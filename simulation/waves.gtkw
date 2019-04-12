@@ -1,0 +1,115 @@
+[*]
+[*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
+[*] Thu Dec 27 18:14:37 2018
+[*]
+[dumpfile] "/home/jsousa/sandbox/spi/simulation/icarus/spi_tb.vcd"
+[dumpfile_mtime] "Thu Dec 27 17:57:19 2018"
+[dumpfile_size] 23699157
+[savefile] "/home/jsousa/sandbox/spi/simulation/waves.gtkw"
+[timestart] 0
+[size] 1920 1031
+[pos] -1 -1
+*-22.818277 14138800 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] spi_tb.
+[sst_width] 287
+[signals_width] 264
+[sst_expanded] 1
+[sst_vpaned_height] 107
+@200
+-MASTER
+@28
+spi_tb.spi_m.address[1:0]
+spi_tb.spi_m.clk
+@22
+spi_tb.spi_m.ctr_data2send[31:0]
+@28
+spi_tb.spi_m.ctr_data2send_en
+spi_tb.spi_m.ctr_interrupt_en
+spi_tb.spi_m.ctr_interrupt_en_en
+spi_tb.spi_m.ctr_nrst
+spi_tb.spi_m.ctr_ready
+spi_tb.spi_m.ctr_ready_clr
+spi_tb.spi_m.ctr_ss
+spi_tb.spi_m.ctr_ss_1
+spi_tb.spi_m.ctr_ss_2
+spi_tb.spi_m.ctr_start
+@22
+spi_tb.spi_m.data_in[31:0]
+spi_tb.spi_m.data_out[31:0]
+@28
+spi_tb.spi_m.interrupt
+@29
+spi_tb.spi_m.miso
+@28
+spi_tb.spi_m.mosi
+spi_tb.spi_m.rst
+spi_tb.spi_m.sclk
+spi_tb.spi_m.sel
+@22
+spi_tb.spi_m.spi_counter[5:0]
+spi_tb.spi_m.spi_data2send[31:0]
+spi_tb.spi_m.spi_data_rcvd[31:0]
+@28
+spi_tb.spi_m.spi_nrst
+spi_tb.spi_m.ss
+spi_tb.spi_m.we
+@200
+-SLAVE
+@28
+spi_tb.spi_s.address[1:0]
+spi_tb.spi_s.clk
+@22
+spi_tb.spi_s.ctr_data2send[31:0]
+@28
+spi_tb.spi_s.ctr_data2send_en
+spi_tb.spi_s.ctr_interrupt_en
+spi_tb.spi_s.ctr_interrupt_en_en
+spi_tb.spi_s.ctr_ready
+spi_tb.spi_s.ctr_ready_clr
+spi_tb.spi_s.ctr_ss
+spi_tb.spi_s.ctr_ss_1
+spi_tb.spi_s.ctr_ss_2
+@22
+spi_tb.spi_s.data_in[31:0]
+spi_tb.spi_s.data_out[31:0]
+@28
+spi_tb.spi_s.interrupt
+spi_tb.spi_s.miso
+spi_tb.spi_s.mosi
+spi_tb.spi_s.rst
+spi_tb.spi_s.sclk
+spi_tb.spi_s.sel
+@22
+spi_tb.spi_s.spi_data2send[31:0]
+spi_tb.spi_s.spi_data_rcvd[31:0]
+@28
+spi_tb.spi_s.ss
+spi_tb.spi_s.we
+@200
+-TB
+@28
+spi_tb.clk
+spi_tb.m_address[1:0]
+@22
+spi_tb.m_data_in[31:0]
+spi_tb.m_data_out[31:0]
+@28
+spi_tb.m_interrupt
+spi_tb.m_sel
+spi_tb.m_we
+spi_tb.miso
+spi_tb.mosi
+spi_tb.rst
+spi_tb.s_address[1:0]
+@22
+spi_tb.s_data_in[31:0]
+spi_tb.s_data_out[31:0]
+@28
+spi_tb.s_interrupt
+spi_tb.s_sel
+spi_tb.s_we
+spi_tb.sclk
+spi_tb.spi_nrst
+spi_tb.ss
+[pattern_trace] 1
+[pattern_trace] 0
