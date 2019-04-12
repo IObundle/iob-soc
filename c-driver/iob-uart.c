@@ -25,12 +25,12 @@ void uart_putc(unsigned int base, char c)
   MEMSET(base, UART_DATAOUT, (int)c);
 }
 
-void uart_puts(const char *s)
+void uart_puts(unsigned int base, const char *s)
 {
-  while (*s) uart_putc(*s++);
+  while (*s) uart_putc(base, *s++);
 }
 
-void uart_printf(const char* fmt, int var) {
+void uart_printf(unsigned int base, const char* fmt, int var) {
 
   const char *w = fmt;
   char c;
@@ -43,14 +43,14 @@ void uart_printf(const char* fmt, int var) {
   while ((c = *w++) != '\0') {
     if (c != '%') {
       /* Regular character */
-      uart_putc(c);
+      uart_putc(base, c);
     }
     else {
       c = *w++;
       switch (c) {
       case '%': // %%
       case 'c': // %c
-        uart_putc(c);
+        uart_putc(base, c);
         break;
       case 'X': // %X
         hex_a = 'A';  // Capital "%x"
@@ -59,7 +59,7 @@ void uart_printf(const char* fmt, int var) {
           /* If the number value is zero, just print and continue. */
           if (var == 0)
             {
-              uart_putc('0');
+              uart_putc(base, '0');
               continue;
             }
 
@@ -80,7 +80,7 @@ void uart_printf(const char* fmt, int var) {
               else {
                 c = hex_a + digit - 10;
               }
-              uart_putc(c);
+              uart_putc(base, c);
             }
 
           /* Reset the A character */
@@ -93,4 +93,7 @@ void uart_printf(const char* fmt, int var) {
     }
   }
 }
-
+void uart_reset(unsigned int base)
+{
+    MEMSET(base, UART_RESET, 1);
+}
