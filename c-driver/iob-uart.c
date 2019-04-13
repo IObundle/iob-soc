@@ -1,36 +1,42 @@
+#include "system.h"
 #include "iob-uart.h"
 
 #define MEMSET(base, location, value) (*((volatile int*) (base + (sizeof(int)) * location)) = value)
 #define MEMGET(base, location)        (*((volatile int*) (base + (sizeof(int)) * location)))
 
 //UART functions
-void uart_setdiv(unsigned int base, int div)
+void uart_reset()
 {
-    MEMSET(base, UART_DIV, div);
+    MEMSET(UART_BASE, UART_RESET, 1);
 }
 
-void uart_wait(unsigned int base)
+void uart_setdiv(unsigned int div)
 {
-  while(MEMGET(base, UART_WAIT));
+  MEMSET(UART_BASE, UART_DIV, div);
 }
 
-int uart_getdiv(unsigned int base)
+void uart_wait()
 {
-  return (MEMGET(base, UART_DIV));
+  while(MEMGET(UART_BASE, UART_WAIT));
 }
 
-void uart_putc(unsigned int base, char c)
+int uart_getdiv()
 {
-  while(MEMGET(base, UART_WAIT));
-  MEMSET(base, UART_DATAOUT, (int)c);
+  return (MEMGET(UART_BASE, UART_DIV));
 }
 
-void uart_puts(unsigned int base, const char *s)
+void uart_putc(char c)
 {
-  while (*s) uart_putc(base, *s++);
+  while(MEMGET(UART_BASE, UART_WAIT));
+  MEMSET(UART_BASE, UART_DATAOUT, (int)c);
 }
 
-void uart_printf(unsigned int base, const char* fmt, int var) {
+void uart_puts(const char *s)
+{
+  while (*s) uart_putc(*s++);
+}
+
+void uart_printf(const char* fmt, int var) {
 
   const char *w = fmt;
   char c;
@@ -43,14 +49,14 @@ void uart_printf(unsigned int base, const char* fmt, int var) {
   while ((c = *w++) != '\0') {
     if (c != '%') {
       /* Regular character */
-      uart_putc(base, c);
+      uart_putc(c);
     }
     else {
       c = *w++;
       switch (c) {
       case '%': // %%
       case 'c': // %c
-        uart_putc(base, c);
+        uart_putc(c);
         break;
       case 'X': // %X
         hex_a = 'A';  // Capital "%x"
@@ -59,7 +65,7 @@ void uart_printf(unsigned int base, const char* fmt, int var) {
           /* If the number value is zero, just print and continue. */
           if (var == 0)
             {
-              uart_putc(base, '0');
+              uart_putc('0');
               continue;
             }
 
@@ -80,7 +86,7 @@ void uart_printf(unsigned int base, const char* fmt, int var) {
               else {
                 c = hex_a + digit - 10;
               }
-              uart_putc(base, c);
+              uart_putc(c);
             }
 
           /* Reset the A character */
@@ -92,8 +98,4 @@ void uart_printf(unsigned int base, const char* fmt, int var) {
       }
     }
   }
-}
-void uart_reset(unsigned int base)
-{
-    MEMSET(base, UART_RESET, 1);
 }

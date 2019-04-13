@@ -6,21 +6,26 @@
 
 //Functions
 
-//Set the division
+//Reset UART
+void uart_reset();
+
+//Set the division factor div
 //div should be equal to round (fclk/baudrate)
 //E.g for fclk = 100 Mhz for a baudrate of 115200 we should uart_setdiv(868)
-void uart_setdiv(unsigned int base, int div);
+void uart_setdiv(unsigned int div);
+
+//Get the division factor div
+void uart_getdiv(unsigned int div);
 
 //Wait for UART be ready to operate
-void uart_wait(unsigned int base);
+void uart_wait();
 
-//Get the division previously configured
-void uart_getdiv(unsigned int base, int div);
+//Print char
+void uart_putc(char c);
 
-//Functions to write
-void uart_putc(unsigned int base, char c);
-void uart_puts(unsigned int base, const char *s);
-void uart_printf(unsigned int base, const char* fmt, int var);
+//Print string
+void uart_puts(const char *s);
 
-//Function to reset UART
-void uart_reset(unsigned int base);
+//formated print
+void uart_printf(const char* fmt, int var);
+
