@@ -172,7 +172,7 @@ module simpleuart (
    always @(posedge clk)
       if (!rstn_int) begin
 	 send_pattern <= ~10'b0;
-         toggle=1'b0;
+         toggle <= 1'b0;
        end else if (dat_sel && we) begin //load
 	  send_pattern <= {1'b1, dat_di[7:0], 1'b0};
           toggle <= ~toggle;
