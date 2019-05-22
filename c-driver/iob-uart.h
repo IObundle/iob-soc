@@ -15,7 +15,7 @@ void uart_reset();
 void uart_setdiv(unsigned int div);
 
 //Get the division factor div
-void uart_getdiv(unsigned int div);
+int uart_getdiv();
 
 //Wait for UART be ready to operate
 void uart_wait();
