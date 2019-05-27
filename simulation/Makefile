@@ -54,6 +54,10 @@ firmware.hex: firmware.S firmware.c firmware.lds
 	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
 	python3 makehex.py firmware.bin 4096 > firmware.hex
 	python3 hex_split.py
+	cp firmware_0.hex firmware_0.dat
+	cp firmware_1.hex firmware_1.dat
+	cp firmware_2.hex firmware_2.dat
+	cp firmware_3.hex firmware_3.dat
 
 boot.hex: firmware.S boot.c firmware.lds
 	$(TOOLCHAIN_PREFIX)gcc -O3 -ffreestanding -nostdlib -o boot.elf firmware.S boot.c \
@@ -61,12 +65,16 @@ boot.hex: firmware.S boot.c firmware.lds
 	$(TOOLCHAIN_PREFIX)objcopy -O binary boot.elf boot.bin
 	python3 makehex.py boot.bin 4096 > boot.hex
 	python3 boot_hex_split.py
+	cp boot_0.hex boot_0.dat
+	cp boot_1.hex boot_1.dat
+	cp boot_2.hex boot_2.dat
+	cp boot_3.hex boot_3.dat
 
 ## gcc -Os for optimizations, but consumes more cycles and memory
 
 
 clean:
-	@rm -rf .Xil/ firmware.bin firmware.elf firmware.hex firmware_?.hex firmware.map synth_*.log *~ \#*# *#  ../rtl/*~ ../rtl/\#*# ../rtl/*#
+	@rm -rf .Xil/ firmware.bin firmware.elf firmware.hex firmware_?.hex firmware_?.dat firmware.map synth_*.log *~ \#*# *#  ../rtl/*~ ../rtl/\#*# ../rtl/*#
 	@rm -rf synth_*.mmi synth_*.bit synth_system*.v *.vcd *_tb table.txt tab_*/ webtalk.jou
 	@rm -rf webtalk.log webtalk_*.jou webtalk_*.log xelab.* xsim[._]* xvlog.*
-	@rm -rf boot.bin boot.elf boot.hex boot.map boot_*.hex
+	@rm -rf boot.bin boot.elf boot.hex boot.map boot_*.hex boot_?.dat
