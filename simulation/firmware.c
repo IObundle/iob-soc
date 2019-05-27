@@ -224,10 +224,14 @@ void main()
   uart_setdiv(UART_CLK_FREQ/UART_BAUD_RATE);
   uart_wait();  
  
-  uart_puts("D\n");
+   uart_puts("D1\n");
   //uart_puts("... Initializing program in main memory:\n");
   uart_wait();  
   
+  uart_puts("D2\n");
+  //uart_puts("... Initializing program in main memory:\n");
+  uart_wait();
+
   vect = (volatile int*) Address_write;
 
   uart_puts("W\n");

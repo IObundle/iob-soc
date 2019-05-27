@@ -3,8 +3,8 @@
 #define MAIN_MEM_ADDR 0x80000000
 #define PROG_MEM_ADDR 0x40000000
 //#define MEM_JUMP 0xBFFFFFFC 
-#define MEM_JUMP 0xFFFFFFFF 
-#define PROG_SIZE 1024
+#define MEM_JUMP 0xFFFFFFFC 
+#define PROG_SIZE 512
 volatile int* MAIN_MEM;
 volatile int* PROG_MEM;
 //--------------------
