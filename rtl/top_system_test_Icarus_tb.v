@@ -42,6 +42,7 @@ module top_system_test_Icarus_tb;
 
    wire [6:0] led;
    wire ser_tx;
+   wire ser_rx;
    wire trap;
 
 	top_system_test_Icarus uut (
@@ -49,6 +50,7 @@ module top_system_test_Icarus_tb;
 		.resetn           (resetn),
 		.led              (led   ),
 		.ser_tx           (ser_tx),
+		.ser_rx           (ser_rx),		    
 		.trap             (trap  )
 	);
 

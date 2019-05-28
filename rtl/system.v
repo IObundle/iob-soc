@@ -7,6 +7,7 @@ module system (
                      input 	   reset,
                      //output reg led,
                      output 	   ser_tx,
+                     input         ser_rx,
                      output 	   trap,
                      output 	   resetn_int_sys,
 		     output [1:0]  s_sel,
@@ -141,7 +142,7 @@ module system (
 //////////////////////////////////////////////////////////////////////
    
    reg processor_resetn;
-   always @* processor_resetn <= resetn_int && ~(soft_reset [0]);
+   always @* processor_resetn <= resetn_int && ~(soft_reset[0]);
     
    picorv32 picorv32_core (
 		           .clk    (clk       ),
@@ -197,7 +198,7 @@ assign s_sel = slave_sel;
 						///////////////////////////////////
 						//// slave 2 interface ///////////
 						/////////////////////////////////
-					        .s_addr_2  (wire_s_addr_2),
+					    .s_addr_2  (wire_s_addr_2),
 						.s_wdata_2 (wire_s_wdata_2),	       
 						.s_wstrb_2 (wire_s_wstrb_2),
 						.s_rdata_2 (wire_s_rdata_2),
@@ -229,6 +230,37 @@ assign s_sel = slave_sel;
 ////// Simple UART /////////////////
 ///////////////////////////////////
 	                   
+//          simpleuart simpleuart (
+//				 //serial i/f
+//				 .ser_tx      (ser_tx          ),
+//				 .ser_rx      (ser_rx          ),
+//				 //data bus
+//				 .clk         (clk             ),
+//				 .resetn      (resetn_int      ),
+//				 .address     (wire_s_addr_2[3:2]),
+//				 .sel         (wire_s_valid_2    ),	
+//				 .we          (|wire_s_wstrb_2   ),
+//				 .dat_di      (wire_s_wdata_2    ),
+//				 .dat_do      (wire_s_rdata_2    )
+//	                  );
+ 
+//   reg 	   uart_ready;
+//   assign wire_s_ready_2 = wire_s_valid_2;
+   
+////   always @(posedge clk) begin
+////      uart_ready <= wire_s_valid_2;
+////   end  
+////////////////////////////////////
+///////////////////////////////////	       
+  
+   
+///////////////////////////////////// 
+////// Simple UART Picosoc//////////
+///////////////////////////////////
+wire simpleuart_wait;
+wire [31:0] simpleuart_reg_div_do, simpleuart_reg_dat_do;
+
+	                   
           simpleuart simpleuart (
 				 //serial i/f
 				 .ser_tx      (ser_tx          ),
@@ -236,24 +268,56 @@ assign s_sel = slave_sel;
 				 //data bus
 				 .clk         (clk             ),
 				 .resetn      (resetn_int      ),
-				 .address     (wire_s_addr_2[3:2]),
-				 .sel         (wire_s_valid_2    ),	
-				 .we          (|wire_s_wstrb_2   ),
-				 .dat_di      (wire_s_wdata_2    ),
-				 .dat_do      (wire_s_rdata_2    )
-	                  );
- 
-   reg 	   uart_ready;
-   assign wire_s_ready_2 = uart_ready;
-   
-   always @(posedge clk) begin
-      uart_ready <= wire_s_valid_2; 
-   end  
+//				 .address     (wire_s_addr_2[3:2]),
+//				 .sel         (wire_s_valid_2    ),	
+//				 .we          (|wire_s_wstrb_2   ),
+//				 .dat_di      (wire_s_wdata_2    ),
+//				 .dat_do      (wire_s_rdata_2    )
+//	                  );
+                .reg_div_we  ((wire_s_valid_2 && wire_s_addr_2 [2])? wire_s_wstrb_2 : 4'b 0000),
+                .reg_div_di  (wire_s_wdata_2),
+                .reg_div_do  (simpleuart_reg_div_do),
+                
+                .reg_dat_we  ((wire_s_valid_2 && wire_s_addr_2 [3])? wire_s_wstrb_2[0] : 1'b 0),
+                .reg_dat_re  ((wire_s_valid_2 && wire_s_addr_2 [3]) && !wire_s_wstrb_2),
+                .reg_dat_di  (wire_s_wdata_2),
+                .reg_dat_do  (simpleuart_reg_dat_do),
+                .reg_dat_wait(simpleuart_wait)
+                );
+                
+                
+                
+//                .reg_div_we  (simpleuart_reg_div_sel ? mem_wstrb : 4'b 0000),
+//                .reg_div_di  (mem_wdata),
+//                .reg_div_do  (simpleuart_reg_div_do),
+        
+//                .reg_dat_we  (simpleuart_reg_dat_sel ? mem_wstrb[0] : 1'b 0),
+//                .reg_dat_re  (simpleuart_reg_dat_sel && !mem_wstrb),
+//                .reg_dat_di  (mem_wdata),
+//                .reg_dat_do  (simpleuart_reg_dat_do),
+//                .reg_dat_wait(simpleuart_reg_dat_wait)
+
+wire        simpleuart_reg_div_sel = wire_s_valid_2 && wire_s_addr_2 [2]; // addr = ...0004
+wire        simpleuart_reg_dat_sel = wire_s_valid_2 && wire_s_addr_2 [3]; // addr = ...0008
+//	assign mem_rdata = (iomem_valid && iomem_ready) ? iomem_rdata : spimem_ready ? spimem_rdata : ram_ready ? ram_rdata :
+//        spimemio_cfgreg_sel ? spimemio_cfgreg_do : simpleuart_reg_div_sel ? simpleuart_reg_div_do :
+//        simpleuart_reg_dat_sel ? simpleuart_reg_dat_do : 32'h 0000_0000;
+
+assign wire_s_ready_2 = (wire_s_valid_2 && wire_s_addr_2 [2]) || ((wire_s_valid_2 && wire_s_addr_2 [3]) && !simpleuart_wait);
+assign wire_s_rdata_2 = simpleuart_reg_div_sel ? simpleuart_reg_div_do : simpleuart_reg_dat_sel ? simpleuart_reg_dat_do : 32'h 0000_0000;
+//   reg 	   uart_ready;
+//   assign wire_s_ready_2 = uart_ready;
+      
+//   always @(posedge clk) begin
+//      uart_ready <= wire_s_valid_2;
+//   end  
 ////////////////////////////////////
 ///////////////////////////////////	       
   
-   
-
+ 
+ 
+ 
+ 
 ////////////////////////////////////////////////////////////////////
 ///// Open source RAM and Boot ROM with native memory instance ////
 //////////////////////////////////////////////////////////////////
