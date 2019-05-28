@@ -70,8 +70,7 @@ boot.hex: firmware.S boot.c firmware.lds
 	cp boot_2.hex boot_2.dat
 	cp boot_3.hex boot_3.dat
 
-## gcc -Os for optimizations, but consumes more cycles and memory
-
+hex: 	firmware.hex boot.hex
 
 clean:
 	@rm -rf .Xil/ firmware.bin firmware.elf firmware.hex firmware_?.hex firmware_?.dat firmware.map synth_*.log *~ \#*# *#  ../rtl/*~ ../rtl/\#*# ../rtl/*#

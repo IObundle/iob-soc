@@ -22,10 +22,11 @@
 
 module top_system_test_Icarus(
 	          //input        C0_SYS_CLK_clk_p, C0_SYS_CLK_clk_n, 
-	          input      clk,
+	          input        clk,
 	          input        resetn,
 	          output [6:0] led,
 	          output       ser_tx,
+		  input        ser_rx,	      
 		  output       trap
               
     );
@@ -64,6 +65,7 @@ module top_system_test_Icarus(
 		           .clk        (clk       ),
 		           .reset      (~resetn   ),
 		           .ser_tx     (ser_tx    ),
+		           .ser_rx     (ser_rx    ),
 		           .trap       (trap      ),
 		           .s_sel      (slave_select),
 		           .resetn_int_sys    (wire_resetn_int),

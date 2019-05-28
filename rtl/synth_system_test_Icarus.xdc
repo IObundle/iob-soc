@@ -37,6 +37,8 @@ create_clock -period 4.000 [get_ports C0_SYS_CLK_clk_p]
 ## USB-UART Interface
 set_property PACKAGE_PIN D20 [get_ports ser_tx]
 set_property IOSTANDARD LVCMOS18 [get_ports ser_tx]
+set_property PACKAGE_PIN C19 [get_ports ser_rx]
+set_property IOSTANDARD LVCMOS18 [get_ports ser_rx]
 
 ###### User LEDs
 set_property PACKAGE_PIN D16 [get_ports {led[6]}]
