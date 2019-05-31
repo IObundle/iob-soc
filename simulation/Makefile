@@ -72,6 +72,14 @@ boot.hex: firmware.S boot.c firmware.lds
 
 hex: 	firmware.hex boot.hex
 
+boot.dump: 	boot.hex
+	$(TOOLCHAIN_PREFIX)objdump -D -S boot.elf
+
+firmware.dump: 	firmware.hex
+	$(TOOLCHAIN_PREFIX)objdump -D -S firmware.elf
+
+dump: 	boot.dump firmware.dump
+
 clean:
 	@rm -rf .Xil/ firmware.bin firmware.elf firmware.hex firmware_?.hex firmware_?.dat firmware.map synth_*.log *~ \#*# *#  ../rtl/*~ ../rtl/\#*# ../rtl/*#
 	@rm -rf synth_*.mmi synth_*.bit synth_system*.v *.vcd *_tb table.txt tab_*/ webtalk.jou
