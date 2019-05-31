@@ -34,7 +34,7 @@ module top_system_test_Icarus(
    parameter MAIN_MEM_ADDR_W = 14; // 14 = 32 bits (4) * 2**12 (4096) depth
 
 
-   parameter DDR_ADDR_W = 14;
+   parameter DDR_ADDR_W = 30;
    
     ////////////single ended clock
   /*

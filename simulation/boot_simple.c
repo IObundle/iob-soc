@@ -148,9 +148,8 @@ char getchar()
 
 void main()
 { 
-  int counter, incr, a;
-  char* uart_char;
-  int*  int_uart;     
+  int counter;
+        
 
   MAIN_MEM = (volatile int*) MAIN_MEM_ADDR;
   PROG_MEM = (volatile int*) PROG_MEM_ADDR;
@@ -164,54 +163,11 @@ void main()
   //uart_puts("C\n");
   // uart_puts("Copying Program to Main Memory...\n");
   //uart_wait(); 
-  print ("Copying Program from UART to Main Memory, load it from terminal...\n");
+  print ("Copying Program to Main Memory...\n");
 
 
-  for (counter = 0; counter < PROG_SIZE; counter++){
-    print ("position ");
-    print_hex (counter, 3);
-    for (incr = 0; incr < 8; incr++){
-      uart_char [incr] = getchar();
-    }
-    print (" -> ");
-
-    a = (int) uart_char[0];
-    int_uart[0] = a;
-    print_hex(int_uart[0],1);
-
-    a = (int) (uart_char[1]);	 
-    int_uart[1] = a<<4;
- print_hex(int_uart[1],1);
-
-    a = (int) (uart_char[2]);
-    int_uart[2] = a<<8;
-print_hex(int_uart[2],1);
-
-    a = (int) (uart_char[3]);
-int_uart[3] = a<<12;
-print_hex(int_uart[3],1);
-    
-a = (int) (uart_char[4]);
-int_uart[4] = a<<16;
-print_hex(int_uart[4],1);
-    
-a = (int) (uart_char[5]);
-int_uart[5] = a<<20;
-print_hex(int_uart[5],1);
-
-    a = (int) (uart_char[6]);
-int_uart[6] = a<<24;
-print_hex(int_uart[6],1);
-
-    a = (int) (uart_char[7]);
-    int_uart[7] = a<<28;
-print_hex(int_uart[7],1);
- 
- print(" =? ");
-
-    MAIN_MEM[counter] = int_uart[0] + int_uart[1] + int_uart[2] + int_uart[3] + int_uart[4] + int_uart[5] + int_uart[6] + int_uart[7];
-    print_hex(MAIN_MEM[counter],8);
-    print ("\n");
+  for (counter = 0; counter < PROG_SIZE; counter ++){
+    MAIN_MEM[counter] = PROG_MEM[counter];
   };
 
   //uart_puts("S\n");
