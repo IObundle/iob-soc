@@ -1,0 +1,53 @@
+
+Allocating common symbols
+Common symbol       size              file
+
+flag                0x4               /tmp/ccksVp4S.o
+vect                0x4               /tmp/ccksVp4S.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+LOAD /tmp/ccDKjYP7.o
+LOAD /tmp/ccksVp4S.o
+
+.memory         0x0000000000000000      0xf84
+                0x0000000000000000                . = 0x0
+ *(.init)
+ .init          0x0000000000000000       0x10 /tmp/ccDKjYP7.o
+ *(.text)
+ .text          0x0000000000000010        0x0 /tmp/ccDKjYP7.o
+ .text          0x0000000000000010      0x9c0 /tmp/ccksVp4S.o
+                0x00000000000002e0                putchar
+                0x0000000000000304                print
+                0x0000000000000344                print_hex
+                0x00000000000005dc                print_dec
+                0x00000000000008f4                getchar_prompt
+                0x00000000000009b0                getchar
+ *(*)
+ .data          0x00000000000009d0        0x0 /tmp/ccDKjYP7.o
+ .bss           0x00000000000009d0        0x0 /tmp/ccDKjYP7.o
+ .rela.init     0x00000000000009d0        0x0 /tmp/ccDKjYP7.o
+ .rela.text.startup
+                0x00000000000009d0        0x0 /tmp/ccDKjYP7.o
+ .data          0x00000000000009d0        0x0 /tmp/ccksVp4S.o
+ .bss           0x00000000000009d0        0x0 /tmp/ccksVp4S.o
+ .text.startup  0x00000000000009d0      0x48c /tmp/ccksVp4S.o
+                0x00000000000009d0                main
+ .rodata.str1.4
+                0x0000000000000e5c      0x10c /tmp/ccksVp4S.o
+                                        0x10a (size before relaxing)
+ .comment       0x0000000000000f68       0x11 /tmp/ccksVp4S.o
+                                         0x12 (size before relaxing)
+ *fill*         0x0000000000000f79        0x3 
+ COMMON         0x0000000000000f7c        0x8 /tmp/ccksVp4S.o
+                0x0000000000000f7c                flag
+                0x0000000000000f80                vect
+                0x0000000000000f84                . = ALIGN (0x4)
+                0x0000000000000f84                end = .
+LOAD /opt/riscv/bin/../lib/gcc/riscv32-unknown-elf/7.2.0/libgcc.a
+OUTPUT(firmware.elf elf32-littleriscv)
