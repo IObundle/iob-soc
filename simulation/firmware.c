@@ -365,43 +365,75 @@ void main()
    // N = (int) Numb - 48;
    print ("N3 = ");
    Numb = getchar();
- while ( Numb > '9' || Numb < '0'){
-     print("Incorrect value, type 0 to f\n");
-     Numb = getchar();
- }
- N3 =(int) Numb - 48;
+   /*   while (Numb > '9' || Numb < '0'){
+	   while (Numb > 'f' || Numb < 'a'){
+	     print("Incorrect value, type 0 to f\n");
+	     Numb = getchar();
+	   }
+       print("Incorrect value, type 0 to f\n");
+       Numb = getchar(); 
+       } */
+   if (Numb <= '9'){
+     N3 =(int) Numb - 48;
+   }else{
+     N3 =(int) Numb - 87;
+   }
    print_hex (N3, 4);
    N3 = N3<<12;
 
 
    print ("\nN2 = ");
    Numb = getchar();
- while ( Numb > '9' || Numb < '0'){
-     print("Incorrect value, type 0 to f\n");
-     Numb = getchar();
- }
- N2 =(int) Numb - 48;
+   /* while (Numb > '9' || Numb < '0'){
+	   while (Numb > 'f' || Numb < 'a'){
+	     print("Incorrect value, type 0 to f\n");
+	     Numb = getchar();
+	   }
+       print("Incorrect value, type 0 to f\n");
+       Numb = getchar(); 
+       } */
+   if (Numb <= '9'){
+     N2 =(int) Numb - 48;
+   }else{
+     N2 =(int) Numb - 87;
+   }
    print_hex (N2, 4);
    N2 = N2<<8;
 
 
    print ("\nN1 = ");
    Numb = getchar();
- while ( Numb > '9' || Numb < '0'){
-     print("Incorrect value, type 0 to f\n");
-     Numb = getchar();
- }
- N1 =(int) Numb - 48;
+   /* while (Numb > '9' || Numb < '0'){
+	   while (Numb > 'f' || Numb < 'a'){
+	     print("Incorrect value, type 0 to f\n");
+	     Numb = getchar();
+	   }
+       print("Incorrect value, type 0 to f\n");
+       Numb = getchar(); 
+       } */
+   if (Numb <= '9'){
+     N1 =(int) Numb - 48;
+   }else{
+     N1 =(int) Numb - 87;
+   }
    print_hex (N1, 4);
    N1 = N1<<4;
 
    print ("\nN0 = ");
-   Numb = getchar();
- while ( Numb > '9' || Numb < '0'){
-     print("Incorrect value, type 0 to f\n");
-     Numb = getchar();
- }
- N0 =(int) Numb - 48;
+   /*   Numb = getchar();
+   while (Numb > '9' || Numb < '0'){
+	   while (Numb > 'f' || Numb < 'a'){
+	     print("Incorrect value, type 0 to f\n");
+	     Numb = getchar();
+	   }
+       print("Incorrect value, type 0 to f\n");
+       Numb = getchar(); 
+   } 
+   */   if (Numb <= '9'){
+     N0 =(int) Numb - 48;
+   }else{
+     N0 =(int) Numb - 87;
+   }
    print_hex (N0, 4);
 
    N = N3 + N2 + N1 + N0;
@@ -425,9 +457,9 @@ void main()
   for (counter = 0; counter <= N; counter ++){
     if(vect[counter] != counter)
       {
-	print_dec(vect[counter]);
+	print_hex(vect[counter],5);
 	print(" should've been ");
-	print_dec(counter);
+	print_hex(counter, 5);
 	print("\n");
 	//flag = 26985;
 	//uart_printf("%x should've been ",vect[counter]); 

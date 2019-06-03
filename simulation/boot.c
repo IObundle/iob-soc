@@ -6,7 +6,8 @@
 #define PROG_MEM_ADDR 0x40000000
 //#define MEM_JUMP 0xBFFFFFFC 
 #define MEM_JUMP 0xFFFFFFFC 
-#define PROG_SIZE 4096
+//#define PROG_SIZE 4096
+#define PROG_SIZE 5
 
 #define reg_uart_clkdiv (*(volatile uint32_t*)0x70000004)
 #define reg_uart_data (*(volatile uint32_t*)  0x70000008)
@@ -72,45 +73,6 @@ void print_hex(uint32_t v, int digits)
 	}
 }
 
-void print_dec(uint32_t v)
-{
-	if (v >= 1000) {
-		print(">=1000");
-		return;
-	}
-
-	if      (v >= 900) { putchar('9'); v -= 900; }
-	else if (v >= 800) { putchar('8'); v -= 800; }
-	else if (v >= 700) { putchar('7'); v -= 700; }
-	else if (v >= 600) { putchar('6'); v -= 600; }
-	else if (v >= 500) { putchar('5'); v -= 500; }
-	else if (v >= 400) { putchar('4'); v -= 400; }
-	else if (v >= 300) { putchar('3'); v -= 300; }
-	else if (v >= 200) { putchar('2'); v -= 200; }
-	else if (v >= 100) { putchar('1'); v -= 100; }
-
-	if      (v >= 90) { putchar('9'); v -= 90; }
-	else if (v >= 80) { putchar('8'); v -= 80; }
-	else if (v >= 70) { putchar('7'); v -= 70; }
-	else if (v >= 60) { putchar('6'); v -= 60; }
-	else if (v >= 50) { putchar('5'); v -= 50; }
-	else if (v >= 40) { putchar('4'); v -= 40; }
-	else if (v >= 30) { putchar('3'); v -= 30; }
-	else if (v >= 20) { putchar('2'); v -= 20; }
-	else if (v >= 10) { putchar('1'); v -= 10; }
-
-	if      (v >= 9) { putchar('9'); v -= 9; }
-	else if (v >= 8) { putchar('8'); v -= 8; }
-	else if (v >= 7) { putchar('7'); v -= 7; }
-	else if (v >= 6) { putchar('6'); v -= 6; }
-	else if (v >= 5) { putchar('5'); v -= 5; }
-	else if (v >= 4) { putchar('4'); v -= 4; }
-	else if (v >= 3) { putchar('3'); v -= 3; }
-	else if (v >= 2) { putchar('2'); v -= 2; }
-	else if (v >= 1) { putchar('1'); v -= 1; }
-	else putchar('0');
-}
-
 char getchar_prompt(char *prompt)
 {
 	int32_t c = -1;
@@ -148,7 +110,7 @@ char getchar()
 
 void main()
 { 
-  int counter, incr, a;
+  int counter, i, a;
   char* uart_char;
   int*  int_uart;     
 
@@ -164,54 +126,54 @@ void main()
   //uart_puts("C\n");
   // uart_puts("Copying Program to Main Memory...\n");
   //uart_wait(); 
-  print ("Copying Program from UART to Main Memory, load it from terminal...\n");
 
+  //print ("Copying Program from UART to Main Memory, load it from terminal...");
 
+  /*
   for (counter = 0; counter < PROG_SIZE; counter++){
-    print ("position ");
+    print ("\nposition ");
     print_hex (counter, 3);
+    print(":\n");
     for (incr = 0; incr < 8; incr++){
       uart_char [incr] = getchar();
     }
-    print (" -> ");
+    for (incr =0; incr < 8; incr++){
+      if (uart_char[incr] <= '9' || uart_char [incr] >= '0'){
+	a = (int) uart_char [incr] - 48; //0 - 9
+      }else{ 
+	a = (int) uart_char [incr] - 87; //a - f
+      }
+      print (" "); 
+      print_hex (a, 1);
+      print (" -> ");
+      int_uart[incr] = a<<(4*incr);
+      print_hex (int_uart[incr], 8);
+      print("\n");
+    }
+    MAIN_MEM[counter] = 0;
+    for (incr =0; incr <8 ; incr++){
+      MAIN_MEM[counter] = MAIN_MEM[counter] + int_uart [incr];
+    }
+    print ("- written value: ");
+    print_hex (MAIN_MEM[counter],8);
+    print("\n");
+  }
+   
+  //uart_puts("S\n");
+  //uart_puts("Program copy completed. Starting to read from Main Memory...\n");
+  //uart_wait(); 
+  print("Program copy completed. Starting to read from Main Memory...\n");
 
-    a = (int) uart_char[0];
-    int_uart[0] = a;
-    print_hex(int_uart[0],1);
 
-    a = (int) (uart_char[1]);	 
-    int_uart[1] = a<<4;
- print_hex(int_uart[1],1);
+  *((volatile int*) MEM_JUMP) = 1;
+}
+*/
 
-    a = (int) (uart_char[2]);
-    int_uart[2] = a<<8;
-print_hex(int_uart[2],1);
 
-    a = (int) (uart_char[3]);
-int_uart[3] = a<<12;
-print_hex(int_uart[3],1);
-    
-a = (int) (uart_char[4]);
-int_uart[4] = a<<16;
-print_hex(int_uart[4],1);
-    
-a = (int) (uart_char[5]);
-int_uart[5] = a<<20;
-print_hex(int_uart[5],1);
+  /*
 
-    a = (int) (uart_char[6]);
-int_uart[6] = a<<24;
-print_hex(int_uart[6],1);
-
-    a = (int) (uart_char[7]);
-    int_uart[7] = a<<28;
-print_hex(int_uart[7],1);
- 
- print(" =? ");
-
-    MAIN_MEM[counter] = int_uart[0] + int_uart[1] + int_uart[2] + int_uart[3] + int_uart[4] + int_uart[5] + int_uart[6] + int_uart[7];
-    print_hex(MAIN_MEM[counter],8);
-    print ("\n");
+  for (counter = 0; counter < PROG_SIZE; counter ++){
+    MAIN_MEM[counter] = PROG_MEM[counter];
   };
 
   //uart_puts("S\n");
@@ -222,3 +184,50 @@ print_hex(int_uart[7],1);
 
   *((volatile int*) MEM_JUMP) = 1;
 }
+  */
+  while (1){
+    print ("\nTesting UART loading to Main Memory...");
+
+    for (i = 0 ; i < PROG_SIZE; i ++){
+
+      for (counter = 7; counter >= 0 ; counter--) {
+	MAIN_MEM[(8*i) + counter] = getchar();
+	print("\nValue sent: ");
+	print_hex(MAIN_MEM[(8*i) + counter], 3);
+	if (MAIN_MEM [(8*i) + counter] >='0'  && MAIN_MEM [(8*i) + counter] <= '9'){
+	  MAIN_MEM [(8*i) + counter] = MAIN_MEM[(8*i) + counter] - 48;
+	}else{
+	  MAIN_MEM [(8*i) + counter] = MAIN_MEM [(8*i) + counter] - 87;
+	}
+	print(" - char of: ");
+	print_hex(MAIN_MEM[(8*i) + counter], 3);
+      }
+  
+
+      for (counter = 0; counter < 8; counter ++){
+	MAIN_MEM[(8*i) + counter] <<= (4*counter);
+	print("\nShifted value: ");
+	print_hex(MAIN_MEM[(8*i) + counter], 8);    
+      }
+
+      MAIN_MEM[i] = MAIN_MEM [8*i]; //puts the instruction in order (from address 8*i to i)
+      for (counter = 1; counter < 8; counter ++){
+	MAIN_MEM[i] = MAIN_MEM[i] + MAIN_MEM[(8*i) + counter];
+      }
+      print("\nFinal value: ");
+      print_hex(MAIN_MEM[i], 8);
+
+    }
+
+      print("\nProgram copy completed... Printing final copy:\n");
+      for (i = 0 ; i < PROG_SIZE; i++){
+	print_hex (i, 3);
+	print (": ");
+	print_hex (MAIN_MEM[i], 8);
+	print("\n");
+      }
+  }
+  //  *((volatile int*) MEM_JUMP) = 1;
+}
+
+
