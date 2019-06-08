@@ -20,7 +20,7 @@ module system (
 	             input         sys_s_ready
                );
                
-   parameter MAIN_MEM_ADDR_W = 14; // 14 = 32 bits (4) * 2**12 (4096) depth
+   parameter MAIN_MEM_ADDR_W = 18; // 14 = 32 bits (4) * 2**12 (4096) depth
 
 
    parameter DDR_ADDR_W = 14;
@@ -198,7 +198,7 @@ assign s_sel = slave_sel;
 						///////////////////////////////////
 						//// slave 2 interface ///////////
 						/////////////////////////////////
-					    .s_addr_2  (wire_s_addr_2),
+						.s_addr_2  (wire_s_addr_2),
 						.s_wdata_2 (wire_s_wdata_2),	       
 						.s_wstrb_2 (wire_s_wstrb_2),
 						.s_rdata_2 (wire_s_rdata_2),
@@ -324,7 +324,7 @@ assign wire_s_rdata_2 = simpleuart_reg_div_sel ? simpleuart_reg_div_do : simpleu
 //////////////////////////////////////////////////////////
 //// Open RAM ///////////////////////////////////////////
 ////////////////////////////////////////////////////////  	  
-
+/*
         main_memory  #(.ADDR_W(MAIN_MEM_ADDR_W-2) ) main_memory (
                     .clk                (clk                                  ),
                     .main_mem_write_data(wire_s_wdata_3                       ),
@@ -339,7 +339,8 @@ assign wire_s_rdata_2 = simpleuart_reg_div_sel ? simpleuart_reg_div_do : simpleu
    
    always @(posedge clk) begin
       main_mem_ready <= wire_s_valid_3; 
-   end   
+   end  
+ */   
 //////////////////////////////////////////////////////////
 //// Boot ROM ///////////////////////////////////////////
 ////////////////////////////////////////////////////////  
