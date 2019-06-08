@@ -80,8 +80,14 @@ firmware.dump: 	firmware.hex
 
 dump: 	boot.dump firmware.dump
 
+uart_loader: 
+	gcc -o uart_loader uart_file_loader.c
+	./uart_loader firmware.hex 
+
+
 clean:
 	@rm -rf .Xil/ firmware.bin firmware.elf firmware.hex firmware_?.hex firmware_?.dat firmware.map synth_*.log *~ \#*# *#  ../rtl/*~ ../rtl/\#*# ../rtl/*#
 	@rm -rf synth_*.mmi synth_*.bit synth_system*.v *.vcd *_tb table.txt tab_*/ webtalk.jou
 	@rm -rf webtalk.log webtalk_*.jou webtalk_*.log xelab.* xsim[._]* xvlog.*
 	@rm -rf boot.bin boot.elf boot.hex boot.map boot_*.hex boot_?.dat
+	@rm -rf uart_loader
