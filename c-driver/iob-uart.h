@@ -27,5 +27,4 @@ void uart_putc(char c);
 void uart_puts(const char *s);
 
 //formated print
-void uart_printf(const char* fmt, int var);
-
+void uart_printf(const char* fmt, ...);
