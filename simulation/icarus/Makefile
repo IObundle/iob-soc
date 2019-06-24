@@ -1,6 +1,6 @@
 RTL_DIR := ../../rtl/src
 INCLUDE_DIR := ../../rtl/include
-TB_DIR := ../../rtl/testbench
+TB_DIR := ../../rtl/tb
 
 VC = iverilog
 VFLAGS = -W all -I.  -g2005-sv

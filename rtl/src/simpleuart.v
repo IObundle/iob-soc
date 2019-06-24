@@ -17,10 +17,7 @@
  *
  */
 
-`define UART_WAIT 0
-`define UART_DIV 1
-`define UART_DATAOUT 2
-`define UART_RESET 3
+`include "iob_uart.vh"
 
 module simpleuart (
                    //serial i/f
@@ -123,6 +120,9 @@ module simpleuart (
      else if (send_bitcnt && (send_divcnt == cfg_divider))  //decrement
        send_bitcnt <= send_bitcnt - 1'b1;
 
+`ifdef SIM
+   reg prchar = 0;
+`endif
 
    // shift register
    always @(posedge clk)
@@ -130,6 +130,11 @@ module simpleuart (
 	send_pattern <= ~10'b0;
      end else if (dat_sel) begin //load
 	send_pattern <= {1'b1, dat_di[7:0], 1'b0};
+`ifdef SIM
+        prchar <= ~prchar;
+        if(prchar)
+          $write("%c", dat_di[7:0]);
+`endif
      end else if (send_bitcnt && send_divcnt == cfg_divider) //shift right
        send_pattern <= {1'b1, send_pattern[9:1]};
 
