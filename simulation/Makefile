@@ -70,7 +70,23 @@ boot.hex: firmware.S boot.c firmware.lds
 	cp boot_2.hex boot_2.dat
 	cp boot_3.hex boot_3.dat
 
+boot_simple.hex: firmware.S boot_simple.c firmware.lds
+	$(TOOLCHAIN_PREFIX)gcc -O3 -ffreestanding -nostdlib -o boot.elf firmware.S boot_simple.c \
+		 --std=gnu99 -Wl,-Bstatic,-T,firmware.lds,-Map,boot.map,--strip-debug -lgcc
+	$(TOOLCHAIN_PREFIX)objcopy -O binary boot.elf boot.bin
+	python3 makehex.py boot.bin 4096 > boot.hex
+	python3 boot_hex_split.py
+	cp boot_0.hex boot_0.dat
+	cp boot_1.hex boot_1.dat
+	cp boot_2.hex boot_2.dat
+	cp boot_3.hex boot_3.dat
+
 hex: 	firmware.hex boot.hex
+
+
+simple_hex: 	firmware.hex boot_simple.hex
+
+
 
 boot.dump: 	boot.hex
 	$(TOOLCHAIN_PREFIX)objdump -D -S boot.elf

@@ -1,0 +1,53 @@
+
+Allocating common symbols
+Common symbol       size              file
+
+MAIN_MEM            0x4               /tmp/ccMon3g8.o
+PROG_MEM            0x4               /tmp/ccMon3g8.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+LOAD /tmp/ccBEqoO2.o
+LOAD /tmp/ccMon3g8.o
+
+.memory         0x0000000000000000      0x820
+                0x0000000000000000                . = 0x0
+ *(.init)
+ .init          0x0000000000000000       0x10 /tmp/ccBEqoO2.o
+ *(.text)
+ .text          0x0000000000000010        0x0 /tmp/ccBEqoO2.o
+ .text          0x0000000000000010      0x6f0 /tmp/ccMon3g8.o
+                0x0000000000000010                putchar
+                0x0000000000000034                print
+                0x0000000000000074                print_hex
+                0x000000000000030c                print_dec
+                0x0000000000000624                getchar_prompt
+                0x00000000000006e0                getchar
+ *(*)
+ .data          0x0000000000000700        0x0 /tmp/ccBEqoO2.o
+ .bss           0x0000000000000700        0x0 /tmp/ccBEqoO2.o
+ .rela.init     0x0000000000000700        0x0 /tmp/ccBEqoO2.o
+ .rela.text.startup
+                0x0000000000000700        0x0 /tmp/ccBEqoO2.o
+ .data          0x0000000000000700        0x0 /tmp/ccMon3g8.o
+ .bss           0x0000000000000700        0x0 /tmp/ccMon3g8.o
+ .text.startup  0x0000000000000700       0xe0 /tmp/ccMon3g8.o
+                0x0000000000000700                main
+ .rodata.str1.4
+                0x00000000000007e0       0x24 /tmp/ccMon3g8.o
+                                         0x23 (size before relaxing)
+ .comment       0x0000000000000804       0x11 /tmp/ccMon3g8.o
+                                         0x12 (size before relaxing)
+ *fill*         0x0000000000000815        0x3 
+ COMMON         0x0000000000000818        0x8 /tmp/ccMon3g8.o
+                0x0000000000000818                MAIN_MEM
+                0x000000000000081c                PROG_MEM
+                0x0000000000000820                . = ALIGN (0x4)
+                0x0000000000000820                end = .
+LOAD /opt/riscv/bin/../lib/gcc/riscv32-unknown-elf/7.2.0/libgcc.a
+OUTPUT(boot.elf elf32-littleriscv)

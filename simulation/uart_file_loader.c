@@ -18,6 +18,8 @@ int main(int argc, char* argv[]){
       return(0);
     }
 
+
+  //////////////////////// Taken from: https://github.com/xanthium-enterprises/Serial-Port-Programming-on-Linux/blob/master/USB2SERIAL_Write/Transmitter%20(PC%20Side)/SerialPort_write.c //////////////////////
      
   printf("\n +----------------------------------+");
   printf("\n |        Serial Port Write         |");
@@ -66,7 +68,7 @@ int main(int argc, char* argv[]){
     printf("\n  BaudRate = 115200 \n  StopBits = 1 \n  Parity   = none");
 	
   /*------------------------------- Write data to serial port -----------------------------*/
-  
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
 
   file_fd = fopen(argv[1], "r");
 
