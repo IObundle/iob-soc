@@ -420,8 +420,8 @@ void main()
    N1 = N1<<4;
 
    print ("\nN0 = ");
-   /*   Numb = getchar();
-   while (Numb > '9' || Numb < '0'){
+   Numb = getchar();
+   /*while (Numb > '9' || Numb < '0'){
 	   while (Numb > 'f' || Numb < 'a'){
 	     print("Incorrect value, type 0 to f\n");
 	     Numb = getchar();
