@@ -1,44 +1,41 @@
-#include <stdlib.h>
-#include <stdarg.h>
-#include "system.h"
 #include "iob-uart.h"
 
-#define MEMSET(base, location, value) (*((volatile int*) (base + (sizeof(int)) * location)) = value)
-#define MEMGET(base, location)        (*((volatile int*) (base + (sizeof(int)) * location)))
+//base address
+static int base;
 
 //UART functions
-void uart_reset()
+void uart_init(int base_address, int div)
 {
-    MEMSET(UART_BASE, UART_RESET, 1);
-}
+  base = base_address;
 
-void uart_setdiv(unsigned int div)
-{
-  MEMSET(UART_BASE, UART_DIV, div);
+  MEMSET(base, UART_RESET, 1);
+
+  //Set the division factor div
+  //div should be equal to round (fclk/baudrate)
+  //E.g for fclk = 100 Mhz for a baudrate of 115200 we should uart_setdiv(868)
+  MEMSET(base, UART_DIV, div);
 }
 
 void uart_wait()
 {
-  while(MEMGET(UART_BASE, UART_WAIT));
+  while(MEMGET(base, UART_WAIT));
 }
 
 int uart_getdiv()
 {
-  return (MEMGET(UART_BASE, UART_DIV));
+  return (MEMGET(base, UART_DIV));
 }
 
 void uart_putc(char c)
 {
-  while(MEMGET(UART_BASE, UART_WAIT));
-  MEMSET(UART_BASE, UART_DATAOUT, (int)c);
+  while(MEMGET(base, UART_WAIT));
+  MEMSET(base, UART_DATAOUT, (int)c);
 }
 
 void uart_puts(const char *s)
 {
   while (*s) uart_putc(*s++);
 }
-
-
 
 void uart_printf(const char* fmt, ...) {
   va_list args;

@@ -1,3 +1,9 @@
+#include <stdlib.h>
+#include <stdarg.h>
+
+#define MEMSET(base, location, value) (*((volatile int*) (base + (sizeof(int)) * location)) = value)
+#define MEMGET(base, location)        (*((volatile int*) (base + (sizeof(int)) * location)))
+
 //Memory Map
 #define UART_WAIT 0
 #define UART_DIV 1
@@ -7,12 +13,7 @@
 //Functions
 
 //Reset UART
-void uart_reset();
-
-//Set the division factor div
-//div should be equal to round (fclk/baudrate)
-//E.g for fclk = 100 Mhz for a baudrate of 115200 we should uart_setdiv(868)
-void uart_setdiv(unsigned int div);
+void uart_init(int base_address, int div);
 
 //Get the division factor div
 int uart_getdiv();
