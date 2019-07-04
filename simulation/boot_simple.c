@@ -6,7 +6,7 @@
 #define PROG_MEM_ADDR 0x40000000
 //#define MEM_JUMP 0xBFFFFFFC 
 #define MEM_JUMP 0xFFFFFFFC 
-#define PROG_SIZE 5
+#define PROG_SIZE 2048
 
 #define reg_uart_clkdiv (*(volatile uint32_t*)0x70000004)
 #define reg_uart_data (*(volatile uint32_t*)  0x70000008)
