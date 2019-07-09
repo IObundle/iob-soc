@@ -8,7 +8,7 @@ void uart_init(int base_address, int div)
 {
   base = base_address;
 
-  MEMSET(base, UART_RESET, 1);
+  MEMSET(base, UART_SOFT_RESET, 1);
 
   //Set the division factor div
   //div should be equal to round (fclk/baudrate)
@@ -16,9 +16,14 @@ void uart_init(int base_address, int div)
   MEMSET(base, UART_DIV, div);
 }
 
-void uart_wait()
+int uart_get_write_wait()
 {
-  while(MEMGET(base, UART_WAIT));
+  return(MEMGET(base, UART_WRITE_WAIT));
+}
+
+void uart_write_wait()
+{
+  while(MEMGET(base, UART_WRITE_WAIT));
 }
 
 int uart_getdiv()
@@ -28,8 +33,8 @@ int uart_getdiv()
 
 void uart_putc(char c)
 {
-  while(MEMGET(base, UART_WAIT));
-  MEMSET(base, UART_DATAOUT, (int)c);
+  while(MEMGET(base, UART_WRITE_WAIT));
+  MEMSET(base, UART_DATA, (int)c);
 }
 
 void uart_puts(const char *s)
@@ -125,4 +130,20 @@ void uart_printf(const char* fmt, ...) {
     }
   }
   va_end(args);
+}
+
+int uart_get_read_valid()
+{
+  return(MEMGET(base, UART_READ_VALID));
+}
+
+void uart_read_wait()
+{
+  while(!MEMGET(base, UART_READ_VALID));
+}
+
+int uart_getc()
+{
+  while(!MEMGET(base, UART_READ_VALID));
+  return(MEMGET(base, UART_DATA));
 }
