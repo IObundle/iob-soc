@@ -1,54 +1,193 @@
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdarg.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 #define UART_CLK_FREQ 100000000 // 100 MHz
 #define UART_BAUD_RATE 115200 // can also use 115200
+#define UART_ADDRESS 0x70000000
 #define MAIN_MEM_ADDR 0x80000000
 #define PROG_MEM_ADDR 0x40000000
 //#define MEM_JUMP 0xBFFFFFFC 
 #define MEM_JUMP 0xFFFFFFFC 
-#define PROG_SIZE 2048
+#define PROG_SIZE 2048 
 
-#define reg_uart_clkdiv (*(volatile uint32_t*)0x70000004)
-#define reg_uart_data (*(volatile uint32_t*)  0x70000008)
+
+
+//#define reg_uart_clkdiv (*(volatile uint32_t*)0x70000004)
+//#define reg_uart_data (*(volatile uint32_t*)  0x70000008)
+
+
+#define MEMSET(base, location, value) (*((volatile int*) (base + (sizeof(int)) * location)) = value)
+#define MEMGET(base, location)        (*((volatile int*) (base + (sizeof(int)) * location)))
+
+//Memory Map
+#define UART_WRITE_WAIT 0
+#define UART_DIV        1
+#define UART_DATA       2
+#define UART_SOFT_RESET 3
+#define UART_READ_VALID 4
+
+
+//base address
+static int base;
+
+
 
 volatile int* MAIN_MEM;
 volatile int* PROG_MEM;
-//--------------------
-//main booting program
-//--------------------
-/*
-#define uart_reset() (*((volatile int*) 0x7000000C) = 1)
+volatile int* PC_SOFT_RESET;
 
-void uart_setdiv(int div)
+//UART functions
+void uart_init(int base_address, int div)
 {
-  *((volatile int*) 0x70000004) = div;
+  base = base_address;
+
+  MEMSET(base, UART_SOFT_RESET, 1);
+
+  //Set the division factor div
+  //div should be equal to round (fclk/baudrate)
+  //E.g for fclk = 100 Mhz for a baudrate of 115200 we should uart_setdiv(868)
+  MEMSET(base, UART_DIV, div);
 }
 
-int uart_getwait()
+int uart_get_write_wait()
 {
-  return *((volatile int*) 0x70000000);
+  return(MEMGET(base, UART_WRITE_WAIT));
 }
 
-void uart_wait()
+void uart_write_wait()
 {
-  while(uart_getwait());
+  while(MEMGET(base, UART_WRITE_WAIT));
+}
+
+int uart_getdiv()
+{
+  return (MEMGET(base, UART_DIV));
 }
 
 void uart_putc(char c)
 {
-  while( *( (volatile int *) 0x70000000) );
-  *( (volatile int *) 0x70000008 ) = (int) c;
+  while(MEMGET(base, UART_WRITE_WAIT));
+  MEMSET(base, UART_DATA, (int)c);
 }
 
 void uart_puts(const char *s)
 {
   while (*s) uart_putc(*s++);
 }
-*/
+
+void uart_printf(const char* fmt, ...) {
+  va_list args;
+  va_start(args, fmt);
+
+  const char *w = fmt;
+
+  char c;
+
+  static char v_char;
+  static char buffer [512];
+  static unsigned long v;
+  static unsigned long digit;
+  static int digit_shift;
+  static char hex_a = 'a';
+
+  while ((c = *w++) != '\0') {
+    if (c != '%') {
+      /* Regular character */
+      uart_putc(c);
+    }
+    else {
+      /* Format Escape Character */
+      if ((c = *w++) != '\0') {
+        switch (c) {
+        case '%': // %%
+          uart_putc(c);
+          break;
+        case 'c': // %c
+          v_char = (char) va_arg(args, int);
+          uart_putc(v_char);
+          break;
+        case 'X': // %X
+          hex_a = 'A';  // Capital "%x"
+        case 'x': // %x
+          /* Process hexadecimal number format. */
+          v = va_arg(args, unsigned long);
+
+          /* If the number value is zero, just print and continue. */
+          if (v == 0)
+            {
+              uart_putc('0');
+              continue;
+            }
+
+          /* Find first non-zero digit. */
+          digit_shift = 28;
+          while (!(v & (0xF << digit_shift))) {
+            digit_shift -= 4;
+          }
+
+          /* Print digits. */
+          for (; digit_shift >= 0; digit_shift -= 4)
+            {
+              digit = (v & (0xF << digit_shift)) >> digit_shift;
+              if (digit <= 9) {
+                c = '0' + digit;
+              }
+              else {
+                c = hex_a + digit - 10;
+              }
+              uart_putc(c);
+            }
+
+          /* Reset the A character */
+          hex_a = 'a';
+          break;
+        case 's': // %s
+          uart_puts(va_arg(args, char *));
+          break;
+          /* %d: print out an int         */
+        case 'd':
+          v = va_arg(args, unsigned long);
+          itoa(v, buffer, 10);
+	  //sprintf(buffer, "%x", v);
+          uart_puts(buffer);
+          break;	
+        default:
+          /* Unsupported format character! */
+          break;
+        }
+      }
+      else {
+        /* String ends with "...%" */
+        /* This should be an error ??? */
+        break;
+      }
+    }
+  }
+  va_end(args);
+}
+
+int uart_get_read_valid()
+{
+  return(MEMGET(base, UART_READ_VALID));
+}
+
+void uart_read_wait()
+{
+  while(!MEMGET(base, UART_READ_VALID));
+}
+
+int uart_getc()
+{
+  while(!MEMGET(base, UART_READ_VALID));
+  return(MEMGET(base, UART_DATA));
+}
 
 
 // ---------------------------------------------------------------
-
+/*
 void putchar(char c)
 {
 	if (c == '\n')
@@ -143,7 +282,7 @@ char getchar()
 {
 	return getchar_prompt(0);
 }
-
+*/
 // -----------------------------------------------------------------
 
 void main()
@@ -153,28 +292,30 @@ void main()
 
   MAIN_MEM = (volatile int*) MAIN_MEM_ADDR;
   PROG_MEM = (volatile int*) PROG_MEM_ADDR;
-
+  PC_SOFT_RESET = (volatile int*) MEM_JUMP;
 
   //uart_reset();
-  reg_uart_clkdiv = 868;
-  //uart_setdiv(UART_CLK_FREQ/UART_BAUD_RATE);
+  //reg_uart_clkdiv = 868;
+  //reg_uart_clkdiv = 2170;
+   uart_init(UART_ADDRESS,(UART_CLK_FREQ/UART_BAUD_RATE));
+//uart_setdiv(UART_CLK_FREQ/UART_BAUD_RATE);
   //uart_wait();  
  
   //uart_puts("C\n");
-  // uart_puts("Copying Program to Main Memory...\n");
+uart_puts("Copying Program to Main Memory...\n");
   //uart_wait(); 
   //print ("Copying Program to Main Memory...\n");
-  print ("A\n");
+  //print ("A\n");
 
   for (counter = 0; counter < PROG_SIZE; counter ++){
     MAIN_MEM[counter] = PROG_MEM[counter];
   };
 
-  //uart_puts("S\n");
-  //uart_puts("Program copy completed. Starting to read from Main Memory...\n");
+  //  uart_puts("S\n");
+uart_puts("Program copy completed. Starting to read from Main Memory...\n");
   //uart_wait(); 
-  // print("Program copy completed. Starting to read from Main Memory...\n");
-  print ("B\n");
-
-  *((volatile int*) MEM_JUMP) = 1;
+  //print("Program copy completed. Starting to read from Main Memory...\n");
+  //  print ("B\n");
+//*((volatile int*) MEM_JUMP) = 1;
+  counter = PC_SOFT_RESET[0];
 }

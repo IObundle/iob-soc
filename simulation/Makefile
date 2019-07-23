@@ -41,7 +41,6 @@ synth_%: firmware.hex boot.hex
 	-grep -B1 -A9 ^Slack $@.log && echo
 
 
-
 VSRC := ../rtl/top_system_test_Icarus_tb.v ../rtl/top_system_test_Icarus.v ../rtl/picorv32.v  ../rtl/simpleuart.v ../rtl/iob_native_interconnect.v  ../rtl/main_memory.v ../rtl/system.v  ../rtl/ddr_memory.v ../rtl/xalt_1p_mem_no_initialization.v xalt_1p_mem.v ../rtl/boot_memory.v
 
 sim_system: firmware.hex boot.hex $(VSRC)
@@ -49,8 +48,8 @@ sim_system: firmware.hex boot.hex $(VSRC)
 	./top_system_test_Icarus_tb +vcd
 
 firmware.hex: firmware.S firmware.c firmware.lds
-	$(TOOLCHAIN_PREFIX)gcc -O3 -ffreestanding -nostdlib -o firmware.elf firmware.S firmware.c \
-		 --std=gnu99 -Wl,-Bstatic,-T,firmware.lds,-Map,firmware.map,--strip-debug -lgcc
+	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -nostdlib -o firmware.elf firmware.S firmware.c \
+		 --std=gnu99 -Wl,-Bstatic,-T,firmware.lds,-Map,firmware.map,--strip-debug -lgcc -lc
 	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
 	python3 makehex.py firmware.bin 4096 > firmware.hex
 	python3 hex_split.py
@@ -59,9 +58,19 @@ firmware.hex: firmware.S firmware.c firmware.lds
 	cp firmware_2.hex firmware_2.dat
 	cp firmware_3.hex firmware_3.dat
 
-boot.hex: firmware.S boot.c firmware.lds
-	$(TOOLCHAIN_PREFIX)gcc -O3 -ffreestanding -nostdlib -o boot.elf firmware.S boot.c \
-		 --std=gnu99 -Wl,-Bstatic,-T,firmware.lds,-Map,boot.map,--strip-debug -lgcc
+#firmware.hex: $(SRC)
+#	$(TOOLCHAIN_PREFIX)g++ -Os -ffreestanding -nostdlib -o firmware.elf $(SRC) -Wl,-Bstatic,-T,firmware.lds,-Map,firmware.map,--strip-debug -lgcc -lc
+#	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
+#	python3 makehex.py firmware.bin 4096 > firmware.hex
+#	python3 hex_split.py
+#	cp firmware_0.hex firmware_0.dat
+#	cp firmware_1.hex firmware_1.dat
+#	cp firmware_2.hex firmware_2.dat
+#	cp firmware_3.hex firmware_3.dat
+
+boot.hex:	boot.S boot.c firmware.lds
+	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -nostdlib -o boot.elf boot.S boot.c \
+		 --std=gnu99 -Wl,-Bstatic,-T,firmware.lds,-Map,boot.map,--strip-debug -lgcc -lc
 	$(TOOLCHAIN_PREFIX)objcopy -O binary boot.elf boot.bin
 	python3 makehex.py boot.bin 4096 > boot.hex
 	python3 boot_hex_split.py
@@ -70,9 +79,10 @@ boot.hex: firmware.S boot.c firmware.lds
 	cp boot_2.hex boot_2.dat
 	cp boot_3.hex boot_3.dat
 
-boot_simple.hex: firmware.S boot_simple.c firmware.lds
-	$(TOOLCHAIN_PREFIX)gcc -O3 -ffreestanding -nostdlib -o boot.elf firmware.S boot_simple.c \
-		 --std=gnu99 -Wl,-Bstatic,-T,firmware.lds,-Map,boot.map,--strip-debug -lgcc
+
+boot_simple.hex: boot_simple.S boot_simple.c firmware.lds
+	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -nostdlib -o boot.elf boot_simple.S boot_simple.c \
+		 --std=gnu99 -Wl,-Bstatic,-T,firmware.lds,-Map,boot.map,--strip-debug -lgcc -lc
 	$(TOOLCHAIN_PREFIX)objcopy -O binary boot.elf boot.bin
 	python3 makehex.py boot.bin 4096 > boot.hex
 	python3 boot_hex_split.py
@@ -80,21 +90,116 @@ boot_simple.hex: firmware.S boot_simple.c firmware.lds
 	cp boot_1.hex boot_1.dat
 	cp boot_2.hex boot_2.dat
 	cp boot_3.hex boot_3.dat
+
+
+firmware_test.hex: firmware_test.S firmware_test.c firmware.lds
+	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -nostdlib -o firmware.elf firmware_test.S firmware_test.c \
+		 --std=gnu99 -Wl,-Bstatic,-T,firmware.lds,-Map,firmware.map,--strip-debug -lgcc -lc
+	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
+	python3 makehex.py firmware.bin 4096 > firmware.hex
+	python3 hex_split.py
+	cp firmware_0.hex firmware_0.dat
+	cp firmware_1.hex firmware_1.dat
+	cp firmware_2.hex firmware_2.dat
+	cp firmware_3.hex firmware_3.dat
+
+#############################################################################
+
+firmware_uart.hex: firmware.S firmware_uart.c firmware.lds
+	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -nostdlib -o firmware.elf firmware.S firmware_uart.c \
+		 --std=gnu99 -Wl,-Bstatic,-T,firmware.lds,-Map,firmware.map,--strip-debug -lgcc -lc
+	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
+	python3 makehex.py firmware.bin 4096 > firmware.hex
+	python3 hex_split.py
+	cp firmware_0.hex firmware_0.dat
+	cp firmware_1.hex firmware_1.dat
+	cp firmware_2.hex firmware_2.dat
+	cp firmware_3.hex firmware_3.dat
+
+
+boot_uart.hex:	boot.S boot_uart.c firmware.lds
+	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -nostdlib -o boot.elf boot.S boot_uart.c \
+		 --std=gnu99 -Wl,-Bstatic,-T,firmware.lds,-Map,boot.map,--strip-debug -lgcc -lc
+	$(TOOLCHAIN_PREFIX)objcopy -O binary boot.elf boot.bin
+	python3 makehex.py boot.bin 4096 > boot.hex
+	python3 boot_hex_split.py
+	cp boot_0.hex boot_0.dat
+	cp boot_1.hex boot_1.dat
+	cp boot_2.hex boot_2.dat
+	cp boot_3.hex boot_3.dat
+
+boot_simple_uart.hex: boot_simple.S boot_simple_uart.c firmware.lds
+	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -nostdlib -o boot.elf boot_simple.S boot_simple_uart.c \
+		 --std=gnu99 -Wl,-Bstatic,-T,firmware.lds,-Map,boot.map,--strip-debug -lgcc -lc
+	$(TOOLCHAIN_PREFIX)objcopy -O binary boot.elf boot.bin
+	python3 makehex.py boot.bin 4096 > boot.hex
+	python3 boot_hex_split.py
+	cp boot_0.hex boot_0.dat
+	cp boot_1.hex boot_1.dat
+	cp boot_2.hex boot_2.dat
+	cp boot_3.hex boot_3.dat
+
+firmware_test_uart.hex: firmware_test.S firmware_test_uart.c firmware.lds
+	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -nostdlib -o firmware.elf firmware_test.S firmware_test_uart.c \
+		 --std=gnu99 -Wl,-Bstatic,-T,firmware.lds,-Map,firmware.map,--strip-debug -lgcc -lc
+	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
+	python3 makehex.py firmware.bin 4096 > firmware.hex
+	python3 hex_split.py
+	cp firmware_0.hex firmware_0.dat
+	cp firmware_1.hex firmware_1.dat
+	cp firmware_2.hex firmware_2.dat
+	cp firmware_3.hex firmware_3.dat
+
+
 
 hex: 	firmware.hex boot.hex
 
-
 simple_hex: 	firmware.hex boot_simple.hex
 
+simple_test_hex:	firmware_test.hex boot_simple.hex
 
+########################################################
+
+hex_uart: 	firmware_uart.hex boot_uart.hex
+
+simple_hex_uart: 	firmware_uart.hex boot_simple_uart.hex
+
+simple_test_hex_uart:	firmware_test_uart.hex boot_simple_uart.hex
+
+
+########################################################
 
 boot.dump: 	boot.hex
 	$(TOOLCHAIN_PREFIX)objdump -D -S boot.elf
 
-firmware.dump: 	firmware.hex
+boot_simple.dump: 	boot_simple.hex
+	$(TOOLCHAIN_PREFIX)objdump -D -S boot.elf
+
+firmware.dump:  firmware.hex
+	$(TOOLCHAIN_PREFIX)objdump -D -S firmware.elf
+
+firmware_test.dump:	firmware_test.hex	
 	$(TOOLCHAIN_PREFIX)objdump -D -S firmware.elf
 
 dump: 	boot.dump firmware.dump
+
+
+#######################################################
+
+
+boot_uart.dump: 	boot_uart.hex
+	$(TOOLCHAIN_PREFIX)objdump -D -S boot.elf
+
+boot_simple_uart.dump: 	boot_simple_uart.hex
+	$(TOOLCHAIN_PREFIX)objdump -D -S boot.elf
+
+firmware_uart.dump:  firmware_uart.hex
+	$(TOOLCHAIN_PREFIX)objdump -D -S firmware.elf
+
+firmware_test_uart.dump:	firmware_test_uart.hex	
+	$(TOOLCHAIN_PREFIX)objdump -D -S firmware.elf
+
+dump_uart: 	boot_uart.dump firmware_uart.dump
 
 uart_loader: 
 	gcc -o uart_loader uart_file_loader.c
