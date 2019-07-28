@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#define UART_CLK_FREQ 100000000 // 100 MHz
+#define UART_CLK_FREQ 200000000 // 100 MHz
 #define UART_BAUD_RATE 115200 // can also use 115200
 #define CEILING(x,y) (((x) + (y) - 1) / (y))
 //#define N 10 // number of memory writes/reads
@@ -201,6 +201,7 @@ void main()
  
   //print("... Initializing program in main memory:\n");
   //uart_puts("D\n");
+  uart_write_wait();
  uart_puts("... Initializing program in main memory:\n");
  // uart_wait();
  
@@ -209,15 +210,19 @@ void main()
  //print("Writting number at 0x");
  //print_hex(Address_write, 8);
   //uart_puts("W\n");
+  uart_write_wait();
   uart_printf("Starting number writting at 0x%x\n", Address_write);
  // uart_wait(); 
  
  while(1){
    // print("\nSelect the number of N = {N3, N2, N1, N0} for prints (between 0 and 9):\n");
+  uart_write_wait();
    uart_puts("\nSelect the number of N = {N3, N2, N1, N0} for prints (between 0 and 9):\n");
    
    // N = (int) Numb - 48;
+  uart_write_wait();
    uart_puts ("N3 = ");
+  uart_read_wait();
    Numb = uart_getc();
    if (Numb <= '9'){
      N3 =(int) Numb - 48;
@@ -227,11 +232,13 @@ void main()
    
    
 // print_hex (N3, 4);
+  uart_write_wait();
    uart_printf("%x", N3);
    N3 = N3<<12;
    
-
+  uart_write_wait();
   uart_puts("\nN2 = ");
+  uart_read_wait();
    Numb = uart_getc();
    
    if (Numb <= '9'){
@@ -240,11 +247,13 @@ void main()
      N2 =(int) Numb - 87;
    }
    //  print_hex (N2, 4);
+  uart_write_wait();
    uart_printf("%x", N2);
    N2 = N2<<8;
    
-
+  uart_write_wait();
    uart_puts ("\nN1 = ");
+  uart_read_wait();
    Numb = uart_getc();
    if (Numb <= '9'){
      N1 =(int) Numb - 48;
@@ -252,6 +261,7 @@ void main()
      N1 =(int) Numb - 87;
    }
    //print_hex (N1, 4);
+  uart_write_wait();
    uart_printf("%x", N1);
    N1 = N1<<4;
    /*
