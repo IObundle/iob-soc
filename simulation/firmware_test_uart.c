@@ -3,7 +3,7 @@
 #define UART_CLK_FREQ 100000000 // 100 MHz
 #define UART_BAUD_RATE 115200 // can also use 115200
 #define CEILING(x,y) (((x) + (y) - 1) / (y))
-#define N 100 // number of memory writes/reads
+#define N 100000000 // number of memory writes/reads
 #define Address_write 0x9004 //address where the writting starts
 volatile int * vect;
 volatile int   flag;
@@ -126,16 +126,20 @@ void main()
   //print("... Initializing program in main memory:\n");
   print("C\n");
   vect = (volatile int*) Address_write;
-
+  print("T\n"); 
+  //print("... initializing the counter\n");
   for (counter = 0; counter < N; counter ++){
+
     vect[counter] = counter;
+    //  print_hex(vect[counter], 5);
+    //print("\n");
   }
 
-  //print("Wrote all numbers, the last printed: \n");
+  // print("Wrote all numbers, the last printed: \n");
   print("D\n");
-  print_hex(vect[N-1],8);
+  print_hex(vect[N-1],5);
   //print("\nVerification of said numbers:\n");
-  print("E\n");
+  print("\nE\n");
   for (counter = 0; counter < N; counter ++){
     if (vect[counter] != counter){
       print("\nfailed at: ");

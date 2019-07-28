@@ -181,100 +181,100 @@ int uart_getc()
 
 // ---------------------------------------------------------------
 /*
-void putchar(char c)
-{
-	if (c == '\n')
-		putchar('\r');
-	reg_uart_data = c;
-}
+  void putchar(char c)
+  {
+  if (c == '\n')
+  putchar('\r');
+  reg_uart_data = c;
+  }
 
-void print(const char *p)
-{
-	while (*p)
-		putchar(*(p++));
-}
+  void print(const char *p)
+  {
+  while (*p)
+  putchar(*(p++));
+  }
 
-void print_hex(uint32_t v, int digits)
-{
-	for (int i = 7; i >= 0; i--) {
-		char c = "0123456789abcdef"[(v >> (4*i)) & 15];
-		if (c == '0' && i >= digits) continue;
-		putchar(c);
-		digits = i;
-	}
-}
+  void print_hex(uint32_t v, int digits)
+  {
+  for (int i = 7; i >= 0; i--) {
+  char c = "0123456789abcdef"[(v >> (4*i)) & 15];
+  if (c == '0' && i >= digits) continue;
+  putchar(c);
+  digits = i;
+  }
+  }
 
-void print_dec(uint32_t v)
-{
-	if (v >= 1000) {
-		print(">=1000");
-		return;
-	}
+  void print_dec(uint32_t v)
+  {
+  if (v >= 1000) {
+  print(">=1000");
+  return;
+  }
 
-	if      (v >= 900) { putchar('9'); v -= 900; }
-	else if (v >= 800) { putchar('8'); v -= 800; }
-	else if (v >= 700) { putchar('7'); v -= 700; }
-	else if (v >= 600) { putchar('6'); v -= 600; }
-	else if (v >= 500) { putchar('5'); v -= 500; }
-	else if (v >= 400) { putchar('4'); v -= 400; }
-	else if (v >= 300) { putchar('3'); v -= 300; }
-	else if (v >= 200) { putchar('2'); v -= 200; }
-	else if (v >= 100) { putchar('1'); v -= 100; }
+  if      (v >= 900) { putchar('9'); v -= 900; }
+  else if (v >= 800) { putchar('8'); v -= 800; }
+  else if (v >= 700) { putchar('7'); v -= 700; }
+  else if (v >= 600) { putchar('6'); v -= 600; }
+  else if (v >= 500) { putchar('5'); v -= 500; }
+  else if (v >= 400) { putchar('4'); v -= 400; }
+  else if (v >= 300) { putchar('3'); v -= 300; }
+  else if (v >= 200) { putchar('2'); v -= 200; }
+  else if (v >= 100) { putchar('1'); v -= 100; }
 
-	if      (v >= 90) { putchar('9'); v -= 90; }
-	else if (v >= 80) { putchar('8'); v -= 80; }
-	else if (v >= 70) { putchar('7'); v -= 70; }
-	else if (v >= 60) { putchar('6'); v -= 60; }
-	else if (v >= 50) { putchar('5'); v -= 50; }
-	else if (v >= 40) { putchar('4'); v -= 40; }
-	else if (v >= 30) { putchar('3'); v -= 30; }
-	else if (v >= 20) { putchar('2'); v -= 20; }
-	else if (v >= 10) { putchar('1'); v -= 10; }
+  if      (v >= 90) { putchar('9'); v -= 90; }
+  else if (v >= 80) { putchar('8'); v -= 80; }
+  else if (v >= 70) { putchar('7'); v -= 70; }
+  else if (v >= 60) { putchar('6'); v -= 60; }
+  else if (v >= 50) { putchar('5'); v -= 50; }
+  else if (v >= 40) { putchar('4'); v -= 40; }
+  else if (v >= 30) { putchar('3'); v -= 30; }
+  else if (v >= 20) { putchar('2'); v -= 20; }
+  else if (v >= 10) { putchar('1'); v -= 10; }
 
-	if      (v >= 9) { putchar('9'); v -= 9; }
-	else if (v >= 8) { putchar('8'); v -= 8; }
-	else if (v >= 7) { putchar('7'); v -= 7; }
-	else if (v >= 6) { putchar('6'); v -= 6; }
-	else if (v >= 5) { putchar('5'); v -= 5; }
-	else if (v >= 4) { putchar('4'); v -= 4; }
-	else if (v >= 3) { putchar('3'); v -= 3; }
-	else if (v >= 2) { putchar('2'); v -= 2; }
-	else if (v >= 1) { putchar('1'); v -= 1; }
-	else putchar('0');
-}
+  if      (v >= 9) { putchar('9'); v -= 9; }
+  else if (v >= 8) { putchar('8'); v -= 8; }
+  else if (v >= 7) { putchar('7'); v -= 7; }
+  else if (v >= 6) { putchar('6'); v -= 6; }
+  else if (v >= 5) { putchar('5'); v -= 5; }
+  else if (v >= 4) { putchar('4'); v -= 4; }
+  else if (v >= 3) { putchar('3'); v -= 3; }
+  else if (v >= 2) { putchar('2'); v -= 2; }
+  else if (v >= 1) { putchar('1'); v -= 1; }
+  else putchar('0');
+  }
 
-char getchar_prompt(char *prompt)
-{
-	int32_t c = -1;
+  char getchar_prompt(char *prompt)
+  {
+  int32_t c = -1;
 
-	uint32_t cycles_begin, cycles_now, cycles;
-	__asm__ volatile ("rdcycle %0" : "=r"(cycles_begin));
+  uint32_t cycles_begin, cycles_now, cycles;
+  __asm__ volatile ("rdcycle %0" : "=r"(cycles_begin));
 
-	//reg_leds = ~0;
+  //reg_leds = ~0;
 
-	if (prompt)
-		print(prompt);
+  if (prompt)
+  print(prompt);
 
-	while (c == -1) {
-		__asm__ volatile ("rdcycle %0" : "=r"(cycles_now));
-		cycles = cycles_now - cycles_begin;
-		if (cycles > 12000000) {
-			if (prompt)
-				print(prompt);
-			cycles_begin = cycles_now;
-			//	reg_leds = ~reg_leds;
-		}
-		c = reg_uart_data;
-	}
+  while (c == -1) {
+  __asm__ volatile ("rdcycle %0" : "=r"(cycles_now));
+  cycles = cycles_now - cycles_begin;
+  if (cycles > 12000000) {
+  if (prompt)
+  print(prompt);
+  cycles_begin = cycles_now;
+  //	reg_leds = ~reg_leds;
+  }
+  c = reg_uart_data;
+  }
 
-	//	reg_leds = 0;
-	return c;
-}
+  //	reg_leds = 0;
+  return c;
+  }
 
-char getchar()
-{
-	return getchar_prompt(0);
-}
+  char getchar()
+  {
+  return getchar_prompt(0);
+  }
 */
 // -----------------------------------------------------------------
 
@@ -288,54 +288,34 @@ void main()
   unsigned char ledvar = 0;
   unsigned char Numb = 0;
 
+  uart_init(UART_ADDRESS,(UART_CLK_FREQ/UART_BAUD_RATE));
+   
+  uart_write_wait();
+  uart_puts("... Initializing program in main memory:\n");
+  vect = (volatile int*) Address_write;
 
-  //uart_reset();
-  //  *((volatile int*) 0x1000000C) = 1;
+  for (counter = 0; counter < N; counter ++){
+    vect[counter] = counter;
+  }
+  uart_write_wait();
+  uart_puts("Wrote all numbers, the last printed: \n");
+  uart_write_wait();
+  uart_printf("%x\n", vect[N-1]);
+  uart_write_wait();
+  uart_puts("Verification of said numbers:\n");
 
-  
-  //uart_setdiv(UART_CLK_FREQ/UART_BAUD_RATE);
-  //uart_wait();  
- 
-  //print("C");
-  //uart_puts("D\n");
-   uart_init(UART_ADDRESS,(UART_CLK_FREQ/UART_BAUD_RATE));
- uart_puts("... Initializing program in main memory:\n");
- // uart_wait();
-  //  print("... Initializing program in main memory:\n");
- vect = (volatile int*) Address_write;
- /*vect[0] = 0xDE;
- N0 = vect[0];
- vect[1] = 0xAD;
- vect[2] = 0xBE;
- vect[3] = 0xEF;
- N1 = vect[1];
- N2 = vect[2];
- N3 = vect[3];
- */
- for (counter = 0; counter < N; counter ++){
-   vect[counter] = counter;
- }
-
- /* uart_puts("Wrote all numbers, starting to print: \n");
- for (counter = 0; counter < N; counter ++){
-   // print_hex (vect[counter], 5);
-      uart_printf("%x\n", vect[counter]);
- }*/
-
- uart_puts("Wrote all numbers, the last printed: \n");
- uart_printf("%x\n", vect[N-1]);
- uart_puts("Verification of said numbers:\n");
-
- for (counter = 0; counter < N; counter ++){
-   if (vect[counter] != counter){
-     //    print("failed at: ");
-     //print_hex (vect[counter], 5);
-     //print("\n");
+  for (counter = 0; counter < N; counter ++){
+    if (vect[counter] != counter){
+      //    print("failed at: ");
+      //print_hex (vect[counter], 5);
+      //print("\n");
+      uart_write_wait();
       uart_printf("fail:%x\n", counter);
-   }
- }
-uart_puts("End of program\n");
+    }
+  }
+  uart_write_wait();
+  uart_puts("End of program\n");
 
- while(1);
+  while(1);
 
 }

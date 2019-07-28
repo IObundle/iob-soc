@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include <stdbool.h>
-#define UART_CLK_FREQ 200000000 // 100 MHz
+#define UART_CLK_FREQ 187500000 // 100 MHz
 #define UART_BAUD_RATE 115200 // can also use 115200
 #define MAIN_MEM_ADDR 0x80000000
 #define PROG_MEM_ADDR 0x40000000
@@ -134,7 +134,7 @@ void main()
       
   print("\nProgram copy completed... Printing final copy:\n");
   for (i = 0 ; i < PROG_SIZE; i++){
-    print_hex (i, 3);
+    print_hex (4*i, 3);
     print (": ");
     print_hex (MAIN_MEM[i], 8);
     print("\n");
@@ -143,8 +143,8 @@ void main()
 
   print("\nPreparing to start the Main Memory program...\n");    
 
-  // *((volatile int*) MEM_JUMP) = 1;
-  counter = PC_SOFT_RESET[0];
+   *((volatile int*) MEM_JUMP) = 1;
+  //counter = PC_SOFT_RESET[0];
 }
 
 
