@@ -3,7 +3,7 @@
 #define UART_CLK_FREQ 100000000 // 100 MHz
 #define UART_BAUD_RATE 115200 // can also use 115200
 #define CEILING(x,y) (((x) + (y) - 1) / (y))
-#define N 100000000 // number of memory writes/reads
+#define N 100000 // number of memory writes/reads
 #define Address_write 0x9004 //address where the writting starts
 volatile int * vect;
 volatile int   flag;
@@ -12,7 +12,10 @@ volatile int   flag;
 #define reg_uart_clkdiv (*(volatile uint32_t*)0x70000004)
 #define reg_uart_data (*(volatile uint32_t*)  0x70000008)
 
-
+#define reg_cache_hit        (*(volatile uint32_t*)  0x40000000)
+#define reg_cache_read_miss  (*(volatile uint32_t*)  0x40000004)
+#define reg_cache_write_miss (*(volatile uint32_t*)  0x40000008)
+#define cache_invalidate     (*(volatile uint32_t*)  0x4000000C)
 // ---------------------------------------------------------------
 
 void putchar(char c)
@@ -122,12 +125,13 @@ void main()
   int counter, reg = 0 ;
   unsigned char ledvar = 0;
   unsigned char Numb = 0;
+  int hit_counter, write_miss_counter, read_miss_counter =0;
 
-  //print("... Initializing program in main memory:\n");
-  print("C\n");
+  print("... Initializing program in main memory:\n");
+  //print("C\n");
   vect = (volatile int*) Address_write;
-  print("T\n"); 
-  //print("... initializing the counter\n");
+  //print("T\n"); 
+  print("Starting the counter\n");
   for (counter = 0; counter < N; counter ++){
 
     vect[counter] = counter;
@@ -135,19 +139,55 @@ void main()
     //print("\n");
   }
 
-  // print("Wrote all numbers, the last printed: \n");
-  print("D\n");
+  print("Wrote all numbers, the last written: \n");
+  //print("D\n");
   print_hex(vect[N-1],5);
-  //print("\nVerification of said numbers:\n");
-  print("\nE\n");
+  print("\nVerification of said numbers:\n");
+  //print("\nE\n");
   for (counter = 0; counter < N; counter ++){
     if (vect[counter] != counter){
       print("\nfailed at: ");
       print_hex (vect[counter], 5);
     }
   }
-  //print("\nEnd of program\n");
-  print("\nF\n");
+  
+  print("hit counter:");
+  hit_counter = reg_cache_hit;
+  print_hex(hit_counter,8);
+  print("\n");
+  print_hex(reg_cache_hit,8);
+  print("\n");
+
+  print("read miss counter:");
+  read_miss_counter = reg_cache_read_miss;
+  print_hex(read_miss_counter,8);
+  print("\n");
+  print_hex(reg_cache_read_miss,8);
+  print("\n");
+
+  print("write miss counter:");
+  print_hex(reg_cache_write_miss,8);
+
+  print("\ncache_invalidate\n");
+  cache_invalidate = 1;
+
+ print("hit counter:");
+  print_hex(reg_cache_hit,8);
+  print("\n");
+
+  print("read miss counter:");
+  print_hex(reg_cache_read_miss,8);
+  print("\n");
+
+  print("write miss counter:");
+  print_hex(reg_cache_write_miss,8);
+
+
+
+  print("\nEnd of program\n");
+
+  
+  //print("\nF\n");
   while(1);
 
 }

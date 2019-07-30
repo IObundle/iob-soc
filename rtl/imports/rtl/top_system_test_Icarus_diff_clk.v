@@ -140,8 +140,7 @@ module top_system(
     `endif
         led [6:0] <= led_reg [6:0];
     end    
-   
-//      assign led[0] = mem_sel;
+
    
       system system (
         	 .clk        (clk       ),
