@@ -423,6 +423,18 @@ assign sys_mem_sel = mem_sel;
 		       .cache_read_data    (wire_s_rdata_1),
 		       .cpu_ack            (wire_s_valid_1),
 		       .cache_ack          (wire_s_ready_1),
+    `ifndef AUX_MEM
+               //Memory Cache controller signals
+               .cache_controller_address (wire_s_addr_3 [3:2]),
+               .cache_controller_requested_data (wire_s_rdata_3),
+               .cache_controller_cpu_request (wire_s_valid_3),
+               .cache_controller_acknowledge (wire_s_ready_3),	       
+	`else	       
+               .cache_controller_address (2'b00),
+               .cache_controller_requested_data (),
+               .cache_controller_cpu_request (1 'b0),
+               .cache_controller_acknowledge (),  
+    `endif              
 		       ///// AXI signals
 		       /// Read            
 		       .AR_ADDR            (sys_s_axi_araddr), 
