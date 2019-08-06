@@ -6,7 +6,7 @@ SCRPT_DIR = ../scripts/
 C_SRC = $(FIRM_DIR)/uart.c
 H_SRC = $(FIRM_DIR)/uart.h
 
-all: firmware_uart.hex
+all: firmware.hex
 
 firmware.hex: firmware_test.S firmware_test.c $(FIRM_DIR)/firmware.lds $(H_SRC) $(C_SRC)
 	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -I. -I$(FIRM_DIR) -nostdlib -o firmware.elf firmware.S $(H_SRC) $(C_SRC) firmware.c \
