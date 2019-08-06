@@ -12,7 +12,7 @@ firmware.hex: firmware_test.S firmware_test.c $(FIRM_DIR)/firmware.lds $(H_SRC) 
 	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -I. -I$(FIRM_DIR) -nostdlib -o firmware.elf firmware.S $(H_SRC) $(C_SRC) firmware.c \
 		 --std=gnu99 -Wl,-Bstatic,-T,$(FIRM_DIR)/firmware.lds,-Map,firmware.map,--strip-debug -lgcc -lc
 	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
-	mv $(SCRPT_DOR)*.py
+	mv $(SCRPT_DIR)*.py ./
 	python3 makehex.py firmware.bin 4096 > firmware.hex
 	python3 hex_split.py
 	mv *.py $(SCRPT_DIR)
@@ -21,7 +21,7 @@ firmware_test.hex: firmware_test.S firmware_test.c $(FIRM_DIR)/firmware.lds $(H_
 	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -I. -I$(FIRM_DIR) -nostdlib -o firmware.elf firmware_test.S $(H_SRC) $(C_SRC) firmware_test.c\
 		 --std=gnu99 -Wl,-Bstatic,-T,$(FIRM_DIR)/firmware.lds,-Map,firmware.map,--strip-debug -lgcc -lc
 	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
-	mv $(SCRPT_DIR)*.py .	
+	mv $(SCRPT_DIR)*.py ./	
 	python3 makehex.py firmware.bin 4096 > firmware.hex
 	python3 hex_split.py
 	mv *.py $(SCRPT_DIR)	
@@ -33,7 +33,7 @@ firmware_uart.hex: firmware.S firmware_uart.c firmware.lds
 	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -I. -I$(FIRM_DIR) -nostdlib -o firmware.elf firmware.S $(H_SRC) $(C_SRC) firmware_uart.c \
 		 --std=gnu99 -Wl,-Bstatic,-T,firmware.lds,-Map,firmware.map,--strip-debug -lgcc -lc
 	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
-	mv $(SCRPT_DOR)*.py
+	mv $(SCRPT_DIR)*.py ./
 	python3 makehex.py firmware.bin 4096 > firmware.hex
 	python3 hex_split.py
 	mv *.py $(SCRPT_DIR)
@@ -42,7 +42,7 @@ firmware_test_uart.hex: firmware_test.S firmware_test_uart.c firmware.lds
 	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -I. -I$(FIRM_DIR) -nostdlib -o firmware.elf firmware_test.S $(H_SRC) $(C_SRC) firmware_test_uart.c \
 		 --std=gnu99 -Wl,-Bstatic,-T,firmware.lds,-Map,firmware.map,--strip-debug -lgcc -lc
 	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
-	mv $(SCRPT_DOR)*.py
+	mv $(SCRPT_DIR)*.py ./
 	python3 makehex.py firmware.bin 4096 > firmware.hex
 	python3 hex_split.py
 	mv *.py $(SCRPT_DIR)
