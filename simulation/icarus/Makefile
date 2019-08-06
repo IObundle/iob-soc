@@ -11,7 +11,7 @@ INCLUDE_DIR= $(RTLDIR)/include
 SRC_DIR = $(RTLDIR)/src
 IP_DIR = $(RTLDIR)/ip
 
-TESTBENCH = $(RTLDIR)/testbench/top_system_test_Icarus_diff_clk.v
+TESTBENCH = $(RTLDIR)/testbench/top_system_test_Icarus_tb.v
 
 VSRC = $(SRC_DIR)/*.v $(SRC_DIR)/fifo/afifo.v $(SRC_DIR)/memory/*.v $(RISCV)/picorv32.v $(UARTSRC)/simpleuart.v
 
@@ -22,7 +22,7 @@ TESTDIR = ../../software/tests/$(TEST)
 BOOTDIR = ../../software/bootloader
 
 all: firmware.hex boot.hex $(VSRC)
-	$(VLOG) -I$(INCLUDE_DIR) -I$(INC_UART) -o top_system_test_Icarus_tb $(VSRC)
+	$(VLOG) -I$(INCLUDE_DIR) -I$(INC_UART) -o top_system_test_Icarus_tb $(VSRC) $(TESTBENCH)
 	./top_system_test_Icarus_tb +vcd
 
 firmware.hex:
