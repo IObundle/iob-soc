@@ -10,32 +10,32 @@ module system (
 	       output 	     trap,
                output 	     resetn_int_sys,
 	       output [1:0]  s_sel,
-	       output  sys_mem_sel,
+	       output 	     sys_mem_sel,
 	       // Slave signals
-           output 	   sys_s_axi_awvalid,
-           input        sys_s_axi_awready,
-           output [31:0] sys_s_axi_awaddr,
+               output 	     sys_s_axi_awvalid,
+               input 	     sys_s_axi_awready,
+               output [31:0] sys_s_axi_awaddr,
                /// Data-Write
-           output        sys_s_axi_wvalid,
-           input        sys_s_axi_wready,
-           output [31:0] sys_s_axi_wdata,
-           output [ 3:0] sys_s_axi_wstrb,
+               output 	     sys_s_axi_wvalid,
+               input 	     sys_s_axi_wready,
+               output [31:0] sys_s_axi_wdata,
+               output [ 3:0] sys_s_axi_wstrb,
                /// Write-Response
-           input        sys_s_axi_bvalid,
-           output        sys_s_axi_bready,
-           /// Address-Read
-           output        sys_s_axi_arvalid,
-           input        sys_s_axi_arready,
-           output [31:0] sys_s_axi_araddr,
-           output [7:0]  sys_s_axi_arlen,
-           output [2:0]  sys_s_axi_arsize,
-           output [1:0]  sys_s_axi_arburst,
-           /// Data-Read
-           input        sys_s_axi_rvalid,
-           output        sys_s_axi_rready,
-           input [31:0]  sys_s_axi_rdata,
-           input         sys_s_axi_rlast
-         );
+               input 	     sys_s_axi_bvalid,
+               output 	     sys_s_axi_bready,
+               /// Address-Read
+               output 	     sys_s_axi_arvalid,
+               input 	     sys_s_axi_arready,
+               output [31:0] sys_s_axi_araddr,
+               output [7:0]  sys_s_axi_arlen,
+               output [2:0]  sys_s_axi_arsize,
+               output [1:0]  sys_s_axi_arburst,
+               /// Data-Read
+               input 	     sys_s_axi_rvalid,
+               output 	     sys_s_axi_rready,
+               input [31:0]  sys_s_axi_rdata,
+               input 	     sys_s_axi_rlast
+               );
    
 
    
@@ -96,52 +96,30 @@ module system (
    
    // reset control counter 
    reg [10:0] 		     rst_cnt, rst_cnt_nxt;
-  // reg 			     resetn_int;
-   
-
-//    // reset control
-//   always @(posedge clk) begin
-//     if(reset) begin
-//	rst_cnt <= 11'd0;
-//	rst_cnt_nxt <=11'd0;
-//	resetn_int <=1'b0;
-//     end else begin
-//	if (rst_cnt [10] != 1'b1) begin  
-//	   rst_cnt <= rst_cnt_nxt + 1'b1;
-//	   rst_cnt_nxt <= rst_cnt;
-//	   resetn_int <= 1'b0;
-//	end
-//	rst_cnt <= 11'b10000000000;
-//	rst_cnt_nxt <= 11'b10000000000;
-//	resetn_int <= 1'b1;
-//     end
-//   end // always @ (posedge clk)
-   
-//   assign resetn_int_sys = resetn_int; 
 
    // reset control
    always @(posedge clk, posedge reset) begin
-     if(reset) begin
-       rst_cnt <= 11'd0;
-	//resetn_int <=1'b0;
-     end else begin
-	if (rst_cnt [10] != 1'b1) begin  
-	   rst_cnt <= rst_cnt + 1'b1;
-	   //resetn_int <= 1'b0;
-	end
-	//rst_cnt <= rst_cnt; 
-	//resetn_int <= 1'b1;
-     end
+      if(reset) begin
+	 rst_cnt <= 11'd0;
+	 //resetn_int <=1'b0;
+      end else begin
+	 if (rst_cnt [10] != 1'b1) begin  
+	    rst_cnt <= rst_cnt + 1'b1;
+	    //resetn_int <= 1'b0;
+	 end
+	 //rst_cnt <= rst_cnt; 
+	 //resetn_int <= 1'b1;
+      end
    end // always @ (posedge clk)
-wire resetn_int;
-  assign resetn_int = (rst_cnt [10]);
+   wire resetn_int;
+   assign resetn_int = (rst_cnt [10]);
    assign resetn_int_sys = resetn_int; 
 
 
-///////////////////////////////////////////////
-////////// Soft Reset Controller ////////////
-////////////////////////////////////////////
-   reg mem_sel;
+   ///////////////////////////////////////////////
+   ////////// Soft Reset Controller ////////////
+   ////////////////////////////////////////////
+   reg 	mem_sel;
    reg [4:0] soft_reset;
 
    
@@ -154,25 +132,25 @@ wire resetn_int;
       else 
 	begin
 
-    `ifdef CACHE
+`ifdef CACHE
            if ((wire_m_addr == 32'hfffffffc) && (buffer_clear))
-    `else       
-            if ((wire_m_addr == 32'hfffffffc))
-    `endif        
+`else       
+             if ((wire_m_addr == 32'hfffffffc))
+`endif        
             
-             begin
-		mem_sel <= 1'b1;
-		soft_reset <= {soft_reset[3:0],soft_reset[4]};
-             end
-           else
-             begin
-		mem_sel <= mem_sel;
-		soft_reset <= 5'b10000;
-             end
+               begin
+		  mem_sel <= 1'b1;
+		  soft_reset <= {soft_reset[3:0],soft_reset[4]};
+               end
+             else
+               begin
+		  mem_sel <= mem_sel;
+		  soft_reset <= 5'b10000;
+               end
 	end
    end
 
-assign sys_mem_sel = mem_sel;
+   assign sys_mem_sel = mem_sel;
    /////////////////////////////////////////////////////////////////////////////////
    ///////////////REMEMBER/////////////////////////////////////////////////////////
    //////////// in picorv32_axi_adapter///////////////////////////////////////////
@@ -206,7 +184,7 @@ assign sys_mem_sel = mem_sel;
    
    wire [1:0] slave_sel;
    assign s_sel = slave_sel;
- //  assign sys_mem_sel = mem_sel;
+   //  assign sys_mem_sel = mem_sel;
 
    
    iob_native_interconnect native_interconnect (
@@ -261,129 +239,112 @@ assign sys_mem_sel = mem_sel;
 						);
 
 
-   ///////////////////////////////////// 
-     ////// Top memory signals //////////
-     ///////////////////////////////////
-     /*   assign sys_s_addr  = wire_s_addr_1;
-      assign sys_s_wdata = wire_s_wdata_1;
-      assign sys_s_wstrb = wire_s_wstrb_1;
-      assign wire_s_rdata_1 = sys_s_rdata;
-      assign sys_s_valid = wire_s_valid_1;
-      assign wire_s_ready_1 = sys_s_ready;
-      */  
-
 `ifndef PICOSOC_UART
    
    ///////////////////////////////////// 
-     ////// Simple UART /////////////////
-     ///////////////////////////////////
-      
-             simpleuart simpleuart (
-   				 //serial i/f
-   				 .ser_tx      (ser_tx          ),
-   				 .ser_rx      (ser_rx          ),
-   				 //data bus
-   				 .clk         (clk             ),
-   				 .resetn      (resetn_int      ),
-   				 .address     (wire_s_addr_2[4:2]),
-   				 .sel         (wire_s_valid_2    ),	
-   				 .we          (|wire_s_wstrb_2   ),
-   				 .dat_di      (wire_s_wdata_2    ),
-   				 .dat_do      (wire_s_rdata_2    )
+   ////// Simple UART /////////////////
+   ///////////////////////////////////
+   
+   simpleuart simpleuart (
+   			  //serial i/f
+   			  .ser_tx      (ser_tx          ),
+   			  .ser_rx      (ser_rx          ),
+   			  //data bus
+   			  .clk         (clk             ),
+   			  .resetn      (resetn_int      ),
+   			  .address     (wire_s_addr_2[4:2]),
+   			  .sel         (wire_s_valid_2    ),	
+   			  .we          (|wire_s_wstrb_2   ),
+   			  .dat_di      (wire_s_wdata_2    ),
+   			  .dat_do      (wire_s_rdata_2    )
    	                  );
    
-      reg 	   uart_ready;
-      assign wire_s_ready_2 = uart_ready;
+   reg 	      uart_ready;
+   assign wire_s_ready_2 = uart_ready;
    
-      always @(posedge clk) begin
-         uart_ready <= wire_s_valid_2;
-      end  
+   always @(posedge clk) begin
+      uart_ready <= wire_s_valid_2;
+   end  
    ////////////////////////////////////
-   ///////////////////////////////////	       
-   
+     ///////////////////////////////////	       
+      
 `else   
    ///////////////////////////////////// 
-   ////// Simple UART Picosoc//////////
-   ///////////////////////////////////
-   wire       simpleuart_wait;
-   wire [31:0] simpleuart_reg_div_do, simpleuart_reg_dat_do;
+     ////// Simple UART Picosoc//////////
+     ///////////////////////////////////
+     wire       simpleuart_wait;
+   wire [31:0] 	simpleuart_reg_div_do, simpleuart_reg_dat_do;
 
    
    picosoc_uart simpleuart (
-			  //serial i/f
-			  .ser_tx      (ser_tx          ),
-			  .ser_rx      (ser_rx          ),
-			  //data bus
-			  .clk         (clk             ),
-			  .resetn      (resetn_int      ),
-			  //				 .address     (wire_s_addr_2[3:2]),
-			  //				 .sel         (wire_s_valid_2    ),	
-			  //				 .we          (|wire_s_wstrb_2   ),
-			  //				 .dat_di      (wire_s_wdata_2    ),
-			  //				 .dat_do      (wire_s_rdata_2    )
-			  //	                  );
-			  .reg_div_we  ((wire_s_valid_2 && wire_s_addr_2 [2])? wire_s_wstrb_2 : 4'b 0000),
-			  .reg_div_di  (wire_s_wdata_2),
-			  .reg_div_do  (simpleuart_reg_div_do),
+			    //serial i/f
+			    .ser_tx      (ser_tx          ),
+			    .ser_rx      (ser_rx          ),
+			    //data bus
+			    .clk         (clk             ),
+			    .resetn      (resetn_int      ),
+			    //				 .address     (wire_s_addr_2[3:2]),
+			    //				 .sel         (wire_s_valid_2    ),	
+			    //				 .we          (|wire_s_wstrb_2   ),
+			    //				 .dat_di      (wire_s_wdata_2    ),
+			    //				 .dat_do      (wire_s_rdata_2    )
+			    //	                  );
+			    .reg_div_we  ((wire_s_valid_2 && wire_s_addr_2 [2])? wire_s_wstrb_2 : 4'b 0000),
+			    .reg_div_di  (wire_s_wdata_2),
+			    .reg_div_do  (simpleuart_reg_div_do),
       
-			  .reg_dat_we  ((wire_s_valid_2 && wire_s_addr_2 [3])? wire_s_wstrb_2[0] : 1'b 0),
-			  .reg_dat_re  ((wire_s_valid_2 && wire_s_addr_2 [3]) && !wire_s_wstrb_2),
-			  .reg_dat_di  (wire_s_wdata_2),
-			  .reg_dat_do  (simpleuart_reg_dat_do),
-			  .reg_dat_wait(simpleuart_wait)
-			  );
+			    .reg_dat_we  ((wire_s_valid_2 && wire_s_addr_2 [3])? wire_s_wstrb_2[0] : 1'b 0),
+			    .reg_dat_re  ((wire_s_valid_2 && wire_s_addr_2 [3]) && !wire_s_wstrb_2),
+			    .reg_dat_di  (wire_s_wdata_2),
+			    .reg_dat_do  (simpleuart_reg_dat_do),
+			    .reg_dat_wait(simpleuart_wait)
+			    );
    
 
-   wire        simpleuart_reg_div_sel = wire_s_valid_2 && wire_s_addr_2 [2]; // addr = ...0004
-   wire        simpleuart_reg_dat_sel = wire_s_valid_2 && wire_s_addr_2 [3]; // addr = ...0008
+   wire 	simpleuart_reg_div_sel = wire_s_valid_2 && wire_s_addr_2 [2]; // addr = ...0004
+   wire 	simpleuart_reg_dat_sel = wire_s_valid_2 && wire_s_addr_2 [3]; // addr = ...0008
 
 
    assign wire_s_ready_2 = (wire_s_valid_2 && wire_s_addr_2 [2]) || ((wire_s_valid_2 && wire_s_addr_2 [3]) && !simpleuart_wait);
    assign wire_s_rdata_2 = simpleuart_reg_div_sel ? simpleuart_reg_div_do : simpleuart_reg_dat_sel ? simpleuart_reg_dat_do : 32'h 0000_0000;
-//      reg 	   uart_ready;
-//      assign wire_s_ready_2 = uart_ready;
-   
-//      always @(posedge clk) begin
-//         uart_ready <= wire_s_valid_2;
-//      end  
    //////////////////////////////////
    /////////////////////////////////	       
    
- `endif  
+`endif  
    
    
    
-//   ////////////////////////////////////////////////////////////////////
-//   ///// Open source RAM and Boot ROM with native memory instance ////
-//   //////////////////////////////////////////////////////////////////
-//   //////////////////////////////////////////////////////////
-//   //// Open RAM ///////////////////////////////////////////
-//   ////////////////////////////////////////////////////////  	  
+   //   ////////////////////////////////////////////////////////////////////
+   //   ///// Open source RAM and Boot ROM with native memory instance ////
+   //   //////////////////////////////////////////////////////////////////
+   //   //////////////////////////////////////////////////////////
+   //   //// Open RAM ///////////////////////////////////////////
+   //   ////////////////////////////////////////////////////////  	  
 `ifdef AUX_MEM
-  main_memory  #(
+   main_memory  #(
 		  .ADDR_W(MAIN_MEM_ADDR_W-2) 
 		  ) auxiliary_memory (
-				 .clk                (clk                                  ),
-				 .main_mem_write_data(wire_s_wdata_3                       ),
-				 .main_mem_addr      (wire_s_addr_3 [MAIN_MEM_ADDR_W-1:2]),
-				 .main_mem_en        (wire_s_wstrb_3                       ),
-				 .main_mem_read_data (wire_s_rdata_3                       )                       
-				 );
+				      .clk                (clk                                  ),
+				      .main_mem_write_data(wire_s_wdata_3                       ),
+				      .main_mem_addr      (wire_s_addr_3 [MAIN_MEM_ADDR_W-1:2]),
+				      .main_mem_en        (wire_s_wstrb_3                       ),
+				      .main_mem_read_data (wire_s_rdata_3                       )                       
+				      );
 
    
-   reg 	       aux_mem_ready;
+   reg 		aux_mem_ready;
    assign wire_s_ready_3 = aux_mem_ready;
    
    always @(posedge clk) begin
       aux_mem_ready <= wire_s_valid_3; 
    end  
    
- `endif  
+`endif  
    
- ////////////////////////////////////////////////////////////////////
- ///// Open source RAM with native memory instance ////
- //////////////////////////////////////////////////////////////////
- 
+   ////////////////////////////////////////////////////////////////////
+   ///// Open source RAM with native memory instance ////
+   //////////////////////////////////////////////////////////////////
+   
    //////////////////////////////////////////////////////////
    //// Boot ROM ///////////////////////////////////////////
    ////////////////////////////////////////////////////////  
@@ -412,7 +373,7 @@ assign sys_mem_sel = mem_sel;
    //////////////////////////////////////////////////////////
    //// Memory cache ///////////////////////////////////////
    ////////////////////////////////////////////////////////
-      
+   
    memory_cache cache (
 		       .clk                (clk),
 		       .reset              (~processor_resetn),
@@ -423,18 +384,18 @@ assign sys_mem_sel = mem_sel;
 		       .cache_read_data    (wire_s_rdata_1),
 		       .cpu_ack            (wire_s_valid_1),
 		       .cache_ack          (wire_s_ready_1),
-    `ifndef AUX_MEM
-               //Memory Cache controller signals
-               .cache_controller_address (wire_s_addr_3 [3:2]),
-               .cache_controller_requested_data (wire_s_rdata_3),
-               .cache_controller_cpu_request (wire_s_valid_3),
-               .cache_controller_acknowledge (wire_s_ready_3),	       
-	`else	       
-               .cache_controller_address (2'b00),
-               .cache_controller_requested_data (),
-               .cache_controller_cpu_request (1 'b0),
-               .cache_controller_acknowledge (),  
-    `endif              
+ `ifndef AUX_MEM
+		       //Memory Cache controller signals
+		       .cache_controller_address (wire_s_addr_3 [3:2]),
+		       .cache_controller_requested_data (wire_s_rdata_3),
+		       .cache_controller_cpu_request (wire_s_valid_3),
+		       .cache_controller_acknowledge (wire_s_ready_3),	       
+ `else	       
+		       .cache_controller_address (2'b00),
+		       .cache_controller_requested_data (),
+		       .cache_controller_cpu_request (1 'b0),
+		       .cache_controller_acknowledge (),  
+ `endif              
 		       ///// AXI signals
 		       /// Read            
 		       .AR_ADDR            (sys_s_axi_araddr), 
@@ -468,28 +429,28 @@ assign sys_mem_sel = mem_sel;
 		       );
 
 `else
-//////////////////////////////////////////////////////////
- //// Open RAM ///////////////////////////////////////////
- ////////////////////////////////////////////////////////        
+   //////////////////////////////////////////////////////////
+     //// Open RAM ///////////////////////////////////////////
+     ////////////////////////////////////////////////////////        
 
- main_memory  #(
-        .ADDR_W(MAIN_MEM_ADDR_W-2) 
-        ) main_memory (
-               .clk                (clk                                  ),
-               .main_mem_write_data(wire_s_wdata_1                       ),
-               .main_mem_addr      (wire_s_addr_1 [MAIN_MEM_ADDR_W-1:2]),
-               .main_mem_en        (wire_s_wstrb_1                       ),
-               .main_mem_read_data (wire_s_rdata_1                       )                       
-               );
+   main_memory  #(
+		  .ADDR_W(MAIN_MEM_ADDR_W-2) 
+		  ) main_memory (
+				 .clk                (clk                                  ),
+				 .main_mem_write_data(wire_s_wdata_1                       ),
+				 .main_mem_addr      (wire_s_addr_1 [MAIN_MEM_ADDR_W-1:2]),
+				 .main_mem_en        (wire_s_wstrb_1                       ),
+				 .main_mem_read_data (wire_s_rdata_1                       )                       
+				 );
 
- 
- reg            main_mem_ready;
- assign wire_s_ready_1 = main_mem_ready;
- 
- always @(posedge clk) begin
-    main_mem_ready <= wire_s_valid_1; 
- end 
-  
- `endif
+   
+   reg            main_mem_ready;
+   assign wire_s_ready_1 = main_mem_ready;
+   
+   always @(posedge clk) begin
+      main_mem_ready <= wire_s_valid_1; 
+   end 
+   
+`endif
    
 endmodule

@@ -1,4 +1,3 @@
-
 // file: clock_wizard.v
 // 
 // (c) Copyright 2008 - 2013 Xilinx, Inc. All rights reserved.
@@ -67,108 +66,108 @@
 
 module clock_wizard 
 
- (// Clock in ports
-  // Clock out ports
-  output        clk_out1,
-  input         clk_in1_p,
-  input         clk_in1_n
- );
-  // Input buffering
-  //------------------------------------
-wire clk_in1_cock_wizard;
-wire clk_in2_cock_wizard;
-  IBUFDS clkin1_ibufds
-   (.O  (clk_in1_cock_wizard),
-    .I  (clk_in1_p),
-    .IB (clk_in1_n));
+  (// Clock in ports
+   // Clock out ports
+   output clk_out1,
+   input  clk_in1_p,
+   input  clk_in1_n
+   );
+   // Input buffering
+   //------------------------------------
+   wire   clk_in1_cock_wizard;
+   wire   clk_in2_cock_wizard;
+   IBUFDS clkin1_ibufds
+     (.O  (clk_in1_cock_wizard),
+      .I  (clk_in1_p),
+      .IB (clk_in1_n));
 
 
 
 
-  // Clocking PRIMITIVE
-  //------------------------------------
+   // Clocking PRIMITIVE
+   //------------------------------------
 
-  // Instantiation of the MMCM PRIMITIVE
-  //    * Unused inputs are tied off
-  //    * Unused outputs are labeled unused
+   // Instantiation of the MMCM PRIMITIVE
+   //    * Unused inputs are tied off
+   //    * Unused outputs are labeled unused
 
-  wire        clk_out1_cock_wizard;
-  wire        clk_out2_cock_wizard;
-  wire        clk_out3_cock_wizard;
-  wire        clk_out4_cock_wizard;
-  wire        clk_out5_cock_wizard;
-  wire        clk_out6_cock_wizard;
-  wire        clk_out7_cock_wizard;
+   wire   clk_out1_cock_wizard;
+   wire   clk_out2_cock_wizard;
+   wire   clk_out3_cock_wizard;
+   wire   clk_out4_cock_wizard;
+   wire   clk_out5_cock_wizard;
+   wire   clk_out6_cock_wizard;
+   wire   clk_out7_cock_wizard;
 
-  wire [15:0] do_unused;
-  wire        drdy_unused;
-  wire        psdone_unused;
-  wire        locked_int;
-  wire        clkfbout_cock_wizard;
-  wire        clkfboutb_unused;
-    wire clkout0b_unused;
-   wire clkout1_unused;
-   wire clkout1b_unused;
-  wire        clkfbstopped_unused;
-  wire        clkinstopped_unused;
+   wire [15:0] do_unused;
+   wire        drdy_unused;
+   wire        psdone_unused;
+   wire        locked_int;
+   wire        clkfbout_cock_wizard;
+   wire        clkfboutb_unused;
+   wire        clkout0b_unused;
+   wire        clkout1_unused;
+   wire        clkout1b_unused;
+   wire        clkfbstopped_unused;
+   wire        clkinstopped_unused;
 
- 
+   
 
-// Auto Instantiation//
+   // Auto Instantiation//
 
- 
-    PLLE3_ADV
-  #(
-    .COMPENSATION         ("AUTO"),
-    .STARTUP_WAIT         ("FALSE"),
-    .DIVCLK_DIVIDE        (1),
-    .CLKFBOUT_MULT        (4),
-    .CLKFBOUT_PHASE       (0.000),
-    .CLKOUT0_DIVIDE       (10),
-    .CLKOUT0_PHASE        (0.000),
-    .CLKOUT0_DUTY_CYCLE   (0.500),
-    .CLKIN_PERIOD         (4.000))
-  plle3_adv_inst
-    // Output clocks
-   (
-    .CLKFBOUT            (clkfbout_cock_wizard),
-    .CLKOUT0             (clk_out1_cock_wizard),
-    .CLKOUT0B            (clkout0b_unused),
-    .CLKOUT1             (clkout1_unused),
-    .CLKOUT1B            (clkout1b_unused),
-     // Input clock control
-    .CLKFBIN             (clkfbout_cock_wizard),
-    .CLKIN               (clk_in1_cock_wizard),
-    // Ports for dynamic reconfiguration
-    .DADDR               (7'h0),
-    .DCLK                (1'b0),
-    .DEN                 (1'b0),
-    .DI                  (16'h0),
-    .DO                  (do_unused),
-    .DRDY                (drdy_unused),
-    .DWE                 (1'b0),
-    .CLKOUTPHYEN         (1'b0),
-    .CLKOUTPHY           (),
-    // Other control and status signals
-    .LOCKED              (locked_int),
-    .PWRDWN              (1'b0),
-    .RST                 (1'b0));
-
-
-
-// Clock Monitor clock assigning
-//--------------------------------------
- // Output buffering
-  //-----------------------------------
+   
+   PLLE3_ADV
+     #(
+       .COMPENSATION         ("AUTO"),
+       .STARTUP_WAIT         ("FALSE"),
+       .DIVCLK_DIVIDE        (1),
+       .CLKFBOUT_MULT        (4),
+       .CLKFBOUT_PHASE       (0.000),
+       .CLKOUT0_DIVIDE       (10),
+       .CLKOUT0_PHASE        (0.000),
+       .CLKOUT0_DUTY_CYCLE   (0.500),
+       .CLKIN_PERIOD         (4.000))
+   plle3_adv_inst
+     // Output clocks
+     (
+      .CLKFBOUT            (clkfbout_cock_wizard),
+      .CLKOUT0             (clk_out1_cock_wizard),
+      .CLKOUT0B            (clkout0b_unused),
+      .CLKOUT1             (clkout1_unused),
+      .CLKOUT1B            (clkout1b_unused),
+      // Input clock control
+      .CLKFBIN             (clkfbout_cock_wizard),
+      .CLKIN               (clk_in1_cock_wizard),
+      // Ports for dynamic reconfiguration
+      .DADDR               (7'h0),
+      .DCLK                (1'b0),
+      .DEN                 (1'b0),
+      .DI                  (16'h0),
+      .DO                  (do_unused),
+      .DRDY                (drdy_unused),
+      .DWE                 (1'b0),
+      .CLKOUTPHYEN         (1'b0),
+      .CLKOUTPHY           (),
+      // Other control and status signals
+      .LOCKED              (locked_int),
+      .PWRDWN              (1'b0),
+      .RST                 (1'b0));
 
 
+
+   // Clock Monitor clock assigning
+   //--------------------------------------
+   // Output buffering
+   //-----------------------------------
 
 
 
 
-  BUFG clkout1_buf
-   (.O   (clk_out1),
-    .I   (clk_out1_cock_wizard));
+
+
+   BUFG clkout1_buf
+     (.O   (clk_out1),
+      .I   (clk_out1_cock_wizard));
 
 
 

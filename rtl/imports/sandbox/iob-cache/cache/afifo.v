@@ -17,20 +17,20 @@ module aFifo
     FIFO_DEPTH    = (1 << ADDRESS_WIDTH))
    //Reading port
    (output reg  [DATA_WIDTH-1:0]        Data_out, 
-    output reg                  Empty_out,
-    input wire                  ReadEn_in,
-    input wire                  RClk, 
+    output reg 			Empty_out,
+    input wire 			ReadEn_in,
+    input wire 			RClk, 
     //Writing port.	 
     input wire [DATA_WIDTH-1:0] Data_in, 
-    output reg                  Full_out,
-    input wire                  WriteEn_in,
-    input wire                  WClk,
+    output reg 			Full_out,
+    input wire 			WriteEn_in,
+    input wire 			WClk,
    
-    input wire                  Clear_in);
+    input wire 			Clear_in);
 
    /////Internal connections & variables//////
   reg   [DATA_WIDTH-1:0]              Mem [FIFO_DEPTH-1:0];
-   wire [ADDRESS_WIDTH-1:0]           pNextWordToWrite, pNextWordToRead;
+   wire [ADDRESS_WIDTH-1:0] 	      pNextWordToWrite, pNextWordToRead;
    wire                               EqualAddresses;
    wire                               NextWriteAddressEn, NextReadAddressEn;
    wire                               Set_Status, Rst_Status;
@@ -135,8 +135,8 @@ module GrayCounter
    always @ (posedge Clk)
      if (Clear_in) begin
         BinaryCount   <= {COUNTER_WIDTH{1'b 0}} + 1'b1;  //Gray count begins @ '1' with
-        GrayCount_out <= {COUNTER_WIDTH{1'b 0}};      // first 'Enable_in'.
-     end
+     GrayCount_out <= {COUNTER_WIDTH{1'b 0}};      // first 'Enable_in'.
+  end
      else if (Enable_in) begin
         BinaryCount   <= BinaryCount + 1'b1;
         GrayCount_out <= {BinaryCount[COUNTER_WIDTH-1],
