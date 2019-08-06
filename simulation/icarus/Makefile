@@ -4,13 +4,13 @@ VLOG = iverilog
 RISCV = ../../submodules/iob-rv32
 RTLDIR = ../../rtl/
 
-INCLUDE_DIR=.$(RTLDIR)/include
+INCLUDE_DIR= $(RTLDIR)/include
 SRC_DIR = $(RTLDIR)/src
 IP_DIR = $(RTLDIR)/ip
 
 TESTBENCH = $(RTLDIR)/testbench/top_system_test_Icarus_diff_clk.v
 
-VSRC = $(SRC_DIR)/*.v $(SRC_DIR)/fifo/afifo.v $(SRC_DIR)/iob-uart/picosoc_uart.v $(SRC_DIR)/memory/*.v
+VSRC = $(SRC_DIR)/*.v $(SRC_DIR)/fifo/afifo.v $(SRC_DIR)/iob-uart/picosoc_uart.v $(SRC_DIR)/memory/*.v $(RISCV)/picorv32.v
 
 #software
 TEST := ./
@@ -19,7 +19,7 @@ TESTDIR = ../../software/tests/$(TEST)
 BOOTDIR = ../../software/bootloader
 
 all: firmware.hex boot.hex $(VSRC)
-	$(VLOG) -I.$(RTLDIR)  -o top_system_test_Icarus_tb $(VSRC)
+	$(VLOG) -I$(INCLUDE_DIR) -o top_system_test_Icarus_tb $(VSRC)
 	./top_system_test_Icarus_tb +vcd
 
 firmware.hex:
@@ -42,6 +42,7 @@ clean:
 	@rm -f *.vcd
 	@rm -f firmware_?.dat
 	@rm -f boot_?.dat
+	@rm top_system_test_Icarus_tb
 	make -C $(BOOTDIR) clean
 	make -C $(TESTDIR) clean
 
