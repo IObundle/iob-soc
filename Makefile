@@ -1,11 +1,8 @@
 VIVADO_BASE = /home/iobundle/Xilinx/Vivado/2017.4
 #VIVADO_BASE = /home/Xilinx/Vivado/2018.3
 VIVADO = $(VIVADO_BASE)/bin/vivado
-VLOG = iverilog
 XELAB = $(VIVADO_BASE)/bin/xelab
 GLBL = $(VIVADO_BASE)/data/verilog/src/glbl.v
-#TOOLCHAIN_PREFIX = riscv64-unknown-elf-
-TOOLCHAIN_PREFIX = /opt/riscv32i/bin/riscv32-unknown-elf-
 
 RISCV = ./submodules/iob-rv32
 RTLDIR = ./rtl/
