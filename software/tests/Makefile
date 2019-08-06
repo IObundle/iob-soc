@@ -2,14 +2,15 @@ TOOLCHAIN_PREFIX = /opt/riscv32i/bin/riscv32-unknown-elf-
 
 FIRM_DIR = .
 SCRPT_DIR = ../scripts/
+UART_DIR = ../../submodules/iob-uart/c-driver
 
-C_SRC = $(FIRM_DIR)/uart.c
-H_SRC = $(FIRM_DIR)/uart.h
+C_SRC = $(UART_DIR)/iob-uart.c
+H_SRC = $(UART_DIR)/iob-uart.h
 
 all: firmware.hex
 
 firmware.hex: firmware_test.S firmware_test.c $(FIRM_DIR)/firmware.lds $(H_SRC) $(C_SRC)
-	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -I. -I$(FIRM_DIR) -nostdlib -o firmware.elf firmware.S $(H_SRC) $(C_SRC) firmware.c \
+	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -I. -I$(FIRM_DIR) -I$(UART_DIR) -nostdlib -o firmware.elf firmware.S $(H_SRC) $(C_SRC) firmware.c \
 		 --std=gnu99 -Wl,-Bstatic,-T,$(FIRM_DIR)/firmware.lds,-Map,firmware.map,--strip-debug -lgcc -lc
 	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
 	mv $(SCRPT_DIR)*.py ./
@@ -18,7 +19,7 @@ firmware.hex: firmware_test.S firmware_test.c $(FIRM_DIR)/firmware.lds $(H_SRC) 
 	mv *.py $(SCRPT_DIR)
 
 firmware_test.hex: firmware_test.S firmware_test.c $(FIRM_DIR)/firmware.lds $(H_SRC) $(C_SRC)
-	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -I. -I$(FIRM_DIR) -nostdlib -o firmware.elf firmware_test.S $(H_SRC) $(C_SRC) firmware_test.c\
+	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -I. -I$(FIRM_DIR) -I$(UART_DIR) -nostdlib -o firmware.elf firmware_test.S $(H_SRC) $(C_SRC) firmware_test.c\
 		 --std=gnu99 -Wl,-Bstatic,-T,$(FIRM_DIR)/firmware.lds,-Map,firmware.map,--strip-debug -lgcc -lc
 	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
 	mv $(SCRPT_DIR)*.py ./	
@@ -30,7 +31,7 @@ firmware_test.hex: firmware_test.S firmware_test.c $(FIRM_DIR)/firmware.lds $(H_
 ##################################################################
 
 firmware_uart.hex: firmware.S firmware_uart.c firmware.lds
-	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -I. -I$(FIRM_DIR) -nostdlib -o firmware.elf firmware.S $(H_SRC) $(C_SRC) firmware_uart.c \
+	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -I. -I$(FIRM_DIR) -I$(UART_DIR) -nostdlib -o firmware.elf firmware.S $(H_SRC) $(C_SRC) firmware_uart.c \
 		 --std=gnu99 -Wl,-Bstatic,-T,firmware.lds,-Map,firmware.map,--strip-debug -lgcc -lc
 	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
 	mv $(SCRPT_DIR)*.py ./
@@ -39,7 +40,7 @@ firmware_uart.hex: firmware.S firmware_uart.c firmware.lds
 	mv *.py $(SCRPT_DIR)
 
 firmware_test_uart.hex: firmware_test.S firmware_test_uart.c firmware.lds
-	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -I. -I$(FIRM_DIR) -nostdlib -o firmware.elf firmware_test.S $(H_SRC) $(C_SRC) firmware_test_uart.c \
+	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -I. -I$(FIRM_DIR) -I$(UART_DIR) -nostdlib -o firmware.elf firmware_test.S $(H_SRC) $(C_SRC) firmware_test_uart.c \
 		 --std=gnu99 -Wl,-Bstatic,-T,firmware.lds,-Map,firmware.map,--strip-debug -lgcc -lc
 	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
 	mv $(SCRPT_DIR)*.py ./
