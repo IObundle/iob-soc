@@ -77,9 +77,8 @@ module dwt_buffer_v2(
 
    always @(posedge clock or posedge reset)
      begin
-	if (reset == 1'b1)
-	  begin
-             write_address             <= {(MEMSIZE){1'b0}};
+	if (reset == 1'b1) begin
+           write_address             <= {(MEMSIZE){1'b0}};
         read_address              <= {(MEMSIZE){1'b0}};
         fifo_length               <= {(MEMSIZE){1'b0}};
      end
@@ -92,7 +91,7 @@ module dwt_buffer_v2(
              fifo_length               <= fifo_length_nxt;
 	  end
      end
-
+   
    always @(posedge clock) // or posedge reset)
      begin
 	//      if (reset == 1'b1)
