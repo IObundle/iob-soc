@@ -1,4 +1,3 @@
-
 VIVADO_BASE = /home/iobundle/Xilinx/Vivado/2017.4
 #VIVADO_BASE = /home/Xilinx/Vivado/2018.3
 VIVADO = $(VIVADO_BASE)/bin/vivado
@@ -7,6 +6,17 @@ XELAB = $(VIVADO_BASE)/bin/xelab
 GLBL = $(VIVADO_BASE)/data/verilog/src/glbl.v
 #TOOLCHAIN_PREFIX = riscv64-unknown-elf-
 TOOLCHAIN_PREFIX = /opt/riscv32i/bin/riscv32-unknown-elf-
+
+RICV = ./submodules/iob-rv32
+RTLDIR = ./rtl/
+
+INCLUDE_DIR=.$(RTLDIR)/include
+SRC_DIR = $(RTLDIR)/src
+IP_DIR = $(RTLDIR)/ip
+
+TESTBENCH = $(RTLDIR)/testbench/top_system_test_Icarus_diff_clk.v
+
+VSRC := $(SRC_DIR)/*.v $(SRC_DIR)/fifo/afifo.v $(SRC_DIR)/iob-uart/picosoc_uart.v $(SRC_DIR)/memory/*.v
 
 export VIVADO
 
@@ -40,8 +50,6 @@ synth_%: firmware.hex boot.hex
 	-grep -B4 -A10 'Slice LUTs' $@.log
 	-grep -B1 -A9 ^Slack $@.log && echo
 
-
-VSRC := ../rtl/top_system_test_Icarus_tb.v ../rtl/top_system_test_Icarus.v ../rtl/picorv32.v  ../rtl/simpleuart.v ../rtl/iob_native_interconnect.v  ../rtl/main_memory.v ../rtl/system.v  ../rtl/ddr_memory.v ../rtl/xalt_1p_mem_no_initialization.v xalt_1p_mem.v ../rtl/boot_memory.v ../rtl/iob_memory_mapped_decoder.v
 
 sim_system: firmware.hex boot.hex $(VSRC)
 	$(VLOG) -I../rtl  -o top_system_test_Icarus_tb $(VSRC)
