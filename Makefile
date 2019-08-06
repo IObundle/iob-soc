@@ -7,7 +7,7 @@ GLBL = $(VIVADO_BASE)/data/verilog/src/glbl.v
 #TOOLCHAIN_PREFIX = riscv64-unknown-elf-
 TOOLCHAIN_PREFIX = /opt/riscv32i/bin/riscv32-unknown-elf-
 
-RICV = ./submodules/iob-rv32
+RISCV = ./submodules/iob-rv32
 RTLDIR = ./rtl/
 
 INCLUDE_DIR=.$(RTLDIR)/include
@@ -50,21 +50,9 @@ synth_%: firmware.hex boot.hex
 	-grep -B4 -A10 'Slice LUTs' $@.log
 	-grep -B1 -A9 ^Slack $@.log && echo
 
+icarus:
+	make -C simulation/icarus
 
-sim_system: firmware.hex boot.hex $(VSRC)
-	$(VLOG) -I../rtl  -o top_system_test_Icarus_tb $(VSRC)
-	./top_system_test_Icarus_tb +vcd
-
-firmware.hex: firmware.S firmware.c firmware.lds uart.c uart.h
-	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -nostdlib -o firmware.elf firmware.S firmware.c \
-		 --std=gnu99 -Wl,-Bstatic,-T,firmware.lds,-Map,firmware.map,--strip-debug -lgcc -lc
-	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
-	python3 makehex.py firmware.bin 4096 > firmware.hex
-	python3 hex_split.py
-	cp firmware_0.hex firmware_0.dat
-	cp firmware_1.hex firmware_1.dat
-	cp firmware_2.hex firmware_2.dat
-	cp firmware_3.hex firmware_3.dat
 
 #firmware.hex: $(SRC)
 #	$(TOOLCHAIN_PREFIX)g++ -Os -ffreestanding -nostdlib -o firmware.elf $(SRC) -Wl,-Bstatic,-T,firmware.lds,-Map,firmware.map,--strip-debug -lgcc -lc
@@ -75,17 +63,6 @@ firmware.hex: firmware.S firmware.c firmware.lds uart.c uart.h
 #	cp firmware_1.hex firmware_1.dat
 #	cp firmware_2.hex firmware_2.dat
 #	cp firmware_3.hex firmware_3.dat
-
-boot.hex:	boot.S boot.c firmware.lds
-	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -nostdlib -o boot.elf boot.S boot.c \
-		 --std=gnu99 -Wl,-Bstatic,-T,firmware.lds,-Map,boot.map,--strip-debug -lgcc -lc
-	$(TOOLCHAIN_PREFIX)objcopy -O binary boot.elf boot.bin
-	python3 makehex.py boot.bin 4096 > boot.hex
-	python3 boot_hex_split.py
-	cp boot_0.hex boot_0.dat
-	cp boot_1.hex boot_1.dat
-	cp boot_2.hex boot_2.dat
-	cp boot_3.hex boot_3.dat
 
 
 boot_simple.hex: boot_simple.S boot_simple.c firmware.lds
