@@ -1,3 +1,5 @@
+VLOG = iverilog
+
 #hardware modules
 RISCV = ../../submodules/iob-rv32
 RTLDIR = ../../rtl/
