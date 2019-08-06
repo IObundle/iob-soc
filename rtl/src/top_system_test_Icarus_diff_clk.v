@@ -23,8 +23,8 @@
 
 
 module top_system(
-	          input 	   C0_SYS_CLK_clk_p, C0_SYS_CLK_clk_n, 
-	          //input      clk,
+	          //input 	   C0_SYS_CLK_clk_p, C0_SYS_CLK_clk_n, 
+	          input      clk,
 	          input 	   reset,
 	          output reg [6:0] led,
 	          output 	   ser_tx,
@@ -66,7 +66,7 @@ module top_system(
     IBUFGDS ibufg_inst (.I(C0_SYS_CLK_clk_p), .IB(C0_SYS_CLK_clk_n), .O(clk_ibufg));
     BUFG bufg_inst     (.I(clk_ibufg), .O(clk));
     */
-`ifndef DDR
+/*`ifndef DDR
  `ifdef CLK_200MHZ
    clk_wiz_200 clk_250_to_200_MHz(
 				  .clk_in1_p(C0_SYS_CLK_clk_p),
@@ -81,7 +81,7 @@ module top_system(
 				  );
  `endif                
 `endif    
-   
+  */ 
    wire 			   wire_axi_awvalid;
    wire 			   wire_axi_awready;
    wire [31:0] 			   wire_axi_awaddr;
@@ -291,7 +291,7 @@ module top_system(
                     .c0_ddr4_dqs_c       (c0_ddr4_dqs_c),
                     .c0_ddr4_dqs_t       (c0_ddr4_dqs_t)
                     );   
-   
+   /*
 `else
    
    bram_axi axi_bram (
@@ -332,5 +332,5 @@ module top_system(
 		      );
 
    
-`endif                                        
+*/`endif                                        
 endmodule
