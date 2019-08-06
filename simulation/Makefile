@@ -47,7 +47,7 @@ sim_system: firmware.hex boot.hex $(VSRC)
 	$(VLOG) -I../rtl  -o top_system_test_Icarus_tb $(VSRC)
 	./top_system_test_Icarus_tb +vcd
 
-firmware.hex: firmware.S firmware.c firmware.lds
+firmware.hex: firmware.S firmware.c firmware.lds uart.c uart.h
 	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -nostdlib -o firmware.elf firmware.S firmware.c \
 		 --std=gnu99 -Wl,-Bstatic,-T,firmware.lds,-Map,firmware.map,--strip-debug -lgcc -lc
 	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
