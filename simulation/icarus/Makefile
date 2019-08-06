@@ -22,10 +22,10 @@ all: firmware.hex boot.hex $(VSRC)
 
 firmware.hex:
 	make -C $(TESTDIR)
-	cp firmware_0.hex firmware_0.dat
-	cp firmware_1.hex firmware_1.dat
-	cp firmware_2.hex firmware_2.dat
-	cp firmware_3.hex firmware_3.dat
+	cp $(TESTDIR)firmware_0.hex firmware_0.dat
+	cp $(TESTDIR)firmware_1.hex firmware_1.dat
+	cp $(TESTDIR)firmware_2.hex firmware_2.dat
+	cp $(TESTDIR)firmware_3.hex firmware_3.dat
 
 boot.hex:
 	make -C $(BOOTDIR)
