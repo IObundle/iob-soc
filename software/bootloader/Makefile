@@ -1,45 +1,21 @@
 TOOLCHAIN_PREFIX = /opt/riscv32i/bin/riscv32-unknown-elf-
 
-RICV = ./submodules/iob-rv32
-RTLDIR = ./rtl/
-
-INCLUDE_DIR=.$(RTLDIR)/include
-SRC_DIR = $(RTLDIR)/src
-IP_DIR = $(RTLDIR)/ip
-
 FIRM_DIR = ../tests/
 SCRPT_DIR = ../scripts/
 
 C_SRC = $(FIRM_DIR)uart.c
 H_SRC = $(FIRM_DIR)uart.h
 
-help:
-	@echo ""
-	@echo "Example system with open-source memories:"
-	@echo "  make synth_system"
-	@echo "  make sim_system"
-	@echo "  clock in 'firmware.c' needs to be 100 MHz"
-	@echo ""
-	@echo "Example system with SDDR4:"
-	@echo "  make synth_system_ddr"
-	@echo "  there is no 'make sim_system_ddr' since you can't simulate a physical memory"
-	@echo "  clock in 'firmware.c' needs to be 100 MHz"
-	@echo ""
-	@echo "Make the executable of your program (firmware.c):"
-	@echo "  make firmware.hex"
-	@echo ""
-	@echo "Make boot-rom program (boot.c):"
-	@echo "  make boot.hex"
-	@echo ""
+all: boot.hex
 
-boot.hex:	boot.S boot.c $(FIRM_DIR)firmware.lds $(H_SRC) $(C_SRC)
+boot.hex: boot.S boot.c $(FIRM_DIR)firmware.lds $(H_SRC) $(C_SRC)
 	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -I. -I$(FIRM_DIR) -nostdlib -o boot.elf boot.S $(H_SRC) $(C_SRC) boot.c\
 		 --std=gnu99 -Wl,-Bstatic,-T,$(FIRM_DIR)firmware.lds,-Map,boot.map,--strip-debug -lgcc -lc
 	$(TOOLCHAIN_PREFIX)objcopy -O binary boot.elf boot.bin
-	mv $(SCRPT_DIR)*.py .
+	mv $(SCRPT_DIR)*.py .	
 	python3 makehex.py boot.bin 4096 > boot.hex
 	python3 boot_hex_split.py
-	mv *.py $(SCRPT_DIR)
+	mv *.py $(SCRPT_DIR)	
 
 
 boot_simple.hex: boot_simple.S boot_simple.c $(FIRM_DIR)firmware.lds $(H_SRC) $(C_SRC)
