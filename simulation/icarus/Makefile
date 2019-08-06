@@ -2,15 +2,18 @@ VLOG = iverilog
 
 #hardware modules
 RISCV = ../../submodules/iob-rv32
-RTLDIR = ../../rtl/
+UARTDIR = ../../submodules/iob-uart
+UARTSRC = $(UARTDIR)/rtl/src
+INC_UART = $(UARTDIR)/rtl/include
 
+RTLDIR = ../../rtl/
 INCLUDE_DIR= $(RTLDIR)/include
 SRC_DIR = $(RTLDIR)/src
 IP_DIR = $(RTLDIR)/ip
 
 TESTBENCH = $(RTLDIR)/testbench/top_system_test_Icarus_diff_clk.v
 
-VSRC = $(SRC_DIR)/*.v $(SRC_DIR)/fifo/afifo.v $(SRC_DIR)/iob-uart/picosoc_uart.v $(SRC_DIR)/memory/*.v $(RISCV)/picorv32.v
+VSRC = $(SRC_DIR)/*.v $(SRC_DIR)/fifo/afifo.v $(SRC_DIR)/memory/*.v $(RISCV)/picorv32.v $(UARTSRC)/simpleuart.v
 
 #software
 TEST := ./
@@ -19,7 +22,7 @@ TESTDIR = ../../software/tests/$(TEST)
 BOOTDIR = ../../software/bootloader
 
 all: firmware.hex boot.hex $(VSRC)
-	$(VLOG) -I$(INCLUDE_DIR) -o top_system_test_Icarus_tb $(VSRC)
+	$(VLOG) -I$(INCLUDE_DIR) -I$(INC_UART) -o top_system_test_Icarus_tb $(VSRC)
 	./top_system_test_Icarus_tb +vcd
 
 firmware.hex:

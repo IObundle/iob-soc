@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "uart.h"
+#include "iob-uart.h"
 
 #define UART_CLK_FREQ 200000000 // 100 MHz
 #define UART_BAUD_RATE 115200 // can also use 115200
