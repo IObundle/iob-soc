@@ -20,27 +20,27 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 module ddr_memory #(
-		      parameter ADDR_W = 30	          
-		      )
-		(      
-        input                    clk,
-        input   [31:0]           main_mem_write_data,
-        input   [ADDR_W-1:0]     main_mem_addr,
-        input   [3:0]            main_mem_en,
-        output  [31:0]           main_mem_read_data
+		    parameter ADDR_W = 30	          
+		    )
+   (      
+          input 	     clk,
+          input [31:0] 	     main_mem_write_data,
+          input [ADDR_W-1:0] main_mem_addr,
+          input [3:0] 	     main_mem_en,
+          output [31:0]      main_mem_read_data
 
-    );
-    
-    
+	  );
+   
+   
 
- 
-    
-    // MAIN MEMORY SYSTEM
+   
+   
+   // MAIN MEMORY SYSTEM
 
    // byte 0
    xalt_1p_mem_no_initialization  #(
-                   .DATA_W(8),
-                   .ADDR_W(ADDR_W))
+				    .DATA_W(8),
+				    .ADDR_W(ADDR_W))
    ddr_mem_byte0
      (
       .data_a   (main_mem_write_data[7:0]),
@@ -52,8 +52,8 @@ module ddr_memory #(
 
    //byte 1
    xalt_1p_mem_no_initialization  #(
-                   .DATA_W(8),
-                   .ADDR_W(ADDR_W))
+				    .DATA_W(8),
+				    .ADDR_W(ADDR_W))
    ddr_mem_byte1
      (
       .data_a   (main_mem_write_data[15:8]),
@@ -65,8 +65,8 @@ module ddr_memory #(
 
    // byte 2
    xalt_1p_mem_no_initialization  #(
-                   .DATA_W(8),
-                   .ADDR_W(ADDR_W))
+				    .DATA_W(8),
+				    .ADDR_W(ADDR_W))
    ddr_mem_byte2
      (
       .data_a   (main_mem_write_data[23:16]),
@@ -78,8 +78,8 @@ module ddr_memory #(
 
    //byte 3
    xalt_1p_mem_no_initialization  #(
-                   .DATA_W(8),
-                   .ADDR_W(ADDR_W))
+				    .DATA_W(8),
+				    .ADDR_W(ADDR_W))
    ddr_mem_byte3
      (
       .data_a   (main_mem_write_data[31:24]),

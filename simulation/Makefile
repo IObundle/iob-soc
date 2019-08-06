@@ -41,7 +41,7 @@ synth_%: firmware.hex boot.hex
 	-grep -B1 -A9 ^Slack $@.log && echo
 
 
-VSRC := ../rtl/top_system_test_Icarus_tb.v ../rtl/top_system_test_Icarus.v ../rtl/picorv32.v  ../rtl/simpleuart.v ../rtl/iob_native_interconnect.v  ../rtl/main_memory.v ../rtl/system.v  ../rtl/ddr_memory.v ../rtl/xalt_1p_mem_no_initialization.v xalt_1p_mem.v ../rtl/boot_memory.v
+VSRC := ../rtl/top_system_test_Icarus_tb.v ../rtl/top_system_test_Icarus.v ../rtl/picorv32.v  ../rtl/simpleuart.v ../rtl/iob_native_interconnect.v  ../rtl/main_memory.v ../rtl/system.v  ../rtl/ddr_memory.v ../rtl/xalt_1p_mem_no_initialization.v xalt_1p_mem.v ../rtl/boot_memory.v ../rtl/iob_memory_mapped_decoder.v
 
 sim_system: firmware.hex boot.hex $(VSRC)
 	$(VLOG) -I../rtl  -o top_system_test_Icarus_tb $(VSRC)

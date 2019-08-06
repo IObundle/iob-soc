@@ -20,28 +20,28 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 module boot_memory #(
-		      parameter ADDR_W = 12	          
-		      )
-		(      
-        input                    clk,
-        input   [31:0]           boot_write_data,
-        input   [ADDR_W-1:0]     boot_addr,
-        input   [3:0]            boot_en,
-        output  [31:0]           boot_read_data
+		     parameter ADDR_W = 12	          
+		     )
+   (      
+          input 	     clk,
+          input [31:0] 	     boot_write_data,
+          input [ADDR_W-1:0] boot_addr,
+          input [3:0] 	     boot_en,
+          output [31:0]      boot_read_data
 
-    );
-    
-    
+	  );
+   
+   
 
- 
-    
-    // BOOT ROM SYSTEM
+   
+   
+   // BOOT ROM SYSTEM
 
    // byte 0
    xalt_1p_mem  #(
-                   .MEM_INIT_FILE({"boot", "_0", ".dat"}),
-                   .DATA_W(8),
-                   .ADDR_W(ADDR_W))
+                  .MEM_INIT_FILE({"boot", "_0", ".dat"}),
+                  .DATA_W(8),
+                  .ADDR_W(ADDR_W))
    boot_byte0
      (
       .data_a   (boot_write_data[7:0]),
@@ -53,9 +53,9 @@ module boot_memory #(
 
    //byte 1
    xalt_1p_mem  #(
-                   .MEM_INIT_FILE({"boot", "_1", ".dat"}),
-                   .DATA_W(8),
-                   .ADDR_W(ADDR_W))
+                  .MEM_INIT_FILE({"boot", "_1", ".dat"}),
+                  .DATA_W(8),
+                  .ADDR_W(ADDR_W))
    boot_byte1
      (
       .data_a   (boot_write_data[15:8]),
@@ -67,9 +67,9 @@ module boot_memory #(
 
    // byte 2
    xalt_1p_mem  #(
-                   .MEM_INIT_FILE({"boot", "_2", ".dat"}),
-                   .DATA_W(8),
-                   .ADDR_W(ADDR_W))
+                  .MEM_INIT_FILE({"boot", "_2", ".dat"}),
+                  .DATA_W(8),
+                  .ADDR_W(ADDR_W))
    boot_byte2
      (
       .data_a   (boot_write_data[23:16]),
@@ -81,9 +81,9 @@ module boot_memory #(
 
    //byte 3
    xalt_1p_mem  #(
-                   .MEM_INIT_FILE({"boot", "_3", ".dat"}),
-                   .DATA_W(8),
-                   .ADDR_W(ADDR_W))
+                  .MEM_INIT_FILE({"boot", "_3", ".dat"}),
+                  .DATA_W(8),
+                  .ADDR_W(ADDR_W))
    boot_byte3
      (
       .data_a   (boot_write_data[31:24]),
