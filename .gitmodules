@@ -1,3 +1,6 @@
 [submodule "submodules/iob-rv32"]
 	path = submodules/iob-rv32
 	url = git@bitbucket.org:jjts/iob-rv32.git
+[submodule "submodules/iob-uart"]
+	path = submodules/iob-uart
+	url = git@bitbucket.org:jjts/iob-uart.git
