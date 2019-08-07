@@ -46,27 +46,23 @@ module system_tb;
       
    end // initial begin
  
-   
-   //
-   // RECEIVER PROCESS
-   //
-   
-   // cpu interface
-   reg [31:0]   rx_data_in;
-   reg [31:0]   rx_data_out;
-   reg [3:0]    rx_address;
-   reg          rx_read;
-   reg          rx_write;
-   reg          rx_sel;
 
+   //
+   // UART TESTER PROCESS
+   //
    integer 	i = 0, j = 0;
  	
    reg [7:0] 	rxread_reg = 8'b0;
 
 
    time         start, stop;
-
+   
    reg [31:0] 	progmem[4095:0];
+   reg [2:0] 	uart_addr;
+   reg 		uart_sel;
+   reg 		uart_we;
+   reg [31:0] 	uart_di;
+   reg [31:0] 	uart_do;
    
  
    initial begin
@@ -105,12 +101,6 @@ module system_tb;
    wire       ser_tx, ser_rx;
    wire       tester_tx, tester_rx;       
    wire       trap;
-
-   reg [2:0] uart_addr;
-   reg 	      uart_sel;
-   reg 	      uart_we;
-   reg [31:0] uart_di;
-   reg [31:0] uart_do;
    
    top_system uut (
 		   //.C0_SYS_CLK_clk_p (clk_p ),	 
