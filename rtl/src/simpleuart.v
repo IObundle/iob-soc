@@ -129,29 +129,29 @@ module simpleuart (
               begin
                  if (!ser_rx)
                    recv_state <= 1;
-                 recv_divcnt <= 0;
+                 recv_divcnt <= 1;
               end
             
             // Forward in time to the middle of the start bit
             4'd1:
-              if ( (2*recv_divcnt) > cfg_divider)
+              if ( (2*recv_divcnt) >= cfg_divider)
                 begin
                    recv_state <= 2;
-                   recv_divcnt <= 0;
+                   recv_divcnt <= 1;
                 end
             
             // Sample the 8 bits from the RX line and put them in the shift register
             default: // states 4'd2 through 4'd9
-              if (recv_divcnt > cfg_divider)
+              if (recv_divcnt >= cfg_divider)
                 begin
                    recv_pattern <= {ser_rx, recv_pattern[7:1]};
                    recv_state <= recv_state + 1'b1;
-                   recv_divcnt <= 0;
+                   recv_divcnt <= 1;
                 end
             
             // Put the received byte in the output data register; drive read valid to high
             4'd10:
-              if (recv_divcnt > cfg_divider)
+              if (recv_divcnt >= cfg_divider)
                 begin
                    recv_buf_data <= recv_pattern;
                    recv_buf_valid <= 1;
