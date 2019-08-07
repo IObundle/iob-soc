@@ -6,7 +6,9 @@
 #include <stdlib.h>
 #include "iob-uart.h"
 
-#define UART_CLK_FREQ 200000000 // 100 MHz
+#define DIVVAL 10
+
+#define UART_CLK_FREQ 100000000 // 100 MHz
 #define UART_BAUD_RATE 115200 // can also use 115200
 #define UART_ADDRESS 0x70000000
 #define MAIN_MEM_ADDR 0x80000000
@@ -29,10 +31,7 @@ void main()
   MAIN_MEM = (volatile int*) MAIN_MEM_ADDR;
   PROG_MEM = (volatile int*) PROG_MEM_ADDR;
 
-
-
-
-  uart_init(UART_ADDRESS,868);
+  uart_init(UART_ADDRESS,DIVVAL);
 
   //uart_write_wait();
   // reg_uart_clkdiv = 868;
@@ -54,6 +53,8 @@ void main()
   */
   uart_write_wait();
   uart_puts ("\nLoad Program throught UART to Main Memory...\n");
+  uart_write_wait();
+  uart_putc(0x11);
 
   for (i = 0 ; i < PROG_SIZE; i ++){
 

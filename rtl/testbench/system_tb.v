@@ -26,11 +26,6 @@ module system_tb;
    reg clk = 1;
    always #5 clk = ~clk;
    
-   reg clk_p = 1;
-   reg clk_n = 0;
-   always #5 clk_p = ~clk_p;
-   always #5 clk_n = ~clk_n;
-   
    reg reset = 1;
    
    initial begin
@@ -40,8 +35,6 @@ module system_tb;
       $dumpvars();
 `endif
       repeat (100) @(posedge clk);
-      reset <= 1;
-      repeat (100) @(posedge clk_p);
       reset <= 0;
       
    end // initial begin
@@ -75,7 +68,7 @@ module system_tb;
       do
 	cpu_uartread(`UART_WRITE_WAIT, rxread_reg);
       while(rxread_reg != 32'h0);
-      cpu_uartwrite(`UART_DIV, 32'd5); //868 for fpga
+      cpu_uartwrite(`UART_DIV, 32'd10); //868 for fpga
 
       //wait until uut is ready
       do begin
@@ -86,15 +79,16 @@ module system_tb;
       end while(rxread_reg != 32'h11); //wait for DC1 ascii code
 
       //send firmware
-      for(i=0; i<4095; i++) begin
+      for(i=0; i<4096; i++) begin
 	 for(j=7; j<32; j=j+8) begin
 	    do
 	      cpu_uartread(`UART_WRITE_WAIT, rxread_reg);
 	    while(rxread_reg != 32'h0);
-	    cpu_uartwrite(`UART_DATA, progmem[i][j -: 4'd8]);	    
+	    cpu_uartwrite(`UART_DATA, progmem[i][j -: 4'd8]);
+	    repeat(300) @(posedge clk) #1;
 	 end
       end
-      
+      $display("Testbench: firmware has been sent");
    end // uart process
 
    wire [6:0] led;
@@ -126,7 +120,7 @@ module system_tb;
 			 .ser_tx    (tester_tx),
 			 .ser_rx    (tester_rx),
 			 .clk       (clk),
-			 .resetn    (reset),
+			 .resetn    (~reset),
 			 .address   (uart_addr),
 			 .sel       (uart_sel),
 			 .we        (uart_we),
@@ -134,7 +128,7 @@ module system_tb;
 			 .dat_do    (uart_do)
 			 );
    
-   // 1-cycle write
+   // 2-cycle write
    task cpu_uartwrite;
       input [3:0]  cpu_address;
       input [31:0] cpu_data;
@@ -143,7 +137,7 @@ module system_tb;
       uart_sel = 1;
       uart_we = 1;
       uart_di = cpu_data;
-      @ (posedge clk) #10 uart_we = 0;
+      @ (posedge clk) #20 uart_we = 0;
       uart_sel = 0;
    endtask //cpu_uartwrite
 

@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include "iob-uart.h"
 
+#define DEVVAL 10
+
 #define UART_CLK_FREQ 100000000 // 100 MHz
 #define UART_BAUD_RATE 115200 // can also use 115200
 #define UART_ADDRESS 0x70000000
@@ -19,7 +21,7 @@ void main()
   unsigned char ledvar = 0;
   unsigned char Numb = 0;
 
-  uart_init(UART_ADDRESS,(UART_CLK_FREQ/UART_BAUD_RATE));
+  uart_init(UART_ADDRESS,DEVVAL);
    
   uart_write_wait();
   uart_puts("... Initializing program in main memory:\n");
