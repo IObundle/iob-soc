@@ -21,3 +21,5 @@ firmware_test.hex: firmware_test.S firmware_test.c $(FIRM_DIR)/firmware.lds $(H_
 clean:
 	@rm -rf firmware.bin firmware.elf firmware.hex firmware.map firmware_?.hex firmware_?.dat
 	@rm -rf uart_loader
+	@rm -rf ../firmware.bin ../firmware.elf ../firmware.hex ../firmware.map ../firmware_?.hex ../firmware_?.dat
+	@rm -rf ../uart_loader

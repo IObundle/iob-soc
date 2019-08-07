@@ -34,7 +34,7 @@ firmware.hex:
 	cp $(TESTDIR)firmware_3.hex firmware_3.dat
 
 boot.hex:
-	make -C $(BOOTDIR)
+	make -C $(BOOTDIR) TEST=$(TEST)
 	cp $(BOOTDIR)/boot_0.hex ./boot_0.dat
 	cp $(BOOTDIR)/boot_1.hex ./boot_1.dat
 	cp $(BOOTDIR)/boot_2.hex ./boot_2.dat
