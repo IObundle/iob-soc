@@ -16,10 +16,11 @@ TESTBENCH = $(RTLDIR)/testbench/top_system_test_Icarus_tb.v
 VSRC = $(SRC_DIR)/*.v $(SRC_DIR)/fifo/afifo.v $(SRC_DIR)/memory/*.v $(RISCV)/picorv32.v $(RISCV)/rtl/xalt_1p_mem.v $(UARTSRC)/simpleuart.v
 
 #software
-TEST := ./
+TEST := test
+BOOT := uart
 
 TESTDIR = ../../software/tests/$(TEST)
-BOOTDIR = ../../software/bootloader
+BOOTDIR = ../../software/bootloader/$(BOOT)
 
 all: firmware.hex boot.hex $(VSRC)
 	$(VLOG) -I$(INCLUDE_DIR) -I$(INC_UART) -o top_system_test_Icarus_tb $(VSRC) $(TESTBENCH)
@@ -45,7 +46,7 @@ clean:
 	@rm -f *.vcd
 	@rm -f firmware_?.dat
 	@rm -f boot_?.dat
-	@rm top_system_test_Icarus_tb
+	@rm -f ./top_system_test_Icarus_tb
 	make -C $(BOOTDIR) clean
 	make -C $(TESTDIR) clean
 

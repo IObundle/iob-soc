@@ -1,7 +1,8 @@
 #configurable options
 ROOT_DIR := iob-rv32-mig-native-axi
 IOB_USER := pteixeira
-TEST := .
+TEST := test
+BOOT := uart
 
 #hardware
 RTL_DIR := ../../rtl/src
@@ -18,7 +19,7 @@ VSRC := $(TB_DIR)/system_tb.v $(RTL_DIR)/*.v $(RTL_DIR)/fifo/afifo.v $(RTL_DIR)/
 
 #software
 TEST_DIR:=../../software/tests/$(TEST)
-BOOT_DIR:=../../software/bootloader
+BOOT_DIR:=../../software/bootloader/$(BOOT)
 
 CFLAGS = -errormax 15  -incdir $(INC_DIR) -incdir $(UART_INC_DIR) -status -update -linedebug -sv
 EFLAGS = -errormax 15 -access +wc -status
@@ -28,7 +29,7 @@ CSRC := $(wildcard $(TEST_DIR)/*.c $(UART)/c-driver/*.c)
 CHEADERS := $(wildcard $(TEST_DIR)/*.h $(UART)/c-driver/*.h)
 
 BOOTSRC := $(wildcard $(BOOT_DIR)/*.c $(UART)/c-driver/*.c)
-BOOTHEADERS := $(wildcard $(UART)/c-driver/*.h)
+BOOTHEADERS := $(wildcard $(BOOT_DIR)/*.h $(UART)/c-driver/*.h)
 
 HEX := firmware.hex
 BOOTHEX := boot_0.hex boot_1.hex boot_2.hex boot_3.hex
@@ -43,10 +44,10 @@ $(HEX): $(CSRC) $(CHEADERS) $(TEST_DIR)/Makefile
 	scp -P 1415 $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/software/tests/$(TEST)/firmware.hex .
 
 $(BOOTHEX): $(BOOTSRC) $(BOOTHEADERS) $(BOOT_DIR)/Makefile
-	scp -P 1415 $(BOOT_DIR)/* $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/software/bootloader
+	scp -P 1415 $(BOOT_DIR)/* $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/software/bootloader/$(BOOT)
 	scp -P 1415 $(UART)/c-driver/* $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/submodules/iob-uart/c-driver
-	ssh -p 1415 $(IOB_USER)@iobundle.ddns.net 'make -C $(ROOT_DIR)/software/bootloader'
-	scp -P 1415 $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/software/bootloader/boot_?.hex .
+	ssh -p 1415 $(IOB_USER)@iobundle.ddns.net 'make -C $(ROOT_DIR)/software/bootloader/$(BOOT)'
+	scp -P 1415 $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/software/bootloader/$(BOOT)/boot_?.hex .
 
 clean:
 	@rm -f *#
@@ -56,7 +57,7 @@ clean:
 	@rm -rf INCA_libs
 	@rm -f *.vcd
 	@rm -f system_synth.v system.tcf firmware.hex firmware_?.hex boot_?.hex
-	make -C ../../software/tests/$(TEST) clean
-	make -C ../../software/bootloader clean
+	make -C $(TEST_DIR) clean
+	make -C $(BOOT_DIR) clean
 
 .phony: all clean synth
