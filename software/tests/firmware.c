@@ -25,7 +25,7 @@ void main()
   //uart_reset();
   //  *((volatile int*) 0x1000000C) = 1;
 
-  
+  uart_init(0x70000000, 5);
   //uart_setdiv(UART_CLK_FREQ/UART_BAUD_RATE);
   //uart_wait();  
  

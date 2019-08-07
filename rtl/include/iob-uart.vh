@@ -1,4 +1,4 @@
-`define SIM
+//`define SIM
 `define UART_ADDR_W 3
 
 `define UART_WRITE_WAIT (`UART_ADDR_W'd0)
