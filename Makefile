@@ -5,7 +5,7 @@ XELAB = $(VIVADO_BASE)/bin/xelab
 GLBL = $(VIVADO_BASE)/data/verilog/src/glbl.v
 
 TEST := test
-BOOT := uart
+BOOT := boot
 
 RISCV = ./submodules/iob-rv32
 RTLDIR = ./rtl/
