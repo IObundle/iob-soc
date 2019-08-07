@@ -24,7 +24,7 @@
 
 module top_system(
 	          //input 	   C0_SYS_CLK_clk_p, C0_SYS_CLK_clk_n, 
-	          input      clk,
+	          input            clk,
 	          input 	   reset,
 	          output reg [6:0] led,
 	          output 	   ser_tx,
@@ -60,7 +60,7 @@ module top_system(
    
    ////////////single ended clock
   
-   wire 			   clk;
+   //wire 			   clk;
    /*       wire 		  clk_ibufg;
     
     IBUFGDS ibufg_inst (.I(C0_SYS_CLK_clk_p), .IB(C0_SYS_CLK_clk_n), .O(clk_ibufg));

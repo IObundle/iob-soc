@@ -13,7 +13,7 @@ IP_DIR = $(RTLDIR)/ip
 
 TESTBENCH = $(RTLDIR)/testbench/top_system_test_Icarus_tb.v
 
-VSRC = $(SRC_DIR)/*.v $(SRC_DIR)/fifo/afifo.v $(SRC_DIR)/memory/*.v $(RISCV)/picorv32.v $(UARTSRC)/simpleuart.v
+VSRC = $(SRC_DIR)/*.v $(SRC_DIR)/fifo/afifo.v $(SRC_DIR)/memory/*.v $(RISCV)/picorv32.v $(RISCV)/rtl/xalt_1p_mem.v $(UARTSRC)/simpleuart.v
 
 #software
 TEST := ./
