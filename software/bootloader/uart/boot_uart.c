@@ -91,11 +91,12 @@ void main()
   PROG_MEM = (volatile int*) PROG_MEM_ADDR;
   PC_SOFT_RESET  = (volatile int*) MEM_JUMP;
 
-  reg_uart_clkdiv = (int)(UART_CLK_FREQ/UART_BAUD_RATE);
+  //reg_uart_clkdiv = (int)(UART_CLK_FREQ/UART_BAUD_RATE);
   //reg_uart_clkdiv = 868;
- 
+  reg_uart_clkdiv = 5;
 
   print ("\nLoad Program throught UART to Main Memory...\n");
+  putchar(0x11);
 
   for (i = 0 ; i < PROG_SIZE; i ++){
 

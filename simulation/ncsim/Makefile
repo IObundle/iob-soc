@@ -35,7 +35,7 @@ BOOTSRC := $(wildcard $(BOOT_DIR)/*.c $(UART)/c-driver/*.c)
 BOOTHEADERS := $(wildcard $(BOOT_DIR)/*.h $(UART)/c-driver/*.h)
 
 HEX := firmware.hex
-BOOTHEX := boot_0.hex boot_1.hex boot_2.hex boot_3.hex
+BOOTHEX := boot_0.dat boot_1.dat boot_2.dat boot_3.dat
 
 all: $(VSRC) $(HEX) $(BOOTHEX)
 	INCLUDE_DIR="$(INCLUDE_DIR)" SRC="$(VSRC)" CFLAGS="$(CFLAGS)" EFLAGS="$(EFLAGS)" SFLAGS="$(SFLAGS)" ./setup.sh
@@ -51,6 +51,10 @@ $(BOOTHEX): $(BOOTSRC) $(BOOTHEADERS) $(BOOT_DIR)/Makefile
 	scp -P 1415 -i $(SSH_PATH) $(UART)/c-driver/* $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/submodules/iob-uart/c-driver
 	ssh -p 1415 -i $(SSH_PATH) $(IOB_USER)@iobundle.ddns.net 'make -C $(ROOT_DIR)/software/bootloader/$(BOOT) TEST=$(TEST)'
 	scp -P 1415 -i $(SSH_PATH) $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/software/bootloader/$(BOOT)/boot_?.hex .
+	cp ./boot_0.hex ./boot_0.dat
+	cp ./boot_1.hex ./boot_1.dat
+	cp ./boot_2.hex ./boot_2.dat
+	cp ./boot_3.hex ./boot_3.dat
 
 clean:
 	@rm -f *#
@@ -59,7 +63,7 @@ clean:
 	@rm -f *~
 	@rm -rf INCA_libs
 	@rm -f *.vcd
-	@rm -f system_synth.v system.tcf firmware.hex firmware_?.hex boot_?.hex
+	@rm -f system_synth.v system.tcf firmware.hex firmware_?.hex boot_?.hex boot_?.dat
 	make -C $(TEST_DIR) clean
 	make -C $(BOOT_DIR) clean
 

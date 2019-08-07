@@ -1,0 +1,36 @@
+[*]
+[*] GTKWave Analyzer v3.3.61 (w)1999-2014 BSI
+[*] Wed Aug  7 14:49:49 2019
+[*]
+[dumpfile] "(null)"
+[savefile] "/home/user14/pteixeira/iob-rv32-mig-native-axi/simulation/waves.gtkw"
+[timestart] 59665900
+[size] 1680 991
+[pos] 3 -388
+*-17.168652 60328100 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] system_tb.
+[treeopen] system_tb.uut.
+[treeopen] system_tb.uut.system.
+[sst_width] 226
+[signals_width] 257
+[sst_expanded] 1
+[sst_vpaned_height] 282
+@28
+system_tb.clk
+@22
+system_tb.i[31:0]
+system_tb.j[31:0]
+system_tb.uut.system.simpleuart.recv_pattern[7:0]
+@28
+system_tb.uut.system.simpleuart.send_pattern[9:0]
+@22
+system_tb.rxread_reg[7:0]
+system_tb.cpu_uartread.cpu_address[3:0]
+system_tb.cpu_uartwrite.cpu_address[3:0]
+system_tb.cpu_uartwrite.cpu_data[31:0]
+@28
+system_tb.uarttester.address[2:0]
+@29
+system_tb.uut.ser_tx
+[pattern_trace] 1
+[pattern_trace] 0

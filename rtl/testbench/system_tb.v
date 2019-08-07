@@ -32,16 +32,16 @@ module system_tb;
    always #5 clk_n = ~clk_n;
    
    reg reset = 1;
-
-     
+   
    initial begin
-      //    if ($test$plusargs("vcd")) begin
-      //$dumpfile("top_system_test_Icarus.vcd");
-      //$dumpvars();
-      //  end
+      
+`ifdef VCD
+      $dumpfile("system.vcd");
+      $dumpvars();
+`endif
       repeat (100) @(posedge clk);
       reset <= 1;
-      repeat (300) @(posedge clk_p);
+      repeat (100) @(posedge clk_p);
       reset <= 0;
       
    end // initial begin
@@ -139,11 +139,11 @@ module system_tb;
       input [3:0]  cpu_address;
       input [31:0] cpu_data;
 
-      # 1 uart_addr = cpu_address;
+      # 10 uart_addr = cpu_address;
       uart_sel = 1;
       uart_we = 1;
       uart_di = cpu_data;
-      @ (posedge clk) #1 uart_we = 0;
+      @ (posedge clk) #10 uart_we = 0;
       uart_sel = 0;
    endtask //cpu_uartwrite
 
@@ -152,12 +152,12 @@ module system_tb;
       input [3:0]   cpu_address;
       output [31:0] read_reg;
 
-      # 1 uart_addr = cpu_address;
+      # 10 uart_addr = cpu_address;
       uart_sel = 1;
       uart_we = 0;
-      @ (posedge clk) #1 uart_we = 0;
+      @ (posedge clk) #10 uart_we = 0;
       read_reg = uart_do;
-      @ (posedge clk) #1 uart_we = 0;
+      @ (posedge clk) #10 uart_we = 0;
       uart_sel = 0;
    endtask //cpu_uartread
    
