@@ -1,6 +1,7 @@
 TOOLCHAIN_PREFIX = /opt/riscv32i/bin/riscv32-unknown-elf-
+TEST := test
 
-FIRM_DIR = ../../tests/
+FIRM_DIR = ../../tests/$(TEST)
 SCRPT_DIR = ../../scripts/
 UART_DIR = ../../../submodules/iob-uart/c-driver
 
@@ -21,3 +22,5 @@ boot_uart.hex:	boot.S boot_uart.c $(FIRM_DIR)firmware.lds $(H_SRC) $(C_SRC)
 clean:
 	@rm -rf boot.bin boot.elf boot.hex boot.map boot_*.hex boot_?.dat
 	@rm -rf uart_loader
+	@rm -rf ../boot.bin ../boot.elf ../boot.hex ../boot.map ../boot_*.hex ../boot_?.dat
+	@rm -rf ../uart_loader
