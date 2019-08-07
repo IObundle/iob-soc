@@ -10,9 +10,9 @@ H_SRC = $(UART_DIR)/iob-uart.h
 
 all: boot_simple_uart.hex
 
-boot_simple_uart.hex: boot_simple.S boot_simple_uart.c $(FIRM_DIR)firmware.lds $(H_SRC) $(C_SRC)
+boot_simple_uart.hex: boot_simple.S boot_simple_uart.c $(FIRM_DIR)/firmware.lds $(H_SRC) $(C_SRC)
 	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -I. -I$(FIRM_DIR) -I$(UART_DIR) -nostdlib -o boot.elf boot_simple.S $(H_SRC) $(C_SRC) boot_simple_uart.c \
-		 --std=gnu99 -Wl,-Bstatic,-T,$(FIRM_DIR)firmware.lds,-Map,boot.map,--strip-debug -lgcc -lc
+		 --std=gnu99 -Wl,-Bstatic,-T,$(FIRM_DIR)/firmware.lds,-Map,boot.map,--strip-debug -lgcc -lc
 	$(TOOLCHAIN_PREFIX)objcopy -O binary boot.elf boot.bin
 	mv $(SCRPT_DIR)*.py .
 	python3 makehex.py boot.bin 4096 > boot.hex
