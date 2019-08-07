@@ -4,6 +4,9 @@ VIVADO = $(VIVADO_BASE)/bin/vivado
 XELAB = $(VIVADO_BASE)/bin/xelab
 GLBL = $(VIVADO_BASE)/data/verilog/src/glbl.v
 
+TEST := test
+BOOT := uart
+
 RISCV = ./submodules/iob-rv32
 RTLDIR = ./rtl/
 
@@ -48,10 +51,10 @@ synth_%: firmware.hex boot.hex
 	-grep -B1 -A9 ^Slack $@.log && echo
 
 ncsim:
-	make -C simulation/ncsim
+	make -C simulation/ncsim TEST=$(TEST) BOOT=$(BOOT)
 
 icarus:
-	make -C simulation/icarus
+	make -C simulation/icarus TEST=$(TEST) BOOT=$(BOOT)
 
 clean:
 	@rm -rf .Xil/ firmware.bin firmware.elf firmware.hex firmware_?.hex firmware_?.dat firmware.map synth_*.log *~ \#*# *#  ../rtl/*~ ../rtl/\#*# ../rtl/*#
