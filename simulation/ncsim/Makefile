@@ -1,8 +1,11 @@
 #configurable options
-ROOT_DIR := iob-rv32-mig-native-axi
-IOB_USER := pteixeira
+ROOT_DIR := versat/iob-rv32-mig-native-axi
+IOB_USER := pmiranda
 TEST := test
 BOOT := uart
+RSA_FILE := rv32_rsa
+
+SSH_PATH = ~/.ssh/$(RSA_FILE)
 
 #hardware
 RTL_DIR := ../../rtl/src
@@ -38,16 +41,16 @@ all: $(VSRC) $(HEX) $(BOOTHEX)
 	INCLUDE_DIR="$(INCLUDE_DIR)" SRC="$(VSRC)" CFLAGS="$(CFLAGS)" EFLAGS="$(EFLAGS)" SFLAGS="$(SFLAGS)" ./setup.sh
 
 $(HEX): $(CSRC) $(CHEADERS) $(TEST_DIR)/Makefile
-	scp -P 1415 $(TEST_DIR)/* $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/software/tests/$(TEST)
-	scp -P 1415 $(UART)/c-driver/* $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/submodules/iob-uart/c-driver
-	ssh -p 1415 $(IOB_USER)@iobundle.ddns.net 'make -C $(ROOT_DIR)/software/tests/$(TEST)'
-	scp -P 1415 $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/software/tests/$(TEST)/firmware.hex .
+	scp -P 1415 -i $(SSH_PATH) $(TEST_DIR)/* $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/software/tests/$(TEST)
+	scp -P 1415 -i $(SSH_PATH) $(UART)/c-driver/* $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/submodules/iob-uart/c-driver
+	ssh -p 1415 -i $(SSH_PATH) $(IOB_USER)@iobundle.ddns.net 'make -C $(ROOT_DIR)/software/tests/$(TEST)'
+	scp -P 1415 -i $(SSH_PATH) $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/software/tests/$(TEST)/firmware.hex .
 
 $(BOOTHEX): $(BOOTSRC) $(BOOTHEADERS) $(BOOT_DIR)/Makefile
-	scp -P 1415 $(BOOT_DIR)/* $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/software/bootloader/$(BOOT)
-	scp -P 1415 $(UART)/c-driver/* $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/submodules/iob-uart/c-driver
-	ssh -p 1415 $(IOB_USER)@iobundle.ddns.net 'make -C $(ROOT_DIR)/software/bootloader/$(BOOT) TEST=$(TEST)'
-	scp -P 1415 $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/software/bootloader/$(BOOT)/boot_?.hex .
+	scp -P 1415 -i $(SSH_PATH) $(BOOT_DIR)/* $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/software/bootloader/$(BOOT)
+	scp -P 1415 -i $(SSH_PATH) $(UART)/c-driver/* $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/submodules/iob-uart/c-driver
+	ssh -p 1415 -i $(SSH_PATH) $(IOB_USER)@iobundle.ddns.net 'make -C $(ROOT_DIR)/software/bootloader/$(BOOT) TEST=$(TEST)'
+	scp -P 1415 -i $(SSH_PATH) $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/software/bootloader/$(BOOT)/boot_?.hex .
 
 clean:
 	@rm -f *#
