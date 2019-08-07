@@ -47,6 +47,9 @@ synth_%: firmware.hex boot.hex
 	-grep -B4 -A10 'Slice LUTs' $@.log
 	-grep -B1 -A9 ^Slack $@.log && echo
 
+ncsim:
+	make -C simulation/ncsim
+
 icarus:
 	make -C simulation/icarus
 
@@ -56,3 +59,5 @@ clean:
 	@rm -rf webtalk.log webtalk_*.jou webtalk_*.log xelab.* xsim[._]* xvlog.*
 	@rm -rf boot.bin boot.elf boot.hex boot.map boot_*.hex boot_?.dat
 	@rm -rf uart_loader
+	make -C simulation/ncsim clean
+	make -C simulation/icarus clean
