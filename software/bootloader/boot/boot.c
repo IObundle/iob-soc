@@ -27,7 +27,9 @@ void main()
   int a;
   char* uart_char;
   int*  int_uart;     
-
+  char buf[4];
+  unsigned char temp;
+  int line=0;
   MAIN_MEM = (volatile int*) MAIN_MEM_ADDR;
   PROG_MEM = (volatile int*) PROG_MEM_ADDR;
 
@@ -57,26 +59,37 @@ void main()
   uart_putc(0x11);
 
   for (i = 0 ; i < PROG_SIZE; i ++){
-
+    line = 0;
     for (counter = 3; counter >= 0 ; counter--) {
 
       //	MAIN_MEM[(8*i) + counter] = getchar();
       //uart_read_wait();
       uart_read_wait();
-      MAIN_MEM[(4*i) + counter] = uart_getc();
+
+      //read the byte to a char and append it to the line
+      temp = uart_getc();
+      line+=temp << (8*counter); //number of shitfs = number of bits in a byte
+
+
+      //MAIN_MEM[(4*i) + counter] = uart_getc();
       //	print("\nValue sent: ");
       //	print_hex(MAIN_MEM[(8*i) + counter], 3);
+      /*
+	Some print manipulation
       if (MAIN_MEM [(4*i) + counter] >='0'  && MAIN_MEM [(4*i) + counter] <= '9'){
 	MAIN_MEM [(4*i) + counter] = MAIN_MEM[(4*i) + counter] - 48;
       }else{
 	MAIN_MEM [(4*i) + counter] = MAIN_MEM [(4*i) + counter] - 87;
       }
+      */
       //	print(" - char of: ");
       //	print_hex(MAIN_MEM[(8*i) + counter], 3);
       //	uart_printf("%x", MAIN_MEM[(8*i) + counter]);
     }
     // uart_puts("\n");
       
+    MAIN_MEM[i] = line;
+    /*
     for (counter = 0; counter < 4; counter ++){
       //	print("\n");
       //	print_hex(MAIN_MEM[(8*i) + counter], 3);
@@ -84,11 +97,13 @@ void main()
       //	print(" - shifted value: ");
       //	print_hex(MAIN_MEM[(8*i) + counter], 8);    
     }
-
+    */
+    /*
     MAIN_MEM[i] = MAIN_MEM [4*i]; //puts the instruction in order (from address 8*i to i)
     for (counter = 1; counter < 4; counter ++){
       MAIN_MEM[i] = MAIN_MEM[i] + MAIN_MEM[(4*i) + counter];
     }
+    */
     // print("\nFinal value: ");
     //print_hex(MAIN_MEM[i], 8);
     //print("Line: ");
@@ -103,7 +118,7 @@ void main()
     // print_hex (MAIN_MEM[i], 8);
     // print("\n");
     uart_write_wait();
-    uart_printf("%x: ", 4*i);
+    uart_printf("%x: ", i);//printing int instead of byte address
     uart_write_wait();
     uart_printf("%x\n", MAIN_MEM[i]);
   }
