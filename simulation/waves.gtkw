@@ -1,0 +1,64 @@
+[*]
+[*] GTKWave Analyzer v3.3.61 (w)1999-2014 BSI
+[*] Thu Aug  8 10:12:31 2019
+[*]
+[dumpfile] "/home/user14/pmiranda/iob-rv32-mig-native-axi/simulation/ncsim/system.vcd"
+[dumpfile_mtime] "Thu Aug  8 09:55:17 2019"
+[dumpfile_size] 134502775
+[savefile] "/home/user14/pteixeira/iob-rv32-mig-native-axi/simulation/waves.gtkw"
+[timestart] 129098400
+[size] 1680 993
+[pos] -1 -1
+*-16.168652 129350000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] system_tb.
+[treeopen] system_tb.uut.
+[treeopen] system_tb.uut.system.
+[sst_width] 226
+[signals_width] 257
+[sst_expanded] 1
+[sst_vpaned_height] 282
+@28
+system_tb.clk
+@200
+-TESTER
+@24
+system_tb.uarttester.address[2:0]
+@22
+system_tb.uarttester.recv_buf_data[7:0]
+system_tb.uarttester.dat_do[31:0]
+@28
+system_tb.uarttester.ser_rx
+system_tb.uarttester.ser_tx
+@22
+system_tb.uarttester.dat_di[31:0]
+@200
+-UART
+@24
+system_tb.uut.system.simpleuart.address[2:0]
+@22
+system_tb.uut.system.simpleuart.recv_pattern[7:0]
+system_tb.uut.system.simpleuart.recv_buf_data[7:0]
+@28
+system_tb.uut.system.simpleuart.ser_rx
+system_tb.uut.system.simpleuart.ser_tx
+system_tb.uut.system.simpleuart.rst_int
+@22
+system_tb.uut.system.simpleuart.send_pattern[9:0]
+system_tb.uut.system.simpleuart.recv_state[3:0]
+system_tb.uut.system.simpleuart.dat_do[31:0]
+@29
+system_tb.uut.system.simpleuart.dat_sel
+@28
+system_tb.uut.system.simpleuart.we
+system_tb.uut.system.simpleuart.recv_buf_valid
+@22
+system_tb.uut.system.simpleuart.recv_divcnt[31:0]
+@200
+-CPU
+[pattern_trace] 1
+[pattern_trace] 0
+!100000@@
+?"222
+@23
+system_tb.uut.system.simpleuart.send_pattern[9:0]
+!!
