@@ -80,12 +80,12 @@ module system_tb;
 
       //send firmware
       for(i=0; i<4096; i++) begin
-	 for(j=7; j<32; j=j+8) begin
+	 for(j=31; j>=7; j=j-8) begin
 	    do
 	      cpu_uartread(`UART_WRITE_WAIT, rxread_reg);
 	    while(rxread_reg != 32'h0);
 	    cpu_uartwrite(`UART_DATA, progmem[i][j -: 4'd8]);
-	    repeat(300) @(posedge clk) #1;
+	    repeat(2000) @(posedge clk) #1;
 	 end
       end
       $display("Testbench: firmware has been sent");

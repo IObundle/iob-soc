@@ -15,7 +15,7 @@
 #define PROG_MEM_ADDR 0x40000000
 //#define MEM_JUMP 0xBFFFFFFC 
 #define MEM_JUMP 0xFFFFFFFC 
-#define PROG_SIZE 2048 
+#define PROG_SIZE 4096 
 
 volatile int* MAIN_MEM;
 volatile int* PROG_MEM;
@@ -58,18 +58,18 @@ void main()
 
   for (i = 0 ; i < PROG_SIZE; i ++){
 
-    for (counter = 7; counter >= 0 ; counter--) {
+    for (counter = 3; counter >= 0 ; counter--) {
 
       //	MAIN_MEM[(8*i) + counter] = getchar();
       //uart_read_wait();
       uart_read_wait();
-      MAIN_MEM[(8*i) + counter] = uart_getc();
+      MAIN_MEM[(4*i) + counter] = uart_getc();
       //	print("\nValue sent: ");
       //	print_hex(MAIN_MEM[(8*i) + counter], 3);
-      if (MAIN_MEM [(8*i) + counter] >='0'  && MAIN_MEM [(8*i) + counter] <= '9'){
-	MAIN_MEM [(8*i) + counter] = MAIN_MEM[(8*i) + counter] - 48;
+      if (MAIN_MEM [(4*i) + counter] >='0'  && MAIN_MEM [(4*i) + counter] <= '9'){
+	MAIN_MEM [(4*i) + counter] = MAIN_MEM[(4*i) + counter] - 48;
       }else{
-	MAIN_MEM [(8*i) + counter] = MAIN_MEM [(8*i) + counter] - 87;
+	MAIN_MEM [(4*i) + counter] = MAIN_MEM [(4*i) + counter] - 87;
       }
       //	print(" - char of: ");
       //	print_hex(MAIN_MEM[(8*i) + counter], 3);
@@ -77,17 +77,17 @@ void main()
     }
     // uart_puts("\n");
       
-    for (counter = 0; counter < 8; counter ++){
+    for (counter = 0; counter < 4; counter ++){
       //	print("\n");
       //	print_hex(MAIN_MEM[(8*i) + counter], 3);
-      MAIN_MEM[(8*i) + counter] = MAIN_MEM[(8*i) + counter] << (4*counter);
+      MAIN_MEM[(4*i) + counter] = MAIN_MEM[(4*i) + counter] << (2*counter);
       //	print(" - shifted value: ");
       //	print_hex(MAIN_MEM[(8*i) + counter], 8);    
     }
 
-    MAIN_MEM[i] = MAIN_MEM [8*i]; //puts the instruction in order (from address 8*i to i)
-    for (counter = 1; counter < 8; counter ++){
-      MAIN_MEM[i] = MAIN_MEM[i] + MAIN_MEM[(8*i) + counter];
+    MAIN_MEM[i] = MAIN_MEM [4*i]; //puts the instruction in order (from address 8*i to i)
+    for (counter = 1; counter < 4; counter ++){
+      MAIN_MEM[i] = MAIN_MEM[i] + MAIN_MEM[(4*i) + counter];
     }
     // print("\nFinal value: ");
     //print_hex(MAIN_MEM[i], 8);
