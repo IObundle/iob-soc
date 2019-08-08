@@ -64,7 +64,7 @@ clean:
 	@rm -rf INCA_libs
 	@rm -f *.vcd
 	@rm -f system_synth.v system.tcf firmware.hex firmware_?.hex boot_?.hex boot_?.dat
-	make -C $(TEST_DIR) clean
-	make -C $(BOOT_DIR) clean
+	@make -C $(TEST_DIR) clean --no-print-directory
+	@make -C $(BOOT_DIR) clean --no-print-directory
 
 .phony: all clean synth
