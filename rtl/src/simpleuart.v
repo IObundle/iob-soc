@@ -108,59 +108,60 @@ module simpleuart (
    // Serial RX
    ////////////////////////////////////////////////////////
 
-      always @(posedge clk, posedge rst_int)
-     if (rst_int)
-       begin
-          recv_state <= 0;
-          recv_divcnt <= 0;
-          recv_pattern <= 0;
-          recv_buf_data <= 0;
-          recv_buf_valid <= 0;
-       end
-     else
-       begin
-          recv_divcnt <= recv_divcnt + 1;
-          if (dat_sel & ~we)
-            recv_buf_valid <= 0;
-          case (recv_state)
-            
-            // Detect start bit (i.e., when RX line goes to low)
-            4'd0:
-              begin
-                 if (!ser_rx)
-                   recv_state <= 1;
-                 recv_divcnt <= 1;
-              end
-            
-            // Forward in time to the middle of the start bit
-            4'd1:
-              if ( (2*recv_divcnt) >= cfg_divider)
-                begin
-                   recv_state <= 2;
-                   recv_divcnt <= 1;
-                end
-            
-            // Sample the 8 bits from the RX line and put them in the shift register
-            default: // states 4'd2 through 4'd9
-              if (recv_divcnt >= cfg_divider)
-                begin
-                   recv_pattern <= {ser_rx, recv_pattern[7:1]};
-                   recv_state <= recv_state + 1'b1;
-                   recv_divcnt <= 1;
-                end
-            
-            // Put the received byte in the output data register; drive read valid to high
-            4'd10:
-              if (recv_divcnt >= cfg_divider)
-                begin
-                   recv_buf_data <= recv_pattern;
-                   recv_buf_valid <= 1;
-                   recv_state <= 0;
-                end
-            
-          endcase // case (recv_state)
-       end // else: !if(rst_int)
-   
+   always @(posedge clk, posedge rst_int) begin
+      if (rst_int)
+	begin
+           recv_state <= 0;
+           recv_divcnt <= 0;
+           recv_pattern <= 0;
+           recv_buf_data <= 0;
+           recv_buf_valid <= 0;
+	end
+      else
+	begin
+           recv_divcnt <= recv_divcnt + 1;
+           if (dat_sel & ~we)
+             recv_buf_valid <= 0;
+           case (recv_state)
+             
+             // Detect start bit (i.e., when RX line goes to low)
+             4'd0:
+               begin
+                  if (!ser_rx)
+                    recv_state <= 1;
+                  recv_divcnt <= 1;
+               end
+             
+             // Forward in time to the middle of the start bit
+             4'd1:
+               if ( (2*recv_divcnt) >= cfg_divider)
+                 begin
+                    recv_state <= 2;
+                    recv_divcnt <= 1;
+                 end
+             
+             // Sample the 8 bits from the RX line and put them in the shift register
+             default: // states 4'd2 through 4'd9
+               if (recv_divcnt >= cfg_divider)
+                 begin
+                    recv_pattern <= {ser_rx, recv_pattern[7:1]};
+                    recv_state <= recv_state + 1'b1;
+                    recv_divcnt <= 1;
+                 end
+             
+             // Put the received byte in the output data register; drive read valid to high
+             4'd10:
+               if (recv_divcnt >= cfg_divider)
+                 begin
+                    recv_buf_data <= recv_pattern;
+                    recv_buf_valid <= 1;
+                    recv_state <= 0;
+                 end
+             
+           endcase // case (recv_state)
+	end // else: !if(rst_int)
+   end //always @
+	 
    ////////////////////////////////////////////////////////
    // Serial TX
    ////////////////////////////////////////////////////////

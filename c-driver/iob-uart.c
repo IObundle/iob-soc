@@ -144,6 +144,6 @@ void uart_read_wait()
 
 int uart_getc()
 {
-  while(!MEMGET(base, UART_READ_VALID));
+  uart_read_wait();
   return(MEMGET(base, UART_DATA));
 }
