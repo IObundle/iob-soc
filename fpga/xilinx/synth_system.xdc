@@ -24,11 +24,12 @@ set_property IOSTANDARD DIFF_SSTL12 [get_ports C0_SYS_CLK_clk_p]
 set_property IOSTANDARD DIFF_SSTL12 [get_ports C0_SYS_CLK_clk_n]
 set_property PACKAGE_PIN H22 [get_ports C0_SYS_CLK_clk_p]
 set_property PACKAGE_PIN H23 [get_ports C0_SYS_CLK_clk_n]
+#set_property IOSTANDARD LVCMOS18 [get_ports clk]
+#set_property PACKAGE_PIN H22 [get_ports clk]
 
-
-set_property CFGBVS VCCO [current_design] 
+#set_property CFGBVS VCCO [current_design] 
 #######where value1 is either VCCO or GND
-set_property CONFIG_VOLTAGE 3.3 [current_design] 
+#set_property CONFIG_VOLTAGE 3.3 [current_design] 
 ########where value2 is the voltage provided to configuration bank 0
 
 create_clock -period 4.000 [get_ports C0_SYS_CLK_clk_p]  
@@ -67,8 +68,8 @@ set_property IOSTANDARD LVCMOS18 [get_ports {trap}]
 
 
 ####### User PUSH Switches
-set_property PACKAGE_PIN K20 [get_ports {resetn}]
-set_property IOSTANDARD LVCMOS12 [get_ports {resetn}]
+set_property PACKAGE_PIN K20 [get_ports {reset}]
+set_property IOSTANDARD LVCMOS12 [get_ports {reset}]
 
 ### User PUSH Switches
 #set_property PACKAGE_PIN K18 [get_ports {gpio_push_sw_tri_i[0]}]
