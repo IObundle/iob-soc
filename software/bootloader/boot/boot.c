@@ -64,7 +64,7 @@ void main()
 
       //	MAIN_MEM[(8*i) + counter] = getchar();
       //uart_read_wait();
-      uart_read_wait();
+      //uart_read_wait();
 
       //read the byte to a char and append it to the line
       temp = uart_getc();
