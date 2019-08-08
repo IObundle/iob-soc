@@ -1,27 +1,8 @@
-VIVADO_BASE = /home/iobundle/Xilinx/Vivado/2017.4
-#VIVADO_BASE = /home/Xilinx/Vivado/2018.3
-VIVADO = $(VIVADO_BASE)/bin/vivado
-XELAB = $(VIVADO_BASE)/bin/xelab
-GLBL = $(VIVADO_BASE)/data/verilog/src/glbl.v
-
 TEST := test
 BOOT := boot
+SYNTH_TARGET := system
 
-RISCV = ./submodules/iob-rv32
-RTLDIR = ./rtl/
-
-INCLUDE_DIR=.$(RTLDIR)/include
-SRC_DIR = $(RTLDIR)/src
-IP_DIR = $(RTLDIR)/ip
-
-TESTBENCH = $(RTLDIR)/testbench/top_system_test_Icarus_diff_clk.v
-
-VSRC := $(SRC_DIR)/*.v $(SRC_DIR)/fifo/afifo.v $(SRC_DIR)/iob-uart/picosoc_uart.v $(SRC_DIR)/memory/*.v
-
-export VIVADO
-
-# work-around for http://svn.clifford.at/handicraft/2016/vivadosig11
-export RDI_VERBOSE = False
+all: xilinx
 
 help:
 	@echo ""
@@ -42,13 +23,8 @@ help:
 	@echo "  make boot.hex"
 	@echo ""
 
-
-synth_%: firmware.hex boot.hex
-	rm -f $@.log
-	$(VIVADO) -nojournal -log $@.log -mode batch -source $@.tcl
-	rm -rf .Xil fsm_encoding.os synth_*.backup.log usage_statistics_webtalk.*
-	-grep -B4 -A10 'Slice LUTs' $@.log
-	-grep -B1 -A9 ^Slack $@.log && echo
+xilinx: 
+	make -C fpga/xilinx TEST=$(TEST) BOOT=$(BOOT) SYNTH_TARGET=$(SYNTH_TARGET)
 
 ncsim:
 	make -C simulation/ncsim TEST=$(TEST) BOOT=$(BOOT)
@@ -57,10 +33,7 @@ icarus:
 	make -C simulation/icarus TEST=$(TEST) BOOT=$(BOOT)
 
 clean:
-	@rm -rf .Xil/ firmware.bin firmware.elf firmware.hex firmware_?.hex firmware_?.dat firmware.map synth_*.log *~ \#*# *#  ../rtl/*~ ../rtl/\#*# ../rtl/*#
-	@rm -rf synth_*.mmi synth_*.bit synth_system*.v *.vcd *_tb table.txt tab_*/ webtalk.jou
-	@rm -rf webtalk.log webtalk_*.jou webtalk_*.log xelab.* xsim[._]* xvlog.*
-	@rm -rf boot.bin boot.elf boot.hex boot.map boot_*.hex boot_?.dat
-	@rm -rf uart_loader
-	make -C simulation/ncsim clean
-	make -C simulation/icarus clean
+	@make -C fpga/xilinx clean --no-print-directory
+	@make -C simulation/ncsim clean --no-print-directory
+	@make -C simulation/icarus clean --no-print-directory
+	@echo "All clean"

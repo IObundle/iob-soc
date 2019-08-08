@@ -28,10 +28,10 @@ all: firmware.hex boot.hex $(VSRC)
 
 firmware.hex:
 	make -C $(TESTDIR)
-	cp $(TESTDIR)firmware_0.hex firmware_0.dat
-	cp $(TESTDIR)firmware_1.hex firmware_1.dat
-	cp $(TESTDIR)firmware_2.hex firmware_2.dat
-	cp $(TESTDIR)firmware_3.hex firmware_3.dat
+	cp $(TESTDIR)/firmware_0.hex ./firmware_0.dat
+	cp $(TESTDIR)/firmware_1.hex ./firmware_1.dat
+	cp $(TESTDIR)/firmware_2.hex ./firmware_2.dat
+	cp $(TESTDIR)/firmware_3.hex ./firmware_3.dat
 
 boot.hex:
 	make -C $(BOOTDIR) TEST=$(TEST)
@@ -47,7 +47,7 @@ clean:
 	@rm -f firmware_?.dat
 	@rm -f boot_?.dat
 	@rm -f ./top_system_test_Icarus_tb
-	make -C $(BOOTDIR) clean
-	make -C $(TESTDIR) clean
+	@make -C $(BOOTDIR) clean --no-print-directory
+	@make -C $(TESTDIR) clean --no-print-directory
 
 .PHONY: all firmware.hex boot.hex clean
