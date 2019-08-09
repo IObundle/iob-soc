@@ -70,13 +70,13 @@ module top_system(
     */
 `ifndef DDR
  `ifdef CLK_200MHZ
-   clk_wiz_200 clk_250_to_200_MHz(
+   clock_wizard clk_250_to_200_MHz(
 				  .clk_in1_p(C0_SYS_CLK_clk_p),
 				  .clk_in1_n(C0_SYS_CLK_clk_n),
 				  .clk_out1(clk)
 				  );
  `else
-   clk_wiz_100 clk_250_to_100_MHz(
+   clock_wizard clk_250_to_100_MHz(
 				  .clk_in1_p(C0_SYS_CLK_clk_p),
 				  .clk_in1_n(C0_SYS_CLK_clk_n),
 				  .clk_out1(clk)
