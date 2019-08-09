@@ -23,8 +23,8 @@
 
 
 module top_system(
-	          //input 	   C0_SYS_CLK_clk_p, C0_SYS_CLK_clk_n, 
-	          input            clk,
+	          input 	   C0_SYS_CLK_clk_p, C0_SYS_CLK_clk_n, 
+	          //input            clk,
 	          input 	   reset,
 	          output reg [6:0] led,
 	          output 	   ser_tx,
@@ -60,13 +60,14 @@ module top_system(
    
    ////////////single ended clock
   
-   //wire 			   clk;
-   /*       wire 		  clk_ibufg;
+   wire 			   clk;
+   /*
+   wire 			   clk_ibufg;
     
-    IBUFGDS ibufg_inst (.I(C0_SYS_CLK_clk_p), .IB(C0_SYS_CLK_clk_n), .O(clk_ibufg));
-    BUFG bufg_inst     (.I(clk_ibufg), .O(clk));
+    IBUFGDS ibufgs_inst (.I(C0_SYS_CLK_clk_p), .IB(C0_SYS_CLK_clk_n), .O(clk_ibufg));
+    //BUFG bufg_inst     (.I(clk_ibufg), .O(clk));
     */
-/*`ifndef DDR
+`ifndef DDR
  `ifdef CLK_200MHZ
    clk_wiz_200 clk_250_to_200_MHz(
 				  .clk_in1_p(C0_SYS_CLK_clk_p),
@@ -74,14 +75,14 @@ module top_system(
 				  .clk_out1(clk)
 				  );
  `else
-   clk_wiz_100 clk_250_to_100_MHz(
+   clock_wizard clk_250_to_100_MHz(
 				  .clk_in1_p(C0_SYS_CLK_clk_p),
 				  .clk_in1_n(C0_SYS_CLK_clk_n),
 				  .clk_out1(clk)
 				  );
  `endif                
 `endif    
-  */ 
+ 
    wire 			   wire_axi_awvalid;
    wire 			   wire_axi_awready;
    wire [31:0] 			   wire_axi_awaddr;

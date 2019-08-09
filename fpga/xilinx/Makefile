@@ -7,6 +7,7 @@ GLBL = $(VIVADO_BASE)/data/verilog/src/glbl.v
 TEST := test
 BOOT := boot
 SYNTH_TARGET := system
+PROG_TARGET := $(SYNTH_TARGET)
 
 export VIVADO
 
@@ -24,6 +25,12 @@ synth_%: firmware.hex boot.hex
 	rm -rf .Xil fsm_encoding.os synth_*.backup.log usage_statistics_webtalk.*
 	-grep -B4 -A10 'Slice LUTs' $@.log
 	-grep -B1 -A9 ^Slack $@.log && echo
+
+prog: prog_$(PROG_TARGET)
+
+prog_%:
+	$(VIVADO) -nojournal -log $@.log -mode batch -source $@.tcl
+	rm -rf .Xil fsm_encoding.os synth_*.backup.log usage_statistics_webtalk.*
 
 firmware.hex:
 	make -C $(TESTDIR)
@@ -44,6 +51,7 @@ clean:
 	@rm -rf synth_*.mmi synth_*.bit synth_system*.v *.vcd *_tb table.txt tab_*/ webtalk.jou
 	@rm -rf webtalk.log webtalk_*.jou webtalk_*.log xelab.* xsim[._]* xvlog.*
 	@rm -rf boot.bin boot.elf boot.hex boot.map boot_*.hex boot_?.dat
+	@rm -rf *.jou *.log
 	@rm -rf uart_loader
 	@make -C $(TESTDIR) clean --no-print-directory
 	@make -C $(BOOTDIR) clean --no-print-directory
