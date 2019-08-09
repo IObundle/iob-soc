@@ -7,3 +7,6 @@
 [submodule "submodules/iob-versat"]
 	path = submodules/iob-versat
 	url = git@bitbucket.org:jjts/rv32-versat.git
+[submodule "submodules/iob-darkrv32"]
+	path = submodules/iob-darkrv32
+	url = git@bitbucket.org:jjts/iob-darkrv32.git
