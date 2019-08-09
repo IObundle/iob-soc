@@ -1,0 +1,136 @@
+Flow report for top_system
+Fri Aug  9 19:23:38 2019
+Quartus Prime Version 18.0.0 Build 614 04/24/2018 SJ Standard Edition
+
+
+---------------------
+; Table of Contents ;
+---------------------
+  1. Legal Notice
+  2. Flow Summary
+  3. Flow Settings
+  4. Flow Non-Default Global Settings
+  5. Flow Elapsed Time
+  6. Flow OS Summary
+  7. Flow Log
+  8. Flow Messages
+  9. Flow Suppressed Messages
+
+
+
+----------------
+; Legal Notice ;
+----------------
+Copyright (C) 2018  Intel Corporation. All rights reserved.
+Your use of Intel Corporation's design tools, logic functions 
+and other software and tools, and its AMPP partner logic 
+functions, and any output files from any of the foregoing 
+(including device programming or simulation files), and any 
+associated documentation or information are expressly subject 
+to the terms and conditions of the Intel Program License 
+Subscription Agreement, the Intel Quartus Prime License Agreement,
+the Intel FPGA IP License Agreement, or other applicable license
+agreement, including, without limitation, that your use is for
+the sole purpose of programming logic devices manufactured by
+Intel and sold by Intel or its authorized distributors.  Please
+refer to the applicable agreement for further details.
+
+
+
++-----------------------------------------------------------------------------------+
+; Flow Summary                                                                      ;
++---------------------------------+-------------------------------------------------+
+; Flow Status                     ; Successful - Fri Aug  9 19:23:38 2019           ;
+; Quartus Prime Version           ; 18.0.0 Build 614 04/24/2018 SJ Standard Edition ;
+; Revision Name                   ; top_system                                      ;
+; Top-level Entity Name           ; top_system                                      ;
+; Family                          ; Cyclone V                                       ;
+; Device                          ; 5CGTFD9E5F35C7                                  ;
+; Timing Models                   ; Final                                           ;
+; Logic utilization (in ALMs)     ; 989 / 113,560 ( < 1 % )                         ;
+; Total registers                 ; 941                                             ;
+; Total pins                      ; 6 / 616 ( < 1 % )                               ;
+; Total virtual pins              ; 0                                               ;
+; Total block memory bits         ; 264,192 / 12,492,800 ( 2 % )                    ;
+; Total DSP Blocks                ; 0 / 342 ( 0 % )                                 ;
+; Total HSSI RX PCSs              ; 0 / 12 ( 0 % )                                  ;
+; Total HSSI PMA RX Deserializers ; 0 / 12 ( 0 % )                                  ;
+; Total HSSI TX PCSs              ; 0 / 12 ( 0 % )                                  ;
+; Total HSSI PMA TX Serializers   ; 0 / 12 ( 0 % )                                  ;
+; Total PLLs                      ; 0 / 20 ( 0 % )                                  ;
+; Total DLLs                      ; 0 / 4 ( 0 % )                                   ;
++---------------------------------+-------------------------------------------------+
+
+
++-----------------------------------------+
+; Flow Settings                           ;
++-------------------+---------------------+
+; Option            ; Setting             ;
++-------------------+---------------------+
+; Start date & time ; 08/09/2019 19:22:16 ;
+; Main task         ; Compilation         ;
+; Revision Name     ; top_system          ;
++-------------------+---------------------+
+
+
++------------------------------------------------------------------------------------------------------------------+
+; Flow Non-Default Global Settings                                                                                 ;
++-------------------------------+---------------------------------------+---------------+-------------+------------+
+; Assignment Name               ; Value                                 ; Default Value ; Entity Name ; Section Id ;
++-------------------------------+---------------------------------------+---------------+-------------+------------+
+; COMPILER_SIGNATURE_ID         ; 53447162225226.156537493646950        ; --            ; --          ; --         ;
+; MAX_CORE_JUNCTION_TEMP        ; 85                                    ; --            ; --          ; --         ;
+; MIN_CORE_JUNCTION_TEMP        ; 0                                     ; --            ; --          ; --         ;
+; POWER_BOARD_THERMAL_MODEL     ; None (CONSERVATIVE)                   ; --            ; --          ; --         ;
+; POWER_PRESET_COOLING_SOLUTION ; 23 MM HEAT SINK WITH 200 LFPM AIRFLOW ; --            ; --          ; --         ;
+; PROJECT_OUTPUT_DIRECTORY      ; output_files                          ; --            ; --          ; --         ;
+; SEARCH_PATH                   ; ../../rtl/src                         ; --            ; --          ; --         ;
+; SEARCH_PATH                   ; ../../rtl/include                     ; --            ; --          ; --         ;
+; SEARCH_PATH                   ; ../../rtl                             ; --            ; --          ; --         ;
+; SEARCH_PATH                   ; ../../rtl/src/memory                  ; --            ; --          ; --         ;
+; SEARCH_PATH                   ; ../../rtl/src/fifo                    ; --            ; --          ; --         ;
+; SEARCH_PATH                   ; ../../rtl/src/cache                   ; --            ; --          ; --         ;
+; SEARCH_PATH                   ; ../../submodules/iob-rv32             ; --            ; --          ; --         ;
+; SEARCH_PATH                   ; ../../submodules/iob-rv32/rtl         ; --            ; --          ; --         ;
+; SEARCH_PATH                   ; ../../submodules/iob-uart/rtl/src     ; --            ; --          ; --         ;
+; SEARCH_PATH                   ; ../../submodules/iob-uart/rtl/include ; --            ; --          ; --         ;
+; SEARCH_PATH                   ; ../../tests                           ; --            ; --          ; --         ;
+; VERILOG_INPUT_VERSION         ; SystemVerilog_2005                    ; Verilog_2001  ; --          ; --         ;
++-------------------------------+---------------------------------------+---------------+-------------+------------+
+
+
++--------------------------------------------------------------------------------------------------------------------------+
+; Flow Elapsed Time                                                                                                        ;
++----------------------+--------------+-------------------------+---------------------+------------------------------------+
+; Module Name          ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
++----------------------+--------------+-------------------------+---------------------+------------------------------------+
+; Analysis & Synthesis ; 00:00:11     ; 1.0                     ; 1217 MB             ; 00:00:25                           ;
+; Fitter               ; 00:00:49     ; 1.2                     ; 3722 MB             ; 00:03:16                           ;
+; Timing Analyzer      ; 00:00:09     ; 1.8                     ; 1699 MB             ; 00:00:15                           ;
+; Assembler            ; 00:00:10     ; 1.0                     ; 1091 MB             ; 00:00:10                           ;
+; Total                ; 00:01:19     ; --                      ; --                  ; 00:04:06                           ;
++----------------------+--------------+-------------------------+---------------------+------------------------------------+
+
+
++----------------------------------------------------------------------------------------+
+; Flow OS Summary                                                                        ;
++----------------------+------------------+--------------+--------------+----------------+
+; Module Name          ; Machine Hostname ; OS Name      ; OS Version   ; Processor type ;
++----------------------+------------------+--------------+--------------+----------------+
+; Analysis & Synthesis ; pudim-flan       ; CentOS Linux ; CentOS Linux ; x86_64         ;
+; Fitter               ; pudim-flan       ; CentOS Linux ; CentOS Linux ; x86_64         ;
+; Timing Analyzer      ; pudim-flan       ; CentOS Linux ; CentOS Linux ; x86_64         ;
+; Assembler            ; pudim-flan       ; CentOS Linux ; CentOS Linux ; x86_64         ;
++----------------------+------------------+--------------+--------------+----------------+
+
+
+------------
+; Flow Log ;
+------------
+quartus_map top_system.qsf
+quartus_fit --read_settings_files=off --write_settings_files=off top_system -c top_system
+quartus_sta top_system -c top_system
+quartus_asm top_system
+
+
+

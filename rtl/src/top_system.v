@@ -24,10 +24,13 @@
 
 
 module top_system(
+`ifdef XILINX
 	          input 	   C0_SYS_CLK_clk_p, C0_SYS_CLK_clk_n, 
-	          //input      clk,
-	          input 	   reset,
-	          output reg [6:0] led,
+`else
+	          input      clk,
+`endif
+	          input 	   resetn,
+//	          output reg [6:0] led,
 	          output 	   ser_tx,
 	          input 	   ser_rx,
 `ifdef DDR
@@ -61,29 +64,29 @@ module top_system(
    
    
    ////////////single ended clock
-  
+`ifdef XILINX
    wire 			   clk;
    /*       wire 		  clk_ibufg;
     
     IBUFGDS ibufg_inst (.I(C0_SYS_CLK_clk_p), .IB(C0_SYS_CLK_clk_n), .O(clk_ibufg));
     BUFG bufg_inst     (.I(clk_ibufg), .O(clk));
     */
-`ifndef DDR
- `ifdef CLK_200MHZ
+ `ifndef DDR
+  `ifdef CLK_200MHZ
    clock_wizard clk_250_to_200_MHz(
-				  .clk_in1_p(C0_SYS_CLK_clk_p),
-				  .clk_in1_n(C0_SYS_CLK_clk_n),
-				  .clk_out1(clk)
-				  );
- `else
+				   .clk_in1_p(C0_SYS_CLK_clk_p),
+				   .clk_in1_n(C0_SYS_CLK_clk_n),
+				   .clk_out1(clk)
+				   );
+  `else
    clock_wizard clk_250_to_100_MHz(
-				  .clk_in1_p(C0_SYS_CLK_clk_p),
-				  .clk_in1_n(C0_SYS_CLK_clk_n),
-				  .clk_out1(clk)
-				  );
- `endif                
-`endif    
-   
+				   .clk_in1_p(C0_SYS_CLK_clk_p),
+				   .clk_in1_n(C0_SYS_CLK_clk_n),
+				   .clk_out1(clk)
+				   );
+  `endif                
+ `endif    
+`endif   
    wire 			   wire_axi_awvalid;
    wire 			   wire_axi_awready;
    wire [31:0] 			   wire_axi_awaddr;
@@ -147,9 +150,9 @@ module top_system(
    system system (
         	  .clk        (clk       ),
 `ifdef DDR
-		  .reset (reset || ~(init_calib_complete)),
+		  .reset (~resetn || ~(init_calib_complete)),
 `else
-		  .reset      (reset   ),
+		  .reset      (~resetn   ),
 `endif
 		  .ser_tx     (ser_tx    ),
 		  .ser_rx     (ser_rx),
@@ -226,7 +229,8 @@ module top_system(
    ////////////////////////////////////////////////////////
    ///////////////////////////////////////////////////////  
 
-`ifdef DDR
+`ifdef CACHE
+ `ifdef DDR
 
    ddr4_0 ddr4_ram (
                     .c0_sys_clk_p        (C0_SYS_CLK_clk_p),
@@ -296,12 +300,12 @@ module top_system(
                     .c0_ddr4_dqs_t       (c0_ddr4_dqs_t)
                     );   
    
-`else
+ `else
    
    bram_axi axi_bram (
 		      //AXI Global Signals
 		      .s_aclk (clk),
-		      .s_aresetn (~reset),
+		      .s_aresetn (resetn),
 		      //AXI                        Full/lite slave write (write side)
 		      .s_axi_awid(),
 		      .s_axi_awaddr(wire_axi_awaddr),
@@ -336,5 +340,6 @@ module top_system(
 		      );
 
    
-`endif                                        
+ `endif //def DDR
+`endif// def CACHE                                         
 endmodule

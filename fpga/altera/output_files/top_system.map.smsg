@@ -1,0 +1,22 @@
+Warning (10273): Verilog HDL warning at picorv32.v(284): extended using "x" or "z" File: /home/pmiranda/versat/iob-rv32-mig-native-axi/submodules/iob-rv32/picorv32.v Line: 284
+Warning (10273): Verilog HDL warning at picorv32.v(304): extended using "x" or "z" File: /home/pmiranda/versat/iob-rv32-mig-native-axi/submodules/iob-rv32/picorv32.v Line: 304
+Warning (10273): Verilog HDL warning at picorv32.v(311): extended using "x" or "z" File: /home/pmiranda/versat/iob-rv32-mig-native-axi/submodules/iob-rv32/picorv32.v Line: 311
+Warning (10273): Verilog HDL warning at picorv32.v(367): extended using "x" or "z" File: /home/pmiranda/versat/iob-rv32-mig-native-axi/submodules/iob-rv32/picorv32.v Line: 367
+Warning (10273): Verilog HDL warning at picorv32.v(369): extended using "x" or "z" File: /home/pmiranda/versat/iob-rv32-mig-native-axi/submodules/iob-rv32/picorv32.v Line: 369
+Warning (10273): Verilog HDL warning at picorv32.v(1017): extended using "x" or "z" File: /home/pmiranda/versat/iob-rv32-mig-native-axi/submodules/iob-rv32/picorv32.v Line: 1017
+Warning (10273): Verilog HDL warning at picorv32.v(1243): extended using "x" or "z" File: /home/pmiranda/versat/iob-rv32-mig-native-axi/submodules/iob-rv32/picorv32.v Line: 1243
+Warning (10273): Verilog HDL warning at picorv32.v(1286): extended using "x" or "z" File: /home/pmiranda/versat/iob-rv32-mig-native-axi/submodules/iob-rv32/picorv32.v Line: 1286
+Warning (10273): Verilog HDL warning at picorv32.v(1313): extended using "x" or "z" File: /home/pmiranda/versat/iob-rv32-mig-native-axi/submodules/iob-rv32/picorv32.v Line: 1313
+Warning (10273): Verilog HDL warning at picorv32.v(1368): extended using "x" or "z" File: /home/pmiranda/versat/iob-rv32-mig-native-axi/submodules/iob-rv32/picorv32.v Line: 1368
+Warning (10273): Verilog HDL warning at picorv32.v(1369): extended using "x" or "z" File: /home/pmiranda/versat/iob-rv32-mig-native-axi/submodules/iob-rv32/picorv32.v Line: 1369
+Warning (10273): Verilog HDL warning at picorv32.v(1381): extended using "x" or "z" File: /home/pmiranda/versat/iob-rv32-mig-native-axi/submodules/iob-rv32/picorv32.v Line: 1381
+Warning (10273): Verilog HDL warning at picorv32.v(1382): extended using "x" or "z" File: /home/pmiranda/versat/iob-rv32-mig-native-axi/submodules/iob-rv32/picorv32.v Line: 1382
+Warning (10273): Verilog HDL warning at picorv32.v(1400): extended using "x" or "z" File: /home/pmiranda/versat/iob-rv32-mig-native-axi/submodules/iob-rv32/picorv32.v Line: 1400
+Warning (10273): Verilog HDL warning at picorv32.v(1401): extended using "x" or "z" File: /home/pmiranda/versat/iob-rv32-mig-native-axi/submodules/iob-rv32/picorv32.v Line: 1401
+Warning (10273): Verilog HDL warning at picorv32.v(1404): extended using "x" or "z" File: /home/pmiranda/versat/iob-rv32-mig-native-axi/submodules/iob-rv32/picorv32.v Line: 1404
+Warning (10273): Verilog HDL warning at picorv32.v(1425): extended using "x" or "z" File: /home/pmiranda/versat/iob-rv32-mig-native-axi/submodules/iob-rv32/picorv32.v Line: 1425
+Warning (10273): Verilog HDL warning at picorv32.v(1548): extended using "x" or "z" File: /home/pmiranda/versat/iob-rv32-mig-native-axi/submodules/iob-rv32/picorv32.v Line: 1548
+Warning (10273): Verilog HDL warning at picorv32.v(1549): extended using "x" or "z" File: /home/pmiranda/versat/iob-rv32-mig-native-axi/submodules/iob-rv32/picorv32.v Line: 1549
+Warning (10273): Verilog HDL warning at picorv32.v(1928): extended using "x" or "z" File: /home/pmiranda/versat/iob-rv32-mig-native-axi/submodules/iob-rv32/picorv32.v Line: 1928
+Warning (10268): Verilog HDL information at picorv32.v(1366): always construct contains both blocking and non-blocking assignments File: /home/pmiranda/versat/iob-rv32-mig-native-axi/submodules/iob-rv32/picorv32.v Line: 1366
+Warning (10273): Verilog HDL warning at picorv32.v(2380): extended using "x" or "z" File: /home/pmiranda/versat/iob-rv32-mig-native-axi/submodules/iob-rv32/picorv32.v Line: 2380
