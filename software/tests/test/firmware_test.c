@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include "iob-uart.h"
 
-#define DEVVAL 10
+#define DEVVAL 868
 
 #define UART_CLK_FREQ 100000000 // 100 MHz
 #define UART_BAUD_RATE 115200 // can also use 115200
@@ -39,9 +39,6 @@ void main()
 
   for (counter = 0; counter < N; counter ++){
     if (vect[counter] != counter){
-      //    print("failed at: ");
-      //print_hex (vect[counter], 5);
-      //print("\n");
       uart_write_wait();
       uart_printf("fail:%x\n", counter);
     }
