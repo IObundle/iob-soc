@@ -1,0 +1,279 @@
+--lpm_mux CBX_DECLARE_ALL_CONNECTED_PORTS="OFF" DEVICE_FAMILY="Cyclone V" LPM_SIZE=16 LPM_WIDTH=8 LPM_WIDTHS=4 data result sel
+--VERSION_BEGIN 18.0 cbx_lpm_mux 2018:04:18:06:50:44:SJ cbx_mgl 2018:04:18:07:37:08:SJ  VERSION_END
+
+
+-- Copyright (C) 2018  Intel Corporation. All rights reserved.
+--  Your use of Intel Corporation's design tools, logic functions 
+--  and other software and tools, and its AMPP partner logic 
+--  functions, and any output files from any of the foregoing 
+--  (including device programming or simulation files), and any 
+--  associated documentation or information are expressly subject 
+--  to the terms and conditions of the Intel Program License 
+--  Subscription Agreement, the Intel Quartus Prime License Agreement,
+--  the Intel FPGA IP License Agreement, or other applicable license
+--  agreement, including, without limitation, that your use is for
+--  the sole purpose of programming logic devices manufactured by
+--  Intel and sold by Intel or its authorized distributors.  Please
+--  refer to the applicable agreement for further details.
+
+
+
+--synthesis_resources = lut 40 
+SUBDESIGN mux_dhb
+( 
+	data[127..0]	:	input;
+	result[7..0]	:	output;
+	sel[3..0]	:	input;
+) 
+VARIABLE
+	l1_w0_n0_mux_dataout	:	WIRE;
+	l1_w0_n1_mux_dataout	:	WIRE;
+	l1_w0_n2_mux_dataout	:	WIRE;
+	l1_w0_n3_mux_dataout	:	WIRE;
+	l1_w0_n4_mux_dataout	:	WIRE;
+	l1_w0_n5_mux_dataout	:	WIRE;
+	l1_w0_n6_mux_dataout	:	WIRE;
+	l1_w0_n7_mux_dataout	:	WIRE;
+	l1_w1_n0_mux_dataout	:	WIRE;
+	l1_w1_n1_mux_dataout	:	WIRE;
+	l1_w1_n2_mux_dataout	:	WIRE;
+	l1_w1_n3_mux_dataout	:	WIRE;
+	l1_w1_n4_mux_dataout	:	WIRE;
+	l1_w1_n5_mux_dataout	:	WIRE;
+	l1_w1_n6_mux_dataout	:	WIRE;
+	l1_w1_n7_mux_dataout	:	WIRE;
+	l1_w2_n0_mux_dataout	:	WIRE;
+	l1_w2_n1_mux_dataout	:	WIRE;
+	l1_w2_n2_mux_dataout	:	WIRE;
+	l1_w2_n3_mux_dataout	:	WIRE;
+	l1_w2_n4_mux_dataout	:	WIRE;
+	l1_w2_n5_mux_dataout	:	WIRE;
+	l1_w2_n6_mux_dataout	:	WIRE;
+	l1_w2_n7_mux_dataout	:	WIRE;
+	l1_w3_n0_mux_dataout	:	WIRE;
+	l1_w3_n1_mux_dataout	:	WIRE;
+	l1_w3_n2_mux_dataout	:	WIRE;
+	l1_w3_n3_mux_dataout	:	WIRE;
+	l1_w3_n4_mux_dataout	:	WIRE;
+	l1_w3_n5_mux_dataout	:	WIRE;
+	l1_w3_n6_mux_dataout	:	WIRE;
+	l1_w3_n7_mux_dataout	:	WIRE;
+	l1_w4_n0_mux_dataout	:	WIRE;
+	l1_w4_n1_mux_dataout	:	WIRE;
+	l1_w4_n2_mux_dataout	:	WIRE;
+	l1_w4_n3_mux_dataout	:	WIRE;
+	l1_w4_n4_mux_dataout	:	WIRE;
+	l1_w4_n5_mux_dataout	:	WIRE;
+	l1_w4_n6_mux_dataout	:	WIRE;
+	l1_w4_n7_mux_dataout	:	WIRE;
+	l1_w5_n0_mux_dataout	:	WIRE;
+	l1_w5_n1_mux_dataout	:	WIRE;
+	l1_w5_n2_mux_dataout	:	WIRE;
+	l1_w5_n3_mux_dataout	:	WIRE;
+	l1_w5_n4_mux_dataout	:	WIRE;
+	l1_w5_n5_mux_dataout	:	WIRE;
+	l1_w5_n6_mux_dataout	:	WIRE;
+	l1_w5_n7_mux_dataout	:	WIRE;
+	l1_w6_n0_mux_dataout	:	WIRE;
+	l1_w6_n1_mux_dataout	:	WIRE;
+	l1_w6_n2_mux_dataout	:	WIRE;
+	l1_w6_n3_mux_dataout	:	WIRE;
+	l1_w6_n4_mux_dataout	:	WIRE;
+	l1_w6_n5_mux_dataout	:	WIRE;
+	l1_w6_n6_mux_dataout	:	WIRE;
+	l1_w6_n7_mux_dataout	:	WIRE;
+	l1_w7_n0_mux_dataout	:	WIRE;
+	l1_w7_n1_mux_dataout	:	WIRE;
+	l1_w7_n2_mux_dataout	:	WIRE;
+	l1_w7_n3_mux_dataout	:	WIRE;
+	l1_w7_n4_mux_dataout	:	WIRE;
+	l1_w7_n5_mux_dataout	:	WIRE;
+	l1_w7_n6_mux_dataout	:	WIRE;
+	l1_w7_n7_mux_dataout	:	WIRE;
+	l2_w0_n0_mux_dataout	:	WIRE;
+	l2_w0_n1_mux_dataout	:	WIRE;
+	l2_w0_n2_mux_dataout	:	WIRE;
+	l2_w0_n3_mux_dataout	:	WIRE;
+	l2_w1_n0_mux_dataout	:	WIRE;
+	l2_w1_n1_mux_dataout	:	WIRE;
+	l2_w1_n2_mux_dataout	:	WIRE;
+	l2_w1_n3_mux_dataout	:	WIRE;
+	l2_w2_n0_mux_dataout	:	WIRE;
+	l2_w2_n1_mux_dataout	:	WIRE;
+	l2_w2_n2_mux_dataout	:	WIRE;
+	l2_w2_n3_mux_dataout	:	WIRE;
+	l2_w3_n0_mux_dataout	:	WIRE;
+	l2_w3_n1_mux_dataout	:	WIRE;
+	l2_w3_n2_mux_dataout	:	WIRE;
+	l2_w3_n3_mux_dataout	:	WIRE;
+	l2_w4_n0_mux_dataout	:	WIRE;
+	l2_w4_n1_mux_dataout	:	WIRE;
+	l2_w4_n2_mux_dataout	:	WIRE;
+	l2_w4_n3_mux_dataout	:	WIRE;
+	l2_w5_n0_mux_dataout	:	WIRE;
+	l2_w5_n1_mux_dataout	:	WIRE;
+	l2_w5_n2_mux_dataout	:	WIRE;
+	l2_w5_n3_mux_dataout	:	WIRE;
+	l2_w6_n0_mux_dataout	:	WIRE;
+	l2_w6_n1_mux_dataout	:	WIRE;
+	l2_w6_n2_mux_dataout	:	WIRE;
+	l2_w6_n3_mux_dataout	:	WIRE;
+	l2_w7_n0_mux_dataout	:	WIRE;
+	l2_w7_n1_mux_dataout	:	WIRE;
+	l2_w7_n2_mux_dataout	:	WIRE;
+	l2_w7_n3_mux_dataout	:	WIRE;
+	l3_w0_n0_mux_dataout	:	WIRE;
+	l3_w0_n1_mux_dataout	:	WIRE;
+	l3_w1_n0_mux_dataout	:	WIRE;
+	l3_w1_n1_mux_dataout	:	WIRE;
+	l3_w2_n0_mux_dataout	:	WIRE;
+	l3_w2_n1_mux_dataout	:	WIRE;
+	l3_w3_n0_mux_dataout	:	WIRE;
+	l3_w3_n1_mux_dataout	:	WIRE;
+	l3_w4_n0_mux_dataout	:	WIRE;
+	l3_w4_n1_mux_dataout	:	WIRE;
+	l3_w5_n0_mux_dataout	:	WIRE;
+	l3_w5_n1_mux_dataout	:	WIRE;
+	l3_w6_n0_mux_dataout	:	WIRE;
+	l3_w6_n1_mux_dataout	:	WIRE;
+	l3_w7_n0_mux_dataout	:	WIRE;
+	l3_w7_n1_mux_dataout	:	WIRE;
+	l4_w0_n0_mux_dataout	:	WIRE;
+	l4_w1_n0_mux_dataout	:	WIRE;
+	l4_w2_n0_mux_dataout	:	WIRE;
+	l4_w3_n0_mux_dataout	:	WIRE;
+	l4_w4_n0_mux_dataout	:	WIRE;
+	l4_w5_n0_mux_dataout	:	WIRE;
+	l4_w6_n0_mux_dataout	:	WIRE;
+	l4_w7_n0_mux_dataout	:	WIRE;
+	data_wire[239..0]	: WIRE;
+	result_wire_ext[7..0]	: WIRE;
+	sel_wire[15..0]	: WIRE;
+
+BEGIN 
+	l1_w0_n0_mux_dataout = sel_wire[0..0] & data_wire[8..8] # !(sel_wire[0..0]) & data_wire[0..0];
+	l1_w0_n1_mux_dataout = sel_wire[0..0] & data_wire[24..24] # !(sel_wire[0..0]) & data_wire[16..16];
+	l1_w0_n2_mux_dataout = sel_wire[0..0] & data_wire[40..40] # !(sel_wire[0..0]) & data_wire[32..32];
+	l1_w0_n3_mux_dataout = sel_wire[0..0] & data_wire[56..56] # !(sel_wire[0..0]) & data_wire[48..48];
+	l1_w0_n4_mux_dataout = sel_wire[0..0] & data_wire[72..72] # !(sel_wire[0..0]) & data_wire[64..64];
+	l1_w0_n5_mux_dataout = sel_wire[0..0] & data_wire[88..88] # !(sel_wire[0..0]) & data_wire[80..80];
+	l1_w0_n6_mux_dataout = sel_wire[0..0] & data_wire[104..104] # !(sel_wire[0..0]) & data_wire[96..96];
+	l1_w0_n7_mux_dataout = sel_wire[0..0] & data_wire[120..120] # !(sel_wire[0..0]) & data_wire[112..112];
+	l1_w1_n0_mux_dataout = sel_wire[0..0] & data_wire[9..9] # !(sel_wire[0..0]) & data_wire[1..1];
+	l1_w1_n1_mux_dataout = sel_wire[0..0] & data_wire[25..25] # !(sel_wire[0..0]) & data_wire[17..17];
+	l1_w1_n2_mux_dataout = sel_wire[0..0] & data_wire[41..41] # !(sel_wire[0..0]) & data_wire[33..33];
+	l1_w1_n3_mux_dataout = sel_wire[0..0] & data_wire[57..57] # !(sel_wire[0..0]) & data_wire[49..49];
+	l1_w1_n4_mux_dataout = sel_wire[0..0] & data_wire[73..73] # !(sel_wire[0..0]) & data_wire[65..65];
+	l1_w1_n5_mux_dataout = sel_wire[0..0] & data_wire[89..89] # !(sel_wire[0..0]) & data_wire[81..81];
+	l1_w1_n6_mux_dataout = sel_wire[0..0] & data_wire[105..105] # !(sel_wire[0..0]) & data_wire[97..97];
+	l1_w1_n7_mux_dataout = sel_wire[0..0] & data_wire[121..121] # !(sel_wire[0..0]) & data_wire[113..113];
+	l1_w2_n0_mux_dataout = sel_wire[0..0] & data_wire[10..10] # !(sel_wire[0..0]) & data_wire[2..2];
+	l1_w2_n1_mux_dataout = sel_wire[0..0] & data_wire[26..26] # !(sel_wire[0..0]) & data_wire[18..18];
+	l1_w2_n2_mux_dataout = sel_wire[0..0] & data_wire[42..42] # !(sel_wire[0..0]) & data_wire[34..34];
+	l1_w2_n3_mux_dataout = sel_wire[0..0] & data_wire[58..58] # !(sel_wire[0..0]) & data_wire[50..50];
+	l1_w2_n4_mux_dataout = sel_wire[0..0] & data_wire[74..74] # !(sel_wire[0..0]) & data_wire[66..66];
+	l1_w2_n5_mux_dataout = sel_wire[0..0] & data_wire[90..90] # !(sel_wire[0..0]) & data_wire[82..82];
+	l1_w2_n6_mux_dataout = sel_wire[0..0] & data_wire[106..106] # !(sel_wire[0..0]) & data_wire[98..98];
+	l1_w2_n7_mux_dataout = sel_wire[0..0] & data_wire[122..122] # !(sel_wire[0..0]) & data_wire[114..114];
+	l1_w3_n0_mux_dataout = sel_wire[0..0] & data_wire[11..11] # !(sel_wire[0..0]) & data_wire[3..3];
+	l1_w3_n1_mux_dataout = sel_wire[0..0] & data_wire[27..27] # !(sel_wire[0..0]) & data_wire[19..19];
+	l1_w3_n2_mux_dataout = sel_wire[0..0] & data_wire[43..43] # !(sel_wire[0..0]) & data_wire[35..35];
+	l1_w3_n3_mux_dataout = sel_wire[0..0] & data_wire[59..59] # !(sel_wire[0..0]) & data_wire[51..51];
+	l1_w3_n4_mux_dataout = sel_wire[0..0] & data_wire[75..75] # !(sel_wire[0..0]) & data_wire[67..67];
+	l1_w3_n5_mux_dataout = sel_wire[0..0] & data_wire[91..91] # !(sel_wire[0..0]) & data_wire[83..83];
+	l1_w3_n6_mux_dataout = sel_wire[0..0] & data_wire[107..107] # !(sel_wire[0..0]) & data_wire[99..99];
+	l1_w3_n7_mux_dataout = sel_wire[0..0] & data_wire[123..123] # !(sel_wire[0..0]) & data_wire[115..115];
+	l1_w4_n0_mux_dataout = sel_wire[0..0] & data_wire[12..12] # !(sel_wire[0..0]) & data_wire[4..4];
+	l1_w4_n1_mux_dataout = sel_wire[0..0] & data_wire[28..28] # !(sel_wire[0..0]) & data_wire[20..20];
+	l1_w4_n2_mux_dataout = sel_wire[0..0] & data_wire[44..44] # !(sel_wire[0..0]) & data_wire[36..36];
+	l1_w4_n3_mux_dataout = sel_wire[0..0] & data_wire[60..60] # !(sel_wire[0..0]) & data_wire[52..52];
+	l1_w4_n4_mux_dataout = sel_wire[0..0] & data_wire[76..76] # !(sel_wire[0..0]) & data_wire[68..68];
+	l1_w4_n5_mux_dataout = sel_wire[0..0] & data_wire[92..92] # !(sel_wire[0..0]) & data_wire[84..84];
+	l1_w4_n6_mux_dataout = sel_wire[0..0] & data_wire[108..108] # !(sel_wire[0..0]) & data_wire[100..100];
+	l1_w4_n7_mux_dataout = sel_wire[0..0] & data_wire[124..124] # !(sel_wire[0..0]) & data_wire[116..116];
+	l1_w5_n0_mux_dataout = sel_wire[0..0] & data_wire[13..13] # !(sel_wire[0..0]) & data_wire[5..5];
+	l1_w5_n1_mux_dataout = sel_wire[0..0] & data_wire[29..29] # !(sel_wire[0..0]) & data_wire[21..21];
+	l1_w5_n2_mux_dataout = sel_wire[0..0] & data_wire[45..45] # !(sel_wire[0..0]) & data_wire[37..37];
+	l1_w5_n3_mux_dataout = sel_wire[0..0] & data_wire[61..61] # !(sel_wire[0..0]) & data_wire[53..53];
+	l1_w5_n4_mux_dataout = sel_wire[0..0] & data_wire[77..77] # !(sel_wire[0..0]) & data_wire[69..69];
+	l1_w5_n5_mux_dataout = sel_wire[0..0] & data_wire[93..93] # !(sel_wire[0..0]) & data_wire[85..85];
+	l1_w5_n6_mux_dataout = sel_wire[0..0] & data_wire[109..109] # !(sel_wire[0..0]) & data_wire[101..101];
+	l1_w5_n7_mux_dataout = sel_wire[0..0] & data_wire[125..125] # !(sel_wire[0..0]) & data_wire[117..117];
+	l1_w6_n0_mux_dataout = sel_wire[0..0] & data_wire[14..14] # !(sel_wire[0..0]) & data_wire[6..6];
+	l1_w6_n1_mux_dataout = sel_wire[0..0] & data_wire[30..30] # !(sel_wire[0..0]) & data_wire[22..22];
+	l1_w6_n2_mux_dataout = sel_wire[0..0] & data_wire[46..46] # !(sel_wire[0..0]) & data_wire[38..38];
+	l1_w6_n3_mux_dataout = sel_wire[0..0] & data_wire[62..62] # !(sel_wire[0..0]) & data_wire[54..54];
+	l1_w6_n4_mux_dataout = sel_wire[0..0] & data_wire[78..78] # !(sel_wire[0..0]) & data_wire[70..70];
+	l1_w6_n5_mux_dataout = sel_wire[0..0] & data_wire[94..94] # !(sel_wire[0..0]) & data_wire[86..86];
+	l1_w6_n6_mux_dataout = sel_wire[0..0] & data_wire[110..110] # !(sel_wire[0..0]) & data_wire[102..102];
+	l1_w6_n7_mux_dataout = sel_wire[0..0] & data_wire[126..126] # !(sel_wire[0..0]) & data_wire[118..118];
+	l1_w7_n0_mux_dataout = sel_wire[0..0] & data_wire[15..15] # !(sel_wire[0..0]) & data_wire[7..7];
+	l1_w7_n1_mux_dataout = sel_wire[0..0] & data_wire[31..31] # !(sel_wire[0..0]) & data_wire[23..23];
+	l1_w7_n2_mux_dataout = sel_wire[0..0] & data_wire[47..47] # !(sel_wire[0..0]) & data_wire[39..39];
+	l1_w7_n3_mux_dataout = sel_wire[0..0] & data_wire[63..63] # !(sel_wire[0..0]) & data_wire[55..55];
+	l1_w7_n4_mux_dataout = sel_wire[0..0] & data_wire[79..79] # !(sel_wire[0..0]) & data_wire[71..71];
+	l1_w7_n5_mux_dataout = sel_wire[0..0] & data_wire[95..95] # !(sel_wire[0..0]) & data_wire[87..87];
+	l1_w7_n6_mux_dataout = sel_wire[0..0] & data_wire[111..111] # !(sel_wire[0..0]) & data_wire[103..103];
+	l1_w7_n7_mux_dataout = sel_wire[0..0] & data_wire[127..127] # !(sel_wire[0..0]) & data_wire[119..119];
+	l2_w0_n0_mux_dataout = sel_wire[5..5] & data_wire[129..129] # !(sel_wire[5..5]) & data_wire[128..128];
+	l2_w0_n1_mux_dataout = sel_wire[5..5] & data_wire[131..131] # !(sel_wire[5..5]) & data_wire[130..130];
+	l2_w0_n2_mux_dataout = sel_wire[5..5] & data_wire[133..133] # !(sel_wire[5..5]) & data_wire[132..132];
+	l2_w0_n3_mux_dataout = sel_wire[5..5] & data_wire[135..135] # !(sel_wire[5..5]) & data_wire[134..134];
+	l2_w1_n0_mux_dataout = sel_wire[5..5] & data_wire[137..137] # !(sel_wire[5..5]) & data_wire[136..136];
+	l2_w1_n1_mux_dataout = sel_wire[5..5] & data_wire[139..139] # !(sel_wire[5..5]) & data_wire[138..138];
+	l2_w1_n2_mux_dataout = sel_wire[5..5] & data_wire[141..141] # !(sel_wire[5..5]) & data_wire[140..140];
+	l2_w1_n3_mux_dataout = sel_wire[5..5] & data_wire[143..143] # !(sel_wire[5..5]) & data_wire[142..142];
+	l2_w2_n0_mux_dataout = sel_wire[5..5] & data_wire[145..145] # !(sel_wire[5..5]) & data_wire[144..144];
+	l2_w2_n1_mux_dataout = sel_wire[5..5] & data_wire[147..147] # !(sel_wire[5..5]) & data_wire[146..146];
+	l2_w2_n2_mux_dataout = sel_wire[5..5] & data_wire[149..149] # !(sel_wire[5..5]) & data_wire[148..148];
+	l2_w2_n3_mux_dataout = sel_wire[5..5] & data_wire[151..151] # !(sel_wire[5..5]) & data_wire[150..150];
+	l2_w3_n0_mux_dataout = sel_wire[5..5] & data_wire[153..153] # !(sel_wire[5..5]) & data_wire[152..152];
+	l2_w3_n1_mux_dataout = sel_wire[5..5] & data_wire[155..155] # !(sel_wire[5..5]) & data_wire[154..154];
+	l2_w3_n2_mux_dataout = sel_wire[5..5] & data_wire[157..157] # !(sel_wire[5..5]) & data_wire[156..156];
+	l2_w3_n3_mux_dataout = sel_wire[5..5] & data_wire[159..159] # !(sel_wire[5..5]) & data_wire[158..158];
+	l2_w4_n0_mux_dataout = sel_wire[5..5] & data_wire[161..161] # !(sel_wire[5..5]) & data_wire[160..160];
+	l2_w4_n1_mux_dataout = sel_wire[5..5] & data_wire[163..163] # !(sel_wire[5..5]) & data_wire[162..162];
+	l2_w4_n2_mux_dataout = sel_wire[5..5] & data_wire[165..165] # !(sel_wire[5..5]) & data_wire[164..164];
+	l2_w4_n3_mux_dataout = sel_wire[5..5] & data_wire[167..167] # !(sel_wire[5..5]) & data_wire[166..166];
+	l2_w5_n0_mux_dataout = sel_wire[5..5] & data_wire[169..169] # !(sel_wire[5..5]) & data_wire[168..168];
+	l2_w5_n1_mux_dataout = sel_wire[5..5] & data_wire[171..171] # !(sel_wire[5..5]) & data_wire[170..170];
+	l2_w5_n2_mux_dataout = sel_wire[5..5] & data_wire[173..173] # !(sel_wire[5..5]) & data_wire[172..172];
+	l2_w5_n3_mux_dataout = sel_wire[5..5] & data_wire[175..175] # !(sel_wire[5..5]) & data_wire[174..174];
+	l2_w6_n0_mux_dataout = sel_wire[5..5] & data_wire[177..177] # !(sel_wire[5..5]) & data_wire[176..176];
+	l2_w6_n1_mux_dataout = sel_wire[5..5] & data_wire[179..179] # !(sel_wire[5..5]) & data_wire[178..178];
+	l2_w6_n2_mux_dataout = sel_wire[5..5] & data_wire[181..181] # !(sel_wire[5..5]) & data_wire[180..180];
+	l2_w6_n3_mux_dataout = sel_wire[5..5] & data_wire[183..183] # !(sel_wire[5..5]) & data_wire[182..182];
+	l2_w7_n0_mux_dataout = sel_wire[5..5] & data_wire[185..185] # !(sel_wire[5..5]) & data_wire[184..184];
+	l2_w7_n1_mux_dataout = sel_wire[5..5] & data_wire[187..187] # !(sel_wire[5..5]) & data_wire[186..186];
+	l2_w7_n2_mux_dataout = sel_wire[5..5] & data_wire[189..189] # !(sel_wire[5..5]) & data_wire[188..188];
+	l2_w7_n3_mux_dataout = sel_wire[5..5] & data_wire[191..191] # !(sel_wire[5..5]) & data_wire[190..190];
+	l3_w0_n0_mux_dataout = sel_wire[10..10] & data_wire[193..193] # !(sel_wire[10..10]) & data_wire[192..192];
+	l3_w0_n1_mux_dataout = sel_wire[10..10] & data_wire[195..195] # !(sel_wire[10..10]) & data_wire[194..194];
+	l3_w1_n0_mux_dataout = sel_wire[10..10] & data_wire[197..197] # !(sel_wire[10..10]) & data_wire[196..196];
+	l3_w1_n1_mux_dataout = sel_wire[10..10] & data_wire[199..199] # !(sel_wire[10..10]) & data_wire[198..198];
+	l3_w2_n0_mux_dataout = sel_wire[10..10] & data_wire[201..201] # !(sel_wire[10..10]) & data_wire[200..200];
+	l3_w2_n1_mux_dataout = sel_wire[10..10] & data_wire[203..203] # !(sel_wire[10..10]) & data_wire[202..202];
+	l3_w3_n0_mux_dataout = sel_wire[10..10] & data_wire[205..205] # !(sel_wire[10..10]) & data_wire[204..204];
+	l3_w3_n1_mux_dataout = sel_wire[10..10] & data_wire[207..207] # !(sel_wire[10..10]) & data_wire[206..206];
+	l3_w4_n0_mux_dataout = sel_wire[10..10] & data_wire[209..209] # !(sel_wire[10..10]) & data_wire[208..208];
+	l3_w4_n1_mux_dataout = sel_wire[10..10] & data_wire[211..211] # !(sel_wire[10..10]) & data_wire[210..210];
+	l3_w5_n0_mux_dataout = sel_wire[10..10] & data_wire[213..213] # !(sel_wire[10..10]) & data_wire[212..212];
+	l3_w5_n1_mux_dataout = sel_wire[10..10] & data_wire[215..215] # !(sel_wire[10..10]) & data_wire[214..214];
+	l3_w6_n0_mux_dataout = sel_wire[10..10] & data_wire[217..217] # !(sel_wire[10..10]) & data_wire[216..216];
+	l3_w6_n1_mux_dataout = sel_wire[10..10] & data_wire[219..219] # !(sel_wire[10..10]) & data_wire[218..218];
+	l3_w7_n0_mux_dataout = sel_wire[10..10] & data_wire[221..221] # !(sel_wire[10..10]) & data_wire[220..220];
+	l3_w7_n1_mux_dataout = sel_wire[10..10] & data_wire[223..223] # !(sel_wire[10..10]) & data_wire[222..222];
+	l4_w0_n0_mux_dataout = sel_wire[15..15] & data_wire[225..225] # !(sel_wire[15..15]) & data_wire[224..224];
+	l4_w1_n0_mux_dataout = sel_wire[15..15] & data_wire[227..227] # !(sel_wire[15..15]) & data_wire[226..226];
+	l4_w2_n0_mux_dataout = sel_wire[15..15] & data_wire[229..229] # !(sel_wire[15..15]) & data_wire[228..228];
+	l4_w3_n0_mux_dataout = sel_wire[15..15] & data_wire[231..231] # !(sel_wire[15..15]) & data_wire[230..230];
+	l4_w4_n0_mux_dataout = sel_wire[15..15] & data_wire[233..233] # !(sel_wire[15..15]) & data_wire[232..232];
+	l4_w5_n0_mux_dataout = sel_wire[15..15] & data_wire[235..235] # !(sel_wire[15..15]) & data_wire[234..234];
+	l4_w6_n0_mux_dataout = sel_wire[15..15] & data_wire[237..237] # !(sel_wire[15..15]) & data_wire[236..236];
+	l4_w7_n0_mux_dataout = sel_wire[15..15] & data_wire[239..239] # !(sel_wire[15..15]) & data_wire[238..238];
+	data_wire[] = ( l3_w7_n1_mux_dataout, l3_w7_n0_mux_dataout, l3_w6_n1_mux_dataout, l3_w6_n0_mux_dataout, l3_w5_n1_mux_dataout, l3_w5_n0_mux_dataout, l3_w4_n1_mux_dataout, l3_w4_n0_mux_dataout, l3_w3_n1_mux_dataout, l3_w3_n0_mux_dataout, l3_w2_n1_mux_dataout, l3_w2_n0_mux_dataout, l3_w1_n1_mux_dataout, l3_w1_n0_mux_dataout, l3_w0_n1_mux_dataout, l3_w0_n0_mux_dataout, l2_w7_n3_mux_dataout, l2_w7_n2_mux_dataout, l2_w7_n1_mux_dataout, l2_w7_n0_mux_dataout, l2_w6_n3_mux_dataout, l2_w6_n2_mux_dataout, l2_w6_n1_mux_dataout, l2_w6_n0_mux_dataout, l2_w5_n3_mux_dataout, l2_w5_n2_mux_dataout, l2_w5_n1_mux_dataout, l2_w5_n0_mux_dataout, l2_w4_n3_mux_dataout, l2_w4_n2_mux_dataout, l2_w4_n1_mux_dataout, l2_w4_n0_mux_dataout, l2_w3_n3_mux_dataout, l2_w3_n2_mux_dataout, l2_w3_n1_mux_dataout, l2_w3_n0_mux_dataout, l2_w2_n3_mux_dataout, l2_w2_n2_mux_dataout, l2_w2_n1_mux_dataout, l2_w2_n0_mux_dataout, l2_w1_n3_mux_dataout, l2_w1_n2_mux_dataout, l2_w1_n1_mux_dataout, l2_w1_n0_mux_dataout, l2_w0_n3_mux_dataout, l2_w0_n2_mux_dataout, l2_w0_n1_mux_dataout, l2_w0_n0_mux_dataout, l1_w7_n7_mux_dataout, l1_w7_n6_mux_dataout, l1_w7_n5_mux_dataout, l1_w7_n4_mux_dataout, l1_w7_n3_mux_dataout, l1_w7_n2_mux_dataout, l1_w7_n1_mux_dataout, l1_w7_n0_mux_dataout, l1_w6_n7_mux_dataout, l1_w6_n6_mux_dataout, l1_w6_n5_mux_dataout, l1_w6_n4_mux_dataout, l1_w6_n3_mux_dataout, l1_w6_n2_mux_dataout, l1_w6_n1_mux_dataout, l1_w6_n0_mux_dataout, l1_w5_n7_mux_dataout, l1_w5_n6_mux_dataout, l1_w5_n5_mux_dataout, l1_w5_n4_mux_dataout, l1_w5_n3_mux_dataout, l1_w5_n2_mux_dataout, l1_w5_n1_mux_dataout, l1_w5_n0_mux_dataout, l1_w4_n7_mux_dataout, l1_w4_n6_mux_dataout, l1_w4_n5_mux_dataout, l1_w4_n4_mux_dataout, l1_w4_n3_mux_dataout, l1_w4_n2_mux_dataout, l1_w4_n1_mux_dataout, l1_w4_n0_mux_dataout, l1_w3_n7_mux_dataout, l1_w3_n6_mux_dataout, l1_w3_n5_mux_dataout, l1_w3_n4_mux_dataout, l1_w3_n3_mux_dataout, l1_w3_n2_mux_dataout, l1_w3_n1_mux_dataout, l1_w3_n0_mux_dataout, l1_w2_n7_mux_dataout, l1_w2_n6_mux_dataout, l1_w2_n5_mux_dataout, l1_w2_n4_mux_dataout, l1_w2_n3_mux_dataout, l1_w2_n2_mux_dataout, l1_w2_n1_mux_dataout, l1_w2_n0_mux_dataout, l1_w1_n7_mux_dataout, l1_w1_n6_mux_dataout, l1_w1_n5_mux_dataout, l1_w1_n4_mux_dataout, l1_w1_n3_mux_dataout, l1_w1_n2_mux_dataout, l1_w1_n1_mux_dataout, l1_w1_n0_mux_dataout, l1_w0_n7_mux_dataout, l1_w0_n6_mux_dataout, l1_w0_n5_mux_dataout, l1_w0_n4_mux_dataout, l1_w0_n3_mux_dataout, l1_w0_n2_mux_dataout, l1_w0_n1_mux_dataout, l1_w0_n0_mux_dataout, data[]);
+	result[] = result_wire_ext[];
+	result_wire_ext[] = ( l4_w7_n0_mux_dataout, l4_w6_n0_mux_dataout, l4_w5_n0_mux_dataout, l4_w4_n0_mux_dataout, l4_w3_n0_mux_dataout, l4_w2_n0_mux_dataout, l4_w1_n0_mux_dataout, l4_w0_n0_mux_dataout);
+	sel_wire[] = ( sel[3..3], B"0000", sel[2..2], B"0000", sel[1..1], B"0000", sel[0..0]);
+END;
+--VALID FILE

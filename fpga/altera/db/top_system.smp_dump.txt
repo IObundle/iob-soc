@@ -1,0 +1,17 @@
+
+State Machine - |top_system|system:system|picorv32:picorv32_core|mem_wordsize
+Name mem_wordsize.00 mem_wordsize.10 mem_wordsize.01 
+mem_wordsize.00 0 0 0 
+mem_wordsize.01 1 0 1 
+mem_wordsize.10 1 1 0 
+
+State Machine - |top_system|system:system|picorv32:picorv32_core|cpu_state
+Name cpu_state.cpu_state_trap cpu_state.cpu_state_fetch cpu_state.cpu_state_ld_rs1 cpu_state.cpu_state_ld_rs2 cpu_state.cpu_state_exec cpu_state.cpu_state_shift cpu_state.cpu_state_stmem cpu_state.cpu_state_ldmem 
+cpu_state.cpu_state_trap 0 0 0 0 0 0 0 0 
+cpu_state.cpu_state_stmem 1 0 0 0 0 0 1 0 
+cpu_state.cpu_state_shift 1 0 0 0 0 1 0 0 
+cpu_state.cpu_state_exec 1 0 0 0 1 0 0 0 
+cpu_state.cpu_state_ld_rs2 1 0 0 1 0 0 0 0 
+cpu_state.cpu_state_ld_rs1 1 0 1 0 0 0 0 0 
+cpu_state.cpu_state_fetch 1 1 0 0 0 0 0 0 
+cpu_state.cpu_state_ldmem 1 0 0 0 0 0 0 1 
