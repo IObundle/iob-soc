@@ -167,7 +167,11 @@ module system (
    reg processor_resetn;
    always @* processor_resetn <= resetn_int && ~(soft_reset[0]);
    
-   picorv32 picorv32_core (
+   picorv32 #(
+	      .ENABLE_MUL(0),
+	      .ENABLE_DIV(0)
+	      )
+   picorv32_core (
 		           .clk    (clk       ),
 		           .resetn (processor_resetn),
 		           .trap   (trap      ),
