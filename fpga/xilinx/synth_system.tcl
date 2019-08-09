@@ -1,6 +1,6 @@
 read_verilog ../../rtl/include/system.vh
 read_verilog ../../submodules/iob-uart/rtl/include/iob-uart.vh
-read_verilog ../../rtl/src/top_system_test_Icarus_diff_clk.v
+read_verilog ../../rtl/src/top_system.v
 read_verilog ../../rtl/src/system.v
 read_verilog ../../submodules/iob-rv32/picorv32.v
 read_verilog ../../rtl/src/iob_native_interconnect.v 
