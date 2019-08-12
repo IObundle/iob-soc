@@ -39,7 +39,7 @@ module system (
    
 
    
-   parameter MAIN_MEM_ADDR_W = 19; // 14 = 32 bits (4) * 2**12 (4096) depth
+   parameter MAIN_MEM_ADDR_W = 14; // 14 = 32 bits (4) * 2**12 (4096) depth
 
 
    parameter BOOT_ADDR_W = 14;
