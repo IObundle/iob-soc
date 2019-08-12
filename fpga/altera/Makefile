@@ -43,8 +43,8 @@ output_files/top_system.sof: top_system.qsf top_system.sdc $(VERILOG) $(HEX) $(I
 	quartus_asm top_system
 
 clean:
-	$(RM) -r db incremental_db output_files
-	$(RM) *.summary *.rpt *.smsg *.txt *.done *.jdi *.pin *.sof *.sld *.qpf *~
+	@rm -r db incremental_db output_files
+	@rm *.summary *.rpt *.smsg *.txt *.done *.jdi *.pin *.sof *.sld *.qpf *~
 
 .PHONY: all clean all
 
