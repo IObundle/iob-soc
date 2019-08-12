@@ -44,8 +44,8 @@ output_files/top_system.sof: top_system.qsf top_system.sdc $(VERILOG) $(HEX) $(I
 
 clean:
 	@rm -r db incremental_db output_files
-	@rm *.summary *.rpt *.smsg *.txt *.done *.jdi *.pin *.sof *.sld *.qpf *~
-
+	@rm -f *.summary *.rpt *.smsg *.txt *.done *.jdi *.pin *.sof *.sld *.qpf *~
+	@rm -f *.dat
 .PHONY: all clean all
 
 .PRECIOUS: output_files/top_system.sof
