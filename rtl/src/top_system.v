@@ -26,10 +26,12 @@
 module top_system(
 `ifdef XILINX
 	          input 	   C0_SYS_CLK_clk_p, C0_SYS_CLK_clk_n, 
+		  input            reset,
+		 
 `else
-	          input      clk,
-`endif
+	          input            clk,
 	          input 	   resetn,
+`endif
 //	          output reg [6:0] led,
 	          output 	   ser_tx,
 	          input 	   ser_rx,
@@ -61,6 +63,14 @@ module top_system(
 
 
    parameter DDR_ADDR_W = 20;
+
+   //set reset according with the target fpga
+`ifdef XILINX
+   wire 			   system_reset = reset;
+`else
+   wire 			   system_reset = ~resetn;
+`endif
+   
    
    
    ////////////single ended clock
@@ -150,9 +160,9 @@ module top_system(
    system system (
         	  .clk        (clk       ),
 `ifdef DDR
-		  .reset (~resetn || ~(init_calib_complete)),
+		  .reset (system_reset || ~(init_calib_complete)),
 `else
-		  .reset      (~resetn   ),
+		  .reset      (system_reset   ),
 `endif
 		  .ser_tx     (ser_tx    ),
 		  .ser_rx     (ser_rx),
@@ -305,7 +315,7 @@ module top_system(
    bram_axi axi_bram (
 		      //AXI Global Signals
 		      .s_aclk (clk),
-		      .s_aresetn (resetn),
+		      .s_aresetn (~system_reset),
 		      //AXI                        Full/lite slave write (write side)
 		      .s_axi_awid(),
 		      .s_axi_awaddr(wire_axi_awaddr),
