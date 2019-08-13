@@ -1,3 +1,4 @@
+
 `timescale 1ns / 1ps
 
 `include "system.vh"
@@ -23,10 +24,15 @@
 
 
 module top_system(
+`ifdef XILINX
 	          input 	   C0_SYS_CLK_clk_p, C0_SYS_CLK_clk_n, 
-	          //input            clk,
-	          input 	   reset,
-	          output reg [6:0] led,
+		  input            reset,
+		 
+`else
+	          input            clk,
+	          input 	   resetn,
+`endif
+//	          output reg [6:0] led,
 	          output 	   ser_tx,
 	          input 	   ser_rx,
 `ifdef DDR
@@ -54,35 +60,43 @@ module top_system(
 		  );
 
    // parameter MAIN_MEM_ADDR_W = 14; // 14 = 32 bits (4) * 2**12 (4096) depth
-   
+
+
    parameter DDR_ADDR_W = 20;
+
+   //set reset according with the target fpga
+`ifdef XILINX
+   wire 			   system_reset = reset;
+`else
+   wire 			   system_reset = ~resetn;
+`endif
+   
    
    
    ////////////single ended clock
-  
+`ifdef XILINX
    wire 			   clk;
-   /*
-   wire 			   clk_ibufg;
+   /*       wire 		  clk_ibufg;
     
-    IBUFGDS ibufgs_inst (.I(C0_SYS_CLK_clk_p), .IB(C0_SYS_CLK_clk_n), .O(clk_ibufg));
-    //BUFG bufg_inst     (.I(clk_ibufg), .O(clk));
+    IBUFGDS ibufg_inst (.I(C0_SYS_CLK_clk_p), .IB(C0_SYS_CLK_clk_n), .O(clk_ibufg));
+    BUFG bufg_inst     (.I(clk_ibufg), .O(clk));
     */
-`ifndef DDR
- `ifdef CLK_200MHZ
-   clk_wiz_200 clk_250_to_200_MHz(
-				  .clk_in1_p(C0_SYS_CLK_clk_p),
-				  .clk_in1_n(C0_SYS_CLK_clk_n),
-				  .clk_out1(clk)
-				  );
- `else
+ `ifndef DDR
+  `ifdef CLK_200MHZ
+   clock_wizard clk_250_to_200_MHz(
+				   .clk_in1_p(C0_SYS_CLK_clk_p),
+				   .clk_in1_n(C0_SYS_CLK_clk_n),
+				   .clk_out1(clk)
+				   );
+  `else
    clock_wizard clk_250_to_100_MHz(
-				  .clk_in1_p(C0_SYS_CLK_clk_p),
-				  .clk_in1_n(C0_SYS_CLK_clk_n),
-				  .clk_out1(clk)
-				  );
- `endif                
-`endif    
- 
+				   .clk_in1_p(C0_SYS_CLK_clk_p),
+				   .clk_in1_n(C0_SYS_CLK_clk_n),
+				   .clk_out1(clk)
+				   );
+  `endif                
+ `endif    
+`endif   
    wire 			   wire_axi_awvalid;
    wire 			   wire_axi_awready;
    wire [31:0] 			   wire_axi_awaddr;
@@ -129,24 +143,26 @@ module top_system(
    reg [6:0] 			   led_reg;
    wire 			   wire_resetn_int;
    
-   always @(posedge clk) begin 
-      led_reg[0] <= (wire_resetn_int); 
-      led_reg[6] <= slave_select[1];
-      led_reg[5] <= slave_select[0];
-      led_reg[2] <= mem_sel;
-`ifdef DDR
-      led_reg[1] <= init_calib_complete;
-`endif
-      led [6:0] <= led_reg [6:0];
-   end    
-
+   // LEDs will put WNS negative, but it will still work (since delays on LEDs have no influence in the overall system, only for debug
+   /*  
+    always @(posedge clk) begin 
+    led_reg[0] <= (wire_resetn_int); 
+    led_reg[6] <= slave_select[1];
+    led_reg[5] <= slave_select[0];
+    led_reg[2] <= mem_sel;
+    `ifdef DDR
+    led_reg[1] <= init_calib_complete;
+    `endif
+    led [6:0] <= led_reg [6:0];
+    end    
+    */
    
    system system (
         	  .clk        (clk       ),
 `ifdef DDR
-		  .reset (reset || ~(init_calib_complete)),
+		  .reset (system_reset || ~(init_calib_complete)),
 `else
-		  .reset      (reset   ),
+		  .reset      (system_reset   ),
 `endif
 		  .ser_tx     (ser_tx    ),
 		  .ser_rx     (ser_rx),
@@ -223,7 +239,8 @@ module top_system(
    ////////////////////////////////////////////////////////
    ///////////////////////////////////////////////////////  
 
-`ifdef DDR
+`ifdef CACHE
+ `ifdef DDR
 
    ddr4_0 ddr4_ram (
                     .c0_sys_clk_p        (C0_SYS_CLK_clk_p),
@@ -292,13 +309,13 @@ module top_system(
                     .c0_ddr4_dqs_c       (c0_ddr4_dqs_c),
                     .c0_ddr4_dqs_t       (c0_ddr4_dqs_t)
                     );   
-   /*
-`else
+   
+ `else
    
    bram_axi axi_bram (
 		      //AXI Global Signals
 		      .s_aclk (clk),
-		      .s_aresetn (~reset),
+		      .s_aresetn (~system_reset),
 		      //AXI                        Full/lite slave write (write side)
 		      .s_axi_awid(),
 		      .s_axi_awaddr(wire_axi_awaddr),
@@ -333,5 +350,6 @@ module top_system(
 		      );
 
    
-*/`endif                                        
+ `endif //def DDR
+`endif// def CACHE                                         
 endmodule
