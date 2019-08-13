@@ -65,8 +65,3 @@ void main()
 
   *((volatile int*) MEM_JUMP) = 1;
 }
-
-
-
-
-

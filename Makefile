@@ -1,5 +1,5 @@
 TEST := test
-BOOT := boot
+BOOT := print
 SYNTH_TARGET := system
 
 all: uart-loader
