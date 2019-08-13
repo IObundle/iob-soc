@@ -168,8 +168,9 @@ module system (
    always @* processor_resetn <= resetn_int && ~(soft_reset[0]);
    
    picorv32 #(
-	      .ENABLE_MUL(0),
-	      .ENABLE_DIV(0)
+	      .ENABLE_PCPI(1),
+	      .ENABLE_MUL(1),
+	      .ENABLE_DIV(1)
 	      )
    picorv32_core (
 		           .clk    (clk       ),

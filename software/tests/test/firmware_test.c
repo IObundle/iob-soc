@@ -34,14 +34,14 @@ void main()
   uart_write_wait();
   uart_puts("Wrote all numbers, the last printed: \n");
   uart_write_wait();
-  uart_printf("%x\n", vect[N-1]);
+  uart_printf("%d\n", vect[N-1]);
   uart_write_wait();
   uart_puts("Verification of said numbers:\n");
 
   for (counter = 0; counter < N; counter ++){
     if (vect[counter] != counter){
       uart_write_wait();
-      uart_printf("fail:%x\n", counter);
+      uart_printf("fail:%d\n", counter);
     }
   }
   uart_write_wait();
