@@ -100,8 +100,12 @@ module system_tb;
 		   //.C0_SYS_CLK_clk_p (clk_p ),	 
 		   //.C0_SYS_CLK_clk_n (clk_n ),	 
 		   .clk              (clk),
+`ifdef XILINX
 		   .reset            (reset),
-		   .led              (led   ),
+`else
+		   .resetn(~reset),
+`endif
+		   //   .led              (led   ),
 		   .ser_tx           (ser_tx),
 		   .ser_rx           (ser_rx),
 		   .trap             (trap  )

@@ -1,8 +1,8 @@
 TEST := test
-BOOT := boot
+BOOT := print
 SYNTH_TARGET := system
 
-all: xilinx
+all: uart-loader
 
 help:
 	@echo ""
@@ -23,7 +23,14 @@ help:
 	@echo "  make boot.hex"
 	@echo ""
 
-xilinx: 
+uart-loader:
+	make -C software/tests/$(TEST)
+	make -C software/scripts TEST=$(TEST)
+
+prog-load:
+	make -C fpga/xilinx prog
+
+bitstream: 
 	make -C fpga/xilinx TEST=$(TEST) BOOT=$(BOOT) SYNTH_TARGET=$(SYNTH_TARGET)
 
 ncsim:
@@ -36,4 +43,5 @@ clean:
 	@make -C fpga/xilinx clean --no-print-directory
 	@make -C simulation/ncsim clean --no-print-directory
 	@make -C simulation/icarus clean --no-print-directory
+	@make -C software/scripts clean --no-print-directory
 	@echo "All clean"

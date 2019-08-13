@@ -4,13 +4,32 @@
 #include <unistd.h>  /* UNIX Standard Definitions 	   */ 
 #include <errno.h>   /* ERROR Number Definitions           */
 #include <time.h>
-#define N 9*2048 //Number of characters to send
-#define N_hex 9*4096 //Number of character in the .hex
+#define N 9*4096 /*Number of characters to send*/
+#define N_hex 9*4096 /*Number of character in the .hex*/
 #define sleep_time_us 20
 
 int main(int argc, char* argv[]){ 
   int serial_fd;/*File Descriptor*/
   FILE *file_fd;
+
+  struct termios SerialPortSettings;	/* Create the structure*/
+
+  int *file_buffer [N_hex];
+  size_t file_size;
+  
+  unsigned char *char_file_buffer;
+  /*int counter;*/
+  char write_buffer[3];	/* Buffer containing characters to write into port (3 to avoid the \0)     */	
+  char hex_buffer[2];
+  char read_buffer [N];
+  int  bytes_written; /* Value for storing the number of bytes written to the port */ 
+  int  bytes_read;
+ 
+  int i = 0;  	
+
+  clock_t begin;
+  clock_t end;
+  double time_spent;
 
   if(argc<2)
     {
@@ -19,7 +38,7 @@ int main(int argc, char* argv[]){
     }
 
 
-  //////////////////////// Taken from: https://github.com/xanthium-enterprises/Serial-Port-Programming-on-Linux/blob/master/USB2SERIAL_Write/Transmitter%20(PC%20Side)/SerialPort_write.c //////////////////////
+  /* Taken from: https://github.com/xanthium-enterprises/Serial-Port-Programming-on-Linux/blob/master/USB2SERIAL_Write/Transmitter%20(PC%20Side)/SerialPort_write.c */
      
   printf("\n +----------------------------------+");
   printf("\n |        Serial Port Write         |");
@@ -41,7 +60,6 @@ int main(int argc, char* argv[]){
 	
   /*---------- Setting the Attributes of the serial port using termios structure --------- */
 
-  struct termios SerialPortSettings;	/* Create the structure                          */
 
   tcgetattr(serial_fd, &SerialPortSettings);	/* Get the current attributes of the Serial port */
 
@@ -68,7 +86,6 @@ int main(int argc, char* argv[]){
     printf("\n  BaudRate = 115200 \n  StopBits = 1 \n  Parity   = none");
 	
   /*------------------------------- Write data to serial port -----------------------------*/
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
 
   file_fd = fopen(argv[1], "r");
 
@@ -77,49 +94,55 @@ int main(int argc, char* argv[]){
     return(0);
   }
 
-  int * file_buffer [N_hex];
-
-
-  size_t file_size;
 
   file_size = fread(file_buffer, sizeof(char), sizeof(file_buffer), file_fd);
- 
+  if (file_size == 0)
+    printf("Warning: File has no values to read\n");
+
+  char_file_buffer = (unsigned char*) file_buffer;
+
   fclose(file_fd);
 
-  //printf("\nPrintng as string:\n%s\n", file_buffer);
-  
-
-  unsigned char *char_file_buffer = (unsigned char*) file_buffer;
-  int counter;
-
+  /*printf("\nPrintng as string:\n%s\n", file_buffer);*/
   /*printf("Printing as unsigned char*:\n");
-  for (counter=0; counter < N; counter++) printf("%c ", char_file_buffer[counter]);
+    for (counter=0; counter < N; counter++) printf("%c ", char_file_buffer[counter]);
   */
-  char write_buffer[2];	/* Buffer containing characters to write into port (2 to avoid the \0)     */	char read_buffer [N];
-  int  bytes_written, i = 0;  	/* Value for storing the number of bytes written to the port */ 
- 
+   
   printf("\nStarting File Transfer...\n");
-  clock_t begin = clock();
+  begin = clock();
 
   for (i = 0; i <N ; i++){
     if (char_file_buffer[i] == 10){/*printf("paragrafo\n");*/}else{
-      // printf ("\nsending:%c\n", char_file_buffer[i]);
-      write_buffer[0] = (char) char_file_buffer[i];
-      bytes_written = write(serial_fd, write_buffer, 1);/* use write() to send data to port, with the size of 1 byte */
+      /* printf ("\nsending:%c\n", char_file_buffer[i]);*/
+      write_buffer[0] = (char) char_file_buffer[i++];
+      write_buffer[1] = (char) char_file_buffer[i];
+      write_buffer[2] = 0;
+      
+      sscanf(write_buffer, "%2x", (unsigned int *) hex_buffer);
+      bytes_written = write(serial_fd, hex_buffer, 1);/* use write() to send data to port, with the size of 1 byte */
+      if (bytes_written == -1)
+	printf("Failed to send data\n");
       /* "serial_fd" - file descriptor pointing to the opened serial port */
       /*	"write_buffer" - address of the buffer containing data         */
       /* "sizeof(write_buffer)" - No of bytes to write                  */	
-      // printf("\n  %s written to ttyUSB0",write_buffer);
-      //printf("\n  %d Bytes written to ttyUSB0", bytes_written);
-      //printf("\n +----------------------------------+\n\n");
+      /*printf("\n  %02x written to ttyUSB0",0x000000ff & (unsigned int) hex_buffer[0]);*/
+      /*printf("\n  %d Bytes written to ttyUSB0", bytes_written);*/
+      /*printf("\n +----------------------------------+\n\n");*/
       usleep(sleep_time_us);
     }
 
   }
-  clock_t end = clock ();
-  double time_spent = ((double) (end - begin)) / CLOCKS_PER_SEC;
+  end = clock ();
+  time_spent = ((double) (end - begin)) / CLOCKS_PER_SEC;
   printf ("\nUART transfer complete.\n");
   printf("The file transfer took %f seconds.\n", time_spent);
+
+  while(1){
+    bytes_read = read(serial_fd, read_buffer, sizeof(char));
+    if(bytes_read > 0)
+      putchar(read_buffer[0]);
+  }
+
   close(serial_fd);/* Close the Serial port */
   return(0);
 }

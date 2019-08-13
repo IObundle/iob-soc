@@ -1,3 +1,4 @@
+`define XILINX
 //`define CACHE
 //`define DDR //Using the DDR requires CACHE
 //`define CLK_200MHZ //Only when not using DDR, comment this to usea 100 MHz clock
