@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-`include "iob_uart.vh"
+`include "iob-uart.vh"
 
 module iob_uart_tb;
 
@@ -10,33 +10,39 @@ module iob_uart_tb;
    reg 			rst;
    reg 			clk;
 
-   reg [`ETH_ADDR_W-1:0] addr;
-   reg 			 sel;
-   reg 			 we;
-   reg [31:0]            data_in;
-   wire [31:0]           data_out;
+   reg [`UART_ADDR_W-1:0] addr;
+   reg                    sel;
+   reg                    write;
+   reg                    read;
+   reg [31:0]             data_in;
+   wire [31:0]            data_out;
 
-   reg [31:0]            cpu_reg;
-
+   reg [31:0]             cpu_reg;
 
  
    //iterator
    integer               i;
 
- 
+   //serial data
+   wire                  serial_data;
+   
+   
    
    // Instantiate the Unit Under Test (UUT)
 
    iob_uart uut (
-		.clk			(clk),
-		.rst			(rst),
+		 .clk			(clk),
+		 .rst			(rst),
+                 
+		 .sel			(sel),
+		 .write			(write),
+		 .read			(read),
+		 .address		(addr),
+		 .data_in		(data_in),
+		 .data_out		(data_out),
 
-		.sel			(sel),
-		.we			(we),
-		.addr			(addr),
-		.data_in		(data_in),
-		.data_out		(data_out)
-
+                 .ser_tx                (serial_data),
+                 .ser_rx                (serial_data)
 		);
 
    initial begin
@@ -48,52 +54,57 @@ module iob_uart_tb;
       
       rst = 1;
       clk = 1;
-      RX_CLK = 1;
-      we = 0;
+      write = 0;
+      read = 0;
       sel = 0;
 
       // deassert reset
       #100 @(posedge clk) rst = 0;
-/*
-      // wait until tx ready
-      cpu_read(`ETH_STATUS, cpu_reg);
-      while(!cpu_reg[0])
-        cpu_read(`ETH_STATUS, cpu_reg);
-      $display("TX is ready");
+
+      // check if tx is ready
+      cpu_read(`UART_WRITE_WAIT, cpu_reg);
+      if (cpu_reg) begin
+         $display("ERROR: TX is not ready initially");
+         $finish;
+      end
+      // check if rx is not ready
+      cpu_read(`UART_READ_VALID, cpu_reg);
+      if(cpu_reg) begin
+         $display("ERROR: RX is ready initially");
+         $finish;
+      end
       
-      //setup number of bytes of transaction
-      cpu_write(`ETH_TX_NBYTES, `ETH_SIZE);
-      cpu_write(`ETH_RX_NBYTES, `ETH_SIZE);
-
       // write data to send
-      for(i=0; i < (`ETH_SIZE+30); i= i+1)
-	cpu_write(`ETH_DATA + i, data[i]);
+      for(i=0; i < 256; i= i+1) begin
 
-      // start sending
-      cpu_write(`ETH_CONTROL, `ETH_SEND);
+         //write word to send
+	 cpu_write(`UART_DATA, i);
 
-      // wait until rx ready
-      cpu_read (`ETH_STATUS, cpu_reg);
-      while(!cpu_reg[1])
-        cpu_read (`ETH_STATUS, cpu_reg);
-      $display("RX is ready");
+         //wait until tx is ready again 
+         cpu_read(`UART_WRITE_WAIT, cpu_reg);
+         while(!cpu_reg)
+           cpu_read(`UART_WRITE_WAIT, cpu_reg);
 
-       // read and check received data
-      for(i=0; i < (22+`ETH_SIZE); i= i+1) begin
-	 cpu_read (`ETH_DATA + i, cpu_reg);
-	 if (cpu_reg[7:0] != data[i+14]) begin
-	    $display("Test failed on vector %d: %x / %x", i, cpu_reg[7:0], data[i+14]);
+         // check if rx is ready
+         cpu_read(`UART_READ_VALID, cpu_reg);
+         if(!cpu_reg) begin
+            $display("ERROR: RX is not ready after word transmitted");
+            $finish;
+         end
+      
+         // read and check received data
+	 cpu_read (`UART_DATA, cpu_reg);
+	 if ( cpu_reg != i ) begin
+	    $display("Test failed on vector %d: %x / %x", i, cpu_reg, i);
 	    $finish;
 	 end
+
       end
 
-      // send receive command
-      cpu_write(`ETH_CONTROL, `ETH_RCV);
-  */    
-      $display("Test completed.");
+      $display("Test completed successfully");
       $finish;
 
-   end // initial begin
+   end 
 
    //
    // CLOCKS
@@ -108,26 +119,26 @@ module iob_uart_tb;
 
    // 1-cycle write
    task cpu_write;
-      input [`ETH_ADDR_W-1:0]  cpu_address;
+      input [`UART_ADDR_W-1:0]  cpu_address;
       input [31:0]  cpu_data;
 
       #1 addr = cpu_address;
       sel = 1;
-      we = 1;
+      write = 1;
       data_in = cpu_data;
-      @ (posedge clk) #1 we = 0;
+      @ (posedge clk) #1 write = 0;
       sel = 0;
    endtask
 
    // 2-cycle read
    task cpu_read;
-      input [`ETH_ADDR_W-1:0]   cpu_address;
+      input [`UART_ADDR_W-1:0]   cpu_address;
       output [31:0] read_reg;
 
       #1 addr = cpu_address;
-      sel = 1;
+      sel = 1; read = 1;
       @ (posedge clk) #1 read_reg = data_out;
-      @ (posedge clk) #1 sel = 0;
+      @ (posedge clk) #1 sel = 0; read = 0;
    endtask
 
 endmodule
