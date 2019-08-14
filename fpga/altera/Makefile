@@ -1,6 +1,6 @@
 # GT hardware
 
-BOOT := boot
+BOOT := print
 BOOTDIR := ../../software/bootloader/$(BOOT)
 TEST := test
 TESTDIR := ../../software/tests/$(TEST)
@@ -34,6 +34,8 @@ firmware.hex:
 	cp $(TESTDIR)/firmware_2.hex ./firmware_2.dat
 	cp $(TESTDIR)/firmware_3.hex ./firmware_3.dat
 
+ld-hw:
+	quartus_pgm -m jtag -c l -o "p;output_files/top_system.sof"
 
 output_files/top_system.sof: top_system.qsf top_system.sdc $(VERILOG) $(HEX) $(INCLUDE) firmware.hex
 	quartus_map top_system.qsf 
