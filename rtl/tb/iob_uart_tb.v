@@ -73,7 +73,13 @@ module iob_uart_tb;
          $display("ERROR: RX is ready initially");
          $finish;
       end
-      
+   
+      //setup DIVVAL
+      do
+	cpu_read(`UART_WRITE_WAIT, cpu_reg);
+      while(cpu_reg);
+      cpu_write(`UART_DIV, 32'd2); //set DIVVAL to 2
+   
       // write data to send
       for(i=0; i < 256; i= i+1) begin
 
@@ -82,7 +88,7 @@ module iob_uart_tb;
 
          //wait until tx is ready again 
          cpu_read(`UART_WRITE_WAIT, cpu_reg);
-         while(!cpu_reg)
+         while(cpu_reg)
            cpu_read(`UART_WRITE_WAIT, cpu_reg);
 
          // check if rx is ready
