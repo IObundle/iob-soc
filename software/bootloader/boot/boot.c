@@ -56,9 +56,9 @@ void main()
   uart_puts("\nProgram copy completed... Printing final copy:\n");
   for (i = 0 ; i < PROG_SIZE; i++){
     uart_write_wait();
-    uart_printf("%d: ", i);//printing int instead of byte address
+    uart_printf("%x: ", i);//printing int instead of byte address
     uart_write_wait();
-    uart_printf("%d\n", MAIN_MEM[i]);
+    uart_printf("%x\n", MAIN_MEM[i]);
   }
   uart_write_wait();
   uart_puts("\nPreparing to start the Main Memory program...\n");    
