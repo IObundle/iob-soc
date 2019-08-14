@@ -62,7 +62,7 @@ set_global_assignment -name VERILOG_FILE xalt_1p_mem_no_initialization.v
 set_global_assignment -name VERILOG_FILE xalt_1p_mem_no_initialization_with_reset.v
 set_global_assignment -name VERILOG_FILE boot_memory.v
 set_global_assignment -name VERILOG_FILE picorv32.v
-set_global_assignment -name VERILOG_FILE simpleuart.v
+set_global_assignment -name VERILOG_FILE iob-uart.v
 set_global_assignment -name SDC_FILE top_system.sdc
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
