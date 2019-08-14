@@ -1,6 +1,6 @@
 # GT hardware
 
-BOOT := print
+BOOT := boot
 BOOTDIR := ../../software/bootloader/$(BOOT)
 TEST := test
 TESTDIR := ../../software/tests/$(TEST)
