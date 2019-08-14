@@ -168,8 +168,9 @@ module system (
    always @* processor_resetn <= resetn_int && ~(soft_reset[0]);
    
    picorv32 #(
-	      .ENABLE_MUL(0),
-	      .ENABLE_DIV(0)
+	      .ENABLE_PCPI(1),
+	      .ENABLE_MUL(1),
+	      .ENABLE_DIV(1)
 	      )
    picorv32_core (
 		           .clk    (clk       ),
@@ -246,23 +247,27 @@ module system (
 `ifndef PICOSOC_UART
    
    ///////////////////////////////////// 
-   ////// Simple UART /////////////////
+   ////// iob UART /////////////////
    ///////////////////////////////////
-   
-   simpleuart simpleuart (
-   			  //serial i/f
-   			  .ser_tx      (ser_tx          ),
-   			  .ser_rx      (ser_rx          ),
-   			  //data bus
-   			  .clk         (clk             ),
-   			  .resetn      (resetn_int      ),
-   			  .address     (wire_s_addr_2[4:2]),
-   			  .sel         (wire_s_valid_2    ),	
-   			  .we          (|wire_s_wstrb_2   ),
-   			  .dat_di      (wire_s_wdata_2    ),
-   			  .dat_do      (wire_s_rdata_2    )
-   	                  );
-   
+
+   iob_uart simpleuart(
+		       //cpu interface
+		       .clk     (clk               ),
+		       .rst     (~resetn_int       ),
+
+		       .address (wire_s_addr_2[4:2]),
+		       .sel     (wire_s_valid_2    ),
+		       .read    (~(|wire_s_wstrb_2)),
+		       .write   (|wire_s_wstrb_2   ),
+
+		       .data_in (wire_s_wdata_2    ),
+		       .data_out(wire_s_rdata_2    ),
+
+		       //serial i/f
+		       .ser_tx  (ser_tx            ),
+		       .ser_rx  (ser_rx            ) 
+		       );
+
    reg 	      uart_ready;
    assign wire_s_ready_2 = uart_ready;
    
