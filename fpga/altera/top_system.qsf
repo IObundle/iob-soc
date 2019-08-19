@@ -53,7 +53,7 @@ set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to *
 set_global_assignment -name LAST_QUARTUS_VERSION "18.0.0 Standard Edition"
 set_global_assignment -name VERILOG_FILE top_system.v
 set_global_assignment -name VERILOG_FILE system.v
-set_global_assignment -name VERILOG_FILE iob_native_interconnect.v
+set_global_assignment -name VERILOG_FILE iob_generic_interconnect.v
 set_global_assignment -name VERILOG_FILE iob_native_memory_mapped_decoder.v
 set_global_assignment -name VERILOG_FILE clock_wizard.v
 set_global_assignment -name VERILOG_FILE main_memory.v
