@@ -41,11 +41,11 @@ module main_memory #(
    xalt_1p_mem  #(
                   .MEM_INIT_FILE({"firmware", "_0", ".dat"}),
                   .DATA_W(8),
-                  .ADDR_W(ADDR_W))
+                  .ADDR_W(ADDR_W-2))
    main_mem_byte0
      (
       .data_a   (main_mem_write_data[7:0]),
-      .addr_a   (main_mem_addr[ADDR_W-1:0]),
+      .addr_a   (main_mem_addr[ADDR_W-1:2]),
       .we_a     (main_mem_en[0]),
       .q_a      (main_mem_read_data[7:0]),
       .clk      (clk)
@@ -55,11 +55,11 @@ module main_memory #(
    xalt_1p_mem  #(
                   .MEM_INIT_FILE({"firmware", "_1", ".dat"}),
                   .DATA_W(8),
-                  .ADDR_W(ADDR_W))
+                  .ADDR_W(ADDR_W-2))
    main_mem_byte1
      (
       .data_a   (main_mem_write_data[15:8]),
-      .addr_a   (main_mem_addr[ADDR_W-1:0]),
+      .addr_a   (main_mem_addr[ADDR_W-1:2]),
       .we_a     (main_mem_en[1]),
       .q_a      (main_mem_read_data[15:8]),
       .clk      (clk)
@@ -69,11 +69,11 @@ module main_memory #(
    xalt_1p_mem  #(
                   .MEM_INIT_FILE({"firmware", "_2", ".dat"}),
                   .DATA_W(8),
-                  .ADDR_W(ADDR_W))
+                  .ADDR_W(ADDR_W-2))
    main_mem_byte2
      (
       .data_a   (main_mem_write_data[23:16]),
-      .addr_a   (main_mem_addr[ADDR_W-1:0]),
+      .addr_a   (main_mem_addr[ADDR_W-1:2]),
       .we_a     (main_mem_en[2]),
       .q_a      (main_mem_read_data[23:16]),
       .clk      (clk)
@@ -83,11 +83,11 @@ module main_memory #(
    xalt_1p_mem  #(
                   .MEM_INIT_FILE({"firmware", "_3", ".dat"}),
                   .DATA_W(8),
-                  .ADDR_W(ADDR_W))
+                  .ADDR_W(ADDR_W-2))
    main_mem_byte3
      (
       .data_a   (main_mem_write_data[31:24]),
-      .addr_a   (main_mem_addr[ADDR_W-1:0]),
+      .addr_a   (main_mem_addr[ADDR_W-1:2]),
       .we_a     (main_mem_en[3]),
       .q_a      (main_mem_read_data[31:24]),
       .clk      (clk)
