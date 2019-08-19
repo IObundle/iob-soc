@@ -5,7 +5,7 @@ XELAB = $(VIVADO_BASE)/bin/xelab
 GLBL = $(VIVADO_BASE)/data/verilog/src/glbl.v
 
 TEST := test
-BOOT := print
+BOOT := boot
 SYNTH_TARGET := system
 PROG_TARGET := $(SYNTH_TARGET)
 
@@ -26,7 +26,7 @@ synth_%: boot.hex #firmware.hex boot.hex
 	-grep -B4 -A10 'Slice LUTs' $@.log
 	-grep -B1 -A9 ^Slack $@.log && echo
 
-prog: prog_$(PROG_TARGET)
+ld-hw: prog_$(PROG_TARGET)
 
 prog_%:
 	$(VIVADO) -nojournal -log $@.log -mode batch -source $@.tcl

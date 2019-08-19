@@ -10,7 +10,7 @@
 
 #define UART_CLK_FREQ 100000000 // 100 MHz
 #define UART_BAUD_RATE 115200 // can also use 115200
-#define UART_ADDRESS 0x70000000
+#define UART_ADDRESS 0x80000000
 #define Address_write 0x9004 //address where the writting starts
 #define N 1000
 volatile int * vect;

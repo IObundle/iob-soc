@@ -168,8 +168,9 @@ module system (
    always @* processor_resetn <= resetn_int && ~(soft_reset[0]);
    
    picorv32 #(
-	      .ENABLE_MUL(0),
-	      .ENABLE_DIV(0)
+	      .ENABLE_PCPI(1),
+	      .ENABLE_MUL(1),
+	      .ENABLE_DIV(1)
 	      )
    picorv32_core (
 		           .clk    (clk       ),
@@ -189,80 +190,59 @@ module system (
    wire [1:0] slave_sel;
    assign s_sel = slave_sel;
    //  assign sys_mem_sel = mem_sel;
-
    
-   iob_native_interconnect native_interconnect (
-						.slave_select (slave_sel),
-						.mem_select   (mem_sel),
-						.clk          (clk),				
-						/////////////////////////////////////
-						//// master interface //////////////
-						///////////////////////////////////
-						.m_addr  (wire_m_addr),
-						.m_wdata (wire_m_wdata),	       
-						.m_wstrb (wire_m_wstrb),
-						.m_rdata (wire_m_rdata),
-						.m_valid (wire_m_valid),
-						.m_ready (wire_m_ready),
-					        ///////////////////////////////////
-						//// slave 0  interface //////////
-						/////////////////////////////////
-						.s_addr_0  (wire_s_addr_0),
-						.s_wdata_0 (wire_s_wdata_0),	       
-						.s_wstrb_0 (wire_s_wstrb_0),
-						.s_rdata_0 (wire_s_rdata_0),
-						.s_valid_0 (wire_s_valid_0),
-						.s_ready_0 (wire_s_ready_0),
-						///////////////////////////////////
-						//// slave 1 interface ///////////
-						/////////////////////////////////
-						.s_addr_1  (wire_s_addr_1),
-						.s_wdata_1 (wire_s_wdata_1),	       
-						.s_wstrb_1 (wire_s_wstrb_1),
-						.s_rdata_1 (wire_s_rdata_1),
-						.s_valid_1 (wire_s_valid_1),
-						.s_ready_1 (wire_s_ready_1),
-						///////////////////////////////////
-						//// slave 2 interface ///////////
-						/////////////////////////////////
-						.s_addr_2  (wire_s_addr_2),
-						.s_wdata_2 (wire_s_wdata_2),	       
-						.s_wstrb_2 (wire_s_wstrb_2),
-						.s_rdata_2 (wire_s_rdata_2),
-						.s_valid_2 (wire_s_valid_2),
-						.s_ready_2 (wire_s_ready_2),
-						///////////////////////////////////
-						//// slave 3 interface ///////////
-						/////////////////////////////////
-						.s_addr_3  (wire_s_addr_3),
-						.s_wdata_3 (wire_s_wdata_3),	       
-						.s_wstrb_3 (wire_s_wstrb_3),
-						.s_rdata_3 (wire_s_rdata_3),
-						.s_valid_3 (wire_s_valid_3),
-						.s_ready_3 (wire_s_ready_3)
-						);
+   
+   iob_generic_interconnect generic_interconnect (
+						  .slave_select (slave_sel),
+						  .mem_select   (mem_sel),
+						  .clk          (clk),
+						  .sel          (1'b1),
+						  
+						  /////////////////////////////////////
+						  //// master interface //////////////
+						  ///////////////////////////////////
+						  .m_addr  (wire_m_addr),
+						  .m_wdata (wire_m_wdata),	       
+						  .m_wstrb (wire_m_wstrb),
+						  .m_rdata (wire_m_rdata),
+						  .m_valid (wire_m_valid),
+						  .m_ready (wire_m_ready),
+					          ///////////////////////////////////
+						  //// N slaves  interface /////////
+						  /////////////////////////////////
+						  .s_addr  ({wire_s_addr_3,wire_s_addr_2,wire_s_addr_1,wire_s_addr_0}),
+						  .s_wdata ({wire_s_wdata_3, wire_s_wdata_2, wire_s_wdata_1, wire_s_wdata_0}),	       
+						  .s_wstrb ({wire_s_wstrb_3, wire_s_wstrb_2, wire_s_wstrb_1, wire_s_wstrb_0}),
+						  .s_rdata ({wire_s_rdata_3, wire_s_rdata_2, wire_s_rdata_1, wire_s_rdata_0}),
+						  .s_valid ({wire_s_valid_3, wire_s_valid_2,wire_s_valid_1, wire_s_valid_0}),
+						  .s_ready ({wire_s_ready_3, wire_s_ready_2, wire_s_ready_1, wire_s_ready_0})
+						  );
 
 
 `ifndef PICOSOC_UART
    
    ///////////////////////////////////// 
-   ////// Simple UART /////////////////
+   ////// iob UART /////////////////
    ///////////////////////////////////
-   
-   simpleuart simpleuart (
-   			  //serial i/f
-   			  .ser_tx      (ser_tx          ),
-   			  .ser_rx      (ser_rx          ),
-   			  //data bus
-   			  .clk         (clk             ),
-   			  .resetn      (resetn_int      ),
-   			  .address     (wire_s_addr_2[4:2]),
-   			  .sel         (wire_s_valid_2    ),	
-   			  .we          (|wire_s_wstrb_2   ),
-   			  .dat_di      (wire_s_wdata_2    ),
-   			  .dat_do      (wire_s_rdata_2    )
-   	                  );
-   
+
+   iob_uart simpleuart(
+		       //cpu interface
+		       .clk     (clk               ),
+		       .rst     (~resetn_int       ),
+
+		       .address (wire_s_addr_2[4:2]),
+		       .sel     (wire_s_valid_2    ),
+		       .read    (~(|wire_s_wstrb_2)),
+		       .write   (|wire_s_wstrb_2   ),
+
+		       .data_in (wire_s_wdata_2    ),
+		       .data_out(wire_s_rdata_2    ),
+
+		       //serial i/f
+		       .ser_tx  (ser_tx            ),
+		       .ser_rx  (ser_rx            ) 
+		       );
+
    reg 	      uart_ready;
    assign wire_s_ready_2 = uart_ready;
    
