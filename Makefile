@@ -1,5 +1,5 @@
 TEST := test
-BOOT := print
+BOOT := boot
 SYNTH_TARGET := system
 
 all: uart-loader
@@ -27,8 +27,8 @@ uart-loader:
 	make -C software/tests/$(TEST)
 	make -C software/scripts TEST=$(TEST)
 
-prog-load:
-	make -C fpga/xilinx prog
+ld-hw:
+	make -C fpga/xilinx ld-hw
 
 bitstream: 
 	make -C fpga/xilinx TEST=$(TEST) BOOT=$(BOOT) SYNTH_TARGET=$(SYNTH_TARGET)
@@ -44,4 +44,6 @@ clean:
 	@make -C simulation/ncsim clean --no-print-directory
 	@make -C simulation/icarus clean --no-print-directory
 	@make -C software/scripts clean --no-print-directory
+	@make -C fpga/altera clean --no-print-directory
+	@make -C software/bootloader/$(BOOT) clean --no-print-directory
 	@echo "All clean"

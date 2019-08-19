@@ -3,7 +3,7 @@
 	url = git@bitbucket.org:jjts/iob-rv32.git
 [submodule "submodules/iob-uart"]
 	path = submodules/iob-uart
-	url = git@bitbucket.org:jjts/iob-uart.git
+	url = git@bitbucket.org:pedrompt97/iob-uart.git
 [submodule "submodules/iob-versat"]
 	path = submodules/iob-versat
 	url = git@bitbucket.org:jjts/versat.git
