@@ -11,7 +11,7 @@ INCLUDE := $(shell find $(INCLUDE_DIR) -name '*.vh')
 SRC := $(shell find $(RTL_DIR) -name '*.v') $(shell find $(TB_DIR) -name '*.v')
 
 a.out:  $(SRC) $(INCLUDE)
-	$(VC)  $(CFLAGS) $(VFLAGS) $(SRC)
+	$(VC)  $(CFLAGS) $(VFLAGS) $(SRC) -DVCD
 	./$@
 
 clean: 
