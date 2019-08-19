@@ -35,7 +35,7 @@ void main()
   //uart_wait();  
  
   //uart_puts("C\n");
-  uart_write_wait();
+  //uart_write_wait();
   uart_puts("Copying Program to Main Memory...\n");
   //uart_wait(); 
   //print ("Copying Program to Main Memory...\n");
@@ -46,7 +46,7 @@ void main()
   };
 
   //  uart_puts("S\n");
-  uart_write_wait();
+  //uart_write_wait();
   uart_puts("Program copy completed. Starting to read from Main Memory...\n");
   //uart_wait(); 
   //print("Program copy completed. Starting to read from Main Memory...\n");

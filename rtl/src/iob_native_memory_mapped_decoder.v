@@ -8,14 +8,14 @@ module iob_native_memory_mapped_decoder #(
    (
     input [(ADDR_W-1):0] 	     mem_addr,
     input 			     mem_sel,
-    output reg [(N_SLAVES-1):0]      s_sel_wr
-    output reg [(SLAVES_ADDR_W-1):0] s_sel_r;
+    output reg [(N_SLAVES-1):0]      s_sel_wr,
+    output reg [(SLAVES_ADDR_W-1):0] s_sel_r
     );
 
    //Address override (boot to main memory)
    wire [SLAVES_ADDR_W-1:0] 	     sel_addr;
 
-   assign sel_addr = (mem_addr[(ADDR_W-1) -: SLAVES_ADDR_W] == SLAVES_ADDR_W'`BOOT_MEM_BASE && mem_sel == 1'b1) ? `MAIN_MEM_BASE : mem_addr[(ADDR_W-1) -: SLAVES_ADDR_W];
+   assign sel_addr = (mem_addr[(ADDR_W-1) -: SLAVES_ADDR_W] == `BOOT_MEM_BASE && mem_sel == 1'b1) ? `MAIN_MEM_BASE : mem_addr[(ADDR_W-1) -: SLAVES_ADDR_W];
    
    
    // Binary to one-hot converter
@@ -23,12 +23,12 @@ module iob_native_memory_mapped_decoder #(
    reg [N_SLAVES-1:0] 		     onehot;
 
    assign bin = sel_addr;
-   
-   genvar 			     i;
-   generate
+
+   always @* begin
+      integer 			     i;
       for(i=0; i<N_SLAVES; i=i+1)
-	onehot[i] = (SLAVES_ADDR_W'i==bin)? 1'b1:1'b0;
-   endgenerate
+	onehot[i] = (i==bin)? 1'b1:1'b0;
+   end
    
    // Outputs assignment
    always @* begin
