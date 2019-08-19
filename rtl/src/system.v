@@ -190,58 +190,33 @@ module system (
    wire [1:0] slave_sel;
    assign s_sel = slave_sel;
    //  assign sys_mem_sel = mem_sel;
-
    
-   iob_native_interconnect native_interconnect (
-						.slave_select (slave_sel),
-						.mem_select   (mem_sel),
-						.clk          (clk),				
-						/////////////////////////////////////
-						//// master interface //////////////
-						///////////////////////////////////
-						.m_addr  (wire_m_addr),
-						.m_wdata (wire_m_wdata),	       
-						.m_wstrb (wire_m_wstrb),
-						.m_rdata (wire_m_rdata),
-						.m_valid (wire_m_valid),
-						.m_ready (wire_m_ready),
-					        ///////////////////////////////////
-						//// slave 0  interface //////////
-						/////////////////////////////////
-						.s_addr_0  (wire_s_addr_0),
-						.s_wdata_0 (wire_s_wdata_0),	       
-						.s_wstrb_0 (wire_s_wstrb_0),
-						.s_rdata_0 (wire_s_rdata_0),
-						.s_valid_0 (wire_s_valid_0),
-						.s_ready_0 (wire_s_ready_0),
-						///////////////////////////////////
-						//// slave 1 interface ///////////
-						/////////////////////////////////
-						.s_addr_1  (wire_s_addr_1),
-						.s_wdata_1 (wire_s_wdata_1),	       
-						.s_wstrb_1 (wire_s_wstrb_1),
-						.s_rdata_1 (wire_s_rdata_1),
-						.s_valid_1 (wire_s_valid_1),
-						.s_ready_1 (wire_s_ready_1),
-						///////////////////////////////////
-						//// slave 2 interface ///////////
-						/////////////////////////////////
-						.s_addr_2  (wire_s_addr_2),
-						.s_wdata_2 (wire_s_wdata_2),	       
-						.s_wstrb_2 (wire_s_wstrb_2),
-						.s_rdata_2 (wire_s_rdata_2),
-						.s_valid_2 (wire_s_valid_2),
-						.s_ready_2 (wire_s_ready_2),
-						///////////////////////////////////
-						//// slave 3 interface ///////////
-						/////////////////////////////////
-						.s_addr_3  (wire_s_addr_3),
-						.s_wdata_3 (wire_s_wdata_3),	       
-						.s_wstrb_3 (wire_s_wstrb_3),
-						.s_rdata_3 (wire_s_rdata_3),
-						.s_valid_3 (wire_s_valid_3),
-						.s_ready_3 (wire_s_ready_3)
-						);
+   
+   iob_generic_interconnect generic_interconnect (
+						  .slave_select (slave_sel),
+						  .mem_select   (mem_sel),
+						  .clk          (clk),
+						  .sel          (1'b1),
+						  
+						  /////////////////////////////////////
+						  //// master interface //////////////
+						  ///////////////////////////////////
+						  .m_addr  (wire_m_addr),
+						  .m_wdata (wire_m_wdata),	       
+						  .m_wstrb (wire_m_wstrb),
+						  .m_rdata (wire_m_rdata),
+						  .m_valid (wire_m_valid),
+						  .m_ready (wire_m_ready),
+					          ///////////////////////////////////
+						  //// N slaves  interface /////////
+						  /////////////////////////////////
+						  .s_addr  ({wire_s_addr_3,wire_s_addr_2,wire_s_addr_1,wire_s_addr_0}),
+						  .s_wdata ({wire_s_wdata_3, wire_s_wdata_2, wire_s_wdata_1, wire_s_wdata_0}),	       
+						  .s_wstrb ({wire_s_wstrb_3, wire_s_wstrb_2, wire_s_wstrb_1, wire_s_wstrb_0}),
+						  .s_rdata ({wire_s_rdata_3, wire_s_rdata_2, wire_s_rdata_1, wire_s_rdata_0}),
+						  .s_valid ({wire_s_valid_3, wire_s_valid_2,wire_s_valid_1, wire_s_valid_0}),
+						  .s_ready ({wire_s_ready_3, wire_s_ready_2, wire_s_ready_1, wire_s_ready_0})
+						  );
 
 
 `ifndef PICOSOC_UART

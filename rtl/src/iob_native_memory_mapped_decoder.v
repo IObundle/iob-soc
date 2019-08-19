@@ -1,4 +1,4 @@
-`include "size_def.vh"
+`include "system.vh"
 
 module iob_native_memory_mapped_decoder #(
 					  parameter SLAVES_ADDR_W=2, //log2(N_SLAVES)
