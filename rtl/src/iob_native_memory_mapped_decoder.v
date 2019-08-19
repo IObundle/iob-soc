@@ -1,23 +1,39 @@
-module iob_native_memory_mapped_decoder(
-					input [31:0] 	 mem_addr,
-					output reg [1:0] s_sel
-					);
+`include "size_def.vh"
+
+module iob_native_memory_mapped_decoder #(
+					  parameter SLAVES_ADDR_W=2, //log2(N_SLAVES)
+					  parameter N_SLAVES=4,
+					  parameter ADDR_W=32
+					  )
+   (
+    input [(ADDR_W-1):0] 	     mem_addr,
+    input 			     mem_sel,
+    output reg [(N_SLAVES-1):0]      s_sel_wr
+    output reg [(SLAVES_ADDR_W-1):0] s_sel_r;
+    );
+
+   //Address override (boot to main memory)
+   wire [SLAVES_ADDR_W-1:0] 	     sel_addr;
+
+   assign sel_addr = (mem_addr[(ADDR_W-1) -: SLAVES_ADDR_W] == SLAVES_ADDR_W'`BOOT_MEM_BASE && mem_sel == 1'b1) ? `MAIN_MEM_BASE : mem_addr[(ADDR_W-1) -: SLAVES_ADDR_W];
    
+   
+   // Binary to one-hot converter
+   wire [SLAVES_ADDR_W-1:0] 	     bin;
+   reg [N_SLAVES-1:0] 		     onehot;
+
+   assign bin = sel_addr;
+   
+   genvar 			     i;
+   generate
+      for(i=0; i<N_SLAVES; i=i+1)
+	onehot[i] = (SLAVES_ADDR_W'i==bin)? 1'b1:1'b0;
+   endgenerate
+   
+   // Outputs assignment
    always @* begin
-      
-      if(mem_addr < 32'h40000000)  // slave_0
-        begin
-           s_sel <= 2'b00;
-        end 
-      else if(mem_addr < 32'h80000000) // slave_2 and 3
-        begin  
-           if (mem_addr ==  32'h70000000 || mem_addr ==  32'h70000004 || mem_addr ==  32'h70000008 || mem_addr ==  32'h7000000C || mem_addr ==  32'h70000010  ) s_sel <= 2'b10;
-           else s_sel <= 2'b11;
-        end         
-      else /*if( (mem_addr>>2) < 2**MEM_ADDR_PAR_3)*/ // slave_1
-        begin  
-           s_sel <= 2'b01; //DDR, starts at 0x80000000 and ends at  0xBFFFFFFC (0xC0000000-0x4) (1 GB)
-        end              
+      s_sel_wr = onehot;
+      s_sel_r = sel_addr;
    end       
    
 endmodule
