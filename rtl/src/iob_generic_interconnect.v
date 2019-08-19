@@ -64,7 +64,9 @@ module iob_generic_interconnect#(
                                );
 
 
-   wire [SLAVE_ADDR_W-1:0] 					 s_sel;
+   wire [SLAVE_ADDR_W-1:0] 					 s_sel_r;
+   wire [N_SLAVES-1 : 0] 					 s_sel_wr;
+   
    assign slave_select = s_sel;
 
 
@@ -79,184 +81,19 @@ module iob_generic_interconnect#(
    generate
       for(gi=0; gi<N_SLAVES;gi=gi+1) begin
 	 //contatenate master value for all outputs to the slaves
-	 assign s_addr[((gi+1)*ADDR_W)-1:(gi*ADDR_W)] = m_addr; //m_addr
-	 assign s_wdata[((gi+1)*ADDR_W)-1:(gi*ADDR_W)] = m_wdata; //m_wdata
-	 assign s_wstrb[((gi+1)*ADDR_W)-1:(gi*ADDR_W)] = m_wstrb; //m_wstrb
+	 assign s_addr[((gi+1)*ADDR_W)-1 -: ADDR_W] = m_addr; //m_addr
+	 assign s_wdata[((gi+1)*WDATA_W)-1 -: WDATA_W] = m_wdata; //m_wdata
+	 assign s_wstrb[((gi+1)*STRB_W)-1 -: STRB_W] = m_wstrb; //m_wstrb
 
 	 //mask ready with one hot output from decoder
-	 assign s_valid[gi] = m_valid && s_sel[gi];
-
-	 //select inputs fr
+	 assign s_valid[gi] = m_valid & s_sel[gi];
+	 
       end
    endgenerate
-   
-   always @*
-     begin: IOBundle_Native_interconnect
-        case (s_sel)
-          default: begin
-	     if (mem_select == 0) begin 
-		// address
-		s_addr_0 <= m_addr;		  
-		s_addr_1 <= 32'd0;
-		s_addr_2 <= 32'd0;
-		s_addr_3 <= 32'd0;
-		// write data
-		s_wdata_0 <= m_wdata; 
-		s_wdata_1 <= 32'd0;
-		s_wdata_2 <= 32'd0;
-		s_wdata_3 <= 32'd0;
-                // write strub
-		s_wstrb_0 <= m_wstrb;
-		s_wstrb_1 <= 4'd0;
-		s_wstrb_2 <= 4'd0;
-		s_wstrb_3 <= 4'd0;
-		// read data
-		m_rdata <= s_rdata_0;
-		// valid
-		s_valid_0 <= m_valid;
-		s_valid_1 <= 1'b0;
-		s_valid_2 <= 1'b0;
-		s_valid_3 <= 1'b0;
-		// ready
-		m_ready <= s_ready_0;
-             end else begin // if (mem_select == 1)
-		// address
-		s_addr_0 <= 32'd0;		  
-		s_addr_1 <= m_addr;
-		s_addr_2 <= 32'd0;
-		s_addr_3 <= 32'd0;
-		// write data
-		s_wdata_0 <= 32'd0; 
-		s_wdata_1 <= m_wdata;
-		s_wdata_2 <= 32'd0;
-		s_wdata_3 <= 32'd0;
-                // write strub
-		s_wstrb_0 <= 4'd0;
-		s_wstrb_1 <= m_wstrb;
-		s_wstrb_2 <= 4'd0;
-		s_wstrb_3 <= 4'd0;
-		// read data
-		m_rdata <= s_rdata_1;
-		// valid
-		s_valid_0 <= 1'b0;
-		s_valid_1 <= m_valid;
-		s_valid_2 <= 1'b0;
-		s_valid_3 <= 1'b0;
-		// ready
-		m_ready <= s_ready_1;   
-             end // else: !if(mem_select == 0)
-	  end // case: default
 
-	  
-          2'b01: begin
-	     if (mem_select == 0) begin
-                // address
-		s_addr_0 <= 32'd0;		  
-		s_addr_1 <= m_addr;
-		s_addr_2 <= 32'd0;
-		s_addr_3 <= 32'd0;
-		// write data
-		s_wdata_0 <= 32'd0; 
-		s_wdata_1 <= m_wdata;
-		s_wdata_2 <= 32'd0;
-		s_wdata_3 <= 32'd0;
-                // write strub
-		s_wstrb_0 <= 4'd0;
-		s_wstrb_1 <= m_wstrb;
-		s_wstrb_2 <= 4'd0;
-		s_wstrb_3 <= 4'd0;
-		// read data
-		m_rdata <= s_rdata_1;
-		// valid
-		s_valid_0 <= 1'b0;
-		s_valid_1 <= m_valid;
-		s_valid_2 <= 1'b0;
-		s_valid_3 <= 1'b0;
-		// ready
-		m_ready <= s_ready_1;                       
-             end // if (mem_select == 0)
-	     else begin
-		// address
-		s_addr_0 <= m_addr;		  
-		s_addr_1 <= 32'd0;
-		s_addr_2 <= 32'd0;
-		s_addr_3 <= 32'd0;
-		// write data
-		s_wdata_0 <= m_wdata; 
-		s_wdata_1 <= 32'd0;
-		s_wdata_2 <= 32'd0;
-		s_wdata_3 <= 32'd0;
-                // write strub
-		s_wstrb_0 <= m_wstrb;
-		s_wstrb_1 <= 4'd0;
-		s_wstrb_2 <= 4'd0;
-		s_wstrb_3 <= 4'd0;
-		// read data
-		m_rdata <= s_rdata_0;
-		// valid
-		s_valid_0 <= m_valid;
-		s_valid_1 <= 1'b0;
-		s_valid_2 <= 1'b0;
-		s_valid_3 <= 1'b0;
-		// ready
-		m_ready <= s_ready_0;
-	     end // else: !if(mem_select == 0)
-	  end // case: 2'b01
-	  
+    //select inputs from slave being read
+   assign m_rdata = s_rdata[((s_sel_r+1)*RDATA_W)-1 -: RDATA_W];
 
-          2'b10: begin
-             // address
-	     s_addr_0 <= 32'd0;		  
-	     s_addr_1 <= 32'd0;
-	     s_addr_2 <= m_addr;
-	     s_addr_3 <= 32'd0;
-	     // write data
-	     s_wdata_0 <= 32'd0; 
-	     s_wdata_1 <= 32'd0;
-	     s_wdata_2 <= m_wdata;
-	     s_wdata_3 <= 32'd0;
-             // write strub
-	     s_wstrb_0 <= 4'd0;
-	     s_wstrb_1 <= 4'd0;
-	     s_wstrb_2 <= m_wstrb;
-	     s_wstrb_3 <= 4'd0;
-	     // read data
-	     m_rdata <= s_rdata_2;
-	     // valid
-	     s_valid_0 <= 1'b0;
-	     s_valid_1 <= 1'b0;
-	     s_valid_2 <= m_valid;
-	     s_valid_3 <= 1'b0;
-	     // ready
-	     m_ready <= s_ready_2;
-          end // case: 2'b10  
-          
-          2'b11: begin
-             // address
-	     s_addr_0 <= 32'd0;		  
-	     s_addr_1 <= 32'd0;
-	     s_addr_2 <= 32'd0;
-	     s_addr_3 <= m_addr;
-	     // write data
-	     s_wdata_0 <= 32'd0; 
-	     s_wdata_1 <= 32'd0;
-	     s_wdata_2 <= 32'd0;
-	     s_wdata_3 <= m_wdata;
-             // write strub
-	     s_wstrb_0 <= 4'd0;
-	     s_wstrb_1 <= 4'd0;
-	     s_wstrb_2 <= 4'd0;
-	     s_wstrb_3 <= m_wstrb;
-	     // read data
-	     m_rdata <= s_rdata_3;
-	     // valid
-	     s_valid_0 <= 1'b0;
-	     s_valid_1 <= 1'b0;
-	     s_valid_2 <= 1'b0;
-	     s_valid_3 <= m_valid;
-	     // ready
-	     m_ready <= s_ready_3;
-          end // case: 2'b11         
-        endcase
-     end                                          
+   assign m_ready = s_ready[s_sel_r];
+                                          
 endmodule
