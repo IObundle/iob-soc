@@ -287,11 +287,11 @@ module system (
 `ifdef AUX_MEM
    //slave 3
    main_memory  #(
-		  .ADDR_W(MAIN_MEM_ADDR_W-2) 
+		  .ADDR_W(MAIN_MEM_ADDR_W) 
 		  ) auxiliary_memory (
 				      .clk                (clk                                    ),
 				      .main_mem_write_data(wire_s_wdata[4*S_WDATA_W-1:3*S_WDATA_W]),
-				      .main_mem_addr      (wire_s_addr[3*S_ADDR_W + MAIN_MEM_ADDR_W-1:3*S_ADDR_W+2]),
+				      .main_mem_addr      (wire_s_addr[3*S_ADDR_W + MAIN_MEM_ADDR_W-1:3*S_ADDR_W]),
 				      .main_mem_en        (wire_s_wstrb[4*S_WSTRB_W-1:3*S_WSTRB_W]),
 				      .main_mem_read_data (wire_s_rdata[4*S_RDATA_W-1:3*S_RDATA_W])                       
 				      );
@@ -316,11 +316,11 @@ module system (
 
    //slave 0
    boot_memory  #(
-		  .ADDR_W(BOOT_ADDR_W-2) 
+		  .ADDR_W(BOOT_ADDR_W) 
 		  ) boot_memory (
 				 .clk            (clk           ),
 				 .boot_write_data(wire_s_wdata[S_WDATA_W-1:0]),
-				 .boot_addr      (wire_s_addr[BOOT_ADDR_W-1:2]),
+				 .boot_addr      (wire_s_addr[BOOT_ADDR_W-1:0]),
 				 .boot_en        (wire_s_wstrb[S_WSTRB_W-1:0]),
 				 .boot_read_data (wire_s_rdata[S_RDATA_W-1:0])                            
 				 );
@@ -403,11 +403,11 @@ module system (
 
    //slave 1
    main_memory  #(
-		  .ADDR_W(MAIN_MEM_ADDR_W-2) 
+		  .ADDR_W(MAIN_MEM_ADDR_W) 
 		  ) main_memory (
 				 .clk                (clk                                               ),
 				 .main_mem_write_data(wire_s_wdata[2*S_WDATA_W-1:S_WDATA_W]             ),
-				 .main_mem_addr      (wire_s_addr[S_ADDR_W+MAIN_MEM_ADDR_W-1:S_ADDR_W+2]),
+				 .main_mem_addr      (wire_s_addr[S_ADDR_W+MAIN_MEM_ADDR_W-1:S_ADDR_W]),
 				 .main_mem_en        (wire_s_wstrb[2*S_WSTRB_W-1:S_WSTRB_W]             ),
 				 .main_mem_read_data (wire_s_rdata[2*S_RDATA_W-1:S_RDATA_W]             )                       
 				 );
