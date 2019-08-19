@@ -1,6 +1,7 @@
 TEST := test
 BOOT := boot
 SYNTH_TARGET := system
+FPGA := xilinx
 
 all: uart-loader
 
@@ -27,11 +28,16 @@ uart-loader:
 	make -C software/tests/$(TEST)
 	make -C software/scripts TEST=$(TEST)
 
+bitstream: $(FPGA)
+
 ld-hw:
 	make -C fpga/xilinx ld-hw
 
-bitstream: 
+xilinx: 
 	make -C fpga/xilinx TEST=$(TEST) BOOT=$(BOOT) SYNTH_TARGET=$(SYNTH_TARGET)
+
+altera:
+	make -C fpga/altera TEST=$(TEST) BOOT=$(BOOT)
 
 ncsim:
 	make -C simulation/ncsim TEST=$(TEST) BOOT=$(BOOT)
