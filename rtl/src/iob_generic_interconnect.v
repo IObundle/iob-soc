@@ -33,43 +33,42 @@ module iob_generic_interconnect#(
 				 parameter STRB_W = 4
 				 ) 
    (
-    output [SLAVE_ADDR_W-1:0] 		slave_select, 
-    input 				mem_select,
-    input 				clk,
-    input 				sel, //selects the interconnect itself 
+    output [SLAVE_ADDR_W-1:0] 		 slave_select, 
+    input 				 mem_select,
+    input 				 clk,
+    input 				 sel, //selects the interconnect itself 
     /////////////////////////////////////  
     //// master AXI interface //////////
     ///////////////////////////////////
 
-    input [ADDR_W-1:0] 			m_addr,
+    input [ADDR_W-1:0] 			 m_addr,
 
-    input [WDATA_W-1:0] 		m_wdata,
-    input [STRB_W-1:0] 			m_wstrb,
-    output reg [RDATA_W-1:0] 		m_rdata,
+    input [WDATA_W-1:0] 		 m_wdata,
+    input [STRB_W-1:0] 			 m_wstrb,
+    output [RDATA_W-1:0] 		 m_rdata,
 
-    input 				m_valid,
-    output reg 				m_ready,
+    input 				 m_valid,
+    output 				 m_ready,
 
     ///////////////////////////////////
     //// N Slaves AXI interface //////
     /////////////////////////////////  
 
-    output reg [(N_SLAVES*ADDR_W)-1:0] 	s_addr,
+    output [(N_SLAVES*ADDR_W)-1:0]  s_addr,
 
-    output reg [(N_SLAVES*WDATA_W)-1:0] s_wdata,
-    output reg [(N_SLAVES*STRB_W)-1:0] 	s_wstrb,
-    input [(N_SLAVES*RDATA_W)-1:0] 	s_rdata,
+    output [(N_SLAVES*WDATA_W)-1:0] s_wdata,
+    output [(N_SLAVES*STRB_W)-1:0] 	 s_wstrb,
+    input [(N_SLAVES*RDATA_W)-1:0] 	 s_rdata,
 
-    output reg [N_SLAVES-1:0] 		s_valid,
-    input [N_SLAVES-1:0] 		s_ready
+    output [N_SLAVES-1:0] 		 s_valid,
+    input [N_SLAVES-1:0] 		 s_ready
     );
    
    
-   reg [SLAVE_ADDR_W-1:0] 		s_sel_r;
-   reg [N_SLAVES-1 : 0] 		s_sel_wr;
+   wire [SLAVE_ADDR_W-1:0] 		s_sel_r;
+   wire [N_SLAVES-1 : 0] 		s_sel_wr;
    
    assign slave_select = s_sel_r;
-   
 
    //Decode the addressed memory
    iob_native_memory_mapped_decoder #(

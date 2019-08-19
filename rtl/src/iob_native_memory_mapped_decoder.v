@@ -24,8 +24,10 @@ module iob_native_memory_mapped_decoder #(
 
    assign bin = sel_addr;
 
+   integer 			     i;
+ 			     
    always @* begin
-      integer 			     i;
+//      integer 			     i;
       for(i=0; i<N_SLAVES; i=i+1)
 	onehot[i] = (i==bin)? 1'b1:1'b0;
    end
