@@ -61,7 +61,7 @@ module iob_generic_interconnect#(
     input [(N_SLAVES*RDATA_W)-1:0] 	s_rdata,
 
     output reg [N_SLAVES-1:0] 		s_valid,
-    input [N_SLAVES-1:0] 		s_ready,
+    input [N_SLAVES-1:0] 		s_ready
     );
    
    
@@ -91,10 +91,10 @@ module iob_generic_interconnect#(
 	 //contatenate master value for all outputs to the slaves
 	 assign s_addr[((gi+1)*ADDR_W)-1 -: ADDR_W] = m_addr; //m_addr
 	 assign s_wdata[((gi+1)*WDATA_W)-1 -: WDATA_W] = m_wdata; //m_wdata
-	 assign s_wstrb[((gi+1)*STRB_W)-1 -: STRB_W] = m_wstrb; //m_wstrb
+	 assign s_wstrb[((gi+1)*STRB_W)-1 -: STRB_W] = m_wstrb & {STRB_W{s_sel_wr[gi]}}; //m_wstrb
 
 	 //mask ready with one hot output from decoder
-	 assign s_valid[gi] = m_valid & s_sel[gi];
+	 assign s_valid[gi] = m_valid & s_sel_wr[gi];
 	 
       end
    endgenerate

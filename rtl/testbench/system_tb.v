@@ -53,7 +53,8 @@ module system_tb;
    reg [31:0] 	progmem[4095:0];
    reg [2:0] 	uart_addr;
    reg 		uart_sel;
-   reg 		uart_we;
+   reg 		uart_wr;
+   reg 		uart_r;
    reg [31:0] 	uart_di;
    reg [31:0] 	uart_do;
    
@@ -85,7 +86,7 @@ module system_tb;
 	      cpu_uartread(`UART_WRITE_WAIT, rxread_reg);
 	    while(rxread_reg != 32'h0);
 	    cpu_uartwrite(`UART_DATA, progmem[i][j -: 4'd8]);
-	    repeat(2000) @(posedge clk) #1;
+	    repeat(3000) @(posedge clk) #1;
 	 end
       end
       $display("Testbench: firmware has been sent");
@@ -120,28 +121,29 @@ module system_tb;
    assign tester_rx = ser_tx;
    assign ser_rx = tester_tx;
    
-   simpleuart uarttester(
-			 .ser_tx    (tester_tx),
-			 .ser_rx    (tester_rx),
-			 .clk       (clk),
-			 .resetn    (~reset),
-			 .address   (uart_addr),
-			 .sel       (uart_sel),
-			 .we        (uart_we),
-			 .dat_di    (uart_di),
-			 .dat_do    (uart_do)
-			 );
+   iob_uart uarttester(
+		       .ser_tx    (tester_tx),
+		       .ser_rx    (tester_rx),
+		       .clk       (clk),
+		       .rst       (reset),
+		       .address   (uart_addr),
+		       .sel       (uart_sel),
+		       .write     (uart_wr),
+		       .read      (uart_r),
+		       .data_in   (uart_di),
+		       .data_out  (uart_do)
+		       );
    
-   // 2-cycle write
+   // 1-cycle write
    task cpu_uartwrite;
       input [3:0]  cpu_address;
       input [31:0] cpu_data;
 
-      # 10 uart_addr = cpu_address;
+      # 1 uart_addr = cpu_address;
       uart_sel = 1;
-      uart_we = 1;
+      uart_wr = 1;
       uart_di = cpu_data;
-      @ (posedge clk) #20 uart_we = 0;
+      @ (posedge clk) #1 uart_wr = 0;
       uart_sel = 0;
    endtask //cpu_uartwrite
 
@@ -150,12 +152,11 @@ module system_tb;
       input [3:0]   cpu_address;
       output [31:0] read_reg;
 
-      # 10 uart_addr = cpu_address;
+      # 1 uart_addr = cpu_address;
       uart_sel = 1;
-      uart_we = 0;
-      @ (posedge clk) #10 uart_we = 0;
-      read_reg = uart_do;
-      @ (posedge clk) #10 uart_we = 0;
+      uart_r = 1;
+      @ (posedge clk) #1 read_reg = uart_do;
+      @ (posedge clk) #1 uart_r = 0;
       uart_sel = 0;
    endtask //cpu_uartread
    

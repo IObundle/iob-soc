@@ -45,7 +45,7 @@ output_files/top_system.sof: top_system.qsf top_system.sdc $(VERILOG) $(HEX) $(I
 	quartus_asm top_system
 
 clean:
-	@rm -r db incremental_db output_files
+	@rm -rf db incremental_db output_files
 	@rm -f *.summary *.rpt *.smsg *.txt *.done *.jdi *.pin *.sof *.sld *.qpf *~
 	@rm -f *.dat
 .PHONY: all clean all
