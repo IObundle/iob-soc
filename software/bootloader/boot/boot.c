@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include "iob-uart.h"
 
-#define DIVVAL 10
+#define DIVVAL 868
 
 #define UART_CLK_FREQ 100000000 // 100 MHz
 #define UART_BAUD_RATE 115200 // can also use 115200
