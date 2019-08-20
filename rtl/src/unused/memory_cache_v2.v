@@ -209,6 +209,7 @@ module memory_cache(
 		 .DATA_W (Tag_size) 
 		 ) tag_memory (
 			       .clk           (clk                                         ),
+			       .reset         (reset                                       ), 
 			       .tag_write_data(cache_addr[Addr_size-1:(Addr_size-Tag_size)]),
 			       //.tag_write_data (tag_data_in),
 			       .tag_addr      (index                                       ),
@@ -329,7 +330,7 @@ module memory_cache(
 	      begin
 		 AR_ADDR  <= {2'b00, cache_addr[Addr_size -1:Word_select_size + 2], {(Word_select_size+2){1'b0}} }  ; //addr = {00, tag,index,0...00,00} => word_select = 0...00
 		 AR_VALID <= 1'b1;
-		 AR_LEN   <= 2*(Word_select_size)-1;
+		 AR_LEN   <= 2**(Word_select_size)-1;
 		 AR_SIZE  <= 3'b010;// 4 bytes
 		 AR_BURST <= 2'b01; //INCR
 		 data_load <= 1'b1;
@@ -467,12 +468,12 @@ module memory_cache(
 
    cache_controller
      cache_ctrl (
-		 .clk (clk),   
+		 .clk                (clk),   
 		 .ctrl_hit           (ctrl_hit),
 		 .ctrl_read_miss     (ctrl_read_miss),
 		 .ctrl_write_miss    (ctrl_write_miss),
 		 .ctrl_cache_invalid (cache_invalidate),
-		 .ctrl_addr       (cache_controller_address),
+		 .ctrl_addr          (cache_controller_address),
 		 .ctrl_req_data      (cache_controller_requested_data),
 		 .ctrl_cpu_req       (cache_controller_cpu_request),
 		 .ctrl_ack           (cache_controller_acknowledge),
@@ -510,53 +511,53 @@ module cache_controller(
 	 hit_counter <= hit_counter + 1;
        else
 	 hit_counter <= hit_counter;
-     
-     
-     //write_miss
-     always @ (posedge clk, posedge ctrl_reset)
-       if (ctrl_reset)
-         write_miss_counter <= {32{1'b0}};
+   
+   
+   //write_miss
+   always @ (posedge clk, posedge ctrl_reset)
+     if (ctrl_reset)
+       write_miss_counter <= {32{1'b0}};
+     else
+       if (ctrl_write_miss)
+	 write_miss_counter <= write_miss_counter + 1;
        else
-         if (ctrl_write_miss)
-	   write_miss_counter <= write_miss_counter + 1;
-         else
-	   write_miss_counter <= write_miss_counter;
-       
-       //read_miss
-       always @ (posedge clk, posedge ctrl_reset)
-	 if (ctrl_reset)
-           read_miss_counter <= {32{1'b0}};
-	 else
-           if (ctrl_read_miss)
-	     read_miss_counter <= read_miss_counter + 1;
-           else
-	     read_miss_counter <= read_miss_counter;
+	 write_miss_counter <= write_miss_counter;
+   
+   //read_miss
+   always @ (posedge clk, posedge ctrl_reset)
+     if (ctrl_reset)
+       read_miss_counter <= {32{1'b0}};
+     else
+       if (ctrl_read_miss)
+	 read_miss_counter <= read_miss_counter + 1;
+       else
+	 read_miss_counter <= read_miss_counter;
 
 
-	 //cache_controller_requested_data
-	 always @ (posedge clk)
-	   begin
-	      if (ctrl_addr == 2'b00)
-		begin
-		   ctrl_req_data <= hit_counter;
-		   ctrl_cache_invalid <= 1'b0;
-		end
-	      else if (ctrl_addr == 2'b01)
-		begin
-		   ctrl_req_data <= read_miss_counter;
-		   ctrl_cache_invalid <= 1'b0;
-		end
-	      else if (ctrl_addr == 2'b10)
-		begin
-		   ctrl_req_data <= write_miss_counter;
-		   ctrl_cache_invalid <= 1'b0;
-		end
-	      else
-		begin
-		   ctrl_req_data <= {32{1'b0}};
-	      ctrl_cache_invalid <= 1'b1;
-	   end
-	   end
+   //cache_controller_requested_data
+   always @ (posedge clk)
+     begin
+	if (ctrl_addr == 2'b00)
+	  begin
+	     ctrl_req_data <= hit_counter;
+	     ctrl_cache_invalid <= 1'b0;
+	  end
+	else if (ctrl_addr == 2'b01)
+	  begin
+	     ctrl_req_data <= read_miss_counter;
+	     ctrl_cache_invalid <= 1'b0;
+	  end
+	else if (ctrl_addr == 2'b10)
+	  begin
+	     ctrl_req_data <= write_miss_counter;
+	     ctrl_cache_invalid <= 1'b0;
+	  end
+	else
+	  begin
+	     ctrl_req_data <= {32{1'b0}};
+	     ctrl_cache_invalid <= 1'b1;
+	  end
+     end
 
 
    always @ (posedge clk)
