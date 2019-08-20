@@ -23,13 +23,13 @@ read_verilog ../../rtl/src/clock/clock_wizard.v
 read_verilog ../../rtl/src/iob_native_memory_mapped_decoder.v
 
 #cache
-read_verilog ../../submodules/iob-cache/rtl/src/cache/afifo.v
-read_verilog ../../submodules/iob-cache/rtl/src/cache/data_memory.v
-read_verilog ../../submodules/iob-cache/rtl/src/cache/memory_cache_v2.v
-read_verilog ../../submodules/iob-cache/rtl/src/cache/tag_memory.v
-read_verilog ../../submodules/iob-cache/rtl/src/cache/valid_memory.v
-read_verilog ../../submodules/iob-cache/rtl/src/cache/write_buffer.v
-read_verilog ../../submodules/iob-cache/rtl/src/cache/xalt_1p_mem_no_initialization_with_reset.v
+read_verilog ../../submodules/iob-cache/rtl/src/afifo.v
+read_verilog ../../submodules/iob-cache/rtl/src/data_memory.v
+read_verilog ../../submodules/iob-cache/rtl/src/memory_cache_v2.v
+read_verilog ../../submodules/iob-cache/rtl/src/tag_memory.v
+read_verilog ../../submodules/iob-cache/rtl/src/valid_memory.v
+read_verilog ../../submodules/iob-cache/rtl/src/write_buffer.v
+read_verilog ../../submodules/iob-cache/rtl/src/xalt_1p_mem_no_initialization_with_reset.v
 
 read_ip -quiet ../../rtl/ip/bram_axi.xcix
 
