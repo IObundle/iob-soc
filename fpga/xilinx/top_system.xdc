@@ -33,7 +33,7 @@ set_property PACKAGE_PIN H23 [get_ports C0_SYS_CLK_clk_n]
 #set_property CONFIG_VOLTAGE 3.3 [current_design] 
 #########where value2 is the voltage provided to configuration bank 0
 
-#create_clock -period 4.000 [get_ports C0_SYS_CLK_clk_p]  
+create_clock -period 4.000 [get_ports C0_SYS_CLK_clk_p]  
 
 ## REMOVER EM CASO DE FREQ_250 #########################################################
 ######## To ignore the sub-optimal clock condition of having an IO pin-BUFGCE-MMCM pair
@@ -47,26 +47,26 @@ set_property PACKAGE_PIN C19 [get_ports ser_rx]
 set_property IOSTANDARD LVCMOS18 [get_ports ser_rx]
 
 ####### User LEDs
-set_property PACKAGE_PIN D16 [get_ports {led[6]}]
-set_property IOSTANDARD LVCMOS18 [get_ports {led[6]}]
+#set_property PACKAGE_PIN D16 [get_ports {led[6]}]
+#set_property IOSTANDARD LVCMOS18 [get_ports {led[6]}]
 
-set_property PACKAGE_PIN G16 [get_ports {led[5]}]
-set_property IOSTANDARD LVCMOS18 [get_ports {led[5]}]
+#set_property PACKAGE_PIN G16 [get_ports {led[5]}]
+#set_property IOSTANDARD LVCMOS18 [get_ports {led[5]}]
 
-set_property PACKAGE_PIN H16 [get_ports {led[4]}]
-set_property IOSTANDARD LVCMOS18 [get_ports {led[4]}]
+#set_property PACKAGE_PIN H16 [get_ports {led[4]}]
+#set_property IOSTANDARD LVCMOS18 [get_ports {led[4]}]
 
-set_property PACKAGE_PIN E18 [get_ports {led[3]}]
-set_property IOSTANDARD LVCMOS18 [get_ports {led[3]}]
+#set_property PACKAGE_PIN E18 [get_ports {led[3]}]
+#set_property IOSTANDARD LVCMOS18 [get_ports {led[3]}]
 
-set_property PACKAGE_PIN E17 [get_ports {led[2]}]
-set_property IOSTANDARD LVCMOS18 [get_ports {led[2]}]
+#set_property PACKAGE_PIN E17 [get_ports {led[2]}]
+#set_property IOSTANDARD LVCMOS18 [get_ports {led[2]}]
 
-set_property PACKAGE_PIN E16 [get_ports {led[1]}]
-set_property IOSTANDARD LVCMOS18 [get_ports {led[1]}]
+#set_property PACKAGE_PIN E16 [get_ports {led[1]}]
+#set_property IOSTANDARD LVCMOS18 [get_ports {led[1]}]
 
-set_property PACKAGE_PIN H18 [get_ports {led[0]}]
-set_property IOSTANDARD LVCMOS18 [get_ports {led[0]}]
+#set_property PACKAGE_PIN H18 [get_ports {led[0]}]
+#set_property IOSTANDARD LVCMOS18 [get_ports {led[0]}]
 
 set_property PACKAGE_PIN H17 [get_ports {trap}]
 set_property IOSTANDARD LVCMOS18 [get_ports {trap}]

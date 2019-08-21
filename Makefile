@@ -52,4 +52,5 @@ clean:
 	@make -C software/scripts clean --no-print-directory
 	@make -C fpga/altera clean --no-print-directory
 	@make -C software/bootloader/$(BOOT) clean --no-print-directory
+	@rm -rf rtl/ip/*
 	@echo "All clean"

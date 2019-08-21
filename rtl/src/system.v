@@ -200,10 +200,7 @@ module system (
 			   .s_valid (wire_s_valid),
 			   .s_ready (wire_s_ready)
 			   );
-   
-
-`ifndef PICOSOC_UART
-   
+      
    ///////////////////////////////////// 
    ////// iob UART /////////////////
    ///////////////////////////////////

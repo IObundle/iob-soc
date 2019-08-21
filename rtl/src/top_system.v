@@ -253,9 +253,9 @@ module top_system(
    ddr4_0 ddr4_ram (
                     .c0_sys_clk_p        (C0_SYS_CLK_clk_p),
                     .c0_sys_clk_n        (C0_SYS_CLK_clk_n),
-                    .c0_ddr4_ui_clk          (clk), 
+                    .c0_ddr4_ui_clk          (), 
 		    //                 .c0_sys_clk_i          (clk),
-                    // .addn_ui_clkout1     (clk             ), // 250MHz
+                    .addn_ui_clkout1     (clk), // 100MHz
                     //   .addn_ui_clkout2     (   clk             ), // 100MHz
                     //.addn_ui_clkout3     (               ), // 25MHz
                     //.addn_ui_clkout4     (                ), // 10MHz
