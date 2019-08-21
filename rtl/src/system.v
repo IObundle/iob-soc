@@ -345,12 +345,12 @@ module system (
 		       .clk                (clk),
 		       .reset              (~processor_resetn),
 		       .buffer_clear       (buffer_clear),
-		       .cache_write_data   (wire_s_wdata_1),
-		       .cache_addr         (wire_s_addr_1 [29:0]),
-		       .cache_wstrb        (wire_s_wstrb_1),
-		       .cache_read_data    (wire_s_rdata_1),
-		       .cpu_ack            (wire_s_valid_1),
-		       .cache_ack          (wire_s_ready_1),
+		       .cache_write_data   (wire_s_wdata[2*S_WDATA_W-1:S_WDATA_W]),
+		       .cache_addr         (wire_s_addr[S_ADDR_W+29:S_ADDR_W]),
+		       .cache_wstrb        (wire_s_wstrb[2*S_WSTRB_W-1:S_WSTRB_W]),
+		       .cache_read_data    (wire_s_rdata[2*S_RDATA_W-1:S_RDATA_W]),
+		       .cpu_ack            (wire_s_valid[1]),
+		       .cache_ack          (wire_s_ready[1]),
  `ifndef AUX_MEM
 		       //slave 3
 		       //Memory Cache controller signals

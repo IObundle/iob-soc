@@ -31,13 +31,20 @@ read_verilog ../../submodules/iob-cache/rtl/src/valid_memory.v
 read_verilog ../../submodules/iob-cache/rtl/src/write_buffer.v
 read_verilog ../../submodules/iob-cache/rtl/src/xalt_1p_mem_no_initialization_with_reset.v
 
-read_ip -quiet ../../rtl/ip/bram_axi.xcix
-
 read_xdc ./synth_system.xdc
+
+set_property part xcku040-fbva676-1-c [current_project]
+read_ip ../../rtl/ip/bram_axi.xcix
+report_property [get_ips bram_axi]
+
+synth_ip [get_ips bram_axi]
+
 
 #            -part 'part fpga'         -top 'sistema de top (module)'
 synth_design -part xcku040-fbva676-1-c -top top_system 
 # read_xdc synth_system.xdc ##pos-synthesis constraints
+
+read_xdc ./impl_system.xdc
 
 opt_design
 place_design
