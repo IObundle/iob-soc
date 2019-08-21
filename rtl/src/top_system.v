@@ -83,17 +83,25 @@ module top_system(
     */
  `ifndef DDR
   `ifdef CLK_200MHZ
-   clock_wizard clk_250_to_200_MHz(
-				   .clk_in1_p(C0_SYS_CLK_clk_p),
-				   .clk_in1_n(C0_SYS_CLK_clk_n),
-				   .clk_out1(clk)
-				   );
+   clock_wizard #(
+		  .OUTPUT_PER(5),
+		  .INPUT_PER(4)
+		  )
+     clk_250_to_200_MHz(
+			.clk_in1_p(C0_SYS_CLK_clk_p),
+			.clk_in1_n(C0_SYS_CLK_clk_n),
+			.clk_out1(clk)
+			);
   `else
-   clock_wizard clk_250_to_100_MHz(
-				   .clk_in1_p(C0_SYS_CLK_clk_p),
-				   .clk_in1_n(C0_SYS_CLK_clk_n),
-				   .clk_out1(clk)
-				   );
+   clock_wizard #(
+		  .OUTPUT_PER(10),
+		  .INPUT_PER(4)
+		  )
+     clk_250_to_100_MHz(
+			.clk_in1_p(C0_SYS_CLK_clk_p),
+			.clk_in1_n(C0_SYS_CLK_clk_n),
+			.clk_out1(clk)
+			);
   `endif                
  `endif    
 `endif   
