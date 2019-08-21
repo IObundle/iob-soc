@@ -234,54 +234,8 @@ module system (
       uart_ready <= wire_s_valid[2];
    end  
    ////////////////////////////////////
-     ///////////////////////////////////	       
-      
-`else   
-   ///////////////////////////////////// 
-     ////// Simple UART Picosoc//////////
-     ///////////////////////////////////
-     wire       simpleuart_wait;
-   wire [31:0] 	simpleuart_reg_div_do, simpleuart_reg_dat_do;
-
-   // slave 2
-   picosoc_uart simpleuart (
-			    //serial i/f
-			    .ser_tx      (ser_tx          ),
-			    .ser_rx      (ser_rx          ),
-			    //data bus
-			    .clk         (clk             ),
-			    .resetn      (resetn_int      ),
-			    //				 .address     (wire_s_addr_2[3:2]),
-			    //				 .sel         (wire_s_valid_2    ),	
-			    //				 .we          (|wire_s_wstrb_2   ),
-			    //				 .dat_di      (wire_s_wdata_2    ),
-			    //				 .dat_do      (wire_s_rdata_2    )
-			    //	                  );
-			    .reg_div_we  ((wire_s_valid[2] && wire_s_addr[2*S_ADDR_W+2])? wire_s_wstrb[3*S_WSTRB_W-1:2*S_WSTRB_W] : 4'b 0000),
-			    .reg_div_di  (wire_s_wdata[3*S_WDATA_W-1:2*S_WDATA]),
-			    .reg_div_do  (simpleuart_reg_div_do),
-      
-			    .reg_dat_we  ((wire_s_valid[2] && wire_s_addr[2*S_ADDR_W+3])? wire_s_wstrb[2*S_WSTRB_W] : 1'b 0),
-			    .reg_dat_re  ((wire_s_valid[2] && wire_s_addr[2*S_ADDR_W+3]) && !wire_s_wstrb[3*S_WSTRB_W-1:2*S_WSTRB_W]),
-			    .reg_dat_di  (wire_s_wdata[3*S_WDATA_W-1:2*S_WDATA_W]),
-			    .reg_dat_do  (simpleuart_reg_dat_do),
-			    .reg_dat_wait(simpleuart_wait)
-			    );
-   
-
-   wire 	simpleuart_reg_div_sel = wire_s_valid[2] && wire_s_addr[2*S_ADDR_W+2]; // addr = ...0004
-   wire 	simpleuart_reg_dat_sel = wire_s_valid[2] && wire_s_addr[2*S_ADDR_W+3]; // addr = ...0008
-
-
-   assign wire_s_ready[2] = (wire_s_valid[2] && wire_s_addr[2*S_ADDR_W+2]) || ((wire_s_valid[2] && wire_s_addr[2*S_ADDR_W+3]) && !simpleuart_wait);
-   assign wire_s_rdata[3*S_RDATA_W-1:2*S_RDATA_W] = simpleuart_reg_div_sel ? simpleuart_reg_div_do : simpleuart_reg_dat_sel ? simpleuart_reg_dat_do : 32'h 0000_0000;
-   //////////////////////////////////
-   /////////////////////////////////	       
-   
-`endif  
-   
-   
-   
+   ///////////////////////////////////	       
+         
    //   ////////////////////////////////////////////////////////////////////
    //   ///// Open source RAM and Boot ROM with native memory instance ////
    //   //////////////////////////////////////////////////////////////////
