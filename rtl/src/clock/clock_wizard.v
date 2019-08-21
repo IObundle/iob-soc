@@ -64,7 +64,10 @@
 
 `timescale 1ps/1ps
 
-module clock_wizard 
+module clock_wizard #(
+		      parameter OUTPUT_PER = 10,
+		      parameter INPUT_PER = 4
+		      ) 
 
   (// Clock in ports
    // Clock out ports
@@ -123,10 +126,10 @@ module clock_wizard
        .DIVCLK_DIVIDE        (1),
        .CLKFBOUT_MULT        (4),
        .CLKFBOUT_PHASE       (0.000),
-       .CLKOUT0_DIVIDE       (10),
+       .CLKOUT0_DIVIDE       (4*OUTPUT_PER/INPUT_PER),
        .CLKOUT0_PHASE        (0.000),
        .CLKOUT0_DUTY_CYCLE   (0.500),
-       .CLKIN_PERIOD         (4.000))
+       .CLKIN_PERIOD         (INPUT_PER))
    plle3_adv_inst
      // Output clocks
      (
