@@ -29,7 +29,7 @@ void main()
   int line=0;
   MAIN_MEM = (volatile int*) MAINMEM_BASE;
 
-  uart_init(UART_BASE,DIVVAL);
+  uart_init(UART_BASE,UART_CLK_FREQ/UART_BAUD_RATE);
 
   uart_puts ("\nLoad Program through UART to Main Memory...\n");
   uart_putc(0x11);

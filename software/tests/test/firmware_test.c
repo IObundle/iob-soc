@@ -21,7 +21,7 @@ void main()
   unsigned char ledvar = 0;
   unsigned char Numb = 0;
 
-  uart_init(UART_BASE,DEVVAL);
+  uart_init(UART_BASE,UART_CLK_FREQ/UART_BAUD_RATE);
    
   //uart_write_wait();
   uart_puts("... Initializing program in main memory:\n");
