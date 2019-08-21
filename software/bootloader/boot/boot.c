@@ -5,20 +5,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "iob-uart.h"
+#include "system.h"
 
 #define DIVVAL 868
 
 #define UART_CLK_FREQ 100000000 // 100 MHz
 #define UART_BAUD_RATE 115200 // can also use 115200
-#define UART_ADDRESS 0x80000000
-#define MAIN_MEM_ADDR 0x40000000
-//#define PROG_MEM_ADDR 0x40000000
-//#define MEM_JUMP 0xBFFFFFFC 
+
 #define MEM_JUMP 0xFFFFFFFC 
 #define PROG_SIZE 4096 
 
 volatile int* MAIN_MEM;
-//volatile int* PROG_MEM;
 volatile int* PC_SOFT_RESET;
 
 void main()
@@ -30,14 +27,11 @@ void main()
   char buf[4];
   unsigned char temp;
   int line=0;
-  MAIN_MEM = (volatile int*) MAIN_MEM_ADDR;
-  //PROG_MEM = (volatile int*) PROG_MEM_ADDR;
+  MAIN_MEM = (volatile int*) MAINMEM_BASE;
 
-  uart_init(UART_ADDRESS,DIVVAL);
+  uart_init(UART_BASE,DIVVAL);
 
-  //uart_write_wait();
   uart_puts ("\nLoad Program through UART to Main Memory...\n");
-  //uart_write_wait();
   uart_putc(0x11);
 
   for (i = 0 ; i < PROG_SIZE; i ++){
@@ -52,15 +46,12 @@ void main()
     MAIN_MEM[i] = line;
   }
 
-  //uart_write_wait();
   uart_puts("\nProgram copy completed... Printing final copy:\n");
   for (i = 0 ; i < PROG_SIZE; i++){
-    //uart_write_wait();
     uart_printf("%x: ", i);//printing int instead of byte address
-    //uart_write_wait();
     uart_printf("%x\n", MAIN_MEM[i]);
   }
-  //uart_write_wait();
+
   uart_puts("\nPreparing to start the Main Memory program...\n");    
 
   *((volatile int*) MEM_JUMP) = 1;

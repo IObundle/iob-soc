@@ -44,8 +44,8 @@ module system (
 
    parameter BOOT_ADDR_W = 14;
 
-   parameter N_SLAVES = 4;
-   parameter SLAVE_ADDR_W = 2; //log2(N_SLAVES)
+   parameter N_SLAVES = 5;
+   parameter SLAVE_ADDR_W = 3; //ceil(log2(N_SLAVES))
 
    parameter S_ADDR_W = 32;
    parameter S_WDATA_W = 32;
@@ -171,32 +171,36 @@ module system (
    //  assign sys_mem_sel = mem_sel;
    
    
-   iob_generic_interconnect generic_interconnect (
-						  .slave_select (slave_sel),
-						  .mem_select   (mem_sel),
-						  .clk          (clk),
-						  .sel          (1'b1),
-						  
-						  /////////////////////////////////////
-						  //// master interface //////////////
-						  ///////////////////////////////////
-						  .m_addr  (wire_m_addr),
-						  .m_wdata (wire_m_wdata),	       
-						  .m_wstrb (wire_m_wstrb),
-						  .m_rdata (wire_m_rdata),
-						  .m_valid (wire_m_valid),
-						  .m_ready (wire_m_ready),
-					          ///////////////////////////////////
-						  //// N slaves  interface /////////
-						  /////////////////////////////////
-						  .s_addr  (wire_s_addr),
-						  .s_wdata (wire_s_wdata),	       
-						  .s_wstrb (wire_s_wstrb),
-						  .s_rdata (wire_s_rdata),
-						  .s_valid (wire_s_valid),
-						  .s_ready (wire_s_ready)
-						  );
-
+   iob_generic_interconnect #(
+			      .N_SLAVES(N_SLAVES),
+			      .SLAVE_ADDR_W(SLAVE_ADDR_W)
+			      )
+     generic_interconnect (
+			   .slave_select (slave_sel),
+			   .mem_select   (mem_sel),
+			   .clk          (clk),
+			   .sel          (1'b1),
+			   
+			   /////////////////////////////////////
+			   //// master interface //////////////
+			   ///////////////////////////////////
+			   .m_addr  (wire_m_addr),
+			   .m_wdata (wire_m_wdata),	       
+			   .m_wstrb (wire_m_wstrb),
+			   .m_rdata (wire_m_rdata),
+			   .m_valid (wire_m_valid),
+			   .m_ready (wire_m_ready),
+			   ///////////////////////////////////
+			   //// N slaves  interface /////////
+			   /////////////////////////////////
+			   .s_addr  (wire_s_addr),
+			   .s_wdata (wire_s_wdata),	       
+			   .s_wstrb (wire_s_wstrb),
+			   .s_rdata (wire_s_rdata),
+			   .s_valid (wire_s_valid),
+			   .s_ready (wire_s_ready)
+			   );
+   
 
 `ifndef PICOSOC_UART
    
@@ -285,23 +289,23 @@ module system (
    //   //// Open RAM ///////////////////////////////////////////
    //   ////////////////////////////////////////////////////////  	  
 `ifdef AUX_MEM
-   //slave 3
+   //slave 4
    main_memory  #(
 		  .ADDR_W(MAIN_MEM_ADDR_W) 
 		  ) auxiliary_memory (
 				      .clk                (clk                                    ),
-				      .main_mem_write_data(wire_s_wdata[4*S_WDATA_W-1:3*S_WDATA_W]),
-				      .main_mem_addr      (wire_s_addr[3*S_ADDR_W + MAIN_MEM_ADDR_W-1:3*S_ADDR_W]),
-				      .main_mem_en        (wire_s_wstrb[4*S_WSTRB_W-1:3*S_WSTRB_W]),
-				      .main_mem_read_data (wire_s_rdata[4*S_RDATA_W-1:3*S_RDATA_W])                       
+				      .main_mem_write_data(wire_s_wdata[5*S_WDATA_W-1:4*S_WDATA_W]),
+				      .main_mem_addr      (wire_s_addr[4*S_ADDR_W + MAIN_MEM_ADDR_W-1:4*S_ADDR_W]),
+				      .main_mem_en        (wire_s_wstrb[5*S_WSTRB_W-1:4*S_WSTRB_W]),
+				      .main_mem_read_data (wire_s_rdata[5*S_RDATA_W-1:4*S_RDATA_W])                       
 				      );
 
    
    reg 		aux_mem_ready;
-   assign wire_s_ready[3] = aux_mem_ready;
+   assign wire_s_ready[4] = aux_mem_ready;
    
    always @(posedge clk) begin
-      aux_mem_ready <= wire_s_valid[3]; 
+      aux_mem_ready <= wire_s_valid[4]; 
    end  
    
 `endif  
@@ -340,7 +344,7 @@ module system (
    //// Memory cache ///////////////////////////////////////
    ////////////////////////////////////////////////////////
 
-   //slave 1
+   //slaves 1 and 3
    memory_cache cache (
 		       .clk                (clk),
 		       .reset              (~processor_resetn),
@@ -351,19 +355,14 @@ module system (
 		       .cache_read_data    (wire_s_rdata[2*S_RDATA_W-1:S_RDATA_W]),
 		       .cpu_ack            (wire_s_valid[1]),
 		       .cache_ack          (wire_s_ready[1]),
- `ifndef AUX_MEM
+
 		       //slave 3
 		       //Memory Cache controller signals
 		       .cache_controller_address (wire_s_addr[S_ADDR_W+3:S_ADDR_W+2]),
 		       .cache_controller_requested_data (wire_s_rdata[4*S_RDATA_W-1:3*S_RDATA_W]),
 		       .cache_controller_cpu_request (wire_s_valid[3]),
 		       .cache_controller_acknowledge (wire_s_ready[3]),	       
- `else	       
-		       .cache_controller_address (2'b00),
-		       .cache_controller_requested_data (),
-		       .cache_controller_cpu_request (1 'b0),
-		       .cache_controller_acknowledge (),  
- `endif              
+
 		       ///// AXI signals
 		       /// Read            
 		       .AR_ADDR            (sys_s_axi_araddr), 

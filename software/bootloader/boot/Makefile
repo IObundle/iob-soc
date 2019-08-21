@@ -4,14 +4,15 @@ TEST := test
 FIRM_DIR = ../../tests/$(TEST)
 SCRPT_DIR = ../../scripts/
 UART_DIR = ../../../submodules/iob-uart/c-driver
+MEMMAP_DIR = ../..
 
 C_SRC = $(UART_DIR)/iob-uart.c
-H_SRC = $(UART_DIR)/iob-uart.h
+H_SRC = $(UART_DIR)/iob-uart.h $(MEMMAP_DIR)/system.h
 
 all: boot.hex
 
 boot.hex: boot.S boot.c $(FIRM_DIR)/firmware.lds $(H_SRC) $(C_SRC)
-	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -I. -I$(FIRM_DIR) -I$(UART_DIR) -nostdlib -o boot.elf boot.S $(H_SRC) $(C_SRC) boot.c\
+	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -I. -I$(FIRM_DIR) -I$(UART_DIR) -I$(MEMMAP_DIR) -nostdlib -o boot.elf boot.S $(H_SRC) $(C_SRC) boot.c\
 		 --std=gnu99 -Wl,-Bstatic,-T,$(FIRM_DIR)/firmware.lds,-Map,boot.map,--strip-debug -lgcc -lc
 	$(TOOLCHAIN_PREFIX)objcopy -O binary boot.elf boot.bin
 	cp $(SCRPT_DIR)*.py .	
