@@ -5,12 +5,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "iob-uart.h"
+#include "system.h"
 
 #define DEVVAL 868
 
 #define UART_CLK_FREQ 100000000 // 100 MHz
 #define UART_BAUD_RATE 115200 // can also use 115200
-#define UART_ADDRESS 0x80000000
 #define Address_write 0x9004 //address where the writting starts
 #define N 1000
 volatile int * vect;
@@ -21,7 +21,7 @@ void main()
   unsigned char ledvar = 0;
   unsigned char Numb = 0;
 
-  uart_init(UART_ADDRESS,DEVVAL);
+  uart_init(UART_BASE,DEVVAL);
    
   //uart_write_wait();
   uart_puts("... Initializing program in main memory:\n");
