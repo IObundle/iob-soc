@@ -5,51 +5,39 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "iob-uart.h"
+#include "system.h"
 
 #define DIVVAL 868
 
 #define UART_CLK_FREQ 100000000 // 100 MHz
 #define UART_BAUD_RATE 115200 // can also use 115200
-#define UART_ADDRESS 0x70000000
-#define MAIN_MEM_ADDR 0x80000000
-#define PROG_MEM_ADDR 0x40000000
-//#define MEM_JUMP 0xBFFFFFFC 
-#define MEM_JUMP 0xFFFFFFFC 
-#define PROG_SIZE 4096 
 
-volatile int* MAIN_MEM;
-volatile int* PROG_MEM;
-volatile int* PC_SOFT_RESET;
+#define N 4096 
+
+volatile int* DDR_MEM;
 
 void main()
 { 
-  int counter, i = 0;
-  int a;
-  char* uart_char;
-  int*  int_uart;     
-  char buf[4];
-  unsigned char temp;
-  int line=0;
-  MAIN_MEM = (volatile int*) MAIN_MEM_ADDR;
-  PROG_MEM = (volatile int*) PROG_MEM_ADDR;
+  int fail_counter, i = 0;
+  
+  DDR_MEM = (volatile int*) MAINMEM_BASE;
 
-  uart_init(UART_ADDRESS,DIVVAL);
+  uart_init(UART_BASE,UART_CLK_FREQ/UART_BAUD_RATE);
 
-  uart_puts ("\nHello! This is a Versat Test!\n");
-  uart_puts("Init Versat 1\n");
+  uart_puts ("\nThis is a DDR Test!\n");
+  uart_printf("Writting vector of size %d to DDR...\n", N);
 
-  for (i = 1 ; i < 6; i ++){
-    uart_printf("val%x = %x\n", i, i);
+  for (i = 1 ; i < N; i ++){
+    DDR_MEM[i] = i;
   }
-    uart_printf("\n");
+    uart_printf("Done!\n");
 
-  for (; i < 11; i ++){
-    uart_printf("val%x = %x\n", i, i);
+  for (; i < N; i ++){
+    if(DDR_MEM[i] != i){
+      uart_printf("Fail %d: expected %x from DDR, actual value %x\n", fail_counter, i, DDR_MEM[i]);
+    }
   }
-
-    uart_printf("\n");
-  for (i = 7 ; i < 16; i+=2){
-    uart_printf("%d\n", i);
-  }
-  uart_puts("Done\n");
+  
+  uart_printf("Done!\n");
+  uart_printf("Verification complete with %d failures.\n", fail_counter);
 }
