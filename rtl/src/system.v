@@ -309,7 +309,7 @@ module system (
 
 		       //slave 3
 		       //Memory Cache controller signals
-		       .cache_controller_address (wire_s_addr[S_ADDR_W+3:S_ADDR_W+2]),
+		       .cache_controller_address (wire_s_addr[3*S_ADDR_W+5:3*S_ADDR_W+2]),
 		       .cache_controller_requested_data (wire_s_rdata[4*S_RDATA_W-1:3*S_RDATA_W]),
 		       .cache_controller_cpu_request (wire_s_valid[3]),
 		       .cache_controller_acknowledge (wire_s_ready[3]),	       
