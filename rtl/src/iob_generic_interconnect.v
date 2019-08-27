@@ -25,8 +25,8 @@
 
 
 module iob_generic_interconnect #(
-				 parameter N_SLAVES = 4,
-				 parameter SLAVE_ADDR_W = 2, //must be ceil[log2(N_SLAVES)]
+				 parameter N_SLAVES = 5,
+				 parameter SLAVE_ADDR_W = 3, //must be ceil[log2(N_SLAVES)]
 				 parameter ADDR_W = 32,
 				 parameter RDATA_W = 32,
 				 parameter WDATA_W = 32,

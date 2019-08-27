@@ -28,7 +28,7 @@ module top_system(
 	          input 	   C0_SYS_CLK_clk_p, C0_SYS_CLK_clk_n, 
 	          input            reset,
 `else
-		  //input      clk,
+		  input            clk,
 	          input 	   resetn,
 `endif
 	          //output reg [6:0] led,
