@@ -279,7 +279,7 @@ assign sys_mem_sel = mem_sel;
    //   //// Open RAM ///////////////////////////////////////////
    //   ////////////////////////////////////////////////////////  	  
 `ifdef AUX_MEM
-   //slave 4
+/*   //slave 4
    main_memory  #(
 		  .ADDR_W(MAIN_MEM_ADDR_W) 
 		  ) auxiliary_memory (
@@ -297,6 +297,26 @@ assign sys_mem_sel = mem_sel;
    always @(posedge clk) begin
       aux_mem_ready <= wire_s_valid[4]; 
    end  
+*/
+   //slave 4
+   main_memory  #(
+		  .ADDR_W(MAIN_MEM_ADDR_W) 
+		  ) auxiliary_memory (
+				      .clk                (clk                                    ),
+				      .main_mem_write_data(wire_s_wdata[2*S_WDATA_W-1:1*S_WDATA_W]),
+				      .main_mem_addr      (wire_s_addr[S_ADDR_W + MAIN_MEM_ADDR_W-1:1*S_ADDR_W]),
+				      .main_mem_en        (wire_s_wstrb[2*S_WSTRB_W-1:1*S_WSTRB_W]),
+				      .main_mem_read_data (wire_s_rdata[2*S_RDATA_W-1:1*S_RDATA_W])                       
+				      );
+
+   
+   reg 		aux_mem_ready;
+   assign wire_s_ready[1] = aux_mem_ready;
+   
+   always @(posedge clk) begin
+      aux_mem_ready <= wire_s_valid[1]; 
+   end  
+
    
 `endif  
    
@@ -339,13 +359,20 @@ assign sys_mem_sel = mem_sel;
 		       .clk                (clk),
 		       .reset              (~processor_resetn),
 		       .buffer_clear       (buffer_clear),
-		       .cache_write_data   (wire_s_wdata[2*S_WDATA_W-1:S_WDATA_W]),
+/* SLAVE 1	       .cache_write_data   (wire_s_wdata[2*S_WDATA_W-1:S_WDATA_W]),
 		       .cache_addr         (wire_s_addr[S_ADDR_W+29:S_ADDR_W]),
 		       .cache_wstrb        (wire_s_wstrb[2*S_WSTRB_W-1:S_WSTRB_W]),
 		       .cache_read_data    (wire_s_rdata[2*S_RDATA_W-1:S_RDATA_W]),
 		       .cpu_req            (wire_s_valid[1]),
 		       .cache_ack          (wire_s_ready[1]),
-
+*/
+		       //slave 4
+		       .cache_write_data   (wire_s_wdata[5*S_WDATA_W-1:4*S_WDATA_W]),
+		       .cache_addr         (wire_s_addr[4*S_ADDR_W+29:4*S_ADDR_W]),
+		       .cache_wstrb        (wire_s_wstrb[5*S_WSTRB_W-1:4*S_WSTRB_W]),
+		       .cache_read_data    (wire_s_rdata[5*S_RDATA_W-1:4*S_RDATA_W]),
+		       .cpu_req            (wire_s_valid[4]),
+		       .cache_ack          (wire_s_ready[4]),
 		       //slave 3
 		       //Memory Cache controller signals
 		       .cache_controller_address (wire_s_addr[3*S_ADDR_W+5:3*S_ADDR_W+2]),
