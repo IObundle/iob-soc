@@ -1,8 +1,8 @@
 `include "system.vh"
 
 module iob_native_memory_mapped_decoder #(
-					  parameter SLAVES_ADDR_W=2, //log2(N_SLAVES)
-					  parameter N_SLAVES=4,
+					  parameter SLAVES_ADDR_W=3, //log2(N_SLAVES)
+					  parameter N_SLAVES=5,
 					  parameter ADDR_W=32
 					  )
    (
