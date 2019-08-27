@@ -48,7 +48,8 @@ report_property [get_ips ddr4_0]
 
 set_property -dict [list \
 			CONFIG.C0.DDR4_TimePeriod {1250} \
-			CONFIG.C0.DDR4_InputClockPeriod {14168} \
+			CONFIG.C0.DDR4_CLKOUT0_DIVIDE {5} \
+			CONFIG.C0.DDR4_InputClockPeriod {4000} \
 			CONFIG.C0.DDR4_MemoryPart {EDY4016AABG-DR-F} \
 			CONFIG.C0.DDR4_DataWidth {32} \
 			CONFIG.C0.DDR4_AxiSelection {true} \
@@ -57,10 +58,6 @@ set_property -dict [list \
 			CONFIG.C0.DDR4_AxiDataWidth {32} \
 			CONFIG.C0.DDR4_AxiAddressWidth {30} \
 			CONFIG.C0.BANK_GROUP_WIDTH {1} \
-		        CONFIG.C0.DDR4_Specify_MandD {true} \
-			CONFIG.C0.DDR4_DIVCLK_DIVIDE {1} \
-			CONFIG.C0.DDR4_CLKFBOUT_MULT {4} \
-			CONFIG.C0.DDR4_CLKOUT0_DIVIDE {5} \
 			CONFIG.ADDN_UI_CLKOUT1_FREQ_HZ {100} \
 		       ] [get_ips ddr4_0]
 
@@ -98,6 +95,7 @@ set_property used_in_implementation false [get_files -all ../../rtl/ip/ddr4_0/ip
 
 
 opt_design
+write_debug_probes -force synth_system_test_Icarus.ltx
 place_design
 route_design
 
