@@ -41,6 +41,28 @@ set_property part xcku040-fbva676-1-c [current_project]
 #report_property [get_ips bram_axi]
 #synth_ip [get_ips bram_axi]
 
+#async interconnect MIG<->Cache
+create_ip -name axi_interconnect -vendor xilinx.com -library ip -version 1.7 -module_name axi_interconnect_0 -dir ../../rtl/ip -force
+
+report_property [get_ips axi_interconnect_0]
+
+set_property -dict [list \
+		       CONFIG.NUM_SLAVE_PORTS {1}\
+		       CONFIG.S00_AXI_IS_ACLK_ASYNC {1}\
+		       CONFIG.M00_AXI_IS_ACLK_ASYNC {1}\
+		       CONFIG.S00_AXI_DATA_WIDTH {32}\
+		      ] [get_ips axi_interconnect_0]
+
+generate_target {instantiation_template} [get_files ../../rtl/ip/axi_interconnect_0/axi_interconnect_0.xci]
+generate_target all [get_files ../../rtl/ip/axi_interconnect_0/axi_interconnect_0.xci]
+
+
+read_ip ../../rtl/ip/axi_interconnect_0/axi_interconnect_0.xci
+report_property [get_files ../../rtl/ip/axi_interconnect_0/axi_interconnect_0.xci]
+
+synth_ip [get_files ../../rtl/ip/axi_interconnect_0/axi_interconnect_0.xci]
+
+
 #ddr
 create_ip -name ddr4 -vendor xilinx.com -library ip -version 2.2 -module_name ddr4_0 -dir ../../rtl/ip -force
 
@@ -69,7 +91,6 @@ read_ip ../../rtl/ip/ddr4_0/ddr4_0.xci
 report_property [get_files ../../rtl/ip/ddr4_0/ddr4_0.xci]
 
 synth_ip [get_files ../../rtl/ip/ddr4_0/ddr4_0.xci]
-
 
 #            -part 'part fpga'         -top 'sistema de top (module)'
 synth_design -part xcku040-fbva676-1-c -top top_system 
