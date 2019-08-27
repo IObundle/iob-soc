@@ -8,9 +8,6 @@
 	path = submodules/iob-versat
 	url = git@bitbucket.org:jjts/versat.git
 	branch = deep_versat
-[submodule "submodules/iob-darkrv32"]
-	path = submodules/iob-darkrv32
-	url = git@bitbucket.org:jjts/iob-darkrv32.git
 [submodule "submodules/iob-cache"]
 	path = submodules/iob-cache
 	url = git@bitbucket.org:jjts/iob-cache.git
