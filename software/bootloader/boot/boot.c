@@ -12,7 +12,7 @@
 #define UART_CLK_FREQ 100000000 // 100 MHz
 #define UART_BAUD_RATE 115200 // can also use 115200
 
-#define MEM_JUMP 0xFFFFFFFC 
+#define MEM_JUMP 0x7FFFFFFC 
 #define PROG_SIZE 4096 
 
 volatile int* MAIN_MEM;
@@ -27,11 +27,13 @@ void main()
   char buf[4];
   unsigned char temp;
   int line=0;
+  int acc = 0;
   MAIN_MEM = (volatile int*) MAINMEM_BASE;
 
   uart_init(UART_BASE,UART_CLK_FREQ/UART_BAUD_RATE);
 
   uart_puts ("\nLoad Program through UART to Main Memory...\n");
+  uart_printf("Writing starts at %x\n", MAIN_MEM);
   uart_putc(0x11);
 
   for (i = 0 ; i < PROG_SIZE; i ++){
@@ -51,6 +53,25 @@ void main()
     uart_printf("%x: ", i);//printing int instead of byte address
     uart_printf("%x\n", MAIN_MEM[i]);
   }
+
+  uart_printf("\n\n******** DDR TEST *******\n\n");
+  
+  MAIN_MEM = (volatile int*) MAINMEM_BASE + 2*PROG_SIZE;
+
+  uart_printf("Writing from address: %x\n", MAIN_MEM);
+
+  for(i=0; i< PROG_SIZE;i++){
+    MAIN_MEM[i] = i;
+  }
+
+  for(i=0;i< PROG_SIZE; i++){
+    if(MAIN_MEM[i] != i) { 
+      uart_printf("fail: %x\n", i);
+      acc++;
+   }
+  }
+
+  uart_printf("Read from address: %x with %d errors\n", MAIN_MEM, acc);
 
   uart_puts("\nPreparing to start the Main Memory program...\n");    
 

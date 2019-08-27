@@ -94,7 +94,7 @@ module system (
    assign resetn_int = (rst_cnt [10]);
    assign resetn_int_sys = resetn_int; 
 
-
+/*
    ///////////////////////////////////////////////
    ////////// Soft Reset Controller ////////////
    ////////////////////////////////////////////
@@ -130,6 +130,45 @@ module system (
    end
 
    assign sys_mem_sel = mem_sel;
+*/
+
+///////////////////////////////////////////////
+////////// Soft Reset Controller ////////////
+////////////////////////////////////////////
+   reg mem_sel;
+   reg [9:0] soft_reset;
+   parameter SOFT_RESET_ADDR = 32'h7ffffffc;
+   
+   always @ (posedge clk) begin
+      if (~resetn_int)
+	begin
+	   mem_sel <= 1'b0;
+	   soft_reset <= 10'b1111100000;
+	end
+      else 
+	begin
+
+    `ifdef CACHE
+           if ((wire_m_addr == SOFT_RESET_ADDR) && (buffer_clear))
+    `else       
+            if ((wire_m_addr == SOFT_RESET_ADDR))
+    `endif        
+            
+             begin
+		mem_sel <= 1'b1;
+		soft_reset <= {soft_reset[8:0],soft_reset[9]};
+             end
+           else
+             begin
+		mem_sel <= mem_sel;
+		soft_reset <= 10'b1111100000;
+             end
+	end
+   end
+
+assign sys_mem_sel = mem_sel;
+
+
    /////////////////////////////////////////////////////////////////////////////////
    ///////////////REMEMBER/////////////////////////////////////////////////////////
    //////////// in picorv32_axi_adapter///////////////////////////////////////////
