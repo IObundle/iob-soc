@@ -17,6 +17,7 @@
 
 volatile int* MAIN_MEM;
 volatile int* PC_SOFT_RESET;
+volatile int* DDR_MEM;
 
 void main()
 { 
@@ -28,7 +29,8 @@ void main()
   unsigned char temp;
   int line=0;
   int acc = 0;
-  MAIN_MEM = (volatile int*) MAINMEM_BASE;
+  MAIN_MEM = (volatile int*) MAINMEM_BASE; //AUXMEM is slave 1
+  DDR_MEM = (volatile int*) AUXMEM_BASE; //cache is slave 4
 
   uart_init(UART_BASE,UART_CLK_FREQ/UART_BAUD_RATE);
 
@@ -56,22 +58,20 @@ void main()
 
   uart_printf("\n\n******** DDR TEST *******\n\n");
   
-  MAIN_MEM = (volatile int*) MAINMEM_BASE + 2*PROG_SIZE;
-
-  uart_printf("Writing from address: %x\n", MAIN_MEM);
+  uart_printf("Writing from address: %x\n", DDR_MEM);
 
   for(i=0; i< PROG_SIZE;i++){
-    MAIN_MEM[i] = i;
+    DDR_MEM[i] = i;
   }
 
   for(i=0;i< PROG_SIZE; i++){
-    if(MAIN_MEM[i] != i) { 
+    if(DDR_MEM[i] != i) { 
       uart_printf("fail: %x\n", i);
       acc++;
    }
   }
 
-  uart_printf("Read from address: %x with %d errors\n", MAIN_MEM, acc);
+  uart_printf("Read from address: %x with %d errors\n", DDR_MEM, acc);
 
   uart_puts("\nPreparing to start the Main Memory program...\n");    
 

@@ -25,7 +25,7 @@ void main()
    
   //uart_write_wait();
   uart_puts("... Initializing program in main memory:\n");
-  vect = (volatile int*) MAINMEM_BASE + Address_write;
+  vect = (volatile int*) AUXMEM_BASE;
   uart_printf("Test. Is this working?\n");
 
   for (counter = 0; counter < N; counter ++){
