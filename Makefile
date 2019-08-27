@@ -45,6 +45,9 @@ ncsim:
 icarus:
 	make -C simulation/icarus TEST=$(TEST) BOOT=$(BOOT)
 
+send-baba:
+	scp -P 1418 ./fpga/xilinx/*.bit pmiranda@iobundle.ddns.net:iob-rv32-mig-native-axi/fpga/xilinx
+	scp -P 1418 ./fpga/xilinx/*.ltx pmiranda@iobundle.ddns.net:iob-rv32-mig-native-axi/fpga/xilinx
 clean:
 	@make -C fpga/xilinx clean --no-print-directory
 	@make -C simulation/ncsim clean --no-print-directory

@@ -33,7 +33,7 @@ set_property PACKAGE_PIN H23 [get_ports C0_SYS_CLK_clk_n]
 #set_property CONFIG_VOLTAGE 3.3 [current_design] 
 #########where value2 is the voltage provided to configuration bank 0
 
-create_clock -period 4.000 [get_ports C0_SYS_CLK_clk_p]  
+#create_clock -period 4.000 [get_ports C0_SYS_CLK_clk_p]  
 
 ## REMOVER EM CASO DE FREQ_250 #########################################################
 ######## To ignore the sub-optimal clock condition of having an IO pin-BUFGCE-MMCM pair
