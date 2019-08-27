@@ -304,7 +304,7 @@ module system (
 		       .cache_addr         (wire_s_addr[S_ADDR_W+29:S_ADDR_W]),
 		       .cache_wstrb        (wire_s_wstrb[2*S_WSTRB_W-1:S_WSTRB_W]),
 		       .cache_read_data    (wire_s_rdata[2*S_RDATA_W-1:S_RDATA_W]),
-		       .cpu_ack            (wire_s_valid[1]),
+		       .cpu_req            (wire_s_valid[1]),
 		       .cache_ack          (wire_s_ready[1]),
 
 		       //slave 3

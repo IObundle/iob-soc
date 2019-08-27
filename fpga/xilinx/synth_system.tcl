@@ -41,6 +41,10 @@ set_property part xcku040-fbva676-1-c [current_project]
 #report_property [get_ips bram_axi]
 #synth_ip [get_ips bram_axi]
 
+if { ![file isdirectory ../../"rtl/ip"]} {
+    file mkdir ../../rtl/ip
+}
+
 #async interconnect MIG<->Cache
 if { [file isdirectory ../../"rtl/ip/axi_interconnect_0"] } {
     read_ip ../../rtl/ip/axi_interconnect_0/axi_interconnect_0.xci
