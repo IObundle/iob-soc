@@ -31,7 +31,7 @@ module top_system(
 		  //input      clk,
 	          input 	   resetn,
 `endif
-	          output reg [6:0] led,
+	          //output reg [6:0] led,
 	          output 	   ser_tx,
 	          input 	   ser_rx,
 `ifdef DDR
