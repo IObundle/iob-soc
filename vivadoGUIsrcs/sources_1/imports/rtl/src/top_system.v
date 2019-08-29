@@ -1,4 +1,3 @@
-
 `timescale 1ns / 1ps
 
 `include "system.vh"
@@ -280,7 +279,7 @@ module top_system(
                     //.addn_ui_clkout4     (                ), // 10MHz
                     .c0_init_calib_complete (init_calib_complete),                  
                     .c0_ddr4_aresetn       (wire_resetn_int ),
-     		        .c0_ddr4_s_axi_awvalid (wire_ddr_awvalid),
+     		    .c0_ddr4_s_axi_awvalid (wire_ddr_awvalid),
 		    .c0_ddr4_s_axi_awready (wire_ddr_awready),
 		    .c0_ddr4_s_axi_awaddr  (wire_ddr_awaddr[29:0]),
 		    .c0_ddr4_s_axi_awcache (4'b0011), //recommended value

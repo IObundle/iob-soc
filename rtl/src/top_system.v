@@ -66,6 +66,8 @@ module top_system(
    //set reset according to the target fpga
 `ifdef XILINX
    wire 			   system_reset = reset;
+   wire 			   ddr_reset;
+   wire 			   s_reset;
 `else
    wire 			   system_reset = ~resetn;
 `endif
@@ -309,7 +311,7 @@ module top_system(
                     //.addn_ui_clkout3   (), // 25MHz
                     //.addn_ui_clkout4   (), // 10MHz
                     .c0_init_calib_complete (init_calib_complete),                  
-                    .c0_ddr4_aresetn       (wire_resetn_int ),
+                    .c0_ddr4_aresetn       (ddr_reset ),
      		    .c0_ddr4_s_axi_awvalid (wire_ddr_awvalid),
 		    .c0_ddr4_s_axi_awready (wire_ddr_awready),
 		    .c0_ddr4_s_axi_awaddr  (wire_ddr_awaddr[29:0]),
@@ -370,12 +372,12 @@ module top_system(
   `ifdef DDR_INTERCONNECT
    axi_interconnect_0 cache2ddr (
 				 .INTERCONNECT_ACLK     (clk), // 200 MHz
-				 .INTERCONNECT_ARESETN  (~system_reset && init_calib_complete),
+				 .INTERCONNECT_ARESETN  (wire_resetn_int),
       
 				 ///////////////
 				 // DDR SIDE //
 				 /////////////
-				 .M00_AXI_ARESET_OUT_N  (),
+				 .M00_AXI_ARESET_OUT_N  (ddr_reset),
 				 .M00_AXI_ACLK          (clk), // 200 MHz
       
 				 //Write address
@@ -523,6 +525,7 @@ module top_system(
    assign wire_ddr_arprot = 3'b0;
    assign wire_ddr_arqos = 4'b0;
 
+   assign ddr_reset = wire_resetn_int
   `endif //def DDR_INTERCONNECT
 
 

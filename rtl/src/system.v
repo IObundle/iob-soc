@@ -38,6 +38,7 @@ module system (
                );
    
 
+   parameter SOFT_RESET_ADDR = 32'h6ffffffc;
    
    parameter MAIN_MEM_ADDR_W = 14; // 14 = 32 bits (4) * 2**12 (4096) depth
 
@@ -63,6 +64,8 @@ module system (
    wire [31:0] 			     wire_m_rdata;
    wire 			     wire_m_valid;
    wire 			     wire_m_ready;
+   wire 			     wire_m_instr;
+			     
    ////////////////////////////////
    //////// Slaves
    ///////////////////////////////
@@ -72,6 +75,8 @@ module system (
    wire [N_SLAVES*S_RDATA_W-1:0]     wire_s_rdata;
    wire [N_SLAVES-1:0] 		     wire_s_valid;
    wire [N_SLAVES-1:0] 		     wire_s_ready;
+
+   wire 			     buffer_clear;
    
    // reset control counter 
    reg [10:0] 			     rst_cnt, rst_cnt_nxt;
@@ -99,56 +104,43 @@ module system (
    ////////// Soft Reset Controller ////////////
    ////////////////////////////////////////////
    reg 	mem_sel;
-   reg [4:0] soft_reset;
+   reg [9:0] soft_reset;
 
    
    always @ (posedge clk) begin
       if (~resetn_int)
 	begin
 	   mem_sel <= 1'b0;
-	   soft_reset <= 5'b10000;
+	   soft_reset <= 10'b1111100000;
 	end
       else 
 	begin
 
 `ifdef CACHE
-           if ((wire_m_addr == 32'hfffffffc) && (buffer_clear))
+           if ((wire_m_addr == SOFT_RESET_ADDR) && (buffer_clear))
 `else       
-             if ((wire_m_addr == 32'hfffffffc))
+             if ((wire_m_addr == SOFT_RESET_ADDR))
 `endif        
             
                begin
 		  mem_sel <= 1'b1;
-		  soft_reset <= {soft_reset[3:0],soft_reset[4]};
+		  soft_reset <= {soft_reset[8:0],soft_reset[9]};
                end
              else
                begin
 		  mem_sel <= mem_sel;
-		  soft_reset <= 5'b10000;
+		  soft_reset <= 10'b1111100000;
                end
 	end
    end
 
    assign sys_mem_sel = mem_sel;
-   /////////////////////////////////////////////////////////////////////////////////
-   ///////////////REMEMBER/////////////////////////////////////////////////////////
-   //////////// in picorv32_axi_adapter///////////////////////////////////////////
-   /////assign mem_ready = mem_axi_bvalid || mem_axi_rvalid;/////////////////////
-   /////////////////////////////////////////////////////////////////////////////
-   /////assign mem_axi_awvalid = mem_valid && |mem_wstrb && !ack_awvalid;//////
-   /////assign mem_axi_arvalid = mem_valid && !mem_wstrb && !ack_arvalid;/////
-   /////assign mem_axi_wvalid = mem_valid && |mem_wstrb && !ack_wvalid;//////
-   /////assign mem_axi_bready = mem_valid && |mem_wstrb;////////////////////
-   /////assign mem_axi_rready = mem_valid && !mem_wstrb;///////////////////
-   ///////////////////////////////////////////////////////////////////////
-   //////////////////////////////////////////////////////////////////////
    
    reg processor_resetn;
    always @* processor_resetn <= resetn_int && ~(soft_reset[0]);
    
    picorv32 #(
-	      .ENABLE_PCPI(1),
-	      .ENABLE_MUL(1),
+	      .ENABLE_FAST_MUL(1),
 	      .ENABLE_DIV(1)
 	      )
    picorv32_core (
@@ -168,7 +160,6 @@ module system (
    
    wire [1:0] slave_sel;
    assign s_sel = slave_sel;
-   //  assign sys_mem_sel = mem_sel;
    
    
    iob_generic_interconnect #(
@@ -313,7 +304,8 @@ module system (
 		       .cache_controller_requested_data (wire_s_rdata[4*S_RDATA_W-1:3*S_RDATA_W]),
 		       .cache_controller_cpu_request (wire_s_valid[3]),
 		       .cache_controller_acknowledge (wire_s_ready[3]),	       
-
+		       .cache_controller_instr_access(wire_m_instr), //instruction signal from master (processor)
+		       
 		       ///// AXI signals
 		       /// Read            
 		       .AR_ADDR            (sys_s_axi_araddr), 
