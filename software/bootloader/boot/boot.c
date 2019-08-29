@@ -17,6 +17,7 @@
 
 volatile int* MAIN_MEM;
 volatile int* PC_SOFT_RESET;
+volatile int* DDR_MEM;
 
 void main()
 { 
@@ -27,11 +28,14 @@ void main()
   char buf[4];
   unsigned char temp;
   int line=0;
-  MAIN_MEM = (volatile int*) MAINMEM_BASE;
+  int acc = 0;
+  MAIN_MEM = (volatile int*) MAINMEM_BASE; //AUXMEM is slave 1
+  DDR_MEM = (volatile int*) AUXMEM_BASE; //cache is slave 4
 
   uart_init(UART_BASE,UART_CLK_FREQ/UART_BAUD_RATE);
 
   uart_puts ("\nLoad Program through UART to Main Memory...\n");
+  uart_printf("Writing starts at %x\n", MAIN_MEM);
   uart_putc(0x11);
 
   for (i = 0 ; i < PROG_SIZE; i ++){
@@ -51,6 +55,23 @@ void main()
     uart_printf("%x: ", i);//printing int instead of byte address
     uart_printf("%x\n", MAIN_MEM[i]);
   }
+
+  uart_printf("\n\n******** DDR TEST *******\n\n");
+  
+  uart_printf("Writing from address: %x\n", DDR_MEM);
+
+  for(i=0; i< PROG_SIZE;i++){
+    DDR_MEM[i] = i;
+  }
+
+  for(i=0;i< PROG_SIZE; i++){
+    if(DDR_MEM[i] != i) { 
+      uart_printf("fail: %x\n", i);
+      acc++;
+   }
+  }
+
+  uart_printf("Read from address: %x with %d errors\n", DDR_MEM, acc);
 
   uart_puts("\nPreparing to start the Main Memory program...\n");    
 
