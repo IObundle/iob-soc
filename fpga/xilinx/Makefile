@@ -53,5 +53,6 @@ clean:
 	@rm -rf boot.bin boot.elf boot.hex boot.map boot_*.hex boot_?.dat
 	@rm -rf *.jou *.log
 	@rm -rf uart_loader
+	@rm -rf *.ltx
 	@make -C $(TESTDIR) clean --no-print-directory
 	@make -C $(BOOTDIR) clean --no-print-directory
