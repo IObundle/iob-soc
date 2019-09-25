@@ -71,26 +71,24 @@ module iob_uart (
    end // always @ *
 
    //read
-   always @*
-     if(sel & read) begin
-       case (address)
-         `UART_WRITE_WAIT: data_out = {31'd0, tx_wait};
-         `UART_DIV       : data_out = cfg_divider;
-         `UART_DATA      : begin 
-            data_out = recv_buf_data;
-            data_read_en = 1'b1;
-         end
-         `UART_READ_VALID: data_out = {31'd0,recv_buf_valid};
-         default         : begin 
-            data_out = ~0;
-            data_read_en = 1'b0;
-         end
-       endcase
-     end else begin 
-        data_read_en = 1'b0;
-        data_out = ~0;
-     end
+   always @* begin
 
+      data_read_en = 1'b0;
+      data_out = ~0;
+
+      if(sel & read) begin
+         case (address)
+           `UART_WRITE_WAIT: data_out = {31'd0, tx_wait};
+           `UART_DIV       : data_out = cfg_divider;
+           `UART_DATA      : begin 
+              data_out = recv_buf_data;
+              data_read_en = 1'b1;
+           end
+           `UART_READ_VALID: data_out = {31'd0,recv_buf_valid};
+           default         : ;
+         endcase
+      end
+   end      
 
        
    // internal registers
