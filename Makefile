@@ -2,7 +2,7 @@ TEST := test
 BOOT := boot
 SYNTH_TARGET := system
 FPGA := xilinx
-IOBUSER := pteixeira
+IOBUSER := vmario
 
 all: uart-loader
 
@@ -47,8 +47,10 @@ icarus:
 	make -C simulation/icarus TEST=$(TEST) BOOT=$(BOOT)
 
 send-baba:
-	scp -P 1418 ./fpga/xilinx/*.bit $(IOBUSER)@iobundle.ddns.net:iob-rv32-mig-native-axi/fpga/xilinx
-	scp -P 1418 ./fpga/xilinx/*.ltx $(IOBUSER)@iobundle.ddns.net:iob-rv32-mig-native-axi/fpga/xilinx
+	scp -P 1418 ./fpga/xilinx/*.bit $(IOBUSER)@iobundle.ddns.net:~/sandbox/iob-soc-e/fpga/xilinx/
+#This is used just to debug. To produce this file use write_debug_probes command in Tcl
+#scp -P 1418 ./fpga/xilinx/*.ltx $(IOBUSER)@iobundle.ddns.net:~/sandbox/iob-soc-e/fpga/xilinx
+
 clean:
 	@make -C fpga/xilinx clean --no-print-directory
 	@make -C simulation/ncsim clean --no-print-directory
