@@ -24,7 +24,7 @@ void main()
   uart_init(UART_BASE,UART_CLK_FREQ/UART_BAUD_RATE);
    
   //uart_write_wait();
-  uart_puts("... Initializing program in main memory:\n");
+  uart_puts("\n... Initializing program in main memory:\n");
   vect = (volatile int*) AUXMEM_BASE;
   uart_printf("Test. Is this working?\n");
 
