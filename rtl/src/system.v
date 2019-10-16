@@ -194,20 +194,19 @@ module system (
    ///////////////////////////////////// 
    ////// iob UART /////////////////
    ///////////////////////////////////
-
    //slave 2
    iob_uart simpleuart(
 		       //cpu interface
 		       .clk     (clk               ),
 		       .rst     (~resetn_int       ),
 
-		       .address (wire_s_addr[2*S_ADDR_W+4:2*S_ADDR_W+2]),
-		       .sel     (wire_s_valid[2]    ),
-		       .read    (~(|wire_s_wstrb[3*S_WSTRB_W-1 : 2*S_WSTRB_W])),
-		       .write   (|wire_s_wstrb[3*S_WSTRB_W-1 : 2*S_WSTRB_W]),
+		       .address (wire_s_addr[`UART*S_ADDR_W+4:`UART*S_ADDR_W+2]),
+		       .sel     (wire_s_valid[`UART]    ),
+		       .read    (~(|wire_s_wstrb[(`UART+1)*S_WSTRB_W-1 : `UART*S_WSTRB_W])),
+		       .write   (|wire_s_wstrb[(`UART+1)*S_WSTRB_W-1 : `UART*S_WSTRB_W]),
 
-		       .data_in (wire_s_wdata[3*S_WDATA_W-1: 2*S_WDATA_W]    ),
-		       .data_out(wire_s_rdata[3*S_RDATA_W-1: 2*S_RDATA_W]    ),
+		       .data_in (wire_s_wdata[(`UART+1)*S_WDATA_W-1: `UART*S_WDATA_W]    ),
+		       .data_out(wire_s_rdata[(`UART+1)*S_RDATA_W-1: `UART*S_RDATA_W]    ),
 
 		       //serial i/f
 		       .ser_tx  (ser_tx            ),
@@ -215,10 +214,10 @@ module system (
 		       );
 
    reg 	      uart_ready;
-   assign wire_s_ready[2] = uart_ready;
+   assign wire_s_ready[`UART] = uart_ready;
    
    always @(posedge clk) begin
-      uart_ready <= wire_s_valid[2];
+      uart_ready <= wire_s_valid[`UART];
    end  
    ////////////////////////////////////
    ///////////////////////////////////	       
@@ -228,25 +227,26 @@ module system (
    //   //////////////////////////////////////////////////////////////////
    //   //////////////////////////////////////////////////////////
    //   //// Open RAM ///////////////////////////////////////////
-   //   ////////////////////////////////////////////////////////  	  
+   //   ////////////////////////////////////////////////////////
+    
 `ifdef AUX_MEM
    //slave 4
    main_memory  #(
 		  .ADDR_W(MAIN_MEM_ADDR_W) 
 		  ) auxiliary_memory (
 				      .clk                (clk                                    ),
-				      .main_mem_write_data(wire_s_wdata[5*S_WDATA_W-1:4*S_WDATA_W]),
-				      .main_mem_addr      (wire_s_addr[4*S_ADDR_W + MAIN_MEM_ADDR_W-1:4*S_ADDR_W]),
-				      .main_mem_en        (wire_s_wstrb[5*S_WSTRB_W-1:4*S_WSTRB_W]),
-				      .main_mem_read_data (wire_s_rdata[5*S_RDATA_W-1:4*S_RDATA_W])                       
+				      .main_mem_write_data(wire_s_wdata[ (`AUX_MEM+1)*S_WDATA_W-1:`AUX_MEM*S_WDATA_W]),
+				      .main_mem_addr      (wire_s_addr[`AUX_MEM*S_ADDR_W + MAIN_MEM_ADDR_W-1:`AUX_MEM*S_ADDR_W]),
+				      .main_mem_en        (wire_s_wstrb[(`AUX_MEM+1)*S_WSTRB_W-1:`AUX_MEM*S_WSTRB_W]),
+				      .main_mem_read_data (wire_s_rdata[(`AUX_MEM+1)*S_RDATA_W-1:`AUX_MEM*S_RDATA_W])                       
 				      );
 
    
    reg 		aux_mem_ready;
-   assign wire_s_ready[4] = aux_mem_ready;
+   assign wire_s_ready[`AUX_MEM] = aux_mem_ready;
    
    always @(posedge clk) begin
-      aux_mem_ready <= wire_s_valid[4]; 
+      aux_mem_ready <= wire_s_valid[`AUX_MEM]; 
    end  
 
    
@@ -291,26 +291,19 @@ module system (
 		       .clk                (clk),
 		       .reset              (~processor_resetn),
 		       .buffer_clear       (buffer_clear),
-/* SLAVE 1	       .cache_write_data   (wire_s_wdata[2*S_WDATA_W-1:S_WDATA_W]),
+		       .cache_write_data   (wire_s_wdata[`CACHE*S_WDATA_W-1:S_WDATA_W]),
 		       .cache_addr         (wire_s_addr[S_ADDR_W+29:S_ADDR_W]),
 		       .cache_wstrb        (wire_s_wstrb[2*S_WSTRB_W-1:S_WSTRB_W]),
 		       .cache_read_data    (wire_s_rdata[2*S_RDATA_W-1:S_RDATA_W]),
 		       .cpu_req            (wire_s_valid[1]),
 		       .cache_ack          (wire_s_ready[1]),
-*/
-		       //slave 4
-		       .cache_write_data   (wire_s_wdata[5*S_WDATA_W-1:4*S_WDATA_W]),
-		       .cache_addr         (wire_s_addr[4*S_ADDR_W+29:4*S_ADDR_W]),
-		       .cache_wstrb        (wire_s_wstrb[5*S_WSTRB_W-1:4*S_WSTRB_W]),
-		       .cache_read_data    (wire_s_rdata[5*S_RDATA_W-1:4*S_RDATA_W]),
-		       .cpu_req            (wire_s_valid[4]),
-		       .cache_ack          (wire_s_ready[4]),
+
 		       //slave 3
 		       //Memory Cache controller signals
-		       .cache_controller_address (wire_s_addr[3*S_ADDR_W+5:3*S_ADDR_W+2]),
-		       .cache_controller_requested_data (wire_s_rdata[4*S_RDATA_W-1:3*S_RDATA_W]),
-		       .cache_controller_cpu_request (wire_s_valid[3]),
-		       .cache_controller_acknowledge (wire_s_ready[3]),	       
+		       .cache_controller_address (wire_s_addr[`CACHE_CTRL*S_ADDR_W+5:`CACHE_CTRL*S_ADDR_W+2]),
+		       .cache_controller_requested_data (wire_s_rdata[(`CACHE_CTRL+1)*S_RDATA_W-1:`CACHE_CTRL*S_RDATA_W]),
+		       .cache_controller_cpu_request (wire_s_valid[CACHE_CTRL]),
+		       .cache_controller_acknowledge (wire_s_ready[CACHE_CTRL]),	       
 		       .cache_controller_instr_access(wire_m_instr), //instruction signal from master (processor)
 		       
 		       ///// AXI signals
