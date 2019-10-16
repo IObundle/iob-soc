@@ -56,6 +56,7 @@ void main()
     uart_printf("%x\n", MAIN_MEM[i]);
   }
 
+#ifdef DDR
   uart_printf("\n\n******** DDR TEST *******\n\n");
   
   uart_printf("Writing from address: %x\n", DDR_MEM);
@@ -72,6 +73,7 @@ void main()
   }
 
   uart_printf("Read from address: %x with %d errors\n", DDR_MEM, acc);
+#endif
 
   uart_puts("\nPreparing to start the Main Memory program...\n");    
 

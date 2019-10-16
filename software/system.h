@@ -3,3 +3,5 @@
 #define UART_BASE       0x40000000
 #define CACHE_CTRL_BASE 0x60000000
 #define AUXMEM_BASE     0x80000000
+
+//#define DDR
