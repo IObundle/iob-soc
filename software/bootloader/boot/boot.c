@@ -30,7 +30,7 @@ void main()
   int line=0;
   int acc = 0;
   MAIN_MEM = (volatile int*) MAINMEM_BASE; //AUXMEM is slave 1
-  DDR_MEM = (volatile int*) AUXMEM_BASE; //cache is slave 4
+  //DDR_MEM = (volatile int*) AUXMEM_BASE; //cache is slave 4
 
   uart_init(UART_BASE,UART_CLK_FREQ/UART_BAUD_RATE);
 

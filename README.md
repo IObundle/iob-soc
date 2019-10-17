@@ -11,22 +11,25 @@ iob-rv32 (a RISC-V processor), an UART and support for external memory (optional
 * Open rtl/include/system.vh
 * Keep `` `define CACHE`` uncommented 
 * If the external memory is a DDR:
-  * Kepp uncommented `` `define DDR`` and `` `define DDR_INTERCONNECT``.
+    * Uncomment `` `define DDR`` and `` `define DDR_INTERCONNECT``.
+    * Open software/system.h and uncomment ``#define DDR``
 
-* If the external memory is a BRAM:
-  * Comment ``define DDR`` and ``define DDR_interconnect``.
+* If the external memory is a BRAM (It was not tested):
+    * Comment ``define DDR`` and ``define DDR_interconnect``.
 
 #### Without external memory: 
 * Open rtl/include/system.vh
-* Comment `` `define CACHE`` 
+* Comment `` `define CACHE``, `` `define DDR`` and `` `define DDR_INTERCONNECT``
 
 ```bash
 make bitstream
 ```
+
 ## To send the program to board FPGA host (baba-de-camelo):
 ```bash
 make send-baba
 ```
+
 ## To run on Xilinx FPGA:
 This command should be given in FPGA host machine. At this moment the unique
 Xilinx FPGA is hosted by baba-de-camelo.

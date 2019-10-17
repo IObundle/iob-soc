@@ -4,9 +4,7 @@
 //`define CACHE 1 //Main memory should be always 1
 `define UART 2
 //`define CACHE_CTRL 3
-
 `define AUX_MEM 4 //Required the 100 MHZ clock (and not using DDR) to use this memory
-
 
 //`define DDR //Using the DDR requires CACHE
 //`define DDR_INTERCONNECT

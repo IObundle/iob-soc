@@ -291,7 +291,7 @@ module system (
 		       .clk                (clk),
 		       .reset              (~processor_resetn),
 		       .buffer_clear       (buffer_clear),
-		       .cache_write_data   (wire_s_wdata[`CACHE*S_WDATA_W-1:S_WDATA_W]),
+		       .cache_write_data   (wire_s_wdata[2*S_WDATA_W-1:S_WDATA_W]),
 		       .cache_addr         (wire_s_addr[S_ADDR_W+29:S_ADDR_W]),
 		       .cache_wstrb        (wire_s_wstrb[2*S_WSTRB_W-1:S_WSTRB_W]),
 		       .cache_read_data    (wire_s_rdata[2*S_RDATA_W-1:S_RDATA_W]),
@@ -302,8 +302,8 @@ module system (
 		       //Memory Cache controller signals
 		       .cache_controller_address (wire_s_addr[`CACHE_CTRL*S_ADDR_W+5:`CACHE_CTRL*S_ADDR_W+2]),
 		       .cache_controller_requested_data (wire_s_rdata[(`CACHE_CTRL+1)*S_RDATA_W-1:`CACHE_CTRL*S_RDATA_W]),
-		       .cache_controller_cpu_request (wire_s_valid[CACHE_CTRL]),
-		       .cache_controller_acknowledge (wire_s_ready[CACHE_CTRL]),	       
+		       .cache_controller_cpu_request (wire_s_valid[`CACHE_CTRL]),
+		       .cache_controller_acknowledge (wire_s_ready[`CACHE_CTRL]),	       
 		       .cache_controller_instr_access(wire_m_instr), //instruction signal from master (processor)
 		       
 		       ///// AXI signals
