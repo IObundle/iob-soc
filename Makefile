@@ -35,7 +35,7 @@ bitstream: $(FPGA)
 ld-hw:
 	make -C fpga/xilinx ld-hw
 
-xilinx: 
+xilinx:
 	make -C fpga/xilinx TEST=$(TEST) BOOT=$(BOOT) SYNTH_TARGET=$(SYNTH_TARGET)
 
 altera:
@@ -53,6 +53,8 @@ send-baba:
 #scp -P 1418 ./fpga/xilinx/*.ltx $(IOBUSER)@iobundle.ddns.net:$(REPO_PATH)/fpga/xilinx
 
 clean:
+	rm -rf INCA_libs
+	rm -f *.log
 	@make -C fpga/xilinx clean --no-print-directory
 	@make -C simulation/ncsim clean --no-print-directory
 	@make -C simulation/icarus clean --no-print-directory
