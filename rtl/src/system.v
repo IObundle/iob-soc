@@ -2,8 +2,20 @@
 
 `include "system.vh"
 
-module system (
-               input 	     clk, 
+module system #(
+
+   		parameter SOFT_RESET_ADDR = 32'h6ffffffc,
+   		parameter MAIN_MEM_ADDR_W = 14, // 14 = 32 bits (4) * 2**12 (4096) depth
+   		parameter BOOT_ADDR_W = 14,
+   		parameter N_SLAVES = 5,
+   		parameter SLAVE_ADDR_W = 3, //ceil(log2(N_SLAVES))
+   		parameter S_ADDR_W = 32,
+   		parameter S_WDATA_W = 32,
+   		parameter S_WSTRB_W = 4,
+   		parameter S_RDATA_W = 32 
+	)
+	(	
+	       input 	     clk, 
                input 	     reset,
                output 	     ser_tx,
                input 	     ser_rx,
@@ -37,22 +49,6 @@ module system (
                input 	     sys_s_axi_rlast
                );
    
-
-   parameter SOFT_RESET_ADDR = 32'h6ffffffc;
-   
-   parameter MAIN_MEM_ADDR_W = 14; // 14 = 32 bits (4) * 2**12 (4096) depth
-
-
-   parameter BOOT_ADDR_W = 14;
-
-   parameter N_SLAVES = 5;
-   parameter SLAVE_ADDR_W = 3; //ceil(log2(N_SLAVES))
-
-   parameter S_ADDR_W = 32;
-   parameter S_WDATA_W = 32;
-   parameter S_WSTRB_W = 4;
-   parameter S_RDATA_W = 32; 
-   
    //////////////////////////////////
    //// wires //////////////////////   
    ////////////////////////////////
@@ -69,10 +65,27 @@ module system (
    ////////////////////////////////
    //////// Slaves
    ///////////////////////////////
-   wire [N_SLAVES*S_ADDR_W-1:0]      wire_s_addr;
-   wire [N_SLAVES*S_WDATA_W-1:0]     wire_s_wdata; 
-   wire [N_SLAVES*S_WSTRB_W-1:0]     wire_s_wstrb;
-   wire [N_SLAVES*S_RDATA_W-1:0]     wire_s_rdata;
+   wire [S_ADDR_W-1:0]      	wire_s_addr [N_SLAVES-1:0];
+   wire [S_WDATA_W-1:0]     	wire_s_wdata[N_SLAVES-1:0]; 
+   wire [S_WSTRB_W-1:0]     	wire_s_wstrb[N_SLAVES-1:0];
+   wire [S_RDATA_W-1:0]    	wire_s_rdata[N_SLAVES-1:0];
+   wire [N_SLAVES*S_ADDR_W-1:0]      wire_s_addr_single;
+   wire [N_SLAVES*S_WDATA_W-1:0]     wire_s_wdata_single; 
+   wire [N_SLAVES*S_WSTRB_W-1:0]     wire_s_wstrb_single;
+   wire [N_SLAVES*S_RDATA_W-1:0]     wire_s_rdata_single;
+   
+   //Concatenate double array slave signals, because verilog
+   //doesn't allow to pass double arrays to others modules
+   genvar gi;
+   generate 
+   	for(gi=0; gi<N_SLAVES;gi=gi+1) begin: SINGLESLAVE
+		assign wire_s_addr_single[((gi+1)*S_ADDR_W)-1 -: S_ADDR_W] = wire_s_addr[gi][S_ADDR_W-1 : 0];
+		assign wire_s_wdata_single[((gi+1)*S_WDATA_W)-1 -: S_WDATA_W] = wire_s_wdata[gi][S_WDATA_W-1 : 0];
+		assign wire_s_wstrb_single[((gi+1)*S_WSTRB_W)-1 -: S_WSTRB_W] = wire_s_wstrb[gi][S_WSTRB_W-1 : 0];
+		assign wire_s_rdata_single[((gi+1)*S_RDATA_W)-1 -: S_RDATA_W] = wire_s_rdata[gi][S_RDATA_W-1 : 0];
+	end
+   endgenerate
+
    wire [N_SLAVES-1:0] 		     wire_s_valid;
    wire [N_SLAVES-1:0] 		     wire_s_ready;
 
@@ -183,10 +196,10 @@ module system (
 			   ///////////////////////////////////
 			   //// N slaves  interface /////////
 			   /////////////////////////////////
-			   .s_addr  (wire_s_addr),
-			   .s_wdata (wire_s_wdata),	       
-			   .s_wstrb (wire_s_wstrb),
-			   .s_rdata (wire_s_rdata),
+			   .s_addr  (wire_s_addr_single),
+			   .s_wdata (wire_s_wdata_single),	       
+			   .s_wstrb (wire_s_wstrb_single),
+			   .s_rdata (wire_s_rdata_single),
 			   .s_valid (wire_s_valid),
 			   .s_ready (wire_s_ready)
 			   );
@@ -200,13 +213,13 @@ module system (
 		       .clk     (clk               ),
 		       .rst     (~resetn_int       ),
 
-		       .address (wire_s_addr[`UART*S_ADDR_W+4:`UART*S_ADDR_W+2]),
+		       .address (wire_s_addr[`UART][4:2]),
 		       .sel     (wire_s_valid[`UART]    ),
-		       .read    (~(|wire_s_wstrb[(`UART+1)*S_WSTRB_W-1 : `UART*S_WSTRB_W])),
-		       .write   (|wire_s_wstrb[(`UART+1)*S_WSTRB_W-1 : `UART*S_WSTRB_W]),
+		       .read    (~(|wire_s_wstrb[`UART][S_WSTRB_W-1:0])),
+		       .write   (|wire_s_wstrb[`UART][S_WSTRB_W-1:0]),
 
-		       .data_in (wire_s_wdata[(`UART+1)*S_WDATA_W-1: `UART*S_WDATA_W]    ),
-		       .data_out(wire_s_rdata[(`UART+1)*S_RDATA_W-1: `UART*S_RDATA_W]    ),
+		       .data_in (wire_s_wdata[`UART][S_WDATA_W-1:0]),
+		       .data_out(wire_s_rdata[`UART][S_RDATA_W-1:0]),
 
 		       //serial i/f
 		       .ser_tx  (ser_tx            ),
@@ -235,10 +248,10 @@ module system (
 		  .ADDR_W(MAIN_MEM_ADDR_W) 
 		  ) auxiliary_memory (
 				      .clk                (clk                                    ),
-				      .main_mem_write_data(wire_s_wdata[ (`AUX_MEM+1)*S_WDATA_W-1:`AUX_MEM*S_WDATA_W]),
-				      .main_mem_addr      (wire_s_addr[`AUX_MEM*S_ADDR_W + MAIN_MEM_ADDR_W-1:`AUX_MEM*S_ADDR_W]),
-				      .main_mem_en        (wire_s_wstrb[(`AUX_MEM+1)*S_WSTRB_W-1:`AUX_MEM*S_WSTRB_W]),
-				      .main_mem_read_data (wire_s_rdata[(`AUX_MEM+1)*S_RDATA_W-1:`AUX_MEM*S_RDATA_W])                       
+				      .main_mem_write_data(wire_s_wdata[`AUX_MEM][S_WDATA_W-1:0]),
+				      .main_mem_addr      (wire_s_addr[`AUX_MEM][MAIN_MEM_ADDR_W-1:0]),
+				      .main_mem_en        (wire_s_wstrb[`AUX_MEM][S_WSTRB_W-1:0]),
+				      .main_mem_read_data (wire_s_rdata[`AUX_MEM][S_RDATA_W-1:0])                       
 				      );
 
    
@@ -260,15 +273,15 @@ module system (
    //// Boot ROM ///////////////////////////////////////////
    ////////////////////////////////////////////////////////  
 
-   //slave 0
+   //Boot ROM is always slave 0
    boot_memory  #(
 		  .ADDR_W(BOOT_ADDR_W) 
 		  ) boot_memory (
 				 .clk            (clk           ),
-				 .boot_write_data(wire_s_wdata[S_WDATA_W-1:0]),
-				 .boot_addr      (wire_s_addr[BOOT_ADDR_W-1:0]),
-				 .boot_en        (wire_s_wstrb[S_WSTRB_W-1:0]),
-				 .boot_read_data (wire_s_rdata[S_RDATA_W-1:0])                            
+				 .boot_write_data(wire_s_wdata[0][S_WDATA_W-1:0]),
+				 .boot_addr      (wire_s_addr[0][BOOT_ADDR_W-1:0]),
+				 .boot_en        (wire_s_wstrb[0][S_WSTRB_W-1:0]),
+				 .boot_read_data (wire_s_rdata[0][S_RDATA_W-1:0])                            
 				 );
    
 
@@ -286,22 +299,22 @@ module system (
    //// Memory cache ///////////////////////////////////////
    ////////////////////////////////////////////////////////
 
-   //slaves 1 and 3
+   //slaves 1(always cache or main_memory) and 3
    memory_cache cache (
 		       .clk                (clk),
 		       .reset              (~processor_resetn),
 		       .buffer_clear       (buffer_clear),
-		       .cache_write_data   (wire_s_wdata[2*S_WDATA_W-1:S_WDATA_W]),
-		       .cache_addr         (wire_s_addr[S_ADDR_W+29:S_ADDR_W]),
-		       .cache_wstrb        (wire_s_wstrb[2*S_WSTRB_W-1:S_WSTRB_W]),
-		       .cache_read_data    (wire_s_rdata[2*S_RDATA_W-1:S_RDATA_W]),
+		       .cache_write_data   (wire_s_wdata[1][S_WDATA_W-1:0]),
+		       .cache_addr         (wire_s_addr[1][29:0]), //TODO: This value (29) shouldn't be hard coded
+		       .cache_wstrb        (wire_s_wstrb[1][S_WSTRB_W-1:0]),
+		       .cache_read_data    (wire_s_rdata[1][S_RDATA_W-1:0]),
 		       .cpu_req            (wire_s_valid[1]),
 		       .cache_ack          (wire_s_ready[1]),
 
 		       //slave 3
 		       //Memory Cache controller signals
-		       .cache_controller_address (wire_s_addr[`CACHE_CTRL*S_ADDR_W+5:`CACHE_CTRL*S_ADDR_W+2]),
-		       .cache_controller_requested_data (wire_s_rdata[(`CACHE_CTRL+1)*S_RDATA_W-1:`CACHE_CTRL*S_RDATA_W]),
+		       .cache_controller_address (wire_s_addr[`CACHE_CTRL][5:2]),
+		       .cache_controller_requested_data (wire_s_rdata[`CACHE_CTRL][S_RDATA_W-1:0]),
 		       .cache_controller_cpu_request (wire_s_valid[`CACHE_CTRL]),
 		       .cache_controller_acknowledge (wire_s_ready[`CACHE_CTRL]),	       
 		       .cache_controller_instr_access(wire_m_instr), //instruction signal from master (processor)
@@ -343,15 +356,15 @@ module system (
      //// Open RAM ///////////////////////////////////////////
      ////////////////////////////////////////////////////////        
 
-   //slave 1
+   //slave 1 (always cache or main_memory)
    main_memory  #(
 		  .ADDR_W(MAIN_MEM_ADDR_W) 
 		  ) main_memory (
-				 .clk                (clk                                               ),
-				 .main_mem_write_data(wire_s_wdata[2*S_WDATA_W-1:S_WDATA_W]             ),
-				 .main_mem_addr      (wire_s_addr[S_ADDR_W+MAIN_MEM_ADDR_W-1:S_ADDR_W]),
-				 .main_mem_en        (wire_s_wstrb[2*S_WSTRB_W-1:S_WSTRB_W]             ),
-				 .main_mem_read_data (wire_s_rdata[2*S_RDATA_W-1:S_RDATA_W]             )                       
+				 .clk                (clk                              ),
+				 .main_mem_write_data(wire_s_wdata[1][S_WDATA_W-1:0]   ),
+				 .main_mem_addr      (wire_s_addr[1][MAIN_MEM_ADDR_W-1]),
+				 .main_mem_en        (wire_s_wstrb[1][S_WSTRB_W-1:0]   ),
+				 .main_mem_read_data (wire_s_rdata[1][S_RDATA_W-1:0]   )                       
 				 );
 
    
