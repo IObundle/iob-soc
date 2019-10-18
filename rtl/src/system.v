@@ -12,10 +12,10 @@ module system #(
    		parameter S_ADDR_W = 32,
    		parameter S_WDATA_W = 32,
    		parameter S_WSTRB_W = 4,
-   		parameter S_RDATA_W = 32 
+   		parameter S_RDATA_W = 32
 	)
-	(	
-	       input 	     clk, 
+	(
+	       input 	     clk,
                input 	     reset,
                output 	     ser_tx,
                input 	     ser_rx,
@@ -48,36 +48,36 @@ module system #(
                input [31:0]  sys_s_axi_rdata,
                input 	     sys_s_axi_rlast
                );
-   
+
    //////////////////////////////////
-   //// wires //////////////////////   
+   //// wires //////////////////////
    ////////////////////////////////
-   //////// PicoRV32 
-   ////////////////////////////// 
+   //////// PicoRV32
+   //////////////////////////////
    wire [31:0]  		     wire_m_addr;
-   wire [31:0] 			     wire_m_wdata; 
+   wire [31:0] 			     wire_m_wdata;
    wire [3:0] 			     wire_m_wstrb;
    wire [31:0] 			     wire_m_rdata;
    wire 			     wire_m_valid;
    wire 			     wire_m_ready;
    wire 			     wire_m_instr;
-			     
+
    ////////////////////////////////
    //////// Slaves
    ///////////////////////////////
    wire [S_ADDR_W-1:0]      	wire_s_addr [N_SLAVES-1:0];
-   wire [S_WDATA_W-1:0]     	wire_s_wdata[N_SLAVES-1:0]; 
+   wire [S_WDATA_W-1:0]     	wire_s_wdata[N_SLAVES-1:0];
    wire [S_WSTRB_W-1:0]     	wire_s_wstrb[N_SLAVES-1:0];
    wire [S_RDATA_W-1:0]    	wire_s_rdata[N_SLAVES-1:0];
    wire [N_SLAVES*S_ADDR_W-1:0]      wire_s_addr_single;
-   wire [N_SLAVES*S_WDATA_W-1:0]     wire_s_wdata_single; 
+   wire [N_SLAVES*S_WDATA_W-1:0]     wire_s_wdata_single;
    wire [N_SLAVES*S_WSTRB_W-1:0]     wire_s_wstrb_single;
    wire [N_SLAVES*S_RDATA_W-1:0]     wire_s_rdata_single;
-   
+
    //Concatenate double array slave signals, because verilog
    //doesn't allow to pass double arrays to others modules
    genvar gi;
-   generate 
+   generate
    	for(gi=0; gi<N_SLAVES;gi=gi+1) begin: SINGLESLAVE
 		assign wire_s_addr_single[((gi+1)*S_ADDR_W)-1 -: S_ADDR_W] = wire_s_addr[gi][S_ADDR_W-1 : 0];
 		assign wire_s_wdata_single[((gi+1)*S_WDATA_W)-1 -: S_WDATA_W] = wire_s_wdata[gi][S_WDATA_W-1 : 0];
@@ -90,27 +90,27 @@ module system #(
    wire [N_SLAVES-1:0] 		     wire_s_ready;
 
    wire 			     buffer_clear;
-   
-   // reset control counter 
+
+   // reset control counter
    reg [10:0] 			     rst_cnt, rst_cnt_nxt;
-   
+
    // reset control
    always @(posedge clk, posedge reset) begin
       if(reset) begin
 	 rst_cnt <= 11'd0;
 	 //resetn_int <=1'b0;
       end else begin
-	 if (rst_cnt [10] != 1'b1) begin  
+	 if (rst_cnt [10] != 1'b1) begin
 	    rst_cnt <= rst_cnt + 1'b1;
 	    //resetn_int <= 1'b0;
 	 end
-	 //rst_cnt <= rst_cnt; 
+	 //rst_cnt <= rst_cnt;
 	 //resetn_int <= 1'b1;
       end
    end // always @ (posedge clk)
    wire resetn_int;
    assign resetn_int = (rst_cnt [10]);
-   assign resetn_int_sys = resetn_int; 
+   assign resetn_int_sys = resetn_int;
 
    ///////////////////////////////////////////////
    ////////// Soft Reset Controller ////////////
@@ -118,22 +118,22 @@ module system #(
    reg 	mem_sel;
    reg [9:0] soft_reset;
 
-   
+
    always @ (posedge clk) begin
       if (~resetn_int)
 	begin
 	   mem_sel <= 1'b0;
 	   soft_reset <= 10'b1111100000;
 	end
-      else 
+      else
 	begin
 
 `ifdef CACHE
            if ((wire_m_addr == SOFT_RESET_ADDR) && (buffer_clear))
-`else       
+`else
              if ((wire_m_addr == SOFT_RESET_ADDR))
-`endif        
-            
+`endif
+
                begin
 		  mem_sel <= 1'b1;
 		  soft_reset <= {soft_reset[8:0],soft_reset[9]};
@@ -150,7 +150,7 @@ module system #(
 
    reg processor_resetn;
    always @* processor_resetn <= resetn_int && ~(soft_reset[0]);
-   
+
    picorv32 #(
 	      .ENABLE_FAST_MUL(1),
 	      .ENABLE_DIV(1)
@@ -168,12 +168,12 @@ module system #(
 		           .mem_wstrb     (wire_m_wstrb),
 		           .mem_rdata     (wire_m_rdata)
 		           );
-   
-   
-   wire [1:0] slave_sel;
+
+
+   wire [SLAVE_ADDR_W-1:0] slave_sel;
    assign s_sel = slave_sel;
-   
-   
+
+
    iob_generic_interconnect #(
 			      .N_SLAVES(N_SLAVES),
 			      .SLAVE_ADDR_W(SLAVE_ADDR_W)
@@ -183,12 +183,12 @@ module system #(
 			   .mem_select   (mem_sel),
 			   .clk          (clk),
 			   .sel          (1'b1),
-			   
+
 			   /////////////////////////////////////
 			   //// master interface //////////////
 			   ///////////////////////////////////
 			   .m_addr  (wire_m_addr),
-			   .m_wdata (wire_m_wdata),	       
+			   .m_wdata (wire_m_wdata),
 			   .m_wstrb (wire_m_wstrb),
 			   .m_rdata (wire_m_rdata),
 			   .m_valid (wire_m_valid),
@@ -197,14 +197,14 @@ module system #(
 			   //// N slaves  interface /////////
 			   /////////////////////////////////
 			   .s_addr  (wire_s_addr_single),
-			   .s_wdata (wire_s_wdata_single),	       
+			   .s_wdata (wire_s_wdata_single),
 			   .s_wstrb (wire_s_wstrb_single),
 			   .s_rdata (wire_s_rdata_single),
 			   .s_valid (wire_s_valid),
 			   .s_ready (wire_s_ready)
 			   );
-      
-   ///////////////////////////////////// 
+
+   /////////////////////////////////////
    ////// iob UART /////////////////
    ///////////////////////////////////
    //slave 2
@@ -223,75 +223,75 @@ module system #(
 
 		       //serial i/f
 		       .ser_tx  (ser_tx            ),
-		       .ser_rx  (ser_rx            ) 
+		       .ser_rx  (ser_rx            )
 		       );
 
    reg 	      uart_ready;
    assign wire_s_ready[`UART] = uart_ready;
-   
+
    always @(posedge clk) begin
       uart_ready <= wire_s_valid[`UART];
-   end  
+   end
    ////////////////////////////////////
-   ///////////////////////////////////	       
-         
+   ///////////////////////////////////
+
    //   ////////////////////////////////////////////////////////////////////
    //   ///// Open source RAM and Boot ROM with native memory instance ////
    //   //////////////////////////////////////////////////////////////////
    //   //////////////////////////////////////////////////////////
    //   //// Open RAM ///////////////////////////////////////////
    //   ////////////////////////////////////////////////////////
-    
+
 `ifdef AUX_MEM
    //slave 4
    main_memory  #(
-		  .ADDR_W(MAIN_MEM_ADDR_W) 
+		  .ADDR_W(MAIN_MEM_ADDR_W)
 		  ) auxiliary_memory (
 				      .clk                (clk                                    ),
 				      .main_mem_write_data(wire_s_wdata[`AUX_MEM][S_WDATA_W-1:0]),
 				      .main_mem_addr      (wire_s_addr[`AUX_MEM][MAIN_MEM_ADDR_W-1:0]),
 				      .main_mem_en        (wire_s_wstrb[`AUX_MEM][S_WSTRB_W-1:0]),
-				      .main_mem_read_data (wire_s_rdata[`AUX_MEM][S_RDATA_W-1:0])                       
+				      .main_mem_read_data (wire_s_rdata[`AUX_MEM][S_RDATA_W-1:0])
 				      );
 
-   
+
    reg 		aux_mem_ready;
    assign wire_s_ready[`AUX_MEM] = aux_mem_ready;
-   
-   always @(posedge clk) begin
-      aux_mem_ready <= wire_s_valid[`AUX_MEM]; 
-   end  
 
-   
-`endif  
-   
+   always @(posedge clk) begin
+      aux_mem_ready <= wire_s_valid[`AUX_MEM];
+   end
+
+
+`endif
+
    ////////////////////////////////////////////////////////////////////
    ///// Open source RAM with native memory instance ////
    //////////////////////////////////////////////////////////////////
-   
+
    //////////////////////////////////////////////////////////
    //// Boot ROM ///////////////////////////////////////////
-   ////////////////////////////////////////////////////////  
+   ////////////////////////////////////////////////////////
 
    //Boot ROM is always slave 0
    boot_memory  #(
-		  .ADDR_W(BOOT_ADDR_W) 
+		  .ADDR_W(BOOT_ADDR_W)
 		  ) boot_memory (
 				 .clk            (clk           ),
 				 .boot_write_data(wire_s_wdata[0][S_WDATA_W-1:0]),
 				 .boot_addr      (wire_s_addr[0][BOOT_ADDR_W-1:0]),
 				 .boot_en        (wire_s_wstrb[0][S_WSTRB_W-1:0]),
-				 .boot_read_data (wire_s_rdata[0][S_RDATA_W-1:0])                            
+				 .boot_read_data (wire_s_rdata[0][S_RDATA_W-1:0])
 				 );
-   
 
-   
+
+
    reg 	   boot_mem_ready;
    assign wire_s_ready[0] = boot_mem_ready;
-   
+
    always @(posedge clk) begin
-      boot_mem_ready <= wire_s_valid[0]; 
-   end   
+      boot_mem_ready <= wire_s_valid[0];
+   end
    //////////////////////////////////////////////////////
    /////////////////////////////////////////////////////
 `ifdef CACHE
@@ -316,29 +316,29 @@ module system #(
 		       .cache_controller_address (wire_s_addr[`CACHE_CTRL][5:2]),
 		       .cache_controller_requested_data (wire_s_rdata[`CACHE_CTRL][S_RDATA_W-1:0]),
 		       .cache_controller_cpu_request (wire_s_valid[`CACHE_CTRL]),
-		       .cache_controller_acknowledge (wire_s_ready[`CACHE_CTRL]),	       
+		       .cache_controller_acknowledge (wire_s_ready[`CACHE_CTRL]),
 		       .cache_controller_instr_access(wire_m_instr), //instruction signal from master (processor)
-		       
+
 		       ///// AXI signals
-		       /// Read            
-		       .AR_ADDR            (sys_s_axi_araddr), 
+		       /// Read
+		       .AR_ADDR            (sys_s_axi_araddr),
 		       .AR_LEN             (sys_s_axi_arlen),
 		       .AR_SIZE            (sys_s_axi_arsize),
 		       .AR_BURST           (sys_s_axi_arburst),
-		       .AR_VALID           (sys_s_axi_arvalid), 
+		       .AR_VALID           (sys_s_axi_arvalid),
 		       .AR_READY           (sys_s_axi_arready),
-		       //.R_ADDR             (wire_R_ADDR), 
-		       .R_VALID            (sys_s_axi_rvalid), 
+		       //.R_ADDR             (wire_R_ADDR),
+		       .R_VALID            (sys_s_axi_rvalid),
 		       .R_READY            (sys_s_axi_rready),
 		       .R_DATA             (sys_s_axi_rdata),
-		       .R_LAST             (sys_s_axi_rlast),            
+		       .R_LAST             (sys_s_axi_rlast),
 		       /// Write
 		       .AW_ADDR            (sys_s_axi_awaddr),
 		       .AW_VALID           (sys_s_axi_awvalid),
-		       .AW_READY           (sys_s_axi_awready), 
+		       .AW_READY           (sys_s_axi_awready),
 		       //.W_ADDR             (wire_W_ADDR),
 		       .W_VALID            (sys_s_axi_wvalid),
-		       .W_STRB             (sys_s_axi_wstrb), 
+		       .W_STRB             (sys_s_axi_wstrb),
 		       .W_READY            (sys_s_axi_wready),
 		       .W_DATA             (sys_s_axi_wdata),
 		       .B_VALID            (sys_s_axi_bvalid),
@@ -354,27 +354,27 @@ module system #(
 `else
    //////////////////////////////////////////////////////////
      //// Open RAM ///////////////////////////////////////////
-     ////////////////////////////////////////////////////////        
+     ////////////////////////////////////////////////////////
 
    //slave 1 (always cache or main_memory)
    main_memory  #(
-		  .ADDR_W(MAIN_MEM_ADDR_W) 
+		  .ADDR_W(MAIN_MEM_ADDR_W)
 		  ) main_memory (
 				 .clk                (clk                              ),
 				 .main_mem_write_data(wire_s_wdata[1][S_WDATA_W-1:0]   ),
 				 .main_mem_addr      (wire_s_addr[1][MAIN_MEM_ADDR_W-1:0]),
 				 .main_mem_en        (wire_s_wstrb[1][S_WSTRB_W-1:0]   ),
-				 .main_mem_read_data (wire_s_rdata[1][S_RDATA_W-1:0]   )                       
+				 .main_mem_read_data (wire_s_rdata[1][S_RDATA_W-1:0]   )
 				 );
 
-   
+
    reg            main_mem_ready;
    assign wire_s_ready[1] = main_mem_ready;
-   
+
    always @(posedge clk) begin
-      main_mem_ready <= wire_s_valid[1]; 
-   end 
-   
+      main_mem_ready <= wire_s_valid[1];
+   end
+
 `endif
-   
+
 endmodule
