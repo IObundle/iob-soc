@@ -362,7 +362,7 @@ module system #(
 		  ) main_memory (
 				 .clk                (clk                              ),
 				 .main_mem_write_data(wire_s_wdata[1][S_WDATA_W-1:0]   ),
-				 .main_mem_addr      (wire_s_addr[1][MAIN_MEM_ADDR_W-1]),
+				 .main_mem_addr      (wire_s_addr[1][MAIN_MEM_ADDR_W-1:0]),
 				 .main_mem_en        (wire_s_wstrb[1][S_WSTRB_W-1:0]   ),
 				 .main_mem_read_data (wire_s_rdata[1][S_RDATA_W-1:0]   )                       
 				 );
