@@ -21,7 +21,7 @@ module system #(
                input 	     ser_rx,
 	       output 	     trap,
                output 	     resetn_int_sys,
-	       output [1:0]  s_sel,
+	       output [SLAVE_ADDR_W-1:0]  s_sel,
 	       output 	     sys_mem_sel,
 	       // Slave signals
                output 	     sys_s_axi_awvalid,
@@ -66,9 +66,10 @@ module system #(
    //////// Slaves
    ///////////////////////////////
    wire [S_ADDR_W-1:0]      	wire_s_addr [N_SLAVES-1:0];
-   wire [S_WDATA_W-1:0]     	wire_s_wdata[N_SLAVES-1:0];
-   wire [S_WSTRB_W-1:0]     	wire_s_wstrb[N_SLAVES-1:0];
    wire [S_RDATA_W-1:0]    	wire_s_rdata[N_SLAVES-1:0];
+   wire [S_WSTRB_W-1:0]     	wire_s_wstrb[N_SLAVES-1:0];
+   wire [S_WDATA_W-1:0]     	wire_s_wdata[N_SLAVES-1:0];
+
    wire [N_SLAVES*S_ADDR_W-1:0]      wire_s_addr_single;
    wire [N_SLAVES*S_WDATA_W-1:0]     wire_s_wdata_single;
    wire [N_SLAVES*S_WSTRB_W-1:0]     wire_s_wstrb_single;
@@ -79,10 +80,10 @@ module system #(
    genvar gi;
    generate
    	for(gi=0; gi<N_SLAVES;gi=gi+1) begin: SINGLESLAVE
-		assign wire_s_addr_single[((gi+1)*S_ADDR_W)-1 -: S_ADDR_W] = wire_s_addr[gi][S_ADDR_W-1 : 0];
-		assign wire_s_wdata_single[((gi+1)*S_WDATA_W)-1 -: S_WDATA_W] = wire_s_wdata[gi][S_WDATA_W-1 : 0];
-		assign wire_s_wstrb_single[((gi+1)*S_WSTRB_W)-1 -: S_WSTRB_W] = wire_s_wstrb[gi][S_WSTRB_W-1 : 0];
-		assign wire_s_rdata_single[((gi+1)*S_RDATA_W)-1 -: S_RDATA_W] = wire_s_rdata[gi][S_RDATA_W-1 : 0];
+		assign wire_s_addr[gi][S_ADDR_W-1 : 0] = wire_s_addr_single[((gi+1)*S_ADDR_W)-1 -: S_ADDR_W];
+		assign wire_s_wdata[gi][S_WDATA_W-1:0] = wire_s_wdata_single[((gi+1)*S_WDATA_W)-1 -: S_WDATA_W];
+		assign wire_s_wstrb[gi][S_WSTRB_W-1 : 0]= wire_s_wstrb_single[((gi+1)*S_WSTRB_W)-1 -: S_WSTRB_W];
+		assign wire_s_rdata_single[((gi+1)*S_RDATA_W)-1 -: S_RDATA_W]=wire_s_rdata[gi][S_RDATA_W-1 : 0];
 	end
    endgenerate
 
