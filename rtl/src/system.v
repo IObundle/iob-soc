@@ -69,7 +69,7 @@ module system (
    ////////////////////////////////
    //////// Slaves
    ///////////////////////////////
-   wire [N_SLAVES*S_ADDR_W-1:0]      wire_s_addr;
+   wire [S_ADDR_W-1:0]      wire_s_addr [N_SLAVES];
    wire [N_SLAVES*S_WDATA_W-1:0]     wire_s_wdata; 
    wire [N_SLAVES*S_WSTRB_W-1:0]     wire_s_wstrb;
    wire [N_SLAVES*S_RDATA_W-1:0]     wire_s_rdata;
@@ -222,36 +222,6 @@ module system (
    ////////////////////////////////////
    ///////////////////////////////////	       
          
-   //   ////////////////////////////////////////////////////////////////////
-   //   ///// Open source RAM and Boot ROM with native memory instance ////
-   //   //////////////////////////////////////////////////////////////////
-   //   //////////////////////////////////////////////////////////
-   //   //// Open RAM ///////////////////////////////////////////
-   //   ////////////////////////////////////////////////////////
-    
-`ifdef AUX_MEM
-   //slave 4
-   main_memory  #(
-		  .ADDR_W(MAIN_MEM_ADDR_W) 
-		  ) auxiliary_memory (
-				      .clk                (clk                                    ),
-				      .main_mem_write_data(wire_s_wdata[ (`AUX_MEM+1)*S_WDATA_W-1:`AUX_MEM*S_WDATA_W]),
-				      .main_mem_addr      (wire_s_addr[`AUX_MEM*S_ADDR_W + MAIN_MEM_ADDR_W-1:`AUX_MEM*S_ADDR_W]),
-				      .main_mem_en        (wire_s_wstrb[(`AUX_MEM+1)*S_WSTRB_W-1:`AUX_MEM*S_WSTRB_W]),
-				      .main_mem_read_data (wire_s_rdata[(`AUX_MEM+1)*S_RDATA_W-1:`AUX_MEM*S_RDATA_W])                       
-				      );
-
-   
-   reg 		aux_mem_ready;
-   assign wire_s_ready[`AUX_MEM] = aux_mem_ready;
-   
-   always @(posedge clk) begin
-      aux_mem_ready <= wire_s_valid[`AUX_MEM]; 
-   end  
-
-   
-`endif  
-   
    ////////////////////////////////////////////////////////////////////
    ///// Open source RAM with native memory instance ////
    //////////////////////////////////////////////////////////////////
@@ -363,5 +333,39 @@ module system (
    end 
    
 `endif
+   
+//////////////////////////////////////////////////////////
+     //// Maxeler IP ///////////////////////////////////////////
+     ///////////////VectorConstantMultiply//////////////////////        
+
+   //It will have 3 slave interfaces. Mapped_registers, Input stream and Output stream 
+   VectorsConstantMultiplication_maxeler_com_maxeler_techonologies_0_1 vector_scale (
+	  	//Mapped Registers Interface (slave 4)
+	   		//Inputs
+		. mec_clk (clk),
+		. mec_rst (~resetn_int)	
+		. s_axi_mapped_regs_awid(),  
+		. s_axi_mapped_regs_awaddr() 
+		. s_axi_mapped_regs_awlen 
+		. s_axi_mapped_regs_awvalid
+		. s_axi_mapped_regs_wdata 
+		. s_axi_mapped_regs_wstrb 
+		. s_axi_mapped_regs_wlast 
+		. s_axi_mapped_regs_wvalid 
+		. s_axi_mapped_regs_bready 
+		. s_axi_mapped_regs_arid  
+		. s_axi_mapped_regs_araddr 
+		. s_axi_mapped_regs_arlen 
+		. s_axi_mapped_regs_arvalid
+		. s_axi_mapped_regs_rready 
+
+
+
+
+
+
+//////////////////////////////////////////////////////////
+     //////////////////////////////////////////////
+     /////////////////////////////////////        
    
 endmodule
