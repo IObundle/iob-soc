@@ -2,7 +2,7 @@ TEST := test
 BOOT := boot
 SYNTH_TARGET := system
 FPGA := xilinx
-IOBUSER := vmario
+IOBUSER := $(shell whoami)
 REPO_PATH := ~/sandbox/iob-soc-e
 
 all: uart-loader
