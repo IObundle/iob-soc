@@ -1,5 +1,10 @@
+MY_PC = $(shell hostname)
+ifeq ($(MY_PC),pudim-flan)
 VIVADO_BASE = /home/iobundle/Xilinx/Vivado/2017.4
-#VIVADO_BASE = /home/Xilinx/Vivado/2018.3
+else ifeq ($(MY_PC),baba-de-camelo)
+VIVADO_BASE = /home/Xilinx/Vivado/2018.3
+endif
+
 VIVADO = $(VIVADO_BASE)/bin/vivado
 XELAB = $(VIVADO_BASE)/bin/xelab
 GLBL = $(VIVADO_BASE)/data/verilog/src/glbl.v
