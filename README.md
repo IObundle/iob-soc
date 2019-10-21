@@ -5,7 +5,6 @@ iob-rv32 (a RISC-V processor), an UART and support for external memory (optional
 
 ## To build the SoC:
 * ``git submodule update --init --recursive``
-* Open Makefile and update IOBUSER with your IOB username.
 
 #### With external memory:
 * Open rtl/include/system.vh
