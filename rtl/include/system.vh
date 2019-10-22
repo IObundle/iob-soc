@@ -1,5 +1,3 @@
-`define XILINX
-
 //Slave ID definition
 //`define CACHE 1 //Main memory should be always 1
 `define UART 2
