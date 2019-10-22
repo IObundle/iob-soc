@@ -41,13 +41,12 @@ BOOTHEX := boot_0.dat boot_1.dat boot_2.dat boot_3.dat
 all: $(VSRC) $(HEX) $(BOOTHEX)
 	INCLUDE_DIR="$(INCLUDE_DIR)" SRC="$(VSRC)" CFLAGS="$(CFLAGS)" EFLAGS="$(EFLAGS)" SFLAGS="$(SFLAGS)" ./setup.sh
 
-
 #GET FIRMWARE HEX FILE
 $(HEX): $(CSRC) $(CHEADERS) $(TEST_DIR)/Makefile
 	scp -P 1415 -i $(SSH_PATH) $(TEST_DIR)/* $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/software/tests/$(TEST)
 	scp -P 1415 -i $(SSH_PATH) $(UART)/c-driver/* $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/submodules/iob-uart/c-driver
 	scp -P 1415 -i $(SSH_PATH) $(MEMMAP_DIR)/system.h $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/software
-	ssh -p 1415 -i $(SSH_PATH) $(IOB_USER)@iobundle.ddns.net 'make -C $(ROOT_DIR)/software/tests/$(TEST)'
+	ssh -p 1415 -i $(SSH_PATH) $(IOB_USER)@iobundle.ddns.net 'make -C $(ROOT_DIR)/software/tests/$(TEST) BAUD=10000000'
 	scp -P 1415 -i $(SSH_PATH) $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/software/tests/$(TEST)/firmware.hex .
 
 #GET BOOTROM DAT FILES
@@ -55,7 +54,7 @@ $(BOOTHEX): $(BOOTSRC) $(BOOTHEADERS) $(BOOT_DIR)/Makefile
 	scp -P 1415 -i $(SSH_PATH) $(BOOT_DIR)/* $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/software/bootloader/$(BOOT)
 	scp -P 1415 -i $(SSH_PATH) $(UART)/c-driver/* $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/submodules/iob-uart/c-driver
 	scp -P 1415 -i $(SSH_PATH) $(MEMMAP_DIR)/system.h $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/software
-	ssh -p 1415 -i $(SSH_PATH) $(IOB_USER)@iobundle.ddns.net 'make -C $(ROOT_DIR)/software/bootloader/$(BOOT) TEST=$(TEST)'
+	ssh -p 1415 -i $(SSH_PATH) $(IOB_USER)@iobundle.ddns.net 'make -C $(ROOT_DIR)/software/bootloader/$(BOOT) TEST=$(TEST) BAUD=10000000'
 	scp -P 1415 -i $(SSH_PATH) $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/software/bootloader/$(BOOT)/boot_?.hex .
 	cp ./boot_0.hex ./boot_0.dat
 	cp ./boot_1.hex ./boot_1.dat
@@ -73,4 +72,4 @@ clean:
 	@make -C $(TEST_DIR) clean --no-print-directory
 	@make -C $(BOOT_DIR) clean --no-print-directory
 
-.phony: all clean synth
+.phony: all clean
