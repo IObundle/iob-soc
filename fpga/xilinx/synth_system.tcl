@@ -106,7 +106,7 @@ if { [file isdirectory ../../"rtl/ip/ddr4_0"] } {
 }
 
 #            -part 'part fpga'         -top 'sistema de top (module)'
-synth_design -part xcku040-fbva676-1-c -top top_system 
+synth_design -part xcku040-fbva676-1-c -top top_system -verilog_define XILINX
 # read_xdc synth_system.xdc ##pos-synthesis constraints
 
 read_xdc ./top_system.xdc
