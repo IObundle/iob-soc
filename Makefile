@@ -4,7 +4,6 @@ SYNTH_TARGET := system
 FPGA := xilinx
 IOBUSER := $(shell whoami)
 REPO_PATH := ~/sandbox/iob-soc-e
-BOOT_HEX = $(addprefix software/bootloader/$(BOOT)/,boot_0.hex boot_1.hex boot_2.hex boot_3.hex)
 
 all: uart-loader
 

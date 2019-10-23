@@ -233,6 +233,39 @@ module system #(
    always @(posedge clk) begin
       uart_ready <= wire_s_valid[`UART];
    end
+   ////////////////////////////////////
+   ///////////////////////////////////
+
+   //   ////////////////////////////////////////////////////////////////////
+   //   ///// Open source RAM and Boot ROM with native memory instance ////
+   //   //////////////////////////////////////////////////////////////////
+   //   //////////////////////////////////////////////////////////
+   //   //// Open RAM ///////////////////////////////////////////
+   //   ////////////////////////////////////////////////////////
+
+`ifdef AUX_MEM
+   //slave 4
+   main_memory  #(
+		  .ADDR_W(MAIN_MEM_ADDR_W)
+		  ) auxiliary_memory (
+				      .clk                (clk                                    ),
+				      .main_mem_write_data(wire_s_wdata[`AUX_MEM][S_WDATA_W-1:0]),
+				      .main_mem_addr      (wire_s_addr[`AUX_MEM][MAIN_MEM_ADDR_W-1:0]),
+				      .main_mem_en        (wire_s_wstrb[`AUX_MEM][S_WSTRB_W-1:0]),
+				      .main_mem_read_data (wire_s_rdata[`AUX_MEM][S_RDATA_W-1:0])
+				      );
+
+
+   reg 		aux_mem_ready;
+   assign wire_s_ready[`AUX_MEM] = aux_mem_ready;
+
+   always @(posedge clk) begin
+      aux_mem_ready <= wire_s_valid[`AUX_MEM];
+   end
+
+
+`endif
+
    ////////////////////////////////////////////////////////////////////
    ///// Open source RAM with native memory instance ////
    //////////////////////////////////////////////////////////////////
@@ -345,111 +378,4 @@ module system #(
 
 `endif
 
-//////////////////////////////////////////////////////////
-     //// Maxeler IP ///////////////////////////////////////////
-     ///////////////VectorConstantMultiply//////////////////////        
-   //It will have 3 slave interfaces. Mapped_registers, Input stream and Output stream.
-   //As IP interfaces are AXI, it will need  native-axi adapters 
-   native_axi_adapter mec_adapter (
-   		. clk (clk),
-		. resetn (~reset_int),
-		
-		//AXI4-lite interface
-		. mem_axi_awvalid(wire_axi_awvalid),
-		. mem_axi_awready(wire_axi_awready)),
-		. mem_axi_awaddr(wire_axi_awaddr)),
-		       
-		. mem_axi_wvalid(wire_axi_wvalid),
-		. mem_axi_wready(wire_axi_wready),
-		. mem_axi_wdata(wire_axi_wdata), 
-		. mem_axi_wstrb(wire_axi_wstrb), 
-		                
-		. mem_axi_bvalid(wire_axi_bvalid),
-		. mem_axi_bready(wire_axi_bready),
-		                
-		. mem_axi_arvalid(wire_axi_arvalid),
-		. mem_axi_arready(wire_axi_arready),
-		. mem_axi_araddr(wire_axi_araddr),
-		                
-		. mem_axi_rvalid(wire_axi_rvalid),
-		. mem_axi_rready(wire_axi_rready),
-		. mem_axi_rdata(wire_axi_rdata),
-		
-		//Native interface
-		. mem_valid(wire_s_valid[`MEC_IF]),
-		. mem_ready(wire_s_ready[`MEC_IF]),
-		. mem_addr(wire_s_addr[`MEC_IF][S_ADDR_W]),
-		. mem_wdata(wire_s_wdata[`MEC_IF][S_WDATA_W]),
-		. mem_wstrb(wire_s_wstrb[`MEC_IF][S_WSTRB_W]),
-		. mem_rdata(wire_s_rdata[`MEC_IF][S_RDATA_W])	
-   );
-
-   wire           wire_axi_awvalid
-   wire           wire_axi_awready
-   wire [31:0]    wire_axi_awaddr;
-   
-   wire           wire_axi_wvalid;
-   wire           wire_axi_wready;
-   wire [31:0]    wire_axi_wdata;
-   wire [ 3:0]    wire_axi_wstrb;
-   
-   wire           wire_axi_bvalid;
-   wire           wire_axi_bready;
-   
-   wire           wire_axi_arvalid
-   wire           wire_axi_arready
-   wire [31:0]    wire_axi_araddr;
-   
-   wire           wire_axi_rvalid;
-   wire           wire_axi_rready;
-   wire [31:0]    wire_axi_rdata;
-
-   VectorsConstantMultiplication_maxeler_com_maxeler_techonologies_0_1 vector_scale (
-	  	//Mapped Registers Interface (slave 4)
-	   		//Inputs
-		. mec_clk (clk),
-		. mec_rst (~resetn_int),
-		. s_axi_mapped_regs_awid(),  
-		. s_axi_mapped_regs_awaddr(wire_axi_awaddr), 
-		. s_axi_mapped_regs_awlen(8'd0),		//I used the same value used in DDR 
-		. s_axi_mapped_regs_awvalid(wire_axi_awvalid),
-		. s_axi_mapped_regs_wdata(wire_axi_wdata), 
-		. s_axi_mapped_regs_wstrb(wire_axi_wstrb), 
-		. s_axi_mapped_regs_wlast(|wire_axi_wstrb), 
-		. s_axi_mapped_regs_wvalid(wire_axi_wvalid),
-		. s_axi_mapped_regs_bready(wire_axi_bready),
-		. s_axi_mapped_regs_arid(),  
-		. s_axi_mapped_regs_araddr(wire_axi_araddr), 
-		. s_axi_mapped_regs_arlen(8'd0),			//Probably it doesn't work! 
-		. s_axi_mapped_regs_arvalid(wire_axi_arvalid),
-		. s_axi_mapped_regs_rready(wire_axi_rready),
-			//Outputs
-		. s_axi_mapped_regs_awready(wire_axi_awready),
-		. s_axi_mapped_regs_wready(wire_axi_wready), 
-		. s_axi_mapped_regs_bid(),
-		. s_axi_mapped_regs_bresp(), 
-		. s_axi_mapped_regs_bvalid(wire_axi_bvalid),
-		. s_axi_mapped_regs_arready(wire_axi_arready),
-		. s_axi_mapped_regs_rid(),
-		. s_axi_mapped_regs_rdata(wire_axi_rdata),
-		. s_axi_mapped_regs_rresp(),
-		. s_axi_mapped_regs_rlast(), 
-		. s_axi_mapped_regs_rvalid(wire_axi_rvalid),
-	       	
-		//Input Stream Interface (slave 5)
-		. STREAM_clk (clk),			//Actually both streams use the same clock and reset
-		. STREAM_rst (~resetn_int),		//The problem was already reported but not solved
-		. s_axis_inVector_tdata(),
-		. s_axis_inVector_tvalid(),		
-		. s_axis_inVector_tready(),		//output
-		
-		//Output Stream Interface (slave 6)
-		. m_axis_outVector_tdata(),
-		. m_axis_outVector_tvalid(),
-		. m_axis_outVector_tready()
-	);
-
-//////////////////////////////////////////////////////////
-     //////////////////////////////////////////////
-     /////////////////////////////////////        
 endmodule
