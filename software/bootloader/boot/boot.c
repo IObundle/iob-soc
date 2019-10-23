@@ -7,12 +7,9 @@
 #include "iob-uart.h"
 #include "system.h"
 
-#define DIVVAL 868
-
 #define UART_CLK_FREQ 100000000 // 100 MHz
-#define UART_BAUD_RATE 115200 // can also use 115200
-
-#define MEM_JUMP 0x6FFFFFFC 
+#define UART_BAUD_RATE BAUD //BAUD passed from Makefile
+#define MEM_JUMP 0x6FFFFFFC
 #define PROG_SIZE 4096 
 
 volatile int* MAIN_MEM;
@@ -24,7 +21,7 @@ void main()
   int counter, i = 0;
   int a;
   char* uart_char;
-  int*  int_uart;     
+  int*  int_uart;
   char buf[4];
   unsigned char temp;
   int line=0;
