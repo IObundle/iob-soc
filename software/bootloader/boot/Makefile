@@ -13,12 +13,13 @@ all: boot.hex
 
 boot.hex: boot.S boot.c $(FIRM_DIR)/firmware.lds $(H_SRC) $(C_SRC)
 	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -I. -I$(FIRM_DIR) -I$(UART_DIR) -I$(MEMMAP_DIR) -nostdlib -o boot.elf boot.S $(H_SRC) $(C_SRC) boot.c\
-		 --std=gnu99 -Wl,-Bstatic,-T,$(FIRM_DIR)/firmware.lds,-Map,boot.map,--strip-debug -lgcc -lc
+		 --std=gnu99 -Wl,-Bstatic,-T,$(FIRM_DIR)/firmware.lds,-Map,boot.map,--strip-debug -lgcc -lc -DBAUD=$(BAUD)
+#$(BAUD) is passed from parent (simulation or fpga) Makefile
 	$(TOOLCHAIN_PREFIX)objcopy -O binary boot.elf boot.bin
-	cp $(SCRPT_DIR)*.py .	
+	cp $(SCRPT_DIR)*.py .
 	python3 makehex.py boot.bin 4096 > boot.hex
 	python3 boot_hex_split.py
-	rm -rf *.py	
+	rm -rf *.py
 
 clean:
 	@rm -rf boot.bin boot.elf boot.hex boot.map boot_*.hex boot_?.dat

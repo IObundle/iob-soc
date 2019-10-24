@@ -38,14 +38,14 @@ prog_%:
 	rm -rf .Xil fsm_encoding.os synth_*.backup.log usage_statistics_webtalk.*
 
 firmware.hex:
-	make -C $(TESTDIR)
+	make -C $(TESTDIR) BAUD=115200
 	cp $(TESTDIR)/firmware_0.hex ./firmware_0.dat
 	cp $(TESTDIR)/firmware_1.hex ./firmware_1.dat
 	cp $(TESTDIR)/firmware_2.hex ./firmware_2.dat
 	cp $(TESTDIR)/firmware_3.hex ./firmware_3.dat
 
 boot.hex:
-	make -C $(BOOTDIR) TEST=$(TEST)
+	make -C $(BOOTDIR) TEST=$(TEST) BAUD=115200
 	cp $(BOOTDIR)/boot_0.hex ./boot_0.dat
 	cp $(BOOTDIR)/boot_1.hex ./boot_1.dat
 	cp $(BOOTDIR)/boot_2.hex ./boot_2.dat
