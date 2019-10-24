@@ -7,12 +7,11 @@
 #include "iob-uart.h"
 #include "system.h"
 
-#define DEVVAL 868
-
 #define UART_CLK_FREQ 100000000 // 100 MHz
-#define UART_BAUD_RATE 115200 // can also use 115200
+#define UART_BAUD_RATE BAUD //BAUD passed from Makefile
 #define Address_write 0x9004 //address where the writting starts
 #define N 1000
+
 volatile int * vect;
 
 void main()
