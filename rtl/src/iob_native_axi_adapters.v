@@ -77,7 +77,7 @@ endmodule
 
 //NATIVE - Slave AXI_STREAM adapter
 module native_s_axis_adapter (
-                             input         clk, resetn,
+                             input         clk,
 
                              input         s_axis_tvalid,
                              output        s_axis_tready,
@@ -97,7 +97,7 @@ endmodule
 
 //NATIVE - Master AXI_STREAM adapter
 module native_m_axis_adapter (
-                             input         clk, resetn,
+                             input         clk,
 
                              // AXI4-lite interface
                              output        m_axis_tvalid,
@@ -107,27 +107,22 @@ module native_m_axis_adapter (
                              // Native interface
                              input         mem_valid,
                              output        mem_ready,
-                             input [31:0]  mem_addr,
                              input [31:0]  mem_wdata,
-                             input [ 3:0]  mem_wstrb,
-                             output [31:0] mem_rdata
+                             input [ 3:0]  mem_wstrb
                              );
    reg                                     ack_wvalid;
    reg                                     xfer_done;
 
    assign m_axis_tvalid = mem_valid && |mem_wstrb && !ack_wvalid;
    assign m_axis_tdata = mem_wdata;
+   assign mem_ready = m_axis_tready;
 
    always @(posedge clk) begin
-      if (!resetn) begin
-         ack_awvalid <= 0;
-      end else begin
-         xfer_done <= mem_valid && mem_ready;
-         if (m_axis_tready && m_axis_tvalid)
-           ack_wvalid <= 1;
-         if (xfer_done || !mem_valid) begin
-            ack_wvalid <= 0;
-         end
+      xfer_done <= mem_valid && mem_ready;
+      if (m_axis_tready && m_axis_tvalid)
+        ack_wvalid <= 1;
+      if (xfer_done || !mem_valid) begin
+         ack_wvalid <= 0;
       end
    end
 endmodule
