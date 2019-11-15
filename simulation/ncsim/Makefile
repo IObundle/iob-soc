@@ -1,11 +1,7 @@
 #configurable options
-ROOT_DIR := versat/iob-rv32-mig-native-axi
-IOB_USER := pmiranda
+REMOTE_DIR := sandbox/iob-soc-e
 TEST := test
 BOOT := uart
-RSA_FILE := rv32_rsa
-
-SSH_PATH = ~/.ssh/$(RSA_FILE)
 
 #hardware
 RTL_DIR := ../../rtl/src
@@ -38,24 +34,29 @@ BOOTHEADERS := $(wildcard $(BOOT_DIR)/*.h $(UART)/c-driver/*.h $(MEMMAP_DIR)/sys
 HEX := firmware.hex
 BOOTHEX := boot_0.dat boot_1.dat boot_2.dat boot_3.dat
 
-all: $(VSRC) $(HEX) $(BOOTHEX)
+all: iobuser $(VSRC) $(HEX) $(BOOTHEX)
 	INCLUDE_DIR="$(INCLUDE_DIR)" SRC="$(VSRC)" CFLAGS="$(CFLAGS)" EFLAGS="$(EFLAGS)" SFLAGS="$(SFLAGS)" ./setup.sh
+
+iobuser:
+ifeq (${IOB_USER},)
+	$(error "IOB_USER env variable not set")
+endif
+
 
 #GET FIRMWARE HEX FILE
 $(HEX): $(CSRC) $(CHEADERS) $(TEST_DIR)/Makefile
-	scp -P 1415 -i $(SSH_PATH) $(TEST_DIR)/* $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/software/tests/$(TEST)
-	scp -P 1415 -i $(SSH_PATH) $(UART)/c-driver/* $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/submodules/iob-uart/c-driver
-	scp -P 1415 -i $(SSH_PATH) $(MEMMAP_DIR)/system.h $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/software
-	ssh -p 1415 -i $(SSH_PATH) $(IOB_USER)@iobundle.ddns.net 'make -C $(ROOT_DIR)/software/tests/$(TEST) BAUD=10000000'
-	scp -P 1415 -i $(SSH_PATH) $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/software/tests/$(TEST)/firmware.hex .
+	ssh -p 1415 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_DIR)/software/tests/$(TEST) BAUD=10000000'
+	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/software/tests/$(TEST)/firmware.hex .
+	python ../../software/scripts/hex_split.py
+	mv ./firmware_0.hex ./firmware_0.dat
+	mv ./firmware_1.hex ./firmware_1.dat
+	mv ./firmware_2.hex ./firmware_2.dat
+	mv ./firmware_3.hex ./firmware_3.dat
 
 #GET BOOTROM DAT FILES
 $(BOOTHEX): $(BOOTSRC) $(BOOTHEADERS) $(BOOT_DIR)/Makefile
-	scp -P 1415 -i $(SSH_PATH) $(BOOT_DIR)/* $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/software/bootloader/$(BOOT)
-	scp -P 1415 -i $(SSH_PATH) $(UART)/c-driver/* $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/submodules/iob-uart/c-driver
-	scp -P 1415 -i $(SSH_PATH) $(MEMMAP_DIR)/system.h $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/software
-	ssh -p 1415 -i $(SSH_PATH) $(IOB_USER)@iobundle.ddns.net 'make -C $(ROOT_DIR)/software/bootloader/$(BOOT) TEST=$(TEST) BAUD=10000000'
-	scp -P 1415 -i $(SSH_PATH) $(IOB_USER)@iobundle.ddns.net:$(ROOT_DIR)/software/bootloader/$(BOOT)/boot_?.hex .
+	ssh -p 1415 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_DIR)/software/bootloader/$(BOOT) TEST=$(TEST) BAUD=10000000'
+	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./$(REMOTE_DIR)/software/bootloader/$(BOOT)/boot_?.hex .
 	cp ./boot_0.hex ./boot_0.dat
 	cp ./boot_1.hex ./boot_1.dat
 	cp ./boot_2.hex ./boot_2.dat
@@ -68,7 +69,7 @@ clean:
 	@rm -f *~
 	@rm -rf INCA_libs
 	@rm -f *.vcd
-	@rm -f system_synth.v system.tcf firmware.hex firmware_?.hex boot_?.hex boot_?.dat
+	@rm -f system_synth.v system.tcf *.hex *.dat
 	@make -C $(TEST_DIR) clean --no-print-directory
 	@make -C $(BOOT_DIR) clean --no-print-directory
 
