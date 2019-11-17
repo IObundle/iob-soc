@@ -10,11 +10,13 @@ INC_DIR := ../../rtl/include
 
 RISCV=../../submodules/iob-rv32
 
+FIFO=../../submodules/fifo
+
 UART=../../submodules/iob-uart
 UART_INC_DIR:=$(UART)/rtl/include
 
 INCLUDE_DIR:= $(UART_INC_DIR) $(INC_DIR)
-VSRC := $(TB_DIR)/system_tb.v $(RTL_DIR)/*.v $(RTL_DIR)/fifo/afifo.v $(RTL_DIR)/memory/*.v $(RISCV)/picorv32.v $(RISCV)/rtl/xalt_1p_mem.v $(UART)/rtl/src/*.v
+VSRC := $(TB_DIR)/system_tb.v $(RTL_DIR)/*.v $(FIFO)/afifo.v $(RTL_DIR)/memory/*.v $(RISCV)/picorv32.v $(RISCV)/rtl/xalt_1p_mem.v $(UART)/rtl/src/*.v
 
 #software
 TEST_DIR:=../../software/tests/$(TEST)
