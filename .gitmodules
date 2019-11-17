@@ -11,3 +11,6 @@
 [submodule "submodules/iob-cache"]
 	path = submodules/iob-cache
 	url = git@bitbucket.org:jjts/iob-cache.git
+[submodule "submodules/fifo"]
+	path = submodules/fifo
+	url = git@bitbucket.org:jjts/iob-fifo.git
