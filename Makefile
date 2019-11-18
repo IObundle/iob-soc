@@ -1,5 +1,5 @@
 TEST := test
-BOOT := boot
+BOOT := uart
 SYNTH_TARGET := system
 FPGA := xilinx
 IOBUSER := $(shell whoami)
