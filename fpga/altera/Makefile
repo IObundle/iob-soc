@@ -1,6 +1,6 @@
 # GT hardware
 
-BOOT := boot
+BOOT := uart
 BOOTDIR := ../../software/bootloader/$(BOOT)
 TEST := test
 TESTDIR := ../../software/tests/$(TEST)
