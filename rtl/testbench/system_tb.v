@@ -1,75 +1,61 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 04/12/2019 03:54:30 PM
-// Design Name: 
-// Module Name: top_system_test_Icarus_tb
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
 
 `include "iob-uart.vh"
 
 module system_tb;
 
+   //clock
    reg clk = 1;
    always #5 clk = ~clk;
-   
+
+   //reset 
    reg reset = 1;
-   
-   initial begin
-      
+
+   // program memory 
+   reg [31:0] 	progmem[4095:0];
+
+
+   //general iterators
+   integer 	i = 0, j = 0;
+
+
+   // dump vcd and deassert rst
+   initial begin    
 `ifdef VCD
       $dumpfile("system.vcd");
       $dumpvars();
 `endif
       repeat (100) @(posedge clk);
       reset <= 0;
-      
-   end // initial begin
- 
+   end
 
-   //
-   // UART TESTER PROCESS
-   //
-   integer 	i = 0, j = 0;
- 	
-   reg [7:0] 	rxread_reg = 8'b0;
-
-
-   time         start, stop;
    
-   reg [31:0] 	progmem[4095:0];
+   //uart signals
+   reg [7:0] 	rxread_reg = 8'b0;
    reg [2:0] 	uart_addr;
    reg 		uart_sel;
    reg 		uart_wr;
    reg 		uart_r;
    reg [31:0] 	uart_di;
    reg [31:0] 	uart_do;
-   
- 
-   initial begin
-      //sync
-      repeat (100) @(posedge clk) #1;
-      $readmemh("firmware.hex", progmem,0,4095);
 
+
+   //
+   // TEST PROCEDURE
+   //
+   initial begin
+      
+      //sync up with reset 
+      repeat (100) @(posedge clk) #1;
+
+      //reset uart 
       cpu_uartwrite(`UART_SOFT_RESET, 32'd1);
-      //config div
+
+      //config uart div factor
       do
 	cpu_uartread(`UART_WRITE_WAIT, rxread_reg);
       while(rxread_reg != 32'h0);
-      cpu_uartwrite(`UART_DIV, 32'd10); //868 for fpga
+      cpu_uartwrite(`UART_DIV, 32'd10);
 
       //wait until uut is ready
       do begin
@@ -79,7 +65,12 @@ module system_tb;
 	 cpu_uartread(`UART_DATA, rxread_reg);
       end while(rxread_reg != 32'h11); //wait for DC1 ascii code
 
-      //send firmware
+`ifdef UART_BOOT
+      //
+      // UPLOAD FIRMWARE VIA UART
+      //
+      $readmemh("firmware.hex", progmem,0,4095);
+
       for(i=0; i<4096; i++) begin
 	 for(j=31; j>=7; j=j-8) begin
 	    do
@@ -89,38 +80,34 @@ module system_tb;
 	    repeat(3000) @(posedge clk) #1;
 	 end
       end
-      $display("Testbench: firmware has been sent");
-   end // uart process
+`endif
+   end // initial begin
+   
 
-   wire [6:0] led;
-   wire       ser_tx, ser_rx;
+   
+   wire       uut_tx, uut_rx;
    wire       tester_tx, tester_rx;       
    wire       trap;
    
-   top_system uut (
-		   //.C0_SYS_CLK_clk_p (clk_p ),	 
-		   //.C0_SYS_CLK_clk_n (clk_n ),	 
+   
+   assign tester_rx = uut_tx;
+   assign uut_rx = tester_tx;
+   
+
+   //
+   // UNIT UNDER TEST
+   //
+   system uut (
 		   .clk              (clk),
-`ifdef XILINX
 		   .reset            (reset),
-`else
-		   .resetn(~reset),
-`endif
-		   //   .led              (led   ),
-		   .ser_tx           (ser_tx),
-		   .ser_rx           (ser_rx),
-		   .trap             (trap  )
+		   .ser_tx           (uut_tx),
+		   .ser_rx           (uut_rx),
+//		   .led              (led),
+		   .trap             (trap)
 		   );
-   
-   always @(posedge clk) begin
-      if (reset && trap) begin
-   	 $finish;
-      end
-   end
-   
-   assign tester_rx = ser_tx;
-   assign ser_rx = tester_tx;
-   
+
+
+   //TESTER UART
    iob_uart uarttester(
 		       .ser_tx    (tester_tx),
 		       .ser_rx    (tester_rx),
@@ -133,6 +120,19 @@ module system_tb;
 		       .data_in   (uart_di),
 		       .data_out  (uart_do)
 		       );
+
+   
+   // finish simulation
+   always @(posedge clk) begin
+      if (reset && trap) begin
+   	 $finish;
+      end
+   end
+   
+   
+   //
+   // CPU tasks
+   //
    
    // 1-cycle write
    task cpu_uartwrite;
