@@ -26,6 +26,7 @@ module iob_uart_tb;
    //serial data
    wire                  serial_data;
    
+   wire                  cts;
    
    
    // Instantiate the Unit Under Test (UUT)
@@ -41,8 +42,10 @@ module iob_uart_tb;
 		 .data_in		(data_in),
 		 .data_out		(data_out),
 
-                 .ser_tx                (serial_data),
-                 .ser_rx                (serial_data)
+                 .txd                   (serial_data),
+                 .rxd                   (serial_data),
+                 .rts                   (1'b1),
+                 .cts                   (cts)
 		);
 
    initial begin

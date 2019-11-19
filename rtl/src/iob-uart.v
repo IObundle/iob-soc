@@ -15,8 +15,10 @@ module iob_uart (
 	         output reg [31:0] data_out,
 
                  //serial i/f
-	         output            ser_tx,
-	         input             ser_rx
+	         output            txd,
+	         input             rxd,
+                 input             rts,
+                 output            cts
                    );
 
    // internal registers
@@ -47,10 +49,21 @@ module iob_uart (
    wire                              rst_int;
    reg                               rst_soft;
 
+
+   reg [1:0]                         rts_int;
+   
+   
    //reset hard and soft
    assign rst_int = rst | rst_soft;
 
-
+   //clear to send (me data)
+   assign cts = ~recv_buf_valid;
+   
+   
+   //rts synchronizer
+   always @(posedge clk) 
+     rts_int <= {rts_int[0], rts};
+   
    
    ////////////////////////////////////////////////////////
    // Address decoder
@@ -78,7 +91,7 @@ module iob_uart (
 
       if(sel & read) begin
          case (address)
-           `UART_WRITE_WAIT: data_out = {31'd0, tx_wait};
+           `UART_WRITE_WAIT: data_out = {31'd0, tx_wait | ~rts_int[1]};
            `UART_DIV       : data_out = cfg_divider;
            `UART_DATA      : begin 
               data_out = recv_buf_data;
@@ -125,7 +138,7 @@ module iob_uart (
              // Detect start bit (i.e., when RX line goes to low)
              4'd0:
                begin
-                  if (!ser_rx)
+                  if (!rxd)
                     recv_state <= 1;
                   recv_divcnt <= 1;
                end
@@ -142,7 +155,7 @@ module iob_uart (
              default: // states 4'd2 through 4'd9
                if (recv_divcnt >= cfg_divider)
                  begin
-                    recv_pattern <= {ser_rx, recv_pattern[7:1]};
+                    recv_pattern <= {rxd, recv_pattern[7:1]};
                     recv_state <= recv_state + 1'b1;
                     recv_divcnt <= 1;
                  end
@@ -207,7 +220,7 @@ module iob_uart (
         send_pattern <= {1'b1, send_pattern[9:1]};
 
    // send serial comm
-   assign ser_tx = send_pattern[0];
+   assign txd = send_pattern[0];
 
 endmodule
 
