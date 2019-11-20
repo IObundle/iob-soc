@@ -12,39 +12,37 @@ module system_tb;
    reg reset = 1;
 
    // program memory 
-   reg [31:0] 	progmem[4095:0];
+   reg [31:0] progmem[4095:0];
 
 
    //general iterators
-   integer 	i = 0, j = 0;
+   integer    i = 0, j = 0;
 
 
-   // dump vcd and deassert rst
-   initial begin    
-`ifdef VCD
-      $dumpfile("system.vcd");
-      $dumpvars();
-`endif
-      repeat (100) @(posedge clk);
-      reset <= 0;
-   end
-
-   
    //uart signals
    reg [7:0] 	rxread_reg = 8'b0;
-   reg [2:0] 	uart_addr;
+   reg [2:0]    uart_addr;
    reg 		uart_sel;
    reg 		uart_wr;
    reg 		uart_r;
-   reg [31:0] 	uart_di;
-   reg [31:0] 	uart_do;
+   reg [31:0]   uart_di;
+   reg [31:0]   uart_do;
 
 
    //
    // TEST PROCEDURE
    //
    initial begin
-      
+
+`ifdef VCD
+      $dumpfile("system.vcd");
+      $dumpvars();
+`endif
+
+      // deassert rst
+      repeat (100) @(posedge clk);
+      reset <= 0;
+
       //sync up with reset 
       repeat (100) @(posedge clk) #1;
 
@@ -81,36 +79,33 @@ module system_tb;
 	 end
       end
 `endif
-   end // initial begin
-   
-
+   end // test procedure
+ 
    
    wire       uut_tx, uut_rx;
    wire       tester_tx, tester_rx;       
    wire       trap;
    
-   
-   assign tester_rx = uut_tx;
-   assign uut_rx = tester_tx;
-   
-
    //
    // UNIT UNDER TEST
    //
    system uut (
-		   .clk              (clk),
-		   .reset            (reset),
-		   .ser_tx           (uut_tx),
-		   .ser_rx           (uut_rx),
-//		   .led              (led),
-		   .trap             (trap)
-		   );
+	       .clk              (clk),
+	       .reset            (reset),
+
+               //.led             (led),
+	       .trap             (trap),
+
+               //UART
+	       .uart_txd           (uut_tx),
+	       .uart_rxd           (uut_rx)
+	       );
 
 
    //TESTER UART
-   iob_uart uarttester(
-		       .ser_tx    (tester_tx),
-		       .ser_rx    (tester_rx),
+   iob_uart test_uart (
+		       .txd    (tester_tx),
+		       .rxd    (tester_rx),
 		       .clk       (clk),
 		       .rst       (reset),
 		       .address   (uart_addr),
@@ -121,14 +116,13 @@ module system_tb;
 		       .data_out  (uart_do)
 		       );
 
+   assign tester_rx = uut_tx;
+   assign uut_rx = tester_tx;
+
    
    // finish simulation
-   always @(posedge clk) begin
-      if (reset && trap) begin
-   	 $finish;
-      end
-   end
-   
+   always @(posedge trap)   	 
+     $finish;
    
    //
    // CPU tasks

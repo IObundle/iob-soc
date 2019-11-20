@@ -2,380 +2,264 @@
 
 `include "system.vh"
 
-module system #(
-
-   		parameter SOFT_RESET_ADDR = 32'h6ffffffc,
-   		parameter MAIN_MEM_ADDR_W = 14, // 14 = 32 bits (4) * 2**12 (4096) depth
-   		parameter BOOT_ADDR_W = 14,
-   		parameter N_SLAVES = 5,
-   		parameter SLAVE_ADDR_W = 3, //ceil(log2(N_SLAVES))
-   		parameter S_ADDR_W = 32,
-   		parameter S_WDATA_W = 32,
-   		parameter S_WSTRB_W = 4,
-   		parameter S_RDATA_W = 32
-	)
-	(
-	       input 	     clk,
-               input 	     reset,
-               output 	     ser_tx,
-               input 	     ser_rx,
-	       output 	     trap,
-               output 	     resetn_int_sys,
-	       output [SLAVE_ADDR_W-1:0]  s_sel,
-	       output 	     sys_mem_sel,
-	       // Slave signals
-               output 	     sys_s_axi_awvalid,
-               input 	     sys_s_axi_awready,
-               output [31:0] sys_s_axi_awaddr,
-               /// Data-Write
-               output 	     sys_s_axi_wvalid,
-               input 	     sys_s_axi_wready,
-               output [31:0] sys_s_axi_wdata,
-               output [ 3:0] sys_s_axi_wstrb,
-               /// Write-Response
-               input 	     sys_s_axi_bvalid,
-               output 	     sys_s_axi_bready,
-               /// Address-Read
-               output 	     sys_s_axi_arvalid,
-               input 	     sys_s_axi_arready,
-               output [31:0] sys_s_axi_araddr,
-               output [7:0]  sys_s_axi_arlen,
-               output [2:0]  sys_s_axi_arsize,
-               output [1:0]  sys_s_axi_arburst,
-               /// Data-Read
-               input 	     sys_s_axi_rvalid,
-               output 	     sys_s_axi_rready,
-               input [31:0]  sys_s_axi_rdata,
-               input 	     sys_s_axi_rlast
+module system (
+               input              clk,
+               input              reset,
+               output             uart_txd,
+               input              uart_rxd,
+               output             trap
+`ifdef DDR //AXI MASTER INTERFACE
+               // Address-Write
+               , output m_axi_awvalid,
+               input              m_axi_awready,
+               output [`ADDR_W:0] m_axi_awaddr,
+    /// Data-Write
+               output             m_axi_wvalid,
+               input              m_axi_wready,
+               output [`DATA_W:0] m_axi_wdata,
+               output [ 3:0]      m_axi_wstrb,
+    /// Write-Response
+               input              m_axi_bvalid,
+               output             m_axi_bready,
+    /// Address-Read
+               output             m_axi_arvalid,
+               input              m_axi_arready,
+               output [`ADDR_W:0] m_axi_araddr,
+               output [7:0]       m_axi_arlen,
+               output [2:0]       m_axi_arsize,
+               output [1:0]       m_axi_arburst,
+    /// Data-Read
+               input              m_axi_rvalid,
+               output             m_axi_rready,
+               input [`DATA_W:0]  m_axi_rdata,
+               input              m_axi_rlast
+`endif
                );
 
-   //////////////////////////////////
-   //// wires //////////////////////
-   ////////////////////////////////
-   //////// PicoRV32
-   //////////////////////////////
-   wire [31:0]  		     wire_m_addr;
-   wire [31:0] 			     wire_m_wdata;
-   wire [3:0] 			     wire_m_wstrb;
-   wire [31:0] 			     wire_m_rdata;
-   wire 			     wire_m_valid;
-   wire 			     wire_m_ready;
-   wire 			     wire_m_instr;
+   //
+   // RESET
+   //
+   wire                           reset_int = reset | soft_reset;
+   reg                            choose_rom;   
 
-   ////////////////////////////////
-   //////// Slaves
-   ///////////////////////////////
-   wire [S_ADDR_W-1:0]      	wire_s_addr [N_SLAVES-1:0];
-   wire [S_RDATA_W-1:0]    	wire_s_rdata[N_SLAVES-1:0];
-   wire [S_WSTRB_W-1:0]     	wire_s_wstrb[N_SLAVES-1:0];
-   wire [S_WDATA_W-1:0]     	wire_s_wdata[N_SLAVES-1:0];
-
-   wire [N_SLAVES*S_ADDR_W-1:0]      wire_s_addr_single;
-   wire [N_SLAVES*S_WDATA_W-1:0]     wire_s_wdata_single;
-   wire [N_SLAVES*S_WSTRB_W-1:0]     wire_s_wstrb_single;
-   wire [N_SLAVES*S_RDATA_W-1:0]     wire_s_rdata_single;
-
-   //Concatenate double array slave signals, because verilog
-   //doesn't allow to pass double arrays to others modules
-   genvar gi;
-   generate
-   	for(gi=0; gi<N_SLAVES;gi=gi+1) begin: SINGLESLAVE
-		assign wire_s_addr[gi][S_ADDR_W-1 : 0] = wire_s_addr_single[((gi+1)*S_ADDR_W)-1 -: S_ADDR_W];
-		assign wire_s_wdata[gi][S_WDATA_W-1:0] = wire_s_wdata_single[((gi+1)*S_WDATA_W)-1 -: S_WDATA_W];
-		assign wire_s_wstrb[gi][S_WSTRB_W-1 : 0]= wire_s_wstrb_single[((gi+1)*S_WSTRB_W)-1 -: S_WSTRB_W];
-		assign wire_s_rdata_single[((gi+1)*S_RDATA_W)-1 -: S_RDATA_W]=wire_s_rdata[gi][S_RDATA_W-1 : 0];
-	end
-   endgenerate
-
-   wire [N_SLAVES-1:0] 		     wire_s_valid;
-   wire [N_SLAVES-1:0] 		     wire_s_ready;
-
-   wire 			     buffer_clear;
-
-   // reset control counter
-   reg [10:0] 			     rst_cnt, rst_cnt_nxt;
-
-   // reset control
-   always @(posedge clk, posedge reset) begin
-      if(reset) begin
-	 rst_cnt <= 11'd0;
-	 //resetn_int <=1'b0;
-      end else begin
-	 if (rst_cnt [10] != 1'b1) begin
-	    rst_cnt <= rst_cnt + 1'b1;
-	    //resetn_int <= 1'b0;
-	 end
-	 //rst_cnt <= rst_cnt;
-	 //resetn_int <= 1'b1;
-      end
-   end // always @ (posedge clk)
-   wire resetn_int;
-   assign resetn_int = (rst_cnt [10]);
-   assign resetn_int_sys = resetn_int;
-
-   ///////////////////////////////////////////////
-   ////////// Soft Reset Controller ////////////
-   ////////////////////////////////////////////
-   reg 	mem_sel;
-   reg [9:0] soft_reset;
-
-
-   always @ (posedge clk) begin
-      if (~resetn_int)
-	begin
-	   mem_sel <= 1'b0;
-	   soft_reset <= 10'b1111100000;
-	end
-      else
-	begin
-
-`ifdef CACHE
-           if ((wire_m_addr == SOFT_RESET_ADDR) && (buffer_clear))
-`else
-             if ((wire_m_addr == SOFT_RESET_ADDR))
-`endif
-
-               begin
-		  mem_sel <= 1'b1;
-		  soft_reset <= {soft_reset[8:0],soft_reset[9]};
-               end
-             else
-               begin
-		  mem_sel <= mem_sel;
-		  soft_reset <= 10'b1111100000;
-               end
-	end
-   end
-
-   assign sys_mem_sel = mem_sel;
-
-   reg processor_resetn;
-   always @* processor_resetn <= resetn_int && ~(soft_reset[0]);
-
+   
+   //
+   //  CPU
+   //
+   wire [`ADDR_W:0]               m_addr;
+   wire [`DATA_W:0]               m_wdata;
+   wire [3:0]                     m_wstrb;
+   wire [`DATA_W:0]               m_rdata;
+   wire                           m_valid;
+   wire                           m_ready;
+   wire                           m_instr;
+  
    picorv32 #(
 	      .ENABLE_FAST_MUL(1),
 	      .ENABLE_DIV(1)
 	      )
    picorv32_core (
-		           .clk    (clk       ),
-		           .resetn (processor_resetn),
-		           .trap   (trap      ),
-		           //memory interface
-		           .mem_valid     (wire_m_valid),
-		           .mem_instr     (wire_m_instr),
-		           .mem_ready     (wire_m_ready),
-		           .mem_addr      (wire_m_addr ),
-		           .mem_wdata     (wire_m_wdata),
-		           .mem_wstrb     (wire_m_wstrb),
-		           .mem_rdata     (wire_m_rdata)
-		           );
+		  .clk           (clk),
+		  .resetn        (~reset_int),
+		  .trap          (trap),
+		  //memory interface
+		  .mem_valid     (m_valid),
+		  .mem_instr     (m_instr),
+		  .mem_ready     (m_ready),
+		  .mem_addr      (m_addr ),
+		  .mem_wdata     (m_wdata),
+		  .mem_wstrb     (m_wstrb),
+		  .mem_rdata     (m_rdata)
+		  );
 
 
-   wire [SLAVE_ADDR_W-1:0] slave_sel;
-   assign s_sel = slave_sel;
+   //
+   // INTERCONNECT
+   //
+   
+   wire [`DATA_W-1:0]             s_rdata[N_SLAVES-1:0];
+   reg [N_SLAVES*`DATA_W-1:0]     s_rdata_concat;
+   wire [N_SLAVES-1:0]            s_valid;
+   wire [N_SLAVES-1:0]            s_ready;
+   
+   //choose program memory according to reset condition
+   assign s_rdata[0] = choose_rom? 
+                       boot_read_data: 
+`ifdef USE_DDR
+                       cache_read_data;
+`else
+                       main_mem_read_data;
+`endif
 
+      
+   //concatenate slave read data signals to input in interconnect
+   always @* begin
+      int i;   
+      for(i=0; i<N_SLAVES; i=i+1)
+	 s_rdata_concat[((i+1)*`DATA_W)-1 -: `DATA_W] =s_rdata[i];
+   end
+   
 
-   iob_generic_interconnect #(
-			      .N_SLAVES(N_SLAVES),
-			      .SLAVE_ADDR_W(SLAVE_ADDR_W)
-			      )
+   iob_generic_interconnect 
      generic_interconnect (
-			   .slave_select (slave_sel),
-			   .mem_select   (mem_sel),
-			   .clk          (clk),
-			   .sel          (1'b1),
+			   // master interface
+			   .m_addr  (m_addr[`ADDR_W-1 -: N_SLAVES_W]),
+			   .m_rdata (m_rdata),
+			   .m_valid (m_valid),
+			   .m_ready (m_ready),
 
-			   /////////////////////////////////////
-			   //// master interface //////////////
-			   ///////////////////////////////////
-			   .m_addr  (wire_m_addr),
-			   .m_wdata (wire_m_wdata),
-			   .m_wstrb (wire_m_wstrb),
-			   .m_rdata (wire_m_rdata),
-			   .m_valid (wire_m_valid),
-			   .m_ready (wire_m_ready),
-			   ///////////////////////////////////
-			   //// N slaves  interface /////////
-			   /////////////////////////////////
-			   .s_addr  (wire_s_addr_single),
-			   .s_wdata (wire_s_wdata_single),
-			   .s_wstrb (wire_s_wstrb_single),
-			   .s_rdata (wire_s_rdata_single),
-			   .s_valid (wire_s_valid),
-			   .s_ready (wire_s_ready)
+                           // slaves interface
+			   .s_rdata (s_rdata_concat),
+			   .s_valid (s_valid),
+			   .s_ready (s_ready)
 			   );
 
-   /////////////////////////////////////
-   ////// iob UART /////////////////
-   ///////////////////////////////////
-   //slave 2
-   iob_uart simpleuart(
-		       //cpu interface
-		       .clk     (clk               ),
-		       .rst     (~resetn_int       ),
+    
+   //
+   // BOOT ROM
+   //
 
-		       .address (wire_s_addr[`UART][4:2]),
-		       .sel     (wire_s_valid[`UART]    ),
-		       .read    (~(|wire_s_wstrb[`UART][S_WSTRB_W-1:0])),
-		       .write   (|wire_s_wstrb[`UART][S_WSTRB_W-1:0]),
-
-		       .data_in (wire_s_wdata[`UART][S_WDATA_W-1:0]),
-		       .data_out(wire_s_rdata[`UART][S_RDATA_W-1:0]),
-
-		       //serial i/f
-		       .ser_tx  (ser_tx            ),
-		       .ser_rx  (ser_rx            )
-		       );
-
-   reg 	      uart_ready;
-   assign wire_s_ready[`UART] = uart_ready;
-
-   always @(posedge clk) begin
-      uart_ready <= wire_s_valid[`UART];
-   end
-   ////////////////////////////////////
-   ///////////////////////////////////
-
-   //   ////////////////////////////////////////////////////////////////////
-   //   ///// Open source RAM and Boot ROM with native memory instance ////
-   //   //////////////////////////////////////////////////////////////////
-   //   //////////////////////////////////////////////////////////
-   //   //// Open RAM ///////////////////////////////////////////
-   //   ////////////////////////////////////////////////////////
-
-`ifdef AUX_MEM
-   //slave 4
-   main_memory  #(
-		  .ADDR_W(MAIN_MEM_ADDR_W)
-		  ) auxiliary_memory (
-				      .clk                (clk                                    ),
-				      .main_mem_write_data(wire_s_wdata[`AUX_MEM][S_WDATA_W-1:0]),
-				      .main_mem_addr      (wire_s_addr[`AUX_MEM][MAIN_MEM_ADDR_W-1:0]),
-				      .main_mem_en        (wire_s_wstrb[`AUX_MEM][S_WSTRB_W-1:0]),
-				      .main_mem_read_data (wire_s_rdata[`AUX_MEM][S_RDATA_W-1:0])
-				      );
-
-
-   reg 		aux_mem_ready;
-   assign wire_s_ready[`AUX_MEM] = aux_mem_ready;
-
-   always @(posedge clk) begin
-      aux_mem_ready <= wire_s_valid[`AUX_MEM];
-   end
-
-
-`endif
-
-   ////////////////////////////////////////////////////////////////////
-   ///// Open source RAM with native memory instance ////
-   //////////////////////////////////////////////////////////////////
-
-   //////////////////////////////////////////////////////////
-   //// Boot ROM ///////////////////////////////////////////
-   ////////////////////////////////////////////////////////
-
-   //Boot ROM is always slave 0
    boot_memory  #(
-		  .ADDR_W(BOOT_ADDR_W)
-		  ) boot_memory (
-				 .clk            (clk           ),
-				 .boot_write_data(wire_s_wdata[0][S_WDATA_W-1:0]),
-				 .boot_addr      (wire_s_addr[0][BOOT_ADDR_W-1:0]),
-				 .boot_en        (wire_s_wstrb[0][S_WSTRB_W-1:0]),
-				 .boot_read_data (wire_s_rdata[0][S_RDATA_W-1:0])
-				 );
+	          .ADDR_W(`ROM_ADDR_W)
+	          )
+   boot_memory (
+		.clk                (clk ),
+		.boot_write_data    (s_wdata[0][`DATA_W-1:0]),
+		.boot_addr          (s_addr[0][`BOOT_ADDR_W-1:0]),
+		.boot_en            (s_wstrb[0][STRB_W-1:0]),
+		.boot_read_data     (s_rdata[0][`DATA_W-1:0])
+		);
 
 
+   //
+   // MAIN MEMORY
+   //
 
-   reg 	   boot_mem_ready;
-   assign wire_s_ready[0] = boot_mem_ready;
-
-   always @(posedge clk) begin
-      boot_mem_ready <= wire_s_valid[0];
-   end
-   //////////////////////////////////////////////////////
-   /////////////////////////////////////////////////////
-`ifdef CACHE
-   //////////////////////////////////////////////////////////
-   //// Memory cache ///////////////////////////////////////
-   ////////////////////////////////////////////////////////
-
-   //slaves 1(always cache or main_memory) and 3
+`ifdef USE_DDR
    memory_cache cache (
 		       .clk                (clk),
-		       .reset              (~processor_resetn),
-		       .buffer_clear       (buffer_clear),
-		       .cache_write_data   (wire_s_wdata[1][S_WDATA_W-1:0]),
-		       .cache_addr         (wire_s_addr[1][29:0]), //TODO: This value (29) shouldn't be hard coded
-		       .cache_wstrb        (wire_s_wstrb[1][S_WSTRB_W-1:0]),
-		       .cache_read_data    (wire_s_rdata[1][S_RDATA_W-1:0]),
-		       .cpu_req            (wire_s_valid[1]),
-		       .cache_ack          (wire_s_ready[1]),
+		       .reset              (reset),
 
-		       //slave 3
-		       //Memory Cache controller signals
-		       .cache_controller_address (wire_s_addr[`CACHE_CTRL][5:2]),
-		       .cache_controller_requested_data (wire_s_rdata[`CACHE_CTRL][S_RDATA_W-1:0]),
-		       .cache_controller_cpu_request (wire_s_valid[`CACHE_CTRL]),
-		       .cache_controller_acknowledge (wire_s_ready[`CACHE_CTRL]),
-		       .cache_controller_instr_access(wire_m_instr), //instruction signal from master (processor)
+                       //data interface 
+		       .cache_write_data   (s_wdata[`MAIN_MEM_BASE][`DATA_W-1:0]),
+		       .cache_addr         (s_addr[`MAIN_MEM_BASE][`CACHE_ADDR_W-1:0]),
+		       .cache_wstrb        (s_wstrb[`MAIN_MEM_BASE][STRB_W-1:0]),
+		       .cache_read_data    (s_rdata[`MAIN_MEM_BASE][`DATA_W-1:0]),
+		       .cpu_req            (s_valid[`MAIN_MEM_BASE]),
+		       .cache_ack          (s_ready[`MAIN_MEM_BASE]),
 
-		       ///// AXI signals
-		       /// Read
-		       .AR_ADDR            (sys_s_axi_araddr),
-		       .AR_LEN             (sys_s_axi_arlen),
-		       .AR_SIZE            (sys_s_axi_arsize),
-		       .AR_BURST           (sys_s_axi_arburst),
-		       .AR_VALID           (sys_s_axi_arvalid),
-		       .AR_READY           (sys_s_axi_arready),
-		       //.R_ADDR             (wire_R_ADDR),
-		       .R_VALID            (sys_s_axi_rvalid),
-		       .R_READY            (sys_s_axi_rready),
-		       .R_DATA             (sys_s_axi_rdata),
-		       .R_LAST             (sys_s_axi_rlast),
-		       /// Write
-		       .AW_ADDR            (sys_s_axi_awaddr),
-		       .AW_VALID           (sys_s_axi_awvalid),
-		       .AW_READY           (sys_s_axi_awready),
-		       //.W_ADDR             (wire_W_ADDR),
-		       .W_VALID            (sys_s_axi_wvalid),
-		       .W_STRB             (sys_s_axi_wstrb),
-		       .W_READY            (sys_s_axi_wready),
-		       .W_DATA             (sys_s_axi_wdata),
-		       .B_VALID            (sys_s_axi_bvalid),
-		       .B_READY            (sys_s_axi_bready)
-		       /*.mem_write_data     (sys_s_wdata),
-			.mem_wstrb          (sys_s_wstrb),
-			.mem_read_data      (sys_s_rdata),
-			.mem_addr           (sys_s_addr),
-			.mem_valid          (sys_s_valid),
-			.mem_ack            (sys_s_ready)*/
+                       //control interface
+		       .cache_controller_address (s_addr[`CACHE_CTRL_BASE][5:2]),
+		       .cache_controller_requested_data (s_rdata[`CACHE_CTRLL_BASE][`DATA_W-1:0]),
+		       .cache_controller_cpu_request (s_valid[`CACHE_CTRLL_BASE]),
+		       .cache_controller_acknowledge (s_ready[`CACHE_CTRLL_BASE]),
+		       .cache_controller_instr_access(m_instr), //instruction signal from master (processor)
+
+                       //
+		       // AXI MASTER INTERFACE TO MAIN MEMORY
+                       //
+		       // Address Read
+		       .AR_ADDR            (m_axi_araddr),
+		       .AR_LEN             (m_axi_arlen),
+		       .AR_SIZE            (m_axi_arsize),
+		       .AR_BURST           (m_axi_arburst),
+		       .AR_VALID           (m_axi_arvalid),
+		       .AR_READY           (m_axi_arready),
+
+                       //Data Read
+		       .R_VALID            (m_axi_rvalid),
+		       .R_READY            (m_axi_rready),
+		       .R_DATA             (m_axi_rdata),
+		       .R_LAST             (m_axi_rlast),
+
+		       // Address Write
+		       .AW_ADDR            (m_axi_awaddr),
+		       .AW_VALID           (m_axi_awvalid),
+		       .AW_READY           (m_axi_awready),
+
+                       // Data Write
+		       .W_VALID            (m_axi_wvalid),
+		       .W_STRB             (m_axi_wstrb),
+		       .W_READY            (m_axi_wready),
+		       .W_DATA             (m_axi_wdata),
+		       .B_VALID            (m_axi_bvalid),
+		       .B_READY            (m_axi_bready)
 		       );
 
+   //cache controller responds in next cycle
+   reg                     cache_ctr_ready;
+   assign s_ready[`CACHE_CTRL_BASE] = cache_ctr_ready;
+
+   always @(posedge clk)
+     cache_ctr_ready <= s_valid[`CACHE_CTRL_BASE];
+
+
 `else
-   //////////////////////////////////////////////////////////
-     //// Open RAM ///////////////////////////////////////////
-     ////////////////////////////////////////////////////////
+   //ROM/RAM respond in next cycle
+   reg                     mem_ready;
+   assign s_ready[0] = mem_ready;
 
-   //slave 1 (always cache or main_memory)
-   main_memory  #(
-		  .ADDR_W(MAIN_MEM_ADDR_W)
-		  ) main_memory (
-				 .clk                (clk                              ),
-				 .main_mem_write_data(wire_s_wdata[1][S_WDATA_W-1:0]   ),
-				 .main_mem_addr      (wire_s_addr[1][MAIN_MEM_ADDR_W-1:0]),
-				 .main_mem_en        (wire_s_wstrb[1][S_WSTRB_W-1:0]   ),
-				 .main_mem_read_data (wire_s_rdata[1][S_RDATA_W-1:0]   )
-				 );
-
-
-   reg            main_mem_ready;
-   assign wire_s_ready[1] = main_mem_ready;
-
-   always @(posedge clk) begin
-      main_mem_ready <= wire_s_valid[1];
-   end
-
+   always @(posedge clk)
+     mem_ready <= s_valid[0];
 `endif
 
+`ifdef USE_RAM
+   main_memory  #(
+		  .ADDR_W(`MEM_ADDR_W)
+		  ) 
+   main_memory (
+		.clk                   (clk),
+		.main_mem_write_data   (s_wdata[1][`DATA_W-1:0]),
+		.main_mem_addr         (s_addr[1][`MEM_ADDR_W-1:0]),
+		.main_mem_en           (s_wstrb[1][STRB_W-1:0]),
+		.main_mem_read_data    (s_rdata[1][`DATA_W-1:0])
+		);
+`endif
+ 
+   //
+   // UART
+   //
+   iob_uart uart(
+		 //cpu interface
+		 .clk       (clk),
+		 .rst       (~resetn_int),
+                 
+		 //cpu i/f
+		 .address   (s_addr[`UART][4:2]),
+		 .sel       (s_valid[`UART]),
+		 .read      (~(|s_wstrb[`UART][STRB_W-1:0])),
+		 .write     (|s_wstrb[`UART][STRB_W-1:0]),
+                 
+		 .data_in   (s_wdata[`UART][`DATA_W-1:0]),
+		 .data_out  (s_rdata[`UART][`DATA_W-1:0]),
+                 
+		 //serial i/f
+		 .txd       (uart_txd),
+		 .rxd       (uart_rxd),
+                 .rts       (uart_rts),
+                 .cts       (uart_cts)
+		 );
+   
+   //UART responds in next cycle
+   reg                     uart_ready;
+   assign s_ready[`UART_BASE] = uart_ready;
+   
+   always @(posedge clk) begin
+      uart_ready <= s_valid[`UART_BASE];
+   end
+
+
+   //
+   // RESET CONTROLLER
+   //
+   always @(posedge clk, posedge reset)
+     if(reset)  begin
+        choose_rom <= 1'b1;
+        soft_reset <= 1'b0;
+     end else if(s_sel[`SOFT_RESET_ADDR]) && m_wstrb) begin
+        soft_reset <= 1'b1;
+        choose_rom <= 1'b0;
+     end else
+       soft_reset <= 1'b0;
+   
 endmodule

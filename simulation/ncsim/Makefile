@@ -37,10 +37,7 @@ HEX := firmware.hex
 BOOTHEX := boot_0.dat boot_1.dat boot_2.dat boot_3.dat
 
 all: iobuser $(VSRC) $(HEX) $(BOOTHEX)
-	source /opt/ic_tools/init/init-incisive1510-hf002
-	ncvlog $(CFLAGS) -incdir $INCLUDE_DIR $(VSRC) -define SIM
-	ncelab $EFLAGS worklib.system_tb:module
-	ncsim  $SFLAGS worklib.system_tb:module
+	INCLUDE_DIR="$(INCLUDE_DIR)" SRC="$(VSRC)" CFLAGS="$(CFLAGS)" EFLAGS="$(EFLAGS)" SFLAGS="$(SFLAGS)" ./run_ncsim.sh
 
 iobuser:
 ifeq (${IOB_USER},)
