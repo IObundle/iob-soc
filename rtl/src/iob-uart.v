@@ -3,23 +3,23 @@
 
 module iob_uart (
                  //cpu interface 
-	         input             clk,
-	         input             rst,
+	         input 		   clk,
+	         input 		   rst,
 
-                 input [2:0]       address,
-	         input             sel,
-                 input             read,
-                 input             write,
+                 input [2:0] 	   address,
+	         input 		   sel,
+                 input 		   read,
+                 input 		   write,
 
-	         input [31:0]      data_in,
+	         input [31:0] 	   data_in,
 	         output reg [31:0] data_out,
 
                  //serial i/f
-	         output            txd,
-	         input             rxd,
-                 input             rts,
-                 output            cts
-                   );
+	         output 	   txd,
+	         input 		   rxd,
+                 input 		   cts,
+                 output 	   rts
+                 );
 
    // internal registers
    wire                              tx_wait;
@@ -50,19 +50,19 @@ module iob_uart (
    reg                               rst_soft;
 
 
-   reg [1:0]                         rts_int;
+   reg [1:0]                         cts_int;
    
    
    //reset hard and soft
    assign rst_int = rst | rst_soft;
 
    //clear to send (me data)
-   assign cts = ~recv_buf_valid;
+   assign rts = ~recv_buf_valid;
    
    
-   //rts synchronizer
+   //cts synchronizer
    always @(posedge clk) 
-     rts_int <= {rts_int[0], rts};
+     cts_int <= {cts_int[0], cts};
    
    
    ////////////////////////////////////////////////////////
@@ -91,7 +91,7 @@ module iob_uart (
 
       if(sel & read) begin
          case (address)
-           `UART_WRITE_WAIT: data_out = {31'd0, tx_wait | ~rts_int[1]};
+           `UART_WRITE_WAIT: data_out = {31'd0, tx_wait | ~cts_int[1]};
            `UART_DIV       : data_out = cfg_divider;
            `UART_DATA      : begin 
               data_out = recv_buf_data;
