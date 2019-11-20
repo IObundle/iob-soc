@@ -2,26 +2,6 @@
 `timescale 1ns / 1ps
 
 `include "system.vh"
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 04/12/2019 03:48:19 PM
-// Design Name: 
-// Module Name: top_system_test_Icarus
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: Top Environment to test AXI - MEM - interface, to later be used for DDR4
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
-
 
 module top_system(
 `ifdef XILINX
@@ -531,43 +511,7 @@ module top_system(
 
  `else
    
-   bram_axi axi_bram (
-		      //AXI Global Signals
-		      .s_aclk (clk),
-		      .s_aresetn (~system_reset),
-		      //AXI                        Full/lite slave write (write side)
-		      .s_axi_awid(),
-		      .s_axi_awaddr(wire_axi_awaddr),
-		      .s_axi_awlen(8'd0),
-		      .s_axi_awsize(3'b010),
-		      .s_axi_awburst(2'b00),
-		      .s_axi_awvalid(wire_axi_awvalid),
-		      .s_axi_awready(wire_axi_awready),
-		      .s_axi_wdata(wire_axi_wdata),
-		      .s_axi_wstrb(wire_axi_wstrb),
-		      .s_axi_wlast(|wire_axi_wstrb),
-		      .s_axi_wvalid(wire_axi_wvalid),
-		      .s_axi_wready(wire_axi_wready),
-		      .s_axi_bid(),
-		      .s_axi_bresp(),
-		      .s_axi_bvalid(wire_axi_bvalid),
-		      .s_axi_bready(wire_axi_bready),
-		      //AXI                        Full/lite slave read (write side)
-		      .s_axi_arid(),
-		      .s_axi_araddr(wire_axi_araddr),
-		      .s_axi_arlen(wire_axi_arlen),
-		      .s_axi_arsize(wire_axi_arsize),
-		      .s_axi_arburst(wire_axi_arburst),
-		      .s_axi_arvalid(wire_axi_arvalid),
-		      .s_axi_arready(wire_axi_arready),
-		      .s_axi_rid(),
-		      .s_axi_rdata(wire_axi_rdata),
-		      .s_axi_rresp(),
-		      .s_axi_rlast(wire_axi_rlast),
-		      .s_axi_rvalid(wire_axi_rvalid),
-		      .s_axi_rready(wire_axi_rready)
-		      );
-
+ 
    
  `endif //def DDR
 `endif //def CACHE
