@@ -7,13 +7,8 @@
 #include "iob-uart.h"
 #include "system.h"
 
-#define UART_CLK_FREQ 100000000 // 100 MHz
-#define UART_BAUD_RATE BAUD //BAUD passed from Makefile
-#define MEM_JUMP 0x6FFFFFFC
-#define PROG_SIZE 4096 
-
 volatile int* MAIN_MEM;
-volatile int* PC_SOFT_RESET;
+volatile int* SOFT_RESET;
 volatile int* DDR_MEM;
 
 void main()
@@ -26,10 +21,9 @@ void main()
   unsigned char temp;
   int line=0;
   int acc = 0;
-  MAIN_MEM = (volatile int*) MAINMEM_BASE; //AUXMEM is slave 1
-  //DDR_MEM = (volatile int*) AUXMEM_BASE; //cache is slave 4
+  MAIN_MEM = (volatile int*) RAM_BASE;
 
-  uart_init(UART_BASE,UART_CLK_FREQ/UART_BAUD_RATE);
+  uart_init(UART_BASE,UART_CLK_FREQ/BAUD);
 
   uart_puts ("\nLoad Program through UART to Main Memory...\n");
   uart_printf("Writing starts at %x\n", MAIN_MEM);
@@ -74,5 +68,5 @@ void main()
 
   uart_puts("\nPreparing to start the Main Memory program...\n");    
 
-  *((volatile int*) MEM_JUMP) = 1;
+  *((volatile int*) SOFT_RESET) = 1;
 }

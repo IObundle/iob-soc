@@ -2,7 +2,7 @@
 
 `include "system.vh"
 
-module system (
+module systemdarkrv (
                input 	     clk, 
                input 	     reset,
                output 	     ser_tx,

@@ -1,21 +1,26 @@
 `timescale 1ns / 1ps
 `include "system.vh"
 
-module iob_generic_interconnect (
-                                 //master interface
-                                 input [`N_SLAVES_W-1:0]      m_addr,
-                                 input                        m_valid,
-                                 output [`DATA_W-1:0]         m_rdata,
-                                 output                       m_ready,
+module iob_generic_interconnect 
+  #(
+    parameter N_SLAVES=5,
+    parameter N_SLAVES_W=3
+    )
+   (
+    //master interface
+    input [N_SLAVES_W-1:0]       m_addr,
+    input                        m_valid,
+    output [`DATA_W-1:0]         m_rdata,
+    output                       m_ready,
 
                                  //slaves interface
-                                 output [N_SLAVES-1:0]        s_valid,
-                                 input [N_SLAVES*`DATA_W-1:0] s_rdata,
-                                 input [N_SLAVES-1:0]         s_ready
+    output reg [N_SLAVES-1:0]    s_valid,
+    input [N_SLAVES*`DATA_W-1:0] s_rdata,
+    input [N_SLAVES-1:0]         s_ready
     );
 
-   always @* begin
-      reg [`N_SLAVES_W-1:0] 				i;
+   always @* begin : compute_slaves_valid
+      reg [N_SLAVES_W-1:0] 				i;
       
       for(i=0; i<N_SLAVES; i=i+1)
          s_valid = (i==m_addr);

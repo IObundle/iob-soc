@@ -5,30 +5,35 @@
 module system (
                input              clk,
                input              reset,
+               output             trap,
+
+               //UART
                output             uart_txd,
                input              uart_rxd,
-               output             trap
+               output             uart_rts,
+               input              uart_cts
+                                  
 `ifdef DDR //AXI MASTER INTERFACE
                // Address-Write
                , output m_axi_awvalid,
                input              m_axi_awready,
                output [`ADDR_W:0] m_axi_awaddr,
-    /// Data-Write
+               /// Data-Write
                output             m_axi_wvalid,
                input              m_axi_wready,
                output [`DATA_W:0] m_axi_wdata,
                output [ 3:0]      m_axi_wstrb,
-    /// Write-Response
+               // Write-Response
                input              m_axi_bvalid,
                output             m_axi_bready,
-    /// Address-Read
+               // Address-Read
                output             m_axi_arvalid,
                input              m_axi_arready,
                output [`ADDR_W:0] m_axi_araddr,
                output [7:0]       m_axi_arlen,
                output [2:0]       m_axi_arsize,
                output [1:0]       m_axi_arburst,
-    /// Data-Read
+               // Data-Read
                input              m_axi_rvalid,
                output             m_axi_rready,
                input [`DATA_W:0]  m_axi_rdata,
@@ -39,6 +44,7 @@ module system (
    //
    // RESET
    //
+   reg                            soft_reset;   
    wire                           reset_int = reset | soft_reset;
    reg                            choose_rom;   
 
@@ -46,10 +52,10 @@ module system (
    //
    //  CPU
    //
-   wire [`ADDR_W:0]               m_addr;
-   wire [`DATA_W:0]               m_wdata;
+   wire [`ADDR_W-1:0]             m_addr;
+   wire [`DATA_W-1:0]             m_wdata;
    wire [3:0]                     m_wstrb;
-   wire [`DATA_W:0]               m_rdata;
+   wire [`DATA_W-1:0]             m_rdata;
    wire                           m_valid;
    wire                           m_ready;
    wire                           m_instr;
@@ -77,42 +83,48 @@ module system (
    // INTERCONNECT
    //
    
-   wire [`DATA_W-1:0]             s_rdata[N_SLAVES-1:0];
-   reg [N_SLAVES*`DATA_W-1:0]     s_rdata_concat;
-   wire [N_SLAVES-1:0]            s_valid;
-   wire [N_SLAVES-1:0]            s_ready;
+   wire [`DATA_W-1:0]             s_rdata[`N_SLAVES-1:0];
+   reg [`N_SLAVES*`DATA_W-1:0]     s_rdata_concat;
+   wire [`N_SLAVES-1:0]            s_valid;
+   wire [`N_SLAVES-1:0]            s_ready;
    
    //choose program memory according to reset condition
-   assign s_rdata[0] = choose_rom? 
-                       boot_read_data: 
+   wire [`N_SLAVES_W-1:0]          mem_ptr;
+   
+   assign mem_ptr = m_addr[`ADDR_W-1 -: `N_SLAVES_W]?
+                    m_addr[`ADDR_W-1 -: `N_SLAVES_W]: choose_rom? `ROM_BASE: 
 `ifdef USE_DDR
-                       cache_read_data;
+                    `CACHE_BASE;
 `else
-                       main_mem_read_data;
+                    `RAM_BASE;
 `endif
 
       
    //concatenate slave read data signals to input in interconnect
-   always @* begin
-      int i;   
-      for(i=0; i<N_SLAVES; i=i+1)
-	 s_rdata_concat[((i+1)*`DATA_W)-1 -: `DATA_W] =s_rdata[i];
+   always @* begin : concat_slave_reads
+      integer i;
+      for(i=0; i<`N_SLAVES; i=i+1)
+	s_rdata_concat[((i+1)*`DATA_W)-1 -: `DATA_W] =s_rdata[i];
    end
    
 
    iob_generic_interconnect 
-     generic_interconnect (
-			   // master interface
-			   .m_addr  (m_addr[`ADDR_W-1 -: N_SLAVES_W]),
-			   .m_rdata (m_rdata),
-			   .m_valid (m_valid),
-			   .m_ready (m_ready),
-
-                           // slaves interface
-			   .s_rdata (s_rdata_concat),
-			   .s_valid (s_valid),
-			   .s_ready (s_ready)
-			   );
+     #(.N_SLAVES(`N_SLAVES),
+       .N_SLAVES_W(`N_SLAVES_W)
+       )
+   generic_interconnect
+     (
+      // master interface
+      .m_addr  (mem_ptr),
+      .m_rdata (m_rdata),
+      .m_valid (m_valid),
+      .m_ready (m_ready),
+      
+      // slaves interface
+      .s_rdata (s_rdata_concat),
+      .s_valid (s_valid),
+      .s_ready (s_ready)
+      );
 
     
    //
@@ -120,14 +132,16 @@ module system (
    //
 
    boot_memory  #(
-	          .ADDR_W(`ROM_ADDR_W)
+	          .ADDR_W(`BOOT_ADDR_W)
 	          )
    boot_memory (
 		.clk                (clk ),
-		.boot_write_data    (s_wdata[0][`DATA_W-1:0]),
-		.boot_addr          (s_addr[0][`BOOT_ADDR_W-1:0]),
-		.boot_en            (s_wstrb[0][STRB_W-1:0]),
-		.boot_read_data     (s_rdata[0][`DATA_W-1:0])
+		.boot_write_data    (m_wdata),
+		.boot_addr          (m_addr[`BOOT_ADDR_W-1:0]),
+		.boot_wstrb         (m_wstrb),
+		.boot_read_data     (s_rdata[`ROM_BASE]),
+                .boot_valid         (s_valid[`ROM_BASE]),
+                .boot_ready         (s_ready[`ROM_BASE])
 		);
 
 
@@ -141,19 +155,19 @@ module system (
 		       .reset              (reset),
 
                        //data interface 
-		       .cache_write_data   (s_wdata[`MAIN_MEM_BASE][`DATA_W-1:0]),
-		       .cache_addr         (s_addr[`MAIN_MEM_BASE][`CACHE_ADDR_W-1:0]),
-		       .cache_wstrb        (s_wstrb[`MAIN_MEM_BASE][STRB_W-1:0]),
-		       .cache_read_data    (s_rdata[`MAIN_MEM_BASE][`DATA_W-1:0]),
-		       .cpu_req            (s_valid[`MAIN_MEM_BASE]),
-		       .cache_ack          (s_ready[`MAIN_MEM_BASE]),
+		       .cache_write_data   (m_wdata),
+		       .cache_addr         (m_addr[`CACHE_ADDR_W-1:0]),
+		       .cache_wstrb        (m_wstrb),
+		       .cache_read_data    (s_rdata[`RAM_BASE]),
+		       .cpu_req            (s_valid[`RAM_BASE]),
+		       .cache_ack          (s_ready[`RAM_BASE]),
 
                        //control interface
-		       .cache_controller_address (s_addr[`CACHE_CTRL_BASE][5:2]),
-		       .cache_controller_requested_data (s_rdata[`CACHE_CTRLL_BASE][`DATA_W-1:0]),
-		       .cache_controller_cpu_request (s_valid[`CACHE_CTRLL_BASE]),
-		       .cache_controller_acknowledge (s_ready[`CACHE_CTRLL_BASE]),
-		       .cache_controller_instr_access(m_instr), //instruction signal from master (processor)
+		       .cache_controller_address (m_addr[5:2]),
+		       .cache_controller_requested_data (s_rdata[`CACHE_CTRL_BASE]),
+		       .cache_controller_cpu_request (s_valid[`CACHE_CTRL_BASE]),
+		       .cache_controller_acknowledge (s_ready[`CACHE_CTRL_BASE]),
+		       .cache_controller_instr_access(m_instr),
 
                        //
 		       // AXI MASTER INTERFACE TO MAIN MEMORY
@@ -185,53 +199,40 @@ module system (
 		       .B_VALID            (m_axi_bvalid),
 		       .B_READY            (m_axi_bready)
 		       );
-
-   //cache controller responds in next cycle
-   reg                     cache_ctr_ready;
-   assign s_ready[`CACHE_CTRL_BASE] = cache_ctr_ready;
-
-   always @(posedge clk)
-     cache_ctr_ready <= s_valid[`CACHE_CTRL_BASE];
-
-
-`else
-   //ROM/RAM respond in next cycle
-   reg                     mem_ready;
-   assign s_ready[0] = mem_ready;
-
-   always @(posedge clk)
-     mem_ready <= s_valid[0];
 `endif
 
 `ifdef USE_RAM
    main_memory  #(
 		  .ADDR_W(`MEM_ADDR_W)
 		  ) 
-   main_memory (
-		.clk                   (clk),
-		.main_mem_write_data   (s_wdata[1][`DATA_W-1:0]),
-		.main_mem_addr         (s_addr[1][`MEM_ADDR_W-1:0]),
-		.main_mem_en           (s_wstrb[1][STRB_W-1:0]),
-		.main_mem_read_data    (s_rdata[1][`DATA_W-1:0])
-		);
+   ram (
+	.clk                   (clk),
+	.main_mem_write_data   (m_wdata[`DATA_W-1:0]),
+	.main_mem_addr         (m_addr[`MEM_ADDR_W-1:0]),
+	.main_mem_wstrb        (m_wstrb),
+	.main_mem_read_data    (s_rdata[1][`DATA_W-1:0]),
+        .main_mem_valid        (s_valid[`RAM_BASE]),
+        .main_mem_ready        (s_ready[`RAM_BASE])
+	);
 `endif
- 
+   
    //
    // UART
    //
    iob_uart uart(
 		 //cpu interface
 		 .clk       (clk),
-		 .rst       (~resetn_int),
+		 .rst       (reset),
                  
 		 //cpu i/f
-		 .address   (s_addr[`UART][4:2]),
-		 .sel       (s_valid[`UART]),
-		 .read      (~(|s_wstrb[`UART][STRB_W-1:0])),
-		 .write     (|s_wstrb[`UART][STRB_W-1:0]),
+		 .sel       (s_valid[`UART_BASE]),
+		 .rdy       (s_ready[`UART_BASE]),
+		 .address   (m_addr[4:2]),
+		 .read      (m_wstrb == 0),
+		 .write     (m_wstrb != 0),
                  
-		 .data_in   (s_wdata[`UART][`DATA_W-1:0]),
-		 .data_out  (s_rdata[`UART][`DATA_W-1:0]),
+		 .data_in   (m_wdata),
+		 .data_out  (s_rdata[`UART_BASE]),
                  
 		 //serial i/f
 		 .txd       (uart_txd),
@@ -240,15 +241,6 @@ module system (
                  .cts       (uart_cts)
 		 );
    
-   //UART responds in next cycle
-   reg                     uart_ready;
-   assign s_ready[`UART_BASE] = uart_ready;
-   
-   always @(posedge clk) begin
-      uart_ready <= s_valid[`UART_BASE];
-   end
-
-
    //
    // RESET CONTROLLER
    //
@@ -256,7 +248,7 @@ module system (
      if(reset)  begin
         choose_rom <= 1'b1;
         soft_reset <= 1'b0;
-     end else if(s_sel[`SOFT_RESET_ADDR]) && m_wstrb) begin
+     end else if( s_valid[`SOFT_RESET_ADDR] && m_wstrb ) begin
         soft_reset <= 1'b1;
         choose_rom <= 1'b0;
      end else
