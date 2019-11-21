@@ -3,22 +3,23 @@
 
 module iob_uart (
                  //cpu interface 
-	         input 		   clk,
-	         input 		   rst,
+	         input             clk,
+	         input             rst,
 
-                 input [2:0] 	   address,
-	         input 		   sel,
-                 input 		   read,
-                 input 		   write,
+	         input             sel,
+	         output reg        rdy,
+                 input [2:0]       address,
+                 input             read,
+                 input             write,
 
-	         input [31:0] 	   data_in,
+	         input [31:0]      data_in,
 	         output reg [31:0] data_out,
 
                  //serial i/f
-	         output 	   txd,
-	         input 		   rxd,
-                 input 		   cts,
-                 output 	   rts
+	         output            txd,
+	         input             rxd,
+                 input             cts,
+                 output            rts
                  );
 
    // internal registers
@@ -119,58 +120,51 @@ module iob_uart (
    ////////////////////////////////////////////////////////
 
    always @(posedge clk, posedge rst_int) begin
-      if (rst_int)
-	begin
-           recv_state <= 0;
-           recv_divcnt <= 0;
-           recv_pattern <= 0;
-           recv_buf_data <= 0;
+      if (rst_int) begin
+         recv_state <= 0;
+         recv_divcnt <= 0;
+         recv_pattern <= 0;
+         recv_buf_data <= 0;
+         recv_buf_valid <= 0;
+      end else begin
+         recv_divcnt <= recv_divcnt + 1;
+         if (data_read_en)
            recv_buf_valid <= 0;
-	end
-      else
-	begin
-           recv_divcnt <= recv_divcnt + 1;
-           if (data_read_en)
-             recv_buf_valid <= 0;
 
-           case (recv_state)
+         case (recv_state)
+           
+           // Detect start bit (i.e., when RX line goes to low)
+           4'd0: begin
+              if (!rxd)
+                recv_state <= 1;
+              recv_divcnt <= 1;
+           end
              
-             // Detect start bit (i.e., when RX line goes to low)
-             4'd0:
-               begin
-                  if (!rxd)
-                    recv_state <= 1;
-                  recv_divcnt <= 1;
+           // Forward in time to the middle of the start bit
+           4'd1:
+             if ( (2*recv_divcnt) >= cfg_divider) begin
+                recv_state <= 2;
+                recv_divcnt <= 1;
+             end
+             
+           // Sample the 8 bits from the RX line and put them in the shift register
+           default: // states 4'd2 through 4'd9
+             if (recv_divcnt >= cfg_divider) begin
+                recv_pattern <= {rxd, recv_pattern[7:1]};
+                recv_state <= recv_state + 1'b1;
+                recv_divcnt <= 1;
+             end
+           
+           // Put the received byte in the output data register; drive read valid to high
+             4'd10:
+               if (recv_divcnt >= cfg_divider) begin
+                  recv_buf_data <= recv_pattern;
+                  recv_buf_valid <= 1;
+                  recv_state <= 0;
                end
              
-             // Forward in time to the middle of the start bit
-             4'd1:
-               if ( (2*recv_divcnt) >= cfg_divider)
-                 begin
-                    recv_state <= 2;
-                    recv_divcnt <= 1;
-                 end
-             
-             // Sample the 8 bits from the RX line and put them in the shift register
-             default: // states 4'd2 through 4'd9
-               if (recv_divcnt >= cfg_divider)
-                 begin
-                    recv_pattern <= {rxd, recv_pattern[7:1]};
-                    recv_state <= recv_state + 1'b1;
-                    recv_divcnt <= 1;
-                 end
-             
-             // Put the received byte in the output data register; drive read valid to high
-             4'd10:
-               if (recv_divcnt >= cfg_divider)
-                 begin
-                    recv_buf_data <= recv_pattern;
-                    recv_buf_valid <= 1;
-                    recv_state <= 0;
-                 end
-             
-           endcase // case (recv_state)
-	end // else: !if(rst_int)
+         endcase // case (recv_state)
+      end // else: !if(rst_int)
    end //always @
 	 
    ////////////////////////////////////////////////////////
@@ -200,27 +194,18 @@ module iob_uart (
    // shift register
    always @(posedge clk, posedge rst_int)
       if (rst_int) //reset
-        begin
            send_pattern <= ~10'b0;
-           `ifdef SIM
-           prchar <= 1'b0;
-           `endif
-        end
-      else if (data_write_en) 
-        //load
-        begin
+      else if (data_write_en) //load
            send_pattern <= {1'b1, data_in[7:0], 1'b0};
-           `ifdef SIM
-           prchar <= ~prchar;
-           if(prchar) $write("%c", data_in[7:0]);
-           `endif
-        end
       else if (send_bitcnt && send_divcnt == cfg_divider) 
         //shift right
         send_pattern <= {1'b1, send_pattern[9:1]};
 
    // send serial comm
    assign txd = send_pattern[0];
+
+  always @(posedge clk)
+     rdy <= sel;
 
 endmodule
 
