@@ -30,6 +30,17 @@ module system_tb;
 
 
    //
+   // READ UART PROCESS
+`ifdef SIM
+   prchar <= 1'b0;
+`endif
+`ifdef SIM
+   prchar <= ~prchar;
+   if(prchar) $write("%c", data_in[7:0]);
+`endif
+   
+
+   //
    // TEST PROCEDURE
    //
    initial begin
@@ -52,7 +63,7 @@ module system_tb;
       //config uart div factor
       do
 	cpu_uartread(`UART_WRITE_WAIT, rxread_reg);
-      while(rxread_reg != 32'h0);
+      while(rxread_reg != 0);
       cpu_uartwrite(`UART_DIV, 32'd10);
 
       //wait until uut is ready
@@ -81,9 +92,8 @@ module system_tb;
 `endif
    end // test procedure
  
-   
-   wire       uut_tx, uut_rx;
-   wire       tester_tx, tester_rx;       
+   wire       tester_txd, tester_rxd;       
+   wire       tester_rts, tester_cts;       
    wire       trap;
    
    //
@@ -97,33 +107,38 @@ module system_tb;
 	       .trap             (trap),
 
                //UART
-	       .uart_txd           (uut_tx),
-	       .uart_rxd           (uut_rx)
+	       .uart_txd         (tester_rxd),
+	       .uart_rxd         (tester_txd),
+	       .uart_rts         (tester_cts),
+	       .uart_cts         (tester_rts)
 	       );
 
 
    //TESTER UART
    iob_uart test_uart (
-		       .txd    (tester_tx),
-		       .rxd    (tester_rx),
 		       .clk       (clk),
 		       .rst       (reset),
-		       .address   (uart_addr),
+                       
 		       .sel       (uart_sel),
+		       .address   (uart_addr),
 		       .write     (uart_wr),
 		       .read      (uart_r),
 		       .data_in   (uart_di),
-		       .data_out  (uart_do)
+		       .data_out  (uart_do),
+
+		       .txd       (tester_txd),
+		       .rxd       (tester_rxd),
+		       .rts       (tester_rts),
+		       .cts       (tester_cts)
 		       );
-
-   assign tester_rx = uut_tx;
-   assign uut_rx = tester_tx;
-
    
    // finish simulation
    always @(posedge trap)   	 
      $finish;
    
+
+
+
    //
    // CPU tasks
    //

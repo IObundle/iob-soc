@@ -1,28 +1,24 @@
 TOOLCHAIN_PREFIX = /opt/riscv32i/bin/riscv32-unknown-elf-
 TEST := test
 
-FIRM_DIR = ../../tests/$(TEST)
 SCRPT_DIR = ../../scripts/
 UART_DIR = ../../../submodules/iob-uart/c-driver
-MEMMAP_DIR = ../..
 
-C_SRC = $(UART_DIR)/iob-uart.c
-H_SRC = $(UART_DIR)/iob-uart.h $(MEMMAP_DIR)/system.h
+SRC = boot_uart.S boot_uart.c $(UART_DIR)/iob-uart.c 
 
 all: boot.hex
 
-boot.hex: boot_uart.S boot_uart.c $(FIRM_DIR)/firmware.lds $(H_SRC) $(C_SRC)
-	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -I. -I$(FIRM_DIR) -I$(UART_DIR) -I$(MEMMAP_DIR) -nostdlib -o boot.elf boot_uart.S $(H_SRC) $(C_SRC) boot_uart.c\
-		 --std=gnu99 -Wl,-Bstatic,-T,$(FIRM_DIR)/firmware.lds,-Map,boot.map,--strip-debug -lgcc -lc -DBAUD=$(BAUD)
-#$(BAUD) is passed from parent (simulation or fpga) Makefile
+boot.hex: $(SRC) boot_uart.lds $(UART_DIR)/iob-uart.h
+	sed s/\`define/\#define/g ../../../rtl/include/system.vh > system.h
+	$(eval PROG_SIZE=`python3 ../../scripts/get_progsize.py BOOT_ADDR_W`)
+	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -DPROG_SIZE=$(PROG_SIZE) -I. -I$(UART_DIR) -nostdlib -o boot.elf $(SRC)\
+		 --std=gnu99 -Wl,-Bstatic,-T,boot_uart.lds,-Map,boot.map,--strip-debug -lgcc -lc -DBAUD=$(BAUD)
 	$(TOOLCHAIN_PREFIX)objcopy -O binary boot.elf boot.bin
-	cp $(SCRPT_DIR)*.py .
-	python3 makehex.py boot.bin 4096 > boot.hex
-	python3 boot_hex_split.py
-	rm -rf *.py
+	python3 $(SCRPT_DIR)/makehex.py boot.bin $(PROG_SIZE) > boot.hex
+	python3 $(SCRPT_DIR)/boot_hex_split.py
 
 clean:
 	@rm -rf boot.bin boot.elf boot.hex boot.map boot_*.hex boot_?.dat
-	@rm -rf uart_loader
+	@rm -rf uart_loader *~
 	@rm -rf ../boot.bin ../boot.elf ../boot.hex ../boot.map ../boot_*.hex ../boot_?.dat
-	@rm -rf ../uart_loader
+	@rm -rf ../uart_loader system.h

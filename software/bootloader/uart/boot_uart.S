@@ -1,10 +1,11 @@
+#include "system.h"
 .section .init
 .global main
 
 
 /* set stack pointer */
 lui sp, %hi(4*4096)
-addi sp, sp, %lo(4*4096)
+addi sp, sp, %lo(4*(1<<(BOOT_ADDR_W-2)))
 
 //.equ STACK_ADDR, 0x800
 //li sp, STACK_ADDR
