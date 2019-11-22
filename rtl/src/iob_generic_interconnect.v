@@ -23,10 +23,10 @@ module iob_generic_interconnect
       reg [N_SLAVES_W-1:0] 				i;
       
       for(i=0; i<N_SLAVES; i=i+1)
-         s_valid = (i==m_addr);
+         s_valid[i] = (i[N_SLAVES_W-1:0] == m_addr);
    end
                    
-   assign    m_rdata = s_rdata[m_addr*`DATA_W-1 -: `DATA_W];
+   assign    m_rdata = s_rdata[(m_addr+1)*`DATA_W-1 -: `DATA_W];
    assign    m_ready = s_ready[m_addr];
    
                       

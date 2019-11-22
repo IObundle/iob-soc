@@ -1,43 +1,54 @@
-VLOG = iverilog -W all -g2005-sv
-
-
-#hardware
-RISCVDIR = ../../submodules/iob-rv32
-UARTDIR = ../../submodules/iob-uart
-FIFODIR = ../../submodules/fifo
-
-UARTSRC = $(UARTDIR)/rtl/src
-UARTINC = $(UARTDIR)/rtl/include
-
-RTLDIR = ../../rtl/
-INCLUDE_DIR= $(RTLDIR)/include
-SRC_DIR = $(RTLDIR)/src
-IP_DIR = $(RTLDIR)/ip
-
-TESTBENCH = $(RTLDIR)/testbench/system_tb.v
-VSRC = $(SRC_DIR)/*.v $(FIFODIR)/afifo.v $(SRC_DIR)/memory/*.v $(RISCVDIR)/picorv32.v $(RISCVDIR)/rtl/xalt_1p_mem.v $(UARTSRC)/iob-uart.v
+#hardware configuration
+USE_RAM = 0
+USE_DDR = 0
 
 #software
-TESTDIR = ../../software/tests/test
-BOOTDIR = ../../software/bootloader/uart
+TEST_DIR = ../../software/tests/hello_world
+BOOT_DIR = ../../software/bootloader/firmware
 
-all: firmware.hex boot.hex $(VSRC)
-	$(VLOG) -I$(INCLUDE_DIR) -I$(UARTINC) $(VSRC) $(TESTBENCH)
-	./a.out +vcd
+ifeq (USE_RAM,1)
+HW_CONF = -DUSE_RAM 
+endif
 
-firmware.hex:
-	make -C $(TESTDIR) BAUD=10000000
-	cp $(TESTDIR)/firmware_0.hex ./firmware_0.dat
-	cp $(TESTDIR)/firmware_1.hex ./firmware_1.dat
-	cp $(TESTDIR)/firmware_2.hex ./firmware_2.dat
-	cp $(TESTDIR)/firmware_3.hex ./firmware_3.dat
+ifeq (USE_DDR,1)
+HW_CONF = $(HW_CONF) -DUSE_DDR
+endif
 
-boot.hex:
-	make -C $(BOOTDIR) BAUD=10000000
-	cp $(BOOTDIR)/boot_0.hex ./boot_0.dat
-	cp $(BOOTDIR)/boot_1.hex ./boot_1.dat
-	cp $(BOOTDIR)/boot_2.hex ./boot_2.dat
-	cp $(BOOTDIR)/boot_3.hex ./boot_3.dat
+#icarus verilog simulator
+VLOG = iverilog -W all -g2005-sv $(HW_CONF) -DVCD
+
+#hardware
+RTL_DIR = ../../rtl
+RISCV_DIR = ../../submodules/iob-rv32
+UART_DIR = ../../submodules/iob-uart
+FIFO_DIR = ../../submodules/fifo
+
+VSRC = $(RTL_DIR)/testbench/system_tb.v  $(RTL_DIR)/src/*.v $(RISCV_DIR)/picorv32.v $(UART_DIR)/rtl/src/iob-uart.v $(FIFO_DIR)/afifo.v
+
+all: firmware boot $(VSRC)
+	$(VLOG) -I$(RTL_DIR)/include -I$(UART_DIR)/rtl/include $(VSRC) $(HW_CONF)
+	./a.out
+
+firmware:
+	make -C $(TEST_DIR) BAUD=10000000
+	cp $(TEST_DIR)/firmware_0.hex ./firmware_0.dat
+	cp $(TEST_DIR)/firmware_1.hex ./firmware_1.dat
+	cp $(TEST_DIR)/firmware_2.hex ./firmware_2.dat
+	cp $(TEST_DIR)/firmware_3.hex ./firmware_3.dat
+
+boot: 
+ifeq ($(USE_RAM)$(USE_DDR),00)
+	cp $(TEST_DIR)/firmware_0.hex ./boot_0.dat
+	cp $(TEST_DIR)/firmware_1.hex ./boot_1.dat
+	cp $(TEST_DIR)/firmware_2.hex ./boot_2.dat
+	cp $(TEST_DIR)/firmware_3.hex ./boot_3.dat
+else 
+	make -C $(BOOT_DIR)/uart BAUD=10000000
+	cp $(BOOT_DIR)/uart/boot_0.hex ./boot_0.dat
+	cp $(BOOT_DIR)/uart/boot_1.hex ./boot_1.dat
+	cp $(BOOT_DIR)/uart/boot_2.hex ./boot_2.dat
+	cp $(BOOT_DIR)/uart/boot_3.hex ./boot_3.dat
+endif
 
 clean:
 	@rm -f *#
@@ -46,7 +57,7 @@ clean:
 	@rm -f firmware_?.dat
 	@rm -f boot_?.dat
 	@rm -f ./a.out
-	@make -C $(BOOTDIR) clean --no-print-directory
-	@make -C $(TESTDIR) clean --no-print-directory
+	@make -C $(BOOT_DIR) clean --no-print-directory
+	@make -C $(TEST_DIR) clean --no-print-directory
 
-.PHONY: all clean
+.PHONY: all clean boot firmware

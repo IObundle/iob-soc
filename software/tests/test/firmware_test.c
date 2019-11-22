@@ -7,8 +7,6 @@
 #include "iob-uart.h"
 #include "system.h"
 
-#define UART_CLK_FREQ 100000000 // 100 MHz
-#define UART_BAUD_RATE BAUD //BAUD passed from Makefile
 #define Address_write 0x9004 //address where the writting starts
 #define N 1000
 
@@ -25,8 +23,10 @@ void main()
   //uart_write_wait();
   uart_puts("\n... Initializing program in main memory:\n");
   vect = (volatile int*) AUXMEM_BASE;
+
   uart_printf("Test. Is this working?\n");
 
+  
   for (counter = 0; counter < N; counter ++){
     vect[counter] = counter;
   }

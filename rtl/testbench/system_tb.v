@@ -1,5 +1,6 @@
 `timescale 1ns / 1ps
 
+`include "system.vh"
 `include "iob-uart.vh"
 
 module system_tb;
@@ -14,11 +15,6 @@ module system_tb;
    // program memory 
    reg [31:0] progmem[4095:0];
 
-
-   //general iterators
-   integer    i = 0, j = 0;
-
-
    //uart signals
    reg [7:0] 	rxread_reg = 8'b0;
    reg [2:0]    uart_addr;
@@ -28,18 +24,14 @@ module system_tb;
    reg [31:0]   uart_di;
    reg [31:0]   uart_do;
 
+   //cpu to receive getchar
+   reg [7:0]    cpu_char = 0;
+      
 
    //
    // READ UART PROCESS
-`ifdef SIM
-   prchar <= 1'b0;
-`endif
-`ifdef SIM
-   prchar <= ~prchar;
-   if(prchar) $write("%c", data_in[7:0]);
-`endif
-   
-
+   //
+     
    //
    // TEST PROCEDURE
    //
@@ -57,41 +49,39 @@ module system_tb;
       //sync up with reset 
       repeat (100) @(posedge clk) #1;
 
-      //reset uart 
-      cpu_uartwrite(`UART_SOFT_RESET, 32'd1);
-
-      //config uart div factor
-      do
-	cpu_uartread(`UART_WRITE_WAIT, rxread_reg);
-      while(rxread_reg != 0);
-      cpu_uartwrite(`UART_DIV, 32'd10);
-
-      //wait until uut is ready
-      do begin
-	 do
-	   cpu_uartread(`UART_READ_VALID, rxread_reg);
-	 while(rxread_reg == 32'h0);	 
-	 cpu_uartread(`UART_DATA, rxread_reg);
-      end while(rxread_reg != 32'h11); //wait for DC1 ascii code
-
-`ifdef UART_BOOT
       //
-      // UPLOAD FIRMWARE VIA UART
+      // CONFIGURE UART
       //
-      $readmemh("firmware.hex", progmem,0,4095);
+      cpu_inituart();
 
-      for(i=0; i<4096; i++) begin
-	 for(j=31; j>=7; j=j-8) begin
-	    do
-	      cpu_uartread(`UART_WRITE_WAIT, rxread_reg);
-	    while(rxread_reg != 32'h0);
-	    cpu_uartwrite(`UART_DATA, progmem[i][j -: 4'd8]);
-	    repeat(3000) @(posedge clk) #1;
-	 end
-      end
+      //
+      // LOAD FIRMWARE
+      //
+`ifdef USE_DDR
+      cpu_loadfirmware(2**(`RAM_ADDR_W-2));
+`elsif USE_RAM
+      cpu_loadfirmware(2**(`RAM_ADDR_W-2));
 `endif
+
+      //
+      // DO THE TEST
+      //
+      
+      do begin 
+         cpu_getchar(cpu_char);
+         $display("%c", cpu_char);
+      end while (cpu_char != "\n"); 
+      
+      $finish;
+  
+      
    end // test procedure
  
+
+   //
+   // INSTANTIATE COMPONENTS
+   //
+   
    wire       tester_txd, tester_rxd;       
    wire       tester_rts, tester_cts;       
    wire       trap;
@@ -132,15 +122,8 @@ module system_tb;
 		       .cts       (tester_cts)
 		       );
    
-   // finish simulation
-   always @(posedge trap)   	 
-     $finish;
-   
-
-
-
    //
-   // CPU tasks
+   // CPU TASKS
    //
    
    // 1-cycle write
@@ -168,5 +151,51 @@ module system_tb;
       @ (posedge clk) #1 uart_r = 0;
       uart_sel = 0;
    endtask //cpu_uartread
+
+
+   task cpu_loadfirware;
+      input [`DATA_W-1:0] N_WORDS;
+      integer             i, j;
+  
+      $readmemh("firmware.hex", progmem, 0, N_WORDS-1);
+
+      for(i=0; i<N_WORDS; i++) begin
+	 for(j=31; j>=7; j=j-8) begin
+	    do
+	      cpu_uartread(`UART_WRITE_WAIT, rxread_reg);
+	    while(!rxread_reg);
+	    cpu_uartwrite(`UART_DATA, progmem[i][j -: 4'd8]);
+	 end
+      end
+   endtask
    
+
+   task cpu_inituart;
+      //reset uart 
+      cpu_uartwrite(`UART_SOFT_RESET, 1);
+      //config uart div factor
+      cpu_uartwrite(`UART_DIV, `UART_CLK_FREQ/`UART_BAUD_RATE);
+      //enable uart for receiving
+      cpu_uartwrite(`UART_RXEN, 1);
+   endtask
+
+   task cpu_getchar;
+      output [7:0] rcv_char;
+
+      //wait until something is received
+      do
+	cpu_uartread(`UART_READ_VALID, rxread_reg);
+      while(rxread_reg == 0);
+
+      //read the data 
+      cpu_uartread(`UART_DATA, rxread_reg); 
+
+      rcv_char = rxread_reg[7:0];
+   endtask
+
+
+   // finish simulation
+   always @(posedge trap)   	 
+     $finish;
+      
 endmodule

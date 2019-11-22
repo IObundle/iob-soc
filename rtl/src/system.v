@@ -46,7 +46,7 @@ module system (
    //
    reg                            soft_reset;   
    wire                           reset_int = reset | soft_reset;
-   reg                            choose_rom;   
+   reg                            boot;   
 
    
    //
@@ -92,7 +92,7 @@ module system (
    wire [`N_SLAVES_W-1:0]          mem_ptr;
    
    assign mem_ptr = m_addr[`ADDR_W-1 -: `N_SLAVES_W]?
-                    m_addr[`ADDR_W-1 -: `N_SLAVES_W]: choose_rom? `ROM_BASE: 
+                    m_addr[`ADDR_W-1 -: `N_SLAVES_W]: boot? `BOOT_BASE: 
 `ifdef USE_DDR
                     `CACHE_BASE;
 `else
@@ -128,21 +128,22 @@ module system (
 
     
    //
-   // BOOT ROM
+   // BOOT RAM
    //
 
-   boot_memory  #(
-	          .ADDR_W(`BOOT_ADDR_W)
+   ram  #(
+	  .ADDR_W(`BOOT_ADDR_W),
+          .NAME("boot")
 	          )
-   boot_memory (
-		.clk                (clk ),
-		.boot_write_data    (m_wdata),
-		.boot_addr          (m_addr[`BOOT_ADDR_W-1:0]),
-		.boot_wstrb         (m_wstrb),
-		.boot_read_data     (s_rdata[`ROM_BASE]),
-                .boot_valid         (s_valid[`ROM_BASE]),
-                .boot_ready         (s_ready[`ROM_BASE])
-		);
+   boot_mem (
+	     .clk           (clk ),
+	     .wdata         (m_wdata),
+	     .addr          (m_addr[`BOOT_ADDR_W-1:0]),
+	     .wstrb         (m_wstrb),
+	     .rdata         (s_rdata[`BOOT_BASE]),
+             .valid         (s_valid[`BOOT_BASE]),
+             .ready         (s_ready[`BOOT_BASE])
+	     );
 
 
    //
@@ -202,17 +203,18 @@ module system (
 `endif
 
 `ifdef USE_RAM
-   main_memory  #(
-		  .ADDR_W(`MEM_ADDR_W)
-		  ) 
+   ram  #(
+	  .ADDR_W(`RAM_ADDR_W),
+          .NAME("firmware")
+	  ) 
    ram (
-	.clk                   (clk),
-	.main_mem_write_data   (m_wdata[`DATA_W-1:0]),
-	.main_mem_addr         (m_addr[`MEM_ADDR_W-1:0]),
-	.main_mem_wstrb        (m_wstrb),
-	.main_mem_read_data    (s_rdata[1][`DATA_W-1:0]),
-        .main_mem_valid        (s_valid[`RAM_BASE]),
-        .main_mem_ready        (s_ready[`RAM_BASE])
+	.clk          (clk),
+	.wdata        (m_wdata[`DATA_W-1:0]),
+	.addr         (m_addr[`RAM_ADDR_W-1:0]),
+	.wstrb        (m_wstrb),
+	.rdata        (s_rdata[1][`DATA_W-1:0]),
+        .valid        (s_valid[`RAM_BASE]),
+        .ready        (s_ready[`RAM_BASE])
 	);
 `endif
    
@@ -246,11 +248,11 @@ module system (
    //
    always @(posedge clk, posedge reset)
      if(reset)  begin
-        choose_rom <= 1'b1;
+        boot <= 1'b1;
         soft_reset <= 1'b0;
-     end else if( s_valid[`SOFT_RESET_ADDR] && m_wstrb ) begin
+     end else if( s_valid[`SOFT_RESET_BASE] && m_wstrb ) begin
         soft_reset <= 1'b1;
-        choose_rom <= 1'b0;
+        boot <= 1'b0;
      end else
        soft_reset <= 1'b0;
    
