@@ -5,13 +5,16 @@ module ram #(
              parameter NAME = "ram"	          
 		     )
    (      
-          input              clk,
+          input                clk,
+          input                rst,
+
+          //native interface 
           input [`DATA_W-1:0]  wdata,
-          input [ADDR_W-1:0] addr,
-          input [3:0]        wstrb,
+          input [ADDR_W-1:0]   addr,
+          input [3:0]          wstrb,
           output [`DATA_W-1:0] rdata,
-          input              valid,
-          output reg         ready
+          input                valid,
+          output reg           ready
 	  );
    
    
@@ -73,7 +76,11 @@ module ram #(
       .clk      (clk)
       );
 
-      always @(posedge clk)
-        ready <= valid;
+   //reply with ready 
+   always @(posedge clk, posedge rst)
+     if(rst)
+       ready <= 1'b0;
+     else 
+       ready <= valid;
 
 endmodule

@@ -84,22 +84,27 @@ module system (
    //
    
    wire [`DATA_W-1:0]             s_rdata[`N_SLAVES-1:0];
-   reg [`N_SLAVES*`DATA_W-1:0]     s_rdata_concat;
-   wire [`N_SLAVES-1:0]            s_valid;
-   wire [`N_SLAVES-1:0]            s_ready;
+   reg [`N_SLAVES*`DATA_W-1:0]    s_rdata_concat;
+   wire [`N_SLAVES-1:0]           s_valid;
+   wire [`N_SLAVES-1:0]           s_ready;
+   
+
    
    //choose program memory according to reset condition
-   wire [`N_SLAVES_W-1:0]          mem_ptr;
-   
-   assign mem_ptr = m_addr[`ADDR_W-1 -: `N_SLAVES_W]?
-                    m_addr[`ADDR_W-1 -: `N_SLAVES_W]: boot? `BOOT_BASE: 
-`ifdef USE_DDR
-                    `CACHE_BASE;
-`else
-                    `RAM_BASE;
-`endif
+   reg [`N_SLAVES_W-1 : 0]         m_addr_int;
 
-      
+   always @*
+     if (!boot && m_instr)
+`ifdef USE_DDR
+       m_addr_int = {`N_SLAVES_W'd`CACHE_BASE, m_addr[`ADDR_W-1 -: `N_SLAVES_W]};
+`else
+       m_addr_int = {`N_SLAVES_W'd`RAM_BASE, m_addr[`ADDR_W-1 -:`N_SLAVES_W]};
+`endif
+     else
+       m_addr_int = m_addr[`ADDR_W-1 -:`N_SLAVES_W];
+
+
+   
    //concatenate slave read data signals to input in interconnect
    always @* begin : concat_slave_reads
       integer i;
@@ -115,7 +120,7 @@ module system (
    generic_interconnect
      (
       // master interface
-      .m_addr  (mem_ptr),
+      .m_addr  (m_addr_int),
       .m_rdata (m_rdata),
       .m_valid (m_valid),
       .m_ready (m_ready),
@@ -246,6 +251,7 @@ module system (
    //
    // RESET CONTROLLER
    //
+
    always @(posedge clk, posedge reset)
      if(reset)  begin
         boot <= 1'b1;
@@ -253,7 +259,11 @@ module system (
      end else if( s_valid[`SOFT_RESET_BASE] && m_wstrb ) begin
         soft_reset <= 1'b1;
         boot <= 1'b0;
-     end else
-       soft_reset <= 1'b0;
+     end else begin
+        soft_reset <= 1'b0;
+     end 
    
+   assign s_ready[`SOFT_RESET_BASE] = soft_reset;
+                                     
+     
 endmodule
