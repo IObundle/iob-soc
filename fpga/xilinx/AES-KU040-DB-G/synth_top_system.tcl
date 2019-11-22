@@ -8,13 +8,15 @@ read_verilog ../../rtl/src/system.v
 read_verilog ../../rtl/src/iob_generic_interconnect.v 
 
 
-read_verilog ../../submodules/iob-cache/rtl/src/cache/afifo.v
-read_verilog ../../submodules/iob-cache/rtl/src/cache/data_memory.v
-read_verilog ../../submodules/iob-cache/rtl/src/cache/memory_cache_v2.v
-read_verilog ../../submodules/iob-cache/rtl/src/cache/tag_memory.v
-read_verilog ../../submodules/iob-cache/rtl/src/cache/valid_memory.v
-read_verilog ../../submodules/iob-cache/rtl/src/cache/write_buffer.v
-read_verilog ../../submodules/iob-cache/rtl/src/cache/xalt_1p_mem_no_initialization_with_reset.v
+read_verilog ../../submodules/iob-cache/rtl/src/afifo.v
+read_verilog ../../submodules/iob-cache/rtl/src/data_memory.v
+read_verilog ../../submodules/iob-cache/rtl/src/iob-cache.v
+read_verilog ../../submodules/iob-cache/rtl/src/tag_memory.v
+read_verilog ../../submodules/iob-cache/rtl/src/valid_memory.v
+read_verilog ../../submodules/iob-cache/rtl/src/write_buffer.v
+read_verilog ../../submodules/iob-cache/rtl/src/xalt_1p_mem_no_initialization.v
+read_verilog ../../submodules/iob-cache/rtl/src/xalt_1p_mem_no_initialization_with_reset.v
+
 
 read_verilog ../../rtl/src/memory/boot_memory.v
 read_verilog ../../rtl/src/memory/xalt_1p_mem_no_initialization.v

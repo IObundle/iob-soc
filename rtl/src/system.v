@@ -154,7 +154,7 @@ module system (
    memory_cache cache (
 		       .clk                (clk),
 		       .reset              (reset),
-
+		       .buffer_clear       (), //to be removed after Cache_controller's implementation
                        //data interface 
 		       .cache_write_data   (m_wdata),
 		       .cache_addr         (m_addr[`CACHE_ADDR_W-1:0]),
@@ -164,11 +164,11 @@ module system (
 		       .cache_ack          (s_ready[`RAM_BASE]),
 
                        //control interface
-		       .cache_controller_address (m_addr[5:2]),
-		       .cache_controller_requested_data (s_rdata[`CACHE_CTRL_BASE]),
-		       .cache_controller_cpu_request (s_valid[`CACHE_CTRL_BASE]),
-		       .cache_controller_acknowledge (s_ready[`CACHE_CTRL_BASE]),
-		       .cache_controller_instr_access(m_instr),
+		       .cache_ctrl_address (m_addr[5:2]),
+		       .cache_ctrl_requested_data (s_rdata[`CACHE_CTRL_BASE]),
+		       .cache_ctrl_cpu_request (s_valid[`CACHE_CTRL_BASE]),
+		       .cache_ctrl_acknowledge (s_ready[`CACHE_CTRL_BASE]),
+		       .cache_ctrl_instr_access(m_instr),
 
                        //
 		       // AXI MASTER INTERFACE TO MAIN MEMORY
