@@ -10,6 +10,7 @@
 #define UART_DATA       2
 #define UART_SOFT_RESET 3
 #define UART_READ_VALID 4
+#define UART_RXEN       5
 
 //Functions
 
