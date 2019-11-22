@@ -38,9 +38,6 @@ module iob_uart (
    reg [9:0]                         send_pattern;
    reg [3:0]                         send_bitcnt;
    reg [15:0]                        send_divcnt;
-   `ifdef SIM
-   reg                               prchar;
-   `endif
    
    // register access
    reg                               data_write_en;
@@ -52,7 +49,6 @@ module iob_uart (
    // reset
    wire                              rst_int;
    reg                               rst_soft;
-
 
    //flow control
    reg [1:0]                         cts_int;
@@ -66,6 +62,14 @@ module iob_uart (
        rst_soft <= data_in[0];
 
    assign rst_int = rst | rst_soft;
+
+   
+   // cpu interface ready signal
+   always @(posedge clk, posedge rst_int)
+     if(rst_int)
+       rdy <= 1'b0;
+     else 
+       rdy <= sel;
 
 
    //receive enable
@@ -224,9 +228,6 @@ module iob_uart (
 
    // send serial comm
    assign txd = send_pattern[0];
-
-  always @(posedge clk)
-     rdy <= sel;
 
 endmodule
 
