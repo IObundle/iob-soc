@@ -25,7 +25,8 @@ module iob_uart (
    // internal registers
    wire                              tx_wait;
    reg [31:0]                        cfg_divider;
-
+   reg                               rx_en;
+   
    // receiver
    reg [3:0]                         recv_state;
    reg [31:0]                        recv_divcnt;
@@ -45,21 +46,37 @@ module iob_uart (
    reg                               data_write_en;
    reg                               data_read_en;
    reg                               div_write_en;
-
+   reg                               rst_soft_en;
+   reg                               rx_en_en;
+                               
    // reset
    wire                              rst_int;
    reg                               rst_soft;
 
 
+   //flow control
    reg [1:0]                         cts_int;
    
    
-   //reset hard and soft
+   //reset
+   always @(posedge clk, posedge rst)
+     if(rst)
+       rst_soft <= 1'b0;
+     else if (rst_soft_en)
+       rst_soft <= data_in[0];
+
    assign rst_int = rst | rst_soft;
 
-   //clear to send (me data)
-   assign rts = ~recv_buf_valid;
-   
+
+   //receive enable
+   always @(posedge clk, posedge rst_int)
+     if(rst_int)
+       rx_en <= 1'b0;
+     else if (rx_en_en)
+       rx_en <= data_in[0];
+  
+   //request to send (me data)
+   assign rts = ~recv_buf_valid & rx_en;
    
    //cts synchronizer
    always @(posedge clk) 
@@ -72,14 +89,18 @@ module iob_uart (
 
    // write
    always @* begin
+
       data_write_en = 1'b0;
       div_write_en = 1'b0;
-      rst_soft = 1'b0;
+      rst_soft_en = 1'b0;
+      rx_en_en = 1'b0;
+      
       if(sel & write)
         case (address)
           `UART_DIV: div_write_en = 1'b1;
           `UART_DATA: data_write_en = 1'b1;
-          `UART_SOFT_RESET: rst_soft = 1'b1;
+          `UART_SOFT_RESET: rst_soft_en = 1'b1;
+          `UART_RXEN: rx_en_en = 1'b1;
           default:;
         endcase
    end // always @ *

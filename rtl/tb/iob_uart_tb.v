@@ -3,9 +3,10 @@
 
 module iob_uart_tb;
 
-   parameter clk_per = 10;
-   parameter pclk_per = 40;
-
+   parameter clk_frequency = 100e6; //100 MHz
+   parameter baud_rate = 1e6; //high value to speed sim
+   parameter clk_per = 1e9/clk_frequency;
+   
    // CPU SIDE
    reg 			rst;
    reg 			clk;
@@ -25,9 +26,9 @@ module iob_uart_tb;
 
    //serial data
    wire                  serial_data;
-   
-   wire                  cts;
-   
+
+   // rts, cts handshaking
+   wire                  rtscts;
    
    // Instantiate the Unit Under Test (UUT)
 
@@ -44,8 +45,8 @@ module iob_uart_tb;
 
                  .txd                   (serial_data),
                  .rxd                   (serial_data),
-                 .rts                   (1'b1),
-                 .cts                   (cts)
+                 .rts                   (rtscts),
+                 .cts                   (rtscts)
 		);
 
    initial begin
@@ -60,47 +61,51 @@ module iob_uart_tb;
       write = 0;
       read = 0;
       sel = 0;
-
+      
       // deassert reset
       #100 @(posedge clk) rst = 0;
+      #100 @(posedge clk);
 
-      // check if tx is ready
+      // assert tx not ready
       cpu_read(`UART_WRITE_WAIT, cpu_reg);
-      if (cpu_reg) begin
-         $display("ERROR: TX is not ready initially");
+      if (!cpu_reg) begin
+         $display("ERROR: TX is ready initially");
          $finish;
       end
-      // check if rx is not ready
+      
+      // assert rx not ready
       cpu_read(`UART_READ_VALID, cpu_reg);
       if(cpu_reg) begin
          $display("ERROR: RX is ready initially");
          $finish;
       end
    
-      //setup DIVVAL
-      do
-	cpu_read(`UART_WRITE_WAIT, cpu_reg);
-      while(cpu_reg);
-      cpu_write(`UART_DIV, 32'd2); //set DIVVAL to 2
-   
+      //pulse soft reset 
+      cpu_write(`UART_SOFT_RESET, 1);
+      cpu_write(`UART_SOFT_RESET, 0);
+
+      //setup divider factor
+      cpu_write(`UART_DIV, clk_frequency/baud_rate);
+
+      //enable rx
+      cpu_write(`UART_RXEN, 1);
+      
       // write data to send
       for(i=0; i < 256; i= i+1) begin
 
+         //wait for tx ready 
+         do
+	   cpu_read(`UART_WRITE_WAIT, cpu_reg);
+         while(cpu_reg);
+         
          //write word to send
 	 cpu_write(`UART_DATA, i);
 
-         //wait until tx is ready again 
-         cpu_read(`UART_WRITE_WAIT, cpu_reg);
-         while(cpu_reg)
-           cpu_read(`UART_WRITE_WAIT, cpu_reg);
-
-         // check if rx is ready
-         cpu_read(`UART_READ_VALID, cpu_reg);
-         if(!cpu_reg) begin
-            $display("ERROR: RX is not ready after word transmitted");
-            $finish;
-         end
-      
+         //wait for core to receive data
+         do 
+           cpu_read(`UART_READ_VALID, cpu_reg);
+         while (!cpu_reg);
+         
          // read and check received data
 	 cpu_read (`UART_DATA, cpu_reg);
 	 if ( cpu_reg != i ) begin

@@ -14,6 +14,7 @@ void uart_init(int base_address, int div)
   //div should be equal to round (fclk/baudrate)
   //E.g for fclk = 100 Mhz for a baudrate of 115200 we should uart_setdiv(868)
   MEMSET(base, UART_DIV, div);
+  MEMSET(base, UART_RXEN, 1);
 }
 
 int uart_get_write_wait()
