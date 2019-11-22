@@ -19,11 +19,11 @@ module iob_generic_interconnect
     input [N_SLAVES-1:0]         s_ready
     );
 
-   always @* begin : compute_slaves_valid
-      reg [N_SLAVES_W-1:0] 				i;
+   reg [N_SLAVES_W-1:0]          i;
       
+   always @* begin : compute_slaves_valid
       for(i=0; i<N_SLAVES; i=i+1)
-         s_valid[i] = (i[N_SLAVES_W-1:0] == m_addr);
+         s_valid[i] = (i == m_addr) & m_valid;
    end
                    
    assign    m_rdata = s_rdata[(m_addr+1)*`DATA_W-1 -: `DATA_W];
