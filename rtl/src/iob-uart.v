@@ -7,7 +7,7 @@ module iob_uart (
 	         input             rst,
 
 	         input             sel,
-	         output reg        rdy,
+	         output reg        ready,
                  input [2:0]       address,
                  input             read,
                  input             write,
@@ -54,22 +54,24 @@ module iob_uart (
    reg [1:0]                         cts_int;
    
    
-   //reset
+   //soft reset pulse
    always @(posedge clk, posedge rst)
      if(rst)
        rst_soft <= 1'b0;
      else if (rst_soft_en)
        rst_soft <= data_in[0];
+     else
+       rst_soft <= 1'b0;
 
    assign rst_int = rst | rst_soft;
 
    
    // cpu interface ready signal
-   always @(posedge clk, posedge rst_int)
+   always @(posedge clk, posedge rst)
      if(rst_int)
-       rdy <= 1'b0;
+       ready <= 1'b0;
      else 
-       rdy <= sel;
+       ready <= sel;
 
 
    //receive enable
