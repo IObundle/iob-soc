@@ -20,17 +20,13 @@ module system_tb;
    reg [2:0]    uart_addr;
    reg 		uart_sel;
    reg 		uart_wr;
-   reg 		uart_r;
+   reg 		uart_rd;
    reg [31:0]   uart_di;
    reg [31:0]   uart_do;
 
    //cpu to receive getchar
    reg [7:0]    cpu_char = 0;
-      
 
-   //
-   // READ UART PROCESS
-   //
      
    //
    // TEST PROCEDURE
@@ -42,6 +38,11 @@ module system_tb;
       $dumpvars();
 `endif
 
+      //init cpu bus signals
+      uart_sel = 0;
+      uart_wr = 0;
+      uart_rd = 0;
+      
       // deassert rst
       repeat (100) @(posedge clk);
       reset <= 0;
@@ -69,7 +70,7 @@ module system_tb;
       
       do begin 
          cpu_getchar(cpu_char);
-         $display("%c", cpu_char);
+         $write("%c", cpu_char);
       end while (cpu_char != "\n"); 
       
       $finish;
@@ -112,7 +113,7 @@ module system_tb;
 		       .sel       (uart_sel),
 		       .address   (uart_addr),
 		       .write     (uart_wr),
-		       .read      (uart_r),
+		       .read      (uart_rd),
 		       .data_in   (uart_di),
 		       .data_out  (uart_do),
 
@@ -146,9 +147,9 @@ module system_tb;
 
       # 1 uart_addr = cpu_address;
       uart_sel = 1;
-      uart_r = 1;
+      uart_rd = 1;
       @ (posedge clk) #1 read_reg = uart_do;
-      @ (posedge clk) #1 uart_r = 0;
+      @ (posedge clk) #1 uart_rd = 0;
       uart_sel = 0;
    endtask //cpu_uartread
 
@@ -171,8 +172,9 @@ module system_tb;
    
 
    task cpu_inituart;
-      //reset uart 
+      //pulse reset uart 
       cpu_uartwrite(`UART_SOFT_RESET, 1);
+      cpu_uartwrite(`UART_SOFT_RESET, 0);
       //config uart div factor
       cpu_uartwrite(`UART_DIV, `UART_CLK_FREQ/`UART_BAUD_RATE);
       //enable uart for receiving

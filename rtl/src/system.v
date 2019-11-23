@@ -233,7 +233,7 @@ module system (
                  
 		 //cpu i/f
 		 .sel       (s_valid[`UART_BASE]),
-		 .rdy       (s_ready[`UART_BASE]),
+		 .ready     (s_ready[`UART_BASE]),
 		 .address   (m_addr[4:2]),
 		 .read      (m_wstrb == 0),
 		 .write     (m_wstrb != 0),
