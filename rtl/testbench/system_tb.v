@@ -27,6 +27,8 @@ module system_tb;
    //cpu to receive getchar
    reg [7:0]    cpu_char = 0;
 
+   integer      i;
+
      
    //
    // TEST PROCEDURE
@@ -58,21 +60,16 @@ module system_tb;
       //
       // LOAD FIRMWARE
       //
-`ifdef USE_DDR
-      cpu_loadfirmware(2**(`RAM_ADDR_W-2));
-`elsif USE_RAM
-      cpu_loadfirmware(2**(`RAM_ADDR_W-2));
-`endif
+
+
+`include "boot_tb.v"
 
       //
       // DO THE TEST
       //
       
-      do begin 
-         cpu_getchar(cpu_char);
-         $write("%c", cpu_char);
-      end while (cpu_char != "\n"); 
-      
+`include "test_tb.v"
+
       $finish;
   
       
@@ -154,19 +151,23 @@ module system_tb;
    endtask //cpu_uartread
 
 
-   task cpu_loadfirware;
+   task cpu_loadfirmware;
       input [`DATA_W-1:0] N_WORDS;
-      integer             i, j;
+      integer             i, j, k=1;
   
       $readmemh("firmware.hex", progmem, 0, N_WORDS-1);
+      $display("got here");
 
       for(i=0; i<N_WORDS; i++) begin
 	 for(j=31; j>=7; j=j-8) begin
-	    do
-	      cpu_uartread(`UART_WRITE_WAIT, rxread_reg);
-	    while(!rxread_reg);
-	    cpu_uartwrite(`UART_DATA, progmem[i][j -: 4'd8]);
+	    cpu_putchar(progmem[i][j -: 4'd8]);            
+            $display("%d", i);
 	 end
+
+         if(i == (N_WORDS*k)/1000) begin
+            k++;
+            $display("progress %d\%", k);
+         end
       end
    endtask
    
@@ -187,7 +188,7 @@ module system_tb;
       //wait until something is received
       do
 	cpu_uartread(`UART_READ_VALID, rxread_reg);
-      while(rxread_reg == 0);
+      while(!rxread_reg);
 
       //read the data 
       cpu_uartread(`UART_DATA, rxread_reg); 
@@ -195,6 +196,16 @@ module system_tb;
       rcv_char = rxread_reg[7:0];
    endtask
 
+
+   task cpu_putchar;
+      input [7:0] send_char;
+      //wait until tx ready
+      do
+	cpu_uartread(`UART_WRITE_WAIT, rxread_reg);
+      while(rxread_reg);
+      //write the data 
+      cpu_uartwrite(`UART_DATA, send_char); 
+   endtask
 
    // finish simulation
    always @(posedge trap)   	 
