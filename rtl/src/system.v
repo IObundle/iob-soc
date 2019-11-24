@@ -100,7 +100,7 @@ module system (
 `else
        m_addr_int = {`N_SLAVES_W'd`RAM_BASE, m_addr[`ADDR_W-1 -:`N_SLAVES_W]};
 `endif
-     else
+   else
        m_addr_int = m_addr[`ADDR_W-1 -:`N_SLAVES_W];
 
 
