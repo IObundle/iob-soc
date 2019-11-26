@@ -19,7 +19,7 @@ module iob_uart (
 	         output            txd,
 	         input             rxd,
                  input             cts,
-                 output            rts
+                 output reg           rts
                  );
 
    // internal registers
@@ -52,6 +52,7 @@ module iob_uart (
 
    //flow control
    reg [1:0]                         cts_int;
+   reg                               rts_en;
    
    
    //soft reset pulse
@@ -82,7 +83,7 @@ module iob_uart (
        rx_en <= data_in[0];
   
    //request to send (me data)
-   assign rts = ~recv_buf_valid & rx_en;
+   rts = rts_en & rx_en;
    
    //cts synchronizer
    always @(posedge clk) 
@@ -152,18 +153,22 @@ module iob_uart (
          recv_divcnt <= 0;
          recv_pattern <= 0;
          recv_buf_data <= 0;
-         recv_buf_valid <= 0;
+         recv_buf_valid <= 1'b0;
+         rts_en = 1'b1;
+         
       end else begin
          recv_divcnt <= recv_divcnt + 1;
          if (data_read_en)
-           recv_buf_valid <= 0;
+           recv_buf_valid <= 1'b0;
 
          case (recv_state)
            
            // Detect start bit (i.e., when RX line goes to low)
            4'd0: begin
-              if (!rxd)
-                recv_state <= 1;
+              if (!rxd) begin
+                 recv_state <= 1;
+                 rts_en <= 1'b0;
+              end
               recv_divcnt <= 1;
            end
              
@@ -186,8 +191,9 @@ module iob_uart (
              4'd10:
                if (recv_divcnt >= cfg_divider) begin
                   recv_buf_data <= recv_pattern;
-                  recv_buf_valid <= 1;
+                  recv_buf_valid <= 1'b1;
                   recv_state <= 0;
+                  rts_en <= 1'b1;
                end
              
          endcase // case (recv_state)
