@@ -83,7 +83,7 @@ module iob_uart (
        rx_en <= data_in[0];
   
    //request to send (me data)
-   rts = rts_en & rx_en;
+   assign rts = rts_en & rx_en;
    
    //cts synchronizer
    always @(posedge clk) 
