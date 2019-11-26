@@ -15,25 +15,33 @@ BOOT_DIR = software/bootloader
 #
 REMOTE_DIR := sandbox/iob-soc-e
 
-#deriving hardware defines
-ifeq ($(USE_RAM),1)
-HW_CONF = -DUSE_RAM 
-endif	
-
-ifeq ($(USE_DDR),1)
-HW_CONF = $(HW_CONF) -DUSE_DDR
-endif
-
 #hardware
 RTL_DIR = ../../rtl
 RISCV_DIR = ../../submodules/iob-rv32
 UART_DIR = ../../submodules/iob-uart/rtl
 FIFO_DIR = ../../submodules/fifo
 
+#defines
+
+DEFINE := -define VCD
+
+DEFINE := $(DEFINE) -define UART_BAUD_RATE=$(BAUD)
+
+ifeq ($(USE_RAM),1)
+DEFINE := $(DEFINE) -define USE_RAM 
+endif	
+
+ifeq ($(USE_DDR),1)
+DEFINE := $(DEFINE) -define USE_DDR
+endif
+
+#includes
+INCLUDE = -incdir $(RTL_DIR)/include -incdir $(UART_DIR)/include -incdir ../../$(BOOT_DIR) -incdir ../../$(TEST_DIR)
+
 VSRC =  $(RISCV_DIR)/picorv32.v $(UART_DIR)/src/iob-uart.v $(FIFO_DIR)/afifo.v $(RTL_DIR)/testbench/system_tb.v  $(RTL_DIR)/src/*.v
 
 #ncsim verilog simulator
-CFLAGS = -errormax 15  -incdir $(RTL_DIR)/include -incdir $(UART_DIR)/include -incdir ../../$(BOOT_DIR) -incdir ../../$(TEST_DIR) -status -update -linedebug -sv -define UART_BAUD_RATE=$(BAUD)
+CFLAGS = -errormax 15 -status -update -linedebug -sv $(DEFINE) $(INCLUDE)
 EFLAGS = -errormax 15 -access +wc -status
 SFLAGS = -errormax 15 -status -CMDFILE $(RTL_DIR)/testbench
 

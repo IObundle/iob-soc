@@ -61,8 +61,11 @@ module system_tb;
       // LOAD FIRMWARE
       //
 
-
-`include "boot_tb.v"
+`ifdef USE_DDR
+ `include "boot_tb.v"
+`elsif USE_RAM
+ `include "boot_tb.v"
+`endif
 
       //
       // DO THE TEST
