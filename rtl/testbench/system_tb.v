@@ -166,7 +166,7 @@ module system_tb;
 
          if(i == (N_WORDS*k)/1000) begin
             k++;
-            $display("progress %d\%", k);
+            $display("progress %d\%", k/10);
          end
       end
    endtask
@@ -205,7 +205,8 @@ module system_tb;
       while(rxread_reg);
       //write the data 
       cpu_uartwrite(`UART_DATA, send_char); 
-   endtask
+
+  endtask
 
    // finish simulation
    always @(posedge trap)   	 
