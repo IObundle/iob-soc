@@ -163,12 +163,13 @@ module system_tb;
       for(i=0; i<N_WORDS; i++) begin
 	 for(j=31; j>=7; j=j-8) begin
 	    cpu_putchar(progmem[i][j -: 4'd8]);            
-            $display("%d", i);
+            //$display("%d", i);
 	 end
 
-         if(i == (N_WORDS*k)/1000) begin
+         if(i == (N_WORDS*k)/1000 ) begin
             k++;
-            $display("progress %d\%", k/10);
+            if(k%100 == 0)
+              $display("progress %d\%", k/10);
          end
       end
    endtask
@@ -210,6 +211,14 @@ module system_tb;
 
   endtask
 
+   task cpu_getline;
+      do begin 
+         cpu_getchar(cpu_char);
+         $write("%c", cpu_char);
+      end while (cpu_char != "\n");
+   endtask
+
+   
    // finish simulation
    always @(posedge trap)   	 
      $finish;
