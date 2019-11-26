@@ -1,14 +1,8 @@
 //receive program load start msg
-do begin 
-   cpu_getchar(cpu_char);
-   $write("%c", cpu_char);
-end while (cpu_char != "\n");
+cpu_getline();
       
 //receive start addr msg 
-do begin 
-   cpu_getchar(cpu_char);
-   $write("%c", cpu_char);
-end while (cpu_char != "\n");
+cpu_getline();
      
 `ifdef USE_DDR
       cpu_loadfirmware(2**(`RAM_ADDR_W-2));
