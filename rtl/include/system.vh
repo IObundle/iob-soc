@@ -33,6 +33,5 @@
 
 //uart 
 `define UART_CLK_FREQ 100000000
-`define UART_BAUD_RATE 100000000
 
 
