@@ -1,78 +1,75 @@
-#configurable options
+#
+# Edit configuration here
+#
+
+#hardware configuration
+USE_RAM = 1
+USE_DDR = 0
+BAUD = 10000000
+#software configuration
+TEST_DIR = software/hello_world
+BOOT_DIR = software/bootloader
+
+#
+# Do not edit beyond this point
+#
 REMOTE_DIR := sandbox/iob-soc-e
-TEST := test
-BOOT := uart
 
-#hardware
-RTL_DIR := ../../rtl/src
-TB_DIR := ../../rtl/testbench
-INC_DIR := ../../rtl/include
+#deriving hardware defines
+ifeq ($(USE_RAM),1)
+HW_CONF = -DUSE_RAM 
+endif	
 
-RISCV=../../submodules/iob-rv32
-
-FIFO=../../submodules/fifo
-
-UART=../../submodules/iob-uart
-UART_INC_DIR:=$(UART)/rtl/include
-
-INCLUDE_DIR:= $(UART_INC_DIR) $(INC_DIR)
-VSRC := $(TB_DIR)/system_tb.v $(RTL_DIR)/*.v $(FIFO)/afifo.v $(RTL_DIR)/memory/*.v $(RISCV)/picorv32.v $(RISCV)/rtl/xalt_1p_mem.v $(UART)/rtl/src/*.v
-
-#software
-TEST_DIR:=../../software/tests/$(TEST)
-BOOT_DIR:=../../software/bootloader/$(BOOT)
-MEMMAP_DIR:=../../software
-
-CFLAGS = -errormax 15  -incdir $(INC_DIR) -incdir $(UART_INC_DIR) -status -update -linedebug -sv
-EFLAGS = -errormax 15 -access +wc -status
-SFLAGS = -errormax 15 -status -CMDFILE $(TB_DIR)
-
-CSRC := $(wildcard $(TEST_DIR)/*.c $(UART)/c-driver/*.c)
-CHEADERS := $(wildcard $(TEST_DIR)/*.h $(UART)/c-driver/*.h $(MEMMAP_DIR)/system.h)
-
-BOOTSRC := $(wildcard $(BOOT_DIR)/*.c $(UART)/c-driver/*.c)
-BOOTHEADERS := $(wildcard $(BOOT_DIR)/*.h $(UART)/c-driver/*.h $(MEMMAP_DIR)/system.h)
-
-HEX := firmware.hex
-BOOTHEX := boot_0.dat boot_1.dat boot_2.dat boot_3.dat
-
-all: iobuser $(VSRC) $(HEX) $(BOOTHEX)
-	INCLUDE_DIR="$(INCLUDE_DIR)" SRC="$(VSRC)" CFLAGS="$(CFLAGS)" EFLAGS="$(EFLAGS)" SFLAGS="$(SFLAGS)" ./run_ncsim.sh
-
-iobuser:
-ifeq (${IOB_USER},)
-	$(error "IOB_USER env variable not set")
+ifeq ($(USE_DDR),1)
+HW_CONF = $(HW_CONF) -DUSE_DDR
 endif
 
 
-#GET FIRMWARE HEX FILE
-$(HEX): $(CSRC) $(CHEADERS) $(TEST_DIR)/Makefile
-	ssh -p 1415 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_DIR)/software/tests/$(TEST) BAUD=10000000'
-	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/software/tests/$(TEST)/firmware.hex .
-	python ../../software/scripts/hex_split.py
-	mv ./firmware_0.hex ./firmware_0.dat
-	mv ./firmware_1.hex ./firmware_1.dat
-	mv ./firmware_2.hex ./firmware_2.dat
-	mv ./firmware_3.hex ./firmware_3.dat
+#ncsim verilog simulator
+CFLAGS = -errormax 15  -incdir $(INC_DIR) -incdir $(UART_INC_DIR) -status -update -linedebug -sv -define UART_BAUD_RATE=$(BAUD)
+EFLAGS = -errormax 15 -access +wc -status
+SFLAGS = -errormax 15 -status -CMDFILE $(TB_DIR)
 
-#GET BOOTROM DAT FILES
-$(BOOTHEX): $(BOOTSRC) $(BOOTHEADERS) $(BOOT_DIR)/Makefile
-	ssh -p 1415 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_DIR)/software/bootloader/$(BOOT) TEST=$(TEST) BAUD=10000000'
-	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./$(REMOTE_DIR)/software/bootloader/$(BOOT)/boot_?.hex .
-	cp ./boot_0.hex ./boot_0.dat
-	cp ./boot_1.hex ./boot_1.dat
-	cp ./boot_2.hex ./boot_2.dat
-	cp ./boot_3.hex ./boot_3.dat
+#hardware
+RTL_DIR = ../../rtl
+RISCV_DIR = ../../submodules/iob-rv32
+UART_DIR = ../../submodules/iob-uart
+FIFO_DIR = ../../submodules/fifo
+
+VSRC = $(RTL_DIR)/testbench/system_tb.v  $(RTL_DIR)/src/*.v $(RISCV_DIR)/picorv32.v $(UART_DIR)/rtl/src/iob-uart.v $(FIFO_DIR)/afifo.v
+
+all: firmware boot $(VSRC)
+	INCLUDE_DIR="$(RTL_DIR) $(UART_DIR) $(BOOT_DIR)" SRC="$(VSRC)" CFLAGS="$(CFLAGS)" EFLAGS="$(EFLAGS)" SFLAGS="$(SFLAGS)" ./run_ncsim.sh
+
+firmware:
+	ssh -p 1415 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_DIR)/$(TEST_DIR) BAUD=$(BAUD)'
+	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(TEST_DIR)/firmware.hex .
+	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(TEST_DIR)/firmware_0.hex ./firmware_0.dat
+	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(TEST_DIR)/firmware_1.hex ./firmware_1.dat
+	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(TEST_DIR)/firmware_2.hex ./firmware_2.dat
+	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(TEST_DIR)/firmware_3.hex ./firmware_3.dat
+
+boot: 
+ifeq ($(USE_RAM)$(USE_DDR),00)
+	ssh -p 1415 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_DIR)/$(BOOT_DIR) BAUD=$(BAUD)'
+	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(TEST_DIR)/firmware_0.hex ./boot_0.dat
+	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(TEST_DIR)/firmware_1.hex ./boot_1.dat
+	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(TEST_DIR)/firmware_2.hex ./boot_2.dat
+	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(TEST_DIR)/firmware_3.hex ./boot_3.dat
+else 
+	ssh -p 1415 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_DIR)/$(BOOT_DIR) BAUD=$(BAUD)'
+	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(BOOT_DIR)/firmware_0.hex ./boot_0.dat
+	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(BOOT_DIR)/firmware_1.hex ./boot_1.dat
+	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(BOOT_DIR)/firmware_2.hex ./boot_2.dat
+	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(BOOT_DIR)/firmware_3.hex ./boot_3.dat
+endif
 
 clean:
-	@rm -f *#
+	@rm -f *# *~ *.vcd *.dat *.hex
 	@rm -f ncsim.key
 	@rm -f *.log
-	@rm -f *~
 	@rm -rf INCA_libs
-	@rm -f *.vcd
-	@rm -f system_synth.v system.tcf *.hex *.dat
-	@make -C $(TEST_DIR) clean --no-print-directory
-	@make -C $(BOOT_DIR) clean --no-print-directory
+	ssh -p 1415 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_DIR)/$(TEST_DIR) clean'
+	ssh -p 1415 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_DIR)/$(BOOT_DIR) clean'
 
-.phony: all clean
+.PHONY: all clean boot firmware
