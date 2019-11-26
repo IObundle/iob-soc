@@ -153,11 +153,13 @@ module system_tb;
 
    task cpu_loadfirmware;
       input [`DATA_W-1:0] N_WORDS;
-      integer             i, j, k=1;
+      integer             i, j, k;
   
       $readmemh("firmware.hex", progmem, 0, N_WORDS-1);
       $display("got here");
 
+      k=1;
+      
       for(i=0; i<N_WORDS; i++) begin
 	 for(j=31; j>=7; j=j-8) begin
 	    cpu_putchar(progmem[i][j -: 4'd8]);            

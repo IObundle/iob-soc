@@ -142,6 +142,7 @@ module system (
 	          )
    boot_mem (
 	     .clk           (clk ),
+             .rst            (reset),
 	     .wdata         (m_wdata),
 	     .addr          (m_addr[`BOOT_ADDR_W-1:0]),
 	     .wstrb         (m_wstrb),
@@ -214,6 +215,7 @@ module system (
 	  ) 
    ram (
 	.clk          (clk),
+        .rst       (reset),
 	.wdata        (m_wdata[`DATA_W-1:0]),
 	.addr         (m_addr[`RAM_ADDR_W-1:0]),
 	.wstrb        (m_wstrb),

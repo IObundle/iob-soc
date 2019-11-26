@@ -27,15 +27,15 @@ endif
 #hardware
 RTL_DIR = ../../rtl
 RISCV_DIR = ../../submodules/iob-rv32
-UART_DIR = ../../submodules/iob-uart
+UART_DIR = ../../submodules/iob-uart/rtl
 FIFO_DIR = ../../submodules/fifo
 
-VSRC = $(RTL_DIR)/testbench/system_tb.v  $(RTL_DIR)/src/*.v $(RISCV_DIR)/picorv32.v $(UART_DIR)/rtl/src/iob-uart.v $(FIFO_DIR)/afifo.v
+VSRC =  $(RISCV_DIR)/picorv32.v $(UART_DIR)/src/iob-uart.v $(FIFO_DIR)/afifo.v $(RTL_DIR)/testbench/system_tb.v  $(RTL_DIR)/src/*.v
 
 #ncsim verilog simulator
-CFLAGS = -errormax 15  -incdir $(RTL_DIR)/include -incdir $(UART_DIR)/include -status -update -linedebug -sv -define UART_BAUD_RATE=$(BAUD)
+CFLAGS = -errormax 15  -incdir $(RTL_DIR)/include -incdir $(UART_DIR)/include -incdir ../../$(BOOT_DIR) -incdir ../../$(TEST_DIR) -status -update -linedebug -sv -define UART_BAUD_RATE=$(BAUD)
 EFLAGS = -errormax 15 -access +wc -status
-SFLAGS = -errormax 15 -status -CMDFILE $(TB_DIR)
+SFLAGS = -errormax 15 -status -CMDFILE $(RTL_DIR)/testbench
 
 
 all: firmware boot $(VSRC)
