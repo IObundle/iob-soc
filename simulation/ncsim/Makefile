@@ -24,12 +24,6 @@ ifeq ($(USE_DDR),1)
 HW_CONF = $(HW_CONF) -DUSE_DDR
 endif
 
-
-#ncsim verilog simulator
-CFLAGS = -errormax 15  -incdir $(INC_DIR) -incdir $(UART_INC_DIR) -status -update -linedebug -sv -define UART_BAUD_RATE=$(BAUD)
-EFLAGS = -errormax 15 -access +wc -status
-SFLAGS = -errormax 15 -status -CMDFILE $(TB_DIR)
-
 #hardware
 RTL_DIR = ../../rtl
 RISCV_DIR = ../../submodules/iob-rv32
@@ -37,6 +31,12 @@ UART_DIR = ../../submodules/iob-uart
 FIFO_DIR = ../../submodules/fifo
 
 VSRC = $(RTL_DIR)/testbench/system_tb.v  $(RTL_DIR)/src/*.v $(RISCV_DIR)/picorv32.v $(UART_DIR)/rtl/src/iob-uart.v $(FIFO_DIR)/afifo.v
+
+#ncsim verilog simulator
+CFLAGS = -errormax 15  -incdir $(RTL_DIR)/include -incdir $(UART_DIR)/include -status -update -linedebug -sv -define UART_BAUD_RATE=$(BAUD)
+EFLAGS = -errormax 15 -access +wc -status
+SFLAGS = -errormax 15 -status -CMDFILE $(TB_DIR)
+
 
 all: firmware boot $(VSRC)
 	SRC="$(VSRC)" CFLAGS="$(CFLAGS)" EFLAGS="$(EFLAGS)" SFLAGS="$(SFLAGS)" ./run_ncsim.sh
