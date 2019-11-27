@@ -96,9 +96,9 @@ module system (
    always @*
      if (!boot && m_instr)
 `ifdef USE_DDR
-       m_addr_int = {`N_SLAVES_W'd`CACHE_BASE, m_addr[`ADDR_W-1 -: `N_SLAVES_W]};
+       m_addr_int = `N_SLAVES_W'd`CACHE_BASE;
 `else
-       m_addr_int = {`N_SLAVES_W'd`RAM_BASE, m_addr[`ADDR_W-1 -:`N_SLAVES_W]};
+       m_addr_int = `N_SLAVES_W'd`RAM_BASE;
 `endif
    else
        m_addr_int = m_addr[`ADDR_W-1 -:`N_SLAVES_W];
@@ -142,7 +142,7 @@ module system (
 	          )
    boot_mem (
 	     .clk           (clk ),
-             .rst            (reset),
+             .rst           (reset),
 	     .wdata         (m_wdata),
 	     .addr          (m_addr[`BOOT_ADDR_W-1:0]),
 	     .wstrb         (m_wstrb),
@@ -165,9 +165,9 @@ module system (
 		       .cache_write_data   (m_wdata),
 		       .cache_addr         (m_addr[`CACHE_ADDR_W-1:0]),
 		       .cache_wstrb        (m_wstrb),
-		       .cache_read_data    (s_rdata[`RAM_BASE]),
-		       .cpu_req            (s_valid[`RAM_BASE]),
-		       .cache_ack          (s_ready[`RAM_BASE]),
+		       .cache_read_data    (s_rdata[`CACHE_BASE]),
+		       .cpu_req            (s_valid[`CACHE_BASE]),
+		       .cache_ack          (s_ready[`CACHE_BASE]),
 
                        //control interface
 		       .cache_controller_address (m_addr[5:2]),
@@ -215,11 +215,11 @@ module system (
 	  ) 
    ram (
 	.clk          (clk),
-        .rst       (reset),
+        .rst          (reset),
 	.wdata        (m_wdata[`DATA_W-1:0]),
 	.addr         (m_addr[`RAM_ADDR_W-1:0]),
 	.wstrb        (m_wstrb),
-	.rdata        (s_rdata[1][`DATA_W-1:0]),
+	.rdata        (s_rdata[`RAM_BASE]),
         .valid        (s_valid[`RAM_BASE]),
         .ready        (s_ready[`RAM_BASE])
 	);

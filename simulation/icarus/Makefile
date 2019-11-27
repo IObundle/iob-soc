@@ -54,7 +54,7 @@ ifeq ($(USE_RAM)$(USE_DDR),00)
 	cp $(TEST_DIR)/firmware_2.hex ./boot_2.dat
 	cp $(TEST_DIR)/firmware_3.hex ./boot_3.dat
 else 
-	make -C $(BOOT_DIR) BAUD=$(BAUD)
+	make -C $(BOOT_DIR) BAUD=$(BAUD) DEFINE=$(HW_CONF)
 	cp $(BOOT_DIR)/boot_0.hex ./boot_0.dat
 	cp $(BOOT_DIR)/boot_1.hex ./boot_1.dat
 	cp $(BOOT_DIR)/boot_2.hex ./boot_2.dat

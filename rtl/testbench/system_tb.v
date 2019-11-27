@@ -165,7 +165,7 @@ module system_tb;
       
       for(i=0; i<N_WORDS; i++) begin
 	 for(j=31; j>=7; j=j-8) begin
-	    cpu_putchar(progmem[i][j -: 4'd8]);            
+	    cpu_putchar(progmem[i][j-:8]);            
             //$display("%d", i);
 	 end
 
