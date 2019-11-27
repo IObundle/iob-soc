@@ -19,7 +19,7 @@ module iob_uart (
 	         output            txd,
 	         input             rxd,
                  input             cts,
-                 output reg           rts
+                 output reg        rts
                  );
 
    // internal registers
@@ -154,13 +154,14 @@ module iob_uart (
          recv_pattern <= 0;
          recv_buf_data <= 0;
          recv_buf_valid <= 1'b0;
-         rts_en = 1'b1;
+         rts_en <= 1'b1;
          
       end else begin
          recv_divcnt <= recv_divcnt + 1;
-         if (data_read_en)
-           recv_buf_valid <= 1'b0;
-
+         if (data_read_en) begin
+            recv_buf_valid <= 1'b0;
+            rts_en <= 1'b1;
+         end
          case (recv_state)
            
            // Detect start bit (i.e., when RX line goes to low)
@@ -193,7 +194,6 @@ module iob_uart (
                   recv_buf_data <= recv_pattern;
                   recv_buf_valid <= 1'b1;
                   recv_state <= 0;
-                  rts_en <= 1'b1;
                end
              
          endcase // case (recv_state)

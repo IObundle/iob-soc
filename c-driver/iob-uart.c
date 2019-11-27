@@ -20,16 +20,6 @@ void uart_init(int base_address, int div)
   MEMSET(base, UART_RXEN, 1);
 }
 
-int uart_get_write_wait()
-{
-  return(MEMGET(base, UART_WRITE_WAIT));
-}
-
-void uart_write_wait()
-{
-  while(MEMGET(base, UART_WRITE_WAIT));
-}
-
 int uart_getdiv()
 {
   return (MEMGET(base, UART_DIV));
@@ -136,18 +126,8 @@ void uart_printf(const char* fmt, ...) {
   va_end(args);
 }
 
-int uart_get_read_valid()
-{
-  return(MEMGET(base, UART_READ_VALID));
-}
-
-void uart_read_wait()
-{
-  while(!MEMGET(base, UART_READ_VALID));
-}
-
 int uart_getc()
 {
-  uart_read_wait();
+  while(!MEMGET(base, UART_READ_VALID));
   return(MEMGET(base, UART_DATA));
 }
