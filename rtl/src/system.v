@@ -137,14 +137,14 @@ module system (
    //
 
    ram  #(
-	  .ADDR_W(`BOOT_ADDR_W),
+	  .ADDR_W(`BOOT_ADDR_W-2),
           .NAME("boot")
-	          )
+	  )
    boot_mem (
 	     .clk           (clk ),
              .rst           (reset),
 	     .wdata         (m_wdata),
-	     .addr          (m_addr[`BOOT_ADDR_W-1:0]),
+	     .addr          (m_addr[`BOOT_ADDR_W-1:2]),
 	     .wstrb         (m_wstrb),
 	     .rdata         (s_rdata[`BOOT_BASE]),
              .valid         (s_valid[`BOOT_BASE]),
@@ -210,14 +210,14 @@ module system (
 
 `ifdef USE_RAM
    ram  #(
-	  .ADDR_W(`RAM_ADDR_W),
+	  .ADDR_W(`RAM_ADDR_W-2),
           .NAME("firmware")
 	  ) 
    ram (
 	.clk          (clk),
         .rst          (reset),
 	.wdata        (m_wdata[`DATA_W-1:0]),
-	.addr         (m_addr[`RAM_ADDR_W-1:0]),
+	.addr         (m_addr[`RAM_ADDR_W-1:2]),
 	.wstrb        (m_wstrb),
 	.rdata        (s_rdata[`RAM_BASE]),
         .valid        (s_valid[`RAM_BASE]),
