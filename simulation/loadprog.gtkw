@@ -1,10 +1,8 @@
 [*]
 [*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
-[*] Wed Nov 27 03:22:06 2019
+[*] Wed Nov 27 17:31:40 2019
 [*]
-[dumpfile] "/home/jsousa/sandbox/iob-soc-e/simulation/icarus/system.vcd"
-[dumpfile_mtime] "Wed Nov 27 03:17:31 2019"
-[dumpfile_size] 494562670
+[dumpfile] "(null)"
 [savefile] "/home/jsousa/sandbox/iob-soc-e/simulation/loadprog.gtkw"
 [timestart] 0
 [size] 1920 1031
