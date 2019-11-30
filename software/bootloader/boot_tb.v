@@ -1,8 +1,6 @@
 //receive program load start msg
 cpu_getline();
 
-$display("git here");
-
 //receive start addr msg 
 cpu_getline();
 

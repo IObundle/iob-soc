@@ -159,20 +159,19 @@ module system_tb;
       integer             i, j, k;
   
       $readmemh("firmware.hex", progmem, 0, N_WORDS-1);
-      $display("got here");
 
       k=1;
       
       for(i=0; i<N_WORDS; i++) begin
-	 for(j=31; j>=7; j=j-8) begin
-	    cpu_putchar(progmem[i][j-:8]);            
+	 for(j=1; j<=4; j=j+1) begin
+	    cpu_putchar(progmem[i][j*8-1 -: 8]);            
             //$display("%d", i);
 	 end
 
          if(i == (N_WORDS*k)/1000 ) begin
             k++;
             if(k%100 == 0)
-              $display("progress %d\%", k/10);
+              $display("%d\%", k/10);
          end
       end
    endtask
