@@ -73,9 +73,6 @@ module system_tb;
       
 `include "test_tb.v"
 
-      $finish;
-  
-      
    end // test procedure
  
 

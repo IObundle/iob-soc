@@ -32,7 +32,7 @@ int main()
   uart_printf("load_address=%x, prog_size=%d \n", MAIN_MEM, PROG_SIZE);
 
   for (int i=0 ; i < (1<<RAM_ADDR_W); i++)
-    RAM_PUTCHAR(MAIN_MEM+4*i, uart_getc());
+    RAM_PUTCHAR(MAIN_MEM+i, uart_getc());
   
   uart_puts("Program loaded \n");
 
