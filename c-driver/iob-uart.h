@@ -20,6 +20,9 @@ void uart_init(int base_address, int div);
 //Get the division factor div
 int uart_getdiv();
 
+//Wait for tx to be ready
+void uart_txwait();
+
 //Print char
 void uart_putc(char c);
 

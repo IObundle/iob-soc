@@ -4,8 +4,7 @@
 static int base;
 
 //UART functions
-void uart_init(int base_address, int div)
-{
+void uart_init(int base_address, int div) {
   //capture base address for good
   base = base_address;
 
@@ -25,14 +24,16 @@ int uart_getdiv()
   return (MEMGET(base, UART_DIV));
 }
 
-void uart_putc(char c)
-{
+void uart_txwait() {
+  while(MEMGET(base, UART_WRITE_WAIT));
+}
+
+void uart_putc(char c) {
   while(MEMGET(base, UART_WRITE_WAIT));
   MEMSET(base, UART_DATA, (int)c);
 }
 
-void uart_puts(const char *s)
-{
+void uart_puts(const char *s) {
   while (*s) uart_putc(*s++);
 }
 
@@ -126,8 +127,7 @@ void uart_printf(const char* fmt, ...) {
   va_end(args);
 }
 
-char uart_getc()
-{
+char uart_getc() {
   while(!MEMGET(base, UART_READ_VALID));
   return( (char) MEMGET(base, UART_DATA));
 }
