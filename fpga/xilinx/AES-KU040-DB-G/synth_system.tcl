@@ -26,10 +26,11 @@ read_verilog ../../submodules/iob-rv32/rtl/xalt_1p_mem.v
 #cache
 read_verilog ../../submodules/iob-cache/rtl/src/afifo.v
 read_verilog ../../submodules/iob-cache/rtl/src/data_memory.v
-read_verilog ../../submodules/iob-cache/rtl/src/memory_cache_v2.v
+read_verilog ../../submodules/iob-cache/rtl/src/iob-cache.v
 read_verilog ../../submodules/iob-cache/rtl/src/tag_memory.v
 read_verilog ../../submodules/iob-cache/rtl/src/valid_memory.v
 read_verilog ../../submodules/iob-cache/rtl/src/write_buffer.v
+read_verilog ../../submodules/iob-cache/rtl/src/xalt_1p_mem_no_initialization.v
 read_verilog ../../submodules/iob-cache/rtl/src/xalt_1p_mem_no_initialization_with_reset.v
 
 read_xdc ./synth_system.xdc
