@@ -9,9 +9,9 @@ all: firmware.hex
 
 firmware.hex: firmware.lds $(SRC) $(UART_DIR)/iob-uart.h
 	sed s/\`/\#/g ../../rtl/include/system.vh > system.h
-	$(eval RAM_ADDR_SZ=`python3 ../scripts/get_progsize.py RAM_ADDR_W`)
 	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -I. -I$(UART_DIR) -nostdlib -o firmware.elf firmware.S $(SRC) --std=gnu99 -Wl,-Bstatic,-T,firmware.lds,-Map,firmware.map,--strip-debug -lgcc -lc -DUART_BAUD_RATE=$(BAUD)
 	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
+	$(eval RAM_ADDR_SZ=`python3 ../scripts/get_progsize.py RAM_ADDR_W`)
 	python3 $(SCRPT_DIR)/makehex.py firmware.bin $(RAM_ADDR_SZ) > firmware.hex
 	python3 $(SCRPT_DIR)/hex_split.py
 

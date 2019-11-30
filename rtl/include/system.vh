@@ -17,7 +17,7 @@
 
 //boot memory address space (log2 of byte size)
 //if no RAM or DDR set to same size as RAM
-`define BOOT_ADDR_W 14
+`define BOOT_ADDR_W 16
 
 // slaves
 `define N_SLAVES 6

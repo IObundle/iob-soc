@@ -16,6 +16,10 @@
 #define UART (UART_BASE<<(ADDR_W-N_SLAVES_W))
 #define SOFT_RESET (SOFT_RESET_BASE<<(ADDR_W-N_SLAVES_W))
 
+
+#define PROG_SIZE (1<<(RAM_ADDR_W-2))
+
+
 int main()
 { 
   int counter, i = 0, j = 1;
