@@ -10,7 +10,7 @@ all: boot.hex
 
 boot.hex: $(SRC) boot_uart.lds $(UART_DIR)/iob-uart.h
 	sed s/\`/\#/g ../../rtl/include/system.vh > system.h
-	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding $(DEFINE) -DUART_BAUD_RATE=$(BAUD) $(INCLUDE) -nostdlib -o boot.elf $(SRC) --std=gnu99 -Wl,-Bstatic,-T,boot_uart.lds,-Map,boot.map,--strip-debug -lgcc -lc
+	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding $(DEFINE) $(INCLUDE) -nostdlib -o boot.elf $(SRC) --std=gnu99 -Wl,-Bstatic,-T,boot_uart.lds,-Map,boot.map,--strip-debug -lgcc -lc
 	$(TOOLCHAIN_PREFIX)objcopy -O binary boot.elf boot.bin
 	$(eval PROG_SIZE=`python3 ../scripts/get_progsize.py BOOT_ADDR_W`)
 	python3 $(SCRPT_DIR)/makehex.py boot.bin $(PROG_SIZE) > boot.hex
