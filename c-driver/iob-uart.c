@@ -126,8 +126,8 @@ void uart_printf(const char* fmt, ...) {
   va_end(args);
 }
 
-int uart_getc()
+char uart_getc()
 {
   while(!MEMGET(base, UART_READ_VALID));
-  return(MEMGET(base, UART_DATA));
+  return( (char) MEMGET(base, UART_DATA));
 }
