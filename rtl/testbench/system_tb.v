@@ -224,6 +224,6 @@ module system_tb;
    
    // finish simulation
    always @(posedge trap)   	 
-     $finish;
+     #100 $finish;
       
 endmodule

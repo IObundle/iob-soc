@@ -6,10 +6,12 @@ module iob_1p_mem #(
 		     parameter ADDR_W=14
 		     )
    (
-    input [(DATA_W-1):0]      data_a,
-    input [(ADDR_W-1):0]      addr_a,
-    input 		      we_a, clk,
-    output reg [(DATA_W-1):0] q_a
+    input                     clk,
+    input                     en, 
+    input                     we, 
+    input [(ADDR_W-1):0]      addr,
+    output reg [(DATA_W-1):0] data_out,
+    input [(DATA_W-1):0]      data_in
     );
 
    // Declare the RAM
@@ -20,9 +22,10 @@ module iob_1p_mem #(
 
    // Operate the RAM
    always @ (posedge clk)
-     if (we_a)
-       ram[addr_a] <= data_a;
-     else
-       q_a <= ram[addr_a];
+     if(en)
+       if (we)
+         ram[addr] <= data_in;
+       else
+         data_out <= ram[addr];
 
 endmodule
