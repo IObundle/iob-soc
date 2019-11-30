@@ -36,8 +36,8 @@ int main()
   
   uart_puts("Program loaded \n");
 
-  RAM_PUTINT(SOFT_RESET, 1);
+  uart_txwait();
 
-  return 0;
+  RAM_PUTINT(SOFT_RESET, 1);
   
 }

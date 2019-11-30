@@ -70,7 +70,8 @@ module system_tb;
       //
       // DO THE TEST
       //
-      
+
+
 `include "test_tb.v"
 
    end // test procedure
@@ -220,6 +221,6 @@ module system_tb;
    
    // finish simulation
    always @(posedge trap)   	 
-     #100 $finish;
+     #500 $finish;
       
 endmodule
