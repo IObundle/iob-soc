@@ -84,7 +84,7 @@ clean:
 	@rm -f ncsim.key
 	@rm -f *.log
 	@rm -rf INCA_libs
-	ssh -p 1415 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_DIR)/$(TEST_DIR) clean'
-	ssh -p 1415 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_DIR)/$(BOOT_DIR) clean'
+	ssh -p 1415 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_DIR)/$(TEST_DIR) clean --no-print-directory'
+	ssh -p 1415 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_DIR)/$(BOOT_DIR) clean --no-print-directory'
 
 .PHONY: all clean boot firmware
