@@ -1,3 +1,7 @@
+#hardware configuration
+USE_RAM = 1
+USE_DDR = 0
+
 MY_PC = $(shell hostname)
 
 all:
@@ -8,17 +12,17 @@ all:
 #
 
 ncsim:
-	make -C simulation/ncsim
+	make -C simulation/ncsim USE_RAM=$(USE_RAM) USE_DDR=$(USE_DDR)
 
 icarus:
-	make -C simulation/icarus
+	make -C simulation/icarus USE_RAM=$(USE_RAM) USE_DDR=$(USE_DDR)
 
 #
 # fpga
 #
 
 ku040:
-	make -C fpga/xilinx/AES-KU040-DB-G
+	make -C fpga/xilinx/AES-KU040-DB-G USE_RAM=$(USE_RAM) USE_DDR=$(USE_DDR)
 #	REMOTE_REPO_PATH = ~/sandbox/iob-soc-e
 #	scp -P 1418 ./fpga/xilinx/*.bit $(IOBUSER)@iobundle.ddns.net:$(REMOTE_REPO_PATH)/fpga/xilinx/AES-KU040-DB-G
 #	ssh -p 1418 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_REPO_PATH)/fpga/xilinx/AES-KU040-DB-G ld-hw'
@@ -28,13 +32,12 @@ sp605:
 	@echo "FPGA not yet available"
 
 gt:
-	make -C fpga/intel/CYCLONEV-GT-DK
+	make -C fpga/intel/CYCLONEV-GT-DK USE_RAM=$(USE_RAM) USE_DDR=$(USE_DDR)
 
 
 
 progld:
-#	make -C software/hello_world DEFINE=$(DEFINE)
-	make -C software/scripts
+	make -C software/scripts USE_RAM=$(USE_RAM) USE_DDR=$(USE_DDR)
 
 
 clean:
