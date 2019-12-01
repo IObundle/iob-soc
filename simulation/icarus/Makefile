@@ -6,6 +6,7 @@
 USE_RAM = 1
 USE_DDR = 0
 BAUD = 10000000
+
 #software configuration
 TEST_DIR = ../../software/hello_world
 BOOT_DIR = ../../software/bootloader
@@ -70,7 +71,7 @@ endif
 
 clean:
 	@rm -f *# *~ *.vcd *.dat *.hex ./a.out
-	@make -C $(BOOT_DIR) clean --no-print-directory
-	@make -C $(TEST_DIR) clean --no-print-directory
+	make -C $(BOOT_DIR) clean --no-print-directory
+	make -C $(TEST_DIR) clean --no-print-directory
 
 .PHONY: all clean boot firmware

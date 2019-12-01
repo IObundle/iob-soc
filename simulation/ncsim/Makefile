@@ -54,7 +54,8 @@ all: firmware boot $(VSRC)
 	SRC="$(VSRC)" CFLAGS="$(CFLAGS)" EFLAGS="$(EFLAGS)" SFLAGS="$(SFLAGS)" ./run_ncsim.sh
 
 firmware:
-	ssh -p 1415 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_DIR)/$(TEST_DIR) BAUD="$(BAUD)"'
+	scp -P 1415 ../../rtl/include/system.vh ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/rtl/include/system.vh
+	ssh -p 1415 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_DIR)/$(TEST_DIR) DEFINE="$(GCC_DEFINE)"'
 	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(TEST_DIR)/firmware.hex .
 	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(TEST_DIR)/firmware_0.hex ./firmware_0.dat
 	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(TEST_DIR)/firmware_1.hex ./firmware_1.dat
@@ -63,12 +64,14 @@ firmware:
 
 boot: 
 ifeq ($(USE_RAM)$(USE_DDR),00)
+	scp -P 1415 ../../rtl/include/system.vh ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/rtl/include/system.vh
 	ssh -p 1415 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_DIR)/$(BOOT_DIR) DEFINE="$(GCC_DEFINE)"'
 	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(TEST_DIR)/firmware_0.hex ./boot_0.dat
 	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(TEST_DIR)/firmware_1.hex ./boot_1.dat
 	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(TEST_DIR)/firmware_2.hex ./boot_2.dat
 	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(TEST_DIR)/firmware_3.hex ./boot_3.dat
 else 
+	scp -P 1415 ../../rtl/include/system.vh ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/rtl/include/system.vh
 	ssh -p 1415 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_DIR)/$(BOOT_DIR) DEFINE="$(GCC_DEFINE)"'
 	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(BOOT_DIR)/boot_0.hex ./boot_0.dat
 	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(BOOT_DIR)/boot_1.hex ./boot_1.dat
@@ -81,7 +84,7 @@ clean:
 	@rm -f ncsim.key
 	@rm -f *.log
 	@rm -rf INCA_libs
-	ssh -p 1415 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_DIR)/$(TEST_DIR) clean'
-	ssh -p 1415 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_DIR)/$(BOOT_DIR) clean'
+	ssh -p 1415 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_DIR)/$(TEST_DIR) clean --no-print-directory'
+	ssh -p 1415 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_DIR)/$(BOOT_DIR) clean --no-print-directory'
 
 .PHONY: all clean boot firmware
