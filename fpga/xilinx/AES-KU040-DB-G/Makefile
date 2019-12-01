@@ -1,3 +1,8 @@
+#hardware configuration
+USE_RAM = 1
+USE_DDR = 0
+BAUD = 115200
+
 MY_PC = $(shell hostname)
 ifeq ($(MY_PC),pudim-flan)
 VIVADO_BASE = /home/iobundle/Xilinx/Vivado/2017.4
@@ -27,13 +32,11 @@ BAUD = 115200
 DEFINE = -DUART_BAUD_RATE=$(BAUD)
 
 ifeq ($(USE_RAM),1)
-DEFINE := $(DEFINE) -define USE_RAM
-GCC_DEFINE := $(GCC_DEFINE) -DUSE_RAM
+DEFINE := $(DEFINE) -DUSE_RAM
 endif	
 
 ifeq ($(USE_DDR),1)
-DEFINE := $(DEFINE) -define USE_DDR
-GCC_DEFINE := $(GCC_DEFINE) -DUSE_DDR
+DEFINE := $(DEFINE) -DUSE_DDR
 endif
 
 all: synth_$(SYNTH_TARGET)
@@ -52,14 +55,14 @@ prog_%:
 	rm -rf .Xil fsm_encoding.os synth_*.backup.log usage_statistics_webtalk.*
 
 firmware.hex:
-	make -C $(TEST_DIR) DEFINE=$(DEFINE)
+	make -C $(TEST_DIR) DEFINE="$(DEFINE)"
 	cp $(TEST_DIR)/firmware_0.hex ./firmware_0.dat
 	cp $(TEST_DIR)/firmware_1.hex ./firmware_1.dat
 	cp $(TEST_DIR)/firmware_2.hex ./firmware_2.dat
 	cp $(TEST_DIR)/firmware_3.hex ./firmware_3.dat
 
 boot.hex:
-	make -C $(BOOT_DIR) DEFINE=$(DEFINE)
+	make -C $(BOOT_DIR) DEFINE="$(DEFINE)"
 	cp $(BOOT_DIR)/boot_0.hex ./boot_0.dat
 	cp $(BOOT_DIR)/boot_1.hex ./boot_1.dat
 	cp $(BOOT_DIR)/boot_2.hex ./boot_2.dat
