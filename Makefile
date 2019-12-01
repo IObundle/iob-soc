@@ -1,50 +1,57 @@
-TEST := test
-BOOT := uart
-SYNTH_TARGET := system
-FPGA := xilinx
-IOBUSER := $(shell whoami)
-REPO_PATH := ~/sandbox/iob-soc-e
+MY_PC = $(shell hostname)
 
-all: uart-loader
+all:
+	less Makefile
 
-uart-loader:
-	make -C software/tests/$(TEST)
-	make -C software/scripts TEST=$(TEST)
-
-bitstream: $(FPGA)
-
-ld-hw:
-	make -C fpga/xilinx ld-hw
-
-xilinx:
-	make -C fpga/xilinx TEST=$(TEST) BOOT=$(BOOT) SYNTH_TARGET=$(SYNTH_TARGET)
-
-altera:
-	make -C fpga/altera TEST=$(TEST) BOOT=$(BOOT)
+#
+# simulation
+#
 
 ncsim:
-	make -C simulation/ncsim TEST=$(TEST) BOOT=$(BOOT)
+	make -C simulation/ncsim
 
 icarus:
-	make -C simulation/icarus TEST=$(TEST) BOOT=$(BOOT)
-#target icarus is outdated
+	make -C simulation/icarus
 
-send-baba:
-	scp -P 1418 ./fpga/xilinx/*.bit $(IOBUSER)@iobundle.ddns.net:$(REPO_PATH)/fpga/xilinx/
-#This is used just to debug. To produce this file use write_debug_probes command in Tcl
-#scp -P 1418 ./fpga/xilinx/*.ltx $(IOBUSER)@iobundle.ddns.net:$(REPO_PATH)/fpga/xilinx
+#
+# fpga
+#
+
+ku040:
+	make -C fpga/xilinx/AES-KU040-DB-G
+#	REMOTE_REPO_PATH = ~/sandbox/iob-soc-e
+#	scp -P 1418 ./fpga/xilinx/*.bit $(IOBUSER)@iobundle.ddns.net:$(REMOTE_REPO_PATH)/fpga/xilinx/AES-KU040-DB-G
+#	ssh -p 1418 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_REPO_PATH)/fpga/xilinx/AES-KU040-DB-G ld-hw'
+#	ssh -p 1418 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_REPO_PATH) progld'
+
+sp605:
+	@echo "FPGA not yet available"
+
+gt:
+	make -C fpga/intel/CYCLONEV-GT-DK
+
+
+
+progld:
+#	make -C software/hello_world DEFINE=$(DEFINE)
+	make -C software/scripts
+
 
 clean:
 	@rm -rf INCA_libs
 	@rm -f *.log
-	@make -C fpga/xilinx clean --no-print-directory
-	@make -C simulation/ncsim clean --no-print-directory
-	@make -C simulation/icarus clean --no-print-directory
-	@make -C software/scripts clean --no-print-directory
-	@make -C fpga/altera clean --no-print-directory
-	@make -C software/bootloader/$(BOOT) clean --no-print-directory
+	make -C software/bootloader clean --no-print-directory
+	make -C software/scripts clean --no-print-directory
+	make -C software/hello_world clean --no-print-directory
+ifeq ($(MY_PC),micro5.lx.it.pt)
+	make -C simulation/ncsim clean --no-print-directory
+endif
+	make -C simulation/icarus clean --no-print-directory
+	make -C fpga/xilinx/AES-KU040-DB-G clean --no-print-directory
+	make -C fpga/intel/CYCLONEV-GT-DK clean --no-print-directory
 	@echo "Cleaned"
 
+#left here because I don't know if it's needed
 very_clean:
 	@rm -rf rtl/ip/*
 	@echo "All Cleaned"
