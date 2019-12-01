@@ -19,7 +19,7 @@ module iob_uart (
 	         output            txd,
 	         input             rxd,
                  input             cts,
-                 output reg        rts
+                 output          rts
                  );
 
    // internal registers
@@ -68,7 +68,7 @@ module iob_uart (
 
    
    // cpu interface ready signal
-   always @(posedge clk, posedge rst)
+   always @(posedge clk, posedge rst_int)
      if(rst_int)
        ready <= 1'b0;
      else 
