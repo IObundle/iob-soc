@@ -1,9 +1,26 @@
 # GT hardware
 
-BOOT := uart
-BOOTDIR := ../../software/bootloader/$(BOOT)
-TEST := test
-TESTDIR := ../../software/tests/$(TEST)
+#hardware configuration
+USE_RAM = 1
+USE_DDR = 0
+BAUD = 115200
+
+#software configuration
+TEST_DIR := ../../../software/hello_world
+BOOT_DIR := ../../../software/bootloader
+BAUD = 115200
+
+#software defines
+
+DEFINE = -DUART_BAUD_RATE=$(BAUD)
+
+ifeq ($(USE_RAM),1)
+DEFINE := $(DEFINE) -DUSE_RAM
+endif	
+
+ifeq ($(USE_DDR),1)
+DEFINE := $(DEFINE) -DUSE_DDR
+endif
 
 INCLUDE := $(wildcard ../../submodules/iob-eth/rtl/include/*.vh) \
 $(wildcard ../../submodules/iob-uart/rtl/include/*.vh) \
@@ -20,19 +37,19 @@ all: output_files/top_system.sof
 	quartus_pgm -m jtag -c 1 -o "p;output_files/top_system.sof"
 
 $(HEX):
-	make -C $(BOOTDIR) TEST=$(TEST)
-	cp $(BOOTDIR)/boot_0.hex ./boot_0.dat
-	cp $(BOOTDIR)/boot_1.hex ./boot_1.dat
-	cp $(BOOTDIR)/boot_2.hex ./boot_2.dat
-	cp $(BOOTDIR)/boot_3.hex ./boot_3.dat
+	make -C $(BOOT_DIR) DEFINE="$(DEFINE)"
+	cp $(BOOT_DIR)/boot_0.hex ./boot_0.dat
+	cp $(BOOT_DIR)/boot_1.hex ./boot_1.dat
+	cp $(BOOT_DIR)/boot_2.hex ./boot_2.dat
+	cp $(BOOT_DIR)/boot_3.hex ./boot_3.dat
 
 
 firmware.hex:
-	make -C $(TESTDIR)
-	cp $(TESTDIR)/firmware_0.hex ./firmware_0.dat
-	cp $(TESTDIR)/firmware_1.hex ./firmware_1.dat
-	cp $(TESTDIR)/firmware_2.hex ./firmware_2.dat
-	cp $(TESTDIR)/firmware_3.hex ./firmware_3.dat
+	make -C $(TEST_DIR) DEFINE="$(DEFINE)"
+	cp $(TEST_DIR)/firmware_0.hex ./firmware_0.dat
+	cp $(TEST_DIR)/firmware_1.hex ./firmware_1.dat
+	cp $(TEST_DIR)/firmware_2.hex ./firmware_2.dat
+	cp $(TEST_DIR)/firmware_3.hex ./firmware_3.dat
 
 ld-hw:
 	quartus_pgm -m jtag -c l -o "p;output_files/top_system.sof"
@@ -48,6 +65,9 @@ clean:
 	@rm -rf db incremental_db output_files
 	@rm -f *.summary *.rpt *.smsg *.txt *.done *.jdi *.pin *.sof *.sld *.qpf *~
 	@rm -f *.dat
-.PHONY: all clean all
+	make -C $(TEST_DIR) clean --no-print-directory
+	make -C $(BOOT_DIR) clean --no-print-directory
+
+.PHONY: all clean ld-hw
 
 .PRECIOUS: output_files/top_system.sof
