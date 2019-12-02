@@ -68,8 +68,8 @@ module iob_uart (
 
    
    // cpu interface ready signal
-   always @(posedge clk, posedge rst_int)
-     if(rst_int)
+   always @(posedge clk, posedge rst)
+     if(rst)
        ready <= 1'b0;
      else 
        ready <= sel;
