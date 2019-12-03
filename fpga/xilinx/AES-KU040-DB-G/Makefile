@@ -32,18 +32,24 @@ BAUD = 115200
 DEFINE = -DUART_BAUD_RATE=$(BAUD)
 
 ifeq ($(USE_RAM),1)
-DEFINE := $(DEFINE) -DUSE_RAM
+HWDEFINE := USE_RAM_1
+DEFINE += -DUSE_RAM
+else
+HWDEFINE := USE_RAM_0
 endif	
 
 ifeq ($(USE_DDR),1)
-DEFINE := $(DEFINE) -DUSE_DDR
+HWDEFINE += USE_DDR_1
+DEFINE += -DUSE_DDR
+else
+HWDEFINE := USE_DDR_0
 endif
 
 all: synth_$(SYNTH_TARGET)
 
 synth_%: boot.hex #firmware.hex boot.hex
 	rm -f $@.log
-	$(VIVADO) -nojournal -log $@.log -mode batch -source $@.tcl
+	$(VIVADO) -nojournal -log $@.log -mode batch -source $@.tcl -tclargs $(HWDEFINE)
 	rm -rf .Xil fsm_encoding.os synth_*.backup.log usage_statistics_webtalk.*
 	-grep -B4 -A10 'Slice LUTs' $@.log
 	-grep -B1 -A9 ^Slack $@.log && echo
@@ -69,7 +75,8 @@ boot.hex:
 	cp $(BOOT_DIR)/boot_3.hex ./boot_3.dat
 
 clean:
-	@rm -rf .Xil/ firmware.bin firmware.elf firmware.hex firmware_?.hex firmware_?.dat firmware.map synth_*.log *~ \#*# *#  ../rtl/*~ ../rtl/\#*# ../rtl/*#
+	@rm -rf .Xil/ firmware.bin firmware.elf *.hex *.dat firmware.map synth_*.log 
+	@rm -rf *~ \#*# *#  ../rtl/*~ ../rtl/\#*# ../rtl/*#
 	@rm -rf synth_*.mmi synth_*.bit synth_system*.v *.vcd *_tb table.txt tab_*/ webtalk.jou
 	@rm -rf webtalk.log webtalk_*.jou webtalk_*.log xelab.* xsim[._]* xvlog.*
 	@rm -rf boot.bin boot.elf boot.hex boot.map boot_*.hex boot_?.dat
