@@ -9,7 +9,7 @@ open_hw_target
 
 current_hw_device [lindex [get_hw_devices] 0]
 refresh_hw_device -update_hw_probes false [lindex [get_hw_devices] 0]
-set_property PROGRAM.FILE {./synth_system_test_Icarus.bit} [lindex [get_hw_devices] 0]
+set_property PROGRAM.FILE {./synth_system.bit} [lindex [get_hw_devices] 0]
 #set_property PROBES.FILE {C:/design.ltx} [lindex [get_hw_devices] 0]
  
 program_hw_devices [lindex [get_hw_devices] 0]
