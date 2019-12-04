@@ -5,6 +5,7 @@ module top_system(
 	          input         C0_SYS_CLK_clk_p, 
                   input         C0_SYS_CLK_clk_n, 
 	          input         reset,
+                  
 	          //output reg [6:0] led,
 	          output        uart_txd,
 	          input         uart_rxd,
@@ -97,8 +98,6 @@ module top_system(
    wire 			   mem_sel;
    wire 			   init_calib_complete;
    reg [6:0] 			   led_reg;
-   wire 			   resetn_int;
-   
 
    // AXI INTERCONNECT DDR SIDE SIGNAlS
    //Write address
@@ -145,16 +144,34 @@ module top_system(
    wire 			   ddr_rready;
 `endif
    
+
+   //initial reset
+   reg [15:0]                      reset_cnt;
+   wire                            reset_int = (reset_cnt != 16'hFFFF);
+
+   always @(posedge sysclk, posedge reset)
+     if(reset)
+       reset_cnt <= 16'b0;
+     else if (reset_cnt != 16'hFFFF)
+       reset_cnt <= reset_cnt+1'b1;
+     
+
+   
+
+
+
+   
    
    system system (
         	  .clk               (sysclk),
 `ifdef USE_DDR
-		  .reset             (reset | ~(init_calib_complete)),
+		  .reset             (reset_int | ~(init_calib_complete)),
 `else
-		  .reset             (reset),
+		  .reset             (reset_int),
 `endif
 		  .uart_txd          (uart_txd),
 		  .uart_rxd          (uart_rxd),
+		  .uart_cts          (1'b1),
 
 `ifdef USE_DDR
 		  //// Address-Write
@@ -257,7 +274,7 @@ module top_system(
    
    axi_interconnect_0 cache2ddr (
 				 .INTERCONNECT_ACLK     (clk), // 200 MHz
-				 .INTERCONNECT_ARESETN  (resetn_int),
+				 .INTERCONNECT_ARESETN  (~reset_int),
       
 				 ///////////////
 				 // DDR SIDE //

@@ -20,8 +20,7 @@ RISCV_DIR = ../../../submodules/iob-rv32
 UART_DIR = ../../../submodules/iob-uart
 FIFO_DIR = ../../../submodules/fifo
 
-VSRC = $(RTL_DIR)/testbench/system_tb.v  $(RTL_DIR)/src/*.v $(RISCV_DIR)/picorv32.v $(UART_DIR)/rtl/src/iob-uart.v $(FIFO_DIR)/afifo.v
-
+VSRC = verilog/top_system.v  $(RTL_DIR)/src/*.v $(RISCV_DIR)/picorv32.v $(UART_DIR)/rtl/src/iob-uart.v $(FIFO_DIR)/afifo.v
 
 MY_PC = $(shell hostname)
 ifeq ($(MY_PC),pudim-flan)
