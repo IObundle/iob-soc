@@ -70,6 +70,10 @@ ld-hw:
 	$(VIVADO) -nojournal -log $@.log -mode batch -source $@.tcl
 	rm -rf .Xil fsm_encoding.os synth_*.backup.log usage_statistics_webtalk.*
 
+ld-sw:
+	make -C ../../../software/ld-sw
+
+
 firmware:
 	make -C $(TEST_DIR) DEFINE="$(DEFINE)"
 	cp $(TEST_DIR)/firmware.hex .

@@ -36,15 +36,15 @@ gt:
 
 
 
-progld:
-	make -C software/scripts USE_RAM=$(USE_RAM) USE_DDR=$(USE_DDR)
+ld-sw:
+	make -C software/ld-sw USE_RAM=$(USE_RAM) USE_DDR=$(USE_DDR)
 
 
 clean:
 	@rm -rf INCA_libs
 	@rm -f *.log
 	make -C software/bootloader clean --no-print-directory
-	make -C software/scripts clean --no-print-directory
+	make -C software/ld-sw clean --no-print-directory
 	make -C software/hello_world clean --no-print-directory
 ifeq ($(MY_PC),micro5.lx.it.pt)
 	make -C simulation/ncsim clean --no-print-directory

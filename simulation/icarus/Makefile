@@ -3,7 +3,8 @@
 #
 
 #hardware configuration
-USE_RAM = 0
+# also update N_SLAVES and N_SLAVES_W in ../../rtl/include/system.vh
+USE_RAM = 1
 USE_DDR = 0
 BAUD = 10000000
 

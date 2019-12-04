@@ -20,8 +20,8 @@
 `define BOOT_ADDR_W 14
 
 // slaves
-`define N_SLAVES 3
-`define N_SLAVES_W 2
+`define N_SLAVES 4
+`define N_SLAVES_W 3
 
 //memory map
 `define BOOT_BASE 0
