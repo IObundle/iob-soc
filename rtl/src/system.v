@@ -46,8 +46,7 @@ module system (
    //
    reg                            soft_reset;   
    wire                           reset_int = reset | soft_reset;
-   reg                            boot;   
-
+   reg                            boot ;   
    
    //
    //  CPU
@@ -153,6 +152,48 @@ module system (
 
 
    //
+   // UART
+   //
+   iob_uart uart(
+		 //cpu interface
+		 .clk       (clk),
+		 .rst       (reset),
+                 
+		 //cpu i/f
+		 .sel       (s_valid[`UART_BASE]),
+		 .ready     (s_ready[`UART_BASE]),
+		 .address   (m_addr[4:2]),
+		 .read      (m_wstrb == 0),
+		 .write     (m_wstrb != 0),
+                 
+		 .data_in   (m_wdata),
+		 .data_out  (s_rdata[`UART_BASE]),
+                 
+		 //serial i/f
+		 .txd       (uart_txd),
+		 .rxd       (uart_rxd),
+                 .rts       (uart_rts),
+                 .cts       (uart_cts)
+		 );
+   
+   //
+   // RESET CONTROLLER
+   //
+   always @(posedge clk, posedge reset)
+     if(reset)  begin
+        boot <= 1'b1;
+        soft_reset <= 1'b0;
+     end else if( s_valid[`SOFT_RESET_BASE] && m_wstrb ) begin
+        soft_reset <= 1'b1;
+        boot <= 1'b0;
+     end else begin
+        soft_reset <= 1'b0;
+     end 
+   assign s_ready[`SOFT_RESET_BASE] = soft_reset;
+   assign s_rdata[`SOFT_RESET_BASE] = 0;
+   
+
+   //
    // MAIN MEMORY
    //
 
@@ -225,47 +266,6 @@ module system (
 	);
 `endif
    
-   //
-   // UART
-   //
-   iob_uart uart(
-		 //cpu interface
-		 .clk       (clk),
-		 .rst       (reset),
-                 
-		 //cpu i/f
-		 .sel       (s_valid[`UART_BASE]),
-		 .ready     (s_ready[`UART_BASE]),
-		 .address   (m_addr[4:2]),
-		 .read      (m_wstrb == 0),
-		 .write     (m_wstrb != 0),
-                 
-		 .data_in   (m_wdata),
-		 .data_out  (s_rdata[`UART_BASE]),
-                 
-		 //serial i/f
-		 .txd       (uart_txd),
-		 .rxd       (uart_rxd),
-                 .rts       (uart_rts),
-                 .cts       (uart_cts)
-		 );
-   
-   //
-   // RESET CONTROLLER
-   //
 
-   always @(posedge clk, posedge reset)
-     if(reset)  begin
-        boot <= 1'b1;
-        soft_reset <= 1'b0;
-     end else if( s_valid[`SOFT_RESET_BASE] && m_wstrb ) begin
-        soft_reset <= 1'b1;
-        boot <= 1'b0;
-     end else begin
-        soft_reset <= 1'b0;
-     end 
-   
-   assign s_ready[`SOFT_RESET_BASE] = soft_reset;
-                                     
      
 endmodule

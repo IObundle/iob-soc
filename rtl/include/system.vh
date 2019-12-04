@@ -17,19 +17,19 @@
 
 //boot memory address space (log2 of byte size)
 //if no RAM or DDR set to same size as RAM
-`define BOOT_ADDR_W 16
+`define BOOT_ADDR_W 14
 
 // slaves
 `define N_SLAVES 3
-`define N_SLAVES_W 3
+`define N_SLAVES_W 2
 
 //memory map
 `define BOOT_BASE 0
-`define CACHE_BASE 1
-`define CACHE_CTRL_BASE 2
+`define UART_BASE 1
+`define SOFT_RESET_BASE 2
 `define RAM_BASE 3
-`define UART_BASE 4
-`define SOFT_RESET_BASE 5
+`define CACHE_BASE 4
+`define CACHE_CTRL_BASE 5
 
 //uart 
 `define UART_CLK_FREQ 100000000
