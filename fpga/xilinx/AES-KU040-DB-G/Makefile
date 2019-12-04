@@ -60,13 +60,14 @@ ifeq ($(USE_DDR),1)
 DEFINE += -DUSE_DDR
 endif
 
-synth_system.bit: boot firmware *.xdc $(VSRC)
+synth_system.bit: firmware boot *.xdc $(VSRC)
 	rm -f $@.log
-	$(VIVADO) -nojournal -log $@.log -mode batch -source $@.tcl -tclargs $(HWDEFINE)
+	$(VIVADO) -nojournal -log $@.log -mode batch -source synth_system.tcl -tclargs $(HWDEFINE)
 	-grep -B4 -A10 'Slice LUTs' $@.log
 	-grep -B1 -A9 ^Slack $@.log && echo
+	scp -P 1418 $@ ${USER}@iobundle.ddns.net:sandbox/iob-soc-e/fpga/xilinx/AES-KU040-DB-G
 
-ld-hw: synth_system.bit
+ld-hw:
 	$(VIVADO) -nojournal -log $@.log -mode batch -source $@.tcl
 	rm -rf .Xil fsm_encoding.os synth_*.backup.log usage_statistics_webtalk.*
 

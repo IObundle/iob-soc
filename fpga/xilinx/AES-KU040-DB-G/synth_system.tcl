@@ -97,9 +97,7 @@ if { [lindex $argv 1] == {USE_DDR_1} } {
         
         synth_ip [get_files ../../rtl/ip/ddr4_0/ddr4_0.xci]
     }
-}
 
-if { [lindex $argv 1] == {USE_DDR_1}} {
     set_property used_in_implementation false [get_files -all ../../rtl/ip/ddr4_0/ddr4_0_board.xdc]
     set_property used_in_implementation false [get_files -all ../../rtl/ip/ddr4_0/par/ddr4_0.xdc]
     set_property used_in_implementation false [get_files -all ../../rtl/ip/ddr4_0/ip_0/ddr4_0_microblaze_mcs_board.xdc]
@@ -120,6 +118,8 @@ if { [lindex $argv 1] == {USE_DDR_1}} {
     set_property used_in_implementation false [get_files -all ../../rtl/ip/axi_interconnect_0/axi_interconnect_0_ooc.xdc]
     set_property used_in_implementation false [get_files -all ../../rtl/ip/axi_interconnect_0/axi_interconnect_0_clocks.xdc]
     set_property used_in_implementation false [get_files -all ../../rtl/ip/axi_interconnect_0/axi_interconnect_0_impl_clocks.xdc]
+
+    read_xdc ./ddr.xdc
 }
 
 read_xdc ./synth_system.xdc
