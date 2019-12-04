@@ -1,6 +1,3 @@
-#puts [lindex $argv 0]
-#exit
-
 #include
 read_verilog ../../../rtl/include/system.vh
 read_verilog ../../../submodules/iob-uart/rtl/include/iob-uart.vh
@@ -126,8 +123,17 @@ read_xdc ./synth_system.xdc
 
 set_property part xcku040-fbva676-1-c [current_project]
 
+set DEFINE {synth_design -part xcku040-fbva676-1-c -top top_system }
+if {[lindex $argv 0] == {USE_RAM_1}} {
+    append DEFINE {-verilog_define USE_RAM}
+}
+if {[lindex $argv 1] == {USE_DDR_1}} {
+    append DEFINE {-verilog_define USE_DDR}
+}
 
-synth_design -part xcku040-fbva676-1-c -top top_system
+set DEFINE {synth_design -part xcku040-fbva676-1-c -top top_system -verilog_define USE_RAM}
+
+eval $DEFINE
 opt_design
 place_design
 route_design

@@ -38,5 +38,7 @@ make ld-hw
 make 
 ```
 
+picocom /dev/ttyUSB0 -b 115200 --imap lfcrlf --send-cmd "ascii-xfr -sedv"
+
 Note: If you change the program, just re-run on Xilinx FPGA. The program will be
 loaded by UART BUT you need 'dialout' group permissions.

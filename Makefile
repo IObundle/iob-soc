@@ -23,10 +23,6 @@ icarus:
 
 ku040:
 	make -C fpga/xilinx/AES-KU040-DB-G USE_RAM=$(USE_RAM) USE_DDR=$(USE_DDR)
-#	REMOTE_REPO_PATH = ~/sandbox/iob-soc-e
-#	scp -P 1418 ./fpga/xilinx/*.bit $(IOBUSER)@iobundle.ddns.net:$(REMOTE_REPO_PATH)/fpga/xilinx/AES-KU040-DB-G
-#	ssh -p 1418 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_REPO_PATH)/fpga/xilinx/AES-KU040-DB-G ld-hw'
-#	ssh -p 1418 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_REPO_PATH) progld'
 
 sp605:
 	@echo "FPGA not yet available"
@@ -34,11 +30,8 @@ sp605:
 gt:
 	make -C fpga/intel/CYCLONEV-GT-DK USE_RAM=$(USE_RAM) USE_DDR=$(USE_DDR)
 
-
-
 ld-sw:
 	make -C software/ld-sw USE_RAM=$(USE_RAM) USE_DDR=$(USE_DDR)
-
 
 clean:
 	@rm -rf INCA_libs
