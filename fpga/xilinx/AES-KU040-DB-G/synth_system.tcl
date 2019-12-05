@@ -49,7 +49,12 @@ if { [lindex $argv 1] == {USE_DDR_1} } {
                                 CONFIG.NUM_SLAVE_PORTS {1}\
                                 CONFIG.S00_AXI_IS_ACLK_ASYNC {1}\
                                 CONFIG.M00_AXI_IS_ACLK_ASYNC {1}\
+                                CONFIG.S00_AXI_READ_FIFO_DEPTH {512}\
+                                CONFIG.M00_AXI_READ_FIFO_DEPTH {512}\
+                                CONFIG.S00_AXI_READ_FIFO_DELAY {1}\
+                                CONFIG.M00_AXI_READ_FIFO_DELAY {1}\
                                 CONFIG.S00_AXI_DATA_WIDTH {32}\
+                                
                                ] [get_ips axi_interconnect_0]
         
         generate_target {instantiation_template} [get_files ../../rtl/ip/axi_interconnect_0/axi_interconnect_0.xci]
