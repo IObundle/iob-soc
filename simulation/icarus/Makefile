@@ -25,14 +25,18 @@ FIFO_DIR = ../../submodules/fifo
 
 #defines
 
-DEFINE := -DUART_BAUD_RATE=$(BAUD)
+DEFINE = -DUART_BAUD_RATE=$(BAUD)
 ifeq ($(USE_RAM),1)
-DEFINE := $(DEFINE) -DUSE_RAM 
+DEFINE += -DUSE_RAM 
 endif	
 
 ifeq ($(USE_DDR),1)
-DEFINE := $(DEFINE) -DUSE_DDR
+DEFINE += -DUSE_DDR
 endif
+
+DEFINE += -DPROG_SIZE=`wc -c   ../../software/hello_world/firmware.bin | head -n1 | cut -d " " -f1`
+
+
 
 #includes
 INCLUDE = -I$(RTL_DIR)/include -I$(UART_DIR)/rtl/include -I$(BOOT_DIR) -I$(TEST_DIR)

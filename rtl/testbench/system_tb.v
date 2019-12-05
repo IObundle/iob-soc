@@ -13,7 +13,7 @@ module system_tb;
    reg reset = 1;
 
    // program memory 
-   reg [31:0] progmem[4095:0];
+   reg [31:0] progmem[`PROG_SIZE/4-1:0];
 
    //uart signals
    reg [7:0] 	rxread_reg = 8'b0;
@@ -158,20 +158,19 @@ module system_tb;
   
       $readmemh("firmware.hex", progmem, 0, N_WORDS-1);
 
-      k=1;
+      k=0;
       
       for(i=0; i<N_WORDS; i++) begin
 	 for(j=1; j<=4; j=j+1) begin
 	    cpu_putchar(progmem[i][j*8-1 -: 8]);            
-            //$display("%d", i);
 	 end
 
-         if(i == (N_WORDS*k)/1000 ) begin
-            k++;
-            if(k%100 == 0)
-              $display("%d\%", k/10);
+         if(i == (N_WORDS*k/100) ) begin
+            $display("%d%% ", k);
+            k=k+10;
          end
       end
+            $display("%d%%", 100);
    endtask
    
 

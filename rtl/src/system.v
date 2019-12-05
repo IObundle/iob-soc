@@ -13,7 +13,7 @@ module system (
                output             uart_rts,
                input              uart_cts
                                   
-`ifdef DDR //AXI MASTER INTERFACE
+`ifdef USE_DDR //AXI MASTER INTERFACE
                // Address-Write
                , output m_axi_awvalid,
                input              m_axi_awready,
