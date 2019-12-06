@@ -21,13 +21,13 @@ read_verilog ../../../rtl/src/ram.v
 read_verilog ../../../rtl/src/iob_1p_mem.v
 
 if { [lindex $argv 1] == {USE_DDR_1} } {
-
+ 
+    read_verilog ../../../submodules/iob-cache/rtl/header/iob-cache.vh
     read_verilog ../../../submodules/fifo/afifo.v
     read_verilog ../../../submodules/iob-cache/rtl/src/data_memory.v
     read_verilog ../../../submodules/iob-cache/rtl/src/iob-cache.v
     read_verilog ../../../submodules/iob-cache/rtl/src/tag_memory.v
     read_verilog ../../../submodules/iob-cache/rtl/src/valid_memory.v
-    read_verilog ../../../submodules/iob-cache/rtl/src/write_buffer.v
 
     read_xdc ./ddr.xdc
 

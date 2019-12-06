@@ -150,7 +150,11 @@ module top_system(
    wire                            reset_int = (reset_cnt != 16'hFFFF);
 
    always @(posedge sysclk, posedge reset)
+`ifdef USE_DDR
+     if(reset | ~(init_calib_complete))
+`else   
      if(reset)
+`endif    
        reset_cnt <= 16'b0;
      else if (reset_cnt != 16'hFFFF)
        reset_cnt <= reset_cnt+1'b1;
@@ -164,11 +168,7 @@ module top_system(
    
    system system (
         	  .clk               (sysclk),
-`ifdef USE_DDR
-		  .reset             (reset_int | ~(init_calib_complete)),
-`else
 		  .reset             (reset_int),
-`endif
 		  .uart_txd          (uart_txd),
 		  .uart_rxd          (uart_rxd),
 		  .uart_cts          (1'b1),
@@ -207,12 +207,9 @@ module top_system(
    ddr4_0 ddr4_ram (
                     .c0_sys_clk_p        (C0_SYS_CLK_clk_p),
                     .c0_sys_clk_n        (C0_SYS_CLK_clk_n),
-                    .c0_ddr4_ui_clk      (clk), 
-		    //.c0_sys_clk_i      (clk),
-                    .addn_ui_clkout1     (sysclk), // 250MHz
-                    //.addn_ui_clkout2   (clk), // 100MHz
-                    //.addn_ui_clkout3   (), // 25MHz
-                    //.addn_ui_clkout4   (), // 10MHz
+                    .c0_ddr4_ui_clk      (clk),    // 200MHz - MIG's clock
+		    //.c0_sys_clk_i      (clk), 
+                    .addn_ui_clkout1     (sysclk), // 100MHz - System's clock
                     .c0_init_calib_complete (init_calib_complete),                  
                     .c0_ddr4_aresetn       (ddr_reset ),
      		    .c0_ddr4_s_axi_awvalid (ddr_awvalid),
@@ -279,7 +276,7 @@ module top_system(
 				 ///////////////
 				 // DDR SIDE //
 				 /////////////
-				 .M00_AXI_ARESET_OUT_N  (ddr_reset),
+				 .M00_AXI_ARESET_OUT_N  (),
 				 .M00_AXI_ACLK          (clk), // 200 MHz
       
 				 //Write address
@@ -358,7 +355,7 @@ module top_system(
       
 				 //Write response
 				 .S00_AXI_BID           (),
-				 .S00_AXI_BRESP         (axi_bresp),
+				 .S00_AXI_BRESP         (),
 				 .S00_AXI_BVALID        (axi_bvalid),
 				 .S00_AXI_BREADY        (axi_bready),
       

@@ -204,7 +204,7 @@ module system (
 		       .buffer_clear       (), //to be removed after Cache_controller's implementation
                        //data interface 
 		       .cache_write_data   (m_wdata),
-		       .cache_addr         (m_addr[`CACHE_ADDR_W-1:0]),
+		       .cache_addr         (m_addr[`ADDR_W-1:0]),
 		       .cache_wstrb        (m_wstrb),
 		       .cache_read_data    (s_rdata[`CACHE_BASE]),
 		       .cpu_req            (s_valid[`CACHE_BASE]),
