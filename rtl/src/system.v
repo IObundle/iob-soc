@@ -179,17 +179,21 @@ module system (
    //
    // RESET CONTROLLER
    //
+   reg        rst_ctrl_rdy;
    always @(posedge clk, posedge reset)
      if(reset)  begin
         boot <= 1'b1;
         soft_reset <= 1'b0;
+        rst_ctrl_rdy <= 1'b0;
      end else if( s_valid[`SOFT_RESET_BASE] && m_wstrb ) begin
-        soft_reset <= 1'b1;
-        boot <= 1'b0;
+        soft_reset <= m_wdata[0];
+        boot <=  m_wdata[1];
+        rst_ctrl_rdy <= 1'b1;
      end else begin
         soft_reset <= 1'b0;
+        rst_ctrl_rdy <= 1'b0;
      end 
-   assign s_ready[`SOFT_RESET_BASE] = soft_reset;
+   assign s_ready[`SOFT_RESET_BASE] = rst_ctrl_rdy;
    assign s_rdata[`SOFT_RESET_BASE] = 0;
    
 
