@@ -20,14 +20,18 @@ read_verilog ../../../submodules/iob-uart/rtl/src/iob-uart.v
 read_verilog ../../../rtl/src/ram.v
 read_verilog ../../../rtl/src/iob_1p_mem.v
 
+set_property part xcku040-fbva676-1-c [current_project]
+
 if { [lindex $argv 1] == {USE_DDR_1} } {
  
-    read_verilog ../../../submodules/iob-cache/rtl/header/iob-cache.vh
     read_verilog ../../../submodules/fifo/afifo.v
-    read_verilog ../../../submodules/iob-cache/rtl/src/data_memory.v
+    read_verilog ../../../submodules/iob-cache/rtl/header/iob-cache.vh
     read_verilog ../../../submodules/iob-cache/rtl/src/iob-cache.v
+    read_verilog ../../../submodules/iob-cache/rtl/src/data_memory.v
     read_verilog ../../../submodules/iob-cache/rtl/src/tag_memory.v
     read_verilog ../../../submodules/iob-cache/rtl/src/valid_memory.v
+    read_verilog ../../../submodules/iob-cache/rtl/src/xalt_1p_mem_no_initialization.v
+    read_verilog ../../../submodules/iob-cache/rtl/src/xalt_1p_mem_no_initialization_with_reset.v
 
     read_xdc ./ddr.xdc
 
@@ -46,14 +50,12 @@ if { [lindex $argv 1] == {USE_DDR_1} } {
         report_property [get_ips axi_interconnect_0]
         
         set_property -dict [list \
-                                CONFIG.NUM_SLAVE_PORTS {1}\
-                                CONFIG.S00_AXI_IS_ACLK_ASYNC {1}\
-                                CONFIG.M00_AXI_IS_ACLK_ASYNC {1}\
-                                CONFIG.S00_AXI_READ_FIFO_DEPTH {32}\
-                                CONFIG.M00_AXI_READ_FIFO_DEPTH {32}\
-                                CONFIG.S00_AXI_READ_FIFO_DELAY {0}\
-                                CONFIG.M00_AXI_READ_FIFO_DELAY {0}\
-                                CONFIG.S00_AXI_DATA_WIDTH {32}\   
+                                CONFIG.NUM_SLAVE_PORTS {1} \
+                                CONFIG.S00_AXI_IS_ACLK_ASYNC {1} \
+                                CONFIG.M00_AXI_IS_ACLK_ASYNC {1} \
+                                CONFIG.S00_AXI_READ_FIFO_DEPTH {32} \
+                                CONFIG.M00_AXI_READ_FIFO_DEPTH {32} \
+                                CONFIG.S00_AXI_DATA_WIDTH {32} \   
                                ] [get_ips axi_interconnect_0]
         
         generate_target {instantiation_template} [get_files ../../rtl/ip/axi_interconnect_0/axi_interconnect_0.xci]
@@ -125,7 +127,7 @@ if { [lindex $argv 1] == {USE_DDR_1} } {
 
 read_xdc ./synth_system.xdc
 
-set_property part xcku040-fbva676-1-c [current_project]
+
 
 set DEFINE {synth_design -part xcku040-fbva676-1-c -top top_system }
 if {[lindex $argv 0] == {USE_RAM_1}} {
