@@ -2,36 +2,36 @@
 `include "system.vh"
 
 module top_system(
-	          input         C0_SYS_CLK_clk_p, 
-                  input         C0_SYS_CLK_clk_n, 
-	          input         reset,
-                  
+	          input 	C0_SYS_CLK_clk_p, 
+                  input 	C0_SYS_CLK_clk_n, 
+	          input 	reset,
+
 	          //output reg [6:0] led,
-	          output        uart_txd,
-	          input         uart_rxd,
+	          output 	uart_txd,
+	          input 	uart_rxd,
 `ifdef USE_DDR
-                  input         sys_rst, 
-                  output        c0_ddr4_act_n,
+                  input 	sys_rst, 
+                  output 	c0_ddr4_act_n,
                   output [16:0] c0_ddr4_adr,
-                  output [1:0]  c0_ddr4_ba,
-                  output [0:0]  c0_ddr4_bg,
-                  output [0:0]  c0_ddr4_cke,
-                  output [0:0]  c0_ddr4_odt,
-                  output [0:0]  c0_ddr4_cs_n,
-                  output [0:0]  c0_ddr4_ck_t,
-                  output [0:0]  c0_ddr4_ck_c,
-                  output        c0_ddr4_reset_n,
-                  inout [3:0]   c0_ddr4_dm_dbi_n,
-                  inout [31:0]  c0_ddr4_dq,
-                  inout [3:0]   c0_ddr4_dqs_c,
-                  inout [3:0]   c0_ddr4_dqs_t, 
+                  output [1:0] 	c0_ddr4_ba,
+                  output [0:0] 	c0_ddr4_bg,
+                  output [0:0] 	c0_ddr4_cke,
+                  output [0:0] 	c0_ddr4_odt,
+                  output [0:0] 	c0_ddr4_cs_n,
+                  output [0:0] 	c0_ddr4_ck_t,
+                  output [0:0] 	c0_ddr4_ck_c,
+                  output 	c0_ddr4_reset_n,
+                  inout [3:0] 	c0_ddr4_dm_dbi_n,
+                  inout [31:0] 	c0_ddr4_dq,
+                  inout [3:0] 	c0_ddr4_dqs_c,
+                  inout [3:0] 	c0_ddr4_dqs_t, 
 `endif                  
-		  output        trap
+		  output 	trap
 		  );
 
    
    //single ended clock
-   wire 			   sysclk;   
+   wire 			sysclk;   
    
 `ifndef USE_DDR
  `ifdef CLK_200MHZ
@@ -40,20 +40,20 @@ module top_system(
 		  .INPUT_PER(4)
 		  )
    clk_250_to_200_MHz(
-			.clk_in1_p(C0_SYS_CLK_clk_p),
-			.clk_in1_n(C0_SYS_CLK_clk_n),
-			.clk_out1(sysclk)
-			);
+		      .clk_in1_p(C0_SYS_CLK_clk_p),
+		      .clk_in1_n(C0_SYS_CLK_clk_n),
+		      .clk_out1(sysclk)
+		      );
  `else
    clock_wizard #(
 		  .OUTPUT_PER(10),
 		  .INPUT_PER(4)
 		  )
    clk_250_to_100_MHz(
-			.clk_in1_p(C0_SYS_CLK_clk_p),
-			.clk_in1_n(C0_SYS_CLK_clk_n),
-			.clk_out1(sysclk)
-			);
+		      .clk_in1_p(C0_SYS_CLK_clk_p),
+		      .clk_in1_n(C0_SYS_CLK_clk_n),
+		      .clk_out1(sysclk)
+		      );
  `endif //def CLK_200MHZ
 `endif //ndef DDR
 
@@ -61,104 +61,104 @@ module top_system(
    //
    // axi signals between system and interconnect
    //
-   wire 			   axi_awvalid;
-   wire 			   axi_awready;
-   wire [31:0] 			   axi_awaddr;
-   wire [ 2:0] 			   axi_awprot;
+   wire 			axi_awvalid;
+   wire 			axi_awready;
+   wire [31:0] 			axi_awaddr;
+   wire [ 2:0] 			axi_awprot;
    
-   wire 			   axi_wvalid;
-   wire 			   axi_wready;
-   wire [31:0] 			   axi_wdata;
-   wire [ 3:0] 			   axi_wstrb;
+   wire 			axi_wvalid;
+   wire 			axi_wready;
+   wire [31:0] 			axi_wdata;
+   wire [ 3:0] 			axi_wstrb;
    
-   wire 			   axi_bvalid;
-   wire 			   axi_bready;
+   wire 			axi_bvalid;
+   wire 			axi_bready;
    
-   wire 			   axi_arvalid;
-   wire 			   axi_arready;
-   wire [31:0] 			   axi_araddr;
-   wire [ 2:0] 			   axi_arprot;
+   wire 			axi_arvalid;
+   wire 			axi_arready;
+   wire [31:0] 			axi_araddr;
+   wire [ 2:0] 			axi_arprot;
    
-   wire 			   axi_rvalid;
-   wire 			   axi_rready;
-   wire [31:0] 			   axi_rdata;
+   wire 			axi_rvalid;
+   wire 			axi_rready;
+   wire [31:0] 			axi_rdata;
    
    // AXI-full extra wires
-   wire 			   axi_rlast;
-   wire [1:0] 			   axi_bresp;
-   wire [7:0] 			   axi_arlen;
-   wire [2:0] 			   axi_arsize;
-   wire [1:0] 			   axi_arburst;
-   wire [7:0] 			   axi_awlen;
-   wire [2:0] 			   axi_awsize;
-   wire [1:0] 			   axi_awburst;
+   wire 			axi_rlast;
+   wire [1:0] 			axi_bresp;
+   wire [7:0] 			axi_arlen;
+   wire [2:0] 			axi_arsize;
+   wire [1:0] 			axi_arburst;
+   wire [7:0] 			axi_awlen;
+   wire [2:0] 			axi_awsize;
+   wire [1:0] 			axi_awburst;
 
 
-   wire [1:0] 			   slave_select;
-   wire 			   mem_sel;
-   wire 			   init_calib_complete;
-   reg [6:0] 			   led_reg;
+   wire [1:0] 			slave_select;
+   wire 			mem_sel;
+   wire 			init_calib_complete;
+   reg [6:0] 			led_reg;
 
    // AXI INTERCONNECT DDR SIDE SIGNAlS
    //Write address
-   wire [0:0] 			   ddr_awid;
-   wire [31:0] 			   ddr_awaddr;
-   wire [7:0] 			   ddr_awlen;
-   wire [2:0] 			   ddr_awsize;
-   wire [1:0] 			   ddr_awburst;
-   wire 			   ddr_awlock;
-   wire [3:0] 			   ddr_awcache;
-   wire [2:0] 			   ddr_awprot;
-   wire [3:0] 			   ddr_awqos;
-   wire 			   ddr_awvalid;
-   wire 			   ddr_awready;
+   wire [0:0] 			ddr_awid;
+   wire [31:0] 			ddr_awaddr;
+   wire [7:0] 			ddr_awlen;
+   wire [2:0] 			ddr_awsize;
+   wire [1:0] 			ddr_awburst;
+   wire 			ddr_awlock;
+   wire [3:0] 			ddr_awcache;
+   wire [2:0] 			ddr_awprot;
+   wire [3:0] 			ddr_awqos;
+   wire 			ddr_awvalid;
+   wire 			ddr_awready;
    //Write data
-   wire [31:0] 			   ddr_wdata;
-   wire [3:0] 			   ddr_wstrb;
-   wire 			   ddr_wlast;
-   wire 			   ddr_wvalid;
-   wire 			   ddr_wready;
+   wire [31:0] 			ddr_wdata;
+   wire [3:0] 			ddr_wstrb;
+   wire 			ddr_wlast;
+   wire 			ddr_wvalid;
+   wire 			ddr_wready;
    //Write response
-   wire [0:0] 			   ddr_bid;
-   wire [1:0] 			   ddr_bresp;
-   wire 			   ddr_bvalid;
-   wire 			   ddr_bready;
+   wire [0:0] 			ddr_bid;
+   wire [1:0] 			ddr_bresp;
+   wire 			ddr_bvalid;
+   wire 			ddr_bready;
    //Read address
-   wire [0:0] 			   ddr_arid;
-   wire [31:0] 			   ddr_araddr;
-   wire [7:0] 			   ddr_arlen;
-   wire [2:0] 			   ddr_arsize;
-   wire [1:0] 			   ddr_arburst;
-   wire 			   ddr_arlock;
-   wire [3:0] 			   ddr_arcache;
-   wire [2:0] 			   ddr_arprot;
-   wire [3:0] 			   ddr_arqos;
-   wire 			   ddr_arvalid;
-   wire 			   ddr_arready;
+   wire [0:0] 			ddr_arid;
+   wire [31:0] 			ddr_araddr;
+   wire [7:0] 			ddr_arlen;
+   wire [2:0] 			ddr_arsize;
+   wire [1:0] 			ddr_arburst;
+   wire 			ddr_arlock;
+   wire [3:0] 			ddr_arcache;
+   wire [2:0] 			ddr_arprot;
+   wire [3:0] 			ddr_arqos;
+   wire 			ddr_arvalid;
+   wire 			ddr_arready;
    //Read data
-   wire [0:0] 			   ddr_rid;
-   wire [31:0] 			   ddr_rdata;
-   wire [1:0] 			   ddr_rresp;
-   wire 			   ddr_rlast;
-   wire 			   ddr_rvalid;
-   wire 			   ddr_rready;
+   wire [0:0] 			ddr_rid;
+   wire [31:0] 			ddr_rdata;
+   wire [1:0] 			ddr_rresp;
+   wire 			ddr_rlast;
+   wire 			ddr_rvalid;
+   wire 			ddr_rready;
 `endif
    
 
    //initial reset
-   reg [15:0]                      reset_cnt;
-   wire                            reset_int = (reset_cnt != 16'hFFFF);
+   reg [15:0] 			reset_cnt;
+   wire 			reset_int = (reset_cnt != 16'hFFFF);
 
    always @(posedge sysclk, posedge reset)
 `ifdef USE_DDR
      if(reset | ~(init_calib_complete))
 `else   
-     if(reset)
+       if(reset)
 `endif    
-       reset_cnt <= 16'b0;
-     else if (reset_cnt != 16'hFFFF)
-       reset_cnt <= reset_cnt+1'b1;
-     
+	 reset_cnt <= 16'b0;
+       else if (reset_cnt != 16'hFFFF)
+	 reset_cnt <= reset_cnt+1'b1;
+   
 
    
 
@@ -175,29 +175,29 @@ module top_system(
 
 `ifdef USE_DDR
 		  //// Address-Write
-		  .sys_s_axi_awvalid (axi_awvalid),
-		  .sys_s_axi_awready (axi_awready),
-		  .sys_s_axi_awaddr  (axi_awaddr ),
+		  .m_axi_awvalid (axi_awvalid),
+		  .m_axi_awready (axi_awready),
+		  .m_axi_awaddr  (axi_awaddr ),
 		  //// Data-Write  
-		  .sys_s_axi_wvalid  (axi_wvalid ),
-		  .sys_s_axi_wready  (axi_wready ),
-		  .sys_s_axi_wdata   (axi_wdata  ),
-		  .sys_s_axi_wstrb   (axi_wstrb  ),
+		  .m_axi_wvalid  (axi_wvalid ),
+		  .m_axi_wready  (axi_wready ),
+		  .m_axi_wdata   (axi_wdata  ),
+		  .m_axi_wstrb   (axi_wstrb  ),
 		  //// Response    
-		  .sys_s_axi_bvalid  (axi_bvalid ),
-		  .sys_s_axi_bready  (axi_bready ),
+		  .m_axi_bvalid  (axi_bvalid ),
+		  .m_axi_bready  (axi_bready ),
 		  //// Address-Read
-		  .sys_s_axi_arvalid (axi_arvalid),
-		  .sys_s_axi_arready (axi_arready),
-		  .sys_s_axi_araddr  (axi_araddr ),
-		  .sys_s_axi_arlen   (axi_arlen),
-		  .sys_s_axi_arburst (axi_arburst),
-		  .sys_s_axi_arsize  (axi_arsize),
+		  .m_axi_arvalid (axi_arvalid),
+		  .m_axi_arready (axi_arready),
+		  .m_axi_araddr  (axi_araddr ),
+		  .m_axi_arlen   (axi_arlen),
+		  .m_axi_arburst (axi_arburst),
+		  .m_axi_arsize  (axi_arsize),
 		  //// Data-Read   
-		  .sys_s_axi_rvalid  (axi_rvalid ),
-		  .sys_s_axi_rready  (axi_rready ),
-		  .sys_s_axi_rdata   (axi_rdata  ),
-		  .sys_s_axi_rlast   (axi_rlast),
+		  .m_axi_rvalid  (axi_rvalid ),
+		  .m_axi_rready  (axi_rready ),
+		  .m_axi_rdata   (axi_rdata  ),
+		  .m_axi_rlast   (axi_rlast),
 `endif		  
 		  .trap              (trap)
 		  );
