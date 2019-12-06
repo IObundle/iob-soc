@@ -22,7 +22,7 @@
 // slaves
 // minimum 3 slaves: boot, uart and reset
 // optional ram, and ddr (cache + cache_ctr)
-`define N_SLAVES 4
+`define N_SLAVES 6
 `define N_SLAVES_W 3
 
 //memory map

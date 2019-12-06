@@ -23,10 +23,7 @@
 
 int main()
 { 
-#ifdef USE_DDR
-  return 0;
-#endif
-  
+ 
   uart_init(UART, UART_CLK_FREQ/UART_BAUD_RATE);
   uart_puts ("Loading program from UART...\n");
   uart_printf("load_address=%x, prog_size=%d \n", MAIN_MEM, PROG_SIZE);

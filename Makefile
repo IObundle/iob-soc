@@ -1,6 +1,6 @@
 #hardware configuration
 USE_RAM = 0
-USE_DDR = 0
+USE_DDR = 1
 
 MY_PC = $(shell hostname)
 
