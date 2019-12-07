@@ -12,10 +12,10 @@ module system (
                input 		    uart_rxd,
                output 		    uart_rts,
                input 		    uart_cts
-				    
-				    `ifdef USE_DDR //AXI MASTER INTERFACE
-				    // Address-Write
-				    , output m_axi_awvalid,
+	       
+`ifdef USE_DDR //AXI MASTER INTERFACE
+	       // Address-Write
+	       , output m_axi_awvalid,
                input 		    m_axi_awready,
                output [`ADDR_W-1:0] m_axi_awaddr,
                /// Data-Write
@@ -38,7 +38,7 @@ module system (
                output 		    m_axi_rready,
                input [`DATA_W-1:0]  m_axi_rdata,
                input 		    m_axi_rlast
-				    `endif
+`endif
                );
 
    //
@@ -207,7 +207,7 @@ module system (
 		       .reset              (reset),
                        //data interface 
 		       .cache_write_data   (m_wdata),
-		       .cache_addr         (m_addr[`ADDR_W-1:0]),
+		       .cache_addr         ({{`N_SLAVES_W{1'b0}},m_addr[`ADDR_W - `N_SLAVES_W-1:0]}),
 		       .cache_wstrb        (m_wstrb),
 		       .cache_read_data    (s_rdata[`CACHE_BASE]),
 		       .cpu_req            (s_valid[`CACHE_BASE]),

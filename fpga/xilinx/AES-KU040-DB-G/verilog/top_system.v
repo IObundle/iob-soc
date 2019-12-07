@@ -149,7 +149,7 @@ module top_system(
    reg [15:0] 			reset_cnt;
    wire 			reset_int = (reset_cnt != 16'hFFFF);
 
-   always @(posedge sysclk, posedge reset)
+   always @(posedge clk, posedge reset)
 `ifdef USE_DDR
      if(reset | ~(init_calib_complete))
 `else   
@@ -211,7 +211,7 @@ module top_system(
 		    //.c0_sys_clk_i      (clk), 
                     .addn_ui_clkout1     (sysclk), // 100MHz - System's clock
                     .c0_init_calib_complete (init_calib_complete),                  
-                    .c0_ddr4_aresetn       (ddr_reset ),
+                    .c0_ddr4_aresetn       (~reset_int),
      		    .c0_ddr4_s_axi_awvalid (ddr_awvalid),
 		    .c0_ddr4_s_axi_awready (ddr_awready),
 		    .c0_ddr4_s_axi_awaddr  (ddr_awaddr[29:0]),
