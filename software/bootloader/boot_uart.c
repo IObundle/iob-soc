@@ -5,6 +5,7 @@
 #define RAM_PUTCHAR(location, value) (*((char*) (location)) = value)
 #define RAM_PUTINT(location, value) (*((int*) (location)) = value)
 
+
 //peripheral addresses 
 //memory
 #ifdef USE_RAM
@@ -20,10 +21,11 @@
 //program size
 //#define PROG_SIZE (1<<(RAM_ADDR_W-2))
 
+//debugging purposes
+volatile int* MAIN_MEM_PROG;
 
 int main()
 { 
- 
   uart_init(UART, UART_CLK_FREQ/UART_BAUD_RATE);
   uart_puts ("Loading program from UART...\n");
   uart_printf("load_address=%x, prog_size=%d \n", MAIN_MEM, PROG_SIZE);
@@ -31,14 +33,17 @@ int main()
   for (int i=0 ; i < PROG_SIZE; i++) {
     //uart_printf("a %d\n", i);
     char c = uart_getc();
-    //uart_printf("b %d\n", i);
+    //uart_printf("%x", c);
     RAM_PUTCHAR(MAIN_MEM+i, c);
     //uart_printf("c %d\n", i);
   }
   
-  uart_puts("Program loaded \n");
+  uart_puts("Program loaded, printing it from Main Memory:\n");
   uart_txwait();
-
+  MAIN_MEM_PROG = (volatile int*) MAIN_MEM;
+  for (int i=0; i < PROG_SIZE/4; i++){
+    uart_printf("%x\n", MAIN_MEM_PROG[i]);
+  }
+  uart_puts("Finished printing the Main Memory program\n");
   RAM_PUTINT(SOFT_RESET, 1);
-  
 }
