@@ -149,7 +149,7 @@ module top_system(
    reg [15:0] 			reset_cnt;
    wire 			reset_int = (reset_cnt != 16'hFFFF);
 
-   always @(posedge clk, posedge reset)
+   always @(posedge sysclk, posedge reset)
 `ifdef USE_DDR
      if(reset | ~(init_calib_complete))
 `else   

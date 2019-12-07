@@ -39,11 +39,18 @@ int main()
   }
   
   uart_puts("Program loaded, printing it from Main Memory:\n");
-  uart_txwait();
+
+  /* uncomment for debug
+  uart_puts("Printing program from Main Memory:\n");
+
   MAIN_MEM_PROG = (volatile int*) MAIN_MEM;
   for (int i=0; i < PROG_SIZE/4; i++){
     uart_printf("%x\n", MAIN_MEM_PROG[i]);
   }
   uart_puts("Finished printing the Main Memory program\n");
+  */
+
+  uart_txwait();
+
   RAM_PUTINT(SOFT_RESET, 1);
 }
