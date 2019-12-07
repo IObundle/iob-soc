@@ -23,7 +23,7 @@ read_verilog ../../../rtl/src/iob_1p_mem.v
 set_property part xcku040-fbva676-1-c [current_project]
 
 if { [lindex $argv 1] == {USE_DDR_1} } {
- 
+    
     read_verilog ../../../submodules/fifo/afifo.v
     read_verilog ../../../submodules/iob-cache/rtl/header/iob-cache.vh
     read_verilog ../../../submodules/iob-cache/rtl/src/iob-cache.v
@@ -49,14 +49,7 @@ if { [lindex $argv 1] == {USE_DDR_1} } {
         
         report_property [get_ips axi_interconnect_0]
         
-        set_property -dict [list \
-                                CONFIG.NUM_SLAVE_PORTS {1} \
-                                CONFIG.S00_AXI_IS_ACLK_ASYNC {1} \
-                                CONFIG.M00_AXI_IS_ACLK_ASYNC {1} \
-                                CONFIG.S00_AXI_READ_FIFO_DEPTH {32} \
-                                CONFIG.M00_AXI_READ_FIFO_DEPTH {32} \
-                                CONFIG.S00_AXI_DATA_WIDTH {32} \   
-                               ] [get_ips axi_interconnect_0]
+        set_property -dict [list CONFIG.NUM_SLAVE_PORTS {1} CONFIG.S00_AXI_IS_ACLK_ASYNC {1} CONFIG.M00_AXI_IS_ACLK_ASYNC {1} CONFIG.S00_AXI_READ_FIFO_DEPTH {32} CONFIG.M00_AXI_READ_FIFO_DEPTH {32} CONFIG.S00_AXI_DATA_WIDTH {32}] [get_ips axi_interconnect_0]
         
         generate_target {instantiation_template} [get_files ../../rtl/ip/axi_interconnect_0/axi_interconnect_0.xci]
         generate_target all [get_files ../../rtl/ip/axi_interconnect_0/axi_interconnect_0.xci]
@@ -69,28 +62,15 @@ if { [lindex $argv 1] == {USE_DDR_1} } {
     }
     
     if { [file isdirectory ../../"rtl/ip/ddr4_0"] } {
-    read_ip ../../rtl/ip/ddr4_0/ddr4_0.xci
+	read_ip ../../rtl/ip/ddr4_0/ddr4_0.xci
         report_property [get_files ../../rtl/ip/ddr4_0/ddr4_0.xci]
     } else {
         create_ip -name ddr4 -vendor xilinx.com -library ip -version 2.2 -module_name ddr4_0 -dir ../../rtl/ip -force
         
         report_property [get_ips ddr4_0]
-        
-        set_property -dict [list \
-                                CONFIG.C0.DDR4_TimePeriod {1250} \
-                                CONFIG.C0.DDR4_CLKOUT0_DIVIDE {5} \
-                                CONFIG.C0.DDR4_InputClockPeriod {4000} \
-                                CONFIG.C0.DDR4_MemoryPart {EDY4016AABG-DR-F} \
-                                CONFIG.C0.DDR4_DataWidth {32} \
-                                CONFIG.C0.DDR4_AxiSelection {true} \
-                                CONFIG.C0.DDR4_CasLatency {11} \
-                                CONFIG.C0.DDR4_CasWriteLatency {11} \
-                                CONFIG.C0.DDR4_AxiDataWidth {32} \
-                                CONFIG.C0.DDR4_AxiAddressWidth {30} \
-                                CONFIG.C0.BANK_GROUP_WIDTH {1} \
-                                CONFIG.ADDN_UI_CLKOUT1_FREQ_HZ {100} \
-                               ] [get_ips ddr4_0]
-        
+
+        set_property -dict [list CONFIG.C0.DDR4_TimePeriod {1250} CONFIG.C0.DDR4_InputClockPeriod {4000} CONFIG.C0.DDR4_CLKOUT0_DIVIDE {5} CONFIG.C0.DDR4_MemoryPart {EDY4016AABG-DR-F} CONFIG.C0.DDR4_DataWidth {32} CONFIG.C0.DDR4_AxiSelection {true} CONFIG.C0.DDR4_CasLatency {11} CONFIG.C0.DDR4_CasWriteLatency {11} CONFIG.C0.DDR4_AxiDataWidth {32} CONFIG.C0.DDR4_AxiAddressWidth {30} CONFIG.ADDN_UI_CLKOUT1_FREQ_HZ {100} CONFIG.C0.BANK_GROUP_WIDTH {1}] [get_ips ddr4_0]
+	
         generate_target {instantiation_template} [get_files ../../rtl/ip/ddr4_0/ddr4_0.xci]
         generate_target all [get_files ../../rtl/ip/ddr4_0/ddr4_0.xci]
 
@@ -151,4 +131,3 @@ write_bitstream -force synth_system.bit
 
 #write_verilog -force synth_system_test_Icarus.v
 # write_mem_info -force synth_system.mmi
-
