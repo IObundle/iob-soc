@@ -63,12 +63,12 @@ module top_system(
    //
    wire 			axi_awvalid;
    wire 			axi_awready;
-   wire [31:0] 			axi_awaddr;
+   wire [`CACHE_ADDR_W-1:0]     axi_awaddr;
    wire [ 2:0] 			axi_awprot;
    
    wire 			axi_wvalid;
    wire 			axi_wready;
-   wire [31:0] 			axi_wdata;
+   wire [`DATA_W-1:0] 			axi_wdata;
    wire [ 3:0] 			axi_wstrb;
    
    wire 			axi_bvalid;
@@ -76,12 +76,12 @@ module top_system(
    
    wire 			axi_arvalid;
    wire 			axi_arready;
-   wire [31:0] 			axi_araddr;
+   wire [`CACHE_ADDR_W-1:0]     axi_araddr;
    wire [ 2:0] 			axi_arprot;
    
    wire 			axi_rvalid;
    wire 			axi_rready;
-   wire [31:0] 			axi_rdata;
+   wire [`DATA_W-1:0] 			axi_rdata;
    
    // AXI-full extra wires
    wire 			axi_rlast;
@@ -335,7 +335,7 @@ module top_system(
 
 				 //Write address
 				 .S00_AXI_AWID         (),
-				 .S00_AXI_AWADDR       (axi_awaddr),
+				 .S00_AXI_AWADDR       ({{`ADDR_W-`CACHE_ADDR_W{1'b0}},axi_awaddr}),
 				 .S00_AXI_AWLEN        (8'd0),
 				 .S00_AXI_AWSIZE       (3'b010),
 				 .S00_AXI_AWBURST      (2'b00),
@@ -361,7 +361,7 @@ module top_system(
       
 				 //Read address
 				 .S00_AXI_ARID         (),
-				 .S00_AXI_ARADDR       (axi_araddr),
+				 .S00_AXI_ARADDR       ({{`ADDR_W-`CACHE_ADDR_W{1'b0}},axi_araddr}),
 				 .S00_AXI_ARLEN        (axi_arlen),
 				 .S00_AXI_ARSIZE       (axi_arsize),
 				 .S00_AXI_ARBURST      (axi_arburst),

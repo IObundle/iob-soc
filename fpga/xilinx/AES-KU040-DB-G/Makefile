@@ -98,7 +98,7 @@ endif
 
 clean:
 	@rm -rf .Xil/ *.hex *.dat *.map synth_*.log 
-	@rm -rf *~ \#*# *#  ../rtl/*~ ../rtl/\#*# ../rtl/*#
+	@rm -rf *~ \#*# *#  ../rtl/*~ ../rtl/\#*# ../rtl/*# ./rtl/
 	@rm -rf synth_*.mmi synth_*.bit synth_system*.v *.vcd *_tb 
 	@rm -rf table.txt tab_*/ *webtalk* *.jou *.log
 	@rm -rf xelab.* xsim[._]* xvlog.* uart_loader

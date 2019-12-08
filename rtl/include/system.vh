@@ -4,7 +4,7 @@
 
 //Optional memories (passed as command line macro)
 //`define USE_RAM
-//`define USE_DDR
+`define USE_DDR
 
 //address width
 `define ADDR_W 32
@@ -19,6 +19,8 @@
 //if no RAM or DDR set to same size as RAM
 `define BOOT_ADDR_W 14
 
+//DDR and Cache memory address size
+`define CACHE_ADDR_W 32
 // slaves
 // minimum 3 slaves: boot, uart and reset
 // optional ram, and ddr (cache + cache_ctr)
@@ -35,5 +37,3 @@
 
 //uart 
 `define UART_CLK_FREQ 100000000
-
-
