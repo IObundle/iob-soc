@@ -3,61 +3,61 @@
 `include "system.vh"
 
 module system (
-               input 		    clk,
-               input 		    reset,
-               output 		    trap,
+               input                      clk,
+               input                      reset,
+               output                     trap,
 
                //UART
-               output 		    uart_txd,
-               input 		    uart_rxd,
-               output 		    uart_rts,
-               input 		    uart_cts
-	       
+               output                     uart_txd,
+               input                      uart_rxd,
+               output                     uart_rts,
+               input                      uart_cts
+                                          
 `ifdef USE_DDR //AXI MASTER INTERFACE
 	       // Address-Write
 	       , output m_axi_awvalid,
-               input 		    m_axi_awready,
-               output [`ADDR_W-1:0] m_axi_awaddr,
+               input                      m_axi_awready,
+               output [`CACHE_ADDR_W-1:0] m_axi_awaddr,
                /// Data-Write
-               output 		    m_axi_wvalid,
-               input 		    m_axi_wready,
-               output [`DATA_W-1:0] m_axi_wdata,
-               output [ 3:0] 	    m_axi_wstrb,
+               output                     m_axi_wvalid,
+               input                      m_axi_wready,
+               output [`DATA_W-1:0]       m_axi_wdata,
+               output [ 3:0]              m_axi_wstrb,
                // Write-Response
-               input 		    m_axi_bvalid,
-               output 		    m_axi_bready,
+               input                      m_axi_bvalid,
+               output                     m_axi_bready,
                // Address-Read
-               output 		    m_axi_arvalid,
-               input 		    m_axi_arready,
-               output [`ADDR_W-1:0] m_axi_araddr,
-               output [7:0] 	    m_axi_arlen,
-               output [2:0] 	    m_axi_arsize,
-               output [1:0] 	    m_axi_arburst,
+               output                     m_axi_arvalid,
+               input                      m_axi_arready,
+               output [`CACHE_ADDR_W-1:0] m_axi_araddr,
+               output [7:0]               m_axi_arlen,
+               output [2:0]               m_axi_arsize,
+               output [1:0]               m_axi_arburst,
                // Data-Read
-               input 		    m_axi_rvalid,
-               output 		    m_axi_rready,
-               input [`DATA_W-1:0]  m_axi_rdata,
-               input 		    m_axi_rlast
+               input                      m_axi_rvalid,
+               output                     m_axi_rready,
+               input [`DATA_W-1:0]        m_axi_rdata,
+               input                      m_axi_rlast
 `endif
                );
 
    //
    // RESET
    //
-   reg 				    soft_reset;   
-   wire 			    reset_int = reset | soft_reset;
-   reg 				    boot ;   
+   reg                                    soft_reset;   
+   wire                                   reset_int = reset | soft_reset;
+   reg                                    boot ;   
    
    //
    //  CPU
    //
-   wire [`ADDR_W-1:0] 		    m_addr;
-   wire [`DATA_W-1:0] 		    m_wdata;
-   wire [3:0] 			    m_wstrb;
-   wire [`DATA_W-1:0] 		    m_rdata;
-   wire 			    m_valid;
-   wire 			    m_ready;
-   wire 			    m_instr;
+   wire [`ADDR_W-1:0]                     m_addr;
+   wire [`DATA_W-1:0]                     m_wdata;
+   wire [3:0]                             m_wstrb;
+   wire [`DATA_W-1:0]                     m_rdata;
+   wire                                   m_valid;
+   wire                                   m_ready;
+   wire                                   m_instr;
    
    picorv32 #(
 	      .ENABLE_FAST_MUL(1),
@@ -82,27 +82,27 @@ module system (
    // INTERCONNECT
    //
    
-   wire [`DATA_W-1:0] 		    s_rdata[`N_SLAVES-1:0];
-   reg [`N_SLAVES*`DATA_W-1:0] 	    s_rdata_concat;
-   wire [`N_SLAVES-1:0] 	    s_valid;
-   wire [`N_SLAVES-1:0] 	    s_ready;
+   wire [`DATA_W-1:0]                     s_rdata[`N_SLAVES-1:0];
+   reg [`N_SLAVES*`DATA_W-1:0]            s_rdata_concat;
+   wire [`N_SLAVES-1:0]                   s_valid;
+   wire [`N_SLAVES-1:0]                   s_ready;
    
 
    
    //choose program memory according to reset condition
-   reg [`N_SLAVES_W-1 : 0] 	    m_addr_int;
+   reg [`N_SLAVES_W-1 : 0]                m_addr_int;
 
    always @*
      if (!boot && !m_addr[`DATA_W-1 -: `N_SLAVES_W])
-				    `ifdef USE_DDR
+`ifdef USE_DDR
        m_addr_int = `N_SLAVES_W'd`CACHE_BASE;
-				    `else
+`else
    m_addr_int = `N_SLAVES_W'd`RAM_BASE;
-				    `endif
+`endif
      else
        m_addr_int = m_addr[`ADDR_W-1 -:`N_SLAVES_W];
 
-
+   
    
    //concatenate slave read data signals to input in interconnect
    always @* begin : concat_slave_reads
@@ -201,58 +201,62 @@ module system (
    // MAIN MEMORY
    //
 
-				    `ifdef USE_DDR
-   memory_cache cache (
-		       .clk                (clk),
-		       .reset              (reset),
-                       //data interface 
-		       .cache_write_data   (m_wdata),
-		       .cache_addr         ({{`N_SLAVES_W{1'b0}},m_addr[`ADDR_W - `N_SLAVES_W-1:0]}),
-		       .cache_wstrb        (m_wstrb),
-		       .cache_read_data    (s_rdata[`CACHE_BASE]),
-		       .cpu_req            (s_valid[`CACHE_BASE]),
-		       .cache_ack          (s_ready[`CACHE_BASE]),
+`ifdef USE_DDR
+   memory_cache #(
+                  .ADDR_W(`CACHE_ADDR_W),
+                  .DATA_W(`DATA_W)
+                  )
+   cache (
+	  .clk                (clk),
+	  .reset              (reset),
+          //data interface 
+	  .cache_write_data   (m_wdata),
+	  .cache_addr         (m_addr[`CACHE_ADDR_W-1:0]),
+	  .cache_wstrb        (m_wstrb),
+	  .cache_read_data    (s_rdata[`CACHE_BASE]),
+	  .cpu_req            (s_valid[`CACHE_BASE]),
+	  .cache_ack          (s_ready[`CACHE_BASE]),
 
-                       //control interface
-		       .cache_ctrl_address (m_addr[5:2]),
-		       .cache_ctrl_requested_data (s_rdata[`CACHE_CTRL_BASE]),
-		       .cache_ctrl_cpu_request (s_valid[`CACHE_CTRL_BASE]),
-		       .cache_ctrl_acknowledge (s_ready[`CACHE_CTRL_BASE]),
-		       .cache_ctrl_instr_access(m_instr),
+          //control interface
+	  .cache_ctrl_address (m_addr[6:2]),
+	  .cache_ctrl_requested_data (s_rdata[`CACHE_CTRL_BASE]),
+	  .cache_ctrl_cpu_request (s_valid[`CACHE_CTRL_BASE]),
+	  .cache_ctrl_acknowledge (s_ready[`CACHE_CTRL_BASE]),
+	  .cache_ctrl_instr_access(m_instr),
 
-                       //
-		       // AXI MASTER INTERFACE TO MAIN MEMORY
-                       //
-		       // Address Read
-		       .AR_ADDR            (m_axi_araddr),
-		       .AR_LEN             (m_axi_arlen),
-		       .AR_SIZE            (m_axi_arsize),
-		       .AR_BURST           (m_axi_arburst),
-		       .AR_VALID           (m_axi_arvalid),
-		       .AR_READY           (m_axi_arready),
+          //
+	  // AXI MASTER INTERFACE TO MAIN MEMORY
+          //
+	  // Address Read
+	  .AR_ADDR            (m_axi_araddr),
+	  .AR_LEN             (m_axi_arlen),
+	  .AR_SIZE            (m_axi_arsize),
+	  .AR_BURST           (m_axi_arburst),
+	  .AR_VALID           (m_axi_arvalid),
+	  .AR_READY           (m_axi_arready),
 
-                       //Data Read
-		       .R_VALID            (m_axi_rvalid),
-		       .R_READY            (m_axi_rready),
-		       .R_DATA             (m_axi_rdata),
-		       .R_LAST             (m_axi_rlast),
+          //Data Read
+	  .R_VALID            (m_axi_rvalid),
+	  .R_READY            (m_axi_rready),
+	  .R_DATA             (m_axi_rdata),
+	  .R_LAST             (m_axi_rlast),
 
-		       // Address Write
-		       .AW_ADDR            (m_axi_awaddr),
-		       .AW_VALID           (m_axi_awvalid),
-		       .AW_READY           (m_axi_awready),
+	  // Address Write
+	  .AW_ADDR            (m_axi_awaddr),
+	  .AW_VALID           (m_axi_awvalid),
+	  .AW_READY           (m_axi_awready),
 
-                       // Data Write
-		       .W_VALID            (m_axi_wvalid),
-		       .W_STRB             (m_axi_wstrb),
-		       .W_READY            (m_axi_wready),
-		       .W_DATA             (m_axi_wdata),
-		       .B_VALID            (m_axi_bvalid),
-		       .B_READY            (m_axi_bready)
-		       );
-				    `endif
+          // Data Write
+	  .W_VALID            (m_axi_wvalid),
+	  .W_STRB             (m_axi_wstrb),
+	  .W_READY            (m_axi_wready),
+	  .W_DATA             (m_axi_wdata),
+	  .B_VALID            (m_axi_bvalid),
+	  .B_READY            (m_axi_bready)
+	  );
+`endif
 
-				    `ifdef USE_RAM
+`ifdef USE_RAM
    ram  #(
 	  .ADDR_W(`RAM_ADDR_W-2),
           .NAME("firmware")
@@ -267,7 +271,7 @@ module system (
         .valid        (s_valid[`RAM_BASE]),
         .ready        (s_ready[`RAM_BASE])
 	);
-				    `endif
+`endif
    
 
    
