@@ -14,7 +14,7 @@ SRC = firmware.c $(UART_DIR)/iob-uart.c firmware.S
 all: firmware.hex
 
 firmware.hex: firmware.lds $(SRC) system.h $(UART_DIR)/iob-uart.h
-	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding  -nostdlib -o firmware.elf $(DEFINE) $(INCLUDE) $(SRC) --std=gnu99 -Wl,-Bstatic,-T,firmware.lds,-Map,firmware.map,--strip-debug -lgcc -lc
+	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding  -nostdlib -o firmware.elf -DUART_BAUD_RATE=$(BAUD) $(INCLUDE) $(SRC) --std=gnu99 -Wl,-Bstatic,-T,firmware.lds,-Map,firmware.map,--strip-debug -lgcc -lc
 	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
 	$(eval RAM_ADDR_SZ=`python3 ../scripts/get_progsize.py RAM_ADDR_W`)
 	python3 $(SCRPT_DIR)/makehex.py firmware.bin $(RAM_ADDR_SZ) > firmware.hex
