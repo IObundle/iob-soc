@@ -38,7 +38,7 @@ int main()
     //uart_printf("c %d\n", i);
   }
   
-  uart_puts("Program loaded, printing it from Main Memory:\n");
+  uart_puts("Program loaded\n");
 
   /* uncomment for debug
   uart_puts("Printing program from Main Memory:\n");

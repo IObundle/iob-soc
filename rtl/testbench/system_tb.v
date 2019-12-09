@@ -72,7 +72,7 @@ module system_tb;
       //
 
 
-`include "test_tb.v"
+`include "firmware_tb.v"
 
 
    end // test procedure
