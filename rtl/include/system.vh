@@ -3,13 +3,13 @@
 //
 
 //Optional memories (passed as command line macro)
-//`define USE_RAM
-//`define USE_DDR
+`define USE_RAM
+`define USE_DDR
 
 // slaves
 // minimum 3 slaves: boot, uart and reset
 // optional ram, and ddr (cache + cache_ctr)
-`define N_SLAVES 5
+`define N_SLAVES 6
 
 //main memory address space (log2 of byte size)
 `define RAM_ADDR_W 14
@@ -31,7 +31,7 @@
 `define CACHE_ADDR_W 32
 
 //bits reserved to identify slave
-`define N_SLAVES_W 5
+`define N_SLAVES_W 3
 
 //memory map
 `define BOOT_BASE 0
