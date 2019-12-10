@@ -12,8 +12,8 @@ all: boot.hex
 boot.hex: $(SRC) system.h $(UART_DIR)/iob-uart.h boot.lds
 	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -nostdlib -o boot.elf -DUART_BAUD_RATE=$(BAUD) $(PROG_SIZE) $(INCLUDE) $(SRC) --std=gnu99 -Wl,-Bstatic,-T,boot.lds,-Map,boot.map,--strip-debug -lgcc -lc
 	$(TOOLCHAIN_PREFIX)objcopy -O binary boot.elf boot.bin
-	$(eval MEM_SIZE=`python3 $(PYTHON_DIR)/get_memsize.py BOOT_ADDR_W`)
-	python3 $(PYTHON_DIR)/makehex.py boot.bin $(MEM_SIZE) > boot.hex
+	$(eval MEM_SIZE=`$(PYTHON_DIR)/get_memsize.py BOOT_ADDR_W`)
+	$(PYTHON_DIR)/makehex.py boot.bin $(MEM_SIZE) > boot.hex
 
 system.h: ../../rtl/include/system.vh
 	sed s/\`/\#/g ../../rtl/include/system.vh > system.h
