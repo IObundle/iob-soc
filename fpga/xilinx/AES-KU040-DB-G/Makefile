@@ -42,7 +42,6 @@ boot.hex:
 	cp  $(BOOT_DIR)/boot.hex .
 
 ld-hw:
-	source /opt/Xilinx/Vivado/settings.sh
 	vivado -nojournal -log $@.log -mode batch -source $@.tcl
 
 clean:
