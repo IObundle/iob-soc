@@ -6,8 +6,7 @@ SoC template containing a RISC-V processor (iob-rv32), a UART (iob-uart) the fol
 ``git submodule update --init --recursive``
 
 
-## Edit the system configuration file:
-``rtl/system.vh``
+## Edit the system configuration file: rtl/system.vh
 
 
 ## Simulate
@@ -40,7 +39,7 @@ picocom /dev/ttyUSB0 -b 115200 --imap lfcrlf --send-cmd "ascii-xfr -sedv"
 
 # Configure FPGA
 
-*Open a new terminal
+Open a new terminal
 
 ```
 cd $HOME/sandbox/iob-soc-e/fpga/<vendor>/<board>
