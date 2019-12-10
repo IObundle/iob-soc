@@ -93,7 +93,7 @@ module system (
    reg [`N_SLAVES_W-1 : 0]                m_addr_int;
 
    always @*
-     if (!boot && !m_addr[`DATA_W-1 -: `N_SLAVES_W])
+     if (!boot && !m_addr[`ADDR_W-1 -: `N_SLAVES_W])
 `ifdef USE_DDR
        m_addr_int = `N_SLAVES_W'd`CACHE_BASE;
 `else
