@@ -1,11 +1,16 @@
-import sys, string
+#!/usr/bin/python3
 
-f0 = open("firmware_0.hex", "w");
-f1 = open("firmware_1.hex", "w");
-f2 = open("firmware_2.hex", "w");
-f3 = open("firmware_3.hex", "w");
+import string
+from sys import argv
 
-main_file = open("firmware.hex", "r");
+firmware = argv[1]
+
+f0 = open(firmware+"_0.dat", "w");
+f1 = open(firmware+"_1.dat", "w");
+f2 = open(firmware+"_2.dat", "w");
+f3 = open(firmware+"_3.dat", "w");
+
+main_file = open(firmware+".hex", "r");
 
 text = main_file.readlines();
 

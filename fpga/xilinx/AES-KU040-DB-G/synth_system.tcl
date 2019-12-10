@@ -22,7 +22,7 @@ read_verilog ../../../rtl/src/iob_1p_mem.v
 
 set_property part xcku040-fbva676-1-c [current_project]
 
-if { [lindex $argv 1] == {USE_DDR_1} } {
+if { [lindex $argv 1] == {USE_DDR} } {
     
     read_verilog ../../../submodules/fifo/afifo.v
     read_verilog ../../../submodules/iob-cache/rtl/header/iob-cache.vh
@@ -106,19 +106,7 @@ if { [lindex $argv 1] == {USE_DDR_1} } {
 
 read_xdc ./synth_system.xdc
 
-
-
-set DEFINE {synth_design -part xcku040-fbva676-1-c -top top_system }
-if {[lindex $argv 0] == {USE_RAM_1}} {
-    append DEFINE {-verilog_define USE_RAM}
-}
-if {[lindex $argv 1] == {USE_DDR_1}} {
-    append DEFINE {-verilog_define USE_DDR}
-}
-
-set DEFINE {synth_design -part xcku040-fbva676-1-c -top top_system -verilog_define USE_RAM}
-
-eval $DEFINE
+synth_design -part xcku040-fbva676-1-c -top top_system -verilog_define UART_BAUD_RATE=[lindex $argv 0]
 opt_design
 place_design
 route_design
@@ -127,6 +115,4 @@ report_utilization
 report_timing
 
 write_bitstream -force synth_system.bit
-
-#write_verilog -force synth_system_test_Icarus.v
-# write_mem_info -force synth_system.mmi
+write_verilog -force synth_system.v
