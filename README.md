@@ -22,6 +22,7 @@ make sim
 #Edit FPGA path in Makefile and do:
 
 ```
+source path/to/vivado/settings64.sh
 make fpga
 ```
 
@@ -43,6 +44,7 @@ Open a new terminal
 
 ```
 cd $HOME/sandbox/iob-soc-e/fpga/<vendor>/<board>
+source path/to/vivado/settings64.sh
 make ld-hw
 ```
 
