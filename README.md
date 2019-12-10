@@ -12,29 +12,42 @@ SoC template containing a RISC-V processor (iob-rv32), a UART (iob-uart) the fol
 
 ## Simulate
 
-```
-cd simulation/<simulator>
-make
-```
-
-## Compile for FPGA 
+#Edit simulator path in Makefile and do:
 
 ```
-cd fpga/<vendor>/<board>
-make
+make sim
 ```
 
-## Configure FPGA
+## Compile FPGA 
 
+#Edit FPGA path in Makefile and do:
+
+```
+make fpga
+```
+
+## Run FPGA
+
+#Ssh to FPGA host:
 ```
 ssh -Y -C -p <port> <fpga_host>
-cd sandbox/iob-soc-e/fpga/<vendor>/<board>
-make ld-hw
 ```
 
-## Load software in FPGA and run
+# Setup picocom to interact
 ```
 picocom /dev/ttyUSB0 -b 115200 --imap lfcrlf --send-cmd "ascii-xfr -sedv"
 ```
-In picocom enter C-a C-s followed by the file name "firmware.bin" to load the software.
+
+# Configure FPGA
+
+*Open a new terminal
+
+```
+cd $HOME/sandbox/iob-soc-e/fpga/<vendor>/<board>
+make ld-hw
+```
+
+# Load formware in FPGA
+
+In picocom wait for the bootloader message and enter C-a C-s followed by the file name "firmware.bin" to load the software.
 
