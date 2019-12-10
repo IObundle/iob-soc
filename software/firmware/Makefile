@@ -16,8 +16,8 @@ all: firmware.hex
 firmware.hex: firmware.lds $(SRC) system.h $(UART_DIR)/iob-uart.h
 	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding  -nostdlib -o firmware.elf -DUART_BAUD_RATE=$(BAUD) $(INCLUDE) $(SRC) --std=gnu99 -Wl,-Bstatic,-T,firmware.lds,-Map,firmware.map,--strip-debug -lgcc -lc
 	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
-	$(eval MEM_SIZE=`python3 $(PYTHON_DIR)/get_memsize.py RAM_ADDR_W`)
-	python3 $(PYTHON_DIR)/makehex.py firmware.bin $(MEM_SIZE) > firmware.hex
+	$(eval MEM_SIZE=`$(PYTHON_DIR)/get_memsize.py RAM_ADDR_W`)
+	$(PYTHON_DIR)/makehex.py firmware.bin $(MEM_SIZE) > firmware.hex
 
 system.h: ../../rtl/include/system.vh
 	sed s/\`/\#/g ../../rtl/include/system.vh > system.h
