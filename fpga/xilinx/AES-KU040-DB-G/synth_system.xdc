@@ -32,8 +32,6 @@ create_clock -period 4.000 [get_ports C0_SYS_CLK_clk_p]
 #derive_pll_clocks
 #derive_clock_uncertainty
 
-
-
 set_property CFGBVS VCCO [current_design]
 
 ## USB-UART Interface

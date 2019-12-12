@@ -231,7 +231,6 @@ module top_system(
 		  .m_axi_arlen   (sys_arlen),
 		  .m_axi_arsize  (sys_arsize),
 		  .m_axi_arburst (sys_arburst),
-		  .m_axi_arvalid (sys_arvalid),
 		  .m_axi_arlock  (sys_arlock),
 		  .m_axi_arcache (sys_arcache),
 		  .m_axi_arprot  (sys_arprot),
@@ -293,7 +292,7 @@ module top_system(
                     .c0_ddr4_s_axi_awlen   (ddr_awlen),
                     .c0_ddr4_s_axi_awsize  (ddr_awsize),
                     .c0_ddr4_s_axi_awburst (ddr_awburst),
-                    .c0_ddr4_s_axi_awlock  (ddr_awlock)
+                    .c0_ddr4_s_axi_awlock  (ddr_awlock),
 		    .c0_ddr4_s_axi_awprot  (ddr_awprot),
 		    .c0_ddr4_s_axi_awcache (ddr_awcache),
                     .c0_ddr4_s_axi_awqos   (ddr_awqos),
@@ -361,7 +360,7 @@ module top_system(
 				 //Write data
 				 .S00_AXI_WDATA        (sys_wdata),
 				 .S00_AXI_WSTRB        (sys_wstrb),
-				 .S00_AXI_WLAST        (sys_last),
+				 .S00_AXI_WLAST        (sys_wlast),
 				 .S00_AXI_WVALID       (sys_wvalid),
 				 .S00_AXI_WREADY       (sys_wready),
       

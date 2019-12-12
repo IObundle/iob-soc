@@ -125,8 +125,6 @@ exit
 
 opt_design -directive Explore
 
-
-
 place_design
 #phys_opt_design
 route_design
