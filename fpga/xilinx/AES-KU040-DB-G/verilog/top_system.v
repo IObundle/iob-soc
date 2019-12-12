@@ -199,16 +199,16 @@ module top_system(
 		  .trap          (trap),
 
 `ifdef USE_DDR
-		  //address write
+          //address write
 		  .m_axi_awid    (sys_awid),
 		  .m_axi_awaddr  (sys_awaddr),
-		  .m_axi_awaddr  (sys_awlen),
-		  .m_axi_awaddr  (sys_awsize),
-		  .m_axi_awaddr  (sys_awburst),
-		  .m_axi_awaddr  (sys_awlock),
-		  .m_axi_awaddr  (sys_awcache),
-		  .m_axi_awaddr  (sys_awprot),
-		  .m_axi_awaddr  (sys_awqos),
+		  .m_axi_awlen   (sys_awlen),
+		  .m_axi_awsize  (sys_awsize),
+		  .m_axi_awburst (sys_awburst),
+		  .m_axi_awlock  (sys_awlock),
+		  .m_axi_awcache (sys_awcache),
+		  .m_axi_awprot  (sys_awprot),
+		  .m_axi_awqos   (sys_awqos),
 		  .m_axi_awvalid (sys_awvalid),
 		  .m_axi_awready (sys_awready),
 
@@ -232,11 +232,11 @@ module top_system(
 		  .m_axi_arsize  (sys_arsize),
 		  .m_axi_arburst (sys_arburst),
 		  .m_axi_arvalid (sys_arvalid),
-		  .m_axi_arsize  (sys_arlock),
-		  .m_axi_arsize  (sys_arcache),
-		  .m_axi_arsize  (sys_arprot),
-		  .m_axi_arsize  (sys_arqos),
-		  .m_axi_arready (sys_arvalid),
+		  .m_axi_arlock  (sys_arlock),
+		  .m_axi_arcache (sys_arcache),
+		  .m_axi_arprot  (sys_arprot),
+		  .m_axi_arqos   (sys_arqos),
+		  .m_axi_arvalid (sys_arvalid),
 		  .m_axi_arready (sys_arready),
 
 		  //read   
@@ -245,7 +245,7 @@ module top_system(
 		  .m_axi_rresp   (sys_rresp),
 		  .m_axi_rlast   (sys_rlast),
 		  .m_axi_rvalid  (sys_rvalid),
-		  .m_axi_rready  (sys_rready),
+		  .m_axi_rready  (sys_rready),	
 `endif
 
                   //UART
@@ -345,16 +345,16 @@ module top_system(
 				 .S00_AXI_ARESET_OUT_N (),
 				 .S00_AXI_ACLK         (sysclk), // 100 MHz
 
-				 //Write address
-				 .S00_AXI_AWID         (1'b0),
-				 .S00_AXI_AWADDR       ({{`ADDR_W-`CACHE_ADDR_W{1'b0}},axi_awaddr}),
-				 .S00_AXI_AWLEN        (8'd0),
-				 .S00_AXI_AWSIZE       (3'b010),
-				 .S00_AXI_AWBURST      (2'b00),
-				 .S00_AXI_AWLOCK       (1'b0),
-				 .S00_AXI_AWCACHE      (4'b0011),
-				 .S00_AXI_AWPROT       (4'd0),
-				 .S00_AXI_AWQOS        (4'd0),
+				  //Write address
+				 .S00_AXI_AWID         (sys_awid),
+				 .S00_AXI_AWADDR       ({{31-`CACHE_ADDR_W{1'b0}},sys_awaddr}),
+				 .S00_AXI_AWLEN        (sys_awlen),
+				 .S00_AXI_AWSIZE       (sys_awsize),
+				 .S00_AXI_AWBURST      (sys_awburst),
+				 .S00_AXI_AWLOCK       (sys_awlock),
+				 .S00_AXI_AWCACHE      (sys_awcache),
+				 .S00_AXI_AWPROT       (sys_awprot),
+				 .S00_AXI_AWQOS        (sys_awqos),
 				 .S00_AXI_AWVALID      (sys_awvalid),
 				 .S00_AXI_AWREADY      (sys_awready),
 
@@ -391,7 +391,6 @@ module top_system(
 				 .S00_AXI_RLAST        (sys_rlast),
 				 .S00_AXI_RVALID       (sys_rvalid),
 				 .S00_AXI_RREADY       (sys_rready),
-
                                  //
 				 // DDR SIDE
                                  //
@@ -441,7 +440,7 @@ module top_system(
 				 //Read data
 				 .M00_AXI_RID          (ddr_rid),
 				 .M00_AXI_RDATA        (ddr_rdata),
-				 .M00_AXI_RRESP        (2'b0),
+				 .M00_AXI_RRESP        (ddr_rresp),
 				 .M00_AXI_RLAST        (ddr_rlast),
 				 .M00_AXI_RVALID       (ddr_rvalid),
 				 .M00_AXI_RREADY       (ddr_rready)
