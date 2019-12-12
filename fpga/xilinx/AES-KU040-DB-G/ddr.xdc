@@ -241,27 +241,25 @@ set_property IOSTANDARD SSTL12_DCI [ get_ports {c0_ddr4_odt[0]} ]
 set_property OUTPUT_IMPEDANCE RDRV_40_40 [ get_ports {c0_ddr4_odt[0]} ]
 
 set_property PACKAGE_PIN V22 [get_ports {c0_ddr4_cs_n[0]}]
-set_property IOSTANDARD SSTL12_DCI [ get_ports "c0_ddr4_cs_n[0]" ]
-set_property OUTPUT_IMPEDANCE RDRV_40_40 [ get_ports "c0_ddr4_cs_n[0]" ]
+set_property IOSTANDARD SSTL12_DCI [ get_ports {c0_ddr4_cs_n[0]} ]
+set_property OUTPUT_IMPEDANCE RDRV_40_40 [ get_ports {c0_ddr4_cs_n[0]} ]
 
 set_property PACKAGE_PIN V23 [get_ports {c0_ddr4_cke[0]}]
-set_property IOSTANDARD SSTL12_DCI [ get_ports "c0_ddr4_cke[0]" ]
-set_property OUTPUT_IMPEDANCE RDRV_40_40 [ get_ports "c0_ddr4_cke[0]" ]
+set_property IOSTANDARD SSTL12_DCI [ get_ports {c0_ddr4_cke[0]} ]
+set_property OUTPUT_IMPEDANCE RDRV_40_40 [ get_ports {c0_ddr4_cke[0]} ]
 
 set_property PACKAGE_PIN V26 [get_ports {c0_ddr4_ba[0]}]
-set_property IOSTANDARD SSTL12_DCI [ get_ports "c0_ddr4_ba[0]" ]
-set_property OUTPUT_IMPEDANCE RDRV_40_40 [ get_ports "c0_ddr4_ba[0]" ]
+set_property IOSTANDARD SSTL12_DCI [ get_ports {c0_ddr4_ba[0]} ]
+set_property OUTPUT_IMPEDANCE RDRV_40_40 [ get_ports {c0_ddr4_ba[0]} ]
 
 set_property PACKAGE_PIN U24 [get_ports {c0_ddr4_ba[1]}]
-set_property IOSTANDARD SSTL12_DCI [ get_ports "c0_ddr4_ba[1]" ]
-set_property OUTPUT_IMPEDANCE RDRV_40_40 [ get_ports "c0_ddr4_ba[1]" ]
+set_property IOSTANDARD SSTL12_DCI [ get_ports {c0_ddr4_ba[1]} ]
+set_property OUTPUT_IMPEDANCE RDRV_40_40 [ get_ports {c0_ddr4_ba[1]} ]
 
 set_property PACKAGE_PIN V24 [get_ports {c0_ddr4_bg[0]}]
-set_property IOSTANDARD SSTL12_DCI [ get_ports "c0_ddr4_bg[0]" ]
-set_property OUTPUT_IMPEDANCE RDRV_40_40 [ get_ports "c0_ddr4_bg[0]" ]
+set_property IOSTANDARD SSTL12_DCI [ get_ports {c0_ddr4_bg[0]} ]
+set_property OUTPUT_IMPEDANCE RDRV_40_40 [ get_ports {c0_ddr4_bg[0]} ]
 
 set_property PACKAGE_PIN T18 [get_ports {c0_init_calib_complete}]
 set_property IOSTANDARD LVCMOS12 [get_ports {c0_init_calib_complete}]
 set_property DRIVE 8 [get_ports {c0_init_calib_complete}]
-
-
