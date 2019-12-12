@@ -8,11 +8,12 @@
 
 //peripheral addresses 
 //memory
-#ifdef USE_RAM
-#define MAIN_MEM (RAM_BASE<<(ADDR_W-N_SLAVES_W))
-#else
+#ifdef USE_DDR
 #define MAIN_MEM (CACHE_BASE<<(ADDR_W-N_SLAVES_W))
+#else
+#define MAIN_MEM (RAM_BASE<<(ADDR_W-N_SLAVES_W))
 #endif
+
 //uart
 #define UART (UART_BASE<<(ADDR_W-N_SLAVES_W))
 //soft reset
