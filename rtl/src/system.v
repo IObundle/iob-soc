@@ -14,31 +14,48 @@ module system (
                input                      uart_cts
                                           
 `ifdef USE_DDR //AXI MASTER INTERFACE
-	       // Address-Write
-	       , output m_axi_awvalid,
-               input                      m_axi_awready,
+	       /// Write
+	                                  , 
+               output [3:0]               m_axi_awid, 
                output [`CACHE_ADDR_W-1:0] m_axi_awaddr,
-               /// Data-Write
-               output                     m_axi_wvalid,
-               input                      m_axi_wready,
+               output [7:0]               m_axi_awlen,
+               output [2:0]               m_axi_awsize,
+               output [1:0]               m_axi_awburst,
+               output [0:0]               m_axi_awlock,
+               output [3:0]               m_axi_awcache,
+               output [2:0]               m_axi_awprot,
+               output [3:0]               m_axi_awqos,
+               output                     m_axi_awvalid,
+               input                      m_axi_awready,
                output [`DATA_W-1:0]       m_axi_wdata,
-               output [ 3:0]              m_axi_wstrb,
-               // Write-Response
+               output [3:0]               m_axi_wstrb,
+               output                     m_axi_wlast,
+               output                     m_axi_wvalid, 
+               input                      m_axi_wready,
+               input [3:0]                m_axi_bid,
+               input [1:0]                m_axi_bresp,
                input                      m_axi_bvalid,
                output                     m_axi_bready,
-               // Address-Read
-               output                     m_axi_arvalid,
-               input                      m_axi_arready,
-               output [`CACHE_ADDR_W-1:0] m_axi_araddr,
+               /// Read
+               output                     m_axi_arid,
+               output [`CACHE_ADDR_W-1:0] m_axi_araddr, 
                output [7:0]               m_axi_arlen,
                output [2:0]               m_axi_arsize,
                output [1:0]               m_axi_arburst,
-               // Data-Read
-               input                      m_axi_rvalid,
-               output                     m_axi_rready,
+               output [0:0]               m_axi_arlock,
+               output [3:0]               m_axi_arcache,
+               output [2:0]               m_axi_arprot,
+               output [3:0]               m_axi_arqos,
+               output                     m_axi_arvalid, 
+               input                      m_axi_arready,
+               input [3:0]                m_axi_rid,
                input [`DATA_W-1:0]        m_axi_rdata,
-               input                      m_axi_rlast
-`endif
+               input [1:0]                m_axi_rresp,
+               input                      m_axi_rlast, 
+               input                      m_axi_rvalid, 
+               output                     m_axi_rready 
+ `endif
+
                );
 
    //
@@ -202,7 +219,7 @@ module system (
    //
 
 `ifdef USE_DDR
-   memory_cache #(
+  memory_cache #(
                   .ADDR_W(`CACHE_ADDR_W),
                   .DATA_W(`DATA_W)
                   )
@@ -223,36 +240,48 @@ module system (
 	  .cache_ctrl_cpu_request (s_valid[`CACHE_CTRL_BASE]),
 	  .cache_ctrl_acknowledge (s_ready[`CACHE_CTRL_BASE]),
 	  .cache_ctrl_instr_access(m_instr),
-
           //
 	  // AXI MASTER INTERFACE TO MAIN MEMORY
           //
-	  // Address Read
-	  .AR_ADDR            (m_axi_araddr),
-	  .AR_LEN             (m_axi_arlen),
-	  .AR_SIZE            (m_axi_arsize),
-	  .AR_BURST           (m_axi_arburst),
-	  .AR_VALID           (m_axi_arvalid),
-	  .AR_READY           (m_axi_arready),
-
-          //Data Read
-	  .R_VALID            (m_axi_rvalid),
-	  .R_READY            (m_axi_rready),
-	  .R_DATA             (m_axi_rdata),
-	  .R_LAST             (m_axi_rlast),
-
-	  // Address Write
-	  .AW_ADDR            (m_axi_awaddr),
-	  .AW_VALID           (m_axi_awvalid),
-	  .AW_READY           (m_axi_awready),
-
-          // Data Write
-	  .W_VALID            (m_axi_wvalid),
-	  .W_STRB             (m_axi_wstrb),
-	  .W_READY            (m_axi_wready),
-	  .W_DATA             (m_axi_wdata),
-	  .B_VALID            (m_axi_bvalid),
-	  .B_READY            (m_axi_bready)
+          /// Write
+          .AW_ID(m_axi_awid), 
+          .AW_ADDR(m_axi_awaddr), 
+          .AW_LEN(m_axi_awlen), 
+          .AW_SIZE(m_axi_awsize), 
+          .AW_BURST(m_axi_awburst), 
+          .AW_LOCK(m_axi_awlock), 
+          .AW_CACHE(m_axi_awcache), 
+          .AW_PROT(m_axi_awprot),
+          .AW_QOS(m_axi_awqos), 
+          .AW_VALID(m_axi_awvalid), 
+          .AW_READY(m_axi_awready), 
+          .W_DATA(m_axi_wdata), 
+          .W_STRB(m_axi_wstrb), 
+          .W_LAST(m_axi_wlast), 
+          .W_VALID(m_axi_wvalid), 
+          .W_READY(m_axi_wready), 
+          .B_ID(m_axi_bid), 
+          .B_RESP(m_axi_bresp), 
+          .B_VALID(m_axi_bvalid), 
+          .B_READY(m_axi_bready), 
+          /// Read
+          .AR_ID(m_axi_arid), 
+          .AR_ADDR(m_axi_araddr), 
+          .AR_LEN(m_axi_arlen), 
+          .AR_SIZE(m_axi_arsize), 
+          .AR_BURST(m_axi_arburst), 
+          .AR_LOCK(m_axi_arlock), 
+          .AR_CACHE(m_axi_arcache), 
+          .AR_PROT(m_axi_arprot), 
+          .AR_QOS(m_axi_arqos), 
+          .AR_VALID(m_axi_arvalid), 
+          .AR_READY(m_axi_arready), 
+          .R_ID(m_axi_rid), 
+          .R_DATA(m_axi_rdata), 
+          .R_RESP(m_axi_rresp), 
+          .R_LAST(m_axi_rlast), 
+          .R_VALID(m_axi_rvalid),  
+          .R_READY(m_axi_rready)  
 	  );
 `endif
 
