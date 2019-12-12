@@ -94,7 +94,7 @@ module system (
 
    always @*
      if (!boot && !m_addr[`ADDR_W-1 -: `N_SLAVES_W])
-`ifdef USE_DDR
+`ifndef USE_RAM
        m_addr_int = `N_SLAVES_W'd`CACHE_BASE;
 `else
    m_addr_int = `N_SLAVES_W'd`RAM_BASE;
