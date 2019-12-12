@@ -1,3 +1,16 @@
+#place and route loop procedure
+proc runPPO { {numIters 1} {enablePhysOpt 1} } {
+    for {set i 0} {$i < $numIters} {incr i} {    
+        place_design -post_place_opt    
+        if {$enablePhysOpt != 0} {      
+            phys_opt_design    
+        }    
+        route_design    
+        if {[get_property SLACK [get_timing_paths ]] >= 0} {break}; #stop if timing is met  
+    }
+}
+
+
 #include
 read_verilog ../../../rtl/include/system.vh
 read_verilog ../../../submodules/iob-uart/rtl/include/iob-uart.vh
@@ -107,9 +120,17 @@ if { [lindex $argv 1] == {USE_DDR} } {
 read_xdc ./synth_system.xdc
 
 synth_design -part xcku040-fbva676-1-c -top top_system -verilog_define UART_BAUD_RATE=[lindex $argv 0]
-opt_design
+
+exit
+
+opt_design -directive Explore
+
+
+
 place_design
+#phys_opt_design
 route_design
+#runPPO 4 1 ; # run 4 post-route iterations and enable phys_opt_design
 
 report_utilization
 report_timing
