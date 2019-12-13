@@ -179,16 +179,17 @@ module top_system(
    reg [15:0] 			reset_cnt;
    wire 			reset_int;
 
-
-   always @(posedge sysclk, posedge reset)
 `ifdef USE_DDR
-     if(reset | ~(init_calib_complete))
+   wire                         arst = reset | ~(init_calib_complete);
 `else   
-       if(reset)
+   wire                         arst = reset;
 `endif    
-	 reset_cnt <= 16'b0;
-       else if (reset_cnt != 16'hFFFF)
-	 reset_cnt <= reset_cnt+1'b1;
+   
+   always @(posedge sysclk, posedge arst)
+     if(arst)
+       reset_cnt <= 16'b0;
+     else if (reset_cnt != 16'hFFFF)
+       reset_cnt <= reset_cnt+1'b1;
    
    assign reset_int  = (reset_cnt != 16'hFFFF);   
 
@@ -289,7 +290,7 @@ module top_system(
                     //MIG SIDE
                     //address write 
                     .c0_ddr4_aresetn       (~reset_int),
-		    .c0_ddr4_s_axi_awid    ({3'b0, ddr_awid}),
+		    .c0_ddr4_s_axi_awid    (ddr_awid),
 		    .c0_ddr4_s_axi_awaddr  (ddr_awaddr[29:0]),
                     .c0_ddr4_s_axi_awlen   (ddr_awlen),
                     .c0_ddr4_s_axi_awsize  (ddr_awsize),
@@ -315,7 +316,7 @@ module top_system(
 		    .c0_ddr4_s_axi_bvalid  (ddr_bvalid),
 
 		    //address read
-		    .c0_ddr4_s_axi_arid    ({3'b0,ddr_arid}),
+		    .c0_ddr4_s_axi_arid    (ddr_arid),
 		    .c0_ddr4_s_axi_araddr  (ddr_araddr[29:0]),
 		    .c0_ddr4_s_axi_arlen   (ddr_arlen), 
 		    .c0_ddr4_s_axi_arsize  (ddr_arsize),    
@@ -335,7 +336,8 @@ module top_system(
                     .c0_ddr4_s_axi_rlast   (ddr_rlast),
 		    .c0_ddr4_s_axi_rvalid  (ddr_rvalid)
                   );   
-   
+
+
    axi_interconnect_0 cache2ddr (
 				 .INTERCONNECT_ACLK     (clk), // 200 MHz
 				 .INTERCONNECT_ARESETN  (~reset_int),
@@ -400,7 +402,7 @@ module top_system(
 				 .M00_AXI_ACLK          (clk), // 200 MHz
       
 				 //Write address
-				 .M00_AXI_AWID          (ddr_awid[0]),
+				 .M00_AXI_AWID          (ddr_awid),
 				 .M00_AXI_AWADDR        (ddr_awaddr),
 				 .M00_AXI_AWLEN         (ddr_awlen),
 				 .M00_AXI_AWSIZE        (ddr_awsize),
@@ -420,13 +422,13 @@ module top_system(
 				 .M00_AXI_WREADY        (ddr_wready),
 
 				 //Write response
-				 .M00_AXI_BID           (ddr_bid[0]),
+				 .M00_AXI_BID           (ddr_bid),
 				 .M00_AXI_BRESP         (ddr_bresp),
 				 .M00_AXI_BVALID        (ddr_bvalid),
 				 .M00_AXI_BREADY        (ddr_bready),
       
 				 //Read address
-				 .M00_AXI_ARID         (ddr_arid[0]),
+				 .M00_AXI_ARID         (ddr_arid),
 				 .M00_AXI_ARADDR       (ddr_araddr),
 				 .M00_AXI_ARLEN        (ddr_arlen),
 				 .M00_AXI_ARSIZE       (ddr_arsize),
@@ -439,7 +441,7 @@ module top_system(
 				 .M00_AXI_ARREADY      (ddr_arready),
       
 				 //Read data
-				 .M00_AXI_RID          (ddr_rid[0]),
+				 .M00_AXI_RID          (ddr_rid),
 				 .M00_AXI_RDATA        (ddr_rdata),
 				 .M00_AXI_RRESP        (ddr_rresp),
 				 .M00_AXI_RLAST        (ddr_rlast),
