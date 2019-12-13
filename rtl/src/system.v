@@ -107,7 +107,7 @@ module system (
           .pcpi_valid    (),
           .pcpi_insn     (),
           .pcpi_rs1      (),
-          .pcpi_rst2     (),
+          .pcpi_rs2      (),
           .pcpi_wr       (1'b0),
           .pcpi_rd       (32'd0),
           .pcpi_wait     (1'b0),
