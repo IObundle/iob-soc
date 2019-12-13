@@ -27,7 +27,7 @@ set_property IOSTANDARD DIFF_SSTL12 [get_ports C0_SYS_CLK_clk_n]
 #set_property IOSTANDARD LVCMOS18 [get_ports clk]
 #set_property PACKAGE_PIN H22 [get_ports clk]
 
-create_clock -period 4.000 [get_ports C0_SYS_CLK_clk_p]  
+#create_clock -period 4.000 [get_ports C0_SYS_CLK_clk_p]  
 
 #derive_pll_clocks
 #derive_clock_uncertainty
