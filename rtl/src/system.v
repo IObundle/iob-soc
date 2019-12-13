@@ -114,7 +114,9 @@ module system (
           .pcpi_ready    (1'b1),
           // IRQ
           .irq           (32'd0),
-          .eoi           ()
+          .eoi           (),
+          .trace_valid   (),
+          .trace_data    ()
 		  );
 
    //
