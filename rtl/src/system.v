@@ -96,7 +96,25 @@ module system (
 		  .mem_addr      (m_addr),
 		  .mem_wdata     (m_wdata),
 		  .mem_wstrb     (m_wstrb),
-		  .mem_rdata     (m_rdata)
+		  .mem_rdata     (m_rdata),
+          // Look-Ahead
+          .mem_la_read   (),
+          .mem_la_write  (),
+          .mem_la_addr   (),
+          .mem_la_wdata  (),
+          .mem_la_wstrb  (),
+          // Pico Co-Processor PCPI
+          .pcpi_valid    (),
+          .pcpi_insn     (),
+          .pcpi_rs1      (),
+          .pcpi_rst2     (),
+          .pcpi_wr       (1'b0),
+          .pcpi_rd       (32'd0),
+          .pcpi_wait     (1'b0),
+          .pcpi_ready    (1'b1),
+          // IRQ
+          .irq           (32'd0),
+          .eoi           ()
 		  );
 
    //
