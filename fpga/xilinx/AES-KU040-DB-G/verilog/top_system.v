@@ -260,7 +260,7 @@ module top_system(
 
 `ifdef USE_DDR   
    ddr4_0 ddr4_ram (
-                    .sys_rst             (reset_int),
+                    .sys_rst             (reset),
                     .c0_sys_clk_p        (C0_SYS_CLK_clk_p),
                     .c0_sys_clk_n        (C0_SYS_CLK_clk_n),
                     .dbg_bus             (),
