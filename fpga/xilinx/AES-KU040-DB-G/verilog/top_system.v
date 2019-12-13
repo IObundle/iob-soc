@@ -73,13 +73,13 @@ module top_system(
                          
    // SYSTEM/SLAVE SIDE
    // address write
-   wire 			sys_awid;
+   wire [0:0]			sys_awid;
    wire [31:0]                  sys_awaddr;
    wire [7:0] 			sys_awlen;
    wire [2:0] 			sys_awsize;
    wire [1:0] 			sys_awburst;
    wire 			sys_awlock;
-   wire 			sys_awcache;
+   wire [3:0]			sys_awcache;
    wire [2:0] 			sys_awprot;
    wire [3:0] 			sys_awqos;
    wire 			sys_awvalid;
@@ -93,14 +93,14 @@ module top_system(
    wire 			sys_wready;
 
    //write response
-   wire 			sys_bid;
+   wire [0:0]			sys_bid;
    wire [1:0] 			sys_bresp;
    wire 			sys_bvalid;
    wire 			sys_bready;
 
    //address read
-   wire 			sys_arid;
-   wire [`CACHE_ADDR_W-1:0]     sys_araddr;
+   wire [0:0]			sys_arid;
+   wire [31:0]                  sys_araddr;
    wire [7:0] 			sys_arlen;
    wire [2:0] 			sys_arsize;
    wire [1:0] 			sys_arburst;
@@ -112,7 +112,7 @@ module top_system(
    wire 			sys_arready;
 
    //read
-   wire 			sys_rid;
+   wire [0:0]			sys_rid;
    wire [`DATA_W-1:0]           sys_rdata;   
    wire [1:0]                   sys_rresp;   
    wire 			sys_rlast;
@@ -160,7 +160,7 @@ module top_system(
    wire 			ddr_arvalid;
    wire 			ddr_arready;
    //Read data
-   wire 			ddr_rid;
+   wire [3:0]			ddr_rid;
    wire [31:0] 			ddr_rdata;
    wire [1:0] 			ddr_rresp;
    wire 			ddr_rlast;
@@ -177,7 +177,8 @@ module top_system(
    //RESET CONTROL
    //
    reg [15:0] 			reset_cnt;
-   wire 			reset_int = (reset_cnt != 16'hFFFF);
+   wire 			reset_int;
+
 
    always @(posedge sysclk, posedge reset)
 `ifdef USE_DDR
@@ -189,6 +190,7 @@ module top_system(
        else if (reset_cnt != 16'hFFFF)
 	 reset_cnt <= reset_cnt+1'b1;
    
+   assign reset_int  = (reset_cnt != 16'hFFFF);   
 
    //
    // SYSTEM
@@ -258,9 +260,9 @@ module top_system(
 `ifdef USE_DDR   
    ddr4_0 ddr4_ram (
                     .sys_rst             (reset_int),
-
                     .c0_sys_clk_p        (C0_SYS_CLK_clk_p),
                     .c0_sys_clk_n        (C0_SYS_CLK_clk_n),
+                    .dbg_bus             (),
 
                     //EXTERNAL SIDE
                     .c0_ddr4_act_n       (c0_ddr4_act_n),
@@ -287,7 +289,7 @@ module top_system(
                     //MIG SIDE
                     //address write 
                     .c0_ddr4_aresetn       (~reset_int),
-		    .c0_ddr4_s_axi_awid    (ddr_awid),
+		    .c0_ddr4_s_axi_awid    ({3'b0, ddr_awid}),
 		    .c0_ddr4_s_axi_awaddr  (ddr_awaddr[29:0]),
                     .c0_ddr4_s_axi_awlen   (ddr_awlen),
                     .c0_ddr4_s_axi_awsize  (ddr_awsize),
@@ -313,7 +315,7 @@ module top_system(
 		    .c0_ddr4_s_axi_bvalid  (ddr_bvalid),
 
 		    //address read
-		    .c0_ddr4_s_axi_arid    (ddr_arid),
+		    .c0_ddr4_s_axi_arid    ({3'b0,ddr_arid}),
 		    .c0_ddr4_s_axi_araddr  (ddr_araddr[29:0]),
 		    .c0_ddr4_s_axi_arlen   (ddr_arlen), 
 		    .c0_ddr4_s_axi_arsize  (ddr_arsize),    
@@ -346,7 +348,7 @@ module top_system(
 
 				  //Write address
 				 .S00_AXI_AWID         (sys_awid),
-				 .S00_AXI_AWADDR       ({{31-`CACHE_ADDR_W{1'b0}},sys_awaddr}),
+				 .S00_AXI_AWADDR       (sys_awaddr),
 				 .S00_AXI_AWLEN        (sys_awlen),
 				 .S00_AXI_AWSIZE       (sys_awsize),
 				 .S00_AXI_AWBURST      (sys_awburst),
@@ -372,7 +374,7 @@ module top_system(
       
 				 //Read address
 				 .S00_AXI_ARID         (sys_arid),
-				 .S00_AXI_ARADDR       ({{31-`CACHE_ADDR_W{1'b0}},sys_araddr}),
+				 .S00_AXI_ARADDR       (sys_araddr),
 				 .S00_AXI_ARLEN        (sys_arlen),
 				 .S00_AXI_ARSIZE       (sys_arsize),
 				 .S00_AXI_ARBURST      (sys_arburst),
@@ -398,7 +400,7 @@ module top_system(
 				 .M00_AXI_ACLK          (clk), // 200 MHz
       
 				 //Write address
-				 .M00_AXI_AWID          (ddr_awid),
+				 .M00_AXI_AWID          (ddr_awid[0]),
 				 .M00_AXI_AWADDR        (ddr_awaddr),
 				 .M00_AXI_AWLEN         (ddr_awlen),
 				 .M00_AXI_AWSIZE        (ddr_awsize),
@@ -418,13 +420,13 @@ module top_system(
 				 .M00_AXI_WREADY        (ddr_wready),
 
 				 //Write response
-				 .M00_AXI_BID           (ddr_bid),
+				 .M00_AXI_BID           (ddr_bid[0]),
 				 .M00_AXI_BRESP         (ddr_bresp),
 				 .M00_AXI_BVALID        (ddr_bvalid),
 				 .M00_AXI_BREADY        (ddr_bready),
       
 				 //Read address
-				 .M00_AXI_ARID         (ddr_arid),
+				 .M00_AXI_ARID         (ddr_arid[0]),
 				 .M00_AXI_ARADDR       (ddr_araddr),
 				 .M00_AXI_ARLEN        (ddr_arlen),
 				 .M00_AXI_ARSIZE       (ddr_arsize),
@@ -437,7 +439,7 @@ module top_system(
 				 .M00_AXI_ARREADY      (ddr_arready),
       
 				 //Read data
-				 .M00_AXI_RID          (ddr_rid),
+				 .M00_AXI_RID          (ddr_rid[0]),
 				 .M00_AXI_RDATA        (ddr_rdata),
 				 .M00_AXI_RRESP        (ddr_rresp),
 				 .M00_AXI_RLAST        (ddr_rlast),
