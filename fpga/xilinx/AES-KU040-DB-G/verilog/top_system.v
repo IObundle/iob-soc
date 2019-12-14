@@ -3,8 +3,8 @@
 
 module top_system(
                   //differential clock and reset
-	          input         C0_SYS_CLK_clk_p, 
-                  input         C0_SYS_CLK_clk_n, 
+	          input         c0_sys_clk_clk_p, 
+                  input         c0_sys_clk_clk_n, 
 	          input         reset,
 
 	          //uart
@@ -44,8 +44,8 @@ module top_system(
 		  .INPUT_PER(4)
 		  )
    clk_250_to_200_MHz(
-		      .clk_in1_p(C0_SYS_CLK_clk_p),
-		      .clk_in1_n(C0_SYS_CLK_clk_n),
+		      .clk_in1_p(c0_sys_clk_clk_p),
+		      .clk_in1_n(c0_sys_clk_clk_n),
 		      .clk_out1(sysclk)
 		      );
  `else
@@ -54,8 +54,8 @@ module top_system(
 		  .INPUT_PER(4)
 		  )
    clk_250_to_100_MHz(
-		      .clk_in1_p(C0_SYS_CLK_clk_p),
-		      .clk_in1_n(C0_SYS_CLK_clk_n),
+		      .clk_in1_p(c0_sys_clk_clk_p),
+		      .clk_in1_n(c0_sys_clk_clk_n),
 		      .clk_out1(sysclk)
 		      );
  `endif //def CLK_200MHZ
@@ -261,8 +261,8 @@ module top_system(
 `ifdef USE_DDR   
    ddr4_0 ddr4_ram (
                     .sys_rst             (reset),
-                    .c0_sys_clk_p        (C0_SYS_CLK_clk_p),
-                    .c0_sys_clk_n        (C0_SYS_CLK_clk_n),
+                    .c0_sys_clk_p        (c0_sys_clk_clk_p),
+                    .c0_sys_clk_n        (c0_sys_clk_clk_n),
                     .dbg_bus             (),
 
                     //EXTERNAL SIDE

@@ -1,22 +1,15 @@
-#place and route loop procedure
-proc runPPO { {numIters 1} {enablePhysOpt 1} } {
-    for {set i 0} {$i < $numIters} {incr i} {    
-        place_design -post_place_opt    
-        if {$enablePhysOpt != 0} {      
-            phys_opt_design    
-        }    
-        route_design    
-        if {[get_property SLACK [get_timing_paths ]] >= 0} {break}; #stop if timing is met  
-    }
-}
-
+#
+# SYNTHESIS AND IMPLEMENTATION SCRIPT
+#
 
 #include
 read_verilog ../../../rtl/include/system.vh
 read_verilog ../../../submodules/iob-uart/rtl/include/iob-uart.vh
 
 #clock
-read_verilog verilog/clock_wizard.v
+if { [lindex $argv 1] != {USE_DDR} } {
+    read_verilog verilog/clock_wizard.v
+}
 
 #system
 read_verilog verilog/top_system.v
@@ -62,7 +55,6 @@ if { [lindex $argv 1] == {USE_DDR} } {
         
         report_property [get_ips axi_interconnect_0]
         
-        #set_property -dict [list CONFIG.NUM_SLAVE_PORTS {1} CONFIG.S00_AXI_IS_ACLK_ASYNC {1} CONFIG.M00_AXI_IS_ACLK_ASYNC {1} CONFIG.S00_AXI_READ_FIFO_DEPTH {32} CONFIG.M00_AXI_READ_FIFO_DEPTH {32} CONFIG.S00_AXI_DATA_WIDTH {32}] [get_ips axi_interconnect_0]
         set_property -dict [list CONFIG.NUM_SLAVE_PORTS {1} CONFIG.S00_AXI_IS_ACLK_ASYNC {1} CONFIG.S00_AXI_READ_FIFO_DEPTH {32} CONFIG.S00_AXI_DATA_WIDTH {32}] [get_ips axi_interconnect_0]
         
         generate_target {instantiation_template} [get_files ./ip/axi_interconnect_0/axi_interconnect_0.xci]
@@ -90,31 +82,11 @@ if { [lindex $argv 1] == {USE_DDR} } {
 
 
         read_ip ./ip/ddr4_0/ddr4_0.xci
+
         report_property [get_files ./ip/ddr4_0/ddr4_0.xci]
         
         synth_ip [get_files ./ip/ddr4_0/ddr4_0.xci]
     }
-
-    set_property used_in_implementation false [get_files -all ./ip/ddr4_0/ddr4_0_board.xdc]
-    set_property used_in_implementation false [get_files -all ./ip/ddr4_0/par/ddr4_0.xdc]
-    set_property used_in_implementation false [get_files -all ./ip/ddr4_0/ip_0/ddr4_0_microblaze_mcs_board.xdc]
-    set_property used_in_implementation false [get_files -all ./ip/ddr4_0/ip_0/ddr4_0_microblaze_mcs_ooc.xdc]
-    #set_property used_in_implementation false [get_files -all ../ip/ddr4_0/ip_0/bd_9054_microblaze_I_0.xdc]
-    set_property used_in_implementation false [get_files -all ./ip/ddr4_0/bd_0/ip/ip_0/bd_9054_microblaze_I_0_ooc_debug.xdc]
-    set_property used_in_implementation false [get_files -all ./ip/ddr4_0/bd_0/ip/ip_1/bd_9054_rst_0_0_board.xdc]
-    set_property used_in_implementation false [get_files -all ./ip/ddr4_0/bd_0/ip/ip_1/bd_9054_rst_0_0.xdc]
-    set_property used_in_implementation false [get_files -all ./ip/ddr4_0/bd_0/ip/ip_2/bd_9054_ilmb_0.xdc]
-    set_property used_in_implementation false [get_files -all ./ip/ddr4_0/bd_0/ip/ip_3/bd_9054_dlmb_0.xdc]
-    set_property used_in_implementation false [get_files -all ./ip/ddr4_0/bd_0/ip/ip_6/bd_9054_lmb_bram_I_0_ooc.xdc]
-    set_property used_in_implementation false [get_files -all ./ip/ddr4_0/bd_0/ip/ip_9/bd_9054_second_lmb_bram_I_0_ooc.xdc]
-    set_property used_in_implementation false [get_files -all ./ip/ddr4_0/bd_0/ip/ip_10/bd_9054_iomodule_0_0_board.xdc]
-    set_property used_in_implementation false [get_files -all ./ip/ddr4_0/bd_0/bd_9054_ooc.xdc]
-    set_property used_in_implementation false [get_files -all ./ip/ddr4_0/ip_1/par/ddr4_0_phy_ooc.xdc]
-    
-    #interconnect MIG<->cache
-    set_property used_in_implementation false [get_files -all ./ip/axi_interconnect_0/axi_interconnect_0_ooc.xdc]
-    set_property used_in_implementation false [get_files -all ./ip/axi_interconnect_0/axi_interconnect_0_clocks.xdc]
-    set_property used_in_implementation false [get_files -all ./ip/axi_interconnect_0/axi_interconnect_0_impl_clocks.xdc]
 
 }
 
@@ -122,17 +94,16 @@ read_xdc ./synth_system.xdc
 
 synth_design -part xcku040-fbva676-1-c -top top_system -verilog_define UART_BAUD_RATE=[lindex $argv 0]
 
-exit
-
-opt_design -directive Explore
+opt_design
 
 place_design
-#phys_opt_design
+
 route_design
-#runPPO 4 1 ; # run 4 post-route iterations and enable phys_opt_design
 
 report_utilization
+
 report_timing
 
 write_bitstream -force synth_system.bit
+
 write_verilog -force synth_system.v
