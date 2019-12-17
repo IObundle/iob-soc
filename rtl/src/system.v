@@ -82,8 +82,8 @@ module system (
    wire                                   m_instr;
    
    picorv32 #(
-	      .ENABLE_FAST_MUL(1),
-	      .ENABLE_DIV(1)
+	      .ENABLE_FAST_MUL(0),
+	      .ENABLE_DIV(0)
 	      )
    picorv32_core (
 		  .clk           (clk),
@@ -141,16 +141,18 @@ module system (
    //
    
    wire [`DATA_W-1:0]                     s_rdata[`N_SLAVES-1:0];
-   reg [`N_SLAVES*`DATA_W-1:0]            s_rdata_concat;
+   wire [`N_SLAVES*`DATA_W-1:0]            s_rdata_concat;
    wire [`N_SLAVES-1:0]                   s_valid;
    wire [`N_SLAVES-1:0]                   s_ready;
    
    //concatenate slave read data signals to input in interconnect
-   always @* begin : concat_slave_reads
-      integer i;
-      for(i=0; i<`N_SLAVES; i=i+1)
-	s_rdata_concat[((i+1)*`DATA_W)-1 -: `DATA_W] =s_rdata[i];
-   end
+   genvar                                 i;
+   generate 
+         for(i=0; i<`N_SLAVES; i=i+1)
+           begin : rdata_concat
+	      assign s_rdata_concat[((i+1)*`DATA_W)-1 -: `DATA_W] = s_rdata[i];
+           end
+   endgenerate
 
    iob_generic_interconnect 
      #(.N_SLAVES(`N_SLAVES),
