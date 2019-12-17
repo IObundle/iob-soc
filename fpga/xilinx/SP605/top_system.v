@@ -9,8 +9,8 @@ module top_system (
 	          //uart
 	          output uart_txd,
 	          input  uart_rxd,
-	          input  uart_cts,
-	          output uart_rts,
+	          input  uart_cts_n,
+	          output uart_rts_n,
 
 		  output trap
 		  );
@@ -21,6 +21,7 @@ module top_system (
    reg [15:0] 			reset_cnt;
    wire 			reset_int;
 
+   wire uart_rts;
 
    
    always @(posedge clk, posedge reset)
@@ -31,6 +32,9 @@ module top_system (
    
    assign reset_int  = (reset_cnt != 16'hFFFF);   
 
+   assign uart_rts_n = ~uart_rts;
+ 
+   
    //
    // SYSTEM
    //
@@ -43,7 +47,7 @@ module top_system (
 		  .uart_txd      (uart_txd),
 		  .uart_rxd      (uart_rxd),
 		  .uart_rts      (uart_rts),
-		  .uart_cts      (uart_cts)
+		  .uart_cts      (~uart_cts_n)
 		  );
 
 

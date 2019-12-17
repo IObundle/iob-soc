@@ -1,3 +1,4 @@
+`include "system.vh"
 `timescale 1ns / 1ps
 
 module ram #(

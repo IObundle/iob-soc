@@ -21,7 +21,6 @@ xst:
 	mkdir xst
 	mkdir xst/projnav.tmp
 
-
 firmware.hex: $(FIRM_DIR)/firmware.hex
 	cp $< .
 	$(PYTHON_DIR)/hex_split.py firmware
@@ -40,15 +39,12 @@ endif
 $(BOOT_DIR)/boot.hex: FORCE
 	make -C $(BOOT_DIR) BAUD=$(BAUD)
 
-ld-hw:
-	vivado -nojournal -log $@.log -mode batch -source $@.tcl
-
 clean:
 	@rm -rf iseconfig _xmsgs *~ *.html *.ncd *.syr *.par *.xml *.cmd_log *.ngc *.ngr *.stx *.xrpt *.hex *.dat
-	@rm -rf xst top_system.bgn top_system.drc top_system_map.ngm top_system_pad.txt top_system.twr
+	@rm -rf xst top_system.bgn top_system.drc top_system_map.ngm top_system_pad.txt top_system.twr top_system.ut
 	@rm -rf _ngo webtalk.log top_system.bit top_system.lso top_system.ngd top_system.pcf top_system.twx top_system.xpi
-	@rm -rf xlnx_auto_0_xdb top_system_bitgen.xwbt top_system_map.map top_system.pad 
+	@rm -rf xlnx_auto_0_xdb top_system_bitgen.xwbt top_system_map.map top_system.pad
 	@rm -rf top_system.bld top_system_map.mrp top_system_pad.csv top_system.ptwx top_system.unroutes
-	make -C ../../../software/firmware
+	make -C ../../../software/firmware clean
 
 .PHONY: clean firmware FORCE
