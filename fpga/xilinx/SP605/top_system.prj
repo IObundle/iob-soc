@@ -1,0 +1,11 @@
+verilog work ./top_system.v
+verilog work ../../../rtl/src/system.v
+verilog work ../../../rtl/src/iob_generic_interconnect.v
+verilog work ../../../rtl/src/ram.v
+verilog work ../../../rtl/src/iob_1p_mem.v
+
+#picorv32
+verilog work ../../../submodules/iob-rv32/picorv32.v
+
+#uart
+verilog work ../../../submodules/iob-uart/rtl/src/iob-uart.v
