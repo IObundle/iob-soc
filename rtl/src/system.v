@@ -82,6 +82,7 @@ module system (
    wire                                   m_instr;
    
    picorv32 #(
+              .ENABLE_PCPI(1), //enables the following 2 parameters
 	      .ENABLE_FAST_MUL(1),
 	      .ENABLE_DIV(1)
 	      )
@@ -97,26 +98,26 @@ module system (
 		  .mem_wdata     (m_wdata),
 		  .mem_wstrb     (m_wstrb),
 		  .mem_rdata     (m_rdata),
-          // Look-Ahead
-          .mem_la_read   (),
-          .mem_la_write  (),
-          .mem_la_addr   (),
-          .mem_la_wdata  (),
-          .mem_la_wstrb  (),
-          // Pico Co-Processor PCPI
-          .pcpi_valid    (),
-          .pcpi_insn     (),
-          .pcpi_rs1      (),
-          .pcpi_rs2      (),
-          .pcpi_wr       (1'b0),
-          .pcpi_rd       (32'd0),
-          .pcpi_wait     (1'b0),
-          .pcpi_ready    (1'b1),
-          // IRQ
-          .irq           (32'd0),
-          .eoi           (),
-          .trace_valid   (),
-          .trace_data    ()
+                  // Look-Ahead
+                  .mem_la_read   (),
+                  .mem_la_write  (),
+                  .mem_la_addr   (),
+                  .mem_la_wdata  (),
+                  .mem_la_wstrb  (),
+                  // Pico Co-Processor PCPI
+                  .pcpi_valid    (),
+                  .pcpi_insn     (),
+                  .pcpi_rs1      (),
+                  .pcpi_rs2      (),
+                  .pcpi_wr       (1'b0),
+                  .pcpi_rd       (32'd0),
+                  .pcpi_wait     (1'b0),
+                  .pcpi_ready    (1'b0),
+                  // IRQ
+                  .irq           (32'd0),
+                  .eoi           (),
+                  .trace_valid   (),
+                  .trace_data    ()
 		  );
 
    //
