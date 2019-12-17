@@ -82,8 +82,8 @@ module system (
    wire                                   m_instr;
    
    picorv32 #(
-	      .ENABLE_FAST_MUL(0),
-	      .ENABLE_DIV(0)
+	      .ENABLE_FAST_MUL(1),
+	      .ENABLE_DIV(1)
 	      )
    picorv32_core (
 		  .clk           (clk),
