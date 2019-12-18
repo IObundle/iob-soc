@@ -1,6 +1,6 @@
 SIM_DIR = simulation/icarus
-#FPGA_DIR = fpga/xilinx/AES-KU040-DB-G
-FPGA_DIR = fpga/xilinx/SP605
+FPGA_DIR = fpga/xilinx/AES-KU040-DB-G
+#FPGA_DIR = fpga/xilinx/SP605
 
 sim:
 	make -C $(SIM_DIR) 
