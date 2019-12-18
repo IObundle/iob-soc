@@ -1,5 +1,6 @@
 #include "system.h"
 #include "iob-uart.h"
+#include "iob-cache.h"
 
 //memory access macros
 #define RAM_PUTCHAR(location, value) (*((char*) (location)) = value)
@@ -18,6 +19,8 @@
 #define UART (UART_BASE<<(ADDR_W-N_SLAVES_W))
 //soft reset
 #define SOFT_RESET (SOFT_RESET_BASE<<(ADDR_W-N_SLAVES_W))
+//cache controller
+#define CACHE_CTRL (CACHE_CTRL_BASE<<(ADDR_W-N_SLAVES_W))
 
 //program size
 //#define PROG_SIZE (1<<(RAM_ADDR_W-2))
@@ -52,6 +55,8 @@ int main()
   */
 
   uart_txwait();
-
+  
+  while(!ctrl_buffer_empty(CACHE_CTRL)){};
+  
   RAM_PUTINT(SOFT_RESET, 1);
 }
