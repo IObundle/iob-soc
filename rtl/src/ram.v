@@ -2,7 +2,7 @@
 `timescale 1ns / 1ps
 
 module ram #(
-	     parameter ADDR_W = 12,
+	     parameter ADDR_W = 12, //must be lower than ADDR_W-N_SLAVES_W
              parameter NAME = "ram"	          
 		     )
    (      

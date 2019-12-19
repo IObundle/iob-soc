@@ -249,10 +249,10 @@ module system (
    //
 
 `ifdef USE_DDR
-  memory_cache #(
-                  .ADDR_W(`ADDR_W),
-                  .DATA_W(`DATA_W)
-                  )
+   iob_cache #(
+               .ADDR_W(`ADDR_W),
+               .DATA_W(`DATA_W)
+               )
    cache (
 	  .clk                (clk),
 	  .reset              (reset_int),
