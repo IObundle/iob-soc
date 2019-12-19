@@ -42,8 +42,6 @@ int main()
     //uart_printf("c %d\n", i);
   }
   
-  uart_puts("Program loaded\n");
-
   /* uncomment for debug
   uart_puts("Printing program from Main Memory:\n");
 
@@ -54,9 +52,13 @@ int main()
   uart_puts("Finished printing the Main Memory program\n");
   */
 
+#ifdef USE_DDR
+  while(!ctrl_buffer_empty(CACHE_CTRL));
+#endif
+
+  uart_puts("Program loaded\n");
   uart_txwait();
   
-  while(!ctrl_buffer_empty(CACHE_CTRL)){};
   
-  RAM_PUTINT(SOFT_RESET, 1);
+  RAM_PUTINT(SOFT_RESET, 0);
 }

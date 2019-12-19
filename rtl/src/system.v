@@ -66,20 +66,20 @@ module system (
    //
    // RESET
    //
-   reg                                    soft_reset;   
-   wire                                   reset_int = reset | soft_reset;
-   reg                                    boot ;   
+   wire                             soft_reset;   
+   wire                             reset_int = reset | soft_reset;
+   reg                              boot ;   
    
    //
    //  CPU
    //
-   wire [`ADDR_W-1:0]                     m_addr;
-   wire [`DATA_W-1:0]                     m_wdata;
-   wire [3:0]                             m_wstrb;
-   wire [`DATA_W-1:0]                     m_rdata;
-   wire                                   m_valid;
-   wire                                   m_ready;
-   wire                                   m_instr;
+   wire [`ADDR_W-1:0]               m_addr;
+   wire [`DATA_W-1:0]               m_wdata;
+   wire [3:0]                       m_wstrb;
+   wire [`DATA_W-1:0]               m_rdata;
+   wire                             m_valid;
+   wire                             m_ready;
+   wire                             m_instr;
    
    picorv32 #(
               .ENABLE_PCPI(1), //enables the following 2 parameters
@@ -184,7 +184,7 @@ module system (
 	  )
    boot_mem (
 	     .clk           (clk ),
-             .rst           (reset),
+             .rst           (reset_int),
 	     .wdata         (m_wdata),
 	     .addr          (m_addr[`BOOT_ADDR_W-1:2]),
 	     .wstrb         (m_wstrb),
@@ -200,7 +200,7 @@ module system (
    iob_uart uart(
 		 //cpu interface
 		 .clk       (clk),
-		 .rst       (reset),
+		 .rst       (reset_int),
                  
 		 //cpu i/f
 		 .sel       (s_valid[`UART_BASE]),
@@ -223,19 +223,23 @@ module system (
    // RESET CONTROLLER
    //
    reg        rst_ctrl_rdy;
+   reg [15:0] soft_reset_cnt;
+   
    always @(posedge clk, posedge reset)
      if(reset)  begin
         boot <= 1'b1;
-        soft_reset <= 1'b0;
+        soft_reset_cnt <= 16'h0;
         rst_ctrl_rdy <= 1'b0;
      end else if( s_valid[`SOFT_RESET_BASE] && m_wstrb ) begin
-        soft_reset <= m_wdata[0];
-        boot <=  m_wdata[1];
+        soft_reset_cnt <= 16'hFFFF;
+        boot <=  m_wdata[0];
         rst_ctrl_rdy <= 1'b1;
-     end else begin
-        soft_reset <= 1'b0;
+     end else if (soft_reset_cnt) begin
+        soft_reset_cnt <= soft_reset_cnt - 1'b1;
         rst_ctrl_rdy <= 1'b0;
-     end 
+     end
+
+   assign soft_reset = (soft_reset_cnt != 16'h0); 
    assign s_ready[`SOFT_RESET_BASE] = rst_ctrl_rdy;
    assign s_rdata[`SOFT_RESET_BASE] = 0;
    
@@ -251,7 +255,7 @@ module system (
                   )
    cache (
 	  .clk                (clk),
-	  .reset              (reset),
+	  .reset              (reset_int),
 
           //data interface 
 	  .cache_write_data   (m_wdata),
@@ -328,7 +332,7 @@ module system (
 	  ) 
    ram (
 	.clk          (clk),
-        .rst          (reset),
+        .rst          (reset_int),
 	.wdata        (m_wdata[`DATA_W-1:0]),
 	.addr         (m_addr[`RAM_ADDR_W-1:2]),
 	.wstrb        (m_wstrb),

@@ -2,8 +2,9 @@ TOOLCHAIN_PREFIX = /opt/riscv32i/bin/riscv32-unknown-elf-
 
 PYTHON_DIR = ../python/
 UART_DIR = ../../submodules/iob-uart/c-driver
+CACHE_DIR = ../../submodules/iob-cache/c-driver
 SRC = boot.S boot.c $(UART_DIR)/iob-uart.c 
-INCLUDE =  -I. -I$(UART_DIR)
+INCLUDE =  -I. -I$(UART_DIR) -I$(CACHE_DIR)
 
 PROG_SIZE = -DPROG_SIZE=`wc -c   ../../software/firmware/firmware.bin | head -n1 | cut -d " " -f1`
 
