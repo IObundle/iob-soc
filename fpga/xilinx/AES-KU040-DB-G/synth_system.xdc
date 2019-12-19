@@ -20,6 +20,20 @@
 # ----------------------------------------------------------------------------
 
 ## System Clock 
+# LVDS Programmable Clock Generator (CDCM61002)
+#set_property  PACKAGE_PIN M5   [get_ports LVDS_CLK0_N]
+#set_property  PACKAGE_PIN M6   [get_ports LVDS_CLK0_P]
+#set_property  PACKAGE_PIN P5   [get_ports LVDS_CLK1_N]
+#set_property  PACKAGE_PIN P6   [get_ports LVDS_CLK1_P]
+
+#set_property  IOSTANDARD LVDS [get_ports LVDS_CLK0_N]
+#set_property  IOSTANDARD LVDS [get_ports LVDS_CLK0_P]
+#set_property  IOSTANDARD LVDS [get_ports LVDS_CLK1_N]
+#set_property  IOSTANDARD LVDS [get_ports LVDS_CLK1_P]
+
+#create_clock -period 10.000 [get_ports LVDS_CLK0_P]  
+
+##DDR clocks
 set_property PACKAGE_PIN H22 [get_ports c0_sys_clk_clk_p]
 set_property PACKAGE_PIN H23 [get_ports c0_sys_clk_clk_n]
 set_property IOSTANDARD DIFF_SSTL12 [get_ports c0_sys_clk_clk_p]
