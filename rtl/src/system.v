@@ -259,7 +259,7 @@ module system (
 
           //data interface 
 	  .cache_write_data   (m_wdata),
-	  .cache_addr         (m_addr[`ADDR_W-1:2]),
+	  .cache_addr         ({{`N_SLAVES_W{1'b0}},m_addr[`ADDR_W-`N_SLAVES_W-1:2]}),
 	  .cache_wstrb        (m_wstrb),
 	  .cache_read_data    (s_rdata[`CACHE_BASE]),
 	  .cpu_req            (s_valid[`CACHE_BASE]),
