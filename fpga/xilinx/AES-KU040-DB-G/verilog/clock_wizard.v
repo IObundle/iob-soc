@@ -77,10 +77,10 @@ module clock_wizard #(
    );
    // Input buffering
    //------------------------------------
-   wire   clk_in1_cock_wizard;
-   wire   clk_in2_cock_wizard;
+   wire   clk_in1_clock_wizard;
+   wire   clk_in2_clock_wizard;
    IBUFDS clkin1_ibufds
-     (.O  (clk_in1_cock_wizard),
+     (.O  (clk_in1_clock_wizard),
       .I  (clk_in1_p),
       .IB (clk_in1_n));
 
@@ -94,19 +94,19 @@ module clock_wizard #(
    //    * Unused inputs are tied off
    //    * Unused outputs are labeled unused
 
-   wire   clk_out1_cock_wizard;
-   wire   clk_out2_cock_wizard;
-   wire   clk_out3_cock_wizard;
-   wire   clk_out4_cock_wizard;
-   wire   clk_out5_cock_wizard;
-   wire   clk_out6_cock_wizard;
-   wire   clk_out7_cock_wizard;
+   wire   clk_out1_clock_wizard;
+   wire   clk_out2_clock_wizard;
+   wire   clk_out3_clock_wizard;
+   wire   clk_out4_clock_wizard;
+   wire   clk_out5_clock_wizard;
+   wire   clk_out6_clock_wizard;
+   wire   clk_out7_clock_wizard;
 
    wire [15:0] do_unused;
    wire        drdy_unused;
    wire        psdone_unused;
    wire        locked_int;
-   wire        clkfbout_cock_wizard;
+   wire        clkfbout_clock_wizard;
    wire        clkfboutb_unused;
    wire        clkout0b_unused;
    wire        clkout1_unused;
@@ -133,14 +133,14 @@ module clock_wizard #(
    plle3_adv_inst
      // Output clocks
      (
-      .CLKFBOUT            (clkfbout_cock_wizard),
-      .CLKOUT0             (clk_out1_cock_wizard),
+      .CLKFBOUT            (clkfbout_clock_wizard),
+      .CLKOUT0             (clk_out1_clock_wizard),
       .CLKOUT0B            (clkout0b_unused),
       .CLKOUT1             (clkout1_unused),
       .CLKOUT1B            (clkout1b_unused),
       // Input clock control
-      .CLKFBIN             (clkfbout_cock_wizard),
-      .CLKIN               (clk_in1_cock_wizard),
+      .CLKFBIN             (clkfbout_clock_wizard),
+      .CLKIN               (clk_in1_clock_wizard),
       // Ports for dynamic reconfiguration
       .DADDR               (7'h0),
       .DCLK                (1'b0),
@@ -170,7 +170,7 @@ module clock_wizard #(
 
    BUFG clkout1_buf
      (.O   (clk_out1),
-      .I   (clk_out1_cock_wizard));
+      .I   (clk_out1_clock_wizard));
 
 
 
