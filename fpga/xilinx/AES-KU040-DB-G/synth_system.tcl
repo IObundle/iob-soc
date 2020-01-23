@@ -33,11 +33,7 @@ if { [lindex $argv 1] == {USE_DDR} } {
     read_verilog ../../../submodules/fifo/afifo.v
     read_verilog ../../../submodules/iob-cache/rtl/header/iob-cache.vh
     read_verilog ../../../submodules/iob-cache/rtl/src/iob-cache.v
-    read_verilog ../../../submodules/iob-cache/rtl/src/data_memory.v
-    read_verilog ../../../submodules/iob-cache/rtl/src/tag_memory.v
-    read_verilog ../../../submodules/iob-cache/rtl/src/valid_memory.v
-    read_verilog ../../../submodules/iob-cache/rtl/src/xalt_1p_mem_no_initialization.v
-    read_verilog ../../../submodules/iob-cache/rtl/src/xalt_1p_mem_no_initialization_with_reset.v
+    read_verilog ../../../submodules/iob-cache/rtl/src/gen_mem_reg.v
 
     read_xdc ./ddr.xdc
 
