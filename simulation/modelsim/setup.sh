@@ -1,0 +1,2 @@
+export PATH=$PATH:/network-raid/opt/modelsimde-10.0a/modelsim_dlx/linuxpe:/network-raid/opt/modelsimde-10.0a/modelsim_dlx/bin
+LM_LICENSE_FILE=/network-raid/opt/licenses/Altera_1G_10G_MAC_maxtest09.dat:1717@sliserver26:1717@horst.critical.maxeler.com:1683@horst.critical.maxeler.com:/network-raid/opt/maxcompiler-2019.2/lib/MaxCompilerQuartusLicense.dat:/network-raid/MaxCompilerQuartusLicense.dat:/network-raid/opt/licenses/Altera_1G_10G_MAC.dat:/network-raid/opt/licenses/Altera-Quartus-2019-12-06.lic
