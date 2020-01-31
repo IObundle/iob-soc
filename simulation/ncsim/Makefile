@@ -3,13 +3,12 @@
 #
 
 #hardware configuration
-USE_RAM = 1
-USE_DDR = 0
+
 BAUD = 10000000
 #software configuration
-TEST_DIR = software/hello_world
+TEST_DIR = software/firmware
 BOOT_DIR = software/bootloader
-
+PYTHON_DIR := ../../software/python
 #
 # Do not edit beyond this point
 #
@@ -24,10 +23,9 @@ FIFO_DIR = ../../submodules/fifo
 #defines
 
 DEFINE := -define VCD
-GCC_DEFINE := -DVCD
 
 DEFINE := $(DEFINE) -define UART_BAUD_RATE=$(BAUD)
-GCC_DEFINE := $(GCC_DEFINE) -DUART_BAUD_RATE=$(BAUD)
+GCC_DEFINE := $(GCC_DEFINE) -DBAUD=$(BAUD)
 
 ifeq ($(USE_RAM),1)
 DEFINE := $(DEFINE) -define USE_RAM
@@ -50,40 +48,31 @@ EFLAGS = -errormax 15 -access +wc -status
 SFLAGS = -errormax 15 -status -CMDFILE $(RTL_DIR)/testbench
 
 
-all: firmware boot $(VSRC)
-	SRC="$(VSRC)" CFLAGS="$(CFLAGS)" EFLAGS="$(EFLAGS)" SFLAGS="$(SFLAGS)" ./run_ncsim.sh
+all: firmware.hex boot.hex $(VSRC)
+	SRC="$(VSRC)" CFLAGS="$(CFLAGS)" EFLAGS="$(EFLAGS)" SFLAGS="$(SFLAGS)" PROG_SIZE="-define PROG_SIZE=$(shell wc -c firmware.bin | head -n1 | cut -d " " -f1)" ./run_ncsim.sh
 
-firmware:
+firmware.hex:
 	scp -P 1415 ../../rtl/include/system.vh ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/rtl/include/system.vh
-	ssh -p 1415 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_DIR)/$(TEST_DIR) DEFINE="$(GCC_DEFINE)"'
+	ssh -p 1415 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_DIR)/$(TEST_DIR) BAUD=$(BAUD) DEFINE="$(GCC_DEFINE)"'
 	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(TEST_DIR)/firmware.hex .
-	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(TEST_DIR)/firmware_0.hex ./firmware_0.dat
-	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(TEST_DIR)/firmware_1.hex ./firmware_1.dat
-	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(TEST_DIR)/firmware_2.hex ./firmware_2.dat
-	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(TEST_DIR)/firmware_3.hex ./firmware_3.dat
+	$(PYTHON_DIR)/hex_split.py firmware
+	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(TEST_DIR)/firmware.bin .
 
-boot: 
-ifeq ($(USE_RAM)$(USE_DDR),00)
+boot.hex: 
 	scp -P 1415 ../../rtl/include/system.vh ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/rtl/include/system.vh
-	ssh -p 1415 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_DIR)/$(BOOT_DIR) DEFINE="$(GCC_DEFINE)"'
-	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(TEST_DIR)/firmware_0.hex ./boot_0.dat
-	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(TEST_DIR)/firmware_1.hex ./boot_1.dat
-	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(TEST_DIR)/firmware_2.hex ./boot_2.dat
-	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(TEST_DIR)/firmware_3.hex ./boot_3.dat
+ifeq ($(shell grep USE_ $(RTL_DIR)/include/system.vh | grep -v \/\/),)
+	cp firmware.hex boot.hex
 else 
-	scp -P 1415 ../../rtl/include/system.vh ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/rtl/include/system.vh
-	ssh -p 1415 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_DIR)/$(BOOT_DIR) DEFINE="$(GCC_DEFINE)"'
-	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(BOOT_DIR)/boot_0.hex ./boot_0.dat
-	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(BOOT_DIR)/boot_1.hex ./boot_1.dat
-	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(BOOT_DIR)/boot_2.hex ./boot_2.dat
-	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(BOOT_DIR)/boot_3.hex ./boot_3.dat
+	ssh -p 1415 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_DIR)/$(BOOT_DIR) BAUD=$(BAUD) DEFINE="$(GCC_DEFINE)"'
+	scp -P 1415 ${IOB_USER}@iobundle.ddns.net:./${REMOTE_DIR}/$(BOOT_DIR)/boot.hex .
 endif
+	$(PYTHON_DIR)/hex_split.py boot
 
 clean:
-	@rm -f *# *~ *.vcd *.dat *.hex
-	@rm -f ncsim.key
+	@rm -f *# *~ *.vcd *.dat *.hex firmware.bin
+	@rm -f xmsim.key
 	@rm -f *.log
-	@rm -rf INCA_libs
+	@rm -rf xcelium.d
 	ssh -p 1415 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_DIR)/$(TEST_DIR) clean --no-print-directory'
 	ssh -p 1415 ${IOB_USER}@iobundle.ddns.net 'make -C $(REMOTE_DIR)/$(BOOT_DIR) clean --no-print-directory'
 
