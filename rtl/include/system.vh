@@ -4,11 +4,12 @@
 
 //Optional memories (passed as command line macro)
 //`define USE_RAM
-`define USE_DDR
+//`define USE_DDR
 
 // slaves
 // minimum 3 slaves: boot, uart and reset
-// optional ram, and ddr (cache + cache_ctr)
+// optional 1 RAM slave for main memory
+// DDR needs 2 slaves: cache and cache controller
 `define N_SLAVES 5
 
 //bits reserved to identify slave
