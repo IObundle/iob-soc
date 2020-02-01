@@ -2,8 +2,6 @@
 # Edit configuration here
 #
 
-#hardware configuration
-
 BAUD = 10000000
 
 #software paths
@@ -18,31 +16,32 @@ UART_DIR = ../../submodules/iob-uart/rtl
 FIFO_DIR = ../../submodules/fifo
 
 #hardware defines
-
 HW_DEFINE := -define VCD
 HW_DEFINE += -define UART_BAUD_RATE=$(BAUD)
-HW_DEFINE += 
 
 #hardware includes
 HW_INCLUDE = -incdir $(RTL_DIR)/include -incdir $(UART_DIR)/include
 
-#
+#hardware sources
 VSRC =  $(RISCV_DIR)/picorv32.v $(UART_DIR)/src/iob-uart.v $(FIFO_DIR)/afifo.v $(RTL_DIR)/testbench/system_tb.v  $(RTL_DIR)/src/*.v
 
-#ncsim verilog simulator flags
+#simulator flags
 CFLAGS = -errormax 15 -status -update -linedebug -sv $(HW_DEFINE) $(HW_INCLUDE)
 EFLAGS = -errormax 15 -access +wc -status
 SFLAGS = -errormax 15 -status -CMDFILE $(RTL_DIR)/testbench
 
+#simulate
 all: firmware.hex boot.hex $(VSRC)
 	VSRC="$(VSRC)" CFLAGS="$(CFLAGS)" PROG_SIZE="-define PROG_SIZE=$(shell wc -c firmware.bin | head -n1 | cut -d " " -f1)" EFLAGS="$(EFLAGS)" SFLAGS="$(SFLAGS)" ./run_ncsim.sh
 
+#make firmware
 firmware.hex:
 	make -C $(FIRM_DIR) BAUD=$(BAUD)
 	cp $(FIRM_DIR)/firmware.hex .
 	$(PYTHON_DIR)/hex_split.py firmware
 	cp $(FIRM_DIR)/firmware.bin .
 
+#make boot loader
 boot.hex: 
 ifeq ($(shell grep USE_ $(RTL_DIR)/include/system.vh | grep -v \/\/),)
 	cp firmware.hex boot.hex
