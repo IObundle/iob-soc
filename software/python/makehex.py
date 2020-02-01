@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 
 from sys import argv
 
@@ -13,8 +13,8 @@ assert len(bindata) % 4 == 0
 
 for i in range(nwords):
     if i < len(bindata) // 4:
-        w = bindata[4*i : 4*i+4]
-        print("%02x%02x%02x%02x" % (w[3], w[2], w[1], w[0]))
+        w = bindata
+        print('%02x%02x%02x%02x' % (ord(w[4*i+3]), ord(w[4*i+2]), ord(w[4*i+1]), ord(w[4*i+0])))
     else:
         print("00000000")
 

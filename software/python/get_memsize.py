@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 
 import sys
 import subprocess
@@ -13,4 +13,4 @@ with open("system.h") as origin:
 line_split = line.split()
 line_count = 2**(int(line_split[2])-2)
 
-print(line_count)
+print line_count

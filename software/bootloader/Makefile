@@ -1,4 +1,4 @@
-TOOLCHAIN_PREFIX = /opt/riscv32i/bin/riscv32-unknown-elf-
+TOOLCHAIN_PREFIX = riscv32-unknown-elf-
 
 PYTHON_DIR = ../python/
 UART_DIR = ../../submodules/iob-uart/c-driver
