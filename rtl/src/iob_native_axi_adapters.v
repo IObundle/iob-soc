@@ -4,7 +4,8 @@
 
 //NATIVE - AXI_LITE adapter
 module native_axi_adapter (
-                             input         clk, resetn,
+                             input         clk, 
+                             input         reset,
 
                              // AXI4-lite interface
                              output        mem_axi_awvalid,
@@ -56,7 +57,7 @@ module native_axi_adapter (
    assign mem_rdata = mem_axi_rdata;
 
    always @(posedge clk) begin
-      if (!resetn) begin
+      if (reset) begin
          ack_awvalid <= 0;
       end else begin
          xfer_done <= mem_valid && mem_ready;
