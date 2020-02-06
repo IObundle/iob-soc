@@ -34,6 +34,12 @@ int main()
   uart_puts ("Loading program from UART...\n");
   uart_printf("load_address=%x, prog_size=%d \n", MAIN_MEM, PROG_SIZE);
 
+  //clean main memory
+  for (int i=0 ; i < (1 << (RAM_ADDR_W-2)); i++)
+    RAM_PUTINT(MAIN_MEM+4*i, 0);
+
+
+  //write program to main memory
   for (int i=0 ; i < PROG_SIZE; i++) {
     //uart_printf("a %d\n", i);
     char c = uart_getc();

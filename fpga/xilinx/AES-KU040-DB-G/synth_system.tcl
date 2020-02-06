@@ -7,7 +7,7 @@ read_verilog ../../../rtl/include/system.vh
 read_verilog ../../../submodules/iob-uart/rtl/include/iob-uart.vh
 
 #clock
-if { [lindex $argv 1] != {USE_DDR} } {
+if { [lindex $argv 0] != {USE_DDR} } {
     read_verilog verilog/clock_wizard.v
 }
 
@@ -28,7 +28,7 @@ read_verilog ../../../rtl/src/iob_1p_mem.v
 
 set_property part xcku040-fbva676-1-c [current_project]
 
-if { [lindex $argv 1] == {USE_DDR} } {
+if { [lindex $argv 0] == {USE_DDR} } {
     
     read_verilog ../../../submodules/fifo/afifo.v
     read_verilog ../../../submodules/iob-cache/rtl/header/iob-cache.vh
@@ -88,7 +88,7 @@ if { [lindex $argv 1] == {USE_DDR} } {
 
 read_xdc ./synth_system.xdc
 
-synth_design -part xcku040-fbva676-1-c -top top_system -verilog_define UART_BAUD_RATE=[lindex $argv 0]
+synth_design -part xcku040-fbva676-1-c -top top_system
 
 opt_design
 
