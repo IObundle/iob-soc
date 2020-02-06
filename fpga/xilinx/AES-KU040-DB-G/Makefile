@@ -26,7 +26,7 @@ all: synth_system.bit
 
 synth_system.bit: *.xdc $(VSRC) firmware.hex boot.hex
 	rm -f $@.log
-	vivado -nojournal -log $@.log -mode batch -source synth_system.tcl -tclargs $(BAUD) $(USE_DDR)
+	vivado -nojournal -log $@.log -mode batch -source synth_system.tcl -tclargs $(USE_DDR)
 	-grep -B4 -A10 'CLB LUTs' $@.log
 	-grep -B1 -A9 ^Slack $@.log && echo
 
