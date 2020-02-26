@@ -5,6 +5,36 @@ SoC template containing a RISC-V processor (iob-rv32), a UART (iob-uart) the fol
 ## Update submodules if you have not
 ``git submodule update --init --recursive``
 
+## Install RISC-V GNU Compiler Toolchain
+
+#Get sources
+
+```
+git clone https://github.com/riscv/riscv-gnu-toolchain
+cd riscv-gnu-toolchain
+git submodule update --init --recursive
+git checkout <stable tag>
+git submodule update --init --recursive
+```
+
+#Prerequisites
+
+```
+sudo apt-get install autoconf automake autotools-dev curl python3 libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev
+```
+
+#Instalation
+
+```
+sudo ./configure --prefix=path/to/riscv --enable-multilib
+sudo make
+```
+
+#Compilation
+
+```
+path/to/riscv/riscv32i-unknown-elf-gcc -march=rv32im -mabi=ilp32 <C sources> -o <exec>
+```
 
 ## Edit the system configuration file: rtl/system.vh
 
