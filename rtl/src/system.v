@@ -68,7 +68,6 @@ module system (
    //
    wire                             soft_reset;   
    wire                             reset_int = reset | soft_reset;
-   reg                              boot ;   
    
    //
    //  CPU
@@ -123,11 +122,12 @@ module system (
    //
    //ADDRESS TRANSLATOR
    //
-   //choose main memory according to reset condition
-   reg [`N_SLAVES_W-1 : 0]                m_addr_int;
+   //choose main memory according to boot status
+   reg [`N_SLAVES_W-1 : 0]          m_addr_int;
+   reg                              boot ;   
 
    always @*
-     if (!boot && !m_addr[`ADDR_W-1 -: `N_SLAVES_W])
+     if (!m_addr[`ADDR_W-1 -: `N_SLAVES_W] && !boot)
 `ifdef USE_DDR
        m_addr_int = `N_SLAVES_W'd`CACHE_BASE;
 `else
@@ -142,7 +142,7 @@ module system (
    //
    
    wire [`DATA_W-1:0]                     s_rdata[`N_SLAVES-1:0];
-   wire [`N_SLAVES*`DATA_W-1:0]            s_rdata_concat;
+   wire [`N_SLAVES*`DATA_W-1:0]           s_rdata_concat;
    wire [`N_SLAVES-1:0]                   s_valid;
    wire [`N_SLAVES-1:0]                   s_ready;
    
@@ -175,24 +175,24 @@ module system (
 
    
    //
-   // BOOT RAM
+   // BOOT SUBSYSTEM
    //
 
-   ram  #(
-	  .ADDR_W(`BOOT_ADDR_W-2),
-          .NAME("boot")
-	  )
-   boot_mem (
-	     .clk           (clk ),
-             .rst           (reset_int),
-	     .wdata         (m_wdata),
-	     .addr          (m_addr[`BOOT_ADDR_W-1:2]),
-	     .wstrb         (m_wstrb),
-	     .rdata         (s_rdata[`BOOT_BASE]),
-             .valid         (s_valid[`BOOT_BASE]),
-             .ready         (s_ready[`BOOT_BASE])
+   boot_mem  #(
+	       .ADDR_W(`BOOT_ADDR_W-2)
+	       )
+   boot_mem0 (
+	      .clk          (clk ),
+              .rst          (reset_int),
+              
+	      .wdata        (m_wdata),
+	      .addr         (m_addr[`BOOT_ADDR_W-1:2]),
+	      .wstrb        (m_wstrb),
+	      .rdata        (s_rdata[`BOOT_BASE]),
+              .valid        (s_valid[`BOOT_BASE]),
+              .ready        (s_ready[`BOOT_BASE])
 	     );
-
+   
 
    //
    // UART
@@ -220,14 +220,18 @@ module system (
 		 );
    
    //
-   // RESET CONTROLLER
+   // RESTART CONTROLLER
    //
    reg        rst_ctrl_rdy;
    reg [15:0] soft_reset_cnt;
    
    always @(posedge clk, posedge reset)
-     if(reset)  begin
+     if(reset) begin
+`ifdef USE_BOOT
         boot <= 1'b1;
+`else
+        boot <= 1'b0;        
+`endif
         soft_reset_cnt <= 16'h0;
         rst_ctrl_rdy <= 1'b0;
      end else if( s_valid[`SOFT_RESET_BASE] && m_wstrb ) begin
@@ -325,12 +329,11 @@ module system (
 	  );
 `endif
 
-`ifdef USE_RAM
    ram  #(
 	  .ADDR_W(`RAM_ADDR_W-2),
-          .NAME("firmware")
-	  ) 
-   ram (
+          .FILE("firmware")
+	  )
+   ram0 (
 	.clk          (clk),
         .rst          (reset_int),
 	.wdata        (m_wdata[`DATA_W-1:0]),
@@ -340,6 +343,5 @@ module system (
         .valid        (s_valid[`RAM_BASE]),
         .ready        (s_ready[`RAM_BASE])
 	);
-`endif
    
 endmodule

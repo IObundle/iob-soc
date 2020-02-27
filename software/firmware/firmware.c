@@ -8,7 +8,7 @@ int main()
 { 
   uart_init(UART,UART_CLK_FREQ/UART_BAUD_RATE);   
 
-  uart_puts("Hello world!\n");
+  uart_printf("Hello world!\n");
 
   uart_txwait();
 

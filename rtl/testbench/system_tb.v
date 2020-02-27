@@ -63,7 +63,7 @@ module system_tb;
 
 `ifdef USE_DDR
  `include "boot_tb.v"
-`elsif USE_RAM
+`elsif USE_BOOT
  `include "boot_tb.v"
 `endif
 

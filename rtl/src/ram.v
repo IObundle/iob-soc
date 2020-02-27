@@ -3,7 +3,7 @@
 
 module ram #(
 	     parameter ADDR_W = 12, //must be lower than ADDR_W-N_SLAVES_W
-             parameter NAME = "ram"	          
+             parameter FILE = "none"	          
 		     )
    (      
           input                clk,
@@ -21,8 +21,10 @@ module ram #(
 
    // byte memories
    // byte 0
+   parameter file_name_0 = (FILE == "none")? "none": {FILE, "_0", ".dat"};
+//   parameter file_name_0 = {FILE, "_0", ".dat"};
    iob_1p_mem  #(
-                  .MEM_INIT_FILE({NAME, "_0", ".dat"}),
+                  .FILE(file_name_0),
                   .DATA_W(8),
                   .ADDR_W(ADDR_W))
    main_mem_byte0
@@ -36,8 +38,10 @@ module ram #(
       );
 
    //byte 1
-   iob_1p_mem  #(
-                  .MEM_INIT_FILE({NAME, "_1", ".dat"}),
+   parameter file_name_1 = (FILE == "none")? "none": {FILE, "_1", ".dat"};
+//     parameter file_name_1 = {FILE, "_1", ".dat"};
+ iob_1p_mem  #(
+                  .FILE(file_name_1),
                   .DATA_W(8),
                   .ADDR_W(ADDR_W))
    main_mem_byte1 (
@@ -50,8 +54,10 @@ module ram #(
                    );
 
    // byte 2
-   iob_1p_mem  #(
-                  .MEM_INIT_FILE({NAME, "_2", ".dat"}),
+   parameter file_name_2 = (FILE == "none")? "none": {FILE, "_2", ".dat"};
+//     parameter file_name_2 = {FILE, "_2", ".dat"};
+ iob_1p_mem  #(
+                  .FILE(file_name_2),
                   .DATA_W(8),
                   .ADDR_W(ADDR_W))
    main_mem_byte2 (
@@ -64,8 +70,10 @@ module ram #(
                    );
 
    //byte 3
-   iob_1p_mem  #(
-                  .MEM_INIT_FILE({NAME, "_3", ".dat"}),
+   parameter file_name_3 = (FILE == "none")? "none": {FILE, "_3", ".dat"};
+//     parameter file_name_3 = {FILE, "_3", ".dat"};
+ iob_1p_mem  #(
+                  .FILE(file_name_3),
                   .DATA_W(8),
                   .ADDR_W(ADDR_W))
    main_mem_byte3 (
