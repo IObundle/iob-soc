@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 module iob_1p_mem #(
-		    parameter MEM_INIT_FILE=0,
+		    parameter FILE="none",
 		    parameter DATA_W=8,
 		    parameter ADDR_W=14
 		    )
@@ -15,13 +15,15 @@ module iob_1p_mem #(
     );
 
    //this allows ISE 14.7 to work; do not remove
-   parameter mem_init_file_int = MEM_INIT_FILE;
+   parameter mem_init_file_int = FILE;
 
    // Declare the RAM
    reg [DATA_W-1:0] 	      ram[2**ADDR_W-1:0];
 
    // Initialize the RAM
-   initial $readmemh(mem_init_file_int, ram, 0, 2**ADDR_W - 1);
+   initial 
+     if(mem_init_file_int != "none")
+       $readmemh(mem_init_file_int, ram, 0, 2**ADDR_W - 1);
 
    // Operate the RAM
    always @ (posedge clk)

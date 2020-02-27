@@ -27,14 +27,11 @@ firmware.hex:
 	$(PYTHON_DIR)/hex_split.py firmware
 
 
-boot.hex: 
-ifeq ($(shell grep USE_ $(RTL_DIR)/include/system.vh | grep -v \/\/),)
-	cp $(FIRM_DIR)/firmware.hex boot.hex
-else 
+boot.hex:
 	make -C $(BOOT_DIR) BAUD=$(BAUD)
 	cp $(BOOT_DIR)/boot.hex .
-endif
 	$(PYTHON_DIR)/hex_split.py boot
+	cp boot.hex boot.dat
 
 clean:
 	@rm -f *# *~ *.vcd *.dat *.hex ./a.out

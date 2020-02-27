@@ -1,13 +1,10 @@
-# iob-SoC-e
+# iob-SoC
 
 SoC template containing a RISC-V processor (iob-rv32), a UART (iob-uart) the following options for booting: no boot (firmware already in internal memory), load firmware to internal RAM and start, load firmware to external DDR and start.
 
-## Update submodules if you have not
-``git submodule update --init --recursive``
+## Install RISC-V GNU Compiler Toolchain if you have not
 
-## Install RISC-V GNU Compiler Toolchain
-
-#Get sources
+###Get sources
 
 ```
 git clone https://github.com/riscv/riscv-gnu-toolchain
@@ -17,24 +14,28 @@ git checkout <stable tag>
 git submodule update --init --recursive
 ```
 
-#Prerequisites
+###Prerequisites
 
 ```
 sudo apt-get install autoconf automake autotools-dev curl python3 libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev
 ```
 
-#Instalation
+###Instalation
 
 ```
 sudo ./configure --prefix=path/to/riscv --enable-multilib
 sudo make
 ```
 
-#Compilation
+###Compilation
 
 ```
 path/to/riscv/riscv32i-unknown-elf-gcc -march=rv32im -mabi=ilp32 <C sources> -o <exec>
 ```
+
+## Update submodules if you have not
+``git submodule update --init --recursive``
+
 
 ## Edit the system configuration file: rtl/system.vh
 
