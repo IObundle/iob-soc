@@ -1,8 +1,9 @@
 `timescale 1ns / 1ps
 
 module rom #(
-	     parameter ADDR_W = 9, //must be lower than ADDR_W-N_SLAVES_W
+	     parameter ADDR_W = 9,
              parameter DATA_W = 32,
+	     parameter DATA_D = 9,
              parameter FILE = "rom"	          
 	     )
    (
@@ -15,11 +16,11 @@ module rom #(
    parameter mem_init_file_int = FILE;
 
    // Declare the ROM
-   reg [DATA_W-1:0] 	      rom[2**ADDR_W-1:0];
+   reg [DATA_W-1:0] 	      rom[DATA_D-1:0];
 
    // Initialize the ROM
    initial 
-     $readmemh(mem_init_file_int, rom, 0, 2**ADDR_W - 1);
+     $readmemh(mem_init_file_int, rom, 0, DATA_D - 1);
 
    // Operate the ROM
    always @(posedge clk)

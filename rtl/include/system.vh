@@ -3,7 +3,7 @@
 //
 
 //Optional memories (passed as command line macro)
-//`define USE_BOOT
+`define USE_BOOT
 //`define USE_DDR
 
 // slaves
@@ -30,11 +30,11 @@
 `define DATA_W 32
 
 //boot memory address space (log2 of byte size)
-//if no RAM or DDR set to same size as RAM
-`define BOOT_ADDR_W 12
+`define BOOTROM_ADDR_W 11
+`define BOOTRAM_ADDR_W 12
 
 //main memory address space (log2 of byte size)
-`define RAM_ADDR_W 11
+`define MAINRAM_ADDR_W 11
 
 //uart 
 `define UART_CLK_FREQ 100000000

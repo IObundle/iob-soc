@@ -179,14 +179,16 @@ module system (
    //
 
    boot_mem  #(
-	       .ADDR_W(`BOOT_ADDR_W-2)
+	       .ROM_ADDR_W(`BOOTROM_ADDR_W-2),
+               .ROM_DATA_D(`BOOT_SIZE/4),
+	       .RAM_ADDR_W(`BOOTRAM_ADDR_W-2)
 	       )
    boot_mem0 (
 	      .clk          (clk ),
               .rst          (reset_int),
               
 	      .wdata        (m_wdata),
-	      .addr         (m_addr[`BOOT_ADDR_W-1:2]),
+	      .addr         (m_addr[`BOOTRAM_ADDR_W-1:2]),
 	      .wstrb        (m_wstrb),
 	      .rdata        (s_rdata[`BOOT_BASE]),
               .valid        (s_valid[`BOOT_BASE]),
@@ -329,19 +331,25 @@ module system (
 	  );
 `endif
 
+`ifndef USE_DDR
    ram  #(
-	  .ADDR_W(`RAM_ADDR_W-2),
+	  .ADDR_W(`MAINRAM_ADDR_W-2),
+ `ifndef USE_BOOT
           .FILE("firmware")
+ `else
+          .FILE("none")
+ `endif
 	  )
    ram0 (
 	.clk          (clk),
         .rst          (reset_int),
 	.wdata        (m_wdata[`DATA_W-1:0]),
-	.addr         (m_addr[`RAM_ADDR_W-1:2]),
+	.addr         (m_addr[`MAINRAM_ADDR_W-1:2]),
 	.wstrb        (m_wstrb),
 	.rdata        (s_rdata[`RAM_BASE]),
         .valid        (s_valid[`RAM_BASE]),
         .ready        (s_ready[`RAM_BASE])
 	);
-   
+`endif
+
 endmodule
