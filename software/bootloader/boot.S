@@ -3,8 +3,8 @@
 .global main
 
 /* set stack pointer */
-lui sp, %hi(1<<BOOT_ADDR_W)
-addi sp, sp, %lo(1<<BOOT_ADDR_W)
+lui sp, %hi(1<<BOOTRAM_ADDR_W)
+addi sp, sp, %lo(1<<BOOTRAM_ADDR_W)
 
 /* call main */
 jal ra, main

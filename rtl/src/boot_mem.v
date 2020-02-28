@@ -1,7 +1,9 @@
 `timescale 1 ns / 1 ps
 
 module boot_mem #(
-	          parameter ADDR_W = 9 //must be lower than ADDR_W-N_SLAVES_W
+	          parameter ROM_ADDR_W = 9,
+	          parameter ROM_DATA_D = 9,
+	          parameter RAM_ADDR_W = 9
 		  )
    (
     input                clk,
@@ -9,7 +11,7 @@ module boot_mem #(
 
     //native interface 
     input [`DATA_W-1:0]  wdata,
-    input [ADDR_W-1:0]   addr,
+    input [RAM_ADDR_W-1:0]   addr,
     input [3:0]          wstrb,
     
     output [`DATA_W-1:0] rdata,
@@ -18,10 +20,10 @@ module boot_mem #(
     );
               
    //
-   // COPY ADDRESS COUNTER
+   // COPY ROM TO RAM
    //
-   reg [ADDR_W-1:0]      addr_cnt;
-   reg [ADDR_W-1:0]      addr_cnt_reg;
+   reg [ROM_ADDR_W-1:0]      addr_cnt;
+   reg [ROM_ADDR_W-1:0]      addr_cnt_reg;
    reg [2:0]             copy_done;
 
    always @(posedge clk, posedge rst)
@@ -32,7 +34,7 @@ module boot_mem #(
      end else begin 
         copy_done[2:1] <= copy_done[1:0];
         addr_cnt_reg <= addr_cnt;
-        if (addr_cnt != (2**ADDR_W-1))
+        if (addr_cnt != (2**ROM_ADDR_W-1))
            addr_cnt <= addr_cnt + 1'b1;
         else
           copy_done[0] <= 1'b1;
@@ -42,7 +44,8 @@ module boot_mem #(
    //BOOT ROM
    reg [`DATA_W-1:0] rom_rdata;
    rom #(
-	 .ADDR_W(ADDR_W),
+	 .ADDR_W(ROM_ADDR_W),
+         .DATA_D(ROM_DATA_D),
          .FILE("boot.dat")
 	 )
    boot_rom (
@@ -55,7 +58,7 @@ module boot_mem #(
    wire              ram_ready;
    
    ram #(
-	 .ADDR_W(ADDR_W),
+	 .ADDR_W(RAM_ADDR_W),
          .FILE("none")
 	 )
    boot_ram (
