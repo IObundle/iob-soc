@@ -13,13 +13,14 @@ all: boot.hex
 boot.hex: $(SRC) system.h $(UART_DIR)/iob-uart.h boot.lds
 	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -nostdlib -o boot.elf -DUART_BAUD_RATE=$(BAUD) -DPROG_SIZE=$(PROG_SIZE) $(INCLUDE) $(SRC) --std=gnu99 -Wl,-Bstatic,-T,boot.lds,-Map,boot.map,--strip-debug -lgcc -lc
 	$(TOOLCHAIN_PREFIX)objcopy -O binary boot.elf boot.bin
-	$(eval MEM_SIZE=`./get_bootsize.sh`)
+#	$(eval MEM_SIZE=`./get_bootsize.sh`) get it from firmware size
+	$(eval MEM_SIZE=`$(PYTHON_DIR)/get_memsize.py BOOTROM_ADDR_W`)
 	$(PYTHON_DIR)/makehex.py boot.bin $(MEM_SIZE) > boot.hex
 
 system.h: ../../rtl/include/system.vh
 	sed s/\`/\#/g ../../rtl/include/system.vh > system.h
 
 clean:
-	@rm -rf boot.bin boot.elf boot.hex boot.map boot_*.hex boot_?.dat
+	@rm -rf boot.bin boot.elf boot.map *.hex *.dat
 	@rm -rf uart_loader *~
 	@rm -rf ../uart_loader system.h

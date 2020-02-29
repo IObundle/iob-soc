@@ -34,7 +34,7 @@
 `define BOOTRAM_ADDR_W 12
 
 //main memory address space (log2 of byte size)
-`define MAINRAM_ADDR_W 11
+`define MAINRAM_ADDR_W 13
 
 //uart 
 `define UART_CLK_FREQ 100000000
