@@ -27,7 +27,7 @@ module int_mem
    //
 
    //address to copy boot rom to
-   parameter BOOTRAM_ADDR = 2**(`MAINRAM_ADDR_W-2)-2**(`BOOTROM_ADDR_W-2);
+   parameter BOOTRAM_ADDR = 2**(`BOOTRAM_ADDR_W-2)-2**(`BOOTROM_ADDR_W-2);
 
    //address counter
    reg [`BOOTROM_ADDR_W-3:0]    addr_cnt;
@@ -72,6 +72,7 @@ module int_mem
    wire                      ram_valid = boot_valid | main_valid | ~copy_done[0];
    wire                      ram_ready;
 
+   //address, write data and write strobe
    always @*
        if(copy_done[1]) begin
           ram_wdata = wdata;
@@ -90,6 +91,12 @@ module int_mem
    wire [`DATA_W-1:0]        rdata;   
    assign boot_rdata = rdata;
    assign main_rdata = rdata;
+
+   //ready signals
+   assign boot_ready = copy_done[2] & ram_ready;
+   assign main_ready = copy_done[2] & ram_ready;
+   
+
    
    ram #(
 	 .ADDR_W(`BOOTRAM_ADDR_W-2),
@@ -110,7 +117,4 @@ module int_mem
              .ready         (ram_ready)
 	     );
 
-   assign boot_ready = copy_done[2] & ram_ready;
-   assign main_ready = copy_done[2] & ram_ready;
-   
 endmodule
