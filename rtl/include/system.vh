@@ -10,16 +10,16 @@
 // minimum 3 slaves: boot, uart and reset
 // optional 1 RAM slave for main memory
 // DDR needs 2 slaves: cache and cache controller
-`define N_SLAVES 5
+`define N_SLAVES 4
 
-//bits reserved to identify slave
+//bits reserved to identify slave (2**N_SLAVES-1 is reserved)
 `define N_SLAVES_W 3
 
 //peripheral address prefixes
 `define BOOT_BASE 0
 `define UART_BASE 1
 `define SOFT_RESET_BASE 2
-`define RAM_BASE 3
+`define MAINRAM_BASE 3
 `define CACHE_BASE 3
 `define CACHE_CTRL_BASE 4
 
@@ -31,10 +31,8 @@
 
 //boot memory address space (log2 of byte size)
 `define BOOTROM_ADDR_W 11
-`define BOOTRAM_ADDR_W 12
+`define BOOTRAM_ADDR_W 13
 
 //main memory address space (log2 of byte size)
+//must be same as BOOTRAM_ADDR_W if DDR is unused
 `define MAINRAM_ADDR_W 13
-
-//uart 
-`define UART_CLK_FREQ 100000000

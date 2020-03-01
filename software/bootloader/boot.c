@@ -6,13 +6,14 @@
 #define RAM_PUTCHAR(location, value) (*((char*) (location)) = value)
 #define RAM_PUTINT(location, value) (*((int*) (location)) = value)
 
-
 //peripheral addresses 
-//memory
+
+//main memory (where to copy firmware to)
+
 #ifdef USE_DDR
 #define MAIN_MEM (CACHE_BASE<<(ADDR_W-N_SLAVES_W))
 #else
-#define MAIN_MEM (RAM_BASE<<(ADDR_W-N_SLAVES_W))
+#define MAIN_MEM (MAINRAM_BASE<<(ADDR_W-N_SLAVES_W))
 #endif
 
 //uart

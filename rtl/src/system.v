@@ -11,7 +11,7 @@ module system (
 
                //address write
                output [0:0]         m_axi_awid, 
-               output [31:0]        m_axi_awaddr,
+               output [`ADDR_W-1:0] m_axi_awaddr,
                output [7:0]         m_axi_awlen,
                output [2:0]         m_axi_awsize,
                output [1:0]         m_axi_awburst,
@@ -37,7 +37,7 @@ module system (
 
                //address read
                output [0:0]         m_axi_arid,
-               output [31:0]        m_axi_araddr, 
+               output [`ADDR_W-1:0] m_axi_araddr, 
                output [7:0]         m_axi_arlen,
                output [2:0]         m_axi_arsize,
                output [1:0]         m_axi_arburst,
@@ -120,20 +120,24 @@ module system (
 		  );
 
    //
-   //ADDRESS TRANSLATOR
+   //ADDRESS PREFIX TRANSLATOR
    //
    //choose main memory according to boot status
    reg [`N_SLAVES_W-1 : 0]          m_addr_int;
    reg                              boot ;   
 
    always @*
+     //if main memory is being addressed and system not booting
      if (!m_addr[`ADDR_W-1 -: `N_SLAVES_W] && !boot)
+       //if DDR being used point to cache
 `ifdef USE_DDR
        m_addr_int = `N_SLAVES_W'd`CACHE_BASE;
 `else
-   m_addr_int = `N_SLAVES_W'd`RAM_BASE;
+       //if DDR  not being used point to RAM
+       m_addr_int = `N_SLAVES_W'd`MAINRAM_BASE;
 `endif
      else
+       //do not modify address prefix 
        m_addr_int = m_addr[`ADDR_W-1 -:`N_SLAVES_W];
 
    
@@ -175,25 +179,28 @@ module system (
 
    
    //
-   // BOOT SUBSYSTEM
+   // INTERNAL MEMORY SUBSYSTEM
    //
 
-   boot_mem  #(
-	       .ROM_ADDR_W(`BOOTROM_ADDR_W-2),
-               .ROM_DATA_D(`BOOT_SIZE/4),
-	       .RAM_ADDR_W(`BOOTRAM_ADDR_W-2)
-	       )
-   boot_mem0 (
-	      .clk          (clk ),
-              .rst          (reset_int),
-              
-	      .wdata        (m_wdata),
-	      .addr         (m_addr[`BOOTRAM_ADDR_W-1:2]),
-	      .wstrb        (m_wstrb),
-	      .rdata        (s_rdata[`BOOT_BASE]),
-              .valid        (s_valid[`BOOT_BASE]),
-              .ready        (s_ready[`BOOT_BASE])
-	     );
+   int_mem int_mem0 (
+	             .clk                (clk ),
+                     .rst                (reset_int),
+                     
+                     //boot mem interface
+	             .boot_rdata         (s_rdata[`BOOT_BASE]),
+                     .boot_valid         (s_valid[`BOOT_BASE]),
+                     .boot_ready         (s_ready[`BOOT_BASE]),
+
+                     //main mem interface
+	             .main_rdata         (s_rdata[`MAINRAM_BASE]),
+                     .main_valid         (s_valid[`MAINRAM_BASE]),
+                     .main_ready         (s_ready[`MAINRAM_BASE]),
+
+                     //common
+	             .addr               (m_addr[`MAINRAM_ADDR_W-1:2]),
+	             .wdata              (m_wdata),
+	             .wstrb              (m_wstrb)
+	             );
    
 
    //
@@ -251,7 +258,7 @@ module system (
    
 
    //
-   // MAIN MEMORY
+   // DDR MAIN MEMORY
    //
 
 `ifdef USE_DDR
@@ -329,27 +336,6 @@ module system (
           .R_VALID(m_axi_rvalid),  
           .R_READY(m_axi_rready)  
 	  );
-`endif
-
-`ifndef USE_DDR
-   ram  #(
-	  .ADDR_W(`MAINRAM_ADDR_W-2),
- `ifndef USE_BOOT
-          .FILE("firmware")
- `else
-          .FILE("none")
- `endif
-	  )
-   ram0 (
-	.clk          (clk),
-        .rst          (reset_int),
-	.wdata        (m_wdata[`DATA_W-1:0]),
-	.addr         (m_addr[`MAINRAM_ADDR_W-1:2]),
-	.wstrb        (m_wstrb),
-	.rdata        (s_rdata[`RAM_BASE]),
-        .valid        (s_valid[`RAM_BASE]),
-        .ready        (s_ready[`RAM_BASE])
-	);
 `endif
 
 endmodule

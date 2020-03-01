@@ -157,7 +157,7 @@ module system_tb;
       input [`DATA_W-1:0] N_WORDS;
       integer             i, j, k;
   
-      $readmemh("firmware.hex", progmem, 0, N_WORDS-1);
+      $readmemh("progmem.hex", progmem, 0, N_WORDS-1);
 
       k=0;
       
