@@ -60,16 +60,16 @@ if type == "SH":
     for i in range(bytes):
         print "    .WEB"+str(i)+"(wstrb["+str(i)+"]),"
     print "    .CS(valid),"
-    print "    .OE(valid && !(|wstrb))"
+    print "    .OE(valid && !(|wstrb)),"
 elif type == "SP":
     for i in range(bits):
         print "    .DO"+str(i)+"(rdata["+str(i)+"]),"
-    print "    .OE(valid)"
+    print "    .OE(valid),"
 
 for i in range(words):
     print "    .A"+str(i)+"(addr["+str(i)+"]),"
 
-print "    .CK(clk),"
+print "    .CK(clk)"
 
 print "   );"
 

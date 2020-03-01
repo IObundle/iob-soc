@@ -23,7 +23,7 @@ TB_DEFINE += -DUART_CLK_FREQ=$(FREQ)
 VLOG = iverilog -W all -g2005-sv -DVCD
 
 #hardware sources
-VSRC = $(RTL_DIR)/testbench/system_tb.v  $(RTL_DIR)/src/*.v $(RISCV_DIR)/picorv32.v $(UART_DIR)/rtl/src/iob-uart.v $(FIFO_DIR)/afifo.v
+VSRC = $(RTL_DIR)/testbench/system_tb.v  $(RTL_DIR)/src/*.v $(RTL_DIR)/src/memory/behav/*.v $(RISCV_DIR)/picorv32.v $(UART_DIR)/rtl/src/iob-uart.v $(FIFO_DIR)/afifo.v
 
 all: $(VSRC) firmware.hex boot.hex
 	$(VLOG) $(HW_INCLUDE) $(TB_DEFINE) $(VSRC)
