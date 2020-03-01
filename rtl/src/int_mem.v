@@ -16,7 +16,7 @@ module int_mem
    output                      main_ready,
 
    //common
-   input [`MAINRAM_ADDR_W-3:0] addr,
+   input [`BOOTRAM_ADDR_W-3:0] addr,
    input [`DATA_W-1:0]         wdata,
    input [3:0]                 wstrb
    );
@@ -66,7 +66,7 @@ module int_mem
 
    
    //RAM
-   reg [`MAINRAM_ADDR_W-3:0] ram_addr;
+   reg [`BOOTRAM_ADDR_W-3:0] ram_addr;
    reg [`DATA_W-1:0]         ram_wdata;
    reg [3:0]                 ram_wstrb;
    wire                      ram_valid = boot_valid | main_valid | ~copy_done[0];
