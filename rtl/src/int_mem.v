@@ -60,6 +60,7 @@ module int_mem
 	 )
    boot_rom (
 	     .clk           (clk ),
+             .valid         (~copy_done[0]),
 	     .addr          (addr_cnt),
 	     .rdata         (rom_rdata)
 	     );

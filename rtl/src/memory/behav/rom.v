@@ -7,6 +7,7 @@ module rom #(
 	     )
    (
     input                    clk,
+    input                    valid,
     input [ADDR_W-1:0]       addr,
     output reg [`DATA_W-1:0] rdata
     );
@@ -23,6 +24,7 @@ module rom #(
 
    // Operate the ROM
    always @(posedge clk)
-     rdata = rom[addr];
+     if(valid)
+       rdata = rom[addr];
 
 endmodule
