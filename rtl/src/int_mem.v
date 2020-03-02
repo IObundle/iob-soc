@@ -53,7 +53,7 @@ module int_mem
 
 
    //BOOT ROM
-   reg [`DATA_W-1:0] rom_rdata;
+   wire [`DATA_W-1:0] rom_rdata;
    rom #(
 	 .ADDR_W(`BOOTROM_ADDR_W-2),
          .FILE("boot.dat")

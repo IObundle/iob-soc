@@ -1,8 +1,8 @@
 all:
-	make -C memory	
-	make -C synth	
+	make -C synth
+	make -C pr
 clean:
-	make -C memory clean
 	make -C synth clean
+	make -C pr clean
 
 .PHONY: all clean 

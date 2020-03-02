@@ -27,15 +27,25 @@ words = int(sys.argv[3])
 
 # print mem interface 
 print "`timescale 1ns / 1ps"
-print "module ram ("
+if type == "SH":
+    print "module ram #("
+elif type == "SP":
+    print "module rom #("
+
+print "             parameter ADDR_W = 9,"
+print "             parameter FILE = \"rom\""
+print "             )"
+print "  ("
+
 print "            input clk,"
-print "            input rst,"
+if type == "SH":
+    print "            input rst,"
 print "            input ["+str(words-1)+":0] addr,"
 if type == "SH":
     print "            input ["+str(bits*bytes-1)+":0] wdata,"
     print "            input ["+str(bytes-1)+":0] wstrb,"
     print "            output ["+str(bits*bytes-1)+":0] rdata,"
-    print "            output ready,"
+    print "            output reg ready,"
 elif type == "SP":
     print "            output ["+str(bits-1)+":0] rdata,"
 
@@ -46,11 +56,15 @@ print "           );"
 
 if tech == "LD130":
     if type == "SH":
-        print "   "+type+tech+"_"+str(2**words)+"X"+str(bits)+"X"+str(bytes)+"BM"+str(mux)+" ram"
+        print "   "+type+tech+"_"+str(2**words)+"X"+str(bits)+"X"+str(bytes)+"BM"+str(mux)+" #(" 
+        print "      .ADDR_W(ADDR_W)"
+        print "   ) ram0"
     elif type == "SP":
-        print "   "+type+tech+"_"+str(2**words)+"X"+str(bits)+"BM"+str(mux)+"A rom"
+        print "   "+type+tech+"_"+str(2**words)+"X"+str(bits)+"BM"+str(mux)+"A #("
+        print "      .ADDR_W(ADDR_W)"
+        print "   ) rom0"
 
-print "   (" #print ports
+print "   (" 
 
 if type == "SH":
     for i in range(bits*bytes):

@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 import sys
-import subprocess
 
 with open("system.h") as origin:
     for line in origin:
@@ -11,6 +10,10 @@ with open("system.h") as origin:
             break
 
 line_split = line.split()
-line_count = 2**(int(line_split[2])-2)
+line_count_log2 = int(line_split[2])-2
+line_count = 2**line_count_log2
 
-print line_count
+if len(sys.argv)==3 and sys.argv[2]=="log2":
+    print line_count_log2
+else:
+    print line_count
