@@ -1,4 +1,4 @@
 #!/usr/bin/bash
 source /opt/ic_tools/init/init-rc14_25_hf000
-rc < synscript.tcl
+echo "quit" | rc -files synscript.tcl
 #rc < powercript.tcl

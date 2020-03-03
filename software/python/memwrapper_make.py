@@ -56,13 +56,9 @@ print "           );"
 
 if tech == "LD130":
     if type == "SH":
-        print "   "+type+tech+"_"+str(2**words)+"X"+str(bits)+"X"+str(bytes)+"BM"+str(mux)+" #(" 
-        print "      .ADDR_W(ADDR_W)"
-        print "   ) ram0"
+        print "   "+type+tech+"_"+str(2**words)+"X"+str(bits)+"X"+str(bytes)+"BM"+str(mux)+" ram0" 
     elif type == "SP":
-        print "   "+type+tech+"_"+str(2**words)+"X"+str(bits)+"BM"+str(mux)+"A #("
-        print "      .ADDR_W(ADDR_W)"
-        print "   ) rom0"
+        print "   "+type+tech+"_"+str(2**words)+"X"+str(bits)+"BM"+str(mux)+"A rom0"
 
 print "   (" 
 
@@ -78,6 +74,7 @@ if type == "SH":
 elif type == "SP":
     for i in range(bits):
         print "    .DO"+str(i)+"(rdata["+str(i)+"]),"
+    print "    .CS(valid),"
     print "    .OE(valid),"
 
 for i in range(words):

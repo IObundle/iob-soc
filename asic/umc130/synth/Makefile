@@ -1,8 +1,13 @@
+CASE=TC
+
 BOOT_DIR=../../../software/bootloader
 PYTHON_DIR=../../../software/python
 MEMW_DIR=../../../rtl/src/memory/wrapper
+ROM_DIR=../memory/bootrom
+RAM_DIR=../memory/bootram
 
 all: $(MEMW_DIR)/rom.v $(MEMW_DIR)/ram.v
+	cp $(ROM_DIR)/*$(CASE).lib $(RAM_DIR)/*$(CASE).lib .
 	./synth.sh
 
 
@@ -21,6 +26,6 @@ $(MEMW_DIR):
 
 clean:
 	make -C ../memory clean
-	@rm -rf $(MEMW_DIR) *~ *.txt rc.cmd* rc.* fv libscore_work *.sdc *.v *.h
+	@rm -rf $(MEMW_DIR) *~ *.txt rc.cmd* rc.* fv libscore_work *.sdc *.v *.h *.lib
 
 .PHONY: all clean

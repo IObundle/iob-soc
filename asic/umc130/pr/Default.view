@@ -3,14 +3,11 @@
 
 #libraries
 set core_lib {/opt/ic_tools/pdk/faraday/umc130/LL/fsc0l_d/2009Q2v3.0/GENERIC_CORE/FrontEnd/synopsys/fsc0l_d_generic_core_tt1p2v25c.lib}
-set bootrom_lib [glob ../memory/bootrom/*.lib]
-set bootram_lib [glob ../memory/bootrom/*.lib]
-
-set LIBS [list $bootrom_lib $bootram_lib $core_lib]
+set LIBS [glob ./*.lib]
 
 create_rc_corner -name typical_rc -preRoute_res {1.0} -preRoute_cap {1.0} -preRoute_clkres {0.0} -preRoute_clkcap {0.0} -postRoute_res {1.0} -postRoute_cap {1.0} -postRoute_xcap {1.0} -postRoute_clkres {0.0} -postRoute_clkcap {0.0}
 
-create_library_set -name typical_lib -timing $LIBS
+create_library_set -name typical_lib -timing [list $LIBS $core_lib]
 
 create_constraint_mode -name typical_constraints -sdc_files {../synth/system_synth.sdc}
 
