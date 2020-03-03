@@ -106,7 +106,7 @@ module system_tb;
    wire 			ddr_wvalid;
    wire 			ddr_wready;
    //Write response
-   wire [0:0]                   ddr_bid;
+   wire [7:0]                   ddr_bid;
    wire [1:0] 			ddr_bresp;
    wire 			ddr_bvalid;
    wire 			ddr_bready;
@@ -123,7 +123,7 @@ module system_tb;
    wire 			ddr_arvalid;
    wire 			ddr_arready;
    //Read data
-   wire [0:0]			ddr_rid;
+   wire [7:0]			ddr_rid;
    wire [31:0] 			ddr_rdata;
    wire [1:0] 			ddr_rresp;
    wire 			ddr_rlast;
@@ -165,7 +165,7 @@ module system_tb;
 	       .m_axi_wready  (ddr_wready),
 
 	       //write response
-	       .m_axi_bid     (ddr_bid),
+	       .m_axi_bid     (ddr_bid[0]),
 	       .m_axi_bresp   (ddr_bresp),
 	       .m_axi_bvalid  (ddr_bvalid),
 	       .m_axi_bready  (ddr_bready),
@@ -184,7 +184,7 @@ module system_tb;
 	       .m_axi_arready (ddr_arready),
 
 	       //read   
-	       .m_axi_rid     (ddr_rid),
+	       .m_axi_rid     (ddr_rid[0]),
 	       .m_axi_rdata   (ddr_rdata),
 	       .m_axi_rresp   (ddr_rresp),
 	       .m_axi_rlast   (ddr_rlast),
@@ -221,24 +221,24 @@ module system_tb;
 
 
 `ifdef USE_DDR
-   axi_ram  #(
+   axi_ram 
+/* #(
               .DATA_WIDTH (DATA_W),
               .ADDR_WIDTH (MAINRAM_ADDR_W),
               .ID_WIDTH (1)
               )
-   ddr_model_mem(
+*/   ddr_model_mem(
                  //address write
                  .clk            (clk),
                  .rst            (reset),
-		 .s_axi_awid     (ddr_awid),
-		 .s_axi_awaddr   (ddr_awaddr[MAINRAM_ADDR_W-1:0]),
+		 .s_axi_awid     ({8{ddr_awid}}),
+		   .s_axi_awaddr   (ddr_awaddr[15:0]),
                  .s_axi_awlen    (ddr_awlen),
                  .s_axi_awsize   (ddr_awsize),
                  .s_axi_awburst  (ddr_awburst),
                  .s_axi_awlock   (ddr_awlock),
 		 .s_axi_awprot   (ddr_awprot),
 		 .s_axi_awcache  (ddr_awcache),
-                 .s_axi_awqos    (ddr_awqos),
      		 .s_axi_awvalid  (ddr_awvalid),
 		 .s_axi_awready  (ddr_awready),
 
@@ -256,15 +256,14 @@ module system_tb;
 		 .s_axi_bvalid   (ddr_bvalid),
 
 		 //address read
-		 .s_axi_arid     (ddr_arid),
-		 .s_axi_araddr   (ddr_araddr[MAINRAM_ADDR_W-1;0]),
+		 .s_axi_arid     ({8{ddr_arid}}),
+		 .s_axi_araddr   (ddr_araddr[15:0]),
 		 .s_axi_arlen    (ddr_arlen), 
 		 .s_axi_arsize   (ddr_arsize),    
                  .s_axi_arburst  (ddr_arburst),
                  .s_axi_arlock   (ddr_arlock),
                  .s_axi_arcache  (ddr_arcache),
                  .s_axi_arprot   (ddr_arprot),
-                 .s_axi_arqos    (ddr_arqos),
 		 .s_axi_arvalid  (ddr_arvalid),
 		 .s_axi_arready  (ddr_arready),
 
@@ -276,7 +275,7 @@ module system_tb;
                  .s_axi_rlast    (ddr_rlast),
 		 .s_axi_rvalid   (ddr_rvalid)
                  );   
-   
+`endif   
    //
    // CPU TASKS
    //
