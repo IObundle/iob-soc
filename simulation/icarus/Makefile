@@ -46,4 +46,4 @@ clean:
 	make -C $(BOOT_DIR) clean --no-print-directory
 	make -C $(FIRM_DIR) clean --no-print-directory
 
-.PHONY: all clean boot firmware
+.PHONY: all clean

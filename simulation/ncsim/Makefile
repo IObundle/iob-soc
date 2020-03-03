@@ -1,5 +1,6 @@
 #simulation baud rate
-BAUD = 10000000
+BAUD := 10000000
+FREQ := 100000000
 
 #software paths
 FIRM_DIR = ../../software/firmware
@@ -9,19 +10,20 @@ PYTHON_DIR := ../../software/python
 #hardware paths
 RTL_DIR = ../../rtl
 RISCV_DIR = ../../submodules/iob-rv32
-UART_DIR = ../../submodules/iob-uart/rtl
+UART_DIR = ../../submodules/iob-uart
 FIFO_DIR = ../../submodules/fifo
 
 #hardware includes
-HW_INCLUDE = -incdir $(RTL_DIR)/include -incdir $(UART_DIR)/include
+HW_INCLUDE = -incdir $(RTL_DIR)/include -incdir $(UART_DIR)/rtl/include
 
 #hardware defines
-HW_DEFINE := -define VCD
-HW_DEFINE += -define PROG_SIZE=$(shell wc -c firmware.bin | head -n1 | cut -d " " -f1)
+HW_DEFINE = -define VCD
+HW_DEFINE += -define PROG_SIZE=$(shell wc -c ../../software/firmware/firmware.bin | head -n1 | cut -d " " -f1)
 HW_DEFINE += -define UART_BAUD_RATE=$(BAUD)
+HW_DEFINE += -define UART_CLK_FREQ=$(FREQ)
 
 #hardware sources
-VSRC =  $(RISCV_DIR)/picorv32.v $(UART_DIR)/src/iob-uart.v $(FIFO_DIR)/afifo.v $(RTL_DIR)/testbench/system_tb.v  $(RTL_DIR)/src/*.v
+VSRC =  $(RISCV_DIR)/picorv32.v $(UART_DIR)/rtl/src/iob-uart.v $(FIFO_DIR)/afifo.v $(RTL_DIR)/testbench/system_tb.v  $(RTL_DIR)/src/*.v $(RTL_DIR)/src/memory/behav/*.v
 
 #simulator flags
 CFLAGS = -errormax 15 -status -update -linedebug -sv $(HW_DEFINE) $(HW_INCLUDE)
@@ -34,20 +36,17 @@ all: firmware.hex boot.hex $(VSRC)
 
 #make firmware
 firmware.hex:
-	make -C $(FIRM_DIR) BAUD=$(BAUD)
+	make -C $(FIRM_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
+	cp $(FIRM_DIR)/progmem.hex .
 	cp $(FIRM_DIR)/firmware.hex .
 	$(PYTHON_DIR)/hex_split.py firmware
-	cp $(FIRM_DIR)/firmware.bin .
 
 #make boot loader
-boot.hex: 
-ifeq ($(shell grep USE_ $(RTL_DIR)/include/system.vh | grep -v \/\/),)
-	cp firmware.hex boot.hex
-else 
-	make -C $(BOOT_DIR) BAUD=$(BAUD)
+boot.hex:
+	make -C $(BOOT_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
 	cp $(BOOT_DIR)/boot.hex .
-endif
 	$(PYTHON_DIR)/hex_split.py boot
+	cp boot.hex boot.dat
 
 clean:
 	@rm -f *# *~ *.vcd *.dat *.hex firmware.bin xmsim.key *.log
