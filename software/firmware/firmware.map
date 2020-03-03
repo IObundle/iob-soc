@@ -1,0 +1,81 @@
+Archive member included to satisfy reference by file (symbol)
+
+/opt/riscv/bin/../lib/gcc/riscv32-unknown-elf/7.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-itoa.o)
+                              /tmp/ccZfv4R4.o (itoa)
+/opt/riscv/bin/../lib/gcc/riscv32-unknown-elf/7.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-utoa.o)
+                              /opt/riscv/bin/../lib/gcc/riscv32-unknown-elf/7.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-itoa.o) (__utoa)
+/opt/riscv/bin/../lib/gcc/riscv32-unknown-elf/7.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-memcpy.o)
+                              /opt/riscv/bin/../lib/gcc/riscv32-unknown-elf/7.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-utoa.o) (memcpy)
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+LOAD /tmp/ccFHbIHB.o
+LOAD /tmp/ccZfv4R4.o
+LOAD /tmp/ccNTNX3x.o
+
+.memory         0x0000000000000000      0x75c
+                0x0000000000000000                . = 0x0
+ *(.init)
+ .init          0x0000000000000000       0x10 /tmp/ccNTNX3x.o
+ *(.text)
+ .text          0x0000000000000010        0x0 /tmp/ccFHbIHB.o
+ .text          0x0000000000000010      0x2a4 /tmp/ccZfv4R4.o
+                0x0000000000000010                uart_init
+                0x000000000000002c                uart_getdiv
+                0x0000000000000038                uart_txwait
+                0x0000000000000048                uart_putc
+                0x000000000000005c                uart_puts
+                0x0000000000000090                uart_printf
+                0x0000000000000298                uart_getc
+ .text          0x00000000000002b4        0x0 /tmp/ccNTNX3x.o
+ .text          0x00000000000002b4       0x6c /opt/riscv/bin/../lib/gcc/riscv32-unknown-elf/7.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-itoa.o)
+                0x00000000000002b4                __itoa
+                0x000000000000031c                itoa
+ .text          0x0000000000000320       0xc8 /opt/riscv/bin/../lib/gcc/riscv32-unknown-elf/7.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-utoa.o)
+                0x0000000000000320                __utoa
+                0x00000000000003e4                utoa
+ .text          0x00000000000003e8       0xe8 /opt/riscv/bin/../lib/gcc/riscv32-unknown-elf/7.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-memcpy.o)
+                0x00000000000003e8                memcpy
+ *(*)
+ .data          0x00000000000004d0        0x0 /tmp/ccFHbIHB.o
+ .bss           0x00000000000004d0        0x0 /tmp/ccFHbIHB.o
+ .text.startup  0x00000000000004d0       0x34 /tmp/ccFHbIHB.o
+                0x00000000000004d0                main
+ .rodata.str1.4
+                0x0000000000000504        0xe /tmp/ccFHbIHB.o
+ .comment       0x0000000000000512       0x11 /tmp/ccFHbIHB.o
+                                         0x12 (size before relaxing)
+ .rela.text.startup
+                0x0000000000000523        0x0 /tmp/ccFHbIHB.o
+ .rela.text     0x0000000000000523        0x0 /tmp/ccFHbIHB.o
+ .data          0x0000000000000523        0x0 /tmp/ccZfv4R4.o
+ *fill*         0x0000000000000523        0x1 
+ .bss           0x0000000000000524      0x200 /tmp/ccZfv4R4.o
+ .sbss          0x0000000000000724        0xc /tmp/ccZfv4R4.o
+ .sdata         0x0000000000000730        0x1 /tmp/ccZfv4R4.o
+ .comment       0x0000000000000731       0x12 /tmp/ccZfv4R4.o
+ .data          0x0000000000000731        0x0 /tmp/ccNTNX3x.o
+ .bss           0x0000000000000731        0x0 /tmp/ccNTNX3x.o
+ .data          0x0000000000000731        0x0 /opt/riscv/bin/../lib/gcc/riscv32-unknown-elf/7.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-itoa.o)
+ .bss           0x0000000000000731        0x0 /opt/riscv/bin/../lib/gcc/riscv32-unknown-elf/7.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-itoa.o)
+ .comment       0x0000000000000731       0x12 /opt/riscv/bin/../lib/gcc/riscv32-unknown-elf/7.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-itoa.o)
+ .data          0x0000000000000731        0x0 /opt/riscv/bin/../lib/gcc/riscv32-unknown-elf/7.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-utoa.o)
+ .bss           0x0000000000000731        0x0 /opt/riscv/bin/../lib/gcc/riscv32-unknown-elf/7.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-utoa.o)
+ *fill*         0x0000000000000731        0x3 
+ .rodata.str1.4
+                0x0000000000000734       0x28 /opt/riscv/bin/../lib/gcc/riscv32-unknown-elf/7.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-utoa.o)
+                                         0x25 (size before relaxing)
+ .comment       0x000000000000075c       0x12 /opt/riscv/bin/../lib/gcc/riscv32-unknown-elf/7.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-utoa.o)
+ .data          0x000000000000075c        0x0 /opt/riscv/bin/../lib/gcc/riscv32-unknown-elf/7.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-memcpy.o)
+ .bss           0x000000000000075c        0x0 /opt/riscv/bin/../lib/gcc/riscv32-unknown-elf/7.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-memcpy.o)
+ .comment       0x000000000000075c       0x12 /opt/riscv/bin/../lib/gcc/riscv32-unknown-elf/7.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-memcpy.o)
+                0x0000000000000770                . = ALIGN (0x4)
+                0x0000000000000770                end = .
+LOAD /opt/riscv/bin/../lib/gcc/riscv32-unknown-elf/7.2.0/libgcc.a
+LOAD /opt/riscv/bin/../lib/gcc/riscv32-unknown-elf/7.2.0/../../../../riscv32-unknown-elf/lib/libc.a
+OUTPUT(firmware.elf elf32-littleriscv)
