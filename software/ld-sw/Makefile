@@ -14,7 +14,7 @@ CHDRS = console.h
 
 all: run
 
-$(FW_DIR)/$(FW).bin:
+$(FW_DIR)/$(FW).bin: $(FW_DIR)/$(FW).c
 	make -C $(FW_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
 
 $(FW).bin: $(FW_DIR)/$(FW).bin
