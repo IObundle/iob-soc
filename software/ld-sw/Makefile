@@ -1,36 +1,33 @@
-TEST_DIR = ../hello_world
+FW_DIR = ../firmware
+FW = firmware
+
+SERIAL = /dev/ttyUSB0
 BAUD = 115200
 
-DEFINE := -DUART_BAUD_RATE=$(BAUD)
+CC := gcc
+CFLAGS := -g -Wall -pedantic
 
-ifeq ($(USE_RAM),1)
-DEFINE := $(DEFINE) -DUSE_RAM 
-endif	
+TRGT = console
+CSRCS = console.c
+CHDRS = console.h
 
-ifeq ($(USE_DDR),1)
-DEFINE := $(DEFINE) -DUSE_DDR
-endif
+all: run
 
-CCOMP := gcc
-CFLAGS := -Wall -pedantic
-CSRC = ./uart_file_loader.c
+$(FW_DIR)/$(FW).bin:
+	make -C $(FW_DIR) BAUD=$(BAUD)
 
+$(FW).bin: $(FW_DIR)/$(FW).bin
+	cp $^ .
 
-all: firmware exec
+$(TRGT): $(CSRCS) $(CHDRS)
+	$(CC) $(CFLAGS) $(CSRCS) -o $@
 
-firmware:
-	make -C $(TEST_DIR) DEFINE="$(DEFINE)"
-	cp $(TEST_DIR)/firmware.hex .
-
-exec: firmware uart_file_loader
-	./uart_file_loader firmware.hex
-
-uart_file_loader: $(CSRC)
-	$(CCOMP) $(CFLAGS) $(CSRC) -o uart_file_loader
+run: $(TRGT) $(FW).bin
+	./$(TRGT) -s $(SERIAL) -f $(FW).bin
 
 clean:
 	@rm -f *# *~
-	@rm -f uart_file_loader firmware.hex
-	@make -C $(TEST_DIR) clean --no-print-directory
+	@rm -f $(TRGT) *.bin
+	make -C $(FW_DIR) clean --no-print-directory
 
-.PHONY: all firmware exec clean
+.PHONY: all run clean

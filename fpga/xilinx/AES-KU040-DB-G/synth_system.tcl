@@ -23,8 +23,10 @@ read_verilog ../../../submodules/iob-rv32/picorv32.v
 read_verilog ../../../submodules/iob-uart/rtl/src/iob-uart.v
 
 #memory
-read_verilog ../../../rtl/src/ram.v
-read_verilog ../../../rtl/src/iob_1p_mem.v
+read_verilog ../../../rtl/src/memory/behav/rom.v
+read_verilog ../../../rtl/src/memory/behav/ram.v
+read_verilog ../../../rtl/src/int_mem.v
+read_verilog ../../../rtl/src/memory/behav/iob_1p_mem.v
 
 set_property part xcku040-fbva676-1-c [current_project]
 
