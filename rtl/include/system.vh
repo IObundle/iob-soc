@@ -30,7 +30,7 @@
 `define DATA_W 32
 
 //boot memory address space (log2 of byte size)
-`define BOOTROM_ADDR_W 11
+`define BOOTROM_ADDR_W 12
 `define BOOTRAM_ADDR_W 13
 
 //main memory address space (log2 of byte size)
