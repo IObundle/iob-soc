@@ -44,7 +44,7 @@ boot.hex:
 	cp boot.hex boot.dat
 
 clean:
-	@rm -f *# *~ *.vcd *.dat *.hex ./a.out
+	@rm -f *# *~ *.vcd *.dat *.hex *.bin ./a.out
 	make -C $(BOOT_DIR) clean --no-print-directory
 	make -C $(FIRM_DIR) clean --no-print-directory
 

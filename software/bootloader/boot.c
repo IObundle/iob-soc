@@ -13,7 +13,7 @@
 #ifdef USE_DDR
 #define MAIN_MEM (CACHE_BASE<<(ADDR_W-N_SLAVES_W))
 #else
-#define MAIN_MEM (RAM_BASE<<(ADDR_W-N_SLAVES_W))
+#define MAIN_MEM (MAINRAM_BASE<<(ADDR_W-N_SLAVES_W))
 #endif
 
 //uart
@@ -64,12 +64,6 @@ int main() {
   // Start Communication
   uart_init(UART, UART_CLK_FREQ/UART_BAUD_RATE);
   
-  // Wait for PC
-  char c;
-  do {
-    c = uart_getc();
-  } while (c != STR);
-  
   // Request File
   uart_puts ("Loading program from UART...\n");
   uart_putc(STX);
@@ -93,7 +87,6 @@ int main() {
 #endif
   
   uart_puts("Program loaded\n");
-  uart_txwait();
   
   // Send File
   uart_puts ("Sending program to UART...\n");
