@@ -1,8 +1,9 @@
 FW_DIR = ../firmware
 FW = firmware
 
-SERIAL = /dev/ttyUSB0
-BAUD = 115200
+SERIAL := /dev/ttyUSB0
+BAUD := 115200
+FREQ := 100000000
 
 CC := gcc
 CFLAGS := -g -Wall -pedantic
@@ -13,8 +14,8 @@ CHDRS = console.h
 
 all: run
 
-$(FW_DIR)/$(FW).bin:
-	make -C $(FW_DIR) BAUD=$(BAUD)
+$(FW_DIR)/$(FW).bin: $(FW_DIR)/$(FW).c
+	make -C $(FW_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
 
 $(FW).bin: $(FW_DIR)/$(FW).bin
 	cp $^ .
