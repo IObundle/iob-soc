@@ -2,6 +2,7 @@
 
 `include "system.vh"
 `include "iob-uart.vh"
+`include "console.vh"
 
 module system_tb;
 
@@ -60,13 +61,13 @@ module system_tb;
       do begin
          cpu_getchar(cpu_char);
          
-         if (cpu_char == 2) begin // Send file
+         if (cpu_char == `STX) begin // Send file
             cpu_sendFile(`PROG_SIZE);
-         end else if (cpu_char == 3) begin // Receive file
+         end else if (cpu_char == `SRX) begin // Receive file
             $write("Please, insert a name for a file:");
             $write("out.bin\n");
             cpu_receiveFile();
-         end else if (cpu_char == 4) begin // Finish
+         end else if (cpu_char == `EOT) begin // Finish
             $write("Bye, bye!\n");
          end else begin
             $write("%c", cpu_char);

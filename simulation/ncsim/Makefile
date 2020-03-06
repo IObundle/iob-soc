@@ -16,7 +16,7 @@ CACHE_DIR = ../../submodules/iob-cache
 AXI_RAM = ../../submodules/axi-mem
 
 #hardware includes
-HW_INCLUDE = -incdir $(RTL_DIR)/include -incdir $(UART_DIR)/rtl/include -incdir $(CACHE_DIR)/rtl/header
+HW_INCLUDE = -incdir . -incdir $(RTL_DIR)/include -incdir $(UART_DIR)/rtl/include -incdir $(CACHE_DIR)/rtl/header
 
 #hardware defines
 HW_DEFINE = -define VCD
@@ -33,7 +33,7 @@ EFLAGS = -errormax 15 -access +wc -status
 SFLAGS = -errormax 15 -status -CMDFILE $(RTL_DIR)/testbench
 
 #simulate
-all: firmware.hex boot.hex $(VSRC)
+all: console.vh firmware.hex boot.hex $(VSRC)
 	VSRC="$(VSRC)" CFLAGS="$(CFLAGS)" EFLAGS="$(EFLAGS)" SFLAGS="$(SFLAGS)" ./run_ncsim.sh
 
 #make firmware
@@ -50,8 +50,11 @@ boot.hex:
 	$(PYTHON_DIR)/hex_split.py boot
 	cp boot.hex boot.dat
 
+console.vh: ../../software/ld-sw/console.h
+	sed "s/\#/\`/;s/0x/4\'h/" $^ | sed "/CONSOLE_H\|endif/d" > $@
+
 clean:
-	@rm -f *# *~ *.vcd *.dat *.hex firmware.bin xmsim.key *.log
+	@rm -f *# *~ *.vcd *.dat *.hex firmware.bin *.vh xmsim.key *.log
 	@rm -rf xcelium.d
 	make -C $(FIRM_DIR) clean
 	make -C $(BOOT_DIR) clean
