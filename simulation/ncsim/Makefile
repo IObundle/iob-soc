@@ -12,9 +12,11 @@ RTL_DIR = ../../rtl
 RISCV_DIR = ../../submodules/iob-rv32
 UART_DIR = ../../submodules/iob-uart
 FIFO_DIR = ../../submodules/fifo
+CACHE_DIR = ../../submodules/iob-cache
+AXI_RAM = ../../submodules/axi-mem
 
 #hardware includes
-HW_INCLUDE = -incdir . -incdir $(RTL_DIR)/include -incdir $(UART_DIR)/rtl/include
+HW_INCLUDE = -incdir . -incdir $(RTL_DIR)/include -incdir $(UART_DIR)/rtl/include -incdir $(CACHE_DIR)/rtl/header
 
 #hardware defines
 HW_DEFINE = -define VCD
@@ -23,7 +25,7 @@ HW_DEFINE += -define UART_BAUD_RATE=$(BAUD)
 HW_DEFINE += -define UART_CLK_FREQ=$(FREQ)
 
 #hardware sources
-VSRC =  $(RISCV_DIR)/picorv32.v $(UART_DIR)/rtl/src/iob-uart.v $(FIFO_DIR)/afifo.v $(RTL_DIR)/testbench/system_tb.v  $(RTL_DIR)/src/*.v $(RTL_DIR)/src/memory/behav/*.v
+VSRC =  $(RISCV_DIR)/picorv32.v $(UART_DIR)/rtl/src/iob-uart.v $(FIFO_DIR)/afifo.v $(RTL_DIR)/testbench/system_tb.v  $(RTL_DIR)/src/*.v $(RTL_DIR)/src/memory/behav/*.v $(CACHE_DIR)/rtl/src/gen_mem_reg.v $(CACHE_DIR)/rtl/src/iob-cache.v $(AXI_RAM)/rtl/axi_ram.v
 
 #simulator flags
 CFLAGS = -errormax 15 -status -update -linedebug -sv $(HW_DEFINE) $(HW_INCLUDE)
