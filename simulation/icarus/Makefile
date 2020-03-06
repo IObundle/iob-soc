@@ -14,7 +14,7 @@ CACHE_DIR = ../../submodules/iob-cache
 AXI_RAM = ../../submodules/axi-mem
 
 #hw includes
-HW_INCLUDE = -I$(RTL_DIR)/include -I$(UART_DIR)/rtl/include -I$(CACHE_DIR)/rtl/header
+HW_INCLUDE = -I. -I$(RTL_DIR)/include -I$(UART_DIR)/rtl/include -I$(CACHE_DIR)/rtl/header
 
 #testbench defines
 TB_DEFINE = -DPROG_SIZE=$(shell wc -c   ../../software/firmware/firmware.bin | head -n1 | cut -d " " -f1)
@@ -27,7 +27,7 @@ VLOG = iverilog -W all -g2005-sv -DVCD
 #hardware sources
 VSRC = $(RTL_DIR)/testbench/system_tb.v  $(RTL_DIR)/src/*.v $(RTL_DIR)/src/memory/behav/*.v $(RISCV_DIR)/picorv32.v $(UART_DIR)/rtl/src/iob-uart.v $(FIFO_DIR)/afifo.v $(CACHE_DIR)/rtl/src/gen_mem_reg.v $(CACHE_DIR)/rtl/src/iob-cache.v $(AXI_RAM)/rtl/axi_ram.v
 
-all: $(VSRC) firmware.hex boot.hex
+all: $(VSRC) console.vh firmware.hex boot.hex
 	$(VLOG) $(HW_INCLUDE) $(TB_DEFINE) $(VSRC)
 	./a.out
 
@@ -43,8 +43,11 @@ boot.hex:
 	$(PYTHON_DIR)/hex_split.py boot
 	cp boot.hex boot.dat
 
+console.vh: ../../software/ld-sw/console.h
+	sed "s/\#/\`/;s/0x/4\'h/" $^ | sed "/CONSOLE_H\|endif/d" > $@
+
 clean:
-	@rm -f *# *~ *.vcd *.dat *.hex *.bin ./a.out
+	@rm -f *# *~ *.vcd *.dat *.hex *.bin *.vh ./a.out
 	make -C $(BOOT_DIR) clean --no-print-directory
 	make -C $(FIRM_DIR) clean --no-print-directory
 
