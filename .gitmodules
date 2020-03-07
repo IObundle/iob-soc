@@ -14,3 +14,6 @@
 [submodule "submodules/fifo"]
 	path = submodules/fifo
 	url = git@bitbucket.org:jjts/iob-fifo.git
+[submodule "submodules/axi-mem"]
+	path = submodules/axi-mem
+	url = git@github.com:jjts/verilog-axi.git
