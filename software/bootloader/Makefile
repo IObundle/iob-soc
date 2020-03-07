@@ -27,3 +27,5 @@ clean:
 	@rm -rf boot.bin boot.elf boot.map *.hex *.dat
 	@rm -rf uart_loader *~
 	@rm -rf ../uart_loader system.h
+
+.PHONY: all clean

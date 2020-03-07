@@ -13,9 +13,6 @@ module system_tb;
    //reset 
    reg reset = 1;
 
-   // program memory 
-   reg [31:0] progmem[`PROG_SIZE/4-1:0];
-
    //uart signals
    reg [7:0] 	rxread_reg = 8'b0;
    reg [2:0]    uart_addr;
@@ -27,7 +24,7 @@ module system_tb;
 
    //cpu to receive getchar
    reg [7:0]    cpu_char = 0;
-
+   
    integer      i;
 
      
@@ -62,7 +59,7 @@ module system_tb;
          cpu_getchar(cpu_char);
          
          if (cpu_char == `STX) begin // Send file
-            cpu_sendFile(`PROG_SIZE);
+            cpu_sendFile();
          end else if (cpu_char == `SRX) begin // Receive file
             $write("Please, insert a name for a file:");
             $write("out.bin\n");
@@ -304,12 +301,16 @@ module system_tb;
    endtask //cpu_uartread
 
    task cpu_sendFile;
-      input [`DATA_W-1:0] file_size;
-      integer             i, j, k;
-  
-      $readmemh("progmem.hex", progmem, 0, file_size/4-1);
+      reg [`DATA_W-1:0] file_size;
+      reg [7:0]         buffer [0:9*4096];
+      integer           fp;
+      integer           i, k;
+
+      fp = $fopen("firmware.bin","rb");
+      file_size = $fread(buffer, fp);
+      $fclose(fp);
       
-      $write("Starting File 'progmem.hex' Transfer...\n");
+      $write("Starting File 'firmware.bin' Transfer...\n");
       $write("file_size = %d\n", file_size);
       
       // Send file size
@@ -319,12 +320,10 @@ module system_tb;
       cpu_putchar(file_size[31:24]);
       
       k = 0;
-      for(i = 0; i < file_size/4; i++) begin
-	     for(j=1; j<=4; j=j+1) begin
-	        cpu_putchar(progmem[i][j*8-1 -: 8]);
-	     end
+      for(i = 0; i < file_size; i++) begin
+         cpu_putchar(buffer[i]);
 
-         if(i == (file_size/4*k/100)) begin
+         if(i/4 == (file_size/4*k/100)) begin
             $write("%d%%\n", k);
             k=k+10;
          end
@@ -335,10 +334,11 @@ module system_tb;
 
    task cpu_receiveFile;
       reg [`DATA_W-1:0] file_size;
+      reg [7:0]         buffer [0:9*4096];
       integer           fp;
-      integer           i, j, k;
+      integer           i, k;
 
-      fp = $fopen("out.bin","wb");
+      fp = $fopen("out.bin", "wb");
       
       $write("Starting File 'out.bin' Transfer...\n");
       
@@ -351,10 +351,7 @@ module system_tb;
       
       k = 0;
       for(i = 0; i < file_size; i++) begin
-	     //for(j=1; j<=4; j=j+1) begin
-	     cpu_getchar(cpu_char);
-         $fwrite(fp, "%c", cpu_char);
-	     //end
+	     cpu_getchar(buffer[i]);
 
          if(i/4 == (file_size/4*k/100)) begin
             $write("%d%%\n", k);
@@ -363,6 +360,9 @@ module system_tb;
       end
       $write("%d%%\n", 100);
       $write("UART transfer complete.\n");
+
+      $fwrite(fp, buffer[0], 0, file_size);
+      $fclose(fp);
    endtask
    
 
