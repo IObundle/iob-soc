@@ -54,7 +54,7 @@ console.vh: ../../software/ld-sw/console.h
 	sed "s/\#/\`/;s/0x/8\'h/" $^ | sed "/CONSOLE_H\|endif/d" > $@
 
 clean:
-	@rm -f *# *~ *.vcd *.dat *.hex firmware.bin *.vh xmsim.key *.log
+	@rm -f *# *~ *.vcd *.dat *.hex *.bin *.vh xmsim.key *.log
 	@rm -rf xcelium.d
 	make -C $(FIRM_DIR) clean
 	make -C $(BOOT_DIR) clean

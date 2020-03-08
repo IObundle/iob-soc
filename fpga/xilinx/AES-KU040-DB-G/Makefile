@@ -4,6 +4,7 @@ UART_DIR = ../../../submodules/iob-uart
 FIFO_DIR = ../../../submodules/fifo
 FIRM_DIR := ../../../software/firmware
 BOOT_DIR := ../../../software/bootloader
+LD_SW_DIR := ../../../software/ld-sw
 PYTHON_DIR := ../../../software/python
 REMOTE := ${USER}@iobundle.ddns.net:sandbox/iob-soc/fpga/xilinx/AES-KU040-DB-G
 PORT := -P 1418
@@ -50,6 +51,10 @@ $(BOOT_DIR)/boot.hex: FORCE
 ld-hw:
 	vivado -nojournal -log $@.log -mode batch -source $@.tcl
 
+ld-sw:
+	cp firmware.bin $(LD_SW_DIR)
+	make -C $(LD_SW_DIR)
+
 clean:
 	@rm -rf .Xil/ *.hex *.dat *.map synth_*.log 
 	@rm -rf *~ \#*# *#  ../rtl/*~ ../rtl/\#*# ../rtl/*# ./rtl/
@@ -59,5 +64,6 @@ clean:
 	@rm -rf *.ltx fsm_encoding.os
 	make -C $(FIRM_DIR) clean --no-print-directory
 	make -C $(BOOT_DIR) clean --no-print-directory
+	make -C $(LD_SW_DIR) clean --no-print-directory
 
 .PHONY: all clean ld-hw FORCE
