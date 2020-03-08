@@ -3,20 +3,20 @@ BAUD := 10000000
 FREQ := 100000000
 
 #software paths
-FIRM_DIR = ../../software/firmware
-BOOT_DIR = ../../software/bootloader
+FIRM_DIR := ../../software/firmware
+BOOT_DIR := ../../software/bootloader
 PYTHON_DIR := ../../software/python
 
 #hardware paths
-RTL_DIR = ../../rtl
-RISCV_DIR = ../../submodules/iob-rv32
-UART_DIR = ../../submodules/iob-uart
-FIFO_DIR = ../../submodules/fifo
-CACHE_DIR = ../../submodules/iob-cache
-AXI_RAM = ../../submodules/axi-mem
+RTL_DIR := ../../rtl
+RISCV_DIR := ../../submodules/iob-rv32
+UART_DIR := ../../submodules/iob-uart
+FIFO_DIR := ../../submodules/fifo
+CACHE_DIR := ../../submodules/iob-cache
+AXI_RAM := ../../submodules/axi-mem
 
 #hardware includes
-HW_INCLUDE = -incdir . -incdir $(RTL_DIR)/include -incdir $(UART_DIR)/rtl/include -incdir $(CACHE_DIR)/rtl/header
+HW_INCLUDE := -incdir . -incdir $(RTL_DIR)/include -incdir $(UART_DIR)/rtl/include -incdir $(CACHE_DIR)/rtl/header
 
 #hardware defines
 HW_DEFINE = -define VCD
@@ -33,25 +33,25 @@ EFLAGS = -errormax 15 -access +wc -status
 SFLAGS = -errormax 15 -status -CMDFILE $(RTL_DIR)/testbench
 
 #simulate
-all: console.vh firmware.hex boot.hex $(VSRC)
+all: console.vh firmware boot $(VSRC)
 	VSRC="$(VSRC)" CFLAGS="$(CFLAGS)" EFLAGS="$(EFLAGS)" SFLAGS="$(SFLAGS)" ./run_ncsim.sh
 
 #make firmware
-firmware.hex:
+firmware:
 	make -C $(FIRM_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
-	cp $(FIRM_DIR)/progmem.hex .
 	cp $(FIRM_DIR)/firmware.hex .
+	cp $(FIRM_DIR)/firmware.bin .
 	$(PYTHON_DIR)/hex_split.py firmware
 
 #make boot loader
-boot.hex:
+boot:
 	make -C $(BOOT_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
 	cp $(BOOT_DIR)/boot.hex .
 	$(PYTHON_DIR)/hex_split.py boot
 	cp boot.hex boot.dat
 
 console.vh: ../../software/ld-sw/console.h
-	sed "s/\#/\`/;s/0x/4\'h/" $^ | sed "/CONSOLE_H\|endif/d" > $@
+	sed "s/\#/\`/;s/0x/8\'h/" $^ | sed "/CONSOLE_H\|endif/d" > $@
 
 clean:
 	@rm -f *# *~ *.vcd *.dat *.hex firmware.bin *.vh xmsim.key *.log
@@ -59,4 +59,4 @@ clean:
 	make -C $(FIRM_DIR) clean
 	make -C $(BOOT_DIR) clean
 
-.PHONY: all clean
+.PHONY: all boot firmware clean
