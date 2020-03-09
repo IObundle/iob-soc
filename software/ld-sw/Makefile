@@ -1,5 +1,5 @@
-FW_DIR = ../firmware
-FW = firmware
+FW_DIR := ../firmware
+FW := firmware
 
 SERIAL := /dev/ttyUSB0
 BAUD := 115200

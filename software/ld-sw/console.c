@@ -94,7 +94,6 @@ int receiveFile(int serial_fd, char *name) {
   if (nbytes == -1) {
     printf("receiveFile: Failed to send data\n");
   }
-  printf("file_size = %d (0x%x)\n", file_size, file_size);
   
   /* Get file */
   for (i = 0; i < file_size; i++) {
@@ -267,13 +266,6 @@ int main(int argc, char* argv[]) {
     return -1;
   }
   
-  /* Tells RISC-V to start */
-  c = STR;
-  nbytes = write(serial_fd, &c, 1);
-  if (nbytes == -1) {
-    printf("console: Failed to send data\n");
-  }
-  
   while (1) {
     do {
       nbytes = read(serial_fd, &c, 1);
@@ -286,7 +278,7 @@ int main(int argc, char* argv[]) {
       scanf("%s", fileOut);
       printf("\n");
       receiveFile(serial_fd, fileOut);
-    } else if (c == EOT) {
+    } else if (c == EOT) { /* Finish */
       printf("Bye, bye!\n");
       break;
     } else { /* Print string */
