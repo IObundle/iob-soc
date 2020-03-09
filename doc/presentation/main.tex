@@ -1,0 +1,237 @@
+\documentclass [xcolor=svgnames, t] {beamer} 
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs, comment} 
+\usepackage[absolute, overlay]{textpos} 
+\useoutertheme{infolines} 
+\setbeamercolor{title in head/foot}{bg=internationalorange}
+\setbeamercolor{author in head/foot}{bg=dodgerblue}
+\usepackage{csquotes}
+\usepackage[style=verbose-ibid,backend=bibtex]{biblatex}
+\bibliography{bibfile}
+\usepackage{amsmath}
+\usepackage[makeroom]{cancel}
+\usepackage{textpos}
+\usepackage{tikz}
+\usepackage{listings}
+\graphicspath{ {./figures/} }
+
+
+\usetheme{Madrid}
+\definecolor{myuniversity}{RGB}{0, 60, 113}
+\definecolor{internationalorange}{RGB}{231, 93,  42}
+ 	\definecolor{dodgerblue}{RGB}{0, 119,202}
+\usecolortheme[named=myuniversity]{structure}
+
+\graphicspath{ {./figures/} }
+
+\title[IOB-SoC Presentation]{IOB-SoC}
+\subtitle{A RISC-V based System on Chip}
+\institute[IObundle Lda]{IObundle Lda.\\The Architecture for an Agile World}
+\titlegraphic{\includegraphics[height=2.5cm]{Logo.png}}
+\author[José T. de Sousa]{Jos\'e T. de Sousa}
+\institute[IObundle Lda]{IObundle Lda}
+\date{\today}
+
+
+\addtobeamertemplate{navigation symbols}{}{%
+    \usebeamerfont{footline}%
+    \usebeamercolor[fg]{footline}%
+    \hspace{1em}%
+    \insertframenumber/\inserttotalframenumber
+}
+
+\begin{document}
+
+\begin{frame}
+ \titlepage   
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\logo{\includegraphics[scale=0.2]{Logo.png}~%
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Outline}
+\vspace{1cm}
+\begin{center}
+   \begin{itemize}
+     \item Introduction
+     \item Conclusion
+ \end{itemize} 
+\end{center}
+\end{frame}
+
+
+\begin{frame}{Introduction}
+\begin{center}
+    \begin{itemize}
+      \item Building processor based systems from scratch is hard
+      \item The IOB-SoC template eases this task
+      \item Provides a base Verilog SoC equipped with
+        \begin{itemize}
+        \item a RISC-V CPU
+        \item a memory system including a boot ROM and a RAM module
+        \item a UART communication module
+        \end{itemize}
+      \item Users can add IP cores to build more complex SoCs
+      \item Here, the addition of a timer IP is exemplified
+    \end{itemize}
+\end{center}
+\end{frame}
+
+\begin{frame}{Project setup}
+\begin{center}
+  \begin{itemize}
+    \item Use a Linux machine virtual or not
+    \item Make sure you can access {\it github.io} and {\it bitbucket.org} using ssh keys
+    \item Go to {\it bitbucket.org/jjts/iob-soc}
+    \item Fork the repository to create your own remote repository
+    \item Create a directory for your project\\
+      {\tt >mkdir mysoc \&\& cd mysoc}
+    \item Follow the instructions in the README to clone the repository into your project directory
+  \end{itemize}
+\end{center}
+\end{frame}
+
+
+\begin{frame}{Project editing}
+\begin{itemize}
+\item Your SoC will be inspired in IOB-SoC, not superimposed on IOB-SoC
+\item Do not edit any files in the iob-soc directory (clone) unless you want to contribute to it
+\item If you want to submit fixes or improvements to the origina iob-soc repository:
+  \begin{itemize}
+  \item Commit and push your changes to your fork
+  \item Submbit a Pull Request to the original iob-soc repository
+  \end{itemize}
+\item If you have benefited from IOB-SoC let others benefit from your improvements
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Project: add a timer IP}
+\begin{itemize}
+\item Create the timer hardware with a CPU interface
+\item Alternatively just do 
+  \\{\tt git clone git@bitbucket.org:jjts/iob-timer.git}
+\item Copy the RTL directory from the iob-soc clone:
+  \\{\tt cp -r iob-soc/rtl .}
+\item Edit the system header file: {\tt ./rtl/include/system.vh} as in next slide\\
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{The edited file {\tt system.vh}}
+\begin{tiny}
+\begin{lstlisting}
+//
+// HARDWARE DEFINITIONS
+//
+
+//Optional memories (passed as command line macro)
+`define USE_BOOT
+`define USE_DDR
+
+// slaves
+// minimum 3 slaves: boot, uart and reset
+// 1 slave for bootram and/or main RAM memory
+// DDR needs 2 slaves: cache and cache controller
+// 1 new slave for timer
+`define N_SLAVES 7
+
+//bits reserved to identify slave (2**N_SLAVES-1 is reserved)
+`define N_SLAVES_W 3
+
+//peripheral address prefixes
+`define BOOT_BASE 0
+`define UART_BASE 1
+`define SOFT_RESET_BASE 2
+`define MAINRAM_BASE 3
+`define CACHE_BASE 4
+`define CACHE_CTRL_BASE 5
+//new base for timer
+`define TIMER_BASE 6
+...
+\end{lstlisting}
+\end{tiny}
+\end{frame}
+
+\begin{frame}[fragile]{Instantiate the timer in file {\tt rtl/src/system.v}}
+\begin{tiny}
+\begin{lstlisting}
+`timescale 1 ns / 1 ps
+`include "system.vh"
+
+module system (
+               input                clk,
+               input                reset,
+               ...
+               ...
+               ...
+
+   time_counter #(.COUNTER_WIDTH(32))
+   timer (
+          rst(rst),
+          clk(clk),
+          .addr(addr),
+          .data_in(m_wdata),
+          .data_out(s_rdata[`TIMER_BASE]),
+          .valid(s_valid[`TIMER_BASE]),
+          .ready(s_ready[`TIMER_BASE])
+    );
+
+endmodule
+
+\end{lstlisting}
+\end{tiny}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{Simulate the system with timer without using it}
+
+\begin{itemize}
+\item This step ensures the integrity of the hardware after the modifications
+\item Copy the simulation folder from the iob-soc repository\\
+  {\tt cp -r iob-soc/simulation} 
+\item Let's use the {\it icarus verilog} simulator 
+  {\tt cs simulation/icarus} 
+\item Edit the Makefile as below
+\end{itemize}
+
+
+
+\begin{tiny}
+\begin{lstlisting}
+
+\end{lstlisting}
+\end{tiny}
+\end{frame}
+
+
+
+\begin{frame}{Conclusion}
+\begin{itemize}
+\item 
+\item 
+\item 
+\end{itemize}
+\end{frame}
+
+
+
+
+%\begin{frame}{Introduction}
+%\begin{center}
+%  \begin{columns}[onlytextwidth]
+%    \column{0.5\textwidth}
+%    bla
+%    \column{0.5\textwidth}
+%    \begin{figure}
+%      \centering
+%       \includegraphics[width=0.9\textwidth]{turb.jpg}
+%      \caption{1. Flow visualisation (source: www.bronkhorst.com).}
+%      \label{fig:my_label}
+%    \end{figure}
+%  \end{columns}
+%\end{center}
+%\end{frame}
+
+\end{document}

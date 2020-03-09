@@ -8,8 +8,8 @@
 
 // slaves
 // minimum 3 slaves: boot, uart and reset
-// 1 slave for bootram and/or main RAM memory
-// 2 slaves for DDR: cache and cache controller
+// optional 1 RAM slave for main memory
+// DDR needs 2 slaves: cache and cache controller
 `define N_SLAVES 6
 
 //bits reserved to identify slave (2**N_SLAVES-1 is reserved)
