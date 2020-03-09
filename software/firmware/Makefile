@@ -1,8 +1,8 @@
 TOOLCHAIN_PREFIX := riscv32-unknown-elf-
 
 PYTHON_DIR := ../python/
-UART_DIR := ../../submodules/iob-uart/c-driver
-
+SUBMODULES_DIR := ../../submodules
+UART_DIR := $(SUBMODULES)/iob-uart/c-driver
 INCLUDE = -I. -I$(UART_DIR)
 
 DEFINE = -DUART_BAUD_RATE=$(BAUD) -DUART_CLK_FREQ=$(FREQ)

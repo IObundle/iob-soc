@@ -107,14 +107,14 @@
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Project: add a timer IP}
+\begin{frame}{Add the timer hardware}
 \begin{itemize}
 \item Create the timer hardware with a CPU interface
-\item Alternatively just do 
+\item Alternatively download an exsting one from
   \\{\tt git clone git@bitbucket.org:jjts/iob-timer.git}
 \item Copy the RTL directory from the iob-soc clone:
   \\{\tt cp -r iob-soc/rtl .}
-\item Edit the system header file: {\tt ./rtl/include/system.vh} as in next slide\\
+\item Edit the system header file {\tt ./rtl/include/system.vh} as in next slide\\
 \end{itemize}
 \end{frame}
 
@@ -133,7 +133,7 @@
 // minimum 3 slaves: boot, uart and reset
 // 1 slave for bootram and/or main RAM memory
 // DDR needs 2 slaves: cache and cache controller
-// 1 new slave for timer
+// 1 ***new*** slave for timer
 `define N_SLAVES 7
 
 //bits reserved to identify slave (2**N_SLAVES-1 is reserved)
@@ -146,7 +146,7 @@
 `define MAINRAM_BASE 3
 `define CACHE_BASE 4
 `define CACHE_CTRL_BASE 5
-//new base for timer
+//***new*** base for timer
 `define TIMER_BASE 6
 ...
 \end{lstlisting}
@@ -166,6 +166,7 @@ module system (
                ...
                ...
 
+   //***new*** timer instance
    time_counter #(.COUNTER_WIDTH(32))
    timer (
           rst(rst),
@@ -183,28 +184,128 @@ endmodule
 \end{tiny}
 \end{frame}
 
-
-
-\begin{frame}[fragile]{Simulate the system with timer without using it}
-
+\begin{frame}{Add the timer software}
 \begin{itemize}
-\item This step ensures the integrity of the hardware after the modifications
-\item Copy the simulation folder from the iob-soc repository\\
-  {\tt cp -r iob-soc/simulation} 
-\item Let's use the {\it icarus verilog} simulator 
-  {\tt cs simulation/icarus} 
-\item Edit the Makefile as below
+\item Copy the software directory from the iob-soc clone:
+  \\{\tt cp -r iob-soc/software .}
+\item Edit the {\tt ./software/firmware/firmware.c} file as in next slide\\
 \end{itemize}
+\end{frame}
 
-
-
+\begin{frame}[fragile]{Edit file {\tt firmware.c} to use the timer}
 \begin{tiny}
 \begin{lstlisting}
+#include "system.h"
+#include "iob-uart.h"
 
+#define UART (UART_BASE<<(DATA_W-N_SLAVES_W))
+#define SOFT_RESET (SOFT_RESET_BASE<<(ADDR_W-N_SLAVES_W))
+
+int main()
+{ 
+
+  //***new*** variable to read timer cycle count
+  unsigned long time = timer_get_count(TIMER_BASE);
+  
+  uart_init(UART,UART_CLK_FREQ/UART_BAUD_RATE);   
+
+  uart_printf("Hello world!\n");
+
+  uart_txwait();
+  
+  //***new*** code section to read current timer count and compute 
+  //and print elapsed clock cycles
+  time =  timer_get_count(TIMER_BASE) - time;
+
+  uart_printf("Total execution time: %d\n", (time*10000000)/UART_CLK_FREQ);
+                          
+  //uncomment the below to reset and start from boot ram
+  //MEMSET(SOFT_RESET, 0, 3);
+
+  return 0;
+}
 \end{lstlisting}
 \end{tiny}
 \end{frame}
 
+
+\begin{frame}[fragile]{Edit Makefile to compile timer}
+\begin{tiny}
+\begin{lstlisting}
+TOOLCHAIN_PREFIX = riscv32-unknown-elf-
+PYTHON_DIR := ../python/
+UART_DIR := ../../submodules/iob-uart/c-driver
+
+#***new*** specify timer directory and addi it to include path 
+TIMER_DIR := ../../iob-timer
+INCLUDE = -I. -I$(UART_DIR) -I$(TIMER_DIR)
+DEFINE = -DUART_BAUD_RATE=$(BAUD) -DUART_CLK_FREQ=$(FREQ)
+
+#***new*** add timer.c to the source list
+SRC = firmware.c $(UART_DIR)/iob-uart.c firmware.S
+
+all: firmware.hex
+
+firmware.hex: firmware.lds $(SRC) system.h $(UART_DIR)/iob-uart.h
+	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding  -nostdlib -o firmware.elf $(DEFINE) $(INCLUDE) $(SRC) --std=gnu99 -Wl,-Bstatic,-T,firmware.lds,-Map,firmware.map,--strip-debug -lgcc -lc
+	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
+	$(eval MEM_SIZE=`./get_firmsize.sh`)
+	$(PYTHON_DIR)/makehex.py firmware.bin $(MEM_SIZE) > progmem.hex
+	$(eval MEM_SIZE=`$(PYTHON_DIR)/get_memsize.py MAINRAM_ADDR_W`)
+	$(PYTHON_DIR)/makehex.py firmware.bin $(MEM_SIZE) > firmware.hex
+
+system.h: ../../rtl/include/system.vh
+	sed s/\`/\#/g ../../rtl/include/system.vh > system.h
+
+clean:
+	@rm -rf firmware.bin firmware.elf firmware.map *.hex *.dat
+	@rm -rf uart_loader system.h
+	@rm -rf ../uart_loader
+
+.PHONY: all clean
+\end{lstlisting}
+\end{tiny}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{Edit simulation Makefile}
+
+\begin{itemize}
+\item Copy the simulation folder from the iob-soc repository\\
+  {\tt cp -r iob-soc/simulation} 
+\item Edit the Makefile to compile timer hardware as below
+\end{itemize}
+
+\begin{tiny}
+\begin{lstlisting}
+#simulation baud rate
+BAUD := 1000000
+FREQ := 100000000
+
+#file paths
+#***new*** add iob-soc directory to relevant paths
+IOB_SOC_DIR := ../../iob-soc
+FIRM_DIR := ../../$(IOB_SOC_DIR)/software/firmware
+BOOT_DIR := ../../software/bootloader
+RTL_DIR := ../../rtl
+RISCV_DIR := ../../$(IOB_SOC_DIR)/submodules/iob-rv32
+UART_DIR := ../../$(IOB_SOC_DIR)/submodules/iob-uart
+FIFO_DIR := ../../$(IOB_SOC_DIR)/submodules/fifo
+PYTHON_DIR := ../../$(IOB_SOC_DIR)/software/python
+CACHE_DIR := ../../$(IOB_SOC_DIR)/submodules/iob-cache
+AXI_RAM_DIR := ../../$(IOB_SOC_DIR)/submodules/axi-mem
+#***new*** add timer directory  and update hw include paths
+TIMER_DIR := ../../iob-timer
+#hw includes
+HW_INCLUDE := -I. -I$(RTL_DIR)/include -I$(UART_DIR)/rtl/include -I$(CACHE_DIR)/rtl/header -I$(TIMER_DIR)
+(...)
+#hardware sources
+#***new*** add timer verilog source 
+VSRC = $(RTL_DIR)/testbench/system_tb.v  $(RTL_DIR)/src/*.v $(RTL_DIR)/src/memory/behav/*.v $(RISCV_DIR)/picorv32.v $(UART_DIR)/rtl/src/iob-uart.v $(FIFO_DIR)/afifo.v $(CACHE_DIR)/rtl/src/gen_mem_reg.v $(CACHE_DIR)/rtl/src/iob-cache.v $(AXI_RAM_DIR)/rtl/axi_ram.v $(TIMER_DIR)/rtl/timer.v
+\end{lstlisting}
+\end{tiny}
+\end{frame}
 
 
 \begin{frame}{Conclusion}

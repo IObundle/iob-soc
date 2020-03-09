@@ -2,8 +2,10 @@ TOOLCHAIN_PREFIX := riscv32-unknown-elf-
 
 PYTHON_DIR := ../python
 CONSOLE_DIR = ../ld-sw
-UART_DIR := ../../submodules/iob-uart/c-driver
-CACHE_DIR := ../../submodules/iob-cache/c-driver
+
+SUBMODULES_DIR := ../../submodules
+UART_DIR := $(SUBMODULES)/iob-uart/c-driver
+CACHE_DIR := $(SUBMODULES)/iob-cache/c-driver
 
 INCLUDE =  -I. -I$(UART_DIR) -I$(CACHE_DIR) -I$(CONSOLE_DIR)
 
