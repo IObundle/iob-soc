@@ -22,7 +22,7 @@ VSRC = verilog/top_system.v $(RTL_DIR)/include/*.vh $(RTL_DIR)/src/memory/behav/
 # work-around for http://svn.clifford.at/handicraft/2016/vivadosig11
 export RDI_VERBOSE = False
 
-all: synth_system.bit
+all: synth_system.bit firmware.hex
 	scp $(PORT) $< $(REMOTE)
 	scp $(PORT) $(FIRM_DIR)/firmware.bin $(REMOTE)
 
@@ -51,7 +51,7 @@ $(BOOT_DIR)/boot.hex: FORCE
 ld-hw:
 	vivado -nojournal -log $@.log -mode batch -source $@.tcl
 
-ld-sw: firmware.hex
+ld-sw:
 	cp firmware.bin $(LD_SW_DIR)
 	make -C $(LD_SW_DIR)
 
