@@ -11,13 +11,13 @@ UART_DIR = ../../submodules/iob-uart
 FIFO_DIR = ../../submodules/fifo
 PYTHON_DIR := ../../software/python
 CACHE_DIR = ../../submodules/iob-cache
-AXI_RAM = ../../submodules/axi-mem
+AXI_RAM_DIR = ../../submodules/axi-mem
 
 #hw includes
 HW_INCLUDE = -I. -I$(RTL_DIR)/include -I$(UART_DIR)/rtl/include -I$(CACHE_DIR)/rtl/header
 
 #testbench defines
-TB_DEFINE = -DPROG_SIZE=$(shell wc -c   ../../software/firmware/firmware.bin | head -n1 | cut -d " " -f1)
+TB_DEFINE = -DPROG_SIZE=$(shell wc -c $(FIRM_DIR)/firmware.bin | head -n1 | cut -d " " -f1)
 TB_DEFINE += -DUART_BAUD_RATE=$(BAUD)
 TB_DEFINE += -DUART_CLK_FREQ=$(FREQ)
 
