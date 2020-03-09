@@ -94,7 +94,6 @@ int receiveFile(int serial_fd, char *name) {
   if (nbytes == -1) {
     printf("receiveFile: Failed to send data\n");
   }
-  printf("file_size = %d (0x%x)\n", file_size, file_size);
   
   /* Get file */
   for (i = 0; i < file_size; i++) {
