@@ -4,8 +4,8 @@ PYTHON_DIR := ../python
 CONSOLE_DIR = ../ld-sw
 
 SUBMODULES_DIR := ../../submodules
-UART_DIR := $(SUBMODULES)/iob-uart/c-driver
-CACHE_DIR := $(SUBMODULES)/iob-cache/c-driver
+UART_DIR := $(SUBMODULES_DIR)/iob-uart/c-driver
+CACHE_DIR := $(SUBMODULES_DIR)/iob-cache/c-driver
 
 INCLUDE =  -I. -I$(UART_DIR) -I$(CACHE_DIR) -I$(CONSOLE_DIR)
 
