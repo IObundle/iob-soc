@@ -14,9 +14,7 @@ DEFINE += -DPROG_SIZE=`wc -c   ../../software/firmware/firmware.bin | head -n1 |
 
 SRC = boot.S boot.c $(UART_DIR)/iob-uart.c 
 
-all: boot.hex
-
-boot.hex: $(SRC) system.h $(UART_DIR)/iob-uart.h $(CONSOLE_DIR)/console.h boot.lds
+all: $(SRC) system.h $(UART_DIR)/iob-uart.h $(CONSOLE_DIR)/console.h boot.lds
 	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -nostdlib -o boot.elf $(INCLUDE) $(DEFINE) $(SRC) --std=gnu99 -Wl,-Bstatic,-T,boot.lds,-Map,boot.map,--strip-debug -lgcc -lc
 	$(TOOLCHAIN_PREFIX)objcopy -O binary boot.elf boot.bin
 	$(eval MEM_SIZE=`$(PYTHON_DIR)/get_memsize.py BOOTROM_ADDR_W`)
