@@ -52,11 +52,20 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}{Outline}
-\vspace{1cm}
 \begin{center}
    \begin{itemize}
      \item Introduction
-     \item Conclusion
+     \item Project setup
+     \item Project editing guidelines
+     \item Getting started with the timer IP hardware design
+     \item Edit the hardware definitions file {\tt system.vh}
+     \item Instantiate the timer IP in file {\tt rtl/src/system.v}
+     \item Add the timer IP firmware
+     \item Edit file {\tt firmware.c} to drive the timer IP
+     \item Edit the Makefile to compile the timer IP firmware
+     \item Setup RTL simulation using the Icarus Verilog simulator
+     \item Simulate the system
+     \item Conclusions and future work
  \end{itemize} 
 \end{center}
 \end{frame}
@@ -83,9 +92,11 @@
 \begin{center}
   \begin{itemize}
     \item Use a Linux machine virtual or not
+    \item Install the latest stable version of the open source Icarus Verilog simulator
     \item Make sure you can access {\it github.io} and {\it bitbucket.org} using ssh keys
     \item Go to {\it bitbucket.org/jjts/iob-soc}
     \item Fork the repository to create your own remote repository
+    \item Follow the README instructions to install the RISC-V toolchain if you have not already
     \item Create a directory for your project\\
       {\tt >mkdir mysoc \&\& cd mysoc}
     \item Follow the instructions in the README to clone the repository into your project directory
@@ -94,31 +105,36 @@
 \end{frame}
 
 
-\begin{frame}{Project editing}
+\begin{frame}{Project editing guidelines}
 \begin{itemize}
-\item Your SoC will be inspired in IOB-SoC, not superimposed on IOB-SoC
-\item Do not edit any files in the iob-soc directory (clone) unless you want to contribute to it
-\item If you want to submit fixes or improvements to the origina iob-soc repository:
+\item Your SoC will be inspired in IOB-SoC, not superimposed on it
   \begin{itemize}
-  \item Commit and push your changes to your fork
-  \item Submbit a Pull Request to the original iob-soc repository
+  \item You will partially reproduce the file hierarchy of the iob-soc
+    repository by copying to the {\tt mysoc} directory only the directories and
+    files you need to change
   \end{itemize}
-\item If you have benefited from IOB-SoC let others benefit from your improvements
+\item Do not edit any files in the iob-soc clone repository unless you want to contribute to it
+\item If you wish to submit fixes or improvements to the original iob-soc repository do the following:
+  \begin{itemize}
+  \item Edit the relevant files in the iob-soc directory (clone)
+  \item Commit and push your changes to your fork
+  \item Submit a Pull Request to the original iob-soc repository
+  \item If you have benefited from IOB-SoC then also let others benefit from your work
+  \end{itemize}
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Project: add a timer IP}
+\begin{frame}{Getting started with the timer IP hardware design}
 \begin{itemize}
-\item Create the timer hardware with a CPU interface
-\item Alternatively just do 
+\item Create the timer IP hardware or alternatively download the one from
   \\{\tt git clone git@bitbucket.org:jjts/iob-timer.git}
-\item Copy the RTL directory from the iob-soc clone:
+\item Copy the rtl directory from the iob-soc clone:
   \\{\tt cp -r iob-soc/rtl .}
-\item Edit the system header file: {\tt ./rtl/include/system.vh} as in next slide\\
+\item Edit the system header file {\tt ./rtl/include/system.vh} as in the next slide\\
 \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{The edited file {\tt system.vh}}
+\begin{frame}[fragile]{Edit the hardware definitions file {\tt system.vh}}
 \begin{tiny}
 \begin{lstlisting}
 //
@@ -130,13 +146,12 @@
 `define USE_DDR
 
 // slaves
-// minimum 3 slaves: boot, uart and reset
-// 1 slave for bootram and/or main RAM memory
-// DDR needs 2 slaves: cache and cache controller
-// 1 new slave for timer
-`define N_SLAVES 7
+// minimum 4 slaves: boot, uart, ram and reset controller
+// Optionally, to use DDR, you need 2 additional slaves: cache and cache controller
+// ***NEW*** increment the number of slaves to host your new timer IP
+`define N_SLAVES 5
 
-//bits reserved to identify slave (2**N_SLAVES-1 is reserved)
+//bits reserved to identify slave (the 2**N_SLAVES-1 combination is reserved and cannot be used to identify any slave)
 `define N_SLAVES_W 3
 
 //peripheral address prefixes
@@ -146,14 +161,14 @@
 `define MAINRAM_BASE 3
 `define CACHE_BASE 4
 `define CACHE_CTRL_BASE 5
-//new base for timer
+//***new*** base for timer
 `define TIMER_BASE 6
 ...
 \end{lstlisting}
 \end{tiny}
 \end{frame}
 
-\begin{frame}[fragile]{Instantiate the timer in file {\tt rtl/src/system.v}}
+\begin{frame}[fragile]{Instantiate the timer IP in file {\tt rtl/src/system.v}}
 \begin{tiny}
 \begin{lstlisting}
 `timescale 1 ns / 1 ps
@@ -166,11 +181,12 @@ module system (
                ...
                ...
 
+   //***NEW*** timer instance
    time_counter #(.COUNTER_WIDTH(32))
    timer (
-          rst(rst),
+          rst(reset_int),
           clk(clk),
-          .addr(addr),
+          .addr(m_addr[0]),
           .data_in(m_wdata),
           .data_out(s_rdata[`TIMER_BASE]),
           .valid(s_valid[`TIMER_BASE]),
@@ -183,36 +199,199 @@ endmodule
 \end{tiny}
 \end{frame}
 
-
-
-\begin{frame}[fragile]{Simulate the system with timer without using it}
-
+\begin{frame}{Add the timer IP software}
 \begin{itemize}
-\item This step ensures the integrity of the hardware after the modifications
-\item Copy the simulation folder from the iob-soc repository\\
-  {\tt cp -r iob-soc/simulation} 
-\item Let's use the {\it icarus verilog} simulator 
-  {\tt cs simulation/icarus} 
-\item Edit the Makefile as below
+\item Copy the software directory from the iob-soc clone:
+  \\{\tt cp -r iob-soc/software .}
+\item Edit the {\tt ./software/firmware/firmware.c} file as in the next slide\\
 \end{itemize}
+\end{frame}
 
-
-
+\begin{frame}[fragile]{Edit file {\tt firmware.c} to drive the timer IP}
 \begin{tiny}
 \begin{lstlisting}
+#include "system.h"
+#include "iob-uart.h"
+#include "iob_timer.h"
 
+#define UART (UART_BASE<<(DATA_W-N_SLAVES_W))
+#define SOFT_RESET (SOFT_RESET_BASE<<(ADDR_W-N_SLAVES_W))
+#define TIMER (TIMER_BASE<<(ADDR_W-N_SLAVES_W))
+
+int main()
+{ 
+
+  //***NEW*** variable to read timer cycle count
+  int cycles = timer_get_count(TIMER_BASE);
+  
+  uart_init(UART,UART_CLK_FREQ/UART_BAUD_RATE);   
+
+  uart_printf("Hello world!\n");
+
+  uart_txwait();
+  
+  //***NEW*** code section to read current timer count and compute 
+  //print elapsed time and clock frequency
+  cycles =  timer_get_count(TIMER_BASE) - time;
+
+  uart_printf("Execution time: %dus @%dMHz,115200BAUD\n",(time*1000000)/UART_CLK_FREQ);
+
+  uart_txwait();
+  return 0;
+}
+\end{lstlisting}
+\end{tiny}
+\end{frame}
+
+
+\begin{frame}[fragile]{Edit the Makefile to compile the timer IP firmware}
+\begin{tiny}
+\begin{lstlisting}
+TOOLCHAIN_PREFIX = riscv32-unknown-elf-
+PYTHON_DIR := ../python/
+SUBMODULES_DIR := ../../iob-soc/submodules
+UART_DIR := $(SUBMODULES_DIR)/iob-uart/c-driver
+
+#***NEW*** specify timer directory and addi it to include path 
+TIMER_DIR := ../../iob-timer
+INCLUDE = -I. -I$(UART_DIR) -I$(TIMER_DIR)
+DEFINE = -DUART_BAUD_RATE=$(BAUD) -DUART_CLK_FREQ=$(FREQ)
+
+#***NEW*** add timer.c to the source list
+SRC =  firmware.S firmware.c $(UART_DIR)/iob-uart.c  $(TIMER_DIR)/iob_timer.c
+
+all: firmware.lds $(SRC) system.h $(UART_DIR)/iob-uart.h
+	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding  -nostdlib -o firmware.elf $(DEFINE) $(INCLUDE) $(SRC) --std=gnu99 -Wl,-Bstatic,-T,firmware.lds,-Map,firmware.map,--strip-debug -lgcc -lc
+	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
+	$(eval MEM_SIZE=`./get_firmsize.sh`)
+	$(PYTHON_DIR)/makehex.py firmware.bin $(MEM_SIZE) > progmem.hex
+	$(eval MEM_SIZE=`$(PYTHON_DIR)/get_memsize.py MAINRAM_ADDR_W`)
+	$(PYTHON_DIR)/makehex.py firmware.bin $(MEM_SIZE) > firmware.hex
+
+system.h: ../../rtl/include/system.vh
+	sed s/\`/\#/g ../../rtl/include/system.vh > system.h
+
+clean:
+	@rm -rf firmware.bin firmware.elf firmware.map *.hex *.dat
+	@rm -rf uart_loader system.h
+	@rm -rf ../uart_loader
+
+.PHONY: all clean
 \end{lstlisting}
 \end{tiny}
 \end{frame}
 
 
 
-\begin{frame}{Conclusion}
+\begin{frame}[fragile]{Setup RTL simulation using the Icarus Verilog simulator}
+
 \begin{itemize}
-\item 
-\item 
-\item 
+\item Copy the simulation folder from the iob-soc repository\\ {\tt cp -r
+  iob-soc/simulation .}
+\item Edit file ``simulation/icarus/Makefile'' as below, to compile the system
+  and simulate it
 \end{itemize}
+
+\begin{tiny}
+\begin{lstlisting}
+#simulation baud rate
+BAUD := 1000000
+FREQ := 100000000
+
+#paths
+ROOT_DIR := ../..
+SUBMODULES_DIR := $(ROOT_DIR)/iob-soc/submodules
+FIRM_DIR := $(ROOT_DIR)/software/firmware
+
+(...)
+
+#***NEW*** add timer directory to the hw include paths
+TIMER_DIR := $(ROOT_DIR)/iob-timer
+HW_INCLUDE := -I. -I$(RTL_DIR)/include -I$(UART_DIR)/rtl/include -I$(CACHE_DIR)/rtl/header -I$(TIMER_DIR)
+
+#***NEW*** add the timer IP verilog source to the list of sources
+VSRC = $(RTL_DIR)/testbench/system_tb.v  $(RTL_DIR)/src/*.v $(RTL_DIR)/src/memory/behav/*.v $(RISCV_DIR)/picorv32.v $(UART_DIR)/rtl/src/iob-uart.v $(FIFO_DIR)/afifo.v $(CACHE_DIR)/rtl/src/gen_mem_reg.v $(CACHE_DIR)/rtl/src/iob-cache.v $(AXI_RAM_DIR)/rtl/axi_ram.v $(TIMER_DIR)/iob_timer.v
+
+(...)
+\end{lstlisting}
+\end{tiny}
+\end{frame}
+
+\begin{frame}[fragile]{Simulate the system}
+
+\begin{itemize}
+\item To simulate the system just type\\
+  {\tt make} 
+\item The firmware, bootloader and system verilog description are compiled as you can see from the printed messages
+\item The last prints should look like the following
+\end{itemize}
+
+\begin{tiny}
+\begin{lstlisting}
+  ./a.out
+  VCD info: dumpfile system.vcd opened for output.
+  Hello world!
+  Total execution time: 1262 us @100MHz
+\end{lstlisting}
+\end{tiny}
+
+\begin{itemize}
+\item Congratulations! You have created your first RISC-V system using IOB-SoC!!\\
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{Main memory options}
+%\begin{small}
+\begin{itemize}
+\item The main memory type options are enabled by defining or undefining the {\tt USE\_DDR} and {\tt USE\_BOOT} macros
+\item Option 1: place the firmware image in FPGA memory during design compilation
+  \begin{itemize}
+  \item Do not define either macro: \underline{not reprogrammable}
+  \item This option is only valid for FPGA: needs recompilation if firmware changes
+  \end{itemize}
+\item Option 2: place the firmware in internal RAM
+  \begin{itemize}
+  \item Define macro {\tt USE\_BOOT} only: \underline {reprogrammable}
+  \item This option is valid for FPGA and ASIC
+  \item Firmware can be (re)loaded via UART
+  \end{itemize}
+\item Option 3: place the firmware in external DDR memory
+  \begin{itemize}
+  \item Define both macros: \underline{reprogrammable}
+  \item This option is valid for FPGA and ASIC
+  \item Firmware can be (re)loaded via UART
+  \item Third party DDR controller IP core is required
+  \end{itemize}
+\end{itemize}
+\end{frame}
+%\end{small}
+
+
+
+
+\begin{frame}{Conclusions and future work}
+
+\begin{itemize}
+  \item Conclusions
+    \begin{itemize}
+    \item Presented project and editing guidelines
+    \item Designed of a peripheral IP (timer)
+    \item Instantiated peripheral in the system 
+    \item Designed a simple software driver for the peripheral
+    \item Compiled the software
+    \item Simulated the system's RTL code running the software in the memories
+    \item Presented options for the main memory
+    \end{itemize}
+  \item Future work
+    \begin{itemize}
+    \item Non volatile (flash) external memory support
+    \item Real Time Operating System (RTOS) 
+    \end{itemize}
+\end{itemize}
+
 \end{frame}
 
 
