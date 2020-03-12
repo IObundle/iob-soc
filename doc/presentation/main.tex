@@ -186,7 +186,7 @@ module system (
    timer (
           rst(reset_int),
           clk(clk),
-          .addr(m_addr[0]),
+          .addr(m_addr[2]),
           .data_in(m_wdata),
           .data_out(s_rdata[`TIMER_BASE]),
           .valid(s_valid[`TIMER_BASE]),
@@ -230,9 +230,9 @@ int main()
 
   uart_txwait();
   
-  //***NEW*** code section to read current timer count and compute 
-  //print elapsed time and clock frequency
-  cycles =  timer_get_count(TIMER_BASE) - time;
+  //***NEW*** code section to read current timer count, compute and  
+  //print the elapsed time and clock frequency
+  cycles =  timer_get_count(TIMER) - cycles;
 
   uart_printf("Execution time: %dus @%dMHz,115200BAUD\n",(time*1000000)/UART_CLK_FREQ);
 
