@@ -6,39 +6,36 @@
 #include <time.h>
 #include "console.h"
 
-#define BUFFER_SIZE (9*4096) /* File buffer size */
-#define WAIT_FOR_RISCV 2000
+#define WAIT_FOR_RISCV 20000
 
 /* Uncomment this line for debug */
 /*#define DEBUG*/
 
 int sendFile(int serial_fd, char *name) {
   FILE *file_fd;
-  unsigned char buffer[BUFFER_SIZE];
   unsigned int file_size;
   
   unsigned int i;
-  int nbytes;
+  unsigned char byte;
+  size_t nbytes;
   
   clock_t begin;
   clock_t end;
   double time_spent;
   
-  file_fd = fopen(name, "r");
+  file_fd = fopen(name, "rb");
   if (!file_fd) {
     printf("sendFile: Can't open the file selected. Don't forget to add an valid pathed file.\n");
     return -1;
   }
   
-  file_size = (unsigned int) fread(buffer, sizeof(char), sizeof(buffer), file_fd);
-  if (!file_size) {
-    printf("sendFile: File has no values to read\n");
-  }
-  
-  fclose(file_fd);
+  /* Get file size */
+  fseek(file_fd, 0L, SEEK_END);
+  file_size = ftell(file_fd);
+  rewind(file_fd);
   
   printf("\nStarting File '%s' Transfer...\n", name);
-  printf("file_size = %d\n", file_size);
+  printf("file_size = %u\n", file_size);
   begin = clock();
   
   /* Send file size */
@@ -49,14 +46,22 @@ int sendFile(int serial_fd, char *name) {
   
   /* Send file */
   for (i = 0; i < file_size; i++) {
-    nbytes = write(serial_fd, &buffer[i], 1);
+    nbytes = fread(&byte, sizeof(unsigned char), 1, file_fd);
+    if (nbytes != 1) {
+      printf("sendFile: Failed to read byte from file\n");
+    }
+    
+    nbytes =  write(serial_fd, &byte, 1);
     if (nbytes == -1) {
+      printf("i = %u\n", i);
       printf("sendFile: Failed to send data\n");
     }
     
+    if (!(i%200)) {
+      usleep(WAIT_FOR_RISCV);
+    }
 #ifdef DEBUG
-    printf("buffer[%d] = %x\n", i, buffer[i]);
-    usleep(WAIT_FOR_RISCV);
+    printf("buffer[%u] = %x\n", i, byte);
 #endif
   }
   
@@ -65,16 +70,18 @@ int sendFile(int serial_fd, char *name) {
   printf ("\nUART transfer complete.\n");
   printf("The file transfer took %f seconds.\n", time_spent);
   
+  fclose(file_fd);
+  
   return 0;
 }
 
 int receiveFile(int serial_fd, char *name) {
   FILE *file_fd;
-  unsigned char buffer[BUFFER_SIZE];
   unsigned int file_size = 0;
   
   unsigned int i;
-  unsigned int nbytes;
+  size_t nbytes;
+  unsigned char byte;
   
   clock_t begin;
   clock_t end;
@@ -92,18 +99,21 @@ int receiveFile(int serial_fd, char *name) {
   /* Get file size */
   nbytes = read(serial_fd, &file_size, 4);
   if (nbytes == -1) {
-    printf("receiveFile: Failed to send data\n");
+    printf("receiveFile: Failed to read data\n");
   }
   
   /* Get file */
   for (i = 0; i < file_size; i++) {
     do {
-      nbytes = read(serial_fd, &buffer[i], 1);
+      nbytes = read(serial_fd, &byte, 1);
     } while (nbytes <= 0);
     
+    nbytes = fwrite(&byte, sizeof(char), 1, file_fd);
+    if (nbytes != 1) {
+      printf("receiveFile: Failed to write byte in file\n");
+    }
 #ifdef DEBUG
-    printf("buffer[%d] = %x\n", i, buffer[i]);
-    usleep(WAIT_FOR_RISCV);
+    printf("buffer[%u] = %x\n", i, byte);
 #endif
   }
   
@@ -113,11 +123,6 @@ int receiveFile(int serial_fd, char *name) {
   printf("file_size = %d\n", file_size);
   printf ("\nUART transfer complete.\n");
   printf("The file transfer took %f seconds.\n", time_spent);
-  
-  nbytes = (unsigned int) fwrite(buffer, sizeof(char), file_size, file_fd);
-  if (nbytes != file_size) {
-    printf("receiveFile: Failed to write file\n");
-  }
   
   fclose(file_fd);
   
@@ -241,7 +246,7 @@ int main(int argc, char* argv[]) {
   int serial_fd;
   int i;
   char c;
-  int nbytes;
+  size_t nbytes;
   
   if (argc < 5) {
     usage("Missing arguments");
@@ -276,7 +281,6 @@ int main(int argc, char* argv[]) {
     } else if (c == SRX) { /* Receive file */
       printf("Please, insert a name for a file:");
       scanf("%s", fileOut);
-      printf("\n");
       receiveFile(serial_fd, fileOut);
     } else if (c == EOT) { /* Finish */
       printf("Bye, bye!\n");
