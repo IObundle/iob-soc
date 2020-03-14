@@ -17,7 +17,7 @@ int sendFile(int serial_fd, char *name) {
   
   unsigned int i;
   unsigned char byte;
-  size_t nbytes;
+  int nbytes;
   
   clock_t begin;
   clock_t end;
@@ -39,19 +39,19 @@ int sendFile(int serial_fd, char *name) {
   begin = clock();
   
   /* Send file size */
-  nbytes = write(serial_fd, &file_size, 4);
+  nbytes = (int) write(serial_fd, &file_size, 4);
   if (nbytes == -1) {
     printf("sendFile: Failed to send data\n");
   }
   
   /* Send file */
   for (i = 0; i < file_size; i++) {
-    nbytes = fread(&byte, sizeof(unsigned char), 1, file_fd);
+    nbytes = (int) fread(&byte, sizeof(unsigned char), 1, file_fd);
     if (nbytes != 1) {
       printf("sendFile: Failed to read byte from file\n");
     }
     
-    nbytes =  write(serial_fd, &byte, 1);
+    nbytes = (int) write(serial_fd, &byte, 1);
     if (nbytes == -1) {
       printf("i = %u\n", i);
       printf("sendFile: Failed to send data\n");
@@ -80,7 +80,7 @@ int receiveFile(int serial_fd, char *name) {
   unsigned int file_size = 0;
   
   unsigned int i;
-  size_t nbytes;
+  int nbytes;
   unsigned char byte;
   
   clock_t begin;
@@ -97,7 +97,7 @@ int receiveFile(int serial_fd, char *name) {
   begin = clock();
   
   /* Get file size */
-  nbytes = read(serial_fd, &file_size, 4);
+  nbytes = (int) read(serial_fd, &file_size, 4);
   if (nbytes == -1) {
     printf("receiveFile: Failed to read data\n");
   }
@@ -105,10 +105,10 @@ int receiveFile(int serial_fd, char *name) {
   /* Get file */
   for (i = 0; i < file_size; i++) {
     do {
-      nbytes = read(serial_fd, &byte, 1);
+      nbytes = (int) read(serial_fd, &byte, 1);
     } while (nbytes <= 0);
     
-    nbytes = fwrite(&byte, sizeof(char), 1, file_fd);
+    nbytes = (int) fwrite(&byte, sizeof(char), 1, file_fd);
     if (nbytes != 1) {
       printf("receiveFile: Failed to write byte in file\n");
     }
@@ -246,7 +246,7 @@ int main(int argc, char* argv[]) {
   int serial_fd;
   int i;
   char c;
-  size_t nbytes;
+  int nbytes;
   
   if (argc < 5) {
     usage("Missing arguments");
@@ -273,7 +273,7 @@ int main(int argc, char* argv[]) {
   
   while (1) {
     do {
-      nbytes = read(serial_fd, &c, 1);
+      nbytes = (int) read(serial_fd, &c, 1);
     } while (nbytes <= 0);
     
     if (c == STX) { /* Send file */
