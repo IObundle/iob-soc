@@ -24,7 +24,11 @@ $(TRGT): $(CSRCS) $(CHDRS)
 	$(CC) $(CFLAGS) $(CSRCS) -o $@
 
 run: $(TRGT) $(FW).bin
+ifneq ($(shell pgrep console),)
+	@echo "FPGA is busy!"
+else
 	./$(TRGT) -s $(SERIAL) -f $(FW).bin
+endif
 
 clean:
 	@rm -f *# *~
