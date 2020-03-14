@@ -45,7 +45,7 @@ boot.hex: $(BOOT_DIR)/boot.hex
 	$(PYTHON_DIR)/hex_split.py boot
 	cp boot.hex boot.dat
 
-$(BOOT_DIR)/boot.hex: FORCE
+$(BOOT_DIR)/boot.hex:
 	make -C $(BOOT_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
 
 ld-hw:
