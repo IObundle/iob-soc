@@ -22,6 +22,7 @@ int sendFile(int serial_fd, char *name) {
   clock_t begin;
   clock_t end;
   double time_spent;
+  unsigned int count = 0;
   
   file_fd = fopen(name, "rb");
   if (!file_fd) {
@@ -38,6 +39,13 @@ int sendFile(int serial_fd, char *name) {
   printf("file_size = %u\n", file_size);
   begin = clock();
   
+  /* Send Start to RISC-V */
+  do {
+    do {
+      nbytes = (int) read(serial_fd, &byte, 1);
+    } while (nbytes <= 0);
+  } while (byte != STR);
+  
   /* Send file size */
   nbytes = (int) write(serial_fd, &file_size, 4);
   if (nbytes == -1) {
@@ -53,11 +61,11 @@ int sendFile(int serial_fd, char *name) {
     
     nbytes = (int) write(serial_fd, &byte, 1);
     if (nbytes == -1) {
-      printf("i = %u\n", i);
       printf("sendFile: Failed to send data\n");
     }
     
     if (!(i%200)) {
+      count++;
       usleep(WAIT_FOR_RISCV);
     }
 #ifdef DEBUG
@@ -66,7 +74,7 @@ int sendFile(int serial_fd, char *name) {
   }
   
   end = clock();
-  time_spent = ((double) (end - begin)) / CLOCKS_PER_SEC;
+  time_spent = ((double) (end - begin)) / CLOCKS_PER_SEC + (double)count * WAIT_FOR_RISCV/1000000.0;
   printf ("\nUART transfer complete.\n");
   printf("The file transfer took %f seconds.\n", time_spent);
   
@@ -96,10 +104,20 @@ int receiveFile(int serial_fd, char *name) {
   printf("\nStarting File '%s' Transfer...\n", name);  
   begin = clock();
   
-  /* Get file size */
-  nbytes = (int) read(serial_fd, &file_size, 4);
+  /* Send Start to RISC-V */
+  byte = STR;
+  nbytes = (int) write(serial_fd, &byte, 1);
   if (nbytes == -1) {
-    printf("receiveFile: Failed to read data\n");
+    printf("receiveFile: Failed to send data\n");
+  }
+  
+  /* Get file size */
+  for (i = 0; i < 4; i++) {
+    do {
+      nbytes = (int) read(serial_fd, &byte, 1);
+    } while (nbytes <= 0);
+    
+    file_size |= byte << (i*8);
   }
   
   /* Get file */
