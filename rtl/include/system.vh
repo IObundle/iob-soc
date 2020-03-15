@@ -3,7 +3,7 @@
 //
 
 //Optional memories (passed as command line macro)
-`define USE_BOOT
+//`define USE_BOOT
 `define USE_DDR
 
 // slaves
