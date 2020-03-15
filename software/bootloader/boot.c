@@ -27,6 +27,9 @@
 
 unsigned int receiveFile(void) {
   
+  // Send Start to PC
+  uart_putc(STR);
+  
   // Get file size
   unsigned int file_size = (unsigned int) uart_getc();
   file_size |= ((unsigned int) uart_getc()) << 8;
@@ -43,6 +46,9 @@ unsigned int receiveFile(void) {
 }
 
 void sendFile(unsigned int file_size, unsigned int offset) {
+  
+  // Wait for PC
+  while (uart_getc() != STR);
   
   // Write file size
   uart_putc((char)(file_size & 0x0ff));

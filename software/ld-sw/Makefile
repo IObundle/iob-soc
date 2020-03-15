@@ -8,9 +8,11 @@ FREQ := 100000000
 CC := gcc
 CFLAGS := -g -Wall -pedantic
 
-TRGT = console
-CSRCS = console.c
-CHDRS = console.h
+TRGT := console
+CSRCS := console.c
+CHDRS := console.h
+
+USERNAME := $(shell pgrep console | xargs -r ps -o uname= -p)
 
 all: run
 
@@ -24,8 +26,8 @@ $(TRGT): $(CSRCS) $(CHDRS)
 	$(CC) $(CFLAGS) $(CSRCS) -o $@
 
 run: $(TRGT) $(FW).bin
-ifneq ($(shell pgrep console),)
-	@echo "FPGA is busy!"
+ifneq ($(USERNAME),)
+	@echo "FPGA is being used by $(USERNAME)"
 else
 	./$(TRGT) -s $(SERIAL) -f $(FW).bin
 endif
