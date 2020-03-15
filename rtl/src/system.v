@@ -130,10 +130,15 @@ module system (
      //if main memory is being addressed and system not booting
      if (!m_addr[`ADDR_W-1 -: `N_SLAVES_W] && !boot)
        //if DDR being used point to cache
-`ifdef USE_DDR
+`ifdef USE_BOOT
+  `ifdef USE_DDR
        m_addr_int = `N_SLAVES_W'd`CACHE_BASE;
-`else
+  `else
        //if DDR  not being used point to RAM
+       m_addr_int = `N_SLAVES_W'd`MAINRAM_BASE;
+  `endif
+`else
+       //if BOOT not being used point to RAM
        m_addr_int = `N_SLAVES_W'd`MAINRAM_BASE;
 `endif
      else
