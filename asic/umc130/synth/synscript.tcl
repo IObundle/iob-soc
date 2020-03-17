@@ -25,7 +25,7 @@ echo $SRC
 
 read_hdl -v2001 $SRC_CPU $SRC 
 elaborate system
-define_clock -name clk -period 5000 [find / -port clk] 
+define_clock -name clk -period 31250 [find / -port clk] 
 synthesize -to_mapped
 #retime -prepare -min_delay
 report gates > gates_report.txt

@@ -17,7 +17,7 @@ $(MEMW_DIR)/rom.v: $(MEMW_DIR)
 
 $(MEMW_DIR)/ram.v: $(MEMW_DIR)
 	$(eval MEM_SIZE=`$(PYTHON_DIR)/get_memsize.py BOOTRAM_ADDR_W log2`)	
-	$(PYTHON_DIR)/memwrapper_make.py fsc0l_d sh $(MEM_SIZE) 8 4 4 > $(MEMW_DIR)/ram.v
+	$(PYTHON_DIR)/memwrapper_make.py fsc0l_d sh $(MEM_SIZE) 8 4 1 > $(MEMW_DIR)/ram.v
 
 $(MEMW_DIR):
 	make -C ../memory
