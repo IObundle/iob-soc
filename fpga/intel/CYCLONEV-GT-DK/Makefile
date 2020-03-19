@@ -9,10 +9,8 @@ PYTHON_DIR := ../../../software/python
 
 
 REMOTE_HOST := iobundle.ddns.net
-REMOTE_PORT := 1418
+REMOTE_PORT := 1415
 REMOTE_FPGA_DIR := ./sandbox/iob-soc/fpga/intel/CYCLONEV-GT-DK
-REMOTE_LDSW_DIR := ./sandbox/iob-soc/software/ld-sw
-
 
 BAUD := 115200
 FREQ := 100000000
@@ -46,16 +44,13 @@ boot.hex: $(BOOT_DIR)/boot.hex
 $(BOOT_DIR)/boot.hex:
 	make -C $(BOOT_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
 
-ld-sw:
-	ssh $(USER)@$(REMOTE_HOST) make -C $(REMOTE_LDSW_DIR)
-
 ld-hw:
 	ssh -p $(REMOTE_PORT) $(USER)@$(REMOTE_HOST) $(REMOTE_FPGA_DIR)/prog.sh $(REMOTE_FPGA_DIR)
 
 clean:
 	@rm -rf db incremental_db output_files
 	@rm -f *.summary *.rpt *.smsg *.txt *.done *.jdi *.pin *.sof *.sld *.qpf *~
-	@rm -f *.dat *.hex
+	@rm -f *.dat *.hex *.bin
 	make -C $(FIRM_DIR) clean --no-print-directory
 	make -C $(BOOT_DIR) clean --no-print-directory
 	make -C $(LD_SW_DIR) clean --no-print-directory

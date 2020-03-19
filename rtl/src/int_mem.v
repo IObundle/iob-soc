@@ -79,11 +79,11 @@ module int_mem
           ram_wdata = wdata;
           ram_wstrb = wstrb;
           if (boot_valid)
-            ram_addr = addr+BOOTRAM_ADDR;
+            ram_addr = addr+BOOTRAM_ADDR[`BOOTRAM_ADDR_W-3:0];
           else //not booting
             ram_addr = addr;
        end else begin //copy not done yet
-          ram_addr =  addr_cnt_reg+BOOTRAM_ADDR;
+          ram_addr =  addr_cnt_reg+BOOTRAM_ADDR[`BOOTRAM_ADDR_W-3:0];
           ram_wdata = rom_rdata;
           ram_wstrb = 4'hF;
        end

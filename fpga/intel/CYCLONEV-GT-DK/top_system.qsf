@@ -31,10 +31,12 @@ set_instance_assignment -name IO_STANDARD "2.5-V" -to resetn
 
 #Leds
 #set_location_assignment  PIN_AM23 -to led
-set_location_assignment  PIN_AE25 -to trap
-
 #set_instance_assignment -name IO_STANDARD "2.5-V" -to led
+
+set_location_assignment  PIN_AE25 -to trap
 set_instance_assignment -name IO_STANDARD "2.5-V" -to trap
+set_instance_assignment -name SLEW_RATE 1 -to trap
+set_instance_assignment -name CURRENT_STRENGTH_NEW DEFAULT -to trap
 
 #Uart
 set_location_assignment PIN_F10 -to uart_txd
@@ -47,18 +49,15 @@ set_instance_assignment -name IO_STANDARD "2.5-V" -to uart_rxd
 #Force registers into IOBs
 set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to *
 set_instance_assignment -name FAST_INPUT_REGISTER ON -to *
-set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to *
+#set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to *
 set_global_assignment -name LAST_QUARTUS_VERSION "18.0.0 Standard Edition"
 set_global_assignment -name VERILOG_FILE top_system.v
 set_global_assignment -name VERILOG_FILE system.v
 set_global_assignment -name VERILOG_FILE iob_generic_interconnect.v
-set_global_assignment -name VERILOG_FILE iob_native_memory_mapped_decoder.v
-set_global_assignment -name VERILOG_FILE clock_wizard.v
-set_global_assignment -name VERILOG_FILE main_memory.v
-set_global_assignment -name VERILOG_FILE xalt_1p_mem.v
-set_global_assignment -name VERILOG_FILE xalt_1p_mem_no_initialization.v
-set_global_assignment -name VERILOG_FILE xalt_1p_mem_no_initialization_with_reset.v
-set_global_assignment -name VERILOG_FILE boot_memory.v
+set_global_assignment -name VERILOG_FILE int_mem.v
+set_global_assignment -name VERILOG_FILE rom.v
+set_global_assignment -name VERILOG_FILE ram.v
+set_global_assignment -name VERILOG_FILE iob_1p_mem.v
 set_global_assignment -name VERILOG_FILE picorv32.v
 set_global_assignment -name VERILOG_FILE iob-uart.v
 set_global_assignment -name SDC_FILE top_system.sdc

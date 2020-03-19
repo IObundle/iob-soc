@@ -22,7 +22,7 @@ module iob_generic_interconnect
    reg [N_SLAVES_W-1:0]          i;
       
    always @* begin : compute_slaves_valid
-      for(i=0; i<N_SLAVES; i=i+1)
+      for(i=0; i<`N_SLAVES_W'd`N_SLAVES; i=i+1'b1)
          s_valid[i] = (i == m_addr) & m_valid;
    end
                    
