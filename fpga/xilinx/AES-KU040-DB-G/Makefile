@@ -22,7 +22,7 @@ VSRC = verilog/top_system.v $(RTL_DIR)/include/*.vh $(RTL_DIR)/src/memory/behav/
 # work-around for http://svn.clifford.at/handicraft/2016/vivadosig11
 export RDI_VERBOSE = False
 
-all: synth_system.bit firmware.hex
+all: firmware.hex synth_system.bit
 	scp $(PORT) $< $(REMOTE)
 	scp $(PORT) $(FIRM_DIR)/firmware.bin $(REMOTE)
 

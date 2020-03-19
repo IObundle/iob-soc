@@ -4,7 +4,7 @@
 
 //Optional memories (passed as command line macro)
 //`define USE_BOOT
-`define USE_DDR
+//`define USE_DDR
 
 // slaves
 // minimum 3 slaves: boot, uart and reset

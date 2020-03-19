@@ -7,17 +7,15 @@ set_global_assignment -name VERILOG_INPUT_VERSION SYSTEMVERILOG_2005
 #verilog sources
 
 #file search paths
-set_global_assignment -name SEARCH_PATH ../../rtl/src
-set_global_assignment -name SEARCH_PATH ../../rtl/include
-set_global_assignment -name SEARCH_PATH ../../rtl
-set_global_assignment -name SEARCH_PATH ../../rtl/src/memory
-set_global_assignment -name SEARCH_PATH ../../rtl/src/fifo
-set_global_assignment -name SEARCH_PATH ../../rtl/src/cache
-set_global_assignment -name SEARCH_PATH ../../submodules/iob-rv32
-set_global_assignment -name SEARCH_PATH ../../submodules/iob-rv32/rtl
-set_global_assignment -name SEARCH_PATH ../../submodules/iob-uart/rtl/src
-set_global_assignment -name SEARCH_PATH ../../submodules/iob-uart/rtl/include
-set_global_assignment -name SEARCH_PATH ../../tests
+set_global_assignment -name SEARCH_PATH ../../../rtl/src
+set_global_assignment -name SEARCH_PATH ../../../rtl/include
+set_global_assignment -name SEARCH_PATH ../../../rtl/src/memory/behav
+set_global_assignment -name SEARCH_PATH ../../../submodules/fifo
+set_global_assignment -name SEARCH_PATH ../../../submodules/iob-rv32
+set_global_assignment -name SEARCH_PATH ../../../submodules/iob-cache/rtl/src
+set_global_assignment -name SEARCH_PATH ../../../submodules/iob-cache/rtl/header
+set_global_assignment -name SEARCH_PATH ../../../submodules/iob-uart/rtl/src
+set_global_assignment -name SEARCH_PATH ../../../submodules/iob-uart/rtl/include
 
 #constraints file
 
@@ -39,12 +37,12 @@ set_location_assignment  PIN_AE25 -to trap
 set_instance_assignment -name IO_STANDARD "2.5-V" -to trap
 
 #Uart
-set_location_assignment PIN_F10 -to ser_tx
-set_instance_assignment -name IO_STANDARD "2.5-V" -to ser_tx
-set_instance_assignment -name SLEW_RATE 1 -to ser_tx
-set_instance_assignment -name CURRENT_STRENGTH_NEW DEFAULT -to ser_tx
-set_location_assignment PIN_C12 -to ser_rx
-set_instance_assignment -name IO_STANDARD "2.5-V" -to ser_rx
+set_location_assignment PIN_F10 -to uart_txd
+set_instance_assignment -name IO_STANDARD "2.5-V" -to uart_txd
+set_instance_assignment -name SLEW_RATE 1 -to uart_txd
+set_instance_assignment -name CURRENT_STRENGTH_NEW DEFAULT -to uart_txd
+set_location_assignment PIN_C12 -to uart_rxd
+set_instance_assignment -name IO_STANDARD "2.5-V" -to uart_rxd
 
 #Force registers into IOBs
 set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to *
