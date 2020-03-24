@@ -2,8 +2,8 @@ SIM_DIR = simulation/icarus
 #SIM_DIR = simulation/modelsim
 #SIM_DIR = simulation/ncsim
 
-#FPGA_DIR = fpga/xilinx/AES-KU040-DB-G
-FPGA_DIR = fpga/intel/CYCLONEV-GT-DK
+FPGA_DIR = fpga/xilinx/AES-KU040-DB-G
+#FPGA_DIR = fpga/intel/CYCLONEV-GT-DK
 #FPGA_DIR = fpga/xilinx/SP605
 
 ASIC_DIR = asic/umc130

@@ -23,7 +23,7 @@ VSRC = verilog/top_system.v $(RTL_DIR)/include/*.vh $(RTL_DIR)/src/memory/behav/
 export RDI_VERBOSE = False
 
 all: firmware.hex synth_system.bit
-	scp $(PORT) $< $(REMOTE)
+	scp $(PORT) synth_system.bit $(REMOTE)
 	scp $(PORT) $(FIRM_DIR)/firmware.bin $(REMOTE)
 
 synth_system.bit: *.xdc $(VSRC) boot.hex
