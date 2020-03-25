@@ -69,7 +69,7 @@ module system_tb;
          end else begin
             $write("%c", cpu_char);
          end
-      end while (cpu_char != 4);
+      end while (cpu_char != `EOT);
 
    end // test procedure
  
@@ -312,6 +312,11 @@ module system_tb;
       
       $write("Starting File 'firmware.bin' Transfer...\n");
       $write("file_size = %d\n", file_size);
+
+      // Wait for RISC-V
+      do begin
+         cpu_getchar(cpu_char);
+      end while (cpu_char != `STR);
       
       // Send file size
       cpu_putchar(file_size[7:0]);
@@ -342,6 +347,9 @@ module system_tb;
       fp = $fopen("out.bin", "wb");
       
       $write("Starting File 'out.bin' Transfer...\n");
+
+      // Send Start to RISC-V
+      cpu_putchar(`STR);
       
       // Send file size
       cpu_getchar(file_size[7:0]);
