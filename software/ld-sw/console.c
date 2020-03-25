@@ -39,7 +39,7 @@ int sendFile(int serial_fd, char *name) {
   printf("file_size = %u\n", file_size);
   begin = clock();
   
-  /* Send Start to RISC-V */
+  /* Wait for RISC-V */
   do {
     do {
       nbytes = (int) read(serial_fd, &byte, 1);
