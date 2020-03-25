@@ -8,7 +8,6 @@ FPGA_DIR = fpga/xilinx/AES-KU040-DB-G
 
 ASIC_DIR = asic/umc130
 
-LDSW_DIR = software/ld-sw
 sim:
 	make -C $(SIM_DIR) 
 
@@ -22,7 +21,7 @@ ld-hw:
 	make -C $(FPGA_DIR) ld-hw
 
 ld-sw:
-	make -C $(LDSW_DIR)
+	make -C software/ld-sw
 
 clean: 
 	make -C $(SIM_DIR) clean
