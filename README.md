@@ -30,7 +30,7 @@ sudo make
 ###Compilation
 
 ```
-path/to/riscv/riscv32i-unknown-elf-gcc -march=rv32im -mabi=ilp32 <C sources> -o <exec>
+path/to/riscv/riscv64-unknown-elf-gcc -march=rv32im -mabi=ilp32 <C sources> -o <exec>
 ```
 
 ## Update submodules if you have not
