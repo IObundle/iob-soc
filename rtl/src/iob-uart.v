@@ -2,16 +2,14 @@
 `include "iob-uart.vh"
 
 module iob_uart (
-                 //cpu interface 
 	         input             clk,
 	         input             rst,
 
-	         input             sel,
+                 //cpu interface 
+	         input             valid,
 	         output reg        ready,
                  input [2:0]       address,
-                 input             read,
                  input             write,
-
 	         input [31:0]      data_in,
 	         output reg [31:0] data_out,
 
@@ -19,7 +17,7 @@ module iob_uart (
 	         output            txd,
 	         input             rxd,
                  input             cts,
-                 output          rts
+                 output            rts
                  );
 
    // internal registers
@@ -72,7 +70,7 @@ module iob_uart (
      if(rst)
        ready <= 1'b0;
      else 
-       ready <= sel;
+       ready <= valid;
 
 
    //receive enable
@@ -102,7 +100,7 @@ module iob_uart (
       rst_soft_en = 1'b0;
       rx_en_en = 1'b0;
       
-      if(sel & write)
+      if(valid & write)
         case (address)
           `UART_DIV: div_write_en = 1'b1;
           `UART_DATA: data_write_en = 1'b1;
@@ -118,7 +116,7 @@ module iob_uart (
       data_read_en = 1'b0;
       data_out = ~0;
 
-      if(sel & read) begin
+      if(valid && !write) begin
          case (address)
            `UART_WRITE_WAIT: data_out = {31'd0, tx_wait | ~cts_int[1]};
            `UART_DIV       : data_out = cfg_divider;
