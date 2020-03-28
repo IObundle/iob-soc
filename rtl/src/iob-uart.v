@@ -112,22 +112,18 @@ module iob_uart (
 
    //read
    always @* begin
-
       data_read_en = 1'b0;
       data_out = ~0;
-
-      if(valid && !write) begin
-         case (address)
-           `UART_WRITE_WAIT: data_out = {31'd0, tx_wait | ~cts_int[1]};
-           `UART_DIV       : data_out = cfg_divider;
-           `UART_DATA      : begin 
-              data_out = recv_buf_data;
-              data_read_en = 1'b1;
-           end
-           `UART_READ_VALID: data_out = {31'd0,recv_buf_valid};
-           default         : ;
-         endcase
-      end
+      case (address)
+        `UART_WRITE_WAIT: data_out = {31'd0, tx_wait | ~cts_int[1]};
+        `UART_DIV       : data_out = cfg_divider;
+        `UART_DATA      : begin 
+           data_out = recv_buf_data;
+           data_read_en = valid & ~write;
+        end
+        `UART_READ_VALID: data_out = {31'd0,recv_buf_valid};
+        default         : ;
+      endcase
    end      
 
        
