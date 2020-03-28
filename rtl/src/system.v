@@ -1,6 +1,6 @@
 `timescale 1 ns / 1 ps
-
 `include "system.vh"
+
 
 module system (
                input                clk,
@@ -79,32 +79,41 @@ module system (
    wire                             m_valid;
    wire                             m_ready;
    wire                             m_instr;
+
+   wire                             mem_valid, la_read, la_write;
+   wire [3:0]                       la_wstrb;
+
+   wire                             int_mem_busy;
+   
    
    picorv32 #(
-              .ENABLE_PCPI(1), //enables the following 2 parameters
+              //.ENABLE_PCPI(1), //enables the following 2 parameters
+	      .BARREL_SHIFTER(1),
 	      .ENABLE_FAST_MUL(1),
 	      .ENABLE_DIV(1)
 	      )
    picorv32_core (
 		  .clk           (clk),
-		  .resetn        (~reset_int),
+		  .resetn        (~reset_int & ~int_mem_busy),
 		  .trap          (trap),
 		  //memory interface
-		  .mem_valid     (m_valid),
-		  .mem_instr     (m_instr),
+		  .mem_valid     (mem_valid),
 		  .mem_ready     (m_ready),
+		  .mem_instr     (m_instr),
+		  .mem_rdata     (m_rdata),
+`ifndef USE_LA_IF
 		  .mem_addr      (m_addr),
 		  .mem_wdata     (m_wdata),
-		  .mem_wstrb     (m_wstrb),
-		  .mem_rdata     (m_rdata),
-                  // Look-Ahead
-                  .mem_la_read   (),
-                  .mem_la_write  (),
-                  .mem_la_addr   (),
-                  .mem_la_wdata  (),
-                  .mem_la_wstrb  (),
+		  .mem_wstrb     (m_wstrb)
+`else
+                  .mem_la_read   (la_read),
+                  .mem_la_write  (la_write),                  
+                  .mem_la_addr   (m_addr),
+                  .mem_la_wdata  (m_wdata),
+                  .mem_la_wstrb  (la_wstrb)
+`endif
                   // Pico Co-Processor PCPI
-                  .pcpi_valid    (),
+/*                  .pcpi_valid    (),
                   .pcpi_insn     (),
                   .pcpi_rs1      (),
                   .pcpi_rs2      (),
@@ -117,8 +126,16 @@ module system (
                   .eoi           (),
                   .trace_valid   (),
                   .trace_data    ()
-		  );
+*/		  
+                  );
 
+`ifdef USE_LA_IF
+   assign m_valid = la_read | la_write;
+   assign m_wstrb = la_wstrb & {4{la_write}};
+`else   
+   assign m_valid = mem_valid;
+`endif
+   
    //
    //ADDRESS PREFIX TRANSLATOR
    //
@@ -164,11 +181,7 @@ module system (
            end
    endgenerate
 
-   iob_generic_interconnect 
-     #(.N_SLAVES(`N_SLAVES),
-       .N_SLAVES_W(`N_SLAVES_W)
-       )
-   generic_interconnect
+   iob_generic_interconnect generic_interconnect
      (
       // master interface
       .m_addr  (m_addr_int),
@@ -186,10 +199,11 @@ module system (
    //
    // INTERNAL MEMORY SUBSYSTEM
    //
-
+   
    int_mem int_mem0 (
 	             .clk                (clk ),
                      .rst                (reset_int),
+                     .busy               (int_mem_busy),
                      
                      //boot mem interface
 	             .boot_rdata         (s_rdata[`BOOT_BASE]),
@@ -217,12 +231,10 @@ module system (
 		 .rst       (reset_int),
                  
 		 //cpu i/f
-		 .sel       (s_valid[`UART_BASE]),
+		 .valid     (s_valid[`UART_BASE]),
 		 .ready     (s_ready[`UART_BASE]),
 		 .address   (m_addr[4:2]),
-		 .read      (m_wstrb == 0),
-		 .write     (m_wstrb != 0),
-                 
+		 .write     (m_wstrb != 0),                 
 		 .data_in   (m_wdata),
 		 .data_out  (s_rdata[`UART_BASE]),
                  

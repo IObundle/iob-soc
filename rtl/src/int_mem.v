@@ -1,9 +1,11 @@
 `timescale 1 ns / 1 ps
+`include "system.vh"
 
 module int_mem
   (
    input                       clk,
    input                       rst,
+   output                      busy,
 
    //boot mem interface 
    output [`DATA_W-1:0]        boot_rdata,
@@ -51,7 +53,8 @@ module int_mem
           copy_done[0] <= 1'b1;
      end
 
-
+   assign busy = ~copy_done[2];
+   
    //BOOT ROM
    wire [`DATA_W-1:0] rom_rdata;
    rom #(
@@ -70,7 +73,7 @@ module int_mem
    reg [`BOOTRAM_ADDR_W-3:0] ram_addr;
    reg [`DATA_W-1:0]         ram_wdata;
    reg [3:0]                 ram_wstrb;
-   wire                      ram_valid = boot_valid | main_valid | ~copy_done[0];
+   wire                      ram_valid = (boot_valid | main_valid) & copy_done[0];
    wire                      ram_ready;
 
    //address, write data and write strobe
@@ -95,8 +98,12 @@ module int_mem
 
    //ready signals
    assign boot_ready = copy_done[2] & ram_ready;
+
+`ifndef USE_LA_IF
    assign main_ready = copy_done[2] & ram_ready;
-   
+`else
+   assign main_ready = 1'b1;
+`endif
 
    
    ram #(

@@ -16,9 +16,8 @@ module system_tb;
    //uart signals
    reg [7:0] 	rxread_reg = 8'b0;
    reg [2:0]    uart_addr;
-   reg          uart_sel;
+   reg          uart_valid;
    reg          uart_wr;
-   reg          uart_rd;
    reg [31:0]   uart_di;
    reg [31:0]   uart_do;
 
@@ -39,9 +38,8 @@ module system_tb;
 `endif
 
       //init cpu bus signals
-      uart_sel = 0;
+      uart_valid = 0;
       uart_wr = 0;
-      uart_rd = 0;
       
       // deassert rst
       repeat (100) @(posedge clk);
@@ -201,10 +199,9 @@ module system_tb;
 		               .clk       (clk),
 		               .rst       (reset),
                        
-		               .sel       (uart_sel),
+		               .valid     (uart_valid),
 		               .address   (uart_addr),
 		               .write     (uart_wr),
-		               .read      (uart_rd),
 		               .data_in   (uart_di),
 		               .data_out  (uart_do),
                        
@@ -280,11 +277,11 @@ module system_tb;
       input [31:0] cpu_data;
 
       # 1 uart_addr = cpu_address;
-      uart_sel = 1;
+      uart_valid = 1;
       uart_wr = 1;
       uart_di = cpu_data;
       @ (posedge clk) #1 uart_wr = 0;
-      uart_sel = 0;
+      uart_valid = 0;
    endtask //cpu_uartwrite
 
    // 2-cycle read
@@ -293,11 +290,9 @@ module system_tb;
       output [31:0] read_reg;
 
       # 1 uart_addr = cpu_address;
-      uart_sel = 1;
-      uart_rd = 1;
+      uart_valid = 1;
       @ (posedge clk) #1 read_reg = uart_do;
-      @ (posedge clk) #1 uart_rd = 0;
-      uart_sel = 0;
+      @ (posedge clk) #1 uart_valid = 0;
    endtask //cpu_uartread
 
    task cpu_sendFile;

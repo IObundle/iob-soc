@@ -3,7 +3,7 @@
 //
 
 //Optional memories (passed as command line macro)
-`define USE_BOOT
+//`define USE_BOOT
 //`define USE_DDR
 
 // slaves
@@ -36,3 +36,6 @@
 //main memory address space (log2 of byte size)
 //must be same as BOOTRAM_ADDR_W if DDR is unused
 `define MAINRAM_ADDR_W 13
+
+//use CPU lookahead interface
+`define USE_LA_IF
