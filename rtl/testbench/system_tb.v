@@ -82,47 +82,47 @@ module system_tb;
   
 `ifdef USE_DDR               
    //Write address
-   wire [0:0] 			ddr_awid;
-   wire [31:0] 			ddr_awaddr;
-   wire [7:0] 			ddr_awlen;
-   wire [2:0] 			ddr_awsize;
-   wire [1:0] 			ddr_awburst;
-   wire                 ddr_awlock;
-   wire [3:0] 			ddr_awcache;
-   wire [2:0] 			ddr_awprot;
-   wire [3:0] 			ddr_awqos;
-   wire                 ddr_awvalid;
-   wire                 ddr_awready;
+   wire [0:0] ddr_awid;
+   wire [31:0] ddr_awaddr;
+   wire [7:0]  ddr_awlen;
+   wire [2:0]  ddr_awsize;
+   wire [1:0]  ddr_awburst;
+   wire        ddr_awlock;
+   wire [3:0]  ddr_awcache;
+   wire [2:0]  ddr_awprot;
+   wire [3:0]  ddr_awqos;
+   wire        ddr_awvalid;
+   wire        ddr_awready;
    //Write data
-   wire [31:0] 			ddr_wdata;
-   wire [3:0] 			ddr_wstrb;
-   wire                 ddr_wlast;
-   wire                 ddr_wvalid;
-   wire                 ddr_wready;
+   wire [31:0] ddr_wdata;
+   wire [3:0]  ddr_wstrb;
+   wire        ddr_wlast;
+   wire        ddr_wvalid;
+   wire        ddr_wready;
    //Write response
-   wire [7:0]           ddr_bid;
-   wire [1:0]           ddr_bresp;
-   wire                 ddr_bvalid;
-   wire                 ddr_bready;
+   wire [7:0]  ddr_bid;
+   wire [1:0]  ddr_bresp;
+   wire        ddr_bvalid;
+   wire        ddr_bready;
    //Read address
-   wire [0:0] 			ddr_arid;
-   wire [31:0] 			ddr_araddr;
-   wire [7:0] 			ddr_arlen;
-   wire [2:0] 			ddr_arsize;
-   wire [1:0] 			ddr_arburst;
-   wire                 ddr_arlock;
-   wire [3:0] 			ddr_arcache;
-   wire [2:0] 			ddr_arprot;
-   wire [3:0] 			ddr_arqos;
-   wire                 ddr_arvalid;
-   wire                 ddr_arready;
+   wire [0:0]  ddr_arid;
+   wire [31:0] ddr_araddr;
+   wire [7:0]  ddr_arlen;
+   wire [2:0]  ddr_arsize;
+   wire [1:0]  ddr_arburst;
+   wire        ddr_arlock;
+   wire [3:0]  ddr_arcache;
+   wire [2:0]  ddr_arprot;
+   wire [3:0]  ddr_arqos;
+   wire        ddr_arvalid;
+   wire        ddr_arready;
    //Read data
-   wire [7:0]			ddr_rid;
-   wire [31:0] 			ddr_rdata;
-   wire [1:0] 			ddr_rresp;
-   wire                 ddr_rlast;
-   wire                 ddr_rvalid;
-   wire                 ddr_rready;
+   wire [7:0]  ddr_rid;
+   wire [31:0] ddr_rdata;
+   wire [1:0]  ddr_rresp;
+   wire        ddr_rlast;
+   wire        ddr_rvalid;
+   wire        ddr_rready;
 `endif
 
    
@@ -213,59 +213,59 @@ module system_tb;
 
 `ifdef USE_DDR
    axi_ram 
-/* #(
-              .DATA_WIDTH (DATA_W),
-              .ADDR_WIDTH (MAINRAM_ADDR_W),
+ #(
+              .DATA_WIDTH (`DATA_W),
+              .ADDR_WIDTH (`MAINRAM_ADDR_W),
               .ID_WIDTH (1)
               )
-*/   ddr_model_mem(
+   ddr_model_mem(
                  //address write
-                   .clk            (clk),
-                   .rst            (reset),
-		           .s_axi_awid     ({8{ddr_awid}}),
-		           .s_axi_awaddr   (ddr_awaddr[15:0]),
-                   .s_axi_awlen    (ddr_awlen),
-                   .s_axi_awsize   (ddr_awsize),
-                   .s_axi_awburst  (ddr_awburst),
-                   .s_axi_awlock   (ddr_awlock),
-		           .s_axi_awprot   (ddr_awprot),
-		           .s_axi_awcache  (ddr_awcache),
-     		       .s_axi_awvalid  (ddr_awvalid),
-		           .s_axi_awready  (ddr_awready),
+                 .clk            (clk),
+                 .rst            (reset),
+		 .s_axi_awid     ({8{ddr_awid}}),
+		 .s_axi_awaddr   (ddr_awaddr[15:0]),
+                 .s_axi_awlen    (ddr_awlen),
+                 .s_axi_awsize   (ddr_awsize),
+                 .s_axi_awburst  (ddr_awburst),
+                 .s_axi_awlock   (ddr_awlock),
+		 .s_axi_awprot   (ddr_awprot),
+		 .s_axi_awcache  (ddr_awcache),
+     		 .s_axi_awvalid  (ddr_awvalid),
+		 .s_axi_awready  (ddr_awready),
                    
-		           //write  
-		           .s_axi_wvalid   (ddr_wvalid),
-		           .s_axi_wready   (ddr_wready),
-		           .s_axi_wdata    (ddr_wdata),
-		           .s_axi_wstrb    (ddr_wstrb),
-                   .s_axi_wlast    (ddr_wlast),
-                   
-		           //write response
-		           .s_axi_bready   (ddr_bready),
-                   .s_axi_bid      (ddr_bid),
-                   .s_axi_bresp    (ddr_bresp),
-		           .s_axi_bvalid   (ddr_bvalid),
-                   
-		           //address read
-		           .s_axi_arid     ({8{ddr_arid}}),
-		           .s_axi_araddr   (ddr_araddr[15:0]),
-		           .s_axi_arlen    (ddr_arlen), 
-		           .s_axi_arsize   (ddr_arsize),    
-                   .s_axi_arburst  (ddr_arburst),
-                   .s_axi_arlock   (ddr_arlock),
-                   .s_axi_arcache  (ddr_arcache),
-                   .s_axi_arprot   (ddr_arprot),
-		           .s_axi_arvalid  (ddr_arvalid),
-		           .s_axi_arready  (ddr_arready),
-                   
-		           //read   
-		           .s_axi_rready   (ddr_rready),
-		           .s_axi_rid      (ddr_rid),
-		           .s_axi_rdata    (ddr_rdata),
-		           .s_axi_rresp    (ddr_rresp),
-                   .s_axi_rlast    (ddr_rlast),
-		           .s_axi_rvalid   (ddr_rvalid)
-                   );   
+		 //write  
+		 .s_axi_wvalid   (ddr_wvalid),
+		 .s_axi_wready   (ddr_wready),
+		 .s_axi_wdata    (ddr_wdata),
+		 .s_axi_wstrb    (ddr_wstrb),
+                 .s_axi_wlast    (ddr_wlast),
+                 
+		 //write response
+		 .s_axi_bready   (ddr_bready),
+                 .s_axi_bid      (ddr_bid),
+                 .s_axi_bresp    (ddr_bresp),
+		 .s_axi_bvalid   (ddr_bvalid),
+                 
+		 //address read
+		 .s_axi_arid     ({8{ddr_arid}}),
+		 .s_axi_araddr   (ddr_araddr[15:0]),
+		 .s_axi_arlen    (ddr_arlen), 
+		 .s_axi_arsize   (ddr_arsize),    
+                 .s_axi_arburst  (ddr_arburst),
+                 .s_axi_arlock   (ddr_arlock),
+                 .s_axi_arcache  (ddr_arcache),
+                 .s_axi_arprot   (ddr_arprot),
+		 .s_axi_arvalid  (ddr_arvalid),
+		 .s_axi_arready  (ddr_arready),
+                 
+		 //read   
+		 .s_axi_rready   (ddr_rready),
+		 .s_axi_rid      (ddr_rid),
+		 .s_axi_rdata    (ddr_rdata),
+		 .s_axi_rresp    (ddr_rresp),
+                 .s_axi_rlast    (ddr_rlast),
+		 .s_axi_rvalid   (ddr_rvalid)
+                 );   
 `endif   
    //
    // CPU TASKS

@@ -104,10 +104,6 @@ module int_mem
 	     );
 
    //generate ready signal
-`ifdef USE_LA_IF
-   assign ready = copy_done[2];
-`else
    assign ready = copy_done[2] & ram_ready;
-`endif
-   
+
 endmodule
