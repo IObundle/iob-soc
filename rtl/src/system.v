@@ -80,7 +80,7 @@ module system (
    wire                             m_ready;
    wire                             m_instr;
 
-   wire                             mem_valid, la_read, la_write;
+   wire                             la_read, la_write;
    wire [3:0]                       la_wstrb;
 
    wire                             int_mem_busy;
@@ -97,21 +97,21 @@ module system (
 		  .resetn        (~reset_int & ~int_mem_busy),
 		  .trap          (trap),
 		  //memory interface
-		  .mem_valid     (mem_valid),
-		  .mem_ready     (m_ready),
 		  .mem_instr     (m_instr),
 		  .mem_rdata     (m_rdata),
 `ifndef USE_LA_IF
+		  .mem_valid     (m_valid),
 		  .mem_addr      (m_addr),
 		  .mem_wdata     (m_wdata),
-		  .mem_wstrb     (m_wstrb)
+		  .mem_wstrb     (m_wstrb),
 `else
                   .mem_la_read   (la_read),
                   .mem_la_write  (la_write),                  
                   .mem_la_addr   (m_addr),
                   .mem_la_wdata  (m_wdata),
-                  .mem_la_wstrb  (la_wstrb)
+                  .mem_la_wstrb  (la_wstrb),
 `endif
+		  .mem_ready     (m_ready)
                   // Pico Co-Processor PCPI
 /*                  .pcpi_valid    (),
                   .pcpi_insn     (),
@@ -132,37 +132,21 @@ module system (
 `ifdef USE_LA_IF
    assign m_valid = la_read | la_write;
    assign m_wstrb = la_wstrb & {4{la_write}};
-`else   
-   assign m_valid = mem_valid;
 `endif
    
    //
-   //ADDRESS PREFIX TRANSLATOR
+   // ADDRESS TRANSFORM
    //
-   //choose main memory according to boot status
-   reg [`N_SLAVES_W-1 : 0]          m_addr_int;
-   reg                              boot ;   
+   // according to boot status and ddr use
+   reg [`ADDR_W-1 : 0]              m_addr_int;
+   reg                              boot;
 
-   always @*
-     //if main memory is being addressed and system not booting
-     if (!m_addr[`ADDR_W-1 -: `N_SLAVES_W] && !boot)
-       //if DDR being used point to cache
-`ifdef USE_BOOT
-  `ifdef USE_DDR
-       m_addr_int = `N_SLAVES_W'd`CACHE_BASE;
-  `else
-       //if DDR  not being used point to RAM
-       m_addr_int = `N_SLAVES_W'd`MAINRAM_BASE;
-  `endif
-`else
-       //if BOOT not being used point to RAM
-       m_addr_int = `N_SLAVES_W'd`MAINRAM_BASE;
-`endif
-     else
-       //do not modify address prefix 
-       m_addr_int = m_addr[`ADDR_W-1 -:`N_SLAVES_W];
-
-   
+   addr_transf addr_transf0 (
+                             .boot(boot),
+                             .addr_in(m_addr),
+                             .addr_out(m_addr_int)
+                             );
+          
    //
    // INTERCONNECT
    //
@@ -184,7 +168,7 @@ module system (
    iob_generic_interconnect generic_interconnect
      (
       // master interface
-      .m_addr  (m_addr_int),
+      .m_addr  (m_addr_int[`ADDR_W-1 -: `N_SLAVES_W]),
       .m_rdata (m_rdata),
       .m_valid (m_valid),
       .m_ready (m_ready),
@@ -197,28 +181,22 @@ module system (
 
    
    //
-   // INTERNAL MEMORY SUBSYSTEM
+   // INTERNAL MEMORY
    //
    
    int_mem int_mem0 (
 	             .clk                (clk ),
                      .rst                (reset_int),
                      .busy               (int_mem_busy),
+                     .boot               (boot),
                      
-                     //boot mem interface
-	             .boot_rdata         (s_rdata[`BOOT_BASE]),
-                     .boot_valid         (s_valid[`BOOT_BASE]),
-                     .boot_ready         (s_ready[`BOOT_BASE]),
-
-                     //main mem interface
-	             .main_rdata         (s_rdata[`MAINRAM_BASE]),
-                     .main_valid         (s_valid[`MAINRAM_BASE]),
-                     .main_ready         (s_ready[`MAINRAM_BASE]),
-
-                     //common
+                     //cpu interface
 	             .addr               (m_addr[`MAINRAM_ADDR_W-1:2]),
+                     .rdata              (s_rdata[`MAINRAM_BASE]),
 	             .wdata              (m_wdata),
-	             .wstrb              (m_wstrb)
+	             .wstrb              (m_wstrb),
+                     .valid              (s_valid[`MAINRAM_BASE]),
+                     .ready              (s_ready[`MAINRAM_BASE])
 	             );
    
 
@@ -246,32 +224,20 @@ module system (
 		 );
    
    //
-   // RESTART CONTROLLER
+   // RESET CONTROLLER
    //
-   reg        rst_ctrl_rdy;
-   reg [15:0] soft_reset_cnt;
-   
-   always @(posedge clk, posedge reset)
-     if(reset) begin
-`ifdef USE_BOOT
-        boot <= 1'b1;
-`else
-        boot <= 1'b0;        
-`endif
-        soft_reset_cnt <= 16'h0;
-        rst_ctrl_rdy <= 1'b0;
-     end else if( s_valid[`SOFT_RESET_BASE] && m_wstrb ) begin
-        soft_reset_cnt <= 16'hFFFF;
-        boot <=  m_wdata[0];
-        rst_ctrl_rdy <= 1'b1;
-     end else if (soft_reset_cnt) begin
-        soft_reset_cnt <= soft_reset_cnt - 1'b1;
-        rst_ctrl_rdy <= 1'b0;
-     end
-
-   assign soft_reset = (soft_reset_cnt != 16'h0); 
-   assign s_ready[`SOFT_RESET_BASE] = rst_ctrl_rdy;
-   assign s_rdata[`SOFT_RESET_BASE] = 0;
+   rst_ctr rst_ctr0 (
+                     .clk(clk),
+                     .rst(reset),
+                     .soft_rst(soft_reset),
+                     .boot(boot),
+                     
+                     .wdata(m_wdata[0]),
+                     .write(m_wstrb != 4'd0),
+                     .rdata(s_rdata[`SOFT_RESET_BASE]),
+                     .valid(s_valid[`SOFT_RESET_BASE]),
+                     .ready(s_ready[`SOFT_RESET_BASE])
+                     );
    
 
    //
