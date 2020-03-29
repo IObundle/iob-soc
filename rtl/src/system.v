@@ -113,20 +113,20 @@ module system (
 `endif
 		  .mem_ready     (m_ready)
                   // Pico Co-Processor PCPI
-/*                  .pcpi_valid    (),
-                  .pcpi_insn     (),
-                  .pcpi_rs1      (),
-                  .pcpi_rs2      (),
-                  .pcpi_wr       (1'b0),
-                  .pcpi_rd       (32'd0),
-                  .pcpi_wait     (1'b0),
-                  .pcpi_ready    (1'b0),
-                  // IRQ
-                  .irq           (32'd0),
-                  .eoi           (),
-                  .trace_valid   (),
-                  .trace_data    ()
-*/		  
+                  /*                  .pcpi_valid    (),
+                   .pcpi_insn     (),
+                   .pcpi_rs1      (),
+                   .pcpi_rs2      (),
+                   .pcpi_wr       (1'b0),
+                   .pcpi_rd       (32'd0),
+                   .pcpi_wait     (1'b0),
+                   .pcpi_ready    (1'b0),
+                   // IRQ
+                   .irq           (32'd0),
+                   .eoi           (),
+                   .trace_valid   (),
+                   .trace_data    ()
+                   */		  
                   );
 
 `ifdef USE_LA_IF
@@ -146,23 +146,23 @@ module system (
                              .addr_in(m_addr),
                              .addr_out(m_addr_int)
                              );
-          
+   
    //
    // INTERCONNECT
    //
    
-   wire [`DATA_W-1:0]                     s_rdata[`N_SLAVES-1:0];
-   wire [`N_SLAVES*`DATA_W-1:0]           s_rdata_concat;
-   wire [`N_SLAVES-1:0]                   s_valid;
-   wire [`N_SLAVES-1:0]                   s_ready;
+   wire [`DATA_W-1:0]               s_rdata[`N_SLAVES-1:0];
+   wire [`N_SLAVES*`DATA_W-1:0]     s_rdata_concat;
+   wire [`N_SLAVES-1:0]             s_valid;
+   wire [`N_SLAVES-1:0]             s_ready;
    
    //concatenate slave read data signals to input in interconnect
-   genvar                                 i;
+   genvar                           i;
    generate 
-         for(i=0; i<`N_SLAVES; i=i+1)
-           begin : rdata_concat
-	      assign s_rdata_concat[((i+1)*`DATA_W)-1 -: `DATA_W] = s_rdata[i];
-           end
+      for(i=0; i<`N_SLAVES; i=i+1)
+        begin : rdata_concat
+	   assign s_rdata_concat[((i+1)*`DATA_W)-1 -: `DATA_W] = s_rdata[i];
+        end
    endgenerate
 
    iob_generic_interconnect generic_interconnect
@@ -189,7 +189,7 @@ module system (
                      .rst                (reset_int),
                      .busy               (int_mem_busy),
                      .boot               (boot),
-                     
+      
                      //cpu interface
 	             .addr               (m_addr[`MAINRAM_ADDR_W-1:2]),
                      .rdata              (s_rdata[`MAINRAM_BASE]),
@@ -231,7 +231,7 @@ module system (
                      .rst(reset),
                      .soft_rst(soft_reset),
                      .boot(boot),
-                     
+      
                      .wdata(m_wdata[0]),
                      .write(m_wstrb != 4'd0),
                      .rdata(s_rdata[`SOFT_RESET_BASE]),
@@ -244,6 +244,36 @@ module system (
    // DDR MAIN MEMORY
    //
 
+`ifdef USE_LA_IF
+   reg [31:0] m_addr_reg;
+   reg [3:0]  m_wstrb_reg;
+   // Avoid waiting 1 additional cycle - mux
+   wire [31:0] m_addr_mux = (s_valid[`CACHE_BASE])? m_addr : m_addr_reg;
+   wire [3:0]  m_wstrb_mux = (s_valid[`CACHE_BASE])? m_wstrb : m_wstrb_reg;
+   
+
+   always @(posedge clk, posedge reset_int) 
+     begin
+        if(reset_int)
+          begin
+             m_addr_reg = 32'd0;
+             m_wstrb_reg = 4'd0;
+          end
+        else
+          if(s_valid[`CACHE_BASE])
+            begin
+               m_addr_reg = m_addr;
+               m_wstrb_reg = m_wstrb;
+            end
+          else
+            begin
+               m_addr_reg = m_addr_reg;
+               m_wstrb_reg = m_wstrb_reg;
+            end
+     end
+
+`endif   
+   
 `ifdef USE_DDR
    iob_cache #(
                .ADDR_W(`ADDR_W),
@@ -252,7 +282,8 @@ module system (
    cache (
 	  .clk                (clk),
 	  .reset              (reset_int),
-
+      
+ `ifndef USE_LA_IF
           //data interface 
 	  .cache_write_data   (m_wdata),
 	  .cache_addr         ({{`N_SLAVES_W{1'b0}},m_addr[`ADDR_W-`N_SLAVES_W-1:2]}),
@@ -260,7 +291,15 @@ module system (
 	  .cache_read_data    (s_rdata[`CACHE_BASE]),
 	  .cpu_req            (s_valid[`CACHE_BASE]),
 	  .cache_ack          (s_ready[`CACHE_BASE]),
-
+ `else
+          //data interface 
+	  .cache_write_data   (m_wdata),
+	  .cache_addr         ({{`N_SLAVES_W{1'b0}},m_addr_mux[`ADDR_W-`N_SLAVES_W-1:2]}),
+	  .cache_wstrb        (m_wstrb_mux),
+	  .cache_read_data    (s_rdata[`CACHE_BASE]),
+	  .cpu_req            (s_valid[`CACHE_BASE]),
+	  .cache_ack          (s_ready[`CACHE_BASE]),
+ `endif
           //control interface
 	  .cache_ctrl_address (m_addr[6:2]),
 	  .cache_ctrl_requested_data (s_rdata[`CACHE_CTRL_BASE]),
@@ -320,5 +359,5 @@ module system (
           .R_READY(m_axi_rready)  
 	  );
 `endif
-
+   
 endmodule
