@@ -214,16 +214,19 @@ module system_tb;
 `ifdef USE_DDR
    axi_ram 
  #(
+            `ifndef USE_BOOT
+	      .FILE("firmware.hex"),
+              .FILE_SIZE(2**(`MAINRAM_ADDR_W-2)),
+            `endif
               .DATA_WIDTH (`DATA_W),
-              .ADDR_WIDTH (`MAINRAM_ADDR_W),
-              .ID_WIDTH (1)
+              .ADDR_WIDTH (`MAINRAM_ADDR_W)
               )
    ddr_model_mem(
                  //address write
                  .clk            (clk),
                  .rst            (reset),
 		 .s_axi_awid     ({8{ddr_awid}}),
-		 .s_axi_awaddr   (ddr_awaddr[15:0]),
+		 .s_axi_awaddr   (ddr_awaddr[`MAINRAM_ADDR_W-1:0]),
                  .s_axi_awlen    (ddr_awlen),
                  .s_axi_awsize   (ddr_awsize),
                  .s_axi_awburst  (ddr_awburst),
@@ -248,7 +251,7 @@ module system_tb;
                  
 		 //address read
 		 .s_axi_arid     ({8{ddr_arid}}),
-		 .s_axi_araddr   (ddr_araddr[15:0]),
+		 .s_axi_araddr   (ddr_araddr[`MAINRAM_ADDR_W-1:0]),
 		 .s_axi_arlen    (ddr_arlen), 
 		 .s_axi_arsize   (ddr_arsize),    
                  .s_axi_arburst  (ddr_arburst),
