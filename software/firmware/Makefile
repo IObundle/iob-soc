@@ -1,18 +1,16 @@
-TOOLCHAIN_PREFIX = riscv32-unknown-elf-
+TOOLCHAIN_PREFIX := riscv32-unknown-elf-
 
-PYTHON_DIR = ../python/
-UART_DIR = ../../submodules/iob-uart/c-driver
-
+PYTHON_DIR := ../python/
+SUBMODULES_DIR := ../../submodules
+UART_DIR := $(SUBMODULES_DIR)/iob-uart/c-driver
 INCLUDE = -I. -I$(UART_DIR)
 
 DEFINE = -DUART_BAUD_RATE=$(BAUD) -DUART_CLK_FREQ=$(FREQ)
 
 SRC = firmware.c $(UART_DIR)/iob-uart.c firmware.S
 
-all: firmware.hex
-
-firmware.hex: firmware.lds $(SRC) system.h $(UART_DIR)/iob-uart.h
-	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding  -nostdlib -o firmware.elf $(DEFINE) $(INCLUDE) $(SRC) --std=gnu99 -Wl,-Bstatic,-T,firmware.lds,-Map,firmware.map,--strip-debug -lgcc -lc
+all: firmware.lds $(SRC) system.h $(UART_DIR)/iob-uart.h
+	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -nostdlib -march=rv32im -mabi=ilp32 -o firmware.elf $(DEFINE) $(INCLUDE) $(SRC) --std=gnu99 -Wl,-Bstatic,-T,firmware.lds,-Map,firmware.map,--strip-debug -lgcc -lc
 	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
 	$(eval MEM_SIZE=`./get_firmsize.sh`)
 	$(PYTHON_DIR)/makehex.py firmware.bin $(MEM_SIZE) > progmem.hex

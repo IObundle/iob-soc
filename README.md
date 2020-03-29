@@ -30,7 +30,7 @@ sudo make
 ###Compilation
 
 ```
-path/to/riscv/riscv32i-unknown-elf-gcc -march=rv32im -mabi=ilp32 <C sources> -o <exec>
+path/to/riscv/riscv64-unknown-elf-gcc -march=rv32im -mabi=ilp32 <C sources> -o <exec>
 ```
 
 ## Update submodules if you have not
@@ -64,9 +64,13 @@ make fpga
 ssh -Y -C -p <port> <fpga_host>
 ```
 
-# Setup picocom to interact
+# Setup console to interact
+
+This tool will automatically load firmware into the FPGA.
+
 ```
-picocom /dev/ttyUSB0 -b 115200 --imap lfcrlf --send-cmd "ascii-xfr -sedv"
+cd $HOME/sandbox/iob-soc/
+make ld-sw
 ```
 
 # Configure FPGA
@@ -74,12 +78,8 @@ picocom /dev/ttyUSB0 -b 115200 --imap lfcrlf --send-cmd "ascii-xfr -sedv"
 Open a new terminal
 
 ```
-cd $HOME/sandbox/iob-soc-e/fpga/<vendor>/<board>
+cd $HOME/sandbox/iob-soc/
 source path/to/vivado/settings64.sh
 make ld-hw
 ```
-
-# Load formware in FPGA
-
-In picocom wait for the bootloader message and enter C-a C-s followed by the file name "firmware.bin" to load the software.
 

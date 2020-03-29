@@ -1,6 +1,6 @@
 `timescale 1 ns / 1 ps
-
 `include "system.vh"
+
 
 module system (
                input                clk,
@@ -79,32 +79,41 @@ module system (
    wire                             m_valid;
    wire                             m_ready;
    wire                             m_instr;
+
+   wire                             la_read, la_write;
+   wire [3:0]                       la_wstrb;
+
+   wire                             int_mem_busy;
+   
    
    picorv32 #(
-              .ENABLE_PCPI(1), //enables the following 2 parameters
+              //.ENABLE_PCPI(1), //enables the following 2 parameters
+	      .BARREL_SHIFTER(1),
 	      .ENABLE_FAST_MUL(1),
 	      .ENABLE_DIV(1)
 	      )
    picorv32_core (
 		  .clk           (clk),
-		  .resetn        (~reset_int),
+		  .resetn        (~reset_int & ~int_mem_busy),
 		  .trap          (trap),
 		  //memory interface
-		  .mem_valid     (m_valid),
 		  .mem_instr     (m_instr),
-		  .mem_ready     (m_ready),
+		  .mem_rdata     (m_rdata),
+`ifndef USE_LA_IF
+		  .mem_valid     (m_valid),
 		  .mem_addr      (m_addr),
 		  .mem_wdata     (m_wdata),
 		  .mem_wstrb     (m_wstrb),
-		  .mem_rdata     (m_rdata),
-                  // Look-Ahead
-                  .mem_la_read   (),
-                  .mem_la_write  (),
-                  .mem_la_addr   (),
-                  .mem_la_wdata  (),
-                  .mem_la_wstrb  (),
+`else
+                  .mem_la_read   (la_read),
+                  .mem_la_write  (la_write),                  
+                  .mem_la_addr   (m_addr),
+                  .mem_la_wdata  (m_wdata),
+                  .mem_la_wstrb  (la_wstrb),
+`endif
+		  .mem_ready     (m_ready)
                   // Pico Co-Processor PCPI
-                  .pcpi_valid    (),
+/*                  .pcpi_valid    (),
                   .pcpi_insn     (),
                   .pcpi_rs1      (),
                   .pcpi_rs2      (),
@@ -117,30 +126,27 @@ module system (
                   .eoi           (),
                   .trace_valid   (),
                   .trace_data    ()
-		  );
+*/		  
+                  );
 
-   //
-   //ADDRESS PREFIX TRANSLATOR
-   //
-   //choose main memory according to boot status
-   reg [`N_SLAVES_W-1 : 0]          m_addr_int;
-   reg                              boot ;   
-
-   always @*
-     //if main memory is being addressed and system not booting
-     if (!m_addr[`ADDR_W-1 -: `N_SLAVES_W] && !boot)
-       //if DDR being used point to cache
-`ifdef USE_DDR
-       m_addr_int = `N_SLAVES_W'd`CACHE_BASE;
-`else
-       //if DDR  not being used point to RAM
-       m_addr_int = `N_SLAVES_W'd`MAINRAM_BASE;
+`ifdef USE_LA_IF
+   assign m_valid = la_read | la_write;
+   assign m_wstrb = la_wstrb & {4{la_write}};
 `endif
-     else
-       //do not modify address prefix 
-       m_addr_int = m_addr[`ADDR_W-1 -:`N_SLAVES_W];
-
    
+   //
+   // ADDRESS TRANSFORM
+   //
+   // according to boot status and ddr use
+   reg [`ADDR_W-1 : 0]              m_addr_int;
+   reg                              boot;
+
+   addr_transf addr_transf0 (
+                             .boot(boot),
+                             .addr_in(m_addr),
+                             .addr_out(m_addr_int)
+                             );
+          
    //
    // INTERCONNECT
    //
@@ -159,14 +165,10 @@ module system (
            end
    endgenerate
 
-   iob_generic_interconnect 
-     #(.N_SLAVES(`N_SLAVES),
-       .N_SLAVES_W(`N_SLAVES_W)
-       )
-   generic_interconnect
+   iob_generic_interconnect generic_interconnect
      (
       // master interface
-      .m_addr  (m_addr_int),
+      .m_addr  (m_addr_int[`ADDR_W-1 -: `N_SLAVES_W]),
       .m_rdata (m_rdata),
       .m_valid (m_valid),
       .m_ready (m_ready),
@@ -179,27 +181,22 @@ module system (
 
    
    //
-   // INTERNAL MEMORY SUBSYSTEM
+   // INTERNAL MEMORY
    //
-
+   
    int_mem int_mem0 (
 	             .clk                (clk ),
                      .rst                (reset_int),
+                     .busy               (int_mem_busy),
+                     .boot               (boot),
                      
-                     //boot mem interface
-	             .boot_rdata         (s_rdata[`BOOT_BASE]),
-                     .boot_valid         (s_valid[`BOOT_BASE]),
-                     .boot_ready         (s_ready[`BOOT_BASE]),
-
-                     //main mem interface
-	             .main_rdata         (s_rdata[`MAINRAM_BASE]),
-                     .main_valid         (s_valid[`MAINRAM_BASE]),
-                     .main_ready         (s_ready[`MAINRAM_BASE]),
-
-                     //common
+                     //cpu interface
 	             .addr               (m_addr[`MAINRAM_ADDR_W-1:2]),
+                     .rdata              (s_rdata[`MAINRAM_BASE]),
 	             .wdata              (m_wdata),
-	             .wstrb              (m_wstrb)
+	             .wstrb              (m_wstrb),
+                     .valid              (s_valid[`MAINRAM_BASE]),
+                     .ready              (s_ready[`MAINRAM_BASE])
 	             );
    
 
@@ -212,12 +209,10 @@ module system (
 		 .rst       (reset_int),
                  
 		 //cpu i/f
-		 .sel       (s_valid[`UART_BASE]),
+		 .valid     (s_valid[`UART_BASE]),
 		 .ready     (s_ready[`UART_BASE]),
 		 .address   (m_addr[4:2]),
-		 .read      (m_wstrb == 0),
-		 .write     (m_wstrb != 0),
-                 
+		 .write     (m_wstrb != 0),                 
 		 .data_in   (m_wdata),
 		 .data_out  (s_rdata[`UART_BASE]),
                  
@@ -229,32 +224,20 @@ module system (
 		 );
    
    //
-   // RESTART CONTROLLER
+   // RESET CONTROLLER
    //
-   reg        rst_ctrl_rdy;
-   reg [15:0] soft_reset_cnt;
-   
-   always @(posedge clk, posedge reset)
-     if(reset) begin
-`ifdef USE_BOOT
-        boot <= 1'b1;
-`else
-        boot <= 1'b0;        
-`endif
-        soft_reset_cnt <= 16'h0;
-        rst_ctrl_rdy <= 1'b0;
-     end else if( s_valid[`SOFT_RESET_BASE] && m_wstrb ) begin
-        soft_reset_cnt <= 16'hFFFF;
-        boot <=  m_wdata[0];
-        rst_ctrl_rdy <= 1'b1;
-     end else if (soft_reset_cnt) begin
-        soft_reset_cnt <= soft_reset_cnt - 1'b1;
-        rst_ctrl_rdy <= 1'b0;
-     end
-
-   assign soft_reset = (soft_reset_cnt != 16'h0); 
-   assign s_ready[`SOFT_RESET_BASE] = rst_ctrl_rdy;
-   assign s_rdata[`SOFT_RESET_BASE] = 0;
+   rst_ctr rst_ctr0 (
+                     .clk(clk),
+                     .rst(reset),
+                     .soft_rst(soft_reset),
+                     .boot(boot),
+                     
+                     .wdata(m_wdata[0]),
+                     .write(m_wstrb != 4'd0),
+                     .rdata(s_rdata[`SOFT_RESET_BASE]),
+                     .valid(s_valid[`SOFT_RESET_BASE]),
+                     .ready(s_ready[`SOFT_RESET_BASE])
+                     );
    
 
    //

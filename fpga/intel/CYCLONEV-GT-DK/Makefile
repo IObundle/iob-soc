@@ -1,73 +1,60 @@
-# GT hardware
-
-#hardware configuration
-USE_RAM = 1
-USE_DDR = 0
-BAUD = 115200
-
-#software configuration
-TEST_DIR := ../../../software/hello_world
+RTL_DIR := ../../../rtl
+RISCV_DIR := ../../../submodules/iob-rv32
+UART_DIR := ../../../submodules/iob-uart
+FIFO_DIR := ../../../submodules/fifo
+FIRM_DIR := ../../../software/firmware
 BOOT_DIR := ../../../software/bootloader
-BAUD = 115200
+LD_SW_DIR := ../../../software/ld-sw
+PYTHON_DIR := ../../../software/python
 
-#software defines
 
-DEFINE = -DUART_BAUD_RATE=$(BAUD)
+REMOTE_HOST := iobundle.ddns.net
+REMOTE_PORT := 1415
+REMOTE_FPGA_DIR := ./sandbox/iob-soc/fpga/intel/CYCLONEV-GT-DK
 
-ifeq ($(USE_RAM),1)
-DEFINE := $(DEFINE) -DUSE_RAM
-endif	
+BAUD := 115200
+FREQ := 100000000
 
-ifeq ($(USE_DDR),1)
-DEFINE := $(DEFINE) -DUSE_DDR
+ifneq ($(shell grep USE_DDR $(RTL_DIR)/include/system.vh | grep -v "//"),)
+USE_DDR = USE_DDR
 endif
 
-INCLUDE := $(wildcard ../../submodules/iob-eth/rtl/include/*.vh) \
-$(wildcard ../../submodules/iob-uart/rtl/include/*.vh) \
+VSRC = top_system.v $(RTL_DIR)/include/*.vh $(RTL_DIR)/src/memory/behav/*.v $(RTL_DIR)/src/*.v $(RISCV_DIR)/picorv32.v $(UART_DIR)/rtl/src/iob-uart.v $(FIFO_DIR)/afifo.v
 
-VERILOG := $(wildcard ../../rtl/src/*.v) \
-$(wildcard ../../rtl/src/memory/*.v) \
-$(wildcard ../../rtl/src/clock/*.v) \
-$(wildcard ../../submodules/iob-uart/rtl/src/*.v) \
-$(wildcard ../../submodules/iob_rv32/picorv32.v)
+all: firmware.hex output_files/top_system.sof
+	scp -P $(REMOTE_PORT) $< $(USER)@$(REMOTE_HOST):$(REMOTE_FPGA_DIR)
+	scp -P $(REMOTE_PORT) $(FIRM_DIR)/firmware.bin $(USER)@$(REMOTE_HOST):$(REMOTE_FPGA_DIR)
 
-HEX := $(addsuffix .dat, $(addprefix $(BOOTDIR)/boot_, 0 1 2 3))
+output_files/top_system.sof: top_system.qsf top_system.sdc $(VSRC) boot.hex
+	./build.sh
 
-all: output_files/top_system.sof
-	quartus_pgm -m jtag -c 1 -o "p;output_files/top_system.sof"
+firmware.hex: $(FIRM_DIR)/firmware.hex
+	cp $< .
+	cp $(FIRM_DIR)/progmem.hex .
+	$(PYTHON_DIR)/hex_split.py firmware
 
-$(HEX):
-	make -C $(BOOT_DIR) DEFINE="$(DEFINE)"
-	cp $(BOOT_DIR)/boot_0.hex ./boot_0.dat
-	cp $(BOOT_DIR)/boot_1.hex ./boot_1.dat
-	cp $(BOOT_DIR)/boot_2.hex ./boot_2.dat
-	cp $(BOOT_DIR)/boot_3.hex ./boot_3.dat
+$(FIRM_DIR)/firmware.hex: FORCE
+	make -C $(FIRM_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
 
+boot.hex: $(BOOT_DIR)/boot.hex
+	cp $(BOOT_DIR)/boot.hex .
+	$(PYTHON_DIR)/hex_split.py boot
+	cp boot.hex boot.dat
 
-firmware.hex:
-	make -C $(TEST_DIR) DEFINE="$(DEFINE)"
-	cp $(TEST_DIR)/firmware_0.hex ./firmware_0.dat
-	cp $(TEST_DIR)/firmware_1.hex ./firmware_1.dat
-	cp $(TEST_DIR)/firmware_2.hex ./firmware_2.dat
-	cp $(TEST_DIR)/firmware_3.hex ./firmware_3.dat
+$(BOOT_DIR)/boot.hex:
+	make -C $(BOOT_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
 
 ld-hw:
-	quartus_pgm -m jtag -c l -o "p;output_files/top_system.sof"
-
-output_files/top_system.sof: top_system.qsf top_system.sdc $(VERILOG) $(HEX) $(INCLUDE) firmware.hex
-	quartus_map top_system.qsf 
-	# --verilog_macro=$(lbh)
-	quartus_fit --read_settings_files=off -write_settings_files=off top_system -c top_system
-	quartus_sta top_system -c top_system
-	quartus_asm top_system
+	ssh -p $(REMOTE_PORT) $(USER)@$(REMOTE_HOST) $(REMOTE_FPGA_DIR)/prog.sh $(REMOTE_FPGA_DIR)
 
 clean:
 	@rm -rf db incremental_db output_files
 	@rm -f *.summary *.rpt *.smsg *.txt *.done *.jdi *.pin *.sof *.sld *.qpf *~
-	@rm -f *.dat
-	make -C $(TEST_DIR) clean --no-print-directory
+	@rm -f *.dat *.hex *.bin
+	make -C $(FIRM_DIR) clean --no-print-directory
 	make -C $(BOOT_DIR) clean --no-print-directory
+	make -C $(LD_SW_DIR) clean --no-print-directory
 
-.PHONY: all clean ld-hw
+.PHONY: all clean ld-hw ld-sw FORCE
 
 .PRECIOUS: output_files/top_system.sof

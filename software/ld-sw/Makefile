@@ -1,36 +1,40 @@
-TEST_DIR = ../hello_world
-BAUD = 115200
+FW_DIR := ../firmware
+FW := firmware
 
-DEFINE := -DUART_BAUD_RATE=$(BAUD)
+SERIAL := /dev/ttyUSB0
+BAUD := 115200
+FREQ := 100000000
 
-ifeq ($(USE_RAM),1)
-DEFINE := $(DEFINE) -DUSE_RAM 
-endif	
+CC := gcc
+CFLAGS := -g -Wall -pedantic
 
-ifeq ($(USE_DDR),1)
-DEFINE := $(DEFINE) -DUSE_DDR
+TRGT := console
+CSRCS := console.c
+CHDRS := console.h
+
+USERNAME := $(shell pgrep console | xargs -r ps -o uname= -p)
+
+all: run
+
+$(FW_DIR)/$(FW).bin: $(FW_DIR)/$(FW).c
+	make -C $(FW_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
+
+$(FW).bin: $(FW_DIR)/$(FW).bin
+	cp $^ .
+
+$(TRGT): $(CSRCS) $(CHDRS)
+	$(CC) $(CFLAGS) $(CSRCS) -o $@
+
+run: $(TRGT) $(FW).bin
+ifneq ($(USERNAME),)
+	@echo "FPGA is being used by $(USERNAME)"
+else
+	./$(TRGT) -s $(SERIAL) -f $(FW).bin
 endif
-
-CCOMP := gcc
-CFLAGS := -Wall -pedantic
-CSRC = ./uart_file_loader.c
-
-
-all: firmware exec
-
-firmware:
-	make -C $(TEST_DIR) DEFINE="$(DEFINE)"
-	cp $(TEST_DIR)/firmware.hex .
-
-exec: firmware uart_file_loader
-	./uart_file_loader firmware.hex
-
-uart_file_loader: $(CSRC)
-	$(CCOMP) $(CFLAGS) $(CSRC) -o uart_file_loader
 
 clean:
 	@rm -f *# *~
-	@rm -f uart_file_loader firmware.hex
-	@make -C $(TEST_DIR) clean --no-print-directory
+	@rm -f $(TRGT) *.bin
+	make -C $(FW_DIR) clean --no-print-directory
 
-.PHONY: all firmware exec clean
+.PHONY: all run clean
