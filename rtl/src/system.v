@@ -165,7 +165,7 @@ module system (
            end
    endgenerate
 
-   iob_generic_interconnect generic_interconnect
+   iob_interconnect intercon
      (
       // master interface
       .m_addr  (m_addr_int[`ADDR_W-1 -: `N_SLAVES_W]),

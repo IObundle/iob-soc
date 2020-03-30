@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 `include "system.vh"
 
-module iob_generic_interconnect
+module iob_interconnect
    (
     //master interface
     input [`N_SLAVES_W-1:0]       m_addr,

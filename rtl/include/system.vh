@@ -4,16 +4,16 @@
 
 //Optional memories (passed as command line macro)
 //`define USE_BOOT
-//`define USE_DDR
+`define USE_DDR
 
 // slaves
 // minimum 3 slaves: boot, uart and reset
 // 1 slave for bootram and/or main RAM memory
 // 2 slaves for DDR: cache and cache controller
-`define N_SLAVES 3
+`define N_SLAVES 5
 
-//bits reserved to identify slave (2**N_SLAVES-1 is reserved)
-`define N_SLAVES_W 2
+//bits reserved to identify slave
+`define N_SLAVES_W 3
 
 //peripheral address prefixes
 `define MAINRAM_BASE 0
@@ -37,4 +37,4 @@
 `define MAINRAM_ADDR_W 13
 
 //use CPU lookahead interface
-//`define USE_LA_IF
+`define USE_LA_IF
