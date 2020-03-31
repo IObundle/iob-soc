@@ -78,9 +78,10 @@ int main() {
 #endif
   
 #ifdef USE_DDR
-  while(!ctrl_buffer_empty());
+  cache_init(MAINRAM_ADDR_W);
+  while(!cache_buffer_empty());
 #endif
-  
+    
   uart_puts("Program loaded\n");
   
   // Send File

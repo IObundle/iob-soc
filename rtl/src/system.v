@@ -113,20 +113,20 @@ module system (
 `endif
 		  .mem_ready     (m_ready)
                   // Pico Co-Processor PCPI
-/*                  .pcpi_valid    (),
-                  .pcpi_insn     (),
-                  .pcpi_rs1      (),
-                  .pcpi_rs2      (),
-                  .pcpi_wr       (1'b0),
-                  .pcpi_rd       (32'd0),
-                  .pcpi_wait     (1'b0),
-                  .pcpi_ready    (1'b0),
-                  // IRQ
-                  .irq           (32'd0),
-                  .eoi           (),
-                  .trace_valid   (),
-                  .trace_data    ()
-*/		  
+                  /*                  .pcpi_valid    (),
+                   .pcpi_insn     (),
+                   .pcpi_rs1      (),
+                   .pcpi_rs2      (),
+                   .pcpi_wr       (1'b0),
+                   .pcpi_rd       (32'd0),
+                   .pcpi_wait     (1'b0),
+                   .pcpi_ready    (1'b0),
+                   // IRQ
+                   .irq           (32'd0),
+                   .eoi           (),
+                   .trace_valid   (),
+                   .trace_data    ()
+                   */		  
                   );
 
 `ifdef USE_LA_IF
@@ -162,7 +162,7 @@ module system (
       m_ready_int = int_mem_ready;
 
       if(m_addr[`ADDR_W-1]) begin
-        //peripherals are being addressed
+         //peripherals are being addressed
          p_valid = m_valid;
          int_mem_valid = 1'b0;
          m_rdata_int = p_rdata;
@@ -178,7 +178,7 @@ module system (
       end
 `endif
    end
-        
+   
    assign m_rdata = m_rdata_int;
    assign m_ready = m_ready_int;
    
@@ -191,7 +191,7 @@ module system (
                      .rst                (reset_int),
                      .busy               (int_mem_busy),
                      .boot               (boot),
-                     
+      
                      //cpu interface
 	             .addr               (m_addr[`BOOTRAM_ADDR_W-1:2]),
                      .rdata              (int_mem_rdata),
@@ -231,7 +231,7 @@ module system (
 
           //address write
           .AW_ID(m_axi_awid), 
-          .AW_ADDR(m_axi_awaddr), 
+          .AW_ADDR(m_axi_awaddr[`MAINRAM_ADDR_W-1:0]), 
           .AW_LEN(m_axi_awlen), 
           .AW_SIZE(m_axi_awsize), 
           .AW_BURST(m_axi_awburst), 
@@ -257,7 +257,7 @@ module system (
 
           //address read
           .AR_ID(m_axi_arid), 
-          .AR_ADDR(m_axi_araddr), 
+          .AR_ADDR(m_axi_araddr[`MAINRAM_ADDR_W-1:0]), 
           .AR_LEN(m_axi_arlen), 
           .AR_SIZE(m_axi_arsize), 
           .AR_BURST(m_axi_arburst), 
@@ -276,6 +276,10 @@ module system (
           .R_VALID(m_axi_rvalid),  
           .R_READY(m_axi_rready)  
 	  );
+
+  assign m_axi_araddr[`ADDR_W-1:`MAINRAM_ADDR_W] = {(`ADDR_W-`MAINRAM_ADDR_W){1'b0}};
+  assign m_axi_awaddr[`ADDR_W-1:`MAINRAM_ADDR_W] = {(`ADDR_W-`MAINRAM_ADDR_W){1'b0}};
+   
 `endif
 
 
@@ -297,10 +301,10 @@ module system (
    //concatenate slave read data signals to input in interconnect
    genvar                                 i;
    generate 
-         for(i=0; i<`N_SLAVES; i=i+1)
-           begin : rdata_concat
-	      assign s_rdata_concat[((i+1)*`DATA_W)-1 -: `DATA_W] = s_rdata[i];
-           end
+      for(i=0; i<`N_SLAVES; i=i+1)
+        begin : rdata_concat
+	   assign s_rdata_concat[((i+1)*`DATA_W)-1 -: `DATA_W] = s_rdata[i];
+        end
    endgenerate
 
 
@@ -352,7 +356,7 @@ module system (
                      .rst(reset),
                      .soft_rst(soft_reset),
                      .boot(boot),
-                     
+      
                      .wdata(m_wdata[0]),
                      .write(m_wstrb != 4'd0),
                      .rdata(s_rdata[`SOFT_RESET_BASE]),
