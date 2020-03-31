@@ -10,7 +10,10 @@
 //#define DEBUG  // Uncomment this line for debug printfs
 
 unsigned int receiveFile(void) {
-  
+
+  // Send command
+  uart_putc(STX);
+
   // Send Start to PC
   uart_putc(STR);
   
@@ -30,7 +33,10 @@ unsigned int receiveFile(void) {
 }
 
 void sendFile(unsigned int file_size, unsigned int offset) {
-  
+
+  // Send command
+  uart_putc(SRX);
+
   // Wait for PC
   while (uart_getc() != STR);
   
@@ -56,7 +62,6 @@ int main() {
   
   // Request File
   uart_puts ("Loading program from UART...\n");
-  uart_putc(STX);
   
   unsigned int prog_size = receiveFile();
   
@@ -80,7 +85,6 @@ int main() {
   
   // Send File
   uart_puts ("Sending program to UART...\n");
-  uart_putc(SRX);
   
   sendFile(prog_size, 0);
   
