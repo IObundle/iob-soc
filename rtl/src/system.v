@@ -209,7 +209,7 @@ module system (
 
 `ifdef USE_DDR
    iob_cache #(
-               .ADDR_W(`MAINRAM_ADDR_W+1),
+               .ADDR_W(`MAINRAM_ADDR_W),
                .DATA_W(`DATA_W)
                )
    cache (
@@ -217,12 +217,12 @@ module system (
 	  .reset (reset_int),
 
           //data interface 
-	  .write (m_wdata),
-	  .addr (m_addr[`MAINRAM_ADDR_W -: 2]}),
+	  .wdata (m_wdata),
+	  .addr  (m_addr[`MAINRAM_ADDR_W : 2]),
 	  .wstrb (m_wstrb),
-	  .rdata (int_mem_rdata),
-	  .valid (int_mem_valid),
-	  .ready (int_mem_ready),
+	  .rdata (ext_mem_rdata),
+	  .valid (ext_mem_valid),
+	  .ready (ext_mem_ready),
 	  .instr (m_instr),
 
           //
