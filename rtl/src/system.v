@@ -231,7 +231,7 @@ module system (
 
           //address write
           .AW_ID(m_axi_awid), 
-          .AW_ADDR(m_axi_awaddr), 
+          .AW_ADDR(m_axi_awaddr[`MAINRAM_ADDR_W-1:0]), 
           .AW_LEN(m_axi_awlen), 
           .AW_SIZE(m_axi_awsize), 
           .AW_BURST(m_axi_awburst), 
@@ -257,7 +257,7 @@ module system (
 
           //address read
           .AR_ID(m_axi_arid), 
-          .AR_ADDR(m_axi_araddr), 
+          .AR_ADDR(m_axi_araddr[`MAINRAM_ADDR_W-1:0]), 
           .AR_LEN(m_axi_arlen), 
           .AR_SIZE(m_axi_arsize), 
           .AR_BURST(m_axi_arburst), 
@@ -276,6 +276,10 @@ module system (
           .R_VALID(m_axi_rvalid),  
           .R_READY(m_axi_rready)  
 	  );
+
+  assign m_axi_araddr[`ADDR_W-1:`MAINRAM_ADDR_W] = {(`ADDR_W-`MAINRAM_ADDR_W){1'b0}};
+  assign m_axi_awaddr[`ADDR_W-1:`MAINRAM_ADDR_W] = {(`ADDR_W-`MAINRAM_ADDR_W){1'b0}};
+   
 `endif
 
 

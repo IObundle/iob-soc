@@ -18,7 +18,7 @@
 `define SOFT_RESET_BASE 1
 
 //use CPU lookahead interface
-`define USE_LA_IF
+//`define USE_LA_IF
 
 
 
