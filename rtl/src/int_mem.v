@@ -1,5 +1,6 @@
 `timescale 1 ns / 1 ps
 `include "system.vh"
+`include "int_mem.vh"
 
 module int_mem
   (

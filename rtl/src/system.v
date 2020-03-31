@@ -1,6 +1,6 @@
 `timescale 1 ns / 1 ps
 `include "system.vh"
-
+`include "int_mem.vh"
 
 module system (
                input                clk,
@@ -134,54 +134,56 @@ module system (
    assign m_wstrb = la_wstrb & {4{la_write}};
 `endif
    
-   //
-   // ADDRESS TRANSFORM
-   //
-   // according to boot status and ddr use
-   reg [`ADDR_W-1 : 0]              m_addr_int;
-   reg                              boot;
+   //select memory  according to addr msb, boot status and ddr use
 
-   addr_transf addr_transf0 (
-                             .boot(boot),
-                             .addr_in(m_addr),
-                             .addr_out(m_addr_int)
-                             );
+   reg                              int_mem_valid;
+   reg                              int_mem_ready;
+   reg [`DATA_W-1:0]                int_mem_rdata;
    
-   //
-   // INTERCONNECT
-   //
+   reg                              ext_mem_valid;
+   reg                              ext_mem_ready;
+   reg [`DATA_W-1:0]                ext_mem_rdata;
    
-   wire [`DATA_W-1:0]               s_rdata[`N_SLAVES-1:0];
-   wire [`N_SLAVES*`DATA_W-1:0]     s_rdata_concat;
-   wire [`N_SLAVES-1:0]             s_valid;
-   wire [`N_SLAVES-1:0]             s_ready;
+   reg                              p_valid;
+   reg                              p_ready;
+   reg [`DATA_W-1:0]                p_rdata;
    
-   //concatenate slave read data signals to input in interconnect
-   genvar                           i;
-   generate 
-      for(i=0; i<`N_SLAVES; i=i+1)
-        begin : rdata_concat
-	   assign s_rdata_concat[((i+1)*`DATA_W)-1 -: `DATA_W] = s_rdata[i];
-        end
-   endgenerate
+   wire                             boot;
+   reg [`DATA_W-1:0]                m_rdata_int;
+   reg                              m_ready_int;
+   
+   always @* begin
+      //assume internal memory is being addressed
+      int_mem_valid = m_valid;
+      ext_mem_valid = 1'b0;
+      p_valid = 1'b0;
 
-   iob_generic_interconnect generic_interconnect
-     (
-      // master interface
-      .m_addr  (m_addr_int[`ADDR_W-1 -: `N_SLAVES_W]),
-      .m_rdata (m_rdata),
-      .m_valid (m_valid),
-      .m_ready (m_ready),
-      
-      // slaves interface
-      .s_rdata (s_rdata_concat),
-      .s_valid (s_valid),
-      .s_ready (s_ready)
-      );
+      m_rdata_int = int_mem_rdata;
+      m_ready_int = int_mem_ready;
 
+      if(m_addr[`ADDR_W-1]) begin
+         //peripherals are being addressed
+         p_valid = m_valid;
+         int_mem_valid = 1'b0;
+         m_rdata_int = p_rdata;
+         m_ready_int = p_ready;
+      end
+`ifdef USE_DDR
+      //ddr is being addressed
+      else if(!boot) begin
+         ext_mem_valid = m_valid;
+         int_mem_valid = 1'b0;
+         m_rdata_int = ext_mem_rdata;
+         m_ready_int = ext_mem_ready;
+      end
+`endif
+   end
+   
+   assign m_rdata = m_rdata_int;
+   assign m_ready = m_ready_int;
    
    //
-   // INTERNAL MEMORY
+   // INTERNAL SRAM MEMORY
    //
    
    int_mem int_mem0 (
@@ -191,121 +193,37 @@ module system (
                      .boot               (boot),
       
                      //cpu interface
-	             .addr               (m_addr[`MAINRAM_ADDR_W-1:2]),
-                     .rdata              (s_rdata[`MAINRAM_BASE]),
+	             .addr               (m_addr[`BOOTRAM_ADDR_W-1:2]),
+                     .rdata              (int_mem_rdata),
 	             .wdata              (m_wdata),
 	             .wstrb              (m_wstrb),
-                     .valid              (s_valid[`MAINRAM_BASE]),
-                     .ready              (s_ready[`MAINRAM_BASE])
+                     .valid              (int_mem_valid),
+                     .ready              (int_mem_ready)
 	             );
    
 
-   //
-   // UART
-   //
-   iob_uart uart(
-		 //cpu interface
-		 .clk       (clk),
-		 .rst       (reset_int),
-                 
-		 //cpu i/f
-		 .valid     (s_valid[`UART_BASE]),
-		 .ready     (s_ready[`UART_BASE]),
-		 .address   (m_addr[4:2]),
-		 .write     (m_wstrb != 0),                 
-		 .data_in   (m_wdata),
-		 .data_out  (s_rdata[`UART_BASE]),
-                 
-		 //serial i/f
-		 .txd       (uart_txd),
-		 .rxd       (uart_rxd),
-                 .rts       (uart_rts),
-                 .cts       (uart_cts)
-		 );
    
    //
-   // RESET CONTROLLER
-   //
-   rst_ctr rst_ctr0 (
-                     .clk(clk),
-                     .rst(reset),
-                     .soft_rst(soft_reset),
-                     .boot(boot),
-      
-                     .wdata(m_wdata[0]),
-                     .write(m_wstrb != 4'd0),
-                     .rdata(s_rdata[`SOFT_RESET_BASE]),
-                     .valid(s_valid[`SOFT_RESET_BASE]),
-                     .ready(s_ready[`SOFT_RESET_BASE])
-                     );
-   
-
-   //
-   // DDR MAIN MEMORY
+   // EXTERNAL DDR MAIN MEMORY
    //
 
-`ifdef USE_LA_IF
-   reg [31:0] m_addr_reg;
-   reg [3:0]  m_wstrb_reg;
-   // Avoid waiting 1 additional cycle - mux
-   wire [31:0] m_addr_mux = (s_valid[`CACHE_BASE])? m_addr : m_addr_reg;
-   wire [3:0]  m_wstrb_mux = (s_valid[`CACHE_BASE])? m_wstrb : m_wstrb_reg;
-   
-
-   always @(posedge clk, posedge reset_int) 
-     begin
-        if(reset_int)
-          begin
-             m_addr_reg = 32'd0;
-             m_wstrb_reg = 4'd0;
-          end
-        else
-          if(s_valid[`CACHE_BASE])
-            begin
-               m_addr_reg = m_addr;
-               m_wstrb_reg = m_wstrb;
-            end
-          else
-            begin
-               m_addr_reg = m_addr_reg;
-               m_wstrb_reg = m_wstrb_reg;
-            end
-     end
-
-`endif   
-   
 `ifdef USE_DDR
    iob_cache #(
-               .ADDR_W(`ADDR_W),
+               .ADDR_W(`MAINRAM_ADDR_W),
                .DATA_W(`DATA_W)
                )
    cache (
-	  .clk                (clk),
-	  .reset              (reset_int),
-      
- `ifndef USE_LA_IF
+	  .clk (clk),
+	  .reset (reset_int),
+
           //data interface 
-	  .cache_write_data   (m_wdata),
-	  .cache_addr         ({{`N_SLAVES_W{1'b0}},m_addr[`ADDR_W-`N_SLAVES_W-1:2]}),
-	  .cache_wstrb        (m_wstrb),
-	  .cache_read_data    (s_rdata[`CACHE_BASE]),
-	  .cpu_req            (s_valid[`CACHE_BASE]),
-	  .cache_ack          (s_ready[`CACHE_BASE]),
- `else
-          //data interface 
-	  .cache_write_data   (m_wdata),
-	  .cache_addr         ({{`N_SLAVES_W{1'b0}},m_addr_mux[`ADDR_W-`N_SLAVES_W-1:2]}),
-	  .cache_wstrb        (m_wstrb_mux),
-	  .cache_read_data    (s_rdata[`CACHE_BASE]),
-	  .cpu_req            (s_valid[`CACHE_BASE]),
-	  .cache_ack          (s_ready[`CACHE_BASE]),
- `endif
-          //control interface
-	  .cache_ctrl_address (m_addr[6:2]),
-	  .cache_ctrl_requested_data (s_rdata[`CACHE_CTRL_BASE]),
-	  .cache_ctrl_cpu_request (s_valid[`CACHE_CTRL_BASE]),
-	  .cache_ctrl_acknowledge (s_ready[`CACHE_CTRL_BASE]),
-	  .cache_ctrl_instr_access(m_instr),
+	  .wdata (m_wdata),
+	  .addr  (m_addr[`MAINRAM_ADDR_W : 2]),
+	  .wstrb (m_wstrb),
+	  .rdata (ext_mem_rdata),
+	  .valid (ext_mem_valid),
+	  .ready (ext_mem_ready),
+	  .instr (m_instr),
 
           //
 	  // AXI MASTER INTERFACE TO MAIN MEMORY
@@ -359,5 +277,88 @@ module system (
           .R_READY(m_axi_rready)  
 	  );
 `endif
+
+
+
+   //
+   // PERIPHERALS
+   //
+
    
+   //
+   // INTERCONNECT
+   //
+   
+   wire [`DATA_W-1:0]                     s_rdata[`N_SLAVES-1:0];
+   wire [`N_SLAVES*`DATA_W-1:0]           s_rdata_concat;
+   wire [`N_SLAVES-1:0]                   s_valid;
+   wire [`N_SLAVES-1:0]                   s_ready;
+   
+   //concatenate slave read data signals to input in interconnect
+   genvar                                 i;
+   generate 
+      for(i=0; i<`N_SLAVES; i=i+1)
+        begin : rdata_concat
+	   assign s_rdata_concat[((i+1)*`DATA_W)-1 -: `DATA_W] = s_rdata[i];
+        end
+   endgenerate
+
+
+
+   iob_interconnect intercon
+     (
+      // master interface
+      .m_addr  (m_addr[`ADDR_W-2 -: `N_SLAVES_W]),
+      .m_rdata (p_rdata),
+      .m_valid (p_valid),
+      .m_ready (p_ready),
+      
+      // slaves interface
+      .s_rdata (s_rdata_concat),
+      .s_valid (s_valid),
+      .s_ready (s_ready)
+      );
+
+   
+
+   //
+   // UART
+   //
+   iob_uart uart(
+		 //cpu interface
+		 .clk       (clk),
+		 .rst       (reset_int),
+                 
+		 //cpu i/f
+		 .valid     (s_valid[`UART_BASE]),
+		 .ready     (s_ready[`UART_BASE]),
+		 .address   (m_addr[4:2]),
+		 .write     (m_wstrb != 0),                 
+		 .data_in   (m_wdata),
+		 .data_out  (s_rdata[`UART_BASE]),
+                 
+		 //serial i/f
+		 .txd       (uart_txd),
+		 .rxd       (uart_rxd),
+                 .rts       (uart_rts),
+                 .cts       (uart_cts)
+		 );
+   
+   //
+   // RESET CONTROLLER
+   //
+   rst_ctr rst_ctr0 (
+                     .clk(clk),
+                     .rst(reset),
+                     .soft_rst(soft_reset),
+                     .boot(boot),
+      
+                     .wdata(m_wdata[0]),
+                     .write(m_wstrb != 4'd0),
+                     .rdata(s_rdata[`SOFT_RESET_BASE]),
+                     .valid(s_valid[`SOFT_RESET_BASE]),
+                     .ready(s_ready[`SOFT_RESET_BASE])
+                     );
+   
+
 endmodule
