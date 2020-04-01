@@ -187,13 +187,14 @@ module system (
                      .rst                (reset_int),
                      .busy               (int_mem_busy),
                      .boot               (boot),
+                     .pvalid             (s_valid[`SRAM_BASE]),
       
                      //cpu interface
 	             .addr               (m_addr[`BOOTRAM_ADDR_W-1:2]),
                      .rdata              (int_mem_rdata),
 	             .wdata              (m_wdata),
 	             .wstrb              (m_wstrb),
-                     .valid              (int_mem_valid | s_valid[`SRAM_BASE]),
+                     .valid              (int_mem_valid),
                      .ready              (int_mem_ready)
 	             );
    

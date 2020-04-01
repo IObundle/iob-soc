@@ -8,6 +8,7 @@ module int_mem
    input                       rst,
    input                       boot,
    output                      busy,
+   input                       pvalid,
 
    //cpu interface
    input                       valid,
@@ -79,6 +80,8 @@ module int_mem
           ram_addr = addr;
           ram_wdata = wdata;
           ram_wstrb = wstrb;
+          if(boot && !pvalid)
+            ram_addr = BOOTRAM_ADDR[`BOOTRAM_ADDR_W-3:0] + addr;
        end else begin
           ram_addr = BOOTRAM_ADDR[`BOOTRAM_ADDR_W-3:0] + rom_addr_reg;
           ram_wdata = rom_rdata;
@@ -100,7 +103,7 @@ module int_mem
 	     .addr          (ram_addr),
 	     .wstrb         (ram_wstrb),
 	     .rdata         (rdata),
-             .valid         (ram_valid),
+             .valid         (ram_valid | pvalid),
              .ready         (ram_ready)
 	     );
 
