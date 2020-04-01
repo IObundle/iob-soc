@@ -24,7 +24,11 @@ unsigned int receiveFile(void) {
   file_size |= ((unsigned int) uart_getc()) << 24;
   
   // Write file to main memory
+#ifndef USE_DDR
   volatile char *mem = (volatile char *) 0;
+#else
+  volatile char *mem = (volatile char *) DDR;
+#endif
   for (unsigned int i = 0; i < file_size; i++) {
     mem[i] = uart_getc();
   }
@@ -47,7 +51,11 @@ void sendFile(unsigned int file_size, unsigned int offset) {
   uart_putc((char)((file_size & 0x0ff000000) >> 24));
   
   // Read file from main memory
-  volatile char *mem = (volatile char *) offset;
+#ifndef USE_DDR
+  volatile char *mem = (volatile char *) (0 + offset);
+#else
+  volatile char *mem = (volatile char *) (DDR + offset);
+#endif
   for (unsigned int i = 0; i < file_size; i++) {
     uart_putc(mem[i]);
   }
