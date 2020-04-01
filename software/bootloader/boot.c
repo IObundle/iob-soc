@@ -25,7 +25,7 @@ unsigned int receiveFile(void) {
   
   // Write file to main memory
 #ifndef USE_DDR
-  volatile char *mem = (volatile char *) 0;
+  volatile char *mem = (volatile char *) SRAM;
 #else
   volatile char *mem = (volatile char *) DDR;
 #endif
@@ -52,7 +52,7 @@ void sendFile(unsigned int file_size, unsigned int offset) {
   
   // Read file from main memory
 #ifndef USE_DDR
-  volatile char *mem = (volatile char *) (0 + offset);
+  volatile char *mem = (volatile char *) (SRAM + offset);
 #else
   volatile char *mem = (volatile char *) (DDR + offset);
 #endif

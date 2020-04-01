@@ -193,10 +193,12 @@ module system (
                      .rdata              (int_mem_rdata),
 	             .wdata              (m_wdata),
 	             .wstrb              (m_wstrb),
-                     .valid              (int_mem_valid),
+                     .valid              (int_mem_valid | s_valid[`SRAM_BASE]),
                      .ready              (int_mem_ready)
 	             );
    
+   assign s_ready[`SRAM_BASE] = int_mem_ready;
+   assign s_rdata[`SRAM_BASE] = int_mem_rdata;
 
    
    //
