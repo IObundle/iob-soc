@@ -26,7 +26,7 @@ module int_mem
    //
 
    //address to copy boot rom to
-   parameter BOOTRAM_ADDR = 2**(`BOOTRAM_ADDR_W-2)-2**(`BOOTROM_ADDR_W-2);
+   parameter BOOTRAM_ADDR = 2**(`BOOTRAM_ADDR_W-2)  -  2**(`BOOTROM_ADDR_W-2);
 
    //address counter
    reg [`BOOTROM_ADDR_W-3:0]    rom_addr;
@@ -81,9 +81,9 @@ module int_mem
           ram_wdata = wdata;
           ram_wstrb = wstrb;
           if(boot && !pvalid)
-            ram_addr = BOOTRAM_ADDR[`BOOTRAM_ADDR_W-3:0] + addr;
+            ram_addr = addr + BOOTRAM_ADDR[`BOOTRAM_ADDR_W-3:0]; //note that parameter BOOTRAM_ADDR has 32 bits
        end else begin
-          ram_addr = BOOTRAM_ADDR[`BOOTRAM_ADDR_W-3:0] + rom_addr_reg;
+          ram_addr = rom_addr_reg + BOOTRAM_ADDR[`BOOTRAM_ADDR_W-3:0];
           ram_wdata = rom_rdata;
           ram_wstrb = 4'hF;
        end

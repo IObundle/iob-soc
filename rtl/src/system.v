@@ -161,16 +161,16 @@ module system (
 
       if(m_addr[`ADDR_W-1]) begin
          //peripherals are being addressed
-         p_valid = m_valid;
          int_mem_valid = 1'b0;
+         p_valid = m_valid;
          m_rdata = p_rdata;
          m_ready = p_ready;
       end
 `ifdef USE_DDR
       //ddr is being addressed
       else if(!boot) begin
-         ext_mem_valid = m_valid;
          int_mem_valid = 1'b0;
+         ext_mem_valid = m_valid;
          m_rdata = ext_mem_rdata;
          m_ready = ext_mem_ready;
       end
