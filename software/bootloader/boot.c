@@ -91,13 +91,16 @@ int main() {
 #endif
     
   uart_puts("Program loaded\n");
-  
+
+#ifdef DEBUG
   // Send File
   uart_puts ("Sending program to UART...\n");
   
   sendFile(prog_size, 0);
   
   uart_puts("Program sent\n");
+#endif
+
   uart_txwait();
   
   RAM_PUTINT(SOFT_RESET, 0);
