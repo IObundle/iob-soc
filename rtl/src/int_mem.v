@@ -91,9 +91,11 @@ module int_mem
    ram #(
 	 .ADDR_W(`BOOTRAM_ADDR_W-2),
 `ifdef USE_BOOT
-          .FILE("none")
-`else
+         .FILE("none")
+`elsif USE_BOOT
          .FILE("firmware")
+`else
+         .FILE("none")
 `endif
 	 )
    boot_ram (
