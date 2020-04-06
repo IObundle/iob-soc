@@ -59,8 +59,7 @@ module system_tb;
          if (cpu_char == `STX) begin // Send file
             cpu_sendFile();
          end else if (cpu_char == `SRX) begin // Receive file
-            $write("Please, insert a name for a file:");
-            $write("out.bin\n");
+            $write("File will be written to out.bin\n");
             cpu_receiveFile();
          end else if (cpu_char == `EOT) begin // Finish
             $write("Bye, bye!\n");

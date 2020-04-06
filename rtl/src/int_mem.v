@@ -8,6 +8,7 @@ module int_mem
    input                       rst,
    input                       boot,
    output                      busy,
+   input                       pvalid,
 
    //cpu interface
    input                       valid,
@@ -25,7 +26,7 @@ module int_mem
    //
 
    //address to copy boot rom to
-   parameter BOOTRAM_ADDR = 2**(`BOOTRAM_ADDR_W-2)-2**(`BOOTROM_ADDR_W-2);
+   parameter BOOTRAM_ADDR = 2**(`BOOTRAM_ADDR_W-2)  -  2**(`BOOTROM_ADDR_W-2);
 
    //address counter
    reg [`BOOTROM_ADDR_W-3:0]    rom_addr;
@@ -79,8 +80,10 @@ module int_mem
           ram_addr = addr;
           ram_wdata = wdata;
           ram_wstrb = wstrb;
+          if(boot && !pvalid)
+            ram_addr = addr + BOOTRAM_ADDR[`BOOTRAM_ADDR_W-3:0]; //note that parameter BOOTRAM_ADDR has 32 bits
        end else begin
-          ram_addr = BOOTRAM_ADDR[`BOOTRAM_ADDR_W-3:0] + rom_addr_reg;
+          ram_addr = rom_addr_reg + BOOTRAM_ADDR[`BOOTRAM_ADDR_W-3:0];
           ram_wdata = rom_rdata;
           ram_wstrb = 4'hF;
        end
@@ -88,7 +91,9 @@ module int_mem
    ram #(
 	 .ADDR_W(`BOOTRAM_ADDR_W-2),
 `ifdef USE_BOOT
-          .FILE("none")
+         .FILE("none")
+`elsif USE_DDR
+         .FILE("none")
 `else
          .FILE("firmware")
 `endif
@@ -100,7 +105,7 @@ module int_mem
 	     .addr          (ram_addr),
 	     .wstrb         (ram_wstrb),
 	     .rdata         (rdata),
-             .valid         (ram_valid),
+             .valid         (ram_valid | pvalid),
              .ready         (ram_ready)
 	     );
 

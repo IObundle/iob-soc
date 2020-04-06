@@ -75,9 +75,9 @@ module system (
    wire [`ADDR_W-1:0]               m_addr;
    wire [`DATA_W-1:0]               m_wdata;
    wire [3:0]                       m_wstrb;
-   wire [`DATA_W-1:0]               m_rdata;
+   reg [`DATA_W-1:0]                m_rdata;
    wire                             m_valid;
-   wire                             m_ready;
+   reg                              m_ready;
    wire                             m_instr;
 
    wire                             la_read, la_write;
@@ -111,22 +111,22 @@ module system (
                   .mem_la_wdata  (m_wdata),
                   .mem_la_wstrb  (la_wstrb),
 `endif
-		  .mem_ready     (m_ready)
+		  .mem_ready     (m_ready),
                   // Pico Co-Processor PCPI
-                  /*                  .pcpi_valid    (),
-                   .pcpi_insn     (),
-                   .pcpi_rs1      (),
-                   .pcpi_rs2      (),
-                   .pcpi_wr       (1'b0),
-                   .pcpi_rd       (32'd0),
-                   .pcpi_wait     (1'b0),
-                   .pcpi_ready    (1'b0),
+                  .pcpi_valid    (),
+                   .pcpi_insn    (),
+                   .pcpi_rs1     (),
+                   .pcpi_rs2     (),
+                   .pcpi_wr      (1'b0),
+                   .pcpi_rd      (32'd0),
+                   .pcpi_wait    (1'b0),
+                   .pcpi_ready   (1'b0),
                    // IRQ
-                   .irq           (32'd0),
-                   .eoi           (),
-                   .trace_valid   (),
-                   .trace_data    ()
-                   */		  
+                   .irq          (32'd0),
+                   .eoi          (),
+                   .trace_valid  (),
+                   .trace_data   ()
+                  
                   );
 
 `ifdef USE_LA_IF
@@ -149,8 +149,6 @@ module system (
    reg [`DATA_W-1:0]                p_rdata;
    
    wire                             boot;
-   reg [`DATA_W-1:0]                m_rdata_int;
-   reg                              m_ready_int;
    
    always @* begin
       //assume internal memory is being addressed
@@ -158,29 +156,27 @@ module system (
       ext_mem_valid = 1'b0;
       p_valid = 1'b0;
 
-      m_rdata_int = int_mem_rdata;
-      m_ready_int = int_mem_ready;
+      m_rdata = int_mem_rdata;
+      m_ready = int_mem_ready;
 
       if(m_addr[`ADDR_W-1]) begin
          //peripherals are being addressed
-         p_valid = m_valid;
          int_mem_valid = 1'b0;
-         m_rdata_int = p_rdata;
-         m_ready_int = p_ready;
+         p_valid = m_valid;
+         m_rdata = p_rdata;
+         m_ready = p_ready;
       end
 `ifdef USE_DDR
       //ddr is being addressed
       else if(!boot) begin
-         ext_mem_valid = m_valid;
          int_mem_valid = 1'b0;
-         m_rdata_int = ext_mem_rdata;
-         m_ready_int = ext_mem_ready;
+         ext_mem_valid = m_valid;
+         m_rdata = ext_mem_rdata;
+         m_ready = ext_mem_ready;
       end
 `endif
    end
    
-   assign m_rdata = m_rdata_int;
-   assign m_ready = m_ready_int;
    
    //
    // INTERNAL SRAM MEMORY
@@ -191,6 +187,7 @@ module system (
                      .rst                (reset_int),
                      .busy               (int_mem_busy),
                      .boot               (boot),
+                     .pvalid             (s_valid[`SRAM_BASE]),
       
                      //cpu interface
 	             .addr               (m_addr[`BOOTRAM_ADDR_W-1:2]),
@@ -201,6 +198,8 @@ module system (
                      .ready              (int_mem_ready)
 	             );
    
+   assign s_ready[`SRAM_BASE] = int_mem_ready;
+   assign s_rdata[`SRAM_BASE] = int_mem_rdata;
 
    
    //
@@ -221,7 +220,7 @@ module system (
 	  .addr  (m_addr[`MAINRAM_ADDR_W : 2]),
 	  .wstrb (m_wstrb),
 	  .rdata (ext_mem_rdata),
-	  .valid (ext_mem_valid),
+	  .valid (ext_mem_valid | s_valid[`DDR_BASE]),
 	  .ready (ext_mem_ready),
 	  .instr (m_instr),
 
@@ -277,8 +276,11 @@ module system (
           .R_READY(m_axi_rready)  
 	  );
 
-  assign m_axi_araddr[`ADDR_W-1:`MAINRAM_ADDR_W] = {(`ADDR_W-`MAINRAM_ADDR_W){1'b0}};
-  assign m_axi_awaddr[`ADDR_W-1:`MAINRAM_ADDR_W] = {(`ADDR_W-`MAINRAM_ADDR_W){1'b0}};
+   assign m_axi_araddr[`ADDR_W-1:`MAINRAM_ADDR_W] = {(`ADDR_W-`MAINRAM_ADDR_W){1'b0}};
+   assign m_axi_awaddr[`ADDR_W-1:`MAINRAM_ADDR_W] = {(`ADDR_W-`MAINRAM_ADDR_W){1'b0}};
+
+   assign s_ready[`DDR_BASE] = ext_mem_ready;
+   assign s_rdata[`DDR_BASE] = ext_mem_rdata;
    
 `endif
 

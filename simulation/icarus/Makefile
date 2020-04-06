@@ -1,5 +1,5 @@
 #simulation baud rate
-BAUD := 1000000
+BAUD := 30000000
 FREQ := 100000000
 
 #file paths

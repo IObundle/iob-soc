@@ -10,7 +10,10 @@
 //#define DEBUG  // Uncomment this line for debug printfs
 
 unsigned int receiveFile(void) {
-  
+
+  // Send command
+  uart_putc(STX);
+
   // Send Start to PC
   uart_putc(STR);
   
@@ -21,7 +24,11 @@ unsigned int receiveFile(void) {
   file_size |= ((unsigned int) uart_getc()) << 24;
   
   // Write file to main memory
-  volatile char *mem = (volatile char *) 0;
+#ifndef USE_DDR
+  volatile char *mem = (volatile char *) SRAM;
+#else
+  volatile char *mem = (volatile char *) DDR;
+#endif
   for (unsigned int i = 0; i < file_size; i++) {
     mem[i] = uart_getc();
   }
@@ -30,7 +37,10 @@ unsigned int receiveFile(void) {
 }
 
 void sendFile(unsigned int file_size, unsigned int offset) {
-  
+
+  // Send command
+  uart_putc(SRX);
+
   // Wait for PC
   while (uart_getc() != STR);
   
@@ -41,7 +51,11 @@ void sendFile(unsigned int file_size, unsigned int offset) {
   uart_putc((char)((file_size & 0x0ff000000) >> 24));
   
   // Read file from main memory
-  volatile char *mem = (volatile char *) offset;
+#ifndef USE_DDR
+  volatile char *mem = (volatile char *) (SRAM + offset);
+#else
+  volatile char *mem = (volatile char *) (DDR + offset);
+#endif
   for (unsigned int i = 0; i < file_size; i++) {
     uart_putc(mem[i]);
   }
@@ -56,7 +70,6 @@ int main() {
   
   // Request File
   uart_puts ("Loading program from UART...\n");
-  uart_putc(STX);
   
   unsigned int prog_size = receiveFile();
   
@@ -78,14 +91,16 @@ int main() {
 #endif
     
   uart_puts("Program loaded\n");
-  
+
+#ifdef DEBUG
   // Send File
   uart_puts ("Sending program to UART...\n");
-  uart_putc(SRX);
   
   sendFile(prog_size, 0);
   
   uart_puts("Program sent\n");
+#endif
+
   uart_txwait();
   
   RAM_PUTINT(SOFT_RESET, 0);
