@@ -35,15 +35,12 @@ all: $(VSRC) console.vh firmware boot
 
 firmware:
 	make -C $(FIRM_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
-	cp $(FIRM_DIR)/firmware.hex .
+	cp $(FIRM_DIR)/firmware.hex firmware.dat
 	cp $(FIRM_DIR)/firmware.bin .
-	$(PYTHON_DIR)/hex_split.py firmware
 
 boot:
 	make -C $(BOOT_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
-	cp $(BOOT_DIR)/boot.hex .
-	$(PYTHON_DIR)/hex_split.py boot
-	cp boot.hex boot.dat
+	cp $(BOOT_DIR)/boot.hex boot.dat
 
 console.vh: $(ROOT_DIR)/software/ld-sw/console.h
 	sed "s/\#/\`/;s/0x/8\'h/" $^ | sed "/CONSOLE_H\|endif/d" > $@

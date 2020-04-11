@@ -95,7 +95,7 @@ module int_mem
 `elsif USE_DDR
          .FILE("none")
 `else
-         .FILE("firmware")
+         .FILE("firmware.dat")
 `endif
 	 )
    boot_ram (
