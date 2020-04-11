@@ -10,7 +10,8 @@ BOOT_DIR := $(ROOT_DIR)/software/bootloader
 RTL_DIR := $(ROOT_DIR)/rtl
 RISCV_DIR := $(SUBMODULES_DIR)/iob-rv32
 UART_DIR := $(SUBMODULES_DIR)/iob-uart
-FIFO_DIR := $(SUBMODULES_DIR)/fifo
+FIFO_DIR := $(SUBMODULES_DIR)/iob-mem/afifo
+MEM_DIR := $(SUBMODULES_DIR)/iob-mem/sp_mem_be
 PYTHON_DIR := $(ROOT_DIR)/software/python
 CACHE_DIR = $(SUBMODULES_DIR)/iob-cache
 AXI_RAM_DIR = $(SUBMODULES_DIR)/axi-mem
@@ -27,7 +28,7 @@ TB_DEFINE += -DUART_CLK_FREQ=$(FREQ)
 VLOG = iverilog -W all -g2005-sv -DVCD
 
 #hardware sources
-VSRC = $(RTL_DIR)/testbench/system_tb.v  $(RTL_DIR)/src/*.v $(RTL_DIR)/src/memory/behav/*.v $(RISCV_DIR)/picorv32.v $(UART_DIR)/rtl/src/iob-uart.v $(FIFO_DIR)/afifo.v $(CACHE_DIR)/rtl/src/gen_mem_reg.v $(CACHE_DIR)/rtl/src/iob-cache.v $(AXI_RAM_DIR)/rtl/axi_ram.v
+VSRC = $(RTL_DIR)/testbench/system_tb.v  $(RTL_DIR)/src/*.v $(RTL_DIR)/src/memory/*.v $(RISCV_DIR)/picorv32.v $(UART_DIR)/rtl/src/iob-uart.v $(FIFO_DIR)/afifo.v $(MEM_DIR)/iob_sp_mem_be.v $(CACHE_DIR)/rtl/src/gen_mem_reg.v $(CACHE_DIR)/rtl/src/iob-cache.v $(AXI_RAM_DIR)/rtl/axi_ram.v
 
 all: $(VSRC) console.vh firmware boot
 	$(VLOG) $(HW_INCLUDE) $(TB_DEFINE) $(VSRC)
