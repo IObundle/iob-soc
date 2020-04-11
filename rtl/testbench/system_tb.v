@@ -4,6 +4,10 @@
 `include "iob-uart.vh"
 `include "console.vh"
 
+`define SEEK_SET 0
+`define SEEK_CUR 1
+`define SEEK_END 2
+
 module system_tb;
 
    //clock
@@ -301,21 +305,25 @@ module system_tb;
 
    task cpu_sendFile;
       reg [`DATA_W-1:0] file_size;
-      reg [7:0]         buffer [0:9*4096];
+      reg [7:0]         char;
       integer           fp;
+      integer           res;
       integer           i, k;
 
       fp = $fopen("firmware.bin","rb");
-      file_size = $fread(buffer, fp);
-      $fclose(fp);
+
+      // Get file size
+      res = $fseek(fp, 0, `SEEK_END);
+      file_size = $ftell(fp);
+      res = $rewind(fp);
       
       $write("Starting File 'firmware.bin' Transfer...\n");
       $write("file_size = %d\n", file_size);
 
       // Wait for RISC-V
       do begin
-         cpu_getchar(cpu_char);
-      end while (cpu_char != `STR);
+         cpu_getchar(char);
+      end while (char != `STR);
       
       // Send file size
       cpu_putchar(file_size[7:0]);
@@ -325,7 +333,7 @@ module system_tb;
       
       k = 0;
       for(i = 0; i < file_size; i++) begin
-         cpu_putchar(buffer[i]);
+         cpu_putchar($fgetc(fp));
 
          if(i/4 == (file_size/4*k/100)) begin
             $write("%d%%\n", k);
@@ -334,13 +342,14 @@ module system_tb;
       end
       $write("%d%%\n", 100);
       $write("UART transfer complete.\n");
+
+      $fclose(fp);
    endtask
 
    task cpu_receiveFile;
       reg [`DATA_W-1:0] file_size;
-      reg [31:0]        word;
+      reg [7:0]         char;
       integer           fp;
-      integer           idx;
       integer           i, k;
 
       fp = $fopen("out.bin", "wb");
@@ -358,15 +367,9 @@ module system_tb;
       $write("file_size = %d\n", file_size);
       
       k = 0;
-      idx = 0;
       for(i = 0; i < file_size; i++) begin
-	     cpu_getchar(cpu_char);
-         word[8*(idx++) +: 8] = cpu_char;
-
-         if (idx == 4) begin
-            idx = 0;
-            $fwrite(fp, "%u", word);
-         end
+	     cpu_getchar(char);
+         $fwrite(fp,"%c", char);
 
          if(i/4 == (file_size/4*k/100)) begin
             $write("%d%%\n", k);
@@ -376,7 +379,6 @@ module system_tb;
       $write("%d%%\n", 100);
       $write("UART transfer complete.\n");
 
-      //$fwrite(fp, buffer);
       $fclose(fp);
    endtask
    
@@ -418,10 +420,11 @@ module system_tb;
    endtask
 
    task cpu_getline;
-      do begin 
-         cpu_getchar(cpu_char);
-         $write("%c", cpu_char);
-      end while (cpu_char != "\n");
+      reg [7:0] char;
+      do begin
+         cpu_getchar(char);
+         $write("%c", char);
+      end while (char != "\n");
    endtask
 
    
