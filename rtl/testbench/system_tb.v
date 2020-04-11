@@ -17,6 +17,7 @@ module system_tb;
    reg [7:0] 	rxread_reg = 8'b0;
    reg [2:0]    uart_addr;
    reg          uart_valid;
+   wire         uart_ready;
    reg          uart_wr;
    reg [31:0]   uart_di;
    reg [31:0]   uart_do;
@@ -199,6 +200,7 @@ module system_tb;
 		               .rst       (reset),
                        
 		               .valid     (uart_valid),
+		               .ready     (uart_ready),
 		               .address   (uart_addr),
 		               .write     (uart_wr),
 		               .data_in   (uart_di),

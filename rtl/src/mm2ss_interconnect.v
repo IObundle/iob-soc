@@ -1,6 +1,8 @@
 `timescale 1ns / 1ps
 `include "system.vh"
 
+`define N_MASTERS 2
+
 module mm2ss_interconnect
    (
     //masters interface

@@ -19,6 +19,8 @@ module int_mem
    input [3:0]                 wstrb
    );
               
+   //copy completion flag
+   reg [2:0]               copy_done;
    assign busy = ~copy_done[2];
 
    //
@@ -32,8 +34,6 @@ module int_mem
    reg [`BOOTROM_ADDR_W-3:0]    rom_addr;
    reg [`BOOTROM_ADDR_W-3:0]    rom_addr_reg;
 
-   //completion flag
-   reg [2:0]               copy_done;
 
    //if booting copy boot rom to ram
    always @(posedge clk, posedge rst)

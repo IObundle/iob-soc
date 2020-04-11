@@ -82,6 +82,8 @@ module system (
 
    wire                             la_read, la_write;
    wire [3:0]                       la_wstrb;
+   wire [`DATA_W-1:0]               la_wdata;
+   wire [`ADDR_W-1:0]               la_addr;
 
    wire                             int_mem_busy;
    
@@ -99,18 +101,18 @@ module system (
 		  //memory interface
 		  .mem_instr     (m_instr),
 		  .mem_rdata     (m_rdata),
-`ifndef USE_LA_IF
+
 		  .mem_valid     (m_valid),
 		  .mem_addr      (m_addr),
 		  .mem_wdata     (m_wdata),
 		  .mem_wstrb     (m_wstrb),
-`else
+
                   .mem_la_read   (la_read),
                   .mem_la_write  (la_write),                  
-                  .mem_la_addr   (m_addr),
-                  .mem_la_wdata  (m_wdata),
+                  .mem_la_addr   (la_addr),
+                  .mem_la_wdata  (la_wdata),
                   .mem_la_wstrb  (la_wstrb),
-`endif
+
 		  .mem_ready     (m_ready),
                   // Pico Co-Processor PCPI
                   .pcpi_valid    (),
@@ -130,6 +132,8 @@ module system (
                   );
 
 `ifdef USE_LA_IF
+   assign m_addr = la_addr;
+   assign m_wdata = la_wdata;
    assign m_valid = la_read | la_write;
    assign m_wstrb = la_wstrb & {4{la_write}};
 `endif
@@ -181,6 +185,10 @@ module system (
    //
    // INTERNAL SRAM MEMORY
    //
+   wire [`DATA_W-1:0]                     s_rdata[`N_SLAVES-1:0];
+   wire [`N_SLAVES*`DATA_W-1:0]           s_rdata_concat;
+   wire [`N_SLAVES-1:0]                   s_valid;
+   wire [`N_SLAVES-1:0]                   s_ready;
    
    int_mem int_mem0 (
 	             .clk                (clk ),
@@ -294,11 +302,6 @@ module system (
    //
    // INTERCONNECT
    //
-   
-   wire [`DATA_W-1:0]                     s_rdata[`N_SLAVES-1:0];
-   wire [`N_SLAVES*`DATA_W-1:0]           s_rdata_concat;
-   wire [`N_SLAVES-1:0]                   s_valid;
-   wire [`N_SLAVES-1:0]                   s_ready;
    
    //concatenate slave read data signals to input in interconnect
    genvar                                 i;
