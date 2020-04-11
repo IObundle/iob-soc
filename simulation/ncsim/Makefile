@@ -11,7 +11,8 @@ PYTHON_DIR := ../../software/python
 RTL_DIR := ../../rtl
 RISCV_DIR := ../../submodules/iob-rv32
 UART_DIR := ../../submodules/iob-uart
-FIFO_DIR := ../../submodules/fifo
+FIFO_DIR := ../../submodules/iob-mem/afifo
+MEM_DIR := ../../submodules/iob-mem/sp_mem_be
 CACHE_DIR := ../../submodules/iob-cache
 AXI_RAM := ../../submodules/axi-mem
 
@@ -25,7 +26,7 @@ HW_DEFINE += -define UART_BAUD_RATE=$(BAUD)
 HW_DEFINE += -define UART_CLK_FREQ=$(FREQ)
 
 #hardware sources
-VSRC =  $(RISCV_DIR)/picorv32.v $(UART_DIR)/rtl/src/iob-uart.v $(FIFO_DIR)/afifo.v $(RTL_DIR)/testbench/system_tb.v  $(RTL_DIR)/src/*.v $(RTL_DIR)/src/memory/behav/*.v $(CACHE_DIR)/rtl/src/gen_mem_reg.v $(CACHE_DIR)/rtl/src/iob-cache.v $(AXI_RAM)/rtl/axi_ram.v
+VSRC =  $(RISCV_DIR)/picorv32.v $(UART_DIR)/rtl/src/iob-uart.v $(FIFO_DIR)/afifo.v $(MEM_DIR)/iob_sp_mem_be.v $(RTL_DIR)/testbench/system_tb.v  $(RTL_DIR)/src/*.v $(RTL_DIR)/src/memory/*.v $(CACHE_DIR)/rtl/src/gen_mem_reg.v $(CACHE_DIR)/rtl/src/iob-cache.v $(AXI_RAM)/rtl/axi_ram.v
 
 #simulator flags
 CFLAGS = -errormax 15 -status -update -linedebug -sv $(HW_DEFINE) $(HW_INCLUDE)
@@ -39,16 +40,13 @@ all: console.vh firmware boot $(VSRC)
 #make firmware
 firmware:
 	make -C $(FIRM_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
-	cp $(FIRM_DIR)/firmware.hex .
+	cp $(FIRM_DIR)/firmware.hex firmware.dat
 	cp $(FIRM_DIR)/firmware.bin .
-	$(PYTHON_DIR)/hex_split.py firmware
 
 #make boot loader
 boot:
 	make -C $(BOOT_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
-	cp $(BOOT_DIR)/boot.hex .
-	$(PYTHON_DIR)/hex_split.py boot
-	cp boot.hex boot.dat
+	cp $(BOOT_DIR)/boot.hex boot.dat
 
 console.vh: ../../software/ld-sw/console.h
 	sed "s/\#/\`/;s/0x/8\'h/" $^ | sed "/CONSOLE_H\|endif/d" > $@
