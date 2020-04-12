@@ -84,9 +84,6 @@ module system (
    wire [3:0]                       la_wstrb;
    wire [`DATA_W-1:0]               la_wdata;
    wire [`ADDR_W-1:0]               la_addr;
-
-   wire                             int_mem_busy;
-   
    
    picorv32 #(
               //.ENABLE_PCPI(1), //enables the following 2 parameters
@@ -96,7 +93,7 @@ module system (
 	      )
    picorv32_core (
 		  .clk           (clk),
-		  .resetn        (~reset_int & ~int_mem_busy),
+		  .resetn        (~reset_int),
 		  .trap          (trap),
 		  //memory interface
 		  .mem_instr     (m_instr),
@@ -141,27 +138,32 @@ module system (
    //select memory  according to addr msb, boot status and ddr use
 
    reg                              int_mem_valid;
-   reg                              int_mem_ready;
-   reg [`DATA_W-1:0]                int_mem_rdata;
+   wire                             int_mem_ready;
+   wire [`DATA_W-1:0]               int_mem_rdata;
    
+`ifdef USE_DDR
    reg                              ext_mem_valid;
    reg                              ext_mem_ready;
    reg [`DATA_W-1:0]                ext_mem_rdata;
+`endif
    
    reg                              p_valid;
-   reg                              p_ready;
-   reg [`DATA_W-1:0]                p_rdata;
+   wire                             p_ready;
+   wire [`DATA_W-1:0]               p_rdata;
    
    wire                             boot;
    
    always @* begin
       //assume internal memory is being addressed
       int_mem_valid = m_valid;
-      ext_mem_valid = 1'b0;
       p_valid = 1'b0;
 
       m_rdata = int_mem_rdata;
       m_ready = int_mem_ready;
+
+`ifdef USE_DDR
+      ext_mem_valid = 1'b0;
+`endif
 
       if(m_addr[`ADDR_W-1]) begin
          //peripherals are being addressed
@@ -193,10 +195,12 @@ module system (
    int_mem int_mem0 (
 	             .clk                (clk ),
                      .rst                (reset_int),
-                     .busy               (int_mem_busy),
-                     .boot               (boot),
+                     .boot               (boot), 
+`ifndef USE_DDR
+ `ifdef USE_BOOT
                      .pvalid             (s_valid[`SRAM_BASE]),
-      
+ `endif
+`endif
                      //cpu interface
 	             .addr               (m_addr[`BOOTRAM_ADDR_W-1:2]),
                      .rdata              (int_mem_rdata),
@@ -206,8 +210,12 @@ module system (
                      .ready              (int_mem_ready)
 	             );
    
+`ifndef USE_DDR
+ `ifdef USE_BOOT
    assign s_ready[`SRAM_BASE] = int_mem_ready;
    assign s_rdata[`SRAM_BASE] = int_mem_rdata;
+ `endif
+`endif
 
    
    //
@@ -314,7 +322,7 @@ module system (
 
 
 
-   iob_interconnect intercon
+   sm2ms_interconnect intercon
      (
       // master interface
       .m_addr  (m_addr[`ADDR_W-2 -: `N_SLAVES_W]),

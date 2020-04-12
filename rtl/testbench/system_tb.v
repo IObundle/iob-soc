@@ -220,7 +220,7 @@ module system_tb;
    axi_ram 
  #(
             `ifndef USE_BOOT
-	      .FILE("firmware.hex"),
+	      .FILE("firmware.dat"),
               .FILE_SIZE(2**(`MAINRAM_ADDR_W-2)),
             `endif
               .DATA_WIDTH (`DATA_W),

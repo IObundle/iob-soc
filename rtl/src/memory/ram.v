@@ -18,7 +18,7 @@ module ram #(
           output reg           ready
 	  );
    
-   parameter file_name = FILE;
+   parameter file_name = (FILE == "none")? "none": {FILE, ".dat"};
 
    iob_sp_mem_be  #(
                   .FILE(file_name),

@@ -7,7 +7,7 @@ module sm2ms_interconnect
     input [`N_SLAVES_W-1:0]       m_addr,
     input                         m_valid,
     output [`DATA_W-1:0]          m_rdata,
-    output reg                    m_ready,
+    output                        m_ready,
 
     //slaves interface
     output reg [`N_SLAVES-1:0]    s_valid,

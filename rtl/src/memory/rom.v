@@ -2,8 +2,8 @@
 `timescale 1ns / 1ps
 
 module rom #(
-	     parameter ADDR_W = 9,
-             parameter FILE = "rom"	          
+	     parameter ADDR_W = 10,
+             parameter FILE = "boot.dat"
 	     )
    (
     input                    clk,
@@ -25,6 +25,6 @@ module rom #(
    // Operate the ROM
    always @(posedge clk)
      if(valid)
-       rdata = rom[addr];
+       rdata <= rom[addr];
 
 endmodule
