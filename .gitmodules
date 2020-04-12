@@ -11,9 +11,9 @@
 [submodule "submodules/iob-cache"]
 	path = submodules/iob-cache
 	url = git@bitbucket.org:jjts/iob-cache.git
-[submodule "submodules/fifo"]
-	path = submodules/fifo
-	url = git@bitbucket.org:jjts/iob-fifo.git
 [submodule "submodules/axi-mem"]
 	path = submodules/axi-mem
 	url = git@github.com:jjts/verilog-axi.git
+[submodule "submodules/iob-mem"]
+	path = submodules/iob-mem
+	url = git@bitbucket.org:jjts/iob-mem.git

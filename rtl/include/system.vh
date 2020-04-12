@@ -10,14 +10,15 @@
 `define MAINRAM_ADDR_W 15
 
 // SLAVES
-`define N_SLAVES 4
+`define N_SLAVES 2
 //bits reserved to identify slave
-`define N_SLAVES_W 2
+`define N_SLAVES_W 1
+
 //peripheral address prefixes
 `define UART_BASE 0
 `define SOFT_RESET_BASE 1
+`define SRAM_BASE 2
 `define DDR_BASE 2
-`define SRAM_BASE 3
 
 //use CPU lookahead interface
 //`define USE_LA_IF

@@ -82,9 +82,8 @@ module system (
 
    wire                             la_read, la_write;
    wire [3:0]                       la_wstrb;
-
-   wire                             int_mem_busy;
-   
+   wire [`DATA_W-1:0]               la_wdata;
+   wire [`ADDR_W-1:0]               la_addr;
    
    picorv32 #(
               //.ENABLE_PCPI(1), //enables the following 2 parameters
@@ -94,23 +93,23 @@ module system (
 	      )
    picorv32_core (
 		  .clk           (clk),
-		  .resetn        (~reset_int & ~int_mem_busy),
+		  .resetn        (~reset_int),
 		  .trap          (trap),
 		  //memory interface
 		  .mem_instr     (m_instr),
 		  .mem_rdata     (m_rdata),
-`ifndef USE_LA_IF
+
 		  .mem_valid     (m_valid),
 		  .mem_addr      (m_addr),
 		  .mem_wdata     (m_wdata),
 		  .mem_wstrb     (m_wstrb),
-`else
+
                   .mem_la_read   (la_read),
                   .mem_la_write  (la_write),                  
-                  .mem_la_addr   (m_addr),
-                  .mem_la_wdata  (m_wdata),
+                  .mem_la_addr   (la_addr),
+                  .mem_la_wdata  (la_wdata),
                   .mem_la_wstrb  (la_wstrb),
-`endif
+
 		  .mem_ready     (m_ready),
                   // Pico Co-Processor PCPI
                   .pcpi_valid    (),
@@ -130,6 +129,8 @@ module system (
                   );
 
 `ifdef USE_LA_IF
+   assign m_addr = la_addr;
+   assign m_wdata = la_wdata;
    assign m_valid = la_read | la_write;
    assign m_wstrb = la_wstrb & {4{la_write}};
 `endif
@@ -137,27 +138,32 @@ module system (
    //select memory  according to addr msb, boot status and ddr use
 
    reg                              int_mem_valid;
-   reg                              int_mem_ready;
-   reg [`DATA_W-1:0]                int_mem_rdata;
+   wire                             int_mem_ready;
+   wire [`DATA_W-1:0]               int_mem_rdata;
    
+`ifdef USE_DDR
    reg                              ext_mem_valid;
    reg                              ext_mem_ready;
    reg [`DATA_W-1:0]                ext_mem_rdata;
+`endif
    
    reg                              p_valid;
-   reg                              p_ready;
-   reg [`DATA_W-1:0]                p_rdata;
+   wire                             p_ready;
+   wire [`DATA_W-1:0]               p_rdata;
    
    wire                             boot;
    
    always @* begin
       //assume internal memory is being addressed
       int_mem_valid = m_valid;
-      ext_mem_valid = 1'b0;
       p_valid = 1'b0;
 
       m_rdata = int_mem_rdata;
       m_ready = int_mem_ready;
+
+`ifdef USE_DDR
+      ext_mem_valid = 1'b0;
+`endif
 
       if(m_addr[`ADDR_W-1]) begin
          //peripherals are being addressed
@@ -181,14 +187,20 @@ module system (
    //
    // INTERNAL SRAM MEMORY
    //
+   wire [`DATA_W-1:0]                     s_rdata[`N_SLAVES-1:0];
+   wire [`N_SLAVES*`DATA_W-1:0]           s_rdata_concat;
+   wire [`N_SLAVES-1:0]                   s_valid;
+   wire [`N_SLAVES-1:0]                   s_ready;
    
    int_mem int_mem0 (
 	             .clk                (clk ),
                      .rst                (reset_int),
-                     .busy               (int_mem_busy),
-                     .boot               (boot),
+                     .boot               (boot), 
+`ifndef USE_DDR
+ `ifdef USE_BOOT
                      .pvalid             (s_valid[`SRAM_BASE]),
-      
+ `endif
+`endif
                      //cpu interface
 	             .addr               (m_addr[`BOOTRAM_ADDR_W-1:2]),
                      .rdata              (int_mem_rdata),
@@ -198,8 +210,12 @@ module system (
                      .ready              (int_mem_ready)
 	             );
    
+`ifndef USE_DDR
+ `ifdef USE_BOOT
    assign s_ready[`SRAM_BASE] = int_mem_ready;
    assign s_rdata[`SRAM_BASE] = int_mem_rdata;
+ `endif
+`endif
 
    
    //
@@ -295,11 +311,6 @@ module system (
    // INTERCONNECT
    //
    
-   wire [`DATA_W-1:0]                     s_rdata[`N_SLAVES-1:0];
-   wire [`N_SLAVES*`DATA_W-1:0]           s_rdata_concat;
-   wire [`N_SLAVES-1:0]                   s_valid;
-   wire [`N_SLAVES-1:0]                   s_ready;
-   
    //concatenate slave read data signals to input in interconnect
    genvar                                 i;
    generate 
@@ -311,7 +322,7 @@ module system (
 
 
 
-   iob_interconnect intercon
+   sm2ms_interconnect intercon
      (
       // master interface
       .m_addr  (m_addr[`ADDR_W-2 -: `N_SLAVES_W]),

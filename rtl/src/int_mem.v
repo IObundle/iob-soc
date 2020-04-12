@@ -7,8 +7,12 @@ module int_mem
    input                       clk,
    input                       rst,
    input                       boot,
-   output                      busy,
+   
+`ifndef USE_DDR
+ `ifdef USE_BOOT
    input                       pvalid,
+ `endif
+`endif
 
    //cpu interface
    input                       valid,
@@ -19,7 +23,10 @@ module int_mem
    input [3:0]                 wstrb
    );
               
-   assign busy = ~copy_done[2];
+
+`ifdef USE_BOOT
+   //copy completion flag
+   reg [2:0]               copy_done;
 
    //
    // COPY ROM TO RAM
@@ -32,8 +39,6 @@ module int_mem
    reg [`BOOTROM_ADDR_W-3:0]    rom_addr;
    reg [`BOOTROM_ADDR_W-3:0]    rom_addr_reg;
 
-   //completion flag
-   reg [2:0]               copy_done;
 
    //if booting copy boot rom to ram
    always @(posedge clk, posedge rst)
@@ -55,8 +60,7 @@ module int_mem
    //BOOT ROM
    wire [`DATA_W-1:0] rom_rdata;
    rom #(
-	 .ADDR_W(`BOOTROM_ADDR_W-2),
-         .FILE("boot.dat")
+	 .ADDR_W(`BOOTROM_ADDR_W-2)
 	 )
    boot_rom (
 	     .clk           (clk ),
@@ -65,9 +69,14 @@ module int_mem
 	     .rdata         (rom_rdata)
 	     );
 
+`endif
    
    //RAM
+`ifdef USE_BOOT
    wire                      ram_valid = ~copy_done[0] | valid;
+`else
+   wire                      ram_valid = valid;
+`endif   
    wire                      ram_ready;
 
    reg [`BOOTRAM_ADDR_W-3:0] ram_addr;
@@ -75,19 +84,27 @@ module int_mem
    reg [3:0]                 ram_wstrb;
  
    //select ram address and write data 
-   always @*
-       if(copy_done[1]) begin
-          ram_addr = addr;
-          ram_wdata = wdata;
-          ram_wstrb = wstrb;
-          if(boot && !pvalid)
-            ram_addr = addr + BOOTRAM_ADDR[`BOOTRAM_ADDR_W-3:0]; //note that parameter BOOTRAM_ADDR has 32 bits
-       end else begin
-          ram_addr = rom_addr_reg + BOOTRAM_ADDR[`BOOTRAM_ADDR_W-3:0];
-          ram_wdata = rom_rdata;
-          ram_wstrb = 4'hF;
+   always @* begin
+      ram_addr = addr;
+      ram_wdata = wdata;
+      ram_wstrb = wstrb;
+      
+ `ifdef USE_BOOT
+      if(copy_done[1]) begin
+
+  `ifndef USE_DDR
+         if(!pvalid)   
+  `endif
+           if(boot)
+             ram_addr = addr + BOOTRAM_ADDR[`BOOTRAM_ADDR_W-3:0]; //note that parameter BOOTRAM_ADDR has 32 bits
+      end else begin
+         ram_addr = rom_addr_reg + BOOTRAM_ADDR[`BOOTRAM_ADDR_W-3:0];
+         ram_wdata = rom_rdata;
+         ram_wstrb = 4'hF;
        end
-   
+ `endif
+   end
+      
    ram #(
 	 .ADDR_W(`BOOTRAM_ADDR_W-2),
 `ifdef USE_BOOT
@@ -105,11 +122,22 @@ module int_mem
 	     .addr          (ram_addr),
 	     .wstrb         (ram_wstrb),
 	     .rdata         (rdata),
+`ifdef USE_DDR
+             .valid         (ram_valid),
+`elsif USE_BOOT
              .valid         (ram_valid | pvalid),
+`else 
+             .valid         (ram_valid),
+`endif
+
              .ready         (ram_ready)
 	     );
 
    //generate ready signal
-   assign ready = copy_done[2] & ram_ready;
+`ifdef USE_BOOT
+      assign ready = copy_done[2] & ram_ready;
+`else 
+      assign ready = ram_ready;
+`endif
 
 endmodule

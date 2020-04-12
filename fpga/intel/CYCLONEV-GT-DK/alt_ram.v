@@ -22,7 +22,6 @@ module ram #(
    // byte memories
    // byte 0
    parameter file_name_0 = (FILE == "none")? "none": {FILE, "_0", ".dat"};
-//   parameter file_name_0 = {FILE, "_0", ".dat"};
    iob_1p_mem  #(
                   .FILE(file_name_0),
                   .DATA_W(8),
@@ -39,8 +38,7 @@ module ram #(
 
    //byte 1
    parameter file_name_1 = (FILE == "none")? "none": {FILE, "_1", ".dat"};
-//     parameter file_name_1 = {FILE, "_1", ".dat"};
- iob_1p_mem  #(
+   iob_1p_mem  #(
                   .FILE(file_name_1),
                   .DATA_W(8),
                   .ADDR_W(ADDR_W))
@@ -55,8 +53,7 @@ module ram #(
 
    // byte 2
    parameter file_name_2 = (FILE == "none")? "none": {FILE, "_2", ".dat"};
-//     parameter file_name_2 = {FILE, "_2", ".dat"};
- iob_1p_mem  #(
+   iob_1p_mem  #(
                   .FILE(file_name_2),
                   .DATA_W(8),
                   .ADDR_W(ADDR_W))
@@ -71,8 +68,7 @@ module ram #(
 
    //byte 3
    parameter file_name_3 = (FILE == "none")? "none": {FILE, "_3", ".dat"};
-//     parameter file_name_3 = {FILE, "_3", ".dat"};
- iob_1p_mem  #(
+   iob_1p_mem  #(
                   .FILE(file_name_3),
                   .DATA_W(8),
                   .ADDR_W(ADDR_W))
