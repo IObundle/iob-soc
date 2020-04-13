@@ -16,8 +16,16 @@ git submodule update --init --recursive
 
 ###Prerequisites
 
+For Ubuntu OS and its variants:
+
 ```
 sudo apt-get install autoconf automake autotools-dev curl python3 libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev
+```
+
+For CentOS and its variants:
+
+```
+sudo yum install autoconf automake python3 libmpc-devel mpfr-devel gmp-devel gawk  bison flex texinfo patchutils gcc gcc-c++ zlib-devel expat-devel
 ```
 
 ###Instalation
@@ -31,6 +39,15 @@ sudo make
 
 ```
 path/to/riscv/riscv64-unknown-elf-gcc -march=rv32im -mabi=ilp32 <C sources> -o <exec>
+```
+
+###For support 32-bit Applications
+
+Use symbolic links:
+
+```
+sudo ln -s riscv64-unknown-elf-gcc riscv32-unknown-elf-gcc
+sudo ln -s riscv64-unknown-elf-objcopy riscv32-unknown-elf-objcopy
 ```
 
 ## Update submodules if you have not
