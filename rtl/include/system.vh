@@ -3,16 +3,16 @@
 //
 
 //Optional memories (passed as command line macro)
-//`define USE_BOOT
-//`define USE_DDR
+`define USE_BOOT
+`define USE_DDR
 
 //main memory address space (log2 of byte size)
 `define MAINRAM_ADDR_W 15
 
 // SLAVES
-`define N_SLAVES 2
+`define N_SLAVES 3
 //bits reserved to identify slave
-`define N_SLAVES_W 1
+`define N_SLAVES_W 2
 
 //peripheral address prefixes
 `define UART_BASE 0

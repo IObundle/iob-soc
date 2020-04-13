@@ -176,7 +176,11 @@ module system (
       //ddr is being addressed
       else if(!boot) begin
          int_mem_valid = 1'b0;
+ `ifdef USE_BOOT
+         ext_mem_valid = m_valid | s_valid[`DDR_BASE];
+ `else
          ext_mem_valid = m_valid;
+ `endif
          m_rdata = ext_mem_rdata;
          m_ready = ext_mem_ready;
       end
@@ -236,7 +240,7 @@ module system (
 	  .addr  (m_addr[`MAINRAM_ADDR_W : 2]),
 	  .wstrb (m_wstrb),
 	  .rdata (ext_mem_rdata),
-	  .valid (ext_mem_valid | s_valid[`DDR_BASE]),
+	  .valid (ext_mem_valid),
 	  .ready (ext_mem_ready),
 	  .instr (m_instr),
 
@@ -295,8 +299,10 @@ module system (
    assign m_axi_araddr[`ADDR_W-1:`MAINRAM_ADDR_W] = {(`ADDR_W-`MAINRAM_ADDR_W){1'b0}};
    assign m_axi_awaddr[`ADDR_W-1:`MAINRAM_ADDR_W] = {(`ADDR_W-`MAINRAM_ADDR_W){1'b0}};
 
+ `ifdef USE_BOOT
    assign s_ready[`DDR_BASE] = ext_mem_ready;
    assign s_rdata[`DDR_BASE] = ext_mem_rdata;
+ `endif
    
 `endif
 
