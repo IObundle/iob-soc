@@ -72,68 +72,36 @@ module system (
    //
    //  CPU
    //
-   wire [`ADDR_W-1:0]               m_addr;
-   wire [`DATA_W-1:0]               m_wdata;
-   wire [3:0]                       m_wstrb;
-   reg [`DATA_W-1:0]                m_rdata;
-   wire                             m_valid;
-   reg                              m_ready;
-   wire                             m_instr;
-
-   wire                             la_read, la_write;
-   wire [3:0]                       la_wstrb;
-   wire [`DATA_W-1:0]               la_wdata;
-   wire [`ADDR_W-1:0]               la_addr;
+   reg 				    m_i_ready, m_d_ready;
+   wire [`ADDR_W-1:0] 		    m_i_addr, m_d_addr;
+   reg [`DATA_W-1:0] 		    m_i_data, m_d_rdata;
+   wire [`DATA_W-1:0] 		    m_d_wdata;
+   wire [3:0] 			    m_d_wstrb;
+   wire 			    m_d_valid;
+   wire 			    HLT;
    
-   picorv32 #(
-              //.ENABLE_PCPI(1), //enables the following 2 parameters
-	      .BARREL_SHIFTER(1),
-	      .ENABLE_FAST_MUL(1),
-	      .ENABLE_DIV(1)
-	      )
-   picorv32_core (
-		  .clk           (clk),
-		  .resetn        (~reset_int),
-		  .trap          (trap),
-		  //memory interface
-		  .mem_instr     (m_instr),
-		  .mem_rdata     (m_rdata),
+   cpu_wrapper cpu_wrapper (
+			    .clk (clk),
+			    .rst (reset_int),
+      
+			    .trap (trap),
+			    .HLT (HLT),
 
-		  .mem_valid     (m_valid),
-		  .mem_addr      (m_addr),
-		  .mem_wdata     (m_wdata),
-		  .mem_wstrb     (m_wstrb),
+			    //memory interface
 
-                  .mem_la_read   (la_read),
-                  .mem_la_write  (la_write),                  
-                  .mem_la_addr   (la_addr),
-                  .mem_la_wdata  (la_wdata),
-                  .mem_la_wstrb  (la_wstrb),
+			    //instruction bus
+			    .i_ready (m_i_ready),
+			    .i_addr (m_i_addr),
+			    .i_data (m_i_data),
 
-		  .mem_ready     (m_ready),
-                  // Pico Co-Processor PCPI
-                  .pcpi_valid    (),
-                   .pcpi_insn    (),
-                   .pcpi_rs1     (),
-                   .pcpi_rs2     (),
-                   .pcpi_wr      (1'b0),
-                   .pcpi_rd      (32'd0),
-                   .pcpi_wait    (1'b0),
-                   .pcpi_ready   (1'b0),
-                   // IRQ
-                   .irq          (32'd0),
-                   .eoi          (),
-                   .trace_valid  (),
-                   .trace_data   ()
-                  
-                  );
-
-`ifdef USE_LA_IF
-   assign m_addr = la_addr;
-   assign m_wdata = la_wdata;
-   assign m_valid = la_read | la_write;
-   assign m_wstrb = la_wstrb & {4{la_write}};
-`endif
+			    //data bus
+			    .d_ready (m_d_ready),
+			    .d_addr (m_d_addr),
+			    .d_rdata (m_d_rdata),
+			    .d_wdata (m_d_wdata),
+			    .d_wstrb (m_d_wstrb),
+			    .d_valid (m_d_valid)
+			    );   
    
    //select memory  according to addr msb, boot status and ddr use
 
@@ -155,22 +123,22 @@ module system (
    
    always @* begin
       //assume internal memory is being addressed
-      int_mem_valid = m_valid;
+      int_mem_valid = m_d_valid;
       p_valid = 1'b0;
 
-      m_rdata = int_mem_rdata;
-      m_ready = int_mem_ready;
+      m_d_rdata = int_mem_rdata;
+      m_d_ready = int_mem_ready;
 
 `ifdef USE_DDR
       ext_mem_valid = 1'b0;
 `endif
 
-      if(m_addr[`ADDR_W-1]) begin
+      if(m_d_addr[`ADDR_W-1]) begin
          //peripherals are being addressed
          int_mem_valid = 1'b0;
-         p_valid = m_valid;
-         m_rdata = p_rdata;
-         m_ready = p_ready;
+         p_valid = m_d_valid;
+         m_d_rdata = p_rdata;
+         m_d_ready = p_ready;
       end
 `ifdef USE_DDR
       //ddr is being addressed
@@ -206,10 +174,10 @@ module system (
  `endif
 `endif
                      //cpu interface
-	             .addr               (m_addr[`BOOTRAM_ADDR_W-1:2]),
+	             .addr               (m_d_addr[`BOOTRAM_ADDR_W-1:2]),
                      .rdata              (int_mem_rdata),
-	             .wdata              (m_wdata),
-	             .wstrb              (m_wstrb),
+	             .wdata              (m_d_wdata),
+	             .wstrb              (m_d_wstrb),
                      .valid              (int_mem_valid),
                      .ready              (int_mem_ready)
 	             );
@@ -331,7 +299,7 @@ module system (
    sm2ms_interconnect intercon
      (
       // master interface
-      .m_addr  (m_addr[`ADDR_W-2 -: `N_SLAVES_W]),
+      .m_addr  (m_d_addr[`ADDR_W-2 -: `N_SLAVES_W]),
       .m_rdata (p_rdata),
       .m_valid (p_valid),
       .m_ready (p_ready),
@@ -355,9 +323,9 @@ module system (
 		 //cpu i/f
 		 .valid     (s_valid[`UART_BASE]),
 		 .ready     (s_ready[`UART_BASE]),
-		 .address   (m_addr[4:2]),
-		 .write     (m_wstrb != 0),                 
-		 .data_in   (m_wdata),
+		 .address   (m_d_addr[4:2]),
+		 .write     (m_d_wstrb != 0),                 
+		 .data_in   (m_d_wdata),
 		 .data_out  (s_rdata[`UART_BASE]),
                  
 		 //serial i/f
@@ -376,8 +344,8 @@ module system (
                      .soft_rst(soft_reset),
                      .boot(boot),
       
-                     .wdata(m_wdata[0]),
-                     .write(m_wstrb != 4'd0),
+                     .wdata(m_d_wdata[0]),
+                     .write(m_d_wstrb != 4'd0),
                      .rdata(s_rdata[`SOFT_RESET_BASE]),
                      .valid(s_valid[`SOFT_RESET_BASE]),
                      .ready(s_ready[`SOFT_RESET_BASE])
