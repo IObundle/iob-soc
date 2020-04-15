@@ -4,23 +4,28 @@
 
 module int_mem
   (
-   input                       clk,
-   input                       rst,
-   input                       boot,
+   input 		       clk,
+   input 		       rst,
+   input 		       boot,
    
 `ifndef USE_DDR
  `ifdef USE_BOOT
-   input                       pvalid,
+   input 		       pvalid,
  `endif
 `endif
 
    //cpu interface
-   input                       valid,
-   output                      ready,
+   input [`BOOTRAM_ADDR_W-3:0] i_addr,
+   input [3:0] 		       i_en,
+   output [`DATA_W-1:0]        i_data,
+   output 		       i_ready,
+
+   input 		       valid,
+   output 		       ready,
    output [`DATA_W-1:0]        rdata,
    input [`BOOTRAM_ADDR_W-3:0] addr,
-   input [`DATA_W-1:0]         wdata,
-   input [3:0]                 wstrb
+   input [`DATA_W-1:0] 	       wdata,
+   input [3:0] 		       wstrb
    );
               
 
@@ -78,8 +83,11 @@ module int_mem
    wire                      ram_valid = valid;
 `endif   
    wire                      ram_ready;
+   wire 		     ram_i_ready;
 
    reg [`BOOTRAM_ADDR_W-3:0] ram_addr;
+   reg [`BOOTRAM_ADDR_W-3:0] ram_i_addr;
+
    reg [`DATA_W-1:0]         ram_wdata;
    reg [3:0]                 ram_wstrb;
  
@@ -88,6 +96,8 @@ module int_mem
       ram_addr = addr;
       ram_wdata = wdata;
       ram_wstrb = wstrb;
+
+      ram_i_addr = i_addr;
       
  `ifdef USE_BOOT
       if(copy_done[1]) begin
@@ -95,8 +105,10 @@ module int_mem
   `ifndef USE_DDR
          if(!pvalid)   
   `endif
-           if(boot)
+           if(boot) begin
+	      ram_i_addr = i_addr + BOOTRAM_ADDR[`BOOTRAM_ADDR_W-3:0];
              ram_addr = addr + BOOTRAM_ADDR[`BOOTRAM_ADDR_W-3:0]; //note that parameter BOOTRAM_ADDR has 32 bits
+	   end
       end else begin
          ram_addr = rom_addr_reg + BOOTRAM_ADDR[`BOOTRAM_ADDR_W-3:0];
          ram_wdata = rom_rdata;
@@ -118,6 +130,12 @@ module int_mem
    boot_ram (
 	     .clk           (clk),
              .rst           (rst),
+
+	     .i_addr        (ram_i_addr),
+	     .i_en          (i_en),
+	     .i_data        (i_data),
+	     .i_ready       (ram_i_ready),
+	     
 	     .wdata         (ram_wdata),
 	     .addr          (ram_addr),
 	     .wstrb         (ram_wstrb),
@@ -135,9 +153,12 @@ module int_mem
 
    //generate ready signal
 `ifdef USE_BOOT
-      assign ready = copy_done[2] & ram_ready;
+   assign ready = copy_done[2] & ram_ready;
+   assign i_ready = copy_done[2] & ram_i_ready;
+   
 `else 
-      assign ready = ram_ready;
+   assign ready = ram_ready;
+   assign i_ready = ram_i_ready;
 `endif
 
 endmodule

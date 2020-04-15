@@ -46,12 +46,13 @@ module cpu_wrapper (
 
 `ifdef PICORV32
    assign d_valid = m_valid;
-   assign m_ready = d_ready; //m_instr ? i_ready : d_ready;
+   assign m_ready = m_instr ? i_ready : d_ready;
+
    assign i_addr = m_addr;
    assign d_addr = m_addr;
    assign d_wdata = m_wdata;
    assign d_wstrb = m_wstrb;
-   assign m_rdata = d_rdata; //m_instr? i_data : d_rdata;
+   assign m_rdata = m_instr? i_data : d_rdata;
 
    `ifndef USE_LA_IF
    assign HLT = ~(m_instr && m_valid); //HLT stops instruction read

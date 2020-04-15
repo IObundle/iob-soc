@@ -6,16 +6,21 @@ module ram #(
              parameter FILE = "none"	          
 		     )
    (      
-          input                clk,
-          input                rst,
+          input 	       clk,
+          input 	       rst,
 
           //native interface 
+	  input [ADDR_W-1:0]   i_addr,
+	  input [3:0] 	       i_en,
+	  output [`DATA_W-1:0] i_data,
+	  output reg 	       i_ready, 
+
           input [`DATA_W-1:0]  wdata,
           input [ADDR_W-1:0]   addr,
-          input [3:0]          wstrb,
+          input [3:0] 	       wstrb,
           output [`DATA_W-1:0] rdata,
-          input                valid,
-          output reg           ready
+          input 	       valid,
+          output reg 	       ready
 	  );
    
    // byte memories
@@ -35,11 +40,11 @@ module ram #(
       .doutA      (rdata[7:0]),
       .dinA       (wdata[7:0]),
       .clkB           (clk),
-      .enaB             (1'b0),
-      .addrB          (addr),
+      .enaB             (i_en[0]),
+      .addrB          (i_addr),
       .weB            (1'b0),
       .dinB           (wdata[7:0]),
-      .doutB          ()
+      .doutB          (i_data[7:0])
       );
 
    //byte 1
@@ -58,11 +63,11 @@ module ram #(
       .doutA      (rdata[15:8]),
       .dinA       (wdata[15:8]),
       .clkB           (clk),
-      .enaB             (1'b0),
-      .addrB          (addr),
+      .enaB             (i_en[1]),
+      .addrB          (i_addr),
       .weB            (1'b0),
       .dinB           (wdata[15:8]),
-      .doutB          ()
+      .doutB          (i_data[15:8])
       );
    
    // byte 2
@@ -81,11 +86,11 @@ module ram #(
       .doutA      (rdata[23:16]),
       .dinA       (wdata[23:16]),
       .clkB           (clk),
-      .enaB             (1'b0),
-      .addrB          (addr),
+      .enaB             (i_en[2]),
+      .addrB          (i_addr),
       .weB            (1'b0),
       .dinB           (wdata[23:16]),
-      .doutB          ()
+      .doutB          (i_data[23:16])
       );
    //byte 3
    parameter file_name_3 = (FILE == "none")? "none": {FILE, "_3", ".dat"};
@@ -103,18 +108,21 @@ module ram #(
       .doutA      (rdata[31:24]),
       .dinA       (wdata[31:24]),
       .clkB           (clk),
-      .enaB             (1'b0),
-      .addrB          (addr),
+      .enaB             (i_en[3]),
+      .addrB          (i_addr),
       .weB            (1'b0),
       .dinB           (wdata[31:24]),
-      .doutB          ()
+      .doutB          (i_data[31:24])
       );
 
    //reply with ready 
    always @(posedge clk, posedge rst)
-     if(rst)
-       ready <= 1'b0;
-     else 
-       ready <= valid;
-
+     if(rst) begin
+	ready <= 1'b0;
+	i_ready <= 1'b0;
+     end
+     else begin 
+	ready <= valid;
+	i_ready <= |i_en;
+     end
 endmodule

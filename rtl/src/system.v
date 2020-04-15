@@ -174,6 +174,11 @@ module system (
  `endif
 `endif
                      //cpu interface
+		     .i_addr             (m_i_addr[`BOOTRAM_ADDR_W-1:2]),
+		     .i_en               ({4{~HLT}}),
+		     .i_data             (m_i_data),
+		     .i_ready            (m_i_ready),
+
 	             .addr               (m_d_addr[`BOOTRAM_ADDR_W-1:2]),
                      .rdata              (int_mem_rdata),
 	             .wdata              (m_d_wdata),
