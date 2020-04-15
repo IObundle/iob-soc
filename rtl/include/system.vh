@@ -2,9 +2,13 @@
 // HARDWARE DEFINITIONS
 //
 
+//Choose CPU architecture to use
+`define PICORV32
+//`define DARKRV
+
 //Optional memories (passed as command line macro)
 `define USE_BOOT
-`define USE_DDR
+//`define USE_DDR
 
 //main memory address space (log2 of byte size)
 `define MAINRAM_ADDR_W 15
