@@ -3,7 +3,8 @@
 
 module ram #(
 	     parameter ADDR_W = 12, //must be lower than ADDR_W-N_SLAVES_W
-             parameter FILE = "none"	          
+             parameter FILE = "none",
+	     parameter FILE_NAME_SIZE = 8
 		     )
    (      
           input 	       clk,
@@ -22,91 +23,40 @@ module ram #(
           input 	       valid,
           output reg 	       ready
 	  );
-   
-   // byte memories
-   // byte 0
-   parameter file_name_0 = (FILE == "none")? "none": {FILE, "_0", ".dat"};
-   iob_t2p_mem  #(
-                  .MEM_INIT_FILE(file_name_0),
-		  .DATA_W(8),
-                  .ADDR_W(ADDR_W))
-   main_mem_byte0
-     (
-      .clk           (clk),
-      .en_a            (valid),
-      .we_a            (wstrb[0]),
-      .addr_a          (addr),
-      .q_a      (rdata[7:0]),
-      .data_a       (wdata[7:0]),
-      .en_b             (i_en[0]),
-      .addr_b          (i_addr),
-      .we_b            (1'b0),
-      .data_b           (wdata[7:0]),
-      .q_b          (i_data[7:0])
-      );
+      
+   // FILE is a string with N chars + 6 for the "_x.dat" sufix , each chat takes 8 bits
+   parameter STRLEN = (FILE_NAME_SIZE+6)*8;
+   parameter [STRLEN-1:0] file_name_0 = (FILE == "none")? "none": {FILE, "_0", ".dat"};
+   parameter [STRLEN-1:0] file_name_1 = (FILE == "none")? "none": {FILE, "_1", ".dat"};
+   parameter [STRLEN-1:0] file_name_2 = (FILE == "none")? "none": {FILE, "_2", ".dat"};
+   parameter [STRLEN-1:0] file_name_3 = (FILE == "none")? "none": {FILE, "_3", ".dat"};
+   //concatenate all file_names into a single parameter
+   parameter [4*(STRLEN)-1:0] file_name = {file_name_3, file_name_2, file_name_1, file_name_0};
 
-   //byte 1
-   parameter file_name_1 = (FILE == "none")? "none": {FILE, "_1", ".dat"};
-   iob_t2p_mem  #(
-                  .MEM_INIT_FILE(file_name_1),
-		  .DATA_W(8),
-                  .ADDR_W(ADDR_W))
-   main_mem_byte1
-     (
-      .clk           (clk),
-      .en_a            (valid),
-      .we_a            (wstrb[1]),
-      .addr_a          (addr),
-      .q_a      (rdata[15:8]),
-      .data_a       (wdata[15:8]),
-      .en_b             (i_en[1]),
-      .addr_b          (i_addr),
-      .we_b            (1'b0),
-      .data_b           (wdata[15:8]),
-      .q_b          (i_data[15:8])
-      );
-   
-   // byte 2
-   parameter file_name_2 = (FILE == "none")? "none": {FILE, "_2", ".dat"};
-   iob_t2p_mem  #(
-                  .MEM_INIT_FILE(file_name_2),
-		  .DATA_W(8),
-                  .ADDR_W(ADDR_W))
-   main_mem_byte2
-     (
-      .clk           (clk),
-      .en_a            (valid),
-      .we_a            (wstrb[2]),
-      .addr_a          (addr),
-      .q_a      (rdata[23:16]),
-      .data_a       (wdata[23:16]),
-      .en_b             (i_en[2]),
-      .addr_b          (i_addr),
-      .we_b            (1'b0),
-      .data_b           (wdata[23:16]),
-      .q_b          (i_data[23:16])
-      );
-   
-   //byte 3
-   parameter file_name_3 = (FILE == "none")? "none": {FILE, "_3", ".dat"};
-   iob_t2p_mem  #(
-                  .MEM_INIT_FILE(file_name_3),
-		  .DATA_W(8),
-                  .ADDR_W(ADDR_W))
-   main_mem_byte3
-     (
-      .clk           (clk),
-      .en_a            (valid),
-      .we_a            (wstrb[3]),
-      .addr_a          (addr),
-      .q_a      (rdata[31:24]),
-      .data_a       (wdata[31:24]),
-      .en_b             (i_en[3]),
-      .addr_b          (i_addr),
-      .we_b            (1'b0),
-      .data_b           (wdata[31:24]),
-      .q_b          (i_data[31:24])
-      );
+   genvar 		       i;
+
+   for (i=0;i<4;i=i+1) 
+     begin : gen_main_mem_byte
+	iob_t2p_mem  #(
+		       .MEM_INIT_FILE(file_name[STRLEN*(i+1)-1 -: STRLEN]),
+		       .DATA_W(8),
+                       .ADDR_W(ADDR_W))
+	main_mem_byte
+	  (
+	   .clk           (clk),
+	   .en_a            (valid),
+	   .we_a            (wstrb[i]),
+	   .addr_a          (addr),
+	   .q_a      (rdata[8*(i+1)-1 -: 8]),
+	   .data_a       (wdata[8*(i+1)-1 -: 8]),
+	   .en_b             (i_en[i]),
+	   .addr_b          (i_addr),
+	   .we_b            (1'b0),
+	   .data_b           (wdata[8*(i+1)-1 -: 8]),
+	   .q_b          (i_data[8*(i+1)-1 -: 8])
+	   );	
+     end
+
 
    //reply with ready 
    always @(posedge clk, posedge rst)
