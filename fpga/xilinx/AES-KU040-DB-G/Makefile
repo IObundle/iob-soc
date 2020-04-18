@@ -1,11 +1,13 @@
 RTL_DIR := ../../../rtl
 RISCV_DIR := ../../../submodules/iob-rv32
 UART_DIR := ../../../submodules/iob-uart
-MEM_DIR := ../../../submodules/iob-mem/sp_mem_be
+MEM_DIR := ../../../submodules/iob-mem/tdp_mem
 FIRM_DIR := ../../../software/firmware
 BOOT_DIR := ../../../software/bootloader
 LD_SW_DIR := ../../../software/ld-sw
 PYTHON_DIR := ../../../software/python
+ALTERA_DIR := ../../intel/CYCLONEV-GT-DK
+
 REMOTE := ${USER}@iobundle.ddns.net:sandbox/iob-soc/fpga/xilinx/AES-KU040-DB-G
 PORT := -P 1418
 
@@ -16,14 +18,14 @@ ifneq ($(shell grep USE_DDR $(RTL_DIR)/include/system.vh | grep -v "//" | grep -
 USE_DDR = USE_DDR
 endif
 
-VSRC = verilog/top_system.v $(RTL_DIR)/include/*.vh $(RTL_DIR)/src/memory/*.v $(RTL_DIR)/src/*.v $(RISCV_DIR)/picorv32.v $(UART_DIR)/rtl/src/iob-uart.v $(MEM_DIR)/iob_sp_mem_be.v
+VSRC = verilog/top_system.v $(RTL_DIR)/include/*.vh $(RTL_DIR)/src/memory/*.v $(RTL_DIR)/src/*.v $(RISCV_DIR)/picorv32.v $(UART_DIR)/rtl/src/iob-uart.v $(MEM_DIR)/*.v $(ALTERA_DIR)/alt_ram.v
 
 # work-around for http://svn.clifford.at/handicraft/2016/vivadosig11
 export RDI_VERBOSE = False
 
 all: firmware.dat synth_system.bit
 	scp $(PORT) synth_system.bit $(REMOTE)
-	scp $(PORT) $(FIRM_DIR)/firmware.bin $(REMOTE)
+	scp $(PORT) firmware*.dat $(REMOTE)
 
 synth_system.bit: *.xdc $(VSRC) boot.dat
 	rm -f $@.log
@@ -33,7 +35,8 @@ synth_system.bit: *.xdc $(VSRC) boot.dat
 	-grep -B1 -A9 ^Slack vivado.log && echo
 
 firmware.dat: $(FIRM_DIR)/firmware.hex
-	cp $< ./firmware.dat
+	cp $< .
+	$(PYTHON_DIR)/hex_split.py firmware
 
 $(FIRM_DIR)/firmware.hex: FORCE
 	make -C $(FIRM_DIR) BAUD=$(BAUD) FREQ=$(FREQ)

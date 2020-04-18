@@ -23,40 +23,35 @@ module ram #(
           input 	       valid,
           output reg 	       ready
 	  );
-      
-   // FILE is a string with N chars + 6 for the "_x.dat" sufix , each chat takes 8 bits
-   parameter STRLEN = (FILE_NAME_SIZE+6)*8;
-   parameter [STRLEN-1:0] file_name_0 = (FILE == "none")? "none": {FILE, "_0", ".dat"};
-   parameter [STRLEN-1:0] file_name_1 = (FILE == "none")? "none": {FILE, "_1", ".dat"};
-   parameter [STRLEN-1:0] file_name_2 = (FILE == "none")? "none": {FILE, "_2", ".dat"};
-   parameter [STRLEN-1:0] file_name_3 = (FILE == "none")? "none": {FILE, "_3", ".dat"};
-   //concatenate all file_names into a single parameter
-   parameter [4*(STRLEN)-1:0] file_name = {file_name_3, file_name_2, file_name_1, file_name_0};
 
+   parameter file_name = (FILE == "none")? "none" : {FILE, "_0"};
+   parameter init_ram = (FILE == "none")? 0 : 1;
+   parameter sufix = (FILE == "none")? "" : ".dat";
+   
    genvar 		       i;
-
-   for (i=0;i<4;i=i+1) 
-     begin : gen_main_mem_byte
-	iob_t2p_mem  #(
-		       .MEM_INIT_FILE(file_name[STRLEN*(i+1)-1 -: STRLEN]),
-		       .DATA_W(8),
-                       .ADDR_W(ADDR_W))
-	main_mem_byte
-	  (
-	   .clk           (clk),
-	   .en_a            (valid),
-	   .we_a            (wstrb[i]),
-	   .addr_a          (addr),
-	   .q_a      (rdata[8*(i+1)-1 -: 8]),
-	   .data_a       (wdata[8*(i+1)-1 -: 8]),
-	   .en_b             (i_en[i]),
-	   .addr_b          (i_addr),
-	   .we_b            (1'b0),
-	   .data_b           (wdata[8*(i+1)-1 -: 8]),
-	   .q_b          (i_data[8*(i+1)-1 -: 8])
-	   );	
-     end
-
+   generate
+      for (i=0;i<4;i=i+1) 
+	begin : gen_main_mem_byte
+	   iob_t2p_mem  #(
+			  .MEM_INIT_FILE({file_name + i[3:0]*init_ram, sufix}),
+			  .DATA_W(8),
+			  .ADDR_W(ADDR_W))
+	   main_mem_byte
+	     (
+	      .clk           (clk),
+	      .en_a            (valid),
+	      .we_a            (wstrb[i]),
+	      .addr_a          (addr),
+	      .q_a      (rdata[8*(i+1)-1 -: 8]),
+	      .data_a       (wdata[8*(i+1)-1 -: 8]),
+	      .en_b             (i_en[i]),
+	      .addr_b          (i_addr),
+	      .we_b            (1'b0),
+	      .data_b           (wdata[8*(i+1)-1 -: 8]),
+	      .q_b          (i_data[8*(i+1)-1 -: 8])
+	      );	
+	end
+   endgenerate
 
    //reply with ready 
    always @(posedge clk, posedge rst)

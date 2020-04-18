@@ -12,11 +12,12 @@ set_global_assignment -name SEARCH_PATH ../../../rtl/include
 set_global_assignment -name SEARCH_PATH ../../../rtl/src/memory/
 set_global_assignment -name SEARCH_PATH ../../../submodules/iob-rv32
 set_global_assignment -name SEARCH_PATH ../../../submodules/iob-mem/afifo
-set_global_assignment -name SEARCH_PATH ../../../submodules/iob-mem/sp_mem
+set_global_assignment -name SEARCH_PATH ../../../submodules/iob-mem/tdp_mem
 set_global_assignment -name SEARCH_PATH ../../../submodules/iob-cache/rtl/src
 set_global_assignment -name SEARCH_PATH ../../../submodules/iob-cache/rtl/header
 set_global_assignment -name SEARCH_PATH ../../../submodules/iob-uart/rtl/src
 set_global_assignment -name SEARCH_PATH ../../../submodules/iob-uart/rtl/include
+
 
 #constraints file
 
@@ -57,10 +58,11 @@ set_global_assignment -name VERILOG_FILE system.v
 set_global_assignment -name VERILOG_FILE rst_ctr.v
 set_global_assignment -name VERILOG_FILE sm2ms_interconnect.v
 set_global_assignment -name VERILOG_FILE int_mem.v
+set_global_assignment -name VERILOG_FILE cpu_wrapper.v
 set_global_assignment -name VERILOG_FILE rom.v
 set_global_assignment -name VERILOG_FILE alt_ram.v
 set_global_assignment -name VERILOG_FILE afifo.v
-set_global_assignment -name VERILOG_FILE iob_sp_mem.v
+set_global_assignment -name VERILOG_FILE iob_tdp_mem.v
 set_global_assignment -name VERILOG_FILE picorv32.v
 set_global_assignment -name VERILOG_FILE iob-uart.v
 set_global_assignment -name SDC_FILE top_system.sdc
