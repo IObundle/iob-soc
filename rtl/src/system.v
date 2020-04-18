@@ -108,6 +108,10 @@ module system (
    reg                              int_mem_valid;
    wire                             int_mem_ready;
    wire [`DATA_W-1:0]               int_mem_rdata;
+
+   
+   wire [`DATA_W-1:0]               int_mem_idata;
+   wire 			    int_mem_iready;
    
 `ifdef USE_DDR
    reg                              ext_mem_valid;
@@ -126,6 +130,9 @@ module system (
       int_mem_valid = m_d_valid;
       p_valid = 1'b0;
 
+      m_i_data = int_mem_idata;
+      m_i_ready = int_mem_iready;
+            
       m_d_rdata = int_mem_rdata;
       m_d_ready = int_mem_ready;
 
@@ -176,8 +183,8 @@ module system (
                      //cpu interface
 		     .i_addr             (m_i_addr[`BOOTRAM_ADDR_W-1:2]),
 		     .i_en               ({4{~HLT}}),
-		     .i_data             (m_i_data),
-		     .i_ready            (m_i_ready),
+		     .i_data             (int_mem_idata),
+		     .i_ready            (int_mem_iready),
 
 	             .addr               (m_d_addr[`BOOTRAM_ADDR_W-1:2]),
                      .rdata              (int_mem_rdata),
