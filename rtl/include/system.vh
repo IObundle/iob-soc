@@ -7,7 +7,7 @@
 `define USE_DDR
 
 //main memory address space (log2 of byte size)
-`define MAINRAM_ADDR_W 15
+`define MAINRAM_ADDR_W 13
 
 // SLAVES
 `define N_SLAVES 3
@@ -44,7 +44,8 @@
 `define DDR ((1<<31) | (DDR_BASE<<(DATA_W-N_SLAVES_W-1)))
 `define SRAM ((1<<31) | (SRAM_BASE<<(DATA_W-N_SLAVES_W-1)))
 
-//internal memory address space (log2 of byte size)                                                                   
+//internal memory address space (log2 of byte size)
+//this code is just copied to system.h; not used in the verilog code
 `ifdef USE_DDR
  `define RAM_ADDR_W (BOOTROM_ADDR_W+1)
 `else

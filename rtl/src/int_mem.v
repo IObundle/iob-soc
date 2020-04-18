@@ -56,8 +56,10 @@ module int_mem
      end else 
           copy_done <= 3'b111;
 
-   
+   //
    //BOOT ROM
+   //
+   
    wire [`DATA_W-1:0] rom_rdata;
    rom #(
 	 .ADDR_W(`BOOTROM_ADDR_W-2)
@@ -71,7 +73,10 @@ module int_mem
 
 `endif
    
-   //RAM
+   //
+   // RAM INTERFACE SIGNALS: SELECT WHERE CONNETED, ROM OR SYSTEM BUS 
+   //
+   
 `ifdef USE_BOOT
    wire                      ram_valid = ~copy_done[0] | valid;
 `else
@@ -83,8 +88,11 @@ module int_mem
    reg [`DATA_W-1:0]         ram_wdata;
    reg [3:0]                 ram_wstrb;
  
-   //select ram address and write data 
+   //compute ram address and write data 
+
    always @* begin
+
+      //assume RAM controlled by system
       ram_addr = addr;
       ram_wdata = wdata;
       ram_wstrb = wstrb;
@@ -104,7 +112,11 @@ module int_mem
        end
  `endif
    end
-      
+     
+
+   //
+   // RAM
+   //   
    ram #(
 	 .ADDR_W(`BOOTRAM_ADDR_W-2),
 `ifdef USE_BOOT
@@ -133,7 +145,9 @@ module int_mem
              .ready         (ram_ready)
 	     );
 
+   //
    //generate ready signal
+   //
 `ifdef USE_BOOT
       assign ready = copy_done[2] & ram_ready;
 `else 
