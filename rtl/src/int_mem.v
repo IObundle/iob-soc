@@ -4,136 +4,154 @@
 
 module int_mem
   (
-   input 		       clk,
-   input 		       rst,
-   input 		       boot,
-   
-`ifndef USE_DDR
- `ifdef USE_BOOT
-   input 		       pvalid,
- `endif
+   input                       clk,
+   input                       rst,
+`ifdef USE_BOOT
+   input                       boot,
 `endif
+   
+   //CPU INTERFACE
 
-   //cpu interface
+   //instruction interface
+   input                       i_valid,
+   output                      i_ready,
    input [`BOOTRAM_ADDR_W-3:0] i_addr,
-   input [3:0] 		       i_en,
-   output [`DATA_W-1:0]        i_data,
-   output 		       i_ready,
+   output [`DATA_W-1:0]        i_rdata,
 
-   input 		       valid,
-   output 		       ready,
-   output [`DATA_W-1:0]        rdata,
-   input [`BOOTRAM_ADDR_W-3:0] addr,
-   input [`DATA_W-1:0] 	       wdata,
-   input [3:0] 		       wstrb
+   //data interface
+   input                       d_valid,
+   output                      d_ready,
+   input [`BOOTRAM_ADDR_W-3:0] d_addr,
+   output [`DATA_W-1:0]        d_rdata,
+   input [`DATA_W-1:0]         d_wdata,
+   input [3:0]                 d_wstrb,
+
+   //PERIPHERAL INTERFACE
+   input                       p_valid,
+   output                      p_ready,
+   input [`BOOTRAM_ADDR_W-3:0] p_addr,
+   output [`DATA_W-1:0]        p_rdata,
+   input [`DATA_W-1:0]         p_wdata,
+   input [3:0]                 p_wstrb
    );
               
+   //read boot rom 
+   wire                         rom_ready;
+   reg [`BOOTROM_ADDR_W-3:0]    rom_addr;
+   wire [`DATA_W-1:0]           rom_rdata;
 
 `ifdef USE_BOOT
-   //copy completion flag
-   reg [2:0]               copy_done;
-
-   //
-   // COPY ROM TO RAM
-   //
-
-   //address to copy boot rom to
-   parameter BOOTRAM_ADDR = 2**(`BOOTRAM_ADDR_W-2)  -  2**(`BOOTROM_ADDR_W-2);
-
-   //address counter
-   reg [`BOOTROM_ADDR_W-3:0]    rom_addr;
-   reg [`BOOTROM_ADDR_W-3:0]    rom_addr_reg;
-
-
-   //if booting copy boot rom to ram
+   reg                          rom_valid;
    always @(posedge clk, posedge rst)
      if(rst) begin
-        rom_addr <= 0;
-        rom_addr_reg <= 0;
-        copy_done <= 3'b000;
-     end else if (boot) begin 
-        copy_done[2:1] <= copy_done[1:0];
-        rom_addr_reg <= rom_addr;
-        if (rom_addr != (2**(`BOOTROM_ADDR_W-2)-1))
-           rom_addr <= rom_addr + 1'b1;
-        else
-          copy_done[0] <= 1'b1;
-     end else 
-          copy_done <= 3'b111;
-
-   //
-   //BOOT ROM
-   //
+        rom_addr <= `BOOTROM_ADDR_W'0;
+        rom_valid <= 1'b1;
+     end else if (boot)
+       if (rom_addr != (2**(`BOOTROM_ADDR_W-2)-1)) begin
+          rom_addr <= rom_addr + 1'b1;
+          rom_valid <= 1'b1;
+       end else
+         rom_valid <= 1'b0;
    
-   wire [`DATA_W-1:0] rom_rdata;
    rom #(
 	 .ADDR_W(`BOOTROM_ADDR_W-2)
 	 )
    boot_rom (
-	     .clk           (clk ),
-             .valid         (~copy_done[0]),
+	     .clk           (clk),
+	     .rst           (rst),
+             .valid         (rom_valid),
+             .valid         (rom_ready),
 	     .addr          (rom_addr),
 	     .rdata         (rom_rdata)
 	     );
-
 `endif
-   
-   //
-   // RAM INTERFACE SIGNALS: SELECT WHERE CONNETED, ROM OR SYSTEM BUS 
-   //
-   
+
+
+   //RAM INTERFACE SIGNALS
+
+   //instruction bus
 `ifdef USE_BOOT
-   wire                      ram_valid = ~copy_done[0] | valid;
+   wire ram_i_valid = i_valid & ~rom_ready;
 `else
-   wire                      ram_valid = valid;
-`endif   
-   wire                      ram_ready;
-   wire 		     ram_i_ready;
+   wire ram_i_valid = i_valid;
+`endif
+   wire ram_i_ready;
+   wire [`BOOTRAM_ADDR_W-3:0] ram_i_addr = i_addr+{`BOOTRAM_ADDR_W-2{1'b1}}-{`BOOTROM_ADDR_W-2{1'b1}};
+   wire [`DATA_W-1:0]         ram_i_rdata;
 
-   reg [`BOOTRAM_ADDR_W-3:0] ram_addr;
-   reg [`BOOTRAM_ADDR_W-3:0] ram_i_addr;
+   //reponse
+`ifdef USE_BOOT
+   assign i_ready = ram_i_ready & ~rom_ready;
+`else
+   assign i_ready = ram_i_ready;
+`endif
+   assign i_rdata = ram_i_rdata;
+   
+   
 
-   reg [`DATA_W-1:0]         ram_wdata;
-   reg [3:0]                 ram_wstrb;
- 
-   //compute ram address and write data 
-
-   always @* begin
-
-      //assume RAM controlled by system
-      ram_addr = addr;
-      ram_wdata = wdata;
-      ram_wstrb = wstrb;
-
-      ram_i_addr = i_addr;
-      
- `ifdef USE_BOOT
-      if(copy_done[1]) begin
-
-  `ifndef USE_DDR
-         if(!pvalid)   
-  `endif
-           if(boot) begin
-	      ram_i_addr = i_addr + BOOTRAM_ADDR[`BOOTRAM_ADDR_W-3:0];
-             ram_addr = addr + BOOTRAM_ADDR[`BOOTRAM_ADDR_W-3:0]; //note that parameter BOOTRAM_ADDR has 32 bits
-	   end
-      end else begin
-         ram_addr = rom_addr_reg + BOOTRAM_ADDR[`BOOTRAM_ADDR_W-3:0];
-         ram_wdata = rom_rdata;
-         ram_wstrb = 4'hF;
-       end
- `endif
-   end
+   //data bus has 3 masters: rom, peripheral interface, mem interface
+   //need interconnect
+   
+   //interconnect master signals
+   wire [2:0]                 m_ready;
+   wire [3*`DATA_W-1:0]       m_rdata;
+   wire [`BOOTRAM_ADDR_W-3:0]  m_ram_addr = boot? d_addr+{`BOOTRAM_ADDR_W-2{1'b1}}-{`BOOTROM_ADDR_W-2{1'b1}}: d_addr;
+   wire [`BOOTRAM_ADDR_W-3:0]  m_rom_addr = rom_addr+{`BOOTRAM_ADDR_W-2{1'b1}}-{`BOOTROM_ADDR_W-2{1'b1}};
      
+   //interconnect slave signals
+   wire ram_d_valid;
+   wire ram_d_ready;
+   wire [`BOOTRAM_ADDR_W-3:0] ram_d_addr;
+   wire [`DATA_W-1:0]         ram_d_rdata;
+   wire [`DATA_W-1:0]         ram_d_wdata;
+   wire [3:0]                 ram_d_wstrb;
 
+   //instantiate multiple master to single slave interconnect
+   mm2ss_interconnect
+     #(
+`ifdef USE_BOOT
+       .N_MASTERS(3),
+`else
+       .N_MASTERS(3),
+`endif       
+       .ADDR_W(`BOOTRAM_ADDR_W-2)
+       )  ram_d_intercon
+   (
+`ifdef USE_BOOT
+    .m_valid({d_valid, p_valid, rom_valid}),
+    .m_ready(m_ready),
+    .m_addr({d_addr, p_addr, m_rom_addr}),
+    .m_rdata(m_rdata),
+    .m_wdata({d_wdata, p_wdata, rom_rdata}),
+    .m_wstrb({d_wstrb, p_wstrb, 4'b1111}),
+`else
+    .m_valid({d_valid, p_valid}),
+    .m_ready(m_ready),
+    .m_addr({m_ram_addr, p_addr}),
+    .m_rdata(m_rdata),
+    .m_wdata({d_wdata, p_wdata}),
+    .m_wstrb({d_wstrb, p_wstrb}),
+`endif       
+
+    .s_valid(ram_d_valid),
+    .s_ready(ram_d_ready),
+    .s_addr(ram_d_addr),
+    .s_rdata(ram_d_rdata),
+    .s_wdata(ram_d_wdata),
+    .s_wstrb(ram_d_wstrb)
+    );   
+ 
+   //data bus response
+   assign d_ready = m_ready[2];
+   assign d_rdata = m_rdata[3*`DATA_W-1 -: `DATA_W];
+   
    //
-   // RAM
-   //   
+   // INSTANTIATE RAM
+   //
+
    ram #(
 	 .ADDR_W(`BOOTRAM_ADDR_W-2),
 `ifdef USE_BOOT
-         .FILE("none")
-`elsif USE_DDR
          .FILE("none")
 `else
          .FILE("firmware")
@@ -143,36 +161,19 @@ module int_mem
 	     .clk           (clk),
              .rst           (rst),
 
-	     .i_addr        (ram_i_addr),
-	     .i_en          (i_en),
-	     .i_data        (i_data),
+             //instruction bus
+	     .i_valid       (ram_i_valid),
 	     .i_ready       (ram_i_ready),
+	     .i_addr        (ram_i_addr),
+	     .i_rdata       (ram_i_rdata),
 	     
-	     .wdata         (ram_wdata),
-	     .addr          (ram_addr),
-	     .wstrb         (ram_wstrb),
-	     .rdata         (rdata),
-`ifdef USE_DDR
-             .valid         (ram_valid),
-`elsif USE_BOOT
-             .valid         (ram_valid | pvalid),
-`else 
-             .valid         (ram_valid),
-`endif
-
-             .ready         (ram_ready)
+             //data bus
+             .d_valid       (ram_d_valid),
+             .d_ready       (ram_d_ready),
+	     .d_addr        (ram_d_addr),
+	     .d_wdata       (ram_d_wdata),
+	     .d_wstrb       (ram_d_wstrb),
+	     .d_rdata       (ram_d_rdata)
 	     );
-
-   //
-   //generate ready signal
-   //
-`ifdef USE_BOOT
-   assign ready = copy_done[2] & ram_ready;
-   assign i_ready = copy_done[2] & ram_i_ready;
-   
-`else 
-   assign ready = ram_ready;
-   assign i_ready = ram_i_ready;
-`endif
 
 endmodule

@@ -1,5 +1,4 @@
 `timescale 1 ns / 1 ps
-
 `include "system.vh"
 
 module cpu_wrapper (
@@ -11,6 +10,7 @@ module cpu_wrapper (
                     // memory interface
 
                     // instruction bus
+                    output 		 i_valid,
                     input 		 i_ready,
                     output [`ADDR_W-1:0] i_addr,
                     input [`DATA_W-1:0]  i_data,
@@ -25,8 +25,6 @@ module cpu_wrapper (
                     );
 
    wire                                  m_ready;
-
-
 
 `ifdef PICORV32
    wire                                  m_instr;
@@ -110,6 +108,8 @@ module cpu_wrapper (
    assign m_valid = la_read | la_write;
    assign m_wstrb = la_wstrb & {4{la_write}};
  `endif
+
+   wire m_i_valid = m_valid & m_instr;
    
 `endif //  `ifdef PICORV32
 

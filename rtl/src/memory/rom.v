@@ -7,7 +7,10 @@ module rom #(
 	     )
    (
     input                    clk,
+    input                    rst,
+
     input                    valid,
+    output reg               ready,
     input [ADDR_W-1:0]       addr,
     output reg [`DATA_W-1:0] rdata
     );
@@ -23,8 +26,13 @@ module rom #(
      $readmemh(mem_init_file_int, rom, 0, 2**ADDR_W-1);
 
    // Operate the ROM
-   always @(posedge clk)
-     if(valid)
-       rdata <= rom[addr];
-
+   always @(posedge clk, posedge rst)
+     if(rst)
+       ready <= 1'b0;
+     else begin
+        ready <= valid;
+        if(valid)
+          rdata <= rom[addr];
+     end
+   
 endmodule

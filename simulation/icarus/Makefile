@@ -4,18 +4,17 @@ FREQ := 100000000
 
 #file paths
 ROOT_DIR := ../..
-SUBMODULES_DIR := $(ROOT_DIR)/submodules
 FIRM_DIR := $(ROOT_DIR)/software/firmware
 BOOT_DIR := $(ROOT_DIR)/software/bootloader
+PYTHON_DIR := $(ROOT_DIR)/software/python
 RTL_DIR := $(ROOT_DIR)/rtl
+
+SUBMODULES_DIR := $(ROOT_DIR)/submodules
 RISCV_DIR := $(SUBMODULES_DIR)/iob-rv32
 UART_DIR := $(SUBMODULES_DIR)/iob-uart
-FIFO_DIR := $(SUBMODULES_DIR)/iob-mem/afifo
-MEM_DIR := $(SUBMODULES_DIR)/iob-mem/sp_mem_be
-PYTHON_DIR := $(ROOT_DIR)/software/python
+MEM_DIR := $(SUBMODULES_DIR)/iob-mem
 CACHE_DIR = $(SUBMODULES_DIR)/iob-cache
 AXI_RAM_DIR = $(SUBMODULES_DIR)/axi-mem
-ALTERA_DIR = $(ROOT_DIR)/fpga/intel/CYCLONEV-GT-DK
 #hw includes
 HW_INCLUDE := -I. -I$(RTL_DIR)/include -I$(UART_DIR)/rtl/include -I$(CACHE_DIR)/rtl/header
 
@@ -28,7 +27,7 @@ TB_DEFINE += -DUART_CLK_FREQ=$(FREQ)
 VLOG = iverilog -W all -g2005-sv -DVCD
 
 #hardware sources
-VSRC = $(RTL_DIR)/testbench/system_tb.v  $(RTL_DIR)/src/*.v $(RTL_DIR)/src/memory/rom.v $(RISCV_DIR)/picorv32.v $(UART_DIR)/rtl/src/iob-uart.v $(FIFO_DIR)/afifo.v $(MEM_DIR)/iob_sp_mem_be.v $(CACHE_DIR)/rtl/src/gen_mem_reg.v $(CACHE_DIR)/rtl/src/iob-cache.v $(AXI_RAM_DIR)/rtl/axi_ram.v $(ALTERA_DIR)/alt_ram.v $(MEM_DIR)/../sp_mem/iob_sp_mem.v $(MEM_DIR)/../tdp_mem/iob_tdp_mem.v
+VSRC = $(RTL_DIR)/testbench/system_tb.v  $(RTL_DIR)/src/*.v $(RTL_DIR)/src/memory/rom.v $(RTL_DIR)/src/memory/ram.v $(RISCV_DIR)/picorv32.v $(UART_DIR)/rtl/src/iob-uart.v $(CACHE_DIR)/rtl/src/gen_mem_reg.v $(CACHE_DIR)/rtl/src/iob-cache.v $(AXI_RAM_DIR)/rtl/axi_ram.v $(MEM_DIR)/tdp_mem/iob_tdp_mem.v $(MEM_DIR)/afifo/afifo.v
 
 all: $(VSRC) console.vh firmware boot
 	$(VLOG) $(HW_INCLUDE) $(TB_DEFINE) $(VSRC)
