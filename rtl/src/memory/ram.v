@@ -55,7 +55,7 @@ module ram #(
 	   .en_b            (i_valid),
 	   .addr_b          (i_addr),
 	   .we_b            (1'b0),
-	   .data_b          (),
+	   .data_b          (8'b0),
 	   .q_b             (i_rdata[8*(i+1)-1 -: 8])
 	   );	
      end

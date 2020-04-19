@@ -4,11 +4,19 @@
 
 //Choose CPU architecture to use
 `define PICORV32
+//use picorv's lookahead interface
+//`define USE_LA_IF
+
 //`define DARKRV
 
 //Optional memories (passed as command line macro)
+`define USE_RAM
+`define INIT_RAM
+
+//`define USE_DDR
+//`define INIT_DDR
+
 //`define USE_BOOT
-`define USE_DDR
 
 //main memory address space (log2 of byte size)
 `define MAINRAM_ADDR_W 13
@@ -16,16 +24,15 @@
 // SLAVES
 `define N_SLAVES 3
 //bits reserved to identify slave
+//please insert manually...
 `define N_SLAVES_W 2
 
 //peripheral address prefixes
-`define UART_BASE 0
+`define SRAM_BASE 0
 `define SOFT_RESET_BASE 1
-`define SRAM_BASE 2
-`define DDR_BASE 2
+//`define DDR_BASE 2
+`define UART_BASE 2
 
-//use CPU lookahead interface
-//`define USE_LA_IF
 
 
 
@@ -38,6 +45,8 @@
 `define ADDR_W 32
 //data width
 `define DATA_W 32
+
+
 //boot rom memory address space (log2 of byte size)
 `define BOOTROM_ADDR_W 12
 
