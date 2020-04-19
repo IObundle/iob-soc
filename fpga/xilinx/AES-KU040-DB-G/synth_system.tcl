@@ -16,6 +16,7 @@ read_verilog verilog/top_system.v
 read_verilog ../../../rtl/src/system.v
 read_verilog ../../../rtl/src/rst_ctr.v
 read_verilog ../../../rtl/src/sm2ms_interconnect.v
+read_verilog ../../../rtl/src/cpu_wrapper.v
 
 #picorv32
 read_verilog ../../../submodules/iob-rv32/picorv32.v
@@ -25,9 +26,9 @@ read_verilog ../../../submodules/iob-uart/rtl/src/iob-uart.v
 
 #memory
 read_verilog ../../../rtl/src/memory/rom.v
-read_verilog ../../../rtl/src/memory/ram.v
+read_verilog ../../intel/CYCLONEV-GT-DK/alt_ram.v
 read_verilog ../../../rtl/src/int_mem.v
-read_verilog ../../../submodules/iob-mem/sp_mem_be/iob_sp_mem_be.v
+read_verilog ../../../submodules/iob-mem/tdp_mem/iob_tdp_mem.v
 
 set_property part xcku040-fbva676-1-c [current_project]
 

@@ -5,7 +5,7 @@ FIRM_DIR := ../../../software/firmware
 BOOT_DIR := ../../../software/bootloader
 LD_SW_DIR := ../../../software/ld-sw
 PYTHON_DIR := ../../../software/python
-
+MEM_DIR := ../../../submodules/iob-mem
 
 REMOTE_HOST := iobundle.ddns.net
 REMOTE_PORT := 1415
@@ -18,7 +18,7 @@ ifneq ($(shell grep USE_DDR $(RTL_DIR)/include/system.vh | grep -v "//"),)
 USE_DDR = USE_DDR
 endif
 
-VSRC = top_system.v $(RTL_DIR)/include/*.vh $(RTL_DIR)/src/memory/*.v $(RTL_DIR)/src/*.v $(RISCV_DIR)/picorv32.v $(UART_DIR)/rtl/src/iob-uart.v
+VSRC = top_system.v $(RTL_DIR)/include/*.vh $(RTL_DIR)/src/memory/rom.v $(RTL_DIR)/src/*.v $(RISCV_DIR)/picorv32.v $(UART_DIR)/rtl/src/iob-uart.v $(MEM_DIR)/tdp_mem/*.v alt_ram.v
 
 all: output_files/top_system.sof
 	scp -P $(REMOTE_PORT) $< $(USER)@$(REMOTE_HOST):$(REMOTE_FPGA_DIR)
