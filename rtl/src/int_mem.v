@@ -6,9 +6,7 @@ module int_mem
   (
    input                       clk,
    input                       rst,
-`ifdef USE_BOOT
    input                       boot,
-`endif
    
    //CPU INTERFACE
 
@@ -77,7 +75,8 @@ module int_mem
    wire [`DATA_W-1:0] r_rdata; //unused
    wire [`DATA_W-1:0] r_wdata;
    wire [`DATA_W/8-1:0] r_wstrb;
-
+`else // !`ifdef USE_BOOT
+   wire                 rom_valid = 0;
 `endif
 
    //
@@ -87,24 +86,19 @@ module int_mem
    //INSTRUCTION BUS
 
    
-`ifdef USE_BOOT
    wire                 ram_i_ready;
    assign i_ready = ram_i_ready & ~rom_valid;
-   wire [`BOOTRAM_ADDR_W-3:0] ram_i_addr = boot? i_addr+{`BOOTRAM_ADDR_W-2{1'b1}}-{`BOOTROM_ADDR_W-2{1'b1}}: i_addr;
-`endif
  
+   // modify instruction address during boot program execution
+   wire [`BOOTRAM_ADDR_W-3:0] ram_i_addr = boot? i_addr+{`BOOTRAM_ADDR_W-2{1'b1}}-{`BOOTROM_ADDR_W-2{1'b1}}: i_addr;
+
    //DATA BUS 
    // has 3 masters: rom, peripheral interface, mem interface
 
    // need interconnect
    
-   // master signals
-`ifdef USE_BOOT
-   //shift data address during boot program execution
+   // modify data address during boot program execution
    wire [`BOOTRAM_ADDR_W-3:0] mod_d_addr = boot? d_addr+{`BOOTRAM_ADDR_W-2{1'b1}}-{`BOOTROM_ADDR_W-2{1'b1}}: d_addr;
-`endif
-
-
      
    //slave interface 
    wire                       ram_d_valid;
@@ -126,6 +120,9 @@ module int_mem
        )  
    ram_d_intercon
      (
+      .clk(clk),
+      .rst(rst),
+      
       //masters
 `ifdef USE_BOOT
       .m_valid({d_valid,    p_valid, r_valid}),
@@ -151,7 +148,7 @@ module int_mem
       .s_wdata(ram_d_wdata),
       .s_wstrb(ram_d_wstrb)
       );   
- 
+
    // instantiate ram
    ram #(
 	 .ADDR_W(`BOOTRAM_ADDR_W-2),
@@ -168,13 +165,8 @@ module int_mem
       
       //instruction bus
       .i_valid       (i_valid),
-`ifndef USE_BOOT
-      .i_ready       (i_ready),
-      .i_addr        (i_addr),
-`else 
-      .i_ready       (ram_i_ready),
-      .i_addr        (ram_i_addr),
-`endif
+      .i_ready       (ram_i_ready), //to be masked by rom loading
+      .i_addr        (ram_i_addr), //modified during boot
       .i_rdata       (i_rdata),
 	     
       //data bus

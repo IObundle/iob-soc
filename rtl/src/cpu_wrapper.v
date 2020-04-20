@@ -4,10 +4,7 @@
 module cpu_wrapper (
                     input 		 clk,
                     input 		 rst,
-
                     output 		 trap,
-		    output 		 HLT,
-                    // memory interface
 
                     // instruction bus
                     output 		 i_valid,
@@ -24,39 +21,36 @@ module cpu_wrapper (
                     output 		 d_valid
                     );
 
-   wire                                  m_ready;
 
 `ifdef PICORV32
    wire                                  m_instr;
-   wire [`DATA_W-1:0]                    m_rdata;
    wire                                  m_valid;
+   wire                                  m_ready;
    wire [`ADDR_W-1:0] 			 m_addr;
+   wire [`DATA_W-1:0]                    m_rdata;
    wire [`DATA_W-1:0] 			 m_wdata;
    wire [3:0] 				 m_wstrb; 				 
 
  `ifdef USE_LA_IF
    wire                                  la_read;
    wire 				 la_write;
-   wire [3:0] 				 la_wstrb; 				 
+   wire [3:0] 				 la_wstrb;
  `endif
 
-`endif
-
-`ifdef PICORV32
-   assign d_valid = m_valid;
-   assign m_ready = m_instr ? i_ready : d_ready;
-
+   //instruction bus
+   assign i_valid = m_valid & m_instr;
    assign i_addr = m_addr;
+
+   //data bus
+   assign d_valid = m_valid & ~m_instr;
    assign d_addr = m_addr;
    assign d_wdata = m_wdata;
    assign d_wstrb = m_wstrb;
+
+   //common
+   assign m_ready = m_instr ? i_ready : d_ready;
    assign m_rdata = m_instr? i_data : d_rdata;
 
-   `ifndef USE_LA_IF
-   assign HLT = ~(m_instr && m_valid); //HLT stops instruction read
-   `else
-   assign HLT = 1'b0;  // in LA_IF, always read instructions
-   `endif
 `endif
 
 
@@ -89,18 +83,18 @@ module cpu_wrapper (
 		  .mem_ready     (m_ready),
                   // Pico Co-Processor PCPI
                   .pcpi_valid    (),
-                  .pcpi_insn    (),
-                  .pcpi_rs1     (),
-                  .pcpi_rs2     (),
-                  .pcpi_wr      (1'b0),
-                  .pcpi_rd      (32'd0),
-                  .pcpi_wait    (1'b0),
-                  .pcpi_ready   (1'b0),
+                  .pcpi_insn     (),
+                  .pcpi_rs1      (),
+                  .pcpi_rs2      (),
+                  .pcpi_wr       (1'b0),
+                  .pcpi_rd       (32'd0),
+                  .pcpi_wait     (1'b0),
+                  .pcpi_ready    (1'b0),
                   // IRQ
-                  .irq          (32'd0),
-                  .eoi          (),
-                  .trace_valid  (),
-                  .trace_data   ()
+                  .irq           (32'd0),
+                  .eoi           (),
+                  .trace_valid   (),
+                  .trace_data    ()
                   
                   );
 
@@ -109,7 +103,6 @@ module cpu_wrapper (
    assign m_wstrb = la_wstrb & {4{la_write}};
  `endif
 
-   wire m_i_valid = m_valid & m_instr;
    
 `endif //  `ifdef PICORV32
 
@@ -123,10 +116,6 @@ module cpu_wrapper (
    wire 				 DHIT;
    wire 				 HLT_riscv;
 
-				 
-`endif
-
-`ifdef DARKRV
    assign d_valid = d_rd_en | d_wr_en;
    assign d_wstrb = d_wr_en ? BE : 4'b0;
 
@@ -146,12 +135,6 @@ module cpu_wrapper (
 
    assign trap = 1'b0;
    
-   
-
-`endif
-
-
-`ifdef DARKRV
  `define __3STAGE__              // single phase 3-state pipeline
    darkriscv darkriscv_core (
                              .CLK(clk),

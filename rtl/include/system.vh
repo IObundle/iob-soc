@@ -43,6 +43,10 @@
 //
 //address width
 `define ADDR_W 32
+//memory address width
+`define MEM_ADDR_W 31
+//peripherals address width
+`define P_ADDR_W (`MEM_ADDR_W-`N_SLAVES_W)
 //data width
 `define DATA_W 32
 

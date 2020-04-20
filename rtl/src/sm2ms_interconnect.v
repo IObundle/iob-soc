@@ -24,7 +24,10 @@ module sm2ms_interconnect
     output reg [N_SLAVES*DATA_W-1:0]                    s_wdata,
     output reg [N_SLAVES*(DATA_W/8)-1:0]                s_wstrb
     );
-
+ 
+   parameter N_SLAVES_W = $clog2(N_SLAVES);
+   parameter P_ADDR_W = ADDR_W-$clog2(N_SLAVES);
+   
    integer                               i;
    always @* begin
       s_valid = {N_SLAVES{1'b0}};
@@ -43,10 +46,10 @@ module sm2ms_interconnect
          s_wstrb = m_wstrb;
       end else
         for (i=0; i<N_SLAVES; i=i+1)
-          if(i == m_addr[ADDR_W-1 -: $clog2(N_SLAVES)]) begin
+          if(i == m_addr[ADDR_W-1 -: N_SLAVES_W]) begin
              s_valid[i] = m_valid;           
              m_ready = s_ready[i];
-             s_addr[(i+1)*ADDR_W -: ADDR_W] = m_addr;
+             s_addr[(i+1)*P_ADDR_W-1 -: P_ADDR_W] = m_addr[P_ADDR_W-1:0];
              m_rdata = s_rdata[(i+1)*DATA_W -: DATA_W];
              s_wdata[(i+1)*DATA_W -: DATA_W] = m_wdata;
              s_wstrb[(i+1)*(DATA_W/8) -: DATA_W/8] = m_wstrb;

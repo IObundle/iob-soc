@@ -111,12 +111,10 @@ module system
       .d_wstrb (m_d_wstrb)
       );   
 
-`ifdef USE_BOOT
    //
    //BOOT FLAG
    //
    wire                             boot;
-`endif
 
    //   
    // SPLIT INSTRUCTION BUS INTO INTERNAL MEMORY AND CACHE BUSES
@@ -133,14 +131,15 @@ module system
    wire [`ADDR_W-1:0]               icache_addr;
    wire [`DATA_W-1:0]               icache_rdata;
 
-    //splitter 
+    //splitter between int mem and cache (instr)
    sm2ms_interconnect 
      #(
 `ifdef USE_DDR
        .N_SLAVES(2),
        .ADDR_W(33)
 `else  
-       .N_SLAVES(1)
+       .N_SLAVES(1),
+       .ADDR_W(32)
 `endif
        )
        ibus_intercon
@@ -159,7 +158,7 @@ module system
       
       // slaves interface
 `ifdef USE_DDR
- `ifdef USE_RAM
+ `ifdef USE_BOOT
       .s_valid ({icache_valid, int_mem_i_valid}),
       .s_ready ({icache_ready, int_mem_i_ready}),
       .s_addr  ({icache_addr,  int_mem_i_addr}),
@@ -198,7 +197,7 @@ module system
    wire [`DATA_W/8-1:0]             dmem_wstrb;
 
    //peripheral bus
-   wire [`ADDR_W-2:0]               p_addr;
+   wire [`MEM_ADDR_W-1:0]           p_addr;
    wire                             p_valid;
    wire                             p_ready;
    wire [`DATA_W-1:0]               p_rdata;
@@ -249,14 +248,15 @@ module system
  
 
 
-      //splitter 
+   //splitter between int mem and cache (data) 
    sm2ms_interconnect 
      #(
 `ifdef USE_DDR
        .N_SLAVES(2),
+       .ADDR_W(`ADDR_W)
 `else  
        .N_SLAVES(1),
-       .ADDR_W(31)
+       .ADDR_W(`MEM_ADDR_W)
 `endif
        )
        dmembus_intercon
@@ -275,7 +275,7 @@ module system
       
       // slaves interface
 `ifdef USE_DDR
- `ifdef USE_RAM
+ `ifdef USE_BOOT
       .s_valid ({dcache_valid, int_mem_d_valid}),
       .s_ready ({dcache_ready, int_mem_d_ready}),
       .s_addr  ({dcache_addr,  int_mem_d_addr}),
@@ -305,14 +305,6 @@ module system
    //INTERNAL MEMORY
    //
    
-   //peripheral bus
-   wire [`ADDR_W-1:0]               int_mem_p_addr;
-   wire                             int_mem_p_valid;
-   wire                             int_mem_p_ready;
-   wire [`DATA_W-1:0]               int_mem_p_rdata;
-   wire [`DATA_W-1:0]               int_mem_p_wdata;
-   wire [`DATA_W/8-1:0]             int_mem_p_wstrb;
-   
    //
    // INTERNAL SRAM MEMORY
    //
@@ -320,9 +312,7 @@ module system
      (
       .clk                (clk ),
       .rst                (reset_int),
-`ifdef USE_BOOT
       .boot               (boot),
-`endif
 
       // instruction bus
       .i_valid              (int_mem_i_valid),
@@ -339,12 +329,12 @@ module system
       .d_wstrb              (int_mem_d_wstrb),
 
       //peripheral bus
-      .p_valid              (int_mem_p_valid),
-      .p_ready              (int_mem_p_ready),
-      .p_addr               (int_mem_p_addr[`BOOTRAM_ADDR_W-1:2]),
-      .p_rdata              (int_mem_p_rdata),
-      .p_wdata              (int_mem_p_wdata),
-      .p_wstrb              (int_mem_p_wstrb)
+      .p_valid              (s_valid[`SRAM_BASE]),
+      .p_ready              (s_ready[`SRAM_BASE]),
+      .p_addr               (s_addr[(`SRAM_BASE+1)*`P_ADDR_W-1-(`P_ADDR_W-`BOOTRAM_ADDR_W)-2 -: `BOOTRAM_ADDR_W-2]),
+      .p_rdata              (s_rdata[(`SRAM_BASE+1)*`DATA_W-1 -: `DATA_W]),
+      .p_wdata              (s_wdata[(`SRAM_BASE+1)*`DATA_W-1 -: `DATA_W]),
+      .p_wstrb              (s_wstrb[(`SRAM_BASE+1)*`DATA_W/8-1 -: `DATA_W/8])
       );
    
 `ifdef USE_DDR
@@ -474,18 +464,19 @@ module system
    // PERIPHERALS
    //
 
+   
    //slaves interface
    wire [`N_SLAVES-1:0]             s_valid;
    wire [`N_SLAVES-1:0]             s_ready;
-   wire [`N_SLAVES*(`ADDR_W-1-`N_SLAVES_W)-1:0] s_addr;
-   wire [`N_SLAVES*`DATA_W-1:0]                 s_rdata;
-   wire [`N_SLAVES*`DATA_W-1:0]                 s_wdata;
-   wire [`N_SLAVES*`DATA_W/8-1:0]               s_wstrb;
+   wire [`N_SLAVES*`P_ADDR_W-1:0]   s_addr;
+   wire [`N_SLAVES*`DATA_W-1:0]     s_rdata;
+   wire [`N_SLAVES*`DATA_W-1:0]     s_wdata;
+   wire [`N_SLAVES*`DATA_W/8-1:0]   s_wstrb;
    
    // peripheral interconnect
    sm2ms_interconnect 
      #(
-       .ADDR_W(31),
+       .ADDR_W(`MEM_ADDR_W),
        .N_SLAVES(`N_SLAVES)
        )
    p_intercon
@@ -518,7 +509,7 @@ module system
       //cpu interface
       .valid     (s_valid[`UART_BASE]),
       .ready     (s_ready[`UART_BASE]),
-      .address   (s_addr[(`UART_BASE+1)*`ADDR_W-(`ADDR_W-`UART_ADDR_W)-1 -: `UART_ADDR_W]),
+      .address   (s_addr[(`UART_BASE+1)*`P_ADDR_W-1-(`P_ADDR_W-`UART_ADDR_W-2) -: `UART_ADDR_W]),
       .data_out  (s_rdata[(`UART_BASE+1)*`DATA_W-1 -: `DATA_W]),
       .data_in   (s_wdata[(`UART_BASE+1)*`DATA_W-1 -: `DATA_W]),
       .write     (s_wstrb[(`UART_BASE+1)*`DATA_W/8-1 -: `DATA_W/8] != 0),                 
@@ -530,7 +521,6 @@ module system
       .cts       (uart_cts)
       );
    
-`ifdef USE_BOOT
    //
    // RESET CONTROLLER
    //
@@ -549,6 +539,5 @@ module system
       .wdata(s_wdata[`SOFT_RESET_BASE*`DATA_W-1 -: `DATA_W]),
       .write(s_wstrb[`SOFT_RESET_BASE*`DATA_W/8-1 -: `DATA_W/8] != 0)
       );
-`endif   
 
 endmodule
