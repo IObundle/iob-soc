@@ -219,10 +219,12 @@ module system_tb;
 `ifdef USE_DDR
    axi_ram 
  #(
-            `ifndef USE_BOOT
-	      .FILE("firmware.dat"),
-              .FILE_SIZE(2**(`MAINRAM_ADDR_W-2)),
-            `endif
+ `ifdef USE_BOOT
+	      .FILE("none"),
+ `else
+	      .FILE("firmware"),
+`endif
+              .FILE_SIZE(2**(`DDR_ADDR_W-2)),
               .DATA_WIDTH (`DATA_W),
               .ADDR_WIDTH (`MAINRAM_ADDR_W)
               )

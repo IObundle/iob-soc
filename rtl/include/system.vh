@@ -9,17 +9,12 @@
 
 //`define DARKRV
 
-//Optional memories (passed as command line macro)
-`define USE_RAM
-`define INIT_RAM
-
-//`define USE_DDR
-//`define INIT_DDR
-
-//`define USE_BOOT
-
 //main memory address space (log2 of byte size)
 `define MAINRAM_ADDR_W 13
+
+//`define USE_DDR
+
+//`define USE_BOOT
 
 // SLAVES
 `define N_SLAVES 3
@@ -34,10 +29,6 @@
 `define UART_BASE 2
 
 
-
-
-
-
 //////////////////////////////////////////////////////////////////////////
 //DO NOT EDIT BEYOND HERE
 //
@@ -47,12 +38,10 @@
 `define MEM_ADDR_W 31
 //peripherals address width
 `define P_ADDR_W (`MEM_ADDR_W-`N_SLAVES_W)
+//boot ROM address width
+`define BOOTROM_ADDR_W 12
 //data width
 `define DATA_W 32
-
-
-//boot rom memory address space (log2 of byte size)
-`define BOOTROM_ADDR_W 12
 
 //definitions to be passed to software
 //peripheral base addresses
@@ -60,11 +49,3 @@
 `define SOFT_RESET ((1<<31) | (SOFT_RESET_BASE<<(ADDR_W-N_SLAVES_W-1)))
 `define DDR ((1<<31) | (DDR_BASE<<(DATA_W-N_SLAVES_W-1)))
 `define SRAM ((1<<31) | (SRAM_BASE<<(DATA_W-N_SLAVES_W-1)))
-
-//internal memory address space (log2 of byte size)
-//this code is just copied to system.h; not used in the verilog code
-`ifdef USE_DDR
- `define RAM_ADDR_W (BOOTROM_ADDR_W+1)
-`else
- `define RAM_ADDR_W MAINRAM_ADDR_W 
-`endif

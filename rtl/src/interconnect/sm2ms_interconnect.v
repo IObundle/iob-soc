@@ -28,15 +28,8 @@ module sm2ms_interconnect
    parameter N_SLAVES_W = $clog2(N_SLAVES);
    parameter P_ADDR_W = ADDR_W-$clog2(N_SLAVES);
    
-   integer                               i;
-   always @* begin
-      s_valid = {N_SLAVES{1'b0}};
-      m_ready = 1'b0;
-      s_addr = {N_SLAVES*ADDR_W{1'b0}};
-      m_rdata = {DATA_W{1'b0}};
-      s_wdata = {N_SLAVES*DATA_W{1'b0}};
-      s_wstrb = {N_SLAVES*(DATA_W/8){1'b0}};
-      
+   reg [N_SLAVES_W-1:0]                                 i;
+   always @* begin      
       if(N_SLAVES == 1) begin
          s_valid = m_valid;           
          m_ready = s_ready;
@@ -50,10 +43,17 @@ module sm2ms_interconnect
              s_valid[i] = m_valid;           
              m_ready = s_ready[i];
              s_addr[(i+1)*P_ADDR_W-1 -: P_ADDR_W] = m_addr[P_ADDR_W-1:0];
-             m_rdata = s_rdata[(i+1)*DATA_W -: DATA_W];
-             s_wdata[(i+1)*DATA_W -: DATA_W] = m_wdata;
-             s_wstrb[(i+1)*(DATA_W/8) -: DATA_W/8] = m_wstrb;
+             m_rdata = s_rdata[(i+1)*DATA_W-1 -: DATA_W];
+             s_wdata[(i+1)*DATA_W-1 -: DATA_W] = m_wdata;
+             s_wstrb[(i+1)*(DATA_W/8)-1 -: DATA_W/8] = m_wstrb;
+          end else begin
+             s_valid[i] = 1'b0;
+             m_ready = 1'b0;
+             s_addr[(i+1)*P_ADDR_W-1 -: P_ADDR_W] = {P_ADDR_W-1{1'b0}};
+             m_rdata = {DATA_W{1'b0}};
+             s_wdata[(i+1)*DATA_W-1 -: DATA_W] = {N_SLAVES*DATA_W{1'b0}};
+             s_wstrb[(i+1)*(DATA_W/8)-1 -: DATA_W/8] = {N_SLAVES*(DATA_W/8){1'b0}};
           end
-   end
-
+   end // always @ *
+   
 endmodule

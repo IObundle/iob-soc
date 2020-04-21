@@ -8,6 +8,8 @@ FIRM_DIR := $(ROOT_DIR)/software/firmware
 BOOT_DIR := $(ROOT_DIR)/software/bootloader
 PYTHON_DIR := $(ROOT_DIR)/software/python
 RTL_DIR := $(ROOT_DIR)/rtl
+SRC_DIR := $(RTL_DIR)/src
+
 
 SUBMODULES_DIR := $(ROOT_DIR)/submodules
 RISCV_DIR := $(SUBMODULES_DIR)/iob-rv32
@@ -27,7 +29,19 @@ TB_DEFINE += -DUART_CLK_FREQ=$(FREQ)
 VLOG = iverilog -W all -g2005-sv -DVCD
 
 #hardware sources
-VSRC = $(RTL_DIR)/testbench/system_tb.v  $(RTL_DIR)/src/*.v $(RTL_DIR)/src/memory/rom.v $(RTL_DIR)/src/memory/ram.v $(RISCV_DIR)/picorv32.v $(UART_DIR)/rtl/src/iob-uart.v $(CACHE_DIR)/rtl/src/gen_mem_reg.v $(CACHE_DIR)/rtl/src/iob-cache.v $(AXI_RAM_DIR)/rtl/axi_ram.v $(MEM_DIR)/tdp_mem/iob_tdp_mem.v $(MEM_DIR)/afifo/afifo.v
+VSRC = \
+$(RTL_DIR)/testbench/system_tb.v \
+$(SRC_DIR)/*.v \
+$(SRC_DIR)/memory/*.v  \
+$(SRC_DIR)/interconnect/*.v  \
+$(SRC_DIR)/bitlib/*.v  \
+$(RISCV_DIR)/picorv32.v \
+$(UART_DIR)/rtl/src/iob-uart.v \
+$(CACHE_DIR)/rtl/src/gen_mem_reg.v \
+$(CACHE_DIR)/rtl/src/iob-cache.v \
+$(AXI_RAM_DIR)/rtl/axi_ram.v \
+$(MEM_DIR)/tdp_mem/iob_tdp_mem.v \
+$(MEM_DIR)/afifo/afifo.v
 
 all: $(VSRC) console.vh firmware boot
 	$(VLOG) $(HW_INCLUDE) $(TB_DEFINE) $(VSRC)
