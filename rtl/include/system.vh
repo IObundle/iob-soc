@@ -42,6 +42,11 @@
 `define BOOTROM_ADDR_W 12
 //data width
 `define DATA_W 32
+//concat bus widths
+`define IBUS_REQ_W (1+`ADDR_W)
+`define DBUS_REQ_W (1+`ADDR_W+`DATA_W+`DATA_W/8)
+`define BUS_RESP_W (1+`DATA_W)
+
 
 //concat bus lengths
 //memory
