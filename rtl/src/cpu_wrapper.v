@@ -2,39 +2,61 @@
 `include "system.vh"
 
 module cpu_wrapper (
-                    input 		 clk,
-                    input 		 rst,
-                    output 		 trap,
+                    input                    clk,
+                    input                    rst,
+                    output                   trap,
 
                     // instruction bus
-                    output 		 i_valid,
-                    input 		 i_ready,
-                    output [`ADDR_W-1:0] i_addr,
-                    input [`DATA_W-1:0]  i_data,
+                    input [`BUS_RESP_W-1:0]  i_bus_in,
+                    output [`IBUS_REQ_W-1:0] i_bus_out,
 
                     // data bus
-                    input 		 d_ready,
-                    output [`ADDR_W-1:0] d_addr,
-                    input [`DATA_W-1:0]  d_rdata,
-                    output [`DATA_W-1:0] d_wdata,
-                    output [3:0] 	 d_wstrb,
-                    output 		 d_valid
+                    input [`BUS_RESP_W-1:0]  d_bus_in,
+                    output [`DBUS_REQ_W-1:0] d_bus_out
                     );
 
+   // instruction bus
+   wire                                      i_valid;
+   wire                                      i_ready;
+   wire [`ADDR_W-1:0]                        i_addr;
+   wire [`DATA_W-1:0]                        i_data;
+
+   // data bus
+   wire                                      d_ready;
+   wire [`ADDR_W-1:0]                        d_addr;
+   wire [`DATA_W-1:0]                        d_rdata;
+   wire [`DATA_W-1:0]                        d_wdata;
+   wire [`DATA_W/8-1:0]                      d_wstrb;
+   wire                                      d_valid;
+
+   uncat i_bus (
+                .resp_bus_in (i_bus_in),
+                .resp_ready  (i_ready),
+                .resp_data   (i_data)
+                );
+
+   uncat d_bus (
+                .resp_bus_in (d_bus_in),
+                .resp_ready  (d_ready),
+                .resp_data   (d_rdata)
+                );
+
+   assign i_bus_out = {i_valid, i_addr};
+   assign d_bus_out = {d_valid, d_addr, d_wdata, d_wstrb};
 
 `ifdef PICORV32
    wire                                  m_instr;
    wire                                  m_valid;
    wire                                  m_ready;
-   wire [`ADDR_W-1:0] 			 m_addr;
+   wire [`ADDR_W-1:0]                    m_addr;
    wire [`DATA_W-1:0]                    m_rdata;
-   wire [`DATA_W-1:0] 			 m_wdata;
-   wire [3:0] 				 m_wstrb; 				 
+   wire [`DATA_W-1:0]                    m_wdata;
+   wire [3:0]                            m_wstrb; 				 
 
  `ifdef USE_LA_IF
    wire                                  la_read;
-   wire 				 la_write;
-   wire [3:0] 				 la_wstrb;
+   wire                                  la_write;
+   wire [3:0]                            la_wstrb;
  `endif
 
    //instruction bus

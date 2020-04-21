@@ -26,6 +26,20 @@ module system_tb;
    reg [31:0]   uart_di;
    reg [31:0]   uart_do;
 
+   // Instuction bus
+   wire               i_ready;
+   wire               i_valid;
+   wire [`ADDR_W-1:0] i_addr;
+   wire [`DATA_W-1:0] i_data;
+
+   // Data bus
+   wire                 d_ready;
+   wire                 d_valid;
+   wire [`ADDR_W-1:0]   d_addr;
+   wire [`DATA_W-1:0]   d_rdata;
+   wire [`DATA_W-1:0]   d_wdata;
+   wire [`DATA_W/8-1:0] d_wstrb;
+
    //cpu to receive getchar
    reg [7:0]    cpu_char = 0;
    
@@ -276,7 +290,30 @@ module system_tb;
                  .s_axi_rlast    (ddr_rlast),
 		 .s_axi_rvalid   (ddr_rvalid)
                  );   
-`endif   
+`endif
+
+   uncat i_bus (
+                .i_req_bus_in (uut.cpu_wrapper.i_bus_out),
+                .i_req_valid  (i_valid),
+                .i_req_addr   (i_addr),
+
+                .resp_bus_in  (uut.cpu_wrapper.i_bus_in),
+                .resp_ready   (i_ready),
+                .resp_data    (i_data)
+                );
+
+   uncat d_bus (
+                .d_req_bus_in (uut.cpu_wrapper.i_bus_out),
+                .d_req_valid  (d_valid),
+                .d_req_addr   (d_addr),
+                .d_req_wdata  (d_wdata),
+                .d_req_wstrb  (d_wstrb),
+
+                .resp_bus_in  (uut.cpu_wrapper.d_bus_in),
+                .resp_ready   (d_ready),
+                .resp_data    (d_rdata)
+                );
+
    //
    // CPU TASKS
    //
