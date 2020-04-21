@@ -43,6 +43,17 @@
 //data width
 `define DATA_W 32
 
+//concat bus lengths
+//memory
+`define IBUS_REQ_W (1+`ADDR_W)
+`define DBUS_REQ_W (1+`ADDR_W-$clog2(N)+`DATA_W+`DATA_W/8)
+`define BUS_RESP_W (1+`DATA_W)
+
+//peripherals
+`define PBUS_REQ_W(N) N*(1+`ADDR_W-$clog2(N)+`DATA_W+`DATA_W/8)
+`define PBUS_RESP_W(N) N*(1+`DATA_W)
+
+
 //definitions to be passed to software
 //peripheral base addresses
 `define UART ((1<<31) | (UART_BASE<<(DATA_W-N_SLAVES_W-1)))
