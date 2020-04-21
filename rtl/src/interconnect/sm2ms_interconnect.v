@@ -6,29 +6,55 @@ module sm2ms_interconnect
     parameter ADDR_W = 32,
     parameter DATA_W = 32
     )
- 
    (
-    //master interface
-    input                                               m_valid,
-    output reg                                          m_ready,
-    input [ADDR_W-1:0]                                  m_addr,
-    output reg [DATA_W-1:0]                             m_rdata,
-    input [DATA_W-1:0]                                  m_wdata,
-    input [DATA_W/8-1:0]                                m_wstrb,
+    // master interface
+    input [`DBUS_REQ_W-1:0]  m_bus_in,
+    output [`BUS_RESP_W-1:0] m_bus_out,
 
-    //slaves interface
-    output reg [N_SLAVES-1:0]                           s_valid,
-    input [N_SLAVES-1:0]                                s_ready,
-    output reg [N_SLAVES*(ADDR_W-$clog2(N_SLAVES))-1:0] s_addr,
-    input [N_SLAVES*DATA_W-1:0]                         s_rdata,
-    output reg [N_SLAVES*DATA_W-1:0]                    s_wdata,
-    output reg [N_SLAVES*(DATA_W/8)-1:0]                s_wstrb
+    // slaves interface
+    input [`BUS_RESP_W-1:0]  s_bus_in,
+    output [`DBUS_REQ_W-1:0] s_bus_out
     );
  
    parameter N_SLAVES_W = $clog2(N_SLAVES);
    parameter P_ADDR_W = ADDR_W-$clog2(N_SLAVES);
-   
-   reg [N_SLAVES_W-1:0]                                 i;
+
+   // Master bus
+   wire                                         m_valid;
+   reg                                          m_ready;
+   wire [ADDR_W-1:0]                            m_addr;
+   reg [DATA_W-1:0]                             m_rdata;
+   wire [DATA_W-1:0]                            m_wdata;
+   wire [DATA_W/8-1:0]                          m_wstrb;
+
+   // Slave bus
+   reg [N_SLAVES-1:0]                           s_valid;
+   wire [N_SLAVES-1:0]                          s_ready;
+   reg [N_SLAVES*(ADDR_W-$clog2(N_SLAVES))-1:0] s_addr;
+   wire [N_SLAVES*DATA_W-1:0]                   s_rdata;
+   reg [N_SLAVES*DATA_W-1:0]                    s_wdata;
+   reg [N_SLAVES*(DATA_W/8)-1:0]                s_wstrb;
+
+   reg [N_SLAVES_W-1:0]                         i;
+
+   uncat m_bus (
+                .d_req_bus_in (m_bus_in),
+                .d_req_valid  (m_valid),
+                .d_req_addr   (m_addr),
+                .d_req_wdata  (m_wdata),
+                .d_req_wstrb  (m_wstrb)
+                );
+
+   assign m_bus_out = {m_ready, m_rdata};
+
+   uncat s_bus (
+                .resp_bus_in  (s_bus_in),
+                .resp_ready   (s_ready),
+                .resp_data    (s_rdata)
+                );
+
+   assign s_bus_out = {s_valid, s_addr, s_wdata, s_wstrb};
+
    always @* begin      
       if(N_SLAVES == 1) begin
          s_valid = m_valid;           
