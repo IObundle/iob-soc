@@ -1,0 +1,87 @@
+#! /usr/local/bin/vvp
+:ivl_version "10.3 (stable)" "(v10_2)";
+:ivl_delay_selection "TYPICAL";
+:vpi_time_precision - 12;
+:vpi_module "system";
+:vpi_module "vhdl_sys";
+:vpi_module "v2005_math";
+:vpi_module "va_math";
+S_0x556cd70d5a90 .scope module, "expand_word" "expand_word" 2 8;
+ .timescale -9 -12;
+    .port_info 0 /INPUT 4 "valid"
+    .port_info 1 /INPUT 4 "word_in"
+    .port_info 2 /OUTPUT 16 "cat_bus_out"
+P_0x556cd70d5c10 .param/l "M" 0 2 11, +C4<00000000000000000000000000000100>;
+P_0x556cd70d5c50 .param/l "N" 0 2 10, +C4<00000000000000000000000000000100>;
+L_0x556cd70efaa0 .functor AND 16, L_0x556cd70ef6c0, L_0x556cd70eed80, C4<1111111111111111>, C4<1111111111111111>;
+v0x556cd70ee7a0_0 .net "cat_bus_out", 15 0, L_0x556cd70efaa0;  1 drivers
+v0x556cd70ee8a0_0 .net "expanded_valid", 15 0, L_0x556cd70ef6c0;  1 drivers
+v0x556cd70ee960_0 .net "replicated", 15 0, L_0x556cd70eed80;  1 drivers
+o0x7fd6070f9198 .functor BUFZ 4, C4<zzzz>; HiZ drive
+v0x556cd70eea30_0 .net "valid", 3 0, o0x7fd6070f9198;  0 drivers
+o0x7fd6070f9378 .functor BUFZ 4, C4<zzzz>; HiZ drive
+v0x556cd70eeb20_0 .net "word_in", 3 0, o0x7fd6070f9378;  0 drivers
+L_0x556cd70eed80 .concat8 [ 4 4 4 4], L_0x556cd70d5fa0, L_0x556cd70d5e90, L_0x556cd709f6b0, L_0x556cd709f5a0;
+S_0x556cd709f0f0 .scope module, "expander" "expand_mask" 2 21, 3 8 0, S_0x556cd70d5a90;
+ .timescale -9 -12;
+    .port_info 0 /INPUT 4 "mask_in"
+    .port_info 1 /OUTPUT 16 "mask_out"
+P_0x556cd70d5cf0 .param/l "M" 0 3 11, +C4<00000000000000000000000000000100>;
+P_0x556cd70d5d30 .param/l "N" 0 3 10, +C4<00000000000000000000000000000100>;
+v0x556cd70ed660_0 .net "mask_in", 3 0, o0x7fd6070f9198;  alias, 0 drivers
+v0x556cd70ed760_0 .net "mask_out", 15 0, L_0x556cd70ef6c0;  alias, 1 drivers
+L_0x556cd70eefe0 .part o0x7fd6070f9198, 0, 1;
+L_0x556cd70ef200 .part o0x7fd6070f9198, 1, 1;
+L_0x556cd70ef400 .part o0x7fd6070f9198, 2, 1;
+L_0x556cd70ef6c0 .concat8 [ 4 4 4 4], L_0x556cd70ef080, L_0x556cd70ef2a0, L_0x556cd70ef530, L_0x556cd70ef8d0;
+L_0x556cd70ef830 .part o0x7fd6070f9198, 3, 1;
+S_0x556cd70c7ee0 .scope generate, "m_loop[0]" "m_loop[0]" 3 21, 3 21 0, S_0x556cd709f0f0;
+ .timescale -9 -12;
+P_0x556cd70c80b0 .param/l "i" 0 3 21, +C4<00>;
+v0x556cd70c6f00_0 .net *"_s0", 0 0, L_0x556cd70eefe0;  1 drivers
+v0x556cd70b3e90_0 .net *"_s1", 3 0, L_0x556cd70ef080;  1 drivers
+L_0x556cd70ef080 .concat [ 1 1 1 1], L_0x556cd70eefe0, L_0x556cd70eefe0, L_0x556cd70eefe0, L_0x556cd70eefe0;
+S_0x556cd70eca80 .scope generate, "m_loop[1]" "m_loop[1]" 3 21, 3 21 0, S_0x556cd709f0f0;
+ .timescale -9 -12;
+P_0x556cd70ecc90 .param/l "i" 0 3 21, +C4<01>;
+v0x556cd70c6430_0 .net *"_s0", 0 0, L_0x556cd70ef200;  1 drivers
+v0x556cd70c7040_0 .net *"_s1", 3 0, L_0x556cd70ef2a0;  1 drivers
+L_0x556cd70ef2a0 .concat [ 1 1 1 1], L_0x556cd70ef200, L_0x556cd70ef200, L_0x556cd70ef200, L_0x556cd70ef200;
+S_0x556cd70ecdd0 .scope generate, "m_loop[2]" "m_loop[2]" 3 21, 3 21 0, S_0x556cd709f0f0;
+ .timescale -9 -12;
+P_0x556cd70ecff0 .param/l "i" 0 3 21, +C4<010>;
+v0x556cd70c6fa0_0 .net *"_s0", 0 0, L_0x556cd70ef400;  1 drivers
+v0x556cd70ed0f0_0 .net *"_s1", 3 0, L_0x556cd70ef530;  1 drivers
+L_0x556cd70ef530 .concat [ 1 1 1 1], L_0x556cd70ef400, L_0x556cd70ef400, L_0x556cd70ef400, L_0x556cd70ef400;
+S_0x556cd70ed1d0 .scope generate, "m_loop[3]" "m_loop[3]" 3 21, 3 21 0, S_0x556cd709f0f0;
+ .timescale -9 -12;
+P_0x556cd70ed3c0 .param/l "i" 0 3 21, +C4<011>;
+v0x556cd70ed4a0_0 .net *"_s0", 0 0, L_0x556cd70ef830;  1 drivers
+v0x556cd70ed580_0 .net *"_s1", 3 0, L_0x556cd70ef8d0;  1 drivers
+L_0x556cd70ef8d0 .concat [ 1 1 1 1], L_0x556cd70ef830, L_0x556cd70ef830, L_0x556cd70ef830, L_0x556cd70ef830;
+S_0x556cd70ed8a0 .scope generate, "m_loop[0]" "m_loop[0]" 2 29, 2 29 0, S_0x556cd70d5a90;
+ .timescale -9 -12;
+P_0x556cd70eda90 .param/l "i" 0 2 29, +C4<00>;
+L_0x556cd70d5fa0 .functor BUFZ 4, o0x7fd6070f9378, C4<0000>, C4<0000>, C4<0000>;
+v0x556cd70edb50_0 .net *"_s1", 3 0, L_0x556cd70d5fa0;  1 drivers
+S_0x556cd70edc30 .scope generate, "m_loop[1]" "m_loop[1]" 2 29, 2 29 0, S_0x556cd70d5a90;
+ .timescale -9 -12;
+P_0x556cd70ede50 .param/l "i" 0 2 29, +C4<01>;
+L_0x556cd70d5e90 .functor BUFZ 4, o0x7fd6070f9378, C4<0000>, C4<0000>, C4<0000>;
+v0x556cd70edf10_0 .net *"_s1", 3 0, L_0x556cd70d5e90;  1 drivers
+S_0x556cd70edff0 .scope generate, "m_loop[2]" "m_loop[2]" 2 29, 2 29 0, S_0x556cd70d5a90;
+ .timescale -9 -12;
+P_0x556cd70ee1e0 .param/l "i" 0 2 29, +C4<010>;
+L_0x556cd709f6b0 .functor BUFZ 4, o0x7fd6070f9378, C4<0000>, C4<0000>, C4<0000>;
+v0x556cd70ee2c0_0 .net *"_s1", 3 0, L_0x556cd709f6b0;  1 drivers
+S_0x556cd70ee3a0 .scope generate, "m_loop[3]" "m_loop[3]" 2 29, 2 29 0, S_0x556cd70d5a90;
+ .timescale -9 -12;
+P_0x556cd70ee5e0 .param/l "i" 0 2 29, +C4<011>;
+L_0x556cd709f5a0 .functor BUFZ 4, o0x7fd6070f9378, C4<0000>, C4<0000>, C4<0000>;
+v0x556cd70ee6c0_0 .net *"_s1", 3 0, L_0x556cd709f5a0;  1 drivers
+# The file index is used to find the file name in the following table.
+:file_names 4;
+    "N/A";
+    "<interactive>";
+    "expand_word.v";
+    "expand_mask.v";
