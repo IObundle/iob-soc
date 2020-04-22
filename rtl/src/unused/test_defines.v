@@ -1,10 +1,11 @@
-`define a(x) wire x = 3;
+`define valid _valid
+`define a(x) wire [1:0] x`valid = 3;
 
 
 module tb;
 
-   `a(x)
+   `a(my)
    initial 
-     $display(x);
+     $display(my_valid);
    
 endmodule

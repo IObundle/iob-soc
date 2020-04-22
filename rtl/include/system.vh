@@ -42,22 +42,6 @@
 `define BOOTROM_ADDR_W 12
 //data width
 `define DATA_W 32
-//concat bus widths
-`define IBUS_REQ_W (1+`ADDR_W)
-`define DBUS_REQ_W (1+`ADDR_W+`DATA_W+`DATA_W/8)
-`define BUS_RESP_W (1+`DATA_W)
-
-
-//concat bus lengths
-//memory
-`define IBUS_REQ_W (1+`ADDR_W)
-`define DBUS_REQ_W (1+`ADDR_W-$clog2(N)+`DATA_W+`DATA_W/8)
-`define BUS_RESP_W (1+`DATA_W)
-
-//peripherals
-`define PBUS_REQ_W(N) N*(1+`ADDR_W-$clog2(N)+`DATA_W+`DATA_W/8)
-`define PBUS_RESP_W(N) N*(1+`DATA_W)
-
 
 //definitions to be passed to software
 //peripheral base addresses
@@ -65,3 +49,4 @@
 `define SOFT_RESET ((1<<31) | (SOFT_RESET_BASE<<(ADDR_W-N_SLAVES_W-1)))
 `define DDR ((1<<31) | (DDR_BASE<<(DATA_W-N_SLAVES_W-1)))
 `define SRAM ((1<<31) | (SRAM_BASE<<(DATA_W-N_SLAVES_W-1)))
+

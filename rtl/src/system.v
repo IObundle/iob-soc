@@ -1,5 +1,6 @@
 `timescale 1 ns / 1 ps
 `include "system.vh"
+`include "interconnect.vh"
 
 module system 
   (
@@ -74,15 +75,14 @@ module system
    //
    //  CPU
    //
+
    // instruction bus
-
-
-   wire [IBUS_REQ_W-1:0]            m_i_bus_req;
-   wire [IBUS_RESP_W-1:0]           m_i_bus_resp;
-
-   wire [DBUS_REQ_W-1:0]            m_d_bus_req;
-   wire [DBUS_RESP_W-1:0]           m_d_bus_resp;
+   `ibusreq_cat(cpu_bus)
+   `ibusresp_cat(cpu_bus)
    
+   // data bus
+   `dbusreq_cat(cpu_bus,1)
+   `dbusresp_cat(cpu_bus,1)
    
    cpu_wrapper cpu_wrapper 
      (
@@ -91,12 +91,12 @@ module system
       .trap    (trap),
       
       //instruction bus
-      i_bus_req(m_i_bus_req),
-      i_bus_resp(m_i_bus_resp),
+      i_bus_req(cpu_bus_i_req),
+      i_bus_resp(cpu_bus_i_resp),
  
       //data bus
-      d_bus_req(m_d_bus_req),
-      d_bus_resp(m_d_bus_resp)
+      d_bus_req(cpu_bus_d_req),
+      d_bus_resp(cpu_bus_d_resp)
       );   
 
    //
@@ -105,47 +105,46 @@ module system
    wire                             boot;
 
    //   
-   // INSTRUCTION BUS TO INTERNAL MEMORY AND/OR ICACHE
+   // SPLIT INSTRUCTION BUS TO INTERNAL MEMORY AND/OR CACHE
    //
-   //internal memory bus
-   wire [DBUS_REQ_W-1:0]            int_mem_i_bus_req;
-   wire [DBUS_RESP_W-1:0]           int_mem_i_bus_resp;
+   
+   //internal memory
+   `ibusreq_cat(int_mem)
+   `ibusresp_cat(int_mem)
  
-   //instruction cache bus
+   //cache
 `ifdef USE_DDR
-   wire [DBUS_REQ_W-1:0]            icache_i_bus_req;
-   wire [DBUS_RESP_W-1:0]           icache_i_bus_resp;
+   `ibusreq_cat(cache)
+   `ibusresp_cat(cache)
 `endif
 
-   //
-   // interconnect instruction bus to int mem and/or icache
-   //
+   //splitter
    sm2ms_interconnect 
      #(
 `ifdef USE_DDR  //connect to both
        .N_SLAVES_N(2),
-       .ADDR_W(`ADDR_W-2), //remove 2 lsbs
+       .ADDR_W(`ADDR_W),
        .E_ADDR_W(1), //add decision bit 
        .DATA_W(`DATA_W),
 `else  //connect only to intmem
        .N_SLAVES(1),
-       .ADDR_W(`ADDR_W-2) //remove 2 lsbs
+       .ADDR_W(`ADDR_W)
 `endif
        )
        ibus_intercon
      (
       // master interface
 `ifdef USE_DDR
-      .m_req ({~boot, m_i_bus_req})
+      .m_req ({~boot, cpu_bus_i_req})
 `else
-      .m_req (m_i_bus_req)
+      .m_req (cpu_bus_i_req)
 `endif
-      .m_resp (m_i_bus_resp)
+      .m_resp (cpu_bus_i_resp)
 
       // slaves interface
 `ifdef USE_DDR
-      .s_req ({icache_req, int_mem_i_req})
-      .s_resp({icache_resp, int_mem_i_resp})
+      .s_req ({cache_i_req, int_mem_i_req})
+      .s_resp({cache_i_resp, int_mem_i_resp})
  `else
       .s_req (int_mem_i_req)
       .s_resp(int_mem_i_resp)
@@ -154,49 +153,48 @@ module system
 
 
    //   
-   // DATA BUS TO MEMORY AND PERIPHERALS
+   // SPLIT DATA BUS TO MEMORY AND PERIPHERALS
    //
    
-   //data memory bus
-   wire [DBUS_REQ_W-1:0]            dmem_req;
-   wire [DBUS_RESP_W-1:0]           dmem_resp;
+   //memory
+   `dbusreq_cat(mem,2)
+   `dbusresp_cat(mem)
    
    //peripheral bus
-   wire [DBUS_REQ_W-1:0]            p_req;
-   wire [DBUS_RESP_W-1:0]           p_resp;
-
-
+   `dbusreq_cat(p,2)
+   `dbusresp_cat(p)
+   
    //splitter 
    sm2ms_interconnect
      #(
        .N_SLAVES(2),
        .ADDR_W(`ADDR_W)
        )
-dbus_intercon
+   dbus_intercon
      (
       // master interface
-      .m_req   (m_d_req),
-      .m_resp  (m_d_resp)
+      .m_req   (cpu_bus_d_req),
+      .m_resp  (cpu_bus_d_resp)
       
       // slaves interface
       // m_d_addr[`ADDR_W-1] selects peripherals (1) or data memory (0) 
-      .s_req ({p_req, dmem_req}),
-      .s_resp({p_req, dmem_resp})
+      .s_req ({p_d_req, mem_d_req}),
+      .s_resp({p_d_resp, mem_d_resp})
       );
 
 
    //   
-   // DATA MEMORY BUS TO INTERNAL MEMORY AND/OR DCACHE
+   // SPLIT DATA MEMORY BUS TO INTERNAL MEMORY AND/OR CACHE
    //
 
    //internal memory data bus
-   wire [DBUS_REQ_W-1:0]            int_mem_d_req;
-   wire [DBUS_RESP_W-1:0]           int_mem_d_resp;
-   
+   `dbusreq_cat(int_mem,2)
+   `dbusresp_cat(int_mem)
+      
    //data cache bus
 `ifdef USE_DDR
-   wire [DBUS_REQ_W-1:0]            dcache_req;
-   wire [DBUS_RESP_W-1:0]           dcache_resp;
+   `dbusreq_cat(cache,2)
+   `dbusresp_cat(cache)
  `endif
 
    //
@@ -206,26 +204,28 @@ dbus_intercon
      #(
 `ifdef USE_DDR
        .N_SLAVES(2),
-       .ADDR_W(`MEM_ADDR_W+1-2) //add selection bit remove 2 lsbs
- `else  
-       .N_SLAVES(1),
-       .ADDR_W(`MEM_ADDR_W-2) //keeps width
+       .ADDR_W(`MEM_ADDR_W+1) //add selection bit
+       .E_ADDR_W(1),
+       .DATA_W(`DATA_W),
+`else  
+       .N_SLAVES(1), 
+       .ADDR_W(`MEM_ADDR_W) //keeps address size
  `endif
        )
        dmembus_intercon
      (
       // master interface
 `ifdef USE_DDR
-      .m_req ({~boot, dmem_bus_req})
+      .m_req ({~boot, mem_d_req})
 `else
-      .m_req (demem_bus_req)
+      .m_req (mem_d_req)
 `endif
-      .m_resp (dmem_bus_resp)
+      .m_resp (mem_d_resp)
 
       // slaves interface
 `ifdef USE_DDR
-      .s_req ({dcache_req, int_mem_d_req})
-      .s_resp({dcache_resp, int_mem_d_resp})
+      .s_req ({cache_d_req, int_mem_d_req})
+      .s_resp({cache_d_resp, int_mem_d_resp})
  `else
       .s_req (int_mem_d_req)
       .s_resp(int_mem_d_resp)
@@ -240,11 +240,22 @@ dbus_intercon
    //
    // INTERNAL SRAM MEMORY
    //
+
+   //declare uart peripheral req and resp cat buses
+   `pbusreq_cat(int_mem, 2*`N_SLAVES)
+   `pbusresp_cat(int_mem)
+
+   //unpack the req bus
+   `demux_preqbus(s, `UART_BASE, int_mem)
+
+   //pack the response bus
+   `mux_prespbus(int_mem, `UART_BASE, s)
+
    int_mem int_mem0 
      (
-      .clk                (clk ),
-      .rst                (reset_int),
-      .boot               (boot),
+      .clk                  (clk ),
+      .rst                  (reset_int),
+      .boot                 (boot),
 
       // instruction bus
       .i_req                (int_mem_i_req),
@@ -255,12 +266,8 @@ dbus_intercon
       .d_resp               (int_mem_d_resp),
 
       //peripheral bus
-      .p_req                (s_req[(`SRAM_BASE+1)*PBUS_REQ_W(`N_SLAVES)-1-(`P_ADDR_W-`MAINRAM_ADDR_W)-2 -: `MAINRAM_ADDR_W-2]),
-      .p_resp               (s_resp),
-      .p_addr               (s_addr[(`SRAM_BASE+1)*`P_ADDR_W-1-(`P_ADDR_W-`MAINRAM_ADDR_W)-2 -: `MAINRAM_ADDR_W-2]),
-      .p_rdata              (s_rdata[(`SRAM_BASE+1)*`DATA_W-1 -: `DATA_W]),
-      .p_wdata              (s_wdata[(`SRAM_BASE+1)*`DATA_W-1 -: `DATA_W]),
-      .p_wstrb              (s_wstrb[(`SRAM_BASE+1)*`DATA_W/8-1 -: `DATA_W/8])
+      .p_req                (int_mem_p_req),
+      .p_resp               (int_mem_p_resp),
       );
 
 
@@ -273,20 +280,13 @@ dbus_intercon
 `ifdef USE_DDR
 
    //peripheral access bus 
-   wire                             pcache_valid;
-   wire                             pcache_ready;
-   wire [`ADDR_W-1:0]               pcache_addr;
-   wire [`DATA_W-1:0]               pcache_rdata;
-   wire [`DATA_W-1:0]               pcache_wdata;
-   wire [`DATA_W/8-1:0]             pcache_wstrb;
-
+   wire [`DBUS_REQ_W(2)-1:0]        pcache_req;
+   wire [`DBUS_RESP_W(2)-1:0]       pcache_resp;
+ 
    //combined cache bus
-   wire                             cache_valid;
-   wire                             cache_ready;
-   wire [`ADDR_W-1:0]               cache_addr; 
-   wire [`DATA_W-1:0]               cache_rdata;
-   wire [`DATA_W-1:0]               cache_wdata;
-   wire [`DATA_W/8-1:0]             cache_wstrb;
+   wire [`DBUS_REQ_W(2)-1:0]        cache_req;
+   wire [`DBUS_RESP_W(2)-1:0]       cache_resp;
+
 
    //CACHE INTERCONNECT
    mm2ss_interconnect
@@ -295,27 +295,31 @@ dbus_intercon
        )
    cache_intercon
      (
-//      .clk(clk),
-  //    .rst(rst),
+      //    .clk(clk),
+      //    .rst(rst),
       
       //masters
-      .m_valid    ({pcache_valid, dcache_valid, icache_valid}),
-      .m_ready    ({pcache_ready, dcache_ready, icache_ready}),
-      .m_addr     ({pcache_addr,  dcache_addr,  icache_addr}),
-      .m_rdata    ({pcache_rdata, dcache_rdata, icache_rdata}),
-      .m_wdata    ({pcache_wdata, dcache_wdata, `DATA_W'd0}),
-      .m_wstrb    ({pcache_wstrb, dcache_wstrb, {`DATA_W/8{1'b0}}}),
+      .m_req      ({pcache_req, dcache_req, icache_req}),
+      .m_resp     ({pcache_resp, dcache_resp, icache_resp}),
 
       //slave
-      .s_valid    (cache_valid),
-      .s_ready    (cache_ready),
-      .s_addr     (cache_addr[`MAINRAM_ADDR_W-1:0]), 
-      .s_rdata    (cache_rdata),
-      .s_wdata    (cache_wdata),
-      .s_wstrb    (cache_wstrb)      
+      .s_req      (cache_req),
+      .s_resp     (cache_resp)
       );
 
 
+   //declare interconect signals
+   `bus(cache)
+
+   //uncat cache bus
+    uncat cache_bus (
+                     .resp_bus_in (cache_resp),
+                     .resp_ready  (cache_ready),
+                     .resp_data   (cache_rdata)
+                     );
+
+
+   
    //single cache instance
    iob_cache #(
                .ADDR_W(`MAINRAM_ADDR_W)
@@ -393,13 +397,9 @@ dbus_intercon
    //
    // PERIPHERALS
    //
-   wire [`DBUS_REQ_W(2)-1:0]        p_req;   
-   wire [`BUS_RESP_W-1:0]           p_resp;
-   
-   
-   //slaves interface
-   wire [`PBUS_REQ_W(`N_SLAVES)-1:0] s_req;
-   wire [`PBUS_RESP_W(`N_SLAVES)-1:0] s_resp;
+
+   pbusreq_cat(s,`N_SLAVES)
+   pbusresp_cat(s,`N_SLAVES)
    
    // peripheral interconnect
    sm2ms_interconnect 
@@ -410,37 +410,44 @@ dbus_intercon
    p_intercon
      (
       // master interface
-      .m_valid (p_valid),
-      .m_ready (p_ready),
-      .m_addr  (p_addr),
-      .m_rdata (p_rdata),
-      .m_wdata (p_wdata),
-      .m_wstrb (p_wstrb),
+      .m_req (p_d_req),
+      .m_resp (p_d_resp),
       
       // slaves interface
-      .s_valid (s_valid),
-      .s_ready (s_ready),
-      .s_addr  (s_addr),
-      .s_rdata (s_rdata),
-      .s_wdata (s_wdata),
-      .s_wstrb (s_wstrb)
+      .s_req (s_p_req),
+      .s_resp (s_p_resp)
       );
+
+   /////////////////////////////////////////////////////////////////////////
+
 
    //
    // UART
    //
+
+   //declare uart req and resp cat buses
+   `pbusreq_cat(uart, 2*`N_SLAVES)
+   `pbusresp_cat(uart)
+
+   //unpack the req bus
+   `unpack_preqbus(s, `UART_BASE, uart)
+
+   //pack the response bus
+   pack_prespbus(uart, `UART_BASE, s)
+
+
    iob_uart uart
      (
       .clk       (clk),
       .rst       (reset_int),
       
       //cpu interface
-      .valid     (s_valid[`UART_BASE]),
-      .ready     (s_ready[`UART_BASE]),
-      .address   (s_addr[(`UART_BASE+1)*`P_ADDR_W-1-(`P_ADDR_W-`UART_ADDR_W-2) -: `UART_ADDR_W]),
-      .data_out  (s_rdata[(`UART_BASE+1)*`DATA_W-1 -: `DATA_W]),
-      .data_in   (s_wdata[(`UART_BASE+1)*`DATA_W-1 -: `DATA_W]),
-      .write     (s_wstrb[(`UART_BASE+1)*`DATA_W/8-1 -: `DATA_W/8] != 0),                 
+      .valid     (uart_p_req_valid),
+      .address   (uart_p_req_addr),
+      .data_in   (uart_p_req_wdata),
+      .write     (uart_p_req_wstrb),                 
+      .data_out  (uart_p_resp_rdata),
+      .ready     (uart_p_resp_ready),
                  
       //RS232 interface
       .txd       (uart_txd),
@@ -448,10 +455,15 @@ dbus_intercon
       .rts       (uart_rts),
       .cts       (uart_cts)
       );
+
+
    
    //
    // RESET CONTROLLER
    //
+
+   //TODO USE CAT INTERFACE UNPACK INSIDE
+   
    rst_ctr rst_ctr0 
      (
       .clk(clk),
