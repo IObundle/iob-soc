@@ -34,10 +34,6 @@
 //
 //address width
 `define ADDR_W 32
-//memory address width
-`define MEM_ADDR_W 31
-//peripherals address width
-`define P_ADDR_W (`MEM_ADDR_W-`N_SLAVES_W)
 //boot ROM address width
 `define BOOTROM_ADDR_W 12
 //data width
