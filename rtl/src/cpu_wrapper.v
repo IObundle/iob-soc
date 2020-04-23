@@ -16,25 +16,24 @@ module cpu_wrapper (
                     );
 
    // instruction bus
+   `ibus_cat(bus, `ADDR_W, 1)
    `ibus_uncat(i, `ADDR_W)
 
+   assign bus_i[`BUS_RESP_W-1:0] = i_bus_in;
+
+   `connect_m_i(i, bus, `ADDR_W, 1, 0)
+
+   assign i_bus_out = `get_req_i(bus_i, `ADDR_W, 1, 0);
+
    // data bus
+   `dbus_cat(bus, `ADDR_W, 1)
    `dbus_uncat(d, `ADDR_W)
 
-   uncat i_bus (
-                .resp_bus_in (i_bus_in),
-                .resp_ready  (i_ready),
-                .resp_data   (i_rdata)
-                );
+   assign bus_d[`BUS_RESP_W-1:0] = d_bus_in;
 
-   uncat d_bus (
-                .resp_bus_in (d_bus_in),
-                .resp_ready  (d_ready),
-                .resp_data   (d_rdata)
-                );
+   `connect_m_d(d, bus, `ADDR_W, 1, 0)
 
-   assign i_bus_out = {i_valid, i_addr};
-   assign d_bus_out = {d_valid, d_addr, d_wdata, d_wstrb};
+   assign d_bus_out = `get_req_i(bus_d, `ADDR_W, 1, 0);
 
 `ifdef PICORV32
    wire                                  m_instr;
