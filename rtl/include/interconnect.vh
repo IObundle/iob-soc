@@ -7,6 +7,12 @@
 
 //`define DATA_W 32
 
+//BUS TYPES
+`define I 0
+`define D 1
+
+//TODO: insert type argument in macros after name 
+
 //CONCAT BUS WIDTHS
 `define IBUS_REQ_W(ADDR_W)   1+ADDR_W
 `define DBUS_REQ_W(ADDR_W)   1+ADDR_W+`DATA_W+`DATA_W/8
@@ -98,7 +104,7 @@ NAME[N*`BUS_RESP_W+(I+1)* `IBUS_REQ_W(ADDR_W)-1 -: `IBUS_REQ_W(ADDR_W)]\
 `define get_req_d (NAME, ADDR_W, N, I)\
 NAME[N*`BUS_RESP_W+(I+1)*`DBUS_REQ_W(ADDR_W)-1 -: `DBUS_REQ_W(ADDR_W)] 
 
-//`define get_resp(NAME, I) NAME[(I+1)*`IBUS_RESP_W-1 -: `IBUS_RESP_W]
+`define get_resp(NAME, I) NAME[(I+1)*`IBUS_RESP_W-1 -: `IBUS_RESP_W]
 
 
 ///////////////////////////////////////////////////////////////////////////////////
