@@ -2,37 +2,29 @@
 `include "system.vh"
 
 module cpu_wrapper (
-                    input                    clk,
-                    input                    rst,
-                    output                   trap,
+                    input                             clk,
+                    input                             rst,
+                    output                            trap,
 
                     // instruction bus
-                    input [`BUS_RESP_W-1:0]  i_bus_in,
-                    output [`IBUS_REQ_W-1:0] i_bus_out,
+                    input [`BUS_RESP_W-1:0]           i_bus_in,
+                    output [`IBUS_REQ_W(`ADDR_W)-1:0] i_bus_out,
 
                     // data bus
-                    input [`BUS_RESP_W-1:0]  d_bus_in,
-                    output [`DBUS_REQ_W-1:0] d_bus_out
+                    input [`BUS_RESP_W-1:0]           d_bus_in,
+                    output [`DBUS_REQ_W(`ADDR_W)-1:0] d_bus_out
                     );
 
    // instruction bus
-   wire                                      i_valid;
-   wire                                      i_ready;
-   wire [`ADDR_W-1:0]                        i_addr;
-   wire [`DATA_W-1:0]                        i_data;
+   `ibus_uncat(i, `ADDR_W)
 
    // data bus
-   wire                                      d_ready;
-   wire [`ADDR_W-1:0]                        d_addr;
-   wire [`DATA_W-1:0]                        d_rdata;
-   wire [`DATA_W-1:0]                        d_wdata;
-   wire [`DATA_W/8-1:0]                      d_wstrb;
-   wire                                      d_valid;
+   `dbus_uncat(d, `ADDR_W)
 
    uncat i_bus (
                 .resp_bus_in (i_bus_in),
                 .resp_ready  (i_ready),
-                .resp_data   (i_data)
+                .resp_data   (i_rdata)
                 );
 
    uncat d_bus (
@@ -71,7 +63,7 @@ module cpu_wrapper (
 
    //common
    assign m_ready = m_instr ? i_ready : d_ready;
-   assign m_rdata = m_instr? i_data : d_rdata;
+   assign m_rdata = m_instr? i_rdata : d_rdata;
 
 `endif
 
@@ -168,7 +160,7 @@ module cpu_wrapper (
 
                              // instruction bus
                              .IADDR(i_addr),
-                             .IDATA(i_data),
+                             .IDATA(i_rdata),
 
                              // data bus
                              .DADDR(d_addr),

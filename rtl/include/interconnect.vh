@@ -37,7 +37,7 @@
 //
 
 //IBUS
-`define ibus_cat(NAME, ADDR_W, N) wire [N*`IBUS_W(N)-1:0] NAME`i;
+`define ibus_cat(NAME, ADDR_W, N) wire [N*`IBUS_W(ADDR_W)-1:0] NAME`i;
 
 `define ibus_uncat(NAME, ADDR_W)\
 wire  NAME`valid;\
@@ -46,10 +46,10 @@ wire [`DATA_W-1:0] NAME`rdata;\
 wire NAME`ready;
 
 //DBUS
-`define dbus_cat(NAME, ADDR_W, N) wire [N*`DBUS_W(N)-1:0] NAME`d;
+`define dbus_cat(NAME, ADDR_W, N) wire [N*`DBUS_W(ADDR_W)-1:0] NAME`d;
 
 `define dbus_uncat(NAME, ADDR_W)\
-wire  NAMEvalid;\
+wire  NAME`valid;\
 wire [ADDR_W-1:0] NAME`addr;\
 wire [`DATA_W-1:0] NAME`wdata;\
 wire [`DATA_W/8-1:0] NAME`wstrb;\
@@ -61,20 +61,20 @@ wire NAME`ready;
 // CONNECT
 //
 
-`define connect_m2s_i(UNCAT, CAT, ADDR_W, N, I)\
+`define connect_m_i(UNCAT, CAT, ADDR_W, N, I)\
 assign CAT`i[N*`BUS_RESP_W+(I+1)*`IBUS_REQ_W(ADDR_W)-1]           = UNCAT`valid;\
 assign CAT`i[N*`BUS_RESP_W+(I+1)*`IBUS_REQ_W(ADDR_W)-1 -: ADDR_W] = UNCAT`addr;\
 assign UNCAT`rdata                                                = CAT`i[I*`BUS_RESP_W+`DATA_W -: `DATA_W];\
 assign UNCAT`ready                                                = CAT`i[I*`BUS_RESP_W];
 
-`define connect_s2m_i(UNCAT, CAT, ADDR_W, N, I)\
+`define connect_s_i(UNCAT, CAT, ADDR_W, N, I)\
 assign UNCAT`valid                                                = CAT`i[N*`BUS_RESP_W+(I+1)*`IBUS_REQ_W(ADDR_W)-1];\
 assign UNCAT`addr                                                 = CAT`i[N*`BUS_RESP_W+(I+1)*`IBUS_REQ_W(ADDR_W)-2 -: ADDR_W];\
 assign CAT`i[I*`BUS_RESP_W+`DATA_W -: `DATA_W]                    = UNCAT`rdata;\ 
 assign CAT`i[I*`BUS_RESP_W]                                       = UNCAT`ready;
 
 
-`define connect_m2s_d(UNCAT, CAT, ADDR_W, N, I)\
+`define connect_m_d(UNCAT, CAT, ADDR_W, N, I)\
 assign CAT`d[N*`BUS_RESP_W+(I+1)*`DBUS_REQ_W(ADDR_W)-1]                    = UNCAT`valid;\
 assign CAT`d[N*`BUS_RESP_W+(I+1)*`DBUS_REQ_W(ADDR_W)-1 -: ADDR_W]          = UNCAT`addr;\
 assign CAT`d[N*`BUS_RESP_W+(I+1)*`DBUS_REQ_W(ADDR_W)-1-ADDR_W -: `DATA_W]  = UNCAT`wdata;\
@@ -82,7 +82,7 @@ assign CAT`d[N*`BUS_RESP_W+(I+1)*`DBUS_REQ_W(ADDRW)-1-ADDR_W -: `DATA_W/8] = UNC
 assign UNCAT`rdata                                                         = CAT`d[I*`BUS_RESP_W+`DATA_W -: `DATA_W];\
 assign UNCAT`ready                                                         = CAT`d[I*`BUS_RESP_W];
 
-`define connect_s2m_d(UNCAT, CAT, ADDR_W, N, I)\
+`define connect_s_d(UNCAT, CAT, ADDR_W, N, I)\
 assign UNCAT`valid                              = CAT`d[N*`BUS_RESP_W+(I+1)*`DBUS_REQ_W(ADDR_W)-1];\
 assign UNCAT`addr                               = CAT`d[N*`BUS_RESP_W+(I+1)*`DBUS_REQ_W(ADDR_w)-2 -: ADDR_W];\
 assign UNCAT`wdata                              = CAT`d[N*`BUS_RESP_W+(I+1)*`DBUS_REQ_W(ADDR_w)-2-ADDR_W -: `DATA_W];\
