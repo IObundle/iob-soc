@@ -8,14 +8,13 @@
 //`define DATA_W 32
 
 //CONCAT BUS WIDTHS
-`define IBUS_W(ADDR_W)   1+ADDR_W+`DATA_W+1
-`define DBUS_W(ADDR_W)   1+ADDR_W+2*`DATA_W+`DATA_W/8+1
-
 `define IBUS_REQ_W(ADDR_W)   1+ADDR_W
 `define DBUS_REQ_W(ADDR_W)   1+ADDR_W+`DATA_W+`DATA_W/8
 
 `define BUS_RESP_W           `DATA_W+1
 
+`define IBUS_W(ADDR_W)   `IBUS_REQ_W(ADDR_W)+`BUS_RESP_W
+`define DBUS_W(ADDR_W)   `DBUS_REQ_W(ADDR_W)+`BUS_RESP_W
 
 //UNCAT BUS SUFFIXES
 //signals
