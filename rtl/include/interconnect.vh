@@ -114,4 +114,7 @@ wire [SRC_ADDR_W-1:0] SRC`addr = SRC[`DBUS_W(SRC_ADDR_W)-2 -: SRC_ADDR_W];\
 wire [DEST_ADDR_W-1:0] DEST`addr = {{DEST_ADDR_W-SRC_ADDR_W{1'b0}}, SRC`addr};\
 wire [`DBUS_W(DEST_ADDR_W)-1 : 0] DEST`r = {SRC[1+`DATA/8+2*`DATA_W+SRC_ADDR_W], DEST`addr, SRC[`DATA/8+2*`DATA_W : 0]};
 
+`define i2d (NAME, ADDR_W) wire [BUS_W(`D, ADDR_W)-1:0] NAME`d;
+
+
                                                                            

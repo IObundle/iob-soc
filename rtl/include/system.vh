@@ -9,12 +9,10 @@
 
 //`define DARKRV
 
-//main memory address space (log2 of byte size)
-`define MAINRAM_ADDR_W 13
-
 //`define USE_DDR
 
 //`define USE_BOOT
+`define SRAM_ADDR_W 13
 
 // SLAVES
 `define N_SLAVES 3
