@@ -34,3 +34,8 @@ void uart_printf(const char* fmt, ...);
 
 //Getchar
 char uart_getc();
+
+#ifdef PCSIM
+//itoa definition
+void itoa(int value, char* str, int base);
+#endif
