@@ -34,10 +34,8 @@ $(RTL_DIR)/testbench/system_tb.v \
 $(SRC_DIR)/*.v \
 $(SRC_DIR)/memory/*.v  \
 $(SRC_DIR)/interconnect/*.v  \
-$(SRC_DIR)/bitlib/*.v  \
 $(RISCV_DIR)/picorv32.v \
 $(UART_DIR)/rtl/src/iob-uart.v \
-$(CACHE_DIR)/rtl/src/gen_mem_reg.v \
 $(CACHE_DIR)/rtl/src/iob-cache.v \
 $(AXI_RAM_DIR)/rtl/axi_ram.v \
 $(MEM_DIR)/tdp_mem/iob_tdp_mem.v \

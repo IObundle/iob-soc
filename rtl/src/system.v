@@ -77,11 +77,11 @@ module system
    //
 
    // instruction cat bus
-   `bus_cat(`I, cpu, 1, `ADDR_W)
+   `bus_cat(`I, cpu_i, `ADDR_W, 1)
    // data cat bus
-   `bus_cat(`D, cpu, 1, `ADDR_W)
+   `bus_cat(`D, cpu_d, `ADDR_W, 1)
    //uncat bus
-   `bus_uncat(`D, cpu,  `ADDR_W)
+   `bus_uncat(`D, cpu_d, `ADDR_W)
    
    cpu_wrapper cpu_wrapper 
      (
@@ -94,12 +94,12 @@ module system
       .i_resp(`get_resp(cpu_i, 0)),
  
       //data bus
-      .d_req(`get_req_d(cpu_d, `ADDR_W, 1, 0)),
+      .d_req(`get_req(`D, cpu_d, `ADDR_W, 1, 0)),
       .d_resp(`get_resp(cpu_d, 0))
       );
 
-   `connect_m2s(`I, cpu, cpu, `ADDR_W, 1, 0)
-   `connect_m2s_d(cpu, cpu, `ADDR_W, 1, 0)
+   `connect_m(`I, cpu_i, cpu_i, `ADDR_W, 1, 0)
+   `connect_m(`D, cpu_d, cpu_d, `ADDR_W, 1, 0)
 
    //
    //BOOT FLAG
@@ -111,10 +111,10 @@ module system
    //
    
    //internal memory
-   `bus_cat(`I, int_mem, `ADDR_W, 1) 
+   `bus_cat(`I, int_mem_i, `ADDR_W, 1) 
    //cache
 `ifdef USE_DDR
-   `bus_cat(`I, cache, `ADDR_W, 1) 
+   `bus_cat(`I, cache_i, `ADDR_W, 1) 
 `endif
 
    //splitter
@@ -124,18 +124,18 @@ module system
 `ifndef USE_DDR  //connect to both
        .N_SLAVES(1),
 `endif
-       .ADDR_W(`ADDR_W),
+       .ADDR_W(`ADDR_W)
        )
    ibus_demux
      (
       // master interface
       .m_e_addr(boot),
       .m_req  (`get_req(`I, cpu_i, `ADDR_W, 1, 0)),
-      .m_resp ({`get_resp(cpu_i, 0)}),
+      .m_resp (`get_resp(cpu_i, 0)),
 
       // slaves interface
 `ifdef USE_DDR
-      .s_req ({`get_req(`I, int_mem_i, `ADDR_W-1, 1, 0)}, `get_req(`I, cache_i, `ADDR_W-1, 1, 0)),
+      .s_req ({`get_req(`I, int_mem_i, `ADDR_W-1, 1, 0), `get_req(`I, cache_i, `ADDR_W-1, 1, 0)}),
  `else
       .s_req (`get_req(`I, int_mem_i, `ADDR_W-1, 1, 0)),
 `endif
@@ -149,9 +149,9 @@ module system
 
    //demuxed buses
    //memory bus
-   `bus_cat(`D, mem,`ADDR_W-1, 1)
+   `bus_cat(`D, mem_d,`ADDR_W-1, 1)
    //peripheral bus
-   `bus_cat(`D, per_m, `ADDR_W-1, 1)
+   `bus_cat(`D, per_m_d, `ADDR_W-1, 1)
    
    //splitter 
    split
@@ -166,12 +166,12 @@ module system
       .m_e_addr(1'b0),
 
       // master interface
-      .m_req   (`get_req(`D, cpu_d, , `ADDR_W, 1, 0)),
-      .m_resp  (`get_resp(`D, cpu_d, `ADDR_W, 1, 0))
+      .m_req   (`get_req(`D, cpu_d, `ADDR_W, 1, 0)),
+      .m_resp  (`get_resp(cpu_d, 0)),
       
       // slaves interface
       .s_req ({`get_req(`D, mem_d, `ADDR_W-1, 1, 0), `get_req(`D, per_m_d, `ADDR_W-1, 1, 0)}),
-      .s_resp({`get_resp(mem_d, 0), `get_resp(per_m_d, 0)}),
+      .s_resp({`get_resp(mem_d, 0), `get_resp(per_m_d, 0)})
       );
 
 
@@ -181,7 +181,7 @@ module system
 
    //demuxed buses
    //internal memory data bus
-   `bus_cat(`D, int_mem, `ADDR_W-1, 1)
+   `bus_cat(`D, int_mem_d, `ADDR_W-1, 1)
    //data cache bus
 `ifdef USE_DDR
    `bus_cat(`D, cache_d, `ADDR_W-1, 1)
@@ -202,14 +202,14 @@ module system
      (
       // master interface
       .m_e_addr(boot),
-      .m_req (`get_req(`D, mem_d, `ADDR_W-1, 1, 0))
-      .m_resp (`get_resp(mem_d, 0))
+      .m_req (`get_req(`D, mem_d, `ADDR_W-1, 1, 0)),
+      .m_resp (`get_resp(mem_d, 0)),
 
       // slaves interface
 `ifdef USE_DDR
-      .s_req ({`get_req(`D, int_mem_d, `ADDR_W-2, 1, 0), `get_req(`D, cache_d, `ADDR_W-2, 1, 0)})
+      .s_req ({`get_req(`D, int_mem_d, `ADDR_W-2, 1, 0), `get_req(`D, cache_d, `ADDR_W-2, 1, 0)}),
  `else
-      .s_req (`get_req(`D, int_mem_d, `ADDR_W-2, 1, 0))
+      .s_req (`get_req(`D, int_mem_d, `ADDR_W-2, 1, 0)),
 `endif
       .s_resp(`get_resp(int_mem_d, 0))
       );
@@ -241,7 +241,7 @@ module system
 
       //peripheral bus
       .p_req                (`get_req(`D, per_s_d, `ADDR_W-1-`N_SLAVES, `N_SLAVES, `SRAM_BASE)),
-      .p_resp               (`get_resp(per_s_d,  `SRAM_BASE)),
+      .p_resp               (`get_resp(per_s_d,  `SRAM_BASE))
       );
 
 
@@ -257,7 +257,7 @@ module system
    `i2d(cache_i, `ADDR_W)
 
    //get cache peripheral bus and resize it
-   `bus_resize(`D, `get_req(`D, per_s_d, `ADDR_W-1-`N_SLAVES_W,`N_SLAVES, `DDR_BASE), cache_p, `ADDR_W)   
+   `bus_resize(`D, `get_req(`D, per_s_d, `ADDR_W-1-`N_SLAVES_W,`N_SLAVES, `DDR_BASE), cache_p, `ADDR_W)
 
    //declare cache frontend bus to be produced by mux
    `bus_cat(`D, cache_frontend, `ADDR_W, 1)
@@ -269,9 +269,6 @@ module system
        )
    cache_mux
      (
-      //    .clk(clk),
-      //    .rst(rst),
-      
       //masters
       .m_req      ({`get_req(`I, cache_i_d, `ADDR_W, 1, 0), `get_req(`D, cache_d, `ADDR_W, 1, 0),  `get_req(`D, cache_p_r, `ADDR_W, 1, 0)}),
       .m_resp     ({`get_resp(cache_i, 0), `get_resp(cache_d, 0), `get_resp(cache_p_r, 0)}),
@@ -286,7 +283,7 @@ module system
    `bus_uncat(`I, cache_uncat, `ADDR_W, 1)
 
    //connect uncat signals to cat bus
-   `connect_s2m(`D, cache_uncat, cache_r, `ADDR_W, 1, 0)
+   `connect_s(`D, cache_uncat, cache_r, `ADDR_W, 1, 0)
 
    
    //single cache instance
@@ -393,7 +390,7 @@ module system
    //
 
    //declare uart uncat bus
-   `bus_uncat(`D, uart, ADDR_W-1-`N_SLAVES_W)
+   `bus_uncat(`D, uart, `ADDR_W-1-`N_SLAVES_W)
 
    iob_uart uart
      (
@@ -421,7 +418,7 @@ module system
    // RESET CONTROLLER
    //
 
-   `bus_uncat(`D, rst_ctr, `ADDR-1-`N_SLAVES_W)
+   `bus_uncat(`D, rst_ctr, `ADDR_W-1-`N_SLAVES_W)
    
    rst_ctr rst_ctr0 
      (
@@ -436,7 +433,7 @@ module system
       .ready(rst_ctr_ready),
       .rdata(rst_ctr_rdata),
       .wdata(rst_ctr_wdata),
-      .write(rst_ctr_wstrb != 0)
+      .write(|rst_ctr_wstrb)
       );
 
 endmodule
