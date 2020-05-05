@@ -12,9 +12,8 @@ module iob_uart_tb;
    reg 			clk;
 
    reg [`UART_ADDR_W-1:0] addr;
-   reg                    sel;
+   reg                    valid;
    reg                    write;
-   reg                    read;
    reg [31:0]             data_in;
    wire [31:0]            data_out;
 
@@ -36,9 +35,8 @@ module iob_uart_tb;
 		 .clk			(clk),
 		 .rst			(rst),
                  
-		 .sel			(sel),
+		 .valid			(valid),
 		 .write			(write),
-		 .read			(read),
 		 .address		(addr),
 		 .data_in		(data_in),
 		 .data_out		(data_out),
@@ -59,8 +57,7 @@ module iob_uart_tb;
       rst = 1;
       clk = 1;
       write = 0;
-      read = 0;
-      sel = 0;
+      valid = 0;
       
       // deassert reset
       #100 @(posedge clk) rst = 0;
@@ -137,11 +134,11 @@ module iob_uart_tb;
       input [31:0]  cpu_data;
 
       #1 addr = cpu_address;
-      sel = 1;
+      valid = 1;
       write = 1;
       data_in = cpu_data;
       @ (posedge clk) #1 write = 0;
-      sel = 0;
+      valid = 0;
    endtask
 
    // 2-cycle read
@@ -150,9 +147,9 @@ module iob_uart_tb;
       output [31:0] read_reg;
 
       #1 addr = cpu_address;
-      sel = 1; read = 1;
+      valid = 1;
       @ (posedge clk) #1 read_reg = data_out;
-      @ (posedge clk) #1 sel = 0; read = 0;
+      @ (posedge clk) #1 valid = 0;
    endtask
 
 endmodule
