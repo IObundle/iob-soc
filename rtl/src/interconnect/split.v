@@ -1,5 +1,7 @@
 `timescale 1ns / 1ps
 
+`include "interconnect.vh"
+
 module split
   #(
     parameter TYPE = `D,
