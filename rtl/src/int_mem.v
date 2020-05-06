@@ -1,5 +1,6 @@
 `timescale 1 ns / 1 ps
 `include "system.vh"
+`include "interconnect.vh"
   
  //TODO USE CAT INTERFACE UNPACK INSIDE
 
@@ -10,16 +11,16 @@ module int_mem
    input                                                 boot,
 
    //instruction bus
-   input [BUS_REQ_W(`I, `SRAMADDR_W)-1:0]                i_req,
+   input [BUS_REQ_W(`I, `SRAM_ADDR_W)-1:0]               i_req,
    output [BUS_RESP_W-1:0]                               i_resp,
 
    //data bus
    input [BUS_REQ_W(`D, `SRAM_ADDR_W-1)-1:0]             d_req,
-   output [BUS_RESP_W-1:0]                               i_resp,
+   output [BUS_RESP_W-1:0]                               d_resp,
 
    //per bus
    input [BUS_REQ_W(`D, `SRAM_ADDR_W-1-`N_SLAVES_W)-1:0] p_req,
-   output [BUS_RESP_W-1:0]                               i_resp
+   output [BUS_RESP_W-1:0]                               p_resp
 
    );
 
@@ -64,7 +65,7 @@ module int_mem
    //connect rom interface to master interface while modifying address
    assign rom_m_valid = rom_valid;
    assign rom_m_ready;
-   assign [`MAINRAM_ADDR_W-3:0] rom_m_addr = rom_addr+{`MAINRAM_ADDR_W-2{1'b1}}-{`BOOTROM_ADDR_W-2{1'b1}};
+   assign [`SRAM_ADDR_W-3:0] rom_m_addr = rom_addr+{`SRAM_ADDR_W-2{1'b1}}-{`BOOTROM_ADDR_W-2{1'b1}};
    assign [`DATA_W-1:0] rom_m_rdata; //unused
    assign [`DATA_W-1:0] rom_m_wdata;
    assign [`DATA_W/8-1:0] rom_m_wstrb;
@@ -87,20 +88,20 @@ module int_mem
    //INSTRUCTION BUS
    //
    
-   `bus_uncat(`D, ram_i, `SRAM_ADDR_W)
+   `bus_uncat(`I, ram_i, `SRAM_ADDR_W)
  
    // modify instruction address during boot program execution
-   wire [`MAINRAM_ADDR_W-3:0] ram_i_addr = boot? i_addr+{`MAINRAM_ADDR_W-2{1'b1}}-{`BOOTROM_ADDR_W-2{1'b1}}: i_addr;
+   wire [`SRAM_ADDR_W-3:0] ram_i_addr = boot? i_addr+{`SRAM_ADDR_W-2{1'b1}}-{`BOOTROM_ADDR_W-2{1'b1}}: i_addr;
 
 
    //
    //DATA BUS 
    //
    
-   `bus_uncat(`D, ram, `SRAM_ADDR_W)
+   `bus_uncat(`D, ram_d, `SRAM_ADDR_W)
 
    // modify data address during boot program execution
-   wire [`MAINRAM_ADDR_W-3:0] mod_d_addr = boot? d_addr+{`MAINRAM_ADDR_W-2{1'b1}}-{`BOOTROM_ADDR_W-2{1'b1}}: d_addr;
+   wire [`SRAM_ADDR_W-3:0] mod_d_addr = boot? d_addr+{`SRAM_ADDR_W-2{1'b1}}-{`BOOTROM_ADDR_W-2{1'b1}}: d_addr;
      
    
    mm2ss_interconnect
@@ -110,7 +111,7 @@ module int_mem
 `else
        .N_MASTERS(2),
 `endif       
-       .ADDR_W(`MAINRAM_ADDR_W-2)
+       .ADDR_W(`SRAM_ADDR_W-2)
        )  
    ram_d_intercon
      (
@@ -135,7 +136,7 @@ module int_mem
          .FILE("firmware"),
  `endif
 `endif
-	 .ADDR_W(`MAINRAM_ADDR_W-2)
+	 .ADDR_W(`SRAM_ADDR_W-2)
 	 )
    boot_ram 
      (

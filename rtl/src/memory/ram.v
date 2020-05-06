@@ -6,56 +6,29 @@ module ram #(
              parameter FILE = "none"
 		     )
    (
-          input                    clk,
-          input                    rst,
+    input                 clk,
+    input                 rst,
 
-          // native interface
-          // intruction bus
-	      input [`IBUS_REQ_W-1:0]  i_bus_in,
-          output [`BUS_RESP_W-1:0] i_bus_out,
+    // native interface
+    // intruction bus
+    output reg            i_ready,
+    input                 i_valid,
+    input [ADDR_W-1:0]    i_addr,
+    output [`DATA_W-1:0]  i_rdata,
 
-          // data bus
-          input [`DBUS_REQ_W-1:0]  d_bus_in,
-          output [`BUS_RESP_W-1:0] d_bus_out
-	  );
+    // data bus
+    output reg            d_ready,
+    input                 d_valid,
+    input [ADDR_W-1:0]    d_addr,
+    output [`DATA_W-1:0]  d_rdata,
+    input [`DATA_W-1:0]   d_wdata,
+    input [`DATA_W/8-1:0] d_wstrb
+	);
 
    parameter file_suffix = {"3","2","1","0"};
    //parameter file_suffix = "3210"
 
-   // intruction bus
-   wire                            i_valid;
-   reg                             i_ready;
-   wire [ADDR_W-1:0]               i_addr;
-   wire [`DATA_W-1:0]              i_rdata;
-
-   // data bus
-   wire                            d_valid;
-   reg                             d_ready;
-   wire [`DATA_W-1:0]              d_wdata;
-   wire [ADDR_W-1:0]               d_addr;
-   wire [`DATA_W/8-1:0]            d_wstrb;
-   wire [`DATA_W-1:0]              d_rdata;
-
-   genvar                          i;
-
-   uncat #(
-           .IREQ_ADDR_W(ADDR_W),
-           .DREQ_ADDR_W(ADDR_W)
-           )
-   buses (
-          .i_req_bus_in (i_bus_in),
-          .i_req_valid  (i_valid),
-          .i_req_addr   (i_addr),
-
-          .d_req_bus_in (d_bus_in),
-          .d_req_valid  (d_valid),
-          .d_req_addr   (d_addr),
-          .d_req_wdata  (d_wdata),
-          .d_req_wstrb  (d_wstrb)
-          );
-
-   assign i_bus_out = {i_ready, i_rdata};
-   assign d_bus_out = {d_ready, d_rdata};
+   genvar                 i;
 
    for (i = 0; i < 4; i = i+1) begin : gen_main_mem_byte
 	  iob_t2p_mem #(

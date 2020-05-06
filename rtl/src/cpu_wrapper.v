@@ -1,39 +1,40 @@
 `timescale 1 ns / 1 ps
 `include "system.vh"
+`include "interconnect.vh"
 
 module cpu_wrapper (
-                    input                             clk,
-                    input                             rst,
-                    output                            trap,
+                    input                               clk,
+                    input                               rst,
+                    output                              trap,
 
                     // instruction bus
-                    input [`BUS_RESP_W-1:0]           i_bus_in,
-                    output [`IBUS_REQ_W(`ADDR_W)-1:0] i_bus_out,
+                    input [`BUS_RESP_W-1:0]             i_bus_in,
+                    output [`BUS_REQ_W(`I,`ADDR_W)-1:0] i_bus_out,
 
                     // data bus
-                    input [`BUS_RESP_W-1:0]           d_bus_in,
-                    output [`DBUS_REQ_W(`ADDR_W)-1:0] d_bus_out
+                    input [`BUS_RESP_W-1:0]             d_bus_in,
+                    output [`BUS_REQ_W(`D,`ADDR_W)-1:0] d_bus_out
                     );
 
    // instruction bus
-   `ibus_cat(bus, `ADDR_W, 1)
+   `bus_cat(`I, i_bus, `ADDR_W, 1)
    `ibus_uncat(i, `ADDR_W)
 
-   assign bus_i[`BUS_RESP_W-1:0] = i_bus_in;
+   assign i_bus[`BUS_RESP_W-1:0] = i_bus_in;
 
-   `connect_m_i(i, bus, `ADDR_W, 1, 0)
+   `connect_m(`I, i, i_bus, `ADDR_W, 1, 0)
 
-   assign i_bus_out = `get_req_i(bus_i, `ADDR_W, 1, 0);
+   assign i_bus_out = `get_req(`I, i_bus, `ADDR_W, 1, 0);
 
    // data bus
-   `dbus_cat(bus, `ADDR_W, 1)
+   `bus_cat(`D, d_bus, `ADDR_W, 1)
    `dbus_uncat(d, `ADDR_W)
 
-   assign bus_d[`BUS_RESP_W-1:0] = d_bus_in;
+   assign d_bus[`BUS_RESP_W-1:0] = d_bus_in;
 
-   `connect_m_d(d, bus, `ADDR_W, 1, 0)
+   `connect_m(`D, d, d_bus, `ADDR_W, 1, 0)
 
-   assign d_bus_out = `get_req_i(bus_d, `ADDR_W, 1, 0);
+   assign d_bus_out = `get_req(`D, d_bus, `ADDR_W, 1, 0);
 
 `ifdef PICORV32
    wire                                  m_instr;
@@ -42,12 +43,12 @@ module cpu_wrapper (
    wire [`ADDR_W-1:0]                    m_addr;
    wire [`DATA_W-1:0]                    m_rdata;
    wire [`DATA_W-1:0]                    m_wdata;
-   wire [3:0]                            m_wstrb; 				 
+   wire [`DATA_W/8-1:0]                  m_wstrb;
 
  `ifdef USE_LA_IF
    wire                                  la_read;
    wire                                  la_write;
-   wire [3:0]                            la_wstrb;
+   wire [`DATA_W/8-1:0]                  la_wstrb;
  `endif
 
    //instruction bus
@@ -113,7 +114,7 @@ module cpu_wrapper (
 
  `ifdef USE_LA_IF
    assign m_valid = la_read | la_write;
-   assign m_wstrb = la_wstrb & {4{la_write}};
+   assign m_wstrb = la_wstrb & {(`DATA_W/8){la_write}};
  `endif
 
    
@@ -122,15 +123,15 @@ module cpu_wrapper (
 
 `ifdef DARKRV
    wire 				 ready_hzrd;				 
-   wire                                  d_rd_en;
-   wire                                  d_wr_en;
-   wire [3:0] 				 BE;
+   wire                  d_rd_en;
+   wire                  d_wr_en;
+   wire [`DATA_W/8-1:0]  BE;
    reg 					 DACK=0;
    wire 				 DHIT;
    wire 				 HLT_riscv;
 
    assign d_valid = d_rd_en | d_wr_en;
-   assign d_wstrb = d_wr_en ? BE : 4'b0;
+   assign d_wstrb = d_wr_en ? BE : {(`DATA_W/8){1'b0}};
 
    assign DHIT = !((d_rd_en||d_wr_en) && DACK!=1);
    

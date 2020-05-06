@@ -9,31 +9,17 @@ module rom #(
     input                    clk,
     input                    rst,
 
-    input [`IBUS_REQ_W-1:0]  bus_in,
-    output [`BUS_RESP_W-1:0] bus_out
+    output reg               ready,
+    input                    valid,
+    input [ADDR_W-1:0]       addr,
+    output reg [`DATA_W-1:0] rdata
     );
    
    // this allows ISE 14.7 to work; do not remove
    parameter mem_init_file_int = FILE;
 
    // Declare the ROM
-   reg [`DATA_W-1:0]         rom[2**ADDR_W-1:0];
-
-   wire                      valid;
-   reg                       ready;
-   wire [ADDR_W-1:0]         addr;
-   reg [`DATA_W-1:0]         rdata;
-
-   uncat #(
-           .IREQ_ADDR_W(ADDR_W)
-           )
-   i_bus (
-          .i_req_bus_in (bus_in),
-          .i_req_valid  (valid),
-          .i_req_addr   (addr)
-          );
-
-   assign bus_out = {ready, rdata};
+   reg [`DATA_W-1:0]     rom[2**ADDR_W-1:0];
 
    // Initialize the ROM
    initial 
