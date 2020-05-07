@@ -9,21 +9,21 @@ module ram #(
     input                 clk,
     input                 rst,
 
-    // native interface
     // intruction bus
-    output reg            i_ready,
     input                 i_valid,
     input [ADDR_W-1:0]    i_addr,
+    input [`DATA_W-1:0]   i_wdata, //used for booting
+    input [`DATA_W/8-1:0] i_wstrb  //used for booting
     output [`DATA_W-1:0]  i_rdata,
+    output reg            i_ready,
 
     // data bus
-    output reg            d_ready,
     input                 d_valid,
     input [ADDR_W-1:0]    d_addr,
     output [`DATA_W-1:0]  d_rdata,
     input [`DATA_W-1:0]   d_wdata,
     input [`DATA_W/8-1:0] d_wstrb
-	);
+    );
 
    parameter file_suffix = {"3","2","1","0"};
    //parameter file_suffix = "3210"
@@ -46,12 +46,11 @@ module ram #(
 
 	                 .en_b            (i_valid),
 	                 .addr_b          (i_addr),
-	                 .we_b            (1'b0),
-	                 .data_b          (8'b0),
+	                 .we_b            (i_wdata),
+	                 .data_b          (i_wstrb),
 	                 .q_b             (i_rdata[8*(i+1)-1 -: 8])
 	                 );	
      end
-
 
    // reply with ready 
    always @(posedge clk, posedge rst)

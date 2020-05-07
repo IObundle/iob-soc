@@ -10,15 +10,17 @@ PYTHON_DIR := $(ROOT_DIR)/software/python
 RTL_DIR := $(ROOT_DIR)/rtl
 SRC_DIR := $(RTL_DIR)/src
 
-
 SUBMODULES_DIR := $(ROOT_DIR)/submodules
 RISCV_DIR := $(SUBMODULES_DIR)/iob-rv32
 UART_DIR := $(SUBMODULES_DIR)/iob-uart
 MEM_DIR := $(SUBMODULES_DIR)/iob-mem
 CACHE_DIR = $(SUBMODULES_DIR)/iob-cache
 AXI_RAM_DIR = $(SUBMODULES_DIR)/axi-mem
+INTERCON_DIR = $(SUBMODULES_DIR)/interconnect
+
 #hw includes
-HW_INCLUDE := -I. -I$(RTL_DIR)/include -I$(UART_DIR)/rtl/include -I$(CACHE_DIR)/rtl/header
+HW_INCLUDE := -I. -I$(RTL_DIR)/include -I$(UART_DIR)/rtl/include \
+-I$(CACHE_DIR)/rtl/header -I$(INTERCON_DIR)/rtl/include
 
 #testbench defines
 TB_DEFINE = -DPROG_SIZE=$(shell wc -c $(FIRM_DIR)/firmware.bin | head -n1 | cut -d " " -f1)
@@ -33,13 +35,13 @@ VSRC = \
 $(RTL_DIR)/testbench/system_tb.v \
 $(SRC_DIR)/*.v \
 $(SRC_DIR)/memory/*.v  \
-$(SRC_DIR)/interconnect/*.v  \
 $(RISCV_DIR)/picorv32.v \
 $(UART_DIR)/rtl/src/iob-uart.v \
 $(CACHE_DIR)/rtl/src/iob-cache.v \
 $(AXI_RAM_DIR)/rtl/axi_ram.v \
 $(MEM_DIR)/tdp_mem/iob_tdp_mem.v \
-$(MEM_DIR)/afifo/afifo.v
+$(MEM_DIR)/afifo/afifo.v \
+$(INTERCON_DIR)/rtl/src/*.v
 
 all: $(VSRC) console.vh firmware boot
 	$(VLOG) $(HW_INCLUDE) $(TB_DEFINE) $(VSRC)
