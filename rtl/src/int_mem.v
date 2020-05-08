@@ -38,7 +38,7 @@ module int_mem
 
    //connect it as slave of incoming instruction bus
    //TODO: following macro does not work, no idea why
-   `connect_cc2u_i(i, ibus_tmp, ADDR_W, 1, 0)
+   `connect_lc2u_i(i, ibus_tmp, ADDR_W, 1, 0)
 
    //create uncat bus to hold instruction bus with modified address
    `ibus_uncat(ibus_mod, ADDR_W)
@@ -102,10 +102,10 @@ module int_mem
    `bus_cat(`D, is_cat_2m, ADDR_W, 2)
 
    //connect rom master bus to slot 1 (highest priority)
-   `connect_u2cc_d(rom_m, is_cat_2m, ADDR_W, 2, 1)
+   `connect_u2lc_d(rom_m, is_cat_2m, ADDR_W, 2, 1)
 
    //connect modified instruction bus to slot 0
-   `connect_u2cc_d(ibus_mod, is_cat_2m, ADDR_W, 2, 0)
+   `connect_u2lc_d(ibus_mod, is_cat_2m, ADDR_W, 2, 0)
 
    merge
      #(
@@ -124,7 +124,7 @@ module int_mem
       );
 `else // !`ifdef USE_BOOT
    //connect modified instruction bus to SRAM instruction cat bus
-   `connect_u2cc_d(ibus_mod, ibus, ADDR_W, 1, 0)
+   `connect_u2lc_d(ibus_mod, ibus, ADDR_W, 1, 0)
 `endif
 
    //
@@ -138,7 +138,7 @@ module int_mem
    `dbus_uncat(dbus_tmp, ADDR_W)
 
    //connect it as slave of incoming data bus
-   `connect_cc2u_d(d, dbus_tmp, ADDR_W, 1, 0)
+   `connect_lc2u_d(d, dbus_tmp, ADDR_W, 1, 0)
 
    //create uncat bus to hold data bus with modified address
    `dbus_uncat(dbus_mod, ADDR_W)
@@ -160,10 +160,10 @@ module int_mem
    `bus_cat(`D, ds_cat_2m, ADDR_W, 2)
 
    //connect data master bus to slot 1
-   `connect_u2cc_d(dbus_mod, ds_cat_2m, ADDR_W, 2, 1)
+   `connect_u2lc_d(dbus_mod, ds_cat_2m, ADDR_W, 2, 1)
 
    //connect peripheral bus to slot 0
-   `connect_c2cc(`D, p, ds_cat_2m, ADDR_W, 2, 0)
+   `connect_c2lc(`D, p, ds_cat_2m, ADDR_W, 2, 0)
   
    //create cat data bus for SRAM
    `bus_cat(`D, dbus, ADDR_W, 1)
@@ -191,11 +191,11 @@ module int_mem
 
    //instruction bus
    `dbus_uncat(ram_i, ADDR_W)
-   `connect_cc2u_d(ibus, ram_i, ADDR_W, 1, 0)
+   `connect_lc2u_d(ibus, ram_i, ADDR_W, 1, 0)
 
    //data bus
    `dbus_uncat(ram_d, ADDR_W)
-   `connect_cc2u_d(dbus, ram_d, ADDR_W, 1, 0)
+   `connect_lc2u_d(dbus, ram_d, ADDR_W, 1, 0)
    
    
    //

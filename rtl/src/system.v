@@ -101,8 +101,8 @@ module system
       .d_resp(`get_resp(cpu_d, 0))
       );
 
-   `connect_u2cc_i(cpu_i, cpu_i, `ADDR_W, 1, 0)
-   `connect_u2cc_d(cpu_d, cpu_d, `ADDR_W, 1, 0)
+   `connect_u2lc_i(cpu_i, cpu_i, `ADDR_W, 1, 0)
+   `connect_u2lc_d(cpu_d, cpu_d, `ADDR_W, 1, 0)
 
    //
    //BOOT FLAG
@@ -161,7 +161,6 @@ module system
      #(
        .TYPE(`D),
        .ADDR_W(`ADDR_W),
-       .E_ADDR_W(0)
        )
    dbus_demux
      (
@@ -371,7 +370,6 @@ module system
        .TYPE(`D),
        .ADDR_W(`ADDR_W-1),
        .N_SLAVES(`N_SLAVES),
-       .E_ADDR_W(0)
        )
    per_demux
      (

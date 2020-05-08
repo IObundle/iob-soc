@@ -8,67 +8,64 @@ module cpu_wrapper (
                     output                              trap,
 
                     // instruction bus
-                    input [`BUS_RESP_W-1:0]             i_bus_in,
-                    output [`BUS_REQ_W(`I,`ADDR_W)-1:0] i_bus_out,
+                    output [`BUS_REQ_W(`I,`ADDR_W)-1:0] ibus_req,
+                    input [`BUS_RESP_W-1:0]             ibus_resp,
 
                     // data bus
-                    input [`BUS_RESP_W-1:0]             d_bus_in,
-                    output [`BUS_REQ_W(`D,`ADDR_W)-1:0] d_bus_out
+                    output [`BUS_REQ_W(`D,`ADDR_W)-1:0] dbus_req,
+                    input [`BUS_RESP_W-1:0]             dbus_resp
                     );
 
-   // instruction bus
-   `bus_cat(`I, i_bus, `ADDR_W, 1)
-   `ibus_uncat(i, `ADDR_W)
+   // reassemble cat instruction bus
+   wire                                                 ibus_cat = {ibus_req, ibus_resp};
 
-   assign i_bus[`BUS_RESP_W-1:0] = i_bus_in;
+   // create uncat instruction bus to connect to CPU
+   `ibus_uncat(ibus, `ADDR_W)
 
-   `connect_m(`I, i, i_bus, `ADDR_W, 1, 0)
+   //drive cat bus with CPU uncat bus
+   `connect_u2lc_i(ibus, ibus_cat, `ADDR_W, 1, 0)
 
-   assign i_bus_out = `get_req(`I, i_bus, `ADDR_W, 1, 0);
+   
+   // repeat for data bus
+   wire                                                 dbus_cat = {dbus_req, dbus_resp};
+   `dbus_uncat(dbus, `ADDR_W)
+   `connect_u2lc_d(dbus, dbus_cat, `ADDR_W, 1, 0)
 
-   // data bus
-   `bus_cat(`D, d_bus, `ADDR_W, 1)
-   `dbus_uncat(d, `ADDR_W)
-
-   assign d_bus[`BUS_RESP_W-1:0] = d_bus_in;
-
-   `connect_m(`D, d, d_bus, `ADDR_W, 1, 0)
-
-   assign d_bus_out = `get_req(`D, d_bus, `ADDR_W, 1, 0);
 
 `ifdef PICORV32
-   wire                                  m_instr;
-   wire                                  m_valid;
-   wire                                  m_ready;
-   wire [`ADDR_W-1:0]                    m_addr;
-   wire [`DATA_W-1:0]                    m_rdata;
-   wire [`DATA_W-1:0]                    m_wdata;
-   wire [`DATA_W/8-1:0]                  m_wstrb;
 
- `ifdef USE_LA_IF
-   wire                                  la_read;
-   wire                                  la_write;
-   wire [`DATA_W/8-1:0]                  la_wstrb;
- `endif
-
-   //instruction bus
-   assign i_valid = m_valid & m_instr;
-   assign i_addr = m_addr;
-
-   //data bus
-   assign d_valid = m_valid & ~m_instr;
-   assign d_addr = m_addr;
-   assign d_wdata = m_wdata;
-   assign d_wstrb = m_wstrb;
-
-   //common
-   assign m_ready = m_instr ? i_ready : d_ready;
-   assign m_rdata = m_instr? i_rdata : d_rdata;
 
 `endif
 
 
 `ifdef PICORV32
+
+   //split block master interface
+   `dbus_uncat(m, `ADDR_W)
+   
+   //picorv32 native interface 
+   wire                                                 picorv32_instr;   
+   `dbus_uncat(picorv32, `ADDR_W)
+
+   //connect picorv32 to master interface
+ `ifndef USE_LA_IF
+   `connect_u2u_d(picorv32, m)
+ `else
+   //manual connect 
+   wire                                                 la_read;
+   wire                                                 la_write;
+   wire [`ADDR_W-1:0]                                   la_addr;
+   wire [`DATA_W-1:0]                                   la_wdata;
+   wire [`DATA_W/8-1:0]                                 la_wstrb;
+   assign                                               m_valid = la_read | la_write;
+   assign                                               m_addr = la_address;
+   assign                                               m_data = la_wdata;
+   assign                                               m_wstrb = la_wstrb;
+   assign                                               picorv32_rdata = m_rdata;
+   assign                                               picorv32_ready = m_ready;
+ `endif
+   
+   //intantiate picorv32
    picorv32 #(
               //.ENABLE_PCPI(1), //enables the following 2 parameters
 	      .BARREL_SHIFTER(1),
@@ -80,21 +77,21 @@ module cpu_wrapper (
 		  .resetn        (~rst),
 		  .trap          (trap),
 		  //memory interface
-		  .mem_instr     (m_instr),
-		  .mem_rdata     (m_rdata),
- `ifndef USE_LA_IF
-		  .mem_valid     (m_valid),
-		  .mem_addr      (m_addr),
-		  .mem_wdata     (m_wdata),
-		  .mem_wstrb     (m_wstrb),
- `else
+		  .mem_instr     (picorv32_instr),
+		  .mem_rdata     (picorv32_rdata),
+		  .mem_valid     (picorv32_valid),
+		  .mem_addr      (picorv32_addr),
+		  .mem_wdata     (picorv32_wdata),
+		  .mem_wstrb     (picorv32_wstrb),
+
+ `ifdef USE_LA_IF
                   .mem_la_read   (la_read),
                   .mem_la_write  (la_write),                  
-                  .mem_la_addr   (m_addr),
-                  .mem_la_wdata  (m_wdata),
+                  .mem_la_addr   (la_addr),
+                  .mem_la_wdata  (la_wdata),
                   .mem_la_wstrb  (la_wstrb),
  `endif
-		  .mem_ready     (m_ready),
+		  .mem_ready     (picorv32_ready),
                   // Pico Co-Processor PCPI
                   .pcpi_valid    (),
                   .pcpi_insn     (),
@@ -112,10 +109,23 @@ module cpu_wrapper (
                   
                   );
 
- `ifdef USE_LA_IF
-   assign m_valid = la_read | la_write;
-   assign m_wstrb = la_wstrb & {(`DATA_W/8){la_write}};
- `endif
+
+   //split master bus in instruction and data buses
+
+   `bus_cat(`D, mbus_cat, `ADDR_W, 2)
+   `connect_c2lc
+
+   split membus_demux
+     (
+      // master interface
+      .m_e_addr(picorv32_instr),
+      .m_req (`get_req(`D, m, `ADDR_W-1, 1, 0)),
+      .m_resp (`get_resp(m, 0)),
+
+      // slaves interface
+      .s_req ({`get_req(`D, , `ADDR_W, 1, 0), `get_req(`D, , `ADDR_W, 1, 0)}),
+      .s_resp(`get_resp(int_mem_d, 0))
+      );
 
    
 `endif //  `ifdef PICORV32
