@@ -78,10 +78,13 @@ module system
 
    // instruction cat bus
    `bus_cat(`I, cpu_i, `ADDR_W, 1)
+   //instruction uncat bus
+   `ibus_uncat(cpu_i, `ADDR_W)
+
    // data cat bus
    `bus_cat(`D, cpu_d, `ADDR_W, 1)
-   //uncat bus
-   `bus_uncat(`D, cpu_d, `ADDR_W)
+   //data uncat bus
+   `dbus_uncat(cpu_d, `ADDR_W)
    
    cpu_wrapper cpu_wrapper 
      (
@@ -98,8 +101,8 @@ module system
       .d_resp(`get_resp(cpu_d, 0))
       );
 
-   `connect_m(`I, cpu_i, cpu_i, `ADDR_W, 1, 0)
-   `connect_m(`D, cpu_d, cpu_d, `ADDR_W, 1, 0)
+   `connect_u2cc_i(cpu_i, cpu_i, `ADDR_W, 1, 0)
+   `connect_u2cc_d(cpu_d, cpu_d, `ADDR_W, 1, 0)
 
    //
    //BOOT FLAG
@@ -362,7 +365,6 @@ module system
 
    `bus_cat(`D, per_s, `ADDR_W-1-`N_SLAVES_W, `N_SLAVES)
    
-   
    // peripheral demux
    split 
      #(
@@ -374,12 +376,13 @@ module system
    per_demux
      (
       // master interface
-      .m_req (`get_req(`D, per_m_d, `ADDR_W-1, 1)),
+      .m_req (`get_req(`D, per_m_d, `ADDR_W-1, 1, 0)),
       .m_resp (`get_resp(per_d, 0)),
       
       // slaves interface
-      .s_req (`get_req(`D, per_s, `ADDR_W-1-`N_SLAVES_W, `N_SLAVES)),
-      .s_resp (`get_resp(per_s, `N_SLAVES))
+      .s_req (`get_req_all(`D, per_s,`ADDR_W-1-`N_SLAVES_W, `N_SLAVES)),
+   //   .s_req (per_s[`N_SLAVES*`BUS_W(`D, SLAVES_ADDR_W)-1 -: `N_SLAVES*`BUS_REQ_W(`D, SLAVES_ADDR_W)] ),
+      .s_resp (`get_resp_all(per_s, `N_SLAVES))
       );
 
    /////////////////////////////////////////////////////////////////////////
@@ -390,7 +393,7 @@ module system
    //
 
    //declare uart uncat bus
-   `bus_uncat(`D, uart, `ADDR_W-1-`N_SLAVES_W)
+   `dbus_uncat(uart, `ADDR_W-1-`N_SLAVES_W)
 
    iob_uart uart
      (
@@ -413,12 +416,11 @@ module system
       );
 
 
-   
    //
    // RESET CONTROLLER
    //
 
-   `bus_uncat(`D, rst_ctr, `ADDR_W-1-`N_SLAVES_W)
+   `dbus_uncat(rst_ctr, `ADDR_W-1-`N_SLAVES_W)
    
    rst_ctr rst_ctr0 
      (

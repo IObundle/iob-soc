@@ -13,7 +13,7 @@ module ram #(
     input                 i_valid,
     input [ADDR_W-1:0]    i_addr,
     input [`DATA_W-1:0]   i_wdata, //used for booting
-    input [`DATA_W/8-1:0] i_wstrb  //used for booting
+    input [`DATA_W/8-1:0] i_wstrb,  //used for booting
     output [`DATA_W-1:0]  i_rdata,
     output reg            i_ready,
 
