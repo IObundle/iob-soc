@@ -93,12 +93,12 @@ module system
       .trap    (trap),
       
       //instruction bus
-      .i_req(`get_req(`I, cpu_i, `ADDR_W, 1, 0)),
-      .i_resp(`get_resp(cpu_i, 0)),
+      .ibus_req(`get_req(`I, cpu_i, `ADDR_W, 1, 0)),
+      .ibus_resp(`get_resp(cpu_i, 0)),
  
       //data bus
-      .d_req(`get_req(`D, cpu_d, `ADDR_W, 1, 0)),
-      .d_resp(`get_resp(cpu_d, 0))
+      .dbus_req(`get_req(`D, cpu_d, `ADDR_W, 1, 0)),
+      .dbus_resp(`get_resp(cpu_d, 0))
       );
 
    `connect_u2lc_i(cpu_i, cpu_i, `ADDR_W, 1, 0)
@@ -160,7 +160,7 @@ module system
    split
      #(
        .TYPE(`D),
-       .ADDR_W(`ADDR_W),
+       .ADDR_W(`ADDR_W)
        )
    dbus_demux
      (
@@ -202,6 +202,9 @@ module system
        )
    dmembus_demux
      (
+      //extra address bits
+      .m_e_addr(1'b0),
+
       // master interface
       .m_e_addr(boot),
       .m_req (`get_req(`D, mem_d, `ADDR_W-1, 1, 0)),
@@ -369,10 +372,13 @@ module system
      #(
        .TYPE(`D),
        .ADDR_W(`ADDR_W-1),
-       .N_SLAVES(`N_SLAVES),
+       .N_SLAVES(`N_SLAVES)
        )
    per_demux
      (
+      //extra address bits
+      .m_e_addr(1'b0),
+
       // master interface
       .m_req (`get_req(`D, per_m_d, `ADDR_W-1, 1, 0)),
       .m_resp (`get_resp(per_d, 0)),

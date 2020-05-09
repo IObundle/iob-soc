@@ -16,53 +16,22 @@ module cpu_wrapper (
                     input [`BUS_RESP_W-1:0]             dbus_resp
                     );
 
-   // reassemble cat instruction bus
+   // reassemble cat instruction and data buses
    wire                                                 ibus_cat = {ibus_req, ibus_resp};
-
-   // create uncat instruction bus to connect to CPU
-   `ibus_uncat(ibus, `ADDR_W)
-
-   //drive cat bus with CPU uncat bus
-   `connect_u2lc_i(ibus, ibus_cat, `ADDR_W, 1, 0)
-
-   
-   // repeat for data bus
    wire                                                 dbus_cat = {dbus_req, dbus_resp};
-   `dbus_uncat(dbus, `ADDR_W)
-   `connect_u2lc_d(dbus, dbus_cat, `ADDR_W, 1, 0)
-
-
-`ifdef PICORV32
-
-
-`endif
-
-
-`ifdef PICORV32
-
-   //split block master interface
-   `dbus_uncat(m, `ADDR_W)
    
-   //picorv32 native interface 
+`ifdef PICORV32
+
+   //picorv32 native interface uncat bus
    wire                                                 picorv32_instr;   
    `dbus_uncat(picorv32, `ADDR_W)
 
-   //connect picorv32 to master interface
- `ifndef USE_LA_IF
-   `connect_u2u_d(picorv32, m)
- `else
+   //handle look ahead interface
+ `ifdef USE_LA_IF
    //manual connect 
    wire                                                 la_read;
    wire                                                 la_write;
-   wire [`ADDR_W-1:0]                                   la_addr;
-   wire [`DATA_W-1:0]                                   la_wdata;
-   wire [`DATA_W/8-1:0]                                 la_wstrb;
-   assign                                               m_valid = la_read | la_write;
-   assign                                               m_addr = la_address;
-   assign                                               m_data = la_wdata;
-   assign                                               m_wstrb = la_wstrb;
-   assign                                               picorv32_rdata = m_rdata;
-   assign                                               picorv32_ready = m_ready;
+   assign                                               picorv32_valid = la_read | la_write;
  `endif
    
    //intantiate picorv32
@@ -79,19 +48,19 @@ module cpu_wrapper (
 		  //memory interface
 		  .mem_instr     (picorv32_instr),
 		  .mem_rdata     (picorv32_rdata),
+		  .mem_ready     (picorv32_ready),
+ `ifndef USE_LA_IF
 		  .mem_valid     (picorv32_valid),
 		  .mem_addr      (picorv32_addr),
 		  .mem_wdata     (picorv32_wdata),
 		  .mem_wstrb     (picorv32_wstrb),
-
- `ifdef USE_LA_IF
+`else
                   .mem_la_read   (la_read),
                   .mem_la_write  (la_write),                  
-                  .mem_la_addr   (la_addr),
-                  .mem_la_wdata  (la_wdata),
-                  .mem_la_wstrb  (la_wstrb),
+                  .mem_la_addr   (picorv32_addr),
+                  .mem_la_wdata  (picorv32_wdata),
+                  .mem_la_wstrb  (picorv32_wstrb),
  `endif
-		  .mem_ready     (picorv32_ready),
                   // Pico Co-Processor PCPI
                   .pcpi_valid    (),
                   .pcpi_insn     (),
@@ -109,28 +78,31 @@ module cpu_wrapper (
                   
                   );
 
-
-   //split master bus in instruction and data buses
-
-   `bus_cat(`D, mbus_cat, `ADDR_W, 2)
-   `connect_c2lc
+   //
+   //SPLIT MASTER BUS IN INSTRUCTION AND DATA BUSES
+   //
+   
+   //create data bus to drive external instruction bus
+   `bus_cat(`D, idbus_cat, `ADDR_W, 2)
 
    split membus_demux
      (
       // master interface
       .m_e_addr(picorv32_instr),
-      .m_req (`get_req(`D, m, `ADDR_W-1, 1, 0)),
-      .m_resp (`get_resp(m, 0)),
+      .m_req (`get_req(`D, picorv32, `ADDR_W-1, 1, 0)),
+      .m_resp (`get_resp(picorv32, 0)),
 
       // slaves interface
-      .s_req ({`get_req(`D, , `ADDR_W, 1, 0), `get_req(`D, , `ADDR_W, 1, 0)}),
+      .s_req ({`get_req(`D, idbus_cat, `ADDR_W, 1, 0), `get_req(`D, dbus_cat, `ADDR_W, 1, 0)}),
       .s_resp(`get_resp(int_mem_d, 0))
       );
 
+   //connect data type instruction bus to external instruction bus
+   `connect_d2i(idbus_cat, ibus_cat,  `ADDR_W)
    
 `endif //  `ifdef PICORV32
 
-
+//TODO 
 `ifdef DARKRV
    wire 				 ready_hzrd;				 
    wire                  d_rd_en;

@@ -15,11 +15,11 @@ module int_mem
 
    //instruction bus
     input [`BUS_REQ_W(`I, ADDR_W)-1:0] i_req,
-    output [BUS_RESP_W-1:0]            i_resp,
+    output [`BUS_RESP_W-1:0]           i_resp,
 
    //data bus
     input [`BUS_REQ_W(`D, ADDR_W)-1:0] d_req,
-    output [BUS_RESP_W-1:0]            d_resp,
+    output [`BUS_RESP_W-1:0]           d_resp,
 
    //peripheral bus
     input [`BUS_REQ_W(`D, ADDR_W)-1:0] p_req,

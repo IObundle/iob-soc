@@ -40,6 +40,8 @@ $(UART_DIR)/rtl/src/iob-uart.v \
 $(CACHE_DIR)/rtl/src/iob-cache.v \
 $(AXI_RAM_DIR)/rtl/axi_ram.v \
 $(MEM_DIR)/tdp_mem/iob_tdp_mem.v \
+$(MEM_DIR)/sp_mem_be/iob_sp_mem_be.v \
+$(MEM_DIR)/reg_file/iob_reg_file.v \
 $(MEM_DIR)/afifo/afifo.v \
 $(INTERCON_DIR)/rtl/src/*.v
 
