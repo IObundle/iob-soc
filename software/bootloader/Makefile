@@ -4,17 +4,17 @@ PYTHON_DIR := ../python
 CONSOLE_DIR = ../ld-sw
 
 SUBMODULES_DIR := ../../submodules
-UART_DIR := $(SUBMODULES_DIR)/iob-uart/c-driver
+UART_DIR := $(SUBMODULES_DIR)/iob-uart/software
 CACHE_DIR := $(SUBMODULES_DIR)/iob-cache/c-driver
 
-INCLUDE =  -I. -I$(UART_DIR) -I$(CACHE_DIR) -I$(CONSOLE_DIR)
+INCLUDE =  -I. -I$(UART_DIR)/common -I$(CACHE_DIR) -I$(CONSOLE_DIR)
 
 DEFINE = -DUART_BAUD_RATE=$(BAUD) -DUART_CLK_FREQ=$(FREQ)
 DEFINE += -DPROG_SIZE=`wc -c   ../../software/firmware/firmware.bin | head -n1 | cut -d " " -f1`
 
-SRC = boot.S boot.c $(UART_DIR)/iob-uart.c $(CACHE_DIR)/iob-cache.c 
+SRC = boot.S boot.c $(UART_DIR)/common/iob-uart.c $(UART_DIR)/embedded/iob-uart-platform.c $(CACHE_DIR)/iob-cache.c 
 
-all: $(SRC) system.h $(UART_DIR)/iob-uart.h $(CACHE_DIR)/iob-cache.h $(CONSOLE_DIR)/console.h boot.lds
+all: $(SRC) system.h $(UART_DIR)/common/iob-uart.h $(CACHE_DIR)/iob-cache.h $(CONSOLE_DIR)/console.h boot.lds
 	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -nostdlib -march=rv32im -mabi=ilp32 -o boot.elf $(INCLUDE) $(DEFINE) $(SRC) --std=gnu99 -Wl,-Bstatic,-T,boot.lds,-Map,boot.map,--strip-debug -lgcc -lc
 	$(TOOLCHAIN_PREFIX)objcopy -O binary boot.elf boot.bin
 	$(eval MEM_SIZE=`$(PYTHON_DIR)/get_memsize.py BOOTROM_ADDR_W`)

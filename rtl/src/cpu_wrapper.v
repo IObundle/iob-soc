@@ -16,15 +16,22 @@ module cpu_wrapper (
                     input [`BUS_RESP_W-1:0]             dbus_resp
                     );
 
-   // reassemble cat instruction and data buses
-   wire                                                 ibus_cat = {ibus_req, ibus_resp};
-   wire                                                 dbus_cat = {dbus_req, dbus_resp};
+   //interface with internal cat buses
+   `bus_cat(`I, ibus_cat, `ADDR_W, 1)
+   assign ibus_req = `get_req(`I, ibus_cat, `ADDR_W, 1, 0);
+   assign `get_resp(ibus_cat, 0) = ibus_resp;
+
+   `bus_cat(`D, dbus_cat, `ADDR_W, 1)
+   assign dbus_req = `get_req(`D, dbus_cat, `ADDR_W, 1, 0);
+   assign `get_resp(dbus_cat, 0) = dbus_resp;
    
 `ifdef PICORV32
 
    //picorv32 native interface uncat bus
    wire                                                 picorv32_instr;   
    `dbus_uncat(picorv32, `ADDR_W)
+   `bus_cat(`D, picorv32, `ADDR_W, 1)
+   `connect_u2lc_d(picorv32, picorv32, `ADDR_W, 1, 0)
 
    //handle look ahead interface
  `ifdef USE_LA_IF
@@ -83,18 +90,18 @@ module cpu_wrapper (
    //
    
    //create data bus to drive external instruction bus
-   `bus_cat(`D, idbus_cat, `ADDR_W, 2)
+   `bus_cat(`D, idbus_cat, `ADDR_W, 1)
 
    split membus_demux
      (
       // master interface
       .m_e_addr(picorv32_instr),
-      .m_req (`get_req(`D, picorv32, `ADDR_W-1, 1, 0)),
+      .m_req (`get_req(`D, picorv32, `ADDR_W, 1, 0)),
       .m_resp (`get_resp(picorv32, 0)),
 
       // slaves interface
       .s_req ({`get_req(`D, idbus_cat, `ADDR_W, 1, 0), `get_req(`D, dbus_cat, `ADDR_W, 1, 0)}),
-      .s_resp(`get_resp(int_mem_d, 0))
+      .s_resp({`get_resp(idbus_cat, 0), `get_resp(dbus_cat, 0)})
       );
 
    //connect data type instruction bus to external instruction bus

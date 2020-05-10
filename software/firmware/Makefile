@@ -2,15 +2,15 @@ TOOLCHAIN_PREFIX := riscv32-unknown-elf-
 
 PYTHON_DIR := ../python
 SUBMODULES_DIR := ../../submodules
-UART_DIR := $(SUBMODULES_DIR)/iob-uart/c-driver
+UART_DIR := $(SUBMODULES_DIR)/iob-uart/software
 CACHE_DIR := $(SUBMODULES_DIR)/iob-cache/c-driver
-INCLUDE = -I. -I$(UART_DIR) -I$(CACHE_DIR)
+INCLUDE = -I. -I$(UART_DIR)/common -I$(CACHE_DIR)
 
 DEFINE = -DUART_BAUD_RATE=$(BAUD) -DUART_CLK_FREQ=$(FREQ)
 
-SRC = firmware.c $(UART_DIR)/iob-uart.c $(CACHE_DIR)/iob-cache.c firmware.S
+SRC = firmware.c $(UART_DIR)/common/iob-uart.c $(UART_DIR)/embedded/iob-uart-platform.c $(CACHE_DIR)/iob-cache.c firmware.S
 
-all: firmware.lds $(SRC) system.h $(UART_DIR)/iob-uart.h $(CACHE_DIR)/iob-cache.h
+all: firmware.lds $(SRC) system.h $(UART_DIR)/common/iob-uart.h $(CACHE_DIR)/iob-cache.h
 	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -nostdlib -march=rv32im -mabi=ilp32 -o firmware.elf $(DEFINE) $(INCLUDE) $(SRC) --std=gnu99 -Wl,-Bstatic,-T,firmware.lds,-Map,firmware.map,--strip-debug -lgcc -lc
 	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
 	$(eval MEM_SIZE=`../bash/get_binsize.sh firmware.bin`)

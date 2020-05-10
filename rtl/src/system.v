@@ -138,9 +138,9 @@ module system
 
       // slaves interface
 `ifdef USE_DDR
-      .s_req ({`get_req(`I, int_mem_i, `ADDR_W-1, 1, 0), `get_req(`I, cache_i, `ADDR_W-1, 1, 0)}),
+      .s_req ({`get_req(`I, int_mem_i, `ADDR_W, 1, 0), `get_req(`I, cache_i, `ADDR_W, 1, 0)}),
  `else
-      .s_req (`get_req(`I, int_mem_i, `ADDR_W-1, 1, 0)),
+      .s_req (`get_req(`I, int_mem_i, `ADDR_W, 1, 0)),
 `endif
       .s_resp (`get_resp(int_mem_i, 0))
       );
