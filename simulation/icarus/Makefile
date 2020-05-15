@@ -34,8 +34,8 @@ VLOG = iverilog -W all -g2005-sv -DVCD
 VSRC = \
 $(RTL_DIR)/testbench/system_tb.v \
 $(SRC_DIR)/*.v \
-$(SRC_DIR)/memory/*.v  \
 $(RISCV_DIR)/picorv32.v \
+$(RISCV_DIR)/iob_picorv32.v \
 $(UART_DIR)/rtl/src/iob-uart.v \
 $(CACHE_DIR)/rtl/src/iob-cache.v \
 $(AXI_RAM_DIR)/rtl/axi_ram.v \

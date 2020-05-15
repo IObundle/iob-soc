@@ -86,7 +86,7 @@ module system
    //data uncat bus
    `dbus_uncat(cpu_d, `ADDR_W)
    
-   cpu_wrapper cpu_wrapper 
+   iob_picorv32 cpu
      (
       .clk     (clk),
       .rst     (reset_int),
@@ -109,25 +109,27 @@ module system
    //
    wire                             boot;
 
+   //
+   //INTERNAL MEMORY BUSES
+   //
+   //internal memory instruction bus
+   `bus_cat(`I, int_mem_i, `ADDR_W, 1) 
+   //internal memory data bus
+   `bus_cat(`D, int_mem_d, `ADDR_W-1, 1)
+   
+`ifdef USE_DDR
    //   
    // SPLIT INSTRUCTION BUS INTO INTERNAL MEMORY AND CACHE
    //
-   
-   //internal memory
-   `bus_cat(`I, int_mem_i, `ADDR_W, 1) 
-   //cache
-`ifdef USE_DDR
+
+   // create instruction cache cat bus
    `bus_cat(`I, cache_i, `ADDR_W, 1) 
-`endif
 
    //splitter
    split
      #(
        .TYPE(`I),
-`ifndef USE_DDR  //connect to both
-       .N_SLAVES(1),
-`endif
-       .ADDR_W(`ADDR_W)
+       .E_ADDR_W(1)
        )
    ibus_demux
      (
@@ -137,15 +139,45 @@ module system
       .m_resp (`get_resp(cpu_i, 0)),
 
       // slaves interface
-`ifdef USE_DDR
       .s_req ({`get_req(`I, int_mem_i, `ADDR_W, 1, 0), `get_req(`I, cache_i, `ADDR_W, 1, 0)}),
- `else
-      .s_req (`get_req(`I, int_mem_i, `ADDR_W, 1, 0)),
-`endif
       .s_resp (`get_resp(int_mem_i, 0))
       );
+`else //drive int_mem instruction bus with cpu instruction bus
+   `connect_c2lc(`I, cpu_i, int_mem_i, `ADDR_W, 1, 0)
+`endif
 
+   //   
+   // SPLIT MEMORY DATA BUS INTO INTERNAL MEMORY AND/OR DATA CACHE
+   //
 
+   //data cache bus
+   `bus_cat(`D, cache_d, `ADDR_W-1, 1)
+
+   //
+   //interconnect data mem bus to int mem and/or cache
+   //
+   split 
+     #(
+       .TYPE(`D),
+       .E_ADDR_W(1)
+       )
+   dmembus_demux
+     (
+      //extra address bits
+      .m_e_addr(1'b0),
+
+      // master interface
+      .m_e_addr(boot),
+      .m_req (`get_req(`D, mem_d, `ADDR_W-1, 1, 0)),
+      .m_resp (`get_resp(mem_d, 0)),
+
+      // slaves interface
+      .s_req ({`get_req(`D, int_mem_d, `ADDR_W-2, 1, 0), `get_req(`D, cache_d, `ADDR_W-2, 1, 0)}),
+      .s_resp(`get_resp(int_mem_d, 0))
+      );
+`endif
+
+   
    //   
    // SPLIT DATA BUS TO MEMORY AND PERIPHERALS
    //
@@ -176,59 +208,10 @@ module system
       .s_resp({`get_resp(mem_d, 0), `get_resp(per_m_d, 0)})
       );
 
-
-   //   
-   // SPLIT MEMORY DATA BUS INTO INTERNAL MEMORY AND/OR DATA CACHE
-   //
-
-   //demuxed buses
-   //internal memory data bus
-   `bus_cat(`D, int_mem_d, `ADDR_W-1, 1)
-   //data cache bus
-`ifdef USE_DDR
-   `bus_cat(`D, cache_d, `ADDR_W-1, 1)
-`endif
-
-   //
-   //interconnect data mem bus to int mem and/or cache
-   //
-   split 
-     #(
-       .TYPE(`D),
-`ifndef USE_DDR
-       .N_SLAVES(1), 
-`endif
-       .ADDR_W(`ADDR_W-1)
-       )
-   dmembus_demux
-     (
-      //extra address bits
-      .m_e_addr(1'b0),
-
-      // master interface
-      .m_e_addr(boot),
-      .m_req (`get_req(`D, mem_d, `ADDR_W-1, 1, 0)),
-      .m_resp (`get_resp(mem_d, 0)),
-
-      // slaves interface
-`ifdef USE_DDR
-      .s_req ({`get_req(`D, int_mem_d, `ADDR_W-2, 1, 0), `get_req(`D, cache_d, `ADDR_W-2, 1, 0)}),
- `else
-      .s_req (`get_req(`D, int_mem_d, `ADDR_W-2, 1, 0)),
-`endif
-      .s_resp(`get_resp(int_mem_d, 0))
-      );
-
-   
-   //
-   //INTERNAL MEMORY
-   //
    
    //
    // INTERNAL SRAM MEMORY
    //
-
-  
 
    int_mem int_mem0 
      (
@@ -248,9 +231,6 @@ module system
       .p_req                (`get_req(`D, per_s_d, `ADDR_W-1-`N_SLAVES, `N_SLAVES, `SRAM_BASE)),
       .p_resp               (`get_resp(per_s_d,  `SRAM_BASE))
       );
-
-
-
 
    //
    // CACHE
