@@ -9,9 +9,9 @@
 
       # 1 uart_addr = cpu_address;
       uart_valid = 1;
-      uart_wr = 1;
-      uart_di = cpu_data;
-      @ (posedge clk) #1 uart_wr = 0;
+      uart_wstrb = 1;
+      uart_wdata = cpu_data;
+      @ (posedge clk) #1 uart_wstrb = 0;
       uart_valid = 0;
    endtask //cpu_uartwrite
 
@@ -22,7 +22,7 @@
 
       # 1 uart_addr = cpu_address;
       uart_valid = 1;
-      @ (posedge clk) #1 read_reg = uart_do;
+      @ (posedge clk) #1 read_reg = uart_rdata;
       @ (posedge clk) #1 uart_valid = 0;
    endtask //cpu_uartread
 

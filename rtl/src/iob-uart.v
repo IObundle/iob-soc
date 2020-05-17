@@ -7,11 +7,11 @@ module iob_uart (
 
                  //cpu interface 
 	         input             valid,
-	         output reg        ready,
                  input [2:0]       address,
-                 input             write,
-	         input [31:0]      data_in,
-	         output reg [31:0] data_out,
+	         input [31:0]      wdata,
+                 input             wstrb,
+	         output reg [31:0] rdata,
+	         output reg        ready,
 
                  //serial i/f
 	         output            txd,
@@ -21,36 +21,36 @@ module iob_uart (
                  );
 
    // internal registers
-   wire                              tx_wait;
-   reg [31:0]                        cfg_divider;
-   reg                               rx_en;
+   wire                            tx_wait;
+   reg [31:0]                      cfg_divider;
+   reg                             rx_en;
    
    // receiver
-   reg [3:0]                         recv_state;
-   reg [31:0]                        recv_divcnt;
-   reg [7:0]                         recv_pattern;
-   reg [7:0]                         recv_buf_data;
-   reg                               recv_buf_valid;
- 
+   reg [3:0]                       recv_state;
+   reg [31:0]                      recv_divcnt;
+   reg [7:0]                       recv_pattern;
+   reg [7:0]                       recv_buf_data;
+   reg                             recv_buf_valid;
+   
    // sender
-   reg [9:0]                         send_pattern;
-   reg [3:0]                         send_bitcnt;
-   reg [15:0]                        send_divcnt;
+   reg [9:0]                       send_pattern;
+   reg [3:0]                       send_bitcnt;
+   reg [15:0]                      send_divcnt;
    
    // register access
-   reg                               data_write_en;
-   reg                               data_read_en;
-   reg                               div_write_en;
-   reg                               rst_soft_en;
-   reg                               rx_en_en;
-                               
+   reg                             data_write_en;
+   reg                             data_read_en;
+   reg                             div_write_en;
+   reg                             rst_soft_en;
+   reg                             rx_en_en;
+   
    // reset
-   wire                              rst_int;
-   reg                               rst_soft;
+   wire                            rst_int;
+   reg                             rst_soft;
 
    //flow control
-   reg [1:0]                         cts_int;
-   reg                               rts_en;
+   reg [1:0]                       cts_int;
+   reg                             rts_en;
    
    
    //soft reset pulse
@@ -58,7 +58,7 @@ module iob_uart (
      if(rst)
        rst_soft <= 1'b0;
      else if (rst_soft_en)
-       rst_soft <= data_in[0];
+       rst_soft <= wdata[0];
      else
        rst_soft <= 1'b0;
 
@@ -78,8 +78,8 @@ module iob_uart (
      if(rst_int)
        rx_en <= 1'b0;
      else if (rx_en_en)
-       rx_en <= data_in[0];
-  
+       rx_en <= wdata[0];
+   
    //request to send (me data)
    assign rts = rts_en & rx_en;
    
@@ -100,7 +100,7 @@ module iob_uart (
       rst_soft_en = 1'b0;
       rx_en_en = 1'b0;
       
-      if(valid & write)
+      if(valid & wstrb)
         case (address)
           `UART_DIV: div_write_en = 1'b1;
           `UART_DATA: data_write_en = 1'b1;
@@ -113,20 +113,20 @@ module iob_uart (
    //read
    always @* begin
       data_read_en = 1'b0;
-      data_out = ~0;
+      rdata = ~0;
       case (address)
-        `UART_WRITE_WAIT: data_out = {31'd0, tx_wait | ~cts_int[1]};
-        `UART_DIV       : data_out = cfg_divider;
+        `UART_WRITE_WAIT: rdata = {31'd0, tx_wait | ~cts_int[1]};
+        `UART_DIV       : rdata = cfg_divider;
         `UART_DATA      : begin 
-           data_out = recv_buf_data;
-           data_read_en = valid & ~write;
+           rdata = recv_buf_data;
+           data_read_en = valid & ~wstrb;
         end
-        `UART_READ_VALID: data_out = {31'd0,recv_buf_valid};
+        `UART_READ_VALID: rdata = {31'd0,recv_buf_valid};
         default         : ;
       endcase
    end      
 
-       
+   
    // internal registers
    assign tx_wait = (send_bitcnt != 4'd0);
 
@@ -135,7 +135,7 @@ module iob_uart (
      if (rst_int)
        cfg_divider <= 1;
      else if (div_write_en)
-       cfg_divider <= data_in;
+       cfg_divider <= wdata;
 
    ////////////////////////////////////////////////////////
    // Serial RX
@@ -166,14 +166,14 @@ module iob_uart (
               end
               recv_divcnt <= 1;
            end
-             
+           
            // Forward in time to the middle of the start bit
            4'd1:
              if ( (2*recv_divcnt) >= cfg_divider) begin
                 recv_state <= 2;
                 recv_divcnt <= 1;
              end
-             
+           
            // Sample the 8 bits from the RX line and put them in the shift register
            default: // states 4'd2 through 4'd9
              if (recv_divcnt >= cfg_divider) begin
@@ -183,17 +183,17 @@ module iob_uart (
              end
            
            // Put the received byte in the output data register; drive read valid to high
-             4'd10:
-               if (recv_divcnt >= cfg_divider) begin
-                  recv_buf_data <= recv_pattern;
-                  recv_buf_valid <= 1'b1;
-                  recv_state <= 0;
-               end
-             
+           4'd10:
+             if (recv_divcnt >= cfg_divider) begin
+                recv_buf_data <= recv_pattern;
+                recv_buf_valid <= 1'b1;
+                recv_state <= 0;
+             end
+           
          endcase // case (recv_state)
       end // else: !if(rst_int)
    end //always @
-	 
+   
    ////////////////////////////////////////////////////////
    // Serial TX
    ////////////////////////////////////////////////////////
@@ -220,13 +220,13 @@ module iob_uart (
 
    // shift register
    always @(posedge clk, posedge rst_int)
-      if (rst_int) //reset
-           send_pattern <= ~10'b0;
-      else if (data_write_en) //load
-           send_pattern <= {1'b1, data_in[7:0], 1'b0};
-      else if (send_bitcnt && send_divcnt == cfg_divider) 
-        //shift right
-        send_pattern <= {1'b1, send_pattern[9:1]};
+     if (rst_int) //reset
+       send_pattern <= ~10'b0;
+     else if (data_write_en) //load
+       send_pattern <= {1'b1, wdata[7:0], 1'b0};
+     else if (send_bitcnt && send_divcnt == cfg_divider) 
+       //shift right
+       send_pattern <= {1'b1, send_pattern[9:1]};
 
    // send serial comm
    assign txd = send_pattern[0];

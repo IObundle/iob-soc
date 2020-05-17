@@ -11,11 +11,12 @@ module iob_uart_tb;
    reg 			rst;
    reg 			clk;
 
-   reg [`UART_ADDR_W-1:0] addr;
    reg                    valid;
-   reg                    write;
-   reg [31:0]             data_in;
-   wire [31:0]            data_out;
+   reg [`UART_ADDR_W-1:0] addr;
+   reg [31:0]             wdata;
+   reg                    wstrb;
+   wire [31:0]            rdata;
+   wire                   ready;
 
    reg [31:0]             cpu_reg;
 
@@ -36,10 +37,11 @@ module iob_uart_tb;
 		 .rst			(rst),
                  
 		 .valid			(valid),
-		 .write			(write),
 		 .address		(addr),
-		 .data_in		(data_in),
-		 .data_out		(data_out),
+		 .wdata		        (wdata),
+		 .wstrb			(wstrb),
+		 .rdata		        (rdata),
+		 .ready		        (ready),
 
                  .txd                   (serial_data),
                  .rxd                   (serial_data),
@@ -56,7 +58,7 @@ module iob_uart_tb;
       
       rst = 1;
       clk = 1;
-      write = 0;
+      wstrb = 0;
       valid = 0;
       
       // deassert reset
@@ -135,9 +137,9 @@ module iob_uart_tb;
 
       #1 addr = cpu_address;
       valid = 1;
-      write = 1;
-      data_in = cpu_data;
-      @ (posedge clk) #1 write = 0;
+      wstrb = 1;
+      wdata = cpu_data;
+      @ (posedge clk) #1 wstrb = 0;
       valid = 0;
    endtask
 
@@ -148,7 +150,7 @@ module iob_uart_tb;
 
       #1 addr = cpu_address;
       valid = 1;
-      @ (posedge clk) #1 read_reg = data_out;
+      @ (posedge clk) #1 read_reg = rdata;
       @ (posedge clk) #1 valid = 0;
    endtask
 
