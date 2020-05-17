@@ -4,10 +4,11 @@ PYTHON_DIR := ../python
 CONSOLE_DIR = ../ld-sw
 
 SUBMODULES_DIR := ../../submodules
+INTERCON_DIR := $(SUBMODULES_DIR)/interconnect/software
 UART_DIR := $(SUBMODULES_DIR)/iob-uart/software
 CACHE_DIR := $(SUBMODULES_DIR)/iob-cache/c-driver
 
-INCLUDE =  -I. -I$(UART_DIR)/common -I$(CACHE_DIR) -I$(CONSOLE_DIR)
+INCLUDE =  -I. -I$(UART_DIR)/common -I$(CACHE_DIR) -I$(CONSOLE_DIR) -I$(INTERCON_DIR)
 
 DEFINE = -DUART_BAUD_RATE=$(BAUD) -DUART_CLK_FREQ=$(FREQ)
 DEFINE += -DPROG_SIZE=`wc -c   ../../software/firmware/firmware.bin | head -n1 | cut -d " " -f1`

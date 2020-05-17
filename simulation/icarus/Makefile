@@ -18,9 +18,27 @@ CACHE_DIR = $(SUBMODULES_DIR)/iob-cache
 AXI_RAM_DIR = $(SUBMODULES_DIR)/axi-mem
 INTERCON_DIR = $(SUBMODULES_DIR)/interconnect
 
+
+#hw defines
+include $(ROOT_DIR)/system.mk
+
+HW_DEFINE = -D$(CPU)
+ifeq ($(USE_LA_IF),1)
+	HW_DEFINE += -DUSE_LA_IF
+endif
+ifeq ($(USE_DDR),1)
+	HW_DEFINE += -DUSE_DDR
+endif
+HW_DEFINE+=-DBOOT_TARGET=$(BOOT_TARGET)
+HW_DEFINE+=-DBOOTROM_ADDR_W=$(BOOTROM_ADDR_W)
+HW_DEFINE+=-DSRAM_ADDR_W=$(SRAM_ADDR_W)
+HW_DEFINE+=-DN_SLAVES=$(N_SLAVES)
+HW_DEFINE+=-DUSE_DDR=$(USE_DDR)
+HW_DEFINE+=-DMEM_ADDR_W=$(MEM_ADDR_W)
+
 #hw includes
 HW_INCLUDE := -I. -I$(RTL_DIR)/include -I$(UART_DIR)/rtl/include \
--I$(CACHE_DIR)/rtl/header -I$(INTERCON_DIR)/rtl/include
+-I$(CACHE_DIR)/rtl/include -I$(INTERCON_DIR)/rtl/include
 
 #testbench defines
 TB_DEFINE = -DPROG_SIZE=$(shell wc -c $(FIRM_DIR)/firmware.bin | head -n1 | cut -d " " -f1)
@@ -28,7 +46,7 @@ TB_DEFINE += -DUART_BAUD_RATE=$(BAUD)
 TB_DEFINE += -DUART_CLK_FREQ=$(FREQ)
 
 #icarus verilog simulator
-VLOG = iverilog -W all -g2005-sv -DVCD
+VLOG = iverilog -W all -g2005-sv -DVCD $(HW_DEFINE)
 
 #hardware sources
 VSRC = \
@@ -50,16 +68,19 @@ all: $(VSRC) console.vh firmware boot
 	./a.out
 
 firmware:
+	@echo "Making firmware"
 	make -C $(FIRM_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
 	cp $(FIRM_DIR)/firmware.hex .
 	cp $(FIRM_DIR)/firmware.bin .
 	$(PYTHON_DIR)/hex_split.py firmware
-
 boot:
+ifneq ($(BOOT_TARGET),0)
+	@echo "Making bootloader $(BOOT_TARGET)"
 	make -C $(BOOT_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
 	cp $(BOOT_DIR)/boot.hex .
 	$(PYTHON_DIR)/hex_split.py boot
 	cp boot.hex boot.dat
+endif
 
 console.vh: $(ROOT_DIR)/software/ld-sw/console.h
 	sed "s/\#/\`/;s/0x/8\'h/" $^ | sed "/CONSOLE_H\|endif/d" > $@
