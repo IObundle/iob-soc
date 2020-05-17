@@ -29,12 +29,15 @@ endif
 ifeq ($(USE_DDR),1)
 	HW_DEFINE += -DUSE_DDR
 endif
-HW_DEFINE+=-DBOOT_TARGET=$(BOOT_TARGET)
+HW_DEFINE+=-DMEM_TYPE=$(MEM_TYPE)
+HW_DEFINE+=-DMEM_ADDR_W=$(MEM_ADDR_W)
 HW_DEFINE+=-DBOOTROM_ADDR_W=$(BOOTROM_ADDR_W)
 HW_DEFINE+=-DSRAM_ADDR_W=$(SRAM_ADDR_W)
 HW_DEFINE+=-DN_SLAVES=$(N_SLAVES)
 HW_DEFINE+=-DUSE_DDR=$(USE_DDR)
-HW_DEFINE+=-DMEM_ADDR_W=$(MEM_ADDR_W)
+HW_DEFINE+=-DUSE_BOOT=$(USE_BOOT)
+HW_DEFINE+=-DBOOT_CTR=$(BOOT_CTR)
+HW_DEFINE+=-DUART=$(UART)
 
 #hw includes
 HW_INCLUDE := -I. -I$(RTL_DIR)/include -I$(UART_DIR)/rtl/include \
@@ -74,8 +77,8 @@ firmware:
 	cp $(FIRM_DIR)/firmware.bin .
 	$(PYTHON_DIR)/hex_split.py firmware
 boot:
-ifneq ($(BOOT_TARGET),0)
-	@echo "Making bootloader $(BOOT_TARGET)"
+ifeq ($(USE_BOOT),1)
+	@echo "Making bootloader"
 	make -C $(BOOT_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
 	cp $(BOOT_DIR)/boot.hex .
 	$(PYTHON_DIR)/hex_split.py boot

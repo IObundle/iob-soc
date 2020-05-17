@@ -34,7 +34,7 @@ module system_tb;
 
       //init cpu bus signals
       uart_valid = 0;
-      uart_wr = 0;
+      uart_wstrb = 0;
       
       // deassert rst
       repeat (100) @(posedge clk);
@@ -189,23 +189,23 @@ module system_tb;
 
 
    //TESTER UART
-   reg [2:0]   uart_addr;
    reg         uart_valid;
-   wire        uart_ready;
-   reg         uart_wr;
-   reg [31:0]  uart_di;
-   reg [31:0]  uart_do;
+   reg [`UART_ADDR_W-1:0] uart_addr;
+   reg [`DATA_W-1:0]      uart_wdata;
+   reg                    uart_wstrb;
+   reg [`DATA_W-1:0]      uart_rdata;
+   wire                   uart_ready;
 
    iob_uart test_uart (
 		       .clk       (clk),
 		       .rst       (reset),
       
 		       .valid     (uart_valid),
-		       .ready     (uart_ready),
 		       .address   (uart_addr),
-		       .write     (uart_wr),
-		       .data_in   (uart_di),
-		       .data_out  (uart_do),
+		       .wdata     (uart_wdata),
+		       .wstrb     (uart_wstrb),
+		       .rdata     (uart_rdata),
+		       .ready     (uart_ready),
       
 		       .txd       (tester_txd),
 		       .rxd       (tester_rxd),

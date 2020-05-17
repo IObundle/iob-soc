@@ -3,4 +3,4 @@
 //address width
 `define ADDR_W 32
 // number of slaves 
-`define N_SLAVES_W $clog2(N_SLAVES)
+`define N_SLAVES_W $clog2(`N_SLAVES)
