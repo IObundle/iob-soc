@@ -1,9 +1,6 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-#define MEMSET(base, location, value) (*((volatile int*) (base + (sizeof(int)) * location)) = value)
-#define MEMGET(base, location)        (*((volatile int*) (base + (sizeof(int)) * location)))
-
 //Memory Map
 #define UART_WRITE_WAIT 0
 #define UART_DIV        1

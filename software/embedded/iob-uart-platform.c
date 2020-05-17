@@ -1,3 +1,4 @@
+#include "interconnect.h"
 #include "iob-uart.h"
 
 //base address
