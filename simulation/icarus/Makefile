@@ -22,12 +22,18 @@ INTERCON_DIR = $(SUBMODULES_DIR)/interconnect
 #hw defines
 include $(ROOT_DIR)/system.mk
 
-HW_DEFINE = -D$(CPU)
+HW_DEFINE=-DVCD
+ifeq ($(CPU),PICORV32)
+	HW_DEFINE += -DPICORV32
+endif
+ifeq ($(CPU),DARKRV)
+	HW_DEFINE += -DARKRV
+endif
 ifeq ($(USE_LA_IF),1)
 	HW_DEFINE += -DUSE_LA_IF
 endif
 ifeq ($(USE_DDR),1)
-	HW_DEFINE += -DUSE_DDR
+	HW_DEFINE += -DSHOW_DDR_IF
 endif
 HW_DEFINE+=-DMEM_TYPE=$(MEM_TYPE)
 HW_DEFINE+=-DMEM_ADDR_W=$(MEM_ADDR_W)
@@ -39,6 +45,9 @@ HW_DEFINE+=-DUSE_BOOT=$(USE_BOOT)
 HW_DEFINE+=-DBOOT_CTR=$(BOOT_CTR)
 HW_DEFINE+=-DUART=$(UART)
 
+
+
+
 #hw includes
 HW_INCLUDE := -I. -I$(RTL_DIR)/include -I$(UART_DIR)/rtl/include \
 -I$(CACHE_DIR)/rtl/include -I$(INTERCON_DIR)/rtl/include
@@ -49,7 +58,7 @@ TB_DEFINE += -DUART_BAUD_RATE=$(BAUD)
 TB_DEFINE += -DUART_CLK_FREQ=$(FREQ)
 
 #icarus verilog simulator
-VLOG = iverilog -W all -g2005-sv -DVCD $(HW_DEFINE)
+VLOG = iverilog -W all -g2005-sv $(HW_DEFINE)
 
 #hardware sources
 VSRC = \

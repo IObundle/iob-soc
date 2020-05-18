@@ -8,7 +8,7 @@ module system
    input                  reset,
    output                 trap,
 
-`ifdef USE_DDR //AXI MASTER INTERFACE
+`ifdef SHOW_DDR_IF //AXI MASTER INTERFACE
 
    //address write
    output [0:0]           m_axi_awid, 
@@ -56,9 +56,8 @@ module system
    input                  m_axi_rlast, 
    input                  m_axi_rvalid, 
    output                 m_axi_rready,
-`endif //  `ifdef USE_DDR
-   
-   
+`endif //  `ifdef SHOW_DDR_IF
+
    //UART
    output                 uart_txd,
    input                  uart_rxd,
@@ -118,7 +117,7 @@ module system
    //peripheral bus
    `bus_cat(per_m_d, `ADDR_W-`USE_DDR-1, 1)
 
-`ifdef USE_DDR
+`ifdef SHOW_DDR_IF
    //instruction cache bus
    `bus_cat(cache_i, `ADDR_W-1, 1) 
    //data cache bus
@@ -131,7 +130,7 @@ module system
    //
 
    //instruction bus
-`ifdef USE_DDR
+`ifdef SHOW_DDR_IF
    split
      #(
        .N_SLAVES(2)
@@ -147,18 +146,14 @@ module system
       .s_resp ({`get_resp(cache_i, 0), `get_resp(int_mem_i, 0)})
       );
 `else
-   `connect(cpu_i,`ADDR_W, 1, 0, int_mem_i, `ADDR_W, 1, 0)
+   `connect_c2c(cpu_i,`ADDR_W, 1, 0, int_mem_i, `ADDR_W, 1, 0)
 `endif
 
 
    //split data bus
    split 
      #(
-`ifdef USE_DDR
-       .N_SLAVES(3)
-`else
-       .N_SLAVES(2)
-`endif
+       .N_SLAVES(2+`USE_DDR)
        )
    dmembus_demux
      (
@@ -167,7 +162,7 @@ module system
       .m_resp (`get_resp(cpu_d, 0)),
 
       // slaves interface
-`ifdef USE_DDR
+`ifdef SHOW_DDR_IF
       .s_req ({`get_req(cache_d, `ADDR_W-2, 1, 0), `get_req(per_m_d, `ADDR_W-2, 1, 0), `get_req(int_mem_d, `ADDR_W-2, 1, 0)}),
       .s_resp({`get_resp(cache_d, 0), `get_resp(per_m_d, 0), `get_resp(int_mem_d, 0)})
 `else
@@ -195,7 +190,7 @@ module system
       );
 
 /*
-`ifdef USE_DDR
+`ifdef SHOW_DDR_IF
    
    //
    // INSTRUCTION CACHE

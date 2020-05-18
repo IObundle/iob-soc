@@ -69,58 +69,59 @@ module system_tb;
    // INSTANTIATE COMPONENTS
    //
 
-   //DDR AXI interface signals 
-`ifdef USE_DDR               
-   //Write address
-   wire [0:0] ddr_awid;
-   wire [31:0] ddr_awaddr;
-   wire [7:0]  ddr_awlen;
-   wire [2:0]  ddr_awsize;
-   wire [1:0]  ddr_awburst;
-   wire        ddr_awlock;
-   wire [3:0]  ddr_awcache;
-   wire [2:0]  ddr_awprot;
-   wire [3:0]  ddr_awqos;
-   wire        ddr_awvalid;
-   wire        ddr_awready;
-   //Write data
-   wire [31:0] ddr_wdata;
-   wire [3:0]  ddr_wstrb;
-   wire        ddr_wlast;
-   wire        ddr_wvalid;
-   wire        ddr_wready;
-   //Write response
-   wire [7:0]  ddr_bid;
-   wire [1:0]  ddr_bresp;
-   wire        ddr_bvalid;
-   wire        ddr_bready;
-   //Read address
-   wire [0:0]  ddr_arid;
-   wire [31:0] ddr_araddr;
-   wire [7:0]  ddr_arlen;
-   wire [2:0]  ddr_arsize;
-   wire [1:0]  ddr_arburst;
-   wire        ddr_arlock;
-   wire [3:0]  ddr_arcache;
-   wire [2:0]  ddr_arprot;
-   wire [3:0]  ddr_arqos;
-   wire        ddr_arvalid;
-   wire        ddr_arready;
-   //Read data
-   wire [7:0]  ddr_rid;
-   wire [31:0] ddr_rdata;
-   wire [1:0]  ddr_rresp;
-   wire        ddr_rlast;
-   wire        ddr_rvalid;
-   wire        ddr_rready;
-`endif
+   //DDR AXI interface signals
+   generate
+      if(`USE_DDR)
+           //Write address
+           wire [0:0] ddr_awid;
+      wire [31:0]     ddr_awaddr;
+      wire [7:0]      ddr_awlen;
+      wire [2:0]      ddr_awsize;
+      wire [1:0]      ddr_awburst;
+      wire            ddr_awlock;
+      wire [3:0]      ddr_awcache;
+      wire [2:0]      ddr_awprot;
+      wire [3:0]      ddr_awqos;
+      wire            ddr_awvalid;
+      wire            ddr_awready;
+      //Write data
+      wire [31:0]     ddr_wdata;
+      wire [3:0]      ddr_wstrb;
+      wire            ddr_wlast;
+      wire            ddr_wvalid;
+      wire            ddr_wready;
+      //Write response
+      wire [7:0]      ddr_bid;
+      wire [1:0]      ddr_bresp;
+      wire            ddr_bvalid;
+      wire            ddr_bready;
+      //Read address
+      wire [0:0]      ddr_arid;
+      wire [31:0]     ddr_araddr;
+      wire [7:0]      ddr_arlen;
+      wire [2:0]      ddr_arsize;
+      wire [1:0]      ddr_arburst;
+      wire            ddr_arlock;
+      wire [3:0]      ddr_arcache;
+      wire [2:0]      ddr_arprot;
+      wire [3:0]      ddr_arqos;
+      wire            ddr_arvalid;
+      wire            ddr_arready;
+      //Read data
+      wire [7:0]      ddr_rid;
+      wire [31:0]     ddr_rdata;
+      wire [1:0]      ddr_rresp;
+      wire            ddr_rlast;
+      wire            ddr_rvalid;
+      wire            ddr_rready;
+   endgenerate
 
    //test uart signals
-   wire        tester_txd, tester_rxd;       
-   wire        tester_rts, tester_cts;       
+   wire               tester_txd, tester_rxd;       
+   wire               tester_rts, tester_cts;       
 
    //cpu trap signal
-   wire        trap;
+   wire               trap;
    
    //
    // UNIT UNDER TEST
@@ -129,8 +130,7 @@ module system_tb;
 	       .clk           (clk),
 	       .reset         (reset),
 	       .trap          (trap),
-
-`ifdef USE_DDR
+`ifdef SHOW_DDR_IF
                //DDR
                //address write
 	       .m_axi_awid    (ddr_awid),
@@ -189,7 +189,7 @@ module system_tb;
 
 
    //TESTER UART
-   reg         uart_valid;
+   reg                uart_valid;
    reg [`UART_ADDR_W-1:0] uart_addr;
    reg [`DATA_W-1:0]      uart_wdata;
    reg                    uart_wstrb;
@@ -213,13 +213,15 @@ module system_tb;
 		       .cts       (tester_cts)
 		       );
 
-`ifdef USE_DDR
+
+   //instantiate the axi memory
+`ifdef SHOW_DDR_IF
    axi_ram 
      #(
- `ifdef USE_BOOT
+ `ifdef SHOW_BOOT_IF
        .FILE("none"),
  `else
-       .FILE("firmware"),
+       .FILE("firmaware"),
  `endif
        .FILE_SIZE(2**(`MEM_ADDR_W-2)),
        .DATA_WIDTH (`DATA_W),

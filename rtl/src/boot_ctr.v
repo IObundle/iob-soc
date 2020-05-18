@@ -19,11 +19,7 @@ module boot_ctr
    
    always @(posedge clk, posedge rst)
      if(rst) begin
-`ifdef USE_BOOT
-        boot <= 1'b1;
-`else
-        boot <= 1'b0;        
-`endif
+        boot <= `USE_BOOT;
         soft_reset_cnt <= 16'h0;
         ready <= 1'b0;
      end else if( valid && wstrb ) begin
