@@ -14,9 +14,9 @@ SUBMODULES_DIR := $(ROOT_DIR)/submodules
 RISCV_DIR := $(SUBMODULES_DIR)/iob-rv32
 UART_DIR := $(SUBMODULES_DIR)/iob-uart
 MEM_DIR := $(SUBMODULES_DIR)/iob-mem
-CACHE_DIR = $(SUBMODULES_DIR)/iob-cache
-AXI_RAM_DIR = $(SUBMODULES_DIR)/axi-mem
-INTERCON_DIR = $(SUBMODULES_DIR)/interconnect
+CACHE_DIR := $(SUBMODULES_DIR)/iob-cache
+AXI_RAM_DIR := $(SUBMODULES_DIR)/axi-mem
+INTERCON_DIR := $(SUBMODULES_DIR)/interconnect
 
 
 #hw defines
@@ -44,21 +44,18 @@ HW_DEFINE+=-DUSE_DDR=$(USE_DDR)
 HW_DEFINE+=-DUSE_BOOT=$(USE_BOOT)
 HW_DEFINE+=-DBOOT_CTR=$(BOOT_CTR)
 HW_DEFINE+=-DUART=$(UART)
-
-
-
-
-#hw includes
-HW_INCLUDE := -I. -I$(RTL_DIR)/include -I$(UART_DIR)/rtl/include \
--I$(CACHE_DIR)/rtl/include -I$(INTERCON_DIR)/rtl/include
-
 #testbench defines
 TB_DEFINE = -DPROG_SIZE=$(shell wc -c $(FIRM_DIR)/firmware.bin | head -n1 | cut -d " " -f1)
 TB_DEFINE += -DUART_BAUD_RATE=$(BAUD)
 TB_DEFINE += -DUART_CLK_FREQ=$(FREQ)
 
+#hw includes
+HW_INCLUDE := -I. -I$(RTL_DIR)/include -I$(UART_DIR)/rtl/include \
+-I$(CACHE_DIR)/rtl/include -I$(INTERCON_DIR)/rtl/include
+
+
 #icarus verilog simulator
-VLOG = iverilog -W all -g2005-sv $(HW_DEFINE)
+VLOG = iverilog -W all -g2005-sv $(HW_DEFINE) $(TB_DEFINE) $(HW_INCLUDE)
 
 #hardware sources
 VSRC = \
@@ -76,7 +73,7 @@ $(MEM_DIR)/afifo/afifo.v \
 $(INTERCON_DIR)/rtl/src/*.v
 
 all: $(VSRC) console.vh firmware boot
-	$(VLOG) $(HW_INCLUDE) $(TB_DEFINE) $(VSRC)
+	$(VLOG) $(VSRC)
 	./a.out
 
 firmware:
@@ -91,7 +88,6 @@ ifeq ($(USE_BOOT),1)
 	make -C $(BOOT_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
 	cp $(BOOT_DIR)/boot.hex .
 	$(PYTHON_DIR)/hex_split.py boot
-	cp boot.hex boot.dat
 endif
 
 console.vh: $(ROOT_DIR)/software/ld-sw/console.h

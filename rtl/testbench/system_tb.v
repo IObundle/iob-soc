@@ -19,7 +19,17 @@ module system_tb;
 
    //received by getchar
    reg [7:0] cpu_char = 0;
+
+
+   //tester uart
+   reg       uart_valid;
+   reg [`UART_ADDR_W-1:0] uart_addr;
+   reg [`DATA_W-1:0]      uart_wdata;
+   reg                    uart_wstrb;
+   reg [`DATA_W-1:0]      uart_rdata;
+   wire                   uart_ready;
    
+   //iterator
    integer   i;
    
    //
@@ -186,15 +196,6 @@ module system_tb;
 	       .uart_rts      (tester_cts),
 	       .uart_cts      (tester_rts)
 	       );
-
-
-   //TESTER UART
-   reg                uart_valid;
-   reg [`UART_ADDR_W-1:0] uart_addr;
-   reg [`DATA_W-1:0]      uart_wdata;
-   reg                    uart_wstrb;
-   reg [`DATA_W-1:0]      uart_rdata;
-   wire                   uart_ready;
 
    iob_uart test_uart (
 		       .clk       (clk),
