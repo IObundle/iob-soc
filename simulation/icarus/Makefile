@@ -33,15 +33,20 @@ ifeq ($(USE_LA_IF),1)
 	HW_DEFINE += -DUSE_LA_IF
 endif
 ifeq ($(USE_DDR),1)
-	HW_DEFINE += -DSHOW_DDR_IF
+	HW_DEFINE += -DUSE_DDR
 endif
-HW_DEFINE+=-DMEM_TYPE=$(MEM_TYPE)
+ifeq ($(RUN_DDR),1)
+	HW_DEFINE += -DRUN_DDR
+endif
+ifeq ($(USE_BOOT),1)
+	HW_DEFINE += -DUSE_BOOT
+endif
+
 HW_DEFINE+=-DMEM_ADDR_W=$(MEM_ADDR_W)
 HW_DEFINE+=-DBOOTROM_ADDR_W=$(BOOTROM_ADDR_W)
 HW_DEFINE+=-DSRAM_ADDR_W=$(SRAM_ADDR_W)
 HW_DEFINE+=-DN_SLAVES=$(N_SLAVES)
-HW_DEFINE+=-DUSE_DDR=$(USE_DDR)
-HW_DEFINE+=-DUSE_BOOT=$(USE_BOOT)
+#peripheral ids
 HW_DEFINE+=-DBOOT_CTR=$(BOOT_CTR)
 HW_DEFINE+=-DUART=$(UART)
 #testbench defines
@@ -68,6 +73,7 @@ $(CACHE_DIR)/rtl/src/iob-cache.v \
 $(AXI_RAM_DIR)/rtl/axi_ram.v \
 $(MEM_DIR)/tdp_mem/iob_tdp_mem.v \
 $(MEM_DIR)/sp_mem_be/iob_sp_mem_be.v \
+$(MEM_DIR)/sp_rom/sp_rom.v \
 $(MEM_DIR)/reg_file/iob_reg_file.v \
 $(MEM_DIR)/afifo/afifo.v \
 $(INTERCON_DIR)/rtl/src/*.v

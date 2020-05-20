@@ -4,13 +4,12 @@ CPU:=PICORV32
 USE_LA_IF:=0
 #CPU := DARKRV
 
-#Define main memory type: SRAM or DDR
-MEM_TYPE:="SRAM"
 #Define main memory size (log2 bytes)
 MEM_ADDR_W:=13
 
 #Define DDR
 USE_DDR:=0
+RUN_DDR:=0
 
 #Define booting
 USE_BOOT:=0

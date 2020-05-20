@@ -8,7 +8,7 @@ module system
    input                  reset,
    output                 trap,
 
-`ifdef SHOW_DDR_IF //AXI MASTER INTERFACE
+`ifdef USE_DDR //AXI MASTER INTERFACE
 
    //address write
    output [0:0]           m_axi_awid, 
@@ -35,7 +35,7 @@ module system
    input [1:0]            m_axi_bresp,
    input                  m_axi_bvalid,
    output                 m_axi_bready,
-   
+  
    //address read
    output [0:0]           m_axi_arid,
    output [`ADDR_W-1:0]   m_axi_araddr, 
@@ -56,7 +56,7 @@ module system
    input                  m_axi_rlast, 
    input                  m_axi_rvalid, 
    output                 m_axi_rready,
-`endif //  `ifdef SHOW_DDR_IF
+`endif //  `ifdef USE_DDR
 
    //UART
    output                 uart_txd,
@@ -68,42 +68,46 @@ module system
    //
    // SYSTEM RESET
    //
-   wire                             soft_reset;   
-   wire                             reset_int = reset | soft_reset;
+   wire                   soft_reset;   
+   wire                   reset_int = reset | soft_reset;
    
    //
    //  CPU
    //
 
-   // instruction cat bus
-   `bus_cat(cpu_i, `ADDR_W, 1)
+   // instruction bus
+   wire [`REQ_W-1:0]      cpu_i_req;
+   wire [`RESP_W-1:0]     cpu_i_resp;
 
    // data cat bus
-   `bus_cat(cpu_d, `ADDR_W, 1)
+   wire [`REQ_W-1:0]      cpu_d_req;
+   wire [`RESP_W-1:0]     cpu_d_resp;
+
 
    // boot flag
-   wire                             boot;
-
+`ifdef USE_BOOT
+   wire                   boot;
+`endif
+   
    //instantiate the cpu
 `ifdef PICORV32
    iob_picorv32 cpu
 `elsif DARKRV
-   iob_darkrv cpu
+     iob_darkrv cpu
 `endif
-     (
-      .clk     (clk),
-      .rst     (reset_int),
-      .trap    (trap),
-      .boot    (boot),
-      
-      //instruction bus
-      .ibus_req(`get_req(cpu_i, `ADDR_W, 1, 0)),
-      .ibus_resp(`get_resp(cpu_i, 0)),
- 
-      //data bus
-      .dbus_req(`get_req(cpu_d, `ADDR_W, 1, 0)),
-      .dbus_resp(`get_resp(cpu_d, 0))
-      );
+       (
+        .clk     (clk),
+        .rst     (reset_int),
+        .trap    (trap),
+        
+        //instruction bus
+        .ibus_req(cpu_i_req),
+        .ibus_resp(cpu_i_resp),
+        
+        //data bus
+        .dbus_req(cpu_d_req),
+        .dbus_resp(cpu_d_resp)
+        );
 
 
    //
@@ -111,65 +115,111 @@ module system
    //
 
    //internal memory instruction bus
-   `bus_cat(int_mem_i, `ADDR_W-`USE_DDR, 1) 
-   //internal memory data bus
-   `bus_cat(int_mem_d, `ADDR_W-`USE_DDR-1, 1)
-   //peripheral bus
-   `bus_cat(per_m_d, `ADDR_W-`USE_DDR-1, 1)
+   wire [`REQ_W-1:0]      int_mem_i_req;
+   wire [`RESP_W-1:0]     int_mem_i_resp;
+   //external memory instruction bus
+   wire [`REQ_W-1:0]      ext_mem_i_req;
+   wire [`RESP_W-1:0]     ext_mem_i_resp;
 
-`ifdef SHOW_DDR_IF
-   //instruction cache bus
-   `bus_cat(cache_i, `ADDR_W-1, 1) 
-   //data cache bus
-   `bus_cat(cache_d, `ADDR_W-2, 1)
-`endif
-
-   
+ 
    //   
-   // SPLIT CPU BUSES INTO INTERNAL MEMORY, CACHE AND PERIPHERALS
+   // SPLIT CPU INSTRUCTION BUS INTO INTERNAL AND EXTERNAL MEMORY
    //
 
-   //instruction bus
-`ifdef SHOW_DDR_IF
+`ifdef RUN_DDR
    split
-     #(
-       .N_SLAVES(2)
-       )
-   ibus_demux
-     (
-      // master interface
-      .m_req  (`get_req(cpu_i,`ADDR_W, 1, 0)),
-      .m_resp (`get_resp(cpu_i, 0)),
-
-      // slaves interface
-      .s_req ({`get_req(cache_i, `ADDR_W-1, 1, 0), `get_req(int_mem_i, `ADDR_W-1, 1, 0)}),
-      .s_resp ({`get_resp(cache_i, 0), `get_resp(int_mem_i, 0)})
-      );
+     ibus_demux
+       (
+        // master interface
+        .m_req  (cpu_i_req),
+        .m_resp (cpu_i_resp),
+        
+        // slaves interface
+ `ifdef USE_BOOT
+        .s_sel (~boot),
+ `else
+        .s_sel (1'b1),
+ `endif
+        .s_req ({ext_mem_i_req, int_mem_i_req}),
+        .s_resp ({ext_mem_i_resp, 0), int_mem_i_resp})
+       );
 `else
-   `connect_c2c(cpu_i,`ADDR_W, 1, 0, int_mem_i, `ADDR_W, 1, 0)
+   assign int_mem_req = cpu_i_req;
+   assign cpu_i_resp = int_mem_i_resp;
 `endif
 
+   //   
+   // SPLIT CPU DATA BUS INTO INTERNAL AND EXTERNAL MEMORY
+   //
 
-   //split data bus
+   //internal memory data bus
+   wire [`REQ_W-1:0]      int_mem_d_req;
+   wire [`RESP_W-1:0]     int_mem_d_resp;
+   //external memory data bus
+   wire [`REQ_W-1:0]      ex_mem_d_req;
+   wire [`RESP_W-1:0]     ex_mem_d_resp;
+   //peripheral bus
+   wire [`REQ_W-1:0]      per_req;
+   wire [`RESP_W-1:0]     per_resp;
+
    split 
      #(
-       .N_SLAVES(2+`USE_DDR)
+`ifdef USE_DDR
+     .N_SLAVES(3)
+`else
+       .N_SLAVES(2)
+`endif
        )
    dmembus_demux
+      
      (
-      // master interface
-      .m_req (`get_req(cpu_d, `ADDR_W, 1, 0)),
-      .m_resp (`get_resp(cpu_d, 0)),
+     // master interface
+     .m_req (cpu_d_req),
+  .m_resp (cpu_d_resp),
 
-      // slaves interface
-`ifdef SHOW_DDR_IF
-      .s_req ({`get_req(cache_d, `ADDR_W-2, 1, 0), `get_req(per_m_d, `ADDR_W-2, 1, 0), `get_req(int_mem_d, `ADDR_W-2, 1, 0)}),
-      .s_resp({`get_resp(cache_d, 0), `get_resp(per_m_d, 0), `get_resp(int_mem_d, 0)})
+  // slaves interface
+`ifdef USE_DDR
+       .sel(cpu_d_req[`addr_slave(2)]),
+  .s_req ({ext_mem_d_req, per_req, int_mem_d_req}),
+  .s_resp({ext_mem_d_resp, per_resp, int_mem_d_resp}}),
 `else
-      .s_req ({`get_req(per_m_d, `ADDR_W-1, 1, 0), `get_req(int_mem_d, `ADDR_W-1, 1, 0)}),
-      .s_resp({`get_resp(per_m_d, 0), `get_resp(int_mem_d, 0)})
+       .sel(cpu_d_req[`addr_slave(1)]),
+  .s_req ({per_req, int_mem_d_req}}),
+  .s_resp({per_resp, int_mem_d_resp})
 `endif
      );
+
+ 
+   //   
+   // SPLIT PERIPHERAL BUS
+   //
+
+
+   //slaves bus
+   wire [`N_SLAVES*`REQ_W-1:0]      slaves_req;
+   wire [`N_SLAVES*`RESP_W-1:0]     slaves_resp;
+
+   
+   // peripheral demux
+   split 
+     #(
+     .N_SLAVES(`N_SLAVES)
+       )
+   per_demux
+     (
+      // master interface
+      .m_req (per_d_req),
+      .m_resp (per_resp),
+      
+      // slaves interface
+     .sel(per_d_req[`address_nbits(`N_SLAVES)])
+      .s_req (slave_req),
+      .s_resp (slave_resp)
+      );
+
+   
+   /////////////////////////////////////////////////////////////////////////
+       // MODULE INSTANCES
    
    //
    // INTERNAL SRAM MEMORY
@@ -177,111 +227,38 @@ module system
 
    int_mem int_mem0 
      (
-      .clk                  (clk ),
-      .rst                  (reset_int),
+     .clk                  (clk ),
+     .rst                  (reset_int),
 
-      // instruction bus
-      .i_req                (`get_req_slice(int_mem_i, (`SRAM_ADDR_W-2), (`DATA_W+`DATA_W+2), (`ADDR_W-`USE_DDR), 1, 0)),
-      .i_resp               (`get_resp(int_mem_i, 0)),
+     // instruction bus
+     .i_req                (int_mem_i_req),
+     .i_resp               (int_mem_i_resp),
 
-      //data bus
-      .d_req                (`get_req_slice(int_mem_d, (`SRAM_ADDR_W-2), (`DATA_W+`DATA_W+2), (`ADDR_W-`USE_DDR-1), 1, 0)),
-      .d_resp               (`get_resp(int_mem_d, 0))
-      );
+     //data bus
+     .d_req                (int_mem_d_req),
+     .d_resp               (int_mem_d_resp)
+       );
 
-/*
-`ifdef SHOW_DDR_IF
+
+`ifdef `USE_DDR
    
+    //
+   // EXTERNAL DDR MEMORY
    //
-   // INSTRUCTION CACHE
-   //
-
-   //front-end bus
-   `bus_uncat(icache_fe, `ADDR_W)
-   `connect_lc2u(cache_i, icache_fe, `ADDR_W, 1, 0)
-
-   //back-end bus
-   `bus_uncat(icache_be, `ADDR_W)
-
+  
    //instruction cache instance
-   iob_cache 
-     #(
-       .ADDR_W(`ADDR_W)
-       )
-   icache 
+   ext_mem ext_mem0 
      (
-      .clk (clk),
-      .reset (reset_int),
-      
-      //front-end interface 
-      .valid (icache_fe_valid),
-      .ready (icache_fe_ready),
-      .addr  (icache_fe_addr),
-      .rdata (icache_fe_rdata),
-      .wdata (icache_fe_wdata),
-      .wstrb (icache_fe_wstrb),
+     .clk                  (clk ),
+     .rst                  (reset_int),
 
-      //back-end interface 
-      .valid (icache_be_valid),
-      .ready (icache_be_ready),
-      .addr  (icache_be_addr),
-      .rdata (icache_be_rdata),
-      .wdata (icache_be_wdata),
-      .wstrb (icache_be_wstrb)
-      );
+     // instruction bus
+  .i_req                (int_mem_i_req),
+     .i_resp               (int_mem_i_resp),
 
-
-   //
-   // DATA CACHE
-   //
-
-   //front-end bus
-   `bus_uncat(dcache_fe, `ADDR_W)
-   `connect_lc2u(cache_d, dcache_fe, `ADDR_W, 1, 0)
-
-   //back-end bus
-   `bus_uncat(dcache_be, `ADDR_W)
-
-   //data cache instance
-   iob_cache 
-     #(
-       .ADDR_W(`ADDR_W)
-       )
-   dcache 
-     (
-      .clk (clk),
-      .reset (reset_int),
-      
-      //front-end interface 
-      .valid (dcache_fe_valid),
-      .ready (dcache_fe_ready),
-      .addr  (dcache_fe_addr),
-      .rdata (dcache_fe_rdata),
-      .wdata (dcache_fe_wdata),
-      .wstrb (dcache_fe_wstrb),
-
-      //back-end interface 
-      .valid (dcache_be_valid),
-      .ready (dcache_be_ready),
-      .addr  (dcache_be_addr),
-      .rdata (dcache_be_rdata),
-      .wdata (dcache_be_wdata),
-      .wstrb (dcache_be_wstrb)
-      );
-
-
-   //MERGE INSTRUCTION AND DATA CACHE BACK-ENDS
-   TODO
-     //INSERT L2 CACHE HERE
-     iob_cache l2cache
-     (      
-            //NATIVE INTERFACE 
- .valid (cache_valid),
-      .addr  (cache_addr),
-      .wdata (cache_uncat_wdata),
-      .wstrb (cache_uncat_wstrb),
-      .rdata (cache_uncat_rdata),
-      .ready (cache_uncat_ready),
+     //data bus
+     .d_req                (int_mem_d_req),
+     .d_resp               (int_mem_d_resp)
 
       //AXI INTERFACE 
       //address write
@@ -329,49 +306,14 @@ module system
       .R_RESP(m_axi_rresp), 
       .R_LAST(m_axi_rlast), 
       .R_VALID(m_axi_rvalid),  
-            .R_READY(m_axi_rready)  
-            );
+  .R_READY(m_axi_rready)  
+       );
 `endif
-  */
-
- 
-   /////////////////////////////////////////////////////////////
-   // PERIPHERALS
-   /////////////////////////////////////////////////////////////
-
-
-   //slaves  cat bus
-   `bus_cat(per_s,`ADDR_W-`USE_DDR-`N_SLAVES_W, `N_SLAVES)
-   
-   // peripheral demux
-   split 
-     #(
-       .ADDR_W(`ADDR_W-`USE_DDR-1),
-       .N_SLAVES(`N_SLAVES)
-       )
-   per_demux
-     (
-      // master interface
-      .m_req (`get_req(per_m_d, `ADDR_W-`USE_DDR-1, 1, 0)),
-      .m_resp (`get_resp(per_m_d, 0)),
-      
-      // slaves interface
-      .s_req (`get_req_all(per_s,`ADDR_W-`USE_DDR-1-`N_SLAVES_W, `N_SLAVES)),
-      .s_resp (`get_resp_all(per_s, `N_SLAVES))
-      );
-
-   /////////////////////////////////////////////////////////////////////////
-
-
 
    //
    // BOOT CONTROLLER
    //
 
-   //declare boot controller uncat bus
-   `bus_uncat(boot_ctr, 1)
-   `connect_c2u(per_s, `ADDR_W-`USE_DDR-`N_SLAVES_W, 2, `BOOT_CTR, boot_ctr, 1)  
-   
    boot_ctr boot0 
      (
       .clk(clk),
@@ -381,32 +323,30 @@ module system
       
       //cpu interface
       //no address bus since single address
-      .valid(boot_ctr_valid),
-      .wdata(boot_ctr_wdata),
-      .wstrb(|boot_ctr_wstrb),
-      .rdata(boot_ctr_rdata),
-      .ready(boot_ctr_ready)
+      .valid(slaves_req[`valid(`BOOT_CTR)]),
+      .wdata(slaves_req[`wdata(`BOOT_CTR)]),
+      .wstrb(|slaves_req[`wstrb(`BOOT_CTR)]),
+      .rdata(slaves_req[`rdata(`BOOT_CTR)]),
+      .ready(slaves_req[`ready(`BOOT_CTR)])
    );
 
    //
    // UART
    //
 
-   //declare uart uncat bus
-   `bus_uncat(uart, `UART_ADDR_W+2)
-   `connect_c2u(per_s, `ADDR_W-`USE_DDR-`N_SLAVES_W, 2, `UART, uart, `UART_ADDR_W+2)  
    iob_uart uart
      (
       .clk       (clk),
       .rst       (reset_int),
       
       //cpu interface
-      .valid     (uart_valid),
-      .address   (uart_addr[`UART_ADDR_W+2-1 : 2]),
-      .wdata     (uart_wdata),
-      .wstrb     (|uart_wstrb),                 
-      .rdata     (uart_rdata),
-      .ready     (uart_ready),
+      .valid(slaves_req[`valid(`UART)]),
+      .valid(slaves_req[`address_nbits(`UART, `UART_ADDR_W)]),
+      .wdata(slaves_req[`wdata(`UART)]),
+      .wstrb(|slaves_req[`wstrb(`UART)]),
+      .rdata(slaves_req[`rdata(`UART)]),
+      .ready(slaves_req[`ready(`UART)])
+  
                  
       //RS232 interface
       .txd       (uart_txd),

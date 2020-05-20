@@ -3,137 +3,119 @@
 `include "interconnect.vh"
   
 module int_mem 
-  #(
-    parameter ADDR_W = `SRAM_ADDR_W-2
-    )
    (
-    input                          clk,
-    input                          rst,
+    input                clk,
+    input                rst,
 
+`ifdef USE_BOOT
+    input                boot,
+`endif
+    
     //instruction bus
-    input [`BUS_REQ_W(ADDR_W)-1:0] i_req,
-    output [`BUS_RESP_W-1:0]       i_resp,
+    input [`REQ_W-1:0]   i_req,
+    output [`RESP_W-1:0] i_resp,
 
     //data bus
-    input [`BUS_REQ_W(ADDR_W)-1:0] d_req,
-    output [`BUS_RESP_W-1:0]       d_resp
+    input [`REQ_W-1:0]   d_req,
+    output [`RESP_W-1:0] d_resp
     );
 
-   //create cat instruction bus for SRAM
-   `bus_cat(ibus, ADDR_W, 1)
-   assign `get_req(ibus, ADDR_W, 1, 0) = i_req;
-   assign i_resp = `get_resp(ibus, 0);
-   
-   //create cat data bus for SRAM
-   `bus_cat(dbus, ADDR_W, 1)
-   assign `get_req(dbus, ADDR_W, 1, 0) = d_req;
-   assign d_resp = `get_resp(dbus, 0);
-
-
-   //create instruction write bus
-   `bus_cat(sram_idrivebus, ADDR_W, 1)
-
-   generate 
-      if(`USE_BOOT) begin
-
-         //
-         // BOOT HARDWARE
-         //
-   
-         //rom valid and address generate
-         reg                                                   rom_readvalid;
-         reg [`BOOTROM_ADDR_W-3:0]                             rom_readaddr;
-         wire [`DATA_W-1:0]                                    rom_readrdata;
-         wire                                                  rom_readready;
-
-         //rom read process
-         always @(posedge clk, posedge rst)
-           if(rst) begin
-              rom_valid <= 1'b1;
-              rom_readaddr <= `BOOTROM_ADDR_W'd0;
-           end else
-             if (rom_addr != (2**(`BOOTROM_ADDR_W-2)-1)) begin
-                rom_readaddr <= rom_readaddr + 1'b1;
-                rom_valid <= 1'b1;
-             end else
-               rom_valid <= 1'b0;
-
-         //
-         //instantiate rom
-         //
-         rom #(
-	       .ADDR_W(`BOOTROM_ADDR_W-2)
-	       )
-         boot_rom (
-	           .clk           (clk),
-	           .rst           (rst),
-                   .valid         (rom_readvalid),
-                   .ready         (rom_readready),
-	           .addr          (rom_readaddr),
-	           .rdata         (rom_readrdata)
-	           );
-
-         //buses to write instructions to sram
-         `bus_uncat(sram_iwrite, ADDR_W)
-         assign sram_iwrite_valid = rom_readready;
-         assign sram_iwrite_addr = rom_readaddr+2**ADDR_W-2**(`BOOTROM_ADDR_W-2);
-         assign sram_iwrite_wdata = rom_readrdata;
-         assign sram_iwrite_wstrb = {`DATA_W/8{1'b1}};
+   //sram instruction bus
+   wire [`REQ_W-1:0]  ram_i_req;
+   wire [`RESP_W-1:0] ram_i_resp;
          
-         
-         //
-         // MERGE INSTRUCTION WRITE AND READ BUSES
-         //
-   
-         //create instruction-side 2-slot cat data bus for merge block
-         `bus_cat(ibus_2, ADDR_W, 2)
 
-         //connect instruction write bus to slot 1 (highest priority)
-         `connect_u2c(sram_iwrite, ADDR_W, ibus_2, ADDR_W, 2, 1)
-
-         //connect instruction bus to slot 0
-         `connect_c2c(ibus, ADDR_W, 1, 0, ibus_2, ADDR_W, 2, 0)
-
-         merge 
-           #(
-             .ADDR_W(ADDR_W)
-             )
-         ibus_merge
-           (
-            //master
-            .m_req(`get_req_all(ibus_2, ADDR_W, 2)),
-            .m_resp(`get_resp_all(ibus_2, 2)),
-            //slave  
-            .s_req(`get_req(sram_idrivebus, ADDR_W, 1, 0)),
-            .s_resp(`get_resp(sram_idrivebus, 0))
-            );
-      end else begin
-         `connect_c2c(ibus, ADDR_W, 1, 0, sram_idrivebus, ADDR_W, 1, 0)
-      end
-   endgenerate
+`ifdef USE_BOOT
 
    //
-   // UNCAT BUSES FOR SRAM
+   // BOOT HARDWARE
+   //
+   
+   //rom read bus
+   wire [`REQ_W-1:0]  rom_r_req;
+   wire [`RESP_W-1:0] rom_r_resp;
+
+   //clear write request
+   assign rom_r_req[`write(0)] = `WRITEW'd0;
+   
+   //read rom
+   always @(posedge clk, posedge rst)
+     if(rst) begin
+        rom_r_req[`valid(0)] <= 1'b1;
+        rom_r_req[`address(0)] <= `BOOTROM_ADDR_W'd0;
+     end else
+       if (rom_r_req[`address(0)] != (2**(`BOOTROM_ADDR_W-2)-1))
+         rom_r_req[`address(0)] <= rom_r_req[`address(0)] + 1'b1;
+       else
+         rom_valid <= 1'b0;
+   
+   //
+   //instantiate rom
+   //
+   rom 
+   boot_rom (
+	     .clk           (clk),
+	     .rst           (rst),
+             .valid         (rom_r_req[`valid(0)]),
+	     .addr          (rom_r_req[`address(0)]),
+	     .rdata         (rom_r_resp[`rdata(0)]),
+             .ready         (rom_r_resp[`ready(0)])
+	     );
+
+   //
+   // MERGE INSTRUCTION WRITE AND READ BUSES
    //
 
-   //instruction bus
-   `bus_uncat(ram_i, ADDR_W)
-   `connect_c2u(sram_idrivebus, ADDR_W, 1, 0, ram_i, ADDR_W)
+   parameter BOOT_OFFSET = (2**(`SRAM_ADDR_W-2) - 2**(`BOOTROM_ADDR_W-2));
+   
+   //ram instruction write bus
+   wire [`REQ_W-1:0]  ram_w_req;
+   wire [`RESP_W-1:0] ram_w_resp;
 
-   //data bus
-   `bus_uncat(ram_d, ADDR_W)
-   `connect_c2u(dbus, ADDR_W, 1, 0, ram_d, ADDR_W)
+   assign ram_w_req[`valid(0)] = rom_r_resp[`ready(0)];
+   assign ram_w_req[`address(0)] = rom_r_req[`address(0)] + BOOT_OFFSET;
+   assign ram_w_req[`wdata(0)] = rom_r_resp[`rdata(0)];
+   assign ram_w_req[`wstrb(0)] = {`DATA_W/8{1'b1}};
+ 
+   
+   //ram instruction read bus
+   wire [`REQ_W-1:0]  ram_r_req;
+   wire [`RESP_W-1:0] ram_r_resp;
+
+   assign ram_r_req[`valid(0)] = i_req[`valid(0)];
+`ifdef USE_BOOT
+   assign ram_r_req[`address(0)] = boot? i_req[`address(0)] + BOOT_OFFSET;
+`else
+   assign ram_r_req[`address(0)] = boot? i_req[`address(0)];
+`endif
+   assign ram_r_req[`write(0)] = i_req[`write(0)];
+   assign i_resp[`resp(0)] = ram_r_resp[`resp(0)];
+
+   merge ibus_merge
+     (
+      //master
+      .m_req({ram_w_req, ram_r_req}),
+      .m_resp({ram_w_resp, ram_r_resp}),
+      //slave  
+      .s_req(ram_i_req),
+      .s_resp(ram_i_resp)
+      );
+`else
+   assign ram_i_req = i_req;
+   assign i_resp = ram_i_resp;
+`endif 
    
    
    //
    // INSTANTIATE RAM
    //
-
-   parameter [9*8-1:0] file_name = !`USE_BOOT? "firmware": "none";
-                            
    ram #(
-         .FILE(file_name),
-	 .ADDR_W(ADDR_W)
+`ifdef USE_BOOT             
+         .FILE("none"),
+`else
+         .FILE("firmware"),
+`endif
+	 .ADDR_W(`SRAM_ADDR_W)
 	 )
    boot_ram 
      (
@@ -141,20 +123,20 @@ module int_mem
       .rst           (rst),
       
       //instruction bus
-      .i_valid       (ram_i_valid),
-      .i_addr        (ram_i_addr),
-      .i_wdata       (ram_i_wdata),
-      .i_wstrb       (ram_i_wstrb),
-      .i_rdata       (ram_i_rdata),
-      .i_ready       (ram_i_ready),
+      .i_valid       (ram_i_req[`valid(0)]),
+      .i_addr        (ram_i_req[`address(0)]), 
+      .i_wdata       (ram_i_req[`wdata(0)]),
+      .i_wstrb       (ram_i_req[`wstrb(0)]),
+      .i_rdata       (ram_i_resp[`rdata(0)]),
+      .i_ready       (ram_i_resp[`ready(0)]),
 	     
       //data bus
-      .d_valid       (ram_d_valid),
-      .d_addr        (ram_d_addr),
-      .d_wdata       (ram_d_wdata),
-      .d_wstrb       (ram_d_wstrb),
-      .d_rdata       (ram_d_rdata),
-      .d_ready       (ram_d_ready)
+      .d_valid       (d_req[`valid(0)]),
+      .d_addr        (d_req[`address(0)]), 
+      .d_wdata       (d_req[`wdata(0)]),
+      .d_wstrb       (d_req[`wstrb(0)]),
+      .d_rdata       (d_resp[`rdata(0)]),
+      .d_ready       (d_resp[`ready(0)])
       );
    
 endmodule
