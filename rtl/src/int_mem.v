@@ -53,14 +53,24 @@ module int_mem
    //instantiate rom
    //
    rom 
-   boot_rom (
-	     .clk           (clk),
-	     .rst           (rst),
-             .valid         (rom_r_req[`valid(0)]),
-	     .addr          (rom_r_req[`address(0)]),
-	     .rdata         (rom_r_resp[`rdata(0)]),
-             .ready         (rom_r_resp[`ready(0)])
-	     );
+   sp_rom #(
+            .DATA_W(`DATA_W),
+            .ADDR_W(`BOOTROM_ADDR_W-2),
+            .FILE("boot.dat")
+            )
+   sp_rom0 (
+            .clk(clk),
+            .r_en(valid),
+            .addr(addr),
+            .rdata(rdata)
+            );
+   
+  // generate rom ready
+   always @(posedge clk, posedge rst)
+     if(rst)
+       rom_r_resp[`ready(0)] <= 1'b0;
+     else
+       rom_r_resp[`ready(0)] <= valid;
 
    //
    // MERGE INSTRUCTION WRITE AND READ BUSES
@@ -103,19 +113,19 @@ module int_mem
 `else
    assign ram_i_req = i_req;
    assign i_resp = ram_i_resp;
-`endif 
+`endif // !`ifdef USE_BOOT
+   
    
    
    //
    // INSTANTIATE RAM
    //
    ram #(
-`ifdef USE_BOOT             
-         .FILE("none"),
+`ifdef USE_BOOT
+         .FILE("none")
 `else
-         .FILE("firmware"),
+         .FILE("firmware")
 `endif
-	 .ADDR_W(`SRAM_ADDR_W)
 	 )
    boot_ram 
      (
@@ -124,7 +134,7 @@ module int_mem
       
       //instruction bus
       .i_valid       (ram_i_req[`valid(0)]),
-      .i_addr        (ram_i_req[`address(0)]), 
+      .i_addr        (ram_i_req[`address_nbits(0, `SRAM_ADDR_W-2)]), 
       .i_wdata       (ram_i_req[`wdata(0)]),
       .i_wstrb       (ram_i_req[`wstrb(0)]),
       .i_rdata       (ram_i_resp[`rdata(0)]),
@@ -132,11 +142,11 @@ module int_mem
 	     
       //data bus
       .d_valid       (d_req[`valid(0)]),
-      .d_addr        (d_req[`address(0)]), 
+      .d_addr        (d_req[`address_nbits(0, `SRAM_ADDR_W-2)]), 
       .d_wdata       (d_req[`wdata(0)]),
       .d_wstrb       (d_req[`wstrb(0)]),
       .d_rdata       (d_resp[`rdata(0)]),
       .d_ready       (d_resp[`ready(0)])
       );
-   
+
 endmodule

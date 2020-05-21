@@ -80,14 +80,13 @@ module system_tb;
    //
 
    //DDR AXI interface signals
-   generate
-      if(`USE_DDR)
-           //Write address
-           wire [0:0] ddr_awid;
-      wire [31:0]     ddr_awaddr;
-      wire [7:0]      ddr_awlen;
-      wire [2:0]      ddr_awsize;
-      wire [1:0]      ddr_awburst;
+`ifdef USE_DDR
+   //Write address
+   wire [0:0] ddr_awid;
+   wire [31:0] ddr_awaddr;
+   wire [7:0]  ddr_awlen;
+   wire [2:0]  ddr_awsize;
+   wire [1:0]  ddr_awburst;
       wire            ddr_awlock;
       wire [3:0]      ddr_awcache;
       wire [2:0]      ddr_awprot;
@@ -124,7 +123,7 @@ module system_tb;
       wire            ddr_rlast;
       wire            ddr_rvalid;
       wire            ddr_rready;
-   endgenerate
+`endif
 
    //test uart signals
    wire               tester_txd, tester_rxd;       
@@ -140,7 +139,7 @@ module system_tb;
 	       .clk           (clk),
 	       .reset         (reset),
 	       .trap          (trap),
-`ifdef SHOW_DDR_IF
+`ifdef USE_DDR
                //DDR
                //address write
 	       .m_axi_awid    (ddr_awid),
@@ -216,13 +215,13 @@ module system_tb;
 
 
    //instantiate the axi memory
-`ifdef SHOW_DDR_IF
+`ifdef USE_DDR
    axi_ram 
      #(
- `ifdef SHOW_BOOT_IF
+ `ifdef USE_BOOT
        .FILE("none"),
  `else
-       .FILE("firmaware"),
+       .FILE("firmware"),
  `endif
        .FILE_SIZE(2**(`MEM_ADDR_W-2)),
        .DATA_WIDTH (`DATA_W),

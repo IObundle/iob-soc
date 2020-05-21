@@ -40,6 +40,7 @@ ifeq ($(RUN_DDR),1)
 endif
 ifeq ($(USE_BOOT),1)
 	HW_DEFINE += -DUSE_BOOT
+	ROM_VSRC$:=(MEM_DIR)/sp_rom/sp_rom.v
 endif
 
 HW_DEFINE+=-DMEM_ADDR_W=$(MEM_ADDR_W)
@@ -62,6 +63,8 @@ HW_INCLUDE := -I. -I$(RTL_DIR)/include -I$(UART_DIR)/rtl/include \
 #icarus verilog simulator
 VLOG = iverilog -W all -g2005-sv $(HW_DEFINE) $(TB_DEFINE) $(HW_INCLUDE)
 
+
+
 #hardware sources
 VSRC = \
 $(RTL_DIR)/testbench/system_tb.v \
@@ -73,10 +76,10 @@ $(CACHE_DIR)/rtl/src/iob-cache.v \
 $(AXI_RAM_DIR)/rtl/axi_ram.v \
 $(MEM_DIR)/tdp_mem/iob_tdp_mem.v \
 $(MEM_DIR)/sp_mem_be/iob_sp_mem_be.v \
-$(MEM_DIR)/sp_rom/sp_rom.v \
 $(MEM_DIR)/reg_file/iob_reg_file.v \
 $(MEM_DIR)/afifo/afifo.v \
 $(INTERCON_DIR)/rtl/src/*.v
+$(ROM_VSRC)
 
 all: $(VSRC) console.vh firmware boot
 	$(VLOG) $(VSRC)
