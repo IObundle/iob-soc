@@ -36,7 +36,7 @@ module int_mem
    wire [`RESP_W-1:0] rom_r_resp;
 
    //clear write request
-   assign rom_r_req[`write(0)] = `WRITEW'd0;
+   assign rom_r_req[`write(0)] = `WRITE_W'd0;
    
    //read rom
    always @(posedge clk, posedge rst)
@@ -100,22 +100,30 @@ module int_mem
 `endif
    assign ram_r_req[`write(0)] = i_req[`write(0)];
    assign i_resp[`resp(0)] = ram_r_resp[`resp(0)];
+`endif // !`ifdef USE_BOOT
 
-   merge ibus_merge
+   
+   merge #(
+`ifdef USE_BOOT
+           .N_MASTERS(2)
+`else
+           .N_MASTERS(1)
+`endif
+           )
+   ibus_merge
      (
       //master
+`ifdef USE_BOOT
       .m_req({ram_w_req, ram_r_req}),
       .m_resp({ram_w_resp, ram_r_resp}),
+`else
+      .m_req(i_req),
+      .m_resp(i_resp),
+`endif
       //slave  
       .s_req(ram_i_req),
       .s_resp(ram_i_resp)
       );
-`else
-   assign ram_i_req = i_req;
-   assign i_resp = ram_i_resp;
-`endif // !`ifdef USE_BOOT
-   
-   
    
    //
    // INSTANTIATE RAM
@@ -134,7 +142,7 @@ module int_mem
       
       //instruction bus
       .i_valid       (ram_i_req[`valid(0)]),
-      .i_addr        (ram_i_req[`address_section(0, `SRAM_ADDR_W-1, `SRAM_ADDR_W-2)]), 
+      .i_addr        (ram_i_req[`section(0, `ADDR_P+`SRAM_ADDR_W-1, `SRAM_ADDR_W-2)]), 
       .i_wdata       (ram_i_req[`wdata(0)]),
       .i_wstrb       (ram_i_req[`wstrb(0)]),
       .i_rdata       (ram_i_resp[`rdata(0)]),
@@ -142,7 +150,7 @@ module int_mem
 	     
       //data bus
       .d_valid       (d_req[`valid(0)]),
-      .d_addr        (d_req[`address_section(0, `SRAM_ADDR_W-1, `SRAM_ADDR_W-2)]), 
+      .d_addr        (d_req[`section(0, `ADDR_P+`SRAM_ADDR_W-1, `SRAM_ADDR_W-2)]), 
       .d_wdata       (d_req[`wdata(0)]),
       .d_wstrb       (d_req[`wstrb(0)]),
       .d_rdata       (d_resp[`rdata(0)]),

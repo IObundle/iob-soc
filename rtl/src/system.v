@@ -132,33 +132,33 @@ module system
    //
 
    split #(
-   `ifdef SPLIT_IBUS
+`ifdef SPLIT_IBUS
            .N_SLAVES(2)
-   `else
+`else
            .N_SLAVES(1)
-   `endif
+`endif
            )
    ibus_demux
      (
       // master interface
       .m_req  (cpu_i_req),
       .m_resp (cpu_i_resp),
-        
+      
       // slaves interface
-   `ifdef SPLIT_IBUS
+`ifdef SPLIT_IBUS //connect to DDR except during boot
       .s_sel ({1'b0, ~boot}),
       .s_req ({ext_mem_i_req, int_mem_i_req}),
       .s_resp ({ext_mem_i_resp, 0), int_mem_i_resp})
-   `elsif RUN_DDR
+`elsif RUN_DDR //connect to DDR always, no boot, simulation only
      .s_sel (1'b0),
      .s_req (ext_mem_i_req),
      .s_resp (ext_mem_i_resp)
-   `else
-       .s_sel (1'b0),
+`else //connect to SRAM only
+       .s_sel (1'b0), 
      .s_req (int_mem_i_req),
      .s_resp (int_mem_i_resp)
-   `endif
-     );
+`endif
+       );
 
    //   
    // SPLIT CPU DATA BUS INTO INTERNAL AND EXTERNAL MEMORY AND PERPHERALS
@@ -171,11 +171,11 @@ module system
    wire [`REQ_W-1:0]      ext_mem_d_req;
    wire [`RESP_W-1:0]     ext_mem_d_resp;
    //peripheral bus
-   wire [`REQ_W-1:0]      per_req;
-   wire [`RESP_W-1:0]     per_resp;
+   wire [`REQ_W-1:0]      pbus_req;
+   wire [`RESP_W-1:0]     pbus_resp;
 
 
-//`ifdef RUN_DDR
+   //`ifdef RUN_DDR
    split 
      #(
 `ifdef USE_SRAM_DDR
@@ -184,7 +184,7 @@ module system
        .N_SLAVES(2)
 `endif
        )
-   dmembus_demux    
+   dbus_demux    
      (
      // master interface
      .m_req (cpu_d_req),
@@ -194,24 +194,24 @@ module system
 
 `ifdef USE_SRAM_DDR
  `ifndef RUN_DDR //running from SRAM, using DDR as extra 
-       .s_sel({1'b0, cpu_d_req[`REQ_W-1 -: 2]}),
-     .s_req ({ext_mem_d_req, per_req, int_mem_d_req}),
-     .s_resp({ext_mem_d_resp, per_resp, int_mem_d_resp})
+       .s_sel(cpu_d_req[`section(0, `REQ_W-1, 3)]),
+     .s_req ({ext_mem_d_req, pbus_req, int_mem_d_req}),
+     .s_resp({ext_mem_d_resp, pbus_resp, int_mem_d_resp})
  `else //running from DDR, using SRAM as extra
-       .s_sel(1'b0, cpu_d_req[`REQ_W-1 -: 2]}),
-     .s_req ({int_mem_d_req, per_req, ext_mem_d_req}),
-     .s_resp({int_mem_d_resp, per_resp, ext_mem_d_resp})
+       .s_sel(cpu_d_req[`section(0, `REQ_W-1, 3]),
+              .s_req ({int_mem_d_req, pbus_req, ext_mem_d_req}),
+              .s_resp({int_mem_d_resp, pbus_resp, ext_mem_d_resp})
  `endif
 `elsif USE_SRAM //using SRAM only 
-       .s_sel({1'b0, cpu_d_req[`REQ_W-1]}),
-     .s_req ({per_req, int_mem_d_req}),
-     .s_resp({per_resp, int_mem_d_resp})
+              .s_sel(cpu_d_req[`section(0, `REQ_W-1, 2)]),
+              .s_req ({pbus_req, int_mem_d_req}),
+              .s_resp({pbus_resp, int_mem_d_resp})
 `else //using DDR only (for simulation)
-       .s_sel({1'b0, cpu_d_req[`REQ_W-1]}),
-     .s_req ({per_req, ext_mem_d_req}),
-     .s_resp({per_resp, ext_mem_d_resp})
+              .s_sel(cpu_d_req[`section(0, `REQ_W-1, 2)]),
+              .s_req ({pbus_req, ext_mem_d_req}),
+              .s_resp({pbus_resp, ext_mem_d_resp})
 `endif
-       );
+              );
    
    
    //   
@@ -225,26 +225,26 @@ module system
 
    
    // peripheral demux
-        split 
-          #(
-          .N_SLAVES(`N_SLAVES)
-            )
-      per_demux
-        (
+   split 
+       #(
+         .N_SLAVES(`N_SLAVES)
+         )
+   pbus_demux
+       (
         // master interface
-        .m_req(per_req),
-          .m_resp(per_resp),
-          
-          // slaves interface
-`ifdef USE_SRAM_DDR
-          .s_sel({1'b0, per_req[`address_section(0, `ADDR_W-2, `N_SLAVES_W)]}),
-`else //using one memoru only 
-          .s_sel({1'b0, per_req[`address_section(0, `ADDR_W-1, `N_SLAVES_W)]}),
+        .m_req(pbus_req),
+        .m_resp(pbus_resp),
+        
+        // slaves interface
+`ifdef USE_SRAM_DDR //MSB is right shifted
+        .s_sel(pbus_req[`section(0, `REQ_W-2, `N_SLAVES_W+1)]),
+`else //using one memory only sectio
+        .s_sel(pbus_req[`section(0,  `REQ_W-1, `N_SLAVES_W+1)]),
 `endif
-          .s_req(slaves_req),
-          .s_resp(slaves_resp)
-          );
-    
+        .s_req(slaves_req),
+        .s_resp(slaves_resp)
+        );
+   
    /////////////////////////////////////////////////////////////////////////
        // MODULE INSTANCES
    
@@ -253,18 +253,18 @@ module system
    //
    
    int_mem int_mem0 
-     (
-     .clk                  (clk ),
-     .rst                  (reset_int),
+       (
+        .clk                  (clk ),
+        .rst                  (reset_int),
 
-     // instruction bus
-     .i_req                (int_mem_i_req),
-     .i_resp               (int_mem_i_resp),
+        // instruction bus
+        .i_req                (int_mem_i_req),
+        .i_resp               (int_mem_i_resp),
 
-     //data bus
-     .d_req                (int_mem_d_req),
-     .d_resp               (int_mem_d_resp)
-       );
+        //data bus
+        .d_req                (int_mem_d_req),
+        .d_resp               (int_mem_d_resp)
+        );
 
 
 `ifdef USE_DDR
@@ -275,88 +275,88 @@ module system
    
    //instruction cache instance
    ext_mem 
-     ext_mem0 
+       ext_mem0 
        (
-       .clk                  (clk ),
-  .rst                  (reset_int),
+        .clk                  (clk ),
+        .rst                  (reset_int),
 
-  // instruction bus
-  .i_req                (int_mem_i_req),
-  .i_resp               (int_mem_i_resp),
+        // instruction bus
+        .i_req                (int_mem_i_req),
+        .i_resp               (int_mem_i_resp),
 
-  //data bus
-  .d_req                (int_mem_d_req),
-  .d_resp               (int_mem_d_resp)
+        //data bus
+        .d_req                (int_mem_d_req),
+        .d_resp               (int_mem_d_resp)
 
-         //AXI INTERFACE 
-         //address write
-         .AW_ID(m_axi_awid), 
-  .AW_ADDR(m_axi_awaddr), 
-  .AW_LEN(m_axi_awlen), 
-  .AW_SIZE(m_axi_awsize), 
-  .AW_BURST(m_axi_awburst), 
-  .AW_LOCK(m_axi_awlock), 
-  .AW_CACHE(m_axi_awcache), 
-  .AW_PROT(m_axi_awprot),
-  .AW_QOS(m_axi_awqos), 
-  .AW_VALID(m_axi_awvalid), 
-  .AW_READY(m_axi_awready), 
+        //AXI INTERFACE 
+        //address write
+        .AW_ID(m_axi_awid), 
+        .AW_ADDR(m_axi_awaddr), 
+        .AW_LEN(m_axi_awlen), 
+        .AW_SIZE(m_axi_awsize), 
+        .AW_BURST(m_axi_awburst), 
+        .AW_LOCK(m_axi_awlock), 
+        .AW_CACHE(m_axi_awcache), 
+        .AW_PROT(m_axi_awprot),
+        .AW_QOS(m_axi_awqos), 
+        .AW_VALID(m_axi_awvalid), 
+        .AW_READY(m_axi_awready), 
 
-  //write
-  .W_DATA(m_axi_wdata), 
-  .W_STRB(m_axi_wstrb), 
-  .W_LAST(m_axi_wlast), 
-  .W_VALID(m_axi_wvalid), 
-  .W_READY(m_axi_wready), 
+        //write
+        .W_DATA(m_axi_wdata), 
+        .W_STRB(m_axi_wstrb), 
+        .W_LAST(m_axi_wlast), 
+        .W_VALID(m_axi_wvalid), 
+        .W_READY(m_axi_wready), 
 
-  //write response
-  .B_ID(m_axi_bid), 
-  .B_RESP(m_axi_bresp), 
-  .B_VALID(m_axi_bvalid), 
-  .B_READY(m_axi_bready), 
-       
-  //address read
-  .AR_ID(m_axi_arid), 
-  .AR_ADDR(m_axi_araddr), 
-  .AR_LEN(m_axi_arlen), 
-  .AR_SIZE(m_axi_arsize), 
-  .AR_BURST(m_axi_arburst), 
-  .AR_LOCK(m_axi_arlock), 
-  .AR_CACHE(m_axi_arcache), 
-  .AR_PROT(m_axi_arprot), 
-  .AR_QOS(m_axi_arqos), 
-  .AR_VALID(m_axi_arvalid), 
-  .AR_READY(m_axi_arready), 
+        //write response
+        .B_ID(m_axi_bid), 
+        .B_RESP(m_axi_bresp), 
+        .B_VALID(m_axi_bvalid), 
+        .B_READY(m_axi_bready), 
+     
+        //address read
+        .AR_ID(m_axi_arid), 
+        .AR_ADDR(m_axi_araddr), 
+        .AR_LEN(m_axi_arlen), 
+        .AR_SIZE(m_axi_arsize), 
+        .AR_BURST(m_axi_arburst), 
+        .AR_LOCK(m_axi_arlock), 
+        .AR_CACHE(m_axi_arcache), 
+        .AR_PROT(m_axi_arprot), 
+        .AR_QOS(m_axi_arqos), 
+        .AR_VALID(m_axi_arvalid), 
+        .AR_READY(m_axi_arready), 
 
-  //read 
-  .R_ID(m_axi_rid), 
-  .R_DATA(m_axi_rdata), 
-  .R_RESP(m_axi_rresp), 
-  .R_LAST(m_axi_rlast), 
-  .R_VALID(m_axi_rvalid),  
-  .R_READY(m_axi_rready)  
-         );
+        //read 
+        .R_ID(m_axi_rid), 
+        .R_DATA(m_axi_rdata), 
+        .R_RESP(m_axi_rresp), 
+        .R_LAST(m_axi_rlast), 
+        .R_VALID(m_axi_rvalid),  
+        .R_READY(m_axi_rready)  
+        );
 `endif
 
    ////////////////////////////////////////////////////////
-   // BOOT CONTROLLER
+       // BOOT CONTROLLER
    //
 `ifdef USE_BOOT
    boot_ctr boot0 
-     (
-     .clk(clk),
-  .rst(reset),
-  .boot_rst(boot_reset),
-  .boot(boot),
-      
-  //cpu interface
-  //no address bus since single address
-  .valid(slaves_req[`valid(`BOOT_CTR)]),
-  .wdata(slaves_req[`wdata(`BOOT_CTR)]),
-  .wstrb(|slaves_req[`wstrb(`BOOT_CTR)]),
-  .rdata(slaves_req[`rdata(`BOOT_CTR)]),
-  .ready(slaves_req[`ready(`BOOT_CTR)])
-       );
+       (
+        .clk(clk),
+        .rst(reset),
+        .boot_rst(boot_reset),
+        .boot(boot),
+        
+        //cpu interface
+        //no address bus since single address
+        .valid(slaves_req[`valid(`BOOT_CTR)]),
+        .wdata(slaves_req[`wdata(`BOOT_CTR)]),
+        .wstrb(|slaves_req[`wstrb(`BOOT_CTR)]),
+        .rdata(slaves_req[`rdata(`BOOT_CTR)]),
+        .ready(slaves_req[`ready(`BOOT_CTR)])
+        );
 `endif //  `ifdef USE_BOOT
    
    ////////////////////////////////////////////////////////
@@ -364,24 +364,24 @@ module system
    //
    
    iob_uart uart
-     (
-     .clk       (clk),
-  .rst       (reset_int),
-      
-  //cpu interface
-  .valid(slaves_req[`valid(`UART)]),
-  .address(slaves_req[`address_section(`UART, 2+`UART_ADDR_W-1, `UART_ADDR_W)]),
-  .wdata(slaves_req[`wdata(`UART)]),
-  .wstrb(|slaves_req[`wstrb(`UART)]),
-  .rdata(slaves_resp[`rdata(`UART)]),
-  .ready(slaves_resp[`ready(`UART)]),
-  
-  
-  //RS232 interface
-  .txd       (uart_txd),
-  .rxd       (uart_rxd),
-  .rts       (uart_rts),
-  .cts       (uart_cts)
-       );
+       (
+        .clk       (clk),
+        .rst       (reset_int),
+        
+        //cpu interface
+        .valid(slaves_req[`valid(`UART)]),
+        .address(slaves_req[`section(`UART, `ADDR_P+`UART_ADDR_W+1, `UART_ADDR_W)]),
+        .wdata(slaves_req[`wdata(`UART)]),
+        .wstrb(|slaves_req[`wstrb(`UART)]),
+        .rdata(slaves_resp[`rdata(`UART)]),
+        .ready(slaves_resp[`ready(`UART)]),
+        
+        
+        //RS232 interface
+        .txd       (uart_txd),
+        .rxd       (uart_rxd),
+        .rts       (uart_rts),
+        .cts       (uart_cts)
+        );
 
 endmodule
