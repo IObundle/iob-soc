@@ -1,6 +1,5 @@
 /*
-
-`timescale 1 ns / 1 ps
+ `timescale 1 ns / 1 ps
 
 `include "system.vh"
 `include "interconnect.vh"
@@ -66,18 +65,17 @@ module ext_mem
    input                  R_VALID,
    output                 R_READY
    );
-   
 
    //
    // INSTRUCTION CACHE
    //
 
    // Front-end bus
-//   wire [`REQ_W-1:0]      icache_fe_req;
-   wire [68:0]      icache_fe_req;
-   assign       icache_fe_req = i_req;
 
+   wire [`REQ_W-1:0]      icache_fe_req;
    wire [`RESP_W-1:0]     icache_fe_resp;
+
+   assign icache_fe_req = i_req;
    assign i_resp = icache_fe_resp;
 
    // Back-end bus
@@ -114,8 +112,11 @@ module ext_mem
    //
 
    // Front-end bus
-   wire [`REQ_W-1:0]      dcache_fe_req = d_req;
-   wire [`RESP_W-1:0]     dcache_fe_resp = d_resp;
+   wire [`REQ_W-1:0]      dcache_fe_req;
+   wire [`RESP_W-1:0]     dcache_fe_resp;
+
+   assign dcache_fe_req = d_req;
+   assign d_resp = dcache_fe_resp;
 
    // Back-end bus
    wire [`REQ_W-1:0]      dcache_be_req;
@@ -147,6 +148,9 @@ module ext_mem
            );
 
    // Merge caches back-ends
+   wire [`REQ_W-1:0]      l2cache_req;
+   wire [`RESP_W-1:0]     l2cache_resp;
+
    merge
      ibus_merge (
                  // masters
@@ -157,9 +161,6 @@ module ext_mem
                  .s_req  (l2cache_req),
                  .s_resp (l2cache_resp)
                  );
-
-   wire [`REQ_W-1:0]      l2cache_req;
-   wire [`RESP_W-1:0]     l2cache_resp;
 
    // L2 cache instance
    iob_cache
