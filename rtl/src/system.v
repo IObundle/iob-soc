@@ -131,32 +131,34 @@ module system
    // SPLIT CPU INSTRUCTION BUS INTO INTERNAL AND EXTERNAL MEMORY
    //
 
-`ifdef USE_DDR
- `ifdef RUN_DDR
-   split
-     ibus_demux
-       (
-        // master interface
-        .m_req  (cpu_i_req),
-        .m_resp (cpu_i_resp),
+   split #(
+   `ifdef SPLIT_IBUS
+           .N_SLAVES(2)
+   `else
+           .N_SLAVES(1)
+   `endif
+           )
+   ibus_demux
+     (
+      // master interface
+      .m_req  (cpu_i_req),
+      .m_resp (cpu_i_resp),
         
-        // slaves interface
-  `ifdef USE_BOOT
-        .s_sel (~boot),
-  `else
-        .s_sel (1'b1),
-  `endif
-        .s_req ({ext_mem_i_req, int_mem_i_req}),
-        .s_resp ({ext_mem_i_resp, 0), int_mem_i_resp})
-       );
- `else
-   assign int_mem_i_req = cpu_i_req;
-   assign cpu_i_resp = int_mem_i_resp;
- `endif // !`ifdef RUN_DDR
-`else
-   assign int_mem_i_req = cpu_i_req;
-   assign cpu_i_resp = int_mem_i_resp;
-`endif
+      // slaves interface
+   `ifdef SPLIT_IBUS
+      .s_sel ({1'b0, ~boot}),
+      .s_req ({ext_mem_i_req, int_mem_i_req}),
+      .s_resp ({ext_mem_i_resp, 0), int_mem_i_resp})
+   `elsif RUN_DDR
+     .s_sel (1'b0),
+     .s_req (ext_mem_i_req),
+     .s_resp (ext_mem_i_resp)
+   `else
+       .s_sel (1'b0),
+     .s_req (int_mem_i_req),
+     .s_resp (int_mem_i_resp)
+   `endif
+     );
 
    //   
    // SPLIT CPU DATA BUS INTO INTERNAL AND EXTERNAL MEMORY AND PERPHERALS
@@ -166,38 +168,51 @@ module system
    wire [`REQ_W-1:0]      int_mem_d_req;
    wire [`RESP_W-1:0]     int_mem_d_resp;
    //external memory data bus
-   wire [`REQ_W-1:0]      ex_mem_d_req;
-   wire [`RESP_W-1:0]     ex_mem_d_resp;
+   wire [`REQ_W-1:0]      ext_mem_d_req;
+   wire [`RESP_W-1:0]     ext_mem_d_resp;
    //peripheral bus
    wire [`REQ_W-1:0]      per_req;
    wire [`RESP_W-1:0]     per_resp;
 
+
+//`ifdef RUN_DDR
    split 
      #(
-`ifdef USE_DDR
+`ifdef USE_SRAM_DDR
      .N_SLAVES(3)
 `else
        .N_SLAVES(2)
 `endif
        )
-   dmembus_demux
-      
+   dmembus_demux    
      (
      // master interface
      .m_req (cpu_d_req),
      .m_resp (cpu_d_resp),
 
      // slaves interface
-`ifdef USE_DDR
-       .s_sel(cpu_d_req[`REQ_W-2 -: 2]),
+
+`ifdef USE_SRAM_DDR
+ `ifndef RUN_DDR //running from SRAM, using DDR as extra 
+       .s_sel({1'b0, cpu_d_req[`REQ_W-1 -: 2]}),
      .s_req ({ext_mem_d_req, per_req, int_mem_d_req}),
      .s_resp({ext_mem_d_resp, per_resp, int_mem_d_resp})
-`else
-     .s_sel(cpu_d_req[`REQ_W-2]),
+ `else //running from DDR, using SRAM as extra
+       .s_sel(1'b0, cpu_d_req[`REQ_W-1 -: 2]}),
+     .s_req ({int_mem_d_req, per_req, ext_mem_d_req}),
+     .s_resp({int_mem_d_resp, per_resp, ext_mem_d_resp})
+ `endif
+`elsif USE_SRAM //using SRAM only 
+       .s_sel({1'b0, cpu_d_req[`REQ_W-1]}),
      .s_req ({per_req, int_mem_d_req}),
      .s_resp({per_resp, int_mem_d_resp})
+`else //using DDR only (for simulation)
+       .s_sel({1'b0, cpu_d_req[`REQ_W-1]}),
+     .s_req ({per_req, ext_mem_d_req}),
+     .s_resp({per_resp, ext_mem_d_resp})
 `endif
        );
+   
    
    //   
    // SPLIT PERIPHERAL BUS
@@ -210,23 +225,26 @@ module system
 
    
    // peripheral demux
-   split 
-     #(
-     .N_SLAVES(`N_SLAVES)
-       )
-   per_demux
-     (
-     // master interface
-     .m_req(per_req),
-     .m_resp(per_resp),
-     
-     // slaves interface
-     .s_sel(per_req[`address_slave(`N_SLAVES_W)]),
-     .s_req(slaves_req),
-     .s_resp(slaves_resp)
-       );
-
-   
+        split 
+          #(
+          .N_SLAVES(`N_SLAVES)
+            )
+      per_demux
+        (
+        // master interface
+        .m_req(per_req),
+          .m_resp(per_resp),
+          
+          // slaves interface
+`ifdef USE_SRAM_DDR
+          .s_sel({1'b0, per_req[`address_section(0, `ADDR_W-2, `N_SLAVES_W)]}),
+`else //using one memoru only 
+          .s_sel({1'b0, per_req[`address_section(0, `ADDR_W-1, `N_SLAVES_W)]}),
+`endif
+          .s_req(slaves_req),
+          .s_resp(slaves_resp)
+          );
+    
    /////////////////////////////////////////////////////////////////////////
        // MODULE INSTANCES
    
@@ -352,11 +370,11 @@ module system
       
   //cpu interface
   .valid(slaves_req[`valid(`UART)]),
-  .address(slaves_req[`address_nbits(`UART, `UART_ADDR_W)]),
+  .address(slaves_req[`address_section(`UART, 2+`UART_ADDR_W-1, `UART_ADDR_W)]),
   .wdata(slaves_req[`wdata(`UART)]),
   .wstrb(|slaves_req[`wstrb(`UART)]),
-  .rdata(slaves_req[`rdata(`UART)]),
-  .ready(slaves_req[`ready(`UART)]),
+  .rdata(slaves_resp[`rdata(`UART)]),
+  .ready(slaves_resp[`ready(`UART)]),
   
   
   //RS232 interface

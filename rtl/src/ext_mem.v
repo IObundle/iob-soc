@@ -1,3 +1,5 @@
+/*
+
 `timescale 1 ns / 1 ps
 
 `include "system.vh"
@@ -63,15 +65,20 @@ module ext_mem
    input                  R_LAST,
    input                  R_VALID,
    output                 R_READY
-   )
+   );
+   
 
    //
    // INSTRUCTION CACHE
    //
 
    // Front-end bus
-   wire [`REQ_W-1:0]      icache_fe_req = i_req;
-   wire [`RESP_W-1:0]     icache_fe_resp = i_resp;
+//   wire [`REQ_W-1:0]      icache_fe_req;
+   wire [68:0]      icache_fe_req;
+   assign       icache_fe_req = i_req;
+
+   wire [`RESP_W-1:0]     icache_fe_resp;
+   assign i_resp = icache_fe_resp;
 
    // Back-end bus
    wire [`REQ_W-1:0]      icache_be_req;
@@ -87,7 +94,7 @@ module ext_mem
 
            // Front-end interface
            .valid (icache_fe_req[`valid(0)]),
-           .addr  (icache_fe_req[`addr(0)]),
+           .addr  (icache_fe_req[`address(0)]),
            .wdata (icache_fe_req[`wdata(0)]),
            .wstrb (icache_fe_req[`wstrb(0)]),
            .rdata (icache_fe_resp[`rdata(0)]),
@@ -95,7 +102,7 @@ module ext_mem
 
            // Back-end interface
            .valid (icache_be_req[`valid(0)]),
-           .addr  (icache_be_req[`addr(0)]),
+           .addr  (icache_be_req[`address(0)]),
            .wdata (icache_be_req[`wdata(0)]),
            .wstrb (icache_be_req[`wstrb(0)]),
            .rdata (icache_be_resp[`rdata(0)]),
@@ -124,7 +131,7 @@ module ext_mem
 
            // Front-end interface
            .valid (dcache_fe_req[`valid(0)]),
-           .addr  (dcache_fe_req[`addr(0)]),
+           .addr  (dcache_fe_req[`address(0)]),
            .wdata (dcache_fe_req[`wdata(0)]),
            .wstrb (dcache_fe_req[`wstrb(0)]),
            .rdata (dcache_fe_resp[`rdata(0)]),
@@ -132,7 +139,7 @@ module ext_mem
 
            // Back-end interface
            .valid (dcache_be_req[`valid(0)]),
-           .addr  (dcache_be_req[`addr(0)]),
+           .addr  (dcache_be_req[`address(0)]),
            .wdata (dcache_be_req[`wdata(0)]),
            .wstrb (dcache_be_req[`wstrb(0)]),
            .rdata (dcache_be_resp[`rdata(0)]),
@@ -159,7 +166,7 @@ module ext_mem
      l2cache (
               // Native interface
               .valid    (l2cache_req[`valid(0)]),
-              .addr     (l2cache_req[`addr(0)]),
+              .addr     (l2cache_req[`address(0)]),
               .wdata    (l2cache_req[`wdata(0)]),
               .wstrb    (l2cache_req[`wstrb(0)]),
               .rdata    (l2cache_resp[`rdata(0)]),
@@ -215,3 +222,5 @@ module ext_mem
               );
 
 endmodule
+*/
+

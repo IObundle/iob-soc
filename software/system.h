@@ -19,6 +19,25 @@
          NEEDS_BIT(N, 30) + NEEDS_BIT(N, 31)   \
         )
 
+//Architecural parameters
 #define ADDR_W 32
 #define N_SLAVES_W BITS_TO_REPRESENT(N_SLAVES)
-#define UART_BASE UART<<(ADDR_W-USE_DDR-N_SLAVES_W)
+
+//
+//Memory map
+//
+
+#if (USE_SRAM==1 && USE_DDR==1)
+#define EXTRA_BASE (1<<31)
+#define PBIT 30
+#else
+#define PBIT 31
+#endif
+
+#define UART_BASE (1<<PBIT) |(UART<<(ADDR_W-N_SLAVES_W))
+
+//bootloader only
+#if USE_BOOT
+BOOT_BASE=2**BOOTROM_ADDR_W
+#endif
+

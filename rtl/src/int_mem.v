@@ -134,7 +134,7 @@ module int_mem
       
       //instruction bus
       .i_valid       (ram_i_req[`valid(0)]),
-      .i_addr        (ram_i_req[`address_nbits(0, `SRAM_ADDR_W-2)]), 
+      .i_addr        (ram_i_req[`address_section(0, `SRAM_ADDR_W-1, `SRAM_ADDR_W-2)]), 
       .i_wdata       (ram_i_req[`wdata(0)]),
       .i_wstrb       (ram_i_req[`wstrb(0)]),
       .i_rdata       (ram_i_resp[`rdata(0)]),
@@ -142,7 +142,7 @@ module int_mem
 	     
       //data bus
       .d_valid       (d_req[`valid(0)]),
-      .d_addr        (d_req[`address_nbits(0, `SRAM_ADDR_W-2)]), 
+      .d_addr        (d_req[`address_section(0, `SRAM_ADDR_W-1, `SRAM_ADDR_W-2)]), 
       .d_wdata       (d_req[`wdata(0)]),
       .d_wstrb       (d_req[`wstrb(0)]),
       .d_rdata       (d_resp[`rdata(0)]),

@@ -32,6 +32,9 @@ endif
 ifeq ($(USE_LA_IF),1)
 	HW_DEFINE += -DUSE_LA_IF
 endif
+ifeq ($(USE_SRAM),1)
+	HW_DEFINE += -DUSE_SRAM
+endif
 ifeq ($(USE_DDR),1)
 	HW_DEFINE += -DUSE_DDR
 endif
