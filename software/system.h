@@ -27,8 +27,12 @@
 //Memory map
 //
 
-#if (USE_SRAM==1 && USE_DDR==1)
+//addres of secondary memory:
+//SRAM if running from DDR or
+//DDR if running from SRAM
 #define EXTRA_BASE (1<<31)
+
+#if (USE_SRAM==1 && USE_DDR==1)
 #define PBIT 30
 #else
 #define PBIT 31
@@ -36,8 +40,4 @@
 
 #define UART_BASE (1<<PBIT) |(UART<<(ADDR_W-N_SLAVES_W))
 
-//bootloader only
-#if USE_BOOT
-BOOT_BASE=2**BOOTROM_ADDR_W
-#endif
 

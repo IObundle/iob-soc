@@ -4,7 +4,17 @@
 #include "iob-cache.h"
 #include "console.h"
 
+#define BOOTRAM_BASE 2**BOOTROM_ADDR_W
+#define BOOTCTR_BASE (1<<PBIT) |(BOOT_CTR<<(ADDR_W-N_SLAVES_W))
+
 //#define DEBUG  // Uncomment this line for debug printfs
+
+//memory pointer
+#if RUN_DDR == 0 //SRAM
+char *mem = (char *) (1<<BOOTROM_ADDR_W);
+#else //DDR
+char *mem = (char *) EXTRA_BASE;
+#endif
 
 unsigned int receiveFile() {
 
@@ -21,11 +31,6 @@ unsigned int receiveFile() {
   file_size |= ((unsigned int) uart_getc()) << 24;
   
   // Write file to main memory
-#if BOOT_TARGET == 1 //SRAM
-  char *mem = (char *) (1<<BOOTROM_ADDR_W);
-#else
-  char *mem = (char *) DDR;
-#endif
   for (unsigned int i = 0; i < file_size; i++) {
     mem[i] = uart_getc();
   }
@@ -48,12 +53,6 @@ void sendFile(unsigned int file_size) {
   uart_putc((char)((file_size & 0x0ff000000) >> 24));
   
   // Read file from main memory
-#if BOOT_TARGET == 1 //SRAM
-  char *mem = (char *) (1<<BOOTROM_ADDR_W);
-#elif BOOT_TARGET == 2 //DDR
-  char *mem = (char *) DDR;
-#endif
-  
   for (unsigned int i = 0; i < file_size; i++) {
     uart_putc(mem[i]);
   }
@@ -84,7 +83,7 @@ int main() {
 #endif
   
 #ifdef USE_DDR
-  cache_init(MAINRAM_ADDR_W);
+  cache_init(MEM_ADDR_W);
   while(!cache_buffer_empty());
 #endif
     
@@ -101,5 +100,5 @@ int main() {
 
   uart_txwait();
   
-  MEM_PUTINT(SOFT_RESET, 0);
+  RAM_SET(int, BOOTCTR_BASE, 0);
 }

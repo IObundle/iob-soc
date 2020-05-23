@@ -4,29 +4,22 @@ CPU:=PICORV32
 USE_LA_IF:=0
 #CPU := DARKRV
 
-#Define main memory size (log2 bytes)
-MEM_ADDR_W:=13
-
 #Define SRAM
 USE_SRAM:=1
+SRAM_ADDR_W:=13
 
 #Define DDR
 USE_DDR:=0
+DDR_ADDR_W:=13
 RUN_DDR:=0
 
 #Define booting
-USE_BOOT:=0
+USE_BOOT:=1
+BOOTROM_ADDR_W:=12
 
 #Define number of slave peripherals
 N_SLAVES:=1
 
-#Define boot ROM size (log2 bytes)
-BOOTROM_ADDR_W:=12
-
-#Define sram size (log2 bytes)
-SRAM_ADDR_W:=13
-
 #Peripheral IDs (assign serial numbers 0, 1, 2, etc)
-#BOOT_CTR:=0
 UART:=0
-
+BOOT_CTR:=1

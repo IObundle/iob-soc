@@ -1,6 +1,5 @@
 #include "system.h"
 #include "iob-uart.h"
-#include "iob-cache.h"
 
 int main()
 { 
@@ -8,8 +7,7 @@ int main()
 
   uart_printf("Hello world!\n");
   //uart_puts("Hello world!\n");
-
-  //uart_txwait();
+  uart_txwait();
 
   //uncomment the below to reset and start from boot ram
   //MEMSET(SOFT_RESET, 0, 3);

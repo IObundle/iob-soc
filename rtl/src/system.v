@@ -70,6 +70,7 @@ module system
    //
 
 `ifdef USE_BOOT
+   wire                   boot;
    wire                   boot_reset;   
    wire                   reset_int = reset | boot_reset;
 `else
@@ -87,12 +88,6 @@ module system
    // data cat bus
    wire [`REQ_W-1:0]      cpu_d_req;
    wire [`RESP_W-1:0]     cpu_d_resp;
-
-
-   // boot flag
-`ifdef USE_BOOT
-   wire                   boot;
-`endif
    
    //instantiate the cpu
 `ifdef PICORV32
@@ -116,7 +111,7 @@ module system
 
 
    //
-   //INTERNAL MEMORY AND PERIPHERALS CAT BUSES
+   //SPLIT MEMORY AND PERIPHERALS
    //
 
    //internal memory instruction bus
@@ -128,9 +123,10 @@ module system
 
    
    //   
-   // SPLIT CPU INSTRUCTION BUS INTO INTERNAL AND EXTERNAL MEMORY
+   // SPLIT  INTERNAL AND EXTERNAL MEMORY BUSES
    //
 
+   // INSTRUCTION BUS
    split #(
 `ifdef SPLIT_IBUS
            .N_SLAVES(2)
@@ -160,9 +156,8 @@ module system
 `endif
        );
 
-   //   
-   // SPLIT CPU DATA BUS INTO INTERNAL AND EXTERNAL MEMORY AND PERPHERALS
-   //
+
+   // DATA BUS
 
    //internal memory data bus
    wire [`REQ_W-1:0]      int_mem_d_req;
@@ -174,8 +169,6 @@ module system
    wire [`REQ_W-1:0]      pbus_req;
    wire [`RESP_W-1:0]     pbus_resp;
 
-
-   //`ifdef RUN_DDR
    split 
      #(
 `ifdef USE_SRAM_DDR
@@ -218,7 +211,6 @@ module system
    // SPLIT PERIPHERAL BUS
    //
 
-
    //slaves bus
    wire [`N_SLAVES*`REQ_W-1:0] slaves_req;
    wire [`N_SLAVES*`RESP_W-1:0] slaves_resp;
@@ -246,17 +238,21 @@ module system
         );
    
    /////////////////////////////////////////////////////////////////////////
-       // MODULE INSTANCES
+   // MODULE INSTANCES
    
    //
    // INTERNAL SRAM MEMORY
    //
    
+`ifdef USE_SRAM
    int_mem int_mem0 
        (
         .clk                  (clk ),
         .rst                  (reset_int),
-
+`ifdef USE_BOOT
+        .boot                 (boot),
+        .boot_reset           (boot_reset),
+`endif
         // instruction bus
         .i_req                (int_mem_i_req),
         .i_resp               (int_mem_i_resp),
@@ -265,15 +261,12 @@ module system
         .d_req                (int_mem_d_req),
         .d_resp               (int_mem_d_resp)
         );
-
+`endif
 
 `ifdef USE_DDR
-   
    //
    // EXTERNAL DDR MEMORY
    //
-   
-   //instruction cache instance
    ext_mem 
        ext_mem0 
        (
@@ -337,28 +330,7 @@ module system
         .R_READY(m_axi_rready)  
         );
 `endif
-
-   ////////////////////////////////////////////////////////
-       // BOOT CONTROLLER
-   //
-`ifdef USE_BOOT
-   boot_ctr boot0 
-       (
-        .clk(clk),
-        .rst(reset),
-        .boot_rst(boot_reset),
-        .boot(boot),
-        
-        //cpu interface
-        //no address bus since single address
-        .valid(slaves_req[`valid(`BOOT_CTR)]),
-        .wdata(slaves_req[`wdata(`BOOT_CTR)]),
-        .wstrb(|slaves_req[`wstrb(`BOOT_CTR)]),
-        .rdata(slaves_req[`rdata(`BOOT_CTR)]),
-        .ready(slaves_req[`ready(`BOOT_CTR)])
-        );
-`endif //  `ifdef USE_BOOT
-   
+ 
    ////////////////////////////////////////////////////////
    // UART
    //

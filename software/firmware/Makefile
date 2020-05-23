@@ -1,32 +1,25 @@
-include ../../system.mk
+include ../embedded.mk
 
-TOOLCHAIN_PREFIX:=riscv32-unknown-elf-
+#additional flags
+CFLAGS+=--std=gnu99 -Wl,-Bstatic,-T,../template.lds,-Map,firmware.map,--strip-debug
 
-CFLAGS:=-Os -ffreestanding -nostdlib -march=rv32im -mabi=ilp32
-PYTHON_DIR := ../python
+#additional defines 
+DEFINE+=-DUSE_SRAM=$(USE_SRAM) -DUSE_DDR=$(USE_DDR)
+ifeq (RUN_DDR,1)
+DEFINE+=-DFIRM_ADDR_W=$(DDR_ADDR_W)
+else
+DEFINE+=-DFIRM_ADDR_W=$(SRAM_ADDR_W)
+endif
 
-SUBMODULES_DIR := ../../submodules
-INTERCON_DIR := $(SUBMODULES_DIR)/interconnect/software
-UART_DIR := $(SUBMODULES_DIR)/iob-uart/software
-CACHE_DIR := $(SUBMODULES_DIR)/iob-cache/c-driver
+#additional sources
+SRC+= firmware.c
 
-INCLUDE =  -I.. -I$(UART_DIR)/common -I$(CACHE_DIR) -I$(INTERCON_DIR)
-
-DEFINE = -DUSE_SRAM=$(USE_SRAM) -DUSE_DDR=$(USE_DDR) -DRUN_DDR=$(RUN_DDR) -DN_SLAVES=$(N_SLAVES)\
-	-DMEM_ADDR_W=$(MEM_ADDR_W) -DSRAM_ADDR_W\
-	-DUART=$(UART) -DUART_BAUD_RATE=$(BAUD) -DUART_CLK_FREQ=$(FREQ)
-
-
-SRC = firmware.c $(UART_DIR)/common/iob-uart.c $(UART_DIR)/embedded/iob-uart-platform.c $(CACHE_DIR)/iob-cache.c firmware.S
-
-firmware.elf: ../system.h firmware.lds $(SRC) $(UART_DIR)/common/iob-uart.h $(CACHE_DIR)/iob-cache.h
-	$(TOOLCHAIN_PREFIX)gcc $(CFLAGS) -o $@  $(DEFINE) $(INCLUDE) $(SRC) --std=gnu99 -Wl,-Bstatic,-T,firmware.lds,-Map,firmware.map,--strip-debug -lgcc -lc
+firmware.elf: ../template.lds ../system.h  $(SRC)
+	$(TOOLCHAIN_PREFIX)gcc -o $@ $(CFLAGS) $(DEFINE) $(INCLUDE) $(SRC) -lgcc -lc
 	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
 	$(PYTHON_DIR)/makehex.py firmware.bin $(SRAM_ADDR_W) > firmware.hex
 
 clean:
-	@rm -rf firmware.bin firmware.elf firmware.map *.hex *.dat
-	@rm -rf uart_loader
-	@rm -rf ../uart_loader
+	@rm -rf firmware.bin firmware.elf firmware.map *.hex
 
 .PHONY: clean

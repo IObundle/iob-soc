@@ -31,7 +31,7 @@ module ram #(
    genvar                 i;
    generate
       for (i = 0; i < 4; i = i+1) begin : gen_main_mem_byte
-         iob_t2p_mem 
+         iob_tdp_ram 
                #(
 	         .MEM_INIT_FILE({FILE, "_", file_suffix[8*(i+1)-1 -: 8], ".dat"}),
 	         .DATA_W(8),
