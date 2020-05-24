@@ -97,7 +97,7 @@ module int_mem
    wire [`REQ_W-1:0]  ram_r_req;
    wire [`RESP_W-1:0] ram_r_resp;
 
-`define BOOT_OFFSET 2**(`SRAM_ADDR_W-2) - 2**(`BOOTROM_ADDR_W-2)
+`define BOOT_OFFSET 2**`SRAM_ADDR_W - 2**`BOOTROM_ADDR_W
    
    //modify address to read boot program
    assign ram_r_req[`valid(0)] = i_req[`valid(0)];

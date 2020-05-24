@@ -72,9 +72,9 @@ module system
 `ifdef USE_BOOT
    wire                   boot;
    wire                   boot_reset;   
-   wire                   reset_int = reset | boot_reset;
+   wire                   cpu_reset = reset | boot_reset;
 `else
-   wire                   reset_int = reset;
+   wire                   cpu_reset = reset;
 `endif
    
    //
@@ -97,7 +97,7 @@ module system
 `endif
        (
         .clk     (clk),
-        .rst     (reset_int),
+        .rst     (cpu_reset),
         .trap    (trap),
         
         //instruction bus
@@ -248,7 +248,7 @@ module system
    int_mem int_mem0 
        (
         .clk                  (clk ),
-        .rst                  (reset_int),
+        .rst                  (reset),
 `ifdef USE_BOOT
         .boot                 (boot),
         .boot_reset           (boot_reset),
@@ -271,7 +271,7 @@ module system
        ext_mem0 
        (
         .clk                  (clk ),
-        .rst                  (reset_int),
+        .rst                  (reset),
 
         // instruction bus
         .i_req                (int_mem_i_req),
@@ -338,7 +338,7 @@ module system
    iob_uart uart
        (
         .clk       (clk),
-        .rst       (reset_int),
+        .rst       (reset),
         
         //cpu interface
         .valid(slaves_req[`valid(`UART)]),
