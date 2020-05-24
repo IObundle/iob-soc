@@ -5,7 +5,7 @@
 #include "console.h"
 
 #define BOOTRAM_BASE 2**BOOTROM_ADDR_W
-#define BOOTCTR_BASE (1<<PBIT) |(BOOT_CTR<<(ADDR_W-N_SLAVES_W))
+#define BOOTCTR_BASE (1<<PBIT) | (1<<(PBIT-1))
 
 //#define DEBUG  // Uncomment this line for debug printfs
 

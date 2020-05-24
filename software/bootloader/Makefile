@@ -21,7 +21,7 @@ SRC+=boot.c $(CACHE_DIR)/iob-cache.c
 boot.elf:  ../template.lds ../system.h $(SRC)
 	$(TOOLCHAIN_PREFIX)gcc -o $@ $(CFLAGS) $(DEFINE) $(INCLUDE) $(SRC) -lgcc -lc
 	$(TOOLCHAIN_PREFIX)objcopy -O binary boot.elf boot.bin
-	$(PYTHON_DIR)/makehex.py boot.bin $(SRAM_ADDR_W) > boot.hex
+	$(PYTHON_DIR)/makehex.py boot.bin $(BOOTROM_ADDR_W) > boot.hex
 
 clean:
 	@rm -rf boot.bin boot.elf boot.map *.hex

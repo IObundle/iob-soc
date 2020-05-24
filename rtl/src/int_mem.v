@@ -70,7 +70,7 @@ module int_mem
    boot_ctr boot0 
        (
         .clk(clk),
-        .rst(reset),
+        .rst(rst),
         .boot_rst(boot_reset),
         .boot(boot),
         
@@ -78,15 +78,15 @@ module int_mem
         //no address bus since single address
         .cpu_valid(boot_req[`valid(0)]),
         .cpu_wdata(boot_req[`wdata(0)]),
-        .wstrb(|boot_req[`wstrb(0)]),
-        .rdata(boot_req[`rdata(0)]),
-        .ready(boot_req[`ready(0)]),
+        .cpu_wstrb(|boot_req[`wstrb(0)]),
+        .cpu_rdata(boot_req[`rdata(0)]),
+        .cpu_ready(boot_req[`ready(0)]),
 
-        //sram master interface
+        //sram master write interface
         .sram_valid(ram_w_req[`valid(0)]),
         .sram_addr(ram_w_req[`address(0)]),
         .sram_wdata(ram_w_req[`wdata(0)]),
-        .sram_wstrb(|ram_w_req[`wstrb(0)])
+        .sram_wstrb(ram_w_req[`wstrb(0)])
         );
    
    //
@@ -96,9 +96,12 @@ module int_mem
    //instruction read bus
    wire [`REQ_W-1:0]  ram_r_req;
    wire [`RESP_W-1:0] ram_r_resp;
+
+`define BOOT_OFFSET 2**(`SRAM_ADDR_W-2) - 2**(`BOOTROM_ADDR_W-2)
+   
    //modify address to read boot program
    assign ram_r_req[`valid(0)] = i_req[`valid(0)];
-   assign ram_r_req[`address(0)] = boot? i_req[`address(0)] + BOOT_OFFSET : i_req[`address(0)];
+   assign ram_r_req[`address(0)] = boot? i_req[`address(0)] + `BOOT_OFFSET : i_req[`address(0)];
    assign ram_r_req[`write(0)] = i_req[`write(0)];
    assign i_resp[`resp(0)] = ram_r_resp[`resp(0)];
 

@@ -2,6 +2,7 @@
 CPU:=PICORV32
 #picorv32 look ahead interface
 USE_LA_IF:=0
+
 #CPU := DARKRV
 
 #Define SRAM
@@ -22,4 +23,3 @@ N_SLAVES:=1
 
 #Peripheral IDs (assign serial numbers 0, 1, 2, etc)
 UART:=0
-BOOT_CTR:=1
