@@ -1,15 +1,22 @@
 #include "system.h"
+#include "interconnect.h"
 #include "iob-uart.h"
 #include "iob-cache.h"
 #include "console.h"
 
-//memory access macros
-#define RAM_PUTCHAR(location, value) (*((char*) (location)) = value)
-#define RAM_PUTINT(location, value) (*((int*) (location)) = value)
+#define BOOTRAM_BASE 2**BOOTROM_ADDR_W
+#define BOOTCTR_BASE (1<<PBIT) | (1<<(PBIT-1))
 
 //#define DEBUG  // Uncomment this line for debug printfs
 
-unsigned int receiveFile(void) {
+//memory pointer
+#if RUN_DDR == 0 //SRAM
+char *mem = (char *) (1<<BOOTROM_ADDR_W);
+#else //DDR
+char *mem = (char *) EXTRA_BASE;
+#endif
+
+unsigned int receiveFile() {
 
   // Send command
   uart_putc(STX);
@@ -24,11 +31,6 @@ unsigned int receiveFile(void) {
   file_size |= ((unsigned int) uart_getc()) << 24;
   
   // Write file to main memory
-#ifndef USE_DDR
-  volatile char *mem = (volatile char *) SRAM;
-#else
-  volatile char *mem = (volatile char *) DDR;
-#endif
   for (unsigned int i = 0; i < file_size; i++) {
     mem[i] = uart_getc();
   }
@@ -36,7 +38,7 @@ unsigned int receiveFile(void) {
   return file_size;
 }
 
-void sendFile(unsigned int file_size, unsigned int offset) {
+void sendFile(unsigned int file_size) {
 
   // Send command
   uart_putc(SRX);
@@ -51,11 +53,6 @@ void sendFile(unsigned int file_size, unsigned int offset) {
   uart_putc((char)((file_size & 0x0ff000000) >> 24));
   
   // Read file from main memory
-#ifndef USE_DDR
-  volatile char *mem = (volatile char *) (SRAM + offset);
-#else
-  volatile char *mem = (volatile char *) (DDR + offset);
-#endif
   for (unsigned int i = 0; i < file_size; i++) {
     uart_putc(mem[i]);
   }
@@ -86,7 +83,7 @@ int main() {
 #endif
   
 #ifdef USE_DDR
-  cache_init(MAINRAM_ADDR_W);
+  cache_init(MEM_ADDR_W);
   while(!cache_buffer_empty());
 #endif
     
@@ -103,5 +100,5 @@ int main() {
 
   uart_txwait();
   
-  RAM_PUTINT(SOFT_RESET, 0);
+  RAM_SET(int, BOOTCTR_BASE, 0);
 }

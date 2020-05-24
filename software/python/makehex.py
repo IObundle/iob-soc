@@ -3,7 +3,7 @@
 from sys import argv
 
 binfile = argv[1]
-nwords = int(argv[2])
+nwords = 2**(int(argv[2])-2)
 
 with open(binfile, "rb") as f:
     bindata = f.read()

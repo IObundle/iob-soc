@@ -17,3 +17,6 @@
 [submodule "submodules/iob-mem"]
 	path = submodules/iob-mem
 	url = git@bitbucket.org:jjts/iob-mem.git
+[submodule "submodules/interconnect"]
+	path = submodules/interconnect
+	url = git@github.com:jjts/iob-interconnect.git

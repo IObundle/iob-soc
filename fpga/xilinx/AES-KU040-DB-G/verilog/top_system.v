@@ -164,14 +164,20 @@ module top_system(
    assign sys_rst  = ~sys_rstn;
 `else
    reg [15:0] 			rst_cnt;
+   reg                          sys_rst_int;
    
    always @(posedge sys_clk, posedge reset)
-     if(reset)
-       rst_cnt <= 16'hFFFF;
-     else if (rst_cnt != 16'h0)
-       rst_cnt <= rst_cnt - 1'b1;
+     if(reset) begin
+        sys_rst_int <= 1'b0;
+        rst_cnt <= 16'hFFFF;
+     end else begin 
+        if(rst_cnt != 16'h0)
+          rst_cnt <= rst_cnt - 1'b1;
+        sys_rst_int <= (rst_cnt != 16'h0);
+     end
+
+   assign sys_rst = sys_rst_int;
    
-   assign sys_rst  = (rst_cnt != 16'h0);
 `endif
 
 `ifdef USE_DDR

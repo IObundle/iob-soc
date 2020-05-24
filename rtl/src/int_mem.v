@@ -1,197 +1,152 @@
 `timescale 1 ns / 1 ps
 `include "system.vh"
+`include "interconnect.vh"
   
- //TODO USE CAT INTERFACE UNPACK INSIDE
+module int_mem 
+   (
+    input                clk,
+    input                rst,
 
-module int_mem
-  (
-   input                       clk,
-   input                       rst,
-   input                       boot,
+`ifdef USE_BOOT
+    output               boot,
+    output               boot_reset,
+`endif
+    
+    //instruction bus
+    input [`REQ_W-1:0]   i_req,
+    output [`RESP_W-1:0] i_resp,
+
+    //data bus
+    input [`REQ_W-1:0]   d_req,
+    output [`RESP_W-1:0] d_resp
+    );
+
    
-   //CPU INTERFACE
-
-   //instruction bus
-   input                       i_valid,
-   output                      i_ready,
-   input [`MAINRAM_ADDR_W-3:0] i_addr,
-   output [`DATA_W-1:0]        i_rdata,
-
-   //data bus
-   input                       d_bus_in = {d_valid, d_addr, d_wdata, d_wstrb};
-   output                      d_bus_out = {d_ready, d_rdata};
-
-
-   input                       d_valid,
-   output                      d_ready,
-   input [`MAINRAM_ADDR_W-3:0] d_addr,
-   output [`DATA_W-1:0]        d_rdata,
-   input [`DATA_W-1:0]         d_wdata,
-   input [3:0]                 d_wstrb,
-
-   //PERIPHERAL INTERFACE
-   wire                        p_bus_in = {p_valid, p_addr, p_wdata, p_wstrb};
-   wire                        p_bus_out = {p_ready, p_rdata};
-
-
-
-   input                       p_valid,
-   output                      p_ready,
-   input [`MAINRAM_ADDR_W-3:0] p_addr,
-   output [`DATA_W-1:0]        p_rdata,
-   input [`DATA_W-1:0]         p_wdata,
-   input [3:0]                 p_wstrb
-   );
-
-
+   ////////////////////////////////////////////////////////
+   // BOOT HARDWARE
    //
-   // BOOT ROM AND COPY ENGINE MASTER
-   //
-   
 `ifdef USE_BOOT
 
-   //read from rom interface
-   reg                         rom_valid;
-   wire                        rom_ready;
-   reg [`BOOTROM_ADDR_W-3:0]   rom_addr;
-   wire [`DATA_W-1:0]          rom_rdata;
+   //boot controller bus
+   wire [`REQ_W-1:0]     boot_req;
+   wire [`RESP_W-1:0]    boot_resp;
 
-   //generate rom address   
-   always @(posedge clk, posedge rst)
-     if(rst) begin
-        rom_valid <= 1'b1;
-        rom_addr <= `BOOTROM_ADDR_W'0;
-     end else
-       if (rom_addr != (2**(`BOOTROM_ADDR_W-2)-1)) begin
-          rom_addr <= rom_addr + 1'b1;
-          rom_valid <= 1'b1;
-       end else
-         rom_valid <= 1'b0;
-
-   //instantiate rom
-   rom #(
-	 .ADDR_W(`BOOTROM_ADDR_W-2)
-	 )
-   boot_rom (
-	     .clk           (clk),
-	     .rst           (rst),
-             .valid         (rom_valid),
-             .ready         (rom_ready),
-	     .addr          (rom_addr),
-	     .rdata         (rom_rdata)
-	     );
-
-   //write to ram interface
-   wire r_valid = rom_valid;
-   wire r_ready;
-   wire [`MAINRAM_ADDR_W-3:0] r_addr = rom_addr+{`MAINRAM_ADDR_W-2{1'b1}}-{`BOOTROM_ADDR_W-2{1'b1}};
-   wire [`DATA_W-1:0] r_rdata; //unused
-   wire [`DATA_W-1:0] r_wdata;
-   wire [`DATA_W/8-1:0] r_wstrb;
-`else // !`ifdef USE_BOOT
-   wire                 rom_valid = 0;
-`endif
-
-
-
-   
-   //
-   // RAM
-   //
-
-   
-   //
-   //INSTRUCTION BUS
-   //
-   
-   wire                 ram_i_ready;
-   assign i_ready = ram_i_ready & ~rom_valid;
- 
-   // modify instruction address during boot program execution
-   wire [`MAINRAM_ADDR_W-3:0] ram_i_addr = boot? i_addr+{`MAINRAM_ADDR_W-2{1'b1}}-{`BOOTROM_ADDR_W-2{1'b1}}: i_addr;
-
+   //sram instruction write bus
+   wire [`REQ_W-1:0]     ram_d_req;
+   wire [`RESP_W-1:0]    ram_d_resp;
 
    //
-   //DATA BUS 
+   // SPLIT DATA BUS BETWEEN SRAM AND BOOT CONTROLLER
    //
-   
-   // modify data address during boot program execution
-   wire [`MAINRAM_ADDR_W-3:0] mod_d_addr = boot? d_addr+{`MAINRAM_ADDR_W-2{1'b1}}-{`BOOTROM_ADDR_W-2{1'b1}}: d_addr;
-     
-   //interconnect data mem, peripheral and rom master buses to 
-   //internal memory data bus single slave
-
-   wire                       ram_d_valid;
-   wire                       ram_d_ready;
-   wire [`MAINRAM_ADDR_W-3:0] ram_d_addr;
-   wire [`DATA_W-1:0]         ram_d_rdata;
-   wire [`DATA_W-1:0]         ram_d_wdata;
-   wire [3:0]                 ram_d_wstrb;
-
-   
-   wire                       r_bus_in  = {r_valid, r_addr, r_wdata, 4'b1111};
-   wire                       r_bus_out = {r_ready, r_rdata};
-
-  
-  
-   wire                       s_bus_in     = {s_valid, s_addr, s_wdata, s_wstrb};
-   wire                       s_bus_out = {s_ready, s_rdata};
-
-
-   parameter BUS_IN_LEN = 1+ADDR_W+DATA_W+DATA_W/8;
-   parameter BUS_OUT_LEN = 1+DATA_W;
-   wire [2*BUS_IN_LEN-1:0]    cat_bus_in_2 = {d_bus_in, p_bus_in};
-   wire [3*BUS_IN_LEN-1:0]    cat_bus_in_3 = {r_bus_in, cat_bus_in_2};
-   
-   
-   mm2ss_interconnect
+   split 
      #(
-`ifdef USE_BOOT
-       .N_MASTERS(3),
-`else
-       .N_MASTERS(2),
-`endif       
-       .ADDR_W(`MAINRAM_ADDR_W-2)
-       )  
-   ram_d_intercon
-     (
-//      .clk(clk),
-//      .rst(rst),
-      
-      //masters
-`ifdef USE_BOOT
-      .m_valid({r_valid, d_valid,    p_valid }),
-      .m_ready({r_ready, d_ready,    p_ready }),
-      .m_addr ({r_addr,  mod_d_addr, p_addr  }),
-      .m_rdata({r_rdata, d_rdata,    p_rdata }),
-      .m_wdata({r_wdata, d_wdata,    p_wdata }),
-      .m_wstrb({4'b1111, d_wstrb,    p_wstrb }),
-`else
-      .m_valid({d_valid,    p_valid}),
-      .m_ready({d_ready,    p_ready}),
-      .m_addr ({d_addr,     p_addr}),
-      .m_rdata({d_rdata,    p_rdata}),
-      .m_wdata({d_wdata,    p_wdata}),
-      .m_wstrb({d_wstrb,    p_wstrb}),
-`endif       
-
-     //slave
-      .s_valid(ram_d_valid),
-      .s_ready(ram_d_ready),
-      .s_addr (ram_d_addr),
-      .s_rdata(ram_d_rdata),
-      .s_wdata(ram_d_wdata),
-      .s_wstrb(ram_d_wstrb)
-      );   
-
-   // instantiate ram
-   ram #(
-`ifndef USE_DDR
- `ifndef USE_BOOT
-         .FILE("firmware"),
- `endif
+       .N_SLAVES(2)
+       )
+   rambus_demux
+       (
+        // master interface
+        .m_req(d_req),
+        .m_resp(d_resp),
+        
+        // slaves interface
+`ifdef USE_SRAM_DDR //MSB is right shifted
+        .s_sel(d_req[`section(0, `REQ_W-3, 2)]),
+`else //using one memory only sectio
+        .s_sel(d_req[`section(0,  `REQ_W-2, 2)]),
 `endif
-	 .ADDR_W(`MAINRAM_ADDR_W-2)
+        .s_req({boot_req, ram_d_req}),
+        .s_resp({boot_resp, ram_d_resp})
+        );
+
+
+   //
+   // BOOT CONTROLLER
+   //
+
+   //sram instruction write bus
+   wire [`REQ_W-1:0]     ram_w_req;
+   wire [`RESP_W-1:0]    ram_w_resp;
+
+   boot_ctr boot0 
+       (
+        .clk(clk),
+        .rst(rst),
+        .boot_rst(boot_reset),
+        .boot(boot),
+        
+        //cpu slave interface
+        //no address bus since single address
+        .cpu_valid(boot_req[`valid(0)]),
+        .cpu_wdata(boot_req[`wdata(0)]),
+        .cpu_wstrb(|boot_req[`wstrb(0)]),
+        .cpu_rdata(boot_req[`rdata(0)]),
+        .cpu_ready(boot_req[`ready(0)]),
+
+        //sram master write interface
+        .sram_valid(ram_w_req[`valid(0)]),
+        .sram_addr(ram_w_req[`address(0)]),
+        .sram_wdata(ram_w_req[`wdata(0)]),
+        .sram_wstrb(ram_w_req[`wstrb(0)])
+        );
+   
+   //
+   //MODIFY INSTRUCTION READ ADDRESS DURING BOOT
+   //
+
+   //instruction read bus
+   wire [`REQ_W-1:0]  ram_r_req;
+   wire [`RESP_W-1:0] ram_r_resp;
+
+`define BOOT_OFFSET 2**(`SRAM_ADDR_W-2) - 2**(`BOOTROM_ADDR_W-2)
+   
+   //modify address to read boot program
+   assign ram_r_req[`valid(0)] = i_req[`valid(0)];
+   assign ram_r_req[`address(0)] = boot? i_req[`address(0)] + `BOOT_OFFSET : i_req[`address(0)];
+   assign ram_r_req[`write(0)] = i_req[`write(0)];
+   assign i_resp[`resp(0)] = ram_r_resp[`resp(0)];
+
+`endif // !`ifdef USE_BOOT
+
+   
+   //
+   //MERGE BOOT WRITE BUS AND CPU READ BUS
+   //
+
+   //sram instruction bus
+   wire [`REQ_W-1:0]     ram_i_req;
+   wire [`RESP_W-1:0]    ram_i_resp;
+
+   merge #(
+`ifdef USE_BOOT
+           .N_MASTERS(2)
+`else
+           .N_MASTERS(1)
+`endif
+           )
+   ibus_merge
+     (
+      //master
+`ifdef USE_BOOT
+      .m_req({ram_w_req, ram_r_req}),
+      .m_resp({ram_w_resp, ram_r_resp}),
+`else
+      .m_req(i_req),
+      .m_resp(i_resp),
+`endif
+      //slave  
+      .s_req(ram_i_req),
+      .s_resp(ram_i_resp)
+      );
+   
+   //
+   // INSTANTIATE RAM
+   //
+   ram #(
+`ifdef USE_BOOT
+         .FILE("none")
+`else
+         .FILE("firmware")
+`endif
 	 )
    boot_ram 
      (
@@ -199,18 +154,20 @@ module int_mem
       .rst           (rst),
       
       //instruction bus
-      .i_valid       (i_valid),
-      .i_ready       (ram_i_ready), //to be masked by rom loading
-      .i_addr        (ram_i_addr), //modified during boot
-      .i_rdata       (i_rdata),
+      .i_valid       (ram_i_req[`valid(0)]),
+      .i_addr        (ram_i_req[`section(0, `ADDR_P+`SRAM_ADDR_W-1, `SRAM_ADDR_W-2)]), 
+      .i_wdata       (ram_i_req[`wdata(0)]),
+      .i_wstrb       (ram_i_req[`wstrb(0)]),
+      .i_rdata       (ram_i_resp[`rdata(0)]),
+      .i_ready       (ram_i_resp[`ready(0)]),
 	     
       //data bus
-      .d_valid       (ram_d_valid),
-      .d_ready       (ram_d_ready),
-      .d_addr        (ram_d_addr),
-      .d_wdata       (ram_d_wdata),
-      .d_wstrb       (ram_d_wstrb),
-      .d_rdata       (ram_d_rdata)
+      .d_valid       (d_req[`valid(0)]),
+      .d_addr        (d_req[`section(0, `ADDR_P+`SRAM_ADDR_W-1, `SRAM_ADDR_W-2)]), 
+      .d_wdata       (d_req[`wdata(0)]),
+      .d_wstrb       (d_req[`wstrb(0)]),
+      .d_rdata       (d_resp[`rdata(0)]),
+      .d_ready       (d_resp[`ready(0)])
       );
-   
+
 endmodule

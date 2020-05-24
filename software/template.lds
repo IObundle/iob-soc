@@ -8,4 +8,3 @@ SECTIONS {
 		end = .;
 	}
 }
-

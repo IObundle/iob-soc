@@ -1,31 +1,29 @@
-TOOLCHAIN_PREFIX := riscv32-unknown-elf-
+include ../embedded.mk
 
-PYTHON_DIR := ../python
-CONSOLE_DIR = ../ld-sw
+#additional flags
+CFLAGS+=-Wl,-Bstatic,-T,../template.lds,-Map,boot.map,--strip-debug
 
-SUBMODULES_DIR := ../../submodules
-UART_DIR := $(SUBMODULES_DIR)/iob-uart/c-driver
-CACHE_DIR := $(SUBMODULES_DIR)/iob-cache/c-driver
+#additional paths
+CONSOLE_DIR:=../ld-sw
+CACHE_DIR:=$(SUBMODULES_DIR)/iob-cache/c-driver
 
-INCLUDE =  -I. -I$(UART_DIR) -I$(CACHE_DIR) -I$(CONSOLE_DIR)
+#additional defines
+DEFINE+=-DPROG_SIZE=`wc -c   ../../software/firmware/firmware.bin | head -n1 | cut -d " " -f1`
+DEFINE+=-DBOOTROM_ADDR_W=$(BOOTROM_ADDR_W) -DBOOT_CTR=$(BOOT_CTR)
+DEFINE+=-DFIRM_ADDR_W=$(SRAM_ADDR_W)
 
-DEFINE = -DUART_BAUD_RATE=$(BAUD) -DUART_CLK_FREQ=$(FREQ)
-DEFINE += -DPROG_SIZE=`wc -c   ../../software/firmware/firmware.bin | head -n1 | cut -d " " -f1`
+#additional includes
+INCLUDE+=-I$(CACHE_DIR) -I$(CONSOLE_DIR)
 
-SRC = boot.S boot.c $(UART_DIR)/iob-uart.c $(CACHE_DIR)/iob-cache.c 
+#additional includes
+SRC+=boot.c $(CACHE_DIR)/iob-cache.c 
 
-all: $(SRC) system.h $(UART_DIR)/iob-uart.h $(CACHE_DIR)/iob-cache.h $(CONSOLE_DIR)/console.h boot.lds
-	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -nostdlib -march=rv32im -mabi=ilp32 -o boot.elf $(INCLUDE) $(DEFINE) $(SRC) --std=gnu99 -Wl,-Bstatic,-T,boot.lds,-Map,boot.map,--strip-debug -lgcc -lc
+boot.elf:  ../template.lds ../system.h $(SRC)
+	$(TOOLCHAIN_PREFIX)gcc -o $@ $(CFLAGS) $(DEFINE) $(INCLUDE) $(SRC) -lgcc -lc
 	$(TOOLCHAIN_PREFIX)objcopy -O binary boot.elf boot.bin
-	$(eval MEM_SIZE=`$(PYTHON_DIR)/get_memsize.py BOOTROM_ADDR_W`)
-	$(PYTHON_DIR)/makehex.py boot.bin $(MEM_SIZE) > boot.hex
-
-system.h: ../../rtl/include/system.vh
-	sed s/\`/\#/g ../../rtl/include/system.vh > system.h
+	$(PYTHON_DIR)/makehex.py boot.bin $(BOOTROM_ADDR_W) > boot.hex
 
 clean:
-	@rm -rf boot.bin boot.elf boot.map *.hex *.dat
-	@rm -rf uart_loader *~
-	@rm -rf ../uart_loader system.h
+	@rm -rf boot.bin boot.elf boot.map *.hex
 
-.PHONY: all clean
+.PHONY: clean
