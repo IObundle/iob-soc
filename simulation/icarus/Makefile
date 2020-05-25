@@ -42,8 +42,9 @@ endif
 
 ifeq ($(USE_DDR),1)
 HW_DEFINE += -DUSE_DDR
-DDR_VSRC:=$(SRC_DIR)/ext_mem.v $(SRC_DIR)/ram.v $(CACHE_DIR)/rtl/src/iob-cache.v \
-$(AXI_RAM_DIR)/rtl/axi_ram.v $(MEM_DIR)/reg_file/iob_reg_file.v $(MEM_DIR)/fifo/afifo/afifo.v
+DDR_VSRC:=$(SRC_DIR)/ext_mem.v $(CACHE_DIR)/rtl/src/iob-cache.v \
+$(AXI_RAM_DIR)/rtl/axi_ram.v $(MEM_DIR)/reg_file/iob_reg_file.v $(MEM_DIR)/fifo/afifo/afifo.v \
+$(MEM_DIR)/sp_ram_be/iob_sp_ram_be.v
 endif
 
 ifeq ($(RUN_DDR),1)

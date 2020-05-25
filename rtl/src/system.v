@@ -72,9 +72,9 @@ module system
 `ifdef USE_BOOT
    wire                   boot;
    wire                   boot_reset;   
-   wire                   reset_int = reset | boot_reset;
+   wire                   cpu_reset = reset | boot_reset;
 `else
-   wire                   reset_int = reset;
+   wire                   cpu_reset = reset;
 `endif
    
    //
@@ -97,7 +97,7 @@ module system
 `endif
        (
         .clk     (clk),
-        .rst     (reset_int),
+        .rst     (cpu_reset),
         .trap    (trap),
         
         //instruction bus
@@ -238,7 +238,7 @@ module system
         );
    
    /////////////////////////////////////////////////////////////////////////
-   // MODULE INSTANCES
+       // MODULE INSTANCES
    
    //
    // INTERNAL SRAM MEMORY
@@ -248,11 +248,11 @@ module system
    int_mem int_mem0 
        (
         .clk                  (clk ),
-        .rst                  (reset_int),
+        .rst                  (reset),
 `ifdef USE_BOOT
         .boot                 (boot),
         .boot_reset           (boot_reset),
-`endif
+ `endif
         // instruction bus
         .i_req                (int_mem_i_req),
         .i_resp               (int_mem_i_resp),
@@ -271,7 +271,7 @@ module system
        ext_mem0 
        (
         .clk                  (clk ),
-        .rst                  (reset_int),
+        .rst                  (reset),
 
         // instruction bus
         .i_req                (int_mem_i_req),
@@ -279,66 +279,62 @@ module system
 
         //data bus
         .d_req                (int_mem_d_req),
-        .d_resp               (int_mem_d_resp)
+        .d_resp               (int_mem_d_resp),
 
         //AXI INTERFACE 
         //address write
-        .AW_ID(m_axi_awid), 
-        .AW_ADDR(m_axi_awaddr), 
-        .AW_LEN(m_axi_awlen), 
-        .AW_SIZE(m_axi_awsize), 
-        .AW_BURST(m_axi_awburst), 
-        .AW_LOCK(m_axi_awlock), 
-        .AW_CACHE(m_axi_awcache), 
-        .AW_PROT(m_axi_awprot),
-        .AW_QOS(m_axi_awqos), 
-        .AW_VALID(m_axi_awvalid), 
-        .AW_READY(m_axi_awready), 
-
+        .axi_awid(m_axi_awid), 
+        .axi_awaddr(m_axi_awaddr), 
+        .axi_awlen(m_axi_awlen), 
+        .axi_awsize(m_axi_awsize), 
+        .axi_awburst(m_axi_awburst), 
+        .axi_awlock(m_axi_awlock), 
+        .axi_awcache(m_axi_awcache), 
+        .axi_awprot(m_axi_awprot),
+        .axi_awqos(m_axi_awqos), 
+        .axi_awvalid(m_axi_awvalid), 
+        .axi_awready(m_axi_awready), 
         //write
-        .W_DATA(m_axi_wdata), 
-        .W_STRB(m_axi_wstrb), 
-        .W_LAST(m_axi_wlast), 
-        .W_VALID(m_axi_wvalid), 
-        .W_READY(m_axi_wready), 
-
+        .axi_wdata(m_axi_wdata), 
+        .axi_wstrb(m_axi_wstrb), 
+        .axi_wlast(m_axi_wlast), 
+        .axi_wvalid(m_axi_wvalid), 
+        .axi_wready(m_axi_wready), 
         //write response
-        .B_ID(m_axi_bid), 
-        .B_RESP(m_axi_bresp), 
-        .B_VALID(m_axi_bvalid), 
-        .B_READY(m_axi_bready), 
-     
+        .axi_bid(m_axi_bid), 
+        .axi_bresp(m_axi_bresp), 
+        .axi_bvalid(m_axi_bvalid), 
+        .axi_bready(m_axi_bready), 
         //address read
-        .AR_ID(m_axi_arid), 
-        .AR_ADDR(m_axi_araddr), 
-        .AR_LEN(m_axi_arlen), 
-        .AR_SIZE(m_axi_arsize), 
-        .AR_BURST(m_axi_arburst), 
-        .AR_LOCK(m_axi_arlock), 
-        .AR_CACHE(m_axi_arcache), 
-        .AR_PROT(m_axi_arprot), 
-        .AR_QOS(m_axi_arqos), 
-        .AR_VALID(m_axi_arvalid), 
-        .AR_READY(m_axi_arready), 
-
+        .axi_arid(m_axi_arid), 
+        .axi_araddr(m_axi_araddr), 
+        .axi_arlen(m_axi_arlen), 
+        .axi_arsize(m_axi_arsize), 
+        .axi_arburst(m_axi_arburst), 
+        .axi_arlock(m_axi_arlock), 
+        .axi_arcache(m_axi_arcache), 
+        .axi_arprot(m_axi_arprot), 
+        .axi_arqos(m_axi_arqos), 
+        .axi_arvalid(m_axi_arvalid), 
+        .axi_arready(m_axi_arready), 
         //read 
-        .R_ID(m_axi_rid), 
-        .R_DATA(m_axi_rdata), 
-        .R_RESP(m_axi_rresp), 
-        .R_LAST(m_axi_rlast), 
-        .R_VALID(m_axi_rvalid),  
-        .R_READY(m_axi_rready)  
+        .axi_rid(m_axi_rid), 
+        .axi_rdata(m_axi_rdata), 
+        .axi_rresp(m_axi_rresp), 
+        .axi_rlast(m_axi_rlast), 
+        .axi_rvalid(m_axi_rvalid),  
+        .axi_rready(m_axi_rready)
         );
 `endif
- 
+   
    ////////////////////////////////////////////////////////
-   // UART
+       // UART
    //
    
    iob_uart uart
        (
         .clk       (clk),
-        .rst       (reset_int),
+        .rst       (reset),
         
         //cpu interface
         .valid(slaves_req[`valid(`UART)]),

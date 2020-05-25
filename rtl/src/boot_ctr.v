@@ -4,24 +4,24 @@
 
 module boot_ctr
   (
-   input                  clk,
-   input                  rst,
-   output                 boot_rst,
-   output reg             boot,
+   input                      clk,
+   input                      rst,
+   output                     boot_rst,
+   output reg                 boot,
 
    //cpu interface
-   input                  cpu_valid,
-   input [`DATA_W-1:0]    cpu_wdata,
-   input                  cpu_wstrb,
-   output [`DATA_W-1:0]   cpu_rdata,
-   output reg             cpu_ready,
+   input                      cpu_valid,
+   input [`DATA_W-1:0]        cpu_wdata,
+   input                      cpu_wstrb,
+   output [`DATA_W-1:0]       cpu_rdata,
+   output reg                 cpu_ready,
 
 
    //sram master write interface
-   output                 sram_valid,
-   output [`ADDR_W-1:0]   sram_addr,
-   output [`DATA_W-1:0]   sram_wdata,
-   output [`DATA_W/8-1:0] sram_wstrb
+   output reg                 sram_valid,
+   output reg [`ADDR_W-1:0]   sram_addr,
+   output [`DATA_W-1:0]       sram_wdata,
+   output reg [`DATA_W/8-1:0] sram_wstrb
    );
 
    reg [15:0]                  boot_reset_cnt;
@@ -56,7 +56,6 @@ module boot_ctr
    reg rom_r_valid;
    reg [`BOOTROM_ADDR_W-3: 0] rom_r_addr;
    reg [`DATA_W-1: 0] rom_r_rdata;
-   reg                rom_r_ready;
    
    //read rom
    always @(posedge clk, posedge rst)
@@ -85,20 +84,22 @@ module boot_ctr
             .rdata(rom_r_rdata)
             );
    
-  // generate rom ready
+   // generate rom ready
+   reg [`SRAM_ADDR_W-3:0] ram_w_addr;
    always @(posedge clk, posedge rst)
-     if(rst)
-       rom_r_ready <= 1'b0;
-     else
-       rom_r_ready <= rom_r_valid;
-
+     if(rst) begin
+        sram_valid <= 1'b0;
+        sram_wstrb <= {`DATA_W/8{1'b0}};
+     end else begin
+        sram_valid <= rom_r_valid;
+        ram_w_addr  <= rom_r_addr + 2**(`SRAM_ADDR_W-2) - 2**(`BOOTROM_ADDR_W-2);
+        sram_wstrb <= {`DATA_W/8{rom_r_valid}};
+     end
+   
    //
    // INSTRUCTION WRITE MASTER BUS
    //
-   
-   assign sram_valid = rom_r_ready;
-   assign sram_addr  = rom_r_addr + (2**(`SRAM_ADDR_W-2) - 2**(`BOOTROM_ADDR_W-2));
+   assign sram_addr = {ram_w_addr, 2'b0};
    assign sram_wdata = rom_r_rdata;
-   assign sram_wstrb = {`DATA_W/8{1'b1}};
 
 endmodule

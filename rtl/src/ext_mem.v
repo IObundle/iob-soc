@@ -1,5 +1,5 @@
-/*
- `timescale 1 ns / 1 ps
+
+`timescale 1 ns / 1 ps
 
 `include "system.vh"
 `include "interconnect.vh"
@@ -19,51 +19,46 @@ module ext_mem
 
    // AXI interface 
    // Address write
-   output [0:0]           AW_ID,
-   output [`ADDR_W-1:0]   AW_ADDR,
-   output [7:0]           AW_LEN,
-   output [2:0]           AW_SIZE,
-   output [1:0]           AW_BURST,
-   output [0:0]           AW_LOCK,
-   output [3:0]           AW_CACHE,
-   output [2:0]           AW_PROT,
-   output [3:0]           AW_QOS,
-   output                 AW_VALID,
-   input                  AW_READY,
-
-   // Write
-   output [`DATA_W-1:0]   W_DATA,
-   output [`DATA_W/8-1:0] W_STRB,
-   output                 W_LAST,
-   output                 W_VALID,
-   input                  W_READY,
-
-   // Write response
-   input [0:0]            B_ID,
-   input [1:0]            B_RESP,
-   input                  B_VALID,
-   output                 B_READY,
-
-   // Address read
-   output [0:0]           AR_ID,
-   output [`ADDR_W-1:0]   AR_ADDR,
-   output [7:0]           AR_LEN,
-   output [2:0]           AR_SIZE,
-   output [1:0]           AR_BURST,
-   output [0:0]           AR_LOCK,
-   output [3:0]           AR_CACHE,
-   output [2:0]           AR_PROT,
-   output [3:0]           AR_QOS,
-   output                 AR_VALID,
-   input                  AR_READY,
-
-   // Read 
-   input [0:0]            R_ID,
-   input [`DATA_W-1:0]    R_DATA,
-   input [1:0]            R_RESP,
-   input                  R_LAST,
-   input                  R_VALID,
-   output                 R_READY
+   output [0:0]           axi_awid, 
+   output [`ADDR_W-1:0]   axi_awaddr,
+   output [7:0]           axi_awlen,
+   output [2:0]           axi_awsize,
+   output [1:0]           axi_awburst,
+   output [0:0]           axi_awlock,
+   output [3:0]           axi_awcache,
+   output [2:0]           axi_awprot,
+   output [3:0]           axi_awqos,
+   output                 axi_awvalid,
+   input                  axi_awready,
+   //Write
+   output [`DATA_W-1:0]   axi_wdata,
+   output [`DATA_W/8-1:0] axi_wstrb,
+   output                 axi_wlast,
+   output                 axi_wvalid, 
+   input                  axi_wready,
+   input [0:0]            axi_bid,
+   input [1:0]            axi_bresp,
+   input                  axi_bvalid,
+   output                 axi_bready,
+   //Address Read
+   output [0:0]           axi_arid,
+   output [`ADDR_W-1:0]   axi_araddr, 
+   output [7:0]           axi_arlen,
+   output [2:0]           axi_arsize,
+   output [1:0]           axi_arburst,
+   output [0:0]           axi_arlock,
+   output [3:0]           axi_arcache,
+   output [2:0]           axi_arprot,
+   output [3:0]           axi_arqos,
+   output                 axi_arvalid, 
+   input                  axi_arready,
+   //Read
+   input [0:0]            axi_rid,
+   input [`DATA_W-1:0]    axi_rdata,
+   input [1:0]            axi_rresp,
+   input                  axi_rlast, 
+   input                  axi_rvalid, 
+   output                 axi_rready
    );
 
    //
@@ -84,7 +79,15 @@ module ext_mem
 
    // Instruction cache instance
    iob_cache # (
-                .ADDR_W(`ADDR_W)
+                .ADDR_W(`ADDR_W),
+                .N_WAYS(2),        //Number of ways
+                .LINE_OFF_W(4),    //Cache Line Offset (number of lines)
+                .WORD_OFF_W(4),    //Word Offset (number of words per line)
+                .WTBUF_DEPTH_W(4), //FIFO's depth
+                .MEM_NATIVE(1),    //Back-end uses Native Interface
+                //Ctrls parameters
+                .CTRL_CNT_ID(0),   //Remove counters with distinct data-instr accesses
+                .CTRL_CNT(1)       //Counters for hits and misses (since previous parameter is 0)
                 )
    icache (
            .clk   (clk),
@@ -99,12 +102,12 @@ module ext_mem
            .ready (icache_fe_resp[`ready(0)]),
 
            // Back-end interface
-           .valid (icache_be_req[`valid(0)]),
-           .addr  (icache_be_req[`address(0)]),
-           .wdata (icache_be_req[`wdata(0)]),
-           .wstrb (icache_be_req[`wstrb(0)]),
-           .rdata (icache_be_resp[`rdata(0)]),
-           .ready (icache_be_resp[`ready(0)])
+           .mem_valid (icache_be_req[`valid(0)]),
+           .mem_addr  (icache_be_req[`address(0)]),
+           .mem_wdata (icache_be_req[`wdata(0)]),
+           .mem_wstrb (icache_be_req[`wstrb(0)]),
+           .mem_rdata (icache_be_resp[`rdata(0)]),
+           .mem_ready (icache_be_resp[`ready(0)])
            );
 
    //
@@ -124,7 +127,15 @@ module ext_mem
 
    // Data cache instance
    iob_cache # (
-                .ADDR_W(`ADDR_W)
+                .ADDR_W(`ADDR_W),
+                .N_WAYS(2),        //Number of ways
+                .LINE_OFF_W(4),    //Cache Line Offset (number of lines)
+                .WORD_OFF_W(4),    //Word Offset (number of words per line)
+                .WTBUF_DEPTH_W(4), //FIFO's depth
+                .MEM_NATIVE(1),    //Back-end uses Native Interface
+                //Ctrls parameters
+                .CTRL_CNT_ID(0),   //Remove counters with distinct data-instr accesses
+                .CTRL_CNT(1)       //Counters for hits and misses (since previous parameter is 0)
                 )
    dcache (
            .clk   (clk),
@@ -139,12 +150,12 @@ module ext_mem
            .ready (dcache_fe_resp[`ready(0)]),
 
            // Back-end interface
-           .valid (dcache_be_req[`valid(0)]),
-           .addr  (dcache_be_req[`address(0)]),
-           .wdata (dcache_be_req[`wdata(0)]),
-           .wstrb (dcache_be_req[`wstrb(0)]),
-           .rdata (dcache_be_resp[`rdata(0)]),
-           .ready (dcache_be_resp[`ready(0)])
+           .mem_valid (dcache_be_req[`valid(0)]),
+           .mem_addr  (dcache_be_req[`address(0)]),
+           .mem_wdata (dcache_be_req[`wdata(0)]),
+           .mem_wstrb (dcache_be_req[`wstrb(0)]),
+           .mem_rdata (dcache_be_resp[`rdata(0)]),
+           .mem_ready (dcache_be_resp[`ready(0)])
            );
 
    // Merge caches back-ends
@@ -163,65 +174,70 @@ module ext_mem
                  );
 
    // L2 cache instance
-   iob_cache
-     l2cache (
-              // Native interface
-              .valid    (l2cache_req[`valid(0)]),
-              .addr     (l2cache_req[`address(0)]),
-              .wdata    (l2cache_req[`wdata(0)]),
-              .wstrb    (l2cache_req[`wstrb(0)]),
-              .rdata    (l2cache_resp[`rdata(0)]),
-              .ready    (l2cache_resp[`ready(0)]),
+   iob_cache # (
+                .ADDR_W(`ADDR_W),
+                .N_WAYS(4),        //Number of Ways
+                .LINE_OFF_W(4),    //Cache Line Offset (number of lines)
+                .WORD_OFF_W(4),    //Word Offset (number of words per line)
+                .WTBUF_DEPTH_W(4), //FIFO's depth
+                .MEM_NATIVE(0),    //Back-end uses AXI Interface
+                //Ctrls parameters
+                .CTRL_CNT_ID(0),   //Remove counters with distinct data-instr accesses
+                .CTRL_CNT(1)       //Counters for hits and misses (since previous parameter is 0)
+                )
+   l2cache (
+            // Native interface
+            .valid    (l2cache_req[`valid(0)]),
+            .addr     (l2cache_req[`address(0)]),
+            .wdata    (l2cache_req[`wdata(0)]),
+            .wstrb    (l2cache_req[`wstrb(0)]),
+            .rdata    (l2cache_resp[`rdata(0)]),
+            .ready    (l2cache_resp[`ready(0)]),
 
-              // AXI interface
-              // Address write
-              .AW_ID    (AW_ID),
-              .AW_ADDR  (AW_ADDR),
-              .AW_LEN   (AW_LEN),
-              .AW_SIZE  (AW_SIZE),
-              .AW_BURST (AW_BURST),
-              .AW_LOCK  (AW_LOCK),
-              .AW_CACHE (AW_CACHE),
-              .AW_PROT  (AW_PROT),
-              .AW_QOS   (AW_QOS),
-              .AW_VALID (AW_VALID),
-              .AW_READY (AW_READY),
-
-              // Write
-              .W_DATA   (W_DATA),
-              .W_STRB   (W_STRB),
-              .W_LAST   (W_LAST),
-              .W_VALID  (W_VALID),
-              .W_READY  (W_READY),
-
-              // Write response
-              .B_ID     (B_ID),
-              .B_RESP   (B_RESP),
-              .B_VALID  (B_VALID),
-              .B_READY  (B_READY),
-
-              // Address read
-              .AR_ID    (AR_ID),
-              .AR_ADDR  (AR_ADDR),
-              .AR_LEN   (AR_LEN),
-              .AR_SIZE  (AR_SIZE),
-              .AR_BURST (AR_BURST),
-              .AR_LOCK  (AR_LOCK),
-              .AR_CACHE (AR_CACHE),
-              .AR_PROT  (AR_PROT),
-              .AR_QOS   (AR_QOS),
-              .AR_VALID (AR_VALID),
-              .AR_READY (AR_READY),
-
-              // Read
-              .R_ID     (R_ID),
-              .R_DATA   (R_DATA),
-              .R_RESP   (R_RESP),
-              .R_LAST   (R_LAST),
-              .R_VALID  (R_VALID),
-              .R_READY  (R_READY)
-              );
+            // AXI interface
+            // Address write
+            .axi_awid(axi_awid), 
+            .axi_awaddr(axi_awaddr), 
+            .axi_awlen(axi_awlen), 
+            .axi_awsize(axi_awsize), 
+            .axi_awburst(axi_awburst), 
+            .axi_awlock(axi_awlock), 
+            .axi_awcache(axi_awcache), 
+            .axi_awprot(axi_awprot),
+            .axi_awqos(axi_awqos), 
+            .axi_awvalid(axi_awvalid), 
+            .axi_awready(axi_awready), 
+            //write
+            .axi_wdata(axi_wdata), 
+            .axi_wstrb(axi_wstrb), 
+            .axi_wlast(axi_wlast), 
+            .axi_wvalid(axi_wvalid), 
+            .axi_wready(axi_wready), 
+            //write response
+            .axi_bid(axi_bid), 
+            .axi_bresp(axi_bresp), 
+            .axi_bvalid(axi_bvalid), 
+            .axi_bready(axi_bready), 
+            //address read
+            .axi_arid(axi_arid), 
+            .axi_araddr(axi_araddr), 
+            .axi_arlen(axi_arlen), 
+            .axi_arsize(axi_arsize), 
+            .axi_arburst(axi_arburst), 
+            .axi_arlock(axi_arlock), 
+            .axi_arcache(axi_arcache), 
+            .axi_arprot(axi_arprot), 
+            .axi_arqos(axi_arqos), 
+            .axi_arvalid(axi_arvalid), 
+            .axi_arready(axi_arready), 
+            //read 
+            .axi_rid(axi_rid), 
+            .axi_rdata(axi_rdata), 
+            .axi_rresp(axi_rresp), 
+            .axi_rlast(axi_rlast), 
+            .axi_rvalid(axi_rvalid),  
+            .axi_rready(axi_rready)
+            );
 
 endmodule
-*/
 
