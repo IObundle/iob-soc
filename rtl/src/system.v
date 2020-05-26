@@ -128,7 +128,7 @@ module system
 
    // INSTRUCTION BUS
    split #(
-`ifdef SPLIT_IBUS
+`ifdef SPLIT_BUSES
            .N_SLAVES(2)
 `else
            .N_SLAVES(1)
@@ -141,18 +141,18 @@ module system
       .m_resp (cpu_i_resp),
       
       // slaves interface
-`ifdef SPLIT_IBUS //connect to DDR except during boot
+`ifdef SPLIT_BUSES //connect to DDR except during boot
       .s_sel ({1'b0, ~boot}),
       .s_req ({ext_mem_i_req, int_mem_i_req}),
       .s_resp ({ext_mem_i_resp, 0), int_mem_i_resp})
 `elsif RUN_DDR //connect to DDR always, no boot, simulation only
-     .s_sel (1'b0),
-     .s_req (ext_mem_i_req),
-     .s_resp (ext_mem_i_resp)
-`else //connect to SRAM only
-       .s_sel (1'b0), 
-     .s_req (int_mem_i_req),
-     .s_resp (int_mem_i_resp)
+      .s_sel (1'b0),
+      .s_req (ext_mem_i_req),
+      .s_resp (ext_mem_i_resp)
+`else //connect to SRAM always
+      .s_sel (1'b0), 
+      .s_req (int_mem_i_req),
+      .s_resp (int_mem_i_resp)
 `endif
        );
 
@@ -187,24 +187,30 @@ module system
 
 `ifdef USE_SRAM_DDR
  `ifndef RUN_DDR //running from SRAM, using DDR as extra 
-       .s_sel(cpu_d_req[`section(0, `REQ_W-1, 3)]),
+     .s_sel(cpu_d_req[`section(0, `REQ_W-1, 3)]),
      .s_req ({ext_mem_d_req, pbus_req, int_mem_d_req}),
      .s_resp({ext_mem_d_resp, pbus_resp, int_mem_d_resp})
  `else //running from DDR, using SRAM as extra
-       .s_sel(cpu_d_req[`section(0, `REQ_W-1, 3]),
-              .s_req ({int_mem_d_req, pbus_req, ext_mem_d_req}),
-              .s_resp({int_mem_d_resp, pbus_resp, ext_mem_d_resp})
+  `ifdef USE_BOOT //SPLIT_BUSES
+     .s_sel({cpu_d_req[`section(0, `REQ_W-2, 2], boot}),
+     .s_req ({pbus_req, int_mem_d_req, ext_mem_d_req}),
+     .s_resp({pbus_resp, int_mem_d_resp, ext_mem_d_resp})
+  `else
+     .s_sel(cpu_d_req[`section(0, `REQ_W-1, 3]),
+     .s_req ({int_mem_d_req, pbus_req, ext_mem_d_req}),
+     .s_resp({int_mem_d_resp, pbus_resp, ext_mem_d_resp})  
+  `endif 
  `endif
 `elsif USE_SRAM //using SRAM only 
-              .s_sel(cpu_d_req[`section(0, `REQ_W-1, 2)]),
-              .s_req ({pbus_req, int_mem_d_req}),
-              .s_resp({pbus_resp, int_mem_d_resp})
+     .s_sel(cpu_d_req[`section(0, `REQ_W-1, 2)]),
+     .s_req ({pbus_req, int_mem_d_req}),
+     .s_resp({pbus_resp, int_mem_d_resp})
 `else //using DDR only (for simulation)
-              .s_sel(cpu_d_req[`section(0, `REQ_W-1, 2)]),
-              .s_req ({pbus_req, ext_mem_d_req}),
-              .s_resp({pbus_resp, ext_mem_d_resp})
+     .s_sel(cpu_d_req[`section(0, `REQ_W-1, 2)]),
+     .s_req ({pbus_req, ext_mem_d_req}),
+     .s_resp({pbus_resp, ext_mem_d_resp})
 `endif
-              );
+     );
    
    
    //   

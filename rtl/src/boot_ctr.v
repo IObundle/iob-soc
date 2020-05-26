@@ -6,7 +6,7 @@ module boot_ctr
   (
    input                      clk,
    input                      rst,
-   output                     boot_rst,
+   output reg                 boot_rst,
    output reg                 boot,
 
    //cpu interface
@@ -24,38 +24,38 @@ module boot_ctr
    output reg [`DATA_W/8-1:0] sram_wstrb
    );
 
-   reg [15:0]                  boot_reset_cnt;
-   
+
+   //cpu interface
+   assign cpu_rdata = {31'd0,boot};
+   always @(posedge clk, posedge rst)
+     if(rst)
+         cpu_ready <= 1'b0;
+     else
+       cpu_ready <= cpu_valid;
+       
+   //boot register
+   reg                        boot_reg;
    always @(posedge clk, posedge rst)
      if(rst) begin
 `ifdef USE_BOOT
-        boot <= 1'b1;
+       boot <= 1'b1;
+       boot_reg <= 1'b1;
 `else 
-        boot <= 1'b0;
+       boot <= 1'b0;
+       boot_reg <= 1'b0;
 `endif
-        boot_reset_cnt <= 16'h0;
-        cpu_ready <= 1'b0;
-     end else if( cpu_valid && cpu_wstrb ) begin
-        boot_reset_cnt <= 16'hFFFF;
+     end else if( cpu_valid && cpu_wstrb) begin 
         boot <=  cpu_wdata[0];
-        cpu_ready <= 1'b1;
-     end else if (boot_reset_cnt) begin
-        boot_reset_cnt <= boot_reset_cnt - 1'b1;
-        cpu_ready <= 1'b0;
+        boot_reg <= boot;
      end
 
-   assign boot_rst = (boot_reset_cnt != 16'h0); 
-   assign cpu_rdata = {31'd0,boot};
 
-
-  //
-   // BOOT HARDWARE
    //
-   
-   //rom read bus
-   reg rom_r_valid;
+   // READ BOOT ROM 
+   //
+   reg                        rom_r_valid;
    reg [`BOOTROM_ADDR_W-3: 0] rom_r_addr;
-   reg [`DATA_W-1: 0] rom_r_rdata;
+   reg [`DATA_W-1: 0]         rom_r_rdata;
    
    //read rom
    always @(posedge clk, posedge rst)
@@ -68,8 +68,40 @@ module boot_ctr
        else
         rom_r_valid <= 1'b0;
    
+   
    //
-   //instantiate rom
+   // WRITE SRAM
+   //
+   reg [`SRAM_ADDR_W-3:0] ram_w_addr;
+   always @(posedge clk, posedge rst)
+     if(rst) begin
+        sram_valid <= 1'b1;
+        sram_wstrb <= {`DATA_W/8{1'b1}};
+     end else begin
+        sram_valid <= rom_r_valid;
+        ram_w_addr  <= rom_r_addr + 2**(`SRAM_ADDR_W-2) - 2**(`BOOTROM_ADDR_W-2);
+        sram_wstrb <= {`DATA_W/8{rom_r_valid}};
+     end
+   
+   assign sram_addr = {ram_w_addr, 2'b0};
+   assign sram_wdata = rom_r_rdata;
+
+   //
+   //BOOT CPU RESET
+   //
+   always @(posedge clk, posedge rst)
+     if(rst)
+`ifdef USE_BOOT
+       boot_rst <= 1'b1;
+`else
+       boot_rst <= 1'b0;
+`endif
+     else //reset cpu while sram loading or boot reg deasserted when booting ends
+       boot_rst <= (sram_valid || (!boot && boot_reg));
+   
+
+   //
+   //INSTANTIATE ROM
    //
    sp_rom 
      #(
@@ -83,23 +115,5 @@ module boot_ctr
             .addr(rom_r_addr),
             .rdata(rom_r_rdata)
             );
-   
-   // generate rom ready
-   reg [`SRAM_ADDR_W-3:0] ram_w_addr;
-   always @(posedge clk, posedge rst)
-     if(rst) begin
-        sram_valid <= 1'b0;
-        sram_wstrb <= {`DATA_W/8{1'b0}};
-     end else begin
-        sram_valid <= rom_r_valid;
-        ram_w_addr  <= rom_r_addr + 2**(`SRAM_ADDR_W-2) - 2**(`BOOTROM_ADDR_W-2);
-        sram_wstrb <= {`DATA_W/8{rom_r_valid}};
-     end
-   
-   //
-   // INSTRUCTION WRITE MASTER BUS
-   //
-   assign sram_addr = {ram_w_addr, 2'b0};
-   assign sram_wdata = rom_r_rdata;
 
 endmodule

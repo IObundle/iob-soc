@@ -1,5 +1,3 @@
-#include "system.h"
-
 .section .init
 .global main
 

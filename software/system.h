@@ -39,5 +39,4 @@
 #endif
 
 #define UART_BASE (1<<PBIT) |(UART<<(ADDR_W-N_SLAVES_W))
-
-
+#define BOOTCTR_BASE (1<<(PBIT-1))

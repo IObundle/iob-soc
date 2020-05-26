@@ -21,19 +21,22 @@ module int_mem
     output [`RESP_W-1:0] d_resp
     );
 
-   
+   //sram data bus  interface
+   wire [`REQ_W-1:0]     ram_d_req;
+   wire [`RESP_W-1:0]    ram_d_resp;
+
+   //modified ram address during boot
+   wire [`SRAM_ADDR_W-3:0] ram_d_addr;
+
+
    ////////////////////////////////////////////////////////
    // BOOT HARDWARE
    //
 `ifdef USE_BOOT
 
-   //boot controller bus
+   //boot controller bus to write program in sram
    wire [`REQ_W-1:0]     boot_req;
    wire [`RESP_W-1:0]    boot_resp;
-
-   //sram instruction write bus
-   wire [`REQ_W-1:0]     ram_d_req;
-   wire [`RESP_W-1:0]    ram_d_resp;
 
    //
    // SPLIT DATA BUS BETWEEN SRAM AND BOOT CONTROLLER
@@ -51,7 +54,7 @@ module int_mem
         // slaves interface
 `ifdef USE_SRAM_DDR //MSB is right shifted
         .s_sel(d_req[`section(0, `REQ_W-3, 2)]),
-`else //using one memory only sectio
+`else //using one memory only
         .s_sel(d_req[`section(0,  `REQ_W-2, 2)]),
 `endif
         .s_req({boot_req, ram_d_req}),
@@ -98,13 +101,23 @@ module int_mem
    wire [`RESP_W-1:0] ram_r_resp;
 
 `define BOOT_OFFSET 2**`SRAM_ADDR_W - 2**`BOOTROM_ADDR_W
-   
-   //modify address to read boot program
+
+   //
+   //modify addresses to run  boot program
+   //
+   //instruction bus
    assign ram_r_req[`valid(0)] = i_req[`valid(0)];
    assign ram_r_req[`address(0)] = boot? i_req[`address(0)] + `BOOT_OFFSET : i_req[`address(0)];
    assign ram_r_req[`write(0)] = i_req[`write(0)];
    assign i_resp[`resp(0)] = ram_r_resp[`resp(0)];
-
+   //data bus
+   assign ram_d_addr = boot? 
+                       ram_d_req[`section(0, `ADDR_P+`SRAM_ADDR_W-1, `SRAM_ADDR_W-2)] + `BOOT_OFFSET : 
+                       ram_d_req[`section(0, `ADDR_P+`SRAM_ADDR_W-1, `SRAM_ADDR_W-2)];
+`else
+   assign ram_d_req[`address(0)] = d_req[`address(0)]; 
+   assign ram_d_addr = d_req[`section(0, `ADDR_P+`SRAM_ADDR_W-1, `SRAM_ADDR_W-2)];
+   assign d_resp = ram_d_resp;
 `endif // !`ifdef USE_BOOT
 
    
@@ -162,12 +175,12 @@ module int_mem
       .i_ready       (ram_i_resp[`ready(0)]),
 	     
       //data bus
-      .d_valid       (d_req[`valid(0)]),
-      .d_addr        (d_req[`section(0, `ADDR_P+`SRAM_ADDR_W-1, `SRAM_ADDR_W-2)]), 
-      .d_wdata       (d_req[`wdata(0)]),
-      .d_wstrb       (d_req[`wstrb(0)]),
-      .d_rdata       (d_resp[`rdata(0)]),
-      .d_ready       (d_resp[`ready(0)])
+      .d_valid       (ram_d_req[`valid(0)]),
+      .d_addr        (ram_d_addr),
+      .d_wdata       (ram_d_req[`wdata(0)]),
+      .d_wstrb       (ram_d_req[`wstrb(0)]),
+      .d_rdata       (ram_d_resp[`rdata(0)]),
+      .d_ready       (ram_d_resp[`ready(0)])
       );
 
 endmodule
