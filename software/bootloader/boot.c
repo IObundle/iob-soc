@@ -4,8 +4,6 @@
 #include "iob-cache.h"
 #include "console.h"
 
-#define BOOTRAM_BASE 2**BOOTROM_ADDR_W
-#define BOOTCTR_BASE (1<<PBIT) | (1<<(PBIT-1))
 
 //#define DEBUG  // Uncomment this line for debug printfs
 
@@ -63,7 +61,7 @@ void sendFile(unsigned int file_size) {
 int main() {
   
   // Start Communication
-  uart_init(UART, UART_CLK_FREQ/UART_BAUD_RATE);
+  uart_init(UART_BASE, UART_CLK_FREQ/UART_BAUD_RATE);
   
   // Request File
   uart_puts ("Loading program from UART...\n");

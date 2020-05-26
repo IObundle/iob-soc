@@ -1,0 +1,67 @@
+[*]
+[*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
+[*] Sun May 24 23:05:01 2020
+[*]
+[dumpfile] "/home/jsousa/sandbox/iob-soc/simulation/icarus/system.vcd"
+[dumpfile_mtime] "Sun May 24 22:38:03 2020"
+[dumpfile_size] 2272732
+[savefile] "/home/jsousa/sandbox/iob-soc/simulation/icarus/noboot_int.gtkw"
+[timestart] 11227500
+[size] 1920 1055
+[pos] -1 -1
+*-16.411869 11564400 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] system_tb.
+[treeopen] system_tb.uut.
+[treeopen] system_tb.uut.cpu.
+[treeopen] system_tb.uut.int_mem0.
+[sst_width] 324
+[signals_width] 389
+[sst_expanded] 1
+[sst_vpaned_height] 393
+@200
+-INT MEM
+@28
+system_tb.uut.int_mem0.clk
+@22
+system_tb.uut.int_mem0.d_req[68:0]
+system_tb.uut.int_mem0.d_resp[32:0]
+system_tb.uut.int_mem0.i_req[68:0]
+system_tb.uut.int_mem0.i_resp[32:0]
+system_tb.uut.int_mem0.ram_i_req[68:0]
+system_tb.uut.int_mem0.ram_i_resp[32:0]
+@28
+system_tb.uut.int_mem0.rst
+@200
+-BOOT RAM
+@28
+system_tb.uut.int_mem0.boot_ram.i_valid
+@24
+system_tb.uut.int_mem0.boot_ram.i_addr[10:0]
+@22
+system_tb.uut.int_mem0.boot_ram.i_rdata[31:0]
+@200
+-SYSTEM
+@22
+system_tb.uut.cpu_d_req[68:0]
+system_tb.uut.cpu_i_req[68:0]
+system_tb.uut.cpu_i_resp[32:0]
+@200
+-CPU
+@22
+system_tb.uut.cpu.cpu_req[68:0]
+@200
+-PICORV32
+@28
+system_tb.uut.cpu.picorv32_core.resetn
+system_tb.uut.cpu.picorv32_core.mem_instr
+system_tb.uut.cpu.picorv32_core.mem_valid
+@25
+system_tb.uut.cpu.picorv32_core.mem_addr[31:0]
+@22
+system_tb.uut.cpu.picorv32_core.mem_wdata[31:0]
+system_tb.uut.cpu.picorv32_core.mem_wstrb[3:0]
+system_tb.uut.cpu.picorv32_core.mem_rdata[31:0]
+@28
+system_tb.uut.cpu.picorv32_core.mem_ready
+[pattern_trace] 1
+[pattern_trace] 0

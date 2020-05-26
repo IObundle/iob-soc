@@ -16,7 +16,7 @@
 `ifdef USE_SRAM_DDR
  `ifdef USE_BOOT
   `ifdef RUN_DDR
-   `define SPLIT_IBUS
+   `define SPLIT_BUSES
   `endif
  `endif
 `endif
