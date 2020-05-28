@@ -25,16 +25,30 @@ int uart_getdiv()
   return (MEMGET(base, UART_DIV));
 }
 
+//tx functions
 void uart_txwait() {
   while(MEMGET(base, UART_WRITE_WAIT));
 }
 
-void uart_putc(char c) {
+int uart_txstatus() {
+  return (!MEMGET(base, UART_WRITE_WAIT));
+}
+
+inline void uart_putc(char c) {
   while(MEMGET(base, UART_WRITE_WAIT));
   MEMSET(base, UART_DATA, (int)c);
 }
 
-char uart_getc() {
+
+void uart_rxwait() {
+  while(!MEMGET(base, UART_READ_VALID));
+}
+
+int uart_rxstatus() {
+  return (MEMGET(base, UART_READ_VALID));
+}
+
+inline char uart_getc() {
   while(!MEMGET(base, UART_READ_VALID));
   return( (char) MEMGET(base, UART_DATA));
 }

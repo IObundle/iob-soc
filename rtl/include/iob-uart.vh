@@ -1,3 +1,10 @@
+//Useful ASCII codes
+`define STX 2
+`define ETX 3
+`define ENQ 5
+`define ACK 6
+
+//Memory map
 `define UART_ADDR_W 3
 
 `define UART_WRITE_WAIT (`UART_ADDR_W'd0)

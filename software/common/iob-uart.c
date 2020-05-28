@@ -93,3 +93,36 @@ void uart_printf(const char* fmt, ...) {
   }
   va_end(args);
 }
+
+
+unsigned int uart_getfile(char *mem) {
+
+  // Get file size
+  unsigned int file_size = (unsigned int) uart_getc();
+  file_size |= ((unsigned int) uart_getc()) << 8;
+  file_size |= ((unsigned int) uart_getc()) << 16;
+  file_size |= ((unsigned int) uart_getc()) << 24;
+  
+  // Write file to main memory
+  for (unsigned int i = 0; i < file_size; i++) {
+    mem[i] = uart_getc();
+  }
+  
+  return file_size;
+}
+
+void uart_sendfile(unsigned int file_size, char *mem) {
+
+  // send file size
+  uart_putc((char)(file_size & 0x0ff));
+  uart_putc((char)((file_size & 0x0ff00) >> 8));
+  uart_putc((char)((file_size & 0x0ff0000) >> 16));
+  uart_putc((char)((file_size & 0x0ff000000) >> 24));
+  
+  // send file contents
+  for (unsigned int i = 0; i < file_size; i++) {
+    uart_putc(mem[i]);
+  }
+
+  return;
+}
