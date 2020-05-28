@@ -4,3 +4,12 @@
 [submodule "submodules/interconnect"]
 	path = submodules/interconnect
 	url = git@github.com:jjts/iob-interconnect.git
+[submodule "submodules/uart"]
+	path = submodules/uart
+	url = git@github.com:jjts/iob-uart.git
+[submodule "submodules/mem"]
+	path = submodules/mem
+	url = git@github.com:jjts/iob-mem.git
+[submodule "submodules/picorv32"]
+	path = submodules/picorv32
+	url = git@github.com:jjts/iob-picorv32.git
