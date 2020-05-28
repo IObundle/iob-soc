@@ -1,22 +1,6 @@
-[submodule "submodules/iob-rv32"]
-	path = submodules/iob-rv32
-	url = git@bitbucket.org:jjts/iob-rv32.git
-[submodule "submodules/iob-uart"]
-	path = submodules/iob-uart
-	url = git@bitbucket.org:jjts/iob-uart.git
-[submodule "submodules/iob-versat"]
-	path = submodules/iob-versat
-	url = git@bitbucket.org:jjts/versat.git
-	branch = deep_versat
-[submodule "submodules/iob-cache"]
-	path = submodules/iob-cache
-	url = git@bitbucket.org:jjts/iob-cache.git
 [submodule "submodules/axi-mem"]
 	path = submodules/axi-mem
 	url = git@github.com:jjts/verilog-axi.git
-[submodule "submodules/iob-mem"]
-	path = submodules/iob-mem
-	url = git@bitbucket.org:jjts/iob-mem.git
 [submodule "submodules/interconnect"]
 	path = submodules/interconnect
 	url = git@github.com:jjts/iob-interconnect.git
