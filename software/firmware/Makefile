@@ -10,9 +10,10 @@ DEFINE+=-DFIRM_ADDR_W=$(DDR_ADDR_W)
 else
 DEFINE+=-DFIRM_ADDR_W=$(SRAM_ADDR_W)
 endif
+DEFINE+=-DUSE_BOOT=$(USE_BOOT)
 
 #additional sources
-SRC+= firmware.c
+SRC+= firmware.S firmware.c
 
 firmware.elf: ../template.lds ../system.h  $(SRC)
 	$(TOOLCHAIN_PREFIX)gcc -o $@ $(CFLAGS) $(DEFINE) $(INCLUDE) $(SRC) -lgcc -lc

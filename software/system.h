@@ -32,7 +32,7 @@
 //DDR if running from SRAM
 #define EXTRA_BASE (1<<31)
 
-#if (USE_SRAM==1 && USE_DDR==1)
+#if (USE_SRAM && USE_DDR)
 #define PBIT 30
 #else
 #define PBIT 31

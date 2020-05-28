@@ -1,6 +1,7 @@
-# iob-SoC
+# IOb-SoC
 
-SoC template containing a RISC-V processor (iob-rv32), a UART (iob-uart) the following options for booting: no boot (firmware already in internal memory), load firmware to internal RAM and start, load firmware to external DDR and start.
+SoC template containing a RISC-V processor (iob-rv32), a UART (iob-uart), and optional internal and external memory systems.
+
 
 ## Install RISC-V GNU Compiler Toolchain if you have not
 
@@ -41,7 +42,7 @@ sudo make
 path/to/riscv/riscv64-unknown-elf-gcc -march=rv32im -mabi=ilp32 <C sources> -o <exec>
 ```
 
-###For support 32-bit Applications
+###Supporting 32-bit applications
 
 Use symbolic links:
 
@@ -50,53 +51,30 @@ sudo ln -s riscv64-unknown-elf-gcc riscv32-unknown-elf-gcc
 sudo ln -s riscv64-unknown-elf-objcopy riscv32-unknown-elf-objcopy
 ```
 
-## Update submodules if you have not
+## Update submodules
 ``git submodule update --init --recursive``
 
 
-## Edit the system configuration file: rtl/system.vh
+## Edit the system configuration file: rtl/system.mk
 
 
 ## Simulate
-
-#Edit simulator path in Makefile and do:
-
 ```
 make sim
 ```
 
 ## Compile FPGA 
-
-#Edit FPGA path in Makefile and do:
-
 ```
-source path/to/vivado/settings64.sh
 make fpga
 ```
 
-## Run FPGA
-
-#Ssh to FPGA host:
+## Configure FPGA
 ```
-ssh -Y -C -p <port> <fpga_host>
-```
-
-# Setup console to interact
-
-This tool will automatically load firmware into the FPGA.
-
-```
-cd $HOME/sandbox/iob-soc/
-make ld-sw
-```
-
-# Configure FPGA
-
-Open a new terminal
-
-```
-cd $HOME/sandbox/iob-soc/
-source path/to/vivado/settings64.sh
 make ld-hw
+```
+
+## Configure FPGA
+```
+make ld-sw
 ```
 

@@ -6,13 +6,13 @@ module boot_ctr
   (
    input                      clk,
    input                      rst,
-   output reg                 boot_rst,
+   output reg                 cpu_rst,
    output reg                 boot,
 
    //cpu interface
    input                      cpu_valid,
    input [`DATA_W-1:0]        cpu_wdata,
-   input                      cpu_wstrb,
+   input [`DATA_W/8-1:0]      cpu_wstrb,
    output [`DATA_W-1:0]       cpu_rdata,
    output reg                 cpu_ready,
 
@@ -34,21 +34,25 @@ module boot_ctr
        cpu_ready <= cpu_valid;
        
    //boot register
-   reg                        boot_reg;
    always @(posedge clk, posedge rst)
-     if(rst) begin
+     if(rst)
 `ifdef USE_BOOT
        boot <= 1'b1;
-       boot_reg <= 1'b1;
 `else 
        boot <= 1'b0;
-       boot_reg <= 1'b0;
 `endif
-     end else if( cpu_valid && cpu_wstrb) begin 
+     else if( cpu_valid && cpu_wstrb)
         boot <=  cpu_wdata[0];
-        boot_reg <= boot;
-     end
 
+   //cpu reset request self-clearing register
+   reg                        cpu_rst_req;
+   always @(posedge clk, posedge rst)
+     if(rst)
+       cpu_rst_req <= 1'b0;
+     else if(cpu_valid && cpu_wstrb)
+        cpu_rst_req <=  cpu_wdata[1];
+     else
+        cpu_rst_req <=  1'b0;
 
    //
    // READ BOOT ROM 
@@ -92,12 +96,13 @@ module boot_ctr
    always @(posedge clk, posedge rst)
      if(rst)
 `ifdef USE_BOOT
-       boot_rst <= 1'b1;
+       cpu_rst <= 1'b1;
 `else
-       boot_rst <= 1'b0;
+       cpu_rst <= 1'b0;
 `endif
-     else //reset cpu while sram loading or boot reg deasserted when booting ends
-       boot_rst <= (sram_valid || (!boot && boot_reg));
+     else 
+       //keep cpu reset while sram loading
+       cpu_rst <= (sram_valid || cpu_rst_req);
    
 
    //

@@ -257,7 +257,7 @@ module system
         .rst                  (reset),
 `ifdef USE_BOOT
         .boot                 (boot),
-        .boot_reset           (boot_reset),
+        .cpu_reset            (boot_reset),
  `endif
         // instruction bus
         .i_req                (int_mem_i_req),
@@ -280,12 +280,12 @@ module system
         .rst                  (reset),
 
         // instruction bus
-        .i_req                (int_mem_i_req),
-        .i_resp               (int_mem_i_resp),
+        .i_req                (ext_mem_i_req),
+        .i_resp               (ext_mem_i_resp),
 
         //data bus
-        .d_req                (int_mem_d_req),
-        .d_resp               (int_mem_d_resp),
+        .d_req                (ext_mem_d_req),
+        .d_resp               (ext_mem_d_resp),
 
         //AXI INTERFACE 
         //address write

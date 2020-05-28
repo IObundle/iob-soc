@@ -1,15 +1,13 @@
 [*]
 [*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
-[*] Tue May 26 01:27:38 2020
+[*] Thu May 28 00:55:18 2020
 [*]
-[dumpfile] "/home/jsousa/sandbox/iob-soc/simulation/icarus/system.vcd"
-[dumpfile_mtime] "Tue May 26 01:17:18 2020"
-[dumpfile_size] 47044079
+[dumpfile] "(null)"
 [savefile] "/home/jsousa/sandbox/iob-soc/simulation/icarus/boot_int.gtkw"
-[timestart] 0
+[timestart] 13068000
 [size] 1920 1055
 [pos] -1 -1
-*-23.132835 14260000 14260000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-19.667896 16220000 14260000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] system_tb.
 [treeopen] system_tb.uut.
 [treeopen] system_tb.uut.cpu.
@@ -20,20 +18,10 @@
 [sst_width] 324
 [signals_width] 552
 [sst_expanded] 1
-[sst_vpaned_height] 407
-@28
-system_tb.uut.int_mem0.boot0.rst
-system_tb.uut.int_mem0.boot0.boot
-system_tb.uut.int_mem0.boot0.boot_rst
-system_tb.uut.int_mem0.boot0.rom_r_valid
+[sst_vpaned_height] 422
 @200
 -INT MEM
 @28
-system_tb.uut.int_mem0.boot
-@22
-system_tb.uut.int_mem0.boot_req[68:0]
-@28
-system_tb.uut.int_mem0.boot_reset
 system_tb.uut.int_mem0.clk
 @22
 system_tb.uut.int_mem0.d_req[68:0]
@@ -44,23 +32,17 @@ system_tb.uut.int_mem0.ram_d_req[68:0]
 system_tb.uut.int_mem0.d_req[68:0]
 system_tb.uut.int_mem0.ram_i_req[68:0]
 system_tb.uut.int_mem0.ram_i_resp[32:0]
-system_tb.uut.int_mem0.ram_r_req[68:0]
-system_tb.uut.int_mem0.ram_r_resp[32:0]
-system_tb.uut.int_mem0.ram_w_req[68:0]
-system_tb.uut.int_mem0.ram_w_resp[32:0]
 @28
-system_tb.uut.int_mem0.rst
+system_tb.uut.int_mem0.boot
 @200
 -data bus split
-@28
-system_tb.uut.int_mem0.rambus_demux.s_sel_int[1:0]
-@200
 -BOOT RAM
 @28
 system_tb.uut.int_mem0.boot_ram.i_valid
-@24
+@25
 system_tb.uut.int_mem0.boot_ram.i_addr[10:0]
 @22
+system_tb.uut.int_mem0.boot_ram.i_wdata[31:0]
 system_tb.uut.int_mem0.boot_ram.i_wstrb[3:0]
 system_tb.uut.int_mem0.boot_ram.i_rdata[31:0]
 @28
@@ -70,20 +52,6 @@ system_tb.uut.int_mem0.boot_ram.d_addr[10:0]
 system_tb.uut.int_mem0.boot_ram.d_wdata[31:0]
 @200
 -boot ctr 
-@28
-system_tb.uut.int_mem0.boot0.sram_valid
-@24
-system_tb.uut.int_mem0.boot0.sram_addr[31:0]
-@22
-system_tb.uut.int_mem0.boot0.sram_wdata[31:0]
-system_tb.uut.int_mem0.boot0.sram_wstrb[3:0]
-@28
-system_tb.uut.int_mem0.boot0.rom_r_valid
-@24
-system_tb.uut.int_mem0.boot0.rom_r_addr[9:0]
-@22
-system_tb.uut.int_mem0.boot0.rom_r_rdata[31:0]
-@200
 -SYSTEM
 @22
 system_tb.uut.cpu_i_req[68:0]
@@ -117,9 +85,8 @@ system_tb.uut.cpu.picorv32_core.reg_next_pc[31:0]
 system_tb.uut.cpu.picorv32_core.resetn
 system_tb.uut.cpu.picorv32_core.mem_instr
 system_tb.uut.cpu.picorv32_core.mem_valid
-@24
-system_tb.uut.cpu.picorv32_core.mem_addr[31:0]
 @22
+system_tb.uut.cpu.picorv32_core.mem_addr[31:0]
 system_tb.uut.cpu.picorv32_core.mem_wdata[31:0]
 system_tb.uut.cpu.picorv32_core.mem_wstrb[3:0]
 system_tb.uut.cpu.picorv32_core.mem_rdata[31:0]
@@ -131,9 +98,9 @@ system_tb.uut.cpu.picorv32_core.resetn
 -UART
 @28
 system_tb.uut.uart.valid
-@29
+system_tb.uut.uart.address[2:0]
+system_tb.uut.uart.wstrb
 system_tb.uut.uart.txd
-@28
 system_tb.uut.uart.rxd
 [pattern_trace] 1
 [pattern_trace] 0

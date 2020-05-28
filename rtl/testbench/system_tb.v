@@ -57,11 +57,13 @@ module system_tb;
       //
       cpu_inituart();
 
+`ifdef USE_BOOT
       //sync with target
       do cpu_getchar(cpu_char);
       while (cpu_char != `ENQ); 
       cpu_putchar(`ACK);
-      
+
+      //send firmware
       do begin 
          cpu_getchar(cpu_char);
          if(cpu_char != `ETX)
@@ -73,7 +75,8 @@ module system_tb;
          end
       end while (cpu_char != `ETX); 
 
-     do begin 
+      /* send file back for debug
+      do begin 
          cpu_getchar(cpu_char);
          if(cpu_char != `ETX)
            //print chars until ETX received      
@@ -83,8 +86,24 @@ module system_tb;
             cpu_receivefile();
          end
       end while (cpu_char != `ETX); 
+       */
 
+      //print any received chars
+      do begin 
+         cpu_getchar(cpu_char);
+         $write("%c", cpu_char);
+      end while (cpu_char != `ENQ);
       
+      //terminate connection
+      cpu_putchar(`EOT);
+      
+`endif //  `ifdef USE_BOOT
+      
+      do begin 
+         cpu_getchar(cpu_char);
+         $write("%c", cpu_char);
+      end while (1);
+
    end // test procedure
 
 

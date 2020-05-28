@@ -40,7 +40,7 @@
       file_size = $ftell(fp);
       res = $rewind(fp);
       
-      $write("file_size = %d\n", file_size);
+      $display("File size: %d bytes", file_size);
 
       // Send file size
       cpu_putchar(file_size[7:0]);
@@ -75,7 +75,7 @@
       cpu_getchar(file_size[15:8]);
       cpu_getchar(file_size[23:16]);
       cpu_getchar(file_size[31:24]);
-      $write("file_size = %d\n", file_size);
+      $display("File size: %d bytes", file_size);
       
       k = 0;
       for(i = 0; i < file_size; i++) begin
