@@ -79,11 +79,11 @@ module boot_ctr
         sram_wstrb <= {`DATA_W/8{1'b1}};
      end else begin
         sram_valid <= rom_r_valid;
-        ram_w_addr  <= rom_r_addr + 2**(`SRAM_ADDR_W-2) - 2**(`BOOTROM_ADDR_W-2);
+        ram_w_addr  <= rom_r_addr - 2**(`BOOTROM_ADDR_W-2);
         sram_wstrb <= {`DATA_W/8{rom_r_valid}};
      end
    
-   assign sram_addr = {ram_w_addr, 2'b0};
+   assign sram_addr = ram_w_addr<<2;
    assign sram_wdata = rom_r_rdata;
 
    //

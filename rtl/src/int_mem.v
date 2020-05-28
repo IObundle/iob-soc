@@ -26,7 +26,7 @@ module int_mem
    wire [`RESP_W-1:0]    ram_d_resp;
 
    //modified ram address during boot
-   wire [`SRAM_ADDR_W-3:0] ram_d_addr;
+   wire [`ADDR_W-1:0]    ram_d_addr;
 
 
    ////////////////////////////////////////////////////////
@@ -100,22 +100,26 @@ module int_mem
    wire [`REQ_W-1:0]  ram_r_req;
    wire [`RESP_W-1:0] ram_r_resp;
 
-`define BOOT_OFFSET 2**`SRAM_ADDR_W - 2**`BOOTROM_ADDR_W
+`define BOOT_OFFSET (2**`SRAM_ADDR_W-2**`BOOTROM_ADDR_W)
 
    //
    //modify addresses to run  boot program
    //
-   //instruction bus
+
+   //instruction bus: connect directly but address
    assign ram_r_req[`valid(0)] = i_req[`valid(0)];
    assign ram_r_req[`address(0)] = boot? i_req[`address(0)] + `BOOT_OFFSET : i_req[`address(0)];
    assign ram_r_req[`write(0)] = i_req[`write(0)];
    assign i_resp[`resp(0)] = ram_r_resp[`resp(0)];
-   //data bus
+
+   wire [`ADDR_W-1:0]   addr_diff = ram_r_req[`address(0)] - i_req[`address(0)];
+
+   //data bus: just replace address
    assign ram_d_addr = boot? 
-                       ram_d_req[`section(0, `ADDR_P+`SRAM_ADDR_W-1, `SRAM_ADDR_W-2)] + `BOOT_OFFSET : 
-                       ram_d_req[`section(0, `ADDR_P+`SRAM_ADDR_W-1, `SRAM_ADDR_W-2)];
-`else
-   assign ram_d_req[`address(0)] = d_req[`address(0)]; 
+                       ram_d_req[`section(0, `ADDR_P+`SRAM_ADDR_W-1, `SRAM_ADDR_W)] + `BOOT_OFFSET: 
+                       ram_d_req[`section(0, `ADDR_P+`SRAM_ADDR_W-1, `SRAM_ADDR_W)];
+`else // !`ifdef USE_BOOT: direct conection
+   assign ram_d_req = d_req; 
    assign ram_d_addr = d_req[`section(0, `ADDR_P+`SRAM_ADDR_W-1, `SRAM_ADDR_W-2)];
    assign d_resp = ram_d_resp;
 `endif // !`ifdef USE_BOOT
@@ -129,6 +133,7 @@ module int_mem
    wire [`REQ_W-1:0]     ram_i_req;
    wire [`RESP_W-1:0]    ram_i_resp;
 
+   
    merge #(
 `ifdef USE_BOOT
            .N_MASTERS(2)
@@ -176,7 +181,7 @@ module int_mem
 	     
       //data bus
       .d_valid       (ram_d_req[`valid(0)]),
-      .d_addr        (ram_d_addr),
+      .d_addr        (ram_d_addr[`SRAM_ADDR_W-1:2]),
       .d_wdata       (ram_d_req[`wdata(0)]),
       .d_wstrb       (ram_d_req[`wstrb(0)]),
       .d_rdata       (ram_d_resp[`rdata(0)]),

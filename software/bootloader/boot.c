@@ -2,10 +2,6 @@
 #include "interconnect.h"
 #include "iob-uart.h"
 #include "iob-cache.h"
-#include "console.h"
-
-
-//#define DEBUG  // Uncomment this line for debug printfs
 
 //memory pointer
 #if RUN_DDR == 0 //SRAM
@@ -14,89 +10,35 @@ char *mem = (char *) (1<<BOOTROM_ADDR_W);
 char *mem = (char *) EXTRA_BASE;
 #endif
 
-unsigned int receiveFile() {
-
-  // Send command
-  uart_putc(STX);
-
-  // Send Start to PC
-  uart_putc(STR);
-  
-  // Get file size
-  unsigned int file_size = (unsigned int) uart_getc();
-  file_size |= ((unsigned int) uart_getc()) << 8;
-  file_size |= ((unsigned int) uart_getc()) << 16;
-  file_size |= ((unsigned int) uart_getc()) << 24;
-  
-  // Write file to main memory
-  for (unsigned int i = 0; i < file_size; i++) {
-    mem[i] = uart_getc();
-  }
-  
-  return file_size;
-}
-
-void sendFile(unsigned int file_size) {
-
-  // Send command
-  uart_putc(SRX);
-
-  // Wait for PC
-  while (uart_getc() != STR);
-  
-  // Write file size
-  uart_putc((char)(file_size & 0x0ff));
-  uart_putc((char)((file_size & 0x0ff00) >> 8));
-  uart_putc((char)((file_size & 0x0ff0000) >> 16));
-  uart_putc((char)((file_size & 0x0ff000000) >> 24));
-  
-  // Read file from main memory
-  for (unsigned int i = 0; i < file_size; i++) {
-    uart_putc(mem[i]);
-  }
-  
-  return;
-}
-
 int main() {
-  
-  // Start Communication
+
+  //init uart 
   uart_init(UART_BASE, UART_CLK_FREQ/UART_BAUD_RATE);
-  
-  // Request File
-  uart_puts ("Loading program from UART...\n");
-  
-  unsigned int prog_size = receiveFile();
-  
-  uart_printf("Program size=%d bytes\n", prog_size);
-  
-#ifdef DEBUG
-  uart_puts("Printing program from Main Memory:\n");
-  
-  volatile int *memInt = (volatile int *) 0;
-  for (unsigned int i = 0; i < prog_size/4; i++){
-    uart_printf("%x\n", memInt[i]);
-  }
-  uart_puts("Finished printing the Main Memory program\n");
-#endif
+
+  //sync with host
+  do uart_putc(ENQ);
+  while(uart_getc() != ACK);
+    
+  uart_puts ("\nIObundle Bootloader\n\n");
+
+  uart_putc (ETX);
+
+  //receive program
+  unsigned int prog_size = uart_getfile(mem);
+
+  uart_printf("Program received from host (%d bytes)\n", prog_size);
   
 #ifdef USE_DDR
-  cache_init(MEM_ADDR_W);
+  //wait for cache write buffer to empty
+  cache_init(FIRM_ADDR_W);
   while(!cache_buffer_empty());
 #endif
-    
-  uart_puts("Program loaded\n");
 
-#ifdef DEBUG
-  // Send File
-  uart_puts ("Sending program to UART...\n");
-  
-  sendFile(prog_size, 0);
-  
-  uart_puts("Program sent\n");
-#endif
+  uart_puts ("Sending program back to host...\n");
 
-  uart_txwait();
+  uart_putc (ETX);
+
+  uart_sendfile(prog_size, mem);
   
   RAM_SET(int, BOOTCTR_BASE, 0);
 }

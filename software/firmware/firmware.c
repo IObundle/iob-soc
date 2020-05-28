@@ -5,6 +5,10 @@ int main()
 { 
   uart_init(UART_BASE,UART_CLK_FREQ/UART_BAUD_RATE);   
 
+  //sync with host
+  do uart_putc(ENQ);
+  while(uart_getc() != ACK);
+    
   uart_printf("Hello world!\n");
   //uart_puts("Hello world!\n");
   uart_txwait();

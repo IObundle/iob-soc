@@ -2,7 +2,6 @@
 
 `include "system.vh"
 `include "iob-uart.vh"
-`include "console.vh"
 
 `define SEEK_SET 0
 `define SEEK_CUR 1
@@ -28,7 +27,7 @@ module system_tb;
    reg                    uart_wstrb;
    reg [`DATA_W-1:0]      uart_rdata;
    wire                   uart_ready;
-   
+
    //iterator
    integer   i;
    
@@ -50,31 +49,45 @@ module system_tb;
       repeat (100) @(posedge clk);
       reset <= 0;
 
-      //sync up with reset 
-      repeat (100) @(posedge clk) #1;
+      //wait an arbitray (10) number of cycles 
+      repeat (10) @(posedge clk) #1;
 
       //
       // CONFIGURE UART
       //
       cpu_inituart();
-      
-      do begin
-         cpu_getchar(cpu_char);
-         
-         if (cpu_char == `STX) begin // Send file
-            cpu_sendFile();
-         end else if (cpu_char == `SRX) begin // Receive file
-            $write("File will be written to out.bin\n");
-            cpu_receiveFile();
-         end else if (cpu_char == `EOT) begin // Finish
-            $write("Bye, bye!\n");
-         end else begin
-            $write("%c", cpu_char);
-         end
-      end while (cpu_char != `EOT);
 
+      //sync with target
+      do cpu_getchar(cpu_char);
+      while (cpu_char != `ENQ); 
+      cpu_putchar(`ACK);
+      
+      do begin 
+         cpu_getchar(cpu_char);
+         if(cpu_char != `ETX)
+           //print chars until ETX received      
+           $write("%c", cpu_char);
+         else begin
+            //ETX received, send file
+            cpu_sendfile();
+         end
+      end while (cpu_char != `ETX); 
+
+     do begin 
+         cpu_getchar(cpu_char);
+         if(cpu_char != `ETX)
+           //print chars until ETX received      
+           $write("%c", cpu_char);
+         else begin
+            //ETX received, receive file
+            cpu_receivefile();
+         end
+      end while (cpu_char != `ETX); 
+
+      
    end // test procedure
-   
+
+
    //
    // INSTANTIATE COMPONENTS
    //
@@ -277,7 +290,7 @@ module system_tb;
                  );   
 `endif
 
-`include "iob_uart_cpu_tasks.v"
+`include "cpu_tasks.v"
    
    // finish simulation
    always @(posedge trap)   	 
