@@ -2,6 +2,7 @@
 
 void uart_puts(const char *s) {
   while (*s) uart_putc(*s++);
+  uart_txwait();
 }
 
 void uart_printf(const char* fmt, ...) {
@@ -92,6 +93,7 @@ void uart_printf(const char* fmt, ...) {
     }
   }
   va_end(args);
+  uart_txwait();
 }
 
 

@@ -1,8 +1,9 @@
 //Useful ASCII codes
-`define STX 2
-`define ETX 3
-`define ENQ 5
-`define ACK 6
+`define STX 2 //start of text 
+`define ETX 3 //end of text
+`define EOT 4 //end of transission
+`define ENQ 5 //enquiry
+`define ACK 6 //acklowledge
 
 //Memory map
 `define UART_ADDR_W 3
