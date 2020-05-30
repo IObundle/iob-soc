@@ -79,12 +79,11 @@ module ext_mem
 
    // Instruction cache instance
    iob_cache # (
-                .ADDR_W(`ADDR_W),
+                .ADDR_W(`DDR_ADDR_W),
                 .N_WAYS(2),        //Number of ways
                 .LINE_OFF_W(4),    //Cache Line Offset (number of lines)
                 .WORD_OFF_W(4),    //Word Offset (number of words per line)
                 .WTBUF_DEPTH_W(4), //FIFO's depth
-                .MEM_NATIVE(1),    //Back-end uses Native Interface
                 //Ctrls parameters
                 .CTRL_CNT_ID(0),   //Remove counters with distinct data-instr accesses
                 .CTRL_CNT(1)       //Counters for hits and misses (since previous parameter is 0)
@@ -129,12 +128,11 @@ module ext_mem
 
    // Data cache instance
    iob_cache # (
-                .ADDR_W(`ADDR_W),
+                .ADDR_W(`DDR_ADDR_W),
                 .N_WAYS(2),        //Number of ways
                 .LINE_OFF_W(4),    //Cache Line Offset (number of lines)
                 .WORD_OFF_W(4),    //Word Offset (number of words per line)
                 .WTBUF_DEPTH_W(4), //FIFO's depth
-                .MEM_NATIVE(1),    //Back-end uses Native Interface
                 //Ctrls parameters
                 .CTRL_CNT_ID(0),   //Remove counters with distinct data-instr accesses
                 .CTRL_CNT(1)       //Counters for hits and misses (since previous parameter is 0)
@@ -151,7 +149,8 @@ module ext_mem
            .rdata (dcache_fe_resp[`rdata(0)]),
            .ready (dcache_fe_resp[`ready(0)]),
            .instr (1'b0),
-           .select(dcache_fe_req[`REQ_W+`ADDR_P+`ADDR_W-1]), //so during boot.c the buffer can be checked to see if it's empty, using the MSB of address
+           // .select(dcache_fe_req[`REQ_W+`ADDR_P+`ADDR_W-1]), //so during boot.c the buffer can be checked to see if it's empty, using the MSB of address
+           .select(1'b0), // currently D-cache controllers is unselectable
            // Back-end interface
            .mem_valid (dcache_be_req[`valid(0)]),
            .mem_addr  (dcache_be_req[`address(0)]),
@@ -177,18 +176,22 @@ module ext_mem
                  );
 
    // L2 cache instance
-   iob_cache # (
-                .ADDR_W(`ADDR_W),
-                .N_WAYS(4),        //Number of Ways
-                .LINE_OFF_W(4),    //Cache Line Offset (number of lines)
-                .WORD_OFF_W(4),    //Word Offset (number of words per line)
-                .WTBUF_DEPTH_W(4), //FIFO's depth
-                .MEM_NATIVE(0),    //Back-end uses AXI Interface
-                //Ctrls parameters
-                .CTRL_CNT_ID(0),   //Remove counters with distinct data-instr accesses
-                .CTRL_CNT(1)       //Counters for hits and misses (since previous parameter is 0)
-                )
+   iob_cache_axi # (
+      
+                    .ADDR_W(`DDR_ADDR_W),
+                    .N_WAYS(4),        //Number of Ways
+                    .LINE_OFF_W(4),    //Cache Line Offset (number of lines)
+                    .WORD_OFF_W(4),    //Word Offset (number of words per line)
+                    .WTBUF_DEPTH_W(4), //FIFO's depth
+                    .MEM_ADDR_W (`ADDR_W),
+                    //Ctrls parameters
+                    .CTRL_CNT_ID(0),   //Remove counters with distinct data-instr accesses
+                    .CTRL_CNT(0)       //Remove counters
+                    )
    l2cache (
+            .clk   (clk),
+            .reset (rst),
+      
             // Native interface
             .valid    (l2cache_req[`valid(0)]),
             .addr     (l2cache_req[`address(0)]),
