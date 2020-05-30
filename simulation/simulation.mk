@@ -54,7 +54,7 @@ HW_DEFINE += $(define) USE_BOOT $(define) BOOTROM_ADDR_W=$(BOOTROM_ADDR_W)
 endif
 
 
-HW_DEFINE+=$(define) MEM_ADDR_W=$(MEM_ADDR_W)
+HW_DEFINE+=$(define) DDR_ADDR_W=$(DDR_ADDR_W)
 HW_DEFINE+=$(define) N_SLAVES=$(N_SLAVES)
 HW_DEFINE+=$(define) UART=$(UART)
 
