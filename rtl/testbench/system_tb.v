@@ -255,9 +255,10 @@ module system_tb;
  `else
        .FILE("firmware"),
  `endif
-       .FILE_SIZE(2**(`MEM_ADDR_W-2)),
+    //   .FILE_SIZE(2**(`DDR_ADDR_W-2)),.
+       .FILE_SIZE(2**(`DDR_ADDR_W)),
        .DATA_WIDTH (`DATA_W),
-       .ADDR_WIDTH (`ADDR_W)
+       .ADDR_WIDTH (`DDR_ADDR_W)
        )
    ddr_model_mem(
                  //address write
