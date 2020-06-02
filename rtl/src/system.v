@@ -196,7 +196,7 @@ module system
      .s_req ({pbus_req, int_mem_d_req, ext_mem_d_req}),
      .s_resp({pbus_resp, int_mem_d_resp, ext_mem_d_resp})
   `else
-     .s_sel(cpu_d_req[`section(0, `REQ_W-1, 3]),
+     .s_sel(cpu_d_req[`section(0, `REQ_W-1, 3)]),
      .s_req ({int_mem_d_req, pbus_req, ext_mem_d_req}),
      .s_resp({int_mem_d_resp, pbus_resp, ext_mem_d_resp})  
   `endif 

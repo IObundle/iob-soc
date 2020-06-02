@@ -30,7 +30,7 @@ endif
 
 
 ifeq ($(CPU),DARKRV)
-HW_DEFINE += $(define) ARKRV
+HW_DEFINE += $(define) DARKRV
 endif
 
 ifeq ($(USE_LA_IF),1)
@@ -54,7 +54,7 @@ HW_DEFINE += $(define) USE_BOOT $(define) BOOTROM_ADDR_W=$(BOOTROM_ADDR_W)
 endif
 
 
-HW_DEFINE+=$(define) MEM_ADDR_W=$(MEM_ADDR_W)
+HW_DEFINE+=$(define) DDR_ADDR_W=$(DDR_ADDR_W)
 HW_DEFINE+=$(define) N_SLAVES=$(N_SLAVES)
 HW_DEFINE+=$(define) UART=$(UART)
 
@@ -74,7 +74,7 @@ endif
 ifeq ($(USE_DDR),1)
 DDR_VSRC:=$(SRC_DIR)/ext_mem.v $(CACHE_DIR)/rtl/src/iob-cache.v \
 $(AXI_RAM_DIR)/rtl/axi_ram.v $(MEM_DIR)/reg_file/iob_reg_file.v $(MEM_DIR)/fifo/afifo/afifo.v \
-$(MEM_DIR)/sp_ram_be/iob_sp_ram_be.v
+$(MEM_DIR)/sp_ram/iob_sp_mem.v
 endif
 
 ifeq ($(USE_BOOT),1)
