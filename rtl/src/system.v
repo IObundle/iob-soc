@@ -134,7 +134,7 @@ module system
            .N_SLAVES(1)
 `endif
            )
-   ibus_demux
+   ibus_split
      (
       // master interface
       .m_req  (cpu_i_req),
@@ -177,7 +177,7 @@ module system
        .N_SLAVES(2)
 `endif
        )
-   dbus_demux    
+   dbus_split    
      (
      // master interface
      .m_req (cpu_d_req),
@@ -197,8 +197,8 @@ module system
      .s_resp({pbus_resp, int_mem_d_resp, ext_mem_d_resp})
   `else
      .s_sel(cpu_d_req[`section(0, `REQ_W-1, 3)]),
-     .s_req ({int_mem_d_req, pbus_req, ext_mem_d_req}),
-     .s_resp({int_mem_d_resp, pbus_resp, ext_mem_d_resp})  
+     .s_req ({ext_mem_d_req, pbus_req, int_mem_d_req}),
+     .s_resp({ext_mem_d_resp, pbus_resp, int_mem_d_resp})  
   `endif 
  `endif
 `elsif USE_SRAM //using SRAM only 
@@ -221,13 +221,11 @@ module system
    wire [`N_SLAVES*`REQ_W-1:0] slaves_req;
    wire [`N_SLAVES*`RESP_W-1:0] slaves_resp;
 
-   
-   // peripheral demux
    split 
        #(
          .N_SLAVES(`N_SLAVES)
          )
-   pbus_demux
+   pbus_split
        (
         // master interface
         .m_req(pbus_req),

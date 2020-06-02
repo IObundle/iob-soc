@@ -110,8 +110,8 @@ ifeq ($(USE_BOOT),1)
 	$(PYTHON_DIR)/hex_split.py boot
 endif
 
-console.vh: $(ROOT_DIR)/software/ld-sw/console.h
-	sed "s/\#/\`/;s/0x/8\'h/" $^ | sed "/CONSOLE_H\|endif/d" > $@
+#console.vh: $(ROOT_DIR)/software/ld-sw/console.h
+#	sed "s/\#/\`/;s/0x/8\'h/" $^ | sed "/CONSOLE_H\|endif/d" > $@
 
 ifeq ($(SIM_DIR),simulation/icarus)
 sim_clean:=icarus_clean

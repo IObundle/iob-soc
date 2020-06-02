@@ -253,9 +253,9 @@ module system_tb;
  `ifdef USE_BOOT
        .FILE("none"),
  `else
-       .FILE("firmware"),
+       .FILE("firmware.hex"),
  `endif
-       .FILE_SIZE(2**`DDR_ADDR_W),
+       .FILE_SIZE(2**(`DDR_ADDR_W-2)),
        .DATA_WIDTH (`DATA_W),
        .ADDR_WIDTH (`DDR_ADDR_W)
        )

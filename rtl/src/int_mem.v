@@ -161,10 +161,10 @@ module int_mem
    // INSTANTIATE RAM
    //
    ram #(
-`ifdef USE_BOOT
-         .FILE("none")
-`else
+`ifndef USE_BOOT
+ `ifndef RUN_DDR
          .FILE("firmware")
+ `endif
 `endif
 	 )
    boot_ram 
