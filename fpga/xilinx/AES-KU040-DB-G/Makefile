@@ -1,31 +1,59 @@
-RTL_DIR := ../../../rtl
-RISCV_DIR := ../../../submodules/iob-rv32
-UART_DIR := ../../../submodules/iob-uart
-MEM_DIR := ../../../submodules/iob-mem/tdp_mem
-FIRM_DIR := ../../../software/firmware
-BOOT_DIR := ../../../software/bootloader
-LD_SW_DIR := ../../../software/ld-sw
-PYTHON_DIR := ../../../software/python
-ALTERA_DIR := ../../intel/CYCLONEV-GT-DK
+# File paths
+ROOT_DIR := ../../..
+RTL_DIR := $(ROOT_DIR)/rtl
+FIRM_DIR := $(ROOT_DIR)/software/firmware
+BOOT_DIR := $(ROOT_DIR)/software/bootloader
+LD_SW_DIR := $(ROOT_DIR)/software/ld-sw
+PYTHON_DIR := $(ROOT_DIR)/software/python
 
-REMOTE := ${USER}@iobundle.ddns.net:sandbox/iob-soc/fpga/xilinx/AES-KU040-DB-G
-PORT := -P 1418
+SUBMODULES_DIR := $(ROOT_DIR)/submodules
+RISCV_DIR := $(SUBMODULES_DIR)/picorv32
+UART_DIR := $(SUBMODULES_DIR)/uart
+MEM_DIR := $(SUBMODULES_DIR)/mem
+CACHE_DIR := $(SUBMODULES_DIR)/cache
+AXI_RAM_DIR := $(SUBMODULES_DIR)/axi-mem
+INTERCON_DIR := $(SUBMODULES_DIR)/interconnect
+
+REMOTE := ${USER}@146.193.44.179:sandbox/iob-soc/fpga/xilinx/AES-KU040-DB-G
 
 BAUD := 115200
 FREQ := 100000000
 
-ifneq ($(shell grep USE_DDR $(RTL_DIR)/include/system.vh | grep -v "//" | grep -v ifdef),)
-USE_DDR = USE_DDR
+#hw defines
+include $(ROOT_DIR)/system.mk
+
+ifeq ($(USE_SRAM),1)
+RAM_VSRC:=$(RTL_DIR)/src/int_mem.v $(RTL_DIR)/src/ram.v $(MEM_DIR)/tdp_ram/iob_tdp_ram.v
 endif
 
-VSRC = verilog/top_system.v $(RTL_DIR)/include/*.vh $(RTL_DIR)/src/memory/*.v $(RTL_DIR)/src/*.v $(RISCV_DIR)/picorv32.v $(UART_DIR)/rtl/src/iob-uart.v $(MEM_DIR)/*.v $(ALTERA_DIR)/alt_ram.v
+ifeq ($(USE_DDR),1)
+DDR_VSRC:=$(RTL_DIR)/src/ext_mem.v $(CACHE_DIR)/rtl/src/iob-cache.v \
+$(AXI_RAM_DIR)/rtl/axi_ram.v $(MEM_DIR)/reg_file/iob_reg_file.v $(MEM_DIR)/fifo/afifo/afifo.v \
+$(MEM_DIR)/sp_ram/iob_sp_mem.v
+endif
+
+ifeq ($(USE_BOOT),1)
+ROM_VSRC$:=$(MEM_DIR)/sp_rom/sp_rom.v $(RTL_DIR)/src/boot_ctr.v
+endif
+
+#hardware sources
+VSRC = \
+verilog/top_system.v \
+$(RTL_DIR)/include/*.vh \
+$(RTL_DIR)/src/system.v \
+$(RISCV_DIR)/picorv32.v \
+$(RISCV_DIR)/iob_picorv32.v \
+$(UART_DIR)/rtl/src/iob-uart.v \
+$(INTERCON_DIR)/rtl/src/merge.v \
+$(INTERCON_DIR)/rtl/src/split.v \
+$(ROM_VSRC) $(RAM_VSRC) $(DDR_VSRC)
 
 # work-around for http://svn.clifford.at/handicraft/2016/vivadosig11
 export RDI_VERBOSE = False
 
 all: firmware.dat synth_system.bit
-	scp $(PORT) synth_system.bit $(REMOTE)
-	scp $(PORT) firmware*.dat $(REMOTE)
+	scp synth_system.bit $(REMOTE)
+	scp firmware*.dat $(REMOTE)
 
 synth_system.bit: *.xdc $(VSRC) boot.dat
 	rm -f $@.log
@@ -55,7 +83,7 @@ ld-sw:
 	make -C $(LD_SW_DIR)
 
 clean:
-	@rm -rf .Xil/ *.dat *.bin *.map
+	@rm -rf .Xil/ *.hex *.dat *.bin *.map
 	@rm -rf *~ \#*# *#  ../rtl/*~ ../rtl/\#*# ../rtl/*# ./rtl/
 	@rm -rf synth_*.mmi synth_*.bit synth_system*.v *.vcd *_tb 
 	@rm -rf table.txt tab_*/ *webtalk* *.jou *.log

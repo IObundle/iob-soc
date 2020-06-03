@@ -25,7 +25,6 @@ SRC+= firmware.S firmware.c
 firmware.elf: ../template.lds ../system.h  $(SRC)
 	$(TOOLCHAIN_PREFIX)gcc -o $@ $(CFLAGS) $(DEFINE) $(INCLUDE) $(SRC) -lgcc -lc
 	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
-	echo $(FIRM_ADDR_W) $(RUN_DDR) $(DDR_ADDR_W)
 	$(PYTHON_DIR)/makehex.py firmware.bin $(FIRM_ADDR_W) > firmware.hex
 
 clean:
