@@ -162,8 +162,12 @@ module int_mem
    //
    ram #(
 `ifndef USE_BOOT
- `ifndef RUN_DDR
+ `ifndef USE_DDR
          .FILE("firmware")
+ `else
+  `ifndef RUN_DDR
+         .FILE("firmware")
+  `endif
  `endif
 `endif
 	 )

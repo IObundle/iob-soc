@@ -34,8 +34,12 @@ module ram #(
          iob_tdp_ram
                #(
 `ifndef USE_BOOT
- `ifndef RUN_DDR
+ `ifndef USE_DDR
 	         .MEM_INIT_FILE({FILE, "_", file_suffix[8*(i+1)-1 -: 8], ".dat"}),
+ `else
+  `ifndef RUN_DDR
+	         .MEM_INIT_FILE({FILE, "_", file_suffix[8*(i+1)-1 -: 8], ".dat"}),
+  `endif
  `endif
 `endif
 	         .DATA_W(8),

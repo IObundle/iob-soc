@@ -5,9 +5,14 @@ CFLAGS+=--std=gnu99 -Wl,-Bstatic,-T,../template.lds,-Map,firmware.map,--strip-de
 
 #additional defines 
 DEFINE+=-DUSE_SRAM=$(USE_SRAM) -DUSE_DDR=$(USE_DDR)
+ifeq ($(USE_DDR),1)
 ifeq ($(RUN_DDR),1)
 DEFINE+=-DFIRM_ADDR_W=$(DDR_ADDR_W)
 FIRM_ADDR_W=$(DDR_ADDR_W)
+else
+DEFINE+=-DFIRM_ADDR_W=$(SRAM_ADDR_W)
+FIRM_ADDR_W=$(SRAM_ADDR_W)
+endif
 else
 DEFINE+=-DFIRM_ADDR_W=$(SRAM_ADDR_W)
 FIRM_ADDR_W=$(SRAM_ADDR_W)

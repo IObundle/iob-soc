@@ -145,10 +145,16 @@ module system
       .s_sel ({1'b0, ~boot}),
       .s_req ({ext_mem_i_req, int_mem_i_req}),
       .s_resp ({ext_mem_i_resp, 0), int_mem_i_resp})
-`elsif RUN_DDR //connect to DDR always, no boot, simulation only
-      .s_sel (1'b0),
-      .s_req (ext_mem_i_req),
-      .s_resp (ext_mem_i_resp)
+`elsif USE_DDR
+ `ifdef RUN_DDR //connect to DDR always, no boot, simulation only
+     .s_sel (1'b0),
+     .s_req (ext_mem_i_req),
+     .s_resp (ext_mem_i_resp)
+ `else //DDR data memory only, connect to SRAM always
+      .s_sel (1'b0), 
+      .s_req (int_mem_i_req),
+      .s_resp (int_mem_i_resp)
+ `endif
 `else //connect to SRAM always
       .s_sel (1'b0), 
       .s_req (int_mem_i_req),
@@ -185,7 +191,7 @@ module system
 
      // slaves interface
 
-`ifdef USE_SRAM_DDR
+`ifdef USE_SRAM_DDR //both memories
  `ifndef RUN_DDR //running from SRAM, using DDR as extra 
      .s_sel(cpu_d_req[`section(0, `REQ_W-1, 3)]),
      .s_req ({ext_mem_d_req, pbus_req, int_mem_d_req}),
@@ -206,7 +212,7 @@ module system
      .s_req ({pbus_req, int_mem_d_req}),
      .s_resp({pbus_resp, int_mem_d_resp})
 `else //using DDR only (for simulation)
-     .s_sel(cpu_d_req[`section(0, `REQ_W-1, 2)]),
+     .s_sel(cpu_d_req[`section(0, `REQ_W-2, 2)]),
      .s_req ({pbus_req, ext_mem_d_req}),
      .s_resp({pbus_resp, ext_mem_d_resp})
 `endif
@@ -232,9 +238,9 @@ module system
         .m_resp(pbus_resp),
         
         // slaves interface
-`ifdef USE_SRAM_DDR //MSB is right shifted
+`ifdef USE_SRAM_DDR //MSB is `REQ_W-3
         .s_sel(pbus_req[`section(0, `REQ_W-2, `N_SLAVES_W+1)]),
-`else //using one memory only sectio
+`else //using one memory only
         .s_sel(pbus_req[`section(0,  `REQ_W-1, `N_SLAVES_W+1)]),
 `endif
         .s_req(slaves_req),
