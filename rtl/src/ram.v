@@ -33,10 +33,14 @@ module ram #(
       for (i = 0; i < 4; i = i+1) begin : gen_main_mem_byte
          iob_tdp_ram
                #(
-`ifdef USE_BOOT
-	         .MEM_INIT_FILE(FILE),
-`else 
+`ifndef USE_BOOT
+ `ifndef USE_DDR
 	         .MEM_INIT_FILE({FILE, "_", file_suffix[8*(i+1)-1 -: 8], ".dat"}),
+ `else
+  `ifndef RUN_DDR
+	         .MEM_INIT_FILE({FILE, "_", file_suffix[8*(i+1)-1 -: 8], ".dat"}),
+  `endif
+ `endif
 `endif
 	         .DATA_W(8),
                  .ADDR_W(`SRAM_ADDR_W-2))

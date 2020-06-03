@@ -7,7 +7,7 @@ include ../simulation.mk
 VLOG = iverilog -W all -g2005-sv $(HW_DEFINE) $(TB_DEFINE) $(HW_INCLUDE)
 
 #run the simulator
-run: $(VSRC) console.vh firmware boot
+run: $(VSRC) firmware boot
 	$(VLOG) $(VSRC)
 	./a.out
 

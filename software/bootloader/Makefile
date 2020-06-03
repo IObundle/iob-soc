@@ -1,4 +1,4 @@
-include ../embedded.mk
+include ../software.mk
 
 #additional flags
 CFLAGS+=-Wl,-Bstatic,-T,../template.lds,-Map,boot.map,--strip-debug
