@@ -3,10 +3,6 @@
 `include "system.vh"
 `include "iob-uart.vh"
 
-`define SEEK_SET 0
-`define SEEK_CUR 1
-`define SEEK_END 2
-
 module system_tb;
 
    //clock
@@ -250,10 +246,10 @@ module system_tb;
 `ifdef USE_DDR
    axi_ram 
      #(
- `ifdef USE_BOOT
-       .FILE("none"),
- `else
+ `ifndef USE_BOOT
+  `ifdef RUN_DDR
        .FILE("firmware.hex"),
+  `endif
  `endif
        .FILE_SIZE(2**(`DDR_ADDR_W-2)),
        .DATA_WIDTH (`DATA_W),
