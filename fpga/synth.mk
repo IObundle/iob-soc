@@ -1,18 +1,18 @@
 # File paths
-ROOT_DIR := ../../..
-RTL_DIR := $(ROOT_DIR)/rtl
-FIRM_DIR := $(ROOT_DIR)/software/firmware
-BOOT_DIR := $(ROOT_DIR)/software/bootloader
-LD_SW_DIR := $(ROOT_DIR)/software/ld-sw
-PYTHON_DIR := $(ROOT_DIR)/software/python
+ROOT_DIR:=../../..
+RTL_DIR:=$(ROOT_DIR)/rtl
+FIRM_DIR:=$(ROOT_DIR)/software/firmware
+BOOT_DIR:=$(ROOT_DIR)/software/bootloader
+LD_SW_DIR:=$(ROOT_DIR)/software/ld-sw
+PYTHON_DIR:=$(ROOT_DIR)/software/python
 
-SUBMODULES_DIR := $(ROOT_DIR)/submodules
-RISCV_DIR := $(SUBMODULES_DIR)/picorv32
-UART_DIR := $(SUBMODULES_DIR)/uart
-MEM_DIR := $(SUBMODULES_DIR)/mem
-CACHE_DIR := $(SUBMODULES_DIR)/cache
-AXI_RAM_DIR := $(SUBMODULES_DIR)/axi-mem
-INTERCON_DIR := $(SUBMODULES_DIR)/interconnect
+SUBMODULES_DIR:=$(ROOT_DIR)/submodules
+RISCV_DIR:=$(SUBMODULES_DIR)/picorv32
+UART_DIR:=$(SUBMODULES_DIR)/uart
+MEM_DIR:=$(SUBMODULES_DIR)/mem
+CACHE_DIR:=$(SUBMODULES_DIR)/cache
+AXI_RAM_DIR:=$(SUBMODULES_DIR)/axi-mem
+INTERCON_DIR:=$(SUBMODULES_DIR)/interconnect
 
 #hw defines
 include $(ROOT_DIR)/system.mk
@@ -30,7 +30,7 @@ HW_DEFINE += $(define) USE_LA_IF
 endif
 
 ifeq ($(USE_SRAM),1)
-HW_DEFINE += $(define) USE_SRAM $(define) SRAM_ADDR_W=$(SRAM_ADDR_W)
+HW_DEFINE += $(define) USE_SRAM $(define) SRAM_ADDR_W $(SRAM_ADDR_W)
 endif
 
 ifeq ($(USE_DDR),1)
@@ -42,12 +42,12 @@ HW_DEFINE += $(define) RUN_DDR
 endif
 
 ifeq ($(USE_BOOT),1)
-HW_DEFINE += $(define) USE_BOOT $(define) BOOTROM_ADDR_W=$(BOOTROM_ADDR_W)
+HW_DEFINE += $(define) USE_BOOT $(define) BOOTROM_ADDR_W $(BOOTROM_ADDR_W)
 endif
 
-HW_DEFINE+=$(define) DDR_ADDR_W=$(DDR_ADDR_W)
-HW_DEFINE+=$(define) N_SLAVES=$(N_SLAVES)
-HW_DEFINE+=$(define) UART=$(UART)
+HW_DEFINE+=$(define) DDR_ADDR_W $(DDR_ADDR_W)
+HW_DEFINE+=$(define) N_SLAVES $(N_SLAVES)
+HW_DEFINE+=$(define) UART $(UART)
 
 #hw includes
 HW_INCLUDE := $(incdirs) . $(RTL_DIR)/include $(UART_DIR)/rtl/include \
@@ -69,8 +69,8 @@ endif
 
 #hardware sources
 VSRC = \
+defs.vh \
 verilog/top_system.v \
-$(RTL_DIR)/include/*.vh \
 $(RTL_DIR)/src/system.v \
 $(RISCV_DIR)/picorv32.v \
 $(RISCV_DIR)/iob_picorv32.v \
