@@ -86,7 +86,7 @@ module ext_mem
                 .WTBUF_DEPTH_W(4), //FIFO's depth
                 //Ctrls parameters
                 .CTRL_CNT_ID(0),   //Remove counters with distinct data-instr accesses
-                .CTRL_CNT(1)       //Counters for hits and misses (since previous parameter is 0)
+                .CTRL_CNT(0)       //Removes counters - Needed to find a way to access the icache controller (using c-drive ctrl functions will always result in the access of dcache) - Change this to 1 when solution found.
                 )
    icache (
            .clk   (clk),
@@ -94,17 +94,16 @@ module ext_mem
 
            // Front-end interface
            .valid (icache_fe_req[`valid(0)]),
-           .addr  (icache_fe_req[`section(0, `ADDR_P+`DDR_ADDR_W-1,`DDR_ADDR_W)]),
+           .addr  (icache_fe_req[`address(0)]),
            .wdata (icache_fe_req[`wdata(0)]),
            .wstrb (icache_fe_req[`wstrb(0)]),
            .rdata (icache_fe_resp[`rdata(0)]),
            .ready (icache_fe_resp[`ready(0)]),
            //Currently unused ports
            .instr(1'b0),
-           .select(1'b0), // currently I-cache controllers is unselectable
            // Back-end interface
            .mem_valid (icache_be_req[`valid(0)]),
-           .mem_addr  (icache_be_req[`section(0, `ADDR_P+`DDR_ADDR_W-1,`DDR_ADDR_W)]),
+           .mem_addr  (icache_be_req[`address(0)]),
            .mem_wdata (icache_be_req[`wdata(0)]),
            .mem_wstrb (icache_be_req[`wstrb(0)]),
            .mem_rdata (icache_be_resp[`rdata(0)]),
@@ -143,17 +142,15 @@ module ext_mem
 
            // Front-end interface
            .valid (dcache_fe_req[`valid(0)]),
-           .addr  (dcache_fe_req[`section(0, `ADDR_P+`DDR_ADDR_W-1,`DDR_ADDR_W)]),
+           .addr  (dcache_fe_req[`address(0)]),
            .wdata (dcache_fe_req[`wdata(0)]),
            .wstrb (dcache_fe_req[`wstrb(0)]),
            .rdata (dcache_fe_resp[`rdata(0)]),
            .ready (dcache_fe_resp[`ready(0)]),
            .instr (1'b0),
-           // .select(dcache_fe_req[`REQ_W+`ADDR_P+`ADDR_W-1]), //so during boot.c the buffer can be checked to see if it's empty, using the MSB of address
-           .select(1'b0), // currently D-cache controllers is unselectable
            // Back-end interface
            .mem_valid (dcache_be_req[`valid(0)]),
-           .mem_addr  (dcache_be_req[`section(0, `ADDR_P+`DDR_ADDR_W-1,`DDR_ADDR_W)]),
+           .mem_addr  (dcache_be_req[`address(0)]),
            .mem_wdata (dcache_be_req[`wdata(0)]),
            .mem_wstrb (dcache_be_req[`wstrb(0)]),
            .mem_rdata (dcache_be_resp[`rdata(0)]),
@@ -194,13 +191,12 @@ module ext_mem
       
             // Native interface
             .valid    (l2cache_req[`valid(0)]),
-            .addr     (l2cache_req[`section(0, `ADDR_P+`DDR_ADDR_W-1,`DDR_ADDR_W)]),
+            .addr     (l2cache_req[`address(0)]),
             .wdata    (l2cache_req[`wdata(0)]),
             .wstrb    (l2cache_req[`wstrb(0)]),
             .rdata    (l2cache_resp[`rdata(0)]),
             .ready    (l2cache_resp[`ready(0)]),
             .instr    (1'b0),
-            .select   (1'b0),
             // AXI interface
             // Address write
             .axi_awid(axi_awid), 

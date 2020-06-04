@@ -11,9 +11,9 @@ SRAM_ADDR_W:=13
 
 #Define DDR
 USE_DDR:=1
-DDR_ADDR_W:=15
+DDR_ADDR_W:=13
 #runs from DDR if 1, from SRAM if 0
-RUN_DDR:=0
+RUN_DDR:=1
 
 #Define booting
 USE_BOOT:=0
