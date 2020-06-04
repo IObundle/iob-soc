@@ -4,7 +4,7 @@
 #include <unistd.h>  /* UNIX Standard Definitions 	       */ 
 #include <errno.h>   /* ERROR Number Definitions           */
 #include <time.h>
-#include "console.h"
+#include "iob-uart.h"
 
 #define WAIT_FOR_RISCV 20000
 
@@ -38,13 +38,6 @@ int sendFile(int serial_fd, char *name) {
   printf("\nStarting File '%s' Transfer...\n", name);
   printf("file_size = %u\n", file_size);
   begin = clock();
-  
-  /* Wait for RISC-V */
-  do {
-    do {
-      nbytes = (int) read(serial_fd, &byte, 1);
-    } while (nbytes <= 0);
-  } while (byte != STR);
   
   /* Send file size */
   nbytes = (int) write(serial_fd, &file_size, 4);
@@ -103,13 +96,6 @@ int receiveFile(int serial_fd, char *name) {
   
   printf("\nStarting File '%s' Transfer...\n", name);  
   begin = clock();
-  
-  /* Send Start to RISC-V */
-  byte = STR;
-  nbytes = (int) write(serial_fd, &byte, 1);
-  if (nbytes == -1) {
-    printf("receiveFile: Failed to send data\n");
-  }
   
   /* Get file size */
   for (i = 0; i < 4; i++) {
@@ -253,7 +239,7 @@ int openSerialPort(char *serialPort) {
 
 void usage(char *message) {
   printf("usage: %s\n", message);
-  printf("       ./console -s <serial port> -f <file>\n");
+  printf("       ./console -s <serial port>\n");
   return;
 }
 
@@ -266,7 +252,7 @@ int main(int argc, char* argv[]) {
   char c;
   int nbytes;
   
-  if (argc < 5) {
+  if (argc < 3) {
     usage("Missing arguments");
     return -1;
   }
@@ -275,8 +261,9 @@ int main(int argc, char* argv[]) {
     if (argv[i][0] == '-') {
       if (argv[i][1] == 's') {
         serialPort = argv[++i];
-      } else if (argv[i][1] == 'f') {
-        file = argv[++i];
+      } else {
+        usage("Unexpected argument");
+        return -1;
       }
     } else {
       usage("Unexpected argument");
@@ -289,23 +276,76 @@ int main(int argc, char* argv[]) {
     return -1;
   }
   
+#if USE_BOOT == 1
+  /* Sync with target */
+  do {
+    do {
+      nbytes = (int) read(serial_fd, &byte, 1);
+    } while (nbytes <= 0);
+  } while (byte != ENQ);
+  c = ACK;
+  nbytes = (int) write(serial_fd, &c, 1);
+  if (nbytes == -1) {
+    printf("console: Failed to send Ack\n");
+  }
+  
+  /* Send firmware */
   while (1) {
     do {
       nbytes = (int) read(serial_fd, &c, 1);
     } while (nbytes <= 0);
     
-    if (c == STX) { /* Send file */
-      sendFile(serial_fd, file);
-    } else if (c == SRX) { /* Receive file */
-      printf("Please, insert a name for a file:");
-      scanf("%s", fileOut);
-      receiveFile(serial_fd, fileOut);
-    } else if (c == EOT) { /* Finish */
-      printf("Bye, bye!\n");
+    if (c == ETX) { /* Finish */
       break;
-    } else { /* Print string */
+    } else { /* Print char */
       printf("%c", c);
     }
+  }
+  sendFile(serial_fd, "firmware.bin");
+  
+  /* Send file back for debug */
+  /*while (1) {
+    do {
+      nbytes = (int) read(serial_fd, &c, 1);
+    } while (nbytes <= 0);
+    
+    if (c == ETX) { // Finish
+      break;
+    } else { // Print char
+      printf("%c", c);
+    }
+  }
+  receiveFile(serial_fd, "out.bin");*/
+  
+  /* Print any received chars */
+  while (1) {
+    do {
+      nbytes = (int) read(serial_fd, &c, 1);
+    } while (nbytes <= 0);
+    
+    if (c == ENQ) { /* Finish */
+      printf("Bye, bye!\n");
+      break;
+    } else { /* Print char */
+      printf("%c", c);
+    }
+  }
+  
+  /* Terminate connection */
+  c = EOT;
+  nbytes = (int) write(serial_fd, &c, 1);
+  if (nbytes == -1) {
+    printf("console: Failed to send EOT\n");
+  }
+#endif
+  
+  while (1) {
+    do {
+      nbytes = (int) read(serial_fd, &c, 1);
+    } while (nbytes <= 0);
+    
+    /* Print char */
+    printf("%c", c);
   }
   
   close(serial_fd);

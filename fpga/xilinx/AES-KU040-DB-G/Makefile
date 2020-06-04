@@ -1,36 +1,23 @@
-RTL_DIR := ../../../rtl
-RISCV_DIR := ../../../submodules/iob-rv32
-UART_DIR := ../../../submodules/iob-uart
-MEM_DIR := ../../../submodules/iob-mem/tdp_mem
-FIRM_DIR := ../../../software/firmware
-BOOT_DIR := ../../../software/bootloader
-LD_SW_DIR := ../../../software/ld-sw
-PYTHON_DIR := ../../../software/python
-ALTERA_DIR := ../../intel/CYCLONEV-GT-DK
+define := -verilog_define
+incdirs := -include_dirs
 
-REMOTE := ${USER}@iobundle.ddns.net:sandbox/iob-soc/fpga/xilinx/AES-KU040-DB-G
-PORT := -P 1418
+include ../../synth.mk
 
 BAUD := 115200
 FREQ := 100000000
 
-ifneq ($(shell grep USE_DDR $(RTL_DIR)/include/system.vh | grep -v "//" | grep -v ifdef),)
-USE_DDR = USE_DDR
-endif
-
-VSRC = verilog/top_system.v $(RTL_DIR)/include/*.vh $(RTL_DIR)/src/memory/*.v $(RTL_DIR)/src/*.v $(RISCV_DIR)/picorv32.v $(UART_DIR)/rtl/src/iob-uart.v $(MEM_DIR)/*.v $(ALTERA_DIR)/alt_ram.v
+REMOTE := ${USER}@146.193.44.179:sandbox/iob-soc/fpga/xilinx/AES-KU040-DB-G
 
 # work-around for http://svn.clifford.at/handicraft/2016/vivadosig11
 export RDI_VERBOSE = False
 
 all: firmware.dat synth_system.bit
-	scp $(PORT) synth_system.bit $(REMOTE)
-	scp $(PORT) firmware*.dat $(REMOTE)
+	scp synth_system.bit $(REMOTE)
+	scp firmware*.dat $(REMOTE)
 
 synth_system.bit: *.xdc $(VSRC) boot.dat
 	rm -f $@.log
-	echo $(USE_DDR)
-	./run_vivado.sh $(USE_DDR)
+	./run_vivado.sh $(USE_DDR) $(HW_INCLUDE) $(HW_DEFINE) $(VSRC)
 	-grep -B4 -A10 'CLB LUTs' vivado.log
 	-grep -B1 -A9 ^Slack vivado.log && echo
 
@@ -55,7 +42,7 @@ ld-sw:
 	make -C $(LD_SW_DIR)
 
 clean:
-	@rm -rf .Xil/ *.dat *.bin *.map
+	@rm -rf .Xil/ *.hex *.dat *.bin *.map
 	@rm -rf *~ \#*# *#  ../rtl/*~ ../rtl/\#*# ../rtl/*# ./rtl/
 	@rm -rf synth_*.mmi synth_*.bit synth_system*.v *.vcd *_tb 
 	@rm -rf table.txt tab_*/ *webtalk* *.jou *.log

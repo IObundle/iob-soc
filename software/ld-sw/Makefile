@@ -1,3 +1,5 @@
+include ../../system.mk
+
 FW_DIR := ../firmware
 FW := firmware
 
@@ -8,9 +10,16 @@ FREQ := 100000000
 CC := gcc
 CFLAGS := -g -Wall -pedantic
 
+SUBMODULES_DIR := ../../submodules
+UART_DIR := $(SUBMODULES_DIR)/uart/software
+
+DEFINE := -DUSE_BOOT=$(USE_BOOT)
+
+INCLUDE := -I.. -I$(UART_DIR)/common
+
 TRGT := console
 CSRCS := console.c
-CHDRS := console.h
+CHDRS := iob-uart.h
 
 USERNAME := $(shell pgrep console | xargs -r ps -o uname= -p)
 
@@ -23,13 +32,13 @@ $(FW).bin: $(FW_DIR)/$(FW).bin
 	cp $^ .
 
 $(TRGT): $(CSRCS) $(CHDRS)
-	$(CC) $(CFLAGS) $(CSRCS) -o $@
+	$(CC) $(CFLAGS) $(DEFINE) $(INCLUDE) $(CSRCS) -o $@
 
 run: $(TRGT) $(FW).bin
 ifneq ($(USERNAME),)
 	@echo "FPGA is being used by $(USERNAME)"
 else
-	./$(TRGT) -s $(SERIAL) -f $(FW).bin
+	./$(TRGT) -s $(SERIAL)
 endif
 
 clean:

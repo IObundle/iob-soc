@@ -4,7 +4,6 @@ include ../software.mk
 CFLAGS+=-Wl,-Bstatic,-T,../template.lds,-Map,boot.map,--strip-debug
 
 #additional paths
-CONSOLE_DIR:=../ld-sw
 CACHE_DIR:=$(SUBMODULES_DIR)/cache/c-driver
 
 #additional defines
@@ -13,7 +12,7 @@ DEFINE+=-DBOOTROM_ADDR_W=$(BOOTROM_ADDR_W) -DBOOT_CTR=$(BOOT_CTR)
 DEFINE+=-DFIRM_ADDR_W=$(SRAM_ADDR_W)
 
 #additional includes
-INCLUDE+=-I$(CACHE_DIR) -I$(CONSOLE_DIR)
+INCLUDE+=-I$(CACHE_DIR)
 
 #additional includes
 SRC+=boot.S boot.c $(CACHE_DIR)/iob-cache.c 
