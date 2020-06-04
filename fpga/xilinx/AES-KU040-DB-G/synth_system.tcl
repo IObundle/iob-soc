@@ -2,10 +2,12 @@
 # SYNTHESIS AND IMPLEMENTATION SCRIPT
 #
 
-#include
-read_verilog ../../../rtl/include/system.vh
-read_verilog ../../../submodules/interconnect/rtl/include/interconnect.vh
-read_verilog ../../../submodules/uart/rtl/include/iob-uart.vh
+set TOP top_system
+set PART xcku040-fbva676-1-c
+
+set FILES_LIST {VSRC}
+
+#foreach file $FILES_LIST {read_verilog $file}
 
 #clock
 if { [lindex $argv 0] != {USE_DDR} } {
@@ -30,13 +32,11 @@ read_verilog ../../../rtl/src/ram.v
 read_verilog ../../../rtl/src/ext_mem.v
 read_verilog ../../../submodules/mem/tdp_ram/iob_tdp_ram.v
 
-set_property part xcku040-fbva676-1-c [current_project]
+#set_property part $PART [current_project]
 
 if { [lindex $argv 0] == {USE_DDR} } {
     
-    read_verilog ../../../submodules/mem/fifo/fifo.vh
     read_verilog ../../../submodules/mem/fifo/afifo/afifo.v
-    read_verilog ../../../submodules/cache/rtl/header/iob-cache.vh
     read_verilog ../../../submodules/cache/rtl/src/iob-cache.v
     read_verilog ../../../submodules/cache/rtl/src/gen_mem_reg.v
 
@@ -93,7 +93,7 @@ if { [lindex $argv 0] == {USE_DDR} } {
 
 read_xdc ./synth_system.xdc
 
-synth_design -part xcku040-fbva676-1-c -top top_system 
+synth_design {HW_INCLUDE} {HW_DEFINE} -part $PART -top $TOP
 
 opt_design
 
