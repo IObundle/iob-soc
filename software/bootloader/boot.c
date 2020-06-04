@@ -36,7 +36,7 @@ int main() {
   unsigned int prog_size = uart_getfile(mem);
   uart_printf("Program received and loaded. (%d bytes)\n", prog_size);
   
-#ifdef USE_DDR
+#if USE_DDR
   //wait for cache write buffer to empty  
   uart_printf("Cache init\n");
   cache_init(FIRM_ADDR_W);

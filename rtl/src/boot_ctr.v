@@ -36,11 +36,7 @@ module boot_ctr
    //boot register
    always @(posedge clk, posedge rst)
      if(rst)
-`ifdef USE_BOOT
        boot <= 1'b1;
-`else 
-       boot <= 1'b0;
-`endif
      else if( cpu_valid && cpu_wstrb)
         boot <=  cpu_wdata[0];
 
@@ -95,11 +91,7 @@ module boot_ctr
    //
    always @(posedge clk, posedge rst)
      if(rst)
-`ifdef USE_BOOT
        cpu_rst <= 1'b1;
-`else
-       cpu_rst <= 1'b0;
-`endif
      else 
        //keep cpu reset while sram loading
        cpu_rst <= (sram_valid || cpu_rst_req);

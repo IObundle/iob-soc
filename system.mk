@@ -6,17 +6,17 @@ USE_LA_IF:=0
 #CPU := DARKRV
 
 #Define SRAM
-USE_SRAM:=1
+USE_SRAM:=0
 SRAM_ADDR_W:=13
 
 #Define DDR
-USE_DDR:=0
+USE_DDR:=1
 DDR_ADDR_W:=15
 #runs from DDR if 1, from SRAM if 0
 RUN_DDR:=0
 
 #Define booting
-USE_BOOT:=1
+USE_BOOT:=0
 BOOTROM_ADDR_W:=12
 
 #Define number of slaves (peripherals)

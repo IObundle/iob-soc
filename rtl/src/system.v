@@ -128,7 +128,7 @@ module system
 
    // INSTRUCTION BUS
    split #(
-`ifdef SPLIT_BUSES
+`ifdef SPLIT_IBUS
            .N_SLAVES(2)
 `else
            .N_SLAVES(1)
@@ -141,10 +141,10 @@ module system
       .m_resp (cpu_i_resp),
       
       // slaves interface
-`ifdef SPLIT_BUSES //connect to DDR except during boot
+`ifdef SPLIT_IBUS //connect to DDR except during boot
       .s_sel ({1'b0, ~boot}),
       .s_req ({ext_mem_i_req, int_mem_i_req}),
-      .s_resp ({ext_mem_i_resp, 0), int_mem_i_resp})
+      .s_resp ({ext_mem_i_resp, int_mem_i_resp})
 `elsif USE_DDR
  `ifdef RUN_DDR //connect to DDR always, no boot, simulation only
      .s_sel (1'b0),
@@ -191,30 +191,29 @@ module system
 
      // slaves interface
 
-`ifdef USE_SRAM_DDR //both memories
- `ifndef RUN_DDR //running from SRAM, using DDR as extra 
-     .s_sel(cpu_d_req[`section(0, `REQ_W-1, 3)]),
-     .s_req ({ext_mem_d_req, pbus_req, int_mem_d_req}),
-     .s_resp({ext_mem_d_resp, pbus_resp, int_mem_d_resp})
- `else //running from DDR, using SRAM as extra
-  `ifdef USE_BOOT //SPLIT_BUSES
-     .s_sel({cpu_d_req[`section(0, `REQ_W-2, 2], boot}),
+`ifdef USE_SRAM_DDR //both memories present
+ `ifdef RUN_DDR //running from SRAM, using DDR as extra 
+  `ifdef USE_BOOT //during boot choose int mem else choose ext mem
+     .s_sel({`V, `P, `E^boot}),
+  `else //init ddr with firmware
+     .s_sel({`V, `P, `E}),
+  `endif
      .s_req ({pbus_req, int_mem_d_req, ext_mem_d_req}),
-     .s_resp({pbus_resp, int_mem_d_resp, ext_mem_d_resp})
-  `else
-     .s_sel(cpu_d_req[`section(0, `REQ_W-1, 3)]),
-     .s_req ({ext_mem_d_req, pbus_req, int_mem_d_req}),
-     .s_resp({ext_mem_d_resp, pbus_resp, int_mem_d_resp})  
-  `endif 
+     .s_resp({pbus_resp, int_mem_d_resp, ext_mem_d_resp})            
+ `else //running from SRAM, as extra memory
+     .s_sel({`V, `P, `E}),
+     .s_req ({pbus_req, ext_mem_d_req, int_mem_d_req}),
+     .s_resp({pbus_resp, ext_mem_d_resp, int_mem_d_resp})
  `endif
-`elsif USE_SRAM //using SRAM only 
-     .s_sel(cpu_d_req[`section(0, `REQ_W-1, 2)]),
+`else //using only one memory
+     .s_sel({`V, `P}),
+ `ifdef USE_SRAM //using SRAM only 
      .s_req ({pbus_req, int_mem_d_req}),
      .s_resp({pbus_resp, int_mem_d_resp})
-`else //using DDR only (for simulation)
-     .s_sel(cpu_d_req[`section(0, `REQ_W-2, 2)]),
+ `else //using DDR only (for simulation)
      .s_req ({pbus_req, ext_mem_d_req}),
      .s_resp({pbus_resp, ext_mem_d_resp})
+ `endif
 `endif
      );
    
