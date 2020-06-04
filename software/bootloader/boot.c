@@ -38,11 +38,8 @@ int main() {
   
 #if USE_DDR
   //wait for cache write buffer to empty  
-  uart_printf("Cache init\n");
-  cache_init(FIRM_ADDR_W);
-  uart_printf("Cache buffer empty?\n");
+  cache_init(DDR_ADDR_W);
   while(!cache_buffer_empty());
-  uart_printf("Cache buffer empty!\n");
 #endif
 
   /*
