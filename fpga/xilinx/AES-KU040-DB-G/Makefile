@@ -11,11 +11,11 @@ REMOTE := ${USER}@146.193.44.179:sandbox/iob-soc/fpga/xilinx/AES-KU040-DB-G
 # work-around for http://svn.clifford.at/handicraft/2016/vivadosig11
 export RDI_VERBOSE = False
 
-all: synth_system.bit #firmware.dat synth_system.bit
+all: synth_system.bit firmware.dat synth_system.bit
 	scp synth_system.bit $(REMOTE)
 	scp firmware*.dat $(REMOTE)
 
-synth_system.bit: *.xdc $(VSRC) #boot.dat
+synth_system.bit: *.xdc $(VSRC) boot.dat
 	rm -f $@.log
 	./run_vivado.sh $(USE_DDR) "$(HW_INCLUDE)" "$(VSRC)"
 	-grep -B4 -A10 'CLB LUTs' vivado.log
