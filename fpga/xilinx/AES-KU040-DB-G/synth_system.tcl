@@ -2,43 +2,24 @@
 # SYNTHESIS AND IMPLEMENTATION SCRIPT
 #
 
+#select top module and FPGA decive
 set TOP top_system
 set PART xcku040-fbva676-1-c
 
-set FILES_LIST {VSRC}
+set HW_INCLUDE [lindex $argv 1]
+set VSRC [lindex $argv 2]
 
-#foreach file $FILES_LIST {read_verilog $file}
+#verilog sources
+foreach file [split $VSRC \ ] {
+    read_verilog $file
+}
 
 #clock
 if { [lindex $argv 0] != {USE_DDR} } {
     read_verilog verilog/clock_wizard.v
 }
 
-#system
-read_verilog verilog/top_system.v
-read_verilog ../../../rtl/src/system.v
-read_verilog ../../../rtl/src/boot_ctr.v
-
-#picorv32
-read_verilog ../../../submodules/picorv32/iob_picorv32.v
-read_verilog ../../../submodules/picorv32/picorv32.v
-
-#uart
-read_verilog ../../../submodules/uart/rtl/src/iob-uart.v
-
-#memory
-read_verilog ../../../rtl/src/int_mem.v
-read_verilog ../../../rtl/src/ram.v
-read_verilog ../../../rtl/src/ext_mem.v
-read_verilog ../../../submodules/mem/tdp_ram/iob_tdp_ram.v
-
-#set_property part $PART [current_project]
-
 if { [lindex $argv 0] == {USE_DDR} } {
-    
-    read_verilog ../../../submodules/mem/fifo/afifo/afifo.v
-    read_verilog ../../../submodules/cache/rtl/src/iob-cache.v
-    read_verilog ../../../submodules/cache/rtl/src/gen_mem_reg.v
 
     read_xdc ./ddr.xdc
 
@@ -93,7 +74,7 @@ if { [lindex $argv 0] == {USE_DDR} } {
 
 read_xdc ./synth_system.xdc
 
-synth_design {HW_INCLUDE} {HW_DEFINE} -part $PART -top $TOP
+synth_design -include_dirs $HW_INCLUDE -part $PART -top $TOP
 
 opt_design
 

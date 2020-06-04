@@ -1,5 +1,5 @@
-define := -verilog_define
-incdirs := -include_dirs
+define := \`define
+incdirs := #-include_dirs
 
 include ../../synth.mk
 
@@ -11,13 +11,13 @@ REMOTE := ${USER}@146.193.44.179:sandbox/iob-soc/fpga/xilinx/AES-KU040-DB-G
 # work-around for http://svn.clifford.at/handicraft/2016/vivadosig11
 export RDI_VERBOSE = False
 
-all: firmware.dat synth_system.bit
+all: synth_system.bit #firmware.dat synth_system.bit
 	scp synth_system.bit $(REMOTE)
 	scp firmware*.dat $(REMOTE)
 
-synth_system.bit: *.xdc $(VSRC) boot.dat
+synth_system.bit: *.xdc $(VSRC) #boot.dat
 	rm -f $@.log
-	./run_vivado.sh $(USE_DDR) $(HW_INCLUDE) $(HW_DEFINE) $(VSRC)
+	./run_vivado.sh $(USE_DDR) "$(HW_INCLUDE)" "$(VSRC)"
 	-grep -B4 -A10 'CLB LUTs' vivado.log
 	-grep -B1 -A9 ^Slack vivado.log && echo
 
@@ -34,6 +34,34 @@ boot.dat: $(BOOT_DIR)/boot.hex
 $(BOOT_DIR)/boot.hex: FORCE
 	make -C $(BOOT_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
 
+defs.vh:
+ifeq ($(CPU),PICORV32)
+	@echo $(define) PICORV32 > $@
+endif
+ifeq ($(CPU),DARKRV)
+	@echo $(define) DARKRV >> $@
+endif
+ifeq ($(USE_LA_IF),1)
+	@echo $(define) USE_LA_IF >> $@
+endif
+ifeq ($(USE_SRAM),1)
+	@echo $(define) USE_SRAM >> $@
+	@echo $(define) SRAM_ADDR_W $(SRAM_ADDR_W) >> $@
+endif
+ifeq ($(USE_DDR),1)
+	@echo $(define) USE_DDR >> $@
+endif
+ifeq ($(RUN_DDR),1)
+	@echo $(define) RUN_DDR >> $@
+endif
+ifeq ($(USE_BOOT),1)
+	@echo $(define) USE_BOOT >> $@
+	@echo $(define) BOOTROM_ADDR_W >> $@
+endif
+	@echo $(define) DDR_ADDR_W $(DDR_ADDR_W) >> $@
+	@echo $(define) N_SLAVES $(N_SLAVES) >> $@
+	@echo $(define) UART $(UART) >> $@
+
 ld-hw:
 	./ld-hw.sh
 
@@ -42,7 +70,7 @@ ld-sw:
 	make -C $(LD_SW_DIR)
 
 clean:
-	@rm -rf .Xil/ *.hex *.dat *.bin *.map
+	@rm -rf .Xil/ *.hex *.dat *.bin *.map *.vh
 	@rm -rf *~ \#*# *#  ../rtl/*~ ../rtl/\#*# ../rtl/*# ./rtl/
 	@rm -rf synth_*.mmi synth_*.bit synth_system*.v *.vcd *_tb 
 	@rm -rf table.txt tab_*/ *webtalk* *.jou *.log
