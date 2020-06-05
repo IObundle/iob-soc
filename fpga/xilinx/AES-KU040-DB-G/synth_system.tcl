@@ -12,8 +12,7 @@ set VSRC [lindex $argv 3]
 
 #verilog sources
 foreach file [split $VSRC \ ] {
-    puts $file
-    read_verilog $file
+    read_verilog -sv $file
 }
 
 #macros
