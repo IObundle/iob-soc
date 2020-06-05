@@ -110,9 +110,6 @@ ifeq ($(USE_BOOT),1)
 	$(PYTHON_DIR)/hex_split.py boot
 endif
 
-#console.vh: $(ROOT_DIR)/software/ld-sw/console.h
-#	sed "s/\#/\`/;s/0x/8\'h/" $^ | sed "/CONSOLE_H\|endif/d" > $@
-
 ifeq ($(SIM_DIR),simulation/icarus)
 sim_clean:=icarus_clean
 endif
@@ -122,7 +119,6 @@ sim_clean:=ncsim_clean
 endif
 
 clean: $(sim_clean)
-	echo bla $(SIM_DIR)
 	@rm -f *# *~ *.vcd *.dat *.hex *.bin *.vh
 	make -C $(BOOT_DIR) clean --no-print-directory
 	make -C $(FIRM_DIR) clean --no-print-directory
