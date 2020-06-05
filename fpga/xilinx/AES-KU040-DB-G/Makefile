@@ -6,7 +6,7 @@ include ../../synth.mk
 BAUD := 115200
 FREQ := 100000000
 
-REMOTE := ${USER}@146.193.44.179:sandbox/iob-soc/fpga/xilinx/AES-KU040-DB-G
+REMOTE := ${USER}@$(BABA):sandbox/iob-soc/fpga/xilinx/AES-KU040-DB-G
 
 # work-around for http://svn.clifford.at/handicraft/2016/vivadosig11
 export RDI_VERBOSE = False
@@ -17,7 +17,7 @@ all: synth_system.bit firmware.dat synth_system.bit
 
 synth_system.bit: *.xdc $(VSRC) boot.dat
 	rm -f $@.log
-	./run_vivado.sh $(USE_DDR) "$(HW_INCLUDE)" "$(VSRC)"
+	./run_vivado.sh $(USE_DDR) "$(HW_INCLUDE)" "$(HW_DEFINE)" "$(VSRC)"
 	-grep -B4 -A10 'CLB LUTs' vivado.log
 	-grep -B1 -A9 ^Slack vivado.log && echo
 
@@ -34,9 +34,10 @@ boot.dat: $(BOOT_DIR)/boot.hex
 $(BOOT_DIR)/boot.hex: FORCE
 	make -C $(BOOT_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
 
-defs.vh:
+system.vh:
+	@echo "" > $@
 ifeq ($(CPU),PICORV32)
-	@echo $(define) PICORV32 > $@
+	@echo $(define) PICORV32 >> $@
 endif
 ifeq ($(CPU),DARKRV)
 	@echo $(define) DARKRV >> $@
@@ -61,6 +62,7 @@ endif
 	@echo $(define) DDR_ADDR_W $(DDR_ADDR_W) >> $@
 	@echo $(define) N_SLAVES $(N_SLAVES) >> $@
 	@echo $(define) UART $(UART) >> $@
+	@cat $(RTL_DIR)/include/system.vh >> $@
 
 ld-hw:
 	./ld-hw.sh
