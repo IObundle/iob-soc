@@ -30,7 +30,7 @@ HW_DEFINE += $(define) USE_LA_IF
 endif
 
 ifeq ($(USE_SRAM),1)
-HW_DEFINE += $(define) USE_SRAM $(define) SRAM_ADDR_W $(SRAM_ADDR_W)
+HW_DEFINE += $(define) USE_SRAM $(define) SRAM_ADDR_W=$(SRAM_ADDR_W)
 endif
 
 ifeq ($(USE_DDR),1)
@@ -42,12 +42,12 @@ HW_DEFINE += $(define) RUN_DDR
 endif
 
 ifeq ($(USE_BOOT),1)
-HW_DEFINE += $(define) USE_BOOT $(define) BOOTROM_ADDR_W $(BOOTROM_ADDR_W)
+HW_DEFINE += $(define) USE_BOOT $(define) BOOTROM_ADDR_W=$(BOOTROM_ADDR_W)
 endif
 
-HW_DEFINE+=$(define) DDR_ADDR_W $(DDR_ADDR_W)
-HW_DEFINE+=$(define) N_SLAVES $(N_SLAVES)
-HW_DEFINE+=$(define) UART $(UART)
+HW_DEFINE+=$(define) DDR_ADDR_W=$(DDR_ADDR_W)
+HW_DEFINE+=$(define) N_SLAVES=$(N_SLAVES)
+HW_DEFINE+=$(define) UART=$(UART)
 
 #hw includes
 HW_INCLUDE := $(incdirs) . $(RTL_DIR)/include $(UART_DIR)/rtl/include \
@@ -69,12 +69,14 @@ endif
 
 #hardware sources
 VSRC = \
-defs.vh \
+system.vh \
 verilog/top_system.v \
 $(RTL_DIR)/src/system.v \
 $(RISCV_DIR)/picorv32.v \
 $(RISCV_DIR)/iob_picorv32.v \
+$(UART_DIR)/rtl/include/iob-uart.vh \
 $(UART_DIR)/rtl/src/iob-uart.v \
+$(INTERCON_DIR)/rtl/include/interconnect.vh \
 $(INTERCON_DIR)/rtl/src/merge.v \
 $(INTERCON_DIR)/rtl/src/split.v \
 $(ROM_VSRC) $(RAM_VSRC) $(DDR_VSRC)

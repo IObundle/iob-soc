@@ -7,12 +7,22 @@ set TOP top_system
 set PART xcku040-fbva676-1-c
 
 set HW_INCLUDE [lindex $argv 1]
-set VSRC [lindex $argv 2]
+set HW_DEFINE [lindex $argv 2]
+set VSRC [lindex $argv 3]
 
 #verilog sources
 foreach file [split $VSRC \ ] {
+    puts $file
     read_verilog $file
 }
+
+#macros
+#foreach macro [split $HW_DEFINE \ ] {
+#    puts $macro
+#    set_property verilog_define $macro [current_fileset]
+#}
+
+#set_property verilog_define $HW_DEFINE [current_fileset]
 
 #clock
 if { [lindex $argv 0] != {USE_DDR} } {
