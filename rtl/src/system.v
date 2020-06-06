@@ -129,7 +129,7 @@ module system
 
    // INSTRUCTION BUS
    split #(
-`ifdef SPLIT_IBUS
+`ifdef BOOT_DDR
            .N_SLAVES(2)
 `else
            .N_SLAVES(1)
@@ -142,21 +142,15 @@ module system
       .m_resp (cpu_i_resp),
       
       // slaves interface
-`ifdef SPLIT_IBUS //connect to DDR except during boot
-      .s_sel ({1'b0, ~boot}),
-      .s_req ({ext_mem_i_req, int_mem_i_req}),
-      .s_resp ({ext_mem_i_resp, int_mem_i_resp})
-`elsif USE_DDR
- `ifdef RUN_DDR //connect to DDR always, no boot, simulation only
+`ifdef BOOT_DDR //run DDR normally, run SRAM to boot 
+      .s_sel (`IBUS_SEL),
+      .s_req ({int_mem_i_req, ext_mem_i_req}),
+      .s_resp ({int_mem_i_resp, ext_mem_i_resp})
+`elsif DDR_ONLY //run DDR always
      .s_sel (1'b0),
      .s_req (ext_mem_i_req),
      .s_resp (ext_mem_i_resp)
- `else //DDR data memory only, connect to SRAM always
-      .s_sel (1'b0), 
-      .s_req (int_mem_i_req),
-      .s_resp (int_mem_i_resp)
- `endif
-`else //connect to SRAM always
+`else //run SRAM always
       .s_sel (1'b0), 
       .s_req (int_mem_i_req),
       .s_resp (int_mem_i_resp)
@@ -178,7 +172,7 @@ module system
 
    split 
      #(
-`ifdef USE_SRAM_DDR
+`ifdef USE_SRAM_USE_DDR
      .N_SLAVES(3)
 `else
        .N_SLAVES(2)
@@ -186,34 +180,32 @@ module system
        )
    dbus_split    
      (
-     // master interface
-     .m_req (cpu_d_req),
-     .m_resp (cpu_d_resp),
+      // master interface
+      .m_req (cpu_d_req),
+      .m_resp (cpu_d_resp),
 
-     // slaves interface
+      // slaves interface
 
-`ifdef USE_SRAM_DDR //both memories present
- `ifdef RUN_DDR //running from SRAM, using DDR as extra 
-  `ifdef USE_BOOT //during boot choose int mem else choose ext mem
-     .s_sel({`V, `P, `E^boot}),
-  `else //init ddr with firmware
-     .s_sel({`V, `P, `E}),
-  `endif
-     .s_req ({pbus_req, int_mem_d_req, ext_mem_d_req}),
-     .s_resp({pbus_resp, int_mem_d_resp, ext_mem_d_resp})            
- `else //running from SRAM, as extra memory
-     .s_sel({`V, `P, `E}),
-     .s_req ({pbus_req, ext_mem_d_req, int_mem_d_req}),
-     .s_resp({pbus_resp, ext_mem_d_resp, int_mem_d_resp})
+`ifdef USE_SRAM_USE_DDR //use both memories
+
+ `ifdef BOOT_DDR 
+      .s_sel(`DBUS_SEL_BOOT_DDR),
+ `elsif RUN_DDR_USE_SRAM
+      .s_sel(`DBUS_SEL_RUN_DDR_USE_SRAM),
+ `elsif RUN_DDR_USE_SRAM
+      .s_sel(`DBUS_SEL_RUN_SRAM_USE_DDR),
  `endif
-`else //using only one memory
-     .s_sel({`V, `P}),
- `ifdef USE_SRAM //using SRAM only 
-     .s_req ({pbus_req, int_mem_d_req}),
-     .s_resp({pbus_resp, int_mem_d_resp})
- `else //using DDR only (for simulation)
-     .s_req ({pbus_req, ext_mem_d_req}),
-     .s_resp({pbus_resp, ext_mem_d_resp})
+      .s_req ({ext_mem_d_req, int_mem_d_req, pbus_req}),
+      .s_resp({ext_mem_d_resp, int_mem_d_resp, pbus_resp})
+
+`else //use single memory 
+      .s_sel(`DBUS_SEL_SINGLE_MEM),
+ `ifdef DDR_ONLY
+      .s_req ({pbus_req, ext_mem_d_req}),
+      .s_resp({pbus_resp, ext_mem_d_resp})
+ `else //must be using sram only
+      .s_req ({pbus_req, int_mem_d_req}),
+      .s_resp({pbus_resp, int_mem_d_resp})
  `endif
 `endif
      );
@@ -238,11 +230,7 @@ module system
         .m_resp(pbus_resp),
         
         // slaves interface
-`ifdef USE_SRAM_DDR //MSB is `REQ_W-3
-        .s_sel(pbus_req[`section(0, `REQ_W-2, `N_SLAVES_W+1)]),
-`else //using one memory only
-        .s_sel(pbus_req[`section(0,  `REQ_W-1, `N_SLAVES_W+1)]),
-`endif
+        .s_sel(`S),
         .s_req(slaves_req),
         .s_resp(slaves_resp)
         );

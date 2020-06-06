@@ -52,11 +52,7 @@ module int_mem
         .m_resp(d_resp),
         
         // slaves interface
-`ifdef USE_SRAM_DDR //MSB is right shifted
-        .s_sel(d_req[`section(0, `REQ_W-3, 2)]),
-`else //using one memory only
-        .s_sel(d_req[`section(0,  `REQ_W-2, 2)]),
-`endif
+        .s_sel(`B),
         .s_req({boot_ctr_req, ram_d_req}),
         .s_resp({boot_ctr_resp, ram_d_resp})
         );

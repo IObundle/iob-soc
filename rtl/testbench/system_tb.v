@@ -246,10 +246,8 @@ module system_tb;
 `ifdef USE_DDR
    axi_ram 
      #(
- `ifndef USE_BOOT
-  `ifdef RUN_DDR
+ `ifdef BOOT_DDR
        .FILE("firmware.hex"),
-  `endif
  `endif
        .FILE_SIZE(2**(`DDR_ADDR_W-2)),
        .DATA_WIDTH (`DATA_W),

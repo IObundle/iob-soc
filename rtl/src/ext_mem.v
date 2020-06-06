@@ -79,6 +79,7 @@ module ext_mem
 
    // Instruction cache instance
    iob_cache # (
+                .DATA_W(`DATA_W),
                 .ADDR_W(`DDR_ADDR_W),
                 .N_WAYS(2),        //Number of ways
                 .LINE_OFF_W(4),    //Cache Line Offset (number of lines)
@@ -127,6 +128,7 @@ module ext_mem
 
    // Data cache instance
    iob_cache # (
+                .DATA_W(`DATA_W),
                 .ADDR_W(`DDR_ADDR_W),
                 .N_WAYS(2),        //Number of ways
                 .LINE_OFF_W(4),    //Cache Line Offset (number of lines)
@@ -174,7 +176,7 @@ module ext_mem
 
    // L2 cache instance
    iob_cache_axi # (
-      
+                    .DATA_W(`DATA_W),
                     .ADDR_W(`DDR_ADDR_W),
                     .N_WAYS(4),        //Number of Ways
                     .LINE_OFF_W(4),    //Cache Line Offset (number of lines)

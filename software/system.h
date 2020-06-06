@@ -21,8 +21,8 @@
 
 //Architecural parameters
 #define ADDR_W 32
-#define EXTRA_MEM (USE_SRAM && USE_DDR)
 #define N_SLAVES_W BITS_TO_REPRESENT(N_SLAVES)
+#define USE_SRAM_USE_DDR (USE_SRAM && USE_DDR)
 
 
 
@@ -30,14 +30,15 @@
 //Memory map
 //
 
-//addres of secondary memory:
+//select secondary memory:
 //SRAM if running from DDR or
 //DDR if running from SRAM
-#define P_BASE (1<<31)
+#define EXTRA_BASE (1<<31)
 
-#define UART_BASE P_BASE |(UART<<(ADDR_W-N_SLAVES_W-EXTRA_MEM))
 
-#define EXTRA_BASE (1<<30)
+//select peripherals
+#define P_BASE (1<<(31-USE_SRAM_USE_DDR))
+#define UART_BASE P_BASE |(UART<<(ADDR_W-N_SLAVES_W-USE_SRAM_USE_DDR))
 
-//#define BOOTCTR_BASE (1 << (30-EXTRA_MEM))
-#define BOOTCTR_BASE (1 << (30-EXTRA_MEM))
+//select boot controller base in int mem
+#define BOOTCTR_BASE (1 << (30-USE_SRAM_USE_DDR))
