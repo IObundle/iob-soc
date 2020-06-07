@@ -5,21 +5,24 @@ USE_LA_IF:=0
 
 #CPU := DARKRV
 
-#Define SRAM
-USE_SRAM:=0
-SRAM_ADDR_W:=13
+#Firmware program and data size
+FIRM_ADDR_W:=13
 
-#Define DDR
+#SRAM
+USE_SRAM:=1
+SRAM_ADDR_W:=14
+
+#DDR
 USE_DDR:=1
-DDR_ADDR_W:=15
+DDR_ADDR_W:=30
 #runs from DDR if 1, from SRAM if 0
 RUN_DDR:=1
 
-#Define booting
+#BOOT
 USE_BOOT:=0
 BOOTROM_ADDR_W:=12
 
-#Define number of slaves (peripherals)
+#Number of slaves (peripherals)
 N_SLAVES:=1
 
 #Peripheral IDs (assign serially: 0, 1, 2, etc)

@@ -1,26 +1,42 @@
 [*]
-[*] GTKWave Analyzer v3.3.61 (w)1999-2014 BSI
-[*] Sat Jun  6 13:38:37 2020
+[*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
+[*] Sat Jun  6 18:09:37 2020
 [*]
-[dumpfile] "/home/jroque/sandbox/iob-soc/simulation/icarus/system.vcd"
-[dumpfile_mtime] "Sat Jun  6 13:38:28 2020"
-[dumpfile_size] 377004
-[savefile] "/home/jroque/sandbox/iob-soc/simulation/noboot_int.gtkw"
+[dumpfile] "/home/jsousa/sandbox/iob-soc/simulation/icarus/system.vcd"
+[dumpfile_mtime] "Sat Jun  6 18:09:24 2020"
+[dumpfile_size] 28393728
+[savefile] "/home/jsousa/sandbox/iob-soc/simulation/noboot_int.gtkw"
 [timestart] 0
-[size] 1855 951
-[pos] -1 -324
-*-18.921532 1094000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[size] 1920 1055
+[pos] -1 -1
+*-20.921532 4050000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] system_tb.
 [treeopen] system_tb.uut.
 [treeopen] system_tb.uut.cpu.
-[treeopen] system_tb.uut.ext_mem0.
+[treeopen] system_tb.uut.int_mem0.
+[treeopen] system_tb.uut.int_mem0.int_sram.
 [sst_width] 324
 [signals_width] 389
 [sst_expanded] 1
-[sst_vpaned_height] 574
+[sst_vpaned_height] 470
 @200
 -INT MEM
--BOOT RAM
+@22
+system_tb.uut.int_mem0.i_req[68:0]
+system_tb.uut.int_mem0.i_resp[32:0]
+system_tb.uut.int_mem0.ram_i_req[68:0]
+system_tb.uut.int_mem0.ram_i_resp[32:0]
+@200
+-sram
+@28
+system_tb.uut.int_mem0.int_sram.i_valid
+@22
+system_tb.uut.int_mem0.int_sram.i_addr[13:0]
+system_tb.uut.int_mem0.int_sram.i_rdata[31:0]
+@28
+system_tb.uut.int_mem0.int_sram.i_ready
+system_tb.uut.int_mem0.int_sram.d_valid
+@200
 -SYSTEM
 @22
 system_tb.uut.cpu_d_req[68:0]
@@ -49,6 +65,7 @@ system_tb.uut.cpu.picorv32_core.mem_ready
 @28
 system_tb.uut.uart.rxd
 system_tb.uut.uart.txd
+@29
 system_tb.uut.uart.valid
 @24
 system_tb.uut.uart.address[2:0]
@@ -70,69 +87,15 @@ system_tb.test_uart.address[2:0]
 system_tb.test_uart.rdata[31:0]
 @200
 -icache
-@22
-system_tb.uut.ext_mem0.icache.addr[15:0]
-system_tb.uut.ext_mem0.icache.wdata[31:0]
-system_tb.uut.ext_mem0.icache.wstrb[3:0]
-@28
-system_tb.uut.ext_mem0.icache.valid
-system_tb.uut.ext_mem0.icache.ready
-@22
-system_tb.uut.ext_mem0.icache.rdata[31:0]
-@200
 -dcache
-@22
-system_tb.uut.ext_mem0.dcache.addr[15:0]
-system_tb.uut.ext_mem0.dcache.wdata[31:0]
-system_tb.uut.ext_mem0.dcache.wstrb[3:0]
-@28
-system_tb.uut.ext_mem0.dcache.valid
-system_tb.uut.ext_mem0.dcache.ready
-@22
-system_tb.uut.ext_mem0.dcache.rdata[31:0]
-@200
 -l2cache
-@22
-system_tb.uut.ext_mem0.l2cache.addr[15:0]
-system_tb.uut.ext_mem0.l2cache.wdata[31:0]
-system_tb.uut.ext_mem0.l2cache.wstrb[3:0]
-@28
-system_tb.uut.ext_mem0.l2cache.valid
-system_tb.uut.ext_mem0.l2cache.ready
-@22
-system_tb.uut.ext_mem0.l2cache.rdata[31:0]
 @28
 system_tb.clk
 @200
 -ddr signals - read
 @28
 system_tb.reset
-@23
-system_tb.ddr_araddr[31:0]
-@28
-system_tb.ddr_arready
-system_tb.ddr_arvalid
-@22
-system_tb.ddr_rdata[31:0]
-@28
-system_tb.ddr_rready
-system_tb.ddr_rvalid
-system_tb.ddr_rresp[1:0]
 @200
 -ddr signals - write
-@22
-system_tb.ddr_awaddr[31:0]
-@28
-system_tb.ddr_awvalid
-system_tb.ddr_awready
-@22
-system_tb.ddr_wdata[31:0]
-system_tb.ddr_wstrb[3:0]
-@28
-system_tb.ddr_wvalid
-system_tb.ddr_wready
-system_tb.ddr_bresp[1:0]
-system_tb.ddr_bvalid
-system_tb.ddr_bready
 [pattern_trace] 1
 [pattern_trace] 0

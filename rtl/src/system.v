@@ -5,65 +5,65 @@
 
 module system 
   (
-   input                  clk,
-   input                  reset,
-   output                 trap,
+   input                    clk,
+   input                    reset,
+   output                   trap,
 
 `ifdef USE_DDR //AXI MASTER INTERFACE
 
    //address write
-   output [0:0]           m_axi_awid, 
-   output [`ADDR_W-1:0]   m_axi_awaddr,
-   output [7:0]           m_axi_awlen,
-   output [2:0]           m_axi_awsize,
-   output [1:0]           m_axi_awburst,
-   output [0:0]           m_axi_awlock,
-   output [3:0]           m_axi_awcache,
-   output [2:0]           m_axi_awprot,
-   output [3:0]           m_axi_awqos,
-   output                 m_axi_awvalid,
-   input                  m_axi_awready,
+   output [0:0]             m_axi_awid, 
+   output [`DDR_ADDR_W-1:0] m_axi_awaddr,
+   output [7:0]             m_axi_awlen,
+   output [2:0]             m_axi_awsize,
+   output [1:0]             m_axi_awburst,
+   output [0:0]             m_axi_awlock,
+   output [3:0]             m_axi_awcache,
+   output [2:0]             m_axi_awprot,
+   output [3:0]             m_axi_awqos,
+   output                   m_axi_awvalid,
+   input                    m_axi_awready,
 
    //write
-   output [`DATA_W-1:0]   m_axi_wdata,
-   output [`DATA_W/8-1:0] m_axi_wstrb,
-   output                 m_axi_wlast,
-   output                 m_axi_wvalid, 
-   input                  m_axi_wready,
+   output [`DATA_W-1:0]     m_axi_wdata,
+   output [`DATA_W/8-1:0]   m_axi_wstrb,
+   output                   m_axi_wlast,
+   output                   m_axi_wvalid, 
+   input                    m_axi_wready,
 
    //write response
-   input [0:0]            m_axi_bid,
-   input [1:0]            m_axi_bresp,
-   input                  m_axi_bvalid,
-   output                 m_axi_bready,
+   input [0:0]              m_axi_bid,
+   input [1:0]              m_axi_bresp,
+   input                    m_axi_bvalid,
+   output                   m_axi_bready,
   
    //address read
-   output [0:0]           m_axi_arid,
-   output [`ADDR_W-1:0]   m_axi_araddr, 
-   output [7:0]           m_axi_arlen,
-   output [2:0]           m_axi_arsize,
-   output [1:0]           m_axi_arburst,
-   output [0:0]           m_axi_arlock,
-   output [3:0]           m_axi_arcache,
-   output [2:0]           m_axi_arprot,
-   output [3:0]           m_axi_arqos,
-   output                 m_axi_arvalid, 
-   input                  m_axi_arready,
+   output [0:0]             m_axi_arid,
+   output [`DDR_ADDR_W-1:0] m_axi_araddr, 
+   output [7:0]             m_axi_arlen,
+   output [2:0]             m_axi_arsize,
+   output [1:0]             m_axi_arburst,
+   output [0:0]             m_axi_arlock,
+   output [3:0]             m_axi_arcache,
+   output [2:0]             m_axi_arprot,
+   output [3:0]             m_axi_arqos,
+   output                   m_axi_arvalid, 
+   input                    m_axi_arready,
 
    //read
-   input [0:0]            m_axi_rid,
-   input [`DATA_W-1:0]    m_axi_rdata,
-   input [1:0]            m_axi_rresp,
-   input                  m_axi_rlast, 
-   input                  m_axi_rvalid, 
-   output                 m_axi_rready,
+   input [0:0]              m_axi_rid,
+   input [`DATA_W-1:0]      m_axi_rdata,
+   input [1:0]              m_axi_rresp,
+   input                    m_axi_rlast, 
+   input                    m_axi_rvalid, 
+   output                   m_axi_rready,
 `endif //  `ifdef USE_DDR
 
    //UART
-   output                 uart_txd,
-   input                  uart_rxd,
-   output                 uart_rts,
-   input                  uart_cts
+   output                   uart_txd,
+   input                    uart_rxd,
+   output                   uart_rts,
+   input                    uart_cts
    );
 
    //
@@ -111,8 +111,8 @@ module system
         );
 
 
-   //
-   //SPLIT MEMORY AND PERIPHERALS
+   //   
+   // SPLIT INTERNAL AND EXTERNAL MEMORY BUSES
    //
 
    //internal memory instruction bus
@@ -122,14 +122,9 @@ module system
    wire [`REQ_W-1:0]      ext_mem_i_req;
    wire [`RESP_W-1:0]     ext_mem_i_resp;
 
-   
-   //   
-   // SPLIT  INTERNAL AND EXTERNAL MEMORY BUSES
-   //
-
    // INSTRUCTION BUS
    split #(
-`ifdef BOOT_DDR
+`ifdef USE_SRAM_USE_DDR
            .N_SLAVES(2)
 `else
            .N_SLAVES(1)
@@ -142,8 +137,16 @@ module system
       .m_resp (cpu_i_resp),
       
       // slaves interface
-`ifdef BOOT_DDR //run DDR normally, run SRAM to boot 
+`ifdef BOOT_DDR //run SRAM to boot then run DDR
       .s_sel (`IBUS_SEL),
+      .s_req ({int_mem_i_req, ext_mem_i_req}),
+      .s_resp ({int_mem_i_resp, ext_mem_i_resp})
+`elsif RUN_SRAM_USE_DDR //run SRAM, use DDR as large mem
+      .s_sel (2'b1),
+      .s_req ({int_mem_i_req, ext_mem_i_req}),
+      .s_resp ({int_mem_i_resp, ext_mem_i_resp})
+`elsif RUN_DDR_USE_SRAM //run DDR, use SRAM as fast mem
+      .s_sel (2'b0),
       .s_req ({int_mem_i_req, ext_mem_i_req}),
       .s_resp ({int_mem_i_resp, ext_mem_i_resp})
 `elsif DDR_ONLY //run DDR always
@@ -187,17 +190,15 @@ module system
       // slaves interface
 
 `ifdef USE_SRAM_USE_DDR //use both memories
-
- `ifdef BOOT_DDR 
+`ifdef BOOT_DDR 
       .s_sel(`DBUS_SEL_BOOT_DDR),
- `elsif RUN_DDR_USE_SRAM
+`elsif RUN_DDR_USE_SRAM
       .s_sel(`DBUS_SEL_RUN_DDR_USE_SRAM),
- `elsif RUN_DDR_USE_SRAM
+`elsif RUN_SRAM_USE_DDR
       .s_sel(`DBUS_SEL_RUN_SRAM_USE_DDR),
- `endif
+`endif
       .s_req ({ext_mem_d_req, int_mem_d_req, pbus_req}),
       .s_resp({ext_mem_d_resp, int_mem_d_resp, pbus_resp})
-
 `else //use single memory 
       .s_sel(`DBUS_SEL_SINGLE_MEM),
  `ifdef DDR_ONLY
@@ -247,7 +248,7 @@ module system
        (
         .clk                  (clk ),
         .rst                  (reset),
-`ifdef USE_BOOT
+ `ifdef USE_BOOT
         .boot                 (boot),
         .cpu_reset            (boot_reset),
  `endif
@@ -324,11 +325,11 @@ module system
         .axi_rready(m_axi_rready)
         );
 `endif
-   
-   ////////////////////////////////////////////////////////
-       // UART
+
    //
-   
+   // UART
+   //
+
    iob_uart uart
        (
         .clk       (clk),
@@ -336,7 +337,7 @@ module system
         
         //cpu interface
         .valid(slaves_req[`valid(`UART)]),
-        .address(slaves_req[`section(`UART, `ADDR_P+`UART_ADDR_W+1, `UART_ADDR_W)]),
+        .address(slaves_req[`address(0,`UART_ADDR_W+2,2)]),
         .wdata(slaves_req[`wdata(`UART)]),
         .wstrb(|slaves_req[`wstrb(`UART)]),
         .rdata(slaves_resp[`rdata(`UART)]),

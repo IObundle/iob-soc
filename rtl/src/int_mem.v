@@ -26,7 +26,7 @@ module int_mem
    wire [`RESP_W-1:0]    ram_d_resp;
 
    //modified ram address during boot
-   wire [`ADDR_W-1:0]    ram_d_addr;
+   wire [`SRAM_ADDR_W-3:0]    ram_d_addr;
 
 
    ////////////////////////////////////////////////////////
@@ -45,7 +45,7 @@ module int_mem
      #(
        .N_SLAVES(2)
        )
-   ram_bootctr_demux
+   data_bootctr_split
        (
         // master interface
         .m_req(d_req),
@@ -83,7 +83,7 @@ module int_mem
 
         //sram master write interface
         .sram_valid(ram_w_req[`valid(0)]),
-        .sram_addr(ram_w_req[`address(0)]),
+        .sram_addr(ram_w_req[`address(0, `ADDR_W, 0)]),
         .sram_wdata(ram_w_req[`wdata(0)]),
         .sram_wstrb(ram_w_req[`wstrb(0)])
         );
@@ -104,20 +104,17 @@ module int_mem
 
    //instruction bus: connect directly but address
    assign ram_r_req[`valid(0)] = i_req[`valid(0)];
-   assign ram_r_req[`address(0)] = boot? i_req[`address(0)] + `BOOT_OFFSET : i_req[`address(0)];
+   assign ram_r_req[`address(0, `ADDR_W, 0)] = boot? i_req[`address(0, `ADDR_W, 0)] + `BOOT_OFFSET : i_req[`address(0, `ADDR_W, 0)];
    assign ram_r_req[`write(0)] = i_req[`write(0)];
    assign i_resp[`resp(0)] = ram_r_resp[`resp(0)];
 
-   //debug addresses
-   //wire [`ADDR_W-1:0]   addr_diff = ram_r_req[`address(0)] - i_req[`address(0)];
-
    //data bus: just replace address
    assign ram_d_addr = boot? 
-                       ram_d_req[`section(0, `ADDR_P+`SRAM_ADDR_W-1, `SRAM_ADDR_W)] + `BOOT_OFFSET: 
-                       ram_d_req[`section(0, `ADDR_P+`SRAM_ADDR_W-1, `SRAM_ADDR_W)];
+                       ram_d_req[`address(0, `SRAM_ADDR_W, 2)] + (`BOOT_OFFSET>>2): 
+                       ram_d_req[`address(0, `SRAM_ADDR_W, 2)];
 `else // !`ifdef USE_BOOT: direct conection
    assign ram_d_req = d_req; 
-   assign ram_d_addr = d_req[`section(0, `ADDR_P+`SRAM_ADDR_W-1, `SRAM_ADDR_W)];
+   assign ram_d_addr = d_req[`address(0, `SRAM_ADDR_W, 2)];
    assign d_resp = ram_d_resp;
 `endif // !`ifdef USE_BOOT
 
@@ -129,7 +126,6 @@ module int_mem
    //sram instruction bus
    wire [`REQ_W-1:0]     ram_i_req;
    wire [`RESP_W-1:0]    ram_i_resp;
-
    
    merge #(
 `ifdef USE_BOOT
@@ -156,25 +152,19 @@ module int_mem
    //
    // INSTANTIATE RAM
    //
-   ram #(
-`ifndef USE_BOOT
- `ifdef USE_DDR //ddr present
-  `ifndef RUN_DDR
-         .FILE("firmware")
-  `endif
- `else //ddr not present
-         .FILE("firmware")
- `endif
+   sram #(
+`ifdef SRAM_INIT
+          .FILE("firmware")
 `endif
 	 )
-   boot_ram 
+   int_sram 
      (
       .clk           (clk),
       .rst           (rst),
       
       //instruction bus
       .i_valid       (ram_i_req[`valid(0)]),
-      .i_addr        (ram_i_req[`section(0, `ADDR_P+`SRAM_ADDR_W-1, `SRAM_ADDR_W-2)]), 
+      .i_addr        (ram_i_req[`address(0, `SRAM_ADDR_W, 2)]), 
       .i_wdata       (ram_i_req[`wdata(0)]),
       .i_wstrb       (ram_i_req[`wstrb(0)]),
       .i_rdata       (ram_i_resp[`rdata(0)]),
@@ -182,7 +172,7 @@ module int_mem
 	     
       //data bus
       .d_valid       (ram_d_req[`valid(0)]),
-      .d_addr        (ram_d_addr[`SRAM_ADDR_W-1:2]),
+      .d_addr        (ram_d_addr),
       .d_wdata       (ram_d_req[`wdata(0)]),
       .d_wstrb       (ram_d_req[`wstrb(0)]),
       .d_rdata       (ram_d_resp[`rdata(0)]),

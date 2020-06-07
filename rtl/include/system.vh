@@ -12,53 +12,53 @@
  `endif
 `endif
 
+//init sram with firmware, no boot
+`ifndef USE_BOOT
+ `ifndef USE_DDR
+  `define SRAM_INIT
+ `else //ddr used
+  `ifndef RUN_DDR
+   `define SRAM_INIT
+  `endif
+ `endif
+`endif
+
+//init ddr with firmware, no boot
+`ifndef USE_BOOT
+ `ifdef USE_DDR
+  `ifdef RUN_DDR
+   `define DDR_INIT
+  `endif
+ `endif
+`endif
+
 //
 //MODES
 //
 
-//1) boot DDR
-`ifdef USE_SRAM_USE_DDR
- `ifdef USE_BOOT
-  `ifdef RUN_DDR
-   `define BOOT_DDR
-  `endif
- `endif
-`endif
-
-//2) run DDR, use SRAM, no boot
-`ifdef USE_SRAM_USE_DDR
- `ifndef USE_BOOT
-  `ifdef RUN_DDR
-   `define RUN_DDR_USE_SRAM
-  `endif
- `endif
-`endif
-
-//3) run sram, use ddr, with or without boot
+//run sram
 `ifdef USE_SRAM
- `ifdef USE_DDR
-  `ifndef RUN_DDR
+ `ifndef RUN_DDR
+  `ifdef USE_DDR
    `define RUN_SRAM_USE_DDR
   `endif
  `endif
 `endif
 
-//4) run ddr, no sram
-`ifndef USE_SRAM
- `ifdef USE_DDR
+//run ddr
+`ifdef USE_DDR
+ `ifdef RUN_DDR
+  `ifndef USE_SRAM
    `define DDR_ONLY
+  `else //use SRAM 
+   `ifdef USE_BOOT
+    `define BOOT_DDR
+   `else
+    `define RUN_DDR_USE_DDR
+   `endif
+  `endif
  `endif
 `endif
-
-//5) run sram, no ddr
-`ifdef USE_SRAM
- `ifndef USE_DDR
-  `define SRAM_ONLY
- `endif
-`endif
-
-
-
 
 
 //INSTRUCTION BUS SELECT
@@ -68,18 +68,19 @@
 // DATA BUS NOTABLE BITS
 // valid bit
 `define V cpu_d_req[`REQ_W-1]
+
 `ifdef USE_SRAM_USE_DDR
  `define E cpu_d_req[`REQ_W-2] // extra memory selection bit
  `define P cpu_d_req[`REQ_W-3] // peripheral selection bit
- `define B d_req[`REQ_W-3 -: 2] // boot controller selection bit
  `define S cpu_d_req[`REQ_W-3 : `REQ_W-3-`N_SLAVES_W]// slave select word
 `else
  `define P cpu_d_req[`REQ_W-2]// peripheral selection bit
- `define B d_req[`REQ_W-2 -: 2] // boot controller selection bit
  `define S cpu_d_req[`REQ_W-2 : `REQ_W-2-`N_SLAVES_W]// slave select word
 `endif
 
+`define B d_req[`ADDR_P+`SRAM_ADDR_W+1 -: 2] // boot controller select
+
 `define DBUS_SEL_BOOT_DDR {1'b0, (`E~^boot)&(~`P), `P}
 `define DBUS_SEL_RUN_DDR_USE_SRAM {1'b0, (~`E)&(~`P), `P}
-`define DBUS_SEL_RUN_SRAM_USE_DDR {1'b0, (`E)&(~`P), `P}
+`define DBUS_SEL_RUN_SRAM_USE_DDR {1'b0, ~`P&`E, ~`P&~`E}
 `define DBUS_SEL_SINGLE_MEM {1'b0, `P}

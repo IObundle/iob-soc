@@ -3,12 +3,15 @@
 #include "iob-uart.h"
 #include "iob-cache.h"
 
-//memory pointer
-#if RUN_DDR == 0 //SRAM
+// determine boot address
+#if USE_BOOT==1
+#if (USE_DDR==0 || (USE_DDR==1 && RUN_DDR==0))
 char *mem = (char *) (1<<BOOTROM_ADDR_W);
-#else //DDR
+#else
 char *mem = (char *) EXTRA_BASE;
 #endif
+#endif
+
 
 int main() {
 
@@ -26,6 +29,7 @@ int main() {
     uart_puts ("\n\n\nConnection closed by host. Bye!\n");
     return 0;
   }
+
   uart_puts ("\n\n\nIOb-SoC bootloader\n");
   uart_puts ("------------------\n\n");
   uart_puts ("Connected with host, waiting program...\n\n");

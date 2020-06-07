@@ -25,7 +25,6 @@
 #define USE_SRAM_USE_DDR (USE_SRAM && USE_DDR)
 
 
-
 //
 //Memory map
 //
@@ -38,7 +37,8 @@
 
 //select peripherals
 #define P_BASE (1<<(31-USE_SRAM_USE_DDR))
-#define UART_BASE P_BASE |(UART<<(ADDR_W-N_SLAVES_W-USE_SRAM_USE_DDR))
+#define P_SHIFT (N_SLAVES==1? 1: N_SLAVES_W)
+#define UART_BASE P_BASE |(UART<<(ADDR_W-USE_SRAM_USE_DDR-1-P_SHIFT))
 
 //select boot controller base in int mem
-#define BOOTCTR_BASE (1 << (30-USE_SRAM_USE_DDR))
+#define BOOTCTR_BASE (1 << SRAM_ADDR_W)

@@ -6,59 +6,59 @@
 
 module ext_mem
   (
-   input                  clk,
-   input                  rst,
+   input                    clk,
+   input                    rst,
 
    // Instruction bus
-   input [`REQ_W-1:0]     i_req,
-   output [`RESP_W-1:0]   i_resp,
+   input [`REQ_W-1:0]       i_req,
+   output [`RESP_W-1:0]     i_resp,
 
    // Data bus
-   input [`REQ_W-1:0]     d_req,
-   output [`RESP_W-1:0]   d_resp,
+   input [`REQ_W-1:0]       d_req,
+   output [`RESP_W-1:0]     d_resp,
 
    // AXI interface 
    // Address write
-   output [0:0]           axi_awid, 
-   output [`ADDR_W-1:0]   axi_awaddr,
-   output [7:0]           axi_awlen,
-   output [2:0]           axi_awsize,
-   output [1:0]           axi_awburst,
-   output [0:0]           axi_awlock,
-   output [3:0]           axi_awcache,
-   output [2:0]           axi_awprot,
-   output [3:0]           axi_awqos,
-   output                 axi_awvalid,
-   input                  axi_awready,
+   output [0:0]             axi_awid, 
+   output [`DDR_ADDR_W-1:0] axi_awaddr,
+   output [7:0]             axi_awlen,
+   output [2:0]             axi_awsize,
+   output [1:0]             axi_awburst,
+   output [0:0]             axi_awlock,
+   output [3:0]             axi_awcache,
+   output [2:0]             axi_awprot,
+   output [3:0]             axi_awqos,
+   output                   axi_awvalid,
+   input                    axi_awready,
    //Write
-   output [`DATA_W-1:0]   axi_wdata,
-   output [`DATA_W/8-1:0] axi_wstrb,
-   output                 axi_wlast,
-   output                 axi_wvalid, 
-   input                  axi_wready,
-   input [0:0]            axi_bid,
-   input [1:0]            axi_bresp,
-   input                  axi_bvalid,
-   output                 axi_bready,
+   output [`DATA_W-1:0]     axi_wdata,
+   output [`DATA_W/8-1:0]   axi_wstrb,
+   output                   axi_wlast,
+   output                   axi_wvalid, 
+   input                    axi_wready,
+   input [0:0]              axi_bid,
+   input [1:0]              axi_bresp,
+   input                    axi_bvalid,
+   output                   axi_bready,
    //Address Read
-   output [0:0]           axi_arid,
-   output [`ADDR_W-1:0]   axi_araddr, 
-   output [7:0]           axi_arlen,
-   output [2:0]           axi_arsize,
-   output [1:0]           axi_arburst,
-   output [0:0]           axi_arlock,
-   output [3:0]           axi_arcache,
-   output [2:0]           axi_arprot,
-   output [3:0]           axi_arqos,
-   output                 axi_arvalid, 
-   input                  axi_arready,
+   output [0:0]             axi_arid,
+   output [`DDR_ADDR_W-1:0] axi_araddr, 
+   output [7:0]             axi_arlen,
+   output [2:0]             axi_arsize,
+   output [1:0]             axi_arburst,
+   output [0:0]             axi_arlock,
+   output [3:0]             axi_arcache,
+   output [2:0]             axi_arprot,
+   output [3:0]             axi_arqos,
+   output                   axi_arvalid, 
+   input                    axi_arready,
    //Read
-   input [0:0]            axi_rid,
-   input [`DATA_W-1:0]    axi_rdata,
-   input [1:0]            axi_rresp,
-   input                  axi_rlast, 
-   input                  axi_rvalid, 
-   output                 axi_rready
+   input [0:0]              axi_rid,
+   input [`DATA_W-1:0]      axi_rdata,
+   input [1:0]              axi_rresp,
+   input                    axi_rlast, 
+   input                    axi_rvalid, 
+   output                   axi_rready
    );
 
    //
@@ -79,8 +79,7 @@ module ext_mem
 
    // Instruction cache instance
    iob_cache # (
-                .DATA_W(`DATA_W),
-                .ADDR_W(`DDR_ADDR_W),
+                .FE_ADDR_W(`FIRM_ADDR_W),
                 .N_WAYS(2),        //Number of ways
                 .LINE_OFF_W(4),    //Cache Line Offset (number of lines)
                 .WORD_OFF_W(4),    //Word Offset (number of words per line)
@@ -95,7 +94,7 @@ module ext_mem
 
            // Front-end interface
            .valid (icache_fe_req[`valid(0)]),
-           .addr  (icache_fe_req[`address(0)]),
+           .addr  (icache_fe_req[`address(0, `FIRM_ADDR_W+1, 0)]),
            .wdata (icache_fe_req[`wdata(0)]),
            .wstrb (icache_fe_req[`wstrb(0)]),
            .rdata (icache_fe_resp[`rdata(0)]),
@@ -104,7 +103,7 @@ module ext_mem
            .instr(1'b0),
            // Back-end interface
            .mem_valid (icache_be_req[`valid(0)]),
-           .mem_addr  (icache_be_req[`address(0)]),
+           .mem_addr  (icache_be_req[`address(0, `FIRM_ADDR_W, 0)]),
            .mem_wdata (icache_be_req[`wdata(0)]),
            .mem_wstrb (icache_be_req[`wstrb(0)]),
            .mem_rdata (icache_be_resp[`rdata(0)]),
@@ -128,8 +127,7 @@ module ext_mem
 
    // Data cache instance
    iob_cache # (
-                .DATA_W(`DATA_W),
-                .ADDR_W(`DDR_ADDR_W),
+                .FE_ADDR_W(`FIRM_ADDR_W),
                 .N_WAYS(2),        //Number of ways
                 .LINE_OFF_W(4),    //Cache Line Offset (number of lines)
                 .WORD_OFF_W(4),    //Word Offset (number of words per line)
@@ -144,7 +142,7 @@ module ext_mem
 
            // Front-end interface
            .valid (dcache_fe_req[`valid(0)]),
-           .addr  (dcache_fe_req[`address(0)]),
+           .addr  (dcache_fe_req[`address(0,`FIRM_ADDR_W+1, 0)]),
            .wdata (dcache_fe_req[`wdata(0)]),
            .wstrb (dcache_fe_req[`wstrb(0)]),
            .rdata (dcache_fe_resp[`rdata(0)]),
@@ -152,7 +150,7 @@ module ext_mem
            .instr (1'b0),
            // Back-end interface
            .mem_valid (dcache_be_req[`valid(0)]),
-           .mem_addr  (dcache_be_req[`address(0)]),
+           .mem_addr  (dcache_be_req[`address(0,`FIRM_ADDR_W, 0)]),
            .mem_wdata (dcache_be_req[`wdata(0)]),
            .mem_wstrb (dcache_be_req[`wstrb(0)]),
            .mem_rdata (dcache_be_resp[`rdata(0)]),
@@ -176,13 +174,12 @@ module ext_mem
 
    // L2 cache instance
    iob_cache_axi # (
-                    .DATA_W(`DATA_W),
-                    .ADDR_W(`DDR_ADDR_W),
+                    .FE_ADDR_W(`FIRM_ADDR_W),
                     .N_WAYS(4),        //Number of Ways
                     .LINE_OFF_W(4),    //Cache Line Offset (number of lines)
                     .WORD_OFF_W(4),    //Word Offset (number of words per line)
                     .WTBUF_DEPTH_W(4), //FIFO's depth
-                    .MEM_ADDR_W (`ADDR_W),
+                    .BE_ADDR_W (`DDR_ADDR_W),
                     //Ctrls parameters
                     .CTRL_CNT_ID(0),   //Remove counters with distinct data-instr accesses
                     .CTRL_CNT(0)       //Remove counters
@@ -193,7 +190,7 @@ module ext_mem
       
             // Native interface
             .valid    (l2cache_req[`valid(0)]),
-            .addr     (l2cache_req[`address(0)]),
+            .addr     ({1'b0, l2cache_req[`address(0, `FIRM_ADDR_W, 0)]}),
             .wdata    (l2cache_req[`wdata(0)]),
             .wstrb    (l2cache_req[`wstrb(0)]),
             .rdata    (l2cache_resp[`rdata(0)]),

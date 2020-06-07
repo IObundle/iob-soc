@@ -1,9 +1,9 @@
 `timescale 1ns / 1ps
 `include "system.vh"
 
-module ram #(
-             parameter FILE = "none"
-	     )
+module sram #(
+              parameter FILE = "none"
+	      )
    (
     input                    clk,
     input                    rst,
@@ -33,14 +33,8 @@ module ram #(
       for (i = 0; i < 4; i = i+1) begin : gen_main_mem_byte
          iob_tdp_ram
                #(
-`ifndef USE_BOOT
- `ifndef USE_DDR
+`ifdef SRAM_INIT
 	         .MEM_INIT_FILE({FILE, "_", file_suffix[8*(i+1)-1 -: 8], ".dat"}),
- `else
-  `ifndef RUN_DDR
-	         .MEM_INIT_FILE({FILE, "_", file_suffix[8*(i+1)-1 -: 8], ".dat"}),
-  `endif
- `endif
 `endif
 	         .DATA_W(8),
                  .ADDR_W(`SRAM_ADDR_W-2))
