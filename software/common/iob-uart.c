@@ -128,3 +128,17 @@ void uart_sendfile(unsigned int file_size, char *mem) {
 
   return;
 }
+
+void uart_connect() {
+  char host_resp;
+  do {
+    uart_putc(ENQ);
+    host_resp = uart_getc();
+  } while(host_resp != ACK);
+  uart_puts ("Connected with host");
+}
+
+void uart_disconnect() {
+  uart_puts ("Closing connection with host. Bye!\n");
+  uart_putc (EOT);
+}

@@ -39,9 +39,6 @@ void uart_puts(const char *s);
 //formated print
 void uart_printf(const char* fmt, ...);
 
-//Send file
-void uart_sendfile(unsigned int file_size, char *mem);
-
 //Wait for rx to be ready
 void uart_rxwait();
 
@@ -51,8 +48,16 @@ int uart_rxstatus();
 //Get char
 char uart_getc();
 
+//Send file
+void uart_sendfile(unsigned int file_size, char *mem);
+
 //Get file 
 unsigned int uart_getfile(char *mem);
+
+void uart_connect();
+
+void uart_disconnect();
+
 
 #ifdef PCSIM
 //itoa definition
