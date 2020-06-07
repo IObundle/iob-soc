@@ -13,7 +13,7 @@ USE_SRAM:=1
 SRAM_ADDR_W:=14
 
 #DDR
-USE_DDR:=1
+USE_DDR:=0
 DDR_ADDR_W:=30
 #runs from DDR if 1, from SRAM if 0
 RUN_DDR:=1

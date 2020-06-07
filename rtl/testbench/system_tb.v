@@ -26,8 +26,8 @@ module system_tb;
 
    //iterator
    integer                i;
-   
-   //
+
+   /////////////////////////////////////////////
    // TEST PROCEDURE
    //
    initial begin
@@ -53,24 +53,28 @@ module system_tb;
 
       //connect with target
       cpu_connect();
-      
-      //serve target
-      do begin 
-         cpu_getchar(cpu_char);
-         case(cpu_char)
-           `ETX: begin 
-              cpu_sendfile();
-              cpu_connect();
-           end
-           `STX: cpu_receivefile();
-           `EOT:;
-           default: $write("%c", cpu_char);
-         endcase
-      end while (cpu_char != `EOT); 
 
+`ifdef USE_BOOT
+      cpu_sendfile();
+`endif
+      
+      //uncomment for debug
+      //cpu_receivefile();
+
+      cpu_run();
+
+      $finish; 
    end // test procedure
 
 
+   initial
+     while(1)
+       begin
+          cpu_getchar(cpu_char);
+          if(cpu_char != `ACK)
+          $write("%c", cpu_char);
+       end
+   
    //
    // INSTANTIATE COMPONENTS
    //
@@ -274,7 +278,7 @@ module system_tb;
 `include "cpu_tasks.v"
    
    // finish simulation
-   always @(posedge trap)   	 
-     #500 $finish;
+  // always @(posedge trap)   	 
+    // #500 $finish;
    
 endmodule

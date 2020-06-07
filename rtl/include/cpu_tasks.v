@@ -2,11 +2,6 @@
    // CPU TASKS
    //
 
-`define SEEK_SET 0
-`define SEEK_CUR 1
-`define SEEK_END 2
-
-   
    // 1-cycle write
    task cpu_uartwrite;
       input [3:0]  cpu_address;
@@ -38,9 +33,15 @@
       integer           res;
       integer           i, k;
 
+      cpu_putchar(`STX);
+      
       fp = $fopen("firmware.bin","rb");
 
       // Get file size
+`define SEEK_SET 0
+`define SEEK_CUR 1
+`define SEEK_END 2
+         
       res = $fseek(fp, 0, `SEEK_END);
       file_size = $ftell(fp);
       res = $rewind(fp);
@@ -63,8 +64,12 @@
          end
       end
       $write("%d%%\n", 100);
-
       $fclose(fp);
+
+      //wait ack
+      cpu_char = `ENQ;
+      while (cpu_char != `ACK);
+            
    endtask
 
    task cpu_receivefile;
@@ -144,9 +149,14 @@
       end while (char != "\n");
    endtask
 
-   //sync with target
+   //connect with targe
    task cpu_connect;
       do cpu_getchar(cpu_char);
       while (cpu_char != `ENQ); 
       cpu_putchar(`ACK);
+   endtask
+
+   task cpu_run;
+      cpu_putchar(`EOT);
+      while (cpu_char != `ACK);
    endtask

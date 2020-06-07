@@ -9,41 +9,37 @@ int main() {
   //init uart 
   uart_init(UART_BASE, UART_CLK_FREQ/UART_BAUD_RATE);
 
-  //connect with host
-  char host_resp;
-  do {
-    uart_putc(ENQ);
-    host_resp = uart_getc();
-  } while(host_resp != ACK && host_resp != EOT);
+  //call host
+  uart_connect();
 
-  if(host_resp == EOT) {
-    uart_puts ("\n\n\nConnection closed by host. Bye!\n");
-    return 0;
-  }
-
-  uart_puts ("\n\n\nIOb-SoC bootloader\n");
+  //greet host 
+  uart_puts ("\n\n\nIOb-SoC Bootloader\n");
   uart_puts ("------------------\n\n");
-  uart_puts ("Connected with host, waiting program...\n\n");
 
+  unsigned int file_size;
 
-  //receive program
-  uart_putc (ETX); //signal host
-  unsigned int prog_size = uart_getfile(mem);
-  uart_printf("Program received and loaded. (%d bytes)\n", prog_size);
-  
+  //enter command loop
+  while (1) {
+    char host_cmd (char) uart_getc();
+    switch(host_cmd) {
+    case STX:
+      prog_size = uart_getfile(mem);
+      uart_putc(ACK);
+      uart_printf("File received (%d bytes)\n", file_size);
+    case ETX:
+      //todo: receive file size
+      uart_sendfile(prog_size, mem);
+      uart_putc(ACK);
+      uart_puts ("File sent (%d bytes)\n", file_size);
+    case EOT:
+      uart_putc(ACK);
+      uart_puts ("Restarting CPU to run program...\n\n\n\n");
 #if USE_DDR
-  //wait for cache write buffer to empty  
-  cache_init(DDR_ADDR_W);
-  while(!cache_buffer_empty());
+      //wait for cache write buffer to empty  
+      cache_init(DDR_ADDR_W);
+      while(!cache_buffer_empty());
 #endif
-
-  //uncomment for debug 
-  /*
-  uart_puts ("Sending program back to host...\n");
-  uart_putc (ETX);
-  uart_sendfile(prog_size, mem);
-  */
-  
-  uart_puts ("Restarting CPU to run program...\n\n\n\n"); 
-  RAM_SET(int, BOOTCTR_BASE, 2);//{cpu_rst_req=1, boot=0}
+      RAM_SET(int, BOOTCTR_BASE, 2);//{cpu_rst_req=1, boot=0}
+    default:;
+    }
 }
