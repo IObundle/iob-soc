@@ -48,57 +48,25 @@ module system_tb;
       //wait an arbitray (10) number of cycles 
       repeat (10) @(posedge clk) #1;
 
-      //
-      // CONFIGURE UART
-      //
+      // configure uart
       cpu_inituart();
 
-`ifdef USE_BOOT
-      //sync with target
-      do cpu_getchar(cpu_char);
-      while (cpu_char != `ENQ); 
-      cpu_putchar(`ACK);
-
-      //send firmware
+      //connect with target
+      cpu_connect();
+      
+      //serve target
       do begin 
          cpu_getchar(cpu_char);
-         if(cpu_char != `ETX)
-           //print chars until ETX received      
-           $write("%c", cpu_char);
-         else begin
-            //ETX received, send file
-            cpu_sendfile();
-         end
-      end while (cpu_char != `ETX); 
-
-      /* send file back for debug
-       do begin 
-       cpu_getchar(cpu_char);
-       if(cpu_char != `ETX)
-       //print chars until ETX received      
-       $write("%c", cpu_char);
-       else begin
-       //ETX received, receive file
-       cpu_receivefile();
-         end
-      end while (cpu_char != `ETX); 
-       */
-
-      //print any received chars
-      do begin 
-         cpu_getchar(cpu_char);
-         $write("%c", cpu_char);
-      end while (cpu_char != `ENQ);
-      
-      //terminate connection
-      cpu_putchar(`EOT);
-      
-`endif //  `ifdef USE_BOOT
-      
-      do begin 
-         cpu_getchar(cpu_char);
-         $write("%c", cpu_char);
-      end while (1);
+         case(cpu_char)
+           `ETX: begin 
+              cpu_sendfile();
+              cpu_connect();
+           end
+           `STX: cpu_receivefile();
+           `EOT:;
+           default: $write("%c", cpu_char);
+         endcase
+      end while (cpu_char != `EOT); 
 
    end // test procedure
 

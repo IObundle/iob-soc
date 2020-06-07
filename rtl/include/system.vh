@@ -54,7 +54,7 @@
    `ifdef USE_BOOT
     `define BOOT_DDR
    `else
-    `define RUN_DDR_USE_DDR
+    `define RUN_DDR_USE_SRAM
    `endif
   `endif
  `endif
@@ -80,7 +80,7 @@
 
 `define B d_req[`ADDR_P+`SRAM_ADDR_W+1 -: 2] // boot controller select
 
-`define DBUS_SEL_BOOT_DDR {1'b0, (`E~^boot)&(~`P), `P}
-`define DBUS_SEL_RUN_DDR_USE_SRAM {1'b0, (~`E)&(~`P), `P}
+`define DBUS_SEL_BOOT_DDR {1'b0, ~`P&(~`E^boot), ~`P&(`E^boot)}
+`define DBUS_SEL_RUN_DDR_USE_SRAM {1'b0, ~`P&~`E, ~`P&`E}
 `define DBUS_SEL_RUN_SRAM_USE_DDR {1'b0, ~`P&`E, ~`P&~`E}
 `define DBUS_SEL_SINGLE_MEM {1'b0, `P}

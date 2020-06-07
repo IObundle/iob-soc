@@ -143,3 +143,10 @@
          $write("%c", char);
       end while (char != "\n");
    endtask
+
+   //sync with target
+   task cpu_connect;
+      do cpu_getchar(cpu_char);
+      while (cpu_char != `ENQ); 
+      cpu_putchar(`ACK);
+   endtask

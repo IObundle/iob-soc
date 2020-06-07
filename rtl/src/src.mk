@@ -12,8 +12,10 @@ $(AXI_RAM_DIR)/rtl/axi_ram.v $(MEM_DIR)/reg_file/iob_reg_file.v $(MEM_DIR)/fifo/
 $(MEM_DIR)/sp_ram/iob_sp_mem.v
 endif
 
+ifeq ($(USE_SRAM),1)
 ifeq ($(USE_BOOT),1)
 ROM_VSRC$:=$(MEM_DIR)/sp_rom/sp_rom.v $(SRC_DIR)/boot_ctr.v
+endif
 endif
 
 VSRC = \
@@ -53,10 +55,16 @@ endif
 
 ifeq ($(RUN_DDR),1)
 HW_DEFINE+=$(define) RUN_DDR
+else
+ifeq ($(USE_SRAM),0)
+HW_DEFINE+=$(define) RUN_DDR
+endif
 endif
 
+ifeq ($(USE_SRAM),1)
 ifeq ($(USE_BOOT),1)
 HW_DEFINE+=$(define) USE_BOOT $(define) BOOTROM_ADDR_W=$(BOOTROM_ADDR_W)
+endif
 endif
 
 HW_DEFINE+=$(define) FIRM_ADDR_W=$(FIRM_ADDR_W)

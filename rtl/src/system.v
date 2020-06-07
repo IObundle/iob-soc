@@ -71,9 +71,11 @@ module system
    //
 
 `ifdef USE_BOOT
-   wire                   boot;
-   wire                   boot_reset;   
-   wire                   cpu_reset = reset | boot_reset;
+ `ifdef USE_SRAM
+   wire                     boot;
+   wire                     boot_reset;   
+   wire                     cpu_reset = reset | boot_reset;
+ `endif
 `else
    wire                   cpu_reset = reset;
 `endif
@@ -190,13 +192,13 @@ module system
       // slaves interface
 
 `ifdef USE_SRAM_USE_DDR //use both memories
-`ifdef BOOT_DDR 
+ `ifdef BOOT_DDR 
       .s_sel(`DBUS_SEL_BOOT_DDR),
-`elsif RUN_DDR_USE_SRAM
+ `elsif RUN_DDR_USE_SRAM
       .s_sel(`DBUS_SEL_RUN_DDR_USE_SRAM),
-`elsif RUN_SRAM_USE_DDR
+ `elsif RUN_SRAM_USE_DDR
       .s_sel(`DBUS_SEL_RUN_SRAM_USE_DDR),
-`endif
+ `endif
       .s_req ({ext_mem_d_req, int_mem_d_req, pbus_req}),
       .s_resp({ext_mem_d_resp, int_mem_d_resp, pbus_resp})
 `else //use single memory 
