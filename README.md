@@ -70,11 +70,26 @@ make fpga
 
 ## Configure FPGA
 ```
-make ld-hw
+make conf-fpga
 ```
 
-## Configure FPGA
+## Load Software
 ```
 make ld-sw
 ```
 
+
+## Run Software
+```
+make run-sw
+```
+
+## Synthesize ASIC
+```
+make synth-asic
+```
+
+## Place and route ASIC
+```
+make pr-asic
+```
