@@ -21,6 +21,8 @@ INTERCON_DIR := $(SUBMODULES_DIR)/interconnect
 #hw defines
 include $(ROOT_DIR)/system.mk
 
+VSRC = $(RTL_DIR)/testbench/system_tb.v
+
 #include hardware sources and definitions
 include $(SRC_DIR)/src.mk
 

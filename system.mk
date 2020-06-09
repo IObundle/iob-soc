@@ -19,7 +19,7 @@ DDR_ADDR_W:=30
 RUN_DDR:=1
 
 #BOOT
-USE_BOOT:=1
+USE_BOOT:=0
 BOOTROM_ADDR_W:=12
 
 #Number of slaves (peripherals)
@@ -42,11 +42,11 @@ FPGA_DIR:=fpga/xilinx/AES-KU040-DB-G
 PUDIM:=146.193.44.48
 BABA:=146.193.44.179
 
-FPGA_COMPILER_SERVER:=$(PUDIM) #pudim-flan
-#FPGA_COMPILER_SERVER:=$(BABA) #baba-de-camelo
+FPGA_COMPILER_SERVER:=$(PUDIM)#pudim-flan
+#FPGA_COMPILER_SERVER:=$(BABA)#baba-de-camelo
 
-FPGA_BOARD_SERVER:= $(PUDIM) #pudim-flan
-#FPGA_BOARD_SERVER:=$(BABA) #baba-de-camelo
+FPGA_BOARD_SERVER:= $(PUDIM)#pudim-flan
+#FPGA_BOARD_SERVER:=$(BABA)#baba-de-camelo
 
 #ASIC compilation directory
 ASIC_DIR = asic/umc130
