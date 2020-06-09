@@ -10,7 +10,8 @@ int main()
   uart_connect();
 
   //say hello
-  uart_putc(STX);
   uart_printf("\n\n\nHello world!\n\n\n");
-  uart_putc(ETX);
+
+  //hang up
+  uart_disconnect();
 }

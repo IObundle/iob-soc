@@ -33,6 +33,7 @@
       integer           res;
       integer           i, k;
 
+      //signal target to expect data
       cpu_putchar(`STX);
       
       fp = $fopen("firmware.bin","rb");
@@ -54,6 +55,7 @@
       cpu_putchar(file_size[23:16]);
       cpu_putchar(file_size[31:24]);
       
+
       k = 0;
       for(i = 0; i < file_size; i++) begin
          cpu_putchar($fgetc(fp));
@@ -65,6 +67,7 @@
       end
       $write("%d%%\n", 100);
       $fclose(fp);
+
    endtask
 
    task cpu_receivefile;
@@ -73,6 +76,9 @@
       integer           fp;
       integer           i, k;
 
+      //signal target to expect data
+      cpu_putchar(`ETX);
+      
       fp = $fopen("out.bin", "wb");
       
       // Send file size
@@ -151,7 +157,7 @@
       cpu_putchar(`ACK);
    endtask
 
-   task cpu_disconnect;
+   task cpu_run;
       cpu_putchar(`EOT);
    endtask
 
@@ -160,8 +166,12 @@
       while (cpu_char != `STX);
 
       cpu_getchar(cpu_char);
-      while(cpu_char != `ETX) begin
+      while(cpu_char != `ETX && cpu_char != `EOT) begin
          $write("%c", cpu_char);
          cpu_getchar(cpu_char);
       end
+
+      if(cpu_char == `EOT)
+        $finish;
+      
    endtask

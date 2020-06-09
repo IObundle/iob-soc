@@ -51,29 +51,27 @@ module system_tb;
       // configure uart
       cpu_inituart();
 
-`ifdef USE_BOOT
       //connect with bootloader
       cpu_connect();
       cpu_print();
       
+`ifdef USE_BOOT
       //send program
       cpu_sendfile();
       cpu_print();
-
       //uncomment for debug
       //cpu_receivefile();
       //cpu_print();
-      
-      //hang up
-      cpu_disconnect();
-      cpu_print();
 `endif
+
+      //run firmware
+      cpu_run();
 
       //connect with firmware
       cpu_connect();
       cpu_print();
-      $finish; 
-   end // test procedure
+      
+   end
 
    
    //
@@ -278,8 +276,8 @@ module system_tb;
 
 `include "cpu_tasks.v"
    
-   // finish simulation
-  // always @(posedge trap)   	 
-    // #500 $finish;
+   //finish simulation
+   always @(posedge trap)   	 
+     #500 $finish;
    
 endmodule
