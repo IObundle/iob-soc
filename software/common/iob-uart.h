@@ -58,6 +58,7 @@ void uart_connect();
 
 void uart_disconnect();
 
+char uart_getcmd();
 
 #ifdef PCSIM
 //itoa definition

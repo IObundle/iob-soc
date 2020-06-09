@@ -109,7 +109,7 @@ unsigned int uart_getfile(char *mem) {
   for (unsigned int i = 0; i < file_size; i++) {
     mem[i] = uart_getc();
   }
-  
+
   return file_size;
 }
 
@@ -135,10 +135,16 @@ void uart_connect() {
     uart_putc(ENQ);
     host_resp = uart_getc();
   } while(host_resp != ACK);
-  uart_puts ("Connected with host");
+  uart_putc(STX);
 }
 
 void uart_disconnect() {
-  uart_puts ("Closing connection with host. Bye!\n");
   uart_putc (EOT);
+}
+
+char uart_getcmd() {
+  uart_putc(ETX); //disable prints
+  char cmd = uart_getc();
+  uart_putc(STX); //enable prints
+  return cmd;
 }
