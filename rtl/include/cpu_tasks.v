@@ -65,11 +65,6 @@
       end
       $write("%d%%\n", 100);
       $fclose(fp);
-
-      //wait ack
-      cpu_char = `ENQ;
-      while (cpu_char != `ACK);
-            
    endtask
 
    task cpu_receivefile;
@@ -156,7 +151,17 @@
       cpu_putchar(`ACK);
    endtask
 
-   task cpu_run;
+   task cpu_disconnect;
       cpu_putchar(`EOT);
-      while (cpu_char != `ACK);
+   endtask
+
+   task cpu_print;
+      do cpu_getchar(cpu_char);
+      while (cpu_char != `STX);
+
+      cpu_getchar(cpu_char);
+      while(cpu_char != `ETX) begin
+         $write("%c", cpu_char);
+         cpu_getchar(cpu_char);
+      end
    endtask

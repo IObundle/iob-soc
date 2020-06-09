@@ -13,13 +13,13 @@ USE_SRAM:=1
 SRAM_ADDR_W:=14
 
 #DDR
-USE_DDR:=0
+USE_DDR:=1
 DDR_ADDR_W:=30
 #runs from DDR if 1, from SRAM if 0
 RUN_DDR:=1
 
 #BOOT
-USE_BOOT:=0
+USE_BOOT:=1
 BOOTROM_ADDR_W:=12
 
 #Number of slaves (peripherals)
