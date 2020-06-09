@@ -9,9 +9,8 @@ int main()
   //call host
   uart_connect();
 
-  //say hello 
+  //say hello
+  uart_putc(STX);
   uart_printf("\n\n\nHello world!\n\n\n");
-
-  //hang up
-  uart_disconnect();
+  uart_putc(ETX);
 }

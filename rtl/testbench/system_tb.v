@@ -51,29 +51,30 @@ module system_tb;
       // configure uart
       cpu_inituart();
 
-      //connect with target
-      cpu_connect();
-
 `ifdef USE_BOOT
-      cpu_sendfile();
-`endif
+      //connect with bootloader
+      cpu_connect();
+      cpu_print();
       
+      //send program
+      cpu_sendfile();
+      cpu_print();
+
       //uncomment for debug
       //cpu_receivefile();
+      //cpu_print();
+      
+      //hang up
+      cpu_disconnect();
+      cpu_print();
+`endif
 
-      cpu_run();
-
+      //connect with firmware
+      cpu_connect();
+      cpu_print();
       $finish; 
    end // test procedure
 
-
-   initial
-     while(1)
-       begin
-          cpu_getchar(cpu_char);
-          if(cpu_char != `ACK)
-          $write("%c", cpu_char);
-       end
    
    //
    // INSTANTIATE COMPONENTS
