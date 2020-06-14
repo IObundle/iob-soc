@@ -6,6 +6,7 @@
 set TOP top_system
 set PART xcku040-fbva676-1-c
 
+set USE_DDR [lindex $argv 0]
 set HW_INCLUDE [lindex $argv 1]
 set HW_DEFINE [lindex $argv 2]
 set VSRC [lindex $argv 3]
@@ -15,20 +16,11 @@ foreach file [split $VSRC \ ] {
     read_verilog -sv $file
 }
 
-#macros
-#foreach macro [split $HW_DEFINE \ ] {
-#    puts $macro
-#    set_property verilog_define $macro [current_fileset]
-#}
+set_property part $PART [current_project]
 
-#set_property verilog_define $HW_DEFINE [current_fileset]
-
-#clock
-if { [lindex $argv 0] != {USE_DDR} } {
+if { !$USE_DDR } { #clock
     read_verilog verilog/clock_wizard.v
-}
-
-if { [lindex $argv 0] == {USE_DDR} } {
+} else { #generate DDR files
 
     read_xdc ./ddr.xdc
 
@@ -83,7 +75,7 @@ if { [lindex $argv 0] == {USE_DDR} } {
 
 read_xdc ./synth_system.xdc
 
-synth_design -include_dirs $HW_INCLUDE -part $PART -top $TOP
+synth_design -include_dirs $HW_INCLUDE -verilog_define $HW_DEFINE -part $PART -top $TOP
 
 opt_design
 

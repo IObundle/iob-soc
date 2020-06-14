@@ -11,7 +11,7 @@ module boot_ctr
 
    //cpu interface
    input                      cpu_valid,
-   input [`DATA_W-1:0]        cpu_wdata,
+   input [1:0]                cpu_wdata,
    input [`DATA_W/8-1:0]      cpu_wstrb,
    output [`DATA_W-1:0]       cpu_rdata,
    output reg                 cpu_ready,
@@ -76,10 +76,11 @@ module boot_ctr
    always @(posedge clk, posedge rst)
      if(rst) begin
         sram_valid <= 1'b1;
+        ram_w_addr <= {(`SRAM_ADDR_W-2){1'b0}};
         sram_wstrb <= {`DATA_W/8{1'b1}};
      end else begin
         sram_valid <= rom_r_valid;
-        ram_w_addr  <= rom_r_addr - 2**(`BOOTROM_ADDR_W-2);
+        ram_w_addr <= rom_r_addr - 2**(`BOOTROM_ADDR_W-2);
         sram_wstrb <= {`DATA_W/8{rom_r_valid}};
      end
    

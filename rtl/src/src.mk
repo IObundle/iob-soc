@@ -18,8 +18,7 @@ ROM_VSRC$:=$(MEM_DIR)/sp_rom/sp_rom.v $(SRC_DIR)/boot_ctr.v
 endif
 endif
 
-VSRC = \
-$(RTL_DIR)/testbench/system_tb.v \
+VSRC+= \
 $(SRC_DIR)/system.v \
 $(RISCV_DIR)/picorv32.v \
 $(RISCV_DIR)/iob_picorv32.v \
@@ -77,7 +76,10 @@ HW_DEFINE+=$(define) UART=$(UART)
 # HW INCLUDES
 #
 
-HW_INCLUDE := . $(incdir) $(RTL_DIR)/include $(incdir) \
-	$(UART_DIR)/rtl/include $(incdir) $(CACHE_DIR)/rtl/include \
-	$(incdir) $(INTERCON_DIR)/rtl/include
+HW_INCLUDE := \
+$(incdir) . \
+$(incdir) $(RTL_DIR)/include \
+$(incdir) $(UART_DIR)/rtl/include \
+$(incdir) $(CACHE_DIR)/rtl/include \
+$(incdir) $(INTERCON_DIR)/rtl/include
 

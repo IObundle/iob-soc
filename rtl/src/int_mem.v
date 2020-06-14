@@ -76,7 +76,7 @@ module int_mem
         //cpu slave interface
         //no address bus since single address
         .cpu_valid(boot_ctr_req[`valid(0)]),
-        .cpu_wdata(boot_ctr_req[`wdata(0)]),
+        .cpu_wdata(boot_ctr_req[`wdata(0)-(`DATA_W-2)]),
         .cpu_wstrb(boot_ctr_req[`wstrb(0)]),
         .cpu_rdata(boot_ctr_resp[`rdata(0)]),
         .cpu_ready(boot_ctr_resp[`ready(0)]),
