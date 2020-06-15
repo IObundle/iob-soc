@@ -25,20 +25,16 @@ endif
 DEFINE+=-DRUN_DDR=$(RUN_DDR)
 
 #firmware size according to SRAM or DDR
-ifeq ($(USE_SRAM),1)
-	ifeq ($(USE_DDR),1)
-		ifeq ($(RUN_DDR),0)
-			FIRM_ADDR_W=$(SRAM_ADDR_W)
-			DEFINE+=-DFIRM_ADDR_W=$(SRAM_ADDR_W)
-		else
-			DEFINE+=-DFIRM_ADDR_W=$(FIRM_ADDR_W)
-		endif
-	else
+ifeq ($(USE_DDR),1)
+	ifeq ($(RUN_DDR),0)
 		FIRM_ADDR_W=$(SRAM_ADDR_W)
 		DEFINE+=-DFIRM_ADDR_W=$(SRAM_ADDR_W)
+	else
+		DEFINE+=-DFIRM_ADDR_W=$(FIRM_ADDR_W)
 	endif
 else
-	DEFINE+=-DFIRM_ADDR_W=$(FIRM_ADDR_W)
+	FIRM_ADDR_W=$(SRAM_ADDR_W)
+	DEFINE+=-DFIRM_ADDR_W=$(SRAM_ADDR_W)
 endif
 
 firmware.elf: ../../system.mk ../template.lds $(HDR) $(SRC)

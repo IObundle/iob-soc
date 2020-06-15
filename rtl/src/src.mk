@@ -2,9 +2,7 @@
 # VERILOG SOURCES
 #
 
-ifeq ($(USE_SRAM),1)
 RAM_VSRC:=$(SRC_DIR)/int_mem.v $(SRC_DIR)/sram.v $(MEM_DIR)/tdp_ram/iob_tdp_ram.v
-endif
 
 ifeq ($(USE_DDR),1)
 DDR_VSRC:=$(SRC_DIR)/ext_mem.v $(CACHE_DIR)/rtl/src/iob-cache.v \
@@ -12,10 +10,8 @@ $(AXI_RAM_DIR)/rtl/axi_ram.v $(MEM_DIR)/reg_file/iob_reg_file.v $(MEM_DIR)/fifo/
 $(MEM_DIR)/sp_ram/iob_sp_mem.v
 endif
 
-ifeq ($(USE_SRAM),1)
 ifeq ($(USE_BOOT),1)
 ROM_VSRC$:=$(MEM_DIR)/sp_rom/sp_rom.v $(SRC_DIR)/boot_ctr.v
-endif
 endif
 
 VSRC+= \
@@ -44,9 +40,7 @@ ifeq ($(USE_LA_IF),1)
 HW_DEFINE+=$(define) USE_LA_IF
 endif
 
-ifeq ($(USE_SRAM),1)
-HW_DEFINE+=$(define) USE_SRAM $(define) SRAM_ADDR_W=$(SRAM_ADDR_W)
-endif
+HW_DEFINE+=$(define) SRAM_ADDR_W=$(SRAM_ADDR_W)
 
 ifeq ($(USE_DDR),1)
 HW_DEFINE+=$(define) USE_DDR
@@ -54,16 +48,10 @@ endif
 
 ifeq ($(RUN_DDR),1)
 HW_DEFINE+=$(define) RUN_DDR
-else
-ifeq ($(USE_SRAM),0)
-HW_DEFINE+=$(define) RUN_DDR
-endif
 endif
 
-ifeq ($(USE_SRAM),1)
 ifeq ($(USE_BOOT),1)
 HW_DEFINE+=$(define) USE_BOOT $(define) BOOTROM_ADDR_W=$(BOOTROM_ADDR_W)
-endif
 endif
 
 HW_DEFINE+=$(define) FIRM_ADDR_W=$(FIRM_ADDR_W)

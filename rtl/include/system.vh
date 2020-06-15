@@ -5,13 +5,6 @@
 // number of slaves (log2)
 `define N_SLAVES_W $clog2(`N_SLAVES)
 
-//use both memories
-`ifdef USE_SRAM
- `ifdef USE_DDR
-  `define USE_SRAM_USE_DDR
- `endif
-`endif
-
 //init sram with firmware, no boot
 `ifndef USE_BOOT
  `ifndef USE_DDR
@@ -37,50 +30,35 @@
 //
 
 //run sram
-`ifdef USE_SRAM
+`ifdef USE_DDR
  `ifndef RUN_DDR
-  `ifdef USE_DDR
-   `define RUN_SRAM_USE_DDR
-  `endif
+  `define RUN_SRAM_USE_DDR
  `endif
 `endif
 
 //run ddr
 `ifdef USE_DDR
  `ifdef RUN_DDR
-  `ifndef USE_SRAM
-   `define DDR_ONLY
-  `else //use SRAM 
-   `ifdef USE_BOOT
-    `define BOOT_DDR
-   `else
-    `define RUN_DDR_USE_SRAM
-   `endif
+  `ifdef USE_BOOT
+   `define BOOT_DDR
+  `else
+   `define RUN_DDR_USE_SRAM
   `endif
  `endif
 `endif
 
-
-//INSTRUCTION BUS SELECT
-`define IBUS_SEL {1'b0, boot}
-
  
 // DATA BUS NOTABLE BITS
-// valid bit
-`define V cpu_d_req[`REQ_W-1]
 
-`ifdef USE_SRAM_USE_DDR
- `define E cpu_d_req[`REQ_W-2] // extra memory selection bit
- `define P cpu_d_req[`REQ_W-3] // peripheral selection bit
- `define S cpu_d_req[`REQ_W-3 : `REQ_W-3-`N_SLAVES_W]// slave select word
-`else
- `define P cpu_d_req[`REQ_W-2]// peripheral selection bit
- `define S cpu_d_req[`REQ_W-2 : `REQ_W-2-`N_SLAVES_W]// slave select word
-`endif
-
+`define E cpu_d_req[`REQ_W-2] // extra memory selection bit
+`define P cpu_d_req[`REQ_W-3] // peripheral selection bit
+`define S cpu_d_req[`REQ_W-3 : `REQ_W-3-`N_SLAVES_W]// slave select word
 `define B d_req[`ADDR_P+`SRAM_ADDR_W+1 -: 2] // boot controller select
 
-`define DBUS_SEL_BOOT_DDR {1'b0, ~`P&(~`E^boot), ~`P&(`E^boot)}
-`define DBUS_SEL_RUN_DDR_USE_SRAM {1'b0, ~`P&~`E, ~`P&`E}
-`define DBUS_SEL_RUN_SRAM_USE_DDR {1'b0, ~`P&`E, ~`P&~`E}
-`define DBUS_SEL_SINGLE_MEM {1'b0, `P}
+`define IBUS_REQ_BOOT_DDR {cpu_i_req[`valid(0)], boot, cpu_i_req[`REQ_W-3:0]),
+
+`define DBUS_REQ_BOOT_DDR {cpu_d_req[`valid(0)], ~`E^boot), ~`P, cpu_d_req[`REQ_W-4:0]}
+`define DBUS_REQ_RUN_DDR_USE_SRAM {cpu_d_req[`valid(0)], ~`E, ~`P, cpu_d_req[`REQ_W-4:0]}
+`define DBUS_REQ_RUN_SRAM_USE_DDR {cpu_d_req[`valid(0)], `E, ~`P, cpu_d_req[`REQ_W-4:0]}
+
+`define PBUS_REQ {cpu_d_req[`valid(0)]&`P, `S, cpu_d_req[`REQ_W-3-`N_SLAVES_W:0]}

@@ -71,13 +71,11 @@ module system
    //
 
 `ifdef USE_BOOT
- `ifdef USE_SRAM
    wire                     boot;
    wire                     boot_reset;   
    wire                     cpu_reset = reset | boot_reset;
- `endif
 `else
-   wire                   cpu_reset = reset;
+   wire                     cpu_reset = reset;
 `endif
    
    //
@@ -126,7 +124,7 @@ module system
 
    // INSTRUCTION BUS
    split #(
-`ifdef USE_SRAM_USE_DDR
+`ifdef BOOT_DDR
            .N_SLAVES(2)
 `else
            .N_SLAVES(1)
@@ -135,32 +133,25 @@ module system
    ibus_split
      (
       // master interface
+`ifdef BOOT_DDR
+      .m_req  (`IBUS_REQ_BOOT_DDR),
+`else
       .m_req  (cpu_i_req),
+`endif
       .m_resp (cpu_i_resp),
       
       // slaves interface
 `ifdef BOOT_DDR //run SRAM to boot then run DDR
-      .s_sel (`IBUS_SEL),
-      .s_req ({int_mem_i_req, ext_mem_i_req}),
-      .s_resp ({int_mem_i_resp, ext_mem_i_resp})
-`elsif RUN_SRAM_USE_DDR //run SRAM, use DDR as large mem
-      .s_sel (2'b1),
-      .s_req ({int_mem_i_req, ext_mem_i_req}),
-      .s_resp ({int_mem_i_resp, ext_mem_i_resp})
-`elsif RUN_DDR_USE_SRAM //run DDR, use SRAM as fast mem
-      .s_sel (2'b0),
       .s_req ({int_mem_i_req, ext_mem_i_req}),
       .s_resp ({int_mem_i_resp, ext_mem_i_resp})
 `elsif DDR_ONLY //run DDR always
-     .s_sel (1'b0),
-     .s_req (ext_mem_i_req),
-     .s_resp (ext_mem_i_resp)
+      .s_req (ext_mem_i_req),
+      .s_resp (ext_mem_i_resp)
 `else //run SRAM always
-      .s_sel (1'b0), 
       .s_req (int_mem_i_req),
       .s_resp (int_mem_i_resp)
 `endif
-       );
+      );
 
 
    // DATA BUS
@@ -177,43 +168,37 @@ module system
 
    split 
      #(
-`ifdef USE_SRAM_USE_DDR
-     .N_SLAVES(3)
+`ifdef USE_DDR
+       .N_SLAVES(3)
 `else
        .N_SLAVES(2)
 `endif
        )
-   dbus_split    
-     (
-      // master interface
-      .m_req (cpu_d_req),
-      .m_resp (cpu_d_resp),
-
-      // slaves interface
-
-`ifdef USE_SRAM_USE_DDR //use both memories
- `ifdef BOOT_DDR 
-      .s_sel(`DBUS_SEL_BOOT_DDR),
- `elsif RUN_DDR_USE_SRAM
-      .s_sel(`DBUS_SEL_RUN_DDR_USE_SRAM),
- `elsif RUN_SRAM_USE_DDR
-      .s_sel(`DBUS_SEL_RUN_SRAM_USE_DDR),
- `endif
-      .s_req ({ext_mem_d_req, int_mem_d_req, pbus_req}),
-      .s_resp({ext_mem_d_resp, int_mem_d_resp, pbus_resp})
-`else //use single memory 
-      .s_sel(`DBUS_SEL_SINGLE_MEM),
- `ifdef DDR_ONLY
-      .s_req ({pbus_req, ext_mem_d_req}),
-      .s_resp({pbus_resp, ext_mem_d_resp})
- `else //must be using sram only
-      .s_req ({pbus_req, int_mem_d_req}),
-      .s_resp({pbus_resp, int_mem_d_resp})
- `endif
+      dbus_split    
+      (
+       // master interface
+`ifdef BOOT_DDR 
+       .m_req  (`DBUS_REQ_BOOT_DDR),
+`elsif RUN_DDR_USE_SRAM
+       .m_req  (`DBUS_REQ_RUN_DDR_USE_SRAM),
+`elsif RUN_DDR_USE_SRAM
+       .m_req  (`DBUS_REQ_RUN_SRAM_USE_DDR),
+`else
+       .m_req  (cpu_d_req),
 `endif
-     );
+       .m_resp (cpu_d_resp),
+
+       // slaves interface
+`ifdef USE_DDR
+       .s_req ({ext_mem_d_req, int_mem_d_req, pbus_req}),
+       .s_resp({ext_mem_d_resp, int_mem_d_resp, pbus_resp})
+`else //must be using sram only
+       .s_req ({pbus_req, int_mem_d_req}),
+       .s_resp({pbus_resp, int_mem_d_resp})
+`endif
+       );
    
-   
+
    //   
    // SPLIT PERIPHERAL BUS
    //
@@ -227,25 +212,21 @@ module system
          .N_SLAVES(`N_SLAVES)
          )
    pbus_split
-       (
-        // master interface
-        .m_req(pbus_req),
-        .m_resp(pbus_resp),
-        
-        // slaves interface
-        .s_sel(`S),
-        .s_req(slaves_req),
-        .s_resp(slaves_resp)
-        );
-   
-   /////////////////////////////////////////////////////////////////////////
-       // MODULE INSTANCES
+     (
+      // master interface
+      .m_req(`PBUS_REQ),
+      .m_resp(pbus_resp),
+      
+      // slaves interface
+      .s_req(slaves_req),
+      .s_resp(slaves_resp)
+      );
+
    
    //
    // INTERNAL SRAM MEMORY
    //
    
-`ifdef USE_SRAM
    int_mem int_mem0 
        (
         .clk                  (clk ),
@@ -262,7 +243,6 @@ module system
         .d_req                (int_mem_d_req),
         .d_resp               (int_mem_d_resp)
         );
-`endif
 
 `ifdef USE_DDR
    //

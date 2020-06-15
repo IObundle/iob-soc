@@ -22,7 +22,6 @@
 //Architecural parameters
 #define ADDR_W 32
 #define N_SLAVES_W BITS_TO_REPRESENT(N_SLAVES)
-#define USE_SRAM_USE_DDR (USE_SRAM && USE_DDR)
 
 
 //
@@ -34,8 +33,5 @@
 //DDR if running from SRAM
 #define EXTRA_BASE (1<<31)
 
-
 //select peripherals
-#define P_BASE (1<<(31-USE_SRAM_USE_DDR))
-#define P_SHIFT (N_SLAVES==1? 1: N_SLAVES_W)
-#define UART_BASE P_BASE |(UART<<(ADDR_W-USE_SRAM_USE_DDR-1-P_SHIFT))
+#define UART_BASE (1<<30) |(UART<<(ADDR_W-2-N_SLAVES_W))
