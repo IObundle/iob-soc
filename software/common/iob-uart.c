@@ -135,7 +135,14 @@ void uart_connect() {
     uart_putc(ENQ);
     host_resp = uart_getc();
   } while(host_resp != ACK);
-  uart_putc(STX);
+}
+
+void uart_starttext() {
+  uart_putc (STX);
+}
+
+void uart_endtext() {
+  uart_putc (ETX);
 }
 
 void uart_disconnect() {
@@ -143,8 +150,6 @@ void uart_disconnect() {
 }
 
 char uart_getcmd() {
-  uart_putc(ETX); //disable prints
   char cmd = uart_getc();
-  uart_putc(STX); //enable prints
   return cmd;
 }

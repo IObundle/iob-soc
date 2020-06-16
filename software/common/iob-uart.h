@@ -58,6 +58,10 @@ void uart_connect();
 
 void uart_disconnect();
 
+void uart_starttext();
+
+void uart_endtext();
+
 char uart_getcmd();
 
 #ifdef PCSIM
