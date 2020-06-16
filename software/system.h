@@ -33,5 +33,9 @@
 //DDR if running from SRAM
 #define EXTRA_BASE (1<<31)
 
+//select boot controller
+#define BOOTCTR_BASE (1<<29)
+
 //select peripherals
 #define UART_BASE (1<<30) |(UART<<(ADDR_W-2-N_SLAVES_W))
+

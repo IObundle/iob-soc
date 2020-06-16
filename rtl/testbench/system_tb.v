@@ -51,26 +51,26 @@ module system_tb;
       // configure uart
       cpu_inituart();
 
+`ifdef USE_BOOT
       //connect with bootloader
       cpu_connect();
       cpu_print();
-      
-`ifdef USE_BOOT
       //send program
       cpu_sendfile();
       cpu_print();
       //uncomment for debug
       //cpu_receivefile();
       //cpu_print();
-`endif
 
       //run firmware
       cpu_run();
-
       //connect with firmware
+`endif
       cpu_connect();
+      //$display("got here");
       cpu_print();
-      
+      $finish;
+
    end
 
    
@@ -82,54 +82,54 @@ module system_tb;
 `ifdef USE_DDR
    //Write address
    wire [0:0] ddr_awid;
-   wire [`DDR_ADDR_W-1:0] ddr_awaddr;
-   wire [7:0]             ddr_awlen;
-   wire [2:0]             ddr_awsize;
-   wire [1:0]             ddr_awburst;
-   wire                   ddr_awlock;
-   wire [3:0]             ddr_awcache;
-   wire [2:0]             ddr_awprot;
-   wire [3:0]             ddr_awqos;
-   wire                   ddr_awvalid;
-   wire                   ddr_awready;
+   wire [`FIRM_ADDR_W-1:0] ddr_awaddr;
+   wire [7:0]              ddr_awlen;
+   wire [2:0]              ddr_awsize;
+   wire [1:0]              ddr_awburst;
+   wire                    ddr_awlock;
+   wire [3:0]              ddr_awcache;
+   wire [2:0]              ddr_awprot;
+   wire [3:0]              ddr_awqos;
+   wire                    ddr_awvalid;
+   wire                    ddr_awready;
    //Write data
-   wire [31:0]            ddr_wdata;
-   wire [3:0]             ddr_wstrb;
-   wire                   ddr_wlast;
-   wire                   ddr_wvalid;
-   wire                   ddr_wready;
+   wire [31:0]             ddr_wdata;
+   wire [3:0]              ddr_wstrb;
+   wire                    ddr_wlast;
+   wire                    ddr_wvalid;
+   wire                    ddr_wready;
    //Write response
-   wire [7:0]             ddr_bid;
-   wire [1:0]             ddr_bresp;
-   wire                   ddr_bvalid;
-   wire                   ddr_bready;
+   wire [7:0]              ddr_bid;
+   wire [1:0]              ddr_bresp;
+   wire                    ddr_bvalid;
+   wire                    ddr_bready;
    //Read address
-   wire [0:0]             ddr_arid;
-   wire [`DDR_ADDR_W-1:0] ddr_araddr;
-   wire [7:0]             ddr_arlen;
-   wire [2:0]             ddr_arsize;
-   wire [1:0]             ddr_arburst;
-   wire                   ddr_arlock;
-   wire [3:0]             ddr_arcache;
-   wire [2:0]             ddr_arprot;
-   wire [3:0]             ddr_arqos;
-   wire                   ddr_arvalid;
-   wire                   ddr_arready;
+   wire [0:0]              ddr_arid;
+   wire [`FIRM_ADDR_W-1:0] ddr_araddr;
+   wire [7:0]              ddr_arlen;
+   wire [2:0]              ddr_arsize;
+   wire [1:0]              ddr_arburst;
+   wire                    ddr_arlock;
+   wire [3:0]              ddr_arcache;
+   wire [2:0]              ddr_arprot;
+   wire [3:0]              ddr_arqos;
+   wire                    ddr_arvalid;
+   wire                    ddr_arready;
    //Read data
-   wire [7:0]             ddr_rid;
-   wire [31:0]            ddr_rdata;
-   wire [1:0]             ddr_rresp;
-   wire                   ddr_rlast;
-   wire                   ddr_rvalid;
-   wire                   ddr_rready;
+   wire [7:0]              ddr_rid;
+   wire [31:0]             ddr_rdata;
+   wire [1:0]              ddr_rresp;
+   wire                    ddr_rlast;
+   wire                    ddr_rvalid;
+   wire                    ddr_rready;
 `endif
 
    //test uart signals
-   wire                   tester_txd, tester_rxd;       
-   wire                   tester_rts, tester_cts;       
+   wire                    tester_txd, tester_rxd;       
+   wire                    tester_rts, tester_cts;       
 
    //cpu trap signal
-   wire                   trap;
+   wire                    trap;
    
    //
    // UNIT UNDER TEST
@@ -277,7 +277,9 @@ module system_tb;
 `include "cpu_tasks.v"
    
    //finish simulation
-   always @(posedge trap)   	 
-     #500 $finish;
+   //always @(posedge trap) begin
+   // #10 $display("Found CPU trap condition");
+   //$finish;
+   //end
    
 endmodule

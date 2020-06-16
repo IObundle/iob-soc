@@ -8,10 +8,14 @@ int main()
 
   //call host
   uart_connect();
+  uart_starttext();
 
   //say hello
   uart_printf("\n\n\nHello world!\n\n\n");
 
   //hang up
-  uart_disconnect();
+  uart_endtext();
+  uart_txwait();
+  // while(1);
+    
 }

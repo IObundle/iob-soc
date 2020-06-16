@@ -134,9 +134,9 @@
    task cpu_putchar;
       input [7:0] send_char;
       //wait until tx ready
-      do
-	    cpu_uartread(`UART_WRITE_WAIT, rxread_reg);
-      while(rxread_reg);
+      do begin 
+	 cpu_uartread(`UART_WRITE_WAIT, rxread_reg);
+      end while(rxread_reg);
       //write the data 
       cpu_uartwrite(`UART_DATA, send_char); 
 
@@ -166,12 +166,9 @@
       while (cpu_char != `STX);
 
       cpu_getchar(cpu_char);
-      while(cpu_char != `ETX && cpu_char != `EOT) begin
+      while(cpu_char != `ETX) begin
          $write("%c", cpu_char);
          cpu_getchar(cpu_char);
       end
-
-      if(cpu_char == `EOT)
-        $finish;
       
    endtask

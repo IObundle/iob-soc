@@ -7,10 +7,8 @@ module int_mem
     input                clk,
     input                rst,
 
-`ifdef USE_BOOT
     output               boot,
     output               cpu_reset,
-`endif
     
     //instruction bus
     input [`REQ_W-1:0]   i_req,
@@ -32,7 +30,6 @@ module int_mem
    ////////////////////////////////////////////////////////
    // BOOT HARDWARE
    //
-`ifdef USE_BOOT
 
    //boot controller bus to write program in sram
    wire [`REQ_W-1:0]     boot_ctr_req;
@@ -48,11 +45,10 @@ module int_mem
    data_bootctr_split
        (
         // master interface
-        .m_req(d_req),
+        .m_req({d_req[`REQ_W-1], `B, d_req[`REQ_W-3:0]}),
         .m_resp(d_resp),
         
         // slaves interface
-        .s_sel(`B),
         .s_req({boot_ctr_req, ram_d_req}),
         .s_resp({boot_ctr_resp, ram_d_resp})
         );
@@ -112,11 +108,6 @@ module int_mem
    assign ram_d_addr = boot? 
                        ram_d_req[`address(0, `SRAM_ADDR_W, 2)] + (`BOOT_OFFSET>>2): 
                        ram_d_req[`address(0, `SRAM_ADDR_W, 2)];
-`else // !`ifdef USE_BOOT: direct conection
-   assign ram_d_req = d_req; 
-   assign ram_d_addr = d_req[`address(0, `SRAM_ADDR_W, 2)];
-   assign d_resp = ram_d_resp;
-`endif // !`ifdef USE_BOOT
 
    
    //
@@ -128,22 +119,14 @@ module int_mem
    wire [`RESP_W-1:0]    ram_i_resp;
    
    merge #(
-`ifdef USE_BOOT
            .N_MASTERS(2)
-`else
-           .N_MASTERS(1)
-`endif
            )
    ibus_merge
      (
       //master
-`ifdef USE_BOOT
       .m_req({ram_w_req, ram_r_req}),
       .m_resp({ram_w_resp, ram_r_resp}),
-`else
-      .m_req(i_req),
-      .m_resp(i_resp),
-`endif
+
       //slave  
       .s_req(ram_i_req),
       .s_resp(ram_i_resp)

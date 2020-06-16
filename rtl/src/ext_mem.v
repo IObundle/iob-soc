@@ -126,16 +126,17 @@ module ext_mem
    wire [`RESP_W-1:0]     dcache_be_resp;
 
    // Data cache instance
-   iob_cache # (
-                .FE_ADDR_W(`FIRM_ADDR_W),
-                .N_WAYS(2),        //Number of ways
-                .LINE_OFF_W(4),    //Cache Line Offset (number of lines)
-                .WORD_OFF_W(4),    //Word Offset (number of words per line)
-                .WTBUF_DEPTH_W(4), //FIFO's depth
-                //Ctrls parameters
-                .CTRL_CNT_ID(0),   //Remove counters with distinct data-instr accesses
-                .CTRL_CNT(1)       //Counters for hits and misses (since previous parameter is 0)
-                )
+   iob_cache # 
+     (
+      .FE_ADDR_W(`FIRM_ADDR_W),
+      .N_WAYS(2),        //Number of ways
+      .LINE_OFF_W(4),    //Cache Line Offset (number of lines)
+      .WORD_OFF_W(4),    //Word Offset (number of words per line)
+      .WTBUF_DEPTH_W(4), //FIFO's depth
+      //Ctrls parameters
+      .CTRL_CNT_ID(0),   //Remove counters with distinct data-instr accesses
+      .CTRL_CNT(1)       //Counters for hits and misses (since previous parameter is 0)
+      )
    dcache (
            .clk   (clk),
            .reset (rst),
@@ -173,17 +174,18 @@ module ext_mem
                  );
 
    // L2 cache instance
-   iob_cache_axi # (
-                    .FE_ADDR_W(`FIRM_ADDR_W),
-                    .N_WAYS(4),        //Number of Ways
-                    .LINE_OFF_W(4),    //Cache Line Offset (number of lines)
-                    .WORD_OFF_W(4),    //Word Offset (number of words per line)
-                    .WTBUF_DEPTH_W(4), //FIFO's depth
-                    .BE_ADDR_W (`DDR_ADDR_W),
-                    //Ctrls parameters
-                    .CTRL_CNT_ID(0),   //Remove counters with distinct data-instr accesses
-                    .CTRL_CNT(0)       //Remove counters
-                    )
+   iob_cache_axi # 
+     (
+      .FE_ADDR_W(`FIRM_ADDR_W),
+      .N_WAYS(4),        //Number of Ways
+      .LINE_OFF_W(4),    //Cache Line Offset (number of lines)
+      .WORD_OFF_W(4),    //Word Offset (number of words per line)
+      .WTBUF_DEPTH_W(4), //FIFO's depth
+      .BE_ADDR_W (`DDR_ADDR_W),
+      //Ctrls parameters
+      .CTRL_CNT_ID(0),   //Remove counters with distinct data-instr accesses
+      .CTRL_CNT(0)       //Remove counters
+      )
    l2cache (
             .clk   (clk),
             .reset (rst),

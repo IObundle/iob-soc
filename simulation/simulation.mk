@@ -43,13 +43,11 @@ firmware:
 	$(PYTHON_DIR)/hex_split.py firmware
 
 boot:
-ifeq ($(USE_BOOT),1)
 	@echo "Making bootloader"
 	make -C $(BOOT_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
 	cp $(BOOT_DIR)/boot.hex .
 	cp $(BOOT_DIR)/boot.hex boot.dat
 	$(PYTHON_DIR)/hex_split.py boot
-endif
 
 ifeq ($(SIM_DIR),simulation/icarus)
 sim_clean:=icarus_clean

@@ -8,18 +8,15 @@ CACHE_DIR:=$(SUBMODULES_DIR)/cache/c-driver
 
 #local defines
 DEFINE+=-DPROG_SIZE=`wc -c   ../../software/firmware/firmware.bin | head -n1 | cut -d " " -f1`
-DEFINE+=-DUSE_BOOT=$(USE_BOOT) -DBOOTROM_ADDR_W=$(BOOTROM_ADDR_W) 
-DEFINE+=-DRUN_DDR=$(RUN_DDR) -DDDR_ADDR_W=$(DDR_ADDR_W)
-
-#else
-#define BOOTCTR_BASE (1 << SRAM_ADDR_W)
-
+DEFINE+=-DBOOTROM_ADDR_W=$(BOOTROM_ADDR_W) 
+DEFINE+=-DRUN_DDR=$(RUN_DDR)
+DEFINE+=-DSRAM_ADDR_W=$(SRAM_ADDR_W)
 
 #local includes
 INCLUDE+=-I$(CACHE_DIR)
 
 #local sources
-HDR:=../system.h ./boot.h
+HDR:=../system.h
 SRC+=boot.S boot.c $(CACHE_DIR)/iob-cache.c
 
 boot.elf: ../../system.mk ../template.lds  $(HDR) $(SRC)

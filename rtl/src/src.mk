@@ -10,9 +10,7 @@ $(AXI_RAM_DIR)/rtl/axi_ram.v $(MEM_DIR)/reg_file/iob_reg_file.v $(MEM_DIR)/fifo/
 $(MEM_DIR)/sp_ram/iob_sp_mem.v
 endif
 
-ifeq ($(USE_BOOT),1)
 ROM_VSRC$:=$(MEM_DIR)/sp_rom/sp_rom.v $(SRC_DIR)/boot_ctr.v
-endif
 
 VSRC+= \
 $(SRC_DIR)/system.v \
@@ -44,18 +42,19 @@ HW_DEFINE+=$(define) SRAM_ADDR_W=$(SRAM_ADDR_W)
 
 ifeq ($(USE_DDR),1)
 HW_DEFINE+=$(define) USE_DDR
-endif
-
+HW_DEFINE+=$(define) DDR_ADDR_W=$(DDR_ADDR_W)
 ifeq ($(RUN_DDR),1)
 HW_DEFINE+=$(define) RUN_DDR
 endif
-
-ifeq ($(USE_BOOT),1)
-HW_DEFINE+=$(define) USE_BOOT $(define) BOOTROM_ADDR_W=$(BOOTROM_ADDR_W)
 endif
 
+
+ifeq ($(USE_BOOT),1)
+HW_DEFINE+=$(define) USE_BOOT 
+endif
+
+HW_DEFINE+=$(define) BOOTROM_ADDR_W=$(BOOTROM_ADDR_W)
 HW_DEFINE+=$(define) FIRM_ADDR_W=$(FIRM_ADDR_W)
-HW_DEFINE+=$(define) DDR_ADDR_W=$(DDR_ADDR_W)
 HW_DEFINE+=$(define) N_SLAVES=$(N_SLAVES)
 HW_DEFINE+=$(define) UART=$(UART)
 

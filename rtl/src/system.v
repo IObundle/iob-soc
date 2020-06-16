@@ -70,25 +70,21 @@ module system
    // SYSTEM RESET
    //
 
-`ifdef USE_BOOT
-   wire                     boot;
-   wire                     boot_reset;   
-   wire                     cpu_reset = reset | boot_reset;
-`else
-   wire                     cpu_reset = reset;
-`endif
+   wire                      boot;
+   wire                      boot_reset;   
+   wire                      cpu_reset = reset | boot_reset;
    
    //
    //  CPU
    //
 
    // instruction bus
-   wire [`REQ_W-1:0]      cpu_i_req;
-   wire [`RESP_W-1:0]     cpu_i_resp;
+   wire [`REQ_W-1:0]         cpu_i_req;
+   wire [`RESP_W-1:0]        cpu_i_resp;
 
    // data cat bus
-   wire [`REQ_W-1:0]      cpu_d_req;
-   wire [`RESP_W-1:0]     cpu_d_resp;
+   wire [`REQ_W-1:0]         cpu_d_req;
+   wire [`RESP_W-1:0]        cpu_d_resp;
    
    //instantiate the cpu
 `ifdef PICORV32
@@ -116,11 +112,11 @@ module system
    //
 
    //internal memory instruction bus
-   wire [`REQ_W-1:0]      int_mem_i_req;
-   wire [`RESP_W-1:0]     int_mem_i_resp;
+   wire [`REQ_W-1:0]         int_mem_i_req;
+   wire [`RESP_W-1:0]        int_mem_i_resp;
    //external memory instruction bus
-   wire [`REQ_W-1:0]      ext_mem_i_req;
-   wire [`RESP_W-1:0]     ext_mem_i_resp;
+   wire [`REQ_W-1:0]         ext_mem_i_req;
+   wire [`RESP_W-1:0]        ext_mem_i_resp;
 
    // INSTRUCTION BUS
    split #(
@@ -157,14 +153,14 @@ module system
    // DATA BUS
 
    //internal memory data bus
-   wire [`REQ_W-1:0]      int_mem_d_req;
-   wire [`RESP_W-1:0]     int_mem_d_resp;
+   wire [`REQ_W-1:0]         int_mem_d_req;
+   wire [`RESP_W-1:0]        int_mem_d_resp;
    //external memory data bus
-   wire [`REQ_W-1:0]      ext_mem_d_req;
-   wire [`RESP_W-1:0]     ext_mem_d_resp;
+   wire [`REQ_W-1:0]         ext_mem_d_req;
+   wire [`RESP_W-1:0]        ext_mem_d_resp;
    //peripheral bus
-   wire [`REQ_W-1:0]      pbus_req;
-   wire [`RESP_W-1:0]     pbus_resp;
+   wire [`REQ_W-1:0]         pbus_req;
+   wire [`RESP_W-1:0]        pbus_resp;
 
    split 
      #(
@@ -174,29 +170,29 @@ module system
        .N_SLAVES(2)
 `endif
        )
-      dbus_split    
-      (
-       // master interface
+   dbus_split    
+     (
+      // master interface
 `ifdef BOOT_DDR 
-       .m_req  (`DBUS_REQ_BOOT_DDR),
+      .m_req  (`DBUS_REQ_BOOT_DDR),
 `elsif RUN_DDR_USE_SRAM
-       .m_req  (`DBUS_REQ_RUN_DDR_USE_SRAM),
+      .m_req  (`DBUS_REQ_RUN_DDR_USE_SRAM),
 `elsif RUN_DDR_USE_SRAM
-       .m_req  (`DBUS_REQ_RUN_SRAM_USE_DDR),
+      .m_req  (`DBUS_REQ_RUN_SRAM_USE_DDR),
 `else
-       .m_req  (cpu_d_req),
+      .m_req  (`DBUS_REQ_RUN_SRAM_NO_DDR),
 `endif
-       .m_resp (cpu_d_resp),
+      .m_resp (cpu_d_resp),
 
-       // slaves interface
+      // slaves interface
 `ifdef USE_DDR
-       .s_req ({ext_mem_d_req, int_mem_d_req, pbus_req}),
-       .s_resp({ext_mem_d_resp, int_mem_d_resp, pbus_resp})
+      .s_req ({ext_mem_d_req, int_mem_d_req, pbus_req}),
+      .s_resp({ext_mem_d_resp, int_mem_d_resp, pbus_resp})
 `else //must be using sram only
-       .s_req ({pbus_req, int_mem_d_req}),
-       .s_resp({pbus_resp, int_mem_d_resp})
+      .s_req ({pbus_req, int_mem_d_req}),
+      .s_resp({pbus_resp, int_mem_d_resp})
 `endif
-       );
+      );
    
 
    //   
@@ -208,9 +204,9 @@ module system
    wire [`N_SLAVES*`RESP_W-1:0] slaves_resp;
 
    split 
-       #(
-         .N_SLAVES(`N_SLAVES)
-         )
+     #(
+       .N_SLAVES(`N_SLAVES)
+       )
    pbus_split
      (
       // master interface
@@ -228,28 +224,27 @@ module system
    //
    
    int_mem int_mem0 
-       (
-        .clk                  (clk ),
-        .rst                  (reset),
- `ifdef USE_BOOT
-        .boot                 (boot),
-        .cpu_reset            (boot_reset),
- `endif
-        // instruction bus
-        .i_req                (int_mem_i_req),
-        .i_resp               (int_mem_i_resp),
+     (
+      .clk                  (clk ),
+      .rst                  (reset),
+      .boot                 (boot),
+      .cpu_reset            (boot_reset),
 
-        //data bus
-        .d_req                (int_mem_d_req),
-        .d_resp               (int_mem_d_resp)
-        );
+      // instruction bus
+      .i_req                (int_mem_i_req),
+      .i_resp               (int_mem_i_resp),
+
+      //data bus
+      .d_req                (int_mem_d_req),
+      .d_resp               (int_mem_d_resp)
+      );
 
 `ifdef USE_DDR
    //
    // EXTERNAL DDR MEMORY
    //
    ext_mem 
-       ext_mem0 
+     ext_mem0 
        (
         .clk                  (clk ),
         .rst                  (reset),
@@ -313,24 +308,24 @@ module system
    //
 
    iob_uart uart
-       (
-        .clk       (clk),
-        .rst       (reset),
-        
-        //cpu interface
-        .valid(slaves_req[`valid(`UART)]),
-        .address(slaves_req[`address(0,`UART_ADDR_W+2,2)]),
-        .wdata(slaves_req[`wdata(`UART)]),
-        .wstrb(|slaves_req[`wstrb(`UART)]),
-        .rdata(slaves_resp[`rdata(`UART)]),
-        .ready(slaves_resp[`ready(`UART)]),
-        
-        
-        //RS232 interface
-        .txd       (uart_txd),
-        .rxd       (uart_rxd),
-        .rts       (uart_rts),
-        .cts       (uart_cts)
-        );
+     (
+      .clk       (clk),
+      .rst       (reset),
+      
+      //cpu interface
+      .valid(slaves_req[`valid(`UART)]),
+      .address(slaves_req[`address(0,`UART_ADDR_W+2,2)]),
+      .wdata(slaves_req[`wdata(`UART)]),
+      .wstrb(|slaves_req[`wstrb(`UART)]),
+      .rdata(slaves_resp[`rdata(`UART)]),
+      .ready(slaves_resp[`ready(`UART)]),
+      
+      
+      //RS232 interface
+      .txd       (uart_txd),
+      .rxd       (uart_rxd),
+      .rts       (uart_rts),
+      .cts       (uart_cts)
+      );
 
 endmodule
