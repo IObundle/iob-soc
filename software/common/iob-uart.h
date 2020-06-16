@@ -56,13 +56,13 @@ unsigned int uart_getfile(char *mem);
 
 void uart_connect();
 
-void uart_disconnect();
+#define uart_disconnect() uart_putc(EOT)
 
-void uart_starttext();
+#define uart_starttext() uart_putc(STX)
 
-void uart_endtext();
+#define uart_endtext() uart_putc (ETX)
 
-char uart_getcmd();
+#define uart_getcmd() uart_getc()
 
 #ifdef PCSIM
 //itoa definition

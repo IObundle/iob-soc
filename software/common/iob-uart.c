@@ -99,6 +99,9 @@ void uart_printf(const char* fmt, ...) {
 
 unsigned int uart_getfile(char *mem) {
 
+  uart_puts ("Receiving and loading file...\n\n");
+  uart_endtext(); //free host from text mode
+
   // Get file size
   unsigned int file_size = (unsigned int) uart_getc();
   file_size |= ((unsigned int) uart_getc()) << 8;
@@ -110,10 +113,17 @@ unsigned int uart_getfile(char *mem) {
     mem[i] = uart_getc();
   }
 
+  uart_starttext();
+  uart_printf("File received (%d bytes)\n", file_size);
+  uart_endtext(); //free host from text mode
+  //uart_starttext(); //renable host text mode for next mesg 
   return file_size;
 }
 
 void uart_sendfile(unsigned int file_size, char *mem) {
+
+  uart_printf("Sending file (%d bytes)\n", file_size);
+  uart_endtext();
 
   // send file size
   uart_putc((char)(file_size & 0x0ff));
@@ -126,30 +136,24 @@ void uart_sendfile(unsigned int file_size, char *mem) {
     uart_putc(mem[i]);
   }
 
-  return;
+  uart_starttext();
+  uart_printf("File sent (%d bytes)\n", file_size);
+  uart_endtext(); //free host from text mode
+  uart_starttext(); //renable host text mode for next mesg 
 }
 
 void uart_connect() {
   char host_resp;
+
   do {
     uart_putc(ENQ);
     host_resp = uart_getc();
   } while(host_resp != ACK);
+
+  uart_starttext();
+  uart_puts("Connected with host.\n");
+  uart_endtext(); //free host from text mode
+  uart_starttext(); //renable host text mode for next mesg 
 }
 
-void uart_starttext() {
-  uart_putc (STX);
-}
 
-void uart_endtext() {
-  uart_putc (ETX);
-}
-
-void uart_disconnect() {
-  uart_putc (EOT);
-}
-
-char uart_getcmd() {
-  char cmd = uart_getc();
-  return cmd;
-}

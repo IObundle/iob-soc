@@ -80,7 +80,7 @@ module iob_uart (
      else if (rx_en_en)
        rx_en <= wdata[0];
    
-   //request to send (me data)
+   //request to send me data
    assign rts = rts_en & rx_en;
    
    //cts synchronizer
@@ -113,12 +113,11 @@ module iob_uart (
    //read
    always @* begin
       data_read_en = 1'b0;
-      rdata = ~0;
+      rdata = recv_buf_data;
       case (address)
         `UART_WRITE_WAIT: rdata = {31'd0, tx_wait | ~cts_int[1]};
         `UART_DIV       : rdata = cfg_divider;
         `UART_DATA      : begin 
-           rdata = recv_buf_data;
            data_read_en = valid & ~wstrb;
         end
         `UART_READ_VALID: rdata = {31'd0,recv_buf_valid};
@@ -184,7 +183,7 @@ module iob_uart (
            
            // Put the received byte in the output data register; drive read valid to high
            4'd10:
-             if (recv_divcnt >= cfg_divider) begin
+             if (recv_divcnt == cfg_divider) begin
                 recv_buf_data <= recv_pattern;
                 recv_buf_valid <= 1'b1;
                 recv_state <= 0;
