@@ -8,13 +8,16 @@ USE_LA_IF:=0
 #Firmware size (program and data)
 FIRM_ADDR_W:=13
 
+#SRAM
+SRAM_ADDR_W=13
+
 #DDR
 USE_DDR:=0
-RUN_DDR:=1
+RUN_DDR:=0
 DDR_ADDR_W:=30
 
 #BOOT
-USE_BOOT:=0
+USE_BOOT:=1
 BOOTROM_ADDR_W:=12
 
 #Number of slaves (peripherals)
@@ -45,14 +48,3 @@ FPGA_BOARD_SERVER:= $(PUDIM)#pudim-flan
 
 #ASIC compilation directory
 ASIC_DIR = asic/umc130
-
-#SRAM size -- do not edit
-ifeq ($(USE_DDR),0)
-SRAM_ADDR_W=$(FIRM_ADDR_W)
-else
-ifeq ($(RUN_DDR),1)
-SRAM_ADDR_W=$(BOOTROM_ADDR_W)+1
-else
-SRAM_ADDR_W=$(FIRM_ADDR_W)
-endif
-endif

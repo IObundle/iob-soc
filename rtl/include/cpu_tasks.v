@@ -47,6 +47,7 @@
       file_size = $ftell(fp);
       res = $rewind(fp);
       
+      cpu_print();
       $display("File size: %d bytes", file_size);
 
       // Send file size
@@ -67,7 +68,9 @@
       end
       $write("%d%%\n", 100);
       $fclose(fp);
-
+  
+      cpu_print();
+      
    endtask
 
    task cpu_receivefile;
@@ -80,7 +83,9 @@
       cpu_putchar(`ETX);
       
       fp = $fopen("out.bin", "wb");
-      
+        
+      cpu_print();
+
       // Send file size
       cpu_getchar(file_size[7:0]);
       cpu_getchar(file_size[15:8]);
@@ -101,6 +106,9 @@
       $write("%d%%\n", 100);
 
       $fclose(fp);
+
+      cpu_print();
+
    endtask
    
 
@@ -155,10 +163,12 @@
       do cpu_getchar(cpu_char);
       while (cpu_char != `ENQ); 
       cpu_putchar(`ACK);
+      cpu_print();
    endtask
 
    task cpu_run;
       cpu_putchar(`EOT);
+      cpu_print();
    endtask
 
    task cpu_print;

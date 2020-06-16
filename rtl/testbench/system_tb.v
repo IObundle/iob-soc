@@ -51,24 +51,20 @@ module system_tb;
       // configure uart
       cpu_inituart();
 
-`ifdef USE_BOOT
       //connect with bootloader
       cpu_connect();
-      cpu_print();
+      //$display("got here");
+
+`ifdef USE_BOOT
       //send program
       cpu_sendfile();
-      cpu_print();
       //uncomment for debug
       //cpu_receivefile();
-      //cpu_print();
-
-      //run firmware
-      cpu_run();
-      //connect with firmware
 `endif
-      cpu_connect();
-      //$display("got here");
-      cpu_print();
+      
+      //run firmware
+//      $display("got here");
+      cpu_run();
       $finish;
 
    end

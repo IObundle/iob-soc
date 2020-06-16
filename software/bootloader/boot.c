@@ -5,56 +5,48 @@
 
 // address to copy firmware to
 #if (USE_DDR==0 || (USE_DDR==1 && RUN_DDR==0))
-char *mem = (char *) (1<<BOOTROM_ADDR_W);
+char *prog_start_addr = (char *) (1<<BOOTROM_ADDR_W);
 #else
-char *mem = (char *) EXTRA_BASE;
+char *prog_start_addr = (char *) EXTRA_BASE;
 #endif
 
+#define LOAD STX
+#define SEND ETX
+#define RUN  EOT
 
 int main() {
 
   //init uart 
   uart_init(UART_BASE, UART_CLK_FREQ/UART_BAUD_RATE);
 
-  //call host
+  //connect with host
   uart_connect();
   
   //greet host 
-  uart_starttext();
   uart_puts ("\n\n\nIOb-SoC Bootloader\n");
-  uart_puts ("------------------\n\n");
-  uart_endtext();
-      
-  unsigned int file_size;
+  uart_puts ("Waiting command...\n\n");
 
+  unsigned int file_size;
   //enter command loop
   while (1) {
     char host_cmd = uart_getcmd(); //receive command
     switch(host_cmd) {
-    case STX: //load firmware
-      file_size = uart_getfile(mem);
-      uart_starttext();
-      uart_printf("File received (%d bytes)\n", file_size);
-      uart_endtext();
+    case LOAD: //load firmware
+      file_size = uart_getfile(prog_start_addr);
       break;
-    case ETX: //return firmware to host
-      //todo: receive file address and size
-      uart_sendfile(file_size, mem);
-      uart_starttext();
-      uart_printf("File sent (%d bytes)\n", file_size);
-      uart_endtext();
+    case SEND: //return firmware to host
+      uart_sendfile(file_size, prog_start_addr);
       break;
     default: break;
-    case EOT: //run firmware
+    case RUN: //run firmware
       uart_starttext();
-      uart_puts ("Rebooting CPU to run program...\n\n\n\n");
-      uart_endtext();
+      uart_puts ("Reboot CPU and run program...\n\n\n\n");
 #if USE_DDR
       //wait for cache write buffer to empty  
       cache_init(FIRM_ADDR_W);
       while(!cache_buffer_empty());
 #endif
-      //reboot and run 
+      //reboot and run firmware
       RAM_SET(int, BOOTCTR_BASE, 2);//{cpu_rst_req=1, boot=0}
       break;
     }

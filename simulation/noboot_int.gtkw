@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
-[*] Mon Jun 15 15:55:44 2020
+[*] Tue Jun 16 23:07:41 2020
 [*]
 [dumpfile] "/home/jsousa/sandbox/iob-soc/simulation/icarus/system.vcd"
-[dumpfile_mtime] "Mon Jun 15 15:51:58 2020"
-[dumpfile_size] 338238004
+[dumpfile_mtime] "Tue Jun 16 23:03:56 2020"
+[dumpfile_size] 312309256
 [savefile] "/home/jsousa/sandbox/iob-soc/simulation/noboot_int.gtkw"
-[timestart] 1056100
+[timestart] 1997140000
 [size] 1918 1026
 [pos] -1 -1
-*-17.056156 1737400 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-21.656307 2006697000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] system_tb.
 [treeopen] system_tb.uut.
 [treeopen] system_tb.uut.int_mem0.
@@ -53,9 +53,8 @@ system_tb.uut.cpu.dbus_req[68:0]
 system_tb.uut.cpu.picorv32_core.resetn
 system_tb.uut.cpu.picorv32_core.mem_instr
 system_tb.uut.cpu.picorv32_core.mem_valid
-@23
-system_tb.uut.cpu.picorv32_core.mem_addr[31:0]
 @22
+system_tb.uut.cpu.picorv32_core.mem_addr[31:0]
 system_tb.uut.cpu.picorv32_core.mem_wdata[31:0]
 system_tb.uut.cpu.picorv32_core.mem_wstrb[3:0]
 system_tb.uut.cpu.picorv32_core.mem_rdata[31:0]
@@ -65,7 +64,6 @@ system_tb.uut.cpu.picorv32_core.mem_ready
 -UART
 @28
 system_tb.uut.uart.rxd
-system_tb.uut.uart.txd
 system_tb.uut.uart.valid
 @24
 system_tb.uut.uart.address[2:0]
