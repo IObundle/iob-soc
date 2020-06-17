@@ -12,7 +12,8 @@ LD_SW_DIR:=$(ROOT_DIR)/software/ld-sw
 PYTHON_DIR:=$(ROOT_DIR)/software/python
 
 SUBMODULES_DIR:=$(ROOT_DIR)/submodules
-RISCV_DIR:=$(SUBMODULES_DIR)/picorv32
+PICORV_DIR := $(SUBMODULES_DIR)/picorv32
+DARKRV_DIR := $(SUBMODULES_DIR)/darkrv
 UART_DIR:=$(SUBMODULES_DIR)/uart
 MEM_DIR:=$(SUBMODULES_DIR)/mem
 CACHE_DIR:=$(SUBMODULES_DIR)/cache
@@ -23,6 +24,8 @@ INTERCON_DIR:=$(SUBMODULES_DIR)/interconnect
 include $(ROOT_DIR)/system.mk
 
 VSRC = \
+$(DARKRV_DIR)/rtl/include/config.vh \
+$(DARKRV_DIR)/rtl/include/decoder.vh \
 $(UART_DIR)/rtl/include/iob-uart.vh \
 $(INTERCON_DIR)/rtl/include/interconnect.vh \
 verilog/top_system.v

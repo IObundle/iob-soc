@@ -2,6 +2,19 @@
 # VERILOG SOURCES
 #
 
+ifeq ($(CPU),PICORV32)
+CPU_VSRC:=$(PICORV_DIR)/picorv32.v \
+$(PICORV_DIR)/iob_picorv32.v
+endif
+
+ifeq ($(CPU),DARKRV)
+CPU_VSRC:=$(DARKRV_DIR)/submodules/iob-mul/rtl/src/xmul_pipe.v \
+$(DARKRV_DIR)/rtl/src/multiplier.v \
+$(DARKRV_DIR)/rtl/src/divider.v \
+$(DARKRV_DIR)/rtl/src/darkriscv.v \
+$(DARKRV_DIR)/rtl/src/iob_darkrv.v
+endif
+
 RAM_VSRC:=$(SRC_DIR)/int_mem.v $(SRC_DIR)/sram.v $(MEM_DIR)/tdp_ram/iob_tdp_ram.v
 
 ifeq ($(USE_DDR),1)
@@ -14,12 +27,10 @@ ROM_VSRC$:=$(MEM_DIR)/sp_rom/sp_rom.v $(SRC_DIR)/boot_ctr.v
 
 VSRC+= \
 $(SRC_DIR)/system.v \
-$(RISCV_DIR)/picorv32.v \
-$(RISCV_DIR)/iob_picorv32.v \
 $(UART_DIR)/rtl/src/iob-uart.v \
 $(INTERCON_DIR)/rtl/src/merge.v \
 $(INTERCON_DIR)/rtl/src/split.v \
-$(ROM_VSRC) $(RAM_VSRC) $(DDR_VSRC)
+$(CPU_VSRC) $(ROM_VSRC) $(RAM_VSRC) $(DDR_VSRC)
 
 #
 # HARDWARE DEFINES
@@ -66,6 +77,7 @@ HW_DEFINE+=$(define) UART=$(UART)
 HW_INCLUDE := \
 $(incdir) . \
 $(incdir) $(RTL_DIR)/include \
+$(incdir) $(DARKRV_DIR)/rtl/include \
 $(incdir) $(UART_DIR)/rtl/include \
 $(incdir) $(CACHE_DIR)/rtl/include \
 $(incdir) $(INTERCON_DIR)/rtl/include
