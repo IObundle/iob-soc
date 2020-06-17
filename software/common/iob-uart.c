@@ -116,7 +116,8 @@ unsigned int uart_getfile(char *mem) {
   uart_starttext();
   uart_printf("File received (%d bytes)\n", file_size);
   uart_endtext(); //free host from text mode
-  //uart_starttext(); //renable host text mode for next mesg 
+  uart_rxwait(); //wait for next command
+  uart_starttext(); //renable host text mode for next mesg 
   return file_size;
 }
 
@@ -139,6 +140,7 @@ void uart_sendfile(unsigned int file_size, char *mem) {
   uart_starttext();
   uart_printf("File sent (%d bytes)\n", file_size);
   uart_endtext(); //free host from text mode
+  uart_rxwait(); //wait for next command
   uart_starttext(); //renable host text mode for next mesg 
 }
 
