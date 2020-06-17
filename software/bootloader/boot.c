@@ -33,13 +33,13 @@ int main() {
     switch(host_cmd) {
     case LOAD: //load firmware
       file_size = uart_getfile(prog_start_addr);
+      //uart_starttext(); //renable host text mode for next mesg 
       break;
     case SEND: //return firmware to host
       uart_sendfile(file_size, prog_start_addr);
       break;
     default: break;
     case RUN: //run firmware
-      uart_starttext();
       uart_puts ("Reboot CPU and run program...\n\n\n\n");
 #if USE_DDR
       //wait for cache write buffer to empty  

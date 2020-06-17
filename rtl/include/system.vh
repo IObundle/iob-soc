@@ -60,7 +60,7 @@
 
 `define DBUS_REQ_BOOT_DDR {cpu_d_req[`valid(0)], ~`E^boot, ~`P, cpu_d_req[`REQ_W-4:0]}
 `define DBUS_REQ_RUN_DDR_USE_SRAM {cpu_d_req[`valid(0)], ~`E, ~`P, cpu_d_req[`REQ_W-4:0]}
-`define DBUS_REQ_RUN_SRAM_USE_DDR {cpu_d_req[`valid(0)], `E, ~(`P|`E), cpu_d_req[`REQ_W-4:0]}
-`define DBUS_REQ_RUN_SRAM_NO_DDR {cpu_d_req[`valid(0)], `P, 1'b0, cpu_d_req[`REQ_W-4:0]}
+`define DBUS_REQ_RUN_SRAM_USE_DDR {cpu_d_req[`valid(0)], `E&~`P, ~`E&~`P, cpu_d_req[`REQ_W-4:0]}
+`define DBUS_REQ_RUN_SRAM_NO_DDR {cpu_d_req[`valid(0)], `P, cpu_d_req[`REQ_W-3:0]}
 
 `define PBUS_REQ {pbus_req[`valid(0)], `S, pbus_req[`REQ_W-3-`N_SLAVES_W:0]}
