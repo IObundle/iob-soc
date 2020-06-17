@@ -177,7 +177,7 @@ module system
       .m_req  (`DBUS_REQ_BOOT_DDR),
 `elsif RUN_DDR_USE_SRAM
       .m_req  (`DBUS_REQ_RUN_DDR_USE_SRAM),
-`elsif RUN_DDR_USE_SRAM
+`elsif RUN_SRAM_USE_DDR
       .m_req  (`DBUS_REQ_RUN_SRAM_USE_DDR),
 `else
       .m_req  (`DBUS_REQ_RUN_SRAM_NO_DDR),
