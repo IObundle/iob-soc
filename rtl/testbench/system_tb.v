@@ -53,17 +53,14 @@ module system_tb;
 
       //connect with bootloader
       cpu_connect();
-      //$display("got here");
 
 `ifdef USE_BOOT
       //send program
       cpu_sendfile();
       //uncomment for debug
       //cpu_receivefile();
-`endif
-      
+`endif      
       //run firmware
-//      $display("got here");
       cpu_run();
       $finish;
 
@@ -78,7 +75,7 @@ module system_tb;
 `ifdef USE_DDR
    //Write address
    wire [0:0] ddr_awid;
-   wire [`FIRM_ADDR_W-1:0] ddr_awaddr;
+   wire [`DDR_ADDR_W-1:0] ddr_awaddr;
    wire [7:0]              ddr_awlen;
    wire [2:0]              ddr_awsize;
    wire [1:0]              ddr_awburst;
@@ -101,7 +98,7 @@ module system_tb;
    wire                    ddr_bready;
    //Read address
    wire [0:0]              ddr_arid;
-   wire [`FIRM_ADDR_W-1:0] ddr_araddr;
+   wire [`DDR_ADDR_W-1:0] ddr_araddr;
    wire [7:0]              ddr_arlen;
    wire [2:0]              ddr_arsize;
    wire [1:0]              ddr_arburst;

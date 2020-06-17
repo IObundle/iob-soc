@@ -120,7 +120,7 @@ module system
 
    // INSTRUCTION BUS
    split #(
-`ifdef BOOT_DDR
+`ifdef RUN_DDR_USE_SRAM
            .N_SLAVES(2)
 `else
            .N_SLAVES(1)
@@ -129,20 +129,17 @@ module system
    ibus_split
      (
       // master interface
-`ifdef BOOT_DDR
-      .m_req  (`IBUS_REQ_BOOT_DDR),
+`ifdef RUN_DDR_USE_SRAM
+      .m_req  (`IBUS_REQ_RUN_DDR_USE_SRAM),
 `else
       .m_req  (cpu_i_req),
 `endif
       .m_resp (cpu_i_resp),
       
       // slaves interface
-`ifdef BOOT_DDR //run SRAM to boot then run DDR
+`ifdef RUN_DDR_USE_SRAM //run SRAM to boot then run DDR
       .s_req ({int_mem_i_req, ext_mem_i_req}),
       .s_resp ({int_mem_i_resp, ext_mem_i_resp})
-`elsif DDR_ONLY //run DDR always
-      .s_req (ext_mem_i_req),
-      .s_resp (ext_mem_i_resp)
 `else //run SRAM always
       .s_req (int_mem_i_req),
       .s_resp (int_mem_i_resp)
@@ -173,9 +170,7 @@ module system
    dbus_split    
      (
       // master interface
-`ifdef BOOT_DDR 
-      .m_req  (`DBUS_REQ_BOOT_DDR),
-`elsif RUN_DDR_USE_SRAM
+`ifdef RUN_DDR_USE_SRAM
       .m_req  (`DBUS_REQ_RUN_DDR_USE_SRAM),
 `elsif RUN_SRAM_USE_DDR
       .m_req  (`DBUS_REQ_RUN_SRAM_USE_DDR),
