@@ -16,3 +16,6 @@
 [submodule "submodules/cache"]
 	path = submodules/cache
 	url = git@github.com:jjts/iob-cache.git
+[submodule "darkrv"]
+	path = submodules/darkrv
+	url = git@github.com:IObundle/iob-darkrv.git
