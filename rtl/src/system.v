@@ -87,14 +87,11 @@ module system
    wire [`RESP_W-1:0]        cpu_d_resp;
    
    //instantiate the cpu
-`ifdef PICORV32
    iob_picorv32 cpu
-`elsif DARKRV
-     iob_darkrv cpu
-`endif
        (
         .clk     (clk),
         .rst     (cpu_reset),
+        .boot    (boot),
         .trap    (trap),
         
         //instruction bus
@@ -115,8 +112,10 @@ module system
    wire [`REQ_W-1:0]         int_mem_i_req;
    wire [`RESP_W-1:0]        int_mem_i_resp;
    //external memory instruction bus
+`ifdef RUN_DDR_USE_SRAM
    wire [`REQ_W-1:0]         ext_mem_i_req;
    wire [`RESP_W-1:0]        ext_mem_i_resp;
+`endif
 
    // INSTRUCTION BUS
    split #(
@@ -129,18 +128,14 @@ module system
    ibus_split
      (
       // master interface
-`ifdef RUN_DDR_USE_SRAM
-      .m_req  (`IBUS_REQ_RUN_DDR_USE_SRAM),
-`else
       .m_req  (cpu_i_req),
-`endif
       .m_resp (cpu_i_resp),
       
       // slaves interface
-`ifdef RUN_DDR_USE_SRAM //run SRAM to boot then run DDR
-      .s_req ({int_mem_i_req, ext_mem_i_req}),
-      .s_resp ({int_mem_i_resp, ext_mem_i_resp})
-`else //run SRAM always
+`ifdef RUN_DDR_USE_SRAM
+      .s_req ({ext_mem_i_req, int_mem_i_req}),
+      .s_resp ({ext_mem_i_resp, int_mem_i_resp})
+`else
       .s_req (int_mem_i_req),
       .s_resp (int_mem_i_resp)
 `endif
@@ -152,9 +147,13 @@ module system
    //internal memory data bus
    wire [`REQ_W-1:0]         int_mem_d_req;
    wire [`RESP_W-1:0]        int_mem_d_resp;
+
+`ifdef USE_DDR
    //external memory data bus
    wire [`REQ_W-1:0]         ext_mem_d_req;
    wire [`RESP_W-1:0]        ext_mem_d_resp;
+`endif
+
    //peripheral bus
    wire [`REQ_W-1:0]         pbus_req;
    wire [`RESP_W-1:0]        pbus_resp;
@@ -162,28 +161,24 @@ module system
    split 
      #(
 `ifdef USE_DDR
-       .N_SLAVES(3)
+       .N_SLAVES(3),
+       .P_SLAVES(`E_BIT)
 `else
-       .N_SLAVES(2)
+       .N_SLAVES(2),
+       .P_SLAVES(`P_BIT)
 `endif
        )
    dbus_split    
      (
       // master interface
-`ifdef RUN_DDR_USE_SRAM
-      .m_req  (`DBUS_REQ_RUN_DDR_USE_SRAM),
-`elsif RUN_SRAM_USE_DDR
-      .m_req  (`DBUS_REQ_RUN_SRAM_USE_DDR),
-`else
-      .m_req  (`DBUS_REQ_RUN_SRAM_NO_DDR),
-`endif
+      .m_req  (cpu_d_req),
       .m_resp (cpu_d_resp),
 
       // slaves interface
 `ifdef USE_DDR
-      .s_req ({ext_mem_d_req, int_mem_d_req, pbus_req}),
-      .s_resp({ext_mem_d_resp, int_mem_d_resp, pbus_resp})
-`else //must be using sram only
+      .s_req ({ext_mem_d_req, pbus_req, int_mem_d_req}),
+      .s_resp({ext_mem_d_resp, pbus_resp, int_mem_d_resp})
+`else
       .s_req ({pbus_req, int_mem_d_req}),
       .s_resp({pbus_resp, int_mem_d_resp})
 `endif
@@ -200,12 +195,13 @@ module system
 
    split 
      #(
-       .N_SLAVES(`N_SLAVES)
+       .N_SLAVES(`N_SLAVES),
+       .P_SLAVES(`P_BIT)
        )
    pbus_split
      (
       // master interface
-      .m_req(`PBUS_REQ),
+      .m_req(pbus_req),
       .m_resp(pbus_resp),
       
       // slaves interface
@@ -244,10 +240,11 @@ module system
         .clk                  (clk ),
         .rst                  (reset),
 
+`ifdef RUN_DDR_USE_SRAM
         // instruction bus
         .i_req                (ext_mem_i_req),
         .i_resp               (ext_mem_i_resp),
-
+`endif
         //data bus
         .d_req                (ext_mem_d_req),
         .d_resp               (ext_mem_d_resp),

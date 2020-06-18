@@ -23,8 +23,7 @@ int main() {
   uart_connect();
   
   //greet host 
-  uart_puts ("\n\n\nIOb-SoC Bootloader\n");
-  uart_puts ("Waiting command...\n\n");
+  uart_puts ("\n\n\nIOb-SoC Bootloader:\n\n");
 
   unsigned int file_size;
   //enter command loop
@@ -40,7 +39,7 @@ int main() {
       break;
     default: break;
     case RUN: //run firmware
-      uart_puts ("Reboot CPU and run program...\n\n\n\n");
+      uart_puts ("Reboot CPU and run program...\n");
 #if USE_DDR
       //wait for cache write buffer to empty  
       cache_init(FIRM_ADDR_W);

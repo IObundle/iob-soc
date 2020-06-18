@@ -45,7 +45,7 @@ module int_mem
    data_bootctr_split
        (
         // master interface
-        .m_req({d_req[`REQ_W-1], `B, d_req[`REQ_W-3:0]}),
+        .m_req({d_req[`REQ_W-1], d_req[`B_BIT], d_req[`REQ_W-3:0]}),
         .m_resp(d_resp),
         
         // slaves interface

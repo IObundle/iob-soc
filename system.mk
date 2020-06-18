@@ -1,10 +1,3 @@
-#Define CPU architecture
-CPU:=PICORV32
-#picorv32 look ahead interface
-USE_LA_IF:=0
-
-#CPU := DARKRV
-
 #Firmware size (program and data)
 FIRM_ADDR_W:=13
 
@@ -25,6 +18,11 @@ N_SLAVES:=1
 
 #Peripheral IDs (assign serially: 0, 1, 2, etc)
 UART:=0
+
+#address select bits: Extra memory (E), Peripherals (P), Boot controller (B)
+E:=31
+P:=30
+B:=29
 
 #RTL simulation directory
 SIM_DIR:=simulation/icarus

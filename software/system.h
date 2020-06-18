@@ -31,11 +31,11 @@
 //select secondary memory:
 //SRAM if running from DDR or
 //DDR if running from SRAM
-#define EXTRA_BASE (1<<31)
+#define EXTRA_BASE (1<<E)
 
 //select boot controller
-#define BOOTCTR_BASE (1<<29)
+#define BOOTCTR_BASE (1<<B)
 
 //select peripherals
-#define UART_BASE (1<<30) |(UART<<(ADDR_W-2-N_SLAVES_W))
+#define UART_BASE (1<<P) |(UART<<(ADDR_W-2-N_SLAVES_W))
 

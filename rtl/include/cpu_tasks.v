@@ -163,7 +163,6 @@
       do cpu_getchar(cpu_char);
       while (cpu_char != `ENQ); 
       cpu_putchar(`ACK);
-      cpu_print();
    endtask
 
    task cpu_run;

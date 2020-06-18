@@ -58,6 +58,10 @@ HW_DEFINE+=$(define) FIRM_ADDR_W=$(FIRM_ADDR_W)
 HW_DEFINE+=$(define) N_SLAVES=$(N_SLAVES)
 HW_DEFINE+=$(define) UART=$(UART)
 
+HW_DEFINE+=$(define) E=$(E)
+HW_DEFINE+=$(define) P=$(P)
+HW_DEFINE+=$(define) B=$(B)
+
 
 #
 # HW INCLUDES

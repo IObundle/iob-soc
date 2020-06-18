@@ -27,18 +27,9 @@
  `endif
 `endif
  
-// instruction master bus
-`define IBUS_REQ_RUN_DDR_USE_SRAM {cpu_i_req[`valid(0)], boot, cpu_i_req[`REQ_W-3:0]}
+// data bus select bits
+`define V_BIT (`REQ_W - 1) //valid bit
+`define E_BIT (`REQ_W - (`ADDR_W-`E+1)) //extra mem bit
+`define P_BIT (`REQ_W - (`ADDR_W-`P+1)) //peripherals bit
+`define B_BIT (`REQ_W - (`ADDR_W-`B+1)) //boot controller bit
 
-// data bus notable bits
-`define E cpu_d_req[`REQ_W-2] // extra memory selection bit
-`define P cpu_d_req[`REQ_W-3] // peripheral selection bit
-`define S cpu_d_req[`REQ_W-3 : `REQ_W-3-`N_SLAVES_W]// slave select word
-`define B d_req[`REQ_W-4] // boot controller select bit
-
-// data master bus
-`define DBUS_REQ_RUN_DDR_USE_SRAM {cpu_d_req[`valid(0)], (~`E^boot)&~`P, (`E^boot)&~`P, cpu_d_req[`REQ_W-4:0]}
-`define DBUS_REQ_RUN_SRAM_USE_DDR {cpu_d_req[`valid(0)], `E&~`P, ~`E&~`P, cpu_d_req[`REQ_W-4:0]}
-`define DBUS_REQ_RUN_SRAM_NO_DDR {cpu_d_req[`valid(0)], `P, cpu_d_req[`REQ_W-3:0]}
-
-`define PBUS_REQ {pbus_req[`valid(0)], `S, pbus_req[`REQ_W-3-`N_SLAVES_W:0]}
