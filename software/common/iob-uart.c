@@ -153,9 +153,6 @@ void uart_connect() {
   } while(host_resp != ACK);
 
   uart_starttext();
-  uart_puts("Connected with host.\n");
-  uart_endtext(); //free host from text mode
-  uart_starttext(); //renable host text mode for next mesg 
 }
 
 
