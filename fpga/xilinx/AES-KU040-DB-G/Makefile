@@ -8,9 +8,9 @@ REMOTE := ${USER}@$(FPGA_BOARD_SERVER):sandbox/iob-soc/fpga/xilinx/AES-KU040-DB-
 # work-around for http://svn.clifford.at/handicraft/2016/vivadosig11
 export RDI_VERBOSE = False
 
-run: synth_system.bit firmware.dat
+run: synth_system.bit firmware.dat firmware.bin
 	scp synth_system.bit $(REMOTE)
-	scp firmware*.dat $(REMOTE)
+	scp firmware.bin $(REMOTE)
 
 synth_system.bit: *.xdc $(VSRC) boot.dat
 	rm -f $@.log
