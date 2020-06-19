@@ -41,8 +41,8 @@ BABA:=146.193.44.179
 FPGA_COMPILER_SERVER:=$(PUDIM)#pudim-flan
 #FPGA_COMPILER_SERVER:=$(BABA)#baba-de-camelo
 
-FPGA_BOARD_SERVER:= $(PUDIM)#pudim-flan
-#FPGA_BOARD_SERVER:=$(BABA)#baba-de-camelo
+#FPGA_BOARD_SERVER:= $(PUDIM)#pudim-flan
+FPGA_BOARD_SERVER:=$(BABA)#baba-de-camelo
 
 #ASIC compilation directory
 ASIC_DIR = asic/umc130
