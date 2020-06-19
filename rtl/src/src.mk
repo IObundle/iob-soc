@@ -25,19 +25,6 @@ $(ROM_VSRC) $(RAM_VSRC) $(DDR_VSRC)
 # HARDWARE DEFINES
 #
 
-ifeq ($(CPU),PICORV32)
-HW_DEFINE:=$(define) PICORV32
-endif
-
-
-ifeq ($(CPU),DARKRV)
-HW_DEFINE+=$(define) DARKRV
-endif
-
-ifeq ($(USE_LA_IF),1)
-HW_DEFINE+=$(define) USE_LA_IF
-endif
-
 HW_DEFINE+=$(define) SRAM_ADDR_W=$(SRAM_ADDR_W)
 
 ifeq ($(USE_DDR),1)
