@@ -8,7 +8,7 @@ BAUD := 115200
 FREQ := 100000000
 
 CC := gcc
-CFLAGS := -g -Wall -pedantic
+CFLAGS := -g -Wall
 
 SUBMODULES_DIR := ../../submodules
 UART_DIR := $(SUBMODULES_DIR)/uart/software
@@ -19,7 +19,7 @@ INCLUDE := -I.. -I$(UART_DIR)/common
 
 TRGT := console
 CSRCS := console.c
-CHDRS := iob-uart.h
+CHDRS := $(UART_DIR)/common/iob-uart.h
 
 USERNAME := $(shell pgrep console | xargs -r ps -o uname= -p)
 
@@ -38,7 +38,7 @@ run: $(TRGT) $(FW).bin
 ifneq ($(USERNAME),)
 	@echo "FPGA is being used by $(USERNAME)"
 else
-	./$(TRGT) -s $(SERIAL)
+	./$(TRGT) -s $(SERIAL) -f $(FW).bin
 endif
 
 clean:

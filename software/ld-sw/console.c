@@ -1,15 +1,79 @@
 #include <stdio.h>
-#include <fcntl.h>   /* File Control Definitions           */
-#include <termios.h> /* POSIX Terminal Control Definitions */
-#include <unistd.h>  /* UNIX Standard Definitions 	       */ 
-#include <errno.h>   /* ERROR Number Definitions           */
+#include <fcntl.h>   // File Control Definitions
+#include <termios.h> // POSIX Terminal Control Definitions
+#include <unistd.h>  // UNIX Standard Definitions
+#include <errno.h>   // ERROR Number Definitions
 #include <time.h>
 #include "iob-uart.h"
 
 #define WAIT_FOR_RISCV 20000
 
-/* Uncomment this line for debug */
-/*#define DEBUG*/
+// Uncomment this line for debug
+//#define DEBUG
+
+int connect(int serial_fd) {
+  unsigned char byte;
+  int nbytes;
+  
+  byte = ENQ;
+  nbytes = (int) write(serial_fd, &byte, 1);
+  if (nbytes == -1) {
+    printf("connect: Failed to send Ack\n");
+  }
+  
+  do {
+    do {
+      nbytes = (int) read(serial_fd, &byte, 1);
+    } while (nbytes <= 0);
+  } while (byte != ENQ);
+  byte = ACK;
+  nbytes = (int) write(serial_fd, &byte, 1);
+  if (nbytes == -1) {
+    printf("connect: Failed to send Ack\n");
+  }
+  
+  return 0;
+}
+
+int print (int serial_fd) {
+  unsigned char byte;
+  int nbytes;
+  
+  do {
+    do {
+      nbytes = (int) read(serial_fd, &byte, 1);
+    } while (nbytes <= 0);
+  } while (byte != STX);
+  
+  while (1) {
+    do {
+      nbytes = (int) read(serial_fd, &byte, 1);
+    } while (nbytes <= 0);
+    
+    if (byte == ETX || byte == ENQ) { // Finish
+      break;
+    } else { // Print char
+      printf("%c", byte);
+    }
+  }
+  
+  return 0;
+}
+
+int run(int serial_fd) {
+  unsigned char byte;
+  int nbytes;
+  
+  byte = EOT;
+  nbytes = (int) write(serial_fd, &byte, 1);
+  if (nbytes == -1) {
+    printf("run: Failed to send EOT\n");
+  }
+  
+  print(serial_fd);
+  
+  return 0;
+}
 
 int sendFile(int serial_fd, char *name) {
   FILE *file_fd;
@@ -30,22 +94,30 @@ int sendFile(int serial_fd, char *name) {
     return -1;
   }
   
-  /* Get file size */
+  // Get file size
   fseek(file_fd, 0L, SEEK_END);
   file_size = ftell(file_fd);
   rewind(file_fd);
+  
+  byte = STX;
+  nbytes = (int) write(serial_fd, &byte, 1);
+  if (nbytes == -1) {
+    printf("sendFile: Failed to send STX\n");
+  }
+  
+  print(serial_fd);
   
   printf("\nStarting File '%s' Transfer...\n", name);
   printf("file_size = %u\n", file_size);
   begin = clock();
   
-  /* Send file size */
+  // Send file size
   nbytes = (int) write(serial_fd, &file_size, 4);
   if (nbytes == -1) {
     printf("sendFile: Failed to send data\n");
   }
   
-  /* Send file */
+  // Send file
   for (i = 0; i < file_size; i++) {
     nbytes = (int) fread(&byte, sizeof(unsigned char), 1, file_fd);
     if (nbytes != 1) {
@@ -73,6 +145,8 @@ int sendFile(int serial_fd, char *name) {
   
   fclose(file_fd);
   
+  print(serial_fd);
+  
   return 0;
 }
 
@@ -94,10 +168,18 @@ int receiveFile(int serial_fd, char *name) {
     return -1;
   }
   
+  byte = ETX;
+  nbytes = (int) write(serial_fd, &byte, 1);
+  if (nbytes == -1) {
+    printf("receiveFile: Failed to send ETX\n");
+  }
+  
+  print(serial_fd);
+  
   printf("\nStarting File '%s' Transfer...\n", name);  
   begin = clock();
   
-  /* Get file size */
+  // Get file size
   for (i = 0; i < 4; i++) {
     do {
       nbytes = (int) read(serial_fd, &byte, 1);
@@ -106,7 +188,7 @@ int receiveFile(int serial_fd, char *name) {
     file_size |= byte << (i*8);
   }
   
-  /* Get file */
+  // Get file
   for (i = 0; i < file_size; i++) {
     do {
       nbytes = (int) read(serial_fd, &byte, 1);
@@ -130,6 +212,8 @@ int receiveFile(int serial_fd, char *name) {
   
   fclose(file_fd);
   
+  print(serial_fd);
+  
   return 0;
 }
 
@@ -137,19 +221,19 @@ int openSerialPort(char *serialPort) {
   struct termios SerialPortSettings;
   int fd;
   
-  /* Taken from: https://github.com/xanthium-enterprises/Serial-Port-Programming-on-Linux/blob/master/USB2SERIAL_Write/Transmitter%20(PC%20Side)/SerialPort_write.c */
+  // Taken from: https://github.com/xanthium-enterprises/Serial-Port-Programming-on-Linux/blob/master/USB2SERIAL_Write/Transmitter%20(PC%20Side)/SerialPort_write.c
   
   printf("\n +----------------------------------+");
   printf("\n |           Serial Port            |");
   printf("\n +----------------------------------+");
   
-  /*------------------------------- Opening the Serial Port -------------------------------*/
+  //------------------------------- Opening the Serial Port -------------------------------//
   
-  /* ttyUSB0 is the FT232 based USB2SERIAL Converter    */
-  /* O_RDWR Read/Write access to serial port            */
-  /* O_NOCTTY - No terminal will control the process    */
-  /* O_NDELAY - Non Blocking Mode, does not care about- */
-  /* -the status of DCD line, Open() returns immediatly */
+  // ttyUSB0 is the FT232 based USB2SERIAL Converter    //
+  // O_RDWR Read/Write access to serial port            //
+  // O_NOCTTY - No terminal will control the process    //
+  // O_NDELAY - Non Blocking Mode, does not care about- //
+  // -the status of DCD line, Open() returns immediatly //
   
   fd = open(serialPort, O_RDWR | O_NOCTTY | O_NDELAY);
   if (fd == -1) {
@@ -159,71 +243,71 @@ int openSerialPort(char *serialPort) {
     printf("\n  '%s' Opened Successfully", serialPort);
   }
 	
-  /* ---------- Setting the Attributes of the serial port using termios structure --------- */
+  // ---------- Setting the Attributes of the serial port using termios structure --------- //
   
-  /* Get the current configuration of the serial interface */
+  // Get the current configuration of the serial interface
   if (tcgetattr(fd, &SerialPortSettings) < 0) {
     printf("\n  Error! in Getting '%s' configuration", serialPort);
     return 0;
   }
   
-  /* Set Read Speed and Write as 115200 */
+  // Set Read Speed and Write as 115200
   if (cfsetispeed(&SerialPortSettings, B115200) < 0 ||
       cfsetospeed(&SerialPortSettings, B115200) < 0) {
     printf("\n  Error! in Setting baudrate '%s'", serialPort);
     return 0;
   }
   
-  /*                                                             */
-  /* Input flags - Turn off input processing                     */
-  /*                                                             */
-  /* convert break to null byte, no CR to NL translation,        */
-  /* no NL to CR translation, don't mark parity errors or breaks */
-  /* no input parity check, don't strip high bit off,            */
-  /* no XON/XOFF software flow control both i/p and o/p          */
-  /*                                                             */
+  //                                                             //
+  // Input flags - Turn off input processing                     //
+  //                                                             //
+  // convert break to null byte, no CR to NL translation,        //
+  // no NL to CR translation, don't mark parity errors or breaks //
+  // no input parity check, don't strip high bit off,            //
+  // no XON/XOFF software flow control both i/p and o/p          //
+  //                                                             //
   SerialPortSettings.c_iflag &= ~(IGNBRK | BRKINT | ICRNL | INLCR |
                                   PARMRK | INPCK | ISTRIP | IXON |
                                   IXOFF | IXANY);
   
-  /*                                                             */
-  /* Output flags - Turn off output processing                   */
-  /*                                                             */
-  /* no CR to NL translation, no NL to CR-NL translation,        */
-  /* no NL to CR translation, no column 0 CR suppression,        */
-  /* no Ctrl-D suppression, no fill characters, no case mapping, */
-  /* no local output processing                                  */
-  /*                                                             */
-  /* config.c_oflag &= ~(OCRNL | ONLCR | ONLRET |                */
-  /*                     ONOCR | ONOEOT| OFILL | OLCUC | OPOST); */
+  //                                                             //
+  // Output flags - Turn off output processing                   //
+  //                                                             //
+  // no CR to NL translation, no NL to CR-NL translation,        //
+  // no NL to CR translation, no column 0 CR suppression,        //
+  // no Ctrl-D suppression, no fill characters, no case mapping, //
+  // no local output processing                                  //
+  //                                                             //
+  // config.c_oflag &= ~(OCRNL | ONLCR | ONLRET |                //
+  //                     ONOCR | ONOEOT| OFILL | OLCUC | OPOST); //
   SerialPortSettings.c_oflag = 0;
   
-  /*                                                 */
-  /* No line processing                              */
-  /*                                                 */
-  /* echo off, echo newline off, canonical mode off, */
-  /* extended input processing off, signal chars off */
-  /*                                                 */
+  //                                                 //
+  // No line processing                              //
+  //                                                 //
+  // echo off, echo newline off, canonical mode off, //
+  // extended input processing off, signal chars off //
+  //                                                 //
   SerialPortSettings.c_lflag &= ~(ECHO | ECHONL | ICANON | IEXTEN | ISIG);
   
-  /*                                                   */
-  /* Turn off character processing                     */
-  /*                                                   */
-  /* clear current char size mask, no parity checking, */
-  /* no output processing, force 8 bit input, set      */
-  /* 1 stop bit and enable receiver                    */
-  /*                                                   */
+  //                                                   //
+  // Turn off character processing                     //
+  //                                                   //
+  // clear current char size mask, no parity checking, //
+  // no output processing, force 8 bit input, set      //
+  // 1 stop bit and enable receiver                    //
+  //                                                   //
   SerialPortSettings.c_cflag &= ~(CRTSCTS | CSTOPB | CSIZE | PARENB | CLOCAL);
   SerialPortSettings.c_cflag |= CS8 | CREAD;
   
-  /*                                                */
-  /* One input byte is enough to return from read() */
-  /* Inter-character timer off                      */
-  /*                                                */
+  //                                                //
+  // One input byte is enough to return from read() //
+  // Inter-character timer off                      //
+  //                                                //
   SerialPortSettings.c_cc[VMIN]  = 1;
   SerialPortSettings.c_cc[VTIME] = 0;
   
-  /* Apply new configuration */
+  // Apply new configuration
   if (tcsetattr(fd, TCSANOW, &SerialPortSettings)) {
     printf("\n  ERROR ! in Setting attributes\n");
     close(fd);
@@ -232,25 +316,25 @@ int openSerialPort(char *serialPort) {
     printf("\n  BaudRate = 115200 \n  StopBits = 1 \n  Parity   = None\n\n");
   }
   
-  /*------------------------------- Write data to serial port -----------------------------*/
+  //------------------------------- Write data to serial port -----------------------------//
   
   return fd;
 }
 
 void usage(char *message) {
   printf("usage: %s\n", message);
-  printf("       ./console -s <serial port>\n");
+  printf("       ./console -s <serial port> -f <firmware file> -i <input file> -o <output file>\n");
+  printf("       -f, -i and -o arguments are optional\n");
   return;
 }
 
 int main(int argc, char* argv[]) {
   char *serialPort = 0;
-  char *file = 0;
-  char fileOut[100];
   int serial_fd;
+  char *fwFile = 0;
+  char *inputFile = 0;
+  char *outputFile = 0;
   int i;
-  char c;
-  int nbytes;
   
   if (argc < 3) {
     usage("Missing arguments");
@@ -261,6 +345,12 @@ int main(int argc, char* argv[]) {
     if (argv[i][0] == '-') {
       if (argv[i][1] == 's') {
         serialPort = argv[++i];
+      } else if (argv[i][1] == 'f') {
+        fwFile = argv[++i];
+      } else if (argv[i][1] == 'i') {
+        inputFile = argv[++i];
+      } else if (argv[i][1] == 'o') {
+        outputFile = argv[++i];
       } else {
         usage("Unexpected argument");
         return -1;
@@ -276,76 +366,22 @@ int main(int argc, char* argv[]) {
     return -1;
   }
   
-#if USE_BOOT == 1
-  /* Sync with target */
-  do {
-    do {
-      nbytes = (int) read(serial_fd, &byte, 1);
-    } while (nbytes <= 0);
-  } while (byte != ENQ);
-  c = ACK;
-  nbytes = (int) write(serial_fd, &c, 1);
-  if (nbytes == -1) {
-    printf("console: Failed to send Ack\n");
+  // Sync with target
+  connect(serial_fd);
+  
+  if (fwFile) { // Send firmware file
+    sendFile(serial_fd, fwFile);
   }
   
-  /* Send firmware */
-  while (1) {
-    do {
-      nbytes = (int) read(serial_fd, &c, 1);
-    } while (nbytes <= 0);
-    
-    if (c == ETX) { /* Finish */
-      break;
-    } else { /* Print char */
-      printf("%c", c);
-    }
-  }
-  sendFile(serial_fd, "firmware.bin");
-  
-  /* Send file back for debug */
-  /*while (1) {
-    do {
-      nbytes = (int) read(serial_fd, &c, 1);
-    } while (nbytes <= 0);
-    
-    if (c == ETX) { // Finish
-      break;
-    } else { // Print char
-      printf("%c", c);
-    }
-  }
-  receiveFile(serial_fd, "out.bin");*/
-  
-  /* Print any received chars */
-  while (1) {
-    do {
-      nbytes = (int) read(serial_fd, &c, 1);
-    } while (nbytes <= 0);
-    
-    if (c == ENQ) { /* Finish */
-      printf("Bye, bye!\n");
-      break;
-    } else { /* Print char */
-      printf("%c", c);
-    }
+  if (inputFile) { // Send input file
+    sendFile(serial_fd, inputFile);
   }
   
-  /* Terminate connection */
-  c = EOT;
-  nbytes = (int) write(serial_fd, &c, 1);
-  if (nbytes == -1) {
-    printf("console: Failed to send EOT\n");
-  }
-#endif
+  // Run application
+  run(serial_fd);
   
-  while (1) {
-    do {
-      nbytes = (int) read(serial_fd, &c, 1);
-    } while (nbytes <= 0);
-    
-    /* Print char */
-    printf("%c", c);
+  if (outputFile) { // Receive output file
+    receiveFile(serial_fd, outputFile);
   }
   
   close(serial_fd);
