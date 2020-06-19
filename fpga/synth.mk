@@ -32,6 +32,9 @@ include $(SRC_DIR)/src.mk
 
 all: run
 
+firmware.bin: $(FIRM_DIR)/firmware.hex
+	cp $(FIRM_DIR)/firmware.bin .
+
 firmware.dat: $(FIRM_DIR)/firmware.hex
 	cp $< .
 	$(PYTHON_DIR)/hex_split.py firmware
