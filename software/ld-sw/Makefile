@@ -34,7 +34,7 @@ $(FW).bin: $(FW_DIR)/$(FW).bin
 $(TRGT): $(CSRCS) $(CHDRS)
 	$(CC) $(CFLAGS) $(DEFINE) $(INCLUDE) $(CSRCS) -o $@
 
-run: $(TRGT)
+run: $(TRGT) $(FW).bin
 ifneq ($(USERNAME),)
 	@echo "FPGA is being used by $(USERNAME)"
 else

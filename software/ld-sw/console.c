@@ -324,6 +324,7 @@ int openSerialPort(char *serialPort) {
 void usage(char *message) {
   printf("usage: %s\n", message);
   printf("       ./console -s <serial port> -f <firmware file> -i <input file> -o <output file>\n");
+  printf("       -f, -i and -o arguments are optional\n");
   return;
 }
 
