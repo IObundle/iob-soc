@@ -7,7 +7,7 @@ an UART (iob-uart), and optional caches and AXI4 connection to external DDR.
 
 ``git clone git@github.com:IObundle/iob-soc.git``
 
-Ssh access is mandadory so that submodules can be upadated.
+Ssh access is mandadory so that submodules can be updated.
 
 ## Update submodules
 ``git submodule update --init --recursive``
@@ -17,7 +17,7 @@ Ssh access is mandadory so that submodules can be upadated.
 
 To configure IOb-SoC the following parameters are availble:
 
-FIRM_ADDR_W: log2 size of user program and data space, from 1st intruction at at
+FIRM_ADDR_W: log2 size of user program and data space, from 1st instruction at
 address 0 to the stack end at address 2<sup>FIRM_ADDR_W</sup>-1
 
 SRAM_ADDR_W: log2 size of SRAM, addresses from 0 to 2<sup>SRAM_ADDR_W</sup>-1
@@ -28,20 +28,22 @@ turn connects to an external DDR controller.
 
 RUN_DDR:= assign to 1 if the program runs from the DDR memory and 0
 otherwise. This parameter is ignored if USE_DDR=0. If USE_DDR=1 and RUN_DDR=1,
-the SRAM memory can be accessed when the address' MSB is 1. If USE_DDR=1 and
+the SRAM memory can be accessed when the address MSB is 1. If USE_DDR=1 and
 RUN_DDR=0, the DDR is used to store data only; it can be accessed when the
-address' MSB is 1.
+address MSB is 1.
 
 DDR_ADDR_W: log2 size of DDR, addresses from 0 to 2<sup>DDR_ADDR_W</sup>-1
 
-USE_BOOT: assign to 1 to load a program received by the UART and boot from it or 0 other wise.
+USE_BOOT: assign to 1 to load a program received by the UART and boot from it, or to 0 otherwise.
 
-BOOTROM_ADDR_W: log2 size of the boot ROM, which should be enough for the bootloader program and data.
+BOOTROM_ADDR_W: log2 size of the boot ROM, which should be sufficient to hold the bootloader program and data.
 
-N_SLAVES: Number of slaves (peripherals). Assign peripheral IDs serially: 0, 1,
-2, etc, in the following lines, for example:
+N_SLAVES: Number of slaves (peripherals).
 
+Then, assign peripheral IDs serially: 0, 1, 2, etc, for example:
 UART:=0
+SPI:=1
+...
 
 SIM_DIR: path to a directory containing scripts for running RTL simulation.
 
@@ -49,9 +51,8 @@ FPGA_DIR: path to a directory containing scripts for compiling and running the d
 
 FPGA_COMPILER_SERVER: IP address of a machine where the FPGA tools are installed
 
-FPGA_BOARD_SERVER: IP address of a machine to which an FPGA board is attached.
+FPGA_BOARD_SERVER: IP address of a machine to which an FPGA board is attached and where the design will run.
 
-#ASIC compilation directory
 ASIC_DIR: path to a directory containing scripts for compiling the design for an ASIC.
 
 
