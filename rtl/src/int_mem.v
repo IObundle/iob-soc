@@ -135,11 +135,10 @@ module int_mem
    //
    // INSTANTIATE RAM
    //
-   sram #(
+   sram
 `ifdef SRAM_INIT
-          .FILE("firmware")
+        #(.FILE("firmware"))
 `endif
-	 )
    int_sram 
      (
       .clk           (clk),

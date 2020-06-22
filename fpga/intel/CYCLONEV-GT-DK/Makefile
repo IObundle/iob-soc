@@ -1,56 +1,24 @@
-RTL_DIR := ../../../rtl
-RISCV_DIR := ../../../submodules/iob-rv32
-UART_DIR := ../../../submodules/iob-uart
-FIRM_DIR := ../../../software/firmware
-BOOT_DIR := ../../../software/bootloader
-LD_SW_DIR := ../../../software/ld-sw
-PYTHON_DIR := ../../../software/python
-MEM_DIR := ../../../submodules/iob-mem
+define := #--verilog_macro
+incdir := #--lib_path
 
-REMOTE_HOST := iobundle.ddns.net
-REMOTE_PORT := 1415
+include ../../synth.mk
+
 REMOTE_FPGA_DIR := ./sandbox/iob-soc/fpga/intel/CYCLONEV-GT-DK
 
-BAUD := 115200
-FREQ := 100000000
+REMOTE := ${USER}@$(FPGA_BOARD_SERVER):$(REMOTE_FPGA_DIR)
 
-ifneq ($(shell grep USE_DDR $(RTL_DIR)/include/system.vh | grep -v "//"),)
-USE_DDR = USE_DDR
-endif
+run: output_files/top_system.sof firmware.bin
+	scp $^ $(REMOTE)
 
-VSRC = top_system.v $(RTL_DIR)/include/*.vh $(RTL_DIR)/src/memory/rom.v $(RTL_DIR)/src/*.v $(RISCV_DIR)/picorv32.v $(UART_DIR)/rtl/src/iob-uart.v $(MEM_DIR)/tdp_mem/*.v alt_ram.v
-
-all: output_files/top_system.sof
-	scp -P $(REMOTE_PORT) $< $(USER)@$(REMOTE_HOST):$(REMOTE_FPGA_DIR)
-	scp -P $(REMOTE_PORT) $(FIRM_DIR)/firmware.bin $(USER)@$(REMOTE_HOST):$(REMOTE_FPGA_DIR)
-
-output_files/top_system.sof: top_system.qsf top_system.sdc $(VSRC) boot.dat firmware.hex
-	./build.sh
-
-firmware.hex: $(FIRM_DIR)/firmware.hex
-	cp $< .
-	$(PYTHON_DIR)/hex_split.py firmware
-
-$(FIRM_DIR)/firmware.hex: FORCE
-	make -C $(FIRM_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
-
-boot.dat: $(BOOT_DIR)/boot.hex
-	cp $< ./boot.dat
-
-$(BOOT_DIR)/boot.hex:
-	make -C $(BOOT_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
+output_files/top_system.sof: top_system.tcl top_system.sdc $(VSRC) boot.dat firmware.dat
+	./build.sh "$(HW_INCLUDE)" "$(HW_DEFINE)" "$(VSRC)"
 
 ld-hw:
-	ssh -p $(REMOTE_PORT) $(USER)@$(REMOTE_HOST) $(REMOTE_FPGA_DIR)/prog.sh $(REMOTE_FPGA_DIR)
+#	ssh $(REMOTE) $(REMOTE_FPGA_DIR)/prog.sh $(REMOTE_FPGA_DIR)
+	./prog.sh .
 
-clean:
+clean_altera:
 	@rm -rf db incremental_db output_files
 	@rm -f *.summary *.rpt *.smsg *.txt *.done *.jdi *.pin *.sof *.sld *.qpf *~
-	@rm -f *.hex *.dat *.bin
-	make -C $(FIRM_DIR) clean --no-print-directory
-	make -C $(BOOT_DIR) clean --no-print-directory
-	make -C $(LD_SW_DIR) clean --no-print-directory
-
-.PHONY: all clean ld-hw ld-sw FORCE
 
 .PRECIOUS: output_files/top_system.sof

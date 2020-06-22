@@ -13,7 +13,9 @@ set VSRC [lindex $argv 3]
 
 #verilog sources
 foreach file [split $VSRC \ ] {
-    read_verilog -sv $file
+    if {$file != ""} {
+        read_verilog -sv $file
+    }
 }
 
 set_property part $PART [current_project]
