@@ -1,4 +1,4 @@
-#Firmware size (program and data)
+#FIRMWARE
 FIRM_ADDR_W:=13
 
 #SRAM
@@ -19,11 +19,6 @@ N_SLAVES:=1
 #Peripheral IDs (assign serially: 0, 1, 2, etc)
 UART:=0
 
-#address select bits: Extra memory (E), Peripherals (P), Boot controller (B)
-E:=31
-P:=30
-B:=29
-
 #RTL simulation directory
 SIM_DIR:=simulation/icarus
 #SIM_DIR:=simulation/modelsim
@@ -34,15 +29,22 @@ FPGA_DIR:=fpga/xilinx/AES-KU040-DB-G
 #FPGA_DIR:=fpga/intel/CYCLONEV-GT-DK
 #FPGA_DIR:=fpga/xilinx/SP605
 
-#FPGA servers
-PUDIM:=146.193.44.48
-BABA:=146.193.44.179
+FPGA_COMPILER_SERVER=$(PUDIM)
+#FPGA_COMPILER_SERVER=$(BABA)
 
-FPGA_COMPILER_SERVER:=$(PUDIM)#pudim-flan
-#FPGA_COMPILER_SERVER:=$(BABA)#baba-de-camelo
-
-#FPGA_BOARD_SERVER:= $(PUDIM)#pudim-flan
-FPGA_BOARD_SERVER:=$(BABA)#baba-de-camelo
+#FPGA_BOARD_SERVER=$(PUDIM)
+FPGA_BOARD_SERVER=$(BABA)
 
 #ASIC compilation directory
 ASIC_DIR = asic/umc130
+
+#address select bits: Extra memory (E), Peripherals (P), Boot controller (B)
+#do not edit
+E:=31
+P:=30
+B:=29
+
+#FPGA servers (replace at will)
+PUDIM:=146.193.44.48
+BABA:=146.193.44.179
+
