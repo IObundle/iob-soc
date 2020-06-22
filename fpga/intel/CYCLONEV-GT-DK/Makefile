@@ -19,6 +19,6 @@ ld-hw:
 
 clean_altera:
 	@rm -rf db incremental_db output_files
-	@rm -f *.summary *.rpt *.smsg *.txt *.done *.jdi *.pin *.sof *.sld *.qpf *~
+	@rm -f *.summary *.rpt *.smsg *.txt *.done *.jdi *.pin *.sof *.sld *.qpf *.qsf *~
 
 .PRECIOUS: output_files/top_system.sof
