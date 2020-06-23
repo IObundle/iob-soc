@@ -48,22 +48,14 @@ boot.dat: $(BOOT_DIR)/boot.hex
 $(BOOT_DIR)/boot.hex: FORCE
 	make -C $(BOOT_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
 
-ld-hw:
-	./ld-hw.sh
-
 ld-sw:
 	cp firmware.bin $(LD_SW_DIR)
 	make -C $(LD_SW_DIR)
 
-clean:
-	@rm -rf .Xil/ *.hex *.dat *.bin *.map *.vh
-	@rm -rf *~ \#*# *#  ../rtl/*~ ../rtl/\#*# ../rtl/*# ./rtl/
-	@rm -rf synth_*.mmi synth_*.bit synth_system*.v *.vcd *_tb
-	@rm -rf table.txt tab_*/ *webtalk* *.jou *.log .log
-	@rm -rf xelab.* xsim[._]* xvlog.* uart_loader
-	@rm -rf *.ltx fsm_encoding.os
+clean: clean_xilinx clean_altera
+	@rm -f *.hex *.dat *.bin
 	make -C $(FIRM_DIR) clean --no-print-directory
 	make -C $(BOOT_DIR) clean --no-print-directory
 	make -C $(LD_SW_DIR) clean --no-print-directory
 
-.PHONY: all run ld-hw ld-sw clean FORCE
+.PHONY: all run ld-hw ld-sw clean clean_xilinx clean_altera FORCE

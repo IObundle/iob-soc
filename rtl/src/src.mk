@@ -55,7 +55,6 @@ HW_DEFINE+=$(define) B=$(B)
 #
 
 HW_INCLUDE := \
-$(incdir) . \
 $(incdir) $(RTL_DIR)/include \
 $(incdir) $(UART_DIR)/rtl/include \
 $(incdir) $(CACHE_DIR)/rtl/include \
