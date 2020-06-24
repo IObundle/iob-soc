@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-`include "iob-uart.vh"
+`include "iob_uart.vh"
 
 module iob_uart_tb;
 
