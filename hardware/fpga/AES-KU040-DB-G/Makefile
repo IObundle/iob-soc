@@ -1,7 +1,9 @@
+ROOT_DIR:=../../..
+
 define := #-verilog_define
 incdir := #-include_dirs
 
-include ../../synth.mk
+include ../fpga.mk
 
 REMOTE := ${USER}@$(FPGA_BOARD_SERVER):sandbox/iob-soc/fpga/xilinx/AES-KU040-DB-G
 

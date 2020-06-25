@@ -1,3 +1,4 @@
+ROOT_DIR:=../..
 include ../software.mk
 
 #local flags

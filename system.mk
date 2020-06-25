@@ -19,32 +19,76 @@ N_SLAVES:=1
 #Peripheral IDs (assign serially: 0, 1, 2, etc)
 UART:=0
 
-#RTL simulation directory
-SIM_DIR:=simulation/icarus
-#SIM_DIR:=simulation/modelsim
-#SIM_DIR:=simulation/ncsim
+#RTL simulator
+SIMULATOR:=icarus
+#SIMULATOR:=modelsim
+#SIMULATOR:=ncsim
 
-#FPGA compilation directory
-FPGA_DIR:=fpga/xilinx/AES-KU040-DB-G
-#FPGA_DIR:=fpga/intel/CYCLONEV-GT-DK
-#FPGA_DIR:=fpga/xilinx/SP605
-
+#FPGA
+FPGA_BOARD:=AES-KU040-DB-G
+#FPGA_BOARD:=CYCLONEV-GT-DK
 FPGA_COMPILER_SERVER=$(PUDIM)
-#FPGA_COMPILER_SERVER=$(BABA)
 
-#FPGA_BOARD_SERVER=$(PUDIM)
+ifeq (FPGA_BOARD,AES-KU040-DB-G)
 FPGA_BOARD_SERVER=$(BABA)
+else ifeq (FPGA_BOARD,CYCLONEV-GT-DK)
+FPGA_BOARD_SERVER=$(PUDIM)
+endif
 
-#ASIC compilation directory
-ASIC_DIR = asic/umc130
+#ASIC node
+ASIC_NODE:=umc130
 
-#address select bits: Extra memory (E), Peripherals (P), Boot controller (B)
-#do not edit
-E:=31
-P:=30
-B:=29
+#DOC_TYPE
+DOC_TYPE:=presentation
 
-#FPGA servers (replace at will)
+#server list
 PUDIM:=146.193.44.48
 BABA:=146.193.44.179
 
+#DO NOT EDIT BEYOND THIS POINT
+#object directories
+FIRM_DIR:=$(ROOT_DIR)/software/firmware
+BOOT_DIR:=$(ROOT_DIR)/software/bootloader
+SIM_DIR:=$(ROOT_DIR)/hardware/simulation/$(SIMULATOR)
+FPGA_DIR:=$(ROOT_DIR)/hardware/fpga/$(FPGA_BOARD)
+ASIC_DIR:=$(ROOT_DIR)/hardware/asic/$(ASIC_NODE)
+DOC_DIR:=$(ROOT_DIR)/document/$(DOC_TYPE)
+
+#submodule paths
+SUBMODULES_DIR:=$(ROOT_DIR)/submodules
+CPU_DIR:=$(SUBMODULES_DIR)/uart
+UART_DIR:=$(SUBMODULES_DIR)/uart
+INTERCON_DIR:=$(SUBMODULES_DIR)/interconnect
+CACHE_DIR:=$(SUBMODULES_DIR)/cache
+AXI_MEM_DIR:=$(SUBMODULES_DIR)/axi-mem
+
+#defines
+DEFINE+=$(define)BOOTROM_ADDR_W=$(BOOTROM_ADDR_W)
+DEFINE+=$(define)SRAM_ADDR_W=$(SRAM_ADDR_W)
+DEFINE+=$(define)FIRM_ADDR_W=$(FIRM_ADDR_W)
+ifeq ($(USE_DDR),1)
+DEFINE+=$(define) USE_DDR
+DEFINE+=$(define) DDR_ADDR_W=$(DDR_ADDR_W)
+ifeq ($(RUN_DDR),1)
+DEFINE+=$(define) RUN_DDR
+endif
+endif
+ifeq ($(USE_BOOT),1)
+DEFINE+=$(define) USE_BOOT 
+endif
+DEFINE+=$(define)N_SLAVES=$(N_SLAVES) 
+DEFINE+=$(define)UART=$(UART)
+#address select bits: Extra memory (E), Peripherals (P), Boot controller (B)
+DEFINE+=$(define)E=31
+DEFINE+=$(define)P=30
+DEFINE+=$(define)B=29
+ifeq ($(CMDGOALS),)
+BAUD:=30000000
+FREQ:=100000000
+else ifeq ($(CMDGOALS),sim)
+BAUD:=30000000
+FREQ:=100000000
+else
+BAUD:=115200
+FREQ:=100000000
+endif

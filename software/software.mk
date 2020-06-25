@@ -1,20 +1,20 @@
-include ../../system.mk
+include $(ROOT_DIR)/system.mk
 
+#python scripts location
+PYTHON_DIR:=../python
+
+#compiler settings
 TOOLCHAIN_PREFIX:=riscv32-unknown-elf-
 CFLAGS:=-Os -ffreestanding -nostdlib -march=rv32im -mabi=ilp32 --std=gnu99
 
-PYTHON_DIR:=../python
+HDR:=../system.h
 
-SUBMODULES_DIR:=../../submodules
-INTERCON_DIR:=$(SUBMODULES_DIR)/interconnect/software
-UART_DIR:=$(SUBMODULES_DIR)/uart/software
+#include dir
+INCLUDE:=-I..
 
-INCLUDE:=-I.. -I$(UART_DIR)/common -I$(INTERCON_DIR)
+define:=-D
 
-DEFINE:=-DUSE_DDR=$(USE_DDR)
-DEFINE+=-DFIRM_ADDR_W=$(FIRM_ADDR_W)
-DEFINE+=-DN_SLAVES=$(N_SLAVES) 
-DEFINE+=-DUART=$(UART) -DUART_BAUD_RATE=$(BAUD) -DUART_CLK_FREQ=$(FREQ)
-DEFINE+=-DE=$(E) -DP=$(P) -DB=$(B)
+include $(UART_DIR)/software/embedded/embedded.mk
+include $(INTERCON_DIR)/software/software.mk
 
-SRC = $(UART_DIR)/common/iob-uart.c $(UART_DIR)/embedded/iob-uart-platform.c
+

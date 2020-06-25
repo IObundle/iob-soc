@@ -165,15 +165,13 @@ endmodule
 \end{tiny}
 \end{frame}
 
-\begin{frame}{Add the timer IP software}
-\begin{itemize}
-\item Copy the software directory from the iob-soc clone:
-  \\{\tt cp -r iob-soc/software .}
-\item Edit the {\tt ./software/firmware/firmware.c} file as in the next slide\\
-\end{itemize}
-\end{frame}
+%\begin{frame}{Add the timer IP software}
+%\end{frame}
 
 \begin{frame}[fragile]{Edit file {\tt firmware.c} to drive the timer IP}
+
+  Edit the {\tt ./software/firmware/firmware.c} file as in the next slide
+
 \begin{tiny}
 \begin{lstlisting}
 #include "system.h"
@@ -187,7 +185,7 @@ endmodule
 int main()
 { 
 
-  //***NEW*** variable to read timer cycle count
+  //variable to read timer cycle count
   int cycles = timer_get_count(TIMER_BASE);
   
   uart_init(UART,UART_CLK_FREQ/UART_BAUD_RATE);   
@@ -196,10 +194,10 @@ int main()
 
   uart_txwait();
   
-  //***NEW*** code section to read current timer count, compute and  
-  //print the elapsed time and clock frequency
+  //read current timer count and compute elapsed time in clock cycles  
   cycles =  timer_get_count(TIMER) - cycles;
 
+  //print the elapsed time and clock frequency
   uart_printf("Execution time: %dus @%dMHz,115200BAUD\n",(time*1000000)/UART_CLK_FREQ);
 
   uart_txwait();
@@ -218,7 +216,7 @@ PYTHON_DIR := ../python/
 SUBMODULES_DIR := ../../iob-soc/submodules
 UART_DIR := $(SUBMODULES_DIR)/iob-uart/c-driver
 
-#***NEW*** specify timer directory and addi it to include path 
+#specify timer directory and addi it to include path 
 TIMER_DIR := ../../iob-timer
 INCLUDE = -I. -I$(UART_DIR) -I$(TIMER_DIR)
 DEFINE = -DUART_BAUD_RATE=$(BAUD) -DUART_CLK_FREQ=$(FREQ)
