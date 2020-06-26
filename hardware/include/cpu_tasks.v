@@ -117,7 +117,7 @@
       cpu_uartwrite(`UART_SOFT_RESET, 1);
       cpu_uartwrite(`UART_SOFT_RESET, 0);
       //config uart div factor
-      cpu_uartwrite(`UART_DIV, `UART_CLK_FREQ/`UART_BAUD_RATE);
+      cpu_uartwrite(`UART_DIV, `FREQ/`BAUD);
       //enable uart for receiving
       cpu_uartwrite(`UART_RXEN, 1);
    endtask

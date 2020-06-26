@@ -17,7 +17,7 @@ char *prog_start_addr = (char *) EXTRA_BASE;
 int main() {
 
   //init uart 
-  uart_init(UART_BASE, UART_CLK_FREQ/UART_BAUD_RATE);
+  uart_init(UART_BASE, FREQ/BAUD);
 
   //connect with host
   uart_connect();

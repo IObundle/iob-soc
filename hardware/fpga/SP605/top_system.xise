@@ -26,7 +26,7 @@
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="53"/>
       <association xil_pn:name="Implementation" xil_pn:seqID="6"/>
     </file>
-    <file xil_pn:name="../../../submodules/iob-uart/rtl/src/iob-uart.v" xil_pn:type="FILE_VERILOG">
+    <file xil_pn:name="../../../submodules/iob-uart/rtl/src/iob_uart.v" xil_pn:type="FILE_VERILOG">
       <association xil_pn:name="BehavioralSimulation" xil_pn:seqID="55"/>
       <association xil_pn:name="Implementation" xil_pn:seqID="2"/>
     </file>
@@ -407,7 +407,7 @@
     <!-- project is analyzed based on files automatically identified as       -->
     <!-- include files.                                                       -->
     <file xil_pn:name="../../../rtl/include/system.vh" xil_pn:type="FILE_VERILOG"/>
-    <file xil_pn:name="../../../submodules/iob-uart/rtl/include/iob-uart.vh" xil_pn:type="FILE_VERILOG"/>
+    <file xil_pn:name="../../../submodules/iob-uart/rtl/include/iob_uart.vh" xil_pn:type="FILE_VERILOG"/>
   </autoManagedFiles>
 
 </project>

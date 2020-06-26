@@ -1,22 +1,22 @@
 ROOT_DIR:=.
 include ./system.mk
 
-sim: firmware boot
+sim: firmware bootloader
 	make -C $(SIM_DIR) 
 
-fpga: firmware boot
+fpga: firmware bootloader
 	make -C $(FPGA_DIR)
 
-asic: boot
+asic: bootloader
 	make -C $(ASIC_DIR)
 
 firmware:
 	make -C $(FIRM_DIR)
 
-boot:
+bootloader: firmware
 	make -C $(BOOT_DIR)
 
-doc:
+document:
 	make -C $(DOC_DIR)
 
 clean: 
@@ -28,4 +28,4 @@ clean:
 	make -C $(DOC_DIR) clean
 
 
-.PHONY: sim fpga asic firmware boot doc clean
+.PHONY: sim fpga asic firmware bootloader doc clean

@@ -45,7 +45,11 @@ DOC_TYPE:=presentation
 PUDIM:=146.193.44.48
 BABA:=146.193.44.179
 
+
+#
 #DO NOT EDIT BEYOND THIS POINT
+#
+
 #object directories
 FIRM_DIR:=$(ROOT_DIR)/software/firmware
 BOOT_DIR:=$(ROOT_DIR)/software/bootloader
@@ -53,29 +57,33 @@ SIM_DIR:=$(ROOT_DIR)/hardware/simulation/$(SIMULATOR)
 FPGA_DIR:=$(ROOT_DIR)/hardware/fpga/$(FPGA_BOARD)
 ASIC_DIR:=$(ROOT_DIR)/hardware/asic/$(ASIC_NODE)
 DOC_DIR:=$(ROOT_DIR)/document/$(DOC_TYPE)
+PYTHON_DIR:=$(ROOT_DIR)/software/python
+
 
 #submodule paths
 SUBMODULES_DIR:=$(ROOT_DIR)/submodules
-CPU_DIR:=$(SUBMODULES_DIR)/uart
-UART_DIR:=$(SUBMODULES_DIR)/uart
-INTERCON_DIR:=$(SUBMODULES_DIR)/interconnect
-CACHE_DIR:=$(SUBMODULES_DIR)/cache
-AXI_MEM_DIR:=$(SUBMODULES_DIR)/axi-mem
+CPU_DIR:=$(SUBMODULES_DIR)/iob-picorv32
+UART_DIR:=$(SUBMODULES_DIR)/iob-uart
+CACHE_DIR:=$(SUBMODULES_DIR)/iob-cache
+INTERCON_DIR:=$(CACHE_DIR)/submodules/iob-interconnect
+MEM_DIR:=$(CACHE_DIR)/submodules/iob-mem
+AXI_MEM_DIR:=$(CACHE_DIR)/submodules/axi-mem
 
 #defines
 DEFINE+=$(define)BOOTROM_ADDR_W=$(BOOTROM_ADDR_W)
 DEFINE+=$(define)SRAM_ADDR_W=$(SRAM_ADDR_W)
 DEFINE+=$(define)FIRM_ADDR_W=$(FIRM_ADDR_W)
 ifeq ($(USE_DDR),1)
-DEFINE+=$(define) USE_DDR
-DEFINE+=$(define) DDR_ADDR_W=$(DDR_ADDR_W)
+DEFINE+=$(define)USE_DDR
+DEFINE+=$(define)DDR_ADDR_W=$(DDR_ADDR_W)
 ifeq ($(RUN_DDR),1)
-DEFINE+=$(define) RUN_DDR
+DEFINE+=$(define)RUN_DDR
 endif
 endif
 ifeq ($(USE_BOOT),1)
-DEFINE+=$(define) USE_BOOT 
+DEFINE+=$(define)USE_BOOT=$(USE_BOOT) 
 endif
+DEFINE+=-DPROG_SIZE=$(shell wc -c $(FIRM_DIR)/firmware.bin | head -n1 | cut -d " " -f1)
 DEFINE+=$(define)N_SLAVES=$(N_SLAVES) 
 DEFINE+=$(define)UART=$(UART)
 #address select bits: Extra memory (E), Peripherals (P), Boot controller (B)
@@ -92,3 +100,5 @@ else
 BAUD:=115200
 FREQ:=100000000
 endif
+DEFINE+=$(define)BAUD=$(BAUD)
+DEFINE+=$(define)FREQ=$(FREQ)
