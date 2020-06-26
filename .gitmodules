@@ -1,9 +1,0 @@
-[submodule "submodules/uart"]
-	path = submodules/uart
-	url = git@github.com:jjts/iob-uart.git
-[submodule "submodules/picorv32"]
-	path = submodules/picorv32
-	url = git@github.com:jjts/iob-picorv32.git
-[submodule "submodules/cache"]
-	path = submodules/cache
-	url = git@github.com:jjts/iob-cache.git
