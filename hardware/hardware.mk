@@ -1,4 +1,12 @@
 UART_HW_DIR:=$(UART_DIR)/hardware
-INCLUDE+=$(UART_HW_DIR)/include
-VSRC+=$(UART_HW_DIR)/src/iob_uart.v
-VHDR+=$(UART_HW_DIR)/include/iob_uart.vh
+
+#include
+UART_INC_DIR:=$(UART_HW_DIR)/include
+INCLUDE+=$(incdir) $(UART_INC_DIR)
+
+#headers
+VHDR+=$(UART_INC_DIR)/*.vh
+
+#sources
+UART_SRC_DIR:=$(UART_DIR)/hardware/src
+VSRC+=$(UART_HW_DIR)/src/*.v

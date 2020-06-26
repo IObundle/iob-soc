@@ -1,3 +1,11 @@
 UART_SW_DIR:=$(UART_DIR)/software
-SRC+=$(UART_SW_DIR)/common/iob-uart.c
-HDR+=$(UART_SW_DIR)/common/iob-uart.h
+
+#include
+INCLUDE+=-I$(UART_SW_DIR)
+
+#headers
+HDR+=$(UART_SW_DIR)/*.h
+
+#sources
+SRC+=$(UART_SW_DIR)/*.c
+
