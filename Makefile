@@ -1,26 +1,31 @@
+ROOT_DIR:=.
 include ./system.mk
 
-sim:
+sim: firmware bootloader
 	make -C $(SIM_DIR) 
 
-fpga:
+fpga: firmware bootloader
 	make -C $(FPGA_DIR)
 
-asic:
+asic: bootloader
 	make -C $(ASIC_DIR)
 
-ld-hw:
-	make -C $(FPGA_DIR) ld-hw
+firmware:
+	make -C $(FIRM_DIR)
 
-ld-sw:
-	make -C software/ld-sw
+bootloader: firmware
+	make -C $(BOOT_DIR)
+
+document:
+	make -C $(DOC_DIR)
 
 clean: 
 	make -C $(SIM_DIR) clean
-	make -C  $(ASIC_DIR) clean
-	make -C fpga/xilinx/AES-KU040-DB-G clean
-	make -C fpga/intel/CYCLONEV-GT-DK clean
-	make -C fpga/xilinx/SP605 clean
+	make -C $(FPGA_DIR) clean
+	make -C $(ASIC_DIR) clean
+	make -C $(FIRM_DIR) clean
+	make -C $(BOOT_DIR) clean
+	make -C $(DOC_DIR) clean
 
 
-.PHONY: sim fpga asic ld-hw ld-sw clean
+.PHONY: sim fpga asic firmware bootloader doc clean

@@ -35,7 +35,6 @@ DEFINES+=+define+MODELSIM
 #DEFINES+=+define+DESPERATE_DEBUG
 DEFINES+=+define+WARNING_MSGS_ON
 DEFINES+=+define+SIMULATION
-DEFINES+=+define+PROG_SIZE=$(shell wc -c   ../../software/firmware/firmware.bin | head -n1 | cut -d " " -f1)
 DEFINES+=+define+UART_BAUD_RATE=$(BAUD)
 
 SIM_LOG_FILE=$(GEN_DIR)/msgs.txt

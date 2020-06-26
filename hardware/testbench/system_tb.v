@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 `include "system.vh"
-`include "iob-uart.vh"
+`include "iob_uart.vh"
 
 module system_tb;
 
