@@ -23,7 +23,12 @@ CHDRS := $(UART_DIR)/common/iob-uart.h
 
 USERNAME := $(shell pgrep console | xargs -r ps -o uname= -p)
 
-all: run
+run: $(TRGT) $(FW).bin
+ifneq ($(USERNAME),)
+	@echo "FPGA is being used by $(USERNAME)"
+else
+	./$(TRGT) -s $(SERIAL) -f $(FW).bin
+endif
 
 $(FW_DIR)/$(FW).bin: $(FW_DIR)/$(FW).c
 	make -C $(FW_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
@@ -34,16 +39,9 @@ $(FW).bin: $(FW_DIR)/$(FW).bin
 $(TRGT): $(CSRCS) $(CHDRS)
 	$(CC) $(CFLAGS) $(DEFINE) $(INCLUDE) $(CSRCS) -o $@
 
-run: $(TRGT) $(FW).bin
-ifneq ($(USERNAME),)
-	@echo "FPGA is being used by $(USERNAME)"
-else
-	./$(TRGT) -s $(SERIAL) -f $(FW).bin
-endif
-
 clean:
 	@rm -f *# *~
 	@rm -f $(TRGT) *.bin
 	make -C $(FW_DIR) clean --no-print-directory
 
-.PHONY: all run clean
+.PHONY: run clean

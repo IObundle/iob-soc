@@ -2,7 +2,6 @@ include $(ROOT_DIR)/system.mk
 
 # submodules
 include $(CPU_DIR)/hardware/hardware.mk
-include $(UART_DIR)/hardware/hardware.mk
 ifeq ($(USE_DDR),1)
 include $(CACHE_DIR)/hardware/hardware.mk
 else
@@ -37,8 +36,9 @@ endif
 #system
 VSRC+=$(SRC_DIR)/system.v
 
-#build trigger
-all: run
+# peripherals
+hw_periphs: periphs
+        $(foreach p, $(PERIPHERALS), $(eval include $(SUBMODULES_DIR)/$p/hardware/hardware.mk))                                      
 
 # data files
 firmware:

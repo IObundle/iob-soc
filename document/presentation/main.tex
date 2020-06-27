@@ -14,7 +14,13 @@
 \usepackage{tikz}
 \usepackage{listings}
 \graphicspath{ {./figures/} }
-
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
 
 \usetheme{Madrid}
 \definecolor{myuniversity}{RGB}{0, 60, 113}
@@ -74,16 +80,16 @@
 \begin{frame}{Introduction}
 \begin{center}
     \begin{itemize}
-      \item Building processor based systems from scratch is hard
+      \item Building processor-based systems from scratch is challenging
       \item The IOB-SoC template eases this task
       \item Provides a base Verilog SoC equipped with
         \begin{itemize}
         \item a RISC-V CPU
-        \item a memory system including a boot ROM and a RAM module
-        \item a UART communication module
+        \item a memory system including boot ROM, RAM and AXI4 interface to DDR
+        \item a UART communications module
         \end{itemize}
-      \item Users can add IP cores to build more complex SoCs
-      \item Here, the addition of a timer IP is exemplified
+      \item Users can add IP cores and software to build more complex SoCs
+      \item Here, the addition of a timer IP and its software driver is exemplified
     \end{itemize}
 \end{center}
 \end{frame}
@@ -91,10 +97,12 @@
 \begin{frame}{Project setup}
 \begin{center}
   \begin{itemize}
-    \item Use a Linux machine virtual or not
-    \item Install the latest stable version of the open source Icarus Verilog simulator
-    \item Make sure you can access {\it github.com} using an ssh key
-    \item At {\it github.com} create your SoC repository  called {\it my-soc} using {\it github.com/IObundle/iob-soc} as a template and cd into it
+    \item Use a Linux machine or VM
+    \item Install the latest stable version of the open source Icarus Verilog simulator (\url{iverilog.icarus.com})
+    \item Make sure you can access \url{github.com} using an ssh key
+    \item At \url{github.com} create your SoC repository ({\it
+      my-soc}) using \url{github.com/IObundle/iob-soc} as a
+      template
     \item Follow the instructions in the README file to clone the repository in your Linux machine
   \end{itemize}
 \end{center}
@@ -103,13 +111,13 @@
 
 \begin{frame}{Create an IP core to instantiate in your SoC}
 \begin{itemize}
-\item Create a timer IP core or alternatively download the one from
-  \\{\tt git clone git@bitbucket.org:jjts/iob-timer.git}
-\item Edit the following lines of the system configuration file file {\tt ./system.mk} as in the next slide
+\item Create a timer IP core or alternatively use a ready-made one and iclude it as a git submodule: at the {\tt iob-soc} root type
+  \\{\fontsize{7pt}{10pt} \tt git submodule add git@github.com:IObundle/iob-timer.git submodules/iob-timer}
+\item Edit the following lines in the {\tt ./system.mk} file to configure the system as explained in the next slide
 \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{Edit the system configuration file {\tt ./system.mk}}
+\begin{frame}[fragile]{Edit the {\tt ./system.mk} configuration file to declare the new peripheral}
 \begin{tiny}
 \begin{lstlisting}
 #FIRMWARE
@@ -127,21 +135,55 @@ DDR_ADDR_W:=30
 USE_BOOT:=0
 BOOTROM_ADDR_W:=12
 
-#Number of slaves (peripherals)
+#Number of peripherals
 N_SLAVES:=2
 
 #Peripheral IDs (assign serially: 0, 1, 2, etc)
 UART:=0
 TIMER:=1
+
+#Peripheral paths
+UART_DIR=$(SUBMODULES_DIR)/iob-uart
+TIMER_DIR=$(SUBMODULES_DIR)/iob-timer
+
+
 \end{lstlisting}
 \end{tiny}
+\end{frame}
+
+\begin{frame}[fragile]{Edit the {\tt hardware.mk} and {\tt software.mk} configuration files to import the peripheral's hardware and software}
+
+  {\tt ./hardware/hardware.mk}
+  \begin{tiny}
+    
+    \begin{lstlisting}
+include $(ROOT_DIR)/system.mk
+
+# submodules
+include $(TIMER_DIR)/hardware/hardware.mk
+include $(CPU_DIR)/hardware/hardware.mk
+...
+    \end{lstlisting}
+  \end{tiny}
+
+  {\tt ./software/software.mk}
+  \begin{tiny}
+    \begin{lstlisting}
+define:=-D
+include $(ROOT_DIR)/system.mk
+
+#submodules
+include $(TIMER_DIR)/software/software.mk
+include $(INTERCON_DIR)/software/software.mk
+    \end{lstlisting}
+  \end{tiny}
 \end{frame}
 
 
 \begin{frame}[fragile]{Instantiate the timer IP in file {\tt rtl/src/system.v}}
 \begin{tiny}
 \begin{lstlisting}
-`timescale 1 ns / 1 ps
+`timescale 1ns/1ps
 `include "system.vh"
 
 module system (
@@ -168,24 +210,19 @@ endmodule
 %\begin{frame}{Add the timer IP software}
 %\end{frame}
 
-\begin{frame}[fragile]{Edit file {\tt firmware.c} to drive the timer IP}
+\begin{frame}[fragile]{Edit the {\tt firmware.c} file to drive the new peripheral}
 
-  Edit the {\tt ./software/firmware/firmware.c} file as in the next slide
-
-\begin{tiny}
-\begin{lstlisting}
+  {\tt ./software/firmware/firmware.c}
+  \begin{tiny}
+    \begin{lstlisting}
 #include "system.h"
 #include "iob-uart.h"
 #include "iob_timer.h"
 
-#define UART (UART_BASE<<(DATA_W-N_SLAVES_W))
-#define SOFT_RESET (SOFT_RESET_BASE<<(ADDR_W-N_SLAVES_W))
-#define TIMER (TIMER_BASE<<(ADDR_W-N_SLAVES_W))
-
 int main()
 { 
 
-  //variable to read timer cycle count
+  //read timer cycle count
   int cycles = timer_get_count(TIMER_BASE);
   
   uart_init(UART,UART_CLK_FREQ/UART_BAUD_RATE);   
@@ -208,78 +245,6 @@ int main()
 \end{frame}
 
 
-\begin{frame}[fragile]{Edit the Makefile to compile the timer IP firmware}
-\begin{tiny}
-\begin{lstlisting}
-TOOLCHAIN_PREFIX = riscv32-unknown-elf-
-PYTHON_DIR := ../python/
-SUBMODULES_DIR := ../../iob-soc/submodules
-UART_DIR := $(SUBMODULES_DIR)/iob-uart/c-driver
-
-#specify timer directory and addi it to include path 
-TIMER_DIR := ../../iob-timer
-INCLUDE = -I. -I$(UART_DIR) -I$(TIMER_DIR)
-DEFINE = -DUART_BAUD_RATE=$(BAUD) -DUART_CLK_FREQ=$(FREQ)
-
-#***NEW*** add timer.c to the source list
-SRC =  firmware.S firmware.c $(UART_DIR)/iob-uart.c  $(TIMER_DIR)/iob_timer.c
-
-all: firmware.lds $(SRC) system.h $(UART_DIR)/iob-uart.h
-	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding  -nostdlib -o firmware.elf $(DEFINE) $(INCLUDE) $(SRC) --std=gnu99 -Wl,-Bstatic,-T,firmware.lds,-Map,firmware.map,--strip-debug -lgcc -lc
-	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
-	$(eval MEM_SIZE=`./get_firmsize.sh`)
-	$(eval MEM_SIZE=`$(PYTHON_DIR)/get_memsize.py MAINRAM_ADDR_W`)
-	$(PYTHON_DIR)/makehex.py firmware.bin $(MEM_SIZE) > firmware.hex
-
-system.h: ../../rtl/include/system.vh
-	sed s/\`/\#/g ../../rtl/include/system.vh > system.h
-
-clean:
-	@rm -rf firmware.bin firmware.elf firmware.map *.hex *.dat
-	@rm -rf uart_loader system.h
-	@rm -rf ../uart_loader
-
-.PHONY: all clean
-\end{lstlisting}
-\end{tiny}
-\end{frame}
-
-
-
-\begin{frame}[fragile]{Setup RTL simulation using the Icarus Verilog simulator}
-
-\begin{itemize}
-\item Copy the simulation folder from the iob-soc repository\\ {\tt cp -r
-  iob-soc/simulation .}
-\item Edit file ``simulation/icarus/Makefile'' as below, to compile the system
-  and simulate it
-\end{itemize}
-
-\begin{tiny}
-\begin{lstlisting}
-#simulation baud rate
-BAUD := 1000000
-FREQ := 100000000
-
-#paths
-ROOT_DIR := ../..
-SUBMODULES_DIR := $(ROOT_DIR)/iob-soc/submodules
-FIRM_DIR := $(ROOT_DIR)/software/firmware
-
-(...)
-
-#***NEW*** add timer directory to the hw include paths
-TIMER_DIR := $(ROOT_DIR)/iob-timer
-HW_INCLUDE := -I. -I$(RTL_DIR)/include -I$(UART_DIR)/rtl/include -I$(CACHE_DIR)/rtl/header -I$(TIMER_DIR)
-
-#***NEW*** add the timer IP verilog source to the list of sources
-VSRC = $(RTL_DIR)/testbench/system_tb.v  $(RTL_DIR)/src/*.v $(RTL_DIR)/src/memory/behav/*.v $(RISCV_DIR)/picorv32.v $(UART_DIR)/rtl/src/iob-uart.v $(FIFO_DIR)/afifo.v $(CACHE_DIR)/rtl/src/gen_mem_reg.v $(CACHE_DIR)/rtl/src/iob-cache.v $(AXI_RAM_DIR)/rtl/axi_ram.v $(TIMER_DIR)/iob_timer.v
-
-(...)
-\end{lstlisting}
-\end{tiny}
-\end{frame}
-
 \begin{frame}[fragile]{Simulate the system}
 
 \begin{itemize}
@@ -291,15 +256,18 @@ VSRC = $(RTL_DIR)/testbench/system_tb.v  $(RTL_DIR)/src/*.v $(RTL_DIR)/src/memor
 
 \begin{tiny}
 \begin{lstlisting}
-  ./a.out
-  VCD info: dumpfile system.vcd opened for output.
-  Hello world!
-  Total execution time: 1262 us @100MHz
+
+IOb-SoC Bootloader:
+
+Reboot CPU and run program...
+
+Hello world!
+Total execution time: 1262 us @100MHz
 \end{lstlisting}
 \end{tiny}
 
 \begin{itemize}
-\item Congratulations! You have created your first RISC-V system using IOB-SoC!!\\
+\item Congratulations! You have created your first RISC-V system using IOB-SoC.\\
 \end{itemize}
 
 \end{frame}

@@ -4,3 +4,6 @@
 [submodule "submodules/iob-cache"]
 	path = submodules/iob-cache
 	url = git@github.com:IObundle/iob-cache.git
+[submodule "submodules/UART"]
+	path = submodules/UART
+	url = git@github.com:IObundle/iob-uart.git
