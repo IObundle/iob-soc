@@ -12,9 +12,9 @@ run: synth_system.bit
 	scp $^ $(REMOTE):$(REMOTE_FPGA_DIR)
 	./ld-hw.sh
 
-synth_system.bit: *.xdc $(VSRC) boot.dat
+synth_system.bit: *.xdc $(VSRC) boot
 	rm -f $@.log
-	./run_vivado.sh $(USE_DDR) "$(HW_INCLUDE)" "$(HW_DEFINE)" "$(VSRC)"
+	./run_vivado.sh $(USE_DDR) "$(INCLUDE)" "$(DEFINE)" "$(VSRC)"
 	-grep -B4 -A10 'CLB LUTs' vivado.log
 	-grep -B1 -A9 ^Slack vivado.log && echo
 

@@ -1,4 +1,4 @@
-simulation/icarus/*.vcd
-simulation/ncim/*.vcd
-fpga/xilinx/AES-KU040-DB-G/ip
-fpga/xilinx/AES-KU040-DB-G/synth_system.bit
+hardware/simulation/icarus/*.vcd
+hardware/simulation/ncim/*.vcd
+hardware/fpga/AES-KU040-DB-G/ip
+hardware/fpga/AES-KU040-DB-G/synth_system.bit
