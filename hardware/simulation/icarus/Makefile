@@ -16,4 +16,4 @@ run: $(VSRC) $(VHDR) firmware boot
 icarus_clean:
 	@rm -f ./a.out
 
-.PHONY: run icarus_clean
+.PHONY: icarus_clean
