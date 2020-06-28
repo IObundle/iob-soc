@@ -23,19 +23,19 @@
 #define ADDR_W 32
 #define N_SLAVES_W BITS_TO_REPRESENT(N_SLAVES)
 
-
 //
 //Memory map
 //
 
-//select secondary memory:
-//SRAM if running from DDR or
-//DDR if running from SRAM
+//select extra memory:
+//extra memory is SRAM if running from DDR or DDR if running from SRAM
 #define EXTRA_BASE (1<<E)
 
 //select boot controller
 #define BOOTCTR_BASE (1<<B)
 
-//select peripherals
-#define UART_BASE (1<<P) |(UART<<(ADDR_W-2-N_SLAVES_W))
-
+//import peripheral addresses
+#ifndef PERIPHS_H
+#define PERIPHS_H
+#include "periphs.h"
+#endif

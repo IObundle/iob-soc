@@ -5,13 +5,12 @@ incdir := #-include_dirs
 
 include ../fpga.mk
 
-REMOTE := ${USER}@$(FPGA_BOARD_SERVER):sandbox/iob-soc/hardware/fpga/AES-KU040-DB-G
-
 # work-around for http://svn.clifford.at/handicraft/2016/vivadosig11
 export RDI_VERBOSE = False
 
-run: synth_system.bit firmware
-	scp $< firmware.bin $(REMOTE)
+run: synth_system.bit
+	scp $^ $(REMOTE):$(REMOTE_FPGA_DIR)
+	./ld-hw.sh
 
 synth_system.bit: *.xdc $(VSRC) boot
 	rm -f $@.log
@@ -19,13 +18,12 @@ synth_system.bit: *.xdc $(VSRC) boot
 	-grep -B4 -A10 'CLB LUTs' vivado.log
 	-grep -B1 -A9 ^Slack vivado.log && echo
 
-ld-hw:
-	./ld-hw.sh
-
-clean_xilinx:
+fpga-clean:
 	@rm -rf .Xil/ *.map *.vh
 	@rm -rf *~ \#*# *#  ../rtl/*~ ../rtl/\#*# ../rtl/*# ./rtl/
 	@rm -rf synth_*.mmi synth_*.bit synth_system*.v *.vcd *_tb
 	@rm -rf table.txt tab_*/ *webtalk* *.jou *.log .log
 	@rm -rf xelab.* xsim[._]* xvlog.* uart_loader
 	@rm -rf *.ltx fsm_encoding.os
+
+.PHONY: fpga-clean

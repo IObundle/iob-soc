@@ -5,7 +5,7 @@ incdir:=-I
 
 include ../simulation.mk
 
-#icarus verilog simulator
+#simulator flags
 VLOG = iverilog -W all -g2005-sv $(INCLUDE) $(DEFINE) 
 
 #run the simulator
@@ -13,7 +13,7 @@ run: $(VSRC) $(VHDR) firmware boot
 	$(VLOG) $(VSRC)
 	./a.out
 
-icarus_clean:
+sim_clean:
 	@rm -f ./a.out
 
-.PHONY: run icarus_clean
+.PHONY: sim_clean

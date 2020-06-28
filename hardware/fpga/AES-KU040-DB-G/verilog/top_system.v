@@ -396,7 +396,7 @@ module top_system(
 `ifdef USE_DDR
           //address write
 		  .m_axi_awid    (sys_awid),
-		  .m_axi_awaddr  (sys_awaddr),
+		  .m_axi_awaddr  ({{(32-`DDR_ADDR_W){1'b0}},sys_awaddr}),
 		  .m_axi_awlen   (sys_awlen),
 		  .m_axi_awsize  (sys_awsize),
 		  .m_axi_awburst (sys_awburst),
@@ -422,7 +422,7 @@ module top_system(
 
 		  //address read
 		  .m_axi_arid    (sys_arid),
-		  .m_axi_araddr  (sys_araddr),
+		  .m_axi_araddr  ({{(32-`DDR_ADDR_W){1'b0}},sys_araddr}),
 		  .m_axi_arlen   (sys_arlen),
 		  .m_axi_arsize  (sys_arsize),
 		  .m_axi_arburst (sys_arburst),
