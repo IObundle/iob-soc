@@ -62,15 +62,13 @@
    \begin{itemize}
      \item Introduction
      \item Project setup
-     \item Project editing guidelines
-     \item Getting started with the timer IP hardware design
-     \item Edit the hardware definitions file {\tt system.vh}
+     \item Create an IP core to instantiate in your SoC
+     \item Edit the ./system.mk configuration file to declare a new peripheral
      \item Instantiate the timer IP in file {\tt rtl/src/system.v}
-     \item Add the timer IP firmware
-     \item Edit file {\tt firmware.c} to drive the timer IP
-     \item Edit the Makefile to compile the timer IP firmware
-     \item Setup RTL simulation using the Icarus Verilog simulator
-     \item Simulate the system
+     \item Edit file {\tt firmware.c} to drive the new peripheral
+     \item Run the firmware in internal SRAM
+     \item Run the firmware in external DDR
+     \item Simulate and implement the system
      \item Conclusions and future work
  \end{itemize} 
 \end{center}
@@ -121,7 +119,7 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{Edit the {\tt ./system.mk} configuration file to declare the new peripheral}
+\begin{frame}[fragile]{Edit the {\tt ./system.mk} configuration file to declare a new peripheral}
 \begin{tiny}
 \begin{lstlisting}
 #FIRMWARE
