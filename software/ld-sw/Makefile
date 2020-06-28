@@ -1,6 +1,6 @@
-include ../../system.mk
+ROOT_DIR:=../..
+include $(ROOT_DIR)/system.mk
 
-FW_DIR := ../firmware
 FW := firmware
 
 SERIAL := /dev/ttyUSB0
@@ -10,16 +10,13 @@ FREQ := 100000000
 CC := gcc
 CFLAGS := -g -Wall
 
-SUBMODULES_DIR := ../../submodules
-UART_DIR := $(SUBMODULES_DIR)/uart/software
-
 DEFINE := -DUSE_BOOT=$(USE_BOOT)
 
-INCLUDE := -I.. -I$(UART_DIR)/common
+INCLUDE := -I.. -I$(UART_DIR)/software
 
 TRGT := console
-CSRCS := console.c
-CHDRS := $(UART_DIR)/common/iob-uart.h
+SRC := console.c
+HDR := $(UART_DIR)/software/iob-uart.h
 
 USERNAME := $(shell pgrep console | xargs -r ps -o uname= -p)
 
@@ -30,18 +27,18 @@ else
 	./$(TRGT) -s $(SERIAL) -f $(FW).bin
 endif
 
-$(FW_DIR)/$(FW).bin: $(FW_DIR)/$(FW).c
-	make -C $(FW_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
+$(FIRM_DIR)/$(FW).bin: $(FIRM_DIR)/$(FW).c
+	make -C $(FIRM_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
 
-$(FW).bin: $(FW_DIR)/$(FW).bin
+$(FW).bin: $(FIRM_DIR)/$(FW).bin
 	cp $^ .
 
-$(TRGT): $(CSRCS) $(CHDRS)
-	$(CC) $(CFLAGS) $(DEFINE) $(INCLUDE) $(CSRCS) -o $@
+$(TRGT): $(SRC) $(HDR)
+	$(CC) $(CFLAGS) $(DEFINE) $(INCLUDE) $(SRC) -o $@
 
 clean:
 	@rm -f *# *~
 	@rm -f $(TRGT) *.bin
-	make -C $(FW_DIR) clean --no-print-directory
+	make -C $(FIRM_DIR) clean --no-print-directory
 
 .PHONY: run clean
