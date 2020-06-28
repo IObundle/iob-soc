@@ -17,9 +17,9 @@ BOOTROM_ADDR_W:=12
 PERIPHERALS:=UART
 
 #RTL simulator
-SIMULATOR:=icarus
+#SIMULATOR:=icarus
 #SIMULATOR:=modelsim
-#SIMULATOR:=ncsim
+SIMULATOR:=ncsim
 
 #FPGA
 FPGA_BOARD:=AES-KU040-DB-G
@@ -73,7 +73,7 @@ endif
 ifeq ($(USE_BOOT),1)
 DEFINE+=$(define)USE_BOOT=$(USE_BOOT) 
 endif
-DEFINE+=-DPROG_SIZE=$(shell wc -c $(FIRM_DIR)/firmware.bin | head -n1 | cut -d " " -f1)
+DEFINE+=$(define)PROG_SIZE=$(shell wc -c $(FIRM_DIR)/firmware.bin | head -n1 | cut -d " " -f1)
 DEFINE+=$(define)N_SLAVES=$(N_SLAVES) 
 #address select bits: Extra memory (E), Peripherals (P), Boot controller (B)
 DEFINE+=$(define)E=31
