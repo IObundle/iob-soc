@@ -1,18 +1,20 @@
+ROOT_DIR:=../../..
+
 define:=-define 
 incdir:=-incdir 
 
 include ../simulation.mk
 
 #simulator flags
-CFLAGS = -errormax 15 -status -update -linedebug -sv $(HW_DEFINE) $(TB_DEFINE) $(HW_INCLUDE)
+CFLAGS = -errormax 15 -status -update -linedebug -sv $(INCLUDE) $(DEFINE)
 EFLAGS = -errormax 15 -access +wc -status
-SFLAGS = -errormax 15 -status -CMDFILE $(RTL_DIR)/testbench
+SFLAGS = -errormax 15 -status -CMDFILE $(ROOT_DIR)/hardware/testbench
 
 #simulate
 run: firmware boot $(VSRC)
 	VSRC="$(VSRC)" CFLAGS="$(CFLAGS)" EFLAGS="$(EFLAGS)" SFLAGS="$(SFLAGS)" ./run_ncsim.sh
 
-ncsim_clean:
+sim_clean:
 	@rm -rf xcelium.d xmsim.key *.log
 
-.PHONY: ncsim_clean
+.PHONY: sim_clean
