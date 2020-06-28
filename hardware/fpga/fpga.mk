@@ -2,7 +2,7 @@ include $(ROOT_DIR)/hardware/hardware.mk
 
 VSRC+=verilog/top_system.v
 
-REMOTE_FPGA_DIR := ./sandbox/iob-soc/fpga/$(FPGA_BOARD)
+REMOTE_FPGA_DIR := ./sandbox/iob-soc/hardware/fpga/$(FPGA_BOARD)
 
 REMOTE := ${USER}@$(FPGA_BOARD_SERVER)
 

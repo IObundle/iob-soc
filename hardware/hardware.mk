@@ -11,7 +11,8 @@ endif
 # include
 INC_DIR:=$(ROOT_DIR)/hardware/include
 
-INCLUDE+=$(incdir) $(INC_DIR)
+INCLUDE+= $(incdir) . \
+$(incdir) $(INC_DIR)
 
 #headers
 VHDR+=$(INC_DIR)/system.vh
