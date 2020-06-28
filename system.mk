@@ -5,17 +5,16 @@ FIRM_ADDR_W:=13
 SRAM_ADDR_W=13
 
 #DDR
-USE_DDR:=0
+USE_DDR:=1
 RUN_DDR:=1
 DDR_ADDR_W:=30
 
 #BOOT
-USE_BOOT:=0
+USE_BOOT:=1
 BOOTROM_ADDR_W:=12
 
 #Peripheral list (must match respective submodule name)
 PERIPHERALS:=UART
-
 
 #RTL simulator
 SIMULATOR:=icarus
@@ -27,21 +26,11 @@ FPGA_BOARD:=AES-KU040-DB-G
 #FPGA_BOARD:=CYCLONEV-GT-DK
 FPGA_COMPILER_SERVER=$(PUDIM)
 
-ifeq ($(FPGA_BOARD),AES-KU040-DB-G)
-FPGA_BOARD_SERVER=$(BABA)
-else ifeq ($(FPGA_BOARD),CYCLONEV-GT-DK)
-FPGA_BOARD_SERVER=$(PUDIM)
-endif
-
 #ASIC node
 ASIC_NODE:=umc130
 
 #DOC_TYPE
 DOC_TYPE:=presentation
-
-#server list
-PUDIM:=146.193.44.48
-BABA:=146.193.44.179
 
 
 #
@@ -113,4 +102,13 @@ dummy:=$(foreach p, $(PERIPHERALS), $(eval $p_DIR:=$(SUBMODULES_DIR)/$p))
 dummy:=$(foreach p, $(PERIPHERALS), $(eval $p=$(N_SLAVES)) $(eval N_SLAVES:=$(shell expr $(N_SLAVES) \+ 1)))
 dummy:=$(foreach p, $(PERIPHERALS), $(eval DEFINE+=$(define)$p=$($p)))
 
-.PHONY: all
+ifeq ($(FPGA_BOARD),AES-KU040-DB-G)
+FPGA_BOARD_SERVER=$(BABA)
+else ifeq ($(FPGA_BOARD),CYCLONEV-GT-DK)
+FPGA_BOARD_SERVER=$(PUDIM)
+endif
+
+#server list
+PUDIM:=146.193.44.48
+BABA:=146.193.44.179
+

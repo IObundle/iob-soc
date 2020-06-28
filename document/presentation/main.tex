@@ -100,9 +100,7 @@
     \item Use a Linux machine or VM
     \item Install the latest stable version of the open source Icarus Verilog simulator (\url{iverilog.icarus.com})
     \item Make sure you can access \url{github.com} using an ssh key
-    \item At \url{github.com} create your SoC repository ({\it
-      my-soc}) using \url{github.com/IObundle/iob-soc} as a
-      template
+    \item At \url{github.com} create your SoC repository using \url{github.com/IObundle/iob-soc} as a template
     \item Follow the instructions in the README file to clone the repository in your Linux machine
   \end{itemize}
 \end{center}
@@ -110,11 +108,17 @@
 
 
 \begin{frame}{Create an IP core to instantiate in your SoC}
-\begin{itemize}
-\item Create a timer IP core or alternatively use a ready-made one and iclude it as a git submodule: at the {\tt iob-soc} root type
-  \\{\fontsize{7pt}{10pt} \tt git submodule add git@github.com:IObundle/iob-timer.git submodules/iob-timer}
-\item Edit the following lines in the {\tt ./system.mk} file to configure the system as explained in the next slide
-\end{itemize}
+  \begin{itemize}
+  \item Create a timer IP core repository or, alternatively, use the one at \url{github.com:IObundle/iob-timer.git}
+  \item An IP core can be integrated in an IOb-SoC if it provides the following 2 files: 
+    \begin{enumerate}
+    \item hardware/hardware.mk
+    \item software/embedded/embedded.mk
+    \end{enumerate}
+  \item Add the IP core repository as a git submodule of your IOb-SoC repository:\\
+    {\tt git submodule add git@github.com/IObundle/iob-soc submodules/TIMER}
+  \item To configure the system to host the IP core, edit the {\tt ./system.mk} file as in the next slide
+  \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]{Edit the {\tt ./system.mk} configuration file to declare the new peripheral}
@@ -135,48 +139,10 @@ DDR_ADDR_W:=30
 USE_BOOT:=0
 BOOTROM_ADDR_W:=12
 
-#Number of peripherals
-N_SLAVES:=2
-
-#Peripheral IDs (assign serially: 0, 1, 2, etc)
-UART:=0
-TIMER:=1
-
-#Peripheral paths
-UART_DIR=$(SUBMODULES_DIR)/iob-uart
-TIMER_DIR=$(SUBMODULES_DIR)/iob-timer
-
-
+#Peripheral list (must match respective submodule name)
+PERIPHERALS:=UART TIMER
 \end{lstlisting}
 \end{tiny}
-\end{frame}
-
-\begin{frame}[fragile]{Edit the {\tt hardware.mk} and {\tt software.mk} configuration files to import the peripheral's hardware and software}
-
-  {\tt ./hardware/hardware.mk}
-  \begin{tiny}
-    
-    \begin{lstlisting}
-include $(ROOT_DIR)/system.mk
-
-# submodules
-include $(TIMER_DIR)/hardware/hardware.mk
-include $(CPU_DIR)/hardware/hardware.mk
-...
-    \end{lstlisting}
-  \end{tiny}
-
-  {\tt ./software/software.mk}
-  \begin{tiny}
-    \begin{lstlisting}
-define:=-D
-include $(ROOT_DIR)/system.mk
-
-#submodules
-include $(TIMER_DIR)/software/software.mk
-include $(INTERCON_DIR)/software/software.mk
-    \end{lstlisting}
-  \end{tiny}
 \end{frame}
 
 
@@ -245,11 +211,46 @@ int main()
 \end{frame}
 
 
-\begin{frame}[fragile]{Simulate the system}
+\begin{frame}{Run the firmware in internal SRAM}
+\begin{enumerate}
+\item Run the firmware in internal RAM and disable (re)programming
+  \begin{itemize}
+  \item Assign {\tt USE\_DDR=0} and {\tt USE\_BOOT=0}
+  \item Loading programs after the FPGA is programmed is disabled: if the firmware is modified the FPGA must be recompiled
+  \item This option is only valid for FPGA which permits memory initialisation
+  \end{itemize}
+\item Run the firmware in internal RAM and enable (re)programming
+  \begin{itemize}
+  \item Assign {\tt USE\_DDR=0} {\tt USE\_BOOT=1}
+  \item Loading programs after the FPGA is programmed is enabled
+  \item This option is valid for FPGA and ASIC
+  \item Firmware is (re)loaded via UART
+  \end{itemize}
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Run the firmware in external DDR}
+\begin{enumerate}
+\item Run the firmware in external DDR and disable (re)programming
+  \begin{itemize}
+  \item Assign {\tt USE\_DDR=1} and {\tt USE\_BOOT=0}
+  \item This option is only allowed in simulation which permits memory initialisation
+  \item An FPGA or ASIC implementation will not work
+  \end{itemize}
+\item Run the firmware in external DDR memory and enable (re)programming
+  \begin{itemize}
+  \item Define {\tt USE\_DDR=1} {\tt USE\_BOOT=1}
+  \item This option is valid for FPGA and ASIC
+  \item Firmware is (re)loaded via UART
+  \item Third party DDR controller IP core is required
+  \end{itemize}
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]{Simulate and implement the system}
 
 \begin{itemize}
-\item To simulate the system just type\\
-  {\tt make} 
+\item To simulate the system just type {\tt make} 
 \item The firmware, bootloader and system verilog description are compiled as you can see from the printed messages
 \item The last prints should look like the following
 \end{itemize}
@@ -267,54 +268,23 @@ Total execution time: 1262 us @100MHz
 \end{tiny}
 
 \begin{itemize}
-\item Congratulations! You have created your first RISC-V system using IOB-SoC.\\
+\item To implement in your chosen FPGA just type {\tt make fpga}
+\item To implement in your chosen ASIC just type {\tt make fpga}
+\item To load the firmware in the hardware just type {\tt make load-firmware}
 \end{itemize}
 
 \end{frame}
-
-
-
-\begin{frame}{Main memory options}
-%\begin{small}
-\begin{itemize}
-\item The main memory type options are enabled by defining or undefining the {\tt USE\_DDR} and {\tt USE\_BOOT} macros
-\item Option 1: place the firmware image in FPGA memory during design compilation
-  \begin{itemize}
-  \item Do not define either macro: \underline{not reprogrammable}
-  \item This option is only valid for FPGA: needs recompilation if firmware changes
-  \end{itemize}
-\item Option 2: place the firmware in internal RAM
-  \begin{itemize}
-  \item Define macro {\tt USE\_BOOT} only: \underline {reprogrammable}
-  \item This option is valid for FPGA and ASIC
-  \item Firmware can be (re)loaded via UART
-  \end{itemize}
-\item Option 3: place the firmware in external DDR memory
-  \begin{itemize}
-  \item Define both macros: \underline{reprogrammable}
-  \item This option is valid for FPGA and ASIC
-  \item Firmware can be (re)loaded via UART
-  \item Third party DDR controller IP core is required
-  \end{itemize}
-\end{itemize}
-\end{frame}
-%\end{small}
-
-
-
 
 \begin{frame}{Conclusions and future work}
 
 \begin{itemize}
   \item Conclusions
     \begin{itemize}
-    \item Presented project and editing guidelines
-    \item Designed of a peripheral IP (timer)
-    \item Instantiated peripheral in the system 
-    \item Designed a simple software driver for the peripheral
-    \item Compiled the software
-    \item Simulated the system's RTL code running the software in the memories
-    \item Presented options for the main memory
+    \item A tutorial on SoC creation using IOb-SoC is presented
+    \item The addition of a peripheral IP core (timer) is illustrated
+    \item A simple software driver for the IP core is exemplified
+    \item How to compile and run the system is explained 
+    \item Options for implementing the main memory are presented
     \end{itemize}
   \item Future work
     \begin{itemize}
@@ -325,9 +295,7 @@ Total execution time: 1262 us @100MHz
 
 \end{frame}
 
-
-
-
+% for including figures in slides:
 %\begin{frame}{Introduction}
 %\begin{center}
 %  \begin{columns}[onlytextwidth]

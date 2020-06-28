@@ -38,58 +38,44 @@ USE_BOOT: assign to 1 to load a program received by the UART and boot from it, o
 
 BOOTROM_ADDR_W: log2 size of the boot ROM, which should be sufficient to hold the bootloader program and data.
 
-N_SLAVES: Number of slaves (peripherals).
+PERIPHERALS:=UART: peripheral list (must match respective submodule name)
 
-Then, assign peripheral IDs serially: 0, 1, 2, etc, for example:
-UART:=0
-SPI:=1
-...
+SIMULATOR:=icarus: chosen RTL simulator
 
-SIM_DIR: path to a directory containing scripts for running RTL simulation.
+FPGA_BOARD:=AES-KU040-DB-G: chosen FPGA board
 
-FPGA_DIR: path to a directory containing scripts for compiling and running the design on an FPGA.
+FPGA_COMPILER_SERVER=146.193.44.48: chosen FPGA build server
 
-FPGA_COMPILER_SERVER: IP address of a machine where the FPGA tools are installed
+ASIC_NODE:=umc130: chosen ASIC node
 
-FPGA_BOARD_SERVER: IP address of a machine to which an FPGA board is attached and where the design will run.
-
-ASIC_DIR: path to a directory containing scripts for compiling the design for an ASIC.
-
+DOC_TYPE:=presentation: chosen document to build with Latex
 
 ## Simulate
 ```
 make sim
 ```
 
-## Compile FPGA 
+## Compile and configure FPGA 
 ```
 make fpga
 ```
 
-## Configure FPGA
+## Load and run firmware
 ```
-make conf-fpga
-```
-
-## Load Software
-```
-make ld-sw
+make load-firmware
 ```
 
-## Run Software
+## Run firmware only
 ```
-make run-sw
-```
-
-## Synthesize ASIC
-```
-make synth-asic
+make run-firmware
 ```
 
-## Place and route ASIC
+## Implement ASIC
 ```
-make pr-asic
+make asic
 ```
+
+
 
 ## Instructions for Installing the RISC-V GNU Compiler Toolchain
 
