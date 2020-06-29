@@ -32,7 +32,6 @@ int main() {
     switch(host_cmd) {
     case LOAD: //load firmware
       file_size = uart_getfile(prog_start_addr);
-      //uart_starttext(); //renable host text mode for next mesg 
       break;
     case SEND: //return firmware to host
       uart_sendfile(file_size, prog_start_addr);

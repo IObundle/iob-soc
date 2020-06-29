@@ -5,12 +5,12 @@ FIRM_ADDR_W:=13
 SRAM_ADDR_W=13
 
 #DDR
-USE_DDR:=0
-RUN_DDR:=0
+USE_DDR:=1
+RUN_DDR:=1
 DDR_ADDR_W:=30
 
 #BOOT
-USE_BOOT:=0
+USE_BOOT:=1
 BOOTROM_ADDR_W:=12
 
 #Peripheral list (must match respective submodule name)

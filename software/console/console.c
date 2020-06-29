@@ -90,7 +90,7 @@ int sendFile(int serial_fd, char *name) {
   
   file_fd = fopen(name, "rb");
   if (!file_fd) {
-    printf("sendFile: Can't open the file selected. Don't forget to add an valid pathed file.\n");
+    printf("sendFile: Can't open file.\n");
     return -1;
   }
   
