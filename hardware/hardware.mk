@@ -42,6 +42,7 @@ periphs:
 
 # data files
 firmware.hex: $(FIRM_DIR)/firmware.hex
+	cp $(FIRM_DIR)/firmware.bin .
 	cp $(FIRM_DIR)/firmware.hex .
 	$(PYTHON_DIR)/hex_split.py firmware
 
