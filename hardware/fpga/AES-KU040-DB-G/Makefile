@@ -5,25 +5,26 @@ incdir := #-include_dirs
 
 include ../fpga.mk
 
+
 # work-around for http://svn.clifford.at/handicraft/2016/vivadosig11
 export RDI_VERBOSE = False
 
-run: synth_system.bit
-	scp $^ $(REMOTE):$(REMOTE_FPGA_DIR)
+load: synth_system.bit
 	./ld-hw.sh
 
-synth_system.bit: *.xdc $(VSRC) boot
+compile: synth_system.bit periphs
+
+synth_system.bit: *.xdc $(VSRC) firmware.hex boot.dat
+	echo $(MAKECMDGOALS)
 	rm -f $@.log
-	./run_vivado.sh $(USE_DDR) "$(INCLUDE)" "$(DEFINE)" "$(VSRC)"
+	./build.sh $(USE_DDR) "$(INCLUDE)" "$(DEFINE)" "$(VSRC)"
 	-grep -B4 -A10 'CLB LUTs' vivado.log
 	-grep -B1 -A9 ^Slack vivado.log && echo
 
+GARBAGE:=.Xil/ *.map *. *~ \#*# *#  ../rtl/*~ ../rtl/\#*# ../rtl/*# ./rtl/ synth_*.mmi synth_*.bit synth_system*.v *.vcd *_tb \
+table.txt tab_*/ *webtalk* *.jou *.log .log xelab.* xsim[._]* xvlog.* uart_loader *.ltx fsm_encoding.os
+
 fpga-clean:
-	@rm -rf .Xil/ *.map *.vh
-	@rm -rf *~ \#*# *#  ../rtl/*~ ../rtl/\#*# ../rtl/*# ./rtl/
-	@rm -rf synth_*.mmi synth_*.bit synth_system*.v *.vcd *_tb
-	@rm -rf table.txt tab_*/ *webtalk* *.jou *.log .log
-	@rm -rf xelab.* xsim[._]* xvlog.* uart_loader
-	@rm -rf *.ltx fsm_encoding.os
+	rm -rf $(GARBAGE)
 
 .PHONY: fpga-clean

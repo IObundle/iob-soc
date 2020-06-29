@@ -1,11 +1,7 @@
 ROOT_DIR:=../..
 include $(ROOT_DIR)/system.mk
 
-FW := firmware
-
 SERIAL := /dev/ttyUSB0
-BAUD := 115200
-FREQ := 100000000
 
 CC := gcc
 CFLAGS := -g -Wall
@@ -20,25 +16,28 @@ HDR := $(UART_DIR)/software/iob-uart.h
 
 USERNAME := $(shell pgrep console | xargs -r ps -o uname= -p)
 
-run: $(TRGT) $(FW).bin
+run: $(TRGT) firmware.bin
 ifneq ($(USERNAME),)
 	@echo "FPGA is being used by $(USERNAME)"
 else
-	./$(TRGT) -s $(SERIAL) -f $(FW).bin
+	./$(TRGT) -s $(SERIAL)
 endif
 
-$(FIRM_DIR)/$(FW).bin: $(FIRM_DIR)/$(FW).c
-	make -C $(FIRM_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
+load: $(TRGT) firmware.bin
+ifneq ($(USERNAME),)
+	@echo "FPGA is being used by $(USERNAME)"
+else
+	./$(TRGT) -s $(SERIAL) -f firmware.bin
+endif
 
-$(FW).bin: $(FIRM_DIR)/$(FW).bin
-	cp $^ .
+firmware.bin:
+	make -C $(FIRM_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
+	cp $(FIRM_DIR)/$@ .
 
 $(TRGT): $(SRC) $(HDR)
 	$(CC) $(CFLAGS) $(DEFINE) $(INCLUDE) $(SRC) -o $@
 
 clean:
-	@rm -f *# *~
-	@rm -f $(TRGT) *.bin
-	make -C $(FIRM_DIR) clean --no-print-directory
+	@rm -f *# *~ $(TRGT) *.bin
 
 .PHONY: run clean

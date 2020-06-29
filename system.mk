@@ -5,26 +5,27 @@ FIRM_ADDR_W:=13
 SRAM_ADDR_W=13
 
 #DDR
-USE_DDR:=1
-RUN_DDR:=1
+USE_DDR:=0
+RUN_DDR:=0
 DDR_ADDR_W:=30
 
 #BOOT
-USE_BOOT:=1
+USE_BOOT:=0
 BOOTROM_ADDR_W:=12
 
 #Peripheral list (must match respective submodule name)
 PERIPHERALS:=UART
 
 #RTL simulator
-#SIMULATOR:=icarus
+SIMULATOR:=icarus
 #SIMULATOR:=modelsim
-SIMULATOR:=ncsim
+#SIMULATOR:=ncsim
 
-#FPGA
+#FPGA board (associated with server below)
 FPGA_BOARD:=AES-KU040-DB-G
 #FPGA_BOARD:=CYCLONEV-GT-DK
-FPGA_COMPILER_SERVER=$(PUDIM)
+FPGA_COMPILE_SERVER=$(PUDIM)
+
 
 #ASIC node
 ASIC_NODE:=umc130
@@ -46,6 +47,7 @@ ASIC_DIR:=$(HW_DIR)/asic/$(ASIC_NODE)
 SW_DIR:=$(ROOT_DIR)/software
 FIRM_DIR:=$(SW_DIR)/firmware
 BOOT_DIR:=$(SW_DIR)/bootloader
+CONSOLE_DIR:=$(SW_DIR)/console
 PYTHON_DIR:=$(SW_DIR)/python
 
 DOC_DIR:=$(ROOT_DIR)/document/$(DOC_TYPE)
@@ -79,19 +81,17 @@ DEFINE+=$(define)N_SLAVES=$(N_SLAVES)
 DEFINE+=$(define)E=31
 DEFINE+=$(define)P=30
 DEFINE+=$(define)B=29
-ifeq ($(CMDGOALS),)
-BAUD:=30000000
-FREQ:=100000000
-else ifeq ($(CMDGOALS),sim)
-BAUD:=30000000
-FREQ:=100000000
+ifeq ($(MAKECMDGOALS),)
+BAUD:=3000000
+else ifeq ($(MAKECMDGOALS),sim)
+BAUD:=3000000
 else
 BAUD:=115200
-FREQ:=100000000
 endif
-DEFINE+=$(define)BAUD=$(BAUD)
-DEFINE+=$(define)FREQ=$(FREQ)
 
+DEFINE+=$(define)BAUD=$(BAUD)
+DEFINE+=$(define)FREQ=100000000
+dummy:= $(shell echo $(BAUD))
 
 #run target by default
 all: run
@@ -111,4 +111,6 @@ endif
 #server list
 PUDIM:=146.193.44.48
 BABA:=146.193.44.179
+
+REMOTE_ROOT_DIR=./sandbox/iob-soc
 

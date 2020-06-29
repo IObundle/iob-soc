@@ -19,10 +19,10 @@ int main() {
   //init uart 
   uart_init(UART_BASE, FREQ/BAUD);
 
-  //connect with host
-  uart_connect();
-  
-  //greet host 
+  //connect with host, comment to disable handshaking
+  //uart_connect();
+
+  //welcome message
   uart_puts ("\n\n\nIOb-SoC Bootloader:\n\n");
 
   unsigned int file_size;
