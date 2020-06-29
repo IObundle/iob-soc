@@ -34,7 +34,7 @@ module sram #(
          iob_tdp_ram
                #(
 `ifdef SRAM_INIT
-	         .MEM_INIT_FILE({FILE, "_", file_suffix[8*(i+1)-1 -: 8], ".dat"}),
+	         .MEM_INIT_FILE({FILE, "_", file_suffix[8*(i+1)-1 -: 8], ".hex"}),
 `endif
 	         .DATA_W(8),
                  .ADDR_W(`SRAM_ADDR_W-2))

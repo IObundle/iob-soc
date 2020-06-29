@@ -166,6 +166,8 @@
    endtask
 
    task cpu_run;
+      //do cpu_getchar(cpu_char);
+      //while (cpu_char != `ENQ); 
       cpu_putchar(`EOT);
       cpu_print();
    endtask
@@ -175,7 +177,7 @@
       while (cpu_char != `STX);
 
       cpu_getchar(cpu_char);
-      while(cpu_char != `ETX) begin
+      while(cpu_char != `ETX && cpu_char != `ENQ) begin
          $write("%c", cpu_char);
          cpu_getchar(cpu_char);
       end

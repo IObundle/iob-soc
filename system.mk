@@ -82,9 +82,9 @@ DEFINE+=$(define)E=31
 DEFINE+=$(define)P=30
 DEFINE+=$(define)B=29
 ifeq ($(MAKECMDGOALS),)
-BAUD:=3000000
+BAUD:=30000000
 else ifeq ($(MAKECMDGOALS),sim)
-BAUD:=3000000
+BAUD:=30000000
 else
 BAUD:=115200
 endif

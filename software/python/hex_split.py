@@ -5,10 +5,10 @@ from sys import argv
 
 firmware = argv[1]
 
-f0 = open(firmware+"_0.dat", "w");
-f1 = open(firmware+"_1.dat", "w");
-f2 = open(firmware+"_2.dat", "w");
-f3 = open(firmware+"_3.dat", "w");
+f0 = open(firmware+"_0.hex", "w");
+f1 = open(firmware+"_1.hex", "w");
+f2 = open(firmware+"_2.hex", "w");
+f3 = open(firmware+"_3.hex", "w");
 
 main_file = open(firmware+".hex", "r");
 

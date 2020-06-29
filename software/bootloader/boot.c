@@ -20,7 +20,7 @@ int main() {
   uart_init(UART_BASE, FREQ/BAUD);
 
   //connect with host, comment to disable handshaking
-  //uart_connect();
+  uart_connect();
 
   //welcome message
   uart_puts ("\n\n\nIOb-SoC Bootloader:\n\n");
