@@ -12,13 +12,13 @@
 <body>
 
 <h1 id="iob-soc">IOb-SoC</h1>
-<p>SoC template comprising a RISC-V processor (iob-rv32), an SRAM memory subsystem, an UART (iob-uart), and optional caches and AXI4 connection to external DDR.</p>
+<p>SoC template comprising a RISC-V processor (iob-rv32), an SRAM memory subsystem, a UART (iob-uart), and optional caches and AXI4 connection to external DDR.</p>
 <h2 id="clone-the-repository">Clone the repository</h2>
 <p><code>git clone git@github.com:IObundle/iob-soc.git</code></p>
-<p>Ssh access is mandadory so that submodules can be updated.</p>
+<p>Ssh access is mandatory so that submodules can be updated.</p>
 <h2 id="update-submodules">Update submodules</h2>
 <p><code>git submodule update --init --recursive</code></p>
-<h2 id="edit-the-system-configuration-file-rtlsystem.mk">Edit the system configuration file: rtl/system.mk</h2>
+<h2 id="edit-the-system-configuration-file-hardware-system.mk">Edit the system configuration file: /hardware/system.mk</h2>
 <p>To configure IOb-SoC the following parameters are availble:</p>
 <p>FIRM_ADDR_W: log2 size of user program and data space, from 1st instruction at address 0 to the stack end at address 2<sup>FIRM_ADDR_W</sup>-1</p>
 <p>SRAM_ADDR_W: log2 size of SRAM, addresses from 0 to 2<sup>SRAM_ADDR_W</sup>-1</p>
@@ -67,7 +67,7 @@ git submodule update --init --recursive</code></pre>
 <pre><code>sudo apt install autoconf automake autotools-dev curl python3 libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev</code></pre>
 <p>For CentOS and its variants:</p>
 <pre><code>sudo yum install autoconf automake python3 libmpc-devel mpfr-devel gmp-devel gawk  bison flex texinfo patchutils gcc gcc-c++ zlib-devel expat-devel</code></pre>
-<h3 id="instalation">Instalation</h3>
+<h3 id="installation">Installation</h3>
 <pre><code>sudo ./configure --prefix=path/to/riscv --enable-multilib
 sudo make</code></pre>
 <h3 id="compilation">Compilation</h3>

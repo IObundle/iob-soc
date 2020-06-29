@@ -114,7 +114,7 @@
     \item software/embedded/embedded.mk
     \end{enumerate}
   \item Add the IP core repository as a git submodule of your IOb-SoC repository:\\
-    {\tt git submodule add git@github.com/IObundle/iob-soc submodules/TIMER}
+    {\tt git submodule add git@github.com/IObundle/iob-timer.git submodules/TIMER}
   \item To configure the system to host the IP core, edit the {\tt ./system.mk} file as in the next slide
   \end{itemize}
 \end{frame}
@@ -144,7 +144,7 @@ PERIPHERALS:=UART TIMER
 \end{frame}
 
 
-\begin{frame}[fragile]{Instantiate the timer IP in file {\tt rtl/src/system.v}}
+\begin{frame}[fragile]{Instantiate the timer IP in file {\tt hardware/src/system.v}}
 \begin{tiny}
 \begin{lstlisting}
 `timescale 1ns/1ps
@@ -267,7 +267,7 @@ Total execution time: 1262 us @100MHz
 
 \begin{itemize}
 \item To implement in your chosen FPGA just type {\tt make fpga}
-\item To implement in your chosen ASIC just type {\tt make fpga}
+\item To implement in your chosen ASIC just type {\tt make asic}
 \item To load the firmware in the hardware just type {\tt make load-firmware}
 \end{itemize}
 
@@ -286,7 +286,7 @@ Total execution time: 1262 us @100MHz
     \end{itemize}
   \item Future work
     \begin{itemize}
-    \item Non volatile (flash) external memory support
+    \item Non-volatile (flash) external memory support
     \item Real Time Operating System (RTOS) 
     \end{itemize}
 \end{itemize}
