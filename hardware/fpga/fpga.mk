@@ -4,6 +4,6 @@ include $(ROOT_DIR)/hardware/hardware.mk
 VSRC+=./verilog/top_system.v
 
 clean: fpga-clean
-	@rm -f *.hex *.dat *.bin
+	@rm -f *.hex *.bin
 
 .PHONY: clean load compile

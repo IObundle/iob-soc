@@ -12,7 +12,7 @@ jal ra, main
 
 //reboot to run bootloader
 li s5, 3
-li s6, BOOTCTR_BASE
+li s6, BOOTCTR_BASE|((USE_DDR & RUN_DDR)<<E)
 sw s5, 0(s6)//cpu_rst_req=1, boot=1
 
 ebreak

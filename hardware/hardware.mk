@@ -43,8 +43,10 @@ periphs:
 # data files
 firmware.hex: $(FIRM_DIR)/firmware.hex
 	cp $(FIRM_DIR)/firmware.bin .
+ifeq ($(USE_BOOT),0)
 	cp $(FIRM_DIR)/firmware.hex .
 	$(PYTHON_DIR)/hex_split.py firmware
+endif
 
 boot.hex: $(BOOT_DIR)/boot.hex
 	cp $(BOOT_DIR)/boot.hex .
