@@ -11,7 +11,7 @@ EFLAGS = -errormax 15 -access +wc -status
 SFLAGS = -errormax 15 -status -CMDFILE $(ROOT_DIR)/hardware/testbench
 
 #simulate
-run: firmware boot $(VSRC)
+run: $(VSRC) $(VHDR) firmware.hex boot.hex periphs
 	VSRC="$(VSRC)" CFLAGS="$(CFLAGS)" EFLAGS="$(EFLAGS)" SFLAGS="$(SFLAGS)" ./run_ncsim.sh
 
 sim_clean:
