@@ -12,12 +12,12 @@ export RDI_VERBOSE = False
 load: synth_system.bit
 	./ld-hw.sh
 
-compile: synth_system.bit periphs
+compile: periphs synth_system.bit
 
-synth_system.bit: *.xdc $(VSRC) firmware.hex boot.dat
+synth_system.bit: *.xdc $(VSRC) firmware.hex boot.hex
 	echo $(MAKECMDGOALS)
 	rm -f $@.log
-	./build.sh $(USE_DDR) "$(INCLUDE)" "$(DEFINE)" "$(VSRC)"
+	./build.sh "$(INCLUDE)" "$(DEFINE)" "$(VSRC)"
 	-grep -B4 -A10 'CLB LUTs' vivado.log
 	-grep -B1 -A9 ^Slack vivado.log && echo
 

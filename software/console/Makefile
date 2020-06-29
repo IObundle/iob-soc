@@ -31,7 +31,6 @@ else
 endif
 
 firmware.bin:
-	make -C $(FIRM_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
 	cp $(FIRM_DIR)/$@ .
 
 $(TRGT): $(SRC) $(HDR)

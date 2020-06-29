@@ -105,7 +105,7 @@ module boot_ctr
      #(
        .DATA_W(`DATA_W),
        .ADDR_W(`BOOTROM_ADDR_W-2),
-       .FILE("boot.dat")
+       .FILE("boot.hex")
        )
    sp_rom0 (
             .clk(clk),

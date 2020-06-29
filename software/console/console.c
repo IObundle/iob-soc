@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <fcntl.h>   // File Control Definitions
 #include <termios.h> // POSIX Terminal Control Definitions
 #include <unistd.h>  // UNIX Standard Definitions
@@ -11,28 +12,27 @@
 // Uncomment this line for debug
 //#define DEBUG
 
-int connect(int serial_fd) {
-  unsigned char byte;
+void connect(int serial_fd) {
+  unsigned char byte = -1;
   int nbytes;
-  
-  byte = ENQ;
-  nbytes = (int) write(serial_fd, &byte, 1);
-  if (nbytes == -1) {
-    printf("connect: Failed to send Ack\n");
+
+  while (1) {
+    nbytes = (int) read(serial_fd, &byte, 1);
+    if (nbytes <= 0 || byte != ENQ) {
+      //this will unblock target block read 
+      byte = ENQ;
+      nbytes = (int) write(serial_fd, &byte, 1);
+      //if (nbytes < 0)
+      //perror("Error: write ENQ returned negative value");
+    }
+    else if (byte == ENQ) {
+      byte = ACK;
+      do nbytes = (int) write(serial_fd, &byte, 1); while (nbytes < 0);
+      printf("Connected to target");
+      //fflush(stdout);
+      break;
+    }
   }
-  
-  do {
-    do {
-      nbytes = (int) read(serial_fd, &byte, 1);
-    } while (nbytes <= 0);
-  } while (byte != ENQ);
-  byte = ACK;
-  nbytes = (int) write(serial_fd, &byte, 1);
-  if (nbytes == -1) {
-    printf("connect: Failed to send Ack\n");
-  }
-  
-  return 0;
 }
 
 int print (int serial_fd) {
@@ -223,9 +223,10 @@ int openSerialPort(char *serialPort) {
   
   // Taken from: https://github.com/xanthium-enterprises/Serial-Port-Programming-on-Linux/blob/master/USB2SERIAL_Write/Transmitter%20(PC%20Side)/SerialPort_write.c
   
-  printf("\n +----------------------------------+");
-  printf("\n |           Serial Port            |");
-  printf("\n +----------------------------------+");
+  printf("\n");
+  printf("+-----------------------------------------------+\n");
+  printf("|           IOb-Console: serial port            |\n");
+  printf("+-----------------------------------------------+\n");
   
   //------------------------------- Opening the Serial Port -------------------------------//
   
@@ -238,24 +239,22 @@ int openSerialPort(char *serialPort) {
   fd = open(serialPort, O_RDWR | O_NOCTTY | O_NDELAY);
   if (fd == -1) {
     printf("\n  Error! in Opening '%s'", serialPort);
-    return 0;
-  } else {
-    printf("\n  '%s' Opened Successfully", serialPort);
+    return 1;
   }
-	
+  
   // ---------- Setting the Attributes of the serial port using termios structure --------- //
   
   // Get the current configuration of the serial interface
   if (tcgetattr(fd, &SerialPortSettings) < 0) {
     printf("\n  Error! in Getting '%s' configuration", serialPort);
-    return 0;
+    return 1;
   }
   
   // Set Read Speed and Write as 115200
   if (cfsetispeed(&SerialPortSettings, B115200) < 0 ||
       cfsetospeed(&SerialPortSettings, B115200) < 0) {
     printf("\n  Error! in Setting baudrate '%s'", serialPort);
-    return 0;
+    return 1;
   }
   
   //                                                             //
@@ -311,7 +310,7 @@ int openSerialPort(char *serialPort) {
   if (tcsetattr(fd, TCSANOW, &SerialPortSettings)) {
     printf("\n  ERROR ! in Setting attributes\n");
     close(fd);
-    return 0;
+    return 1;
   } else {
     printf("\n  BaudRate = 115200 \n  StopBits = 1 \n  Parity   = None\n\n");
   }
