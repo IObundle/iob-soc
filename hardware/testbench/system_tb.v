@@ -54,7 +54,7 @@ module system_tb;
       //connect with bootloader
       cpu_connect();
 
-`ifdef USE_BOOT
+`ifdef LD_FW
       //send program
       cpu_sendfile();
       //uncomment for debug

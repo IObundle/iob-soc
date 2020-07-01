@@ -5,13 +5,15 @@ FIRM_ADDR_W:=13
 SRAM_ADDR_W=13
 
 #DDR
-USE_DDR:=1
-RUN_DDR:=1
+USE_DDR:=0
+RUN_DDR:=0
 DDR_ADDR_W:=30
 
-#BOOT
-USE_BOOT:=1
+#ROM
 BOOTROM_ADDR_W:=12
+
+#Init memory (only works in simulation or FPGA)
+INIT_MEM:=1
 
 #Peripheral list (must match respective submodule name)
 PERIPHERALS:=UART
@@ -72,10 +74,9 @@ ifeq ($(RUN_DDR),1)
 DEFINE+=$(define)RUN_DDR
 endif
 endif
-ifeq ($(USE_BOOT),1)
-DEFINE+=$(define)USE_BOOT=$(USE_BOOT) 
+ifeq ($(INIT_MEM),1)
+DEFINE+=$(define)INIT_MEM 
 endif
-DEFINE+=$(define)PROG_SIZE=$(shell wc -c $(FIRM_DIR)/firmware.bin | head -n1 | cut -d " " -f1)
 DEFINE+=$(define)N_SLAVES=$(N_SLAVES) 
 #address select bits: Extra memory (E), Peripherals (P), Boot controller (B)
 DEFINE+=$(define)E=31
@@ -114,3 +115,4 @@ BABA:=146.193.44.179
 
 REMOTE_ROOT_DIR=./sandbox/iob-soc
 
+.PHONY: all

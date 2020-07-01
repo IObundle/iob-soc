@@ -6,37 +6,28 @@ SERIAL := /dev/ttyUSB0
 CC := gcc
 CFLAGS := -g -Wall
 
-DEFINE := -DUSE_BOOT=$(USE_BOOT)
+INCLUDE+=-I$(UART_DIR)/software
+SRC:=console.c
 
-INCLUDE := -I.. -I$(UART_DIR)/software
-
-TRGT := console
-SRC := console.c
-HDR := $(UART_DIR)/software/iob-uart.h
+CONSOLE:=./console -s $(SERIAL)
 
 USERNAME := $(shell pgrep console | xargs -r ps -o uname= -p)
 
-run: $(TRGT) firmware.bin
+run: console firmware.bin
 ifneq ($(USERNAME),)
 	@echo "FPGA is being used by $(USERNAME)"
 else
-	./$(TRGT) -s $(SERIAL)
+	$(CONSOLE)
 endif
 
-load: $(TRGT) firmware.bin
-ifneq ($(USERNAME),)
-	@echo "FPGA is being used by $(USERNAME)"
-else
-	./$(TRGT) -s $(SERIAL) -f firmware.bin
-endif
-
-firmware.bin:
+./firmware.bin: $(FIRM_DIR)/firmware.bin
 	cp $(FIRM_DIR)/$@ .
+	$(eval CONSOLE:=./console -s $(SERIAL) -f firmware.bin)
 
-$(TRGT): $(SRC) $(HDR)
-	$(CC) $(CFLAGS) $(DEFINE) $(INCLUDE) $(SRC) -o $@
+console: $(SRC)
+	$(CC) $(CFLAGS) $(INCLUDE) $(SRC) -o $@
 
 clean:
-	@rm -f *# *~ $(TRGT) *.bin
+	@rm -f *# *~ console *.bin
 
 .PHONY: run clean

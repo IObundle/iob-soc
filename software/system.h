@@ -39,3 +39,15 @@
 #define PERIPHS_H
 #include "periphs.h"
 #endif
+
+#ifdef USE_DDR
+#define USE_DDR_SW 1
+#else
+#define USE_DDR_SW 0
+#endif
+
+#ifdef RUN_DDR
+#define RUN_DDR_SW 1
+#else
+#define RUN_DDR_SW 0
+#endif
