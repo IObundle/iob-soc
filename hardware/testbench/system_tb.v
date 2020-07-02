@@ -2,6 +2,7 @@
 
 `include "system.vh"
 `include "iob_uart.vh"
+`include "iob_timer.vh"
 
 module system_tb;
 

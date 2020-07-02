@@ -5,7 +5,7 @@ FIRM_ADDR_W:=13
 SRAM_ADDR_W=13
 
 #DDR
-USE_DDR:=1
+USE_DDR:=0
 RUN_DDR:=1
 DDR_ADDR_W:=30
 
@@ -13,10 +13,10 @@ DDR_ADDR_W:=30
 BOOTROM_ADDR_W:=12
 
 #Init memory (only works in simulation or FPGA not running DDR)
-INIT_MEM:=0
+INIT_MEM:=1
 
 #Peripheral list (must match respective submodule name)
-PERIPHERALS:=UART
+PERIPHERALS:=UART TIMER
 
 #RTL simulator
 SIMULATOR:=icarus

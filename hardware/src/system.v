@@ -1,6 +1,7 @@
 `timescale 1 ns / 1 ps
 `include "system.vh"
 `include "iob_uart.vh"
+`include "iob_timer.vh"
 `include "interconnect.vh"
 
 module system 
@@ -299,25 +300,41 @@ module system
    // UART
    //
 
-   iob_uart uart
-     (
-      .clk       (clk),
-      .rst       (reset),
+   iob_uart uart (
+		  .clk       (clk),
+		  .rst       (reset),
       
-      //cpu interface
-      .valid(slaves_req[`valid(`UART)]),
-      .address(slaves_req[`address(`UART,`UART_ADDR_W+2,2)]),
-      .wdata(slaves_req[`wdata(`UART)]),
-      .wstrb(|slaves_req[`wstrb(`UART)]),
-      .rdata(slaves_resp[`rdata(`UART)]),
-      .ready(slaves_resp[`ready(`UART)]),
-      
-      
-      //RS232 interface
-      .txd       (uart_txd),
-      .rxd       (uart_rxd),
-      .rts       (uart_rts),
-      .cts       (uart_cts)
-      );
+		  //cpu interface
+		  .valid(slaves_req[`valid(`UART)]),
+		  .address(slaves_req[`address(`UART,`UART_ADDR_W+2,2)]),
+		  .wdata(slaves_req[`wdata(`UART)]),
+		  .wstrb(|slaves_req[`wstrb(`UART)]),
+		  .rdata(slaves_resp[`rdata(`UART)]),
+		  .ready(slaves_resp[`ready(`UART)]),
+		  
+		  
+		  //RS232 interface
+		  .txd       (uart_txd),
+		  .rxd       (uart_rxd),
+		  .rts       (uart_rts),
+		  .cts       (uart_cts)
+		  );
 
+   //
+   // TIMER
+   //
+
+   time_counter #(.COUNTER_WIDTH(32))
+           timer (
+		  .clk (clk),
+		  /rst (rst),
+
+		  //cpu interface
+		  .valid(slaves_req[`valid(`TIMER)]),
+		  .address(slaves_req[`address(`TIMER,`TIMER_ADDR_W+2,2)]),
+		  .wdata(slaves_req[`wdata(`TIMER)]),
+		  .rdata(slaves_resp[`rdata(`TIMER)]),
+		  .ready(slaves_resp[`ready(`TIMER)])
+		  );
+			   
 endmodule
