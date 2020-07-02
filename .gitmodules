@@ -7,3 +7,6 @@
 [submodule "submodules/UART"]
 	path = submodules/UART
 	url = git@github.com:IObundle/iob-uart.git
+[submodule "submodules/TIMER"]
+	path = submodules/TIMER
+	url = git@github.com:ChrisEdgley/iob-timer.git
