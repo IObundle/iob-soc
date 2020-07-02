@@ -173,19 +173,20 @@ module ext_mem
       .N_MASTERS(1)
 `endif
        )
-     ibus_merge (
-                 // masters
+     merge_i_d_buses_into_l2
+       (
+        // masters
 `ifdef RUN_DDR_USE_SRAM
-                 .m_req  ({icache_be_req, dcache_be_req}),
-                 .m_resp ({icache_be_resp, dcache_be_resp}),
+        .m_req  ({icache_be_req, dcache_be_req}),
+        .m_resp ({icache_be_resp, dcache_be_resp}),
 `else
-                 .m_req  (dcache_be_req),
-                 .m_resp (dcache_be_resp),
+        .m_req  (dcache_be_req),
+        .m_resp (dcache_be_resp),
 `endif                 
-                 // slave
-                 .s_req  (l2cache_req),
-                 .s_resp (l2cache_resp)
-                 );
+        // slave
+        .s_req  (l2cache_req),
+        .s_resp (l2cache_resp)
+        );
 
    // L2 cache instance
    iob_cache_axi # 

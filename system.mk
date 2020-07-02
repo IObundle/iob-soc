@@ -5,15 +5,15 @@ FIRM_ADDR_W:=13
 SRAM_ADDR_W=13
 
 #DDR
-USE_DDR:=0
-RUN_DDR:=0
+USE_DDR:=1
+RUN_DDR:=1
 DDR_ADDR_W:=30
 
 #ROM
 BOOTROM_ADDR_W:=12
 
-#Init memory (only works in simulation or FPGA)
-INIT_MEM:=1
+#Init memory (only works in simulation or FPGA not running DDR)
+INIT_MEM:=0
 
 #Peripheral list (must match respective submodule name)
 PERIPHERALS:=UART

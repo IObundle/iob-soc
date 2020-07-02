@@ -15,7 +15,6 @@ load: synth_system.bit
 compile: periphs synth_system.bit
 
 synth_system.bit: *.xdc $(VSRC) firmware.hex boot.hex
-	echo $(MAKECMDGOALS)
 	rm -f $@.log
 	./build.sh "$(INCLUDE)" "$(DEFINE)" "$(VSRC)"
 	-grep -B4 -A10 'CLB LUTs' vivado.log
