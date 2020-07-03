@@ -38,7 +38,7 @@ VSRC+=$(SRC_DIR)/system.v
 
 # peripherals
 periphs:
-	$(foreach p, $(PERIPHERALS), $(eval include $(SUBMODULES_DIR)/$p/hardware/hardware.mk))                                      
+	$(foreach p, $(PERIPHERALS), $(eval include $(SUBMODULES_DIR)/$p/hardware/hardware.mk))
 
 # data files
 firmware.hex: $(FIRM_DIR)/firmware.hex

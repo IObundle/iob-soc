@@ -196,7 +196,7 @@ module system
    split 
      #(
        .N_SLAVES(`N_SLAVES),
-       .P_SLAVES(`P_BIT)
+       .P_SLAVES(`P_BIT-1)
        )
    pbus_split
      (

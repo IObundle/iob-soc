@@ -1,6 +1,5 @@
 ROOT_DIR:=../..
 include $(ROOT_DIR)/software/software.mk
-
 include $(CACHE_DIR)/software/software.mk
 
 #specific compiler flags

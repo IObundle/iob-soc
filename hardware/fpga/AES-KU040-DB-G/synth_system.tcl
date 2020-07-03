@@ -55,7 +55,6 @@ if { $USE_DDR < 0 } { #clock
                  CONFIG.S00_AXI_DATA_WIDTH {32}] \
             [get_ips axi_interconnect_0]
 
-#        generate_target {instantiation_template} [get_files ./ip/axi_interconnect_0/axi_interconnect_0.xci]
         generate_target all [get_files ./ip/axi_interconnect_0/axi_interconnect_0.xci]
         
         read_ip ./ip/axi_interconnect_0/axi_interconnect_0.xci
@@ -72,7 +71,7 @@ if { $USE_DDR < 0 } { #clock
         
         report_property [get_ips ddr4_0]
 
-        set_property -dict
+        set_property -dict \
         [list \
              CONFIG.C0.DDR4_TimePeriod {1250} \
              CONFIG.C0.DDR4_InputClockPeriod {4000} \
@@ -87,14 +86,12 @@ if { $USE_DDR < 0 } { #clock
              CONFIG.ADDN_UI_CLKOUT1_FREQ_HZ {100} \
              CONFIG.C0.BANK_GROUP_WIDTH {1}] [get_ips ddr4_0]
 	
-        generate_target {instantiation_template} [get_files ./ip/ddr4_0/ddr4_0.xci]
-
         generate_target all [get_files ./ip/ddr4_0/ddr4_0.xci]
 
         read_ip ./ip/ddr4_0/ddr4_0.xci
 
         report_property [get_files ./ip/ddr4_0/ddr4_0.xci]
-        q
+        
         synth_ip [get_files ./ip/ddr4_0/ddr4_0.xci]
     }
 

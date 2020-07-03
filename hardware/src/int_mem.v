@@ -40,12 +40,13 @@ module int_mem
    //
    split 
      #(
-       .N_SLAVES(2)
+       .N_SLAVES(2),
+       .P_SLAVES(`B_BIT)
        )
    data_bootctr_split
        (
         // master interface
-        .m_req({d_req[`REQ_W-1], d_req[`B_BIT], d_req[`REQ_W-3:0]}),
+        .m_req(d_req),
         .m_resp(d_resp),
         
         // slaves interface
@@ -77,7 +78,7 @@ module int_mem
         .cpu_rdata(boot_ctr_resp[`rdata(0)]),
         .cpu_ready(boot_ctr_resp[`ready(0)]),
 
-        //sram master write interface
+        //sram write master interface
         .sram_valid(ram_w_req[`valid(0)]),
         .sram_addr(ram_w_req[`address(0, `ADDR_W, 0)]),
         .sram_wdata(ram_w_req[`wdata(0)]),

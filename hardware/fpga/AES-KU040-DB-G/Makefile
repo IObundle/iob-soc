@@ -1,7 +1,7 @@
 ROOT_DIR:=../../..
 
-define := #-verilog_define
-incdir := #-include_dirs
+#define:=-verilog_define
+#incdir:=-include_dirs
 
 include ../fpga.mk
 
@@ -9,7 +9,7 @@ include ../fpga.mk
 # work-around for http://svn.clifford.at/handicraft/2016/vivadosig11
 export RDI_VERBOSE = False
 
-load: synth_system.bit
+load:
 	./ld-hw.sh
 
 compile: periphs synth_system.bit
