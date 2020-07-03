@@ -1,7 +1,6 @@
 `timescale 1 ns / 1 ps
 `include "system.vh"
 `include "iob_uart.vh"
-`include "iob_timer.vh"
 `include "interconnect.vh"
 
 module system 
