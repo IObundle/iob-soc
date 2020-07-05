@@ -21,52 +21,51 @@ foreach file [split $VSRC \ ] {
 
 set_property part $PART [current_project]
 
-if { $USE_DDR < 0 } { #clock
+if { $USE_DDR < 0 } {
     read_verilog verilog/clock_wizard.v
-} else { #generate DDR files
+} else {
 
     read_xdc ./ddr.xdc
 
 
-    if { ![file isdirectory "ip"]} {
+    if { ![file isdirectory "./ip"]} {
         file mkdir ./ip
     }
 
     #async interconnect MIG<->Cache
-    if { [file isdirectory "ip/axi_interconnect_0"] } {
+    if { [file isdirectory "./ip/axi_interconnect_0"] } {
         read_ip ./ip/axi_interconnect_0/axi_interconnect_0.xci
         report_property [get_files ./ip/axi_interconnect_0/axi_interconnect_0.xci]
     } else {
+
         create_ip -name axi_interconnect -vendor xilinx.com -library ip -version 1.7 -module_name axi_interconnect_0 -dir ./ip -force
-        
+
         report_property [get_ips axi_interconnect_0]
         
         set_property -dict \
             [list \
-                 CONFIG.NUM_SLAVE_PORTS {1} \
-                 CONFIG.AXI_ADDR_WIDTH {30} \
-                 CONFIG.M00_AXI_IS_ACLK_ASYNC {1} \
-                 CONFIG.M00_AXI_DATA_WIDTH {32} \
-                 CONFIG.M00_AXI_WRITE_FIFO_DEPTH {32} \
-                 CONFIG.M00_AXI_READ_FIFO_DEPTH {32} \
-                 CONFIG.S00_AXI_IS_ACLK_ASYNC {1} \
-                 CONFIG.S00_AXI_READ_FIFO_DEPTH {32} \
-                 CONFIG.S00_AXI_WRITE_FIFO_DEPTH {32} \
-                 CONFIG.S00_AXI_DATA_WIDTH {32}] \
-            [get_ips axi_interconnect_0]
+                 CONFIG.NUM_SLAVE_PORTS {1}\
+                 CONFIG.AXI_ADDR_WIDTH {30}\
+                 CONFIG.INTERCONNECT_DATA_WIDTH {32}\
+                 CONFIG.M00_AXI_IS_ACLK_ASYNC {1}\
+                 CONFIG.M00_AXI_WRITE_FIFO_DEPTH {32}\
+                 CONFIG.M00_AXI_READ_FIFO_DEPTH {32}\
+                 CONFIG.S00_AXI_IS_ACLK_ASYNC {1}\
+                 CONFIG.S00_AXI_READ_FIFO_DEPTH {32}\
+                 CONFIG.S00_AXI_WRITE_FIFO_DEPTH {32}] [get_ips axi_interconnect_0]
 
         generate_target all [get_files ./ip/axi_interconnect_0/axi_interconnect_0.xci]
         
-        read_ip ./ip/axi_interconnect_0/axi_interconnect_0.xci
-        report_property [get_files ./ip/axi_interconnect_0/axi_interconnect_0.xci]
-        
+        #read_ip ./ip/axi_interconnect_0/axi_interconnect_0.xci
+        #report_property [get_files ./ip/axi_interconnect_0/axi_interconnect_0.xci]
         synth_ip [get_files ./ip/axi_interconnect_0/axi_interconnect_0.xci]
     }
     
-    if { [file isdirectory "ip/ddr4_0"] } {
+    if { [file isdirectory "./ip/ddr4_0"] } {
 	read_ip ./ip/ddr4_0/ddr4_0.xci
         report_property [get_files ./ip/ddr4_0/ddr4_0.xci]
     } else {
+
         create_ip -name ddr4 -vendor xilinx.com -library ip -version 2.2 -module_name ddr4_0 -dir ./ip -force
         
         report_property [get_ips ddr4_0]
@@ -88,10 +87,8 @@ if { $USE_DDR < 0 } { #clock
 	
         generate_target all [get_files ./ip/ddr4_0/ddr4_0.xci]
 
-        read_ip ./ip/ddr4_0/ddr4_0.xci
-
-        report_property [get_files ./ip/ddr4_0/ddr4_0.xci]
-        
+        #read_ip ./ip/ddr4_0/ddr4_0.xci
+        #report_property [get_files ./ip/ddr4_0/ddr4_0.xci]
         synth_ip [get_files ./ip/ddr4_0/ddr4_0.xci]
     }
 

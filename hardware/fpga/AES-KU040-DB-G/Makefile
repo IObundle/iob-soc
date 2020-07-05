@@ -20,10 +20,10 @@ synth_system.bit: *.xdc $(VSRC) firmware.hex boot.hex
 	-grep -B4 -A10 'CLB LUTs' vivado.log
 	-grep -B1 -A9 ^Slack vivado.log && echo
 
-GARBAGE:=.Xil/ *.map *. *~ \#*# *#  ../rtl/*~ ../rtl/\#*# ../rtl/*# ./rtl/ synth_*.mmi synth_*.bit synth_system*.v *.vcd *_tb \
+GARBAGE:=.Xil/ *.map *. *~ synth_*.mmi synth_*.bit synth_system*.v *.vcd *_tb \
 table.txt tab_*/ *webtalk* *.jou *.log .log xelab.* xsim[._]* xvlog.* uart_loader *.ltx fsm_encoding.os
 
 fpga-clean:
-	rm -rf $(GARBAGE)
+	rm -rf $(GARBAGE) ip
 
-.PHONY: fpga-clean
+.PHONY: load compile fpga-clean

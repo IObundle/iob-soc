@@ -81,7 +81,7 @@ module top_system(
    // DDR/MASTER SIDE
    //Write address
    wire [3:0] 			ddr_awid;
-   wire [31:0] 			ddr_awaddr;
+   wire [`DDR_ADDR_W-1:0]       ddr_awaddr;
    wire [7:0] 			ddr_awlen;
    wire [2:0] 			ddr_awsize;
    wire [1:0] 			ddr_awburst;
@@ -104,7 +104,7 @@ module top_system(
    wire 			ddr_bready;
    //Read address
    wire [3:0] 			ddr_arid;
-   wire [31:0] 			ddr_araddr;
+   wire [`DDR_ADDR_W-1:0]       ddr_araddr;
    wire [7:0] 			ddr_arlen;
    wire [2:0] 			ddr_arsize;
    wire [1:0] 			ddr_arburst;
@@ -227,7 +227,7 @@ module top_system(
       //address write 
       .c0_ddr4_aresetn        (ddr_arstn),
       .c0_ddr4_s_axi_awid     (ddr_awid),
-      .c0_ddr4_s_axi_awaddr   (ddr_awaddr[29:0]),
+      .c0_ddr4_s_axi_awaddr   (ddr_awaddr),
       .c0_ddr4_s_axi_awlen    (ddr_awlen),
       .c0_ddr4_s_axi_awsize   (ddr_awsize),
       .c0_ddr4_s_axi_awburst  (ddr_awburst),
@@ -253,7 +253,7 @@ module top_system(
 
       //address read
       .c0_ddr4_s_axi_arid     (ddr_arid),
-      .c0_ddr4_s_axi_araddr   (ddr_araddr[29:0]),
+      .c0_ddr4_s_axi_araddr   (ddr_araddr),
       .c0_ddr4_s_axi_arlen    (ddr_arlen), 
       .c0_ddr4_s_axi_arsize   (ddr_arsize),    
       .c0_ddr4_s_axi_arburst  (ddr_arburst),
