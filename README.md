@@ -94,21 +94,31 @@ git submodule update --init --recursive
 For Ubuntu OS and its variants:
 
 ```
-sudo apt install autoconf automake autotools-dev curl python3 libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev
+sudo apt install autoconf automake autotools-dev curl python3 python2 libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev
+```
+To check your python version, use:
+```
+python --version
+```
+If this doesn't return Python 2.*, navigate to your /usr/bin folder and soft-link python2 to python using:
+```
+ln -s python2 /usr/bin/python
 ```
 
 For CentOS and its variants:
 
 ```
-sudo yum install autoconf automake python3 libmpc-devel mpfr-devel gmp-devel gawk  bison flex texinfo patchutils gcc gcc-c++ zlib-devel expat-devel
+sudo yum install autoconf automake python3 python2 libmpc-devel mpfr-devel gmp-devel gawk  bison flex texinfo patchutils gcc gcc-c++ zlib-devel expat-devel
 ```
 
 ### Installation
 
 ```
-sudo ./configure --prefix=path/to/riscv --enable-multilib
+sudo ./configure --prefix=/path/to/riscv --enable-multilib
 sudo make
+export PATH=/path/to/riscv:$PATH
 ```
+The export PATH command can be added to the bottom of your ~/.bashrc
 
 ### Compilation
 
