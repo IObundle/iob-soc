@@ -165,7 +165,9 @@ module ext_mem
    wire [`REQ_W-1:0]      l2cache_req;
    wire [`RESP_W-1:0]     l2cache_resp;
 
+`ifdef RUN_DDR_USE_SRAM
    assign icache_be_req[`address(0,`ADDR_W,`FIRM_ADDR_W)] = 0;
+`endif
    assign dcache_be_req[`address(0,`ADDR_W,`FIRM_ADDR_W)] = 0;
 
    
