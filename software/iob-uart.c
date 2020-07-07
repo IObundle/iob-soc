@@ -77,7 +77,7 @@ void uart_printf(const char* fmt, ...) {
           /* %d: print out an int         */
         case 'd':
           v = va_arg(args, unsigned long);
-	  itoa(v, buffer, 10);
+	  uart_itoa(v, buffer, 10);
 	  uart_puts(buffer);
           break;	
         default:

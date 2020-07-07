@@ -21,8 +21,20 @@ void uart_txwait() {
   return;
 }
 
+int uart_txstatus(){
+  return 1;
+}
+
 void uart_putc(char c) {
   putc(c, stdout);
+}
+
+void uart_rxwait(){
+  return;
+}
+
+int uart_rxstatus(){
+  return 1;
 }
 
 char uart_getc() {
@@ -32,7 +44,7 @@ char uart_getc() {
 
 // itoa() implementation - since it is not a C standard function
 // adapted from http://www.strudel.org.uk/itoa/#newest
-void itoa(int value, char* str, int base){
+void uart_itoa(int value, char* str, int base){
   //check for  2 <= base <= 16
   if(base < 2 || base > 16){
     str[0] = '\n';
