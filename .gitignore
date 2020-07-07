@@ -23,3 +23,11 @@ submodules/*
 !submodules/iob-cache
 !submodules/iob-picorv32
 !submodules/UART
+
+document/presentation/*
+!document/presentation/figures
+!document/presentation/bibfile.bib
+!document/presentation/main.pdf
+!document/presentation/main.tex
+!document/presentation/makefile
+!document/presentation/system.vh
