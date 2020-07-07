@@ -163,7 +163,7 @@ void receiveFile(int serial_fd, char *name) {
     
   printf (PROGNAME); printf(": file reception complete. %d bytes received\n", file_size);
 
-  //free(buf);
+  free(buf);
   fclose(fp);
 
   //print incoming messages
