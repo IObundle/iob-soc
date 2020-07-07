@@ -26,7 +26,7 @@ module boot_ctr
 
 
    //cpu interface
-   assign cpu_rdata = {31'd0,boot};
+   assign cpu_rdata = {{(`DATA_W-1){1'b0}},boot};
    always @(posedge clk, posedge rst)
      if(rst)
          cpu_ready <= 1'b0;
