@@ -19,11 +19,6 @@ software/firmware/*
 
 software/periphs.h
 
-submodules/*
-!submodules/iob-cache
-!submodules/iob-picorv32
-!submodules/UART
-
 document/presentation/*
 !document/presentation/figures
 !document/presentation/bibfile.bib
