@@ -53,3 +53,6 @@ inline char uart_getc() {
   return( (char) MEMGET(base, UART_DATA));
 }
 
+void uart_itoa(int value, char* str, int base){
+  itoa(value, str, base);
+}

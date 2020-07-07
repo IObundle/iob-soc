@@ -58,7 +58,5 @@ void uart_connect();
 
 #define uart_getcmd() uart_getc()
 
-#ifdef PCSIM
-//itoa definition
-void itoa(int value, char* str, int base);
-#endif
+//itoa() wrapper
+void uart_itoa(int value, char* str, int base);
