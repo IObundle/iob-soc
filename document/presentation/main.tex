@@ -1,5 +1,6 @@
 \documentclass [xcolor=svgnames, t] {beamer} 
 \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage{booktabs, comment} 
 \usepackage[absolute, overlay]{textpos} 
 \useoutertheme{infolines} 
@@ -48,8 +49,6 @@
 
 \begin{document}
 
-% Following line allows for a more copy-paste-able code
-\lstset{columns=fullflexible} 
 
 \begin{frame}
  \titlepage   
@@ -122,6 +121,9 @@
   \end{itemize}
 \end{frame}
 
+% Following line allows for a more copy-paste-able code
+\lstset{basicstyle=\ttfamily,columns=fullflexible}
+
 \begin{frame}[fragile]{Edit the {\tt ./system.mk} configuration file to declare a new peripheral}
 \begin{tiny}
 \begin{lstlisting}
@@ -158,6 +160,7 @@ N_SLAVES:=1
 \begin{lstlisting}
 `timescale 1ns/1ps
 `include "system.vh"
+`include "iob_timer.vh"
 
 module system (
 
