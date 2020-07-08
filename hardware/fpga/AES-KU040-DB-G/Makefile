@@ -24,6 +24,9 @@ GARBAGE:=.Xil/ *.map *. *~ synth_*.mmi synth_*.bit synth_system*.v *.vcd *_tb \
 table.txt tab_*/ *webtalk* *.jou *.log .log xelab.* xsim[._]* xvlog.* uart_loader *.ltx fsm_encoding.os
 
 fpga-clean:
-	rm -rf $(GARBAGE) ip
+	rm -rf $(GARBAGE)
+
+fpga-clean-xil-ip:
+	rm -rf ip
 
 .PHONY: load compile fpga-clean

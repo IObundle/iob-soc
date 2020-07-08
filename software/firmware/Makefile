@@ -5,6 +5,7 @@ include ../software.mk
 CFLAGS+=--std=gnu99 -Wl,-Bstatic,-T,../template.lds,-Map,firmware.map,--strip-debug
 
 #local sources
+HDR+=$(SW_DIR)/periphs.h
 SRC+= firmware.S firmware.c
 
 run: firmware.elf

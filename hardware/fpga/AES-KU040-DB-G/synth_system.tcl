@@ -41,11 +41,12 @@ if { $USE_DDR < 0 } {
         create_ip -name axi_interconnect -vendor xilinx.com -library ip -version 1.7 -module_name axi_interconnect_0 -dir ./ip -force
 
         report_property [get_ips axi_interconnect_0]
-        
+
         set_property -dict \
             [list \
                  CONFIG.NUM_SLAVE_PORTS {1}\
                  CONFIG.AXI_ADDR_WIDTH {30}\
+                 CONFIG.ACLK_PERIOD {4000} \
                  CONFIG.INTERCONNECT_DATA_WIDTH {32}\
                  CONFIG.M00_AXI_IS_ACLK_ASYNC {1}\
                  CONFIG.M00_AXI_WRITE_FIFO_DEPTH {32}\
@@ -54,8 +55,9 @@ if { $USE_DDR < 0 } {
                  CONFIG.S00_AXI_READ_FIFO_DEPTH {32}\
                  CONFIG.S00_AXI_WRITE_FIFO_DEPTH {32}] [get_ips axi_interconnect_0]
 
+        report_property [get_ips axi_interconnect_0]
         generate_target all [get_files ./ip/axi_interconnect_0/axi_interconnect_0.xci]
-        
+        exit
         #read_ip ./ip/axi_interconnect_0/axi_interconnect_0.xci
         #report_property [get_files ./ip/axi_interconnect_0/axi_interconnect_0.xci]
         synth_ip [get_files ./ip/axi_interconnect_0/axi_interconnect_0.xci]

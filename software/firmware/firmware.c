@@ -1,4 +1,6 @@
 #include "system.h"
+#include "periphs.h"
+
 #include "iob-uart.h"
 
 int main()
