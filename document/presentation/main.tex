@@ -1,6 +1,6 @@
 \documentclass [xcolor=svgnames, t] {beamer} 
 \usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
+\usepackage[T1]{fontenc} % Allows accents from listings to be correctly copied
 \usepackage{booktabs, comment} 
 \usepackage[absolute, overlay]{textpos} 
 \useoutertheme{infolines} 
@@ -116,7 +116,7 @@
     \item software/embedded/embedded.mk
     \end{enumerate}
   \item Add the IP core repository as a git submodule of your IOb-SoC repository:\\
-    {\tt git submodule add https://github.com/IObundle/iob-timer.git submodules/TIMER}
+    {\small \tt git submodule add https://github.com/IObundle/iob-timer.git submodules/TIMER}
   \item To configure the system to host the IP core, edit the {\tt ./system.mk} file as in the next slide
   \end{itemize}
 \end{frame}
