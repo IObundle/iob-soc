@@ -235,7 +235,7 @@ module ext_mem
             .axi_wvalid(axi_wvalid), 
             .axi_wready(axi_wready), 
             //write response
-            .axi_bid(axi_bid), 
+            //.axi_bid(axi_bid), 
             .axi_bresp(axi_bresp), 
             .axi_bvalid(axi_bvalid), 
             .axi_bready(axi_bready), 
@@ -252,7 +252,7 @@ module ext_mem
             .axi_arvalid(axi_arvalid), 
             .axi_arready(axi_arready), 
             //read 
-            .axi_rid(axi_rid), 
+            //.axi_rid(axi_rid), 
             .axi_rdata(axi_rdata), 
             .axi_rresp(axi_rresp), 
             .axi_rlast(axi_rlast), 
