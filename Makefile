@@ -7,9 +7,9 @@ sim: firmware bootloader
 ifeq ($(SIMULATOR),icarus)
 	make -C $(SIM_DIR)
 else
-	ssh $(MICRO_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
-	rsync -avz --exclude .git . $(MICRO_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR) 
-	ssh $(MICRO_USER)@$(SIM_SERVER) "cd $(REMOTE_ROOT_DIR); make -C $(SIM_DIR)"
+	ssh $(MICRO_USER)@$(SIM_SERVER) "if [ ! -d $(MICRO_ROOT_DIR) ]; then mkdir -p $(MICRO_ROOT_DIR); fi"
+	rsync -avz --exclude .git . $(MICRO_USER)@$(SIM_SERVER):$(MICRO_ROOT_DIR) 
+	ssh $(MICRO_USER)@$(SIM_SERVER) "cd $(MICRO_ROOT_DIR); make -C $(SIM_DIR)"
 endif
 
 fpga: firmware bootloader
@@ -23,12 +23,25 @@ fpga-load: fpga
 	ssh $(USER)@$(FPGA_COMPILE_SERVER) "cd $(REMOTE_ROOT_DIR); rsync -avz --exclude .git . $(USER)@$(FPGA_BOARD_SERVER):$(REMOTE_ROOT_DIR)"
 	ssh $(USER)@$(FPGA_BOARD_SERVER) "cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) load"
 
-fpga-clean-ip:
+
+fpga-clean:
+	rsync -avz --exclude .git . $(USER)@$(FPGA_BOARD_SERVER):$(REMOTE_ROOT_DIR) 
+	ssh $(USER)@$(FPGA_BOARD_SERVER) "if [ -d $(REMOTE_ROOT_DIR) ]; then cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) clean; fi"
+	rsync -avz --exclude .git . $(USER)@$(FPGA_COMPILE_SERVER):$(REMOTE_ROOT_DIR) 
+	ssh $(USER)@$(FPGA_COMPILE_SERVER) "if [ -d $(REMOTE_ROOT_DIR) ]; then cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) clean; fi"
+
+fpga-clean-ip: fpga-clean
 	rsync -avz --exclude .git . $(USER)@$(FPGA_BOARD_SERVER):$(REMOTE_ROOT_DIR) 
 	ssh $(USER)@$(FPGA_BOARD_SERVER) "if [ -d $(REMOTE_ROOT_DIR) ]; then cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) clean-ip; fi"
 
 asic: bootloader
-	make -C $(ASIC_DIR)
+	ssh $(MICRO_USER)@$(ASIC_SERVER) "if [ ! -d $(MICRO_ROOT_DIR) ]; then mkdir -p $(MICRO_ROOT_DIR); fi"
+	rsync -avz --exclude .git . $(MICRO_USER)@$(ASIC_SERVER):$(MICRO_ROOT_DIR) 
+	ssh $(MICRO_USER)@$(ASIC_SERVER) "cd $(MICRO_ROOT_DIR); make -C $(ASIC_DIR)"
+
+asic-clean:
+	rsync -avz --exclude .git . $(MICRO_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR) 
+	ssh $(MICRO_USER)@$(ASIC_SERVER) "cd $(MICRO_ROOT_DIR); make -C $(ASIC_DIR) clean"
 
 run-firmware:
 	ssh $(USER)@$(FPGA_BOARD_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
@@ -46,14 +59,9 @@ document:
 
 clean: 
 	make -C $(SIM_DIR) clean
-	rsync -avz --exclude .git . $(USER)@$(FPGA_BOARD_SERVER):$(REMOTE_ROOT_DIR) 
-	ssh $(USER)@$(FPGA_BOARD_SERVER) "if [ -d $(REMOTE_ROOT_DIR) ]; then cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) clean; fi"
-	rsync -avz --exclude .git . $(USER)@$(FPGA_COMPILE_SERVER):$(REMOTE_ROOT_DIR) 
-	ssh $(USER)@$(FPGA_COMPILE_SERVER) "if [ -d $(REMOTE_ROOT_DIR) ]; then cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) clean; fi"
-	make -C $(ASIC_DIR) clean
 	make -C $(FIRM_DIR) clean
 	make -C $(BOOT_DIR) clean
 	make -C $(DOC_DIR) clean
 
 
-.PHONY: sim fpga fpga-load asic firmware bootloader document clean
+.PHONY: sim fpga firmware bootloader document clean fpga-load fpga-clean fpga-clen-ip asic asic-clean
