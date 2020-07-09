@@ -34,12 +34,6 @@
 //select boot controller
 #define BOOTCTR_BASE (1<<B)
 
-//import peripheral addresses
-#ifndef PERIPHS_H
-#define PERIPHS_H
-#include "periphs.h"
-#endif
-
 #ifdef USE_DDR
 #define USE_DDR_SW 1
 #else

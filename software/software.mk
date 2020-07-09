@@ -12,7 +12,7 @@ SW_DIR:=$(ROOT_DIR)/software
 INCLUDE+=-I$(SW_DIR)
 
 #headers
-HDR=$(SW_DIR)/periphs.h $(SW_DIR)/system.h
+HDR=$(SW_DIR)/system.h
 
 #sources (none so far)
 #SRC=$(SW_DIR)/*.c
