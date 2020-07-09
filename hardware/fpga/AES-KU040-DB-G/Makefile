@@ -26,7 +26,7 @@ table.txt tab_*/ *webtalk* *.jou *.log .log xelab.* xsim[._]* xvlog.* uart_loade
 fpga-clean:
 	rm -rf $(GARBAGE)
 
-clean-xil-ip:
+clean-ip:
 	rm -rf ip
 
 .PHONY: load compile fpga-clean

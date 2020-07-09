@@ -19,15 +19,13 @@ INIT_MEM:=0
 PERIPHERALS:=UART
 
 #RTL simulator
-SIMULATOR:=icarus
+#SIMULATOR:=icarus
 #SIMULATOR:=modelsim
-#SIMULATOR:=ncsim
+SIMULATOR:=ncsim
 
 #FPGA board (associated with server below)
 FPGA_BOARD:=AES-KU040-DB-G
 #FPGA_BOARD:=CYCLONEV-GT-DK
-FPGA_COMPILE_SERVER=$(PUDIM)
-
 
 #ASIC node
 ASIC_NODE:=umc130
@@ -103,15 +101,25 @@ dummy:=$(foreach p, $(PERIPHERALS), $(eval $p_DIR:=$(SUBMODULES_DIR)/$p))
 dummy:=$(foreach p, $(PERIPHERALS), $(eval $p=$(N_SLAVES)) $(eval N_SLAVES:=$(shell expr $(N_SLAVES) \+ 1)))
 dummy:=$(foreach p, $(PERIPHERALS), $(eval DEFINE+=$(define)$p=$($p)))
 
+FPGA_COMPILE_SERVER=$(PUDIM)
+
 ifeq ($(FPGA_BOARD),AES-KU040-DB-G)
 FPGA_BOARD_SERVER=$(BABA)
 else ifeq ($(FPGA_BOARD),CYCLONEV-GT-DK)
 FPGA_BOARD_SERVER=$(PUDIM)
 endif
 
+ifeq ($(SIMULATOR),ncsim)
+SIM_SERVER=$(MICRO)
+endif
+
 #server list
-PUDIM:=146.193.44.48
-BABA:=146.193.44.179
+PUDIM:=pudim-flan.iobundle.com
+BABA:=baba-de-camelo.iobundle.com
+MICRO:=micro5.lx.it.pt
+
+#user list
+MICRO_USER=user19
 
 REMOTE_ROOT_DIR=./sandbox/iob-soc
 
