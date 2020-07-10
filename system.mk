@@ -19,9 +19,9 @@ INIT_MEM:=0
 PERIPHERALS:=UART
 
 #RTL simulator
-#SIMULATOR:=icarus
+SIMULATOR:=icarus
 #SIMULATOR:=modelsim
-SIMULATOR:=ncsim
+#SIMULATOR:=ncsim
 
 #FPGA board (associated with server below)
 FPGA_BOARD:=AES-KU040-DB-G
@@ -113,6 +113,8 @@ ifeq ($(SIMULATOR),ncsim)
 SIM_SERVER=$(MICRO)
 endif
 
+ASIC_SERVER=$(MICRO)
+
 #server list
 PUDIM:=pudim-flan.iobundle.com
 BABA:=baba-de-camelo.iobundle.com
@@ -120,6 +122,7 @@ MICRO:=micro5.lx.it.pt
 
 #user list
 MICRO_USER=user19
+MICRO_ROOT_DIR=./$(USER)/sandbox/iob-soc
 
 REMOTE_ROOT_DIR=./sandbox/iob-soc
 

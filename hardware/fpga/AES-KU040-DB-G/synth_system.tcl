@@ -44,7 +44,7 @@ if { $USE_DDR < 0 } {
             [list \
                  CONFIG.NUM_SLAVE_PORTS {1}\
                  CONFIG.AXI_ADDR_WIDTH {30}\
-                 CONFIG.ACLK_PERIOD {4000} \
+                 CONFIG.ACLK_PERIOD {5000} \
                  CONFIG.INTERCONNECT_DATA_WIDTH {32}\
                  CONFIG.M00_AXI_IS_ACLK_ASYNC {1}\
                  CONFIG.M00_AXI_WRITE_FIFO_DEPTH {32}\

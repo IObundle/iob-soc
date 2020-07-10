@@ -21,12 +21,12 @@ synth_system.bit: *.xdc $(VSRC) firmware.hex boot.hex
 	-grep -B1 -A9 ^Slack vivado.log && echo
 
 GARBAGE:=.Xil/ *.map *. *~ synth_*.mmi synth_*.bit synth_system*.v *.vcd *_tb \
-table.txt tab_*/ *webtalk* *.jou *.log .log xelab.* xsim[._]* xvlog.* uart_loader *.ltx fsm_encoding.os
+table.txt tab_*/ *webtalk* *.jou xelab.* xsim[._]* xvlog.* uart_loader *.ltx fsm_encoding.os
 
 fpga-clean:
 	rm -rf $(GARBAGE)
 
 clean-ip:
-	rm -rf ip
+	rm -rf ip *.log
 
 .PHONY: load compile fpga-clean
