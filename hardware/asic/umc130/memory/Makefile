@@ -1,5 +1,5 @@
-FIRM_DIR:=../../../software/firmware
-BOOT_DIR:=../../../software/bootloader
+FIRM_DIR:=../../../../software/firmware
+BOOT_DIR:=../../../../software/bootloader
 
 BAUD:=115200
 FREQ:=100000000
