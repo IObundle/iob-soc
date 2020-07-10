@@ -6,11 +6,11 @@
 set TOP top_system
 set PART xcku040-fbva676-1-c
 
-set HW_INCLUDE [lindex $argv 0]
-set HW_DEFINE [lindex $argv 1]
+set INCLUDE [lindex $argv 0]
+set DEFINE [lindex $argv 1]
 set VSRC [lindex $argv 2]
 
-set USE_DDR [string last "USE_DDR" $HW_DEFINE]
+set USE_DDR [string last "USE_DDR" $DEFINE]
 
 #verilog sources
 foreach file [split $VSRC \ ] {
@@ -57,7 +57,7 @@ if { $USE_DDR < 0 } {
 
         report_property [get_ips axi_interconnect_0]
         report_property [get_files ./ip/axi_interconnect_0/axi_interconnect_0.xci]
-
+        exec sed -i s/100/5/g ip/axi_interconnect_0/axi_interconnect_0_ooc.xdc
         synth_ip [get_files ./ip/axi_interconnect_0/axi_interconnect_0.xci]
 
     }
@@ -96,7 +96,7 @@ if { $USE_DDR < 0 } {
 
 read_xdc ./synth_system.xdc
 
-synth_design -include_dirs $HW_INCLUDE -verilog_define $HW_DEFINE -part $PART -top $TOP
+synth_design -include_dirs $INCLUDE -verilog_define $DEFINE -part $PART -top $TOP
 
 opt_design
 

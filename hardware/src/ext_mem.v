@@ -209,7 +209,7 @@ module ext_mem
       
             // Native interface
             .valid    (l2cache_req[`valid(0)]),
-            .addr     ({1'b0, l2cache_req[`address(0, `FIRM_ADDR_W, 2)]}),
+            .addr     (l2cache_req[`address(0, `FIRM_ADDR_W+1, 2)]),
             .wdata    (l2cache_req[`wdata(0)]),
             .wstrb    (l2cache_req[`wstrb(0)]),
             .rdata    (l2cache_resp[`rdata(0)]),
