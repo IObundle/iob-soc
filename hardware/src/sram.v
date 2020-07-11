@@ -26,7 +26,6 @@ module sram #(
     );
 
    localparam file_suffix = {"3","2","1","0"};
-   //parameter file_suffix = "3210"
 
    genvar                 i;
    generate

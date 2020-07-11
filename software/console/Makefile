@@ -17,7 +17,11 @@ run: console firmware.bin
 ifneq ($(USERNAME),)
 	@echo "FPGA is being used by $(USERNAME)"
 else
-	$(CONSOLE)
+ifeq ($(INIT_MEM),1)
+	./console -s $(SERIAL)
+else
+	$(CONSOLE) 
+endif
 endif
 
 ./firmware.bin: $(FIRM_DIR)/firmware.bin

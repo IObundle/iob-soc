@@ -55,14 +55,19 @@ DOC_TYPE:=presentation: chosen document to build with Latex
 make sim
 ```
 
-## Compile and configure FPGA 
+## Compile FPGA 
 ```
 make fpga
 ```
 
+## Load FPGA 
+```
+make fpga-load
+```
+
 ## Load and run firmware
 ```
-make load-firmware
+make run-firmware
 ```
 
 ## Run firmware only
@@ -116,7 +121,7 @@ sudo yum install autoconf automake python3 python2 libmpc-devel mpfr-devel gmp-d
 ```
 sudo ./configure --prefix=/path/to/riscv --enable-multilib
 sudo make
-export PATH=/path/to/riscv:$PATH
+export PATH=$PATH:/path/to/riscv/bin
 ```
 The export PATH command can be added to the bottom of your ~/.bashrc
 

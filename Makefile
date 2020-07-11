@@ -19,9 +19,14 @@ fpga: firmware bootloader
 
 
 fpga-load: fpga
+ifeq ($(FPGA_BOARD_SERVER),$(FPGA_COMPILE_SERVER))
+	ssh $(USER)@$(FPGA_BOARD_SERVER) "cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) load"
+else
 	ssh $(USER)@$(FPGA_BOARD_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	ssh $(USER)@$(FPGA_COMPILE_SERVER) "cd $(REMOTE_ROOT_DIR); rsync -avz --exclude .git . $(USER)@$(FPGA_BOARD_SERVER):$(REMOTE_ROOT_DIR)"
 	ssh $(USER)@$(FPGA_BOARD_SERVER) "cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) load"
+endif
+
 
 
 fpga-clean: clean
@@ -64,5 +69,4 @@ endif
 	make -C $(BOOT_DIR) clean
 	make -C $(DOC_DIR) clean
 
-
-.PHONY: sim fpga firmware bootloader document clean fpga-load fpga-clean fpga-clen-ip asic asic-clean
+.PHONY: sim fpga firmware bootloader document clean fpga-load fpga-clean fpga-clean-ip asic asic-clean
