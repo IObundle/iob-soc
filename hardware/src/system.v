@@ -66,6 +66,9 @@ module system
    input                    uart_cts
    );
 
+   localparam ADDR_W=32;
+   localparam DATA_W=32;
+   
    //
    // SYSTEM RESET
    //

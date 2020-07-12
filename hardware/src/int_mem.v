@@ -2,7 +2,11 @@
 `include "system.vh"
 `include "interconnect.vh"
   
-module int_mem 
+module int_mem
+  #(
+    parameter ADDR_W=32,
+    parameter DATA_W=32
+    )
    (
     input                clk,
     input                rst,
@@ -24,7 +28,7 @@ module int_mem
    wire [`RESP_W-1:0]    ram_d_resp;
 
    //modified ram address during boot
-   wire [`SRAM_ADDR_W-3:0]    ram_d_addr;
+   wire [`SRAM_ADDR_W-3:0] ram_d_addr;
 
 
    ////////////////////////////////////////////////////////

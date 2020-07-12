@@ -5,6 +5,10 @@
 `include "interconnect.vh"
 
 module ext_mem
+  #(
+    parameter ADDR_W=32,
+    parameter DATA_W=32
+    )
   (
    input                    clk,
    input                    rst,
