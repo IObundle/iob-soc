@@ -37,9 +37,9 @@ fpga-clean-ip: fpga-clean
 	ssh $(USER)@$(FPGA_COMPILE_SERVER) "if [ -d $(REMOTE_ROOT_DIR) ]; then cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) clean-ip; fi"
 
 asic: bootloader
-	ssh $(MICRO_USER)@$(ASIC_SERVER) "if [ ! -d $(MICRO_ROOT_DIR) ]; then mkdir -p $(MICRO_ROOT_DIR); fi"
+	ssh -C -Y $(MICRO_USER)@$(ASIC_SERVER) "if [ ! -d $(MICRO_ROOT_DIR) ]; then mkdir -p $(MICRO_ROOT_DIR); fi"
 	rsync -avz --exclude .git . $(MICRO_USER)@$(ASIC_SERVER):$(MICRO_ROOT_DIR) 
-	ssh $(MICRO_USER)@$(ASIC_SERVER) "cd $(MICRO_ROOT_DIR); make -C $(ASIC_DIR)"
+	ssh -C -Y $(MICRO_USER)@$(ASIC_SERVER) "cd $(MICRO_ROOT_DIR); make -C $(ASIC_DIR)"
 
 asic-clean:
 	rsync -avz --exclude .git . $(MICRO_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR) 
