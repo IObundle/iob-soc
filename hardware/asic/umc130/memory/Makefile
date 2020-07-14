@@ -1,17 +1,18 @@
-FIRM_DIR:=../../../../software/firmware
-BOOT_DIR:=../../../../software/bootloader
+ROOT_DIR:=../../../..
+include $(ROOT_DIR)/system.mk
 
-BAUD:=115200
-FREQ:=100000000
+# in the future, BAUD and FREQ is to be defined by system.mk; this .mk file still needs to be changed for this end
+BAUD_TMP:=115200
+FREQ_TMP:=100000000
 
-all:
-	make -C $(FIRM_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
-	make -C $(BOOT_DIR) BAUD=$(BAUD) FREQ=$(FREQ)
+run:
+	make -C $(FIRM_DIR) BAUD=$(BAUD_TMP) FREQ=$(FREQ_TMP)
+	make -C $(BOOT_DIR) BAUD=$(BAUD_TMP) FREQ=$(FREQ_TMP)
 	make -C bootrom	
-	make -C bootram
+	make -C sram
 
 clean:
 	make -C bootrom	clean
-	make -C bootram	clean
+	make -C sram clean
 
 .PHONY: all clean 
