@@ -1,6 +1,3 @@
-ROOT_DIR:=../../../..
-include $(ROOT_DIR)/system.mk
-
 run:
 	make -C bootrom	
 	make -C sram
