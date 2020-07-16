@@ -84,7 +84,7 @@ module int_mem
 
         //sram write master interface
         .sram_valid(ram_w_req[`valid(0)]),
-        .sram_addr(ram_w_req[`address(0, `ADDR_W, 0)]),
+        .sram_addr(ram_w_req[`address(0, `ADDR_W)]),
         .sram_wdata(ram_w_req[`wdata(0)]),
         .sram_wstrb(ram_w_req[`wstrb(0)])
         );
@@ -108,14 +108,14 @@ module int_mem
 
    //instruction bus: connect directly but address
    assign ram_r_req[`valid(0)] = i_req[`valid(0)];
-   assign ram_r_req[`address(0, `ADDR_W, 0)] = boot? i_req[`address(0, `ADDR_W, 0)] + boot_offset : i_req[`address(0, `ADDR_W, 0)];
+   assign ram_r_req[`address(0, `ADDR_W)] = boot? i_req[`address(0, `ADDR_W)] + boot_offset : i_req[`address(0, `ADDR_W)];
    assign ram_r_req[`write(0)] = i_req[`write(0)];
    assign i_resp[`resp(0)] = ram_r_resp[`resp(0)];
 
    //data bus: just replace address
    assign ram_d_addr = boot? 
-                       ram_d_req[`address(0, `SRAM_ADDR_W, 2)] + boot_offset[`SRAM_ADDR_W-1:2]: 
-                       ram_d_req[`address(0, `SRAM_ADDR_W, 2)];
+                       ram_d_req[`address(0, `SRAM_ADDR_W)-2] + boot_offset[`SRAM_ADDR_W-1:2]: 
+                       ram_d_req[`address(0, `SRAM_ADDR_W)-2];
 
    
    //
@@ -154,7 +154,7 @@ module int_mem
       
       //instruction bus
       .i_valid       (ram_i_req[`valid(0)]),
-      .i_addr        (ram_i_req[`address(0, `SRAM_ADDR_W, 2)]), 
+      .i_addr        (ram_i_req[`address(0, `SRAM_ADDR_W)-2]), 
       .i_wdata       (ram_i_req[`wdata(0)]),
       .i_wstrb       (ram_i_req[`wstrb(0)]),
       .i_rdata       (ram_i_resp[`rdata(0)]),
