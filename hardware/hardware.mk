@@ -43,8 +43,8 @@ periphs:
 # data files
 firmware.hex: $(FIRM_DIR)/firmware.bin
 ifeq ($(INIT_MEM),1)
-	$(PYTHON_DIR)/makehex.py firmware.bin $(FIRM_ADDR_W) > firmware.hex
-	$(PYTHON_DIR)/hex_split.py $(FIRM_DIR)/firmware.hex .
+	$(PYTHON_DIR)/makehex.py $(FIRM_DIR)/firmware.bin $(FIRM_ADDR_W) > firmware.hex
+	$(PYTHON_DIR)/hex_split.py firmware .
 else
 	cp $(FIRM_DIR)/firmware.bin .
 endif
