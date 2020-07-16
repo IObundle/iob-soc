@@ -1,5 +1,6 @@
 \documentclass [xcolor=svgnames, t] {beamer} 
 \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage{booktabs, comment} 
 \usepackage[absolute, overlay]{textpos} 
 \useoutertheme{infolines} 
@@ -64,7 +65,7 @@
      \item Project setup
      \item Create an IP core to instantiate in your SoC
      \item Edit the ./system.mk configuration file to declare a new peripheral
-     \item Instantiate the timer IP in file {\tt rtl/src/system.v}
+     \item Instantiate the timer IP in file {\tt hardware/src/system.v}
      \item Edit file {\tt firmware.c} to drive the new peripheral
      \item Run the firmware in internal SRAM
      \item Run the firmware in external DDR
@@ -107,17 +108,20 @@
 
 \begin{frame}{Create an IP core to instantiate in your SoC}
   \begin{itemize}
-  \item Create a timer IP core repository or, alternatively, use the one at \url{github.com:IObundle/iob-timer.git}
+  \item Create a timer IP core repository or, alternatively, use the one at \url{www.github.com/IObundle/iob-timer.git}
   \item An IP core can be integrated in an IOb-SoC if it provides the following 2 files: 
     \begin{enumerate}
     \item hardware/hardware.mk
     \item software/embedded/embedded.mk
     \end{enumerate}
   \item Add the IP core repository as a git submodule of your IOb-SoC repository:\\
-    {\tt git submodule add git@github.com/IObundle/iob-soc submodules/TIMER}
+    {\tt git submodule add https://github.com/IObundle/iob-timer.git submodules/TIMER}
   \item To configure the system to host the IP core, edit the {\tt ./system.mk} file as in the next slide
   \end{itemize}
 \end{frame}
+
+% Following line allows for a more copy-paste-able code
+\lstset{basicstyle=\ttfamily,columns=fullflexible}
 
 \begin{frame}[fragile]{Edit the {\tt ./system.mk} configuration file to declare a new peripheral}
 \begin{tiny}
@@ -133,38 +137,49 @@ USE_DDR:=0
 RUN_DDR:=0
 DDR_ADDR_W:=30
 
-#BOOT
-USE_BOOT:=0
+#ROM
 BOOTROM_ADDR_W:=12
+
+#Init memory (only works in simulation or FPGA not running DDR)
+INIT_MEM:=1
 
 #Peripheral list (must match respective submodule name)
 PERIPHERALS:=UART TIMER
+
+...
+
+N_SLAVES:=1
 \end{lstlisting}
 \end{tiny}
 \end{frame}
 
 
-\begin{frame}[fragile]{Instantiate the timer IP in file {\tt rtl/src/system.v}}
+\begin{frame}[fragile]{Instantiate the timer IP in file {\tt hardware/src/system.v}}
 \begin{tiny}
 \begin{lstlisting}
 `timescale 1ns/1ps
 `include "system.vh"
+`include "iob_timer.vh"
 
 module system (
 
    ...
 
-   time_counter #(.COUNTER_WIDTH(32))
-   timer (
-          rst(reset_int),
-          clk(clk),
-          .addr(m_addr[2]),
-          .data_in(m_wdata),
-          .data_out(s_rdata[`TIMER_BASE]),
-          .valid(s_valid[`TIMER_BASE]),
-          .ready(s_ready[`TIMER_BASE])
-    );
+   //
+   // TIMER
+   //
 
+   iob_timer timer (
+		    .clk (clk),
+		    .rst (reset),
+
+		    //cpu interface
+		    .valid(slaves_req[`valid(`TIMER)]),
+		    .address(slaves_req[`address(`TIMER,`TIMER_ADDR_W+2,2)]),
+		    .wdata(slaves_req[`wdata(`TIMER)]),
+		    .rdata(slaves_resp[`rdata(`TIMER)]),
+		    .ready(slaves_resp[`ready(`TIMER)])
+		    );
    ...
 endmodule
 \end{lstlisting}
@@ -184,22 +199,23 @@ endmodule
 #include "iob_timer.h"
 
 int main()
-{ 
+{
+  unsigned long long elapsed;
+  unsigned int elapsedu;
 
-  //read timer cycle count
-  int cycles = timer_get_count(TIMER_BASE);
+  //read current timer count, compute elapsed time
+  elapsed  = timer_get_count(TIMER_BASE);
+  elapsedu = timer_time_us(TIMER_BASE);
+
+  //init uart 
+  uart_init(UART_BASE, FREQ/BAUD);
+
+  uart_printf("\nHello world!\n");
   
-  uart_init(UART,UART_CLK_FREQ/UART_BAUD_RATE);   
-
-  uart_printf("Hello world!\n");
-
   uart_txwait();
-  
-  //read current timer count and compute elapsed time in clock cycles  
-  cycles =  timer_get_count(TIMER) - cycles;
 
-  //print the elapsed time and clock frequency
-  uart_printf("Execution time: %dus @%dMHz,115200BAUD\n",(time*1000000)/UART_CLK_FREQ);
+  uart_printf("\nExecution time: %d clocks in %dus @%dMHz (%d MBaud)\n\n", 
+              (unsigned int)elapsed, elapsedu, FREQ/1000000, BAUD/1000000);
 
   uart_txwait();
   return 0;
@@ -261,13 +277,15 @@ IOb-SoC Bootloader:
 Reboot CPU and run program...
 
 Hello world!
-Total execution time: 1262 us @100MHz
+
+Execution time: 6583 clocks in 66us @100MHz (30 MBaud)
+
 \end{lstlisting}
 \end{tiny}
 
 \begin{itemize}
 \item To implement in your chosen FPGA just type {\tt make fpga}
-\item To implement in your chosen ASIC just type {\tt make fpga}
+\item To implement in your chosen ASIC just type {\tt make asic}
 \item To load the firmware in the hardware just type {\tt make load-firmware}
 \end{itemize}
 
@@ -286,7 +304,7 @@ Total execution time: 1262 us @100MHz
     \end{itemize}
   \item Future work
     \begin{itemize}
-    \item Non volatile (flash) external memory support
+    \item Non-volatile (flash) external memory support
     \item Real Time Operating System (RTOS) 
     \end{itemize}
 \end{itemize}

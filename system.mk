@@ -9,9 +9,11 @@ USE_DDR:=1
 RUN_DDR:=1
 DDR_ADDR_W:=30
 
-#BOOT
-USE_BOOT:=1
+#ROM
 BOOTROM_ADDR_W:=12
+
+#Init memory (only works in simulation or FPGA not running DDR)
+INIT_MEM:=0
 
 #Peripheral list (must match respective submodule name)
 PERIPHERALS:=UART
@@ -24,8 +26,6 @@ SIMULATOR:=icarus
 #FPGA board (associated with server below)
 FPGA_BOARD:=AES-KU040-DB-G
 #FPGA_BOARD:=CYCLONEV-GT-DK
-FPGA_COMPILE_SERVER=$(PUDIM)
-
 
 #ASIC node
 ASIC_NODE:=umc130
@@ -72,10 +72,9 @@ ifeq ($(RUN_DDR),1)
 DEFINE+=$(define)RUN_DDR
 endif
 endif
-ifeq ($(USE_BOOT),1)
-DEFINE+=$(define)USE_BOOT=$(USE_BOOT) 
+ifeq ($(INIT_MEM),1)
+DEFINE+=$(define)INIT_MEM 
 endif
-DEFINE+=$(define)PROG_SIZE=$(shell wc -c $(FIRM_DIR)/firmware.bin | head -n1 | cut -d " " -f1)
 DEFINE+=$(define)N_SLAVES=$(N_SLAVES) 
 #address select bits: Extra memory (E), Peripherals (P), Boot controller (B)
 DEFINE+=$(define)E=31
@@ -102,15 +101,29 @@ dummy:=$(foreach p, $(PERIPHERALS), $(eval $p_DIR:=$(SUBMODULES_DIR)/$p))
 dummy:=$(foreach p, $(PERIPHERALS), $(eval $p=$(N_SLAVES)) $(eval N_SLAVES:=$(shell expr $(N_SLAVES) \+ 1)))
 dummy:=$(foreach p, $(PERIPHERALS), $(eval DEFINE+=$(define)$p=$($p)))
 
+FPGA_COMPILE_SERVER=$(PUDIM)
+
 ifeq ($(FPGA_BOARD),AES-KU040-DB-G)
 FPGA_BOARD_SERVER=$(BABA)
 else ifeq ($(FPGA_BOARD),CYCLONEV-GT-DK)
 FPGA_BOARD_SERVER=$(PUDIM)
 endif
 
+ifeq ($(SIMULATOR),ncsim)
+SIM_SERVER=$(MICRO)
+endif
+
+ASIC_SERVER=$(MICRO)
+
 #server list
-PUDIM:=146.193.44.48
-BABA:=146.193.44.179
+PUDIM:=pudim-flan.iobundle.com
+BABA:=baba-de-camelo.iobundle.com
+MICRO:=micro5.lx.it.pt
+
+#user list
+MICRO_USER=user19
+MICRO_ROOT_DIR=./$(USER)/sandbox/iob-soc
 
 REMOTE_ROOT_DIR=./sandbox/iob-soc
 
+.PHONY: all

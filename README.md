@@ -1,19 +1,19 @@
 # IOb-SoC
 
 SoC template comprising a RISC-V processor (iob-rv32), an SRAM memory subsystem,
-an UART (iob-uart), and optional caches and AXI4 connection to external DDR.
+a UART (iob-uart), and optional caches and AXI4 connection to external DDR.
 
 ## Clone the repository
 
 ``git clone git@github.com:IObundle/iob-soc.git``
 
-Ssh access is mandadory so that submodules can be updated.
+Ssh access is mandatory so that submodules can be updated.
 
 ## Update submodules
 ``git submodule update --init --recursive``
 
 
-## Edit the system configuration file: rtl/system.mk
+## Edit the system configuration file: /hardware/system.mk
 
 To configure IOb-SoC the following parameters are availble:
 
@@ -22,7 +22,7 @@ address 0 to the stack end at address 2<sup>FIRM_ADDR_W</sup>-1
 
 SRAM_ADDR_W: log2 size of SRAM, addresses from 0 to 2<sup>SRAM_ADDR_W</sup>-1
 
-USE_DDR: assign to 1 if DDR access is needed or to 0 otherwsie. Instruction and
+USE_DDR: assign to 1 if DDR access is needed or to 0 otherwise. Instruction and
 data L1 caches will be placed in the design, connected to an L2 cache, which in
 turn connects to an external DDR controller.
 
@@ -55,14 +55,19 @@ DOC_TYPE:=presentation: chosen document to build with Latex
 make sim
 ```
 
-## Compile and configure FPGA 
+## Compile FPGA 
 ```
 make fpga
 ```
 
+## Load FPGA 
+```
+make fpga-load
+```
+
 ## Load and run firmware
 ```
-make load-firmware
+make run-firmware
 ```
 
 ## Run firmware only
@@ -79,7 +84,7 @@ make asic
 
 ## Instructions for Installing the RISC-V GNU Compiler Toolchain
 
-###Get sources
+### Get sources
 
 ```
 git clone https://github.com/riscv/riscv-gnu-toolchain
@@ -89,34 +94,44 @@ git checkout <stable tag>
 git submodule update --init --recursive
 ```
 
-###Prerequisites
+### Prerequisites
 
 For Ubuntu OS and its variants:
 
 ```
-sudo apt install autoconf automake autotools-dev curl python3 libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev
+sudo apt install autoconf automake autotools-dev curl python3 python2 libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev
+```
+To check your python version, use:
+```
+python --version
+```
+If this doesn't return Python 2.*, navigate to your /usr/bin folder and soft-link python2 to python using:
+```
+ln -s python2 /usr/bin/python
 ```
 
 For CentOS and its variants:
 
 ```
-sudo yum install autoconf automake python3 libmpc-devel mpfr-devel gmp-devel gawk  bison flex texinfo patchutils gcc gcc-c++ zlib-devel expat-devel
+sudo yum install autoconf automake python3 python2 libmpc-devel mpfr-devel gmp-devel gawk  bison flex texinfo patchutils gcc gcc-c++ zlib-devel expat-devel
 ```
 
-###Instalation
+### Installation
 
 ```
-sudo ./configure --prefix=path/to/riscv --enable-multilib
+sudo ./configure --prefix=/path/to/riscv --enable-multilib
 sudo make
+export PATH=$PATH:/path/to/riscv/bin
 ```
+The export PATH command can be added to the bottom of your ~/.bashrc
 
-###Compilation
+### Compilation
 
 ```
 path/to/riscv/riscv64-unknown-elf-gcc -march=rv32im -mabi=ilp32 <C sources> -o <exec>
 ```
 
-###Supporting 32-bit applications
+### Supporting 32-bit applications
 
 Use symbolic links:
 

@@ -31,17 +31,13 @@
 #set_property  IOSTANDARD LVDS [get_ports LVDS_CLK1_N]
 #set_property  IOSTANDARD LVDS [get_ports LVDS_CLK1_P]
 
-#create_clock -period 10.000 [get_ports LVDS_CLK0_P]  
-
 ##DDR clocks
 set_property PACKAGE_PIN H22 [get_ports c0_sys_clk_clk_p]
 set_property PACKAGE_PIN H23 [get_ports c0_sys_clk_clk_n]
 set_property IOSTANDARD DIFF_SSTL12 [get_ports c0_sys_clk_clk_p]
 set_property IOSTANDARD DIFF_SSTL12 [get_ports c0_sys_clk_clk_n]
-#set_property IOSTANDARD LVCMOS18 [get_ports clk]
-#set_property PACKAGE_PIN H22 [get_ports clk]
 
-create_clock -period 4.000 [get_ports c0_sys_clk_clk_p]  
+#create_clock -period 4.000 [get_ports c0_sys_clk_clk_p]  
 
 #derive_pll_clocks
 #derive_clock_uncertainty
@@ -83,7 +79,6 @@ set_property IOSTANDARD LVCMOS18 [get_ports {trap}]
 set_property PACKAGE_PIN K20 [get_ports {reset}]
 set_property IOSTANDARD LVCMOS12 [get_ports {reset}]
 
-### User PUSH Switches
 #set_property PACKAGE_PIN K18 [get_ports {gpio_push_sw_tri_i[0]}]
 #set_property IOSTANDARD LVCMOS12 [get_ports {gpio_push_sw_tri_i[0]}]
 
@@ -95,4 +90,3 @@ set_property IOSTANDARD LVCMOS12 [get_ports {reset}]
 
 #set_property PACKAGE_PIN K20 [get_ports {gpio_push_sw_tri_i[3]}]
 #set_property IOSTANDARD LVCMOS12 [get_ports {gpio_push_sw_tri_i[3]}]
-

@@ -5,8 +5,8 @@
 // number of slaves (log2)
 `define N_SLAVES_W $clog2(`N_SLAVES)
 
-//when not booting init sram/ddr with firmware
-`ifndef USE_BOOT
+//init sram/ddr with firmware
+`ifdef INIT_MEM
  `ifdef USE_DDR
   `ifdef RUN_DDR
    `define DDR_INIT
@@ -16,6 +16,8 @@
  `else //ddr not used
   `define SRAM_INIT
  `endif
+`else
+ `define LD_FW
 `endif
 
 // run modes

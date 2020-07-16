@@ -1,6 +1,5 @@
 ROOT_DIR:=../..
 include $(ROOT_DIR)/software/software.mk
-
 include $(CACHE_DIR)/software/software.mk
 
 #specific compiler flags
@@ -11,11 +10,10 @@ SRC+=boot.S boot.c
 
 run: boot.elf
 
-boot.elf: ../../system.mk ../template.lds  $(HDR) $(SRC)
+boot.elf: ../template.lds  $(HDR) $(SRC)
 	$(TOOLCHAIN_PREFIX)gcc -o $@ $(CFLAGS) $(DEFINE) $(INCLUDE) $(SRC) -lgcc -lc
 	$(TOOLCHAIN_PREFIX)objcopy -O binary boot.elf boot.bin
 	$(PYTHON_DIR)/makehex.py boot.bin $(BOOTROM_ADDR_W) > boot.hex
-	@rm ../periphs.h
 
 clean:
 	@rm -rf boot.bin boot.elf boot.map *.hex ../periphs.h *~

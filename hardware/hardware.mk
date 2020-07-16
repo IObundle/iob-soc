@@ -11,7 +11,7 @@ endif
 # include
 INC_DIR:=$(ROOT_DIR)/hardware/include
 
-INCLUDE+= $(incdir) . $(incdir) $(INC_DIR)
+INCLUDE+=$(incdir). $(incdir)$(INC_DIR)
 
 #headers
 VHDR+=$(INC_DIR)/system.vh
@@ -38,12 +38,12 @@ VSRC+=$(SRC_DIR)/system.v
 
 # peripherals
 periphs:
-	$(foreach p, $(PERIPHERALS), $(eval include $(SUBMODULES_DIR)/$p/hardware/hardware.mk))                                      
+	$(foreach p, $(PERIPHERALS), $(eval include $(SUBMODULES_DIR)/$p/hardware/hardware.mk))
 
 # data files
 firmware.hex: $(FIRM_DIR)/firmware.hex
 	cp $(FIRM_DIR)/firmware.bin .
-ifeq ($(USE_BOOT),0)
+ifeq ($(INIT_MEM),1)
 	cp $(FIRM_DIR)/firmware.hex .
 	$(PYTHON_DIR)/hex_split.py firmware
 endif

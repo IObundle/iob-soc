@@ -66,6 +66,9 @@ module system
    input                    uart_cts
    );
 
+   localparam ADDR_W=32;
+   localparam DATA_W=32;
+   
    //
    // SYSTEM RESET
    //
@@ -196,7 +199,7 @@ module system
    split 
      #(
        .N_SLAVES(`N_SLAVES),
-       .P_SLAVES(`P_BIT)
+       .P_SLAVES(`P_BIT-1)
        )
    pbus_split
      (
@@ -306,7 +309,7 @@ module system
       
       //cpu interface
       .valid(slaves_req[`valid(`UART)]),
-      .address(slaves_req[`address(`UART,`UART_ADDR_W+2,2)]),
+      .address(slaves_req[`address(`UART,`UART_ADDR_W+2)-2]),
       .wdata(slaves_req[`wdata(`UART)]),
       .wstrb(|slaves_req[`wstrb(`UART)]),
       .rdata(slaves_resp[`rdata(`UART)]),

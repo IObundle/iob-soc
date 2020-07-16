@@ -3,6 +3,8 @@
 #include "iob-uart.h"
 #include "iob-cache.h"
 
+#define UART_BASE (1<<P) |(UART<<(ADDR_W-2-N_SLAVES_W))
+
 // address to copy firmware to
 #if (USE_DDR==0 || (USE_DDR==1 && RUN_DDR==0))
 char *prog_start_addr = (char *) (1<<BOOTROM_ADDR_W);
@@ -45,7 +47,7 @@ int main() {
       while(!cache_buffer_empty());
 #endif
       //reboot and run firmware
-      RAM_SET(int, BOOTCTR_BASE, 2);//{cpu_rst_req=1, boot=0}
+      MEM_SET(int, BOOTCTR_BASE, 2);//{cpu_rst_req=1, boot=0}
       break;
     }
   }

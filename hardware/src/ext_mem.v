@@ -5,6 +5,10 @@
 `include "interconnect.vh"
 
 module ext_mem
+  #(
+    parameter ADDR_W=32,
+    parameter DATA_W=32
+    )
   (
    input                    clk,
    input                    rst,
@@ -87,8 +91,7 @@ module ext_mem
                 .LINE_OFF_W(4),    //Cache Line Offset (number of lines)
                 .WORD_OFF_W(4),    //Word Offset (number of words per line)
                 .WTBUF_DEPTH_W(4), //FIFO's depth
-                //Ctrls parameters
-                .CTRL_CNT_ID(0),   //Remove counters with distinct data-instr accesses
+                .CTRL_CACHE (0),
                 .CTRL_CNT(0)       //Removes counters - Needed to find a way to access the icache controller (using c-drive ctrl functions will always result in the access of dcache) - Change this to 1 when solution found.
                 )
    icache (
@@ -97,16 +100,15 @@ module ext_mem
 
            // Front-end interface
            .valid (icache_fe_req[`valid(0)]),
-           .addr  (icache_fe_req[`address(0, `FIRM_ADDR_W+1, 0)]),
+           .addr  (icache_fe_req[`address(0, `FIRM_ADDR_W+1)-2]),
            .wdata (icache_fe_req[`wdata(0)]),
            .wstrb (icache_fe_req[`wstrb(0)]),
            .rdata (icache_fe_resp[`rdata(0)]),
            .ready (icache_fe_resp[`ready(0)]),
-           //Currently unused ports
-           .instr(1'b0),
+
            // Back-end interface
            .mem_valid (icache_be_req[`valid(0)]),
-           .mem_addr  (icache_be_req[`address(0, `FIRM_ADDR_W, 0)]),
+           .mem_addr  (icache_be_req[`address(0, `FIRM_ADDR_W)]),
            .mem_wdata (icache_be_req[`wdata(0)]),
            .mem_wstrb (icache_be_req[`wstrb(0)]),
            .mem_rdata (icache_be_resp[`rdata(0)]),
@@ -136,8 +138,6 @@ module ext_mem
       .LINE_OFF_W(4),    //Cache Line Offset (number of lines)
       .WORD_OFF_W(4),    //Word Offset (number of words per line)
       .WTBUF_DEPTH_W(4), //FIFO's depth
-      //Ctrls parameters
-      .CTRL_CNT_ID(0),   //Remove counters with distinct data-instr accesses
       .CTRL_CNT(1)       //Counters for hits and misses (since previous parameter is 0)
       )
    dcache (
@@ -146,15 +146,15 @@ module ext_mem
 
            // Front-end interface
            .valid (dcache_fe_req[`valid(0)]),
-           .addr  (dcache_fe_req[`address(0,`FIRM_ADDR_W+1, 0)]),
+           .addr  (dcache_fe_req[`address(0,`FIRM_ADDR_W+1)-2]),
            .wdata (dcache_fe_req[`wdata(0)]),
            .wstrb (dcache_fe_req[`wstrb(0)]),
            .rdata (dcache_fe_resp[`rdata(0)]),
            .ready (dcache_fe_resp[`ready(0)]),
-           .instr (1'b0),
+
            // Back-end interface
            .mem_valid (dcache_be_req[`valid(0)]),
-           .mem_addr  (dcache_be_req[`address(0,`FIRM_ADDR_W, 0)]),
+           .mem_addr  (dcache_be_req[`address(0,`FIRM_ADDR_W)]),
            .mem_wdata (dcache_be_req[`wdata(0)]),
            .mem_wstrb (dcache_be_req[`wstrb(0)]),
            .mem_rdata (dcache_be_resp[`rdata(0)]),
@@ -165,6 +165,13 @@ module ext_mem
    wire [`REQ_W-1:0]      l2cache_req;
    wire [`RESP_W-1:0]     l2cache_resp;
 
+`ifdef RUN_DDR_USE_SRAM
+   assign icache_be_req[`address(0,`ADDR_W)-`FIRM_ADDR_W] = 0;
+`endif
+   assign dcache_be_req[`address(0,`ADDR_W)-`FIRM_ADDR_W] = 0;
+
+   
+   
    merge
      #(
 `ifdef RUN_DDR_USE_SRAM
@@ -173,19 +180,20 @@ module ext_mem
       .N_MASTERS(1)
 `endif
        )
-     ibus_merge (
-                 // masters
+     merge_i_d_buses_into_l2
+       (
+        // masters
 `ifdef RUN_DDR_USE_SRAM
-                 .m_req  ({icache_be_req, dcache_be_req}),
-                 .m_resp ({icache_be_resp, dcache_be_resp}),
+        .m_req  ({icache_be_req, dcache_be_req}),
+        .m_resp ({icache_be_resp, dcache_be_resp}),
 `else
-                 .m_req  (dcache_be_req),
-                 .m_resp (dcache_be_resp),
+        .m_req  (dcache_be_req),
+        .m_resp (dcache_be_resp),
 `endif                 
-                 // slave
-                 .s_req  (l2cache_req),
-                 .s_resp (l2cache_resp)
-                 );
+        // slave
+        .s_req  (l2cache_req),
+        .s_resp (l2cache_resp)
+        );
 
    // L2 cache instance
    iob_cache_axi # 
@@ -196,8 +204,7 @@ module ext_mem
       .WORD_OFF_W(4),    //Word Offset (number of words per line)
       .WTBUF_DEPTH_W(4), //FIFO's depth
       .BE_ADDR_W (`DDR_ADDR_W),
-      //Ctrls parameters
-      .CTRL_CNT_ID(0),   //Remove counters with distinct data-instr accesses
+      .CTRL_CACHE (0),
       .CTRL_CNT(0)       //Remove counters
       )
    l2cache (
@@ -206,12 +213,12 @@ module ext_mem
       
             // Native interface
             .valid    (l2cache_req[`valid(0)]),
-            .addr     ({1'b0, l2cache_req[`address(0, `FIRM_ADDR_W, 0)]}),
+            .addr     (l2cache_req[`address(0, `FIRM_ADDR_W+1)-2]),
             .wdata    (l2cache_req[`wdata(0)]),
             .wstrb    (l2cache_req[`wstrb(0)]),
             .rdata    (l2cache_resp[`rdata(0)]),
             .ready    (l2cache_resp[`ready(0)]),
-            .instr    (1'b0),
+
             // AXI interface
             // Address write
             .axi_awid(axi_awid), 
@@ -232,7 +239,7 @@ module ext_mem
             .axi_wvalid(axi_wvalid), 
             .axi_wready(axi_wready), 
             //write response
-            .axi_bid(axi_bid), 
+            //.axi_bid(axi_bid), 
             .axi_bresp(axi_bresp), 
             .axi_bvalid(axi_bvalid), 
             .axi_bready(axi_bready), 
@@ -249,7 +256,7 @@ module ext_mem
             .axi_arvalid(axi_arvalid), 
             .axi_arready(axi_arready), 
             //read 
-            .axi_rid(axi_rid), 
+            //.axi_rid(axi_rid), 
             .axi_rdata(axi_rdata), 
             .axi_rresp(axi_rresp), 
             .axi_rlast(axi_rlast), 

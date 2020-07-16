@@ -5,216 +5,169 @@
 #include <unistd.h>  // UNIX Standard Definitions
 #include <errno.h>   // ERROR Number Definitions
 #include <time.h>
-#include "iob-uart.h"
 
-#define WAIT_FOR_RISCV 20000
+#include "iob-uart-ascii.h"
 
-// Uncomment this line for debug
-//#define DEBUG
+#define PROGNAME "IOb-Console"
 
 void connect(int serial_fd) {
-  unsigned char byte = -1;
-  int nbytes;
+  unsigned char byte;
+  int nbytes = 0;
 
-  while (1) {
-    nbytes = (int) read(serial_fd, &byte, 1);
-    if (nbytes <= 0 || byte != ENQ) {
-      //this will unblock target block read 
-      byte = ENQ;
-      nbytes = (int) write(serial_fd, &byte, 1);
-      //if (nbytes < 0)
-      //perror("Error: write ENQ returned negative value");
-    }
-    else if (byte == ENQ) {
-      byte = ACK;
-      do nbytes = (int) write(serial_fd, &byte, 1); while (nbytes < 0);
-      printf("Connected to target");
-      //fflush(stdout);
+  //wait for taget to send ENQ 
+  while (nbytes <= 0) {
+    nbytes = read(serial_fd, &byte, 1);
+    if (nbytes == ENQ)
       break;
-    }
+    //this will unblock target block read 
+    while (write(serial_fd, &byte, 1) <= 0);
   }
+  
+  //send ACK
+  byte = ACK;
+  while ( write(serial_fd, &byte, 1) <= 0);
+
+  printf(PROGNAME); printf(": Connected to target\n");
 }
 
-int print (int serial_fd) {
+//prints incoming chars until ETX or ENQ is received
+void print (int serial_fd) {
   unsigned char byte;
   int nbytes;
   
-  do {
-    do {
-      nbytes = (int) read(serial_fd, &byte, 1);
-    } while (nbytes <= 0);
-  } while (byte != STX);
+  do nbytes = (int) read(serial_fd, &byte, 1);
+  while (byte != STX);
   
   while (1) {
-    do {
-      nbytes = (int) read(serial_fd, &byte, 1);
-    } while (nbytes <= 0);
+    do nbytes = (int) read(serial_fd, &byte, 1);
+    while (nbytes <= 0);
     
-    if (byte == ETX || byte == ENQ) { // Finish
+    if (byte == ETX || byte == ENQ)
       break;
-    } else { // Print char
-      printf("%c", byte);
-    }
+
+    printf("%c", byte);
   }
-  
-  return 0;
 }
 
-int run(int serial_fd) {
+//send run signal
+void run(int serial_fd) {
   unsigned char byte;
-  int nbytes;
   
   byte = EOT;
-  nbytes = (int) write(serial_fd, &byte, 1);
-  if (nbytes == -1) {
-    printf("run: Failed to send EOT\n");
-  }
-  
+  while (write(serial_fd, &byte, 1) <= 0);
   print(serial_fd);
-  
-  return 0;
 }
 
-int sendFile(int serial_fd, char *name) {
-  FILE *file_fd;
-  unsigned int file_size;
+// send file to target
+void sendFile(int serial_fd, char *name) {
+  FILE *fp;
+  int file_size;
   
-  unsigned int i;
-  unsigned char byte;
+  char byte;
   int nbytes;
-  
-  clock_t begin;
-  clock_t end;
-  double time_spent;
-  unsigned int count = 0;
-  
-  file_fd = fopen(name, "rb");
-  if (!file_fd) {
-    printf("sendFile: Can't open file.\n");
-    return -1;
-  }
-  
-  // Get file size
-  fseek(file_fd, 0L, SEEK_END);
-  file_size = ftell(file_fd);
-  rewind(file_fd);
-  
+  char *buf;
+
+  //signal target to expect data
   byte = STX;
-  nbytes = (int) write(serial_fd, &byte, 1);
-  if (nbytes == -1) {
-    printf("sendFile: Failed to send STX\n");
+  do nbytes = (int) write(serial_fd, &byte, 1);
+  while (nbytes <= 0);
+
+  //open data file
+  fp = fopen(name, "rb");
+  if (!fp) {
+    {printf(PROGNAME); printf(": sendFile: Can't open file\n");}
+    exit(1);
   }
   
+  //get file size
+  fseek(fp, 0L, SEEK_END);
+  file_size = ftell(fp);
+  rewind(fp);
+
+  //allocate space for internal file buffer
+  if( (buf = malloc(file_size)) == NULL)
+    {printf(PROGNAME); printf(": memory allocation failed\n");}
+      
+  //print incoming messages
   print(serial_fd);
   
-  printf("\nStarting File '%s' Transfer...\n", name);
-  printf("file_size = %u\n", file_size);
-  begin = clock();
+  printf(PROGNAME); printf(": starting file transfer of %d bytes...\n", file_size);
+
   
-  // Send file size
-  nbytes = (int) write(serial_fd, &file_size, 4);
-  if (nbytes == -1) {
-    printf("sendFile: Failed to send data\n");
-  }
+  //send file size
+  while ( write(serial_fd, &file_size, 4) <= 0);
   
-  // Send file
-  for (i = 0; i < file_size; i++) {
-    nbytes = (int) fread(&byte, sizeof(unsigned char), 1, file_fd);
-    if (nbytes != 1) {
-      printf("sendFile: Failed to read byte from file\n");
-    }
+  //read file into buffer
+  if (fread(buf, sizeof(char), file_size, fp) <= 0)
+    {printf(PROGNAME); printf(": can't read file\n");}
+  
     
-    nbytes = (int) write(serial_fd, &byte, 1);
-    if (nbytes == -1) {
-      printf("sendFile: Failed to send data\n");
-    }
-    
-    if (!(i%200)) {
-      count++;
-      usleep(WAIT_FOR_RISCV);
-    }
-#ifdef DEBUG
-    printf("buffer[%u] = %x\n", i, byte);
-#endif
-  }
+  //send buffer
+  while ( write(serial_fd, buf, file_size) <= 0 );
+          
+  //DEBUG
+  //printf("buffer[%u] = %x\n", i, byte);
   
-  end = clock();
-  time_spent = ((double) (end - begin)) / CLOCKS_PER_SEC + (double)count * WAIT_FOR_RISCV/1000000.0;
-  printf ("\nUART transfer complete.\n");
-  printf("The file transfer took %f seconds.\n", time_spent);
+  printf (PROGNAME); printf(": file transfer complete\n\n\n");
   
-  fclose(file_fd);
+  free(buf);
+  fclose(fp);
   
+  // Print incoming messages
   print(serial_fd);
   
-  return 0;
 }
 
-int receiveFile(int serial_fd, char *name) {
-  FILE *file_fd;
-  unsigned int file_size = 0;
+void receiveFile(int serial_fd, char *name) {
+  FILE *fp;
+  int file_size = 0;
   
-  unsigned int i;
   int nbytes;
-  unsigned char byte;
-  
-  clock_t begin;
-  clock_t end;
-  double time_spent;
-  
-  file_fd = fopen(name, "wb");
-  if (!file_fd) {
-    printf("receiveFile: Can't open the file selected. Don't forget to add an valid pathed file.\n");
-    return -1;
+  char byte;
+  char *buf;
+
+  //open data file
+  fp = fopen(name, "wb");
+  if (!fp) {
+    printf(PROGNAME); printf(": receiveFile: Can't open file\n");
+    exit(1);
   }
-  
+
+  //signal target to send data
   byte = ETX;
-  nbytes = (int) write(serial_fd, &byte, 1);
-  if (nbytes == -1) {
-    printf("receiveFile: Failed to send ETX\n");
-  }
-  
+  while ( write(serial_fd, &byte, 1) <= 0 );
+
+  // Print incoming messages
   print(serial_fd);
   
-  printf("\nStarting File '%s' Transfer...\n", name);  
-  begin = clock();
+  printf(PROGNAME); printf(": starting file reception...\n");  
   
-  // Get file size
-  for (i = 0; i < 4; i++) {
-    do {
-      nbytes = (int) read(serial_fd, &byte, 1);
-    } while (nbytes <= 0);
+  //receive file size
+  do nbytes = (int) read(serial_fd, &file_size, sizeof(int));
+  while (nbytes <= 0);
+
+  //allocate space for internal file buffer
+  if( (buf = malloc(file_size)) == NULL)
+    {printf(PROGNAME); printf(": memory allocation failed");}
+
+  
+  //receive file into buffer
+  do nbytes = (int) read(serial_fd, &byte, file_size);
+  while (nbytes <= 0);
     
-    file_size |= byte << (i*8);
-  }
-  
-  // Get file
-  for (i = 0; i < file_size; i++) {
-    do {
-      nbytes = (int) read(serial_fd, &byte, 1);
-    } while (nbytes <= 0);
+  if( fwrite(&byte, sizeof(char), 1, fp) <= 0)
+    {printf(PROGNAME); printf(": receiveFile: failed to write file\n");}
+
+    //DEBUG
+    //printf("buffer[%u] = %x\n", i, byte);
     
-    nbytes = (int) fwrite(&byte, sizeof(char), 1, file_fd);
-    if (nbytes != 1) {
-      printf("receiveFile: Failed to write byte in file\n");
-    }
-#ifdef DEBUG
-    printf("buffer[%u] = %x\n", i, byte);
-#endif
-  }
-  
-  end = clock();
-  time_spent = ((double) (end - begin)) / CLOCKS_PER_SEC;
-  
-  printf("file_size = %d\n", file_size);
-  printf ("\nUART transfer complete.\n");
-  printf("The file transfer took %f seconds.\n", time_spent);
-  
-  fclose(file_fd);
-  
+  printf (PROGNAME); printf(": file reception complete. %d bytes received\n", file_size);
+
+  free(buf);
+  fclose(fp);
+
+  //print incoming messages
   print(serial_fd);
-  
-  return 0;
 }
 
 int openSerialPort(char *serialPort) {
@@ -225,7 +178,7 @@ int openSerialPort(char *serialPort) {
   
   printf("\n");
   printf("+-----------------------------------------------+\n");
-  printf("|           IOb-Console: serial port            |\n");
+  printf("|                   ");printf(PROGNAME);printf("                 |\n");
   printf("+-----------------------------------------------+\n");
   
   //------------------------------- Opening the Serial Port -------------------------------//
@@ -237,25 +190,22 @@ int openSerialPort(char *serialPort) {
   // -the status of DCD line, Open() returns immediatly //
   
   fd = open(serialPort, O_RDWR | O_NOCTTY | O_NDELAY);
-  if (fd == -1) {
-    printf("\n  Error! in Opening '%s'", serialPort);
-    return 1;
-  }
+  if (fd == -1)
+    {printf(PROGNAME); printf(": can't open %s", serialPort);}
+
   
-  // ---------- Setting the Attributes of the serial port using termios structure --------- //
+  //set attributes of the serial port using termios structure
   
-  // Get the current configuration of the serial interface
-  if (tcgetattr(fd, &SerialPortSettings) < 0) {
-    printf("\n  Error! in Getting '%s' configuration", serialPort);
-    return 1;
-  }
+  //get current configuration of the serial interface
+  if (tcgetattr(fd, &SerialPortSettings) < 0)
+    {printf(PROGNAME); printf(": can't get configuration of %s", serialPort);}
+
   
-  // Set Read Speed and Write as 115200
+  //set baud rate to 115200
   if (cfsetispeed(&SerialPortSettings, B115200) < 0 ||
-      cfsetospeed(&SerialPortSettings, B115200) < 0) {
-    printf("\n  Error! in Setting baudrate '%s'", serialPort);
-    return 1;
-  }
+      cfsetospeed(&SerialPortSettings, B115200) < 0)
+    {printf(PROGNAME); printf(": can't set baud rate %s", serialPort);}
+
   
   //                                                             //
   // Input flags - Turn off input processing                     //
@@ -324,7 +274,6 @@ void usage(char *message) {
   printf("usage: %s\n", message);
   printf("       ./console -s <serial port> -f <firmware file> -i <input file> -o <output file>\n");
   printf("       -f, -i and -o arguments are optional\n");
-  return;
 }
 
 int main(int argc, char* argv[]) {
@@ -336,7 +285,7 @@ int main(int argc, char* argv[]) {
   int i;
   
   if (argc < 3) {
-    usage("Missing arguments");
+    usage("PROGNAME: not enough program arguments");
     return -1;
   }
   
@@ -351,11 +300,11 @@ int main(int argc, char* argv[]) {
       } else if (argv[i][1] == 'o') {
         outputFile = argv[++i];
       } else {
-        usage("Unexpected argument");
+        usage("PROGNAME: unexpected argument");
         return -1;
       }
     } else {
-      usage("Unexpected argument");
+      usage("PROGNAME: unexpected argument");
       return -1;
     }
   }
@@ -365,16 +314,16 @@ int main(int argc, char* argv[]) {
     return -1;
   }
   
-  // Sync with target
+  //sync with target
   connect(serial_fd);
-  
-  if (fwFile) { // Send firmware file
+
+  //send firmware file
+  if (fwFile)
     sendFile(serial_fd, fwFile);
-  }
   
-  if (inputFile) { // Send input file
+  //send input file
+  if (inputFile)
     sendFile(serial_fd, inputFile);
-  }
   
   // Run application
   run(serial_fd);

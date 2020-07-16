@@ -5,17 +5,20 @@ incdir := #--lib_path
 
 include ../fpga.mk
 
-run: output_files/top_system.sof
+SOF:=output_files/top_system.sof
+
+load:
 	./prog.sh
 
-output_files/top_system.sof: top_system.tcl top_system.sdc $(VSRC) $(VHDR) boot.hex firmware.hex
+compile: periphs firmware.hex $(SOF)
+
+$(SOF): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex
 	./build.sh "$(INCLUDE)" "$(DEFINE)" "$(VSRC)"
 
 fpga-clean:
-	@rm -rf db incremental_db output_files
-	@rm -f *.summary *.rpt *.smsg *.txt *.done *.jdi *.pin *.sof *.sld *.qpf *.qsf *~
+	@rm -rf db incremental_db output_files *.summary *.rpt *.smsg *.txt *.done *.jdi *.pin *.sof *.sld *.qpf *.qsf *~
 
-.PRECIOUS: output_files/top_system.sof
+.PRECIOUS: $(SOF)
 
-.PHONY: fpga-clean
+.PHONY: load compile fpga-clean
 

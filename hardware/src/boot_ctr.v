@@ -26,7 +26,7 @@ module boot_ctr
 
 
    //cpu interface
-   assign cpu_rdata = {31'd0,boot};
+   assign cpu_rdata = {{(`DATA_W-1){1'b0}},boot};
    always @(posedge clk, posedge rst)
      if(rst)
          cpu_ready <= 1'b0;
@@ -61,7 +61,7 @@ module boot_ctr
    always @(posedge clk, posedge rst)
      if(rst) begin
         rom_r_valid <= 1'b1;
-        rom_r_addr <= `BOOTROM_ADDR_W'd0;
+        rom_r_addr <= {`BOOTROM_ADDR_W-2{1'b0}};
      end else
        if (rom_r_addr != (2**(`BOOTROM_ADDR_W-2)-1))
          rom_r_addr <= rom_r_addr + 1'b1;
@@ -80,7 +80,7 @@ module boot_ctr
         sram_wstrb <= {`DATA_W/8{1'b1}};
      end else begin
         sram_valid <= rom_r_valid;
-        ram_w_addr <= rom_r_addr - 2**(`BOOTROM_ADDR_W-2);
+        ram_w_addr <= rom_r_addr - { 1'b1,{`BOOTROM_ADDR_W-2{1'b0}} };
         sram_wstrb <= {`DATA_W/8{rom_r_valid}};
      end
    
