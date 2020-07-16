@@ -47,7 +47,7 @@ int main() {
       while(!cache_buffer_empty());
 #endif
       //reboot and run firmware
-      RAM_SET(int, BOOTCTR_BASE, 2);//{cpu_rst_req=1, boot=0}
+      MEM_SET(int, BOOTCTR_BASE, 2);//{cpu_rst_req=1, boot=0}
       break;
     }
   }

@@ -5,8 +5,8 @@ include $(ROOT_DIR)/system.mk
 MEMAKER_SRC:=source /opt/ic_tools/init/init-memaker-20100111-130LL
 
 # memory compilation flags
-BOOTROM_WORDS:=$(shell echo '2^($(BOOTROM_ADDR_W)-2)' | bc)
-MEM_FLAGS:=-s fsc0l_d -type sp -words $(BOOTROM_WORDS) -bits 32 -mux 1 -rformat hex -romcode $(BOOT_DIR)/boot.hex -ds -lib -ver -lef
+SRAM_WORDS:=$(shell echo '2^($(SRAM_ADDR_W)-2)' | bc)
+MEM_FLAGS:=-s fsc0l_d -type sh -words $(SRAM_WORDS) -bits 8 -bytes 4 -mux 1 -ds -lib -ver -lef
 
 # run memory compiler
 run:
@@ -16,4 +16,4 @@ run:
 clean:
 	@find . -type f -not -name Makefile -delete
 
-.PHONY: all clean 
+.PHONY: all clean
