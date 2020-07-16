@@ -41,14 +41,15 @@ periphs:
 	$(foreach p, $(PERIPHERALS), $(eval include $(SUBMODULES_DIR)/$p/hardware/hardware.mk))
 
 # data files
-firmware.hex: $(FIRM_DIR)/firmware.hex
-	cp $(FIRM_DIR)/firmware.bin .
+firmware.hex: $(FIRM_DIR)/firmware.bin
 ifeq ($(INIT_MEM),1)
-	cp $(FIRM_DIR)/firmware.hex .
-	$(PYTHON_DIR)/hex_split.py firmware
+	$(PYTHON_DIR)/makehex.py firmware.bin $(FIRM_ADDR_W) > firmware.hex
+	$(PYTHON_DIR)/hex_split.py $(FIRM_DIR)/firmware.hex .
+else
+	cp $(FIRM_DIR)/firmware.bin .
 endif
 
-boot.hex: $(BOOT_DIR)/boot.hex
-	cp $(BOOT_DIR)/boot.hex .
+boot.hex: $(BOOT_DIR)/boot.bin
+	$(PYTHON_DIR)/makehex.py $(BOOT_DIR)/boot.bin $(BOOTROM_ADDR_W) > boot.hex
 
 .PHONY: periphs
