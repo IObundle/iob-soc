@@ -1,27 +1,25 @@
-CASE=TC
+ROOT_DIR:=../../../..
 
-BOOT_DIR=../../../software/bootloader
-PYTHON_DIR=../../../software/python
-MEMW_DIR=../../../rtl/src/memory/wrapper
-ROM_DIR=../memory/bootrom
-RAM_DIR=../memory/bootram
+include ../../asic.mk
 
-all: $(MEMW_DIR)/rom.v $(MEMW_DIR)/ram.v
+RTL_COMPILER:=source /opt/ic_tools/init/init-rc14_25_hf000
+
+run: rom ram
 	cp $(ROM_DIR)/*$(CASE).lib $(RAM_DIR)/*$(CASE).lib .
-	./synth.sh
+	$(RTL_COMPILER) && echo "quit" | rc -files synscript.tcl
+	echo "quit"
 
 
-$(MEMW_DIR)/rom.v: $(MEMW_DIR)
-	$(eval MEM_SIZE=`$(PYTHON_DIR)/get_memsize.py BOOTROM_ADDR_W log2`)
-	$(PYTHON_DIR)/memwrapper_make.py fsc0l_d sp $(MEM_SIZE) 32 1 > $(MEMW_DIR)/rom.v
+rom: gen_mem
+	$(PYTHON_DIR)/memwrapper_make.py fsc0l_d sp $(MEM_SIZE_ROM) 32 1 > $(MEMW_DIR)/rom.v
 
-$(MEMW_DIR)/ram.v: $(MEMW_DIR)
-	$(eval MEM_SIZE=`$(PYTHON_DIR)/get_memsize.py BOOTRAM_ADDR_W log2`)	
-	$(PYTHON_DIR)/memwrapper_make.py fsc0l_d sh $(MEM_SIZE) 8 4 1 > $(MEMW_DIR)/ram.v
+ram: gen_mem
+	$(PYTHON_DIR)/memwrapper_make.py fsc0l_d sh $(MEM_SIZE_RAM) 8 4 1 > $(MEMW_DIR)/ram.v
 
-$(MEMW_DIR):
+gen_mem:
 	make -C ../memory
-	cp $(BOOT_DIR)/system.h .
+	cp $(SW_DIR)/system.h .
+	rm -R $(MEMW_DIR)
 	mkdir $(MEMW_DIR)
 
 clean:
