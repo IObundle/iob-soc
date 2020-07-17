@@ -26,8 +26,7 @@ set INCLUDE [glob $SRC_UART_I/*.vh $SRC_CACHE_I/*.vh $SRC_CONNECT_I/*.vh $SRC_SY
 echo $INCLUDE
 
 #verilog defines
-read_hdl -v2001 $INCLUDE 
-read_hdl -v2001 $SRC_CPU $SRC
+read_hdl -v2001 $INCLUDE $SRC_CPU $SRC
 elaborate system
 define_clock -name clk -period 31250 [find / -port clk] 
 synthesize -to_mapped
