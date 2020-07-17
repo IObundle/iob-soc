@@ -13,7 +13,7 @@ DDR_ADDR_W:=30
 BOOTROM_ADDR_W:=12
 
 #Init memory (only works in simulation or FPGA not running DDR)
-INIT_MEM:=1
+INIT_MEM:=0
 
 #Peripheral list (must match respective submodule name)
 PERIPHERALS:=UART
