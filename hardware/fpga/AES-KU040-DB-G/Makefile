@@ -27,4 +27,4 @@ clean-ip:
 
 .PRECIOUS: synth_system.bit
 
-.PHONY: load compile fpga-clean
+.PHONY: load compile fpga-clean clean-ip

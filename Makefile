@@ -17,7 +17,6 @@ fpga: firmware bootloader
 	rsync -avz --exclude .git . $(USER)@$(FPGA_COMPILE_SERVER):$(REMOTE_ROOT_DIR) 
 	ssh $(USER)@$(FPGA_COMPILE_SERVER) "cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) compile"
 
-
 fpga-load: fpga
 ifeq ($(FPGA_BOARD_SERVER),$(FPGA_COMPILE_SERVER))
 	ssh $(USER)@$(FPGA_BOARD_SERVER) "cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) load"
@@ -26,8 +25,6 @@ else
 	ssh $(USER)@$(FPGA_COMPILE_SERVER) "cd $(REMOTE_ROOT_DIR); rsync -avz --exclude .git . $(USER)@$(FPGA_BOARD_SERVER):$(REMOTE_ROOT_DIR)"
 	ssh $(USER)@$(FPGA_BOARD_SERVER) "cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) load"
 endif
-
-
 
 fpga-clean: clean
 	ssh $(USER)@$(FPGA_BOARD_SERVER) "if [ -d $(REMOTE_ROOT_DIR) ]; then cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) clean; fi"
@@ -45,7 +42,7 @@ asic-clean:
 	rsync -avz --exclude .git . $(MICRO_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR) 
 	ssh $(MICRO_USER)@$(ASIC_SERVER) "cd $(MICRO_ROOT_DIR); make -C $(ASIC_DIR) clean"
 
-run-firmware:
+run-firmware: firmware
 	ssh $(USER)@$(FPGA_BOARD_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --exclude .git . $(USER)@$(FPGA_BOARD_SERVER):$(REMOTE_ROOT_DIR) 
 	ssh $(USER)@$(FPGA_BOARD_SERVER) "cd $(REMOTE_ROOT_DIR); make -C $(CONSOLE_DIR) run"
@@ -69,4 +66,4 @@ endif
 	make -C $(BOOT_DIR) clean
 	make -C $(DOC_DIR) clean
 
-.PHONY: sim fpga firmware bootloader document clean fpga-load fpga-clean fpga-clean-ip asic asic-clean
+.PHONY: sim fpga firmware bootloader document clean fpga-load fpga-clean fpga-clean-ip asic asic-clean run-firmware
