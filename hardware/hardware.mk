@@ -41,9 +41,9 @@ periphs:
 	$(foreach p, $(PERIPHERALS), $(eval include $(SUBMODULES_DIR)/$p/hardware/hardware.mk))
 
 $(HW_DIR)/src/system.v:
-	$(foreach p, $(PERIPHERALS), sed '/endmodule/e cat $(SUBMODULES_DIR)/UART/hardware/include/inst.v' $(HW_DIR)/src/system_core.v > $(HW_DIR)/src/system.v)
-	$(foreach p, $(PERIPHERALS), sed -i '/PIO/r $(SUBMODULES_DIR)/UART/hardware/include/pio.v' $(HW_DIR)/src/system.v)
-	$(foreach p, $(PERIPHERALS), sed -i '/PH/r $(SUBMODULES_DIR)/UART/hardware/include/*.vh' $(HW_DIR)/src/system.v)
+	$(foreach p, $(PERIPHERALS), sed '/endmodule/e cat $(SUBMODULES_DIR)/$p/hardware/include/inst.v' $(HW_DIR)/src/system_core.v > $(HW_DIR)/src/system.v;)
+	$(foreach p, $(PERIPHERALS), sed -i '/PIO/r $(SUBMODULES_DIR)/$p/hardware/include/pio.v' $(HW_DIR)/src/system.v;)
+	$(foreach p, $(PERIPHERALS), sed -i '/PH/a `include \"$(shell echo `ls $(SUBMODULES_DIR)/$p/hardware/include/*.vh`)\"' $(HW_DIR)/src/system.v;)\
 
 # data files
 firmware.hex: $(FIRM_DIR)/firmware.bin
