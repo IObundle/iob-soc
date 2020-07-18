@@ -43,6 +43,7 @@ periphs:
 $(HW_DIR)/src/system.v:
 	$(foreach p, $(PERIPHERALS), sed '/endmodule/e cat $(SUBMODULES_DIR)/UART/hardware/include/inst.v' $(HW_DIR)/src/system_core.v > $(HW_DIR)/src/system.v)
 	$(foreach p, $(PERIPHERALS), sed -i '/PIO/r $(SUBMODULES_DIR)/UART/hardware/include/pio.v' $(HW_DIR)/src/system.v)
+	$(foreach p, $(PERIPHERALS), sed -i '/PH/r $(SUBMODULES_DIR)/UART/hardware/include/*.vh' $(HW_DIR)/src/system.v)
 
 # data files
 firmware.hex: $(FIRM_DIR)/firmware.bin
