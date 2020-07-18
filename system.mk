@@ -1,12 +1,12 @@
 #FIRMWARE
-FIRM_ADDR_W:=23
+FIRM_ADDR_W:=13
 
 #SRAM
 SRAM_ADDR_W=13
 
 #DDR
-USE_DDR:=1
-RUN_DDR:=1
+USE_DDR:=0
+RUN_DDR:=0
 DDR_ADDR_W:=30
 CACHE_ADDR_W:=24
 
@@ -14,7 +14,7 @@ CACHE_ADDR_W:=24
 BOOTROM_ADDR_W:=12
 
 #Init memory (only works in simulation or FPGA not running DDR)
-INIT_MEM:=0
+INIT_MEM:=1
 
 #Peripheral list (must match respective submodule name)
 PERIPHERALS:=UART
