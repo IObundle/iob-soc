@@ -3,9 +3,6 @@
 
 #include "iob-uart.h"
 
-//wip: test large global vars
-//int a[2000] = {0};
-
 int main()
 { 
   //init uart 
