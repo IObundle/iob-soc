@@ -40,10 +40,11 @@ VSRC+=$(SRC_DIR)/system.v
 periphs:
 	$(foreach p, $(PERIPHERALS), $(eval include $(SUBMODULES_DIR)/$p/hardware/hardware.mk))
 
-$(HW_DIR)/src/system.v:
-	$(foreach p, $(PERIPHERALS), sed '/endmodule/e cat $(SUBMODULES_DIR)/$p/hardware/include/inst.v' $(HW_DIR)/src/system_core.v > $(HW_DIR)/src/system.v;)
-	$(foreach p, $(PERIPHERALS), sed -i '/PIO/r $(SUBMODULES_DIR)/$p/hardware/include/pio.v' $(HW_DIR)/src/system.v;)
-	$(foreach p, $(PERIPHERALS), sed -i '/PH/a `include \"$(shell echo `ls $(SUBMODULES_DIR)/$p/hardware/include/*.vh`)\"' $(HW_DIR)/src/system.v;)\
+$(SRC_DIR)/system.v:
+	cp $(SRC_DIR)/system_core.v $@
+	$(foreach p, $(PERIPHERALS), sed -i '/endmodule/e cat $(SUBMODULES_DIR)/$p/hardware/include/inst.v' $(SRC_DIR)/system.v;)
+	$(foreach p, $(PERIPHERALS), sed -i '/PIO/r $(SUBMODULES_DIR)/$p/hardware/include/pio.v' $(SRC_DIR)/system.v;)
+	$(foreach p, $(PERIPHERALS), sed -i '/PHEADER/a `include \"$(shell echo `ls $(SUBMODULES_DIR)/$p/hardware/include/*.vh`)\"' $(SRC_DIR)/system.v;)\
 
 # data files
 firmware.hex: $(FIRM_DIR)/firmware.bin
@@ -58,7 +59,7 @@ boot.hex: $(BOOT_DIR)/boot.bin
 	$(PYTHON_DIR)/makehex.py $(BOOT_DIR)/boot.bin $(BOOTROM_ADDR_W) > boot.hex
 
 hw-clean:
-	@rm -f *# *~ *.vcd *.dat *.hex *.bin $(HW_DIR)/src/system.v
+	@rm -f *# *~ *.vcd *.dat *.hex *.bin $(SRC_DIR)/system.v
 
 .PHONY: periphs hw-clean
 

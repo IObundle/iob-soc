@@ -3,7 +3,7 @@
 `include "interconnect.vh"
 
 //do not remove line below
-//PH
+//PHEADER
 
 module system 
   (
