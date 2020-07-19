@@ -56,6 +56,9 @@ bootloader: firmware
 document:
 	make -C $(DOC_DIR)
 
+waves:
+	gtkwave -a $(SIM_DIR)/../waves.gtkw $(SIM_DIR)/system.vcd
+
 clean: 
 ifeq ($(SIMULATOR),ncsim)
 	ssh $(MICRO_USER)@$(SIM_SERVER) "cd $(MICRO_ROOT_DIR); make -C $(SIM_DIR) clean"
@@ -66,4 +69,4 @@ endif
 	make -C $(BOOT_DIR) clean
 	make -C $(DOC_DIR) clean
 
-.PHONY: sim fpga firmware bootloader document clean fpga-load fpga-clean fpga-clean-ip asic asic-clean run-firmware
+.PHONY: sim fpga firmware bootloader document clean fpga-load fpga-clean fpga-clean-ip asic asic-clean run-firmware waves
