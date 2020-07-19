@@ -1,6 +1,6 @@
 include $(ROOT_DIR)/system.mk
 
-# submodules
+#submodules
 include $(CPU_DIR)/hardware/hardware.mk
 ifeq ($(USE_DDR),1)
 include $(CACHE_DIR)/hardware/hardware.mk
@@ -8,7 +8,7 @@ else
 include $(INTERCON_DIR)/hardware/hardware.mk
 endif
 
-# include
+#include
 INC_DIR:=$(ROOT_DIR)/hardware/include
 
 INCLUDE+=$(incdir). $(incdir)$(INC_DIR)
@@ -16,8 +16,11 @@ INCLUDE+=$(incdir). $(incdir)$(INC_DIR)
 #headers
 VHDR+=$(INC_DIR)/system.vh
 
-# sources
+#sources
 SRC_DIR:=$(ROOT_DIR)/hardware/src
+
+#testbench
+TB_DIR:=$(ROOT_DIR)/hardware/testbench
 
 #rom
 VSRC+=$(SRC_DIR)/boot_ctr.v \
@@ -42,9 +45,16 @@ periphs:
 
 $(SRC_DIR)/system.v:
 	cp $(SRC_DIR)/system_core.v $@
-	$(foreach p, $(PERIPHERALS), sed -i '/endmodule/e cat $(SUBMODULES_DIR)/$p/hardware/include/inst.v' $(SRC_DIR)/system.v;)
-	$(foreach p, $(PERIPHERALS), sed -i '/PIO/r $(SUBMODULES_DIR)/$p/hardware/include/pio.v' $(SRC_DIR)/system.v;)
-	$(foreach p, $(PERIPHERALS), sed -i '/PHEADER/a `include \"$(shell echo `ls $(SUBMODULES_DIR)/$p/hardware/include/*.vh`)\"' $(SRC_DIR)/system.v;)\
+	$(foreach p, $(PERIPHERALS), sed -i '/endmodule/e cat $(SUBMODULES_DIR)/$p/hardware/include/inst.v' $@;)
+	$(foreach p, $(PERIPHERALS), sed -i '/PIO/r $(SUBMODULES_DIR)/$p/hardware/include/pio.v' $@;)
+	$(foreach p, $(PERIPHERALS), sed -i '/PHEADER/a `include \"$(shell echo `ls $(SUBMODULES_DIR)/$p/hardware/include/*.vh`)\"' $@;)\
+
+$(TB_DIR)/system_tb.v:
+	cp $(TB_DIR)/system_core_tb.v $@
+	$(foreach p, $(PERIPHERALS), sed -i '/endmodule/e cat $(SUBMODULES_DIR)/$p/hardware/testbench/inst_tb.sv' $@;)
+	$(foreach p, $(PERIPHERALS), sed -i '/PIO/r $(SUBMODULES_DIR)/$p/hardware/testbench/pio_tb.v' $@;)
+	$(foreach p, $(PERIPHERALS), sed -i '/PHEADER/a `include \"$(shell echo `ls $(SUBMODULES_DIR)/$p/hardware/include/*.vh`)\"' $@;)\
+	$(foreach p, $(PERIPHERALS), sed -i '/PWIRES/a `include \"$(shell echo `ls $(SUBMODULES_DIR)/$p/hardware/testbench/wires_tb.v`)\"' $@;)\
 
 # data files
 firmware.hex: $(FIRM_DIR)/firmware.bin
@@ -59,7 +69,7 @@ boot.hex: $(BOOT_DIR)/boot.bin
 	$(PYTHON_DIR)/makehex.py $(BOOT_DIR)/boot.bin $(BOOTROM_ADDR_W) > boot.hex
 
 hw-clean:
-	@rm -f *# *~ *.vcd *.dat *.hex *.bin $(SRC_DIR)/system.v
+	@rm -f *# *~ *.vcd *.dat *.hex *.bin $(SRC_DIR)/system.v $(TB_DIR)/system_tb.v
 
 .PHONY: periphs hw-clean
 

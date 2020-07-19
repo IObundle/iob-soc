@@ -1,7 +1,9 @@
 `timescale 1ns / 1ps
 
 `include "system.vh"
-`include "iob_uart.vh"
+
+
+//PHEADER
 
 module system_tb;
 
@@ -27,6 +29,9 @@ module system_tb;
    //iterator
    integer                i;
 
+   //PWIRES
+
+   
    /////////////////////////////////////////////
    // TEST PROCEDURE
    //
@@ -117,10 +122,6 @@ module system_tb;
    wire                    ddr_rready;
 `endif
 
-   //test uart signals
-   wire                    tester_txd, tester_rxd;       
-   wire                    tester_rts, tester_cts;       
-
    //cpu trap signal
    wire                    trap;
    
@@ -128,11 +129,8 @@ module system_tb;
    // UNIT UNDER TEST
    //
    system uut (
-	       .clk           (clk),
-	       .reset         (reset),
-	       .trap          (trap),
+               //PIO
 `ifdef USE_DDR
-               //DDR
                //address write
 	       .m_axi_awid    (ddr_awid),
 	       .m_axi_awaddr  (ddr_awaddr),
@@ -179,31 +177,11 @@ module system_tb;
 	       .m_axi_rlast   (ddr_rlast),
 	       .m_axi_rvalid  (ddr_rvalid),
 	       .m_axi_rready  (ddr_rready),	
-`endif
-               
-               //UART
-	       .uart_txd      (tester_rxd),
-	       .uart_rxd      (tester_txd),
-	       .uart_rts      (tester_cts),
-	       .uart_cts      (tester_rts)
+`endif               
+	       .clk           (clk),
+	       .reset         (reset),
+	       .trap          (trap)
 	       );
-
-   iob_uart test_uart (
-		       .clk       (clk),
-		       .rst       (reset),
-      
-		       .valid     (uart_valid),
-		       .address   (uart_addr),
-		       .wdata     (uart_wdata),
-		       .wstrb     (uart_wstrb),
-		       .rdata     (uart_rdata),
-		       .ready     (uart_ready),
-      
-		       .txd       (tester_txd),
-		       .rxd       (tester_rxd),
-		       .rts       (tester_rts),
-		       .cts       (tester_cts)
-		       );
 
 
    //instantiate the axi memory
@@ -267,6 +245,7 @@ module system_tb;
                  );   
 `endif
 
+
 `include "cpu_tasks.v"
    
    //finish simulation
@@ -274,5 +253,5 @@ module system_tb;
    // #10 $display("Found CPU trap condition");
    //$finish;
    //end
-   
+
 endmodule
