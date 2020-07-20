@@ -15,10 +15,10 @@ compile: periphs firmware.hex $(SOF)
 $(SOF): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex
 	./build.sh "$(INCLUDE)" "$(DEFINE)" "$(VSRC)"
 
-fpga-clean:
+clean: hw-clean
 	@rm -rf db incremental_db output_files *.summary *.rpt *.smsg *.txt *.done *.jdi *.pin *.sof *.sld *.qpf *.qsf *~
 
 .PRECIOUS: $(SOF)
 
-.PHONY: load compile fpga-clean
+.PHONY: load compile clean
 

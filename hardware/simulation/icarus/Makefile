@@ -13,7 +13,7 @@ run: $(VSRC) $(VHDR) firmware.bin firmware.hex boot.hex periphs
 	$(VLOG) $(VSRC)
 	./a.out
 
-sim_clean:
+clean: hw-clean
 	@rm -f ./a.out
 
-.PHONY: sim_clean
+.PHONY: clean

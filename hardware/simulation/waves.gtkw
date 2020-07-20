@@ -1,22 +1,25 @@
 [*]
 [*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
-[*] Thu Jun 18 20:33:30 2020
+[*] Sun Jul 19 10:26:00 2020
 [*]
-[dumpfile] "/home/jsousa/sandbox/iob-soc/simulation/icarus/system.vcd"
-[dumpfile_mtime] "Thu Jun 18 20:32:57 2020"
-[dumpfile_size] 13979911
-[savefile] "/home/jsousa/sandbox/iob-soc/simulation/noboot_int.gtkw"
-[timestart] 0
+[dumpfile] "/home/jsousa/sandbox/iob-soc/hardware/simulation/icarus/system.vcd"
+[dumpfile_mtime] "Sun Jul 19 10:24:34 2020"
+[dumpfile_size] 7665400
+[savefile] "/home/jsousa/sandbox/iob-soc/hardware/simulation/waves.gtkw"
+[timestart] 52535000
 [size] 1918 1026
 [pos] -1 -1
-*-25.087370 16780000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-18.960993 54050000 14260000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] system_tb.
 [treeopen] system_tb.uut.
+[treeopen] system_tb.uut.cpu.picorv32_core.
+[treeopen] system_tb.uut.cpu.picorv32_core.genblk1.
+[treeopen] system_tb.uut.cpu.picorv32_core.genblk5.
 [treeopen] system_tb.uut.int_mem0.int_sram.
 [sst_width] 324
-[signals_width] 389
+[signals_width] 358
 [sst_expanded] 1
-[sst_vpaned_height] 470
+[sst_vpaned_height] 437
 @200
 -INT MEM
 @22
@@ -39,14 +42,12 @@ system_tb.uut.int_mem0.int_sram.d_valid
 system_tb.uut.int_mem0.int_sram.d_addr[10:0]
 @200
 -SYSTEM
+@28
+system_tb.uut.boot
 @22
 system_tb.uut.cpu_i_req[68:0]
 system_tb.uut.cpu_i_resp[32:0]
-@23
 system_tb.uut.dbus_split.m_req[68:0]
-@28
-system_tb.uut.dbus_split.s_sel_int[1:0]
-@22
 system_tb.uut.cpu_d_req[68:0]
 system_tb.uut.cpu_d_resp[32:0]
 system_tb.uut.pbus_req[68:0]
@@ -81,6 +82,7 @@ system_tb.uut.cpu.picorv32_core.mem_ready
 -UART
 @28
 system_tb.uut.uart.rxd
+@29
 system_tb.uut.uart.valid
 @24
 system_tb.uut.uart.address[2:0]
@@ -102,17 +104,5 @@ system_tb.test_uart.ready
 system_tb.test_uart.address[2:0]
 @22
 system_tb.test_uart.rdata[31:0]
-@200
--icache
--dcache
--l2cache
-@28
-system_tb.clk
-@200
--ddr signals - read
-@28
-system_tb.reset
-@200
--ddr signals - write
 [pattern_trace] 1
 [pattern_trace] 0

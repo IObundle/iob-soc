@@ -1,13 +1,14 @@
 `timescale 1 ns / 1 ps
 `include "system.vh"
-`include "iob_uart.vh"
 `include "interconnect.vh"
+
+//do not remove line below
+//PHEADER
 
 module system 
   (
-   input                    clk,
-   input                    reset,
-   output                   trap,
+   //do not remove line below
+   //PIO
 
 `ifdef USE_DDR //AXI MASTER INTERFACE
 
@@ -58,12 +59,9 @@ module system
    input                    m_axi_rvalid, 
    output                   m_axi_rready,
 `endif //  `ifdef USE_DDR
-
-   //UART
-   output                   uart_txd,
-   input                    uart_rxd,
-   output                   uart_rts,
-   input                    uart_cts
+   input                    clk,
+   input                    reset,
+   output                   trap
    );
 
    localparam ADDR_W=32;
@@ -298,29 +296,6 @@ module system
         );
 `endif
 
-   //
-   // UART
-   //
-
-   iob_uart uart
-     (
-      .clk       (clk),
-      .rst       (reset),
-      
-      //cpu interface
-      .valid(slaves_req[`valid(`UART)]),
-      .address(slaves_req[`address(`UART,`UART_ADDR_W+2)-2]),
-      .wdata(slaves_req[`wdata(`UART)]),
-      .wstrb(|slaves_req[`wstrb(`UART)]),
-      .rdata(slaves_resp[`rdata(`UART)]),
-      .ready(slaves_resp[`ready(`UART)]),
-      
-      
-      //RS232 interface
-      .txd       (uart_txd),
-      .rxd       (uart_rxd),
-      .rts       (uart_rts),
-      .cts       (uart_cts)
-      );
 
 endmodule
+ 

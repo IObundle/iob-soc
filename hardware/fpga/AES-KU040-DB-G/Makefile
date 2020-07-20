@@ -19,7 +19,7 @@ synth_system.bit: $(wildcard *.xdc) $(VSRC) boot.hex
 	-grep -B4 -A10 'CLB LUTs' vivado.log
 	-grep -B1 -A9 ^Slack vivado.log && echo
 
-fpga-clean:
+clean: hw-clean
 	rm -rf .Xil/ *.map *. *~ synth_*.mmi synth_*.bit synth_system*.v *.vcd *_tb table.txt tab_*/ *webtalk* *.jou xelab.* xsim[._]* xvlog.* uart_loader *.ltx fsm_encoding.os
 
 clean-ip:

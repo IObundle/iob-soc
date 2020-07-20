@@ -18,7 +18,7 @@ HDR=$(SW_DIR)/system.h
 #SRC=$(SW_DIR)/*.c
 
 #compiler settings
-TOOLCHAIN_PREFIX:=riscv32-unknown-elf-
+TOOLCHAIN_PREFIX:=riscv64-unknown-elf-
 CFLAGS:=-Os -ffreestanding -nostdlib -march=rv32im -mabi=ilp32 --std=gnu99
 
 #include peripherals
