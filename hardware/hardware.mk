@@ -46,15 +46,8 @@ periphs:
 $(SRC_DIR)/system.v:
 	cp $(SRC_DIR)/system_core.v $@
 	$(foreach p, $(PERIPHERALS), sed -i '/endmodule/e cat $(SUBMODULES_DIR)/$p/hardware/include/inst.v' $@;)
-	$(foreach p, $(PERIPHERALS), sed -i '/PIO/r $(SUBMODULES_DIR)/$p/hardware/include/pio.v' $@;)
-	$(foreach p, $(PERIPHERALS), sed -i '/PHEADER/a `include \"$(shell echo `ls $(SUBMODULES_DIR)/$p/hardware/include/*.vh`)\"' $@;)\
-
-$(TB_DIR)/system_tb.v:
-	cp $(TB_DIR)/system_core_tb.v $@
-	$(foreach p, $(PERIPHERALS), sed -i '/endmodule/e cat $(SUBMODULES_DIR)/$p/hardware/testbench/inst_tb.sv' $@;)
-	$(foreach p, $(PERIPHERALS), sed -i '/PIO/r $(SUBMODULES_DIR)/$p/hardware/testbench/pio_tb.v' $@;)
-	$(foreach p, $(PERIPHERALS), sed -i '/PHEADER/a `include \"$(shell echo `ls $(SUBMODULES_DIR)/$p/hardware/include/*.vh`)\"' $@;)\
-	$(foreach p, $(PERIPHERALS), sed -i '/PWIRES/a `include \"$(shell echo `ls $(SUBMODULES_DIR)/$p/hardware/testbench/wires_tb.v`)\"' $@;)\
+	$(foreach p, $(PERIPHERALS), if test -f $(SUBMODULES_DIR)/$p/hardware/include/pio.v; then sed -i '/PIO/r $(SUBMODULES_DIR)/$p/hardware/include/pio.v' $@; fi;)
+	$(foreach p, $(PERIPHERALS), if test -f $(SUBMODULES_DIR)/$p/hardware/include/*.vh; then sed -i '/PHEADER/a `include \"$(shell echo `ls $(SUBMODULES_DIR)/$p/hardware/include/*.vh`)\"' $@; fi;)\
 
 # data files
 firmware.hex: $(FIRM_DIR)/firmware.bin
