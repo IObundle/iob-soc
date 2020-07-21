@@ -69,6 +69,7 @@
      \item Run the firmware in internal SRAM
      \item Run the firmware in external DDR
      \item Simulate and implement the system
+     \item Implementing FPGA
      \item Conclusions and future work
  \end{itemize} 
 \end{center}
@@ -251,12 +252,28 @@ Execution time: 6583 clocks in 66us @100MHz (30 MBaud)
 \end{tiny}
 
 \begin{itemize}
-\item To implement in your chosen FPGA just type {\tt make fpga}
 \item To implement in your chosen ASIC just type {\tt make asic}
 \item To load the firmware in the hardware just type {\tt make load-firmware}
 \end{itemize}
 
 \end{frame}
+
+
+\begin{frame}{Implementing FPGA}
+\begin{itemize}
+  \item Add your FPGA module in the {\tt ./hardware/fpga} folder
+  \item In the file {\tt ./system-mk} 
+  \begin{enumerate}
+    \item Add your FPGA board name in {\tt FPGA\_BOARD}
+    \item Add your server URL connected to the board in {\tt FPGA\_BOARD\_SERVER}
+    \item Add further server info such as username and work directories
+  \end{enumerate}
+  \item To implement it, just type {\tt make fpga}
+  \item To load the FPGA, type {\tt make fpga-load}
+\end{itemize}
+\end{frame}
+
+
 
 \begin{frame}{Conclusions and future work}
 
