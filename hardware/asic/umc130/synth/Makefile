@@ -1,27 +1,35 @@
-CASE=TC
+ROOT_DIR:=../../../..
 
-BOOT_DIR=../../../software/bootloader
-PYTHON_DIR=../../../software/python
-MEMW_DIR=../../../rtl/src/memory/wrapper
-ROM_DIR=../memory/bootrom
-RAM_DIR=../memory/bootram
+include ../../asic.mk
 
-all: $(MEMW_DIR)/rom.v $(MEMW_DIR)/ram.v
+RTL_COMPILER:=source /opt/ic_tools/init/init-rc14_25_hf000
+	
+
+run: rom ram
+	# in the future, this DEFINE process needs to be automated, system.mk may need to be changed
+	echo "set FIRM_ADDR_W $(FIRM_ADDR_W)" > defs.tcl
+	echo "set SRAM_ADDR_W $(SRAM_ADDR_W)" >> defs.tcl
+	echo "set USE_DDR $(USE_DDR)" >> defs.tcl
+	echo "set RUN_DDR $(RUN_DDR)" >> defs.tcl
+	echo "set DDR_ADDR_W $(DDR_ADDR_W)" >> defs.tcl
+	echo "set CACHE_ADDR_W $(CACHE_ADDR_W)" >> defs.tcl
+	echo "set BOOTROM_ADDR_W $(BOOTROM_ADDR_W)" >> defs.tcl
+	echo "set INIT_MEM $(INIT_MEM)" >> defs.tcl
+	echo 'set DEFINE [list $$FIRM_ADDR_W $$SRAM_ADDR_W $$USE_DDR $$RUN_DDR $$DDR_ADDR_W $$CACHE_ADDR_W $$CACHE_ADDR_W $$BOOTROM_ADDR_W $$INIT_MEM]' >> defs.tcl
 	cp $(ROM_DIR)/*$(CASE).lib $(RAM_DIR)/*$(CASE).lib .
-	./synth.sh
+	$(RTL_COMPILER) && echo "quit" | rc -files defs.tcl -files synscript.tcl
+	echo "quit"
 
+rom: gen_mem
+	$(PYTHON_DIR)/memwrapper_make.py fsc0l_d sp $(MEM_SIZE_ROM) 32 1 > $(MEMW_DIR)/rom.v
 
-$(MEMW_DIR)/rom.v: $(MEMW_DIR)
-	$(eval MEM_SIZE=`$(PYTHON_DIR)/get_memsize.py BOOTROM_ADDR_W log2`)
-	$(PYTHON_DIR)/memwrapper_make.py fsc0l_d sp $(MEM_SIZE) 32 1 > $(MEMW_DIR)/rom.v
+ram: gen_mem
+	$(PYTHON_DIR)/memwrapper_make.py fsc0l_d sh $(MEM_SIZE_RAM) 8 4 1 > $(MEMW_DIR)/ram.v
 
-$(MEMW_DIR)/ram.v: $(MEMW_DIR)
-	$(eval MEM_SIZE=`$(PYTHON_DIR)/get_memsize.py BOOTRAM_ADDR_W log2`)	
-	$(PYTHON_DIR)/memwrapper_make.py fsc0l_d sh $(MEM_SIZE) 8 4 1 > $(MEMW_DIR)/ram.v
-
-$(MEMW_DIR):
+gen_mem:
 	make -C ../memory
-	cp $(BOOT_DIR)/system.h .
+	cp $(SW_DIR)/system.h .
+	rm -R $(MEMW_DIR)
 	mkdir $(MEMW_DIR)
 
 clean:

@@ -15,7 +15,7 @@ Ssh access is mandatory so that submodules can be updated.
 
 ## Edit the system configuration file: /hardware/system.mk
 
-To configure IOb-SoC the following parameters are availble:
+To configure IOb-SoC the following parameters are available:
 
 FIRM_ADDR_W: log2 size of user program and data space, from 1st instruction at
 address 0 to the stack end at address 2<sup>FIRM_ADDR_W</sup>-1
@@ -26,7 +26,7 @@ USE_DDR: assign to 1 if DDR access is needed or to 0 otherwise. Instruction and
 data L1 caches will be placed in the design, connected to an L2 cache, which in
 turn connects to an external DDR controller.
 
-RUN_DDR:= assign to 1 if the program runs from the DDR memory and 0
+RUN_DDR: assign to 1 if the program runs from the DDR memory and 0
 otherwise. This parameter is ignored if USE_DDR=0. If USE_DDR=1 and RUN_DDR=1,
 the SRAM memory can be accessed when the address MSB is 1. If USE_DDR=1 and
 RUN_DDR=0, the DDR is used to store data only; it can be accessed when the
