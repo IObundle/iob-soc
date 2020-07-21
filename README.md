@@ -34,7 +34,9 @@ address MSB is 1.
 
 DDR_ADDR_W: log2 size of DDR, addresses from 0 to 2<sup>DDR_ADDR_W</sup>-1
 
-USE_BOOT: assign to 1 to load a program received by the UART and boot from it, or to 0 otherwise.
+CACHE_ADDR_W: log2 size, allows to use data from DDR when FIRM_ADDR_W is exceeded
+
+INIT_MEM: assign to 1 to load a program received by the UART and boot from it, or to 0 otherwise.
 
 BOOTROM_ADDR_W: log2 size of the boot ROM, which should be sufficient to hold the bootloader program and data.
 
