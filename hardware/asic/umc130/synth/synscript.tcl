@@ -15,18 +15,21 @@ set SRC_CACHE_I		"../../../../submodules/iob-cache/hardware/include"
 set SRC_SYS 		"../../../src"
 set SRC_SYS_I 		"../../../include"
 set SRC_CONNECT 	"../../../../submodules/iob-cache/submodules/iob-interconnect/hardware/src"
-set SRC_CONNECT_I 	"../../../../submodules/iob-cache/submodules/iob-interconnect/hardware/include"
+set SRC_CONNECT_I 	"../../../../submodules/iob-cache/submodules/iob-interconnect/hardware/include"		
 
 set_attribute hdl_search_path [list $SRC_MEM $SRC_UART_I $SRC_UART $SRC_FIFO $SRC_CACHE_I $SRC_CACHE $SRC_CONNECT_I $SRC_CONNECT $SRC_SYS_I $SRC_SYS]
 
 #verilog source files
-set SRC [glob $SRC_FIFO/*.v $SRC_MEM/*.v $SRC_UART/*.v $SRC_CACHE/*.v $SRC_CONNECT/*.v $SRC_SYS/*.v]
-echo $SRC
-set INCLUDE [glob $SRC_UART_I/*.vh $SRC_CACHE_I/*.vh $SRC_CONNECT_I/*.vh $SRC_SYS_I/*.vh]
-echo $INCLUDE
+set SRC [glob $SRC_FIFO/*.v $SRC_MEM/*.v $SRC_UART/*.v $SRC_CACHE/*.v $SRC_UART/*.v $SRC_SYS/*.v]
+echo "\n\nSource files:" $SRC
+echo "\n\n"
+set INCLUDE [glob $SRC_UART_I/*.vh $SRC_CACHE_I/*.vh $SRC_SYS_I/*.vh]
+echo "\n\nHeader files:" $INCLUDE
+echo "\n\n"
+echo "DEFINE:" $DEFINE "\n\n"
 
 #verilog defines 
-read_hdl -v2001 $INCLUDE $SRC_CPU $SRC
+read_hdl -v2001 $DEFINE $SRC_CPU $INCLUDE $SRC
 elaborate system
 define_clock -name clk -period 31250 [find / -port clk] 
 synthesize -to_mapped
