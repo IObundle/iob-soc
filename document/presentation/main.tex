@@ -71,7 +71,6 @@
      \item Simulate and implement the system
      \item Implement in FPGA
      \item Implement in ASIC (WIP)
-     \item Implement in RTL simulation
      \item Conclusions and future work
  \end{itemize}
 \end{center}
@@ -114,9 +113,11 @@
   \item An IP core can be integrated in an IOb-SoC if it provides the following X files: 
     \begin{enumerate}
     \item hardware/hardware.mk
-    \item software/embedded/embedded.mk
-      \item JTS: many more files are needed. Can you figure this out from the build (makefiles)
+    \item software/software.mk
     \end{enumerate}
+        \begin{itemize}
+      \item[--] Please refer to the files {\tt hardware/simulation/simulation.mk} and {\tt hardware/hardware.mk} in IOb-SoC for specific configurations (not necessary for this tutorial)
+    \end{itemize}
   \item Add the IP core repository as a git submodule of your IOb-SoC repository:\\
     {\tiny \tt git submodule add https://github.com/IObundle/iob-timer.git submodules/TIMER}
   \item To configure the system to host the IP core, edit the {\tt ./system.mk} file as in the next slide
@@ -186,7 +187,7 @@ int main()
 
   uart_printf("\nExecution time: %d clocks in %dus @%dMHz", 
               (unsigned int)elapsed, elapsedu, FREQ/1000000);
-JTS: baud rate is not printed anymore, please remove from timer and PR me
+
   uart_txwait();
   return 0;
 }
@@ -234,7 +235,7 @@ JTS: baud rate is not printed anymore, please remove from timer and PR me
 \begin{itemize}
   \item Add your simulation folder in {\tt ./hardware/simulation} using the other folders in there as examples
   \item In  file {\tt ./system.mk}:
-  \begin{enumerate}
+  \begin{itemize}
     \item Define {\tt SIMULATOR} with the name of your simulation folder
     \item Define {\tt SIM\_SERVER} with the URL or IP address of the computer where the RTL simulator runs.
     \item Define {\tt SIM\_ROOT\_DIR} with the name of the remote root directory for the repository files
@@ -243,7 +244,7 @@ JTS: baud rate is not printed anymore, please remove from timer and PR me
     \item The firmware, bootloader and system verilog description are compiled as you can see from the printed messages
     \item During simulation the following is printed
   \end{itemize}
-
+\end{itemize}
 \begin{tiny}
 \begin{lstlisting}
 
@@ -280,8 +281,9 @@ Execution time: 6583 clocks in 66us @100MHz
   \item Add your ASIC folder in {\tt ./hardware/asic} using the other folders in there as examples
   \item In the file {\tt ./system.mk}:
   \begin{enumerate}
-    \item JTS: fill me
-    \item 
+     \item Add your ASIC node name in {\tt ASIC\_NODE}    
+     \item Add your server URL connected to the microcontroller in {\tt ASIC\_SERVER}   
+     \item Add further server info such as username and work directories
   \end{enumerate}
   \item To compile the ASIC, type {\tt make asic}
 \end{itemize}
