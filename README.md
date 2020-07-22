@@ -132,12 +132,3 @@ The export PATH command can be added to the bottom of your ~/.bashrc
 ```
 path/to/riscv/riscv64-unknown-elf-gcc -march=rv32im -mabi=ilp32 <C sources> -o <exec>
 ```
-
-### Supporting 32-bit applications
-
-Use symbolic links:
-
-```
-sudo ln -s riscv64-unknown-elf-gcc riscv32-unknown-elf-gcc
-sudo ln -s riscv64-unknown-elf-objcopy riscv32-unknown-elf-objcopy
-```

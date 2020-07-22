@@ -86,7 +86,8 @@ module ext_mem
 
    // Instruction cache instance
    iob_cache # (
-                .FE_ADDR_W(`CACHE_ADDR_W),
+                .FE_ADDR_W(`FIRM_ADDR_W),
+                .BE_ADDR_W(`CACHE_ADDR_W),
                 .N_WAYS(2),        //Number of ways
                 .LINE_OFF_W(4),    //Cache Line Offset (number of lines)
                 .WORD_OFF_W(4),    //Word Offset (number of words per line)
@@ -108,7 +109,7 @@ module ext_mem
 
            // Back-end interface
            .mem_valid (icache_be_req[`valid(0)]),
-           .mem_addr  (icache_be_req[`address(0, `FIRM_ADDR_W)]),
+           .mem_addr  (icache_be_req[`address(0, `CACHE_ADDR_W)]),
            .mem_wdata (icache_be_req[`wdata(0)]),
            .mem_wstrb (icache_be_req[`wstrb(0)]),
            .mem_rdata (icache_be_resp[`rdata(0)]),

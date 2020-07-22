@@ -5,8 +5,13 @@ FIRM_ADDR_W:=13
 SRAM_ADDR_W=13
 
 #DDR
+ifeq ($(USE_DDR),)
 USE_DDR:=0
+endif
+ifeq ($(RUN_DDR),)
 RUN_DDR:=0
+endif
+
 DDR_ADDR_W:=30
 CACHE_ADDR_W:=24
 
@@ -14,7 +19,9 @@ CACHE_ADDR_W:=24
 BOOTROM_ADDR_W:=12
 
 #Init memory (only works in simulation or FPGA not running DDR)
+ifeq ($(INIT_MEM),)
 INIT_MEM:=1
+endif
 
 #Peripheral list (must match respective submodule name)
 PERIPHERALS:=UART
@@ -29,10 +36,15 @@ SIM_ROOT_DIR=$(ROOT_DIR)/sandbox/iob-soc
 #FPGA
 FPGA_COMPILE_SERVER:=$(USER)@pudim-flan.iobundle.com
 FPGA_COMPILE_ROOT_DIR=./sandbox/iob-soc
-FPGA_BOARD:=AES-KU040-DB-G
-#FPGA_BOARD:=CYCLONEV-GT-DK
+#FPGA_BOARD:=AES-KU040-DB-G
+ifeq ($(FPGA_BOARD),)
+FPGA_BOARD:=CYCLONEV-GT-DK
+endif
+ifeq ($(FPGA_BOARD),CYCLONEV-GT-DK)
 FPGA_BOARD_SERVER:=$(USER)@pudim-flan.iobundle.com
-#FPGA_BOARD_SERVER:=$(USER)@baba-de-camelo.iobundle.com
+else 
+FPGA_BOARD_SERVER:=$(USER)@baba-de-camelo.iobundle.com
+endif
 FPGA_BOARD_ROOT_DIR=$(ROOT_DIR)/sandbox/iob-soc
 
 #ASIC
@@ -75,7 +87,7 @@ AXI_MEM_DIR:=$(CACHE_DIR)/submodules/axi-mem
 DEFINE+=$(define)BOOTROM_ADDR_W=$(BOOTROM_ADDR_W)
 DEFINE+=$(define)SRAM_ADDR_W=$(SRAM_ADDR_W)
 DEFINE+=$(define)FIRM_ADDR_W=$(FIRM_ADDR_W)
-DEFINE+=$(define)CACHE_ADDR_W=$(FIRM_ADDR_W)
+DEFINE+=$(define)CACHE_ADDR_W=$(CACHE_ADDR_W)
 ifeq ($(USE_DDR),1)
 DEFINE+=$(define)USE_DDR
 DEFINE+=$(define)DDR_ADDR_W=$(DDR_ADDR_W)
