@@ -65,7 +65,6 @@
      \item Project setup
      \item Create an IP core to instantiate in your SoC
      \item Edit the ./system.mk configuration file to declare a new peripheral
-     \item Instantiate the timer IP in file {\tt hardware/src/system.v}
      \item Edit file {\tt firmware.c} to drive the new peripheral
      \item Run the firmware in internal SRAM
      \item Run the firmware in external DDR
@@ -99,7 +98,7 @@
     \item Use a Linux machine or VM
     \item Install the latest stable version of the open source Icarus Verilog simulator (\url{iverilog.icarus.com})
     \item Make sure you can access \url{github.com} using an ssh key
-    \item At \url{github.com} create your SoC repository using \url{github.com/IObundle/iob-soc} as a template
+    \item At \url{github.com} create your SoC repository by cloning \url{github.com/IObundle/iob-soc}
     \item Follow the instructions in the README file to clone the repository in your Linux machine
   \end{itemize}
 \end{center}
@@ -115,7 +114,7 @@
     \item software/embedded/embedded.mk
     \end{enumerate}
   \item Add the IP core repository as a git submodule of your IOb-SoC repository:\\
-    {\tt git submodule add https://github.com/IObundle/iob-timer.git submodules/TIMER}
+    {\tiny \tt git submodule add https://github.com/IObundle/iob-timer.git submodules/TIMER}
   \item To configure the system to host the IP core, edit the {\tt ./system.mk} file as in the next slide
   \end{itemize}
 \end{frame}
@@ -136,6 +135,7 @@ SRAM_ADDR_W=13
 USE_DDR:=0
 RUN_DDR:=0
 DDR_ADDR_W:=30
+CACHE_ADDR_W:=24
 
 #ROM
 BOOTROM_ADDR_W:=12
@@ -147,44 +147,10 @@ INIT_MEM:=1
 PERIPHERALS:=UART TIMER
 
 ...
-
-N_SLAVES:=1
 \end{lstlisting}
 \end{tiny}
 \end{frame}
 
-
-\begin{frame}[fragile]{Instantiate the timer IP in file {\tt hardware/src/system.v}}
-\begin{tiny}
-\begin{lstlisting}
-`timescale 1ns/1ps
-`include "system.vh"
-`include "iob_timer.vh"
-
-module system (
-
-   ...
-
-   //
-   // TIMER
-   //
-
-   iob_timer timer (
-		    .clk (clk),
-		    .rst (reset),
-
-		    //cpu interface
-		    .valid(slaves_req[`valid(`TIMER)]),
-		    .address(slaves_req[`address(`TIMER,`TIMER_ADDR_W+2,2)]),
-		    .wdata(slaves_req[`wdata(`TIMER)]),
-		    .rdata(slaves_resp[`rdata(`TIMER)]),
-		    .ready(slaves_resp[`ready(`TIMER)])
-		    );
-   ...
-endmodule
-\end{lstlisting}
-\end{tiny}
-\end{frame}
 
 %\begin{frame}{Add the timer IP software}
 %\end{frame}
@@ -195,6 +161,7 @@ endmodule
   \begin{tiny}
     \begin{lstlisting}
 #include "system.h"
+#include "periphs.h"
 #include "iob-uart.h"
 #include "iob_timer.h"
 
@@ -229,13 +196,13 @@ int main()
 \begin{enumerate}
 \item Run the firmware in internal RAM and disable (re)programming
   \begin{itemize}
-  \item Assign {\tt USE\_DDR=0} and {\tt USE\_BOOT=0}
+  \item Assign {\tt USE\_DDR=0} and {\tt INIT\_MEM=0}
   \item Loading programs after the FPGA is programmed is disabled: if the firmware is modified the FPGA must be recompiled
   \item This option is only valid for FPGA which permits memory initialisation
   \end{itemize}
 \item Run the firmware in internal RAM and enable (re)programming
   \begin{itemize}
-  \item Assign {\tt USE\_DDR=0} {\tt USE\_BOOT=1}
+  \item Assign {\tt USE\_DDR=0} {\tt INIT\_MEM=1}
   \item Loading programs after the FPGA is programmed is enabled
   \item This option is valid for FPGA and ASIC
   \item Firmware is (re)loaded via UART
@@ -247,13 +214,13 @@ int main()
 \begin{enumerate}
 \item Run the firmware in external DDR and disable (re)programming
   \begin{itemize}
-  \item Assign {\tt USE\_DDR=1} and {\tt USE\_BOOT=0}
+  \item Assign {\tt USE\_DDR=1} and {\tt INIT\_MEM=0}
   \item This option is only allowed in simulation which permits memory initialisation
   \item An FPGA or ASIC implementation will not work
   \end{itemize}
 \item Run the firmware in external DDR memory and enable (re)programming
   \begin{itemize}
-  \item Define {\tt USE\_DDR=1} {\tt USE\_BOOT=1}
+  \item Define {\tt USE\_DDR=1} {\tt INIT\_MEM=1}
   \item This option is valid for FPGA and ASIC
   \item Firmware is (re)loaded via UART
   \item Third party DDR controller IP core is required
