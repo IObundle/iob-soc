@@ -134,7 +134,7 @@
 FIRM_ADDR_W:=13
 
 #SRAM
-SRAM_ADDR_W=13
+SRAM_ADDR_W:=13
 
 #DDR
 ifeq ($(USE_DDR),)
@@ -192,7 +192,7 @@ int main()
   
   uart_txwait();
 
-  uart_printf("\nExecution time: %d clocks in %dus @%dMHz", 
+  uart_printf("\nExecution time: %d clocks in %dus @%dMHz\n\n", 
               (unsigned int)elapsed, elapsedu, FREQ/1000000);
 
   uart_txwait();
@@ -245,7 +245,7 @@ int main()
   \item In  file {\tt ./system.mk}:
   \begin{enumerate}
     \item Define {\tt SIMULATOR} with the name of your simulation folder
-    \item Define {\tt SIM\_SERVER} with the URL or IP address of the computer where the RTL simulator runs.
+    \item Define {\tt SIM\_SERVER} with the URL or IP address of the computer where the RTL simulator runs
     \item Define {\tt SIM\_ROOT\_DIR} with the name of the remote root directory for the repository files
   \end{enumerate}
   \item To run locally, do not define {\tt SIM\_SERVER} and {\tt SIM\_ROOT\_DIR}
@@ -283,12 +283,12 @@ Execution time: 6583 clocks in 66us @100MHz
     \item Define {\tt FPGA\_BOARD} with the name of your FPGA folder
     \item Define {\tt FPGA\_BOARD\_SERVER} with the URL or IP address of the computer connected to the board
     \item Define {\tt FPGA\_COMPILE\_SERVER} with the URL or IP address of the computer containing the FPGA compiler and tools
+    \item Define {\tt FPGA\_BOARD\_ROOT\_DIR} and {\tt FPGA\_COMPILE\_ROOT\_DIR} with the name of the remote root directories for the repository files
   \end{enumerate}
   \item To compile and load the hardware design in the FPGA, type {\tt make fpga-load}
   \item To load and run your firmware in the FPGA, type {\tt make run-firmware}
 \end{itemize}
 \end{frame}
-
 
 \begin{frame}{Implement in ASIC (WIP)}
 \begin{itemize}
@@ -297,7 +297,7 @@ Execution time: 6583 clocks in 66us @100MHz
   \begin{enumerate}
      \item Define {\tt ASIC\_NODE} with the name of your ASIC folder
      \item Define {\tt ASIC\_COMPILE\_SERVER} with the URL or IP address of the computer containing the ASIC design tools
-     \item Add further server info such as username and work directories
+     \item Define {\tt ASIC\_COMPILER\_ROOT\_DIR} with the name of the remote root directory for the repository files
   \end{enumerate}
   \item To compile the ASIC, type {\tt make asic}
 \end{itemize}
