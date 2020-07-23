@@ -155,7 +155,7 @@ ifeq ($(INIT_MEM),)
 INIT_MEM:=1
 endif
 
-#Peripheral list (must match respective submodule name)
+#Peripheral list (must match respective submodule or folder name in the submodules directory)
 PERIPHERALS:=UART TIMER
 
 ...
@@ -282,7 +282,7 @@ Execution time: 6583 clocks in 66us @100MHz
   \begin{enumerate}
     \item Define {\tt FPGA\_BOARD} with the name of your FPGA folder
     \item Define {\tt FPGA\_BOARD\_SERVER} with the URL or IP address of the computer connected to the board
-    \item Define ...
+    \item Define {\tt FPGA\_COMPILE\_SERVER} with the URL or IP address of the computer containing the FPGA compiler and tools
   \end{enumerate}
   \item To compile and load the hardware design in the FPGA, type {\tt make fpga-load}
   \item To load and run your firmware in the FPGA, type {\tt make run-firmware}
@@ -296,7 +296,7 @@ Execution time: 6583 clocks in 66us @100MHz
   \item In the file {\tt ./system.mk}:
   \begin{enumerate}
      \item Define {\tt ASIC\_NODE} with the name of your ASIC folder
-     \item Define {\tt ASIC\_COMPILE\_SERVER} with the URL or IP address of the computer connected to the node
+     \item Define {\tt ASIC\_COMPILE\_SERVER} with the URL or IP address of the computer containing the ASIC design tools
      \item Add further server info such as username and work directories
   \end{enumerate}
   \item To compile the ASIC, type {\tt make asic}
