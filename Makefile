@@ -55,6 +55,22 @@ document:
 waves:
 	gtkwave -a $(SIM_DIR)/../waves.gtkw $(SIM_DIR)/system.vcd
 
+test: test-sim test-fpga
+
+test-sim:
+	make -C . clean && make > test.log
+	make -C . clean && make -C . INIT_MEM=0 >> test.log
+	make -C . clean && make -C . USE_DDR=1 RUN_DDR=1 >> test.log
+	make -C . clean && make -C . USE_DDR=1 RUN_DDR=1 INIT_MEM=0 >> test.log
+	diff -q test.log test/test-sim.log
+
+test-fpga:
+	make -C . fpga-clean && make -C . fpga-load && make -C . run-firmware > test.log
+	make -C . fpga-clean && make -C . fpga-load INIT_MEM=0  && make -C . run-firmware >> test.log
+	make -C . fpga-clean && make -C . fpga-load FPGA_BOARD=AES-KU040-DB-G USE_DDR=1 RUN_DDR=1 && make -C . run-firmware  >> test.log
+	diff -q test.log test_fpga_expected.log
+
+
 clean: 
 ifeq ($(SIMULATOR),ncsim)
 	ssh $(SIM_SERVER) "cd $(MICRO_ROOT_DIR); make -C $(SIM_DIR) clean"
@@ -65,4 +81,4 @@ endif
 	make -C $(BOOT_DIR) clean
 	make -C $(DOC_DIR) clean
 
-.PHONY: sim fpga firmware bootloader document clean fpga-load fpga-clean fpga-clean-ip asic asic-clean run-firmware waves
+.PHONY: sim fpga firmware bootloader document clean fpga-load fpga-clean fpga-clean-ip asic asic-clean run-firmware waves test test-sim test-fpga

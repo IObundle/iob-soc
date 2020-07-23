@@ -28,3 +28,5 @@ document/presentation/*
 !document/presentation/main.tex
 !document/presentation/makefile
 !document/presentation/system.vh
+
+test.log
