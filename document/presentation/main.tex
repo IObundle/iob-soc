@@ -116,7 +116,7 @@
     \item software/software.mk
     \end{enumerate}
     \begin{itemize}
-      \item[--] Please refer to the files {\tt hardware/simulation/simulation.mk} and {\tt hardware/hardware.mk} in IOb-SoC for specific configurations (not necessary for this tutorial)
+      \item[--] Please refer to the files {\tt hardware/hardware.mk} and {\tt software/software.mk} in the iob-timer submodule to learn how to organize a peripheral core.
     \end{itemize}
   \item Add the IP core repository as a git submodule of your IOb-SoC repository:\\
     {\tiny \tt git submodule add https://github.com/IObundle/iob-timer.git submodules/TIMER}
@@ -137,18 +137,25 @@ FIRM_ADDR_W:=13
 SRAM_ADDR_W=13
 
 #DDR
+ifeq ($(USE_DDR),)
 USE_DDR:=0
+endif
+ifeq ($(RUN_DDR),)
 RUN_DDR:=0
+endif
+
 DDR_ADDR_W:=30
 CACHE_ADDR_W:=24
 
 #ROM
 BOOTROM_ADDR_W:=12
 
-#Init memory (only works in simulation or FPGA running from internal RAM memory)
+#Init memory (only works in simulation or FPGA not running DDR)
+ifeq ($(INIT_MEM),)
 INIT_MEM:=1
+endif
 
-#Peripheral list (must match respective submodule or folder name in the submodules directory)
+#Peripheral list (must match respective submodule name)
 PERIPHERALS:=UART TIMER
 
 ...
@@ -231,6 +238,7 @@ int main()
 \end{enumerate}
 \end{frame}
 
+
 \begin{frame}[fragile]{Simulate IOb-SoC}
 \begin{itemize}
   \item Add your simulation folder in {\tt ./hardware/simulation} using the other folders in there as examples
@@ -242,6 +250,12 @@ int main()
   \end{enumerate}
   \item To run locally, do not define {\tt SIM\_SERVER} and {\tt SIM\_ROOT\_DIR}
   \item To run the simulator, type {\tt make} or {\tt make USER=your\_user\_name} if you have a different username on the remote simulation server
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Simulate IOb-SoC}
+\begin{itemize}
   \item The firmware, bootloader and system verilog description are compiled as you can see from the printed messages
   \item During simulation the following is printed:
 \end{itemize}
@@ -281,8 +295,8 @@ Execution time: 6583 clocks in 66us @100MHz
   \item Add your ASIC folder in {\tt ./hardware/asic} using the other folders in there as examples
   \item In the file {\tt ./system.mk}:
   \begin{enumerate}
-     \item Add your ASIC node name in {\tt ASIC\_NODE}    
-     \item Add your server URL connected to the microcontroller in {\tt ASIC\_SERVER}   
+     \item Define {\tt ASIC\_NODE} with the name of your ASIC folder
+     \item Define {\tt ASIC\_COMPILE\_SERVER} with the URL or IP address of the computer connected to the node
      \item Add further server info such as username and work directories
   \end{enumerate}
   \item To compile the ASIC, type {\tt make asic}
