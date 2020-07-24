@@ -20,7 +20,7 @@ BOOTROM_ADDR_W:=12
 
 #Init memory (only works in simulation or FPGA not running DDR)
 ifeq ($(INIT_MEM),)
-INIT_MEM:=1
+INIT_MEM:=0
 endif
 
 #Peripheral list (must match respective submodule name)

@@ -9,6 +9,8 @@ hardware/fpga/AES-KU040-DB-G/synth_system.bit
 hardware/simulation/icarus/*
 !hardware/simulation/icarus/Makefile
 
+software/periphs.h
+
 software/bootloader/*
 !software/bootloader/boot.c
 !software/bootloader/boot.S
@@ -19,14 +21,16 @@ software/firmware/*
 !software/firmware/firmware.S
 !software/firmware/Makefile
 
-software/periphs.h
+software/console/*
+!software/console/console.c
+!software/console/console.h
+!software/console/Makefile
 
 document/presentation/*
 !document/presentation/figures
 !document/presentation/bibfile.bib
 !document/presentation/main.pdf
 !document/presentation/main.tex
-!document/presentation/makefile
-!document/presentation/system.vh
+!document/presentation/Makefile
 
 test.log

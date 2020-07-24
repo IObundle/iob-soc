@@ -1,17 +1,18 @@
 ROOT_DIR:=../..
 include $(ROOT_DIR)/system.mk
 
-SERIAL := /dev/ttyUSB0
+SERIAL:=/dev/ttyUSB0
 
-CC := gcc
-CFLAGS := -g -Wall
+CC:=gcc
+CFLAGS:=-g -Wall
 
 INCLUDE+=-I$(UART_DIR)/software
 SRC:=console.c
 
-CONSOLE:=./console -s $(SERIAL)
 
-USERNAME := $(shell pgrep console | xargs -r ps -o uname= -p)
+USERNAME:=$(shell pgrep console | xargs -r ps -o uname= -p)
+
+CONSOLE=./console -s $(SERIAL)
 
 run: console firmware.bin
 ifneq ($(USERNAME),)
@@ -25,8 +26,9 @@ endif
 endif
 
 ./firmware.bin: $(FIRM_DIR)/firmware.bin
-	cp $(FIRM_DIR)/$@ .
-	$(eval CONSOLE:=./console -s $(SERIAL) -f firmware.bin)
+	ls -al $^ $@
+	cp -f $^ $@
+	$(eval CONSOLE=./console -s $(SERIAL) -f $@)
 
 console: $(SRC)
 	$(CC) $(CFLAGS) $(INCLUDE) $(SRC) -o $@
