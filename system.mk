@@ -23,7 +23,7 @@ ifeq ($(INIT_MEM),)
 INIT_MEM:=0
 endif
 
-#Peripheral list (must match respective submodule name)
+#Peripheral list (must match respective submodule or folder name in the submodules directory)
 PERIPHERALS:=UART
 
 #RTL simulator
