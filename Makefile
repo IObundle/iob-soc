@@ -60,17 +60,17 @@ waves:
 test: test-sim test-fpga
 
 test-sim:
-	make -C . clean && make INIT_MEM=1 > test.log
-	make -C . clean && make >> test.log
-	make -C . clean && make USE_DDR=1 RUN_DDR=1 INIT_MEM=1 >> test.log
-	make -C . clean && make USE_DDR=1 RUN_DDR=1 >> test.log
+	make clean && make INIT_MEM=1 > test.log
+	make clean && make >> test.log
+	make clean && make USE_DDR=1 RUN_DDR=1 INIT_MEM=1 >> test.log
+	make clean && make USE_DDR=1 RUN_DDR=1 >> test.log
 	diff -q test.log test/test-sim.log
 
 test-fpga:
-	make -C . fpga-clean && make fpga-load INIT_MEM=1 && make run-firmware INIT_MEM=1 > test.log
-	make -C . fpga-clean && make fpga-load && make -C . run-firmware >> test.log
-	make -C . fpga-clean && make fpga-load FPGA_BOARD=AES-KU040-DB-G USE_DDR=1 RUN_DDR=1 && make run-firmware FPGA_BOARD=AES-KU040-DB-G >> test.log
-	diff -q test.log test_fpga_expected.log
+	make fpga-clean && make fpga-load INIT_MEM=1 && make run-firmware INIT_MEM=1 > test.log
+	make fpga-clean && make fpga-load && make run-firmware >> test.log
+	make fpga-clean && make fpga-load FPGA_BOARD=AES-KU040-DB-G USE_DDR=1 RUN_DDR=1 && make run-firmware FPGA_BOARD=AES-KU040-DB-G >> test.log
+	diff -q test.log test-fpga.log
 
 
 clean: 

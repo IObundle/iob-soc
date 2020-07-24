@@ -1,0 +1,149 @@
+make[1]: Entering directory '/home/jsousa/sandbox/iob-soc'
+make -C ./software/firmware BAUD=115200
+make[2]: Entering directory '/home/jsousa/sandbox/iob-soc/software/firmware'
+make[2]: Nothing to be done for 'all'.
+make[2]: Leaving directory '/home/jsousa/sandbox/iob-soc/software/firmware'
+ssh jsousa@pudim-flan.iobundle.com "if [ ! -d ./sandbox/iob-soc ]; then mkdir -p ./sandbox/iob-soc; fi"
+rsync -avz --exclude .git . jsousa@pudim-flan.iobundle.com:./sandbox/iob-soc 
+sending incremental file list
+test.log
+hardware/fpga/CYCLONEV-GT-DK/
+hardware/src/
+
+sent 13,706 bytes  received 183 bytes  5,555.60 bytes/sec
+total size is 9,341,464  speedup is 672.58
+ssh jsousa@pudim-flan.iobundle.com "cd ./sandbox/iob-soc; make -C ./software/console run INIT_MEM=1"
+make: Entering directory `/home/jsousa/sandbox/iob-soc/software/console'
+ls -al ../../software/firmware/firmware.bin firmware.bin
+-rwxrwxr-x. 1 jsousa jsousa 2508 Jul 24 01:09 firmware.bin
+-rwxrwxr-x. 1 jsousa jsousa 2508 Jul 24 01:46 ../../software/firmware/firmware.bin
+cp -f ../../software/firmware/firmware.bin firmware.bin
+./console -s /dev/ttyUSB0
+
++-----------------------------------------------+
+|                   IOb-Console                 |
++-----------------------------------------------+
+
+  BaudRate = 115200 
+  StopBits = 1 
+  Parity   = None
+
+IOb-Console: Connected to target
+
+
+
+IOb-SoC Bootloader:
+
+Reboot CPU and run program...
+
+
+
+Hello world!
+
+
+make: Leaving directory `/home/jsousa/sandbox/iob-soc/software/console'
+make[1]: Leaving directory '/home/jsousa/sandbox/iob-soc'
+make[1]: Entering directory '/home/jsousa/sandbox/iob-soc'
+make -C ./software/firmware BAUD=115200
+make[2]: Entering directory '/home/jsousa/sandbox/iob-soc/software/firmware'
+make[2]: Nothing to be done for 'all'.
+make[2]: Leaving directory '/home/jsousa/sandbox/iob-soc/software/firmware'
+ssh jsousa@pudim-flan.iobundle.com "if [ ! -d ./sandbox/iob-soc ]; then mkdir -p ./sandbox/iob-soc; fi"
+rsync -avz --exclude .git . jsousa@pudim-flan.iobundle.com:./sandbox/iob-soc 
+sending incremental file list
+test.log
+hardware/fpga/CYCLONEV-GT-DK/
+hardware/src/
+
+sent 13,516 bytes  received 153 bytes  9,112.67 bytes/sec
+total size is 9,343,020  speedup is 683.52
+ssh jsousa@pudim-flan.iobundle.com "cd ./sandbox/iob-soc; make -C ./software/console run INIT_MEM=0"
+make: Entering directory `/home/jsousa/sandbox/iob-soc/software/console'
+ls -al ../../software/firmware/firmware.bin firmware.bin
+-rwxrwxr-x. 1 jsousa jsousa 2508 Jul 24 01:48 firmware.bin
+-rwxrwxr-x. 1 jsousa jsousa 2508 Jul 24 01:48 ../../software/firmware/firmware.bin
+cp -f ../../software/firmware/firmware.bin firmware.bin
+./console -s /dev/ttyUSB0 -f firmware.bin 
+
++-----------------------------------------------+
+|                   IOb-Console                 |
++-----------------------------------------------+
+
+  BaudRate = 115200 
+  StopBits = 1 
+  Parity   = None
+
+IOb-Console: Connected to target
+
+
+
+IOb-SoC Bootloader:
+
+Receiving and loading file...
+
+IOb-Console: starting file transfer of 2508 bytes...
+IOb-Console: file transfer complete
+
+
+File received (2508 bytes)
+Reboot CPU and run program...
+
+
+
+Hello world!
+
+
+make: Leaving directory `/home/jsousa/sandbox/iob-soc/software/console'
+make[1]: Leaving directory '/home/jsousa/sandbox/iob-soc'
+make[1]: Entering directory '/home/jsousa/sandbox/iob-soc'
+make -C ./software/firmware BAUD=115200
+make[2]: Entering directory '/home/jsousa/sandbox/iob-soc/software/firmware'
+make[2]: Nothing to be done for 'all'.
+make[2]: Leaving directory '/home/jsousa/sandbox/iob-soc/software/firmware'
+ssh jsousa@baba-de-camelo.iobundle.com "if [ ! -d ./sandbox/iob-soc ]; then mkdir -p ./sandbox/iob-soc; fi"
+rsync -avz --exclude .git . jsousa@baba-de-camelo.iobundle.com:./sandbox/iob-soc 
+sending incremental file list
+test.log
+hardware/fpga/AES-KU040-DB-G/
+hardware/src/
+
+sent 13,570 bytes  received 165 bytes  9,156.67 bytes/sec
+total size is 9,344,782  speedup is 680.36
+ssh jsousa@baba-de-camelo.iobundle.com "cd ./sandbox/iob-soc; make -C ./software/console run INIT_MEM=0"
+make: Entering directory `/home/jsousa/sandbox/iob-soc/software/console'
+ls -al ../../software/firmware/firmware.bin firmware.bin
+-rwxrwxr-x. 1 jsousa jsousa 2508 Jul 24 01:50 firmware.bin
+-rwxrwxr-x. 1 jsousa jsousa 2508 Jul 24 01:50 ../../software/firmware/firmware.bin
+cp -f ../../software/firmware/firmware.bin firmware.bin
+./console -s /dev/ttyUSB0 -f firmware.bin 
+
++-----------------------------------------------+
+|                   IOb-Console                 |
++-----------------------------------------------+
+
+  BaudRate = 115200 
+  StopBits = 1 
+  Parity   = None
+
+IOb-Console: Connected to target
+
+
+
+IOb-SoC Bootloader:
+
+Receiving and loading file...
+
+IOb-Console: starting file transfer of 2508 bytes...
+IOb-Console: file transfer complete
+
+
+File received (2508 bytes)
+Reboot CPU and run program...
+
+
+
+Hello world!
+
+
+make: Leaving directory `/home/jsousa/sandbox/iob-soc/software/console'
+make[1]: Leaving directory '/home/jsousa/sandbox/iob-soc'
