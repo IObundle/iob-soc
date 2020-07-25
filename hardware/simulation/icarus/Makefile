@@ -1,6 +1,6 @@
 UART_DIR:=../../..
 incdir:=-I
-define:=-D
+defmacro:=-D
 include ../simulation.mk
 
 #icarus verilog simulator
