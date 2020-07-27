@@ -18,17 +18,16 @@ run: console firmware.bin
 ifneq ($(USERNAME),)
 	@echo "FPGA is being used by $(USERNAME)"
 else
-ifeq ($(INIT_MEM),1)
-	./console -s $(SERIAL)
-else
-	$(CONSOLE) 
-endif
+	rsync -avz $(CONSOLE_DIR) $(BOARD_SERVER):$(REMOTE_SW_DIR)
+	ssh $(BOARD_SERVER) "cd $(REMOTE_SW_DIR)/console; $(CONSOLE) $(TEST_LOG)"
+	scp $(BOARD_SERVER):$(REMOTE_SW_DIR)/console/test.log $(CONSOLE_DIR)/test.log
 endif
 
 ./firmware.bin: $(FIRM_DIR)/firmware.bin
-	ls -al $^ $@
-	cp -f $^ $@
+ifeq ($(INIT_MEM),0)
 	$(eval CONSOLE=./console -s $(SERIAL) -f $@)
+	cp $(FIRM_DIR)/firmware.bin $@
+endif
 
 console: $(SRC)
 	$(CC) $(CFLAGS) $(INCLUDE) $(SRC) -o $@

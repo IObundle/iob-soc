@@ -29,13 +29,13 @@ SRC := $(RTL_DIR)/src/*.v $(RISCV_DIR)/picorv32.v $(UART_DIR)/rtl/src/*.v $(FIFO
 SV_SRC := $(RTL_DIR)/testbench/system_tb.v
 INCLUDE+=+incdir+../../rtl/include
 INCLUDE+=+incdir+$(UART_DIR)/rtl/include
-DEFINES+=+define+MODELSIM
-#DEFINES+=+define+FUSION_DEBUG
-#DEFINES+=+define+DEBUG
-#DEFINES+=+define+DESPERATE_DEBUG
-DEFINES+=+define+WARNING_MSGS_ON
-DEFINES+=+define+SIMULATION
-DEFINES+=+define+UART_BAUD_RATE=$(BAUD)
+DEFINES+=+defmacro+MODELSIM
+#DEFINES+=+defmacro+FUSION_DEBUG
+#DEFINES+=+defmacro+DEBUG
+#DEFINES+=+defmacro+DESPERATE_DEBUG
+DEFINES+=+defmacro+WARNING_MSGS_ON
+DEFINES+=+defmacro+SIMULATION
+DEFINES+=+defmacro+UART_BAUD_RATE=$(BAUD)
 
 SIM_LOG_FILE=$(GEN_DIR)/msgs.txt
 VSIM_SCRIPT=$(GEN_DIR)/vsim_script

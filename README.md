@@ -67,21 +67,15 @@ make fpga
 make fpga-load
 ```
 
-## Load and run firmware
+## Run FPGA
 ```
-make run-firmware
-```
-
-## Run firmware only
-```
-make run-firmware
+make fpga-run
 ```
 
 ## Implement ASIC
 ```
 make asic
 ```
-
 
 
 ## Instructions for Installing the RISC-V GNU Compiler Toolchain

@@ -67,6 +67,7 @@ module system_tb;
 `endif      
       //run firmware
       cpu_run();
+
       $finish;
 
    end

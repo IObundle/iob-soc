@@ -1,4 +1,4 @@
-define:=-D
+defmacro:=-D
 incdir:=-I
 include $(ROOT_DIR)/system.mk
 

@@ -50,7 +50,7 @@ $(SRC_DIR)/system.v:
 	$(foreach p, $(PERIPHERALS), if test -f $(SUBMODULES_DIR)/$p/hardware/include/*.vh; then sed -i '/PHEADER/a `include \"$(shell echo `ls $(SUBMODULES_DIR)/$p/hardware/include/*.vh`)\"' $@; fi;)\
 
 # data files
-firmware.hex: $(FIRM_DIR)/firmware.bin
+firmware: $(FIRM_DIR)/firmware.bin
 ifeq ($(INIT_MEM),1)
 	$(PYTHON_DIR)/makehex.py $(FIRM_DIR)/firmware.bin $(FIRM_ADDR_W) > firmware.hex
 	$(PYTHON_DIR)/hex_split.py firmware .
@@ -64,6 +64,6 @@ boot.hex: $(BOOT_DIR)/boot.bin
 hw-clean:
 	@rm -f *# *~ *.vcd *.dat *.hex *.bin $(SRC_DIR)/system.v $(TB_DIR)/system_tb.v
 
-.PHONY: periphs hw-clean
+.PHONY: periphs firmware hw-clean
 
 

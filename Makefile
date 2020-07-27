@@ -1,49 +1,29 @@
 ROOT_DIR:=.
 include ./system.mk
 
-run: sim
-
 sim: firmware bootloader
-ifeq ($(SIM_SERVER),)
 	make -C $(SIM_DIR)
-else
-	ssh $(SIM_SERVER) "if [ ! -d $(SIM_ROOT_DIR) ]; then mkdir -p $(SIM_ROOT_DIR); fi"
-	rsync -avz --exclude .git . $(SIM_SERVER):$(SIM_ROOT_DIR) 
-	ssh $(SIM_SERVER) "cd $(SIM_ROOT_DIR); make -C $(SIM_DIR)"
-endif
+
+run-hw: firmware
+	make -C $(CONSOLE_DIR) run
 
 fpga: firmware bootloader
-	ssh $(FPGA_COMPILE_SERVER) "if [ ! -d $(FPGA_COMPILE_ROOT_DIR) ]; then mkdir -p $(FPGA_COMPILE_ROOT_DIR); fi"
-	rsync -avz --exclude .git . $(FPGA_COMPILE_SERVER):$(FPGA_COMPILE_ROOT_DIR) 
-	ssh $(FPGA_COMPILE_SERVER) "cd $(FPGA_COMPILE_ROOT_DIR); make -C $(FPGA_DIR) compile USE_DDR=$(USE_DDR) RUN_DDR=$(USE_DDR) INIT_MEM=$(INIT_MEM)"
+	make -C $(FPGA_DIR) compile
 
-fpga-load: fpga
-	ssh $(FPGA_BOARD_SERVER) "if [ ! -d $(FPGA_BOARD_ROOT_DIR) ]; then mkdir -p $(FPGA_BOARD_ROOT_DIR); fi"
-ifneq ($(FPGA_COMPILE_SERVER),$(FPGA_BOARD_SERVER))
-	ssh $(FPGA_COMPILE_SERVER) "cd $(FPGA_COMPILE_ROOT_DIR); rsync -avz --exclude .git . $(FPGA_BOARD_SERVER):$(FPGA_BOARD_ROOT_DIR)"
-endif	
-	ssh $(FPGA_BOARD_SERVER) "cd $(FPGA_BOARD_ROOT_DIR); make -C $(FPGA_DIR) load USE_DDR=$(USE_DDR) RUN_DDR=$(USE_DDR) INIT_MEM=$(INIT_MEM)"
+fpga-load:
+	make -C $(FPGA_DIR) load
 
 fpga-clean: clean
-	ssh $(FPGA_BOARD_SERVER) "if [ -d $(FPGA_BOARD_ROOT_DIR) ]; then cd $(FPGA_BOARD_ROOT_DIR); make -C $(FPGA_DIR) clean; fi"
-	ssh $(FPGA_COMPILE_SERVER) "if [ -d $(FPGA_COMPILE_ROOT_DIR) ]; then cd $(FPGA_COMPILE_ROOT_DIR); make -C $(FPGA_DIR) clean; fi"
+	make -C $(FPGA_DIR) clean
 
 fpga-clean-ip: fpga-clean
-	ssh $(FPGA_COMPILE_SERVER) "if [ -d $(FPGA_COMPILE_ROOT_DIR) ]; then cd $(FPGA_COMPILE_ROOT_DIR); make -C $(FPGA_DIR) clean-ip; fi"
+	make -C $(FPGA_DIR) clean-ip
 
 asic: bootloader
-	ssh -C -Y $(ASIC_COMPILE_SERVER) "if [ ! -d $(ASIC_COMPILE_ROOT_DIR) ]; then mkdir -p $(ASIC_COMPILE_ROOT_DIR); fi"
-	rsync -avz --exclude .git . $(ASIC_SERVER):$(MICRO_ROOT_DIR) 
-	ssh -C -Y $(ASIC_COMPILE_SERVER) "cd $(ASIC_COMPILE_ROOT_DIR); make -C $(ASIC_DIR)"
+	make -C $(ASIC_DIR)
 
 asic-clean:
-	rsync -avz --exclude .git . $(ASIC_SERVER):$(ASIC_COMPILE_ROOT_DIR) 
-	ssh $(ASIC_COMPILE_SERVER) "cd $(ASIC_COMPILE_ROOT_DIR); make -C $(ASIC_DIR) clean"
-
-run-firmware: firmware
-	ssh $(FPGA_BOARD_SERVER) "if [ ! -d $(FPGA_BOARD_ROOT_DIR) ]; then mkdir -p $(FPGA_BOARD_ROOT_DIR); fi"
-	rsync -avz --exclude .git . $(FPGA_BOARD_SERVER):$(FPGA_BOARD_ROOT_DIR) 
-	ssh $(FPGA_BOARD_SERVER) "cd $(FPGA_BOARD_ROOT_DIR); make -C $(CONSOLE_DIR) run INIT_MEM=$(INIT_MEM)"
+	make -C $(ASIC_DIR) clean
 
 firmware:
 	make -C $(FIRM_DIR) BAUD=$(BAUD)
@@ -59,29 +39,62 @@ waves:
 
 test: test-sim test-fpga
 
+SIM_LIST=icarus
+
+define test_sim
+	$(eval SIMULATOR=$1)
+	export SIMULATOR
+#test-1
+	make -C . clean
+	make -C . sim $1 INIT_MEM=1
+#test-2
+	make -C . clean
+	make -C . sim INIT_MEM=0
+#test-3
+	make -C . clean
+	make -C . sim INIT_MEM=1 USE_DDR=1 RUN_DDR=1
+#test-4
+	make -C . clean
+	make -C . sim INIT_MEM=0 USE_DDR=1 RUN_DDR=1
+endef
+
 test-sim:
-	make clean && make INIT_MEM=1 > test.log
-	make clean && make >> test.log
-	make clean && make USE_DDR=1 RUN_DDR=1 INIT_MEM=1 >> test.log
-	make clean && make USE_DDR=1 RUN_DDR=1 >> test.log
+	@rm -f test.log
+	$(foreach s, $(SIM_LIST), $(call test_sim, SIMULATOR=$s))
 	diff -q test.log test/test-sim.log
 
-test-fpga:
-	make fpga-clean && make fpga-load INIT_MEM=1 && make run-firmware INIT_MEM=1 > test.log
-	make fpga-clean && make fpga-load && make run-firmware >> test.log
-	make fpga-clean && make fpga-load FPGA_BOARD=AES-KU040-DB-G USE_DDR=1 RUN_DDR=1 && make run-firmware FPGA_BOARD=AES-KU040-DB-G >> test.log
-	diff -q test.log test-fpga.log
 
+BOARD_LIST=CYCLONEV-GT-DK AES-KU040-DB-G
+define test_board
+	$(eval BOARD=$1)
+	export BOARD
+	printf "%s\n\n\n" "TESTING BOARD $(BOARD)" >> test.log
+#test-1
+	make fpga-clean BOARD=$(BOARD); make fpga INIT_MEM=1 BOARD=$(BOARD); make fpga-load BOARD=$(BOARD)
+	make run-hw INIT_MEM=1 TEST_LOG=">test.log" BOARD=$(BOARD)
+	cat $(CONSOLE_DIR)/test.log >> test.log
+#test-2
+	make fpga-clean BOARD=$(BOARD); make fpga INIT_MEM=0 BOARD=$(BOARD); make fpga-load BOARD=$(BOARD)
+	make run-hw INIT_MEM=0 TEST_LOG=">test.log" BOARD=$(BOARD)
+	cat $(CONSOLE_DIR)/test.log >> test.log
+#test-3
+	if [ "$(BOARD)" = "AES-KU040-DB-G" ]; then make -C $(FPGA_DIR) clean BOARD=$(BOARD);\
+	make -C $(FPGA_DIR) compile INIT_MEM=0 BOARD=$(BOARD); make -C $(FPGA_DIR) load BOARD=$(BOARD);\
+	make -C $(CONSOLE_DIR) run INIT_MEM=0 TEST_LOG=">test.log" BOARD=$(BOARD);\
+	cat $(CONSOLE_DIR)/test.log >> test.log; fi
+endef
+
+test-fpga:
+	@rm -f test.log
+	$(foreach b, $(BOARD_LIST), $(call test_board, $b))
+	diff -q test.log test/test-fpga.log
 
 clean: 
-ifeq ($(SIMULATOR),ncsim)
-	ssh $(SIM_SERVER) "cd $(SIM_SERVER_ROOT_DIR); make -C $(SIM_DIR) clean"
-else
 	make -C $(SIM_DIR) clean
-endif
 	make -C $(FIRM_DIR) clean
 	make -C $(BOOT_DIR) clean
 	make -C $(CONSOLE_DIR) clean
 	make -C $(DOC_DIR) clean
+	make -C $(FPGA_DIR) clean
 
-.PHONY: sim fpga firmware bootloader document clean fpga-load fpga-clean fpga-clean-ip asic asic-clean run-firmware waves test test-sim test-fpga
+.PHONY: sim fpga firmware bootloader document clean fpga-load fpga-clean fpga-clean-ip asic asic-clean run-hw waves test test-sim test-fpga

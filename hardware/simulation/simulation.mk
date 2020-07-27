@@ -1,7 +1,7 @@
 include $(ROOT_DIR)/hardware/hardware.mk
 
-#testbench defines 
-DEFINE+=$(define)VCD
+#testbench defmacros 
+DEFINE+=$(defmacro)VCD
 
 #testbench source files
 VSRC+=$(TB_DIR)/system_tb.v $(AXI_MEM_DIR)/rtl/axi_ram.v
@@ -17,5 +17,3 @@ $(TB_DIR)/system_tb.v:
 	$(foreach p, $(PERIPHERALS), if test -f $(SUBMODULES_DIR)/$p/hardware/testbench/wires_tb.v; then sed -i '/PWIRES/a `include \"$(shell echo `ls $(SUBMODULES_DIR)/$p/hardware/testbench/wires_tb.v`)\"' $@; fi;)
 
 VSRC+=$(foreach p, $(PERIPHERALS), $(shell if test -f $(SUBMODULES_DIR)/$p/hardware/testbench/module_tb.sv; then echo $(SUBMODULES_DIR)/$p/hardware/testbench/module_tb.sv; fi;))
-
-
