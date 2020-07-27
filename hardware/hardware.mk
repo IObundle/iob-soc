@@ -44,7 +44,7 @@ $(SRC_DIR)/system.v:
 	cp $(SRC_DIR)/system_core.v $@
 	$(foreach p, $(PERIPHERALS), sed -i '/endmodule/e cat $(SUBMODULES_DIR)/$p/hardware/include/inst.v' $(SRC_DIR)/system.v;)
 	$(foreach p, $(PERIPHERALS), sed -i '/PIO/r $(SUBMODULES_DIR)/$p/hardware/include/pio.v' $(SRC_DIR)/system.v;)
-	$(foreach p, $(PERIPHERALS), sed -i '/PHEADER/a `include \"$(shell echo `ls $(SUBMODULES_DIR)/$p/hardware/include/*.vh`)\"' $(SRC_DIR)/system.v;)\
+	$(foreach p, $(PERIPHERALS), $(foreach f, $(shell echo `ls $(SUBMODULES_DIR)/$p/hardware/include/*.vh`), sed -i '/PHEADER/a `include \"$f\"' $(SRC_DIR)/system.v;))\
 
 # data files
 firmware.hex: $(FIRM_DIR)/firmware.bin
@@ -62,5 +62,3 @@ hw-clean:
 	@rm -f *# *~ *.vcd *.dat *.hex *.bin $(SRC_DIR)/system.v
 
 .PHONY: periphs hw-clean
-
-
