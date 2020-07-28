@@ -18,9 +18,7 @@ run: console firmware.bin
 ifneq ($(USERNAME),)
 	@echo "FPGA is being used by $(USERNAME)"
 else
-	rsync -avz $(CONSOLE_DIR) $(BOARD_SERVER):$(REMOTE_SW_DIR)
-	ssh $(BOARD_SERVER) "cd $(REMOTE_SW_DIR)/console; $(CONSOLE) $(TEST_LOG)"
-	scp $(BOARD_SERVER):$(REMOTE_SW_DIR)/console/test.log $(CONSOLE_DIR)/test.log
+	$(CONSOLE) $(TEST_LOG)
 endif
 
 ./firmware.bin: $(FIRM_DIR)/firmware.bin

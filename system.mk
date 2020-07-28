@@ -28,19 +28,30 @@ PERIPHERALS:=UART
 
 #SIMULATOR
 SIMULATOR=icarus
-#SIMULATOR=modelsim
 #SIMULATOR=ncsim
 
+ifeq ($(SIMULATOR),ncsim)
+	SIM_USER=$(USER)
+	SIM_SERVER=$(COMPILE_USER)@micro7.lx.it.pt
+endif
 
 #BOARD
 ifeq ($(BOARD),AES-KU040-DB-G)
+	COMPILE_USER=$(USER)
+	COMPILE_SERVER=$(COMPILE_USER)@pudim-flan.iobundle.com
+	COMPILE_OBJ=synth_system.bit
 	BOARD_USER=$(USER)
 	BOARD_SERVER=$(BOARD_USER)@baba-de-camelo.iobundle.com
 else
+	COMPILE_USER=$(USER)
+	COMPILE_SERVER=$(COMPILE_USER)@pudim-flan.iobundle.com
+	COMPILE_OBJ=output_files/top_system.sof
 	BOARD=CYCLONEV-GT-DK
 	BOARD_USER=$(USER)
 	BOARD_SERVER=$(BOARD_USER)@pudim-flan.iobundle.com
 endif
+#ROOT DIR ON REMOTE MACHINES
+REMOTE_ROOT_DIR=./sandbox/iob-soc
 
 #ASIC
 ASIC_NODE:=umc130
@@ -48,8 +59,6 @@ ASIC_NODE:=umc130
 #DOC_TYPE
 DOC_TYPE:=presentation
 
-#ROOT DIR ON REMOTE MACHINES
-REMOTE_ROOT_DIR=./sandbox/iob-soc
 
 #
 #DO NOT EDIT BEYOND THIS POINT
@@ -59,7 +68,6 @@ REMOTE_ROOT_DIR=./sandbox/iob-soc
 HW_DIR:=$(ROOT_DIR)/hardware
 SIM_DIR=$(HW_DIR)/simulation/$(SIMULATOR)
 FPGA_DIR=$(HW_DIR)/fpga/$(BOARD)
-REMOTE_FPGA_DIR=$(REMOTE_ROOT_DIR)/hardware/fpga/$(BOARD)
 ASIC_DIR=$(HW_DIR)/asic/$(ASIC_NODE)
 
 
@@ -67,7 +75,6 @@ SW_DIR:=$(ROOT_DIR)/software
 FIRM_DIR:=$(SW_DIR)/firmware
 BOOT_DIR:=$(SW_DIR)/bootloader
 CONSOLE_DIR:=$(SW_DIR)/console
-REMOTE_SW_DIR:=$(REMOTE_ROOT_DIR)/software
 PYTHON_DIR:=$(SW_DIR)/python
 
 DOC_DIR:=$(ROOT_DIR)/document/$(DOC_TYPE)
