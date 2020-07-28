@@ -9,6 +9,7 @@
 #include "iob-uart-ascii.h"
 
 #define PROGNAME "IOb-Console"
+#define WAIT_FOR_RISCV 20000
 
 void connect(int serial_fd) {
   unsigned char byte;
@@ -61,9 +62,9 @@ void run(int serial_fd) {
 // send file to target
 void sendFile(int serial_fd, char *name) {
   FILE *fp;
-  int file_size;
+  int file_size, i;
   
-  char byte;
+  unsigned char byte;
   int nbytes;
   char *buf;
 
@@ -95,16 +96,24 @@ void sendFile(int serial_fd, char *name) {
 
   
   //send file size
-  while ( write(serial_fd, &file_size, 4) <= 0);
-  
-  //read file into buffer
-  if (fread(buf, sizeof(char), file_size, fp) <= 0)
-    {printf(PROGNAME); printf(": can't read file\n");}
-  
+  while ( write(serial_fd, &file_size, 4) <= 0);  
     
-  //send buffer
-  while ( write(serial_fd, buf, file_size) <= 0 );
-          
+ /* Send file */
+  for (i = 0; i < file_size; i++) {
+    nbytes = (int) fread(&byte, sizeof(unsigned char), 1, fp);
+    if (nbytes != 1) {
+      printf("sendFile: Failed to read byte from file\n");
+    }
+    
+    nbytes = (int) write(serial_fd, &byte, 1);
+    if (nbytes == -1) {
+      printf("sendFile: Failed to send data\n");
+    }
+    
+    if (!(i%200)) {
+      usleep(WAIT_FOR_RISCV);
+    }
+  }       
   //DEBUG
   //printf("buffer[%u] = %x\n", i, byte);
   
