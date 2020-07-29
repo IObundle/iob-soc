@@ -2,15 +2,19 @@ ROOT_DIR:=.
 include ./system.mk
 
 sim: firmware bootloader
-	make -C $(SIM_DIR)
+ifeq ($(SIMULATOR),icarus)
+	make -C $(SIM_DIR) TEST_LOG=\"$(TEST_LOG)
+endif
 
 fpga: firmware bootloader
 	ssh $(COMPILE_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --exclude .git $(ROOT_DIR) $(COMPILE_SERVER):$(REMOTE_ROOT_DIR) 
 	ssh $(COMPILE_SERVER) "cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) compile INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR)"
+ifneq ($(COMPILE_SERVER),$(BOARD_SERVER))
 	scp $(COMPILE_SERVER):$(REMOTE_ROOT_DIR)/$(FPGA_DIR)/$(COMPILE_OBJ) $(FPGA_DIR)
+endif
 
-fpga-load: fpga
+fpga-load:
 	ssh $(BOARD_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_SERVER):$(REMOTE_ROOT_DIR) 
 	ssh $(BOARD_SERVER) "cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) load"
@@ -18,11 +22,12 @@ fpga-load: fpga
 run-hw: firmware
 	ssh $(BOARD_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_SERVER):$(REMOTE_ROOT_DIR) 
-	ssh $(BOARD_SERVER) "cd $(REMOTE_ROOT_DIR); make -C $(CONSOLE_DIR) run"
+	ssh $(BOARD_SERVER) "cd $(REMOTE_ROOT_DIR); make -C $(CONSOLE_DIR) run INIT_MEM=$(INIT_MEM) TEST_LOG=\"$(TEST_LOG)\""
 	scp $(BOARD_SERVER):$(REMOTE_ROOT_DIR)/$(CONSOLE_DIR)/test.log $(CONSOLE_DIR)
 
 fpga-clean: clean
-	ssh $(COMPILE_SERVER) "cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) clean"
+	ssh $(COMPILE_SERVER) "cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) clean BOARD=$(BOARD)"
+	ssh $(BOARD_SERVER) "cd $(REMOTE_ROOT_DIR); make -C $(CONSOLE_DIR) clean"
 
 fpga-clean-ip: fpga-clean
 	ssh $(COMPILE_SERVER) "cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) clean-ip"
@@ -47,53 +52,34 @@ waves:
 
 test: test-sim test-fpga
 
-SIM_LIST=icarus
 
-define test_sim
-	$(eval SIMULATOR=$1)
-	export SIMULATOR
-#test-1
-	make -C . clean
-	make -C . sim $1 INIT_MEM=1
-#test-2
-	make -C . clean
-	make -C . sim INIT_MEM=0
-#test-3
-	make -C . clean
-	make -C . sim INIT_MEM=1 USE_DDR=1 RUN_DDR=1
-#test-4
-	make -C . clean
-	make -C . sim INIT_MEM=0 USE_DDR=1 RUN_DDR=1
-endef
+run_sim=make clean $1; make sim $1 $2 $3 $4 TEST_LOG=">test.log"; cat $(SIM_DIR)/test.log >> test.log
 
+test_sim=echo "Testing $1"; echo "Testing $1">>test.log;\
+$(call run_sim, $1, "INIT_MEM=1", "USE_DDR=0", "RUN_DDR=0");\
+$(call run_sim, $1, "INIT_MEM=0", "USE_DDR=0", "RUN_DDR=0");\
+$(call run_sim, $1, "INIT_MEM=1", "USE_DDR=1", "RUN_DDR=1");\
+$(call run_sim, $1, "INIT_MEM=1", "USE_DDR=1", "RUN_DDR=1");\
+
+SIM_LIST="SIMULATOR=icarus"
 test-sim:
 	@rm -f test.log
-	$(foreach s, $(SIM_LIST), $(call test_sim, SIMULATOR=$s))
+	$(foreach s, $(SIM_LIST), $(call test_sim, $s))
 	diff -q test.log test/test-sim.log
 
+run_board=make fpga-clean $1; make fpga $1 $2 $3 $4; make fpga-load $1;\
+make run-hw $1 $2 TEST_LOG=">test.log"; cat $(CONSOLE_DIR)/test.log >> test.log
 
-BOARD_LIST=CYCLONEV-GT-DK AES-KU040-DB-G
-define test_board
-	$(eval BOARD=$1)
-	printf "%s\n\n\n" "TESTING BOARD $(BOARD)" >> test.log
-#test-1
-	make fpga-clean BOARD=$(BOARD)
-	make fpga-load BOARD=$(BOARD) INIT_MEM=1
-	make run-hw INIT_MEM=1 TEST_LOG=">test.log" BOARD=$(BOARD)
-	cat $(CONSOLE_DIR)/test.log >> test.log
-#test-2
-	make fpga-clean BOARD=$(BOARD);
-	make fpga-load BOARD=$(BOARD)
-	make run-hw TEST_LOG=">test.log" BOARD=$(BOARD)
-	cat $(CONSOLE_DIR)/test.log >> test.log
-#test-3
-	if [ "$(BOARD)" = "AES-KU040-DB-G" ]; then\
-	make fpga clean BOARD=$(BOARD);\
-	make fpga-load BOARD=$(BOARD);\
-	make run-hw INIT_MEM=0 TEST_LOG=">test.log" BOARD=$(BOARD);\
-	cat $(CONSOLE_DIR)/test.log >> test.log; fi
-endef
 
+test_board=echo "Testing $1"; echo Testing $1>>test.log ;\
+$(call run_board, $1, "INIT_MEM=1", "USE_DDR=0", "RUN_DDR=0");\
+$(call run_board, $1, "INIT_MEM=0", "USE_DDR=0", "RUN_DDR=0");\
+#should run only for AES-KU040-DB-G
+#$(call run_board, $1, "INIT_MEM=0", "USE_DDR=1", "RUN_DDR=1")"
+
+#BOARD_LIST="BOARD=CYCLONEV-GT-DK" "BOARD=AES-KU040-DB-G"
+#BOARD_LIST="BOARD=CYCLONEV-GT-DK"
+BOARD_LIST="BOARD=AES-KU040-DB-G"
 test-fpga:
 	@rm -f test.log
 	$(foreach b, $(BOARD_LIST), $(call test_board, $b))
@@ -103,8 +89,6 @@ clean:
 	make -C $(SIM_DIR) clean
 	make -C $(FIRM_DIR) clean
 	make -C $(BOOT_DIR) clean
-	make -C $(CONSOLE_DIR) clean
 	make -C $(DOC_DIR) clean
-	make -C $(FPGA_DIR) clean
 
 .PHONY: sim fpga firmware bootloader document clean fpga-load fpga-clean fpga-clean-ip run-hw asic asic-clean run-hw waves test test-sim test-fpga

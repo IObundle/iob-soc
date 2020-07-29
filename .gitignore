@@ -1,6 +1,8 @@
 hardware/simulation/icarus/*.vcd
 hardware/simulation/ncim/*.vcd
 
+hardware/fpga/CYCLONEV-GT-DK/synth_system.sof
+
 hardware/fpga/AES-KU040-DB-G/ip
 hardware/fpga/AES-KU040-DB-G/*.log
 hardware/fpga/AES-KU040-DB-G/synth_system.bit
