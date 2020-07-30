@@ -43,11 +43,11 @@ fpga-clean-ip: fpga-clean
 	ssh $(COMPILE_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) clean-ip'
 
 run-hw: firmware
-	echo $(TEST_LOG)
+	echo "$(TEST_LOG)"
 	ssh $(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_SERVER):$(REMOTE_ROOT_DIR) 
-	ssh $(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(CONSOLE_DIR) run INIT_MEM=$(INIT_MEM) TEST_LOG="$(TEST_LOG)" '
-	scp $(BOARD_SERVER):$(REMOTE_ROOT_DIR)/$(CONSOLE_DIR)/test.log $(CONSOLE_DIR)
+	ssh $(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(CONSOLE_DIR) run INIT_MEM=$(INIT_MEM) TEST_LOG="$(TEST_LOG)"'
+	scp $(BOARD_SERVER):$(REMOTE_ROOT_DIR)/$(CONSOLE_DIR)/test.log $(CONSOLE_DIR)/test.log
 
 asic: bootloader
 	make -C $(ASIC_DIR)
@@ -72,11 +72,11 @@ test: test-sim test-fpga
 
 run_sim:
 	make sim-clean SIMULATOR=$(SIMULATOR)
-	make sim SIMULATOR=$(SIMULATOR) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) TEST_LOG=">test.log"
+	make sim SIMULATOR=$(SIMULATOR) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) TEST_LOG=$(TEST_LOG)
 	cat $(SIM_DIR)/test.log >> test.log
 
 test_sim:
-	echo "Testing $(SIMULATOR)"; echo Testing $(SIMULATOR)>>test.log
+	echo "Testing $(SIMULATOR)";echo Testing $(SIMULATOR)>>test.log
 	make run_sim SIMULATOR=$(SIMULATOR) INIT_MEM=1 USE_DDR=0 RUN_DDR=0
 	make run_sim SIMULATOR=$(SIMULATOR) INIT_MEM=0 USE_DDR=0 RUN_DDR=0
 	make run_sim SIMULATOR=$(SIMULATOR) INIT_MEM=1 USE_DDR=1 RUN_DDR=0
@@ -84,9 +84,6 @@ test_sim:
 	make run_sim SIMULATOR=$(SIMULATOR) INIT_MEM=0 USE_DDR=1 RUN_DDR=1
 	make sim-clean SIMULATOR=$(SIMULATOR)
 
-#SIM_LIST="SIMULATOR=icarus"
-#SIM_LIST="SIMULATOR=ncsim"
-SIM_LIST="SIMULATOR=icarus" "SIMULATOR=ncsim"
 test-sim:
 	@rm -f test.log
 	$(foreach s, $(SIM_LIST), make test_sim $s;)
@@ -97,21 +94,19 @@ run_board:
 	make fpga-clean BOARD=$(BOARD)
 	make fpga BOARD=$(BOARD) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR)
 	make fpga-load BOARD=$(BOARD)
-	make run-hw BOARD=$(BOARD) INIT_MEM=$(INIT_MEM) TEST_LOG=">test.log"
+	make run-hw BOARD=$(BOARD) INIT_MEM=$(INIT_MEM) TEST_LOG=$(TEST_LOG)
 	cat $(CONSOLE_DIR)/test.log >> test.log
 
 
 test_board:
-	echo "Testing $(BOARD)"; echo Testing $(BOARD)>>test.log
+	echo "Testing $(BOARD)"; echo "Testing $(BOARD)" >> test.log
 	make run_board BOARD=$(BOARD) INIT_MEM=1 USE_DDR=0 RUN_DDR=0
 	make run_board BOARD=$(BOARD) INIT_MEM=0 USE_DDR=0 RUN_DDR=0
 ifeq ($(BOARD),AES-KU040-DB-G)
 	make run_board BOARD=$(BOARD) INIT_MEM=0 USE_DDR=1 RUN_DDR=1
 endif
 
-#BOARD_LIST="BOARD=CYCLONEV-GT-DK" "BOARD=AES-KU040-DB-G"
-BOARD_LIST="BOARD=CYCLONEV-GT-DK"
-#BOARD_LIST="BOARD=AES-KU040-DB-G"
+
 test-fpga:
 	@rm -f test.log
 	$(foreach b, $(BOARD_LIST), make test_board $b;)

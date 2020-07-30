@@ -26,12 +26,20 @@ endif
 #Peripheral list (must match respective submodule or folder name in the submodules directory)
 PERIPHERALS:=UART
 
+#SIMULATION TEST
+SIM_LIST="SIMULATOR=icarus" "SIMULATOR=ncsim"
+
 ifeq ($(SIMULATOR),ncsim)
 	SIM_USER=user19
 	SIM_SERVER=$(SIM_USER)@micro7.lx.it.pt
+else
+#default
+	SIMULATOR:=icarus
 endif
 
-#BOARD
+#BOARD TEST
+BOARD_LIST="BOARD=CYCLONEV-GT-DK" "BOARD=AES-KU040-DB-G"
+
 ifeq ($(BOARD),AES-KU040-DB-G)
 	COMPILE_USER=$(USER)
 	COMPILE_SERVER=$(COMPILE_USER)@pudim-flan.iobundle.com
@@ -39,10 +47,11 @@ ifeq ($(BOARD),AES-KU040-DB-G)
 	BOARD_USER=$(USER)
 	BOARD_SERVER=$(BOARD_USER)@baba-de-camelo.iobundle.com
 else
+#default
+	BOARD=CYCLONEV-GT-DK
 	COMPILE_USER=$(USER)
 	COMPILE_SERVER=$(COMPILE_USER)@pudim-flan.iobundle.com
 	COMPILE_OBJ=output_files/top_system.sof
-	BOARD=CYCLONEV-GT-DK
 	BOARD_USER=$(USER)
 	BOARD_SERVER=$(BOARD_USER)@pudim-flan.iobundle.com
 endif
@@ -123,5 +132,7 @@ N_SLAVES:=0
 dummy:=$(foreach p, $(PERIPHERALS), $(eval $p_DIR:=$(SUBMODULES_DIR)/$p))
 dummy:=$(foreach p, $(PERIPHERALS), $(eval $p=$(N_SLAVES)) $(eval N_SLAVES:=$(shell expr $(N_SLAVES) \+ 1)))
 dummy:=$(foreach p, $(PERIPHERALS), $(eval DEFINE+=$(defmacro)$p=$($p)))
+
+TEST_LOG:=">./test.log"
 
 .PHONY: all
