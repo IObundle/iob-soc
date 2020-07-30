@@ -26,13 +26,9 @@ endif
 #Peripheral list (must match respective submodule or folder name in the submodules directory)
 PERIPHERALS:=UART
 
-#SIMULATOR
-SIMULATOR=icarus
-#SIMULATOR=ncsim
-
 ifeq ($(SIMULATOR),ncsim)
-	SIM_USER=$(USER)
-	SIM_SERVER=$(COMPILE_USER)@micro7.lx.it.pt
+	SIM_USER=user19
+	SIM_SERVER=$(SIM_USER)@micro7.lx.it.pt
 endif
 
 #BOARD
@@ -50,6 +46,7 @@ else
 	BOARD_USER=$(USER)
 	BOARD_SERVER=$(BOARD_USER)@pudim-flan.iobundle.com
 endif
+
 #ROOT DIR ON REMOTE MACHINES
 REMOTE_ROOT_DIR=./sandbox/iob-soc
 

@@ -6,9 +6,6 @@ DEFINE+=$(defmacro)VCD
 #testbench source files
 VSRC+=$(TB_DIR)/system_tb.v $(AXI_MEM_DIR)/rtl/axi_ram.v
 
-firmware.bin: $(FIRM_DIR)/firmware.bin
-	cp $(FIRM_DIR)/firmware.bin .
-
 $(TB_DIR)/system_tb.v:
 	cp $(TB_DIR)/system_core_tb.v $@
 	$(foreach p, $(PERIPHERALS), if test -f $(SUBMODULES_DIR)/$p/hardware/testbench/inst_tb.sv; then sed -i '/endmodule/e cat $(SUBMODULES_DIR)/$p/hardware/testbench/inst_tb.sv' $@; fi;)

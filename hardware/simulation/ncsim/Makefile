@@ -15,13 +15,14 @@ SIM_USER:=user19
 SIM_SERVER=$(SIM_USER)@micro7.lx.it.pt
 SIM_ROOT_DIR=./sandbox/iob-soc
 
+export VSRC CFLAGS EFLAGS SFLAGS TEST_LOG
+
 #simulate
-run: $(VSRC) $(VHDR) firmware.bin firmware.hex boot.hex periphs
-	ssh $(SIM_SERVER) "if [ ! -d $(SIM_ROOT_DIR) ]; then mkdir -p $(SIM_ROOT_DIR); fi"
-	rsync -avz --exclude .git . $(SIM_SERVER):$(SIM_ROOT_DIR) 
-	ssh $(SIM_SERVER) "cd $(SIM_ROOT_DIR)/hardware/simulation/ncsim; VSRC=\"$(VSRC)\" CFLAGS=\"$(CFLAGS)\" EFLAGS=\"$(EFLAGS)\" SFLAGS=\"$(SFLAGS)\" ./run_ncsim.sh $(TEST_LOG)"
+run: $(VSRC) $(VHDR) firmware boot.hex periphs
+	./run_ncsim.sh
+	grep -v xcelium xmsim.log | grep -v xmsim > test.log
 
 clean: hw-clean
-	ssh $(SIM_SERVER) "cd $(SIM_SERVER_ROOT_DIR); rm -rf xcelium.d xmsim.key *.log"
+	rm -rf xcelium.d xmsim.key *.log
 
 .PHONY: clean

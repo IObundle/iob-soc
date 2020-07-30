@@ -1,4 +1,207 @@
-               72421
-             1992971
-               79701
-             2000251
+Testing icarus
+VCD info: dumpfile system.vcd opened for output.
+
+
+
+IOb-SoC Bootloader:
+USE_DDR=0 RUN_DDR=0
+
+Reboot CPU and run program...
+
+
+
+Hello world!
+
+
+VCD info: dumpfile system.vcd opened for output.
+
+
+
+IOb-SoC Bootloader:
+USE_DDR=0 RUN_DDR=0
+
+Receiving and loading file...
+
+File size:       2508 bytes
+          0%
+         10%
+         20%
+         30%
+         40%
+         50%
+         60%
+         70%
+         80%
+         90%
+        100%
+File received (2508 bytes)
+Reboot CPU and run program...
+
+
+
+Hello world!
+
+
+VCD info: dumpfile system.vcd opened for output.
+
+
+
+IOb-SoC Bootloader:
+USE_DDR=1 RUN_DDR=0
+
+Reboot CPU and run program...
+
+
+
+Hello world!
+
+
+VCD info: dumpfile system.vcd opened for output.
+
+
+
+IOb-SoC Bootloader:
+USE_DDR=1 RUN_DDR=1
+
+Reboot CPU and run program...
+
+
+
+Hello world!
+
+
+VCD info: dumpfile system.vcd opened for output.
+
+
+
+IOb-SoC Bootloader:
+USE_DDR=1 RUN_DDR=1
+
+Receiving and loading file...
+
+File size:       2508 bytes
+          0%
+         10%
+         20%
+         30%
+         40%
+         50%
+         60%
+         70%
+         80%
+         90%
+        100%
+File received (2508 bytes)
+Reboot CPU and run program...
+
+
+
+Hello world!
+
+
+Testing ncsim
+
+
+
+IOb-SoC Bootloader:
+USE_DDR=0 RUN_DDR=0
+
+Reboot CPU and run program...
+
+
+
+Hello world!
+
+
+Simulation complete via $finish(1) at time 108601 NS + 0
+/home/user19/sandbox/iob-soc/hardware/testbench/system_tb.v:73       $finish;
+
+
+
+IOb-SoC Bootloader:
+USE_DDR=0 RUN_DDR=0
+
+Receiving and loading file...
+
+File size:       2508 bytes
+          0%
+         10%
+         20%
+         30%
+         40%
+         50%
+         60%
+         70%
+         80%
+         90%
+        100%
+File received (2508 bytes)
+Reboot CPU and run program...
+
+
+
+Hello world!
+
+
+Simulation complete via $finish(1) at time 2029131 NS + 0
+/home/user19/sandbox/iob-soc/hardware/testbench/system_tb.v:73       $finish;
+
+
+
+IOb-SoC Bootloader:
+USE_DDR=1 RUN_DDR=0
+
+Reboot CPU and run program...
+
+
+
+Hello world!
+
+
+Simulation complete via $finish(1) at time 109261 NS + 0
+/home/user19/sandbox/iob-soc/hardware/testbench/system_tb.v:73       $finish;
+
+
+
+IOb-SoC Bootloader:
+USE_DDR=1 RUN_DDR=1
+
+Reboot CPU and run program...
+
+
+
+Hello world!
+
+
+Simulation complete via $finish(1) at time 115881 NS + 0
+/home/user19/sandbox/iob-soc/hardware/testbench/system_tb.v:73       $finish;
+
+
+
+IOb-SoC Bootloader:
+USE_DDR=1 RUN_DDR=1
+
+Receiving and loading file...
+
+File size:       2508 bytes
+          0%
+         10%
+         20%
+         30%
+         40%
+         50%
+         60%
+         70%
+         80%
+         90%
+        100%
+File received (2508 bytes)
+Reboot CPU and run program...
+
+
+
+Hello world!
+
+
+Simulation complete via $finish(1) at time 2036411 NS + 0
+/home/user19/sandbox/iob-soc/hardware/testbench/system_tb.v:73       $finish;
