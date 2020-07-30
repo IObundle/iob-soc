@@ -8,5 +8,4 @@ INCLUDE+=$(incdir) $(UART_INC_DIR)
 VHDR+=$(wildcard $(UART_INC_DIR)/*.vh)
 
 #sources
-UART_SRC_DIR:=$(UART_DIR)/hardware/src
 VSRC+=$(wildcard $(UART_HW_DIR)/src/*.v)
