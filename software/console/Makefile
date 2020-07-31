@@ -32,6 +32,6 @@ console: $(SRC)
 	$(CC) $(CFLAGS) $(INCLUDE) $(SRC) -o $@
 
 clean:
-	@rm -f *# *~ console *.bin
+	@rm -f *# *~ console *.bin *.log
 
 .PHONY: run clean

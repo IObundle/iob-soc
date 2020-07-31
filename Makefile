@@ -68,5 +68,6 @@ endif
 	make -C $(FIRM_DIR) clean
 	make -C $(BOOT_DIR) clean
 	make -C $(DOC_DIR) clean
+	@rm -f test.log
 
 .PHONY: sim fpga firmware bootloader document clean fpga-load fpga-clean fpga-clean-ip asic asic-clean run-firmware waves
