@@ -67,21 +67,15 @@ make fpga
 make fpga-load
 ```
 
-## Load and run firmware
+## Run FPGA
 ```
-make run-firmware
-```
-
-## Run firmware only
-```
-make run-firmware
+make fpga-run
 ```
 
 ## Implement ASIC
 ```
 make asic
 ```
-
 
 
 ## Instructions for Installing the RISC-V GNU Compiler Toolchain
@@ -131,13 +125,4 @@ The export PATH command can be added to the bottom of your ~/.bashrc
 
 ```
 path/to/riscv/riscv64-unknown-elf-gcc -march=rv32im -mabi=ilp32 <C sources> -o <exec>
-```
-
-### Supporting 32-bit applications
-
-Use symbolic links:
-
-```
-sudo ln -s riscv64-unknown-elf-gcc riscv32-unknown-elf-gcc
-sudo ln -s riscv64-unknown-elf-objcopy riscv32-unknown-elf-objcopy
 ```
