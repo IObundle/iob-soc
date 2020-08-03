@@ -1,6 +1,6 @@
 include $(ROOT_DIR)/system.mk
 
-# submodules
+#submodules
 include $(CPU_DIR)/hardware/hardware.mk
 ifeq ($(USE_DDR),1)
 include $(CACHE_DIR)/hardware/hardware.mk
@@ -8,7 +8,7 @@ else
 include $(INTERCON_DIR)/hardware/hardware.mk
 endif
 
-# include
+#include
 INC_DIR:=$(ROOT_DIR)/hardware/include
 
 INCLUDE+=$(incdir). $(incdir)$(INC_DIR)
@@ -16,8 +16,11 @@ INCLUDE+=$(incdir). $(incdir)$(INC_DIR)
 #headers
 VHDR+=$(INC_DIR)/system.vh
 
-# sources
+#sources
 SRC_DIR:=$(ROOT_DIR)/hardware/src
+
+#testbench
+TB_DIR:=$(ROOT_DIR)/hardware/testbench
 
 #rom
 VSRC+=$(SRC_DIR)/boot_ctr.v \
@@ -40,8 +43,15 @@ VSRC+=$(SRC_DIR)/system.v
 periphs:
 	$(foreach p, $(PERIPHERALS), $(eval include $(SUBMODULES_DIR)/$p/hardware/hardware.mk))
 
+$(SRC_DIR)/system.v:
+	cp $(SRC_DIR)/system_core.v $@
+	$(foreach p, $(PERIPHERALS), sed -i '/endmodule/e cat $(SUBMODULES_DIR)/$p/hardware/include/inst.v' $@;)
+	$(foreach p, $(PERIPHERALS), if test -f $(SUBMODULES_DIR)/$p/hardware/include/pio.v; then sed -i '/PIO/r $(SUBMODULES_DIR)/$p/hardware/include/pio.v' $@; fi;)
+	$(foreach p, $(PERIPHERALS), if test -f $(SUBMODULES_DIR)/$p/hardware/include/*.vh; then sed -i '/PHEADER/a `include \"$(shell echo `ls $(SUBMODULES_DIR)/$p/hardware/include/*.vh`)\"' $@; fi;)\
+
+
 # data files
-firmware.hex: $(FIRM_DIR)/firmware.bin
+firmware: $(FIRM_DIR)/firmware.bin
 ifeq ($(INIT_MEM),1)
 	$(PYTHON_DIR)/makehex.py $(FIRM_DIR)/firmware.bin $(FIRM_ADDR_W) > firmware.hex
 	$(PYTHON_DIR)/hex_split.py firmware .
@@ -52,4 +62,7 @@ endif
 boot.hex: $(BOOT_DIR)/boot.bin
 	$(PYTHON_DIR)/makehex.py $(BOOT_DIR)/boot.bin $(BOOTROM_ADDR_W) > boot.hex
 
-.PHONY: periphs
+hw-clean:
+	@rm -f *# *~ *.vcd *.dat *.hex *.bin $(SRC_DIR)/system.v $(TB_DIR)/system_tb.v
+
+.PHONY: periphs firmware hw-clean

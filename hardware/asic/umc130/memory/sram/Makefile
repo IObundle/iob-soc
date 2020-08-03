@@ -1,5 +1,5 @@
 ROOT_DIR:=../../../../..
-include $(ROOT_DIR)/system.mk
+include ../../../asic.mk
 
 # include Faraday memory compiler
 MEMAKER_SRC:=source /opt/ic_tools/init/init-memaker-20100111-130LL

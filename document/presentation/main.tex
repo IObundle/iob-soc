@@ -35,7 +35,7 @@
 \subtitle{A RISC-V-based System on Chip}
 \institute[IObundle Lda]{IObundle Lda.\\The Architecture for an Agile World}
 \titlegraphic{\includegraphics[height=2.5cm]{Logo.png}}
-\author[José T. de Sousa]{Jos\'e T. de Sousa}
+%\author[José T. de Sousa]{Jos\'e T. de Sousa}
 \institute[IObundle Lda]{IObundle Lda}
 \date{\today}
 
@@ -65,13 +65,14 @@
      \item Project setup
      \item Create an IP core to instantiate in your SoC
      \item Edit the ./system.mk configuration file to declare a new peripheral
-     \item Instantiate the timer IP in file {\tt hardware/src/system.v}
      \item Edit file {\tt firmware.c} to drive the new peripheral
      \item Run the firmware in internal SRAM
      \item Run the firmware in external DDR
      \item Simulate and implement the system
+     \item Implement in FPGA
+     \item Implement in ASIC (WIP)
      \item Conclusions and future work
- \end{itemize} 
+ \end{itemize}
 \end{center}
 \end{frame}
 
@@ -99,8 +100,8 @@
     \item Use a Linux machine or VM
     \item Install the latest stable version of the open source Icarus Verilog simulator (\url{iverilog.icarus.com})
     \item Make sure you can access \url{github.com} using an ssh key
-    \item At \url{github.com} create your SoC repository using \url{github.com/IObundle/iob-soc} as a template
-    \item Follow the instructions in the README file to clone the repository in your Linux machine
+    \item Clone the repository \url{github.com/IObundle/iob-soc}
+    \item Follow the instructions in its the README file
   \end{itemize}
 \end{center}
 \end{frame}
@@ -109,13 +110,16 @@
 \begin{frame}{Create an IP core to instantiate in your SoC}
   \begin{itemize}
   \item Create a timer IP core repository or, alternatively, use the one at \url{www.github.com/IObundle/iob-timer.git}
-  \item An IP core can be integrated in an IOb-SoC if it provides the following 2 files: 
+  \item An IP core can be integrated in an IOb-SoC if it provides the following X files: 
     \begin{enumerate}
     \item hardware/hardware.mk
-    \item software/embedded/embedded.mk
+    \item software/software.mk
     \end{enumerate}
+    \begin{itemize}
+      \item[--] Please refer to the files {\tt hardware/hardware.mk} and {\tt software/software.mk} in the iob-timer submodule to learn how to organize a peripheral core.
+    \end{itemize}
   \item Add the IP core repository as a git submodule of your IOb-SoC repository:\\
-    {\tt git submodule add https://github.com/IObundle/iob-timer.git submodules/TIMER}
+    {\tiny \tt git submodule add https://github.com/IObundle/iob-timer.git submodules/TIMER}
   \item To configure the system to host the IP core, edit the {\tt ./system.mk} file as in the next slide
   \end{itemize}
 \end{frame}
@@ -123,78 +127,52 @@
 % Following line allows for a more copy-paste-able code
 \lstset{basicstyle=\ttfamily,columns=fullflexible}
 
-\begin{frame}[fragile]{Edit the {\tt ./system.mk} configuration file to declare a new peripheral}
+\begin{frame}[fragile]{Edit the {\tt ./system.mk} configuration file to configure the system with a new peripheral}
 \begin{tiny}
 \begin{lstlisting}
 #FIRMWARE
 FIRM_ADDR_W:=13
 
 #SRAM
-SRAM_ADDR_W=13
+SRAM_ADDR_W:=13
 
 #DDR
+ifeq ($(USE_DDR),)
 USE_DDR:=0
+endif
+ifeq ($(RUN_DDR),)
 RUN_DDR:=0
+endif
+
 DDR_ADDR_W:=30
+CACHE_ADDR_W:=24
 
 #ROM
 BOOTROM_ADDR_W:=12
 
 #Init memory (only works in simulation or FPGA not running DDR)
+ifeq ($(INIT_MEM),)
 INIT_MEM:=1
+endif
 
-#Peripheral list (must match respective submodule name)
+#Peripheral list (must match respective submodule or folder name in the submodules directory)
 PERIPHERALS:=UART TIMER
 
 ...
-
-N_SLAVES:=1
 \end{lstlisting}
 \end{tiny}
 \end{frame}
 
-
-\begin{frame}[fragile]{Instantiate the timer IP in file {\tt hardware/src/system.v}}
-\begin{tiny}
-\begin{lstlisting}
-`timescale 1ns/1ps
-`include "system.vh"
-`include "iob_timer.vh"
-
-module system (
-
-   ...
-
-   //
-   // TIMER
-   //
-
-   iob_timer timer (
-		    .clk (clk),
-		    .rst (reset),
-
-		    //cpu interface
-		    .valid(slaves_req[`valid(`TIMER)]),
-		    .address(slaves_req[`address(`TIMER,`TIMER_ADDR_W+2,2)]),
-		    .wdata(slaves_req[`wdata(`TIMER)]),
-		    .rdata(slaves_resp[`rdata(`TIMER)]),
-		    .ready(slaves_resp[`ready(`TIMER)])
-		    );
-   ...
-endmodule
-\end{lstlisting}
-\end{tiny}
-\end{frame}
 
 %\begin{frame}{Add the timer IP software}
 %\end{frame}
 
 \begin{frame}[fragile]{Edit the {\tt firmware.c} file to drive the new peripheral}
-
   {\tt ./software/firmware/firmware.c}
   \begin{tiny}
     \begin{lstlisting}
 #include "system.h"
+#include "periphs.h"
 #include "iob-uart.h"
 #include "iob_timer.h"
 
@@ -214,8 +192,8 @@ int main()
   
   uart_txwait();
 
-  uart_printf("\nExecution time: %d clocks in %dus @%dMHz (%d MBaud)\n\n", 
-              (unsigned int)elapsed, elapsedu, FREQ/1000000, BAUD/1000000);
+  uart_printf("\nExecution time: %d clocks in %dus @%dMHz\n\n", 
+              (unsigned int)elapsed, elapsedu, FREQ/1000000);
 
   uart_txwait();
   return 0;
@@ -227,48 +205,60 @@ int main()
 
 \begin{frame}{Run the firmware in internal SRAM}
 \begin{enumerate}
-\item Run the firmware in internal RAM and disable (re)programming
+\item Initialize the internal RAM with the firmware
   \begin{itemize}
-  \item Assign {\tt USE\_DDR=0} and {\tt USE\_BOOT=0}
-  \item Loading programs after the FPGA is programmed is disabled: if the firmware is modified the FPGA must be recompiled
-  \item This option is only valid for FPGA which permits memory initialisation
+  \item Define {\tt USE\_DDR=0} and {\tt INIT\_MEM=1}
+  \item Works in simulation and FPGA
+  \item Loading programs after the FPGA is programmed is enabled: if the firmware is modified it is automatically recompiled
   \end{itemize}
-\item Run the firmware in internal RAM and enable (re)programming
+\item Do not initialize the internal RAM with the firmware
   \begin{itemize}
-  \item Assign {\tt USE\_DDR=0} {\tt USE\_BOOT=1}
-  \item Loading programs after the FPGA is programmed is enabled
-  \item This option is valid for FPGA and ASIC
-  \item Firmware is (re)loaded via UART
+  \item Assign {\tt USE\_DDR=0} {\tt INIT\_MEM=0}
+  \item Works in simulation, FPGA and ASIC
+  \item The firmware is (re)compiled and (re)loaded via UART
   \end{itemize}
 \end{enumerate}
 \end{frame}
 
 \begin{frame}{Run the firmware in external DDR}
 \begin{enumerate}
-\item Run the firmware in external DDR and disable (re)programming
+\item Initialize the DDR with the firmware
   \begin{itemize}
-  \item Assign {\tt USE\_DDR=1} and {\tt USE\_BOOT=0}
-  \item This option is only allowed in simulation which permits memory initialisation
-  \item An FPGA or ASIC implementation will not work
+  \item Define {\tt USE\_DDR=1} and {\tt INIT\_MEM=1}
+  \item Works in simulation only
+  \item In FPGA or ASIC the external DDR cannot be initialized
   \end{itemize}
-\item Run the firmware in external DDR memory and enable (re)programming
+\item Do not initialize the DDR with the firmware
   \begin{itemize}
-  \item Define {\tt USE\_DDR=1} {\tt USE\_BOOT=1}
-  \item This option is valid for FPGA and ASIC
-  \item Firmware is (re)loaded via UART
-  \item Third party DDR controller IP core is required
+  \item Define {\tt USE\_DDR=1} {\tt INIT\_MEM=0}
+  \item This option is valid for simulation, FPGA and ASIC
+  \item The firmware is (re)compiled and (re)loaded via UART
+  \item In FPGA or ASIC a third party DDR controller IP core is required
   \end{itemize}
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[fragile]{Simulate and implement the system}
 
+\begin{frame}[fragile]{Simulate IOb-SoC}
 \begin{itemize}
-\item To simulate the system just type {\tt make} 
-\item The firmware, bootloader and system verilog description are compiled as you can see from the printed messages
-\item The last prints should look like the following
+  \item Add your simulation folder in {\tt ./hardware/simulation} using the other folders in there as examples
+  \item In  file {\tt ./system.mk}:
+  \begin{enumerate}
+    \item Define {\tt SIMULATOR} with the name of your simulation folder
+    \item Define {\tt SIM\_SERVER} with the URL or IP address of the computer where the RTL simulator runs
+    \item Define {\tt SIM\_ROOT\_DIR} with the name of the remote root directory for the repository files
+  \end{enumerate}
+  \item To run locally, do not define {\tt SIM\_SERVER} and {\tt SIM\_ROOT\_DIR}
+  \item To run the simulator, type {\tt make} or {\tt make USER=your\_user\_name} if you have a different username on the remote simulation server
 \end{itemize}
+\end{frame}
 
+
+\begin{frame}[fragile]{Simulate IOb-SoC}
+\begin{itemize}
+  \item The firmware, bootloader and system verilog description are compiled as you can see from the printed messages
+  \item During simulation the following is printed:
+\end{itemize}
 \begin{tiny}
 \begin{lstlisting}
 
@@ -278,18 +268,41 @@ Reboot CPU and run program...
 
 Hello world!
 
-Execution time: 6583 clocks in 66us @100MHz (30 MBaud)
+Execution time: 6583 clocks in 66us @100MHz
 
 \end{lstlisting}
 \end{tiny}
-
-\begin{itemize}
-\item To implement in your chosen FPGA just type {\tt make fpga}
-\item To implement in your chosen ASIC just type {\tt make asic}
-\item To load the firmware in the hardware just type {\tt make load-firmware}
-\end{itemize}
-
 \end{frame}
+
+
+\begin{frame}{Implement in FPGA}
+\begin{itemize}
+  \item Add your FPGA folder in {\tt ./hardware/fpga} using the other folders in there as examples
+  \item In file {\tt ./system.mk}:
+  \begin{enumerate}
+    \item Define {\tt FPGA\_BOARD} with the name of your FPGA folder
+    \item Define {\tt FPGA\_BOARD\_SERVER} with the URL or IP address of the computer connected to the board
+    \item Define {\tt FPGA\_COMPILE\_SERVER} with the URL or IP address of the computer containing the FPGA compiler and tools
+    \item Define {\tt FPGA\_BOARD\_ROOT\_DIR} and {\tt FPGA\_COMPILE\_ROOT\_DIR} with the name of the remote root directories for the repository files
+  \end{enumerate}
+  \item To compile and load the hardware design in the FPGA, type {\tt make fpga-load}
+  \item To load and run your firmware in the FPGA, type {\tt make run-firmware}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Implement in ASIC (WIP)}
+\begin{itemize}
+  \item Add your ASIC folder in {\tt ./hardware/asic} using the other folders in there as examples
+  \item In the file {\tt ./system.mk}:
+  \begin{enumerate}
+     \item Define {\tt ASIC\_NODE} with the name of your ASIC folder
+     \item Define {\tt ASIC\_COMPILE\_SERVER} with the URL or IP address of the computer containing the ASIC design tools
+     \item Define {\tt ASIC\_COMPILER\_ROOT\_DIR} with the name of the remote root directory for the repository files
+  \end{enumerate}
+  \item To compile the ASIC, type {\tt make asic}
+\end{itemize}
+\end{frame}
+
 
 \begin{frame}{Conclusions and future work}
 
@@ -301,6 +314,7 @@ Execution time: 6583 clocks in 66us @100MHz (30 MBaud)
     \item A simple software driver for the IP core is exemplified
     \item How to compile and run the system is explained 
     \item Options for implementing the main memory are presented
+    \item Implementation of FPGA and ASIC is explained
     \end{itemize}
   \item Future work
     \begin{itemize}

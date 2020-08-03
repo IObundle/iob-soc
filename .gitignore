@@ -1,6 +1,8 @@
 hardware/simulation/icarus/*.vcd
 hardware/simulation/ncim/*.vcd
 
+hardware/fpga/CYCLONEV-GT-DK/synth_system.sof
+
 hardware/fpga/AES-KU040-DB-G/ip
 hardware/fpga/AES-KU040-DB-G/*.log
 hardware/fpga/AES-KU040-DB-G/synth_system.bit
@@ -8,6 +10,8 @@ hardware/fpga/AES-KU040-DB-G/synth_system.bit
 # following lines ignore everything 'make' command produces
 hardware/simulation/icarus/*
 !hardware/simulation/icarus/Makefile
+
+software/periphs.h
 
 software/bootloader/*
 !software/bootloader/boot.c
@@ -19,12 +23,16 @@ software/firmware/*
 !software/firmware/firmware.S
 !software/firmware/Makefile
 
-software/periphs.h
+software/console/*
+!software/console/console.c
+!software/console/console.h
+!software/console/Makefile
 
 document/presentation/*
 !document/presentation/figures
 !document/presentation/bibfile.bib
 !document/presentation/main.pdf
 !document/presentation/main.tex
-!document/presentation/makefile
-!document/presentation/system.vh
+!document/presentation/Makefile
+
+test.log
