@@ -28,6 +28,7 @@ PERIPHERALS:=UART
 
 #SIMULATION TEST
 SIM_LIST="SIMULATOR=icarus" "SIMULATOR=ncsim"
+#SIM_LIST="SIMULATOR=icarus"
 
 ifeq ($(SIMULATOR),ncsim)
 	SIM_USER=user19
@@ -39,6 +40,7 @@ endif
 
 #BOARD TEST
 BOARD_LIST="BOARD=CYCLONEV-GT-DK" "BOARD=AES-KU040-DB-G"
+#BOARD_LIST="BOARD=CYCLONEV-GT-DK"
 
 ifeq ($(BOARD),AES-KU040-DB-G)
 	COMPILE_USER=$(USER)
@@ -126,7 +128,13 @@ DEFINE+=$(defmacro)FREQ=100000000
 dummy:= $(shell echo $(BAUD))
 
 #run target by default
-all: run
+TARGET:=run
+
+all: usage $(TARGET)
+
+
+usage:
+	@echo "Usage: make target [parameters]"
 
 #create periph indices and directories
 N_SLAVES:=0
@@ -134,6 +142,9 @@ dummy:=$(foreach p, $(PERIPHERALS), $(eval $p_DIR:=$(SUBMODULES_DIR)/$p))
 dummy:=$(foreach p, $(PERIPHERALS), $(eval $p=$(N_SLAVES)) $(eval N_SLAVES:=$(shell expr $(N_SLAVES) \+ 1)))
 dummy:=$(foreach p, $(PERIPHERALS), $(eval DEFINE+=$(defmacro)$p=$($p)))
 
-TEST_LOG:=">./test.log"
+#test log
+ifneq ($(TEST_LOG),)
+LOG=>test.log
+endif
 
 .PHONY: all
