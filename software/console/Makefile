@@ -17,6 +17,7 @@ CONSOLE=./console -s $(SERIAL)
 run: console firmware.bin
 ifneq ($(USERNAME),)
 	@echo "FPGA is being used by $(USERNAME)"
+	exit 1
 else
 	$(CONSOLE) $(LOG)
 endif

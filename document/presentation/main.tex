@@ -101,7 +101,7 @@
     \item Install the latest stable version of the open source Icarus Verilog simulator (\url{iverilog.icarus.com})
     \item Make sure you can access \url{github.com} using an ssh key
     \item Clone the repository \url{github.com/IObundle/iob-soc}
-    \item Follow the instructions in its the README file
+    \item Follow the instructions in its README file
   \end{itemize}
 \end{center}
 \end{frame}
@@ -110,7 +110,7 @@
 \begin{frame}{Create an IP core to instantiate in your SoC}
   \begin{itemize}
   \item Create a timer IP core repository or, alternatively, use the one at \url{www.github.com/IObundle/iob-timer.git}
-  \item An IP core can be integrated in an IOb-SoC if it provides the following X files: 
+  \item An IP core can be integrated into IOb-SoC if it provides the following files: 
     \begin{enumerate}
     \item hardware/hardware.mk
     \item software/software.mk
@@ -134,14 +134,14 @@
 FIRM_ADDR_W:=13
 
 #SRAM
-SRAM_ADDR_W:=13
+SRAM_ADDR_W=13
 
 #DDR
 ifeq ($(USE_DDR),)
-USE_DDR:=0
+	USE_DDR:=0
 endif
 ifeq ($(RUN_DDR),)
-RUN_DDR:=0
+	RUN_DDR:=0
 endif
 
 DDR_ADDR_W:=30
@@ -150,22 +150,89 @@ CACHE_ADDR_W:=24
 #ROM
 BOOTROM_ADDR_W:=12
 
-#Init memory (only works in simulation or FPGA not running DDR)
+#Init memory (only works in simulation or in FPGA)
 ifeq ($(INIT_MEM),)
-INIT_MEM:=1
+	INIT_MEM:=0
 endif
 
 #Peripheral list (must match respective submodule or folder name in the submodules directory)
-PERIPHERALS:=UART TIMER
+PERIPHERALS:=UART
 
-...
+
 \end{lstlisting}
 \end{tiny}
 \end{frame}
 
 
-%\begin{frame}{Add the timer IP software}
-%\end{frame}
+\begin{frame}[fragile]{Edit the {\tt ./system.mk} configuration file to configure the system with a new peripheral (continued: 2)}
+\begin{tiny}
+\begin{lstlisting}
+
+#SIMULATION TEST
+SIM_LIST="SIMULATOR=icarus" "SIMULATOR=ncsim"
+#SIM_LIST="SIMULATOR=icarus"
+LOCAL_SIM_LIST=icarus #leave space in the end
+
+ifeq ($(SIMULATOR),ncsim)
+	SIM_SERVER=$(SIM_USER)@micro7.lx.it.pt
+	SIM_USER=user19
+else
+#default
+	SIMULATOR:=icarus
+endif
+
+\end{lstlisting}
+\end{tiny}
+\end{frame}
+
+\begin{frame}[fragile]{Edit the {\tt ./system.mk} configuration file to configure the system with a new peripheral (continued: 3)}
+\begin{tiny}
+\begin{lstlisting}
+#BOARD TEST
+BOARD_LIST="BOARD=CYCLONEV-GT-DK" "BOARD=AES-KU040-DB-G"
+#BOARD_LIST="BOARD=AES-KU040-DB-G"
+#BOARD_LIST="BOARD=CYCLONEV-GT-DK"
+#LOCAL_BOARD_LIST=CYCLONEV-GT-DK #leave space in the end
+#LOCAL_COMPILER_LIST=CYCLONEV-GT-DK AES-KU040-DB-G
+
+ifeq ($(BOARD),AES-KU040-DB-G)
+	COMPILE_USER=$(USER)
+	COMPILE_SERVER=$(COMPILE_USER)@pudim-flan.iobundle.com
+	COMPILE_OBJ=synth_system.bit
+	BOARD_USER=$(USER)
+	BOARD_SERVER=$(BOARD_USER)@baba-de-camelo.iobundle.com
+else ifeq ($(BOARD),CYCLONEV-GT-DK)
+	COMPILE_SERVER=$(COMPILE_USER)@pudim-flan.iobundle.com
+	COMPILE_USER=$(USER)
+	COMPILE_OBJ=output_files/top_system.sof
+	BOARD_SERVER=$(BOARD_USER)@pudim-flan.iobundle.com
+	BOARD_USER=$(USER)
+else
+#default
+	BOARD=CYCLONEV-GT-DK
+	COMPILE_OBJ=output_files/top_system.sof
+endif
+
+\end{lstlisting}
+\end{tiny}
+\end{frame}
+
+\begin{frame}[fragile]{Edit the {\tt ./system.mk} configuration file to configure the system with a new peripheral (continued: 4)}
+\begin{tiny}
+\begin{lstlisting}
+
+#ROOT DIR ON REMOTE MACHINES
+REMOTE_ROOT_DIR=./sandbox/iob-soc
+
+#ASIC
+ASIC_NODE:=umc130
+
+#DOC TYPE
+DOC_TYPE:=presentation
+\end{lstlisting}
+\end{tiny}
+\end{frame}
+
 
 \begin{frame}[fragile]{Edit the {\tt firmware.c} file to drive the new peripheral}
   {\tt ./software/firmware/firmware.c}
@@ -205,15 +272,14 @@ int main()
 
 \begin{frame}{Run the firmware in internal SRAM}
 \begin{enumerate}
-\item Initialize the internal RAM with the firmware
+\item Initialize the SRAM with the firmware
   \begin{itemize}
-  \item Define {\tt USE\_DDR=0} and {\tt INIT\_MEM=1}
+  \item Define {\tt INIT\_MEM=1}
   \item Works in simulation and FPGA
-  \item Loading programs after the FPGA is programmed is enabled: if the firmware is modified it is automatically recompiled
+  \item Firmware may be recompiled and reloaded via UART afterwords
   \end{itemize}
-\item Do not initialize the internal RAM with the firmware
+\item Do not initialize the SRAM with the firmware (default)
   \begin{itemize}
-  \item Assign {\tt USE\_DDR=0} {\tt INIT\_MEM=0}
   \item Works in simulation, FPGA and ASIC
   \item The firmware is (re)compiled and (re)loaded via UART
   \end{itemize}
@@ -228,9 +294,9 @@ int main()
   \item Works in simulation only
   \item In FPGA or ASIC the external DDR cannot be initialized
   \end{itemize}
-\item Do not initialize the DDR with the firmware
+\item Do not initialize the DDR with the firmware (default)
   \begin{itemize}
-  \item Define {\tt USE\_DDR=1} {\tt INIT\_MEM=0}
+  \item Define {\tt USE\_DDR=1}
   \item This option is valid for simulation, FPGA and ASIC
   \item The firmware is (re)compiled and (re)loaded via UART
   \item In FPGA or ASIC a third party DDR controller IP core is required
@@ -240,22 +306,33 @@ int main()
 
 
 \begin{frame}[fragile]{Simulate IOb-SoC}
-\begin{itemize}
-  \item Add your simulation folder in {\tt ./hardware/simulation} using the other folders in there as examples
-  \item In  file {\tt ./system.mk}:
-  \begin{enumerate}
-    \item Define {\tt SIMULATOR} with the name of your simulation folder
-    \item Define {\tt SIM\_SERVER} with the URL or IP address of the computer where the RTL simulator runs
-    \item Define {\tt SIM\_ROOT\_DIR} with the name of the remote root directory for the repository files
-  \end{enumerate}
-  \item To run locally, do not define {\tt SIM\_SERVER} and {\tt SIM\_ROOT\_DIR}
-  \item To run the simulator, type {\tt make} or {\tt make USER=your\_user\_name} if you have a different username on the remote simulation server
-\end{itemize}
+  \begin{itemize}
+  \item Simulation runs in directory {\tt ./hardware/simulation} pointed by the
+    SIMULATOR variable in system.mk
+  \item To add your simulation directory in {\tt ./hardware/simulation} for your
+    simulator use the files in the existing simulation directories as examples.
+  \item In file {\tt ./system.mk} find and insert in the following section as given:
+%   \begin{tiny}
+    \begin{lstlisting}
+ifeq ($(SIMULATOR),ncsim)
+	SIM_SERVER=$(SIM_USER)@micro7.lx.it.pt
+	SIM_USER=user19
+else ifeq ($(SIMULATOR),your_simulator)
+	SIM_SERVER=$(SIM_USER)@your.simulation.server
+	SIM_USER=your_username
+else
+#default
+	SIMULATOR:=icarus
+endif
+    \end{lstlisting}
+%    \end{tiny}
+  \end{itemize}
 \end{frame}
 
 
-\begin{frame}[fragile]{Simulate IOb-SoC}
+\begin{frame}[fragile]{Simulate IOb-SoC (continued)}
 \begin{itemize}
+  \item To run the simulation type {\tt make sim INIT\_MEM=1}
   \item The firmware, bootloader and system verilog description are compiled as you can see from the printed messages
   \item During simulation the following is printed:
 \end{itemize}
