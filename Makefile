@@ -95,9 +95,6 @@ clean-sw:
 	make -C $(FIRM_DIR) clean
 	make -C $(BOOT_DIR) clean
 
-clean-sim:
-	make -C $(SIM_DIR) clean
-
 document:
 	make -C $(DOC_DIR)
 
@@ -125,7 +122,7 @@ test-sim:
 	@rm -f test.log
 	$(foreach s, $(SIM_LIST), make test_sim $s TEST_LOG=1;)
 	diff -q test.log test/test-sim.log
-	echo SIMULATION test passed for $(SIM_LIST)
+	@echo SIMULATION TEST PASSED FOR $(SIM_LIST)
 
 run_board:
 	make fpga-clean BOARD=$(BOARD)
@@ -148,9 +145,8 @@ test-fpga:
 	@rm -f test.log
 	$(foreach b, $(BOARD_LIST), make test_board $b TEST_LOG=1;)
 	diff -q test.log test/test-fpga.log
-	echo FPGA test passed for $(BOARD_LIST)
+	@echo FPGA TEST PASSED FOR $(BOARD_LIST)
 
-clean: clean-sw clean-doc clean-sim
+clean: clean-sw clean-doc
 
-
-.PHONY: sim fpga firmware bootloader document clean fpga-load fpga-clean fpga-clean-ip run-hw asic asic-clean waves test test-sim test-fpga clean-sw clean-doc
+.PHONY: sim sim-clean fpga firmware bootloader document clean fpga-load fpga-clean fpga-clean-ip run-hw asic asic-clean waves test test-sim test-fpga clean-sw clean-doc
