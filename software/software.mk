@@ -3,6 +3,7 @@ incdir:=-I
 include $(ROOT_DIR)/system.mk
 
 #submodules
+include $(CPU_DIR)/software/software.mk
 include $(INTERCON_DIR)/software/software.mk
 
 SW_DIR:=$(ROOT_DIR)/software

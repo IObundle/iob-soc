@@ -22,7 +22,7 @@ USE_DDR=0 RUN_DDR=0
 
 Receiving and loading file...
 
-File size:       2508 bytes
+File size:       2556 bytes
           0%
          10%
          20%
@@ -34,7 +34,7 @@ File size:       2508 bytes
          80%
          90%
         100%
-File received (2508 bytes)
+File received (2556 bytes)
 Reboot CPU and run program...
 
 
@@ -79,7 +79,7 @@ USE_DDR=1 RUN_DDR=1
 
 Receiving and loading file...
 
-File size:       2508 bytes
+File size:       2556 bytes
           0%
          10%
          20%
@@ -91,7 +91,7 @@ File size:       2508 bytes
          80%
          90%
         100%
-File received (2508 bytes)
+File received (2556 bytes)
 Reboot CPU and run program...
 
 
@@ -113,7 +113,7 @@ Reboot CPU and run program...
 Hello world!
 
 
-Simulation complete via $finish(1) at time 108601 NS + 0
+Simulation complete via $finish(1) at time 129101 NS + 0
 /home/user19/sandbox/iob-soc/hardware/testbench/system_tb.v:73       $finish;
 
 
@@ -123,7 +123,7 @@ USE_DDR=0 RUN_DDR=0
 
 Receiving and loading file...
 
-File size:       2508 bytes
+File size:       2556 bytes
           0%
          10%
          20%
@@ -135,7 +135,7 @@ File size:       2508 bytes
          80%
          90%
         100%
-File received (2508 bytes)
+File received (2556 bytes)
 Reboot CPU and run program...
 
 
@@ -143,7 +143,7 @@ Reboot CPU and run program...
 Hello world!
 
 
-Simulation complete via $finish(1) at time 2029131 NS + 0
+Simulation complete via $finish(1) at time 2085151 NS + 0
 /home/user19/sandbox/iob-soc/hardware/testbench/system_tb.v:73       $finish;
 
 
@@ -158,7 +158,7 @@ Reboot CPU and run program...
 Hello world!
 
 
-Simulation complete via $finish(1) at time 109261 NS + 0
+Simulation complete via $finish(1) at time 129761 NS + 0
 /home/user19/sandbox/iob-soc/hardware/testbench/system_tb.v:73       $finish;
 
 
@@ -173,7 +173,7 @@ Reboot CPU and run program...
 Hello world!
 
 
-Simulation complete via $finish(1) at time 115881 NS + 0
+Simulation complete via $finish(1) at time 137161 NS + 0
 /home/user19/sandbox/iob-soc/hardware/testbench/system_tb.v:73       $finish;
 
 
@@ -183,7 +183,7 @@ USE_DDR=1 RUN_DDR=1
 
 Receiving and loading file...
 
-File size:       2508 bytes
+File size:       2556 bytes
           0%
          10%
          20%
@@ -195,7 +195,7 @@ File size:       2508 bytes
          80%
          90%
         100%
-File received (2508 bytes)
+File received (2556 bytes)
 Reboot CPU and run program...
 
 
@@ -203,5 +203,5 @@ Reboot CPU and run program...
 Hello world!
 
 
-Simulation complete via $finish(1) at time 2036411 NS + 0
+Simulation complete via $finish(1) at time 2093211 NS + 0
 /home/user19/sandbox/iob-soc/hardware/testbench/system_tb.v:73       $finish;
