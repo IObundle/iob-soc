@@ -237,8 +237,8 @@ module system
    //
    ext_mem ext_mem0 
      (
-      .clk                  (clk ),
-      .rst                  (reset),
+      .clk                  (clk),
+      .rst                  (cpu_reset),
       
  `ifdef RUN_DDR_USE_SRAM
       // instruction bus
