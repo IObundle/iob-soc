@@ -95,6 +95,9 @@ clean-sw:
 	make -C $(FIRM_DIR) clean
 	make -C $(BOOT_DIR) clean
 
+clean-sim:
+	make -C $(SIM_DIR) clean
+
 document:
 	make -C $(DOC_DIR)
 
@@ -147,7 +150,7 @@ test-fpga:
 	diff -q test.log test/test-fpga.log
 	echo FPGA test passed for $(BOARD_LIST)
 
-clean: clean-sw clean-doc
+clean: clean-sw clean-doc clean-sim
 
 
 .PHONY: sim fpga firmware bootloader document clean fpga-load fpga-clean fpga-clean-ip run-hw asic asic-clean waves test test-sim test-fpga clean-sw clean-doc
