@@ -13,8 +13,6 @@ run: firmware.elf
 firmware.elf: ../template.lds $(HDR) $(SRC)
 	$(TOOLCHAIN_PREFIX)gcc -o $@ $(CFLAGS) $(DEFINE) $(INCLUDE) $(SRC) -lgcc -lc
 	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
-	if [ `wc -c firmware.bin | sed s/firmware\.bin//` -gt $(( (2**$(FIRM_ADDR_W))/2 )) ] ; \
-	then echo "ERROR: FIRM_ADDR_W too small"; exit 1; fi;
 
 clean:
 	@rm -rf firmware.bin firmware.elf firmware.map *.hex ../periphs.h *~

@@ -5,6 +5,7 @@ SECTIONS {
 		*(.text);
 		*(*);
 		. = ALIGN(4);
+                _heap_start = .; 
 		end = .;
 	}
 }
