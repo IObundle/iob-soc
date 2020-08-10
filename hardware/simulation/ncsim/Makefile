@@ -15,12 +15,12 @@ SIM_USER:=user19
 SIM_SERVER=$(SIM_USER)@micro7.lx.it.pt
 SIM_ROOT_DIR=./sandbox/iob-soc
 
-export VSRC CFLAGS EFLAGS SFLAGS TEST_LOG
+export VSRC CFLAGS EFLAGS SFLAGS 
 
 #simulate
 run: $(VSRC) $(VHDR) firmware boot.hex periphs
 	./run_ncsim.sh
-	grep -v xcelium xmsim.log | grep -v xmsim > test.log
+	grep -v xcelium xmsim.log | grep -v xmsim $(LOG)
 
 clean: hw-clean
 	rm -rf xcelium.d xmsim.key *.log

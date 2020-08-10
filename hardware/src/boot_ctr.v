@@ -58,8 +58,10 @@ module boot_ctr
    reg [`DATA_W-1: 0]         rom_r_rdata;
    
    //read rom
-   always @(posedge clk, posedge rst)
-     if(rst) begin
+   wire                       reboot_rst = rst | cpu_rst_req;
+   
+   always @(posedge clk, posedge reboot_rst)
+     if(reboot_rst) begin
         rom_r_valid <= 1'b1;
         rom_r_addr <= {`BOOTROM_ADDR_W-2{1'b0}};
      end else
@@ -73,8 +75,8 @@ module boot_ctr
    // WRITE SRAM
    //
    reg [`SRAM_ADDR_W-3:0] ram_w_addr;
-   always @(posedge clk, posedge rst)
-     if(rst) begin
+   always @(posedge clk, posedge reboot_rst)
+     if(reboot_rst) begin
         sram_valid <= 1'b1;
         ram_w_addr <= {(`SRAM_ADDR_W-2){1'b0}};
         sram_wstrb <= {`DATA_W/8{1'b1}};
@@ -90,6 +92,7 @@ module boot_ctr
    //
    //BOOT CPU RESET
    //
+   
    always @(posedge clk, posedge rst)
      if(rst)
        cpu_rst <= 1'b1;

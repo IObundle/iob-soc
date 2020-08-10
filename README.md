@@ -17,65 +17,175 @@ Ssh access is mandatory so that submodules can be updated.
 
 To configure IOb-SoC the following parameters are available:
 
-FIRM_ADDR_W: log2 size of user program and data space, from 1st instruction at
-address 0 to the stack end at address 2<sup>FIRM_ADDR_W</sup>-1
+FIRM\_ADDR\_W: log2 size of user program and data space, from 1st instruction at
+address 0 to the stack end at address 2<sup>FIRM\_ADDR\_W</sup>-1
 
-SRAM_ADDR_W: log2 size of SRAM, addresses from 0 to 2<sup>SRAM_ADDR_W</sup>-1
+SRAM\_ADDR\_W: log2 size of SRAM, addresses from 0 to 2<sup>SRAM\_ADDR\_W</sup>-1
 
-USE_DDR: assign to 1 if DDR access is needed or to 0 otherwise. Instruction and
-data L1 caches will be placed in the design, connected to an L2 cache, which in
-turn connects to an external DDR controller.
+USE\_DDR: assign default to 1 if DDR access is needed or to 0
+otherwise. Instruction and data L1 caches will be placed in the design,
+connected to an L2 cache, which in turn connects to an external DDR
+controller. This parameter can also be passed when invoking the makefile.
 
-RUN_DDR: assign to 1 if the program runs from the DDR memory and 0
-otherwise. This parameter is ignored if USE_DDR=0. If USE_DDR=1 and RUN_DDR=1,
-the SRAM memory can be accessed when the address MSB is 1. If USE_DDR=1 and
-RUN_DDR=0, the DDR is used to store data only; it can be accessed when the
-address MSB is 1.
+RUN\_DDR: assign default to 1 if the program runs from the DDR memory and 0
+otherwise. This parameter is ignored if USE\_DDR=0. If USE\_DDR=1 and RUN\_DDR=1,
+the SRAM memory can be accessed when the address MSB is 1. If USE\_DDR=1 and
+RUN\_DDR=0, the DDR is used to store data only; it can be accessed when the
+address MSB is 1. This parameter can also be passed when invoking the makefile.
 
-DDR_ADDR_W: log2 size of DDR, addresses from 0 to 2<sup>DDR_ADDR_W</sup>-1
+DDR\_ADDR\_W: log2 size of DDR, addresses from 0 to 2<sup>DDR\_ADDR\_W</sup>-1
 
-CACHE_ADDR_W: log2 size, allows to use data from DDR when FIRM_ADDR_W is exceeded
+CACHE\_ADDR\_W: log2 size of addressable memory; it should be greater than
+FIRM\_ADDR\_W to allow to allow accessing DDR data outside the program scope.
 
-INIT_MEM: assign to 1 to load a program received by the UART and boot from it, or to 0 otherwise.
+INIT\_MEM: assign default to 1 to load a program received by the UART and boot
+from it, or to 0 otherwise. This parameter can also be passed when invoking the
+makefile.
 
-BOOTROM_ADDR_W: log2 size of the boot ROM, which should be sufficient to hold the bootloader program and data.
+BOOTROM\_ADDR\_W: log2 size of the boot ROM, which should be sufficient to hold
+the bootloader program and data.
 
-PERIPHERALS:=UART: peripheral list (must match respective submodule name)
+PERIPHERALS: peripheral list; must match respective submodule name so that
+all hardware and software of the peripheral is automatically included when
+compiling the system.
 
-SIMULATOR:=icarus: chosen RTL simulator
+SIM\_LIST: list of simulators to use in automatic testing. Simulators can be run
+remotely, in which case parameters SIM\_SERVER and SIM\_USER should be given.
 
-FPGA_BOARD:=AES-KU040-DB-G: chosen FPGA board
+SIM\_SERVER: remote machine where the simulator runs.
 
-FPGA_COMPILER_SERVER=146.193.44.48: chosen FPGA build server
+SIM\_USER: user name for SIM\_SERVER.
 
-ASIC_NODE:=umc130: chosen ASIC node
+SIMULATOR: default simulator. Leave SIM\_SERVER and SIM\_USER blank if simulator
+runs locally.
 
-DOC_TYPE:=presentation: chosen document to build with Latex
+BOARD_LIST: list of boards to use in automatic testing. FPGA compilers, loaders
+and our "console" program can be run remotely, in which case parameters
+COMPILE\_SERVER, COMPILE\_USER, COMPILE\_OBJ, BOARD\_SERVER and BOARD\_USER
+should be given.
 
-## Simulate
+LOCAL\_BOARD_LIST: list of boards attached to the local machine.
+
+LOCAL\_COMPILER_LIST: list of FPGA compilers installed in the local machine.
+
+COMPILE\_SERVER: remote machine where the FPGA compiler is installed.
+
+COMPILE\_USER: user name for COMPILE\_SERVER.
+
+COMPILE\_OBJ: name of the FPGA configuration file to build.
+
+BOARD\_SERVER: remote machine where the hardware board is attached.
+
+COMPILE\_USER: user name for BOARD\_SERVER.
+
+REMOTE\_ROOT_DIR: directory in the remote machine to copy the current directory 
+
+ASIC\_NODE: directory in the asic directory containing a compilation environment for the ASIC technology node
+
+DOC\_TYPE: directory in the document directory containing the Latex files producing the desired type of document
+
+## Simulation
+
+To simulate:
 ```
 make sim
 ```
+To visualise simulation waveforms
+```
+make sim-waves
+```
+clean simulation files:
+```
+make sim-clean
+```
 
-## Compile FPGA 
+## FPGA
+
+To compile the FPGA:
 ```
 make fpga
 ```
 
-## Load FPGA 
+To configure the FPGA:
 ```
 make fpga-load
 ```
 
-## Run FPGA
+To clean FPGA files:
 ```
-make fpga-run
+make fpga-clean
+```
+or to clean and delete 3rd party IP:
+```
+make fpga-clean-ip
 ```
 
-## Implement ASIC
+
+## Running the hardware
+```
+make run-hw
+```
+
+## ASIC
+
+To compile and ASIC:
 ```
 make asic
 ```
+To clean ASIC files:
+```
+make asic-clean
+```
+
+
+## Software
+
+To compile the firmware:
+```
+make  firmware
+```
+
+To compile the bootloader:
+```
+make bootloader
+```
+
+## Documentation
+
+To compile the chosen document type:
+```
+make document
+```
+
+To clean document files:
+```
+make clean-doc
+```
+
+
+## Testing
+
+To run a simulation and FPGA test:
+```
+make test
+```
+To run a simulation test only:
+```
+make test-sim
+```
+To run a FPGA test only:
+```
+make test-fpga
+```
+
+
+## Cleaning
+
+Besides the specific cleanup actions give so far, to clean software and documentation type
+```
+make clean
+```
+
 
 
 ## Instructions for Installing the RISC-V GNU Compiler Toolchain
