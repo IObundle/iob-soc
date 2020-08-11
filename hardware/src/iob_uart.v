@@ -11,7 +11,7 @@ module iob_uart (
 	         input [31:0]      wdata,
                  input             wstrb,
 	         output reg [31:0] rdata,
-	         output reg        ready,
+	         output            ready,
 
                  //serial i/f
 	         output            txd,
@@ -66,12 +66,7 @@ module iob_uart (
 
    
    // cpu interface ready signal
-   always @(posedge clk, posedge rst)
-     if(rst)
-       ready <= 1'b0;
-     else 
-       ready <= valid;
-
+   assign ready = 1'b1;
 
    //receive enable
    always @(posedge clk, posedge rst_int)
