@@ -14,7 +14,7 @@ module boot_ctr
    input [1:0]                cpu_wdata,
    input [`DATA_W/8-1:0]      cpu_wstrb,
    output [`DATA_W-1:0]       cpu_rdata,
-   output reg                 cpu_ready,
+   output                     cpu_ready,
 
 
    //sram master write interface
@@ -27,12 +27,8 @@ module boot_ctr
 
    //cpu interface
    assign cpu_rdata = {{(`DATA_W-1){1'b0}},boot};
-   always @(posedge clk, posedge rst)
-     if(rst)
-         cpu_ready <= 1'b0;
-     else
-       cpu_ready <= cpu_valid;
-       
+   assign cpu_ready = 1'b1;
+
    //boot register
    always @(posedge clk, posedge rst)
      if(rst)
