@@ -1,12 +1,15 @@
 ROOT_DIR:=../..
 include ../software.mk
+#include peripherals
+dummy:=$(foreach p, $(PERIPHERALS), $(eval include $(SUBMODULES_DIR)/$p/software/embedded/embedded.mk))
+
 
 #local flags
 CFLAGS+=--std=gnu99 -Wl,-Bstatic,-T,../template.lds,-Map,firmware.map,--strip-debug
 
 #local sources
 HDR+=$(SW_DIR)/periphs.h
-SRC+= firmware.S firmware.c
+SRC+= firmware.S firmware.c ../iob_sbrkr.c
 
 run: firmware.elf
 

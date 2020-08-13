@@ -1,6 +1,7 @@
 ROOT_DIR:=../..
 include $(ROOT_DIR)/software/software.mk
 include $(CACHE_DIR)/software/software.mk
+include $(UART_DIR)/software/embedded/embedded.mk
 
 #specific compiler flags
 CFLAGS+=-Wl,-Bstatic,-T,../template.lds,-Map,boot.map,--strip-debug

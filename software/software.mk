@@ -3,9 +3,9 @@ incdir:=-I
 include $(ROOT_DIR)/system.mk
 
 #submodules
-include $(CPU_DIR)/software/software.mk
 include $(INTERCON_DIR)/software/software.mk
 
+#software directory
 SW_DIR:=$(ROOT_DIR)/software
 
 #include
@@ -22,8 +22,6 @@ HDR=$(SW_DIR)/system.h
 TOOLCHAIN_PREFIX:=riscv64-unknown-elf-
 CFLAGS:=-Os -ffreestanding -nostdlib -march=rv32im -mabi=ilp32 --std=gnu99
 
-#include peripherals
-dummy:=$(foreach p, $(PERIPHERALS), $(eval include $(SUBMODULES_DIR)/$p/software/embedded/embedded.mk))
-
+#peripherals' base addresses
 $(SW_DIR)/periphs.h:
 	$(foreach p, $(PERIPHERALS), $(shell echo "#define $p_BASE (1<<P) |($p<<(ADDR_W-2-N_SLAVES_W))" >> ../periphs.h) )
