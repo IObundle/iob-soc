@@ -1,7 +1,10 @@
 #include "system.h"
 #include "interconnect.h"
 #include "iob-uart.h"
+
+#if (USE_DDR==1 && RUN_DDR==1)
 #include "iob-cache.h"
+#endif
 
 #define UART_BASE (1<<P) |(UART<<(ADDR_W-2-N_SLAVES_W))
 
@@ -43,7 +46,7 @@ int main() {
     default: break;
     case RUN: //run firmware
       uart_puts ("Reboot CPU and run program...\n");
-#if USE_DDR
+#if (USE_DDR && RUN_DDR)
       //wait for cache write buffer to empty  
       cache_init(FIRM_ADDR_W);
       while(!cache_buffer_empty());
