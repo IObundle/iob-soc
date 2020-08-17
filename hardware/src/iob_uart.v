@@ -11,7 +11,7 @@ module iob_uart (
 	         input [31:0]      wdata,
                  input             wstrb,
 	         output reg [31:0] rdata,
-	         output            ready,
+	         output reg        ready,
 
                  //serial i/f
 	         output            txd,
