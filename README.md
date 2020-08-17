@@ -14,4 +14,4 @@ make
 
 ## Integrate in SoC ##
 
-* Check out https://github.com/jjts/iob-soc
+* Check out [IOb-SoC](https://github.com/IObundle/iob-soc)

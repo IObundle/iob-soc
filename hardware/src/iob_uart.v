@@ -11,7 +11,7 @@ module iob_uart (
 	         input [31:0]      wdata,
                  input             wstrb,
 	         output reg [31:0] rdata,
-	         output reg        ready,
+	         output            ready,
 
                  //serial i/f
 	         output            txd,
@@ -67,7 +67,7 @@ module iob_uart (
    assign rst_int = rst | rst_soft;
 
    
-   // register cpu command
+   // register cpu command and produce ready
    reg [2:0]       address_reg;
    reg             wstrb_reg;
    always @(posedge clk, posedge rst)
