@@ -23,6 +23,7 @@ module iob_uart (
    // internal registers
    wire                            tx_wait;
    reg [31:0]                      cfg_divider;
+   reg                             tx_en;
    reg                             rx_en;
    
    // receiver
@@ -39,9 +40,10 @@ module iob_uart (
    
    // register access
    reg                             data_write_en;
-   reg                             data_read_en;
+   wire                            data_read_en;
    reg                             div_write_en;
    reg                             rst_soft_en;
+   reg                             tx_en_en;
    reg                             rx_en_en;
    
    // reset
@@ -65,14 +67,25 @@ module iob_uart (
    assign rst_int = rst | rst_soft;
 
    
-   // cpu interface ready signal
+   // register cpu command
+   reg [2:0]       address_reg;
+   reg             wstrb_reg;
    always @(posedge clk, posedge rst)
-     if(rst)
+     if(rst) begin
        ready <= 1'b0;
-     else 
-       ready <= valid;
+      end else begin
+         ready <= valid;
+         wstrb_reg <= wstrb;
+         address_reg <= address;
+      end
 
-
+   //transmit enable
+   always @(posedge clk, posedge rst_int)
+     if(rst_int)
+       tx_en <= 1'b0;
+     else if (tx_en_en)
+       tx_en <= wdata[0];
+   
    //receive enable
    always @(posedge clk, posedge rst_int)
      if(rst_int)
@@ -89,43 +102,42 @@ module iob_uart (
    
    
    ////////////////////////////////////////////////////////
-   // Address decoder
+   // CPU ACCESS
    ////////////////////////////////////////////////////////
 
-   // write
+   // WRITE
    always @* begin
-
       data_write_en = 1'b0;
       div_write_en = 1'b0;
       rst_soft_en = 1'b0;
-      rx_en_en = 1'b0;
-      
+      rx_en_en = 1'b0;  
+      tx_en_en = 1'b0;  
       if(valid & wstrb)
         case (address)
           `UART_DIV: div_write_en = 1'b1;
           `UART_DATA: data_write_en = 1'b1;
           `UART_SOFT_RESET: rst_soft_en = 1'b1;
+          `UART_TXEN: tx_en_en = 1'b1;
           `UART_RXEN: rx_en_en = 1'b1;
           default:;
         endcase
    end // always @ *
 
-   //read
+   //READ
    always @* begin
-      data_read_en = 1'b0;
-      rdata = recv_buf_data;
-      case (address)
-        `UART_WRITE_WAIT: rdata = {31'd0, tx_wait | ~cts_int[1]};
-        `UART_DIV       : rdata = cfg_divider;
-        `UART_DATA      : begin 
-           data_read_en = valid & ~wstrb;
-        end
-        `UART_READ_VALID: rdata = {31'd0,recv_buf_valid};
-        default         : ;
-      endcase
-   end      
+      rdata = `DATA_W'h0;
+      if(ready & ~wstrb_reg)
+        case (address_reg)
+          `UART_WRITE_WAIT: rdata = {31'd0, tx_wait | ~cts_int[1]};
+          `UART_DIV       : rdata = cfg_divider;
+          `UART_DATA      : rdata = recv_buf_data;
+          `UART_READ_VALID: rdata = {31'd0,recv_buf_valid};
+          default         : rdata = `DATA_W'h0;
+        endcase
+   end
 
-   
+   assign data_read_en = valid & ~wstrb & (address == `UART_DATA);
+
    // internal registers
    assign tx_wait = (send_bitcnt != 4'd0);
 
@@ -228,7 +240,7 @@ module iob_uart (
        send_pattern <= {1'b1, send_pattern[9:1]};
 
    // send serial comm
-   assign txd = send_pattern[0];
+   assign txd = send_pattern[0] | ~tx_en;
 
 endmodule
 

@@ -2,7 +2,7 @@
 #include "iob-uart.h"
 
 //base address
-static int base;
+int base;
 
 //UART functions
 void uart_init(int base_address, int div) {
@@ -17,6 +17,7 @@ void uart_init(int base_address, int div) {
   //div should be equal to round (fclk/baudrate)
   //E.g for fclk = 100 Mhz for a baudrate of 115200 we should uart_setdiv(868)
   IO_SET(base, UART_DIV, div);
+  IO_SET(base, UART_TXEN, 1);
   IO_SET(base, UART_RXEN, 1);
 }
 
@@ -39,7 +40,6 @@ inline void uart_putc(char c) {
   IO_SET(base, UART_DATA, (int)c);
 }
 
-
 void uart_rxwait() {
   while(!IO_GET(base, UART_READ_VALID));
 }
@@ -55,4 +55,13 @@ inline char uart_getc() {
 
 void uart_itoa(int value, char* str, int base){
   itoa(value, str, base);
+}
+
+void uart_wait_n (int n)  {
+  uart_txwait();
+  IO_SET(base, UART_TXEN, 0);
+   for (int i=0; i<n; i++)
+    uart_putc('c');
+  uart_txwait();
+  IO_SET(base, UART_TXEN, 1);
 }

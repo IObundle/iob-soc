@@ -1,6 +1,6 @@
 #include "iob-uart.h"
 
-void uart_puts(const char *s) {
+void uart_puts(char *s) {
   while (*s) uart_putc(*s++);
   uart_txwait();
 }
@@ -149,10 +149,13 @@ void uart_connect() {
 
   do {
     uart_putc(ENQ);
+    uart_wait_n(2);
     host_resp = uart_getc();
   } while(host_resp != ACK);
 
   uart_starttext();
 }
+
+
 
 

@@ -14,3 +14,4 @@
 `define UART_SOFT_RESET (`UART_ADDR_W'd3)
 `define UART_READ_VALID (`UART_ADDR_W'd4)
 `define UART_RXEN       (`UART_ADDR_W'd5)
+`define UART_TXEN       (`UART_ADDR_W'd6)
