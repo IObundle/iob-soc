@@ -1,11 +1,12 @@
 ROOT_DIR:=../..
 include ../software.mk
+
 #include peripherals
 dummy:=$(foreach p, $(PERIPHERALS), $(eval include $(SUBMODULES_DIR)/$p/software/embedded/embedded.mk))
 
 
 #local flags
-CFLAGS+=--specs=nano.specs --std=gnu99 -Wl,-Bstatic,-T,../template.lds,-Map,firmware.map,--strip-debug
+CFLAGS+=--specs=nano.specs -Wl,-Bstatic,-T,../template.lds,-Map,firmware.map,--strip-debug
 
 #local sources
 HDR+=$(SW_DIR)/periphs.h

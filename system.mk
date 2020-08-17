@@ -117,10 +117,21 @@ ifeq ($(INIT_MEM),1)
 DEFINE+=$(defmacro)INIT_MEM 
 endif
 DEFINE+=$(defmacro)N_SLAVES=$(N_SLAVES) 
-#address select bits: Extra memory (E), Peripherals (P), Boot controller (B)
-DEFINE+=$(defmacro)E=31
-DEFINE+=$(defmacro)P=30
-DEFINE+=$(defmacro)B=29
+
+#address selection bits
+E:=31 #extra memory bit
+ifeq ($(USE_DDR),1)
+P:=30 #periphs
+B:=29 #boot controller
+else
+P:=31
+B:=30
+endif
+
+DEFINE+=$(defmacro)E=$E
+DEFINE+=$(defmacro)P=$P
+DEFINE+=$(defmacro)B=$B
+
 ifeq ($(MAKECMDGOALS),)
 BAUD:=30000000
 else ifeq ($(word 1, $(MAKECMDGOALS)),sim)

@@ -20,8 +20,9 @@ HDR=$(SW_DIR)/system.h
 
 #compiler settings
 TOOLCHAIN_PREFIX:=riscv64-unknown-elf-
-CFLAGS:=-Os -ffreestanding -nostdlib -march=rv32im -mabi=ilp32 --std=gnu99
+#CFLAGS:=-Os -ffreestanding -nostdlib -march=rv32im -mabi=ilp32 --std=gnu99
+CFLAGS:=-Os -nostdlib -march=rv32im -mabi=ilp32
 
 #peripherals' base addresses
 $(SW_DIR)/periphs.h:
-	$(foreach p, $(PERIPHERALS), $(shell echo "#define $p_BASE (1<<P) |($p<<(ADDR_W-2-N_SLAVES_W))" >> ../periphs.h) )
+	$(foreach p, $(PERIPHERALS), $(shell echo "#define $p_BASE (1<<$P) |($p<<($P-N_SLAVES_W))" >> ../periphs.h) )
