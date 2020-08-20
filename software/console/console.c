@@ -16,18 +16,21 @@ void connect(int serial_fd) {
 
   //wait for taget to send ENQ 
   while (nbytes <= 0) {
-    nbytes = read(serial_fd, &byte, 1);
-    if (nbytes == ENQ)
+    nbytes = (int) read(serial_fd, &byte, 1);
+    //printf(PROGNAME); printf(": nbytes=%d byte=%d received from target\n", nbytes, byte);
+    if (byte == ENQ)
       break;
     //this will unblock target block read 
     while (write(serial_fd, &byte, 1) <= 0);
   }
+  printf(PROGNAME); printf(": ENQ symbol received from target\n");
   
   //send ACK
   byte = ACK;
   while ( write(serial_fd, &byte, 1) <= 0);
 
   printf(PROGNAME); printf(": Connected to target\n");
+  fflush(stdout);
 }
 
 //prints incoming chars until ETX or ENQ is received
@@ -35,12 +38,13 @@ void print (int serial_fd) {
   unsigned char byte;
   int nbytes;
   
-  do nbytes = (int) read(serial_fd, &byte, 1);
-  while (byte != STX);
+  do {
+    nbytes = (int) read(serial_fd, &byte, 1);
+    //printf(PROGNAME); printf(": nbytes=%d byte=%d:\n", nbytes, byte);
+  } while (byte != STX);
   
   while (1) {
-    do nbytes = (int) read(serial_fd, &byte, 1);
-    while (nbytes <= 0);
+    do nbytes = (int) read(serial_fd, &byte, 1); while (nbytes <= 0);
     
     if (byte == ETX || byte == ENQ)
       break;
@@ -143,8 +147,7 @@ void receiveFile(int serial_fd, char *name) {
   printf(PROGNAME); printf(": starting file reception...\n");  
   
   //receive file size
-  do nbytes = (int) read(serial_fd, &file_size, sizeof(int));
-  while (nbytes <= 0);
+  do nbytes = (int) read(serial_fd, &file_size, sizeof(int)); while (nbytes <= 0);
 
   //allocate space for internal file buffer
   if( (buf = malloc(file_size)) == NULL)
@@ -152,8 +155,7 @@ void receiveFile(int serial_fd, char *name) {
 
   
   //receive file into buffer
-  do nbytes = (int) read(serial_fd, &byte, file_size);
-  while (nbytes <= 0);
+  do nbytes = (int) read(serial_fd, &byte, file_size); while (nbytes <= 0);
     
   if( fwrite(&byte, sizeof(char), 1, fp) <= 0)
     {printf(PROGNAME); printf(": receiveFile: failed to write file\n");}
