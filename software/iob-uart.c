@@ -149,7 +149,7 @@ void uart_connect() {
 
   do {
     uart_putc(ENQ);
-    uart_wait_n(2);
+    uart_sleep(1);
     host_resp = uart_getc();
   } while(host_resp != ACK);
 

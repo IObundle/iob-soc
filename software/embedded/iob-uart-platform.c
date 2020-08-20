@@ -57,7 +57,7 @@ void uart_itoa(int value, char* str, int base){
   itoa(value, str, base);
 }
 
-void uart_wait_n (int n)  {
+void uart_sleep (int n)  {
   uart_txwait();
   IO_SET(base, UART_TXEN, 0);
    for (int i=0; i<n; i++)
