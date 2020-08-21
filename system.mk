@@ -43,9 +43,9 @@ endif
 BOARD_LIST="BOARD=CYCLONEV-GT-DK" "BOARD=AES-KU040-DB-G"
 #BOARD_LIST="BOARD=AES-KU040-DB-G"
 #BOARD_LIST="BOARD=CYCLONEV-GT-DK"
+
 #LOCAL_BOARD_LIST=CYCLONEV-GT-DK #leave space in the end
 #LOCAL_COMPILER_LIST=CYCLONEV-GT-DK AES-KU040-DB-G
-
 
 ifeq ($(BOARD),AES-KU040-DB-G)
 	COMPILE_USER=$(USER)
@@ -53,16 +53,14 @@ ifeq ($(BOARD),AES-KU040-DB-G)
 	COMPILE_OBJ=synth_system.bit
 	BOARD_USER=$(USER)
 	BOARD_SERVER=$(BOARD_USER)@baba-de-camelo.iobundle.com
-else ifeq ($(BOARD),CYCLONEV-GT-DK)
+else
+#default
+	BOARD=CYCLONEV-GT-DK
 	COMPILE_SERVER=$(COMPILE_USER)@pudim-flan.iobundle.com
 	COMPILE_USER=$(USER)
 	COMPILE_OBJ=output_files/top_system.sof
 	BOARD_SERVER=$(BOARD_USER)@pudim-flan.iobundle.com
 	BOARD_USER=$(USER)
-else
-#default
-	BOARD=CYCLONEV-GT-DK
-	COMPILE_OBJ=output_files/top_system.sof
 endif
 
 #ROOT DIR ON REMOTE MACHINES
@@ -75,9 +73,9 @@ ASIC_NODE:=umc130
 DOC_TYPE:=presentation
 
 
-#
+#############################################################
 #DO NOT EDIT BEYOND THIS POINT
-#
+#############################################################
 
 #object directories
 HW_DIR:=$(ROOT_DIR)/hardware
@@ -119,28 +117,45 @@ ifeq ($(INIT_MEM),1)
 DEFINE+=$(defmacro)INIT_MEM 
 endif
 DEFINE+=$(defmacro)N_SLAVES=$(N_SLAVES) 
-#address select bits: Extra memory (E), Peripherals (P), Boot controller (B)
-DEFINE+=$(defmacro)E=31
-DEFINE+=$(defmacro)P=30
-DEFINE+=$(defmacro)B=29
-ifeq ($(MAKECMDGOALS),)
-BAUD:=30000000
-else ifeq ($(word 1, $(MAKECMDGOALS)),sim)
-BAUD:=30000000
+
+#address selection bits
+E:=31 #extra memory bit
+ifeq ($(USE_DDR),1)
+P:=30 #periphs
+B:=29 #boot controller
 else
-BAUD:=115200
+P:=31
+B:=30
 endif
+
+DEFINE+=$(defmacro)E=$E
+DEFINE+=$(defmacro)P=$P
+DEFINE+=$(defmacro)B=$B
+
+SIM_BAUD:=10000000
+HW_BAUD:=115200
+
+
+ifeq ($(MAKECMDGOALS),)
+BAUD:=$(SIM_BAUD)
+else ifeq ($(word 1, $(MAKECMDGOALS)),sim)
+BAUD:=$(SIM_BAUD)
+else
+BAUD:=$(HW_BAUD)
+endif
+
+
 DEFINE+=$(defmacro)BAUD=$(BAUD)
 DEFINE+=$(defmacro)FREQ=100000000
-dummy:= $(shell echo $(BAUD))
 
-#run target by default
+#target is run by default
 TARGET:=run
 
 all: usage $(TARGET)
 
-
 usage:
+	@echo "INFO: Top target must me defined so that target \"run\" can be found" 
+	@echo "      For example, \"make sim INIT_MEM=0\"." 
 	@echo "Usage: make target [parameters]"
 
 #create periph indices and directories

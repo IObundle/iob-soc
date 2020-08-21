@@ -104,11 +104,11 @@
          end
       end
       $write("%d%%\n", 100);
-
+ 
       $fclose(fp);
 
       cpu_print();
-
+      
    endtask
    
 
@@ -120,6 +120,7 @@
       cpu_uartwrite(`UART_DIV, `FREQ/`BAUD);
       //enable uart for receiving
       cpu_uartwrite(`UART_RXEN, 1);
+      cpu_uartwrite(`UART_TXEN, 1);
    endtask
 
    reg [7:0] rxread_reg = 8'b0;

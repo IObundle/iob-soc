@@ -1,20 +1,19 @@
 [*]
 [*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
-[*] Sun Jul 19 10:26:00 2020
+[*] Fri Aug 21 02:30:05 2020
 [*]
-[dumpfile] "/home/jsousa/sandbox/iob-soc/hardware/simulation/icarus/system.vcd"
-[dumpfile_mtime] "Sun Jul 19 10:24:34 2020"
-[dumpfile_size] 7665400
+[dumpfile] "(null)"
 [savefile] "/home/jsousa/sandbox/iob-soc/hardware/simulation/waves.gtkw"
-[timestart] 52535000
+[timestart] 922890000
 [size] 1918 1026
 [pos] -1 -1
-*-18.960993 54050000 14260000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-21.961535 935010000 14260000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] system_tb.
 [treeopen] system_tb.uut.
 [treeopen] system_tb.uut.cpu.picorv32_core.
 [treeopen] system_tb.uut.cpu.picorv32_core.genblk1.
 [treeopen] system_tb.uut.cpu.picorv32_core.genblk5.
+[treeopen] system_tb.uut.int_mem0.
 [treeopen] system_tb.uut.int_mem0.int_sram.
 [sst_width] 324
 [signals_width] 358
@@ -34,12 +33,14 @@ system_tb.uut.int_mem0.d_resp[32:0]
 @28
 system_tb.uut.int_mem0.int_sram.i_valid
 @22
+system_tb.uut.int_mem0.int_sram.i_wstrb[3:0]
 system_tb.uut.int_mem0.int_sram.i_rdata[31:0]
 @28
 system_tb.uut.int_mem0.int_sram.i_ready
 system_tb.uut.int_mem0.int_sram.d_valid
 @22
-system_tb.uut.int_mem0.int_sram.d_addr[10:0]
+system_tb.uut.int_mem0.int_sram.d_wstrb[3:0]
+system_tb.uut.int_mem0.int_sram.d_wdata[31:0]
 @200
 -SYSTEM
 @28
@@ -81,8 +82,8 @@ system_tb.uut.cpu.picorv32_core.mem_ready
 @200
 -UART
 @28
+system_tb.uut.uart.txd
 system_tb.uut.uart.rxd
-@29
 system_tb.uut.uart.valid
 @24
 system_tb.uut.uart.address[2:0]
@@ -94,15 +95,24 @@ system_tb.uut.uart.wstrb
 system_tb.uut.uart.rdata[31:0]
 @28
 system_tb.uut.uart.ready
+@29
+system_tb.uut.uart.recv_buf_valid
+@24
+system_tb.uut.uart.bit_duration[15:0]
+system_tb.uut.uart.send_counter[15:0]
+@22
+system_tb.uut.uart.recv_buf_data[7:0]
 @200
 -test_uart
 @28
-system_tb.test_uart.rx_en
-system_tb.test_uart.valid
-system_tb.test_uart.ready
-@24
-system_tb.test_uart.address[2:0]
+system_tb.uart_tb.valid
+system_tb.uart_tb.wstrb
 @22
-system_tb.test_uart.rdata[31:0]
+system_tb.uart_tb.wdata[31:0]
+@28
+system_tb.uart_tb.address[2:0]
+system_tb.uart_tb.rxd
+system_tb.uart_tb.txd
+system_tb.uart_tb.recv_buf_valid
 [pattern_trace] 1
 [pattern_trace] 0
