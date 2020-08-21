@@ -1,15 +1,13 @@
 [*]
 [*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
-[*] Fri Aug 21 00:57:18 2020
+[*] Fri Aug 21 02:30:05 2020
 [*]
-[dumpfile] "/home/jsousa/sandbox/iob-soc/hardware/simulation/icarus/system.vcd"
-[dumpfile_mtime] "Fri Aug 21 00:37:35 2020"
-[dumpfile_size] 25133256
+[dumpfile] "(null)"
 [savefile] "/home/jsousa/sandbox/iob-soc/hardware/simulation/waves.gtkw"
-[timestart] 0
+[timestart] 922890000
 [size] 1918 1026
 [pos] -1 -1
-*-28.253414 337000000 14260000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-21.961535 935010000 14260000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] system_tb.
 [treeopen] system_tb.uut.
 [treeopen] system_tb.uut.cpu.picorv32_core.
@@ -97,10 +95,10 @@ system_tb.uut.uart.wstrb
 system_tb.uut.uart.rdata[31:0]
 @28
 system_tb.uut.uart.ready
+@29
 system_tb.uut.uart.recv_buf_valid
 @24
 system_tb.uut.uart.bit_duration[15:0]
-@25
 system_tb.uut.uart.send_counter[15:0]
 @22
 system_tb.uut.uart.recv_buf_data[7:0]
@@ -115,5 +113,6 @@ system_tb.uart_tb.wdata[31:0]
 system_tb.uart_tb.address[2:0]
 system_tb.uart_tb.rxd
 system_tb.uart_tb.txd
+system_tb.uart_tb.recv_buf_valid
 [pattern_trace] 1
 [pattern_trace] 0

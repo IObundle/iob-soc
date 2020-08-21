@@ -73,9 +73,9 @@ ASIC_NODE:=umc130
 DOC_TYPE:=presentation
 
 
-#
+#############################################################
 #DO NOT EDIT BEYOND THIS POINT
-#
+#############################################################
 
 #object directories
 HW_DIR:=$(ROOT_DIR)/hardware
@@ -132,24 +132,30 @@ DEFINE+=$(defmacro)E=$E
 DEFINE+=$(defmacro)P=$P
 DEFINE+=$(defmacro)B=$B
 
+SIM_BAUD:=10000000
+HW_BAUD:=115200
+
+
 ifeq ($(MAKECMDGOALS),)
-BAUD:=10000000
+BAUD:=$(SIM_BAUD)
 else ifeq ($(word 1, $(MAKECMDGOALS)),sim)
-BAUD:=10000000
+BAUD:=$(SIM_BAUD)
 else
-BAUD:=115200
+BAUD:=$(HW_BAUD)
 endif
+
+
 DEFINE+=$(defmacro)BAUD=$(BAUD)
 DEFINE+=$(defmacro)FREQ=100000000
-dummy:= $(shell echo $(BAUD))
 
-#run target by default
+#target is run by default
 TARGET:=run
 
 all: usage $(TARGET)
 
-
 usage:
+	@echo "INFO: Top target must me defined so that target \"run\" can be found" 
+	@echo "      For example, \"make sim INIT_MEM=0\"." 
 	@echo "Usage: make target [parameters]"
 
 #create periph indices and directories
