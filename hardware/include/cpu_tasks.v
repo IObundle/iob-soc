@@ -104,11 +104,11 @@
          end
       end
       $write("%d%%\n", 100);
-
+ 
       $fclose(fp);
 
       cpu_print();
-
+      
    endtask
    
 

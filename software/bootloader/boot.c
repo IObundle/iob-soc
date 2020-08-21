@@ -19,6 +19,9 @@ char *prog_start_addr = (char *) EXTRA_BASE;
 #define SEND ETX
 #define RUN  EOT
 
+
+#define PROGNAME "IOb-Bootloader"
+
 int main() {
 
   //init uart 
@@ -28,14 +31,12 @@ int main() {
   uart_connect();
 
   //welcome message
-  uart_puts ("\n\n\nIOb-SoC Bootloader:\n");
-  //uart_printf ("INIT_MEM=%d USE_DDR=%d RUN_DDR=%d\n\n", INIT_MEM, USE_DDR_SW, RUN_DDR_SW);
-  uart_printf ("USE_DDR=%d RUN_DDR=%d\n\n", USE_DDR_SW, RUN_DDR_SW);
+  uart_printf ("%s: USE_DDR=%d RUN_DDR=%d\n", PROGNAME, USE_DDR_SW, RUN_DDR_SW);
 
   unsigned int file_size;
   //enter command loop
   while (1) {
-    char host_cmd = uart_getcmd(); //receive command
+    char host_cmd = uart_getc(); //receive command
     switch(host_cmd) {
     case LOAD: //load firmware
       file_size = uart_getfile(prog_start_addr);
@@ -43,17 +44,17 @@ int main() {
     case SEND: //return firmware to host
       uart_sendfile(file_size, prog_start_addr);
       break;
-    default: break;
     case RUN: //run firmware
-      uart_puts ("Reboot CPU and run program...\n");
+      uart_printf ("%s: Reboot CPU and run program...\n", PROGNAME);
 #if (USE_DDR && RUN_DDR)
       //wait for cache write buffer to empty  
       cache_init(FIRM_ADDR_W);
       while(!cache_buffer_empty());
 #endif
-      //reboot and run firmware
-      MEM_SET(int, BOOTCTR_BASE, 2);//{cpu_rst_req=1, boot=0}
+      //reboot and run firmware (not bootloader)
+      MEM_SET(int, BOOTCTR_BASE, 0b10);//{cpu_rst_req=1, boot=0}
       break;
+    default: ;
     }
   }
 }

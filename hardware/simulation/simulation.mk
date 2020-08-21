@@ -1,7 +1,9 @@
 include $(ROOT_DIR)/hardware/hardware.mk
 
-#testbench defmacros 
+#testbench defmacros
+ifeq ($(VCD),1)
 DEFINE+=$(defmacro)VCD
+endif
 
 #testbench source files
 VSRC+=$(TB_DIR)/system_tb.v $(AXI_MEM_DIR)/rtl/axi_ram.v
