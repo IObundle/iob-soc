@@ -70,14 +70,17 @@ module iob_uart (
    // register cpu command and produce ready
    reg [2:0]       address_reg;
    reg             wstrb_reg;
+   always @(posedge clk) begin
+      wstrb_reg <= wstrb;
+      address_reg <= address;
+   end
+
    always @(posedge clk, posedge rst)
-     if(rst) begin
+     if(rst)
        ready <= 1'b0;
-      end else begin
-         ready <= valid;
-         wstrb_reg <= wstrb;
-         address_reg <= address;
-      end
+     else
+        ready <= valid;
+
 
    //transmit enable
    always @(posedge clk, posedge rst_int)
