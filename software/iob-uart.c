@@ -1,5 +1,7 @@
 #include "iob-uart.h"
 
+#define PROGNAME "IOb-UART"
+
 void uart_puts(char *s) {
   while (*s) uart_putc(*s++);
   uart_txwait();
@@ -99,7 +101,7 @@ void uart_printf(const char* fmt, ...) {
 
 unsigned int uart_getfile(char *mem) {
 
-  uart_puts ("Receiving and loading file...\n\n");
+  uart_printf ("%s: Receiving and loading file...\n", PROGNAME);
   uart_endtext(); //free host from text mode
 
   // Get file size
@@ -114,7 +116,7 @@ unsigned int uart_getfile(char *mem) {
   }
 
   uart_starttext();
-  uart_printf("File received (%d bytes)\n", file_size);
+  uart_printf("%s: File received (%d bytes)\n", PROGNAME, file_size);
   uart_endtext(); //free host from text mode
   uart_rxwait(); //wait for next command
   uart_starttext(); //renable host text mode for next mesg 
@@ -123,7 +125,7 @@ unsigned int uart_getfile(char *mem) {
 
 void uart_sendfile(unsigned int file_size, char *mem) {
 
-  uart_printf("Sending file (%d bytes)\n", file_size);
+  uart_printf("%s: Sending file (%d bytes)\n", PROGNAME, file_size);
   uart_endtext();
 
   // send file size
@@ -138,7 +140,7 @@ void uart_sendfile(unsigned int file_size, char *mem) {
   }
 
   uart_starttext();
-  uart_printf("File sent (%d bytes)\n", file_size);
+  uart_printf("%s: File sent (%d bytes)\n",  PROGNAME, file_size);
   uart_endtext(); //free host from text mode
   uart_rxwait(); //wait for next command
   uart_starttext(); //renable host text mode for next mesg 
@@ -149,7 +151,7 @@ void uart_connect() {
 
   do {
     uart_putc(ENQ);
-    uart_wait_n(2);
+    //    uart_sleep(1);
     host_resp = uart_getc();
   } while(host_resp != ACK);
 

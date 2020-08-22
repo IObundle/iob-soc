@@ -30,24 +30,6 @@ module iob_uart_tb;
    // rts, cts handshaking
    wire                  rtscts;
    
-   // Instantiate the Unit Under Test (UUT)
-
-   iob_uart uut (
-		 .clk			(clk),
-		 .rst			(rst),
-                 
-		 .valid			(valid),
-		 .address		(addr),
-		 .wdata		        (wdata),
-		 .wstrb			(wstrb),
-		 .rdata		        (rdata),
-		 .ready		        (ready),
-
-                 .txd                   (serial_data),
-                 .rxd                   (serial_data),
-                 .rts                   (rtscts),
-                 .cts                   (rtscts)
-		);
 
    initial begin
 
@@ -86,6 +68,9 @@ module iob_uart_tb;
       //setup divider factor
       cpu_write(`UART_DIV, clk_frequency/baud_rate);
 
+      //enable tx
+      cpu_write(`UART_TXEN, 1);
+      
       //enable rx
       cpu_write(`UART_RXEN, 1);
       
@@ -154,5 +139,25 @@ module iob_uart_tb;
       @ (posedge clk) #1 valid = 0;
    endtask
 
+
+  // Instantiate the Unit Under Test (UUT)
+   iob_uart uut (
+		 .clk			(clk),
+		 .rst			(rst),
+                 
+		 .valid			(valid),
+		 .address		(addr),
+		 .wdata		        (wdata),
+		 .wstrb			(wstrb),
+		 .rdata		        (rdata),
+		 .ready		        (ready),
+
+                 .txd                   (serial_data),
+                 .rxd                   (serial_data),
+                 .rts                   (rtscts),
+                 .cts                   (rtscts)
+		);
+
+   
 endmodule
 
