@@ -35,7 +35,7 @@ int uart_txstatus() {
   return (!IO_GET(base, UART_WRITE_WAIT));
 }
 
-inline void uart_putc(char c) {
+void uart_putc(char c) {
   while(IO_GET(base, UART_WRITE_WAIT));
   IO_SET(base, UART_DATA, (int)c);
 }
@@ -48,7 +48,7 @@ int uart_rxstatus() {
   return (IO_GET(base, UART_READ_VALID));
 }
 
-inline char uart_getc() {
+char uart_getc() {
   while(!IO_GET(base, UART_READ_VALID));
   return( (char) IO_GET(base, UART_DATA));
 }
