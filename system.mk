@@ -146,7 +146,14 @@ endif
 
 
 DEFINE+=$(defmacro)BAUD=$(BAUD)
+
+ifeq ($(FREQ),) 
 DEFINE+=$(defmacro)FREQ=100000000
+else
+DEFINE+=$(defmacro)FREQ=$(FREQ)
+endif
+
+
 
 #target is run by default
 TARGET:=run
