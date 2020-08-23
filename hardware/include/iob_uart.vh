@@ -5,9 +5,11 @@
 `define ENQ 5 //enquiry
 `define ACK 6 //acklowledge
 
-//Memory map
+//data and address widths
+`define UART_WDATA_W 16
 `define UART_ADDR_W 3
 
+//Memory map
 `define UART_WRITE_WAIT (`UART_ADDR_W'd0)
 `define UART_DIV        (`UART_ADDR_W'd1)
 `define UART_DATA       (`UART_ADDR_W'd2)
