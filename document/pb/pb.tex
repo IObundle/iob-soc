@@ -20,7 +20,7 @@
 \definecolor{iob-green}{rgb}{0.0,1.0,0.80}
 \definecolor{iob-blue}{rgb}{0.90196,0.94902,1}
 
-\title{IOb-SoC-Yolo}
+\title{IOb-SoC}
 \category{IObundle System-on-Chip Platfom}
 \confidential{}
 
@@ -41,15 +41,15 @@ keepaspectratio]{bg.png}%
 
 \section*{\textcolor[rgb]{0,0,0}{Overview}}
 
-The IOb-SoC is an RISC-V-based System-on-Chip Platform written in Verilog, which
+IOb-SoC is a RISC-V-based System-on-Chip Platform written in Verilog, which
 users can download for free, modify, simulate and implement in FPGA or ASIC. It
-supports stand-alone and booting modes, and can use internal RAM or an external
-DDR controller via L1/L2 cache systems. The IP is currently supported in ASICs
-and FPGAs. Licensable commercial versions are available.
+supports stand-alone and boot loading modes, and can use an internal RAM or an
+external DDR controller via an L1/L2 cache system. The IP is currently supported
+in ASICs and FPGAs. Licensable commercial versions are available.
 
 \section*{\textcolor[rgb]{0,0,0}{Features}}
 \begin{itemize}
-\item 1 32-bit RISC-V control CPU
+\item 32-bit RISC-V control CPU
 \item Support for Integer (I), atomic (A) and multiply/divide extensions (M)
 \item Instruction and data caches
 \item RS232 interfaces for viewing runtime messages
@@ -70,8 +70,8 @@ and FPGAs. Licensable commercial versions are available.
 
 \section*{\textcolor[rgb]{0,0,0}{Deliverables}}
 \begin{itemize}
-\item HDL netlist or source code optionally
-\item Software object or C++ source code optionally
+\item HDL source code
+\item Software C source code
 \item Simulation testbench
 \item Implementation constraints for map, place and route
 \item Demo files for commercial FPGA board with Ethernet connectivity
@@ -83,9 +83,9 @@ and FPGAs. Licensable commercial versions are available.
 
 \begin{figure}[H]
   \begin{center}
-    \includegraphics[width=8.5cm]{IoB-SoC-Yolo_block_diagram.png}
+    \includegraphics[width=8.5cm]{IoB-SoC_block_diagram.png}
     \caption{IOb-SoC high-level block diagram}
-    \label{fig:IOb-SoC-Yolo}
+    \label{fig:IOb-SoC}
   \end{center}
 \end{figure}
 
@@ -133,14 +133,13 @@ and FPGAs. Licensable commercial versions are available.
   \end{center}
 \end{table}
 
-
-
 \vspace*{0.5cm}
 \noindent
 \begin{scriptsize}
 Disclaimer: IObundle reserves the right to modify the current
 technical spe-cifications without notice.
 \end{scriptsize}
-
 \newpage
+
+
 \end{document}

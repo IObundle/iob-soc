@@ -1,11 +1,13 @@
 #!/bin/bash
 
+COMPILE_SERVER=$1
+
 #altera
 
 LOG=top_system.fit.summary
 RES=alt_results.tex
 
-scp jsousa@pudim-flan.iobundle.com:sandbox/iob-soc/hardware/fpga/CYCLONEV-GT-DK/output_files/$LOG .
+scp $COMPILE_SERVER:sandbox/iob-soc/hardware/fpga/CYCLONEV-GT-DK/output_files/$LOG .
 
 ALM=`grep ALM $LOG |grep -o '[0-9]*,[0-9]* \/' | sed s/'\/'//g`
 
@@ -40,7 +42,7 @@ echo "PIN & $PIN \\\\ \\hline"  >> $RES
 LOG=vivado.log
 RES=xil_results.tex
 
-scp jsousa@pudim-flan.iobundle.com:sandbox/iob-soc/hardware/fpga/AES-KU040-DB-G/vivado.log .
+scp $COMPILE_SERVER:sandbox/iob-soc/hardware/fpga/AES-KU040-DB-G/vivado.log .
 
 LUT=`grep -o 'LUTs\ *| [0-9]*' vivado.log | sed s/'| L'/L/g | sed s/\|/'\&'/g`
 

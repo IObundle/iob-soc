@@ -70,7 +70,8 @@ REMOTE_ROOT_DIR=./sandbox/iob-soc
 ASIC_NODE:=umc130
 
 #DOC_TYPE
-DOC_TYPE:=presentation
+#DOC_TYPE:=presentation
+DOC_TYPE:=pb
 
 
 #############################################################
