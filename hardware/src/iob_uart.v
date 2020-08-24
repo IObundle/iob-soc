@@ -7,22 +7,22 @@ module iob_uart
      )
 
   (
-   input                   clk,
-   input                   rst,
+   input                     clk,
+   input                     rst,
 
                  //cpu interface 
-   input                   valid,
-   input [2:0]             address,
-   input [DATA_W-1:0]      wdata,
-   input                   wstrb,
-   output reg [DATA_W-1:0] rdata,
-   output reg              ready,
+   input                     valid,
+   input [2:0]               address,
+   input [`UART_WDATA_W-1:0] wdata,
+   input                     wstrb,
+   output reg [DATA_W-1:0]   rdata,
+   output reg                ready,
 
                  //serial i/f
-   output                  txd,
-   input                   rxd,
-   input                   cts,
-   output                  rts
+   output                    txd,
+   input                     rxd,
+   input                     cts,
+   output                    rts
    );
 
    // internal registers
