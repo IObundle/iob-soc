@@ -21,7 +21,7 @@
 \definecolor{iob-blue}{rgb}{0.90196,0.94902,1}
 
 \title{IOb-SoC}
-\category{IObundle System-on-Chip Platfom}
+\category{IObundle System-on-Chip Platform}
 \confidential{}
 
 \usepackage{eso-pic}
@@ -96,6 +96,8 @@ in ASICs and FPGAs. Licensable commercial versions are available.
 
 
 \section*{FPGA Resources}
+
+\ifnum\XILINX=1
 \begin{table}[H]
   \begin{center}
     \begin{tabular}{|l|r|}
@@ -113,8 +115,10 @@ in ASICs and FPGAs. Licensable commercial versions are available.
     \label{tab:res-xil}
   \end{center}
 \end{table}
+\fi
 
 
+\ifnum\INTEL=1
 \begin{table}[H]
   \begin{center}
     \begin{tabular}{|l|r|}
@@ -132,6 +136,7 @@ in ASICs and FPGAs. Licensable commercial versions are available.
     \label{tab:res-alt}
   \end{center}
 \end{table}
+\fi
 
 \vspace*{0.5cm}
 \noindent
