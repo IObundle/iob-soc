@@ -122,7 +122,11 @@ void sendFile(int serial_fd, char *name) {
   
     
   //send buffer
-  while ( write(serial_fd, buf, file_size) <= 0 );
+  int i=0;
+  for(i=0;i<file_size;i++){
+    //send 1 byte at a time - fix for transfering bigger firmwares
+    while ( write(serial_fd, &(buf[i]), 1) <= 0 );
+  }
           
   //DEBUG
   //printf("buffer[%u] = %x\n", i, byte);
