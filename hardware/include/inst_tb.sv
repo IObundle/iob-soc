@@ -1,3 +1,4 @@
+//add core test module in testbench
 
    iob_uart uart_tb
      (
@@ -11,9 +12,9 @@
       .rdata     (uart_rdata),
       .ready     (uart_ready),
       
-      .txd       (txd_tb),
-      .rxd       (rxd_tb),
-      .rts       (rts_tb),
-      .cts       (cts_tb)
+      .txd       (uart_rxd),
+      .rxd       (uart_txd),
+      .rts       (uart_rts),
+      .cts       (uart_cts)
       );
 

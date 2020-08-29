@@ -10,7 +10,7 @@ module iob_uart
    input                     clk,
    input                     rst,
 
-                 //cpu interface 
+   //cpu interface 
    input                     valid,
    input [2:0]               address,
    input [`UART_WDATA_W-1:0] wdata,
@@ -18,7 +18,7 @@ module iob_uart
    output reg [DATA_W-1:0]   rdata,
    output reg                ready,
 
-                 //serial i/f
+   //serial i/f
    output                    txd,
    input                     rxd,
    input                     cts,
