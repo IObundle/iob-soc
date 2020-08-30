@@ -6,13 +6,14 @@ DEFINE+=$(defmacro)VCD
 endif
 
 #testbench source files
-VSRC+=$(TB_DIR)/system_tb.v $(AXI_MEM_DIR)/rtl/axi_ram.v
+VSRC+=system_tb.v $(AXI_MEM_DIR)/rtl/axi_ram.v
 
-$(TB_DIR)/system_tb.v:
+#create testbench 
+system_tb.v:
 	cp $(TB_DIR)/system_core_tb.v $@
-	$(foreach p, $(PERIPHERALS), if test -f $(SUBMODULES_DIR)/$p/hardware/testbench/inst_tb.sv; then sed -i '/endmodule/e cat $(SUBMODULES_DIR)/$p/hardware/testbench/inst_tb.sv' $@; fi;)
-	$(foreach p, $(PERIPHERALS), if test -f $(SUBMODULES_DIR)/$p/hardware/testbench/pio_tb.v; then sed -i '/PIO/r $(SUBMODULES_DIR)/$p/hardware/testbench/pio_tb.v' $@; fi;)
-	$(foreach p, $(PERIPHERALS), if test -f $(SUBMODULES_DIR)/$p/hardware/include/*.vh; then sed -i '/PHEADER/a `include \"$(shell echo `ls $(SUBMODULES_DIR)/$p/hardware/include/*.vh`)\"' $@; fi;)
-	$(foreach p, $(PERIPHERALS), if test -f $(SUBMODULES_DIR)/$p/hardware/testbench/wires_tb.v; then sed -i '/PWIRES/a `include \"$(shell echo `ls $(SUBMODULES_DIR)/$p/hardware/testbench/wires_tb.v`)\"' $@; fi;)
+	$(foreach p, $(PERIPHERALS), if test -f $(SUBMODULES_DIR)/$p/hardware/include/*.vh; then sed -i '/PHEADER/a `include \"$(shell echo `ls $(SUBMODULES_DIR)/$p/hardware/include/*.vh`)\"' $@; fi;) #include header files
+	$(foreach p, $(PERIPHERALS), sed s/input/wire/ $(SUBMODULES_DIR)/$p/hardware/include/pio.v | sed s/output/wire/  | sed s/\,/\;/ > wires_tb.v; sed -i '/PWIRES/a `include \"wires_tb.v"' $@;) #declare wires
+	$(foreach p, $(PERIPHERALS), sed s/input// $(SUBMODULES_DIR)/$p/hardware/include/pio.v | sed s/output// | sed 's/\([A-Za-z].*\),/\.\1(\1),/' > ./pio_tb.v; sed -i '/PIO/r pio_tb.v' $@) #insert and connect pins in uut instance
+	$(foreach p, $(PERIPHERALS), if test -f $(SUBMODULES_DIR)/$p/hardware/include/inst_tb.sv; then sed -i '/endmodule/e cat $(SUBMODULES_DIR)/$p/hardware/include/inst_tb.sv' $@; fi;) #instantiate peripheral test module
 
 VSRC+=$(foreach p, $(PERIPHERALS), $(shell if test -f $(SUBMODULES_DIR)/$p/hardware/testbench/module_tb.sv; then echo $(SUBMODULES_DIR)/$p/hardware/testbench/module_tb.sv; fi;))

@@ -95,8 +95,8 @@ DOC_DIR:=$(ROOT_DIR)/document/$(DOC_TYPE)
 
 #submodule paths
 SUBMODULES_DIR=$(ROOT_DIR)/submodules
-CPU_DIR:=$(SUBMODULES_DIR)/iob-picorv32
-CACHE_DIR:=$(SUBMODULES_DIR)/iob-cache
+CPU_DIR:=$(SUBMODULES_DIR)/CPU
+CACHE_DIR:=$(SUBMODULES_DIR)/CACHE
 INTERCON_DIR:=$(CACHE_DIR)/submodules/iob-interconnect
 MEM_DIR:=$(CACHE_DIR)/submodules/iob-mem
 AXI_MEM_DIR:=$(CACHE_DIR)/submodules/axi-mem
