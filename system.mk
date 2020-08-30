@@ -28,6 +28,7 @@ PERIPHERALS:=UART
 
 #SIMULATION TEST
 SIM_LIST="SIMULATOR=icarus" "SIMULATOR=ncsim"
+#SIM_LIST="SIMULATOR=ncsim"
 #SIM_LIST="SIMULATOR=icarus"
 LOCAL_SIM_LIST=icarus #leave space in the end
 

@@ -1,15 +1,16 @@
 [*]
 [*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
-[*] Fri Aug 21 02:30:05 2020
+[*] Sun Aug 30 01:01:54 2020
 [*]
 [dumpfile] "(null)"
 [savefile] "/home/jsousa/sandbox/iob-soc/hardware/simulation/waves.gtkw"
-[timestart] 922890000
+[timestart] 11103300
 [size] 1918 1026
 [pos] -1 -1
-*-21.961535 935010000 14260000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-15.940769 11320600 14260000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] system_tb.
 [treeopen] system_tb.uut.
+[treeopen] system_tb.uut.cpu.
 [treeopen] system_tb.uut.cpu.picorv32_core.
 [treeopen] system_tb.uut.cpu.picorv32_core.genblk1.
 [treeopen] system_tb.uut.cpu.picorv32_core.genblk5.
@@ -66,9 +67,15 @@ system_tb.uut.cpu.cpu_d_req[68:0]
 system_tb.uut.cpu.cpu_req[68:0]
 @28
 system_tb.uut.cpu.cpu_instr
+@29
+system_tb.uut.cpu.cpu_valid
+@28
+system_tb.uut.cpu.cpu_valid_reg
+system_tb.uut.cpu.cpu_valid_int
 @200
 -PICORV32
 @28
+system_tb.uut.cpu.clk
 system_tb.uut.cpu.picorv32_core.resetn
 system_tb.uut.cpu.picorv32_core.mem_instr
 system_tb.uut.cpu.picorv32_core.mem_valid
@@ -87,15 +94,12 @@ system_tb.uut.uart.rxd
 system_tb.uut.uart.valid
 @24
 system_tb.uut.uart.address[2:0]
-@22
-system_tb.uut.uart.wdata[31:0]
 @28
 system_tb.uut.uart.wstrb
 @22
 system_tb.uut.uart.rdata[31:0]
 @28
 system_tb.uut.uart.ready
-@29
 system_tb.uut.uart.recv_buf_valid
 @24
 system_tb.uut.uart.bit_duration[15:0]
@@ -107,9 +111,6 @@ system_tb.uut.uart.recv_buf_data[7:0]
 @28
 system_tb.uart_tb.valid
 system_tb.uart_tb.wstrb
-@22
-system_tb.uart_tb.wdata[31:0]
-@28
 system_tb.uart_tb.address[2:0]
 system_tb.uart_tb.rxd
 system_tb.uart_tb.txd
