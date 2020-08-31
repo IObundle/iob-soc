@@ -158,6 +158,8 @@ module ext_mem
        )
      merge_i_d_buses_into_l2
        (
+        .clk(clk),
+        .rst(rst),
         // masters
 `ifdef RUN_DDR_USE_SRAM
         .m_req  ({icache_be_req, dcache_be_req}),

@@ -28,6 +28,7 @@ PERIPHERALS:=UART
 
 #SIMULATION TEST
 SIM_LIST="SIMULATOR=icarus" "SIMULATOR=ncsim"
+#SIM_LIST="SIMULATOR=ncsim"
 #SIM_LIST="SIMULATOR=icarus"
 LOCAL_SIM_LIST=icarus #leave space in the end
 
@@ -43,9 +44,9 @@ endif
 BOARD_LIST="BOARD=CYCLONEV-GT-DK" "BOARD=AES-KU040-DB-G"
 #BOARD_LIST="BOARD=AES-KU040-DB-G"
 #BOARD_LIST="BOARD=CYCLONEV-GT-DK"
+
 #LOCAL_BOARD_LIST=CYCLONEV-GT-DK #leave space in the end
 #LOCAL_COMPILER_LIST=CYCLONEV-GT-DK AES-KU040-DB-G
-
 
 ifeq ($(BOARD),AES-KU040-DB-G)
 	COMPILE_USER=$(USER)
@@ -53,16 +54,14 @@ ifeq ($(BOARD),AES-KU040-DB-G)
 	COMPILE_OBJ=synth_system.bit
 	BOARD_USER=$(USER)
 	BOARD_SERVER=$(BOARD_USER)@baba-de-camelo.iobundle.com
-else ifeq ($(BOARD),CYCLONEV-GT-DK)
+else
+#default
+	BOARD=CYCLONEV-GT-DK
 	COMPILE_SERVER=$(COMPILE_USER)@pudim-flan.iobundle.com
 	COMPILE_USER=$(USER)
 	COMPILE_OBJ=output_files/top_system.sof
 	BOARD_SERVER=$(BOARD_USER)@pudim-flan.iobundle.com
 	BOARD_USER=$(USER)
-else
-#default
-	BOARD=CYCLONEV-GT-DK
-	COMPILE_OBJ=output_files/top_system.sof
 endif
 
 #ROOT DIR ON REMOTE MACHINES
@@ -72,12 +71,13 @@ REMOTE_ROOT_DIR=./sandbox/iob-soc
 ASIC_NODE:=umc130
 
 #DOC_TYPE
-DOC_TYPE:=presentation
+#DOC_TYPE:=presentation
+DOC_TYPE:=pb
 
 
-#
+#############################################################
 #DO NOT EDIT BEYOND THIS POINT
-#
+#############################################################
 
 #object directories
 HW_DIR:=$(ROOT_DIR)/hardware
@@ -96,8 +96,8 @@ DOC_DIR:=$(ROOT_DIR)/document/$(DOC_TYPE)
 
 #submodule paths
 SUBMODULES_DIR=$(ROOT_DIR)/submodules
-CPU_DIR:=$(SUBMODULES_DIR)/iob-picorv32
-CACHE_DIR:=$(SUBMODULES_DIR)/iob-cache
+CPU_DIR:=$(SUBMODULES_DIR)/CPU
+CACHE_DIR:=$(SUBMODULES_DIR)/CACHE
 INTERCON_DIR:=$(CACHE_DIR)/submodules/iob-interconnect
 MEM_DIR:=$(CACHE_DIR)/submodules/iob-mem
 AXI_MEM_DIR:=$(CACHE_DIR)/submodules/axi-mem
@@ -119,28 +119,52 @@ ifeq ($(INIT_MEM),1)
 DEFINE+=$(defmacro)INIT_MEM 
 endif
 DEFINE+=$(defmacro)N_SLAVES=$(N_SLAVES) 
-#address select bits: Extra memory (E), Peripherals (P), Boot controller (B)
-DEFINE+=$(defmacro)E=31
-DEFINE+=$(defmacro)P=30
-DEFINE+=$(defmacro)B=29
-ifeq ($(MAKECMDGOALS),)
-BAUD:=30000000
-else ifeq ($(word 1, $(MAKECMDGOALS)),sim)
-BAUD:=30000000
-else
-BAUD:=115200
-endif
-DEFINE+=$(defmacro)BAUD=$(BAUD)
-DEFINE+=$(defmacro)FREQ=100000000
-dummy:= $(shell echo $(BAUD))
 
-#run target by default
+#address selection bits
+E:=31 #extra memory bit
+ifeq ($(USE_DDR),1)
+P:=30 #periphs
+B:=29 #boot controller
+else
+P:=31
+B:=30
+endif
+
+DEFINE+=$(defmacro)E=$E
+DEFINE+=$(defmacro)P=$P
+DEFINE+=$(defmacro)B=$B
+
+SIM_BAUD:=10000000
+HW_BAUD:=115200
+
+
+ifeq ($(MAKECMDGOALS),)
+BAUD:=$(SIM_BAUD)
+else ifeq ($(word 1, $(MAKECMDGOALS)),sim)
+BAUD:=$(SIM_BAUD)
+else
+BAUD:=$(HW_BAUD)
+endif
+
+
+DEFINE+=$(defmacro)BAUD=$(BAUD)
+
+ifeq ($(FREQ),) 
+DEFINE+=$(defmacro)FREQ=100000000
+else
+DEFINE+=$(defmacro)FREQ=$(FREQ)
+endif
+
+
+
+#target is run by default
 TARGET:=run
 
 all: usage $(TARGET)
 
-
 usage:
+	@echo "INFO: Top target must me defined so that target \"run\" can be found" 
+	@echo "      For example, \"make sim INIT_MEM=0\"." 
 	@echo "Usage: make target [parameters]"
 
 #create periph indices and directories

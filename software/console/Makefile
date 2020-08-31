@@ -9,26 +9,27 @@ CFLAGS:=-g -Wall
 INCLUDE+=-I$(UART_DIR)/software
 SRC:=console.c
 
+CONSOLE_CMD=./console -s $(SERIAL)
+ifeq ($(INIT_MEM),0)
+	CONSOLE_CMD+=-f firmware.bin
+endif
 
-USERNAME:=$(shell pgrep console | xargs -r ps -o uname= -p)
-
-CONSOLE=./console -s $(SERIAL)
+CONSOLE_PID:=$(shell pgrep console)
+CONSOLE_USER:=$(shell pgrep console | xargs -r ps -o uname= -p)
 
 run: console firmware.bin
-ifneq ($(USERNAME),)
-	@echo "FPGA is being used by $(USERNAME)"
+ifneq ($(CONSOLE_USER),$(USER))
+ifneq ($(CONSOLE_USER),)
+	@echo "BOARD is being used by $()"
 	exit 1
-else
-	#kill any stray console process
-	PID=`pgrep console`; if [ "$PID" != "" ]; kill -9 $PID; fi
-	$(CONSOLE) $(LOG)
 endif
+else ifneq ($(CONSOLE_PID),)
+	kill -9 $(CONSOLE_PID)
+endif
+	$(CONSOLE_CMD) $(LOG)
 
 ./firmware.bin: $(FIRM_DIR)/firmware.bin
-ifeq ($(INIT_MEM),0)
-	$(eval CONSOLE=./console -s $(SERIAL) -f $@)
 	cp $(FIRM_DIR)/firmware.bin $@
-endif
 
 console: $(SRC)
 	$(CC) $(CFLAGS) $(INCLUDE) $(SRC) -o $@

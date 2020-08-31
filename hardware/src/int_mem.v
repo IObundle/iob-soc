@@ -49,13 +49,15 @@ module int_mem
        )
    data_bootctr_split
        (
+        .clk    ( clk                         ),
+        .rst    ( rst                         ),
         // master interface
-        .m_req(d_req),
-        .m_resp(d_resp),
+        .m_req  ( d_req                       ),
+        .m_resp ( d_resp                      ),
         
         // slaves interface
-        .s_req({boot_ctr_req, ram_d_req}),
-        .s_resp({boot_ctr_resp, ram_d_resp})
+        .s_req  ( {boot_ctr_req, ram_d_req}   ),
+        .s_resp ( {boot_ctr_resp, ram_d_resp} )
         );
 
 
@@ -131,13 +133,16 @@ module int_mem
            )
    ibus_merge
      (
+      .clk    ( clk                      ),
+      .rst    ( rst                      ),
+
       //master
-      .m_req({ram_w_req, ram_r_req}),
-      .m_resp({ram_w_resp, ram_r_resp}),
+      .m_req  ( {ram_w_req, ram_r_req}   ),
+      .m_resp ( {ram_w_resp, ram_r_resp} ),
 
       //slave  
-      .s_req(ram_i_req),
-      .s_resp(ram_i_resp)
+      .s_req  ( ram_i_req                ),
+      .s_resp ( ram_i_resp               )
       );
    
    //
