@@ -130,7 +130,7 @@ module system_tb;
    // UNIT UNDER TEST
    //
    system uut (
-               //PIO
+               //PORTS
 `ifdef USE_DDR
                //address write
 	       .m_axi_awid    (ddr_awid),
