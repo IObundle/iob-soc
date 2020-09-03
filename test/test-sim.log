@@ -77,7 +77,7 @@ Hello world!
 
 
 Simulation complete via $finish(1) at time 189911 NS + 0
-./system_tb.v:73       $finish;
+./system_tb.v:80       $finish;
 IOb-Bootloader: USE_DDR=0 RUN_DDR=0
 IOb-UART: Receiving and loading file...
 File size:       2696 bytes
@@ -101,7 +101,7 @@ Hello world!
 
 
 Simulation complete via $finish(1) at time 3091041 NS + 0
-./system_tb.v:73       $finish;
+./system_tb.v:80       $finish;
 IOb-Bootloader: USE_DDR=1 RUN_DDR=0
 IOb-Bootloader: Reboot CPU and run program...
 
@@ -111,7 +111,7 @@ Hello world!
 
 
 Simulation complete via $finish(1) at time 189911 NS + 0
-./system_tb.v:73       $finish;
+./system_tb.v:80       $finish;
 IOb-Bootloader: USE_DDR=1 RUN_DDR=1
 IOb-Bootloader: Reboot CPU and run program...
 
@@ -121,7 +121,7 @@ Hello world!
 
 
 Simulation complete via $finish(1) at time 197471 NS + 0
-./system_tb.v:73       $finish;
+./system_tb.v:80       $finish;
 IOb-Bootloader: USE_DDR=1 RUN_DDR=1
 IOb-UART: Receiving and loading file...
 File size:       2696 bytes
@@ -145,4 +145,4 @@ Hello world!
 
 
 Simulation complete via $finish(1) at time 3102141 NS + 0
-./system_tb.v:73       $finish;
+./system_tb.v:80       $finish;
