@@ -34,7 +34,7 @@ LOCAL_SIM_LIST=icarus #leave space in the end
 
 ifeq ($(SIMULATOR),ncsim)
 	SIM_SERVER=$(SIM_USER)@micro7.lx.it.pt
-	SIM_USER=user14
+	SIM_USER=user19
 else
 #default
 	SIMULATOR:=icarus
