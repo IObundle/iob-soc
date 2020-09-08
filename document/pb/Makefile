@@ -8,7 +8,7 @@ run: pb.pdf
 
 pb.pdf: pb.tex iob_pb.cls figures/*.odg
 	make -C figures
-	../fpga2tex.sh $(COMPILE_SERVER) $(REMOTE_ROOT_DIR)/$(HW_DIR) $(INTEL) $(XILINX)
+	../fpga2tex.sh $(COMPILE_USER) $(COMPILE_SERVER) $(REMOTE_ROOT_DIR)/$(HW_DIR) $(INTEL) $(XILINX)
 	pdflatex '\def\XILINX{$(XILINX)}\def\INTEL{$(INTEL)}\input{$<}'
 	pdflatex '\def\XILINX{$(XILINX)}\def\INTEL{$(INTEL)}\input{$<}'
 	evince $@ &
