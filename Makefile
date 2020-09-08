@@ -28,11 +28,11 @@ fpga: firmware bootloader
 ifeq ($(BOARD),$(filter $(BOARD), $(LOCAL_COMPILER_LIST)))
 	make -C $(FPGA_DIR) compile INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR)
 else
-	ssh $(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
-	rsync -avz --exclude .git $(ROOT_DIR) $(COMPILE_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(COMPILE_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) compile INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR)'
+	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
+	rsync -avz --exclude .git $(ROOT_DIR) $(COMPILE_USER)@$(COMPILE_SERVER):$(REMOTE_ROOT_DIR)
+	ssh $(COMPILE_USER)@$(COMPILE_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) compile INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR)'
 ifneq ($(COMPILE_SERVER),$(BOARD_SERVER))
-	scp $(COMPILE_SERVER):$(REMOTE_ROOT_DIR)/$(FPGA_DIR)/$(COMPILE_OBJ) $(FPGA_DIR)
+	scp $(COMPILE_USER)@$(COMPILE_SERVER):$(REMOTE_ROOT_DIR)/$(FPGA_DIR)/$(COMPILE_OBJ) $(FPGA_DIR)
 endif
 endif
 
@@ -40,17 +40,17 @@ fpga-load:
 ifeq ($(BOARD),$(filter $(BOARD), $(LOCAL_BOARD_LIST)))
 	make -C $(FPGA_DIR) load
 else
-	ssh $(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
-	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_SERVER):$(REMOTE_ROOT_DIR) 
-	ssh $(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) load'
+	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
+	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR) 
+	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) load'
 endif
 
 fpga-clean: sw-clean
 ifeq ($(BOARD),$(filter $(BOARD), $(LOCAL_COMPILER_LIST)))
 	make -C $(FPGA_DIR) clean BOARD=$(BOARD)
 else
-	rsync -avz --exclude .git $(ROOT_DIR) $(COMPILE_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(COMPILE_SERVER) 'if [ -d $(REMOTE_ROOT_DIR) ]; then cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) clean BOARD=$(BOARD); fi'
+	rsync -avz --exclude .git $(ROOT_DIR) $(COMPILE_USER)@$(COMPILE_SERVER):$(REMOTE_ROOT_DIR)
+	ssh $(COMPILE_USER)@$(COMPILE_SERVER) 'if [ -d $(REMOTE_ROOT_DIR) ]; then cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) clean BOARD=$(BOARD); fi'
 endif
 ifeq ($(BOARD),$(filter $(BOARD), $(LOCAL_BOARD_LIST)))
 	make -C $(FPGA_DIR) clean BOARD=$(BOARD)
@@ -63,7 +63,7 @@ fpga-clean-ip: fpga-clean
 ifeq ($(BOARD), $(filter $(BOARD), $(LOCAL_COMPILER_LIST)))
 	make -C $(FPGA_DIR) clean-ip
 else
-	ssh $(COMPILE_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) clean-ip'
+	ssh $(COMPILE_USER)@$(COMPILE_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) clean-ip'
 endif
 
 run-hw: firmware
