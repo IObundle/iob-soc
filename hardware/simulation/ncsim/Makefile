@@ -12,7 +12,7 @@ SFLAGS = -errormax 15 -status -CMDFILE $(ROOT_DIR)/hardware/testbench
 
 
 SIM_USER:=user19
-SIM_SERVER=$(SIM_USER)@micro7.lx.it.pt
+SIM_SERVER=micro7.lx.it.pt
 SIM_ROOT_DIR=./sandbox/iob-soc
 
 export VSRC CFLAGS EFLAGS SFLAGS 
