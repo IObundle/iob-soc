@@ -21,6 +21,9 @@ void uart_printf(const char* fmt, ...) {
   static unsigned long digit;
   static int digit_shift;
   static char hex_a = 'a';
+#ifdef FLOAT
+  static float vfloat;
+#endif
 
   while ((c = *w++) != '\0') {
     if (c != '%') {
@@ -81,7 +84,14 @@ void uart_printf(const char* fmt, ...) {
           v = va_arg(args, unsigned long);
 	  uart_itoa(v, buffer, 10);
 	  uart_puts(buffer);
-          break;	
+          break;
+#ifdef FLOAT
+        case 'f':
+          vfloat = (float)va_arg(args, double);
+          int sign = (vfloat < 0)? -1 : 1;
+          uart_printf("%d.%d", (int)vfloat, (int)((sign*(vfloat-(int)vfloat)+0.0005F)*1000.0F));
+          break;
+#endif
         default:
           /* Unsupported format character! */
           break;
