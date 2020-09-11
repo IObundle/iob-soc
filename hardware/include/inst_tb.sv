@@ -14,7 +14,7 @@
       
       .txd       (uart_rxd),
       .rxd       (uart_txd),
-      .rts       (uart_rts),
-      .cts       (uart_cts)
+      .rts       (uart_cts),
+      .cts       (uart_rts)
       );
 
