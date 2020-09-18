@@ -3,7 +3,7 @@ include ./system.mk
 
 sim: firmware bootloader
 ifeq ($(SIMULATOR),$(filter $(SIMULATOR), $(LOCAL_SIM_LIST)))
-	make -C $(SIM_DIR)  INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) TEST_LOG=$(TEST_LOG) VCD=$(VCD)
+	make -C $(SIM_DIR) run INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) TEST_LOG=$(TEST_LOG) VCD=$(VCD)
 else
 	ssh $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
@@ -85,10 +85,10 @@ asic-clean:
 	make -C $(ASIC_DIR) clean
 
 firmware:
-	make -C $(FIRM_DIR) BAUD=$(BAUD)
+	make -C $(FIRM_DIR) run BAUD=$(BAUD)
 
 bootloader: firmware
-	make -C $(BOOT_DIR) BAUD=$(BAUD)
+	make -C $(BOOT_DIR) run BAUD=$(BAUD)
 
 
 sw-clean:
@@ -153,7 +153,7 @@ test-fpga:
 	@echo FPGA TEST PASSED FOR $(BOARD_LIST)
 
 .PHONY: sim sim-waves sim-clean \
-	firmware bootloader sw-clean
+	firmware bootloader sw-clean \
 	doc doc-clean \
 	fpga fpga-load fpga-clean fpga-clean-ip \
 	run-hw \
