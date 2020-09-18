@@ -20,8 +20,8 @@ sim-waves:
 sim-clean: sw-clean
 	make -C $(SIM_DIR) clean SIMULATOR=$(SIMULATOR)
 ifneq ($(SIMULATOR),$(filter $(SIMULATOR), $(LOCAL_SIM_LIST)))
-	rsync -avz --exclude .git $(ROOT_DIR) $(SIM_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(SIM_SERVER) 'if [ -d $(REMOTE_ROOT_DIR) ]; then cd $(REMOTE_ROOT_DIR); make -C $(SIM_DIR) clean SIMULATOR=$(SIMULATOR); fi'
+	rsync -avz --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
+	ssh $(SIM_USER)@$(SIM_SERVER) 'if [ -d $(REMOTE_ROOT_DIR) ]; then cd $(REMOTE_ROOT_DIR); make -C $(SIM_DIR) clean SIMULATOR=$(SIMULATOR); fi'
 endif
 
 fpga: firmware bootloader
