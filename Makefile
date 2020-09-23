@@ -100,7 +100,7 @@ sw-clean:
 	make -C $(CONSOLE_DIR) clean
 
 doc:
-	make -C $(DOC_DIR)
+	make -C $(DOC_DIR) run
 
 doc-clean:
 	make -C $(DOC_DIR) clean
