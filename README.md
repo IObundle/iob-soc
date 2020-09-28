@@ -76,7 +76,7 @@ COMPILE\_OBJ: name of the FPGA configuration file to build.
 
 BOARD\_SERVER: remote machine where the hardware board is attached.
 
-COMPILE\_USER: user name for BOARD\_SERVER.
+BOARD\_USER: user name for BOARD\_SERVER.
 
 REMOTE\_ROOT_DIR: directory in the remote machine to copy the current directory 
 
