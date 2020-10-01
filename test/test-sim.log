@@ -120,7 +120,7 @@ IOb-Bootloader: Reboot CPU and run program...
 Hello world!
 
 
-Simulation complete via $finish(1) at time 197471 NS + 0
+Simulation complete via $finish(1) at time 198071 NS + 0
 ./system_tb.v:80       $finish;
 IOb-Bootloader: USE_DDR=1 RUN_DDR=1
 IOb-UART: Receiving and loading file...
@@ -144,5 +144,5 @@ IOb-Bootloader: Reboot CPU and run program...
 Hello world!
 
 
-Simulation complete via $finish(1) at time 3102141 NS + 0
+Simulation complete via $finish(1) at time 3102741 NS + 0
 ./system_tb.v:80       $finish;

@@ -1,7 +1,7 @@
 ROOT_DIR:=.
 include ./system.mk
 
-sim: firmware bootloader
+sim: sim-clean firmware bootloader 
 ifeq ($(SIMULATOR),$(filter $(SIMULATOR), $(LOCAL_SIM_LIST)))
 	make -C $(SIM_DIR) run INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) TEST_LOG=$(TEST_LOG) VCD=$(VCD)
 else
@@ -16,7 +16,7 @@ ifneq ($(VCD),)
 endif
 endif
 
-sim-waves:
+sim-waves: sim-clean
 	make sim INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) TEST_LOG=$(TEST_LOG) VCD=1
 	gtkwave -a $(SIM_DIR)/../waves.gtkw $(SIM_DIR)/system.vcd
 
