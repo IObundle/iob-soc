@@ -29,6 +29,8 @@
 
 \pagestyle{fancy}
 
+\graphicspath{ {../figures/} {../figures/png/} }
+
 \renewcommand{\headrulewidth}{.4pt}
 \fancyhead{}
 \fancyhead[RO,LE]{
@@ -62,7 +64,7 @@
 \huge{\@category}
 
 \vspace*{2ex}
-\includegraphics[keepaspectratio,scale=.7]{Logo.png}
+\includegraphics[keepaspectratio,scale=.7]{../figures/Logo.png}
 
 \small{\today}
 \vspace*{\fill}

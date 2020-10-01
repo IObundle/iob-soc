@@ -147,13 +147,13 @@ ifeq ($(BOARD),AES-KU040-DB-G)
 	make run-board BOARD=$(BOARD) INIT_MEM=0 USE_DDR=1 RUN_DDR=1 TEST_LOG=$(TEST_LOG)
 endif
 
-clean-all: sim-clean fpga-clean doc-clean
-
 test-fpga:
 	@rm -f test.log
 	$(foreach b, $(BOARD_LIST), make test-board $b TEST_LOG=1;)
 	diff -q test.log test/test-fpga.log
 	@echo FPGA TEST PASSED FOR $(BOARD_LIST)
+
+clean-all: sim-clean fpga-clean doc-clean
 
 .PHONY: sim sim-waves sim-clean \
 	firmware bootloader sw-clean \
