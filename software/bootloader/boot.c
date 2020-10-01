@@ -47,9 +47,8 @@ int main() {
     case RUN: //run firmware
       uart_printf ("%s: Reboot CPU and run program...\n", PROGNAME);
 #if (USE_DDR && RUN_DDR)
-      //wait for cache write buffer to empty  
-      cache_init(FIRM_ADDR_W);
-      while(!cache_buffer_empty());
+      //by reading any DDR data, it forces the caches to first write everyting before reason (write-through write-not-allocate)
+      char force_cache_read = prog_start_addr[0];
 #endif
       //reboot and run firmware (not bootloader)
       MEM_SET(int, BOOTCTR_BASE, 0b10);//{cpu_rst_req=1, boot=0}

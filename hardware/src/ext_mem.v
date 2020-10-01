@@ -8,62 +8,62 @@ module ext_mem
   #(
     parameter ADDR_W=`ADDR_W,
     parameter DATA_W=`DATA_W
-   )
-  (
-   input                                    clk,
-   input                                    rst,
+    )
+   (
+    input                                    clk,
+    input                                    rst,
 
 `ifdef RUN_DDR_USE_SRAM
-   // Instruction bus
-   input [1+`FIRM_ADDR_W-2+`WRITE_W-1:0]    i_req,
-   output [`RESP_W-1:0]                     i_resp,
+    // Instruction bus
+    input [1+`FIRM_ADDR_W-2+`WRITE_W-1:0]    i_req,
+    output [`RESP_W-1:0]                     i_resp,
 `endif
 
-   // Data bus
-   input [1+1+`CACHE_ADDR_W-2+`WRITE_W-1:0] d_req,
-   output [`RESP_W-1:0]                     d_resp,
+    // Data bus
+    input [1+1+`CACHE_ADDR_W-2+`WRITE_W-1:0] d_req,
+    output [`RESP_W-1:0]                     d_resp,
 
-   // AXI interface 
-   // Address write
-   output [0:0]                             axi_awid, 
-   output [`DDR_ADDR_W-1:0]                 axi_awaddr,
-   output [7:0]                             axi_awlen,
-   output [2:0]                             axi_awsize,
-   output [1:0]                             axi_awburst,
-   output [0:0]                             axi_awlock,
-   output [3:0]                             axi_awcache,
-   output [2:0]                             axi_awprot,
-   output [3:0]                             axi_awqos,
-   output                                   axi_awvalid,
-   input                                    axi_awready,
-   //Write
-   output [`DATA_W-1:0]                     axi_wdata,
-   output [`DATA_W/8-1:0]                   axi_wstrb,
-   output                                   axi_wlast,
-   output                                   axi_wvalid, 
-   input                                    axi_wready,
-   input [1:0]                              axi_bresp,
-   input                                    axi_bvalid,
-   output                                   axi_bready,
-   //Address Read
-   output [0:0]                             axi_arid,
-   output [`DDR_ADDR_W-1:0]                 axi_araddr, 
-   output [7:0]                             axi_arlen,
-   output [2:0]                             axi_arsize,
-   output [1:0]                             axi_arburst,
-   output [0:0]                             axi_arlock,
-   output [3:0]                             axi_arcache,
-   output [2:0]                             axi_arprot,
-   output [3:0]                             axi_arqos,
-   output                                   axi_arvalid, 
-   input                                    axi_arready,
-   //Read
-   input [`DATA_W-1:0]                      axi_rdata,
-   input [1:0]                              axi_rresp,
-   input                                    axi_rlast, 
-   input                                    axi_rvalid, 
-   output                                   axi_rready
-   );
+    // AXI interface 
+    // Address write
+    output [0:0]                             axi_awid, 
+    output [`DDR_ADDR_W-1:0]                 axi_awaddr,
+    output [7:0]                             axi_awlen,
+    output [2:0]                             axi_awsize,
+    output [1:0]                             axi_awburst,
+    output [0:0]                             axi_awlock,
+    output [3:0]                             axi_awcache,
+    output [2:0]                             axi_awprot,
+    output [3:0]                             axi_awqos,
+    output                                   axi_awvalid,
+    input                                    axi_awready,
+    //Write
+    output [`DATA_W-1:0]                     axi_wdata,
+    output [`DATA_W/8-1:0]                   axi_wstrb,
+    output                                   axi_wlast,
+    output                                   axi_wvalid, 
+    input                                    axi_wready,
+    input [1:0]                              axi_bresp,
+    input                                    axi_bvalid,
+    output                                   axi_bready,
+    //Address Read
+    output [0:0]                             axi_arid,
+    output [`DDR_ADDR_W-1:0]                 axi_araddr, 
+    output [7:0]                             axi_arlen,
+    output [2:0]                             axi_arsize,
+    output [1:0]                             axi_arburst,
+    output [0:0]                             axi_arlock,
+    output [3:0]                             axi_arcache,
+    output [2:0]                             axi_arprot,
+    output [3:0]                             axi_arqos,
+    output                                   axi_arvalid, 
+    input                                    axi_arready,
+    //Read
+    input [`DATA_W-1:0]                      axi_rdata,
+    input [1:0]                              axi_rresp,
+    input                                    axi_rlast, 
+    input                                    axi_rvalid, 
+    output                                   axi_rready
+    );
 
 `ifdef RUN_DDR_USE_SRAM
    //
@@ -71,18 +71,21 @@ module ext_mem
    //
 
    // Back-end bus
-   wire [1+`CACHE_ADDR_W+`WRITE_W-1:0]    icache_be_req;
-   wire [`RESP_W-1:0]                     icache_be_resp;
+   wire [1+`CACHE_ADDR_W+`WRITE_W-1:0]       icache_be_req;
+   wire [`RESP_W-1:0]                        icache_be_resp;
 
    // Instruction cache instance
-   iob_cache # (
-                .FE_ADDR_W(`FIRM_ADDR_W),
-                .BE_ADDR_W(`CACHE_ADDR_W),
-                .N_WAYS(2),        //Number of ways
-                .LINE_OFF_W(4),    //Cache Line Offset (number of lines)
-                .WORD_OFF_W(4),    //Word Offset (number of words per line)
-                .WTBUF_DEPTH_W(4) //FIFO's depth
-                )
+   iob_cache # 
+     (
+      .FE_ADDR_W(`FIRM_ADDR_W),
+      .BE_ADDR_W(`CACHE_ADDR_W),
+      .N_WAYS(2),        //Number of ways
+      .LINE_OFF_W(4),    //Cache Line Offset (number of lines)
+      .WORD_OFF_W(4),    //Word Offset (number of words per line)
+      .WTBUF_DEPTH_W(5), //FIFO's depth -- 5 minimum for BRAM implementation
+      .CTRL_CACHE (0),   //Cache-Control can't be accessed
+      .CTRL_CNT(0)       //Remove counters
+      )
    icache (
            .clk   (clk),
            .reset (rst),
@@ -109,8 +112,8 @@ module ext_mem
    //
 
    // Back-end bus
-   wire [1+`CACHE_ADDR_W+`WRITE_W-1:0]    dcache_be_req;
-   wire [`RESP_W-1:0]                     dcache_be_resp;
+   wire [1+`CACHE_ADDR_W+`WRITE_W-1:0]       dcache_be_req;
+   wire [`RESP_W-1:0]                        dcache_be_resp;
 
    // Data cache instance
    iob_cache # 
@@ -119,8 +122,9 @@ module ext_mem
       .N_WAYS(2),        //Number of ways
       .LINE_OFF_W(4),    //Cache Line Offset (number of lines)
       .WORD_OFF_W(4),    //Word Offset (number of words per line)
-      .WTBUF_DEPTH_W(4), //FIFO's depth
-      .CTRL_CACHE (1)
+      .WTBUF_DEPTH_W(5), //FIFO's depth -- 5 minimum for BRAM implementation
+      .CTRL_CACHE (1),   //Either 1 to enable cache-control or 0 to disable
+      .CTRL_CNT(1)       //do not change (it's implementation depends on the previous)
       )
    dcache (
            .clk   (clk),
@@ -144,34 +148,34 @@ module ext_mem
            );
 
    // Merge caches back-ends
-   wire [1+`CACHE_ADDR_W+`WRITE_W-1:0]    l2cache_req;
-   wire [`RESP_W-1:0]                     l2cache_resp;
-    
+   wire [1+`CACHE_ADDR_W+`WRITE_W-1:0]       l2cache_req;
+   wire [`RESP_W-1:0]                        l2cache_resp;
+   
    merge
      #(
        .ADDR_W(`CACHE_ADDR_W),
 `ifdef RUN_DDR_USE_SRAM
-      .N_MASTERS(2)
+       .N_MASTERS(2)
 `else
-      .N_MASTERS(1)
+       .N_MASTERS(1)
 `endif
        )
-     merge_i_d_buses_into_l2
-       (
-        .clk(clk),
-        .rst(rst),
-        // masters
+   merge_i_d_buses_into_l2
+     (
+      .clk(clk),
+      .rst(rst),
+      // masters
 `ifdef RUN_DDR_USE_SRAM
-        .m_req  ({icache_be_req, dcache_be_req}),
-        .m_resp ({icache_be_resp, dcache_be_resp}),
+      .m_req  ({icache_be_req, dcache_be_req}),
+      .m_resp ({icache_be_resp, dcache_be_resp}),
 `else
-        .m_req  (dcache_be_req),
-        .m_resp (dcache_be_resp),
+      .m_req  (dcache_be_req),
+      .m_resp (dcache_be_resp),
 `endif                 
-        // slave
-        .s_req  (l2cache_req),
-        .s_resp (l2cache_resp)
-        );
+      // slave
+      .s_req  (l2cache_req),
+      .s_resp (l2cache_resp)
+      );
 
    // L2 cache instance
    iob_cache_axi # 
@@ -181,8 +185,8 @@ module ext_mem
       .N_WAYS(4),        //Number of Ways
       .LINE_OFF_W(4),    //Cache Line Offset (number of lines)
       .WORD_OFF_W(4),    //Word Offset (number of words per line)
-      .WTBUF_DEPTH_W(4), //FIFO's depth
-      .CTRL_CACHE (0),
+      .WTBUF_DEPTH_W(5), //FIFO's depth -- 5 minimum for BRAM implementation
+      .CTRL_CACHE (0),   //Cache-Control can't be accessed
       .CTRL_CNT(0)       //Remove counters
       )
    l2cache (
