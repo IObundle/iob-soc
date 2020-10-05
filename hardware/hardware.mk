@@ -40,8 +40,7 @@ endif
 VSRC+=system.v
 
 # peripherals
-periphs:
-	$(foreach p, $(PERIPHERALS), $(eval include $(SUBMODULES_DIR)/$p/hardware/hardware.mk))
+$(foreach p, $(PERIPHERALS), $(eval include $(SUBMODULES_DIR)/$p/hardware/hardware.mk))
 
 # insert peripherals
 system.v:
@@ -66,4 +65,4 @@ boot.hex: $(BOOT_DIR)/boot.bin
 hw-clean:
 	@rm -f *# *~ *.vcd *.dat *.hex *.bin $(SRC_DIR)/system.v $(TB_DIR)/system_tb.v
 
-.PHONY: periphs firmware hw-clean
+.PHONY: firmware hw-clean

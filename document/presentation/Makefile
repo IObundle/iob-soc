@@ -2,10 +2,11 @@ OBJS = $(patsubst %.odg,%.pdf,$(wildcard drawings/*.odg))
 TRGT = main
 #BIB = ./bibtex/BIBfile.bib
 
-all: $(TRGT).pdf
+run: $(TRGT).pdf
 
 $(TRGT).pdf: $(TRGT).tex $(OBJS) $(BIB)
 	latexmk -pdf $(TRGT).tex
+	evince $@ &
 
 drawings/%.pdf: drawings/%.odg
 	make -C drawings
@@ -16,8 +17,8 @@ clean:
 	@rm -f *~ *.fls *.fdb_latexmk *.vrb
 	make -C figures clean
 
-veryclean: clean
+pdfclean: clean
 	@rm $(TRGT).pdf
 
-.PHONY: all clean veryclean
+.PHONY: run clean veryclean
 

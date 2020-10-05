@@ -114,7 +114,7 @@
   \item An IP core can be integrated into IOb-SoC if it provides the following files: 
     \begin{itemize}
     \item hardware/hardware.mk
-    \item software/software.mk
+    \item software/embedded.mk
     \end{itemize}
   \item Study these files and its references in the Time IP core repository to learn how to make your own peripheral cores.
   \end{itemize}
@@ -160,7 +160,6 @@ int main()
 \begin{itemize}
 \item The following assumes you are using the default Icarus Verilog simulator
   installed locally (see the README.md file)
-\item To add your own simulator, add a directory into {\tt ./hardware/simulation}, using the existing simulation directories as examples
 \item To run the simulation with the firmware pre-initialised in the memory:\\
   {\tt make sim INIT\_MEM=1}
 \item The firmware and bootloader C codes and the system's Verilog description are compiled as you can see from the printed messages

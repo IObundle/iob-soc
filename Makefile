@@ -16,9 +16,11 @@ ifneq ($(VCD),)
 endif
 endif
 
-sim-waves: sim-clean
-	make sim INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) TEST_LOG=$(TEST_LOG) VCD=1
-	gtkwave -a $(SIM_DIR)/../waves.gtkw $(SIM_DIR)/system.vcd
+sim-waves: $(SIM_DIR)/../waves.gtkw $(SIM_DIR)/system.vcd
+	gtkwave -a $^ &
+
+$(SIM_DIR)/../waves.gtkw $(SIM_DIR)/system.vcd:
+	make sim INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) VCD=1
 
 sim-clean: sw-clean
 	make -C $(SIM_DIR) clean SIMULATOR=$(SIMULATOR)
@@ -105,11 +107,13 @@ doc:
 doc-clean:
 	make -C $(DOC_DIR) clean
 
+doc-pdfclean:
+	make -C $(DOC_DIR) pdfclean
+
 test: test-sim test-fpga
 
 
-run-sim:
-	make sim-clean SIMULATOR=$(SIMULATOR)
+run-sim: sim-clean
 	make sim SIMULATOR=$(SIMULATOR) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) TEST_LOG=$(TEST_LOG)
 ifneq ($(TEST_LOG),)
 	cat $(SIM_DIR)/test.log >> test.log
