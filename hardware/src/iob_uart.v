@@ -12,7 +12,7 @@ module iob_uart
 
    //cpu interface 
    input                     valid,
-   input [2:0]               address,
+   input [`UART_ADDR_W-1:0]  address,
    input [`UART_WDATA_W-1:0] wdata,
    input                     wstrb,
    output reg [DATA_W-1:0]   rdata,
