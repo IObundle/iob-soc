@@ -2,7 +2,7 @@
 #include "iob-uart.h"
 
 //base address
-int base;
+static int base;
 
 //UART functions
 void uart_init(int base_address, int div) {
