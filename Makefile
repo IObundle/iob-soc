@@ -167,3 +167,5 @@ clean-all: sim-clean fpga-clean doc-clean
 	test test-sim test-fpga test-board run-board\
 	asic asic-clean \
 	clean-all
+
+.PRECIOUS: $(SIM_DIR)/system.vcd
