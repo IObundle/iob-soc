@@ -1,5 +1,8 @@
-hardware/simulation/icarus/*.vcd
-hardware/simulation/ncim/*.vcd
+hardware/src/system.v
+hardware/testbench/system_tb.v
+
+hardware/simulation/icarus/*
+!hardware/simulation/icarus/Makefile
 
 hardware/fpga/CYCLONEV-GT-DK/synth_system.sof
 

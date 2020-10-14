@@ -174,4 +174,7 @@ ifneq ($(TEST_LOG),)
 LOG=>test.log
 endif
 
+gen-clean:
+	@rm -f *# *~
+
 .PHONY: all
