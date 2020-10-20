@@ -6,7 +6,7 @@ VSRC+=./verilog/top_system.v
 load:
 	./prog.sh
 
-compile: periphs firmware $(COMPILE_OBJ)
+compile: firmware $(COMPILE_OBJ)
 
 $(COMPILE_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex
 	./build.sh "$(INCLUDE)" "$(DEFINE)" "$(VSRC)"
