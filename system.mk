@@ -6,10 +6,10 @@ SRAM_ADDR_W=14
 
 #DDR
 ifeq ($(USE_DDR),)
-	USE_DDR:=0
+	USE_DDR:=1
 endif
 ifeq ($(RUN_DDR),)
-	RUN_DDR:=0
+	RUN_DDR:=1
 endif
 
 DDR_ADDR_W:=30
@@ -20,11 +20,11 @@ BOOTROM_ADDR_W:=12
 
 #Init memory (only works in simulation or in FPGA)
 ifeq ($(INIT_MEM),)
-	INIT_MEM:=0
+	INIT_MEM:=1
 endif
 
 #Peripheral list (must match respective submodule or folder name in the submodules directory)
-PERIPHERALS:=UART
+PERIPHERALS:=UART TIMER
 
 #SIMULATION TEST
 SIM_LIST="SIMULATOR=icarus" "SIMULATOR=ncsim"
@@ -48,20 +48,20 @@ BOARD_LIST="BOARD=CYCLONEV-GT-DK" "BOARD=AES-KU040-DB-G"
 #BOARD_LIST="BOARD=CYCLONEV-GT-DK"
 
 #LOCAL_BOARD_LIST=CYCLONEV-GT-DK #leave space in the end
-#LOCAL_COMPILER_LIST=CYCLONEV-GT-DK AES-KU040-DB-G
+LOCAL_BOARD_LIST=CYCLONEV-GT-DK AES-KU040-DB-G
 
 ifeq ($(BOARD),AES-KU040-DB-G)
-	COMPILE_USER=$(USER)
-	COMPILE_SERVER=pudim-flan.iobundle.com
-	COMPILE_OBJ=synth_system.bit
+	FPGA_USER=$(USER)
+	FPGA_SERVER=pudim-flan.iobundle.com
+	FPGA_OBJ=synth_system.bit
 	BOARD_USER=$(USER)
 	BOARD_SERVER=baba-de-camelo.iobundle.com
 else
 #default
 	BOARD=CYCLONEV-GT-DK
-	COMPILE_SERVER=pudim-flan.iobundle.com
-	COMPILE_USER=$(USER)
-	COMPILE_OBJ=output_files/top_system.sof
+	FPGA_SERVER=pudim-flan.iobundle.com
+	FPGA_USER=$(USER)
+	FPGA_OBJ=output_files/top_system.sof
 	BOARD_SERVER=pudim-flan.iobundle.com
 	BOARD_USER=$(USER)
 endif
@@ -174,4 +174,7 @@ ifneq ($(TEST_LOG),)
 LOG=>test.log
 endif
 
-.PHONY: all usage
+gen-clean:
+	@rm -f *# *~
+
+.PHONY: all
