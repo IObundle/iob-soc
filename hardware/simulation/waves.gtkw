@@ -1,13 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
-[*] Sun Aug 30 01:01:54 2020
+[*] Sat Oct  3 19:13:16 2020
 [*]
-[dumpfile] "(null)"
+[dumpfile] "/home/jsousa/sandbox/iob-soc/hardware/simulation/icarus/system.vcd"
+[dumpfile_mtime] "Sat Oct  3 11:34:18 2020"
+[dumpfile_size] 28019509
 [savefile] "/home/jsousa/sandbox/iob-soc/hardware/simulation/waves.gtkw"
-[timestart] 11103300
+[timestart] 149412600
 [size] 1918 1026
 [pos] -1 -1
-*-15.940769 11320600 14260000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-17.439247 150070000 14260000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] system_tb.
 [treeopen] system_tb.uut.
 [treeopen] system_tb.uut.cpu.
@@ -29,6 +31,17 @@ system_tb.uut.int_mem0.ram_i_req[68:0]
 system_tb.uut.int_mem0.ram_i_resp[32:0]
 system_tb.uut.int_mem0.d_req[68:0]
 system_tb.uut.int_mem0.d_resp[32:0]
+@200
+-TIMER
+@28
+system_tb.uut.timer.valid
+@22
+system_tb.uut.timer.rdata[31:0]
+system_tb.uut.timer.counter[64:0]
+@28
+system_tb.uut.timer.tmp_reg_en
+@23
+system_tb.uut.timer.tmp_reg[64:0]
 @200
 -sram
 @28
@@ -56,7 +69,6 @@ system_tb.uut.pbus_req[68:0]
 system_tb.uut.pbus_resp[32:0]
 system_tb.uut.int_mem_d_req[68:0]
 system_tb.uut.int_mem_d_resp[32:0]
-system_tb.uut.slaves_resp[32:0]
 @200
 -CPU
 @22
@@ -67,11 +79,7 @@ system_tb.uut.cpu.cpu_d_req[68:0]
 system_tb.uut.cpu.cpu_req[68:0]
 @28
 system_tb.uut.cpu.cpu_instr
-@29
 system_tb.uut.cpu.cpu_valid
-@28
-system_tb.uut.cpu.cpu_valid_reg
-system_tb.uut.cpu.cpu_valid_int
 @200
 -PICORV32
 @28

@@ -20,11 +20,11 @@ BOOTROM_ADDR_W:=12
 
 #Init memory (only works in simulation or in FPGA)
 ifeq ($(INIT_MEM),)
-	INIT_MEM:=0
+	INIT_MEM:=1
 endif
 
 #Peripheral list (must match respective submodule or folder name in the submodules directory)
-PERIPHERALS:=UART
+PERIPHERALS:=UART TIMER
 
 #SIMULATION TEST
 SIM_LIST="SIMULATOR=icarus" "SIMULATOR=ncsim"
@@ -51,17 +51,17 @@ BOARD_LIST="BOARD=CYCLONEV-GT-DK" "BOARD=AES-KU040-DB-G"
 #LOCAL_COMPILER_LIST=CYCLONEV-GT-DK AES-KU040-DB-G
 
 ifeq ($(BOARD),AES-KU040-DB-G)
-	COMPILE_USER=$(USER)
-	COMPILE_SERVER=pudim-flan.iobundle.com
-	COMPILE_OBJ=synth_system.bit
+	FPGA_USER=$(USER)
+	FPGA_SERVER=pudim-flan.iobundle.com
+	FPGA_OBJ=synth_system.bit
 	BOARD_USER=$(USER)
 	BOARD_SERVER=baba-de-camelo.iobundle.com
 else
 #default
 	BOARD=CYCLONEV-GT-DK
-	COMPILE_SERVER=pudim-flan.iobundle.com
-	COMPILE_USER=$(USER)
-	COMPILE_OBJ=output_files/top_system.sof
+	FPGA_SERVER=pudim-flan.iobundle.com
+	FPGA_USER=$(USER)
+	FPGA_OBJ=output_files/top_system.sof
 	BOARD_SERVER=pudim-flan.iobundle.com
 	BOARD_USER=$(USER)
 endif
@@ -118,9 +118,9 @@ DEFINE+=$(defmacro)RUN_DDR
 endif
 endif
 ifeq ($(INIT_MEM),1)
-DEFINE+=$(defmacro)INIT_MEM 
+DEFINE+=$(defmacro)INIT_MEM
 endif
-DEFINE+=$(defmacro)N_SLAVES=$(N_SLAVES) 
+DEFINE+=$(defmacro)N_SLAVES=$(N_SLAVES)
 
 #address selection bits
 E:=31 #extra memory bit
@@ -149,7 +149,7 @@ endif
 
 DEFINE+=$(defmacro)BAUD=$(BAUD)
 
-ifeq ($(FREQ),) 
+ifeq ($(FREQ),)
 DEFINE+=$(defmacro)FREQ=100000000
 else
 DEFINE+=$(defmacro)FREQ=$(FREQ)
@@ -159,8 +159,8 @@ endif
 all: usage
 
 usage:
-	@echo "INFO: Top target must me defined so that target \"run\" can be found" 
-	@echo "      For example, \"make sim INIT_MEM=0\"." 
+	@echo "INFO: Top target must me defined so that target \"run\" can be found"
+	@echo "      For example, \"make sim INIT_MEM=0\"."
 	@echo "Usage: make target [parameters]"
 
 #create periph indices and directories
@@ -174,4 +174,7 @@ ifneq ($(TEST_LOG),)
 LOG=>test.log
 endif
 
-.PHONY: all usage
+gen-clean:
+	@rm -f *# *~
+
+.PHONY: all
