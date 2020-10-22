@@ -1,4 +1,3 @@
-
 `timescale 1 ns / 1 ps
 
 `include "system.vh"
@@ -79,7 +78,7 @@ module ext_mem
    wire                                      invalidate;
    reg                                       invalidate_reg;
    wire                                      l2_valid = l2cache_req[1+`CACHE_ADDR_W+`WRITE_W-1];
-  //Necessary logic to avoid invalidating L2 while it's being accessed by a request
+   //Necessary logic to avoid invalidating L2 while it's being accessed by a request
    always @(posedge clk, posedge rst)
      if (rst)
        invalidate_reg <= 1'b0;
