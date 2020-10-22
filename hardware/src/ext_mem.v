@@ -73,24 +73,6 @@ module ext_mem
    wire [1+`CACHE_ADDR_W+`WRITE_W-1:0]       icache_be_req;
    wire [`RESP_W-1:0]                        icache_be_resp;
 
-   //ext_mem control signals
-   wire                                      l2_wtb_empty;
-   wire                                      invalidate;
-   reg                                       invalidate_reg;
-   wire                                      l2_valid = l2cache_req[1+`CACHE_ADDR_W+`WRITE_W-1];
-   //Necessary logic to avoid invalidating L2 while it's being accessed by a request
-   always @(posedge clk, posedge rst)
-     if (rst)
-       invalidate_reg <= 1'b0;
-     else 
-       if (invalidate)
-         invalidate_reg <= 1'b1;
-       else 
-         if(~l2_valid)
-           invalidate_reg <= 1'b0;
-         else
-           invalidate_reg <= invalidate_reg;
-   
 
    // Instruction cache instance
    iob_cache # 
@@ -128,7 +110,26 @@ module ext_mem
            .mem_rdata (icache_be_resp[`rdata(0)]),
            .mem_ready (icache_be_resp[`ready(0)])
            );
-`endif
+`endif //  `ifdef RUN_DDR_USE_SRAM
+
+   //ext_mem control signals
+   wire                                      l2_wtb_empty;
+   wire                                      invalidate;
+   reg                                       invalidate_reg;
+   wire                                      l2_valid = l2cache_req[1+`CACHE_ADDR_W+`WRITE_W-1];
+   //Necessary logic to avoid invalidating L2 while it's being accessed by a request
+   always @(posedge clk, posedge rst)
+     if (rst)
+       invalidate_reg <= 1'b0;
+     else 
+       if (invalidate)
+         invalidate_reg <= 1'b1;
+       else 
+         if(~l2_valid)
+           invalidate_reg <= 1'b0;
+         else
+           invalidate_reg <= invalidate_reg;
+   
    //
    // DATA CACHE
    //
@@ -136,7 +137,7 @@ module ext_mem
    // Back-end bus
    wire [1+`CACHE_ADDR_W+`WRITE_W-1:0]       dcache_be_req;
    wire [`RESP_W-1:0]                        dcache_be_resp;
-
+   
    // Data cache instance
    iob_cache # 
      (
