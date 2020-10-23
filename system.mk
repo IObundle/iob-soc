@@ -8,7 +8,7 @@ SRAM_ADDR_W ?=14
 USE_DDR ?=1
 RUN_DDR ?=1
 
-DDR_ADDR_W:=30
+HW_DDR_ADDR_W:=30
 CACHE_ADDR_W:=24
 
 #ROM
@@ -110,6 +110,13 @@ DEFINE+=$(defmacro)BOOTROM_ADDR_W=$(BOOTROM_ADDR_W)
 DEFINE+=$(defmacro)SRAM_ADDR_W=$(SRAM_ADDR_W)
 DEFINE+=$(defmacro)FIRM_ADDR_W=$(FIRM_ADDR_W)
 DEFINE+=$(defmacro)CACHE_ADDR_W=$(CACHE_ADDR_W)
+
+SIM_DDR_ADDR_W=24
+ifeq ($(word 1, $(MAKECMDGOALS)),fpga)
+DDR_ADDR_W:=$(HW_DDR_ADDR_W)
+else
+DDR_ADDR_W:=$(SIM_DDR_ADDR_W)
+endif
 
 ifeq ($(USE_DDR),1)
 DEFINE+=$(defmacro)USE_DDR
