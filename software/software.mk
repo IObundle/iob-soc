@@ -1,3 +1,5 @@
+include $(UART_DIR)/core.mk
+
 UART_SW_DIR:=$(UART_DIR)/software
 
 #include

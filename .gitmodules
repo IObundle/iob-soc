@@ -1,0 +1,3 @@
+[submodule "submodules/INTERCON"]
+	path = submodules/INTERCON
+	url = git@github.com:IObundle/iob-interconnect.git
