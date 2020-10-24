@@ -5,13 +5,15 @@ include ./system.mk
 # SIMULATE
 #
 
-sim: sim-clean firmware bootloader 
+sim: sim-clean
+	make -C $(FIRM_DIR) run BAUD=$(SIM_BAUD)
+	make -C $(BOOT_DIR) run BAUD=$(SIM_BAUD)
 ifeq ($(SIMULATOR),$(filter $(SIMULATOR), $(LOCAL_SIM_LIST)))
-	make -C $(SIM_DIR) run INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) TEST_LOG=$(TEST_LOG) VCD=$(VCD)
+	make -C $(SIM_DIR) run INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) TEST_LOG=$(TEST_LOG) VCD=$(VCD) BAUD=$(SIM_BAUD)
 else
 	ssh $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(SIM_DIR) run INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) TEST_LOG=$(TEST_LOG) VCD=$(VCD)'
+	ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(SIM_DIR) run INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) TEST_LOG=$(TEST_LOG) VCD=$(VCD) BAUD=$(SIM_BAUD)'
 ifneq ($(TEST_LOG),)
 	scp $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)/$(SIM_DIR)/test.log $(SIM_DIR)
 endif
@@ -37,13 +39,15 @@ endif
 # COMPILE FPGA 
 #
 
-fpga: firmware bootloader
+fpga:
+	make -C $(FIRM_DIR) run BAUD=$(HW_BAUD)
+	make -C $(BOOT_DIR) run BAUD=$(HW_BAUD)
 ifeq ($(FPGA),$(filter $(FPGA), $(LOCAL_FPGA_LIST)))
-	make -C $(FPGA_DIR) compile INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR)
+	make -C $(FPGA_DIR) compile INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) BAUD=$(HW_BAUD)
 else
 	ssh $(FPGA_USER)@$(FPGA_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) compile INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR)'
+	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) compile INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) BAUD=$(HW_BAUD)'
 ifneq ($(FPGA_SERVER),localhost)
 	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/$(FPGA_DIR)/$(FPGA_OBJ) $(FPGA_DIR)
 endif
@@ -79,11 +83,11 @@ endif
 
 board-run: firmware
 ifeq ($(BOARD),$(filter $(BOARD), $(LOCAL_BOARD_LIST)))
-	make -C $(CONSOLE_DIR) run INIT_MEM=$(INIT_MEM) TEST_LOG=$(TEST_LOG)
+	make -C $(CONSOLE_DIR) run INIT_MEM=$(INIT_MEM) TEST_LOG=$(TEST_LOG) BAUD=$(HW_BAUD)
 else
 	ssh $(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_SERVER):$(REMOTE_ROOT_DIR) 
-	ssh $(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(CONSOLE_DIR) run INIT_MEM=$(INIT_MEM) TEST_LOG=$(TEST_LOG)'
+	ssh $(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(CONSOLE_DIR) run INIT_MEM=$(INIT_MEM) TEST_LOG=$(TEST_LOG) BAUD=$(HW_BAUD)'
 ifneq ($(TEST_LOG),)
 	scp $(BOARD_SERVER):$(REMOTE_ROOT_DIR)/$(CONSOLE_DIR)/test.log $(CONSOLE_DIR)/test.log
 endif
@@ -96,17 +100,6 @@ else
 	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_SERVER):$(REMOTE_ROOT_DIR)
 	ssh $(BOARD_SERVER) 'if [ -d $(REMOTE_ROOT_DIR) ]; then cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) clean BOARD=$(BOARD); fi'
 endif
-
-
-#
-# COMPILE ASIC
-#
-
-asic: bootloader
-	make -C $(ASIC_DIR)
-
-asic-clean:
-	make -C $(ASIC_DIR) clean
 
 #
 # COMPILE SOFTWARE
@@ -125,7 +118,7 @@ bootloader-clean: firmware-clean
 	make -C $(BOOT_DIR) clean
 
 console:
-	make -C $(CONSOLE_DIR) run BAUD=$(BAUD)
+	make -C $(CONSOLE_DIR) run BAUD=$(HW_BAUD)
 
 console-clean:
 	make -C $(CONSOLE_DIR) clean
@@ -196,6 +189,20 @@ test-all-boards:
 	diff -q test.log test/test-fpga.log
 	@echo FPGA TEST PASSED FOR $(BOARD_LIST)
 
+
+
+#
+# COMPILE ASIC (WIP)
+#
+
+asic: bootloader
+	make -C $(ASIC_DIR)
+
+asic-clean:
+	make -C $(ASIC_DIR) clean
+
+
+# CLEAN ALL
 clean-all: sim-clean fpga-clean board-clean doc-clean
 
 .PHONY: sim sim-waves sim-clean \

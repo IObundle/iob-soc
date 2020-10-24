@@ -194,7 +194,6 @@ module system_tb;
  `ifdef DDR_INIT
        .FILE("firmware.hex"),
  `endif
-       .FILE_SIZE(2**(`FIRM_ADDR_W-2)),
        .DATA_WIDTH (`DATA_W),
        .ADDR_WIDTH (`DDR_ADDR_W)
        )
