@@ -5,10 +5,10 @@ FIRM_ADDR_W ?=14
 SRAM_ADDR_W ?=14
 
 #DDR
-USE_DDR ?=0
-RUN_DDR ?=0
+USE_DDR ?=1
+RUN_DDR ?=1
 
-DDR_ADDR_W:=30
+HW_DDR_ADDR_W:=30
 CACHE_ADDR_W:=24
 
 #ROM
@@ -50,7 +50,8 @@ else ifeq ($(FPGA),CYCLONEV-GT-DK)
 	FPGA_OBJ=output_files/top_system.sof
 endif
 
-
+#BOARD TEST
+BOARD_LIST?=AES-KU040-DB-G 
 #BOARD EXECUTION
 BOARD=AES-KU040-DB-G
 LOCAL_BOARD_LIST=CYCLONEV-GT-DK
@@ -107,6 +108,13 @@ DEFINE+=$(defmacro)SRAM_ADDR_W=$(SRAM_ADDR_W)
 DEFINE+=$(defmacro)FIRM_ADDR_W=$(FIRM_ADDR_W)
 DEFINE+=$(defmacro)CACHE_ADDR_W=$(CACHE_ADDR_W)
 
+SIM_DDR_ADDR_W=24
+ifeq ($(word 1, $(MAKECMDGOALS)),fpga)
+DDR_ADDR_W:=$(HW_DDR_ADDR_W)
+else
+DDR_ADDR_W:=$(SIM_DDR_ADDR_W)
+endif
+
 ifeq ($(USE_DDR),1)
 DEFINE+=$(defmacro)USE_DDR
 DEFINE+=$(defmacro)DDR_ADDR_W=$(DDR_ADDR_W)
@@ -115,9 +123,9 @@ DEFINE+=$(defmacro)RUN_DDR
 endif
 endif
 ifeq ($(INIT_MEM),1)
-DEFINE+=$(defmacro)INIT_MEM 
+DEFINE+=$(defmacro)INIT_MEM
 endif
-DEFINE+=$(defmacro)N_SLAVES=$(N_SLAVES) 
+DEFINE+=$(defmacro)N_SLAVES=$(N_SLAVES)
 
 #address selection bits
 E:=31 #extra memory bit
@@ -146,7 +154,7 @@ endif
 
 DEFINE+=$(defmacro)BAUD=$(BAUD)
 
-ifeq ($(FREQ),) 
+ifeq ($(FREQ),)
 DEFINE+=$(defmacro)FREQ=100000000
 else
 DEFINE+=$(defmacro)FREQ=$(FREQ)
@@ -156,8 +164,8 @@ endif
 all: usage
 
 usage:
-	@echo "INFO: Top target must me defined so that target \"run\" can be found" 
-	@echo "      For example, \"make sim INIT_MEM=0\"." 
+	@echo "INFO: Top target must me defined so that target \"run\" can be found"
+	@echo "      For example, \"make sim INIT_MEM=0\"."
 	@echo "Usage: make target [parameters]"
 
 #create periph indices and directories

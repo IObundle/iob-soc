@@ -18,7 +18,7 @@ SIM_ROOT_DIR=./sandbox/iob-soc
 export VSRC CFLAGS EFLAGS SFLAGS 
 
 #simulate
-run: $(VSRC) $(VHDR) firmware boot.hex periphs
+run: $(VSRC) $(VHDR) firmware boot.hex	
 	./run_ncsim.sh
 	grep -v xcelium xmsim.log | grep -v xmsim $(LOG)
 
