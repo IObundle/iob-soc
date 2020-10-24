@@ -5,8 +5,12 @@ ifeq ($(VCD),1)
 DEFINE+=$(defmacro)VCD
 endif
 
-#testbench source files
-VSRC+=system_tb.v $(AXI_MEM_DIR)/rtl/axi_ram.v
+#testbench submodules source files
+VSRC+=$(CACHE_DIR)/submodules/AXIMEM/rtl/axi_ram.v
+
+#testbench source file
+VSRC+=system_tb.v
+
 
 #create testbench system_tb.v
 system_tb.v:
@@ -17,5 +21,6 @@ system_tb.v:
 	$(foreach p, $(PERIPHERALS), if test -f $(SUBMODULES_DIR)/$p/hardware/include/inst_tb.sv; then sed -i '/endmodule/e cat $(SUBMODULES_DIR)/$p/hardware/include/inst_tb.sv' $@; fi;) # insert peripheral instances
 
 VSRC+=$(foreach p, $(PERIPHERALS), $(shell if test -f $(SUBMODULES_DIR)/$p/hardware/testbench/module_tb.sv; then echo $(SUBMODULES_DIR)/$p/hardware/testbench/module_tb.sv; fi;)) #add test cores to list of sources
+
 
 .PRECIOUS: system.vcd

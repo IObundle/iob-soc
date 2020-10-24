@@ -115,14 +115,22 @@ asic-clean:
 firmware:
 	make -C $(FIRM_DIR) run BAUD=$(BAUD)
 
+firmware-clean:
+	make -C $(FIRM_DIR) clean
+
 bootloader: firmware
 	make -C $(BOOT_DIR) run BAUD=$(BAUD)
 
-
-sw-clean:
-	make -C $(FIRM_DIR) clean
+bootloader-clean: firmware-clean
 	make -C $(BOOT_DIR) clean
+
+console:
+	make -C $(CONSOLE_DIR) run BAUD=$(BAUD)
+
+console-clean:
 	make -C $(CONSOLE_DIR) clean
+
+sw-clean: firmware-clean bootloader-clean console-clean
 
 #
 # COMPILE DOCUMENTS

@@ -18,7 +18,8 @@ BOOTROM_ADDR_W:=12
 INIT_MEM ?=1
 
 #Peripheral list (must match respective submodule or folder name in the submodules directory)
-PERIPHERALS:=UART TIMER
+PERIPHERALS:=UART
+#PERIPHERALS:=UART TIMER
 
 #
 #SIMULATION
@@ -87,7 +88,6 @@ SIM_DIR=$(HW_DIR)/simulation/$(SIMULATOR)
 FPGA_DIR=$(HW_DIR)/fpga/$(BOARD)
 ASIC_DIR=$(HW_DIR)/asic/$(ASIC_NODE)
 
-
 SW_DIR:=$(ROOT_DIR)/software
 FIRM_DIR:=$(SW_DIR)/firmware
 BOOT_DIR:=$(SW_DIR)/bootloader
@@ -97,12 +97,9 @@ PYTHON_DIR:=$(SW_DIR)/python
 DOC_DIR:=$(ROOT_DIR)/document/$(DOC_TYPE)
 
 #submodule paths
-SUBMODULES_DIR=$(ROOT_DIR)/submodules
-CPU_DIR:=$(SUBMODULES_DIR)/CPU
-CACHE_DIR:=$(SUBMODULES_DIR)/CACHE
-INTERCON_DIR:=$(CACHE_DIR)/submodules/iob-interconnect
-MEM_DIR:=$(CACHE_DIR)/submodules/iob-mem
-AXI_MEM_DIR:=$(CACHE_DIR)/submodules/axi-mem
+SUBMODULES_DIR:=$(ROOT_DIR)/submodules
+SUBMODULES=CPU CACHE $(PERIPHERALS)
+$(foreach p, $(SUBMODULES), $(eval $p_DIR:=$(SUBMODULES_DIR)/$p))
 
 #defmacros
 DEFINE+=$(defmacro)BOOTROM_ADDR_W=$(BOOTROM_ADDR_W)
@@ -165,9 +162,8 @@ usage:
 
 #create periph indices and directories
 N_SLAVES:=0
-dummy:=$(foreach p, $(PERIPHERALS), $(eval $p_DIR:=$(SUBMODULES_DIR)/$p))
-dummy:=$(foreach p, $(PERIPHERALS), $(eval $p=$(N_SLAVES)) $(eval N_SLAVES:=$(shell expr $(N_SLAVES) \+ 1)))
-dummy:=$(foreach p, $(PERIPHERALS), $(eval DEFINE+=$(defmacro)$p=$($p)))
+$(foreach p, $(PERIPHERALS), $(eval $p=$(N_SLAVES)) $(eval N_SLAVES:=$(shell expr $(N_SLAVES) \+ 1)))
+$(foreach p, $(PERIPHERALS), $(eval DEFINE+=$(defmacro)$p=$($p)))
 
 #test log
 ifneq ($(TEST_LOG),)

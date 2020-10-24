@@ -1,17 +1,27 @@
 ROOT_DIR:=../..
 include ../software.mk
 
-#include peripherals
-dummy:=$(foreach p, $(PERIPHERALS), $(eval include $(SUBMODULES_DIR)/$p/software/embedded/embedded.mk))
-
-
-#local flags
+#additional compiler flags
 CFLAGS+=--specs=nano.specs -Wl,-Bstatic,-T,../template.lds,-Map,firmware.map,--strip-debug
 
-#local sources
-HDR+=$(SW_DIR)/periphs.h
+
+#SUBMODULES
+
+#cache
+ifeq ($(USE_DDR),1)
+include $(CACHE_DIR)/software/software.mk
+endif
+
+#peripherals (embedded)
+$(foreach p, $(PERIPHERALS), $(eval include $(SUBMODULES_DIR)/$p/software/embedded/embedded.mk))
+
+#HEADERS
+HDR+=periphs.h
+
+#SOURCES
 SRC+= firmware.S firmware.c
 
+#RULES
 run: firmware.elf
 
 firmware.elf: ../template.lds $(HDR) $(SRC)
@@ -21,4 +31,4 @@ firmware.elf: ../template.lds $(HDR) $(SRC)
 clean: gen-clean 
 	@rm -rf firmware.bin firmware.elf firmware.map *.hex ../periphs.h
 
-.PHONY: run clean
+.PHONY: run clean subs
