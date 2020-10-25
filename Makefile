@@ -14,10 +14,10 @@ else
 	ssh $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
 	ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(SIM_DIR) run INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) TEST_LOG=$(TEST_LOG) VCD=$(VCD) BAUD=$(SIM_BAUD)'
-ifneq ($(TEST_LOG),)
+ifeq ($(TEST_LOG),1)
 	scp $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)/$(SIM_DIR)/test.log $(SIM_DIR)
 endif
-ifneq ($(VCD),)
+ifeq ($(VCD),1)
 	scp $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)/$(SIM_DIR)/*.vcd $(SIM_DIR)
 endif
 endif
@@ -26,7 +26,7 @@ sim-waves: $(SIM_DIR)/../waves.gtkw $(SIM_DIR)/system.vcd
 	gtkwave -a $^ &
 
 $(SIM_DIR)/../waves.gtkw $(SIM_DIR)/system.vcd:
-	make sim INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) VCD=1
+	make sim INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) VCD=$(VCD)
 
 sim-clean: sw-clean
 	make -C $(SIM_DIR) clean SIMULATOR=$(SIMULATOR)
@@ -43,11 +43,11 @@ fpga:
 	make -C $(FIRM_DIR) run BAUD=$(HW_BAUD)
 	make -C $(BOOT_DIR) run BAUD=$(HW_BAUD)
 ifeq ($(FPGA),$(filter $(FPGA), $(LOCAL_FPGA_LIST)))
-	make -C $(FPGA_DIR) compile INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) BAUD=$(HW_BAUD)
+	make -C $(FPGA_DIR) compile FPGA=$(FPGA) LOCAL_FPGA_LIST=$(LOCAL_FPGA_LIST) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) BAUD=$(HW_BAUD)
 else
 	ssh $(FPGA_USER)@$(FPGA_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) compile INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) BAUD=$(HW_BAUD)'
+	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) compile FPGA=$(FPGA) LOCAL_FPGA_LIST=$(LOCAL_FPGA_LIST) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) BAUD=$(HW_BAUD)'
 ifneq ($(FPGA_SERVER),localhost)
 	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/$(FPGA_DIR)/$(FPGA_OBJ) $(FPGA_DIR)
 endif
@@ -147,27 +147,27 @@ test: test-all-simulators test-all-boards
 #test on simulators
 test-each-simulator:
 	echo "Testing simulator $(SIMULATOR)";echo Testing simulator $(SIMULATOR)>>test.log
-	make sim SIMULATOR=$(SIMULATOR) INIT_MEM=1 USE_DDR=0 RUN_DDR=0 TEST_LOG=1
+	make sim SIMULATOR=$(SIMULATOR) LOCAL_SIM_LIST=$(LOCAL_SIM_LIST) INIT_MEM=1 USE_DDR=0 RUN_DDR=0 TEST_LOG=1
 	cat $(SIM_DIR)/test.log >> test.log
-	make sim SIMULATOR=$(SIMULATOR) INIT_MEM=0 USE_DDR=0 RUN_DDR=0 TEST_LOG=1
+	make sim SIMULATOR=$(SIMULATOR) LOCAL_SIM_LIST=$(LOCAL_SIM_LIST) INIT_MEM=0 USE_DDR=0 RUN_DDR=0 TEST_LOG=1
 	cat $(SIM_DIR)/test.log >> test.log
-	make sim SIMULATOR=$(SIMULATOR) INIT_MEM=1 USE_DDR=1 RUN_DDR=0 TEST_LOG=1
+	make sim SIMULATOR=$(SIMULATOR) LOCAL_SIM_LIST=$(LOCAL_SIM_LIST) INIT_MEM=1 USE_DDR=1 RUN_DDR=0 TEST_LOG=1
 	cat $(SIM_DIR)/test.log >> test.log
-	make sim SIMULATOR=$(SIMULATOR) INIT_MEM=1 USE_DDR=1 RUN_DDR=1 TEST_LOG=1
+	make sim SIMULATOR=$(SIMULATOR) LOCAL_SIM_LIST=$(LOCAL_SIM_LIST) INIT_MEM=1 USE_DDR=1 RUN_DDR=1 TEST_LOG=1
 	cat $(SIM_DIR)/test.log >> test.log
-	make sim SIMULATOR=$(SIMULATOR) INIT_MEM=0 USE_DDR=1 RUN_DDR=1 TEST_LOG=1
+	make sim SIMULATOR=$(SIMULATOR) LOCAL_SIM_LIST=$(LOCAL_SIM_LIST) INIT_MEM=0 USE_DDR=1 RUN_DDR=1 TEST_LOG=1
 	cat $(SIM_DIR)/test.log >> test.log
 
 test-all-simulators:
 	@rm -f test.log
-	$(foreach s, $(SIM_LIST), make test-each-simulator SIMULATOR=$s;)
+	$(foreach s, $(SIM_LIST), make test-each-simulator SIMULATOR=$s LOCAL_SIM_LIST=$(LOCAL_SIM_LIST);)
 	diff -q test.log test/test-sim.log
 	@echo SIMULATION TEST PASSED FOR $(SIM_LIST)
 
 #test on boards
 test-each-board-config:
 	make fpga-clean FPGA=$(FPGA)
-	make fpga FPGA=$(FPGA) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR)
+	make fpga FPGA=$(FPGA) LOCAL_FPGA_LIST=$(LOCAL_FPGA_LIST) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR)
 	make board-clean BOARD=$(BOARD)
 	make board-load BOARD=$(BOARD)
 	make board-run BOARD=$(BOARD) INIT_MEM=$(INIT_MEM) TEST_LOG=$(TEST_LOG)
@@ -177,15 +177,15 @@ endif
 
 test-each-board:
 	echo "Testing board $(BOARD)"; echo "Testing board $(BOARD)" >> test.log
-	make test-each-board-config BOARD=$(BOARD) INIT_MEM=1 USE_DDR=0 RUN_DDR=0 TEST_LOG=1
-	make test-each-board-config BOARD=$(BOARD) INIT_MEM=0 USE_DDR=0 RUN_DDR=0 TEST_LOG=1
+	make test-each-board-config FPGA=$(FPGA) LOCAL_FPGA_LIST=$(LOCAL_FPGA_LIST) BOARD=$(BOARD) INIT_MEM=1 USE_DDR=0 RUN_DDR=0 TEST_LOG=1
+	make test-each-board-config FPGA=$(FPGA) LOCAL_FPGA_LIST=$(LOCAL_FPGA_LIST) BOARD=$(BOARD) INIT_MEM=0 USE_DDR=0 RUN_DDR=0 TEST_LOG=1
 ifeq ($(BOARD),AES-KU040-DB-G)
-	make test-each-board-config BOARD=$(BOARD) INIT_MEM=0 USE_DDR=1 RUN_DDR=1 TEST_LOG=1
+	make test-each-board-config FPGA=$(FPGA) LOCAL_FPGA_LIST=$(LOCAL_FPGA_LIST) BOARD=$(BOARD) INIT_MEM=0 USE_DDR=1 RUN_DDR=1 TEST_LOG=1
 endif
 
 test-all-boards:
 	@rm -f test.log
-	$(foreach b, $(BOARD_LIST), make test-each-board BOARD=$b;)
+	$(foreach b, $(BOARD_LIST), make test-each-board BOARD=$b FPGA=$(FPGA) LOCAL_FPGA_LIST=$(LOCAL_FPGA_LIST);)
 	diff -q test.log test/test-fpga.log
 	@echo FPGA TEST PASSED FOR $(BOARD_LIST)
 

@@ -112,6 +112,10 @@ module ext_mem
            );
 `endif //  `ifdef RUN_DDR_USE_SRAM
 
+   //l2 cache interface signals
+   wire [1+`CACHE_ADDR_W+`WRITE_W-1:0]       l2cache_req;
+   wire [`RESP_W-1:0]                        l2cache_resp;
+   
    //ext_mem control signals
    wire                                      l2_wtb_empty;
    wire                                      invalidate;
@@ -174,10 +178,7 @@ module ext_mem
            .mem_ready (dcache_be_resp[`ready(0)])
            );
 
-   // Merge caches back-ends
-   wire [1+`CACHE_ADDR_W+`WRITE_W-1:0]       l2cache_req;
-   wire [`RESP_W-1:0]                        l2cache_resp;
-   
+   // Merge cache back-ends
    merge
      #(
        .ADDR_W(`CACHE_ADDR_W),

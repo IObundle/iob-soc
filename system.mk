@@ -16,8 +16,8 @@ BOOTROM_ADDR_W:=12
 INIT_MEM ?=1
 
 #Peripheral list (must match respective submodule or folder name in the submodules directory)
-PERIPHERALS:=UART
-#PERIPHERALS:=UART TIMER
+#PERIPHERALS:=UART
+PERIPHERALS:=UART TIMER
 
 #
 #SIMULATION
@@ -25,6 +25,7 @@ PERIPHERALS:=UART
 SIMULATOR ?=icarus
 SIM_LIST:=icarus ncsim
 LOCAL_SIM_LIST ?=icarus
+VCD ?= 0
 
 ifeq ($(SIMULATOR),ncsim)
 	SIM_SERVER=micro7.lx.it.pt
@@ -34,7 +35,7 @@ endif
 #
 #FPGA COMPILATION
 #
-FPGA=AES-KU040-DB-G
+FPGA ?=AES-KU040-DB-G
 #LOCAL_FPGA_LIST=CYCLONEV-GT-DK AES-KU040-DB-G
 
 #set according to FPGA
@@ -56,7 +57,7 @@ FPGA_DDR_ADDR_W:=30
 #
 BOARD=AES-KU040-DB-G
 BOARD_LIST?=AES-KU040-DB-G 
-LOCAL_BOARD_LIST=CYCLONEV-GT-DK
+#LOCAL_BOARD_LIST=CYCLONEV-GT-DK
 #LOCAL_BOARD_LIST=AES-KU040-DB-G
 
 #set according to FPGA
@@ -88,7 +89,7 @@ ASIC_NODE:=umc130
 #paths
 HW_DIR:=$(ROOT_DIR)/hardware
 SIM_DIR=$(HW_DIR)/simulation/$(SIMULATOR)
-FPGA_DIR=$(HW_DIR)/fpga/$(BOARD)
+FPGA_DIR=$(HW_DIR)/fpga/$(FPGA)
 ASIC_DIR=$(HW_DIR)/asic/$(ASIC_NODE)
 
 SW_DIR:=$(ROOT_DIR)/software

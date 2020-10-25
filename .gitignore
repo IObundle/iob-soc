@@ -39,3 +39,12 @@ document/presentation/*
 !document/presentation/Makefile
 
 test.log
+
+hardware/fpga/CYCLONEV-GT-DK/boot.hex
+hardware/fpga/CYCLONEV-GT-DK/firmware.hex
+hardware/fpga/CYCLONEV-GT-DK/firmware_0.hex
+hardware/fpga/CYCLONEV-GT-DK/firmware_1.hex
+hardware/fpga/CYCLONEV-GT-DK/firmware_2.hex
+hardware/fpga/CYCLONEV-GT-DK/firmware_3.hex
+hardware/fpga/CYCLONEV-GT-DK/system.v
+hardware/fpga/CYCLONEV-GT-DK/top_system.sof

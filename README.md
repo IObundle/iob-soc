@@ -5,15 +5,12 @@ a UART (iob-uart), and optional caches and AXI4 connection to external DDR.
 
 ## Clone the repository
 
-``git clone git@github.com:IObundle/iob-soc.git``
+``git clone --recursive git@github.com:IObundle/iob-soc.git``
 
 Ssh access is mandatory so that submodules can be updated.
 
-## Update submodules
-``git submodule update --init --recursive``
 
-
-## Edit the system configuration file: /hardware/system.mk
+## The system configuration file: system.mk
 
 To configure IOb-SoC the following parameters are available:
 
@@ -22,42 +19,40 @@ address 0 to the stack end at address 2<sup>FIRM\_ADDR\_W</sup>-1
 
 SRAM\_ADDR\_W: log2 size of SRAM, addresses from 0 to 2<sup>SRAM\_ADDR\_W</sup>-1
 
-USE\_DDR: assign default to 1 if DDR access is needed or to 0
-otherwise. Instruction and data L1 caches will be placed in the design,
-connected to an L2 cache, which in turn connects to an external DDR
-controller. This parameter can also be passed when invoking the makefile.
+USE\_DDR: assign to 1 if DDR memory is needed or to 0 otherwise. If
+asserted, instruction and data L1 caches will be placed in the design, connected
+to an L2 cache, which in turn connects to an external DDR controller.
 
-RUN\_DDR: assign default to 1 if the program runs from the DDR memory and 0
+RUN\_DDR: assign to 1 if the program runs from the DDR memory or to 0
 otherwise. This parameter is ignored if USE\_DDR=0. If USE\_DDR=1 and RUN\_DDR=1,
 the SRAM memory can be accessed when the address MSB is 1. If USE\_DDR=1 and
 RUN\_DDR=0, the DDR is used to store data only; it can be accessed when the
-address MSB is 1. This parameter can also be passed when invoking the makefile.
+address MSB is 1.
 
 DDR\_ADDR\_W: log2 size of DDR, addresses from 0 to 2<sup>DDR\_ADDR\_W</sup>-1
 
 CACHE\_ADDR\_W: log2 size of addressable memory; it should be greater than
 FIRM\_ADDR\_W to allow to allow accessing DDR data outside the program scope.
 
-INIT\_MEM: assign default to 1 to load a program received by the UART and boot
-from it, or to 0 otherwise. This parameter can also be passed when invoking the
-makefile.
+INIT\_MEM: assign to 1 to pre-load the programa and data contents in the memory at comple time, or assign to 0 for the bootloader to receive a program using the UART and boot from it.
 
-BOOTROM\_ADDR\_W: log2 size of the boot ROM, which should be sufficient to hold
-the bootloader program and data.
+BOOTROM\_ADDR\_W: log2 size of the boot ROM.
 
-PERIPHERALS: peripheral list; must match respective submodule name so that
-all hardware and software of the peripheral is automatically included when
-compiling the system.
+PERIPHERALS: peripheral list; must match the respective submodule name in the
+submodules directory, so that all hardware and software of the peripheral is
+automatically included when compiling the system.
 
-SIM\_LIST: list of simulators to use in automatic testing. Simulators can be run
-remotely, in which case parameters SIM\_SERVER and SIM\_USER should be given.
+SIMULATOR: default simulator.
 
 SIM\_SERVER: remote machine where the simulator runs.
 
 SIM\_USER: user name for SIM\_SERVER.
 
-SIMULATOR: default simulator. Leave SIM\_SERVER and SIM\_USER blank if simulator
-runs locally.
+SIM\_LIST: list of simulators to use in automatic testing. Simulators can be run
+remotely, in which case parameters SIM\_SERVER and SIM\_USER should be given.
+
+LOCAL\_SIM\_LIST: list the simulators available on the local host.
+
 
 BOARD_LIST: list of boards to use in automatic testing. FPGA compilers, loaders
 and our "console" program can be run remotely, in which case parameters
@@ -66,7 +61,15 @@ should be given.
 
 LOCAL\_BOARD_LIST: list of boards attached to the local machine.
 
+BOARD\_SERVER: remote machine where the hardware board is attached.
+
+BOARD\_USER: user name for BOARD\_SERVER.
+
+
 LOCAL\_COMPILER_LIST: list of FPGA compilers installed in the local machine.
+
+
+
 
 COMPILE\_SERVER: remote machine where the FPGA compiler is installed.
 
@@ -74,15 +77,13 @@ COMPILE\_USER: user name for COMPILE\_SERVER.
 
 COMPILE\_OBJ: name of the FPGA configuration file to build.
 
-BOARD\_SERVER: remote machine where the hardware board is attached.
-
-BOARD\_USER: user name for BOARD\_SERVER.
 
 REMOTE\_ROOT_DIR: directory in the remote machine to copy the current directory 
 
-ASIC\_NODE: directory in the asic directory containing a compilation environment for the ASIC technology node
-
 DOC\_TYPE: directory in the document directory containing the Latex files producing the desired type of document
+
+
+ASIC\_NODE: directory in the asic directory containing a compilation environment for the ASIC technology node
 
 ## Simulation
 
@@ -106,11 +107,6 @@ To compile the FPGA:
 make fpga
 ```
 
-To configure the FPGA:
-```
-make fpga-load
-```
-
 To clean FPGA files:
 ```
 make fpga-clean
@@ -121,9 +117,19 @@ make fpga-clean-ip
 ```
 
 
-## Running the hardware
+## Running on board
+
+To load the board (e.g., with an FPGA configuration bitstream file):
 ```
-make run-hw
+make board-load
+```
+
+```
+make board-run
+```
+
+```
+make board-clean
 ```
 
 ## ASIC
@@ -183,7 +189,7 @@ make test-fpga
 
 Besides the specific cleanup actions give so far, to clean software and documentation type
 ```
-make clean
+make clean-all
 ```
 
 
