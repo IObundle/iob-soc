@@ -1,3 +1,4 @@
+system.mk
 hardware/src/system.v
 hardware/testbench/system_tb.v
 

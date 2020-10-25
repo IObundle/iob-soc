@@ -114,10 +114,6 @@ DOC_TYPE ?=pb
 # DERIVED FROM PRIMARY PARAMETERS: DO NOT CHANGE
 #############################################################
 
-#ifeq ($(RUN_DDR),1)
-#	USE_DDR=1
-#endif
-
 #paths
 HW_DIR:=$(ROOT_DIR)/hardware
 SIM_DIR=$(HW_DIR)/simulation/$(SIMULATOR)

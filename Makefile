@@ -36,36 +36,36 @@ ifneq ($(SIMULATOR),$(filter $(SIMULATOR), $(LOCAL_SIM_LIST)))
 endif
 
 #
-# COMPILE FPGA 
+# FPGA COMPILE 
 #
 
 fpga:
 	make -C $(FIRM_DIR) run BAUD=$(HW_BAUD)
 	make -C $(BOOT_DIR) run BAUD=$(HW_BAUD)
-ifeq ($(FPGA),$(filter $(FPGA), $(LOCAL_FPGA_LIST)))
-	make -C $(FPGA_DIR) compile FPGA=$(FPGA) LOCAL_FPGA_LIST=$(LOCAL_FPGA_LIST) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) BAUD=$(HW_BAUD)
+ifeq ($(BOARD),$(filter $(BOARD), $(LOCAL_FPGA_LIST)))
+	make -C $(BOARD_DIR) compile BOARD=$(BOARD) LOCAL_FPGA_LIST=$(LOCAL_FPGA_LIST) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) BAUD=$(HW_BAUD)
 else
 	ssh $(FPGA_USER)@$(FPGA_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) compile FPGA=$(FPGA) LOCAL_FPGA_LIST=$(LOCAL_FPGA_LIST) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) BAUD=$(HW_BAUD)'
+	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(BOARD_DIR) compile BOARD=$(BOARD) LOCAL_FPGA_LIST=$(LOCAL_FPGA_LIST) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) BAUD=$(HW_BAUD)'
 ifneq ($(FPGA_SERVER),localhost)
-	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/$(FPGA_DIR)/$(FPGA_OBJ) $(FPGA_DIR)
+	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/$(BOARD_DIR)/$(FPGA_OBJ) $(BOARD_DIR)
 endif
 endif
 
 fpga-clean: sw-clean
-ifeq ($(FPGA),$(filter $(FPGA), $(LOCAL_FPGA_LIST)))
-	make -C $(FPGA_DIR) clean FPGA=$(FPGA)
+ifeq ($(BOARD),$(filter $(BOARD), $(LOCAL_FPGA_LIST)))
+	make -C $(BOARD_DIR) clean BOARD=$(BOARD)
 else
 	rsync -avz --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(FPGA_USER)@$(FPGA_SERVER) 'if [ -d $(REMOTE_ROOT_DIR) ]; then cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) clean FPGA=$(FPGA); fi'
+	ssh $(FPGA_USER)@$(FPGA_SERVER) 'if [ -d $(REMOTE_ROOT_DIR) ]; then cd $(REMOTE_ROOT_DIR); make -C $(BOARD_DIR) clean BOARD=$(BOARD); fi'
 endif
 
 fpga-clean-ip: fpga-clean
-ifeq ($(FPGA), $(filter $(FPGA), $(LOCAL_FPGA_LIST)))
-	make -C $(FPGA_DIR) clean-ip
+ifeq ($(BOARD), $(filter $(BOARD), $(LOCAL_FPGA_LIST)))
+	make -C $(BOARD_DIR) clean-ip
 else
-	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) clean-ip'
+	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(BOARD_DIR) clean-ip'
 endif
 
 #
@@ -74,11 +74,11 @@ endif
 
 board-load:
 ifeq ($(BOARD),$(filter $(BOARD), $(LOCAL_BOARD_LIST)))
-	make -C $(FPGA_DIR) load
+	make -C $(BOARD_DIR) load
 else
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR) 
-	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) load'
+	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(BOARD_DIR) load'
 endif
 
 board-run: firmware
@@ -95,10 +95,10 @@ endif
 
 board_clean:
 ifeq ($(BOARD),$(filter $(BOARD), $(LOCAL_BOARD_LIST)))
-	make -C $(FPGA_DIR) clean BOARD=$(BOARD)
+	make -C $(BOARD_DIR) clean BOARD=$(BOARD)
 else
 	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(BOARD_SERVER) 'if [ -d $(REMOTE_ROOT_DIR) ]; then cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) clean BOARD=$(BOARD); fi'
+	ssh $(BOARD_SERVER) 'if [ -d $(REMOTE_ROOT_DIR) ]; then cd $(REMOTE_ROOT_DIR); make -C $(BOARD_DIR) clean BOARD=$(BOARD); fi'
 endif
 
 #
@@ -145,7 +145,7 @@ doc-pdfclean:
 test: test-all-simulators test-all-boards
 
 #test on simulators
-test-each-simulator:
+test-simulator:
 	echo "Testing simulator $(SIMULATOR)";echo Testing simulator $(SIMULATOR)>>test.log
 	make sim SIMULATOR=$(SIMULATOR) LOCAL_SIM_LIST=$(LOCAL_SIM_LIST) INIT_MEM=1 USE_DDR=0 RUN_DDR=0 TEST_LOG=1
 	cat $(SIM_DIR)/test.log >> test.log
@@ -160,14 +160,14 @@ test-each-simulator:
 
 test-all-simulators:
 	@rm -f test.log
-	$(foreach s, $(SIM_LIST), make test-each-simulator SIMULATOR=$s LOCAL_SIM_LIST=$(LOCAL_SIM_LIST);)
+	$(foreach s, $(SIM_LIST), make test-simulator SIMULATOR=$s LOCAL_SIM_LIST=$(LOCAL_SIM_LIST);)
 	diff -q test.log test/test-sim.log
 	@echo SIMULATION TEST PASSED FOR $(SIM_LIST)
 
 #test on boards
-test-each-board-config:
-	make fpga-clean FPGA=$(FPGA)
-	make fpga FPGA=$(FPGA) LOCAL_FPGA_LIST=$(LOCAL_FPGA_LIST) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR)
+test-board-config:
+	make fpga-clean BOARD=$(BOARD)
+	make fpga BOARD=$(BOARD) LOCAL_FPGA_LIST=$(LOCAL_FPGA_LIST) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR)
 	make board-clean BOARD=$(BOARD)
 	make board-load BOARD=$(BOARD)
 	make board-run BOARD=$(BOARD) INIT_MEM=$(INIT_MEM) TEST_LOG=$(TEST_LOG)
@@ -175,20 +175,19 @@ ifneq ($(TEST_LOG),)
 	cat $(CONSOLE_DIR)/test.log >> test.log
 endif
 
-test-each-board:
+test-board:
 	echo "Testing board $(BOARD)"; echo "Testing board $(BOARD)" >> test.log
-	make test-each-board-config FPGA=$(FPGA) LOCAL_FPGA_LIST=$(LOCAL_FPGA_LIST) BOARD=$(BOARD) INIT_MEM=1 USE_DDR=0 RUN_DDR=0 TEST_LOG=1
-	make test-each-board-config FPGA=$(FPGA) LOCAL_FPGA_LIST=$(LOCAL_FPGA_LIST) BOARD=$(BOARD) INIT_MEM=0 USE_DDR=0 RUN_DDR=0 TEST_LOG=1
+	make test-board-config BOARD=$(BOARD) LOCAL_FPGA_LIST=$(LOCAL_FPGA_LIST) INIT_MEM=1 USE_DDR=0 RUN_DDR=0 TEST_LOG=1
+	make test-board-config BOARD=$(BOARD) LOCAL_FPGA_LIST=$(LOCAL_FPGA_LIST) INIT_MEM=0 USE_DDR=0 RUN_DDR=0 TEST_LOG=1
 ifeq ($(BOARD),AES-KU040-DB-G)
-	make test-each-board-config FPGA=$(FPGA) LOCAL_FPGA_LIST=$(LOCAL_FPGA_LIST) BOARD=$(BOARD) INIT_MEM=0 USE_DDR=1 RUN_DDR=1 TEST_LOG=1
+	make test-board-config BOARD=$(BOARD) LOCAL_FPGA_LIST=$(LOCAL_FPGA_LIST) INIT_MEM=0 USE_DDR=1 RUN_DDR=1 TEST_LOG=1
 endif
 
 test-all-boards:
 	@rm -f test.log
-	$(foreach b, $(BOARD_LIST), make test-each-board BOARD=$b FPGA=$(FPGA) LOCAL_FPGA_LIST=$(LOCAL_FPGA_LIST);)
+	$(foreach b, $(BOARD_LIST), make test-board BOARD=$b LOCAL_FPGA_LIST=$(LOCAL_FPGA_LIST);)
 	diff -q test.log test/test-fpga.log
-	@echo FPGA TEST PASSED FOR $(BOARD_LIST)
-
+	@echo BOARD TEST PASSED FOR $(BOARD_LIST)
 
 
 #
@@ -206,12 +205,11 @@ asic-clean:
 clean-all: sim-clean fpga-clean board-clean doc-clean
 
 .PHONY: sim sim-waves sim-clean \
-	firmware bootloader sw-clean \
-	doc doc-clean \
 	fpga  fpga-clean fpga-clean-ip \
 	board-load board-run board-clean\
-	test test-all-simulators test-each-simulator test-all-boards test-each-board test-each-board-config
+	firmware firmware-clean bootloader bootloader-clean sw-clean \
+	console console-clean \
+	doc doc-clean \
+	test test-all-simulators test-simulator test-all-boards test-board test-board-config \
 	asic asic-clean \
 	clean-all
-
-.PRECIOUS: $(SIM_DIR)/system.vcd

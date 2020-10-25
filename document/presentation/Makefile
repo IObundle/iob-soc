@@ -3,10 +3,10 @@ TRGT = main
 #BIB = ./bibtex/BIBfile.bib
 
 run: $(TRGT).pdf
+	evince $< &
 
 $(TRGT).pdf: $(TRGT).tex $(OBJS) $(BIB)
 	latexmk -pdf $(TRGT).tex
-	evince $@ &
 
 drawings/%.pdf: drawings/%.odg
 	make -C drawings
