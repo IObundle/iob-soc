@@ -32,7 +32,7 @@ INIT_MEM ?=1
 #must match respective submodule or folder name in the submodules directory
 #and CORE_NAME in the core.mk file of the submodule
 #PERIPHERALS:=UART
-PERIPHERALS ?=UART TIMER
+PERIPHERALS ?=UART
 
 #
 #SIMULATION
@@ -191,12 +191,11 @@ ifneq ($(TEST_LOG),)
 LOG=>test.log
 endif
 
-usage:
-	@echo "INFO: Top target must me defined so that target \"run\" can be found"
-	@echo "      For example, \"make sim INIT_MEM=0\"."
-	@echo "Usage: make target [parameters]"
+
+
+#RULES
 
 gen-clean:
 	@rm -f *# *~
 
-.PHONY: usage gen-clean
+.PHONY: gen-clean

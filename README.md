@@ -16,11 +16,7 @@ Access to Github by *ssh* is mandatory so that submodules can be updated.
 ## The system configuration file: system.mk
 
 The single system configuration is the system.mk file residing at the repository
-root. The user must create this file by first copying the provided
-system\_config.mk file:
-```
-cp system_config.mk system.mk 
-```
+root. If this file does not exist it is created automatically by copying the providedsystem\_config.mk file. The user is free to edit the created systm.mk file, which is ignored by git.
 
 Then edit the system.mk file at will. The variables that can be set are explained in the original system\_config.mk file.
 
@@ -33,7 +29,12 @@ SIM_SERVER variable.
 
 To simulate:
 ```
-make sim
+make [sim]
+```
+
+Parameters can be passed in the command line overriding those in the system.mk file. For example:
+```
+make [sim] INIT_MEM=0 RUN_DDR=1
 ```
 
 To clean the simulation directory:

@@ -1,16 +1,15 @@
 Testing simulator icarus
 IOb-Bootloader: USE_DDR=0 RUN_DDR=0
-IOb-Bootloader: Reboot CPU and run program...
+IOb-Bootloader: Restart CPU to run user program...
+
+
 
 Hello world!
 
-Execution time: 2190 clock cycles
-
-Execution time: 23us @100MHz
 
 IOb-Bootloader: USE_DDR=0 RUN_DDR=0
 IOb-UART: Receiving and loading file...
-File size:       5652 bytes
+File size:       2636 bytes
           0%
          10%
          20%
@@ -22,36 +21,33 @@ File size:       5652 bytes
          80%
          90%
         100%
-IOb-UART: File received (5652 bytes)
-IOb-Bootloader: Reboot CPU and run program...
+IOb-UART: File received (2636 bytes)
+IOb-Bootloader: Restart CPU to run user program...
+
+
 
 Hello world!
 
-Execution time: 2190 clock cycles
-
-Execution time: 23us @100MHz
 
 IOb-Bootloader: USE_DDR=1 RUN_DDR=0
-IOb-Bootloader: Reboot CPU and run program...
+IOb-Bootloader: Restart CPU to run user program...
+
+
 
 Hello world!
 
-Execution time: 2190 clock cycles
-
-Execution time: 23us @100MHz
 
 IOb-Bootloader: USE_DDR=1 RUN_DDR=1
-IOb-Bootloader: Reboot CPU and run program...
+IOb-Bootloader: Restart CPU to run user program...
+
+
 
 Hello world!
 
-Execution time: 2536 clock cycles
-
-Execution time: 26us @100MHz
 
 IOb-Bootloader: USE_DDR=1 RUN_DDR=1
 IOb-UART: Receiving and loading file...
-File size:       5844 bytes
+File size:       2832 bytes
           0%
          10%
          20%
@@ -63,30 +59,28 @@ File size:       5844 bytes
          80%
          90%
         100%
-IOb-UART: File received (5844 bytes)
-IOb-Bootloader: Reboot CPU and run program...
+IOb-UART: File received (2832 bytes)
+IOb-Bootloader: Restart CPU to run user program...
+
+
 
 Hello world!
 
-Execution time: 2536 clock cycles
-
-Execution time: 26us @100MHz
 
 Testing simulator ncsim
 IOb-Bootloader: USE_DDR=0 RUN_DDR=0
-IOb-Bootloader: Reboot CPU and run program...
+IOb-Bootloader: Restart CPU to run user program...
+
+
 
 Hello world!
 
-Execution time: 2190 clock cycles
 
-Execution time: 23us @100MHz
-
-Simulation complete via $finish(1) at time 317551 NS + 0
-./system_tb.v:84       $finish;
+Simulation complete via $finish(1) at time 194271 NS + 0
+./system_tb.v:82       $finish;
 IOb-Bootloader: USE_DDR=0 RUN_DDR=0
 IOb-UART: Receiving and loading file...
-File size:       5652 bytes
+File size:       2636 bytes
           0%
          10%
          20%
@@ -98,42 +92,39 @@ File size:       5652 bytes
          80%
          90%
         100%
-IOb-UART: File received (5652 bytes)
-IOb-Bootloader: Reboot CPU and run program...
+IOb-UART: File received (2636 bytes)
+IOb-Bootloader: Restart CPU to run user program...
+
+
 
 Hello world!
 
-Execution time: 2190 clock cycles
 
-Execution time: 23us @100MHz
-
-Simulation complete via $finish(1) at time 6263401 NS + 0
-./system_tb.v:84       $finish;
+Simulation complete via $finish(1) at time 3033521 NS + 0
+./system_tb.v:82       $finish;
 IOb-Bootloader: USE_DDR=1 RUN_DDR=0
-IOb-Bootloader: Reboot CPU and run program...
+IOb-Bootloader: Restart CPU to run user program...
+
+
 
 Hello world!
 
-Execution time: 2190 clock cycles
 
-Execution time: 23us @100MHz
-
-Simulation complete via $finish(1) at time 317551 NS + 0
-./system_tb.v:84       $finish;
+Simulation complete via $finish(1) at time 195191 NS + 0
+./system_tb.v:82       $finish;
 IOb-Bootloader: USE_DDR=1 RUN_DDR=1
-IOb-Bootloader: Reboot CPU and run program...
+IOb-Bootloader: Restart CPU to run user program...
+
+
 
 Hello world!
 
-Execution time: 2536 clock cycles
 
-Execution time: 26us @100MHz
-
-Simulation complete via $finish(1) at time 343671 NS + 0
-./system_tb.v:84       $finish;
+Simulation complete via $finish(1) at time 204371 NS + 0
+./system_tb.v:82       $finish;
 IOb-Bootloader: USE_DDR=1 RUN_DDR=1
 IOb-UART: Receiving and loading file...
-File size:       5844 bytes
+File size:       2832 bytes
           0%
          10%
          20%
@@ -145,14 +136,13 @@ File size:       5844 bytes
          80%
          90%
         100%
-IOb-UART: File received (5844 bytes)
-IOb-Bootloader: Reboot CPU and run program...
+IOb-UART: File received (2832 bytes)
+IOb-Bootloader: Restart CPU to run user program...
+
+
 
 Hello world!
 
-Execution time: 2536 clock cycles
 
-Execution time: 26us @100MHz
-
-Simulation complete via $finish(1) at time 6490801 NS + 0
-./system_tb.v:84       $finish;
+Simulation complete via $finish(1) at time 3249161 NS + 0
+./system_tb.v:82       $finish;

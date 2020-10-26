@@ -1,4 +1,14 @@
 ROOT_DIR:=.
+
+#default target
+all: system.mk
+	make -C hardware/simulation/icarus run BAUD=10000000
+
+#system configuration file
+system.mk: system_config.mk
+	cp system_config.mk system.mk
+	@echo system.mk file created
+
 include ./system.mk
 
 #
@@ -39,7 +49,7 @@ endif
 # FPGA COMPILE 
 #
 
-fpga:
+fpga: system.mk
 	make -C $(FIRM_DIR) run BAUD=$(HW_BAUD)
 	make -C $(BOOT_DIR) run BAUD=$(HW_BAUD)
 ifeq ($(BOARD),$(filter $(BOARD), $(LOCAL_FPGA_LIST)))
@@ -72,7 +82,7 @@ endif
 # RUN BOARD
 #
 
-board-load:
+board-load: system.mk
 ifeq ($(BOARD),$(filter $(BOARD), $(LOCAL_BOARD_LIST)))
 	make -C $(BOARD_DIR) load
 else
@@ -93,7 +103,7 @@ ifneq ($(TEST_LOG),)
 endif
 endif
 
-board_clean:
+board_clean: system.mk
 ifeq ($(BOARD),$(filter $(BOARD), $(LOCAL_BOARD_LIST)))
 	make -C $(BOARD_DIR) clean
 else
@@ -105,22 +115,22 @@ endif
 # COMPILE SOFTWARE
 #
 
-firmware:
+firmware: system.mk
 	make -C $(FIRM_DIR) run
 
-firmware-clean:
+firmware-clean: system.mk
 	make -C $(FIRM_DIR) clean
 
 bootloader: firmware
 	make -C $(BOOT_DIR) run
 
-bootloader-clean: firmware-clean
+bootloader-clean: system.mk
 	make -C $(BOOT_DIR) clean
 
-console:
+console: system.mk
 	make -C $(CONSOLE_DIR) run BAUD=$(HW_BAUD)
 
-console-clean:
+console-clean: system.mk
 	make -C $(CONSOLE_DIR) clean
 
 sw-clean: firmware-clean bootloader-clean console-clean
@@ -129,13 +139,13 @@ sw-clean: firmware-clean bootloader-clean console-clean
 # COMPILE DOCUMENTS
 #
 
-doc:
+doc: system.mk
 	make -C $(DOC_DIR) run
 
-doc-clean:
+doc-clean: system.mk
 	make -C $(DOC_DIR) clean
 
-doc-pdfclean:
+doc-pdfclean: system.mk
 	make -C $(DOC_DIR) pdfclean
 
 #
@@ -212,4 +222,4 @@ clean-all: sim-clean fpga-clean board-clean doc-clean
 	doc doc-clean \
 	test test-all-simulators test-simulator test-all-boards test-board test-board-config \
 	asic asic-clean \
-	clean-all
+	all clean-all
