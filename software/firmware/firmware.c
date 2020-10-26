@@ -17,8 +17,8 @@ int main()
   uart_txwait();
 
   //read current timer count, compute elapsed time
-  elapsed  = timer_get_count(TIMER_BASE);
-  elapsedu = timer_time_us(TIMER_BASE);
+  elapsed  = timer_get_count();
+  elapsedu = timer_time_us();
 
   uart_printf("\nExecution time: %d clock cycles\n", (unsigned int) elapsed);
   uart_printf("\nExecution time: %dus @%dMHz\n\n", elapsedu, FREQ/1000000);

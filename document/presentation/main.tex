@@ -33,10 +33,10 @@
 
 \title[IOB-SoC Presentation]{IOB-SoC}
 \subtitle{Tutorial: Create a RISC-V-based System on Chip}
-\institute[IObundle Lda]{IObundle Lda.\\The Architecture for an Agile World}
+\institute[IObundle Lda]{IObundle Lda.}
 \titlegraphic{\includegraphics[height=2.5cm]{Logo.png}}
 %\author[José T. de Sousa]{Jos\'e T. de Sousa}
-\institute[IObundle Lda]{IObundle Lda}
+%\institute[IObundle Lda]{IObundle Lda}
 \date{\today}
 
 
@@ -189,11 +189,11 @@ Execution time: 23us @100MHz
   @ iobundle . com.
 \item To add your own FPGA board, add a directory into {\tt ./hardware/fpga},
   using the existing board directories as examples
-\item To compile and run the FPGA design with a certain configuration, type for example:\\
-  {\tt make test-board-config INIT_MEM=0 RUN\_DDR=1}\\
-  This will 
-\item You may change the firmware afterwards and use the previous command to
-  recompile and reload the firmware via UART
+\item To compile and run the FPGA design for a set of parameters:\\
+  {\tt make test-board-config INIT\_MEM=0 RUN\_DDR=1}\\
+  This will compile the software and the hardware, produce an FPGA image, load the hardware and firmware to the board, and direct the standard output to your PC.
+\item To recompile and sent only the firmware to the board via UART:\\
+  {\tt make board-run}
 \end{itemize}
 \end{frame}
 
@@ -203,7 +203,7 @@ Execution time: 23us @100MHz
   \item The addition of an example peripheral IP core has been illustrated
   \item A simple software driver for the IP core has been described
   \item Simulation of IOb-SoC hs been explained
-  \item Compiling and running IOb-SoC in FPGA has been explained
+  \item Compiling and running IOb-SoC on FPGA has been explained
   \end{itemize}
 \end{frame}
 
