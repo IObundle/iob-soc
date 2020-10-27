@@ -29,9 +29,6 @@ void connect(int serial_fd) {
   //send ACK
   byte = ACK;
   while ( write(serial_fd, &byte, 1) <= 0);
-
-  printf(PROGNAME); printf(": Connected to target\n");
-  fflush(stdout);
 }
 
 //prints incoming chars until ETX or ENQ is received

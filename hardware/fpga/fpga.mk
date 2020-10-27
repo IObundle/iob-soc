@@ -1,8 +1,16 @@
+#DEFINES
+
+BAUD=$(HW_BAUD)
+
+#ddr controller address width
+DEFINE+=$(defmacro)DDR_ADDR_W=$(FPGA_DDR_ADDR_W)
+
 include $(ROOT_DIR)/hardware/hardware.mk
 
-#board specific top level source
+#SOURCES
 VSRC+=./verilog/top_system.v
 
+#RULES
 load:
 	./prog.sh
 

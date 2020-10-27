@@ -20,4 +20,4 @@ clean:
 pdfclean: clean
 	@rm -f *.pdf
 
-.PHONY: clean pdfclean
+.PHONY: run clean pdfclean

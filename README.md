@@ -1,148 +1,111 @@
 # IOb-SoC
 
-SoC template comprising a RISC-V processor (iob-rv32), an SRAM memory subsystem,
-a UART (iob-uart), and optional caches and AXI4 connection to external DDR.
+SoC template comprising an open-source RISC-V processor (picorv32), an internal
+SRAM memory subsystem, a UART (iob-uart), and an optional external DDR memory
+subsystem. If selected, an instruction L1 cache, a data L1 cache and a shared L2
+cache is added to the system. The L2 cache communicates with a DDR
+memory controller IP (not provided) using an AXI4 master bus.
 
 ## Clone the repository
 
-``git clone git@github.com:IObundle/iob-soc.git``
+``git clone --recursive git@github.com:IObundle/iob-soc.git``
 
-Ssh access is mandatory so that submodules can be updated.
-
-## Update submodules
-``git submodule update --init --recursive``
+Access to Github by *ssh* is mandatory so that submodules can be updated.
 
 
-## Edit the system configuration file: /hardware/system.mk
+## The system configuration file: system.mk
 
-To configure IOb-SoC the following parameters are available:
+The single system configuration is the system.mk file residing at the repository
+root. If this file does not exist it is created automatically by copying the providedsystem\_config.mk file. The user is free to edit the created systm.mk file, which is ignored by git.
 
-FIRM\_ADDR\_W: log2 size of user program and data space, from 1st instruction at
-address 0 to the stack end at address 2<sup>FIRM\_ADDR\_W</sup>-1
-
-SRAM\_ADDR\_W: log2 size of SRAM, addresses from 0 to 2<sup>SRAM\_ADDR\_W</sup>-1
-
-USE\_DDR: assign default to 1 if DDR access is needed or to 0
-otherwise. Instruction and data L1 caches will be placed in the design,
-connected to an L2 cache, which in turn connects to an external DDR
-controller. This parameter can also be passed when invoking the makefile.
-
-RUN\_DDR: assign default to 1 if the program runs from the DDR memory and 0
-otherwise. This parameter is ignored if USE\_DDR=0. If USE\_DDR=1 and RUN\_DDR=1,
-the SRAM memory can be accessed when the address MSB is 1. If USE\_DDR=1 and
-RUN\_DDR=0, the DDR is used to store data only; it can be accessed when the
-address MSB is 1. This parameter can also be passed when invoking the makefile.
-
-DDR\_ADDR\_W: log2 size of DDR, addresses from 0 to 2<sup>DDR\_ADDR\_W</sup>-1
-
-CACHE\_ADDR\_W: log2 size of addressable memory; it should be greater than
-FIRM\_ADDR\_W to allow to allow accessing DDR data outside the program scope.
-
-INIT\_MEM: assign default to 1 to load a program received by the UART and boot
-from it, or to 0 otherwise. This parameter can also be passed when invoking the
-makefile.
-
-BOOTROM\_ADDR\_W: log2 size of the boot ROM, which should be sufficient to hold
-the bootloader program and data.
-
-PERIPHERALS: peripheral list; must match respective submodule name so that
-all hardware and software of the peripheral is automatically included when
-compiling the system.
-
-SIM\_LIST: list of simulators to use in automatic testing. Simulators can be run
-remotely, in which case parameters SIM\_SERVER and SIM\_USER should be given.
-
-SIM\_SERVER: remote machine where the simulator runs.
-
-SIM\_USER: user name for SIM\_SERVER.
-
-SIMULATOR: default simulator. Leave SIM\_SERVER and SIM\_USER blank if simulator
-runs locally.
-
-BOARD_LIST: list of boards to use in automatic testing. FPGA compilers, loaders
-and our "console" program can be run remotely, in which case parameters
-COMPILE\_SERVER, COMPILE\_USER, COMPILE\_OBJ, BOARD\_SERVER and BOARD\_USER
-should be given.
-
-LOCAL\_BOARD_LIST: list of boards attached to the local machine.
-
-LOCAL\_COMPILER_LIST: list of FPGA compilers installed in the local machine.
-
-COMPILE\_SERVER: remote machine where the FPGA compiler is installed.
-
-COMPILE\_USER: user name for COMPILE\_SERVER.
-
-COMPILE\_OBJ: name of the FPGA configuration file to build.
-
-BOARD\_SERVER: remote machine where the hardware board is attached.
-
-BOARD\_USER: user name for BOARD\_SERVER.
-
-REMOTE\_ROOT_DIR: directory in the remote machine to copy the current directory 
-
-ASIC\_NODE: directory in the asic directory containing a compilation environment for the ASIC technology node
-
-DOC\_TYPE: directory in the document directory containing the Latex files producing the desired type of document
+Then edit the system.mk file at will. The variables that can be set are explained in the original system\_config.mk file.
 
 ## Simulation
 
+The following commands will run locally if the simulator selected by the
+SIMULATOR variable is installed and listed in the LOCAL\_SIM\_LIST
+variable. Otherwise they will run by ssh on the server selected by the
+SIM_SERVER variable.
+
 To simulate:
 ```
-make sim
+make [sim]
 ```
-To visualise simulation waveforms
+
+Parameters can be passed in the command line overriding those in the system.mk file. For example:
 ```
-make sim-waves
+make [sim] INIT_MEM=0 RUN_DDR=1
 ```
-clean simulation files:
+
+To clean the simulation directory:
 ```
 make sim-clean
 ```
 
+To visualise simulation waveforms:
+```
+make sim-waves
+```
+The above command assumes simulation had been previously run with the VCD variable set to 1. Otherwise an error issued.
+
 ## FPGA
+
+The following commands will run locally if the board selected by the BOARD
+variable has its compiler installed and the baord is listed in the
+LOCAL\_FPGA\_LIST variable.  Otherwise they will run by ssh on the server
+selected by the FPGA_SERVER variable.
 
 To compile the FPGA:
 ```
 make fpga
 ```
 
-To configure the FPGA:
-```
-make fpga-load
-```
-
 To clean FPGA files:
 ```
 make fpga-clean
 ```
-or to clean and delete 3rd party IP:
+
+To clean and also delete any used FPGA vendor IP core:
 ```
 make fpga-clean-ip
 ```
 
 
-## Running the hardware
+## Running on the board
+
+The following commands will run locally if the board selected by the BOARD
+variable is installed and listed in the LOCAL\_BOARD\_LIST variable. Otherwise
+they will run by ssh on the server selected by the BOARD_SERVER variable.
+
+To load the board with an FPGA configuration bitstream file:
 ```
-make run-hw
+make board-load
 ```
 
-## ASIC
+To load the board with the most recently compiled firmware and run:
+```
+make board-run
+```
 
-To compile and ASIC:
+To clean the board directory:
 ```
-make asic
-```
-To clean ASIC files:
-```
-make asic-clean
+make board-clean
 ```
 
 
 ## Software
 
+The following commands assume the RISC-V toolchain is installed. Otherwise
+follow the instructions below to install the toolchain.
+
 To compile the firmware:
 ```
 make  firmware
+```
+
+To clean the firmware directory:
+```
+make  firmware-clean
 ```
 
 To compile the bootloader:
@@ -150,40 +113,110 @@ To compile the bootloader:
 make bootloader
 ```
 
+To clean the bootloader directory:
+```
+make bootloader-clean
+```
+
+To compile the provided *console* PC program to communicate with the board:
+```
+make console
+```
+
+
+To clean the console directory
+```
+make console-clean
+```
+
+To clean all software directories
+```
+make sw-clean
+```
+
+
+
 ## Documentation
+
+The following commands assume a full installation of Latex is
+present. Otherwise install it. The texlive-full Linux package is recommended.
 
 To compile the chosen document type:
 ```
-make document
+make document [DOC_TYPE=[pb|presentation]]
 ```
 
-To clean document files:
+To clean the chosen document type:
 ```
-make clean-doc
+make doc-clean [DOC_TYPE=[pb|presentation]]
+```
+
+To clean the chosen document type including the pdf file:
+```
+make doc-pdfclean [DOC_TYPE=[pb|presentation]]
 ```
 
 
 ## Testing
 
-To run a simulation and FPGA test:
+If you create a system using IOb-SoC, you will will want to exhaustively test it
+in simulation and FPGA board. The following commands automate this process.
+
+Tho run a series of simulation tests on the simulator selected by the SIMULATOR variable: 
 ```
-make test
+make test-simulator
 ```
-To run a simulation test only:
+
+Tho run a series of simulation tests on the simulators listed in the SIM_LIST variable: 
 ```
-make test-sim
+make test-all-simulators
 ```
-To run a FPGA test only:
+
+The above commands will produce a simulation log test.log. With the
+test-all-simulators target, test.log is compared with the expected file in
+test/test-sim.log; if they are different an error is issued.
+
+To create an updated test-sim.log, inspect the test.log file. If you deem the file correct replace the test-sim.log file with it:
 ```
-make test-fpga
+mv test.log test/test-sim.log
 ```
+
+Run the test-all-simulators target and verify that the test now passes.
+
+
+
+To compile and run a particular system configuration on the board selected by the BOARD variable:
+```
+make test-board-config
+```
+
+To compile and run a series of system configurations on the board selected by the BOARD variable:
+```
+make test-board
+```
+
+To compile and run a series of system configurations on the boards listed in the BOARD_LIST variable:
+```
+make test-all-boards
+```
+
+The above commands will produce a board run log test.log. With the
+test-all-boards target, test.log is compared with the expected file in
+test/test-fpga.log; if they are different an error is issued.
+
+To create an updated test-fpga.log, inspect the test.log file. If you deem the file correct replace the test-fpga.log file with it:
+```
+mv test.log test/test-fpga.log
+```
+
+Run the test-all-boards target and verify that the test now passes.
 
 
 ## Cleaning
 
-Besides the specific cleanup actions give so far, to clean software and documentation type
+The following command will clean the selected directories for simulation, FPGA compilation and board run: 
 ```
-make clean
+make clean-all
 ```
 
 
@@ -213,7 +246,7 @@ python --version
 ```
 If this doesn't return Python 2.*, navigate to your /usr/bin folder and soft-link python2 to python using:
 ```
-ln -s python2 /usr/bin/python
+sudo ln -s python2 /usr/bin/python
 ```
 
 For CentOS and its variants:
@@ -229,10 +262,4 @@ sudo ./configure --prefix=/path/to/riscv --enable-multilib
 sudo make
 export PATH=$PATH:/path/to/riscv/bin
 ```
-The export PATH command can be added to the bottom of your ~/.bashrc
-
-### Compilation
-
-```
-path/to/riscv/riscv64-unknown-elf-gcc -march=rv32im -mabi=ilp32 <C sources> -o <exec>
-```
+The *export PATH* command should be added to the bottom of your ~/.bashrc, so that you do not have to type it for every session.
