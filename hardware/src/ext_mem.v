@@ -1,4 +1,3 @@
-
 `timescale 1 ns / 1 ps
 
 `include "system.vh"
@@ -74,6 +73,7 @@ module ext_mem
    wire [1+`CACHE_ADDR_W+`WRITE_W-1:0]       icache_be_req;
    wire [`RESP_W-1:0]                        icache_be_resp;
 
+
    // Instruction cache instance
    iob_cache # 
      (
@@ -97,7 +97,11 @@ module ext_mem
            .wstrb (i_req[`wstrb(0)]),
            .rdata (i_resp[`rdata(0)]),
            .ready (i_resp[`ready(0)]),
-
+           //Control IO
+           .force_inv_in(1'b0),
+           .force_inv_out(),
+           .wtb_empty_in(1'b1),
+           .wtb_empty_out(),
            // Back-end interface
            .mem_valid (icache_be_req[1+`CACHE_ADDR_W+`WRITE_W-1]),
            .mem_addr  (icache_be_req[`address(0, `CACHE_ADDR_W)]),
@@ -106,7 +110,30 @@ module ext_mem
            .mem_rdata (icache_be_resp[`rdata(0)]),
            .mem_ready (icache_be_resp[`ready(0)])
            );
-`endif
+`endif //  `ifdef RUN_DDR_USE_SRAM
+
+   //l2 cache interface signals
+   wire [1+`CACHE_ADDR_W+`WRITE_W-1:0]       l2cache_req;
+   wire [`RESP_W-1:0]                        l2cache_resp;
+   
+   //ext_mem control signals
+   wire                                      l2_wtb_empty;
+   wire                                      invalidate;
+   reg                                       invalidate_reg;
+   wire                                      l2_valid = l2cache_req[1+`CACHE_ADDR_W+`WRITE_W-1];
+   //Necessary logic to avoid invalidating L2 while it's being accessed by a request
+   always @(posedge clk, posedge rst)
+     if (rst)
+       invalidate_reg <= 1'b0;
+     else 
+       if (invalidate)
+         invalidate_reg <= 1'b1;
+       else 
+         if(~l2_valid)
+           invalidate_reg <= 1'b0;
+         else
+           invalidate_reg <= invalidate_reg;
+   
    //
    // DATA CACHE
    //
@@ -114,7 +141,7 @@ module ext_mem
    // Back-end bus
    wire [1+`CACHE_ADDR_W+`WRITE_W-1:0]       dcache_be_req;
    wire [`RESP_W-1:0]                        dcache_be_resp;
-
+   
    // Data cache instance
    iob_cache # 
      (
@@ -137,7 +164,11 @@ module ext_mem
            .wstrb (d_req[`wstrb(0)]),
            .rdata (d_resp[`rdata(0)]),
            .ready (d_resp[`ready(0)]),
-
+           //Control IO
+           .force_inv_in(1'b0),
+           .force_inv_out(invalidate),
+           .wtb_empty_in(l2_wtb_empty),
+           .wtb_empty_out(),
            // Back-end interface
            .mem_valid (dcache_be_req[1+`CACHE_ADDR_W+`WRITE_W-1]),
            .mem_addr  (dcache_be_req[`address(0,`CACHE_ADDR_W)]),
@@ -147,10 +178,7 @@ module ext_mem
            .mem_ready (dcache_be_resp[`ready(0)])
            );
 
-   // Merge caches back-ends
-   wire [1+`CACHE_ADDR_W+`WRITE_W-1:0]       l2cache_req;
-   wire [`RESP_W-1:0]                        l2cache_resp;
-   
+   // Merge cache back-ends
    merge
      #(
        .ADDR_W(`CACHE_ADDR_W),
@@ -177,6 +205,7 @@ module ext_mem
       .s_resp (l2cache_resp)
       );
 
+   
    // L2 cache instance
    iob_cache_axi # 
      (
@@ -200,7 +229,11 @@ module ext_mem
             .wstrb    (l2cache_req[`wstrb(0)]),
             .rdata    (l2cache_resp[`rdata(0)]),
             .ready    (l2cache_resp[`ready(0)]),
-
+            //Control IO
+            .force_inv_in(invalidate_reg & ~l2_valid),
+            .force_inv_out(),
+            .wtb_empty_in(1'b1),
+            .wtb_empty_out(l2_wtb_empty),
             // AXI interface
             // Address write
             .axi_awid(axi_awid), 

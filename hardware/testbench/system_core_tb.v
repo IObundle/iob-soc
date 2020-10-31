@@ -7,9 +7,11 @@
 
 module system_tb;
 
+   parameter realtime clk_per = 1s/`FREQ;
+
    //clock
    reg clk = 1;
-   always #5 clk = ~clk;
+   always #(clk_per/2) clk = ~clk;
 
    //reset 
    reg reset = 1;
@@ -192,16 +194,15 @@ module system_tb;
  `ifdef DDR_INIT
        .FILE("firmware.hex"),
  `endif
-       .FILE_SIZE(2**(`FIRM_ADDR_W-2)),
        .DATA_WIDTH (`DATA_W),
-       .ADDR_WIDTH (`FIRM_ADDR_W)
+       .ADDR_WIDTH (`DDR_ADDR_W)
        )
    ddr_model_mem(
                  //address write
                  .clk            (clk),
                  .rst            (reset),
 		 .s_axi_awid     ({8{ddr_awid}}),
-		 .s_axi_awaddr   (ddr_awaddr[`FIRM_ADDR_W-1:0]),
+		 .s_axi_awaddr   (ddr_awaddr[`DDR_ADDR_W-1:0]),
                  .s_axi_awlen    (ddr_awlen),
                  .s_axi_awsize   (ddr_awsize),
                  .s_axi_awburst  (ddr_awburst),
@@ -226,7 +227,7 @@ module system_tb;
       
 		 //address read
 		 .s_axi_arid     ({8{ddr_arid}}),
-		 .s_axi_araddr   (ddr_araddr[`FIRM_ADDR_W-1:0]),
+		 .s_axi_araddr   (ddr_araddr[`DDR_ADDR_W-1:0]),
 		 .s_axi_arlen    (ddr_arlen), 
 		 .s_axi_arsize   (ddr_arsize),    
                  .s_axi_arburst  (ddr_arburst),

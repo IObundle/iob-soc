@@ -45,7 +45,7 @@ int main() {
       uart_sendfile(file_size, prog_start_addr);
       break;
     case RUN: //run firmware
-      uart_printf ("%s: Reboot CPU and run program...\n", PROGNAME);
+      uart_printf ("%s: Restart CPU to run user program...\n", PROGNAME);
 #if (USE_DDR && RUN_DDR)
       //by reading any DDR data, it forces the caches to first write everyting before reason (write-through write-not-allocate)
       char force_cache_read = prog_start_addr[0];
