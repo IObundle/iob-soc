@@ -38,6 +38,8 @@ document/presentation/*
 !document/presentation/main.pdf
 !document/presentation/main.tex
 !document/presentation/Makefile
+document/pb/xil_results.tex
+document/pb/alt_results.tex
 
 test.log
 
@@ -49,3 +51,4 @@ hardware/fpga/CYCLONEV-GT-DK/firmware_2.hex
 hardware/fpga/CYCLONEV-GT-DK/firmware_3.hex
 hardware/fpga/CYCLONEV-GT-DK/system.v
 hardware/fpga/CYCLONEV-GT-DK/top_system.sof
+hardware/fpga/CYCLONEV-GT-DK/top_system.fit.summary

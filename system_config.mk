@@ -74,12 +74,14 @@ ifeq ($(BOARD),AES-KU040-DB-G)
 	BOARD_SERVER ?=baba-de-camelo.iobundle.com
 	BOARD_USER ?=$(USER)
 	FPGA_OBJ ?=synth_system.bit
+	FPGA_LOG ?=vivado.log
 	FPGA_SERVER ?=pudim-flan.iobundle.com
 	FPGA_USER ?=$(USER)
 else #default; ifeq ($(BOARD),CYCLONEV-GT-DK)
 	BOARD_SERVER ?=pudim-flan.iobundle.com
 	BOARD_USER ?=$(USER)
 	FPGA_OBJ ?=output_files/top_system.sof
+	FPGA_LOG ?=output_files/top_system.fit.summary
 	FPGA_SERVER ?=pudim-flan.iobundle.com
 	FPGA_USER ?=$(USER)
 endif
@@ -131,6 +133,7 @@ CONSOLE_DIR:=$(SW_DIR)/console
 PYTHON_DIR:=$(SW_DIR)/python
 
 DOC_DIR:=$(ROOT_DIR)/document/$(DOC_TYPE)
+TEX_DIR=$(UART_DIR)/submodules/TEX
 
 #submodule paths
 SUBMODULES_DIR:=$(ROOT_DIR)/submodules

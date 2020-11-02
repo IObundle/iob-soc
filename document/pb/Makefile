@@ -1,23 +1,13 @@
+ROOT_DIR:=../..
 include ../../system.mk
-
 
 INTEL = 1
 XILINX = 1
 
-run: pb.pdf
+CORE_DIR:=$(ROOT_DIR)
+include $(TEX_DIR)/document/document.mk
 
-pb.pdf: pb.tex iob_pb.cls figures/*.odg
-	make -C figures
-	../fpga2tex.sh $(COMPILE_USER) $(COMPILE_SERVER) $(REMOTE_ROOT_DIR)/$(HW_DIR) $(INTEL) $(XILINX)
-	pdflatex '\def\XILINX{$(XILINX)}\def\INTEL{$(INTEL)}\input{$<}'
-	pdflatex '\def\XILINX{$(XILINX)}\def\INTEL{$(INTEL)}\input{$<}'
-	evince $@ &
+clean: texclean
 
-clean:
-	@rm -f *~ *.aux *.out *.log *.summary *_results*
-	make -C figures clean
+.PHONY: clean
 
-pdfclean: clean
-	@rm -f *.pdf
-
-.PHONY: run clean pdfclean
