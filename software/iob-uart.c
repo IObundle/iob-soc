@@ -85,11 +85,19 @@ void uart_printf(const char* fmt, ...) {
 	  uart_itoa(v, buffer, 10);
 	  uart_puts(buffer);
           break;
+        case 'u':
+          v = va_arg(args, unsigned long);
+          if (v >= (1<<31)) {
+            uart_printf("%d%d",(int)(v/10),(int)(v%10));
+          } else {
+            uart_printf("%d",v);
+          }
+          break;
 #ifdef FLOAT
         case 'f':
           vfloat = (float)va_arg(args, double);
           int sign = (vfloat < 0)? -1 : 1;
-          uart_printf("%d.%d", (int)vfloat, (int)((sign*(vfloat-(int)vfloat)+0.0005F)*1000.0F));
+          uart_printf("%d.%d", (int)vfloat, (int)((sign*(vfloat-(long long)vfloat)+0.0005F)*1000.0F));
           break;
 #endif
         default:
