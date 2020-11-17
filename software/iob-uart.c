@@ -21,6 +21,9 @@ void uart_printf(const char* fmt, ...) {
   static unsigned long digit;
   static int digit_shift;
   static char hex_a = 'a';
+#ifdef LONGLONG
+  static unsigned long long vlong;
+#endif
 #ifdef FLOAT
   static float vfloat;
 #endif
@@ -87,12 +90,53 @@ void uart_printf(const char* fmt, ...) {
           break;
         case 'u':
           v = va_arg(args, unsigned long);
-          if (v >= (1<<31)) {
-            uart_printf("%d%d",(int)(v/10),(int)(v%10));
+          if (v > 999999999) {
+            uart_printf("%d%d", (int)(v/10), (int)(v%10));
           } else {
             uart_printf("%d",v);
           }
           break;
+#ifdef LONGLONG
+        case 'l':
+          if ((c = *w++) == 'l') {
+            vlong = va_arg(args, unsigned long long);
+            if ((c = *w++) == 'u') {
+              if (!vlong) {
+                uart_puts("0");
+              } else {
+                int i = 511;
+                buffer[i] = 0;
+                while (vlong) {
+                  buffer[--i] = (vlong%10)+'0';
+                  vlong /= 10;
+                }
+                uart_puts(&buffer[i]);
+              }
+            } else if (c == 'd') {
+              if (!vlong) {
+                uart_puts("0");
+              } else {
+                if (vlong & 0x8000000000000000) {
+                  vlong ^= 0xffffffffffffffff;
+                  vlong++;
+                  uart_printf("-");
+                }
+                int i = 511;
+                buffer[i] = 0;
+                while (vlong) {
+                  buffer[--i] = (vlong%10)+'0';
+                  vlong /= 10;
+                }
+                uart_puts(&buffer[i]);
+              }
+            } else {
+              /* Unsupported format character! */
+            }
+          } else {
+            /* Unsupported format character! */
+          }
+          break;
+#endif
 #ifdef FLOAT
         case 'f':
           vfloat = (float)va_arg(args, double);
