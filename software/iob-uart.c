@@ -100,34 +100,16 @@ void uart_printf(const char* fmt, ...) {
         case 'l':
           if ((c = *w++) == 'l') {
             vlong = va_arg(args, unsigned long long);
-            if ((c = *w++) == 'u') {
-              if (!vlong) {
-                uart_puts("0");
-              } else {
-                int i = 511;
-                buffer[i] = 0;
-                while (vlong) {
-                  buffer[--i] = (vlong%10)+'0';
-                  vlong /= 10;
-                }
-                uart_puts(&buffer[i]);
+            if ((c = *w++) == 'u'|| c == 'd') {
+              if (c == 'd' && vlong >= ((unsigned long long)1<<63)) {
+                vlong ^= 0xffffffffffffffff;
+                vlong++;
+                uart_printf("-");
               }
-            } else if (c == 'd') {
-              if (!vlong) {
-                uart_puts("0");
+              if (vlong >= ((unsigned long long)1<<32)) {
+                uart_printf("%u%u%u", (unsigned long)((vlong/10)/1000000000), (unsigned long)((vlong/10)%1000000000), (unsigned long)(vlong%10));
               } else {
-                if (vlong & 0x8000000000000000) {
-                  vlong ^= 0xffffffffffffffff;
-                  vlong++;
-                  uart_printf("-");
-                }
-                int i = 511;
-                buffer[i] = 0;
-                while (vlong) {
-                  buffer[--i] = (vlong%10)+'0';
-                  vlong /= 10;
-                }
-                uart_puts(&buffer[i]);
+                uart_printf("%u",(unsigned long)vlong);
               }
             } else {
               /* Unsupported format character! */
