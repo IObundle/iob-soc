@@ -90,7 +90,7 @@ void uart_printf(const char* fmt, ...) {
           break;
         case 'u':
           v = va_arg(args, unsigned long);
-          if (v > 999999999) {
+          if (v >= (1<<31)) {
             uart_printf("%d%d", (int)(v/10), (int)(v%10));
           } else {
             uart_printf("%d",v);
