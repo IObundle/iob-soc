@@ -5,7 +5,6 @@
 
 void uart_puts(char *s) {
   while (*s) uart_putc(*s++);
-  uart_txwait();
 }
 
 void uart_printf(const char* fmt, ...) {
@@ -103,12 +102,13 @@ void uart_printf(const char* fmt, ...) {
             vlong = va_arg(args, uint64_t);
             if ((c = *w++) == 'u'|| c == 'd') {
               if (c == 'd' && vlong >= ((uint64_t)1<<63)) {
-                vlong ^= ~0;
-                vlong++;
-                uart_printf("-");
+                vlong = -vlong;
+                uart_putc('-');
               }
-              if (vlong >= ((uint64_t)1<<32)) {
+              if (vlong >= (uint64_t)1000000000000000000) {
                 uart_printf("%u%u%u", (uint32_t)((vlong/10)/1000000000), (uint32_t)((vlong/10)%1000000000), (uint32_t)(vlong%10));
+              } else if (vlong >= ((uint64_t)1<<32)) {
+                uart_printf("%u%u", (uint32_t)(vlong/1000000000), (uint32_t)(vlong%1000000000));
               } else {
                 uart_printf("%u",(uint32_t)vlong);
               }
