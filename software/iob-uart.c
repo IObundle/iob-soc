@@ -1,3 +1,4 @@
+#include "stdint.h"
 #include "iob-uart.h"
 
 #define PROGNAME "IOb-UART"
@@ -17,12 +18,12 @@ void uart_printf(const char* fmt, ...) {
 
   char v_char;
   char buffer [512];
-  unsigned long v;
-  unsigned long digit;
+  uint32_t v;
+  uint32_t digit;
   int digit_shift;
   char hex_a = 'a';
 #ifdef LONGLONG
-  unsigned long long vlong;
+  uint64_t vlong;
 #endif
 #ifdef FLOAT
   float vfloat;
@@ -48,7 +49,7 @@ void uart_printf(const char* fmt, ...) {
           hex_a = 'A';  // Capital "%x"
         case 'x': // %x
           /* Process hexadecimal number format. */
-          v = va_arg(args, unsigned long);
+          v = va_arg(args, uint32_t);
 
           /* If the number value is zero, just print and continue. */
           if (v == 0)
@@ -84,12 +85,12 @@ void uart_printf(const char* fmt, ...) {
           break;
           /* %d: print out an int         */
         case 'd':
-          v = va_arg(args, unsigned long);
+          v = va_arg(args, uint32_t);
 	  uart_itoa(v, buffer, 10);
 	  uart_puts(buffer);
           break;
         case 'u':
-          v = va_arg(args, unsigned long);
+          v = va_arg(args, uint32_t);
           if (v >= (1<<31)) {
             uart_printf("%d%d", (int)(v/10), (int)(v%10));
           } else {
@@ -99,17 +100,17 @@ void uart_printf(const char* fmt, ...) {
 #ifdef LONGLONG
         case 'l':
           if ((c = *w++) == 'l') {
-            vlong = va_arg(args, unsigned long long);
+            vlong = va_arg(args, uint64_t);
             if ((c = *w++) == 'u'|| c == 'd') {
-              if (c == 'd' && vlong >= ((unsigned long long)1<<63)) {
+              if (c == 'd' && vlong >= ((uint64_t)1<<63)) {
                 vlong ^= ~0;
                 vlong++;
                 uart_printf("-");
               }
-              if (vlong >= ((unsigned long long)1<<32)) {
-                uart_printf("%u%u%u", (unsigned long)((vlong/10)/1000000000), (unsigned long)((vlong/10)%1000000000), (unsigned long)(vlong%10));
+              if (vlong >= ((uint64_t)1<<32)) {
+                uart_printf("%u%u%u", (uint32_t)((vlong/10)/1000000000), (uint32_t)((vlong/10)%1000000000), (uint32_t)(vlong%10));
               } else {
-                uart_printf("%u",(unsigned long)vlong);
+                uart_printf("%u",(uint32_t)vlong);
               }
             }
           }
@@ -119,7 +120,7 @@ void uart_printf(const char* fmt, ...) {
         case 'f':
           vfloat = (float)va_arg(args, double);
           int sign = (vfloat < 0)? -1 : 1;
-          uart_printf("%d.%d", (int)vfloat, (int)((sign*(vfloat-(long long)vfloat)+0.0005F)*1000.0F));
+          uart_printf("%d.%d", (int)vfloat, (int)((sign*(vfloat-(int32_t)vfloat)+0.0005F)*1000.0F));
           break;
 #endif
         default:
