@@ -15,17 +15,17 @@ void uart_printf(const char* fmt, ...) {
 
   char c;
 
-  static char v_char;
-  static char buffer [512];
-  static unsigned long v;
-  static unsigned long digit;
-  static int digit_shift;
-  static char hex_a = 'a';
+  char v_char;
+  char buffer [512];
+  unsigned long v;
+  unsigned long digit;
+  int digit_shift;
+  char hex_a = 'a';
 #ifdef LONGLONG
-  static unsigned long long vlong;
+  unsigned long long vlong;
 #endif
 #ifdef FLOAT
-  static float vfloat;
+  float vfloat;
 #endif
 
   while ((c = *w++) != '\0') {
@@ -102,7 +102,7 @@ void uart_printf(const char* fmt, ...) {
             vlong = va_arg(args, unsigned long long);
             if ((c = *w++) == 'u'|| c == 'd') {
               if (c == 'd' && vlong >= ((unsigned long long)1<<63)) {
-                vlong ^= 0xffffffffffffffff;
+                vlong ^= ~0;
                 vlong++;
                 uart_printf("-");
               }
@@ -111,11 +111,7 @@ void uart_printf(const char* fmt, ...) {
               } else {
                 uart_printf("%u",(unsigned long)vlong);
               }
-            } else {
-              /* Unsupported format character! */
             }
-          } else {
-            /* Unsupported format character! */
           }
           break;
 #endif
