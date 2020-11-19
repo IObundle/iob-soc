@@ -18,13 +18,10 @@ void uart_printf(char* fmt, ...) {
   char buffer [20];
   char *buf_ptr = 0;
   char c;
-  char a = 'a';
   uint32_t uv;
   int32_t v;
   uint64_t uvl;
   int64_t vl;
-  int digit_shift;
-
   int r;
 
   
@@ -43,39 +40,10 @@ void uart_printf(char* fmt, ...) {
         case 'c': // %c
           uart_putc(va_arg(args, int));
           break;
-        case 'X': // %X
-          a = 'A';  // Capital "%x"
         case 'x': // %x
-          //Process hexadecimal number format.
           uv = va_arg(args, uint32_t);
-
-          //If the number value is zero, just print and continue.
-          if (uv == 0)
-            {
-              uart_putc('0');
-              continue;
-            }
-
-          //Find first non-zero digit.
-          while (!(uv & (0xF << digit_shift))) {
-            digit_shift -= 4;
-          }
-
-          //Print digits.
-          for (; digit_shift >= 0; digit_shift -= 4)
-            {
-              uint32_t digit = (uv & (0xF << digit_shift)) >> digit_shift;
-              if (digit <= 9) {
-                c = '0' + digit;
-              }
-              else {
-                c = a + digit - 10;
-              }
-              uart_putc(c);
-            }
-
-          // reset the A character
-          a = 'a';
+          utoa(uv, buffer, 16);
+          uart_puts(buffer);
           break;
         case 's': // %s
           uart_puts(va_arg(args, char *));

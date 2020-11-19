@@ -9,12 +9,21 @@ int main()
 
   uart_init(UART_BASE,FREQ/BAUD);
 
+  uart_printf("%x\n", 0);
+  uart_printf("%x\n", 245);
+  uart_printf("%x\n", (uint32_t)(~0));
+
   uart_printf("%u\n", 0);
   uart_printf("%u\n", 245);
   uart_printf("%u\n", (uint32_t)(~0));
+
+  uart_printf("%u\n", 0);
   uart_printf("%d\n", 245);
   uart_printf("%d\n", (int32_t)(~0));
-
+  uart_printf("%d\n", (int32_t)(1<<31));
+  uart_printf("%d\n", (int32_t)(~(1<<31)));
+  
+  //exit(0);
   
   //test unsigned
   uint64_t l = (uint64_t)1<<29;
