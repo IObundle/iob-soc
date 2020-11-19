@@ -3,116 +3,128 @@
 
 #define PROGNAME "IOb-UART"
 
+#define E8 100000000   //10**8
+#define E16 10000000000000000  //10**16
+ 
 void uart_puts(char *s) {
   while (*s) uart_putc(*s++);
 }
 
-void uart_printf(const char* fmt, ...) {
+
+void uart_printf(char* fmt, ...) {
   va_list args;
   va_start(args, fmt);
 
-  const char *w = fmt;
-
+  char buffer [20];
+  char *buf_ptr = 0;
   char c;
-
-  char v_char;
-  char buffer [512];
-  uint32_t v;
-  uint32_t digit;
+  char a = 'a';
+  uint32_t uv;
+  int32_t v;
+  uint64_t uvl;
+  int64_t vl;
   int digit_shift;
-  char hex_a = 'a';
-#ifdef LONGLONG
-  uint64_t vlong;
-#endif
-#ifdef FLOAT
-  float vfloat;
-#endif
 
-  while ((c = *w++) != '\0') {
+  int r;
+
+  
+  while ( (c = *fmt++) != '\0') {
     if (c != '%') {
-      /* Regular character */
+      //Regular character 
       uart_putc(c);
     }
     else {
-      /* Format Escape Character */
-      if ((c = *w++) != '\0') {
+      // Format Escape Character
+      if ((c = *fmt++) != '\0') {
         switch (c) {
         case '%': // %%
           uart_putc(c);
           break;
         case 'c': // %c
-          v_char = (char) va_arg(args, int);
-          uart_putc(v_char);
+          uart_putc(va_arg(args, int));
           break;
         case 'X': // %X
-          hex_a = 'A';  // Capital "%x"
+          a = 'A';  // Capital "%x"
         case 'x': // %x
-          /* Process hexadecimal number format. */
-          v = va_arg(args, uint32_t);
+          //Process hexadecimal number format.
+          uv = va_arg(args, uint32_t);
 
-          /* If the number value is zero, just print and continue. */
-          if (v == 0)
+          //If the number value is zero, just print and continue.
+          if (uv == 0)
             {
               uart_putc('0');
               continue;
             }
 
-          /* Find first non-zero digit. */
-          digit_shift = 28;
-          while (!(v & (0xF << digit_shift))) {
+          //Find first non-zero digit.
+          while (!(uv & (0xF << digit_shift))) {
             digit_shift -= 4;
           }
 
-          /* Print digits. */
+          //Print digits.
           for (; digit_shift >= 0; digit_shift -= 4)
             {
-              digit = (v & (0xF << digit_shift)) >> digit_shift;
+              uint32_t digit = (uv & (0xF << digit_shift)) >> digit_shift;
               if (digit <= 9) {
                 c = '0' + digit;
               }
               else {
-                c = hex_a + digit - 10;
+                c = a + digit - 10;
               }
               uart_putc(c);
             }
 
-          /* Reset the A character */
-          hex_a = 'a';
+          // reset the A character
+          a = 'a';
           break;
         case 's': // %s
           uart_puts(va_arg(args, char *));
           break;
-          /* %d: print out an int         */
         case 'd':
-          v = va_arg(args, uint32_t);
-	  uart_itoa(v, buffer, 10);
-	  uart_puts(buffer);
+          v = va_arg(args, int32_t);
+          itoa(v, buffer, 10);
+          uart_puts(buffer);
           break;
         case 'u':
-          v = va_arg(args, uint32_t);
-          if (v >= (1<<31)) {
-            uart_printf("%d%d", (int)(v/10), (int)(v%10));
-          } else {
-            uart_printf("%d",v);
-          }
+          uv = va_arg(args, uint32_t);
+          utoa(uv, buffer, 10);
+          uart_puts(buffer);
           break;
 #ifdef LONGLONG
         case 'l':
-          if ((c = *w++) == 'l') {
-            vlong = va_arg(args, uint64_t);
-            if ((c = *w++) == 'u'|| c == 'd') {
-              if (c == 'd' && vlong >= ((uint64_t)1<<63)) {
-                vlong = -vlong;
+          if ((c = *fmt++) == 'l') {
+            if ((c = *fmt++) == 'd') {
+              vl = va_arg(args, int64_t);
+              uvl = (uint64_t) vl;
+              if (vl < 0) {
+                uvl = (uint64_t)(-vl);
                 uart_putc('-');
               }
-              if (vlong >= (uint64_t)1000000000000000000) {
-                uart_printf("%u%u%u", (uint32_t)((vlong/10)/1000000000), (uint32_t)((vlong/10)%1000000000), (uint32_t)(vlong%10));
-              } else if (vlong >= ((uint64_t)1<<32)) {
-                uart_printf("%u%u", (uint32_t)(vlong/1000000000), (uint32_t)(vlong%1000000000));
-              } else {
-                uart_printf("%u",(uint32_t)vlong);
-              }
             }
+            else if (c == 'u')
+              uvl = va_arg(args, uint64_t);
+            else {
+              uart_puts("uart_printf: ERROR: unsupported print format\n");
+              exit(1);
+            }
+
+            //dec digits 20-16
+            if(uvl >=  E16) {
+              uart_puts(itoa((int)(uvl/E16), buffer, 10));
+              //dec digits 15-8
+              uvl %= E16;
+              uint64_t r = E16/10;
+              while(!(uvl / r)) {uart_putc('0'); r /=10;}
+            }
+            if(uvl >= E8) {
+              uart_puts(itoa((int)(uvl/E8), buffer, 10));
+              //dec digits 7-0
+              uvl %= E8;
+              uint64_t r = E8/10;
+              while(!(uvl / r)) {uart_putc('0'); r /=10;}
+            }
+            if(uvl > 0)
+              uart_puts(itoa((int)uvl, buffer, 10));
           }
           break;
 #endif
@@ -124,13 +136,11 @@ void uart_printf(const char* fmt, ...) {
           break;
 #endif
         default:
-          /* Unsupported format character! */
+          // Unsupported format character!
           break;
         }
       }
       else {
-        /* String ends with "...%" */
-        /* This should be an error ??? */
         break;
       }
     }
@@ -186,6 +196,7 @@ void uart_sendfile(unsigned int file_size, char *mem) {
   uart_rxwait(); //wait for next command
   uart_starttext(); //renable host text mode for next mesg 
 }
+
 
 void uart_connect() {
   char host_resp;

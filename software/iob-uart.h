@@ -32,7 +32,7 @@ void uart_putc(char c);
 void uart_puts(char *s);
 
 //formated print
-void uart_printf(const char* fmt, ...);
+void uart_printf(char* fmt, ...);
 
 //Wait for rx to be ready
 void uart_rxwait();
@@ -58,8 +58,5 @@ void uart_connect();
 #define uart_endtext() uart_putc (ETX)
 
 #define uart_getcmd() uart_getc()
-
-//itoa() wrapper
-void uart_itoa(int value, char* str, int base);
 
 void uart_sleep (int n);

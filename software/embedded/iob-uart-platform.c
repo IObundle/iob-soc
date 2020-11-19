@@ -53,10 +53,6 @@ char uart_getc() {
   return( (char) IO_GET(base, UART_DATA));
 }
 
-void uart_itoa(int value, char* str, int base){
-  itoa(value, str, base);
-}
-
 void uart_sleep (int n)  {
   uart_txwait();
   IO_SET(base, UART_TXEN, 0);
