@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<webTalkData  fileName='usage_statistics_webtalk.xml'  majorVersion='1' minorVersion='0' timeStamp='Fri Nov  6 12:01:51 2020'>
+<section name="__ROOT__" level="0" order="1" description="">
+ <section name="software_version_and_target_device" level="1" order="1" description="">
+  <keyValuePair key="beta" value="FALSE" description="" />
+  <keyValuePair key="build_version" value="2552052" description="" />
+  <keyValuePair key="date_generated" value="Fri Nov  6 12:01:51 2020" description="" />
+  <keyValuePair key="os_platform" value="LIN64" description="" />
+  <keyValuePair key="product_version" value="Vivado v2019.1 (64-bit)" description="" />
+  <keyValuePair key="project_id" value="ba12871b3d524cc3819d21fee747eee5" description="" />
+  <keyValuePair key="project_iteration" value="1" description="" />
+  <keyValuePair key="random_id" value="10e51c0e71495866b1c72dcc3569d237" description="" />
+  <keyValuePair key="registration_id" value="10e51c0e71495866b1c72dcc3569d237" description="" />
+  <keyValuePair key="route_design" value="TRUE" description="" />
+  <keyValuePair key="target_device" value="xczu7ev" description="" />
+  <keyValuePair key="target_family" value="zynquplus" description="" />
+  <keyValuePair key="target_package" value="ffvc1156" description="" />
+  <keyValuePair key="target_speed" value="-2" description="" />
+  <keyValuePair key="tool_flow" value="Vivado" description="" />
+ </section>
+ <section name="user_environment" level="1" order="2" description="">
+  <keyValuePair key="cpu_name" value="Intel(R) Core(TM) i7-6500U CPU @ 2.50GHz" description="" />
+  <keyValuePair key="cpu_speed" value="2591.998 MHz" description="" />
+  <keyValuePair key="os_name" value="Ubuntu" description="" />
+  <keyValuePair key="os_release" value="Ubuntu 18.04.5 LTS" description="" />
+  <keyValuePair key="system_ram" value="11.000 GB" description="" />
+  <keyValuePair key="total_processors" value="1" description="" />
+ </section>
+ <section name="power_opt_design" level="1" order="3" description="">
+  <section name="command_line_options_spo" level="2" order="1" description="">
+   <keyValuePair key="-cell_types" value="default::all" description="" />
+   <keyValuePair key="-clocks" value="default::[not_specified]" description="" />
+   <keyValuePair key="-exclude_cells" value="default::[not_specified]" description="" />
+   <keyValuePair key="-include_cells" value="default::[not_specified]" description="" />
+  </section>
+  <section name="usage" level="2" order="2" description="">
+   <keyValuePair key="bram_ports_augmented" value="0" description="" />
+   <keyValuePair key="bram_ports_newly_gated" value="0" description="" />
+   <keyValuePair key="bram_ports_total" value="10" description="" />
+   <keyValuePair key="flow_state" value="default" description="" />
+   <keyValuePair key="slice_registers_augmented" value="0" description="" />
+   <keyValuePair key="slice_registers_newly_gated" value="0" description="" />
+   <keyValuePair key="slice_registers_total" value="1080" description="" />
+   <keyValuePair key="srls_augmented" value="0" description="" />
+   <keyValuePair key="srls_newly_gated" value="0" description="" />
+   <keyValuePair key="srls_total" value="0" description="" />
+  </section>
+ </section>
+ <section name="report_utilization" level="1" order="4" description="">
+  <section name="io_standard" level="2" order="1" description="">
+   <keyValuePair key="analog" value="0" description="" />
+   <keyValuePair key="analog_se" value="0" description="" />
+   <keyValuePair key="diff_hstl_i" value="0" description="" />
+   <keyValuePair key="diff_hstl_i_12" value="0" description="" />
+   <keyValuePair key="diff_hstl_i_18" value="0" description="" />
+   <keyValuePair key="diff_hstl_i_dci" value="0" description="" />
+   <keyValuePair key="diff_hstl_i_dci_12" value="0" description="" />
+   <keyValuePair key="diff_hstl_i_dci_18" value="0" description="" />
+   <keyValuePair key="diff_hsul_12" value="0" description="" />
+   <keyValuePair key="diff_hsul_12_dci" value="0" description="" />
+   <keyValuePair key="diff_pod10" value="0" description="" />
+   <keyValuePair key="diff_pod10_dci" value="0" description="" />
+   <keyValuePair key="diff_pod12" value="0" description="" />
+   <keyValuePair key="diff_pod12_dci" value="0" description="" />
+   <keyValuePair key="diff_sstl12" value="0" description="" />
+   <keyValuePair key="diff_sstl12_dci" value="0" description="" />
+   <keyValuePair key="diff_sstl135" value="0" description="" />
+   <keyValuePair key="diff_sstl135_dci" value="0" description="" />
+   <keyValuePair key="diff_sstl135_ii" value="0" description="" />
+   <keyValuePair key="diff_sstl15" value="0" description="" />
+   <keyValuePair key="diff_sstl15_dci" value="0" description="" />
+   <keyValuePair key="diff_sstl15_ii" value="0" description="" />
+   <keyValuePair key="diff_sstl18_i" value="0" description="" />
+   <keyValuePair key="diff_sstl18_i_dci" value="0" description="" />
+   <keyValuePair key="diff_sstl18_ii" value="0" description="" />
+   <keyValuePair key="hslvdci_15" value="0" description="" />
+   <keyValuePair key="hslvdci_18" value="0" description="" />
+   <keyValuePair key="hstl_i" value="0" description="" />
+   <keyValuePair key="hstl_i_12" value="0" description="" />
+   <keyValuePair key="hstl_i_18" value="0" description="" />
+   <keyValuePair key="hstl_i_dci" value="0" description="" />
+   <keyValuePair key="hstl_i_dci_12" value="0" description="" />
+   <keyValuePair key="hstl_i_dci_18" value="0" description="" />
+   <keyValuePair key="hsul_12" value="0" description="" />
+   <keyValuePair key="hsul_12_dci" value="0" description="" />
+   <keyValuePair key="lvcmos12" value="0" description="" />
+   <keyValuePair key="lvcmos15" value="0" description="" />
+   <keyValuePair key="lvcmos18" value="1" description="" />
+   <keyValuePair key="lvcmos25" value="0" description="" />
+   <keyValuePair key="lvcmos33" value="1" description="" />
+   <keyValuePair key="lvdci_15" value="0" description="" />
+   <keyValuePair key="lvdci_18" value="0" description="" />
+   <keyValuePair key="lvds" value="1" description="" />
+   <keyValuePair key="lvds_25" value="0" description="" />
+   <keyValuePair key="lvpecl" value="0" description="" />
+   <keyValuePair key="lvttl" value="0" description="" />
+   <keyValuePair key="mipi_dphy_dci" value="0" description="" />
+   <keyValuePair key="pod10" value="0" description="" />
+   <keyValuePair key="pod10_dci" value="0" description="" />
+   <keyValuePair key="pod12" value="0" description="" />
+   <keyValuePair key="pod12_dci" value="0" description="" />
+   <keyValuePair key="slvs_400_18" value="0" description="" />
+   <keyValuePair key="slvs_400_25" value="0" description="" />
+   <keyValuePair key="sstl12" value="0" description="" />
+   <keyValuePair key="sstl12_dci" value="0" description="" />
+   <keyValuePair key="sstl135" value="0" description="" />
+   <keyValuePair key="sstl135_dci" value="0" description="" />
+   <keyValuePair key="sstl135_ii" value="0" description="" />
+   <keyValuePair key="sstl15" value="0" description="" />
+   <keyValuePair key="sstl15_dci" value="0" description="" />
+   <keyValuePair key="sstl15_ii" value="0" description="" />
+   <keyValuePair key="sstl18_i" value="0" description="" />
+   <keyValuePair key="sstl18_i_dci" value="0" description="" />
+   <keyValuePair key="sstl18_ii" value="0" description="" />
+   <keyValuePair key="sub_lvds" value="0" description="" />
+  </section>
+  <section name="primitives" level="2" order="2" description="">
+   <keyValuePair key="bufgce_functional_category" value="Clock" description="" />
+   <keyValuePair key="bufgce_used" value="2" description="" />
+   <keyValuePair key="carry8_functional_category" value="CLB" description="" />
+   <keyValuePair key="carry8_used" value="80" description="" />
+   <keyValuePair key="diffinbuf_functional_category" value="I/O" description="" />
+   <keyValuePair key="diffinbuf_used" value="1" description="" />
+   <keyValuePair key="dsp48e2_functional_category" value="Arithmetic" description="" />
+   <keyValuePair key="dsp48e2_used" value="4" description="" />
+   <keyValuePair key="fdce_functional_category" value="Register" description="" />
+   <keyValuePair key="fdce_used" value="170" description="" />
+   <keyValuePair key="fdpe_functional_category" value="Register" description="" />
+   <keyValuePair key="fdpe_used" value="14" description="" />
+   <keyValuePair key="fdre_functional_category" value="Register" description="" />
+   <keyValuePair key="fdre_used" value="889" description="" />
+   <keyValuePair key="fdse_functional_category" value="Register" description="" />
+   <keyValuePair key="fdse_used" value="7" description="" />
+   <keyValuePair key="ibufctrl_functional_category" value="Others" description="" />
+   <keyValuePair key="ibufctrl_used" value="3" description="" />
+   <keyValuePair key="inbuf_functional_category" value="I/O" description="" />
+   <keyValuePair key="inbuf_used" value="2" description="" />
+   <keyValuePair key="ldce_functional_category" value="Register" description="" />
+   <keyValuePair key="ldce_used" value="68" description="" />
+   <keyValuePair key="lut1_functional_category" value="CLB" description="" />
+   <keyValuePair key="lut1_used" value="135" description="" />
+   <keyValuePair key="lut2_functional_category" value="CLB" description="" />
+   <keyValuePair key="lut2_used" value="214" description="" />
+   <keyValuePair key="lut3_functional_category" value="CLB" description="" />
+   <keyValuePair key="lut3_used" value="241" description="" />
+   <keyValuePair key="lut4_functional_category" value="CLB" description="" />
+   <keyValuePair key="lut4_used" value="330" description="" />
+   <keyValuePair key="lut5_functional_category" value="CLB" description="" />
+   <keyValuePair key="lut5_used" value="418" description="" />
+   <keyValuePair key="lut6_functional_category" value="CLB" description="" />
+   <keyValuePair key="lut6_used" value="692" description="" />
+   <keyValuePair key="obuf_functional_category" value="I/O" description="" />
+   <keyValuePair key="obuf_used" value="1" description="" />
+   <keyValuePair key="ramb36e2_functional_category" value="Block Ram" description="" />
+   <keyValuePair key="ramb36e2_used" value="5" description="" />
+   <keyValuePair key="ramd32_functional_category" value="CLB" description="" />
+   <keyValuePair key="ramd32_used" value="84" description="" />
+   <keyValuePair key="rams32_functional_category" value="CLB" description="" />
+   <keyValuePair key="rams32_used" value="12" description="" />
+  </section>
+ </section>
+ <section name="synthesis" level="1" order="5" description="">
+  <section name="command_line_options" level="2" order="1" description="">
+   <keyValuePair key="-assert" value="default::[not_specified]" description="" />
+   <keyValuePair key="-bufg" value="default::12" description="" />
+   <keyValuePair key="-cascade_dsp" value="default::auto" description="" />
+   <keyValuePair key="-constrset" value="default::[not_specified]" description="" />
+   <keyValuePair key="-control_set_opt_threshold" value="default::auto" description="" />
+   <keyValuePair key="-directive" value="default::default" description="" />
+   <keyValuePair key="-fanout_limit" value="default::10000" description="" />
+   <keyValuePair key="-flatten_hierarchy" value="default::rebuilt" description="" />
+   <keyValuePair key="-fsm_extraction" value="default::auto" description="" />
+   <keyValuePair key="-gated_clock_conversion" value="default::off" description="" />
+   <keyValuePair key="-generic" value="default::[not_specified]" description="" />
+   <keyValuePair key="-include_dirs" value="default::[not_specified]/home/pedroazevedo/ecomp/iob-soc-knn/submodules/UART/submodules/INTERCON/hardware/include;/home/pedroazevedo/ecomp/iob-soc-knn/submodules/UART/hardware/include;/home/pedroazevedo/ecomp/iob-soc-knn/submodules/TIMER/hardware/include;/home/pedroazevedo/ecomp/iob-soc-knn/submodules/KNN/submodules/LIB/hardware/include;/home/pedroazevedo/ecomp/iob-soc-knn/submodules/KNN/submodules/INTERCON/hardware/include;/home/pedroazevedo/ecomp/iob-soc-knn/submodules/KNN/hardware/include;/home/pedroazevedo/ecomp/iob-soc-knn/submodules/KNN/submodules/LIB/hardware/include;/home/pedroazevedo/ecomp/iob-soc-knn/submodules/KNN/submodules/INTERCON/hardware/include;/home/pedroazevedo/ecomp/iob-soc-knn/hardware/fpga/ZYNC-7-ZC702;/home/pedroazevedo/ecomp/iob-soc-knn/hardware/include" description="" />
+   <keyValuePair key="-keep_equivalent_registers" value="default::[not_specified]" description="" />
+   <keyValuePair key="-max_bram" value="default::-1" description="" />
+   <keyValuePair key="-max_bram_cascade_height" value="default::-1" description="" />
+   <keyValuePair key="-max_dsp" value="default::-1" description="" />
+   <keyValuePair key="-max_uram" value="default::-1" description="" />
+   <keyValuePair key="-max_uram_cascade_height" value="default::-1" description="" />
+   <keyValuePair key="-mode" value="default::default" description="" />
+   <keyValuePair key="-name" value="default::[not_specified]" description="" />
+   <keyValuePair key="-no_lc" value="default::[not_specified]" description="" />
+   <keyValuePair key="-no_srlextract" value="default::[not_specified]" description="" />
+   <keyValuePair key="-no_timing_driven" value="default::[not_specified]" description="" />
+   <keyValuePair key="-part" value="xczu7ev-ffvc1156-2-e" description="" />
+   <keyValuePair key="-resource_sharing" value="default::auto" description="" />
+   <keyValuePair key="-retiming" value="default::[not_specified]" description="" />
+   <keyValuePair key="-rtl" value="default::[not_specified]" description="" />
+   <keyValuePair key="-rtl_skip_constraints" value="default::[not_specified]" description="" />
+   <keyValuePair key="-rtl_skip_ip" value="default::[not_specified]" description="" />
+   <keyValuePair key="-seu_protect" value="default::none" description="" />
+   <keyValuePair key="-sfcu" value="default::[not_specified]" description="" />
+   <keyValuePair key="-shreg_min_size" value="default::3" description="" />
+   <keyValuePair key="-top" value="top_system" description="" />
+   <keyValuePair key="-verilog_define" value="default::[not_specified]DDR_ADDR_W=30;BOOTROM_ADDR_W=12;SRAM_ADDR_W=14;FIRM_ADDR_W=14;CACHE_ADDR_W=24;INIT_MEM;N_SLAVES=3;E=31;P=31;B=30;BAUD=115200;FREQ=100000000;UART=0;TIMER=1;KNN=2;DATA_W=32" description="" />
+  </section>
+  <section name="usage" level="2" order="2" description="">
+   <keyValuePair key="elapsed" value="00:04:38s" description="" />
+   <keyValuePair key="hls_ip" value="0" description="" />
+   <keyValuePair key="memory_gain" value="1639.492MB" description="" />
+   <keyValuePair key="memory_peak" value="3038.746MB" description="" />
+  </section>
+ </section>
+ <section name="unisim_transformation" level="1" order="6" description="">
+  <section name="post_unisim_transformation" level="2" order="1" description="">
+   <keyValuePair key="bufgce" value="2" description="" />
+   <keyValuePair key="carry8" value="80" description="" />
+   <keyValuePair key="diffinbuf" value="1" description="" />
+   <keyValuePair key="dsp_a_b_data" value="4" description="" />
+   <keyValuePair key="dsp_alu" value="4" description="" />
+   <keyValuePair key="dsp_c_data" value="4" description="" />
+   <keyValuePair key="dsp_m_data" value="4" description="" />
+   <keyValuePair key="dsp_multiplier" value="4" description="" />
+   <keyValuePair key="dsp_output" value="4" description="" />
+   <keyValuePair key="dsp_preadd" value="4" description="" />
+   <keyValuePair key="dsp_preadd_data" value="4" description="" />
+   <keyValuePair key="fdce" value="172" description="" />
+   <keyValuePair key="fdpe" value="14" description="" />
+   <keyValuePair key="fdre" value="889" description="" />
+   <keyValuePair key="fdse" value="7" description="" />
+   <keyValuePair key="gnd" value="14" description="" />
+   <keyValuePair key="ibufctrl" value="3" description="" />
+   <keyValuePair key="inbuf" value="2" description="" />
+   <keyValuePair key="ldce" value="68" description="" />
+   <keyValuePair key="lut1" value="137" description="" />
+   <keyValuePair key="lut2" value="215" description="" />
+   <keyValuePair key="lut3" value="241" description="" />
+   <keyValuePair key="lut4" value="333" description="" />
+   <keyValuePair key="lut5" value="417" description="" />
+   <keyValuePair key="lut6" value="695" description="" />
+   <keyValuePair key="obuf" value="1" description="" />
+   <keyValuePair key="ramb36e2" value="5" description="" />
+   <keyValuePair key="ramd32" value="84" description="" />
+   <keyValuePair key="rams32" value="12" description="" />
+   <keyValuePair key="vcc" value="25" description="" />
+  </section>
+  <section name="pre_unisim_transformation" level="2" order="2" description="">
+   <keyValuePair key="bufg" value="2" description="" />
+   <keyValuePair key="carry8" value="80" description="" />
+   <keyValuePair key="dsp48e2" value="4" description="" />
+   <keyValuePair key="fdce" value="172" description="" />
+   <keyValuePair key="fdpe" value="14" description="" />
+   <keyValuePair key="fdre" value="889" description="" />
+   <keyValuePair key="fdse" value="7" description="" />
+   <keyValuePair key="gnd" value="10" description="" />
+   <keyValuePair key="ibuf" value="2" description="" />
+   <keyValuePair key="ibufgds" value="1" description="" />
+   <keyValuePair key="ld" value="68" description="" />
+   <keyValuePair key="lut1" value="137" description="" />
+   <keyValuePair key="lut2" value="215" description="" />
+   <keyValuePair key="lut3" value="241" description="" />
+   <keyValuePair key="lut4" value="333" description="" />
+   <keyValuePair key="lut5" value="417" description="" />
+   <keyValuePair key="lut6" value="695" description="" />
+   <keyValuePair key="obuf" value="1" description="" />
+   <keyValuePair key="ram32m16" value="6" description="" />
+   <keyValuePair key="ramb36e2" value="5" description="" />
+   <keyValuePair key="vcc" value="19" description="" />
+  </section>
+ </section>
+ <section name="vivado_usage" level="1" order="7" description="">
+  <section name="project_data" level="2" order="1" description="">
+   <keyValuePair key="constraintsetcount" value="1" description="" />
+   <keyValuePair key="core_container" value="false" description="" />
+   <keyValuePair key="currentimplrun" value="impl_1" description="" />
+   <keyValuePair key="currentsynthesisrun" value="synth_1" description="" />
+   <keyValuePair key="default_library" value="xil_defaultlib" description="" />
+   <keyValuePair key="designmode" value="RTL" description="" />
+   <keyValuePair key="export_simulation_activehdl" value="0" description="" />
+   <keyValuePair key="export_simulation_ies" value="0" description="" />
+   <keyValuePair key="export_simulation_modelsim" value="0" description="" />
+   <keyValuePair key="export_simulation_questa" value="0" description="" />
+   <keyValuePair key="export_simulation_riviera" value="0" description="" />
+   <keyValuePair key="export_simulation_vcs" value="0" description="" />
+   <keyValuePair key="export_simulation_xsim" value="0" description="" />
+   <keyValuePair key="implstrategy" value="Vivado Implementation Defaults" description="" />
+   <keyValuePair key="launch_simulation_activehdl" value="0" description="" />
+   <keyValuePair key="launch_simulation_ies" value="0" description="" />
+   <keyValuePair key="launch_simulation_modelsim" value="0" description="" />
+   <keyValuePair key="launch_simulation_questa" value="0" description="" />
+   <keyValuePair key="launch_simulation_riviera" value="0" description="" />
+   <keyValuePair key="launch_simulation_vcs" value="0" description="" />
+   <keyValuePair key="launch_simulation_xsim" value="0" description="" />
+   <keyValuePair key="simulator_language" value="Mixed" description="" />
+   <keyValuePair key="srcsetcount" value="17" description="" />
+   <keyValuePair key="synthesisstrategy" value="Vivado Synthesis Defaults" description="" />
+   <keyValuePair key="target_language" value="Verilog" description="" />
+   <keyValuePair key="target_simulator" value="XSim" description="" />
+   <keyValuePair key="totalimplruns" value="1" description="" />
+   <keyValuePair key="totalsynthesisruns" value="1" description="" />
+  </section>
+ </section>
+</section>
+</webTalkData>

@@ -1,0 +1,11 @@
+set_property SRC_FILE_INFO {cfile:/home/pedroazevedo/ecomp/iob-soc-knn/hardware/fpga/ZYNC-7-ZC702/synth_system.xdc rfile:../synth_system.xdc id:1} [current_design]
+set_property src_info {type:XDC file:1 line:24 export:INPUT save:INPUT read:READ} [current_design]
+set_property PACKAGE_PIN F23 [get_ports c0_sys_clk_clk_p]
+set_property src_info {type:XDC file:1 line:25 export:INPUT save:INPUT read:READ} [current_design]
+set_property PACKAGE_PIN E23 [get_ports c0_sys_clk_clk_n]
+set_property src_info {type:XDC file:1 line:30 export:INPUT save:INPUT read:READ} [current_design]
+set_property PACKAGE_PIN M11      [get_ports "reset"] ;# Bank  87 VCCO - VCC3V3   - IO_L4N_AD8N_87
+set_property src_info {type:XDC file:1 line:38 export:INPUT save:INPUT read:READ} [current_design]
+set_property PACKAGE_PIN C19 [get_ports uart_txd]
+set_property src_info {type:XDC file:1 line:40 export:INPUT save:INPUT read:READ} [current_design]
+set_property PACKAGE_PIN A20 [get_ports uart_rxd]

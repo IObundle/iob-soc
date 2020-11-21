@@ -1,0 +1,1438 @@
+#-----------------------------------------------------------
+# Vivado v2019.1 (64-bit)
+# SW Build 2552052 on Fri May 24 14:47:09 MDT 2019
+# IP Build 2548770 on Fri May 24 18:01:18 MDT 2019
+# Start of session at: Fri Nov  6 11:31:04 2020
+# Process ID: 7266
+# Current directory: /home/pedroazevedo/ecomp/iob-soc-knn/hardware/fpga/ZYNC-7-ZC702
+# Command line: vivado -nojournal -log vivado.log -mode batch -source synth_system.tcl -tclargs  ../../../submodules/UART/submodules/INTERCON/hardware/include  ../../../submodules/UART/hardware/include  ../../../submodules/TIMER/hardware/include  ../../../submodules/KNN/submodules/LIB/hardware/include  ../../../submodules/KNN/submodules/INTERCON/hardware/include   ../../../submodules/KNN/hardware/include  ../../../submodules/KNN/submodules/LIB/hardware/include  ../../../submodules/KNN/submodules/INTERCON/hardware/include  . ../../../hardware/include DDR_ADDR_W=30 BOOTROM_ADDR_W=12 SRAM_ADDR_W=14 FIRM_ADDR_W=14 CACHE_ADDR_W=24 INIT_MEM N_SLAVES=3 E=31  P=31 B=30 BAUD=115200 FREQ=100000000 UART=0 TIMER=1 KNN=2  DATA_W=32 ../../../submodules/CPU/hardware/src/picorv32.v ../../../submodules/CPU/hardware/src/iob_picorv32.v ../../../submodules/CACHE/submodules/MEM/sp_rom/sp_rom.v ../../../submodules/CACHE/submodules/MEM/tdp_ram/iob_tdp_ram.v ../../../submodules/UART/submodules/INTERCON/hardware/src/merge.v ../../../submodules/UART/submodules/INTERCON/hardware/src/split.v ../../../submodules/UART/hardware/src/iob_uart.v ../../../submodules/TIMER/hardware/src/iob_timer.v ../../../submodules/TIMER/hardware/src/timer.v ../../../submodules/KNN/hardware/src/knn.v ../../../submodules/KNN/hardware/src/iob_knn.v ../../../hardware/src/boot_ctr.v ../../../hardware/src/int_mem.v  ../../../hardware/src/sram.v  system.v ./verilog/top_system.v
+# Log file: /home/pedroazevedo/ecomp/iob-soc-knn/hardware/fpga/ZYNC-7-ZC702/vivado.log
+# Journal file: 
+#-----------------------------------------------------------
+source synth_system.tcl
+# set TOP top_system
+# set PART xc7z020clg484-1
+# set INCLUDE [lindex $argv 0]
+# set DEFINE [lindex $argv 1]
+# set VSRC [lindex $argv 2]
+# set USE_DDR [string last "USE_DDR" $DEFINE]
+# foreach file [split $VSRC \ ] {
+#     if {$file != ""} {
+#         read_verilog -sv $file
+#     }
+# }
+# set_property part $PART [current_project]
+# if { $USE_DDR < 0 } {
+#     read_verilog verilog/clock_wizard.v
+# } else {
+# 
+#     read_xdc ./ddr.xdc
+# 
+# 
+#     if { ![file isdirectory "./ip"]} {
+#         file mkdir ./ip
+#     }
+# 
+#     #async interconnect MIG<->Cache
+#     if { [file isdirectory "./ip/axi_interconnect_0"] } {
+#         read_ip ./ip/axi_interconnect_0/axi_interconnect_0.xci
+#         report_property [get_files ./ip/axi_interconnect_0/axi_interconnect_0.xci]
+#     } else {
+# 
+#         create_ip -name axi_interconnect -vendor xilinx.com -library ip -version 1.7 -module_name axi_interconnect_0 -dir ./ip -force
+# 
+#         set_property -dict \
+#             [list \
+#                  CONFIG.NUM_SLAVE_PORTS {1}\
+#                  CONFIG.AXI_ADDR_WIDTH {30}\
+#                  CONFIG.ACLK_PERIOD {5000} \
+#                  CONFIG.INTERCONNECT_DATA_WIDTH {32}\
+#                  CONFIG.M00_AXI_IS_ACLK_ASYNC {1}\
+#                  CONFIG.M00_AXI_WRITE_FIFO_DEPTH {32}\
+#                  CONFIG.M00_AXI_READ_FIFO_DEPTH {32}\
+#                  CONFIG.S00_AXI_IS_ACLK_ASYNC {1}\
+#                  CONFIG.S00_AXI_READ_FIFO_DEPTH {32}\
+#                  CONFIG.S00_AXI_WRITE_FIFO_DEPTH {32}] [get_ips axi_interconnect_0]
+# 
+#         generate_target all [get_files ./ip/axi_interconnect_0/axi_interconnect_0.xci]
+# 
+#         report_property [get_ips axi_interconnect_0]
+#         report_property [get_files ./ip/axi_interconnect_0/axi_interconnect_0.xci]
+#         exec sed -i s/100/5/g ip/axi_interconnect_0/axi_interconnect_0_ooc.xdc
+#         synth_ip [get_files ./ip/axi_interconnect_0/axi_interconnect_0.xci]
+# 
+#     }
+#     
+#     if { [file isdirectory "./ip/ddr4_0"] } {
+# 	read_ip ./ip/ddr4_0/ddr4_0.xci
+#         report_property [get_files ./ip/ddr4_0/ddr4_0.xci]
+#     } else {
+# 
+#         create_ip -name ddr4 -vendor xilinx.com -library ip -version 2.2 -module_name ddr4_0 -dir ./ip -force
+#         
+#         set_property -dict \
+#         [list \
+#              CONFIG.C0.DDR4_TimePeriod {1250} \
+#              CONFIG.C0.DDR4_InputClockPeriod {4000} \
+#              CONFIG.C0.DDR4_CLKOUT0_DIVIDE {5} \
+#              CONFIG.C0.DDR4_MemoryPart {EDY4016AABG-DR-F} \
+#              CONFIG.C0.DDR4_DataWidth {32} \
+#              CONFIG.C0.DDR4_AxiSelection {true} \
+#              CONFIG.C0.DDR4_CasLatency {11} \
+#              CONFIG.C0.DDR4_CasWriteLatency {11} \
+#              CONFIG.C0.DDR4_AxiDataWidth {32} \
+#              CONFIG.C0.DDR4_AxiAddressWidth {30} \
+#              CONFIG.ADDN_UI_CLKOUT1_FREQ_HZ {100} \
+#              CONFIG.C0.BANK_GROUP_WIDTH {1}] [get_ips ddr4_0]
+# 	
+#         generate_target all [get_files ./ip/ddr4_0/ddr4_0.xci]
+# 
+#         report_property [get_ips ddr4_0]
+#         report_property [get_files ./ip/ddr4_0/ddr4_0.xci]
+# 
+#         synth_ip [get_files ./ip/ddr4_0/ddr4_0.xci]
+#     }
+# 
+# }
+# read_xdc ./synth_system.xdc
+# synth_design -include_dirs $INCLUDE -verilog_define $DEFINE -part $PART -top $TOP
+Command: synth_design -include_dirs {../../../submodules/UART/submodules/INTERCON/hardware/include  ../../../submodules/UART/hardware/include  ../../../submodules/TIMER/hardware/include  ../../../submodules/KNN/submodules/LIB/hardware/include  ../../../submodules/KNN/submodules/INTERCON/hardware/include   ../../../submodules/KNN/hardware/include  ../../../submodules/KNN/submodules/LIB/hardware/include  ../../../submodules/KNN/submodules/INTERCON/hardware/include  . ../../../hardware/include} -verilog_define {DDR_ADDR_W=30 BOOTROM_ADDR_W=12 SRAM_ADDR_W=14 FIRM_ADDR_W=14 CACHE_ADDR_W=24 INIT_MEM N_SLAVES=3 E=31  P=31 B=30 BAUD=115200 FREQ=100000000 UART=0 TIMER=1 KNN=2  DATA_W=32} -part xc7z020clg484-1 -top top_system
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7z020'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7z020'
+INFO: [Device 21-403] Loading part xc7z020clg484-1
+INFO: Launching helper process for spawning children vivado processes
+INFO: Helper process launched with PID 7305 
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:12 ; elapsed = 00:00:16 . Memory (MB): peak = 1716.449 ; gain = 152.715 ; free physical = 5756 ; free virtual = 10057
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'top_system' [/home/pedroazevedo/ecomp/iob-soc-knn/hardware/fpga/ZYNC-7-ZC702/verilog/top_system.v:4]
+INFO: [Synth 8-6157] synthesizing module 'IBUFGDS' [/tools/Xilinx/Vivado/2019.1/scripts/rt/data/unisim_comp.v:33335]
+	Parameter CAPACITANCE bound to: DONT_CARE - type: string 
+	Parameter DIFF_TERM bound to: FALSE - type: string 
+	Parameter IBUF_DELAY_VALUE bound to: 0 - type: string 
+	Parameter IBUF_LOW_PWR bound to: TRUE - type: string 
+	Parameter IOSTANDARD bound to: DEFAULT - type: string 
+INFO: [Synth 8-6155] done synthesizing module 'IBUFGDS' (1#1) [/tools/Xilinx/Vivado/2019.1/scripts/rt/data/unisim_comp.v:33335]
+INFO: [Synth 8-6157] synthesizing module 'system' [/home/pedroazevedo/ecomp/iob-soc-knn/hardware/fpga/ZYNC-7-ZC702/system.v:13]
+	Parameter ADDR_W bound to: 32 - type: integer 
+	Parameter DATA_W bound to: 32 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'iob_picorv32' [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/iob_picorv32.v:28]
+	Parameter ADDR_W bound to: 32 - type: integer 
+	Parameter DATA_W bound to: 32 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'picorv32' [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:57]
+	Parameter ENABLE_COUNTERS bound to: 1'b1 
+	Parameter ENABLE_COUNTERS64 bound to: 1'b1 
+	Parameter ENABLE_REGS_16_31 bound to: 1'b1 
+	Parameter ENABLE_REGS_DUALPORT bound to: 1'b1 
+	Parameter LATCHED_MEM_RDATA bound to: 1'b0 
+	Parameter TWO_STAGE_SHIFT bound to: 1'b1 
+	Parameter BARREL_SHIFTER bound to: 1'b1 
+	Parameter TWO_CYCLE_COMPARE bound to: 1'b0 
+	Parameter TWO_CYCLE_ALU bound to: 1'b0 
+	Parameter COMPRESSED_ISA bound to: 1'b0 
+	Parameter CATCH_MISALIGN bound to: 1'b1 
+	Parameter CATCH_ILLINSN bound to: 1'b1 
+	Parameter ENABLE_PCPI bound to: 1'b0 
+	Parameter ENABLE_MUL bound to: 1'b0 
+	Parameter ENABLE_FAST_MUL bound to: 1'b1 
+	Parameter ENABLE_DIV bound to: 1'b1 
+	Parameter ENABLE_IRQ bound to: 1'b0 
+	Parameter ENABLE_IRQ_QREGS bound to: 1'b1 
+	Parameter ENABLE_IRQ_TIMER bound to: 1'b1 
+	Parameter ENABLE_TRACE bound to: 1'b0 
+	Parameter REGS_INIT_ZERO bound to: 1'b0 
+	Parameter MASKED_IRQ bound to: 0 - type: integer 
+	Parameter LATCHED_IRQ bound to: -1 - type: integer 
+	Parameter PROGADDR_RESET bound to: 0 - type: integer 
+	Parameter PROGADDR_IRQ bound to: 16 - type: integer 
+	Parameter STACKADDR bound to: -1 - type: integer 
+	Parameter irq_timer bound to: 0 - type: integer 
+	Parameter irq_ebreak bound to: 1 - type: integer 
+	Parameter irq_buserror bound to: 2 - type: integer 
+	Parameter irqregs_offset bound to: 32 - type: integer 
+	Parameter regfile_size bound to: 32 - type: integer 
+	Parameter regindex_bits bound to: 5 - type: integer 
+	Parameter WITH_PCPI bound to: 1'b1 
+	Parameter TRACE_BRANCH bound to: 36'b000100000000000000000000000000000000 
+	Parameter TRACE_ADDR bound to: 36'b001000000000000000000000000000000000 
+	Parameter TRACE_IRQ bound to: 36'b100000000000000000000000000000000000 
+	Parameter cpu_state_trap bound to: 8'b10000000 
+	Parameter cpu_state_fetch bound to: 8'b01000000 
+	Parameter cpu_state_ld_rs1 bound to: 8'b00100000 
+	Parameter cpu_state_ld_rs2 bound to: 8'b00010000 
+	Parameter cpu_state_exec bound to: 8'b00001000 
+	Parameter cpu_state_shift bound to: 8'b00000100 
+	Parameter cpu_state_stmem bound to: 8'b00000010 
+	Parameter cpu_state_ldmem bound to: 8'b00000001 
+INFO: [Synth 8-6157] synthesizing module 'picorv32_pcpi_fast_mul' [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:2271]
+	Parameter EXTRA_MUL_FFS bound to: 0 - type: integer 
+	Parameter EXTRA_INSN_FFS bound to: 0 - type: integer 
+	Parameter MUL_CLKGATE bound to: 0 - type: integer 
+INFO: [Synth 8-155] case statement is not full and has no default [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:2308]
+WARNING: [Synth 8-6014] Unused sequential element pcpi_insn_valid_q_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:2318]
+WARNING: [Synth 8-6014] Unused sequential element rs1_q_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:2320]
+WARNING: [Synth 8-6014] Unused sequential element rs2_q_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:2321]
+WARNING: [Synth 8-6014] Unused sequential element rd_q_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:2327]
+INFO: [Synth 8-6155] done synthesizing module 'picorv32_pcpi_fast_mul' (2#1) [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:2271]
+INFO: [Synth 8-6157] synthesizing module 'picorv32_pcpi_div' [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:2373]
+INFO: [Synth 8-155] case statement is not full and has no default [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:2398]
+INFO: [Synth 8-4471] merging register 'pcpi_wr_reg' into 'pcpi_ready_reg' [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:2419]
+WARNING: [Synth 8-6014] Unused sequential element pcpi_wr_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:2419]
+INFO: [Synth 8-6155] done synthesizing module 'picorv32_pcpi_div' (3#1) [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:2373]
+INFO: [Synth 8-155] case statement is not full and has no default [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:386]
+INFO: [Synth 8-155] case statement is not full and has no default [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:1496]
+WARNING: [Synth 8-6014] Unused sequential element mem_la_firstword_reg_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:375]
+WARNING: [Synth 8-6014] Unused sequential element last_mem_valid_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:376]
+WARNING: [Synth 8-6014] Unused sequential element next_insn_opcode_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:416]
+WARNING: [Synth 8-6014] Unused sequential element mem_la_secondword_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:554]
+WARNING: [Synth 8-6014] Unused sequential element prefetched_high_word_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:555]
+WARNING: [Synth 8-6014] Unused sequential element q_ascii_instr_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:760]
+WARNING: [Synth 8-6014] Unused sequential element q_insn_imm_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:761]
+WARNING: [Synth 8-6014] Unused sequential element q_insn_opcode_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:762]
+WARNING: [Synth 8-6014] Unused sequential element q_insn_rs1_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:763]
+WARNING: [Synth 8-6014] Unused sequential element q_insn_rs2_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:764]
+WARNING: [Synth 8-6014] Unused sequential element q_insn_rd_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:765]
+WARNING: [Synth 8-6014] Unused sequential element dbg_next_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:766]
+WARNING: [Synth 8-6014] Unused sequential element dbg_valid_insn_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:769]
+WARNING: [Synth 8-6014] Unused sequential element cached_ascii_instr_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:774]
+WARNING: [Synth 8-6014] Unused sequential element cached_insn_imm_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:775]
+WARNING: [Synth 8-6014] Unused sequential element cached_insn_opcode_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:777]
+WARNING: [Synth 8-6014] Unused sequential element cached_insn_rs1_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:780]
+WARNING: [Synth 8-6014] Unused sequential element cached_insn_rs2_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:781]
+WARNING: [Synth 8-6014] Unused sequential element cached_insn_rd_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:782]
+WARNING: [Synth 8-6014] Unused sequential element dbg_insn_addr_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:786]
+WARNING: [Synth 8-6014] Unused sequential element is_sll_srl_sra_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:1090]
+WARNING: [Synth 8-6014] Unused sequential element clear_prefetched_high_word_q_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:1270]
+WARNING: [Synth 8-6014] Unused sequential element set_mem_do_rinst_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:1410]
+WARNING: [Synth 8-6014] Unused sequential element set_mem_do_rdata_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:1411]
+WARNING: [Synth 8-6014] Unused sequential element set_mem_do_wdata_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:1412]
+WARNING: [Synth 8-6014] Unused sequential element alu_out_0_q_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:1414]
+WARNING: [Synth 8-6014] Unused sequential element alu_wait_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:1417]
+WARNING: [Synth 8-6014] Unused sequential element alu_wait_2_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:1418]
+WARNING: [Synth 8-6014] Unused sequential element dbg_rs1val_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:1421]
+WARNING: [Synth 8-6014] Unused sequential element dbg_rs2val_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:1422]
+WARNING: [Synth 8-6014] Unused sequential element dbg_rs1val_valid_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:1423]
+WARNING: [Synth 8-6014] Unused sequential element dbg_rs2val_valid_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:1424]
+WARNING: [Synth 8-6014] Unused sequential element next_irq_pending_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:1444]
+WARNING: [Synth 8-6014] Unused sequential element decoder_trigger_q_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:1457]
+WARNING: [Synth 8-6014] Unused sequential element decoder_pseudo_trigger_q_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:1459]
+WARNING: [Synth 8-6014] Unused sequential element latched_trace_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:1475]
+WARNING: [Synth 8-6014] Unused sequential element irq_active_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:1481]
+WARNING: [Synth 8-6014] Unused sequential element irq_delay_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:1482]
+WARNING: [Synth 8-6014] Unused sequential element irq_mask_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:1483]
+WARNING: [Synth 8-6014] Unused sequential element irq_state_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:1485]
+WARNING: [Synth 8-6014] Unused sequential element timer_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:1487]
+WARNING: [Synth 8-6014] Unused sequential element current_pc_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:1505]
+WARNING: [Synth 8-6014] Unused sequential element irq_pending_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:1957]
+INFO: [Synth 8-4471] merging register 'trace_valid_reg' into 'do_waitirq_reg' [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:1462]
+WARNING: [Synth 8-6014] Unused sequential element trace_valid_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:1462]
+WARNING: [Synth 8-6014] Unused sequential element latched_is_lb_reg was removed.  [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:1478]
+INFO: [Synth 8-6155] done synthesizing module 'picorv32' (4#1) [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:57]
+WARNING: [Synth 8-7023] instance 'picorv32_core' of module 'picorv32' has 27 connections declared, but only 22 given [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/iob_picorv32.v:87]
+INFO: [Synth 8-6155] done synthesizing module 'iob_picorv32' (5#1) [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/iob_picorv32.v:28]
+INFO: [Synth 8-6157] synthesizing module 'split' [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/UART/submodules/INTERCON/hardware/src/split.v:4]
+	Parameter DATA_W bound to: 32 - type: integer 
+	Parameter ADDR_W bound to: 32 - type: integer 
+	Parameter N_SLAVES bound to: 1 - type: integer 
+	Parameter P_SLAVES bound to: 67 - type: integer 
+	Parameter Nb bound to: 1 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'split' (6#1) [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/UART/submodules/INTERCON/hardware/src/split.v:4]
+INFO: [Synth 8-6157] synthesizing module 'split__parameterized0' [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/UART/submodules/INTERCON/hardware/src/split.v:4]
+	Parameter DATA_W bound to: 32 - type: integer 
+	Parameter ADDR_W bound to: 32 - type: integer 
+	Parameter N_SLAVES bound to: 2 - type: integer 
+	Parameter P_SLAVES bound to: 67 - type: integer 
+	Parameter Nb bound to: 1 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'split__parameterized0' (6#1) [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/UART/submodules/INTERCON/hardware/src/split.v:4]
+INFO: [Synth 8-6157] synthesizing module 'split__parameterized1' [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/UART/submodules/INTERCON/hardware/src/split.v:4]
+	Parameter DATA_W bound to: 32 - type: integer 
+	Parameter ADDR_W bound to: 32 - type: integer 
+	Parameter N_SLAVES bound to: 3 - type: integer 
+	Parameter P_SLAVES bound to: 66 - type: integer 
+	Parameter Nb bound to: 2 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'split__parameterized1' (6#1) [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/UART/submodules/INTERCON/hardware/src/split.v:4]
+INFO: [Synth 8-6157] synthesizing module 'int_mem' [/home/pedroazevedo/ecomp/iob-soc-knn/hardware/src/int_mem.v:5]
+	Parameter ADDR_W bound to: 32 - type: integer 
+	Parameter DATA_W bound to: 32 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'split__parameterized2' [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/UART/submodules/INTERCON/hardware/src/split.v:4]
+	Parameter DATA_W bound to: 32 - type: integer 
+	Parameter ADDR_W bound to: 32 - type: integer 
+	Parameter N_SLAVES bound to: 2 - type: integer 
+	Parameter P_SLAVES bound to: 66 - type: integer 
+	Parameter Nb bound to: 1 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'split__parameterized2' (6#1) [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/UART/submodules/INTERCON/hardware/src/split.v:4]
+INFO: [Synth 8-6157] synthesizing module 'boot_ctr' [/home/pedroazevedo/ecomp/iob-soc-knn/hardware/src/boot_ctr.v:5]
+INFO: [Synth 8-6157] synthesizing module 'sp_rom' [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CACHE/submodules/MEM/sp_rom/sp_rom.v:3]
+	Parameter DATA_W bound to: 32 - type: integer 
+	Parameter ADDR_W bound to: 10 - type: integer 
+	Parameter FILE bound to: boot.hex - type: string 
+	Parameter mem_init_file_int bound to: boot.hex - type: string 
+INFO: [Synth 8-3876] $readmem data file 'boot.hex' is read successfully [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CACHE/submodules/MEM/sp_rom/sp_rom.v:23]
+INFO: [Synth 8-6155] done synthesizing module 'sp_rom' (7#1) [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CACHE/submodules/MEM/sp_rom/sp_rom.v:3]
+INFO: [Synth 8-6155] done synthesizing module 'boot_ctr' (8#1) [/home/pedroazevedo/ecomp/iob-soc-knn/hardware/src/boot_ctr.v:5]
+INFO: [Synth 8-6157] synthesizing module 'merge' [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/UART/submodules/INTERCON/hardware/src/merge.v:5]
+	Parameter N_MASTERS bound to: 2 - type: integer 
+	Parameter DATA_W bound to: 32 - type: integer 
+	Parameter ADDR_W bound to: 32 - type: integer 
+	Parameter Nb bound to: 1 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'merge' (9#1) [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/UART/submodules/INTERCON/hardware/src/merge.v:5]
+INFO: [Synth 8-6157] synthesizing module 'sram' [/home/pedroazevedo/ecomp/iob-soc-knn/hardware/src/sram.v:4]
+	Parameter FILE bound to: firmware - type: string 
+	Parameter file_suffix bound to: 858927408 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'iob_tdp_ram' [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CACHE/submodules/MEM/tdp_ram/iob_tdp_ram.v:3]
+	Parameter MEM_INIT_FILE bound to: 112'b0110011001101001011100100110110101110111011000010111001001100101010111110011000000101110011010000110010101111000 
+	Parameter DATA_W bound to: 8 - type: integer 
+	Parameter ADDR_W bound to: 12 - type: integer 
+	Parameter mem_init_file_int bound to: 112'b0110011001101001011100100110110101110111011000010111001001100101010111110011000000101110011010000110010101111000 
+INFO: [Synth 8-3876] $readmem data file 'firmware_0.hex' is read successfully [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CACHE/submodules/MEM/tdp_ram/iob_tdp_ram.v:35]
+INFO: [Synth 8-6155] done synthesizing module 'iob_tdp_ram' (10#1) [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CACHE/submodules/MEM/tdp_ram/iob_tdp_ram.v:3]
+INFO: [Synth 8-6157] synthesizing module 'iob_tdp_ram__parameterized0' [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CACHE/submodules/MEM/tdp_ram/iob_tdp_ram.v:3]
+	Parameter MEM_INIT_FILE bound to: 112'b0110011001101001011100100110110101110111011000010111001001100101010111110011000100101110011010000110010101111000 
+	Parameter DATA_W bound to: 8 - type: integer 
+	Parameter ADDR_W bound to: 12 - type: integer 
+	Parameter mem_init_file_int bound to: 112'b0110011001101001011100100110110101110111011000010111001001100101010111110011000100101110011010000110010101111000 
+INFO: [Synth 8-3876] $readmem data file 'firmware_1.hex' is read successfully [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CACHE/submodules/MEM/tdp_ram/iob_tdp_ram.v:35]
+INFO: [Synth 8-6155] done synthesizing module 'iob_tdp_ram__parameterized0' (10#1) [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CACHE/submodules/MEM/tdp_ram/iob_tdp_ram.v:3]
+INFO: [Synth 8-6157] synthesizing module 'iob_tdp_ram__parameterized1' [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CACHE/submodules/MEM/tdp_ram/iob_tdp_ram.v:3]
+	Parameter MEM_INIT_FILE bound to: 112'b0110011001101001011100100110110101110111011000010111001001100101010111110011001000101110011010000110010101111000 
+	Parameter DATA_W bound to: 8 - type: integer 
+	Parameter ADDR_W bound to: 12 - type: integer 
+	Parameter mem_init_file_int bound to: 112'b0110011001101001011100100110110101110111011000010111001001100101010111110011001000101110011010000110010101111000 
+INFO: [Synth 8-3876] $readmem data file 'firmware_2.hex' is read successfully [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CACHE/submodules/MEM/tdp_ram/iob_tdp_ram.v:35]
+INFO: [Synth 8-6155] done synthesizing module 'iob_tdp_ram__parameterized1' (10#1) [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CACHE/submodules/MEM/tdp_ram/iob_tdp_ram.v:3]
+INFO: [Synth 8-6157] synthesizing module 'iob_tdp_ram__parameterized2' [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CACHE/submodules/MEM/tdp_ram/iob_tdp_ram.v:3]
+	Parameter MEM_INIT_FILE bound to: 112'b0110011001101001011100100110110101110111011000010111001001100101010111110011001100101110011010000110010101111000 
+	Parameter DATA_W bound to: 8 - type: integer 
+	Parameter ADDR_W bound to: 12 - type: integer 
+	Parameter mem_init_file_int bound to: 112'b0110011001101001011100100110110101110111011000010111001001100101010111110011001100101110011010000110010101111000 
+INFO: [Synth 8-3876] $readmem data file 'firmware_3.hex' is read successfully [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CACHE/submodules/MEM/tdp_ram/iob_tdp_ram.v:35]
+INFO: [Synth 8-6155] done synthesizing module 'iob_tdp_ram__parameterized2' (10#1) [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CACHE/submodules/MEM/tdp_ram/iob_tdp_ram.v:3]
+INFO: [Synth 8-6155] done synthesizing module 'sram' (11#1) [/home/pedroazevedo/ecomp/iob-soc-knn/hardware/src/sram.v:4]
+INFO: [Synth 8-6155] done synthesizing module 'int_mem' (12#1) [/home/pedroazevedo/ecomp/iob-soc-knn/hardware/src/int_mem.v:5]
+INFO: [Synth 8-6157] synthesizing module 'iob_uart' [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/UART/hardware/src/iob_uart.v:4]
+	Parameter DATA_W bound to: 32 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'iob_uart' (13#1) [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/UART/hardware/src/iob_uart.v:4]
+INFO: [Synth 8-6157] synthesizing module 'iob_timer' [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/TIMER/hardware/src/iob_timer.v:6]
+	Parameter ADDR_W bound to: 3 - type: integer 
+	Parameter DATA_W bound to: 32 - type: integer 
+	Parameter WDATA_W bound to: 1 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'timer_core' [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/TIMER/hardware/src/timer.v:5]
+	Parameter DATA_W bound to: 32 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'timer_core' (14#1) [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/TIMER/hardware/src/timer.v:5]
+INFO: [Synth 8-6155] done synthesizing module 'iob_timer' (15#1) [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/TIMER/hardware/src/iob_timer.v:6]
+INFO: [Synth 8-6157] synthesizing module 'iob_knn' [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/KNN/hardware/src/iob_knn.v:6]
+	Parameter ADDR_W bound to: 3 - type: integer 
+	Parameter DATA_W bound to: 32 - type: integer 
+	Parameter WDATA_W bound to: 1 - type: integer 
+WARNING: [Synth 8-4446] all outputs are unconnected for this instance and logic may be removed [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/KNN/hardware/src/iob_knn.v:33]
+INFO: [Synth 8-6157] synthesizing module 'knn_core' [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/KNN/hardware/src/knn.v:4]
+	Parameter DATA_W bound to: 32 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'knn_core' (16#1) [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/KNN/hardware/src/knn.v:4]
+INFO: [Synth 8-6155] done synthesizing module 'iob_knn' (17#1) [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/KNN/hardware/src/iob_knn.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'system' (18#1) [/home/pedroazevedo/ecomp/iob-soc-knn/hardware/fpga/ZYNC-7-ZC702/system.v:13]
+INFO: [Synth 8-6155] done synthesizing module 'top_system' (19#1) [/home/pedroazevedo/ecomp/iob-soc-knn/hardware/fpga/ZYNC-7-ZC702/verilog/top_system.v:4]
+WARNING: [Synth 8-3331] design picorv32_pcpi_div has unconnected port pcpi_insn[24]
+WARNING: [Synth 8-3331] design picorv32_pcpi_div has unconnected port pcpi_insn[23]
+WARNING: [Synth 8-3331] design picorv32_pcpi_div has unconnected port pcpi_insn[22]
+WARNING: [Synth 8-3331] design picorv32_pcpi_div has unconnected port pcpi_insn[21]
+WARNING: [Synth 8-3331] design picorv32_pcpi_div has unconnected port pcpi_insn[20]
+WARNING: [Synth 8-3331] design picorv32_pcpi_div has unconnected port pcpi_insn[19]
+WARNING: [Synth 8-3331] design picorv32_pcpi_div has unconnected port pcpi_insn[18]
+WARNING: [Synth 8-3331] design picorv32_pcpi_div has unconnected port pcpi_insn[17]
+WARNING: [Synth 8-3331] design picorv32_pcpi_div has unconnected port pcpi_insn[16]
+WARNING: [Synth 8-3331] design picorv32_pcpi_div has unconnected port pcpi_insn[15]
+WARNING: [Synth 8-3331] design picorv32_pcpi_div has unconnected port pcpi_insn[11]
+WARNING: [Synth 8-3331] design picorv32_pcpi_div has unconnected port pcpi_insn[10]
+WARNING: [Synth 8-3331] design picorv32_pcpi_div has unconnected port pcpi_insn[9]
+WARNING: [Synth 8-3331] design picorv32_pcpi_div has unconnected port pcpi_insn[8]
+WARNING: [Synth 8-3331] design picorv32_pcpi_div has unconnected port pcpi_insn[7]
+WARNING: [Synth 8-3331] design picorv32_pcpi_fast_mul has unconnected port pcpi_insn[24]
+WARNING: [Synth 8-3331] design picorv32_pcpi_fast_mul has unconnected port pcpi_insn[23]
+WARNING: [Synth 8-3331] design picorv32_pcpi_fast_mul has unconnected port pcpi_insn[22]
+WARNING: [Synth 8-3331] design picorv32_pcpi_fast_mul has unconnected port pcpi_insn[21]
+WARNING: [Synth 8-3331] design picorv32_pcpi_fast_mul has unconnected port pcpi_insn[20]
+WARNING: [Synth 8-3331] design picorv32_pcpi_fast_mul has unconnected port pcpi_insn[19]
+WARNING: [Synth 8-3331] design picorv32_pcpi_fast_mul has unconnected port pcpi_insn[18]
+WARNING: [Synth 8-3331] design picorv32_pcpi_fast_mul has unconnected port pcpi_insn[17]
+WARNING: [Synth 8-3331] design picorv32_pcpi_fast_mul has unconnected port pcpi_insn[16]
+WARNING: [Synth 8-3331] design picorv32_pcpi_fast_mul has unconnected port pcpi_insn[15]
+WARNING: [Synth 8-3331] design picorv32_pcpi_fast_mul has unconnected port pcpi_insn[11]
+WARNING: [Synth 8-3331] design picorv32_pcpi_fast_mul has unconnected port pcpi_insn[10]
+WARNING: [Synth 8-3331] design picorv32_pcpi_fast_mul has unconnected port pcpi_insn[9]
+WARNING: [Synth 8-3331] design picorv32_pcpi_fast_mul has unconnected port pcpi_insn[8]
+WARNING: [Synth 8-3331] design picorv32_pcpi_fast_mul has unconnected port pcpi_insn[7]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_wr
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[31]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[30]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[29]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[28]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[27]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[26]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[25]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[24]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[23]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[22]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[21]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[20]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[19]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[18]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[17]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[16]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[15]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[14]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[13]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[12]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[11]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[10]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[9]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[8]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[7]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[6]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[5]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[4]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[3]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[2]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[1]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[0]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_wait
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_ready
+WARNING: [Synth 8-3331] design picorv32 has unconnected port irq[31]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port irq[30]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port irq[29]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port irq[28]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port irq[27]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port irq[26]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port irq[25]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port irq[24]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port irq[23]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port irq[22]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port irq[21]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port irq[20]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port irq[19]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port irq[18]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port irq[17]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port irq[16]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port irq[15]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port irq[14]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port irq[13]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port irq[12]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port irq[11]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port irq[10]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port irq[9]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port irq[8]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port irq[7]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port irq[6]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port irq[5]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port irq[4]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port irq[3]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port irq[2]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port irq[1]
+WARNING: [Synth 8-3331] design picorv32 has unconnected port irq[0]
+WARNING: [Synth 8-3331] design iob_picorv32 has unconnected port boot
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:19 ; elapsed = 00:00:24 . Memory (MB): peak = 1783.168 ; gain = 219.434 ; free physical = 5753 ; free virtual = 10057
+---------------------------------------------------------------------------------
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:21 ; elapsed = 00:00:26 . Memory (MB): peak = 1803.980 ; gain = 240.246 ; free physical = 5759 ; free virtual = 10063
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:21 ; elapsed = 00:00:26 . Memory (MB): peak = 1803.980 ; gain = 240.246 ; free physical = 5759 ; free virtual = 10063
+---------------------------------------------------------------------------------
+INFO: [Netlist 29-17] Analyzing 1 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [/home/pedroazevedo/ecomp/iob-soc-knn/hardware/fpga/ZYNC-7-ZC702/synth_system.xdc]
+Finished Parsing XDC File [/home/pedroazevedo/ecomp/iob-soc-knn/hardware/fpga/ZYNC-7-ZC702/synth_system.xdc]
+INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [/home/pedroazevedo/ecomp/iob-soc-knn/hardware/fpga/ZYNC-7-ZC702/synth_system.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/top_system_propImpl.xdc].
+Resolution: To avoid this warning, move constraints listed in [.Xil/top_system_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.01 . Memory (MB): peak = 1929.645 ; gain = 0.000 ; free physical = 5632 ; free virtual = 9953
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 1 instances were transformed.
+  IBUFGDS => IBUFDS: 1 instances
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:00.03 ; elapsed = 00:00:00.04 . Memory (MB): peak = 1929.645 ; gain = 0.000 ; free physical = 5632 ; free virtual = 9953
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:42 ; elapsed = 00:00:51 . Memory (MB): peak = 1929.645 ; gain = 365.910 ; free physical = 5722 ; free virtual = 10044
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7z020clg484-1
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:42 ; elapsed = 00:00:52 . Memory (MB): peak = 1929.645 ; gain = 365.910 ; free physical = 5722 ; free virtual = 10044
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:42 ; elapsed = 00:00:52 . Memory (MB): peak = 1929.645 ; gain = 365.910 ; free physical = 5722 ; free virtual = 10044
+---------------------------------------------------------------------------------
+INFO: [Synth 8-4471] merging register 'instr_waitirq_reg' into 'instr_retirq_reg' [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:853]
+INFO: [Synth 8-4471] merging register 'compressed_instr_reg' into 'instr_retirq_reg' [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:873]
+INFO: [Synth 8-4471] merging register 'instr_setq_reg' into 'instr_getq_reg' [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:1071]
+INFO: [Synth 8-4471] merging register 'instr_maskirq_reg' into 'instr_getq_reg' [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:1072]
+INFO: [Synth 8-4471] merging register 'instr_timer_reg' into 'instr_getq_reg' [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:1073]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:1218]
+WARNING: [Synth 8-327] inferring latch for variable 'mem_rdata_word_reg' [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:390]
+WARNING: [Synth 8-327] inferring latch for variable 'mem_la_wdata_reg' [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:388]
+WARNING: [Synth 8-327] inferring latch for variable 'mem_la_wstrb_reg' [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:389]
+INFO: [Synth 8-3971] The signal "iob_tdp_ram:/ram_reg" was recognized as a true dual port RAM template.
+INFO: [Synth 8-3971] The signal "iob_tdp_ram__parameterized0:/ram_reg" was recognized as a true dual port RAM template.
+INFO: [Synth 8-3971] The signal "iob_tdp_ram__parameterized1:/ram_reg" was recognized as a true dual port RAM template.
+INFO: [Synth 8-3971] The signal "iob_tdp_ram__parameterized2:/ram_reg" was recognized as a true dual port RAM template.
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:46 ; elapsed = 00:00:57 . Memory (MB): peak = 1929.645 ; gain = 365.910 ; free physical = 5712 ; free virtual = 10035
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     63 Bit       Adders := 1     
+	   2 Input     32 Bit       Adders := 7     
+	   3 Input     32 Bit       Adders := 1     
+	   2 Input     16 Bit       Adders := 2     
+	   2 Input     12 Bit       Adders := 1     
+	   2 Input     10 Bit       Adders := 1     
+	   2 Input      5 Bit       Adders := 2     
+	   2 Input      4 Bit       Adders := 3     
++---XORs : 
+	   2 Input     32 Bit         XORs := 1     
++---Registers : 
+	               64 Bit    Registers := 2     
+	               63 Bit    Registers := 1     
+	               36 Bit    Registers := 1     
+	               33 Bit    Registers := 2     
+	               32 Bit    Registers := 17    
+	               16 Bit    Registers := 3     
+	               12 Bit    Registers := 1     
+	               10 Bit    Registers := 2     
+	                8 Bit    Registers := 11    
+	                5 Bit    Registers := 6     
+	                4 Bit    Registers := 6     
+	                3 Bit    Registers := 2     
+	                2 Bit    Registers := 6     
+	                1 Bit    Registers := 108   
++---Multipliers : 
+	                33x33  Multipliers := 1     
++---RAMs : 
+	              32K Bit         RAMs := 4     
+	             1024 Bit         RAMs := 1     
++---ROMs : 
+	                              ROMs := 1     
++---Muxes : 
+	   2 Input     69 Bit        Muxes := 10    
+	   3 Input     69 Bit        Muxes := 1     
+	   2 Input     63 Bit        Muxes := 2     
+	   2 Input     33 Bit        Muxes := 11    
+	   4 Input     33 Bit        Muxes := 1     
+	   2 Input     32 Bit        Muxes := 44    
+	   7 Input     32 Bit        Muxes := 1     
+	   9 Input     32 Bit        Muxes := 2     
+	   3 Input     32 Bit        Muxes := 2     
+	   4 Input     32 Bit        Muxes := 2     
+	   2 Input     16 Bit        Muxes := 6     
+	   2 Input     10 Bit        Muxes := 1     
+	   2 Input      8 Bit        Muxes := 3     
+	   9 Input      8 Bit        Muxes := 1     
+	   4 Input      8 Bit        Muxes := 1     
+	   2 Input      5 Bit        Muxes := 1     
+	   9 Input      5 Bit        Muxes := 2     
+	   2 Input      4 Bit        Muxes := 3     
+	   4 Input      4 Bit        Muxes := 2     
+	   5 Input      4 Bit        Muxes := 1     
+	   2 Input      3 Bit        Muxes := 2     
+	   6 Input      2 Bit        Muxes := 1     
+	   2 Input      2 Bit        Muxes := 2     
+	   9 Input      2 Bit        Muxes := 1     
+	   2 Input      1 Bit        Muxes := 62    
+	   4 Input      1 Bit        Muxes := 18    
+	   9 Input      1 Bit        Muxes := 25    
+	   6 Input      1 Bit        Muxes := 5     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Hierarchical Component Statistics 
+---------------------------------------------------------------------------------
+Hierarchical RTL Component report 
+Module picorv32_pcpi_fast_mul 
+Detailed RTL Component Info : 
++---Registers : 
+	               64 Bit    Registers := 1     
+	               33 Bit    Registers := 2     
+	                4 Bit    Registers := 1     
+	                1 Bit    Registers := 1     
++---Multipliers : 
+	                33x33  Multipliers := 1     
++---Muxes : 
+	   2 Input     33 Bit        Muxes := 2     
+	   2 Input     32 Bit        Muxes := 1     
+	   2 Input      1 Bit        Muxes := 4     
+	   4 Input      1 Bit        Muxes := 4     
+Module picorv32_pcpi_div 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     63 Bit       Adders := 1     
+	   2 Input     32 Bit       Adders := 3     
++---Registers : 
+	               63 Bit    Registers := 1     
+	               32 Bit    Registers := 4     
+	                1 Bit    Registers := 9     
++---Muxes : 
+	   2 Input     63 Bit        Muxes := 2     
+	   2 Input     32 Bit        Muxes := 4     
+	   2 Input      1 Bit        Muxes := 8     
+	   4 Input      1 Bit        Muxes := 4     
+Module picorv32 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     32 Bit       Adders := 3     
+	   3 Input     32 Bit       Adders := 1     
+	   2 Input      5 Bit       Adders := 2     
+	   2 Input      4 Bit       Adders := 1     
++---XORs : 
+	   2 Input     32 Bit         XORs := 1     
++---Registers : 
+	               36 Bit    Registers := 1     
+	               32 Bit    Registers := 12    
+	                8 Bit    Registers := 1     
+	                5 Bit    Registers := 6     
+	                4 Bit    Registers := 2     
+	                2 Bit    Registers := 2     
+	                1 Bit    Registers := 75    
++---RAMs : 
+	             1024 Bit         RAMs := 1     
++---Muxes : 
+	   2 Input     32 Bit        Muxes := 39    
+	   7 Input     32 Bit        Muxes := 1     
+	   9 Input     32 Bit        Muxes := 2     
+	   3 Input     32 Bit        Muxes := 1     
+	   4 Input     32 Bit        Muxes := 2     
+	   2 Input     16 Bit        Muxes := 1     
+	   2 Input      8 Bit        Muxes := 3     
+	   9 Input      8 Bit        Muxes := 1     
+	   4 Input      8 Bit        Muxes := 1     
+	   2 Input      5 Bit        Muxes := 1     
+	   9 Input      5 Bit        Muxes := 2     
+	   2 Input      4 Bit        Muxes := 2     
+	   4 Input      4 Bit        Muxes := 1     
+	   5 Input      4 Bit        Muxes := 1     
+	   2 Input      3 Bit        Muxes := 2     
+	   6 Input      2 Bit        Muxes := 1     
+	   2 Input      2 Bit        Muxes := 2     
+	   9 Input      2 Bit        Muxes := 1     
+	   9 Input      1 Bit        Muxes := 25    
+	   2 Input      1 Bit        Muxes := 43    
+	   4 Input      1 Bit        Muxes := 6     
+Module iob_picorv32 
+Detailed RTL Component Info : 
++---Muxes : 
+	   2 Input     69 Bit        Muxes := 2     
+	   2 Input     33 Bit        Muxes := 1     
+Module split 
+Detailed RTL Component Info : 
++---Registers : 
+	                2 Bit    Registers := 1     
++---Muxes : 
+	   2 Input     69 Bit        Muxes := 1     
+	   2 Input     33 Bit        Muxes := 1     
+Module split__parameterized0 
+Detailed RTL Component Info : 
++---Registers : 
+	                2 Bit    Registers := 1     
++---Muxes : 
+	   2 Input     69 Bit        Muxes := 2     
+	   2 Input     33 Bit        Muxes := 2     
+Module split__parameterized1 
+Detailed RTL Component Info : 
++---Registers : 
+	                3 Bit    Registers := 1     
++---Muxes : 
+	   2 Input     69 Bit        Muxes := 3     
+	   4 Input     33 Bit        Muxes := 1     
+	   2 Input     33 Bit        Muxes := 1     
+Module split__parameterized2 
+Detailed RTL Component Info : 
++---Registers : 
+	                2 Bit    Registers := 1     
++---Muxes : 
+	   2 Input     69 Bit        Muxes := 2     
+	   2 Input     33 Bit        Muxes := 2     
+Module sp_rom 
+Detailed RTL Component Info : 
++---Registers : 
+	               32 Bit    Registers := 1     
++---ROMs : 
+	                              ROMs := 1     
+Module boot_ctr 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     10 Bit       Adders := 1     
++---Registers : 
+	               12 Bit    Registers := 1     
+	               10 Bit    Registers := 1     
+	                4 Bit    Registers := 1     
+	                1 Bit    Registers := 6     
+Module merge 
+Detailed RTL Component Info : 
++---Registers : 
+	                1 Bit    Registers := 2     
++---Muxes : 
+	   3 Input     69 Bit        Muxes := 1     
+	   2 Input     33 Bit        Muxes := 2     
+	   2 Input      1 Bit        Muxes := 2     
+Module iob_tdp_ram 
+Detailed RTL Component Info : 
++---Registers : 
+	                8 Bit    Registers := 2     
++---RAMs : 
+	              32K Bit         RAMs := 1     
+Module iob_tdp_ram__parameterized0 
+Detailed RTL Component Info : 
++---Registers : 
+	                8 Bit    Registers := 2     
++---RAMs : 
+	              32K Bit         RAMs := 1     
+Module iob_tdp_ram__parameterized1 
+Detailed RTL Component Info : 
++---Registers : 
+	                8 Bit    Registers := 2     
++---RAMs : 
+	              32K Bit         RAMs := 1     
+Module iob_tdp_ram__parameterized2 
+Detailed RTL Component Info : 
++---Registers : 
+	                8 Bit    Registers := 2     
++---RAMs : 
+	              32K Bit         RAMs := 1     
+Module sram 
+Detailed RTL Component Info : 
++---Registers : 
+	                1 Bit    Registers := 2     
+Module int_mem 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     32 Bit       Adders := 1     
+	   2 Input     12 Bit       Adders := 1     
+Module iob_uart 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     16 Bit       Adders := 2     
+	   2 Input      4 Bit       Adders := 2     
++---Registers : 
+	               16 Bit    Registers := 3     
+	               10 Bit    Registers := 1     
+	                8 Bit    Registers := 2     
+	                4 Bit    Registers := 2     
+	                3 Bit    Registers := 1     
+	                2 Bit    Registers := 1     
+	                1 Bit    Registers := 6     
++---Muxes : 
+	   2 Input     16 Bit        Muxes := 5     
+	   2 Input     10 Bit        Muxes := 1     
+	   2 Input      4 Bit        Muxes := 1     
+	   4 Input      4 Bit        Muxes := 1     
+	   6 Input      1 Bit        Muxes := 5     
+	   2 Input      1 Bit        Muxes := 5     
+	   4 Input      1 Bit        Muxes := 4     
+Module timer_core 
+Detailed RTL Component Info : 
++---Registers : 
+	               64 Bit    Registers := 1     
+Module iob_timer 
+Detailed RTL Component Info : 
++---Registers : 
+	                1 Bit    Registers := 4     
++---Muxes : 
+	   3 Input     32 Bit        Muxes := 1     
+Module iob_knn 
+Detailed RTL Component Info : 
++---Registers : 
+	                1 Bit    Registers := 3     
+---------------------------------------------------------------------------------
+Finished RTL Hierarchical Component Statistics
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 220 (col length:60)
+BRAMs: 280 (col length: RAMB18 60 RAMB36 30)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+Warning: Parallel synthesis criteria is not met 
+INFO: [Synth 8-5845] Not enough pipeline registers after wide multiplier. Recommended levels of pipeline registers is 4 [/home/pedroazevedo/ecomp/iob-soc-knn/submodules/CPU/hardware/src/picorv32.v:2324]
+DSP Report: Generating DSP rd0, operation Mode is: A2*B2.
+DSP Report: register rs1_reg is absorbed into DSP rd0.
+DSP Report: register rd0 is absorbed into DSP rd0.
+DSP Report: operator rd0 is absorbed into DSP rd0.
+DSP Report: operator rd0 is absorbed into DSP rd0.
+DSP Report: Generating DSP rd_reg, operation Mode is: (PCIN>>17)+A2*B2.
+DSP Report: register rs2_reg is absorbed into DSP rd_reg.
+DSP Report: register rs1_reg is absorbed into DSP rd_reg.
+DSP Report: register rd_reg is absorbed into DSP rd_reg.
+DSP Report: operator rd0 is absorbed into DSP rd_reg.
+DSP Report: operator rd0 is absorbed into DSP rd_reg.
+DSP Report: Generating DSP rd0, operation Mode is: A2*B2.
+DSP Report: register rd0 is absorbed into DSP rd0.
+DSP Report: register rd0 is absorbed into DSP rd0.
+DSP Report: operator rd0 is absorbed into DSP rd0.
+DSP Report: operator rd0 is absorbed into DSP rd0.
+DSP Report: Generating DSP rd_reg, operation Mode is: (PCIN>>17)+A2*B2.
+DSP Report: register rs2_reg is absorbed into DSP rd_reg.
+DSP Report: register rd_reg is absorbed into DSP rd_reg.
+DSP Report: register rd_reg is absorbed into DSP rd_reg.
+DSP Report: operator rd0 is absorbed into DSP rd_reg.
+DSP Report: operator rd0 is absorbed into DSP rd_reg.
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_wr
+WARNING: [Synth 8-3331] design picorv32 has unconnected port pcpi_rd[31]
+INFO: [Common 17-14] Message 'Synth 8-3331' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+INFO: [Synth 8-3971] The signal "top_system/system/int_mem0/int_sram/gen_main_mem_byte[0].main_mem_byte/ram_reg" was recognized as a true dual port RAM template.
+INFO: [Synth 8-3971] The signal "top_system/system/int_mem0/int_sram/gen_main_mem_byte[1].main_mem_byte/ram_reg" was recognized as a true dual port RAM template.
+INFO: [Synth 8-3971] The signal "top_system/system/int_mem0/int_sram/gen_main_mem_byte[2].main_mem_byte/ram_reg" was recognized as a true dual port RAM template.
+INFO: [Synth 8-3971] The signal "top_system/system/int_mem0/int_sram/gen_main_mem_byte[3].main_mem_byte/ram_reg" was recognized as a true dual port RAM template.
+INFO: [Synth 8-3333] propagating constant 1 across sequential element (\system/uart/send_pattern_reg[9] )
+INFO: [Synth 8-3886] merging instance 'system/int_mem0/boot_ctr0/sram_wstrb_reg[3]' (FDP) to 'system/int_mem0/boot_ctr0/sram_wstrb_reg[0]'
+INFO: [Synth 8-3886] merging instance 'system/int_mem0/boot_ctr0/sram_wstrb_reg[2]' (FDP) to 'system/int_mem0/boot_ctr0/sram_wstrb_reg[0]'
+INFO: [Synth 8-3886] merging instance 'system/int_mem0/boot_ctr0/sram_wstrb_reg[1]' (FDP) to 'system/int_mem0/boot_ctr0/sram_wstrb_reg[0]'
+INFO: [Synth 8-3333] propagating constant 1 across sequential element (\system/uart/cts_int_reg[0] )
+INFO: [Synth 8-3886] merging instance 'system/int_mem0/boot_ctr0/sram_wstrb_reg[0]' (FDP) to 'system/int_mem0/boot_ctr0/sram_valid_reg'
+INFO: [Synth 8-3886] merging instance 'system/int_mem0/boot_ctr0/ram_w_addr_reg[10]' (FDC) to 'system/int_mem0/boot_ctr0/ram_w_addr_reg[11]'
+INFO: [Synth 8-3886] merging instance 'system/cpu/picorv32_core/decoded_rs2_reg[0]' (FDE) to 'system/cpu/picorv32_core/decoded_imm_uj_reg[11]'
+INFO: [Synth 8-3886] merging instance 'system/cpu/picorv32_core/decoded_rs2_reg[1]' (FDE) to 'system/cpu/picorv32_core/decoded_imm_uj_reg[1]'
+INFO: [Synth 8-3886] merging instance 'system/cpu/picorv32_core/decoded_rs2_reg[2]' (FDE) to 'system/cpu/picorv32_core/decoded_imm_uj_reg[2]'
+INFO: [Synth 8-3886] merging instance 'system/cpu/picorv32_core/decoded_rs2_reg[3]' (FDE) to 'system/cpu/picorv32_core/decoded_imm_uj_reg[3]'
+INFO: [Synth 8-3886] merging instance 'system/cpu/picorv32_core/decoded_rs2_reg[4]' (FDE) to 'system/cpu/picorv32_core/decoded_imm_uj_reg[4]'
+INFO: [Synth 8-3886] merging instance 'system/uart/cts_int_reg[1]' (FD) to 'system/uart/cts_int_reg[0]'
+INFO: [Synth 8-3886] merging instance 'system/cpu/picorv32_core/decoded_imm_uj_reg[30]' (FDE) to 'system/cpu/picorv32_core/decoded_imm_uj_reg[20]'
+INFO: [Synth 8-3886] merging instance 'system/cpu/picorv32_core/decoded_imm_uj_reg[31]' (FDE) to 'system/cpu/picorv32_core/decoded_imm_uj_reg[20]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\system/cpu/picorv32_core /\decoded_imm_uj_reg[0] )
+INFO: [Synth 8-3886] merging instance 'system/cpu/picorv32_core/decoded_imm_uj_reg[15]' (FDE) to 'system/cpu/picorv32_core/decoded_rs1_reg[0]'
+INFO: [Synth 8-3886] merging instance 'system/cpu/picorv32_core/decoded_imm_uj_reg[16]' (FDE) to 'system/cpu/picorv32_core/decoded_rs1_reg[1]'
+INFO: [Synth 8-3886] merging instance 'system/cpu/picorv32_core/decoded_imm_uj_reg[17]' (FDE) to 'system/cpu/picorv32_core/decoded_rs1_reg[2]'
+INFO: [Synth 8-3886] merging instance 'system/cpu/picorv32_core/decoded_imm_uj_reg[18]' (FDE) to 'system/cpu/picorv32_core/decoded_rs1_reg[3]'
+INFO: [Synth 8-3886] merging instance 'system/cpu/picorv32_core/decoded_imm_uj_reg[19]' (FDE) to 'system/cpu/picorv32_core/decoded_rs1_reg[4]'
+INFO: [Synth 8-3886] merging instance 'system/cpu/picorv32_core/decoded_imm_uj_reg[20]' (FDE) to 'system/cpu/picorv32_core/decoded_imm_uj_reg[21]'
+INFO: [Synth 8-3886] merging instance 'system/cpu/picorv32_core/decoded_imm_uj_reg[21]' (FDE) to 'system/cpu/picorv32_core/decoded_imm_uj_reg[22]'
+INFO: [Synth 8-3886] merging instance 'system/cpu/picorv32_core/decoded_imm_uj_reg[22]' (FDE) to 'system/cpu/picorv32_core/decoded_imm_uj_reg[23]'
+INFO: [Synth 8-3886] merging instance 'system/cpu/picorv32_core/decoded_imm_uj_reg[23]' (FDE) to 'system/cpu/picorv32_core/decoded_imm_uj_reg[24]'
+INFO: [Synth 8-3886] merging instance 'system/cpu/picorv32_core/decoded_imm_uj_reg[24]' (FDE) to 'system/cpu/picorv32_core/decoded_imm_uj_reg[25]'
+INFO: [Synth 8-3886] merging instance 'system/cpu/picorv32_core/decoded_imm_uj_reg[25]' (FDE) to 'system/cpu/picorv32_core/decoded_imm_uj_reg[26]'
+INFO: [Synth 8-3886] merging instance 'system/cpu/picorv32_core/decoded_imm_uj_reg[26]' (FDE) to 'system/cpu/picorv32_core/decoded_imm_uj_reg[27]'
+INFO: [Synth 8-3886] merging instance 'system/cpu/picorv32_core/decoded_imm_uj_reg[27]' (FDE) to 'system/cpu/picorv32_core/decoded_imm_uj_reg[28]'
+INFO: [Synth 8-3886] merging instance 'system/cpu/picorv32_core/decoded_imm_uj_reg[28]' (FDE) to 'system/cpu/picorv32_core/decoded_imm_uj_reg[29]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\system/cpu/picorv32_core /do_waitirq_reg)
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\system/cpu/picorv32_core /instr_getq_reg)
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\system/cpu/picorv32_core /instr_retirq_reg)
+INFO: [Synth 8-3886] merging instance 'system/cpu/picorv32_core/cpu_state_reg[4]' (FDRE) to 'system/cpu/picorv32_core/cpu_state_reg[2]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\system/cpu/picorv32_core /\cpu_state_reg[2] )
+INFO: [Synth 8-3886] merging instance 'system/ibus_split/s_sel_reg_reg[1]' (FDC) to 'system/int_mem0/data_bootctr_split/s_sel_reg_reg[1]'
+INFO: [Synth 8-3886] merging instance 'system/pbus_split/s_sel_reg_reg[2]' (FDC) to 'system/int_mem0/data_bootctr_split/s_sel_reg_reg[1]'
+INFO: [Synth 8-3886] merging instance 'system/int_mem0/data_bootctr_split/s_sel_reg_reg[1]' (FDC) to 'system/dbus_split/s_sel_reg_reg[1]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\system/dbus_split/s_sel_reg_reg[1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\system/cpu/picorv32_core /latched_compr_reg)
+INFO: [Synth 8-3333] propagating constant 1 across sequential element (\system/uart/cts_int_reg[0] )
+WARNING: [Synth 8-3332] Sequential element (rd_reg[47]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[46]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[45]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[44]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[43]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[42]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[41]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[40]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[39]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[38]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[37]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[36]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[35]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[34]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[33]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[32]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[31]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[30]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[29]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[28]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[27]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[26]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[25]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[24]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[23]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[22]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[21]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[20]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[19]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[18]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[17]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[47]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[46]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[45]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[44]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[43]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[42]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[41]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[40]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[39]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[38]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[37]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[36]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[35]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[34]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[33]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[32]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[31]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[30]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[29]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[28]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[27]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[26]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[25]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[24]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[23]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[22]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[21]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[20]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[19]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[18]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[17]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:01:28 ; elapsed = 00:01:41 . Memory (MB): peak = 1929.645 ; gain = 365.910 ; free physical = 5671 ; free virtual = 10003
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+
+ROM:
++------------+-----------------------------+---------------+----------------+
+|Module Name | RTL Object                  | Depth x Width | Implemented As | 
++------------+-----------------------------+---------------+----------------+
+|int_mem     | boot_ctr0/sp_rom0/rdata_reg | 1024x32       | Block RAM      | 
++------------+-----------------------------+---------------+----------------+
+
+
+Block RAM: Preliminary Mapping  Report (see note below)
++-----------------------------+------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+|Module Name                  | RTL Object | PORT A (Depth x Width) | W | R | PORT B (Depth x Width) | W | R | Ports driving FF | RAMB18 | RAMB36 | 
++-----------------------------+------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+|iob_tdp_ram:                 | ram_reg    | 4 K x 8(NO_CHANGE)     | W | R | 4 K x 8(NO_CHANGE)     | W | R | Port A and B     | 0      | 1      | 
+|iob_tdp_ram__parameterized0: | ram_reg    | 4 K x 8(NO_CHANGE)     | W | R | 4 K x 8(NO_CHANGE)     | W | R | Port A and B     | 0      | 1      | 
+|iob_tdp_ram__parameterized1: | ram_reg    | 4 K x 8(NO_CHANGE)     | W | R | 4 K x 8(NO_CHANGE)     | W | R | Port A and B     | 0      | 1      | 
+|iob_tdp_ram__parameterized2: | ram_reg    | 4 K x 8(NO_CHANGE)     | W | R | 4 K x 8(NO_CHANGE)     | W | R | Port A and B     | 0      | 1      | 
++-----------------------------+------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+
+Note: The table above is a preliminary report that shows the Block RAMs at the current stage of the synthesis flow. Some Block RAMs may be reimplemented as non Block RAM primitives later in the synthesis flow. Multiple instantiated Block RAMs are reported only once. 
+
+Distributed RAM: Preliminary Mapping  Report (see note below)
++---------------------------+-------------+-----------+----------------------+---------------+
+|Module Name                | RTL Object  | Inference | Size (Depth x Width) | Primitives    | 
++---------------------------+-------------+-----------+----------------------+---------------+
+|\system/cpu/picorv32_core  | cpuregs_reg | Implied   | 32 x 32              | RAM32M x 12   | 
++---------------------------+-------------+-----------+----------------------+---------------+
+
+Note: The table above is a preliminary report that shows the Distributed RAMs at the current stage of the synthesis flow. Some Distributed RAMs may be reimplemented as non Distributed RAM primitives later in the synthesis flow. Multiple instantiated RAMs are reported only once.
+
+DSP: Preliminary Mapping  Report (see note below)
++-----------------------+------------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|Module Name            | DSP Mapping      | A Size | B Size | C Size | D Size | P Size | AREG | BREG | CREG | DREG | ADREG | MREG | PREG | 
++-----------------------+------------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|picorv32_pcpi_fast_mul | A2*B2            | 18     | 16     | -      | -      | 48     | 1    | 1    | -    | -    | -     | 0    | 0    | 
+|picorv32_pcpi_fast_mul | (PCIN>>17)+A2*B2 | 16     | 16     | -      | -      | 48     | 1    | 1    | -    | -    | -     | 0    | 1    | 
+|picorv32_pcpi_fast_mul | A2*B2            | 18     | 18     | -      | -      | 48     | 1    | 1    | -    | -    | -     | 0    | 0    | 
+|picorv32_pcpi_fast_mul | (PCIN>>17)+A2*B2 | 18     | 16     | -      | -      | 48     | 1    | 1    | -    | -    | -     | 0    | 1    | 
++-----------------------+------------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+
+Note: The table above is a preliminary report that shows the DSPs inferred at the current stage of the synthesis flow. Some DSP may be reimplemented as non DSP primitives later in the synthesis flow. Multiple instantiated DSPs are reported only once.
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6837] The timing for the instance systemi_3/system/int_mem0/int_sram/gen_main_mem_byte[0].main_mem_byte/ram_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance systemi_3/system/int_mem0/int_sram/gen_main_mem_byte[0].main_mem_byte/ram_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance systemi_4/system/int_mem0/int_sram/gen_main_mem_byte[1].main_mem_byte/ram_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance systemi_4/system/int_mem0/int_sram/gen_main_mem_byte[1].main_mem_byte/ram_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance systemi_5/system/int_mem0/int_sram/gen_main_mem_byte[2].main_mem_byte/ram_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance systemi_5/system/int_mem0/int_sram/gen_main_mem_byte[2].main_mem_byte/ram_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance systemi_6/system/int_mem0/int_sram/gen_main_mem_byte[3].main_mem_byte/ram_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance systemi_6/system/int_mem0/int_sram/gen_main_mem_byte[3].main_mem_byte/ram_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance systemi_14/system/int_mem0/boot_ctr0/sp_rom0/rdata_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:02:01 ; elapsed = 00:02:15 . Memory (MB): peak = 1929.645 ; gain = 365.910 ; free physical = 5507 ; free virtual = 9845
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:02:05 ; elapsed = 00:02:18 . Memory (MB): peak = 1929.645 ; gain = 365.910 ; free physical = 5503 ; free virtual = 9842
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+
+Block RAM: Final Mapping  Report
++-----------------------------+------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+|Module Name                  | RTL Object | PORT A (Depth x Width) | W | R | PORT B (Depth x Width) | W | R | Ports driving FF | RAMB18 | RAMB36 | 
++-----------------------------+------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+|iob_tdp_ram:                 | ram_reg    | 4 K x 8(NO_CHANGE)     | W | R | 4 K x 8(NO_CHANGE)     | W | R | Port A and B     | 0      | 1      | 
+|iob_tdp_ram__parameterized0: | ram_reg    | 4 K x 8(NO_CHANGE)     | W | R | 4 K x 8(NO_CHANGE)     | W | R | Port A and B     | 0      | 1      | 
+|iob_tdp_ram__parameterized1: | ram_reg    | 4 K x 8(NO_CHANGE)     | W | R | 4 K x 8(NO_CHANGE)     | W | R | Port A and B     | 0      | 1      | 
+|iob_tdp_ram__parameterized2: | ram_reg    | 4 K x 8(NO_CHANGE)     | W | R | 4 K x 8(NO_CHANGE)     | W | R | Port A and B     | 0      | 1      | 
++-----------------------------+------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+
+
+Distributed RAM: Final Mapping  Report
++---------------------------+-------------+-----------+----------------------+---------------+
+|Module Name                | RTL Object  | Inference | Size (Depth x Width) | Primitives    | 
++---------------------------+-------------+-----------+----------------------+---------------+
+|\system/cpu/picorv32_core  | cpuregs_reg | Implied   | 32 x 32              | RAM32M x 12   | 
++---------------------------+-------------+-----------+----------------------+---------------+
+
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6837] The timing for the instance system/int_mem0/int_sram/gen_main_mem_byte[0].main_mem_byte/ram_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance system/int_mem0/int_sram/gen_main_mem_byte[0].main_mem_byte/ram_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance system/int_mem0/int_sram/gen_main_mem_byte[1].main_mem_byte/ram_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance system/int_mem0/int_sram/gen_main_mem_byte[1].main_mem_byte/ram_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance system/int_mem0/int_sram/gen_main_mem_byte[2].main_mem_byte/ram_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance system/int_mem0/int_sram/gen_main_mem_byte[2].main_mem_byte/ram_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance system/int_mem0/int_sram/gen_main_mem_byte[3].main_mem_byte/ram_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance system/int_mem0/int_sram/gen_main_mem_byte[3].main_mem_byte/ram_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-6837] The timing for the instance system/int_mem0/boot_ctr0/sp_rom0/rdata_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:02:11 ; elapsed = 00:02:25 . Memory (MB): peak = 1958.777 ; gain = 395.043 ; free physical = 5493 ; free virtual = 9832
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+INFO: [Synth 8-4649] Removing BlackBox instance \system/knn/knn0  of module knn_core having unconnected or no output ports
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:02:17 ; elapsed = 00:02:31 . Memory (MB): peak = 1964.715 ; gain = 400.980 ; free physical = 5491 ; free virtual = 9830
+---------------------------------------------------------------------------------
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:02:17 ; elapsed = 00:02:31 . Memory (MB): peak = 1964.715 ; gain = 400.980 ; free physical = 5491 ; free virtual = 9830
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:02:19 ; elapsed = 00:02:33 . Memory (MB): peak = 1964.715 ; gain = 400.980 ; free physical = 5491 ; free virtual = 9830
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:02:19 ; elapsed = 00:02:33 . Memory (MB): peak = 1964.715 ; gain = 400.980 ; free physical = 5491 ; free virtual = 9830
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:02:19 ; elapsed = 00:02:33 . Memory (MB): peak = 1964.715 ; gain = 400.980 ; free physical = 5491 ; free virtual = 9830
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:02:19 ; elapsed = 00:02:33 . Memory (MB): peak = 1964.715 ; gain = 400.980 ; free physical = 5491 ; free virtual = 9830
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+-----------+------+
+|      |Cell       |Count |
++------+-----------+------+
+|1     |BUFG       |     2|
+|2     |CARRY4     |   173|
+|3     |DSP48E1_1  |     1|
+|4     |DSP48E1_2  |     1|
+|5     |DSP48E1_3  |     1|
+|6     |DSP48E1_4  |     1|
+|7     |LUT1       |   138|
+|8     |LUT2       |   224|
+|9     |LUT3       |   273|
+|10    |LUT4       |   301|
+|11    |LUT5       |   398|
+|12    |LUT6       |   707|
+|13    |MUXF7      |    14|
+|14    |RAM32M     |    12|
+|15    |RAMB36E1   |     1|
+|16    |RAMB36E1_1 |     1|
+|17    |RAMB36E1_2 |     1|
+|18    |RAMB36E1_3 |     1|
+|19    |RAMB36E1_4 |     1|
+|20    |FDCE       |   172|
+|21    |FDPE       |    14|
+|22    |FDRE       |   889|
+|23    |FDSE       |     7|
+|24    |LD         |    68|
+|25    |IBUF       |     2|
+|26    |IBUFGDS    |     1|
+|27    |OBUF       |     1|
++------+-----------+------+
+
+Report Instance Areas: 
++------+---------------------------------------------+----------------------------+------+
+|      |Instance                                     |Module                      |Cells |
++------+---------------------------------------------+----------------------------+------+
+|1     |top                                          |                            |  3405|
+|2     |  system                                     |system                      |  3399|
+|3     |    cpu                                      |iob_picorv32                |  2847|
+|4     |      picorv32_core                          |picorv32                    |  2836|
+|5     |        pcpi_div                             |picorv32_pcpi_div           |   632|
+|6     |        pcpi_mul                             |picorv32_pcpi_fast_mul      |   309|
+|7     |    dbus_split                               |split__parameterized0       |     3|
+|8     |    ibus_split                               |split                       |     1|
+|9     |    int_mem0                                 |int_mem                     |   190|
+|10    |      boot_ctr0                              |boot_ctr                    |    83|
+|11    |        sp_rom0                              |sp_rom                      |     1|
+|12    |      data_bootctr_split                     |split__parameterized2       |     1|
+|13    |      ibus_merge                             |merge                       |     9|
+|14    |      int_sram                               |sram                        |    97|
+|15    |        \gen_main_mem_byte[0].main_mem_byte  |iob_tdp_ram                 |    27|
+|16    |        \gen_main_mem_byte[1].main_mem_byte  |iob_tdp_ram__parameterized0 |    10|
+|17    |        \gen_main_mem_byte[2].main_mem_byte  |iob_tdp_ram__parameterized1 |    40|
+|18    |        \gen_main_mem_byte[3].main_mem_byte  |iob_tdp_ram__parameterized2 |    17|
+|19    |    knn                                      |iob_knn                     |     4|
+|20    |    pbus_split                               |split__parameterized1       |     4|
+|21    |    timer                                    |iob_timer                   |   173|
+|22    |      timer0                                 |timer_core                  |   169|
+|23    |    uart                                     |iob_uart                    |   177|
++------+---------------------------------------------+----------------------------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:02:19 ; elapsed = 00:02:33 . Memory (MB): peak = 1964.715 ; gain = 400.980 ; free physical = 5491 ; free virtual = 9830
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 133 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:02:10 ; elapsed = 00:02:22 . Memory (MB): peak = 1964.715 ; gain = 275.316 ; free physical = 5555 ; free virtual = 9894
+Synthesis Optimization Complete : Time (s): cpu = 00:02:20 ; elapsed = 00:02:34 . Memory (MB): peak = 1964.723 ; gain = 400.980 ; free physical = 5555 ; free virtual = 9894
+INFO: [Project 1-571] Translating synthesized netlist
+INFO: [Netlist 29-17] Analyzing 277 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+Parsing XDC File [/home/pedroazevedo/ecomp/iob-soc-knn/hardware/fpga/ZYNC-7-ZC702/synth_system.xdc]
+CRITICAL WARNING: [Common 17-69] Command failed: 'F23' is not a valid site or package pin name. [/home/pedroazevedo/ecomp/iob-soc-knn/hardware/fpga/ZYNC-7-ZC702/synth_system.xdc:24]
+CRITICAL WARNING: [Common 17-69] Command failed: 'E23' is not a valid site or package pin name. [/home/pedroazevedo/ecomp/iob-soc-knn/hardware/fpga/ZYNC-7-ZC702/synth_system.xdc:25]
+CRITICAL WARNING: [Common 17-69] Command failed: 'M11' is not a valid site or package pin name. [/home/pedroazevedo/ecomp/iob-soc-knn/hardware/fpga/ZYNC-7-ZC702/synth_system.xdc:30]
+CRITICAL WARNING: [Common 17-69] Command failed: 'A20' is not a valid site or package pin name. [/home/pedroazevedo/ecomp/iob-soc-knn/hardware/fpga/ZYNC-7-ZC702/synth_system.xdc:40]
+Finished Parsing XDC File [/home/pedroazevedo/ecomp/iob-soc-knn/hardware/fpga/ZYNC-7-ZC702/synth_system.xdc]
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00 . Memory (MB): peak = 1973.621 ; gain = 0.000 ; free physical = 5496 ; free virtual = 9836
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 81 instances were transformed.
+  IBUFGDS => IBUFDS: 1 instances
+  LD => LDCE: 68 instances
+  RAM32M => RAM32M (RAMD32, RAMD32, RAMD32, RAMD32, RAMD32, RAMD32, RAMS32, RAMS32): 12 instances
+
+INFO: [Common 17-83] Releasing license: Synthesis
+151 Infos, 217 Warnings, 4 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:02:38 ; elapsed = 00:02:54 . Memory (MB): peak = 1973.621 ; gain = 577.336 ; free physical = 5616 ; free virtual = 9955
+# opt_design
+Command: opt_design
+Attempting to get a license for feature 'Implementation' and/or device 'xc7z020'
+INFO: [Common 17-349] Got license for feature 'Implementation' and/or device 'xc7z020'
+Running DRC as a precondition to command opt_design
+
+Starting DRC Task
+INFO: [DRC 23-27] Running DRC with 2 threads
+INFO: [Project 1-461] DRC finished with 0 Errors
+INFO: [Project 1-462] Please refer to the DRC report (report_drc) for more information.
+
+Time (s): cpu = 00:00:04 ; elapsed = 00:00:04 . Memory (MB): peak = 1989.629 ; gain = 16.008 ; free physical = 5615 ; free virtual = 9955
+
+Starting Cache Timing Information Task
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+Ending Cache Timing Information Task | Checksum: 126dfda3c
+
+Time (s): cpu = 00:00:09 ; elapsed = 00:00:10 . Memory (MB): peak = 2181.598 ; gain = 191.969 ; free physical = 5323 ; free virtual = 9677
+
+Starting Logic Optimization Task
+
+Phase 1 Retarget
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+INFO: [Opt 31-49] Retargeted 0 cell(s).
+Phase 1 Retarget | Checksum: 1f715dc3e
+
+Time (s): cpu = 00:00:00.98 ; elapsed = 00:00:00.88 . Memory (MB): peak = 2271.598 ; gain = 0.000 ; free physical = 5227 ; free virtual = 9582
+INFO: [Opt 31-389] Phase Retarget created 0 cells and removed 2 cells
+
+Phase 2 Constant propagation
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Phase 2 Constant propagation | Checksum: 25304fa81
+
+Time (s): cpu = 00:00:01 ; elapsed = 00:00:01 . Memory (MB): peak = 2271.598 ; gain = 0.000 ; free physical = 5227 ; free virtual = 9582
+INFO: [Opt 31-389] Phase Constant propagation created 0 cells and removed 0 cells
+
+Phase 3 Sweep
+Phase 3 Sweep | Checksum: 271b043dd
+
+Time (s): cpu = 00:00:02 ; elapsed = 00:00:01 . Memory (MB): peak = 2271.598 ; gain = 0.000 ; free physical = 5227 ; free virtual = 9582
+INFO: [Opt 31-389] Phase Sweep created 0 cells and removed 7 cells
+
+Phase 4 BUFG optimization
+Phase 4 BUFG optimization | Checksum: 271b043dd
+
+Time (s): cpu = 00:00:02 ; elapsed = 00:00:02 . Memory (MB): peak = 2271.598 ; gain = 0.000 ; free physical = 5227 ; free virtual = 9582
+INFO: [Opt 31-662] Phase BUFG optimization created 0 cells of which 0 are BUFGs and removed 0 cells.
+
+Phase 5 Shift Register Optimization
+INFO: [Opt 31-1064] SRL Remap converted 0 SRLs to 0 registers and converted 0 registers of register chains to 0 SRLs
+Phase 5 Shift Register Optimization | Checksum: 271b043dd
+
+Time (s): cpu = 00:00:02 ; elapsed = 00:00:02 . Memory (MB): peak = 2271.598 ; gain = 0.000 ; free physical = 5227 ; free virtual = 9582
+INFO: [Opt 31-389] Phase Shift Register Optimization created 0 cells and removed 0 cells
+
+Phase 6 Post Processing Netlist
+Phase 6 Post Processing Netlist | Checksum: 271b043dd
+
+Time (s): cpu = 00:00:02 ; elapsed = 00:00:02 . Memory (MB): peak = 2271.598 ; gain = 0.000 ; free physical = 5227 ; free virtual = 9582
+INFO: [Opt 31-389] Phase Post Processing Netlist created 0 cells and removed 0 cells
+Opt_design Change Summary
+=========================
+
+
+-------------------------------------------------------------------------------------------------------------------------
+|  Phase                        |  #Cells created  |  #Cells Removed  |  #Constrained objects preventing optimizations  |
+-------------------------------------------------------------------------------------------------------------------------
+|  Retarget                     |               0  |               2  |                                              0  |
+|  Constant propagation         |               0  |               0  |                                              0  |
+|  Sweep                        |               0  |               7  |                                              0  |
+|  BUFG optimization            |               0  |               0  |                                              0  |
+|  Shift Register Optimization  |               0  |               0  |                                              0  |
+|  Post Processing Netlist      |               0  |               0  |                                              0  |
+-------------------------------------------------------------------------------------------------------------------------
+
+
+
+Starting Connectivity Check Task
+
+Time (s): cpu = 00:00:00.04 ; elapsed = 00:00:00.04 . Memory (MB): peak = 2271.598 ; gain = 0.000 ; free physical = 5227 ; free virtual = 9582
+Ending Logic Optimization Task | Checksum: 2295ae93a
+
+Time (s): cpu = 00:00:02 ; elapsed = 00:00:02 . Memory (MB): peak = 2271.598 ; gain = 0.000 ; free physical = 5227 ; free virtual = 9582
+
+Starting Power Optimization Task
+INFO: [Pwropt 34-132] Skipping clock gating for clocks with a period < 2.00 ns.
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+INFO: [Pwropt 34-9] Applying IDT optimizations ...
+INFO: [Pwropt 34-10] Applying ODC optimizations ...
+INFO: [Physopt 32-619] Estimated Timing Summary | WNS=1.349 | TNS=0.000 |
+Running Vector-less Activity Propagation...
+
+Finished Running Vector-less Activity Propagation
+
+
+Starting PowerOpt Patch Enables Task
+INFO: [Pwropt 34-162] WRITE_MODE attribute of 0 BRAM(s) out of a total of 5 has been updated to save power. Run report_power_opt to get a complete listing of the BRAMs updated.
+INFO: [Pwropt 34-201] Structural ODC has moved 0 WE to EN ports
+Number of BRAM Ports augmented: 0 newly gated: 0 Total Ports: 10
+Ending PowerOpt Patch Enables Task | Checksum: 2295ae93a
+
+Time (s): cpu = 00:00:00.10 ; elapsed = 00:00:00.16 . Memory (MB): peak = 2475.340 ; gain = 0.000 ; free physical = 5208 ; free virtual = 9568
+Ending Power Optimization Task | Checksum: 2295ae93a
+
+Time (s): cpu = 00:00:09 ; elapsed = 00:00:08 . Memory (MB): peak = 2475.340 ; gain = 203.742 ; free physical = 5215 ; free virtual = 9574
+
+Starting Final Cleanup Task
+Ending Final Cleanup Task | Checksum: 2295ae93a
+
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2475.340 ; gain = 0.000 ; free physical = 5215 ; free virtual = 9574
+
+Starting Netlist Obfuscation Task
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2475.340 ; gain = 0.000 ; free physical = 5215 ; free virtual = 9574
+Ending Netlist Obfuscation Task | Checksum: 2295ae93a
+
+Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00.01 . Memory (MB): peak = 2475.340 ; gain = 0.000 ; free physical = 5215 ; free virtual = 9574
+INFO: [Common 17-83] Releasing license: Implementation
+23 Infos, 0 Warnings, 0 Critical Warnings and 0 Errors encountered.
+opt_design completed successfully
+opt_design: Time (s): cpu = 00:00:31 ; elapsed = 00:00:31 . Memory (MB): peak = 2475.340 ; gain = 501.719 ; free physical = 5215 ; free virtual = 9574
+# place_design
+Command: place_design
+Attempting to get a license for feature 'Implementation' and/or device 'xc7z020'
+INFO: [Common 17-349] Got license for feature 'Implementation' and/or device 'xc7z020'
+INFO: [DRC 23-27] Running DRC with 2 threads
+INFO: [Vivado_Tcl 4-198] DRC finished with 0 Errors
+INFO: [Vivado_Tcl 4-199] Please refer to the DRC report (report_drc) for more information.
+Running DRC as a precondition to command place_design
+INFO: [DRC 23-27] Running DRC with 2 threads
+WARNING: [DRC CHECK-3] Report rule limit reached: REQP-1839 rule limit reached: 20 violations have been found.
+WARNING: [DRC REQP-1839] RAMB36 async control check: The RAMB36E1 system/int_mem0/boot_ctr0/sp_rom0/rdata_reg has an input control pin system/int_mem0/boot_ctr0/sp_rom0/rdata_reg/ADDRARDADDR[10] (net: system/int_mem0/boot_ctr0/sp_rom0/Q[5]) which is driven by a register (system/int_mem0/boot_ctr0/rom_r_addr_reg_rep[5]) that has an active asychronous set or reset. This may cause corruption of the memory contents and/or read values when the set/reset is asserted and is not analyzed by the default static timing analysis. It is suggested to eliminate the use of a set/reset to registers driving this RAMB pin or else use a synchronous reset in which the assertion of the reset is timed by default.
+WARNING: [DRC REQP-1839] RAMB36 async control check: The RAMB36E1 system/int_mem0/boot_ctr0/sp_rom0/rdata_reg has an input control pin system/int_mem0/boot_ctr0/sp_rom0/rdata_reg/ADDRARDADDR[11] (net: system/int_mem0/boot_ctr0/sp_rom0/Q[6]) which is driven by a register (system/int_mem0/boot_ctr0/rom_r_addr_reg_rep[6]) that has an active asychronous set or reset. This may cause corruption of the memory contents and/or read values when the set/reset is asserted and is not analyzed by the default static timing analysis. It is suggested to eliminate the use of a set/reset to registers driving this RAMB pin or else use a synchronous reset in which the assertion of the reset is timed by default.
+WARNING: [DRC REQP-1839] RAMB36 async control check: The RAMB36E1 system/int_mem0/boot_ctr0/sp_rom0/rdata_reg has an input control pin system/int_mem0/boot_ctr0/sp_rom0/rdata_reg/ADDRARDADDR[12] (net: system/int_mem0/boot_ctr0/sp_rom0/Q[7]) which is driven by a register (system/int_mem0/boot_ctr0/rom_r_addr_reg_rep[7]) that has an active asychronous set or reset. This may cause corruption of the memory contents and/or read values when the set/reset is asserted and is not analyzed by the default static timing analysis. It is suggested to eliminate the use of a set/reset to registers driving this RAMB pin or else use a synchronous reset in which the assertion of the reset is timed by default.
+WARNING: [DRC REQP-1839] RAMB36 async control check: The RAMB36E1 system/int_mem0/boot_ctr0/sp_rom0/rdata_reg has an input control pin system/int_mem0/boot_ctr0/sp_rom0/rdata_reg/ADDRARDADDR[13] (net: system/int_mem0/boot_ctr0/sp_rom0/Q[8]) which is driven by a register (system/int_mem0/boot_ctr0/rom_r_addr_reg_rep[8]) that has an active asychronous set or reset. This may cause corruption of the memory contents and/or read values when the set/reset is asserted and is not analyzed by the default static timing analysis. It is suggested to eliminate the use of a set/reset to registers driving this RAMB pin or else use a synchronous reset in which the assertion of the reset is timed by default.
+WARNING: [DRC REQP-1839] RAMB36 async control check: The RAMB36E1 system/int_mem0/boot_ctr0/sp_rom0/rdata_reg has an input control pin system/int_mem0/boot_ctr0/sp_rom0/rdata_reg/ADDRARDADDR[14] (net: system/int_mem0/boot_ctr0/sp_rom0/Q[9]) which is driven by a register (system/int_mem0/boot_ctr0/rom_r_addr_reg_rep[9]) that has an active asychronous set or reset. This may cause corruption of the memory contents and/or read values when the set/reset is asserted and is not analyzed by the default static timing analysis. It is suggested to eliminate the use of a set/reset to registers driving this RAMB pin or else use a synchronous reset in which the assertion of the reset is timed by default.
+WARNING: [DRC REQP-1839] RAMB36 async control check: The RAMB36E1 system/int_mem0/boot_ctr0/sp_rom0/rdata_reg has an input control pin system/int_mem0/boot_ctr0/sp_rom0/rdata_reg/ADDRARDADDR[5] (net: system/int_mem0/boot_ctr0/sp_rom0/Q[0]) which is driven by a register (system/int_mem0/boot_ctr0/rom_r_addr_reg_rep[0]) that has an active asychronous set or reset. This may cause corruption of the memory contents and/or read values when the set/reset is asserted and is not analyzed by the default static timing analysis. It is suggested to eliminate the use of a set/reset to registers driving this RAMB pin or else use a synchronous reset in which the assertion of the reset is timed by default.
+WARNING: [DRC REQP-1839] RAMB36 async control check: The RAMB36E1 system/int_mem0/boot_ctr0/sp_rom0/rdata_reg has an input control pin system/int_mem0/boot_ctr0/sp_rom0/rdata_reg/ADDRARDADDR[6] (net: system/int_mem0/boot_ctr0/sp_rom0/Q[1]) which is driven by a register (system/int_mem0/boot_ctr0/rom_r_addr_reg_rep[1]) that has an active asychronous set or reset. This may cause corruption of the memory contents and/or read values when the set/reset is asserted and is not analyzed by the default static timing analysis. It is suggested to eliminate the use of a set/reset to registers driving this RAMB pin or else use a synchronous reset in which the assertion of the reset is timed by default.
+WARNING: [DRC REQP-1839] RAMB36 async control check: The RAMB36E1 system/int_mem0/boot_ctr0/sp_rom0/rdata_reg has an input control pin system/int_mem0/boot_ctr0/sp_rom0/rdata_reg/ADDRARDADDR[7] (net: system/int_mem0/boot_ctr0/sp_rom0/Q[2]) which is driven by a register (system/int_mem0/boot_ctr0/rom_r_addr_reg_rep[2]) that has an active asychronous set or reset. This may cause corruption of the memory contents and/or read values when the set/reset is asserted and is not analyzed by the default static timing analysis. It is suggested to eliminate the use of a set/reset to registers driving this RAMB pin or else use a synchronous reset in which the assertion of the reset is timed by default.
+WARNING: [DRC REQP-1839] RAMB36 async control check: The RAMB36E1 system/int_mem0/boot_ctr0/sp_rom0/rdata_reg has an input control pin system/int_mem0/boot_ctr0/sp_rom0/rdata_reg/ADDRARDADDR[8] (net: system/int_mem0/boot_ctr0/sp_rom0/Q[3]) which is driven by a register (system/int_mem0/boot_ctr0/rom_r_addr_reg_rep[3]) that has an active asychronous set or reset. This may cause corruption of the memory contents and/or read values when the set/reset is asserted and is not analyzed by the default static timing analysis. It is suggested to eliminate the use of a set/reset to registers driving this RAMB pin or else use a synchronous reset in which the assertion of the reset is timed by default.
+WARNING: [DRC REQP-1839] RAMB36 async control check: The RAMB36E1 system/int_mem0/boot_ctr0/sp_rom0/rdata_reg has an input control pin system/int_mem0/boot_ctr0/sp_rom0/rdata_reg/ADDRARDADDR[9] (net: system/int_mem0/boot_ctr0/sp_rom0/Q[4]) which is driven by a register (system/int_mem0/boot_ctr0/rom_r_addr_reg_rep[4]) that has an active asychronous set or reset. This may cause corruption of the memory contents and/or read values when the set/reset is asserted and is not analyzed by the default static timing analysis. It is suggested to eliminate the use of a set/reset to registers driving this RAMB pin or else use a synchronous reset in which the assertion of the reset is timed by default.
+WARNING: [DRC REQP-1839] RAMB36 async control check: The RAMB36E1 system/int_mem0/boot_ctr0/sp_rom0/rdata_reg has an input control pin system/int_mem0/boot_ctr0/sp_rom0/rdata_reg/ENARDEN (net: system/int_mem0/boot_ctr0/sp_rom0/rom_r_valid) which is driven by a register (system/int_mem0/boot_ctr0/rom_r_valid_reg) that has an active asychronous set or reset. This may cause corruption of the memory contents and/or read values when the set/reset is asserted and is not analyzed by the default static timing analysis. It is suggested to eliminate the use of a set/reset to registers driving this RAMB pin or else use a synchronous reset in which the assertion of the reset is timed by default.
+WARNING: [DRC REQP-1839] RAMB36 async control check: The RAMB36E1 system/int_mem0/int_sram/gen_main_mem_byte[0].main_mem_byte/ram_reg has an input control pin system/int_mem0/int_sram/gen_main_mem_byte[0].main_mem_byte/ram_reg/ADDRARDADDR[13] (net: system/int_mem0/int_sram/gen_main_mem_byte[0].main_mem_byte/ADDRARDADDR[10]) which is driven by a register (system/int_mem0/boot_ctr0/boot_reg) that has an active asychronous set or reset. This may cause corruption of the memory contents and/or read values when the set/reset is asserted and is not analyzed by the default static timing analysis. It is suggested to eliminate the use of a set/reset to registers driving this RAMB pin or else use a synchronous reset in which the assertion of the reset is timed by default.
+WARNING: [DRC REQP-1839] RAMB36 async control check: The RAMB36E1 system/int_mem0/int_sram/gen_main_mem_byte[0].main_mem_byte/ram_reg has an input control pin system/int_mem0/int_sram/gen_main_mem_byte[0].main_mem_byte/ram_reg/ADDRARDADDR[14] (net: system/int_mem0/int_sram/gen_main_mem_byte[0].main_mem_byte/ADDRARDADDR[11]) which is driven by a register (system/int_mem0/boot_ctr0/boot_reg) that has an active asychronous set or reset. This may cause corruption of the memory contents and/or read values when the set/reset is asserted and is not analyzed by the default static timing analysis. It is suggested to eliminate the use of a set/reset to registers driving this RAMB pin or else use a synchronous reset in which the assertion of the reset is timed by default.
+WARNING: [DRC REQP-1839] RAMB36 async control check: The RAMB36E1 system/int_mem0/int_sram/gen_main_mem_byte[0].main_mem_byte/ram_reg has an input control pin system/int_mem0/int_sram/gen_main_mem_byte[0].main_mem_byte/ram_reg/ADDRBWRADDR[13] (net: system/int_mem0/int_sram/gen_main_mem_byte[0].main_mem_byte/ram_i_req[1]) which is driven by a register (system/int_mem0/boot_ctr0/ram_w_addr_reg[11]) that has an active asychronous set or reset. This may cause corruption of the memory contents and/or read values when the set/reset is asserted and is not analyzed by the default static timing analysis. It is suggested to eliminate the use of a set/reset to registers driving this RAMB pin or else use a synchronous reset in which the assertion of the reset is timed by default.
+WARNING: [DRC REQP-1839] RAMB36 async control check: The RAMB36E1 system/int_mem0/int_sram/gen_main_mem_byte[0].main_mem_byte/ram_reg has an input control pin system/int_mem0/int_sram/gen_main_mem_byte[0].main_mem_byte/ram_reg/ADDRBWRADDR[13] (net: system/int_mem0/int_sram/gen_main_mem_byte[0].main_mem_byte/ram_i_req[1]) which is driven by a register (system/int_mem0/boot_ctr0/sram_valid_reg) that has an active asychronous set or reset. This may cause corruption of the memory contents and/or read values when the set/reset is asserted and is not analyzed by the default static timing analysis. It is suggested to eliminate the use of a set/reset to registers driving this RAMB pin or else use a synchronous reset in which the assertion of the reset is timed by default.
+WARNING: [DRC REQP-1839] RAMB36 async control check: The RAMB36E1 system/int_mem0/int_sram/gen_main_mem_byte[0].main_mem_byte/ram_reg has an input control pin system/int_mem0/int_sram/gen_main_mem_byte[0].main_mem_byte/ram_reg/ADDRBWRADDR[14] (net: system/int_mem0/int_sram/gen_main_mem_byte[0].main_mem_byte/ram_i_req[2]) which is driven by a register (system/int_mem0/boot_ctr0/boot_reg) that has an active asychronous set or reset. This may cause corruption of the memory contents and/or read values when the set/reset is asserted and is not analyzed by the default static timing analysis. It is suggested to eliminate the use of a set/reset to registers driving this RAMB pin or else use a synchronous reset in which the assertion of the reset is timed by default.
+WARNING: [DRC REQP-1839] RAMB36 async control check: The RAMB36E1 system/int_mem0/int_sram/gen_main_mem_byte[0].main_mem_byte/ram_reg has an input control pin system/int_mem0/int_sram/gen_main_mem_byte[0].main_mem_byte/ram_reg/ADDRBWRADDR[14] (net: system/int_mem0/int_sram/gen_main_mem_byte[0].main_mem_byte/ram_i_req[2]) which is driven by a register (system/int_mem0/boot_ctr0/ram_w_addr_reg[11]) that has an active asychronous set or reset. This may cause corruption of the memory contents and/or read values when the set/reset is asserted and is not analyzed by the default static timing analysis. It is suggested to eliminate the use of a set/reset to registers driving this RAMB pin or else use a synchronous reset in which the assertion of the reset is timed by default.
+WARNING: [DRC REQP-1839] RAMB36 async control check: The RAMB36E1 system/int_mem0/int_sram/gen_main_mem_byte[0].main_mem_byte/ram_reg has an input control pin system/int_mem0/int_sram/gen_main_mem_byte[0].main_mem_byte/ram_reg/ADDRBWRADDR[14] (net: system/int_mem0/int_sram/gen_main_mem_byte[0].main_mem_byte/ram_i_req[2]) which is driven by a register (system/int_mem0/boot_ctr0/sram_valid_reg) that has an active asychronous set or reset. This may cause corruption of the memory contents and/or read values when the set/reset is asserted and is not analyzed by the default static timing analysis. It is suggested to eliminate the use of a set/reset to registers driving this RAMB pin or else use a synchronous reset in which the assertion of the reset is timed by default.
+WARNING: [DRC REQP-1839] RAMB36 async control check: The RAMB36E1 system/int_mem0/int_sram/gen_main_mem_byte[0].main_mem_byte/ram_reg has an input control pin system/int_mem0/int_sram/gen_main_mem_byte[0].main_mem_byte/ram_reg/ADDRBWRADDR[14] (net: system/int_mem0/int_sram/gen_main_mem_byte[0].main_mem_byte/ram_i_req[2]) which is driven by a register (system/int_mem0/ibus_merge/sel_en_reg) that has an active asychronous set or reset. This may cause corruption of the memory contents and/or read values when the set/reset is asserted and is not analyzed by the default static timing analysis. It is suggested to eliminate the use of a set/reset to registers driving this RAMB pin or else use a synchronous reset in which the assertion of the reset is timed by default.
+WARNING: [DRC REQP-1839] RAMB36 async control check: The RAMB36E1 system/int_mem0/int_sram/gen_main_mem_byte[0].main_mem_byte/ram_reg has an input control pin system/int_mem0/int_sram/gen_main_mem_byte[0].main_mem_byte/ram_reg/ADDRBWRADDR[14] (net: system/int_mem0/int_sram/gen_main_mem_byte[0].main_mem_byte/ram_i_req[2]) which is driven by a register (system/int_mem0/ibus_merge/sel_reg_reg[0]) that has an active asychronous set or reset. This may cause corruption of the memory contents and/or read values when the set/reset is asserted and is not analyzed by the default static timing analysis. It is suggested to eliminate the use of a set/reset to registers driving this RAMB pin or else use a synchronous reset in which the assertion of the reset is timed by default.
+INFO: [Vivado_Tcl 4-198] DRC finished with 0 Errors, 21 Warnings
+INFO: [Vivado_Tcl 4-199] Please refer to the DRC report (report_drc) for more information.
+
+Starting Placer Task
+INFO: [Place 30-611] Multithreading enabled for place_design using a maximum of 2 CPUs
+
+Phase 1 Placer Initialization
+
+Phase 1.1 Placer Initialization Netlist Sorting
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2475.340 ; gain = 0.000 ; free physical = 5215 ; free virtual = 9575
+Phase 1.1 Placer Initialization Netlist Sorting | Checksum: 1a711dbc6
+
+Time (s): cpu = 00:00:00.02 ; elapsed = 00:00:00.06 . Memory (MB): peak = 2475.340 ; gain = 0.000 ; free physical = 5215 ; free virtual = 9575
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.02 . Memory (MB): peak = 2475.340 ; gain = 0.000 ; free physical = 5215 ; free virtual = 9575
+
+Phase 1.2 IO Placement/ Clock Placement/ Build Placer Device
+ERROR: [Place 30-329] IO terminal c0_sys_clk_clk_p is not placeable anywhere in the device. It has LVDS IOSTANDARD with Drive Strength = , applied by the user. It makes it incompatible to 4 out of 5 IO Banks. Please check whether the IOSTANDARD is compatible with the target device.
+ERROR: [Place 30-475] IO terminal c0_sys_clk_clk_p with IOStandard LVDS is not placeable anywhere in the device.
+Please check whether the IOSTANDARD is compatible with the target device.
+ERROR: [Place 30-329] IO terminal c0_sys_clk_clk_n is not placeable anywhere in the device. It has LVDS IOSTANDARD with Drive Strength = , applied by the user. It makes it incompatible to 4 out of 5 IO Banks. Please check whether the IOSTANDARD is compatible with the target device.
+ERROR: [Place 30-475] IO terminal c0_sys_clk_clk_n with IOStandard LVDS is not placeable anywhere in the device.
+Please check whether the IOSTANDARD is compatible with the target device.
+ERROR: [Place 30-374] IO placer failed to find a solution
+Below is the partial placement that can be analyzed to see if any constraint modifications will make the IO placement problem easier to solve.
+0. c0_sys_clk_clk_p
+1. c0_sys_clk_clk_n
+2. reset
+3. uart_rxd
+
++-------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                                                                     IO Placement : Bank Stats                                                                           |
++----+-------+-------+------------------------------------------------------------------------+------------------------------------------+--------+--------+--------+-----+
+| Id | Pins  | Terms |                               Standards                                |                IDelayCtrls               |  VREF  |  VCCO  |   VR   | DCI |
++----+-------+-------+------------------------------------------------------------------------+------------------------------------------+--------+--------+--------+-----+
+|  0 |     0 |     0 |                                                                        |                                          |        |        |        |     |
+| 13 |    50 |     0 |                                                                        |                                          |        |        |        |     |
+| 33 |    50 |     0 |                                                                        |                                          |        |        |        |     |
+| 34 |    50 |     0 |                                                                        |                                          |        |        |        |     |
+| 35 |    50 |     1 | LVCMOS18(1)                                                            |                                          |        |  +1.80 |    YES |     |
++----+-------+-------+------------------------------------------------------------------------+------------------------------------------+--------+--------+--------+-----+
+|    |   200 |     1 |                                                                        |                                          |        |        |        |     |
++----+-------+-------+------------------------------------------------------------------------+------------------------------------------+--------+--------+--------+-----+
+
+IO Placement:
++--------+----------------------+-----------------+----------------------+----------------------+----------------------+
+| BankId |             Terminal | Standard        | Site                 | Pin                  | Attributes           |
++--------+----------------------+-----------------+----------------------+----------------------+----------------------+
+| 35     | uart_txd             | LVCMOS18        | IOB_X1Y125           | C19                  |                      |
++--------+----------------------+-----------------+----------------------+----------------------+----------------------+
+
+ERROR: [Place 30-69] Instance clk_buf (IBUFDS) is unplaced after IO placer
+ERROR: [Place 30-69] Instance reset_IBUF_inst (IBUF driven by I/O terminal reset) is unplaced after IO placer
+ERROR: [Place 30-69] Instance uart_rxd_IBUF_inst (IBUF driven by I/O terminal uart_rxd) is unplaced after IO placer
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+ERROR: [Place 30-68] Instance clk_buf (IBUFDS) is not placed
+ERROR: [Place 30-68] Instance n_0_1036_BUFG_inst (BUFG) is not placed
+ERROR: [Place 30-68] Instance reset_IBUF_inst (IBUF) is not placed
+ERROR: [Place 30-68] Instance sys_clk_BUFG_inst (BUFG) is not placed
+ERROR: [Place 30-68] Instance uart_rxd_IBUF_inst (IBUF) is not placed
+Phase 1.2 IO Placement/ Clock Placement/ Build Placer Device | Checksum: 10baede04
+
+Time (s): cpu = 00:00:04 ; elapsed = 00:00:03 . Memory (MB): peak = 2475.340 ; gain = 0.000 ; free physical = 5209 ; free virtual = 9571
+Phase 1 Placer Initialization | Checksum: 10baede04
+
+Time (s): cpu = 00:00:04 ; elapsed = 00:00:03 . Memory (MB): peak = 2475.340 ; gain = 0.000 ; free physical = 5209 ; free virtual = 9571
+ERROR: [Place 30-99] Placer failed with error: 'IO Clock Placer failed'
+Please review all ERROR, CRITICAL WARNING, and WARNING messages during placement to understand the cause for failure.
+Ending Placer Task | Checksum: 10baede04
+
+Time (s): cpu = 00:00:04 ; elapsed = 00:00:03 . Memory (MB): peak = 2475.340 ; gain = 0.000 ; free physical = 5209 ; free virtual = 9570
+INFO: [Common 17-83] Releasing license: Implementation
+10 Infos, 21 Warnings, 0 Critical Warnings and 15 Errors encountered.
+place_design failed
+ERROR: [Common 17-69] Command failed: Placer could not place all instances
+INFO: [Common 17-206] Exiting Vivado at Fri Nov  6 11:34:53 2020...
