@@ -45,6 +45,7 @@ char uart_getc();
 
 //Send file
 void uart_sendfile(unsigned int file_size, char *mem);
+#include <stdint.h>
 
 //Get file 
 unsigned int uart_getfile(char *mem);
@@ -60,3 +61,7 @@ void uart_connect();
 #define uart_getcmd() uart_getc()
 
 void uart_sleep (int n);
+
+char *ulltoa(uint64_t val, uint64_t b);
+char *lltoa(int64_t val, uint64_t b);
+char *ftoa(float f);
