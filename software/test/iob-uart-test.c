@@ -7,22 +7,7 @@
 int main()
 {
   uart_init(UART_BASE,FREQ/BAUD);
-
-  uint64_t a = 0x0000001000000000LL;
-  uint64_t b = 0x0000000000001100LL;
-
-  uint64_t d = 0x0000001000001100LL;
-  uint64_t c = iob_llsum(a,b);
-  uint64_t e = iob_llmul(a,b);
-  uint64_t f = iob_lldiv(a,b);
-  uint64_t g = iob_llrem(a,b);
-
-  uart_printf("const %x %x\n\n", *((uint32_t *)(&d)+1), *((uint32_t *)(&d)));
-  uart_printf("add %x %x\n\n", *((uint32_t *)(&c)+1), *((uint32_t *)(&c)));
-  uart_printf("mul %x %x\n\n", *((uint32_t *)(&e)+1), *((uint32_t *)(&e)));
-  uart_printf("div %x %x\n\n", *((uint32_t *)(&f)+1), *((uint32_t *)(&f)));
-  uart_printf("rem %x %x\n\n", *((uint32_t *)(&g)+1), *((uint32_t *)(&g)));
-
+  /*
   //test hex
   uart_puts("\ntest hex\n");
   uart_printf("%x\n", 0);
@@ -82,7 +67,7 @@ int main()
   uart_printf("%lld\n\n", -(1LL<<31));
   uart_printf("%lld\n\n", -(1LL<<32));
   uart_printf("%lld\n\n", -(1LL<<33));
-
+  */
   //test floats
   int x = 0b00000000100000000000000000000000; //smallest normal
   int y = 0b01111111011111111111111111111111; //largest normal

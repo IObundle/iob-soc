@@ -25,12 +25,9 @@ char * lltoa(int64_t val, uint64_t b){
     return buf;
 }
 
-  
-char * ftoa(float f)
-{
-
-  float p10[77] = {
-    1.0E-38,
+ 
+static float p10[77] = {
+    1E-38,
     1E-37,
     1E-36,
     1E-35,
@@ -109,9 +106,15 @@ char * ftoa(float f)
     1E38
   };
 
+static char buf[80] = {0};
 
-  static char        buf[80] = {0};
+char * ftoa(float f)
+{
+ 
+
   char *ptr = buf;
+
+  //uart_printf("Got here\n");
 
   if(f < 0) {
     f = -f;
@@ -123,10 +126,21 @@ char * ftoa(float f)
   for(int i=38, pz=39; i>-39; i--) {
 
     //uart_printf("%d\n", i);
+
+    if (f < p10[38+i]) {
+      if(i<=0 || pz !=39) {
+        *ptr++ = '0';
+        //uart_printf("pz=%d", pz);
+      }
+      if(i==0) *ptr++ = '.';
+      continue;
+    }
+
+    
     float test = f/(p10[38+i]);
-      
+
     if(test >= 9) {
-      buf[i-38] = '9';
+      *ptr++ = '9';
       f = f - 9*p10[38+i];
       pz = 9;
     }
@@ -165,18 +179,16 @@ char * ftoa(float f)
       f = f - 2*p10[38+i];
       pz = 2;
     }
-    else if(test >= 1) {
+    else {
       *ptr++ = '1';
       f = f - 1*p10[38+i];
       pz = 1;
     }
-    else if(i<=0 || pz !=39) {
-      *ptr++ = '0';
-      //uart_printf("pz=%d", pz);
-    }
     if(i==0) *ptr++ = '.';
+
+    // uart_printf("%d\n", i);
   }
-    
+
   return buf;
 }
 
@@ -184,13 +196,12 @@ void uart_puts(char *s) {
   while (*s) uart_putc(*s++);
 }
 
-char buffer [32] = {0};
+char buffer[32] = {0};
 
 void uart_printf(char* fmt, ...) {
   va_list args;
   va_start(args, fmt);
 
-  char *buf_ptr = 0;
   char c;
   uint32_t uv;
   int32_t v;
