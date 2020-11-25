@@ -5,6 +5,11 @@
 
 #define PROGNAME "IOb-UART"
 
+#if defined LONGLONG || defined FLOAT
+char buf[80] = {0};
+#endif
+
+#ifdef LONGLONG
 char *ulltoa(uint64_t val, uint64_t b){
   static char buf[21] = {0};
   int i = 20;
@@ -24,9 +29,10 @@ char * lltoa(int64_t val, uint64_t b){
   } else
     return buf;
 }
+#endif
 
- 
-static float p10[77] = {
+#ifdef FLOAT
+float p10[77] = {
     1E-38,
     1E-37,
     1E-36,
@@ -105,8 +111,6 @@ static float p10[77] = {
     1E37 ,
     1E38
   };
-
-static char buf[80] = {0};
 
 char * ftoa(float f)
 {
@@ -191,6 +195,7 @@ char * ftoa(float f)
 
   return buf;
 }
+#endif
 
 void uart_puts(char *s) {
   while (*s) uart_putc(*s++);
@@ -261,10 +266,12 @@ void uart_printf(char* fmt, ...) {
           }
           break;
 #endif
+#ifdef FLOAT
         case 'f':
           vfloat = (float) va_arg(args, double);
           uart_puts(ftoa(vfloat));
           break;
+#endif
         }
       }
       else {
