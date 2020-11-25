@@ -5,14 +5,15 @@
 
 #define PROGNAME "IOb-UART"
 
+char buffer[80] = {0};
+
 #ifdef LONGLONG
 char *ulltoa(uint64_t val, uint64_t b){
-  static char buf[21] = {0};
   int i = 20;
   for(; val!=0LL || i==20; i--, val /= b) {
-    buf[i] = "0123456789abcdef"[(int)(val % b)];
+    buffer[i] = "0123456789abcdef"[(int)(val % b)];
   }
-  return &buf[i+1];
+  return &buffer[i+1];
 }
 
 char * lltoa(int64_t val, uint64_t b){
@@ -108,13 +109,11 @@ float p10[77] = {
     1E38
   };
 
-char buf[80] = {0};
-
 char * ftoa(float f)
 {
  
 
-  char *ptr = buf;
+  char *ptr = buffer;
 
   //uart_printf("Got here\n");
 
@@ -191,15 +190,13 @@ char * ftoa(float f)
     // uart_printf("%d\n", i);
   }
 
-  return buf;
+  return buffer;
 }
 #endif
 
 void uart_puts(char *s) {
   while (*s) uart_putc(*s++);
 }
-
-char buffer[32] = {0};
 
 void uart_printf(char* fmt, ...) {
   va_list args;
