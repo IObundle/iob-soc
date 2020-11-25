@@ -5,10 +5,6 @@
 
 #define PROGNAME "IOb-UART"
 
-#if defined LONGLONG || defined FLOAT
-char buf[80] = {0};
-#endif
-
 #ifdef LONGLONG
 char *ulltoa(uint64_t val, uint64_t b){
   static char buf[21] = {0};
@@ -111,6 +107,8 @@ float p10[77] = {
     1E37 ,
     1E38
   };
+
+char buf[80] = {0};
 
 char * ftoa(float f)
 {
