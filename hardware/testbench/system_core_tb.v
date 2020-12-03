@@ -250,10 +250,31 @@ module system_tb;
 
 `include "cpu_tasks.v"
    
-   //finish simulation
-   //always @(posedge trap) begin
-   // #10 $display("Found CPU trap condition");
-   //$finish;
-   //end
+   //finish simulation on trap
+   always @(posedge trap) begin
+      #10 $display("Found CPU trap condition");
+      $finish;
+   end
 
+   //sram monitor - use for debugging programs
+   /*
+   wire [`SRAM_ADDR_W-1:0] sram_daddr = uut.int_mem0.int_sram.d_addr;
+   wire sram_dwstrb = |uut.int_mem0.int_sram.d_wstrb & uut.int_mem0.int_sram.d_valid;
+   wire sram_drdstrb = !uut.int_mem0.int_sram.d_wstrb & uut.int_mem0.int_sram.d_valid;
+   wire [`DATA_W-1:0] sram_dwdata = uut.int_mem0.int_sram.d_wdata;
+
+
+   wire sram_iwstrb = |uut.int_mem0.int_sram.i_wstrb & uut.int_mem0.int_sram.i_valid;
+   wire sram_irdstrb = !uut.int_mem0.int_sram.i_wstrb & uut.int_mem0.int_sram.i_valid;
+   wire [`SRAM_ADDR_W-1:0] sram_iaddr = uut.int_mem0.int_sram.i_addr;
+   wire [`DATA_W-1:0] sram_irdata = uut.int_mem0.int_sram.i_rdata;
+
+   
+   always @(posedge sram_dwstrb)
+      if(sram_daddr == 13'h090d)  begin
+         #10 $display("Found CPU memory condition at %f : %x : %x", $time, sram_daddr, sram_dwdata );
+         //$finish;
+      end
+    */
+   
 endmodule
