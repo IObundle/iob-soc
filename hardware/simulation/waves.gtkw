@@ -1,18 +1,17 @@
 [*]
 [*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
-[*] Sat Oct  3 19:13:16 2020
+[*] Tue Nov 24 00:43:45 2020
 [*]
 [dumpfile] "/home/jsousa/sandbox/iob-soc/hardware/simulation/icarus/system.vcd"
-[dumpfile_mtime] "Sat Oct  3 11:34:18 2020"
-[dumpfile_size] 28019509
+[dumpfile_mtime] "Mon Nov 23 23:54:29 2020"
+[dumpfile_size] 122492816
 [savefile] "/home/jsousa/sandbox/iob-soc/hardware/simulation/waves.gtkw"
-[timestart] 149412600
-[size] 1918 1026
+[timestart] 1134150000
+[size] 1920 1031
 [pos] -1 -1
-*-17.439247 150070000 14260000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-14.521607 1134220000 14260000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] system_tb.
 [treeopen] system_tb.uut.
-[treeopen] system_tb.uut.cpu.
 [treeopen] system_tb.uut.cpu.picorv32_core.
 [treeopen] system_tb.uut.cpu.picorv32_core.genblk1.
 [treeopen] system_tb.uut.cpu.picorv32_core.genblk5.
@@ -21,7 +20,7 @@
 [sst_width] 324
 [signals_width] 358
 [sst_expanded] 1
-[sst_vpaned_height] 437
+[sst_vpaned_height] 440
 @200
 -INT MEM
 @22
@@ -33,26 +32,18 @@ system_tb.uut.int_mem0.d_req[68:0]
 system_tb.uut.int_mem0.d_resp[32:0]
 @200
 -TIMER
-@28
-system_tb.uut.timer.valid
-@22
-system_tb.uut.timer.rdata[31:0]
-system_tb.uut.timer.counter[64:0]
-@28
-system_tb.uut.timer.tmp_reg_en
-@23
-system_tb.uut.timer.tmp_reg[64:0]
-@200
 -sram
 @28
 system_tb.uut.int_mem0.int_sram.i_valid
 @22
+system_tb.uut.int_mem0.int_sram.i_addr[12:0]
 system_tb.uut.int_mem0.int_sram.i_wstrb[3:0]
 system_tb.uut.int_mem0.int_sram.i_rdata[31:0]
 @28
 system_tb.uut.int_mem0.int_sram.i_ready
 system_tb.uut.int_mem0.int_sram.d_valid
 @22
+system_tb.uut.int_mem0.int_sram.d_addr[12:0]
 system_tb.uut.int_mem0.int_sram.d_wstrb[3:0]
 system_tb.uut.int_mem0.int_sram.d_wdata[31:0]
 @200
@@ -91,9 +82,11 @@ system_tb.uut.cpu.picorv32_core.mem_valid
 system_tb.uut.cpu.picorv32_core.mem_addr[31:0]
 system_tb.uut.cpu.picorv32_core.mem_wdata[31:0]
 system_tb.uut.cpu.picorv32_core.mem_wstrb[3:0]
+@23
 system_tb.uut.cpu.picorv32_core.mem_rdata[31:0]
 @28
 system_tb.uut.cpu.picorv32_core.mem_ready
+system_tb.uut.cpu.picorv32_core.trap
 @200
 -UART
 @28
