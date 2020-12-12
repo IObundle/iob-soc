@@ -19,7 +19,7 @@ module boot_ctr
 
    //sram master write interface
    output reg                 sram_valid,
-   output reg [`ADDR_W-1:0]   sram_addr,
+   output [`ADDR_W-1:0]       sram_addr,
    output [`DATA_W-1:0]       sram_wdata,
    output reg [`DATA_W/8-1:0] sram_wstrb
    );

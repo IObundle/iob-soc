@@ -11,14 +11,18 @@ include $(CACHE_DIR)/hardware/hardware.mk
 endif
 
 #rom
+ifneq ($(ASIC),1)
 SUBMODULES+=SPROM
 SPROM_DIR:=$(CACHE_DIR)/submodules/MEM/sp_rom
 VSRC+=$(SPROM_DIR)/sp_rom.v
+endif
 
 #ram
+ifneq ($(ASIC),1)
 SUBMODULES+=TDPRAM
 TDPRAM_DIR:=$(CACHE_DIR)/submodules/MEM/tdp_ram
 VSRC+=$(TDPRAM_DIR)/iob_tdp_ram.v
+endif
 
 #peripherals
 $(foreach p, $(PERIPHERALS), $(eval include $(SUBMODULES_DIR)/$p/hardware/hardware.mk))
@@ -43,7 +47,11 @@ VSRC+=$(SRC_DIR)/ext_mem.v
 endif
 
 #system
-VSRC+=$(SRC_DIR)/boot_ctr.v $(SRC_DIR)/int_mem.v  $(SRC_DIR)/sram.v  system.v
+VSRC+=$(SRC_DIR)/boot_ctr.v $(SRC_DIR)/int_mem.v
+ifneq ($(ASIC),1)
+VSRC+=$(SRC_DIR)/sram.v
+endif
+VSRC+=system.v
 
 # make system.v with peripherals
 system.v:

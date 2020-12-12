@@ -108,7 +108,10 @@ DOC_TYPE ?=pb
 #
 # ASIC COMPILE (WIP)
 #
-#ASIC_NODE:=umc130
+ASIC_NODE:=umc130
+ASIC_SERVER:=micro7.lx.it.pt
+ASIC_COMPILE_ROOT_DIR=$(ROOT_DIR)/sandbox/iob-soc
+#ASIC_USER=
 
 
 
