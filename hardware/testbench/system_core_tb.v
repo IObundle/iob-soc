@@ -49,7 +49,7 @@ module system_tb;
       uart_wstrb = 0;
       
       // deassert rst
-      repeat (100) @(posedge clk);
+      repeat (100) @(posedge clk) #1;
       reset <= 0;
 
       //wait an arbitray (10) number of cycles 
