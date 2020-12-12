@@ -23,7 +23,7 @@ endif
 VSRC+=$(wildcard $(ROM_DIR)/*.v) \
 $(wildcard $(RAM_DIR)/*.v)
 #ddr memory
-VSRC+=$(AXIMEM_DIR)/rtl/axi_ram.v
+VSRC+=$(CACHE_DIR)/submodules/AXIMEM/rtl/axi_ram.v
 #testbench
 VSRC+=system_tb.v
 
