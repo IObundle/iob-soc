@@ -52,3 +52,5 @@ hardware/fpga/CYCLONEV-GT-DK/firmware_3.hex
 hardware/fpga/CYCLONEV-GT-DK/system.v
 hardware/fpga/CYCLONEV-GT-DK/top_system.sof
 hardware/fpga/CYCLONEV-GT-DK/top_system.fit.summary
+
+hardware/asic/umc130/synth/*_report.txt
