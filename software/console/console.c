@@ -156,9 +156,6 @@ void receiveFile(int serial_fd, char *name) {
   //signal target to send data
   byte = ETX;
   while ( write(serial_fd, &byte, 1) <= 0 );
-
-  // Print incoming messages
-  print(serial_fd);
   
   printf(PROGNAME); printf(": starting file reception...\n");  
   
@@ -173,9 +170,9 @@ void receiveFile(int serial_fd, char *name) {
 
   
   //receive file into buffer
-  do nbytes = (int) read(serial_fd, &byte, file_size); while (nbytes <= 0);
+  do nbytes = (int) read(serial_fd, buf, file_size); while (nbytes <= 0);
     
-  if( fwrite(&byte, sizeof(char), 1, fp) <= 0) {
+  if( fwrite(buf, sizeof(char), file_size, fp) <= 0) {
     printf(PROGNAME); printf(": receiveFile: failed to write file\n");
     exit(1);
   }
