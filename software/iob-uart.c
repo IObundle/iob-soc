@@ -308,6 +308,9 @@ void uart_sendfile(unsigned int file_size, char *mem) {
   uart_printf("%s: Sending file (%d bytes)\n", PROGNAME, file_size);
   uart_endtext();
 
+	//Wait for PC
+	while (uart_getc() != ETX);
+	
   // send file size
   uart_putc((char)(file_size & 0x0ff));
   uart_putc((char)((file_size & 0x0ff00) >> 8));
