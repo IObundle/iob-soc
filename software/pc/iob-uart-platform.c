@@ -44,7 +44,7 @@ char uart_getc() {
 
 // itoa() implementation - since it is not a C standard function
 // adapted from http://www.strudel.org.uk/itoa/#newest
-void uart_itoa(int value, char* str, int base){
+void itoa(int value, char* str, int base){
   //check for  2 <= base <= 16
   if(base < 2 || base > 16){
     str[0] = '\n';
@@ -82,3 +82,37 @@ void uart_itoa(int value, char* str, int base){
   }
   return;
 }
+
+// utoa() implementation - since it is not a C standard function
+// adapted from https://searchcode.com/codesearch/view/20251583/
+
+void utoa(int value, char *str, int base) {
+    char temp[17];  //an int can only be 16 bits long
+                    //at radix 2 (binary) the string
+                    //is at most 16 + 1 null long.
+    int i = 0;
+    int digit;
+    int j = 0;
+
+    //construct a backward string of the number.
+    do {
+        digit = (uint32_t)value % base;
+        if (digit < 10) 
+            temp[i++] = digit + '0';
+        else
+            temp[i++] = digit - 10 + 'A';
+         value  = (uint32_t)value/base;
+    } while ((uint32_t)value > 0);
+
+    i--;
+
+
+    //now reverse the string.
+    while ( i >=0 ) {// while there are still chars
+        str[j++] = temp[i--];    
+    }
+    str[j] = 0; // add null termination.
+
+    return;
+}
+

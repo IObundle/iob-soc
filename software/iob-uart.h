@@ -43,6 +43,14 @@ int uart_rxstatus();
 //Get char
 char uart_getc();
 
+#ifdef PC
+//Uart itoa
+void itoa(int value, char* str, int base);
+
+//Uart utoa
+void utoa(int value, char* str, int base);
+#endif
+
 //Send file
 void uart_sendfile(unsigned int file_size, char *mem);
 #include <stdint.h>
