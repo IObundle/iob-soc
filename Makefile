@@ -12,6 +12,17 @@ system.mk: system_config.mk
 include ./system.mk
 
 #
+# PC
+#
+
+pc-emul: system.mk
+	make -C software/pc-emul run
+	
+pc-clean:
+	make -C software/pc-emul clean
+
+
+#
 # SIMULATE
 #
 
@@ -263,7 +274,8 @@ endif
 # CLEAN ALL
 clean-all: sim-clean fpga-clean asic-clean board-clean doc-clean
 
-.PHONY: sim sim-waves sim-clean \
+.PHONY: pc-emul \
+	sim sim-waves sim-clean \
 	fpga fpga-clean fpga-clean-ip \
 	board-load board-run board-clean \
 	firmware firmware-clean bootloader bootloader-clean sw-clean \
