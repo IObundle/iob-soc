@@ -274,7 +274,7 @@ endif
 # CLEAN ALL
 clean-all: sim-clean fpga-clean asic-clean board-clean doc-clean
 
-.PHONY: pc-emul \
+.PHONY: pc-emul pc-clean \
 	sim sim-waves sim-clean \
 	fpga fpga-clean fpga-clean-ip \
 	board-load board-run board-clean \
