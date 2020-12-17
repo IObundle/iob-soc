@@ -17,6 +17,7 @@ hardware/simulation/ncsim/*
 !hardware/simulation/ncsim/run_ncsim.sh
 
 software/periphs.h
+software/pc-emul/periphs.h
 
 software/bootloader/*
 !software/bootloader/boot.c
