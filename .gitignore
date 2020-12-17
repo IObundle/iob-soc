@@ -16,6 +16,7 @@ hardware/simulation/icarus/*
 !hardware/simulation/icarus/Makefile
 
 software/periphs.h
+software/pc-emul/periphs.h
 
 software/bootloader/*
 !software/bootloader/boot.c
