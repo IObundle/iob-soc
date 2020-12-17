@@ -41,8 +41,7 @@ module system_tb;
 
 `ifdef VCD
       $dumpfile("system.vcd");
-      $dumpvars(2, uut.int_mem0, uut.cpu);
-      //$dumpvars();
+      $dumpvars();
 `endif
 
       //init cpu bus signals

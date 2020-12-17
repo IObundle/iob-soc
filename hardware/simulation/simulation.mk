@@ -13,9 +13,27 @@ endif
 
 include $(ROOT_DIR)/hardware/hardware.mk
 
+#ASIC libs
+ifeq ($(SYNTH),1)
+LIBS=/opt/ic_tools/pdk/faraday/umc130/LL/fsc0l_d/2009Q2v3.0/GENERIC_CORE/FrontEnd/verilog/fsc0l_d_generic_core_30.lib
+else ifeq ($(PR),1)
+LIBS=/opt/ic_tools/pdk/faraday/umc130/LL/fsc0l_d/2009Q2v3.0/GENERIC_CORE/FrontEnd/verilog/fsc0l_d_generic_core_30.lib
+endif
 
 
 #SOURCES
+#asic sources
+ifeq ($(SYNTH),1)
+VSRC=$(ASIC_DIR)/synth/system_synth.v \
+$(wildcard $(ASIC_DIR)/memory/bootrom/SP*.v) \
+$(wildcard $(ASIC_DIR)/memory/sram/SH*.v)
+endif
+
+ifeq ($(PR),1)
+VSRC=$(ASIC_DIR)/pr/system_pr.v \
+$(wildcard $(ASIC_DIR)/memory/bootrom/SP*.v) \
+$(wildcard $(ASIC_DIR)/memory/sram/SH*.v)
+endif
 #ddr memory
 VSRC+=$(CACHE_DIR)/submodules/AXIMEM/rtl/axi_ram.v
 #testbench
