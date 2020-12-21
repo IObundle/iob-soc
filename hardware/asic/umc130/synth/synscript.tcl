@@ -21,7 +21,7 @@ read_hdl -v2001 -define $DEFINE $VSRC
 elaborate system
 #
 # constrains
-define_clock -name clk -period 31250 [find / -port clk] 
+define_clock -name clk -period 5000 [find / -port clk]
 #
 # synthesis
 synthesize -to_mapped

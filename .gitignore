@@ -2,9 +2,6 @@ system.mk
 hardware/src/system.v
 hardware/testbench/system_tb.v
 
-hardware/simulation/icarus/*
-!hardware/simulation/icarus/Makefile
-
 hardware/fpga/CYCLONEV-GT-DK/synth_system.sof
 
 hardware/fpga/AES-KU040-DB-G/ip
@@ -14,6 +11,10 @@ hardware/fpga/AES-KU040-DB-G/synth_system.bit
 # following lines ignore everything 'make' command produces
 hardware/simulation/icarus/*
 !hardware/simulation/icarus/Makefile
+
+hardware/simulation/ncsim/*
+!hardware/simulation/ncsim/Makefile
+!hardware/simulation/ncsim/run_ncsim.sh
 
 software/periphs.h
 software/pc-emul/periphs.h
