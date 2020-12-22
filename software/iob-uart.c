@@ -10,6 +10,7 @@ char buffer[80] = {0};
 #ifdef LONGLONG
 char *ulltoa(uint64_t val, uint64_t b){
   int i = 20;
+  buffer[i+1] = 0;
   for(; val!=0LL || i==20; i--, val /= b) {
     buffer[i] = "0123456789abcdef"[(int)(val % b)];
   }
@@ -189,6 +190,7 @@ char * ftoa(float f)
 
     // uart_printf("%d\n", i);
   }
+  *ptr++ = 0;
 
   return buffer;
 }
