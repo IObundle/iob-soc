@@ -6,7 +6,7 @@ include ../simulation.mk
 #icarus verilog simulator
 VLOG:=iverilog -W all -g2005-sv
 
-all: a.out
+run: a.out
 	./$<
 
 a.out: $(VSRC) $(VHDR)
