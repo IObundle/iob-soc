@@ -59,10 +59,10 @@ endif
 #
 #DOCUMENT
 #
-DOC_TYPE:=pb
-#DOC_TYPE:=ug
+#DOC_TYPE:=pb
+DOC_TYPE:=ug
 INTEL ?=1
-XILINX ?=1
+XILINX ?=0
 VERSION= 0.1
 VLINE:="V$(VERSION)"
 $(CORE_NAME)_version.txt:
