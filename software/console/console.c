@@ -17,7 +17,6 @@ void connect(int serial_fd) {
   //wait for taget to send ENQ 
   while (nbytes <= 0) {
     nbytes = (int) read(serial_fd, &byte, 1);
-    //printf(PROGNAME); printf(": nbytes=%d byte=%d received from target\n", nbytes, byte);
     if ( nbytes > 0 && byte == ENQ)
       break;
     //this will unblock target block read
@@ -35,17 +34,6 @@ void connect(int serial_fd) {
 void print (int serial_fd) {
   unsigned char byte;
   int nbytes;
-  
-  //printf(PROGNAME); printf(": Target to send STX symbol\n");
-  //fflush(stdout);
-
-  do {
-    nbytes = (int) read(serial_fd, &byte, 1);
-    //
-  } while (!(nbytes > 0 && byte == STX));
-
-  //printf(PROGNAME); printf(": Target to print chars\n");
-  //fflush(stdout);
 
   while (1) {
     nbytes = (int) read(serial_fd, &byte, 1);
@@ -58,31 +46,13 @@ void print (int serial_fd) {
   }
 }
 
-//send run signal
-void run(int serial_fd) {
-  unsigned char byte;
-  printf(PROGNAME); printf(": Sending RUN command to target\n");
-  byte = EOT;
-  while (write(serial_fd, &byte, 1) <= 0);
-  printf(PROGNAME); printf(": RUN command sent to target\n");
-  fflush(stdout);
-
-  print(serial_fd);
-}
-
 // send file to target
 void sendFile(int serial_fd, char *name) {
   FILE *fp;
   int file_size;
-  
-  char byte;
-  int nbytes;
   char *buf;
-
-  //signal target to expect data
-  byte = STX;
-  do nbytes = (int) write(serial_fd, &byte, 1);
-  while (nbytes <= 0);
+  unsigned char byte;
+  int nbytes;
 
   //open data file
   fp = fopen(name, "rb");
@@ -103,13 +73,17 @@ void sendFile(int serial_fd, char *name) {
   }
       
   //print incoming messages
+  do {
+    nbytes = (int) read(serial_fd, &byte, 1);
+    //
+  } while (!(nbytes > 0 && byte == STX));
   print(serial_fd);
   
   printf(PROGNAME); printf(": starting file transfer of %d bytes...\n", file_size);
 
   
   //send file size
-  while ( write(serial_fd, &file_size, 4) <= 0);
+  while (write(serial_fd, &file_size, 4) <= 0);
   
   //read file into buffer
   if (fread(buf, sizeof(char), file_size, fp) <= 0) {
@@ -133,9 +107,27 @@ void sendFile(int serial_fd, char *name) {
   free(buf);
   fclose(fp);
   
-  // Print incoming messages
-  print(serial_fd);
+}
+
+//load firmware file into target
+void loadFile(int serial_fd, char* name) {
+  char byte;
+  int nbytes;
   
+  //signal target to expect data
+  byte = FRX;
+  do nbytes = (int) write(serial_fd, &byte, 1);
+  while (nbytes <= 0);
+  
+  sendFile(serial_fd, name);
+  
+  //print incoming messages
+  do {
+    nbytes = (int) read(serial_fd, &byte, 1);
+    //
+  } while (!(nbytes > 0 && byte == STX));
+  print(serial_fd);
+
 }
 
 void receiveFile(int serial_fd, char *name) {
@@ -154,8 +146,8 @@ void receiveFile(int serial_fd, char *name) {
     exit(1);
   }
 
-  //signal target to send data
-  byte = ETX;
+  //signal target ACK 
+  byte = ACK;
   while ( write(serial_fd, &byte, 1) <= 0 );
   
   printf(PROGNAME); printf(": starting file reception...\n");  
@@ -190,8 +182,6 @@ void receiveFile(int serial_fd, char *name) {
   free(buf);
   fclose(fp);
 
-  //print incoming messages
-  print(serial_fd);
 }
 
 int openSerialPort(char *serialPort) {
@@ -307,6 +297,36 @@ void usage(char *message) {
   exit(1);
 }
 
+
+//send run signal and wait for commands
+void run(int serial_fd) {
+  unsigned char byte;
+  int nbytes;
+  
+  printf(PROGNAME); printf(": Sending RUN command to target\n");
+  byte = EOT;
+  while (write(serial_fd, &byte, 1) <= 0);
+  
+  printf(PROGNAME); printf(": RUN command sent to target\n");
+  fflush(stdout);
+	
+  while (1) {
+    nbytes = (int) read(serial_fd, &byte, 1);
+    if (nbytes > 0) {
+    	if (byte == STX) //Print mode
+    		print(serial_fd);
+    	else if (byte == FRX) //Send a file to firmware mode
+    		sendFile(serial_fd, "input.val");	
+    	else if (byte == FTX) //Receive a file from firmware mode
+    		receiveFile(serial_fd, "image.png");
+    	else if (byte == EOT) //Program finished
+    		break;
+    }
+  }
+  
+}
+
+
 int main(int argc, char* argv[]) {
   char *serialPort = 0;
   int serial_fd;
@@ -343,26 +363,13 @@ int main(int argc, char* argv[]) {
 
   //send firmware file
   if (fwFile) {
-    sendFile(serial_fd, fwFile);
+    loadFile(serial_fd, fwFile);
     printf(PROGNAME); printf(": Firmware sent to target\n");
-    fflush(stdout);
-  }
-  
-  //send input file
-  if (inputFile) {
-    sendFile(serial_fd, inputFile);
-    printf(PROGNAME); printf(": Data file sent to target\n");
     fflush(stdout);
   }
   
   // Run application
   run(serial_fd);
-  
-  if (outputFile) { // Receive output file
-    receiveFile(serial_fd, outputFile);
-    printf(PROGNAME); printf(": Data file received from target\n");
-    fflush(stdout);
-  }
   
   close(serial_fd);
   
