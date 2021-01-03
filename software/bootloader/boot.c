@@ -9,14 +9,14 @@
 #define UART_BASE (1<<P) |(UART<<(ADDR_W-2-N_SLAVES_W))
 
 // address to copy firmware to
-#if (USE_DDR==0 || (USE_DDR==1 && RUN_DDR==0))
+#if (USE_DDR==0 || (USE_DDR==1 && RUN_DDR==0))	
 char *prog_start_addr = (char *) (1<<BOOTROM_ADDR_W);
 #else
 char *prog_start_addr = (char *) EXTRA_BASE;
 #endif
 
-#define LOAD STX
-#define SEND ETX
+#define LOAD FRX
+#define SEND FTX
 #define RUN  EOT
 
 
