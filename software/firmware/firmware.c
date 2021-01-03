@@ -10,4 +10,7 @@ int main()
   uart_printf("\n\n\nHello world!\n\n\n");
   //char *a = malloc(10);
   //free(a);
+  
+  uart_finish();
+  
 }

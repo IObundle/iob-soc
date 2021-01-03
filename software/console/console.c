@@ -71,17 +71,13 @@ void sendFile(int serial_fd, char *name) {
     printf(PROGNAME); printf(": memory allocation failed\n");
     exit(1);
   }
-      
-  //print incoming messages
-  do {
-    nbytes = (int) read(serial_fd, &byte, 1);
-    //
-  } while (!(nbytes > 0 && byte == STX));
-  print(serial_fd);
   
   printf(PROGNAME); printf(": starting file transfer of %d bytes...\n", file_size);
-
   
+  //signal target ACK 
+  byte = ACK;
+  while ( write(serial_fd, &byte, 1) <= 0 );
+
   //send file size
   while (write(serial_fd, &file_size, 4) <= 0);
   
@@ -107,27 +103,6 @@ void sendFile(int serial_fd, char *name) {
   free(buf);
   fclose(fp);
   
-}
-
-//load firmware file into target
-void loadFile(int serial_fd, char* name) {
-  char byte;
-  int nbytes;
-  
-  //signal target to expect data
-  byte = FRX;
-  do nbytes = (int) write(serial_fd, &byte, 1);
-  while (nbytes <= 0);
-  
-  sendFile(serial_fd, name);
-  
-  //print incoming messages
-  do {
-    nbytes = (int) read(serial_fd, &byte, 1);
-    //
-  } while (!(nbytes > 0 && byte == STX));
-  print(serial_fd);
-
 }
 
 void receiveFile(int serial_fd, char *name) {
@@ -181,6 +156,30 @@ void receiveFile(int serial_fd, char *name) {
 
   free(buf);
   fclose(fp);
+
+}
+
+//load firmware file into target
+void loadFile(int serial_fd, char* name) {
+  char byte;
+  int nbytes;
+  
+  //signal target to expect data
+  byte = FRX;
+  do nbytes = (int) write(serial_fd, &byte, 1);
+  while (nbytes <= 0);
+  
+  //print incoming messages
+  do {
+    nbytes = (int) read(serial_fd, &byte, 1);
+  } while (!(nbytes > 0 && byte == STX));
+  print(serial_fd);
+  
+  do {
+    nbytes = (int) read(serial_fd, &byte, 1);
+  } while (!(nbytes > 0 && byte == FRX));
+  
+  sendFile(serial_fd, name);
 
 }
 
