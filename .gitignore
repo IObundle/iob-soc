@@ -1,5 +1,8 @@
-hardware/simulation/icarus/*.vcd
-hardware/simulation/ncim/*.vcd
+system.mk
+hardware/src/system.v
+hardware/testbench/system_tb.v
+
+hardware/fpga/CYCLONEV-GT-DK/synth_system.sof
 
 hardware/fpga/AES-KU040-DB-G/ip
 hardware/fpga/AES-KU040-DB-G/*.log
@@ -8,6 +11,13 @@ hardware/fpga/AES-KU040-DB-G/synth_system.bit
 # following lines ignore everything 'make' command produces
 hardware/simulation/icarus/*
 !hardware/simulation/icarus/Makefile
+
+hardware/simulation/ncsim/*
+!hardware/simulation/ncsim/Makefile
+!hardware/simulation/ncsim/run_ncsim.sh
+
+software/periphs.h
+software/pc-emul/periphs.h
 
 software/bootloader/*
 !software/bootloader/boot.c
@@ -19,12 +29,30 @@ software/firmware/*
 !software/firmware/firmware.S
 !software/firmware/Makefile
 
-software/periphs.h
+software/console/*
+!software/console/console.c
+!software/console/console.h
+!software/console/Makefile
 
 document/presentation/*
 !document/presentation/figures
 !document/presentation/bibfile.bib
 !document/presentation/main.pdf
 !document/presentation/main.tex
-!document/presentation/makefile
-!document/presentation/system.vh
+!document/presentation/Makefile
+document/pb/xil_results.tex
+document/pb/alt_results.tex
+
+test.log
+
+hardware/fpga/CYCLONEV-GT-DK/boot.hex
+hardware/fpga/CYCLONEV-GT-DK/firmware.hex
+hardware/fpga/CYCLONEV-GT-DK/firmware_0.hex
+hardware/fpga/CYCLONEV-GT-DK/firmware_1.hex
+hardware/fpga/CYCLONEV-GT-DK/firmware_2.hex
+hardware/fpga/CYCLONEV-GT-DK/firmware_3.hex
+hardware/fpga/CYCLONEV-GT-DK/system.v
+hardware/fpga/CYCLONEV-GT-DK/top_system.sof
+hardware/fpga/CYCLONEV-GT-DK/top_system.fit.summary
+
+hardware/asic/umc130/synth/*_report.txt

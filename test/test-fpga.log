@@ -1,0 +1,122 @@
+Testing board CYCLONEV-GT-DK
+
++-----------------------------------------------+
+|                   IOb-Console                 |
++-----------------------------------------------+
+
+  BaudRate = 115200 
+  StopBits = 1 
+  Parity   = None
+
+IOb-Console: ENQ symbol received from target
+IOb-Console: Connected to target
+IOb-Console: Sending RUN command to target
+IOb-Console: RUN command sent to target
+IOb-Bootloader: USE_DDR=0 RUN_DDR=0
+IOb-Bootloader: Restart CPU to run user program...
+
+
+
+Hello world!
+
+
+
++-----------------------------------------------+
+|                   IOb-Console                 |
++-----------------------------------------------+
+
+  BaudRate = 115200 
+  StopBits = 1 
+  Parity   = None
+
+IOb-Console: ENQ symbol received from target
+IOb-Console: Connected to target
+IOb-Bootloader: USE_DDR=0 RUN_DDR=0
+IOb-UART: Receiving and loading file...
+IOb-Console: starting file transfer of 2636 bytes...
+IOb-Console: file transfer complete
+IOb-UART: File received (2636 bytes)
+IOb-Console: Firmware sent to target
+IOb-Console: Sending RUN command to target
+IOb-Console: RUN command sent to target
+IOb-Bootloader: Restart CPU to run user program...
+
+
+
+Hello world!
+
+
+Testing board AES-KU040-DB-G
+
++-----------------------------------------------+
+|                   IOb-Console                 |
++-----------------------------------------------+
+
+  BaudRate = 115200 
+  StopBits = 1 
+  Parity   = None
+
+IOb-Console: ENQ symbol received from target
+IOb-Console: Connected to target
+IOb-Console: Sending RUN command to target
+IOb-Console: RUN command sent to target
+IOb-Bootloader: USE_DDR=0 RUN_DDR=0
+IOb-Bootloader: Restart CPU to run user program...
+
+
+
+Hello world!
+
+
+
++-----------------------------------------------+
+|                   IOb-Console                 |
++-----------------------------------------------+
+
+  BaudRate = 115200 
+  StopBits = 1 
+  Parity   = None
+
+IOb-Console: ENQ symbol received from target
+IOb-Console: Connected to target
+IOb-Bootloader: USE_DDR=0 RUN_DDR=0
+IOb-UART: Receiving and loading file...
+IOb-Console: starting file transfer of 2636 bytes...
+IOb-Console: file transfer complete
+IOb-UART: File received (2636 bytes)
+IOb-Console: Firmware sent to target
+IOb-Console: Sending RUN command to target
+IOb-Console: RUN command sent to target
+IOb-Bootloader: Restart CPU to run user program...
+
+
+
+Hello world!
+
+
+
++-----------------------------------------------+
+|                   IOb-Console                 |
++-----------------------------------------------+
+
+  BaudRate = 115200 
+  StopBits = 1 
+  Parity   = None
+
+IOb-Console: ENQ symbol received from target
+IOb-Console: Connected to target
+IOb-Bootloader: USE_DDR=1 RUN_DDR=1
+IOb-UART: Receiving and loading file...
+IOb-Console: starting file transfer of 2832 bytes...
+IOb-Console: file transfer complete
+IOb-UART: File received (2832 bytes)
+IOb-Console: Firmware sent to target
+IOb-Console: Sending RUN command to target
+IOb-Console: RUN command sent to target
+IOb-Bootloader: Restart CPU to run user program...
+
+
+
+Hello world!
+
+

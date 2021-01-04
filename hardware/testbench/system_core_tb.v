@@ -1,13 +1,17 @@
 `timescale 1ns / 1ps
 
 `include "system.vh"
-`include "iob_uart.vh"
+
+
+//PHEADER
 
 module system_tb;
 
+   parameter realtime clk_per = 1s/`FREQ;
+
    //clock
    reg clk = 1;
-   always #5 clk = ~clk;
+   always #(clk_per/2) clk = ~clk;
 
    //reset 
    reg reset = 1;
@@ -27,6 +31,9 @@ module system_tb;
    //iterator
    integer                i;
 
+   //PWIRES
+
+   
    /////////////////////////////////////////////
    // TEST PROCEDURE
    //
@@ -42,7 +49,7 @@ module system_tb;
       uart_wstrb = 0;
       
       // deassert rst
-      repeat (100) @(posedge clk);
+      repeat (100) @(posedge clk) #1;
       reset <= 0;
 
       //wait an arbitray (10) number of cycles 
@@ -62,6 +69,7 @@ module system_tb;
 `endif      
       //run firmware
       cpu_run();
+
       $finish;
 
    end
@@ -117,10 +125,6 @@ module system_tb;
    wire                    ddr_rready;
 `endif
 
-   //test uart signals
-   wire                    tester_txd, tester_rxd;       
-   wire                    tester_rts, tester_cts;       
-
    //cpu trap signal
    wire                    trap;
    
@@ -128,11 +132,8 @@ module system_tb;
    // UNIT UNDER TEST
    //
    system uut (
-	       .clk           (clk),
-	       .reset         (reset),
-	       .trap          (trap),
+               //PORTS
 `ifdef USE_DDR
-               //DDR
                //address write
 	       .m_axi_awid    (ddr_awid),
 	       .m_axi_awaddr  (ddr_awaddr),
@@ -154,7 +155,7 @@ module system_tb;
 	       .m_axi_wready  (ddr_wready),
                
 	       //write response
-	       .m_axi_bid     (ddr_bid[0]),
+	       //.m_axi_bid     (ddr_bid[0]),
 	       .m_axi_bresp   (ddr_bresp),
 	       .m_axi_bvalid  (ddr_bvalid),
 	       .m_axi_bready  (ddr_bready),
@@ -173,37 +174,17 @@ module system_tb;
 	       .m_axi_arready (ddr_arready),
                
 	       //read   
-	       .m_axi_rid     (ddr_rid[0]),
+	       //.m_axi_rid     (ddr_rid[0]),
 	       .m_axi_rdata   (ddr_rdata),
 	       .m_axi_rresp   (ddr_rresp),
 	       .m_axi_rlast   (ddr_rlast),
 	       .m_axi_rvalid  (ddr_rvalid),
 	       .m_axi_rready  (ddr_rready),	
-`endif
-               
-               //UART
-	       .uart_txd      (tester_rxd),
-	       .uart_rxd      (tester_txd),
-	       .uart_rts      (tester_cts),
-	       .uart_cts      (tester_rts)
+`endif               
+	       .clk           (clk),
+	       .reset         (reset),
+	       .trap          (trap)
 	       );
-
-   iob_uart test_uart (
-		       .clk       (clk),
-		       .rst       (reset),
-      
-		       .valid     (uart_valid),
-		       .address   (uart_addr),
-		       .wdata     (uart_wdata),
-		       .wstrb     (uart_wstrb),
-		       .rdata     (uart_rdata),
-		       .ready     (uart_ready),
-      
-		       .txd       (tester_txd),
-		       .rxd       (tester_rxd),
-		       .rts       (tester_rts),
-		       .cts       (tester_cts)
-		       );
 
 
    //instantiate the axi memory
@@ -213,16 +194,15 @@ module system_tb;
  `ifdef DDR_INIT
        .FILE("firmware.hex"),
  `endif
-       .FILE_SIZE(2**(`FIRM_ADDR_W-2)),
        .DATA_WIDTH (`DATA_W),
-       .ADDR_WIDTH (`FIRM_ADDR_W)
+       .ADDR_WIDTH (`DDR_ADDR_W)
        )
    ddr_model_mem(
                  //address write
                  .clk            (clk),
                  .rst            (reset),
 		 .s_axi_awid     ({8{ddr_awid}}),
-		 .s_axi_awaddr   (ddr_awaddr[`FIRM_ADDR_W-1:0]),
+		 .s_axi_awaddr   (ddr_awaddr[`DDR_ADDR_W-1:0]),
                  .s_axi_awlen    (ddr_awlen),
                  .s_axi_awsize   (ddr_awsize),
                  .s_axi_awburst  (ddr_awburst),
@@ -247,7 +227,7 @@ module system_tb;
       
 		 //address read
 		 .s_axi_arid     ({8{ddr_arid}}),
-		 .s_axi_araddr   (ddr_araddr[`FIRM_ADDR_W-1:0]),
+		 .s_axi_araddr   (ddr_araddr[`DDR_ADDR_W-1:0]),
 		 .s_axi_arlen    (ddr_arlen), 
 		 .s_axi_arsize   (ddr_arsize),    
                  .s_axi_arburst  (ddr_arburst),
@@ -267,12 +247,34 @@ module system_tb;
                  );   
 `endif
 
+
 `include "cpu_tasks.v"
    
-   //finish simulation
-   //always @(posedge trap) begin
-   // #10 $display("Found CPU trap condition");
-   //$finish;
-   //end
+   //finish simulation on trap
+   always @(posedge trap) begin
+      #10 $display("Found CPU trap condition");
+      $finish;
+   end
+
+   //sram monitor - use for debugging programs
+   /*
+   wire [`SRAM_ADDR_W-1:0] sram_daddr = uut.int_mem0.int_sram.d_addr;
+   wire sram_dwstrb = |uut.int_mem0.int_sram.d_wstrb & uut.int_mem0.int_sram.d_valid;
+   wire sram_drdstrb = !uut.int_mem0.int_sram.d_wstrb & uut.int_mem0.int_sram.d_valid;
+   wire [`DATA_W-1:0] sram_dwdata = uut.int_mem0.int_sram.d_wdata;
+
+
+   wire sram_iwstrb = |uut.int_mem0.int_sram.i_wstrb & uut.int_mem0.int_sram.i_valid;
+   wire sram_irdstrb = !uut.int_mem0.int_sram.i_wstrb & uut.int_mem0.int_sram.i_valid;
+   wire [`SRAM_ADDR_W-1:0] sram_iaddr = uut.int_mem0.int_sram.i_addr;
+   wire [`DATA_W-1:0] sram_irdata = uut.int_mem0.int_sram.i_rdata;
+
+   
+   always @(posedge sram_dwstrb)
+      if(sram_daddr == 13'h090d)  begin
+         #10 $display("Found CPU memory condition at %f : %x : %x", $time, sram_daddr, sram_dwdata );
+         //$finish;
+      end
+    */
    
 endmodule

@@ -1,19 +1,35 @@
 ROOT_DIR:=../..
-include $(ROOT_DIR)/software/software.mk
+include ../software.mk
+
+#additional compiler flags
+CFLAGS+=--specs=nano.specs -Wl,-Bstatic,-T,../template.lds,-Map,boot.map,--strip-debug
+
+
+#SUBMODULES
+
+#cache
+ifeq ($(USE_DDR),1)
+ifeq ($(RUN_DDR),1)
 include $(CACHE_DIR)/software/software.mk
+endif
+endif
 
-#specific compiler flags
-CFLAGS+=-Wl,-Bstatic,-T,../template.lds,-Map,boot.map,--strip-debug
+#UART
+include $(UART_DIR)/software/embedded/embedded.mk
 
-#specific sources
+#interconnect
+include $(INTERCON_DIR)/software/software.mk
+
+
+#SOURCES
 SRC+=boot.S boot.c 
 
+#RULES
 run: boot.elf
 
 boot.elf: ../template.lds  $(HDR) $(SRC)
-	$(TOOLCHAIN_PREFIX)gcc -o $@ $(CFLAGS) $(DEFINE) $(INCLUDE) $(SRC) -lgcc -lc
+	$(TOOLCHAIN_PREFIX)gcc -o $@ $(CFLAGS) $(DEFINE) $(INCLUDE) $(SRC) -lgcc -lc -lnosys
 	$(TOOLCHAIN_PREFIX)objcopy -O binary boot.elf boot.bin
-	$(PYTHON_DIR)/makehex.py boot.bin $(BOOTROM_ADDR_W) > boot.hex
 
 clean:
 	@rm -rf boot.bin boot.elf boot.map *.hex ../periphs.h *~

@@ -1,37 +1,45 @@
-# library search paths
+#
+# library and hdl search paths
 set_attribute lib_search_path [list /opt/ic_tools/pdk/faraday/umc130/LL/fsc0l_d/2009Q2v3.0/GENERIC_CORE/FrontEnd/synopsys .]
-
 set libs [glob *.lib]
 set_attribute library [list fsc0l_d_generic_core_tt1p2v25c.lib $libs]
-
-# hdl search paths
-set SRC_FIFO "../../../submodules/fifo"
-set SRC_MEM "../../../rtl/src/memory/wrapper"
-set SRC_CPU "../../../submodules/iob-rv32/picorv32.v"
-set SRC_UART "../../../submodules/iob-uart/rtl/src"
-set SRC_UART_I "../../../submodules/iob-uart/rtl/include"
-set SRC_CACHE "../../../submodules/iob-cache/rtl/src"
-set SRC_CACHE_I "../../../submodules/iob-cache/rtl/header"
-set SRC_SYS "../../../rtl/src"
-set SRC_SYS_I "../../../rtl/include"
-
-set_attribute hdl_search_path [list $SRC_MEM $SRC_UART_I $SRC_UART $SRC_FIFO $SRC_CACHE_I $SRC_CACHE $SRC_SYS_I $SRC_SYS]
-
-#verilog source files
-set SRC [glob $SRC_FIFO/*.v $SRC_MEM/*.v $SRC_UART/*.v $SRC_CACHE/*.v $SRC_SYS/*.v]
-echo $SRC
-
-#verilog defines
-
-read_hdl -v2001 $SRC_CPU $SRC 
+set_attribute hdl_search_path $INCLUDE
+#
+# verilog source files, defines and includes
+echo "\n\n"
+echo "INCLUDE=" $INCLUDE
+echo "\n\n"
+echo "DEFINE=" $DEFINE
+echo "\n\n"
+echo "VSRC=" $VSRC
+echo "\n\n"
+#
+# verilog read
+read_hdl -v2001 -define $DEFINE $VSRC
+#
+# elaborate
 elaborate system
-define_clock -name clk -period 31250 [find / -port clk] 
+#
+# constrains
+define_clock -name clk -period 5000 [find / -port clk]
+#
+# synthesis
 synthesize -to_mapped
-#retime -prepare -min_delay
+#
+# aditional
+insert_tiehilo_cells -verbose
+delete_unloaded_undriven -all *
+#
+# reports
+report timing > timing_report.txt
+report power > power_report.txt
 report gates > gates_report.txt
 report area > area_report.txt
-report timing > timing_report.txt
-write_hdl -mapped > system_synth.v 
-write_sdc > system_synth.sdc
-
+#
+# outputs
+write_hdl -mapped -v2001 > system_synth.v
+write_sdc -strict > system_synth.sdc
+write_db -to_file system_synth.sdc
+#
+#
 exit
