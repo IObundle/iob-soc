@@ -12,7 +12,7 @@ SRC:=console.c
 
 CONSOLE_CMD=./console -s $(SERIAL)
 ifeq ($(INIT_MEM),0)
-	CONSOLE_CMD+=-f firmware.bin
+	CONSOLE_CMD+=-f
 endif
 
 run: console firmware.bin
