@@ -52,12 +52,11 @@ void sendFile(int serial_fd, char *name) {
   int file_size;
   char *buf;
   unsigned char byte;
-  int nbytes;
 
   //open data file
   fp = fopen(name, "rb");
   if (!fp) {
-    {printf(PROGNAME); printf(": sendFile: Can't open file\n");}
+    {printf(PROGNAME); printf(": sendFile: Can't open file %s\n", name);}
     exit(1);
   }
   
@@ -164,6 +163,8 @@ void loadFile(int serial_fd, char* name) {
   char byte;
   int nbytes;
   
+  printf(PROGNAME); printf(": Sending firmware to target %s\n", name);
+  
   //signal target to expect data
   byte = FRX;
   do nbytes = (int) write(serial_fd, &byte, 1);
@@ -175,6 +176,7 @@ void loadFile(int serial_fd, char* name) {
   } while (!(nbytes > 0 && byte == STX));
   print(serial_fd);
   
+  //Wait for target
   do {
     nbytes = (int) read(serial_fd, &byte, 1);
   } while (!(nbytes > 0 && byte == FRX));
@@ -330,8 +332,6 @@ int main(int argc, char* argv[]) {
   char *serialPort = 0;
   int serial_fd;
   char *fwFile = 0;
-  char *inputFile = 0;
-  char *outputFile = 0;
   int i;
   
   if (argc < 3)
@@ -342,11 +342,7 @@ int main(int argc, char* argv[]) {
       if (argv[i][1] == 's') {
         serialPort = argv[++i];
       } else if (argv[i][1] == 'f') {
-        fwFile = argv[++i];
-      } else if (argv[i][1] == 'i') {
-        inputFile = argv[++i];
-      } else if (argv[i][1] == 'o') {
-        outputFile = argv[++i];
+        fwFile = "firmware.bin";
       } else usage("PROGNAME: unexpected argument\n");
     } else  usage("PROGNAME: unexpected argument\n");
   }
