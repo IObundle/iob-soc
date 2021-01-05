@@ -1,3 +1,8 @@
+#
+# CORE DEFINITIONS FILE
+#
+
+
 CORE_NAME=UART
 IS_CORE:=1
 USE_NETLIST ?=0
@@ -8,7 +13,11 @@ UART_HW_INC_DIR:=$(UART_HW_DIR)/include
 UART_DOC_DIR:=$(UART_DIR)/document
 UART_SUBMODULES_DIR:=$(UART_DIR)/submodules
 
-REMOTE_ROOT_DIR ?= sandbox/iob-soc/submodules/UART
+#submodules
+UART_SUBMODULES:=INTERCON LIB TEX
+$(foreach p, $(UART_SUBMODULES), $(eval $p_DIR:=$(UART_DIR)/submodules/$p))
+
+REMOTE_ROOT_DIR ?= ~/repo1/iob-soc/submodules/UART
 
 #
 #SIMULATION
@@ -26,10 +35,10 @@ SIM_DIR ?=hardware/simulation/$(SIMULATOR)
 #
 #FPGA
 #
-#FPGA_FAMILY ?=CYCLONEV-GT
-FPGA_FAMILY ?=XCKU
-#FPGA_SERVER ?=localhost
-FPGA_SERVER ?=pudim-flan.iobundle.com
+FPGA_FAMILY :=CYCLONEV-GT
+#FPGA_FAMILY ?=XCKU
+FPGA_SERVER :=localhost
+#FPGA_SERVER ?=pudim-flan.iobundle.com
 FPGA_USER ?= $(USER)
 
 ifeq ($(FPGA_FAMILY),XCKU)
@@ -53,11 +62,15 @@ endif
 DOC_TYPE:=pb
 #DOC_TYPE:=ug
 INTEL ?=1
-XILINX ?=1
-
+XILINX ?=0
+VERSION= 0.1
 VLINE:="V$(VERSION)"
 $(CORE_NAME)_version.txt:
 ifeq ($(VERSION),)
 	$(error "variable VERSION is not set")
 endif
 	echo $(VLINE) > version.txt
+	
+	
+	
+	
