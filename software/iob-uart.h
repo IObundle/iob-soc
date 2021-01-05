@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdarg.h>
+#include <stdint.h>
 #include "iob-uart-ascii.h"
 
 //Memory Map
@@ -51,14 +52,18 @@ void itoa(int value, char* str, int base);
 void utoa(int value, char* str, int base);
 #endif
 
+//Loads firmware
+void uart_loadfw(char *mem);
+
 //Send file
-void uart_sendfile(unsigned int file_size, char *mem);
-#include <stdint.h>
+void uart_sendfile(unsigned int file_size, char* file_name, char *mem);
 
 //Get file 
-unsigned int uart_getfile(char *mem);
+void uart_getfile(char* file_name, char *mem);
 
 void uart_connect();
+
+void uart_finish();
 
 #define uart_disconnect() uart_putc(EOT)
 
@@ -66,7 +71,12 @@ void uart_connect();
 
 #define uart_endtext() uart_putc (ETX)
 
+#define uart_startsendfile() uart_putc (FTX)
+
+#define uart_startrecvfile() uart_putc (FRX)
+
 #define uart_getcmd() uart_getc()
+
 
 void uart_sleep (int n);
 
