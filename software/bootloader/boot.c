@@ -30,11 +30,10 @@ int main() {
   //welcome message
   uart_printf ("%s: USE_DDR=%d RUN_DDR=%d\n", PROGNAME, USE_DDR_SW, RUN_DDR_SW);
 
-  unsigned int file_size;
   char host_cmd = uart_getc(); //receive command
   
   if (host_cmd==LOAD) //load firmware
-      file_size = uart_getfile(prog_start_addr);
+      uart_loadfw(prog_start_addr);
  	//run firmware
   uart_printf ("%s: Restart CPU to run user program...\n", PROGNAME);
 #if (USE_DDR && RUN_DDR)
