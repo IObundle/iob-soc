@@ -12,12 +12,10 @@ UART_HW_DIR:=$(UART_DIR)/hardware
 UART_HW_INC_DIR:=$(UART_HW_DIR)/include
 UART_DOC_DIR:=$(UART_DIR)/document
 UART_SUBMODULES_DIR:=$(UART_DIR)/submodules
+LIB_DIR ?= $(UART_SUBMODULES_DIR)/LIB
+TEX_DIR ?= $(UART_SUBMODULES_DIR)/TEX
 
-#submodules
-UART_SUBMODULES:=INTERCON LIB TEX
-$(foreach p, $(UART_SUBMODULES), $(eval $p_DIR:=$(UART_DIR)/submodules/$p))
-
-REMOTE_ROOT_DIR ?= ~/repo1/iob-soc/submodules/UART
+REMOTE_ROOT_DIR ?= sandbox/iob-soc/submodules/UART
 
 #
 #SIMULATION
@@ -70,7 +68,3 @@ ifeq ($(VERSION),)
 	$(error "variable VERSION is not set")
 endif
 	echo $(VLINE) > version.txt
-	
-	
-	
-	

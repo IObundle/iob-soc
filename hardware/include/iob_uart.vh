@@ -8,6 +8,8 @@
 `define EOT 4 //end of transission
 `define ENQ 5 //enquiry
 `define ACK 6 //acklowledge
+`define FTX 7 //transmit file
+`define FRX 8 //receive file
 
 //Memory map
 `define UART_WRITE_WAIT (`UART_ADDR_W'd0)
