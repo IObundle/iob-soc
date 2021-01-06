@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <fcntl.h>   // File Control Definitions
 #include <termios.h> // POSIX Terminal Control Definitions
 #include <unistd.h>  // UNIX Standard Definitions
@@ -46,12 +47,52 @@ void print (int serial_fd) {
   }
 }
 
+//Receives file name from target
+char* recvFileName(serial_fd) {
+	int nbytes;
+  int i;
+  unsigned int name_size = 0;
+  char* file_name;
+  char byte;
+  
+  //signal target ACK 
+  byte = ACK;
+  while ( write(serial_fd, &byte, 1) <= 0 );
+	
+	//receive name size
+  do nbytes = (int) read(serial_fd, &name_size, sizeof(int)); while (nbytes <= 0);
+  
+  if (name_size==0) {
+  	name_size = strlen("firmware.bin");
+  	
+		if( (file_name = (char*) malloc(name_size)) == NULL) {
+		  printf(PROGNAME); printf(": memory allocation failed\n");
+		  exit(1);
+		}
+  	strcpy(file_name,"firmware.bin");
+	}
+	else {
+		if( (file_name = (char*) malloc(name_size)) == NULL) {
+				printf(PROGNAME); printf(": memory allocation failed\n");
+				exit(1);
+			}
+  
+		//receive file name into buffer
+		for (i=0; i<name_size;i=i+nbytes) {
+		  do {
+		    nbytes = (int) read(serial_fd, &file_name[i], name_size-i);      	
+		  } while (nbytes <= 0);
+		}
+	}
+	
+	return file_name;
+}
+
 // send file to target
 void sendFile(int serial_fd, char *name) {
   FILE *fp;
   int file_size;
   char *buf;
-  unsigned char byte;
 
   //open data file
   fp = fopen(name, "rb");
@@ -71,11 +112,7 @@ void sendFile(int serial_fd, char *name) {
     exit(1);
   }
   
-  printf(PROGNAME); printf(": starting file transfer of %d bytes...\n", file_size);
-  
-  //signal target ACK 
-  byte = ACK;
-  while ( write(serial_fd, &byte, 1) <= 0 );
+  printf(PROGNAME); printf(": starting transfer of %s (%d bytes)...\n",name, file_size);
 
   //send file size
   while (write(serial_fd, &file_size, 4) <= 0);
@@ -104,27 +141,22 @@ void sendFile(int serial_fd, char *name) {
   
 }
 
-void receiveFile(int serial_fd, char *name) {
+void recvFile(int serial_fd, char *name) {
   FILE *fp;
   unsigned int file_size = 0;
   
   int nbytes;
-  char byte;
   char *buf;
   unsigned int i;
 
   //open data file
   fp = fopen(name, "wb");
   if (!fp) {
-    printf(PROGNAME); printf(": receiveFile: Can't open file\n");
+    printf(PROGNAME); printf(": recvFile: Can't open file\n");
     exit(1);
   }
-
-  //signal target ACK 
-  byte = ACK;
-  while ( write(serial_fd, &byte, 1) <= 0 );
   
-  printf(PROGNAME); printf(": starting file reception...\n");  
+  printf(PROGNAME); printf(": starting %s reception...\n", name);  
   
   //receive file size
   do nbytes = (int) read(serial_fd, &file_size, sizeof(int)); while (nbytes <= 0);
@@ -134,7 +166,6 @@ void receiveFile(int serial_fd, char *name) {
     printf(PROGNAME); printf(": memory allocation failed\n");
     exit(1);
   }
-
   
   //receive file into buffer
   for (i=0; i<file_size;i=i+nbytes) {
@@ -144,7 +175,7 @@ void receiveFile(int serial_fd, char *name) {
   }
     
   if( fwrite(buf, sizeof(char), file_size, fp) <= 0) {
-    printf(PROGNAME); printf(": receiveFile: failed to write file\n");
+    printf(PROGNAME); printf(": recvFile: failed to write file\n");
     exit(1);
   }
 
@@ -159,11 +190,12 @@ void receiveFile(int serial_fd, char *name) {
 }
 
 //load firmware file into target
-void loadFile(int serial_fd, char* name) {
+void loadFile(int serial_fd) {
   char byte;
   int nbytes;
-  
-  printf(PROGNAME); printf(": Sending firmware to target %s\n", name);
+  FILE *fp;
+  int file_size;
+  char *buf;
   
   //signal target to expect data
   byte = FRX;
@@ -180,9 +212,51 @@ void loadFile(int serial_fd, char* name) {
   do {
     nbytes = (int) read(serial_fd, &byte, 1);
   } while (!(nbytes > 0 && byte == FRX));
-  
-  sendFile(serial_fd, name);
 
+  //open data file
+  fp = fopen("firmware.bin", "rb");
+  if (!fp) {
+    {printf(PROGNAME); printf(": sendFile: Can't open firmware.bin\n");}
+    exit(1);
+  }
+  
+  //get file size
+  fseek(fp, 0L, SEEK_END);
+  file_size = ftell(fp);
+  rewind(fp);
+
+  //allocate space for internal file buffer
+  if( (buf = malloc(file_size)) == NULL) {
+    printf(PROGNAME); printf(": memory allocation failed\n");
+    exit(1);
+  }
+  
+  printf(PROGNAME); printf(": starting to load firmware with %d bytes...\n", file_size);
+  
+  //signal target ACK 
+  byte = ACK;
+  while ( write(serial_fd, &byte, 1) <= 0 );
+
+  //send file size
+  while (write(serial_fd, &file_size, 4) <= 0);
+  
+  //read file into buffer
+  if (fread(buf, sizeof(char), file_size, fp) <= 0) {
+    printf(PROGNAME); printf(": can't read file\n");
+    exit(1);
+  }
+  
+  //send file
+  int i=0;
+  for(i=0;i<file_size;i++){
+    //send 1 byte at a time - fix for transfering bigger firmwares
+    while ( write(serial_fd, &(buf[i]), 1) <= 0 );
+  }
+  
+  printf (PROGNAME); printf(": file loading complete\n");
+  
+  free(buf);
+  fclose(fp);
 }
 
 int openSerialPort(char *serialPort) {
@@ -298,11 +372,11 @@ void usage(char *message) {
   exit(1);
 }
 
-
 //send run signal and wait for commands
 void run(int serial_fd) {
   unsigned char byte;
   int nbytes;
+  char* file_name;
   
   printf(PROGNAME); printf(": Sending RUN command to target\n");
   byte = EOT;
@@ -314,12 +388,19 @@ void run(int serial_fd) {
   while (1) {
     nbytes = (int) read(serial_fd, &byte, 1);
     if (nbytes > 0) {
-    	if (byte == STX) //Print mode
+    	if (byte == STX) { //Print mode
     		print(serial_fd);
-    	else if (byte == FRX) //Send a file to firmware mode
-    		sendFile(serial_fd, "input.val");	
-    	else if (byte == FTX) //Receive a file from firmware mode
-    		receiveFile(serial_fd, "image.png");
+  		}
+    	else if (byte == FRX) { //Send a file to firmware mode
+    		file_name = recvFileName(serial_fd);
+    		sendFile(serial_fd, file_name);	
+    		free(file_name);
+		}
+    	else if (byte == FTX) { //Receive a file from firmware mode
+    		file_name = recvFileName(serial_fd);
+    		recvFile(serial_fd, file_name);
+    		free(file_name);
+		}
     	else if (byte == EOT) //Program finished
     		break;
     }
@@ -358,7 +439,7 @@ int main(int argc, char* argv[]) {
 
   //send firmware file
   if (fwFile) {
-    loadFile(serial_fd, fwFile);
+    loadFile(serial_fd);
     printf(PROGNAME); printf(": Firmware sent to target\n");
     fflush(stdout);
   }
