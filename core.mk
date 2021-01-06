@@ -35,8 +35,8 @@ SIM_DIR ?=hardware/simulation/$(SIMULATOR)
 #
 FPGA_FAMILY :=CYCLONEV-GT
 #FPGA_FAMILY ?=XCKU
-FPGA_SERVER :=localhost
-#FPGA_SERVER ?=pudim-flan.iobundle.com
+#FPGA_SERVER :=localhost
+FPGA_SERVER ?=pudim-flan.iobundle.com
 FPGA_USER ?= $(USER)
 
 ifeq ($(FPGA_FAMILY),XCKU)

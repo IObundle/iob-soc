@@ -1,8 +1,7 @@
 #!/usr/bin/bash
 export ALTERAPATH=/home/iobundle/Intel/Altera_full/18.0
 export LM_LICENSE_FILE=1801@localhost:$ALTERAPATH/../1-MVXX5H_License.dat
-nios=~/intelFPGA_lite/20.1/nios2eds/nios2_command_shell.sh
-#/home/iobundle/Intel/Altera_full/18.0/nios2eds/nios2_command_shell.sh
+nios=/home/iobundle/Intel/Altera_full/18.0/nios2eds/nios2_command_shell.sh
 
 TOP_MODULE="iob_uart"
 
