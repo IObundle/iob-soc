@@ -5,7 +5,8 @@ include ../software.mk
 CFLAGS=-Os -Wl,--strip-debug
 
 
-DEFINE+=-DLONGLONG -DPC
+#DEFINE+=-DLONGLONG 
+DEFINE+=-DPC
 
 #SUBMODULES
 

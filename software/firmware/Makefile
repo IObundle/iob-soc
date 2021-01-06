@@ -4,8 +4,9 @@ include ../software.mk
 #additional compiler flags
 CFLAGS+=--specs=nano.specs -Wl,-Bstatic,-T,../template.lds,-Map,firmware.map,--strip-debug
 
-
-DEFINE+=-DLONGLONG
+#uncomment if you need to print floats and/or long long numbers
+#DEFINE+=-DFLOAT
+#DEFINE+=-DLONGLONG
 
 #SUBMODULES
 
