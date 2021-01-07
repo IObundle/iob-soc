@@ -34,29 +34,39 @@
       integer           i, k;
 
       //signal target to expect data
-      cpu_putchar(`STX);
-      
+      cpu_putchar(`FRX);
+
+	  //print incoming messages
+	  cpu_print();
+
+	  //wait for target
+	  do cpu_getchar(cpu_char);
+      while (cpu_char != `FRX);
+
+	  //open data file
       fp = $fopen("firmware.bin","rb");
 
       // Get file size
 `define SEEK_SET 0
 `define SEEK_CUR 1
 `define SEEK_END 2
-         
+
       res = $fseek(fp, 0, `SEEK_END);
       file_size = $ftell(fp);
       res = $rewind(fp);
-      
-      cpu_print();
+
+	  //Signal target ACK
+	  cpu_putchar(`ACK);
+
       $display("File size: %d bytes", file_size);
 
-      // Send file size
+      //Send file size
       cpu_putchar(file_size[7:0]);
       cpu_putchar(file_size[15:8]);
       cpu_putchar(file_size[23:16]);
       cpu_putchar(file_size[31:24]);
-      
 
+	  //Send file
       k = 0;
       for(i = 0; i < file_size; i++) begin
          cpu_putchar($fgetc(fp));
@@ -68,9 +78,7 @@
       end
       $write("%d%%\n", 100);
       $fclose(fp);
-  
-      cpu_print();
-      
+
    endtask
 
    task cpu_receivefile;
@@ -81,9 +89,9 @@
 
       //signal target to expect data
       cpu_putchar(`ETX);
-      
+
       fp = $fopen("out.bin", "wb");
-        
+
       cpu_print();
 
       // Send file size
@@ -92,7 +100,7 @@
       cpu_getchar(file_size[23:16]);
       cpu_getchar(file_size[31:24]);
       $display("File size: %d bytes", file_size);
-      
+
       k = 0;
       for(i = 0; i < file_size; i++) begin
 	     cpu_getchar(char);
@@ -104,16 +112,16 @@
          end
       end
       $write("%d%%\n", 100);
- 
+
       $fclose(fp);
 
       cpu_print();
-      
+
    endtask
-   
+
 
    task cpu_inituart;
-      //pulse reset uart 
+      //pulse reset uart
       cpu_uartwrite(`UART_SOFT_RESET, 1);
       cpu_uartwrite(`UART_SOFT_RESET, 0);
       //config uart div factor
@@ -133,8 +141,8 @@
 	    cpu_uartread(`UART_READ_VALID, rxread_reg);
       while(!rxread_reg);
 
-      //read the data 
-      cpu_uartread(`UART_DATA, rxread_reg); 
+      //read the data
+      cpu_uartread(`UART_DATA, rxread_reg);
 
       rcv_char = rxread_reg[7:0];
    endtask
@@ -143,11 +151,11 @@
    task cpu_putchar;
       input [7:0] send_char;
       //wait until tx ready
-      do begin 
+      do begin
 	 cpu_uartread(`UART_WRITE_WAIT, rxread_reg);
       end while(rxread_reg);
-      //write the data 
-      cpu_uartwrite(`UART_DATA, send_char); 
+      //write the data
+      cpu_uartwrite(`UART_DATA, send_char);
 
    endtask
 
@@ -162,13 +170,13 @@
    //connect with targe
    task cpu_connect;
       do cpu_getchar(cpu_char);
-      while (cpu_char != `ENQ); 
+      while (cpu_char != `ENQ);
       cpu_putchar(`ACK);
    endtask
 
    task cpu_run;
       //do cpu_getchar(cpu_char);
-      //while (cpu_char != `ENQ); 
+      //while (cpu_char != `ENQ);
       cpu_putchar(`EOT);
       cpu_print();
    endtask
@@ -182,5 +190,5 @@
          $write("%c", cpu_char);
          cpu_getchar(cpu_char);
       end
-      
+
    endtask
