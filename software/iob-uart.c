@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <string.h>
 #include "iob-uart.h"
 
 #define PROGNAME "IOb-UART"
@@ -280,38 +281,92 @@ void uart_printf(char* fmt, ...) {
   uart_txwait();
 }
 
+//Loads file into mem
+void uart_loadfw(char *mem) {
 
-unsigned int uart_getfile(char *mem) {
-
-  uart_printf ("%s: Receiving and loading file...\n", PROGNAME);
+  uart_printf ("%s: Loading file...\n", PROGNAME);
   uart_endtext(); //free host from text mode
-
+  
+  uart_startrecvfile();
+  
+	//Wait for PC ACK
+  while (uart_getc() != ACK);	
+	
   // Get file size
   unsigned int file_size = (unsigned int) uart_getc();
   file_size |= ((unsigned int) uart_getc()) << 8;
   file_size |= ((unsigned int) uart_getc()) << 16;
   file_size |= ((unsigned int) uart_getc()) << 24;
   
-  // Write file to main memory
+  // Write file to memory
+  for (unsigned int i = 0; i < file_size; i++) {
+    mem[i] = uart_getc();
+  }
+
+  uart_starttext();
+  uart_printf("%s: File loaded (%d bytes)\n", PROGNAME, file_size);
+  
+}
+
+//Sends the name of the file to use
+void uart_sendfileID (char* name) {
+	int i;
+	int name_size = strlen(name);
+	
+	//send name size
+  uart_putc((char)(name_size & 0x0ff));
+  uart_putc((char)((name_size & 0x0ff00) >> 8));
+  uart_putc((char)((name_size & 0x0ff0000) >> 16));
+  uart_putc((char)((name_size & 0x0ff000000) >> 24));
+  
+  //send name
+  for (i=0; i<name_size; i++) 
+  	uart_putc(name[i]);
+  
+}
+
+
+//Receives file into mem
+void uart_getfile(char* file_name, char* mem) {
+
+  uart_printf ("%s: Receiving file %s\n", PROGNAME, file_name);
+  uart_endtext(); //free host from text mode
+  
+  uart_startrecvfile();
+  
+	//Wait for PC ACK
+  while (uart_getc() != ACK);	
+  
+  uart_sendfileID(file_name);
+	
+  // Get file size
+  unsigned int file_size = (unsigned int) uart_getc();
+  file_size |= ((unsigned int) uart_getc()) << 8;
+  file_size |= ((unsigned int) uart_getc()) << 16;
+  file_size |= ((unsigned int) uart_getc()) << 24;
+  
+  // Write file to memory
   for (unsigned int i = 0; i < file_size; i++) {
     mem[i] = uart_getc();
   }
 
   uart_starttext();
   uart_printf("%s: File received (%d bytes)\n", PROGNAME, file_size);
-  uart_endtext(); //free host from text mode
-  uart_rxwait(); //wait for next command
-  uart_starttext(); //renable host text mode for next mesg 
-  return file_size;
+  
 }
 
-void uart_sendfile(unsigned int file_size, char *mem) {
+//Sends content of mem to a file
+void uart_sendfile(unsigned int file_size, char* file_name, char *mem) {
 
-  uart_printf("%s: Sending file (%d bytes)\n", PROGNAME, file_size);
+  uart_printf("%s: Sending file %s\n", PROGNAME, file_name);
   uart_endtext();
+  
+  uart_startsendfile();
 
-	//Wait for PC
-	while (uart_getc() != ETX);
+	//Wait for PC ACK
+  while (uart_getc() != ACK);
+	
+	uart_sendfileID(file_name);
 	
   // send file size
   uart_putc((char)(file_size & 0x0ff));
@@ -326,11 +381,7 @@ void uart_sendfile(unsigned int file_size, char *mem) {
 
   uart_starttext();
   uart_printf("%s: File sent (%d bytes)\n",  PROGNAME, file_size);
-  uart_endtext(); //free host from text mode
-  uart_rxwait(); //wait for next command
-  uart_starttext(); //renable host text mode for next mesg 
 }
-
 
 void uart_connect() {
   char host_resp;
@@ -342,6 +393,12 @@ void uart_connect() {
   } while(host_resp != ACK);
 
   uart_starttext();
+}
+
+void uart_finish() {
+	uart_endtext();
+	uart_disconnect();
+	uart_txwait();
 }
 
 
