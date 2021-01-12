@@ -33,7 +33,7 @@ SIM_DIR ?=hardware/simulation/$(SIMULATOR)
 #
 #FPGA
 #
-FPGA_FAMILY :=CYCLONEV-GT
+FPGA_FAMILY ?=CYCLONEV-GT
 #FPGA_FAMILY ?=XCKU
 #FPGA_SERVER :=localhost
 FPGA_SERVER ?=pudim-flan.iobundle.com
@@ -60,7 +60,9 @@ endif
 DOC_TYPE:=pb
 #DOC_TYPE:=ug
 INTEL ?=1
-XILINX ?=0
+INT_FAMILY ?=CYCLONEV-GT
+XILINX ?=1
+XIL_FAMILY ?=XCKU
 VERSION= 0.1
 VLINE:="V$(VERSION)"
 $(CORE_NAME)_version.txt:

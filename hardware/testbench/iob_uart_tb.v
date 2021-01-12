@@ -11,14 +11,14 @@ module iob_uart_tb;
    reg 			rst;
    reg 			clk;
 
-   reg                    valid;
+   reg                  valid;
    reg [`UART_ADDR_W-1:0] addr;
-   reg [31:0]             wdata;
-   reg                    wstrb;
-   wire [31:0]            rdata;
-   wire                   ready;
+   reg [`UART_WDATA_W-1:0] wdata;
+   reg                     wstrb;
+   wire [`UART_RDATA_W-1:0] rdata;
+   wire                     ready;
 
-   reg [31:0]             cpu_reg;
+   reg [`UART_RDATA_W-1:0]  cpu_readreg;
 
  
    //iterator
@@ -48,15 +48,15 @@ module iob_uart_tb;
       #100 @(posedge clk);
 
       // assert tx not ready
-      cpu_read(`UART_WRITE_WAIT, cpu_reg);
-      if (!cpu_reg) begin
+      cpu_read(`UART_WRITE_WAIT, cpu_readreg);
+      if (!cpu_readreg) begin
          $display("ERROR: TX is ready initially");
          $finish;
       end
       
       // assert rx not ready
-      cpu_read(`UART_READ_VALID, cpu_reg);
-      if(cpu_reg) begin
+      cpu_read(`UART_READ_VALID, cpu_readreg);
+      if(cpu_readreg) begin
          $display("ERROR: RX is ready initially");
          $finish;
       end
@@ -79,21 +79,21 @@ module iob_uart_tb;
 
          //wait for tx ready 
          do
-	   cpu_read(`UART_WRITE_WAIT, cpu_reg);
-         while(cpu_reg);
+	   cpu_read(`UART_WRITE_WAIT, cpu_readreg);
+         while(cpu_readreg);
          
          //write word to send
 	 cpu_write(`UART_DATA, i);
 
          //wait for core to receive data
          do 
-           cpu_read(`UART_READ_VALID, cpu_reg);
-         while (!cpu_reg);
+           cpu_read(`UART_READ_VALID, cpu_readreg);
+         while (!cpu_readreg);
          
          // read and check received data
-	 cpu_read (`UART_DATA, cpu_reg);
-	 if ( cpu_reg != i ) begin
-	    $display("Test failed on vector %d: %x / %x", i, cpu_reg, i);
+	 cpu_read (`UART_DATA, cpu_readreg);
+	 if ( cpu_readreg != i ) begin
+	    $display("Test failed on vector %d: %x / %x", i, cpu_readreg, i);
 	    $finish;
 	 end
 

@@ -1,4 +1,5 @@
 //data and address widths
+`define UART_RDATA_W 32
 `define UART_WDATA_W 16
 `define UART_ADDR_W 3
 
