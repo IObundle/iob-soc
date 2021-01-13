@@ -96,16 +96,6 @@ BOARD_LIST ?=CYCLONEV-GT-DK AES-KU040-DB-G
 REMOTE_ROOT_DIR ?=sandbox/iob-soc
 
 #
-# DOCUMENTATION
-#
-
-#DOC_TYPE
-#must match subdirectory name in directory document
-
-#DOC_TYPE:=presentation
-DOC_TYPE ?=pb
-
-#
 # ASIC COMPILE (WIP)
 #
 ASIC_NODE:=umc130
@@ -135,7 +125,6 @@ BOOT_DIR:=$(SW_DIR)/bootloader
 CONSOLE_DIR:=$(SW_DIR)/console
 PYTHON_DIR:=$(SW_DIR)/python
 
-DOC_DIR:=$(ROOT_DIR)/document/$(DOC_TYPE)
 TEX_DIR=$(UART_DIR)/submodules/TEX
 
 #submodule paths

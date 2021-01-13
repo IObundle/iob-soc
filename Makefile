@@ -157,13 +157,16 @@ sw-clean: firmware-clean bootloader-clean console-clean
 #
 
 doc: system.mk
-	make -C document/$(DOC_TYPE) $(DOC_TYPE).pdf
+	make -C document/pb pb.pdf
+	make -C document/presentation presentation.pdf
 
 doc-clean: system.mk
-	make -C document/$(DOC_TYPE) clean
+	make -C document/pb clean
+	make -C document/presentation clean
 
 doc-pdfclean: system.mk
-	make -C document/$(DOC_TYPE) pdfclean
+	make -C document/pb pdfclean
+	make -C document/presentation pdfclean
 
 
 #
