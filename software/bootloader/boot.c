@@ -17,8 +17,6 @@ char *prog_start_addr = (char *) EXTRA_BASE;
 
 #define LOAD FRX
 
-#define PROGNAME "IOb-Bootloader"
-
 int main() {
 
   //init uart 
@@ -27,15 +25,26 @@ int main() {
   //connect with host, comment to disable handshaking
   uart_connect();
 
-  //welcome message
-  uart_printf ("%s: USE_DDR=%d RUN_DDR=%d\n", PROGNAME, USE_DDR_SW, RUN_DDR_SW);
-
+  //start message
+  uart_puts (PROGNAME);
+  uart_puts (": started...\n");
+  if(USE_DDR_SW){
+    uart_puts (PROGNAME);
+    uart_puts("DDR in use\n");
+  }
+  if(RUN_DDR_SW){
+    uart_puts (PROGNAME);
+    uart_puts("Program to run from DDR\n");
+  }
+  
   char host_cmd = uart_getc(); //receive command
   
   if (host_cmd==LOAD) //load firmware
       uart_loadfw(prog_start_addr);
  	//run firmware
-  uart_printf ("%s: Restart CPU to run user program...\n", PROGNAME);
+  uart_puts (PROGNAME);
+  uart_puts (": ");
+  uart_puts ("Restart CPU to run user program...\n");
 #if (USE_DDR && RUN_DDR)
   //by reading any DDR data, it forces the caches to first write everyting before reason (write-through write-not-allocate)
   char force_cache_read = prog_start_addr[0];

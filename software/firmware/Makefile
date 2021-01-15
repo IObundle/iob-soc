@@ -4,9 +4,6 @@ include ../software.mk
 #additional compiler flags
 CFLAGS+=--specs=nano.specs -Wl,-Bstatic,-T,../template.lds,-Map,firmware.map,--strip-debug
 
-#uncomment if you need to print floats and/or long long numbers
-#DEFINE+=-DFLOAT
-#DEFINE+=-DLONGLONG
 
 #SUBMODULES
 
@@ -22,7 +19,8 @@ $(foreach p, $(PERIPHERALS), $(eval include $(SUBMODULES_DIR)/$p/software/embedd
 HDR+=periphs.h
 
 #SOURCES
-SRC+= firmware.S firmware.c
+SRC+= firmware.S firmware.c $(UART_DIR)/software/uart_io.c
+SRC+= $(UART_DIR)/software/printf.c
 
 #RULES
 run: firmware.elf
