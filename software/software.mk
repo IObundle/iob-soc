@@ -9,5 +9,5 @@ INCLUDE+=-I$(UART_SW_DIR)
 HDR+=$(UART_SW_DIR)/*.h
 
 #sources
-SRC+=$(UART_SW_DIR)/*.c
+SRC+=$(UART_SW_DIR)/iob-uart.c
 

@@ -3,6 +3,8 @@
 #include <stdint.h>
 #include "iob-uart-ascii.h"
 
+#define PROGNAME "IOb-UART"
+
 //Memory Map
 #define UART_WRITE_WAIT 0
 #define UART_DIV        1
@@ -44,14 +46,6 @@ int uart_rxstatus();
 //Get char
 char uart_getc();
 
-#ifdef PC
-//Uart itoa
-void itoa(int value, char* str, int base);
-
-//Uart utoa
-void utoa(int value, char* str, int base);
-#endif
-
 //Loads firmware
 void uart_loadfw(char *mem);
 
@@ -77,9 +71,4 @@ void uart_finish();
 
 #define uart_getcmd() uart_getc()
 
-
 void uart_sleep (int n);
-
-char *ulltoa(uint64_t val, uint64_t b);
-char *lltoa(int64_t val, uint64_t b);
-char *ftoa(float f);
