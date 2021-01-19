@@ -56,9 +56,9 @@ VSRC+=system.v
 # make system.v with peripherals
 system.v:
 	cp $(SRC_DIR)/system_core.v $@ # create system.v
-	$(foreach p, $(PERIPHERALS), if [ `ls -1 $(SUBMODULES_DIR)/$p/hardware/include/*.vh 2>/dev/null | wc -l ` -gt 0 ]; then $(foreach f, $(shell echo `ls $(SUBMODULES_DIR)/$p/hardware/include/*.vh`), sed -i '/PHEADER/a `include \"$f\"' $@;) break; fi;) # insert header files
-	$(foreach p, $(PERIPHERALS), if test -f $(SUBMODULES_DIR)/$p/hardware/include/pio.v; then sed -i '/PIO/r $(SUBMODULES_DIR)/$p/hardware/include/pio.v' $@; fi;) #insert system IOs for peripheral
-	$(foreach p, $(PERIPHERALS), if test -f $(SUBMODULES_DIR)/$p/hardware/include/inst.v; then sed -i '/endmodule/e cat $(SUBMODULES_DIR)/$p/hardware/include/inst.v' $@; fi;) # insert peripheral instances
+	$(foreach p, $(INSTANCES), if [ `ls -1 $(INST_DIR)/$p/*.vh 2>/dev/null | wc -l ` -gt 0 ]; then $(foreach f, $(shell echo `ls $(INST_DIR)/$p/*.vh`), sed -i '/PHEADER/a `include \"$f\"' $@;) break; fi;) # insert header files
+	$(foreach p, $(INSTANCES), if test -f $(INST_DIR)/$p/pio.v; then sed -i '/PIO/r $(INST_DIR)/$p/pio.v' $@; fi;) #insert system IOs for peripheral
+	$(foreach p, $(INSTANCES), if test -f $(INST_DIR)/$p/inst.v; then sed -i '/endmodule/e cat $(INST_DIR)/$p/inst.v' $@; fi;) # insert peripheral instances
 
 # make and copy memory init files
 firmware: $(FIRM_DIR)/firmware.bin

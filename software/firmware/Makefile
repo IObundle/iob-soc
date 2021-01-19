@@ -35,7 +35,7 @@ periphs.h: periphs_tmp.h
 	@rm periphs_tmp.h
 
 periphs_tmp.h:
-	$(foreach p, $(PERIPHERALS), $(shell echo "#define $p_BASE (1<<$P) |($p<<($P-N_SLAVES_W))" >> $@) )
+	$(foreach p, $(INSTANCES), $(shell echo "#define $p_BASE (1<<$P) |($p<<($P-N_SLAVES_W))" >> $@) )
 
 clean: gen-clean 
 	@rm -rf firmware.bin firmware.elf firmware.map *.hex ../periphs.h

@@ -6,7 +6,7 @@
 #include "iob-cache.h"
 #endif
 
-#define UART_BASE (1<<P) |(UART<<(ADDR_W-2-N_SLAVES_W))
+#define UART0_BASE (1<<P) |(UART0<<(ADDR_W-2-N_SLAVES_W))
 
 // address to copy firmware to
 #if (USE_DDR==0 || (USE_DDR==1 && RUN_DDR==0))	
@@ -20,7 +20,7 @@ char *prog_start_addr = (char *) EXTRA_BASE;
 int main() {
 
   //init uart 
-  uart_init(UART_BASE, FREQ/BAUD);
+  uart_init(UART0_BASE, FREQ/BAUD);
 
   //connect with host, comment to disable handshaking
   uart_connect();
@@ -45,6 +45,7 @@ int main() {
   uart_puts (PROGNAME);
   uart_puts (": ");
   uart_puts ("Restart CPU to run user program...\n");
+  uart_txwait();
 #if (USE_DDR && RUN_DDR)
   //by reading any DDR data, it forces the caches to first write everyting before reason (write-through write-not-allocate)
   char force_cache_read = prog_start_addr[0];
