@@ -6,7 +6,7 @@ incdir:=-I
 include ../simulation.mk
 
 #simulator flags
-VLOG = verilator -Wall -cc $(INCLUDE) $(DEFINE) 
+VLOG = verilator +1800-2005ext+v --error-limit 1000  -Wall -cc  $(INCLUDE) $(DEFINE) 
 
 #run the simulator
 run: $(VSRC) $(VHDR) firmware boot.hex
