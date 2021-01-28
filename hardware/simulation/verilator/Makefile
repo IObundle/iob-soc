@@ -8,6 +8,7 @@ include ../simulation.mk
 # remove space between -I and directory for verilator
 INCLUDE_SPACE_REMOVE=$(subst -I ,-I,$(INCLUDE)) 
 
+VSRC_VERI=$(subst system_tb.v,,$(VSRC))
 
 #simulator flags
 VLOG = verilator +1800-2005ext+v --error-limit 1000   -cc  $(INCLUDE_SPACE_REMOVE) $(DEFINE) 
@@ -15,7 +16,7 @@ VLOG = verilator +1800-2005ext+v --error-limit 1000   -cc  $(INCLUDE_SPACE_REMOV
 
 #run the simulator
 run: $(VSRC) $(VHDR) firmware boot.hex
-	$(VLOG) $(VSRC)
+	$(VLOG) $(VSRC_VERI)
 	./a.out $(LOG)
 
 clean: hw-clean
