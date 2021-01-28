@@ -11,6 +11,7 @@ INCLUDE_SPACE_REMOVE=$(subst -I ,-I,$(INCLUDE))
 
 #simulator flags
 VLOG = verilator +1800-2005ext+v --error-limit 1000   -cc  $(INCLUDE_SPACE_REMOVE) $(DEFINE) 
+#VLOG = verilator +1800-2005ext+v --error-limit 1000  -Wall -cc  $(INCLUDE2) $(DEFINE) 
 
 #run the simulator
 run: $(VSRC) $(VHDR) firmware boot.hex
