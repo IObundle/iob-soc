@@ -103,6 +103,11 @@ ASIC_SERVER:=micro7.lx.it.pt
 ASIC_COMPILE_ROOT_DIR=$(ROOT_DIR)/sandbox/iob-soc
 #ASIC_USER=
 
+#
+#SOFTWARE COMPILATION
+#
+
+USE_COMPRESSED ?=1
 
 
 #############################################################
@@ -174,6 +179,11 @@ ifeq ($(FREQ),)
 DEFINE+=$(defmacro)FREQ=100000000
 else
 DEFINE+=$(defmacro)FREQ=$(FREQ)
+endif
+
+#use compressed instructions
+ifeq ($(USE_COMPRESSED),1)
+DEFINE+=$(defmacro)USE_COMPRESSED
 endif
 
 #create periph serial number
