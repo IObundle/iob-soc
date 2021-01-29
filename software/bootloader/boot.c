@@ -16,7 +16,7 @@ char *prog_start_addr = (char *) EXTRA_BASE;
 #endif
 
 #define LOAD FRX
-
+#define PROGNAME "IOb-Bootloader"
 int main() {
 
   //init uart 
@@ -30,11 +30,11 @@ int main() {
   uart_puts (": started...\n");
   if(USE_DDR_SW){
     uart_puts (PROGNAME);
-    uart_puts("DDR in use\n");
+    uart_puts(": DDR in use\n");
   }
   if(RUN_DDR_SW){
     uart_puts (PROGNAME);
-    uart_puts("Program to run from DDR\n");
+    uart_puts(": Program to run from DDR\n");
   }
   
   char host_cmd = uart_getc(); //receive command
