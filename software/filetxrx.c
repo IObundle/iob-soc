@@ -21,7 +21,7 @@ void uart_sendfileID (char* name) {
 //Receives file into mem
 void uart_getfile(char* file_name, char* mem) {
 
-  uart_printf ("%s: Receiving file %s\n", PROGNAME, file_name);
+  uart_printf ("%s: Receiving file %s\n", UART_PROGNAME, file_name);
   uart_endtext(); //free host from text mode
   
   uart_startrecvfile();
@@ -43,14 +43,14 @@ void uart_getfile(char* file_name, char* mem) {
   }
 
   uart_starttext();
-  uart_printf("%s: File received (%d bytes)\n", PROGNAME, file_size);
+  uart_printf("%s: File received (%d bytes)\n", UART_PROGNAME, file_size);
   
 }
 
 //Sends content of mem to a file
 void uart_sendfile(unsigned int file_size, char* file_name, char *mem) {
 
-  uart_printf("%s: Sending file %s\n", PROGNAME, file_name);
+  uart_printf("%s: Sending file %s\n", UART_PROGNAME, file_name);
   uart_endtext();
   
   uart_startsendfile();
@@ -72,5 +72,5 @@ void uart_sendfile(unsigned int file_size, char* file_name, char *mem) {
   }
 
   uart_starttext();
-  uart_printf("%s: File sent (%d bytes)\n",  PROGNAME, file_size);
+  uart_printf("%s: File sent (%d bytes)\n",  UART_PROGNAME, file_size);
 }

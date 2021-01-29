@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include "iob-uart-ascii.h"
 
-#define PROGNAME "IOb-UART"
+#define UART_PROGNAME "IOb-UART"
 
 //Memory Map
 #define UART_WRITE_WAIT 0

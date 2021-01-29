@@ -7,7 +7,7 @@ void uart_puts(char *s) {
 //Loads file into mem
 void uart_loadfw(char *mem) {
 
-  uart_puts (PROGNAME);
+  uart_puts (UART_PROGNAME);
   uart_puts (": Loading file...\n");
   uart_endtext(); //free host from text mode
   
@@ -28,7 +28,7 @@ void uart_loadfw(char *mem) {
   }
 
   uart_starttext();
-  uart_puts (PROGNAME);
+  uart_puts (UART_PROGNAME);
   uart_puts(": File loaded\n");
   
 }
