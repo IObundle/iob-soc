@@ -16,8 +16,8 @@ VLOG = verilator +1800-2005ext+v --error-limit 1000  -cc  $(INCLUDE_VERI) $(DEFI
 
 #run the simulator
 run: $(VSRC) $(VHDR) firmware boot.hex
-	$(VLOG) $(VSRC_VERI) --top-module system
-	./a.out $(LOG)
+	$(VLOG) $(VSRC_VERI) --top-module system -Wno-fatal
+#	./a.out $(LOG)
 
 clean: hw-clean
 	@rm -f ./a.out *.log *.v
