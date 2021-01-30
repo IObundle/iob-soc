@@ -11,7 +11,7 @@ Value of Pi = 3.141500
 
 IOb-Bootloader: started...
 IOb-UART: Loading file...
-File size:      23848 bytes
+File size:      21560 bytes
           0%
          10%
          20%
@@ -60,7 +60,7 @@ IOb-Bootloader: started...
 IOb-Bootloader: DDR in use
 IOb-Bootloader: Program to run from DDR
 IOb-UART: Loading file...
-File size:      24040 bytes
+File size:      21680 bytes
           0%
          10%
          20%
@@ -93,11 +93,11 @@ Hello world number 1!
 
 Value of Pi = 3.141500
 
-Simulation complete via $finish(1) at time 283231 NS + 0
+Simulation complete via $finish(1) at time 285591 NS + 0
 ./system_tb.v:82       $finish;
 IOb-Bootloader: started...
 IOb-UART: Loading file...
-File size:      23848 bytes
+File size:      21560 bytes
           0%
          10%
          20%
@@ -119,7 +119,7 @@ Hello world number 1!
 
 Value of Pi = 3.141500
 
-Simulation complete via $finish(1) at time 24912131 NS + 0
+Simulation complete via $finish(1) at time 22560651 NS + 0
 ./system_tb.v:82       $finish;
 IOb-Bootloader: started...
 IOb-Bootloader: DDR in use
@@ -132,7 +132,7 @@ Hello world number 1!
 
 Value of Pi = 3.141500
 
-Simulation complete via $finish(1) at time 314251 NS + 0
+Simulation complete via $finish(1) at time 318291 NS + 0
 ./system_tb.v:82       $finish;
 IOb-Bootloader: started...
 IOb-Bootloader: DDR in use
@@ -146,13 +146,13 @@ Hello world number 1!
 
 Value of Pi = 3.141500
 
-Simulation complete via $finish(1) at time 437811 NS + 0
+Simulation complete via $finish(1) at time 436211 NS + 0
 ./system_tb.v:82       $finish;
 IOb-Bootloader: started...
 IOb-Bootloader: DDR in use
 IOb-Bootloader: Program to run from DDR
 IOb-UART: Loading file...
-File size:      24040 bytes
+File size:      21680 bytes
           0%
          10%
          20%
@@ -174,5 +174,5 @@ Hello world number 1!
 
 Value of Pi = 3.141500
 
-Simulation complete via $finish(1) at time 25264391 NS + 0
+Simulation complete via $finish(1) at time 22835371 NS + 0
 ./system_tb.v:82       $finish;
