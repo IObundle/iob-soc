@@ -1,4 +1,55 @@
 Testing board CYCLONEV-GT-DK
+
++-----------------------------------------------+
+|                   IOb-Console                 |
++-----------------------------------------------+
+
+  BaudRate = 115200 
+  StopBits = 1 
+  Parity   = None
+
+IOb-Console: ENQ symbol received from target
+IOb-Console: Connected to target
+IOb-Console: Sending RUN command to target
+IOb-Console: RUN command sent to target
+IOb-Bootloader: started...
+IOb-Bootloader: Restart CPU to run user program...
+
+
+
+Hello world number 1!
+
+
+Value of Pi = 3.141500
+
+
++-----------------------------------------------+
+|                   IOb-Console                 |
++-----------------------------------------------+
+
+  BaudRate = 115200 
+  StopBits = 1 
+  Parity   = None
+
+IOb-Console: ENQ symbol received from target
+IOb-Console: Connected to target
+IOb-Bootloader: started...
+IOb-UART: Loading file...
+IOb-Console: starting to load firmware with 21560 bytes...
+IOb-Console: file loading complete
+IOb-Console: Firmware sent to target
+IOb-Console: Sending RUN command to target
+IOb-Console: RUN command sent to target
+IOb-UART: File loaded
+IOb-Bootloader: Restart CPU to run user program...
+
+
+
+Hello world number 1!
+
+
+Value of Pi = 3.141500
+
 Testing board AES-KU040-DB-G
 
 +-----------------------------------------------+
@@ -36,7 +87,7 @@ IOb-Console: ENQ symbol received from target
 IOb-Console: Connected to target
 IOb-Bootloader: started...
 IOb-UART: Loading file...
-IOb-Console: starting to load firmware with 23848 bytes...
+IOb-Console: starting to load firmware with 21560 bytes...
 IOb-Console: file loading complete
 IOb-Console: Firmware sent to target
 IOb-Console: Sending RUN command to target
@@ -66,7 +117,7 @@ IOb-Bootloader: started...
 IOb-Bootloader: DDR in use
 IOb-Bootloader: Program to run from DDR
 IOb-UART: Loading file...
-IOb-Console: starting to load firmware with 24040 bytes...
+IOb-Console: starting to load firmware with 21688 bytes...
 IOb-Console: file loading complete
 IOb-Console: Firmware sent to target
 IOb-Console: Sending RUN command to target
