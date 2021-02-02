@@ -33,10 +33,10 @@
 
 \title[IOB-SoC Presentation]{IOB-SoC}
 \subtitle{Tutorial: Create a RISC-V-based System on Chip}
-\institute[IObundle Lda]{IObundle Lda.\\The Architecture for an Agile World}
+\institute[IObundle Lda]{IObundle Lda.}
 \titlegraphic{\includegraphics[height=2.5cm]{Logo.png}}
 %\author[José T. de Sousa]{Jos\'e T. de Sousa}
-\institute[IObundle Lda]{IObundle Lda}
+%\institute[IObundle Lda]{IObundle Lda}
 \date{\today}
 
 
@@ -81,7 +81,7 @@
       \item Provides a base Verilog SoC equipped with
         \begin{itemize}
         \item a RISC-V CPU
-        \item a memory system including boot ROM, RAM and AXI4 interface to DDR
+        \item a memory system including boot ROM, RAM, cache system and AXI4 interface to DDR
         \item a UART communications module
         \end{itemize}
       \item Users can add IP cores and software to build more complex SoCs
@@ -94,11 +94,11 @@
 \begin{center}
   \begin{itemize}
     \item Use a Linux machine or VM
-    \item Install the latest stable version of the open source Icarus Verilog simulator (\url{iverilog.icarus.com})
-    \item Make sure you have push/pull access to \url{github.com} using an ssh
+    \item Install the latest {\bf stable} version of the open source Icarus Verilog simulator (\url{iverilog.icarus.com})
+    \item Make sure you have {\bf ssh} push/pull access to \url{github.com} (htps access is not enough)
       key
-    \item Clone the repository \url{github.com/IObundle/iob-soc}
-    \item Follow the instructions in its README file
+    \item Visit the repository at \url{github.com/IObundle/iob-soc}
+    \item Follow the instructions in its README file to clone the repository ans install the tools
   \end{itemize}
 \end{center}
 \end{frame}
@@ -106,21 +106,21 @@
 
 \begin{frame}{Instantiate an IP core in your SoC}
   \begin{itemize}
-  \item The Timer IP core at \url{www.github.com/IObundle/iob-timer.git} will be used as an example
+  \item The Timer IP core at \url{github.com/IObundle/iob-timer.git} will be used as an example
   \item Add the Timer IP core repository as a git submodule of your IOb-SoC repository:\\
-    {\tt git submodule add git@github.com:IObundle/iob-timer.git submodules/TIMER}
+    {\tt \tiny git submodule add git@github.com:IObundle/iob-timer.git submodules/TIMER}
   \item Add the timer IP core to the list of peripherals in the {\tt ./system.mk} file:\\
-    {\tt PERIPHERALS:=UART TIMER}
+    {\tt PERIPHERALS:=UART {\em TIMER}}
   \item An IP core can be integrated into IOb-SoC if it provides the following files: 
     \begin{itemize}
     \item hardware/hardware.mk
-    \item software/software.mk
+    \item software/embedded.mk
     \end{itemize}
-  \item Study these files and its references in the Time IP core repository to learn how to make your own peripheral cores.
+  \item Study these files and its references in the Timer IP core repository.
   \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{Edit the {\tt firmware.c} file to drive the new peripheral}
+\begin{frame}[fragile]{Edit the {\tt firmware.c} file to look as follows and drive the new peripheral}
   {\tt ./software/firmware/firmware.c}
   \begin{tiny}
     \begin{lstlisting}
@@ -134,48 +134,48 @@ int main()
   unsigned long long elapsed;
   unsigned int elapsedu;
 
-  //read current timer count, compute elapsed time
-  elapsed  = timer_get_count(TIMER_BASE);
-  elapsedu = timer_time_us(TIMER_BASE);
-
-  //init uart 
+  //init timer and uart
+  timer_init(TIMER_BASE);
   uart_init(UART_BASE, FREQ/BAUD);
 
   uart_printf("\nHello world!\n");
   
   uart_txwait();
 
-  uart_printf("\nExecution time: %d clocks in %dus @%dMHz\n\n", 
-              (unsigned int)elapsed, elapsedu, FREQ/1000000);
+  //read current timer count, compute elapsed time
+  elapsed  = timer_get_count(TIMER_BASE);
+  elapsedu = timer_time_us(TIMER_BASE);
+
+  uart_printf("\nExecution time: %d clock cycles\n", (unsigned int) elapsed);
+  uart_printf("\nExecution time: %dus @%dMHz\n\n", elapsedu, FREQ/1000000);
 
   uart_txwait();
-  return 0;
 }
-\end{lstlisting}
-\end{tiny}
+    \end{lstlisting}
+  \end{tiny}
 \end{frame}
 
 
 \begin{frame}[fragile]{Simulate IOb-SoC}
 \begin{itemize}
-\item The following assumes you are using the default Icarus Verilog simulator
-  installed locally (see the README.md file)
-\item To add your own simulator, add a directory into {\tt ./hardware/simulation}, using the existing simulation directories as examples
+\item The following assumes the Icarus Verilog simulator is installed locally and that the SIMULATOR variable is set as SIMULATOR=icarus (see the README.md file)
 \item To run the simulation with the firmware pre-initialised in the memory:\\
-  {\tt make sim INIT\_MEM=1}
-\item The firmware and bootloader C codes and the system's Verilog description are compiled as you can see from the printed messages
+  {\tt make sim}
+\item The firmware and bootloader C files, and the system's Verilog files are compiled as you can see from the printed messages
 \item During the simulation itself, the following is printed:
 \end{itemize}
 
 \begin{tiny}
   \begin{lstlisting}
-IOb-SoC Bootloader:
 
-Reboot CPU and run program...
+IOb-Bootloader: USE_DDR=0 RUN_DDR=0
+IOb-Bootloader: Restart CPU to run user program...
 
 Hello world!
 
-Execution time: 6583 clocks in 66us @100MHz
+Execution time: 2190 clock cycles
+
+Execution time: 23us @100MHz
 
   \end{lstlisting}
 \end{tiny}
@@ -185,18 +185,14 @@ Execution time: 6583 clocks in 66us @100MHz
 \begin{frame}{Run IOb-SoC in FPGA}
 \begin{itemize}
 \item To compile and run your SoC in one of our FPGA boards, contacts us at info
-  @ iobundle . com. The following assumes your are using our default Intel
-  Cyclone V GT Development Kit
+  @ iobundle . com.
 \item To add your own FPGA board, add a directory into {\tt ./hardware/fpga},
   using the existing board directories as examples
-\item To compile the FPGA design with the firmware pre-initialised in the memory:\\
-  {\tt make fpga INIT\_MEM=1}
-\item To load the hardware design in the FPGA:\\
-  {\tt make fpga-load}
-\item To run your firmware in the FPGA:\\
-  {\tt make run-hw INIT\_MEM=1}
-\item You may change the firmware afterwards and use the previous command to
-  recompile and reload the firmware via UART
+\item To compile and run the FPGA design for a set of parameters:\\
+  {\tt make test-board-config INIT\_MEM=0 RUN\_DDR=1}\\
+  This will compile the software and the hardware, produce an FPGA image, load the hardware and firmware to the board, and direct the standard output to your PC.
+\item To recompile and sent only the firmware to the board via UART:\\
+  {\tt make board-run}
 \end{itemize}
 \end{frame}
 
@@ -206,7 +202,7 @@ Execution time: 6583 clocks in 66us @100MHz
   \item The addition of an example peripheral IP core has been illustrated
   \item A simple software driver for the IP core has been described
   \item Simulation of IOb-SoC hs been explained
-  \item Compiling and running IOb-SoC in FPGA has been explained
+  \item Compiling and running IOb-SoC on FPGA has been explained
   \end{itemize}
 \end{frame}
 

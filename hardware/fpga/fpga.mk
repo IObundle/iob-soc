@@ -1,16 +1,24 @@
+#DEFINES
+
+BAUD=$(HW_BAUD)
+
+#ddr controller address width
+DEFINE+=$(defmacro)DDR_ADDR_W=$(FPGA_DDR_ADDR_W)
+
 include $(ROOT_DIR)/hardware/hardware.mk
 
-#board specific top level source
+#SOURCES
 VSRC+=./verilog/top_system.v
 
+#RULES
 load:
 	./prog.sh
 
-compile: periphs firmware $(COMPILE_OBJ)
+compile: firmware $(FPGA_OBJ)
 
-$(COMPILE_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex
+$(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex
 	./build.sh "$(INCLUDE)" "$(DEFINE)" "$(VSRC)"
 
-.PRECIOUS: $(COMPILE_OBJ)
+.PRECIOUS: $(FPGA_OBJ)
 
 .PHONY: load compile

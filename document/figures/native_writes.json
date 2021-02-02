@@ -1,0 +1,53 @@
+
+{
+    "signal": [
+        {
+            "data": [],
+            "name": "clk",
+            "wave": "P........."
+        },
+        {
+            "data": [],
+            "name": "valid",
+            "wave": "01......0."
+        },
+        {
+            "data": [
+                "a0",
+                "a1",
+                "a2"
+            ],
+            "name": "address",
+            "wave": "x===....x."
+        },
+        {
+            "data": [
+                "wd0",
+                "wd1",
+                "wd2"
+            ],
+            "name": "wdata",
+            "wave": "x===....x."
+        },
+        {
+            "data": ["F"],
+            "name": "wstrb",
+            "wave": "x=......xx"
+        },
+        {
+            "data": ["rd0","rd1", "rd2"],
+            "name": "rdata",
+            "wave": "x........."
+        },
+        {
+            "data": [],
+            "name": "ready",
+            "wave": "1...0...1."
+        },
+       
+        
+    ],
+    "config": {
+        "hscale": 1
+    }
+}

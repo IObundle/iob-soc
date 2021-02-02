@@ -7,9 +7,11 @@
 
 module system_tb;
 
+   parameter realtime clk_per = 1s/`FREQ;
+
    //clock
    reg clk = 1;
-   always #5 clk = ~clk;
+   always #(clk_per/2) clk = ~clk;
 
    //reset 
    reg reset = 1;
@@ -47,7 +49,7 @@ module system_tb;
       uart_wstrb = 0;
       
       // deassert rst
-      repeat (100) @(posedge clk);
+      repeat (100) @(posedge clk) #1;
       reset <= 0;
 
       //wait an arbitray (10) number of cycles 
@@ -130,7 +132,7 @@ module system_tb;
    // UNIT UNDER TEST
    //
    system uut (
-               //PIO
+               //PORTS
 `ifdef USE_DDR
                //address write
 	       .m_axi_awid    (ddr_awid),
@@ -192,16 +194,15 @@ module system_tb;
  `ifdef DDR_INIT
        .FILE("firmware.hex"),
  `endif
-       .FILE_SIZE(2**(`FIRM_ADDR_W-2)),
        .DATA_WIDTH (`DATA_W),
-       .ADDR_WIDTH (`FIRM_ADDR_W)
+       .ADDR_WIDTH (`DDR_ADDR_W)
        )
    ddr_model_mem(
                  //address write
                  .clk            (clk),
                  .rst            (reset),
 		 .s_axi_awid     ({8{ddr_awid}}),
-		 .s_axi_awaddr   (ddr_awaddr[`FIRM_ADDR_W-1:0]),
+		 .s_axi_awaddr   (ddr_awaddr[`DDR_ADDR_W-1:0]),
                  .s_axi_awlen    (ddr_awlen),
                  .s_axi_awsize   (ddr_awsize),
                  .s_axi_awburst  (ddr_awburst),
@@ -226,7 +227,7 @@ module system_tb;
       
 		 //address read
 		 .s_axi_arid     ({8{ddr_arid}}),
-		 .s_axi_araddr   (ddr_araddr[`FIRM_ADDR_W-1:0]),
+		 .s_axi_araddr   (ddr_araddr[`DDR_ADDR_W-1:0]),
 		 .s_axi_arlen    (ddr_arlen), 
 		 .s_axi_arsize   (ddr_arsize),    
                  .s_axi_arburst  (ddr_arburst),
@@ -249,10 +250,31 @@ module system_tb;
 
 `include "cpu_tasks.v"
    
-   //finish simulation
-   //always @(posedge trap) begin
-   // #10 $display("Found CPU trap condition");
-   //$finish;
-   //end
+   //finish simulation on trap
+   always @(posedge trap) begin
+      #10 $display("Found CPU trap condition");
+      $finish;
+   end
 
+   //sram monitor - use for debugging programs
+   /*
+   wire [`SRAM_ADDR_W-1:0] sram_daddr = uut.int_mem0.int_sram.d_addr;
+   wire sram_dwstrb = |uut.int_mem0.int_sram.d_wstrb & uut.int_mem0.int_sram.d_valid;
+   wire sram_drdstrb = !uut.int_mem0.int_sram.d_wstrb & uut.int_mem0.int_sram.d_valid;
+   wire [`DATA_W-1:0] sram_dwdata = uut.int_mem0.int_sram.d_wdata;
+
+
+   wire sram_iwstrb = |uut.int_mem0.int_sram.i_wstrb & uut.int_mem0.int_sram.i_valid;
+   wire sram_irdstrb = !uut.int_mem0.int_sram.i_wstrb & uut.int_mem0.int_sram.i_valid;
+   wire [`SRAM_ADDR_W-1:0] sram_iaddr = uut.int_mem0.int_sram.i_addr;
+   wire [`DATA_W-1:0] sram_irdata = uut.int_mem0.int_sram.i_rdata;
+
+   
+   always @(posedge sram_dwstrb)
+      if(sram_daddr == 13'h090d)  begin
+         #10 $display("Found CPU memory condition at %f : %x : %x", $time, sram_daddr, sram_dwdata );
+         //$finish;
+      end
+    */
+   
 endmodule

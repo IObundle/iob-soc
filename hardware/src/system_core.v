@@ -253,7 +253,7 @@ module system
       .i_resp               (ext_mem_i_resp),
  `endif
       //data bus
-      .d_req                ({ext_mem_d_req[`valid(0)], ext_mem_d_req[`address(0, `CACHE_ADDR_W+1)-2], ext_mem_d_req[`write(0)]}),
+      .d_req                ({ext_mem_d_req[`valid(0)], ext_mem_d_req[`address(0, `DCACHE_ADDR_W+1)-2], ext_mem_d_req[`write(0)]}),
       .d_resp               (ext_mem_d_resp),
 
       //AXI INTERFACE 

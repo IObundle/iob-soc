@@ -1,4 +1,4 @@
-Testing CYCLONEV-GT-DK
+Testing board CYCLONEV-GT-DK
 
 +-----------------------------------------------+
 |                   IOb-Console                 |
@@ -9,17 +9,18 @@ Testing CYCLONEV-GT-DK
   Parity   = None
 
 IOb-Console: ENQ symbol received from target
-IOb-Console: Connected to target
 IOb-Console: Connected to target
 IOb-Console: Sending RUN command to target
 IOb-Console: RUN command sent to target
-IOb-Bootloader: USE_DDR=0 RUN_DDR=0
-IOb-Bootloader: Reboot CPU and run program...
+IOb-Bootloader: started...
+IOb-Bootloader: Restart CPU to run user program...
 
 
 
-Hello world!
+Hello world number 1!
 
+
+Value of Pi = 3.141500
 
 
 +-----------------------------------------------+
@@ -32,23 +33,24 @@ Hello world!
 
 IOb-Console: ENQ symbol received from target
 IOb-Console: Connected to target
-IOb-Console: Connected to target
-IOb-Bootloader: USE_DDR=0 RUN_DDR=0
-IOb-UART: Receiving and loading file...
-IOb-Console: starting file transfer of 2696 bytes...
-IOb-Console: file transfer complete
-IOb-UART: File received (2696 bytes)
+IOb-Bootloader: started...
+IOb-UART: Loading file...
+IOb-Console: starting to load firmware with 21560 bytes...
+IOb-Console: file loading complete
 IOb-Console: Firmware sent to target
 IOb-Console: Sending RUN command to target
 IOb-Console: RUN command sent to target
-IOb-Bootloader: Reboot CPU and run program...
+IOb-UART: File loaded
+IOb-Bootloader: Restart CPU to run user program...
 
 
 
-Hello world!
+Hello world number 1!
 
 
-Testing AES-KU040-DB-G
+Value of Pi = 3.141500
+
+Testing board AES-KU040-DB-G
 
 +-----------------------------------------------+
 |                   IOb-Console                 |
@@ -59,17 +61,18 @@ Testing AES-KU040-DB-G
   Parity   = None
 
 IOb-Console: ENQ symbol received from target
-IOb-Console: Connected to target
 IOb-Console: Connected to target
 IOb-Console: Sending RUN command to target
 IOb-Console: RUN command sent to target
-IOb-Bootloader: USE_DDR=0 RUN_DDR=0
-IOb-Bootloader: Reboot CPU and run program...
+IOb-Bootloader: started...
+IOb-Bootloader: Restart CPU to run user program...
 
 
 
-Hello world!
+Hello world number 1!
 
+
+Value of Pi = 3.141500
 
 
 +-----------------------------------------------+
@@ -82,21 +85,22 @@ Hello world!
 
 IOb-Console: ENQ symbol received from target
 IOb-Console: Connected to target
-IOb-Console: Connected to target
-IOb-Bootloader: USE_DDR=0 RUN_DDR=0
-IOb-UART: Receiving and loading file...
-IOb-Console: starting file transfer of 2696 bytes...
-IOb-Console: file transfer complete
-IOb-UART: File received (2696 bytes)
+IOb-Bootloader: started...
+IOb-UART: Loading file...
+IOb-Console: starting to load firmware with 21560 bytes...
+IOb-Console: file loading complete
 IOb-Console: Firmware sent to target
 IOb-Console: Sending RUN command to target
 IOb-Console: RUN command sent to target
-IOb-Bootloader: Reboot CPU and run program...
+IOb-UART: File loaded
+IOb-Bootloader: Restart CPU to run user program...
 
 
 
-Hello world!
+Hello world number 1!
 
+
+Value of Pi = 3.141500
 
 
 +-----------------------------------------------+
@@ -109,19 +113,22 @@ Hello world!
 
 IOb-Console: ENQ symbol received from target
 IOb-Console: Connected to target
-IOb-Console: Connected to target
-IOb-Bootloader: USE_DDR=1 RUN_DDR=1
-IOb-UART: Receiving and loading file...
-IOb-Console: starting file transfer of 2696 bytes...
-IOb-Console: file transfer complete
-IOb-UART: File received (2696 bytes)
+IOb-Bootloader: started...
+IOb-Bootloader: DDR in use
+IOb-Bootloader: Program to run from DDR
+IOb-UART: Loading file...
+IOb-Console: starting to load firmware with 21688 bytes...
+IOb-Console: file loading complete
 IOb-Console: Firmware sent to target
 IOb-Console: Sending RUN command to target
 IOb-Console: RUN command sent to target
-IOb-Bootloader: Reboot CPU and run program...
+IOb-UART: File loaded
+IOb-Bootloader: Restart CPU to run user program...
 
 
 
-Hello world!
+Hello world number 1!
 
+
+Value of Pi = 3.141500
 
