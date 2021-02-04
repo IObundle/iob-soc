@@ -16,7 +16,7 @@ VLOG = verilator +1800-2005ext+v --error-limit 1000  -cc  $(INCLUDE_VERI) $(DEFI
 
 #run the simulator
 run: $(VSRC) $(VHDR) firmware boot.hex
-	$(VLOG) $(VSRC_VERI) --top-module system -Wno-fatal --exe sim_xtop.cpp  
+	$(VLOG) $(VSRC_VERI) --top-module system -Wno-WIDTH -Wno-PINMISSING -Wno-fatal --exe sim_xtop.cpp  
 #	./a.out $(LOG)
 
 clean: hw-clean
