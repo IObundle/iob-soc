@@ -22,30 +22,30 @@ int main(int argc, char **argv, char **env)
   tfp->open ("waves.vcd");
  
   top->clk = 0;
-  top->resetn = 0;
+  top->reset = 0;
   top->eval();
   tfp->dump(main_time);
   main_time++;
   
   top->clk=1;
-  top->resetn=0;
+  top->reset=0;
   top->eval();
   tfp->dump(main_time);
   main_time++;
         
   top->clk=0;
-  top->resetn=1;
+  top->reset=1;
   top->eval();
   tfp->dump(main_time);
   main_time++;        
 
   top->clk=1;
-  top->resetn=1;
+  top->reset=1;
   top->eval();
   tfp->dump(main_time);
   main_time++;        
 
-  tfp-close();
+  tfp->close();
   delete top;
   exit(0);
 
