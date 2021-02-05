@@ -21,6 +21,8 @@ int main(int argc, char **argv, char **env)
   top->trace (tfp, 1);
   tfp->open ("waves.vcd");
 
+  //uart always clear to send
+  top->uart_cts = 1;
 
   // Reset sequence 
   top->clk = 0;
@@ -53,11 +55,11 @@ int main(int argc, char **argv, char **env)
   tfp->dump(main_time);
   main_time++; 
 
-  for (int i = 0; i<4000;i++){
+  for (int i = 0; i<20000;i++){
   top->clk ^= 1UL << 0;
   top->eval();
   tfp->dump(main_time);
-  main_time++; 
+  main_time+=10000; 
   }
 
 
