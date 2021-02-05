@@ -17,8 +17,8 @@ gen_is_tab.tex: $(INTERCON_DIR)/hardware/include/gen_if.v
 cpu_nat_s_is_tab.tex: $(INTERCON_DIR)/hardware/include/cpu_nat_s_if.v
 	$(TEX_SW_DIR)/io2tex.py $< $@
 
-#sw_reg_tab.tex: $(UART_HW_DIR)/include/UARTsw_reg.v
-#	$(TEX_SW_DIR)/swreg2tex.py $<
+sw_reg_tab.tex: $(UART_HW_DIR)/include/UARTsw_reg.v
+	$(TEX_SW_DIR)/swreg2tex.py $<
 
 bd_tab.tex: $(UART_HW_DIR)/src/iob_uart.v
 	$(TEX_SW_DIR)/block2tex.py $@ $(UART_HW_DIR)/src/iob_uart.v

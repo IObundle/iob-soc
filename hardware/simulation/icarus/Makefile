@@ -12,7 +12,7 @@ run: a.out
 a.out: $(VSRC) $(VHDR)
 	$(VLOG) $(INCLUDE) $(DEFINE) $(VSRC)
 
-clean: 
+clean: uart_clean_hw
 	@rm -f a.out *~ *.vcd
 
 .PHONY: all clean

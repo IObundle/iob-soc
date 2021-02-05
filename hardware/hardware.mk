@@ -19,7 +19,7 @@ INCLUDE+=$(incdir) $(UART_INC_DIR)
 VHDR+=$(wildcard $(UART_HW_INC_DIR)/*.vh)
 VHDR+=$(wildcard $(LIB_DIR)/hardware/include/*.vh)
 VHDR+=$(wildcard $(INTERCON_DIR)/hardware/include/*.vh $(INTERCON_DIR)/hardware/include/*.v)
-#VHDR+=$(UART_HW_INC_DIR)/UARTsw_reg_gen.v
+VHDR+=$(UART_HW_INC_DIR)/UARTsw_reg_gen.v
 VHDR+=$(wildcard $(UART_INC_DIR)/*.vh)
 
 #sources
@@ -30,13 +30,13 @@ VSRC+=$(wildcard $(UART_HW_DIR)/src/*.v)
 
 #################################################################################################
 
-#$(UART_HW_INC_DIR)/UARTsw_reg_gen.v: $(UART_HW_INC_DIR)/UARTsw_reg.v
-#	$(LIB_DIR)/software/mkregs.py $< HW
-#	mv UARTsw_reg_gen.v $(UART_HW_INC_DIR)
-#	mv UARTsw_reg_w.vh $(UART_HW_INC_DIR)
+$(UART_HW_INC_DIR)/UARTsw_reg_gen.v: $(UART_HW_INC_DIR)/UARTsw_reg.v
+	$(LIB_DIR)/software/mkregs.py $< HW
+	mv UARTsw_reg_gen.v $(UART_HW_INC_DIR)
+	mv UARTsw_reg_w.vh $(UART_HW_INC_DIR)
 
 uart_clean_hw:
-#	@rm -rf $(UART_HW_INC_DIR)/UARTsw_reg_gen.v $(UART_HW_INC_DIR)/UARTsw_reg_w.vh tmp $(UART_HW_DIR)/fpga/vivado/XCKU $(UART_HW_DIR)/fpga/quartus/CYCLONEV-GT
+	@rm -rf $(UART_HW_INC_DIR)/UARTsw_reg_gen.v $(UART_HW_INC_DIR)/UARTsw_reg_w.vh tmp $(UART_HW_DIR)/fpga/vivado/XCKU $(UART_HW_DIR)/fpga/quartus/CYCLONEV-GT
 
 #include $(UART_DIR)/core.mk
 

@@ -1,160 +1,115 @@
 `timescale 1ns/1ps
+`include "iob_lib.vh"
+`include "interconnect.vh"
 `include "iob_uart.vh"
 
 module iob_uart 
   # (
-     parameter DATA_W = 32
+     parameter ADDR_W = `UART_ADDR_W, //NODOC Address width
+     parameter DATA_W = `UART_RDATA_W, //NODOC CPU data width
+     parameter WDATA_W = `UART_WDATA_W //NODOC Data word width on writes
      )
 
   (
-   input                     clk,
-   input                     rst,
+`ifndef USE_AXI4LITE
+ `include "cpu_nat_s_if.v"
+`else
+ `include "cpu_axi4lite_s_if.v"
+`endif
 
-   //cpu interface 
-   input                     valid,
-   input [`UART_ADDR_W-1:0]  address,
-   input [`UART_WDATA_W-1:0] wdata,
-   input                     wstrb,
-   output reg [DATA_W-1:0]   rdata,
-   output reg                ready,
+   `OUTPUT(interrupt, 1),
 
-   //serial i/f
-   output                    txd,
-   input                     rxd,
-   input                     cts,
-   output                    rts
+   `OUTPUT(txd, 1),
+   `INPUT(rxd, 1),
+   `INPUT(cts, 1),
+   `OUTPUT(rts, 1),
+`include "gen_if.v"
    );
 
-   // internal registers
-   wire                            tx_wait;
-   reg [15:0]                      bit_duration;
-   reg                             tx_en;
-   reg                             rx_en;
+//BLOCK Register File & Holds the current configuration of the UART as well as internal parameters. Data to be sent or that has been received is stored here temporarily.
+`include "UARTsw_reg.v"
+`include "UARTsw_reg_gen.v"
+
+   `SIGNAL_OUT(tx_wait, 1)
+   `SIGNAL_OUT(rx_wait, 1)
+
+   // read registers
+   `COMB UART_WRITE_WAIT = tx_wait;
+   `COMB UART_READ_VALID = ~rx_wait;
    
+   //ready signal   
+   `SIGNAL(ready_int, 1)
+   `REG_AR(clk, rst, 0, ready_int, valid)
+   `SIGNAL2OUT(ready, ready_int)
+
+   uart_core uart0 
+     (
+      .clk(clk),
+      .rst(rst),
+      .rst_soft(UART_SOFT_RESET),
+      .tx_en(UART_TXEN),
+      .rx_en(UART_RXEN),
+      .tx_wait(tx_wait),
+      .rx_wait(rx_wait),
+      .tx_data(wdata[DATA_W/4-1:0]),
+      .rx_data(rdata),
+      .data_write_en(valid & wstrb & (address == `UART_DATA_ADDR)),
+      .data_read_en(valid & !wstrb & (address == `UART_DATA_ADDR)),
+      .bit_duration(UART_DIV)
+      );
+   
+endmodule
+
+module uart_core 
+  (
+   input        clk,
+   input        rst,
+   input        rst_soft,
+   input        tx_en,
+   input        rx_en,
+   input [`UART_W:0]  tx_data,
+   output [7:0] rx_data,
+   output       tx_wait,
+   output       rx_wait,
+   input        rxd,
+   output       txd,
+   input        cts,
+   output       rts,
+   input        data_write_en,
+   input        data_read_en,
+   input [15:0] bit_duration
+   );
+   
+                  
    // receiver
-   reg [3:0]                       recv_state;
-   reg [15:0]                      recv_counter;
-   reg [7:0]                       recv_pattern;
-   reg [7:0]                       recv_buf_data;
-   reg                             recv_buf_valid;
+   reg [3:0] recv_state;
+   reg [15:0] recv_counter;
+   reg [7:0]  recv_pattern;
+   reg [7:0]  recv_buf_data;
+   reg        recv_buf_valid;
    
    // sender
-   reg [9:0]                       send_pattern;
-   reg [3:0]                       send_bitcnt;
-   reg [15:0]                      send_counter;
+   reg [9:0]  send_pattern;
+   reg [3:0]  send_bitcnt;
+   reg [15:0] send_counter;
    
-   // register access
-   reg                             data_write_en;
-   wire                            data_read_en;
-   reg                             div_write_en;
-   reg                             rst_soft_en;
-   reg                             tx_en_en;
-   reg                             rx_en_en;
-   
-   // reset
-   wire                            rst_int;
-   reg                             rst_soft;
-
+  
+   //combined soft/hard reset
+   wire       rst_int = rst | rst_soft;
+  
    //flow control
-   reg [1:0]                       cts_int;
-   
-   //soft reset pulse
-   always @(posedge clk, posedge rst)
-     if(rst)
-       rst_soft <= 1'b0;
-     else if (rst_soft_en)
-       rst_soft <= wdata[0];
-     else
-       rst_soft <= 1'b0;
+   reg [1:0]  cts_int;
+      
+   assign tx_wait = (send_bitcnt != 4'd0) | ~cts_int[1];
+   assign rx_wait = ~recv_buf_valid;
 
-   assign rst_int = rst | rst_soft;
-
-   
-   // register cpu command and produce ready
-   reg [2:0]       address_reg;
-   reg             wstrb_reg;
-   always @(posedge clk) begin
-      wstrb_reg <= wstrb;
-      address_reg <= address;
-   end
-
-   always @(posedge clk, posedge rst)
-     if(rst)
-       ready <= 1'b0;
-     else
-        ready <= valid;
-
-
-   //transmit enable
-   always @(posedge clk, posedge rst_int)
-     if(rst_int)
-       tx_en <= 1'b0;
-     else if (tx_en_en)
-       tx_en <= wdata[0];
-   
-   //receive enable
-   always @(posedge clk, posedge rst_int)
-     if(rst_int)
-       rx_en <= 1'b0;
-     else if (rx_en_en)
-       rx_en <= wdata[0];
-   
    //request to send me data
    assign rts = rx_en;
    
    //cts synchronizer
    always @(posedge clk) 
      cts_int <= {cts_int[0], cts};
-   
-   
-   ////////////////////////////////////////////////////////
-   // CPU ACCESS
-   ////////////////////////////////////////////////////////
-
-   // WRITE
-   always @* begin
-      data_write_en = 1'b0;
-      div_write_en = 1'b0;
-      rst_soft_en = 1'b0;
-      rx_en_en = 1'b0;  
-      tx_en_en = 1'b0;  
-      if(valid & wstrb)
-        case (address)
-          `UART_DIV: div_write_en = 1'b1;
-          `UART_DATA: data_write_en = 1'b1;
-          `UART_SOFT_RESET: rst_soft_en = 1'b1;
-          `UART_TXEN: tx_en_en = 1'b1;
-          `UART_RXEN: rx_en_en = 1'b1;
-          default:;
-        endcase
-   end // always @ *
-
-   //READ
-   always @* begin
-      rdata = 0;
-      if(ready & ~wstrb_reg)
-        case (address_reg)
-          `UART_WRITE_WAIT: rdata = {{DATA_W{1'b0}}, tx_wait | ~cts_int[1]};
-          `UART_DIV       : rdata = bit_duration;
-          `UART_DATA      : rdata = recv_buf_data;
-          `UART_READ_VALID: rdata = {{DATA_W{1'b0}},recv_buf_valid};
-          default         : rdata = 0;
-        endcase
-   end
-
-   assign data_read_en = valid & ~wstrb & (address == `UART_DATA);
-
-   // internal registers
-   assign tx_wait = (send_bitcnt != 4'd0);
-
-   // division factor
-   always @(posedge clk)
-     if (rst_int)
-       bit_duration <= 1;
-     else if (div_write_en)
-       bit_duration <= wdata;
-
-   
+      
    ////////////////////////////////////////////////////////
    // Serial TX
    ////////////////////////////////////////////////////////
