@@ -39,8 +39,8 @@ PERIPHERALS ?=UART
 #
 
 #default simulator
-SIMULATOR ?=icarus
-LOCAL_SIM_LIST ?=icarus
+SIMULATOR ?=verilator
+LOCAL_SIM_LIST ?=verilator
 VCD ?=0
 
 #set according to SIMULATOR

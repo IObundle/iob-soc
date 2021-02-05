@@ -20,7 +20,9 @@ int main(int argc, char **argv, char **env)
   
   top->trace (tfp, 1);
   tfp->open ("waves.vcd");
- 
+
+
+  // Reset sequence 
   top->clk = 0;
   top->reset = 0;
   top->eval();
@@ -44,6 +46,20 @@ int main(int argc, char **argv, char **env)
   top->eval();
   tfp->dump(main_time);
   main_time++;        
+  
+  top->clk=0;
+  top->reset=0;
+  top->eval();
+  tfp->dump(main_time);
+  main_time++; 
+
+  for (int i = 0; i<4000;i++){
+  top->clk ^= 1UL << 0;
+  top->eval();
+  tfp->dump(main_time);
+  main_time++; 
+  }
+
 
   tfp->close();
   delete top;
