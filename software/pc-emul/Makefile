@@ -17,7 +17,7 @@ $(foreach p, $(PERIPHERALS), $(eval include $(SUBMODULES_DIR)/$p/software/pc/pc.
 HDR+=periphs.h
 
 #SOURCES
-SRC+= $(FIRM_DIR)/firmware.c
+SRC+= $(FIRM_DIR)/firmware.c $(UART_DIR)/software/printf.c $(UART_DIR)/software/uart_io.c
 
 #RULES
 run: firmware.out

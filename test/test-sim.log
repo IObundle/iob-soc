@@ -1,15 +1,17 @@
 Testing simulator icarus
-IOb-Bootloader: USE_DDR=0 RUN_DDR=0
+IOb-Bootloader: started...
 IOb-Bootloader: Restart CPU to run user program...
 
 
 
-Hello world!
+Hello world number 1!
 
 
-IOb-Bootloader: USE_DDR=0 RUN_DDR=0
-IOb-UART: Receiving and loading file...
-File size:       2636 bytes
+Value of Pi = 3.141500
+
+IOb-Bootloader: started...
+IOb-UART: Loading file...
+File size:      21560 bytes
           0%
          10%
          20%
@@ -21,33 +23,44 @@ File size:       2636 bytes
          80%
          90%
         100%
-IOb-UART: File received (2636 bytes)
+IOb-UART: File loaded
 IOb-Bootloader: Restart CPU to run user program...
 
 
 
-Hello world!
+Hello world number 1!
 
 
-IOb-Bootloader: USE_DDR=1 RUN_DDR=0
+Value of Pi = 3.141500
+
+IOb-Bootloader: started...
+IOb-Bootloader: DDR in use
 IOb-Bootloader: Restart CPU to run user program...
 
 
 
-Hello world!
+Hello world number 1!
 
 
-IOb-Bootloader: USE_DDR=1 RUN_DDR=1
+Value of Pi = 3.141500
+
+IOb-Bootloader: started...
+IOb-Bootloader: DDR in use
+IOb-Bootloader: Program to run from DDR
 IOb-Bootloader: Restart CPU to run user program...
 
 
 
-Hello world!
+Hello world number 1!
 
 
-IOb-Bootloader: USE_DDR=1 RUN_DDR=1
-IOb-UART: Receiving and loading file...
-File size:       2832 bytes
+Value of Pi = 3.141500
+
+IOb-Bootloader: started...
+IOb-Bootloader: DDR in use
+IOb-Bootloader: Program to run from DDR
+IOb-UART: Loading file...
+File size:      21680 bytes
           0%
          10%
          20%
@@ -59,28 +72,32 @@ File size:       2832 bytes
          80%
          90%
         100%
-IOb-UART: File received (2832 bytes)
+IOb-UART: File loaded
 IOb-Bootloader: Restart CPU to run user program...
 
 
 
-Hello world!
+Hello world number 1!
 
+
+Value of Pi = 3.141500
 
 Testing simulator ncsim
-IOb-Bootloader: USE_DDR=0 RUN_DDR=0
+IOb-Bootloader: started...
 IOb-Bootloader: Restart CPU to run user program...
 
 
 
-Hello world!
+Hello world number 1!
 
 
-Simulation complete via $finish(1) at time 194271 NS + 0
+Value of Pi = 3.141500
+
+Simulation complete via $finish(1) at time 285591 NS + 0
 ./system_tb.v:82       $finish;
-IOb-Bootloader: USE_DDR=0 RUN_DDR=0
-IOb-UART: Receiving and loading file...
-File size:       2636 bytes
+IOb-Bootloader: started...
+IOb-UART: Loading file...
+File size:      21560 bytes
           0%
          10%
          20%
@@ -92,39 +109,50 @@ File size:       2636 bytes
          80%
          90%
         100%
-IOb-UART: File received (2636 bytes)
+IOb-UART: File loaded
 IOb-Bootloader: Restart CPU to run user program...
 
 
 
-Hello world!
+Hello world number 1!
 
 
-Simulation complete via $finish(1) at time 3033521 NS + 0
+Value of Pi = 3.141500
+
+Simulation complete via $finish(1) at time 22560651 NS + 0
 ./system_tb.v:82       $finish;
-IOb-Bootloader: USE_DDR=1 RUN_DDR=0
+IOb-Bootloader: started...
+IOb-Bootloader: DDR in use
 IOb-Bootloader: Restart CPU to run user program...
 
 
 
-Hello world!
+Hello world number 1!
 
 
-Simulation complete via $finish(1) at time 195191 NS + 0
+Value of Pi = 3.141500
+
+Simulation complete via $finish(1) at time 318291 NS + 0
 ./system_tb.v:82       $finish;
-IOb-Bootloader: USE_DDR=1 RUN_DDR=1
+IOb-Bootloader: started...
+IOb-Bootloader: DDR in use
+IOb-Bootloader: Program to run from DDR
 IOb-Bootloader: Restart CPU to run user program...
 
 
 
-Hello world!
+Hello world number 1!
 
 
-Simulation complete via $finish(1) at time 204371 NS + 0
+Value of Pi = 3.141500
+
+Simulation complete via $finish(1) at time 436211 NS + 0
 ./system_tb.v:82       $finish;
-IOb-Bootloader: USE_DDR=1 RUN_DDR=1
-IOb-UART: Receiving and loading file...
-File size:       2832 bytes
+IOb-Bootloader: started...
+IOb-Bootloader: DDR in use
+IOb-Bootloader: Program to run from DDR
+IOb-UART: Loading file...
+File size:      21680 bytes
           0%
          10%
          20%
@@ -136,13 +164,15 @@ File size:       2832 bytes
          80%
          90%
         100%
-IOb-UART: File received (2832 bytes)
+IOb-UART: File loaded
 IOb-Bootloader: Restart CPU to run user program...
 
 
 
-Hello world!
+Hello world number 1!
 
 
-Simulation complete via $finish(1) at time 3249161 NS + 0
+Value of Pi = 3.141500
+
+Simulation complete via $finish(1) at time 22835371 NS + 0
 ./system_tb.v:82       $finish;

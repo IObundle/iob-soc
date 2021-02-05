@@ -258,8 +258,9 @@ sudo yum install autoconf automake python3 python2 libmpc-devel mpfr-devel gmp-d
 ### Installation
 
 ```
-sudo ./configure --prefix=/path/to/riscv --enable-multilib
-sudo make
+../configure --with-arch=rv32i --prefix=/opt/riscv
+sudo make -j$(nproc)
+
 export PATH=$PATH:/path/to/riscv/bin
 ```
 The *export PATH* command should be added to the bottom of your ~/.bashrc, so that you do not have to type it for every session.

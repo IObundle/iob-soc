@@ -3,8 +3,14 @@ incdir:=-I
 include $(ROOT_DIR)/system.mk
 
 #compiler settings
-TOOLCHAIN_PREFIX:=riscv64-unknown-elf-
-CFLAGS:=-Os -nostdlib -march=rv32im -mabi=ilp32
+TOOLCHAIN_PREFIX:=riscv32-unknown-elf-
+CFLAGS=-Os -nostdlib -march=$(MFLAGS) -mabi=ilp32
+
+ifeq ($(USE_COMPRESSED),1)
+MFLAGS=rv32imc
+else
+MFLAGS=rv32im
+endif
 
 #INCLUDE
 INCLUDE+=$(incdir)$(SW_DIR) $(incdir).

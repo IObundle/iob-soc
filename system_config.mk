@@ -23,7 +23,7 @@ RUN_DDR ?=0
 DCACHE_ADDR_W:=24
 
 #ROM SIZE (LOG2)
-BOOTROM_ADDR_W:=12
+BOOTROM_ADDR_W:=11
 
 #PRE-INIT MEMORY WITH PROGRAM AND DATA
 INIT_MEM ?=1
@@ -96,16 +96,6 @@ BOARD_LIST ?=CYCLONEV-GT-DK AES-KU040-DB-G
 REMOTE_ROOT_DIR ?=sandbox/iob-soc
 
 #
-# DOCUMENTATION
-#
-
-#DOC_TYPE
-#must match subdirectory name in directory document
-
-#DOC_TYPE:=presentation
-DOC_TYPE ?=pb
-
-#
 # ASIC COMPILE (WIP)
 #
 ASIC_NODE:=umc130
@@ -113,6 +103,11 @@ ASIC_SERVER:=micro7.lx.it.pt
 ASIC_COMPILE_ROOT_DIR=$(ROOT_DIR)/sandbox/iob-soc
 #ASIC_USER=
 
+#
+#SOFTWARE COMPILATION
+#
+
+USE_COMPRESSED ?=1
 
 
 #############################################################
@@ -135,7 +130,6 @@ BOOT_DIR:=$(SW_DIR)/bootloader
 CONSOLE_DIR:=$(SW_DIR)/console
 PYTHON_DIR:=$(SW_DIR)/python
 
-DOC_DIR:=$(ROOT_DIR)/document/$(DOC_TYPE)
 TEX_DIR=$(UART_DIR)/submodules/TEX
 
 #submodule paths
@@ -185,6 +179,11 @@ ifeq ($(FREQ),)
 DEFINE+=$(defmacro)FREQ=100000000
 else
 DEFINE+=$(defmacro)FREQ=$(FREQ)
+endif
+
+#use compressed instructions
+ifeq ($(USE_COMPRESSED),1)
+DEFINE+=$(defmacro)USE_COMPRESSED
 endif
 
 #create periph serial number
