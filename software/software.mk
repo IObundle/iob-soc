@@ -6,10 +6,12 @@ include $(ROOT_DIR)/system.mk
 TOOLCHAIN_PREFIX:=riscv32-unknown-elf-
 CFLAGS=-Os -nostdlib -march=$(MFLAGS) -mabi=ilp32
 
+MFLAGS=$(BASE_FLAGS)$(CFLAG)
+
+BASE_FLAGS:=rv32im
+
 ifeq ($(USE_COMPRESSED),1)
-MFLAGS=rv32imc
-else
-MFLAGS=rv32im
+CFLAG:=c
 endif
 
 #INCLUDE
