@@ -148,7 +148,7 @@ module iob_uart_tb;
 		 .valid			(valid),
 		 .address		(addr),
 		 .wdata		        (wdata),
-		 .wstrb			(wstrb),
+		 .wstrb			({4{wstrb}}),
 		 .rdata		        (rdata),
 		 .ready		        (ready),
 
