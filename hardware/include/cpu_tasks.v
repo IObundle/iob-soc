@@ -1,6 +1,16 @@
-   //
-   // CPU TASKS
-   //
+//
+// CPU TASKS TO CONTROL THE TESTBENCH UART 
+//
+//this is a temporary solution
+
+//address macros
+`define UART_SOFTRESET_ADDR 0
+`define UART_DIV_ADDR 1
+`define UART_DATA_ADDR 2
+`define UART_TXEN_ADDR 3
+`define UART_TXREADY_ADDR 4
+`define UART_RXEN_ADDR 5
+`define UART_RXREADY_ADDR 6
 
    // 1-cycle write
    task cpu_uartwrite;
@@ -122,13 +132,13 @@
 
    task cpu_inituart;
       //pulse reset uart
-      cpu_uartwrite(`UART_SOFT_RESET, 1);
-      cpu_uartwrite(`UART_SOFT_RESET, 0);
+      cpu_uartwrite(`UART_SOFTRESET_ADDR, 1);
+      cpu_uartwrite(`UART_SOFTRESET_ADDR, 0);
       //config uart div factor
-      cpu_uartwrite(`UART_DIV, `FREQ/`BAUD);
+      cpu_uartwrite(`UART_DIV_ADDR, `FREQ/`BAUD);
       //enable uart for receiving
-      cpu_uartwrite(`UART_RXEN, 1);
-      cpu_uartwrite(`UART_TXEN, 1);
+      cpu_uartwrite(`UART_RXEN_ADDR, 1);
+      cpu_uartwrite(`UART_TXEN_ADDR, 1);
    endtask
 
    reg [7:0] rxread_reg = 8'b0;
@@ -138,11 +148,11 @@
 
       //wait until something is received
       do
-	    cpu_uartread(`UART_READ_VALID, rxread_reg);
+	    cpu_uartread(`UART_RXREADY_ADDR, rxread_reg);
       while(!rxread_reg);
 
       //read the data
-      cpu_uartread(`UART_DATA, rxread_reg);
+      cpu_uartread(`UART_RXDATA_ADDR, rxread_reg);
 
       rcv_char = rxread_reg[7:0];
    endtask
@@ -152,10 +162,10 @@
       input [7:0] send_char;
       //wait until tx ready
       do begin
-	 cpu_uartread(`UART_WRITE_WAIT, rxread_reg);
-      end while(rxread_reg);
+	 cpu_uartread(`UART_TXREADY_ADDR, rxread_reg);
+      end while(!rxread_reg);
       //write the data
-      cpu_uartwrite(`UART_DATA, send_char);
+      cpu_uartwrite(`UART_TXDATA_ADDR, send_char);
 
    endtask
 
