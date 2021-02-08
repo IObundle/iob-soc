@@ -3,22 +3,22 @@
 
 module uart_core 
   (
-   input                         clk,
-   input                         rst,
-   input                         rst_soft,
-   input                         tx_en,
-   input                         rx_en,
-   input [`UART_DATA_W-1:0]      tx_data,
-   output reg [`UART_DATA_W-1:0] rx_data,
-   output reg                    tx_ready,
-   output reg                    rx_ready,
-   input                         rxd,
-   output                        txd,
-   input                         cts,
-   output                        rts,
-   input                         data_write_en,
-   input                         data_read_en,
-   input [`UART_WDATA_W-1:0]     bit_duration
+   input                     clk,
+   input                     rst,
+   input                     rst_soft,
+   input                     tx_en,
+   input                     rx_en,
+   input [7:0]               tx_data,
+   output [7:0]              rx_data,
+   output reg                tx_ready,
+   output reg                rx_ready,
+   input                     rxd,
+   output                    txd,
+   input                     cts,
+   output                    rts,
+   input                     data_write_en,
+   input                     data_read_en,
+   input [`UART_WDATA_W-1:0] bit_duration
    );
    
                   
@@ -37,15 +37,15 @@ module uart_core
 
 
    ////////////////////////////////////////////////////////
-   // Serial TX
+   // TX
    ////////////////////////////////////////////////////////
 
    // sender
-   reg [9:0]  tx_pattern; //start(1) + data(8) + stop(1) = 10 bits
+   reg [9:0]  tx_pattern; //stop(1) + data(8) + start(1) = 10 bits
    reg [3:0]  tx_bitcnt;
    reg [15:0] tx_cyclecnt;
 
-   // serial tx bit
+   //tx bit
    assign txd = tx_pattern[0];
    
    //tx program
@@ -55,10 +55,10 @@ module uart_core
      if(rst_int) begin 
 
         tx_pc <= 1'b0;
-        tx_ready <= 1'b1;
+        tx_ready <= 1'b0;
         tx_pattern <= ~10'b0;
         tx_bitcnt <= 1'b0;
-        tx_cyclecnt <= 1'b0;
+        tx_cyclecnt <= 1'b1;
 
      end else if(tx_en && cts_int[1]) begin
 
@@ -67,25 +67,29 @@ module uart_core
         case (tx_pc)
 
           0: begin //wait for data to send
-             tx_pattern <= {1'b1, tx_data[7:0], 1'b0};
              tx_ready <= 1'b1;
              tx_bitcnt <= 1'b0;
-             tx_cyclecnt <= 1'b0;
-             if(!data_write_en) begin
-                tx_pc <= tx_pc;
+             tx_cyclecnt <= 1'b1;   
+             tx_pattern <= ~9'b0;
+
+             if(!data_write_en)
+               tx_pc <= tx_pc;
+             else begin
+                tx_pattern <= {1'b1, tx_data[7:0], 1'b0};
                 tx_ready <= 1'b0;
              end
           end
-
           1: begin //send pattern
              tx_pc <= tx_pc; //stay here util pattern sent
-             if(tx_bitcnt == 4'd10 && tx_cyclecnt == bit_duration) //pattern sent: restart program 
-               tx_pc <= 1'b0;
-             else if(tx_cyclecnt == bit_duration) begin //bit sent: send next
-                tx_bitcnt <= tx_bitcnt + 1'b1;
-                tx_cyclecnt <= 1'b0;
-             end else 
-                tx_cyclecnt <= tx_cyclecnt + 1'b1; //increment cycle counter
+             tx_cyclecnt <= tx_cyclecnt + 1'b1; //increment cycle counter
+             if (tx_cyclecnt == bit_duration)
+               if (tx_bitcnt == 4'd9) begin //stop bit sent sent
+                  tx_pc <= 1'b0; //restart program 
+               end else begin//data bit sent
+                  tx_pattern <= tx_pattern >> 1;
+                  tx_bitcnt <= tx_bitcnt + 1'b1; //send next bit
+                  tx_cyclecnt <= 1'b1;
+               end
           end
           
           default:;
@@ -95,7 +99,7 @@ module uart_core
      end else begin              
         
         tx_pc <= 1'b0;
-        tx_ready <= 1'b1;
+        tx_ready <= 1'b0;
         tx_pattern <= ~10'b0;
         tx_bitcnt <= 1'b0;
         tx_cyclecnt <= 1'b0;
@@ -104,22 +108,24 @@ module uart_core
 
 
    ////////////////////////////////////////////////////////
-   // Serial RX
+   // RX
    ////////////////////////////////////////////////////////
 
    // receiver program
-   reg [2:0] rx_pc;
+   reg [1:0] rx_pc;
+   reg [9:0] rx_pattern; //stop(1) + data(8) + start(1) = 10 bits
    reg [15:0] rx_cyclecnt;
    reg [3:0]  rx_bitcnt;
+
+   assign rx_data = rx_pattern[8:1];
    
    always @(posedge clk, posedge rst_int) begin
 
       if (rst_int) begin
 
          rx_pc <= 1'b0;
-         rx_cyclecnt <= 1'b0;
+         rx_cyclecnt <= 1'b1;
          rx_bitcnt <= 1'b0;
-         rx_data <= 1'b0;
          rx_ready <= 1'b0;
          
       end else if(rx_en && rts) begin
@@ -130,53 +136,43 @@ module uart_core
            
            0: begin //wait for start bit 
               rx_ready <= 1'b0;
-              rx_cyclecnt <= 1'b0; 
+              rx_cyclecnt <= bit_duration/2; 
               rx_bitcnt <= 1'b0;
               if (rxd) //start bit has not arrived: stay here
                  rx_pc <= rx_pc;
            end
+
+           1: begin // receive data
+              rx_cyclecnt <= rx_cyclecnt + 1'b1;
+              if (rx_cyclecnt == bit_duration) begin
+                 rx_cyclecnt <= 1'b1;
+                 rx_bitcnt <= rx_bitcnt + 1'b1;
+                 rx_pattern <= {rxd, rx_pattern[9:1]}; //sample rx line
+                 if (rx_bitcnt == 4'd9) begin //stop bit is here
+                    rx_ready <= 1'b1;
+                    rx_bitcnt <= 1'b0;
+                 end else begin //one data bit is here
+                    rx_pc <= rx_pc; //stay here and wait for more
+                 end
+              end else
+                rx_pc <= rx_pc; //stay here, wait for whole bit
+           end
            
-           1: begin // wait until middle of start bit
-             if ( rx_cyclecnt != (bit_duration/2) ) begin
-                rx_pc <= rx_pc;
-                rx_cyclecnt <= rx_cyclecnt + 1'b1;
-             end else 
-                rx_cyclecnt <= 1'b0;
-           end
-
-           2: begin // receive data
-             if (rx_cyclecnt == bit_duration && rx_bitcnt != 4'd8) begin //data bit has arrived
-                rx_pc <= rx_pc;
-                rx_data <= {rxd, rx_data[7:1]}; //sample rx line
-                rx_bitcnt <= rx_bitcnt + 1'b1;
-                rx_cyclecnt <= 1'b0;
-             end else if (rx_bitcnt == 4'd8) begin //data byte has arrived
-                rx_ready <= 1'b1;
-                rx_cyclecnt <= 1'b0;
-             end
-           end
-
-           3: begin //wait for stop bit
-              if (rx_cyclecnt != bit_duration) begin 
-                rx_pc <= rx_pc;
-                rx_cyclecnt <= rx_cyclecnt + 1'b1;
-              end
-           end
-
-           4: begin //wait for data to be read
-              if (!data_read_en) 
-                rx_pc <= rx_pc;
-              else
+           2: begin //wait for word to be read and restart program
+              rx_pc <= rx_pc; //stay here
+              if (data_read_en)
                 rx_pc <= 1'b0;
            end
            
-           endcase // case (rx_pc)
+          default: ;
+           
+           
+         endcase // case (rx_pc)
          
       end else begin // if (rx_en && rts)
          rx_pc <= 1'b0;
-         rx_cyclecnt <= 1'b0;
+         rx_cyclecnt <= 1'b1;
          rx_bitcnt <= 1'b0;
-         rx_data <= 1'b0;
          rx_ready <= 1'b0;
       end
 

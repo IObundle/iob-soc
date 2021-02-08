@@ -18,7 +18,7 @@
       .valid(slaves_req[`valid(`UART)]),
       .address(slaves_req[`address(`UART,`UART_ADDR_W+2)-2]),
       .wdata(slaves_req[`wdata(`UART)-(`DATA_W-`UART_WDATA_W)]),
-      .wstrb(|slaves_req[`wstrb(`UART)]),
+      .wstrb(slaves_req[`wstrb(`UART)]),
       .rdata(slaves_resp[`rdata(`UART)]),
       .ready(slaves_resp[`ready(`UART)])
       );

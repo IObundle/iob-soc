@@ -6,13 +6,14 @@
 #define UART_PROGNAME "IOb-UART"
 
 //Memory Map
-#define UART_WRITE_WAIT 0
-#define UART_DIV        1
-#define UART_DATA       2
-#define UART_SOFT_RESET 3
-#define UART_READ_VALID 4
-#define UART_RXEN       5
-#define UART_TXEN       6
+#define UART_SOFTRESET 0
+#define UART_DIV 1
+#define UART_TXDATA 2
+#define UART_TXEN 3
+#define UART_TXREADY 4
+#define UART_RXDATA 5
+#define UART_RXREADY 6
+#define UART_RXEN 7
 
 //Functions
 

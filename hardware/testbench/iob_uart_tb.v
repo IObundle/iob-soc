@@ -7,28 +7,32 @@ module iob_uart_tb;
    parameter baud_rate = 1e6; //high value to speed sim
    parameter clk_per = 1e9/clk_frequency;
    
-   // CPU SIDE
-   reg 			rst;
-   reg 			clk;
-
-   reg                  valid;
-   reg [`UART_ADDR_W-1:0] addr;
-   reg [`UART_WDATA_W-1:0] wdata;
-   reg                     wstrb;
-   wire [`UART_RDATA_W-1:0] rdata;
-   wire                     ready;
-
-   reg [`UART_RDATA_W-1:0]  cpu_readreg;
-
- 
    //iterator
    integer               i;
 
-   //serial data
-   wire                  serial_data;
+   // CORE SIGNALS
+   reg 			rst;
+   reg 			clk;
 
-   // rts, cts handshaking
-   wire                  rtscts;
+   //control interface (backend)
+   reg                  rst_soft;
+   reg                  wr_en;
+   reg                  rd_en;   
+   reg [`UART_WDATA_W-1:0] div;
+   
+   reg                     tx_en;
+   reg [7:0]               tx_data;
+   wire                    tx_ready;
+   
+   reg                     rx_en;
+   wire [7:0] rx_data;
+   reg [7:0]  rcvd_data;
+   wire                    rx_ready;
+   
+   //rs232 interface (frontend)
+   reg                     cts;
+   wire                    rts;
+   wire                    tx2rx;
    
 
    initial begin
@@ -38,66 +42,82 @@ module iob_uart_tb;
       $dumpvars;
 `endif
       
-      rst = 1;
       clk = 1;
-      wstrb = 0;
-      valid = 0;
+      rst = 1;
+      rst_soft =0;
+
+      rd_en = 0;
+      wr_en = 0;
+
+      tx_en = 0;
+      rx_en = 0;
+
+      cts = 0;
+            
+      div = clk_frequency / baud_rate;
       
-      // deassert reset
-      #100 @(posedge clk) rst = 0;
+      // deassert hard reset
+      #100 @(posedge clk) #1 rst = 0;
       #100 @(posedge clk);
 
       // assert tx not ready
-      cpu_read(`UART_WRITE_WAIT, cpu_readreg);
-      if (!cpu_readreg) begin
+      if (tx_ready) begin
          $display("ERROR: TX is ready initially");
          $finish;
       end
       
       // assert rx not ready
-      cpu_read(`UART_READ_VALID, cpu_readreg);
-      if(cpu_readreg) begin
+      if(rx_ready) begin
          $display("ERROR: RX is ready initially");
          $finish;
       end
    
-      //pulse soft reset 
-      cpu_write(`UART_SOFT_RESET, 1);
-      cpu_write(`UART_SOFT_RESET, 0);
-
-      //setup divider factor
-      cpu_write(`UART_DIV, clk_frequency/baud_rate);
+      //pulse soft reset
+      #1 rst_soft = 1;
+      @(posedge clk) #1 rst_soft = 0;
+      
 
       //enable tx
-      cpu_write(`UART_TXEN, 1);
+      @(posedge clk) #1 tx_en = 1;
       
       //enable rx
-      cpu_write(`UART_RXEN, 1);
+      @(posedge clk) #1 rx_en = 1;
+
+      //send clear to send (cts) to core
+      @(posedge clk) #1 cts = 1;
+
       
       // write data to send
       for(i=0; i < 256; i= i+1) begin
 
          //wait for tx ready 
-         do
-	   cpu_read(`UART_WRITE_WAIT, cpu_readreg);
-         while(cpu_readreg);
+         do @(posedge clk); while(!tx_ready);
          
          //write word to send
-	 cpu_write(`UART_DATA, i);
-
-         //wait for core to receive data
-         do 
-           cpu_read(`UART_READ_VALID, cpu_readreg);
-         while (!cpu_readreg);
+         @(posedge clk) #1 wr_en = 1; tx_data = i;
+         @(posedge clk) #1 wr_en = 0;
          
-         // read and check received data
-	 cpu_read (`UART_DATA, cpu_readreg);
-	 if ( cpu_readreg != i ) begin
-	    $display("Test failed on vector %d: %x / %x", i, cpu_readreg, i);
+         //wait for core to receive datarx ready 
+         do  @(posedge clk); while(!rx_ready);
+
+         //read received word
+         @(posedge clk) #1 rd_en = 1; rcvd_data = rx_data;
+         @(posedge clk) #1 rd_en = 0;
+         
+         
+         // check received data
+	 $display("got %x, expected %x", rcvd_data, i);
+	 if ( rcvd_data != i ) begin
+            $display("Test failed");
 	    $finish;
 	 end
 
-      end
+         @(posedge clk);
+         @(posedge clk);
+         @(posedge clk);
+
+      end // for (i=0; i < 256; i= i+1)
+      
 
       $display("Test completed successfully");
       $finish;
@@ -105,59 +125,33 @@ module iob_uart_tb;
    end 
 
    //
-   // CLOCKS
+   // CLOCK
    //
 
    //system clock
    always #(clk_per/2) clk = ~clk;
 
-   //
-   // TASKS
-   //
-
-   // 1-cycle write
-   task cpu_write;
-      input [`UART_ADDR_W-1:0]  cpu_address;
-      input [31:0]  cpu_data;
-
-      #1 addr = cpu_address;
-      valid = 1;
-      wstrb = 1;
-      wdata = cpu_data;
-      @ (posedge clk) #1 wstrb = 0;
-      valid = 0;
-   endtask
-
-   // 2-cycle read
-   task cpu_read;
-      input [`UART_ADDR_W-1:0]   cpu_address;
-      output [31:0] read_reg;
-
-      #1 addr = cpu_address;
-      valid = 1;
-      @ (posedge clk) #1 read_reg = rdata;
-      @ (posedge clk) #1 valid = 0;
-   endtask
-
 
   // Instantiate the Unit Under Test (UUT)
-   iob_uart uut (
-		 .clk			(clk),
-		 .rst			(rst),
-                 
-		 .valid			(valid),
-		 .address		(addr),
-		 .wdata		        (wdata),
-		 .wstrb			({4{wstrb}}),
-		 .rdata		        (rdata),
-		 .ready		        (ready),
+   uart_core uut
+     (
+      .clk(clk),
+      .rst(rst),
+      .rst_soft(rst_soft),
+      .tx_en(tx_en),
+      .rx_en(rx_en),
+      .tx_ready(tx_ready),
+      .rx_ready(rx_ready),
+      .tx_data(tx_data),
+      .rx_data(rx_data),
+      .data_write_en(wr_en),
+      .data_read_en(rd_en),
+      .bit_duration(div),
+      .rxd(tx2rx),
+      .txd(tx2rx),
+      .cts(cts),
+      .rts(rts)
+      );
 
-                 .txd                   (serial_data),
-                 .rxd                   (serial_data),
-                 .rts                   (rtscts),
-                 .cts                   (rtscts)
-		);
-
-   
 endmodule
 

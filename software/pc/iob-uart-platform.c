@@ -21,7 +21,7 @@ void uart_txwait() {
   return;
 }
 
-int uart_txstatus(){
+int uart_istxready(){
   return 1;
 }
 

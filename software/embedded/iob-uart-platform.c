@@ -10,8 +10,8 @@ void uart_init(int base_address, int div) {
   base = base_address;
 
   //pulse soft reset 
-  IO_SET(base, UART_SOFT_RESET, 1);
-  IO_SET(base, UART_SOFT_RESET, 0);
+  IO_SET(base, UART_SOFTRESET, 1);
+  IO_SET(base, UART_SOFTRESET, 0);
 
   //Set the division factor div
   //div should be equal to round (fclk/baudrate)
@@ -28,36 +28,28 @@ int uart_getdiv()
 
 //tx functions
 void uart_txwait() {
-  while(IO_GET(base, UART_WRITE_WAIT));
+  while(!IO_GET(base, UART_TXREADY));
 }
 
-int uart_txstatus() {
-  return (!IO_GET(base, UART_WRITE_WAIT));
+int uart_istxready() {
+  return (IO_GET(base, UART_TXREADY));
 }
 
 void uart_putc(char c) {
-  while(IO_GET(base, UART_WRITE_WAIT));
-  IO_SET(base, UART_DATA, (int)c);
+  while(!uart_istxready());
+  IO_SET(base, UART_TXDATA, (int)c);
 }
 
 void uart_rxwait() {
-  while(!IO_GET(base, UART_READ_VALID));
+  while(!IO_GET(base, UART_RXREADY));
 }
 
-int uart_rxstatus() {
-  return (IO_GET(base, UART_READ_VALID));
+int uart_isrxready() {
+  return (IO_GET(base, UART_RXREADY));
 }
 
 char uart_getc() {
-  while(!IO_GET(base, UART_READ_VALID));
-  return( (char) IO_GET(base, UART_DATA));
+  while(!uart_isrxready());
+  return( (char) IO_GET(base, UART_RXDATA));
 }
 
-void uart_sleep (int n)  {
-  uart_txwait();
-  IO_SET(base, UART_TXEN, 0);
-   for (int i=0; i<n; i++)
-    uart_putc('c');
-  uart_txwait();
-  IO_SET(base, UART_TXEN, 1);
-}
