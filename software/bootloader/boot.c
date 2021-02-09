@@ -22,12 +22,10 @@ int main() {
   //init uart 
   uart_init(UART_BASE, FREQ/BAUD);
 
-  //connect with host, comment to disable handshaking
-  uart_connect();
-
-  //start message
+  //welcome message
   uart_puts (PROGNAME);
-  uart_puts (": started...\n");
+  uart_puts (": Welcome!\n");
+
   if(USE_DDR_SW){
     uart_puts (PROGNAME);
     uart_puts(": DDR in use\n");
@@ -36,15 +34,18 @@ int main() {
     uart_puts (PROGNAME);
     uart_puts(": Program to run from DDR\n");
   }
-  
-  char host_cmd = uart_getc(); //receive command
-  
-  if (host_cmd==LOAD) //load firmware
-      uart_loadfw(prog_start_addr);
- 	//run firmware
+
   uart_puts (PROGNAME);
-  uart_puts (": ");
-  uart_puts ("Restart CPU to run user program...\n");
+  uart_puts (": Sending boot mode enquiry to host\n");
+
+  do uart_putc(ENQ); while(uart_isrxready());
+
+  if (uart_getc() == LOAD) //load firmware
+      uart_loadfw(prog_start_addr);
+  
+  //run firmware
+  uart_puts (PROGNAME);
+  uart_puts (": Restart CPU to run user program...\n");
   uart_txwait();
 #if (USE_DDR && RUN_DDR)
   //by reading any DDR data, it forces the caches to first write everyting before reason (write-through write-not-allocate)

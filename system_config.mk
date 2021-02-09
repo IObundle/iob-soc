@@ -169,7 +169,7 @@ DEFINE+=$(defmacro)P=$P
 DEFINE+=$(defmacro)B=$B
 
 #baud rate
-SIM_BAUD:=10000000
+SIM_BAUD:=5000000
 HW_BAUD:=115200
 BAUD ?= $(HW_BAUD)
 DEFINE+=$(defmacro)BAUD=$(BAUD)

@@ -57,20 +57,30 @@ module system_tb;
 
       // configure uart
       cpu_inituart();
+      
+      while(1) begin
+         cpu_getchar(cpu_char);
 
-      //connect with bootloader
-      cpu_connect();
-
-`ifdef LD_FW
-      //send program
-      cpu_sendfile();
-      //uncomment for debug
-      //cpu_receivefile();
+         case(cpu_char)
+           `ENQ: begin
+`ifdef LD_FW //send program
+              cpu_putchar(`FRX);              
+              cpu_sendfile();
+`else
+              cpu_putchar(`ACK);              
 `endif      
-      //run firmware
-      cpu_run();
+           end
 
-      $finish;
+           `EOT: begin
+              $finish;
+           end
+           
+           default: begin
+              $write("%c", cpu_char);
+           end
+
+         endcase         
+      end
 
    end
 

@@ -49,7 +49,7 @@ void print (int serial_fd) {
 
 //Receives file name from target
 char* recvFileName(serial_fd) {
-	int nbytes;
+  int nbytes;
   int i;
   unsigned int name_size = 0;
   char* file_name;
@@ -59,33 +59,33 @@ char* recvFileName(serial_fd) {
   byte = ACK;
   while ( write(serial_fd, &byte, 1) <= 0 );
 	
-	//receive name size
+  //receive name size
   do nbytes = (int) read(serial_fd, &name_size, sizeof(int)); while (nbytes <= 0);
   
   if (name_size==0) {
-  	name_size = strlen("firmware.bin");
+    name_size = strlen("firmware.bin");
   	
-		if( (file_name = (char*) malloc(name_size)) == NULL) {
-		  printf(PROGNAME); printf(": memory allocation failed\n");
-		  exit(1);
-		}
-  	strcpy(file_name,"firmware.bin");
-	}
-	else {
-		if( (file_name = (char*) malloc(name_size)) == NULL) {
-				printf(PROGNAME); printf(": memory allocation failed\n");
-				exit(1);
-			}
+    if( (file_name = (char*) malloc(name_size)) == NULL) {
+      printf(PROGNAME); printf(": memory allocation failed\n");
+      exit(1);
+    }
+    strcpy(file_name,"firmware.bin");
+  }
+  else {
+    if( (file_name = (char*) malloc(name_size)) == NULL) {
+      printf(PROGNAME); printf(": memory allocation failed\n");
+      exit(1);
+    }
   
-		//receive file name into buffer
-		for (i=0; i<name_size;i=i+nbytes) {
-		  do {
-		    nbytes = (int) read(serial_fd, &file_name[i], name_size-i);      	
-		  } while (nbytes <= 0);
-		}
-	}
+    //receive file name into buffer
+    for (i=0; i<name_size;i=i+nbytes) {
+      do {
+        nbytes = (int) read(serial_fd, &file_name[i], name_size-i);      	
+      } while (nbytes <= 0);
+    }
+  }
 	
-	return file_name;
+  return file_name;
 }
 
 // send file to target
@@ -388,21 +388,21 @@ void run(int serial_fd) {
   while (1) {
     nbytes = (int) read(serial_fd, &byte, 1);
     if (nbytes > 0) {
-    	if (byte == STX) { //Print mode
-    		print(serial_fd);
-  		}
-    	else if (byte == FRX) { //Send a file to firmware mode
-    		file_name = recvFileName(serial_fd);
-    		sendFile(serial_fd, file_name);	
-    		free(file_name);
-		}
-    	else if (byte == FTX) { //Receive a file from firmware mode
-    		file_name = recvFileName(serial_fd);
-    		recvFile(serial_fd, file_name);
-    		free(file_name);
-		}
-    	else if (byte == EOT) //Program finished
-    		break;
+      if (byte == STX) { //Print mode
+        print(serial_fd);
+      }
+      else if (byte == FRX) { //Send a file to firmware mode
+        file_name = recvFileName(serial_fd);
+        sendFile(serial_fd, file_name);	
+        free(file_name);
+      }
+      else if (byte == FTX) { //Receive a file from firmware mode
+        file_name = recvFileName(serial_fd);
+        recvFile(serial_fd, file_name);
+        free(file_name);
+      }
+      else if (byte == EOT) //Program finished
+        break;
     }
   }
   
