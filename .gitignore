@@ -43,7 +43,7 @@ document/ug/version.txt
 document/figures/Logo.png
 document/ug/quartus.log
 hardware/simulation/icarus/a.out
-hardware/simulation/icarus/hardcore.vcd
+hardware/simulation/icarus/uart.vcd
 hardware/simulation/icarus/sw_reg_w.vh
 hardware/simulation/icarus/tmp
 hardware/simulation/ncsim/tmp

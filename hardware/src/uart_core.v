@@ -9,13 +9,13 @@ module uart_core
    input                     tx_en,
    input                     rx_en,
    input [7:0]               tx_data,
-   output [7:0]              rx_data,
+   output reg [7:0]          rx_data,
    output reg                tx_ready,
    output reg                rx_ready,
    input                     rxd,
    output                    txd,
    input                     cts,
-   output                    rts,
+   output reg                rts,
    input                     data_write_en,
    input                     data_read_en,
    input [`UART_WDATA_W-1:0] bit_duration
@@ -25,21 +25,16 @@ module uart_core
    //COMBINED SOFT/HARD RESET
    wire       rst_int = rst | rst_soft;
   
-   //FLOW CONTROL
-   reg [1:0]  cts_int;
-      
-   //request to send (rts) me data
-   assign rts = rx_en;
-   
-   //clear to send (cts) synchronizer
-   always @(posedge clk) 
-     cts_int <= {cts_int[0], cts};
-
-
    ////////////////////////////////////////////////////////
    // TX
    ////////////////////////////////////////////////////////
 
+   //clear to send (cts) synchronizer
+   reg [1:0]  cts_int;
+   always @(posedge clk) 
+     cts_int <= {cts_int[0], cts};
+
+   
    // sender
    reg [9:0]  tx_pattern; //stop(1) + data(8) + start(1) = 10 bits
    reg [3:0]  tx_bitcnt;
@@ -58,7 +53,7 @@ module uart_core
         tx_ready <= 1'b0;
         tx_pattern <= ~10'b0;
         tx_bitcnt <= 1'b0;
-        tx_cyclecnt <= 1'b1;
+        tx_cyclecnt <= 1'b0;
 
      end else if(tx_en && cts_int[1]) begin
 
@@ -78,7 +73,7 @@ module uart_core
           end
 
           1: begin //load tx pattern to send
-             tx_pattern <= {1'b1, tx_data[7:0], 1'b0};
+             tx_pattern <= {1'b1, tx_data[7:0], 1'b0}; //{stop, data, start}>>
           end
 
           2: begin //send pattern
@@ -114,13 +109,10 @@ module uart_core
    ////////////////////////////////////////////////////////
 
    // receiver program
-   reg [1:0] rx_pc;
-   reg [9:0] rx_pattern; //stop(1) + data(8) + start(1) = 10 bits
+   reg [2:0] rx_pc;
    reg [15:0] rx_cyclecnt;
    reg [3:0]  rx_bitcnt;
 
-   assign rx_data = rx_pattern[8:1];
-   
    always @(posedge clk, posedge rst_int) begin
 
       if (rst_int) begin
@@ -129,56 +121,86 @@ module uart_core
          rx_cyclecnt <= 1'b1;
          rx_bitcnt <= 1'b0;
          rx_ready <= 1'b0;
+         rts <= 1'b0;
          
-      end else if(rx_en && rts) begin
+         
+      end else if(rx_en) begin
 
          rx_pc <= rx_pc + 1'b1; //increment pc by default
 
          case (rx_pc)
            
-           0: begin //wait for start bit 
+           0: begin //sync up
+              rts <= 1'b1;
               rx_ready <= 1'b0;
-              rx_cyclecnt <= bit_duration/2; 
+              rx_cyclecnt <= 1'b1;
               rx_bitcnt <= 1'b0;
-              if (rxd) //start bit has not arrived: stay here
+              if (!rxd) //line is low, wait until it is high
                  rx_pc <= rx_pc;
            end
 
-           1: begin // receive data
+           1: begin //line is high
+              rx_cyclecnt <= rx_cyclecnt + 1'b1;
+              if(rx_cyclecnt != bit_duration)
+                 rx_pc <= rx_pc;
+              else if(!rxd) //error: line returned to low early
+                 rx_pc <= 1'b0; //go back and resync
+           end
+           
+           2: begin //wait for start bit
+              rx_cyclecnt <= 1'b1;
+              if (rxd) //start bit (low) has not arrived, wait
+                 rx_pc <= rx_pc;
+           end
+
+           3: begin //start bit is here
+              rx_cyclecnt <= rx_cyclecnt + 1'b1;
+              if(rx_cyclecnt != bit_duration/2) // wait half bit period
+                 rx_pc <= rx_pc;
+              else if(rxd) //error: line returned to high unexpectedly 
+                rx_pc <= 1'b0; //go back and resync
+              else
+                rx_cyclecnt <= 1'b1;
+           end
+           
+           4: begin // receive data
               rx_cyclecnt <= rx_cyclecnt + 1'b1;
               if (rx_cyclecnt == bit_duration) begin
                  rx_cyclecnt <= 1'b1;
                  rx_bitcnt <= rx_bitcnt + 1'b1;
-                 rx_pattern <= {rxd, rx_pattern[9:1]}; //sample rx line
-                 if (rx_bitcnt == 4'd9) begin //stop bit is here
+                 rx_data <= {rxd, rx_data[7:1]}; //sample rx line
+                 if (rx_bitcnt == 4'd8) begin //stop bit is here
+                    rx_data <= rx_data; //unsample rx line
                     rx_ready <= 1'b1;
                     rx_bitcnt <= 1'b0;
-                 end else begin //one data bit is here
-                    rx_pc <= rx_pc; //stay here and wait for more
-                 end
-              end else
-                rx_pc <= rx_pc; //stay here, wait for whole bit
+                 end else
+                   rx_pc <= rx_pc; //wait for more bits
+              end else begin
+                rx_pc <= rx_pc; //wait for more cycles
+              end
            end
            
-           2: begin //wait for word to be read and restart program
+           5: begin //wait for word to be read, then go wait for start bit
               rx_pc <= rx_pc; //stay here
-              if (data_read_en)
-                rx_pc <= 1'b0;
+              if (data_read_en) begin
+                 rx_pc <= 2'd2;
+                 rx_ready <= 1'b0;
+              end
            end
            
           default: ;
            
-           
-         endcase // case (rx_pc)
+         endcase
          
-      end else begin // if (rx_en && rts)
+      end else begin 
+         
          rx_pc <= 1'b0;
          rx_cyclecnt <= 1'b1;
          rx_bitcnt <= 1'b0;
          rx_ready <= 1'b0;
+      
       end
 
-   end // always @ (posedge clk, posedge rst_int)
+   end
    
-
 endmodule

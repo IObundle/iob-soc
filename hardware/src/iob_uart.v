@@ -45,7 +45,7 @@ module iob_uart
    `REG_AR(clk, rst, 0, ready_int, valid)
    `SIGNAL2OUT(ready, ready_int)
 
-   uart_core uart0 
+   uart_core uart_core0 
      (
       .clk(clk),
       .rst(rst),

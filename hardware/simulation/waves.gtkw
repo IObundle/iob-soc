@@ -1,15 +1,14 @@
 [*]
 [*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
-[*] Mon Feb  8 02:46:26 2021
+[*] Tue Feb  9 14:56:56 2021
 [*]
 [dumpfile] "(null)"
 [savefile] "/home/jsousa/sandbox/iob-soc/submodules/UART/hardware/simulation/waves.gtkw"
 [timestart] 0
 [size] 1918 1026
 [pos] -1 -1
-*-21.568748 11040000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
-[treeopen] iob_uart_tb.
-[treeopen] iob_uart_tb.uut.
+*-22.807814 21100000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] uart_tb.
 [sst_width] 324
 [signals_width] 264
 [sst_expanded] 1
@@ -17,54 +16,37 @@
 @200
 -TB
 @28
-iob_uart_tb.rts
-iob_uart_tb.wr_en
+uart_tb.rst
+uart_tb.clk
 @420
-iob_uart_tb.i
-@22
-iob_uart_tb.rcvd_data[7:0]
-@28
-iob_uart_tb.rd_en
-iob_uart_tb.rx_ready
+uart_tb.i
 @200
 -CORE
-@28
-iob_uart_tb.uut.clk
-iob_uart_tb.uut.cts
-iob_uart_tb.uut.cts_int[1:0]
-iob_uart_tb.uut.rts
-iob_uart_tb.uut.rst_soft
 @22
-iob_uart_tb.uut.bit_duration[15:0]
+uart_tb.uut.bit_duration[15:0]
 @200
 -tx
 @28
-iob_uart_tb.uut.tx_en
-iob_uart_tb.uut.tx_ready
-iob_uart_tb.wr_en
+uart_tb.uut.tx_en
+uart_tb.uut.txd
+uart_tb.uut.tx_ready
+uart_tb.uut.tx_pc[1:0]
 @22
-iob_uart_tb.uut.tx_cyclecnt[15:0]
-iob_uart_tb.uut.tx_bitcnt[3:0]
-@29
-iob_uart_tb.uut.tx_pc
-@22
-iob_uart_tb.uut.tx_pattern[9:0]
-@28
-iob_uart_tb.uut.txd
+uart_tb.uut.tx_cyclecnt[15:0]
+uart_tb.uut.tx_bitcnt[3:0]
 @200
 -rx
 @28
-iob_uart_tb.uut.rxd
-iob_uart_tb.uut.rx_en
-iob_uart_tb.uut.rx_ready
-@22
-iob_uart_tb.uut.rx_cyclecnt[15:0]
-iob_uart_tb.uut.rx_bitcnt[3:0]
-@28
-iob_uart_tb.uut.data_read_en
-iob_uart_tb.uut.rx_data[7:0]
-iob_uart_tb.uut.rx_pattern[9:0]
+uart_tb.uut.rx_en
+uart_tb.uut.rxd
+@29
+uart_tb.uut.rx_ready
 @24
-iob_uart_tb.uut.rx_pc[1:0]
+uart_tb.uut.rx_pc[2:0]
+@22
+uart_tb.uut.rx_cyclecnt[15:0]
+uart_tb.uut.rx_bitcnt[3:0]
+@28
+uart_tb.uut.rx_data[7:0]
 [pattern_trace] 1
 [pattern_trace] 0

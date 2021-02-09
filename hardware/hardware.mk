@@ -1,11 +1,6 @@
 include $(UART_DIR)/core.mk
 
-#submodules
-ifneq (INTERCON,$(filter INTERCON, $(SUBMODULES)))
-SUBMODULES+=INTERCON
 INTERCON_DIR:=$(UART_DIR)/submodules/INTERCON
-include $(INTERCON_DIR)/hardware/hardware.mk
-endif
 
 #include
 INCLUDE+=$(incdir) $(UART_HW_INC_DIR)
@@ -23,8 +18,7 @@ VHDR+=$(UART_HW_INC_DIR)/UARTsw_reg_gen.v
 VHDR+=$(wildcard $(UART_INC_DIR)/*.vh)
 
 #sources
-UART_SRC_DIR:=$(UART_DIR)/hardware/src
-VSRC+=$(wildcard $(UART_HW_DIR)/src/*.v)
+VSRC+=$(UART_HW_DIR)/src/uart_core.v
 
 .PHONY: uart_clean_hw
 

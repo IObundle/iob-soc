@@ -20,7 +20,7 @@ else
 endif
 
 sim-waves:
-	gtkwave -a $(SIM_DIR)/../waves.gtkw $(SIM_DIR)/iob_uart.vcd &
+	gtkwave -a $(SIM_DIR)/../waves.gtkw $(SIM_DIR)/uart.vcd &
 
 sim-clean:
 ifeq ($(SIM_SERVER), localhost)

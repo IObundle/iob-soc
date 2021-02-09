@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 `include "iob_uart.vh"
 
-module iob_uart_tb;
+module uart_tb;
 
    parameter clk_frequency = 100e6; //100 MHz
    parameter baud_rate = 1e6; //high value to speed sim
@@ -30,15 +30,14 @@ module iob_uart_tb;
    wire                    rx_ready;
    
    //rs232 interface (frontend)
-   reg                     cts;
-   wire                    rts;
+   wire                    rts2cts;
    wire                    tx2rx;
    
 
    initial begin
 
 `ifdef VCD
-      $dumpfile("iob_uart.vcd");
+      $dumpfile("uart.vcd");
       $dumpvars;
 `endif
       
@@ -52,8 +51,6 @@ module iob_uart_tb;
       tx_en = 0;
       rx_en = 0;
 
-      cts = 0;
-            
       div = clk_frequency / baud_rate;
       
       // deassert hard reset
@@ -77,16 +74,14 @@ module iob_uart_tb;
       @(posedge clk) #1 rst_soft = 0;
       
 
-      //enable tx
-      @(posedge clk) #1 tx_en = 1;
-      
       //enable rx
       @(posedge clk) #1 rx_en = 1;
 
-      //send clear to send (cts) to core
-      @(posedge clk) #1 cts = 1;
-
+      //enable tx
+      #20000;
+      @(posedge clk) #1 tx_en = 1;
       
+
       // write data to send
       for(i=0; i < 256; i= i+1) begin
 
@@ -149,8 +144,8 @@ module iob_uart_tb;
       .bit_duration(div),
       .rxd(tx2rx),
       .txd(tx2rx),
-      .cts(cts),
-      .rts(rts)
+      .cts(rts2cts),
+      .rts(rts2cts)
       );
 
 endmodule
