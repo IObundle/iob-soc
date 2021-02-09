@@ -12,8 +12,8 @@
 #define UART_TXEN 3
 #define UART_TXREADY 4
 #define UART_RXDATA 5
-#define UART_RXREADY 6
-#define UART_RXEN 7
+#define UART_RXEN 6
+#define UART_RXREADY 7
 
 //Functions
 
@@ -23,11 +23,8 @@ void uart_init(int base_address, int div);
 //Get the division factor div
 int uart_getdiv();
 
-//Wait for tx to be ready
-void uart_txwait();
-
-//Get tx status (0/1 = busy/ready)
-int uart_txstatus();
+//Get char
+char uart_getc();
 
 //Print char
 void uart_putc(char c);
@@ -38,14 +35,17 @@ void uart_puts(char *s);
 //formated print
 void uart_printf(char* fmt, ...);
 
-//Wait for rx to be ready
-void uart_rxwait();
+//Get tx status (0/1 = busy/ready)
+int uart_istxready();
 
 //Get rx status (0/1 = busy/ready)
-int uart_rxstatus();
+int uart_isrxready();
 
-//Get char
-char uart_getc();
+//Wait for tx to be ready
+void uart_txwait();
+
+//Wait for rx to be ready
+void uart_rxwait();
 
 //Loads firmware
 void uart_loadfw(char *mem);
@@ -56,15 +56,7 @@ void uart_sendfile(unsigned int file_size, char* file_name, char *mem);
 //Get file 
 void uart_getfile(char* file_name, char *mem);
 
-void uart_connect();
-
 void uart_finish();
-
-#define uart_disconnect() uart_putc(EOT)
-
-#define uart_starttext() uart_putc(STX)
-
-#define uart_endtext() uart_putc (ETX)
 
 #define uart_startsendfile() uart_putc (FTX)
 

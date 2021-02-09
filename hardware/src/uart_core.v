@@ -49,7 +49,7 @@ module uart_core
    assign txd = tx_pattern[0];
    
    //tx program
-   reg  tx_pc;   
+   reg  [1:0] tx_pc;   
    always @(posedge clk, posedge rst_int)
 
      if(rst_int) begin 
@@ -71,15 +71,17 @@ module uart_core
              tx_bitcnt <= 1'b0;
              tx_cyclecnt <= 1'b1;   
              tx_pattern <= ~9'b0;
-
              if(!data_write_en)
                tx_pc <= tx_pc;
-             else begin
-                tx_pattern <= {1'b1, tx_data[7:0], 1'b0};
+             else
                 tx_ready <= 1'b0;
-             end
           end
-          1: begin //send pattern
+
+          1: begin //load tx pattern to send
+             tx_pattern <= {1'b1, tx_data[7:0], 1'b0};
+          end
+
+          2: begin //send pattern
              tx_pc <= tx_pc; //stay here util pattern sent
              tx_cyclecnt <= tx_cyclecnt + 1'b1; //increment cycle counter
              if (tx_cyclecnt == bit_duration)
