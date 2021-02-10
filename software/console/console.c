@@ -21,7 +21,7 @@ void cnsl_perror (char * mesg) {
 void cnsl_getchar(char *byte) {
   int nbytes;
   do {
-    nbytes = (int) read(serial_fd, &byte, 1);
+    nbytes = (int) read(serial_fd, byte, 1);
   } while (!(nbytes > 0));
 }
 
@@ -308,13 +308,13 @@ int main(int argc, char* argv[]) {
           cnsl_sendfile();
         } else
           cnsl_putchar(ACK);
-        break;
       }
-      
-    case EOT:
-      exit(0);
       break;
       
+    case EOT:
+      printf(PROGNAME); printf(": exiting...\n");
+      exit(0);
+      break;
       
     default:
       printf("%c", byte);
