@@ -38,7 +38,10 @@ int main() {
   uart_puts (PROGNAME);
   uart_puts (": Sending boot mode enquiry to host\n");
 
-  do uart_putc(ENQ); while(uart_isrxready());
+  do {
+    if(uart_istxready())
+      uart_putc(ENQ);
+  } while(!uart_isrxready());
 
   if (uart_getc() == LOAD) //load firmware
       uart_loadfw(prog_start_addr);

@@ -64,7 +64,8 @@ module system_tb;
          case(cpu_char)
            `ENQ: begin
 `ifdef LD_FW //send program
-              cpu_putchar(`FRX);              
+              cpu_putchar(`FRX); 
+              cpu_getchar(cpu_char); //remove extra ENQ received
               cpu_sendfile();
 `else
               cpu_putchar(`ACK);              

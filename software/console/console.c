@@ -6,100 +6,43 @@
 #include <unistd.h>  // UNIX Standard Definitions
 #include <errno.h>   // ERROR Number Definitions
 #include <time.h>
-
 #include "iob-uart-ascii.h"
 
 #define PROGNAME "IOb-Console"
 
-void connect(int serial_fd) {
-  unsigned char byte;
-  int nbytes = 0;
+static int serial_fd;
 
-  //wait for taget to send ENQ 
-  while (nbytes <= 0) {
-    nbytes = (int) read(serial_fd, &byte, 1);
-    if ( nbytes > 0 && byte == ENQ)
-      break;
-    //this will unblock target block read
-    byte = 0;
-    while (write(serial_fd, &byte, 1) <= 0);
-  }
-  printf(PROGNAME); printf(": ENQ symbol received from target\n");
-  
-  //send ACK
-  byte = ACK;
-  while ( write(serial_fd, &byte, 1) <= 0);
+//print error
+void cnsl_perror (char * mesg) {
+  printf(PROGNAME); printf(": %s\n", mesg);
+  exit(1);
 }
 
-//prints incoming chars until ETX or ENQ is received
-void print (int serial_fd) {
-  unsigned char byte;
+void cnsl_getchar(char *byte) {
   int nbytes;
-
-  while (1) {
+  do {
     nbytes = (int) read(serial_fd, &byte, 1);
-
-    if ( nbytes > 0 &&  (byte == ETX || byte == ENQ ) )
-      break;
-
-    if (nbytes == 1)
-      printf("%c", byte);
-  }
+  } while (!(nbytes > 0));
 }
 
-//Receives file name from target
-char* recvFileName(serial_fd) {
+void cnsl_putchar(char byte) {
   int nbytes;
-  int i;
-  unsigned int name_size = 0;
-  char* file_name;
-  char byte;
-  
-  //signal target ACK 
-  byte = ACK;
-  while ( write(serial_fd, &byte, 1) <= 0 );
-	
-  //receive name size
-  do nbytes = (int) read(serial_fd, &name_size, sizeof(int)); while (nbytes <= 0);
-  
-  if (name_size==0) {
-    name_size = strlen("firmware.bin");
-  	
-    if( (file_name = (char*) malloc(name_size)) == NULL) {
-      printf(PROGNAME); printf(": memory allocation failed\n");
-      exit(1);
-    }
-    strcpy(file_name,"firmware.bin");
-  }
-  else {
-    if( (file_name = (char*) malloc(name_size)) == NULL) {
-      printf(PROGNAME); printf(": memory allocation failed\n");
-      exit(1);
-    }
-  
-    //receive file name into buffer
-    for (i=0; i<name_size;i=i+nbytes) {
-      do {
-        nbytes = (int) read(serial_fd, &file_name[i], name_size-i);      	
-      } while (nbytes <= 0);
-    }
-  }
-	
-  return file_name;
+  do nbytes = (int) write(serial_fd, &byte, 1);
+  while (nbytes <= 0);
 }
+
 
 // send file to target
-void sendFile(int serial_fd, char *name) {
+void sendFile(char *name) {
   FILE *fp;
   int file_size;
   char *buf;
-
+  int i;
+  
   //open data file
   fp = fopen(name, "rb");
-  if (!fp) {
-    {printf(PROGNAME); printf(": sendFile: Can't open file %s\n", name);}
-    exit(1);
-  }
+  if (!fp)
+    cnsl_perror("sendFile: Can't open file %s\n");
   
   //get file size
   fseek(fp, 0L, SEEK_END);
@@ -107,29 +50,21 @@ void sendFile(int serial_fd, char *name) {
   rewind(fp);
 
   //allocate space for internal file buffer
-  if( (buf = malloc(file_size)) == NULL) {
-    printf(PROGNAME); printf(": memory allocation failed\n");
-    exit(1);
-  }
-  
+  if( (buf = malloc(file_size)) == NULL)
+    cnsl_perror("memory allocation failed\n");
+
   printf(PROGNAME); printf(": starting transfer of %s (%d bytes)...\n",name, file_size);
 
   //send file size
   while (write(serial_fd, &file_size, 4) <= 0);
   
   //read file into buffer
-  if (fread(buf, sizeof(char), file_size, fp) <= 0) {
-    printf(PROGNAME); printf(": can't read file\n");
-    exit(1);
-  }
-  
+  if (fread(buf, sizeof(char), file_size, fp) <= 0)
+    cnsl_perror("can't read file\n");
     
   //send buffer
-  int i=0;
-  for(i=0;i<file_size;i++){
-    //send 1 byte at a time - fix for transfering bigger firmwares
-    while ( write(serial_fd, &(buf[i]), 1) <= 0 );
-  }
+  for(i=0;i<file_size;i++)
+    cnsl_putchar(buf[i]);
           
   //DEBUG
   //printf("buffer[%u] = %x\n", i, byte);
@@ -138,10 +73,10 @@ void sendFile(int serial_fd, char *name) {
   
   free(buf);
   fclose(fp);
-  
+
 }
 
-void recvFile(int serial_fd, char *name) {
+void recvFile(char *name) {
   FILE *fp;
   unsigned int file_size = 0;
   
@@ -151,33 +86,28 @@ void recvFile(int serial_fd, char *name) {
 
   //open data file
   fp = fopen(name, "wb");
-  if (!fp) {
-    printf(PROGNAME); printf(": recvFile: Can't open file\n");
-    exit(1);
-  }
+  if (!fp)
+    cnsl_perror("recvFile: Can't open file\n");
+
   
   printf(PROGNAME); printf(": starting %s reception...\n", name);  
   
   //receive file size
-  do nbytes = (int) read(serial_fd, &file_size, sizeof(int)); while (nbytes <= 0);
+  do nbytes = (int) read(serial_fd, &file_size, sizeof(int));
+  while (nbytes <= 0);
 
   //allocate space for internal file buffer
-  if( (buf = malloc(file_size)) == NULL) {
-    printf(PROGNAME); printf(": memory allocation failed\n");
-    exit(1);
-  }
+  if( (buf = malloc(file_size)) == NULL)
+    cnsl_perror("memory allocation failed\n");
+
   
   //receive file into buffer
-  for (i=0; i<file_size;i=i+nbytes) {
-    do {
-      nbytes = (int) read(serial_fd, &buf[i], file_size-i);      	
-    } while (nbytes <= 0);
-  }
-    
-  if( fwrite(buf, sizeof(char), file_size, fp) <= 0) {
-    printf(PROGNAME); printf(": recvFile: failed to write file\n");
-    exit(1);
-  }
+  for (i=0; i<file_size;i=i+nbytes)
+    cnsl_getchar( &buf[i]);
+
+  //save buffer into file
+  if( fwrite(buf, sizeof(char), file_size, fp) <= 0)
+    cnsl_perror("recvFile: failed to write file\n");
 
   //DEBUG
   //printf("buffer[%u] = %x\n", i, byte);
@@ -190,35 +120,16 @@ void recvFile(int serial_fd, char *name) {
 }
 
 //load firmware file into target
-void loadFile(int serial_fd) {
-  char byte;
-  int nbytes;
+void cnsl_sendfile() {
   FILE *fp;
   int file_size;
   char *buf;
+  int i;
   
-  //signal target to expect data
-  byte = FRX;
-  do nbytes = (int) write(serial_fd, &byte, 1);
-  while (nbytes <= 0);
-  
-  //print incoming messages
-  do {
-    nbytes = (int) read(serial_fd, &byte, 1);
-  } while (!(nbytes > 0 && byte == STX));
-  print(serial_fd);
-  
-  //Wait for target
-  do {
-    nbytes = (int) read(serial_fd, &byte, 1);
-  } while (!(nbytes > 0 && byte == FRX));
-
-  //open data file
+  //open file to sent
   fp = fopen("firmware.bin", "rb");
-  if (!fp) {
-    {printf(PROGNAME); printf(": sendFile: Can't open firmware.bin\n");}
-    exit(1);
-  }
+  if (!fp)
+    cnsl_perror("sendFile: Can't open firmware.bin\n");
   
   //get file size
   fseek(fp, 0L, SEEK_END);
@@ -226,32 +137,21 @@ void loadFile(int serial_fd) {
   rewind(fp);
 
   //allocate space for internal file buffer
-  if( (buf = malloc(file_size)) == NULL) {
-    printf(PROGNAME); printf(": memory allocation failed\n");
-    exit(1);
-  }
+  if( (buf = malloc(file_size)) == NULL)
+    cnsl_perror("memory allocation failed\n");
   
   printf(PROGNAME); printf(": starting to load firmware with %d bytes...\n", file_size);
   
-  //signal target ACK 
-  byte = ACK;
-  while ( write(serial_fd, &byte, 1) <= 0 );
-
   //send file size
   while (write(serial_fd, &file_size, 4) <= 0);
   
   //read file into buffer
-  if (fread(buf, sizeof(char), file_size, fp) <= 0) {
-    printf(PROGNAME); printf(": can't read file\n");
-    exit(1);
-  }
+  if (fread(buf, sizeof(char), file_size, fp) <= 0)
+    cnsl_perror("can't read file\n");
   
-  //send file
-  int i=0;
-  for(i=0;i<file_size;i++){
-    //send 1 byte at a time - fix for transfering bigger firmwares
-    while ( write(serial_fd, &(buf[i]), 1) <= 0 );
-  }
+  //send file 1 byte at a time (fix for transfering large files)
+  for(i=0;i<file_size;i++)
+    cnsl_putchar(buf[i]);
   
   printf (PROGNAME); printf(": file loading complete\n");
   
@@ -279,27 +179,21 @@ int openSerialPort(char *serialPort) {
   // -the status of DCD line, Open() returns immediatly //
   
   fd = open(serialPort, O_RDWR | O_NOCTTY | O_NDELAY);
-  if (fd == -1) {
-    printf(PROGNAME); printf(": can't open %s\n", serialPort);
-    exit(1);
-  }
-
+  if (fd == -1)
+    cnsl_perror("can't open serial port\n");
   
   //set attributes of the serial port using termios structure
   
   //get current configuration of the serial interface
-  if (tcgetattr(fd, &SerialPortSettings) < 0) {
-    printf(PROGNAME); printf(": can't get configuration of %s\n", serialPort);
-    exit(1);
-  }
+  if (tcgetattr(fd, &SerialPortSettings) < 0)
+    cnsl_perror("can't get configuration of serial port\n");
+
 
   
   //set baud rate to 115200
   if (cfsetispeed(&SerialPortSettings, B115200) < 0 ||
-      cfsetospeed(&SerialPortSettings, B115200) < 0) {
-    printf(PROGNAME); printf(": can't set baud rate %s\n", serialPort);
-    exit(1);
-  }
+      cfsetospeed(&SerialPortSettings, B115200) < 0)
+    cnsl_perror("can't set baud rate of serial port\n");
 
   
   //                                                             //
@@ -353,9 +247,8 @@ int openSerialPort(char *serialPort) {
   
   // Apply new configuration
   if (tcsetattr(fd, TCSANOW, &SerialPortSettings)) {
-    printf("\n  ERROR ! in Setting attributes\n");
     close(fd);
-    exit(1);
+    cnsl_perror("\n  ERROR ! in Setting attributes\n");
   } else {
     printf("\n  BaudRate = 115200 \n  StopBits = 1 \n  Parity   = None\n\n");
   }
@@ -365,53 +258,17 @@ int openSerialPort(char *serialPort) {
   return fd;
 }
 
-void usage(char *message) {
-  printf("usage: %s\n", message);
-  printf("       ./console -s <serial port> -f <firmware file> -i <input file> -o <output file>\n");
-  printf("       -f, -i and -o arguments are optional\n");
-  exit(1);
+void usage(char *message){
+  cnsl_perror("usage: ./console -s <serial port> [ -f <firmware file> ]\n");
 }
 
-//send run signal and wait for commands
-void run(int serial_fd) {
-  unsigned char byte;
-  int nbytes;
-  char* file_name;
-  
-  printf(PROGNAME); printf(": Sending RUN command to target\n");
-  byte = EOT;
-  while (write(serial_fd, &byte, 1) <= 0);
-  
-  printf(PROGNAME); printf(": RUN command sent to target\n");
-  fflush(stdout);
-	
-  while (1) {
-    nbytes = (int) read(serial_fd, &byte, 1);
-    if (nbytes > 0) {
-      if (byte == STX) { //Print mode
-        print(serial_fd);
-      }
-      else if (byte == FRX) { //Send a file to firmware mode
-        file_name = recvFileName(serial_fd);
-        sendFile(serial_fd, file_name);	
-        free(file_name);
-      }
-      else if (byte == FTX) { //Receive a file from firmware mode
-        file_name = recvFileName(serial_fd);
-        recvFile(serial_fd, file_name);
-        free(file_name);
-      }
-      else if (byte == EOT) //Program finished
-        break;
-    }
-  }
-  
-}
 
+//
+// MAIN ROUTINE
+//
 
 int main(int argc, char* argv[]) {
   char *serialPort = 0;
-  int serial_fd;
   char *fwFile = 0;
   int i;
   
@@ -428,26 +285,45 @@ int main(int argc, char* argv[]) {
     } else  usage("PROGNAME: unexpected argument\n");
   }
   
+  //open serial port
   serial_fd = openSerialPort(serialPort);
-  if (!serial_fd)
-    exit(1);
-  
-  //sync with target
-  connect(serial_fd);
-  printf(PROGNAME); printf(": Connected to target\n");
-  fflush(stdout);
 
-  //send firmware file
-  if (fwFile) {
-    loadFile(serial_fd);
-    printf(PROGNAME); printf(": Firmware sent to target\n");
-    fflush(stdout);
+  //server loop
+  char byte;
+  int gotENQ = 0;
+
+  while (1) {
+
+    //get byte from target
+    cnsl_getchar(&byte);
+
+    //process command
+    switch (byte) {
+          
+    case ENQ:
+      if(!gotENQ) {
+        gotENQ = 1;
+        if(fwFile) {
+          cnsl_putchar(FRX);
+          cnsl_sendfile();
+        } else
+          cnsl_putchar(ACK);
+        break;
+      }
+      
+    case EOT:
+      exit(0);
+      break;
+      
+      
+    default:
+      printf("%c", byte);
+      fflush(stdout);
+
+    }
+
   }
   
-  // Run application
-  run(serial_fd);
-  
   close(serial_fd);
-  
-  return 0;
+
 }
