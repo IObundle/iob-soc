@@ -112,6 +112,7 @@ module uart_core
    reg [2:0] rx_pc;
    reg [15:0] rx_cyclecnt;
    reg [3:0]  rx_bitcnt;
+   reg [7:0]  rx_pattern;
 
    always @(posedge clk, posedge rst_int) begin
 
@@ -168,29 +169,28 @@ module uart_core
               if (rx_cyclecnt == bit_duration) begin
                  rx_cyclecnt <= 1'b1;
                  rx_bitcnt <= rx_bitcnt + 1'b1;
-                 rx_data <= {rxd, rx_data[7:1]}; //sample rx line
+                 rx_pattern <= {rxd, rx_pattern[7:1]}; //sample rx line
                  if (rx_bitcnt == 4'd8) begin //stop bit is here
-                    rx_data <= rx_data; //unsample rx line
+                    rx_pattern <= rx_pattern; //unsample rx line
+                    rx_data <= rx_pattern; //unsample rx line
                     rx_ready <= 1'b1;
                     rx_bitcnt <= 1'b0;
-                 end else
-                   rx_pc <= rx_pc; //wait for more bits
+                    rx_pc <= 2'd2;
+                 end else begin
+                    rx_pc <= rx_pc; //wait for more bits
+                 end 
               end else begin
-                rx_pc <= rx_pc; //wait for more cycles
+                 rx_pc <= rx_pc; //wait for more cycles
               end
            end
-           
-           5: begin //wait for word to be read, then go wait for start bit
-              rx_pc <= rx_pc; //stay here
-              if (data_read_en) begin
-                 rx_pc <= 2'd2;
-                 rx_ready <= 1'b0;
-              end
-           end
-           
-          default: ;
-           
+
+           default: ;
+
          endcase
+
+         if (data_read_en) begin
+            rx_ready <= 1'b0;
+         end
          
       end else begin 
          

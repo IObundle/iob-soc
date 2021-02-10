@@ -27,6 +27,10 @@ int uart_getdiv()
 }
 
 //tx functions
+void uart_txen(int val) {
+  IO_SET(base, UART_TXEN, val);
+}
+
 void uart_txwait() {
   while(!IO_GET(base, UART_TXREADY));
 }
@@ -38,6 +42,11 @@ int uart_istxready() {
 void uart_putc(char c) {
   while(!uart_istxready());
   IO_SET(base, UART_TXDATA, (int)c);
+}
+
+//rx functions
+void uart_rxen(int val) {
+  IO_SET(base, UART_RXEN, val);
 }
 
 void uart_rxwait() {

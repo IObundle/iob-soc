@@ -1,8 +1,10 @@
 [*]
 [*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
-[*] Tue Feb  9 14:56:56 2021
+[*] Tue Feb  9 15:11:05 2021
 [*]
-[dumpfile] "(null)"
+[dumpfile] "/home/jsousa/sandbox/iob-soc/submodules/UART/hardware/simulation/icarus/uart.vcd"
+[dumpfile_mtime] "Tue Feb  9 15:09:33 2021"
+[dumpfile_size] 15914733
 [savefile] "/home/jsousa/sandbox/iob-soc/submodules/UART/hardware/simulation/waves.gtkw"
 [timestart] 0
 [size] 1918 1026

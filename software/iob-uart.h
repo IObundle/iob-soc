@@ -35,17 +35,23 @@ void uart_puts(char *s);
 //formated print
 void uart_printf(char* fmt, ...);
 
-//Get tx status (0/1 = busy/ready)
-int uart_istxready();
-
-//Get rx status (0/1 = busy/ready)
-int uart_isrxready();
+//Enable / diable tx
+void uart_txen(int val);
 
 //Wait for tx to be ready
 void uart_txwait();
 
+//Get tx status (0/1 = busy/ready)
+int uart_istxready();
+
+//Enable / diable rx
+void uart_rxen(int val);
+
 //Wait for rx to be ready
 void uart_rxwait();
+
+//Get rx status (0/1 = busy/ready)
+int uart_isrxready();
 
 //Loads firmware
 void uart_loadfw(char *mem);

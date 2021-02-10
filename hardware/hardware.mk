@@ -18,7 +18,7 @@ VHDR+=$(UART_HW_INC_DIR)/UARTsw_reg_gen.v
 VHDR+=$(wildcard $(UART_INC_DIR)/*.vh)
 
 #sources
-VSRC+=$(UART_HW_DIR)/src/uart_core.v
+VSRC+=$(UART_HW_DIR)/src/uart_core.v $(UART_HW_DIR)/src/iob_uart.v
 
 .PHONY: uart_clean_hw
 
