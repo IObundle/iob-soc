@@ -15,6 +15,11 @@ UART_SUBMODULES_DIR:=$(UART_DIR)/submodules
 LIB_DIR ?= $(UART_SUBMODULES_DIR)/LIB
 TEX_DIR ?= $(UART_SUBMODULES_DIR)/TEX
 
+#submodules
+UART_SUBMODULES:=INTERCON LIB TEX
+$(foreach p, $(UART_SUBMODULES), $(eval $p_DIR:=$(UART_DIR)/submodules/$p))
+
+
 REMOTE_ROOT_DIR ?= sandbox/iob-soc/submodules/UART
 
 #
