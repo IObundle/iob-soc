@@ -32,20 +32,20 @@ int main() {
   }
   if(RUN_DDR_SW){
     uart_puts (PROGNAME);
-    uart_puts(": Program to run from DDR\n");
+    uart_puts(": program to run from DDR\n");
   }
 
-// address to copy firmware to
+  // address to copy firmware to
   char **prog_start_addr;
   if (USE_DDR_SW==0 || (USE_DDR_SW==1 && RUN_DDR_SW==0))	
     *prog_start_addr = (char *) (1<<BOOTROM_ADDR_W);
   else
     *prog_start_addr = (char *) EXTRA_BASE;
 
+  //receive firmware from host 
   int file_size = 0;
-  char *fw_name = "firmware.bin";
   if (uart_getc() == FRX) {//load firmware
-    file_size = uart_recvfile(fw_name, prog_start_addr);
+    file_size = uart_recvfile("firmware.bin", prog_start_addr);
     uart_puts (PROGNAME);
     uart_puts (": Loading firmware...\n");
   }
@@ -53,7 +53,7 @@ int main() {
   //sending firmware back for debug
   if(file_size) {
     uart_putc(FTX);
-    uart_sendfile("fw.bin", file_size, *prog_start_addr);
+    uart_sendfile("fw_bin", file_size, *prog_start_addr);
   }
   
   //run firmware
