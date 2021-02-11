@@ -2,21 +2,15 @@
 #include "interconnect.h"
 #include "iob-uart.h"
 
-#if (USE_DDR==1 && RUN_DDR==1)
+#if (USE_DDR_SW==1 && RUN_DDR_SW==1)
 #include "iob-cache.h"
 #endif
 
 #define UART_BASE (1<<P) |(UART<<(ADDR_W-2-N_SLAVES_W))
+//why not include periphs.h instead?
 
-// address to copy firmware to
-#if (USE_DDR==0 || (USE_DDR==1 && RUN_DDR==0))	
-char *prog_start_addr = (char *) (1<<BOOTROM_ADDR_W);
-#else
-char *prog_start_addr = (char *) EXTRA_BASE;
-#endif
-
-#define LOAD FRX
 #define PROGNAME "IOb-Bootloader"
+
 int main() {
 
   //init uart 
@@ -30,7 +24,7 @@ int main() {
 
   //welcome message
   uart_puts (PROGNAME);
-  uart_puts (": Welcome!\n");
+  uart_puts (": connected!\n");
 
   if(USE_DDR_SW){
     uart_puts (PROGNAME);
@@ -41,12 +35,27 @@ int main() {
     uart_puts(": Program to run from DDR\n");
   }
 
-  if (uart_getc() == LOAD) {//load firmware
-    uart_loadfw(prog_start_addr);
+// address to copy firmware to
+  char **prog_start_addr;
+  if (USE_DDR_SW==0 || (USE_DDR_SW==1 && RUN_DDR_SW==0))	
+    *prog_start_addr = (char *) (1<<BOOTROM_ADDR_W);
+  else
+    *prog_start_addr = (char *) EXTRA_BASE;
+
+  int file_size = 0;
+  char *fw_name = "firmware.bin";
+  if (uart_getc() == FRX) {//load firmware
+    file_size = uart_recvfile(fw_name, prog_start_addr);
     uart_puts (PROGNAME);
     uart_puts (": Loading firmware...\n");
   }
 
+  //sending firmware back for debug
+  if(file_size) {
+    uart_putc(FTX);
+    uart_sendfile("fw.bin", file_size, *prog_start_addr);
+  }
+  
   //run firmware
   uart_puts (PROGNAME);
   uart_puts (": Restart CPU to run user program...\n");
