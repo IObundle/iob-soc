@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stdint.h>
-#include "iob-uart-ascii.h"
 
 #define UART_PROGNAME "IOb-UART"
 
@@ -15,13 +14,36 @@
 #define UART_RXEN 6
 #define UART_RXREADY 7
 
-//Functions
+//UART commands
+#define NUL 0 //start text
+#define STX 2 //start text
+#define ETX 3 //end text
+#define EOT 4 //end of transission
+#define ENQ 5 //enquiry
+#define ACK 6 //acklowledge
+#define FTX 7 //transmit file
+#define FRX 8 //receive file
+
+
+//UART functions
+
+//Set base address
+void uart_setbaseaddr(int v);
+
+//Soft reset
+void uart_softrst(int v);
 
 //Reset UART and set the division factor
 void uart_init(int base_address, int div);
 
-//Get the division factor div
+//Close transmission
+void uart_finish();
+
+//Get the division factor div (fclk/baud)
 int uart_getdiv();
+
+//Set the division factor div (fclk/baud)
+void uart_setdiv(int v);
 
 //Get char
 char uart_getc();
@@ -57,17 +79,8 @@ int uart_isrxready();
 void uart_loadfw(char *mem);
 
 //Send file
-void uart_sendfile(unsigned int file_size, char* file_name, char *mem);
+void uart_sendfile(char* file_name, int file_size, char *mem);
 
-//Get file 
-void uart_getfile(char* file_name, char *mem);
+//Receive file 
+int uart_recvfile(char* file_name, char **mem);
 
-void uart_finish();
-
-#define uart_startsendfile() uart_putc (FTX)
-
-#define uart_startrecvfile() uart_putc (FRX)
-
-#define uart_getcmd() uart_getc()
-
-void uart_sleep (int n);
