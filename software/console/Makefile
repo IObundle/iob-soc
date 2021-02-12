@@ -8,7 +8,7 @@ CC:=gcc
 CFLAGS:=-g -Wall
 
 INCLUDE+=-I$(UART_DIR)/software
-SRC:=console.c
+SRC:=console.c rs232comm.c
 
 CONSOLE_CMD=./console -s $(SERIAL)
 ifeq ($(INIT_MEM),0)

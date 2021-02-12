@@ -10,6 +10,11 @@ ifeq ($(USE_DDR),1)
 include $(CACHE_DIR)/hardware/hardware.mk
 endif
 
+#interconect
+INTERCON_DIR:=$(CACHE_DIR)/submodules/INTERCON
+include $(INTERCON_DIR)/hardware/hardware.mk
+
+
 #rom
 ifneq ($(ASIC),1)
 SUBMODULES+=SPROM
