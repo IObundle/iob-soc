@@ -25,7 +25,7 @@ module system_tb;
    reg [`UART_ADDR_W-1:0] uart_addr;
    reg [`DATA_W-1:0]      uart_wdata;
    reg [3:0]              uart_wstrb;
-   reg [`DATA_W-1:0]      uart_rdata;
+   wire [`DATA_W-1:0]     uart_rdata;
    wire                   uart_ready;
 
    //iterator
@@ -88,12 +88,12 @@ module system_tb;
            end
            
            `FRX: begin
-              $display("TESTBENCH: got file send request\n");
+              $display("TESTBENCH: got file send request");
               cpu_sendfile();
            end
 
            `FTX: begin
-              $display("TESTBENCH: got file receive request\n");
+              $display("TESTBENCH: got file receive request");
               cpu_recvfile();
            end
 

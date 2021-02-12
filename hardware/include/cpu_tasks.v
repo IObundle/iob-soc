@@ -114,10 +114,10 @@ task cpu_sendfile;
 
       //receive file name
       cpu_recvstr(name);
-      $display("TESBENCH: sending file %s", name);
+      name_str = name;
+      $display("TESBENCH: sending file %s", name_str);
          
       //open data file
-      name_str = name;
       fp = $fopen(name_str,"rb");
 
       if(!fp)
@@ -157,10 +157,13 @@ task cpu_recvfile;
    integer           fp;
    integer           i, k;
    reg [8*80-1:0]    name;
+   string            name_str;
 
    begin
       //receive file name
       cpu_recvstr(name);
+      name_str = name;
+      $display("TESBENCH: receiving file %s", name_str);
         
       fp = $fopen(name, "wb");
       if(!fp)
@@ -176,7 +179,6 @@ task cpu_recvfile;
       k = 0;
       for(i = 0; i < file_size; i++) begin
 	 cpu_getchar(char);
-         $fwrite(fp,"%c", char);
          
          if(i/4 == (file_size/4*k/100)) begin
             $write("%d%%\n", k);
@@ -184,7 +186,6 @@ task cpu_recvfile;
          end
       end
       $write("%d%%\n", 100);
-
       $fclose(fp);
    end
 endtask

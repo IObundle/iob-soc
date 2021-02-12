@@ -55,7 +55,6 @@ void cnsl_sendfile() {
   
   printf (PROGNAME); printf(": file sent\n");
   
-  free(buf);
   fclose(fp);
 }
 
@@ -90,7 +89,6 @@ void cnsl_recvfile() {
   
   printf (PROGNAME); printf(": file of size %d bytes received\n", file_size);
 
-  free(buf);
   fclose(fp);
 
 }
