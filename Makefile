@@ -1,34 +1,21 @@
 #
 # TOP MAKEFILE
 #
+UART_DIR:=.
+include core.mk
 
 #
 # SIMULATE
 #
 
-UART_DIR:=.
-include core.mk
-
 sim:
-ifeq ($(SIM_SERVER), localhost)
-	make -C $(SIM_DIR) run SIMULATOR=$(SIMULATOR)
-else
-	ssh $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
-	make -C $(SIM_DIR) clean
-	rsync -avz --delete --exclude .git $(UART_DIR) $(SIM_USER)@$(SIM_SERVER):$(USER)/$(REMOTE_ROOT_DIR)
-	ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(SIM_DIR) run SIMULATOR=$(SIMULATOR) SIM_SERVER=localhost'
-endif
+	make -C $(SIM_DIR) run
 
 sim-waves:
 	gtkwave -a $(SIM_DIR)/../waves.gtkw $(SIM_DIR)/uart.vcd &
 
 sim-clean:
-ifeq ($(SIM_SERVER), localhost)
 	make -C $(SIM_DIR) clean
-else 
-	rsync -avz --delete --exclude .git $(UART_DIR) $(SIM_USER)@$(SIM_SERVER):$(USER)/$(REMOTE_ROOT_DIR)
-	ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR); make clean SIM_SERVER=localhost FPGA_SERVER=localhost'
-endif
 
 fpga:
 ifeq ($(FPGA_SERVER), localhost)
@@ -59,14 +46,21 @@ doc:
 doc-clean:
 	make -C document/$(DOC_TYPE) clean
 
+doc-clean-all:
+	make -C document/pb clean
+	make -C document/ug clean
+
 doc-pdfclean:
+	make -C document/$(DOC_TYPE) pdfclean
+
+doc-pdfclean-all:
 	make -C document/$(DOC_TYPE) pdfclean
 
 #
 # CLEAN
 # 
 
-clean: sim-clean fpga-clean doc-clean
+clean: sim-clean fpga-clean doc-clean-all doc-pdfclean-all
 
-.PHONY: sim sim-waves fpga fpga_clean doc doc-clean doc-pdfclean clean
+.PHONY: sim sim-waves fpga fpga_clean doc doc-clean doc-clean-all doc-pdfclean doc-pdfclean-all clean
 

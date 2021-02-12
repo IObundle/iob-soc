@@ -1,54 +1,38 @@
 include $(UART_DIR)/core.mk
 
-INTERCON_DIR:=$(UART_DIR)/submodules/INTERCON
+#SUBMODULE HARDWARE
+#intercon
+ifneq (INTERCON,$(filter INTERCON, $(SUBMODULES)))
+include $(INTERCON_DIR)/hardware/hardware.mk
+SUBMODULES+=INTERCON
+endif
 
-#include
-INCLUDE+=$(incdir) $(UART_HW_INC_DIR)
+#lib
+ifneq (LIB,$(filter LIB, $(SUBMODULES)))
 INCLUDE+=$(incdir) $(LIB_DIR)/hardware/include
-INCLUDE+=$(incdir) $(INTERCON_DIR)/hardware/include
-UART_INC_DIR:=$(UART_HW_DIR)/include
-INCLUDE+=$(incdir) $(UART_INC_DIR)
-
-
-#headers
-VHDR+=$(wildcard $(UART_HW_INC_DIR)/*.vh)
 VHDR+=$(wildcard $(LIB_DIR)/hardware/include/*.vh)
-VHDR+=$(wildcard $(INTERCON_DIR)/hardware/include/*.vh $(INTERCON_DIR)/hardware/include/*.v)
-VHDR+=$(UART_HW_INC_DIR)/UARTsw_reg_gen.v
-VHDR+=$(wildcard $(UART_INC_DIR)/*.vh)
+SUBMODULES+=LIB
+endif
 
+#hardware include dirs
+INCLUDE+=$(incdir) $(UART_HW_DIR)/include
+
+#UART HARDWARE
+#included files
+VHDR+=$(wildcard $(UART_HW_DIR)/include/*.vh)
+VHDR+=$(UART_HW_DIR)/include/UARTsw_reg_gen.v
 #sources
 VSRC+=$(UART_HW_DIR)/src/uart_core.v $(UART_HW_DIR)/src/iob_uart.v
 
-.PHONY: uart_clean_hw
 
-#################################################################################################
-
-$(UART_HW_INC_DIR)/UARTsw_reg_gen.v: $(UART_HW_INC_DIR)/UARTsw_reg.v
+#cpu accessible registers
+$(UART_HW_DIR)/include/UARTsw_reg_gen.v: $(UART_HW_DIR)/include/UARTsw_reg.v
 	$(LIB_DIR)/software/mkregs.py $< HW
-	mv UARTsw_reg_gen.v $(UART_HW_INC_DIR)
-	mv UARTsw_reg.vh $(UART_HW_INC_DIR)
+	mv UARTsw_reg_gen.v $(UART_HW_DIR)/include
+	mv UARTsw_reg.vh $(UART_HW_DIR)/include
 
 uart_clean_hw:
 	@rm -rf $(UART_HW_INC_DIR)/UARTsw_reg_gen.v $(UART_HW_INC_DIR)/UARTsw_reg.vh tmp $(UART_HW_DIR)/fpga/vivado/XCKU $(UART_HW_DIR)/fpga/quartus/CYCLONEV-GT
 
-#include $(UART_DIR)/core.mk
+.PHONY: uart_clean_hw
 
-#UART_HW_DIR:=$(UART_DIR)/hardware
-
-#submodules
-#ifneq (INTERCON,$(filter INTERCON, $(SUBMODULES)))
-#SUBMODULES+=INTERCON
-#INTERCON_DIR:=$(UART_DIR)/submodules/INTERCON
-#include $(INTERCON_DIR)/hardware/hardware.mk
-#endif
-
-#include
-#UART_INC_DIR:=$(UART_HW_DIR)/include
-#INCLUDE+=$(incdir) $(UART_INC_DIR)
-
-#headers
-#VHDR+=$(wildcard $(UART_INC_DIR)/*.vh)
-
-#sources
-#VSRC+=$(wildcard $(UART_HW_DIR)/src/*.v)

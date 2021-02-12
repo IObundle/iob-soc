@@ -1,5 +1,5 @@
-hardware/include/sw_reg_gen.v
-hardware/include/sw_reg_w.vh
+hardware/include/UARTsw_reg_gen.v
+hardware/include/UARTsw_reg.vh
 software/i2s_sw_reg.h
 document/figures/bd.pdf
 document/figures/bg.pdf

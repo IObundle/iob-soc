@@ -2,45 +2,45 @@
 # CORE DEFINITIONS FILE
 #
 
-
-CORE_NAME=UART
+CORE_NAME:=UART
 IS_CORE:=1
 USE_NETLIST ?=0
 
-#PATHS
+
+#SUBMODULE PATHS
+
+ifneq (INTERCON,$(filter INTERCON, $(SUBMODULES)))
+INTERCON_DIR:=$(UART_DIR)/submodules/INTERCON
+endif
+
+ifneq (LIB,$(filter LIB, $(SUBMODULES)))
+LIB_DIR:=$(UART_DIR)/submodules/LIB
+endif
+
+ifneq (TEX,$(filter TEX, $(SUBMODULES)))
+TEX_DIR:=$(UART_DIR)/submodules/TEX
+endif
+
+
+#UART PATHS
 UART_HW_DIR:=$(UART_DIR)/hardware
-UART_HW_INC_DIR:=$(UART_HW_DIR)/include
+UART_SW_DIR:=$(UART_DIR)/software
 UART_DOC_DIR:=$(UART_DIR)/document
-UART_SUBMODULES_DIR:=$(UART_DIR)/submodules
-LIB_DIR ?= $(UART_SUBMODULES_DIR)/LIB
-TEX_DIR ?= $(UART_SUBMODULES_DIR)/TEX
 
-#submodules
-UART_SUBMODULES:=INTERCON LIB TEX
-$(foreach p, $(UART_SUBMODULES), $(eval $p_DIR:=$(UART_DIR)/submodules/$p))
-
-
-REMOTE_ROOT_DIR ?= sandbox/iob-soc/submodules/UART
 
 #
 #SIMULATION
 #
-SIMULATOR ?=icarus
-SIM_SERVER ?=localhost
-SIM_USER ?=$(USER)
-
-#SIMULATOR ?=ncsim
-#SIM_SERVER ?=micro7.lx.it.pt
-#SIM_USER ?=user19
-
-SIM_DIR ?=hardware/simulation/$(SIMULATOR)
+SIM_DIR ?=$(UART_HW_DIR)/simulation
 
 #
 #FPGA
 #
 FPGA_FAMILY ?=CYCLONEV-GT
 #FPGA_FAMILY ?=XCKU
+
 #FPGA_SERVER :=localhost
+REMOTE_ROOT_DIR ?= sandbox/iob-soc/submodules/UART
 FPGA_SERVER ?=pudim-flan.iobundle.com
 FPGA_USER ?= $(USER)
 
@@ -51,7 +51,7 @@ else
 	FPGA_COMP:=quartus
 	FPGA_PART:=5CGTFD9E5F35C7
 endif
-FPGA_DIR ?=$(UART_DIR)/hardware/fpga/$(FPGA_COMP)
+FPGA_DIR ?=$(UART_HW_DIR)/fpga/$(FPGA_COMP)
 
 ifeq ($(FPGA_COMP),vivado)
 FPGA_LOG:=vivado.log
