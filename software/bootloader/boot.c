@@ -2,53 +2,71 @@
 #include "interconnect.h"
 #include "iob-uart.h"
 
-#if (USE_DDR==1 && RUN_DDR==1)
+#if (USE_DDR_SW==1 && RUN_DDR_SW==1)
 #include "iob-cache.h"
 #endif
 
+//defined here (and not in periphs.h) because it is the only peripheral used
+//by the bootloader
 #define UART_BASE (1<<P) |(UART<<(ADDR_W-2-N_SLAVES_W))
 
-// address to copy firmware to
-#if (USE_DDR==0 || (USE_DDR==1 && RUN_DDR==0))	
-char *prog_start_addr = (char *) (1<<BOOTROM_ADDR_W);
-#else
-char *prog_start_addr = (char *) EXTRA_BASE;
-#endif
-
-#define LOAD FRX
 #define PROGNAME "IOb-Bootloader"
+
 int main() {
 
   //init uart 
   uart_init(UART_BASE, FREQ/BAUD);
 
-  //connect with host, comment to disable handshaking
-  uart_connect();
+  //connect with console
+   do {
+    if(uart_istxready())
+      uart_putc(ENQ);
+  } while(!uart_isrxready());
 
-  //start message
+  //welcome message
   uart_puts (PROGNAME);
-  uart_puts (": started...\n");
+  uart_puts (": connected!\n");
+
   if(USE_DDR_SW){
     uart_puts (PROGNAME);
     uart_puts(": DDR in use\n");
   }
   if(RUN_DDR_SW){
     uart_puts (PROGNAME);
-    uart_puts(": Program to run from DDR\n");
+    uart_puts(": program to run from DDR\n");
   }
+
+  // address to copy firmware to
+  char *prog_start_addr[1];
+  if (USE_DDR_SW==0 || (USE_DDR_SW==1 && RUN_DDR_SW==0))	
+    prog_start_addr[0] = (char *) (1<<BOOTROM_ADDR_W);
+  else
+    prog_start_addr[0] = (char *) EXTRA_BASE;
+
+  //receive firmware from host 
+  int file_size = 0;
+  char r_fw[] = "firmware.bin";
+  if (uart_getc() == FRX) {//file receive: load firmware
+    file_size = uart_recvfile(r_fw, prog_start_addr);
+    uart_puts (PROGNAME);
+    uart_puts (": Loading firmware...\n");
+  }
+
+  //sending firmware back for debug
+  char s_fw[] = "s_fw.bin";
+
+  if(file_size)
+    uart_sendfile(s_fw, file_size, prog_start_addr[0]);
   
-  char host_cmd = uart_getc(); //receive command
-  
-  if (host_cmd==LOAD) //load firmware
-      uart_loadfw(prog_start_addr);
- 	//run firmware
+  //run firmware
   uart_puts (PROGNAME);
-  uart_puts (": ");
-  uart_puts ("Restart CPU to run user program...\n");
+  uart_puts (": Restart CPU to run user program...\n");
   uart_txwait();
+
 #if (USE_DDR && RUN_DDR)
   //by reading any DDR data, it forces the caches to first write everyting before reason (write-through write-not-allocate)
-  char force_cache_read = prog_start_addr[0];
+  char force_cache_read = *prog_start_addr[0];
+  uart_rxen(force_cache_read);//this line prevents compiler from optimizing away force_cache_read
 #endif
   //reboot and run firmware (not bootloader)
   MEM_SET(int, BOOTCTR_BASE, 0b10);//{cpu_rst_req=1, boot=0}
