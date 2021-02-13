@@ -87,7 +87,7 @@ task cpu_putchar;
 endtask
 
 task cpu_recvstr;
-   output reg [8*80-1:0] name;
+   output [8*80-1:0] name;
    integer           k;
    reg [7:0]         rcv_char;
    
