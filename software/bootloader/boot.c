@@ -6,8 +6,9 @@
 #include "iob-cache.h"
 #endif
 
+//defined here (and not in periphs.h) because it is the only peripheral used
+//by the bootloader
 #define UART_BASE (1<<P) |(UART<<(ADDR_W-2-N_SLAVES_W))
-//why not include periphs.h instead?
 
 #define PROGNAME "IOb-Bootloader"
 
@@ -64,7 +65,8 @@ int main() {
 
 #if (USE_DDR && RUN_DDR)
   //by reading any DDR data, it forces the caches to first write everyting before reason (write-through write-not-allocate)
-  char force_cache_read = prog_start_addr[0];
+  char force_cache_read = *prog_start_addr[0];
+  uart_rxen(force_cache_read);//this line prevents compiler from optimizing away force_cache_read
 #endif
   //reboot and run firmware (not bootloader)
   MEM_SET(int, BOOTCTR_BASE, 0b10);//{cpu_rst_req=1, boot=0}
