@@ -181,11 +181,6 @@ else
 DEFINE+=$(defmacro)FREQ=$(FREQ)
 endif
 
-#use compressed instructions
-ifeq ($(USE_COMPRESSED),1)
-DEFINE+=$(defmacro)USE_COMPRESSED
-endif
-
 #create periph serial number
 N_SLAVES:=0
 $(foreach p, $(PERIPHERALS), $(eval $p=$(N_SLAVES)) $(eval N_SLAVES:=$(shell expr $(N_SLAVES) \+ 1)))
