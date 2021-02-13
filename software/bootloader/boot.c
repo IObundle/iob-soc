@@ -44,19 +44,18 @@ int main() {
 
   //receive firmware from host 
   int file_size = 0;
-  if (uart_getc() == FRX) {//load firmware
-    file_size = uart_recvfile("firmware.bin", prog_start_addr);
+  char r_fw[] = "firmware.bin";
+  if (uart_getc() == FRX) {//file receive: load firmware
+    file_size = uart_recvfile(r_fw, prog_start_addr);
     uart_puts (PROGNAME);
     uart_puts (": Loading firmware...\n");
   }
 
-  /*
   //sending firmware back for debug
-  if(file_size) {
-    uart_putc(FTX);
-    uart_sendfile("fw_bin", file_size, prog_start_addr[0]);
-  }
-  */
+  char s_fw[] = "s_fw.bin";
+
+  if(file_size)
+    uart_sendfile(s_fw, file_size, prog_start_addr[0]);
   
   //run firmware
   uart_puts (PROGNAME);

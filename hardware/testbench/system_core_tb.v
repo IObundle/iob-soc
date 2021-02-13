@@ -64,7 +64,7 @@ module system_tb;
       
       gotENQ = 0;
       
-      $display("TESTBENCH: connecting");
+      $write("TESTBENCH: connecting");
       
       while(1) begin
          cpu_getchar(cpu_char);

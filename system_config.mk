@@ -40,16 +40,20 @@ PERIPHERALS ?=UART
 
 #default simulator
 SIMULATOR ?=icarus
+
+#simulators installed locally
 LOCAL_SIM_LIST ?=icarus
+
+#produce waveform dump
 VCD ?=0
 
-#set according to SIMULATOR
+#set for running remote simulators
 ifeq ($(SIMULATOR),ncsim)
 	SIM_SERVER ?=micro7.lx.it.pt
 	SIM_USER ?=user19
 endif
 
-#simulator used in testing
+#simulator used in regression testing
 SIM_LIST:=icarus ncsim
 
 #
@@ -107,6 +111,7 @@ ASIC_COMPILE_ROOT_DIR=$(ROOT_DIR)/sandbox/iob-soc
 #SOFTWARE COMPILATION
 #
 
+# risc-v compressed instructions
 USE_COMPRESSED ?=1
 
 
@@ -123,7 +128,6 @@ HW_DIR:=$(ROOT_DIR)/hardware
 SIM_DIR=$(HW_DIR)/simulation/$(SIMULATOR)
 BOARD_DIR=$(HW_DIR)/fpga/$(BOARD)
 ASIC_DIR=$(HW_DIR)/asic/$(ASIC_NODE)
-
 SW_DIR:=$(ROOT_DIR)/software
 FIRM_DIR:=$(SW_DIR)/firmware
 BOOT_DIR:=$(SW_DIR)/bootloader
@@ -186,7 +190,8 @@ ifeq ($(USE_COMPRESSED),1)
 DEFINE+=$(defmacro)USE_COMPRESSED
 endif
 
-#create periph serial number
+#create periph serial number, for example, UART=0
+#add to define list, for example, DEFINE+=-DUART=0
 N_SLAVES:=0
 $(foreach p, $(PERIPHERALS), $(eval $p=$(N_SLAVES)) $(eval N_SLAVES:=$(shell expr $(N_SLAVES) \+ 1)))
 $(foreach p, $(PERIPHERALS), $(eval DEFINE+=$(defmacro)$p=$($p)))

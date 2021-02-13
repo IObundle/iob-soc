@@ -87,15 +87,16 @@ task cpu_putchar;
 endtask
 
 task cpu_recvstr;
-   output [8*80-1:0] str;
+   output reg [8*80-1:0] name;
    integer           k;
    reg [7:0]         rcv_char;
    
    begin
+      name = {8*80{1'b0}};
       k=0;
       do begin
          cpu_getchar(rcv_char);
-         str[8*80-(8*k)-1 -: 8] = rcv_char;          
+         name[8*80-(8*k)-1 -: 8] = rcv_char;          
          k = k + 1;          
       end while (rcv_char);
    end
@@ -163,9 +164,10 @@ task cpu_recvfile;
       //receive file name
       cpu_recvstr(name);
       name_str = name;
+      
       $display("TESBENCH: receiving file %s", name_str);
         
-      fp = $fopen(name, "wb");
+      fp = $fopen(name_str, "wb");
       if(!fp)
         $display("TESTBENCH: can't open file to store received data\n");
 
@@ -179,7 +181,8 @@ task cpu_recvfile;
       k = 0;
       for(i = 0; i < file_size; i++) begin
 	 cpu_getchar(char);
-         
+         $fwrite(fp, "%c", char);
+
          if(i/4 == (file_size/4*k/100)) begin
             $write("%d%%\n", k);
             k=k+10;
