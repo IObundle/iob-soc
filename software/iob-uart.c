@@ -3,8 +3,7 @@
 
 //UART printing functions
 void uart_puts(char *s) {
-  while (*s) uart_putc(*s++);
-  uart_putc(NUL);
+  do uart_putc(*s); while (*(s++));
 }
 
 void uart_printf(char* fmt, ...) {
@@ -43,19 +42,17 @@ void uart_finish() {
 
 //Sends the name of the file to use
 void uart_sendstr (char* name) {
-
   int i=0;
-  while ( name[i] != NUL )
-    uart_putc(name[i++]);
-
-  uart_putc (NUL);
-
+  do
+    uart_putc(name[i]);
+  while (name[i++]);
 }
 
 //Receives file into mem
 int uart_recvfile(char* file_name, char **mem) {
 
-  uart_printf ("%s: requesting to receive file %s\n", UART_PROGNAME, file_name);
+  uart_puts(UART_PROGNAME);
+  uart_printf (": requesting to receive file %s\n", file_name);
 
   //send file receive request
   uart_putc (FRX);
@@ -78,7 +75,8 @@ int uart_recvfile(char* file_name, char **mem) {
     mem[0][i] = uart_getc();
   }
 
-  uart_printf("%s: file received (%d bytes)\n", UART_PROGNAME, file_size);
+  uart_puts(UART_PROGNAME);
+  uart_printf(": file received (%d bytes)\n", file_size);
 
   return file_size;
 }
@@ -86,7 +84,8 @@ int uart_recvfile(char* file_name, char **mem) {
 //Sends mem contents to a file
 void uart_sendfile(char *file_name, int file_size, char *mem) {
 
-  uart_printf("%s: requesting to send file %s\n", UART_PROGNAME, file_name);
+  uart_puts(UART_PROGNAME);
+  uart_printf(": requesting to send file %s\n", file_name);
 
   //send file transmit command
   uart_putc(FTX);
@@ -104,7 +103,8 @@ void uart_sendfile(char *file_name, int file_size, char *mem) {
   for (int i = 0; i < file_size; i++)
     uart_putc(mem[i]);
 
-  uart_printf("%s: file sent (%d bytes)\n",  UART_PROGNAME, file_size);
+  uart_puts(UART_PROGNAME);
+  uart_printf(": file sent (%d bytes)\n", file_size);
 }
 
 

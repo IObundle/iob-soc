@@ -15,7 +15,6 @@
 #define UART_RXREADY 7
 
 //UART commands
-#define NUL 0 //start text
 #define STX 2 //start text
 #define ETX 3 //end text
 #define EOT 4 //end of transission
