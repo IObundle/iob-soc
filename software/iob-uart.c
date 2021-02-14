@@ -3,7 +3,7 @@
 
 //UART printing functions
 void uart_puts(char *s) {
-  do uart_putc(*s); while (*(s++));
+  while (*s) uart_putc(*s++);
 }
 
 void uart_printf(char* fmt, ...) {
