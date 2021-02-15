@@ -1,6 +1,18 @@
-   //
-   // CPU TASKS
-   //
+//
+// CPU TASKS TO CONTROL THE TESTBENCH UART 
+//
+//this is a temporary solution
+
+//address macros
+`define UART_SOFTRESET_ADDR 0
+`define UART_DIV_ADDR 1
+`define UART_TXDATA_ADDR 2
+`define UART_TXEN_ADDR 3
+`define UART_TXREADY_ADDR 4
+`define UART_RXDATA_ADDR 5
+`define UART_RXEN_ADDR 6
+`define UART_RXREADY_ADDR 7
+
 
    // 1-cycle write
    task cpu_uartwrite;
@@ -9,7 +21,7 @@
 
       # 1 uart_addr = cpu_address;
       uart_valid = 1;
-      uart_wstrb = 1;
+      uart_wstrb = 4'hf;
       uart_wdata = cpu_data;
       @ (posedge clk) #1 uart_wstrb = 0;
       uart_valid = 0;
@@ -26,6 +38,45 @@
       @ (posedge clk) #1 uart_valid = 0;
    endtask //cpu_uartread
 
+   task cpu_inituart;
+      //pulse reset uart
+      cpu_uartwrite(`UART_SOFTRESET_ADDR, 1);
+      cpu_uartwrite(`UART_SOFTRESET_ADDR, 0);
+      //config uart div factor
+      cpu_uartwrite(`UART_DIV_ADDR, `FREQ/`BAUD);
+      //enable uart for receiving
+      cpu_uartwrite(`UART_RXEN_ADDR, 1);
+      cpu_uartwrite(`UART_TXEN_ADDR, 1);
+   endtask
+
+   reg [7:0] rxread_reg = 8'b0;
+
+   task cpu_getchar;
+      output [7:0] rcv_char;
+
+      //wait until something is received
+      do
+	    cpu_uartread(`UART_RXREADY_ADDR, rxread_reg);
+      while(!rxread_reg);
+
+      //read the data
+      cpu_uartread(`UART_RXDATA_ADDR, rxread_reg);
+
+      rcv_char = rxread_reg[7:0];
+   endtask
+
+
+   task cpu_putchar;
+      input [7:0] send_char;
+      //wait until tx ready
+      do begin
+	 cpu_uartread(`UART_TXREADY_ADDR, rxread_reg);
+      end while(!rxread_reg);
+      //write the data
+      cpu_uartwrite(`UART_TXDATA_ADDR, send_char);
+
+   endtask
+
    task cpu_sendfile;
       reg [`DATA_W-1:0] file_size;
       reg [7:0]         char;
@@ -33,17 +84,7 @@
       integer           res;
       integer           i, k;
 
-      //signal target to expect data
-      cpu_putchar(`FRX);
-
-	  //print incoming messages
-	  cpu_print();
-
-	  //wait for target
-	  do cpu_getchar(cpu_char);
-      while (cpu_char != `FRX);
-
-	  //open data file
+      //open data file
       fp = $fopen("firmware.bin","rb");
 
       // Get file size
@@ -55,9 +96,6 @@
       file_size = $ftell(fp);
       res = $rewind(fp);
 
-	  //Signal target ACK
-	  cpu_putchar(`ACK);
-
       $display("File size: %d bytes", file_size);
 
       //Send file size
@@ -66,7 +104,7 @@
       cpu_putchar(file_size[23:16]);
       cpu_putchar(file_size[31:24]);
 
-	  //Send file
+      //Send file
       k = 0;
       for(i = 0; i < file_size; i++) begin
          cpu_putchar($fgetc(fp));
@@ -92,8 +130,6 @@
 
       fp = $fopen("out.bin", "wb");
 
-      cpu_print();
-
       // Send file size
       cpu_getchar(file_size[7:0]);
       cpu_getchar(file_size[15:8]);
@@ -115,80 +151,6 @@
 
       $fclose(fp);
 
-      cpu_print();
-
    endtask
 
 
-   task cpu_inituart;
-      //pulse reset uart
-      cpu_uartwrite(`UART_SOFT_RESET, 1);
-      cpu_uartwrite(`UART_SOFT_RESET, 0);
-      //config uart div factor
-      cpu_uartwrite(`UART_DIV, `FREQ/`BAUD);
-      //enable uart for receiving
-      cpu_uartwrite(`UART_RXEN, 1);
-      cpu_uartwrite(`UART_TXEN, 1);
-   endtask
-
-   reg [7:0] rxread_reg = 8'b0;
-
-   task cpu_getchar;
-      output [7:0] rcv_char;
-
-      //wait until something is received
-      do
-	    cpu_uartread(`UART_READ_VALID, rxread_reg);
-      while(!rxread_reg);
-
-      //read the data
-      cpu_uartread(`UART_DATA, rxread_reg);
-
-      rcv_char = rxread_reg[7:0];
-   endtask
-
-
-   task cpu_putchar;
-      input [7:0] send_char;
-      //wait until tx ready
-      do begin
-	 cpu_uartread(`UART_WRITE_WAIT, rxread_reg);
-      end while(rxread_reg);
-      //write the data
-      cpu_uartwrite(`UART_DATA, send_char);
-
-   endtask
-
-   task cpu_getline;
-      reg [7:0] char;
-      do begin
-         cpu_getchar(char);
-         $write("%c", char);
-      end while (char != "\n");
-   endtask
-
-   //connect with targe
-   task cpu_connect;
-      do cpu_getchar(cpu_char);
-      while (cpu_char != `ENQ);
-      cpu_putchar(`ACK);
-   endtask
-
-   task cpu_run;
-      //do cpu_getchar(cpu_char);
-      //while (cpu_char != `ENQ);
-      cpu_putchar(`EOT);
-      cpu_print();
-   endtask
-
-   task cpu_print;
-      do cpu_getchar(cpu_char);
-      while (cpu_char != `STX);
-
-      cpu_getchar(cpu_char);
-      while(cpu_char != `ETX && cpu_char != `ENQ) begin
-         $write("%c", cpu_char);
-         cpu_getchar(cpu_char);
-      end
-
-   endtask

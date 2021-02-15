@@ -35,6 +35,8 @@ software/firmware/*
 software/console/*
 !software/console/console.c
 !software/console/console.h
+!software/console/rs232comm.c
+!software/console/socketcomm.c
 !software/console/Makefile
 
 document/presentation/*
