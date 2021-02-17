@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 `include "system.vh"
 
-module top_system(
+module sim_system_top(
 	          input         clk, 
 	          input         resetn,
 
