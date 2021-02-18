@@ -15,6 +15,9 @@ hardware/simulation/ncsim/*
 !hardware/simulation/ncsim/Makefile
 !hardware/simulation/ncsim/run_ncsim.sh
 
+hardware/simulation/verilator/*
+!hardware/simulation/verilator/Makefile
+
 software/periphs.h
 software/pc-emul/periphs.h
 
