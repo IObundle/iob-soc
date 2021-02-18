@@ -1,15 +1,9 @@
 ROOT_DIR:=.
+include ./system.mk
 
 #default target
 all: system.mk
-	make -C hardware/simulation/icarus run BAUD=10000000
-
-#system configuration file
-system.mk: system_config.mk
-	cp system_config.mk system.mk
-	@echo system.mk file created
-
-include ./system.mk
+	make -C hardware/simulation/icarus run BAUD=SIM_BAUD
 
 #
 # PC
