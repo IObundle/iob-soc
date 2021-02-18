@@ -14,6 +14,12 @@ VSRC_VERI=$(subst system_tb.v,,$(VSRC))
 VLOG = verilator +1800-2005ext+v --error-limit 1000  -cc  $(INCLUDE_VERI) $(DEFINE) 
 #VLOG = verilator +1800-2005ext+v --error-limit 1000  -Wall -cc  $(INCLUDE2) $(DEFINE) 
 
+# Add system wrapper to the sources list to be verilated
+VSRC+=$(SRC_DIR)/sim_system_top.v
+
+
+
+
 #run the simulator
 run: $(VSRC) $(VHDR) firmware boot.hex
 	$(VLOG) $(VSRC_VERI) --trace --top-module sim_system_top -Wno-WIDTH -Wno-PINMISSING -Wno-fatal --exe sim_xtop.cpp  
