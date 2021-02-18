@@ -25,18 +25,16 @@ module sim_system_top(
             output [`DATA_W-1:0]     tb_uart_rdata,
             output                   tb_uart_ready,
 
-
+            input                    tb_uart_rts
    );
 
    // Wires that will connect both units
-   wire serial_data_to_fpga; // wire from uart going to fpga uart
+   wire serial_data_to_fpga;
    wire serial_data_from_fpga;
-   wire fpga_rts;
-   wire fpga_cts;
+   wire fpga_rts; // pin with rts on fpga
+   wire fpga_cts; // pin with cts on fpga
 
-
-
- system system (
+system system (
    	  .clk           (sys_clk),
 		  .reset         (sys_rst),
 		  .trap          (trap),
@@ -48,7 +46,11 @@ module sim_system_top(
 		  );
 
 
- iob_uart testbench_uart
+iob_uart #( 
+                           .ADDR_W(`UART_ADDR_W),
+                           .DATA_W(`DATA_W),
+                           .WDATA_W(`DATA_W)
+) testbench_uart
  (
       .clk       (clk),
       .rst       (reset),
