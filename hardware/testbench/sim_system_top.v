@@ -1,6 +1,15 @@
 `timescale 1ns / 1ps
 `include "system.vh"
 
+/*
+
+This is a wrapper module for verilator simulation
+that will communicate with the console and get things
+done 
+
+Therefore it will be a module with inout unlike system_tb.v 
+*/
+
 module sim_system_top(
 	          input         clk, 
 	          input         resetn,
@@ -9,7 +18,10 @@ module sim_system_top(
 	          output        uart_txd,
 	          input         uart_rxd,
 
-`ifdef USE_DDR
+
+// Current testing for external DDR stuff
+
+            `ifdef USE_DDR
                   output        c0_ddr4_act_n,
                   output [16:0] c0_ddr4_adr,
                   output [1:0]  c0_ddr4_ba,
@@ -24,9 +36,12 @@ module sim_system_top(
                   inout [31:0]  c0_ddr4_dq,
                   inout [3:0]   c0_ddr4_dqs_c,
                   inout [3:0]   c0_ddr4_dqs_t, 
-`endif                  
+`endif 
+
 		  output        trap
 		  );
+
+
 
 `ifdef USE_DDR
    //
@@ -123,17 +138,19 @@ module sim_system_top(
 `endif
 
 
+
    //
    // CLOCK MANAGEMENT
    //
 
    //system clock
    wire 			sys_clk = clk;
+
    
 `ifdef USE_DDR
    wire                         ddr_aclk;
 `endif
-   
+
    //ddr clock output from ddr ctrl 
  
 
@@ -170,8 +187,8 @@ module sim_system_top(
 `endif
    
 
-   //
-   // DDR CONTROLLER
+   // 
+   // DDR CONTROLLERi ! Disabled for simulation
    //
                  
 `ifdef USE_DDR   
