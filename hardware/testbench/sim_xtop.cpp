@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "Vsystem.h"
+#include "Vsim_system_top.h"
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 
@@ -15,14 +15,14 @@ int main(int argc, char **argv, char **env)
 {
   Verilated::commandArgs(argc, argv);
   Verilated::traceEverOn(true);
-  Vsystem* top = new Vsystem;
+  Vsim_system_top* top = new Vsim_system_top;
   VerilatedVcdC* tfp = new VerilatedVcdC;
   
   top->trace (tfp, 1);
   tfp->open ("waves.vcd");
 
   //uart always clear to send
-  top->uart_cts = 1;
+  top->tb_uart_rts = 1;
 
   // Reset sequence 
   top->clk = 0;
