@@ -25,8 +25,13 @@ run: $(VSRC) $(VHDR) firmware boot.hex
 	./Vsim_system_top
 
 clean: hw-clean
-	@rm -v !("sim_system_top") -f *.v *.cpp *.hex Vsystem
+	mv sim_system_top.v sim_system_top.ver
+	@rm  -f *.v *.cpp *.hex Vsim_system_top
 	@rm -rf obj_dir
+	mv sim_system_top.ver sim_system_top.v
+
+#@rm  -f *.v *.cpp *.hex Vsystem  !("sim_system_top.v")
+
 
 .PHONY: clean
 
