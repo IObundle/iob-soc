@@ -117,12 +117,17 @@ task cpu_sendfile;
       cpu_recvstr(name);
       name_str = name;
       $display("TESBENCH: sending file %s", name_str);
-         
+
       //open data file
-      fp = $fopen(name_str,"rb");
+      fp = $fopen(name_str,"rb"); //to support icarus
+      if(!fp)
+        fp = $fopen(name,"rb"); //to support ncsim
 
       if(!fp)
-        $display("TESTBENCH: can't open file to send\n");
+        begin
+           $display("TESTBENCH: can't open file to send\n");
+           $finish;
+        end
       
       //get file size
       res = $fseek(fp, 0, `SEEK_END);
@@ -167,10 +172,16 @@ task cpu_recvfile;
       
       $display("TESBENCH: receiving file %s", name_str);
         
-      fp = $fopen(name_str, "wb");
-      if(!fp)
-        $display("TESTBENCH: can't open file to store received data\n");
+      fp = $fopen(name_str, "wb"); //to support icarus
 
+      if(!fp)
+        fp = $fopen(name, "wb"); //to support ncsim
+
+      if(!fp) begin
+         $display("TESTBENCH: can't open file to store received data\n");
+         $finish;
+      end
+      
       //receive file size
       cpu_getchar(file_size[7:0]);
       cpu_getchar(file_size[15:8]);

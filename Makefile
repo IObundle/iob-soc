@@ -171,7 +171,13 @@ test: test-all-simulators test-all-boards
 
 #test on simulators
 test-simulator:
-	echo "Testing simulator $(SIMULATOR)";echo Testing simulator $(SIMULATOR)>>test.log
+	@echo "############################################################"
+	@echo "Testing simulator $(SIMULATOR)"
+	@echo "############################################################"
+	@echo "############################################################">>test.log
+	@echo Testing simulator $(SIMULATOR)>>test.log
+	@echo "############################################################">>test.log
+	@echo "">>test.log; echo "">>test.log;
 	make sim SIMULATOR=$(SIMULATOR) INIT_MEM=1 USE_DDR=0 RUN_DDR=0 TEST_LOG=1
 	cat $(SIM_DIR)/test.log >> test.log
 	make sim SIMULATOR=$(SIMULATOR) INIT_MEM=0 USE_DDR=0 RUN_DDR=0 TEST_LOG=1
@@ -201,7 +207,13 @@ ifneq ($(TEST_LOG),)
 endif
 
 test-board:
-	echo "Testing board $(BOARD)"; echo "Testing board $(BOARD)" >> test.log
+	@echo "############################################################"
+	@echo "Testing board $(BOARD)"
+	@echo "############################################################"
+	@echo "############################################################">>test.log
+	@echo Testing board $(BOARD)>>test.log
+	@echo "############################################################">>test.log
+	@echo "">>test.log; echo "">>test.log;
 	make test-board-config BOARD=$(BOARD) INIT_MEM=1 USE_DDR=0 RUN_DDR=0 TEST_LOG=1
 	make test-board-config BOARD=$(BOARD) INIT_MEM=0 USE_DDR=0 RUN_DDR=0 TEST_LOG=1
 ifeq ($(BOARD),AES-KU040-DB-G)

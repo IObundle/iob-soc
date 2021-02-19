@@ -19,11 +19,11 @@ SRAM_ADDR_W ?=16
 USE_DDR ?=0
 RUN_DDR ?=0
 
-#CACHE DATA SIZE (LOG2)
+#DATA CACHE ADDRESS WIDTH (tag + index + offset)
 DCACHE_ADDR_W:=24
 
 #ROM SIZE (LOG2)
-BOOTROM_ADDR_W:=13
+BOOTROM_ADDR_W:=12
 
 #PRE-INIT MEMORY WITH PROGRAM AND DATA
 INIT_MEM ?=1
@@ -42,7 +42,7 @@ PERIPHERALS ?=UART
 SIMULATOR ?=icarus
 
 #simulators installed locally
-LOCAL_SIM_LIST ?=icarus
+LOCAL_SIM_LIST ?=icarus verilator
 
 #produce waveform dump
 VCD ?=0

@@ -83,7 +83,7 @@ module system_tb;
            end
            
            `EOT: begin
-              $display("TESTBENCH: exiting");
+              $display("TESTBENCH: exiting\n\n\n");
               $finish;
            end
            
