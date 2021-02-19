@@ -54,7 +54,7 @@ void uart_putc(char c);
 void uart_puts(char *s);
 
 //formated print
-void uart_printf(char* fmt, ...);
+//void uart_printf(char* fmt, ...);
 
 //Enable / diable tx
 void uart_txen(int val);
