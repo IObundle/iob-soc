@@ -1,5 +1,6 @@
 `timescale 1ns / 1ps
 `include "system.vh"
+//`include "cpu_nat_s_if.v"
 
 /*
 
@@ -17,36 +18,37 @@ module sim_system_top(
             output                   trap,
 
             // Interface from cpu i.e. parallel data
-            input                    tb_uart_valid,
-            input                    tb_uart_address,
-            input [`UART_ADDR_W-1:0] tb_uart_addr,
-            input [`DATA_W-1:0]      tb_uart_wdata,
-            input [3:0]              tb_uart_wstrb,
-            output [`DATA_W-1:0]     tb_uart_rdata,
-            output                   tb_uart_ready,
-
-            input                    tb_uart_rts
-   );
+            input                    valid,
+            input                    address,
+            input [`UART_ADDR_W-1:0] addr,
+            input [`DATA_W-1:0]      wdata,
+            input [3:0]              wstrb,
+            output [`DATA_W-1:0]     rdata,
+            output                   ready,
+            input                    system_uart_cts
+ );
 
    // Wires that will connect both units
-   wire serial_data_to_fpga;
-   wire serial_data_from_fpga;
+   wire serial_data_to_iob_soc;
+   wire serial_data_from_iob_soc;
    wire fpga_rts; // pin with rts on fpga
    wire fpga_cts; // pin with cts on fpga
 
+
+
 system system (
-   	  .clk           (sys_clk),
-		  .reset         (sys_rst),
+   	  .clk           (clk),
+		  .reset         (reset),
 		  .trap          (trap),
                   //UART
-		  .uart_txd      (serial_data_from_fpga),
-		  .uart_rxd      (serial_data_to_fpga),
-		  .uart_rts      (fpga_rts),
-		  .uart_cts      (fpga_cts)
+		  .uart_txd      (serial_data_from_iob_soc),
+		  .uart_rxd      (serial_data_to_iob_soc),
+		  .uart_rts      (),
+		  .uart_cts      (test_wire)
 		  );
 
 
-iob_uart #( 
+iob_uart #(
                            .ADDR_W(`UART_ADDR_W),
                            .DATA_W(`DATA_W),
                            .WDATA_W(`DATA_W)
@@ -60,8 +62,8 @@ iob_uart #(
       .wstrb     (tb_uart_wstrb),
       .rdata     (tb_uart_rdata),
       .ready     (tb_uart_ready),
-      .txd       (serial_data_to_fpga),
-      .rxd       (serial_data_from_fpga),
+      .txd       (serial_data_to_iob_soc),
+      .rxd       (serial_data_from_iob_soc),
       .rts       (fpga_cts),
       .cts       (fpga_rts)
   );
