@@ -24,23 +24,25 @@ char cnsl_getchar() {
 
 void cnsl_putchar(char byte) {
   int nbytes;
-  do nbytes = (int) write(serial_fd, &byte, 1);
-  while (nbytes <= 0);
+  do {
+    nbytes = (int) write(serial_fd, &byte, 1);
+  } while (nbytes <= 0);
 }
 
 int cnsl_getint() {
-  int x;
+  int i;
   int nbytes;
   do {
-    nbytes = (int) read(serial_fd, &x, 4);
+    nbytes = (int) read(serial_fd, &i, 4);
   } while (nbytes <= 0);
-  return x;
+  return i;
 }
 
-void cnsl_putint(int x) {
+void cnsl_putint(int i) {
   int nbytes;
-  do nbytes = (int) write(serial_fd, &x, 4);
-  while (nbytes <= 0);
+  do {
+    nbytes = (int) write(serial_fd, &i, 4);
+  } while (nbytes <= 0);
 }
 
 void cnsl_open(char *serialPort) {
@@ -64,7 +66,7 @@ void cnsl_open(char *serialPort) {
   serial_fd = open(serialPort, O_RDWR | O_NOCTTY | O_NDELAY);
   if (serial_fd == -1)
     cnsl_perror("can't open serial port\n");
-  
+
   //set attributes of the serial port using termios structure
   
   //get current configuration of the serial interface
@@ -127,7 +129,10 @@ void cnsl_open(char *serialPort) {
   //                                                //
   SerialPortSettings.c_cc[VMIN]  = 1;
   SerialPortSettings.c_cc[VTIME] = 0;
-  
+
+  //diable buffering
+  tcflush(serial_fd, TCIFLUSH);
+
   // Apply new configuration
   if (tcsetattr(serial_fd, TCSANOW, &SerialPortSettings)) {
     close(serial_fd);

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include "console.h"
 #include "iob-uart.h"
 
@@ -16,63 +17,20 @@ void cnsl_perror (char * mesg) {
 void cnsl_recvstr(char *name) {
   int i=0;
   do name[i] = cnsl_getchar(); while (name[i++]);
-  printf(PROGNAME); printf(": file name %s\n", name);  
-}
-
-//receive file from target
-void cnsl_recvfile() {
-  FILE *fp;
-  int file_size = 0;
-  char *buf;
-  char name[80];
-  int i;
-  
-  //receive file name
-  cnsl_recvstr(name);
-
-  //open data file
-  fp = fopen(name, "wb");
-  if (!fp)
-    cnsl_perror("can't open file to store received file\n");
-
-  printf(PROGNAME); printf(": receiving file...\n");  
-  
-  //receive file size
-  file_size = cnsl_getint();
-
-  //allocate space for internal file buffer
-  if( (buf = malloc(file_size)) == NULL)
-    cnsl_perror("memory allocation failed\n");
-
-  
-  //receive file into buffer
-  for (i=0; i<file_size; i++)
-    buf[i] = cnsl_getchar();
-
-  //save buffer into file
-  if( fwrite(buf, sizeof(char), file_size, fp) <= 0)
-    cnsl_perror("failed to write file\n");
-    
-  printf (PROGNAME); printf(": file of size %d bytes received\n", file_size);
-
-  free(buf);
-  fclose(fp);
-
+  printf(PROGNAME); printf(": file name %s\n", name);
+  fflush(stdout);
 }
 
 //send file to target
 void cnsl_sendfile() {
   FILE *fp;
   int file_size;
-  char *name;
-  char *buf;
+  char name[80];
+  char byte;
   int i;
 
   //receive file name
-  name = malloc(80);
   cnsl_recvstr(name);
-
-  printf(PROGNAME); printf(": file name: %s\n", name);
   
   //open file to sent
   fp = fopen(name, "rb");
@@ -83,29 +41,58 @@ void cnsl_sendfile() {
   fseek(fp, 0L, SEEK_END);
   file_size = ftell(fp);
   rewind(fp);
-
-  //allocate space for internal file buffer
-  if( (buf = malloc(file_size)) == NULL)
-    cnsl_perror("memory allocation failed\n");
-  
   printf(PROGNAME); printf(": file size: %d bytes\n", file_size);
   
   //send file size
   cnsl_putint(file_size);
   
-  //read file into buffer
-  if (fread(buf, sizeof(char), file_size, fp) <= 0)
-    cnsl_perror("can't read file\n");
-  
   //send file 1 byte at a time (fix for transfering large files)
-  for(i=0;i<file_size;i++)
-    cnsl_putchar(buf[i]);
+  for(i=0;i<file_size;i++) {
+    if(fread(&byte, sizeof(char), 1, fp) <= 0)
+      cnsl_perror("can't read byte from file\n");
+    cnsl_putchar(byte);
+  }
   
   printf (PROGNAME); printf(": file sent\n");
   
-  free(buf);
   fclose(fp);
 }
+
+//receive file from target
+void cnsl_recvfile() {
+  FILE *fp;
+  int file_size = 0;
+  char byte;
+  char name[80];
+  int i;
+  
+  //receive file name
+  cnsl_recvstr(name);
+
+  //open data file
+  fp = fopen(name, "wb");
+  if (!fp)
+    cnsl_perror("can't open file to store received data\n");
+
+  //receive file size
+  file_size = cnsl_getint();
+  printf(PROGNAME); printf(": file size: %d bytes\n", file_size);
+
+  //receive data and save to file
+  for (i=0; i<file_size; i++) {
+    //receive data
+    byte = cnsl_getchar();
+    //save to file
+    if( fwrite(&byte, sizeof(char), 1, fp) <= 0)
+      cnsl_perror("failed to write file\n");
+  }
+  
+  printf (PROGNAME); printf(": file of size %d bytes received\n", file_size);
+
+  fclose(fp);
+
+}
+
 
 void usage(char *message){
   cnsl_perror("usage: ./console -s <serial port> [ -f <firmware file> ]\n");
@@ -169,12 +156,12 @@ int main(int argc, char* argv[]) {
       break;
       
     case FRX:
-      printf(PROGNAME); printf(": sending file\n");
+      printf(PROGNAME); printf(": got file send request\n");
       cnsl_sendfile();
       break;
 
     case FTX:
-      printf(PROGNAME); printf(": receiving file\n");
+      printf(PROGNAME); printf(": got file receive request\n");
       cnsl_recvfile();
       break;
 

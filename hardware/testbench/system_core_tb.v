@@ -25,12 +25,15 @@ module system_tb;
    reg [`UART_ADDR_W-1:0] uart_addr;
    reg [`DATA_W-1:0]      uart_wdata;
    reg [3:0]              uart_wstrb;
-   reg [`DATA_W-1:0]      uart_rdata;
+   wire [`DATA_W-1:0]     uart_rdata;
    wire                   uart_ready;
 
    //iterator
    integer                i;
 
+   //got enquiry (connect request)
+   reg                    gotENQ;
+   
    //PWIRES
 
    
@@ -57,25 +60,43 @@ module system_tb;
 
       // configure uart
       cpu_inituart();
+
+      
+      gotENQ = 0;
+      
+      $write("TESTBENCH: connecting");
       
       while(1) begin
          cpu_getchar(cpu_char);
 
          case(cpu_char)
            `ENQ: begin
-`ifdef LD_FW //send program
-              cpu_putchar(`FRX); 
-              cpu_getchar(cpu_char); //remove extra ENQ received
-              cpu_sendfile();
+              $write(".");
+              if(!gotENQ) begin
+                 gotENQ = 1;
+`ifdef LD_FW
+                 cpu_putchar(`FRX); //got request to sent file
 `else
-              cpu_putchar(`ACK);              
+                 cpu_putchar(`ACK);              
 `endif      
+              end
            end
-
+           
            `EOT: begin
+              $display("TESTBENCH: exiting\n\n\n");
               $finish;
            end
            
+           `FRX: begin
+              $display("TESTBENCH: got file send request");
+              cpu_sendfile();
+           end
+
+           `FTX: begin
+              $display("TESTBENCH: got file receive request");
+              cpu_recvfile();
+           end
+
            default: begin
               $write("%c", cpu_char);
            end

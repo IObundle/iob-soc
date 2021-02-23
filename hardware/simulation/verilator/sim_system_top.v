@@ -66,5 +66,12 @@ iob_uart #(
       .cts       (iob_rts)
   );
 
+  initial begin
+    
+    // configure uart
+    cpu_inituart();
+
+
+  end
 
 endmodule
