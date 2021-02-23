@@ -10,20 +10,20 @@
 
 
 #FIRMWARE SIZE (LOG2)
-FIRM_ADDR_W ?=15
+FIRM_ADDR_W ?=16
 
 #SRAM SIZE (LOG2)
-SRAM_ADDR_W ?=15
+SRAM_ADDR_W ?=16
 
 #DDR 
 USE_DDR ?=0
 RUN_DDR ?=0
 
-#CACHE DATA SIZE (LOG2)
+#DATA CACHE ADDRESS WIDTH (tag + index + offset)
 DCACHE_ADDR_W:=24
 
 #ROM SIZE (LOG2)
-BOOTROM_ADDR_W:=13
+BOOTROM_ADDR_W:=12
 
 #PRE-INIT MEMORY WITH PROGRAM AND DATA
 INIT_MEM ?=1
@@ -39,17 +39,21 @@ PERIPHERALS ?=UART
 #
 
 #default simulator
-SIMULATOR ?=verilator
-LOCAL_SIM_LIST ?=verilator
+SIMULATOR ?=icarus
+
+#simulators installed locally
+LOCAL_SIM_LIST ?=icarus verilator
+
+#produce waveform dump
 VCD ?=0
 
-#set according to SIMULATOR
+#set for running remote simulators
 ifeq ($(SIMULATOR),ncsim)
 	SIM_SERVER ?=micro7.lx.it.pt
 	SIM_USER ?=user19
 endif
 
-#simulator used in testing
+#simulator used in regression testing
 SIM_LIST:=icarus ncsim
 
 #
@@ -107,6 +111,7 @@ ASIC_COMPILE_ROOT_DIR=$(ROOT_DIR)/sandbox/iob-soc
 #SOFTWARE COMPILATION
 #
 
+# risc-v compressed instructions
 USE_COMPRESSED ?=1
 
 
@@ -123,7 +128,6 @@ HW_DIR:=$(ROOT_DIR)/hardware
 SIM_DIR=$(HW_DIR)/simulation/$(SIMULATOR)
 BOARD_DIR=$(HW_DIR)/fpga/$(BOARD)
 ASIC_DIR=$(HW_DIR)/asic/$(ASIC_NODE)
-
 SW_DIR:=$(ROOT_DIR)/software
 FIRM_DIR:=$(SW_DIR)/firmware
 BOOT_DIR:=$(SW_DIR)/bootloader
@@ -181,12 +185,6 @@ else
 DEFINE+=$(defmacro)FREQ=$(FREQ)
 endif
 
-#use compressed instructions
-ifeq ($(USE_COMPRESSED),1)
-DEFINE+=$(defmacro)USE_COMPRESSED
-endif
-
-#create periph serial number
 N_SLAVES:=0
 $(foreach p, $(PERIPHERALS), $(eval $p=$(N_SLAVES)) $(eval N_SLAVES:=$(shell expr $(N_SLAVES) \+ 1)))
 $(foreach p, $(PERIPHERALS), $(eval DEFINE+=$(defmacro)$p=$($p)))

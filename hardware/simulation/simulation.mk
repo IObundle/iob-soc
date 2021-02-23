@@ -34,6 +34,7 @@ VSRC=$(ASIC_DIR)/pr/system_pr.v \
 $(wildcard $(ASIC_DIR)/memory/bootrom/SP*.v) \
 $(wildcard $(ASIC_DIR)/memory/sram/SH*.v)
 endif
+
 #ddr memory
 VSRC+=$(CACHE_DIR)/submodules/AXIMEM/rtl/axi_ram.v
 #testbench

@@ -55,7 +55,7 @@ module boot_ctr
    //
    reg                        rom_r_valid;
    reg [`BOOTROM_ADDR_W-3: 0] rom_r_addr;
-   reg [`DATA_W-1: 0]         rom_r_rdata;
+   wire [`DATA_W-1: 0]        rom_r_rdata;
    
    //read rom
    wire                       reboot_rst = rst | cpu_rst_req;
