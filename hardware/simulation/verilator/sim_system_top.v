@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 `include "system.vh"
-//`include "cpu_nat_s_if.v"
+`include "cpu_nat_s_if.v"
 
 /*
 
@@ -19,20 +19,18 @@ module sim_system_top(
 
             // Interface from cpu i.e. parallel data
             input                    valid,
-            input                    address,
             input [`UART_ADDR_W-1:0] addr,
             input [`DATA_W-1:0]      wdata,
             input [3:0]              wstrb,
             output [`DATA_W-1:0]     rdata,
             output                   ready,
-            input                    system_uart_cts
  );
 
    // Wires that will connect both units
-   wire serial_data_to_iob_soc;
-   wire serial_data_from_iob_soc;
-   wire fpga_rts; // pin with rts on fpga
-   wire fpga_cts; // pin with cts on fpga
+   wire iob_txd;
+   wire iob_rxd;
+   wire iob_rts; // pin with rts on iob_soc
+   wire iob_cts; // pin with cts on iob_soc
 
 
 
@@ -41,10 +39,10 @@ system system (
 		  .reset         (reset),
 		  .trap          (trap),
                   //UART
-		  .uart_txd      (serial_data_from_iob_soc),
-		  .uart_rxd      (serial_data_to_iob_soc),
-		  .uart_rts      (),
-		  .uart_cts      (test_wire)
+		  .uart_txd      (iob_txd),
+		  .uart_rxd      (iob_rxd),
+		  .uart_rts      (iob_rts),
+		  .uart_cts      (iob_cts)
 		  );
 
 
@@ -56,16 +54,16 @@ iob_uart #(
  (
       .clk       (clk),
       .rst       (reset),
-      .valid     (tb_uart_valid),
-      .address   (tb_uart_addr),
-      .wdata     (tb_uart_wdata),
-      .wstrb     (tb_uart_wstrb),
-      .rdata     (tb_uart_rdata),
-      .ready     (tb_uart_ready),
-      .txd       (serial_data_to_iob_soc),
-      .rxd       (serial_data_from_iob_soc),
-      .rts       (fpga_cts),
-      .cts       (fpga_rts)
+      .valid     (valid),
+      .address   (addr),
+      .wdata     (wdata),
+      .wstrb     (wstrb),
+      .rdata     (rdata),
+      .ready     (ready),
+      .txd       (iob_rxd),
+      .rxd       (iob_txd),
+      .rts       (iob_cts),
+      .cts       (iob_rts)
   );
 
 
