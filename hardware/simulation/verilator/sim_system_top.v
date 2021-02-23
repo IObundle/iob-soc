@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 `include "system.vh"
-`include "cpu_nat_s_if.v"
+//`include "cpu_nat_s_if.v"
 
 /*
 
@@ -23,7 +23,7 @@ module sim_system_top(
             input [`DATA_W-1:0]      wdata,
             input [3:0]              wstrb,
             output [`DATA_W-1:0]     rdata,
-            output                   ready,
+            output                   ready
  );
 
    // Wires that will connect both units

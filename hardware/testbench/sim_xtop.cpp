@@ -22,7 +22,7 @@ int main(int argc, char **argv, char **env)
   tfp->open ("waves.vcd");
 
   //uart always clear to send
-  top->test_wire = 1;
+  //  top->test_wire = 1;
 
   // Reset sequence
   top->clk = 0;
