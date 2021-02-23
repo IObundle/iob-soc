@@ -15,10 +15,7 @@ VLOG = verilator +1800-2005ext+v --error-limit 1000  -cc  $(INCLUDE_VERI) $(DEFI
 #VLOG = verilator +1800-2005ext+v --error-limit 1000  -Wall -cc  $(INCLUDE2) $(DEFINE) 
 
 # Add system wrapper to the sources list to be verilated
-VSRC+=$(SRC_DIR)/sim_system_top.v
-
-
-
+VSRC+=sim_system_top.v
 
 #run the simulator
 run: $(VSRC) $(VHDR) firmware boot.hex
@@ -28,8 +25,13 @@ run: $(VSRC) $(VHDR) firmware boot.hex
 	./Vsim_system_top
 
 clean: hw-clean
-	@rm -f *.v *.cpp *.hex Vsystem
+	mv sim_system_top.v sim_system_top.ver
+	@rm  -f *.v *.cpp *.hex Vsim_system_top
 	@rm -rf obj_dir
+	mv sim_system_top.ver sim_system_top.v
+
+#@rm  -f *.v *.cpp *.hex Vsystem  !("sim_system_top.v")
+
 
 .PHONY: clean
 
