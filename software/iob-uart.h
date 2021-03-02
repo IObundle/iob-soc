@@ -38,9 +38,6 @@ void uart_init(int base_address, int div);
 //Close transmission
 void uart_finish();
 
-//Get the division factor div (fclk/baud)
-int uart_getdiv();
-
 //Set the division factor div (fclk/baud)
 void uart_setdiv(int v);
 

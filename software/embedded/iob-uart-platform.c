@@ -14,11 +14,6 @@ void uart_softrst(int v)
   IO_SET(base, UART_SOFTRESET, v);
 }
 
-int uart_getdiv()
-{
-  return IO_GET(base, UART_DIV);
-}
-
 void uart_setdiv(int div)
 {
   IO_SET(base, UART_DIV, div);

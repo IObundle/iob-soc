@@ -12,14 +12,17 @@ module iob_uart
      )
 
   (
+
+   //CPU interface
 `ifndef USE_AXI4LITE
  `include "cpu_nat_s_if.v"
 `else
  `include "cpu_axi4lite_s_if.v"
 `endif
 
-   //`OUTPUT(interrupt, 1), //to be done
+   //additional inputs and outputs
 
+   //`OUTPUT(interrupt, 1), //to be done
    `OUTPUT(txd, 1),
    `INPUT(rxd, 1),
    `INPUT(cts, 1),
@@ -30,21 +33,7 @@ module iob_uart
 //BLOCK Register File & Holds the current configuration of the UART as well as internal parameters. Data to be sent or that has been received is stored here temporarily.
 `include "UARTsw_reg.v"
 `include "UARTsw_reg_gen.v"
-
-   `SIGNAL_OUT(tx_ready, 1)
-   `SIGNAL_OUT(rx_ready, 1)
-   `SIGNAL_OUT(rx_data, 8)
-
-   // read registers
-   `COMB UART_TXREADY = tx_ready;
-   `COMB UART_RXREADY = rx_ready;
-   `COMB UART_RXDATA = rx_data;
    
-   //ready signal   
-   `SIGNAL(ready_int, 1)
-   `REG_AR(clk, rst, 0, ready_int, valid)
-   `SIGNAL2OUT(ready, ready_int)
-
    uart_core uart_core0 
      (
       .clk(clk),
@@ -52,10 +41,10 @@ module iob_uart
       .rst_soft(UART_SOFTRESET),
       .tx_en(UART_TXEN),
       .rx_en(UART_RXEN),
-      .tx_ready(tx_ready),
-      .rx_ready(rx_ready),
+      .tx_ready(UART_TXREADY),
+      .rx_ready(UART_RXREADY),
       .tx_data(UART_TXDATA),
-      .rx_data(rx_data),
+      .rx_data(UART_RXDATA),
       .data_write_en(valid & |wstrb & (address == `UART_TXDATA_ADDR)),
       .data_read_en(valid & !wstrb & (address == `UART_RXDATA_ADDR)),
       .bit_duration(UART_DIV),
