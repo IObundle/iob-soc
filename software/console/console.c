@@ -129,7 +129,7 @@ int main(int argc, char* argv[]) {
   char byte;
   int gotENQ = 0;
 
-  printf(PROGNAME); printf(": connecting");
+  printf(PROGNAME); printf(": connecting...\n\n");
 
   while (1) {
 
@@ -140,7 +140,7 @@ int main(int argc, char* argv[]) {
     switch (byte) {
           
     case ENQ:
-      printf(".");
+      //      printf(".");
       if(!gotENQ) {
         gotENQ = 1;
         if(load_fw)
@@ -151,7 +151,7 @@ int main(int argc, char* argv[]) {
       break;
       
     case EOT:
-      printf(PROGNAME); printf(": exiting...\n");
+      printf(PROGNAME); printf(": exiting...\n\n\n");
       exit(0);
       break;
       

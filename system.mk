@@ -8,7 +8,6 @@
 # PRIMARY PARAMETERS: CAN BE CHANGED BY USERS
 #
 
-
 #FIRMWARE SIZE (LOG2)
 FIRM_ADDR_W ?=16
 
@@ -35,26 +34,34 @@ INIT_MEM ?=1
 PERIPHERALS ?=UART
 
 #
+#SOFTWARE COMPILATION
+#
+
+# risc-v compressed instructions
+USE_COMPRESSED ?=1
+
+
+#
+#ROOT DIR ON REMOTE MACHINES
+#
+REMOTE_ROOT_DIR ?=sandbox/iob-soc
+
+
+#
 #SIMULATION
 #
 
 #default simulator
 SIMULATOR ?=icarus
 
-#simulators installed locally
-LOCAL_SIM_LIST ?=icarus verilator
-
 #produce waveform dump
 VCD ?=0
 
 #set for running remote simulators
 ifeq ($(SIMULATOR),ncsim)
-	SIM_SERVER ?=micro7.lx.it.pt
-	SIM_USER ?=user19
+	SIM_SERVER=$(NCSIM_SERVER)
+	SIM_USER=$(NCSIM_USER)
 endif
-
-#simulator used in regression testing
-SIM_LIST:=icarus ncsim
 
 #
 #FPGA BOARD COMPILE & RUN
@@ -66,58 +73,50 @@ FPGA_DDR_ADDR_W ?=30
 #default board
 BOARD ?=CYCLONEV-GT-DK
 
-#Boards for which the FPGA compiler is installed in host
-#LOCAL_FPGA_LIST=CYCLONEV-GT-DK AES-KU040-DB-G
-
-#boards installed host
-#LOCAL_BOARD_LIST=CYCLONEV-GT-DK
-#LOCAL_BOARD_LIST=AES-KU040-DB-G
-
-#set according to FPGA board
+#set for running remote FPGA boards
 ifeq ($(BOARD),AES-KU040-DB-G)
-	BOARD_SERVER ?=baba-de-camelo.iobundle.com
-	BOARD_USER ?=$(USER)
-	FPGA_OBJ ?=synth_system.bit
-	FPGA_LOG ?=vivado.log
-	FPGA_SERVER ?=pudim-flan.iobundle.com
-	FPGA_USER ?=$(USER)
+	BOARD_SERVER = $(KU40_SERVER)
+	BOARD_USER =$(KU40_USER)
+	FPGA_OBJ ?= synth_system.bit
+	FPGA_LOG ?= vivado.log
 else #default; ifeq ($(BOARD),CYCLONEV-GT-DK)
-	BOARD_SERVER ?=pudim-flan.iobundle.com
-	BOARD_USER ?=$(USER)
+	BOARD_SERVER = $(CYC5_SERVER)
+	BOARD_USER = $(CYC5_USER)
 	FPGA_OBJ ?=output_files/top_system.sof
 	FPGA_LOG ?=output_files/top_system.fit.summary
-	FPGA_SERVER ?=pudim-flan.iobundle.com
-	FPGA_USER ?=$(USER)
 endif
 
-#board list for testing
-BOARD_LIST ?=CYCLONEV-GT-DK AES-KU040-DB-G 
+#
+#ASIC COMPILE
+#
+ASIC_NODE=umc130
 
 
 #
-#ROOT DIR ON REMOTE MACHINES
-#
-REMOTE_ROOT_DIR ?=sandbox/iob-soc
-
-#
-# ASIC COMPILE (WIP)
-#
-ASIC_NODE:=umc130
-ASIC_SERVER:=micro7.lx.it.pt
-ASIC_COMPILE_ROOT_DIR=$(ROOT_DIR)/sandbox/iob-soc
-#ASIC_USER=
-
-#
-#SOFTWARE COMPILATION
+# REGRESSION TESTING
 #
 
-# risc-v compressed instructions
-USE_COMPRESSED ?=1
+#simulators used in regression testing
+SIM_LIST=icarus ncsim
+
+#boards used for regression testing
+BOARD_LIST=CYCLONEV-GT-DK AES-KU040-DB-G 
+
+
+
+
+
 
 
 #############################################################
 # DERIVED FROM PRIMARY PARAMETERS: DO NOT CHANGE
 #############################################################
+HOSTNAME=$(shell hostname)
+
+SIM_HOST=$(shell echo $(SIM_SERVER) | cut -d"." -f1)
+FPGA_HOST=$(shell echo $(FPGA_SERVER) | cut -d"." -f1)
+BOARD_HOST=$(shell echo $(BOARD_SERVER) | cut -d"." -f1)
+
 
 ifeq ($(RUN_DDR),1)
 	USE_DDR=1
@@ -194,7 +193,18 @@ ifneq ($(TEST_LOG),)
 LOG=>test.log
 endif
 
+#default remote servers and users
+SIM_SERVER ?=$(shell hostname)
+SIM_USER ?=$(USER)
 
+FPGA_SERVER ?=$(shell hostname)
+FPGA_USER ?=$(USER)
+
+BOARD_SERVER ?=$(shell hostname)
+BOARD_USER ?=$(USER)
+
+ASIC_SERVER ?=$(shell hostname)
+ASIC_USER ?=$(USER)
 
 #RULES
 

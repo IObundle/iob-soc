@@ -12,7 +12,9 @@ Testing board CYCLONEV-GT-DK
   StopBits = 1 
   Parity   = None
 
-IOb-Console: connecting...................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................IOb-Bootloader: connected!
+IOb-Console: connecting...
+
+IOb-Bootloader: connected!
 IOb-Bootloader: Restart CPU to run user program...
 
 
@@ -24,6 +26,8 @@ Value of Pi = 3.141500
 
 IOb-Console: exiting...
 
+
+
 +-----------------------------------------------+
 |                   IOb-Console                 |
 +-----------------------------------------------+
@@ -32,19 +36,21 @@ IOb-Console: exiting...
   StopBits = 1 
   Parity   = None
 
-IOb-Console: connecting...................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................IOb-Bootloader: connected!
+IOb-Console: connecting...
+
+IOb-Bootloader: connected!
 IOb-UART: requesting to receive file
 IOb-Console: got file send request
 IOb-Console: file name firmware.bin
-IOb-Console: file size: 19076 bytes
+IOb-Console: file size: 19068 bytes
 IOb-Console: file sent
 IOb-UART: file received
 IOb-Bootloader: Loading firmware...
 IOb-UART: requesting to send file
 IOb-Console: got file receive request
 IOb-Console: file name s_fw.bin
-IOb-Console: file size: 19076 bytes
-IOb-Console: file of size 19076 bytes received
+IOb-Console: file size: 19068 bytes
+IOb-Console: file of size 19068 bytes received
 IOb-UART: file sent
 IOb-Bootloader: Restart CPU to run user program...
 
@@ -56,6 +62,8 @@ Hello world!
 Value of Pi = 3.141500
 
 IOb-Console: exiting...
+
+
 ############################################################
 Testing board AES-KU040-DB-G
 ############################################################
@@ -70,7 +78,9 @@ Testing board AES-KU040-DB-G
   StopBits = 1 
   Parity   = None
 
-IOb-Console: connecting..........................................................................................................................................................................................................................................................................IOb-Bootloader: connected!
+IOb-Console: connecting...
+
+IOb-Bootloader: connected!
 IOb-Bootloader: Restart CPU to run user program...
 
 
@@ -82,6 +92,8 @@ Value of Pi = 3.141500
 
 IOb-Console: exiting...
 
+
+
 +-----------------------------------------------+
 |                   IOb-Console                 |
 +-----------------------------------------------+
@@ -90,19 +102,21 @@ IOb-Console: exiting...
   StopBits = 1 
   Parity   = None
 
-IOb-Console: connecting..............................................................................................................................................................................................................................................................................IOb-Bootloader: connected!
+IOb-Console: connecting...
+
+IOb-Bootloader: connected!
 IOb-UART: requesting to receive file
 IOb-Console: got file send request
 IOb-Console: file name firmware.bin
-IOb-Console: file size: 19076 bytes
+IOb-Console: file size: 19068 bytes
 IOb-Console: file sent
 IOb-UART: file received
 IOb-Bootloader: Loading firmware...
 IOb-UART: requesting to send file
 IOb-Console: got file receive request
 IOb-Console: file name s_fw.bin
-IOb-Console: file size: 19076 bytes
-IOb-Console: file of size 19076 bytes received
+IOb-Console: file size: 19068 bytes
+IOb-Console: file of size 19068 bytes received
 IOb-UART: file sent
 IOb-Bootloader: Restart CPU to run user program...
 
@@ -115,6 +129,8 @@ Value of Pi = 3.141500
 
 IOb-Console: exiting...
 
+
+
 +-----------------------------------------------+
 |                   IOb-Console                 |
 +-----------------------------------------------+
@@ -123,21 +139,23 @@ IOb-Console: exiting...
   StopBits = 1 
   Parity   = None
 
-IOb-Console: connecting...........................................................................................................................................................................................................................................................................IOb-Bootloader: connected!
+IOb-Console: connecting...
+
+IOb-Bootloader: connected!
 IOb-Bootloader: DDR in use
 IOb-Bootloader: program to run from DDR
 IOb-UART: requesting to receive file
 IOb-Console: got file send request
 IOb-Console: file name firmware.bin
-IOb-Console: file size: 19236 bytes
+IOb-Console: file size: 19228 bytes
 IOb-Console: file sent
 IOb-UART: file received
 IOb-Bootloader: Loading firmware...
 IOb-UART: requesting to send file
 IOb-Console: got file receive request
 IOb-Console: file name s_fw.bin
-IOb-Console: file size: 19236 bytes
-IOb-Console: file of size 19236 bytes received
+IOb-Console: file size: 19228 bytes
+IOb-Console: file of size 19228 bytes received
 IOb-UART: file sent
 IOb-Bootloader: Restart CPU to run user program...
 
@@ -149,3 +167,5 @@ Hello world!
 Value of Pi = 3.141500
 
 IOb-Console: exiting...
+
+

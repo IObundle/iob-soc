@@ -127,6 +127,8 @@
 #include "system.h"
 #include "periphs.h"
 #include "iob-uart.h"
+#include "printf.h"
+      
 #include "iob_timer.h"
 
 int main()
@@ -143,8 +145,8 @@ int main()
   uart_txwait();
 
   //read current timer count, compute elapsed time
-  elapsed  = timer_get_count(TIMER_BASE);
-  elapsedu = timer_time_us(TIMER_BASE);
+  elapsed  = timer_get_count();
+  elapsedu = timer_time_us();
 
   printf("\nExecution time: %d clock cycles\n", (unsigned int) elapsed);
   printf("\nExecution time: %dus @%dMHz\n\n", elapsedu, FREQ/1000000);
@@ -159,7 +161,7 @@ int main()
 \begin{frame}[fragile]{Simulate IOb-SoC}
 \begin{itemize}
 \item The following assumes the Icarus Verilog simulator is installed locally and that the SIMULATOR variable is set as SIMULATOR=icarus (see the README.md file)
-\item To run the simulation with the firmware pre-initialised in the memory:\\
+\item Run the simulation with the firmware pre-initialised in the memory:\\
   {\tt make sim}
 \item The firmware and bootloader C files, and the system's Verilog files are compiled as you can see from the printed messages
 \item During the simulation itself, the following is printed:
@@ -201,7 +203,7 @@ Execution time: 23us @100MHz
   \item A tutorial on creating a simple SoC using IOb-SoC has been presented
   \item The addition of an example peripheral IP core has been illustrated
   \item A simple software driver for the IP core has been described
-  \item Simulation of IOb-SoC hs been explained
+  \item Simulation of IOb-SoC has been explained
   \item Compiling and running IOb-SoC on FPGA has been explained
   \end{itemize}
 \end{frame}

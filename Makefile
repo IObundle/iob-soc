@@ -23,7 +23,7 @@ pc-clean:
 sim: sim-clean
 	make -C $(FIRM_DIR) run BAUD=$(SIM_BAUD)
 	make -C $(BOOT_DIR) run BAUD=$(SIM_BAUD)
-ifeq ($(SIMULATOR),$(filter $(SIMULATOR), $(LOCAL_SIM_LIST)))
+ifeq ($(SIM_HOST),$(HOSTNAME))
 	make -C $(SIM_DIR) run BAUD=$(SIM_BAUD)
 else
 	ssh $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
@@ -45,7 +45,7 @@ $(SIM_DIR)/../waves.gtkw $(SIM_DIR)/system.vcd:
 
 sim-clean: sw-clean
 	make -C $(SIM_DIR) clean 
-ifneq ($(SIMULATOR),$(filter $(SIMULATOR), $(LOCAL_SIM_LIST)))
+ifneq ($(SIM_HOST),$(HOSTNAME))
 	rsync -avz --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
 	ssh $(SIM_USER)@$(SIM_SERVER) 'if [ -d $(REMOTE_ROOT_DIR) ]; then cd $(REMOTE_ROOT_DIR); make -C $(SIM_DIR) clean; fi'
 endif
@@ -57,7 +57,7 @@ endif
 fpga: system.mk
 	make -C $(FIRM_DIR) run BAUD=$(HW_BAUD)
 	make -C $(BOOT_DIR) run BAUD=$(HW_BAUD)
-ifeq ($(BOARD),$(filter $(BOARD), $(LOCAL_FPGA_LIST)))
+ifeq ($(BOARD_HOST),$(HOSTNAME))
 	make -C $(BOARD_DIR) compile BAUD=$(HW_BAUD)
 else
 	ssh $(FPGA_USER)@$(FPGA_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
@@ -70,7 +70,7 @@ endif
 endif
 
 fpga-clean: sw-clean
-ifeq ($(BOARD),$(filter $(BOARD), $(LOCAL_FPGA_LIST)))
+ifeq ($(BOARD_HOST),$(HOSTNAME))
 	make -C $(BOARD_DIR) clean
 else
 	rsync -avz --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
@@ -78,7 +78,7 @@ else
 endif
 
 fpga-clean-ip: fpga-clean
-ifeq ($(BOARD), $(filter $(BOARD), $(LOCAL_FPGA_LIST)))
+ifeq ($(BOARD_HOST), $(HOSTNAME))
 	make -C $(BOARD_DIR) clean-ip
 else
 	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(BOARD_DIR) clean-ip'
@@ -89,7 +89,7 @@ endif
 #
 
 board-load: system.mk
-ifeq ($(BOARD),$(filter $(BOARD), $(LOCAL_BOARD_LIST)))
+ifeq ($(BOARD_HOST),$(HOSTNAME))
 	make -C $(BOARD_DIR) load
 else
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
@@ -98,7 +98,7 @@ else
 endif
 
 board-run: firmware
-ifeq ($(BOARD),$(filter $(BOARD), $(LOCAL_BOARD_LIST)))
+ifeq ($(BOARD_HOST),$(HOSTNAME))
 	make -C $(CONSOLE_DIR) run TEST_LOG=$(TEST_LOG) BAUD=$(HW_BAUD)
 else
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
@@ -115,7 +115,7 @@ kill-remote-console:
 
 
 board_clean: system.mk
-ifeq ($(BOARD),$(filter $(BOARD), $(LOCAL_BOARD_LIST)))
+ifeq ($(BOARD_HOST),$(HOSTNAME))
 	make -C $(BOARD_DIR) clean
 else
 	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_SERVER):$(REMOTE_ROOT_DIR)

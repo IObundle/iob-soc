@@ -15,24 +15,52 @@ Access to Github by *ssh* is mandatory so that submodules can be updated.
 
 ## The system configuration file: system.mk
 
-The single system configuration is the system.mk file residing at the repository
-root. If this file does not exist it is created automatically by copying the providedsystem\_config.mk file. The user is free to edit the created systm.mk file, which is ignored by git.
+The system configuration is the system.mk file residing at the repository
+root. Edit the system.mk file at will. The variables that can be set are
+explained by comments in the system.mk file.
 
-Then edit the system.mk file at will. The variables that can be set are explained in the original system\_config.mk file.
+## Setup your environment variables
+
+The various simulators, FPGA compilers and FPGA boards may be run locally or
+remotely. For running them remotely, set environmental variables as shown below
+using your own servers and user names.  Have these settings in your .bashrc file
+so that you do not need to do it every session.
+
+
+```
+#default sim server
+export SIM_SERVER=pudim-flan.iobundle.com
+export SIM_USER=jsousa
+
+#default ncsim simulator server
+export NCSIM_SERVER=micro7.lx.it.pt
+export NCSIM_USER=user19
+
+#default fpga build server
+export FPGA_SERVER=pudim-flan.iobundle.com
+export FPGA_USER=jsousa
+
+#default ku40 board server
+export KU40_SERVER=baba-de-camelo.iobundle.com
+export KU40_USER=jsousa
+
+#default cyc5 board server
+export CYC5_SERVER=pudim-flan.iobundle.com
+export CYC5_USER=jsousa
+
+export ASIC_SERVER=micro7.lx.it.pt
+export ASIC_USER=user19
+```
+
 
 ## Simulation
-
-The following commands will run locally if the simulator selected by the
-SIMULATOR variable is installed and listed in the LOCAL\_SIM\_LIST
-variable. Otherwise they will run by ssh on the server selected by the
-SIM_SERVER variable.
 
 To simulate:
 ```
 make [sim]
 ```
 
-Parameters can be passed in the command line overriding those in the system.mk file. For example:
+Parameters can be passed in the command line, overriding those in the system.mk file. For example:
 ```
 make [sim] INIT_MEM=0 RUN_DDR=1
 ```
@@ -49,11 +77,6 @@ make sim-waves
 The above command assumes simulation had been previously run with the VCD variable set to 1. Otherwise an error issued.
 
 ## FPGA
-
-The following commands will run locally if the board selected by the BOARD
-variable has its compiler installed and the baord is listed in the
-LOCAL\_FPGA\_LIST variable.  Otherwise they will run by ssh on the server
-selected by the FPGA_SERVER variable.
 
 To compile the FPGA:
 ```
@@ -72,10 +95,6 @@ make fpga-clean-ip
 
 
 ## Running on the board
-
-The following commands will run locally if the board selected by the BOARD
-variable is installed and listed in the LOCAL\_BOARD\_LIST variable. Otherwise
-they will run by ssh on the server selected by the BOARD_SERVER variable.
 
 To load the board with an FPGA configuration bitstream file:
 ```
@@ -223,7 +242,7 @@ make clean-all
 
 ## Instructions for Installing the RISC-V GNU Compiler Toolchain
 
-### Get sources
+### Get sources and checkout the supported stable version
 
 ```
 git clone https://github.com/riscv/riscv-gnu-toolchain
