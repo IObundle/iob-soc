@@ -119,10 +119,12 @@ task cpu_sendfile;
       $display("TESBENCH: sending file %s", name_str);
 
       //open data file
-      fp = $fopen(name_str,"rb"); //to support icarus
-      if(!fp)
-        fp = $fopen(name,"rb"); //to support ncsim
+      if(name_str != "")
+        fp = $fopen(name_str,"rb"); //to support icarus
+      else
+         fp = $fopen(name,"rb"); //to support ncsim
 
+      
       if(!fp)
         begin
            $display("TESTBENCH: can't open file to send\n");
@@ -171,10 +173,10 @@ task cpu_recvfile;
       name_str = name;
       
       $display("TESBENCH: receiving file %s", name_str);
-        
-      fp = $fopen(name_str, "wb"); //to support icarus
 
-      if(!fp)
+      if(name_str != "")
+        fp = $fopen(name_str, "wb"); //to support icarus
+      else
         fp = $fopen(name, "wb"); //to support ncsim
 
       if(!fp) begin
