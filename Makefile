@@ -11,8 +11,11 @@ include core.mk
 sim:
 	make -C $(SIM_DIR) run
 
-sim-waves:
-	gtkwave -a $(SIM_DIR)/../waves.gtkw $(SIM_DIR)/uart.vcd &
+sim-waves: $(SIM_DIR)/waves.gtkw $(SIM_DIR)/uart.vcd
+	gtkwave -a $^ &
+
+$(SIM_DIR)/uart.vcd:
+	make -C $(SIM_DIR) run VCD=1
 
 sim-clean:
 	make -C $(SIM_DIR) clean
@@ -41,14 +44,12 @@ endif
 #
 
 doc: hardware/fpga/quartus/CYCLONEV-GT/quartus.log hardware/fpga/vivado/XCKU/vivado.log
-	ls $^
 	make -C document/$(DOC_TYPE) $(DOC_TYPE).pdf
 
 hardware/fpga/quartus/CYCLONEV-GT/quartus.log:
 	make fpga FPGA_FAMILY=CYCLONEV-GT
 
 hardware/fpga/vivado/XCKU/vivado.log:
-	ls $^
 	make fpga FPGA_FAMILY=XCKU
 
 doc-clean:
@@ -62,7 +63,8 @@ doc-pdfclean:
 	make -C document/$(DOC_TYPE) pdfclean
 
 doc-pdfclean-all:
-	make -C document/$(DOC_TYPE) pdfclean
+	make -C document/pb pdfclean
+	make -C document/ug pdfclean
 
 #
 # CLEAN
