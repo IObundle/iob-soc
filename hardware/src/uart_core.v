@@ -29,6 +29,8 @@ module uart_core
    // TX
    ////////////////////////////////////////////////////////
 
+   //BLOCK Serial TX & After enabled, this block serializes the data previously written to the {\tt tx_data} register by the CPU, and sends the data word over the single transmit line connected to output {\tt txd}.
+   
    //clear to send (cts) synchronizer
    reg [1:0]  cts_int;
    always @(posedge clk) 
@@ -107,6 +109,9 @@ module uart_core
    ////////////////////////////////////////////////////////
    // RX
    ////////////////////////////////////////////////////////
+
+   //BLOCK Serial RX & After enabled, this block deserializes the data in the incoming single transmit line connected to pin {\tt txd}, and writes a data word to the {\tt rx_data} register for the CPU to read.
+   
 
    // receiver program
    reg [2:0] rx_pc;

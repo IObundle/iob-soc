@@ -1,6 +1,6 @@
 \label{sec:is}
 
-The interface signals of the I$^{2}$S/TDM transceiver core are described in the following tables.
+The interface signals of the UART core are described in the following tables.
 
 \begin{table}[H]
   \centering
@@ -31,7 +31,6 @@ The interface signals of the I$^{2}$S/TDM transceiver core are described in the 
   \caption{CPU Native Slave Interface Signals}
   \label{cpu_nat_s_is_tab:is}
 \end{table}
-\clearpage
 
 \begin{table}[H]
   \centering
@@ -45,6 +44,22 @@ The interface signals of the I$^{2}$S/TDM transceiver core are described in the 
  
   \end{tabular}
   \caption{CPU AXI4 Lite Slave Interface Signals}
+  \label{cpu_axi4lite_s_is_tab:is}
+\end{table}
+
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{|l|l|r|p{9.5cm}|}
+    
+    \hline
+    \rowcolor{iob-green}
+    {\bf Name} & {\bf Direction} & {\bf Width} & {\bf Description}  \\ \hline \hline
+
+    \input{rs232_is_tab}
+ 
+  \end{tabular}
+  \caption{RS232 Interface Signals}
   \label{cpu_axi4lite_s_is_tab:is}
 \end{table}
 

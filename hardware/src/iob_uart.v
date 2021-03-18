@@ -23,10 +23,10 @@ module iob_uart
    //additional inputs and outputs
 
    //`OUTPUT(interrupt, 1), //to be done
-   `OUTPUT(txd, 1),
-   `INPUT(rxd, 1),
-   `INPUT(cts, 1),
-   `OUTPUT(rts, 1),
+   `OUTPUT(txd, 1), //Serial transmit line
+   `INPUT(rxd, 1), //Serial receive line
+   `INPUT(cts, 1), //Clear to send; the destination is ready to receive a transmission sent by the UART
+   `OUTPUT(rts, 1), //Ready to send; the UART is ready to receive a transmission from the sender.
 `include "gen_if.v"
    );
 

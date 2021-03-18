@@ -6,7 +6,6 @@ CORE_NAME:=UART
 IS_CORE:=1
 USE_NETLIST ?=0
 
-
 #SUBMODULE PATHS
 
 ifneq (INTERCON,$(filter INTERCON, $(SUBMODULES)))
@@ -21,12 +20,13 @@ ifneq (TEX,$(filter TEX, $(SUBMODULES)))
 TEX_DIR:=$(UART_DIR)/submodules/TEX
 endif
 
-
 #UART PATHS
 UART_HW_DIR:=$(UART_DIR)/hardware
 UART_SW_DIR:=$(UART_DIR)/software
 UART_DOC_DIR:=$(UART_DIR)/document
 
+#host where this is running
+HOSTNAME=$(shell hostname)
 
 #
 #SIMULATION
@@ -36,6 +36,7 @@ SIM_DIR ?=$(UART_HW_DIR)/simulation
 #
 #FPGA
 #
+FPGA_HOST=$(shell echo $(FPGA_SERVER) | cut -d"." -f1)
 FPGA_FAMILY ?=CYCLONEV-GT
 #FPGA_FAMILY ?=XCKU
 
