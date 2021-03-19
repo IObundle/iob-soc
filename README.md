@@ -35,6 +35,13 @@ Install the FPGA design tools of your favority vendor. Create an FPGA build
 folder below folder hardware/simulation/<compiler>/<fpga family>; use the
 existing compiler and FPGA family folders as a reference.
 
+Make sure the environmental variables for the tools and licenses you use are are defined. For example:
+```
+export ALTERAPATH=/path/to/intel/fpga/tools
+export XILINXPATH=/path/to/xilinx/fpga/tools
+export LM_LICENSE_FILE=port@host:lic_or_dat_file
+```
+
 To generate an FPGA neltlist for the UART core type:
 ```
 make fpga [FPGA_FAMILY=<fpga family>]
