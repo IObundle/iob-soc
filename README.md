@@ -23,7 +23,7 @@ explained by comments in the system.mk file.
 
 The various simulators, FPGA compilers and FPGA boards may be run locally or
 remotely. For running them remotely, set environmental variables as shown below
-using your own servers and user names.  Have these settings in your .bashrc file
+using some example servers and user names.  Have these settings in your .bashrc file
 so that you do not need to do it every session.
 
 
@@ -50,6 +50,17 @@ export CYC5_USER=jsousa
 
 export ASIC_SERVER=micro7.lx.it.pt
 export ASIC_USER=user19
+
+```
+
+Make sure the environmental variables for the tools and licenses you use are are
+defined. For example:
+
+```
+export ALTERAPATH=/path/to/intel/fpga/tools
+export XILINXPATH=/path/to/xilinx/fpga/tools
+...
+export LM_LICENSE_FILE=port@host:lic_or_dat_file
 ```
 
 

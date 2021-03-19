@@ -75,15 +75,15 @@ BOARD ?=CYCLONEV-GT-DK
 
 #set for running remote FPGA boards
 ifeq ($(BOARD),AES-KU040-DB-G)
-	BOARD_SERVER = $(KU40_SERVER)
-	BOARD_USER =$(KU40_USER)
-	FPGA_OBJ ?= synth_system.bit
-	FPGA_LOG ?= vivado.log
+	BOARD_SERVER=$(KU40_SERVER)
+	BOARD_USER=$(KU40_USER)
+	FPGA_OBJ=synth_system.bit
+	FPGA_LOG=vivado.log
 else #default; ifeq ($(BOARD),CYCLONEV-GT-DK)
-	BOARD_SERVER = $(CYC5_SERVER)
-	BOARD_USER = $(CYC5_USER)
-	FPGA_OBJ ?=output_files/top_system.sof
-	FPGA_LOG ?=output_files/top_system.fit.summary
+	BOARD_SERVER=$(CYC5_SERVER)
+	BOARD_USER=$(CYC5_USER)
+	FPGA_OBJ=output_files/top_system.sof
+	FPGA_LOG=output_files/top_system.fit.summary
 endif
 
 #
