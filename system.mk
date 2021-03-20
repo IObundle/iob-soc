@@ -75,15 +75,15 @@ BOARD ?=CYCLONEV-GT-DK
 
 #set for running remote FPGA boards
 ifeq ($(BOARD),AES-KU040-DB-G)
-	BOARD_SERVER = $(KU40_SERVER)
-	BOARD_USER =$(KU40_USER)
-	FPGA_OBJ ?= synth_system.bit
-	FPGA_LOG ?= vivado.log
+	BOARD_SERVER=$(KU40_SERVER)
+	BOARD_USER=$(KU40_USER)
+	FPGA_OBJ=synth_system.bit
+	FPGA_LOG=vivado.log
 else #default; ifeq ($(BOARD),CYCLONEV-GT-DK)
-	BOARD_SERVER = $(CYC5_SERVER)
-	BOARD_USER = $(CYC5_USER)
-	FPGA_OBJ ?=output_files/top_system.sof
-	FPGA_LOG ?=output_files/top_system.fit.summary
+	BOARD_SERVER=$(CYC5_SERVER)
+	BOARD_USER=$(CYC5_USER)
+	FPGA_OBJ=output_files/top_system.sof
+	FPGA_LOG=output_files/top_system.fit.summary
 endif
 
 #
@@ -111,12 +111,6 @@ BOARD_LIST=CYCLONEV-GT-DK AES-KU040-DB-G
 #############################################################
 # DERIVED FROM PRIMARY PARAMETERS: DO NOT CHANGE
 #############################################################
-HOSTNAME=$(shell hostname)
-
-SIM_HOST=$(shell echo $(SIM_SERVER) | cut -d"." -f1)
-FPGA_HOST=$(shell echo $(FPGA_SERVER) | cut -d"." -f1)
-BOARD_HOST=$(shell echo $(BOARD_SERVER) | cut -d"." -f1)
-
 
 ifeq ($(RUN_DDR),1)
 	USE_DDR=1
@@ -194,17 +188,27 @@ LOG=>test.log
 endif
 
 #default remote servers and users
-SIM_SERVER ?=$(shell hostname)
+HOSTNAME=$(shell hostname)
+
+SIM_SERVER ?=$(HOSTNAME)
 SIM_USER ?=$(USER)
 
-FPGA_SERVER ?=$(shell hostname)
+FPGA_SERVER ?=$(HOSTNAME)
 FPGA_USER ?=$(USER)
 
-BOARD_SERVER ?=$(shell hostname)
+BOARD_SERVER ?=$(HOSTNAME)
 BOARD_USER ?=$(USER)
 
-ASIC_SERVER ?=$(shell hostname)
+ASIC_SERVER ?=$(HOSTNAME)
 ASIC_USER ?=$(USER)
+
+
+SIM_HOST=$(shell echo $(SIM_SERVER) | cut -d"." -f1)
+FPGA_HOST=$(shell echo $(FPGA_SERVER) | cut -d"." -f1)
+BOARD_HOST=$(shell echo $(BOARD_SERVER) | cut -d"." -f1)
+ASIC_HOST=$(shell echo $(ASIC_SERVER) | cut -d"." -f1)
+
+
 
 #RULES
 
