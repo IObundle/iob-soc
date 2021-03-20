@@ -2,14 +2,14 @@ ROOT_DIR:=.
 include ./system.mk
 
 #default target
-all: system.mk
+all:
 	make -C hardware/simulation/icarus run BAUD=SIM_BAUD
 
 #
 # PC
 #
 
-pc-emul: system.mk
+pc-emul:
 	make -C software/pc-emul run
 
 pc-clean:
@@ -54,7 +54,7 @@ endif
 # FPGA COMPILE 
 #
 
-fpga: system.mk
+fpga:
 	make -C $(FIRM_DIR) run BAUD=$(HW_BAUD)
 	make -C $(BOOT_DIR) run BAUD=$(HW_BAUD)
 ifeq ($(FPGA_HOST),$(HOSTNAME))
@@ -86,7 +86,7 @@ endif
 # RUN BOARD
 #
 
-board-load: system.mk
+board-load:
 ifeq ($(BOARD_HOST),$(HOSTNAME))
 	make -C $(BOARD_DIR) load
 else
@@ -112,7 +112,7 @@ kill-remote-console:
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR); kill -9 `pgrep -a console`'
 
 
-board_clean: system.mk
+board_clean:
 ifeq ($(BOARD_HOST),$(HOSTNAME))
 	make -C $(BOARD_DIR) clean
 else
@@ -124,22 +124,22 @@ endif
 # COMPILE SOFTWARE
 #
 
-firmware: system.mk
+firmware:
 	make -C $(FIRM_DIR) run
 
-firmware-clean: system.mk
+firmware-clean:
 	make -C $(FIRM_DIR) clean
 
 bootloader: firmware
 	make -C $(BOOT_DIR) run
 
-bootloader-clean: system.mk
+bootloader-clean:
 	make -C $(BOOT_DIR) clean
 
-console: system.mk
+console:
 	make -C $(CONSOLE_DIR) run BAUD=$(HW_BAUD)
 
-console-clean: system.mk
+console-clean:
 	make -C $(CONSOLE_DIR) clean
 
 sw-clean: firmware-clean bootloader-clean console-clean
@@ -148,15 +148,15 @@ sw-clean: firmware-clean bootloader-clean console-clean
 # COMPILE DOCUMENTS
 #
 
-doc: system.mk
+doc:
 	make -C document/pb pb.pdf
 	make -C document/presentation presentation.pdf
 
-doc-clean: system.mk
+doc-clean:
 	make -C document/pb clean
 	make -C document/presentation clean
 
-doc-pdfclean: system.mk
+doc-pdfclean:
 	make -C document/pb pdfclean
 	make -C document/presentation pdfclean
 
