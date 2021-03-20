@@ -111,6 +111,11 @@ BOARD_LIST=CYCLONEV-GT-DK AES-KU040-DB-G
 #############################################################
 # DERIVED FROM PRIMARY PARAMETERS: DO NOT CHANGE
 #############################################################
+SIM_HOST=$(shell echo $(SIM_SERVER) | cut -d"." -f1)
+FPGA_HOST=$(shell echo $(FPGA_SERVER) | cut -d"." -f1)
+BOARD_HOST=$(shell echo $(BOARD_SERVER) | cut -d"." -f1)
+ASIC_HOST=$(shell echo $(ASIC_SERVER) | cut -d"." -f1)
+
 
 ifeq ($(RUN_DDR),1)
 	USE_DDR=1
@@ -186,28 +191,6 @@ $(foreach p, $(PERIPHERALS), $(eval DEFINE+=$(defmacro)$p=$($p)))
 ifneq ($(TEST_LOG),)
 LOG=>test.log
 endif
-
-#default remote servers and users
-HOSTNAME=$(shell hostname)
-
-SIM_SERVER ?=$(HOSTNAME)
-SIM_USER ?=$(USER)
-
-FPGA_SERVER ?=$(HOSTNAME)
-FPGA_USER ?=$(USER)
-
-BOARD_SERVER ?=$(HOSTNAME)
-BOARD_USER ?=$(USER)
-
-ASIC_SERVER ?=$(HOSTNAME)
-ASIC_USER ?=$(USER)
-
-
-SIM_HOST=$(shell echo $(SIM_SERVER) | cut -d"." -f1)
-FPGA_HOST=$(shell echo $(FPGA_SERVER) | cut -d"." -f1)
-BOARD_HOST=$(shell echo $(BOARD_SERVER) | cut -d"." -f1)
-ASIC_HOST=$(shell echo $(ASIC_SERVER) | cut -d"." -f1)
-
 
 
 #RULES
