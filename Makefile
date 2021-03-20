@@ -23,7 +23,7 @@ pc-clean:
 sim: sim-clean
 	make -C $(FIRM_DIR) run BAUD=$(SIM_BAUD)
 	make -C $(BOOT_DIR) run BAUD=$(SIM_BAUD)
-ifeq ($(SIM_HOST),$(HOSTNAME))
+ifeq ($(SIM_HOST),)
 	make -C $(SIM_DIR) run BAUD=$(SIM_BAUD)
 else
 	ssh $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
@@ -45,7 +45,7 @@ $(SIM_DIR)/../waves.gtkw $(SIM_DIR)/system.vcd:
 
 sim-clean: sw-clean
 	make -C $(SIM_DIR) clean 
-ifneq ($(SIM_HOST),$(HOSTNAME))
+ifneq ($(SIM_HOST),)
 	rsync -avz --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
 	ssh $(SIM_USER)@$(SIM_SERVER) 'if [ -d $(REMOTE_ROOT_DIR) ]; then cd $(REMOTE_ROOT_DIR); make -C $(SIM_DIR) clean; fi'
 endif
@@ -57,7 +57,7 @@ endif
 fpga:
 	make -C $(FIRM_DIR) run BAUD=$(HW_BAUD)
 	make -C $(BOOT_DIR) run BAUD=$(HW_BAUD)
-ifeq ($(FPGA_HOST),$(HOSTNAME))
+ifeq ($(FPGA_HOST),)
 	make -C $(BOARD_DIR) compile BAUD=$(HW_BAUD)
 else
 	ssh $(FPGA_USER)@$(FPGA_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
@@ -68,7 +68,7 @@ else
 endif
 
 fpga-clean: sw-clean
-ifeq ($(FPGA_HOST),$(HOSTNAME))
+ifeq ($(FPGA_HOST),)
 	make -C $(BOARD_DIR) clean
 else
 	rsync -avz --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
@@ -76,7 +76,7 @@ else
 endif
 
 fpga-clean-ip: fpga-clean
-ifeq ($(FPGA_HOST), $(HOSTNAME))
+ifeq ($(FPGA_HOST),)
 	make -C $(BOARD_DIR) clean-ip
 else
 	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(BOARD_DIR) clean-ip'
@@ -87,16 +87,17 @@ endif
 #
 
 board-load:
-ifeq ($(BOARD_HOST),$(HOSTNAME))
+ifeq ($(BOARD_HOST),)
 	make -C $(BOARD_DIR) load
 else
+	echo $(BOARD_HOST) $(BOARD_SERVER) $(SIM_SERVER) $(FPGA_SERVER) $(ASIC_SERVER)
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR) 
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(BOARD_DIR) load'
 endif
 
 board-run: firmware
-ifeq ($(BOARD_HOST),$(HOSTNAME))
+ifeq ($(BOARD_HOST),)
 	make -C $(CONSOLE_DIR) run TEST_LOG=$(TEST_LOG) BAUD=$(HW_BAUD)
 else
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
@@ -113,7 +114,7 @@ kill-remote-console:
 
 
 board_clean:
-ifeq ($(BOARD_HOST),$(HOSTNAME))
+ifeq ($(BOARD_HOST),)
 	make -C $(BOARD_DIR) clean
 else
 	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_SERVER):$(REMOTE_ROOT_DIR)
@@ -232,7 +233,7 @@ test-all-boards:
 asic: asic-clean
 	make -C $(FIRM_DIR) run BAUD=$(HW_BAUD)
 	make -C $(BOOT_DIR) run BAUD=$(HW_BAUD)
-ifeq ($(ASIC_HOST), $(HOSTNAME))
+ifeq ($(ASIC_HOST),)
 	make -C $(ASIC_DIR) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) ASIC=1
 else
 	ssh $(ASIC_USER)@$(ASIC_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
@@ -243,7 +244,7 @@ endif
 
 asic-mem:
 	make -C $(BOOT_DIR) run BAUD=$(HW_BAUD)
-ifeq ($(ASIC_HOST), $(HOSTNAME))
+ifeq ($(ASIC_HOST),)
 	make -C $(ASIC_DIR) mem INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) ASIC=1
 else
 	ssh $(ASIC_USER)@$(ASIC_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
@@ -252,7 +253,7 @@ else
 endif
 
 asic-synth:
-ifeq ($(ASIC_HOST), $(HOSTNAME))
+ifeq ($(ASIC_HOST),)
 	make -C $(ASIC_DIR) synth INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) ASIC=1
 else
 	ssh $(ASIC_USER)@$(ASIC_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
@@ -264,7 +265,7 @@ endif
 asic-sim-synth: sim-clean
 	make -C $(FIRM_DIR) run BAUD=$(SIM_BAUD)
 	make -C $(BOOT_DIR) run BAUD=$(SIM_BAUD)
-ifeq ($(ASIC_HOST), $(HOSTNAME))
+ifeq ($(ASIC_HOST),)
 	make -C $(HW_DIR)/simulation/ncsim run INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) TEST_LOG=$(TEST_LOG) VCD=$(VCD) BAUD=$(SIM_BAUD) SYNTH=1
 else
 	ssh $(ASIC_USER)@$(ASIC_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
@@ -280,7 +281,7 @@ endif
 
 asic-clean: sw-clean
 	make -C $(ASIC_DIR) clean
-ifneq ($(ASIC_HOST), $(HOSTNAME))
+ifneq ($(ASIC_HOST),)
 	rsync -avz --exclude .git $(ROOT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)
 	ssh $(ASIC_USER)@$(ASIC_SERVER) 'if [ -d $(REMOTE_ROOT_DIR) ]; then cd $(REMOTE_ROOT_DIR); make -C $(ASIC_DIR) clean; fi'
 endif
