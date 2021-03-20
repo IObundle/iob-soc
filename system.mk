@@ -1,11 +1,11 @@
-#####################################################################
+######################################################################
 #
 # IOb-SoC Configuration File
 #
-#####################################################################
+######################################################################
 
 #
-# PRIMARY PARAMETERS: CAN BE CHANGED BY USERS
+# PRIMARY PARAMETERS: CAN BE CHANGED BY USERS OR OVERRIDEN BY ENV VARS
 #
 
 #FIRMWARE SIZE (LOG2)
@@ -51,16 +51,26 @@ REMOTE_ROOT_DIR ?=sandbox/iob-soc
 #SIMULATION
 #
 
-#default simulator
-SIMULATOR ?=icarus
-
 #produce waveform dump
 VCD ?=0
 
-#set for running remote simulators
-ifeq ($(SIMULATOR),ncsim)
+#set for running (remote) simulators
+#servers and respective users should be environment variables
+#default simulator
+SIMULATOR ?=icarus
+#select according simulators
+ifeq ($(SIMULATOR),icarus)
+	SIM_SERVER=$(IVSIM_SERVER)
+	SIM_USER=$(IVSIM_USER)
+else ifeq ($(SIMULATOR),ncsim)
 	SIM_SERVER=$(NCSIM_SERVER)
 	SIM_USER=$(NCSIM_USER)
+else ifeq ($(SIMULATOR),modelsim)
+	SIM_SERVER=$(MSIM_SERVER)
+	SIM_USER=$(MSIM_USER)
+else ifeq ($(SIMULATOR),verilator)
+	SIM_SERVER=$(VSIM_SERVER)
+	SIM_USER=$(VSIM_USER)
 endif
 
 #
@@ -70,26 +80,40 @@ endif
 #DDR controller address width
 FPGA_DDR_ADDR_W ?=30
 
+
+#set for running (remote) tools and boards
+#servers and respective users should be environment variables
 #default board
 BOARD ?=CYCLONEV-GT-DK
-
-#set for running remote FPGA boards
+#select according to board
 ifeq ($(BOARD),AES-KU040-DB-G)
-	BOARD_SERVER=$(KU40_SERVER)
-	BOARD_USER=$(KU40_USER)
+	FPGA_SERVER=$(VIVA_SERVER)
+	FPGA_USER=$(VIVA_USER)
 	FPGA_OBJ=synth_system.bit
 	FPGA_LOG=vivado.log
-else #default; ifeq ($(BOARD),CYCLONEV-GT-DK)
-	BOARD_SERVER=$(CYC5_SERVER)
-	BOARD_USER=$(CYC5_USER)
+	BOARD_SERVER=$(KU40_SERVER)
+	BOARD_USER=$(KU40_USER)
+else ifeq ($(BOARD),CYCLONEV-GT-DK)
+	FPGA_SERVER=$(QUAR_SERVER)
+	FPGA_USER=$(QUAR_USER)
 	FPGA_OBJ=output_files/top_system.sof
 	FPGA_LOG=output_files/top_system.fit.summary
+	BOARD_SERVER=$(CYC5_SERVER)
+	BOARD_USER=$(CYC5_USER)
 endif
 
 #
 #ASIC COMPILE
 #
-ASIC_NODE=umc130
+#set for running (remote) tools and boards
+#servers and respective users should be environment variables
+#default node
+ASIC_NODE ?=umc130
+#select according to node
+ifeq ($(ASIC_NODE),umc130)
+	ASIC_SERVER=$(CADE_SERVER)
+	ASIC_USER=$(CADE_USER)
+endif
 
 
 #
@@ -97,10 +121,10 @@ ASIC_NODE=umc130
 #
 
 #simulators used in regression testing
-SIM_LIST=icarus ncsim
+SIM_LIST ?=icarus ncsim
 
 #boards used for regression testing
-BOARD_LIST=CYCLONEV-GT-DK AES-KU040-DB-G 
+BOARD_LIST ?=CYCLONEV-GT-DK AES-KU040-DB-G 
 
 
 

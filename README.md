@@ -28,33 +28,26 @@ so that you do not need to do it every session.
 
 
 ```
-#default sim server
-export SIM_SERVER=pudim-flan.iobundle.com
-export SIM_USER=jsousa
+#ncsim simulator server
+export NCSIM_SERVER=sericaia.iobundle.com
+export NCSIM_USER=jsousa
 
-#default ncsim simulator server
-export NCSIM_SERVER=micro7.lx.it.pt
-export NCSIM_USER=user19
+#quartus server
+export QUAR_SERVER=pudim-flan.iobundle.com
+export QUAR_USER=jsousa
 
-#default fpga build server
-export FPGA_SERVER=pudim-flan.iobundle.com
-export FPGA_USER=jsousa
-
-#default ku40 board server
+#ku40 board server
 export KU40_SERVER=baba-de-camelo.iobundle.com
 export KU40_USER=jsousa
 
-#default cyc5 board server
-export CYC5_SERVER=pudim-flan.iobundle.com
-export CYC5_USER=jsousa
-
-export ASIC_SERVER=micro7.lx.it.pt
-export ASIC_USER=user19
-
+#cadence tools server
+export CADE_SERVER=molotof.iobundle.com
+export CADE_USER=user19
 ```
 
-Make sure the environmental variables for the tools and licenses you use are are
-defined. For example:
+Make sure the environmental variables for the tool paths, licenses servers,
+ports or files are defined in each server in use according to the following
+examples.
 
 ```
 export ALTERAPATH=/path/to/intel/fpga/tools
