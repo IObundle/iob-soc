@@ -128,19 +128,19 @@ endif
 firmware:
 	make -C $(FIRM_DIR) run
 
-firmware-clean: system.mk
+firmware-clean:
 	make -C $(FIRM_DIR) clean
 
 bootloader: firmware
 	make -C $(BOOT_DIR) run
 
-bootloader-clean: system.mk
+bootloader-clean:
 	make -C $(BOOT_DIR) clean
 
-console: system.mk
+console:
 	make -C $(CONSOLE_DIR) run BAUD=$(HW_BAUD)
 
-console-clean: system.mk
+console-clean:
 	make -C $(CONSOLE_DIR) clean
 
 sw-clean: firmware-clean bootloader-clean console-clean
@@ -149,15 +149,15 @@ sw-clean: firmware-clean bootloader-clean console-clean
 # COMPILE DOCUMENTS
 #
 
-doc: system.mk
+doc:
 	make -C document/pb pb.pdf
 	make -C document/presentation presentation.pdf
 
-doc-clean: system.mk
+doc-clean:
 	make -C document/pb clean
 	make -C document/presentation clean
 
-doc-pdfclean: system.mk
+doc-pdfclean:
 	make -C document/pb pdfclean
 	make -C document/presentation pdfclean
 
