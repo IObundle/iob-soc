@@ -1,25 +1,24 @@
-#####################################################################
+######################################################################
 #
 # IOb-SoC Configuration File
 #
-#####################################################################
+######################################################################
 
 #
-# PRIMARY PARAMETERS: CAN BE CHANGED BY USERS
+# PRIMARY PARAMETERS: CAN BE CHANGED BY USERS OR OVERRIDEN BY ENV VARS
 #
-
 
 #FIRMWARE SIZE (LOG2)
-FIRM_ADDR_W ?=15
+FIRM_ADDR_W ?=16
 
 #SRAM SIZE (LOG2)
-SRAM_ADDR_W ?=15
+SRAM_ADDR_W ?=16
 
 #DDR 
 USE_DDR ?=0
 RUN_DDR ?=0
 
-#CACHE DATA SIZE (LOG2)
+#DATA CACHE ADDRESS WIDTH (tag + index + offset)
 DCACHE_ADDR_W:=24
 
 #ROM SIZE (LOG2)
@@ -35,22 +34,44 @@ INIT_MEM ?=1
 PERIPHERALS ?=UART
 
 #
+#SOFTWARE COMPILATION
+#
+
+# risc-v compressed instructions
+USE_COMPRESSED ?=1
+
+
+#
+#ROOT DIR ON REMOTE MACHINES
+#
+REMOTE_ROOT_DIR ?=sandbox/iob-soc
+
+
+#
 #SIMULATION
 #
 
-#default simulator
-SIMULATOR ?=icarus
-LOCAL_SIM_LIST ?=icarus
+#produce waveform dump
 VCD ?=0
 
-#set according to SIMULATOR
-ifeq ($(SIMULATOR),ncsim)
-	SIM_SERVER ?=micro7.lx.it.pt
-	SIM_USER ?=user19
+#set for running (remote) simulators
+#servers and respective users should be environment variables
+#default simulator
+SIMULATOR ?=icarus
+#select according simulators
+ifeq ($(SIMULATOR),icarus)
+	SIM_SERVER=$(IVSIM_SERVER)
+	SIM_USER=$(IVSIM_USER)
+else ifeq ($(SIMULATOR),ncsim)
+	SIM_SERVER=$(NCSIM_SERVER)
+	SIM_USER=$(NCSIM_USER)
+else ifeq ($(SIMULATOR),modelsim)
+	SIM_SERVER=$(MSIM_SERVER)
+	SIM_USER=$(MSIM_USER)
+else ifeq ($(SIMULATOR),verilator)
+	SIM_SERVER=$(VSIM_SERVER)
+	SIM_USER=$(VSIM_USER)
 endif
-
-#simulator used in testing
-SIM_LIST:=icarus ncsim
 
 #
 #FPGA BOARD COMPILE & RUN
@@ -59,65 +80,66 @@ SIM_LIST:=icarus ncsim
 #DDR controller address width
 FPGA_DDR_ADDR_W ?=30
 
+
+#set for running (remote) tools and boards
+#servers and respective users should be environment variables
 #default board
 BOARD ?=CYCLONEV-GT-DK
-
-#Boards for which the FPGA compiler is installed in host
-#LOCAL_FPGA_LIST=CYCLONEV-GT-DK AES-KU040-DB-G
-
-#boards installed host
-#LOCAL_BOARD_LIST=CYCLONEV-GT-DK
-#LOCAL_BOARD_LIST=AES-KU040-DB-G
-
-#set according to FPGA board
+#select according to board
 ifeq ($(BOARD),AES-KU040-DB-G)
-	BOARD_SERVER ?=baba-de-camelo.iobundle.com
-	BOARD_USER ?=$(USER)
-	FPGA_OBJ ?=synth_system.bit
-	FPGA_LOG ?=vivado.log
-	FPGA_SERVER ?=pudim-flan.iobundle.com
-	FPGA_USER ?=$(USER)
-else #default; ifeq ($(BOARD),CYCLONEV-GT-DK)
-	BOARD_SERVER ?=pudim-flan.iobundle.com
-	BOARD_USER ?=$(USER)
-	FPGA_OBJ ?=output_files/top_system.sof
-	FPGA_LOG ?=output_files/top_system.fit.summary
-	FPGA_SERVER ?=pudim-flan.iobundle.com
-	FPGA_USER ?=$(USER)
+	FPGA_SERVER=$(VIVA_SERVER)
+	FPGA_USER=$(VIVA_USER)
+	FPGA_OBJ=synth_system.bit
+	FPGA_LOG=vivado.log
+	BOARD_SERVER=$(KU40_SERVER)
+	BOARD_USER=$(KU40_USER)
+else ifeq ($(BOARD),CYCLONEV-GT-DK)
+	FPGA_SERVER=$(QUAR_SERVER)
+	FPGA_USER=$(QUAR_USER)
+	FPGA_OBJ=output_files/top_system.sof
+	FPGA_LOG=output_files/top_system.fit.summary
+	BOARD_SERVER=$(CYC5_SERVER)
+	BOARD_USER=$(CYC5_USER)
 endif
 
-#board list for testing
+#
+#ASIC COMPILE
+#
+#set for running (remote) tools and boards
+#servers and respective users should be environment variables
+#default node
+ASIC_NODE ?=umc130
+#select according to node
+ifeq ($(ASIC_NODE),umc130)
+	ASIC_SERVER=$(CADE_SERVER)
+	ASIC_USER=$(CADE_USER)
+endif
+
+
+#
+# REGRESSION TESTING
+#
+
+#simulators used in regression testing
+SIM_LIST ?=icarus ncsim
+
+#boards used for regression testing
 BOARD_LIST ?=CYCLONEV-GT-DK AES-KU040-DB-G 
 
 
-#
-#ROOT DIR ON REMOTE MACHINES
-#
-REMOTE_ROOT_DIR ?=sandbox/iob-soc
 
-#
-# DOCUMENTATION
-#
 
-#DOC_TYPE
-#must match subdirectory name in directory document
-
-#DOC_TYPE:=presentation
-DOC_TYPE ?=pb
-
-#
-# ASIC COMPILE (WIP)
-#
-ASIC_NODE:=umc130
-ASIC_SERVER:=micro7.lx.it.pt
-ASIC_COMPILE_ROOT_DIR=$(ROOT_DIR)/sandbox/iob-soc
-#ASIC_USER=
 
 
 
 #############################################################
 # DERIVED FROM PRIMARY PARAMETERS: DO NOT CHANGE
 #############################################################
+SIM_HOST=$(shell echo $(SIM_SERVER) | cut -d"." -f1)
+FPGA_HOST=$(shell echo $(FPGA_SERVER) | cut -d"." -f1)
+BOARD_HOST=$(shell echo $(BOARD_SERVER) | cut -d"." -f1)
+ASIC_HOST=$(shell echo $(ASIC_SERVER) | cut -d"." -f1)
+
 
 ifeq ($(RUN_DDR),1)
 	USE_DDR=1
@@ -128,14 +150,12 @@ HW_DIR:=$(ROOT_DIR)/hardware
 SIM_DIR=$(HW_DIR)/simulation/$(SIMULATOR)
 BOARD_DIR=$(HW_DIR)/fpga/$(BOARD)
 ASIC_DIR=$(HW_DIR)/asic/$(ASIC_NODE)
-
 SW_DIR:=$(ROOT_DIR)/software
 FIRM_DIR:=$(SW_DIR)/firmware
 BOOT_DIR:=$(SW_DIR)/bootloader
 CONSOLE_DIR:=$(SW_DIR)/console
 PYTHON_DIR:=$(SW_DIR)/python
 
-DOC_DIR:=$(ROOT_DIR)/document/$(DOC_TYPE)
 TEX_DIR=$(UART_DIR)/submodules/TEX
 
 #submodule paths
@@ -175,7 +195,7 @@ DEFINE+=$(defmacro)P=$P
 DEFINE+=$(defmacro)B=$B
 
 #baud rate
-SIM_BAUD:=10000000
+SIM_BAUD:=5000000
 HW_BAUD:=115200
 BAUD ?= $(HW_BAUD)
 DEFINE+=$(defmacro)BAUD=$(BAUD)
@@ -187,7 +207,6 @@ else
 DEFINE+=$(defmacro)FREQ=$(FREQ)
 endif
 
-#create periph serial number
 N_SLAVES:=0
 $(foreach p, $(PERIPHERALS), $(eval $p=$(N_SLAVES)) $(eval N_SLAVES:=$(shell expr $(N_SLAVES) \+ 1)))
 $(foreach p, $(PERIPHERALS), $(eval DEFINE+=$(defmacro)$p=$($p)))
@@ -196,7 +215,6 @@ $(foreach p, $(PERIPHERALS), $(eval DEFINE+=$(defmacro)$p=$($p)))
 ifneq ($(TEST_LOG),)
 LOG=>test.log
 endif
-
 
 
 #RULES

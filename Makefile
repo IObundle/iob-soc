@@ -1,21 +1,15 @@
 ROOT_DIR:=.
+include ./system.mk
 
 #default target
-all: system.mk
-	make -C hardware/simulation/icarus run BAUD=10000000
-
-#system configuration file
-system.mk: system_config.mk
-	cp system_config.mk system.mk
-	@echo system.mk file created
-
-include ./system.mk
+all:
+	make -C hardware/simulation/icarus run BAUD=SIM_BAUD
 
 #
 # PC
 #
 
-pc-emul: system.mk
+pc-emul:
 	make -C software/pc-emul run
 
 pc-clean:
@@ -29,7 +23,7 @@ pc-clean:
 sim: sim-clean
 	make -C $(FIRM_DIR) run BAUD=$(SIM_BAUD)
 	make -C $(BOOT_DIR) run BAUD=$(SIM_BAUD)
-ifeq ($(SIMULATOR),$(filter $(SIMULATOR), $(LOCAL_SIM_LIST)))
+ifeq ($(SIM_HOST),)
 	make -C $(SIM_DIR) run BAUD=$(SIM_BAUD)
 else
 	ssh $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
@@ -51,7 +45,7 @@ $(SIM_DIR)/../waves.gtkw $(SIM_DIR)/system.vcd:
 
 sim-clean: sw-clean
 	make -C $(SIM_DIR) clean 
-ifneq ($(SIMULATOR),$(filter $(SIMULATOR), $(LOCAL_SIM_LIST)))
+ifneq ($(SIM_HOST),)
 	rsync -avz --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
 	ssh $(SIM_USER)@$(SIM_SERVER) 'if [ -d $(REMOTE_ROOT_DIR) ]; then cd $(REMOTE_ROOT_DIR); make -C $(SIM_DIR) clean; fi'
 endif
@@ -60,23 +54,21 @@ endif
 # FPGA COMPILE 
 #
 
-fpga: system.mk
+fpga:
 	make -C $(FIRM_DIR) run BAUD=$(HW_BAUD)
 	make -C $(BOOT_DIR) run BAUD=$(HW_BAUD)
-ifeq ($(BOARD),$(filter $(BOARD), $(LOCAL_FPGA_LIST)))
+ifeq ($(FPGA_HOST),)
 	make -C $(BOARD_DIR) compile BAUD=$(HW_BAUD)
 else
 	ssh $(FPGA_USER)@$(FPGA_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(BOARD_DIR) compile INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) BAUD=$(HW_BAUD)'
-ifneq ($(FPGA_SERVER),localhost)
+	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(BOARD_DIR) compile INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) BAUD=$(HW_BAUD) BOARD=$(BOARD)'
 	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/$(BOARD_DIR)/$(FPGA_OBJ) $(BOARD_DIR)
 	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/$(BOARD_DIR)/$(FPGA_LOG) $(BOARD_DIR)
 endif
-endif
 
 fpga-clean: sw-clean
-ifeq ($(BOARD),$(filter $(BOARD), $(LOCAL_FPGA_LIST)))
+ifeq ($(FPGA_HOST),)
 	make -C $(BOARD_DIR) clean
 else
 	rsync -avz --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
@@ -84,7 +76,7 @@ else
 endif
 
 fpga-clean-ip: fpga-clean
-ifeq ($(BOARD), $(filter $(BOARD), $(LOCAL_FPGA_LIST)))
+ifeq ($(FPGA_HOST),)
 	make -C $(BOARD_DIR) clean-ip
 else
 	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(BOARD_DIR) clean-ip'
@@ -94,17 +86,18 @@ endif
 # RUN BOARD
 #
 
-board-load: system.mk
-ifeq ($(BOARD),$(filter $(BOARD), $(LOCAL_BOARD_LIST)))
+board-load:
+ifeq ($(BOARD_HOST),)
 	make -C $(BOARD_DIR) load
 else
+	echo $(BOARD_HOST) $(BOARD_SERVER) $(SIM_SERVER) $(FPGA_SERVER) $(ASIC_SERVER)
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR) 
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(BOARD_DIR) load'
 endif
 
 board-run: firmware
-ifeq ($(BOARD),$(filter $(BOARD), $(LOCAL_BOARD_LIST)))
+ifeq ($(BOARD_HOST),)
 	make -C $(CONSOLE_DIR) run TEST_LOG=$(TEST_LOG) BAUD=$(HW_BAUD)
 else
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
@@ -120,8 +113,8 @@ kill-remote-console:
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR); kill -9 `pgrep -a console`'
 
 
-board_clean: system.mk
-ifeq ($(BOARD),$(filter $(BOARD), $(LOCAL_BOARD_LIST)))
+board_clean:
+ifeq ($(BOARD_HOST),)
 	make -C $(BOARD_DIR) clean
 else
 	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_SERVER):$(REMOTE_ROOT_DIR)
@@ -132,22 +125,22 @@ endif
 # COMPILE SOFTWARE
 #
 
-firmware: system.mk
+firmware:
 	make -C $(FIRM_DIR) run
 
-firmware-clean: system.mk
+firmware-clean:
 	make -C $(FIRM_DIR) clean
 
 bootloader: firmware
 	make -C $(BOOT_DIR) run
 
-bootloader-clean: system.mk
+bootloader-clean:
 	make -C $(BOOT_DIR) clean
 
-console: system.mk
+console:
 	make -C $(CONSOLE_DIR) run BAUD=$(HW_BAUD)
 
-console-clean: system.mk
+console-clean:
 	make -C $(CONSOLE_DIR) clean
 
 sw-clean: firmware-clean bootloader-clean console-clean
@@ -156,14 +149,17 @@ sw-clean: firmware-clean bootloader-clean console-clean
 # COMPILE DOCUMENTS
 #
 
-doc: system.mk
-	make -C document/$(DOC_TYPE) $(DOC_TYPE).pdf
+doc:
+	make -C document/pb pb.pdf
+	make -C document/presentation presentation.pdf
 
-doc-clean: system.mk
-	make -C document/$(DOC_TYPE) clean
+doc-clean:
+	make -C document/pb clean
+	make -C document/presentation clean
 
-doc-pdfclean: system.mk
-	make -C document/$(DOC_TYPE) pdfclean
+doc-pdfclean:
+	make -C document/pb pdfclean
+	make -C document/presentation pdfclean
 
 
 #
@@ -174,7 +170,13 @@ test: test-all-simulators test-all-boards
 
 #test on simulators
 test-simulator:
-	echo "Testing simulator $(SIMULATOR)";echo Testing simulator $(SIMULATOR)>>test.log
+	@echo "############################################################"
+	@echo "Testing simulator $(SIMULATOR)"
+	@echo "############################################################"
+	@echo "############################################################">>test.log
+	@echo Testing simulator $(SIMULATOR)>>test.log
+	@echo "############################################################">>test.log
+	@echo "">>test.log; echo "">>test.log;
 	make sim SIMULATOR=$(SIMULATOR) INIT_MEM=1 USE_DDR=0 RUN_DDR=0 TEST_LOG=1
 	cat $(SIM_DIR)/test.log >> test.log
 	make sim SIMULATOR=$(SIMULATOR) INIT_MEM=0 USE_DDR=0 RUN_DDR=0 TEST_LOG=1
@@ -204,7 +206,13 @@ ifneq ($(TEST_LOG),)
 endif
 
 test-board:
-	echo "Testing board $(BOARD)"; echo "Testing board $(BOARD)" >> test.log
+	@echo "############################################################"
+	@echo "Testing board $(BOARD)"
+	@echo "############################################################"
+	@echo "############################################################">>test.log
+	@echo Testing board $(BOARD)>>test.log
+	@echo "############################################################">>test.log
+	@echo "">>test.log; echo "">>test.log;
 	make test-board-config BOARD=$(BOARD) INIT_MEM=1 USE_DDR=0 RUN_DDR=0 TEST_LOG=1
 	make test-board-config BOARD=$(BOARD) INIT_MEM=0 USE_DDR=0 RUN_DDR=0 TEST_LOG=1
 ifeq ($(BOARD),AES-KU040-DB-G)
@@ -225,7 +233,7 @@ test-all-boards:
 asic: asic-clean
 	make -C $(FIRM_DIR) run BAUD=$(HW_BAUD)
 	make -C $(BOOT_DIR) run BAUD=$(HW_BAUD)
-ifeq ($(shell hostname), $(ASIC_SERVER))
+ifeq ($(ASIC_HOST),)
 	make -C $(ASIC_DIR) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) ASIC=1
 else
 	ssh $(ASIC_USER)@$(ASIC_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
@@ -236,7 +244,7 @@ endif
 
 asic-mem:
 	make -C $(BOOT_DIR) run BAUD=$(HW_BAUD)
-ifeq ($(shell hostname), $(ASIC_SERVER))
+ifeq ($(ASIC_HOST),)
 	make -C $(ASIC_DIR) mem INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) ASIC=1
 else
 	ssh $(ASIC_USER)@$(ASIC_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
@@ -245,7 +253,7 @@ else
 endif
 
 asic-synth:
-ifeq ($(shell hostname), $(ASIC_SERVER))
+ifeq ($(ASIC_HOST),)
 	make -C $(ASIC_DIR) synth INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) ASIC=1
 else
 	ssh $(ASIC_USER)@$(ASIC_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
@@ -257,7 +265,7 @@ endif
 asic-sim-synth: sim-clean
 	make -C $(FIRM_DIR) run BAUD=$(SIM_BAUD)
 	make -C $(BOOT_DIR) run BAUD=$(SIM_BAUD)
-ifeq ($(shell hostname), $(ASIC_SERVER))
+ifeq ($(ASIC_HOST),)
 	make -C $(HW_DIR)/simulation/ncsim run INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) TEST_LOG=$(TEST_LOG) VCD=$(VCD) BAUD=$(SIM_BAUD) SYNTH=1
 else
 	ssh $(ASIC_USER)@$(ASIC_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
@@ -273,7 +281,7 @@ endif
 
 asic-clean: sw-clean
 	make -C $(ASIC_DIR) clean
-ifneq ($(shell hostname), $(ASIC_SERVER))
+ifneq ($(ASIC_HOST),)
 	rsync -avz --exclude .git $(ROOT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)
 	ssh $(ASIC_USER)@$(ASIC_SERVER) 'if [ -d $(REMOTE_ROOT_DIR) ]; then cd $(REMOTE_ROOT_DIR); make -C $(ASIC_DIR) clean; fi'
 endif
