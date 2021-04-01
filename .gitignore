@@ -59,4 +59,22 @@ hardware/fpga/CYCLONEV-GT-DK/system.v
 hardware/fpga/CYCLONEV-GT-DK/top_system.sof
 hardware/fpga/CYCLONEV-GT-DK/top_system.fit.summary
 
+hardware/fpga/DE10-LITE/boot.hex
+hardware/fpga/DE10-LITE/firmware.hex
+hardware/fpga/DE10-LITE/firmware_0.hex
+hardware/fpga/DE10-LITE/firmware_1.hex
+hardware/fpga/DE10-LITE/firmware_2.hex
+hardware/fpga/DE10-LITE/firmware_3.hex
+hardware/fpga/DE10-LITE/system.v
+hardware/fpga/DE10-LITE/top_system.sof
+hardware/fpga/DE10-LITE/top_system.fit.summary
+
+hardware/AES-KU040-DB-G/boot.hex
+hardware/AES-KU040-DB-G/firmware.hex
+hardware/AES-KU040-DB-G/firmware_0.hex
+hardware/AES-KU040-DB-G/firmware_1.hex
+hardware/AES-KU040-DB-G/firmware_2.hex
+hardware/AES-KU040-DB-G/firmware_3.hex
+hardware/AES-KU040-DB-G/system.v
+
 hardware/asic/umc130/synth/*_report.txt
