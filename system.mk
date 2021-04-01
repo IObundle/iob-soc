@@ -84,7 +84,7 @@ FPGA_DDR_ADDR_W ?=30
 #set for running (remote) tools and boards
 #servers and respective users should be environment variables
 #default board
-BOARD ?=CYCLONEV-GT-DK
+BOARD ?=DE10-LITE
 #select according to board
 ifeq ($(BOARD),AES-KU040-DB-G)
 	FPGA_SERVER=$(VIVA_SERVER)
@@ -100,6 +100,13 @@ else ifeq ($(BOARD),CYCLONEV-GT-DK)
 	FPGA_LOG=output_files/top_system.fit.summary
 	BOARD_SERVER=$(CYC5_SERVER)
 	BOARD_USER=$(CYC5_USER)
+else ifeq ($(BOARD),DE10-LITE)
+	FPGA_SERVER=$(DE10_SERVER)
+	FPGA_USER=$(DE10_USER)
+	FPGA_OBJ=output_files/top_system.sof
+	FPGA_LOG=output_files/top_system.fit.summary
+	BOARD_SERVER=$(DE10_SERVER)
+	BOARD_USER=$(DE10_USER)
 endif
 
 #
