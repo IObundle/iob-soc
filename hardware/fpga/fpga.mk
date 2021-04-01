@@ -12,6 +12,12 @@ VSRC+=./verilog/top_system.v
 
 #RULES
 load:
+	@buser=`pgrep console | xargs -r ps -o uname= -p`;\
+	if [ "$$buser" = "$(USER)" ]; then kill -9 `pgrep console`;\
+	elif [ "$$buser" ]; then echo "Board being used by $$buser; waiting 30s for release..."; sleep 30; busy=1; fi;\
+	buser=`pgrep console | xargs -r ps -o uname= -p`;\
+	if [ "$$buser" ]; then echo "Board locked after 30s by user $$buser"; exit 1;\
+	elif [ $$busy ]; then make -C $(BOARD_DIR) load; fi
 	./prog.sh
 
 compile: firmware $(FPGA_OBJ)
