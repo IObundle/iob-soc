@@ -113,14 +113,14 @@ module system
    wire [`REQ_W-1:0]         int_mem_i_req;
    wire [`RESP_W-1:0]        int_mem_i_resp;
    //external memory instruction bus
-`ifdef RUN_DDR_USE_SRAM
+`ifdef RUN_EXTMEM_USE_SRAM
    wire [`REQ_W-1:0]         ext_mem_i_req;
    wire [`RESP_W-1:0]        ext_mem_i_resp;
 `endif
 
    // INSTRUCTION BUS
    split #(
-`ifdef RUN_DDR_USE_SRAM
+`ifdef RUN_EXTMEM_USE_SRAM
            .N_SLAVES(2),
 `else
            .N_SLAVES(1),
@@ -136,7 +136,7 @@ module system
       .m_resp ( cpu_i_resp                       ),
       
       // slaves interface
-`ifdef RUN_DDR_USE_SRAM
+`ifdef RUN_EXTMEM_USE_SRAM
       .s_req  ( {ext_mem_i_req, int_mem_i_req}   ),
       .s_resp ( {ext_mem_i_resp, int_mem_i_resp} )
 `else
@@ -152,7 +152,7 @@ module system
    wire [`REQ_W-1:0]         int_mem_d_req;
    wire [`RESP_W-1:0]        int_mem_d_resp;
 
-`ifdef USE_DDR
+`ifdef USE_EXTMEM
    //external memory data bus
    wire [`REQ_W-1:0]         ext_mem_d_req;
    wire [`RESP_W-1:0]        ext_mem_d_resp;
@@ -164,7 +164,7 @@ module system
 
    split 
      #(
-`ifdef USE_DDR
+`ifdef USE_EXTMEM
        .N_SLAVES(3), //E,P,I
 `else
        .N_SLAVES(2),//P,I
@@ -181,7 +181,7 @@ module system
       .m_resp ( cpu_d_resp                                 ),
 
       // slaves interface
-`ifdef USE_DDR
+`ifdef USE_EXTMEM
       .s_req  ( {ext_mem_d_req, pbus_req, int_mem_d_req}   ),
       .s_resp ({ext_mem_d_resp, pbus_resp, int_mem_d_resp} )
 `else
@@ -238,7 +238,7 @@ module system
       .d_resp               (int_mem_d_resp)
       );
 
-`ifdef USE_DDR
+`ifdef USE_EXTMEM
    //
    // EXTERNAL DDR MEMORY
    //
@@ -246,8 +246,8 @@ module system
      (
       .clk                  (clk),
       .rst                  (cpu_reset),
-      
- `ifdef RUN_DDR_USE_SRAM
+
+ `ifdef RUN_EXTMEM_USE_SRAM
       // instruction bus
       .i_req                ({ext_mem_i_req[`valid(0)], ext_mem_i_req[`address(0, `FIRM_ADDR_W)-2], ext_mem_i_req[`write(0)]}),
       .i_resp               (ext_mem_i_resp),

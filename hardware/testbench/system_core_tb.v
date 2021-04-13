@@ -220,8 +220,8 @@ module system_tb;
 
 
    //instantiate the axi memory
-`ifdef USE_DDR
-   axi_ram 
+`ifdef USE_EXTMEM
+   axi_ram
      #(
  `ifdef DDR_INIT
        .FILE("firmware.hex"),

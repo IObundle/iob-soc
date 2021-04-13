@@ -38,7 +38,7 @@ int main() {
 
   // address to copy firmware to
   char *prog_start_addr[1];
-  if (USE_DDR_SW==0 || (USE_DDR_SW==1 && RUN_DDR_SW==0))	
+  if (USE_EXTMEM_SW==0 || (USE_EXTMEM_SW==1 && RUN_EXTMEM_SW==0))
     prog_start_addr[0] = (char *) (1<<BOOTROM_ADDR_W);
   else
     prog_start_addr[0] = (char *) EXTRA_BASE;

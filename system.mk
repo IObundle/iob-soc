@@ -14,18 +14,21 @@ FIRM_ADDR_W ?=16
 #SRAM SIZE (LOG2)
 SRAM_ADDR_W ?=16
 
-#DDR 
-USE_DDR ?=0
-RUN_DDR ?=0
+#DDR
+USE_EXTMEM ?=1
+RUN_EXTMEM ?=1
+
+USE_DDR ?=1
+RUN_DDR ?=1
 
 #DATA CACHE ADDRESS WIDTH (tag + index + offset)
-DCACHE_ADDR_W:=24
+DCACHE_ADDR_W:=21
 
 #ROM SIZE (LOG2)
 BOOTROM_ADDR_W:=12
 
 #PRE-INIT MEMORY WITH PROGRAM AND DATA
-INIT_MEM ?=1
+INIT_MEM ?=0
 
 #PERIPHERAL LIST
 #must match respective submodule or folder name in the submodules directory
@@ -78,13 +81,13 @@ endif
 #
 
 #DDR controller address width
-FPGA_DDR_ADDR_W ?=30
+FPGA_DDR_ADDR_W ?=21
 
 
 #set for running (remote) tools and boards
 #servers and respective users should be environment variables
 #default board
-BOARD ?=DE10-LITE
+BOARD ?=AES-KU040-DB-G
 #select according to board
 ifeq ($(BOARD),AES-KU040-DB-G)
 	FPGA_SERVER=$(VIVA_SERVER)
@@ -128,10 +131,10 @@ endif
 #
 
 #simulators used in regression testing
-SIM_LIST ?=icarus ncsim
+SIM_LIST ?=ncsim
 
 #boards used for regression testing
-BOARD_LIST ?=CYCLONEV-GT-DK AES-KU040-DB-G 
+BOARD_LIST ?=CYCLONEV-GT-DK AES-KU040-DB-G
 
 
 
@@ -148,8 +151,8 @@ BOARD_HOST=$(shell echo $(BOARD_SERVER) | cut -d"." -f1)
 ASIC_HOST=$(shell echo $(ASIC_SERVER) | cut -d"." -f1)
 
 
-ifeq ($(RUN_DDR),1)
-	USE_DDR=1
+ifeq ($(RUN_EXTMEM),1)
+	USE_EXTMEM=1
 endif
 
 #paths
@@ -176,12 +179,20 @@ DEFINE+=$(defmacro)SRAM_ADDR_W=$(SRAM_ADDR_W)
 DEFINE+=$(defmacro)FIRM_ADDR_W=$(FIRM_ADDR_W)
 DEFINE+=$(defmacro)DCACHE_ADDR_W=$(DCACHE_ADDR_W)
 
+ifeq ($(USE_EXTMEM),1)
+DEFINE+=$(defmacro)USE_EXTMEM
+endif
+ifeq ($(RUN_EXTMEM),1)
+DEFINE+=$(defmacro)RUN_EXTMEM
+endif
+
 ifeq ($(USE_DDR),1)
 DEFINE+=$(defmacro)USE_DDR
+endif
 ifeq ($(RUN_DDR),1)
 DEFINE+=$(defmacro)RUN_DDR
 endif
-endif
+
 ifeq ($(INIT_MEM),1)
 DEFINE+=$(defmacro)INIT_MEM
 endif
@@ -189,7 +200,7 @@ DEFINE+=$(defmacro)N_SLAVES=$(N_SLAVES)
 
 #address selection bits
 E:=31 #extra memory bit
-ifeq ($(USE_DDR),1)
+ifeq ($(USE_EXTMEM),1)
 P:=30 #periphs
 B:=29 #boot controller
 else

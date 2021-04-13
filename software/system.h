@@ -34,13 +34,25 @@
 //select boot controller
 #define BOOTCTR_BASE (1<<B)
 
-#ifdef USE_DDR
+#ifdef USE_EXTMEM
+#define USE_EXTMEM_SW 1
+#else
+#define USE_EXTMEM_SW 0
+#endif
+
+#ifdef RUN_EXTMEM
+#define RUN_EXTMEM_SW 1
+#else
+#define RUN_EXTMEM_SW 0
+#endif
+
+#if defined (USE_EXTMEM) && defined(USE_DDR)
 #define USE_DDR_SW 1
 #else
 #define USE_DDR_SW 0
 #endif
 
-#ifdef RUN_DDR
+#if defined(RUN_EXTMEM) && defined(RUN_DDR)
 #define RUN_DDR_SW 1
 #else
 #define RUN_DDR_SW 0

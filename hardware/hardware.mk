@@ -39,7 +39,7 @@ VHDR+=$(INC_DIR)/system.vh
 TB_DIR:=$(ROOT_DIR)/hardware/testbench
 
 #external memory interface
-ifeq ($(USE_DDR),1)
+ifeq ($(USE_EXTMEM),1)
 VSRC+=$(SRC_DIR)/ext_mem.v
 endif
 

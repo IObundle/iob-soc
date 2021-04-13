@@ -7,8 +7,8 @@
 
 //init sram/ddr with firmware
 `ifdef INIT_MEM
- `ifdef USE_DDR
-  `ifdef RUN_DDR
+ `ifdef USE_EXTMEM
+  `ifdef RUN_EXTMEM
    `define DDR_INIT
   `else
    `define SRAM_INIT
@@ -21,11 +21,11 @@
 `endif
 
 // run modes
-`ifdef USE_DDR
- `ifdef RUN_DDR
-  `define RUN_DDR_USE_SRAM
+`ifdef USE_EXTMEM
+ `ifdef RUN_EXTMEM
+  `define RUN_EXTMEM_USE_SRAM
  `else
-  `define RUN_SRAM_USE_DDR
+  `define RUN_SRAM_USE_EXTMEM
  `endif
 `endif
  
