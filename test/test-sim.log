@@ -21,7 +21,7 @@ TESTBENCH: connecting..IOb-Bootloader: connected!
 IOb-UART: requesting to receive file
 TESTBENCH: got file send request
 TESBENCH: sending file firmware.bin
-File size:      19068 bytes
+File size:      18996 bytes
           0%
          10%
          20%
@@ -38,7 +38,7 @@ IOb-Bootloader: Loading firmware...
 IOb-UART: requesting to send file
 TESTBENCH: got file receive request
 TESBENCH: receiving file s_fw.bin
-TESTBENCH: file size:      19068 bytes
+TESTBENCH: file size:      18996 bytes
           0%
          10%
          20%
@@ -101,7 +101,7 @@ IOb-Bootloader: program to run from DDR
 IOb-UART: requesting to receive file
 TESTBENCH: got file send request
 TESBENCH: sending file firmware.bin
-File size:      19220 bytes
+File size:      19156 bytes
           0%
          10%
          20%
@@ -118,7 +118,7 @@ IOb-Bootloader: Loading firmware...
 IOb-UART: requesting to send file
 TESTBENCH: got file receive request
 TESBENCH: receiving file s_fw.bin
-TESTBENCH: file size:      19220 bytes
+TESTBENCH: file size:      19156 bytes
           0%
          10%
          20%
@@ -163,13 +163,13 @@ TESTBENCH: exiting
 
 
 
-Simulation complete via $finish(1) at time 402801 NS + 0
+Simulation complete via $finish(1) at time 408121 NS + 0
 ./system_tb.v:97               $finish;
 TESTBENCH: connecting..IOb-Bootloader: connected!
 IOb-UART: requesting to receive file
 TESTBENCH: got file send request
 TESBENCH: sending file 
-File size:      19068 bytes
+File size:      18996 bytes
           0%
          10%
          20%
@@ -186,7 +186,7 @@ IOb-Bootloader: Loading firmware...
 IOb-UART: requesting to send file
 TESTBENCH: got file receive request
 TESBENCH: receiving file 
-TESTBENCH: file size:      19068 bytes
+TESTBENCH: file size:      18996 bytes
           0%
          10%
          20%
@@ -212,7 +212,7 @@ TESTBENCH: exiting
 
 
 
-Simulation complete via $finish(1) at time 89143221 NS + 0
+Simulation complete via $finish(1) at time 88815461 NS + 0
 ./system_tb.v:97               $finish;
 TESTBENCH: connecting..IOb-Bootloader: connected!
 IOb-Bootloader: DDR in use
@@ -229,7 +229,7 @@ TESTBENCH: exiting
 
 
 
-Simulation complete via $finish(1) at time 469941 NS + 0
+Simulation complete via $finish(1) at time 475261 NS + 0
 ./system_tb.v:97               $finish;
 TESTBENCH: connecting..IOb-Bootloader: connected!
 IOb-Bootloader: DDR in use
@@ -247,7 +247,7 @@ TESTBENCH: exiting
 
 
 
-Simulation complete via $finish(1) at time 599141 NS + 0
+Simulation complete via $finish(1) at time 605921 NS + 0
 ./system_tb.v:97               $finish;
 TESTBENCH: connecting..IOb-Bootloader: connected!
 IOb-Bootloader: DDR in use
@@ -255,7 +255,7 @@ IOb-Bootloader: program to run from DDR
 IOb-UART: requesting to receive file
 TESTBENCH: got file send request
 TESBENCH: sending file 
-File size:      19220 bytes
+File size:      19156 bytes
           0%
          10%
          20%
@@ -272,7 +272,7 @@ IOb-Bootloader: Loading firmware...
 IOb-UART: requesting to send file
 TESTBENCH: got file receive request
 TESBENCH: receiving file 
-TESTBENCH: file size:      19220 bytes
+TESTBENCH: file size:      19156 bytes
           0%
          10%
          20%
@@ -298,5 +298,5 @@ TESTBENCH: exiting
 
 
 
-Simulation complete via $finish(1) at time 86200041 NS + 0
+Simulation complete via $finish(1) at time 85923221 NS + 0
 ./system_tb.v:97               $finish;
