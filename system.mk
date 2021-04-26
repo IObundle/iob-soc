@@ -14,12 +14,9 @@ FIRM_ADDR_W ?=15
 #SRAM SIZE (LOG2)
 SRAM_ADDR_W ?=15
 
-#DDR
+#EXTERNAL MEMORY
 USE_EXTMEM ?=0
 RUN_EXTMEM ?=0
-
-USE_DDR ?=0
-RUN_DDR ?=0
 
 #DATA CACHE ADDRESS WIDTH (tag + index + offset)
 DCACHE_ADDR_W:=21
@@ -87,9 +84,15 @@ FPGA_DDR_ADDR_W ?=21
 #set for running (remote) tools and boards
 #servers and respective users should be environment variables
 #default board
-BOARD ?=DE10-LITE
+BOARD ?=AES-KU040-DB-G
 #select according to board
 ifeq ($(BOARD),AES-KU040-DB-G)
+	ifeq ($(USE_EXTMEM),1)
+		USE_DDR=1
+	endif
+	ifeq ($(RUN_EXTMEM),1)
+		RUN_DDR=1
+	endif
 	FPGA_SERVER=$(VIVA_SERVER)
 	FPGA_USER=$(VIVA_USER)
 	FPGA_OBJ=synth_system.bit
