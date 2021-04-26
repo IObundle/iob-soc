@@ -3,15 +3,15 @@ include $(UART_DIR)/core.mk
 #SUBMODULE HARDWARE
 #intercon
 ifneq (INTERCON,$(filter INTERCON, $(SUBMODULES)))
-include $(INTERCON_DIR)/hardware/hardware.mk
 SUBMODULES+=INTERCON
+include $(INTERCON_DIR)/hardware/hardware.mk
 endif
 
 #lib
 ifneq (LIB,$(filter LIB, $(SUBMODULES)))
+SUBMODULES+=LIB
 INCLUDE+=$(incdir) $(LIB_DIR)/hardware/include
 VHDR+=$(wildcard $(LIB_DIR)/hardware/include/*.vh)
-SUBMODULES+=LIB
 endif
 
 #hardware include dirs
