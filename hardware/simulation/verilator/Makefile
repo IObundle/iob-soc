@@ -22,7 +22,7 @@ run: $(VSRC) $(VHDR) firmware boot.hex
 	./Vsystem
 
 clean: hw-clean
-	@rm -f *.v *.cpp *.hex Vsystem
+	@rm -f *.cpp Vsystem
 	@rm -rf obj_dir
 
 .PHONY: clean

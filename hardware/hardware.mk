@@ -75,6 +75,6 @@ boot.hex: $(BOOT_DIR)/boot.bin
 
 #clean general hardware files
 hw-clean: gen-clean
-	@rm -f *.hex *.bin $(SRC_DIR)/system.v $(TB_DIR)/system_tb.v
+	@rm -f *.v *.hex *.bin $(SRC_DIR)/system.v $(TB_DIR)/system_tb.v
 
 .PHONY: firmware hw-clean

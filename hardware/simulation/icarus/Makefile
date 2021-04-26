@@ -14,6 +14,6 @@ run: $(VSRC) $(VHDR) firmware boot.hex
 	./a.out $(LOG)
 
 clean: hw-clean
-	@rm -f ./a.out *.log *.v
+	@rm -f ./a.out *.log
 
 .PHONY: clean
