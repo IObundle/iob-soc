@@ -1,4 +1,4 @@
-create_clock -period 10.00 [get_ports clk]
+create_clock -period 20.00 [get_ports clk]
 
 derive_pll_clocks
 

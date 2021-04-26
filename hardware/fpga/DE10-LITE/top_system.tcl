@@ -46,7 +46,7 @@ foreach file [split $VSRC \ ] {
 # ==========================
 
 #System
-set_location_assignment PIN_N5 -to clk
+set_location_assignment PIN_P11 -to clk
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to clk
 set_location_assignment PIN_B8 -to resetn
 set_instance_assignment -name IO_STANDARD "3.3 V SCHMITT TRIGGER" -to resetn
@@ -54,13 +54,11 @@ set_instance_assignment -name IO_STANDARD "3.3 V SCHMITT TRIGGER" -to resetn
 #Leds
 set_location_assignment  PIN_A8 -to trap
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to trap
-set_instance_assignment -name SLEW_RATE 1 -to trap
 set_instance_assignment -name CURRENT_STRENGTH_NEW DEFAULT -to trap
 
 #Uart
 set_location_assignment PIN_V10 -to uart_txd
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to uart_txd
-set_instance_assignment -name SLEW_RATE 1 -to uart_txd
 set_instance_assignment -name CURRENT_STRENGTH_NEW DEFAULT -to uart_txd
 set_location_assignment PIN_W10 -to uart_rxd
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to uart_rxd

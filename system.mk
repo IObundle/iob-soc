@@ -9,17 +9,17 @@
 #
 
 #FIRMWARE SIZE (LOG2)
-FIRM_ADDR_W ?=16
+FIRM_ADDR_W ?=15
 
 #SRAM SIZE (LOG2)
-SRAM_ADDR_W ?=16
+SRAM_ADDR_W ?=15
 
 #DDR
-USE_EXTMEM ?=1
-RUN_EXTMEM ?=1
+USE_EXTMEM ?=0
+RUN_EXTMEM ?=0
 
-USE_DDR ?=1
-RUN_DDR ?=1
+USE_DDR ?=0
+RUN_DDR ?=0
 
 #DATA CACHE ADDRESS WIDTH (tag + index + offset)
 DCACHE_ADDR_W:=21
@@ -87,7 +87,7 @@ FPGA_DDR_ADDR_W ?=21
 #set for running (remote) tools and boards
 #servers and respective users should be environment variables
 #default board
-BOARD ?=AES-KU040-DB-G
+BOARD ?=DE10-LITE
 #select according to board
 ifeq ($(BOARD),AES-KU040-DB-G)
 	FPGA_SERVER=$(VIVA_SERVER)
@@ -110,6 +110,7 @@ else ifeq ($(BOARD),DE10-LITE)
 	FPGA_LOG=output_files/top_system.fit.summary
 	BOARD_SERVER=$(DE10_SERVER)
 	BOARD_USER=$(DE10_USER)
+	FREQ=50000000
 endif
 
 #
@@ -131,7 +132,7 @@ endif
 #
 
 #simulators used in regression testing
-SIM_LIST ?=ncsim
+SIM_LIST ?=icarus ncsim
 
 #boards used for regression testing
 BOARD_LIST ?=CYCLONEV-GT-DK AES-KU040-DB-G
