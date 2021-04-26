@@ -6,24 +6,15 @@ CORE_NAME:=UART
 IS_CORE:=1
 USE_NETLIST ?=0
 
-#SUBMODULE PATHS
-
-ifneq (INTERCON,$(filter INTERCON, $(SUBMODULES)))
-INTERCON_DIR:=$(UART_DIR)/submodules/INTERCON
-endif
-
-ifneq (LIB,$(filter LIB, $(SUBMODULES)))
-LIB_DIR:=$(UART_DIR)/submodules/LIB
-endif
-
-ifneq (TEX,$(filter TEX, $(SUBMODULES)))
-TEX_DIR:=$(UART_DIR)/submodules/TEX
-endif
-
 #UART PATHS
 UART_HW_DIR:=$(UART_DIR)/hardware
 UART_SW_DIR:=$(UART_DIR)/software
 UART_DOC_DIR:=$(UART_DIR)/document
+UART_SUBMODULES_DIR:=$(UART_DIR)/submodules
+
+#SUBMODULES
+UART_SUBMODULES:=INTERCON LIB TEX
+$(foreach p, $(UART_SUBMODULES), $(eval $p_DIR ?=$(UART_SUBMODULES_DIR)/$p))
 
 #host where this is running
 HOSTNAME=$(shell hostname)
