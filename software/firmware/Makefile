@@ -30,7 +30,7 @@ firmware.elf: ../template.lds $(HDR) $(SRC)
 
 #peripherals' base addresses
 periphs.h: periphs_tmp.h
-	@is_diff=`diff -q $@ $<`; if [ "$$is_diff" ]; then cp $< $@; fi
+	@is_diff=`diff -q -N $@ $<`; if [ "$$is_diff" ]; then cp $< $@; fi
 	@rm periphs_tmp.h
 
 periphs_tmp.h:
