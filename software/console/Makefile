@@ -26,7 +26,10 @@ run: console firmware.bin
 
 
 
-./firmware.bin: $(FIRM_DIR)/firmware.bin
+firmware.bin: $(FIRM_DIR)/firmware.bin
+ifeq ($(INIT_MEM),1)
+	$(eval CONSOLE_CMD+=-f)
+endif
 	cp $(FIRM_DIR)/firmware.bin $@
 
 console: $(SRC)
