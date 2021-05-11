@@ -18,6 +18,8 @@ SRAM_ADDR_W ?=15
 USE_EXTMEM ?=0
 RUN_EXTMEM ?=0
 
+#DDR
+#If external memory is being used, set these variables accordingly
 USE_DDR=0
 RUN_DDR=0
 
