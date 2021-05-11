@@ -20,5 +20,3 @@ HDR=$(SW_DIR)/system.h
 
 #common sources (none so far)
 #SRC=$(SW_DIR)/*.c
-
-.PHONY: periphs.h
