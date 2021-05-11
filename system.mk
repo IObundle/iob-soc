@@ -18,6 +18,9 @@ SRAM_ADDR_W ?=15
 USE_EXTMEM ?=0
 RUN_EXTMEM ?=0
 
+USE_DDR=0
+RUN_DDR=0
+
 #DATA CACHE ADDRESS WIDTH (tag + index + offset)
 DCACHE_ADDR_W:=21
 
@@ -84,15 +87,9 @@ FPGA_DDR_ADDR_W ?=21
 #set for running (remote) tools and boards
 #servers and respective users should be environment variables
 #default board
-BOARD ?=AES-KU040-DB-G
+BOARD ?=CYCLONEV-GT-DK
 #select according to board
 ifeq ($(BOARD),AES-KU040-DB-G)
-	ifeq ($(USE_EXTMEM),1)
-		USE_DDR=1
-	endif
-	ifeq ($(RUN_EXTMEM),1)
-		RUN_DDR=1
-	endif
 	FPGA_SERVER=$(VIVA_SERVER)
 	FPGA_USER=$(VIVA_USER)
 	FPGA_OBJ=synth_system.bit
@@ -185,16 +182,16 @@ DEFINE+=$(defmacro)DCACHE_ADDR_W=$(DCACHE_ADDR_W)
 
 ifeq ($(USE_EXTMEM),1)
 DEFINE+=$(defmacro)USE_EXTMEM
-endif
-ifeq ($(RUN_EXTMEM),1)
-DEFINE+=$(defmacro)RUN_EXTMEM
-endif
-
 ifeq ($(USE_DDR),1)
 DEFINE+=$(defmacro)USE_DDR
 endif
+endif
+
+ifeq ($(RUN_EXTMEM),1)
+DEFINE+=$(defmacro)RUN_EXTMEM
 ifeq ($(RUN_DDR),1)
 DEFINE+=$(defmacro)RUN_DDR
+endif
 endif
 
 ifeq ($(INIT_MEM),1)
@@ -210,6 +207,10 @@ B:=29 #boot controller
 else
 P:=31
 B:=30
+endif
+
+ifeq ($(BOARD),CYCLONEV-GT-DK)
+	DEFINE+=$(defmacro)IS_CYCLONEV
 endif
 
 DEFINE+=$(defmacro)E=$E

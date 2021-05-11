@@ -28,7 +28,7 @@ ifeq ($(SIM_HOST),)
 else
 	ssh $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(SIM_DIR) run INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) RUN_EXTMEM=$(RUN_EXTMEM) TEST_LOG=$(TEST_LOG) VCD=$(VCD) BAUD=$(SIM_BAUD)'
+	ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(SIM_DIR) run INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) RUN_EXTMEM=$(RUN_EXTMEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) TEST_LOG=$(TEST_LOG) VCD=$(VCD) BAUD=$(SIM_BAUD)'
 ifeq ($(TEST_LOG),1)
 	scp $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)/$(SIM_DIR)/test.log $(SIM_DIR)
 endif
@@ -41,7 +41,7 @@ sim-waves: $(SIM_DIR)/../waves.gtkw $(SIM_DIR)/system.vcd
 	gtkwave -a $^ &
 
 $(SIM_DIR)/../waves.gtkw $(SIM_DIR)/system.vcd:
-	make sim INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) RUN_EXTMEM=$(RUN_EXTMEM) VCD=$(VCD)
+	make sim INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) RUN_EXTMEM=$(RUN_EXTMEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) VCD=$(VCD)
 
 sim-clean: sw-clean
 	make -C $(SIM_DIR) clean
@@ -62,7 +62,7 @@ ifeq ($(FPGA_HOST),)
 else
 	ssh $(FPGA_USER)@$(FPGA_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(BOARD_DIR) compile INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) RUN_EXTMEM=$(RUN_EXTMEM) BAUD=$(HW_BAUD) BOARD=$(BOARD)'
+	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(BOARD_DIR) compile INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) RUN_EXTMEM=$(RUN_EXTMEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) BAUD=$(HW_BAUD) BOARD=$(BOARD)'
 	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/$(BOARD_DIR)/$(FPGA_OBJ) $(BOARD_DIR)
 	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/$(BOARD_DIR)/$(FPGA_LOG) $(BOARD_DIR)
 endif
@@ -104,7 +104,7 @@ else
 	rsync -avz --exclude .git $(ROOT_DIR)  $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR)
 	bash -c "trap 'make kill-remote-console' EXIT; ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(CONSOLE_DIR) run INIT_MEM=$(INIT_MEM) TEST_LOG=$(TEST_LOG) BAUD=$(HW_BAUD)  BOARD=$(BOARD)'"
 ifneq ($(TEST_LOG),)
-	scp $(BOARD_SERVER):$(REMOTE_ROOT_DIR)/$(CONSOLE_DIR)/test.log $(CONSOLE_DIR)/test.log
+	scp $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR)/$(CONSOLE_DIR)/test.log $(CONSOLE_DIR)/test.log
 endif
 endif
 
@@ -177,15 +177,15 @@ test-simulator:
 	@echo Testing simulator $(SIMULATOR)>>test.log
 	@echo "############################################################">>test.log
 	@echo "">>test.log; echo "">>test.log;
-	make sim SIMULATOR=$(SIMULATOR) INIT_MEM=1 USE_EXTMEM=0 RUN_EXTMEM=0 TEST_LOG=1
+	make sim SIMULATOR=$(SIMULATOR) INIT_MEM=1 USE_EXTMEM=0 USE_DDR=0 RUN_EXTMEM=0 RUN_DDR=0 TEST_LOG=1
 	cat $(SIM_DIR)/test.log >> test.log
-	make sim SIMULATOR=$(SIMULATOR) INIT_MEM=0 USE_EXTMEM=0 RUN_EXTMEM=0 TEST_LOG=1
+	make sim SIMULATOR=$(SIMULATOR) INIT_MEM=0 USE_EXTMEM=0 USE_DDR=0 RUN_EXTMEM=0 RUN_DDR=0 TEST_LOG=1
 	cat $(SIM_DIR)/test.log >> test.log
-	make sim SIMULATOR=$(SIMULATOR) INIT_MEM=1 USE_EXTMEM=1 RUN_EXTMEM=0 TEST_LOG=1
+	make sim SIMULATOR=$(SIMULATOR) INIT_MEM=1 USE_EXTMEM=1 USE_DDR=1 RUN_EXTMEM=0 RUN_DDR=0 TEST_LOG=1
 	cat $(SIM_DIR)/test.log >> test.log
-	make sim SIMULATOR=$(SIMULATOR) INIT_MEM=1 USE_EXTMEM=1 RUN_EXTMEM=1 TEST_LOG=1
+	make sim SIMULATOR=$(SIMULATOR) INIT_MEM=1 USE_EXTMEM=1 USE_DDR=1 RUN_EXTMEM=1 RUN_DDR=1 TEST_LOG=1
 	cat $(SIM_DIR)/test.log >> test.log
-	make sim SIMULATOR=$(SIMULATOR) INIT_MEM=0 USE_EXTMEM=1 RUN_EXTMEM=1 TEST_LOG=1
+	make sim SIMULATOR=$(SIMULATOR) INIT_MEM=0 USE_EXTMEM=1 USE_DDR=1 RUN_EXTMEM=1 RUN_DDR=1 TEST_LOG=1
 	cat $(SIM_DIR)/test.log >> test.log
 
 test-all-simulators:
@@ -213,10 +213,10 @@ test-board:
 	@echo Testing board $(BOARD)>>test.log
 	@echo "############################################################">>test.log
 	@echo "">>test.log; echo "">>test.log;
-	make test-board-config BOARD=$(BOARD) INIT_MEM=1 USE_EXTMEM=0 RUN_EXTMEM=0 TEST_LOG=1
-	make test-board-config BOARD=$(BOARD) INIT_MEM=0 USE_EXTMEM=0 RUN_EXTMEM=0 TEST_LOG=1
+	make test-board-config BOARD=$(BOARD) INIT_MEM=1 USE_EXTMEM=0 USE_DDR=0 RUN_EXTMEM=0 RUN_DDR=0 TEST_LOG=1
+	make test-board-config BOARD=$(BOARD) INIT_MEM=0 USE_EXTMEM=0 USE_DDR=0 RUN_EXTMEM=0 RUN_DDR=0 TEST_LOG=1
 ifeq ($(BOARD),AES-KU040-DB-G)
-	make test-board-config BOARD=$(BOARD) INIT_MEM=0 USE_EXTMEM=1 RUN_EXTMEM=1 TEST_LOG=1
+	make test-board-config BOARD=$(BOARD) INIT_MEM=0 USE_EXTMEM=1 USE_DDR=1 RUN_EXTMEM=1 RUN_DDR=1 TEST_LOG=1
 endif
 
 test-all-boards:
@@ -234,31 +234,31 @@ asic: asic-clean
 	make -C $(FIRM_DIR) run BAUD=$(HW_BAUD)
 	make -C $(BOOT_DIR) run BAUD=$(HW_BAUD)
 ifeq ($(ASIC_HOST),)
-	make -C $(ASIC_DIR) INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) RUN_EXTMEM=$(RUN_EXTMEM) ASIC=1
+	make -C $(ASIC_DIR) INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) RUN_DDR=$(RUN_DDR) ASIC=1
 else
 	ssh $(ASIC_USER)@$(ASIC_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --exclude .git $(ROOT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)
-	ssh -Y -C $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(ASIC_DIR) INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) RUN_EXTMEM=$(RUN_EXTMEM) ASIC=1'
+	ssh -Y -C $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(ASIC_DIR) INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) RUN_DDR=$(RUN_DDR) ASIC=1'
 	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/$(ASIC_DIR)/synth/*.txt $(ASIC_DIR)/synth
 endif
 
 asic-mem:
 	make -C $(BOOT_DIR) run BAUD=$(HW_BAUD)
 ifeq ($(ASIC_HOST),)
-	make -C $(ASIC_DIR) mem INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) RUN_EXTMEM=$(RUN_EXTMEM) ASIC=1
+	make -C $(ASIC_DIR) mem INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) RUN_EXTMEM=$(RUN_EXTMEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) ASIC=1
 else
 	ssh $(ASIC_USER)@$(ASIC_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --exclude .git $(ROOT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)
-	ssh -Y -C $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(ASIC_DIR) mem INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) RUN_EXTMEM=$(RUN_EXTMEM) ASIC=1'
+	ssh -Y -C $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(ASIC_DIR) mem INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) RUN_EXTMEM=$(RUN_EXTMEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) ASIC=1'
 endif
 
 asic-synth:
 ifeq ($(ASIC_HOST),)
-	make -C $(ASIC_DIR) synth INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) RUN_EXTMEM=$(RUN_EXTMEM) ASIC=1
+	make -C $(ASIC_DIR) synth INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) RUN_EXTMEM=$(RUN_EXTMEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) ASIC=1
 else
 	ssh $(ASIC_USER)@$(ASIC_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --exclude .git $(ROOT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)
-	ssh -Y -C $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(ASIC_DIR) synth INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) RUN_EXTMEM=$(RUN_EXTMEM) ASIC=1'
+	ssh -Y -C $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(ASIC_DIR) synth INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) RUN_EXTMEM=$(RUN_EXTMEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) ASIC=1'
 	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/$(ASIC_DIR)/synth/*.txt $(ASIC_DIR)/synth
 endif
 
@@ -266,11 +266,11 @@ asic-sim-synth: sim-clean
 	make -C $(FIRM_DIR) run BAUD=$(SIM_BAUD)
 	make -C $(BOOT_DIR) run BAUD=$(SIM_BAUD)
 ifeq ($(ASIC_HOST),)
-	make -C $(HW_DIR)/simulation/ncsim run INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) RUN_EXTMEM=$(RUN_EXTMEM) TEST_LOG=$(TEST_LOG) VCD=$(VCD) BAUD=$(SIM_BAUD) SYNTH=1
+	make -C $(HW_DIR)/simulation/ncsim run INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) RUN_EXTMEM=$(RUN_EXTMEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) TEST_LOG=$(TEST_LOG) VCD=$(VCD) BAUD=$(SIM_BAUD) SYNTH=1
 else
 	ssh $(ASIC_USER)@$(ASIC_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --exclude .git $(ROOT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(HW_DIR)/simulation/ncsim run INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) RUN_EXTMEM=$(RUN_EXTMEM) TEST_LOG=$(TEST_LOG) VCD=$(VCD) BAUD=$(SIM_BAUD) SYNTH=1'
+	ssh $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(HW_DIR)/simulation/ncsim run INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) RUN_EXTMEM=$(RUN_EXTMEM) USE_DDR=$(USE_DDR) RUN_DDR=$(RUN_DDR) TEST_LOG=$(TEST_LOG) VCD=$(VCD) BAUD=$(SIM_BAUD) SYNTH=1'
 ifeq ($(TEST_LOG),1)
 	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/$(HW_DIR)/simulation/ncsim/test.log $(HW_DIR)/simulation/ncsim
 endif
