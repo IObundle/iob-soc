@@ -60,7 +60,7 @@ system.v:
 # make and copy memory init files
 firmware: $(FIRM_DIR)/firmware.bin
 ifeq ($(INIT_MEM),1)
-ifeq ($(RUN_DDR),1)
+ifeq ($(RUN_EXTMEM),1)
 	$(PYTHON_DIR)/makehex.py $(FIRM_DIR)/firmware.bin $(DCACHE_ADDR_W) > firmware.hex
 else
 	$(PYTHON_DIR)/makehex.py $(FIRM_DIR)/firmware.bin $(FIRM_ADDR_W) > firmware.hex
