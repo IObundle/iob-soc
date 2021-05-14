@@ -84,7 +84,7 @@ FPGA_DDR_ADDR_W ?=30
 #set for running (remote) tools and boards
 #servers and respective users should be environment variables
 #default board
-BOARD ?=DE10-LITE
+BOARD ?=CYCLONEV-GT-DK
 #select according to board
 ifeq ($(BOARD),AES-KU040-DB-G)
 	FPGA_SERVER=$(VIVA_SERVER)
