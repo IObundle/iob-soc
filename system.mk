@@ -14,7 +14,7 @@ FIRM_ADDR_W ?=16
 #SRAM SIZE (LOG2)
 SRAM_ADDR_W ?=16
 
-#DDR 
+#DDR
 USE_DDR ?=0
 RUN_EXTMEM ?=0
 
@@ -107,6 +107,7 @@ else ifeq ($(BOARD),DE10-LITE)
 	FPGA_LOG=output_files/top_system.fit.summary
 	BOARD_SERVER=$(DE10_SERVER)
 	BOARD_USER=$(DE10_USER)
+	FREQ=50000000
 endif
 
 #
@@ -131,7 +132,7 @@ endif
 SIM_LIST ?=icarus ncsim
 
 #boards used for regression testing
-BOARD_LIST ?=CYCLONEV-GT-DK AES-KU040-DB-G 
+BOARD_LIST ?=CYCLONEV-GT-DK AES-KU040-DB-G
 
 
 
