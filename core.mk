@@ -16,9 +16,6 @@ UART_SUBMODULES_DIR:=$(UART_DIR)/submodules
 UART_SUBMODULES:=INTERCON LIB TEX
 $(foreach p, $(UART_SUBMODULES), $(eval $p_DIR ?=$(UART_SUBMODULES_DIR)/$p))
 
-#host where this is running
-HOSTNAME=$(shell hostname)
-
 #
 #SIMULATION
 #
@@ -27,14 +24,10 @@ SIM_DIR ?=$(UART_HW_DIR)/simulation
 #
 #FPGA
 #
-FPGA_HOST=$(shell echo $(FPGA_SERVER) | cut -d"." -f1)
 FPGA_FAMILY ?=CYCLONEV-GT
 #FPGA_FAMILY ?=XCKU
 
-#FPGA_SERVER :=localhost
 REMOTE_ROOT_DIR ?= sandbox/iob-soc/submodules/UART
-FPGA_SERVER ?=pudim-flan.iobundle.com
-FPGA_USER ?= $(USER)
 
 ifeq ($(FPGA_FAMILY),XCKU)
 	FPGA_COMP:=vivado
