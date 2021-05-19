@@ -9,7 +9,7 @@ CFLAGS+=--specs=nano.specs -Wl,-Bstatic,-T,../template.lds,-Map,boot.map,--strip
 
 #cache
 ifeq ($(USE_DDR),1)
-ifeq ($(RUN_DDR),1)
+ifeq ($(RUN_EXTMEM),1)
 include $(CACHE_DIR)/software/software.mk
 endif
 endif

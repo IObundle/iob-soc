@@ -15,26 +15,58 @@ Access to Github by *ssh* is mandatory so that submodules can be updated.
 
 ## The system configuration file: system.mk
 
-The single system configuration is the system.mk file residing at the repository
-root. If this file does not exist it is created automatically by copying the providedsystem\_config.mk file. The user is free to edit the created systm.mk file, which is ignored by git.
+The system configuration is the system.mk file residing at the repository
+root. Edit the system.mk file at will. The variables that can be set are
+explained by comments in the system.mk file.
 
-Then edit the system.mk file at will. The variables that can be set are explained in the original system\_config.mk file.
+## Setup your environment variables
+
+The various simulators, FPGA compilers and FPGA boards may be run locally or
+remotely. For running them remotely, set environmental variables as shown below
+using some example servers and user names.  Have these settings in your .bashrc file
+so that you do not need to do it every session.
+
+
+```
+#ncsim simulator server
+export NCSIM_SERVER=sericaia.iobundle.com
+export NCSIM_USER=jsousa
+
+#quartus server
+export QUAR_SERVER=pudim-flan.iobundle.com
+export QUAR_USER=jsousa
+
+#ku40 board server
+export KU40_SERVER=baba-de-camelo.iobundle.com
+export KU40_USER=jsousa
+
+#cadence tools server
+export CADE_SERVER=molotof.iobundle.com
+export CADE_USER=user19
+```
+
+Make sure the environmental variables for the tool paths, licenses servers,
+ports or files are defined in each server in use according to the following
+examples.
+
+```
+export ALTERAPATH=/path/to/intel/fpga/tools
+export XILINXPATH=/path/to/xilinx/fpga/tools
+...
+export LM_LICENSE_FILE=port@host:lic_or_dat_file
+```
+
 
 ## Simulation
-
-The following commands will run locally if the simulator selected by the
-SIMULATOR variable is installed and listed in the LOCAL\_SIM\_LIST
-variable. Otherwise they will run by ssh on the server selected by the
-SIM_SERVER variable.
 
 To simulate:
 ```
 make [sim]
 ```
 
-Parameters can be passed in the command line overriding those in the system.mk file. For example:
+Parameters can be passed in the command line, overriding those in the system.mk file. For example:
 ```
-make [sim] INIT_MEM=0 RUN_DDR=1
+make [sim] INIT_MEM=0 RUN_EXTMEM=1
 ```
 
 To clean the simulation directory:
@@ -49,11 +81,6 @@ make sim-waves
 The above command assumes simulation had been previously run with the VCD variable set to 1. Otherwise an error issued.
 
 ## FPGA
-
-The following commands will run locally if the board selected by the BOARD
-variable has its compiler installed and the baord is listed in the
-LOCAL\_FPGA\_LIST variable.  Otherwise they will run by ssh on the server
-selected by the FPGA_SERVER variable.
 
 To compile the FPGA:
 ```
@@ -72,10 +99,6 @@ make fpga-clean-ip
 
 
 ## Running on the board
-
-The following commands will run locally if the board selected by the BOARD
-variable is installed and listed in the LOCAL\_BOARD\_LIST variable. Otherwise
-they will run by ssh on the server selected by the BOARD_SERVER variable.
 
 To load the board with an FPGA configuration bitstream file:
 ```
@@ -223,14 +246,10 @@ make clean-all
 
 ## Instructions for Installing the RISC-V GNU Compiler Toolchain
 
-### Get sources
+### Get sources and checkout the supported stable version
 
 ```
 git clone https://github.com/riscv/riscv-gnu-toolchain
-cd riscv-gnu-toolchain
-git submodule update --init --recursive
-git checkout <stable tag>
-git submodule update --init --recursive
 ```
 
 ### Prerequisites
@@ -258,9 +277,14 @@ sudo yum install autoconf automake python3 python2 libmpc-devel mpfr-devel gmp-d
 ### Installation
 
 ```
-../configure --with-arch=rv32i --prefix=/opt/riscv
+cd riscv-gnu-toolchain
+./configure --prefix=/path/to/riscv --enable-multilib
 sudo make -j$(nproc)
+```
 
+This will take a while... After it is done do:
+
+```
 export PATH=$PATH:/path/to/riscv/bin
 ```
-The *export PATH* command should be added to the bottom of your ~/.bashrc, so that you do not have to type it for every session.
+The above command should be added to the bottom of your ~/.bashrc file, so that you do not have to type it every session.

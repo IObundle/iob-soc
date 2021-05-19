@@ -18,6 +18,6 @@ run: $(VSRC) $(VHDR) firmware boot.hex
 	grep -v xcelium xmsim.log | grep -v xmsim $(LOG)
 
 clean: hw-clean
-	@rm -rf xcelium.d xmsim.key *.log *.v
+	@rm -rf xcelium.d xmsim.key *.log
 
 .PHONY: run clean

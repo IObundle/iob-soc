@@ -10,15 +10,12 @@ ifeq ($(USE_DDR),1)
 include $(CACHE_DIR)/hardware/hardware.mk
 endif
 
-#rom
 ifneq ($(ASIC),1)
+#rom
 SUBMODULES+=SPROM
 SPROM_DIR:=$(CACHE_DIR)/submodules/MEM/sp_rom
 VSRC+=$(SPROM_DIR)/sp_rom.v
-endif
-
 #ram
-ifneq ($(ASIC),1)
 SUBMODULES+=TDPRAM
 TDPRAM_DIR:=$(CACHE_DIR)/submodules/MEM/tdp_ram
 VSRC+=$(TDPRAM_DIR)/iob_tdp_ram.v
@@ -63,7 +60,7 @@ system.v:
 # make and copy memory init files
 firmware: $(FIRM_DIR)/firmware.bin
 ifeq ($(INIT_MEM),1)
-ifeq ($(RUN_DDR),1)
+ifeq ($(RUN_EXTMEM),1)
 	$(PYTHON_DIR)/makehex.py $(FIRM_DIR)/firmware.bin $(DCACHE_ADDR_W) > firmware.hex
 else
 	$(PYTHON_DIR)/makehex.py $(FIRM_DIR)/firmware.bin $(FIRM_ADDR_W) > firmware.hex
@@ -78,6 +75,6 @@ boot.hex: $(BOOT_DIR)/boot.bin
 
 #clean general hardware files
 hw-clean: gen-clean
-	@rm -f *.hex *.bin $(SRC_DIR)/system.v $(TB_DIR)/system_tb.v
+	@rm -f *.v *.hex *.bin $(SRC_DIR)/system.v $(TB_DIR)/system_tb.v
 
 .PHONY: firmware hw-clean

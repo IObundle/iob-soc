@@ -24,13 +24,16 @@ module system_tb;
    reg       uart_valid;
    reg [`UART_ADDR_W-1:0] uart_addr;
    reg [`DATA_W-1:0]      uart_wdata;
-   reg                    uart_wstrb;
-   reg [`DATA_W-1:0]      uart_rdata;
+   reg [3:0]              uart_wstrb;
+   wire [`DATA_W-1:0]     uart_rdata;
    wire                   uart_ready;
 
    //iterator
    integer                i;
 
+   //got enquiry (connect request)
+   reg                    gotENQ;
+   
    //PWIRES
 
    
@@ -58,19 +61,48 @@ module system_tb;
       // configure uart
       cpu_inituart();
 
-      //connect with bootloader
-      cpu_connect();
+      
+      gotENQ = 0;
+      
+      $write("TESTBENCH: connecting");
+      
+      while(1) begin
+         cpu_getchar(cpu_char);
 
+         case(cpu_char)
+           `ENQ: begin
+              $write(".");
+              if(!gotENQ) begin
+                 gotENQ = 1;
 `ifdef LD_FW
-      //send program
-      cpu_sendfile();
-      //uncomment for debug
-      //cpu_receivefile();
+                 cpu_putchar(`FRX); //got request to sent file
+`else
+                 cpu_putchar(`ACK);              
 `endif      
-      //run firmware
-      cpu_run();
+              end
+           end
+           
+           `EOT: begin
+              $display("TESTBENCH: exiting\n\n\n");
+              $finish;
+           end
+           
+           `FRX: begin
+              $display("TESTBENCH: got file send request");
+              cpu_sendfile();
+           end
 
-      $finish;
+           `FTX: begin
+              $display("TESTBENCH: got file receive request");
+              cpu_recvfile();
+           end
+
+           default: begin
+              $write("%c", cpu_char);
+           end
+
+         endcase         
+      end
 
    end
 

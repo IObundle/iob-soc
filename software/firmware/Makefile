@@ -19,8 +19,7 @@ $(foreach p, $(PERIPHERALS), $(eval include $(SUBMODULES_DIR)/$p/software/embedd
 HDR+=periphs.h
 
 #SOURCES
-SRC+= firmware.S firmware.c $(UART_DIR)/software/uart_io.c
-SRC+= $(UART_DIR)/software/printf.c
+SRC+= firmware.S firmware.c $(UART_DIR)/software/printf.c
 
 #RULES
 run: firmware.elf
@@ -31,13 +30,13 @@ firmware.elf: ../template.lds $(HDR) $(SRC)
 
 #peripherals' base addresses
 periphs.h: periphs_tmp.h
-	is_diff=`diff -q $@ $<`; if [ 'is_diff' ]; then cp $< $@; fi
+	@is_diff=`diff -q -N $@ $<`; if [ "$$is_diff" ]; then cp $< $@; fi
 	@rm periphs_tmp.h
 
 periphs_tmp.h:
 	$(foreach p, $(PERIPHERALS), $(shell echo "#define $p_BASE (1<<$P) |($p<<($P-N_SLAVES_W))" >> $@) )
 
 clean: gen-clean 
-	@rm -rf firmware.bin firmware.elf firmware.map *.hex ../periphs.h
+	@rm -rf firmware.bin firmware.elf firmware.map *.hex periphs.h
 
-.PHONY: run clean subs periphs_tmp.h
+.PHONY: run clean

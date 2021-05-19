@@ -1,4 +1,3 @@
-system.mk
 hardware/src/system.v
 hardware/testbench/system_tb.v
 
@@ -16,6 +15,9 @@ hardware/simulation/ncsim/*
 !hardware/simulation/ncsim/Makefile
 !hardware/simulation/ncsim/run_ncsim.sh
 
+hardware/simulation/verilator/*
+!hardware/simulation/verilator/Makefile
+
 software/periphs.h
 software/pc-emul/periphs.h
 
@@ -32,6 +34,8 @@ software/firmware/*
 software/console/*
 !software/console/console.c
 !software/console/console.h
+!software/console/rs232comm.c
+!software/console/socketcomm.c
 !software/console/Makefile
 
 document/presentation/*
@@ -54,5 +58,23 @@ hardware/fpga/CYCLONEV-GT-DK/firmware_3.hex
 hardware/fpga/CYCLONEV-GT-DK/system.v
 hardware/fpga/CYCLONEV-GT-DK/top_system.sof
 hardware/fpga/CYCLONEV-GT-DK/top_system.fit.summary
+
+hardware/fpga/DE10-LITE/boot.hex
+hardware/fpga/DE10-LITE/firmware.hex
+hardware/fpga/DE10-LITE/firmware_0.hex
+hardware/fpga/DE10-LITE/firmware_1.hex
+hardware/fpga/DE10-LITE/firmware_2.hex
+hardware/fpga/DE10-LITE/firmware_3.hex
+hardware/fpga/DE10-LITE/system.v
+hardware/fpga/DE10-LITE/top_system.sof
+hardware/fpga/DE10-LITE/top_system.fit.summary
+
+hardware/fpga/AES-KU040-DB-G/boot.hex
+hardware/fpga/AES-KU040-DB-G/firmware.hex
+hardware/fpga/AES-KU040-DB-G/firmware_0.hex
+hardware/fpga/AES-KU040-DB-G/firmware_1.hex
+hardware/fpga/AES-KU040-DB-G/firmware_2.hex
+hardware/fpga/AES-KU040-DB-G/firmware_3.hex
+hardware/fpga/AES-KU040-DB-G/system.v
 
 hardware/asic/umc130/synth/*_report.txt

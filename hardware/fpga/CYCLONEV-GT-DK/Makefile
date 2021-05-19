@@ -1,5 +1,7 @@
 ROOT_DIR:=../../..
 
+DEFINE+=$(defmacro)IS_CYCLONEV=1
+
 include ../fpga.mk
 
 clean: hw-clean

@@ -1,26 +1,7 @@
+############################################################
 Testing board CYCLONEV-GT-DK
+############################################################
 
-+-----------------------------------------------+
-|                   IOb-Console                 |
-+-----------------------------------------------+
-
-  BaudRate = 115200 
-  StopBits = 1 
-  Parity   = None
-
-IOb-Console: ENQ symbol received from target
-IOb-Console: Connected to target
-IOb-Console: Sending RUN command to target
-IOb-Console: RUN command sent to target
-IOb-Bootloader: started...
-IOb-Bootloader: Restart CPU to run user program...
-
-
-
-Hello world number 1!
-
-
-Value of Pi = 3.141500
 
 
 +-----------------------------------------------+
@@ -31,26 +12,63 @@ Value of Pi = 3.141500
   StopBits = 1 
   Parity   = None
 
-IOb-Console: ENQ symbol received from target
-IOb-Console: Connected to target
-IOb-Bootloader: started...
-IOb-UART: Loading file...
-IOb-Console: starting to load firmware with 21560 bytes...
-IOb-Console: file loading complete
-IOb-Console: Firmware sent to target
-IOb-Console: Sending RUN command to target
-IOb-Console: RUN command sent to target
-IOb-UART: File loaded
+IOb-Console: connecting...
+
+IOb-Bootloader: connected!
 IOb-Bootloader: Restart CPU to run user program...
 
 
 
-Hello world number 1!
+Hello world!
 
 
 Value of Pi = 3.141500
 
+IOb-Console: exiting...
+
+
+
++-----------------------------------------------+
+|                   IOb-Console                 |
++-----------------------------------------------+
+
+  BaudRate = 115200 
+  StopBits = 1 
+  Parity   = None
+
+IOb-Console: connecting...
+
+IOb-Bootloader: connected!
+IOb-UART: requesting to receive file
+IOb-Console: got file send request
+IOb-Console: file name firmware.bin
+IOb-Console: file size: 19068 bytes
+IOb-Console: file sent
+IOb-UART: file received
+IOb-Bootloader: Loading firmware...
+IOb-UART: requesting to send file
+IOb-Console: got file receive request
+IOb-Console: file name s_fw.bin
+IOb-Console: file size: 19068 bytes
+IOb-Console: file of size 19068 bytes received
+IOb-UART: file sent
+IOb-Bootloader: Restart CPU to run user program...
+
+
+
+Hello world!
+
+
+Value of Pi = 3.141500
+
+IOb-Console: exiting...
+
+
+############################################################
 Testing board AES-KU040-DB-G
+############################################################
+
+
 
 +-----------------------------------------------+
 |                   IOb-Console                 |
@@ -60,19 +78,20 @@ Testing board AES-KU040-DB-G
   StopBits = 1 
   Parity   = None
 
-IOb-Console: ENQ symbol received from target
-IOb-Console: Connected to target
-IOb-Console: Sending RUN command to target
-IOb-Console: RUN command sent to target
-IOb-Bootloader: started...
+IOb-Console: connecting...
+
+IOb-Bootloader: connected!
 IOb-Bootloader: Restart CPU to run user program...
 
 
 
-Hello world number 1!
+Hello world!
 
 
 Value of Pi = 3.141500
+
+IOb-Console: exiting...
+
 
 
 +-----------------------------------------------+
@@ -83,24 +102,33 @@ Value of Pi = 3.141500
   StopBits = 1 
   Parity   = None
 
-IOb-Console: ENQ symbol received from target
-IOb-Console: Connected to target
-IOb-Bootloader: started...
-IOb-UART: Loading file...
-IOb-Console: starting to load firmware with 21560 bytes...
-IOb-Console: file loading complete
-IOb-Console: Firmware sent to target
-IOb-Console: Sending RUN command to target
-IOb-Console: RUN command sent to target
-IOb-UART: File loaded
+IOb-Console: connecting...
+
+IOb-Bootloader: connected!
+IOb-UART: requesting to receive file
+IOb-Console: got file send request
+IOb-Console: file name firmware.bin
+IOb-Console: file size: 19068 bytes
+IOb-Console: file sent
+IOb-UART: file received
+IOb-Bootloader: Loading firmware...
+IOb-UART: requesting to send file
+IOb-Console: got file receive request
+IOb-Console: file name s_fw.bin
+IOb-Console: file size: 19068 bytes
+IOb-Console: file of size 19068 bytes received
+IOb-UART: file sent
 IOb-Bootloader: Restart CPU to run user program...
 
 
 
-Hello world number 1!
+Hello world!
 
 
 Value of Pi = 3.141500
+
+IOb-Console: exiting...
+
 
 
 +-----------------------------------------------+
@@ -111,24 +139,33 @@ Value of Pi = 3.141500
   StopBits = 1 
   Parity   = None
 
-IOb-Console: ENQ symbol received from target
-IOb-Console: Connected to target
-IOb-Bootloader: started...
+IOb-Console: connecting...
+
+IOb-Bootloader: connected!
 IOb-Bootloader: DDR in use
-IOb-Bootloader: Program to run from DDR
-IOb-UART: Loading file...
-IOb-Console: starting to load firmware with 21688 bytes...
-IOb-Console: file loading complete
-IOb-Console: Firmware sent to target
-IOb-Console: Sending RUN command to target
-IOb-Console: RUN command sent to target
-IOb-UART: File loaded
+IOb-Bootloader: program to run from DDR
+IOb-UART: requesting to receive file
+IOb-Console: got file send request
+IOb-Console: file name firmware.bin
+IOb-Console: file size: 19228 bytes
+IOb-Console: file sent
+IOb-UART: file received
+IOb-Bootloader: Loading firmware...
+IOb-UART: requesting to send file
+IOb-Console: got file receive request
+IOb-Console: file name s_fw.bin
+IOb-Console: file size: 19228 bytes
+IOb-Console: file of size 19228 bytes received
+IOb-UART: file sent
 IOb-Bootloader: Restart CPU to run user program...
 
 
 
-Hello world number 1!
+Hello world!
 
 
 Value of Pi = 3.141500
+
+IOb-Console: exiting...
+
 

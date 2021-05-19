@@ -8,7 +8,7 @@ CC:=gcc
 CFLAGS:=-g -Wall
 
 INCLUDE+=-I$(UART_DIR)/software
-SRC:=console.c
+SRC:=console.c rs232comm.c
 
 CONSOLE_CMD=./console -s $(SERIAL)
 ifeq ($(INIT_MEM),0)
@@ -26,7 +26,10 @@ run: console firmware.bin
 
 
 
-./firmware.bin: $(FIRM_DIR)/firmware.bin
+firmware.bin: $(FIRM_DIR)/firmware.bin
+ifeq ($(INIT_MEM),1)
+	$(eval CONSOLE_CMD+=-f)
+endif
 	cp $(FIRM_DIR)/firmware.bin $@
 
 console: $(SRC)

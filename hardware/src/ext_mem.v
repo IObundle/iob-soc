@@ -12,7 +12,7 @@ module ext_mem
     input                                    clk,
     input                                    rst,
 
-`ifdef RUN_DDR_USE_SRAM
+`ifdef RUN_EXTMEM_USE_SRAM
     // Instruction bus
     input [1+`FIRM_ADDR_W-2+`WRITE_W-1:0]    i_req,
     output [`RESP_W-1:0]                     i_resp,
@@ -64,7 +64,7 @@ module ext_mem
     output                                   axi_rready
     );
 
-`ifdef RUN_DDR_USE_SRAM
+`ifdef RUN_EXTMEM_USE_SRAM
    //
    // INSTRUCTION CACHE
    //
@@ -110,7 +110,7 @@ module ext_mem
            .mem_rdata (icache_be_resp[`rdata(0)]),
            .mem_ready (icache_be_resp[`ready(0)])
            );
-`endif //  `ifdef RUN_DDR_USE_SRAM
+`endif //  `ifdef RUN_EXTMEM_USE_SRAM
 
    //l2 cache interface signals
    wire [1+`DCACHE_ADDR_W+`WRITE_W-1:0]       l2cache_req;
@@ -182,7 +182,7 @@ module ext_mem
    merge
      #(
        .ADDR_W(`DCACHE_ADDR_W),
-`ifdef RUN_DDR_USE_SRAM
+`ifdef RUN_EXTMEM_USE_SRAM
        .N_MASTERS(2)
 `else
        .N_MASTERS(1)
@@ -193,7 +193,7 @@ module ext_mem
       .clk(clk),
       .rst(rst),
       // masters
-`ifdef RUN_DDR_USE_SRAM
+`ifdef RUN_EXTMEM_USE_SRAM
       .m_req  ({icache_be_req, dcache_be_req}),
       .m_resp ({icache_be_resp, dcache_be_resp}),
 `else
