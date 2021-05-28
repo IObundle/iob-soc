@@ -1,11 +1,20 @@
 #DEFINES
 
-BAUD=$(SIM_BAUD)
+#operation frequency and uart baud rate
+#needed by embedded sofrware and testbench
+BAUD=5000000
+FREQ=100000000
+
+#define for testbench
+DEFINE+=$(defmacro)BAUD=$(BAUD)
+DEFINE+=$(defmacro)FREQ=$(FREQ)
 
 #ddr controller address width
 DEFINE+=$(defmacro)DDR_ADDR_W=24
 
-#vcd dump
+#produce waveform dump
+VCD ?=0
+
 ifeq ($(VCD),1)
 DEFINE+=$(defmacro)VCD
 endif
@@ -42,10 +51,29 @@ VSRC+=system_tb.v
 
 # verilator uses a c++ testbench
 ifeq ($(SIMULATOR),verilator)
-	VSRC+=sim_xtop.cpp
+VSRC+=sim_xtop.cpp
 endif
 
 #RULES
+all: clean sw
+ifeq ($(SIM_SERVER),)
+	make run
+else
+	ssh $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
+	rsync -avz --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
+	ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR); make run INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) VCD=$(VCD) LOG="$(TEST_LOG)"'
+ifneq ($(TEST_LOG),)
+	scp $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR)/test.log $(SIM_DIR)
+endif
+ifeq ($(VCD),1)
+	scp $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)//hardware/simulation/$(SIMULATOR)/*.vcd $(SIM_DIR)
+endif
+endif
+ifeq ($(VCD),1)
+	gtkwave -a $^ &
+endif
+
+
 #create testbench
 system_tb.v:
 	cp $(TB_DIR)/system_core_tb.v $@  # create system_tb.v
@@ -60,4 +88,20 @@ sim_xtop.cpp:
 VSRC+=$(foreach p, $(PERIPHERALS), $(shell if test -f $(SUBMODULES_DIR)/$p/hardware/testbench/module_tb.sv; then echo $(SUBMODULES_DIR)/$p/hardware/testbench/module_tb.sv; fi;)) #add test cores to list of sources
 
 
-.PRECIOUS: system.vcd
+clean: hw-clean
+ifneq ($(SIM_SERVER),)
+	rsync -avz --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
+	ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR); make sim-clean'
+endif
+
+
+log-clean:
+	@rm -f test.log
+ifneq ($(SIM_SERVER),)
+	rsync -avz --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
+	ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR); rm -f test.log'
+endif
+
+
+.PRECIOUS: system.vcd test.log
+.PHONY: clean log-clean

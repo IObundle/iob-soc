@@ -1,4 +1,6 @@
 ROOT_DIR:=../../..
+FPGA_OBJ=output_files/top_system.sof
+FPGA_LOG=output_files/top_system.fit.summary
 
 include ../fpga.mk
 

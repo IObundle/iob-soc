@@ -2,7 +2,7 @@ ROOT_DIR:=../..
 include ../software.mk
 
 #additional compiler flags
-CFLAGS=-Os -Wl,--strip-debug
+CFLAGS=-Os -std=gnu99 -Wl,--strip-debug
 
 
 #DEFINE+=-DLONGLONG 
@@ -20,11 +20,15 @@ HDR+=periphs.h
 SRC+= $(FIRM_DIR)/firmware.c $(UART_DIR)/software/printf.c
 
 #RULES
+
+all: build run
 run: firmware.out
+	./firmware.out
+
+build: firmware.out
 
 firmware.out: $(HDR) $(SRC)
 	gcc -o $@ $(CFLAGS) $(DEFINE) $(INCLUDE) $(SRC) -lgcc -lc
-	./firmware.out
 
 #peripherals' base addresses
 periphs.h: periphs_tmp.h
@@ -37,4 +41,4 @@ periphs_tmp.h:
 clean:
 	@rm -rf firmware.out periphs.h
 
-.PHONY: run clean subs periphs_tmp.h
+.PHONY: all build run clean subs periphs_tmp.h

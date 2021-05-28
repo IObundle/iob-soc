@@ -2,7 +2,7 @@
 #include "interconnect.h"
 #include "iob-uart.h"
 
-#if (USE_DDR_SW==1 && RUN_DDR_SW==1)
+#if (USE_DDR_SW==1 && RUN_EXTMEM_SW==1)
 #include "iob-cache.h"
 #endif
 
@@ -31,14 +31,14 @@ int main() {
     uart_puts (PROGNAME);
     uart_puts(": DDR in use\n");
   }
-  if(RUN_DDR_SW){
+  if(RUN_EXTMEM_SW){
     uart_puts (PROGNAME);
     uart_puts(": program to run from DDR\n");
   }
 
   // address to copy firmware to
   char *prog_start_addr[1];
-  if (USE_DDR_SW==0 || (USE_DDR_SW==1 && RUN_DDR_SW==0))	
+  if (USE_DDR_SW==0 || (USE_DDR_SW==1 && RUN_EXTMEM_SW==0))	
     prog_start_addr[0] = (char *) (1<<BOOTROM_ADDR_W);
   else
     prog_start_addr[0] = (char *) EXTRA_BASE;
@@ -63,7 +63,7 @@ int main() {
   uart_puts (": Restart CPU to run user program...\n");
   uart_txwait();
 
-#if (USE_DDR && RUN_DDR)
+#if (USE_DDR && RUN_EXTMEM)
   //by reading any DDR data, it forces the caches to first write everyting before reason (write-through write-not-allocate)
   char force_cache_read = *prog_start_addr[0];
   uart_rxen(force_cache_read);//this line prevents compiler from optimizing away force_cache_read

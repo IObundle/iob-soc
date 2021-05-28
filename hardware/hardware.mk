@@ -1,5 +1,10 @@
 include $(ROOT_DIR)/system.mk
 
+#default baud and freq for hardware
+BAUD ?=115200
+FREQ ?=100000000
+
+
 #SUBMODULES
 
 #cpu
@@ -50,6 +55,8 @@ VSRC+=$(SRC_DIR)/sram.v
 endif
 VSRC+=system.v
 
+IMAGES=boot.hex firmware.hex
+
 # make system.v with peripherals
 system.v:
 	cp $(SRC_DIR)/system_core.v $@ # create system.v
@@ -58,23 +65,31 @@ system.v:
 	$(foreach p, $(PERIPHERALS), if test -f $(SUBMODULES_DIR)/$p/hardware/include/inst.v; then sed -i '/endmodule/e cat $(SUBMODULES_DIR)/$p/hardware/include/inst.v' $@; fi;) # insert peripheral instances
 
 # make and copy memory init files
-firmware: $(FIRM_DIR)/firmware.bin
-ifeq ($(INIT_MEM),1)
-ifeq ($(RUN_DDR),1)
+boot.hex: $(BOOT_DIR)/boot.bin
+	$(PYTHON_DIR)/makehex.py $(BOOT_DIR)/boot.bin $(BOOTROM_ADDR_W) > boot.hex
+
+firmware.hex: $(FIRM_DIR)/firmware.bin
+ifeq ($(RUN_EXTMEM),1)
 	$(PYTHON_DIR)/makehex.py $(FIRM_DIR)/firmware.bin $(DCACHE_ADDR_W) > firmware.hex
 else
 	$(PYTHON_DIR)/makehex.py $(FIRM_DIR)/firmware.bin $(FIRM_ADDR_W) > firmware.hex
 endif 
 	$(PYTHON_DIR)/hex_split.py firmware .
-else
 	cp $(FIRM_DIR)/firmware.bin .
-endif
 
-boot.hex: $(BOOT_DIR)/boot.bin
-	$(PYTHON_DIR)/makehex.py $(BOOT_DIR)/boot.bin $(BOOTROM_ADDR_W) > boot.hex
+# make embedded sw software
+sw:
+	make -C $(FIRM_DIR) firmware.elf FREQ=$(FREQ) BAUD=$(BAUD)
+	make -C $(BOOT_DIR) boot.elf FREQ=$(FREQ) BAUD=$(BAUD)
+	make -C $(CONSOLE_DIR) INIT_MEM==$(INIT_MEM)
+
+sw-clean:
+	make -C $(FIRM_DIR) clean
+	make -C $(BOOT_DIR) clean
+	make -C $(CONSOLE_DIR) clean
 
 #clean general hardware files
-hw-clean: gen-clean
+hw-clean: sw-clean gen-clean
 	@rm -f *.v *.hex *.bin $(SRC_DIR)/system.v $(TB_DIR)/system_tb.v
 
-.PHONY: firmware hw-clean
+.PHONY: sw sw-clean hw-clean

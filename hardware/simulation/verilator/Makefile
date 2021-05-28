@@ -3,6 +3,9 @@ ROOT_DIR:=../../..
 defmacro:=-D
 incdir:=-I
 
+SIM_SERVER=$(VSIM_SERVER)
+SIM_USER=$(VSIM_USER)
+
 include ../simulation.mk
 
 # remove space between -I and directory for verilator

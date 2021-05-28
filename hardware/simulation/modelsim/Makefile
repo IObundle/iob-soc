@@ -1,3 +1,6 @@
+SIM_SERVER=$(MSIM_SERVER)
+SIM_USER=$(MSIM_USER)
+
 FIRM_DIR = ../../software/firmware
 BOOT_DIR = ../../software/bootloader
 RTL_DIR = ../../rtl
