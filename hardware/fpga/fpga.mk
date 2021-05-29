@@ -59,7 +59,7 @@ ifneq ($(BOARD_SERVER),)
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(BOARD); make board-clean'
 endif
 
-log-clean:
+testlog-clean:
 	@rm -f $(CONSOLE_DIR)/test.log
 ifneq ($(BOARD_SERVER),)
 	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR)
@@ -69,4 +69,4 @@ endif
 
 .PRECIOUS: $(FPGA_OBJ)
 
-.PHONY: all run load build fpga-clean log-clean
+.PHONY: all run load build fpga-clean testlog-clean

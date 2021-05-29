@@ -36,12 +36,12 @@ doc:
 test: test-all-simulators test-all-boards
 
 test-simulator:
-	make -C $(SIM_DIR) log-clean SIMULATOR=$(SIMULATOR)
-	make sim SIMULATOR=$(SIMULATOR) INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
-	make sim SIMULATOR=$(SIMULATOR) INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
-	make sim SIMULATOR=$(SIMULATOR) INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=0 TEST_LOG=">> test.log"
-	make sim SIMULATOR=$(SIMULATOR) INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
-	make sim SIMULATOR=$(SIMULATOR) INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
+	make -C $(SIM_DIR) testlog-clean
+	make -C $(SIM_DIR) all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+	make -C $(SIM_DIR) all INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+	make -C $(SIM_DIR) all INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+	make -C $(SIM_DIR) all INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
+	make -C $(SIM_DIR) all INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
 	diff -q $(SIM_DIR)/test.log $(SIM_DIR)/test.expected
 	@echo SIMULATOR $(SIMULATOR) TEST PASSED
 
@@ -52,12 +52,12 @@ all-simulators-clean:
 	$(foreach s, $(SIM_LIST), make -C $(HW_DIR)/simulation/$s clean SIMULATOR=$s;)
 
 test-board:
-	make -C $(BOARD_DIR) BOARD=$(BOARD) log-clean
-	make -C $(BOARD_DIR) BOARD=$(BOARD) board-clean
-	make run BOARD=$(BOARD) INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
-	make run BOARD=$(BOARD) INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+	make -C $(BOARD_DIR) testlog-clean
 	make -C $(BOARD_DIR) board-clean
-	make run BOARD=$(BOARD) INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
+	make -C $(BOARD_DIR) all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+	make -C $(BOARD_DIR) all INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+	make -C $(BOARD_DIR) board-clean
+	make -C $(BOARD_DIR) all INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
 	diff -q $(CONSOLE_DIR)/test.log $(BOARD_DIR)/test.expected
 	@echo BOARD $(BOARD) TEST PASSED
 

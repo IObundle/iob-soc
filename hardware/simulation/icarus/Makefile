@@ -3,6 +3,7 @@ ROOT_DIR:=../../..
 defmacro:=-D
 incdir:=-I
 
+SIMULATOR=icarus
 SIM_SERVER=$(IVSIM_SERVER)
 SIM_USER=$(IVSIM_USER)
 

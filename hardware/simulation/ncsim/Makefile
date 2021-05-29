@@ -3,6 +3,7 @@ ROOT_DIR:=../../..
 defmacro:=-define 
 incdir:=-incdir 
 
+SIMULATOR=ncsim
 SIM_SERVER ?=$(NCSIM_SERVER)
 SIM_USER ?=$(NCSIM_USER)
 

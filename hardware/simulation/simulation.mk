@@ -95,7 +95,7 @@ ifneq ($(SIM_SERVER),)
 endif
 
 
-log-clean:
+testlog-clean:
 	@rm -f test.log
 ifneq ($(SIM_SERVER),)
 	rsync -avz --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
@@ -104,4 +104,4 @@ endif
 
 
 .PRECIOUS: system.vcd test.log
-.PHONY: clean log-clean
+.PHONY: clean testlog-clean
