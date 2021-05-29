@@ -1,6 +1,13 @@
 ROOT_DIR:=../..
 include ../software.mk
 
+#default baud and freq for pc emulation
+BAUD=5000000
+FREQ=100000000
+
+
+
+
 #additional compiler flags
 CFLAGS=-Os -std=gnu99 -Wl,--strip-debug
 

@@ -1,9 +1,8 @@
 #DEFINES
 
-#operation frequency and uart baud rate
-#needed by embedded sofrware and testbench
-BAUD=5000000
-FREQ=100000000
+#default baud and freq for simulation
+BAUD =?5000000
+FREQ =?100000000
 
 #define for testbench
 DEFINE+=$(defmacro)BAUD=$(BAUD)

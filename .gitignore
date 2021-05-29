@@ -23,7 +23,9 @@ hardware/simulation/verilator/*
 !hardware/simulation/verilator/Makefile
 
 software/periphs.h
+
 software/pc-emul/periphs.h
+software/pc-emul/firmware.out
 
 software/bootloader/*
 !software/bootloader/boot.c
