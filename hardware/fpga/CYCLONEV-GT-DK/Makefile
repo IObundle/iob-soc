@@ -2,8 +2,16 @@ ROOT_DIR:=../../..
 DEFINE+=$(defmacro)IS_CYCLONEV=1
 FPGA_OBJ=output_files/top_system.sof
 FPGA_LOG=output_files/top_system.fit.summary
-FPGA_NORUN ?=$(USE_DDR)
+
 BOARD=CYCLONEV-GT-DK
+
+FPGA_SERVER=$(CYC5_SERVER)
+FPGA_USER=$(CYC5_USER)
+
+BOARD_SERVER=$(CYC5_SERVER)
+BOARD_USER=$(CYC5_USER)
+
+NORUN = $(USE_DDR)
 
 include ../fpga.mk
 

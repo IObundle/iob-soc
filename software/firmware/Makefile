@@ -23,7 +23,6 @@ SRC+= firmware.S firmware.c $(UART_DIR)/software/printf.c
 
 #RULES
 firmware.elf: ../template.lds $(HDR) $(SRC)
-	echo $(FREQ) $(BAUD)
 	$(TOOLCHAIN_PREFIX)gcc -o $@ $(CFLAGS) $(DEFINE) $(INCLUDE) $(SRC) -lgcc -lc -lnosys
 	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
 

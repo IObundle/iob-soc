@@ -1,10 +1,16 @@
 ROOT_DIR:=../../..
 FPGA_OBJ=synth_system.bit
 FPGA_LOG=vivado.log
+
 BOARD=AES-KU040-DB-G
+
+FPGA_SERVER=$(KU40_SERVER)
+FPGA_USER=$(KU40_USER)
+
 BOARD_SERVER=$(KU40_SERVER)
 BOARD_USER=$(KU40_USER)
-FPGA_NORUN=0
+
+NORUN = 0
 
 include ../fpga.mk
 

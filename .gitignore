@@ -1,6 +1,8 @@
 hardware/src/system.v
 hardware/testbench/system_tb.v
 
+hardware/fpga/*/firmware.bin
+
 hardware/fpga/CYCLONEV-GT-DK/synth_system.sof
 
 hardware/fpga/AES-KU040-DB-G/ip
