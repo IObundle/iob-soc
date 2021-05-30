@@ -1,8 +1,8 @@
 #DEFINES
 
 #default baud and freq for simulation
-BAUD =?5000000
-FREQ =?100000000
+BAUD ?=5000000
+FREQ ?=100000000
 
 #define for testbench
 DEFINE+=$(defmacro)BAUD=$(BAUD)
