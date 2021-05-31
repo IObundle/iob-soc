@@ -81,7 +81,7 @@ endif
 sw:
 	make -C $(FIRM_DIR) firmware.elf FREQ=$(FREQ) BAUD=$(BAUD)
 	make -C $(BOOT_DIR) boot.elf FREQ=$(FREQ) BAUD=$(BAUD)
-	make -C $(CONSOLE_DIR) INIT_MEM==$(INIT_MEM)
+	make -C $(CONSOLE_DIR) INIT_MEM=$(INIT_MEM)
 
 sw-clean:
 	make -C $(FIRM_DIR) clean
