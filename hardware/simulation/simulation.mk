@@ -32,15 +32,15 @@ endif
 #SOURCES
 #asic sources
 ifeq ($(SYNTH),1)
-VSRC=$(ASIC_DIR)/synth/system_synth.v \
-$(wildcard $(ASIC_DIR)/memory/bootrom/SP*.v) \
-$(wildcard $(ASIC_DIR)/memory/sram/SH*.v)
+VSRC=$(ASIC_DIR)/$(ASIC_NODE)/synth/system_synth.v \
+$(wildcard $(ASIC_DIR)/$(ASIC_NODE)/memory/bootrom/SP*.v) \
+$(wildcard $(ASIC_DIR)/$(ASIC_NODE)/memory/sram/SH*.v)
 endif
 
 ifeq ($(PR),1)
-VSRC=$(ASIC_DIR)/pr/system_pr.v \
-$(wildcard $(ASIC_DIR)/memory/bootrom/SP*.v) \
-$(wildcard $(ASIC_DIR)/memory/sram/SH*.v)
+VSRC=$(ASIC_DIR)/$(ASIC_NODE)/pr/system_pr.v \
+$(wildcard $(ASIC_DIR)/$(ASIC_NODE)/memory/bootrom/SP*.v) \
+$(wildcard $(ASIC_DIR)/$(ASIC_NODE)/memory/sram/SH*.v)
 endif
 
 #ddr memory

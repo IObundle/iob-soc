@@ -1,8 +1,13 @@
+#DEFINES
+
+#ddr controller address width
+DEFINE+=$(defmacro)DDR_ADDR_W=$(FPGA_DDR_ADDR_W)
+
 include $(ROOT_DIR)/hardware/hardware.mk
 
-MEMORIES_DIR=$(ASIC_DIR)/memory
-SYNTH_DIR=$(ASIC_DIR)/synth
-PR_DIR=$(ASIC_DIR)/pr
+MEMORIES_DIR=$(ASIC_DIR)/$(ASIC_NODE)/memory
+SYNTH_DIR=$(ASIC_DIR)/$(ASIC_NODE)/synth
+PR_DIR=$(ASIC_DIR)/$(ASIC_NODE)/pr
 
 MEMW_DIR=$(HW_DIR)/src/wrapper
 ROM_DIR=$(MEMORIES_DIR)/bootrom

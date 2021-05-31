@@ -23,6 +23,13 @@ run:
 	make -C $(BOARD_DIR) all TEST_LOG="$(TEST_LOG)"
 
 #
+# SIMULATE POST-SYNTHESIS ASIC
+#
+
+asic:
+	make -C $(ASIC_DIR) all
+
+#
 # COMPILE DOCUMENTS
 #
 doc:
