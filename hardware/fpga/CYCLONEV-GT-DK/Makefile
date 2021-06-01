@@ -13,6 +13,8 @@ BOARD_USER=$(CYC5_USER)
 
 NORUN = $(USE_DDR)
 
+DEFINE+=$(defmacro)IS_CYCLONEV=1
+
 include ../fpga.mk
 
 board-clean: fpga-clean
