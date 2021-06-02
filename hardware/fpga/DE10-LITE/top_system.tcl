@@ -45,22 +45,20 @@ foreach file [split $VSRC \ ] {
 # Pin & Location Assignments
 # ==========================
 
-#System 
-set_location_assignment PIN_N5 -to clk
+#System
+set_location_assignment PIN_P11 -to clk
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to clk
 set_location_assignment PIN_B8 -to resetn
-instance_set_assignment -name IO_STANDARD "3.3 V SCHMITT TRIGGER" -to resetn
+set_instance_assignment -name IO_STANDARD "3.3 V SCHMITT TRIGGER" -to resetn
 
 #Leds
 set_location_assignment  PIN_A8 -to trap
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to trap
-set_instance_assignment -name SLEW_RATE 1 -to trap
 set_instance_assignment -name CURRENT_STRENGTH_NEW DEFAULT -to trap
 
 #Uart
 set_location_assignment PIN_V10 -to uart_txd
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to uart_txd
-set_instance_assignment -name SLEW_RATE 1 -to uart_txd
 set_instance_assignment -name CURRENT_STRENGTH_NEW DEFAULT -to uart_txd
 set_location_assignment PIN_W10 -to uart_rxd
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to uart_rxd
@@ -69,7 +67,10 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to uart_rxd
 # End of pin assignments
 #============================================================
 
-
+#Force registers into IOBs
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to *
+set_instance_assignment -name FAST_INPUT_REGISTER ON -to *
+#set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to *
 set_global_assignment -name LAST_QUARTUS_VERSION $QUARTUS_VERSION
 set_global_assignment -name SDC_FILE top_system.sdc
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
