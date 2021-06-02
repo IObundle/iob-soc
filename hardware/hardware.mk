@@ -15,7 +15,7 @@ ifeq ($(USE_DDR),1)
 include $(CACHE_DIR)/hardware/hardware.mk
 endif
 
-ifneq ($(ASIC),1)
+ifneq ($(ASIC_MEM),1)
 #rom
 SUBMODULES+=SPROM
 SPROM_DIR:=$(CACHE_DIR)/submodules/MEM/sp_rom
@@ -50,7 +50,7 @@ endif
 
 #system
 VSRC+=$(SRC_DIR)/boot_ctr.v $(SRC_DIR)/int_mem.v
-ifneq ($(ASIC),1)
+ifneq ($(ASIC_MEM),1)
 VSRC+=$(SRC_DIR)/sram.v
 endif
 VSRC+=system.v
