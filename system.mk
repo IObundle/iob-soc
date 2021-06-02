@@ -14,7 +14,7 @@ FIRM_ADDR_W ?=15
 #SRAM SIZE (LOG2)
 SRAM_ADDR_W ?=15
 
-#DDR 
+#DDR
 USE_DDR ?=0
 RUN_EXTMEM ?=0
 
@@ -60,7 +60,7 @@ ASIC_NODE ?=umc130
 #simulators used in regression testing
 SIM_LIST ?=icarus ncsim
 #boards used for regression testing
-BOARD_LIST ?=CYCLONEV-GT-DK AES-KU040-DB-G 
+BOARD_LIST ?=CYCLONEV-GT-DK AES-KU040-DB-G
 
 
 
@@ -111,7 +111,6 @@ DEFINE+=$(defmacro)BOOTROM_ADDR_W=$(BOOTROM_ADDR_W)
 DEFINE+=$(defmacro)SRAM_ADDR_W=$(SRAM_ADDR_W)
 DEFINE+=$(defmacro)FIRM_ADDR_W=$(FIRM_ADDR_W)
 DEFINE+=$(defmacro)DCACHE_ADDR_W=$(DCACHE_ADDR_W)
-
 
 DEFINE+=$(defmacro)N_SLAVES=$(N_SLAVES)
 
