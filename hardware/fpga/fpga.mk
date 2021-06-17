@@ -38,8 +38,13 @@ endif
 build: $(FPGA_OBJ)
 
 
-$(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) firmware.hex boot.hex
+ifeq ($(INIT_MEM),1)
+$(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex firmware.hex
+else
+$(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex
+endif
 ifeq ($(FPGA_SERVER),)
+	if [ $(NORUN) = 0 -a -f load.log ]; then rm -f load.log; fi
 	if [ $(NORUN) = 0 ]; then ./build.sh "$(INCLUDE)" "$(DEFINE)" "$(VSRC)"; fi
 else ifeq ($(NORUN),0)
 	ssh $(FPGA_USER)@$(FPGA_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
