@@ -38,7 +38,11 @@ endif
 build: $(FPGA_OBJ)
 
 
-$(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) firmware.hex boot.hex
+ifeq ($(INIT_MEM),1)
+$(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex firmware.hex
+else
+$(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex
+endif
 ifeq ($(FPGA_SERVER),)
 	if [ $(NORUN) = 0 ]; then ./build.sh "$(INCLUDE)" "$(DEFINE)" "$(VSRC)"; fi
 else ifeq ($(NORUN),0)
