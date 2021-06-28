@@ -162,6 +162,8 @@ FIRM_DIR:=$(SW_DIR)/firmware
 BOOT_DIR:=$(SW_DIR)/bootloader
 CONSOLE_DIR:=$(SW_DIR)/console
 PYTHON_DIR:=$(SW_DIR)/python
+EMUL_DIR:=$(SW_DIR)/pc-emul
+DOC_DIR:=$(ROOT_DIR)/document
 
 TEX_DIR=$(UART_DIR)/submodules/TEX
 
@@ -218,11 +220,15 @@ N_SLAVES:=0
 $(foreach p, $(PERIPHERALS), $(eval $p=$(N_SLAVES)) $(eval N_SLAVES:=$(shell expr $(N_SLAVES) \+ 1)))
 $(foreach p, $(PERIPHERALS), $(eval DEFINE+=$(defmacro)$p=$($p)))
 
+#log files
 #test log
 ifneq ($(TEST_LOG),)
 LOG=>test.log
 endif
-
+FIRMWARE_LOG=firmware.log
+BOOT_LOG=boot.log
+EMUL_LOG=pc_emul.log
+BOARDLOAD_LOG=board_load.log
 
 #RULES
 
