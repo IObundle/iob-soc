@@ -1,16 +1,22 @@
 ROOT_DIR:=.
 include ./system.mk
 
-#default target
-all:
-	make -C hardware/simulation/icarus run BAUD=SIM_BAUD
 
+#default target
+all: sim-clean 
+	@echo make -C $(FIRM_DIR) run BAUD=$(SIM_BAUD) 2>&1 | tee $(FIRM_DIR)/$(FIRMWARE_LOG)
+	make -C $(FIRM_DIR) run BAUD=$(SIM_BAUD) 2>&1 | tee --append $(FIRM_DIR)/$(FIRMWARE_LOG)
+	@echo make -C $(BOOT_DIR) run BAUD=$(SIM_BAUD) 2>&1 | tee $(BOOT_DIR)/$(BOOT_LOG)
+	make -C $(BOOT_DIR) run BAUD=$(SIM_BAUD) 2>&1 | tee --append $(BOOT_DIR)/$(BOOT_LOG)
+	@echo make -C hardware/simulation/icarus run BAUD=$(SIM_BAUD) 2>&1 | tee $(HW_DIR)/simulation/icarus/test.log
+	make -C hardware/simulation/icarus run BAUD=$(SIM_BAUD) 2>&1 | tee --append $(HW_DIR)/simulation/icarus/test.log 
 #
 # PC
 #
 
-pc-emul:
-	make -C software/pc-emul run
+pc-emul: pc-clean
+	@echo make -C $(EMUL_DIR) run 2>&1 | tee $(EMUL_DIR)/$(EMUL_LOG)
+	make -C $(EMUL_DIR) run 2>&1 | tee --append $(EMUL_DIR)/$(EMUL_LOG)
 
 pc-clean:
 	make -C software/pc-emul clean
@@ -21,10 +27,13 @@ pc-clean:
 #
 
 sim: sim-clean
-	make -C $(FIRM_DIR) run BAUD=$(SIM_BAUD)
-	make -C $(BOOT_DIR) run BAUD=$(SIM_BAUD)
+	@echo make -C $(FIRM_DIR) run BAUD=$(SIM_BAUD) 2>&1 | tee $(FIRM_DIR)/$(FIRMWARE_LOG)
+	make -C $(FIRM_DIR) run BAUD=$(SIM_BAUD) 2>&1 | tee --append $(FIRM_DIR)/$(FIRMWARE_LOG)
+	@echo make -C $(BOOT_DIR) run BAUD=$(SIM_BAUD) 2>&1 | tee $(BOOT_DIR)/$(BOOT_LOG)
+	make -C $(BOOT_DIR) run BAUD=$(SIM_BAUD) 2>&1 | tee --append $(BOOT_DIR)/$(BOOT_LOG)
 ifeq ($(SIM_HOST),)
-	make -C $(SIM_DIR) run BAUD=$(SIM_BAUD)
+	@echo make -C $(SIM_DIR) run BAUD=$(SIM_BAUD) 2>&1 | tee $(SIM_DIR)/test.log
+	make -C $(SIM_DIR) run BAUD=$(SIM_BAUD) 2>&1 | tee --append $(SIM_DIR)/test.log
 else
 	ssh $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
@@ -38,11 +47,10 @@ endif
 endif
 
 sim-waves: $(SIM_DIR)/../waves.gtkw $(SIM_DIR)/system.vcd
-	gtkwave -a $^ &
-
+	gtkwave -a $^ & 
 $(SIM_DIR)/../waves.gtkw $(SIM_DIR)/system.vcd:
 	make sim INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) VCD=$(VCD)
-
+	
 sim-clean: sw-clean
 	make -C $(SIM_DIR) clean 
 ifneq ($(SIM_HOST),)
@@ -54,15 +62,18 @@ endif
 # FPGA COMPILE 
 #
 
-fpga:
-	make -C $(FIRM_DIR) run BAUD=$(HW_BAUD)
-	make -C $(BOOT_DIR) run BAUD=$(HW_BAUD)
+fpga: sw-clean fpga-clean
+	@echo make -C $(FIRM_DIR) run BAUD=$(HW_BAUD) 2>&1 | tee $(FIRM_DIR)/$(FIRMWARE_LOG)
+	make -C $(FIRM_DIR) run BAUD=$(HW_BAUD) 2>&1 | tee --append $(FIRM_DIR)/$(FIRMWARE_LOG)
+	@echo make -C $(BOOT_DIR) run BAUD=$(HW_BAUD) 2>&1 | tee $(BOOT_DIR)/$(BOOT_LOG)
+	make -C $(BOOT_DIR) run BAUD=$(HW_BAUD) 2>&1 | tee --append $(BOOT_DIR)/$(BOOT_LOG)
 ifeq ($(FPGA_HOST),)
 	make -C $(BOARD_DIR) compile BAUD=$(HW_BAUD)
 else
 	ssh $(FPGA_USER)@$(FPGA_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(BOARD_DIR) compile INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) BAUD=$(HW_BAUD) BOARD=$(BOARD)'
+	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR); \
+	make -C $(BOARD_DIR) compile INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) BAUD=$(HW_BAUD) BOARD=$(BOARD) 2>&1 | tee $(BOARD_DIR)/$@.log'
 	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/$(BOARD_DIR)/$(FPGA_OBJ) $(BOARD_DIR)
 	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/$(BOARD_DIR)/$(FPGA_LOG) $(BOARD_DIR)
 endif
@@ -93,7 +104,7 @@ else
 	echo $(BOARD_HOST) $(BOARD_SERVER) $(SIM_SERVER) $(FPGA_SERVER) $(ASIC_SERVER)
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR) 
-	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(BOARD_DIR) load'
+	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(BOARD_DIR) load  2>&1 | tee $(BOARD_DIR)/$(BOARDLOAD_LOG)'
 endif
 
 board-run: firmware
@@ -101,10 +112,10 @@ ifeq ($(BOARD_HOST),)
 	make -C $(CONSOLE_DIR) run TEST_LOG=$(TEST_LOG) BAUD=$(HW_BAUD)
 else
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
-	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_SERVER):$(REMOTE_ROOT_DIR)
+	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR)
 	bash -c "trap 'make kill-remote-console' EXIT; ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(CONSOLE_DIR) run INIT_MEM=$(INIT_MEM) TEST_LOG=$(TEST_LOG) BAUD=$(HW_BAUD)  BOARD=$(BOARD)'"
 ifneq ($(TEST_LOG),)
-	scp $(BOARD_SERVER):$(REMOTE_ROOT_DIR)/$(CONSOLE_DIR)/test.log $(CONSOLE_DIR)/test.log
+	scp $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR)/$(CONSOLE_DIR)/test.log $(CONSOLE_DIR)/test.log
 endif
 endif
 
@@ -125,15 +136,17 @@ endif
 # COMPILE SOFTWARE
 #
 
-firmware:
-	make -C $(FIRM_DIR) run
+firmware: firmware-clean
+	@echo make -C $(FIRM_DIR) run 2>&1 | tee $(FIRM_DIR)/$@.log
+	make -C $(FIRM_DIR) run 2>&1 | tee --append $(FIRM_DIR)/$@.log
 
 firmware-clean:
 	make -C $(FIRM_DIR) clean
 
-bootloader: firmware
-	make -C $(BOOT_DIR) run
-
+bootloader: firmware-clean bootloader-clean firmware
+	@echo make -C $(BOOT_DIR) run 2>&1 | tee $(BOOT_DIR)/$(BOOT_LOG)
+	make -C $(BOOT_DIR) run 2>&1 | tee --append $(BOOT_DIR)/$(BOOT_LOG)
+		
 bootloader-clean:
 	make -C $(BOOT_DIR) clean
 
@@ -150,8 +163,8 @@ sw-clean: firmware-clean bootloader-clean console-clean
 #
 
 doc:
-	make -C document/pb pb.pdf
-	make -C document/presentation presentation.pdf
+	make -C document/pb pb.pdf 2>&1 | tee $(DOC_DIR)/$@.log
+	make -C document/presentation presentation.pdf 2>&1 | tee --append $(DOC_DIR)/$@.log
 
 doc-clean:
 	make -C document/pb clean
@@ -287,8 +300,13 @@ ifneq ($(ASIC_HOST),)
 endif
 
 
+# CLEAN LOGS
+clean_logs: 
+	@rm -f $(FIRM_DIR)/$(FIRMWARE_LOG) $(BOOT_DIR)/$(BOOT_LOG) $(SIM_DIR)/test.log $(EMUL_DIR)/$(EMUL_LOG) \
+	$(BOARD_DIR)/fpga.log $(BOARD_DIR)/$(BOARDLOAD_LOG)
+
 # CLEAN ALL
-clean-all: sim-clean fpga-clean asic-clean board-clean doc-clean
+clean-all: pc-clean sw-clean sim-clean fpga-clean asic-clean board-clean doc-clean
 
 .PHONY: pc-emul pc-clean \
 	sim sim-waves sim-clean \
