@@ -32,6 +32,6 @@ boot.elf: ../template.lds  $(HDR) $(SRC)
 	$(TOOLCHAIN_PREFIX)objcopy -O binary boot.elf boot.bin
 
 clean:
-	@rm -rf boot.bin boot.elf boot.map *.hex ../periphs.h *~
+	@rm -rf boot.bin boot.elf boot.map *.hex ../periphs.h *~ *.log
 
 .PHONY: clean
