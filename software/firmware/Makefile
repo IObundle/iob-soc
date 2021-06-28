@@ -37,6 +37,6 @@ periphs_tmp.h:
 	$(foreach p, $(PERIPHERALS), $(shell echo "#define $p_BASE (1<<$P) |($p<<($P-N_SLAVES_W))" >> $@) )
 
 clean: gen-clean 
-	@rm -rf firmware.bin firmware.elf firmware.map *.hex periphs.h
+	@rm -rf firmware.bin firmware.elf firmware.map *.hex periphs.h *.log
 
 .PHONY: run clean
