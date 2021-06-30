@@ -31,9 +31,9 @@
 
 \graphicspath{ {./figures/} }
 
-\title[IOB-SoC Presentation]{IOB-SoC}
-\subtitle{Tutorial: Create a RISC-V-based System on Chip}
-\institute[IObundle Lda]{IObundle Lda.}
+\title[IOb-SoC Presentation]{IOb-SoC}
+\subtitle{Tutorial: Create a RISC-V-based System-on-Chip}
+\institute[IObundle Lda.]{IObundle Lda.}
 \titlegraphic{\includegraphics[height=2.5cm]{Logo.png}}
 %\author[José T. de Sousa]{Jos\'e T. de Sousa}
 %\institute[IObundle Lda]{IObundle Lda}
@@ -77,7 +77,7 @@
 \begin{center}
     \begin{itemize}
       \item Building processor-based systems from scratch is challenging
-      \item The IOB-SoC template eases this task
+      \item The IOb-SoC template eases this task
       \item Provides a base Verilog SoC equipped with
         \begin{itemize}
         \item a RISC-V CPU
@@ -141,8 +141,6 @@ int main()
   uart_init(UART_BASE, FREQ/BAUD);
 
   printf("\nHello world!\n");
-  
-  uart_txwait();
 
   //read current timer count, compute elapsed time
   elapsed  = timer_get_count();
@@ -150,8 +148,6 @@ int main()
 
   printf("\nExecution time: %d clock cycles\n", (unsigned int) elapsed);
   printf("\nExecution time: %dus @%dMHz\n\n", elapsedu, FREQ/1000000);
-
-  uart_txwait();
 }
     \end{lstlisting}
   \end{tiny}
@@ -186,15 +182,14 @@ Execution time: 23us @100MHz
 
 \begin{frame}{Run IOb-SoC in FPGA}
 \begin{itemize}
-\item To compile and run your SoC in one of our FPGA boards, contacts us at info
-  @ iobundle . com.
+\item To compile and run your SoC in one of our FPGA boards, contacts us at info@iobundle.com.
 \item To add your own FPGA board, add a directory into {\tt ./hardware/fpga},
   using the existing board directories as examples
 \item To compile and run the FPGA design for a set of parameters:\\
-  {\tt make test-board-config INIT\_MEM=0 RUN\_DDR=1}\\
+  {\tt make run INIT\_MEM=0 RUN\_EXTMEM=1}\\
   This will compile the software and the hardware, produce an FPGA image, load the hardware and firmware to the board, and direct the standard output to your PC.
 \item To recompile and sent only the firmware to the board via UART:\\
-  {\tt make board-run}
+  {\tt make run INIT\_MEM=0 RUN\_EXTMEM=1}
 \end{itemize}
 \end{frame}
 
