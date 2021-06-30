@@ -60,10 +60,10 @@ all-simulators-clean:
 
 test-board:
 	make -C $(BOARD_DIR) testlog-clean
-	make -C $(BOARD_DIR) board-clean
+	make -C $(BOARD_DIR) clean
 	make -C $(BOARD_DIR) all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
 	make -C $(BOARD_DIR) all INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
-	make -C $(BOARD_DIR) board-clean
+	make -C $(BOARD_DIR) clean
 	make -C $(BOARD_DIR) all INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
 	diff -q $(CONSOLE_DIR)/test.log $(BOARD_DIR)/test.expected
 	@echo BOARD $(BOARD) TEST PASSED
@@ -72,7 +72,7 @@ test-all-boards:
 	$(foreach b, $(BOARD_LIST), make test-board BOARD=$b;)
 
 all-boards-clean:
-	$(foreach s, $(BOARD_LIST), make -C $(FPGA_DIR)/$s board-clean BOARD=$s;)
+	$(foreach s, $(BOARD_LIST), make -C $(FPGA_DIR)/$s clean BOARD=$s;)
 
 clean: 
 	make -C $(PC_DIR) clean
