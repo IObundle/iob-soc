@@ -3,9 +3,9 @@ ROOT_DIR:=../../..
 defmacro:=-define 
 incdir:=-incdir 
 
-SIMULATOR=ncsim
-SIM_SERVER ?=$(NCSIM_SERVER)
-SIM_USER ?=$(NCSIM_USER)
+SIMULATOR=xcelium
+SIM_SERVER ?=$(XMSIM_SERVER)
+SIM_USER ?=$(XMSIM_USER)
 
 include ../simulation.mk
 
@@ -18,13 +18,11 @@ export VSRC CFLAGS EFLAGS SFLAGS
 
 #simulate
 run: $(VSRC) $(VHDR) $(IMAGES)
-	echo $(NCSIM_SERVER)
-	./run_ncsim.sh
+	echo $(XMSIM_SERVER)
+	./run_xmsim.sh
 	grep -v xcelium xmsim.log | grep -v xmsim $(LOG)
 
 sim-clean: hw-clean
-ifeq ($(SIM_SERVER),)
 	@rm -rf xcelium.d xmsim.key
-endif
 
 .PHONY: run sim-clean

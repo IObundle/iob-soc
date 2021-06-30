@@ -1,53 +1,87 @@
 # IOb-SoC
 
-SoC template comprising an open-source RISC-V processor (picorv32), an internal
-SRAM memory subsystem, a UART (iob-uart), and an optional external DDR memory
-subsystem. If selected, an instruction L1 cache, a data L1 cache and a shared L2
-cache is added to the system. The L2 cache communicates with a DDR
-memory controller IP (not provided) using an AXI4 master bus.
+IOb-SoC is a System-on-Chip (SoC) template comprising an open-source RISC-V processor
+(picorv32), an internal SRAM memory subsystem, a UART (iob-uart), and an
+optional interface to an external memory. If external memory is selected, an
+instruction L1 cache, a data L1 cache and a shared L2 cache is added to the
+system. The L2 cache communicates with a 3rd party memory controller IP
+(tpically DDR) using an AXI4 master bus.
+
+## Operating Systems
+
+IOb-SoC can be used in Linux Operating Systems. The following instructions work
+for CentOS 7 and Ubuntu 18.04 or 20.04 LTS.
 
 ## Clone the repository
 
+The first step is to clone this repository. Before you clone it make sure you
+can access Github by *ssh*. This is necessary as IOb-SoC is a git submodule
+tree that can only be recursively downloaded via *ssh*. To clone IOb-SoC type 
+
+
 ``git clone --recursive git@github.com:IObundle/iob-soc.git``
 
-Access to Github by *ssh* is mandatory so that submodules can be updated.
 
 
-## The system configuration file: system.mk
+## Configure your SoC
 
-The system configuration is the system.mk file residing at the repository
-root. Edit the system.mk file at will. The variables that can be set are
-explained by comments in the system.mk file.
+To configure your system edit the *system.mk*, which can be found at the
+repository root. You configure the system by setting the variables in the
+*system.mk* file. The variables are explianed by comments inserted in the
+*system.mk* file.
 
-## Setup your environment variables
+
+## Set environment variables for local or remote builds and runs
 
 The various simulators, FPGA compilers and FPGA boards may be run locally or
-remotely. For running them remotely, set environmental variables as shown below
-using some example servers and user names.  Have these settings in your .bashrc file
-so that you do not need to do it every session.
+remotely. For running them remotely, you need to set the environmental variables
+shown below, replacing the server and user names by the ones you will use. Place
+these settings in your .bashrc file, so that you do not need to do them in every
+session.
 
+### Set up the remote simulator server
+
+Navigate to the simulator directory, for example, `cd
+hardware/simulation/icarus`, and check the Makefile for the environment
+variables to be set. You will see that the server is read from the variable
+IVSIM\_SERVER and the user from IVSIM_USER. Set them with your simulator server
+name and user name, for example:
 
 ```
-#ncsim simulator server
-export NCSIM_SERVER=sericaia.iobundle.com
-export NCSIM_USER=jsousa
+export XMSIM_SERVER=sericaia.iobundle.com
+export XMSIM_USER=jsousa
+```
 
-#quartus server
+### Set up the remote FPGA toolchain and board servers
+
+Navigate to the FPGA board directory, for example, `cd
+hardware/fpga/CYCLONEV-GT-DK`, and check the Makefile for the environment
+variables to be set. You will see that the compile server is read from the variable
+QUAR\_SERVER and the compile user from QUAR\_USER; the board server is read from the variable
+CYC5\_SERVER and the compile user from CYC5_USER. Set them accordingly, for example:
+
+```
 export QUAR_SERVER=pudim-flan.iobundle.com
 export QUAR_USER=jsousa
-
-#ku40 board server
-export KU40_SERVER=baba-de-camelo.iobundle.com
-export KU40_USER=jsousa
-
-#cadence tools server
-export CADE_SERVER=molotof.iobundle.com
-export CADE_USER=user19
+export CYC5_SERVER=pudim-flan.iobundle.com
+export CYC5_USER=jsousa
 ```
 
-Make sure the environmental variables for the tool paths, licenses servers,
-ports or files are defined in each server in use according to the following
-examples.
+### Set up the remote ASIC toolchain server
+
+Navigate to the ASIC directory, `cd hardware/fpga/CYCLONEV-GT-DK`, and check the
+Makefile for the environment variables to be set. You will see that the server
+is read from the variable CADE\_SERVER and the user from CADE\_USER. Set them
+accordingly, for example:
+
+```
+export CADE_SERVER=molotof.iobundle.com
+export CADE_USER=jsousa
+
+```
+
+Also make sure the environmental variables for the tool paths, license servers
+(ports or files) are defined in each remote server, for example:
 
 ```
 export ALTERAPATH=/path/to/intel/fpga/tools
@@ -57,14 +91,14 @@ export LM_LICENSE_FILE=port@host:lic_or_dat_file
 ```
 
 
-## Simulation
+## Simulate the system
 
-To simulate:
+To simulate IOb-SoC, simply type:
 ```
 make [sim]
 ```
 
-Parameters can be passed in the command line, overriding those in the system.mk file. For example:
+Control parameters can be passed in the command line, overriding those in the system.mk file. For example:
 ```
 make [sim] INIT_MEM=0 RUN_EXTMEM=1
 ```

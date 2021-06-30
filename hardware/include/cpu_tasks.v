@@ -122,7 +122,7 @@ task cpu_sendfile;
       if(name_str != "")
         fp = $fopen(name_str,"rb"); //to support icarus
       else
-         fp = $fopen(name,"rb"); //to support ncsim
+         fp = $fopen(name,"rb"); //to support xmsim
 
       
       if(!fp)
@@ -177,7 +177,7 @@ task cpu_recvfile;
       if(name_str != "")
         fp = $fopen(name_str, "wb"); //to support icarus
       else
-        fp = $fopen(name, "wb"); //to support ncsim
+        fp = $fopen(name, "wb"); //to support xmsim
 
       if(!fp) begin
          $display("TESTBENCH: can't open file to store received data\n");
