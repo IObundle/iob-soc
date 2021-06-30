@@ -22,7 +22,7 @@ run: $(VSRC) $(VHDR) $(IMAGES)
 	./run_ncsim.sh
 	grep -v xcelium xmsim.log | grep -v xmsim $(LOG)
 
-sim-clean: clean
+sim-clean: hw-clean
 ifeq ($(SIM_SERVER),)
 	@rm -rf xcelium.d xmsim.key
 endif

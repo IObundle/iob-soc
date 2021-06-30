@@ -14,7 +14,7 @@ all: sw build load run
 
 run:
 ifeq ($(BOARD_SERVER),)
-	if [ $(NORUN) = 0 ]; then make -C $(CONSOLE_DIR) run; fi
+	if [ $(NORUN) = 0 ]; then make -C $(CONSOLE_DIR) run BOARD=$(BOARD); fi
 else ifeq ($(NORUN),0)
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR) 
@@ -54,7 +54,8 @@ else ifeq ($(NORUN),0)
 endif
 
 
-fpga-clean: hw-clean
+clean: hw-clean
+	@rm -rf $(BOARD_DIR)/$(FPGA_OBJ)
 ifneq ($(FPGA_SERVER),)
 	rsync -avz --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
 	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(BOARD); make board-clean CLEANIP=$(CLEANIP)'
@@ -74,4 +75,4 @@ endif
 
 .PRECIOUS: $(FPGA_OBJ)
 
-.PHONY: all run load build fpga-clean testlog-clean
+.PHONY: all run load build clean testlog-clean

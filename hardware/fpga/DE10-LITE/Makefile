@@ -17,7 +17,7 @@ FREQ=50000000
 
 include ../fpga.mk
 
-board-clean: fpga-clean
+board-clean: hw-clean
 	rm -rf db incremental_db output_files *.summary *.rpt *.smsg *.txt *.done \
 	*.jdi *.pin *.sof *.sld *.qpf *.qsf *~ system.v *.log
 

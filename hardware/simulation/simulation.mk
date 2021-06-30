@@ -103,4 +103,4 @@ endif
 
 
 .PRECIOUS: system.vcd test.log
-.PHONY: clean testlog-clean
+.PHONY: all clean testlog-clean
