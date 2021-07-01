@@ -1,3 +1,8 @@
+#
+# Makefile for compiling the documentation.
+# Tested with the texlive-full Linux package
+#
+
 all:
 	make -C presentation
 	make -C pb

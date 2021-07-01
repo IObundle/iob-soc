@@ -1,3 +1,9 @@
+#
+# ICARUS VERILOG SIMULTOR (iverilog)
+#
+# Tested with iverilog version 10.3
+#
+
 ROOT_DIR:=../../..
 
 defmacro:=-D
