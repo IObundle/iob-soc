@@ -21,6 +21,14 @@ tree that can only be recursively downloaded via *ssh*. To clone IOb-SoC type
 
 ``git clone --recursive git@github.com:IObundle/iob-soc.git``
 
+Alternatively, you can clone this repository using the url. You might want to
+cache your credentials using:
+
+``git config --global credential.helper 'cache --timeout=<time_in_seconds>'``
+
+Before cloning the repository:
+
+``git clone --recursive https://github.com/IObundle/iob-soc.git``
 
 
 ## Configure your SoC
@@ -113,7 +121,7 @@ either to the local or to a remote host, and has a run directory under the
 make run [BOARD=<board_dir_name>] [<control parameters>]
 ```
 
-where `board\_dir_name` is the name of the board's run directoryand `control
+where `board\_dir_name` is the name of the board's run directory and `control
  parameters` are parameters that can be passed in the command line details, for
  example, `INIT_MEM=0 RUN_EXTMEM=1`, etc. For more details, read the Makefile in
  the board directory.
@@ -134,17 +142,17 @@ For more details, read the Makefile in the `document` directory.
 
 ## Testing
 
-If you create a system using IOb-SoC, you will will want to exhaustively test it
+If you create a system using IOb-SoC, you will want to exhaustively test it
 in simulation and FPGA board. The following commands automate this process.
 
 ### Simulation test
 
-Tho run a series of simulation tests on the simulator selected by the SIMULATOR variable: 
+To run a series of simulation tests on the simulator selected by the SIMULATOR variable: 
 ```
 make test-simulator [SIMULATOR=<simulator_dir_name>]
 ```
 
-Tho run a series of simulation tests on the simulators listed in the SIM\_LIST variable, type: 
+To run a series of simulation tests on the simulators listed in the SIM\_LIST variable, type: 
 ```
 make test-all-simulators [SIM_LIST="simulator_dir_name_list"]
 ```
