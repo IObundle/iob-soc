@@ -4,16 +4,16 @@
 #
 
 all:
-	make -C presentation
+	make -C presentation all
 	make -C pb
 
 clean:
 	make -C presentation clean
 	make -C pb
 
-pdfclean:
-	make -C presentation pdf clean
+clean-all:
+	make -C presentation clean-all
 	make -C pb pdf clean
 
 
-.PHONY: all clean pdfclean
+.PHONY: all clean clean-all

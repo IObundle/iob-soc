@@ -16,44 +16,41 @@ for CentOS 7 and Ubuntu 18.04 or 20.04 LTS.
 
 The first step is to clone this repository. IOb-SoC is a git sub-module tree and
 Github will ask for your password for each downloaded module. To avoid this,
-setup Github access with *ssh*, or configure git to cache your password for a
-few minutes:
-
-``git config credential.helper 'cache --timeout=300'``
-
-To clone IOb-SoC and enter into its directory, type:
-
+setup Github access with *ssh* and type:
 ```
 git clone --recursive git@github.com:IObundle/iob-soc.git
 cd iob-soc
 ```
 
+Alternatively, you can clone this repository using *https*. You might want to
+cache your credentials using:
+``git config --global credential.helper 'cache --timeout=<time_in_seconds>'``
+
+Before cloning the repository:
+``git clone --recursive https://github.com/IObundle/iob-soc.git``
 
 
 ## Configure your SoC
 
 To configure your system edit the *system.mk* file, which can be found at the
-repository root, and set its variables as desired; there comments in the file to
-explain each variable.
+repository root. In this file there is a set of variables to configure the
+system as desired; there are comments to explain each variable.
 
 
-
-## Set environment variables for local or remote builds and runs
+## Set environment variables for local or remote building and running
 
 The various simulators, FPGA compilers and FPGA boards may be run locally or
 remotely. For running a tool remotely, you need to set two environmental
 variables: the server logical name and the server user name. You may place these
-settings in your .bashrc file, so that you do not need to do them in every
-session.
+settings in your .bashrc file, so that they apply to every session.
 
 
 ### Set up the remote simulator server
 
-Check the Makefile in `hardware/simulation/icarus` for the environment variables
-to be set. In it, the variable for the server logical name, SIM\_SERVER, is set
-to IVSIM\_SERVER, and the variable for the user name, SIM\_USER, is set to
-IVSIM_USER. Hence, you need to set the latter variables before simulating, for
-example:
+For example, in the Makefile in `hardware/simulation/icarus`, the variable for
+the server logical name, SIM\_SERVER, is set to IVSIM\_SERVER, and the variable
+for the user name, SIM\_USER, is set to IVSIM_USER. Hence, you need to set the
+latter variables as in the following example:
 
 ```
 export IVSIM_SERVER=sericaia.iobundle.com
@@ -62,13 +59,12 @@ export IVSIM_USER=jsousa
 
 ### Set up the remote FPGA toolchain and board servers
 
-Check the Makefile in `hardware/fpga/<board>` for the environment variables to
-be set, where `board` is the board you will run. In that Makefile, the variable
-for the FPGA tool server logical name, FPGA\_SERVER, is set to QUAR\_SERVER, and
-the variable for the user name, FPGA\_USER, is set to QUAR\_USER; the variable
-for the board server, BOARD\_SERVER, is set to CYC5\_SERVER, and the variable
-for the board user, BOARD\_USER, is set to CYC5_USER. Hence, you need to set the
-latter variables before simulating, for example:
+For example, in the Makefile in `hardware/fpga/CYCLONEV-GT-DK` the variable for
+the FPGA tool server logical name, FPGA\_SERVER, is set to QUAR\_SERVER, and the
+variable for the user name, FPGA\_USER, is set to QUAR\_USER; the variable for
+the board server, BOARD\_SERVER, is set to CYC5\_SERVER, and the variable for
+the board user, BOARD\_USER, is set to CYC5_USER. Hence, you need to set the
+latter variables as in the following example:
 
 ```
 export QUAR_SERVER=pudim-flan.iobundle.com
@@ -79,11 +75,10 @@ export CYC5_USER=jsousa
 
 ### Set up the remote ASIC toolchain server
 
-Check the Makefile in `hardware/asic` for the environment variables to be set.
-In it, the variable for the server logical name, ASIC\_SERVER, is set to
-CADE\_SERVER, and the variable for the user name ASIC\_USER is set to
-CADE\_USER. Hence, you need to set the latter variables before simulating, for
-example:
+In the Makefile in `hardware/asic`, the variable for the server logical name,
+ASIC\_SERVER, is set to CADE\_SERVER, and the variable for the user name
+ASIC\_USER is set to CADE\_USER. Hence, you need to set the latter variables as
+in the following example:
 
 ```
 export CADE_SERVER=molotof.iobundle.com
@@ -91,8 +86,8 @@ export CADE_USER=jsousa
 
 ```
 
-In each remote server, the environmental variables for the tool paths and
-license servers must be defined, for example:
+In each remote server, the environmental variables for the paths of tools and
+license servers must be defined as in the following example:
 
 ```
 export ALTERAPATH=/path/to/intel/fpga/tools
@@ -104,37 +99,42 @@ export LM_LICENSE_FILE=port@host:lic_or_dat_file
 
 ## Simulate the system
 
-To simulate IOb-SoC, the simulator must be installed, either locally or remotely, and must have a run directory under the `hardware/simulation` directory. To simulate, type:
+To simulate IOb-SoC, the simulator must be installed, either locally or
+remotely, and must have a run directory under the `hardware/simulation`
+directory. To simulate, type:
+
 ```
 make [sim] [SIMULATOR=simulator_dir_name] [<control_parameters>]
 ```
-
 where `simulator_dir_name` is the name of the simulator's run directory, and
- `control_parameters` are system configuration parameters passed in the command
- line, overriding those in the system.mk file, for example, `INIT_MEM=0
- RUN_EXTMEM=1`, etc. For more details, read the Makefile in the simulator
- directory.
+`control_parameters` are system configuration parameters passed in the command
+line, overriding those in the system.mk file. For example, `control_parameters`
+can be set to `INIT_MEM=0 RUN_EXTMEM=1`, etc. For more details, read the
+Makefile in the simulator directory.
 
 
 ## Run on FPGA board
 
-To run IOb-SoC on an FPGA board, the board must be attached, either to the local
-or to a remote host, and must have a run directory under the `hardware/fpga`
-directory. To simulate, type:
-```
-make run [BOARD=<board_dir_name>] [<control parameters>]
-```
-where `board\_dir_name` is the name of the board's run directory, and `control
- parameters` are system configuration parameters passed in the command line,
- overriding those in the system.mk file, for example, `INIT_MEM=0 RUN_EXTMEM=1`,
- etc. For more details, read the Makefile in the board directory.
+To run IOb-SoC on an FPGA board, the FPGA design tools must be installed, either
+locally or remotely, the board must be attached to a local host or remote host,
+and IOb-SoC must have a run directory under the `hardware/fpga` directory. The
+FPGA tools and bord hosts may be different. To compile and run, type:
+
+``` 
+make run [BOARD=<board_dir_name>] [<control_parameters>] 
+``` 
+where `board\_dir_name` is the name of the board's run directory, and
+`control_parameters` are system configuration parameters passed in the command
+line, overriding those in the system.mk file. For example, `control_parameters`
+can be set to `INIT_MEM=0 RUN_EXTMEM=1`, etc. For more details, read the
+Makefile in the board directory.
+
 
 
 ## Compile the documentation
 
-To compile the documents, it is assumed that a full installation of Latex is
-present. With Latex installed, type:
-
+To compile the documents, the Latex document preparation software must be
+installed. To compile, type:
 ```
 make doc
 ```
@@ -147,12 +147,16 @@ For more details, read the Makefile in the `document` directory.
 
 ### Simulation test
 
-To run a series of simulation tests on the simulator selected by the SIMULATOR variable, type: 
+To run a series of simulation tests on the simulator selected by the SIMULATOR
+variable, type:
+
 ```
 make test-simulator [SIMULATOR=<simulator_dir_name>]
 ```
 
-To run the series of simulation tests on all the simulators listed in the SIM\_LIST variable, type: 
+To run the series of simulation tests on all the simulators listed in the
+SIM\_LIST variable, type:
+
 ```
 make test-all-simulators [SIM_LIST="simulator_dir_name_list"]
 ```
@@ -160,6 +164,7 @@ where `simulator_dir_name_list` is the list of directory names of the simulators
 to be used.
 
 To clean the files produced when testing all simulators, type:
+
 ```
 make clean-all-simulators
 ```
@@ -167,12 +172,16 @@ make clean-all-simulators
 
 ### Board test
 
-To compile and run a series of board tests on the board selected by the BOARD variable, type:
+To compile and run a series of board tests on the board selected by the BOARD
+variable, type:
+
 ```
 make test-board [BOARD=<board_dir_name>]
 ```
 
-To run the series of board tests on all the boards listed in the BOARD\_LIST variable, type: 
+To run the series of board tests on all the boards listed in the BOARD\_LIST
+variable, type:
+
 ```
 make test-all-boards [BOARD_LIST="board_dir_name_list"]
 ```
@@ -182,11 +191,10 @@ To clean the files produced when testing all boards, type:
 make clean-all-boards
 ```
 
-
 The above simulation and board test commands will produce a test log file called
-`test.log`. With the `test-all-simulators` or the `test-all-boards` targets,
-`test.log` is compared with the expected file log in the respective simulator or
-board directory; if they are different an error is issued.
+`test.log`. With the `test-all-simulators` or the `test-all-boards` targets, the
+`test.log` file is compared with the expected file log in the respective
+simulator or board directory; if they differ, an error is issued.
 
 
 ## Cleaning
@@ -215,17 +223,19 @@ For Ubuntu OS and its variants:
 ```
 sudo apt install autoconf automake autotools-dev curl python3 python2 libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev
 ```
+
 To check your python version, use:
 ```
 python --version
 ```
-If this doesn't return Python 2.*, navigate to your /usr/bin folder and soft-link python2 to python using:
+
+If this doesn't return Python 2.*, navigate to your /usr/bin folder and
+soft-link python2 to python using:
 ```
 sudo ln -s python2 /usr/bin/python
 ```
 
 For CentOS and its variants:
-
 ```
 sudo yum install autoconf automake python3 python2 libmpc-devel mpfr-devel gmp-devel gawk  bison flex texinfo patchutils gcc gcc-c++ zlib-devel expat-devel
 ```
