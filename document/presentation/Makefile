@@ -1,25 +1,16 @@
-OBJS = $(patsubst %.odg,%.pdf,$(wildcard drawings/*.odg))
-TRGT = presentation
+ROOT_DIR:=../..
+include ../../system.mk
 
-run: $(TRGT).pdf
-	evince $< &
+OBJS=$(patsubst %.odg,%.pdf,$(wildcard figures/*.odg))
+TRGT=presentation
+BIB=$(TRGT).bib
 
-$(TRGT).pdf: $(TRGT).tex $(OBJS) $(TRGT).bib
-	pdflatex $(TRGT).tex
-	pdflatex $(TRGT).tex
-	evince $@ &
+include ../document.mk
 
-drawings/%.pdf: drawings/%.odg
-	make -C drawings
+figures/%.pdf: figures/%.odg
+	make -C figures all
 
-clean:
-	@rm -f $(TRGT).aux $(TRGT).log $(TRGT).dvi $(TRGT).bbl $(TRGT).blg
-	@rm -f *.nav *.out *.xml *.snm *.toc $(TRGT)-blx.bib 
-	@rm -f *~ *.fls *.fdb_latexmk *.vrb *.aux *.bbl  *.blg  *.log
+doc-clean:
 	make -C figures clean
 
-pdfclean: clean
-	@rm $(TRGT).pdf
-
-.PHONY: run clean veryclean
-
+.PHONY: doc-clean
