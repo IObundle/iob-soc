@@ -14,12 +14,10 @@ CFLAGS = -errormax 15 -status -update -linedebug -sv $(LIBS) $(INCLUDE) $(DEFINE
 EFLAGS = -errormax 15 -access +wc -status
 SFLAGS = -errormax 15 -status -CMDFILE $(ROOT_DIR)/hardware/testbench
 
-export VSRC CFLAGS EFLAGS SFLAGS 
-
 #simulate
 run: $(VSRC) $(VHDR) $(IMAGES)
 	echo $(XMSIM_SERVER)
-	./run_xmsim.sh
+	./run_xmsim.sh "$(VSRC)" "$(CFLAGS)" "$(EFLAGS)" "$(SFLAGS)"
 	grep -v xcelium xmsim.log | grep -v xmsim $(LOG)
 
 sim-clean: hw-clean
