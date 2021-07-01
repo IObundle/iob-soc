@@ -56,7 +56,7 @@ endif
 #RULES
 all: clean sw
 ifeq ($(SIM_SERVER),)
-	make run
+	make run LOG=$(TEST_LOG)
 else
 	ssh $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
