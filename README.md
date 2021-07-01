@@ -1,11 +1,11 @@
 # IOb-SoC
 
-IOb-SoC is a System-on-Chip (SoC) template comprising an open-source RISC-V processor
-(picorv32), an internal SRAM memory subsystem, a UART (iob-uart), and an
-optional interface to an external memory. If external memory is selected, an
-instruction L1 cache, a data L1 cache and a shared L2 cache is added to the
-system. The L2 cache communicates with a 3rd party memory controller IP
-(tpically DDR) using an AXI4 master bus.
+IOb-SoC is a System-on-Chip (SoC) template comprising an open-source RISC-V
+processor (picorv32), an internal SRAM memory subsystem, a UART (iob-uart), and
+an optional interface to an external memory. If the external memory interface is
+selected, an instruction L1 cache, a data L1 cache and a shared L2 cache is
+added to the system. The L2 cache communicates with a 3rd party memory
+controller IP (typically a DDR controller) using an AXI4 master bus.
 
 ## Operating Systems
 
@@ -14,51 +14,61 @@ for CentOS 7 and Ubuntu 18.04 or 20.04 LTS.
 
 ## Clone the repository
 
-The first step is to clone this repository. Before you clone it, make sure you
-can access Github by *ssh*. This is necessary as IOb-SoC is a git submodule
-tree that can only be recursively downloaded via *ssh*. To clone IOb-SoC type 
+The first step is to clone this repository. IOb-SoC is a git sub-module tree and
+Github will ask for your password for each downloaded module. To avoid this,
+setup Github access with *ssh*, or configure git to cache your password for a
+few minutes:
 
+``git config credential.helper 'cache --timeout=300'``
 
-``git clone --recursive git@github.com:IObundle/iob-soc.git``
+To clone IOb-SoC and enter into its directory, type:
+
+```
+git clone --recursive git@github.com:IObundle/iob-soc.git
+cd iob-soc
+```
 
 
 
 ## Configure your SoC
 
-To configure your system edit the *system.mk*, which can be found at the
-repository root. You can configure the system by setting the variables in the
-*system.mk* file. The variables are explained by comments inserted in the
-*system.mk* file.
+To configure your system edit the *system.mk* file, which can be found at the
+repository root, and set its variables as desired; there comments in the file to
+explain each variable.
+
 
 
 ## Set environment variables for local or remote builds and runs
 
 The various simulators, FPGA compilers and FPGA boards may be run locally or
-remotely. For running them remotely, you need to set the environmental variables
-shown below, replacing the server and user names by the ones you will use. Place
-these settings in your .bashrc file, so that you do not need to do them in every
+remotely. For running a tool remotely, you need to set two environmental
+variables: the server logical name and the server user name. You may place these
+settings in your .bashrc file, so that you do not need to do them in every
 session.
+
 
 ### Set up the remote simulator server
 
-Navigate to the simulator directory, for example, `cd
-hardware/simulation/icarus`, and check the Makefile for the environment
-variables to be set. You will see that the server is read from the variable
-IVSIM\_SERVER and the user from IVSIM_USER. Set them with your simulator server
-name and user name, for example:
+Check the Makefile in `hardware/simulation/icarus` for the environment variables
+to be set. In it, the variable for the server logical name, SIM\_SERVER, is set
+to IVSIM\_SERVER, and the variable for the user name, SIM\_USER, is set to
+IVSIM_USER. Hence, you need to set the latter variables before simulating, for
+example:
 
 ```
-export XMSIM_SERVER=sericaia.iobundle.com
-export XMSIM_USER=jsousa
+export IVSIM_SERVER=sericaia.iobundle.com
+export IVSIM_USER=jsousa
 ```
 
 ### Set up the remote FPGA toolchain and board servers
 
-Navigate to the FPGA board directory, for example, `cd
-hardware/fpga/CYCLONEV-GT-DK`, and check the Makefile for the environment
-variables to be set. You will see that the compile server is read from the variable
-QUAR\_SERVER and the compile user from QUAR\_USER; the board server is read from the variable
-CYC5\_SERVER and the compile user from CYC5_USER. Set them accordingly, for example:
+Check the Makefile in `hardware/fpga/<board>` for the environment variables to
+be set, where `board` is the board you will run. In that Makefile, the variable
+for the FPGA tool server logical name, FPGA\_SERVER, is set to QUAR\_SERVER, and
+the variable for the user name, FPGA\_USER, is set to QUAR\_USER; the variable
+for the board server, BOARD\_SERVER, is set to CYC5\_SERVER, and the variable
+for the board user, BOARD\_USER, is set to CYC5_USER. Hence, you need to set the
+latter variables before simulating, for example:
 
 ```
 export QUAR_SERVER=pudim-flan.iobundle.com
@@ -69,10 +79,11 @@ export CYC5_USER=jsousa
 
 ### Set up the remote ASIC toolchain server
 
-Navigate to the ASIC directory, `cd hardware/fpga/CYCLONEV-GT-DK`, and check the
-Makefile for the environment variables to be set. You will see that the server
-is read from the variable CADE\_SERVER and the user from CADE\_USER. Set them
-accordingly, for example:
+Check the Makefile in `hardware/asic` for the environment variables to be set.
+In it, the variable for the server logical name, ASIC\_SERVER, is set to
+CADE\_SERVER, and the variable for the user name ASIC\_USER is set to
+CADE\_USER. Hence, you need to set the latter variables before simulating, for
+example:
 
 ```
 export CADE_SERVER=molotof.iobundle.com
@@ -80,8 +91,8 @@ export CADE_USER=jsousa
 
 ```
 
-Also make sure the environmental variables for the tool paths, license servers
-(ports or files) are defined in each remote server, for example:
+In each remote server, the environmental variables for the tool paths and
+license servers must be defined, for example:
 
 ```
 export ALTERAPATH=/path/to/intel/fpga/tools
@@ -93,30 +104,30 @@ export LM_LICENSE_FILE=port@host:lic_or_dat_file
 
 ## Simulate the system
 
-To simulate IOb-SoC, it is assumed that the simulator is installed, either locally or remotely, and has a run directory under the `hardware/simulation` directory. With the simulator installed, type:
+To simulate IOb-SoC, the simulator must be installed, either locally or remotely, and must have a run directory under the `hardware/simulation` directory. To simulate, type:
 ```
-make [sim] [SIMULATOR=simulator_dir_name] [<control parameters>]
+make [sim] [SIMULATOR=simulator_dir_name] [<control_parameters>]
 ```
 
 where `simulator_dir_name` is the name of the simulator's run directory, and
- `control parameters` are parameters that can be passed in the command line,
- overriding those in the system.mk file, for example, `INIT_MEM=0 RUN_EXTMEM=1`, etc. For more details, read the Makefile in the simulator directory.
+ `control_parameters` are system configuration parameters passed in the command
+ line, overriding those in the system.mk file, for example, `INIT_MEM=0
+ RUN_EXTMEM=1`, etc. For more details, read the Makefile in the simulator
+ directory.
 
 
 ## Run on FPGA board
 
-To run IOb-SoC on an FPGA board, it is assumed that the board is attached,
-either to the local or to a remote host, and has a run directory under the
-`hardware/fpga` directory. With the board installed, type:
-
+To run IOb-SoC on an FPGA board, the board must be attached, either to the local
+or to a remote host, and must have a run directory under the `hardware/fpga`
+directory. To simulate, type:
 ```
 make run [BOARD=<board_dir_name>] [<control parameters>]
 ```
-
-where `board\_dir_name` is the name of the board's run directoryand `control
- parameters` are parameters that can be passed in the command line details, for
- example, `INIT_MEM=0 RUN_EXTMEM=1`, etc. For more details, read the Makefile in
- the board directory.
+where `board\_dir_name` is the name of the board's run directory, and `control
+ parameters` are system configuration parameters passed in the command line,
+ overriding those in the system.mk file, for example, `INIT_MEM=0 RUN_EXTMEM=1`,
+ etc. For more details, read the Makefile in the board directory.
 
 
 ## Compile the documentation
@@ -134,40 +145,36 @@ For more details, read the Makefile in the `document` directory.
 
 ## Testing
 
-If you create a system using IOb-SoC, you will will want to exhaustively test it
-in simulation and FPGA board. The following commands automate this process.
-
 ### Simulation test
 
-Tho run a series of simulation tests on the simulator selected by the SIMULATOR variable: 
+To run a series of simulation tests on the simulator selected by the SIMULATOR variable, type: 
 ```
 make test-simulator [SIMULATOR=<simulator_dir_name>]
 ```
 
-Tho run a series of simulation tests on the simulators listed in the SIM\_LIST variable, type: 
+To run the series of simulation tests on all the simulators listed in the SIM\_LIST variable, type: 
 ```
 make test-all-simulators [SIM_LIST="simulator_dir_name_list"]
 ```
+where `simulator_dir_name_list` is the list of directory names of the simulators
+to be used.
 
-where `simulator_dir_name_list` is the list of directory names of the simulators to be used.
-
-
-To clean the files produced when testing all boards, type:
+To clean the files produced when testing all simulators, type:
 ```
-make clean-all-boards
+make clean-all-simulators
 ```
 
 
 ### Board test
 
-To compile and run a series of system configurations on the board selected by the BOARD variable, type:
+To compile and run a series of board tests on the board selected by the BOARD variable, type:
 ```
-make test-board
+make test-board [BOARD=<board_dir_name>]
 ```
 
-To test all the boards listed in the BOARD_LIST variable, type:
+To run the series of board tests on all the boards listed in the BOARD\_LIST variable, type: 
 ```
-make test-all-boards
+make test-all-boards [BOARD_LIST="board_dir_name_list"]
 ```
 
 To clean the files produced when testing all boards, type:
@@ -178,14 +185,14 @@ make clean-all-boards
 
 The above simulation and board test commands will produce a test log file called
 `test.log`. With the `test-all-simulators` or the `test-all-boards` targets,
-`test.log` is compared with the expected file log; if they are different an
-error is issued.
+`test.log` is compared with the expected file log in the respective simulator or
+board directory; if they are different an error is issued.
 
 
 ## Cleaning
 
 The following command will clean the selected directories for simulation and
-board runs, locally and in the remote servers used:
+board runs, locally and in the remote servers:
 
 ```
 make clean
@@ -231,9 +238,10 @@ cd riscv-gnu-toolchain
 sudo make -j$(nproc)
 ```
 
-This will take a while... After it is done do:
-
+This will take a while... After it is done, type:
 ```
 export PATH=$PATH:/path/to/riscv/bin
 ```
-The above command should be added to the bottom of your ~/.bashrc file, so that you do not have to type it every session.
+
+The above command should be added to the bottom of your ~/.bashrc file, so that
+you do not have to type it every session.
