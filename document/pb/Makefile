@@ -7,7 +7,10 @@ XILINX = 1
 CORE_DIR:=$(ROOT_DIR)
 include $(TEX_DIR)/document/document.mk
 
-clean: texclean
+all: pb.pdf
 
-.PHONY: clean
+clean-all: clean pdfclean
 
+clean: texclean resultsclean
+
+.PHONY: all clean clean-all
