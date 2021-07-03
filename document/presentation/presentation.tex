@@ -168,7 +168,7 @@ int main()
 \begin{tiny}
   \begin{lstlisting}
 
-IOb-Bootloader: connected!
+TESTBENCH: connecting..IOb-Bootloader: connected!
 IOb-Bootloader: Restart CPU to run user program...
 
 Hello world!
@@ -176,6 +176,8 @@ Hello world!
 Execution time: 4356 clock cycles
 
 Execution time: 44us @100MHz
+
+TESTBENCH: exiting
 
   \end{lstlisting}
 \end{tiny}
@@ -195,6 +197,41 @@ Execution time: 44us @100MHz
 \item If you change only the firmware and repeat the above command, only the
   firmware will be recompiled, reloaded and rerun
 \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Run IOb-SoC}
+\begin{itemize}
+\item When run IOb-SoC on an FPGA with the default settings and the firmware
+  pre-initialised in the memory, the following should be printed:
+\end{itemize}
+
+\begin{tiny}
+  \begin{lstlisting}
+
++-----------------------------------------------+
+|                   IOb-Console                 |
++-----------------------------------------------+
+
+  BaudRate = 115200 
+  StopBits = 1 
+  Parity   = None
+
+IOb-Console: connecting...
+
+IOb-Bootloader: connected!
+IOb-Bootloader: Restart CPU to run user program...
+
+Hello world!
+
+Execution time: 114466 clock cycles
+
+Execution time: 1145us @100MHz
+
+IOb-Console: exiting...
+
+  \end{lstlisting}
+\end{tiny}
 \end{frame}
 
 \begin{frame}{Conclusion}  
