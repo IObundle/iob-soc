@@ -5,15 +5,15 @@
 
 all:
 	make -C presentation all
-	make -C pb
+	make -C pb all
 
 clean:
 	make -C presentation clean
-	make -C pb
+	make -C pb clean
 
 clean-all:
 	make -C presentation clean-all
-	make -C pb pdf clean
+	make -C pb clean-all
 
 
 .PHONY: all clean clean-all

@@ -3,7 +3,7 @@
 IOb-SoC is a System-on-Chip (SoC) template comprising an open-source RISC-V
 processor (picorv32), an internal SRAM memory subsystem, a UART (iob-uart), and
 an optional interface to an external memory. If the external memory interface is
-selected, an instruction L1 cache, a data L1 cache and a shared L2 cache is
+selected, an instruction L1 cache, a data L1 cache and a shared L2 cache are
 added to the system. The L2 cache communicates with a 3rd party memory
 controller IP (typically a DDR controller) using an AXI4 master bus.
 
@@ -15,8 +15,8 @@ for CentOS 7 and Ubuntu 18.04 or 20.04 LTS.
 ## Clone the repository
 
 The first step is to clone this repository. IOb-SoC is a git sub-module tree and
-Github will ask for your password for each downloaded module. To avoid this,
-setup Github access with *ssh* and type:
+GitHub will ask for your password for each downloaded module. To avoid this,
+setup GitHub access with *ssh* and type:
 ```
 git clone --recursive git@github.com:IObundle/iob-soc.git
 cd iob-soc
@@ -104,13 +104,13 @@ remotely, and must have a run directory under the `hardware/simulation`
 directory. To simulate, type:
 
 ```
-make [sim] [SIMULATOR=simulator_dir_name] [<control_parameters>]
+make [sim] [SIMULATOR=<simulator directory name>] [<control parameters>]
 ```
-where `simulator_dir_name` is the name of the simulator's run directory, and
-`control_parameters` are system configuration parameters passed in the command
-line, overriding those in the system.mk file. For example, `control_parameters`
-can be set to `INIT_MEM=0 RUN_EXTMEM=1`, etc. For more details, read the
-Makefile in the simulator directory.
+where `<simulator directory name>` is the name of the simulator's run directory,
+and `<control parameters>` are system configuration parameters passed in the
+command line, overriding those in the system.mk file. For example, `<control
+parameters>` can be set to `INIT_MEM=0 RUN_EXTMEM=1`, etc. For more details,
+read the Makefile in the simulator directory.
 
 
 ## Run on FPGA board
@@ -121,19 +121,19 @@ and IOb-SoC must have a run directory under the `hardware/fpga` directory. The
 FPGA tools and bord hosts may be different. To compile and run, type:
 
 ``` 
-make run [BOARD=<board_dir_name>] [<control_parameters>] 
+make run [BOARD=<board directory name>] [<control parameters>]
 ``` 
-where `board\_dir_name` is the name of the board's run directory, and
-`control_parameters` are system configuration parameters passed in the command
-line, overriding those in the system.mk file. For example, `control_parameters`
-can be set to `INIT_MEM=0 RUN_EXTMEM=1`, etc. For more details, read the
-Makefile in the board directory.
+where `<board directory name>` is the name of the board's run directory, and
+`<control parameters>` are system configuration parameters passed in the command
+line, overriding those in the system.mk file. For example, `<control
+parameters>` can be set to `INIT_MEM=0 RUN_EXTMEM=1`, etc. For more details,
+read the Makefile in the board directory.
 
 
 
 ## Compile the documentation
 
-To compile the documents, the Latex document preparation software must be
+To compile the documents, the LaTeX document preparation software must be
 installed. To compile, type:
 ```
 make doc
@@ -151,17 +151,17 @@ To run a series of simulation tests on the simulator selected by the SIMULATOR
 variable, type:
 
 ```
-make test-simulator [SIMULATOR=<simulator_dir_name>]
+make test-simulator [SIMULATOR=<simulator directory name>]
 ```
 
 To run the series of simulation tests on all the simulators listed in the
 SIM\_LIST variable, type:
 
 ```
-make test-all-simulators [SIM_LIST="simulator_dir_name_list"]
+make test-all-simulators [SIM_LIST="<simulator directory name list>"]
 ```
-where `simulator_dir_name_list` is the list of directory names of the simulators
-to be used.
+where `<simulator directory name list>` is the list of directory names of the
+simulators to be used.
 
 To clean the files produced when testing all simulators, type:
 
@@ -176,14 +176,14 @@ To compile and run a series of board tests on the board selected by the BOARD
 variable, type:
 
 ```
-make test-board [BOARD=<board_dir_name>]
+make test-board [BOARD=<board directory name>]
 ```
 
 To run the series of board tests on all the boards listed in the BOARD\_LIST
 variable, type:
 
 ```
-make test-all-boards [BOARD_LIST="board_dir_name_list"]
+make test-all-boards [BOARD_LIST="<board directory name list>"]
 ```
 
 To clean the files produced when testing all boards, type:
