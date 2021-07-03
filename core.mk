@@ -39,9 +39,9 @@ endif
 FPGA_DIR ?=$(UART_HW_DIR)/fpga/$(FPGA_COMP)
 
 ifeq ($(FPGA_COMP),vivado)
-FPGA_LOG:=vivado.log
+FPGA_LOG ?=vivado.log
 else ifeq ($(FPGA_COMP),quartus)
-FPGA_LOG:=quartus.log
+FPGA_LOG ?=quartus.log
 endif
 
 #
