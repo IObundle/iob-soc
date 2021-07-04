@@ -1,3 +1,5 @@
+LOCK_FILE:=/tmp/fpga.lock
+
 #DEFINES
 
 #ddr controller address width
@@ -14,7 +16,10 @@ all: sw build load run
 
 run:
 ifeq ($(BOARD_SERVER),)
-	if [ $(NORUN) = 0 ]; then make -C $(CONSOLE_DIR) run BOARD=$(BOARD); fi
+	$(eval TMP=$(shell cat $(LOCK_FILE)))
+	@if [ $(NORUN) = 0 -a ! -O $(LOCK_FILE) ]; then echo "FPGA is being used by user $(TMP)! Please, try again later."; fi
+	if [ $(NORUN) = 0 -a -O $(LOCK_FILE) ]; then make -C $(CONSOLE_DIR) run BOARD=$(BOARD); fi
+	@make unlock
 else ifeq ($(NORUN),0)
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR) 
@@ -27,7 +32,8 @@ endif
 
 load:
 ifeq ($(BOARD_SERVER),)
-	if [ $(NORUN) = 0 -a ! -f load.log ]; then ./prog.sh > load.log; fi
+	@make lock
+	if [ $(NORUN) = 0 -a ! -f load.log -a -O $(LOCK_FILE) ]; then ./prog.sh > load.log; fi
 else ifeq ($(NORUN),0)
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR) 
@@ -55,6 +61,16 @@ else ifeq ($(NORUN),0)
 endif
 
 
+lock:
+ifeq ($(BOARD_SERVER),)
+	@if [ $(NORUN) = 0 -a ! -f $(LOCK_FILE) ]; then echo $(USER) > $(LOCK_FILE); fi
+endif
+
+unlock:
+ifeq ($(BOARD_SERVER),)
+	@if [ $(NORUN) = 0 -a -O $(LOCK_FILE) ]; then rm $(LOCK_FILE); fi
+endif
+
 clean-all: clean testlog-clean
 
 clean: hw-clean
@@ -78,4 +94,4 @@ endif
 
 .PRECIOUS: $(FPGA_OBJ)
 
-.PHONY: all run load build clean-all clean testlog-clean
+.PHONY: all run load build lock unlock clean-all clean testlog-clean

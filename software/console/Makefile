@@ -22,12 +22,6 @@ firmware.bin: $(FIRM_DIR)/firmware.bin
 	cp $(FIRM_DIR)/firmware.bin .
 
 run: firmware.bin build 
-	buser=`pgrep console | xargs -r ps -o uname= -p`;\
-	if [ "$$buser" = $(USER) ]; then killall -q -9 console;\
-	elif [ "$$buser" ]; then echo "Board being used by $$buser; waiting 30s for release..."; sleep 30; rm $(BOARD_DIR)/load.log; busy=1; fi;\
-	buser=`pgrep console | xargs -r ps -o uname= -p`;\
-	if [ "$$buser" ]; then echo "Board locked after 30s by user $$buser"; exit 1;\
-	elif [ $$busy ]; then make -C $(BOARD_DIR) load; fi
 	$(CONSOLE_CMD) $(TEST_LOG)
 
 build: $(SRC)
