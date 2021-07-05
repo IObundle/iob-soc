@@ -29,8 +29,6 @@ a.out: $(VSRC) $(VHDR) $(IMAGES)
 	$(VLOG) $(VSRC)
 
 sim-clean: clean
-ifeq ($(SIM_SERVER),)
-	@rm -f ./a.out
-endif
+	@rm -f a.out
 
-.PHONY: build run clean
+.PHONY: run build sim-clean

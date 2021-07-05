@@ -44,7 +44,7 @@ endif
 clean:
 	make -C $(ASIC_DIR)/$(ASIC_NODE) clean
 ifneq ($(ASIC_SERVER),)
-	rsync -avz --exclude .git $(ROOT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)
+	rsync -avz --delete --exclude .git $(ROOT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)
 	ssh $(ASIC_USER)@$(ASIC_SERVER) 'if [ -d $(REMOTE_ROOT_DIR) ]; then cd $(REMOTE_ROOT_DIR)/hardware/asic; make clean; fi'
 endif
 

@@ -59,7 +59,7 @@ test-all-simulators:
 	$(foreach s, $(SIM_LIST), make test-simulator SIMULATOR=$s;)
 
 clean-all-simulators:
-	$(foreach s, $(SIM_LIST), make -C $(HW_DIR)/simulation/$s clean SIMULATOR=$s;)
+	$(foreach s, $(SIM_LIST), make -C $(HW_DIR)/simulation/$s clean-all SIMULATOR=$s;)
 
 test-board:
 	make -C $(BOARD_DIR) testlog-clean
@@ -75,7 +75,7 @@ test-all-boards:
 	$(foreach b, $(BOARD_LIST), make test-board BOARD=$b;)
 
 clean-all-boards:
-	$(foreach s, $(BOARD_LIST), make -C $(FPGA_DIR)/$s clean BOARD=$s;)
+	$(foreach s, $(BOARD_LIST), make -C $(FPGA_DIR)/$s clean-all BOARD=$s;)
 
 clean: 
 	make -C $(PC_DIR) clean

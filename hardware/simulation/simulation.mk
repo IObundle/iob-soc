@@ -84,9 +84,12 @@ sim_xtop.cpp:
 VSRC+=$(foreach p, $(PERIPHERALS), $(shell if test -f $(SUBMODULES_DIR)/$p/hardware/testbench/module_tb.sv; then echo $(SUBMODULES_DIR)/$p/hardware/testbench/module_tb.sv; fi;)) #add test cores to list of sources
 
 
+clean-all: clean testlog-clean
+
 clean: hw-clean
+	@rm -f system.vcd
 ifneq ($(SIM_SERVER),)
-	rsync -avz --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
+	rsync -avz --delete --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
 	ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR); make sim-clean'
 endif
 
@@ -94,10 +97,10 @@ endif
 testlog-clean:
 	@rm -f test.log
 ifneq ($(SIM_SERVER),)
-	rsync -avz --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
+	rsync -avz --delete --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
 	ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR); rm -f test.log'
 endif
 
 
 .PRECIOUS: system.vcd test.log
-.PHONY: all clean testlog-clean
+.PHONY: all clean-all clean testlog-clean
