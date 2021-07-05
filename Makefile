@@ -85,4 +85,4 @@ clean:
 	make clean-all-boards
 
 
-.PHONY: all pc-emul pc-clean sim run asic doc test test-all-simulators test-simulator test-all-boards test-board clean-all-simulators clean-all-boards clean
+.PHONY: all pc-emul sim run asic doc test test-all-simulators test-simulator test-all-boards test-board clean-all-simulators clean-all-boards clean

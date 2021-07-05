@@ -109,7 +109,12 @@ make [sim] [SIMULATOR=simulator_dir_name] [<control_parameters>]
 where `simulator_dir_name` is the name of the simulator's run directory, and
 `control_parameters` are system configuration parameters passed in the command
 line, overriding those in the system.mk file. For example, `control_parameters`
-can be set to `INIT_MEM=0 RUN_EXTMEM=1`, etc. For more details, read the
+can be set to `INIT_MEM=0 RUN_EXTMEM=1`, etc. 
+
+To visualise simulation waveforms use the `VCD=1` control parameter. It will
+open the Gtkwave visualisation program.
+
+For more details, read the
 Makefile in the simulator directory.
 
 
