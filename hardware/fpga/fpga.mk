@@ -64,11 +64,15 @@ endif
 lock:
 ifeq ($(BOARD_SERVER),)
 	@if [ $(NORUN) = 0 -a ! -f $(LOCK_FILE) ]; then echo $(USER) > $(LOCK_FILE); fi
+else
+	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(BOARD); make lock'
 endif
 
 unlock:
 ifeq ($(BOARD_SERVER),)
-	@if [ $(NORUN) = 0 -a -O $(LOCK_FILE) ]; then rm $(LOCK_FILE); fi
+	@if [ $(NORUN) = 0 -a -O $(LOCK_FILE) ]; then rm -f $(LOCK_FILE); fi
+else
+	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(BOARD); make unlock'
 endif
 
 clean-all: clean testlog-clean
