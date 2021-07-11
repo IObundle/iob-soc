@@ -24,6 +24,10 @@ run: $(VSRC) $(VHDR) firmware boot.hex
 	cp obj_dir/Vsystem Vsystem
 	./Vsystem
 
+kill-remote-sim:
+	@echo "INFO: Remote verilator will be killed; ignore following errors"
+	ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR); kill -9 `pgrep -a Vsystem`'
+
 clean: hw-clean
 	@rm -f *.cpp Vsystem
 	@rm -rf obj_dir

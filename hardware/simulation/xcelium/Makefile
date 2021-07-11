@@ -20,6 +20,10 @@ run: $(VSRC) $(VHDR) $(IMAGES)
 	./run_xmsim.sh "$(VSRC)" "$(CFLAGS)" "$(EFLAGS)" "$(SFLAGS)"
 	grep -v xcelium xmsim.log | grep -v xmsim $(LOG)
 
+kill-remote-sim:
+	@echo "INFO: Remote xcelium will be killed; ignore following errors"
+	ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR); kill -9 `pgrep -a xmsim`'
+
 sim-clean: hw-clean
 	@rm -rf xcelium.d xmsim.key
 
