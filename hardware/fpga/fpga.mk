@@ -101,4 +101,4 @@ endif
 
 .PRECIOUS: $(FPGA_OBJ)
 
-.PHONY: all run load build lock unlock clean-all clean testlog-clean
+.PHONY: all run load build kill-remote-console lock unlock clean-all clean testlog-clean

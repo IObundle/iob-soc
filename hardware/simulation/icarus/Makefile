@@ -35,4 +35,4 @@ kill-remote-sim:
 sim-clean: clean
 	@rm -f a.out
 
-.PHONY: run build sim-clean
+.PHONY: run build kill-remote-sim sim-clean

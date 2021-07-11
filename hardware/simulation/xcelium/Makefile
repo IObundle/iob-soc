@@ -27,4 +27,4 @@ kill-remote-sim:
 sim-clean: hw-clean
 	@rm -rf xcelium.d xmsim.key
 
-.PHONY: run sim-clean
+.PHONY: run kill-remote-sim sim-clean
