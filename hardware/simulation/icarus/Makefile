@@ -28,7 +28,11 @@ build: a.out
 a.out: $(VSRC) $(VHDR) $(IMAGES)
 	$(VLOG) $(VSRC)
 
+kill-remote-sim:
+	@echo "INFO: Remote icarus will be killed; ignore following errors"
+	ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR); kill -9 `pgrep -a a.out`'
+
 sim-clean: clean
 	@rm -f a.out
 
-.PHONY: run build sim-clean
+.PHONY: run build kill-remote-sim sim-clean
