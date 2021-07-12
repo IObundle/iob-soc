@@ -1,6 +1,6 @@
 ######################################################################
 #
-# IOb-SoC Configuration File
+# IOb-SoC-tester Configuration File
 #
 ######################################################################
 
@@ -44,7 +44,7 @@ USE_COMPRESSED ?=1
 #
 #ROOT DIR ON REMOTE MACHINES
 #
-REMOTE_ROOT_DIR ?=sandbox/iob-soc
+REMOTE_ROOT_DIR ?=sandbox/iob-soc-tester
 
 
 #
