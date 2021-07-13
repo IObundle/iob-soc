@@ -19,11 +19,11 @@ ifeq ($(BOARD_SERVER),)
 	$(eval TMP=$(shell cat $(LOCK_FILE)))
 	@if [ $(NORUN) = 0 -a ! -O $(LOCK_FILE) ]; then echo "FPGA is being used by user $(TMP)! Please, try again later."; fi
 	if [ $(NORUN) = 0 -a -O $(LOCK_FILE) ]; then make -C $(CONSOLE_DIR) run BOARD=$(BOARD); fi
+	@make unlock
 else ifeq ($(NORUN),0)
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR) 
 	bash -c "trap 'make kill-remote-console' EXIT; ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(BOARD); make run INIT_MEM=$(INIT_MEM) TEST_LOG=\"$(TEST_LOG)\"'"
-	@make unlock
 ifneq ($(TEST_LOG),)
 	scp $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR)/software/console/test.log $(CONSOLE_DIR)
 endif
@@ -60,7 +60,7 @@ else ifeq ($(NORUN),0)
 	if [ $(NORUN) = 0 ]; then scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(BOARD)/$(FPGA_LOG) $(BOARD_DIR); fi
 endif
 
-kill-remote-console:
+kill-remote-console: unlock
 	@echo "INFO: Remote console will be killed; ignore following errors"
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR); kill -9 `pgrep -a console`'
 
