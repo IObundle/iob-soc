@@ -17,7 +17,7 @@ all: sw build load run
 run:
 ifeq ($(BOARD_SERVER),)
 	$(eval TMP=$(shell cat $(LOCK_FILE)))
-	@if [ $(NORUN) = 0 -a ! -O $(LOCK_FILE) ]; then echo "FPGA is being used by user $(TMP)! Please, try again later."; fi
+	@if [ $(NORUN) = 0 -a ! -O $(LOCK_FILE) ]; then echo "FPGA is being used by user $(TMP)! Please, try again later."; rm -f load.log; fi
 	if [ $(NORUN) = 0 -a -O $(LOCK_FILE) ]; then make -C $(CONSOLE_DIR) run BOARD=$(BOARD); fi
 	@make unlock
 else ifeq ($(NORUN),0)
