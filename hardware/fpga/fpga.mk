@@ -1,4 +1,6 @@
-LOCK_FILE:=/tmp/fpga.lock
+LOCK_FILE=/tmp/$(BOARD).lock
+QUEUE_FILE=/tmp/$(BOARD).fpga
+QUEUE_SLEEP_TIME:=5s
 
 #DEFINES
 
@@ -12,13 +14,17 @@ VSRC+=./verilog/top_system.v
 
 #RULES
 
+#
+# Use
+#
+
 all: sw build load run
 
 run:
 ifeq ($(BOARD_SERVER),)
-	$(eval TMP=$(shell cat $(LOCK_FILE)))
-	@if [ $(NORUN) = 0 -a ! -O $(LOCK_FILE) ]; then echo "FPGA is being used by user $(TMP)! Please, try again later."; rm -f load.log; fi
-	if [ $(NORUN) = 0 -a -O $(LOCK_FILE) ]; then make -C $(CONSOLE_DIR) run BOARD=$(BOARD); fi
+#	$(eval TMP=$(shell cat $(LOCK_FILE)))
+#	@if [ $(NORUN) = 0 -a ! -O $(LOCK_FILE) ]; then echo "FPGA is being used by user $(TMP)! Please, try again later."; rm -f load.log; fi
+	if [ $(NORUN) = 0 ]; then make -C $(CONSOLE_DIR) run BOARD=$(BOARD); fi
 	@make unlock
 else ifeq ($(NORUN),0)
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
@@ -32,8 +38,8 @@ endif
 
 load:
 ifeq ($(BOARD_SERVER),)
-	@make lock
-	if [ $(NORUN) = 0 -a ! -f load.log -a -O $(LOCK_FILE) ]; then ./prog.sh > load.log; fi
+	if [ $(NORUN) = 0 ]; then make wait-in-queue; fi
+	if [ $(NORUN) = 0 -a ! -f load.log ]; then ./prog.sh > load.log; fi
 else ifeq ($(NORUN),0)
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR) 
@@ -64,6 +70,45 @@ kill-remote-console: unlock
 	@echo "INFO: Remote console will be killed; ignore following errors"
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR); kill -9 `pgrep -a console`; rm -f hardware/fpga/$(BOARD)/load.log'
 
+
+#
+# Queue management
+#
+
+create-queue:
+ifeq ($(BOARD_SERVER),)
+	chown $(USER).dialout $(QUEUE_FILE) >> $(QUEUE_FILE)
+else
+	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(BOARD); make create-queue'
+endif
+
+delete-queue:
+ifeq ($(BOARD_SERVER),)
+	rm -rf $(QUEUE_FILE)
+else
+	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(BOARD); make delete-queue'
+endif
+
+get-in-queue:
+	if [ ! -f $(QUEUE_FILE) ]; then make create-queue; fi
+	echo $(USER) >> $(QUEUE_FILE)
+
+get-out-queue:
+	sed -i '/$(USER)/d' $(QUEUE_FILE)
+
+wait-in-queue: get-in-queue
+	if [ -f $(LOCK_FILE) -a ! -O $(LOCK_FILE) ]; then echo "FPGA is being used by another user! Waiting in the queue..."; fi
+	while [ ! -O $(LOCK_FILE) ]; do \
+	while [ -f $(LOCK_FILE) ]; do sleep $(QUEUE_SLEEP_TIME); done; \
+	($(eval TMP:=$(shell head -1 $(QUEUE_FILE)))) ; \
+	if [ $(TMP) = $(USER) ]; then make lock; fi; \
+	done
+	make get-out-queue
+
+#
+# Lock files
+#
+
 lock:
 ifeq ($(BOARD_SERVER),)
 	@if [ $(NORUN) = 0 -a ! -f $(LOCK_FILE) ]; then echo $(USER) > $(LOCK_FILE); fi
@@ -77,6 +122,11 @@ ifeq ($(BOARD_SERVER),)
 else
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(BOARD); make unlock'
 endif
+
+
+#
+# Clean
+#
 
 clean-all: clean testlog-clean
 
@@ -101,4 +151,8 @@ endif
 
 .PRECIOUS: $(FPGA_OBJ)
 
-.PHONY: all run load build kill-remote-console lock unlock clean-all clean testlog-clean
+.PHONY: all run load build \
+	kill-remote-console \
+	create-queue delete-queue get-in-queue get-out-queue wait-in-queue \
+	lock unlock \
+	clean-all clean testlog-clean
