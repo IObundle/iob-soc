@@ -1,6 +1,6 @@
 LOCK_FILE=/tmp/$(BOARD).lock
 QUEUE_FILE=/tmp/$(BOARD).fpga
-QUEUE_SLEEP_TIME:=5s
+QUEUE_SLEEP_TIME:=30s
 
 #DEFINES
 
@@ -98,10 +98,11 @@ get-out-queue:
 
 wait-in-queue: get-in-queue
 	if [ -f $(LOCK_FILE) -a ! -O $(LOCK_FILE) ]; then echo "FPGA is being used by another user! Waiting in the queue..."; fi
+	QUEUE_FILE=$(QUEUE_FILE); \
 	while [ ! -O $(LOCK_FILE) ]; do \
 	while [ -f $(LOCK_FILE) ]; do sleep $(QUEUE_SLEEP_TIME); done; \
-	($(eval TMP:=$(shell head -1 $(QUEUE_FILE)))) ; \
-	if [ $(TMP) = $(USER) ]; then make lock; fi; \
+	TMP=`head -1 $$QUEUE_FILE`; \
+	if [ $${TMP} = $(USER) ]; then make lock; fi; \
 	done
 	make get-out-queue
 
