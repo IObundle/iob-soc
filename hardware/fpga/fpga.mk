@@ -1,6 +1,9 @@
 LOCK_FILE=/tmp/$(BOARD).lock
 QUEUE_FILE=/tmp/$(BOARD).fpga
 QUEUE_SLEEP_TIME:=30s
+PROJ:=$(shell echo `cd $(ROOT_DIR); pwd` | rev | cut -d/ -f1 | rev)
+REV:=$(shell git log --oneline | head -n1 | cut -d " " -f1)
+FINGERTIP=$(PROJ)" "$(REV)
 
 #DEFINES
 
