@@ -97,7 +97,7 @@ get-out-queue:
 	@sed -i '/$(USER)/d' $(QUEUE_FILE)
 
 wait-in-queue: get-in-queue
-	$(eval QUEUE_SZ:=$(shell wc -l /tmp/AES-KU040-DB-G.fpga | cut -d" " -f1))
+	$(eval QUEUE_SZ:=$(shell wc -l $(QUEUE_FILE) | cut -d" " -f1))
 	$(eval NUSERS:=$(shell expr $(QUEUE_SZ) \- 1))
 	@if [ -f $(LOCK_FILE) -a ! -O $(LOCK_FILE) ]; then echo "FPGA is being used by another user! There are $(NUSERS) user(s) in the queue."; \
 	echo "Waiting in the queue..."; fi
