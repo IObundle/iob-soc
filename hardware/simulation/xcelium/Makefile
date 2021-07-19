@@ -3,9 +3,9 @@ ROOT_DIR:=../../..
 defmacro:=-define 
 incdir:=-incdir 
 
-SIMULATOR=ncsim
-SIM_SERVER ?=$(NCSIM_SERVER)
-SIM_USER ?=$(NCSIM_USER)
+SIMULATOR=xcelium
+SIM_SERVER ?=$(XMSIM_SERVER)
+SIM_USER ?=$(XMSIM_USER)
 
 include ../simulation.mk
 
@@ -14,17 +14,17 @@ CFLAGS = -errormax 15 -status -update -linedebug -sv $(LIBS) $(INCLUDE) $(DEFINE
 EFLAGS = -errormax 15 -access +wc -status
 SFLAGS = -errormax 15 -status -CMDFILE $(ROOT_DIR)/hardware/testbench
 
-export VSRC CFLAGS EFLAGS SFLAGS 
-
 #simulate
 run: $(VSRC) $(VHDR) $(IMAGES)
-	echo $(NCSIM_SERVER)
-	./run_ncsim.sh
+	echo $(XMSIM_SERVER)
+	./run_xmsim.sh "$(VSRC)" "$(CFLAGS)" "$(EFLAGS)" "$(SFLAGS)"
 	grep -v xcelium xmsim.log | grep -v xmsim $(LOG)
 
-sim-clean: clean
-ifeq ($(SIM_SERVER),)
-	@rm -rf xcelium.d xmsim.key
-endif
+kill-remote-sim:
+	@echo "INFO: Remote xcelium will be killed; ignore following errors"
+	ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR); kill -9 `pgrep -a xmsim`'
 
-.PHONY: run sim-clean
+sim-clean: hw-clean
+	@rm -rf xcelium.d xmsim.key
+
+.PHONY: run kill-remote-sim sim-clean

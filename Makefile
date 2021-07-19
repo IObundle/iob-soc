@@ -1,12 +1,8 @@
+all: sim
+
+
 ROOT_DIR:=.
 include ./system.mk
-
-#
-# EMULATE ON PC
-#
-
-pc-emul:
-	make -C $(PC_DIR) all
 
 #
 # SIMULATE RTL
@@ -15,6 +11,13 @@ pc-emul:
 sim:
 	make -C $(SIM_DIR) all
 
+
+#
+# EMULATE ON PC
+#
+
+pc-emul:
+	make -C $(PC_DIR) all
 
 #
 # RUN ON FPGA BOARD
@@ -55,15 +58,15 @@ test-simulator:
 test-all-simulators:
 	$(foreach s, $(SIM_LIST), make test-simulator SIMULATOR=$s;)
 
-all-simulators-clean:
-	$(foreach s, $(SIM_LIST), make -C $(HW_DIR)/simulation/$s clean SIMULATOR=$s;)
+clean-all-simulators:
+	$(foreach s, $(SIM_LIST), make -C $(HW_DIR)/simulation/$s clean-all SIMULATOR=$s;)
 
 test-board:
 	make -C $(BOARD_DIR) testlog-clean
-	make -C $(BOARD_DIR) board-clean
+	make -C $(BOARD_DIR) clean
 	make -C $(BOARD_DIR) all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
 	make -C $(BOARD_DIR) all INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
-	make -C $(BOARD_DIR) board-clean
+	make -C $(BOARD_DIR) clean
 	make -C $(BOARD_DIR) all INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
 	diff -q $(CONSOLE_DIR)/test.log $(BOARD_DIR)/test.expected
 	@echo BOARD $(BOARD) TEST PASSED
@@ -71,15 +74,15 @@ test-board:
 test-all-boards:
 	$(foreach b, $(BOARD_LIST), make test-board BOARD=$b;)
 
-all-boards-clean:
-	$(foreach s, $(BOARD_LIST), make -C $(FPGA_DIR)/$s board-clean BOARD=$s;)
+clean-all-boards:
+	$(foreach s, $(BOARD_LIST), make -C $(FPGA_DIR)/$s clean-all BOARD=$s;)
 
 clean: 
 	make -C $(PC_DIR) clean
 	make -C $(ASIC_DIR) clean
 	make -C $(DOC_DIR) clean
-	make all-simulators-clean
-	make all-boards-clean
+	make clean-all-simulators
+	make clean-all-boards
 
 
-.PHONY: pc-emul pc-clean sim run asic doc test test-all-simulators test-simulator test-all-boards test-board all-simulators-clean all-boards-clean clean
+.PHONY: all pc-emul sim run asic doc test test-all-simulators test-simulator test-all-boards test-board clean-all-simulators clean-all-boards clean

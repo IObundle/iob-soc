@@ -56,20 +56,18 @@ endif
 #RULES
 all: clean sw
 ifeq ($(SIM_SERVER),)
-	make run
+	make run LOG=$(TEST_LOG)
 else
 	ssh $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR); make run INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) VCD=$(VCD) LOG="$(TEST_LOG)"'
+	bash -c "trap 'make kill-remote-sim' INT; ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR); make run INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) VCD=$(VCD) LOG=\"$(TEST_LOG)\"'"
 ifneq ($(TEST_LOG),)
 	scp $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR)/test.log $(SIM_DIR)
 endif
 ifeq ($(VCD),1)
 	scp $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)//hardware/simulation/$(SIMULATOR)/*.vcd $(SIM_DIR)
+	gtkwave -a ../waves.gtkw system.vcd &
 endif
-endif
-ifeq ($(VCD),1)
-	gtkwave -a $^ &
 endif
 
 
@@ -87,9 +85,12 @@ sim_xtop.cpp:
 VSRC+=$(foreach p, $(PERIPHERALS), $(shell if test -f $(SUBMODULES_DIR)/$p/hardware/testbench/module_tb.sv; then echo $(SUBMODULES_DIR)/$p/hardware/testbench/module_tb.sv; fi;)) #add test cores to list of sources
 
 
+clean-all: clean testlog-clean
+
 clean: hw-clean
+	@rm -f system.vcd
 ifneq ($(SIM_SERVER),)
-	rsync -avz --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
+	rsync -avz --delete --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
 	ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR); make sim-clean'
 endif
 
@@ -97,10 +98,10 @@ endif
 testlog-clean:
 	@rm -f test.log
 ifneq ($(SIM_SERVER),)
-	rsync -avz --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
+	rsync -avz --delete --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
 	ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR); rm -f test.log'
 endif
 
 
 .PRECIOUS: system.vcd test.log
-.PHONY: clean testlog-clean
+.PHONY: all clean-all clean testlog-clean

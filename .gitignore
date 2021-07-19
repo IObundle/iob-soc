@@ -14,10 +14,10 @@ hardware/simulation/icarus/*
 !hardware/simulation/icarus/Makefile
 !hardware/simulation/icarus/test.expected
 
-hardware/simulation/ncsim/*
-!hardware/simulation/ncsim/Makefile
-!hardware/simulation/ncsim/run_ncsim.sh
-!hardware/simulation/ncsim/test.expected
+hardware/simulation/xmsim/*
+!hardware/simulation/xmsim/Makefile
+!hardware/simulation/xmsim/run_xmsim.sh
+!hardware/simulation/xmsim/test.expected
 
 hardware/simulation/verilator/*
 !hardware/simulation/verilator/Makefile

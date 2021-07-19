@@ -58,7 +58,7 @@ ASIC_NODE ?=umc130
 
 # REGRESSION TESTING
 #simulators used in regression testing
-SIM_LIST ?=icarus ncsim
+SIM_LIST ?=icarus xcelium
 #boards used for regression testing
 BOARD_LIST ?=CYCLONEV-GT-DK AES-KU040-DB-G
 

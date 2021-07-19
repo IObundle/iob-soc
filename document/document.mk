@@ -1,13 +1,18 @@
-all:
-	make -C document/pb pb.pdf
-	make -C document/presentation presentation.pdf
+all: $(TRGT).pdf
+	evince $< &
 
-clean:
-	make -C document/pb clean
-	make -C document/presentation clean
+$(TRGT).pdf: $(TRGT).tex $(OBJS) $(BIB)
+	pdflatex $(TRGT).tex
+	pdflatex $(TRGT).tex
 
-pdfclean:
-	make -C document/pb pdfclean
-	make -C document/presentation pdfclean
+clean-all: clean pdf-clean
 
-.PHONY: all clean pdfclean
+pdf-clean: clean
+	@rm $(TRGT).pdf
+
+clean: doc-clean
+	@rm -f $(TRGT).aux $(TRGT).log $(TRGT).dvi $(TRGT).bbl $(TRGT).blg
+	@rm -f *.nav *.out *.xml *.snm *.toc $(TRGT)-blx.bib
+	@rm -f *~ *.fls *.fdb_latexmk *.vrb *.aux *.bbl  *.blg  *.log
+
+.PHONY: all clean pdf-clean clean-all

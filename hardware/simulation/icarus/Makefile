@@ -1,3 +1,9 @@
+#
+# ICARUS VERILOG SIMULTOR (iverilog)
+#
+# Tested with iverilog version 10.3
+#
+
 ROOT_DIR:=../../..
 
 defmacro:=-D
@@ -22,9 +28,11 @@ build: a.out
 a.out: $(VSRC) $(VHDR) $(IMAGES)
 	$(VLOG) $(VSRC)
 
-sim-clean: clean
-ifeq ($(SIM_SERVER),)
-	@rm -f ./a.out
-endif
+kill-remote-sim:
+	@echo "INFO: Remote icarus will be killed; ignore following errors"
+	ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR); kill -9 `pgrep -a a.out`'
 
-.PHONY: build run clean
+sim-clean: clean
+	@rm -f a.out
+
+.PHONY: run build kill-remote-sim sim-clean

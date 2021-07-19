@@ -1,14 +1,19 @@
+#
+# Makefile for compiling the documentation.
+# Tested with the texlive-full Linux package
+#
+
 all:
-	make -C presentation
-	make -C pb
+	make -C presentation all
+	make -C pb all
 
 clean:
 	make -C presentation clean
-	make -C pb
+	make -C pb clean
 
-pdfclean:
-	make -C presentation pdf clean
-	make -C pb pdf clean
+clean-all:
+	make -C presentation clean-all
+	make -C pb clean-all
 
 
-.PHONY: all clean pdfclean
+.PHONY: all clean clean-all
