@@ -94,7 +94,7 @@ get-in-queue:
 	@echo $(USER) >> $(QUEUE_FILE)
 
 get-out-queue:
-	@sed -i '/$(USER)/d' $(QUEUE_FILE)
+	@ed -s $(QUEUE_FILE) <<<$$'g/$(USER)/d\nw\nq'
 
 wait-in-queue: get-in-queue
 	$(eval QUEUE_SZ:=$(shell wc -l $(QUEUE_FILE) | cut -d" " -f1))
