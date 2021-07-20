@@ -1,6 +1,6 @@
-CC = soffice
+CC = libreoffice
 CFLAGS = --headless --convert-to pdf
-LO_RUNNING = $(shell pgrep soffice)
+LO_RUNNING = $(shell pgrep libreoffice)
 OBJS = $(patsubst %.odg,%.pdf,$(wildcard *.odg))
 
 all: $(OBJS) $(TD_FIGS)
