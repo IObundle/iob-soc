@@ -77,7 +77,7 @@ kill-remote-console: unlock
 
 create-queue:
 ifeq ($(BOARD_SERVER),)
-	@chown $(USER).dialout $(QUEUE_FILE) >> $(QUEUE_FILE)
+	@chown $(USER).dialout $(QUEUE_FILE) > $(QUEUE_FILE)
 else
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(BOARD); make create-queue'
 endif
@@ -133,7 +133,7 @@ endif
 
 create-fpga-log:
 ifeq ($(BOARD_SERVER),)
-	@chown $(USER).dialout $(FPGA_LOG_FILE) >> $(FPGA_LOG_FILE)
+	@chown $(USER).dialout $(FPGA_LOG_FILE) > $(FPGA_LOG_FILE)
 else
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(BOARD); make create-fpga-log'
 endif
