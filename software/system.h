@@ -40,8 +40,8 @@
 #define USE_DDR_SW 0
 #endif
 
-#ifdef RUN_DDR
-#define RUN_DDR_SW 1
+#ifdef RUN_EXTMEM
+#define RUN_EXTMEM_SW 1
 #else
-#define RUN_DDR_SW 0
+#define RUN_EXTMEM_SW 0
 #endif

@@ -66,7 +66,7 @@ make [sim]
 
 Parameters can be passed in the command line, overriding those in the system.mk file. For example:
 ```
-make [sim] INIT_MEM=0 RUN_DDR=1
+make [sim] INIT_MEM=0 RUN_EXTMEM=1
 ```
 
 To clean the simulation directory:

@@ -1,6 +1,6 @@
 ######################################################################
 #
-# IOb-SoC Configuration File
+# IOb-SoC-tester Configuration File
 #
 ######################################################################
 
@@ -16,7 +16,7 @@ SRAM_ADDR_W ?=16
 
 #DDR 
 USE_DDR ?=0
-RUN_DDR ?=0
+RUN_EXTMEM ?=0
 
 #DATA CACHE ADDRESS WIDTH (tag + index + offset)
 DCACHE_ADDR_W:=24
@@ -31,7 +31,7 @@ INIT_MEM ?=1
 #must match respective submodule or folder name in the submodules directory
 #and CORE_NAME in the core.mk file of the submodule
 #PERIPHERALS:=UART
-PERIPHERALS ?=UART
+PERIPHERALS ?=UART ETHERNET
 
 #
 #SOFTWARE COMPILATION
@@ -44,7 +44,7 @@ USE_COMPRESSED ?=1
 #
 #ROOT DIR ON REMOTE MACHINES
 #
-REMOTE_ROOT_DIR ?=sandbox/iob-soc
+REMOTE_ROOT_DIR ?=sandbox/iob-soc-tester
 
 
 #
@@ -84,7 +84,7 @@ FPGA_DDR_ADDR_W ?=30
 #set for running (remote) tools and boards
 #servers and respective users should be environment variables
 #default board
-BOARD ?=DE10-LITE
+BOARD ?=CYCLONEV-GT-DK
 #select according to board
 ifeq ($(BOARD),AES-KU040-DB-G)
 	FPGA_SERVER=$(VIVA_SERVER)
@@ -148,7 +148,7 @@ BOARD_HOST=$(shell echo $(BOARD_SERVER) | cut -d"." -f1)
 ASIC_HOST=$(shell echo $(ASIC_SERVER) | cut -d"." -f1)
 
 
-ifeq ($(RUN_DDR),1)
+ifeq ($(RUN_EXTMEM),1)
 	USE_DDR=1
 endif
 
@@ -178,8 +178,8 @@ DEFINE+=$(defmacro)DCACHE_ADDR_W=$(DCACHE_ADDR_W)
 
 ifeq ($(USE_DDR),1)
 DEFINE+=$(defmacro)USE_DDR
-ifeq ($(RUN_DDR),1)
-DEFINE+=$(defmacro)RUN_DDR
+ifeq ($(RUN_EXTMEM),1)
+DEFINE+=$(defmacro)RUN_EXTMEM
 endif
 endif
 ifeq ($(INIT_MEM),1)

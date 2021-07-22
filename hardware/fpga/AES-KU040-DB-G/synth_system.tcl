@@ -108,6 +108,15 @@ report_utilization
 
 report_timing
 
+file mkdir reports
+
+report_timing -file reports/timing.txt -max_paths 30
+report_clocks -file reports/clocks.txt
+report_clock_interaction -file reports/clock_interaction.txt
+report_cdc -details -file reports/cdc.txt
+report_synchronizer_mtbf -file reports/synchronizer_mtbf.txt
+report_utilization -hierarchical -file reports/utilization.txt
+
 write_bitstream -force synth_system.bit
 
 write_verilog -force synth_system.v
