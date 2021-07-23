@@ -6,27 +6,15 @@ CORE_NAME:=UART
 IS_CORE:=1
 USE_NETLIST ?=0
 
-#SUBMODULE PATHS
-
-ifneq (INTERCON,$(filter INTERCON, $(SUBMODULES)))
-INTERCON_DIR:=$(UART_DIR)/submodules/INTERCON
-endif
-
-ifneq (LIB,$(filter LIB, $(SUBMODULES)))
-LIB_DIR:=$(UART_DIR)/submodules/LIB
-endif
-
-ifneq (TEX,$(filter TEX, $(SUBMODULES)))
-TEX_DIR:=$(UART_DIR)/submodules/TEX
-endif
-
 #UART PATHS
 UART_HW_DIR:=$(UART_DIR)/hardware
 UART_SW_DIR:=$(UART_DIR)/software
 UART_DOC_DIR:=$(UART_DIR)/document
+UART_SUBMODULES_DIR:=$(UART_DIR)/submodules
 
-#host where this is running
-HOSTNAME=$(shell hostname)
+#SUBMODULES
+UART_SUBMODULES:=INTERCON LIB TEX
+$(foreach p, $(UART_SUBMODULES), $(eval $p_DIR ?=$(UART_SUBMODULES_DIR)/$p))
 
 #
 #SIMULATION
@@ -36,14 +24,10 @@ SIM_DIR ?=$(UART_HW_DIR)/simulation
 #
 #FPGA
 #
-FPGA_HOST=$(shell echo $(FPGA_SERVER) | cut -d"." -f1)
 FPGA_FAMILY ?=CYCLONEV-GT
 #FPGA_FAMILY ?=XCKU
 
-#FPGA_SERVER :=localhost
 REMOTE_ROOT_DIR ?= sandbox/iob-soc/submodules/UART
-FPGA_SERVER ?=pudim-flan.iobundle.com
-FPGA_USER ?= $(USER)
 
 ifeq ($(FPGA_FAMILY),XCKU)
 	FPGA_COMP:=vivado
@@ -55,9 +39,9 @@ endif
 FPGA_DIR ?=$(UART_HW_DIR)/fpga/$(FPGA_COMP)
 
 ifeq ($(FPGA_COMP),vivado)
-FPGA_LOG:=vivado.log
+FPGA_LOG ?=vivado.log
 else ifeq ($(FPGA_COMP),quartus)
-FPGA_LOG:=quartus.log
+FPGA_LOG ?=quartus.log
 endif
 
 #

@@ -48,7 +48,7 @@ char uart_getc();
 void uart_putc(char c);
 
 //Print string
-void uart_puts(char *s);
+void uart_puts(const char *s);
 
 //formated print
 //void uart_printf(char* fmt, ...);

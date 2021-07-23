@@ -21,7 +21,7 @@ sim-clean:
 	make -C $(SIM_DIR) clean
 
 fpga:
-ifeq ($(FPGA_HOST), $(HOSTNAME))
+ifeq ($(FPGA_SERVER),)
 	make -C $(FPGA_DIR) run DATA_W=$(DATA_W)
 else 
 	ssh $(FPGA_USER)@$(FPGA_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
@@ -32,7 +32,7 @@ else
 endif
 
 fpga-clean:
-ifeq ($(FPGA_HOST), $(HOSTNAME))
+ifeq ($(FPGA_SERVER),)
 	make -C $(FPGA_DIR) clean
 else 
 	rsync -avz --delete --exclude .git $(UART_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
