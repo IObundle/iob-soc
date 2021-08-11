@@ -68,13 +68,12 @@ int uart_recvfile(char* file_name, char **mem) {
   file_size |= ((unsigned int) uart_getc()) << 16;
   file_size |= ((unsigned int) uart_getc()) << 24;
 
-  //allocate space for file if pointer not given
-  if( mem[0] == (char *)(-1) )
-    mem[0] = (char *)malloc(file_size);
+  //allocate space for file
+  *mem = (char *)malloc(file_size);
   
   //write file to memory
   for (int i = 0; i < file_size; i++) {
-    mem[0][i] = uart_getc();
+    *mem[i] = uart_getc();
   }
 
   uart_puts(UART_PROGNAME);
