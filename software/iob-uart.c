@@ -62,18 +62,25 @@ int uart_recvfile(char* file_name, char **mem) {
   //send file name
   uart_sendstr(file_name);
 
+
   //receive file size
   int file_size = (unsigned int) uart_getc();
   file_size |= ((unsigned int) uart_getc()) << 8;
   file_size |= ((unsigned int) uart_getc()) << 16;
   file_size |= ((unsigned int) uart_getc()) << 24;
 
-  //allocate space for file
-  *mem = (char *)malloc(file_size);
-  
+  //allocate space for file if file pointer not initialized
+  if((*mem) == NULL) {
+    (*mem) = (char *) malloc(file_size);
+    if ((*mem) == NULL) {
+      uart_puts(UART_PROGNAME);
+      uart_puts("Error: malloc failed");
+    }
+  }
+
   //write file to memory
   for (int i = 0; i < file_size; i++) {
-    *mem[i] = uart_getc();
+    (*mem)[i] = uart_getc();
   }
 
   uart_puts(UART_PROGNAME);
