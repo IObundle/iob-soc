@@ -1,6 +1,6 @@
-ROOT_DIR:=../../..
+ROOT_DIR:=../../../..
 
-include ../fpga.mk
+include ../../fpga.mk
 
 # work-around for http://svn.clifford.at/handicraft/2016/vivadosig11
 export RDI_VERBOSE = False

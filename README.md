@@ -90,8 +90,8 @@ In each remote server, the environmental variables for the paths of tools and
 license servers must be defined as in the following example:
 
 ```
-export ALTERAPATH=/path/to/intel/fpga/tools
-export XILINXPATH=/path/to/xilinx/fpga/tools
+export QUARTUSPATH=/path/to/quartus
+export VIVADOPATH=/path/to/vivado
 ...
 export LM_LICENSE_FILE=port@host:lic_or_dat_file
 ```

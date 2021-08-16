@@ -36,6 +36,10 @@ PERIPHERALS ?=UART
 #RISC-V COMPRESSED INSTRUCTIONS
 USE_COMPRESSED ?=1
 
+#ROOT DIR ON REMOTE MACHINES
+REMOTE_ROOT_DIR ?=sandbox/iob-soc
+
+
 #SIMULATION
 #default simulator running locally or remotely
 #check the respective Makefile in hardware/simulation/$(SIMULATOR) for specific settings
@@ -45,11 +49,6 @@ SIMULATOR ?=icarus
 #default board running locally or remotely
 #check the respective Makefile in hardware/fpga/$(BOARD) for specific settings
 BOARD ?=CYCLONEV-GT-DK
-#DDR controller address width
-FPGA_DDR_ADDR_W ?=30
-
-#ROOT DIR ON REMOTE MACHINES
-REMOTE_ROOT_DIR ?=sandbox/iob-soc
 
 #ASIC COMPILATION
 #default asic node  running locally or remotely
@@ -94,7 +93,7 @@ PYTHON_DIR:=$(SW_DIR)/python
 HW_DIR:=$(ROOT_DIR)/hardware
 SIM_DIR=$(HW_DIR)/simulation/$(SIMULATOR)
 FPGA_DIR=$(HW_DIR)/fpga
-BOARD_DIR=$(HW_DIR)/fpga/$(BOARD)
+BOARD_DIR=$(HW_DIR)/fpga/$(FPGA_COMP)/$(BOARD)
 ASIC_DIR=$(HW_DIR)/asic
 
 #doc paths
