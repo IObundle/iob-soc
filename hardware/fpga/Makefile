@@ -1,3 +1,6 @@
+ROOT_DIR:=../..
+include ../hardware.mk
+
 #FPGA COMPILER
 ifeq ($(BOARD),AES-KU040-DB-G)
 	FPGA_COMPILE=vivado
@@ -7,12 +10,11 @@ else ifeq ($(BOARD),CYCLONEV-GT-DK)
 	FPGA_COMPILE=quartus
 else ifeq ($(BOARD),DE10-LITE)
 	FPGA_COMPILE=quartus
-else
-	FPGA_COMPILE=vivado
 endif
 
-all:
-	make -C $(FPGA_COMPILE)/$(BOARD) all
+export FPGA_COMPILE
+
+all: sw build load run
 
 build:
 	make -C $(FPGA_COMPILE)/$(BOARD) build
@@ -22,4 +24,7 @@ load:
 
 run:
 	make -C $(FPGA_COMPILE)/$(BOARD) run
+
+
+.PHONY: all build load run
 

@@ -19,7 +19,6 @@ VSRC+=./verilog/top_system.v
 #
 # Use
 #
-all: sw build load run
 
 run:
 ifeq ($(BOARD_SERVER),)
@@ -49,7 +48,6 @@ endif
 
 build: $(FPGA_OBJ)
 
-
 ifeq ($(INIT_MEM),1)
 $(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex firmware.hex
 else
@@ -62,9 +60,11 @@ else ifeq ($(NORUN),0)
 	ssh $(FPGA_USER)@$(FPGA_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
 	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga; make build INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) BOARD=$(BOARD)'
-	if [ $(NORUN) = 0 ]; then scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(FPGA_COMPILE)/$(BOARD)/$(FPGA_OBJ) $(BOARD_DIR); fi
-	if [ $(NORUN) = 0 ]; then scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(FPGA_COMPILE)/$(BOARD)/$(FPGA_LOG) $(BOARD_DIR); fi
+	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(FPGA_COMPILE)/$(BOARD)/$(FPGA_OBJ) $(BOARD_DIR)
+	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(FPGA_COMPILE)/$(BOARD)/$(FPGA_LOG) $(BOARD_DIR)
 endif
+
+
 
 kill-remote-console: unlock
 	@echo "INFO: Remote console will be killed; ignore following errors"
@@ -160,6 +160,7 @@ fpga-log:
 check-fpga-log:
 	$(eval FPGA_LOG:=$(shell cat $(FPGA_LOG_FILE)))
 	@if [ "$(FPGA_LOG)" != "$(CURRENT_LOG)" ]; then rm -f load.log; fi
+
 
 #
 # Clean
