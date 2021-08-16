@@ -1,5 +1,5 @@
-#!/usr/bin/bash
-nios=$ALTERAPATH/nios2eds/nios2_command_shell.sh
+#!/bin/bash
+nios=$QUARTUSPATH/nios2eds/nios2_command_shell.sh
 $nios quartus_sh -t top_system.tcl "$1" "$2" "$3"
 $nios quartus_map top_system
 $nios quartus_fit --read_settings_files=off -write_settings_files=off top_system -c top_system

@@ -13,12 +13,12 @@ include $(ROOT_DIR)/hardware/hardware.mk
 #SOURCES
 VSRC+=./verilog/top_system.v
 
+
 #RULES
 
 #
 # Use
 #
-
 all: sw build load run
 
 run:
@@ -28,7 +28,7 @@ ifeq ($(BOARD_SERVER),)
 else ifeq ($(NORUN),0)
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR) 
-	bash -c "trap 'make kill-remote-console' INT; ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(BOARD); make run INIT_MEM=$(INIT_MEM) TEST_LOG=\"$(TEST_LOG)\"'"
+	bash -c "trap 'make kill-remote-console' INT; ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga; make run INIT_MEM=$(INIT_MEM) TEST_LOG=\"$(TEST_LOG)\"'"
 ifneq ($(TEST_LOG),)
 	scp $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR)/software/console/test.log $(CONSOLE_DIR)
 endif
@@ -43,7 +43,7 @@ ifeq ($(BOARD_SERVER),)
 else ifeq ($(NORUN),0)
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR) 
-	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(BOARD); make load CURRENT_LOG="$(CURRENT_LOG)"'
+	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga; make load CURRENT_LOG="$(CURRENT_LOG)"'
 endif
 
 
@@ -57,18 +57,18 @@ $(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex
 endif
 ifeq ($(FPGA_SERVER),)
 	if [ $(NORUN) = 0 -a -f load.log ]; then rm -f load.log; fi
-	if [ $(NORUN) = 0 ]; then ./build.sh "$(INCLUDE)" "$(DEFINE)" "$(VSRC)"; fi
+	if [ $(NORUN) = 0 ]; then ../build.sh "$(INCLUDE)" "$(DEFINE)" "$(VSRC)"; fi
 else ifeq ($(NORUN),0)
 	ssh $(FPGA_USER)@$(FPGA_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(BOARD); make build INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) BOARD=$(BOARD)'
-	if [ $(NORUN) = 0 ]; then scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(BOARD)/$(FPGA_OBJ) $(BOARD_DIR); fi
-	if [ $(NORUN) = 0 ]; then scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(BOARD)/$(FPGA_LOG) $(BOARD_DIR); fi
+	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga; make build INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) BOARD=$(BOARD)'
+	if [ $(NORUN) = 0 ]; then scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(FPGA_COMPILE)/$(BOARD)/$(FPGA_OBJ) $(BOARD_DIR); fi
+	if [ $(NORUN) = 0 ]; then scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(FPGA_COMPILE)/$(BOARD)/$(FPGA_LOG) $(BOARD_DIR); fi
 endif
 
 kill-remote-console: unlock
 	@echo "INFO: Remote console will be killed; ignore following errors"
-	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR); kill -9 `pgrep -a console`; rm -f hardware/fpga/$(BOARD)/load.log'
+	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR); kill -9 `pgrep -a console`; find . -name load.log -delete'
 
 
 #
@@ -79,14 +79,14 @@ create-queue:
 ifeq ($(BOARD_SERVER),)
 	@chown $(USER).dialout $(QUEUE_FILE) > $(QUEUE_FILE)
 else
-	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(BOARD); make create-queue'
+	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(FPGA_COMPILE)/$(BOARD); make create-queue'
 endif
 
 delete-queue:
 ifeq ($(BOARD_SERVER),)
 	@rm -f $(QUEUE_FILE)
 else
-	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(BOARD); make delete-queue'
+	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(FPGA_COMPILE)/$(BOARD); make delete-queue'
 endif
 
 get-in-queue:
@@ -117,14 +117,14 @@ lock:
 ifeq ($(BOARD_SERVER),)
 	@if [ $(NORUN) = 0 -a ! -f $(LOCK_FILE) ]; then echo $(USER) > $(LOCK_FILE); fi
 else
-	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(BOARD); make lock'
+	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(FPGA_COMPILE)/$(BOARD); make lock'
 endif
 
 unlock:
 ifeq ($(BOARD_SERVER),)
 	@if [ $(NORUN) = 0 -a -O $(LOCK_FILE) ]; then rm -f $(LOCK_FILE); fi
 else
-	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(BOARD); make unlock'
+	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(FPGA_COMPILE)/$(BOARD); make unlock'
 endif
 
 #
@@ -135,14 +135,14 @@ create-fpga-log:
 ifeq ($(BOARD_SERVER),)
 	@chown $(USER).dialout $(FPGA_LOG_FILE) > $(FPGA_LOG_FILE)
 else
-	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(BOARD); make create-fpga-log'
+	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(FPGA_COMPILE)/$(BOARD); make create-fpga-log'
 endif
 
 delete-fpga-log:
 ifeq ($(BOARD_SERVER),)
 	@rm -f $(FPGA_LOG_FILE)
 else
-	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(BOARD); make delete-fpga-log'
+	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(FPGA_COMPILE)/$(BOARD); make delete-fpga-log'
 endif
 
 current-log:
@@ -171,18 +171,18 @@ clean: hw-clean
 	make board-clean
 ifneq ($(FPGA_SERVER),)
 	rsync -avz --delete --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(BOARD); make board-clean CLEANIP=$(CLEANIP)'
+	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(FPGA_COMPILE)/$(BOARD); make board-clean CLEANIP=$(CLEANIP)'
 endif
 ifneq ($(BOARD_SERVER),)
 	rsync -avz --delete --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(BOARD); make board-clean'
+	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(FPGA_COMPILE)/$(BOARD); make board-clean'
 endif
 
 testlog-clean:
 	@rm -f $(CONSOLE_DIR)/test.log
 ifneq ($(BOARD_SERVER),)
 	rsync -avz --delete --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(BOARD); rm -f $(CONSOLE_DIR)/test.log'
+	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(FPGA_COMPILE)/$(BOARD); rm -f $(CONSOLE_DIR)/test.log'
 endif
 
 

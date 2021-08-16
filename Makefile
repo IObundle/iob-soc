@@ -22,8 +22,8 @@ pc-emul:
 #
 # RUN ON FPGA BOARD
 #
-run:
-	make -C $(BOARD_DIR) all TEST_LOG="$(TEST_LOG)"
+fpga-run:
+	make -C $(FPGA_DIR) all TEST_LOG="$(TEST_LOG)"
 
 #
 # SIMULATE POST-SYNTHESIS ASIC

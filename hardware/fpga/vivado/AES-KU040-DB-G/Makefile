@@ -1,4 +1,5 @@
-ROOT_DIR:=../../..
+ROOT_DIR:=../../../..
+
 FPGA_OBJ=synth_system.bit
 FPGA_LOG=vivado.log
 
@@ -12,7 +13,11 @@ BOARD_USER=$(KU40_USER)
 
 NORUN = 0
 
-include ../fpga.mk
+#DDR controller address width
+FPGA_DDR_ADDR_W ?=30
+
+
+include ../../fpga.mk
 
 # work-around for http://svn.clifford.at/handicraft/2016/vivadosig11
 export RDI_VERBOSE = False
