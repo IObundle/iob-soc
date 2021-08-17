@@ -23,17 +23,17 @@ pc-emul:
 # RUN ON FPGA BOARD
 #
 fpga-run:
-	make -C $(BOARD_DIR) all TEST_LOG="$(TEST_LOG)"
+	make -C `find $(HW_DIR)/fpga -name $(BOARD)` all TEST_LOG="$(TEST_LOG)"
 
 fpga-load:
-	make -C $(BOARD_DIR) load
+	make -C `find $(HW_DIR)/fpga -name $(BOARD)` load
 
 fpga-build:
-	make -C $(BOARD_DIR) build
+	make -C `find $(HW_DIR)/fpga -name $(BOARD)` build
 
 fpga-mvlogs:
-	mv $(BOARD_DIR)/$(FPGA_OBJ) .
-	mv $(BOARD_DIR)/$(FPGA_LOG) .
+	mv `find $(HW_DIR)/fpga -name $(BOARD)`/$(FPGA_OBJ) .
+	mv `find $(HW_DIR)/fpga -name $(BOARD)`/$(FPGA_LOG) .
 
 
 #
@@ -73,20 +73,20 @@ clean-all-simulators:
 	$(foreach s, $(SIM_LIST), make -C $(HW_DIR)/simulation/$s clean-all SIMULATOR=$s;)
 
 test-board:
-	make -C $(BOARD_DIR) testlog-clean
-	make -C $(BOARD_DIR) clean
-	make -C $(BOARD_DIR) all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
-	make -C $(BOARD_DIR) all INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
-	make -C $(BOARD_DIR) clean
-	make -C $(BOARD_DIR) all INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
-	diff -q $(CONSOLE_DIR)/test.log $(BOARD_DIR)/test.expected
+	make -C `find $(HW_DIR)/fpga -name $(BOARD)` testlog-clean
+	make -C `find $(HW_DIR)/fpga -name $(BOARD)` clean
+	make -C `find $(HW_DIR)/fpga -name $(BOARD)` all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+	make -C `find $(HW_DIR)/fpga -name $(BOARD)` all INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+	make -C `find $(HW_DIR)/fpga -name $(BOARD)` clean
+	make -C `find $(HW_DIR)/fpga -name $(BOARD)` all INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
+	diff -q $(CONSOLE_DIR)/test.log `find $(HW_DIR)/fpga -name $(BOARD)`/test.expected
 	@echo BOARD $(BOARD) TEST PASSED
 
 test-all-boards:
 	$(foreach b, $(BOARD_LIST), make test-board BOARD=$b;)
 
 clean-all-boards:
-	$(foreach s, $(BOARD_LIST), make -C $(BOARD_DIR) clean-all BOARD=$s;)
+	$(foreach s, $(BOARD_LIST), make -C `find $(HW_DIR)/fpga -name $(BOARD)` clean-all BOARD=$s;)
 
 clean: 
 	make -C $(PC_DIR) clean
