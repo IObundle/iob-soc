@@ -23,7 +23,18 @@ pc-emul:
 # RUN ON FPGA BOARD
 #
 fpga-run:
-	make -C $(FPGA_DIR) all TEST_LOG="$(TEST_LOG)"
+	make -C $(BOARD_DIR) all TEST_LOG="$(TEST_LOG)"
+
+fpga-load:
+	make -C $(BOARD_DIR) load
+
+fpga-build:
+	make -C $(BOARD_DIR) build
+
+fpga-mvlogs:
+	mv $(BOARD_DIR)/$(FPGA_OBJ) .
+	mv $(BOARD_DIR)/$(FPGA_LOG) .
+
 
 #
 # SIMULATE POST-SYNTHESIS ASIC
@@ -75,7 +86,7 @@ test-all-boards:
 	$(foreach b, $(BOARD_LIST), make test-board BOARD=$b;)
 
 clean-all-boards:
-	$(foreach s, $(BOARD_LIST), make -C $(FPGA_DIR)/$s clean-all BOARD=$s;)
+	$(foreach s, $(BOARD_LIST), make -C $(BOARD_DIR) clean-all BOARD=$s;)
 
 clean: 
 	make -C $(PC_DIR) clean
@@ -85,4 +96,6 @@ clean:
 	make clean-all-boards
 
 
-.PHONY: all pc-emul sim run asic doc test test-all-simulators test-simulator test-all-boards test-board clean-all-simulators clean-all-boards clean
+.PHONY: all pc-emul sim fpga-run fpga-load fpga-build fpga-mvlogs asic doc test \
+test-all-simulators test-simulator test-all-boards test-board clean-all-simulators \
+clean-all-boards clean

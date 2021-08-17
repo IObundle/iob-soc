@@ -20,6 +20,8 @@ VSRC+=./verilog/top_system.v
 # Use
 #
 
+all: sw build load run
+
 run:
 ifeq ($(BOARD_SERVER),)
 	if [ $(NORUN) = 0 ]; then make -C $(CONSOLE_DIR) run BOARD=$(BOARD); fi
@@ -27,7 +29,7 @@ ifeq ($(BOARD_SERVER),)
 else ifeq ($(NORUN),0)
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR) 
-	bash -c "trap 'make kill-remote-console' INT; ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga; make run INIT_MEM=$(INIT_MEM) TEST_LOG=\"$(TEST_LOG)\"'"
+	bash -c "trap 'make kill-remote-console' INT; ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR); make fpga-run BOARD=$(BOARD) INIT_MEM=$(INIT_MEM) TEST_LOG=\"$(TEST_LOG)\"'"
 ifneq ($(TEST_LOG),)
 	scp $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR)/software/console/test.log $(CONSOLE_DIR)
 endif
@@ -35,14 +37,15 @@ endif
 
 
 load: current-log
+	echo $(BOARD_DIR)
 ifeq ($(BOARD_SERVER),)
 	@if [ $(NORUN) = 0 ]; then make wait-in-queue; fi
 	@if [ $(NORUN) = 0 ]; then make fpga-log; fi
-	if [ $(NORUN) = 0 -a ! -f load.log ]; then ./prog.sh > load.log; fi
+	if [ $(NORUN) = 0 -a ! -f load.log ]; then ../prog.sh > load.log; fi
 else ifeq ($(NORUN),0)
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR) 
-	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga; make load CURRENT_LOG="$(CURRENT_LOG)"'
+	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR); make fpga-load BOARD=$(BOARD) CURRENT_LOG="$(CURRENT_LOG)"'
 endif
 
 
@@ -53,17 +56,18 @@ $(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex firmware.hex
 else
 $(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex
 endif
+	echo $(BOARD_DIR)
 ifeq ($(FPGA_SERVER),)
 	if [ $(NORUN) = 0 -a -f load.log ]; then rm -f load.log; fi
 	if [ $(NORUN) = 0 ]; then ../build.sh "$(INCLUDE)" "$(DEFINE)" "$(VSRC)"; fi
 else ifeq ($(NORUN),0)
 	ssh $(FPGA_USER)@$(FPGA_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga; make build INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) BOARD=$(BOARD)'
-	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(FPGA_COMPILE)/$(BOARD)/$(FPGA_OBJ) $(BOARD_DIR)
-	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(FPGA_COMPILE)/$(BOARD)/$(FPGA_LOG) $(BOARD_DIR)
+	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR); make fpga-build BOARD=$(BOARD) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM)'
+	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR); make fpga-mvlogs BOARD=$(BOARD) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM)'
+	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/$(basename $(FPGA_OBJ)) $(BOARD_DIR)
+	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/$(FPGA_LOG) $(BOARD_DIR)
 endif
-
 
 
 kill-remote-console: unlock
@@ -79,14 +83,7 @@ create-queue:
 ifeq ($(BOARD_SERVER),)
 	@chown $(USER).dialout $(QUEUE_FILE) > $(QUEUE_FILE)
 else
-	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(FPGA_COMPILE)/$(BOARD); make create-queue'
-endif
-
-delete-queue:
-ifeq ($(BOARD_SERVER),)
-	@rm -f $(QUEUE_FILE)
-else
-	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(FPGA_COMPILE)/$(BOARD); make delete-queue'
+	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR) $(BOARD); make create-queue BOARD=$(BOARD)'
 endif
 
 get-in-queue:

@@ -90,10 +90,9 @@ CONSOLE_DIR:=$(SW_DIR)/console
 PYTHON_DIR:=$(SW_DIR)/python
 
 #hw paths
-HW_DIR:=$(ROOT_DIR)/hardware
+HW_DIR=$(ROOT_DIR)/hardware
 SIM_DIR=$(HW_DIR)/simulation/$(SIMULATOR)
-FPGA_DIR=$(HW_DIR)/fpga
-BOARD_DIR=$(HW_DIR)/fpga/$(FPGA_COMP)/$(BOARD)
+BOARD_DIR=$(shell find $(HW_DIR)/fpga -name $(BOARD))
 ASIC_DIR=$(HW_DIR)/asic
 
 #doc paths
