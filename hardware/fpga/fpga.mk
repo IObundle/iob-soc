@@ -1,5 +1,4 @@
 FPGA_LOG_FILE=/tmp/$(BOARD).log
-LOCK_FILE=/tmp/$(BOARD).lock
 QUEUE_FILE=/tmp/$(BOARD).fpga
 QUEUE_SLEEP_TIME:=30s
 
@@ -36,8 +35,8 @@ endif
 endif
 
 
-load: current-log
-	echo $(BOARD_DIR)
+load:
+	echo `find $(HW_DIR)/fpga -name $(BOARD)`
 ifeq ($(BOARD_SERVER),)
 	@if [ $(NORUN) = 0 ]; then make wait-in-queue; fi
 	@if [ $(NORUN) = 0 ]; then make fpga-log; fi
@@ -45,7 +44,7 @@ ifeq ($(BOARD_SERVER),)
 else ifeq ($(NORUN),0)
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR) 
-	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR); make fpga-load BOARD=$(BOARD) CURRENT_LOG="$(CURRENT_LOG)"'
+	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR); make fpga-load BOARD=$(BOARD)'
 endif
 
 
@@ -56,7 +55,7 @@ $(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex firmware.hex
 else
 $(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex
 endif
-	echo $(BOARD_DIR)
+	echo `find $(HW_DIR)/fpga -name $(BOARD)`
 ifeq ($(FPGA_SERVER),)
 	if [ $(NORUN) = 0 -a -f load.log ]; then rm -f load.log; fi
 	if [ $(NORUN) = 0 ]; then ../build.sh "$(INCLUDE)" "$(DEFINE)" "$(VSRC)"; fi
@@ -65,8 +64,8 @@ else ifeq ($(NORUN),0)
 	rsync -avz --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
 	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR); make fpga-build BOARD=$(BOARD) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM)'
 	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR); make fpga-mvlogs BOARD=$(BOARD) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM)'
-	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/$(basename $(FPGA_OBJ)) $(BOARD_DIR)
-	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/$(FPGA_LOG) $(BOARD_DIR)
+	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/$(basename $(FPGA_OBJ)) `find $(HW_DIR)/fpga -name $(BOARD)`
+	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/$(FPGA_LOG) `find $(HW_DIR)/fpga -name $(BOARD)`
 endif
 
 
@@ -80,11 +79,7 @@ kill-remote-console: unlock
 #
 
 create-queue:
-ifeq ($(BOARD_SERVER),)
 	@chown $(USER).dialout $(QUEUE_FILE) > $(QUEUE_FILE)
-else
-	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR) $(BOARD); make create-queue BOARD=$(BOARD)'
-endif
 
 get-in-queue:
 	@if [ ! -f $(QUEUE_FILE) ]; then make create-queue; fi
@@ -96,32 +91,23 @@ get-out-queue:
 wait-in-queue: get-in-queue
 	$(eval QUEUE_SZ:=$(shell wc -l $(QUEUE_FILE) | cut -d" " -f1))
 	$(eval NUSERS:=$(shell expr $(QUEUE_SZ) \- 1))
-	@if [ -f $(LOCK_FILE) -a ! -O $(LOCK_FILE) ]; then echo "FPGA is being used by another user! There are $(NUSERS) user(s) in the queue."; \
+	@if [ $(NUSERS) != 0 ]; then echo "FPGA is being used by another user! There are $(NUSERS) user(s) in the queue."; \
 	echo "Waiting in the queue..."; fi
 	@QUEUE_FILE=$(QUEUE_FILE); \
-	while [ ! -O $(LOCK_FILE) ]; do \
-	while [ -f $(LOCK_FILE) ]; do sleep $(QUEUE_SLEEP_TIME); done; \
+	while [ $${TMP} != $(USER) ]; do \
 	TMP=`head -1 $$QUEUE_FILE`; \
-	if [ $${TMP} = $(USER) ]; then make lock; fi; \
-	done
-	@make get-out-queue
+	sleep $(QUEUE_SLEEP_TIME); \
+	done;
 
 #
-# Lock files
+# Unlock
 #
-
-lock:
-ifeq ($(BOARD_SERVER),)
-	@if [ $(NORUN) = 0 -a ! -f $(LOCK_FILE) ]; then echo $(USER) > $(LOCK_FILE); fi
-else
-	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(FPGA_COMPILE)/$(BOARD); make lock'
-endif
 
 unlock:
 ifeq ($(BOARD_SERVER),)
-	@if [ $(NORUN) = 0 -a -O $(LOCK_FILE) ]; then rm -f $(LOCK_FILE); fi
+	@if [ $(NORUN) = 0 ]; then make get-out-queue; fi
 else
-	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(FPGA_COMPILE)/$(BOARD); make unlock'
+	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd `find $(REMOTE_ROOT_DIR)/hardware/fpga -name $(BOARD)`; make unlock'
 endif
 
 #
@@ -129,34 +115,16 @@ endif
 #
 
 create-fpga-log:
-ifeq ($(BOARD_SERVER),)
 	@chown $(USER).dialout $(FPGA_LOG_FILE) > $(FPGA_LOG_FILE)
-else
-	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(FPGA_COMPILE)/$(BOARD); make create-fpga-log'
-endif
-
-delete-fpga-log:
-ifeq ($(BOARD_SERVER),)
-	@rm -f $(FPGA_LOG_FILE)
-else
-	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(FPGA_COMPILE)/$(BOARD); make delete-fpga-log'
-endif
-
-current-log:
-ifeq ($(CURRENT_LOG),)
-	$(eval PROJ=$(shell echo `cd $(ROOT_DIR); pwd` | rev | cut -d/ -f1 | rev))
-	$(eval REV=$(shell git log --oneline | head -n1 | cut -d " " -f1))
-	$(eval CURRENT_LOG=$(shell echo "$(PROJ)"" ""$(REV)"))
-endif
 
 fpga-log:
 	@if [ ! -f $(FPGA_LOG_FILE) ]; then make create-fpga-log; fi
 	@make check-fpga-log
-	@echo $(CURRENT_LOG) > $(FPGA_LOG_FILE)
+	@echo $(USER) > $(FPGA_LOG_FILE)
 
 check-fpga-log:
 	$(eval FPGA_LOG:=$(shell cat $(FPGA_LOG_FILE)))
-	@if [ "$(FPGA_LOG)" != "$(CURRENT_LOG)" ]; then rm -f load.log; fi
+	@if [ $(FPGA_LOG) != $(USER) ]; then rm -f load.log; fi
 
 
 #
@@ -169,18 +137,18 @@ clean: hw-clean
 	make board-clean
 ifneq ($(FPGA_SERVER),)
 	rsync -avz --delete --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(FPGA_COMPILE)/$(BOARD); make board-clean CLEANIP=$(CLEANIP)'
+	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd `find $(REMOTE_ROOT_DIR)/hardware/fpga -name $(BOARD)`; make board-clean CLEANIP=$(CLEANIP)'
 endif
 ifneq ($(BOARD_SERVER),)
 	rsync -avz --delete --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(FPGA_COMPILE)/$(BOARD); make board-clean'
+	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd `find $(REMOTE_ROOT_DIR)/hardware/fpga -name $(BOARD)`; make board-clean'
 endif
 
 testlog-clean:
 	@rm -f $(CONSOLE_DIR)/test.log
 ifneq ($(BOARD_SERVER),)
 	rsync -avz --delete --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(FPGA_COMPILE)/$(BOARD); rm -f $(CONSOLE_DIR)/test.log'
+	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd `find $(REMOTE_ROOT_DIR)/hardware/fpga -name $(BOARD)`; rm -f $(CONSOLE_DIR)/test.log'
 endif
 
 
@@ -188,7 +156,7 @@ endif
 
 .PHONY: all run load build \
 	kill-remote-console \
-	create-queue delete-queue get-in-queue get-out-queue wait-in-queue \
-	lock unlock \
-	create-fpga-log delete-fpga-log current-log fpga-log check-fpga-log \
+	create-queue get-in-queue get-out-queue wait-in-queue \
+	unlock \
+	create-fpga-log fpga-log check-fpga-log \
 	clean-all clean testlog-clean
