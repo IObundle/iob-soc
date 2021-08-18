@@ -1,13 +1,6 @@
 hardware/src/system.v
 hardware/testbench/system_tb.v
 
-hardware/fpga/*/firmware.bin
-
-hardware/fpga/CYCLONEV-GT-DK/synth_system.sof
-
-hardware/fpga/AES-KU040-DB-G/ip
-hardware/fpga/AES-KU040-DB-G/*.log
-hardware/fpga/AES-KU040-DB-G/synth_system.bit
 
 # following lines ignore everything 'make' command produces
 hardware/simulation/icarus/*
@@ -53,32 +46,48 @@ document/presentation/*
 document/pb/xil_results.tex
 document/pb/alt_results.tex
 
-hardware/fpga/CYCLONEV-GT-DK/boot.hex
-hardware/fpga/CYCLONEV-GT-DK/firmware.hex
-hardware/fpga/CYCLONEV-GT-DK/firmware_0.hex
-hardware/fpga/CYCLONEV-GT-DK/firmware_1.hex
-hardware/fpga/CYCLONEV-GT-DK/firmware_2.hex
-hardware/fpga/CYCLONEV-GT-DK/firmware_3.hex
-hardware/fpga/CYCLONEV-GT-DK/system.v
-hardware/fpga/CYCLONEV-GT-DK/top_system.sof
-hardware/fpga/CYCLONEV-GT-DK/top_system.fit.summary
+hardware/fpga/*/CYCLONEV-GT-DK/boot.hex
+hardware/fpga/*/CYCLONEV-GT-DK/firmware.hex
+hardware/fpga/*/CYCLONEV-GT-DK/firmware_0.hex
+hardware/fpga/*/CYCLONEV-GT-DK/firmware_1.hex
+hardware/fpga/*/CYCLONEV-GT-DK/firmware_2.hex
+hardware/fpga/*/CYCLONEV-GT-DK/firmware_3.hex
+hardware/fpga/*/CYCLONEV-GT-DK/system.v
+hardware/fpga/*/CYCLONEV-GT-DK/top_system.sof
+hardware/fpga/*/CYCLONEV-GT-DK/top_system.fit.summary
+hardware/fpga/quartus/CYCLONEV-GT-DK/c5_pin_model_dump.txt
+hardware/fpga/quartus/CYCLONEV-GT-DK/db/
+hardware/fpga/quartus/CYCLONEV-GT-DK/firmware.bin
+hardware/fpga/quartus/CYCLONEV-GT-DK/incremental_db/
+hardware/fpga/quartus/CYCLONEV-GT-DK/load.log
+hardware/fpga/quartus/CYCLONEV-GT-DK/output_files/
+hardware/fpga/quartus/CYCLONEV-GT-DK/top_system.qpf
+hardware/fpga/quartus/CYCLONEV-GT-DK/top_system.qsf
+hardware/fpga/*/CYCLONEV-GT-DK/synth_system.sof
 
-hardware/fpga/DE10-LITE/boot.hex
-hardware/fpga/DE10-LITE/firmware.hex
-hardware/fpga/DE10-LITE/firmware_0.hex
-hardware/fpga/DE10-LITE/firmware_1.hex
-hardware/fpga/DE10-LITE/firmware_2.hex
-hardware/fpga/DE10-LITE/firmware_3.hex
-hardware/fpga/DE10-LITE/system.v
-hardware/fpga/DE10-LITE/top_system.sof
-hardware/fpga/DE10-LITE/top_system.fit.summary
 
-hardware/fpga/AES-KU040-DB-G/boot.hex
-hardware/fpga/AES-KU040-DB-G/firmware.hex
-hardware/fpga/AES-KU040-DB-G/firmware_0.hex
-hardware/fpga/AES-KU040-DB-G/firmware_1.hex
-hardware/fpga/AES-KU040-DB-G/firmware_2.hex
-hardware/fpga/AES-KU040-DB-G/firmware_3.hex
-hardware/fpga/AES-KU040-DB-G/system.v
+hardware/fpga/*/DE10-LITE/boot.hex
+hardware/fpga/*/DE10-LITE/firmware.hex
+hardware/fpga/*/DE10-LITE/firmware_0.hex
+hardware/fpga/*/DE10-LITE/firmware_1.hex
+hardware/fpga/*/DE10-LITE/firmware_2.hex
+hardware/fpga/*/DE10-LITE/firmware_3.hex
+hardware/fpga/*/DE10-LITE/system.v
+hardware/fpga/*/DE10-LITE/top_system.sof
+hardware/fpga/*/DE10-LITE/top_system.fit.summary
+
+hardware/fpga/*/AES-KU040-DB-G/boot.hex
+hardware/fpga/*/AES-KU040-DB-G/firmware.hex
+hardware/fpga/*/AES-KU040-DB-G/firmware_0.hex
+hardware/fpga/*/AES-KU040-DB-G/firmware_1.hex
+hardware/fpga/*/AES-KU040-DB-G/firmware_2.hex
+hardware/fpga/*/AES-KU040-DB-G/firmware_3.hex
+hardware/fpga/*/AES-KU040-DB-G/system.v
+hardware/fpga/vivado/AES-KU040-DB-G/.Xil/
+hardware/fpga/vivado/AES-KU040-DB-G/firmware.bin
+hardware/fpga/vivado/AES-KU040-DB-G/synth_system.v
+hardware/fpga/*/AES-KU040-DB-G/ip
+hardware/fpga/*/AES-KU040-DB-G/*.log
+hardware/fpga/*/AES-KU040-DB-G/synth_system.bit
 
 hardware/asic/umc130/synth/*_report.txt

@@ -11,6 +11,7 @@ FPGA_USER=$(VIVA_USER)
 BOARD_SERVER=$(KU40_SERVER)
 BOARD_USER=$(KU40_USER)
 
+#specify any conditions that prevent running this FPGA
 NORUN = 0
 
 #DDR controller address width

@@ -2,6 +2,10 @@ ROOT_DIR:=../../../..
 
 include ../../fpga.mk
 
+
+#specify any conditions that prevent running this FPGA
+NORUN = 0
+
 # work-around for http://svn.clifford.at/handicraft/2016/vivadosig11
 export RDI_VERBOSE = False
 
