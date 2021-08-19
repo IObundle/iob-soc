@@ -21,6 +21,10 @@ module iob_gpio
 `endif
 
     // additional inputs and outputs
+    `OUTPUT(r0, `GPIO_R0_W),
+    `OUTPUT(r1, `GPIO_R1_W),
+    `OUTPUT(r2, `GPIO_R2_W),
+    `OUTPUT(r3, `GPIO_R3_W),
 
 `include "gen_if.v"
     );
@@ -28,5 +32,10 @@ module iob_gpio
    // BLOCK Register File & Holds the current configuration of the GPIO as well as internal parameters. Data to be sent or that has been received is stored here temporarily.
 `include "GPIOsw_reg.v"
 `include "GPIOsw_reg_gen.v"
+
+   `SIGNAL2OUT(r0, GPIO_R0)
+   `SIGNAL2OUT(r1, GPIO_R1)
+   `SIGNAL2OUT(r2, GPIO_R2)
+   `SIGNAL2OUT(r3, GPIO_R3)
 
 endmodule
