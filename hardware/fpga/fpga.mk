@@ -26,7 +26,7 @@ ifeq ($(BOARD_SERVER),)
 else
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR) 
-	bash -c "trap 'make kill-remote-console' INT; ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR); make fpga-run BOARD=$(BOARD) INIT_MEM=$(INIT_MEM) TEST_LOG=\"$(TEST_LOG)\"'"
+	bash -c "trap 'make queue-out-remote' INT; ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR); make fpga-run BOARD=$(BOARD) INIT_MEM=$(INIT_MEM) TEST_LOG=\"$(TEST_LOG)\"'"
 ifneq ($(TEST_LOG),)
 	scp $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR)/software/console/test.log $(CONSOLE_DIR)
 endif
@@ -37,16 +37,19 @@ FORCE ?= 0
 load: queue-in
 ifeq ($(NORUN),0)
 ifeq ($(BOARD_SERVER),)
-	echo $(USER) `md5sum $(FPGA_OBJ)  | cut -d" " -f1`  > load.log;\
-	if [ $(FORCE) = 1 -o ! -f $(LOAD_FILE) -o "`diff -q load.log $(LOAD_FILE)`" != "" ]; then ../prog.sh; fi
-	mv load.log $(LOAD_FILE)
+	@echo `md5sum $(FPGA_OBJ)  | cut -d" " -f1`  > load.log;\
+	bash -c "trap 'make queue-out' INT; if [ $(FORCE) = 1 -o ! -f $(LOAD_FILE) -o \"`diff -q load.log $(LOAD_FILE)`\" ]; then make prog; else make queue-out; fi"
 else
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR) 
-	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR); make fpga-load BOARD=$(BOARD)'
+	bash -c "trap 'make queue-out-remote' INT; ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR); make fpga-load BOARD=$(BOARD)'"
 endif
 endif
 
+prog:
+	../prog.sh
+	mv load.log $(LOAD_FILE)
+	tail -n +2 $(QUEUE_FILE)
 
 build: $(FPGA_OBJ)
 
@@ -73,20 +76,21 @@ endif
 #
 # Board access queue
 #
-QUEUE_SLEEP_TIME:=30s
-
-queue-out:
-	@ed -s $(QUEUE_FILE) <<<$$'g/$(USER)/d\nw\nq'
+QUEUE_SLEEP_TIME:=10s
 
 queue-in:
-	@echo $(USER) >> $(QUEUE_FILE)
-	chown $(USER).dialout $(QUEUE_FILE)
-	while [ `head -1 $(QUEUE_FILE)` != $(USER) ]; do echo "Queue occupancy: " `wc -l $(QUEUE_FILE) | cut -d" " -f1`; sleep $(QUEUE_SLEEP_TIME); done
+	@echo $(USER) `md5sum $(FPGA_OBJ)  | cut -d" " -f1` >> $(QUEUE_FILE)
+	@chown $(USER).dialout $(QUEUE_FILE)
+	bash -c "trap 'make queue-out; exit' INT; while [ \"`cut -d\" \" -f1 $(QUEUE_FILE)`\" != $(USER) ]; do echo \"Queued for board access. Queue length: \" `wc -l $(QUEUE_FILE) | cut -d" " -f1`; sleep $(QUEUE_SLEEP_TIME); done"
 
-kill-remote-console: queue-out
-	@echo "INFO: Remote console will be killed; ignore following errors"
+queue-out:
+	$(eval JOB=$(shell echo $(USER) `md5sum $(FPGA_OBJ)  | cut -d" " -f1`))
+	sed -i '/$(JOB)/d' $(QUEUE_FILE)
+
+queue-out-remote: queue-out
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR);\
-	make -C `find hardware/fpga -name $(BOARD)` queue-out; kill -9 `pgrep -a console`'
+	make -C `find hardware/fpga -name $(BOARD)` queue-out; killall -q -u $(USER) -9 console`'
+
 
 #
 # Clean
@@ -115,4 +119,4 @@ endif
 
 .PRECIOUS: $(FPGA_OBJ)
 
-.PHONY: all run load build kill-remote-console queue-in queue-out clean-all clean testlog-clean
+.PHONY: all run load build queue-out-remote queue-in queue-out clean-all clean testlog-clean
