@@ -31,10 +31,6 @@ fpga-load:
 fpga-build:
 	make -C $(BOARD_DIR) build
 
-fpga-mvlogs:
-	mv $(BOARD_DIR)/$(FPGA_OBJ) .
-	mv $(BOARD_DIR)/$(FPGA_LOG) .
-
 
 #
 # SIMULATE POST-SYNTHESIS ASIC
@@ -96,6 +92,6 @@ clean:
 	make clean-all-boards
 
 
-.PHONY: all pc-emul sim fpga-run fpga-load fpga-build fpga-mvlogs asic doc test \
-test-all-simulators test-simulator test-all-boards test-board clean-all-simulators \
-clean-all-boards clean
+.PHONY: all pc-emul sim fpga-run fpga-load fpga-build asic doc test \
+	test-all-simulators test-simulator test-all-boards test-board clean-all-simulators \
+	clean-all-boards clean
