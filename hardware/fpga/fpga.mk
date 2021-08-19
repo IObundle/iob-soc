@@ -34,11 +34,11 @@ endif
 endif
 
 FORCE ?= 0
-load: queue-in
+load:
 ifeq ($(NORUN),0)
 ifeq ($(BOARD_SERVER),)
 	@echo `md5sum $(FPGA_OBJ)  | cut -d" " -f1`  > load.log;\
-	bash -c "trap 'make queue-out' INT; if [ $(FORCE) = 1 -o ! -f $(LOAD_FILE) -o \"`diff -q load.log $(LOAD_FILE)`\" ]; then make prog; else make queue-out; fi"
+	bash -c "trap 'make queue-out' INT; if [ $(FORCE) = 1 -o ! -f $(LOAD_FILE) -o \"`diff -q load.log $(LOAD_FILE)`\" ]; then make queue-in; make prog; fi"
 else
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR) 
@@ -49,7 +49,7 @@ endif
 prog:
 	../prog.sh
 	mv load.log $(LOAD_FILE)
-	tail -n +2 $(QUEUE_FILE)
+	tail -n +2 $(QUEUE_FILE) > $(QUEUE_FILE)
 
 build: $(FPGA_OBJ)
 
@@ -79,17 +79,17 @@ endif
 QUEUE_SLEEP_TIME:=10s
 
 queue-in:
-	@echo $(USER) `md5sum $(FPGA_OBJ)  | cut -d" " -f1` >> $(QUEUE_FILE)
-	@chown $(USER).dialout $(QUEUE_FILE)
-	bash -c "trap 'make queue-out; exit' INT; while [ \"`cut -d\" \" -f1 $(QUEUE_FILE)`\" != $(USER) ]; do echo \"Queued for board access. Queue length: \" `wc -l $(QUEUE_FILE) | cut -d" " -f1`; sleep $(QUEUE_SLEEP_TIME); done"
+	@echo $(USER) `md5sum $(FPGA_OBJ)  | cut -d" " -f1` >> $(QUEUE_FILE);\
+	chown $(USER).dialout $(QUEUE_FILE); cat $(QUEUE_FILE);\
+	bash -c "trap 'make queue-out; exit' INT; while [ \"`cut -d\" \" -f1 $(QUEUE_FILE)`\" != \"$(USER)\" ]; do echo \"Queued for board access. Queue length: \" `wc -l $(QUEUE_FILE) | cut -d\" \" -f1`; sleep $(QUEUE_SLEEP_TIME); done"
 
 queue-out:
 	$(eval JOB=$(shell echo $(USER) `md5sum $(FPGA_OBJ)  | cut -d" " -f1`))
 	sed -i '/$(JOB)/d' $(QUEUE_FILE)
 
-queue-out-remote: queue-out
+queue-out-remote:
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR);\
-	make -C `find hardware/fpga -name $(BOARD)` queue-out; killall -q -u $(USER) -9 console`'
+	make -C `find hardware/fpga -name $(BOARD)` queue-out; killall -q -u $(USER) -9 console'
 
 
 #
@@ -119,4 +119,4 @@ endif
 
 .PRECIOUS: $(FPGA_OBJ)
 
-.PHONY: all run load build queue-out-remote queue-in queue-out clean-all clean testlog-clean
+.PHONY: all run load build queue-in queue-out queue-out-remote clean-all clean testlog-clean
