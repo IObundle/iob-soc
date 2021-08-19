@@ -1,5 +1,6 @@
 LOAD_FILE=/tmp/$(BOARD).load
 QUEUE_FILE=/tmp/$(BOARD).queue
+TOOL=$(shell find $(HW_DIR)/fpga -name $(BOARD) | cut -d"/" -f7)
 
 #ddr controller address width
 DEFINE+=$(defmacro)DDR_ADDR_W=$(FPGA_DDR_ADDR_W)
@@ -61,13 +62,12 @@ endif
 ifeq ($(NORUN),0)
 ifeq ($(FPGA_SERVER),)
 	../build.sh "$(INCLUDE)" "$(DEFINE)" "$(VSRC)"
-	cp $(FPGA_OBJ) $(FPGA_LOG) /tmp
 else 
 	ssh $(FPGA_USER)@$(FPGA_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
 	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR); make fpga-build BOARD=$(BOARD) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM)'
-	scp $(FPGA_USER)@$(FPGA_SERVER): /tmp/$(FPGA_OBJ) `find $(HW_DIR)/fpga -name $(BOARD)`
-	scp $(FPGA_USER)@$(FPGA_SERVER): /tmp/$(FPGA_LOG) `find $(HW_DIR)/fpga -name $(BOARD)`
+	scp $(FPGA_USER)@$(FPGA_SERVER): $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD)/$(FPGA_OBJ) `find $(HW_DIR)/fpga -name $(BOARD)`
+	scp $(FPGA_USER)@$(FPGA_SERVER): $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD)/$(FPGA_LOG) `find $(HW_DIR)/fpga -name $(BOARD)`
 endif
 endif
 
