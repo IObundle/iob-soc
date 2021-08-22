@@ -42,6 +42,7 @@ document/presentation/*
 !document/presentation/presentation.bib
 !document/presentation/presentation.pdf
 !document/presentation/presentation.tex
+!document/presentation/presentation.expected
 !document/presentation/Makefile
 document/pb/xil_results.tex
 document/pb/alt_results.tex

@@ -55,11 +55,18 @@ BOARD ?=CYCLONEV-GT-DK
 #check the respective Makefile in hardware/asic/$(ASIC_NODE) for specific settings
 ASIC_NODE ?=umc130
 
+
+#DOCUMENTATION
+#default document
+DOC ?= pb
+
 # REGRESSION TESTING
 #simulators used in regression testing
 SIM_LIST ?=icarus xcelium
 #boards used for regression testing
 BOARD_LIST ?=CYCLONEV-GT-DK AES-KU040-DB-G
+#documents used for regression testing
+DOC_LIST ?=pb presentation
 
 
 
@@ -96,7 +103,7 @@ ASIC_DIR=$(HW_DIR)/asic
 BOARD_DIR ?=$(shell find hardware -name $(BOARD))
 
 #doc paths
-DOC_DIR=$(ROOT_DIR)/document
+DOC_DIR=$(ROOT_DIR)/document/$(DOC)
 TEX_DIR=$(UART_DIR)/submodules/TEX
 
 #submodule paths

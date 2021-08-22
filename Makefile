@@ -11,6 +11,8 @@ include ./system.mk
 sim:
 	make -C $(SIM_DIR) all
 
+sim-clean:
+	make -C $(SIM_DIR) clean-all
 
 #
 # EMULATE ON PC
@@ -19,38 +21,53 @@ sim:
 pc-emul:
 	make -C $(PC_DIR) all
 
+pc-emul-clean:
+	make -C $(PC_DIR) clean
+
 #
-# RUN ON FPGA BOARD
+# BUILD, LOAD AND RUN ON FPGA BOARD
 #
-fpga-run:
+
+fpga-all:
 	make -C $(BOARD_DIR) all TEST_LOG="$(TEST_LOG)"
 
-fpga-load:
+fpga-run:
+	make -C $(BOARD_DIR) run TEST_LOG="$(TEST_LOG)"
 	make -C $(BOARD_DIR) load
 
 fpga-build:
 	make -C $(BOARD_DIR) build
 
+fpga-clean:
+	make -C $(BOARD_DIR) clean-all
+
 
 #
-# SIMULATE POST-SYNTHESIS ASIC
+# BUILD AND SIMULATE ASIC
 #
 
-asic:
+asic-synt:
+	make -C $(ASIC_DIR) all
+
+asic-sim-post-synt:
 	make -C $(ASIC_DIR) all
 
 #
 # COMPILE DOCUMENTS
 #
 doc:
-	make -C $(DOC_DIR)
+	make -C $(DOC_DIR) $(DOC).pdf
+
+doc-clean:
+	make -C $(DOC_DIR) clean
 
 
 #
 # TEST ON SIMULATORS AND BOARDS
 #
 
-test: test-all-simulators test-all-boards
+test: test-all-simulators test-all-boards test-all-docs
+	@echo ALL TESTS PASSED
 
 test-simulator:
 	make -C $(SIM_DIR) testlog-clean
@@ -84,14 +101,32 @@ test-all-boards:
 clean-all-boards:
 	$(foreach s, $(BOARD_LIST), make -C $(BOARD_DIR) clean-all BOARD=$s;)
 
+test-doc:
+	make -C $(DOC_DIR) clean
+	make -C $(DOC_DIR) $(DOC).pdf
+	diff -q $(DOC_DIR)/$(DOC).aux $(DOC_DIR)/$(DOC).expected
+
+test-all-docs:
+	$(foreach b, $(DOC_LIST), make test-doc DOC=$b;)
+	@echo DOC TEST PASSED
+
+clean-all-docs:
+	$(foreach s, $(DOC_LIST), make -C document/$s clean DOC=$s;)
+
+
 clean: 
 	make -C $(PC_DIR) clean
 	make -C $(ASIC_DIR) clean
 	make -C $(DOC_DIR) clean
 	make clean-all-simulators
 	make clean-all-boards
+	make clean-all-docs
 
 
-.PHONY: all pc-emul sim fpga-run fpga-load fpga-build asic doc test \
-	test-all-simulators test-simulator test-all-boards test-board clean-all-simulators \
-	clean-all-boards clean
+.PHONY: all pc-emul pc-emul-clean \
+	sim sim-clean\
+	fpga-all fpga-run fpga-build fpga-clean\
+	asic-synt asic-sim-post-synt
+	doc doc-clean \
+	test test-all-simulators test-simulator test-all-boards test-board\
+	clean-all-simulators clean-all-boards clean

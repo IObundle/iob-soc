@@ -53,24 +53,24 @@ for the user name, SIM\_USER, is set to IVSIM_USER. Hence, you need to set the
 latter variables as in the following example:
 
 ```
-export IVSIM_SERVER=sericaia.iobundle.com
-export IVSIM_USER=jsousa
+export IVSIM_SERVER=mysimserver.myorg.com
+export IVSIM_USER=myusername
 ```
 
 ### Set up the remote FPGA toolchain and board servers
 
 For example, in the Makefile in `hardware/fpga/CYCLONEV-GT-DK` the variable for
-the FPGA tool server logical name, FPGA\_SERVER, is set to QUAR\_SERVER, and the
-variable for the user name, FPGA\_USER, is set to QUAR\_USER; the variable for
+the FPGA tool server logical name, FPGA\_SERVER, is set to QUARTUS\_SERVER, and the
+variable for the user name, FPGA\_USER, is set to QUARTUS\_USER; the variable for
 the board server, BOARD\_SERVER, is set to CYC5\_SERVER, and the variable for
 the board user, BOARD\_USER, is set to CYC5_USER. Hence, you need to set the
 latter variables as in the following example:
 
 ```
-export QUAR_SERVER=pudim-flan.iobundle.com
-export QUAR_USER=jsousa
-export CYC5_SERVER=pudim-flan.iobundle.com
-export CYC5_USER=jsousa
+export QUARTUS_SERVER=myfpgaserver.myorg.com
+export QUARTUS_USER=myusername
+export CYC5_SERVER=myboardserver.myorg.com
+export CYC5_USER=myusername
 ```
 
 ### Set up the remote ASIC toolchain server
@@ -81,8 +81,8 @@ ASIC\_USER is set to CADE\_USER. Hence, you need to set the latter variables as
 in the following example:
 
 ```
-export CADE_SERVER=molotof.iobundle.com
-export CADE_USER=jsousa
+export CADENCE_SERVER=myasicserver.myorg.com
+export CADENCE_USER=myusername
 
 ```
 
@@ -93,7 +93,7 @@ license servers must be defined as in the following example:
 export QUARTUSPATH=/path/to/quartus
 export VIVADOPATH=/path/to/vivado
 ...
-export LM_LICENSE_FILE=port@host:lic_or_dat_file
+export LM_LICENSE_FILE=port@host;lic_or_dat_file
 ```
 
 
@@ -114,7 +114,32 @@ parameters>` can be set to `INIT_MEM=0 RUN_EXTMEM=1`, etc.
 To visualise simulation waveforms use the `VCD=1` control parameter. It will
 open the Gtkwave visualisation program.
 
+To clean simulation generated files, type:
+```
+make sim-clean [SIMULATOR=<simulator directory name>] 
+```
+
 For more details, read the Makefile in the simulator directory.
+
+## Emulate the system on PC 
+
+If there are embedded software compilation or runtime issues you may want to
+emulate the system on a PC ot debug those issues. To emulate IOb-SoC's embedded
+software on a PC, type:
+
+```
+make pc-emul [<control parameters>]
+```
+where `<control parameters>` are system configuration parameters passed in the
+command line, overriding those in the system.mk file. For example, `<control
+parameters>` can be set to `INIT_MEM=0 RUN_EXTMEM=1`, etc.
+
+To clean the PC compilation generated files, type:
+```
+make pc-emul-clean
+```
+
+For more details, read the Makefile in the `software/pc-emul` directory.
 
 
 ## Run on FPGA board
@@ -125,7 +150,7 @@ and IOb-SoC must have a run directory under the `hardware/fpga` directory. The
 FPGA tools and bord hosts may be different. To compile and run, type:
 
 ``` 
-make run [BOARD=<board directory name>] [<control parameters>]
+make fpga-all [BOARD=<board directory name>] [<control parameters>]
 ``` 
 where `<board directory name>` is the name of the board's run directory, and
 `<control parameters>` are system configuration parameters passed in the command
@@ -133,17 +158,30 @@ line, overriding those in the system.mk file. For example, `<control
 parameters>` can be set to `INIT_MEM=0 RUN_EXTMEM=1`, etc. For more details,
 read the Makefile in the board directory.
 
+To compile only, type
+``` 
+make fpga-build [BOARD=<board directory name>] [<control parameters>]
+``` 
 
+To just load the FPGA bitstream onto the board, type
+``` 
+make fpga-load [BOARD=<board directory name>] [<control parameters>]
+``` 
+
+To clean the FPGA compilation generated files, type
+``` 
+make fpga-clean [BOARD=<board directory name>]
+``` 
 
 ## Compile the documentation
 
-To compile the documents, the LaTeX document preparation software must be
-installed. To compile, type:
+To compile documents, the LaTeX document preparation software must be
+installed. To compile the document given by the DOC variable, type:
 ```
-make doc
+make doc [DOC=<document directory name>]
 ```
 
-For more details, read the Makefile in the `document` directory.
+For more details, read the Makefile in each document's directory
 
 
 
@@ -193,6 +231,31 @@ make test-all-boards [BOARD_LIST="<board directory name list>"]
 To clean the files produced when testing all boards, type:
 ```
 make clean-all-boards
+```
+
+The above simulation and board test commands will produce a test log file called
+`test.log`. With the `test-all-simulators` or the `test-all-boards` targets, the
+`test.log` file is compared with the expected file log in the respective
+simulator or board directory; if they differ, an error is issued.
+
+
+### Documentation test
+
+To compile and test the document given in the DOC, variable, type:
+
+```
+make test-doc [DOC=<document directory name>]
+```
+
+To test all documents listed in the DOC\_LIST variable, type:
+
+```
+make test-all-boards [DOC_LIST="<document directory name list>"]
+```
+
+To clean the files produced when testing all documents, type:
+```
+make clean-all-docs
 ```
 
 The above simulation and board test commands will produce a test log file called

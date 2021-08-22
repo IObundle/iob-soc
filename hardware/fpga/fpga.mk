@@ -2,8 +2,6 @@ LOAD_FILE=/tmp/$(BOARD).load
 QUEUE_FILE=/tmp/$(BOARD).queue
 TOOL=$(shell find $(HW_DIR)/fpga -name $(BOARD) | cut -d"/" -f7)
 
-#ddr controller address width
-DEFINE+=$(defmacro)DDR_ADDR_W=$(FPGA_DDR_ADDR_W)
 
 include $(ROOT_DIR)/hardware/hardware.mk
 
@@ -16,8 +14,7 @@ VSRC+=./verilog/top_system.v
 #
 # Use
 #
-
-all: sw build load run
+all: build load run
 
 run:
 ifeq ($(NORUN),0)
@@ -43,7 +40,7 @@ ifeq ($(BOARD_SERVER),)
 else
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR) 
-	bash -c "trap 'make queue-out-remote' INT; ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR); make fpga-load BOARD=$(BOARD) FORCE=$(FORCE)'"
+	bash -c "trap 'make queue-out-remote' INT; ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD); make load BOARD=$(BOARD) FORCE=$(FORCE)'"
 endif
 endif
 
@@ -52,7 +49,7 @@ prog:
 	mv load.log $(LOAD_FILE)
 	tail -n +2 $(QUEUE_FILE) > $(QUEUE_FILE)
 
-build: $(FPGA_OBJ)
+build: sw $(FPGA_OBJ)
 
 ifeq ($(INIT_MEM),1)
 $(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex firmware.hex
@@ -62,12 +59,13 @@ endif
 ifeq ($(NORUN),0)
 ifeq ($(FPGA_SERVER),)
 	../build.sh "$(INCLUDE)" "$(DEFINE)" "$(VSRC)"
+	make post-build
 else 
 	ssh $(FPGA_USER)@$(FPGA_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
 	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR); make fpga-build BOARD=$(BOARD) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM)'
-	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD)/$(FPGA_OBJ) .
-	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD)/$(FPGA_LOG) .
+	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD)/$(FPGA_OBJ) $(FPGA_OBJ)
+	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD)/$(FPGA_LOG) $(FPGA_LOG) 
 endif
 endif
 
@@ -89,7 +87,7 @@ queue-out:
 
 queue-out-remote:
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR);\
-	make -C `find hardware/fpga -name $(BOARD)` queue-out; killall -q -u $(USER) -9 console'
+	make -C $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD) queue-out; killall -q -u $(USER) -9 console'
 
 
 #
@@ -102,21 +100,23 @@ clean: hw-clean
 	make board-clean
 ifneq ($(FPGA_SERVER),)
 	rsync -avz --delete --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd `find $(REMOTE_ROOT_DIR)/hardware/fpga -name $(BOARD)`; make board-clean CLEANIP=$(CLEANIP)'
+	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD); make board-clean CLEANIP=$(CLEANIP)'
 endif
 ifneq ($(BOARD_SERVER),)
 	rsync -avz --delete --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd `find $(REMOTE_ROOT_DIR)/hardware/fpga -name $(BOARD)`; make board-clean'
+	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD); make board-clean'
 endif
 
 testlog-clean:
 	@rm -f $(CONSOLE_DIR)/test.log
 ifneq ($(BOARD_SERVER),)
 	rsync -avz --delete --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd `find $(REMOTE_ROOT_DIR)/hardware/fpga -name $(BOARD)`; rm -f $(CONSOLE_DIR)/test.log'
+	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD); rm -f $(CONSOLE_DIR)/test.log'
 endif
 
 
 .PRECIOUS: $(FPGA_OBJ)
 
-.PHONY: all run load build queue-in queue-out queue-out-remote clean-all clean testlog-clean
+.PHONY: all run load build \
+	queue-in queue-out queue-out-remote \
+	clean-all clean testlog-clean

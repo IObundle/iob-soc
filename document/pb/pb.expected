@@ -1,0 +1,24 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
+\HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
+\global\let\oldcontentsline\contentsline
+\gdef\contentsline#1#2#3#4{\oldcontentsline{#1}{#2}{#3}}
+\global\let\oldnewlabel\newlabel
+\gdef\newlabel#1#2{\newlabelxx{#1}#2}
+\gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
+\AtEndDocument{\ifx\hyper@anchor\@undefined
+\let\contentsline\oldcontentsline
+\let\newlabel\oldnewlabel
+\fi}
+\fi}
+\global\let\hyper@last\relax 
+\gdef\HyperFirstAtBeginDocument#1{#1}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces IOb-SoC high-level block diagram}}{1}{figure.1}\protected@file@percent }
+\newlabel{fig:IOb-SoC}{{1}{1}{IOb-SoC high-level block diagram}{figure.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Implementation Resources for Xilinx Kintex Ultrascale Devices (with ROM, RAM, L1/L2 caches, DDR controller and UART)}}{1}{table.1}\protected@file@percent }
+\newlabel{tab:res-xil}{{1}{1}{Implementation Resources for Xilinx Kintex Ultrascale Devices (with ROM, RAM, L1/L2 caches, DDR controller and UART)}{table.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Implementation Resources for Intel Cyclone V Devices (with ROM, RAM, UART)}}{1}{table.2}\protected@file@percent }
+\newlabel{tab:res-alt}{{2}{1}{Implementation Resources for Intel Cyclone V Devices (with ROM, RAM, UART)}{table.2}{}}
