@@ -32,7 +32,9 @@ $(UART_HW_DIR)/include/UARTsw_reg_gen.v $(UART_HW_DIR)/include/UARTsw_reg.vh: $(
 	mv UARTsw_reg.vh $(UART_HW_DIR)/include
 
 uart_clean_hw:
-	@rm -rf $(UART_HW_DIR)/include/UARTsw_reg_gen.v $(UART_HW_DIR)/include/UARTsw_reg.vh tmp $(UART_HW_DIR)/fpga/vivado/XCKU $(UART_HW_DIR)/fpga/quartus/CYCLONEV-GT
+	@rm -rf $(UART_HW_DIR)/include/UARTsw_reg_gen.v \
+	$(UART_HW_DIR)/include/UARTsw_reg.vh tmp
+
 
 .PHONY: uart_clean_hw
 

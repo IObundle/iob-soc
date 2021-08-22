@@ -51,8 +51,10 @@ where <fpga family> is the FPGA family's folder name
 If you have the FPGA tools installed on another machine you can run FPGA compilation remotely by setting the following environment variables:
 
 ```
-export FPGA_SERVER=<full host name including domain or IP address>
-export FPGA_USER=<your user name at host>
+export VIVADO_SERVER=<full host name including domain or IP address>
+export VIVADO_USER=<your user name at the host>
+export QUARTUS_SERVER=<full host name including domain or IP address>
+export QUARTUS_USER=<your user name at the host>
 ```
 
 To clean the FPGA compilation generated files on the local or remote host type:

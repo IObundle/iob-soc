@@ -1,10 +1,29 @@
-UART_DIR:=../../..
 include $(UART_DIR)/hardware/hardware.mk
 
-FPGA_VSRC=$(addprefix ../, $(VSRC) )
-FPGA_VHDR=$(addprefix ../, $(VHDR) )
-FPGA_INCLUDE=$(addprefix ../, $(INCLUDE) )
+TOOL=$(shell find $(UART_HW_DIR)/fpga -name $(FPGA_FAMILY) | cut -d"/" -f7)
+
+build: $(FPGA_OBJ)
 
 $(FPGA_OBJ): $(CONSTRAINTS) $(VSRC) $(VHDR)
-	mkdir -p $(FPGA_FAMILY)
-	cd $(FPGA_FAMILY); ../build.sh "$(FPGA_VSRC)" "$(FPGA_INCLUDE)" "$(DEFINE)" "$(FPGA_PART)"
+ifeq ($(FPGA_SERVER),)
+	../build.sh "$(VSRC)" "$(INCLUDE)" "$(DEFINE)" "$(FPGA_PART)"
+	make post-build
+else 
+	ssh $(FPGA_USER)@$(FPGA_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
+	rsync -avz --delete --exclude .git $(UART_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
+	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR); make fpga-build FPGA_FAMILY=$(FPGA_FAMILY)'
+	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(FPGA_FAMILY)/$(FPGA_OBJ) $(FPGA_DIR)
+	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(FPGA_FAMILY)/$(FPGA_LOG) $(FPGA_DIR)
+
+endif
+
+
+clean:
+	find . -type f -not -name 'Makefile' -delete
+ifneq ($(FPGA_SERVER),)
+	rsync -avz --delete --exclude .git $(UART_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
+	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR); make fpga-clean FPGA_FAMILY=$(FPGA_FAMILY)'
+endif
+
+
+.PHONY: build clean

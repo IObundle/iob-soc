@@ -1,5 +1,5 @@
 #!/usr/bin/bash
-nios=$ALTERAPATH/nios2eds/nios2_command_shell.sh
+nios=$QUARTUSPATH/nios2eds/nios2_command_shell.sh
 
 TOP_MODULE="iob_uart"
 

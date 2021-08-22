@@ -5,54 +5,56 @@
 CORE_NAME:=UART
 IS_CORE:=1
 USE_NETLIST ?=0
+DATA_W=32
 
-#UART PATHS
+# UART PATHS
 UART_HW_DIR:=$(UART_DIR)/hardware
 UART_SW_DIR:=$(UART_DIR)/software
 UART_DOC_DIR:=$(UART_DIR)/document
 UART_SUBMODULES_DIR:=$(UART_DIR)/submodules
 
-#SUBMODULES
+# SUBMODULES
 UART_SUBMODULES:=INTERCON LIB TEX
 $(foreach p, $(UART_SUBMODULES), $(eval $p_DIR ?=$(UART_SUBMODULES_DIR)/$p))
 
 #
-#SIMULATION
+# SIMULATION
 #
 SIM_DIR ?=$(UART_HW_DIR)/simulation
 
 #
-#FPGA
+# FPGA
 #
 FPGA_FAMILY ?=CYCLONEV-GT
 #FPGA_FAMILY ?=XCKU
 
+FPGA_FAMILY_LIST = CYCLONEV-GT XCKU
+
 REMOTE_ROOT_DIR ?= sandbox/iob-soc/submodules/UART
 
-ifeq ($(FPGA_FAMILY),XCKU)
-	FPGA_COMP:=vivado
-	FPGA_PART:=xcku040-fbva676-1-c
-else
-	FPGA_COMP:=quartus
-	FPGA_PART:=5CGTFD9E5F35C7
-endif
-FPGA_DIR ?=$(UART_HW_DIR)/fpga/$(FPGA_COMP)
+FPGA_DIR ?=$(shell find $(UART_DIR)/hardware -name $(FPGA_FAMILY))
 
-ifeq ($(FPGA_COMP),vivado)
-FPGA_LOG ?=vivado.log
-else ifeq ($(FPGA_COMP),quartus)
-FPGA_LOG ?=quartus.log
-endif
 
 #
-#DOCUMENT
+# DOCUMENTS
 #
 DOC_TYPE:=pb
 #DOC_TYPE:=ug
+
+DOC_LIST:=pb ug
+
+DOC_DIR:=document/$(DOC_TYPE)
+
 INTEL ?=1
 INT_FAMILY ?=CYCLONEV-GT
 XILINX ?=1
 XIL_FAMILY ?=XCKU
+
+
+
+#
+# VERSION
+#
 VERSION= 0.1
 VLINE:="V$(VERSION)"
 $(CORE_NAME)_version.txt:

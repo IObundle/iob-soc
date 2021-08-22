@@ -42,11 +42,8 @@ document/ug/shortHash.txt
 document/ug/version.txt
 document/figures/Logo.png
 document/ug/quartus.log
-hardware/simulation/icarus/a.out
-hardware/simulation/icarus/uart.vcd
-hardware/simulation/icarus/sw_reg_w.vh
-hardware/simulation/icarus/tmp
-hardware/simulation/ncsim/tmp
+hardware/simulation/uart.vcd
+hardware/simulation/sw_reg_w.vh
 document/pb/alt_results.tex
 document/pb/xil_results.tex
 document/ug/alt_results.tex
