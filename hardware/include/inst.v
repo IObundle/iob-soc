@@ -1,10 +1,6 @@
    //
    // GPIO
    //
-   wire [`GPIO_R0_W-1:0] gpio_r0;
-   wire [`GPIO_R1_W-1:0] gpio_r1;
-   wire [`GPIO_R2_W-1:0] gpio_r2;
-   wire [`GPIO_R3_W-1:0] gpio_r3;
 
    iob_gpio gpio
      (
