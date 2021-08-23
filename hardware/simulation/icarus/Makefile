@@ -12,7 +12,7 @@ incdir:=-I
 SIMULATOR=icarus
 SIM_SERVER=$(IVSIM_SERVER)
 SIM_USER=$(IVSIM_USER)
-
+SIM_PROC=a.out
 
 include ../simulation.mk
 
@@ -28,11 +28,7 @@ build: a.out
 a.out: $(VSRC) $(VHDR) $(IMAGES)
 	$(VLOG) $(VSRC)
 
-kill-remote-sim:
-	@echo "INFO: Remote icarus will be killed"
-	ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR); killall -9 a.out'
-
-sim-clean: clean
+clean: clean-all
 	@rm -f a.out
 
-.PHONY: run build kill-remote-sim sim-clean
+.PHONY: run build sim-clean

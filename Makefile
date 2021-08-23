@@ -12,7 +12,7 @@ sim:
 	make -C $(SIM_DIR) all
 
 sim-clean:
-	make -C $(SIM_DIR) clean-all
+	make -C $(SIM_DIR) clean
 
 #
 # EMULATE ON PC
@@ -32,8 +32,8 @@ fpga-all:
 	make -C $(BOARD_DIR) all TEST_LOG="$(TEST_LOG)"
 
 fpga-run:
-	make -C $(BOARD_DIR) run TEST_LOG="$(TEST_LOG)"
 	make -C $(BOARD_DIR) load
+	make -C $(BOARD_DIR) run TEST_LOG="$(TEST_LOG)"
 
 fpga-build:
 	make -C $(BOARD_DIR) build

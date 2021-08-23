@@ -86,8 +86,8 @@ queue-out:
 	sed -i '/$(JOB)/d' $(QUEUE_FILE)
 
 queue-out-remote:
-	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR);\
-	make -C $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD) queue-out; killall -q -u $(USER) -9 console'
+	ssh $(BOARD_USER)@$(BOARD_SERVER) \
+	'make -C $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD) queue-out; killall -q -u $(USER) -9 console'
 
 
 #
