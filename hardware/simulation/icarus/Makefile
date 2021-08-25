@@ -21,7 +21,7 @@ VLOG = iverilog -W all -g2005-sv $(INCLUDE) $(DEFINE)
 
 #run the simulator
 run: build
-	./a.out $(LOG)
+	./a.out $(TEST_LOG)
 
 build: a.out
 

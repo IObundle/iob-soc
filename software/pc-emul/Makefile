@@ -30,7 +30,7 @@ SRC+= $(FIRM_DIR)/firmware.c $(UART_DIR)/software/printf.c
 
 all: build run
 run: firmware.out
-	./firmware.out
+	./firmware.out $(TEST_LOG)
 
 build: firmware.out
 
@@ -46,6 +46,6 @@ periphs_tmp.h:
 	$(foreach p, $(PERIPHERALS), $(shell echo "#define $p_BASE (1<<$P) |($p<<($P-N_SLAVES_W))" >> $@) )
 
 clean:
-	@rm -rf firmware.out periphs.h
+	@rm -rf firmware.out periphs.h test.log
 
 .PHONY: all build run clean subs periphs_tmp.h

@@ -1,20 +1,18 @@
 test_report.log
 
+# generated verilog files
 hardware/src/system.v
 hardware/testbench/system_tb.v
 
 # following lines ignore everything 'make' command produces
-hardware/simulation/icarus/*
-!hardware/simulation/icarus/Makefile
-!hardware/simulation/icarus/test.expected
+hardware/simulation/*/*
 
-hardware/simulation/xmsim/*
-!hardware/simulation/xmsim/Makefile
-!hardware/simulation/xmsim/run_xmsim.sh
-!hardware/simulation/xmsim/test.expected
+!hardware/simulation/*/Makefile
+!hardware/simulation/*/test.expected
 
-hardware/simulation/verilator/*
-!hardware/simulation/verilator/Makefile
+hardware/simulation/xcelium/*
+!hardware/simulation/xcelium/run_xmsim.sh
+
 
 software/periphs.h
 
