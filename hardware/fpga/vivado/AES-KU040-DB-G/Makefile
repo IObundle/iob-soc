@@ -9,7 +9,7 @@ BOARD_USER=$(KU40_USER)
 NORUN = 0
 
 #DDR controller address width
-DDR_ADDR_W ?=30
+DDR_ADDR_W=24
 
 include ../vivado.mk
 

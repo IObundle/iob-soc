@@ -9,7 +9,7 @@ DEFINE+=$(defmacro)BAUD=$(BAUD)
 DEFINE+=$(defmacro)FREQ=$(FREQ)
 
 #ddr controller address width
-DEFINE+=$(defmacro)DDR_ADDR_W=24
+DDR_ADDR_W=24
 
 #produce waveform dump
 VCD ?=0
@@ -72,13 +72,23 @@ kill-remote-sim:
 	@echo "INFO: Remote simulator $(SIMULATOR) will be killed"
 	ssh $(SIM_USER)@$(SIM_SERVER) 'killall -q -u $(SIM_USER) -9 $(SIM_PROC)'
 
-clean-all: hw-clean 
-	@rm -f system.vcd test.log
+#clean target common to all simulators
+clean-remote: hw-clean 
+	@rm -f system.vcd
 ifneq ($(SIM_SERVER),)
 	rsync -avz --delete --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
 	ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR); make sim-clean SIMULATOR=$(SIMULATOR)'
 endif
 
+#clean test log only when sim testing begins
+clean-testlog:
+	@rm -f test.log
+ifneq ($(SIM_SERVER),)
+	rsync -avz --delete --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
+	ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR); rm -f test.log'
+endif
+
+
 
 .PRECIOUS: system.vcd test.log
-.PHONY: all clean-all clean testlog-clean kill-remote-sim
+.PHONY: all clean-remote clean-testlog kill-remote-sim

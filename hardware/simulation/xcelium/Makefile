@@ -21,7 +21,7 @@ run: $(VSRC) $(VHDR) $(IMAGES)
 	./run_xmsim.sh "$(VSRC)" "$(CFLAGS)" "$(EFLAGS)" "$(SFLAGS)"
 	grep -v xcelium xmsim.log | grep -v xmsim $(LOG)
 
-clean: clean-all
+clean: clean-remote
 	@rm -rf xcelium.d xmsim.key
 
-.PHONY: run sim-clean
+.PHONY: run clean

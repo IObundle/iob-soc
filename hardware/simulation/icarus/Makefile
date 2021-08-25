@@ -28,7 +28,7 @@ build: a.out
 a.out: $(VSRC) $(VHDR) $(IMAGES)
 	$(VLOG) $(VSRC)
 
-clean: clean-all
+clean: clean-remote
 	@rm -f a.out
 
-.PHONY: run build sim-clean
+.PHONY: run build clean

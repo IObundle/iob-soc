@@ -12,7 +12,7 @@ sim:
 	make -C $(SIM_DIR) all
 
 sim-clean:
-	make -C $(SIM_DIR) clean
+	make -C $(SIM_DIR) clean clean-testlog
 
 #
 # EMULATE ON PC
@@ -39,7 +39,7 @@ fpga-build:
 	make -C $(BOARD_DIR) build
 
 fpga-clean:
-	make -C $(BOARD_DIR) clean-all
+	make -C $(BOARD_DIR) clean clean-testlog
 
 
 #
@@ -66,49 +66,57 @@ doc-clean:
 # TEST ON SIMULATORS AND BOARDS
 #
 
-test: test-all-simulators test-all-boards test-all-docs
-	@echo ALL TESTS PASSED
+test:
+	@echo TEST REPORT `date`> test_report.log
+	make test-all-simulators
+	make test-all-boards
+	make test-all-docs
+	@echo TEST FINISHED `date`>> test_report.log
+
 
 test-simulator:
-	make -C $(SIM_DIR) testlog-clean
+	make -C $(SIM_DIR) clean-testlog
 	make -C $(SIM_DIR) all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
 	make -C $(SIM_DIR) all INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
 	make -C $(SIM_DIR) all INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=0 TEST_LOG=">> test.log"
 	make -C $(SIM_DIR) all INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
 	make -C $(SIM_DIR) all INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
-	diff -q $(SIM_DIR)/test.log $(SIM_DIR)/test.expected
-	@echo SIMULATOR $(SIMULATOR) TEST PASSED
+	if [ `diff -q $(SIM_DIR)/test.log $(SIM_DIR)/test.expected` ]; then \
+	echo SIMULATOR $(SIMULATOR) TEST FAILED; else \
+	echo SIMULATOR $(SIMULATOR) TEST PASSED; fi >> test_report.log
 
 test-all-simulators:
 	$(foreach s, $(SIM_LIST), make test-simulator SIMULATOR=$s;)
 
 clean-all-simulators:
-	$(foreach s, $(SIM_LIST), make -C $(HW_DIR)/simulation/$s clean-all SIMULATOR=$s;)
+	$(foreach s, $(SIM_LIST), make -C $(HW_DIR)/simulation/$s clean clean-testlog SIMULATOR=$s;)
 
 test-board:
-	make -C $(BOARD_DIR) testlog-clean
+	make -C $(BOARD_DIR) clean-testlog
 	make -C $(BOARD_DIR) clean
 	make -C $(BOARD_DIR) all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
 	make -C $(BOARD_DIR) all INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
 	make -C $(BOARD_DIR) clean
 	make -C $(BOARD_DIR) all INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
-	diff -q $(CONSOLE_DIR)/test.log $(BOARD_DIR)/test.expected
-	@echo BOARD $(BOARD) TEST PASSED
+	if [ `diff -q $(CONSOLE_DIR)/test.log $(BOARD_DIR)/test.expected` ]; then \
+	echo BOARD $(BOARD) TEST FAILED; else \
+	echo BOARD $(BOARD) TEST PASSED; fi >> test_report.log
 
 test-all-boards:
 	$(foreach b, $(BOARD_LIST), make test-board BOARD=$b;)
 
 clean-all-boards:
-	$(foreach s, $(BOARD_LIST), make -C $(BOARD_DIR) clean-all BOARD=$s;)
+	$(foreach s, $(BOARD_LIST), make -C $(BOARD_DIR) clean BOARD=$s;)
 
 test-doc:
 	make -C $(DOC_DIR) clean
-	make -C $(DOC_DIR) $(DOC).pdf
-	diff -q $(DOC_DIR)/$(DOC).aux $(DOC_DIR)/$(DOC).expected
+	make -C $(DOC_DIR) $(DOC).pdf DOC=$(DOC)
+	if [ `diff -q $(DOC_DIR)/$(DOC).aux $(DOC_DIR)/$(DOC).expected` ]; then \
+	echo DOC $(DOC) TEST FAILED; else \
+	echo DOC $(DOC) TEST PASSED; fi >> test_report.log
 
 test-all-docs:
 	$(foreach b, $(DOC_LIST), make test-doc DOC=$b;)
-	@echo DOC TEST PASSED
 
 clean-all-docs:
 	$(foreach s, $(DOC_LIST), make -C document/$s clean DOC=$s;)

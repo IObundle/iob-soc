@@ -34,8 +34,8 @@ INC_DIR:=$(HW_DIR)/include
 SRC_DIR:=$(HW_DIR)/src
 
 #DEFINES
-#ddr controller address width
 DEFINE+=$(defmacro)DDR_ADDR_W=$(DDR_ADDR_W)
+
 
 #INCLUDES
 INCLUDE+=$(incdir). $(incdir)$(INC_DIR)

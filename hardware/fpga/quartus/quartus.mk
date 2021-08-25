@@ -14,8 +14,8 @@ post-build:
 	mv output_files/top_system.fit.summary $(FPGA_LOG)
 
 
-board-clean: hw-clean
+clean: clean-remote
 	rm -rf db incremental_db output_files *.summary *.rpt *.smsg *.txt *.done \
 	*.jdi *.pin *.sof *.sld *.qpf *.qsf *~ system.v *.log
 
-.PHONY: pre-build post-build board-clean
+.PHONY: pre-build post-build clean

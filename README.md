@@ -14,7 +14,7 @@ for CentOS 7 and Ubuntu 18.04 or 20.04 LTS.
 
 ## Clone the repository
 
-The first step is to clone this repository. IOb-SoC is a git sub-module tree and
+The first step is to clone this repository. IOb-SoC git sub-module trees, and
 GitHub will ask for your password for each downloaded module. To avoid this,
 setup GitHub access with *ssh* and type:
 ```
@@ -23,18 +23,14 @@ cd iob-soc
 ```
 
 Alternatively, you can clone this repository using *https*. You might want to
-cache your credentials using:
+cache your credentials before cloning the repository, using:
 ``git config --global credential.helper 'cache --timeout=<time_in_seconds>'``
-
-Before cloning the repository:
-``git clone --recursive https://github.com/IObundle/iob-soc.git``
 
 
 ## Configure your SoC
 
 To configure your system edit the *system.mk* file, which can be found at the
-repository root. In this file there is a set of variables to configure the
-system as desired; there are comments to explain each variable.
+repository root. In this file, you can find the system configuration variables; each variable is explained by a comment.
 
 
 ## Set environment variables for local or remote building and running
@@ -47,9 +43,9 @@ settings in your .bashrc file, so that they apply to every session.
 
 ### Set up the remote simulator server
 
-For example, in the Makefile in `hardware/simulation/icarus`, the variable for
-the server logical name, SIM\_SERVER, is set to IVSIM\_SERVER, and the variable
-for the user name, SIM\_USER, is set to IVSIM_USER. Hence, you need to set the
+For example, in `hardware/simulation/icarus/Makefile`, the variable for the
+server logical name, SIM\_SERVER, is set to IVSIM\_SERVER, and the variable for
+the user name, SIM\_USER, is set to IVSIM_USER. Hence, you need to set the
 latter variables as in the following example:
 
 ```
@@ -59,7 +55,7 @@ export IVSIM_USER=myusername
 
 ### Set up the remote FPGA toolchain and board servers
 
-For example, in the Makefile in `hardware/fpga/CYCLONEV-GT-DK` the variable for
+For example, in `hardware/fpga/CYCLONEV-GT-DK/Makefile` the variable for
 the FPGA tool server logical name, FPGA\_SERVER, is set to QUARTUS\_SERVER, and the
 variable for the user name, FPGA\_USER, is set to QUARTUS\_USER; the variable for
 the board server, BOARD\_SERVER, is set to CYC5\_SERVER, and the variable for
@@ -67,18 +63,18 @@ the board user, BOARD\_USER, is set to CYC5_USER. Hence, you need to set the
 latter variables as in the following example:
 
 ```
-export QUARTUS_SERVER=myfpgaserver.myorg.com
-export QUARTUS_USER=myusername
-export CYC5_SERVER=myboardserver.myorg.com
-export CYC5_USER=myusername
+export QUARTUS_SERVER=myQUARTUSserver.myorg.com
+export QUARTUS_USER=myQUARTUSserverusername
+export CYC5_SERVER=myCYCLONEV-GT-DKboardserver.myorg.com
+export CYC5_USER=myCYCLONEV-GT-DKboardserverusername
 ```
 
 ### Set up the remote ASIC toolchain server
 
-In the Makefile in `hardware/asic`, the variable for the server logical name,
-ASIC\_SERVER, is set to CADE\_SERVER, and the variable for the user name
-ASIC\_USER is set to CADE\_USER. Hence, you need to set the latter variables as
-in the following example:
+In `hardware/asic/Makefile`, the variable for the server logical name,
+ASIC\_SERVER, is set to CADENCE\_SERVER, and the variable for the user name
+ASIC\_USER is set to CADENCE\_USER. Hence, you need to set the latter variables
+as in the following example:
 
 ```
 export CADENCE_SERVER=myasicserver.myorg.com
@@ -86,8 +82,8 @@ export CADENCE_USER=myusername
 
 ```
 
-In each remote server, the environmental variables for the paths of tools and
-license servers must be defined as in the following example:
+In each remote server, the environmental variables for the paths of the tools
+and license servers used must be defined as in the following example:
 
 ```
 export QUARTUSPATH=/path/to/quartus
@@ -109,7 +105,7 @@ make [sim] [SIMULATOR=<simulator directory name>] [<control parameters>]
 where `<simulator directory name>` is the name of the simulator's run directory,
 and `<control parameters>` are system configuration parameters passed in the
 command line, overriding those in the system.mk file. For example, `<control
-parameters>` can be set to `INIT_MEM=0 RUN_EXTMEM=1`, etc.
+parameters>` can be replaced with `INIT_MEM=0 RUN_EXTMEM=1`.
 
 To visualise simulation waveforms use the `VCD=1` control parameter. It will
 open the Gtkwave visualisation program.
@@ -119,7 +115,7 @@ To clean simulation generated files, type:
 make sim-clean [SIMULATOR=<simulator directory name>] 
 ```
 
-For more details, read the Makefile in the simulator directory.
+For more details, read the Makefile in each simulator directory.
 
 ## Emulate the system on PC 
 
@@ -132,7 +128,7 @@ make pc-emul [<control parameters>]
 ```
 where `<control parameters>` are system configuration parameters passed in the
 command line, overriding those in the system.mk file. For example, `<control
-parameters>` can be set to `INIT_MEM=0 RUN_EXTMEM=1`, etc.
+parameters>` can be replaced with `INIT_MEM=0 RUN_EXTMEM=1`.
 
 To clean the PC compilation generated files, type:
 ```
@@ -142,31 +138,44 @@ make pc-emul-clean
 For more details, read the Makefile in the `software/pc-emul` directory.
 
 
-## Run on FPGA board
+## Build and run on FPGA board
 
-To run IOb-SoC on an FPGA board, the FPGA design tools must be installed, either
-locally or remotely, the board must be attached to a local host or remote host,
-and IOb-SoC must have a run directory under the `hardware/fpga` directory. The
-FPGA tools and bord hosts may be different. To compile and run, type:
+To build and run IOb-SoC on an FPGA board, the FPGA design tools must be
+installed, either locally or remotely, the board must be attached to the local
+host or to a remote host, and each board must have a run directory under the
+`hardware/fpga` directory, for example the `hardware/fpga/BASYS3` directory. The
+FPGA tools and board hosts may be different. 
 
+To build only, type
 ``` 
-make fpga-all [BOARD=<board directory name>] [<control parameters>]
+make fpga-build [BOARD=<board directory name>] [<control parameters>]
 ``` 
 where `<board directory name>` is the name of the board's run directory, and
 `<control parameters>` are system configuration parameters passed in the command
 line, overriding those in the system.mk file. For example, `<control
-parameters>` can be set to `INIT_MEM=0 RUN_EXTMEM=1`, etc. For more details,
+parameters>` can be replaced with `INIT_MEM=0 RUN_EXTMEM=1`, etc. For more details,
 read the Makefile in the board directory.
 
-To compile only, type
+To build and run, type:
 ``` 
-make fpga-build [BOARD=<board directory name>] [<control parameters>]
+make fpga-all [BOARD=<board directory name>] [<control parameters>]
 ``` 
 
-To just load the FPGA bitstream onto the board, type
+To run, assuming it is already built, type:
 ``` 
-make fpga-load [BOARD=<board directory name>] [<control parameters>]
+make fpga-run [BOARD=<board directory name>] [<control parameters>]
 ``` 
+
+Before running, the FPGA is loaded with the configuration bitstream. However if
+the bitstream checksum matches that of the last loaded bitstream, kept in file
+`/tmp/<board directory name>.load`, this step is skipped. If, for some reason,
+the FPGA does not run, you may interrupt it with Ctr-C. Then run make fpga-run again and force the bitstream to be reloaded using control
+parameter FORCE=1.
+
+If many users are trying to run the same FPGA board they will be queued in file
+`/tmp/<board directory name>.queue`, before being able to load the bistream and
+run. After a successful run or Ctr-C interrupt, the user is dequeued.
+
 
 To clean the FPGA compilation generated files, type
 ``` 
@@ -196,20 +205,30 @@ variable, type:
 make test-simulator [SIMULATOR=<simulator directory name>]
 ```
 
+The above command creates a file called `test.log` in directory
+`hardware/simulation/<simulator directory name>`, which is compared to file
+`test.expected`in the same directory; if they differ, an error is issued. It
+also adds a line to file `test_report.log` in the repository's root directory.
+
 To run the series of simulation tests on all the simulators listed in the
 SIM\_LIST variable, type:
 
 ```
 make test-all-simulators [SIM_LIST="<simulator directory name list>"]
 ```
-where `<simulator directory name list>` is the list of directory names of the
-simulators to be used.
+where `<simulator directory name list>` is the list of sub-directory names in directory `hardware/simulation`, which correspond to simulator names.
 
 To clean the files produced when testing all simulators, type:
 
 ```
 make clean-all-simulators
 ```
+
+The above simulation and board test commands will produce a test log file called
+`test.log` in each simulator or board sub-directory. With the `test-all-simulators` or the `test-all-boards` targets, the
+`test.log` file is compared with the expected file log in the respective
+simulator or board directory; if they differ, an error is issued.
+
 
 
 ### Board test
@@ -220,6 +239,11 @@ variable, type:
 ```
 make test-board [BOARD=<board directory name>]
 ```
+
+The above command creates the file `software/console/test.log`, which is
+compared to file `hardware/fpga/<FPGA compiler name>/<board directory
+name>/test.expected`; if they differ, an error is issued. It also adds a line to
+file `test_report.log` in the repository's root directory.
 
 To run the series of board tests on all the boards listed in the BOARD\_LIST
 variable, type:
@@ -233,11 +257,6 @@ To clean the files produced when testing all boards, type:
 make clean-all-boards
 ```
 
-The above simulation and board test commands will produce a test log file called
-`test.log`. With the `test-all-simulators` or the `test-all-boards` targets, the
-`test.log` file is compared with the expected file log in the respective
-simulator or board directory; if they differ, an error is issued.
-
 
 ### Documentation test
 
@@ -247,10 +266,14 @@ To compile and test the document given in the DOC, variable, type:
 make test-doc [DOC=<document directory name>]
 ```
 
+The above command will add a line to file `test_report.log` in the repository's
+root directory.
+
+
 To test all documents listed in the DOC\_LIST variable, type:
 
 ```
-make test-all-boards [DOC_LIST="<document directory name list>"]
+make test-all-docs [DOC_LIST="<document directory name list>"]
 ```
 
 To clean the files produced when testing all documents, type:
@@ -258,10 +281,15 @@ To clean the files produced when testing all documents, type:
 make clean-all-docs
 ```
 
-The above simulation and board test commands will produce a test log file called
-`test.log`. With the `test-all-simulators` or the `test-all-boards` targets, the
-`test.log` file is compared with the expected file log in the respective
-simulator or board directory; if they differ, an error is issued.
+### Total test
+
+To run all simulation, FPGA board and documentation tests, type:
+```
+make test
+```
+
+The total test report can be found in file `test_report.log` in the repository's
+root directory.
 
 
 ## Cleaning
