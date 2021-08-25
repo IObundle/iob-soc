@@ -3,6 +3,11 @@ ROOT_DIR:=../../..
 defmacro:=-D
 incdir:=-I
 
+SIM_SERVER=$(VSIM_SERVER)
+SIM_USER=$(VSIM_USER)
+SIM_PROC=Vsystem
+
+
 include ../simulation.mk
 
 # remove space between -I and directory for verilator
@@ -24,15 +29,20 @@ run: $(VSRC) $(VHDR) firmware boot.hex
 	cp obj_dir/Vsim_system_top Vsim_system_top
 	./Vsim_system_top
 
+<<<<<<< HEAD
 clean: hw-clean
 	mv sim_system_top.v sim_system_top.ver
 	@rm  -f *.v *.cpp *.hex Vsim_system_top
+=======
+sim-clean: hw-clean
+	@rm -f *.cpp Vsystem
+>>>>>>> modelsim
 	@rm -rf obj_dir
 	mv sim_system_top.ver sim_system_top.v
 
 #@rm  -f *.v *.cpp *.hex Vsystem  !("sim_system_top.v")
 
 
-.PHONY: clean
+.PHONY: run clean
 
 

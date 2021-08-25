@@ -2,6 +2,9 @@ defmacro:=-D
 incdir:=-I
 include $(ROOT_DIR)/system.mk
 
+DEFINE+=$(defmacro)BAUD=$(BAUD)
+DEFINE+=$(defmacro)FREQ=$(FREQ)
+
 #compiler settings
 TOOLCHAIN_PREFIX:=riscv64-unknown-elf-
 CFLAGS=-Os -nostdlib -march=$(MFLAGS) -mabi=ilp32
@@ -21,4 +24,3 @@ HDR=$(SW_DIR)/system.h
 #common sources (none so far)
 #SRC=$(SW_DIR)/*.c
 
-.PHONY: periphs.h

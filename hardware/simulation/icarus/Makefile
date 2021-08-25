@@ -1,7 +1,18 @@
+#
+# ICARUS VERILOG SIMULTOR (iverilog)
+#
+# Tested with iverilog version 10.3
+#
+
 ROOT_DIR:=../../..
 
 defmacro:=-D
 incdir:=-I
+
+SIMULATOR=icarus
+SIM_SERVER=$(IVSIM_SERVER)
+SIM_USER=$(IVSIM_USER)
+SIM_PROC=a.out
 
 include ../simulation.mk
 
@@ -9,11 +20,15 @@ include ../simulation.mk
 VLOG = iverilog -W all -g2005-sv $(INCLUDE) $(DEFINE) 
 
 #run the simulator
-run: $(VSRC) $(VHDR) firmware boot.hex
+run: build
+	./a.out $(TEST_LOG)
+
+build: a.out
+
+a.out: $(VSRC) $(VHDR) $(IMAGES)
 	$(VLOG) $(VSRC)
-	./a.out $(LOG)
 
-clean: hw-clean
-	@rm -f ./a.out *.log *.v
+clean: clean-remote
+	@rm -f a.out
 
-.PHONY: clean
+.PHONY: run build clean

@@ -2,7 +2,7 @@
 #include "interconnect.h"
 #include "iob-uart.h"
 
-#if (USE_DDR_SW==1 && RUN_DDR_SW==1)
+#if (USE_DDR_SW==1 && RUN_EXTMEM_SW==1)
 #include "iob-cache.h"
 #endif
 
@@ -31,23 +31,23 @@ int main() {
     uart_puts (PROGNAME);
     uart_puts(": DDR in use\n");
   }
-  if(RUN_DDR_SW){
+  if(RUN_EXTMEM_SW){
     uart_puts (PROGNAME);
     uart_puts(": program to run from DDR\n");
   }
 
   // address to copy firmware to
-  char *prog_start_addr[1];
-  if (USE_DDR_SW==0 || (USE_DDR_SW==1 && RUN_DDR_SW==0))	
-    prog_start_addr[0] = (char *) (1<<BOOTROM_ADDR_W);
+  char *prog_start_addr;
+  if (USE_DDR_SW==0 || (USE_DDR_SW==1 && RUN_EXTMEM_SW==0))	
+    prog_start_addr = (char *) (1<<BOOTROM_ADDR_W);
   else
-    prog_start_addr[0] = (char *) EXTRA_BASE;
+    prog_start_addr = (char *) EXTRA_BASE;
 
   //receive firmware from host 
   int file_size = 0;
   char r_fw[] = "firmware.bin";
   if (uart_getc() == FRX) {//file receive: load firmware
-    file_size = uart_recvfile(r_fw, prog_start_addr);
+    file_size = uart_recvfile(r_fw, &prog_start_addr);
     uart_puts (PROGNAME);
     uart_puts (": Loading firmware...\n");
   }
@@ -56,16 +56,16 @@ int main() {
   char s_fw[] = "s_fw.bin";
 
   if(file_size)
-    uart_sendfile(s_fw, file_size, prog_start_addr[0]);
+    uart_sendfile(s_fw, file_size, prog_start_addr);
   
   //run firmware
   uart_puts (PROGNAME);
   uart_puts (": Restart CPU to run user program...\n");
   uart_txwait();
 
-#if (USE_DDR && RUN_DDR)
+#if (USE_DDR && RUN_EXTMEM)
   //by reading any DDR data, it forces the caches to first write everyting before reason (write-through write-not-allocate)
-  char force_cache_read = *prog_start_addr[0];
+  char force_cache_read = *prog_start_addr;
   uart_rxen(force_cache_read);//this line prevents compiler from optimizing away force_cache_read
 #endif
   //reboot and run firmware (not bootloader)
