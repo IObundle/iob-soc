@@ -13,6 +13,9 @@ hardware/simulation/*/*
 hardware/simulation/xcelium/*
 !hardware/simulation/xcelium/run_xmsim.sh
 
+hardware/simulation/verilator/*
+!hardware/simulation/verilator/verilog
+
 
 software/periphs.h
 

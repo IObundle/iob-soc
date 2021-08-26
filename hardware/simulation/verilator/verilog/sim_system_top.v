@@ -74,4 +74,6 @@ iob_uart #(
 
   end
 
+`include "cpu_tasks.v"
+
 endmodule
