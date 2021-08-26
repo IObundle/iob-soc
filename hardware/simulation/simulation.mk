@@ -1,38 +1,37 @@
 #DEFINES
 
-BAUD=$(SIM_BAUD)
+#default baud and freq for simulation
+BAUD ?=5000000
+FREQ ?=100000000
+
+#define for testbench
+DEFINE+=$(defmacro)BAUD=$(BAUD)
+DEFINE+=$(defmacro)FREQ=$(FREQ)
 
 #ddr controller address width
-DEFINE+=$(defmacro)DDR_ADDR_W=24
+DDR_ADDR_W=24
 
-#vcd dump
+#produce waveform dump
+VCD ?=0
+
 ifeq ($(VCD),1)
 DEFINE+=$(defmacro)VCD
 endif
 
-
 include $(ROOT_DIR)/hardware/hardware.mk
 
-#ASIC libs
-ifeq ($(SYNTH),1)
-LIBS=/opt/ic_tools/pdk/faraday/umc130/LL/fsc0l_d/2009Q2v3.0/GENERIC_CORE/FrontEnd/verilog/fsc0l_d_generic_core_30.lib
-else ifeq ($(PR),1)
-LIBS=/opt/ic_tools/pdk/faraday/umc130/LL/fsc0l_d/2009Q2v3.0/GENERIC_CORE/FrontEnd/verilog/fsc0l_d_generic_core_30.lib
-endif
-
-
 #SOURCES
-#asic sources
-ifeq ($(SYNTH),1)
-VSRC=$(ASIC_DIR)/synth/system_synth.v \
-$(wildcard $(ASIC_DIR)/memory/bootrom/SP*.v) \
-$(wildcard $(ASIC_DIR)/memory/sram/SH*.v)
+#asic post-synthesis and post-pr sources
+ifeq ($(ASIC_SIM),1)
+ASIC_SIM_LIB ?= my_asic_sim_lib
+$(wildcard $(ASIC_DIR)/$(ASIC_NODE)/memory/bootrom/SP*.v)
+$(wildcard $(ASIC_DIR)/$(ASIC_NODE)/memory/sram/SH*.v)
+ifeq ($(ASIC_SYNTH),1)
+VSRC=$(ASIC_DIR)/$(ASIC_NODE)/synth/system_synth.v
 endif
-
-ifeq ($(PR),1)
-VSRC=$(ASIC_DIR)/pr/system_pr.v \
-$(wildcard $(ASIC_DIR)/memory/bootrom/SP*.v) \
-$(wildcard $(ASIC_DIR)/memory/sram/SH*.v)
+ifeq ($(ASIC_PR),1)
+VSRC=$(ASIC_DIR)/$(ASIC_NODE)/pr/system_pr.v
+endif
 endif
 
 #ddr memory
@@ -40,12 +39,24 @@ VSRC+=$(CACHE_DIR)/submodules/AXIMEM/rtl/axi_ram.v
 #testbench
 VSRC+=system_tb.v
 
-# verilator uses a c++ testbench
-ifeq ($(SIMULATOR),verilator)
-	VSRC+=sim_xtop.cpp
+#RULES
+all: clean sw
+ifeq ($(SIM_SERVER),)
+	make run 
+else
+	ssh $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
+	rsync -avz --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
+	bash -c "trap 'make kill-remote-sim' INT; ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR); make run INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) VCD=$(VCD) TEST_LOG=\"$(TEST_LOG)\"'"
+ifneq ($(TEST_LOG),)
+	scp $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR)/test.log $(SIM_DIR)
+endif
+ifeq ($(VCD),1)
+	scp $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)//hardware/simulation/$(SIMULATOR)/*.vcd $(SIM_DIR)
+	gtkwave -a ../waves.gtkw system.vcd &
+endif
 endif
 
-#RULES
+
 #create testbench
 system_tb.v:
 	cp $(TB_DIR)/system_core_tb.v $@  # create system_tb.v
@@ -54,10 +65,30 @@ system_tb.v:
 	$(foreach p, $(PERIPHERALS), if test -f $(SUBMODULES_DIR)/$p/hardware/include/pio.v; then sed s/input// $(SUBMODULES_DIR)/$p/hardware/include/pio.v | sed s/output// | sed 's/\[.*\]//' | sed 's/\([A-Za-z].*\),/\.\1(\1),/' > ./ports.v; sed -i '/PORTS/r ports.v' $@; fi;) #insert and connect pins in uut instance
 	$(foreach p, $(PERIPHERALS), if test -f $(SUBMODULES_DIR)/$p/hardware/include/inst_tb.sv; then sed -i '/endmodule/e cat $(SUBMODULES_DIR)/$p/hardware/include/inst_tb.sv' $@; fi;) # insert peripheral instances
 
-sim_xtop.cpp:
-	cp $(TB_DIR)/sim_xtop.cpp $@
 
 VSRC+=$(foreach p, $(PERIPHERALS), $(shell if test -f $(SUBMODULES_DIR)/$p/hardware/testbench/module_tb.sv; then echo $(SUBMODULES_DIR)/$p/hardware/testbench/module_tb.sv; fi;)) #add test cores to list of sources
 
+kill-remote-sim:
+	@echo "INFO: Remote simulator $(SIMULATOR) will be killed"
+	ssh $(SIM_USER)@$(SIM_SERVER) 'killall -q -u $(SIM_USER) -9 $(SIM_PROC)'
 
-.PRECIOUS: system.vcd
+#clean target common to all simulators
+clean-remote: hw-clean 
+	@rm -f system.vcd
+ifneq ($(SIM_SERVER),)
+	rsync -avz --delete --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
+	ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR); make sim-clean SIMULATOR=$(SIMULATOR)'
+endif
+
+#clean test log only when sim testing begins
+clean-testlog:
+	@rm -f test.log
+ifneq ($(SIM_SERVER),)
+	rsync -avz --delete --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
+	ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR); rm -f test.log'
+endif
+
+
+
+.PRECIOUS: system.vcd test.log
+.PHONY: all clean-remote clean-testlog kill-remote-sim
