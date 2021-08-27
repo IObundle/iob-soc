@@ -4,7 +4,7 @@
 
 #select top module and FPGA decive
 set TOP top_system
-set PART xc7a35tcpg236-1
+set DEVICE [lindex $argv 3]
 
 set INCLUDE [lindex $argv 0]
 set DEFINE [lindex $argv 1]
@@ -19,7 +19,7 @@ foreach file [split $VSRC \ ] {
     }
 }
 
-set_property part $PART [current_project]
+set_property part $DEVICE [current_project]
 
 if { $USE_DDR < 0 } {
     read_verilog verilog/clock_wizard.v
@@ -61,14 +61,14 @@ if { $USE_DDR < 0 } {
         synth_ip [get_files ./ip/axi_interconnect_0/axi_interconnect_0.xci]
 
     }
-
+    
     if { [file isdirectory "./ip/ddr4_0"] } {
 	read_ip ./ip/ddr4_0/ddr4_0.xci
         report_property [get_files ./ip/ddr4_0/ddr4_0.xci]
     } else {
 
         create_ip -name ddr4 -vendor xilinx.com -library ip -version 2.2 -module_name ddr4_0 -dir ./ip -force
-
+        
         set_property -dict \
         [list \
              CONFIG.C0.DDR4_TimePeriod {1250} \
@@ -83,7 +83,7 @@ if { $USE_DDR < 0 } {
              CONFIG.C0.DDR4_AxiAddressWidth {30} \
              CONFIG.ADDN_UI_CLKOUT1_FREQ_HZ {100} \
              CONFIG.C0.BANK_GROUP_WIDTH {1}] [get_ips ddr4_0]
-
+	
         generate_target all [get_files ./ip/ddr4_0/ddr4_0.xci]
 
         report_property [get_ips ddr4_0]
@@ -96,7 +96,7 @@ if { $USE_DDR < 0 } {
 
 read_xdc ./top_system.xdc
 
-synth_design -include_dirs $INCLUDE -verilog_define $DEFINE -part $PART -top $TOP
+synth_design -include_dirs $INCLUDE -verilog_define $DEFINE -part $DEVICE -top $TOP
 
 opt_design
 
@@ -108,7 +108,6 @@ report_utilization
 
 report_timing
 
-<<<<<<< HEAD:hardware/fpga/BASYS3/synth_system.tcl
 file mkdir reports
 
 report_timing -file reports/timing.txt -max_paths 30
@@ -118,9 +117,6 @@ report_cdc -details -file reports/cdc.txt
 report_synchronizer_mtbf -file reports/synchronizer_mtbf.txt
 report_utilization -hierarchical -file reports/utilization.txt
 
-write_bitstream -force synth_system.bit
-=======
 write_bitstream -force top_system.bit
->>>>>>> makefile_revamp:hardware/fpga/vivado/BASYS3/top_system.tcl
 
 write_verilog -force top_system.v

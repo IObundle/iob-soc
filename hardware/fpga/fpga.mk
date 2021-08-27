@@ -1,7 +1,10 @@
-LOAD_FILE=/tmp/$(BOARD).load
-QUEUE_FILE=/tmp/$(BOARD).queue
-TOOL=$(shell find $(HW_DIR)/fpga -name $(BOARD) | cut -d"/" -f7)
+BOARD=$(shell basename `pwd`)
 
+LOAD_FILE=/tmp/$(BOARD).load
+
+QUEUE_FILE=/tmp/$(BOARD).queue
+
+TOOL=$(shell find $(HW_DIR)/fpga -name $(BOARD) | cut -d"/" -f7)
 
 include $(ROOT_DIR)/hardware/hardware.mk
 
@@ -58,7 +61,7 @@ $(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex
 endif
 ifeq ($(NORUN),0)
 ifeq ($(FPGA_SERVER),)
-	../build.sh "$(INCLUDE)" "$(DEFINE)" "$(VSRC)"
+	../build.sh "$(INCLUDE)" "$(DEFINE)" "$(VSRC)" "$(DEVICE)"
 	make post-build
 else 
 	ssh $(FPGA_USER)@$(FPGA_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
