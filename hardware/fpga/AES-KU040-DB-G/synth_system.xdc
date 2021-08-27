@@ -50,6 +50,52 @@ set_property IOSTANDARD LVCMOS18 [get_ports uart_txd]
 set_property PACKAGE_PIN C19 [get_ports uart_rxd]
 set_property IOSTANDARD LVCMOS18 [get_ports uart_rxd]
 
+## Ethernet #1 Interface (J1)
+set_property PACKAGE_PIN D9 [get_ports ENET_RESETN]
+set_property IOSTANDARD LVCMOS18 [get_ports ENET_RESETN]
+
+set_property PACKAGE_PIN A10 [get_ports ENET_RX_D0]
+set_property IOSTANDARD LVCMOS18 [get_ports ENET_RX_D0]
+
+set_property PACKAGE_PIN B10 [get_ports ENET_RX_D1]
+set_property IOSTANDARD LVCMOS18 [get_ports ENET_RX_D1]
+
+set_property PACKAGE_PIN B11 [get_ports ENET_RX_D2]
+set_property IOSTANDARD LVCMOS18 [get_ports ENET_RX_D2]
+
+set_property PACKAGE_PIN C11 [get_ports ENET_RX_D3]
+set_property IOSTANDARD LVCMOS18 [get_ports ENET_RX_D3]
+
+set_property PACKAGE_PIN D11 [get_ports ENET_RX_DV]
+set_property IOSTANDARD LVCMOS18 [get_ports ENET_RX_DV]
+
+set_property PACKAGE_PIN E11 [get_ports ENET_RX_CLK]
+set_property IOSTANDARD LVCMOS18 [get_ports ENET_RX_CLK]
+
+set_property PACKAGE_PIN H8 [get_ports ENET_TX_D0]
+set_property IOSTANDARD LVCMOS18 [get_ports ENET_TX_D0]
+
+set_property PACKAGE_PIN H9 [get_ports ENET_TX_D1]
+set_property IOSTANDARD LVCMOS18 [get_ports ENET_TX_D1]
+
+set_property PACKAGE_PIN J9 [get_ports ENET_TX_D2]
+set_property IOSTANDARD LVCMOS18 [get_ports ENET_TX_D2]
+
+set_property PACKAGE_PIN J10 [get_ports ENET_TX_D3]
+set_property IOSTANDARD LVCMOS18 [get_ports ENET_TX_D3]
+
+set_property PACKAGE_PIN G9 [get_ports ENET_TX_EN]
+set_property IOSTANDARD LVCMOS18 [get_ports ENET_TX_EN]
+
+set_property PACKAGE_PIN G10 [get_ports ENET_GTX_CLK]
+set_property IOSTANDARD LVCMOS18 [get_ports ENET_GTX_CLK]
+
+set_property IOB TRUE [get_ports ENET_TX_D0]
+set_property IOB TRUE [get_ports ENET_TX_D1]
+set_property IOB TRUE [get_ports ENET_TX_D2]
+set_property IOB TRUE [get_ports ENET_TX_D3]
+set_property IOB TRUE [get_ports ENET_TX_EN]
+
 ###### User LEDs
 #set_property PACKAGE_PIN D16 [get_ports {led[6]}]
 #set_property IOSTANDARD LVCMOS18 [get_ports {led[6]}]
