@@ -86,7 +86,7 @@ queue-in:
 
 queue-out:
 	$(eval JOB=$(shell echo $(USER) `md5sum $(FPGA_OBJ)  | cut -d" " -f1`))
-	sed -i '/$(JOB)/d' $(QUEUE_FILE)
+	ed -s $(QUEUE_FILE) <<<$$'g/$(JOB)/d\nw\nq'
 
 queue-out-remote:
 	ssh $(BOARD_USER)@$(BOARD_SERVER) \
