@@ -50,7 +50,7 @@ endif
 prog:
 	../prog.sh
 	$(eval TMP=$(shell cat load.log))
-	ed -s /tmp/AES-KU040-DB-G.load <<< $'1d\ni\n$(TMP)\n.\nw\nq'
+	ed -s $(LOAD_FILE) <<<$$'i\nXX\n.\n1d\ni\n$(TMP)\n.\nw\nq'
 
 build: sw $(FPGA_OBJ)
 
