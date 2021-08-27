@@ -15,7 +15,7 @@ FIRM_ADDR_W ?=16
 SRAM_ADDR_W ?=16
 
 #DDR 
-USE_DDR ?=0
+USE_DDR ?=1
 RUN_EXTMEM ?=0
 
 #DATA CACHE ADDRESS WIDTH (tag + index + offset)
