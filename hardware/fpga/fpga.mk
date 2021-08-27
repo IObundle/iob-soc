@@ -49,8 +49,8 @@ endif
 
 prog:
 	../prog.sh
-	mv load.log $(LOAD_FILE)
-	tail -n +2 $(QUEUE_FILE) > $(QUEUE_FILE)
+	$(eval TMP=$(shell cat load.log))
+	ed -s /tmp/AES-KU040-DB-G.load <<< $'1d\ni\n$(TMP)\n.\nw\nq'
 
 build: sw $(FPGA_OBJ)
 
