@@ -1,6 +1,3 @@
-#
-# TOP MAKEFILE
-#
 UART_DIR:=.
 include core.mk
 
@@ -10,12 +7,6 @@ include core.mk
 
 sim:
 	make -C $(SIM_DIR) run
-
-sim-waves: $(SIM_DIR)/waves.gtkw $(SIM_DIR)/uart.vcd
-	gtkwave -a $^ &
-
-$(SIM_DIR)/uart.vcd:
-	make -C $(SIM_DIR) run VCD=1
 
 sim-clean:
 	make -C $(SIM_DIR) clean
