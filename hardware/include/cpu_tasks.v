@@ -39,7 +39,7 @@ task cpu_uartread;
    begin
       # 1 uart_addr = cpu_address;
       uart_valid = 1;
-      @ (posedge clk) #1 read_reg = uart_rdata;
+      @ (posedge clk) #1 read_reg = {24'd0, uart_rdata[7:0]};
       @ (posedge clk) #1 uart_valid = 0;
    end
 endtask
@@ -122,7 +122,7 @@ task cpu_sendfile;
       if(name_str != "")
         fp = $fopen(name_str,"rb"); //to support icarus
       else
-         fp = $fopen(name,"rb"); //to support ncsim
+         fp = $fopen(name,"rb"); //to support xmsim
 
       
       if(!fp)
@@ -177,7 +177,7 @@ task cpu_recvfile;
       if(name_str != "")
         fp = $fopen(name_str, "wb"); //to support icarus
       else
-        fp = $fopen(name, "wb"); //to support ncsim
+        fp = $fopen(name, "wb"); //to support xmsim
 
       if(!fp) begin
          $display("TESTBENCH: can't open file to store received data\n");
