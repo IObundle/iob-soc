@@ -38,7 +38,7 @@ FORCE ?= 0
 load:
 ifeq ($(NORUN),0)
 ifeq ($(BOARD_SERVER),)
-	@echo `md5sum $(FPGA_OBJ)  | cut -d" " -f1`  > load.log;\
+	@echo `md5sum $(FPGA_OBJ)  | cut -d" " -f1`  > load.log; chown $(USER).dialout $(LOAD_FILE)\
 	bash -c "trap 'make queue-out' INT; if [ $(FORCE) = 1 -o ! -f $(LOAD_FILE) -o \"`diff -q load.log $(LOAD_FILE)`\" ]; then make queue-in; make prog; fi"
 else
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
@@ -49,7 +49,7 @@ endif
 
 prog:
 	../prog.sh
-	mv load.log $(LOAD_FILE)
+	cat load.log > $(LOAD_FILE)
 	tail -n +2 $(QUEUE_FILE) > $(QUEUE_FILE)
 
 build: sw $(FPGA_OBJ)
