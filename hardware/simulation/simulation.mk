@@ -42,7 +42,7 @@ VSRC+=system_tb.v
 #RULES
 all: clean sw
 ifeq ($(SIM_SERVER),)
-	make run 
+	make run
 else
 	ssh $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
@@ -73,7 +73,7 @@ kill-remote-sim:
 	ssh $(SIM_USER)@$(SIM_SERVER) 'killall -q -u $(SIM_USER) -9 $(SIM_PROC)'
 
 #clean target common to all simulators
-clean-remote: hw-clean 
+clean-remote: hw-clean
 	@rm -f system.vcd
 ifneq ($(SIM_SERVER),)
 	rsync -avz --delete --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
