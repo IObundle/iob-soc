@@ -50,7 +50,8 @@ doc-clean-all:
 # CLEAN ALL
 # 
 
-clean: sim-clean fpga-clean fpga-clean-all doc-clean doc-clean-all 
+clean: sim-clean fpga-clean-all doc-clean doc-clean-all 
 
-.PHONY: sim sim-waves fpga-build fpga-build-all fpga-clean doc-build doc-build-all doc-clean doc-clean-all clean
+.PHONY: sim sim-clean fpga-build fpga-build-all fpga-clean \
+	doc-build doc-build-all doc-clean doc-clean-all clean
 
