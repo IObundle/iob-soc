@@ -40,7 +40,7 @@ ifeq ($(NORUN),0)
 ifeq ($(BOARD_SERVER),)
 	if [ ! -f $(LOAD_FILE) ]; then touch $(LOAD_FILE); chown $(USER).dialout $(LOAD_FILE); fi;\
 	echo `md5sum $(FPGA_OBJ)  | cut -d" " -f1`  > load.log;\
-	bash -c "trap 'make queue-out' INT; if [ $(FORCE) = 1 -o ! -f $(LOAD_FILE) -o \"`diff -q load.log $(LOAD_FILE)`\" ]; then make queue-in; make prog; fi"
+	bash -c "trap 'make queue-out' INT; make queue-in; if [ $(FORCE) = 1 -o ! -f $(LOAD_FILE) -o \"`diff -q load.log $(LOAD_FILE)`\" ]; then make prog; fi"
 else
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR) 
@@ -78,15 +78,17 @@ endif
 #
 # Board access queue
 #
-QUEUE_SLEEP_TIME:=10s
+JOB=$(shell echo $(USER) `md5sum $(FPGA_OBJ)  | cut -d" " -f1`)
 
 queue-in:
 	if [ ! -f $(QUEUE_FILE) ]; then touch $(QUEUE_FILE); chown $(USER).dialout $(QUEUE_FILE); fi;\
-	echo $(USER) `md5sum $(FPGA_OBJ)  | cut -d" " -f1` >> $(QUEUE_FILE);\
-	bash -c "trap 'make queue-out; exit' INT; while [ \"`cut -d\" \" -f1 $(QUEUE_FILE)`\" != \"$(USER)\" ]; do echo \"Queued for board access. Queue length: \" `wc -l $(QUEUE_FILE) | cut -d\" \" -f1`; sleep $(QUEUE_SLEEP_TIME); done"
+	if [ "`head -1 $(QUEUE_FILE)`" != "$(JOB)" ]; then echo $(JOB) >> $(QUEUE_FILE); fi;\
+	bash -c "trap 'make queue-out; exit' INT; make queue-wait"
+
+queue-wait:
+	while [ "`head -1 $(QUEUE_FILE)`" != "$(JOB)" ]; do echo "Job queued for board access. Queue length: `wc -l $(QUEUE_FILE) | cut -d" " -f1`"; sleep 10s; done
 
 queue-out:
-	$(eval JOB=$(shell echo $(USER) `md5sum $(FPGA_OBJ)  | cut -d" " -f1`))
 	sed '/$(JOB)/d' $(QUEUE_FILE) > queue; cat queue > $(QUEUE_FILE); rm queue
 
 queue-out-remote:
@@ -121,5 +123,5 @@ endif
 .PRECIOUS: $(FPGA_OBJ)
 
 .PHONY: all run load build \
-	queue-in queue-out queue-out-remote \
+	queue-in queue-out queue-wait queue-out-remote \
 	clean clean-testlog
