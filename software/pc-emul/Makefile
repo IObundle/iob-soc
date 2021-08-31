@@ -5,12 +5,8 @@ include ../software.mk
 BAUD=5000000
 FREQ=100000000
 
-
-
-
 #additional compiler flags
 CFLAGS=-Os -std=gnu99 -Wl,--strip-debug
-
 
 #DEFINE+=-DLONGLONG 
 DEFINE+=-DPC
@@ -18,7 +14,7 @@ DEFINE+=-DPC
 #SUBMODULES
 
 #peripherals (pc)
-$(foreach p, $(PERIPHERALS), $(eval include $(SUBMODULES_DIR)/$p/software/pc/pc.mk))
+$(foreach p, $(PERIPHERALS), $(eval include $(SUBMODULES_DIR)/$p/software/pc-emul/pc.mk))
 
 #HEADERS
 HDR+=periphs.h
