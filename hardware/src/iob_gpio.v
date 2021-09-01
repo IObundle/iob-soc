@@ -8,7 +8,8 @@
 module iob_gpio 
   # (
      parameter ADDR_W = `GPIO_ADDR_W,
-     parameter DATA_W = `GPIO_DATA_W
+     parameter DATA_W = `GPIO_DATA_W,
+     parameter WDATA_W = `GPIO_DATA_W
      )
    (
 
