@@ -19,12 +19,15 @@ VSRC+=./verilog/top_system.v
 #
 # Use
 #
-all: sw build load run
+all: sw build run
+FORCE ?= 0
 
 run:
 ifeq ($(NORUN),0)
 ifeq ($(BOARD_SERVER),)
-	make -C $(CONSOLE_DIR) run; make queue-out
+	if [ ! -f $(LOAD_FILE) ]; then touch $(LOAD_FILE); chown $(USER).dialout $(LOAD_FILE); fi;\
+	bash -c "trap 'make queue-out' INT; make queue-in; if [ $(FORCE) = 1 -o \"`head -1 $(LOAD_FILE)`\" != \"$(JOB)\" ];\
+	then ../prog.sh; echo $(JOB) > $(LOAD_FILE); fi; make -C $(CONSOLE_DIR) run; make queue-out"
 else
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR) 
@@ -32,20 +35,6 @@ else
 ifneq ($(TEST_LOG),)
 	scp $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR)/software/console/test.log $(CONSOLE_DIR)
 endif
-endif
-endif
-
-FORCE ?= 0
-load:
-ifeq ($(NORUN),0)
-ifeq ($(BOARD_SERVER),)
-	if [ ! -f $(LOAD_FILE) ]; then touch $(LOAD_FILE); chown $(USER).dialout $(LOAD_FILE); fi;\
-	bash -c "trap 'make queue-out' INT; make queue-in; if [ $(FORCE) = 1 -o \"`head -1 $(LOAD_FILE)`\" != \"$(JOB)\" ];\
-	then ../prog.sh; echo $(JOB) > $(LOAD_FILE); fi"
-else
-	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
-	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR) 
-	bash -c "trap 'make queue-out-remote' INT; ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD); make $@ FORCE=$(FORCE)'"
 endif
 endif
 
