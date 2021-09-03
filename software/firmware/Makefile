@@ -16,7 +16,7 @@ endif
 $(foreach p, $(PERIPHERALS), $(eval include $(SUBMODULES_DIR)/$p/software/embedded/embedded.mk))
 
 #HEADERS
-HDR+=periphs.h
+HDR+=$(SW_DIR)/periphs.h
 
 #SOURCES
 SRC+= firmware.S firmware.c $(UART_DIR)/software/printf.c
@@ -26,7 +26,7 @@ firmware.elf: ../template.lds $(HDR) $(SRC)
 	$(TOOLCHAIN_PREFIX)gcc -o $@ $(CFLAGS) $(DEFINE) $(INCLUDE) $(SRC) -lgcc -lc -lnosys
 	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
 
-clean: gen-clean 
-	@rm -rf firmware.bin firmware.elf firmware.map *.hex periphs.h
+clean: sw-clean
+	@rm -rf firmware.bin firmware.elf firmware.map *.hex
 
 .PHONY: clean

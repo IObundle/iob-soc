@@ -1,3 +1,4 @@
+include $(ROOT_DIR)/core.mk
 include $(ROOT_DIR)/system.mk
 
 #default baud and freq for hardware
@@ -28,6 +29,9 @@ endif
 
 #peripherals
 $(foreach p, $(PERIPHERALS), $(eval include $(SUBMODULES_DIR)/$p/hardware/hardware.mk))
+
+#Restore CORE_NAME
+include $(ROOT_DIR)/core.mk
 
 #HARDWARE PATHS
 INC_DIR:=$(HW_DIR)/include
@@ -66,7 +70,7 @@ system.v:
 	cp $(SRC_DIR)/system_core.v $@ # create system.v
 	$(foreach p, $(PERIPHERALS), if [ `ls -1 $(SUBMODULES_DIR)/$p/hardware/include/*.vh 2>/dev/null | wc -l ` -gt 0 ]; then $(foreach f, $(shell echo `ls $(SUBMODULES_DIR)/$p/hardware/include/*.vh`), sed -i '/PHEADER/a `include \"$f\"' $@;) break; fi;) # insert header files
 	$(foreach p, $(PERIPHERALS), if test -f $(SUBMODULES_DIR)/$p/hardware/include/pio.v; then sed -i '/PIO/r $(SUBMODULES_DIR)/$p/hardware/include/pio.v' $@; fi;) #insert system IOs for peripheral
-	$(foreach p, $(PERIPHERALS), if test -f $(SUBMODULES_DIR)/$p/hardware/include/inst.v; then sed -i '/endmodule/e cat $(SUBMODULES_DIR)/$p/hardware/include/inst.v' $@; fi;) # insert peripheral instances
+	$(foreach p, $(PERIPHERALS), if test -f $(SUBMODULES_DIR)/$p/hardware/include/inst.v; then sed 's/`$p/`$(CORE_NAME)_$p/g' $(SUBMODULES_DIR)/$p/hardware/include/inst.v | sed 's/`$(CORE_NAME)_$p_/`$p_/g' > inst.v; sed -i '/endmodule/e cat inst.v' $@; fi;) # insert peripheral instances
 
 # make and copy memory init files
 boot.hex: $(BOOT_DIR)/boot.bin

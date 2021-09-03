@@ -29,7 +29,11 @@ boot.elf: ../template.lds  $(HDR) $(SRC)
 	$(TOOLCHAIN_PREFIX)gcc -o $@ $(CFLAGS) $(DEFINE) $(INCLUDE) $(SRC) -lgcc -lc -lnosys
 	$(TOOLCHAIN_PREFIX)objcopy -O binary boot.elf boot.bin
 
-clean: gen-clean
-	@rm -rf boot.bin boot.elf boot.map *.hex
+boot.c: boot_core.c $(SW_DIR)/periphs.h
+	cp $< $@
+	sed -i '/UART BASE ADDRESS/e grep "UART" $(SW_DIR)/periphs.h ' $@
+
+clean: sw-clean
+	@rm -rf boot.c boot.bin boot.elf boot.map *.hex
 
 .PHONY: clean

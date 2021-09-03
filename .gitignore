@@ -9,7 +9,7 @@ software/*/*
 !software/*/*.expected
 !software/*/*.py
 
-!software/bootloader/boot.c
+!software/bootloader/boot_core.c
 !software/bootloader/boot.S
 
 !software/firmware/firmware.c

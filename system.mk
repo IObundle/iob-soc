@@ -136,7 +136,7 @@ DEFINE+=$(defmacro)B=$B
 N_SLAVES:=0
 #assign sequential numbers to peripheral names used as variables
 $(foreach p, $(PERIPHERALS), $(eval $p=$(N_SLAVES)) $(eval N_SLAVES:=$(shell expr $(N_SLAVES) \+ 1)))
-$(foreach p, $(PERIPHERALS), $(eval DEFINE+=$(defmacro)$p=$($p)))
+$(foreach p, $(PERIPHERALS), $(eval DEFINE+=$(defmacro)$(CORE_NAME)_$p=$($p)))
 
 #RULES
 gen-clean:

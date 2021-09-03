@@ -1,6 +1,9 @@
 defmacro:=-D
 incdir:=-I
+include $(ROOT_DIR)/core.mk
 include $(ROOT_DIR)/system.mk
+
+PREFIX:=$(CORE_NAME)_
 
 DEFINE+=$(defmacro)BAUD=$(BAUD)
 DEFINE+=$(defmacro)FREQ=$(FREQ)
@@ -25,10 +28,14 @@ HDR=$(SW_DIR)/system.h
 #SRC=$(SW_DIR)/*.c
 
 #peripherals' base addresses
-periphs.h: periphs_tmp.h
+$(SW_DIR)/periphs.h: $(SW_DIR)/periphs_tmp.h
 	@is_diff=`diff -q -N $@ $<`; if [ "$$is_diff" ]; then cp $< $@; fi
-	@rm periphs_tmp.h
+	@rm $(SW_DIR)/periphs_tmp.h
 
-periphs_tmp.h:
-	$(foreach p, $(PERIPHERALS), $(shell echo "#define $p_BASE (1<<$P) |($p<<($P-N_SLAVES_W))" >> $@) )
+$(SW_DIR)/periphs_tmp.h:
+	$(foreach p, $(PERIPHERALS), $(shell echo "#define $p_BASE (1<<$P) |($(PREFIX)$p<<($P-N_SLAVES_W))" >> $@) )
 
+sw-clean: gen-clean
+	@rm -rf $(SW_DIR)/periphs.h
+
+.PHONY: sw-clean
