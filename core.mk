@@ -1,26 +1,27 @@
-CORE_NAME:=GPIO
+CORE_NAME:=REGFILEIF
 IS_CORE:=1
 USE_NETLIST ?=0
-TOP_MODULE:=iob_gpio
+TOP_MODULE:=iob_regfileif
+
+#REGFILEIF ADDRESS WIDTH
+REGFILEIF_ADDR_W ?=2
 
 #PATHS
-GPIO_HW_DIR:=$(GPIO_DIR)/hardware
-GPIO_INC_DIR:=$(GPIO_HW_DIR)/include
-GPIO_SRC_DIR:=$(GPIO_HW_DIR)/src
-GPIO_TB_DIR:=$(GPIO_HW_DIR)/testbench
-GPIO_FPGA_DIR:=$(GPIO_HW_DIR)/fpga
-GPIO_SUBMODULES_DIR:=$(GPIO_DIR)/submodules
+REGFILEIF_HW_DIR:=$(REGFILEIF_DIR)/hardware
+REGFILEIF_INC_DIR:=$(REGFILEIF_HW_DIR)/include
+REGFILEIF_SRC_DIR:=$(REGFILEIF_HW_DIR)/src
+REGFILEIF_TB_DIR:=$(REGFILEIF_HW_DIR)/testbench
+REGFILEIF_FPGA_DIR:=$(REGFILEIF_HW_DIR)/fpga
+REGFILEIF_SUBMODULES_DIR:=$(REGFILEIF_DIR)/submodules
 
 #SUBMODULES
-GPIO_SUBMODULES:=LIB TEX
-$(foreach p, $(GPIO_SUBMODULES), $(eval $p_DIR ?=$(GPIO_SUBMODULES_DIR)/$p))
+REGFILEIF_SUBMODULES:=MEM INTERCON LIB
+$(foreach p, $(REGFILEIF_SUBMODULES), $(eval $p_DIR ?=$(REGFILEIF_SUBMODULES_DIR)/$p))
 
-REMOTE_ROOT_DIR ?=sandbox/iob-gpio
+REMOTE_ROOT_DIR ?=sandbox/iob-regfileif
 
 #SIMULATION
 SIMULATOR ?=icarus
-SIM_SERVER ?=localhost
-SIM_USER ?=$(USER)
 SIM_DIR ?=hardware/simulation/$(SIMULATOR)
 
 #FPGA
@@ -34,19 +35,12 @@ else #default; ifeq ($(FPGA_FAMILY),CYCLONEV-GT)
         FPGA_COMP:=quartus
         FPGA_PART:=5CGTFD9E5F35C7
 endif
-FPGA_DIR ?= $(GPIO_DIR)/hardware/fpga/$(FPGA_COMP)
+FPGA_DIR ?= $(REGFILEIF_DIR)/hardware/fpga/$(FPGA_COMP)
 ifeq ($(FPGA_COMP),vivado)
 FPGA_LOG:=vivado.log
 else ifeq ($(FPGA_COMP),quartus)
 FPGA_LOG:=quartus.log
 endif
-
-#ASIC
-ASIC_NODE ?=umc130
-ASIC_SERVER ?=micro5.lx.it.pt
-ASIC_COMPILE_ROOT_DIR ?=$(ROOT_DIR)/sandbox/iob-gpio
-ASIC_USER ?=user14
-ASIC_DIR ?=hardware/asic/$(ASIC_NODE)
 
 XILINX ?=1
 INTEL ?=1

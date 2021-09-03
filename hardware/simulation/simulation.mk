@@ -1,5 +1,5 @@
-include $(GPIO_DIR)/hardware/hardware.mk
+include $(REGFILEIF_DIR)/hardware/hardware.mk
 
 DEFINE+=$(defmacro)VCD
 
-VSRC+=$(wildcard $(GPIO_TB_DIR)/*.v)
+VSRC+=$(wildcard $(REGFILEIF_TB_DIR)/*.v)

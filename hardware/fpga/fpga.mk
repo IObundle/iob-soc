@@ -1,5 +1,5 @@
-GPIO_DIR:=../../..
-include $(GPIO_DIR)/hardware/hardware.mk
+REGFILEIF_DIR:=../../..
+include $(REGFILEIF_DIR)/hardware/hardware.mk
 
 FPGA_VSRC=$(addprefix ../, $(VSRC) )
 FPGA_VHDR=$(addprefix ../, $(VHDR) )

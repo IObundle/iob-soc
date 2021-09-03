@@ -1,5 +1,7 @@
-   // GPIO
-   output [`GPIO_R0_W-1:0] gpio_r0,
-   output [`GPIO_R1_W-1:0] gpio_r1,
-   output [`GPIO_R2_W-1:0] gpio_r2,
-   output [`GPIO_R3_W-1:0] gpio_r3,
+   // REGFILEIF
+   input                           regfileif_valid,
+   input [`REGFILEIF_ADDR_W-1:0]   regfileif_address,
+   input [`REGFILEIF_DATA_W-1:0]   regfileif_wdata,
+   input [`REGFILEIF_DATA_W/8-1:0] regfileif_wstrb,
+   output [`REGFILEIF_DATA_W-1:0]  regfileif_rdata,
+   output                          regfileif_ready,

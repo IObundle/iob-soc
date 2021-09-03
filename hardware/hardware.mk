@@ -1,28 +1,46 @@
-include $(GPIO_DIR)/core.mk
+include $(REGFILEIF_DIR)/core.mk
 
 # submodules
+# Dual-port register file
+ifneq (DPREGFILE,$(filter DPREGFILE, $(SUBMODULES)))
+SUBMODULES+=DPREGFILE
+DPREGFILE_DIR:=$(MEM_DIR)/dp_reg_file
+VSRC+=$(DPREGFILE_DIR)/iob_dp_reg_file.v
+endif
+
+# Interconnect
+ifneq (INTERCON,$(filter INTERCON, $(SUBMODULES)))
+SUBMODULES+=INTERCON
+include $(INTERCON_DIR)/hardware/hardware.mk
+endif
+
+# Library
 ifneq (LIB,$(filter LIB, $(SUBMODULES)))
 SUBMODULES+=LIB
-include $(LIB_DIR)/hardware/hardware.mk
+INCLUDE+=$(incdir)$(LIB_DIR)/hardware/include
+VHDR+=$(wildcard $(LIB_DIR)/hardware/include/*.vh)
 endif
 
 # hardware include dirs
-INCLUDE+=$(incdir)$(GPIO_HW_DIR)/include
+INCLUDE+=$(incdir)$(REGFILEIF_HW_DIR)/include
+
+# defines
+DEFINE+=$(defmacro)REGFILEIF_ADDR_W=$(REGFILEIF_ADDR_W)
 
 # includes
-VHDR+=$(wildcard $(GPIO_HW_DIR)/include/*.vh)
-VHDR+=$(GPIO_HW_DIR)/include/GPIOsw_reg_gen.v
+VHDR+=$(wildcard $(REGFILEIF_HW_DIR)/include/*.vh)
+VHDR+=$(REGFILEIF_HW_DIR)/include/REGFILEIFsw_reg_gen.v
 
 # sources
-VSRC+=$(wildcard $(GPIO_SRC_DIR)/*.v)
+VSRC+=$(wildcard $(REGFILEIF_SRC_DIR)/*.v)
 
 # CPU accessible registers
-$(GPIO_HW_DIR)/include/GPIOsw_reg_gen.v $(GPIO_HW_DIR)/include/GPIOsw_reg.vh: $(GPIO_HW_DIR)/include/GPIOsw_reg.v
+$(REGFILEIF_HW_DIR)/include/REGFILEIFsw_reg_gen.v $(REGFILEIF_HW_DIR)/include/REGFILEIFsw_reg.vh: $(REGFILEIF_HW_DIR)/include/REGFILEIFsw_reg.v
 	$(LIB_DIR)/software/mkregs.py $< HW
-	mv GPIOsw_reg_gen.v $(GPIO_HW_DIR)/include
-	mv GPIOsw_reg.vh $(GPIO_HW_DIR)/include
+	mv REGFILEIFsw_reg_gen.v $(REGFILEIF_HW_DIR)/include
+	mv REGFILEIFsw_reg.vh $(REGFILEIF_HW_DIR)/include
 
-gpio_clean_hw:
-	@rm -rf $(GPIO_FPGA_DIR)/vivado/XCKU $(GPIO_FPGA_DIR)/quartus/CYCLONEV-GT
+regfileif_clean_hw:
+	@rm -rf $(REGFILEIF_FPGA_DIR)/vivado/XCKU $(REGFILEIF_FPGA_DIR)/quartus/CYCLONEV-GT
 
-.PHONY: gpio_clean_hw
+.PHONY: regfileif_clean_hw

@@ -1,4 +1,4 @@
-GPIO_DIR:=../../..
+REGFILEIF_DIR:=../../..
 
 incdir:=-I
 defmacro:=-D

@@ -5,7 +5,7 @@ include ../fpga.mk
 
 run: $(FPGA_OBJ)
 
-clean: gpio_clean_hw
+clean: regfileif_clean_hw
 	rm -rf $(FPGA_FAMILY) *.v *.vh
 
 .PHONY: run clean
