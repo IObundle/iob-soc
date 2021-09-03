@@ -86,6 +86,7 @@ queue-out-remote:
 
 clean-remote: hw-clean
 ifneq ($(FPGA_SERVER),)
+	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
 	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD); make clean CLEANIP=$(CLEANIP)'
 endif
@@ -98,6 +99,7 @@ endif
 clean-testlog:
 	@rm -f $(CONSOLE_DIR)/test.log
 ifneq ($(BOARD_SERVER),)
+	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR)
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD); make $@'
 endif

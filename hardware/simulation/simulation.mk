@@ -76,6 +76,7 @@ kill-remote-sim:
 clean-remote: hw-clean 
 	@rm -f system.vcd
 ifneq ($(SIM_SERVER),)
+	ssh $(SIM_USER)@$(SIM_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --delete --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
 	ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR); make sim-clean SIMULATOR=$(SIMULATOR)'
 endif
@@ -84,6 +85,7 @@ endif
 clean-testlog:
 	@rm -f test.log
 ifneq ($(SIM_SERVER),)
+	ssh $(SIM_USER)@$(SIM_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --delete --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
 	ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR); rm -f test.log'
 endif
