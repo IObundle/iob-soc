@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 nios=$QUARTUSPATH/nios2eds/nios2_command_shell.sh
 
 TOP_MODULE="iob_uart"
