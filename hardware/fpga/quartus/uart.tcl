@@ -2,27 +2,22 @@
 # Synthesis and implementation script
 #
 
-set TOP iob_uart
 set QUARTUS_VERSION "18.0.0 Standard Edition"
 set FAMILY "Cyclone V"
-set DEVICE 5CGTFD9E5F35C7
 
-set VSRC [lindex $argv 0]
-set HW_INCLUDE [lindex $argv 1]
-set HW_DEFINE [lindex $argv 2]
+set TOP [lindex $argv 0]
+set VSRC [lindex $argv 1]
+set HW_INCLUDE [lindex $argv 2]
+set HW_DEFINE [lindex $argv 3]
+set PART [lindex $argv 4]
 
 project_new $TOP -overwrite
 
 set_global_assignment -name FAMILY $FAMILY
-set_global_assignment -name DEVICE $DEVICE
+set_global_assignment -name DEVICE $PART
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
 set_global_assignment -name TOP_LEVEL_ENTITY $TOP
 set_global_assignment -name VERILOG_INPUT_VERSION SYSTEMVERILOG_2005
-
-#set_global_assignment -name ORIGINAL_QUARTUS_VERSION 18.0.0
-#set_global_assignment -name PROJECT_CREATION_TIME_DATE "15:59:11  JANUARY 21, 2019"
-
-#set_global_assignment -name ERROR_CHECK_FREQUENCY_DIVISOR 256
 
 #file search paths
 foreach path [split $HW_INCLUDE \ ] {

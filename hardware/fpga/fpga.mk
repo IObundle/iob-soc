@@ -1,12 +1,15 @@
 include $(UART_DIR)/hardware/hardware.mk
 
+#this dummy define is necessary to prevent passing empty arguments to tcl script
+DEFINE+=$(defmacro)DUMMY
+
 TOOL=$(shell find $(UART_HW_DIR)/fpga -name $(FPGA_FAMILY) | cut -d"/" -f7)
 
 build: $(FPGA_OBJ)
 
 $(FPGA_OBJ): $(CONSTRAINTS) $(VSRC) $(VHDR)
 ifeq ($(FPGA_SERVER),)
-	../build.sh "$(VSRC)" "$(INCLUDE)" "$(DEFINE)" "$(FPGA_PART)"
+	../build.sh "$(TOP_MODULE)" "$(VSRC)" "$(INCLUDE)" "$(DEFINE)" "$(FPGA_PART)"
 	make post-build
 else 
 	ssh $(FPGA_USER)@$(FPGA_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"

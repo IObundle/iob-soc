@@ -1,4 +1,3 @@
 #!/bin/bash
-TOP_MODULE="iob_uart"
 source $VIVADOPATH/settings64.sh
-vivado -nojournal -log vivado.log -mode batch -source ../iob_uart.tcl -tclargs "$TOP_MODULE" "$1" "$2" "$3" "$4"
+vivado -nojournal -log vivado.log -mode batch -source ../uart.tcl -tclargs "$1" "$2" "$3" "$4" "$5"
