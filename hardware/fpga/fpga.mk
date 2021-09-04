@@ -31,7 +31,7 @@ ifeq ($(BOARD_SERVER),)
 else
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR) 
-	bash -c "trap 'make queue-out-remote' INT; ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD); make $@ INIT_MEM=$(INIT_MEM) TEST_LOG=\"$(TEST_LOG)\"'"
+	bash -c "trap 'make queue-out-remote' INT; ssh $(BOARD_USER)@$(BOARD_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD); make $@ INIT_MEM=$(INIT_MEM) FORCE=$(FORCE) TEST_LOG=\"$(TEST_LOG)\"'"
 ifneq ($(TEST_LOG),)
 	scp $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR)/software/console/test.log $(CONSOLE_DIR)
 endif
