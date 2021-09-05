@@ -68,30 +68,20 @@ make fpga-clean
 
 To generate the documentation for the IP core type:
 ```
-make doc [DOC_TYPE=<doc type name>]
+make doc-build [DOC=<doc type name>]
 ```
 
-Currently you can generate two document types: the Product Brief (DOC\_TYPE=pb)
-or the User Guide (DOC\_TYPE=ug). To create a new document type get inspired by
+Currently you can generate two document types: the Product Brief (DOC=pb)
+or the User Guide (DOC=ug). To create a new document type get inspired by
 the Makefiles in the document type directories document/pb and document/ug. Data
 from the FPGA compile tools is imported automatically into the docs.
 
 To clean the documentation generated files type:
 ```
-make doc-clean [DOC_TYPE=<doc type name>]
-```
-
-To clean the documentation generated files and the respective pdf file type:
-```
-make doc-pdfclean [DOC_TYPE=<doc type name>]
+make doc-clean [DOC=<doc type name>]
 ```
 
 To clean the documentation generated files for all document types, the command is
-```
-make doc-clean-all
-```
-
-To clean the documentation generated files for all document types and the respective pdf files, the command is
 ```
 make doc-clean-all
 ```

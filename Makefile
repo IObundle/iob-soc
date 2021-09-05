@@ -33,17 +33,17 @@ fpga-clean-all:
 #
 
 doc-build: fpga-build-all
-	make -C $(DOC_DIR) $(DOC_TYPE).pdf
+	make -C $(DOC_DIR) all
 
 doc-build-all:
-	$(foreach s, $(DOC_LIST), make doc-build DOC_TYPE=$s;)
+	$(foreach s, $(DOC_LIST), make doc-build DOC=$s;)
 
 
 doc-clean:
 	make -C $(DOC_DIR) clean
 
 doc-clean-all:
-	$(foreach s, $(DOC_LIST), make doc-clean DOC_TYPE=$s;)
+	$(foreach s, $(DOC_LIST), make doc-clean DOC=$s;)
 
 
 #
