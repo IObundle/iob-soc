@@ -105,6 +105,7 @@ BOARD_DIR ?=$(shell find hardware -name $(BOARD))
 #doc paths
 DOC_DIR=$(ROOT_DIR)/document/$(DOC)
 TEX_DIR=$(UART_DIR)/submodules/TEX
+INTERCON_DIR=$(UART_DIR)/submodules/INTERCON
 
 #submodule paths
 SUBMODULES_DIR:=$(ROOT_DIR)/submodules
