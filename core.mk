@@ -3,7 +3,8 @@
 #
 
 CORE_NAME:=UART
-IS_CORE:=1
+TOP_MODULE = iob_uart
+
 DATA_W=32
 
 # UART PATHS

@@ -1,7 +1,6 @@
 include $(UART_DIR)/core.mk
 
 USE_NETLIST ?=0
-TOP_MODULE = iob_uart
 
 #SUBMODULE HARDWARE
 #intercon

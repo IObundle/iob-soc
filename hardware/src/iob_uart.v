@@ -5,7 +5,7 @@
 `include "UARTsw_reg.vh"
 
 module iob_uart 
-  # (
+  # (//the below parameters are used in cpu if includes below
      parameter ADDR_W = `UART_ADDR_W, //NODOC Address width
      parameter DATA_W = `UART_RDATA_W, //NODOC CPU data width
      parameter WDATA_W = `UART_WDATA_W //NODOC CPU data width

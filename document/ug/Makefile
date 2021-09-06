@@ -3,10 +3,14 @@ CORE_DIR:=$(UART_DIR)
 include $(UART_DIR)/core.mk
 
 #interface signal tables 
-IS_TAB := rs232_is_tab.tex cpu_nat_s_is_tab.tex cpu_axi4lite_s_is_tab.tex
+TAB := rs232_is_tab.tex cpu_nat_s_is_tab.tex cpu_axi4lite_s_is_tab.tex
+
 
 #block diagram verilog source
 BD_VSRC=uart_core.v
+
+
+#include tex makefile segment
 include $(UART_DIR)/submodules/TEX/document/document.mk
 
 rs232_is_tab.tex: $(UART_HW_DIR)/src/iob_uart.v
