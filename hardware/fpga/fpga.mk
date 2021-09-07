@@ -19,7 +19,7 @@ VSRC+=./verilog/top_system.v
 #
 # Use
 #
-all: sw build run
+all: build run
 FORCE ?= 0
 
 run:
@@ -38,7 +38,7 @@ endif
 endif
 endif
 
-build: $(FPGA_OBJ)
+build: sw $(FPGA_OBJ)
 
 ifeq ($(INIT_MEM),1)
 $(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex firmware.hex
