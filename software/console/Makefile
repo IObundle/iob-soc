@@ -21,7 +21,7 @@ $(FIRM_DIR)/firmware.bin: $(FIRM_DIR)/firmware.c
 firmware.bin: $(FIRM_DIR)/firmware.bin
 	cp $(FIRM_DIR)/firmware.bin .
 
-run: firmware.bin build 
+run: firmware.bin build
 	$(CONSOLE_CMD) $(TEST_LOG)
 
 build: $(SRC)
