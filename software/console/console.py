@@ -9,20 +9,26 @@ import os
 import sys
 import serial
 import time
+import curses.ascii
+from FIFO import *
 
 # Global variables
-path = "./cnsl2soc"
-path2 = "./soc2cnsl"
+SerialFlag = True
 mode = 0o600
 PROGNAME = "IOb-Console"
+EOT = b'\x04' # End of Transmission in Hexadecimal
+ENQ = b'\x05' # Enquiry in Hexadecimal
+ACK = b'\x06' # Acknowledgement in Hexadecimal
+FRX = b'\xfe'
+FTX = b'\xff'
 
 # configure the serial connections (the parameters differs on the device you are connecting to)
 
 ser = serial.Serial()
 #ser.port = "/dev/ttyUSB0"
-ser.port = "/dev/ttyUSB7"
+ser.port = "/dev/ttyUSB1"
 #ser.port = "/dev/ttyS2"
-ser.baudrate = 9600
+ser.baudrate = 115200
 ser.bytesize = serial.EIGHTBITS #number of bits per bytes
 ser.parity = serial.PARITY_NONE #set parity check: no parity
 ser.stopbits = serial.STOPBITS_ONE #number of stop bits
@@ -43,7 +49,10 @@ def cnsl_error(mesg):
 
 # Receive file name
 def cnsl_recvstr(name):
-    name = "".join(map(chr, ser.read_until()))
+    if SerialFlag:
+        name = ser.read(80) # reads 80 bytes
+    else:
+        name = soc2cnsl.read(80)
     print(PROGNAME, end = ' ')
     print('file name: ' + str(name))
     sys.stdout.flush()
@@ -71,40 +80,85 @@ def cnsl_rcvfile():
     cnsl_recvstr(name)
     # open data file
     f = open(name, "wb")
-    file_size = int.from_bytes(ser.read(4), byteorder='big', signed=False)
-    data = ser.read(file_size)
-    print(data, file=f)
+    if SerialFlag:
+        file_size = int.from_bytes(ser.read(4), byteorder='big', signed=False)
+        data = ser.read(file_size)
+    else:
+        file_size = int.from_bytes(soc2cnsl.read(4), byteorder='big', signed=False)
+        data = soc2cnsl.read(file_size)
+    print(data, file==f)
     f.close()
     print(PROGNAME, end = ' ')
     print(': file size:' + file_size + 'bytes received')
-
-def open_FIFO(pathi):
-    if not os.path.exists(pathi):
-        os.mkfifo(pathi, mode)
-        print('FIFO named ' + str(pathi) + 'is created successfully.')
 
 def usage(message):
     cnsl_perror("usage: ./console -s <serial port> [ -f <firmware file> ]")
     cnsl_perror(message)
 
 def clean_exit():
-    os.remove(path)
-    os.remove(path2)
-    print('FIFO files deleted')
-    ser.close()
+    if (not SerialFlag):
+        cnsl2soc.close()
+        soc2cnsl.close()
+        print('FIFO files deleted')
+    else:
+        ser.close()
     exit(0)
 
 # Main function.
 def main():
-    open_FIFO(path)
-    open_FIFO(path2)
-    try:
-        ser.open()
-    except Exception:
-        print("error open serial port.")
-    # ser.isOpen()
-    # Reading the data from the serial port. This will be running in an infinite loop.
+    gotENQ = 0
+    byte = b'\x01'
+    if ('-L' in sys.argv):
+        cnsl2soc = FIFO_FILE('./cnsl2soc')
+        soc2cnsl = FIFO_FILE('./soc2cnsl')
+        SerialFlag = False
+    else:
+        if (len(sys.argv)<3):
+            usage("PROGNAME: not enough program arguments")
+        # open connection
+        try:
+            #ser.port = sys.argv[3]
+            ser.open()
+        except Exception:
+            cnsl_perror("error open serial port.")
+    print(PROGNAME, end = ' ')
+    print(': connecting...')
+    # Reading the data from the serial port or FIFO files. This will be running in an infinite loop.
+    while(True):
+        # get byte from target
+        if (not SerialFlag):
+            byte = soc2cnsl.read()
+        elif (ser.isOpen()):
+            byte = ser.read()
+        # process command
+        if (byte == ENQ):
+            if (not gotENQ):
+                gotENQ = 1
+                if ('-f' in sys.argv):
+                    ser.write(FRX)
+                else:
+                    ser.write(ACK)
+            break
+        elif (byte == EOT):
+            print(PROGNAME, end = ' ')
+            print(': exiting...')
+            clean_exit()
+            break
+        elif (byte == FRX):
+            print(PROGNAME, end = ' ')
+            print(': got file send request')
+            cnsl_sendfile()
+            break
+        elif (byte == FTX):
+            print(PROGNAME, end = ' ')
+            print(': got file receive request')
+            cnsl_recvfile()
+            break
+        else:
+            print(byte)
+            sys.stdout.flush()
+
     clean_exit()
 
-main()
-
+if __name__ == "__main__":
+    main()
