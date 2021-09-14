@@ -21,6 +21,9 @@ ENQ = b'\x05' # Enquiry in Hexadecimal
 ACK = b'\x06' # Acknowledgement in Hexadecimal
 FRX = b'\xfe'
 FTX = b'\xff'
+soc2cnsl = FifoFile('./soc2cnsl')
+cnsl2soc = FifoFile('./cnsl2soc')
+
 
 # configure the serial connections (the parameters differs on the device you are connecting to)
 
@@ -96,22 +99,21 @@ def usage(message):
     cnsl_perror(message)
 
 def clean_exit():
-    if (not SerialFlag):
-        cnsl2soc.close()
-        soc2cnsl.close()
-        print('FIFO files deleted')
-    else:
+    if SerialFlag:
         ser.close()
+    cnsl2soc.close()
+    soc2cnsl.close()
     exit(0)
 
 # Main function.
 def main():
+    global SerialFlag
     gotENQ = 0
     byte = b'\x01'
-    if ('-L' in sys.argv):
-        cnsl2soc = FIFO_FILE('./cnsl2soc')
-        soc2cnsl = FIFO_FILE('./soc2cnsl')
+    if ('-L' in sys.argv or '--local' in sys.argv):
         SerialFlag = False
+        # soc2cnsl = FifoFile('./soc2cnsl')
+        # cnsl2soc = FifoFile('./cnsl2soc')
     else:
         if (len(sys.argv)<3):
             usage("PROGNAME: not enough program arguments")
