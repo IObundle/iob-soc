@@ -11,7 +11,7 @@ class FifoFile:
 
     def read(self, number_of_bytes = 1):
         i = 0
-        data = bytes()
+        data = b''
         # print(number_of_bytes)
         with open(self.path) as fifo:
             print("FIFO opened")
@@ -22,7 +22,7 @@ class FifoFile:
                     break
                 print('Read: "{0}"'.format(data))
                 i += 1
-        return data
+            return data
 
     def write(self, data):
         with open(self.path, 'wb') as fifo:
