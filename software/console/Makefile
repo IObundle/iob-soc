@@ -1,4 +1,3 @@
-SHELL := /bin/bash
 ROOT_DIR:=../..
 include $(ROOT_DIR)/system.mk
 

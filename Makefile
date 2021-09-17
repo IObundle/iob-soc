@@ -28,12 +28,8 @@ pc-emul-clean:
 # BUILD, LOAD AND RUN ON FPGA BOARD
 #
 
-fpga-all:
-	make -C $(BOARD_DIR) all TEST_LOG="$(TEST_LOG)"
-
 fpga-run:
-	make -C $(BOARD_DIR) load
-	make -C $(BOARD_DIR) run TEST_LOG="$(TEST_LOG)"
+	make -C $(BOARD_DIR) all TEST_LOG="$(TEST_LOG)"
 
 fpga-build:
 	make -C $(BOARD_DIR) build
@@ -43,7 +39,7 @@ fpga-clean:
 
 
 #
-# BUILD AND SIMULATE ASIC
+# SYNTHESIZE AND SIMULATE ASIC
 #
 
 asic-synt:
@@ -56,7 +52,7 @@ asic-sim-post-synt:
 # COMPILE DOCUMENTS
 #
 doc:
-	make -C $(DOC_DIR) $(DOC).pdf
+	make -C $(DOC_DIR) all
 
 doc-clean:
 	make -C $(DOC_DIR) clean
@@ -67,28 +63,28 @@ doc-clean:
 #
 
 test:
-	@echo TEST REPORT `date`> test_report.log
-	make test-pc-emul
-	make test-all-simulators
-	make test-all-boards
-	make test-all-docs
-	@echo TEST FINISHED `date`>> test_report.log
+	@echo TEST REPORT `date`> test_report.log;\
+	make test-pc-emul;\
+	make test-all-simulators;\
+	make test-all-boards;\
+	make test-all-docs;\
+	echo TEST FINISHED `date`>> test_report.log
 
 test-pc-emul:
-	make -C $(PC_DIR) all TEST_LOG="> test.log"
-	@if [ "`diff -q $(PC_DIR)/test.log $(PC_DIR)/test.expected`" ]; then \
+	@make -C $(PC_DIR) all TEST_LOG="> test.log";\
+	if [ "`diff -q $(PC_DIR)/test.log $(PC_DIR)/test.expected`" ]; then \
 	echo PC EMULATION TEST FAILED; else \
 	echo PC EMULATION TEST PASSED; fi >> test_report.log
 
 
 test-simulator:
-	make -C $(SIM_DIR) clean-testlog
-	make -C $(SIM_DIR) all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
-	make -C $(SIM_DIR) all INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
-	make -C $(SIM_DIR) all INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=0 TEST_LOG=">> test.log"
-	make -C $(SIM_DIR) all INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
-	make -C $(SIM_DIR) all INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
-	@if [ "`diff -q $(SIM_DIR)/test.log $(SIM_DIR)/test.expected`" ]; then \
+	@make -C $(SIM_DIR) clean-testlog;\
+	make -C $(SIM_DIR) all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log";\
+	make -C $(SIM_DIR) all INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log";\
+	make -C $(SIM_DIR) all INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=0 TEST_LOG=">> test.log";\
+	make -C $(SIM_DIR) all INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log";\
+	make -C $(SIM_DIR) all INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log";\
+	if [ "`diff -q $(SIM_DIR)/test.log $(SIM_DIR)/test.expected`" ]; then \
 	echo SIMULATOR $(SIMULATOR) TEST FAILED; else \
 	echo SIMULATOR $(SIMULATOR) TEST PASSED; fi >> test_report.log
 
@@ -99,13 +95,13 @@ clean-all-simulators:
 	$(foreach s, $(SIM_LIST), make -C $(HW_DIR)/simulation/$s clean clean-testlog SIMULATOR=$s;)
 
 test-board:
-	make -C $(BOARD_DIR) clean-testlog
-	make -C $(BOARD_DIR) clean
-	make -C $(BOARD_DIR) all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
-	make -C $(BOARD_DIR) all INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
-	make -C $(BOARD_DIR) clean
-	make -C $(BOARD_DIR) all INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
-	@if [ "`diff -q $(CONSOLE_DIR)/test.log $(BOARD_DIR)/test.expected`" ]; then \
+	@make -C $(BOARD_DIR) clean-testlog;\
+	make -C $(BOARD_DIR) clean;\
+	make -C $(BOARD_DIR) all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log";\
+	make -C $(BOARD_DIR) all INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log";\
+	make -C $(BOARD_DIR) clean;\
+	make -C $(BOARD_DIR) all INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log";\
+	if [ "`diff -q $(CONSOLE_DIR)/test.log $(BOARD_DIR)/test.expected`" ]; then \
 	echo BOARD $(BOARD) TEST FAILED; else \
 	echo BOARD $(BOARD) TEST PASSED; fi >> test_report.log
 
@@ -116,9 +112,9 @@ clean-all-boards:
 	$(foreach s, $(BOARD_LIST), make -C $(BOARD_DIR) clean BOARD=$s;)
 
 test-doc:
-	make -C $(DOC_DIR) clean
-	make -C $(DOC_DIR) $(DOC).pdf DOC=$(DOC)
-	@if [ "`diff -q $(DOC_DIR)/$(DOC).aux $(DOC_DIR)/$(DOC).expected`" ]; then \
+	@make -C $(DOC_DIR) clean;\
+	make -C $(DOC_DIR) all DOC=$(DOC);\
+	if [ "`diff -q $(DOC_DIR)/$(DOC).aux $(DOC_DIR)/$(DOC).expected`" ]; then \
 	echo DOC $(DOC) TEST FAILED; else \
 	echo DOC $(DOC) TEST PASSED; fi >> test_report.log
 

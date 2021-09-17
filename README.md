@@ -158,19 +158,14 @@ read the Makefile in the board directory.
 
 To build and run, type:
 ``` 
-make fpga-all [BOARD=<board directory name>] [<control parameters>]
-``` 
-
-To run, assuming it is already built, type:
-``` 
 make fpga-run [BOARD=<board directory name>] [<control parameters>]
 ``` 
 
 Before running, the FPGA is loaded with the configuration bitstream. However if
 the bitstream checksum matches that of the last loaded bitstream, kept in file
 `/tmp/<board directory name>.load`, this step is skipped. If, for some reason,
-the FPGA does not run, you may interrupt it with Ctr-C. Then run make fpga-run again and force the bitstream to be reloaded using control
-parameter FORCE=1.
+the FPGA does not run, you may interrupt it with Ctr-C. Then run make fpga-run
+again and force the bitstream to be reloaded using control parameter FORCE=1.
 
 If many users are trying to run the same FPGA board they will be queued in file
 `/tmp/<board directory name>.queue`, before being able to load the bistream and
@@ -188,6 +183,12 @@ To compile documents, the LaTeX document preparation software must be
 installed. To compile the document given by the DOC variable, type:
 ```
 make doc [DOC=<document directory name>]
+```
+
+
+To clean the compilation files of the document given by the DOC variable, type:
+```
+make doc-clean [DOC=<document directory name>]
 ```
 
 For more details, read the Makefile in each document's directory

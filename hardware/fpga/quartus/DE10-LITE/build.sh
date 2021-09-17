@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 nios=$QUARTUSPATH/nios2eds/nios2_command_shell.sh
 $nios quartus_sh -t top_system.tcl "$1" "$2" "$3"
 $nios quartus_map top_system
