@@ -52,8 +52,10 @@ ifneq ($(TEST_LOG),)
 endif
 ifeq ($(VCD),1)
 	scp $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)//hardware/simulation/$(SIMULATOR)/*.vcd $(SIM_DIR)
-	gtkwave -a ../waves.gtkw system.vcd &
 endif
+endif
+ifeq ($(VCD),1)
+	gtkwave -a ../waves.gtkw system.vcd &
 endif
 
 
