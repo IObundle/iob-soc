@@ -55,6 +55,7 @@ ifeq ($(VCD),1)
 endif
 endif
 ifeq ($(VCD),1)
+	if [ "`pgrep -u $(USER) gtkwave`" ]; then killall -q -9 gtkwave; fi
 	gtkwave -a ../waves.gtkw system.vcd &
 endif
 
