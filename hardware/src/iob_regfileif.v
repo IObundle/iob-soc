@@ -3,7 +3,6 @@
 `include "iob_lib.vh"
 `include "interconnect.vh"
 `include "iob_regfileif.vh"
-`include "REGFILEIFsw_reg.vh"
 
 module iob_regfileif 
   # (
@@ -31,9 +30,7 @@ module iob_regfileif
 `include "gen_if.v"
     );
 
-   // BLOCK Register File data to exchange between cores.
-`include "REGFILEIFsw_reg.v"
-`include "REGFILEIFsw_reg_gen.v"
+   // BLOCK Register file interface.
 
    iob_dp_reg_file
      #(
@@ -45,25 +42,25 @@ module iob_regfileif
       .clk    (clk),
       .rst    (rst),
 
-      .addrA  (address_ext),
-      .wdataA (wdata_ext),
-      .weA    (|wstrb_ext & valid_ext),
-      .rdataA (rdata_ext),
+      .enA    (valid),
+      .addrA  (address),
+      .wdataA (wdata),
+      .weA    (|wstrb & valid),
+      .rdataA (rdata),
 
-      .addrB  (address),
-      .wdataB (wdata),
-      .weB    (|wstrb & valid),
-      .rdataB (rdata)
+      .enB    (valid_ext),
+      .addrB  (address_ext),
+      .wdataB (wdata_ext),
+      .weB    (|wstrb_ext & valid_ext),
+      .rdataB (rdata_ext)
       );
 
-   always @(posedge clk) begin
-      if (rst) begin
-         ready     <= 1'b0;
-         ready_ext <= 1'b0;
-      end else begin
-         ready     <= valid;
-         ready_ext <= valid_ext;
-      end
-   end
+   `VAR(ready_var, 1)
+   `REG_AR(clk, rst, 1'b0, ready_var, valid)
+   `VAR2WIRE(ready, ready_var)
+
+   `VAR(ready_ext_var, 1)
+   `REG_AR(clk, rst, 1'b0, ready_ext_var, valid_ext)
+   `VAR2WIRE(ready_ext, ready_ext_var)
 
 endmodule
