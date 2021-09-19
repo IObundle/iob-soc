@@ -7,3 +7,6 @@
 [submodule "submodules/CACHE"]
 	path = submodules/CACHE
 	url = git@github.com:IObundle/iob-cache.git
+[submodule "submodules/REGFILEIF"]
+	path = submodules/REGFILEIF
+	url = git@github.com:IObundle/iob-regfileif.git

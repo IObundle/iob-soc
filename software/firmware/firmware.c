@@ -4,12 +4,24 @@
 #include "periphs.h"
 #include "iob-uart.h"
 #include "printf.h"
+#include "iob-regfileif.h"
 
 int main()
 {
   //init uart
   uart_init(UART_BASE,FREQ/BAUD);   
+  regfileif_setbaseaddr(REGFILEIF_BASE);   
   uart_puts("\n\n\nHello world!\n\n\n");
-  printf("Value of Pi = %f\n\n", 3.1415);
+
+  regfileif_writereg(0, 666);
+  regfileif_writereg(1, 667);
+  regfileif_writereg(2, 668);
+  regfileif_writereg(3, 669);
+
+  printf("%d \n", regfileif_readreg(0));
+  printf("%d \n", regfileif_readreg(1));
+  printf("%d \n", regfileif_readreg(2));
+  printf("%d \n", regfileif_readreg(3));
+
   uart_finish();
 }

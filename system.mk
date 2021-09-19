@@ -4,6 +4,8 @@
 #
 ######################################################################
 
+CORE_NAME:=SUT
+
 #
 # PRIMARY PARAMETERS: CAN BE CHANGED BY USERS OR OVERRIDEN BY ENV VARS
 #
@@ -29,9 +31,8 @@ INIT_MEM ?=1
 
 #PERIPHERAL LIST
 #must match respective submodule or folder name in the submodules directory
-#and CORE_NAME in the core.mk file of the submodule
 #PERIPHERALS:=UART
-PERIPHERALS ?=UART
+PERIPHERALS ?=UART REGFILEIF
 
 #RISC-V COMPRESSED INSTRUCTIONS
 USE_COMPRESSED ?=1
@@ -142,5 +143,8 @@ $(foreach p, $(PERIPHERALS), $(eval DEFINE+=$(defmacro)$p=$($p)))
 #RULES
 gen-clean:
 	@rm -f *# *~ test_report.log
+
+core-name:
+	@echo $(CORE_NAME)
 
 .PHONY: gen-clean
