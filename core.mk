@@ -38,7 +38,7 @@ PERIPHERALS ?=UART REGFILEIF
 USE_COMPRESSED ?=1
 
 #ROOT DIR ON REMOTE MACHINES
-REMOTE_ROOT_DIR ?=sandbox/iob-soc
+REMOTE_SUT_DIR ?=sandbox/iob-soc-sut
 
 
 #SIMULATION
@@ -90,7 +90,7 @@ DEFINE+=$(defmacro)INIT_MEM
 endif
 
 #sw paths
-SW_DIR:=$(ROOT_DIR)/software
+SW_DIR:=$(SUT_DIR)/software
 PC_DIR:=$(SW_DIR)/pc-emul
 FIRM_DIR:=$(SW_DIR)/firmware
 BOOT_DIR:=$(SW_DIR)/bootloader
@@ -98,18 +98,18 @@ CONSOLE_DIR:=$(SW_DIR)/console
 PYTHON_DIR:=$(SW_DIR)/python
 
 #hw paths
-HW_DIR=$(ROOT_DIR)/hardware
+HW_DIR=$(SUT_DIR)/hardware
 SIM_DIR=$(HW_DIR)/simulation/$(SIMULATOR)
 ASIC_DIR=$(HW_DIR)/asic
 BOARD_DIR ?=$(shell find hardware -name $(BOARD))
 
 #doc paths
-DOC_DIR=$(ROOT_DIR)/document/$(DOC)
+DOC_DIR=$(SUT_DIR)/document/$(DOC)
 TEX_DIR=$(UART_DIR)/submodules/TEX
 INTERCON_DIR=$(UART_DIR)/submodules/INTERCON
 
 #submodule paths
-SUBMODULES_DIR:=$(ROOT_DIR)/submodules
+SUBMODULES_DIR:=$(SUT_DIR)/submodules
 SUBMODULES=CPU CACHE $(PERIPHERALS)
 $(foreach p, $(SUBMODULES), $(eval $p_DIR:=$(SUBMODULES_DIR)/$p))
 

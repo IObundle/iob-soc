@@ -1,4 +1,4 @@
-include $(ROOT_DIR)/system.mk
+include $(SUT_DIR)/core.mk
 
 #default baud and freq for hardware
 BAUD ?=115200
@@ -45,7 +45,7 @@ VHDR+=$(INC_DIR)/system.vh
 
 #SOURCES
 #testbench
-TB_DIR:=$(ROOT_DIR)/hardware/testbench
+TB_DIR:=$(SUT_DIR)/hardware/testbench
 
 #external memory interface
 ifeq ($(USE_DDR),1)

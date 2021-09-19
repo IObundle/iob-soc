@@ -1,8 +1,8 @@
 all: sim
 
 
-ROOT_DIR:=.
-include ./system.mk
+SUT_DIR:=.
+include ./core.mk
 
 #
 # SIMULATE RTL

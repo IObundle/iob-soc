@@ -1,4 +1,4 @@
-ROOT_DIR:=../../..
+SUT_DIR:=../../..
 
 defmacro:=-define 
 incdir:=-incdir 
@@ -13,7 +13,7 @@ include ../simulation.mk
 #simulator flags
 CFLAGS = -errormax 15 -status -update -linedebug -sv $(LIBS) $(INCLUDE) $(DEFINE)
 EFLAGS = -errormax 15 -access +wc -status
-SFLAGS = -errormax 15 -status -CMDFILE $(ROOT_DIR)/hardware/testbench
+SFLAGS = -errormax 15 -status -CMDFILE $(SUT_DIR)/hardware/testbench
 
 #simulate
 run: $(VSRC) $(VHDR) $(IMAGES)

@@ -4,7 +4,7 @@
 # Tested with iverilog version 10.3
 #
 
-ROOT_DIR:=../../..
+SUT_DIR:=../../..
 
 defmacro:=-D
 incdir:=-I

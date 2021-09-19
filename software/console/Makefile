@@ -1,5 +1,5 @@
-ROOT_DIR:=../..
-include $(ROOT_DIR)/system.mk
+SUT_DIR:=../..
+include $(SUT_DIR)/core.mk
 
 SERIAL:=/dev/ttyUSB0
 

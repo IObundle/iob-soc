@@ -1,4 +1,4 @@
-ROOT_DIR:=../../../..
+SUT_DIR:=../../../..
 
 BOARD=DE10-LITE
 

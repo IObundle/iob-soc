@@ -1,4 +1,4 @@
-ROOT_DIR:=../..
+SUT_DIR:=../..
 include ../software.mk
 
 #default baud and freq for pc emulation
