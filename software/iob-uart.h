@@ -1,18 +1,9 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stdint.h>
+#include "UARTsw_reg.h"
 
 #define UART_PROGNAME "IOb-UART"
-
-//Memory Map
-#define UART_SOFTRESET 0
-#define UART_DIV 1
-#define UART_TXDATA 2
-#define UART_TXEN 3
-#define UART_TXREADY 4
-#define UART_RXDATA 5
-#define UART_RXEN 6
-#define UART_RXREADY 7
 
 //UART commands
 #define STX 2 //start text
