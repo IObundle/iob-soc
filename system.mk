@@ -31,7 +31,7 @@ INIT_MEM ?=1
 #must match respective submodule or folder name in the submodules directory
 #and CORE_NAME in the core.mk file of the submodule
 #PERIPHERALS:=UART
-PERIPHERALS ?=UART ETHERNET
+PERIPHERALS ?=UART
 
 #
 #SOFTWARE COMPILATION
