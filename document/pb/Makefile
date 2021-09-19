@@ -1,13 +1,17 @@
 ROOT_DIR:=../..
-include ../../system.mk
 
+include $(ROOT_DIR)/system.mk
+
+#FPGA results to include
 INTEL = 1
 XILINX = 1
+XIL_FAMILY:=AES-KU040-DB-G
+INT_FAMILY:=CYCLONEV-GT-DK
 
 CORE_DIR:=$(ROOT_DIR)
+
+BDTAB=0
+SWREGS=0
+
 include $(TEX_DIR)/document/document.mk
-
-clean: texclean
-
-.PHONY: clean
 
