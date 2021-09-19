@@ -14,7 +14,7 @@ include $(CACHE_DIR)/software/software.mk
 endif
 endif
 
-#UART
+#uart
 include $(UART_DIR)/software/embedded/embedded.mk
 
 #interconnect
