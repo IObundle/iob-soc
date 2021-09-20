@@ -7,3 +7,6 @@
 [submodule "submodules/SUT"]
 	path = submodules/SUT
 	url = git@github.com:IObundle/iob-soc-sut.git
+[submodule "submodules/T_UART"]
+	path = submodules/T_UART
+	url = git@github.com:IObundle/iob-uart.git
