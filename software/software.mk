@@ -1,3 +1,5 @@
+defmacro:=-D
+incdir:=-I
 include $(REGFILEIF_DIR)/core.mk
 
 #include
