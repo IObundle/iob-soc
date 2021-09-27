@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stdint.h>
-#include "UARTsw_reg.h"
 
 #define UART_PROGNAME "IOb-UART"
 

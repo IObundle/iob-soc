@@ -1,5 +1,6 @@
 #include "interconnect.h"
 #include "iob-uart.h"
+#include "UARTsw_reg.h"
 
 //base address
 static int base;
