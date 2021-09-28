@@ -24,6 +24,9 @@ VSRC+=$(SPROM_DIR)/sp_rom.v
 SUBMODULES+=TDPRAM
 TDPRAM_DIR:=$(CACHE_DIR)/submodules/MEM/tdp_ram
 VSRC+=$(TDPRAM_DIR)/iob_tdp_ram.v
+SUBMODULES+=TDPRAM_BE
+TDPRAM_BE_DIR:=$(CACHE_DIR)/submodules/MEM/tdp_ram_be
+VSRC+=$(TDPRAM_BE_DIR)/iob_tdp_ram_be.v
 endif
 
 #peripherals
