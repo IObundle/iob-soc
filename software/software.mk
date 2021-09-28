@@ -24,3 +24,11 @@ HDR=$(SW_DIR)/system.h
 #common sources (none so far)
 #SRC=$(SW_DIR)/*.c
 
+#peripherals' base addresses
+periphs.h: periphs_tmp.h
+	@is_diff=`diff -q -N $@ $<`; if [ "$$is_diff" ]; then cp $< $@; fi
+	@rm periphs_tmp.h
+
+periphs_tmp.h:
+	$(foreach p, $(PERIPHERALS), $(shell echo "#define $p_BASE (1<<$P) |($p<<($P-N_SLAVES_W))" >> $@) )
+
