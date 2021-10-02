@@ -1,0 +1,223 @@
+README FOR INSTALLATION OF OPENRAM AND SKYWATER 130nm WITH OPEN PDK
+
+----------------------------------OPENRAM---------------------------------------
+Getting Openram:
+Requirements for Openram are the following,
+1. Python 3.8.10
+2.   Python numpy (pip3 install numpy)
+3.   Python scipy (pip3 install scipy)
+4.   Python sklearn (pip3 install sklearn)
+5.   Python Coverage(pip3 install coverage)			
+5. Magic 8.3.130
+6. Netgen 1.5.164 or newer
+
+1.clone the git repository for openram
+git clone https://github.com/VLSIDA/OpenRAM
+
+2.set following environment variables in bashrc
+  export OPENRAM_HOME="$HOME/openram/compiler"
+  export OPENRAM_TECH="$HOME/openram/technology"
+  
+3. Also add OPENRAM_HOME to your PYTHONPATH
+
+  export PYTHONPATH="$PYTHONPATH:$OPENRAM_HOME"
+
+----------------------------------skywater---------------------------------------
+Getting skywater-pdk:
+
+git clone https://github.com/google/skywater-pdk
+
+---------------------------------------------------------------------------------
+
+----------------------------------open-pdks--------------------------------------
+
+Getting open-pdk from open circuit design
+
+we will need OpenPDK to install & generate the required tech files for magic vlsi.
+Get open pdk repository and checkout to new branch as follows:
+
+	git clone git://opencircuitdesign.com/open_pdks
+	cd open_pdks
+	git checkout open_pdks-1.0
+	
+---------------------------------Magic_vlsi--------------------------------------
+
+For requirements of magic vlsi:
+
+sudo apt update && sudo apt install m4 tcsh csh libx11-dev tcl-dev tk-dev
+
+sudo apt install libcairo2-dev libncurses-dev libglu1-mesa-dev freeglut3-dev mesa-common-dev
+
+Download and installation of Magic_vlsi
+
+	# download
+	git clone git://opencircuitdesign.com/magic
+	cd magic
+	git checkout magic-8.3
+
+	# compile & install
+	sudo ./configure
+	sudo make
+	sudo make install
+	and then exit to home directory
+----------------------------------skywater pdk installation-----------------------
+
+	cd skywater-pdk # cd into skywater repo
+
+	# initialise pdk
+	git submodule init libraries/sky130_fd_pr/latest
+	git submodule init libraries/sky130_fd_sc_hd/latest
+	git submodule init libraries/sky130_fd_sc_hdll/latest
+	git submodule init libraries/sky130_fd_sc_hs/latest
+	git submodule init libraries/sky130_fd_sc_ms/latest
+	git submodule init libraries/sky130_fd_sc_ls/latest
+	git submodule init libraries/sky130_fd_sc_lp/latest
+	git submodule init libraries/sky130_fd_sc_hvl/latest
+
+	git submodule update
+	sudo make timing
+       # exit skywater-pdk directory 
+-----------------------------------configuring open-pdk with google skywater------
+
+cd into open-pdk repository and enter following
+
+	 ./configure 
+--enable-sky130-pdk=<skywater_root_dir>/skywater-pdk/libraries --with-sky130-local-path=<your_target_install_dir>
+
+NOTE: skywater_root_dir = skywater repo and your_target_install_dir = your skywater130A runtime install directory.
+
+-----------------------------------install skywater---------------------------------
+From open-pdk repository 
+
+	cd sky130 # you should be in open_pdks root dir
+	make
+	sudo make install
+------------------------------------integrate skywater into magic ------------------
+
+As the skywater tech files are not installed in magic’s library, we need to create a symbolic link in order to use the tech files for drawing layout.
+So enter following for the symbolic links:
+sudo ln -s <sky130A_install_root_dir>/sky130A/libs.tech/magic/*../usr/local/lib/magic/sys/
+In my case it was as follows:
+ sudo ln -s /home/c/open_pdks/sky130/sky130A/libs.tech/magic/*../usr/local/lib/magic/sys/
+
+
+
+-------------------------------------Running magic with skywater combo--------------
+
+Enter following in the terminal to check if the magic runs with skywater
+
+tcsh
+sudo magic -T sky130A
+
+-------------------------------------Porting SKY130 to OpenRAM-----------------------
+Last step is to port skywater 130 process node technology to Openram. The OpenRAM compiler is currently available for two technologies, namely - SCMOS and FreePDK45. For adding a new technology support to OpenRAM, a directory with name of process node should be created in technology directory of OpenRAM.
+
+
+getting the sky130 technology for Openram
+ 
+	git clone https://github.com/vsdip/vsdsram_sky130
+copy the folder:
+
+vsdsram_sky130/OpenRAM/sky130A
+ 
+from the above repository:
+and paste it in the openram repository in the technology folder
+
+ openram/technology
+ 
+-------------------------------netgen installation----------------------------
+
+Getting the git repo for netgen (tool used for LVS layout vs schemetic comparison)
+
+	git clone git://opencircuitdesign.com/netgen
+
+For installation of this tool 
+
+cd netgen # repo of netgen
+./configure
+make 
+make install
+ 
+------------------------------------------------------------------------------
+
+Finally, make a configuration python script. I used the following one
+
+------------------------------------------------------------------------------
+# Data word size
+word_size = 32
+
+# Number of words in the memory
+num_words = 32 #1024
+
+# Technology to use in $OPENRAM_TECH
+tech_name = "sky130A"
+
+# You can use the technology nominal corner only
+# nominal_corner_only = True
+
+process_corners = ["SS", "TT", "FF"]
+# process_corners = ["TT"]
+
+# Voltage corners to characterize
+supply_voltages = [ 1.8 ]
+# supply_voltages = [ 3.0, 3.3, 3.5 ]
+
+# Temperature corners to characterize
+# temperatures = [ 0, 25 100]
+
+# Output directory for the results
+output_path = "temp"
+# Output file base name
+output_name = "sram_{0}_{1}_{2}".format(word_size,num_words,tech_name)
+
+# Disable analytical models for full characterization (WARNING: slow!)
+# analytical_delay = False
+
+-----------------------------------------------------------------------------------
+Some example scripts are available inside the openram repository,
+
+openram/compiler/example_configs
+
+-----------------------------------------------------------------------------------
+
+Finally, run the openram from the command line terminal as follows,
+
+$ python3 $OPENRAM_HOME/openram.py myconfig_sky130.py 
+
+------------------------------------------------------------------------------------
+REFERENCES
+
+http://www.opencircuitdesign.com/open_pdks/install.html
+
+https://lootr5858.wordpress.com/2020/10/06/magic-vlsi-skywater-pdk-local-installation-guide/
+
+https://github.com/vsdip/vsdsram_sky130/tree/main/OpenRAM
+
+https://github.com/VLSIDA/OpenRAM
+
+https://github.com/google/skywater-pdk
+ 
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+	
+
+   
+
+
