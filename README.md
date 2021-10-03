@@ -208,8 +208,7 @@ make test-simulator [SIMULATOR=<simulator directory name>]
 
 The above command creates a file called `test.log` in directory
 `hardware/simulation/<simulator directory name>`, which is compared to file
-`test.expected`in the same directory; if they differ, an error is issued. It
-also adds a line to file `test_report.log` in the repository's root directory.
+`test.expected`in the same directory; if they differ, the test is aborted.
 
 To run the series of simulation tests on all the simulators listed in the
 SIM\_LIST variable, type:
@@ -243,8 +242,7 @@ make test-board [BOARD=<board directory name>]
 
 The above command creates the file `software/console/test.log`, which is
 compared to file `hardware/fpga/<FPGA compiler name>/<board directory
-name>/test.expected`; if they differ, an error is issued. It also adds a line to
-file `test_report.log` in the repository's root directory.
+name>/test.expected`; if they differ, the test is aborted.
 
 To run the series of board tests on all the boards listed in the BOARD\_LIST
 variable, type:
@@ -267,10 +265,6 @@ To compile and test the document given in the DOC, variable, type:
 make test-doc [DOC=<document directory name>]
 ```
 
-The above command will add a line to file `test_report.log` in the repository's
-root directory.
-
-
 To test all documents listed in the DOC\_LIST variable, type:
 
 ```
@@ -288,10 +282,6 @@ To run all simulation, FPGA board and documentation tests, type:
 ```
 make test
 ```
-
-The total test report can be found in file `test_report.log` in the repository's
-root directory.
-
 
 ## Cleaning
 
