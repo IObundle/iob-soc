@@ -6,7 +6,7 @@ MEMAKER_SRC:=source /opt/ic_tools/init/init-memaker-20210111-130LL
 
 # memory compilation flags
 SRAM_WORDS:=$(shell echo '2^($(SRAM_W))' | bc)
-MEM_FLAGS:=-s fsc0l_d -type sh -words $(SRAM_WORDS) -bits 8 -bytes 4 -mux 1 -ds -lib -ver -lef
+MEM_FLAGS:=-s fsc0l_d -type sj -words $(SRAM_WORDS) -bits 8 -bytes 4 -mux 16 -ds -lib -ver -lef
 
 # run memory compiler
 run: gen-mem fix-lef fix-sim-model
