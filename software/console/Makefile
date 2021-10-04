@@ -6,7 +6,10 @@ SERIAL:=/dev/ttyUSB0
 CC:=gcc
 CFLAGS:=-g -Wall
 
-INCLUDE+=-I$(UART_DIR)/software
+INCLUDE+=-I$(UART_DIR)/software -I$(FIRM_DIR)
+
+HDR:=console.c $(UART_DIR)/software $(FIRM_DIR)/UARTsw_reg.h
+
 SRC:=console.c rs232comm.c
 
 CONSOLE_CMD=./console -s $(SERIAL)
@@ -23,10 +26,10 @@ firmware.bin: $(FIRM_DIR)/firmware.bin
 run: firmware.bin build 
 	$(CONSOLE_CMD) $(TEST_LOG)
 
-build: $(SRC)
+build: $(HDR) $(SRC)
 	$(CC) $(CFLAGS) $(INCLUDE) $(SRC) -o console
 
 clean:
-	rm -f *# *~ console *.bin
+	rm -f *# *~ console firmware.bin
 
 .PHONY: run build clean

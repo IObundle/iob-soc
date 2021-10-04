@@ -79,6 +79,22 @@ queue-out-remote:
 	'make -C $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD) queue-out;\
 	if [ "`pgrep -u $(USER) console`" ]; then killall -q -u $(USER) -9 console; fi'
 
+#
+# Testing
+#
+
+test: clean-testlog test1 test2 test3
+	diff -q $(CONSOLE_DIR)/test.log test.expected
+
+test1: clean
+	make all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log";\
+
+test2: 
+	make all INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log";\
+
+test3: clean
+	make all INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log";\
+
 
 #
 # Clean
@@ -109,4 +125,5 @@ endif
 
 .PHONY: all run load build \
 	queue-in queue-out queue-wait queue-out-remote \
+	test test1 test2 test3 \
 	clean clean-testlog
