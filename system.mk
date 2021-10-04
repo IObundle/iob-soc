@@ -99,7 +99,7 @@ PYTHON_DIR:=$(SW_DIR)/python
 #hw paths
 HW_DIR=$(ROOT_DIR)/hardware
 SIM_DIR=$(HW_DIR)/simulation/$(SIMULATOR)
-ASIC_DIR=$(HW_DIR)/asic
+ASIC_DIR=$(HW_DIR)/asic/$(ASIC_NODE)
 BOARD_DIR ?=$(shell find hardware -name $(BOARD))
 
 #doc paths

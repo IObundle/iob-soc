@@ -42,11 +42,17 @@ fpga-clean:
 # SYNTHESIZE AND SIMULATE ASIC
 #
 
-asic-synt:
-	make -C $(ASIC_DIR) all
+asic-mem:
+	make -C $(ASIC_DIR) mem
 
-asic-sim-post-synt:
-	make -C $(ASIC_DIR) all
+asic-synth:
+	make -C $(ASIC_DIR) synth
+
+asic-sim-post-synth:
+	make -C $(ASIC_DIR) sim
+
+asic-clean:
+	make -C $(ASIC_DIR) clean
 
 #
 # COMPILE DOCUMENTS
@@ -116,7 +122,7 @@ clean-all-docs:
 
 clean: 
 	make -C $(PC_DIR) clean
-#	make -C $(ASIC_DIR) clean
+	make -C $(ASIC_DIR) clean
 	make -C $(DOC_DIR) clean
 	make clean-all-simulators
 	make clean-all-boards
@@ -124,9 +130,9 @@ clean:
 
 
 .PHONY: all pc-emul pc-emul-clean \
-	sim sim-clean\
-	fpga-all fpga-run fpga-build fpga-clean\
-	asic-synt asic-sim-post-synt
+	sim sim-clean \
+	fpga-all fpga-run fpga-build fpga-clean \
+	asic-mem asic-synth asic-sim-post-synth asic-clean \
 	doc doc-clean \
-	test test-all-simulators test-simulator test-all-boards test-board\
+	test test-all-simulators test-simulator test-all-boards test-board \
 	clean-all-simulators clean-all-boards clean
