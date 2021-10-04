@@ -141,6 +141,6 @@ $(foreach p, $(PERIPHERALS), $(eval DEFINE+=$(defmacro)$p=$($p)))
 
 #RULES
 gen-clean:
-	@rm -f *# *~ test_report.log
+	@rm -f *# *~
 
 .PHONY: gen-clean
