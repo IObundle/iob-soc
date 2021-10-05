@@ -47,6 +47,10 @@ hardware/fpga/*/*/*
 hardware/asic/*/*
 !hardware/asic/asic.mk
 !hardware/asic/*/Makefile
+!hardware/asic/*/*.sh
+!hardware/asic/*/initial.v
+!hardware/asic/*/synscript.tcl
+!hardware/asic/*/powscript.tcl
 
 #DOCUMENT
 document/*/*
