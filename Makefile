@@ -42,8 +42,8 @@ fpga-clean:
 # SYNTHESIZE AND SIMULATE ASIC
 #
 
-asic-mem:
-	make -C $(ASIC_DIR) mem
+asic-mems:
+	make -C $(ASIC_DIR) mems
 
 asic-synth:
 	make -C $(ASIC_DIR) synth
@@ -132,7 +132,7 @@ clean:
 .PHONY: all pc-emul pc-emul-clean \
 	sim sim-clean \
 	fpga-all fpga-run fpga-build fpga-clean \
-	asic-mem asic-synth asic-sim-post-synth asic-clean \
+	asic-mems asic-synth asic-sim-post-synth asic-clean \
 	doc doc-clean \
 	test test-all-simulators test-simulator test-all-boards test-board \
 	clean-all-simulators clean-all-boards clean

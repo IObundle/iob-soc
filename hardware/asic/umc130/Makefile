@@ -5,27 +5,47 @@ ASIC_USER=$(CADE_USER)
 
 include ../asic.mk
 
-all: mem
+BOOTROM_WORDS:=$(shell echo '2^($(BOOTROM_W))' | bc)
+SRAM_WORDS:=$(shell echo '2^($(SRAM_W))' | bc)
 
-mem:
+all: mems
+
+mems: bootrom sram
+ifneq ($(ASIC_SERVER),)
+	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/*.lef .
+endif
+
+bootrom: sw gen-bootrom
+
+sram: gen-sram
+
+gen-bootrom: boot.hex
 ifeq ($(ASIC_SERVER),)
-	make -C memory/bootrom run
-	make -C memory/sram run
+	./bootrom.sh $(BOOTROM_WORDS)
 else
-	ssh $(ASIC_USER)@$(ASIC_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
+	ssh $(ASIC_USER)@$(ASIC_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)
-	ssh -Y -C $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR); make asic-mem ASIC_NODE=$(ASIC_NODE)'
-	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/memory/bootrom/*.lef memory/bootrom/
-	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/memory/sram/*.lef memory/sram/
+	ssh -Y -C $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE); make $@ ASIC_NODE=$(ASIC_NODE)'
+endif
+
+gen-sram:
+ifeq ($(ASIC_SERVER),)
+	./sram.sh $(SRAM_WORDS)
+else
+	ssh $(ASIC_USER)@$(ASIC_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
+	rsync -avz --exclude .git $(ROOT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)
+	ssh -Y -C $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE); make $@ ASIC_NODE=$(ASIC_NODE)'
 endif
 
 clean:
-	make -C memory/bootrom clean
-	make -C memory/sram clean
+#	make -C memory/bootrom clean
+#	make -C memory/sram clean
 ifneq ($(ASIC_SERVER),)
 	ssh $(ASIC_USER)@$(ASIC_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --delete --exclude .git $(ROOT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)
 	ssh $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR); make asic-clean ASIC_NODE=$(ASIC_NODE)'
 endif
 
-.PHONY: all mem clean
+.PHONY: all \
+	mems bootrom sram gen-bootrom gen-sram \
+	clean

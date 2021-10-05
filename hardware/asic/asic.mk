@@ -1,7 +1,5 @@
 #DEFINES
 
-BAUD=$(HW_BAUD)
-
 #ddr controller address width
 DEFINE+=$(defmacro)DDR_ADDR_W=$(FPGA_DDR_ADDR_W)
 
