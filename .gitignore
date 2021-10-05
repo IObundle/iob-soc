@@ -44,12 +44,9 @@ hardware/fpga/*/*/*
 !hardware/fpga/quartus/*/*.sdc
 
 #asic
-hardware/asic/*/*/*
+hardware/asic/*/*
 !hardware/asic/asic.mk
 !hardware/asic/*/Makefile
-!hardware/asic/*/memory/bootrom/Makefile
-!hardware/asic/*/memory/sram/Makefile
-!hardware/asic/*/memory/sram/initial.v
 
 #DOCUMENT
 document/*/*
