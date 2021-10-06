@@ -72,6 +72,7 @@ test:
 	make test-pc-emul;\
 	make test-all-simulators;\
 	make test-all-boards;\
+	make test-all-asics;\
 	make test-all-docs;\
 
 test-pc-emul:
@@ -108,6 +109,18 @@ test-all-boards:
 clean-all-boards:
 	$(foreach s, $(BOARD_LIST), make -C $(BOARD_DIR) clean BOARD=$s;)
 
+test-asic:
+	@make -C $(ASIC_DIR) clean-testlog;\
+	make -C $(ASIC_DIR) clean;\
+	make -C $(ASIC_DIR) all TEST_LOG=">> test.log";\
+	diff -q $(ASIC_DIR)/test.log $(ASIC_DIR)/test.expected
+
+test-all-asics:
+	$(foreach b, $(ASIC_NODE_LIST), make test-asic ASIC_NODE=$b;)
+
+clean-all-asics:
+	$(foreach s, $(ASIC_NODE_LIST), make -C $(ASIC_DIR) clean ASIC_NODE=$s;)
+
 test-doc:
 	@make -C $(DOC_DIR) clean;\
 	make -C $(DOC_DIR) all DOC=$(DOC);\
@@ -122,10 +135,10 @@ clean-all-docs:
 
 clean: 
 	make -C $(PC_DIR) clean
-	make -C $(ASIC_DIR) clean
 	make -C $(DOC_DIR) clean
 	make clean-all-simulators
 	make clean-all-boards
+	make clean-all-asics
 	make clean-all-docs
 
 
@@ -134,5 +147,5 @@ clean:
 	fpga-all fpga-run fpga-build fpga-clean \
 	asic-mems asic-synth asic-sim-post-synth asic-clean \
 	doc doc-clean \
-	test test-all-simulators test-simulator test-all-boards test-board \
-	clean-all-simulators clean-all-boards clean
+	test test-all-simulators test-simulator test-all-boards test-board test-all-asics test-asic \
+	clean-all-simulators clean-all-boards clean-all-asics clean

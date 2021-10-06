@@ -5,10 +5,6 @@ DEFINE+=$(defmacro)DDR_ADDR_W=$(FPGA_DDR_ADDR_W)
 
 include $(ROOT_DIR)/hardware/hardware.mk
 
-MEMORIES_DIR=$(ASIC_DIR)/memory
-BOOTROM_DIR=$(MEMORIES_DIR)/bootrom
-SRAM_DIR=$(MEMORIES_DIR)/sram
-
 CASE=TC
 
 # Memory sizes in log2
@@ -21,7 +17,13 @@ SRAM_WORDS:=$(shell echo '2^($(SRAM_W))' | bc)
 # Memories' wrappers
 VSRC+=bootrom.v sram.v
 
+#RULES
+
 all: mems synth
+
+#
+# Memories
+#
 
 mems: bootrom sram
 ifneq ($(ASIC_SERVER),)
@@ -35,8 +37,34 @@ bootrom: sw gen-bootrom
 
 sram: gen-sram
 
+#
+# Synthesis
+#
+
 synth: system_synth.v
+
+#
+# Clean
+#
+
+clean-remote: hw-clean
+	@rm -f $(ASIC_MEM_LEFS) $(ASIC_MEM_LIBS) $(ASIC_MEM_SIM_MODELS)
+ifneq ($(ASIC_SERVER),)
+	ssh $(ASIC_USER)@$(ASIC_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
+	rsync -avz --delete --exclude .git $(ROOT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)
+	ssh $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE); make $@ ASIC_NODE=$(ASIC_NODE)'
+endif
+
+#clean test log only when asic testing begins
+clean-testlog:
+	@rm -f test.log
+ifneq ($(ASIC_SERVER),)
+	ssh $(ASIC_USER)@$(ASIC_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
+	rsync -avz --exclude .git $(ROOT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)
+	ssh $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE); make $@ ASIC_NODE=$(ASIC_NODE)'
+endif
 
 .PHONY: all \
 	mems bootrom sram \
-	synth
+	synth \
+	clean-remote clean-testlog
