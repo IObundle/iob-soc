@@ -46,7 +46,7 @@ ser.writeTimeout = 2     #timeout for write
 
 
 # Print ERROR
-def cnsl_error(mesg):
+def cnsl_perror(mesg):
     print(PROGNAME, end = ' ')
     print(": " + str(mesg))
     exit(1)
@@ -102,7 +102,7 @@ def cnsl_recvfile():
     print(': file size: {0} bytes received'.format(file_size))
 
 def usage(message):
-    cnsl_perror("usage: ./console -s <serial port> [ -f <firmware file> ]")
+    cnsl_perror("usage: ./console -s <serial port> [ -f <firmware file> ] [-L/--local]")
     cnsl_perror(message)
 
 def clean_exit():
@@ -175,7 +175,7 @@ def main():
             print(': got file receive request')
             cnsl_recvfile()
         else:
-            print(byte)
+            print(str(byte, 'ascii'), end = '')
             sys.stdout.flush()
 
 if __name__ == "__main__":
