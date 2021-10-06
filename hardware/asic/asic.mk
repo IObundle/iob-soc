@@ -44,6 +44,16 @@ sram: gen-sram
 synth: system_synth.v
 
 #
+# Testing
+#
+
+test: clean-testlog test1
+	diff -q $(HW_DIR)/simulation/xcelium/test.log test.expected
+
+test1: clean
+	make all ASIC_NODE=$(ASIC_NODE) TEST_LOG=">> test.log";
+
+#
 # Clean
 #
 
@@ -67,4 +77,5 @@ endif
 .PHONY: all \
 	mems bootrom sram \
 	synth \
+	test test1 \
 	clean-remote clean-testlog

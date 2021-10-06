@@ -51,7 +51,7 @@ SIMULATOR ?=icarus
 BOARD ?=CYCLONEV-GT-DK
 
 #ASIC COMPILATION
-#default asic node running locally or remotely
+#default asic node  running locally or remotely
 #check the respective Makefile in hardware/asic/$(ASIC_NODE) for specific settings
 ASIC_NODE ?=umc130
 
@@ -59,17 +59,6 @@ ASIC_NODE ?=umc130
 #DOCUMENTATION
 #default document
 DOC ?= pb
-
-# REGRESSION TESTING
-#simulators used in regression testing
-SIM_LIST ?=icarus xcelium
-#boards used for regression testing
-BOARD_LIST ?=CYCLONEV-GT-DK AES-KU040-DB-G
-#asic nodes used for regression testing
-ASIC_NODE_LIST ?=umc130
-#documents used for regression testing
-DOC_LIST ?=pb presentation
-
 
 
 ####################################################################
