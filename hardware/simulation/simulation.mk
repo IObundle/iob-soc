@@ -24,13 +24,13 @@ include $(ROOT_DIR)/hardware/hardware.mk
 #asic post-synthesis and post-pr sources
 ifeq ($(ASIC_SIM),1)
 ASIC_SIM_LIB ?= my_asic_sim_lib
-$(wildcard $(ASIC_DIR)/$(ASIC_NODE)/memory/bootrom/SP*.v)
-$(wildcard $(ASIC_DIR)/$(ASIC_NODE)/memory/sram/SH*.v)
+$(wildcard $(ASIC_DIR)/SP*.v)
+$(wildcard $(ASIC_DIR)/SJ*.v)
 ifeq ($(ASIC_SYNTH),1)
-VSRC=$(ASIC_DIR)/$(ASIC_NODE)/synth/system_synth.v
+VSRC=$(ASIC_DIR)/system_synth.v
 endif
 ifeq ($(ASIC_PR),1)
-VSRC=$(ASIC_DIR)/$(ASIC_NODE)/pr/system_pr.v
+VSRC=$(ASIC_DIR)/system_pr.v
 endif
 endif
 
@@ -74,6 +74,22 @@ VSRC+=$(foreach p, $(PERIPHERALS), $(shell if test -f $(SUBMODULES_DIR)/$p/hardw
 kill-remote-sim:
 	@echo "INFO: Remote simulator $(SIMULATOR) will be killed"
 	ssh $(SIM_USER)@$(SIM_SERVER) 'killall -q -u $(SIM_USER) -9 $(SIM_PROC)'
+
+
+test: clean-testlog test1 test2 test3 test4 test5
+	diff -q test.log test.expected
+
+test1:
+	make all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log";
+test2:
+	make all INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log";
+test3:
+	make all INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=0 TEST_LOG=">> test.log";
+test4:
+	make all INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log";
+test5:
+	make all INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log";
+
 
 #clean target common to all simulators
 clean-remote: hw-clean 
