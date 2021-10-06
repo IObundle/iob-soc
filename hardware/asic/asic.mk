@@ -18,14 +18,18 @@ SRAM_W:=$(shell echo '$(SRAM_ADDR_W)-2' | bc)
 BOOTROM_WORDS:=$(shell echo '2^($(BOOTROM_W))' | bc)
 SRAM_WORDS:=$(shell echo '2^($(SRAM_W))' | bc)
 
+# Memories' wrappers
 VSRC+=bootrom.v sram.v
 
 all: mems synth
 
 mems: bootrom sram
 ifneq ($(ASIC_SERVER),)
-	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_MEMS) .
+	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_MEM_LEFS) .
+	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_MEM_LIBS) .
+	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_MEM_SIM_MODELS) .
 endif
+	make fix-mems
 
 bootrom: sw gen-bootrom
 
