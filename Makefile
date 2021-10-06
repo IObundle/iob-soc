@@ -113,7 +113,7 @@ test-asic:
 	@make -C $(ASIC_DIR) clean-testlog;\
 	make -C $(ASIC_DIR) clean;\
 	make -C $(ASIC_DIR) all TEST_LOG=">> test.log";\
-	diff -q $(ASIC_DIR)/test.log $(ASIC_DIR)/test.expected
+	diff -q $(HW_DIR)/simulation/xcelium/test.log $(ASIC_DIR)/test.expected
 
 test-all-asics:
 	$(foreach b, $(ASIC_NODE_LIST), make test-asic ASIC_NODE=$b;)
