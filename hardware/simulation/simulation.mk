@@ -24,13 +24,13 @@ include $(ROOT_DIR)/hardware/hardware.mk
 #asic post-synthesis and post-pr sources
 ifeq ($(ASIC_SIM),1)
 ASIC_SIM_LIB ?= my_asic_sim_lib
-$(wildcard $(ASIC_DIR)/$(ASIC_NODE)/memory/bootrom/SP*.v)
-$(wildcard $(ASIC_DIR)/$(ASIC_NODE)/memory/sram/SH*.v)
+$(wildcard $(ASIC_DIR)/SP*.v)
+$(wildcard $(ASIC_DIR)/SJ*.v)
 ifeq ($(ASIC_SYNTH),1)
-VSRC=$(ASIC_DIR)/$(ASIC_NODE)/synth/system_synth.v
+VSRC=$(ASIC_DIR)/system_synth.v
 endif
 ifeq ($(ASIC_PR),1)
-VSRC=$(ASIC_DIR)/$(ASIC_NODE)/pr/system_pr.v
+VSRC=$(ASIC_DIR)/system_pr.v
 endif
 endif
 
