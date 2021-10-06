@@ -75,7 +75,7 @@
 \begin{center}
     \begin{itemize}
       \item Building processor-based systems from scratch is challenging
-      \item The IOb-SoC template makes it easy by providing a base Verilog SoC equipped with
+      \item The IOb-SoC template eases this task by providing a base Verilog SoC equipped with
         \begin{itemize}
         \item a RISC-V CPU
         \item a memory system including boot ROM, RAM, 2-level cache system and AXI4 interface to external memory (DDR)
@@ -92,9 +92,9 @@
 \begin{center}
   \begin{itemize}
     \item Use a Linux real or virtual machine
-    \item Make sure you have access to a {\bf stable} version of the open source Icarus Verilog simulator (\url{iverilog.icarus.com}) installed locally or into some remote server
-    \item Make sure you have access to FPGA build tools locally or on some remote server
-    \item Make sure you have an FPGA board attached to your Linux machine or on some remote server
+    \item Make sure you a {\bf stable} version of the open source Icarus Verilog simulator (\url{iverilog.icarus.com}) installed locally or into some remote server
+    \item Make sure you have FPGA build tools installed locally or on some remote server
+    \item Make sure you have an FPGA board attached to your Linux machine or to some remote server
     \item Set up {\bf ssh} access key to GitHub (\url{github.com}) (https access requires you to enter your password many times)
     \item Follow the instructions in the IOb-SoC repository's README file to clone the repository and install the tools
   \end{itemize}
@@ -115,6 +115,7 @@
     \begin{itemize}
     \item CORE\_REPO/hardware/hardware.mk
     \item CORE\_REPO/software/embedded/embedded.mk
+    \item CORE\_REPO/software/embedded/pc.mk
     \end{itemize}
   \item Study these files and its references in the Timer IP core repository.
   \end{itemize}
@@ -160,8 +161,9 @@ int main()
 \begin{itemize}
 \item Run the simulation with the firmware pre-initialised in the memory:\\
   {\tt make sim}
-\item You should see from the printed messages that the firmware and bootloader C files, and the system's Verilog files are being compiled
-\item Then the simulation is started and the following should be printed:
+\item The printed messages show that the firmware and bootloader C files are compiled
+\item The whole system's Verilog files are also compiled
+\item Finally the simulation is started and the following is printed:
 \end{itemize}
 
 \begin{tiny}
@@ -238,8 +240,8 @@ IOb-Console: exiting...
   \item A tutorial on creating a simple SoC using IOb-SoC has been presented
   \item The addition of an example peripheral IP core has been illustrated
   \item A simple firmware that uses the IP core driver functions has been explained
-  \item IOb-SoC has been simulated at the RTL level while running the firmware
-  \item IOb-SoC has been compiled and the firmware run on an FPGA board
+  \item RTL simulation of the system running the firmware has been demonstrated
+  \item FPGA board running of the system running the firmware has been demonstrated 
   \end{itemize}
 \end{frame}
 
