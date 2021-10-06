@@ -48,7 +48,7 @@ SIMULATOR ?=icarus
 #BOARD
 #default board running locally or remotely
 #check the respective Makefile in hardware/fpga/$(BOARD) for specific settings
-BOARD ?=CYCLONEV-GT-DK
+BOARD ?=AES-KU040-DB-G
 
 #ASIC COMPILATION
 #default asic node  running locally or remotely
