@@ -126,8 +126,13 @@ test-doc:
 	make -C $(DOC_DIR) all DOC=$(DOC);\
 	diff -q $(DOC_DIR)/$(DOC).aux $(DOC_DIR)/$(DOC).expected
 
-test-all-docs:
-	$(foreach b, $(DOC_LIST), make test-doc DOC=$b;)
+test-pb:
+	make test-doc DOC=pb
+
+test-presentation:
+	make test-doc DOC=presentation
+
+test-all-docs: test-pb test-presentation
 
 clean-all-docs:
 	$(foreach s, $(DOC_LIST), make -C document/$s clean DOC=$s;)
@@ -147,5 +152,5 @@ clean:
 	fpga-all fpga-run fpga-build fpga-clean \
 	asic-mems asic-synth asic-sim-post-synth asic-clean \
 	doc doc-clean \
-	test test-all-simulators test-simulator test-all-boards test-board test-all-asics test-asic \
+	test test-all-simulators test-simulator test-all-boards test-board test-all-asics test-asic test-all-docs test-presentation test-pb test-doc \
 	clean-all-simulators clean-all-boards clean-all-asics clean
