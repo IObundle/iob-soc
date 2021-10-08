@@ -44,7 +44,7 @@ ser.writeTimeout = 2     #timeout for write
 
 # Print ERROR
 def cnsl_perror(mesg):
-    print(PROGNAME, end = ' ')
+    print(PROGNAME, end = '')
     print(": " + str(mesg))
     exit(1)
 
@@ -54,7 +54,7 @@ def cnsl_recvstr():
         name = ser.read_until(b'\x00') # reads 80 bytes
     else:
         name = soc2cnsl.read_until(b'\x00')
-    print(PROGNAME, end = ' ')
+    print(PROGNAME, end = '')
     print(': file name {0} '.format(name))
     sys.stdout.flush()
     return name
@@ -76,9 +76,9 @@ def cnsl_sendfile():
         cnsl2soc.write(file_size.to_bytes(4,  byteorder='little'))
         cnsl2soc.write(f.read())
     f.close()
-    print(PROGNAME, end = ' ')
+    print(PROGNAME, end = '')
     print(': file of size {0} bytes'.format(file_size))
-    print(PROGNAME, end = ' ')
+    print(PROGNAME, end = '')
     print(': file sent')
 
 def cnsl_recvfile():
@@ -100,7 +100,7 @@ def cnsl_recvfile():
     # print(data)
     f.write(data)
     f.close()
-    print(PROGNAME, end = ' ')
+    print(PROGNAME, end = '')
     print(': file of size {0} bytes received'.format(file_size))
 
 def usage(message):
@@ -123,6 +123,11 @@ def init_print():
     print('  BaudRate = {0}'.format(ser.baudrate))
     print('  StopBits = {0}'.format(ser.stopbits))
     print('  Parity   = None')
+    print()
+    print(PROGNAME, end = '')
+    print(': connecting...')
+    print()
+
 
 # Main function.
 def main():
@@ -147,10 +152,7 @@ def main():
         usage("PROGNAME: not enough program arguments")
     if ('-f' in sys.argv):
         load_fw = True
-
-    print(PROGNAME, end = ' ')
-    print(': connecting...')
-    print()
+    init_print()
     # Reading the data from the serial port or FIFO files. This will be running in an infinite loop.
     while(True):
         # get byte from target
@@ -175,15 +177,15 @@ def main():
                     else:
                         cnsl2soc.write(ACK)
         elif (byte == EOT):
-            print(PROGNAME, end = ' ')
+            print(PROGNAME, end = '')
             print(': exiting...')
             clean_exit()
         elif (byte == FTX):
-            print(PROGNAME, end = ' ')
+            print(PROGNAME, end = '')
             print(': got file receive request')
             cnsl_recvfile()
         elif (byte == FRX):
-            print(PROGNAME, end = ' ')
+            print(PROGNAME, end = '')
             print(': got file send request')
             cnsl_sendfile()
         else:
