@@ -1,5 +1,2 @@
 hardware/fpga/*/*/*
 !hardware/fpga/*/*/Makefile
-
-hardware/include/UARTsw_reg.vh
-hardware/include/UARTsw_reg_gen.v

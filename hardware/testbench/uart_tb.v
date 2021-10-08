@@ -101,8 +101,8 @@ module uart_tb;
          
          
          // check received data
-	 $display("got %x, expected %x", rcvd_data, i);
 	 if ( rcvd_data != i ) begin
+	    $display("got %x, expected %x", rcvd_data, i);
             $display("Test failed");
 	    $finish;
 	 end
@@ -112,9 +112,8 @@ module uart_tb;
          @(posedge clk);
 
       end // for (i=0; i < 256; i= i+1)
-      
 
-      $display("Test completed successfully");
+      $display("Test PASSED");
       $finish;
 
    end 
