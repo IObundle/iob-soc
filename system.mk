@@ -60,15 +60,6 @@ ASIC_NODE ?=umc130
 #default document
 DOC ?= pb
 
-# REGRESSION TESTING
-#simulators used in regression testing
-SIM_LIST ?=icarus xcelium
-#boards used for regression testing
-BOARD_LIST ?=CYCLONEV-GT-DK AES-KU040-DB-G
-#documents used for regression testing
-DOC_LIST ?=pb presentation
-
-
 
 ####################################################################
 # DERIVED FROM PRIMARY PARAMETERS: DO NOT CHANGE BELOW THIS POINT
@@ -99,7 +90,7 @@ PYTHON_DIR:=$(SW_DIR)/python
 #hw paths
 HW_DIR=$(ROOT_DIR)/hardware
 SIM_DIR=$(HW_DIR)/simulation/$(SIMULATOR)
-ASIC_DIR=$(HW_DIR)/asic
+ASIC_DIR=$(HW_DIR)/asic/$(ASIC_NODE)
 BOARD_DIR ?=$(shell find hardware -name $(BOARD))
 
 #doc paths
@@ -141,6 +132,6 @@ $(foreach p, $(PERIPHERALS), $(eval DEFINE+=$(defmacro)$p=$($p)))
 
 #RULES
 gen-clean:
-	@rm -f *# *~ test_report.log
+	@rm -f *# *~
 
 .PHONY: gen-clean
