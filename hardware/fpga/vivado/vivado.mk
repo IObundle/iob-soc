@@ -11,7 +11,7 @@ export RDI_VERBOSE = False
 
 post-build:
 
-clean: clean-remote
+clean: hw-clean clean-remote
 	rm -rf .Xil/ *.map *. *~ synth_*.mmi synth_*.bit top_system*.v \
 	*_tb table.txt tab_*/ *webtalk* *.jou xelab.* xsim[._]* xvlog.* \
 	uart_loader *.ltx system.v fsm_encoding.os

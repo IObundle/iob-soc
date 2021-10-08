@@ -13,7 +13,7 @@ TESTBENCH: exiting
 
 
 Simulation complete via $finish(1) at time 408141 NS + 0
-./system_tb.v:97               $finish;
+./system_tb.v:96               $finish;
 TESTBENCH: connecting..IOb-Bootloader: connected!
 IOb-UART: requesting to receive file
 TESTBENCH: got file send request
@@ -62,7 +62,7 @@ TESTBENCH: exiting
 
 
 Simulation complete via $finish(1) at time 89297181 NS + 0
-./system_tb.v:97               $finish;
+./system_tb.v:96               $finish;
 TESTBENCH: connecting..IOb-Bootloader: connected!
 IOb-Bootloader: DDR in use
 IOb-Bootloader: Restart CPU to run user program...
@@ -79,7 +79,7 @@ TESTBENCH: exiting
 
 
 Simulation complete via $finish(1) at time 475281 NS + 0
-./system_tb.v:97               $finish;
+./system_tb.v:96               $finish;
 TESTBENCH: connecting..IOb-Bootloader: connected!
 IOb-Bootloader: DDR in use
 IOb-Bootloader: program to run from DDR
@@ -97,7 +97,7 @@ TESTBENCH: exiting
 
 
 Simulation complete via $finish(1) at time 602481 NS + 0
-./system_tb.v:97               $finish;
+./system_tb.v:96               $finish;
 TESTBENCH: connecting..IOb-Bootloader: connected!
 IOb-Bootloader: DDR in use
 IOb-Bootloader: program to run from DDR
@@ -148,4 +148,4 @@ TESTBENCH: exiting
 
 
 Simulation complete via $finish(1) at time 86380581 NS + 0
-./system_tb.v:97               $finish;
+./system_tb.v:96               $finish;
