@@ -31,7 +31,7 @@ INIT_MEM ?=1
 #must match respective submodule or folder name in the submodules directory
 #and CORE_NAME in the core.mk file of the submodule
 #PERIPHERALS:=UART
-PERIPHERALS ?=UART TIMER
+PERIPHERALS ?=UART
 
 #RISC-V COMPRESSED INSTRUCTIONS
 USE_COMPRESSED ?=1
@@ -48,7 +48,7 @@ SIMULATOR ?=icarus
 #BOARD
 #default board running locally or remotely
 #check the respective Makefile in hardware/fpga/$(BOARD) for specific settings
-BOARD ?=AES-KU040-DB-G
+BOARD ?=CYCLONEV-GT-DK
 
 #ASIC COMPILATION
 #default asic node  running locally or remotely
