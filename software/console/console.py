@@ -114,6 +114,16 @@ def clean_exit():
     soc2cnsl.close()
     exit(0)
 
+def init_print():
+    print()
+    print('+-----------------------------------------------+')
+    print('|                   IOb-Console                 |')
+    print('+-----------------------------------------------+')
+    print()
+    print('  BaudRate = {0}'.format(ser.baudrate))
+    print('  StopBits = {0}'.format(ser.stopbits))
+    print('  Parity   = None')
+
 # Main function.
 def main():
     global SerialFlag
@@ -140,6 +150,7 @@ def main():
 
     print(PROGNAME, end = ' ')
     print(': connecting...')
+    print()
     # Reading the data from the serial port or FIFO files. This will be running in an infinite loop.
     while(True):
         # get byte from target

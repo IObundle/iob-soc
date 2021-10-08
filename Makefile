@@ -20,7 +20,7 @@ sim-clean:
 #
 
 console:
-	make -C $(CONSOLE_DIR) build
+	make -C $(CONSOLE_DIR) run
 
 console-clean:
 	make -C $(CONSOLE_DIR) clean

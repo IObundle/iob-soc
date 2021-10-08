@@ -12,7 +12,8 @@ HDR:=console.c $(UART_DIR)/software $(FIRM_DIR)/UARTsw_reg.h
 
 SRC:=console.c rs232comm.c
 
-CONSOLE_CMD=./console -s $(SERIAL)
+#CONSOLE_CMD=./console -s $(SERIAL)
+CONSOLE_CMD=python3 ./console.py -s $(SERIAL)
 ifeq ($(INIT_MEM),0)
 	CONSOLE_CMD+=-f
 endif
@@ -23,7 +24,8 @@ $(FIRM_DIR)/firmware.bin: $(FIRM_DIR)/firmware.c
 firmware.bin: $(FIRM_DIR)/firmware.bin
 	cp $(FIRM_DIR)/firmware.bin .
 
-run: firmware.bin build
+#run: firmware.bin build
+run: firmware.bin
 	$(CONSOLE_CMD) $(TEST_LOG)
 
 build: $(HDR) $(SRC)
