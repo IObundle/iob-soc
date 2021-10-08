@@ -24,6 +24,22 @@ class FifoFile:
                 i += 1
             return data
 
+    def read_until(self, end = b'\x00'):
+        i = 0
+        data = b''
+        # print(number_of_bytes)
+        with open(self.path) as fifo:
+            print("FIFO opened")
+            while(True):
+                data += bytes(fifo.read(1), 'ascii')
+                if len(data) == b'':
+                    print("Writer closed")
+                    break
+                print('Read: "{0}"'.format(data))
+                if (data == b'\x00'):
+                    break
+            return data
+
     def write(self, data):
         with open(self.path, 'wb') as fifo:
             fifo.write(data)
