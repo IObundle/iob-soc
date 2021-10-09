@@ -68,14 +68,6 @@ doc-clean:
 	make -C $(DOC_DIR) clean
 
 
-clean: 
-	make pc-emul-clean
-	make sim-clean
-	make fpga-clean
-	make doc-clean
-#	make asic-clean
-
-
 #
 # TEST ON SIMULATORS AND BOARDS
 #
@@ -113,6 +105,16 @@ test: test-clean test-pc-emul test-sim test-fpga test-doc
 test-clean: test-pc-emul-clean test-sim-clean test-fpga-clean test-doc-clean
 
 
+#generic clean 
+clean: 
+	make pc-emul-clean
+	make sim-clean
+	make fpga-clean
+	make doc-clean
+#	make asic-clean
+
+clean-all: test-clean
+
 
 .PHONY: pc-emul pc-emul-test pc-emul-clean \
 	sim sim-test sim-clean\
@@ -124,3 +126,4 @@ test-clean: test-pc-emul-clean test-sim-clean test-fpga-clean test-doc-clean
 	test-fpga test-fpga-clean\
 	test-doc test-doc-clean\
 	test test-clean
+	clean clean-all
