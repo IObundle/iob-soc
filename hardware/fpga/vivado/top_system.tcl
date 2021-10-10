@@ -4,7 +4,7 @@
 
 #select top module and FPGA decive
 set TOP top_system
-set PART xcku040-fbva676-1-c
+set DEVICE [lindex $argv 3]
 
 set INCLUDE [lindex $argv 0]
 set DEFINE [lindex $argv 1]
@@ -19,7 +19,7 @@ foreach file [split $VSRC \ ] {
     }
 }
 
-set_property part $PART [current_project]
+set_property part $DEVICE [current_project]
 
 if { $USE_DDR < 0 } {
     read_verilog verilog/clock_wizard.v
@@ -94,9 +94,9 @@ if { $USE_DDR < 0 } {
 
 }
 
-read_xdc ./synth_system.xdc
+read_xdc ./top_system.xdc
 
-synth_design -include_dirs $INCLUDE -verilog_define $DEFINE -part $PART -top $TOP
+synth_design -include_dirs $INCLUDE -verilog_define $DEFINE -part $DEVICE -top $TOP
 
 opt_design
 
@@ -108,6 +108,15 @@ report_utilization
 
 report_timing
 
-write_bitstream -force synth_system.bit
+file mkdir reports
 
-write_verilog -force synth_system.v
+report_timing -file reports/timing.txt -max_paths 30
+report_clocks -file reports/clocks.txt
+report_clock_interaction -file reports/clock_interaction.txt
+report_cdc -details -file reports/cdc.txt
+report_synchronizer_mtbf -file reports/synchronizer_mtbf.txt
+report_utilization -hierarchical -file reports/utilization.txt
+
+write_bitstream -force top_system.bit
+
+write_verilog -force top_system.v

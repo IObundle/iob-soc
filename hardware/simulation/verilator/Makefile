@@ -29,14 +29,13 @@ run: $(VSRC) $(VHDR) firmware boot.hex
 	cp obj_dir/Vsim_system_top Vsim_system_top
 	./Vsim_system_top
 
-<<<<<<< HEAD
+
 clean: hw-clean
 	mv sim_system_top.v sim_system_top.ver
 	@rm  -f *.v *.cpp *.hex Vsim_system_top
-=======
+
 sim-clean: hw-clean
 	@rm -f *.cpp Vsystem
->>>>>>> modelsim
 	@rm -rf obj_dir
 	mv sim_system_top.ver sim_system_top.v
 
