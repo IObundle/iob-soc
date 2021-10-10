@@ -7,9 +7,17 @@
 # importing modules
 import os
 import sys
-import serial
+import importlib.util
 import time
 import curses.ascii
+
+package_name = 'serial'
+spec = importlib.util.find_spec(package_name)
+if spec is None:
+    print("IOb-Console: ERROR... py{0} is not installed!".format(package_name))
+    exit()
+import serial
+
 from FIFO import *
 
 # Global variables
