@@ -2,6 +2,7 @@ ROOT_DIR:=../..
 include $(ROOT_DIR)/system.mk
 
 SERIAL:=/dev/ttyUSB0
+LOCAL:=0
 
 CC:=gcc
 CFLAGS:=-g -Wall
@@ -12,9 +13,12 @@ HDR:=console.c $(UART_DIR)/software $(FIRM_DIR)/UARTsw_reg.h
 
 SRC:=console.c rs232comm.c
 
-CONSOLE_CMD=./console -s $(SERIAL)
+CONSOLE_CMD=python3 ./console.py -s $(SERIAL)
 ifeq ($(INIT_MEM),0)
 	CONSOLE_CMD+=-f
+endif
+ifeq ($(LOCAL),1)
+	CONSOLE_CMD+=-L
 endif
 
 $(FIRM_DIR)/firmware.bin: $(FIRM_DIR)/firmware.c
@@ -23,13 +27,10 @@ $(FIRM_DIR)/firmware.bin: $(FIRM_DIR)/firmware.c
 firmware.bin: $(FIRM_DIR)/firmware.bin
 	cp $(FIRM_DIR)/firmware.bin .
 
-run: firmware.bin build 
+run: firmware.bin
 	$(CONSOLE_CMD) $(TEST_LOG)
 
-build: $(HDR) $(SRC)
-	$(CC) $(CFLAGS) $(INCLUDE) $(SRC) -o console
-
 clean:
-	rm -f *# *~ console firmware.bin
+	rm -f *# *~ firmware.bin
 
-.PHONY: run build clean
+.PHONY: run clean
