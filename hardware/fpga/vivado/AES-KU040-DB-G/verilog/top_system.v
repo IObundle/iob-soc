@@ -158,7 +158,6 @@ module top_system(
    wire                         sys_rst;
 
 `ifdef USE_DDR
-   wire                         init_calib_complete;
    wire                         sys_rstn;
 
    assign sys_rst  = ~sys_rstn;
@@ -216,7 +215,7 @@ module top_system(
       .c0_ddr4_dq             (c0_ddr4_dq),
       .c0_ddr4_dqs_c          (c0_ddr4_dqs_c),
       .c0_ddr4_dqs_t          (c0_ddr4_dqs_t),
-      .c0_init_calib_complete (init_calib_complete),
+      .c0_init_calib_complete (),
       
       //generated clocks and resets
       .c0_ddr4_ui_clk         (ddr_ui_clk),
@@ -277,7 +276,7 @@ module top_system(
    axi_interconnect_0 cache2ddr 
      (
       .INTERCONNECT_ACLK     (ddr_ui_clk),
-      .INTERCONNECT_ARESETN  (~(ddr_ui_rst | ~init_calib_complete)),
+      .INTERCONNECT_ARESETN  (~ddr_ui_rst),
       
       //
       // SYSTEM SIDE
@@ -331,6 +330,8 @@ module top_system(
       .S00_AXI_RLAST        (sys_rlast),
       .S00_AXI_RVALID       (sys_rvalid),
       .S00_AXI_RREADY       (sys_rready),
+
+
       //
       // DDR SIDE
       //

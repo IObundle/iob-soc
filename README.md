@@ -30,7 +30,8 @@ cache your credentials before cloning the repository, using:
 ## Configure your SoC
 
 To configure your system edit the *system.mk* file, which can be found at the
-repository root. In this file, you can find the system configuration variables; each variable is explained by a comment.
+repository root. In this file, you can find the system configuration variables;
+each variable is explained by a comment.
 
 
 ## Set environment variables for local or remote building and running
@@ -55,7 +56,7 @@ export IVSIM_USER=myusername
 
 ### Set up the remote FPGA toolchain and board servers
 
-For example, in `hardware/fpga/CYCLONEV-GT-DK/Makefile` the variable for
+For example, in `hardware/fpga/quartus/CYCLONEV-GT-DK/Makefile` the variable for
 the FPGA tool server logical name, FPGA\_SERVER, is set to QUARTUS\_SERVER, and the
 variable for the user name, FPGA\_USER, is set to QUARTUS\_USER; the variable for
 the board server, BOARD\_SERVER, is set to CYC5\_SERVER, and the variable for
@@ -63,10 +64,10 @@ the board user, BOARD\_USER, is set to CYC5_USER. Hence, you need to set the
 latter variables as in the following example:
 
 ```
-export QUARTUS_SERVER=myQUARTUSserver.myorg.com
-export QUARTUS_USER=myQUARTUSserverusername
-export CYC5_SERVER=myCYCLONEV-GT-DKboardserver.myorg.com
-export CYC5_USER=myCYCLONEV-GT-DKboardserverusername
+export QUARTUS_SERVER=<hostname.domain>
+export QUARTUS_USER=<username>
+export CYC5_SERVER=<hostname.domain>
+export CYC5_USER=<username>
 ```
 
 ### Set up the remote ASIC toolchain server
@@ -77,19 +78,18 @@ ASIC\_USER is set to CADENCE\_USER. Hence, you need to set the latter variables
 as in the following example:
 
 ```
-export CADENCE_SERVER=myasicserver.myorg.com
-export CADENCE_USER=myusername
-
+export CADENCE_SERVER=<hostname.domain>
+export CADENCE_USER=<username>
 ```
 
-In each remote server, the environmental variables for the paths of the tools
-and license servers used must be defined as in the following example:
+In each remote server, the environmental variables for tool paths and license
+servers used must be defined as in the following example:
 
 ```
 export QUARTUSPATH=/path/to/quartus
 export VIVADOPATH=/path/to/vivado
 ...
-export LM_LICENSE_FILE=port@host;lic_or_dat_file
+export LM_LICENSE_FILE=port@hostname.domain;lic_or_dat_file
 ```
 
 
@@ -158,19 +158,14 @@ read the Makefile in the board directory.
 
 To build and run, type:
 ``` 
-make fpga-all [BOARD=<board directory name>] [<control parameters>]
-``` 
-
-To run, assuming it is already built, type:
-``` 
 make fpga-run [BOARD=<board directory name>] [<control parameters>]
 ``` 
 
 Before running, the FPGA is loaded with the configuration bitstream. However if
 the bitstream checksum matches that of the last loaded bitstream, kept in file
 `/tmp/<board directory name>.load`, this step is skipped. If, for some reason,
-the FPGA does not run, you may interrupt it with Ctr-C. Then run make fpga-run again and force the bitstream to be reloaded using control
-parameter FORCE=1.
+the FPGA does not run, you may interrupt it with Ctr-C. Then run make fpga-run
+again and force the bitstream to be reloaded using control parameter FORCE=1.
 
 If many users are trying to run the same FPGA board they will be queued in file
 `/tmp/<board directory name>.queue`, before being able to load the bistream and
@@ -190,6 +185,12 @@ installed. To compile the document given by the DOC variable, type:
 make doc [DOC=<document directory name>]
 ```
 
+
+To clean the compilation files of the document given by the DOC variable, type:
+```
+make doc-clean [DOC=<document directory name>]
+```
+
 For more details, read the Makefile in each document's directory
 
 
@@ -207,8 +208,7 @@ make test-simulator [SIMULATOR=<simulator directory name>]
 
 The above command creates a file called `test.log` in directory
 `hardware/simulation/<simulator directory name>`, which is compared to file
-`test.expected`in the same directory; if they differ, an error is issued. It
-also adds a line to file `test_report.log` in the repository's root directory.
+`test.expected`in the same directory; if they differ, the test is aborted.
 
 To run the series of simulation tests on all the simulators listed in the
 SIM\_LIST variable, type:
@@ -242,8 +242,7 @@ make test-board [BOARD=<board directory name>]
 
 The above command creates the file `software/console/test.log`, which is
 compared to file `hardware/fpga/<FPGA compiler name>/<board directory
-name>/test.expected`; if they differ, an error is issued. It also adds a line to
-file `test_report.log` in the repository's root directory.
+name>/test.expected`; if they differ, the test is aborted.
 
 To run the series of board tests on all the boards listed in the BOARD\_LIST
 variable, type:
@@ -266,10 +265,6 @@ To compile and test the document given in the DOC, variable, type:
 make test-doc [DOC=<document directory name>]
 ```
 
-The above command will add a line to file `test_report.log` in the repository's
-root directory.
-
-
 To test all documents listed in the DOC\_LIST variable, type:
 
 ```
@@ -287,10 +282,6 @@ To run all simulation, FPGA board and documentation tests, type:
 ```
 make test
 ```
-
-The total test report can be found in file `test_report.log` in the repository's
-root directory.
-
 
 ## Cleaning
 
