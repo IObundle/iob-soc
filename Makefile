@@ -16,6 +16,16 @@ sim-clean:
 	make -C $(SIM_DIR) clean clean-testlog
 
 #
+# CONSOLE
+#
+
+console:
+	make -C $(CONSOLE_DIR) run
+
+console-clean:
+	make -C $(CONSOLE_DIR) clean
+
+#
 # EMULATE ON PC
 #
 
@@ -111,6 +121,7 @@ clean:
 	make sim-clean
 	make fpga-clean
 	make doc-clean
+	make console-clean
 #	make asic-clean
 
 clean-all: test-clean
