@@ -1,11 +1,5 @@
 #!/bin/python3
 
-#
-# Python adaptation of the console program writen in C.
-# By Pedro Antunes:
-# https://github.com/PedroAntunes178
-#
-
 # importing modules
 import os
 import sys
