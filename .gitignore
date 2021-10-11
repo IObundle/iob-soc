@@ -44,13 +44,12 @@ hardware/fpga/*/*/*
 !hardware/fpga/quartus/*/*.sdc
 
 #asic
-hardware/asic/*/*/*
+hardware/asic/*/*
 !hardware/asic/asic.mk
 !hardware/asic/*/Makefile
 !hardware/asic/*/*.sh
 !hardware/asic/*/synscript.tcl
 !hardware/asic/*/powscript.tcl
-!hardware/asic/*/verilog/initial.v
 
 #DOCUMENT
 document/*/*
