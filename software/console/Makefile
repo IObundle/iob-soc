@@ -2,22 +2,17 @@ ROOT_DIR:=../..
 include $(ROOT_DIR)/system.mk
 
 SERIAL:=/dev/ttyUSB0
-LOCAL:=0
-
-CC:=gcc
-CFLAGS:=-g -Wall
+TEST_BENCH:=0
 
 INCLUDE+=-I$(UART_DIR)/software -I$(FIRM_DIR)
 
-HDR:=console.c $(UART_DIR)/software $(FIRM_DIR)/UARTsw_reg.h
+HDR:=$(UART_DIR)/software $(FIRM_DIR)/UARTsw_reg.h
 
-SRC:=console.c rs232comm.c
-
-CONSOLE_CMD=python3 ./console.py -s $(SERIAL)
+CONSOLE_CMD=./console -s $(SERIAL)
 ifeq ($(INIT_MEM),0)
 	CONSOLE_CMD+=-f
 endif
-ifeq ($(LOCAL),1)
+ifeq ($(TEST_BENCH),1)
 	CONSOLE_CMD+=-L
 endif
 
