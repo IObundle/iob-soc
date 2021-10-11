@@ -123,7 +123,7 @@ test-doc-clean:
 	make doc-clean DOC=pb
 	make doc-clean DOC=presentation
 
-test: test-clean test-pc-emul test-sim test-fpga test-asic test-doc
+test: test-clean test-pc-emul test-sim test-fpga test-doc
 
 test-clean: test-pc-emul-clean test-sim-clean test-fpga-clean test-asic-clean test-doc-clean
 

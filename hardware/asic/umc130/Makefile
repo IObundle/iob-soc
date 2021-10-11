@@ -63,8 +63,8 @@ endif
 #
 
 clean: clean-remote
-	@rm -rf *.txt rc.cmd* rc.* fv libscore_work *.sdc *.lib *.lef *.db
-	@find *.tcl -type f -not -name synscript.tcl -not -name powscript.tcl -delete
+	rm -rf *.txt rc.cmd* rc.* fv libscore_work *.sdc *.lib *.lef *.db
+	find *.tcl -type f -not -name synscript.tcl -not -name powscript.tcl -delete
 
 .PHONY: gen-bootrom gen-sram \
 	fix-mems fix-lefs fix-bootrom-sim-model fix-sram-sim-model \
