@@ -111,6 +111,7 @@ clean:
 	make sim-clean
 	make fpga-clean
 	make doc-clean
+	make console-clean
 #	make asic-clean
 
 clean-all: test-clean
