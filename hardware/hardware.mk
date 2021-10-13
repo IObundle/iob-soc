@@ -21,12 +21,12 @@ SUBMODULES+=SPROM
 SPROM_DIR:=$(CACHE_DIR)/submodules/MEM/sp_rom
 VSRC+=$(SPROM_DIR)/sp_rom.v
 #ram
-SUBMODULES+=TDPRAM
-TDPRAM_DIR:=$(CACHE_DIR)/submodules/MEM/tdp_ram
-VSRC+=$(TDPRAM_DIR)/iob_tdp_ram.v
-SUBMODULES+=TDPRAM_BE
-TDPRAM_BE_DIR:=$(CACHE_DIR)/submodules/MEM/tdp_ram_be
-VSRC+=$(TDPRAM_BE_DIR)/iob_tdp_ram_be.v
+SUBMODULES+=DPRAM
+DPRAM_DIR:=$(CACHE_DIR)/submodules/MEM/dp_ram
+VSRC+=$(DPRAM_DIR)/iob_dp_ram.v
+SUBMODULES+=DPRAM_BE
+DPRAM_BE_DIR:=$(CACHE_DIR)/submodules/MEM/dp_ram_be
+VSRC+=$(DPRAM_BE_DIR)/iob_dp_ram_be.v
 endif
 
 #peripherals

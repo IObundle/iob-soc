@@ -25,7 +25,7 @@ module sram #(
     output reg               d_ready
     );
 
-   iob_tdp_ram_be
+   iob_dp_ram_be
      #(
        .FILE(FILE),
        .ADDR_WIDTH(`SRAM_ADDR_W-2),
