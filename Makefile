@@ -50,7 +50,7 @@ fpga-clean:
 #
 
 asic-synth:
-	make -C $(ASIC_DIR) synth
+	make -C $(ASIC_DIR) all
 
 asic-sim-post-synth:
 	make -C $(ASIC_DIR) sim
@@ -123,7 +123,7 @@ clean:
 	make sim-clean
 	make fpga-clean
 	make doc-clean
-#	make asic-clean
+	make asic-clean
 
 clean-all: test-clean
 

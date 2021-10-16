@@ -4,8 +4,8 @@ ASIC_MEM_LEFS=*.lef
 ASIC_MEM_LIBS=*$(CASE).lib
 ASIC_MEM_SIM_MODELS=*LD130*.v
 
-ASIC_SERVER=$(CADE_SERVER)
-ASIC_USER=$(CADE_USER)
+ASIC_SERVER=$(CADENCE_SERVER)
+ASIC_USER=$(CADENCE_USER)
 
 include ../asic.mk
 
@@ -51,6 +51,9 @@ fix-sram-sim-model:
 
 system_synth.v: $(VHDR) $(VSRC)
 ifeq ($(ASIC_SERVER),)
+	echo "set INCLUDE [list $(INCLUDE)]" > inc.tcl
+	echo "set DEFINE [list $(DEFINE)]" > defs.tcl
+	echo "set VSRC [glob $(VSRC)]" > vsrc.tcl
 	./synth.sh
 else
 	ssh $(ASIC_USER)@$(ASIC_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'

@@ -18,14 +18,14 @@ endif
 ifneq ($(ASIC_MEM),1)
 #rom
 SUBMODULES+=SPROM
-SPROM_DIR:=$(CACHE_DIR)/submodules/MEM/sp_rom
+SPROM_DIR:=$(MEM_DIR)/sp_rom
 VSRC+=$(SPROM_DIR)/sp_rom.v
 #ram
 SUBMODULES+=DPRAM
-DPRAM_DIR:=$(CACHE_DIR)/submodules/MEM/dp_ram
+DPRAM_DIR:=$(MEM_DIR)/dp_ram
 VSRC+=$(DPRAM_DIR)/iob_dp_ram.v
 SUBMODULES+=DPRAM_BE
-DPRAM_BE_DIR:=$(CACHE_DIR)/submodules/MEM/dp_ram_be
+DPRAM_BE_DIR:=$(MEM_DIR)/dp_ram_be
 VSRC+=$(DPRAM_BE_DIR)/iob_dp_ram_be.v
 endif
 
