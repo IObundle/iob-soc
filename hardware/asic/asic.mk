@@ -37,11 +37,11 @@ bootrom: sw gen-bootrom
 
 sram: gen-sram
 
-rom.v: *$(CASE).lib
-	$(MEM_DIR)/software/python/memwrapper_make.py fsc0l_d sp $(BOOTROM_W) 32 1 > rom.v
+bootrom.v:
+	$(MEM_DIR)/software/python/memakerwrap.py fsc0l_d sp $(BOOTROM_W) 32 1 > $@
 
-sram.v: $(SRAM_DIR)/*$(CASE).lib
-	$(MEM_DIR)/software/python/memwrapper_make.py fsc0l_d sj 0 1 $(SRAM_W) 8 4 1 > sram.v
+sram.v:
+	$(MEM_DIR)/software/python/memakerwrap.py fsc0l_d sj 0 1 $(SRAM_W) 8 4 1 > $@
 
 #
 # Synthesis
