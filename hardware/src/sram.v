@@ -28,8 +28,8 @@ module sram #(
    iob_dp_ram_be
      #(
        .FILE(FILE),
-       .ADDR_WIDTH(`SRAM_ADDR_W-2),
-       .DATA_WIDTH(`DATA_W)
+       .ADDR_W(`SRAM_ADDR_W-2),
+       .DATA_W(`DATA_W)
        )
    main_mem_byte
      (

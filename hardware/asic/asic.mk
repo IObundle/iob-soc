@@ -39,10 +39,10 @@ bootrom: sw gen-bootrom
 sram: gen-sram
 
 bootrom.v:
-	$(MEM_DIR)/software/python/memakerwrap.py fsc0l_d sp $(BOOTROM_W) 32 1 > $@
+	$(MEM_DIR)/software/python/memakerwrap.py fsc0l_d iob_sp_rom sp $(BOOTROM_W) 32 1 > $@
 
 sram.v:
-	$(MEM_DIR)/software/python/memakerwrap.py fsc0l_d sj 0 1 $(SRAM_W) 8 4 16 > $@
+	$(MEM_DIR)/software/python/memakerwrap.py fsc0l_d iob_dp_ram_be sj 0 1 $(SRAM_W) 8 4 16 > $@
 
 #
 # Synthesis
