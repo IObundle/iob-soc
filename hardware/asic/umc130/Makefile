@@ -3,6 +3,7 @@ ROOT_DIR:=../../..
 ASIC_MEM_LEFS=*.lef
 ASIC_MEM_LIBS=*$(CASE).lib
 ASIC_MEM_SIM_MODELS=*LD130*.v
+ASIC_REPORTS=*.txt
 
 ASIC_SERVER=$(CADENCE_SERVER)
 ASIC_USER=$(CADENCE_USER)
@@ -54,6 +55,7 @@ ifeq ($(ASIC_SERVER),)
 	echo "set INCLUDE [list $(INCLUDE)]" > inc.tcl
 	echo "set DEFINE [list $(DEFINE)]" > defs.tcl
 	echo "set VSRC [glob $(VSRC)]" > vsrc.tcl
+	echo "set CASE $(CASE)" > case.tcl
 	./synth.sh
 else
 	ssh $(ASIC_USER)@$(ASIC_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
@@ -66,7 +68,7 @@ endif
 #
 
 clean: clean-remote
-	rm -rf *.txt rc.cmd* rc.* fv libscore_work *.sdc *.lib *.lef *.db
+	rm -rf *.txt rc.cmd* rc.* fv libscore_work *.sdc *.lib *.lef *.ds
 	find *.tcl -type f -not -name synscript.tcl -not -name powscript.tcl -delete
 
 .PHONY: gen-bootrom gen-sram \

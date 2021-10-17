@@ -15,18 +15,25 @@ ifeq ($(USE_DDR),1)
 include $(CACHE_DIR)/hardware/hardware.mk
 endif
 
-ifneq ($(ASIC_MEM),1)
+ifneq ($(ASIC),1)
 #rom
+ifneq (SPROM,$(filter SPROM, $(SUBMODULES)))
 SUBMODULES+=SPROM
 SPROM_DIR:=$(MEM_DIR)/sp_rom
-VSRC+=$(SPROM_DIR)/sp_rom.v
+VSRC+=$(SPROM_DIR)/iob_sp_rom.v
+endif
+
 #ram
+ifneq (DPRAM,$(filter DPRAM, $(SUBMODULES)))
 SUBMODULES+=DPRAM
 DPRAM_DIR:=$(MEM_DIR)/dp_ram
 VSRC+=$(DPRAM_DIR)/iob_dp_ram.v
+endif
+ifneq (DPRAM_BE,$(filter DPRAM_BE, $(SUBMODULES)))
 SUBMODULES+=DPRAM_BE
 DPRAM_BE_DIR:=$(MEM_DIR)/dp_ram_be
 VSRC+=$(DPRAM_BE_DIR)/iob_dp_ram_be.v
+endif
 endif
 
 #peripherals
@@ -56,10 +63,7 @@ VSRC+=$(SRC_DIR)/ext_mem.v
 endif
 
 #system
-VSRC+=$(SRC_DIR)/boot_ctr.v $(SRC_DIR)/int_mem.v
-ifneq ($(ASIC_MEM),1)
-VSRC+=$(SRC_DIR)/sram.v
-endif
+VSRC+=$(SRC_DIR)/boot_ctr.v $(SRC_DIR)/int_mem.v $(SRC_DIR)/sram.v
 VSRC+=system.v
 
 IMAGES=boot.hex firmware.hex
