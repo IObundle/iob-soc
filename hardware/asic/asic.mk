@@ -26,7 +26,7 @@ all: mems synth
 # Memories
 #
 
-mems: bootrom sram
+mems: sw bootrom sram
 ifneq ($(ASIC_SERVER),)
 	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_MEM_LEFS) .
 	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_MEM_LIBS) .
@@ -34,9 +34,23 @@ ifneq ($(ASIC_SERVER),)
 endif
 	make fix-mems
 
-bootrom: sw gen-bootrom
+bootrom: boot.hex
+ifeq ($(ASIC_SERVER),)
+	./bootrom.sh $(BOOTROM_WORDS)
+else
+	ssh $(ASIC_USER)@$(ASIC_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
+	rsync -avz --exclude .git $(ROOT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)
+	ssh -Y -C $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE); make $@ ASIC_NODE=$(ASIC_NODE)'
+endif
 
-sram: gen-sram
+sram:
+ifeq ($(ASIC_SERVER),)
+	./sram.sh $(SRAM_WORDS)
+else
+	ssh $(ASIC_USER)@$(ASIC_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
+	rsync -avz --exclude .git $(ROOT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)
+	ssh -Y -C $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE); make $@ ASIC_NODE=$(ASIC_NODE)'
+endif
 
 bootrom.v:
 	$(MEM_DIR)/software/python/memakerwrap.py fsc0l_d iob_sp_rom sp $(BOOTROM_W) 32 1 > $@
@@ -49,7 +63,20 @@ sram.v:
 #
 
 synth: system_synth.v
-ifneq ($(ASIC_SERVER),)
+
+system_synth.v: $(VHDR) $(VSRC)
+ifeq ($(ASIC_SERVER),)
+	echo "set INCLUDE [list $(INCLUDE)]" > inc.tcl
+	echo "set DEFINE [list $(DEFINE)]" > defs.tcl
+	echo "set VSRC [list $(VSRC)]" > vsrc.tcl
+	echo "set CASE $(CASE)" > case.tcl
+	./synth.sh
+else
+	ssh $(ASIC_USER)@$(ASIC_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
+	rsync -avz --exclude .git $(ROOT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)
+	ssh -Y -C $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE); make $@ ASIC_NODE=$(ASIC_NODE)'
+	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$@ .
+	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_LOG) .
 	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_REPORTS) .
 endif
 
