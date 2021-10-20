@@ -22,16 +22,11 @@ include $(ROOT_DIR)/hardware/hardware.mk
 
 #SOURCES
 #asic post-synthesis and post-pr sources
-ifeq ($(ASIC_SIM),1)
-ASIC_SIM_LIB ?= my_asic_sim_lib
-$(wildcard $(ASIC_DIR)/SP*.v)
-$(wildcard $(ASIC_DIR)/SJ*.v)
-ifeq ($(ASIC_SYNTH),1)
+ifeq ($(ASIC),1)
+ifeq ($(SYNTH),1)
 VSRC=$(ASIC_DIR)/system_synth.v
 endif
-ifeq ($(ASIC_PR),1)
-VSRC=$(ASIC_DIR)/system_pr.v
-endif
+VSRC+=$(wildcard $(ASIC_DIR)/*_be.v)
 endif
 
 #ddr memory
@@ -46,12 +41,12 @@ ifeq ($(SIM_SERVER),)
 else
 	ssh $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
-	bash -c "trap 'make kill-remote-sim' INT; ssh $(SIM_USER)@$(SIM_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR) run INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) VCD=$(VCD) TEST_LOG=\"$(TEST_LOG)\"'"
+	bash -c "trap 'make kill-remote-sim' INT; ssh $(SIM_USER)@$(SIM_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR) run INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) VCD=$(VCD) ASIC=$(ASIC) SYNTH=$(SYNTH) LIBS=$(LIBS) TEST_LOG=\"$(TEST_LOG)\"'"
 ifneq ($(TEST_LOG),)
 	scp $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR)/test.log $(SIM_DIR)
 endif
 ifeq ($(VCD),1)
-	scp $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)//hardware/simulation/$(SIMULATOR)/*.vcd $(SIM_DIR)
+	scp $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR)/*.vcd $(SIM_DIR)
 endif
 endif
 ifeq ($(VCD),1)
@@ -112,4 +107,8 @@ endif
 
 
 .PRECIOUS: system.vcd test.log
-.PHONY: all clean-remote clean-testlog kill-remote-sim
+
+.PHONY: all \
+	kill-remote-sim \
+	test test1 test2 test3 test4 test5 \
+	clean-remote clean-testlog

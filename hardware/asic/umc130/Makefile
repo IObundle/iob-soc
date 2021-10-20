@@ -1,76 +1,59 @@
 ROOT_DIR:=../../..
 
-ASIC_MEM_LEFS=*.lef
-ASIC_MEM_LIBS=*$(CASE).lib
-ASIC_MEM_SIM_MODELS=*LD130*.v
+ASIC_MEM_TYPE:=fsc0l_d
+
+ASIC_ROM_TYPE:=SP
+ASIC_RAM_TYPE:=SJ
+
+ASIC_ROM_DS=$(ASIC_ROM_TYPE)*.ds
+ASIC_ROM_LEF=$(ASIC_ROM_TYPE)*.lef
+ASIC_ROM_LIB=$(ASIC_ROM_TYPE)*$(CASE).lib
+ASIC_ROM_SIM_MODEL=$(ASIC_ROM_TYPE)*.v
+
+ASIC_RAM_DS=$(ASIC_RAM_TYPE)*.ds
+ASIC_RAM_LEF=$(ASIC_RAM_TYPE)*.lef
+ASIC_RAM_LIB=$(ASIC_RAM_TYPE)*$(CASE).lib
+ASIC_RAM_SIM_MODEL=$(ASIC_RAM_TYPE)*.v
+
+ASIC_LOG=*.log
 ASIC_REPORTS=*.txt
 
+# Simulation libs
+ASIC_LIBS=/opt/ic_tools/pdk/faraday/umc130/LL/fsc0l_d/2009Q2v3.0/GENERIC_CORE/FrontEnd/verilog/fsc0l_d_generic_core_30.lib
+
+ASIC_NODE=umc130
 ASIC_SERVER=$(CADENCE_SERVER)
 ASIC_USER=$(CADENCE_USER)
 
 include ../asic.mk
 
 #
-# Memories
+# Fix memories
 #
 
-gen-bootrom: boot.hex
-ifeq ($(ASIC_SERVER),)
-	./bootrom.sh $(BOOTROM_WORDS)
-else
-	ssh $(ASIC_USER)@$(ASIC_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
-	rsync -avz --exclude .git $(ROOT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)
-	ssh -Y -C $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE); make $@ ASIC_NODE=$(ASIC_NODE)'
-endif
+fix-rom: fix-lefs fix-rom-sim-model
 
-gen-sram:
-ifeq ($(ASIC_SERVER),)
-	./sram.sh $(SRAM_WORDS)
-else
-	ssh $(ASIC_USER)@$(ASIC_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
-	rsync -avz --exclude .git $(ROOT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)
-	ssh -Y -C $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE); make $@ ASIC_NODE=$(ASIC_NODE)'
-endif
-
-fix-mems: fix-lefs fix-bootrom-sim-model fix-sram-sim-model
+fix-ram: fix-lefs fix-ram-sim-model
 
 fix-lefs:
 	sed -i 's/ME\([1-8]\)/metal\1/g' *.lef
 	sed -i 's/VI1/via/g' *.lef
 	sed -i 's/VI\([2-7]\)/via\1/g' *.lef
 
-fix-bootrom-sim-model:
-	sed -i -E 's/(parameter *ROMCODE *= \").*(\";)/\1boot.hex\2/g' SP*.v
-	sed -i -E "s/(readmemh\(ROMCODE,Memory)/\1,0,Words-1/g" SP*.v
+fix-rom-sim-model:
+	sed -i -E 's/(parameter *ROMCODE *= \").*(\";)/\1boot.hex\2/g' rom_be.v
+	sed -i -E "s/(readmemh\(ROMCODE,Memory)\)/\1,0,Words-1\)/g" rom_be.v
 
-fix-sram-sim-model:
-	sed -i "/endprotect/e cat verilog/initial.v" SJ*.v
-
-#
-# Synthesis
-#
-
-system_synth.v: $(VHDR) $(VSRC)
-ifeq ($(ASIC_SERVER),)
-	echo "set INCLUDE [list $(INCLUDE)]" > inc.tcl
-	echo "set DEFINE [list $(DEFINE)]" > defs.tcl
-	echo "set VSRC [glob $(VSRC)]" > vsrc.tcl
-	echo "set CASE $(CASE)" > case.tcl
-	./synth.sh
-else
-	ssh $(ASIC_USER)@$(ASIC_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
-	rsync -avz --exclude .git $(ROOT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)
-	ssh -Y -C $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE); make $@ ASIC_NODE=$(ASIC_NODE)'
-endif
+fix-ram-sim-model:
+	sed -i "/endprotect/e cat verilog/initial_sram.v" ram_be.v
 
 #
 # Clean
 #
 
 clean: clean-remote
-	rm -rf *.txt rc.cmd* rc.* fv libscore_work *.sdc *.lib *.lef *.ds
+	rm -rf *.txt rc.* fv libscore_work *.sdc *.lib *.lef *.ds
 	find *.tcl -type f -not -name synscript.tcl -not -name powscript.tcl -delete
 
-.PHONY: gen-bootrom gen-sram \
-	fix-mems fix-lefs fix-bootrom-sim-model fix-sram-sim-model \
+.PHONY: fix-rom fix-ram fix-lefs fix-rom-sim-model fix-ram-sim-model \
 	clean
