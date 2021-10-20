@@ -22,13 +22,13 @@ INCLUDE+=$(incdir) $(UART_HW_DIR)/include
 #UART HARDWARE
 #included files
 VHDR+=$(wildcard $(UART_HW_DIR)/include/*.vh)
-VHDR+=$(UART_HW_DIR)/include/UARTsw_reg_gen.v
+VHDR+=UARTsw_reg_gen.v UARTsw_reg.vh
 #sources
 VSRC+=$(UART_HW_DIR)/src/uart_core.v $(UART_HW_DIR)/src/iob_uart.v
 
 
 #cpu accessible registers
-$(UART_HW_DIR)/include/UARTsw_reg_gen.v $(UART_HW_DIR)/include/UARTsw_reg.vh: $(UART_HW_DIR)/include/UARTsw_reg.v
+UARTsw_reg_gen.v UARTsw_reg.vh: $(UART_HW_DIR)/include/UARTsw_reg.v
 	$(LIB_DIR)/software/mkregs.py $< HW
 
 uart_clean_hw:
