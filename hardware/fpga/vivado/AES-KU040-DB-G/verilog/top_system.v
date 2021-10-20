@@ -419,7 +419,7 @@ module top_system(
       .m_axi_wready  (sys_wready),
       
       //write response
-      //.m_axi_bid     (sys_bid),
+      .m_axi_bid     (sys_bid),
       .m_axi_bresp   (sys_bresp),
       .m_axi_bvalid  (sys_bvalid),
       .m_axi_bready  (sys_bready),
@@ -438,7 +438,7 @@ module top_system(
       .m_axi_arready (sys_arready),
 
       //read   
-      //.m_axi_rid     (sys_rid),
+      .m_axi_rid     (sys_rid),
       .m_axi_rdata   (sys_rdata),
       .m_axi_rresp   (sys_rresp),
       .m_axi_rlast   (sys_rlast),
