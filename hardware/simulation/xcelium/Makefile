@@ -4,8 +4,8 @@ defmacro:=-define
 incdir:=-incdir 
 
 SIMULATOR=xcelium
-SIM_SERVER ?=$(XMSIM_SERVER)
-SIM_USER ?=$(XMSIM_USER)
+SIM_SERVER ?=$(CADENCE_SERVER)
+SIM_USER ?=$(CADENCE_USER)
 SIM_PROC=xmsim
 
 include ../simulation.mk
@@ -17,7 +17,7 @@ SFLAGS = -errormax 15 -status -CMDFILE $(ROOT_DIR)/hardware/testbench
 
 #simulate
 run: $(VSRC) $(VHDR) $(IMAGES)
-	echo $(XMSIM_SERVER)
+	echo $(CADENCE_SERVER)
 	./run_xmsim.sh "$(VSRC)" "$(CFLAGS)" "$(EFLAGS)" "$(SFLAGS)"
 	grep -v xcelium xmsim.log | grep -v xmsim $(TEST_LOG)
 
