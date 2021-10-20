@@ -60,15 +60,6 @@ ASIC_NODE ?=umc130
 #default document
 DOC ?= pb
 
-# REGRESSION TESTING
-#simulators used in regression testing
-SIM_LIST ?=icarus xcelium
-#boards used for regression testing
-BOARD_LIST ?=CYCLONEV-GT-DK AES-KU040-DB-G
-#documents used for regression testing
-DOC_LIST ?=pb presentation
-
-
 
 ####################################################################
 # DERIVED FROM PRIMARY PARAMETERS: DO NOT CHANGE BELOW THIS POINT
@@ -105,6 +96,7 @@ BOARD_DIR ?=$(shell find hardware -name $(BOARD))
 #doc paths
 DOC_DIR=$(ROOT_DIR)/document/$(DOC)
 TEX_DIR=$(UART_DIR)/submodules/TEX
+INTERCON_DIR=$(UART_DIR)/submodules/INTERCON
 
 #submodule paths
 SUBMODULES_DIR:=$(ROOT_DIR)/submodules
@@ -140,6 +132,6 @@ $(foreach p, $(PERIPHERALS), $(eval DEFINE+=$(defmacro)$p=$($p)))
 
 #RULES
 gen-clean:
-	@rm -f *# *~ test_report.log
+	@rm -f *# *~
 
 .PHONY: gen-clean
