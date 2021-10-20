@@ -1,20 +1,25 @@
 ROOT_DIR:=../../..
 
-ASIC_MEM_TYPE:=fsc0l_d
+# Memory technology
+ASIC_MEM_TECH:=fsc0l_d
 
+# Memories' types
 ASIC_ROM_TYPE:=SP
 ASIC_RAM_TYPE:=SJ
 
+# ROM files
 ASIC_ROM_DS=$(ASIC_ROM_TYPE)*.ds
 ASIC_ROM_LEF=$(ASIC_ROM_TYPE)*.lef
 ASIC_ROM_LIB=$(ASIC_ROM_TYPE)*$(CASE).lib
 ASIC_ROM_SIM_MODEL=$(ASIC_ROM_TYPE)*.v
 
+# RAM files
 ASIC_RAM_DS=$(ASIC_RAM_TYPE)*.ds
 ASIC_RAM_LEF=$(ASIC_RAM_TYPE)*.lef
 ASIC_RAM_LIB=$(ASIC_RAM_TYPE)*$(CASE).lib
 ASIC_RAM_SIM_MODEL=$(ASIC_RAM_TYPE)*.v
 
+# Log and report files
 ASIC_LOG=*.log
 ASIC_REPORTS=*.txt
 

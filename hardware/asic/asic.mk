@@ -59,10 +59,10 @@ endif
 	make fix-ram
 
 rom_wrap.v:
-	$(MEM_DIR)/software/python/memakerwrap.py $(ASIC_MEM_TYPE) iob_sp_rom $(ASIC_ROM_TYPE) $(BOOTROM_W) 32 1 > $@
+	$(MEM_DIR)/software/python/memakerwrap.py $(ASIC_MEM_TECH) iob_sp_rom $(ASIC_ROM_TYPE) $(BOOTROM_W) 32 1 > $@
 
 ram_wrap.v:
-	$(MEM_DIR)/software/python/memakerwrap.py $(ASIC_MEM_TYPE) iob_dp_ram_be $(ASIC_RAM_TYPE) 0 1 $(SRAM_W) 8 4 16 > $@
+	$(MEM_DIR)/software/python/memakerwrap.py $(ASIC_MEM_TECH) iob_dp_ram_be $(ASIC_RAM_TYPE) 0 1 $(SRAM_W) 8 4 16 > $@
 
 #
 # Synthesis
