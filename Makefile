@@ -50,10 +50,10 @@ fpga-clean:
 #
 
 asic-synth:
-	make -C $(ASIC_DIR) all
+	make -C $(ASIC_DIR) synth
 
 asic-sim-post-synth:
-	make -C $(ASIC_DIR) sim
+	make -C $(ASIC_DIR) all TEST_LOG="$(TEST_LOG)"
 
 asic-test:
 	make -C $(ASIC_DIR) test

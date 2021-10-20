@@ -16,53 +16,59 @@ BOOTROM_WORDS:=$(shell echo '2^($(BOOTROM_W))' | bc)
 SRAM_WORDS:=$(shell echo '2^($(SRAM_W))' | bc)
 
 # Memories' wrappers
-VSRC+=bootrom.v sram.v
+VSRC+=rom_wrap.v ram_wrap.v
 
 #RULES
 
-all: mems synth
+all: synth sim-post-synth
 
 #
 # Memories
 #
 
-mems: sw bootrom sram
-ifneq ($(ASIC_SERVER),)
-	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_MEM_LEFS) .
-	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_MEM_LIBS) .
-	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_MEM_SIM_MODELS) .
-endif
-	make fix-mems
+mems: sw rom_be.v ram_be.v
 
-bootrom: boot.hex
+rom_be.v: boot.hex
 ifeq ($(ASIC_SERVER),)
 	./bootrom.sh $(BOOTROM_WORDS)
 else
 	ssh $(ASIC_USER)@$(ASIC_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)
-	ssh -Y -C $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE); make $@ ASIC_NODE=$(ASIC_NODE)'
+	ssh -Y -C $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE); make $@'
+	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_ROM_DS) .
+	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_ROM_LEF) .
+	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_ROM_LIB) .
+	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_ROM_SIM_MODEL) .
 endif
+	cp $(ASIC_ROM_SIM_MODEL) $@
+	make fix-rom
 
-sram:
+ram_be.v:
 ifeq ($(ASIC_SERVER),)
 	./sram.sh $(SRAM_WORDS)
 else
 	ssh $(ASIC_USER)@$(ASIC_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)
-	ssh -Y -C $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE); make $@ ASIC_NODE=$(ASIC_NODE)'
+	ssh -Y -C $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE); make $@'
+	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_RAM_DS) .
+	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_RAM_LEF) .
+	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_RAM_LIB) .
+	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_RAM_SIM_MODEL) .
 endif
+	cp $(ASIC_RAM_SIM_MODEL) $@
+	make fix-ram
 
-bootrom.v:
-	$(MEM_DIR)/software/python/memakerwrap.py fsc0l_d iob_sp_rom sp $(BOOTROM_W) 32 1 > $@
+rom_wrap.v:
+	$(MEM_DIR)/software/python/memakerwrap.py $(ASIC_MEM_TYPE) iob_sp_rom $(ASIC_ROM_TYPE) $(BOOTROM_W) 32 1 > $@
 
-sram.v:
-	$(MEM_DIR)/software/python/memakerwrap.py fsc0l_d iob_dp_ram_be sj 0 1 $(SRAM_W) 8 4 16 > $@
+ram_wrap.v:
+	$(MEM_DIR)/software/python/memakerwrap.py $(ASIC_MEM_TYPE) iob_dp_ram_be $(ASIC_RAM_TYPE) 0 1 $(SRAM_W) 8 4 16 > $@
 
 #
 # Synthesis
 #
 
-synth: system_synth.v
+synth: mems system_synth.v
 
 system_synth.v: $(VHDR) $(VSRC)
 ifeq ($(ASIC_SERVER),)
@@ -74,11 +80,18 @@ ifeq ($(ASIC_SERVER),)
 else
 	ssh $(ASIC_USER)@$(ASIC_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)
-	ssh -Y -C $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE); make $@ ASIC_NODE=$(ASIC_NODE)'
+	ssh -Y -C $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE); make $@ INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM)'
 	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$@ .
 	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_LOG) .
 	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_REPORTS) .
 endif
+
+#
+# Simulation
+#
+
+sim-post-synth:
+	make -C $(HW_DIR)/simulation/xcelium all INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) VCD=$(VCD) TEST_LOG="$(TEST_LOG)" ASIC=1 SYNTH=1 LIBS=$(ASIC_LIBS)
 
 #
 # Testing
@@ -88,7 +101,7 @@ test: clean-testlog test1
 	diff -q $(HW_DIR)/simulation/xcelium/test.log test.expected
 
 test1: clean
-	make all ASIC_NODE=$(ASIC_NODE) TEST_LOG=">> test.log";
+	make all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
 
 #
 # Clean
@@ -111,7 +124,7 @@ ifneq ($(ASIC_SERVER),)
 endif
 
 .PHONY: all \
-	mems bootrom sram \
-	synth \
+	mems synth \
+	sim-post-synth \
 	test test1 \
 	clean-remote clean-testlog
