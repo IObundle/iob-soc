@@ -46,19 +46,22 @@ ifeq ($(SIM_SERVER),)
 else
 	ssh $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
-	bash -c "trap 'make kill-remote-sim' INT; ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR); make run INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) VCD=$(VCD) TEST_LOG=\"$(TEST_LOG)\"'"
+	bash -c "trap 'make kill-remote-sim' INT; ssh $(SIM_USER)@$(SIM_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR) run INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) VCD=$(VCD) TEST_LOG=\"$(TEST_LOG)\"'"
 ifneq ($(TEST_LOG),)
 	scp $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR)/test.log $(SIM_DIR)
 endif
 ifeq ($(VCD),1)
 	scp $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)//hardware/simulation/$(SIMULATOR)/*.vcd $(SIM_DIR)
-	gtkwave -a ../waves.gtkw system.vcd &
 endif
+endif
+ifeq ($(VCD),1)
+	if [ "`pgrep -u $(USER) gtkwave`" ]; then killall -q -9 gtkwave; fi
+	gtkwave -a ../waves.gtkw system.vcd &
 endif
 
 
 #create testbench
-system_tb.v:
+system_tb.v: $(TB_DIR)/system_core_tb.v
 	cp $(TB_DIR)/system_core_tb.v $@  # create system_tb.v
 	$(foreach p, $(PERIPHERALS), if [ `ls -1 $(SUBMODULES_DIR)/$p/hardware/include/*.vh 2>/dev/null | wc -l ` -gt 0 ]; then $(foreach f, $(shell echo `ls $(SUBMODULES_DIR)/$p/hardware/include/*.vh`), sed -i '/PHEADER/a `include \"$f\"' $@;) break; fi;) # insert header files
 	$(foreach p, $(PERIPHERALS), if test -f $(SUBMODULES_DIR)/$p/hardware/include/pio.v; then sed s/input/wire/ $(SUBMODULES_DIR)/$p/hardware/include/pio.v | sed s/output/wire/  | sed s/\,/\;/ > wires_tb.v; sed -i '/PWIRES/r wires_tb.v' $@; fi;) # declare and insert wire declarations
@@ -72,13 +75,29 @@ kill-remote-sim:
 	@echo "INFO: Remote simulator $(SIMULATOR) will be killed"
 	ssh $(SIM_USER)@$(SIM_SERVER) 'killall -q -u $(SIM_USER) -9 $(SIM_PROC)'
 
+
+test: clean-testlog test1 test2 test3 test4 test5
+	diff -q test.log test.expected
+
+test1:
+	make all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log";
+test2:
+	make all INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log";
+test3:
+	make all INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=0 TEST_LOG=">> test.log";
+test4:
+	make all INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log";
+test5:
+	make all INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log";
+
+
 #clean target common to all simulators
 clean-remote: hw-clean 
 	@rm -f system.vcd
 ifneq ($(SIM_SERVER),)
 	ssh $(SIM_USER)@$(SIM_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --delete --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR); make sim-clean SIMULATOR=$(SIMULATOR)'
+	ssh $(SIM_USER)@$(SIM_SERVER) 'make -C $(REMOTE_ROOT_DIR) sim-clean SIMULATOR=$(SIMULATOR)'
 endif
 
 #clean test log only when sim testing begins
@@ -87,7 +106,7 @@ clean-testlog:
 ifneq ($(SIM_SERVER),)
 	ssh $(SIM_USER)@$(SIM_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --delete --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR); rm -f test.log'
+	ssh $(SIM_USER)@$(SIM_SERVER) 'rm -f $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR)/test.log'
 endif
 
 

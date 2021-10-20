@@ -25,15 +25,20 @@ SRC+= $(FIRM_DIR)/firmware.c $(UART_DIR)/software/printf.c
 #RULES
 
 all: build run
-run: firmware.out
-	./firmware.out $(TEST_LOG)
 
 build: firmware.out
+
+run: firmware.out
+	./firmware.out $(TEST_LOG)
 
 firmware.out: $(HDR) $(SRC)
 	gcc -o $@ $(CFLAGS) $(DEFINE) $(INCLUDE) $(SRC) -lgcc -lc
 
-clean:
-	@rm -rf firmware.out periphs.h test.log
+test:
+	make all TEST_LOG="> test.log"
+	diff -q $(PC_DIR)/test.log $(PC_DIR)/test.expected
 
-.PHONY: all build run clean subs periphs_tmp.h
+clean:
+	@rm -rf firmware.out periphs.h test.log *sw_reg.h
+
+.PHONY: all build run clean subs periphs_tmp.h test
