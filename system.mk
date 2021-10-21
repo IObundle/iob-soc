@@ -29,7 +29,6 @@ INIT_MEM ?=1
 
 #PERIPHERAL LIST
 #must match respective submodule CORE_NAME in the core.mk file of the submodule
-#(if core.mk file does not exist, we can also just use the name of the submodule folder)
 #PERIPHERALS:=UART
 PERIPHERALS ?=UART
 
@@ -101,7 +100,7 @@ INTERCON_DIR=$(UART_DIR)/submodules/INTERCON
 #submodule paths
 SUBMODULES_DIR:=$(ROOT_DIR)/submodules
 SUBMODULES=CPU CACHE $(PERIPHERALS)
-$(foreach p, $(SUBMODULES), $(eval $p_DIR:=$(SUBMODULES_DIR)/$(shell cd $(SUBMODULES_DIR);out=`grep -sl 'CORE_NAME:\?=$p[[:space:]]\?$$' */core.mk | head -n 1`; [ -z $$out ] && echo $p || echo `dirname $$out`)))
+$(foreach p, $(SUBMODULES), $(eval $p_DIR:=$(SUBMODULES_DIR)/$(shell for i in `ls $(SUBMODULES_DIR)`; do [ "`make --no-print-directory -C $(SUBMODULES_DIR)/$$i corename`" = "$p" ] && echo $$i && break; done)))
 
 #define macros
 DEFINE+=$(defmacro)BOOTROM_ADDR_W=$(BOOTROM_ADDR_W)
