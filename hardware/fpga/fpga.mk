@@ -77,6 +77,7 @@ queue-out:
 queue-out-remote:
 	ssh $(BOARD_USER)@$(BOARD_SERVER) \
 	'make -C $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD) queue-out;\
+	echo "" > $(LOAD_FILE);\
 	if [ "`pgrep -u $(USER) console`" ]; then killall -q -u $(USER) -9 console; fi'
 
 #
