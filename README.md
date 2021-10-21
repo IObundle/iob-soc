@@ -310,17 +310,6 @@ For Ubuntu OS and its variants:
 sudo apt install autoconf automake autotools-dev curl python3 python2 libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev
 ```
 
-To check your python version, use:
-```
-python --version
-```
-
-If this doesn't return Python 2.*, navigate to your /usr/bin folder and
-soft-link python2 to python using:
-```
-sudo ln -s python2 /usr/bin/python
-```
-
 For CentOS and its variants:
 ```
 sudo yum install autoconf automake python3 python2 libmpc-devel mpfr-devel gmp-devel gawk  bison flex texinfo patchutils gcc gcc-c++ zlib-devel expat-devel
