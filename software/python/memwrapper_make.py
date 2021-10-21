@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2
 
 #ram usage: memwrapper_make tech type words bits bytes mux
 #rom usage: memwrapper_make tech type words bits mux romcode
