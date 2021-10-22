@@ -1,4 +1,4 @@
-ROOT_DIR:=../..
+ROOT_DIR=../..
 include ../software.mk
 
 #additional compiler flags
@@ -22,21 +22,11 @@ HDR+=periphs.h
 SRC+= firmware.S firmware.c $(UART_DIR)/software/printf.c
 
 #RULES
-run: firmware.elf
-
 firmware.elf: ../template.lds $(HDR) $(SRC)
 	$(TOOLCHAIN_PREFIX)gcc -o $@ $(CFLAGS) $(DEFINE) $(INCLUDE) $(SRC) -lgcc -lc -lnosys
 	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
 
-#peripherals' base addresses
-periphs.h: periphs_tmp.h
-	@is_diff=`diff -q -N $@ $<`; if [ "$$is_diff" ]; then cp $< $@; fi
-	@rm periphs_tmp.h
-
-periphs_tmp.h:
-	$(foreach p, $(PERIPHERALS), $(shell echo "#define $p_BASE (1<<$P) |($p<<($P-N_SLAVES_W))" >> $@) )
-
 clean: gen-clean 
-	@rm -rf firmware.bin firmware.elf firmware.map *.hex periphs.h
+	@rm -rf firmware.bin firmware.elf firmware.map *.hex periphs.h *sw_reg.h
 
-.PHONY: run clean
+.PHONY: clean

@@ -1,9 +1,12 @@
 ROOT_DIR:=../..
 include ../software.mk
 
-#additional compiler flags
-CFLAGS=-Os -Wl,--strip-debug
+#default baud and freq for pc emulation
+BAUD=5000000
+FREQ=100000000
 
+#additional compiler flags
+CFLAGS=-Os -std=gnu99 -Wl,--strip-debug
 
 #DEFINE+=-DLONGLONG 
 DEFINE+=-DPC
@@ -11,7 +14,7 @@ DEFINE+=-DPC
 #SUBMODULES
 
 #peripherals (pc)
-$(foreach p, $(PERIPHERALS), $(eval include $(SUBMODULES_DIR)/$p/software/pc/pc.mk))
+$(foreach p, $(PERIPHERALS), $(eval include $(SUBMODULES_DIR)/$p/software/pc-emul/pc.mk))
 
 #HEADERS
 HDR+=periphs.h
@@ -20,21 +23,22 @@ HDR+=periphs.h
 SRC+= $(FIRM_DIR)/firmware.c $(UART_DIR)/software/printf.c
 
 #RULES
+
+all: build run
+
+build: firmware.out
+
 run: firmware.out
+	./firmware.out $(TEST_LOG)
 
 firmware.out: $(HDR) $(SRC)
 	gcc -o $@ $(CFLAGS) $(DEFINE) $(INCLUDE) $(SRC) -lgcc -lc
-	./firmware.out
 
-#peripherals' base addresses
-periphs.h: periphs_tmp.h
-	is_diff=`diff -q $@ $<`; if [ 'is_diff' ]; then cp $< $@; fi
-	@rm periphs_tmp.h
-
-periphs_tmp.h:
-	$(foreach p, $(PERIPHERALS), $(shell echo "#define $p_BASE (1<<$P) |($p<<($P-N_SLAVES_W))" >> $@) )
+test:
+	make all TEST_LOG="> test.log"
+	diff -q $(PC_DIR)/test.log $(PC_DIR)/test.expected
 
 clean:
-	@rm -rf firmware.out periphs.h
+	@rm -rf firmware.out periphs.h test.log *sw_reg.h
 
-.PHONY: run clean subs periphs_tmp.h
+.PHONY: all build run clean subs periphs_tmp.h test

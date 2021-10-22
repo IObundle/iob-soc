@@ -41,6 +41,7 @@ module ext_mem
     output                                   axi_wlast,
     output                                   axi_wvalid, 
     input                                    axi_wready,
+    input [0:0]                              axi_bid,
     input [1:0]                              axi_bresp,
     input                                    axi_bvalid,
     output                                   axi_bready,
@@ -57,6 +58,7 @@ module ext_mem
     output                                   axi_arvalid, 
     input                                    axi_arready,
     //Read
+    input [0:0]                              axi_rid,
     input [`DATA_W-1:0]                      axi_rdata,
     input [1:0]                              axi_rresp,
     input                                    axi_rlast, 

@@ -25,13 +25,11 @@ include $(INTERCON_DIR)/software/software.mk
 SRC+=boot.S boot.c 
 
 #RULES
-run: boot.elf
-
 boot.elf: ../template.lds  $(HDR) $(SRC)
 	$(TOOLCHAIN_PREFIX)gcc -o $@ $(CFLAGS) $(DEFINE) $(INCLUDE) $(SRC) -lgcc -lc -lnosys
 	$(TOOLCHAIN_PREFIX)objcopy -O binary boot.elf boot.bin
 
-clean:
-	@rm -rf boot.bin boot.elf boot.map *.hex ../periphs.h *~
+clean: gen-clean
+	@rm -rf boot.bin boot.elf boot.map *.hex *sw_reg.h
 
 .PHONY: clean
