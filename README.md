@@ -1,5 +1,5 @@
 # IOb-SoC
-t
+ty
 IOb-SoC is a System-on-Chip (SoC) template comprising an open-source RISC-V
 processor (picorv32), an internal SRAM memory subsystem, a UART (iob-uart), and
 an optional interface to an external memory. If the external memory interface is
