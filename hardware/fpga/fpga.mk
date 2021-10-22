@@ -25,7 +25,7 @@ FORCE ?= 0
 run:
 ifeq ($(NORUN),0)
 ifeq ($(BOARD_SERVER),)
-	if [ ! -f $(LOAD_FILE) ]; then touch $(LOAD_FILE); chmod 664 $(LOAD_FILE); chown $(USER):dialout $(LOAD_FILE); fi;\
+	if [ ! -f $(LOAD_FILE) ]; then touch $(LOAD_FILE); chown $(USER):dialout $(LOAD_FILE); chmod 664 $(LOAD_FILE); fi;\
 	bash -c "trap 'make queue-out' INT TERM KILL; make queue-in; if [ $(FORCE) = 1 -o \"`head -1 $(LOAD_FILE)`\" != \"$(JOB)\" ];\
 	then ../prog.sh; echo $(JOB) > $(LOAD_FILE); fi; make -C $(CONSOLE_DIR) run; make queue-out"
 else
@@ -64,7 +64,7 @@ endif
 # Board access queue
 #
 queue-in:
-	if [ ! -f $(QUEUE_FILE) ]; then touch $(QUEUE_FILE); chmod 644 $(QUEUE_FILE); chown $(USER):dialout $(QUEUE_FILE); fi;\
+	if [ ! -f $(QUEUE_FILE) ]; then touch $(QUEUE_FILE); chown $(USER):dialout $(QUEUE_FILE); chmod 664 $(QUEUE_FILE); fi;\
 	if [ "`head -1 $(QUEUE_FILE)`" != "$(JOB)" ]; then echo $(JOB) >> $(QUEUE_FILE); fi;\
 	bash -c "trap 'make queue-out; exit' INT TERM KILL; make queue-wait"
 
