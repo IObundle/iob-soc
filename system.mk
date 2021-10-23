@@ -93,6 +93,9 @@ SIM_DIR=$(HW_DIR)/simulation/$(SIMULATOR)
 ASIC_DIR=$(HW_DIR)/asic
 BOARD_DIR ?=$(shell find hardware -name $(BOARD))
 
+#mem path
+MEM_DIR=$(CACHE_DIR)/submodules/MEM
+
 #doc paths
 DOC_DIR=$(ROOT_DIR)/document/$(DOC)
 TEX_DIR=$(UART_DIR)/submodules/TEX
