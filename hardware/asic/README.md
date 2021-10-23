@@ -1,7 +1,5 @@
+# ASIC IMPLEMENTATION INSTRUCTIONS
 
- ---------------------------------
- # README FOR OPENLANE AND OPENRAM
- ---------------------------------
 ## OpenLane Instructions 
 ## Installation of Openlane and Skywater PDK 130
 
