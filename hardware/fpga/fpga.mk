@@ -84,15 +84,18 @@ queue-out-remote:
 #
 
 test: clean-testlog test1 test2 test3
-	diff -q $(CONSOLE_DIR)/test.log test.expected
+	mv $(CONSOLE_DIR)/test.log .
+	diff -q test.log test.expected
 
-test1: clean
+test1:
+	make clean
 	make all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log";\
 
 test2: 
 	make all INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log";\
 
-test3: clean
+test3:
+	make clean
 	make all INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log";\
 
 
