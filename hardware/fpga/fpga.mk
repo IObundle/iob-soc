@@ -84,7 +84,8 @@ queue-out-remote:
 #
 
 test: clean-testlog test1 test2 test3
-	diff -q $(CONSOLE_DIR)/test.log test.expected
+	mv $(CONSOLE_DIR)/test.log .
+	diff -q test.log test.expected
 
 test1:
 	make clean
