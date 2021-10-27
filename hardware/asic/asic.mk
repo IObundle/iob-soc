@@ -97,11 +97,19 @@ sim-post-synth:
 # Testing
 #
 
-test: clean-testlog test1
+test: clean-testlog test1 test2 test3
 	diff -q $(HW_DIR)/simulation/xcelium/test.log test.expected
 
-test1: clean
+test1:
+	make clean
 	make all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+
+test2:
+	make all INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+
+test3:
+	make clean
+	make all INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
 
 #
 # Clean
@@ -126,5 +134,5 @@ endif
 .PHONY: all \
 	mems synth \
 	sim-post-synth \
-	test test1 \
+	test test1 test2 test3 \
 	clean-remote clean-testlog
