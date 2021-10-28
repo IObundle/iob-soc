@@ -42,16 +42,14 @@ module iob_regfileif
       .clk    (clk),
       .rst    (rst),
 
-      .enA    (valid),
+      .weA    (|wstrb & valid),
       .addrA  (address),
       .wdataA (wdata),
-      .weA    (|wstrb & valid),
       .rdataA (rdata),
 
-      .enB    (valid_ext),
+      .weB    (|wstrb_ext & valid_ext),
       .addrB  (address_ext),
       .wdataB (wdata_ext),
-      .weB    (|wstrb_ext & valid_ext),
       .rdataB (rdata_ext)
       );
 
