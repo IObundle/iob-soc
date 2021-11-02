@@ -64,11 +64,11 @@ fix-lefs:
 	sed -i 's/VI\([2-7]\)/via\1/g' *.lef
 
 fix-sprom-sim-model:
-	sed -i -E 's/(parameter *ROMCODE *= \").*(\";)/\1boot.hex\2/g' sp_rom_be.v
-	sed -i -E "s/(readmemh\(ROMCODE,Memory)\)/\1,0,Words-1\)/g" sp_rom_be.v
+	sed -i -E 's/(parameter *ROMCODE *= \").*(\";)/\1boot.hex\2/g' $(ASIC_SPROM_SIM_MODEL)
+	sed -i -E "s/(readmemh\(ROMCODE,Memory)\)/\1,0,Words-1\)/g" $(ASIC_SPROM_SIM_MODEL)
 
 fix-dpram-sim-model:
-	sed -i "/endprotect/e cat verilog/initial_dp_ram.v" dp_ram_be.v
+	sed -i "/endprotect/e cat verilog/initial_dp_ram.v" $(ASIC_DPRAM_SIM_MODEL)
 
 #
 # Clean
