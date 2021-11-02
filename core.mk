@@ -65,7 +65,7 @@ endif
 	echo $(VLINE) > version.txt
 
 #RULES
-corename:
+$(CORE_NAME)_printname:
 	@echo $(CORE_NAME)
 
-.PHONY: corename
+.PHONY: $(CORE_NAME)_printname
