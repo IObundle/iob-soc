@@ -8,7 +8,7 @@ SIM ?= icarus
 TOPLEVEL_LANG ?= verilog
 PWD=$(shell pwd)
 
-VERILOG_SOURCES += $(PWD)/system.v $(INCLUDE) $(VSRC)
+VERILOG_SOURCES += $(PWD)/system.v $(INCLUDE)
 # use VHDL_SOURCES for VHDL files
 
 # TOPLEVEL is the name of the toplevel module in your Verilog or VHDL file
