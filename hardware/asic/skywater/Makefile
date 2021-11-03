@@ -1,7 +1,8 @@
 #Makefile for OpenLane and OpenRAM started on 2/11/21
-SRAM:
-	python3 $(OPENRAM_HOME)/openram.py $(OPENRAM_CONFIG)/myconfig.py
+sram:
+	python3 $(OPENRAM_COMPILER)/openram.py $(OPENRAM_HOME)/myconfig.py
 	
-.PHONY clean:
+.PHONY: clean
+clean:
 	rm -rf __pycache__
 	rm -rf temp
