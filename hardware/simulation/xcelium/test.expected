@@ -96,7 +96,7 @@ TESTBENCH: exiting
 
 
 
-Simulation complete via $finish(1) at time 602481 NS + 0
+Simulation complete via $finish(1) at time 593601 NS + 0
 ./system_tb.v:96               $finish;
 TESTBENCH: connecting..IOb-Bootloader: connected!
 IOb-Bootloader: DDR in use
@@ -147,5 +147,5 @@ TESTBENCH: exiting
 
 
 
-Simulation complete via $finish(1) at time 86380581 NS + 0
+Simulation complete via $finish(1) at time 86371501 NS + 0
 ./system_tb.v:96               $finish;
