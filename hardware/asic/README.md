@@ -242,7 +242,7 @@ git clone https://github.com/VLSIDA/OpenRAM
   ```bash
   export OPENRAM_COMPILER="<path to openRAM root dir>/compiler"
   export OPENRAM_TECH="<path to openRAM root dir>/technology"
-  export OPENRAM_HOME="<path to openRAM root dir>"
+  export OPENRAM_CONFIG="<path to iob-soc/hardware/asic/skywater>"
   ```
 3. Also add OPENRAM_HOME to your PYTHONPATH
 ```bash
@@ -375,7 +375,7 @@ cd netgen # repo of netgen
 make 
 make install
 ``` 
-Finally, make a configuration python script ("myconfig_sky130.py" any name can be used). I used the following one
+Finally, make a configuration python script ("myconfig.py" any name can be used). I used the following one
 
 ```python
 # Data word size
