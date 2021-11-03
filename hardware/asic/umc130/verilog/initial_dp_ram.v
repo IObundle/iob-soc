@@ -1,3 +1,4 @@
+`ifdef SRAM_INIT
    initial begin
       // wait for 5 clock cycles
       repeat (5) @(posedge CKA);
@@ -7,3 +8,4 @@
       $readmemh("firmware_2.hex", Memory_byte2, 0, (Words-1));
       $readmemh("firmware_3.hex", Memory_byte3, 0, (Words-1));
    end
+`endif

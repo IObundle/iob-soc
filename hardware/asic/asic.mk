@@ -140,7 +140,7 @@ endif
 #
 
 sim-post-synth:
-	make -C $(HW_DIR)/simulation/xcelium all INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) VCD=$(VCD) TEST_LOG="$(TEST_LOG)" ASIC=1 SYNTH=1 LIBS=$(ASIC_LIBS)
+	make -C $(HW_DIR)/simulation/xcelium all INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) VCD=$(VCD) TEST_LOG="$(TEST_LOG)" ASIC=1 SYNTH=1 ASIC_MEM_FILES=$(ASIC_MEM_FILES) LIBS=$(ASIC_LIBS)
 
 #
 # Testing
