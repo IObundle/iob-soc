@@ -242,6 +242,7 @@ git clone https://github.com/VLSIDA/OpenRAM
   ```bash
   export OPENRAM_HOME="$HOME/openram/compiler"
   export OPENRAM_TECH="$HOME/openram/technology"
+  export OPENRAM_CONFIG="$HOME/openram"
   ```
 3. Also add OPENRAM_HOME to your PYTHONPATH
 ```bash
