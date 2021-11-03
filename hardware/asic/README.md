@@ -240,9 +240,9 @@ git clone https://github.com/VLSIDA/OpenRAM
 ```
 2. set following environment variables in bashrc
   ```bash
-  export OPENRAM_HOME="$HOME/openram/compiler"
+  export OPENRAM_COMPILER="$HOME/openram/compiler"
   export OPENRAM_TECH="$HOME/openram/technology"
-  export OPENRAM_CONFIG="$HOME/openram"
+  export OPENRAM_HOME="$HOME/openram"
   ```
 3. Also add OPENRAM_HOME to your PYTHONPATH
 ```bash
