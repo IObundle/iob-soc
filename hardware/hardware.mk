@@ -19,19 +19,19 @@ ifneq ($(ASIC),1)
 #rom
 ifneq (SPROM,$(filter SPROM, $(SUBMODULES)))
 SUBMODULES+=SPROM
-SPROM_DIR:=$(MEM_DIR)/sp_rom
+SPROM_DIR:=$(MEM_DIR)/rom/sp_rom
 VSRC+=$(SPROM_DIR)/iob_sp_rom.v
 endif
 
 #ram
 ifneq (DPRAM,$(filter DPRAM, $(SUBMODULES)))
 SUBMODULES+=DPRAM
-DPRAM_DIR:=$(MEM_DIR)/dp_ram
+DPRAM_DIR:=$(MEM_DIR)/ram/dp_ram
 VSRC+=$(DPRAM_DIR)/iob_dp_ram.v
 endif
 ifneq (DPRAM_BE,$(filter DPRAM_BE, $(SUBMODULES)))
 SUBMODULES+=DPRAM_BE
-DPRAM_BE_DIR:=$(MEM_DIR)/dp_ram_be
+DPRAM_BE_DIR:=$(MEM_DIR)/ram/dp_ram_be
 VSRC+=$(DPRAM_BE_DIR)/iob_dp_ram_be.v
 endif
 endif
@@ -77,15 +77,15 @@ system.v: $(SRC_DIR)/system_core.v
 
 # make and copy memory init files
 boot.hex: $(BOOT_DIR)/boot.bin
-	$(PYTHON_DIR)/makehex.py $(BOOT_DIR)/boot.bin $(BOOTROM_ADDR_W) > boot.hex
+	$(MEM_PYTHON_DIR)/makehex.py $(BOOT_DIR)/boot.bin $(BOOTROM_ADDR_W) > boot.hex
 
 firmware.hex: $(FIRM_DIR)/firmware.bin
 ifeq ($(RUN_EXTMEM),1)
-	$(PYTHON_DIR)/makehex.py $(FIRM_DIR)/firmware.bin $(DCACHE_ADDR_W) > firmware.hex
+	$(MEM_PYTHON_DIR)/makehex.py $(FIRM_DIR)/firmware.bin $(DCACHE_ADDR_W) > firmware.hex
 else
-	$(PYTHON_DIR)/makehex.py $(FIRM_DIR)/firmware.bin $(FIRM_ADDR_W) > firmware.hex
+	$(MEM_PYTHON_DIR)/makehex.py $(FIRM_DIR)/firmware.bin $(FIRM_ADDR_W) > firmware.hex
 endif 
-	$(PYTHON_DIR)/hex_split.py firmware .
+	$(MEM_PYTHON_DIR)/hex_split.py firmware .
 	cp $(FIRM_DIR)/firmware.bin .
 
 # make embedded sw software
