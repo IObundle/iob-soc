@@ -62,7 +62,7 @@ flow.tcl -design design_name -init_design_config
 
 * DESIGN_NAME: the name of your design must match the name of your top-level Verilog module. This variable cannot be modified.
 
-* VERILOG_FILES: this environment variable points to a directory containing and lists all your Verilog files. By default it is set to DESIGN_DIR/src/\*.v, where DESIGN_DIR is the "$OPENLANE_HOME/designs/" directory
+* VERILOG_FILES: this environment variable points to a directory containing and lists all your Verilog files. By default it is set to DESIGN_DIR/src/\*.v, where DESIGN_DIR is the "$OPENLANE_HOME/designs/design_name" directory
 
 * CLOCK_PERIOD: clock signal period. Change this according to your design.
 
