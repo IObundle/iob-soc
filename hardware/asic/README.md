@@ -13,10 +13,11 @@ Setting up OPenLane
 Clone OpenLane repository with Skywater PDK 130 as follows
 
 ```bash
-
-git clone https://github.com/The-OpenROAD-Project/OpenLane.git 
+SSH
+git clone git@github.com:efabless/OpenLane.git  
+HTTP
+https://github.com/efabless/OpenLane.git
 ```
-
 The default PDK installation directory is $PWD/pdks. If any other location is required then add the configuration variable to bashrc as follows
 ```bash
 export PDK_ROOT=/usr/devel/pdks/
@@ -240,7 +241,7 @@ git clone https://github.com/VLSIDA/OpenRAM
 ```
 2. set following environment variables in bashrc
   ```bash
-  export OPENRAM_COMPILER="<path to openRAM root dir>/compiler"
+  export OPENRAM_HOME="<path to openRAM root dir>/compiler"
   export OPENRAM_TECH="<path to openRAM root dir>/technology"
   export OPENRAM_CONFIG="<path to iob-soc/hardware/asic/skywater>"
   ```
@@ -336,7 +337,7 @@ As the skywater tech files are not installed in magic’s library, we need to cr
 
 So enter following for the symbolic links:
 ```bash
-sudo ln -s <sky130A_install_root_dir>/sky130A/libs.tech/magic/*../usr/local/lib/magic/sys/
+sudo ln -s <sky130A_install_root_dir>/sky130A/libs.tech/magic/    /usr/local/lib/magic/sys/
 ```
 In my case it was as follows:
 ```bash
