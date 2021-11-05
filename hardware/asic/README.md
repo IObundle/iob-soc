@@ -9,7 +9,6 @@ Minimal requirements for OpenLane:
 3.  Python 3.6+ with PIP
 4.  Click,Pyyaml 
 
-Setting up OPenLane
 Clone OpenLane repository with Skywater PDK 130 as follows
 
 ```bash
@@ -18,19 +17,20 @@ git clone git@github.com:efabless/OpenLane.git
 HTTP
 https://github.com/efabless/OpenLane.git
 ```
-The default PDK installation directory is $PWD/pdks. If any other location is required then add the configuration variable to bashrc as follows
+
+
+Set the PDK installation directory:
+
 ```bash
-export PDK_ROOT=/usr/devel/pdks/
+export PDK_ROOT=/path/to/pdks
 ```
 
-Any other path can also be chosen for PDK installation. 
-
-The default SCL to be installed is sky130_fd_sc_hd.
+The default Standard Cell Library (SCL) to be installed is sky130_fd_sc_hd.
 To change that, you can add this configuration variable: 
 ```bash
-export STD_CELL_LIBRARY=<Library name, i.e. sky130_fd_sc_ls>
+export STD_CELL_LIBRARY=<library name>
 ```
-where the library name is one of:
+where library name is one of the following:
 1.  sky130_fd_sc_hd
 2.  sky130_fd_sc_hs
 3.  sky130_fd_sc_ms
@@ -38,15 +38,12 @@ where the library name is one of:
 5.  sky130_fd_sc_hdll
 
 
-For intallation of Skywater PDK and OpenLane use the OpenLane make utility just type make inside the cloned OpenLane repo or do 
-as following:
+For installation of Skywater PDK and OpenLane type make inside the cloned OpenLane repo:
 ```bash
     cd OpenLane/
     make openlane
  ```   
-This will clone the specific version of Skywater PDK and will pull and will build Docker Container. 
-If everything is properly installed by the makefile it will report the success.
-In order to test the OpenLane flow and PDK installation just run 
+This will clone the specific version of Skywater PDK, pull and build its Docker container. If everything is properly installed by the makefile, it will report success. In order to test the OpenLane flow and PDK installation just run 
 
 ```bash
 make test
@@ -55,45 +52,42 @@ This will run a 5 mins test that will verify the OpenLane and Skywater PDK insta
 
 ## OPENLANE FLOW FOR MACRO HARDENING FROM AN HDL DESIGN
 
-OpenLane Flow for Macro Hardening of a test design.
-
-1.  Copy all HDL files in one folder and name it as 'src' folder.
-2.  Make a folder inside "OpenLane installation directory"/designs/. The name of the folder is the name of your design and it should be the same as the name of the top level module of your design.
-3.  Start Docker container of OpenLane by running 
+1. Go to the OpenLane installation directory (you may set an environment variable called OPENLANE_HOME that points to this directory) and start the OpenLane Docker container by running 
 
 ```bash
 make mount
 ```
 
-in the terminal.After starting Docker container in the terminal run following tcl script in order to generate a design configuration of your design.
+This command opens up a bash terminal in which you run the following tcl script to generate a design configuration of your design:
 ```bash
-flow.tcl -design design1 -init_design_config 
+flow.tcl -design design_name -init_design_config 
 ```
-4.  This tcl script will generate a default tcl configutaion file of your design. This "config.tcl" file has following environment variables by default that can be modified.
+4.  This tcl script will generate a default tcl configuration file of your design called "config.tcl", which has the following environment variables:
 
-* Clock signal name. Make sure that this name matches the name of the clock signal in your top level module.
+* DESIGN_NAME: the name of your design must match the name of your top-level Verilog module. This variable cannot be modified.
 
-* Design name. This should be the same as your top level module name is.
+* VERILOG_FILES: this environment variable points to a directory containing and lists all your Verilog files. By default it is set to DESIGN_DIR/src/\*.v, where DESIGN_DIR is the "$OPENLANE_HOME/designs/design_name" directory
 
-* Verilog Files. This environment variable should point to all of your HDL files. e.g., set ::env(VERILOG_FILES) "src/*.vh src/*.v"
+* CLOCK_PERIOD: clock signal period. Change this according to your design.
 
-* Standard Cell Library. 
+* CLOCK_PORT: name of the clock signal port. Make sure that this name matches the name of the clock signal in your top level module.
 
-5. After making necessary changes to config.tcl file. Run following tcl command.
+* STD_CELL_LIBRARY: Standard Cell Library. 
+
+5. After making necessary changes to config.tcl file, run the following tcl command:
 ```bash 
 	flow.tcl -design design1 -tag first_run
 ```     
-Tag here is the tag of the design run. 	
-This will go through all the following steps inorder to generate GDSII file from HDL input files.
+where the -tag option is the tag for the design run. This command will go through all the following steps to generate GDSII file from Verilog input files.
 
 **"Synthesis"**
 
 _yosys_ - Performs RTL synthesis
 _abc_ - Performs technology mapping
 
-**"OpenSTA"** 
+**"Static Timing Analysis"** 
 
-Performs static timing analysis on the resulting netlist to generate timing reports
+OpenSTA - Performs static timing analysis on the resulting netlist to generate timing reports
 
 **"Floorplan and PDN"**
 
@@ -108,9 +102,9 @@ _RePLace_ - Performs global placement
 _Resizer_ - Performs optional optimizations on the design
 _OpenDP_ - Perfroms detailed placement to legalize the globally placed components
 
-**"CTS"**
+**"Clock Tree Synthesis"**
 
-_TritonCTS_ - Synthesizes the clock distribution network (the clock tree)
+_TritonCTS_ - Synthesizes the clock distribution network (clock tree)
 
 **"Routing"**
 
@@ -137,7 +131,7 @@ _Netgen_ - Performs LVS Checks
 
 _CVC_ - Performs Circuit Validity Checks
 
-After all the processes mentioned above are successfully completed without any fatal errors and warnings and GDSII is generated. Go to the runs/first_run/ folder. Here Reports and Results folders will have all reports and results generated by all of the above mentioned steps.
+After all the processes mentioned above are successfully completed without any fatal errors and warnings, the GDSII file is generated. Go to the runs/first_run/ folder. Here you will have all reports and results generated by all of the above mentioned steps.
 
 ## Interactive flow of OpenLane 
 OpenLane can be run in interactive mode. This can be done by following these steps.
