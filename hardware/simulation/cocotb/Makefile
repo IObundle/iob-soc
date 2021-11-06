@@ -8,8 +8,10 @@ SIM ?= icarus
 TOPLEVEL_LANG ?= verilog
 PWD=$(shell pwd)
 
-VERILOG_SOURCES += $(PWD)/system.v $(INCLUDE)
-# use VHDL_SOURCES for VHDL files
+include ../simulation.mk
+INCLUDE += -I../../../submodules/UART/submodules/LIB/hardware/include
+VERILOG_SOURCES += $(VSRC)
+COMPILE_ARGS = $(INCLUDE) $(DEFINE)
 
 # TOPLEVEL is the name of the toplevel module in your Verilog or VHDL file
 TOPLEVEL = system
@@ -17,6 +19,14 @@ TOPLEVEL = system
 # MODULE is the basename of the Python test file
 MODULE = system_tb
 
-# include cocotb's make rules to take care of the simulator setup
-include $(shell cocotb-config --makefiles)/Makefile.sim
-include ../simulation.mk
+dep: $(VSRC) $(VHDR) $(IMAGES)
+	# include cocotb's make rules to take care of the simulator setup
+	$(eval include $(shell cocotb-config --makefiles)/Makefile.sim)
+
+clean: clean-remote
+	@echo "clean\n"
+#	@rm -r sim_build
+#	@rm -r __pycache__
+#	@rm *.vcd
+
+.PHONY: run clean
