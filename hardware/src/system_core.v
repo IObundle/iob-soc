@@ -11,15 +11,6 @@ module system
    //PIO
 
 
-// the "macro" to dump signals
-`ifdef COCOTB_SIM
-   initial begin
-     $dumpfile ("button_deb.vcd");
-     $dumpvars (0, button_deb);
-     #1;
-   end
-`endif
-
 `ifdef USE_DDR //AXI MASTER INTERFACE
 
    //address write
