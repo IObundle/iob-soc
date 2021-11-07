@@ -5,7 +5,7 @@
 
 //PHEADER
 
-module system_tb(
+module system_tb (
    input                    clk,
    input                    reset,
    output                   trap,
@@ -228,5 +228,6 @@ module system_tb(
          //$finish;
       end
     */
+   
    
 endmodule
