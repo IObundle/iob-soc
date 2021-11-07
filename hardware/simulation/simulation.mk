@@ -42,9 +42,6 @@ VSRC+=system_tb.v
 #RULES
 all: clean sw
 ifeq ($(SIM_SERVER),)
-ifeq ($(SIMULATOR), cocotb)
-	make dep
-endif
 	make run
 else
 	ssh $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
