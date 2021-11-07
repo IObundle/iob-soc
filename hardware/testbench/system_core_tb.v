@@ -187,7 +187,7 @@ module system_tb;
 	       .m_axi_wready  (ddr_wready),
                
 	       //write response
-	       //.m_axi_bid     (ddr_bid[0]),
+	       .m_axi_bid     (ddr_bid[0]),
 	       .m_axi_bresp   (ddr_bresp),
 	       .m_axi_bvalid  (ddr_bvalid),
 	       .m_axi_bready  (ddr_bready),
@@ -206,7 +206,7 @@ module system_tb;
 	       .m_axi_arready (ddr_arready),
                
 	       //read   
-	       //.m_axi_rid     (ddr_rid[0]),
+	       .m_axi_rid     (ddr_rid[0]),
 	       .m_axi_rdata   (ddr_rdata),
 	       .m_axi_rresp   (ddr_rresp),
 	       .m_axi_rlast   (ddr_rlast),
