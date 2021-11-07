@@ -12,15 +12,11 @@ Minimal requirements for OpenLane:
 Clone OpenLane repository with Skywater PDK 130 as follows
 
 ```bash
-
-git clone https://github.com/The-OpenROAD-Project/OpenLane.git 
+SSH
+git clone git@github.com:efabless/OpenLane.git  
+HTTP
+https://github.com/efabless/OpenLane.git
 ```
-
-Set the PDK installation directory:
-```bash
-export PDK_ROOT=/path/to/pdks
-```
-
 The default Standard Cell Library (SCL) to be installed is sky130_fd_sc_hd.
 To change that, you can add this configuration variable: 
 ```bash
@@ -37,7 +33,7 @@ where library name is one of the following:
 For installation of Skywater PDK and OpenLane type make inside the cloned OpenLane repo:
 ```bash
     cd OpenLane/
-    make openlane
+    make
  ```   
 This will clone the specific version of Skywater PDK, pull and build its Docker container. If everything is properly installed by the makefile, it will report success. In order to test the OpenLane flow and PDK installation just run 
 
@@ -231,7 +227,7 @@ git clone https://github.com/VLSIDA/OpenRAM
 ```
 2. set following environment variables in bashrc
   ```bash
-  export OPENRAM_COMPILER="<path to openRAM root dir>/compiler"
+  export OPENRAM_HOME="<path to openRAM root dir>/compiler"
   export OPENRAM_TECH="<path to openRAM root dir>/technology"
   export OPENRAM_CONFIG="<path to iob-soc/hardware/asic/skywater>"
   ```
@@ -327,11 +323,11 @@ As the skywater tech files are not installed in magic’s library, we need to cr
 
 So enter following for the symbolic links:
 ```bash
-sudo ln -s <sky130A_install_root_dir>/sky130A/libs.tech/magic/*../usr/local/lib/magic/sys/
+sudo ln -s <sky130A_install_root_dir>/sky130A/libs.tech/magic/*  /usr/local/lib/magic/sys/
 ```
 In my case it was as follows:
 ```bash
- sudo ln -s /home/c/open_pdks/sky130/sky130A/libs.tech/magic/*../usr/local/lib/magic/sys/
+ sudo ln -s /home/c/open_pdks/sky130/sky130A/libs.tech/magic/*  /usr/local/lib/magic/sys/
  ```
 
 ## Running Magic with Skywater
