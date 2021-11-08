@@ -11,8 +11,7 @@ run: $(VSRC) $(VHDR) $(IMAGES)
 
 clean: clean-remote
 	@echo "clean\n"
-#	@rm -r sim_build
-#	@rm -r __pycache__
+	make -f cocotb.mk clean
 #	@rm *.vcd
 
 .PHONY: run clean

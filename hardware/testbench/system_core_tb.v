@@ -31,6 +31,8 @@ module system_tb (
       $dumpfile("system.vcd");
       $dumpvars();
 `endif
+
+   end
    
    //
    // INSTANTIATE COMPONENTS
