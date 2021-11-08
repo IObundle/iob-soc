@@ -3,11 +3,9 @@
 //`include "cpu_nat_s_if.v"
 
 /*
-
 This is a wrapper module for verilator simulation
 that will communicate with the console and get things
 done
-
 Therefore it will be a module with inout unlike system_tb.v
 */
 
@@ -67,7 +65,7 @@ iob_uart #(
   );
 
   initial begin
-    
+
     // configure uart
     cpu_inituart();
 
