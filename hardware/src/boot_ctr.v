@@ -114,7 +114,7 @@ module boot_ctr
             .clk(clk),
             .r_en(rom_r_valid),
             .addr(rom_r_addr),
-            .rdata(rom_r_rdata)
+            .r_data(rom_r_rdata)
             );
 
 endmodule

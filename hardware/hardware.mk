@@ -15,26 +15,11 @@ ifeq ($(USE_DDR),1)
 include $(CACHE_DIR)/hardware/hardware.mk
 endif
 
-ifneq ($(ASIC),1)
 #rom
-ifneq (SPROM,$(filter SPROM, $(SUBMODULES)))
-SUBMODULES+=SPROM
-SPROM_DIR:=$(MEM_DIR)/rom/sp_rom
-VSRC+=$(SPROM_DIR)/iob_sp_rom.v
-endif
+include $(MEM_DIR)/rom/sp_rom/hardware.mk
 
 #ram
-ifneq (DPRAM,$(filter DPRAM, $(SUBMODULES)))
-SUBMODULES+=DPRAM
-DPRAM_DIR:=$(MEM_DIR)/ram/dp_ram
-VSRC+=$(DPRAM_DIR)/iob_dp_ram.v
-endif
-ifneq (DPRAM_BE,$(filter DPRAM_BE, $(SUBMODULES)))
-SUBMODULES+=DPRAM_BE
-DPRAM_BE_DIR:=$(MEM_DIR)/ram/dp_ram_be
-VSRC+=$(DPRAM_BE_DIR)/iob_dp_ram_be.v
-endif
-endif
+include $(MEM_DIR)/ram/dp_ram_be/hardware.mk
 
 #peripherals
 $(foreach p, $(PERIPHERALS), $(eval include $(SUBMODULES_DIR)/$p/hardware/hardware.mk))
