@@ -9,6 +9,9 @@ ASIC_DPRAM_TYPE:=SJ
 ASIC_2PRAM_TYPE:=SZ
 ASIC_SPRAM_TYPE:=SH
 
+# Memories' simulation model files
+ASIC_MEM_FILES=*LD130*.v
+
 # SPROM files
 ASIC_SPROM_DS=$(ASIC_SPROM_TYPE)*.ds
 ASIC_SPROM_LEF=$(ASIC_SPROM_TYPE)*.lef
@@ -64,11 +67,11 @@ fix-lefs:
 	sed -i 's/VI\([2-7]\)/via\1/g' *.lef
 
 fix-sprom-sim-model:
-	sed -i -E 's/(parameter *ROMCODE *= \").*(\";)/\1boot.hex\2/g' $(ASIC_SPROM_SIM_MODEL)
-	sed -i -E "s/(readmemh\(ROMCODE,Memory)\)/\1,0,Words-1\)/g" $(ASIC_SPROM_SIM_MODEL)
+	sed -i -E 's/(parameter *ROMCODE *= \").*(\";)/\1boot.hex\2/g' $(ASIC_SPROM_TYPE)LD130_$(BOOTROM_WORDS)X32BM1A.v
+	sed -i -E "s/(readmemh\(ROMCODE,Memory)\)/\1,0,Words-1\)/g" $(ASIC_SPROM_TYPE)LD130_$(BOOTROM_WORDS)X32BM1A.v
 
 fix-dpram-sim-model:
-	sed -i "/endprotect/e cat verilog/initial_dp_ram.v" $(ASIC_DPRAM_SIM_MODEL)
+	sed -i "/endprotect/e cat verilog/initial_dp_ram.v" $(ASIC_DPRAM_TYPE)LD130_$(SRAM_WORDS)X8X4CM16.v
 
 #
 # Clean

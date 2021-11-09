@@ -95,6 +95,7 @@ BOARD_DIR ?=$(shell find hardware -name $(BOARD))
 
 #mem path
 MEM_DIR=$(CACHE_DIR)/submodules/MEM
+MEM_PYTHON_DIR=$(MEM_DIR)/software/python
 
 #doc paths
 DOC_DIR=$(ROOT_DIR)/document/$(DOC)
