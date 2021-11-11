@@ -52,9 +52,9 @@ async def inituart(dut):
     await uartwrite(dut, UART_TXEN_ADDR, 1)
 
 async def reset_dut(reset_n, duration_ns):
-    reset_n.value = 0
-    await Timer(duration_ns, units="ns")
     reset_n.value = 1
+    await Timer(duration_ns, units="ns")
+    reset_n.value = 0
     reset_n._log.debug("Reset complete")
 
 @cocotb.test()
@@ -62,6 +62,7 @@ async def basic_test(dut):
     reset_n = dut.reset
     clk_n = dut.clk
     char = 0
+    reset = 0
 
     cocotb.start_soon(Clock(clk_n, CLK_PERIOD, units="ns").start())
     await reset_dut(reset_n, 100*CLK_PERIOD)
@@ -81,16 +82,14 @@ async def basic_test(dut):
       j += 1
       ready = 0
       i = 0
-      while(not ready and i < 10):
-          i += 1
+      while(not ready):
           await uartread(dut, UART_RXREADY_ADDR, ready)
       await uartread(dut, UART_RXDATA_ADDR, char)
       data += char.to_bytes(1, byteorder='big')
       send = int.from_bytes(b'\x06', "big")
       ready = 0
       i = 0
-      while(not ready and i < 10):
-          i += 1
+      while(not ready):
           await uartread(dut, UART_TXREADY_ADDR, ready)
       await uartwrite(dut, UART_TXDATA_ADDR, send)
 
