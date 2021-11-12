@@ -1,5 +1,8 @@
 UART_DIR:=.
-include core.mk
+include config.mk
+
+.PHONY: sim sim-clean fpga-build fpga-build-all fpga-clean fpga-clean-all\
+	doc-build doc-build-all doc-clean doc-clean-all clean-all
 
 #
 # SIMULATE
@@ -50,8 +53,6 @@ doc-clean-all:
 # CLEAN ALL
 # 
 
-clean: sim-clean fpga-clean-all doc-clean doc-clean-all 
+clean-all: sim-clean fpga-clean-all doc-clean-all 
 
-.PHONY: sim sim-clean fpga-build fpga-build-all fpga-clean fpga-clean-all\
-	doc-build doc-build-all doc-clean doc-clean-all clean
 

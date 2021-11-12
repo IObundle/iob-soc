@@ -2,7 +2,7 @@
 # CORE DEFINITIONS FILE
 #
 
-CORE_NAME:=UART
+MODULE:=UART
 TOP_MODULE = iob_uart
 
 DATA_W=32
@@ -38,6 +38,7 @@ REMOTE_ROOT_DIR ?= sandbox/iob-soc/submodules/UART
 # DOCUMENTS
 #
 TEX_DIR ?=$(UART_SUBMODULES_DIR)/TEX
+TEX_DOC_DIR ?=$(TEX_DIR)/document
 
 DOC:=pb
 #DOC:=ug
@@ -58,7 +59,7 @@ XIL_FAMILY ?=XCKU
 #
 VERSION= 0.1
 VLINE:="V$(VERSION)"
-$(CORE_NAME)_version.txt:
+$(MODULE)_version.txt:
 ifeq ($(VERSION),)
 	$(error "variable VERSION is not set")
 endif

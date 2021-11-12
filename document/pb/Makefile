@@ -1,10 +1,6 @@
 UART_DIR:=../..
-CORE_DIR:=$(UART_DIR)
 
-include $(UART_DIR)/core.mk
+NOCLEAN = -name "pb.pdf" -o -name "Makefile"
 
-#block diagram verilog source
-BD_VSRC=uart_core.v
-
-include $(UART_DIR)/submodules/TEX/document/document.mk
+include $(UART_DIR)/document/document.mk
 

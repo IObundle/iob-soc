@@ -1,4 +1,4 @@
-include $(UART_DIR)/core.mk
+include $(UART_DIR)/config.mk
 
 USE_NETLIST ?=0
 

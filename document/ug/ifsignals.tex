@@ -6,7 +6,13 @@
     \rowcolor{iob-green}
     {\bf Name} & {\bf Direction} & {\bf Width} & {\bf Description}  \\ \hline \hline
 
-    \input{rs232_is_tab}
+    interrupt & output & 1 & to be done \\ \hline
+    \rowcolor{iob-blue}
+    txd & output & 1 & Serial transmit line \\ \hline
+    rxd & input & 1 & Serial receive line \\ \hline
+    \rowcolor{iob-blue}
+    cts & input & 1 & Clear to send the destination is ready to receive a transmission sent by the UART \\ \hline
+    rts & output & 1 & Ready to send the UART is ready to receive a transmission from the sender. \\ \hline
  
   \end{tabular}
   \caption{RS232 Interface Signals}
@@ -14,4 +20,5 @@
 \end{table}
 
 \input{\TEX/ug/cpu_nat_s_is}
+
 \input{\TEX/ug/cpu_axi4lite_s_is}
