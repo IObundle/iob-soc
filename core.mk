@@ -63,9 +63,3 @@ ifeq ($(VERSION),)
 	$(error "variable VERSION is not set")
 endif
 	echo $(VLINE) > version.txt
-
-#RULES
-$(CORE_NAME)_printname:
-	@echo $(CORE_NAME)
-
-.PHONY: $(CORE_NAME)_printname
