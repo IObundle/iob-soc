@@ -1,4 +1,6 @@
 import cocotb
+import os
+
 from cocotb.triggers import Timer
 from cocotb.triggers import RisingEdge
 from cocotb.clock import Clock
@@ -16,6 +18,7 @@ UART_RXREADY_ADDR = 7
 FREQ = 100000000
 BAUD = 5000000
 CLK_PERIOD = 10 # 20 ns
+CONSOLE_DIR = '../../../software/console/'
 
 # 1-cycle write
 async def uartwrite(dut, cpu_address, cpu_data):
@@ -30,16 +33,18 @@ async def uartwrite(dut, cpu_address, cpu_data):
     dut.uart_valid.value = 0;
 
 # 2-cycle read
-async def uartread(dut, cpu_address, read_reg):
+async def uartread(dut, cpu_address):
     await Timer(1, units="ns")
     dut.uart_addr.value = cpu_address
     dut.uart_valid.value = 1
     await RisingEdge(dut.clk)
     await Timer(1, units="ns")
+    #print(dut.uart_rdata.value)
     read_reg = dut.uart_rdata.value.integer
     await RisingEdge(dut.clk)
     await Timer(1, units="ns")
     dut.uart_valid.value = 0;
+    return read_reg;
 
 async def inituart(dut):
     #pulse reset uart
@@ -62,7 +67,6 @@ async def basic_test(dut):
     reset_n = dut.reset
     clk_n = dut.clk
     char = 0
-    reset = 0
 
     cocotb.start_soon(Clock(clk_n, CLK_PERIOD, units="ns").start())
     await reset_dut(reset_n, 100*CLK_PERIOD)
@@ -72,26 +76,54 @@ async def basic_test(dut):
     await inituart(dut)
 
     print('\n\nTESTBENCH: connecting')
-    j = 0
-    data = b'\x00'
-    while(data[-1] != b'\x04' and j < 1000):
-      #print("traped")
-      if(dut.trap.value.integer > 0):
-          print('TESTBENCH: force cpu trap exit')
-          exit()
-      j += 1
-      ready = 0
-      i = 0
-      while(not ready):
-          await uartread(dut, UART_RXREADY_ADDR, ready)
-      await uartread(dut, UART_RXDATA_ADDR, char)
-      data += char.to_bytes(1, byteorder='big')
-      send = int.from_bytes(b'\x06', "big")
-      ready = 0
-      i = 0
-      while(not ready):
-          await uartread(dut, UART_TXREADY_ADDR, ready)
-      await uartwrite(dut, UART_TXDATA_ADDR, send)
+    while(char != 4):
+        #print("traped")
+        if(dut.trap.value.integer > 0):
+            print('TESTBENCH: force cpu trap exit')
+            exit()
+        RXready = 0
+        while(RXready != 1):
+            RXready = await uartread(dut, UART_RXREADY_ADDR)
+        char = await uartread(dut, UART_RXDATA_ADDR)
+        print(chr(char), end = '')
+        if(char == 5):
+            send = int.from_bytes(b'\x06', "big")
+            TXready = 0
+            while(TXready != 1):
+                TXready = await uartread(dut, UART_TXREADY_ADDR)
+            await uartwrite(dut, UART_TXDATA_ADDR, send)
+    print('\nTESTBENCH: finished\n\n')
 
-    print(data)
+@cocotb.test()
+async def console_test(dut):
+    reset_n = dut.reset
+    clk_n = dut.clk
+    char = 0
+    #os.system('{}console -L'.format(CONSOLE_DIR))
+
+    cocotb.start_soon(Clock(clk_n, CLK_PERIOD, units="ns").start())
+    await reset_dut(reset_n, 100*CLK_PERIOD)
+    await Timer(10*CLK_PERIOD, units="ns")  # wait a bit
+    dut.uart_valid.value = 0
+    dut.uart_wstrb.value = 0
+    await inituart(dut)
+
+    print('\n\nTESTBENCH: connecting')
+    while(char != 4):
+        if(dut.trap.value.integer > 0):
+            print('TESTBENCH: force cpu trap exit')
+            exit()
+        RXready = 0
+        while(RXready != 1):
+            RXready = await uartread(dut, UART_RXREADY_ADDR)
+        char = await uartread(dut, UART_RXDATA_ADDR)
+        with open('{}soc2cnsl'.format(CONSOLE_DIR), 'wb') as fifo:
+            fifo.write(char.to_bytes(1, byteorder='little'))
+
+        with os.open('{}cnsl2soc'.format(CONSOLE_DIR), os.O_RDONLY | os.O_NONBLOCK) as fifo:
+            send = ord(fifo.read())
+        TXready = 0
+        while(TXready != 1):
+            TXready = await uartread(dut, UART_TXREADY_ADDR)
+        await uartwrite(dut, UART_TXDATA_ADDR, send)
     print('TESTBENCH: finished\n\n')

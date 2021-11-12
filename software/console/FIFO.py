@@ -36,7 +36,7 @@ class FifoFile:
                     print("Writer closed")
                     break
                 print('Read: "{0}"'.format(data))
-                if (data == b'\x00'):
+                if (data == end):
                     break
             return data
 
@@ -47,4 +47,3 @@ class FifoFile:
     def close(self):
         os.remove(self.path)
         print('Removed file: "{0}"'.format(self.path))
-
