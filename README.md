@@ -84,10 +84,10 @@ export CYC5_USER=cyc5username
 
 ### Set up the remote ASIC toolchain server
 
-Using the umc130 node as an example, note that in `hardware/asic/Makefile`, the
-variable for the server logical name, ASIC\_SERVER, is set to CADENCE\_SERVER,
-and the variable for the user name ASIC\_USER is set to CADENCE\_USER. Hence,
-set these variables as follows:
+For example, in `hardware/asic/umc130/Makefile`, the variable for the server
+logical name, ASIC\_SERVER, is set to CADENCE\_SERVER, and the variable for the
+user name ASIC\_USER is set to CADENCE\_USER. Hence, you need to set the latter
+variables as in the following example:
 
 ```
 export CADENCE_SERVER=cadenceserver.myorg.com
@@ -285,6 +285,34 @@ make clean-all-boards
 ```
 
 
+
+### ASIC test
+
+To compile and run a series of ASIC tests on the ASIC technology node selected
+by the ASIC\_NODE variable, type:
+
+```
+make test-asic [ASIC_NODE=<ASIC technology node directory name>]
+```
+
+The above command creates the file `hardware/simulation/xcelium/test.log`, which
+is compared to file `hardware/asic/<ASIC technology node name>/test.expected`;
+if they differ, the test is aborted.
+
+To run the series of ASIC tests on all the ASIC technology nodes listed in the
+ASIC\_NODE\_LIST variable, type:
+
+```
+make test-all-asics [ASIC_NODE_LIST="<ASIC technology node directory name list>"]
+```
+
+To clean the files produced when testing all ASIC technology nodes, type:
+```
+make clean-all-asics
+```
+
+
+
 ### Documentation test
 
 To compile and test the document selected by the DOC, variable, type:
@@ -309,15 +337,16 @@ make clean-all-docs
 
 ### Total test
 
-To run all simulation, FPGA board and documentation tests, type:
+To run all simulation, FPGA board, ASIC technology node and documentation tests,
+type:
 ```
 make test
 ```
 
 ## Cleaning
 
-The following command will clean the selected simulation, board and document
-directories, locally and in the remote servers:
+The following command will clean the selected simulation, board, ASIC technology
+node and document directories, locally and in the remote servers:
 
 ```
 make clean
