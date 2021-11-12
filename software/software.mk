@@ -1,6 +1,6 @@
 defmacro:=-D
 incdir:=-I
-include $(ROOT_DIR)/system.mk
+include $(ROOT_DIR)/config.mk
 
 DEFINE+=$(defmacro)BAUD=$(BAUD)
 DEFINE+=$(defmacro)FREQ=$(FREQ)

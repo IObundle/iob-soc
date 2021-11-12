@@ -1,5 +1,5 @@
 ROOT_DIR:=.
-include ./system.mk
+include ./config.mk
 
 #
 # SIMULATE RTL

@@ -8,6 +8,8 @@
 # PRIMARY PARAMETERS: CAN BE CHANGED BY USERS OR OVERRIDEN BY ENV VARS
 #
 
+MODULE:=IOBSOC
+
 #FIRMWARE SIZE (LOG2)
 FIRM_ADDR_W ?=15
 
@@ -84,7 +86,6 @@ PC_DIR:=$(SW_DIR)/pc-emul
 FIRM_DIR:=$(SW_DIR)/firmware
 BOOT_DIR:=$(SW_DIR)/bootloader
 CONSOLE_DIR:=$(SW_DIR)/console
-PYTHON_DIR:=$(SW_DIR)/python
 
 #hw paths
 HW_DIR=$(ROOT_DIR)/hardware

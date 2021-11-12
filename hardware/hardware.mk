@@ -1,4 +1,4 @@
-include $(ROOT_DIR)/system.mk
+include $(ROOT_DIR)/config.mk
 
 #default baud and freq for hardware
 BAUD ?=115200

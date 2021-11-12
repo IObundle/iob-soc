@@ -1,4 +1,4 @@
-include $(ROOT_DIR)/system.mk
+include $(ROOT_DIR)/config.mk
 
 #FPGA results to include
 INTEL = 1
