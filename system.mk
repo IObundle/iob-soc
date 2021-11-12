@@ -103,8 +103,9 @@ INTERCON_DIR=$(UART_DIR)/submodules/INTERCON
 
 #submodule paths
 SUBMODULES_DIR:=$(ROOT_DIR)/submodules
-#create submodule list
-$(foreach p, $(shell ls $(SUBMODULES_DIR)), $(eval i=$(shell make --no-print-directory -C $(SUBMODULES_DIR)/$p corename)); $(if $(filter $i, $(SUBMODULES)),, $(eval SUBMODULES+=$i); $(eval $i_DIR=$(SUBMODULES_DIR)/$p)))
+SUBMODULES=$(shell ls $(SUBMODULES_DIR))
+$(foreach p, $(SUBMODULES), $(eval $p_DIR:=$(SUBMODULES_DIR)/$p))
+
 
 #define macros
 DEFINE+=$(defmacro)BOOTROM_ADDR_W=$(BOOTROM_ADDR_W)
