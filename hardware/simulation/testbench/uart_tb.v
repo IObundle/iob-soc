@@ -37,7 +37,7 @@ module uart_tb;
    initial begin
 
 `ifdef VCD
-      $dumpfile("uart.vcd");
+      $dumpfile("uut.vcd");
       $dumpvars;
 `endif
       
