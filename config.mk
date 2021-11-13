@@ -100,8 +100,8 @@ INTERCON_DIR=$(UART_DIR)/submodules/INTERCON
 
 #submodule paths
 SUBMODULES_DIR:=$(ROOT_DIR)/submodules
-SUBMODULES=$(shell ls $(SUBMODULES_DIR))
-$(foreach p, $(SUBMODULES), $(eval $p_DIR:=$(SUBMODULES_DIR)/$p))
+SUBMODULES_LIST:=$(shell ls $(SUBMODULES_DIR))
+$(foreach p, $(SUBMODULES_LIST), $(if $(filter $p, $(SUBMODULES)),,$(eval $p_DIR ?=$(SUBMODULES_DIR)/$p)))
 
 
 #define macros
