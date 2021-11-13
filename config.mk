@@ -1,65 +1,33 @@
-#
-# CORE DEFINITIONS FILE
-#
-
 MODULE:=UART
 TOP_MODULE = iob_uart
 
-DATA_W=32
-
-# UART PATHS
+#PATHS
+REMOTE_ROOT_DIR ?= sandbox/iob-soc/submodules/UART
 UART_HW_DIR:=$(UART_DIR)/hardware
 UART_SW_DIR:=$(UART_DIR)/software
-UART_DOC_DIR:=$(UART_DIR)/document
-UART_SUBMODULES_DIR:=$(UART_DIR)/submodules
-
-# SUBMODULES
-UART_SUBMODULES:=INTERCON LIB TEX
-$(foreach p, $(UART_SUBMODULES), $(eval $p_DIR ?=$(UART_SUBMODULES_DIR)/$p))
-
-#
-# SIMULATION
-#
 SIM_DIR ?=$(UART_HW_DIR)/simulation
+FPGA_DIR ?=$(shell find $($(MODULE)_DIR)/hardware -name $(FPGA_FAMILY))
+DOC_DIR = $(UART_DIR)/document/$(DOC)
+SUBMODULES_DIR:=$(UART_DIR)/submodules
 
-#
-# FPGA
-#
-FPGA_DIR ?=$(shell find $(UART_DIR)/hardware -name $(FPGA_FAMILY))
+# SUBMODULE PATHS
+SUBMODULES_LIST:=$(shell ls $(SUBMODULES_DIR))
+$(foreach p, $(SUBMODULES_LIST), $(if $(filter $p, $(SUBMODULES)),,$(eval $p_DIR ?=$(SUBMODULES_DIR)/$p)))
 
+#DEFAULT FPGA FAMILY
 FPGA_FAMILY ?=CYCLONEV-GT
 #FPGA_FAMILY ?=XCKU
-
 FPGA_FAMILY_LIST = CYCLONEV-GT XCKU
 
-REMOTE_ROOT_DIR ?= sandbox/iob-soc/submodules/UART
-
-#
-# DOCUMENTS
-#
-TEX_DIR ?=$(UART_SUBMODULES_DIR)/TEX
-TEX_DOC_DIR ?=$(TEX_DIR)/document
-
-DOC:=pb
+#DEFAULT DOC
+DOC ?=pb
 #DOC:=ug
-
 DOC_LIST:=pb ug
 
-DOC_DIR:=document/$(DOC)
-
-INTEL ?=1
-INT_FAMILY ?=CYCLONEV-GT
-XILINX ?=1
-XIL_FAMILY ?=XCKU
-
-
-
-#
 # VERSION
-#
 VERSION= 0.1
 VLINE:="V$(VERSION)"
-$(MODULE)_version.txt:
+UART_version.txt:
 ifeq ($(VERSION),)
 	$(error "variable VERSION is not set")
 endif
