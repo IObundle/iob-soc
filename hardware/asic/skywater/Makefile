@@ -1,13 +1,13 @@
 #Makefile for OpenLane and OpenRAM started on 2/11/21
 
-#include ../asic.mk
+include ../asic.mk
 #OpenRAM for SRAM generation
 sram: myconfig.py
 	python3 $(OPENRAM_HOME)/openram.py myconfig.py
 #OpenLane
 all:  Dok 
 Dok:
-	sudo $(MAKE) -C  $(OPENLANE_MK)  -f Makefile mount 
+	$(MAKE) -C  $(OPENLANE_MK)  -f Makefile mount 
 
 .PHONY: all Dok 
 
