@@ -49,6 +49,20 @@ This will run a 5 mins test that will verify the OpenLane and Skywater PDK insta
 ```bash
 make mount
 ```
+**NOTE**: If mounting of docker require sudo access then follow these steps,
+1. First create the docker group, if it is not already there.
+```bash
+sudo groupadd docker
+```
+2. Add the user to docker group
+```bash
+sudo usermod -aG docker $USER
+```
+3. Run following
+```bash
+newgrp docker
+```
+Now you should be able to mount docker without sudo access
 
 This command opens up a bash terminal in which you run the following tcl script to generate a design configuration of your design:
 ```bash
