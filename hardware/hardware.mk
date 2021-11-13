@@ -61,12 +61,14 @@ system.v: $(SRC_DIR)/system_core.v
 	$(foreach p, $(PERIPHERALS), if test -f $($p_DIR)/hardware/include/inst.v; then sed -i '/endmodule/e cat $($p_DIR)/hardware/include/inst.v' $@; fi;) # insert peripheral instances
 
 # make and copy memory init files
+MEM_PYTHON_DIR=$(MEM_DIR)/software/python
+
 boot.hex: $(BOOT_DIR)/boot.bin
 	$(MEM_PYTHON_DIR)/makehex.py $(BOOT_DIR)/boot.bin $(BOOTROM_ADDR_W) > boot.hex
 
 firmware.hex: $(FIRM_DIR)/firmware.bin
 ifeq ($(RUN_EXTMEM),1)
-	$(MEM_PYTHON_DIR)/makehex.py $(FIRM_DIR)/firmware.bin $(DCACHE_ADDR_W) > firmware.hex
+	$(MEM_PYTHON_DIR)/makehex.py $(FIRM_DIR)/firmware.bin $(FIRM_ADDR_W) > firmware.hex
 else
 	$(MEM_PYTHON_DIR)/makehex.py $(FIRM_DIR)/firmware.bin $(FIRM_ADDR_W) > firmware.hex
 endif 

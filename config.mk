@@ -52,13 +52,13 @@ SIMULATOR ?=icarus
 BOARD ?=CYCLONEV-GT-DK
 
 #ASIC COMPILATION
-#default asic node  running locally or remotely
+#default asic node running locally or remotely
 #check the respective Makefile in hardware/asic/$(ASIC_NODE) for specific settings
 ASIC_NODE ?=umc130
 
 
 #DOCUMENTATION
-#default document
+#default document to compile
 DOC ?= pb
 
 
@@ -92,10 +92,6 @@ HW_DIR=$(ROOT_DIR)/hardware
 SIM_DIR=$(HW_DIR)/simulation/$(SIMULATOR)
 ASIC_DIR=$(HW_DIR)/asic/$(ASIC_NODE)
 BOARD_DIR ?=$(shell find hardware -name $(BOARD))
-
-#mem path
-MEM_DIR=$(CACHE_DIR)/submodules/MEM
-MEM_PYTHON_DIR=$(MEM_DIR)/software/python
 
 #doc paths
 DOC_DIR=$(ROOT_DIR)/document/$(DOC)
