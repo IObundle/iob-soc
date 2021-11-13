@@ -1,3 +1,4 @@
+
 # Data word size
 word_size = 32
 
