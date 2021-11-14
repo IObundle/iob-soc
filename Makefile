@@ -1,6 +1,22 @@
 ROOT_DIR:=.
 include ./config.mk
 
+.PHONY: pc-emul pc-emul-test pc-emul-clean\
+	sim sim-test sim-clean\
+	fpga-build fpga-run fpga-test fpga-clean\
+	asic-synth asic-sim-post-synth asic-test asic-clean\
+	doc-build doc-test  doc-clean clean\
+	test-pc-emul test-pc-emul-clean\
+	test-sim test-sim-clean\
+	test-fpga test-fpga-clean\
+	test-asic test-asic-clean\
+	test-doc test-doc-clean\
+	test test-clean\
+	clean clean-all\
+	printname
+
+printname:
+	@echo $(MODULE)
 #
 # SIMULATE RTL
 #
@@ -126,17 +142,3 @@ clean:
 	make doc-clean
 
 clean-all: test-clean
-
-
-.PHONY: pc-emul pc-emul-test pc-emul-clean\
-	sim sim-test sim-clean\
-	fpga-build fpga-run fpga-test fpga-clean\
-	asic-synth asic-sim-post-synth asic-test asic-clean\
-	doc-build doc-test  doc-clean clean\
-	test-pc-emul test-pc-emul-clean\
-	test-sim test-sim-clean\
-	test-fpga test-fpga-clean\
-	test-asic test-asic-clean\
-	test-doc test-doc-clean\
-	test test-clean\
-	clean clean-all

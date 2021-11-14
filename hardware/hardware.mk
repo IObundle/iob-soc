@@ -13,6 +13,8 @@ include $(CPU_DIR)/hardware/hardware.mk
 #cache
 ifeq ($(USE_DDR),1)
 include $(CACHE_DIR)/hardware/hardware.mk
+else
+MEM_DIR=$(CACHE_DIR)/submodules/MEM
 endif
 
 #rom
