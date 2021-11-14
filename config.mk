@@ -1,4 +1,4 @@
-MODULE:=UART
+MODULE=UART
 TOP_MODULE = iob_uart
 
 #PATHS
