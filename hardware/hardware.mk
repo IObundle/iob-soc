@@ -69,11 +69,7 @@ boot.hex: $(BOOT_DIR)/boot.bin
 	$(MEM_PYTHON_DIR)/makehex.py $(BOOT_DIR)/boot.bin $(BOOTROM_ADDR_W) > boot.hex
 
 firmware.hex: $(FIRM_DIR)/firmware.bin
-ifeq ($(RUN_EXTMEM),1)
 	$(MEM_PYTHON_DIR)/makehex.py $(FIRM_DIR)/firmware.bin $(FIRM_ADDR_W) > firmware.hex
-else
-	$(MEM_PYTHON_DIR)/makehex.py $(FIRM_DIR)/firmware.bin $(FIRM_ADDR_W) > firmware.hex
-endif 
 	$(MEM_PYTHON_DIR)/hex_split.py firmware .
 	cp $(FIRM_DIR)/firmware.bin .
 
