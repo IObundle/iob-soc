@@ -11,11 +11,7 @@ FREQ ?=100000000
 include $(CPU_DIR)/hardware/hardware.mk
 
 #cache
-ifeq ($(USE_DDR),1)
 include $(CACHE_DIR)/hardware/hardware.mk
-else
-MEM_DIR=$(CACHE_DIR)/submodules/MEM
-endif
 
 #rom
 include $(MEM_DIR)/rom/sp_rom/hardware.mk
