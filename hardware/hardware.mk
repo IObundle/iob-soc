@@ -5,7 +5,7 @@ BAUD ?=115200
 FREQ ?=100000000
 
 #add itself to MODULES list
-MODULES += IOb-SoC
+MODULES+=IOb-SoC
 
 #ADD SUBMODULES
 
@@ -34,7 +34,7 @@ VHDR+=$(INC_DIR)/system.vh
 
 #SOURCES
 #testbench
-TB_DIR:=$(ROOT_DIR)/hardware/testbench
+TB_DIR:=$(HW_DIR)/testbench
 
 #external memory interface
 ifeq ($(USE_DDR),1)
