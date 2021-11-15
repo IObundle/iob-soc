@@ -2,20 +2,12 @@ include $(UART_DIR)/config.mk
 
 USE_NETLIST ?=0
 
+#add itself to MODULES list
+MODULES+=$(MODULE)
 
-#SUBMODULE HARDWARE
-#intercon
-ifneq (INTERCON,$(filter INTERCON, $(SUBMODULES)))
-SUBMODULES+=INTERCON
-include $(INTERCON_DIR)/hardware/hardware.mk
-endif
+#include submodule's hardware
+$(foreach p, $(SUBMODULES_TMP), $(if $(filter $p, $(MODULES)),,$(eval include $($p_DIR)/hardware/hardware.mk)))
 
-#lib
-ifneq (LIB,$(filter LIB, $(SUBMODULES)))
-SUBMODULES+=LIB
-INCLUDE+=$(incdir) $(LIB_DIR)/hardware/include
-VHDR+=$(wildcard $(LIB_DIR)/hardware/include/*.vh)
-endif
 
 #UART HARDWARE
 
