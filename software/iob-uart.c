@@ -78,6 +78,9 @@ int uart_recvfile(char* file_name, char **mem) {
     }
   }
 
+  //send ACK before receiving file
+  uart_putc(ACK);
+
   //write file to memory
   for (int i = 0; i < file_size; i++) {
     (*mem)[i] = uart_getc();
