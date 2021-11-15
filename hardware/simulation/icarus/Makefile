@@ -29,7 +29,7 @@ clean: clean-remote
 	@rm -f a.out
 
 debug:
-	@echo $(SUBMODULES_TMP)
+	@echo $(SUBMODULES)
 	@echo $(MODULES)
 	@echo $(MEM_MODULES)
 	@echo $(AXIMEM_DIR)
