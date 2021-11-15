@@ -13,7 +13,7 @@ MODULES += IOb-SoC
 MEM_MODULES+=rom/sp_rom ram/dp_ram_be
 
 #include submodule's hardware
-$(foreach p, $(filter-out MEM, $(SUBMODULES_TMP)), $(if $(filter $p, $(MODULES)),, $(eval include $($p_DIR)/hardware/hardware.mk)))
+$(foreach p, $(filter-out MEM, $(SUBMODULES)), $(if $(filter $p, $(MODULES)),, $(eval include $($p_DIR)/hardware/hardware.mk)))
 
 include $(MEM_DIR)/hardware/hardware.mk
 
