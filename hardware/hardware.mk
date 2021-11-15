@@ -10,11 +10,13 @@ MODULES += IOb-SoC
 #ADD SUBMODULES
 
 #list memory modules before including MEM's hardware.mk
-MEM_MODULES=rom/sp_rom ram/dp_ram_be
-include $(MEM_DIR)/hardware/hardware.mk
+MEM_MODULES+=rom/sp_rom ram/dp_ram_be
 
 #include submodule's hardware
 $(foreach p, $(filter-out MEM, $(SUBMODULES_TMP)), $(if $(filter $p, $(MODULES)),, $(eval include $($p_DIR)/hardware/hardware.mk)))
+
+include $(MEM_DIR)/hardware/hardware.mk
+
 
 #HARDWARE PATHS
 INC_DIR:=$(HW_DIR)/include
