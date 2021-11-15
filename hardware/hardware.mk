@@ -5,7 +5,7 @@ BAUD ?=115200
 FREQ ?=100000000
 
 #add itself to MODULES list
-MODULES+=$(MODULE)
+MODULES += IOb-SoC
 
 #ADD SUBMODULES
 
@@ -14,7 +14,7 @@ MEM_MODULES=rom/sp_rom ram/dp_ram_be
 include $(MEM_DIR)/hardware/hardware.mk
 
 #include submodule's hardware
-$(foreach p, $(filter-out MEM, $(SUBMODULES_TMP)), $(if $(filter $p, $(MODULES)),,$(eval include $($p_DIR)/hardware/hardware.mk)))
+$(foreach p, $(filter-out MEM, $(SUBMODULES_TMP)), $(if $(filter $p, $(MODULES)),, $(eval include $($p_DIR)/hardware/hardware.mk)))
 
 #HARDWARE PATHS
 INC_DIR:=$(HW_DIR)/include
