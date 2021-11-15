@@ -1,9 +1,3 @@
-#
-# ICARUS VERILOG SIMULTOR (iverilog)
-#
-# Tested with iverilog version 10.3
-#
-
 ROOT_DIR:=../../..
 
 defmacro:=-D
@@ -35,16 +29,17 @@ clean: clean-remote
 	@rm -f a.out
 
 debug:
-	@echo $(CSUBMODULES_LIST)
+	@echo $(SUBMODULES_TMP)
+	@echo $(MODULES)
+	@echo $(MEM_MODULES)
 	@echo $(AXIMEM_DIR)
 	@echo $(INTERCON_DIR)
 	@echo $(MEM_DIR)
+	@echo $(CPU_DIR)
+	@echo $(CACHE_DIR)
+	@echo $(UART_DIR)
 	@echo $(VHDR)
 	@echo $(VSRC)
 	@echo $(INCLUDE)
 	@echo $(DEFINE)
-	@echo $(SUBMODULES_LIST)
-	@echo $(CPU_DIR)
-	@echo $(CACHE_DIR)
-	@echo $(UART_DIR)
 	@echo $(MODULE)

@@ -4,23 +4,17 @@ include $(ROOT_DIR)/config.mk
 BAUD ?=115200
 FREQ ?=100000000
 
+#add itself to MODULES list
+MODULES+=$(MODULE)
 
-#SUBMODULES
+#ADD SUBMODULES
 
-#cpu
-include $(CPU_DIR)/hardware/hardware.mk
+#list memory modules before including MEM's hardware.mk
+MEM_MODULES=rom/sp_rom ram/dp_ram_be
+include $(MEM_DIR)/hardware/hardware.mk
 
-#cache
-include $(CACHE_DIR)/hardware/hardware.mk
-
-#rom
-include $(MEM_DIR)/rom/sp_rom/hardware.mk
-
-#ram
-include $(MEM_DIR)/ram/dp_ram_be/hardware.mk
-
-#peripherals
-$(foreach p, $(PERIPHERALS), $(eval include $($p_DIR)/hardware/hardware.mk))
+#include submodule's hardware
+$(foreach p, $(filter-out MEM, $(SUBMODULES_TMP)), $(if $(filter $p, $(MODULES)),,$(eval include $($p_DIR)/hardware/hardware.mk)))
 
 #HARDWARE PATHS
 INC_DIR:=$(HW_DIR)/include

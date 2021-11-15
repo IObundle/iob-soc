@@ -7,3 +7,12 @@
 [submodule "submodules/CACHE"]
 	path = submodules/CACHE
 	url = git@github.com:IObundle/iob-cache.git
+[submodule "submodules/MEM"]
+	path = submodules/MEM
+	url = git@github.com:IObundle/iob-mem.git
+[submodule "submodules/LIB"]
+	path = submodules/LIB
+	url = git@github.com:IObundle/iob-lib.git
+[submodule "submodules/TEX"]
+	path = submodules/TEX
+	url = git@github.com:IObundle/iob-tex.git

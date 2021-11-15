@@ -4,9 +4,6 @@ include ../software.mk
 #additional compiler flags
 CFLAGS+=--specs=nano.specs -Wl,-Bstatic,-T,../template.lds,-Map,firmware.map,--strip-debug
 
-
-#SUBMODULES
-
 #cache
 ifeq ($(USE_DDR),1)
 include $(CACHE_DIR)/software/software.mk
