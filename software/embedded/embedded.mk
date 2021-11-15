@@ -1,8 +1,7 @@
 include $(UART_DIR)/software/software.mk
 
 #submodule
-ifneq (INTERCON,$(filter INTERCON, $(SUBMODULES)))
-SUBMODULES+=INTERCON
+ifneq (INTERCON,$(filter INTERCON, $(MODULES)))
 include $(INTERCON_DIR)/software/software.mk
 endif
 
