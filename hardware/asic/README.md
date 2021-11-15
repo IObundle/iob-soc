@@ -28,8 +28,14 @@ where library name is one of the following:
 3.  sky130_fd_sc_ms
 4.  sky130_fd_sc_ls
 5.  sky130_fd_sc_hdll
-
-
+In order to run OpenLane from Makefile provided in the hardware/asic/skywater folder, you need to export following environment variable.
+```bash
+export OPENLANE_DIRECTORY=<path to OpenLane root directory>
+```
+Export the absolute path where the skywater-pdk and open-pdk will reside.
+``` bash
+export PDK_ROOT=<absolute path to where skywater-pdk and open_pdks will reside>
+```
 For installation of Skywater PDK and OpenLane type make inside the cloned OpenLane repo:
 ```bash
     cd OpenLane/
@@ -42,13 +48,6 @@ make test
 ```
 This will run a 5 mins test that will verify the OpenLane and Skywater PDK installation and will report success if everything has been successfully installed.
 
-## OPENLANE FLOW FOR MACRO HARDENING FROM AN HDL DESIGN
-
-1. Go to the OpenLane installation directory (you may set an environment variable called OPENLANE_HOME that points to this directory) and start the OpenLane Docker container by running 
-
-```bash
-make mount
-```
 **NOTE**: If mounting of docker require sudo access then follow these steps,
 1. First create the docker group, if it is not already there.
 ```bash
@@ -62,9 +61,16 @@ sudo usermod -aG docker $USER
 ```bash
 newgrp docker
 ```
-Now you should be able to mount docker without sudo access
+Now you should be able to mount docker without sudo access.
 
-This command opens up a bash terminal in which you run the following tcl script to generate a design configuration of your design:
+## OPENLANE FLOW FOR MACRO HARDENING FROM AN HDL DESIGN
+
+1. Go to the OpenLane installation directory (you may set an environment variable called OPENLANE_HOME that points to this directory) and start the OpenLane Docker container by running 
+
+```bash
+make mount
+```
+The "make mount" command opens up a bash terminal in which you run the following tcl script to generate a design configuration of your design:
 ```bash
 flow.tcl -design design_name -init_design_config 
 ```
