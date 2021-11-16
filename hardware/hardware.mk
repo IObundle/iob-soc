@@ -6,7 +6,7 @@ USE_NETLIST ?=0
 MODULES+=UART
 
 #include submodule's hardware
-$(foreach p, $(SUBMODULES_TMP), $(if $(filter $p, $(MODULES)),,$(eval include $($p_DIR)/hardware/hardware.mk)))
+$(foreach p, $(SUBMODULES), $(if $(filter $p, $(MODULES)),,$(eval include $($p_DIR)/hardware/hardware.mk)))
 
 
 #UART HARDWARE
