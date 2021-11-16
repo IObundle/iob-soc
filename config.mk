@@ -11,8 +11,8 @@ DOC_DIR ?=$(UART_DIR)/document/$(DOC)
 SUBMODULES_DIR:=$(UART_DIR)/submodules
 
 # SUBMODULE PATHS
-SUBMODULES_LIST:=$(shell ls $(SUBMODULES_DIR))
-$(foreach p, $(SUBMODULES_LIST), $(eval $p_DIR ?=$(SUBMODULES_DIR)/$p))
+SUBMODULES:=$(shell ls $(SUBMODULES_DIR))
+$(foreach p, $(SUBMODULES), $(eval $p_DIR ?=$(SUBMODULES_DIR)/$p))
 
 #DEFAULT FPGA FAMILY
 FPGA_FAMILY ?=CYCLONEV-GT
