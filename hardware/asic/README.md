@@ -13,9 +13,9 @@ Clone OpenLane repository with Skywater PDK 130 as follows
 
 ```bash
 SSH
-git clone git@github.com:efabless/OpenLane.git  
+$ git clone git@github.com:efabless/OpenLane.git  
 HTTP
-https://github.com/efabless/OpenLane.git
+$ git clone https://github.com/efabless/OpenLane.git
 ```
 The default Standard Cell Library (SCL) to be installed is sky130_fd_sc_hd.
 To change that, you can add this configuration variable: 
@@ -28,47 +28,53 @@ where library name is one of the following:
 3.  sky130_fd_sc_ms
 4.  sky130_fd_sc_ls
 5.  sky130_fd_sc_hdll
-
-
+In order to run OpenLane from Makefile provided in the hardware/asic/skywater folder, you need to export following environment variable.
+```bash
+export OPENLANE_HOME=<path to OpenLane root directory>
+```
+Export the absolute path where the skywater-pdk and open-pdk will reside.
+``` bash
+export PDK_ROOT=<absolute path to where skywater-pdk and open_pdks will reside>
+```
 For installation of Skywater PDK and OpenLane type make inside the cloned OpenLane repo:
 ```bash
-    cd OpenLane/
-    make
+$ cd OpenLane/
+$ make
  ```   
 This will clone the specific version of Skywater PDK, pull and build its Docker container. If everything is properly installed by the makefile, it will report success. In order to test the OpenLane flow and PDK installation just run 
 
 ```bash
-make test
+$ make test
 ```
 This will run a 5 mins test that will verify the OpenLane and Skywater PDK installation and will report success if everything has been successfully installed.
+
+**NOTE**: If mounting of docker require sudo access then follow these steps,
+1. First create the docker group, if it is not already there.
+```bash
+$ sudo groupadd docker
+```
+2. Add the user to docker group
+```bash
+$ sudo usermod -aG docker $USER
+```
+3. Run following
+```bash
+$ newgrp docker
+```
+Now you should be able to mount docker without sudo access.
 
 ## OPENLANE FLOW FOR MACRO HARDENING FROM AN HDL DESIGN
 
 1. Go to the OpenLane installation directory (you may set an environment variable called OPENLANE_HOME that points to this directory) and start the OpenLane Docker container by running 
 
 ```bash
-make mount
+$ make mount
 ```
-**NOTE**: If mounting of docker require sudo access then follow these steps,
-1. First create the docker group, if it is not already there.
+This command will mount the docker container along with bash terminal in which you run the following tcl script to generate a default configuration file for OpenLane flow:
 ```bash
-sudo groupadd docker
+$ flow.tcl -design design_name -init_design_config 
 ```
-2. Add the user to docker group
-```bash
-sudo usermod -aG docker $USER
-```
-3. Run following
-```bash
-newgrp docker
-```
-Now you should be able to mount docker without sudo access
-
-This command opens up a bash terminal in which you run the following tcl script to generate a design configuration of your design:
-```bash
-flow.tcl -design design_name -init_design_config 
-```
-4.  This tcl script will generate a default tcl configuration file of your design called "config.tcl", which has the following environment variables:
+2.  The default configuration file "config.tcl" has following environment variables:
 
 * DESIGN_NAME: the name of your design must match the name of your top-level Verilog module. This variable cannot be modified.
 
@@ -79,10 +85,20 @@ flow.tcl -design design_name -init_design_config
 * CLOCK_PORT: name of the clock signal port. Make sure that this name matches the name of the clock signal in your top level module.
 
 * STD_CELL_LIBRARY: Standard Cell Library. 
+## Configuration of OpenLane
 
-5. After making necessary changes to config.tcl file, run the following tcl command:
+Configuration parameters of the OpenLane can be changed by adding / changing the environment variables in config.tcl file in the designs/"name of design" folder. Some important parameters that can be used to define the design constraints include the following,
+
+1. Clock definition parameter. Clock Period definition parameter.
+2. Synthesis strategy parameter. This parameter can be used to define the synthesis strategy. This defines if the design is optimized for area or for delay.
+3. Set input delay as percent of clock period.
+4. Parameter to report maximum and minimum delay paths, critical delay path and specific path for delay.
+5. Parameter to set different wire load models.
+
+**NOTE:** Complete list of configuration parameters that can be used to define the design constraints can be found in OpenLane repository. OpenLane/configuration/Readme.md.
+3. After making necessary changes to config.tcl file, run the following command.
 ```bash 
-	flow.tcl -design design1 -tag first_run
+$ flow.tcl -design design1 -tag first_run
 ```     
 where the -tag option is the tag for the design run. This command will go through all the following steps to generate GDSII file from Verilog input files.
 
@@ -144,80 +160,70 @@ OpenLane can be run in interactive mode. This can be done by following these ste
 
 1. Intialize design configuration. Enter following the command line.
 ```bash
-flow.tcl -design design1 -init_design_config 
+$ flow.tcl -design design1 -init_design_config 
 ```
 2. Start interactive flow of OpenLane. Enter following in command line.
 ```bash
-flow.tcl -interactive
+$ flow.tcl -interactive
 ``` 
 3. Prepare the design. Enter following in command line.
 ```bash
-prep -design design1
+$ prep -design design1
 ```
 where the design1 is your design. This command will prepare the design for OpenLane flow by creating one .lef file and one .tech file by merging all the tech and lef files from the library.
 4. Run yosys. Enter following in command line.
 ```bash
-run_yosys
+$ run_yosys
 ```
 This will create a gate level netlist of the design and will perform technology independent optimizations to the design. 
 
 5. Run STA. Enter the following in command line.
 ```bash
-run_sta
+$ run_sta
 ```
 This will report the Total Negative Slack and Worst Negative Slack of the design.
 
 6. Run Floorplan. Enter the following in command line.
 ```bash
-run_floorplan
+$ run_floorplan
 ```
 7. Run Placement step. Enter the following in command line.
 ```bash
-run_placement_step
+$ run_placement_step
 ```
 8. Run CTS step. Enter the following in command line.
 ```bash
-run_cts_step
+$ run_cts_step
 ```
 9. Run Routing step. Enter the following in command line.
 ```bash
-run_routing_step
+$ run_routing_step
 ```
 10. Run Fake Diode Insertion step. Enter the following in command line.
 ```bash
-run_diode_insertion_2_5_step
+$ run_diode_insertion_2_5_step
 ```
 11. Run Power Pin Insertion step. Enter the following in command line.
 ```bash
-run_power_pins_insertion_step
+$ run_power_pins_insertion_step
 ```
 12. Run Magic. Enter the following in command line.
 ```bash
-run_magic
+$ run_magic
 ```
 13. Run Klayout. Enter the following in command line.
 ```bash
-run_klayout
+$ run_klayout
 ```
 14. Run Klayout GDS XOR. Enter the following in command line.
 ```bash
-run_klayout_gds_xor
+$ run_klayout_gds_xor
 ```
 15. Run CVC. Enter the following in command line.
 ```bash
-run_lef_cvc
+$ run_lef_cvc
 ```
-## Configuration of OpenLane
 
-Configuration parameters of the OpenLane can be changed by adding / changing the environment variables in config.tcl file in the designs/"name of design" folder. Some important parameters that can be used to define the design constraints include the following,
-
-1. Clock definition parameter. Clock Period definition parameter.
-2. Synthesis strategy parameter. This parameter can be used to define the synthesis strategy. This defines if the design is optimized for area or for delay.
-3. Set input delay as percent of clock period.
-4. Parameter to report maximum and minimum delay paths, critical delay path and specific path for delay.
-5. parameter to set different wire load models.
-
-Complete list of configuration parameters that can be used to define the design constraints can be found in OpenLane repository. OpenLane/configuration/Readme.md.
 
 -------------------------------
 # OpenRAM Instructions
@@ -225,7 +231,7 @@ Complete list of configuration parameters that can be used to define the design 
 ## INSTALLATION OF OPENRAM  
 
 Getting Openram: Requirements for Openram are the following,
-1. Python 3.8.10
+1.   Python 3.8.10
 2.   Python numpy (pip3 install numpy)
 3.   Python scipy (pip3 install scipy)
 4.   Python sklearn (pip3 install sklearn)
@@ -237,7 +243,7 @@ Clone OpenRAM and set environment variables as followa:
 
 1. clone the git repository for openram
 ```bash
-git clone https://github.com/VLSIDA/OpenRAM
+$ git clone https://github.com/VLSIDA/OpenRAM
 ```
 2. set following environment variables in bashrc
   ```bash
@@ -254,7 +260,7 @@ export PYTHONPATH="$PYTHONPATH:$OPENRAM_HOME"
 Getting skywater-pdk:
 
 ```bash
-git clone https://github.com/google/skywater-pdk
+$ git clone https://github.com/google/skywater-pdk
 ```
 
 ## Getting OpenPDK
@@ -265,9 +271,9 @@ we will need OpenPDK to install & generate the required tech files for magic vls
 Get open pdk repository and checkout to new branch as follows:
 
 ```bash
-	git clone git://opencircuitdesign.com/open_pdks
-	cd open_pdks
-	git checkout open_pdks-1.0
+$ git clone git://opencircuitdesign.com/open_pdks
+$ cd open_pdks
+$ git checkout open_pdks-1.0
 ```
 ## Getting Magic_VLSI	
 
@@ -281,15 +287,15 @@ Download and installation of Magic_vlsi.
 
 **Download**
 ```bash
-	git clone git://opencircuitdesign.com/magic
-	cd magic
-	git checkout magic-8.3
+$ git clone git://opencircuitdesign.com/magic
+$ cd magic
+$ git checkout magic-8.3
 ```
 **Compile & Install**
 ```bash
-	sudo ./configure
-	sudo make
-	sudo make install
+$ sudo ./configure
+$ sudo make
+$ sudo make install
 ```
 	and then exit to home directory
 
@@ -297,28 +303,28 @@ Download and installation of Magic_vlsi.
 
 ```bash
 # cd into skywater repo
-	cd skywater-pdk 
+$ cd skywater-pdk 
 ```
 ```bash
 	# initialise pdk
-	git submodule init libraries/sky130_fd_pr/latest
-	git submodule init libraries/sky130_fd_sc_hd/latest
-	git submodule init libraries/sky130_fd_sc_hdll/latest
-	git submodule init libraries/sky130_fd_sc_hs/latest
-	git submodule init libraries/sky130_fd_sc_ms/latest
-	git submodule init libraries/sky130_fd_sc_ls/latest
-	git submodule init libraries/sky130_fd_sc_lp/latest
-	git submodule init libraries/sky130_fd_sc_hvl/latest
+$ git submodule init libraries/sky130_fd_pr/latest
+$ git submodule init libraries/sky130_fd_sc_hd/latest
+$ git submodule init libraries/sky130_fd_sc_hdll/latest
+$ git submodule init libraries/sky130_fd_sc_hs/latest
+$ git submodule init libraries/sky130_fd_sc_ms/latest
+$ git submodule init libraries/sky130_fd_sc_ls/latest
+$ git submodule init libraries/sky130_fd_sc_lp/latest
+$ git submodule init libraries/sky130_fd_sc_hvl/latest
 
-	git submodule update
-	sudo make timing
-       # exit skywater-pdk directory 
+$ git submodule update
+$ sudo make timing
+# exit skywater-pdk directory 
 ``` 
 ## Configuring Open PDK with Google Skywater
 
 cd into open-pdk repository and enter following
 ```bash
- ./configure 
+$ ./configure 
 --enable-sky130-pdk=<skywater_root_dir>/skywater-pdk/libraries --with-sky130-local-path=<your_target_install_dir>
 ```
 
@@ -327,9 +333,9 @@ cd into open-pdk repository and enter following
 ## Install Skywater
 From open-pdk repository 
 ```bash
-	cd sky130 # you should be in open_pdks root dir
-	make
-	sudo make install
+$ cd sky130 # you should be in open_pdks root dir
+$ make
+$ sudo make install
 ```	
 ## Integrate Skywater into Magic
 
@@ -337,19 +343,19 @@ As the skywater tech files are not installed in magic’s library, we need to cr
 
 So enter following for the symbolic links:
 ```bash
-sudo ln -s <sky130A_install_root_dir>/sky130A/libs.tech/magic/*  /usr/local/lib/magic/sys/
+$ sudo ln -s <sky130A_install_root_dir>/sky130A/libs.tech/magic/*  /usr/local/lib/magic/sys/
 ```
 In my case it was as follows:
 ```bash
- sudo ln -s /home/c/open_pdks/sky130/sky130A/libs.tech/magic/*  /usr/local/lib/magic/sys/
+$ sudo ln -s /home/c/open_pdks/sky130/sky130A/libs.tech/magic/*  /usr/local/lib/magic/sys/
  ```
 
 ## Running Magic with Skywater
 
 Enter following in the terminal to check if the magic runs with skywater
 ```bash
-tcsh
-sudo magic -T sky130A
+$ tcsh
+$ sudo magic -T sky130A
 ```
 
 ## Porting SKY130 to OpenRAM
@@ -358,7 +364,7 @@ Last step is to port skywater 130 process node technology to Openram. The OpenRA
 
 Getting the Sky130 technology for Openram
 ```bash
-git clone https://github.com/vsdip/vsdsram_sky130
+$ git clone https://github.com/vsdip/vsdsram_sky130
 ```
 
 Copy the folder from (vsdsram_sky130/OpenRAM/sky130A) and paste it in the technology folder of openram repository (openram/technology).
@@ -367,14 +373,14 @@ Copy the folder from (vsdsram_sky130/OpenRAM/sky130A) and paste it in the techno
 Getting the git repo for netgen (tool used for LVS layout vs schemetic comparison)
 
 ```bash
-git clone git://opencircuitdesign.com/netgen
+$ git clone git://opencircuitdesign.com/netgen
 ```
 For installation of this tool 
 ```bash
-cd netgen # repo of netgen
-./configure
-make 
-make install
+$ cd netgen # repo of netgen
+$ ./configure
+$ make 
+$ make install
 ``` 
 Finally, make a configuration python script ("myconfig.py" any name can be used). I used the following one
 
