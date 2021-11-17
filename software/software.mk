@@ -2,6 +2,17 @@ defmacro:=-D
 incdir:=-I
 include $(ROOT_DIR)/system.mk
 
+#force sw recompile if baudrate or frequency change
+LAST_BAUD:=$(shell cat baud.log; echo $(BAUD) > baud.log)
+ifneq ($(BAUD),$(LAST_BAUD))
+$(shell touch *.c)
+endif
+
+LAST_FREQ:=$(shell cat freq.log; echo $(FREQ) > freq.log)
+ifneq ($(FREQ),$(LAST_FREQ))
+$(shell touch *.c)
+endif
+
 DEFINE+=$(defmacro)BAUD=$(BAUD)
 DEFINE+=$(defmacro)FREQ=$(FREQ)
 
