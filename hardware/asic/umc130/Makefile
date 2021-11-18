@@ -54,6 +54,21 @@ ifeq ($(USE_DDR),1)
 VSRC+=2p_ram_wrap.v sp_ram_wrap.v
 endif
 
+system_synth.v: $(VHDR) $(VSRC)
+ifeq ($(ASIC_SERVER),)
+	echo "set INCLUDE [list $(INCLUDE)]" > inc.tcl
+	echo "set DEFINE [list $(DEFINE)]" > defs.tcl
+	echo "set VSRC [list $(VSRC)]" > vsrc.tcl
+	echo "set CASE $(CASE)" > case.tcl
+	./synth.sh
+else
+	ssh $(ASIC_USER)@$(ASIC_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
+	rsync -avz --exclude .git $(ROOT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)
+	ssh -Y -C $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE); make $@ INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM)'
+	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$@ .
+	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_LOG) .
+	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_REPORTS) .
+endif
 
 include ../asic.mk
 
