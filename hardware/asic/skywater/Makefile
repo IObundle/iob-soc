@@ -16,7 +16,7 @@ ifeq (0,$(shell docker -v 2>/dev/null | grep podman | wc -l))
 endif
 DOK_CMD ?= "docker run -it --rm -v $(OPENLANE_HOME):/openLANE_flow -v $(PDK_ROOT):$(PDK_ROOT) -e PDK_ROOT=$(PDK_ROOT) $(DOCKER_UID_OPTIONS) $(IMAGE_NAME)"
 
-.PHONY: all sram asic clean
+.PHONY: all asic clean
 
 all: sram asic
 
@@ -41,4 +41,4 @@ debug:
 
 clean:
 	rm -rf __pycache__
-	rm -rf temp
+	rm -rf sram
