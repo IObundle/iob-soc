@@ -47,6 +47,14 @@ ASIC_NODE=umc130
 ASIC_SERVER=$(CADENCE_SERVER)
 ASIC_USER=$(CADENCE_USER)
 
+# Memories' wrappers
+VSRC+=sp_rom_wrap.v dp_ram_wrap.v
+
+ifeq ($(USE_DDR),1)
+VSRC+=2p_ram_wrap.v sp_ram_wrap.v
+endif
+
+
 include ../asic.mk
 
 #

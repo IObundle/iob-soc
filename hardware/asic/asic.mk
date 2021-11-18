@@ -15,14 +15,10 @@ SRAM_W:=$(shell echo '$(SRAM_ADDR_W)-2' | bc)
 BOOTROM_WORDS:=$(shell echo '2^($(BOOTROM_W))' | bc)
 SRAM_WORDS:=$(shell echo '2^($(SRAM_W))' | bc)
 
-# Memories' wrappers
-VSRC+=sp_rom_wrap.v dp_ram_wrap.v
-
-# Behaveral memories
+# Behavioural memories
 MEMS=sp-rom dp-ram
 
 ifeq ($(USE_DDR),1)
-VSRC+=2p_ram_wrap.v sp_ram_wrap.v
 MEMS+=2p-ram sp-ram
 endif
 
