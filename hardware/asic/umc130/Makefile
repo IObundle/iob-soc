@@ -54,6 +54,11 @@ ifeq ($(USE_DDR),1)
 VSRC+=2p_ram_wrap.v sp_ram_wrap.v
 endif
 
+#RULES
+
+all: synth sim-post-synth
+
+
 #
 # Synthesis
 #

@@ -22,9 +22,6 @@ ifeq ($(USE_DDR),1)
 MEMS+=2p-ram sp-ram
 endif
 
-#RULES
-
-all: synth sim-post-synth
 
 #
 # Memories
