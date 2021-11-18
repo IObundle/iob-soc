@@ -32,12 +32,6 @@ all: synth sim-post-synth
 
 mems: sw $(MEMS)
 
-#
-# Synthesis
-#
-
-synth: mems system_synth.v
-
 
 #
 # Simulation

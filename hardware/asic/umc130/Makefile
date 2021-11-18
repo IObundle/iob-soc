@@ -54,6 +54,13 @@ ifeq ($(USE_DDR),1)
 VSRC+=2p_ram_wrap.v sp_ram_wrap.v
 endif
 
+#
+# Synthesis
+#
+
+synth: mems system_synth.v
+
+
 system_synth.v: $(VHDR) $(VSRC)
 ifeq ($(ASIC_SERVER),)
 	echo "set INCLUDE [list $(INCLUDE)]" > inc.tcl
