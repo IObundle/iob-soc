@@ -51,6 +51,7 @@ hardware/asic/*/*
 !hardware/asic/*/verilog
 !hardware/asic/*/synscript.tcl
 !hardware/asic/*/powscript.tcl
+!hardware/asic/skywater/asic_config.py
 
 #DOCUMENT
 document/*/*
