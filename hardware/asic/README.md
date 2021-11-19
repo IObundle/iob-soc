@@ -32,7 +32,7 @@ In order to run OpenLane from Makefile provided in the hardware/asic/skywater fo
 ```bash
 export OPENLANE_HOME=<path to OpenLane root directory>
 ```
-Export the absolute path where the skywater-pdk and open-pdk will reside.
+Export the absolute path where the skywater-pdk and open-pdk will reside. Otherwise, they will reside inside the OpenLane root directory.
 ``` bash
 export PDK_ROOT=<absolute path to where skywater-pdk and open_pdks will reside>
 ```
