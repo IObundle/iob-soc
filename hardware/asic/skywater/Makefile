@@ -14,22 +14,25 @@ IMAGE_NAME ?= efabless/openlane:2021.07.29_04.49.46 #latest
 ifeq (0,$(shell docker -v 2>/dev/null | grep podman | wc -l))
    DOCKER_UID_OPTIONS = -u $(shell id -u $(USER)):$(shell id -g $(USER))
 endif
-DOK_CMD ?= "docker run -it --rm -v $(OPENLANE_HOME):/openLANE_flow -v $(PDK_ROOT):$(PDK_ROOT) -e PDK_ROOT=$(PDK_ROOT) $(DOCKER_UID_OPTIONS) $(IMAGE_NAME)"
+DOK_CMD ?= docker run -it --rm -v $(OPENLANE_HOME):/openLANE_flow -v $(PDK_ROOT):$(PDK_ROOT) -e PDK_ROOT=$(PDK_ROOT) $(DOCKER_UID_OPTIONS) $(IMAGE_NAME)
 
-.PHONY: all asic clean
+.PHONY: all asic clean_sram clean_asic
 
 all: sram asic
 
-#OpenRAM for SRAM generation
+#SRAM generation
 
 sram: asic_config.py
 	python3 $(OPENRAM_HOME)/openram.py asic_config.py
 	mv temp sram
-
-asic: $(VSRC) $(VHDR)
-	mkdir -p $(OPENLANE_DESIGNS)/iob-soc/src
-	cp $(VSRC) $(VHDR) $(OPENLANE_DESIGNS)
-	cd $(OPENLANE_HOME); $(DOK_CMD) sh -c  "./flow.tcl -design APU  --init_design_config -tag iob_soc -overwrite"
+# ASIC for iob-soc
+asic:  $(VSRC) $(VHDR)
+	mkdir -p $(OPENLANE_DESIGNS)/system/src 
+	cp $(VSRC) $(VHDR) $(OPENLANE_DESIGNS)/system/src 
+	cd $(OPENLANE_HOME);
+	$(DOK_CMD) sh -c   "./flow.tcl -design system  -init_design_config"
+	$(DOK_CMD) sh -c   "./flow.tcl -design system  -tag soc -overwrite"
+	 	
 
 copy_test:  $(VSRC) $(VHDR)
 	mkdir temp
@@ -39,6 +42,9 @@ debug:
 	echo $(VSRC)
 	echo $(VHDR)
 
-clean:
+clean_sram:
 	rm -rf __pycache__
 	rm -rf sram
+clean_asic:
+	cd $(OPENLANE_DESIGNS);
+		rm -rf system	
