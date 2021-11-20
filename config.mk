@@ -11,7 +11,9 @@ DOC_DIR ?=$(UART_DIR)/document/$(DOC)
 SUBMODULES_DIR:=$(UART_DIR)/submodules
 
 # SUBMODULE PATHS
-SUBMODULES:=$(shell ls $(SUBMODULES_DIR))
+SUBMODULES=
+SUBMODULE_DIRS=$(shell ls $(SUBMODULES_DIR))
+$(foreach d, $(SUBMODULE_DIRS), $(eval SUBMODULES+=$(shell make -C $(SUBMODULES_DIR)/$d corename | grep -v make)))
 $(foreach p, $(SUBMODULES), $(eval $p_DIR ?=$(SUBMODULES_DIR)/$p))
 
 #DEFAULT FPGA FAMILY
