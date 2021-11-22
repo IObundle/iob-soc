@@ -13,9 +13,9 @@ include ./config.mk
 	test-doc test-doc-clean\
 	test test-clean\
 	clean clean-all\
-	printname
+	corename
 
-printname:
+corename:
 	@echo $(MODULE)
 #
 # SIMULATE RTL

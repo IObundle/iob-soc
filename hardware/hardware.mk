@@ -13,10 +13,7 @@ MODULES+=IOb-SoC
 MEM_MODULES+=rom/sp_rom ram/dp_ram_be
 
 #include submodule's hardware
-$(foreach p, $(filter-out MEM, $(SUBMODULES)), $(if $(filter $p, $(MODULES)),, $(eval include $($p_DIR)/hardware/hardware.mk)))
-
-include $(MEM_DIR)/hardware/hardware.mk
-
+$(foreach p, $(SUBMODULES), $(if $(filter $p, $(MODULES)),, $(eval include $($p_DIR)/hardware/hardware.mk)))
 
 #HARDWARE PATHS
 INC_DIR:=$(HW_DIR)/include
@@ -24,7 +21,6 @@ SRC_DIR:=$(HW_DIR)/src
 
 #DEFINES
 DEFINE+=$(defmacro)DDR_ADDR_W=$(DDR_ADDR_W)
-
 
 #INCLUDES
 INCLUDE+=$(incdir). $(incdir)$(INC_DIR)
