@@ -70,3 +70,10 @@ void uart_sendfile(char* file_name, int file_size, char *mem);
 //Receive file 
 int uart_recvfile(char* file_name, char **mem);
 
+//Send file for pc-emul
+void uart_sendfile_pc(char* file_name, int file_size, char *mem);
+
+//Receive file for pc-emul
+int uart_recvfile_pc(char* file_name, char **mem);
+
+
