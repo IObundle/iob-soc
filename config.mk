@@ -13,8 +13,7 @@ SUBMODULES_DIR:=$(UART_DIR)/submodules
 # SUBMODULE PATHS
 SUBMODULES=
 SUBMODULE_DIRS=$(shell ls $(SUBMODULES_DIR))
-$(foreach d, $(SUBMODULE_DIRS), $(eval SUBMODULES+=$(shell make -C $(SUBMODULES_DIR)/$d corename | grep -v make)))
-$(foreach p, $(SUBMODULES), $(eval $p_DIR ?=$(SUBMODULES_DIR)/$p))
+$(foreach d, $(SUBMODULE_DIRS), $(eval TMP=$(shell make -C $(SUBMODULES_DIR)/$d corename | grep -v make)) $(eval SUBMODULES+=$(TMP)) $(eval $(TMP)_DIR ?=$(SUBMODULES_DIR)/$d))
 
 #DEFAULT FPGA FAMILY
 FPGA_FAMILY ?=CYCLONEV-GT
