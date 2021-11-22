@@ -39,7 +39,9 @@ hardware/fpga/*/*/*
 !hardware/fpga/*/*/verilog
 !hardware/fpga/*/*/doc
 !hardware/fpga/vivado/*/*.xdc
+!hardware/fpga/vivado/*/vivado.log
 !hardware/fpga/quartus/*/*.sdc
+!hardware/fpga/quartus/*/quartus.log
 
 #DOCUMENT
 document/*/*
@@ -47,4 +49,5 @@ document/*/*
 !document/*/*.expected
 !document/*/*.pdf
 !document/presentation/presentation.tex
-
+!document/pb/quartus.log
+!document/pb/vivado.log
