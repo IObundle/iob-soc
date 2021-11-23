@@ -20,8 +20,8 @@ or using *https*;
 git clone https://github.com/efabless/OpenLane.git
 ```
 
-The default Standard Cell Library (SCL) to be installed is sky130_fd_sc_hd.
-To change that, you can add this configuration variable: 
+The default Standard Cell Library (SCL) to be installed is sky130_fd_sc_hd. To
+change that, you can add this configuration variable: 
 
 ```bash
 export STD_CELL_LIBRARY=<library name>
@@ -48,18 +48,19 @@ make
 ```
 
 This will clone the specific version of Skywater PDK, pull and build its Docker
-container. If everything is properly installed, it will report
-success. To test the OpenLane flow and PDK installation, run
+container. If everything is properly installed, it will report success. To test
+the OpenLane flow and PDK installation, run
 
 ```bash
 make test
 ```
 
-This runs a 5-minute test that verifies the OpenLane and Skywater PDK
+This runs a test design flow that verifies the OpenLane and Skywater PDK
 installations, and reports success if everything has been successfully
 installed.
 
-**NOTE**: If mounting *docker* is requiring sudo access, then follow these steps:
+**NOTE**: If mounting *docker* is requiring sudo access, then follow these
+steps:
 
 1. First create the docker group, if it is not already there.
 ```bash
@@ -69,12 +70,20 @@ sudo groupadd docker
 ```bash
 sudo usermod -aG docker $USER
 ```
-3. Run following //are you sure this is needed? wasn't the group created already in the first command?
+3. Log out and log back in so that your group membership is re-evaluated.On
+   Ubuntu machine logout completely from the session and login again in order to
+   allow changes to take effect. On the Ubuntu machine you can also run
+   following command to activate the changes to groups.
+
 ```bash
 newgrp docker
 ```
-
-
+4. Verify that you can run docker commands without sudo by running docker
+```bash
+ docker run -name test -d efabless/openlane:2021.07.29_04.49.46
+```
+This image and tag are cloned when you give the "make" command in OpenLane root
+directory.You can also clone the latest tag for the efabless/openlane image.
 ## OPENLANE FLOW FOR MACRO HARDENING FROM AN HDL DESIGN
 
 1. Start the OpenLane Docker container by running 
@@ -85,20 +94,21 @@ make mount
 ```
 
 This command will mount the docker container and open a bash terminal in which
-you run the following tcl script to generate a default configuration file for
+you run the following tcl file to generate a default configuration file for
 OpenLane flow:
 
 ```bash
-flow.tcl -design design_name -init_design_config 
+./flow.tcl -design design_name -init_design_config 
 ```
 
-2.  The default configuration file "config.tcl" has following environment variables:
+2.  The default configuration file "config.tcl" has following environment
+    variables:
 
 * DESIGN_NAME: the name of your design must match the name of your top-level
   Verilog module. This variable cannot be modified.
 
 * VERILOG_FILES: this environment variable points to a directory containing and
-  lists all your Verilog files. By default it is set to DESIGN_DIR/src/\*.v,
+  lists all your Verilog files. By default it is set to DESIGN_DIR/src/*.v,
   where DESIGN_DIR is the "$OPENLANE_HOME/designs/design_name" directory
 
 * CLOCK_PERIOD: clock signal period. Change this according to your design.
@@ -108,46 +118,48 @@ flow.tcl -design design_name -init_design_config
 
 * STD_CELL_LIBRARY: Standard Cell Library.
 
-* //insert parameter name here     Synthesis strategy parameter. This parameter can be used to define the
-   synthesis strategy. This defines if the design is optimized for area or for
-   delay.
-* //insert parameter name hereSet input delay as percent of clock period.
-* //insert parameter name here Parameter to report maximum and minimum delay paths, critical delay path and
-   specific path for delay.
-* //insert parameter name hereParameter to set different wire load models.
+You can also specify variables in the config.tcl file whose values that you provide here will override the default values of these variables. These variables are used to specify and report different design parameters that are used in the Static Timing Analysis.
+* Synthesis strategy parameter **SYNTH_STRATEGY**. This parameter
+   can be used to define the synthesis strategy. This defines if the design is
+   optimized for area or for delay.
+* Parameter to specify input delay as percentage of clock peroid **IO_PCT**.
+* Parameter to report maximum delay path **LIB_SLOWEST** and minimum delay paths
+   **LIB_FASTEST** and specific delay path **LIB_TYPICAL**.
+* Parameter to set different wire load models **SPEF_WIRE_MODEL**.
 
-**NOTE:** Complete list of configuration parameters that can be used to define
-the design constraints can be found in //give proper url here OpenLane/configuration/Readme.md.
+**NOTE:** Complete list of configuration variables that can be used to define
+the design constraints can be found at:
+https://github.com/The-OpenROAD-Project/OpenLane/tree/master/configuration
 
 
 3. After eding config.tcl file, run the following command.
 ```bash 
-flow.tcl -design design1 -tag first_run
+./flow.tcl -design design1 -tag first_run
 ```
 where the -tag option is the tag for the design run. This command will go
 through all the following steps to generate GDSII file from Verilog input files.
 
 **"Synthesis"**
 
-_yosys_ - Performs RTL synthesis
-_abc_ - Performs technology mapping
+_yosys_ - Performs RTL synthesis _abc_ - Performs technology mapping
 
 **"Static Timing Analysis"** 
 
-OpenSTA - Performs static timing analysis on the resulting netlist to generate timing reports
+OpenSTA - Performs static timing analysis on the resulting netlist to generate
+timing reports
 
 **"Floorplan and PDN"**
 
-_init_fp_ - Defines the core area for the macro as well as the rows (used for placement) and the tracks (used for routing)
-_ioplacer_ - Places the macro input and output ports
-_pdn_ - Generates the power distribution network
-_tapcell_ - Inserts welltap and decap cells in the floorplan
+_init_fp_ - Defines the core area for the macro as well as the rows (used for
+placement) and the tracks (used for routing) _ioplacer_ - Places the macro input
+and output ports _pdn_ - Generates the power distribution network _tapcell_ -
+Inserts welltap and decap cells in the floorplan
 
 **"Placement"**
 
-_RePLace_ - Performs global placement
-_Resizer_ - Performs optional optimizations on the design
-_OpenDP_ - Perfroms detailed placement to legalize the globally placed components
+_RePLace_ - Performs global placement _Resizer_ - Performs optional
+optimizations on the design _OpenDP_ - Perfroms detailed placement to legalize
+the globally placed components
 
 **"Clock Tree Synthesis"**
 
@@ -155,7 +167,8 @@ _TritonCTS_ - Synthesizes the clock distribution network (clock tree)
 
 **"Routing"**
 
-_FastRoute_ - Performs global routing to generate a guide file for the detailed router.
+_FastRoute_ - Performs global routing to generate a guide file for the detailed
+router.
 
 _CU-GR_ - Another option for performing global routing.
 
@@ -165,8 +178,8 @@ _SPEF-Extractor_ - Performs SPEF extraction.
 
 **"GDSII Generation"**
 
-_Magic_ - Streams out the final GDSII layout file from the routed def
-_Klayout_ - Streams out the final GDSII layout file from the routed def as a back-up
+_Magic_ - Streams out the final GDSII layout file from the routed def _Klayout_
+- Streams out the final GDSII layout file from the routed def as a back-up
 
 **"Checks"**
 
@@ -270,7 +283,7 @@ The requirements for Openram are the following:
 2.   Python numpy (pip3 install numpy)
 3.   Python scipy (pip3 install scipy)
 4.   Python sklearn (pip3 install sklearn)
-5.   Python Coverage(pip3 install coverage)			
+5.   Python Coverage(pip3 install coverage)     
 5.   Magic 8.3.130
 6.   Netgen 1.5.164 or newer
 
@@ -282,16 +295,16 @@ git clone https://github.com/VLSIDA/OpenRAM
 ```
 2. set following environment variables in bashrc
 ```bash
-export OPENRAM_HOME=path/to/openRAM/compiler
-export OPENRAM_TECH=path/to/openRAM/technology
-export OPENRAM_CONFIG=path/to/iob-soc/hardware/asic/skywater
+export OPENRAM_HOME=<path to openRAM compiler>
+export OPENRAM_TECH=<path to openRAM technology>
+export OPENRAM_CONFIG=<path to skywater directory inside iob-soc repository>
   ```
 3. Also add OPENRAM_HOME to your PYTHONPATH variable
 ```bash
 export PYTHONPATH="$PYTHONPATH:$OPENRAM_HOME"
 ```
 
-## Getting SKYWATER 130nm //this is already in OpenLane. Why download it separately?
+## Getting SKYWATER 130nm 
 
 Clone the Skywater Physical Design Kit:
 
@@ -301,8 +314,8 @@ git clone https://github.com/google/skywater-pdk
 
 ## Getting OpenPDK
 
-We will need OpenPDK to install & generate the required tech files for *magic_vlsi*.
-Get open pdk repository and checkout to new branch as follows:
+We will need OpenPDK to install & generate the required tech files for
+*magic_vlsi*. Get open pdk repository and checkout to new branch as follows:
 
 ```bash
 git clone git://opencircuitdesign.com/open_pdks
@@ -310,7 +323,7 @@ cd open_pdks
 git checkout open_pdks-1.0
 ```
 
-## Getting Magic_VLSI	
+## Getting Magic_VLSI 
 
 For *magic_vlsi* requirements, do the following:
 
@@ -339,7 +352,7 @@ sudo make install
 ## Skywater PDK Installation
 
 ```bash
-# cd /path/to/????//give the right path
+# cd into skywater-pdk cloned repository.
 cd skywater-pdk 
 git submodule init libraries/sky130_fd_pr/latest
 git submodule init libraries/sky130_fd_sc_hd/latest
@@ -358,11 +371,12 @@ sudo make timing
 
 To configure Open PDK with Google's Skywater technology, do the following:
 ```bash
-cd path/to/open-pdk
-./configure --enable-sky130-pdk=<skywater_root_dir>/skywater-pdk/libraries --with-sky130-local-path=<your_target_install_dir> //don't understan these paths
+cd <path to open-pdk repository root directory>
+./configure --enable-sky130-pdk=<skywater root directory>/skywater-pdk/libraries --with-sky130-local-path=<your target install directory> 
 ```
 
-**NOTE**: Skywater_root_dir = skywater repo and your_target_install_dir = your skywater130A runtime install directory.
+**NOTE**: Skywater_root_dir = skywater repo and your_target_install_dir = your
+skywater130A runtime install directory.
 
 ## Install Skywater
 
@@ -371,7 +385,7 @@ From the open-pdk repository, do the following
 cd sky130 # you should be in open_pdks root dir
 make
 sudo make install
-```	
+``` 
 
 ## Integrate Skywater into Magic
 
@@ -386,7 +400,6 @@ sudo ln -s /path/to/open_pdks/sky130A/libs.tech/magic/*  /usr/local/lib/magic/sy
 
 Enter following in the terminal to check if the magic can run with Skywater:
 ```bash
-tcsh //do you need this tcl shell?
 sudo magic -T sky130A
 ```
 
@@ -403,11 +416,13 @@ Getting the Sky130 technology for OpenRAM:
 git clone https://github.com/vsdip/vsdsram_sky130
 ```
 
-Copy the folder `vsdsram_sky130/OpenRAM/sky130A)` and paste it in in directory $OPENRAM_TECH.
+Copy the folder `vsdsram_sky130/OpenRAM/sky130A)` and paste it in in directory
+$OPENRAM_TECH.
 
 ## Netgen Installation
 
-To get the git repo for Netgen, a tool used for LVS layout vs schemetic comparison, do the following:
+To get the git repo for Netgen, a tool used for LVS layout vs schemetic
+comparison, do the following:
 
 ```bash
 git clone git://opencircuitdesign.com/netgen
@@ -469,7 +484,8 @@ python3 $OPENRAM_HOME/openram.py openram_config.py
 
 [Magic_VLSI_Install_Guide](https://lootr5858.wordpress.com/2020/10/06/magic-vlsi-skywater-pdk-local-installation-guide/)
 
-[Github:Repo for Skywater130 tech](https://github.com/vsdip/vsdsram_sky130/tree/main/OpenRAM)
+[Github:Repo for Skywater130
+tech](https://github.com/vsdip/vsdsram_sky130/tree/main/OpenRAM)
 
 [OpenRAM Repo](https://github.com/VLSIDA/OpenRAM)
 
@@ -487,7 +503,7 @@ python3 $OPENRAM_HOME/openram.py openram_config.py
 
   
 
-	
+  
 
    
 
