@@ -3,7 +3,7 @@ include $(UART_DIR)/config.mk
 USE_NETLIST ?=0
 
 #add itself to MODULES list
-MODULES+=UART
+MODULES+=$(MODULE)
 
 #include submodule's hardware
 $(foreach p, $(SUBMODULES), $(if $(filter $p, $(MODULES)),,$(eval include $($p_DIR)/hardware/hardware.mk)))
