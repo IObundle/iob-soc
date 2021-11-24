@@ -5,7 +5,7 @@ BAUD ?=115200
 FREQ ?=100000000
 
 #add itself to MODULES list
-MODULES+=$(MODULE)
+MODULES+=$(shell make -C $(ROOT_DIR) corename | grep -v make)
 
 #ADD SUBMODULES
 

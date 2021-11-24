@@ -16,7 +16,7 @@ include ./config.mk
 	corename
 
 corename:
-	@echo $(MODULE)
+	@echo "IOb-SoC"
 #
 # SIMULATE RTL
 #
