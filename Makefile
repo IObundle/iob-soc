@@ -6,7 +6,7 @@ include config.mk
 	doc-build doc-build-all doc-clean doc-clean-all clean-all
 
 corename:
-	@echo $(MODULE)
+	@echo "UART"
 
 #
 # SIMULATE

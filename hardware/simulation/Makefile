@@ -5,7 +5,7 @@ include $(UART_DIR)/hardware/hardware.mk
 
 DEFINE+=$(defmacro)VCD
 
-VSRC+=$(SIM_DIR)/testbench/uart_tb.v
+VSRC+=$(UART_TB_DIR)/uart_tb.v
 
 
 #icarus verilog simulator
@@ -18,12 +18,11 @@ ifeq ($(VCD),1)
         gtkwave -a ../waves.gtkw uut.vcd &
 endif
 
-
 a.out: $(VSRC) $(VHDR)
 	$(VLOG) $(INCLUDE) $(DEFINE) $(VSRC)
 
 clean: uart_clean_hw
 	@rm -f a.out *~ *.vcd *.v *.vh
 
-.PHONY: all clean
+.PHONY: run clean
 
