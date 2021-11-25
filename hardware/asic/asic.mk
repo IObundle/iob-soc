@@ -15,20 +15,13 @@ SRAM_W:=$(shell echo '$(SRAM_ADDR_W)-2' | bc)
 BOOTROM_WORDS:=$(shell echo '2^($(BOOTROM_W))' | bc)
 SRAM_WORDS:=$(shell echo '2^($(SRAM_W))' | bc)
 
-# Memories' wrappers
-VSRC+=sp_rom_wrap.v dp_ram_wrap.v
-
-# Behaveral memories
+# Behavioural memories
 MEMS=sp-rom dp-ram
 
 ifeq ($(USE_DDR),1)
-VSRC+=2p_ram_wrap.v sp_ram_wrap.v
 MEMS+=2p-ram sp-ram
 endif
 
-#RULES
-
-all: synth sim-post-synth
 
 #
 # Memories
@@ -36,104 +29,6 @@ all: synth sim-post-synth
 
 mems: sw $(MEMS)
 
-sp-rom: boot.hex
-ifeq ($(ASIC_SERVER),)
-	./rom.sh $(BOOTROM_WORDS)
-	make fix-sprom
-else
-	ssh $(ASIC_USER)@$(ASIC_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
-	rsync -avz --exclude .git $(ROOT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)
-	ssh -Y -C $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE); make $@'
-	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_SPROM_DS) .
-	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_SPROM_LEF) .
-	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_SPROM_LIB) .
-	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_SPROM_SIM_MODEL) .
-endif
-
-dp-ram:
-ifeq ($(ASIC_SERVER),)
-	./ram.sh $(ASIC_DPRAM_TYPE) $(SRAM_WORDS) 8 4 16
-	make fix-dpram
-else
-	ssh $(ASIC_USER)@$(ASIC_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
-	rsync -avz --exclude .git $(ROOT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)
-	ssh -Y -C $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE); make $@'
-	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_DPRAM_DS) .
-	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_DPRAM_LEF) .
-	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_DPRAM_LIB) .
-	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_DPRAM_SIM_MODEL) .
-endif
-
-2p-ram:
-ifeq ($(ASIC_SERVER),)
-	./ram.sh $(ASIC_2PRAM_TYPE) 32 49 1 4
-	./ram.sh $(ASIC_DPRAM_TYPE) 32 49 1 4
-	./ram.sh $(ASIC_2PRAM_TYPE) 32 58 1 4
-	./ram.sh $(ASIC_DPRAM_TYPE) 32 58 1 4
-else
-	ssh $(ASIC_USER)@$(ASIC_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
-	rsync -avz --exclude .git $(ROOT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)
-	ssh -Y -C $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE); make $@'
-	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_2PRAM_DS) .
-	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_DPRAM_DS) .
-	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_2PRAM_LEF) .
-	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_DPRAM_LEF) .
-	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_2PRAM_LIB) .
-	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_DPRAM_LIB) .
-	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_2PRAM_SIM_MODEL) .
-	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_DPRAM_SIM_MODEL) .
-endif
-	make fix-2pram
-
-sp-ram:
-ifeq ($(ASIC_SERVER),)
-	./ram.sh $(ASIC_SPRAM_TYPE) 128 8 1 1
-	./ram.sh $(ASIC_SPRAM_TYPE) 128 2 1 1
-	./ram.sh $(ASIC_SPRAM_TYPE) 128 11 1 1
-else
-	ssh $(ASIC_USER)@$(ASIC_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
-	rsync -avz --exclude .git $(ROOT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)
-	ssh -Y -C $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE); make $@'
-	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_SPRAM_DS) .
-	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_SPRAM_LEF) .
-	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_SPRAM_LIB) .
-	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_SPRAM_SIM_MODEL) .
-endif
-	make fix-spram
-
-sp_rom_wrap.v:
-	$(MEM_DIR)/software/python/memakerwrap.py $(ASIC_MEM_TECH) iob_sp_rom $(ASIC_SPROM_TYPE) 1 $(BOOTROM_W) 32 1 > $@
-
-dp_ram_wrap.v:
-	$(MEM_DIR)/software/python/memakerwrap.py $(ASIC_MEM_TECH) iob_dp_ram_be $(ASIC_DPRAM_TYPE) 0 1 1 $(SRAM_W) 8 4 16 > $@
-
-2p_ram_wrap.v:
-	$(MEM_DIR)/software/python/memakerwrap.py $(ASIC_MEM_TECH) iob_2p_ram $(ASIC_2PRAM_TYPE) 0 0 2 5 49 1 4 5 58 1 4 > $@
-
-sp_ram_wrap.v:
-	$(MEM_DIR)/software/python/memakerwrap.py $(ASIC_MEM_TECH) iob_sp_ram $(ASIC_SPRAM_TYPE) 0 3 7 8 1 1 7 2 1 1 7 11 1 1 > $@
-
-#
-# Synthesis
-#
-
-synth: mems system_synth.v
-
-system_synth.v: $(VHDR) $(VSRC)
-ifeq ($(ASIC_SERVER),)
-	echo "set INCLUDE [list $(INCLUDE)]" > inc.tcl
-	echo "set DEFINE [list $(DEFINE)]" > defs.tcl
-	echo "set VSRC [list $(VSRC)]" > vsrc.tcl
-	echo "set CASE $(CASE)" > case.tcl
-	./synth.sh
-else
-	ssh $(ASIC_USER)@$(ASIC_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
-	rsync -avz --exclude .git $(ROOT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)
-	ssh -Y -C $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE); make $@ INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM)'
-	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$@ .
-	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_LOG) .
-	scp $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE)/$(ASIC_REPORTS) .
-endif
 
 #
 # Simulation
