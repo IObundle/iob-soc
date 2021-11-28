@@ -1,6 +1,22 @@
 ROOT_DIR:=.
-include ./system.mk
+include ./config.mk
 
+.PHONY: pc-emul pc-emul-test pc-emul-clean\
+	sim sim-test sim-clean\
+	fpga-build fpga-run fpga-test fpga-clean\
+	asic-synth asic-sim-post-synth asic-test asic-clean\
+	doc-build doc-test  doc-clean clean\
+	test-pc-emul test-pc-emul-clean\
+	test-sim test-sim-clean\
+	test-fpga test-fpga-clean\
+	test-asic test-asic-clean\
+	test-doc test-doc-clean\
+	test test-clean\
+	clean clean-all\
+	corename
+
+corename:
+	@echo "IOb-SoC"
 #
 # SIMULATE RTL
 #
@@ -49,11 +65,17 @@ fpga-clean:
 # SYNTHESIZE AND SIMULATE ASIC
 #
 
-asic-synt:
-	make -C $(ASIC_DIR) all
+asic-synth:
+	make -C $(ASIC_DIR) synth
 
-asic-sim-post-synt:
-	make -C $(ASIC_DIR) all
+asic-sim-post-synth:
+	make -C $(ASIC_DIR) all TEST_LOG="$(TEST_LOG)"
+
+asic-test:
+	make -C $(ASIC_DIR) test
+
+asic-clean:
+	make -C $(ASIC_DIR) clean clean-testlog
 
 #
 # COMPILE DOCUMENTS
@@ -92,6 +114,12 @@ test-fpga-clean:
 	make fpga-clean BOARD=CYCLONEV-GT-DK
 	make fpga-clean BOARD=AES-KU040-DB-G
 
+test-asic:
+	make asic-test ASIC_NODE=umc130
+
+test-asic-clean:
+	make asic-clean ASIC_NODE=umc130
+
 test-doc:
 	make doc-test DOC=pb
 	make doc-test DOC=presentation
@@ -102,7 +130,7 @@ test-doc-clean:
 
 test: test-clean test-pc-emul test-sim test-fpga test-doc
 
-test-clean: test-pc-emul-clean test-sim-clean test-fpga-clean test-doc-clean
+test-clean: test-pc-emul-clean test-sim-clean test-fpga-clean test-asic-clean test-doc-clean
 
 
 #generic clean 
@@ -110,19 +138,7 @@ clean:
 	make pc-emul-clean
 	make sim-clean
 	make fpga-clean
+	make asic-clean
 	make doc-clean
 
 clean-all: test-clean
-
-
-.PHONY: pc-emul pc-emul-test pc-emul-clean \
-	sim sim-test sim-clean\
-	fpga-build fpga-run fpga-test fpga-clean\
-	asic-synt asic-sim-post-synt\
-	doc-build doc-test  doc-clean clean\
-	test-pc-emul test-pc-emul-clean\
-	test-sim test-sim-clean\
-	test-fpga test-fpga-clean\
-	test-doc test-doc-clean\
-	test test-clean
-	clean clean-all

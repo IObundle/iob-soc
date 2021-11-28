@@ -76,15 +76,15 @@ IOb-Bootloader: program to run from DDR
 IOb-UART: requesting to receive file
 IOb-Console: got file send request
 IOb-Console: file name firmware.bin
-IOb-Console: file size: 19260 bytes
+IOb-Console: file size: 19268 bytes
 IOb-Console: file sent
 IOb-UART: file received
 IOb-Bootloader: Loading firmware...
 IOb-UART: requesting to send file
 IOb-Console: got file receive request
 IOb-Console: file name s_fw.bin
-IOb-Console: file size: 19260 bytes
-IOb-Console: file of size 19260 bytes received
+IOb-Console: file size: 19268 bytes
+IOb-Console: file of size 19268 bytes received
 IOb-UART: file sent
 IOb-Bootloader: Restart CPU to run user program...
 

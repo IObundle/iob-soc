@@ -143,7 +143,13 @@ task cpu_sendfile;
       cpu_putchar(file_size[15:8]);
       cpu_putchar(file_size[23:16]);
       cpu_putchar(file_size[31:24]);
-      
+
+      //wait for ACK
+      cpu_getchar(char);
+      while(char!=6) begin
+        cpu_getchar(char);
+      end
+
       //send file
       k = 0;
       for(i = 0; i < file_size; i++) begin
