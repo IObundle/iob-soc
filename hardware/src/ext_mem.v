@@ -82,7 +82,7 @@ module ext_mem
       .FE_ADDR_W(`FIRM_ADDR_W),
       .BE_ADDR_W(`DCACHE_ADDR_W),
       .N_WAYS(2),        //Number of ways
-      .LINE_OFF_W(4),    //Cache Line Offset (number of lines)
+      .LINE_OFF_W(7),    //Cache Line Offset (number of lines)
       .WORD_OFF_W(4),    //Word Offset (number of words per line)
       .WTBUF_DEPTH_W(5), //FIFO's depth -- 5 minimum for BRAM implementation
       .CTRL_CACHE (0),   //Cache-Control can't be accessed
@@ -149,7 +149,7 @@ module ext_mem
      (
       .FE_ADDR_W(`DCACHE_ADDR_W),
       .N_WAYS(2),        //Number of ways
-      .LINE_OFF_W(4),    //Cache Line Offset (number of lines)
+      .LINE_OFF_W(7),    //Cache Line Offset (number of lines)
       .WORD_OFF_W(4),    //Word Offset (number of words per line)
       .WTBUF_DEPTH_W(5), //FIFO's depth -- 5 minimum for BRAM implementation
       .CTRL_CACHE (1),   //Either 1 to enable cache-control or 0 to disable
@@ -214,7 +214,7 @@ module ext_mem
       .FE_ADDR_W(`DCACHE_ADDR_W),
       .BE_ADDR_W (`DDR_ADDR_W),
       .N_WAYS(4),        //Number of Ways
-      .LINE_OFF_W(4),    //Cache Line Offset (number of lines)
+      .LINE_OFF_W(7),    //Cache Line Offset (number of lines)
       .WORD_OFF_W(4),    //Word Offset (number of words per line)
       .WTBUF_DEPTH_W(5), //FIFO's depth -- 5 minimum for BRAM implementation
       .CTRL_CACHE (0),   //Cache-Control can't be accessed

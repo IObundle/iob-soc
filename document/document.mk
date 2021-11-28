@@ -1,8 +1,9 @@
-include $(ROOT_DIR)/system.mk
+include $(ROOT_DIR)/config.mk
 
 #FPGA results to include
 INTEL = 1
 XILINX = 1
+ASIC = 0
 XIL_FAMILY:=AES-KU040-DB-G
 INT_FAMILY:=CYCLONEV-GT-DK
 
