@@ -22,6 +22,7 @@ class FifoFile:
                     break
                 print('Read: "{0}"'.format(data))
                 i += 1
+            fifo.close()
             return data
 
     def read_until(self, end = b'\x00'):

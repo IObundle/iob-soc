@@ -1,12 +1,6 @@
 import cocotb
 import os
-import sys
-import aiofiles
 
-#import console python module
-CONSOLE_DIR = '../../../software/console/'
-#sys.path.append(CONSOLE_DIR)
-#import console as cnsl
 from UART import *
 
 from cocotb.triggers import Timer
@@ -18,7 +12,7 @@ async def reset_dut(reset_n, duration_ns):
     reset_n.value = 0
     reset_n._log.debug("Reset complete")
 
-#@cocotb.test()
+@cocotb.test()
 async def basic_test(dut):
     reset_n = dut.reset
     clk_n = dut.clk
@@ -38,23 +32,26 @@ async def basic_test(dut):
             print('TESTBENCH: force cpu trap exit')
             exit()
         RXready = 0
-        while(RXready != 1):
+        TXready = 0
+        while(RXready != 1 and TXready != 1):
             RXready = await uartread(dut, UART_RXREADY_ADDR)
-        char = await uartread(dut, UART_RXDATA_ADDR)
-        print(chr(char), end = '')
-        if(char == 5):
-            send = int.from_bytes(b'\x06', "big")
-            TXready = 0
-            while(TXready != 1):
-                TXready = await uartread(dut, UART_TXREADY_ADDR)
-            await uartwrite(dut, UART_TXDATA_ADDR, send)
+            TXready = await uartread(dut, UART_TXREADY_ADDR)
+            #print(":p")
+        if(RXready):
+            char = await uartread(dut, UART_RXDATA_ADDR)
+            print(chr(char), end = '')
+        elif(TXready):
+            if(char == 5):
+                send = int.from_bytes(b'\x06', "little")
+                await uartwrite(dut, UART_TXDATA_ADDR, send)
     print('\nTESTBENCH: finished\n\n')
 
 @cocotb.test()
 async def console_test(dut):
+    char = 0
     reset_n = dut.reset
     clk_n = dut.clk
-    char = 0
+    soc2cnsl = open(CONSOLE_DIR+'soc2cnsl', 'w')
 
     cocotb.start_soon(Clock(clk_n, CLK_PERIOD, units="ns").start())
     await reset_dut(reset_n, 100*CLK_PERIOD)
@@ -70,18 +67,30 @@ async def console_test(dut):
         if(dut.trap.value.integer > 0):
             print('TESTBENCH: force cpu trap exit')
             exit()
-        cocotb.start_soon(Clock(clk_n, CLK_PERIOD, units="ns").start())
         RXready = 0
-        while(RXready != 1):
+        TXready = 0
+        while(RXready != 1 and TXready != 1):
             RXready = await uartread(dut, UART_RXREADY_ADDR)
-        char = await uartread(dut, UART_RXDATA_ADDR)
-        async with aiofiles.open('{0}soc2cnsl'.format(CONSOLE_DIR), mode='w') as f:
-            await f.write(char)
+            TXready = await uartread(dut, UART_TXREADY_ADDR)
+            #print(":p")
+        if(RXready):
+            char = await uartread(dut, UART_RXDATA_ADDR)
+            print("traped")
+            soc2cnsl.write(chr(char))
+        elif(TXready):
+            if(char == 5):
+                send = int.from_bytes(b'\x06', "little")
+                await uartwrite(dut, UART_TXDATA_ADDR, send)
+            '''
+            print("traped")
+            with open(CONSOLE_DIR+'cnsl2soc', 'rb') as f:
+                os.set_blocking(f.fileno(), False)
+                print("traped")
+                send = f.read()
+            await uartwrite(dut, UART_TXDATA_ADDR, send)'''
 
-        if(char == 5):
-            send = int.from_bytes(b'\x06', "big")
-            TXready = 0
-            while(TXready != 1):
-                TXready = await uartread(dut, UART_TXREADY_ADDR)
-            await uartwrite(dut, UART_TXDATA_ADDR, send)
+        print(chr(char), end = '')
+
+        #print("traped")
+
     print('TESTBENCH: finished\n\n')
