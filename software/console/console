@@ -178,8 +178,9 @@ def main():
                 else:
                     if SerialFlag:
                         ser.write(ACK)
-                    else:
-                        cnsl2soc.write(ACK)
+                    #else:
+                        #cnsl2soc.write(ACK)
+
         elif (byte == EOT):
             print(PROGNAME, end = '')
             print(': exiting...')

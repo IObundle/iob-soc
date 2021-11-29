@@ -12,7 +12,11 @@ async def reset_dut(reset_n, duration_ns):
     reset_n.value = 0
     reset_n._log.debug("Reset complete")
 
-@cocotb.test()
+async def time_limit(duration_ns):
+    await Timer(duration_ns, units="ns")
+    exit()
+
+#@cocotb.test()
 async def basic_test(dut):
     reset_n = dut.reset
     clk_n = dut.clk
@@ -52,8 +56,13 @@ async def console_test(dut):
     reset_n = dut.reset
     clk_n = dut.clk
     soc2cnsl = open(CONSOLE_DIR+'soc2cnsl', 'w')
+    #cnsl2soc = open(CONSOLE_DIR+'cnsl2soc', 'rb')
+    #os.set_blocking(cnsl2soc.fileno(), False)
+    #GETS TRAPED WHEN TRYING TO OPEN CNSL2SOC...
+    #print("not yet traped")
 
     cocotb.start_soon(Clock(clk_n, CLK_PERIOD, units="ns").start())
+    cocotb.start_soon(time_limit(500000))
     await reset_dut(reset_n, 100*CLK_PERIOD)
     await Timer(10*CLK_PERIOD, units="ns")  # wait a bit
     dut.uart_valid.value = 0
@@ -75,8 +84,10 @@ async def console_test(dut):
             #print(":p")
         if(RXready):
             char = await uartread(dut, UART_RXDATA_ADDR)
-            print("traped")
+            print(chr(char), end = '')
+            #print("traped")
             soc2cnsl.write(chr(char))
+            soc2cnsl.flush()
         elif(TXready):
             if(char == 5):
                 send = int.from_bytes(b'\x06', "little")
@@ -89,8 +100,8 @@ async def console_test(dut):
                 send = f.read()
             await uartwrite(dut, UART_TXDATA_ADDR, send)'''
 
-        print(chr(char), end = '')
 
         #print("traped")
 
     print('TESTBENCH: finished\n\n')
+    soc2cnsl.close()
