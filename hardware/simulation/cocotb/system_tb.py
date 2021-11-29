@@ -90,8 +90,9 @@ async def console_test(dut):
             soc2cnsl.flush()
         elif(TXready):
             if(char == 5):
-                send = int.from_bytes(b'\x06', "little")
-                await uartwrite(dut, UART_TXDATA_ADDR, send)
+                with open(CONSOLE_DIR+'cnsl2soc', 'rb', 0) as fifo:
+                    send = int.from_bytes(fifo.read(1), "little")
+                    await uartwrite(dut, UART_TXDATA_ADDR, send)
             '''
             print("traped")
             with open(CONSOLE_DIR+'cnsl2soc', 'rb') as f:

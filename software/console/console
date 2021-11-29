@@ -26,8 +26,7 @@ ACK = b'\x06' # Acknowledgement in Hexadecimal
 FTX = b'\x07' # Receive file request
 FRX = b'\x08' # Send file request
 soc2cnsl = FifoFile('./soc2cnsl')
-cnsl2soc = FifoFile('./cnsl2soc')
-
+cnsl2soc = open('./cnsl2soc', 'w')
 
 # configure the serial connections (the parameters differs on the device you are connecting to)
 
@@ -77,8 +76,8 @@ def cnsl_sendfile():
         ser.write(file_size.to_bytes(4,  byteorder='little')) #send file size
         ser.write(f.read()) #send file
     else:
-        cnsl2soc.write(file_size.to_bytes(4,  byteorder='little'))
-        cnsl2soc.write(f.read())
+        cnsl2soc.write(str(file_size))
+        cnsl2soc.write(str(f.read(), 'ascii'))
     f.close()
     print(PROGNAME, end = '')
     print(': file of size {0} bytes'.format(file_size))
@@ -141,8 +140,6 @@ def main():
     byte = b'\x00'
     if ('-L' in sys.argv or '--local' in sys.argv):
         SerialFlag = False
-        # soc2cnsl = FifoFile('./soc2cnsl')
-        # cnsl2soc = FifoFile('./cnsl2soc')
     elif ('-s' in sys.argv):
         if (len(sys.argv)<3):
             usage("PROGNAME: not enough program arguments")
@@ -164,8 +161,6 @@ def main():
             byte = soc2cnsl.read()
         elif (ser.isOpen()):
             byte = ser.read()
-            #if(byte in b'\x04\x05\x06\x07\x08'):
-                #print(byte)
         # process command
         if (byte == ENQ):
             if (not gotENQ):
@@ -174,12 +169,12 @@ def main():
                     if SerialFlag:
                         ser.write(FRX)
                     else:
-                        cnsl2soc.write(FRX)
+                        cnsl2soc.write(str(FRX, 'ascii'))
                 else:
                     if SerialFlag:
                         ser.write(ACK)
-                    #else:
-                        #cnsl2soc.write(ACK)
+                    else:
+                        cnsl2soc.write(str(ACK, 'ascii'))
 
         elif (byte == EOT):
             print(PROGNAME, end = '')
