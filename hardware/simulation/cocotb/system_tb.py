@@ -58,12 +58,13 @@ async def console_test(dut):
     while((not os.path.exists(CONSOLE_DIR+'soc2cnsl')) and (not os.path.exists(CONSOLE_DIR+'cnsl2soc'))):
         print('Waiting for console to create FIFO\'s')
         await Timer(CLK_PERIOD, units="ns")
-    soc2cnsl = open(CONSOLE_DIR+'soc2cnsl', 'wb+', 0)
-    cnsl2soc = open(CONSOLE_DIR+'cnsl2soc', 'wb+', 0)
+    soc2cnsl = open('soc2cnsl', 'wb+', 0)
+    cnsl2soc = open('cnsl2soc', 'wb+', 0)
+    ##aux = open('aux.bin', 'a')
     os.set_blocking(cnsl2soc.fileno(), False)
 
     cocotb.start_soon(Clock(clk_n, CLK_PERIOD, units="ns").start())
-    cocotb.start_soon(time_limit(500000))
+    #cocotb.start_soon(time_limit(500000))
     await reset_dut(reset_n, 100*CLK_PERIOD)
     await Timer(10*CLK_PERIOD, units="ns")  # wait a bit
     dut.uart_valid.value = 0
@@ -85,7 +86,8 @@ async def console_test(dut):
             #print(":p")
         if(RXready):
             char = await uartread(dut, UART_RXDATA_ADDR)
-            print(chr(char), end = '')
+            #print(chr(char), end = '')
+            #sys.stdout.flush()
             #print("traped")
             soc2cnsl.write(char.to_bytes(1,  byteorder='little'))
             try:
@@ -101,6 +103,9 @@ async def console_test(dut):
                 aux = cnsl2soc.read(1)
                 if(aux != None):
                     send = int.from_bytes(aux, "little")
+                    #print(chr(send), end = '')
+                    print('.', end = '')
+                    sys.stdout.flush()
                     await uartwrite(dut, UART_TXDATA_ADDR, send)
             except IOError as e:
                 if e.errno == errno.EPIPE:
