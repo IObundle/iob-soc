@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 nios=$QUARTUSPATH/nios2eds/nios2_command_shell.sh
 
 $nios quartus_sh -t ../uart.tcl "$1" "$2" "$3" "$4" "$5"
