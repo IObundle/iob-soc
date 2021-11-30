@@ -5,18 +5,20 @@ mode = 0o600
 class FifoFile:
     def __init__(self, path):
         self.path = path
-        if not os.path.exists(path):
-            os.mkfifo(path, mode)
-            print('FIFO named ' + str(path) + 'is created successfully.')
+        if (os.path.exists(path)):
+            os.remove(self.path)
+        os.mkfifo(path, mode)
+        print('FIFO named ' + str(path) + ' is created successfully.')
+        self.cnsl = open(self.path, 'wb+', 0)
 
     def read(self, number_of_bytes = 1):
         i = 0
         data = b''
         # print(number_of_bytes)
-        with open(self.path, 'rb', 0) as fifo:
+        with open(self.path, 'rb', 0) as soc:
             #print("FIFO opened")
             while(i<number_of_bytes):
-                data += fifo.read(1)
+                data += soc.read(1)
                 if len(data) == b'':
                     print("Writer closed")
                     break
@@ -28,10 +30,10 @@ class FifoFile:
         i = 0
         data = b''
         # print(number_of_bytes)
-        with open(self.path, 'rb', 0) as fifo:
+        with open(self.path, 'rb', 0) as soc:
             #print("FIFO opened")
             while(True):
-                data += fifo.read(1)
+                data += soc.read(1)
                 if len(data) == b'':
                     print("Writer closed")
                     break
@@ -41,8 +43,8 @@ class FifoFile:
             return data
 
     def write(self, data):
-        with open(self.path, 'wb') as fifo:
-            fifo.write(data)
+        self.cnsl.write(data)
+        self.cnsl.flush()
 
     def close(self):
         os.remove(self.path)

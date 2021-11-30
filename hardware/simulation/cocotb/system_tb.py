@@ -1,6 +1,6 @@
 import cocotb
 import os
-
+import sys, errno
 from UART import *
 
 from cocotb.triggers import Timer
@@ -55,11 +55,12 @@ async def console_test(dut):
     char = 0
     reset_n = dut.reset
     clk_n = dut.clk
-    soc2cnsl = open(CONSOLE_DIR+'soc2cnsl', 'w')
-    #cnsl2soc = open(CONSOLE_DIR+'cnsl2soc', 'rb')
-    #os.set_blocking(cnsl2soc.fileno(), False)
-    #GETS TRAPED WHEN TRYING TO OPEN CNSL2SOC...
-    #print("not yet traped")
+    while((not os.path.exists(CONSOLE_DIR+'soc2cnsl')) and (not os.path.exists(CONSOLE_DIR+'cnsl2soc'))):
+        print('Waiting for console to create FIFO\'s')
+        await Timer(CLK_PERIOD, units="ns")
+    soc2cnsl = open(CONSOLE_DIR+'soc2cnsl', 'wb+', 0)
+    cnsl2soc = open(CONSOLE_DIR+'cnsl2soc', 'wb+', 0)
+    os.set_blocking(cnsl2soc.fileno(), False)
 
     cocotb.start_soon(Clock(clk_n, CLK_PERIOD, units="ns").start())
     cocotb.start_soon(time_limit(500000))
@@ -86,22 +87,29 @@ async def console_test(dut):
             char = await uartread(dut, UART_RXDATA_ADDR)
             print(chr(char), end = '')
             #print("traped")
-            soc2cnsl.write(chr(char))
-            soc2cnsl.flush()
+            soc2cnsl.write(char.to_bytes(1,  byteorder='little'))
+            try:
+                ### IO operation ###
+                soc2cnsl.flush()
+            except IOError as e:
+                if e.errno == errno.EPIPE:
+                    ### Handle the error ###
+                    print('Error flushing soc2cnsl!')
         elif(TXready):
-            with open(CONSOLE_DIR+'cnsl2soc', 'rb', 0) as fifo:
-                send = int.from_bytes(fifo.read(1), "little")
-                await uartwrite(dut, UART_TXDATA_ADDR, send)
-            '''
-            print("traped")
-            with open(CONSOLE_DIR+'cnsl2soc', 'rb') as f:
-                os.set_blocking(f.fileno(), False)
-                print("traped")
-                send = f.read()
-            await uartwrite(dut, UART_TXDATA_ADDR, send)'''
+            try:
+                ### IO operation ###
+                aux = cnsl2soc.read(1)
+                if(aux != None):
+                    send = int.from_bytes(aux, "little")
+                    await uartwrite(dut, UART_TXDATA_ADDR, send)
+            except IOError as e:
+                if e.errno == errno.EPIPE:
+                    ### Handle the error ###
+                    print('Error writing to Pipe cnsl2soc!')
 
 
         #print("traped")
 
     print('TESTBENCH: finished\n\n')
     soc2cnsl.close()
+    cnsl2soc.close()
