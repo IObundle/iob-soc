@@ -1,4 +1,5 @@
 #!/bin/bash
+
 flow.tcl -interactive
 prep -design system_core
 run_yosys -p "read_verilog -I/$(OPENLANE_DESIGNS)/system_core/inc"

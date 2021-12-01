@@ -20,6 +20,7 @@ sram: asic_config.py
 	python3 $(OPENRAM_HOME)/openram.py asic_config.py
 	mv temp sram
 
+
 # ASIC generation
 asic:  $(VSRC) $(VHDR)
 	mkdir -p $(OPENLANE_DESIGNS)/system/src 
