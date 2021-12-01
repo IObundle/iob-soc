@@ -16,7 +16,7 @@ async def time_limit(duration_ns):
     await Timer(duration_ns, units="ns")
     exit()
 
-#@cocotb.test()
+@cocotb.test()
 async def basic_test(dut):
     reset_n = dut.reset
     clk_n = dut.clk
@@ -44,6 +44,7 @@ async def basic_test(dut):
         if(RXready):
             char = await uartread(dut, UART_RXDATA_ADDR)
             print(chr(char), end = '')
+            sys.stdout.flush()
         elif(TXready):
             if(char == 5):
                 send = int.from_bytes(b'\x06', "little")
@@ -53,9 +54,11 @@ async def basic_test(dut):
 @cocotb.test()
 async def console_test(dut):
     char = 0
+    number_of_bytes_from_cnsl = 0
+    number_of_bytes_from_soc = 0
     reset_n = dut.reset
     clk_n = dut.clk
-    while((not os.path.exists(CONSOLE_DIR+'soc2cnsl')) and (not os.path.exists(CONSOLE_DIR+'cnsl2soc'))):
+    while((not os.path.exists('soc2cnsl')) and (not os.path.exists('cnsl2soc'))):
         print('Waiting for console to create FIFO\'s')
         await Timer(CLK_PERIOD, units="ns")
     soc2cnsl = open('soc2cnsl', 'wb+', 0)
@@ -73,7 +76,7 @@ async def console_test(dut):
 
     print('\n\nTESTBENCH: connecting')
 
-    while(char != 4):
+    while((os.path.exists('soc2cnsl')) and (os.path.exists('cnsl2soc'))):
         #print("traped")
         if(dut.trap.value.integer > 0):
             print('TESTBENCH: force cpu trap exit')
@@ -90,6 +93,10 @@ async def console_test(dut):
             #sys.stdout.flush()
             #print("traped")
             soc2cnsl.write(char.to_bytes(1,  byteorder='little'))
+            number_of_bytes_from_soc += 1
+            if(number_of_bytes_from_soc%1000 == 0):
+                print('.', end = '')
+                sys.stdout.flush()
             try:
                 ### IO operation ###
                 soc2cnsl.flush()
@@ -104,8 +111,10 @@ async def console_test(dut):
                 if(aux != None):
                     send = int.from_bytes(aux, "little")
                     #print(chr(send), end = '')
-                    print('.', end = '')
-                    sys.stdout.flush()
+                    number_of_bytes_from_cnsl += 1
+                    if(number_of_bytes_from_cnsl%1000 == 0):
+                        print('.', end = '')
+                        sys.stdout.flush()
                     await uartwrite(dut, UART_TXDATA_ADDR, send)
             except IOError as e:
                 if e.errno == errno.EPIPE:

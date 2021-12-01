@@ -99,6 +99,8 @@ def cnsl_recvfile():
         data = ser.read(file_size)
     else:
         file_size = int.from_bytes(soc2cnsl.read(4), byteorder='little', signed=False)
+        print(PROGNAME, end = ' ')
+        print(': file size: {0} bytes'.format(file_size))
         data = soc2cnsl.read(file_size)
     # print(data)
     f.write(data)
