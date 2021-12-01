@@ -5,7 +5,7 @@
 //do not remove line below
 //PHEADER
 
-module system 
+module system_core 
   (
    //do not remove line below
    //PIO
