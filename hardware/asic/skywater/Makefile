@@ -22,13 +22,13 @@ sram: asic_config.py
 
 # ASIC generation
 asic:  $(VSRC) $(VHDR)
-	mkdir -p $(OPENLANE_DESIGNS)/system_core/src 
-	mkdir -p $(OPENLANE_DESIGNS)/system_core/inc 
-	cp $(VSRC) $(OPENLANE_DESIGNS)/system_core/src 
-	cp $(VHDR) $(OPENLANE_DESIGNS)/system_core/inc 
-	cp config.tcl $(OPENLANE_DESIGNS)/system_core
+	mkdir -p $(OPENLANE_DESIGNS)/system/src 
+	mkdir -p $(OPENLANE_DESIGNS)/system/inc 
+	cp $(VSRC) $(OPENLANE_DESIGNS)/system/src 
+	cp $(VHDR) $(OPENLANE_DESIGNS)/system/inc 
+	cp config.tcl $(OPENLANE_DESIGNS)/system
 	cd $(OPENLANE_HOME);
-	$(DOK_CMD) sh -c   "./flow.tcl -design system_core  -p "read_verilog -I/$(OPENLANE_DESIGNS)/system_core/inc" -tag soc -overwrite -config file /system_core/config.tcl"
+	$(DOK_CMD) sh -c   "./flow.tcl -design system  -p "read_verilog -I/$(OPENLANE_DESIGNS)/system/inc" -tag soc -overwrite -config file /system/config.tcl"
 
 debug:
 	mkdir temp
@@ -41,7 +41,7 @@ clean_sram:
 	rm -rf sram
 
 clean_asic:
-	rm -rf $(OPENLANE_DESIGNS)/system_core
+	rm -rf $(OPENLANE_DESIGNS)/system
 
 clean_debug:
 	rm -rf temp
