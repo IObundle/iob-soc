@@ -9,7 +9,7 @@ UART_SIM_DIR:=$(UART_HW_DIR)/simulation
 UART_TB_DIR:=$(UART_SIM_DIR)/testbench
 UART_SW_DIR:=$(UART_DIR)/software
 SIM_DIR ?=$(UART_SIM_DIR)
-FPGA_DIR ?=$(shell find $($(MODULE)_DIR)/hardware -name $(FPGA_FAMILY))
+FPGA_DIR ?=$(shell find $(UART_DIR)/hardware -name $(FPGA_FAMILY))
 DOC_DIR ?=$(UART_DIR)/document/$(DOC)
 SUBMODULES_DIR:=$(UART_DIR)/submodules
 
