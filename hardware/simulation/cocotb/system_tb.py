@@ -47,7 +47,7 @@ async def basic_test(dut):
             sys.stdout.flush()
         elif(TXready):
             if(char == 5):
-                send = int.from_bytes(b'\x06', "little")
+                send = 6
                 await uartwrite(dut, UART_TXDATA_ADDR, send)
     print('\nTESTBENCH: finished\n\n')
 
@@ -76,8 +76,7 @@ async def console_test(dut):
 
     print('\n\nTESTBENCH: connecting')
 
-    while((os.path.exists('soc2cnsl')) and (os.path.exists('cnsl2soc'))):
-        #print("traped")
+    while((os.path.exists('soc2cnsl'))):
         if(dut.trap.value.integer > 0):
             print('TESTBENCH: force cpu trap exit')
             exit()
@@ -86,12 +85,8 @@ async def console_test(dut):
         while(RXready != 1 and TXready != 1):
             RXready = await uartread(dut, UART_RXREADY_ADDR)
             TXready = await uartread(dut, UART_TXREADY_ADDR)
-            #print(":p")
         if(RXready):
             char = await uartread(dut, UART_RXDATA_ADDR)
-            #print(chr(char), end = '')
-            #sys.stdout.flush()
-            #print("traped")
             soc2cnsl.write(char.to_bytes(1,  byteorder='little'))
             number_of_bytes_from_soc += 1
             if(number_of_bytes_from_soc%1000 == 0):
