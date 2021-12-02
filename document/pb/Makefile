@@ -1,6 +1,6 @@
 UART_DIR:=../..
 
-NOCLEAN = -name "pb.pdf" -o -name "Makefile"
+NOCLEAN=-name "pb.pdf"
 
 include $(UART_DIR)/document/document.mk
 

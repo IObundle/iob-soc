@@ -1,2 +1,3 @@
 hardware/fpga/*/*/*
 !hardware/fpga/*/*/Makefile
+!hardware/fpga/*/*/*.expected
