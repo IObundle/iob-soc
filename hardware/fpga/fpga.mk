@@ -7,7 +7,7 @@ TOOL=$(shell find $(UART_HW_DIR)/fpga -name $(FPGA_FAMILY) | cut -d"/" -f7)
 
 build: $(FPGA_OBJ)
 ifneq ($(TEST_LOG),)
-	echo `md5sum $(FPGA_OBJ)  | cut -d" " -f1` $(TEST_LOG)
+	echo "PASSED!" $(TEST_LOG)
 endif
 
 $(FPGA_OBJ): $(CONSTRAINTS) $(VSRC) $(VHDR)
