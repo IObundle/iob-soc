@@ -19,11 +19,6 @@ To simulate type:
 make [sim]
 ```
 
-To visualize the waveforms type:
-```
-make sim-waves
-```
-
 To clean the simulation generated files:
 ```
 make sim-clean
@@ -47,6 +42,11 @@ To generate an FPGA neltlist for the UART core type:
 make fpga-build [FPGA_FAMILY=<fpga family>]
 ```
 where <fpga family> is the FPGA family's folder name
+
+To generate all FPGA families for the UART core type:
+```
+make fpga-build-all [FPGA_FAMILY_LIST="<fpga family directory name list>"]
+```
 
 If you have the FPGA tools installed on another machine you can run FPGA compilation remotely by setting the following environment variables:
 
@@ -75,6 +75,11 @@ Currently you can generate two document types: the Product Brief (DOC=pb)
 or the User Guide (DOC=ug). To create a new document type get inspired by
 the Makefiles in the document type directories document/pb and document/ug. Data
 from the FPGA compile tools is imported automatically into the docs.
+
+To generate all documents for the IP core type:
+```
+make doc-build-all [DOC_LIST="<document directory name list>"]
+```
 
 To clean the documentation generated files type:
 ```
@@ -126,7 +131,7 @@ To compile and run a series of FPGA family tests on the FPGA family selected by 
 variable, type:
 
 ```
-make fpga-test [FPGA_FAMILY=<FPGA family directory name>]
+make fpga-test [FPGA_FAMILY=<fpga family directory name>]
 ```
 
 The above command produces a test log file called `test.log` in the FPGA family's
@@ -138,7 +143,7 @@ To run the series of FPGA family tests on all the FPGA families listed in the FP
 variable, type:
 
 ```
-make test-fpga [FPGA_FAMILY_LIST="<FPGA family directory name list>"]
+make test-fpga [FPGA_FAMILY_LIST="<fpga family directory name list>"]
 ```
 
 To clean the files produced when testing all FPGA families, type:
