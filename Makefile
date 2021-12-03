@@ -4,12 +4,12 @@ include config.mk
 .PHONY: corename \
 	sim sim-test sim-clean \
 	fpga-build fpga-build-all fpga-test fpga-clean fpga-clean-all \
-	doc-build doc-build-all doc-test doc-clean \
+	doc-build doc-build-all doc-test doc-clean doc-clean-all \
 	test-sim test-sim-clean \
 	test-fpga test-fpga-clean \
 	test-doc test-doc-clean \
 	test test-clean \
-	doc-clean-all clean-all
+	clean-all
 
 corename:
 	@echo "UART"
