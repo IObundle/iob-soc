@@ -44,7 +44,7 @@ export LM_LICENSE_FILE=port@host:lic_or_dat_file
 
 To generate an FPGA neltlist for the UART core type:
 ```
-make fpga [FPGA_FAMILY=<fpga family>]
+make fpga-build [FPGA_FAMILY=<fpga family>]
 ```
 where <fpga family> is the FPGA family's folder name
 
@@ -87,6 +87,97 @@ make doc-clean-all
 ```
 
 
+## Testing
+
+### Simulation test
+
+To run a series of simulation tests on the simulator selected by the SIMULATOR
+variable, type:
+
+```
+make sim-test [SIMULATOR=<simulator directory>]
+```
+
+The above command produces a test log file called `test.log` in the simulator's
+directory. The `test.log` file is compared with the `test.expected` file, which
+resides in the same directory; if they differ, the test fails; otherwise, it
+passes.
+
+To run the series of simulation tests on all the simulators listed in the
+SIMOLATOR\_LIST variable, type:
+
+```
+make test-sim [SIMOLATOR_LIST="<simulator directory list>"]
+```
+
+where `<simulator directory list>` is the list of sub-directories in directory
+`hardware/simulation`, which correspond to simulator names.
+
+To clean the files produced when testing all simulators, type:
+
+```
+make test-sim-clean
+```
+
+
+### FPGA family test
+
+To compile and run a series of FPGA family tests on the FPGA family selected by the FPGA\_FAMILY
+variable, type:
+
+```
+make fpga-test [FPGA_FAMILY=<FPGA family directory name>]
+```
+
+The above command produces a test log file called `test.log` in the FPGA family's
+directory. The `test.log` file is compared with the `test.expected` file, which
+resides in the same directory; if they differ, the test fails; otherwise, it
+passes.
+
+To run the series of FPGA family tests on all the FPGA families listed in the FPGA\_FAMILY\_LIST
+variable, type:
+
+```
+make test-fpga [FPGA_FAMILY_LIST="<FPGA family directory name list>"]
+```
+
+To clean the files produced when testing all FPGA families, type:
+```
+make test-fpga-clean
+```
+
+
+### Documentation test
+
+To compile and test the document selected by the DOC, variable, type:
+
+```
+make doc-test [DOC=<document directory name>]
+```
+
+The resulting Latex .aux file is compared with a known-good .aux file. If the
+match the test passes; otherwise it fails.
+
+To test all documents listed in the DOC\_LIST variable, type:
+
+```
+make test-doc [DOC_LIST="<document directory name list>"]
+```
+
+To clean the files produced when testing all documents, type:
+```
+make test-doc-clean
+```
+
+### Total test
+
+To run all simulation, FPGA family and documentation tests,
+type:
+```
+make test
+```
+
+
 ## Integrate in SoC ##
 
 * Check out [IOb-SoC](https://github.com/IObundle/iob-soc)
@@ -94,5 +185,5 @@ make doc-clean-all
 ## Clean all generated files ##
 To clean all generated files, the command is simply
 ```
-make clean
+make clean-all
 ```
