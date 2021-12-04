@@ -16,7 +16,7 @@ TESTBENCH: connecting..IOb-Bootloader: connected!
 IOb-UART: requesting to receive file
 TESTBENCH: got file send request
 TESBENCH: sending file firmware.bin
-File size:      19100 bytes
+File size:      19108 bytes
           0%
          10%
          20%
@@ -33,7 +33,7 @@ IOb-Bootloader: Loading firmware...
 IOb-UART: requesting to send file
 TESTBENCH: got file receive request
 TESBENCH: receiving file s_fw.bin
-TESTBENCH: file size:      19100 bytes
+TESTBENCH: file size:      19108 bytes
           0%
          10%
          20%

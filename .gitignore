@@ -27,19 +27,33 @@ hardware/testbench/system_tb.v
 
 #simulation
 hardware/simulation/*/*
+!hardware/simulation/simulation.mk
 !hardware/simulation/*/Makefile
 !hardware/simulation/*/test.expected
 !hardware/simulation/xcelium/run_xmsim.sh
 
 #fpga
 hardware/fpga/*/*/*
+!hardware/fpga/fpga.mk
 !hardware/fpga/*/*/Makefile
 !hardware/fpga/*/*/*.tcl
 !hardware/fpga/*/*/*.expected
 !hardware/fpga/*/*/verilog
 !hardware/fpga/*/*/doc
 !hardware/fpga/vivado/*/*.xdc
+!hardware/fpga/vivado/*/vivado.log
 !hardware/fpga/quartus/*/*.sdc
+!hardware/fpga/quartus/*/quartus.log
+
+#asic
+hardware/asic/*/*
+!hardware/asic/asic.mk
+!hardware/asic/*/Makefile
+!hardware/asic/*/*.sh
+!hardware/asic/*/verilog
+!hardware/asic/*/synscript.tcl
+!hardware/asic/*/powscript.tcl
+!hardware/asic/skywater/openram_config.py
 
 #DOCUMENT
 document/*/*
@@ -47,4 +61,5 @@ document/*/*
 !document/*/*.expected
 !document/*/*.pdf
 !document/presentation/presentation.tex
-
+!document/pb/quartus.log
+!document/pb/vivado.log
