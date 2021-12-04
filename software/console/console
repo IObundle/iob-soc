@@ -28,7 +28,6 @@ FRX = b'\x08' # Send file request
 soc2cnsl = FifoFile('./soc2cnsl')
 cnsl2soc = FifoFile('./cnsl2soc')
 
-
 # configure the serial connections (the parameters differs on the device you are connecting to)
 
 ser = serial.Serial()
@@ -100,6 +99,8 @@ def cnsl_recvfile():
         data = ser.read(file_size)
     else:
         file_size = int.from_bytes(soc2cnsl.read(4), byteorder='little', signed=False)
+        print(PROGNAME, end = ' ')
+        print(': file size: {0} bytes'.format(file_size))
         data = soc2cnsl.read(file_size)
     # print(data)
     f.write(data)
@@ -124,10 +125,11 @@ def init_print():
     print('|                   IOb-Console                 |')
     print('+-----------------------------------------------+')
     print()
-    print('  BaudRate = {0}'.format(ser.baudrate))
-    print('  StopBits = {0}'.format(ser.stopbits))
-    print('  Parity   = None')
-    print()
+    if SerialFlag:
+        print('  BaudRate = {0}'.format(ser.baudrate))
+        print('  StopBits = {0}'.format(ser.stopbits))
+        print('  Parity   = None')
+        print()
     print(PROGNAME, end = '')
     print(': connecting...')
     print()
@@ -141,8 +143,6 @@ def main():
     byte = b'\x00'
     if ('-L' in sys.argv or '--local' in sys.argv):
         SerialFlag = False
-        # soc2cnsl = FifoFile('./soc2cnsl')
-        # cnsl2soc = FifoFile('./cnsl2soc')
     elif ('-s' in sys.argv):
         if (len(sys.argv)<3):
             usage("PROGNAME: not enough program arguments")
@@ -164,8 +164,6 @@ def main():
             byte = soc2cnsl.read()
         elif (ser.isOpen()):
             byte = ser.read()
-            #if(byte in b'\x04\x05\x06\x07\x08'):
-                #print(byte)
         # process command
         if (byte == ENQ):
             if (not gotENQ):
@@ -180,6 +178,7 @@ def main():
                         ser.write(ACK)
                     else:
                         cnsl2soc.write(ACK)
+
         elif (byte == EOT):
             print(PROGNAME, end = '')
             print(': exiting...')

@@ -43,7 +43,7 @@ REMOTE_ROOT_DIR ?=sandbox/iob-soc
 #SIMULATION
 #default simulator running locally or remotely
 #check the respective Makefile in hardware/simulation/$(SIMULATOR) for specific settings
-SIMULATOR ?=cocotb
+SIMULATOR ?=icarus
 
 #BOARD
 #default board running locally or remotely

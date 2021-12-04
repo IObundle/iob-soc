@@ -5,34 +5,19 @@
 
 //PHEADER
 
-module system_tb;
-
-   parameter realtime clk_per = 1s/`FREQ;
-
-   //clock
-   reg clk = 1;
-   always #(clk_per/2) clk = ~clk;
-
-   //reset 
-   reg reset = 1;
-
-   //received by getchar
-   reg [7:0] cpu_char = 0;
-
-
+module system_top (
+   input                    clk,
+   input                    reset,
+   output                   trap,
    //tester uart
-   reg       uart_valid;
-   reg [`UART_ADDR_W-1:0] uart_addr;
-   reg [`DATA_W-1:0]      uart_wdata;
-   reg [3:0]              uart_wstrb;
-   wire [`DATA_W-1:0]     uart_rdata;
-   wire                   uart_ready;
+   input                    uart_valid,
+   input [`UART_ADDR_W-1:0] uart_addr,
+   input [`DATA_W-1:0]      uart_wdata,
+   input [3:0]              uart_wstrb,
+   output [`DATA_W-1:0]     uart_rdata,
+   output                   uart_ready
+   );
 
-   //iterator
-   integer                i;
-
-   //got enquiry (connect request)
-   reg                    gotENQ;
    
    //PWIRES
 
@@ -47,65 +32,7 @@ module system_tb;
       $dumpvars();
 `endif
 
-      //init cpu bus signals
-      uart_valid = 0;
-      uart_wstrb = 0;
-      
-      // deassert rst
-      repeat (100) @(posedge clk) #1;
-      reset <= 0;
-
-      //wait an arbitray (10) number of cycles 
-      repeat (10) @(posedge clk) #1;
-
-      // configure uart
-      cpu_inituart();
-
-      
-      gotENQ = 0;
-      
-      $write("TESTBENCH: connecting");
-      
-      while(1) begin
-         cpu_getchar(cpu_char);
-
-         case(cpu_char)
-           `ENQ: begin
-              $write(".");
-              if(!gotENQ) begin
-                 gotENQ = 1;
-`ifdef LD_FW
-                 cpu_putchar(`FRX); //got request to sent file
-`else
-                 cpu_putchar(`ACK);              
-`endif      
-              end
-           end
-           
-           `EOT: begin
-              $display("TESTBENCH: exiting\n\n\n");
-              $finish;
-           end
-           
-           `FRX: begin
-              $display("TESTBENCH: got file send request");
-              cpu_sendfile();
-           end
-
-           `FTX: begin
-              $display("TESTBENCH: got file receive request");
-              cpu_recvfile();
-           end
-
-           default: begin
-              $write("%c", cpu_char);
-           end
-
-         endcase         
-      end
-
    end
-
    
    //
    // INSTANTIATE COMPONENTS
@@ -156,9 +83,6 @@ module system_tb;
    wire                    ddr_rvalid;
    wire                    ddr_rready;
 `endif
-
-   //cpu trap signal
-   wire                    trap;
    
    //
    // UNIT UNDER TEST
@@ -279,14 +203,12 @@ module system_tb;
                  );   
 `endif
 
-
-`include "cpu_tasks.v"
    
    //finish simulation on trap
-   always @(posedge trap) begin
+/* always @(posedge trap) begin
       #10 $display("Found CPU trap condition");
       $finish;
-   end
+   end*/
 
    //sram monitor - use for debugging programs
    /*
@@ -294,10 +216,13 @@ module system_tb;
    wire sram_dwstrb = |uut.int_mem0.int_sram.d_wstrb & uut.int_mem0.int_sram.d_valid;
    wire sram_drdstrb = !uut.int_mem0.int_sram.d_wstrb & uut.int_mem0.int_sram.d_valid;
    wire [`DATA_W-1:0] sram_dwdata = uut.int_mem0.int_sram.d_wdata;
+
+
    wire sram_iwstrb = |uut.int_mem0.int_sram.i_wstrb & uut.int_mem0.int_sram.i_valid;
    wire sram_irdstrb = !uut.int_mem0.int_sram.i_wstrb & uut.int_mem0.int_sram.i_valid;
    wire [`SRAM_ADDR_W-1:0] sram_iaddr = uut.int_mem0.int_sram.i_addr;
    wire [`DATA_W-1:0] sram_irdata = uut.int_mem0.int_sram.i_rdata;
+
    
    always @(posedge sram_dwstrb)
       if(sram_daddr == 13'h090d)  begin
@@ -305,5 +230,6 @@ module system_tb;
          //$finish;
       end
     */
+   
    
 endmodule
