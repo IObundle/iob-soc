@@ -121,6 +121,10 @@ test-asic-clean:
 	make asic-clean ASIC_NODE=umc130
 
 test-doc:
+	make fpga-clean BOARD=CYCLONEV-GT-DK
+	make fpga-build BOARD=CYCLONEV-GT-DK
+	make fpga-clean BOARD=AES-KU040-DB-G
+	make fpga-build BOARD=AES-KU040-DB-G
 	make doc-test DOC=pb
 	make doc-test DOC=presentation
 
@@ -133,8 +137,8 @@ test: test-clean test-pc-emul test-sim test-fpga test-doc
 test-clean: test-pc-emul-clean test-sim-clean test-fpga-clean test-asic-clean test-doc-clean
 
 
-#generic clean 
-clean: 
+#generic clean
+clean:
 	make pc-emul-clean
 	make sim-clean
 	make fpga-clean
