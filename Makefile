@@ -51,6 +51,10 @@ pc-emul-clean:
 fpga-build:
 	make -C $(BOARD_DIR) build
 
+fpga-build-all:
+	make fpga-build BOARD=CYCLONEV-GT-DK
+	make fpga-build BOARD=AES-KU040-DB-G
+
 fpga-run:
 	make -C $(BOARD_DIR) all TEST_LOG="$(TEST_LOG)"
 
@@ -59,6 +63,10 @@ fpga-test:
 
 fpga-clean:
 	make -C $(BOARD_DIR) clean clean-testlog
+
+fpga-clean-all:
+	make fpga-clean BOARD=CYCLONEV-GT-DK
+	make fpga-clean BOARD=AES-KU040-DB-G
 
 
 #
@@ -121,10 +129,8 @@ test-asic-clean:
 	make asic-clean ASIC_NODE=umc130
 
 test-doc:
-	make fpga-clean BOARD=CYCLONEV-GT-DK
-	make fpga-build BOARD=CYCLONEV-GT-DK
-	make fpga-clean BOARD=AES-KU040-DB-G
-	make fpga-build BOARD=AES-KU040-DB-G
+	make fpga-clean-all
+	make fpga-build-all
 	make doc-test DOC=pb
 	make doc-test DOC=presentation
 
