@@ -1,7 +1,8 @@
-#!usr/bin/env bash
-./flow.tcl -interactive 
+#Interactive commands
+
+package require openlane
 prep -design system config file /system/config.tcl -tag soc -overwrite
-run_yosys -p "read_verilog -I/$(OPENLANE_DESIGNS)/system/inc"
+run_yosys -p "read_verilog -I/designs/system/inc"
 run_sta
 init_floorplan
 add_macro_placement ram 5.59000 168.23 N
@@ -18,9 +19,10 @@ global_routing
 detailed_routing
 run_magic
 run_magic_drc
-puts $::env(CURRENT_NETLIST)
-run_magic_spice_export
-run_lvs
-run_antenna_check
-calc_total_runtime
-generate_final_summary_report
+#these commands are valid and will be used once above cmds are verified -please do not remove-
+#puts $::env(CURRENT_NETLIST)
+#run_magic_spice_export
+#run_lvs
+#run_antenna_check
+#calc_total_runtime
+#generate_final_summary_report
