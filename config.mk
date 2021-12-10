@@ -28,10 +28,12 @@ BOOTROM_ADDR_W:=12
 INIT_MEM ?=1
 
 #PERIPHERAL LIST
-#must match respective submodule or folder name in the submodules directory
-#and CORE_NAME in the core.mk file of the submodule
+#must match respective submodule CORE_NAME in the core.mk file of the submodule
 #PERIPHERALS:=UART
 PERIPHERALS ?=UART
+
+#RISC-V HARD MULTIPLIER AND DIVIDER INSTRUCTIONS
+USE_MUL_DIV ?=1
 
 #RISC-V COMPRESSED INSTRUCTIONS
 USE_COMPRESSED ?=1
@@ -51,13 +53,13 @@ SIMULATOR ?=icarus
 BOARD ?=CYCLONEV-GT-DK
 
 #ASIC COMPILATION
-#default asic node  running locally or remotely
+#default asic node running locally or remotely
 #check the respective Makefile in hardware/asic/$(ASIC_NODE) for specific settings
 ASIC_NODE ?=umc130
 
 
 #DOCUMENTATION
-#default document
+#default document to compile
 DOC ?= pb
 
 
@@ -85,12 +87,11 @@ PC_DIR:=$(SW_DIR)/pc-emul
 FIRM_DIR:=$(SW_DIR)/firmware
 BOOT_DIR:=$(SW_DIR)/bootloader
 CONSOLE_DIR:=$(SW_DIR)/console
-PYTHON_DIR:=$(SW_DIR)/python
 
 #hw paths
 HW_DIR=$(ROOT_DIR)/hardware
 SIM_DIR=$(HW_DIR)/simulation/$(SIMULATOR)
-ASIC_DIR=$(HW_DIR)/asic
+ASIC_DIR=$(HW_DIR)/asic/$(ASIC_NODE)
 BOARD_DIR ?=$(shell find hardware -name $(BOARD))
 
 #doc paths
@@ -99,9 +100,10 @@ TEX_DIR=$(UART_DIR)/submodules/TEX
 INTERCON_DIR=$(UART_DIR)/submodules/INTERCON
 
 #submodule paths
-SUBMODULES_DIR:=$(ROOT_DIR)/submodules
-SUBMODULES=CPU CACHE $(PERIPHERALS)
-$(foreach p, $(SUBMODULES), $(eval $p_DIR:=$(SUBMODULES_DIR)/$p))
+SUBMODULES_DIR=$(ROOT_DIR)/submodules
+SUBMODULES=
+SUBMODULE_DIRS=$(shell ls $(SUBMODULES_DIR))
+$(foreach d, $(SUBMODULE_DIRS), $(eval TMP=$(shell make -C $(SUBMODULES_DIR)/$d corename | grep -v make)) $(eval SUBMODULES+=$(TMP)) $(eval $(TMP)_DIR ?=$(SUBMODULES_DIR)/$d))
 
 #define macros
 DEFINE+=$(defmacro)BOOTROM_ADDR_W=$(BOOTROM_ADDR_W)

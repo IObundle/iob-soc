@@ -4,16 +4,13 @@ include ../software.mk
 #additional compiler flags
 CFLAGS+=--specs=nano.specs -Wl,-Bstatic,-T,../template.lds,-Map,firmware.map,--strip-debug
 
-
-#SUBMODULES
-
 #cache
 ifeq ($(USE_DDR),1)
 include $(CACHE_DIR)/software/software.mk
 endif
 
 #peripherals (embedded)
-$(foreach p, $(PERIPHERALS), $(eval include $(SUBMODULES_DIR)/$p/software/embedded/embedded.mk))
+$(foreach p, $(PERIPHERALS), $(eval include $($p_DIR)/software/embedded/embedded.mk))
 
 #HEADERS
 HDR+=periphs.h

@@ -4,8 +4,8 @@ defmacro:=-define
 incdir:=-incdir 
 
 SIMULATOR=xcelium
-SIM_SERVER ?=$(CADENCE_SERVER)
-SIM_USER ?=$(CADENCE_USER)
+SIM_SERVER=$(CADENCE_SERVER)
+SIM_USER=$(CADENCE_USER)
 SIM_PROC=xmsim
 
 include ../simulation.mk
