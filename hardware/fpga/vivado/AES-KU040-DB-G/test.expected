@@ -98,3 +98,27 @@ Value of Pi = 3.141500
 IOb-Console: exiting...
 
 
+
++-----------------------------------------------+
+|                   IOb-Console                 |
++-----------------------------------------------+
+
+  BaudRate = 115200 
+  StopBits = 1 
+  Parity   = None
+
+IOb-Console: connecting...
+
+IOb-Bootloader: connected!
+IOb-Bootloader: Restart CPU to run user program...
+
+
+
+Hello world!
+
+
+Value of Pi = 3.141500
+
+IOb-Console: exiting...
+
+

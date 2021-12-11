@@ -53,7 +53,7 @@ ifeq ($(FPGA_SERVER),)
 else 
 	ssh $(FPGA_USER)@$(FPGA_SERVER) 'if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi'
 	rsync -avz --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(FPGA_USER)@$(FPGA_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD) $@ INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM)'
+	ssh $(FPGA_USER)@$(FPGA_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD) $@ INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) USE_SPRAM=$(USE_SPRAM)'
 	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD)/$(FPGA_OBJ) $(FPGA_OBJ)
 	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD)/$(FPGA_LOG) $(FPGA_LOG) 
 endif
@@ -84,19 +84,23 @@ queue-out-remote:
 # Testing
 #
 
-test: clean-testlog test1 test2 test3
+test: clean-testlog test1 test2 test3 test4
 	diff -q test.log test.expected
 
 test1:
 	make clean
-	make all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+	make all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 USE_SPRAM=0 TEST_LOG=">> test.log"
 
 test2: 
-	make all INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+	make all INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 USE_SPRAM=0 TEST_LOG=">> test.log"
 
 test3:
 	make clean
-	make all INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
+	make all INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 USE_SPRAM=0 TEST_LOG=">> test.log"
+
+test4:
+	make clean
+	make all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 USE_SPRAM=1 TEST_LOG=">> test.log"
 
 
 #
@@ -134,5 +138,5 @@ endif
 
 .PHONY: all run load build \
 	queue-in queue-out queue-wait queue-out-remote \
-	test test1 test2 test3 \
+	test test1 test2 test3 test4 \
 	clean-remote clean-testlog

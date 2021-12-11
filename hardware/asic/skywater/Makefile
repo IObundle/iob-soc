@@ -1,5 +1,5 @@
-
 ROOT_DIR=../../..
+
 include ../asic.mk
 
 OPENLANE_DESIGNS:=$(OPENLANE_HOME)/designs
