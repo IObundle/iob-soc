@@ -149,3 +149,19 @@ TESTBENCH: exiting
 
 Simulation complete via $finish(1) at time 86375681 NS + 0
 ./system_tb.v:96               $finish;
+TESTBENCH: connecting..IOb-Bootloader: connected!
+IOb-Bootloader: Restart CPU to run user program...
+
+
+
+Hello world!
+
+
+Value of Pi = 3.141500
+
+TESTBENCH: exiting
+
+
+
+Simulation complete via $finish(1) at time 408141 NS + 0
+./system_tb.v:96               $finish;
