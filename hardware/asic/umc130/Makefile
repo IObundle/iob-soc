@@ -47,11 +47,6 @@ ASIC_NODE=umc130
 ASIC_SERVER=$(CADENCE_SERVER)
 ASIC_USER=$(CADENCE_USER)
 
-#DEFINES
-
-#default RAM type for running on ASIC
-USE_SPRAM ?=0
-
 # Memories' wrappers
 VSRC+=sp_rom_wrap.v dp_ram_wrap.v
 

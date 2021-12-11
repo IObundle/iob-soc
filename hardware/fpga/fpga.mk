@@ -8,11 +8,6 @@ TOOL=$(shell find $(HW_DIR)/fpga -name $(BOARD) | cut -d"/" -f7)
 
 JOB=$(shell echo $(USER) `md5sum $(FPGA_OBJ)  | cut -d" " -f1`)
 
-#DEFINES
-
-#default RAM type for running on FPGA
-USE_SPRAM ?=0
-
 include $(ROOT_DIR)/hardware/hardware.mk
 
 #SOURCES
@@ -89,19 +84,23 @@ queue-out-remote:
 # Testing
 #
 
-test: clean-testlog test1 test2 test3
+test: clean-testlog test1 test2 test3 test4
 	diff -q test.log test.expected
 
 test1:
 	make clean
-	make all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+	make all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 USE_SPRAM=0 TEST_LOG=">> test.log"
 
 test2: 
-	make all INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+	make all INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 USE_SPRAM=0 TEST_LOG=">> test.log"
 
 test3:
 	make clean
-	make all INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
+	make all INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 USE_SPRAM=0 TEST_LOG=">> test.log"
+
+test4:
+	make clean
+	make all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 USE_SPRAM=1 TEST_LOG=">> test.log"
 
 
 #
@@ -139,5 +138,5 @@ endif
 
 .PHONY: all run load build \
 	queue-in queue-out queue-wait queue-out-remote \
-	test test1 test2 test3 \
+	test test1 test2 test3 test4 \
 	clean-remote clean-testlog

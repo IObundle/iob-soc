@@ -1,10 +1,5 @@
 ROOT_DIR=../../..
 
-#DEFINES
-
-#default RAM type for running on FPGA
-USE_SPRAM ?=0
-
 include ../asic.mk
 
 OPENLANE_DESIGNS:=$(OPENLANE_HOME)/designs

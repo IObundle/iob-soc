@@ -11,9 +11,6 @@ DEFINE+=$(defmacro)FREQ=$(FREQ)
 #ddr controller address width
 DDR_ADDR_W=$(FIRM_ADDR_W)
 
-#default RAM type for simulation
-USE_SPRAM ?=0
-
 #produce waveform dump
 VCD ?=0
 
@@ -74,19 +71,21 @@ kill-remote-sim:
 	ssh $(SIM_USER)@$(SIM_SERVER) 'killall -q -u $(SIM_USER) -9 $(SIM_PROC)'
 
 
-test: clean-testlog test1 test2 test3 test4 test5
+test: clean-testlog test1 test2 test3 test4 test5 test6
 	diff -q test.log test.expected
 
 test1:
-	make all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+	make all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 USE_SPRAM=0 TEST_LOG=">> test.log"
 test2:
-	make all INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+	make all INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 USE_SPRAM=0 TEST_LOG=">> test.log"
 test3:
-	make all INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+	make all INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=0 USE_SPRAM=0 TEST_LOG=">> test.log"
 test4:
-	make all INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
+	make all INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=1 USE_SPRAM=0 TEST_LOG=">> test.log"
 test5:
-	make all INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
+	make all INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 USE_SPRAM=0 TEST_LOG=">> test.log"
+test6:
+	make all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 USE_SPRAM=1 TEST_LOG=">> test.log"
 
 
 #clean target common to all simulators
@@ -113,5 +112,5 @@ endif
 
 .PHONY: all \
 	kill-remote-sim \
-	test test1 test2 test3 test4 test5 \
+	test test1 test2 test3 test4 test5 test6 \
 	clean-remote clean-testlog
