@@ -38,8 +38,8 @@ asic:  $(VSRC) $(VHDR)
 	mkdir -p $(OPENLANE_DESIGNS)/system/inc 
 	mkdir -p $(OPENLANE_DESIGNS)/system/macros/lef
 	mkdir -p $(OPENLANE_DESIGNS)/system/macros/gds
-	cp sram/*.lef $(OPENLANE_DESIGNS)/system/macros/lef 	
-	cp sram/*.gds $(OPENLANE_DESIGNS)/system/macros/gds 		
+	cp  $(wildcard sram/*.lef) $(OPENLANE_DESIGNS)/system/macros/lef 	
+	cp  $(wildcard sram/*.gds) $(OPENLANE_DESIGNS)/system/macros/gds 		
 	cp $(VSRC) $(OPENLANE_DESIGNS)/system/src 
 	cp $(VHDR) $(OPENLANE_DESIGNS)/system/inc 
 	cp run_interactive.tcl $(OPENLANE_HOME)
