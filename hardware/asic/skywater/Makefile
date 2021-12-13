@@ -1,5 +1,5 @@
-
 ROOT_DIR=../../..
+
 include ../asic.mk
 VHDR+= $(UART_DIR)/hardware/include/UARTsw_reg.v
 VSRC+=iob_dp_ram.v

@@ -38,7 +38,7 @@ credential.helper 'cache --timeout=<time_in_seconds>'``
 
 ## Configure your SoC
 
-To configure your system edit the *system.mk* file, which can be found at the
+To configure your system edit the `config.mk` file, which can be found at the
 repository root. This file has the system configuration variables;
 hopefully, each variable is explained by a comment.
 
@@ -119,7 +119,7 @@ make [sim] [SIMULATOR=<simulator directory name>] [<control parameters>]
 `<simulator directory name>` is the name of the simulator's run directory,
 
 `<control parameters>` are system configuration parameters passed in the
-command line, overriding those in the system.mk file. Example control
+command line, overriding those in the `config.mk` file. Example control
 parameters are `INIT_MEM=0 RUN_EXTMEM=1`.
 
 To visualise simulation waveforms use the `VCD=1` control parameter. It will
@@ -133,7 +133,7 @@ make sim-clean [SIMULATOR=<simulator directory name>]
 For more details, read the Makefile in each simulator directory. The Makefile
 includes the Makefile segment `simulation.mk`, which contains statements that
 apply to any simulator. In turn, `simulation.mk` includes the Makefile segment
-`system.mk`, which contains main system parameters. The Makefile in the
+`config.mk`, which contains main system parameters. The Makefile in the
 simulator's directory, with the segments recursively included as described, is
 construed as a single large Makefile.
 
@@ -147,7 +147,7 @@ software on a PC, type:
 make pc-emul [<control parameters>]
 ```
 where `<control parameters>` are system configuration parameters passed in the
-command line, overriding those in the system.mk file. Example control
+command line, overriding those in the `config.mk` file. Example control
 parameters are `INIT_MEM=0 RUN_EXTMEM=1`.
 
 To clean the PC compilation generated files, type:
@@ -174,7 +174,7 @@ make fpga-build [BOARD=<board directory name>] [<control parameters>]
 ``` 
 where `<board directory name>` is the name of the board's run directory, and
 `<control parameters>` are system configuration parameters passed in the command
-line, overriding those in the system.mk file. For example, 
+line, overriding those in the `config.mk` file. For example, 
 ``` 
 make fpga-build BOARD=BASYS3 INIT_MEM=0 RUN_EXTMEM=1
 ``` 
