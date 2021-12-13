@@ -109,7 +109,7 @@
     {\tt \tiny git submodule add git@github.com:IObundle/iob-timer.git submodules/TIMER}
   \item Update the Timer IP core submodules:\\
     {\tt \tiny git submodule update ----init ----recursive}
-  \item Add the Timer IP core to the list of peripherals in the {\tt ./system.mk} file:\\
+  \item Add the Timer IP core to the list of peripherals in the {\tt ./config.mk} file:\\
     {\tt PERIPHERALS:=UART {\em TIMER}}
   \item An IP core can be integrated into IOb-SoC if it provides the following files: 
     \begin{itemize}

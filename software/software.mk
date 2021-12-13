@@ -1,6 +1,6 @@
 defmacro:=-D
 incdir:=-I
-include $(ROOT_DIR)/system.mk
+include $(ROOT_DIR)/config.mk
 
 DEFINE+=$(defmacro)BAUD=$(BAUD)
 DEFINE+=$(defmacro)FREQ=$(FREQ)
@@ -9,10 +9,16 @@ DEFINE+=$(defmacro)FREQ=$(FREQ)
 TOOLCHAIN_PREFIX:=riscv64-unknown-elf-
 CFLAGS=-Os -nostdlib -march=$(MFLAGS) -mabi=ilp32
 
+MFLAGS=$(MFLAGS_BASE)$(MFLAG_M)$(MFLAG_C)
+
+MFLAGS_BASE:=rv32i
+
+ifeq ($(USE_MUL_DIV),1)
+MFLAG_M=m
+endif
+
 ifeq ($(USE_COMPRESSED),1)
-MFLAGS=rv32imc
-else
-MFLAGS=rv32im
+MFLAG_C=c
 endif
 
 #INCLUDE
