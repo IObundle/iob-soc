@@ -51,9 +51,9 @@ asic:  $(VSRC) $(VHDR)
 	#$(DOK_CMD) sh -c   "./flow.tcl -design system  -p "read_verilog -I/$(OPENLANE_DESIGNS)/system/inc" -tag soc -overwrite -config file /system/config.tcl"
 #For interactive flow for SRAM Macro placement
 	$(DOK_CMD) sh -c "./flow.tcl -interactive -file run_interactive.tcl"
-debug: 
-	mkdir temp
-	cp $(VSRC) $(VHDR) temp
+debug: $(VSRC) $(VHDR)
+	mkdir debug
+	cp $(VSRC) $(VHDR) debug
 	echo $(VSRC)
 	echo $(VHDR)
 
@@ -68,6 +68,6 @@ clean_asic:
 clean_iob_dp_ram:
 	rm -rf iob_dp_ram.v
 clean_debug:
-	rm -rf temp
+	rm -rf debug
 
 clean: clean_sram clean_asic clean_debug clean_iob_dp_ram
