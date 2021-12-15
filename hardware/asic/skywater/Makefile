@@ -1,10 +1,12 @@
 ROOT_DIR=../../..
 
-include ../asic.mk
-VHDR+= $(UART_DIR)/hardware/include/UARTsw_reg.v
-VSRC+=iob_dp_ram.v
 OPENLANE_DESIGNS:=$(OPENLANE_HOME)/designs
 IMAGE_NAME ?= efabless/openlane:2021.07.29_04.49.46 #latest
+ASIC_NODE=skywater
+
+include ../asic.mk
+
+VSRC+=iob_dp_ram.v
 
 # Memory technology
 ASIC_MEM_TECH:=skywater130
