@@ -10,7 +10,13 @@ MODULES+=$(shell make -C $(ROOT_DIR) corename | grep -v make)
 #ADD SUBMODULES
 
 #list memory modules before including MEM's hardware.mk
-MEM_MODULES+=rom/sp_rom ram/dp_ram_be
+MEM_MODULES+=rom/sp_rom
+
+ifeq ($(USE_SPRAM),1)
+MEM_MODULES+=ram/sp_ram_be
+else
+MEM_MODULES+=ram/dp_ram_be
+endif
 
 #include submodule's hardware
 $(foreach p, $(SUBMODULES), $(if $(filter $p, $(MODULES)),, $(eval include $($p_DIR)/hardware/hardware.mk)))
@@ -21,6 +27,11 @@ SRC_DIR:=$(HW_DIR)/src
 
 #DEFINES
 DEFINE+=$(defmacro)DDR_ADDR_W=$(DDR_ADDR_W)
+
+#use single-port RAM instead of dual-port
+ifeq ($(USE_SPRAM),1)
+DEFINE+=$(defmacro)USE_SPRAM
+endif
 
 #INCLUDES
 INCLUDE+=$(incdir). $(incdir)$(INC_DIR)

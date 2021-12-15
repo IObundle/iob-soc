@@ -41,7 +41,7 @@ ifeq ($(SIM_SERVER),)
 else
 	ssh $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
-	bash -c "trap 'make kill-remote-sim' INT TERM KILL; ssh $(SIM_USER)@$(SIM_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR) run INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) VCD=$(VCD) ASIC=$(ASIC) SYNTH=$(SYNTH) ASIC_MEM_FILES=$(ASIC_MEM_FILES) LIBS=$(LIBS) TEST_LOG=\"$(TEST_LOG)\"'"
+	bash -c "trap 'make kill-remote-sim' INT TERM KILL; ssh $(SIM_USER)@$(SIM_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR) run INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) USE_SPRAM=$(USE_SPRAM) VCD=$(VCD) ASIC=$(ASIC) SYNTH=$(SYNTH) ASIC_MEM_FILES=$(ASIC_MEM_FILES) LIBS=$(LIBS) TEST_LOG=\"$(TEST_LOG)\"'"
 ifneq ($(TEST_LOG),)
 	scp $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR)/test.log $(SIM_DIR)
 endif
@@ -71,19 +71,21 @@ kill-remote-sim:
 	ssh $(SIM_USER)@$(SIM_SERVER) 'killall -q -u $(SIM_USER) -9 $(SIM_PROC)'
 
 
-test: clean-testlog test1 test2 test3 test4 test5
+test: clean-testlog test1 test2 test3 test4 test5 test6
 	diff -q test.log test.expected
 
 test1:
-	make all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+	make all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 USE_SPRAM=0 TEST_LOG=">> test.log"
 test2:
-	make all INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+	make all INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 USE_SPRAM=0 TEST_LOG=">> test.log"
 test3:
-	make all INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+	make all INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=0 USE_SPRAM=0 TEST_LOG=">> test.log"
 test4:
-	make all INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
+	make all INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=1 USE_SPRAM=0 TEST_LOG=">> test.log"
 test5:
-	make all INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
+	make all INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 USE_SPRAM=0 TEST_LOG=">> test.log"
+test6:
+	make all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 USE_SPRAM=1 TEST_LOG=">> test.log"
 
 
 #clean target common to all simulators
@@ -110,5 +112,5 @@ endif
 
 .PHONY: all \
 	kill-remote-sim \
-	test test1 test2 test3 test4 test5 \
+	test test1 test2 test3 test4 test5 test6 \
 	clean-remote clean-testlog

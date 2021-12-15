@@ -1,18 +1,21 @@
 
 # Data word size
 word_size = 32
+num_rw_ports = 1
+num_r_ports = 0
+num_w_ports = 0
 
 # Number of words in the memory
-num_words = 1024
+num_words = 64
 
 # Technology to use in $OPENRAM_TECH
 tech_name = "sky130A"
 
 # You can use the technology nominal corner only
-# nominal_corner_only = True
+#nominal_corner_only = True
 
-process_corners = ["SS", "TT", "FF"]
-# process_corners = ["TT"]
+#process_corners = ["SS", "TT", "FF"]
+process_corners = ["TT"]
 
 # Voltage corners to characterize
 supply_voltages = [ 1.8 ]
