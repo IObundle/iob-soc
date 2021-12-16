@@ -12,7 +12,7 @@ VSRC+=iob_dp_ram.v
 ASIC_MEM_TECH:=skywater130
 
 # Memory type
-ASIC_DPRAM_TYPE:=SH
+ASIC_DPRAM_TYPE:=spram
 
 ifeq (0,$(shell docker -v 2>/dev/null | grep podman | wc -l))
    DOCKER_UID_OPTIONS = -u $(shell id -u $(USER)):$(shell id -g $(USER))
