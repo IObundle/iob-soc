@@ -38,7 +38,10 @@ USE_MUL_DIV ?=1
 #RISC-V COMPRESSED INSTRUCTIONS
 USE_COMPRESSED ?=1
 
-#ROOT DIR ON REMOTE MACHINES
+#REMOTE MACHINES
+#git url for cloning 
+GITURL := $(word 2, $(shell git remote -v))
+#root dir
 REMOTE_ROOT_DIR ?=sandbox/iob-soc
 
 
