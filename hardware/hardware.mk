@@ -16,7 +16,7 @@ INCLUDE+=$(incdir)$(UART_INC_DIR)
 
 #included files
 VHDR+=$(wildcard $(UART_INC_DIR)/*.vh)
-VHDR+=UARTsw_reg_gen.v UARTsw_reg.vh UARTsw_reg.v #UARTsw_reg.v added for skywater
+VHDR+=UARTsw_reg_gen.v UARTsw_reg.vh UARTsw_reg.v 
 #sources
 VSRC+=$(UART_SRC_DIR)/uart_core.v $(UART_SRC_DIR)/iob_uart.v
 
