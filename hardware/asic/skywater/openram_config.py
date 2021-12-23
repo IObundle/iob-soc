@@ -4,9 +4,10 @@ word_size = 32
 num_rw_ports = 1
 num_r_ports = 0
 num_w_ports = 0
-
+#write size for adding byte enable for sram
+write_size =8
 # Number of words in the memory
-num_words = 64
+num_words = 32
 
 # Technology to use in $OPENRAM_TECH
 tech_name = "sky130A"

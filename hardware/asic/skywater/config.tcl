@@ -3,7 +3,18 @@
 set ::env(DESIGN_NAME) system
 
 # Change if needed
-set ::env(VERILOG_FILES) "src/*.v"
+set ::env(VERILOG_FILES) "\
+    designs/system/src/system.v\
+    designs/system/src/boot_ctr.v\
+    designs/system/src/int_mem.v\
+    designs/system/src/iob_dp_ram.v\
+    designs/system/src/iob_picorv32.v\
+    designs/system/src/iob_uart.v\
+    designs/system/src/merge.v\
+    designs/system/src/picorv32.v\
+    designs/system/src/split.v\
+    designs/system/src/sram.v\
+    designs/system/src/uart_core.v"
 
 # Fill this
 set ::env(CLOCK_PERIOD) "10"
