@@ -3,7 +3,8 @@ ROOT_DIR=../../..
 OPENLANE_DESIGNS:=$(OPENLANE_HOME)/designs
 IMAGE_NAME ?= efabless/openlane:2021.07.29_04.49.46 #latest
 ASIC_NODE=skywater
-
+#defmacro := -D
+MKDIR := mkdir -p
 include ../asic.mk
 
 VSRC+=iob_dp_ram.v
@@ -21,7 +22,7 @@ DOK_CMD ?= docker run -it --rm -v $(OPENLANE_HOME):/openLANE_flow -v $(PDK_ROOT)
 
 .PHONY: all asic clean_sram clean_asic clean_debug clean_iob_dp_ram clean
 
-all: sram iob_dp_ram asic 
+all: sram iob_dp_ram.v TEMP DEL asic 
 
 #SRAM generation
 
@@ -37,20 +38,28 @@ iob_dp_ram.v:
 
 #make sure temp is delete before calling this target
 TEMP:
-	mkdir -p temp
+	$(MKDIR) temp
 	cp $(VSRC) temp
 	cp $(VHDR) temp
-	echo  "\`include iob_uart.vh" >> temp/system.v
+#	echo  "\`include \"iob_uart.vh\" " >> temp/system.v
+#	echo "\`include \"iob-soc-defs.vh\" ">> temp/system.v
 
-DEL: TEMP
+DEL:   TEMP
 	sed -i.bak -e '7d' temp/system.v
+ADD:   DEL
+	sed -i "5i \`include \"iob_uart.vh\"" temp/system.v
+	sed -i "1i \`include \"iob-soc-defs.vh\"" temp/system.v
 
+$(DEFINE): ADD
+	echo "\`define $@ $($@) " >> temp/iob-soc-defs.vh
+#	sed -i "1i \`define ADDR_W 32" temp/iob-soc-defs.vh
+#	sed -i "2i \`define DATA_W 32" temp/iob-soc-defs.vh
 # ASIC generation
-asic:  $(VSRC) $(VHDR) DEL
-	mkdir -p $(OPENLANE_DESIGNS)/system/src 
-#	mkdir -p $(OPENLANE_DESIGNS)/system/inc 
-	mkdir -p $(OPENLANE_DESIGNS)/system/macros/lef
-	mkdir -p $(OPENLANE_DESIGNS)/system/macros/gds
+asic:  $(VSRC) $(VHDR) $(DEFINE)
+	$(MKDIR) $(OPENLANE_DESIGNS)/system/src 
+#	$(MKDIR) $(OPENLANE_DESIGNS)/system/inc 
+	$(MKDIR) $(OPENLANE_DESIGNS)/system/macros/lef
+	$(MKDIR) $(OPENLANE_DESIGNS)/system/macros/gds
 	cp  $(wildcard sram/*.lef) $(OPENLANE_DESIGNS)/system/macros/lef 	
 	cp  $(wildcard sram/*.gds) $(OPENLANE_DESIGNS)/system/macros/gds 		
 	cp  $(wildcard temp/*.v) $(OPENLANE_DESIGNS)/system/src
