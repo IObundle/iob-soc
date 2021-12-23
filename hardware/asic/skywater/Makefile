@@ -41,8 +41,6 @@ TEMP:
 	$(MKDIR) temp
 	cp $(VSRC) temp
 	cp $(VHDR) temp
-#	echo  "\`include \"iob_uart.vh\" " >> temp/system.v
-#	echo "\`include \"iob-soc-defs.vh\" ">> temp/system.v
 
 DEL:   TEMP
 	sed -i.bak -e '7d' temp/system.v
@@ -51,20 +49,16 @@ ADD:   DEL
 	sed -i "1i \`include \"iob-soc-defs.vh\"" temp/system.v
 
 $(DEFINE): ADD
-	echo "\`define $@ $($@) " >> temp/iob-soc-defs.vh
-#	sed -i "1i \`define ADDR_W 32" temp/iob-soc-defs.vh
-#	sed -i "2i \`define DATA_W 32" temp/iob-soc-defs.vh
+	echo "\`define $@ $($@)"| sed 's/=/ /g' >> temp/iob-soc-defs.vh
 # ASIC generation
 asic:  $(VSRC) $(VHDR) $(DEFINE)
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/src 
-#	$(MKDIR) $(OPENLANE_DESIGNS)/system/inc 
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/macros/lef
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/macros/gds
 	cp  $(wildcard sram/*.lef) $(OPENLANE_DESIGNS)/system/macros/lef 	
 	cp  $(wildcard sram/*.gds) $(OPENLANE_DESIGNS)/system/macros/gds 		
 	cp  $(wildcard temp/*.v) $(OPENLANE_DESIGNS)/system/src
 	cp  $(wildcard temp/*.vh) $(OPENLANE_DESIGNS)/system/src
-#	cp $(VHDR) $(OPENLANE_DESIGNS)/system/inc 
 	cp run_interactive.tcl $(OPENLANE_HOME)
 	cp config.tcl $(OPENLANE_DESIGNS)/system
 	cd $(OPENLANE_HOME);
