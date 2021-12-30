@@ -7,13 +7,14 @@ ASIC_NODE=skywater
 MKDIR := mkdir -p
 include ../asic.mk
 
-VSRC+=iob_dp_ram.v
+VSRC+=iob_sp_ram_be.v
+#VSRC+=iob_sp_rom.v
 
 # Memory technology
 ASIC_MEM_TECH:=skywater130
-
+ASIC_MEM_MODULE:=iob_sp_ram_be
 # Memory type
-ASIC_DPRAM_TYPE:=spram
+ASIC_SPRAM_TYPE:=spram
 
 ifeq (0,$(shell docker -v 2>/dev/null | grep podman | wc -l))
    DOCKER_UID_OPTIONS = -u $(shell id -u $(USER)):$(shell id -g $(USER))
@@ -22,7 +23,7 @@ DOK_CMD ?= docker run -it --rm -v $(OPENLANE_HOME):/openLANE_flow -v $(PDK_ROOT)
 
 .PHONY: all asic clean_sram clean_asic clean_debug clean_iob_dp_ram clean
 
-all: sram iob_dp_ram.v TEMP DEL asic 
+all: sram iob_sp_ram_be.v  asic 
 
 #SRAM generation
 
@@ -31,10 +32,10 @@ sram: openram_config.py
 	mv temp sram
 #SRAM wrapper generation
 
-iob_dp_ram.v:
+iob_sp_ram_be.v:
 #It was added for test only -will be removed-
 #	~/Documents/iob-mem/software/python/memakerwrap.py $(ASIC_MEM_TECH) iob_dp_ram $(ASIC_DPRAM_TYPE) 0 1 $(SRAM_W) 8 4 1 > $@
-	$(MEM_DIR)/software/python/memakerwrap.py $(ASIC_MEM_TECH) iob_dp_ram $(ASIC_DPRAM_TYPE) 0 1 $(SRAM_W) 8 4 1 > $@
+	$(MEM_DIR)/software/python/memakerwrap.py $(ASIC_MEM_TECH) $(ASIC_MEM_MODULE) $(ASIC_SPRAM_TYPE) 0 1 $(SRAM_W) 8 4 1 > $@
 
 #make sure temp is delete before calling this target
 TEMP:
@@ -51,7 +52,7 @@ ADD:   DEL
 $(DEFINE): ADD
 	echo "\`define $@ $($@)"| sed 's/=/ /g' >> temp/iob-soc-defs.vh
 # ASIC generation
-asic:  $(VSRC) $(VHDR) $(DEFINE)
+asic:  $(VSRC) $(VHDR)  $(DEFINE)
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/src 
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/macros/lef
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/macros/gds
@@ -80,10 +81,10 @@ clean_sram:
 
 clean_asic:
 	rm -rf $(OPENLANE_DESIGNS)/system
-	rm -rf iob_dp_ram.v
+	rm -rf iob_sp_ram_be.v
 	rm -rf $(OPENLANE_HOME)/run_interactive.tcl
-clean_iob_dp_ram:
-	rm -rf iob_dp_ram.v
+clean_iob_sp_ram_be:
+	rm -rf iob_sp_ram_be.v
 clean_debug:
 	rm -rf debug
 

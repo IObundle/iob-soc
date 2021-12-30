@@ -12,10 +12,10 @@
 FIRM_ADDR_W ?=15
 
 #SRAM SIZE (LOG2)
-SRAM_ADDR_W ?=15
+SRAM_ADDR_W ?=7
 
 #RAM TYPE (single-port or dual-port)
-USE_SPRAM ?=0
+USE_SPRAM ?=1
 
 #DDR
 USE_DDR ?=0
