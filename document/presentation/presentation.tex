@@ -1,9 +1,9 @@
-\documentclass [xcolor=svgnames, t] {beamer} 
+\documentclass [xcolor=svgnames, t] {beamer}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{booktabs, comment} 
-\usepackage[absolute, overlay]{textpos} 
-\useoutertheme{infolines} 
+\usepackage{booktabs, comment}
+\usepackage[absolute, overlay]{textpos}
+\useoutertheme{infolines}
 \setbeamercolor{title in head/foot}{bg=internationalorange}
 \setbeamercolor{author in head/foot}{bg=dodgerblue}
 \usepackage{csquotes}
@@ -19,7 +19,7 @@
 \hypersetup{
     colorlinks=true,
     linkcolor=blue,
-    filecolor=magenta,      
+    filecolor=magenta,
     urlcolor=cyan,
 }
 
@@ -48,7 +48,7 @@
 \begin{document}
 
 \begin{frame}
- \titlepage   
+ \titlepage
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -92,7 +92,7 @@
 \begin{center}
   \begin{itemize}
     \item Use a Linux real or virtual machine (see the README file to download a VM)
-    \item Make sure you a {\bf stable} version of the open source Icarus Verilog simulator (\url{iverilog.icarus.com}) is installed locally or on some remote server
+    \item Make sure a {\bf stable} version of the open source Icarus Verilog simulator (\url{iverilog.icarus.com}) is installed locally or on some remote server
     \item Make sure you have FPGA build tools installed locally or on some remote server
     \item Make sure you have an FPGA board attached to your Linux machine or to some remote server
     \item Set up {\bf ssh} access key to GitHub (\url{github.com}) (using https will ask for your password many times)
@@ -111,11 +111,11 @@
     {\tt \tiny git submodule update ----init ----recursive}
   \item Add the Timer IP core to the list of peripherals in the {\tt ./config.mk} file:\\
     {\tt PERIPHERALS:=UART {\em TIMER}}
-  \item An IP core can be integrated into IOb-SoC if it provides the following files: 
+  \item An IP core can be integrated into IOb-SoC if it provides the following files:
     \begin{itemize}
     \item CORE\_REPO/hardware/hardware.mk
     \item CORE\_REPO/software/embedded/embedded.mk
-    \item CORE\_REPO/software/embedded/pc.mk
+    \item CORE\_REPO/software/pc-emul/pc.mk
     \end{itemize}
   \item Study these files and its references in the Timer IP core repository.
   \end{itemize}
@@ -129,7 +129,7 @@
 #include "periphs.h"
 #include "iob-uart.h"
 #include "printf.h"
-      
+
 #include "iob_timer.h"
 
 int main()
@@ -213,8 +213,8 @@ TESTBENCH: exiting
 |                   IOb-Console                 |
 +-----------------------------------------------+
 
-  BaudRate = 115200 
-  StopBits = 1 
+  BaudRate = 115200
+  StopBits = 1
   Parity   = None
 
 IOb-Console: connecting...
@@ -234,13 +234,13 @@ IOb-Console: exiting...
 \end{tiny}
 \end{frame}
 
-\begin{frame}{Conclusion}  
+\begin{frame}{Conclusion}
   \begin{itemize}
   \item A tutorial on creating a simple SoC using IOb-SoC has been presented
   \item The addition of an example peripheral IP core has been illustrated
   \item A simple firmware that uses the IP core driver functions has been explained
   \item RTL simulation of the system running the firmware has been demonstrated
-  \item FPGA board running of the system running the firmware has been demonstrated 
+  \item FPGA board running of the system running the firmware has been demonstrated
   \end{itemize}
 \end{frame}
 
