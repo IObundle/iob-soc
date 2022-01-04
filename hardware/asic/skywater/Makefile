@@ -3,12 +3,12 @@ ROOT_DIR=../../..
 OPENLANE_DESIGNS:=$(OPENLANE_HOME)/designs
 IMAGE_NAME ?= efabless/openlane:2021.07.29_04.49.46 #latest
 ASIC_NODE=skywater
-#defmacro := -D
+
 MKDIR := mkdir -p
 include ../asic.mk
 
 VSRC+=iob_sp_ram_be.v
-#VSRC+=iob_sp_rom.v
+VSRC+=iob_sp_rom.v
 
 # Memory technology
 ASIC_MEM_TECH:=skywater130
@@ -23,7 +23,7 @@ DOK_CMD ?= docker run -it --rm -v $(OPENLANE_HOME):/openLANE_flow -v $(PDK_ROOT)
 
 .PHONY: all asic clean_sram clean_asic clean_debug clean_iob_dp_ram clean
 
-all: sram iob_sp_ram_be.v  asic 
+all: sram  asic 
 
 #SRAM generation
 
@@ -42,6 +42,7 @@ TEMP:
 	$(MKDIR) temp
 	cp $(VSRC) temp
 	cp $(VHDR) temp
+	cp boot.hex temp
 
 DEL:   TEMP
 	sed -i.bak -e '7d' temp/system.v
@@ -52,7 +53,7 @@ ADD:   DEL
 $(DEFINE): ADD
 	echo "\`define $@ $($@)"| sed 's/=/ /g' >> temp/iob-soc-defs.vh
 # ASIC generation
-asic:  $(VSRC) $(VHDR)  $(DEFINE)
+asic:  $(VSRC) $(VHDR) $(DEFINE)
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/src 
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/macros/lef
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/macros/gds
@@ -60,6 +61,7 @@ asic:  $(VSRC) $(VHDR)  $(DEFINE)
 	cp  $(wildcard sram/*.gds) $(OPENLANE_DESIGNS)/system/macros/gds 		
 	cp  $(wildcard temp/*.v) $(OPENLANE_DESIGNS)/system/src
 	cp  $(wildcard temp/*.vh) $(OPENLANE_DESIGNS)/system/src
+	cp  $(wildcard temp/boot.hex) $(OPENLANE_DESIGNS)/system/src
 	cp run_interactive.tcl $(OPENLANE_HOME)
 	cp config.tcl $(OPENLANE_DESIGNS)/system
 	cd $(OPENLANE_HOME);

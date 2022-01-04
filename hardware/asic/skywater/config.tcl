@@ -7,7 +7,8 @@ set ::env(VERILOG_FILES) "\
     designs/system/src/system.v\
     designs/system/src/boot_ctr.v\
     designs/system/src/int_mem.v\
-    designs/system/src/iob_dp_ram.v\
+    designs/system/src/iob_sp_ram_be.v\
+    designs/system/src/iob_sp_rom.v\
     designs/system/src/iob_picorv32.v\
     designs/system/src/iob_uart.v\
     designs/system/src/merge.v\
