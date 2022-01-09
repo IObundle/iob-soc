@@ -20,7 +20,7 @@ VSRC+=./verilog/top_system.v
 # Use
 #
 all: build run
-FORCE ?= 0
+FORCE ?= 1
 
 run:
 ifeq ($(NORUN),0)
