@@ -59,7 +59,6 @@ BOARD ?=CYCLONEV-GT-DK
 #default asic node running locally or remotely
 #check the respective Makefile in hardware/asic/$(ASIC_NODE) for specific settings
 ASIC_NODE ?=umc130
-#ASIC_NODE  ?=skywater
 
 #DOCUMENTATION
 #default document to compile
