@@ -4,9 +4,6 @@ include ../software.mk
 #additional compiler flags
 CFLAGS+=--specs=nano.specs -Wl,-Bstatic,-T,../template.lds,-Map,boot.map,--strip-debug
 
-
-#SUBMODULES
-
 #cache
 ifeq ($(USE_DDR),1)
 ifeq ($(RUN_EXTMEM),1)
@@ -30,6 +27,6 @@ boot.elf: ../template.lds  $(HDR) $(SRC)
 	$(TOOLCHAIN_PREFIX)objcopy -O binary boot.elf boot.bin
 
 clean: gen-clean
-	@rm -rf boot.bin boot.elf boot.map *.hex
+	@rm -rf boot.bin boot.elf boot.map *.hex *sw_reg.h
 
 .PHONY: clean

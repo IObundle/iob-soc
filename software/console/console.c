@@ -45,7 +45,10 @@ void cnsl_sendfile() {
   
   //send file size
   cnsl_putint(file_size);
-  
+
+  //wait for ACK
+  while(cnsl_getchar()!=ACK) {}
+
   //send file 1 byte at a time (fix for transfering large files)
   for(i=0;i<file_size;i++) {
     if(fread(&byte, sizeof(char), 1, fp) <= 0)

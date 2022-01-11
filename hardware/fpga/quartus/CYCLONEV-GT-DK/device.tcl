@@ -17,8 +17,8 @@ set_instance_assignment -name IO_STANDARD LVDS -to clk
 set_instance_assignment -name IO_STANDARD "2.5-V" -to resetn
 
 #Leds
-set_location_assignment  PIN_AM23 -to led
-set_instance_assignment -name IO_STANDARD "2.5-V" -to led
+#set_location_assignment  PIN_AM23 -to led
+#set_instance_assignment -name IO_STANDARD "2.5-V" -to led
 
 set_location_assignment  PIN_AE25 -to trap
 set_instance_assignment -name IO_STANDARD "2.5-V" -to trap

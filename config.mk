@@ -4,8 +4,6 @@
 #
 ######################################################################
 
-CORE_NAME:=SUT
-
 #
 # PRIMARY PARAMETERS: CAN BE CHANGED BY USERS OR OVERRIDEN BY ENV VARS
 #
@@ -30,14 +28,20 @@ BOOTROM_ADDR_W:=12
 INIT_MEM ?=1
 
 #PERIPHERAL LIST
-#must match respective submodule or folder name in the submodules directory
+#must match respective submodule CORE_NAME in the core.mk file of the submodule
 #PERIPHERALS:=UART
 PERIPHERALS ?=UART REGFILEIF
+
+#RISC-V HARD MULTIPLIER AND DIVIDER INSTRUCTIONS
+USE_MUL_DIV ?=1
 
 #RISC-V COMPRESSED INSTRUCTIONS
 USE_COMPRESSED ?=1
 
-#ROOT DIR ON REMOTE MACHINES
+#REMOTE MACHINES
+#git url for cloning 
+GITURL := $(word 2, $(shell git remote -v))
+#SUT DIR ON REMOTE MACHINES
 REMOTE_SUT_DIR ?=sandbox/iob-soc-sut
 
 
@@ -52,23 +56,14 @@ SIMULATOR ?=icarus
 BOARD ?=CYCLONEV-GT-DK
 
 #ASIC COMPILATION
-#default asic node  running locally or remotely
+#default asic node running locally or remotely
 #check the respective Makefile in hardware/asic/$(ASIC_NODE) for specific settings
 ASIC_NODE ?=umc130
 
 
 #DOCUMENTATION
-#default document
+#default document to compile
 DOC ?= pb
-
-# REGRESSION TESTING
-#simulators used in regression testing
-SIM_LIST ?=icarus xcelium
-#boards used for regression testing
-BOARD_LIST ?=CYCLONEV-GT-DK AES-KU040-DB-G
-#documents used for regression testing
-DOC_LIST ?=pb presentation
-
 
 
 ####################################################################
@@ -95,12 +90,11 @@ PC_DIR:=$(SW_DIR)/pc-emul
 FIRM_DIR:=$(SW_DIR)/firmware
 BOOT_DIR:=$(SW_DIR)/bootloader
 CONSOLE_DIR:=$(SW_DIR)/console
-PYTHON_DIR:=$(SW_DIR)/python
 
 #hw paths
 HW_DIR=$(SUT_DIR)/hardware
 SIM_DIR=$(HW_DIR)/simulation/$(SIMULATOR)
-ASIC_DIR=$(HW_DIR)/asic
+ASIC_DIR=$(HW_DIR)/asic/$(ASIC_NODE)
 BOARD_DIR ?=$(shell find hardware -name $(BOARD))
 
 #doc paths
@@ -109,9 +103,10 @@ TEX_DIR=$(UART_DIR)/submodules/TEX
 INTERCON_DIR=$(UART_DIR)/submodules/INTERCON
 
 #submodule paths
-SUBMODULES_DIR:=$(SUT_DIR)/submodules
-SUBMODULES=CPU CACHE $(PERIPHERALS)
-$(foreach p, $(SUBMODULES), $(eval $p_DIR:=$(SUBMODULES_DIR)/$p))
+SUBMODULES_DIR=$(SUT_DIR)/submodules
+SUBMODULES=
+SUBMODULE_DIRS=$(shell ls $(SUBMODULES_DIR))
+$(foreach d, $(SUBMODULE_DIRS), $(eval TMP=$(shell make -C $(SUBMODULES_DIR)/$d corename | grep -v make)) $(eval SUBMODULES+=$(TMP)) $(eval $(TMP)_DIR ?=$(SUBMODULES_DIR)/$d))
 
 #define macros
 DEFINE+=$(defmacro)BOOTROM_ADDR_W=$(BOOTROM_ADDR_W)
@@ -142,9 +137,6 @@ $(foreach p, $(PERIPHERALS), $(eval DEFINE+=$(defmacro)$p=$($p)))
 
 #RULES
 gen-clean:
-	@rm -f *# *~ test_report.log
-
-core-name:
-	@echo $(CORE_NAME)
+	@rm -f *# *~
 
 .PHONY: gen-clean
