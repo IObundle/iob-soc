@@ -5,7 +5,7 @@ include $(REGFILEIF_DIR)/core.mk
 # Dual-port register file
 ifneq (DPREGFILE,$(filter DPREGFILE, $(SUBMODULES)))
 SUBMODULES+=DPREGFILE
-DPREGFILE_DIR:=$(MEM_DIR)/dp_reg_file
+DPREGFILE_DIR:=$(MEM_DIR)/hardware/regfile/dp_reg_file
 VSRC+=$(DPREGFILE_DIR)/iob_dp_reg_file.v
 endif
 

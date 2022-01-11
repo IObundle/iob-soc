@@ -55,6 +55,10 @@ endif
 # CLEAN ALL
 clean-all: sim-clean fpga-clean asic-clean
 
+corename:
+	@echo "REGFILEIF"
+
 .PHONY: sim sim-waves sim-clean \
 	fpga fpga-clean \
-	clean-all
+	clean-all \
+	corename
