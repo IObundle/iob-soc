@@ -4,16 +4,13 @@ include ../software.mk
 #additional compiler flags
 CFLAGS+=--specs=nano.specs -Wl,-Bstatic,-T,../template.lds,-Map,firmware.map,--strip-debug
 
-
-#SUBMODULES
-
 #cache
 ifeq ($(USE_DDR),1)
 include $(CACHE_DIR)/software/software.mk
 endif
 
 #peripherals (embedded)
-$(foreach p, $(PERIPHERALS), $(eval include $(SUBMODULES_DIR)/$p/software/embedded/embedded.mk))
+$(foreach p, $(PERIPHERALS), $(eval include $($p_DIR)/software/embedded/embedded.mk))
 
 #HEADERS
 HDR+=periphs.h
@@ -27,6 +24,6 @@ firmware.elf: ../template.lds $(HDR) $(SRC)
 	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
 
 clean: gen-clean 
-	@rm -rf firmware.bin firmware.elf firmware.map *.hex periphs.h
+	@rm -rf firmware.bin firmware.elf firmware.map *.hex periphs.h *sw_reg.h
 
 .PHONY: clean
