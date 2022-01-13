@@ -11,6 +11,7 @@ set DEVICE 5CGTFD9E5F35C7
 
 #System 
 set_location_assignment PIN_H19 -to clk
+set_location_assignment PIN_V28 -to sys_bclk
 set_location_assignment PIN_AN8 -to resetn
 
 set_instance_assignment -name IO_STANDARD LVDS -to clk
