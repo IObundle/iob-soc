@@ -1,25 +1,25 @@
    //
-   // REGFILEIF
+   // /*<InstanceName>*/
    //
 
-   iob_regfileif regfileif
+   iob_regfileif /*<InstanceName>*/
      (
       .clk     (clk),
       .rst     (reset),
 
       // Register file interface
-      .valid_ext   (regfileif_valid),
-      .address_ext (regfileif_address),
-      .wdata_ext   (regfileif_wdata),
-      .wstrb_ext   (regfileif_wstrb),
-      .rdata_ext   (regfileif_rdata),
-      .ready_ext   (regfileif_ready),
+      .valid_ext   (/*<InstanceName>*/_valid),
+      .address_ext (/*<InstanceName>*/_address),
+      .wdata_ext   (/*<InstanceName>*/_wdata),
+      .wstrb_ext   (/*<InstanceName>*/_wstrb),
+      .rdata_ext   (/*<InstanceName>*/_rdata),
+      .ready_ext   (/*<InstanceName>*/_ready),
 
       // CPU interface
-      .valid       (slaves_req[`valid(`REGFILEIF)]),
-      .address     (slaves_req[`address(`REGFILEIF,`REGFILEIF_ADDR_W+2)-2]),
-      .wdata       (slaves_req[`wdata(`REGFILEIF)]),
-      .wstrb       (slaves_req[`wstrb(`REGFILEIF)]),
-      .rdata       (slaves_resp[`rdata(`REGFILEIF)]),
-      .ready       (slaves_resp[`ready(`REGFILEIF)])
+      .valid       (slaves_req[`valid(`/*<InstanceName>*/)]),
+      .address     (slaves_req[`address(`/*<InstanceName>*/,`REGFILEIF_ADDR_W+2)-2]),
+      .wdata       (slaves_req[`wdata(`/*<InstanceName>*/)]),
+      .wstrb       (slaves_req[`wstrb(`/*<InstanceName>*/)]),
+      .rdata       (slaves_resp[`rdata(`/*<InstanceName>*/)]),
+      .ready       (slaves_resp[`ready(`/*<InstanceName>*/)])
       );

@@ -1,7 +1,7 @@
    // REGFILEIF
-   input                           regfileif_valid,
-   input [`REGFILEIF_ADDR_W-1:0]   regfileif_address,
-   input [`REGFILEIF_DATA_W-1:0]   regfileif_wdata,
-   input [`REGFILEIF_DATA_W/8-1:0] regfileif_wstrb,
-   output [`REGFILEIF_DATA_W-1:0]  regfileif_rdata,
-   output                          regfileif_ready,
+   input                           /*<InstanceName>*/_valid,
+   input [`REGFILEIF_ADDR_W-1:0]   /*<InstanceName>*/_address,
+   input [`REGFILEIF_DATA_W-1:0]   /*<InstanceName>*/_wdata,
+   input [`REGFILEIF_DATA_W/8-1:0] /*<InstanceName>*/_wstrb,
+   output [`REGFILEIF_DATA_W-1:0]  /*<InstanceName>*/_rdata,
+   output                          /*<InstanceName>*/_ready,
