@@ -8,7 +8,7 @@
 
 //defined here (and not in periphs.h) because it is the only peripheral used
 //by the bootloader
-#define UART_BASE (1<<P) |(UART0<<(ADDR_W-2-N_SLAVES_W))
+#define UART_BASE (1<<P) |(UART0<<(P-N_SLAVES_W))
 
 #define PROGNAME "IOb-Bootloader"
 
