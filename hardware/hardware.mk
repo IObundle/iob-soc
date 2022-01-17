@@ -46,9 +46,9 @@ IMAGES=boot.hex firmware.hex
 # make system.v with peripherals
 system.v: $(SRC_DIR)/system_core.v
 	cp $(SRC_DIR)/system_core.v $@ # create system.v
-	$(foreach p, $(PERIPHERAL_CORENAMES), if [ `ls -1 $($p_DIR)/hardware/include/*.vh 2>/dev/null | wc -l ` -gt 0 ]; then $(foreach f, $(shell echo `ls $($p_DIR)/hardware/include/*.vh`), sed -i '/PHEADER/a `include \"$f\"' $@;) break; fi;) # insert header files
-	$(foreach p, $(PERIPHERALS), if test -f $($($p_CORENAME)_DIR)/hardware/include/pio.v; then sed 's/\/\*<InstanceName>\*\//$p/g' $($($p_CORENAME)_DIR)/hardware/include/pio.v | sed -i '/PIO/r /dev/stdin' $@; fi;) #insert system IOs for peripheral
-	$(foreach p, $(PERIPHERALS), if test -f $($($p_CORENAME)_DIR)/hardware/include/inst.v; then sed 's/\/\*<InstanceName>\*\//$p/g' $($($p_CORENAME)_DIR)/hardware/include/inst.v | sed -i '/endmodule/e cat /dev/stdin' $@; fi;) # insert peripheral instances
+	$(foreach p, $(sort $(PERIPHERALS)), if [ `ls -1 $($p_DIR)/hardware/include/*.vh 2>/dev/null | wc -l ` -gt 0 ]; then $(foreach f, $(shell echo `ls $($p_DIR)/hardware/include/*.vh`), sed -i '/PHEADER/a `include \"$f\"' $@;) break; fi;) # insert header files
+	$(foreach p, $(PERIPH_INSTANCES), if test -f $($($p_CORENAME)_DIR)/hardware/include/pio.v; then sed 's/\/\*<InstanceName>\*\//$p/g' $($($p_CORENAME)_DIR)/hardware/include/pio.v | sed -i '/PIO/r /dev/stdin' $@; fi;) #insert system IOs for peripheral
+	$(foreach p, $(PERIPH_INSTANCES), if test -f $($($p_CORENAME)_DIR)/hardware/include/inst.v; then sed 's/\/\*<InstanceName>\*\//$p/g' $($($p_CORENAME)_DIR)/hardware/include/inst.v | sed -i '/endmodule/e cat /dev/stdin' $@; fi;) # insert peripheral instances
 
 # make and copy memory init files
 MEM_PYTHON_DIR=$(MEM_DIR)/software/python
