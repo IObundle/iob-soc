@@ -310,7 +310,7 @@ module system_tb;
     */
 
 	//Manually added testbench uart core. RS232 pins attached to the same pins
-	//of the uut UART instance
+	//of the uut UART0 instance to communicate with it
    iob_uart uart_tb
      (
       .clk       (clk),
