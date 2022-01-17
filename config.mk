@@ -28,9 +28,10 @@ BOOTROM_ADDR_W:=12
 INIT_MEM ?=1
 
 #PERIPHERAL LIST
-#must match respective submodule CORE_NAME in the core.mk file of the submodule
-#PERIPHERALS:=UART
-PERIPHERALS ?=UART REGFILEIF
+#list with corename of peripherals to be attached to peripheral bus.
+#must match the 'corename' target in the Makefile inside the peripheral submodule directory.
+#if multiple folders with the same corename exist, each of them will be attached as a new instance.
+PERIPHERAL_CORENAMES ?=UART REGFILEIF
 
 #RISC-V HARD MULTIPLIER AND DIVIDER INSTRUCTIONS
 USE_MUL_DIV ?=1
@@ -131,7 +132,9 @@ DEFINE+=$(defmacro)P=$P
 DEFINE+=$(defmacro)B=$B
 
 N_SLAVES:=0
-#assign sequential numbers to peripheral names used as variables
+#create list of peripherals based on instance names taken from the folder name of each peripheral
+$(foreach d, $(SUBMODULE_DIRS), $(eval TMP=$(shell make -C $(SUBMODULES_DIR)/$d corename | grep -v make)) $(if $(filter $(TMP), $(PERIPHERAL_CORENAMES)), $(eval PERIPHERALS+=$d) $(eval $d_CORENAME =$(TMP)) ,))
+#assign sequential numbers to peripheral instance names used as variables
 $(foreach p, $(PERIPHERALS), $(eval $p=$(N_SLAVES)) $(eval N_SLAVES:=$(shell expr $(N_SLAVES) \+ 1)))
 $(foreach p, $(PERIPHERALS), $(eval DEFINE+=$(defmacro)$p=$($p)))
 

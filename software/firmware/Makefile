@@ -10,7 +10,7 @@ include $(CACHE_DIR)/software/software.mk
 endif
 
 #peripherals (embedded)
-$(foreach p, $(PERIPHERALS), $(eval include $($p_DIR)/software/embedded/embedded.mk))
+$(foreach p, $(PERIPHERAL_CORENAMES), $(eval include $($p_DIR)/software/embedded/embedded.mk))
 
 #HEADERS
 HDR+=periphs.h
