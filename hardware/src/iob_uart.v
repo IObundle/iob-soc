@@ -14,11 +14,7 @@ module iob_uart
   (
 
    //CPU interface
-`ifndef USE_AXI4LITE
  `include "cpu_nat_s_if.v"
-`else
- `include "cpu_axi4lite_s_if.v"
-`endif
 
    //additional inputs and outputs
 
