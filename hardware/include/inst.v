@@ -1,7 +1,7 @@
 //instantiate core in system
 
    //
-   // UART
+   // /*<InstanceName>*/
    //
 
    iob_uart /*<InstanceName>*/

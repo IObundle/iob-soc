@@ -1,7 +1,7 @@
 //add primary io to system instance
 
 
-   //UART
+   ///*<InstanceName>*/
    output                   /*<InstanceName>*/_txd,
    input                    /*<InstanceName>*/_rxd,
    output                   /*<InstanceName>*/_rts,
