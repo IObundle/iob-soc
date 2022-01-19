@@ -12,10 +12,10 @@
 FIRM_ADDR_W ?=15
 
 #SRAM SIZE (LOG2)
-SRAM_ADDR_W ?=7
+SRAM_ADDR_W ?=15
 
 #RAM TYPE (single-port or dual-port)
-USE_SPRAM ?=1
+USE_SPRAM ?=0
 
 #DDR
 USE_DDR ?=0
@@ -59,6 +59,7 @@ BOARD ?=CYCLONEV-GT-DK
 #default asic node running locally or remotely
 #check the respective Makefile in hardware/asic/$(ASIC_NODE) for specific settings
 ASIC_NODE ?=umc130
+#ASIC_NODE  ?=skywater
 
 #DOCUMENTATION
 #default document to compile
