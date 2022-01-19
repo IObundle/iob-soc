@@ -1,36 +1,25 @@
 ROOT_DIR=../../..
 include ../asic.mk
 OPENLANE_DESIGNS:=$(OPENLANE_HOME)/designs
-IMAGE_NAME ?= efabless/openlane:2021.07.29_04.49.46 #latest
+IMAGE_NAME ?= efabless/openlane:2021.07.29_04.49.46
 ASIC_NODE=skywater
-USE_SPRAM = 1
-SRAM_ADDR_W =7
 SRAM_W = 7
 MKDIR := mkdir -p
 VSRC+=iob_sp_ram_be.v
 VSRC+=iob_sp_rom.v
-# Memory technology
 ASIC_MEM_TECH:=sky130A
-# Memory type
 ASIC_SPRAM_TYPE:=spram
 ifeq (0,$(shell docker -v 2>/dev/null | grep podman | wc -l))
    DOCKER_UID_OPTIONS = -u $(shell id -u $(USER)):$(shell id -g $(USER))
 endif
 DOK_CMD ?= docker run -it --rm -v $(OPENLANE_HOME):/openLANE_flow -v $(PDK_ROOT):$(PDK_ROOT) -e PDK_ROOT=$(PDK_ROOT) $(DOCKER_UID_OPTIONS) $(IMAGE_NAME)
-
-
 .PHONY: all asic clean_sram clean_asic clean_debug clean_iob_sp_ram_be.v clean
-
 all: sram  asic 
-
-#SRAM generation
 
 sram: openram_config.py
 	python3 $(OPENRAM_HOME)/openram.py openram_config.py
 	mv temp sram
 
-
-#SRAM wrapper generation
 iob_sp_ram_be.v:
 	$(MEM_DIR)/software/python/memakerwrap.py $(ASIC_MEM_TECH) iob_sp_ram_be $(ASIC_SPRAM_TYPE) 0 1 $(SRAM_W) 8 4 1 > $@
 
@@ -42,7 +31,6 @@ TEMP:
 	sed -i "s/m4/met4/g" $(wildcard sram/*.lef)
 	sed -i "s/m3/met3/g" $(wildcard sram/*.lef)
 
-
 DEL:   TEMP
 	sed -i.bak -e '7d' temp/system.v
 ADD:   DEL
@@ -52,7 +40,6 @@ ADD:   DEL
 $(DEFINE): ADD
 	echo "\`define $@ $($@)"| sed 's/=/ /g' >> temp/iob-soc-defs.vh
 
-# ASIC generation
 asic:  $(VSRC) $(VHDR) $(DEFINE) 
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/src 
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/macros/lef
@@ -65,13 +52,7 @@ asic:  $(VSRC) $(VHDR) $(DEFINE)
 	cp run_interactive.tcl $(OPENLANE_HOME)
 	cp config.tcl $(OPENLANE_DESIGNS)/system
 	cd $(OPENLANE_HOME);
-
-       # For non-interactive flow of OpenLane by using iob-soc SRAM and macro placement config file -please do not remove-
-#$(DOK_CMD) sh -c   "./flow.tcl -design system  -p "read_verilog -I/$(OPENLANE_DESIGNS)/system/inc" -tag soc -overwrite -config file /system/config.tcl"
-	#For interactive flow for SRAM Macro placement
 	$(DOK_CMD) sh -c "./flow.tcl -interactive -file run_interactive.tcl"
-	#For non - interactive flow for SRAM Macro placement
-	#$(DOK_CMD) sh -c "./flow.tcl -design system -tag soc -overwrite"
 
 debug: $(VSRC) $(VHDR)
 	mkdir debug

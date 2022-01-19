@@ -1,7 +1,5 @@
 # User config
-
 set ::env(DESIGN_NAME) system
-
 # Change if needed
 set ::env(VERILOG_FILES) "\
     designs/system/src/system.v\
@@ -16,25 +14,16 @@ set ::env(VERILOG_FILES) "\
     designs/system/src/split.v\
     designs/system/src/sram.v\
     designs/system/src/uart_core.v"
-
-# Fill this
 set ::env(CLOCK_PERIOD) "10"
 set ::env(CLOCK_PORT) "clk"
-#for non interactive macro placement -please do not remove-
-#set ::env(MACRO_PLACEMENT_CFG) $::env(OPENLANE_HOME)/designs/$::env(DESIGN_NAME)/macro_placement.cfg
-#MAGIC_EXT_USE_GDS #for black box LVS 
-#VERILOG_FILES_BLACKBOX to point the black box verilog files
-#variables to set macro to be placed as macro (not core i.e., without io ring/pad)
 set ::env(DESIGN_IS_CORE) 0
 set ::env(FP_PDN_CORE_RING) 0
 set ::env(PL_TARGET_DENSITY) 0.5
 set ::env(PL_BASIC_PLACEMENT) 1
 set ::env(CELL_PAD) 0
 set ::env(GLB_RESIZER_TIMING_OPTIMIZATIONS) 0
-#variables to prohibit router from using metal 5 for routing. Router will use up to met4 before macro placement
 set ::env(GLB_RT_MAXLAYER) 5
 set ::env(FP_PDN_CHECK_NODES) 0
-#lef and gds files from generated OpenRAM (sram)
 set ::env(EXTRA_LEFS) [glob $::env(DESIGN_DIR)/macros/lef/*.lef]
 set ::env(EXTRA_GDS_FILES) [glob $::env(DESIGN_DIR)/macros/gds/*.gds]
 set ::env(DIE_AREA) "0 0 1212.060 622.780"
