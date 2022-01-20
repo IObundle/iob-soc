@@ -10,7 +10,7 @@ MODULES+=$(shell make -C $(ROOT_DIR) corename | grep -v make)
 #ADD SUBMODULES
 
 #list memory modules before including MEM's hardware.mk
-MEM_MODULES+=rom/sp_rom ram/dp_ram_be
+MEM_MODULES+=iob_rom_sp iob_ram_dp_be
 
 #include submodule's hardware
 $(foreach p, $(SUBMODULES), $(if $(filter $p, $(MODULES)),, $(eval include $($p_DIR)/hardware/hardware.mk)))
