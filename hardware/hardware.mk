@@ -23,7 +23,7 @@ VSRC+=$(UART_SRC_DIR)/uart_core.v $(UART_SRC_DIR)/iob_uart.v
 
 #cpu accessible registers
 UARTsw_reg_gen.v UARTsw_reg.vh: $(UART_INC_DIR)/UARTsw_reg.v
-	$(LIB_DIR)/software/mkregs.py $< HW
+	$(LIB_DIR)/software/python/mkregs.py $< HW
 
 uart_clean_hw:
 	@rm -rf $(UART_INC_DIR)/UARTsw_reg_gen.v \
