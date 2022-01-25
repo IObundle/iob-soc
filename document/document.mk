@@ -13,8 +13,8 @@ NOCLEAN+=-o -name "test.expected" -o -name "Makefile"
 
 #include tex submodule makefile segment
 CORE_DIR:=$(UART_DIR)
-TEX_DOC_DIR ?=$(TEX_DIR)/document
-include $(TEX_DOC_DIR)/document.mk
+LIB_DOC_DIR ?=$(LIB_DIR)/document
+include $(LIB_DOC_DIR)/document.mk
 
 test: clean all
 	diff -q $(DOC).aux test.expected
