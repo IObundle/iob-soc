@@ -13,6 +13,7 @@ HW_MODULES+=$(shell make -C $(ROOT_DIR) corename | grep -v make)
 
 #memories
 #list memory modules before including MEM's hardware.mk
+
 MEM_MODULES+=rom/sp_rom ram/dp_ram_be
 include $(MEM_DIR)/hardware/hardware.mk
 
