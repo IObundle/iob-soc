@@ -13,7 +13,7 @@ include ./config.mk
 	test-doc test-doc-clean\
 	test test-clean\
 	clean clean-all\
-	corename
+	corename debug
 
 corename:
 	@echo "IOb-SoC"
@@ -152,3 +152,7 @@ clean:
 	make doc-clean
 
 clean-all: test-clean
+
+
+debug:
+	@echo $(UART_DIR)

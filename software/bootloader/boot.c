@@ -1,5 +1,5 @@
 #include "system.h"
-#include "interconnect.h"
+#include "iob-lib.h"
 #include "iob-uart.h"
 
 #if (USE_DDR_SW==1 && RUN_EXTMEM_SW==1)

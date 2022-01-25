@@ -24,6 +24,9 @@ endif
 #INCLUDE
 INCLUDE+=$(incdir)$(SW_DIR) $(incdir).
 
+#add iob-lib to include path
+INCLUDE+=$(incdir)$(LIB_DIR)/software/include
+
 #headers
 HDR=$(SW_DIR)/system.h
 

@@ -5,15 +5,26 @@ BAUD ?=115200
 FREQ ?=100000000
 
 #add itself to MODULES list
-MODULES+=$(shell make -C $(ROOT_DIR) corename | grep -v make)
+HW_MODULES+=$(shell make -C $(ROOT_DIR) corename | grep -v make)
 
-#ADD SUBMODULES
+#
+# ADD SUBMODULES HARDWARE
+#
 
+#memories
 #list memory modules before including MEM's hardware.mk
 MEM_MODULES+=rom/sp_rom ram/dp_ram_be
+include $(MEM_DIR)/hardware/hardware.mk
 
-#include submodule's hardware
-$(foreach p, $(SUBMODULES), $(if $(filter $p, $(MODULES)),, $(eval include $($p_DIR)/hardware/hardware.mk)))
+#CPU
+include $(CPU_DIR)/hardware/hardware.mk
+
+#CACHE
+include $(CACHE_DIR)/hardware/hardware.mk
+
+#UART
+include $(UART_DIR)/hardware/hardware.mk
+
 
 #HARDWARE PATHS
 INC_DIR:=$(HW_DIR)/include
@@ -23,7 +34,8 @@ SRC_DIR:=$(HW_DIR)/src
 DEFINE+=$(defmacro)DDR_ADDR_W=$(DDR_ADDR_W)
 
 #INCLUDES
-INCLUDE+=$(incdir). $(incdir)$(INC_DIR)
+INCLUDE+=$(incdir). $(incdir)$(INC_DIR) $(incdir)$(LIB_DIR)/hardware/include
+
 
 #HEADERS
 VHDR+=$(INC_DIR)/system.vh

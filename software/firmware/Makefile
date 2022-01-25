@@ -9,8 +9,8 @@ ifeq ($(USE_DDR),1)
 include $(CACHE_DIR)/software/software.mk
 endif
 
-#peripherals (embedded)
-$(foreach p, $(PERIPHERALS), $(eval include $($p_DIR)/software/embedded/embedded.mk))
+#uart
+include $(UART_DIR)/software/embedded/embedded.mk
 
 #HEADERS
 HDR+=periphs.h

@@ -14,10 +14,6 @@ endif
 #UART
 include $(UART_DIR)/software/embedded/embedded.mk
 
-#interconnect
-include $(INTERCON_DIR)/software/software.mk
-
-
 #SOURCES
 SRC+=boot.S boot.c 
 
