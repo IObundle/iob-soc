@@ -1,11 +1,16 @@
 UART_DIR:=../..
+CORE_DIR:=$(UART_DIR)
 
+#interface signal tables
 TAB=rs232_is_tab.tex cpu_nat_s_is_tab.tex cpu_axi4lite_s_is_tab.tex
 
-NOCLEAN=-name "ug.pdf" -o -name "ifsignals.tex"
+#include sowftware accessible registers
+SWREGS=1
+
+NOCLEAN=-name "ug.pdf" -o -name "ifsignals.tex" -o -name "sw_reg_tab.tex"
 
 include $(UART_DIR)/document/document.mk
 
 rs232_is_tab.tex: $(UART_HW_DIR)/src/iob_uart.v
-	$(TEX_SW_DIR)/io2tex.py $< $@
+	$(LIB_SW_PYTHON_DIR)/io2tex.py $< $@
 
