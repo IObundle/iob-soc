@@ -7,7 +7,6 @@ include $(UART_DIR)/config.mk
 
 UART_INC_DIR:=$(UART_HW_DIR)/include
 UART_SRC_DIR:=$(UART_HW_DIR)/src
-LIB_DIR ?= $(UART_DIR)/submodules/LIB
 
 USE_NETLIST ?=0
 

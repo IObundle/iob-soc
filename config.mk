@@ -4,10 +4,11 @@ TOP_MODULE=iob_uart
 #PATHS
 REMOTE_ROOT_DIR ?= sandbox/iob-uart
 
+LIB_DIR ?= $(UART_DIR)/submodules/LIB
 UART_HW_DIR:=$(UART_DIR)/hardware
 
 #MAKE SW ACCESSIBLE REGISTER
-MKREGS:=$(shell find $(UART_DIR)/submodules/LIB -name mkregs.py)
+MKREGS:=$(shell find $(LIB_DIR) -name mkregs.py)
 
 #DEFAULT FPGA FAMILY AND FAMILY LIST
 FPGA_FAMILY ?=CYCLONEV-GT

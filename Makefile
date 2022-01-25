@@ -9,7 +9,7 @@ include config.mk
 	test-fpga test-fpga-clean \
 	test-doc test-doc-clean \
 	test test-clean \
-	clean-all
+	clean-all debug
 
 corename:
 	@echo $(UART_NAME)
@@ -107,3 +107,9 @@ test-clean: test-sim-clean test-fpga-clean test-doc-clean
 # 
 
 clean-all: sim-clean fpga-clean-all doc-clean-all
+
+
+debug:
+	@echo $(SIM_DIR)
+	@echo $(FPGA_DIR)
+	@echo $(DOC_DIR)
