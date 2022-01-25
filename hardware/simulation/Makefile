@@ -5,17 +5,14 @@ defmacro:=-D
 
 include $(UART_DIR)/hardware/hardware.mk
 
-VCD ?=1
-
 ifeq ($(VCD),1)
 DEFINE+=$(defmacro)VCD
 endif
 
-VSRC+=$(UART_TB_DIR)/uart_tb.v
+VSRC+=$(UART_HW_DIR)/simulation/testbench/uart_tb.v
 
 #icarus verilog simulator
 VLOG:=iverilog -W all -g2005-sv
-
 
 .PHONY: run \
 	test test1 \

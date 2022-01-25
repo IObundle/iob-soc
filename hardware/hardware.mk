@@ -1,9 +1,13 @@
-ifeq ($(filter $(UART_NAME), $(MODULES)),)
+ifeq ($(filter $(UART_NAME), $(HW_MODULES)),)
 
 #add itself to MODULES list
-MODULES+=$(shell make -C $(UART_DIR) corename | grep -v make)
+HW_MODULES+=$(shell make -C $(UART_DIR) corename | grep -v make)
 
 include $(UART_DIR)/config.mk
+
+UART_INC_DIR:=$(UART_HW_DIR)/include
+UART_SRC_DIR:=$(UART_HW_DIR)/src
+LIB_DIR ?= $(UART_DIR)/submodules/LIB
 
 USE_NETLIST ?=0
 
