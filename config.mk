@@ -1,22 +1,27 @@
+UART_NAME = UART
 TOP_MODULE=iob_uart
 
 #PATHS
 REMOTE_ROOT_DIR ?= sandbox/iob-uart
+
 UART_HW_DIR:=$(UART_DIR)/hardware
 UART_INC_DIR:=$(UART_HW_DIR)/include
 UART_SRC_DIR:=$(UART_HW_DIR)/src
+
+SIM_DIR ?=$(UART_SIM_DIR)
 UART_SIM_DIR:=$(UART_HW_DIR)/simulation
 UART_TB_DIR:=$(UART_SIM_DIR)/testbench
-UART_SW_DIR:=$(UART_DIR)/software
-SIM_DIR ?=$(UART_SIM_DIR)
-FPGA_DIR ?=$(shell find $(UART_DIR)/hardware -name $(FPGA_FAMILY))
-DOC_DIR ?=$(UART_DIR)/document/$(DOC)
-SUBMODULES_DIR:=$(UART_DIR)/submodules
 
-# SUBMODULE PATHS
-SUBMODULES=
-SUBMODULE_DIRS=$(shell ls $(SUBMODULES_DIR))
-$(foreach d, $(SUBMODULE_DIRS), $(eval TMP=$(shell make -C $(SUBMODULES_DIR)/$d corename | grep -v make)) $(eval SUBMODULES+=$(TMP)) $(eval $(TMP)_DIR ?=$(SUBMODULES_DIR)/$d))
+UART_SW_DIR:=$(UART_DIR)/software
+
+FPGA_DIR ?=$(shell find $(UART_DIR)/hardware -name $(FPGA_FAMILY))
+
+DOC_DIR ?=$(UART_DIR)/document/$(DOC)
+
+LIB_DIR ?= $(UART_DIR)/submodules/LIB
+
+#MAKE SW ACCESSIBLE REGISTER
+MKREGS:=$(shell find $(LIB_DIR) -name mkregs.py)
 
 #DEFAULT FPGA FAMILY
 FPGA_FAMILY ?=CYCLONEV-GT

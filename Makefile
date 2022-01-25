@@ -12,7 +12,7 @@ include config.mk
 	clean-all
 
 corename:
-	@echo "UART"
+	@echo $(UART_NAME)
 
 #
 # SIMULATE

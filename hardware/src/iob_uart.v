@@ -2,7 +2,7 @@
 `include "iob_lib.vh"
 `include "interconnect.vh"
 `include "iob_uart.vh"
-`include "UARTsw_reg.vh"
+`include "UARTsw_reg_def.vh"
 
 module iob_uart 
   # (//the below parameters are used in cpu if includes below
@@ -14,7 +14,7 @@ module iob_uart
   (
 
    //CPU interface
- `include "cpu_nat_s_if.v"
+`include "cpu_nat_s_if.vh"
 
    //additional inputs and outputs
 
@@ -23,12 +23,12 @@ module iob_uart
    `INPUT(rxd, 1), //Serial receive line
    `INPUT(cts, 1), //Clear to send; the destination is ready to receive a transmission sent by the UART
    `OUTPUT(rts, 1), //Ready to send; the UART is ready to receive a transmission from the sender.
-`include "gen_if.v"
+`include "gen_if.vh"
    );
 
 //BLOCK Register File & Holds the current configuration of the UART as well as internal parameters. Data to be sent or that has been received is stored here temporarily.
-`include "UARTsw_reg.v"
-`include "UARTsw_reg_gen.v"
+`include "UARTsw_reg.vh"
+`include "UARTsw_reg_gen.vh"
    
    uart_core uart_core0 
      (
