@@ -1,7 +1,4 @@
-ifeq($(filter $(UART_NAME), $(SW_MODULES)),)
 include $(UART_DIR)/config.mk
-
-SW_MODULES+=$(UART_NAME)
 
 UART_SW_DIR:=$(UART_DIR)/software
 
@@ -16,5 +13,3 @@ SRC+=$(UART_SW_DIR)/iob-uart.c
 
 UARTsw_reg.h: $(UART_HW_DIR)/include/UARTsw_reg.vh
 	$(MKREGS) $< SW
-
-endif
