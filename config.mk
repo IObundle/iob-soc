@@ -1,7 +1,7 @@
 TOP_MODULE=iob_uart
 
 #PATHS
-REMOTE_ROOT_DIR ?= sandbox/iob-soc/submodules/UART
+REMOTE_ROOT_DIR ?= sandbox/iob-uart
 UART_HW_DIR:=$(UART_DIR)/hardware
 UART_INC_DIR:=$(UART_HW_DIR)/include
 UART_SRC_DIR:=$(UART_HW_DIR)/src

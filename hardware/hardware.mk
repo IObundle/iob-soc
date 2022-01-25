@@ -1,3 +1,5 @@
+ifeq ($(filter UART, $(MODULES)),)
+
 include $(UART_DIR)/config.mk
 
 USE_NETLIST ?=0
@@ -31,3 +33,4 @@ uart_clean_hw:
 
 .PHONY: uart_clean_hw
 
+endif
