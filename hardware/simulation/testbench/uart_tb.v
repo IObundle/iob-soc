@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-`include "iob_uart.vh"
+`include "UART.vh"
 
 module uart_tb;
 
