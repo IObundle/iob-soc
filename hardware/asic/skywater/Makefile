@@ -24,31 +24,34 @@ iob_sp_ram_be.v:
 	$(MEM_DIR)/software/python/memakerwrap.py $(ASIC_MEM_TECH) iob_sp_ram_be $(ASIC_SPRAM_TYPE) 0 1 $(SRAM_W) 8 4 1 > $@
 
 TEMP:
-	$(MKDIR) temp
-	cp $(VSRC) temp
-	cp $(VHDR) temp
-	cp boot.hex temp
+	$(MKDIR) temp_src
+	$(MKDIR) temp_inc
+	cp $(VSRC) temp_src
+	cp $(VHDR) temp_inc
+	cp boot.hex temp_src
 	sed -i "s/m4/met4/g" $(wildcard sram/*.lef)
 	sed -i "s/m3/met3/g" $(wildcard sram/*.lef)
 
 DEL:   TEMP
-	sed -i.bak -e '7d' temp/system.v
+	sed -i.bak -e '7d' temp_src/system.v
 ADD:   DEL
-	sed -i "5i \`include \"iob_uart.vh\"" temp/system.v
-	sed -i "1i \`include \"iob-soc-defs.vh\"" temp/system.v
+	sed -i "5i \`include \"iob_uart.vh\"" temp_src/system.v
+	sed -i "1i \`include \"iob-soc-defs.vh\"" temp_src/system.v
+	sed -i "4i \`include \"iob-soc-defs.vh\"" temp_src/boot_ctr.v
 
 $(DEFINE): ADD
-	echo "\`define $@ $($@)"| sed 's/=/ /g' >> temp/iob-soc-defs.vh
+	echo "\`define $@ $($@)"| sed 's/=/ /g' >> temp_inc/iob-soc-defs.vh
 
 asic:  $(VSRC) $(VHDR) $(DEFINE) 
-	$(MKDIR) $(OPENLANE_DESIGNS)/system/src 
+	$(MKDIR) $(OPENLANE_DESIGNS)/system/src
+	$(MKDIR) $(OPENLANE_DESIGNS)/system/inc
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/macros/lef
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/macros/gds
 	cp  $(wildcard sram/*.lef) $(OPENLANE_DESIGNS)/system/macros/lef 	
 	cp  $(wildcard sram/*.gds) $(OPENLANE_DESIGNS)/system/macros/gds 		
-	cp  $(wildcard temp/*.v) $(OPENLANE_DESIGNS)/system/src
-	cp  $(wildcard temp/*.vh) $(OPENLANE_DESIGNS)/system/src
-	cp  $(wildcard temp/boot.hex) $(OPENLANE_DESIGNS)/system/src
+	cp  $(wildcard temp_src/*.v) $(OPENLANE_DESIGNS)/system/src
+	cp  $(wildcard temp_inc/*.*) $(OPENLANE_DESIGNS)/system/inc
+	cp  $(wildcard temp_src/boot.hex) $(OPENLANE_DESIGNS)/system/src
 	cp run_interactive.tcl $(OPENLANE_HOME)
 	cp config.tcl $(OPENLANE_DESIGNS)/system
 	cd $(OPENLANE_HOME);
