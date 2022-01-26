@@ -5,7 +5,7 @@ BAUD ?=115200
 FREQ ?=100000000
 
 #add itself to MODULES list
-HW_MODULES+=$(shell make -C $(ROOT_DIR) corename | grep -v make)
+HW_MODULES+=$(IOBSOC_NAME)
 
 #
 # ADD SUBMODULES HARDWARE
@@ -14,7 +14,10 @@ HW_MODULES+=$(shell make -C $(ROOT_DIR) corename | grep -v make)
 #memories
 #list memory modules before including MEM's hardware.mk
 
-MEM_MODULES+=rom/sp_rom ram/dp_ram_be
+LIB_HW_MODULES+=iob_split iob_merge
+include $(LIB_DIR)/hardware/hardware.mk
+
+MEM_MODULES+=iob_rom_sp iob_ram_dp_be
 include $(MEM_DIR)/hardware/hardware.mk
 
 #CPU
@@ -42,8 +45,6 @@ INCLUDE+=$(incdir). $(incdir)$(INC_DIR) $(incdir)$(LIB_DIR)/hardware/include
 VHDR+=$(INC_DIR)/system.vh
 
 #SOURCES
-#testbench
-TB_DIR:=$(HW_DIR)/testbench
 
 #external memory interface
 ifeq ($(USE_DDR),1)
@@ -56,10 +57,12 @@ VSRC+=system.v
 
 IMAGES=boot.hex firmware.hex
 
+#	$(foreach p, $(PERIPHERALS), if [ `ls -1 $($p_DIR)/hardware/include/*.vh 2>/dev/null | wc -l ` -gt 0 ]; then $(foreach f, $(shell echo `ls $($p_DIR)/hardware/include/*_reg_def.vh`), sed -i '/PHEADER/a `include \"$f\"' $@;) break; fi;) # insert header file
+
 # make system.v with peripherals
 system.v: $(SRC_DIR)/system_core.v
 	cp $(SRC_DIR)/system_core.v $@ # create system.v
-	$(foreach p, $(PERIPHERALS), if [ `ls -1 $($p_DIR)/hardware/include/*.vh 2>/dev/null | wc -l ` -gt 0 ]; then $(foreach f, $(shell echo `ls $($p_DIR)/hardware/include/*.vh`), sed -i '/PHEADER/a `include \"$f\"' $@;) break; fi;) # insert header files
+	$(foreach p, $(PERIPHERALS), $(shell sed -i '/PHEADER/a `include \"$(f).vh\"' $@)) # insert header file
 	$(foreach p, $(PERIPHERALS), if test -f $($p_DIR)/hardware/include/pio.v; then sed -i '/PIO/r $($p_DIR)/hardware/include/pio.v' $@; fi;) #insert system IOs for peripheral
 	$(foreach p, $(PERIPHERALS), if test -f $($p_DIR)/hardware/include/inst.v; then sed -i '/endmodule/e cat $($p_DIR)/hardware/include/inst.v' $@; fi;) # insert peripheral instances
 

@@ -4,6 +4,8 @@
 #
 ######################################################################
 
+IOBSOC_NAME:=IOBSOC
+
 #
 # PRIMARY PARAMETERS: CAN BE CHANGED BY USERS OR OVERRIDEN BY ENV VARS
 #
@@ -86,8 +88,8 @@ endif
 
 #submodule paths
 SUBMODULES_DIR=$(ROOT_DIR)/submodules
-SUBMODULE_DIR_LIST=$(shell ls $(SUBMODULES_DIR))
-$(foreach d, $(SUBMODULE_DIR_LIST), $(eval $d_DIR ?=$(SUBMODULES_DIR)/$d))
+SUBMODULES_DIR_LIST=$(shell ls $(SUBMODULES_DIR))
+$(foreach d, $(SUBMODULES_DIR_LIST), $(eval $d_DIR ?=$(SUBMODULES_DIR)/$d))
 
 #sw paths
 SW_DIR:=$(ROOT_DIR)/software
