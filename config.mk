@@ -1,4 +1,3 @@
-UART_NAME = UART
 TOP_MODULE=iob_uart
 
 #PATHS

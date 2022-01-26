@@ -1,7 +1,6 @@
 `timescale 1ns/1ps
 `include "iob_lib.vh"
-`include "interconnect.vh"
-`include "iob_uart.vh"
+`include "UART.vh"
 `include "UARTsw_reg_def.vh"
 
 module iob_uart 

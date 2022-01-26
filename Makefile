@@ -1,8 +1,7 @@
 UART_DIR:=.
 include config.mk
 
-.PHONY: corename \
-	sim sim-test sim-clean \
+.PHONY: sim sim-test sim-clean \
 	fpga-build fpga-build-all fpga-test fpga-clean fpga-clean-all \
 	doc-build doc-build-all doc-test doc-clean doc-clean-all \
 	test-sim test-sim-clean \
@@ -11,8 +10,6 @@ include config.mk
 	test test-clean \
 	clean-all debug
 
-corename:
-	@echo $(UART_NAME)
 
 #
 # SIMULATE

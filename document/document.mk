@@ -2,7 +2,7 @@ include $(UART_DIR)/config.mk
 
 #block diagram verilog source
 BD_VSRC=uart_core.v
-CORENAME=$(shell make -C $(UART_DIR) corename | grep -v make)
+CORENAME=UART
 
 INTEL ?=1
 INT_FAMILY ?=CYCLONEV-GT
