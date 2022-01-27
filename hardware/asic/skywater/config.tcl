@@ -7,7 +7,7 @@ set ::env(CLOCK_PERIOD) "10"
 set ::env(CLOCK_PORT) "clk"
 set ::env(DESIGN_IS_CORE) 0
 set ::env(FP_PDN_CORE_RING) 0
-set ::env(PL_TARGET_DENSITY) 0.5
+set ::env(PL_TARGET_DENSITY) 0.3
 set ::env(PL_BASIC_PLACEMENT) 1
 set ::env(CELL_PAD) 0
 set ::env(GLB_RESIZER_TIMING_OPTIMIZATIONS) 0
