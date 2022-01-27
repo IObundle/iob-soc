@@ -84,8 +84,11 @@ queue-out-remote:
 # Testing
 #
 
-test: clean-testlog test1 test2 test3
+test: clean-testlog test1 test2 test3 test-log-parse
 	diff -q test.log test.expected
+
+test-log-parse: test.log
+	sed -i '/IOb-Console:/d' test.log
 
 test1:
 	make clean

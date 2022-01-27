@@ -116,7 +116,7 @@ task cpu_sendfile;
       //receive file name
       cpu_recvstr(name);
       name_str = name;
-      $display("TESBENCH: sending file %s", name_str);
+      $display("TESTBENCH: sending file %s", name_str);
 
       //open data file
       if(name_str != "")
@@ -136,7 +136,7 @@ task cpu_sendfile;
       file_size = $ftell(fp);
       res = $rewind(fp);
 
-      $display("File size: %d bytes", file_size);
+      $display("TESTBENCH: File size: %d bytes", file_size);
       
       //send file size
       cpu_putchar(file_size[7:0]);
@@ -156,11 +156,11 @@ task cpu_sendfile;
          cpu_putchar($fgetc(fp));
          
          if(i/4 == (file_size/4*k/100)) begin
-            $write("%d%%\n", k);
+            $write("TESTBENCH: %d%%\n", k);
             k=k+10;
          end
       end
-      $write("%d%%\n", 100);
+      $write("TESTBENCH: %d%%\n", 100);
       $fclose(fp);
    end
 endtask
@@ -178,7 +178,7 @@ task cpu_recvfile;
       cpu_recvstr(name);
       name_str = name;
       
-      $display("TESBENCH: receiving file %s", name_str);
+      $display("TESTBENCH: receiving file %s", name_str);
 
       if(name_str != "")
         fp = $fopen(name_str, "wb"); //to support icarus
@@ -203,11 +203,11 @@ task cpu_recvfile;
          $fwrite(fp, "%c", char);
 
          if(i/4 == (file_size/4*k/100)) begin
-            $write("%d%%\n", k);
+            $write("TESTBENCH: %d%%\n", k);
             k=k+10;
          end
       end
-      $write("%d%%\n", 100);
+      $write("TESTBENCH: %d%%\n", 100);
       $fclose(fp);
    end
 endtask
