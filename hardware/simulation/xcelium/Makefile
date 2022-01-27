@@ -19,7 +19,7 @@ SFLAGS = -errormax 15 -status -CMDFILE $(ROOT_DIR)/hardware/testbench
 run: $(VSRC) $(VHDR) $(IMAGES)
 	echo $(XMSIM_SERVER)
 	./run_xmsim.sh "$(VSRC)" "$(CFLAGS)" "$(EFLAGS)" "$(SFLAGS)"
-	grep -v xcelium xmsim.log | grep -v xmsim $(TEST_LOG)
+	grep -v xcelium xmsim.log | grep -v xmsim | grep -v "\$finish" $(TEST_LOG)
 
 clean: clean-remote
 	@rm -rf xcelium.d xmsim.key
