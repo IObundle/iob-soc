@@ -77,8 +77,11 @@ kill-remote-sim:
 	ssh $(SIM_USER)@$(SIM_SERVER) 'killall -q -u $(SIM_USER) -9 $(SIM_PROC)'
 
 
-test: clean-testlog test1 test2 test3 test4 test5
+test: clean-testlog test1 test2 test3 test4 test5 test-log-parse
 	diff -q test.log test.expected
+
+test-log-parse: test.log
+	sed -i '/TESTBENCH:/d' test.log
 
 test1:
 	make all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
