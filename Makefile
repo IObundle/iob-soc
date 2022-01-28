@@ -2,7 +2,7 @@ SUT_DIR:=.
 include ./config.mk
 
 .PHONY: pc-emul pc-emul-test pc-emul-clean\
-	sim sim-test sim-clean\
+	sim sim-test sim-clean tester-sim\
 	fpga-build fpga-run fpga-test fpga-clean\
 	asic-synth asic-sim-post-synth asic-test asic-clean\
 	doc-build doc-test  doc-clean clean\
@@ -13,10 +13,17 @@ include ./config.mk
 	test-doc test-doc-clean\
 	test test-clean\
 	clean clean-all\
-	corename
+	corename\
+	tester-config
 
 corename:
 	@echo "IOb-SoC"
+
+# Generate configuration file for port mapping between the Tester, SUT and external interface of the Top System
+tester-config:
+	python3 hardware/tester/portmap.py generate_config $(SUT_DIR)
+	@echo Portmap template generated in hardware/tester/peripheral_portmap.txt
+
 #
 # SIMULATE RTL
 #
@@ -30,6 +37,10 @@ sim-test:
 
 sim-clean:
 	make -C $(SIM_DIR) clean clean-testlog
+
+#Simulate SUT with Tester system
+tester-sim:
+	make -C $(SIM_DIR) all TESTER_ENABLED=1
 
 #
 # EMULATE ON PC

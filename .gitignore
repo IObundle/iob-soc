@@ -55,6 +55,10 @@ hardware/asic/*/*
 !hardware/asic/*/powscript.tcl
 !hardware/asic/skywater/openram_config.py
 
+#tester
+#config file
+hardware/tester/peripheral_portmap.txt
+
 #DOCUMENT
 document/*/*
 !document/*/Makefile

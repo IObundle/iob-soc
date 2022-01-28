@@ -40,6 +40,11 @@ USE_MUL_DIV ?=1
 #RISC-V COMPRESSED INSTRUCTIONS
 USE_COMPRESSED ?=1
 
+
+#TESTER SYSTEM
+#list with corename of peripherals to be attached to Tester peripheral bus.
+TESTER_PERIPHERALS ?=UART
+
 #REMOTE MACHINES
 #git url for cloning 
 GITURL := $(word 2, $(shell git remote -v))
@@ -97,6 +102,7 @@ CONSOLE_DIR:=$(SW_DIR)/console
 HW_DIR=$(SUT_DIR)/hardware
 SIM_DIR=$(HW_DIR)/simulation/$(SIMULATOR)
 ASIC_DIR=$(HW_DIR)/asic/$(ASIC_NODE)
+TESTER_DIR=$(HW_DIR)/tester
 BOARD_DIR ?=$(shell find hardware -name $(BOARD))
 
 #doc paths
@@ -132,12 +138,24 @@ DEFINE+=$(defmacro)E=$E
 DEFINE+=$(defmacro)P=$P
 DEFINE+=$(defmacro)B=$B
 
+#Add the regfileif peripheral if building with tester system (otherwise not needed)
+ifneq ($(TESTER_ENABLED),)
+PERIPHERALS+=REGFILEIF
+endif
+
 N_SLAVES:=0
 #create list of peripheral instances based on PERIPHERALS list
 $(foreach d, $(sort $(PERIPHERALS)), $(eval TMP:=0) $(foreach p, $(filter $d,$(PERIPHERALS)), $(eval PERIPH_INSTANCES+=$d$(TMP)) $(eval $d$(TMP)_CORENAME=$d) $(eval TMP:=$(shell expr $(TMP) \+ 1)) ))
 #assign sequential numbers to peripheral instance names used as variables
 $(foreach p, $(PERIPH_INSTANCES), $(eval $p=$(N_SLAVES)) $(eval N_SLAVES:=$(shell expr $(N_SLAVES) \+ 1)))
 $(foreach p, $(PERIPH_INSTANCES), $(eval DEFINE+=$(defmacro)$p=$($p)))
+
+TESTER_N_SLAVES:=0
+#create list of peripheral instances for Tester based on TESTER_PERIPHERALS list
+$(foreach d, $(sort $(TESTER_PERIPHERALS)), $(eval TMP:=0) $(foreach p, $(filter $d,$(TESTER_PERIPHERALS)), $(eval TESTER_PERIPH_INSTANCES+=$d$(TMP)) $(eval $d$(TMP)_TESTER_CORENAME=$d) $(eval TMP:=$(shell expr $(TMP) \+ 1)) ))
+#assign sequential numbers to peripheral instance names used as variables
+$(foreach p, $(TESTER_PERIPH_INSTANCES), $(eval $p_TESTER=$(TESTER_N_SLAVES)) $(eval TESTER_N_SLAVES:=$(shell expr $(TESTER_N_SLAVES) \+ 1)))
+$(foreach p, $(TESTER_PERIPH_INSTANCES), $(eval DEFINE+=$(defmacro)$p_TESTER=$($p_TESTER)))
 
 #RULES
 gen-clean:
