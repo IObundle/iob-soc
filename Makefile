@@ -14,13 +14,13 @@ include ./config.mk
 	test test-clean\
 	clean clean-all\
 	corename\
-	tester-config
+	tester-portmap
 
 corename:
 	@echo "IOb-SoC"
 
 # Generate configuration file for port mapping between the Tester, SUT and external interface of the Top System
-tester-config:
+tester-portmap:
 	python3 hardware/tester/portmap.py generate_config $(SUT_DIR)
 	@echo Portmap template generated in hardware/tester/peripheral_portmap.txt
 
@@ -33,7 +33,6 @@ sim:
 
 sim-test:
 	make -C $(SIM_DIR) test
-
 
 sim-clean:
 	make -C $(SIM_DIR) clean clean-testlog

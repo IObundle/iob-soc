@@ -56,8 +56,9 @@ hardware/asic/*/*
 !hardware/asic/skywater/openram_config.py
 
 #tester
-#config file
+#auto generated files
 hardware/tester/peripheral_portmap.txt
+hardware/tester/top_system_generated.v
 
 #DOCUMENT
 document/*/*

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # This script auto generates a template portmap based on given peripheral instances
-# It's also used to read the portmap file and verify its correctness.
+# It's also used to read the portmap file, verify its correctness and generate top_system.v that interconnects SUT with Tester
 
 import sys
 import subprocess
@@ -19,19 +19,20 @@ portmap_header = """\
 //      or
 //    SUT.<peripheral_corename>[<peripheral_instance_number>].<peripheral_signal_name> : Tester.<peripheral_corename>[<peripheral_instance_number>].<peripheral_signal_name>
 // Example, to connect UART instance number 1 of SUT to UART instance number 0 of Tester:
-//    Tester.UART[0].txd : SUT.UART[1].rxd
-//    Tester.UART[0].rxd : SUT.UART[1].txd
-//    Tester.UART[0].rts : SUT.UART[1].cts
-//    Tester.UART[0].cts : SUT.UART[1].rts
+//    Tester.UART[0].UART_txd : SUT.UART[1].UART_rxd
+//    Tester.UART[0].UART_rxd : SUT.UART[1].UART_txd
+//    Tester.UART[0].UART_rts : SUT.UART[1].UART_cts
+//    Tester.UART[0].UART_cts : SUT.UART[1].UART_rts
 // Example, to connect UART instance number 0 of SUT to a dedicated external interface of the top system: 
-//    SUT.UART[0].rxd : External
-//    SUT.UART[0].txd : External
-//    SUT.UART[0].cts : External
-//    SUT.UART[0].rts : External
+//    SUT.UART[0].UART_rxd : External
+//    SUT.UART[0].UART_txd : External
+//    SUT.UART[0].UART_cts : External
+//    SUT.UART[0].UART_rts : External
 //********************************************************************************************************************************
 // Auto-generated list of signals to be mapped (by default mapped to external interface):
 """
 
+# Get lists with instances, signals of peripherals of SUT and Tester. Also get directories of submodules.
 def get_peripherals_vars():
     # Get peripherals list of config.mk
     sut_peripherals = subprocess.run(['make', '--no-print-directory', '-f', root_dir+'/hardware/tester/getVars.mk', 'sut-peripherals', 'SUT_DIR='+root_dir], stdout=subprocess.PIPE)
@@ -63,9 +64,16 @@ def get_peripherals_vars():
         pio_file = open(root_dir+"/submodules/"+submodule_directories[i]+"/hardware/include/pio.v", "r") 
         pio_contents = pio_file.readlines() 
         for j in pio_contents:
-            signal = re.search("^\s*((?:input)|(?:output))(?:\s|(?:\[.*\]))*(.*),", j)
+            signal = re.search("^\s*((?:(?:input)|(?:output))(?:\s|(?:\[.*\]))*)(.*),", j)
             if signal is not None:
-                peripheral_signals[i][signal.group(2)]=signal.group(1)
+                ## Find matching signal of inst.v # This is currently not needed
+                #with open(root_dir+"/submodules/"+submodule_directories[i]+"/hardware/include/inst.v", "r" ) as f:
+                #    matching_signal = re.search("\.([^\s]+)\s+\({}\),".format(signal.group(2).replace("/","\/").replace("*","\*")),f.read(),re.MULTILINE).group(1)
+                # Not used currenlty: Place an array that contains:
+                #   input or output and array size of pio.v 
+                #   matching signal in inst.v 
+                # Store input or output and array size of pio.v 
+                peripheral_signals[i][signal.group(2)]=signal.group(1)#,matching_signal]
         pio_file.close()
     #print(peripheral_signals) #DEBUG
     return sut_peripherals, tester_peripherals, sut_instances_amount, tester_instances_amount, submodule_directories, peripheral_signals
@@ -81,48 +89,105 @@ def generate_portmap():
     for corename in sut_instances_amount:
         for i in range(sut_instances_amount[corename]):
             for signal in peripheral_signals[corename]:
-                signal = re.sub("\/\*<InstanceName>\*\/_","",signal)
+                signal = re.sub("\/\*<InstanceName>\*\/",corename,signal)
                 portmap_file.write("SUT.{}[{}].{} : External\n".format(corename,i,signal))
     portmap_file.write("//Tester peripheral signals (you can remove some of these signals and map them to the SUT signals above instead)\n")
     for corename in tester_instances_amount:
         for i in range(tester_instances_amount[corename]):
             for signal in peripheral_signals[corename]:
-                signal = re.sub("\/\*<InstanceName>\*\/_","",signal)
+                signal = re.sub("\/\*<InstanceName>\*\/",corename,signal)
                 portmap_file.write("Tester.{}[{}].{} : External\n".format(corename,i,signal))
             
 
 
     portmap_file.close()
 
+
+# Find index of word in array with multiple strings
+def find_idx(lines, word):
+    for idx, i in enumerate(lines):
+        if word in i:
+            break
+    return idx+1
+
+
 def create_topsystem():
     sut_peripherals, tester_peripherals, sut_instances_amount, tester_instances_amount, submodule_directories, peripheral_signals = get_peripherals_vars()
 
+    # Wires internal to top_system that interface SUT and Tester
+    pwires = []
     # Array to store if a signal has been mapped
-    mapped_signals = {{},{}} # SUT signals and Tester Signals
+    # -2 not mapped, -1 mapped to external interface, 0< mapped to signal in pwires (index)
+    mapped_signals = [{},{}] # SUT signals and Tester Signals
     for corename in sut_instances_amount:
-        mapped_signals[0][corename] = {}
+        mapped_signals[0][corename] = []
         for i in range(sut_instances_amount[corename]):
-            mapped_signals[0][corename][i] = {}
+            mapped_signals[0][corename].append({})
             for signal in peripheral_signals[corename]:
-                mapped_signals[0][corename][i][signal] = False
+                signal = re.sub("\/\*<InstanceName>\*\/",corename,signal)
+                mapped_signals[0][corename][i][signal] = -2
     for corename in tester_instances_amount:
-        mapped_signals[1][corename] = {}
+        mapped_signals[1][corename] = []
         for i in range(tester_instances_amount[corename]):
-            mapped_signals[1][corename][i] = {}
+            mapped_signals[1][corename].append({})
             for signal in peripheral_signals[corename]:
-                mapped_signals[1][corename][i][signal] = False
-
+                signal = re.sub("\/\*<InstanceName>\*\/",corename,signal)
+                mapped_signals[1][corename][i][signal] = -2
 
     # Read portmap file
     portmap_file = open(root_dir+"/hardware/tester/peripheral_portmap.txt", "r")
     portmap_contents = portmap_file.readlines() 
     portmap_file.close()
-    # Parse signals
-    for i in portmap_contents:
-        if not i.startswith("//"):
-            #TODO: finish
-            print()
 
+    # Parse signals, map them and create pwires signals
+    for idx, i in enumerate(portmap_contents):
+        if not i.startswith("//"):
+            i=i.replace(" ", "") # Remove all spaces
+            result = re.search("^([^\.]+)\.([^\[]+)\[(\d+)\]\.([^\:]+)\:(?:(?:External)|(?:([^\.\n]+)\.([^\[]+)\[(\d+)\]\.(.+)))$", i)
+            if result is not None:
+                try:
+                    # Make sure it has not been mapped before
+                    if mapped_signals[0 if result.group(1)=="SUT" else 1][result.group(2)][int(result.group(3))][result.group(4)] < -1:
+                        if result.group(5) is None: # Mapped to external interface
+                                mapped_signals[0 if result.group(1)=="SUT" else 1][result.group(2)][int(result.group(3))][result.group(4)] = -1
+                        else: # Mapped between SUT and Tester
+                            if result.group(1) != result.group(5): # Make sure we are not mapping SUT or Tester with itself 
+                                # Make sure it has not been mapped before
+                                if mapped_signals[0 if result.group(5)=="SUT" else 1][result.group(6)][int(result.group(7))][result.group(8)] < -1:
+                                    # Get signal with macro
+                                    signalWithMacro = [result.group(4).replace(result.group(2),"/*<InstanceName>*/"),result.group(8).replace(result.group(6),"/*<InstanceName>*/")]
+                                    # Make sure we are connecting an input and an output
+                                    if ("input" in peripheral_signals[result.group(2)][signalWithMacro[0]] and "output" in peripheral_signals[result.group(6)][signalWithMacro[1]]) or\
+                                       ("output" in peripheral_signals[result.group(2)][signalWithMacro[0]] and "input" in peripheral_signals[result.group(6)][signalWithMacro[1]]):
+                                        # Create pwires signal to merge them
+                                        pwires.append("merge_{}_{}_{}_with_{}_{}_{}".format(result.group(1),result.group(4),result.group(3),result.group(5),result.group(8),result.group(7)))
+                                        # Store index of pwires signal in mapping
+                                        mapped_signals[0 if result.group(1)=="SUT" else 1][result.group(2)][int(result.group(3))][result.group(4)] = len(pwires)-1
+                                        mapped_signals[0 if result.group(5)=="SUT" else 1][result.group(6)][int(result.group(7))][result.group(8)] = len(pwires)-1
+                                    else:
+                                        print("Error: Portmap file line {}, can't connect because both signals are of type {}!".format(idx+1,"input" if "input" in peripheral_signals[result.group(2)][signalWithMacro[0]] else "output"))
+                                        exit(-1)
+                                else:
+                                    print("Error: Portmap file line {}, Signal {} of {}.{}[{}] already mapped previously!".format(idx+1,result.group(8),result.group(5),result.group(6),result.group(7)))
+                                    exit(-1)
+                            else:
+                                print("Error: Portmap file line {}, can't map ports of {} with itself!".format(idx+1,result.group(1)))
+                                exit(-1)
+                    else:
+                        print("Error: Portmap file line {}, Signal {} of {}.{}[{}] already mapped previously!".format(idx+1,result.group(4),result.group(1),result.group(2),result.group(3)))
+                        exit(-1)
+                except KeyError as e:
+                    print("Error: Portmap file line {}, unknown parameter {}!".format(idx+1,e))
+                    exit(-1)
+                except IndexError as e:
+                    print("Error: Portmap file line {}, could not find peripheral with index given!".format(idx+1))
+                    exit(-1)
+            else:
+                print("Error parsing line {} of portmap file!".format(idx+1))
+                exit(-1)
+
+    #print(pwires) #DEBUG
+    #print(mapped_signals) #DEBUG
 
     # Read template file
     topsystem_template_file = open(root_dir+"/hardware/tester/top_system.v", "r") 
@@ -130,46 +195,70 @@ def create_topsystem():
     topsystem_template_file.close()
 
     # Insert headers
-    for idx, i in enumerate(topsystem_contents):
-        if "PHEADER" in i:
-            break;
-    idx+=1;
     for i in {**sut_instances_amount, **tester_instances_amount}:
         for file in os.listdir(root_dir+"/submodules/"+submodule_directories[i]+"/hardware/include"):
             if file.endswith(".vh"):
-                topsystem_contents.insert(idx, '`include "{}"\n'.format(root_dir+"/submodules/"+submodule_directories[i]+"/hardware/include/"+file))
+                topsystem_contents.insert(find_idx(topsystem_contents, "PHEADER"), '`include "{}"\n'.format(root_dir+"/submodules/"+submodule_directories[i]+"/hardware/include/"+file))
 
-    # Insert PIO for external interface TODO: Below
-    for idx, i in enumerate(topsystem_contents):
-        if "PIO" in i:
-            break;
-    idx+=1;
 
-    # Insert PWIRES to connect SUT and Tester
-    for idx, i in enumerate(topsystem_contents):
-        if "PWIRES" in i:
-            break;
-    idx+=1;
+    # Array to store if pwires have been inserted
+    pwires_inserted = [0] * len(pwires)
+    # Insert PIO, PWIRES, SUTPORTS and TESTERPORTS
+    for corename in sut_instances_amount:
+        for i in range(sut_instances_amount[corename]):
+            for signal in peripheral_signals[corename]:
+                signalModified = re.sub("\/\*<InstanceName>\*\/",corename,signal)
+                # Make sure this signal is mapped
+                if mapped_signals[0][corename][i][signalModified] > -2:
+                    if mapped_signals[0][corename][i][signalModified] > -1: # Not mapped to external interface
+                        # Make sure we have not yet created PWIRE of this signal
+                        if pwires_inserted[mapped_signals[0][corename][i][signalModified]] == False:
+                            # Insert pwire
+                            topsystem_contents.insert(find_idx(topsystem_contents, "PWIRES"), '    wire {};\n'.format(pwires[mapped_signals[0][corename][i][signalModified]]))
+                            # Mark this signal as been inserted
+                            pwires_inserted[mapped_signals[0][corename][i][signalModified]] = True
+                        # Insert SUT PORT
+                        topsystem_contents.insert(find_idx(topsystem_contents, "SUTPORTS"), '        .{}({}),\n'.format(re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal),pwires[mapped_signals[0][corename][i][signalModified]]))
+                    else: # Mapped to external interface
+                        # Insert PIO
+                        topsystem_contents.insert(find_idx(topsystem_contents, "PIO"), '    {} sut_{},\n'.format(peripheral_signals[corename][signal],re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
+                        # Insert SUT PORT
+                        topsystem_contents.insert(find_idx(topsystem_contents, "SUTPORTS"), '        .{}({}),\n'.format(re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal),"sut_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
+                else:
+                    print("Error: signal {} of SUT.{}[{}] not mapped!".format(signal,corename,i))
+                    exit(-1)
+    for corename in tester_instances_amount:
+        for i in range(tester_instances_amount[corename]):
+            for signal in peripheral_signals[corename]:
+                signalModified = re.sub("\/\*<InstanceName>\*\/",corename,signal)
+                # Make sure this signal is mapped
+                if mapped_signals[1][corename][i][signalModified] > -2:
+                    if mapped_signals[1][corename][i][signalModified] > -1: # Not mapped to external interface
+                        # Make sure we have not yet created PWIRE of this signal
+                        if pwires_inserted[mapped_signals[1][corename][i][signalModified]] == False:
+                            # Insert pwire
+                            topsystem_contents.insert(find_idx(topsystem_contents, "PWIRES"), '    wire {};\n'.format(pwires[mapped_signals[1][corename][i][signalModified]]))
+                            # Mark this signal as been inserted
+                            pwires_inserted[mapped_signals[1][corename][i][signalModified]] = True
+                        # Insert TESTER PORT
+                        topsystem_contents.insert(find_idx(topsystem_contents, "TESTERPORTS"), '        .{}({}),\n'.format(re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal),pwires[mapped_signals[1][corename][i][signalModified]]))
+                    else: # Mapped to external interface
+                        # Insert PIO
+                        topsystem_contents.insert(find_idx(topsystem_contents, "PIO"), '    {} tester_{},\n'.format(peripheral_signals[corename][signal],re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
+                        # Insert TESTER PORT
+                        topsystem_contents.insert(find_idx(topsystem_contents, "TESTERPORTS"), '        .{}({}),\n'.format(re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal),"tester_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
+                else:
+                    print("Error: signal {} of Tester.{}[{}] not mapped!".format(signal,corename,i))
+                    exit(-1)
 
-    # Insert SUTPORTS to interface with SUT peripherals
-    for idx, i in enumerate(topsystem_contents):
-        if "SUTPORTS" in i:
-            break;
-    idx+=1;
 
-    # Insert TESTERPORTS to interface with Tester peripherals
-    for idx, i in enumerate(topsystem_contents):
-        if "TESTERPORTS" in i:
-            break;
-    idx+=1;
 
-    print(topsystem_contents)
     # Write topsystem to topsystem_path
-    #topsystem_file = open("top_system.v", "w")
-    #topsystem_file.writelines(topsystem_contents)
-    #topsystem_file.close()
+    topsystem_file = open(root_dir+"/hardware/tester/top_system_generated.v", "w")
+    topsystem_file.writelines(topsystem_contents)
+    topsystem_file.close()
 
-# parse arguments
+# Parse arguments
 if len(sys.argv)>2:
     root_dir=sys.argv[2]
     if sys.argv[1] == "generate_config":
@@ -177,7 +266,7 @@ if len(sys.argv)>2:
     elif sys.argv[1] == "create_topsystem":
         create_topsystem() 
     else:
-        print("Unknown argument.")
+        print("Unknown argument.\nUsage: {} <command> <root_dir>\n Commands: generate_config create_topsystem".format(sys.argv[0]))
 else:
     print("Needs two arguments.\nUsage: {} <command> <root_dir>".format(sys.argv[0]))
 

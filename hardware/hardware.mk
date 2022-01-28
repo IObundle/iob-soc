@@ -62,16 +62,10 @@ tester.v: $(TESTER_DIR)/tester_core.v
 	$(foreach p, $(TESTER_PERIPH_INSTANCES), if test -f $($($p_TESTER_CORENAME)_DIR)/hardware/include/pio.v; then sed 's/\/\*<InstanceName>\*\//$p/g' $($($p_TESTER_CORENAME)_DIR)/hardware/include/pio.v | sed -i '/PIO/r /dev/stdin' $@; fi;) #insert system IOs for peripheral
 	$(foreach p, $(TESTER_PERIPH_INSTANCES), if test -f $($($p_TESTER_CORENAME)_DIR)/hardware/include/inst.v; then sed 's/\/\*<InstanceName>\*\//$p/g' $($($p_TESTER_CORENAME)_DIR)/hardware/include/inst.v | sed -i '/endmodule/e cat /dev/stdin' $@; fi;) # insert peripheral instances
 
-# interconnect SUT with Tester
+# top_system to interconnect SUT with Tester based on portmap
 top_system.v: $(TESTER_DIR)/top_system.v
-	cp $(TESTER_DIR)/top_system.v $@ # create top_system.v
-	$(foreach p, $(sort $(PERIPHERALS) $(TESTER_PERIPHERALS)), if [ `ls -1 $($p_DIR)/hardware/include/*.vh 2>/dev/null | wc -l ` -gt 0 ]; then $(foreach f, $(shell echo `ls $($p_DIR)/hardware/include/*.vh`), sed -i '/PHEADER/a `include \"$f\"' $@;) break; fi;) # insert header files for peripherals of sut and tester
-	#$(foreach p, $(PERIPH_INSTANCES), if test -f $($($p_CORENAME)_DIR)/hardware/include/pio.v; then sed 's/\/\*<InstanceName>\*\//sut_$p/g' $($($p_CORENAME)_DIR)/hardware/include/pio.v | sed s/input/wire/  | sed s/output/wire/  | sed s/\,/\;/ > wires_tb.v; sed -i '/PWIRES/r wires_tb.v' $@; fi;) # declare and insert wire declarations for SUT peripherals
-	#$(foreach p, $(TESTER_PERIPH_INSTANCES), if test -f $($($p_CORENAME)_DIR)/hardware/include/pio.v; then sed 's/\/\*<InstanceName>\*\//tester_$p/g' $($($p_CORENAME)_DIR)/hardware/include/pio.v | sed s/input/wire/  | sed s/output/wire/  | sed s/\,/\;/ > wires_tb.v; sed -i '/PWIRES/r wires_tb.v' $@; fi;) # declare and insert wire declarations for TESTER peripherals
-	#$(foreach p, $(PERIPH_INSTANCES), if test -f $($($p_CORENAME)_DIR)/hardware/include/pio.v; then sed 's/\/\*<InstanceName>\*\//$p/g' $($($p_CORENAME)_DIR)/hardware/include/pio.v | sed s/input//  | sed s/output// | sed 's/\[.*\]//' | sed 's/\([A-Za-z].*\),/\.\1(sut_\1),/' > ./ports.v; sed -i '/SUTPORTS/r ports.v' $@; fi;) #insert and connect pins in sut instance
-	#$(foreach p, $(TESTER_PERIPH_INSTANCES), if test -f $($($p_CORENAME)_DIR)/hardware/include/pio.v; then sed 's/\/\*<InstanceName>\*\//$p/g' $($($p_CORENAME)_DIR)/hardware/include/pio.v | sed s/input//  | sed s/output// | sed 's/\[.*\]//' | sed 's/\([A-Za-z].*\),/\.\1(tester_\1),/' > ./ports.v; sed -i '/TESTERPORTS/r ports.v' $@; fi;) #insert and connect pins in tester instance
-	#TODO: Make connections based on port map
-
+	python3 hardware/tester/portmap.py create_topsystem $(SUT_DIR)
+	mv $(TESTER_DIR)/top_system_generated.v $@ # Move generated top_system.v
 
 # make and copy memory init files
 MEM_PYTHON_DIR=$(MEM_DIR)/software/python
