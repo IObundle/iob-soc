@@ -64,7 +64,7 @@ tester.v: $(TESTER_DIR)/tester_core.v
 
 # top_system to interconnect SUT with Tester based on portmap
 top_system.v: $(TESTER_DIR)/top_system.v
-	python3 hardware/tester/portmap.py create_topsystem $(SUT_DIR)
+	python3 $(TESTER_DIR)/portmap.py create_topsystem $(SUT_DIR)
 	mv $(TESTER_DIR)/top_system_generated.v $@ # Move generated top_system.v
 
 # make and copy memory init files

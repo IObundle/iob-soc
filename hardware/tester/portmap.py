@@ -35,8 +35,8 @@ portmap_header = """\
 # Get lists with instances, signals of peripherals of SUT and Tester. Also get directories of submodules.
 def get_peripherals_vars():
     # Get peripherals list of config.mk
-    sut_peripherals = subprocess.run(['make', '--no-print-directory', '-f', root_dir+'/hardware/tester/getVars.mk', 'sut-peripherals', 'SUT_DIR='+root_dir], stdout=subprocess.PIPE)
-    tester_peripherals = subprocess.run(['make', '--no-print-directory', '-f', root_dir+'/hardware/tester/getVars.mk', 'tester-peripherals', 'SUT_DIR='+root_dir], stdout=subprocess.PIPE)
+    sut_peripherals = subprocess.run(['make', '--no-print-directory', '-f', root_dir+'/hardware/tester/getVars.mk', 'sut-peripherals', 'SUT_DIR='+root_dir, 'TESTER_ENABLED=1'], stdout=subprocess.PIPE)
+    tester_peripherals = subprocess.run(['make', '--no-print-directory', '-f', root_dir+'/hardware/tester/getVars.mk', 'tester-peripherals', 'SUT_DIR='+root_dir, 'TESTER_ENABLED=1'], stdout=subprocess.PIPE)
     sut_peripherals = sut_peripherals.stdout.decode('ascii').split()
     tester_peripherals = tester_peripherals.stdout.decode('ascii').split()
 
