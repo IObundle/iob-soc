@@ -11,14 +11,13 @@ HW_MODULES+=$(IOBSOC_NAME)
 # ADD SUBMODULES HARDWARE
 #
 
-#memories
-#list memory modules before including MEM's hardware.mk
+#include LIB modules
+include $(LIB_DIR)/hardware/iob_merge/hardware.mk
+include $(LIB_DIR)/hardware/iob_split/hardware.mk
 
-LIB_HW_MODULES+=iob_split iob_merge
-include $(LIB_DIR)/hardware/hardware.mk
-
-MEM_MODULES+=iob_rom_sp iob_ram_dp_be
-include $(MEM_DIR)/hardware/hardware.mk
+#include MEM modules
+include $(MEM_DIR)/hardware/rom/iob_rom_sp/hardware.mk
+include $(MEM_DIR)/hardware/ram/iob_ram_dp_be/hardware.mk
 
 #CPU
 include $(PICORV32_DIR)/hardware/hardware.mk
@@ -56,8 +55,6 @@ VSRC+=$(SRC_DIR)/boot_ctr.v $(SRC_DIR)/int_mem.v $(SRC_DIR)/sram.v
 VSRC+=system.v
 
 IMAGES=boot.hex firmware.hex
-
-#	$(foreach p, $(PERIPHERALS), if [ `ls -1 $($p_DIR)/hardware/include/*.vh 2>/dev/null | wc -l ` -gt 0 ]; then $(foreach f, $(shell echo `ls $($p_DIR)/hardware/include/*_reg_def.vh`), sed -i '/PHEADER/a `include \"$f\"' $@;) break; fi;) # insert header file
 
 # make system.v with peripherals
 system.v: system_tmp.v
