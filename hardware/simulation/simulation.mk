@@ -66,9 +66,9 @@ system_tb.v: $(TB_DIR)/system_core_tb.v
 	#$(foreach p, $(PERIPH_INSTANCES), if test -f $($($p_CORENAME)_DIR)/hardware/include/inst_tb.sv; then sed 's/\/\*<InstanceName>\*\//$p/g' $($($p_CORENAME)_DIR)/hardware/include/inst_tb.sv | sed -i '/endmodule/e cat /dev/stdin' $@; fi;) # insert peripheral instances
 else
 #create testbench for SUT+Tester system
-system_tb.v: $(TESTER_DIR)/system_core_tb.v
-	cp $(TESTER_DIR)/system_core_tb.v $@  # create system_tb.v to simulate top_system.v
-	#TODO
+system_tb.v: $(TESTER_DIR)/top_system_tb.v
+	python3 $(TESTER_DIR)/portmap.py create_testbench $(SUT_DIR)
+	mv $(TESTER_DIR)/top_system_tb_generated.v $@  
 endif
 
 VSRC+=$(foreach p, $(PERIPH_INSTANCES), $(shell if test -f $($($p_CORENAME)_DIR)/hardware/testbench/module_tb.sv; then sed 's/\/\*<InstanceName>\*\//$p/g' $($($p_CORENAME)_DIR)/hardware/testbench/module_tb.sv; fi;)) #add test cores to list of sources

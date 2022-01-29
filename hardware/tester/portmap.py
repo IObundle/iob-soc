@@ -111,9 +111,13 @@ def find_idx(lines, word):
     return idx+1
 
 
-def create_topsystem():
-    sut_peripherals, tester_peripherals, sut_instances_amount, tester_instances_amount, submodule_directories, peripheral_signals = get_peripherals_vars()
-
+# Reads portmap file
+# Returns:
+#    pwires: List of signals that will interconnect SUT with Tester peripherals
+#    mapped_signals: Dimensions=[<0 for SUT; 1 for Tester>][<corename>][<instance number>][<signal name with macro>]
+#                    This list of dictionaries stores the -2 for unmapped signals, -1 for mapped to external interface 
+#                    and >0 for signals mapped to a wire in pwires list with that index.
+def read_portmap(sut_instances_amount, tester_instances_amount, peripheral_signals):
     # Wires internal to top_system that interface SUT and Tester
     pwires = []
     # Array to store if a signal has been mapped
@@ -188,6 +192,14 @@ def create_topsystem():
 
     #print(pwires) #DEBUG
     #print(mapped_signals) #DEBUG
+    return pwires, mapped_signals
+
+def create_topsystem():
+    # Get lists of peripherals and info about them
+    sut_peripherals, tester_peripherals, sut_instances_amount, tester_instances_amount, submodule_directories, peripheral_signals = get_peripherals_vars()
+
+    # Read portmap file and get encoded data
+    pwires, mapped_signals = read_portmap(sut_instances_amount, tester_instances_amount, peripheral_signals)
 
     # Read template file
     topsystem_template_file = open(root_dir+"/hardware/tester/top_system.v", "r") 
@@ -253,10 +265,65 @@ def create_topsystem():
 
 
 
-    # Write topsystem to topsystem_path
+    # Write topsystem 
     topsystem_file = open(root_dir+"/hardware/tester/top_system_generated.v", "w")
     topsystem_file.writelines(topsystem_contents)
     topsystem_file.close()
+
+def create_testbench():
+    # Get lists of peripherals and info about them
+    sut_peripherals, tester_peripherals, sut_instances_amount, tester_instances_amount, submodule_directories, peripheral_signals = get_peripherals_vars()
+
+    # Read portmap file and get encoded data
+    pwires, mapped_signals = read_portmap(sut_instances_amount, tester_instances_amount, peripheral_signals)
+
+    # Read template file
+    testbench_template_file = open(root_dir+"/hardware/tester/top_system_tb.v", "r") 
+    testbench_contents = testbench_template_file.readlines() 
+    testbench_template_file.close()
+
+    # Insert headers
+    for i in {**sut_instances_amount, **tester_instances_amount}:
+        for file in os.listdir(root_dir+"/submodules/"+submodule_directories[i]+"/hardware/include"):
+            if file.endswith(".vh"):
+                testbench_contents.insert(find_idx(testbench_contents, "PHEADER"), '`include "{}"\n'.format(root_dir+"/submodules/"+submodule_directories[i]+"/hardware/include/"+file))
+
+    # Insert PORTS and PWIRES
+    for corename in sut_instances_amount:
+        for i in range(sut_instances_amount[corename]):
+            for signal in peripheral_signals[corename]:
+                signalModified = re.sub("\/\*<InstanceName>\*\/",corename,signal)
+                # Make sure this signal is mapped
+                if mapped_signals[0][corename][i][signalModified] > -2:
+                    if mapped_signals[0][corename][i][signalModified] == -1: # Mapped to external interface, therefore is a top_system port
+                        # Insert PWIRES
+                        testbench_contents.insert(find_idx(testbench_contents, "PWIRES"), '    wire {};\n'.format("sut_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
+                        # Insert PORTS
+                        testbench_contents.insert(find_idx(testbench_contents, "PORTS"), '        .{}({}),\n'.format("sut_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal), "sut_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
+                else:
+                    print("Error: signal {} of SUT.{}[{}] not mapped!".format(signal,corename,i))
+                    exit(-1)
+    for corename in tester_instances_amount:
+        for i in range(tester_instances_amount[corename]):
+            for signal in peripheral_signals[corename]:
+                signalModified = re.sub("\/\*<InstanceName>\*\/",corename,signal)
+                # Make sure this signal is mapped
+                if mapped_signals[1][corename][i][signalModified] > -2:
+                    if mapped_signals[1][corename][i][signalModified] == -1: # Mapped to external interface, therefore is a top_system port
+                        # Insert PWIRES
+                        testbench_contents.insert(find_idx(testbench_contents, "PWIRES"), '    wire {};\n'.format("tester_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
+                        # Insert PORTS
+                        testbench_contents.insert(find_idx(testbench_contents, "PORTS"), '        .{}({}),\n'.format("tester_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal), "tester_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
+                else:
+                    print("Error: signal {} of Tester.{}[{}] not mapped!".format(signal,corename,i))
+                    exit(-1)
+
+
+
+    # Write testbench 
+    testbench_file = open(root_dir+"/hardware/tester/top_system_tb_generated.v", "w")
+    testbench_file.writelines(testbench_contents)
+    testbench_file.close()
 
 # Parse arguments
 if len(sys.argv)>2:
@@ -265,8 +332,10 @@ if len(sys.argv)>2:
        generate_portmap() 
     elif sys.argv[1] == "create_topsystem":
         create_topsystem() 
+    elif sys.argv[1] == "create_testbench":
+        create_testbench() 
     else:
-        print("Unknown argument.\nUsage: {} <command> <root_dir>\n Commands: generate_config create_topsystem".format(sys.argv[0]))
+        print("Unknown argument.\nUsage: {} <command> <root_dir>\n Commands: generate_config create_topsystem create_testbench".format(sys.argv[0]))
 else:
     print("Needs two arguments.\nUsage: {} <command> <root_dir>".format(sys.argv[0]))
 
