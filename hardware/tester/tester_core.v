@@ -204,12 +204,12 @@ module tester
    //
 
    //slaves bus
-   wire [`N_SLAVES*`REQ_W-1:0] slaves_req;
-   wire [`N_SLAVES*`RESP_W-1:0] slaves_resp;
+   wire [`TESTER_N_SLAVES*`REQ_W-1:0] slaves_req;
+   wire [`TESTER_N_SLAVES*`RESP_W-1:0] slaves_resp;
 
    split 
      #(
-       .N_SLAVES(`N_SLAVES),
+       .N_SLAVES(`TESTER_N_SLAVES),
        .P_SLAVES(`P_BIT-1)
        )
    pbus_split
@@ -232,8 +232,8 @@ module tester
    
    int_mem 
 `ifdef SRAM_INIT
-        #(.FILE("tester_firmware")
-          .BOOT_FILE("tester_boot"))
+        #(.FILE("tester_firmware"),
+          .BOOT_FILE("tester_boot.hex"))
 `endif
 	int_mem0 
      (

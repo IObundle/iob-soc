@@ -58,8 +58,8 @@ ifneq ($(TESTER_ENABLED),)
 	#insert REGFILEIF header if it is not included yet
 	$(if $(filter REGFILEIF, $(PERIPHERALS)),, $(foreach f, $(shell echo `ls $(REGFILEIF_DIR)/hardware/include/*.vh`), sed -i '/PHEADER/a `include \"$f\"' $@;))	
 	#insert one REGFILEIF instance dedicated to communicate with tester
-	sed 's/\/\*<InstanceName>\*\//REGFILEIF_TESTER/g' $(REGFILEIF_DIR)/hardware/include/pio.v | sed -i '/PIO/r /dev/stdin' $@
-	sed 's/\/\*<InstanceName>\*\//REGFILEIF_TESTER/g' $(REGFILEIF_DIR)/hardware/include/inst.v | sed -i '/endmodule/e cat /dev/stdin' $@
+	sed 's/\/\*<InstanceName>\*\//REGFILEIF_SUT/g' $(REGFILEIF_DIR)/hardware/include/pio.v | sed -i '/PIO/r /dev/stdin' $@
+	sed 's/\/\*<InstanceName>\*\//REGFILEIF_SUT/g' $(REGFILEIF_DIR)/hardware/include/inst.v | sed -i '/endmodule/e cat /dev/stdin' $@
 endif
 
 # make tester.v with peripherals
@@ -67,7 +67,7 @@ tester.v: $(TESTER_DIR)/tester_core.v
 	cp $(TESTER_DIR)/tester_core.v $@ # create tester.v
 	$(foreach p, $(sort $(TESTER_PERIPHERALS)), if [ `ls -1 $($p_DIR)/hardware/include/*.vh 2>/dev/null | wc -l ` -gt 0 ]; then $(foreach f, $(shell echo `ls $($p_DIR)/hardware/include/*.vh`), sed -i '/PHEADER/a `include \"$f\"' $@;) break; fi;) # insert header files
 	$(foreach p, $(TESTER_PERIPH_INSTANCES), if test -f $($($p_TESTER_CORENAME)_DIR)/hardware/include/pio.v; then sed 's/\/\*<InstanceName>\*\//$p/g' $($($p_TESTER_CORENAME)_DIR)/hardware/include/pio.v | sed -i '/PIO/r /dev/stdin' $@; fi;) #insert system IOs for peripheral
-	$(foreach p, $(TESTER_PERIPH_INSTANCES), if test -f $($($p_TESTER_CORENAME)_DIR)/hardware/include/inst.v; then sed 's/\/\*<InstanceName>\*\//$p/g' $($($p_TESTER_CORENAME)_DIR)/hardware/include/inst.v | sed -i '/endmodule/e cat /dev/stdin' $@; fi;) # insert peripheral instances
+	$(foreach p, $(TESTER_PERIPH_INSTANCES), if test -f $($($p_TESTER_CORENAME)_DIR)/hardware/include/inst.v; then sed 's/\/\*<InstanceName>\*\//$p/g' $($($p_TESTER_CORENAME)_DIR)/hardware/include/inst.v | sed 's/`$p/`$p_TESTER/g' | sed -i '/endmodule/e cat /dev/stdin' $@; fi;) # insert peripheral instances
 	#insert REGFILEIF header if it is not included yet
 	$(if $(filter REGFILEIF, $(TESTER_PERIPHERALS)),, $(foreach f, $(shell echo `ls $(REGFILEIF_DIR)/hardware/include/*.vh`), sed -i '/PHEADER/a `include \"$f\"' $@;))	
 

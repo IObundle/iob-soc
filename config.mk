@@ -123,6 +123,7 @@ DEFINE+=$(defmacro)FIRM_ADDR_W=$(FIRM_ADDR_W)
 DEFINE+=$(defmacro)DCACHE_ADDR_W=$(DCACHE_ADDR_W)
 
 DEFINE+=$(defmacro)N_SLAVES=$(N_SLAVES)
+DEFINE+=$(defmacro)TESTER_N_SLAVES=$(TESTER_N_SLAVES)
 
 #address selection bits
 E:=31 #extra memory bit
@@ -155,6 +156,9 @@ $(foreach p, $(TESTER_PERIPH_INSTANCES), $(eval DEFINE+=$(defmacro)$p_TESTER=$($
 
 #Add one more slave for REGFILEIF that communicates with SUT and Tester
 $(eval N_SLAVES:=$(shell expr $(N_SLAVES) \+ 1))
+$(eval TESTER_N_SLAVES:=$(shell expr $(TESTER_N_SLAVES) \+ 1))
+DEFINE+=$(defmacro)REGFILEIF_SUT=$(shell expr $(N_SLAVES) \- 1)
+DEFINE+=$(defmacro)REGFILEIF_TESTER=$(shell expr $(TESTER_N_SLAVES) \- 1)
 endif
 
 #RULES

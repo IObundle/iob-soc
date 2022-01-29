@@ -7,9 +7,6 @@
 
 module top_system
 	(
-   input                    clk,
-   input                    reset,
-   output [1:0]             trap
 `ifdef USE_DDR //AXI MASTER INTERFACE OF TESTER AND SUT
 
    //address write
@@ -63,17 +60,21 @@ module top_system
 	//Top system peripheral external interface
    //PIO
 	
+
+   input                    clk,
+   input                    reset,
+   output [1:0]             trap
 	);
 
    //PWIRES
 
 	//Wires to interconnect default REGFILEIF for communication between SUT and Tester
-   wire                           REGFILEIF_TESTER_valid;
-   wire [`REGFILEIF_ADDR_W-1:0]   REGFILEIF_TESTER_address;
-   wire [`REGFILEIF_DATA_W-1:0]   REGFILEIF_TESTER_wdata;
-   wire [`REGFILEIF_DATA_W/8-1:0] REGFILEIF_TESTER_wstrb;
-   wire [`REGFILEIF_DATA_W-1:0]   REGFILEIF_TESTER_rdata;
-   wire                           REGFILEIF_TESTER_ready;
+   wire                           REGFILEIF_MERGE_valid;
+   wire [`REGFILEIF_ADDR_W-1:0]   REGFILEIF_MERGE_address;
+   wire [`REGFILEIF_DATA_W-1:0]   REGFILEIF_MERGE_wdata;
+   wire [`REGFILEIF_DATA_W/8-1:0] REGFILEIF_MERGE_wstrb;
+   wire [`REGFILEIF_DATA_W-1:0]   REGFILEIF_MERGE_rdata;
+   wire                           REGFILEIF_MERGE_ready;
    
    //
    // INSTANTIATE COMPONENTS
@@ -82,12 +83,12 @@ module top_system
 		//SUTPORTS
 
 		//Default REGFILEIF for communication between SUT and Tester
-		.REGFILEIF_TESTER_valid(REGFILEIF_TESTER_valid),
-		.REGFILEIF_TESTER_address(REGFILEIF_TESTER_address),
-		.REGFILEIF_TESTER_wdata(REGFILEIF_TESTER_wdata),
-		.REGFILEIF_TESTER_wstrb(REGFILEIF_TESTER_wstrb),
-		.REGFILEIF_TESTER_rdata(REGFILEIF_TESTER_rdata),
-		.REGFILEIF_TESTER_ready(REGFILEIF_TESTER_ready),
+		.REGFILEIF_SUT_valid(REGFILEIF_MERGE_valid),
+		.REGFILEIF_SUT_address(REGFILEIF_MERGE_address),
+		.REGFILEIF_SUT_wdata(REGFILEIF_MERGE_wdata),
+		.REGFILEIF_SUT_wstrb(REGFILEIF_MERGE_wstrb),
+		.REGFILEIF_SUT_rdata(REGFILEIF_MERGE_rdata),
+		.REGFILEIF_SUT_ready(REGFILEIF_MERGE_ready),
 `ifdef USE_DDR
 		//address write
 		.axi_awid(m_axi_awid[0]), 
@@ -141,12 +142,12 @@ module top_system
 		//TESTERPORTS
 
 		//Default REGFILEIF for communication between SUT and Tester
-		.REGFILEIF_TESTER_valid(REGFILEIF_TESTER_valid),
-		.REGFILEIF_TESTER_address(REGFILEIF_TESTER_address),
-		.REGFILEIF_TESTER_wdata(REGFILEIF_TESTER_wdata),
-		.REGFILEIF_TESTER_wstrb(REGFILEIF_TESTER_wstrb),
-		.REGFILEIF_TESTER_rdata(REGFILEIF_TESTER_rdata),
-		.REGFILEIF_TESTER_ready(REGFILEIF_TESTER_ready),
+		.REGFILEIF_TESTER_valid(REGFILEIF_MERGE_valid),
+		.REGFILEIF_TESTER_address(REGFILEIF_MERGE_address),
+		.REGFILEIF_TESTER_wdata(REGFILEIF_MERGE_wdata),
+		.REGFILEIF_TESTER_wstrb(REGFILEIF_MERGE_wstrb),
+		.REGFILEIF_TESTER_rdata(REGFILEIF_MERGE_rdata),
+		.REGFILEIF_TESTER_ready(REGFILEIF_MERGE_ready),
 `ifdef USE_DDR
 		//address write
 		.axi_awid(m_axi_awid[1]), 
