@@ -4,7 +4,7 @@
 #include "periphs.h"
 #include "iob-uart.h"
 #include "printf.h"
-#ifdef REGFILEIF_TESTER_BASE
+#ifdef REGFILEIF_SUT_BASE
 #include "iob-regfileif.h"
 #endif
 
@@ -15,8 +15,8 @@ int main()
   uart_puts("\n\n\nHello world!\n\n\n");
 
   //run REGFILEIF tests if the system was built with it (and the Tester)
-  #ifdef REGFILEIF_TESTER_BASE
-  regfileif_setbaseaddr(REGFILEIF_TESTER_BASE);   
+  #ifdef REGFILEIF_SUT_BASE
+  regfileif_setbaseaddr(REGFILEIF_SUT_BASE);   
 
   regfileif_writereg(0, 666);
   regfileif_writereg(1, 667);
