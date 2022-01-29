@@ -67,6 +67,13 @@ module top_system
 
    //PWIRES
 
+	//Wires to interconnect default REGFILEIF for communication between SUT and Tester
+   wire                           REGFILEIF_TESTER_valid;
+   wire [`REGFILEIF_ADDR_W-1:0]   REGFILEIF_TESTER_address;
+   wire [`REGFILEIF_DATA_W-1:0]   REGFILEIF_TESTER_wdata;
+   wire [`REGFILEIF_DATA_W/8-1:0] REGFILEIF_TESTER_wstrb;
+   wire [`REGFILEIF_DATA_W-1:0]   REGFILEIF_TESTER_rdata;
+   wire                           REGFILEIF_TESTER_ready;
    
    //
    // INSTANTIATE COMPONENTS
@@ -74,6 +81,13 @@ module top_system
    system sut (
 		//SUTPORTS
 
+		//Default REGFILEIF for communication between SUT and Tester
+		.REGFILEIF_TESTER_valid(REGFILEIF_TESTER_valid),
+		.REGFILEIF_TESTER_address(REGFILEIF_TESTER_address),
+		.REGFILEIF_TESTER_wdata(REGFILEIF_TESTER_wdata),
+		.REGFILEIF_TESTER_wstrb(REGFILEIF_TESTER_wstrb),
+		.REGFILEIF_TESTER_rdata(REGFILEIF_TESTER_rdata),
+		.REGFILEIF_TESTER_ready(REGFILEIF_TESTER_ready),
 `ifdef USE_DDR
 		//address write
 		.axi_awid(m_axi_awid[0]), 
@@ -126,6 +140,13 @@ module top_system
    tester tester0 (
 		//TESTERPORTS
 
+		//Default REGFILEIF for communication between SUT and Tester
+		.REGFILEIF_TESTER_valid(REGFILEIF_TESTER_valid),
+		.REGFILEIF_TESTER_address(REGFILEIF_TESTER_address),
+		.REGFILEIF_TESTER_wdata(REGFILEIF_TESTER_wdata),
+		.REGFILEIF_TESTER_wstrb(REGFILEIF_TESTER_wstrb),
+		.REGFILEIF_TESTER_rdata(REGFILEIF_TESTER_rdata),
+		.REGFILEIF_TESTER_ready(REGFILEIF_TESTER_ready),
 `ifdef USE_DDR
 		//address write
 		.axi_awid(m_axi_awid[1]), 

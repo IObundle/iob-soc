@@ -11,6 +11,10 @@ endif
 
 #peripherals (embedded)
 $(foreach p, $(sort $(PERIPHERALS)), $(eval include $($p_DIR)/software/embedded/embedded.mk))
+ifneq ($(TESTER_ENABLED),)
+#Include REGFILEIF for communication between  SUT and Tester 
+$(if $(filter REGFILEIF, $(PERIPHERALS)),, $(eval include $(REGFILEIF_DIR)/software/embedded/embedded.mk))	
+endif
 
 #HEADERS
 HDR+=periphs.h

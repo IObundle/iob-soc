@@ -10,6 +10,14 @@ module tester
    //do not remove line below
    //PIO
 
+   //Default REGFILEIF for communication between SUT and Tester
+   output                           REGFILEIF_TESTER_valid,
+   output [`REGFILEIF_ADDR_W-1:0]   REGFILEIF_TESTER_address,
+   output [`REGFILEIF_DATA_W-1:0]   REGFILEIF_TESTER_wdata,
+   output [`REGFILEIF_DATA_W/8-1:0] REGFILEIF_TESTER_wstrb,
+   input [`REGFILEIF_DATA_W-1:0]    REGFILEIF_TESTER_rdata,
+   input                            REGFILEIF_TESTER_ready,
+
 `ifdef USE_DDR //AXI MASTER INTERFACE
 
    //address write
@@ -301,6 +309,14 @@ module tester
       .axi_rready(m_axi_rready)
       );
 `endif
+
+   // SUT REGFILEIF CPU interface 
+   assign REGFILEIF_TESTER_valid = slaves_req[`valid(`REGFILEIF_TESTER)];
+   assign REGFILEIF_TESTER_address = slaves_req[`address(`REGFILEIF_TESTER,`REGFILEIF_ADDR_W+2)-2];
+   assign REGFILEIF_TESTER_wdata = slaves_req[`wdata(`REGFILEIF_TESTER)];
+   assign REGFILEIF_TESTER_wstrb = slaves_req[`wstrb(`REGFILEIF_TESTER)];
+   assign slaves_resp[`rdata(`REGFILEIF_TESTER)] = REGFILEIF_TESTER_rdata;
+   assign slaves_resp[`ready(`REGFILEIF_TESTER)] = REGFILEIF_TESTER_ready; 
 
    //peripheral instances are inserted here
    

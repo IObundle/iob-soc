@@ -10,7 +10,7 @@ int main()
 {
   //init uart
   uart_init(UART0_BASE,FREQ/BAUD);   
-  regfileif_setbaseaddr(REGFILEIF0_BASE);   
+  regfileif_setbaseaddr(REGFILEIF_TESTER_BASE);   
   uart_puts("\n\n\nHello world!\n\n\n");
 
   regfileif_writereg(0, 666);

@@ -37,4 +37,8 @@ periphs.h: periphs_tmp.h
 
 periphs_tmp.h:
 	$(foreach p, $(PERIPH_INSTANCES), $(shell echo "#define $p_BASE (1<<$P) |($p<<($P-N_SLAVES_W))" >> $@) )
+ifneq ($(TESTER_ENABLED),)
+	#insert REGFILEIF dedicated for communicating with tester
+	$(shell echo "#define REGFILEIF_TESTER_BASE (1<<$P) |($(shell expr $(N_SLAVES) \- 1)<<($P-N_SLAVES_W))" >> $@)
+endif
 

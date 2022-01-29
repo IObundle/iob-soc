@@ -31,8 +31,8 @@ INIT_MEM ?=1
 #list with corename of peripherals to be attached to peripheral bus.
 #must match the 'corename' target in the Makefile inside the peripheral submodule directory.
 #to include multiple instances, write the corename of the peripheral multiple times.
-#(Example: 'PERIPHERALS ?=UART UART REGFILEIF' will create 2 UART instances and 1 REGFILEIF instance)
-PERIPHERALS ?=UART UART REGFILEIF
+#(Example: 'PERIPHERALS ?=UART UART' will create 2 UART instances
+PERIPHERALS ?=UART UART
 
 #RISC-V HARD MULTIPLIER AND DIVIDER INSTRUCTIONS
 USE_MUL_DIV ?=1
@@ -138,11 +138,6 @@ DEFINE+=$(defmacro)E=$E
 DEFINE+=$(defmacro)P=$P
 DEFINE+=$(defmacro)B=$B
 
-#Add the regfileif peripheral if building with tester system (otherwise not needed)
-ifneq ($(TESTER_ENABLED),)
-PERIPHERALS+=REGFILEIF
-endif
-
 N_SLAVES:=0
 #create list of peripheral instances based on PERIPHERALS list
 $(foreach d, $(sort $(PERIPHERALS)), $(eval TMP:=0) $(foreach p, $(filter $d,$(PERIPHERALS)), $(eval PERIPH_INSTANCES+=$d$(TMP)) $(eval $d$(TMP)_CORENAME=$d) $(eval TMP:=$(shell expr $(TMP) \+ 1)) ))
@@ -150,12 +145,17 @@ $(foreach d, $(sort $(PERIPHERALS)), $(eval TMP:=0) $(foreach p, $(filter $d,$(P
 $(foreach p, $(PERIPH_INSTANCES), $(eval $p=$(N_SLAVES)) $(eval N_SLAVES:=$(shell expr $(N_SLAVES) \+ 1)))
 $(foreach p, $(PERIPH_INSTANCES), $(eval DEFINE+=$(defmacro)$p=$($p)))
 
+ifneq ($(TESTER_ENABLED),)
 TESTER_N_SLAVES:=0
 #create list of peripheral instances for Tester based on TESTER_PERIPHERALS list
 $(foreach d, $(sort $(TESTER_PERIPHERALS)), $(eval TMP:=0) $(foreach p, $(filter $d,$(TESTER_PERIPHERALS)), $(eval TESTER_PERIPH_INSTANCES+=$d$(TMP)) $(eval $d$(TMP)_TESTER_CORENAME=$d) $(eval TMP:=$(shell expr $(TMP) \+ 1)) ))
 #assign sequential numbers to peripheral instance names used as variables
 $(foreach p, $(TESTER_PERIPH_INSTANCES), $(eval $p_TESTER=$(TESTER_N_SLAVES)) $(eval TESTER_N_SLAVES:=$(shell expr $(TESTER_N_SLAVES) \+ 1)))
 $(foreach p, $(TESTER_PERIPH_INSTANCES), $(eval DEFINE+=$(defmacro)$p_TESTER=$($p_TESTER)))
+
+#Add one more slave for REGFILEIF that communicates with SUT and Tester
+$(eval N_SLAVES:=$(shell expr $(N_SLAVES) \+ 1))
+endif
 
 #RULES
 gen-clean:
