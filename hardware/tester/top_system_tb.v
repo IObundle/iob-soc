@@ -5,7 +5,7 @@
 
 //PHEADER
 
-module system_tb;
+module top_system_tb;
 
    parameter realtime clk_per = 1s/`FREQ;
 
@@ -114,56 +114,56 @@ module system_tb;
    //DDR AXI interface signals
 `ifdef USE_DDR
    //Write address
-   wire [0:0] ddr_awid;
-   wire [`DDR_ADDR_W-1:0] ddr_awaddr;
-   wire [7:0]              ddr_awlen;
-   wire [2:0]              ddr_awsize;
-   wire [1:0]              ddr_awburst;
-   wire                    ddr_awlock;
-   wire [3:0]              ddr_awcache;
-   wire [2:0]              ddr_awprot;
-   wire [3:0]              ddr_awqos;
-   wire                    ddr_awvalid;
-   wire                    ddr_awready;
+   wire [1:0][0:0]              ddr_awid;
+   wire [1:0][`DDR_ADDR_W-1:0]  ddr_awaddr;
+   wire [1:0][7:0]              ddr_awlen;
+   wire [1:0][2:0]              ddr_awsize;
+   wire [1:0][1:0]              ddr_awburst;
+   wire [1:0]                   ddr_awlock;
+   wire [1:0][3:0]              ddr_awcache;
+   wire [1:0][2:0]              ddr_awprot;
+   wire [1:0][3:0]              ddr_awqos;
+   wire [1:0]                   ddr_awvalid;
+   wire [1:0]                   ddr_awready;
    //Write data
-   wire [31:0]             ddr_wdata;
-   wire [3:0]              ddr_wstrb;
-   wire                    ddr_wlast;
-   wire                    ddr_wvalid;
-   wire                    ddr_wready;
+   wire [1:0][31:0]             ddr_wdata;
+   wire [1:0][3:0]              ddr_wstrb;
+   wire [1:0]                   ddr_wlast;
+   wire [1:0]                   ddr_wvalid;
+   wire [1:0]                   ddr_wready;
    //Write response
-   wire [7:0]              ddr_bid;
-   wire [1:0]              ddr_bresp;
-   wire                    ddr_bvalid;
-   wire                    ddr_bready;
+   wire [1:0][7:0]              ddr_bid;
+   wire [1:0][1:0]              ddr_bresp;
+   wire [1:0]                   ddr_bvalid;
+   wire [1:0]                   ddr_bready;
    //Read address
-   wire [0:0]              ddr_arid;
-   wire [`DDR_ADDR_W-1:0] ddr_araddr;
-   wire [7:0]              ddr_arlen;
-   wire [2:0]              ddr_arsize;
-   wire [1:0]              ddr_arburst;
-   wire                    ddr_arlock;
-   wire [3:0]              ddr_arcache;
-   wire [2:0]              ddr_arprot;
-   wire [3:0]              ddr_arqos;
-   wire                    ddr_arvalid;
-   wire                    ddr_arready;
+   wire [1:0][0:0]              ddr_arid;
+   wire [1:0][`DDR_ADDR_W-1:0]  ddr_araddr;
+   wire [1:0][7:0]              ddr_arlen;
+   wire [1:0][2:0]              ddr_arsize;
+   wire [1:0][1:0]              ddr_arburst;
+   wire [1:0]                   ddr_arlock;
+   wire [1:0][3:0]              ddr_arcache;
+   wire [1:0][2:0]              ddr_arprot;
+   wire [1:0][3:0]              ddr_arqos;
+   wire [1:0]                   ddr_arvalid;
+   wire [1:0]                   ddr_arready;
    //Read data
-   wire [7:0]              ddr_rid;
-   wire [31:0]             ddr_rdata;
-   wire [1:0]              ddr_rresp;
-   wire                    ddr_rlast;
-   wire                    ddr_rvalid;
-   wire                    ddr_rready;
+   wire [1:0][7:0]              ddr_rid;
+   wire [1:0][31:0]             ddr_rdata;
+   wire [1:0][1:0]              ddr_rresp;
+   wire [1:0]                   ddr_rlast;
+   wire [1:0]                   ddr_rvalid;
+   wire [1:0]                   ddr_rready;
 `endif
 
    //cpu trap signal
-   wire                    trap;
+   wire [1:0]                   trap;
    
    //
    // UNIT UNDER TEST
    //
-   system uut (
+   top_system uut (
                //PORTS
 `ifdef USE_DDR
                //address write
@@ -219,73 +219,139 @@ module system_tb;
 	       );
 
 
-   //instantiate the axi memory
-`ifdef USE_DDR
-   axi_ram 
-     #(
- `ifdef DDR_INIT
-       .FILE("firmware.hex"),
- `endif
-       .DATA_WIDTH (`DATA_W),
-       .ADDR_WIDTH (`DDR_ADDR_W)
-       )
-   ddr_model_mem(
-                 //address write
-                 .clk            (clk),
-                 .rst            (reset),
-		 .s_axi_awid     ({8{ddr_awid}}),
-		 .s_axi_awaddr   (ddr_awaddr[`DDR_ADDR_W-1:0]),
-                 .s_axi_awlen    (ddr_awlen),
-                 .s_axi_awsize   (ddr_awsize),
-                 .s_axi_awburst  (ddr_awburst),
-                 .s_axi_awlock   (ddr_awlock),
-		 .s_axi_awprot   (ddr_awprot),
-		 .s_axi_awcache  (ddr_awcache),
-     		 .s_axi_awvalid  (ddr_awvalid),
-		 .s_axi_awready  (ddr_awready),
-      
-		 //write  
-		 .s_axi_wvalid   (ddr_wvalid),
-		 .s_axi_wready   (ddr_wready),
-		 .s_axi_wdata    (ddr_wdata),
-		 .s_axi_wstrb    (ddr_wstrb),
-                 .s_axi_wlast    (ddr_wlast),
-      
-		 //write response
-		 .s_axi_bready   (ddr_bready),
-                 .s_axi_bid      (ddr_bid),
-                 .s_axi_bresp    (ddr_bresp),
-		 .s_axi_bvalid   (ddr_bvalid),
-      
-		 //address read
-		 .s_axi_arid     ({8{ddr_arid}}),
-		 .s_axi_araddr   (ddr_araddr[`DDR_ADDR_W-1:0]),
-		 .s_axi_arlen    (ddr_arlen), 
-		 .s_axi_arsize   (ddr_arsize),    
-                 .s_axi_arburst  (ddr_arburst),
-                 .s_axi_arlock   (ddr_arlock),
-                 .s_axi_arcache  (ddr_arcache),
-                 .s_axi_arprot   (ddr_arprot),
-		 .s_axi_arvalid  (ddr_arvalid),
-		 .s_axi_arready  (ddr_arready),
-      
-		 //read   
-		 .s_axi_rready   (ddr_rready),
-		 .s_axi_rid      (ddr_rid),
-		 .s_axi_rdata    (ddr_rdata),
-		 .s_axi_rresp    (ddr_rresp),
-                 .s_axi_rlast    (ddr_rlast),
-		 .s_axi_rvalid   (ddr_rvalid)
-                 );   
+   //instantiate the axi memory 
+	// In this simulation we have two instances of the memory.
+	// In the synthesized system, both components will access the same memory.
+	`ifdef USE_DDR
+	//SUT memory
+	axi_ram 
+		#(
+		`ifdef DDR_INIT
+		.FILE("firmware.hex"),
+		`endif
+		.DATA_WIDTH (`DATA_W),
+		.ADDR_WIDTH (`DDR_ADDR_W)
+		)
+		sut_ddr_model_mem(
+			//address write
+			.clk            (clk[0]),
+			.rst            (reset[0]),
+			.s_axi_awid     ({8{ddr_awid[0]}}),
+			.s_axi_awaddr   (ddr_awaddr[0][`DDR_ADDR_W-1:0]),
+			.s_axi_awlen    (ddr_awlen[0]),
+			.s_axi_awsize   (ddr_awsize[0]),
+			.s_axi_awburst  (ddr_awburst[0]),
+			.s_axi_awlock   (ddr_awlock[0]),
+			.s_axi_awprot   (ddr_awprot[0]),
+			.s_axi_awcache  (ddr_awcache[0]),
+			.s_axi_awvalid  (ddr_awvalid[0]),
+			.s_axi_awready  (ddr_awready[0]),
+
+			//write  
+			.s_axi_wvalid   (ddr_wvalid[0]),
+			.s_axi_wready   (ddr_wready[0]),
+			.s_axi_wdata    (ddr_wdata[0]),
+			.s_axi_wstrb    (ddr_wstrb[0]),
+			.s_axi_wlast    (ddr_wlast[0]),
+
+			//write response
+			.s_axi_bready   (ddr_bready[0]),
+			.s_axi_bid      (ddr_bid[0]),
+			.s_axi_bresp    (ddr_bresp[0]),
+			.s_axi_bvalid   (ddr_bvalid[0]),
+
+			//address read
+			.s_axi_arid     ({8{ddr_arid[0]}}),
+			.s_axi_araddr   (ddr_araddr[0][`DDR_ADDR_W-1:0]),
+			.s_axi_arlen    (ddr_arlen[0]), 
+			.s_axi_arsize   (ddr_arsize[0]),    
+			.s_axi_arburst  (ddr_arburst[0]),
+			.s_axi_arlock   (ddr_arlock[0]),
+			.s_axi_arcache  (ddr_arcache[0]),
+			.s_axi_arprot   (ddr_arprot[0]),
+			.s_axi_arvalid  (ddr_arvalid[0]),
+			.s_axi_arready  (ddr_arready[0]),
+
+			//read   
+			.s_axi_rready   (ddr_rready[0]),
+			.s_axi_rid      (ddr_rid[0]),
+			.s_axi_rdata    (ddr_rdata[0]),
+			.s_axi_rresp    (ddr_rresp[0]),
+			.s_axi_rlast    (ddr_rlast[0]),
+			.s_axi_rvalid   (ddr_rvalid[0])
+		);   
+	//Tester memory
+	axi_ram 
+		#(
+		`ifdef DDR_INIT
+		.FILE("tester_firmware.hex"),
+		`endif
+		.DATA_WIDTH (`DATA_W),
+		.ADDR_WIDTH (`DDR_ADDR_W)
+		)
+		tester_ddr_model_mem(
+			//address write
+			.clk            (clk[1]),
+			.rst            (reset[1]),
+			.s_axi_awid     ({8{ddr_awid[1]}}),
+			.s_axi_awaddr   (ddr_awaddr[1][`DDR_ADDR_W-1:0]),
+			.s_axi_awlen    (ddr_awlen[1]),
+			.s_axi_awsize   (ddr_awsize[1]),
+			.s_axi_awburst  (ddr_awburst[1]),
+			.s_axi_awlock   (ddr_awlock[1]),
+			.s_axi_awprot   (ddr_awprot[1]),
+			.s_axi_awcache  (ddr_awcache[1]),
+			.s_axi_awvalid  (ddr_awvalid[1]),
+			.s_axi_awready  (ddr_awready[1]),
+
+			//write  
+			.s_axi_wvalid   (ddr_wvalid[1]),
+			.s_axi_wready   (ddr_wready[1]),
+			.s_axi_wdata    (ddr_wdata[1]),
+			.s_axi_wstrb    (ddr_wstrb[1]),
+			.s_axi_wlast    (ddr_wlast[1]),
+
+			//write response
+			.s_axi_bready   (ddr_bready[1]),
+			.s_axi_bid      (ddr_bid[1]),
+			.s_axi_bresp    (ddr_bresp[1]),
+			.s_axi_bvalid   (ddr_bvalid[1]),
+
+			//address read
+			.s_axi_arid     ({8{ddr_arid[1]}}),
+			.s_axi_araddr   (ddr_araddr[1][`DDR_ADDR_W-1:0]),
+			.s_axi_arlen    (ddr_arlen[1]), 
+			.s_axi_arsize   (ddr_arsize[1]),    
+			.s_axi_arburst  (ddr_arburst[1]),
+			.s_axi_arlock   (ddr_arlock[1]),
+			.s_axi_arcache  (ddr_arcache[1]),
+			.s_axi_arprot   (ddr_arprot[1]),
+			.s_axi_arvalid  (ddr_arvalid[1]),
+			.s_axi_arready  (ddr_arready[1]),
+
+			//read   
+			.s_axi_rready   (ddr_rready[1]),
+			.s_axi_rid      (ddr_rid[1]),
+			.s_axi_rdata    (ddr_rdata[1]),
+			.s_axi_rresp    (ddr_rresp[1]),
+			.s_axi_rlast    (ddr_rlast[1]),
+			.s_axi_rvalid   (ddr_rvalid[1])
+		);   
 `endif
 
 
 `include "cpu_tasks.v"
-   
-   //finish simulation on trap
-   always @(posedge trap) begin
-      #10 $display("Found CPU trap condition");
-      $finish;
+
+//finish simulation on trap
+//Sut
+always @(posedge trap[0]) begin
+	#10 $display("Found SUT CPU trap condition");
+	$finish;
+   end
+//Tester
+always @(posedge trap[1]) begin
+	#10 $display("Found Tester CPU trap condition");
+	$finish;
    end
 
    //sram monitor - use for debugging programs
@@ -310,7 +376,7 @@ module system_tb;
     */
 
 	//Manually added testbench uart core. RS232 pins attached to the same pins
-	//of the uut UART0 instance to communicate with it
+	//of the top_system Tester UART0 instance to communicate with it
    iob_uart uart_tb
      (
       .clk       (clk),
@@ -323,10 +389,10 @@ module system_tb;
       .rdata     (uart_rdata),
       .ready     (uart_ready),
       
-      .txd       (UART0_rxd),
-      .rxd       (UART0_txd),
-      .rts       (UART0_cts),
-      .cts       (UART0_rts)
+      .txd       (tester_UART0_rxd),
+      .rxd       (tester_UART0_txd),
+      .rts       (tester_UART0_cts),
+      .cts       (tester_UART0_rts)
       );
    
 endmodule

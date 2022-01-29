@@ -5,7 +5,9 @@
 module int_mem
   #(
     parameter ADDR_W=32,
-    parameter DATA_W=32
+    parameter DATA_W=32,
+    parameter FILE = "firmware",
+    parameter BOOT_FILE = "boot.hex"
     )
    (
     input                clk,
@@ -69,7 +71,9 @@ module int_mem
    wire [`REQ_W-1:0]     ram_w_req;
    wire [`RESP_W-1:0]    ram_w_resp;
 
-   boot_ctr boot_ctr0 
+   boot_ctr 
+        #(.FILE(BOOT_FILE))
+	boot_ctr0 
        (
         .clk(clk),
         .rst(rst),
@@ -150,7 +154,7 @@ module int_mem
    //
    sram
 `ifdef SRAM_INIT
-        #(.FILE("firmware"))
+        #(.FILE(FILE))
 `endif
    int_sram 
      (

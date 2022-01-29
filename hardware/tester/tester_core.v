@@ -230,7 +230,12 @@ module tester
    // INTERNAL SRAM MEMORY
    //
    
-   int_mem int_mem0 
+   int_mem 
+`ifdef SRAM_INIT
+        #(.FILE("tester_firmware")
+          .BOOT_FILE("tester_boot"))
+`endif
+	int_mem0 
      (
       .clk                  (clk ),
       .rst                  (reset),
