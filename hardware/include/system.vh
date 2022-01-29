@@ -4,6 +4,7 @@
 `define ADDR_W 32
 // number of slaves (log2)
 `define N_SLAVES_W $clog2(`N_SLAVES)
+`define TESTER_N_SLAVES_W $clog2(`TESTER_N_SLAVES)
 
 //init sram/ddr with firmware
 `ifdef INIT_MEM

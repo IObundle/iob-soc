@@ -22,6 +22,7 @@
 //Architectural parameters
 #define ADDR_W 32
 #define N_SLAVES_W BITS_TO_REPRESENT(N_SLAVES)
+#define TESTER_N_SLAVES_W BITS_TO_REPRESENT(TESTER_N_SLAVES)
 
 //
 //Memory map
