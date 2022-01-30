@@ -31,7 +31,7 @@ INIT_MEM ?=1
 #list with corename of peripherals to be attached to peripheral bus.
 #must match the 'corename' target in the Makefile inside the peripheral submodule directory.
 #to include multiple instances, write the corename of the peripheral multiple times.
-#(Example: 'PERIPHERALS ?=UART UART' will create 2 UART instances
+#(Example: 'PERIPHERALS ?=UART UART' will create 2 UART instances)
 PERIPHERALS ?=UART
 
 #RISC-V HARD MULTIPLIER AND DIVIDER INSTRUCTIONS
