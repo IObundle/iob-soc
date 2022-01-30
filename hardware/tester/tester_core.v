@@ -233,7 +233,7 @@ module tester
    int_mem 
 `ifdef SRAM_INIT
         #(.FILE("tester_firmware"),
-          .BOOT_FILE("tester_boot.hex"))
+          .BOOT_FILE("tester_boot"))
 `endif
 	int_mem0 
      (

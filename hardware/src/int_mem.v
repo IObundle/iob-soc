@@ -7,7 +7,7 @@ module int_mem
     parameter ADDR_W=32,
     parameter DATA_W=32,
     parameter FILE = "firmware",
-    parameter BOOT_FILE = "boot.hex"
+    parameter BOOT_FILE = "boot"
     )
    (
     input                clk,
@@ -72,7 +72,7 @@ module int_mem
    wire [`RESP_W-1:0]    ram_w_resp;
 
    boot_ctr 
-        #(.FILE(BOOT_FILE))
+        #(.FILE({BOOT_FILE,".hex"}))
 	boot_ctr0 
        (
         .clk(clk),
