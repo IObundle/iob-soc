@@ -49,7 +49,7 @@ endif
 
 tester_periphs_tmp.h:
 	#define base addresses for tester peripherals
-	$(foreach p, $(TESTER_PERIPH_INSTANCES), $(shell echo "#define $p_TESTER_BASE (1<<$P) |($p<<($P-TESTER_N_SLAVES_W))" >> $@) )
+	$(foreach p, $(TESTER_PERIPH_INSTANCES), $(shell echo "#define $p_TESTER_BASE (1<<$P) |($p_TESTER<<($P-TESTER_N_SLAVES_W))" >> $@) )
 	#define base of SUT REGFILEIF seen from tester dedicated for communication with SUT
 	$(shell echo "#define REGFILEIF_TESTER_BASE (1<<$P) |($(shell expr $(TESTER_N_SLAVES) \- 1)<<($P-TESTER_N_SLAVES_W))" >> $@)
 

@@ -35,7 +35,11 @@ VSRC+=$(CACHE_DIR)/submodules/AXIMEM/rtl/axi_ram.v
 VSRC+=system_tb.v
 
 #RULES
+ifeq ($(TESTER_ENABLED),)
 all: clean sw
+else
+all: clean sw tester-sw
+endif
 ifeq ($(SIM_SERVER),)
 	make run 
 else
