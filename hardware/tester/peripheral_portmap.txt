@@ -18,12 +18,12 @@
 //    SUT.UART[0].UART_cts : External
 //    SUT.UART[0].UART_rts : External
 //********************************************************************************************************************************
-// Auto-generated list of signals to be mapped (by default mapped to external interface):
+//Attach UART 0 instance of SUT to UART 1 instance of Tester
 SUT.UART[0].UART_txd : Tester.UART[1].UART_rxd
 SUT.UART[0].UART_rxd : Tester.UART[1].UART_txd
 SUT.UART[0].UART_rts : Tester.UART[1].UART_cts
 SUT.UART[0].UART_cts : Tester.UART[1].UART_rts
-//Tester peripheral signals (you can remove some of these signals and map them to the SUT signals above instead)
+//Attach UART 0 instance of Tester to external interface (signals will be inputs/outputs of top_system)
 Tester.UART[0].UART_txd : External
 Tester.UART[0].UART_rxd : External
 Tester.UART[0].UART_rts : External
