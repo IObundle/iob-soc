@@ -13,8 +13,8 @@ ifeq (0,$(shell docker -v 2>/dev/null | grep podman | wc -l))
    DOCKER_UID_OPTIONS = -u $(shell id -u $(USER)):$(shell id -g $(USER))
 endif
 DOK_CMD ?= docker run -it --rm -v $(OPENLANE_HOME):/openLANE_flow -v $(PDK_ROOT):$(PDK_ROOT) -e PDK_ROOT=$(PDK_ROOT) $(DOCKER_UID_OPTIONS) $(IMAGE_NAME)
-.PHONY: all asic clean_sram clean_asic clean_debug clean_iob_sp_ram_be.v clean
-all: sram  asic 
+.PHONY: all asic-synth  clean_sram clean_asic clean_debug clean_iob_sp_ram_be.v clean
+all: sram asic-synth test
 
 sram: openram_config.py
 	python3 $(OPENRAM_HOME)/openram.py openram_config.py
@@ -42,7 +42,7 @@ ADD:   DEL
 $(DEFINE): ADD
 	echo "\`define $@ $($@)"| sed 's/=/ /g' >> temp_inc/iob-soc-defs.vh
 
-asic:  $(VSRC) $(VHDR) $(DEFINE) 
+synth:  $(VSRC) $(VHDR) $(DEFINE) 
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/src
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/inc
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/macros/lef
@@ -56,6 +56,8 @@ asic:  $(VSRC) $(VHDR) $(DEFINE)
 	cp config.tcl $(OPENLANE_DESIGNS)/system
 	cd $(OPENLANE_HOME);
 	$(DOK_CMD) sh -c "./flow.tcl -interactive -file run_interactive.tcl"
+test:
+	[ -f $(OPENLANE_DESIGNS)/system/runs/soc/results/synthesis/system.synthesis.v ] && echo "Synthesis and technology mapping successful" || echo "Synthesis or technology mapping failed"
 
 debug: $(VSRC) $(VHDR)
 	mkdir debug
@@ -78,4 +80,4 @@ clean_iob_sp_ram_be.v:
 clean_debug:
 	rm -rf debug
 
-clean: clean_sram clean_asic clean_debug clean_iob_dp_ram
+clean: clean_sram clean_asic clean_debug clean_iob_sp_ram_be.v

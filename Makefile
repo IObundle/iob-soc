@@ -123,7 +123,7 @@ test-fpga-clean:
 	make fpga-clean BOARD=AES-KU040-DB-G
 
 test-asic:
-	make asic-test ASIC_NODE=umc130
+	make asic-test
 
 test-asic-clean:
 	make asic-clean ASIC_NODE=umc130
