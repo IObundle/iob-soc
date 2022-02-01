@@ -38,24 +38,6 @@ sim-post-synth:
 	make -C $(HW_DIR)/simulation/xcelium all INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) VCD=$(VCD) TEST_LOG="$(TEST_LOG)" ASIC=1 SYNTH=1 ASIC_MEM_FILES=$(ASIC_MEM_FILES) LIBS=$(ASIC_LIBS)
 
 #
-# Testing
-#
-
-test: clean-testlog test1 test2 test3
-	diff -q $(HW_DIR)/simulation/xcelium/test.log test.expected
-
-test1:
-	make clean
-	make all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
-
-test2:
-	make all INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
-
-test3:
-	make clean
-	make all INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
-
-#
 # Clean
 #
 
@@ -79,5 +61,4 @@ endif
 	mems synth \
 	sp-rom dp-ram 2p-ram sp-ram \
 	sim-post-synth \
-	test test1 test2 test3 \
 	clean-remote clean-testlog
