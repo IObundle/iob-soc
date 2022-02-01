@@ -16,6 +16,7 @@ include $(LIB_DIR)/hardware/iob_merge/hardware.mk
 include $(LIB_DIR)/hardware/iob_split/hardware.mk
 
 #include MEM modules
+MEM_DIR=$(CACHE_DIR)/submodules/MEM
 include $(MEM_DIR)/hardware/rom/iob_rom_sp/hardware.mk
 include $(MEM_DIR)/hardware/ram/iob_ram_dp_be/hardware.mk
 
@@ -68,14 +69,14 @@ system_tmp.v: $(SRC_DIR)/system_core.v
 
 
 # make and copy memory init files
-MEM_PYTHON_DIR=$(MEM_DIR)/software/python
+PYTHON_DIR=$(MEM_DIR)/software/python
 
 boot.hex: $(BOOT_DIR)/boot.bin
-	$(MEM_PYTHON_DIR)/makehex.py $(BOOT_DIR)/boot.bin $(BOOTROM_ADDR_W) > boot.hex
+	$(PYTHON_DIR)/makehex.py $(BOOT_DIR)/boot.bin $(BOOTROM_ADDR_W) > boot.hex
 
 firmware.hex: $(FIRM_DIR)/firmware.bin
-	$(MEM_PYTHON_DIR)/makehex.py $(FIRM_DIR)/firmware.bin $(FIRM_ADDR_W) > firmware.hex
-	$(MEM_PYTHON_DIR)/hex_split.py firmware .
+	$(PYTHON_DIR)/makehex.py $(FIRM_DIR)/firmware.bin $(FIRM_ADDR_W) > firmware.hex
+	$(PYTHON_DIR)/hex_split.py firmware .
 	cp $(FIRM_DIR)/firmware.bin .
 
 # make embedded sw software

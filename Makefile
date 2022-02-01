@@ -154,4 +154,4 @@ clean-all: test-clean
 
 debug:
 	@echo $(UART_DIR)
-	@echo $(SUBMODULES_DIR_LIST)
+	@echo $(CACHE_DIR)

@@ -87,9 +87,9 @@ DEFINE+=$(defmacro)INIT_MEM
 endif
 
 #submodule paths
-SUBMODULES_DIR=$(ROOT_DIR)/submodules
-SUBMODULES_DIR_LIST=$(shell ls $(SUBMODULES_DIR))
-$(foreach d, $(SUBMODULES_DIR_LIST), $(eval $d_DIR ?=$(SUBMODULES_DIR)/$d))
+PICORV32_DIR=$(ROOT_DIR)/submodules/PICORV32
+CACHE_DIR=$(ROOT_DIR)/submodules/CACHE
+UART_DIR=$(ROOT_DIR)/submodules/UART
 
 #sw paths
 SW_DIR:=$(ROOT_DIR)/software
@@ -97,8 +97,6 @@ PC_DIR:=$(SW_DIR)/pc-emul
 FIRM_DIR:=$(SW_DIR)/firmware
 BOOT_DIR:=$(SW_DIR)/bootloader
 CONSOLE_DIR:=$(SW_DIR)/console
-LIB_PYTHON_DIR:=$(SUBMODULES_DIR)/software/python
-
 
 #hw paths
 HW_DIR=$(ROOT_DIR)/hardware
