@@ -13,7 +13,7 @@ module iob_uart
   (
 
    //CPU interface
-`include "cpu_nat_s_if.vh"
+`include "iob_s_if.vh"
 
    //additional inputs and outputs
 
