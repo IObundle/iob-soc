@@ -65,7 +65,7 @@ ASIC_NODE ?=umc130
 DOC ?= pb
 
 #IOB LIBRARY
-LIB_DIR ?= $(ROOT_DIR)/submodules/CACHE/submodules/LIB
+LIB_DIR ?= $(ROOT_DIR)/submodules/UART/submodules/LIB
 UART_HW_DIR:=$(UART_DIR)/hardware
 
 ####################################################################
