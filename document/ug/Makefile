@@ -2,7 +2,7 @@ UART_DIR:=../..
 CORE_DIR:=$(UART_DIR)
 
 #interface signal tables
-TAB=rs232_is_tab.tex cpu_nat_s_is_tab.tex cpu_axi4lite_s_is_tab.tex
+TAB=rs232_is_tab.tex iob_s_if_is_tab.tex axil_s_if_is_tab.tex
 
 #include sowftware accessible registers
 SWREGS=1

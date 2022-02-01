@@ -36,9 +36,9 @@
 \@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces RS232 Interface Signals\relax }}{8}{table.caption.8}\protected@file@percent }
 \newlabel{rs232_is_tab:is}{{3}{8}{RS232 Interface Signals\relax }{table.caption.8}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces CPU Native Slave Interface Signals\relax }}{8}{table.caption.9}\protected@file@percent }
-\newlabel{cpu_nat_s_is_tab:is}{{4}{8}{CPU Native Slave Interface Signals\relax }{table.caption.9}{}}
+\newlabel{iob_s_if_is_tab:is}{{4}{8}{CPU Native Slave Interface Signals\relax }{table.caption.9}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces CPU AXI4 Lite Slave Interface Signals\relax }}{9}{table.caption.10}\protected@file@percent }
-\newlabel{cpu_axi4lite_s_is_tab:is}{{5}{9}{CPU AXI4 Lite Slave Interface Signals\relax }{table.caption.10}{}}
+\newlabel{axil_s_if_is_tab:is}{{5}{9}{CPU AXI4 Lite Slave Interface Signals\relax }{table.caption.10}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {8}Software Accessible Registers}{9}{section.8}\protected@file@percent }
 \newlabel{sec:re}{{8}{9}{Software Accessible Registers}{section.8}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces UART software accessible registers.\relax }}{9}{table.caption.11}\protected@file@percent }
