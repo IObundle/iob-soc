@@ -7,7 +7,9 @@ DEFINE+=$(defmacro)FREQ=$(FREQ)
 
 #compiler settings
 TOOLCHAIN_PREFIX:=riscv64-unknown-elf-
-CFLAGS=-Os -nostdlib -march=$(MFLAGS) -mabi=ilp32
+CFLAGS=-Os -nostdlib -march=$(MFLAGS) -mabi=ilp32 --specs=nano.specs
+LFLAGS+= -Wl,-Bstatic,-T,../template.lds,--strip-debug
+LLIBS=-lgcc -lc -lnosys
 
 MFLAGS=$(MFLAGS_BASE)$(MFLAG_M)$(MFLAG_C)
 

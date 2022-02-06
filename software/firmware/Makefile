@@ -1,8 +1,8 @@
 ROOT_DIR=../..
 include ../software.mk
 
-#additional compiler flags
-CFLAGS+=--specs=nano.specs -Wl,-Bstatic,-T,../template.lds,-Map,firmware.map,--strip-debug
+#additional linker flag
+LFLAGS+=-Wl,-Map,firmware.map
 
 #cache
 ifeq ($(USE_DDR),1)
@@ -20,7 +20,7 @@ SRC+= firmware.S firmware.c $(UART_DIR)/software/printf.c
 
 #RULES
 firmware.elf: ../template.lds $(HDR) $(SRC)
-	$(TOOLCHAIN_PREFIX)gcc -o $@ $(CFLAGS) $(DEFINE) $(INCLUDE) $(SRC) -lgcc -lc -lnosys
+	$(TOOLCHAIN_PREFIX)gcc -o $@ $(CFLAGS) $(LFLAGS) $(DEFINE) $(INCLUDE) $(SRC) $(LLIBS)
 	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
 
 clean: gen-clean 
