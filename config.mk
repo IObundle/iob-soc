@@ -31,14 +31,19 @@ INIT_MEM ?=1
 #list with corename of peripherals to be attached to peripheral bus.
 #must match the 'corename' target in the Makefile inside the peripheral submodule directory.
 #to include multiple instances, write the corename of the peripheral multiple times.
-#(Example: 'PERIPHERALS ?=UART UART REGFILEIF' will create 2 UART instances and 1 REGFILEIF instance)
-PERIPHERALS ?=UART UART REGFILEIF
+#(Example: 'PERIPHERALS ?=UART UART' will create 2 UART instances)
+PERIPHERALS ?=UART
 
 #RISC-V HARD MULTIPLIER AND DIVIDER INSTRUCTIONS
 USE_MUL_DIV ?=1
 
 #RISC-V COMPRESSED INSTRUCTIONS
 USE_COMPRESSED ?=1
+
+
+#TESTER SYSTEM
+#list with corename of peripherals to be attached to Tester peripheral bus.
+TESTER_PERIPHERALS ?=UART UART
 
 #REMOTE MACHINES
 #git url for cloning 
@@ -97,6 +102,7 @@ CONSOLE_DIR:=$(SW_DIR)/console
 HW_DIR=$(SUT_DIR)/hardware
 SIM_DIR=$(HW_DIR)/simulation/$(SIMULATOR)
 ASIC_DIR=$(HW_DIR)/asic/$(ASIC_NODE)
+TESTER_DIR=$(HW_DIR)/tester
 BOARD_DIR ?=$(shell find hardware -name $(BOARD))
 
 #doc paths
@@ -117,6 +123,7 @@ DEFINE+=$(defmacro)FIRM_ADDR_W=$(FIRM_ADDR_W)
 DEFINE+=$(defmacro)DCACHE_ADDR_W=$(DCACHE_ADDR_W)
 
 DEFINE+=$(defmacro)N_SLAVES=$(N_SLAVES)
+DEFINE+=$(defmacro)TESTER_N_SLAVES=$(TESTER_N_SLAVES)
 
 #address selection bits
 E:=31 #extra memory bit
@@ -138,6 +145,21 @@ $(foreach d, $(sort $(PERIPHERALS)), $(eval TMP:=0) $(foreach p, $(filter $d,$(P
 #assign sequential numbers to peripheral instance names used as variables
 $(foreach p, $(PERIPH_INSTANCES), $(eval $p=$(N_SLAVES)) $(eval N_SLAVES:=$(shell expr $(N_SLAVES) \+ 1)))
 $(foreach p, $(PERIPH_INSTANCES), $(eval DEFINE+=$(defmacro)$p=$($p)))
+
+ifneq ($(TESTER_ENABLED),)
+TESTER_N_SLAVES:=0
+#create list of peripheral instances for Tester based on TESTER_PERIPHERALS list
+$(foreach d, $(sort $(TESTER_PERIPHERALS)), $(eval TMP:=0) $(foreach p, $(filter $d,$(TESTER_PERIPHERALS)), $(eval TESTER_PERIPH_INSTANCES+=$d$(TMP)) $(eval $d$(TMP)_TESTER_CORENAME=$d) $(eval TMP:=$(shell expr $(TMP) \+ 1)) ))
+#assign sequential numbers to peripheral instance names used as variables
+$(foreach p, $(TESTER_PERIPH_INSTANCES), $(eval $p_TESTER=$(TESTER_N_SLAVES)) $(eval TESTER_N_SLAVES:=$(shell expr $(TESTER_N_SLAVES) \+ 1)))
+$(foreach p, $(TESTER_PERIPH_INSTANCES), $(eval DEFINE+=$(defmacro)$p_TESTER=$($p_TESTER)))
+
+#Add one more slave for REGFILEIF that communicates with SUT and Tester
+$(eval N_SLAVES:=$(shell expr $(N_SLAVES) \+ 1))
+$(eval TESTER_N_SLAVES:=$(shell expr $(TESTER_N_SLAVES) \+ 1))
+DEFINE+=$(defmacro)REGFILEIF_SUT=$(shell expr $(N_SLAVES) \- 1)
+DEFINE+=$(defmacro)REGFILEIF_TESTER=$(shell expr $(TESTER_N_SLAVES) \- 1)
+endif
 
 #RULES
 gen-clean:

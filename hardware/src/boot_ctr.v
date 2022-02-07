@@ -3,6 +3,9 @@
 `include "interconnect.vh"
 
 module boot_ctr
+  #(
+    parameter FILE = "boot.hex"
+ )
   (
    input                      clk,
    input                      rst,
@@ -108,7 +111,7 @@ module boot_ctr
      #(
        .DATA_W(`DATA_W),
        .ADDR_W(`BOOTROM_ADDR_W-2),
-       .FILE("boot.hex")
+       .FILE(FILE)
        )
    sp_rom0 (
             .clk(clk),

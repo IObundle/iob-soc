@@ -35,6 +35,21 @@ periphs.h: periphs_tmp.h
 	@is_diff=`diff -q -N $@ $<`; if [ "$$is_diff" ]; then cp $< $@; fi
 	@rm periphs_tmp.h
 
+#Tester peripherals' base addresses
+tester_periphs.h: tester_periphs_tmp.h
+	@is_diff=`diff -q -N $@ $<`; if [ "$$is_diff" ]; then cp $< $@; fi
+	@rm tester_periphs_tmp.h
+
 periphs_tmp.h:
 	$(foreach p, $(PERIPH_INSTANCES), $(shell echo "#define $p_BASE (1<<$P) |($p<<($P-N_SLAVES_W))" >> $@) )
+ifneq ($(TESTER_ENABLED),)
+	#define base of REGFILEIF dedicated for communicating with tester
+	$(shell echo "#define REGFILEIF_SUT_BASE (1<<$P) |($(shell expr $(N_SLAVES) \- 1)<<($P-N_SLAVES_W))" >> $@)
+endif
+
+tester_periphs_tmp.h:
+	#define base addresses for tester peripherals
+	$(foreach p, $(TESTER_PERIPH_INSTANCES), $(shell echo "#define $p_TESTER_BASE (1<<$P) |($p_TESTER<<($P-TESTER_N_SLAVES_W))" >> $@) )
+	#define base of SUT REGFILEIF seen from tester dedicated for communication with SUT
+	$(shell echo "#define REGFILEIF_TESTER_BASE (1<<$P) |($(shell expr $(TESTER_N_SLAVES) \- 1)<<($P-TESTER_N_SLAVES_W))" >> $@)
 

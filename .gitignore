@@ -15,6 +15,11 @@ software/*/*
 !software/firmware/firmware.c
 !software/firmware/firmware.S
 
+!software/tester/boot.c
+!software/tester/boot.S
+!software/tester/firmware.c
+!software/tester/firmware.S
+
 !software/console/console.c
 !software/console/console.h
 !software/console/rs232comm.c
@@ -54,6 +59,11 @@ hardware/asic/*/*
 !hardware/asic/*/synscript.tcl
 !hardware/asic/*/powscript.tcl
 !hardware/asic/skywater/openram_config.py
+
+#tester
+#auto generated files
+hardware/tester/top_system_generated.v
+hardware/tester/top_system_tb_generated.v
 
 #DOCUMENT
 document/*/*
