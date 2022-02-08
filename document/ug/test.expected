@@ -37,12 +37,10 @@
 \newlabel{rs232_is_tab:is}{{3}{8}{RS232 Interface Signals\relax }{table.caption.8}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces CPU Native Slave Interface Signals\relax }}{8}{table.caption.9}\protected@file@percent }
 \newlabel{iob_s_if_is_tab:is}{{4}{8}{CPU Native Slave Interface Signals\relax }{table.caption.9}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces CPU AXI4 Lite Slave Interface Signals\relax }}{9}{table.caption.10}\protected@file@percent }
-\newlabel{axil_s_if_is_tab:is}{{5}{9}{CPU AXI4 Lite Slave Interface Signals\relax }{table.caption.10}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {8}Software Accessible Registers}{9}{section.8}\protected@file@percent }
-\newlabel{sec:re}{{8}{9}{Software Accessible Registers}{section.8}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces UART software accessible registers.\relax }}{9}{table.caption.11}\protected@file@percent }
-\newlabel{tab:sw_tx}{{6}{9}{UART software accessible registers.\relax }{table.caption.11}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {9}Implementation Results}{10}{section.9}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces FPGA results for Kintex Ultrascale (left) and Cyclone V GT (right).\relax }}{10}{table.caption.12}\protected@file@percent }
-\newlabel{tab:fpga_results}{{7}{10}{FPGA results for Kintex Ultrascale (left) and Cyclone V GT (right).\relax }{table.caption.12}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {8}Software Accessible Registers}{8}{section.8}\protected@file@percent }
+\newlabel{sec:re}{{8}{8}{Software Accessible Registers}{section.8}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces UART software accessible registers.\relax }}{8}{table.caption.10}\protected@file@percent }
+\newlabel{tab:sw_tx}{{5}{8}{UART software accessible registers.\relax }{table.caption.10}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {9}Implementation Results}{9}{section.9}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces FPGA results for Kintex Ultrascale (left) and Cyclone V GT (right).\relax }}{9}{table.caption.11}\protected@file@percent }
+\newlabel{tab:fpga_results}{{6}{9}{FPGA results for Kintex Ultrascale (left) and Cyclone V GT (right).\relax }{table.caption.11}{}}
