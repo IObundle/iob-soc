@@ -91,6 +91,7 @@ CACHE_DIR=$(ROOT_DIR)/submodules/CACHE
 UART_DIR=$(ROOT_DIR)/submodules/UART
 LIB_DIR=$(ROOT_DIR)/submodules/LIB
 MEM_DIR=$(ROOT_DIR)/submodules/MEM
+AXI_DIR=$(ROOT_DIR)/submodules/AXI
 
 #sw paths
 SW_DIR:=$(ROOT_DIR)/software
