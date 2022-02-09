@@ -16,7 +16,6 @@ include $(LIB_DIR)/hardware/iob_merge/hardware.mk
 include $(LIB_DIR)/hardware/iob_split/hardware.mk
 
 #include MEM modules
-MEM_DIR=$(CACHE_DIR)/submodules/MEM
 include $(MEM_DIR)/hardware/rom/iob_rom_sp/hardware.mk
 include $(MEM_DIR)/hardware/ram/iob_ram_dp_be/hardware.mk
 
