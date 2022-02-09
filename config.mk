@@ -65,7 +65,6 @@ ASIC_NODE ?=umc130
 DOC ?= pb
 
 #IOB LIBRARY
-LIB_DIR ?= $(ROOT_DIR)/submodules/UART/submodules/LIB
 UART_HW_DIR:=$(UART_DIR)/hardware
 
 ####################################################################
@@ -90,6 +89,8 @@ endif
 PICORV32_DIR=$(ROOT_DIR)/submodules/PICORV32
 CACHE_DIR=$(ROOT_DIR)/submodules/CACHE
 UART_DIR=$(ROOT_DIR)/submodules/UART
+LIB_DIR=$(ROOT_DIR)/submodules/LIB
+MEM_DIR=$(ROOT_DIR)/submodules/MEM
 
 #sw paths
 SW_DIR:=$(ROOT_DIR)/software
