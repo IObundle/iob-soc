@@ -16,7 +16,7 @@ async def time_limit(duration_ns):
     await Timer(duration_ns, units="ns")
     exit()
 
-@cocotb.test()
+#@cocotb.test()
 async def basic_test(dut):
     reset_n = dut.reset
     clk_n = dut.clk
