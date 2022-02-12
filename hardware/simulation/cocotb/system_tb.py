@@ -51,6 +51,7 @@ async def basic_test(dut):
                 await uartwrite(dut, UART_TXDATA_ADDR, send)
     print('\nTESTBENCH: finished\n\n')
 
+''' FIFO TESTBENCH
 @cocotb.test()
 async def console_test(dut):
     char = 0
@@ -122,3 +123,4 @@ async def console_test(dut):
     print('TESTBENCH: finished\n\n')
     soc2cnsl.close()
     cnsl2soc.close()
+'''
