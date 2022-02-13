@@ -63,8 +63,8 @@ def tb_read(number_of_bytes = 1):
             data = f.read(1)
             transfered_bytes += 1
             write_percentage = int(100/number_of_bytes*transfered_bytes)
-            if(write_percentage%2 == 0 and number_of_bytes != 1):
-                print(write_percentage, end='\r')
+            if(write_percentage%10 == 0 and number_of_bytes != 1):
+                print(write_percentage)
         if(data!=b''):
             f.seek(0) # absolute file positioning
             f.truncate() # to erase all data
