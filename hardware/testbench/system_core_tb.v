@@ -84,12 +84,11 @@ module system_tb;
         end
         $fclose(soc2cnsl_fd);
       end
-      if(txread_reg) begin
+      else if(txread_reg) begin
         cnsl2soc_fd = $fopen("./soc2cnsl", "rb+");
         if (!cnsl2soc_fd) begin
           $display("Could not open file cnsl2soc!\n");
-        end
-        else
+        end else begin
           cpu_char = $fgetc(cnsl2soc_fd);
           while (cpu_char > 0) begin
             cpu_uartwrite(`UART_TXDATA_ADDR, cpu_char);
