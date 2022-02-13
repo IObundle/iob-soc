@@ -27,11 +27,15 @@ FRX = b'\x08' # Send file request
 try:
     open('./cnsl2soc',"x")
 except IOError as e:
-    print('Error creating new cnsl2soc file!')
+    print('Old cnsl2soc deleted and created new file!')
+    os.remove('./cnsl2soc')
+    open('./cnsl2soc',"x")
 try:
     open('./soc2cnsl',"x")
 except IOError as e:
-    print('Error creating new soc2cnsl file!')
+    print('Old soc2cnsl deleted and created new file!')
+    os.remove('./soc2cnsl')
+    open('./soc2cnsl',"x")
 
 def tb_write(data):
     f = open('./cnsl2soc', "wb")
@@ -40,17 +44,14 @@ def tb_write(data):
 
 def tb_read_until(end = b'\x00'):
     data = b''
-    if (os.path.exists('./soc2cnsl')):
-        f = open('./soc2cnsl', "rb+")
-        while(True):
-            byte = f.read(1)
+    while(True):
+        byte = tb_read()
+        if (byte == end):
+            #print('Enter end')
+            return data
+        else:
             data += byte
-            #print('Read: "{0}"'.format(data))
-            if (byte == end):
-                f.seek(0) # absolute file positioning
-                f.truncate() # to erase all data
-                f.close()
-                return data
+
 
 def tb_read(number_of_bytes = 1):
     data = b''
@@ -94,7 +95,7 @@ def cnsl_recvstr():
         name = tb_read_until(b'\x00')
     print(PROGNAME, end = '')
     print(': file name {0} '.format(name))
-    sys.stdout.flush()
+    #sys.stdout.flush()
     return name
 
 # Send file to target
@@ -102,9 +103,8 @@ def cnsl_sendfile():
     file_size = 0
     name = b''
     # receive file name
-    name = cnsl_recvstr()[:-1]
+    name = cnsl_recvstr()
     # open file to send
-    # print(name)
     f = open(name, 'rb')
     file_size = os.path.getsize(name)
     if SerialFlag:
@@ -123,7 +123,7 @@ def cnsl_recvfile():
     file_size = 0
     name = ""
     # receive file name
-    name = cnsl_recvstr()[:-1]
+    name = cnsl_recvstr()
     # open data file
     f = open(name, 'wb')
     if SerialFlag:

@@ -73,8 +73,8 @@ async def files_tb_test(dut):
 
     while(1):
         if(dut.trap.value.integer > 0):
-            print('TESTBENCH: force cpu trap exit')
-            exit()
+            print('\nTESTBENCH: force cpu trap exit')
+            break
         RXready = 0
         TXready = 0
         while(RXready != 1 and TXready != 1):
@@ -97,8 +97,8 @@ async def files_tb_test(dut):
             except IOError as e:
                 print('Could not open file cnsl2soc!')
                 break
-            aux = cnsl2soc.read()
-            if(aux != b''):
+            aux = cnsl2soc.read(1)
+            while(aux!=b''):
                 send = int.from_bytes(aux, "little")
                 #print(chr(send), end = '')
                 number_of_bytes_from_cnsl += 1
@@ -106,6 +106,9 @@ async def files_tb_test(dut):
                     print('-', end = '')
                     sys.stdout.flush()
                 await uartwrite(dut, UART_TXDATA_ADDR, send)
+                aux = cnsl2soc.read(1)
+            cnsl2soc.seek(0) # absolute file positioning
+            cnsl2soc.truncate() # to erase all data
             cnsl2soc.close()
 
     print('TESTBENCH: finished\n\n')
