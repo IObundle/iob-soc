@@ -32,7 +32,7 @@ endif
 #ddr memory
 VSRC+=$(CACHE_DIR)/submodules/AXIMEM/rtl/axi_ram.v
 #testbench
-ifeq ($(SIMULATOR), cocotb)
+ifneq (,$(filter $(SIMULATOR),cocotb verilator))
     VSRC+=system_top.v
 else
     VSRC+=system_tb.v
@@ -58,7 +58,7 @@ ifeq ($(VCD),1)
 	gtkwave -a ../waves.gtkw system.vcd &
 endif
 
-ifeq ($(SIMULATOR), cocotb)
+ifneq (,$(filter $(SIMULATOR),cocotb verilator))
 #create top system module
 system_top.v: $(TB_DIR)/system_top_core.v
 	cp $(TB_DIR)/system_top_core.v $@  # create system_top.velse
