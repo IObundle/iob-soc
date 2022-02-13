@@ -7,105 +7,105 @@
 
 module system_tb;
 
-   parameter realtime clk_per = 1s/`FREQ;
+  parameter realtime clk_per = 1s/`FREQ;
 
-   //clock
-   reg clk = 1;
-   always #(clk_per/2) clk = ~clk;
+  //clock
+  reg clk = 1;
+  always #(clk_per/2) clk = ~clk;
 
-   //reset
-   reg reset = 1;
+  //reset
+  reg reset = 1;
 
-   //received by getchar
-   reg [31:0]  rxread_reg;
-   reg [31:0]  txread_reg;
-   reg [31:0] cpu_char = 0;
-   integer soc2cnsl_fd, cnsl2soc_fd;
-
-
-   //tester uart
-   reg       uart_valid;
-   reg [`UART_ADDR_W-1:0] uart_addr;
-   reg [`DATA_W-1:0]      uart_wdata;
-   reg [3:0]              uart_wstrb;
-   wire [`DATA_W-1:0]     uart_rdata;
-   wire                   uart_ready;
-
-   //iterator
-   integer                i;
-
-   //got enquiry (connect request)
-   reg                    gotENQ;
-
-   //PWIRES
+  //received by getchar
+  reg [31:0]  rxread_reg;
+  reg [31:0]  txread_reg;
+  reg [31:0] cpu_char = 0;
+  integer soc2cnsl_fd, cnsl2soc_fd;
 
 
-   /////////////////////////////////////////////
-   // TEST PROCEDURE
-   //
-   initial begin
+  //tester uart
+  reg       uart_valid;
+  reg [`UART_ADDR_W-1:0] uart_addr;
+  reg [`DATA_W-1:0]      uart_wdata;
+  reg [3:0]              uart_wstrb;
+  wire [`DATA_W-1:0]     uart_rdata;
+  wire                   uart_ready;
+
+  //iterator
+  integer                i;
+
+  //got enquiry (connect request)
+  reg                    gotENQ;
+
+  //PWIRES
+
+
+  /////////////////////////////////////////////
+  // TEST PROCEDURE
+  //
+  initial begin
 
 `ifdef VCD
-      $dumpfile("system.vcd");
-      $dumpvars();
+    $dumpfile("system.vcd");
+    $dumpvars();
 `endif
 
-      //init cpu bus signals
-      uart_valid = 0;
-      uart_wstrb = 0;
+    //init cpu bus signals
+    uart_valid = 0;
+    uart_wstrb = 0;
 
-      // deassert rst
-      repeat (100) @(posedge clk) #1;
-      reset <= 0;
+    // deassert rst
+    repeat (100) @(posedge clk) #1;
+    reset <= 0;
 
-      //wait an arbitray (10) number of cycles
-      repeat (10) @(posedge clk) #1;
+    //wait an arbitray (10) number of cycles
+    repeat (10) @(posedge clk) #1;
 
-      // configure uart
-      cpu_inituart();
+    // configure uart
+    cpu_inituart();
 
 
-      gotENQ = 0;
+    gotENQ = 0;
 
-      $write("TESTBENCH: connecting");
+    $write("TESTBENCH: connecting");
 
-      while(cnsl2soc_fd > 0) begin
-        rxread_reg = 0;
-        while((rxread_reg != 1) && (txread_reg != 1)) begin
+    while(cnsl2soc_fd > 0) begin
+      rxread_reg = 0;
+      while((rxread_reg != 1) && (txread_reg != 1)) begin
+        cpu_uartread(`UART_RXREADY_ADDR, rxread_reg);
+        cpu_uartread(`UART_TXREADY_ADDR, txread_reg);
+      end
+      if(rxread_reg) begin
+        soc2cnsl_fd = $fopen("./soc2cnsl", "wb+");
+        cpu_char = $fgetc(soc2cnsl_fd);
+        if(cpu_char < 0) begin
           cpu_uartread(`UART_RXREADY_ADDR, rxread_reg);
-          cpu_uartread(`UART_TXREADY_ADDR, txread_reg);
+          $fwrite(soc2cnsl_fd, "%b", rxread_reg[7:0]);
         end
-        if(rxread_reg) begin
-          soc2cnsl_fd = $fopen("./soc2cnsl", "wb+");
-          cpu_char = $fgetc(soc2cnsl_fd);
-          if(cpu_char < 0) begin
-            cpu_uartread(`UART_RXREADY_ADDR, rxread_reg);
-            $fwrite(soc2cnsl_fd, "%b", rxread_reg[7:0]);
-          end
-          $fclose(soc2cnsl_fd);
+        $fclose(soc2cnsl_fd);
+      end
+      if(txread_reg) begin
+        cnsl2soc_fd = $fopen("./soc2cnsl", "rb+");
+        if (!cnsl2soc_fd) begin
+          $display("Could not open file cnsl2soc!\n");
         end
-        if(txread_reg) begin
-          cnsl2soc_fd = $fopen("./soc2cnsl", "rb+");
-          if (!cnsl2soc_fd) begin
-            $display("Could not open file cnsl2soc!\n");
-          end
-          else
-            cpu_char = $fgetc(cnsl2soc_fd);
-            while (cpu_char > 0) begin
-              cpu_uartwrite(`UART_TXDATA_ADDR, cpu_char);
-              while(!txread_reg) begin
-            	 cpu_uartread(`UART_TXREADY_ADDR, txread_reg);
-              end
-              cpu_char = $fgetc(cnsl2soc_fd);
+        else
+          cpu_char = $fgetc(cnsl2soc_fd);
+          while (cpu_char > 0) begin
+            cpu_uartwrite(`UART_TXDATA_ADDR, cpu_char);
+            while(!txread_reg) begin
+          	 cpu_uartread(`UART_TXREADY_ADDR, txread_reg);
             end
-            $fclose(cnsl2soc_fd);
-            cnsl2soc_fd = $fopen("./soc2cnsl", "w");
-            $fwrite(cnsl2soc_fd, "");
-            $fclose(cnsl2soc_fd);
+            cpu_char = $fgetc(cnsl2soc_fd);
+          end
+          $fclose(cnsl2soc_fd);
+          cnsl2soc_fd = $fopen("./soc2cnsl", "w");
+          $fwrite(cnsl2soc_fd, "");
+          $fclose(cnsl2soc_fd);
         end
       end
-
-   end
+    end
+  end
 
 
    //
