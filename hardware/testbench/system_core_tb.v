@@ -13,10 +13,12 @@ module system_tb;
    reg clk = 1;
    always #(clk_per/2) clk = ~clk;
 
-   //reset 
+   //reset
    reg reset = 1;
 
    //received by getchar
+   reg [31:0]  rxread_reg;
+   reg [31:0]  txread_reg;
    reg [7:0] cpu_char = 0;
 
 
@@ -33,10 +35,10 @@ module system_tb;
 
    //got enquiry (connect request)
    reg                    gotENQ;
-   
+
    //PWIRES
 
-   
+
    /////////////////////////////////////////////
    // TEST PROCEDURE
    //
@@ -50,63 +52,46 @@ module system_tb;
       //init cpu bus signals
       uart_valid = 0;
       uart_wstrb = 0;
-      
+
       // deassert rst
       repeat (100) @(posedge clk) #1;
       reset <= 0;
 
-      //wait an arbitray (10) number of cycles 
+      //wait an arbitray (10) number of cycles
       repeat (10) @(posedge clk) #1;
 
       // configure uart
       cpu_inituart();
 
-      
+
       gotENQ = 0;
-      
+
       $write("TESTBENCH: connecting");
-      
+
       while(1) begin
-         cpu_getchar(cpu_char);
-
-         case(cpu_char)
-           `ENQ: begin
-              $write(".");
-              if(!gotENQ) begin
-                 gotENQ = 1;
-`ifdef LD_FW
-                 cpu_putchar(`FRX); //got request to sent file
-`else
-                 cpu_putchar(`ACK);              
-`endif      
-              end
-           end
-           
-           `EOT: begin
-              $display("TESTBENCH: exiting\n\n\n");
-              $finish;
-           end
-           
-           `FRX: begin
-              $display("TESTBENCH: got file send request");
-              cpu_sendfile();
-           end
-
-           `FTX: begin
-              $display("TESTBENCH: got file receive request");
-              cpu_recvfile();
-           end
-
-           default: begin
-              $write("%c", cpu_char);
-           end
-
-         endcase         
+        rxread_reg = 0
+        while(rxread_reg != 1 && txread_reg != 1) begin
+          cpu_uartread(`UART_RXREADY_ADDR, rxread_reg);
+          cpu_uartread(`UART_TXREADY_ADDR, txread_reg);
+        end
+        if(rxread_reg) begin
+          soc2cnsl_fd = $fopen("./soc2cnsl", "wb+");
+          $fclose(soc2cnsl_fd);
+        end
+        if(txread_reg) begin
+          cnsl2soc_fd = $fopen("./soc2cnsl", "rb+");
+          if (!cnsl2soc_fd) begin
+            $display("Could not open file cnsl2soc!\n", error);
+            break;
+          end
+          cpu_char = $fgetc(cnsl2soc_fd);
+          $fclose(soc2cnsl_fd);
+        end
       end
 
    end
 
-   
+
    //
    // INSTANTIATE COMPONENTS
    //
@@ -159,7 +144,7 @@ module system_tb;
 
    //cpu trap signal
    wire                    trap;
-   
+
    //
    // UNIT UNDER TEST
    //
@@ -178,20 +163,20 @@ module system_tb;
 	       .m_axi_awqos   (ddr_awqos),
 	       .m_axi_awvalid (ddr_awvalid),
 	       .m_axi_awready (ddr_awready),
-               
-	       //write  
+
+	       //write
 	       .m_axi_wdata   (ddr_wdata),
 	       .m_axi_wstrb   (ddr_wstrb),
 	       .m_axi_wlast   (ddr_wlast),
 	       .m_axi_wvalid  (ddr_wvalid),
 	       .m_axi_wready  (ddr_wready),
-               
+
 	       //write response
 	       .m_axi_bid     (ddr_bid[0]),
 	       .m_axi_bresp   (ddr_bresp),
 	       .m_axi_bvalid  (ddr_bvalid),
 	       .m_axi_bready  (ddr_bready),
-               
+
 	       //address read
 	       .m_axi_arid    (ddr_arid),
 	       .m_axi_araddr  (ddr_araddr),
@@ -204,15 +189,15 @@ module system_tb;
 	       .m_axi_arqos   (ddr_arqos),
 	       .m_axi_arvalid (ddr_arvalid),
 	       .m_axi_arready (ddr_arready),
-               
-	       //read   
+
+	       //read
 	       .m_axi_rid     (ddr_rid[0]),
 	       .m_axi_rdata   (ddr_rdata),
 	       .m_axi_rresp   (ddr_rresp),
 	       .m_axi_rlast   (ddr_rlast),
 	       .m_axi_rvalid  (ddr_rvalid),
-	       .m_axi_rready  (ddr_rready),	
-`endif               
+	       .m_axi_rready  (ddr_rready),
+`endif
 	       .clk           (clk),
 	       .reset         (reset),
 	       .trap          (trap)
@@ -221,7 +206,7 @@ module system_tb;
 
    //instantiate the axi memory
 `ifdef USE_DDR
-   axi_ram 
+   axi_ram
      #(
  `ifdef DDR_INIT
        .FILE("firmware.hex"),
@@ -243,45 +228,45 @@ module system_tb;
 		 .s_axi_awcache  (ddr_awcache),
      		 .s_axi_awvalid  (ddr_awvalid),
 		 .s_axi_awready  (ddr_awready),
-      
-		 //write  
+
+		 //write
 		 .s_axi_wvalid   (ddr_wvalid),
 		 .s_axi_wready   (ddr_wready),
 		 .s_axi_wdata    (ddr_wdata),
 		 .s_axi_wstrb    (ddr_wstrb),
                  .s_axi_wlast    (ddr_wlast),
-      
+
 		 //write response
 		 .s_axi_bready   (ddr_bready),
                  .s_axi_bid      (ddr_bid),
                  .s_axi_bresp    (ddr_bresp),
 		 .s_axi_bvalid   (ddr_bvalid),
-      
+
 		 //address read
 		 .s_axi_arid     ({8{ddr_arid}}),
 		 .s_axi_araddr   (ddr_araddr[`DDR_ADDR_W-1:0]),
-		 .s_axi_arlen    (ddr_arlen), 
-		 .s_axi_arsize   (ddr_arsize),    
+		 .s_axi_arlen    (ddr_arlen),
+		 .s_axi_arsize   (ddr_arsize),
                  .s_axi_arburst  (ddr_arburst),
                  .s_axi_arlock   (ddr_arlock),
                  .s_axi_arcache  (ddr_arcache),
                  .s_axi_arprot   (ddr_arprot),
 		 .s_axi_arvalid  (ddr_arvalid),
 		 .s_axi_arready  (ddr_arready),
-      
-		 //read   
+
+		 //read
 		 .s_axi_rready   (ddr_rready),
 		 .s_axi_rid      (ddr_rid),
 		 .s_axi_rdata    (ddr_rdata),
 		 .s_axi_rresp    (ddr_rresp),
                  .s_axi_rlast    (ddr_rlast),
 		 .s_axi_rvalid   (ddr_rvalid)
-                 );   
+                 );
 `endif
 
 
 `include "cpu_tasks.v"
-   
+
    //finish simulation on trap
    always @(posedge trap) begin
       #10 $display("Found CPU trap condition");
@@ -298,12 +283,12 @@ module system_tb;
    wire sram_irdstrb = !uut.int_mem0.int_sram.i_wstrb & uut.int_mem0.int_sram.i_valid;
    wire [`SRAM_ADDR_W-1:0] sram_iaddr = uut.int_mem0.int_sram.i_addr;
    wire [`DATA_W-1:0] sram_irdata = uut.int_mem0.int_sram.i_rdata;
-   
+
    always @(posedge sram_dwstrb)
       if(sram_daddr == 13'h090d)  begin
          #10 $display("Found CPU memory condition at %f : %x : %x", $time, sram_daddr, sram_dwdata );
          //$finish;
       end
     */
-   
+
 endmodule
