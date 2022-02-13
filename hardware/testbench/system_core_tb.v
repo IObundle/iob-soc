@@ -67,11 +67,14 @@ module system_tb;
 
     gotENQ = 0;
 
-    $write("TESTBENCH: connecting");
+    $write("TESTBENCH: connecting\n");
 
-    while(cnsl2soc_fd > 0) begin
+    while(1) begin
       rxread_reg = 0;
+      txread_reg = 0;
       while((rxread_reg != 1) && (txread_reg != 1)) begin
+        $write("DEBUG: RX = %d; TX = %d\n", rxread_reg, txread_reg);
+        $write("DEBUG: RX = %d; TX = %d\n", `UART_RXREADY_ADDR, `UART_TXREADY_ADDR);
         cpu_uartread(`UART_RXREADY_ADDR, rxread_reg);
         cpu_uartread(`UART_TXREADY_ADDR, txread_reg);
       end
@@ -87,7 +90,9 @@ module system_tb;
       else if(txread_reg) begin
         cnsl2soc_fd = $fopen("./soc2cnsl", "rb+");
         if (!cnsl2soc_fd) begin
-          $display("Could not open file cnsl2soc!\n");
+          $write("Could not open file cnsl2soc!\n");
+          $write("TESTBENCH: exiting\n\n");
+          $finish;
         end else begin
           cpu_char = $fgetc(cnsl2soc_fd);
           while (cpu_char > 0) begin

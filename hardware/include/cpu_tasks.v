@@ -23,7 +23,7 @@ task cpu_uartwrite;
    input [3:0]  cpu_address;
    input [31:0] cpu_data;
    begin
-      # 1 uart_addr = cpu_address;
+      #1 uart_addr = cpu_address;
       uart_valid = 1;
       uart_wstrb = 4'hf;
       uart_wdata = cpu_data;
@@ -37,7 +37,7 @@ task cpu_uartread;
    input [3:0]   cpu_address;
    output [31:0] read_reg;
    begin
-      # 1 uart_addr = cpu_address;
+      #1 uart_addr = cpu_address;
       uart_valid = 1;
       @ (posedge clk) #1 read_reg = {24'd0, uart_rdata[7:0]};
       @ (posedge clk) #1 uart_valid = 0;
