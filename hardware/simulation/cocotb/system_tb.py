@@ -85,10 +85,6 @@ async def files_tb_test(dut):
             if(soc2cnsl.read(1)==b''):
                 char = await uartread(dut, UART_RXDATA_ADDR)
                 soc2cnsl.write(char.to_bytes(1,  byteorder='little'))
-                number_of_bytes_from_soc += 1
-                if(number_of_bytes_from_soc%1000 == 0):
-                    print('.', end = '')
-                    sys.stdout.flush()
             soc2cnsl.close()
         elif(TXready):
             try:
@@ -106,6 +102,9 @@ async def files_tb_test(dut):
                     print('-', end = '')
                     sys.stdout.flush()
                 await uartwrite(dut, UART_TXDATA_ADDR, send)
+                TXready = 0
+                while(not TXready):
+                    TXready = await uartread(dut, UART_TXREADY_ADDR)
                 aux = cnsl2soc.read(1)
             cnsl2soc.seek(0) # absolute file positioning
             cnsl2soc.truncate() # to erase all data
