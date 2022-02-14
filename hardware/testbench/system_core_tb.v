@@ -83,13 +83,13 @@ module system_tb;
       end
       if(rxread_reg) begin
         soc2cnsl_fd = $fopen("soc2cnsl", "wb+");
-        cpu_char = $fgetc(3);
+        cpu_char = $fgetc(soc2cnsl_fd);
         if (!soc2cnsl_fd)
           $display("Could not open \"soc2cnsl\"");
         else if((cpu_char < 0)) begin
           //$write("Enter RX\n");
           cpu_uartread(`UART_RXREADY_ADDR, cpu_char);
-          $fwrite(3, "%x", cpu_char);
+          $fwrite(soc2cnsl_fd, "%x", cpu_char);
         end
         $fclose(soc2cnsl_fd);
       end
