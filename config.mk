@@ -18,10 +18,6 @@ DOC ?=pb
 DOC_LIST ?=pb ug
 
 # VERSION
-VERSION ?=0.1
-VLINE ?="V$(VERSION)"
-UART_version.txt:
-ifeq ($(VERSION),)
-	$(error "variable VERSION is not set")
-endif
-	echo $(VLINE) > version.txt
+VERSION ?=V0.1
+$(TOP_MODULE)_version.txt:
+	echo $(VERSION) > version.txt

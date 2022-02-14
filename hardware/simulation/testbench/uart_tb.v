@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-`include "UART.vh"
+`include "iob_uart.vh"
 
 module uart_tb;
 
@@ -13,25 +13,25 @@ module uart_tb;
    // CORE SIGNALS
    reg 			rst;
    reg 			clk;
-
+   
    //control interface (backend)
    reg                  rst_soft;
    reg                  wr_en;
    reg                  rd_en;   
-   reg [`UART_WDATA_W-1:0] div;
+   reg [`UART_DIV_W-1:0] div;
    
-   reg                     tx_en;
-   reg [7:0]               tx_data;
-   wire                    tx_ready;
+   reg                   tx_en;
+   reg [7:0]             tx_data;
+   wire                  tx_ready;
    
-   reg                     rx_en;
-   wire [7:0] rx_data;
-   reg [7:0]  rcvd_data;
-   wire                    rx_ready;
+   reg                   rx_en;
+   wire [7:0]            rx_data;
+   reg [7:0]             rcvd_data;
+   wire                  rx_ready;
    
    //rs232 interface (frontend)
-   wire                    rts2cts;
-   wire                    tx2rx;
+   wire                  rts2cts;
+   wire                  tx2rx;
    
 
    initial begin

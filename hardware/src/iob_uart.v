@@ -1,13 +1,12 @@
 `timescale 1ns/1ps
 `include "iob_lib.vh"
-`include "UART.vh"
-`include "UARTsw_reg_def.vh"
+`include "iob_uart.vh"
+`include "iob_uart_sw_reg_def.vh"
 
 module iob_uart 
-  # (//the below parameters are used in cpu if includes below
-     parameter ADDR_W = `UART_ADDR_W, //NODOC Address width
-     parameter DATA_W = `UART_RDATA_W, //NODOC CPU data width
-     parameter WDATA_W = `UART_WDATA_W //NODOC CPU data width
+  # (
+     parameter DATA_W = 32, //PARAM CPU data width
+     parameter ADDR_W = `iob_uart_sw_reg_ADDR_W //MACRO CPU address width
      )
 
   (
@@ -25,9 +24,9 @@ module iob_uart
 `include "gen_if.vh"
    );
 
-//BLOCK Register File & Holds the current configuration of the UART as well as internal parameters. Data to be sent or that has been received is stored here temporarily.
-`include "UARTsw_reg.vh"
-`include "UARTsw_reg_gen.vh"
+//BLOCK Register File & Configuration control and status register file.
+`include "iob_uart_sw_reg.vh"
+`include "iob_uart_sw_reg_gen.vh"
    
    uart_core uart_core0 
      (

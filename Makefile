@@ -53,7 +53,7 @@ fpga-clean-all:
 #
 DOC_DIR ?=$(UART_DIR)/document/$(DOC)
 
-doc-build: fpga-build-all
+doc-build:
 	make -C $(DOC_DIR) all
 
 doc-build-all:

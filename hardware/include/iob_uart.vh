@@ -1,8 +1,3 @@
-//data and address widths
-`define UART_RDATA_W 32
-`define UART_WDATA_W 16
-`define UART_ADDR_W 3
-
 //Useful ASCII codes
 `define STX 2 //start of text 
 `define ETX 3 //end of text

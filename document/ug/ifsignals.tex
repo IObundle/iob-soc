@@ -6,20 +6,14 @@
     \rowcolor{iob-green}
     {\bf Name} & {\bf Direction} & {\bf Width} & {\bf Description}  \\ \hline \hline
 
-    interrupt & output & 1 & to be done \\ \hline
-    \rowcolor{iob-blue}
-    txd & output & 1 & Serial transmit line \\ \hline
-    rxd & input & 1 & Serial receive line \\ \hline
-    \rowcolor{iob-blue}
-    cts & input & 1 & Clear to send the destination is ready to receive a transmission sent by the UART \\ \hline
-    rts & output & 1 & Ready to send the UART is ready to receive a transmission from the sender. \\ \hline
+    \input{rs232_if_tab}
  
   \end{tabular}
   \caption{RS232 Interface Signals}
   \label{rs232_is_tab:is}
 \end{table}
 
-\input{\TEX/ug/iob_s_if_is}
+\input{\TEX/ug/iob_s_if}
 
 %TODO
-%\input{\TEX/ug/axil_s_if_is}
+%\input{\TEX/ug/axil_s_if}
