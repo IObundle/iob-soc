@@ -72,7 +72,7 @@ module system_tb;
     while(1) begin
       rxread_reg = 0;
       txread_reg = 0;
-      while((rxread_reg != 1) && (txread_reg != 1)) begin
+      while(!rxread_reg && !rxread_reg) begin
         $write("DEBUG: RX = %d; TX = %d\n", rxread_reg, txread_reg);
         $write("DEBUG: RX = %d; TX = %d\n", `UART_RXREADY_ADDR, `UART_TXREADY_ADDR);
         cpu_uartread(`UART_RXREADY_ADDR, rxread_reg);
