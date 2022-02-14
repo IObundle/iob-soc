@@ -86,7 +86,7 @@ async def files_tb_test(dut):
                 char = await uartread(dut, UART_RXDATA_ADDR)
                 soc2cnsl.write(char.to_bytes(1,  byteorder='little'))
             soc2cnsl.close()
-        elif(TXready):
+        if(TXready):
             try:
                 ### IO operation ###
                 cnsl2soc = open('./cnsl2soc', 'rb+')

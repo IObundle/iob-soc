@@ -57,15 +57,14 @@ def tb_read(number_of_bytes = 1):
     data = b''
     # print(number_of_bytes)
     transfered_bytes = 0
-    if (os.path.exists('./soc2cnsl')):
+    while(transfered_bytes < number_of_bytes):
         f = open('./soc2cnsl', "rb+")
-        while(transfered_bytes < number_of_bytes):
-            data = f.read(1)
+        data += f.read(1)
+        if(data!=b''):
             transfered_bytes += 1
             write_percentage = int(100/number_of_bytes*transfered_bytes)
             if(write_percentage%10 == 0 and number_of_bytes != 1):
                 print(write_percentage)
-        if(data!=b''):
             f.seek(0) # absolute file positioning
             f.truncate() # to erase all data
         f.close()
