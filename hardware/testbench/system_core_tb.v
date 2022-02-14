@@ -32,7 +32,7 @@ module system_tb;
   wire                   uart_ready;
 
   //iterator
-  integer                i;
+  integer                i = 0;
 
   //got enquiry (connect request)
   reg                    gotENQ;
@@ -56,7 +56,7 @@ module system_tb;
 
     // deassert rst
     repeat (100) @(posedge clk) #1;
-    reset <= 0;
+    reset = 0;
 
     //wait an arbitray (10) number of cycles
     repeat (10) @(posedge clk) #1;
@@ -73,10 +73,13 @@ module system_tb;
       rxread_reg = 0;
       txread_reg = 0;
       while(!rxread_reg && !rxread_reg) begin
-        $write("DEBUG: RX = %d; TX = %d\n", rxread_reg, txread_reg);
-        $write("DEBUG: RX = %d; TX = %d\n", `UART_RXREADY_ADDR, `UART_TXREADY_ADDR);
+        $write("Loop %d: RX = %d; TX = %d\n", i, rxread_reg, txread_reg);
         cpu_uartread(`UART_RXREADY_ADDR, rxread_reg);
         cpu_uartread(`UART_TXREADY_ADDR, txread_reg);
+        i = i+1;
+        if(i>10) begin
+          #20 $finish;
+        end
       end
       if(rxread_reg) begin
         soc2cnsl_fd = $fopen("./soc2cnsl", "wb+");
