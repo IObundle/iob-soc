@@ -35,11 +35,7 @@ VSRC+=$(CACHE_DIR)/submodules/AXIMEM/rtl/axi_ram.v
 VSRC+=system_tb.v
 
 #RULES
-ifeq ($(TESTER_ENABLED),)
 all: clean sw
-else
-all: clean sw tester-sw
-endif
 ifeq ($(SIM_SERVER),)
 	make run 
 else
@@ -60,22 +56,19 @@ endif
 
 
 #create testbench
-ifeq ($(TESTER_ENABLED),)
-#create testbench for IObSoC only
 system_tb.v: $(TB_DIR)/system_core_tb.v
-	cp $(TB_DIR)/system_core_tb.v $@  # create system_tb.v
-	$(foreach p, $(sort $(PERIPHERALS)), if [ `ls -1 $($p_DIR)/hardware/include/*.vh 2>/dev/null | wc -l ` -gt 0 ]; then $(foreach f, $(shell echo `ls $($p_DIR)/hardware/include/*.vh`), sed -i '/PHEADER/a `include \"$f\"' $@;) break; fi;) # insert header files
-	$(foreach p, $(PERIPH_INSTANCES), if test -f $($($p_CORENAME)_DIR)/hardware/include/pio.v; then sed 's/\/\*<InstanceName>\*\//$p/g' $($($p_CORENAME)_DIR)/hardware/include/pio.v | sed s/input/wire/  | sed s/output/wire/  | sed s/\,/\;/ > wires_tb.v; sed -i '/PWIRES/r wires_tb.v' $@; fi;) # declare and insert wire declarations
-	$(foreach p, $(PERIPH_INSTANCES), if test -f $($($p_CORENAME)_DIR)/hardware/include/pio.v; then sed 's/\/\*<InstanceName>\*\//$p/g' $($($p_CORENAME)_DIR)/hardware/include/pio.v | sed s/input//  | sed s/output// | sed 's/\[.*\]//' | sed 's/\([A-Za-z].*\),/\.\1(\1),/' > ./ports.v; sed -i '/PORTS/r ports.v' $@; fi;) #insert and connect pins in uut instance
-	#$(foreach p, $(PERIPH_INSTANCES), if test -f $($($p_CORENAME)_DIR)/hardware/include/inst_tb.sv; then sed 's/\/\*<InstanceName>\*\//$p/g' $($($p_CORENAME)_DIR)/hardware/include/inst_tb.sv | sed -i '/endmodule/e cat /dev/stdin' $@; fi;) # insert peripheral instances
-else
-#create testbench for SUT+Tester system
-system_tb.v: $(TESTER_DIR)/top_system_tb.v
-	python3 $(TESTER_DIR)/portmap.py create_testbench $(SUT_DIR)
-	mv $(TESTER_DIR)/top_system_tb_generated.v $@  
-endif
+	python3 $(HW_DIR)/simulation/createTestbench.py $(SUT_DIR)
 
-VSRC+=$(foreach p, $(PERIPH_INSTANCES), $(shell if test -f $($($p_CORENAME)_DIR)/hardware/testbench/module_tb.sv; then sed 's/\/\*<InstanceName>\*\//$p/g' $($($p_CORENAME)_DIR)/hardware/testbench/module_tb.sv; fi;)) #add test cores to list of sources
+#else
+	#TODO: do this in python
+#create testbench for SUT+Tester system
+#system_tb.v: $(TESTER_DIR)/top_system_tb.v
+	#python3 $(TESTER_DIR)/portmap.py create_testbench $(SUT_DIR)
+	#mv $(TESTER_DIR)/top_system_tb_generated.v $@  
+#endif
+
+#What is this for?
+#VSRC+=$(foreach p, $(PERIPH_INSTANCES), $(shell if test -f $($($p_CORENAME)_DIR)/hardware/testbench/module_tb.sv; then sed 's/\/\*<InstanceName>\*\//$p/g' $($($p_CORENAME)_DIR)/hardware/testbench/module_tb.sv; fi;)) #add test cores to list of sources
 
 kill-remote-sim:
 	@echo "INFO: Remote simulator $(SIMULATOR) will be killed"

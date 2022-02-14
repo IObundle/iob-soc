@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-# It also creates instance names based on peripherals list
-# It has functions to auto generate a template portmap based on given peripheral instances
+# It has functions to auto generate a template portmap based on peripherals list
 # It's also used to read the portmap file, verify its correctness and generate tester.v that includes the SUT instance 
 
 import sys
@@ -8,9 +7,10 @@ import subprocess
 import os
 import re
 
-# Add tester folder to path that contains python scripts to be imported
-sys.path.insert(0, root_dir+'/hardware/tester')
-import submodule_utils
+# Add folder to path that contains python scripts to be imported
+sys.path.append(os.path.join(os.path.dirname(__file__), '../../software'))
+import submodule_utils 
+from submodule_utils import *
 
 # Header to be put in portmap config file
 portmap_header = """\
@@ -39,7 +39,7 @@ portmap_header = """\
 
 # Returns dictionary with amount of instances each peripheral of the Tester to be created 
 def get_tester_peripherals():
-    tester_peripherals = subprocess.run(['make', '--no-print-directory', '-C', root_dir+'/hardware/tester', 'tester-peripherals', 'SUT_DIR='+root_dir, 'TESTER_ENABLED=1'], stdout=subprocess.PIPE)
+    tester_peripherals = subprocess.run(['make', '--no-print-directory', '-C', root_dir+'/hardware/tester', 'tester-peripherals', 'SUT_DIR=../..', 'TESTER_ENABLED=1'], stdout=subprocess.PIPE)
     tester_peripherals = tester_peripherals.stdout.decode('ascii').split()
 
     tester_instances_amount = {}
@@ -51,7 +51,7 @@ def get_tester_peripherals():
 
 # Overwrites portmap configuration file with a template, with every existing signal mapped to external interface by default
 def generate_portmap():
-    sut_instances_amount, = get_sut_peripherals()
+    sut_instances_amount = get_sut_peripherals()
     tester_instances_amount = get_tester_peripherals()
     submodule_directories = get_submodule_directories()
     peripheral_signals = get_peripherals_signals({**sut_instances_amount, **tester_instances_amount},submodule_directories)
@@ -73,15 +73,6 @@ def generate_portmap():
                 signal = re.sub("\/\*<InstanceName>\*\/",corename,signal)
                 portmap_file.write("Tester.{}[{}].{} : External\n".format(corename,i,signal))
     portmap_file.close()
-
-
-# Find index of word in array with multiple strings
-def find_idx(lines, word):
-    for idx, i in enumerate(lines):
-        if word in i:
-            break
-    return idx+1
-
 
 # Reads portmap file
 # Returns:
@@ -169,7 +160,7 @@ def read_portmap(sut_instances_amount, tester_instances_amount, peripheral_signa
 # TODO: change this to become Tester
 def create_topsystem():
     # Get lists of peripherals and info about them
-    sut_instances_amount, = get_sut_peripherals()
+    sut_instances_amount = get_sut_peripherals()
     tester_instances_amount = get_tester_peripherals()
     submodule_directories = get_submodule_directories()
     peripheral_signals = get_peripherals_signals({**sut_instances_amount, **tester_instances_amount},submodule_directories)
@@ -249,7 +240,7 @@ def create_topsystem():
 # Create testbench for simulation with the Tester
 def create_testbench():
     # Get lists of peripherals and info about them
-    sut_instances_amount, = get_sut_peripherals()
+    sut_instances_amount = get_sut_peripherals()
     tester_instances_amount = get_tester_peripherals()
     submodule_directories = get_submodule_directories()
     peripheral_signals = get_peripherals_signals({**sut_instances_amount, **tester_instances_amount},submodule_directories)
@@ -310,6 +301,7 @@ if __name__ == "__main__":
     # Parse arguments
     if len(sys.argv)>2:
         root_dir=sys.argv[2]
+        submodule_utils.root_dir = root_dir
         if sys.argv[1] == "generate_config":
            generate_portmap() 
         elif sys.argv[1] == "create_topsystem":
