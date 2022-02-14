@@ -1,6 +1,5 @@
 `timescale 1ns/1ps
 `include "iob_lib.vh"
-`include "iob_uart.vh"
 `include "iob_uart_sw_reg_def.vh"
 
 module iob_uart 

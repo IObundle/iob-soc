@@ -1,5 +1,13 @@
 `timescale 1ns/1ps
-`include "iob_uart.vh"
+
+//ASCII codes used
+`define STX 2 //start of text 
+`define ETX 3 //end of text
+`define EOT 4 //end of transission
+`define ENQ 5 //enquiry
+`define ACK 6 //acklowledge
+`define FTX 7 //transmit file
+`define FRX 8 //receive file
 
 module uart_tb;
 
