@@ -14,8 +14,6 @@ if spec is None:
     exit()
 import serial
 
-from FIFO import *
-
 # Global variables
 SerialFlag = True
 mode = 0o600
@@ -25,9 +23,52 @@ ENQ = b'\x05' # Enquiry in Hexadecimal
 ACK = b'\x06' # Acknowledgement in Hexadecimal
 FTX = b'\x07' # Receive file request
 FRX = b'\x08' # Send file request
-soc2cnsl = FifoFile('./soc2cnsl')
-cnsl2soc = FifoFile('./cnsl2soc')
 
+try:
+    open('./cnsl2soc',"x")
+except IOError as e:
+    print('Old cnsl2soc deleted and created new file!')
+    os.remove('./cnsl2soc')
+    open('./cnsl2soc',"x")
+try:
+    open('./soc2cnsl',"x")
+except IOError as e:
+    print('Old soc2cnsl deleted and created new file!')
+    os.remove('./soc2cnsl')
+    open('./soc2cnsl',"x")
+
+def tb_write(data):
+    f = open('./cnsl2soc', "wb")
+    f.write(data)
+    f.close()
+
+def tb_read_until(end = b'\x00'):
+    data = b''
+    while(True):
+        byte = tb_read()
+        if (byte == end):
+            #print('Enter end')
+            return data
+        else:
+            data += byte
+
+
+def tb_read(number_of_bytes = 1):
+    data = b''
+    # print(number_of_bytes)
+    transfered_bytes = 0
+    while(transfered_bytes < number_of_bytes):
+        f = open('./soc2cnsl', "rb+")
+        data += f.read(1)
+        if(data!=b''):
+            transfered_bytes += 1
+            write_percentage = int(100/number_of_bytes*transfered_bytes)
+            if(write_percentage%10 == 0 and number_of_bytes != 1):
+                print(write_percentage)
+            f.seek(0) # absolute file positioning
+            f.truncate() # to erase all data
+        f.close()
+    return data
 # configure the serial connections (the parameters differs on the device you are connecting to)
 
 ser = serial.Serial()
@@ -56,10 +97,10 @@ def cnsl_recvstr():
     if SerialFlag:
         name = ser.read_until(b'\x00') # reads 80 bytes
     else:
-        name = soc2cnsl.read_until(b'\x00')
+        name = tb_read_until(b'\x00')
     print(PROGNAME, end = '')
     print(': file name {0} '.format(name))
-    sys.stdout.flush()
+    #sys.stdout.flush()
     return name
 
 # Send file to target
@@ -67,17 +108,16 @@ def cnsl_sendfile():
     file_size = 0
     name = b''
     # receive file name
-    name = cnsl_recvstr()[:-1]
+    name = cnsl_recvstr()
     # open file to send
-    # print(name)
     f = open(name, 'rb')
     file_size = os.path.getsize(name)
     if SerialFlag:
         ser.write(file_size.to_bytes(4,  byteorder='little')) #send file size
         ser.write(f.read()) #send file
     else:
-        cnsl2soc.write(file_size.to_bytes(4,  byteorder='little'))
-        cnsl2soc.write(f.read())
+        tb_write(file_size.to_bytes(4,  byteorder='little'))
+        tb_write(f.read())
     f.close()
     print(PROGNAME, end = '')
     print(': file of size {0} bytes'.format(file_size))
@@ -88,7 +128,7 @@ def cnsl_recvfile():
     file_size = 0
     name = ""
     # receive file name
-    name = cnsl_recvstr()[:-1]
+    name = cnsl_recvstr()
     # open data file
     f = open(name, 'wb')
     if SerialFlag:
@@ -98,10 +138,10 @@ def cnsl_recvfile():
         print(': file size: {0} bytes'.format(file_size))
         data = ser.read(file_size)
     else:
-        file_size = int.from_bytes(soc2cnsl.read(4), byteorder='little', signed=False)
+        file_size = int.from_bytes(tb_read(4), byteorder='little', signed=False)
         print(PROGNAME, end = ' ')
         print(': file size: {0} bytes'.format(file_size))
-        data = soc2cnsl.read(file_size)
+        data = tb_read(file_size)
     # print(data)
     f.write(data)
     f.close()
@@ -115,8 +155,8 @@ def usage(message):
 def clean_exit():
     if SerialFlag:
         ser.close()
-    cnsl2soc.close()
-    soc2cnsl.close()
+    os.remove('./cnsl2soc')
+    os.remove('./soc2cnsl')
     exit(0)
 
 def init_print():
@@ -161,7 +201,7 @@ def main():
     while(True):
         # get byte from target
         if (not SerialFlag):
-            byte = soc2cnsl.read()
+            byte = tb_read()
         elif (ser.isOpen()):
             byte = ser.read()
         # process command
@@ -172,12 +212,12 @@ def main():
                     if SerialFlag:
                         ser.write(FRX)
                     else:
-                        cnsl2soc.write(FRX)
+                        tb_write(FRX)
                 else:
                     if SerialFlag:
                         ser.write(ACK)
                     else:
-                        cnsl2soc.write(ACK)
+                        tb_write(ACK)
 
         elif (byte == EOT):
             print(PROGNAME, end = '')

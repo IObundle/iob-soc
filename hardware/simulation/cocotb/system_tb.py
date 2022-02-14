@@ -1,3 +1,5 @@
+#!/bin/env python3
+
 import cocotb
 import os
 import sys, errno
@@ -52,19 +54,12 @@ async def basic_test(dut):
     print('\nTESTBENCH: finished\n\n')
 
 @cocotb.test()
-async def console_test(dut):
+async def files_tb_test(dut):
     char = 0
     number_of_bytes_from_cnsl = 0
     number_of_bytes_from_soc = 0
     reset_n = dut.reset
     clk_n = dut.clk
-    while((not os.path.exists('soc2cnsl')) and (not os.path.exists('cnsl2soc'))):
-        print('Waiting for console to create FIFO\'s')
-        await Timer(CLK_PERIOD, units="ns")
-    soc2cnsl = open('soc2cnsl', 'wb+', 0)
-    cnsl2soc = open('cnsl2soc', 'wb+', 0)
-    ##aux = open('aux.bin', 'a')
-    os.set_blocking(cnsl2soc.fileno(), False)
 
     cocotb.start_soon(Clock(clk_n, CLK_PERIOD, units="ns").start())
     #cocotb.start_soon(time_limit(500000))
@@ -76,49 +71,43 @@ async def console_test(dut):
 
     print('\n\nTESTBENCH: connecting')
 
-    while((os.path.exists('soc2cnsl'))):
+    while(1):
         if(dut.trap.value.integer > 0):
-            print('TESTBENCH: force cpu trap exit')
-            exit()
+            print('\nTESTBENCH: force cpu trap exit')
+            break
         RXready = 0
         TXready = 0
         while(RXready != 1 and TXready != 1):
             RXready = await uartread(dut, UART_RXREADY_ADDR)
             TXready = await uartread(dut, UART_TXREADY_ADDR)
         if(RXready):
-            char = await uartread(dut, UART_RXDATA_ADDR)
-            soc2cnsl.write(char.to_bytes(1,  byteorder='little'))
-            number_of_bytes_from_soc += 1
-            if(number_of_bytes_from_soc%1000 == 0):
-                print('.', end = '')
-                sys.stdout.flush()
+            soc2cnsl = open('./soc2cnsl', 'wb+')
+            if(soc2cnsl.read(1)==b''):
+                char = await uartread(dut, UART_RXDATA_ADDR)
+                soc2cnsl.write(char.to_bytes(1,  byteorder='little'))
+            soc2cnsl.close()
+        if(TXready):
             try:
                 ### IO operation ###
-                soc2cnsl.flush()
+                cnsl2soc = open('./cnsl2soc', 'rb+')
             except IOError as e:
-                if e.errno == errno.EPIPE:
-                    ### Handle the error ###
-                    print('Error flushing soc2cnsl!')
-        elif(TXready):
-            try:
-                ### IO operation ###
+                print('Could not open file cnsl2soc!')
+                break
+            aux = cnsl2soc.read(1)
+            while(aux!=b''):
+                send = int.from_bytes(aux, "little")
+                #print(chr(send), end = '')
+                number_of_bytes_from_cnsl += 1
+                if(number_of_bytes_from_cnsl%1000 == 0):
+                    print('-', end = '')
+                    sys.stdout.flush()
+                await uartwrite(dut, UART_TXDATA_ADDR, send)
+                TXready = 0
+                while(not TXready):
+                    TXready = await uartread(dut, UART_TXREADY_ADDR)
                 aux = cnsl2soc.read(1)
-                if(aux != None):
-                    send = int.from_bytes(aux, "little")
-                    #print(chr(send), end = '')
-                    number_of_bytes_from_cnsl += 1
-                    if(number_of_bytes_from_cnsl%1000 == 0):
-                        print('.', end = '')
-                        sys.stdout.flush()
-                    await uartwrite(dut, UART_TXDATA_ADDR, send)
-            except IOError as e:
-                if e.errno == errno.EPIPE:
-                    ### Handle the error ###
-                    print('Error writing to Pipe cnsl2soc!')
-
-
-        #print("traped")
+            cnsl2soc.seek(0) # absolute file positioning
+            cnsl2soc.truncate() # to erase all data
+            cnsl2soc.close()
 
     print('TESTBENCH: finished\n\n')
-    soc2cnsl.close()
-    cnsl2soc.close()

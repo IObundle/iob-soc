@@ -3,6 +3,7 @@ ROOT_DIR:=../../..
 defmacro:=-D
 incdir:=-I
 
+CONSOLE_CMD=../../../software/console/console -L
 SIMULATOR=icarus
 SIM_SERVER=$(IVSIM_SERVER)
 SIM_USER=$(IVSIM_USER)
@@ -11,16 +12,17 @@ SIM_PROC=a.out
 include ../simulation.mk
 
 #simulator flags
-VLOG = iverilog -W all -g2005-sv $(INCLUDE) $(DEFINE) 
+VLOG = iverilog -W all -g2005-sv $(INCLUDE) $(DEFINE)
 
-#simulator object 
+#simulator object
 a.out: $(VSRC) $(VHDR) $(IMAGES)
 	$(VLOG) $(VSRC)
-
 
 .PHONY: run build clean debug
 
 run: build
+	-pkill -f console
+	$(CONSOLE_CMD) &
 	./a.out $(TEST_LOG)
 
 build: a.out

@@ -18,6 +18,7 @@ INCLUDE_VERI=$(subst -I ,-I,$(INCLUDE))
 
 run: $(VSRC) $(VHDR) $(IMAGES)
 	# include cocotb's make rules to take care of the simulator setup
+	-pkill -f console
 	$(CONSOLE_CMD) &
 	COMPILE_ARGS="$(INCLUDE_VERI) $(DEFINE)" VERILOG_SOURCES="$(VSRC)" make -f cocotb.mk
 
