@@ -4,6 +4,9 @@ defmacro:=-D
 incdir:=-I
 
 CONSOLE_CMD=../../../software/console/console -L
+ifeq ($(INIT_MEM),0)
+	CONSOLE_CMD+=-f
+endif
 SIMULATOR=icarus
 SIM_SERVER=$(IVSIM_SERVER)
 SIM_USER=$(IVSIM_USER)

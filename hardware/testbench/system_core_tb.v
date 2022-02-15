@@ -78,20 +78,17 @@ module system_tb;
         //$write("Loop %d: RX = %x; TX = %x\n", i, rxread_reg[0], txread_reg[0]);
         cpu_uartread(`UART_RXREADY_ADDR, rxread_reg);
         cpu_uartread(`UART_TXREADY_ADDR, txread_reg);
-        i = i+1;
-        if(i>10000) begin
-          #20 $finish;
-        end
       end
       if(rxread_reg) begin
-        soc2cnsl_fd = $fopen("soc2cnsl", "w+");
+        soc2cnsl_fd = $fopen("soc2cnsl", "wb+");
         n = $fgets(cpu_char, soc2cnsl_fd);
         if (!soc2cnsl_fd)
           $display("Could not open \"soc2cnsl\"");
         else if(n == 0) begin
           //$write("Enter RX\n");
-          cpu_uartread(`UART_RXREADY_ADDR, cpu_char);
-          $fdisplay(soc2cnsl_fd, cpu_char);
+          cpu_uartread(`UART_RXDATA_ADDR, cpu_char);
+          //$display("%x", cpu_char);
+          $fwriteh(soc2cnsl_fd, "%u", cpu_char);
         end
         $fclose(soc2cnsl_fd);
       end
@@ -99,13 +96,12 @@ module system_tb;
         //$write("Enter TX\n");
         cnsl2soc_fd = $fopen("cnsl2soc", "rb+");
         if (!cnsl2soc_fd) begin
-          $write("Could not open file cnsl2soc!\n");
+          //$write("Could not open file cnsl2soc!\n");
           $write("TESTBENCH: exiting\n\n");
           $finish;
         end else begin
           n = $fgets(cpu_char, cnsl2soc_fd);
           while (n > 0) begin
-            $write("Loop TX %x\n", cpu_char);
             cpu_uartwrite(`UART_TXDATA_ADDR, cpu_char);
             txread_reg = 0;
             while(!txread_reg) begin
