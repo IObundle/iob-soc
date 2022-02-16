@@ -33,7 +33,7 @@ module system_tb;
 
   //iterator
   integer                i = 0, n = 0;
-  integer                error;
+  integer                error, n_byte = 0;
 
   //got enquiry (connect request)
   reg                    gotENQ;
@@ -69,6 +69,8 @@ module system_tb;
     gotENQ = 0;
     cpu_char = 0;
 
+    soc2cnsl_fd = $fopen("soc2cnsl", "wb+");
+
     $write("TESTBENCH: connecting\n");
 
     while(1) begin
@@ -78,9 +80,12 @@ module system_tb;
         //$write("Loop %d: RX = %x; TX = %x\n", i, rxread_reg[0], txread_reg[0]);
         cpu_uartread(`UART_RXREADY_ADDR, rxread_reg);
         cpu_uartread(`UART_TXREADY_ADDR, txread_reg);
+        //i = i+1;
+        //if(i>100000) begin
+        //  #20 $finish;
+        //end
       end
       if(rxread_reg) begin
-        soc2cnsl_fd = $fopen("soc2cnsl", "wb+");
         n = $fgets(cpu_char, soc2cnsl_fd);
         if (!soc2cnsl_fd)
           $display("Could not open \"soc2cnsl\"");
@@ -90,28 +95,36 @@ module system_tb;
           //$display("%x", cpu_char);
           $fwriteh(soc2cnsl_fd, "%u", cpu_char);
         end
-        $fclose(soc2cnsl_fd);
+        n = $fseek(soc2cnsl_fd, 0, 0);
       end
       if(txread_reg) begin
         //$write("Enter TX\n");
         cnsl2soc_fd = $fopen("cnsl2soc", "rb+");
         if (!cnsl2soc_fd) begin
           //$write("Could not open file cnsl2soc!\n");
+          $fclose(soc2cnsl_fd);
           $write("TESTBENCH: exiting\n\n");
           $finish;
         end else begin
           n = $fgets(cpu_char, cnsl2soc_fd);
+          n_byte = 0;
           while (n > 0) begin
             cpu_uartwrite(`UART_TXDATA_ADDR, cpu_char);
             txread_reg = 0;
+            n_byte = n_byte + 1;
+            //$write("Loop: %d\n", n_byte);
+            if (n_byte%1000 == 0) begin
+                $write("-");
+                $fflush();
+            end
             while(!txread_reg) begin
           	 cpu_uartread(`UART_TXREADY_ADDR, txread_reg);
             end
             n = $fgets(cpu_char, cnsl2soc_fd);
-            n = 0;
           end
-          $fclose(cnsl2soc_fd);
-          cnsl2soc_fd = $fopen("./cnsl2soc", "w");
+          n = $fseek(soc2cnsl_fd, 0, 0);
+          //$fclose(cnsl2soc_fd);
+          //cnsl2soc_fd = $fopen("./cnsl2soc", "w");
           $fwriteh(cnsl2soc_fd, "");
           $fclose(cnsl2soc_fd);
         end
