@@ -36,10 +36,19 @@ except IOError as e:
     os.remove('./soc2cnsl')
     open('./soc2cnsl',"x")
 
-def tb_write(data):
-    if (os.path.getsize("./cnsl2soc") == 0):
-        f = open('./cnsl2soc', "wb")
-        f.write(data)
+def tb_write(data, number_of_bytes = 1):
+    #print(data)
+    transfered_bytes = 0
+    while(transfered_bytes < number_of_bytes):
+        while (os.path.getsize("./cnsl2soc") != 0):
+            pass
+        f = open('./cnsl2soc', "w")
+        f.write(chr(data[transfered_bytes]))
+        f.flush()
+        transfered_bytes += 1
+        write_percentage = int(100/number_of_bytes*transfered_bytes)
+        if(write_percentage%10 == 0 and number_of_bytes != 1):
+            print('{0} %   '.format(write_percentage), end = '\r')
         f.close()
 
 def tb_read_until(end = b'\x00'):
@@ -112,15 +121,15 @@ def cnsl_sendfile():
     # open file to send
     f = open(name, 'rb')
     file_size = os.path.getsize(name)
+    print(PROGNAME, end = '')
+    print(': file of size {0} bytes'.format(file_size))
     if SerialFlag:
         ser.write(file_size.to_bytes(4,  byteorder='little')) #send file size
         ser.write(f.read()) #send file
     else:
-        tb_write(file_size.to_bytes(4,  byteorder='little'))
-        tb_write(f.read())
+        tb_write(file_size.to_bytes(4,  byteorder='little'), 4)
+        tb_write(f.read(), file_size)
     f.close()
-    print(PROGNAME, end = '')
-    print(': file of size {0} bytes'.format(file_size))
     print(PROGNAME, end = '')
     print(': file sent')
 
