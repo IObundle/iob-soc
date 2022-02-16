@@ -41,7 +41,7 @@ INCLUDE+=$(incdir). $(incdir)$(INC_DIR) $(incdir)$(LIB_DIR)/hardware/include
 
 
 #HEADERS
-VHDR+=$(INC_DIR)/system.vh
+VHDR+=$(INC_DIR)/system.vh $(LIB_DIR)/hardware/include/iob_intercon.vh
 
 #SOURCES
 
