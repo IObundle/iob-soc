@@ -50,6 +50,7 @@ hardware/fpga/*/*/*
 hardware/asic/*/*
 !hardware/asic/asic.mk
 !hardware/asic/*/Makefile
+!hardware/asic/*/*.tcl
 !hardware/asic/*/*.sh
 !hardware/asic/*/verilog
 !hardware/asic/*/synscript.tcl
