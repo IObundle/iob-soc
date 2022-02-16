@@ -16,7 +16,6 @@ import serial
 
 # Global variables
 SerialFlag = True
-mode = 0o600
 PROGNAME = "IOb-Console"
 EOT = b'\x04' # End of Transmission in Hexadecimal
 ENQ = b'\x05' # Enquiry in Hexadecimal
@@ -38,9 +37,10 @@ except IOError as e:
     open('./soc2cnsl',"x")
 
 def tb_write(data):
-    f = open('./cnsl2soc', "wb")
-    f.write(data)
-    f.close()
+    if (os.path.getsize("./cnsl2soc") == 0):
+        f = open('./cnsl2soc', "wb")
+        f.write(data)
+        f.close()
 
 def tb_read_until(end = b'\x00'):
     data = b''
