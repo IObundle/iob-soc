@@ -1,6 +1,6 @@
 `timescale 1 ns / 1 ps
 `include "system.vh"
-`include "interconnect.vh"
+`include "iob_intercon.vh"
 
 module boot_ctr
   (
@@ -104,7 +104,7 @@ module boot_ctr
    //
    //INSTANTIATE ROM
    //
-   iob_sp_rom
+   iob_rom_sp
      #(
        .DATA_W(`DATA_W),
        .ADDR_W(`BOOTROM_ADDR_W-2),

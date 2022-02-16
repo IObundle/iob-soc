@@ -36,7 +36,7 @@ module sram #(
    assign d_rdata = rdata;
    assign i_rdata = rdata;
 
-   iob_sp_ram_be
+   iob_ram_sp_be
      #(
        .FILE(FILE),
        .ADDR_W(`SRAM_ADDR_W-2),
@@ -56,7 +56,7 @@ module sram #(
 `else
    wire                     d_valid_int = d_valid;
 
-   iob_dp_ram_be
+   iob_ram_dp_be
      #(
        .FILE(FILE),
        .ADDR_W(`SRAM_ADDR_W-2),

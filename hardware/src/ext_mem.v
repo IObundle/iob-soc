@@ -1,7 +1,7 @@
 `timescale 1 ns / 1 ps
 
 `include "system.vh"
-`include "interconnect.vh"
+`include "iob_intercon.vh"
 
 module ext_mem
   #(
@@ -181,7 +181,7 @@ module ext_mem
            );
 
    // Merge cache back-ends
-   merge
+   iob_merge
      #(
        .ADDR_W(`DCACHE_ADDR_W),
 `ifdef RUN_EXTMEM_USE_SRAM

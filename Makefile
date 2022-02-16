@@ -13,10 +13,8 @@ include ./config.mk
 	test-doc test-doc-clean\
 	test test-clean\
 	clean clean-all\
-	corename
+	debug
 
-corename:
-	@echo "IOb-SoC"
 #
 # SIMULATE RTL
 #
@@ -154,3 +152,8 @@ clean:
 	make doc-clean
 
 clean-all: test-clean
+
+
+debug:
+	@echo $(UART_DIR)
+	@echo $(CACHE_DIR)

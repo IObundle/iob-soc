@@ -5,21 +5,33 @@ BAUD ?=115200
 FREQ ?=100000000
 
 #add itself to MODULES list
-MODULES+=$(shell make -C $(ROOT_DIR) corename | grep -v make)
+HW_MODULES+=$(IOBSOC_NAME)
 
-#ADD SUBMODULES
+#
+# ADD SUBMODULES HARDWARE
+#
 
-#list memory modules before including MEM's hardware.mk
-MEM_MODULES+=rom/sp_rom
+#include LIB modules
+include $(LIB_DIR)/hardware/iob_merge/hardware.mk
+include $(LIB_DIR)/hardware/iob_split/hardware.mk
 
+#include MEM modules
+include $(MEM_DIR)/hardware/rom/iob_rom_sp/hardware.mk
 ifeq ($(USE_SPRAM),1)
-MEM_MODULES+=ram/sp_ram_be
+include $(MEM_DIR)/hardware/ram/iob_ram_sp_be/hardware.mk
 else
-MEM_MODULES+=ram/dp_ram_be
+include $(MEM_DIR)/hardware/ram/iob_ram_dp_be/hardware.mk
 endif
 
-#include submodule's hardware
-$(foreach p, $(SUBMODULES), $(if $(filter $p, $(MODULES)),, $(eval include $($p_DIR)/hardware/hardware.mk)))
+#CPU
+include $(PICORV32_DIR)/hardware/hardware.mk
+
+#CACHE
+include $(CACHE_DIR)/hardware/hardware.mk
+
+#UART
+include $(UART_DIR)/hardware/hardware.mk
+
 
 #HARDWARE PATHS
 INC_DIR:=$(HW_DIR)/include
@@ -34,14 +46,13 @@ DEFINE+=$(defmacro)USE_SPRAM
 endif
 
 #INCLUDES
-INCLUDE+=$(incdir). $(incdir)$(INC_DIR)
+INCLUDE+=$(incdir). $(incdir)$(INC_DIR) $(incdir)$(LIB_DIR)/hardware/include
+
 
 #HEADERS
 VHDR+=$(INC_DIR)/system.vh
 
 #SOURCES
-#testbench
-TB_DIR:=$(HW_DIR)/testbench
 
 #external memory interface
 ifeq ($(USE_DDR),1)
@@ -55,21 +66,25 @@ VSRC+=system.v
 IMAGES=boot.hex firmware.hex
 
 # make system.v with peripherals
-system.v: $(SRC_DIR)/system_core.v
-	cp $(SRC_DIR)/system_core.v $@ # create system.v
-	$(foreach p, $(PERIPHERALS), if [ `ls -1 $($p_DIR)/hardware/include/*.vh 2>/dev/null | wc -l ` -gt 0 ]; then $(foreach f, $(shell echo `ls $($p_DIR)/hardware/include/*.vh`), sed -i '/PHEADER/a `include \"$f\"' $@;) break; fi;) # insert header files
-	$(foreach p, $(PERIPHERALS), if test -f $($p_DIR)/hardware/include/pio.v; then sed -i '/PIO/r $($p_DIR)/hardware/include/pio.v' $@; fi;) #insert system IOs for peripheral
-	$(foreach p, $(PERIPHERALS), if test -f $($p_DIR)/hardware/include/inst.v; then sed -i '/endmodule/e cat $($p_DIR)/hardware/include/inst.v' $@; fi;) # insert peripheral instances
+system.v: system_tmp.v
+	$(foreach p, $(PERIPHERALS), $(shell sed -i '/PHEADER/a `include \"$p.vh\"' $@)) # insert header file
+	$(foreach p, $(PERIPHERALS), if test -f $($p_DIR)/hardware/include/pio.vh; then sed -i '/PIO/r $($p_DIR)/hardware/include/pio.vh' $@; fi;) #insert system IOs for peripheral
+	$(foreach p, $(PERIPHERALS), if test -f $($p_DIR)/hardware/include/inst.vh; then sed -i '/endmodule/e cat $($p_DIR)/hardware/include/inst.vh' $@; fi;) # insert peripheral instances
+
+system_tmp.v: $(SRC_DIR)/system_core.v
+	cp $< $@; cp $@ system.v
+
+
 
 # make and copy memory init files
-MEM_PYTHON_DIR=$(MEM_DIR)/software/python
+PYTHON_DIR=$(MEM_DIR)/software/python
 
 boot.hex: $(BOOT_DIR)/boot.bin
-	$(MEM_PYTHON_DIR)/makehex.py $(BOOT_DIR)/boot.bin $(BOOTROM_ADDR_W) > boot.hex
+	$(PYTHON_DIR)/makehex.py $(BOOT_DIR)/boot.bin $(BOOTROM_ADDR_W) > boot.hex
 
 firmware.hex: $(FIRM_DIR)/firmware.bin
-	$(MEM_PYTHON_DIR)/makehex.py $(FIRM_DIR)/firmware.bin $(FIRM_ADDR_W) > firmware.hex
-	$(MEM_PYTHON_DIR)/hex_split.py firmware .
+	$(PYTHON_DIR)/makehex.py $(FIRM_DIR)/firmware.bin $(FIRM_ADDR_W) > firmware.hex
+	$(PYTHON_DIR)/hex_split.py firmware .
 	cp $(FIRM_DIR)/firmware.bin .
 
 # make embedded sw software
@@ -85,6 +100,6 @@ sw-clean:
 
 #clean general hardware files
 hw-clean: sw-clean gen-clean
-	@rm -f *.v *.hex *.bin $(SRC_DIR)/system.v $(TB_DIR)/system_tb.v
+	@rm -f *.v *.hex *.bin $(SRC_DIR)/system.v $(TB_DIR)/system_tb.v *.vh
 
 .PHONY: sw sw-clean hw-clean
