@@ -72,7 +72,7 @@ module system_tb;
     txread_reg = 0;
 
 
-    soc2cnsl_fd = $fopen("soc2cnsl", "rb+");
+    soc2cnsl_fd = $fopen("soc2cnsl", "r+");
     if (!soc2cnsl_fd) begin
       $display("Could not open \"soc2cnsl\"");
       $finish;
@@ -85,10 +85,6 @@ module system_tb;
         //$write("Loop %d: RX = %x; TX = %x\n", i, rxread_reg[0], txread_reg[0]);
         cpu_uartread(`UART_RXREADY_ADDR, rxread_reg);
         cpu_uartread(`UART_TXREADY_ADDR, txread_reg);
-        //i = i+1;
-        //if(i>10000) begin
-        //  #20 $finish;
-        //end
       end
       if(rxread_reg) begin
         n = $fgets(cpu_char, soc2cnsl_fd);
@@ -102,7 +98,7 @@ module system_tb;
       end
       if(txread_reg) begin
         //$write("Enter TX\n");
-        cnsl2soc_fd = $fopen("cnsl2soc", "rb+");
+        cnsl2soc_fd = $fopen("cnsl2soc", "r");
         if (!cnsl2soc_fd) begin
           //$write("Could not open file cnsl2soc!\n");
           $fclose(soc2cnsl_fd);
@@ -248,18 +244,18 @@ module system_tb;
        .ADDR_WIDTH (`DDR_ADDR_W)
        )
    ddr_model_mem(
-                 //address write
-                 .clk            (clk),
-                 .rst            (reset),
+		 //address write
+		 .clk            (clk),
+		 .rst            (reset),
 		 .s_axi_awid     ({8{ddr_awid}}),
 		 .s_axi_awaddr   (ddr_awaddr[`DDR_ADDR_W-1:0]),
-                 .s_axi_awlen    (ddr_awlen),
-                 .s_axi_awsize   (ddr_awsize),
-                 .s_axi_awburst  (ddr_awburst),
-                 .s_axi_awlock   (ddr_awlock),
+		 .s_axi_awlen    (ddr_awlen),
+		 .s_axi_awsize   (ddr_awsize),
+		 .s_axi_awburst  (ddr_awburst),
+		 .s_axi_awlock   (ddr_awlock),
 		 .s_axi_awprot   (ddr_awprot),
 		 .s_axi_awcache  (ddr_awcache),
-     		 .s_axi_awvalid  (ddr_awvalid),
+		 .s_axi_awvalid  (ddr_awvalid),
 		 .s_axi_awready  (ddr_awready),
 
 		 //write
@@ -267,12 +263,12 @@ module system_tb;
 		 .s_axi_wready   (ddr_wready),
 		 .s_axi_wdata    (ddr_wdata),
 		 .s_axi_wstrb    (ddr_wstrb),
-                 .s_axi_wlast    (ddr_wlast),
+		 .s_axi_wlast         (ddr_wlast),
 
 		 //write response
 		 .s_axi_bready   (ddr_bready),
-                 .s_axi_bid      (ddr_bid),
-                 .s_axi_bresp    (ddr_bresp),
+		 .s_axi_bid      (ddr_bid),
+		 .s_axi_bresp    (ddr_bresp),
 		 .s_axi_bvalid   (ddr_bvalid),
 
 		 //address read
@@ -280,10 +276,10 @@ module system_tb;
 		 .s_axi_araddr   (ddr_araddr[`DDR_ADDR_W-1:0]),
 		 .s_axi_arlen    (ddr_arlen),
 		 .s_axi_arsize   (ddr_arsize),
-                 .s_axi_arburst  (ddr_arburst),
-                 .s_axi_arlock   (ddr_arlock),
-                 .s_axi_arcache  (ddr_arcache),
-                 .s_axi_arprot   (ddr_arprot),
+		 .s_axi_arburst  (ddr_arburst),
+		 .s_axi_arlock   (ddr_arlock),
+		 .s_axi_arcache  (ddr_arcache),
+		 .s_axi_arprot   (ddr_arprot),
 		 .s_axi_arvalid  (ddr_arvalid),
 		 .s_axi_arready  (ddr_arready),
 
@@ -292,9 +288,9 @@ module system_tb;
 		 .s_axi_rid      (ddr_rid),
 		 .s_axi_rdata    (ddr_rdata),
 		 .s_axi_rresp    (ddr_rresp),
-                 .s_axi_rlast    (ddr_rlast),
+		 .s_axi_rlast    (ddr_rlast),
 		 .s_axi_rvalid   (ddr_rvalid)
-                 );
+		 );
 `endif
 
 
