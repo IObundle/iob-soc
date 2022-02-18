@@ -30,8 +30,8 @@ def tb_write(data, number_of_bytes = 1):
     while(transfered_bytes < number_of_bytes):
         while (os.path.getsize("./cnsl2soc") != 0):
             pass
-        f = open('./cnsl2soc', "w")
-        f.write(chr(data[transfered_bytes]))
+        f = open('./cnsl2soc', "wb")
+        f.write(data[transfered_bytes].to_bytes(1, byteorder='little'))
         f.flush()
         transfered_bytes += 1
         new_percentage = int(100/number_of_bytes*transfered_bytes)
