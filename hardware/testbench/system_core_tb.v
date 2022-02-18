@@ -17,8 +17,8 @@ module system_tb;
   reg reset = 1;
 
   //received by getchar
-  reg [31:0]  rxread_reg;
-  reg [31:0]  txread_reg;
+  reg  rxread_reg;
+  reg  txread_reg;
   reg [7:0]  cpu_char;
   integer soc2cnsl_fd = 0, cnsl2soc_fd = 0;
 
@@ -68,6 +68,8 @@ module system_tb;
 
     gotENQ = 0;
     cpu_char = 0;
+    rxread_reg = 0;
+    txread_reg = 0;
 
 
     soc2cnsl_fd = $fopen("soc2cnsl", "rb+");
@@ -79,8 +81,6 @@ module system_tb;
     $write("TESTBENCH: connecting\n");
 
     while(1) begin
-      rxread_reg = 0;
-      txread_reg = 0;
       while(!rxread_reg && !txread_reg) begin
         //$write("Loop %d: RX = %x; TX = %x\n", i, rxread_reg[0], txread_reg[0]);
         cpu_uartread(`UART_RXREADY_ADDR, rxread_reg);
@@ -96,6 +96,7 @@ module system_tb;
           cpu_uartread(`UART_RXDATA_ADDR, cpu_char);
           //$display("%x", cpu_char);
           $fwriteh(soc2cnsl_fd, "%c", cpu_char);
+          rxread_reg = 0;
         end
         n = $fseek(soc2cnsl_fd, 0, 0);
       end
@@ -118,6 +119,7 @@ module system_tb;
           $fwriteh(cnsl2soc_fd, "");
         end
         $fclose(cnsl2soc_fd);
+        txread_reg = 0;
       end
     end
   end

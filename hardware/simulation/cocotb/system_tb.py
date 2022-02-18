@@ -58,6 +58,8 @@ async def files_tb_test(dut):
     char = 0
     number_of_bytes_from_cnsl = 0
     number_of_bytes_from_soc = 0
+    RXready = 0
+    TXready = 0
     reset_n = dut.reset
     clk_n = dut.clk
 
@@ -76,8 +78,6 @@ async def files_tb_test(dut):
         if(dut.trap.value.integer > 0):
             print('\nTESTBENCH: force cpu trap exit')
             break
-        RXready = 0
-        TXready = 0
         while(RXready != 1 and TXready != 1):
             RXready = await uartread(dut, UART_RXREADY_ADDR)
             TXready = await uartread(dut, UART_TXREADY_ADDR)
@@ -85,6 +85,7 @@ async def files_tb_test(dut):
             if(soc2cnsl.read(1)==b''):
                 char = await uartread(dut, UART_RXDATA_ADDR)
                 soc2cnsl.write(char.to_bytes(1,  byteorder='little'))
+                RXready = 0
             soc2cnsl.seek(0) # absolute file positioning
         if(TXready):
             try:
@@ -103,5 +104,6 @@ async def files_tb_test(dut):
                 cnsl2soc.seek(0) # absolute file positioning
                 cnsl2soc.truncate() # to erase all data
             cnsl2soc.close()
+            TXready = 0
 
     print('TESTBENCH: finished\n\n')
