@@ -18,41 +18,6 @@ async def time_limit(duration_ns):
     await Timer(duration_ns, units="ns")
     exit()
 
-#@cocotb.test()
-async def basic_test(dut):
-    reset_n = dut.reset
-    clk_n = dut.clk
-    char = 0
-
-    cocotb.start_soon(Clock(clk_n, CLK_PERIOD, units="ns").start())
-    await reset_dut(reset_n, 100*CLK_PERIOD)
-    await Timer(10*CLK_PERIOD, units="ns")  # wait a bit
-    dut.uart_valid.value = 0
-    dut.uart_wstrb.value = 0
-    await inituart(dut)
-
-    print('\n\nTESTBENCH: connecting')
-    while(char != 4):
-        #print("traped")
-        if(dut.trap.value.integer > 0):
-            print('TESTBENCH: force cpu trap exit')
-            exit()
-        RXready = 0
-        TXready = 0
-        while(RXready != 1 and TXready != 1):
-            RXready = await uartread(dut, UART_RXREADY_ADDR)
-            TXready = await uartread(dut, UART_TXREADY_ADDR)
-            #print(":p")
-        if(RXready):
-            char = await uartread(dut, UART_RXDATA_ADDR)
-            print(chr(char), end = '')
-            sys.stdout.flush()
-        elif(TXready):
-            if(char == 5):
-                send = 6
-                await uartwrite(dut, UART_TXDATA_ADDR, send)
-    print('\nTESTBENCH: finished\n\n')
-
 @cocotb.test()
 async def files_tb_test(dut):
     char = 0
