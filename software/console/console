@@ -23,19 +23,6 @@ ACK = b'\x06' # Acknowledgement in Hexadecimal
 FTX = b'\x07' # Receive file request
 FRX = b'\x08' # Send file request
 
-try:
-    open('./cnsl2soc',"x")
-except IOError as e:
-    print('Old cnsl2soc deleted and created new file!')
-    os.remove('./cnsl2soc')
-    open('./cnsl2soc',"x")
-try:
-    open('./soc2cnsl',"x")
-except IOError as e:
-    print('Old soc2cnsl deleted and created new file!')
-    os.remove('./soc2cnsl')
-    open('./soc2cnsl',"x")
-
 def tb_write(data, number_of_bytes = 1):
     #print(data)
     transfered_bytes = 0
@@ -164,8 +151,9 @@ def usage(message):
 def clean_exit():
     if SerialFlag:
         ser.close()
-    os.remove('./cnsl2soc')
-    os.remove('./soc2cnsl')
+    else:
+        os.remove('./cnsl2soc')
+        os.remove('./soc2cnsl')
     exit(0)
 
 def init_print():
@@ -183,15 +171,20 @@ def init_print():
     print(': connecting...')
     print()
 
-
-# Main function.
-def main():
+def init_console():
     global SerialFlag
     load_fw = False
-    gotENQ = False
-    byte = b'\x00'
     if ('-L' in sys.argv or '--local' in sys.argv):
         SerialFlag = False
+        f = open('./cnsl2soc',"wb")
+        f.write(b'\x01')
+        f.close()
+        try:
+            open('./soc2cnsl',"x")
+        except IOError as e:
+            print('Old soc2cnsl deleted and created new file!')
+            os.remove('./soc2cnsl')
+            open('./soc2cnsl',"x")
     elif ('-s' in sys.argv):
         if (len(sys.argv)<3):
             usage("PROGNAME: not enough program arguments")
@@ -206,6 +199,15 @@ def main():
     if ('-f' in sys.argv):
         load_fw = True
     init_print()
+
+    return load_fw
+
+
+# Main function.
+def main():
+    load_fw = init_console()
+    gotENQ = False
+    byte = b'\x00'
     # Reading the data from the serial port or FIFO files. This will be running in an infinite loop.
     while(True):
         # get byte from target
