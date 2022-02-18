@@ -70,23 +70,25 @@ module system_tb;
     cpu_char = 0;
 
 
-    soc2cnsl_fd = $fopen("soc2cnsl", "wb+");
-    if (!soc2cnsl_fd)
+    soc2cnsl_fd = $fopen("soc2cnsl", "rb+");
+    if (!soc2cnsl_fd) begin
       $display("Could not open \"soc2cnsl\"");
+      $finish;
+    end
 
     $write("TESTBENCH: connecting\n");
 
     while(1) begin
       rxread_reg = 0;
       txread_reg = 0;
-      while(!rxread_reg[0] && !rxread_reg[0]) begin
+      while(!rxread_reg && !txread_reg) begin
         //$write("Loop %d: RX = %x; TX = %x\n", i, rxread_reg[0], txread_reg[0]);
         cpu_uartread(`UART_RXREADY_ADDR, rxread_reg);
         cpu_uartread(`UART_TXREADY_ADDR, txread_reg);
-        i = i+1;
-        if(i>30000) begin
-          #20 $finish;
-        end
+        //i = i+1;
+        //if(i>10000) begin
+        //  #20 $finish;
+        //end
       end
       if(rxread_reg) begin
         n = $fgets(cpu_char, soc2cnsl_fd);
@@ -108,14 +110,13 @@ module system_tb;
         end
         n = $fscanf(cnsl2soc_fd, "%c", cpu_char);
         if (n > 0) begin
-          $write("%x", cpu_char);
-          $display("ENTER!");
+          //$write("%x", cpu_char);
+          //$display("ENTER!");
           cpu_uartwrite(`UART_TXDATA_ADDR, cpu_char);
           $fclose(cnsl2soc_fd);
           cnsl2soc_fd = $fopen("./cnsl2soc", "w");
           $fwriteh(cnsl2soc_fd, "");
         end
-        //n = $fseek(soc2cnsl_fd, 0, 0);
         $fclose(cnsl2soc_fd);
       end
     end
