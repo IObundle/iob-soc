@@ -9,7 +9,7 @@ DEFINE+=$(defmacro)BAUD=$(BAUD)
 DEFINE+=$(defmacro)FREQ=$(FREQ)
 
 #ddr controller address width
-DDR_ADDR_W=$(FIRM_ADDR_W)
+DDR_ADDR_W=$(DCACHE_ADDR_W)
 
 #produce waveform dump
 VCD ?=0
