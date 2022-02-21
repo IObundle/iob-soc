@@ -88,12 +88,12 @@ def print_nslaves():
         i=i+sut_instances_amount[corename]
     print(i, end="")
 
-def print_defines():
+def print_defines(defmacro):
     sut_instances_amount = get_sut_peripherals()
     j=0
     for corename in sut_instances_amount:
         for i in range(sut_instances_amount[corename]):
-            print(corename+str(i)+"="+str(j), end=" ")
+            print(defmacro+corename+str(i)+"="+str(j), end=" ")
             j = j + 1
 
 if __name__ == "__main__":
@@ -107,8 +107,11 @@ if __name__ == "__main__":
         elif sys.argv[1] == "get_n_slaves":
            print_nslaves()
         elif sys.argv[1] == "get_defines":
-           print_defines()
+            if len(sys.argv)>3:
+               print_defines(sys.argv[3])
+            else:
+                print("Unknown argument.\nUsage: {} print_defines <root_dir> <defmacro>\n".format(sys.argv[0]))
         else:
-            print("Unknown argument.\nUsage: {} <command> <root_dir>\n Commands: TODO".format(sys.argv[0]))
+            print("Unknown argument.\nUsage: {} <command> <root_dir>\n".format(sys.argv[0]))
     else:
         print("Needs two arguments.\nUsage: {} <command> <root_dir>".format(sys.argv[0]))

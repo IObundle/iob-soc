@@ -139,7 +139,7 @@ DEFINE+=$(defmacro)E=$E
 DEFINE+=$(defmacro)P=$P
 DEFINE+=$(defmacro)B=$B
 
-DEFINE+=$(defmacro)$(shell python3 $(SW_DIR)/submodule_utils.py get_defines $(SUT_DIR))
+DEFINE+=$(shell python3 $(SW_DIR)/submodule_utils.py get_defines $(SUT_DIR) $(defmacro)) 
 #TODO: Change everything below for python
 #N_SLAVES:=0
 #create list of peripheral instances based on PERIPHERALS list
