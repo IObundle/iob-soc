@@ -4,12 +4,13 @@ OPENLANE_DESIGNS:=$(OPENLANE_HOME)/designs
 IMAGE_NAME ?= efabless/openlane:2021.07.29_04.49.46
 SRAM_W = 7
 MKDIR := mkdir -p
-VSRC+=iob_sp_ram_be.v
+VSRC+=iob_ram_sp_be.v
 VHDR+=../../../submodules/LIB/hardware/include/gen_if.vh
 VSRC+=../../../submodules/MEM/hardware/rom/iob_rom_sp/iob_rom_sp.v
 VHDR+=../../../submodules/LIB/hardware/include/iob_s_if.vh
 ASIC_MEM_TECH:=sky130A
 ASIC_SPRAM_TYPE:=spram
+DEFINE+=$(defmacro)USE_SPRAM=1
 
 ifeq (0,$(shell docker -v 2>/dev/null | grep podman | wc -l))
    DOCKER_UID_OPTIONS = -u $(shell id -u $(USER)):$(shell id -g $(USER))
@@ -17,7 +18,7 @@ endif
 
 DOK_CMD ?= docker run -it --rm -v $(OPENLANE_HOME):/openLANE_flow -v $(PDK_ROOT):$(PDK_ROOT) -e PDK_ROOT=$(PDK_ROOT) $(DOCKER_UID_OPTIONS) $(IMAGE_NAME)
 
-.PHONY: all clean_sram clean_asic clean_debug clean_iob_sp_ram_be.v clean
+.PHONY: all clean_sram clean_asic clean_debug clean_iob_ram_sp_be.v clean
 
 all: sram synth test
 test:
@@ -81,9 +82,9 @@ clean_asic:
 	rm -rf $(OPENLANE_HOME)/run_interactive.tcl
 
 clean_iob_sp_ram_be.v:
-	rm -rf iob_sp_ram_be.v
+	rm -rf iob_ram_sp_be.v
 
 clean_debug:
 	rm -rf debug
 
-clean: clean_sram clean_asic clean_debug clean_iob_sp_ram_be.v
+clean: clean_sram clean_asic clean_debug clean_iob_ram_sp_be.v

@@ -80,7 +80,7 @@ module sram #(
       .dinB  (i_wdata),
       .doutB (i_rdata)
       );
-
+`endif
    // reply with ready 
    always @(posedge clk, posedge rst)
      if(rst) begin
