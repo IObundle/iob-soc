@@ -1,8 +1,8 @@
-#Makefile script to return variables
 include $(SUT_DIR)/config.mk
 
-
 #RULES
+
+#Get lists of peripherals
 sut-peripherals:
 	@echo $(PERIPHERALS)
 tester-peripherals:

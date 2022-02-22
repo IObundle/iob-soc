@@ -34,6 +34,10 @@ VSRC+=$(CACHE_DIR)/submodules/AXIMEM/rtl/axi_ram.v
 #testbench
 VSRC+=system_tb.v
 
+ifeq ($(TESTER_ENABLED),1)
+include $(TESTER_DIR)/simulation.mk
+endif
+
 #RULES
 all: clean sw
 ifeq ($(SIM_SERVER),)
@@ -58,14 +62,6 @@ endif
 #create testbench
 system_tb.v: $(TB_DIR)/system_core_tb.v
 	python3 $(HW_DIR)/simulation/createTestbench.py $(SUT_DIR)
-
-#else
-	#TODO: do this in python
-#create testbench for SUT+Tester system
-#system_tb.v: $(TESTER_DIR)/top_system_tb.v
-	#python3 $(TESTER_DIR)/portmap.py create_testbench $(SUT_DIR)
-	#mv $(TESTER_DIR)/top_system_tb_generated.v $@  
-#endif
 
 #What is this for?
 #VSRC+=$(foreach p, $(PERIPH_INSTANCES), $(shell if test -f $($($p_CORENAME)_DIR)/hardware/testbench/module_tb.sv; then sed 's/\/\*<InstanceName>\*\//$p/g' $($($p_CORENAME)_DIR)/hardware/testbench/module_tb.sv; fi;)) #add test cores to list of sources

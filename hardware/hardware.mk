@@ -43,27 +43,13 @@ VSRC+=system.v
 
 IMAGES=boot.hex firmware.hex
 
+ifeq ($(TESTER_ENABLED),1)
+include $(TESTER_DIR)/hardware.mk
+endif
 
 # make system.v with peripherals
 system.v: $(SRC_DIR)/system_core.v
 	python3 $(HW_DIR)/createSystem.py $(SUT_DIR)
-
-# TODO: move to other makefile
-# make tester.v with peripherals
-#tester.v: $(TESTER_DIR)/tester_core.v
-	#cp $(TESTER_DIR)/tester_core.v $@ # create tester.v
-	#$(foreach p, $(sort $(TESTER_PERIPHERALS)), if [ `ls -1 $($p_DIR)/hardware/include/*.vh 2>/dev/null | wc -l ` -gt 0 ]; then $(foreach f, $(shell echo `ls $($p_DIR)/hardware/include/*.vh`), sed -i '/PHEADER/a `include \"$f\"' $@;) break; fi;) # insert header files
-	#$(foreach p, $(TESTER_PERIPH_INSTANCES), if test -f $($($p_TESTER_CORENAME)_DIR)/hardware/include/pio.v; then sed 's/\/\*<InstanceName>\*\//$p/g' $($($p_TESTER_CORENAME)_DIR)/hardware/include/pio.v | sed -i '/PIO/r /dev/stdin' $@; fi;) #insert system IOs for peripheral
-	#$(foreach p, $(TESTER_PERIPH_INSTANCES), if test -f $($($p_TESTER_CORENAME)_DIR)/hardware/include/inst.v; then sed 's/\/\*<InstanceName>\*\//$p/g' $($($p_TESTER_CORENAME)_DIR)/hardware/include/inst.v | sed 's/`$p/`$p_TESTER/g' | sed -i '/endmodule/e cat /dev/stdin' $@; fi;) # insert peripheral instances
-	##insert REGFILEIF header if it is not included yet
-	#$(if $(filter REGFILEIF, $(TESTER_PERIPHERALS)),, $(foreach f, $(shell echo `ls $(REGFILEIF_DIR)/hardware/include/*.vh`), sed -i '/PHEADER/a `include \"$f\"' $@;))	
-#
-# top_system to interconnect SUT with Tester based on portmap
-#top_system.v: $(TESTER_DIR)/top_system.v
-	#python3 $(TESTER_DIR)/portmap.py create_topsystem $(SUT_DIR)
-	#mv $(TESTER_DIR)/top_system_generated.v $@ # Move generated top_system.v
-	##insert REGFILEIF header if it is not included yet
-	#$(if $(filter REGFILEIF, $(PERIPHERALS) $(TESTER_PERIPHERALS)),, $(foreach f, $(shell echo `ls $(REGFILEIF_DIR)/hardware/include/*.vh`), sed -i '/PHEADER/a `include \"$f\"' $@;))	
 
 # make and copy memory init files
 MEM_PYTHON_DIR=$(MEM_DIR)/software/python
@@ -76,6 +62,7 @@ firmware.hex: $(FIRM_DIR)/firmware.bin
 	$(MEM_PYTHON_DIR)/hex_split.py firmware .
 	cp $(FIRM_DIR)/firmware.bin .
 
+# TODO: move this
 # tester init files
 #tester_boot.hex: $(SW_DIR)/tester/boot.bin
 	#$(MEM_PYTHON_DIR)/makehex.py $(SW_DIR)/tester/boot.bin $(BOOTROM_ADDR_W) > $@

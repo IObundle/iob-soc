@@ -302,7 +302,6 @@ module system
       );
 `endif
 
-   //peripheral instances are inserted here
    
 endmodule
  

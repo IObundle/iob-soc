@@ -21,7 +21,7 @@ corename:
 
 # Generate configuration file for port mapping between the Tester, SUT and external interface of the Top System
 tester-portmap:
-	python3 hardware/tester/portmap.py generate_config $(SUT_DIR)
+	python3 hardware/tester/tester_utils.py generate_config $(SUT_DIR)
 	@echo Portmap template generated in hardware/tester/peripheral_portmap.txt
 
 #

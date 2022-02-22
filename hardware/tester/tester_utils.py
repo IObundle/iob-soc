@@ -37,6 +37,65 @@ portmap_header = """\
 // Auto-generated list of signals to be mapped (by default mapped to external interface):
 """
 
+# SUT instance to be included in tester
+sut_instance_template = """\
+system sut (
+    //SUTPORTS
+
+`ifdef USE_DDR
+    //address write
+    .m_axi_awid    (m_axi_awid[0]),
+    .m_axi_awaddr  (m_axi_awaddr[0]),
+    .m_axi_awlen   (m_axi_awlen[0]),
+    .m_axi_awsize  (m_axi_awsize[0]),
+    .m_axi_awburst (m_axi_awburst[0]),
+    .m_axi_awlock  (m_axi_awlock[0]),
+    .m_axi_awcache (m_axi_awcache[0]),
+    .m_axi_awprot  (m_axi_awprot[0]),
+    .m_axi_awqos   (m_axi_awqos[0]),
+    .m_axi_awvalid (m_axi_awvalid[0]),
+    .m_axi_awready (m_axi_awready[0]),
+
+    //write  
+    .m_axi_wdata   (m_axi_wdata[0]),
+    .m_axi_wstrb   (m_axi_wstrb[0]),
+    .m_axi_wlast   (m_axi_wlast[0]),
+    .m_axi_wvalid  (m_axi_wvalid[0]),
+    .m_axi_wready  (m_axi_wready[0]),
+
+    //write response
+    .m_axi_bid     (m_axi_bid[0]),
+    .m_axi_bresp   (m_axi_bresp[0]),
+    .m_axi_bvalid  (m_axi_bvalid[0]),
+    .m_axi_bready  (m_axi_bready[0]),
+
+    //address read
+    .m_axi_arid    (m_axi_arid[0]),
+    .m_axi_araddr  (m_axi_araddr[0]),
+    .m_axi_arlen   (m_axi_arlen[0]),
+    .m_axi_arsize  (m_axi_arsize[0]),
+    .m_axi_arburst (m_axi_arburst[0]),
+    .m_axi_arlock  (m_axi_arlock[0]),
+    .m_axi_arcache (m_axi_arcache[0]),
+    .m_axi_arprot  (m_axi_arprot[0]),
+    .m_axi_arqos   (m_axi_arqos[0]),
+    .m_axi_arvalid (m_axi_arvalid[0]),
+    .m_axi_arready (m_axi_arready[0]),
+
+    //read   
+    .m_axi_rid     (m_axi_rid[0]),
+    .m_axi_rdata   (m_axi_rdata[0]),
+    .m_axi_rresp   (m_axi_rresp[0]),
+    .m_axi_rlast   (m_axi_rlast[0]),
+    .m_axi_rvalid  (m_axi_rvalid[0]),
+    .m_axi_rready  (m_axi_rready[0]),	
+`endif               
+    .clk           (clk),
+    .reset         (reset),
+    .trap          (trap[0])
+    );
+"""
+
 # Returns dictionary with amount of instances each peripheral of the Tester to be created 
 def get_tester_peripherals():
     tester_peripherals = subprocess.run(['make', '--no-print-directory', '-C', root_dir+'/hardware/tester', 'tester-peripherals', 'SUT_DIR=../..', 'TESTER_ENABLED=1'], stdout=subprocess.PIPE)
@@ -157,8 +216,8 @@ def read_portmap(sut_instances_amount, tester_instances_amount, peripheral_signa
     #print(mapped_signals) #DEBUG
     return pwires, mapped_signals
 
-# TODO: change this to become Tester
-def create_topsystem():
+# Creates tester.v with SUT included 
+def create_tester():
     # Get lists of peripherals and info about them
     sut_instances_amount = get_sut_peripherals()
     tester_instances_amount = get_tester_peripherals()
@@ -169,20 +228,77 @@ def create_topsystem():
     pwires, mapped_signals = read_portmap(sut_instances_amount, tester_instances_amount, peripheral_signals)
 
     # Read template file
-    topsystem_template_file = open(root_dir+"/hardware/tester/top_system.v", "r") 
-    topsystem_contents = topsystem_template_file.readlines() 
-    topsystem_template_file.close()
+    tester_template_file = open(root_dir+"/hardware/src/system_core.v", "r") 
+    tester_contents = tester_template_file.readlines() 
+    tester_template_file.close()
 
-    # Insert headers
+    # Insert headers of peripherals of both systems
     for i in {**sut_instances_amount, **tester_instances_amount}:
+        start_index = find_idx(tester_contents, "PHEADER")
         for file in os.listdir(root_dir+"/submodules/"+submodule_directories[i]+"/hardware/include"):
             if file.endswith(".vh"):
-                topsystem_contents.insert(find_idx(topsystem_contents, "PHEADER"), '`include "{}"\n'.format(root_dir+"/submodules/"+submodule_directories[i]+"/hardware/include/"+file))
+                tester_contents.insert(start_index, '`include "{}"\n'.format(root_dir+"/submodules/"+submodule_directories[i]+"/hardware/include/"+file))
 
+    # Create PWIRES marker
+    tester_contents.insert(find_idx(tester_contents, "endmodule")-1, '    //PWIRES\n')
+
+    # Rename verilog module form 'system' to 'tester'
+    tester_contents[find_idx(tester_contents, "module system")-1] = "module tester\n"
+
+    # Add another trap signal for tester cpu
+    tester_contents = [re.sub('output(\s+)trap', 'output [1:0]\g<1>trap', i) for i in tester_contents] 
+    # Attach tester cpu to instance 0 of trap signal array
+    tester_contents = [re.sub('\(trap\)', '(trap[1])', i) for i in tester_contents] 
+
+    # Add another AXI bus for Tester memory
+    tester_contents = [re.sub('((?:(?:output)|(?:input))\s+)((?:\[[^\]]+\])*\s+m_axi_[^,]+,)', '\g<1>[1:0]\g<2>', i) for i in tester_contents] 
+    # Change Tester AXI interface to use instance 1 of AXI bus array
+    tester_contents = [re.sub('(\(m_axi_[^\)]+)\)', '\g<1>[1])', i) for i in tester_contents] 
+
+    # Insert SUT instance (includes SUTPORTS marker)
+    start_index = find_idx(tester_contents, "endmodule")-1
+    tester_contents = tester_contents[:start_index] + sut_instance_template.splitlines(True) + tester_contents[start_index:] 
+
+    # Invert tester memory access bit
+    #TODO: Check if this is correct
+    tester_contents = [re.sub('.axi_awaddr\(m_axi_awaddr\[1\]\),', '.axi_awaddr({~m_axi_awaddr[1][`DDR_ADDR_W-1],m_axi_awaddr[1][`DDR_ADDR_W-2:0]}),', i) for i in tester_contents] 
+    tester_contents = [re.sub('.axi_araddr\(m_axi_araddr\[1\]\),', '.axi_araddr({~m_axi_araddr[1][`DDR_ADDR_W-1],m_axi_araddr[1][`DDR_ADDR_W-2:0]}),', i) for i in tester_contents] 
+
+    # Replace N_SLAVES by TESTER_N_SLAVES
+    tester_contents = [re.sub('`N_SLAVES', '`TESTER_N_SLAVES', i) for i in tester_contents] 
+
+    # Insert Tester peripherals
+    for corename in tester_instances_amount:
+        # Read inst.v file
+        instv_file = open(root_dir+"/submodules/"+submodule_directories[corename]+"/hardware/include/inst.v", "r")
+        instv_contents = instv_file.readlines() 
+        # Insert for every instance
+        for i in range(tester_instances_amount[corename]):
+            # Insert peripheral instance
+            start_index = find_idx(tester_contents, "endmodule")-1
+            for j in reversed(instv_contents):
+                # Check if this line contains a signal of PIO
+                strMatch = re.search("\((\/\*<InstanceName>\*\/[^\)]+)\)",j)
+                if strMatch and strMatch[1] in peripheral_signals[corename]:
+                    # Line contains a pio.v signal, therefore change signal name to match PIO or PWIRES
+                    signalModified = re.sub("\/\*<InstanceName>\*\/",corename,strMatch[1])
+                    if mapped_signals[1][corename][i][signalModified] > -1: # Not mapped to external interface
+                        # Signal is connected to corresponding pwires
+                        tester_contents.insert(start_index, re.sub("\/\*<InstanceName>\*\/[^\)]+",pwires[mapped_signals[1][corename][i][signalModified]],j))
+                    else: # Mapped to external interface
+                        # Signal is connected to corresponding pio
+                        tester_contents.insert(start_index, re.sub("\/\*<InstanceName>\*\/","tester_"+corename+str(i),j))
+                else:
+                    # Replace instace name verilog defines with tester defines (Because their values are different from SUT defines)
+                    j = re.sub("`\/\*<InstanceName>\*\/","`TESTER_"+corename+str(i),j)
+                    # Line did not contain any pio signal, so just insert it
+                    # Also, replace instance name macros if their not verilog defines
+                    tester_contents.insert(start_index, re.sub("\/\*<InstanceName>\*\/",corename+str(i),j))
+        instv_file.close()
 
     # Array to store if pwires have been inserted
     pwires_inserted = [0] * len(pwires)
-    # Insert PIO, PWIRES, SUTPORTS and TESTERPORTS
+    # Insert PIO, PWIRES, SUTPORTS 
     for corename in sut_instances_amount:
         for i in range(sut_instances_amount[corename]):
             for signal in peripheral_signals[corename]:
@@ -193,16 +309,16 @@ def create_topsystem():
                         # Make sure we have not yet created PWIRE of this signal
                         if pwires_inserted[mapped_signals[0][corename][i][signalModified]] == False:
                             # Insert pwire
-                            topsystem_contents.insert(find_idx(topsystem_contents, "PWIRES"), '    wire {};\n'.format(pwires[mapped_signals[0][corename][i][signalModified]]))
+                            tester_contents.insert(find_idx(tester_contents, "PWIRES"), '    wire {};\n'.format(pwires[mapped_signals[0][corename][i][signalModified]]))
                             # Mark this signal as been inserted
                             pwires_inserted[mapped_signals[0][corename][i][signalModified]] = True
                         # Insert SUT PORT
-                        topsystem_contents.insert(find_idx(topsystem_contents, "SUTPORTS"), '        .{}({}),\n'.format(re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal),pwires[mapped_signals[0][corename][i][signalModified]]))
+                        tester_contents.insert(find_idx(tester_contents, "SUTPORTS"), '        .{}({}),\n'.format(re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal),pwires[mapped_signals[0][corename][i][signalModified]]))
                     else: # Mapped to external interface
                         # Insert PIO
-                        topsystem_contents.insert(find_idx(topsystem_contents, "PIO"), '    {} sut_{},\n'.format(peripheral_signals[corename][signal],re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
+                        tester_contents.insert(find_idx(tester_contents, "PIO"), '    {} sut_{},\n'.format(peripheral_signals[corename][signal],re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
                         # Insert SUT PORT
-                        topsystem_contents.insert(find_idx(topsystem_contents, "SUTPORTS"), '        .{}({}),\n'.format(re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal),"sut_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
+                        tester_contents.insert(find_idx(tester_contents, "SUTPORTS"), '        .{}({}),\n'.format(re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal),"sut_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
                 else:
                     print("Error: signal {} of SUT.{}[{}] not mapped!".format(signal,corename,i))
                     exit(-1)
@@ -216,26 +332,26 @@ def create_topsystem():
                         # Make sure we have not yet created PWIRE of this signal
                         if pwires_inserted[mapped_signals[1][corename][i][signalModified]] == False:
                             # Insert pwire
-                            topsystem_contents.insert(find_idx(topsystem_contents, "PWIRES"), '    wire {};\n'.format(pwires[mapped_signals[1][corename][i][signalModified]]))
+                            tester_contents.insert(find_idx(tester_contents, "PWIRES"), '    wire {};\n'.format(pwires[mapped_signals[1][corename][i][signalModified]]))
                             # Mark this signal as been inserted
                             pwires_inserted[mapped_signals[1][corename][i][signalModified]] = True
-                        # Insert TESTER PORT
-                        topsystem_contents.insert(find_idx(topsystem_contents, "TESTERPORTS"), '        .{}({}),\n'.format(re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal),pwires[mapped_signals[1][corename][i][signalModified]]))
+                        # Insert TESTER PORT #TODO: REMOVE THIS
+                        #tester_contents.insert(find_idx(tester_contents, "TESTERPORTS"), '        .{}({}),\n'.format(re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal),pwires[mapped_signals[1][corename][i][signalModified]]))
                     else: # Mapped to external interface
                         # Insert PIO
-                        topsystem_contents.insert(find_idx(topsystem_contents, "PIO"), '    {} tester_{},\n'.format(peripheral_signals[corename][signal],re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
-                        # Insert TESTER PORT
-                        topsystem_contents.insert(find_idx(topsystem_contents, "TESTERPORTS"), '        .{}({}),\n'.format(re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal),"tester_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
+                        tester_contents.insert(find_idx(tester_contents, "PIO"), '    {} tester_{},\n'.format(peripheral_signals[corename][signal],re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
+                        # Insert TESTER PORT #TODO: REMOVE THIS
+                        #tester_contents.insert(find_idx(tester_contents, "TESTERPORTS"), '        .{}({}),\n'.format(re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal),"tester_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
                 else:
                     print("Error: signal {} of Tester.{}[{}] not mapped!".format(signal,corename,i))
                     exit(-1)
 
 
 
-    # Write topsystem 
-    topsystem_file = open(root_dir+"/hardware/tester/top_system_generated.v", "w")
-    topsystem_file.writelines(topsystem_contents)
-    topsystem_file.close()
+    # Write tester.v
+    tester_file = open("tester.v", "w")
+    tester_file.writelines(tester_contents)
+    tester_file.close()
 
 # Create testbench for simulation with the Tester
 def create_testbench():
@@ -249,15 +365,16 @@ def create_testbench():
     pwires, mapped_signals = read_portmap(sut_instances_amount, tester_instances_amount, peripheral_signals)
 
     # Read template file
-    testbench_template_file = open(root_dir+"/hardware/tester/top_system_tb.v", "r") 
+    testbench_template_file = open(root_dir+"/hardware/tester/tester_core_tb.v", "r") 
     testbench_contents = testbench_template_file.readlines() 
     testbench_template_file.close()
 
-    # Insert headers
+    # Insert headers of peripherals of both systems
     for i in {**sut_instances_amount, **tester_instances_amount}:
+        start_index = find_idx(template_contents, "PHEADER")
         for file in os.listdir(root_dir+"/submodules/"+submodule_directories[i]+"/hardware/include"):
             if file.endswith(".vh"):
-                testbench_contents.insert(find_idx(testbench_contents, "PHEADER"), '`include "{}"\n'.format(root_dir+"/submodules/"+submodule_directories[i]+"/hardware/include/"+file))
+                testbench_contents.insert(start_index, '`include "{}"\n'.format(root_dir+"/submodules/"+submodule_directories[i]+"/hardware/include/"+file))
 
     # Insert PORTS and PWIRES
     for corename in sut_instances_amount:
@@ -292,7 +409,7 @@ def create_testbench():
 
 
     # Write testbench 
-    testbench_file = open(root_dir+"/hardware/tester/top_system_tb_generated.v", "w")
+    testbench_file = open("tester_tb.v", "w")
     testbench_file.writelines(testbench_contents)
     testbench_file.close()
 
@@ -304,8 +421,8 @@ if __name__ == "__main__":
         submodule_utils.root_dir = root_dir
         if sys.argv[1] == "generate_config":
            generate_portmap() 
-        elif sys.argv[1] == "create_topsystem":
-            create_topsystem() 
+        elif sys.argv[1] == "create_tester":
+            create_tester() 
         elif sys.argv[1] == "create_testbench":
             create_testbench() 
         else:
