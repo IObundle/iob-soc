@@ -25,6 +25,37 @@ module sram #(
     output reg               d_ready
     );
 
+`ifdef USE_SPRAM
+
+   wire                     d_valid_int = i_valid? 1'b0: d_valid;
+   wire                     valid = i_valid? i_valid: d_valid;
+   wire [`SRAM_ADDR_W-3:0]  addr  = i_valid? i_addr: d_addr;
+   wire [`DATA_W-1:0]       wdata = i_valid? i_wdata: d_wdata;
+   wire [`DATA_W/8-1:0]     wstrb = i_valid? i_wstrb: d_wstrb;
+   wire [`DATA_W-1:0]       rdata;
+   assign d_rdata = rdata;
+   assign i_rdata = rdata;
+
+   iob_ram_sp_be
+     #(
+       .FILE(FILE),
+       .ADDR_W(`SRAM_ADDR_W-2),
+       .DATA_W(`DATA_W)
+       )
+   main_mem_byte
+     (
+      .clk   (clk),
+
+      // data port
+      .en   (valid),
+      .addr (addr),
+      .we   (wstrb),
+      .din  (wdata),
+      .dout (rdata)
+      );
+`else
+   wire                     d_valid_int = d_valid;
+
    iob_ram_dp_be
      #(
        .FILE(FILE),
