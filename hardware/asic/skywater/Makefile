@@ -5,7 +5,6 @@ IMAGE_NAME ?= efabless/openlane:2021.07.29_04.49.46
 SRAM_W = 7
 MKDIR := mkdir -p
 VSRC+=iob_sp_ram_be.v
-VSRC+=iob_sp_rom.v
 ASIC_MEM_TECH:=sky130A
 ASIC_SPRAM_TYPE:=spram
 ifeq (0,$(shell docker -v 2>/dev/null | grep podman | wc -l))
@@ -24,11 +23,14 @@ sram: openram_config.py
 
 iob_sp_ram_be.v:
 	$(MEM_DIR)/software/python/memakerwrap.py $(ASIC_MEM_TECH) iob_sp_ram_be $(ASIC_SPRAM_TYPE) 0 1 $(SRAM_W) 8 4 1 > $@
-TEMP: boot.hex
+TEMP: sw boot.hex
 	$(MKDIR) temp_src
 	$(MKDIR) temp_inc
 	cp $(VSRC) temp_src
 	cp $(VHDR) temp_inc
+	cp ../../../submodules/LIB/hardware/include/iob_s_if.vh temp_inc
+	cp ../../../submodules/LIB/hardware/include/gen_if.vh temp_inc
+	cp ../../../submodules/MEM/hardware/rom/iob_rom_sp/iob_rom_sp.v temp_src
 	cp boot.hex temp_src
 	sed -i "s/m4/met4/g" $(wildcard sram/*.lef)
 	sed -i "s/m3/met3/g" $(wildcard sram/*.lef)
@@ -36,7 +38,6 @@ TEMP: boot.hex
 DEL:   TEMP
 	sed -i.bak -e '7d' temp_src/system.v
 ADD:   DEL
-	sed -i "5i \`include \"iob_uart.vh\"" temp_src/system.v
 	sed -i "1i \`include \"iob-soc-defs.vh\"" temp_src/system.v
 	sed -i "4i \`include \"iob-soc-defs.vh\"" temp_src/boot_ctr.v
 
