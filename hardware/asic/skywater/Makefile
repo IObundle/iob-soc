@@ -5,15 +5,21 @@ IMAGE_NAME ?= efabless/openlane:2021.07.29_04.49.46
 SRAM_W = 7
 MKDIR := mkdir -p
 VSRC+=iob_sp_ram_be.v
+VHDR+=../../../submodules/LIB/hardware/include/gen_if.vh
+VSRC+=../../../submodules/MEM/hardware/rom/iob_rom_sp/iob_rom_sp.v
+VHDR+=../../../submodules/LIB/hardware/include/iob_s_if.vh
 ASIC_MEM_TECH:=sky130A
 ASIC_SPRAM_TYPE:=spram
+
 ifeq (0,$(shell docker -v 2>/dev/null | grep podman | wc -l))
    DOCKER_UID_OPTIONS = -u $(shell id -u $(USER)):$(shell id -g $(USER))
 endif
-DOK_CMD ?= docker run -it --rm -v $(OPENLANE_HOME):/openLANE_flow -v $(PDK_ROOT):$(PDK_ROOT) -e PDK_ROOT=$(PDK_ROOT) $(DOCKER_UID_OPTIONS) $(IMAGE_NAME)
-.PHONY: all clean_sram clean_asic clean_debug clean_iob_sp_ram_be.v clean
-all: sram synth test
 
+DOK_CMD ?= docker run -it --rm -v $(OPENLANE_HOME):/openLANE_flow -v $(PDK_ROOT):$(PDK_ROOT) -e PDK_ROOT=$(PDK_ROOT) $(DOCKER_UID_OPTIONS) $(IMAGE_NAME)
+
+.PHONY: all clean_sram clean_asic clean_debug clean_iob_sp_ram_be.v clean
+
+all: sram synth test
 test:
 	[ -f $(OPENLANE_DESIGNS)/system/runs/soc/results/synthesis/system.synthesis.v ] && echo "Synthesis and technology mapping successful" || echo "Synthesis or technology mapping failed"
 
@@ -23,28 +29,25 @@ sram: openram_config.py
 
 iob_sp_ram_be.v:
 	$(MEM_DIR)/software/python/memakerwrap.py $(ASIC_MEM_TECH) iob_sp_ram_be $(ASIC_SPRAM_TYPE) 0 1 $(SRAM_W) 8 4 1 > $@
-TEMP: sw boot.hex
+
+temp_src:
 	$(MKDIR) temp_src
-	$(MKDIR) temp_inc
 	cp $(VSRC) temp_src
+
+temp_inc:
+	$(MKDIR) temp_inc
 	cp $(VHDR) temp_inc
-	cp ../../../submodules/LIB/hardware/include/iob_s_if.vh temp_inc
-	cp ../../../submodules/LIB/hardware/include/gen_if.vh temp_inc
-	cp ../../../submodules/MEM/hardware/rom/iob_rom_sp/iob_rom_sp.v temp_src
+
+$(DEFINE): sw boot.hex
+	echo "\`define $@ $($@)"| sed 's/=/ /g' >> temp_inc/iob-soc-defs.vh
+	cp boot.hex temp_src
+
+synth:  $(VSRC) $(VHDR) temp_src temp_inc $(DEFINE)
 	cp boot.hex temp_src
 	sed -i "s/m4/met4/g" $(wildcard sram/*.lef)
 	sed -i "s/m3/met3/g" $(wildcard sram/*.lef)
-
-DEL:   TEMP
-	sed -i.bak -e '7d' temp_src/system.v
-ADD:   DEL
 	sed -i "1i \`include \"iob-soc-defs.vh\"" temp_src/system.v
 	sed -i "4i \`include \"iob-soc-defs.vh\"" temp_src/boot_ctr.v
-
-$(DEFINE): ADD
-	echo "\`define $@ $($@)"| sed 's/=/ /g' >> temp_inc/iob-soc-defs.vh
-
-synth:  $(VSRC) $(VHDR) $(DEFINE)
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/src
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/inc
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/macros/lef
@@ -58,6 +61,7 @@ synth:  $(VSRC) $(VHDR) $(DEFINE)
 	cp config.tcl $(OPENLANE_DESIGNS)/system
 	cd $(OPENLANE_HOME);
 	$(DOK_CMD) sh -c "./flow.tcl -interactive -file run_interactive.tcl"
+
 debug: $(VSRC) $(VHDR)
 	mkdir debug
 	cp $(VSRC) $(VHDR) debug
