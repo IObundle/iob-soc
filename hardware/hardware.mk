@@ -13,19 +13,18 @@ USE_NETLIST ?=0
 
 #include files
 VHDR+=$(wildcard $(UART_INC_DIR)/*.vh)
-VHDR+=iob_uart_sw_reg_gen.vh iob_uart_sw_reg_def.vh
+VHDR+=$(TOP_MODULE)_swreg_gen.vh $(TOP_MODULE)_swreg_def.vh
 VHDR+=$(LIB_DIR)/hardware/include/iob_lib.vh
 
 #hardware include dirs
-INCLUDE+=$(incdir)$(UART_INC_DIR) $(incdir)$(LIB_DIR)/hardware/include
+INCLUDE+=$(incdir). $(incdir)$(UART_INC_DIR) $(incdir)$(LIB_DIR)/hardware/include
 
 #sources
 VSRC+=$(UART_SRC_DIR)/uart_core.v $(UART_SRC_DIR)/iob_uart.v
 
-#cpu accessible registers
-iob_uart_sw_reg_gen.vh iob_uart_sw_reg_def.vh: $(UART_INC_DIR)/iob_uart_sw_reg.vh
-	$(MKREGS) $< HW
+uart-hw-clean: uart-gen-clean
+	@rm -f *.v *.vh
 
-.PHONY: uart_clean_hw
+.PHONY: uart-hw-clean
 
 endif

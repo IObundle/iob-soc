@@ -1,11 +1,11 @@
 `timescale 1ns/1ps
 `include "iob_lib.vh"
-`include "iob_uart_sw_reg_def.vh"
+`include "iob_uart_swreg_def.vh"
 
 module iob_uart 
   # (
      parameter DATA_W = 32, //PARAM CPU data width
-     parameter ADDR_W = `iob_uart_sw_reg_ADDR_W //MACRO CPU address width
+     parameter ADDR_W = `iob_uart_swreg_ADDR_W //MACRO CPU address width
      )
 
   (
@@ -24,8 +24,8 @@ module iob_uart
    );
 
 //BLOCK Register File & Configuration control and status register file.
-`include "iob_uart_sw_reg.vh"
-`include "iob_uart_sw_reg_gen.vh"
+`include "iob_uart_swreg.vh"
+`include "iob_uart_swreg_gen.vh"
    
    uart_core uart_core0 
      (

@@ -32,7 +32,7 @@ test1: clean
 clean-testlog:
 	@rm -f test.log
 
-clean:
+clean: uart-hw-clean
 	find . -type f -not  \( -name 'Makefile' -o -name 'test.expected' -o -name 'test.log' \) -delete
 ifneq ($(FPGA_SERVER),)
 	rsync -avz --delete --exclude .git $(UART_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)

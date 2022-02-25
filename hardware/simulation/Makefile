@@ -46,7 +46,7 @@ debug:
 clean-testlog:
 	@rm -f test.log
 
-clean:
-	@rm -f a.out *~ *.vcd *.vh
+clean: uart-hw-clean
+	@rm -f a.out *.vcd
 
 clean-all: clean-testlog clean
