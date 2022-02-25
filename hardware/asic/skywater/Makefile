@@ -29,7 +29,7 @@ sram: openram_config.py
 	mv temp sram
 
 iob_ram_sp_be.v:
-	$(MEM_DIR)/software/python/memakerwrap.py $(ASIC_MEM_TECH) iob_ram_sp_be $(ASIC_SPRAM_TYPE) 0 1 $(SRAM_W) 8 4 1 > $@
+	$(MEM_DIR)/software/python/memwrapper.py $(ASIC_MEM_TECH) iob_ram_sp_be $(ASIC_SPRAM_TYPE) 0 1 $(SRAM_W) 8 4 1 > $@
 
 temp_src:
 	$(MKDIR) temp_src
