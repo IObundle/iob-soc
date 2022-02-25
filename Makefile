@@ -14,7 +14,6 @@ include config.mk
 #
 # SIMULATE
 #
-SIM_DIR ?=$(UART_HW_DIR)/simulation
 VCD ?=0
 
 sim:
@@ -29,8 +28,6 @@ sim-clean:
 #
 # FPGA COMPILE
 #
-FPGA_DIR ?= $(shell find $(UART_DIR)/hardware -name $(FPGA_FAMILY))
-
 
 fpga-build:
 	make -C $(FPGA_DIR) build
@@ -51,10 +48,9 @@ fpga-clean-all:
 #
 # DOCUMENT
 #
-DOC_DIR ?=$(UART_DIR)/document/$(DOC)
 
 doc-build:
-	make -C $(DOC_DIR) all
+	make -C $(DOC_DIR) $(DOC).pdf
 
 doc-build-all:
 	$(foreach s, $(DOC_LIST), make doc-build DOC=$s;)

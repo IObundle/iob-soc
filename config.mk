@@ -1,9 +1,12 @@
 TOP_MODULE=iob_uart
 
 #PATHS
-REMOTE_ROOT_DIR ?= sandbox/iob-uart
+REMOTE_ROOT_DIR ?=sandbox/iob-uart
+SIM_DIR ?=$(UART_HW_DIR)/simulation
+FPGA_DIR ?=$(shell find $(UART_DIR)/hardware -name $(FPGA_FAMILY))
+DOC_DIR ?=$(UART_DIR)/document/$(DOC)
 
-LIB_DIR ?= $(UART_DIR)/submodules/LIB
+LIB_DIR ?=$(UART_DIR)/submodules/LIB
 UART_HW_DIR:=$(UART_DIR)/hardware
 
 #MAKE SW ACCESSIBLE REGISTER
@@ -21,3 +24,12 @@ DOC_LIST ?=pb ug
 VERSION ?=V0.1
 $(TOP_MODULE)_version.txt:
 	echo $(VERSION) > version.txt
+
+#cpu accessible registers
+$(TOP_MODULE)_swreg_def.vh $(TOP_MODULE)_swreg_gen.vh: $(UART_HW_DIR)/include/$(TOP_MODULE)_swreg.vh
+	$(MKREGS) $< HW
+
+uart-gen-clean:
+	@rm -rf *# *~ version.txt
+
+.PHONY: uart-gen-clean
