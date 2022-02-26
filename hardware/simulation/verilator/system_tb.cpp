@@ -22,15 +22,16 @@
 
 #define CONSOLE_DIR "../../../software/console/"
 
-unsigned int main_time = 0;
+vluint64_t main_time = 0;
 char cpu_char = 0;
 VerilatedVcdC* tfp = NULL;
+Vsystem_top* dut = NULL;
 
 double sc_time_stamp () {
   return main_time;
 }
 
-void Timer(Vsystem_top* dut, unsigned int half_cycles){
+void Timer(unsigned int half_cycles){
   for(int i = 0; i<half_cycles; i++){
     dut->clk = !(dut->clk);
     dut->eval();
@@ -40,47 +41,47 @@ void Timer(Vsystem_top* dut, unsigned int half_cycles){
 }
 
 // 1-cycle write
-void uartwrite(Vsystem_top* dut, unsigned int cpu_address, char cpu_data){
+void uartwrite(unsigned int cpu_address, char cpu_data){
 
     dut->uart_addr = cpu_address;
     dut->uart_valid = 1;
     dut->uart_wstrb = -1;
     dut->uart_wdata = cpu_data;
-    Timer(dut, 2);
+    Timer(2);
     dut->uart_wstrb = 0;
     dut->uart_valid = 0;
 
 }
 
 // 2-cycle read
-int uartread(Vsystem_top* dut, unsigned int cpu_address){
+int uartread(unsigned int cpu_address){
     int read_reg = 0;
     dut->uart_addr = cpu_address;
     dut->uart_valid = 1;
-    Timer(dut, 2);
+    Timer(2);
     read_reg = dut->uart_rdata;
-    Timer(dut, 2);
+    Timer(2);
     dut->uart_valid = 0;
     return read_reg;
 
 }
 
-void inituart(Vsystem_top* dut){
+void inituart(){
   //pulse reset uart
-  uartwrite(dut, UART_SOFTRESET_ADDR, 1);
-  uartwrite(dut, UART_SOFTRESET_ADDR, 0);
+  uartwrite(UART_SOFTRESET_ADDR, 1);
+  uartwrite(UART_SOFTRESET_ADDR, 0);
   //config uart div factor
-  uartwrite(dut, UART_DIV_ADDR, int(FREQ/BAUD));
+  uartwrite(UART_DIV_ADDR, int(FREQ/BAUD));
   //enable uart for receiving
-  uartwrite(dut, UART_RXEN_ADDR, 1);
-  uartwrite(dut, UART_TXEN_ADDR, 1);
+  uartwrite(UART_RXEN_ADDR, 1);
+  uartwrite(UART_TXEN_ADDR, 1);
 }
 
 int main(int argc, char **argv, char **env)
 {
   Verilated::commandArgs(argc, argv);
   Verilated::traceEverOn(true);
-  Vsystem_top* dut = new Vsystem_top;
+  dut = new Vsystem_top;
   tfp = new VerilatedVcdC;
 
   dut->trace(tfp, 1);
@@ -101,7 +102,7 @@ int main(int argc, char **argv, char **env)
   }
   dut->uart_valid = 0;
   dut->uart_wstrb = 0;
-  inituart(dut);
+  inituart();
 
   printf("\n\nTESTBENCH: connecting");
   while(!Verilated::gotFinish()){
@@ -112,6 +113,7 @@ int main(int argc, char **argv, char **env)
   dut->final();
   tfp->close();
   delete dut;
+  dut = NULL;
   exit(0);
 
 }
