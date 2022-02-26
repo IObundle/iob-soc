@@ -7,14 +7,8 @@ import importlib.util
 import time
 import curses.ascii
 
-package_name = 'serial'
-spec = importlib.util.find_spec(package_name)
-if spec is None:
-    print("IOb-Console: ERROR... py{0} is not installed!".format(package_name))
-    exit()
-import serial
-
 # Global variables
+ser = None
 SerialFlag = True
 PROGNAME = "IOb-Console"
 EOT = b'\x04' # End of Transmission in Hexadecimal
@@ -22,6 +16,7 @@ ENQ = b'\x05' # Enquiry in Hexadecimal
 ACK = b'\x06' # Acknowledgement in Hexadecimal
 FTX = b'\x07' # Receive file request
 FRX = b'\x08' # Send file request
+
 
 def tb_write(data, number_of_bytes = 1):
     #print(data)
@@ -50,7 +45,6 @@ def tb_read_until(end = b'\x00'):
         else:
             data += byte
 
-
 def tb_read(number_of_bytes):
     data = b''
     # print(number_of_bytes)
@@ -70,22 +64,6 @@ def tb_read(number_of_bytes):
             f.truncate() # to erase all data
         f.close()
     return data
-# configure the serial connections (the parameters differs on the device you are connecting to)
-
-ser = serial.Serial()
-ser.port = "/dev/ttyUSB0"
-ser.baudrate = 115200
-ser.bytesize = serial.EIGHTBITS #number of bits per bytes
-ser.parity = serial.PARITY_NONE #set parity check: no parity
-ser.stopbits = serial.STOPBITS_ONE #number of stop bits
-#ser.timeout = None          #block read
-#ser.timeout = 1            #non-block read
-ser.timeout = 2              #timeout block read
-ser.xonxoff = False     #disable software flow control
-ser.rtscts = False     #disable hardware (RTS/CTS) flow control
-ser.dsrdtr = False       #disable hardware (DSR/DTR) flow control
-ser.writeTimeout = 2     #timeout for write
-
 
 # Print ERROR
 def cnsl_perror(mesg):
@@ -176,8 +154,34 @@ def init_print():
     print(': connecting...')
     print()
 
+def init_serial():
+    global ser
+    package_name = 'serial'
+    spec = importlib.util.find_spec(package_name)
+    if spec is None:
+        print(PROGNAME, end = '')
+        print(": ERROR... py{0} is not installed!".format(package_name))
+        exit(-1)
+    import serial
+    # configure the serial connections (the parameters differs on the device connected to)
+    ser = serial.Serial()
+    ser.port = "/dev/ttyUSB0"
+    ser.baudrate = 115200
+    ser.bytesize = serial.EIGHTBITS #number of bits per bytes
+    ser.parity = serial.PARITY_NONE #set parity check: no parity
+    ser.stopbits = serial.STOPBITS_ONE #number of stop bits
+    #ser.timeout = None          #block read
+    #ser.timeout = 1            #non-block read
+    ser.timeout = 2              #timeout block read
+    ser.xonxoff = False     #disable software flow control
+    ser.rtscts = False     #disable hardware (RTS/CTS) flow control
+    ser.dsrdtr = False       #disable hardware (DSR/DTR) flow control
+    ser.writeTimeout = 2     #timeout for write
+
+
 def init_console():
     global SerialFlag
+    global ser
     load_fw = False
     if ('-L' in sys.argv or '--local' in sys.argv):
         SerialFlag = False
@@ -195,6 +199,7 @@ def init_console():
             usage("PROGNAME: not enough program arguments")
         # open connection
         try:
+            init_serial()
             ser.port = sys.argv[sys.argv.index('-s')+1]
             ser.open()
         except Exception:
