@@ -110,7 +110,7 @@ int main(int argc, char **argv, char **env){
   }
 
   printf("TESTBENCH: connecting\n");
-  while(!Verilated::gotFinish()){
+  while(1){
     if(dut->trap > 0){
         printf("\nTESTBENCH: force cpu trap exit\n");
         break;
