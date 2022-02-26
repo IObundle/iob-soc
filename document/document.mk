@@ -20,6 +20,8 @@ CORE_DIR:=$(UART_DIR)
 #headers for creating tables
 VHDR+=$(FPGA_DIR)/iob_uart_swreg_def.vh
 VHDR+=$(UART_HW_DIR)/include/iob_uart_swreg.vh
+VHDR+=$(LIB_DIR)/hardware/include/iob_s_if.vh
+VHDR+=$(LIB_DIR)/hardware/include/gen_if.vh
 
 #export definitions
 export DEFINE
