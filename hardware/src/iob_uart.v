@@ -15,6 +15,7 @@ module iob_uart
 
    //additional inputs and outputs
 
+   //START_IO_TABLE rs232
    //`OUTPUT(interrupt, 1), //to be done
    `OUTPUT(txd, 1), //Serial transmit line
    `INPUT(rxd, 1), //Serial receive line

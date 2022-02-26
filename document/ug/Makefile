@@ -7,7 +7,7 @@ TAB=rs232_if_tab.tex iob_s_if_tab.tex
 #include sowftware accessible registers
 SWREGS=1
 
-NOCLEAN=-name "ug.pdf" -o -name "ifsignals.tex" -o -name "sw_reg_tab.tex"
+NOCLEAN=-name "ug.pdf" -o -name "if.tex" -o -name "swreg.tex"
 
 include $(UART_DIR)/document/document.mk
 
