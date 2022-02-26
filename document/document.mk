@@ -18,7 +18,7 @@ NOCLEAN+=-o -name "test.expected" -o -name "Makefile"
 #root directory
 CORE_DIR:=$(UART_DIR)
 #headers for creating tables
-VHDR=$(FPGA_DIR)/iob_uart_swreg_def.vh
+VHDR+=$(FPGA_DIR)/iob_uart_swreg_def.vh
 VHDR+=$(UART_HW_DIR)/include/iob_uart_swreg.vh
 
 #export definitions
