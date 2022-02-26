@@ -87,15 +87,20 @@ test-log-parse: test.log
 	sed -i '/TESTBENCH:/d' test.log
 
 test1:
-	make all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+	make all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> temp.log"
+	grep -R "Test Passed" temp.log > test.log
 test2:
-	make all INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+	make all INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> temp.log"
+	grep -R "Test Passed" temp.log > test.log
 test3:
-	make all INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+	make all INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=0 TEST_LOG=">> temp.log"
+	grep -R "Test Passed" temp.log > test.log
 test4:
-	make all INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
+	make all INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> temp.log"
+	grep -R "Test Passed" temp.log > test.log
 test5:
-	make all INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
+	make all INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> temp.log"
+	grep -R "Test Passed" temp.log > test.log
 
 
 #clean target common to all simulators
@@ -110,6 +115,7 @@ endif
 #clean test log only when sim testing begins
 clean-testlog:
 	@rm -f test.log
+	@rm -f temp.log
 ifneq ($(SIM_SERVER),)
 	ssh $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --delete --force --exclude .git $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
