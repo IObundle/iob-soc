@@ -68,15 +68,8 @@ run: $(VSRC) $(VHDR) $(IMAGES)
 
 clean: hw-clean
 	@echo "clean\n"
-	#mv system.v system.ver
-	@rm  -f *.v *.hex Vsystem
-
-sim-clean: hw-clean
-	@rm -f  Vsystem
-	@rm -rf obj_dir
-	mv system.ver system.v
-
-#@rm  -f *.v *.cpp *.hex Vsystem  !("sim_system_top.v")
-
+	-rm Vsystem_top
+	-rm -r obj_dir
+	-rm *.v *.hex *.vcd
 
 .PHONY: run clean
