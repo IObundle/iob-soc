@@ -23,7 +23,8 @@
 #define CONSOLE_DIR "../../../software/console/"
 
 unsigned int main_time = 0;
-char = 0;
+char cpu_char = 0;
+//VerilatedVcdC* tfp = NULL;
 
 double sc_time_stamp () {
   return main_time;
@@ -33,39 +34,32 @@ void Timer(Vsystem_top* dut, unsigned int half_cycles){
   for(int i = 0; i<half_cycles; i++){
     dut->clk = !(dut->clk);
     dut->eval();
-    tfp->dump(main_time);
-    main_time++;
+    //tfp->dump(main_time);
+    main_time += CLK_PERIOD;
   }
 }
 
 // 1-cycle write
 void uartwrite(Vsystem_top* dut, unsigned int cpu_address, char cpu_data){
-    //Timer(1, units="ns")
+
     dut->uart_addr = cpu_address;
     dut->uart_valid = 1;
     dut->uart_wstrb = -1;
     dut->uart_wdata = cpu_data;
     Timer(dut, 2);
-    //RisingEdge(dut->clk)
-    //Timer(1, units="ns")
     dut->uart_wstrb = 0;
     dut->uart_valid = 0;
 
 }
 
 // 2-cycle read
-void uartread(Vsystem_top* dut, unsigned int cpu_address){
-    //Timer(1, units="ns");
+int uartread(Vsystem_top* dut, unsigned int cpu_address){
+    int read_reg = 0;
     dut->uart_addr = cpu_address;
     dut->uart_valid = 1;
-    //RisingEdge(dut->clk);
     Timer(dut, 2);
-    //Timer(1, units="ns");
-    //print(dut.uart_rdata)
     read_reg = dut->uart_rdata;
     Timer(dut, 2);
-    //RisingEdge(dut->clk);
-    //Timer(1, units="ns");
     dut->uart_valid = 0;
     return read_reg;
 
@@ -87,33 +81,36 @@ int main(int argc, char **argv, char **env)
   Verilated::commandArgs(argc, argv);
   Verilated::traceEverOn(true);
   Vsystem_top* dut = new Vsystem_top;
-  VerilatedVcdC* tfp = new VerilatedVcdC;
+  //tfp = new VerilatedVcdC;
 
-  dut->trace (tfp, 1);
-  tfp->open ("waves.vcd");
+  //dut->trace(tfp, 1);
+  //tfp->open("waves.vcd");
 
   dut->clk = 0;
   dut->reset = 0;
+  dut->eval();
+  //tfp->dump(main_time);
 
   // Reset sequence
   for(int i = 0; i<5; i++){
     dut->clk = !(dut->clk);
     if(i==2 || i==4) dut->reset = !(dut->reset);
     dut->eval();
-    tfp->dump(main_time);
-    main_time++;
+    //tfp->dump(main_time);
+    main_time += CLK_PERIOD;
   }
-  dut->uart_valid = 0
-  dut->uart_wstrb = 0
+  dut->uart_valid = 0;
+  dut->uart_wstrb = 0;
   inituart(dut);
 
   printf("\n\nTESTBENCH: connecting");
-  while(1){
+  while(!Verilated::gotFinish()){
     break;
   }
   printf("\nTESTBENCH: finished\n\n");
 
-  tfp->close();
+  dut->final();
+  //tfp->close();
   delete dut;
   exit(0);
 
