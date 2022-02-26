@@ -7,6 +7,11 @@ SIM_SERVER=$(VSIM_SERVER)
 SIM_USER=$(VSIM_USER)
 SIM_PROC=Vsystem
 
+CONSOLE_CMD=../../../software/console/console -L
+ifeq ($(INIT_MEM),0)
+	CONSOLE_CMD+=-f
+endif
+
 include ../simulation.mk
 
 # remove space between -I and directory for verilator
@@ -55,8 +60,10 @@ VERILATOR_INPUT = $(INCLUDE_VERI) $(DEFINE) $(VSRC) --top-module system_top syst
 run: $(VSRC) $(VHDR) $(IMAGES)
 	$(VERILATOR) $(VERILATOR_FLAGS) $(VERILATOR_INPUT)
 	#$(MAKE) -j -C obj_dir -f Vsystem_top.mk
-	#cp obj_dir/Vsystem_top Vsystem_top
-	#./Vsystem_top
+	-pkill -f console
+	$(CONSOLE_CMD) &
+	cp obj_dir/Vsystem_top Vsystem_top
+	./Vsystem_top
 
 
 clean: hw-clean
