@@ -19,15 +19,12 @@ VSRC_VERI=$(subst system_tb.v,,$(VSRC))
 VLOG = verilator +1800-2005ext+v --error-limit 1000  -cc  $(INCLUDE_VERI) $(DEFINE)
 #VLOG = verilator +1800-2005ext+v --error-limit 1000  -Wall -cc  $(INCLUDE2) $(DEFINE)
 
-# Add system wrapper to the sources list to be verilated
-VSRC+=system_top.v
-
 #run the simulator
 run: $(VSRC) $(VHDR) $(IMAGES)
-	$(VLOG) $(VSRC_VERI) --trace --top-module system -Wno-WIDTH -Wno-PINMISSING -Wno-fatal --exe system_tb.cpp
-	make -C obj_dir -j -f Vsystem.mk Vsystem
-	cp obj_dir/Vsystem Vsystem
-	./Vsystem
+	$(VLOG) $(VSRC_VERI) --trace --top-module system_top -Wno-WIDTH -Wno-PINMISSING -Wno-CASEINCOMPLETE --exe system_tb.cpp
+	make -C obj_dir -j -f Vsystem_top.mk Vsystem_top
+	cp obj_dir/Vsystem_top Vsystem_top
+	./Vsystem_top
 
 
 clean: hw-clean
