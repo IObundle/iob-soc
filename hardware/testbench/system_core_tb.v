@@ -112,7 +112,6 @@ module system_tb;
           cpu_uartwrite(`UART_TXDATA_ADDR, cpu_char);
           $fclose(cnsl2soc_fd);
           cnsl2soc_fd = $fopen("./cnsl2soc", "w");
-          $fwriteh(cnsl2soc_fd, "");
         end
         $fclose(cnsl2soc_fd);
         txread_reg = 0;
