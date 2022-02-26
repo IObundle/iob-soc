@@ -24,7 +24,7 @@
 
 unsigned int main_time = 0;
 char cpu_char = 0;
-//VerilatedVcdC* tfp = NULL;
+VerilatedVcdC* tfp = NULL;
 
 double sc_time_stamp () {
   return main_time;
@@ -34,7 +34,7 @@ void Timer(Vsystem_top* dut, unsigned int half_cycles){
   for(int i = 0; i<half_cycles; i++){
     dut->clk = !(dut->clk);
     dut->eval();
-    //tfp->dump(main_time);
+    tfp->dump(main_time);
     main_time += CLK_PERIOD;
   }
 }
@@ -81,22 +81,22 @@ int main(int argc, char **argv, char **env)
   Verilated::commandArgs(argc, argv);
   Verilated::traceEverOn(true);
   Vsystem_top* dut = new Vsystem_top;
-  //tfp = new VerilatedVcdC;
+  tfp = new VerilatedVcdC;
 
-  //dut->trace(tfp, 1);
-  //tfp->open("waves.vcd");
+  dut->trace(tfp, 1);
+  tfp->open("waves.vcd");
 
   dut->clk = 0;
   dut->reset = 0;
   dut->eval();
-  //tfp->dump(main_time);
+  tfp->dump(main_time);
 
   // Reset sequence
   for(int i = 0; i<5; i++){
     dut->clk = !(dut->clk);
     if(i==2 || i==4) dut->reset = !(dut->reset);
     dut->eval();
-    //tfp->dump(main_time);
+    tfp->dump(main_time);
     main_time += CLK_PERIOD;
   }
   dut->uart_valid = 0;
@@ -110,7 +110,7 @@ int main(int argc, char **argv, char **env)
   printf("\nTESTBENCH: finished\n\n");
 
   dut->final();
-  //tfp->close();
+  tfp->close();
   delete dut;
   exit(0);
 
