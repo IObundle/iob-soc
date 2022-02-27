@@ -57,7 +57,7 @@ async def files_tb_test(dut):
                 ### IO operation ###
                 cnsl2soc = open('./cnsl2soc', 'rb+')
             except IOError as e:
-                print('Could not open file cnsl2soc!')
+                #print('Could not open file cnsl2soc!')
                 soc2cnsl.close()
                 break
             aux = cnsl2soc.read(1)

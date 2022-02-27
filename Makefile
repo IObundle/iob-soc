@@ -13,10 +13,8 @@ include ./config.mk
 	test-doc test-doc-clean\
 	test test-clean\
 	clean clean-all\
-	corename
+	debug
 
-corename:
-	@echo "IOb-SoC"
 #
 # SIMULATE RTL
 #
@@ -124,9 +122,11 @@ test-fpga-clean:
 
 test-asic:
 	make asic-test ASIC_NODE=umc130
+	make asic-test ASIC_NODE=skywater
 
 test-asic-clean:
 	make asic-clean ASIC_NODE=umc130
+	make asic-clean ASIC_NODE=skywater
 
 test-doc:
 	make fpga-clean-all
@@ -152,3 +152,8 @@ clean:
 	make doc-clean
 
 clean-all: test-clean
+
+
+debug:
+	@echo $(UART_DIR)
+	@echo $(CACHE_DIR)

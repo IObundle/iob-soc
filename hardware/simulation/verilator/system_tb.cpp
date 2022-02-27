@@ -110,7 +110,7 @@ int main(int argc, char **argv, char **env){
   }
 
   printf("TESTBENCH: connecting\n");
-  while(!Verilated::gotFinish()){
+  while(1){
     if(dut->trap > 0){
         printf("\nTESTBENCH: force cpu trap exit\n");
         break;
@@ -134,7 +134,7 @@ int main(int argc, char **argv, char **env){
     if(txread_reg){
       //$write("Enter TX\n");
       if ((cnsl2soc_fd = fopen("cnsl2soc", "rb")) == NULL){
-        printf("Could not open file cnsl2soc!\n");
+        //printf("Could not open file cnsl2soc!\n");
         fclose(soc2cnsl_fd);
         break;
       }
@@ -149,7 +149,7 @@ int main(int argc, char **argv, char **env){
       txread_reg = 0;
     }
   }
-  printf("\nTESTBENCH: finished\n\n");
+  printf("TESTBENCH: finished\n\n");
 
   dut->final();
   tfp->close();

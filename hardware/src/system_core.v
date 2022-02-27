@@ -1,6 +1,6 @@
 `timescale 1 ns / 1 ps
 `include "system.vh"
-`include "interconnect.vh"
+`include "iob_lib.vh"
 
 //do not remove line below
 //PHEADER
@@ -120,7 +120,8 @@ module system
 `endif
 
    // INSTRUCTION BUS
-   split #(
+   iob_split 
+     #(
 `ifdef RUN_EXTMEM_USE_SRAM
            .N_SLAVES(2),
 `else
@@ -163,7 +164,7 @@ module system
    wire [`REQ_W-1:0]         pbus_req;
    wire [`RESP_W-1:0]        pbus_resp;
 
-   split 
+   iob_split 
      #(
 `ifdef USE_DDR
        .N_SLAVES(3), //E,P,I
@@ -200,7 +201,7 @@ module system
    wire [`N_SLAVES*`REQ_W-1:0] slaves_req;
    wire [`N_SLAVES*`RESP_W-1:0] slaves_resp;
 
-   split 
+   iob_split 
      #(
        .N_SLAVES(`N_SLAVES),
        .P_SLAVES(`P_BIT-1)
