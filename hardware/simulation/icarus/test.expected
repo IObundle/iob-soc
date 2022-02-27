@@ -1,4 +1,3 @@
-TESTBENCH: connecting..IOb-Bootloader: connected!
 IOb-Bootloader: Restart CPU to run user program...
 
 
@@ -8,43 +7,13 @@ Hello world!
 
 Value of Pi = 3.141500
 
-TESTBENCH: exiting
 
 
 
-TESTBENCH: connecting..IOb-Bootloader: connected!
 IOb-UART: requesting to receive file
-TESTBENCH: got file send request
-TESBENCH: sending file firmware.bin
-File size:      19108 bytes
-          0%
-         10%
-         20%
-         30%
-         40%
-         50%
-         60%
-         70%
-         80%
-         90%
-        100%
 IOb-UART: file received
 IOb-Bootloader: Loading firmware...
 IOb-UART: requesting to send file
-TESTBENCH: got file receive request
-TESBENCH: receiving file s_fw.bin
-TESTBENCH: file size:      19108 bytes
-          0%
-         10%
-         20%
-         30%
-         40%
-         50%
-         60%
-         70%
-         80%
-         90%
-        100%
 IOb-UART: file sent
 IOb-Bootloader: Restart CPU to run user program...
 
@@ -55,11 +24,9 @@ Hello world!
 
 Value of Pi = 3.141500
 
-TESTBENCH: exiting
 
 
 
-TESTBENCH: connecting..IOb-Bootloader: connected!
 IOb-Bootloader: DDR in use
 IOb-Bootloader: Restart CPU to run user program...
 
@@ -70,11 +37,9 @@ Hello world!
 
 Value of Pi = 3.141500
 
-TESTBENCH: exiting
 
 
 
-TESTBENCH: connecting..IOb-Bootloader: connected!
 IOb-Bootloader: DDR in use
 IOb-Bootloader: program to run from DDR
 IOb-Bootloader: Restart CPU to run user program...
@@ -86,45 +51,15 @@ Hello world!
 
 Value of Pi = 3.141500
 
-TESTBENCH: exiting
 
 
 
-TESTBENCH: connecting..IOb-Bootloader: connected!
 IOb-Bootloader: DDR in use
 IOb-Bootloader: program to run from DDR
 IOb-UART: requesting to receive file
-TESTBENCH: got file send request
-TESBENCH: sending file firmware.bin
-File size:      19260 bytes
-          0%
-         10%
-         20%
-         30%
-         40%
-         50%
-         60%
-         70%
-         80%
-         90%
-        100%
 IOb-UART: file received
 IOb-Bootloader: Loading firmware...
 IOb-UART: requesting to send file
-TESTBENCH: got file receive request
-TESBENCH: receiving file s_fw.bin
-TESTBENCH: file size:      19260 bytes
-          0%
-         10%
-         20%
-         30%
-         40%
-         50%
-         60%
-         70%
-         80%
-         90%
-        100%
 IOb-UART: file sent
 IOb-Bootloader: Restart CPU to run user program...
 
@@ -135,7 +70,6 @@ Hello world!
 
 Value of Pi = 3.141500
 
-TESTBENCH: exiting
 
 
 

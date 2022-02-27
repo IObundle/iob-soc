@@ -7,7 +7,6 @@
   StopBits = 1 
   Parity   = None
 
-IOb-Console: connecting...
 
 IOb-Bootloader: connected!
 IOb-Bootloader: Restart CPU to run user program...
@@ -19,7 +18,6 @@ Hello world!
 
 Value of Pi = 3.141500
 
-IOb-Console: exiting...
 
 
 
@@ -31,21 +29,12 @@ IOb-Console: exiting...
   StopBits = 1 
   Parity   = None
 
-IOb-Console: connecting...
 
 IOb-Bootloader: connected!
 IOb-UART: requesting to receive file
-IOb-Console: got file send request
-IOb-Console: file name firmware.bin
-IOb-Console: file size: 19108 bytes
-IOb-Console: file sent
 IOb-UART: file received
 IOb-Bootloader: Loading firmware...
 IOb-UART: requesting to send file
-IOb-Console: got file receive request
-IOb-Console: file name s_fw.bin
-IOb-Console: file size: 19108 bytes
-IOb-Console: file of size 19108 bytes received
 IOb-UART: file sent
 IOb-Bootloader: Restart CPU to run user program...
 
@@ -56,7 +45,6 @@ Hello world!
 
 Value of Pi = 3.141500
 
-IOb-Console: exiting...
 
 
 
@@ -68,23 +56,14 @@ IOb-Console: exiting...
   StopBits = 1 
   Parity   = None
 
-IOb-Console: connecting...
 
 IOb-Bootloader: connected!
 IOb-Bootloader: DDR in use
 IOb-Bootloader: program to run from DDR
 IOb-UART: requesting to receive file
-IOb-Console: got file send request
-IOb-Console: file name firmware.bin
-IOb-Console: file size: 19268 bytes
-IOb-Console: file sent
 IOb-UART: file received
 IOb-Bootloader: Loading firmware...
 IOb-UART: requesting to send file
-IOb-Console: got file receive request
-IOb-Console: file name s_fw.bin
-IOb-Console: file size: 19268 bytes
-IOb-Console: file of size 19268 bytes received
 IOb-UART: file sent
 IOb-Bootloader: Restart CPU to run user program...
 
@@ -95,6 +74,5 @@ Hello world!
 
 Value of Pi = 3.141500
 
-IOb-Console: exiting...
 
 
