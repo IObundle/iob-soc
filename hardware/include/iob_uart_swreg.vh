@@ -1,4 +1,4 @@
-//START_TABLE sw_uartreg
+//START_SWREG_TABLE uart
 `SWREG_W(UART_SOFTRESET, 1, 0) //Bit duration in system clock cycles.
 `SWREG_W(UART_DIV, 16, 0) //Bit duration in system clock cycles.
 `SWREG_W(UART_TXDATA, 8, 0) //TX data
