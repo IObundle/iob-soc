@@ -43,7 +43,7 @@ $(DEFINE): sw boot.hex
 	echo "\`define $@ $($@)"| sed 's/=/ /g' >> temp_inc/iob-soc-defs.vh
 	cp boot.hex temp_src
 
-synth:  $(VSRC) $(VHDR) sram temp_src temp_inc $(DEFINE)
+synth:  clean $(VSRC) $(VHDR) sram temp_src temp_inc $(DEFINE)
 	cp boot.hex temp_src
 	sed -i "s/m4/met4/g" $(wildcard sram/*.lef)
 	sed -i "s/m3/met3/g" $(wildcard sram/*.lef)
@@ -72,6 +72,7 @@ debug: $(VSRC) $(VHDR)
 clean_sram:
 	rm -rf __pycache__
 	rm -rf sram
+	rm -rf temp
 
 clean_asic: clean-remote
 	rm -rf $(OPENLANE_DESIGNS)/system
