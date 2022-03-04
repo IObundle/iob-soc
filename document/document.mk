@@ -6,9 +6,6 @@ INT_FAMILY ?=CYCLONEV-GT
 #results for xilinx fpga
 XIL_FAMILY ?=XCKU
 
-#results for asic nodes
-ASIC_NODE=0
-
 NOCLEAN+=-o -name "test.expected" -o -name "Makefile"
 
 #PREPARE TO INCLUDE TEX SUBMODULE MAKEFILE SEGMENT

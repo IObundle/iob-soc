@@ -16,11 +16,11 @@ module iob_uart
    //additional inputs and outputs
 
    //START_IO_TABLE rs232
-   //`OUTPUT(interrupt, 1), //to be done
-   `OUTPUT(txd, 1), //Serial transmit line
-   `INPUT(rxd, 1), //Serial receive line
-   `INPUT(cts, 1), //Clear to send; the destination is ready to receive a transmission sent by the UART
-   `OUTPUT(rts, 1), //Ready to send; the UART is ready to receive a transmission from the sender.
+   //`IOB_OUTPUT(interrupt, 1), //to be done
+   `IOB_OUTPUT(txd, 1), //Serial transmit line
+   `IOB_INPUT(rxd, 1), //Serial receive line
+   `IOB_INPUT(cts, 1), //Clear to send; the destination is ready to receive a transmission sent by the UART
+   `IOB_OUTPUT(rts, 1), //Ready to send; the UART is ready to receive a transmission from the sender.
 `include "gen_if.vh"
    );
 
