@@ -1,3 +1,5 @@
+SHELL := /bin/bash
+
 ROOT_DIR:=../../..
 
 defmacro:=-D
@@ -59,7 +61,6 @@ VERILATOR_INPUT = $(INCLUDE_VERI) $(DEFINE) $(VSRC) --top-module system_top syst
 #run the simulator
 run: $(VSRC) $(VHDR) $(IMAGES)
 	$(VERILATOR) $(VERILATOR_FLAGS) $(VERILATOR_INPUT)
-	#$(MAKE) -j -C obj_dir -f Vsystem_top.mk
 	-pkill -f console
 	$(CONSOLE_CMD) &
 	cp obj_dir/Vsystem_top Vsystem_top
