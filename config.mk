@@ -4,7 +4,7 @@
 #
 ######################################################################
 
-IOBSOC_NAME:=IOBSOC
+IOBSOC_NAME:=IOBTESTER
 
 #
 # PRIMARY PARAMETERS: CAN BE CHANGED BY USERS OR OVERRIDEN BY ENV VARS
@@ -32,7 +32,7 @@ INIT_MEM ?=1
 #PERIPHERAL LIST
 #must match respective submodule CORE_NAME in the core.mk file of the submodule
 #PERIPHERALS:=UART
-PERIPHERALS ?=UART
+PERIPHERALS ?=UART $(CORE_UT)
 
 #RISC-V HARD MULTIPLIER AND DIVIDER INSTRUCTIONS
 USE_MUL_DIV ?=1
@@ -92,6 +92,8 @@ UART_DIR=$(ROOT_DIR)/submodules/UART
 LIB_DIR=$(ROOT_DIR)/submodules/LIB
 MEM_DIR=$(ROOT_DIR)/submodules/MEM
 AXI_DIR=$(ROOT_DIR)/submodules/AXI
+#core under test
+$(CORE_UT)_DIR=$(ROOT_DIR)/../..
 
 #sw paths
 SW_DIR:=$(ROOT_DIR)/software
