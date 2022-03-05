@@ -44,6 +44,7 @@ $(DEFINE): sw boot.hex
 	cp boot.hex temp_src
 
 synth:  clean $(VSRC) $(VHDR) sram temp_src temp_inc $(DEFINE)
+	cp -r /opt/OpenLane .
 	cp boot.hex temp_src
 	sed -i "s/m4/met4/g" $(wildcard sram/*.lef)
 	sed -i "s/m3/met3/g" $(wildcard sram/*.lef)
@@ -85,6 +86,7 @@ clean_asic: clean-remote
 	rm -rf system_tmp.v
 	rm -rf UARTsw_reg_def.vh
 	rm -rf UARTsw_reg_gen.vh
+	rm -rf OpenLane
 
 clean_iob_ram_sp_be.v:
 	rm -rf iob_ram_sp_be.v
