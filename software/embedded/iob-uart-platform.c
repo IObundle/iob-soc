@@ -1,6 +1,6 @@
 #include "iob-lib.h"
 #include "iob-uart.h"
-#include "UARTsw_reg.h"
+#include "iob_uart_swreg.h"
 
 //base address
 static int base;
