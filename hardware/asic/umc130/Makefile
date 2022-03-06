@@ -38,7 +38,7 @@ ASIC_SPRAM_SIM_MODEL=$(ASIC_SPRAM_TYPE)*.v
 
 # Log and report files
 ASIC_LOG=*.log
-ASIC_REPORTS=*.txt
+ASIC_REPORTS=*.rpt
 
 # Simulation libs
 ASIC_LIBS=/opt/ic_tools/pdk/faraday/umc130/LL/fsc0l_d/2009Q2v3.0/GENERIC_CORE/FrontEnd/verilog/fsc0l_d_generic_core_30.lib
@@ -68,6 +68,7 @@ synth: mems system_synth.v
 
 system_synth.v: $(VHDR) $(VSRC)
 ifeq ($(ASIC_SERVER),)
+	@rm -f rc.*
 	echo "set INCLUDE [list $(INCLUDE)]" > inc.tcl
 	echo "set DEFINE [list $(DEFINE)]" > defs.tcl
 	echo "set VSRC [list $(VSRC)]" > vsrc.tcl
@@ -194,7 +195,7 @@ sp_ram_wrap.v:
 #
 
 clean: clean-remote
-	rm -rf *.txt rc.* fv libscore_work *.sdc *.lib *.lef *.ds
+	rm -rf *.rpt rc.* fv libscore_work *.sdc *.db *.lib *.lef *.ds
 	find *.tcl -type f -not -name synscript.tcl -not -name powscript.tcl -delete
 
 .PHONY: fix-sprom fix-dpram \
