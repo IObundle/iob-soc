@@ -1,33 +1,35 @@
-include $(ROOT_DIR)/system.mk
+include $(ROOT_DIR)/config.mk
 
 #default baud and freq for hardware
 BAUD ?=115200
 FREQ ?=100000000
 
+#add itself to MODULES list
+HW_MODULES+=$(IOBSOC_NAME)
 
-#SUBMODULES
+#
+# ADD SUBMODULES HARDWARE
+#
 
-#cpu
-include $(CPU_DIR)/hardware/hardware.mk
+#include LIB modules
+include $(LIB_DIR)/hardware/iob_merge/hardware.mk
+include $(LIB_DIR)/hardware/iob_split/hardware.mk
 
-#cache
-ifeq ($(USE_DDR),1)
+#include MEM modules
+include $(MEM_DIR)/hardware/rom/iob_rom_sp/hardware.mk
+include $(MEM_DIR)/hardware/ram/iob_ram_dp_be/hardware.mk
+
+#CPU
+include $(PICORV32_DIR)/hardware/hardware.mk
+
+#CACHE
 include $(CACHE_DIR)/hardware/hardware.mk
-endif
 
-ifneq ($(ASIC_MEM),1)
-#rom
-SUBMODULES+=SPROM
-SPROM_DIR:=$(CACHE_DIR)/submodules/MEM/sp_rom
-VSRC+=$(SPROM_DIR)/sp_rom.v
-#ram
-SUBMODULES+=TDPRAM
-TDPRAM_DIR:=$(CACHE_DIR)/submodules/MEM/tdp_ram
-VSRC+=$(TDPRAM_DIR)/iob_tdp_ram.v
-endif
+#UART
+include $(UART_DIR)/hardware/hardware.mk
 
-#peripherals
-$(foreach p, $(PERIPHERALS), $(eval include $(SUBMODULES_DIR)/$p/hardware/hardware.mk))
+#CORE_UT
+include $($(CORE_UT)_DIR)/hardware/hardware.mk
 
 #HARDWARE PATHS
 INC_DIR:=$(HW_DIR)/include
@@ -36,16 +38,14 @@ SRC_DIR:=$(HW_DIR)/src
 #DEFINES
 DEFINE+=$(defmacro)DDR_ADDR_W=$(DDR_ADDR_W)
 
-
 #INCLUDES
-INCLUDE+=$(incdir). $(incdir)$(INC_DIR)
+INCLUDE+=$(incdir). $(incdir)$(INC_DIR) $(incdir)$(LIB_DIR)/hardware/include
+
 
 #HEADERS
-VHDR+=$(INC_DIR)/system.vh
+VHDR+=$(INC_DIR)/system.vh $(LIB_DIR)/hardware/include/iob_intercon.vh
 
 #SOURCES
-#testbench
-TB_DIR:=$(ROOT_DIR)/hardware/testbench
 
 #external memory interface
 ifeq ($(USE_DDR),1)
@@ -53,31 +53,30 @@ VSRC+=$(SRC_DIR)/ext_mem.v
 endif
 
 #system
-VSRC+=$(SRC_DIR)/boot_ctr.v $(SRC_DIR)/int_mem.v
-ifneq ($(ASIC_MEM),1)
-VSRC+=$(SRC_DIR)/sram.v
-endif
+VSRC+=$(SRC_DIR)/boot_ctr.v $(SRC_DIR)/int_mem.v $(SRC_DIR)/sram.v
 VSRC+=system.v
 
 IMAGES=boot.hex firmware.hex
 
 # make system.v with peripherals
-system.v: $(SRC_DIR)/system_core.v
-	cp $(SRC_DIR)/system_core.v $@ # create system.v
-	$(foreach p, $(PERIPHERALS), if [ `ls -1 $(SUBMODULES_DIR)/$p/hardware/include/*.vh 2>/dev/null | wc -l ` -gt 0 ]; then $(foreach f, $(shell echo `ls $(SUBMODULES_DIR)/$p/hardware/include/*.vh`), sed -i '/PHEADER/a `include \"$f\"' $@;) break; fi;) # insert header files
-	$(foreach p, $(PERIPHERALS), if test -f $(SUBMODULES_DIR)/$p/hardware/include/pio.v; then sed -i '/PIO/r $(SUBMODULES_DIR)/$p/hardware/include/pio.v' $@; fi;) #insert system IOs for peripheral
-	$(foreach p, $(PERIPHERALS), if test -f $(SUBMODULES_DIR)/$p/hardware/include/inst.v; then sed -i '/endmodule/e cat $(SUBMODULES_DIR)/$p/hardware/include/inst.v' $@; fi;) # insert peripheral instances
+system.v: system_tmp.v
+	$(foreach p, $(PERIPHERALS), $(shell sed -i '/PHEADER/a `include \"$p.vh\"' $@)) # insert header file
+	$(foreach p, $(PERIPHERALS), if test -f $($p_DIR)/hardware/include/pio.vh; then sed -i '/PIO/r $($p_DIR)/hardware/include/pio.vh' $@; fi;) #insert system IOs for peripheral
+	$(foreach p, $(PERIPHERALS), if test -f $($p_DIR)/hardware/include/inst.vh; then sed -i '/endmodule/e cat $($p_DIR)/hardware/include/inst.vh' $@; fi;) # insert peripheral instances
+
+system_tmp.v: $(SRC_DIR)/system_core.v
+	cp $< $@; cp $@ system.v
+
+
 
 # make and copy memory init files
+PYTHON_DIR=$(MEM_DIR)/software/python
+
 boot.hex: $(BOOT_DIR)/boot.bin
 	$(PYTHON_DIR)/makehex.py $(BOOT_DIR)/boot.bin $(BOOTROM_ADDR_W) > boot.hex
 
 firmware.hex: $(FIRM_DIR)/firmware.bin
-ifeq ($(RUN_EXTMEM),1)
-	$(PYTHON_DIR)/makehex.py $(FIRM_DIR)/firmware.bin $(DCACHE_ADDR_W) > firmware.hex
-else
 	$(PYTHON_DIR)/makehex.py $(FIRM_DIR)/firmware.bin $(FIRM_ADDR_W) > firmware.hex
-endif 
 	$(PYTHON_DIR)/hex_split.py firmware .
 	cp $(FIRM_DIR)/firmware.bin .
 
@@ -94,6 +93,6 @@ sw-clean:
 
 #clean general hardware files
 hw-clean: sw-clean gen-clean
-	@rm -f *.v *.hex *.bin $(SRC_DIR)/system.v $(TB_DIR)/system_tb.v
+	@rm -f *.v *.hex *.bin $(SRC_DIR)/system.v $(TB_DIR)/system_tb.v *.vh
 
 .PHONY: sw sw-clean hw-clean

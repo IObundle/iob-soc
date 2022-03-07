@@ -1,4 +1,3 @@
-TESTBENCH: connecting..IOb-Bootloader: connected!
 IOb-Bootloader: Restart CPU to run user program...
 
 
@@ -8,45 +7,13 @@ Hello world!
 
 Value of Pi = 3.141500
 
-TESTBENCH: exiting
 
 
 
-Simulation complete via $finish(1) at time 408141 NS + 0
-./system_tb.v:97               $finish;
-TESTBENCH: connecting..IOb-Bootloader: connected!
 IOb-UART: requesting to receive file
-TESTBENCH: got file send request
-TESBENCH: sending file 
-File size:      19100 bytes
-          0%
-         10%
-         20%
-         30%
-         40%
-         50%
-         60%
-         70%
-         80%
-         90%
-        100%
 IOb-UART: file received
 IOb-Bootloader: Loading firmware...
 IOb-UART: requesting to send file
-TESTBENCH: got file receive request
-TESBENCH: receiving file 
-TESTBENCH: file size:      19100 bytes
-          0%
-         10%
-         20%
-         30%
-         40%
-         50%
-         60%
-         70%
-         80%
-         90%
-        100%
 IOb-UART: file sent
 IOb-Bootloader: Restart CPU to run user program...
 
@@ -57,13 +24,9 @@ Hello world!
 
 Value of Pi = 3.141500
 
-TESTBENCH: exiting
 
 
 
-Simulation complete via $finish(1) at time 89297181 NS + 0
-./system_tb.v:97               $finish;
-TESTBENCH: connecting..IOb-Bootloader: connected!
 IOb-Bootloader: DDR in use
 IOb-Bootloader: Restart CPU to run user program...
 
@@ -74,13 +37,9 @@ Hello world!
 
 Value of Pi = 3.141500
 
-TESTBENCH: exiting
 
 
 
-Simulation complete via $finish(1) at time 475281 NS + 0
-./system_tb.v:97               $finish;
-TESTBENCH: connecting..IOb-Bootloader: connected!
 IOb-Bootloader: DDR in use
 IOb-Bootloader: program to run from DDR
 IOb-Bootloader: Restart CPU to run user program...
@@ -92,47 +51,15 @@ Hello world!
 
 Value of Pi = 3.141500
 
-TESTBENCH: exiting
 
 
 
-Simulation complete via $finish(1) at time 602481 NS + 0
-./system_tb.v:97               $finish;
-TESTBENCH: connecting..IOb-Bootloader: connected!
 IOb-Bootloader: DDR in use
 IOb-Bootloader: program to run from DDR
 IOb-UART: requesting to receive file
-TESTBENCH: got file send request
-TESBENCH: sending file 
-File size:      19260 bytes
-          0%
-         10%
-         20%
-         30%
-         40%
-         50%
-         60%
-         70%
-         80%
-         90%
-        100%
 IOb-UART: file received
 IOb-Bootloader: Loading firmware...
 IOb-UART: requesting to send file
-TESTBENCH: got file receive request
-TESBENCH: receiving file 
-TESTBENCH: file size:      19260 bytes
-          0%
-         10%
-         20%
-         30%
-         40%
-         50%
-         60%
-         70%
-         80%
-         90%
-        100%
 IOb-UART: file sent
 IOb-Bootloader: Restart CPU to run user program...
 
@@ -143,9 +70,6 @@ Hello world!
 
 Value of Pi = 3.141500
 
-TESTBENCH: exiting
 
 
 
-Simulation complete via $finish(1) at time 86380581 NS + 0
-./system_tb.v:97               $finish;

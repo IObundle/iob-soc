@@ -1,17 +1,5 @@
 ROOT_DIR:=../..
 
-include $(ROOT_DIR)/system.mk
+NOCLEAN = -name "pb.pdf" -o -name "pb.expected" -o -name "Makefile"
 
-#FPGA results to include
-INTEL = 1
-XILINX = 1
-XIL_FAMILY:=AES-KU040-DB-G
-INT_FAMILY:=CYCLONEV-GT-DK
-
-CORE_DIR:=$(ROOT_DIR)
-
-BDTAB=0
-SWREGS=0
-
-include $(TEX_DIR)/document/document.mk
-
+include $(ROOT_DIR)/document/document.mk

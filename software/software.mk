@@ -1,22 +1,33 @@
 defmacro:=-D
 incdir:=-I
-include $(ROOT_DIR)/system.mk
+include $(ROOT_DIR)/config.mk
 
 DEFINE+=$(defmacro)BAUD=$(BAUD)
 DEFINE+=$(defmacro)FREQ=$(FREQ)
 
 #compiler settings
 TOOLCHAIN_PREFIX:=riscv64-unknown-elf-
-CFLAGS=-Os -nostdlib -march=$(MFLAGS) -mabi=ilp32
+CFLAGS=-Os -nostdlib -march=$(MFLAGS) -mabi=ilp32 --specs=nano.specs
+LFLAGS+= -Wl,-Bstatic,-T,../template.lds,--strip-debug
+LLIBS=-lgcc -lc -lnosys
+
+MFLAGS=$(MFLAGS_BASE)$(MFLAG_M)$(MFLAG_C)
+
+MFLAGS_BASE:=rv32i
+
+ifeq ($(USE_MUL_DIV),1)
+MFLAG_M=m
+endif
 
 ifeq ($(USE_COMPRESSED),1)
-MFLAGS=rv32imc
-else
-MFLAGS=rv32im
+MFLAG_C=c
 endif
 
 #INCLUDE
 INCLUDE+=$(incdir)$(SW_DIR) $(incdir).
+
+#add iob-lib to include path
+INCLUDE+=$(incdir)$(LIB_DIR)/software/include
 
 #headers
 HDR=$(SW_DIR)/system.h
