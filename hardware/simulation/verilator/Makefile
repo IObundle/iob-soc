@@ -46,7 +46,7 @@ VERILATOR_FLAGS += -cc --exe --build # Generate C++ in executable form and compi
 #VERILATOR_FLAGS += -Os -x-assign 0 # Optimize
 VERILATOR_FLAGS += -Wall # Enable all style warnings; may not want this on less solid designs
 VERILATOR_FLAGS += -Wno-lint # Disable all lint warnings
-#VERILATOR_FLAGS += -Wno-fatal # Disable fatal exit on warnings
+VERILATOR_FLAGS += -Wno-fatal # Disable fatal exit on warnings
 VERILATOR_FLAGS += --trace # Make waveforms
 #VERILATOR_FLAGS += --assert # Check SystemVerilog assertions
 #VERILATOR_FLAGS += --coverage # Generate coverage analysis
@@ -62,6 +62,7 @@ VERILATOR_INPUT = $(INCLUDE_VERI) $(DEFINE) $(VSRC) --top-module system_top syst
 run: $(VSRC) $(VHDR) $(IMAGES)
 	$(VERILATOR) $(VERILATOR_FLAGS) $(VERILATOR_INPUT)
 	-pkill -f console
+	-rm soc2cnsl cnsl2soc
 	$(CONSOLE_CMD) &
 	cp obj_dir/Vsystem_top Vsystem_top
 	./Vsystem_top

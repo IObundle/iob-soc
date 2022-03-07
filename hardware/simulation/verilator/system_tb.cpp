@@ -111,6 +111,10 @@ int main(int argc, char **argv, char **env){
   while(1){
     if(dut->trap > 0){
         printf("\nTESTBENCH: force cpu trap exit\n");
+        fclose(soc2cnsl_fd);
+        soc2cnsl_fd = fopen("./soc2cnsl", "wb");
+        cpu_char = 4;
+        fwrite(&cpu_char, sizeof(char), 1, soc2cnsl_fd);
         break;
     }
     while(!rxread_reg && !txread_reg){
@@ -133,7 +137,6 @@ int main(int argc, char **argv, char **env){
       //$write("Enter TX\n");
       if ((cnsl2soc_fd = fopen("./cnsl2soc", "rb")) == NULL){
         //printf("Could not open file cnsl2soc!\n");
-        fclose(soc2cnsl_fd);
         break;
       }
       n = fread(&cpu_char, sizeof(char), 1, cnsl2soc_fd);
@@ -147,6 +150,7 @@ int main(int argc, char **argv, char **env){
       txread_reg = 0;
     }
   }
+  fclose(soc2cnsl_fd);
   printf("TESTBENCH: finished\n\n");
 
   dut->final();
