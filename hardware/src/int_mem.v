@@ -151,7 +151,7 @@ module int_mem
    //
    sram
 `ifdef SRAM_INIT
-        #(.FILE("firmware"))
+        #(.HEXFILE("firmware"))
 `endif
    int_sram 
      (
