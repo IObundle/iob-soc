@@ -20,8 +20,6 @@
 #define BAUD 5000000
 #define CLK_PERIOD 10000 // 20 ns
 
-#define CONSOLE_DIR "../../../software/console/"
-
 vluint64_t main_time = 0;
 VerilatedVcdC* tfp = NULL;
 Vsystem_top* dut = NULL;
@@ -105,7 +103,7 @@ int main(int argc, char **argv, char **env){
   char rxread_reg = 0, txread_reg = 0;
   int n = 0;
 
-  while ((soc2cnsl_fd = fopen("soc2cnsl", "rb+")) == NULL){
+  while ((soc2cnsl_fd = fopen("./soc2cnsl", "rb+")) == NULL){
     //printf("Could not open \"soc2cnsl\"\n");
   }
 
@@ -133,7 +131,7 @@ int main(int argc, char **argv, char **env){
     }
     if(txread_reg){
       //$write("Enter TX\n");
-      if ((cnsl2soc_fd = fopen("cnsl2soc", "rb")) == NULL){
+      if ((cnsl2soc_fd = fopen("./cnsl2soc", "rb")) == NULL){
         //printf("Could not open file cnsl2soc!\n");
         fclose(soc2cnsl_fd);
         break;
