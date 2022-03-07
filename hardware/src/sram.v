@@ -2,7 +2,7 @@
 `include "system.vh"
 
 module sram #(
-              parameter FILE = "none"
+              parameter HEXFILE = "none"
 	      )
    (
     input                    clk,
@@ -38,7 +38,7 @@ module sram #(
 
    iob_ram_sp_be
      #(
-       .FILE(FILE),
+       .HEXFILE(HEXFILE),
        .ADDR_W(`SRAM_ADDR_W-2),
        .DATA_W(`DATA_W)
        )
@@ -58,7 +58,7 @@ module sram #(
 
    iob_ram_dp_be
      #(
-       .FILE(FILE),
+       .HEXFILE(HEXFILE),
        .ADDR_W(`SRAM_ADDR_W-2),
        .DATA_W(`DATA_W)
        )

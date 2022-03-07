@@ -8,7 +8,7 @@ CFLAGS:=-g -Wall
 
 INCLUDE+=-I$(UART_DIR)/software -I$(FIRM_DIR)
 
-HDR:=console.c $(UART_DIR)/software $(FIRM_DIR)/UARTsw_reg.h
+HDR:=console.c $(UART_DIR)/software $(FIRM_DIR)/iob_uart_swreg.h
 
 SRC:=console.c rs232comm.c
 
