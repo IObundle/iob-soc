@@ -10,12 +10,12 @@ SIM_USER=$(VSIM_USER)
 SIM_PROC=Vsystem
 
 CONSOLE_CMD=../../../software/console/console -L
-ifeq ($(INIT_MEM),0)
-	CONSOLE_CMD+=-f
-endif
 
 include ../simulation.mk
 
+ifeq ($(INIT_MEM),0)
+	CONSOLE_CMD+=-f
+endif
 # remove space between -I and directory for verilator
 INCLUDE_VERI=$(subst -I ,-I,$(INCLUDE))
 
