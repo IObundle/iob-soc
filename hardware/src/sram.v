@@ -2,7 +2,7 @@
 `include "system.vh"
 
 module sram #(
-              parameter FILE = "none"
+              parameter HEXFILE = "none"
 	      )
    (
     input                    clk,
@@ -25,37 +25,62 @@ module sram #(
     output reg               d_ready
     );
 
-   localparam file_suffix = {"3","2","1","0"};
+`ifdef USE_SPRAM
 
-   genvar                 i;
-   generate
-      for (i = 0; i < 4; i = i+1) begin : gen_main_mem_byte
-         iob_tdp_ram
-               #(
-`ifdef SRAM_INIT
-	         .MEM_INIT_FILE({FILE, "_", file_suffix[8*(i+1)-1 -: 8], ".hex"}),
+   wire                     d_valid_int = i_valid? 1'b0: d_valid;
+   wire                     valid = i_valid? i_valid: d_valid;
+   wire [`SRAM_ADDR_W-3:0]  addr  = i_valid? i_addr: d_addr;
+   wire [`DATA_W-1:0]       wdata = i_valid? i_wdata: d_wdata;
+   wire [`DATA_W/8-1:0]     wstrb = i_valid? i_wstrb: d_wstrb;
+   wire [`DATA_W-1:0]       rdata;
+   assign d_rdata = rdata;
+   assign i_rdata = rdata;
+
+   iob_ram_sp_be
+     #(
+       .HEXFILE(HEXFILE),
+       .ADDR_W(`SRAM_ADDR_W-2),
+       .DATA_W(`DATA_W)
+       )
+   main_mem_byte
+     (
+      .clk   (clk),
+
+      // data port
+      .en   (valid),
+      .addr (addr),
+      .we   (wstrb),
+      .din  (wdata),
+      .dout (rdata)
+      );
+`else
+   wire                     d_valid_int = d_valid;
+
+   iob_ram_dp_be
+     #(
+       .HEXFILE(HEXFILE),
+       .ADDR_W(`SRAM_ADDR_W-2),
+       .DATA_W(`DATA_W)
+       )
+   main_mem_byte
+     (
+      .clk   (clk),
+
+      // data port
+      .enA   (d_valid),
+      .addrA (d_addr),
+      .weA   (d_wstrb),
+      .dinA  (d_wdata),
+      .doutA (d_rdata),
+
+      // instruction port
+      .enB   (i_valid),
+      .addrB (i_addr),
+      .weB   (i_wstrb),
+      .dinB  (i_wdata),
+      .doutB (i_rdata)
+      );
 `endif
-	         .DATA_W(8),
-                 .ADDR_W(`SRAM_ADDR_W-2))
-         main_mem_byte 
-               (
-	        .clk             (clk),
-                //data 
-	        .en_a            (d_valid),
-	        .we_a            (d_wstrb[i]),
-	        .addr_a          (d_addr),
-	        .data_a          (d_wdata[8*(i+1)-1 -: 8]),
-	        .q_a             (d_rdata[8*(i+1)-1 -: 8]),
-                //instruction
-	        .en_b            (i_valid),
-	        .we_b            (i_wstrb[i]),
-	        .addr_b          (i_addr),
-	        .data_b          (i_wdata[8*(i+1)-1 -: 8]),
-	        .q_b             (i_rdata[8*(i+1)-1 -: 8])
-	        );	
-      end // block: gen_main_mem_byte
-   endgenerate
-
    // reply with ready 
    always @(posedge clk, posedge rst)
      if(rst) begin

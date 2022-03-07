@@ -11,10 +11,8 @@ CFLAGS=-Os -std=gnu99 -Wl,--strip-debug
 #DEFINE+=-DLONGLONG 
 DEFINE+=-DPC
 
-#SUBMODULES
-
 #peripherals (pc)
-$(foreach p, $(PERIPHERALS), $(eval include $(SUBMODULES_DIR)/$p/software/pc-emul/pc.mk))
+$(foreach p, $(PERIPHERALS), $(eval include $($p_DIR)/software/pc-emul/pc.mk))
 
 #HEADERS
 HDR+=periphs.h
@@ -25,15 +23,20 @@ SRC+= $(FIRM_DIR)/firmware.c $(UART_DIR)/software/printf.c
 #RULES
 
 all: build run
-run: firmware.out
-	./firmware.out $(TEST_LOG)
 
 build: firmware.out
+
+run: firmware.out
+	./firmware.out $(TEST_LOG)
 
 firmware.out: $(HDR) $(SRC)
 	gcc -o $@ $(CFLAGS) $(DEFINE) $(INCLUDE) $(SRC) -lgcc -lc
 
-clean:
-	@rm -rf firmware.out periphs.h test.log
+test:
+	make all TEST_LOG="> test.log"
+	diff -q $(PC_DIR)/test.log $(PC_DIR)/test.expected
 
-.PHONY: all build run clean subs periphs_tmp.h
+clean:
+	@rm -rf firmware.out periphs.h test.log *sw_reg.h
+
+.PHONY: all build run clean subs periphs_tmp.h test

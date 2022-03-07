@@ -1,9 +1,3 @@
-#
-# ICARUS VERILOG SIMULTOR (iverilog)
-#
-# Tested with iverilog version 10.3
-#
-
 ROOT_DIR:=../../..
 
 defmacro:=-D
@@ -19,16 +13,33 @@ include ../simulation.mk
 #simulator flags
 VLOG = iverilog -W all -g2005-sv $(INCLUDE) $(DEFINE) 
 
-#run the simulator
+#simulator object 
+a.out: $(VSRC) $(VHDR) $(IMAGES)
+	$(VLOG) $(VSRC)
+
+
+.PHONY: run build clean debug
+
 run: build
 	./a.out $(TEST_LOG)
 
 build: a.out
 
-a.out: $(VSRC) $(VHDR) $(IMAGES)
-	$(VLOG) $(VSRC)
-
 clean: clean-remote
 	@rm -f a.out
 
-.PHONY: run build clean
+debug:
+	@echo $(SUBMODULES)
+	@echo $(MODULES)
+	@echo $(MEM_MODULES)
+	@echo $(AXIMEM_DIR)
+	@echo $(INTERCON_DIR)
+	@echo $(MEM_DIR)
+	@echo $(CPU_DIR)
+	@echo $(CACHE_DIR)
+	@echo $(UART_DIR)
+	@echo $(VHDR)
+	@echo $(VSRC)
+	@echo $(INCLUDE)
+	@echo $(DEFINE)
+	@echo $(MODULE)
