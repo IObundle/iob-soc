@@ -1,6 +1,6 @@
 ######################################################################
 #
-# IOb-SoC-tester Configuration File
+# IOb-SoC Configuration File
 #
 ######################################################################
 
@@ -29,13 +29,16 @@ INIT_MEM ?=1
 
 #PERIPHERAL LIST
 #must match respective submodule or folder name in the submodules directory
+#and CORE_NAME in the core.mk file of the submodule
 #PERIPHERALS:=UART
-PERIPHERALS ?=UART SUT
+PERIPHERALS ?=UART
 
 #RISC-V COMPRESSED INSTRUCTIONS
 USE_COMPRESSED ?=1
 
-REMOTE_ROOT_DIR ?=sandbox/iob-soc-tester
+#ROOT DIR ON REMOTE MACHINES
+REMOTE_ROOT_DIR ?=sandbox/iob-soc
+
 
 #SIMULATION
 #default simulator running locally or remotely

@@ -128,7 +128,7 @@ clean-all-docs:
 clean: 
 	make -C $(PC_DIR) clean
 	make -C $(ASIC_DIR) clean
-#	make -C $(DOC_DIR) clean
+	make -C $(DOC_DIR) clean
 	make clean-all-simulators
 	make clean-all-boards
 	make clean-all-docs
