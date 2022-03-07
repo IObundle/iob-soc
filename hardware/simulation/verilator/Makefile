@@ -41,12 +41,12 @@ VERILATOR_COVERAGE = $(VERILATOR_ROOT)/bin/verilator_coverage
 endif
 
 # Verilator flags
-VERILATOR_FLAGS += -cc --exe --build# Generate C++ in executable form and compile it after
+VERILATOR_FLAGS += -cc --exe --build # Generate C++ in executable form and compile it after
 #VERILATOR_FLAGS += -MMD # Generate makefile dependencies (not shown as complicates the Makefile)
 #VERILATOR_FLAGS += -Os -x-assign 0 # Optimize
-VERILATOR_FLAGS += -Wall # Warn abount lint issues; may not want this on less solid designs
-VERILATOR_FLAGS += -Wno-lint -Wno-WIDTH -Wno-PINMISSING -Wno-CASEINCOMPLETE # Disable the warnings
-#VERILATOR_FLAGS += --bbox-unsup # Disable the warning that the code has an assignment statement with a delayed time in front of it
+VERILATOR_FLAGS += -Wall # Enable all style warnings; may not want this on less solid designs
+VERILATOR_FLAGS += -Wno-lint # Disable all lint warnings
+#VERILATOR_FLAGS += -Wno-fatal # Disable fatal exit on warnings
 VERILATOR_FLAGS += --trace # Make waveforms
 #VERILATOR_FLAGS += --assert # Check SystemVerilog assertions
 #VERILATOR_FLAGS += --coverage # Generate coverage analysis
