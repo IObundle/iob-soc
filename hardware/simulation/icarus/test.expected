@@ -40,6 +40,7 @@ Value of Pi = 3.141500
 
 
 
+WARNING: ../../../submodules/AXI/submodules/V_AXI/rtl/axi_ram.v:176: $readmemh(firmware.hex): Not enough words in the file for the requested range [0:4194303].
 IOb-Bootloader: DDR in use
 IOb-Bootloader: program to run from DDR
 IOb-Bootloader: Restart CPU to run user program...

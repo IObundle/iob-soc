@@ -1,11 +1,11 @@
 ROOT_DIR:=.
 include ./config.mk
 
-.PHONY: pc-emul pc-emul-test pc-emul-clean\
-	sim sim-test sim-clean\
-	fpga-build fpga-run fpga-test fpga-clean\
+.PHONY: sim sim-test sim-clean\
+	pc-emul pc-emul-test pc-emul-clean\
+	fpga-build fpga-build-all fpga-run fpga-test fpga-clean fpga-clean-all\
 	asic-synth asic-sim-post-synth asic-test asic-clean\
-	doc-build doc-test  doc-clean clean\
+	doc-build doc-build-all doc-test doc-clean doc-clean-all\
 	test-pc-emul test-pc-emul-clean\
 	test-sim test-sim-clean\
 	test-fpga test-fpga-clean\
@@ -87,13 +87,23 @@ asic-clean:
 # COMPILE DOCUMENTS
 #
 doc-build:
-	make -C $(DOC_DIR) all
+	make -C $(DOC_DIR) $(DOC).pdf
+
+doc-build-all:
+	make fpga-clean-all
+	make fpga-build-all
+	make doc-build DOC=presentation
+	make doc-build DOC=pb
 
 doc-test:
 	make -C $(DOC_DIR) test
 
 doc-clean:
 	make -C $(DOC_DIR) clean
+
+doc-clean-all:
+	make doc-clean DOC=presentation
+	make doc-clean DOC=pb
 
 
 #
@@ -105,11 +115,11 @@ test-pc-emul: pc-emul-test
 test-pc-emul-clean: pc-emul-clean
 
 test-sim:
-	make sim-test SIMULATOR=xcelium
+#	make sim-test SIMULATOR=xcelium
 	make sim-test SIMULATOR=icarus
 
 test-sim-clean:
-	make sim-clean SIMULATOR=xcelium
+#	make sim-clean SIMULATOR=xcelium
 	make sim-clean SIMULATOR=icarus
 
 test-fpga:
@@ -140,16 +150,11 @@ test-doc-clean:
 
 test: test-clean test-pc-emul test-sim test-fpga test-doc
 
-test-clean: test-pc-emul-clean test-sim-clean test-fpga-clean test-asic-clean test-doc-clean
+test-clean: test-pc-emul-clean test-sim-clean test-fpga-clean test-doc-clean
 
 
 #generic clean
-clean:
-	make pc-emul-clean
-	make sim-clean
-	make fpga-clean
-	make asic-clean
-	make doc-clean
+clean: pc-emul-clean sim-clean fpga-clean doc-clean
 
 clean-all: test-clean
 
