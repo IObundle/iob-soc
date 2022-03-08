@@ -32,6 +32,8 @@ hardware/simulation/*
 !hardware/simulation/*/Makefile
 !hardware/simulation/*/test.expected
 !hardware/simulation/xcelium/run_xmsim.sh
+!hardware/simulation/modelsim/run_vsim.sh
+!hardware/simulation/modelsim/Makefile
 
 #fpga
 hardware/fpga/*/*/*
