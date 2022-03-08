@@ -22,8 +22,6 @@ SIM_SSH_FLAGS=$(MODELSIM_SSH_FLAGS)
 SIM_SYNC_FLAGS=$(MODELSIM_SYNC_FLAGS)
 SIM_PROC=vsimk
 
-#rsync -avz --delete --force --exclude .git -e "ssh -p 2290 -l iobundle" . iobundle@cast2.dyndns-ip.com:sandbox/iob-soc
-
 include ../simulation.mk
 ## SYNTHESIS MACROS
 #DEFINES += +define+IN_FIFO_DEPTH_LOG2=11
