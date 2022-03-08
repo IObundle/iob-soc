@@ -10,12 +10,12 @@ SIM_USER=$(VSIM_USER)
 SIM_PROC=Vsystem
 
 CONSOLE_CMD=../../../software/console/console -L
-ifeq ($(INIT_MEM),0)
-	CONSOLE_CMD+=-f
-endif
 
 include ../simulation.mk
 
+ifeq ($(INIT_MEM),0)
+	CONSOLE_CMD+=-f
+endif
 # remove space between -I and directory for verilator
 INCLUDE_VERI=$(subst -I ,-I,$(INCLUDE))
 
@@ -41,12 +41,12 @@ VERILATOR_COVERAGE = $(VERILATOR_ROOT)/bin/verilator_coverage
 endif
 
 # Verilator flags
-VERILATOR_FLAGS += -cc --exe --build# Generate C++ in executable form and compile it after
+VERILATOR_FLAGS += -cc --exe --build # Generate C++ in executable form and compile it after
 #VERILATOR_FLAGS += -MMD # Generate makefile dependencies (not shown as complicates the Makefile)
 #VERILATOR_FLAGS += -Os -x-assign 0 # Optimize
-VERILATOR_FLAGS += -Wall # Warn abount lint issues; may not want this on less solid designs
-VERILATOR_FLAGS += -Wno-lint -Wno-WIDTH -Wno-PINMISSING -Wno-CASEINCOMPLETE # Disable the warnings
-#VERILATOR_FLAGS += --bbox-unsup # Disable the warning that the code has an assignment statement with a delayed time in front of it
+VERILATOR_FLAGS += -Wall # Enable all style warnings; may not want this on less solid designs
+VERILATOR_FLAGS += -Wno-lint # Disable all lint warnings
+VERILATOR_FLAGS += -Wno-fatal # Disable fatal exit on warnings
 VERILATOR_FLAGS += --trace # Make waveforms
 #VERILATOR_FLAGS += --assert # Check SystemVerilog assertions
 #VERILATOR_FLAGS += --coverage # Generate coverage analysis
@@ -62,6 +62,7 @@ VERILATOR_INPUT = $(INCLUDE_VERI) $(DEFINE) $(VSRC) --top-module system_top syst
 run: $(VSRC) $(VHDR) $(IMAGES)
 	$(VERILATOR) $(VERILATOR_FLAGS) $(VERILATOR_INPUT)
 	-pkill -f console
+	-rm soc2cnsl cnsl2soc
 	$(CONSOLE_CMD) &
 	cp obj_dir/Vsystem_top Vsystem_top
 	./Vsystem_top

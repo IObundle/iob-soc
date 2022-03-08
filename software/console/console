@@ -179,21 +179,24 @@ def init_serial():
     ser.writeTimeout = 2     #timeout for write
 
 
+def init_files():
+    f = open('./cnsl2soc',"w")
+    f.seek(0) # absolute file positioning
+    f.truncate() # to erase all data
+    f.close()
+    f = open('./soc2cnsl',"w")
+    f.seek(0) # absolute file positioning
+    f.truncate() # to erase all data
+    f.close()
+
+
 def init_console():
     global SerialFlag
     global ser
     load_fw = False
     if ('-L' in sys.argv or '--local' in sys.argv):
         SerialFlag = False
-        f = open('./cnsl2soc',"wb")
-        f.write(b'\x01')
-        f.close()
-        try:
-            open('./soc2cnsl',"x")
-        except IOError as e:
-            print('Old soc2cnsl deleted and created new file!')
-            os.remove('./soc2cnsl')
-            open('./soc2cnsl',"x")
+        init_files()
     elif ('-s' in sys.argv):
         if (len(sys.argv)<3):
             usage("PROGNAME: not enough program arguments")
