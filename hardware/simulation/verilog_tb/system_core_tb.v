@@ -5,6 +5,15 @@
 
 //PHEADER
 
+//Useful ASCII codes
+`define STX 2 //start of text
+`define ETX 3 //end of text
+`define EOT 4 //end of transission
+`define ENQ 5 //enquiry
+`define ACK 6 //acklowledge
+`define FTX 7 //transmit file
+`define FRX 8 //receive file
+
 module system_tb;
 
    parameter realtime clk_per = 1s/`FREQ;
@@ -22,7 +31,7 @@ module system_tb;
 
    //tester uart
    reg       uart_valid;
-   reg [`UART_ADDR_W-1:0] uart_addr;
+   reg [`iob_uart_swreg_ADDR_W-1:0] uart_addr;
    reg [`DATA_W-1:0]      uart_wdata;
    reg [3:0]              uart_wstrb;
    wire [`DATA_W-1:0]     uart_rdata;
