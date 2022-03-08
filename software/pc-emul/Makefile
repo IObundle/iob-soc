@@ -15,6 +15,9 @@ DEFINE+=-DPC
 #uart
 include $(UART_DIR)/software/pc-emul/pc.mk
 
+#core_ut
+include $($(CORE_UT)_DIR)/software/pc-emul/pc.mk
+
 #HEADERS
 HDR+=periphs.h
 
