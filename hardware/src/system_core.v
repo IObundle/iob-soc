@@ -1,6 +1,6 @@
 `timescale 1 ns / 1 ps
 `include "system.vh"
-`include "interconnect.vh"
+`include "iob_lib.vh"
 
 //do not remove line below
 //PHEADER
@@ -33,7 +33,7 @@ module system
    input                    m_axi_wready,
 
    //write response
-   //input [0:0]              m_axi_bid,
+   input [0:0]              m_axi_bid,
    input [1:0]              m_axi_bresp,
    input                    m_axi_bvalid,
    output                   m_axi_bready,
@@ -52,7 +52,7 @@ module system
    input                    m_axi_arready,
 
    //read
-   //input [0:0]              m_axi_rid,
+   input [0:0]              m_axi_rid,
    input [`DATA_W-1:0]      m_axi_rdata,
    input [1:0]              m_axi_rresp,
    input                    m_axi_rlast, 
@@ -119,7 +119,8 @@ module system
 `endif
 
    // INSTRUCTION BUS
-   split #(
+   iob_split 
+     #(
 `ifdef RUN_EXTMEM_USE_SRAM
            .N_SLAVES(2),
 `else
@@ -162,7 +163,7 @@ module system
    wire [`REQ_W-1:0]         pbus_req;
    wire [`RESP_W-1:0]        pbus_resp;
 
-   split 
+   iob_split 
      #(
 `ifdef USE_DDR
        .N_SLAVES(3), //E,P,I
@@ -199,7 +200,7 @@ module system
    wire [`N_SLAVES*`REQ_W-1:0] slaves_req;
    wire [`N_SLAVES*`RESP_W-1:0] slaves_resp;
 
-   split 
+   iob_split 
      #(
        .N_SLAVES(`N_SLAVES),
        .P_SLAVES(`P_BIT-1)
@@ -276,7 +277,7 @@ module system
       .axi_wvalid(m_axi_wvalid), 
       .axi_wready(m_axi_wready), 
       //write response
-      //.axi_bid(m_axi_bid), 
+      .axi_bid(m_axi_bid),
       .axi_bresp(m_axi_bresp), 
       .axi_bvalid(m_axi_bvalid), 
       .axi_bready(m_axi_bready), 
@@ -293,7 +294,7 @@ module system
       .axi_arvalid(m_axi_arvalid), 
       .axi_arready(m_axi_arready), 
       //read 
-      //.axi_rid(m_axi_rid), 
+      .axi_rid(m_axi_rid),
       .axi_rdata(m_axi_rdata), 
       .axi_rresp(m_axi_rresp), 
       .axi_rlast(m_axi_rlast), 

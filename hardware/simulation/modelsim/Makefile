@@ -1,89 +1,66 @@
-SIM_SERVER=$(MSIM_SERVER)
-SIM_USER=$(MSIM_USER)
+#  DO NOT REMOVE THIS HEADER
+#  
+#  This file is owned by company IObundle, Lda,
+#  incorporated under the laws of Portugal.
+#  
+#  If you have this file, you must also have a License Agreement
+#  signed with IObundle, Lda.
+#  
+#  Please refer to the License Agreement text for instructions
+#  on how to legally use the contents of this file.
+#  
+#  © 2022 Copyright Iobundle, Lda. All rights reserved
+ROOT_DIR:=../../..
 
-FIRM_DIR = ../../software/firmware
-BOOT_DIR = ../../software/bootloader
-RTL_DIR = ../../rtl
-RISCV_DIR = ../../submodules/iob-rv32
-UART_DIR = ../../submodules/iob-uart
-FIFO_DIR = ../../submodules/fifo
-PYTHON_DIR := ../../software/python
+defmacro:=+define+
+incdir:=+incdir+
 
-BAUD = 1000000
+SIMULATOR=modelsim
+SIM_SERVER=$(MODELSIM_SERVER)
+SIM_USER=$(MODELSIM_USER)
+SIM_SSH_FLAGS=$(MODELSIM_SSH_FLAGS)
+SIM_SYNC_FLAGS=$(MODELSIM_SYNC_FLAGS)
+SIM_PROC=vsim
+
+rsync -avz --delete --force --exclude .git -e "ssh -p 2290 -l iobundle" . iobundle@cast2.dyndns-ip.com:sandbox/iob-soc
+
+include ../simulation.mk
+## SYNTHESIS MACROS
+#DEFINES += +define+IN_FIFO_DEPTH_LOG2=11
+#DEFINES += +define+OUT_FIFO_DEPTH_LOG2=11
+#DEFINES += +define+ANCI_FIFO_DEPTH_LOG2=11
+#DEFINES += +define+MAX_IMAGE_WIDTH_LOG2=13
+##DEFINES += +define+MAX_IMAGE_WIDTH_BYTES_LOG2=13
+#DEFINES += +define+MAX_LZ77_SLIDING_WINDOW_LEN_BYTES_LOG2=15
+#DEFINES += +define+VCD=1
 
 
-MODULE=system
 
-VLIB=vlib
-VCC=vlog
-VCC_VHDL=vcom
-VSIM=vsim
+##IMAGE TO BE DECODED
+#INPUT_IMG=input.png
+##DECODED IMAGE
+#OUTPUT_IMG=output.raw
 
-SV_FLAGS=-sv
+#INCLUDE=+incdir+../src
 
-GEN_DIR=./gen
-MS_LIB=$(GEN_DIR)/modelsim_lib
+#VSRC=$(wildcard ../src/*.v) $(wildcard *.v)
 
-MS_INT_FILE = $(MS_LIB)/int_file
-VCC_LOG_FILE=$(GEN_DIR)/vcc_msgs.txt
-TOPLEVEL=$(MODULE)_tb
 
-SRC := $(RTL_DIR)/src/*.v $(RISCV_DIR)/picorv32.v $(UART_DIR)/rtl/src/*.v $(FIFO_DIR)/*.v
-SV_SRC := $(RTL_DIR)/testbench/system_tb.v
-INCLUDE+=+incdir+../../rtl/include
-INCLUDE+=+incdir+$(UART_DIR)/rtl/include
-DEFINES+=+defmacro+MODELSIM
-#DEFINES+=+defmacro+FUSION_DEBUG
-#DEFINES+=+defmacro+DEBUG
-#DEFINES+=+defmacro+DESPERATE_DEBUG
-DEFINES+=+defmacro+WARNING_MSGS_ON
-DEFINES+=+defmacro+SIMULATION
-DEFINES+=+defmacro+UART_BAUD_RATE=$(BAUD)
+#simulator command
+#VLOG = vlog iverilog -W all -g2005-sv $(INCLUDE) $(DEFINE)
+VLOG = vlog -sv $(INCLUDE) $(DEFINE)
+CFLAGS = -sv $(INCLUDE) $(DEFINE)
+SFLAGS = -voptargs="+acc" -c system_tb
 
-SIM_LOG_FILE=$(GEN_DIR)/msgs.txt
-VSIM_SCRIPT=$(GEN_DIR)/vsim_script
-VSIM_SCRIPT_COMMANDS="vsim $(TOPLEVEL);\
-		      run -all;\
-                      exit"
-VSIM_FLAGS=-c -l $(SIM_LOG_FILE) -lib $(MS_LIB) -do $(VSIM_SCRIPT)
+.PHONY: all clean debug $(MACRO_LIST)
 
-all: $(SIM_LOG_FILE)
+run: $(VSRC) $(VHDR) $(MACRO_LIST)
+	echo $(MODELSIM_SERVER)
+	./run_vsim.sh "$(VSRC)" "$(CFLAGS)" "$(SFLAGS)"
 
-$(SIM_LOG_FILE): $(MS_INT_FILE) $(VSIM_SCRIPT)
-	rm -rf $(SIM_LOG_FILE)
-	$(VSIM) $(VSIM_FLAGS)
-	@!(cat $@ | grep FAILED && rm -rf $^)
-	@(cat $@ | grep PASSED)
+clean: clean-remote
+	@rm -f a.out
 
-$(VSIM_SCRIPT): $(MS_INT_FILE) $(HEX) $(BOOTHEX)
-	echo $(VSIM_SCRIPT_COMMANDS)|sed -e 's/ *; */\n/g' > $@
-
-$(MS_INT_FILE): $(MS_LIB) $(SRC) $(SV_SRC) firmware.hex boot.hex
-	$(VCC) $(INCLUDE) $(DEFINES) -work $< $(SRC) > $(VCC_LOG_FILE)
-	$(VCC) $(SV_FLAGS) $(INCLUDE) $(DEFINES) -work $< $(SV_SRC) >> $(VCC_LOG_FILE)
-	@touch $@
-
-$(MS_LIB):
-	mkdir -p $(GEN_DIR)
-	$(VLIB) $@
-
-#GET FIRMWARE
-firmware.hex:
-	make -C $(FIRM_DIR) BAUD=$(BAUD)
-	cp $(FIRM_DIR)/firmware.hex .
-	$(PYTHON_DIR)/hex_split.py firmware
-
-#GET BOOTROM
-ifeq ($(shell grep USE_ $(RTL_DIR)/include/system.vh | grep -v \/\/),)
-	cp $(FIRM_DIR)/firmware.hex boot.hex
-else 
-	make -C $(BOOT_DIR) BAUD=$(BAUD)
-	cp $(BOOT_DIR)/boot.hex .
-endif
-	$(PYTHON_DIR)/hex_split.py boot
-
-clean:
-	rm -Rf *.vcd .*.swp .*.*.swp *.wlf $(SIM_LOG_FILE) $(MS_LIB) $(VSIM_SCRIPT) work transcript $(MS_INT_FILE) $(VCC_LOG_FILE) $(GEN_DIR)/* $(GEN_DIR) 
-	rm -Rf *.dat *.hex *~ 
-	make -C $(FIRM_DIR) clean
-	make -C $(BOOT_DIR) clean
+debug:
+	@echo $(INCLUDE)
+	@echo $(VSRC)
