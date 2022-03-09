@@ -1,7 +1,7 @@
 ROOT_DIR:=../../..
 include ../asic.mk
 OPENLANE_DESIGNS:=$(OPENLANE_HOME)/designs
-IMAGE_NAME ?= efabless/openlane:2021.07.29_04.49.46
+IMAGE_NAME ?= efabless/openlane:d49a0b6d731715308cae65613dcefdd650682ae8
 SRAM_W = 7
 MKDIR := mkdir -p
 VSRC+=iob_ram_sp_be.v
@@ -16,7 +16,7 @@ ifeq (0,$(shell docker -v 2>/dev/null | grep podman | wc -l))
    DOCKER_UID_OPTIONS = -u $(shell id -u $(USER)):$(shell id -g $(USER))
 endif
 
-DOK_CMD ?= docker run -it --rm -v $(OPENLANE_HOME):/openLANE_flow -v $(PDK_ROOT):$(PDK_ROOT) -e PDK_ROOT=$(PDK_ROOT) $(DOCKER_UID_OPTIONS) $(IMAGE_NAME)
+DOK_CMD ?= docker run --rm -v $(OPENLANE_HOME):/openlane -v $(OPENLANE_DESIGNS):/openlane/install -v $(OPENLANE_HOME)/pdks:/$(OPENLANE_HOME)/pdks -e PDK_ROOT=$(OPENLANE_HOME)/pdks -e STD_CELL_LIBRARY=sky130_fd_sc_hd --user 1000:1000 -e DISPLAY=:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v /home/c/.Xauthority:/.Xauthority --network host -ti $(IMAGE_NAME)
 
 .PHONY: all clean_sram clean_asic clean_debug clean_iob_ram_sp_be.v clean
 
@@ -48,6 +48,8 @@ synth:  clean $(VSRC) $(VHDR) sram temp_src temp_inc $(DEFINE)
 	cp boot.hex temp_src
 	sed -i "s/m4/met4/g" $(wildcard sram/*.lef)
 	sed -i "s/m3/met3/g" $(wildcard sram/*.lef)
+	sed -i "s/m1/met1/g" $(wildcard sram/*.lef)
+	sed -i "s/m2/met2/g" $(wildcard sram/*.lef)
 	sed -i "1i \`include \"iob-soc-defs.vh\"" temp_src/system.v
 	sed -i "4i \`include \"iob-soc-defs.vh\"" temp_src/boot_ctr.v
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/src
