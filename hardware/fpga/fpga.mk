@@ -132,10 +132,12 @@ ifneq ($(BOARD_SERVER),)
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD) $@'
 endif
 
+clean-all: clean-testlog clean
+	@rm -f $(FPGA_OBJ) $(FPGA_LOG)
 
 .PRECIOUS: $(FPGA_OBJ)
 
 .PHONY: all run load build \
 	queue-in queue-out queue-wait queue-out-remote \
 	test test1 test2 test3 \
-	clean-remote clean-testlog
+	clean-remote clean-testlog clean-all
