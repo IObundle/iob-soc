@@ -35,13 +35,18 @@ endif
 
 #axi memory
 include $(AXI_DIR)/hardware/axiram/hardware.mk
+
 #testbench
+ifeq ($(SIMULATOR),verilator)
+VSRC+=system_top.v
+else
 VSRC+=system_tb.v
+endif
 
 #RULES
 all: clean sw build
 ifeq ($(SIM_SERVER),)
-	make run 
+	make run
 else
 	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --delete --force --exclude .git $(SIM_SYNC_FLAGS) $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
@@ -60,9 +65,13 @@ endif
 
 build: $(VSRC) $(VHDR) $(IMAGES)
 
-
+ifeq ($(SIMULATOR),verilator)
+#create top system module
+system_top.v: system_top_tmp.v
+else
 #create testbench
 system_tb.v: system_tb_tmp.v
+endif
 	$(foreach p, $(PERIPHERALS), $(eval HFILES=$(shell echo `ls $($p_DIR)/hardware/include/*.vh | grep -v pio | grep -v inst | grep -v swreg`)) \
 	$(eval HFILES+=$(shell echo `basename $($p_DIR)/hardware/include/*swreg.vh | sed 's/swreg/swreg_def/g'`)) \
 	$(if $(HFILES), $(foreach f, $(HFILES), sed -i '/PHEADER/a `include \"$f\"' $@;),)) # insert header files
@@ -72,6 +81,9 @@ system_tb.v: system_tb_tmp.v
 
 system_tb_tmp.v: $(TB_DIR)/system_core_tb.v
 	cp $< $@; cp $@ system_tb.v
+
+system_top_tmp.v: $(TB_DIR)/system_top_core.v
+	cp $< $@; cp $@ system_top.v
 
 VSRC+=$(foreach p, $(PERIPHERALS), $(shell if test -f $($p_DIR)/hardware/testbench/module_tb.sv; then echo $($p_DIR)/hardware/testbench/module_tb.sv; fi;)) #add test cores to list of sources
 
@@ -102,7 +114,7 @@ test5:
 
 
 #clean target common to all simulators
-clean-remote: hw-clean 
+clean-remote: hw-clean
 	@rm -f system.vcd
 ifneq ($(SIM_SERVER),)
 	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
