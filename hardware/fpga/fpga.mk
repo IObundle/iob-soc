@@ -133,6 +133,7 @@ ifneq ($(BOARD_SERVER),)
 endif
 
 clean-all: clean-testlog clean
+	@rm -f $(FPGA_OBJ) $(FPGA_LOG)
 
 .PRECIOUS: $(FPGA_OBJ)
 

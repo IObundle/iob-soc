@@ -92,7 +92,7 @@ sw-clean:
 	make -C $(CONSOLE_DIR) clean
 
 #clean general hardware files
-hw-clean: gen-clean
+hw-clean: sw-clean gen-clean
 	@rm -f *.v *.hex *.bin $(SRC_DIR)/system.v $(TB_DIR)/system_tb.v *.vh
 
 .PHONY: sw sw-clean hw-clean

@@ -29,7 +29,7 @@ run: firmware.bin build
 build: $(HDR) $(SRC)
 	$(CC) $(CFLAGS) $(INCLUDE) $(SRC) -o console
 
-clean:
-	rm -f *# *~ console firmware.bin
+clean: gen-clean
+	@rm -f console firmware.bin
 
 .PHONY: run build clean
