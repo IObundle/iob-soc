@@ -119,11 +119,11 @@ ifneq ($(SIM_SERVER),)
 	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'rm -f $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR)/test.log'
 endif
 
-
+clean-all: clean-testlog clean
 
 .PRECIOUS: system.vcd test.log
 
 .PHONY: all \
 	kill-remote-sim \
 	test test1 test2 test3 test4 test5 \
-	clean-remote clean-testlog
+	clean-remote clean-testlog clean-all
