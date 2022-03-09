@@ -18,7 +18,7 @@ endif
 
 DOK_CMD ?= docker run --rm -v $(OPENLANE_HOME):/openlane -v $(OPENLANE_DESIGNS):/openlane/install -v $(OPENLANE_HOME)/pdks:/$(OPENLANE_HOME)/pdks -e PDK_ROOT=$(OPENLANE_HOME)/pdks -e STD_CELL_LIBRARY=sky130_fd_sc_hd --user 1000:1000 -e DISPLAY=:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v /home/c/.Xauthority:/.Xauthority --network host -ti $(IMAGE_NAME)
 
-.PHONY: all clean_sram clean_asic clean_debug clean_iob_ram_sp_be.v clean
+.PHONY: all clean_sram clean_asic clean_debug clean
 
 all: sram synth test
 test:
@@ -60,11 +60,12 @@ synth:  clean $(VSRC) $(VHDR) sram temp_src temp_inc $(DEFINE)
 	cp $(wildcard sram/*.gds) $(OPENLANE_DESIGNS)/system/macros/gds
 	cp $(wildcard temp_src/*.v) $(OPENLANE_DESIGNS)/system/src
 	cp $(wildcard temp_inc/*.*) $(OPENLANE_DESIGNS)/system/inc
-	cp $(wildcard temp_src/boot.hex) $(OPENLANE_DESIGNS)/system/src
+	cp temp_src/boot.hex $(OPENLANE_DESIGNS)/system/src
+	cp macro_placement.cfg $(OPENLANE_DESIGNS)/system
 	cp run_interactive.tcl $(OPENLANE_HOME)
 	cp config.tcl $(OPENLANE_DESIGNS)/system
 	cd $(OPENLANE_HOME);
-	$(DOK_CMD) sh -c "./flow.tcl -interactive -file run_interactive.tcl"
+	$(DOK_CMD) sh -c "./flow.tcl -design system -tag soc -overwrite"
 
 debug: $(VSRC) $(VHDR)
 	mkdir debug
@@ -78,22 +79,17 @@ clean_sram:
 	rm -rf temp
 
 clean_asic: clean-remote
-	rm -rf $(OPENLANE_DESIGNS)/system
 	rm -rf iob_ram_sp_be.v
 	rm -rf boot.hex
 	rm -rf temp_src
 	rm -rf temp_inc
-	rm -rf $(OPENLANE_HOME)/run_interactive.tcl
 	rm -rf system.v
 	rm -rf system_tmp.v
 	rm -rf UARTsw_reg_def.vh
 	rm -rf UARTsw_reg_gen.vh
 	rm -rf OpenLane
 
-clean_iob_ram_sp_be.v:
-	rm -rf iob_ram_sp_be.v
-
 clean_debug:
 	rm -rf debug
 
-clean: clean_sram clean_asic clean_debug clean_iob_ram_sp_be.v
+clean: clean_sram clean_asic clean_debug 
