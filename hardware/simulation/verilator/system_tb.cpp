@@ -128,10 +128,11 @@ int main(int argc, char **argv, char **env){
         uartread(UART_RXDATA_ADDR, &cpu_char);
         //printf("Test 1! %x\n", cpu_char);
         //$display("%x", cpu_char);
-        fwrite(&cpu_char, sizeof(char), 1, soc2cnsl_fd);
+        n = fwrite(&cpu_char, sizeof(char), 1, soc2cnsl_fd);
+        while(n != 0)
+          n = fseek(soc2cnsl_fd, 0, 0);
         rxread_reg = 0;
       }
-      n = fseek(soc2cnsl_fd, 0, 0);
     }
     if(txread_reg){
       //$write("Enter TX\n");
