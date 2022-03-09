@@ -115,7 +115,7 @@ task cpu_sendfile;
 
       //receive file name
       cpu_recvstr(name);
-      name_str = name;
+      name_str = string'(name);
       $display("TESTBENCH: sending file %s", name_str);
 
       //open data file
@@ -176,7 +176,7 @@ task cpu_recvfile;
    begin
       //receive file name
       cpu_recvstr(name);
-      name_str = name;
+      name_str = string'(name);
       
       $display("TESTBENCH: receiving file %s", name_str);
 

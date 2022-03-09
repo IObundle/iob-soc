@@ -14,16 +14,13 @@ include ../simulation.mk
 VLOG = iverilog -W all -g2005-sv $(INCLUDE) $(DEFINE) 
 
 #simulator object 
-a.out: $(VSRC) $(VHDR) $(IMAGES)
+a.out: 
 	$(VLOG) $(VSRC)
 
+.PHONY: run clean debug
 
-.PHONY: run build clean debug
-
-run: build
+run: a.out
 	./a.out $(TEST_LOG)
-
-build: a.out
 
 clean: clean-remote
 	@rm -f a.out

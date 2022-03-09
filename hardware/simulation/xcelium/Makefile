@@ -16,7 +16,7 @@ EFLAGS = -errormax 15 -access +wc -status
 SFLAGS = -errormax 15 -status -CMDFILE $(ROOT_DIR)/hardware/testbench
 
 #simulate
-run: $(VSRC) $(VHDR) $(IMAGES)
+run: 
 	echo $(XMSIM_SERVER)
 	./run_xmsim.sh "$(VSRC)" "$(CFLAGS)" "$(EFLAGS)" "$(SFLAGS)"
 	grep -v xcelium xmsim.log | grep -v xmsim | grep -v "\$finish" $(TEST_LOG)
