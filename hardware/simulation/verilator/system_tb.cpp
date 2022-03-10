@@ -78,7 +78,7 @@ int main(int argc, char **argv, char **env){
   tfp = new VerilatedVcdC;
 
   dut->trace(tfp, 1);
-  tfp->open("waves.vcd");
+  tfp->open("system.vcd");
 
   dut->clk = 0;
   dut->reset = 0;
