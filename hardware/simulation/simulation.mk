@@ -97,11 +97,8 @@ ifeq ($(VCD),1)
 endif
 
 
-test: clean-testlog test1 test2 test3 test4 test5 test-log-parse
+test: clean-testlog test1 test2 test3 test4 test5
 	diff -q test.log test.expected
-
-test-log-parse: test.log
-	sed -i '/TESTBENCH:/d' test.log
 
 test1:
 	make all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"

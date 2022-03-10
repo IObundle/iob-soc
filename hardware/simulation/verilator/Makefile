@@ -67,8 +67,8 @@ Vsystem_top:
 
 #run the simulator
 run: Vsystem_top
-	$(CONSOLE_CMD) &
-	./Vsystem_top $(TEST_LOG)
+	$(CONSOLE_CMD) $(TEST_LOG) &
+	./Vsystem_top
 
 clean: clean-remote
 	@rm -f Vsystem_top

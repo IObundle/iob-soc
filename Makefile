@@ -114,10 +114,12 @@ test-pc-emul: pc-emul-test
 test-pc-emul-clean: pc-emul-clean
 
 test-sim:
+	make sim-test SIMULATOR=verilator
 #	make sim-test SIMULATOR=xcelium
 	make sim-test SIMULATOR=icarus
 
 test-sim-clean:
+	make sim-clean SIMULATOR=verilator
 #	make sim-clean SIMULATOR=xcelium
 	make sim-clean SIMULATOR=icarus
 

@@ -25,8 +25,8 @@ a.out:
 .PHONY: run clean debug
 
 run: a.out
-	$(CONSOLE_CMD) &
-	./a.out $(TEST_LOG)
+	$(CONSOLE_CMD) $(TEST_LOG) &
+	./a.out
 
 clean: clean-remote
 	@rm -f a.out

@@ -26,14 +26,12 @@ hardware/src/system.v
 hardware/testbench/system_tb.v
 
 #simulation
-hardware/simulation/*
+hardware/simulation/*/*
 !hardware/simulation/verilog_tb
 !hardware/simulation/simulation.mk
 !hardware/simulation/*/Makefile
-!hardware/simulation/*/test.expected
-!hardware/simulation/xcelium/run_xmsim.sh
-!hardware/simulation/modelsim/run_vsim.sh
-!hardware/simulation/modelsim/Makefile
+!hardware/simulation/*/*.expected
+!hardware/simulation/*/*.sh
 
 #fpga
 hardware/fpga/*/*/*
