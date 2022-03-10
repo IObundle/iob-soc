@@ -46,6 +46,8 @@ endif
 #RULES
 all: clean sw build
 ifeq ($(SIM_SERVER),)
+	if [ "`pgrep -u $(USER) console`" ]; then killall -q -9 console; fi
+	@rm -f soc2cnsl cnsl2soc
 	make run
 else
 	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
@@ -89,7 +91,7 @@ VSRC+=$(foreach p, $(PERIPHERALS), $(shell if test -f $($p_DIR)/hardware/testben
 
 kill-remote-sim:
 	@echo "INFO: Remote simulator $(SIMULATOR) will be killed"
-	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'killall -q -u $(SIM_USER) -9 $(SIM_PROC)'
+	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'killall -q -u $(SIM_USER) -9 $(SIM_PROC); killall -q -u $(SIM_USER) -9 console'
 ifeq ($(VCD),1)
 	scp $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR)/*.vcd $(SIM_DIR)
 endif
@@ -115,6 +117,7 @@ test5:
 
 #clean target common to all simulators
 clean-remote: hw-clean
+	@rm -f soc2cnsl cnsl2soc
 	@rm -f system.vcd
 ifneq ($(SIM_SERVER),)
 	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"

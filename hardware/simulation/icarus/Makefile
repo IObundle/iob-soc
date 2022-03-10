@@ -25,7 +25,6 @@ a.out:
 .PHONY: run clean debug
 
 run: a.out
-	-pkill -f console
 	$(CONSOLE_CMD) &
 	./a.out $(TEST_LOG)
 

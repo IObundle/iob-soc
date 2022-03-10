@@ -3,7 +3,7 @@ SHELL := /bin/bash
 ROOT_DIR:=../../..
 
 defmacro:=-D
-incdir:=-I
+incdir:=-I 
 
 SIM_SERVER=$(VSIM_SERVER)
 SIM_USER=$(VSIM_USER)
@@ -14,15 +14,16 @@ CONSOLE_CMD=../../../software/console/console -L
 include ../simulation.mk
 
 ifeq ($(INIT_MEM),0)
-	CONSOLE_CMD+=-f
+CONSOLE_CMD+=-f
 endif
+
 # remove space between -I and directory for verilator
 INCLUDE_VERI=$(subst -I ,-I,$(INCLUDE))
 
 ######################################################################
 # Check for sanity to avoid later confusion
 ifneq ($(words $(CURDIR)),1)
- $(error Unsupported: GNU Make cannot build in directories containing spaces, build elsewhere: '$(CURDIR)')
+$(error Unsupported: GNU Make cannot build in directories containing spaces, build elsewhere: '$(CURDIR)')
 endif
 
 ######################################################################
@@ -58,20 +59,19 @@ VERILATOR_FLAGS += --error-limit 1000 # Exit if number of errors passes 1000
 # Verilator source files
 VERILATOR_INPUT = $(INCLUDE_VERI) $(DEFINE) $(VSRC) --top-module system_top system_tb.cpp
 ######################################################################
-#run the simulator
-run: $(VSRC) $(VHDR) $(IMAGES)
+
+#simulator object
+Vsystem_top:
 	$(VERILATOR) $(VERILATOR_FLAGS) $(VERILATOR_INPUT)
-	-pkill -f console
-	-rm soc2cnsl cnsl2soc
-	$(CONSOLE_CMD) &
 	cp obj_dir/Vsystem_top Vsystem_top
-	./Vsystem_top
 
+#run the simulator
+run: Vsystem_top
+	$(CONSOLE_CMD) &
+	./Vsystem_top $(TEST_LOG)
 
-clean: hw-clean
-	@echo "clean\n"
-	-rm Vsystem_top
-	-rm -r obj_dir
-	-rm *.v *.hex *.vcd
+clean: clean-remote
+	@rm -f Vsystem_top
+	@rm -rf obj_dir
 
 .PHONY: run clean
