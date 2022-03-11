@@ -11,6 +11,12 @@ DEFINE+=$(defmacro)FREQ=$(FREQ)
 #ddr controller address width
 DDR_ADDR_W=$(DCACHE_ADDR_W)
 
+CONSOLE_CMD=$(ROOT_DIR)/software/console/console -L
+
+ifeq ($(INIT_MEM),0)
+CONSOLE_CMD+=-f
+endif
+
 #produce waveform dump
 VCD ?=0
 
@@ -48,6 +54,8 @@ all: clean sw build
 ifeq ($(SIM_SERVER),)
 	if [ "`pgrep -u $(USER) console`" ]; then killall -q -9 console; fi
 	@rm -f soc2cnsl cnsl2soc
+	make $(SIM_PROC)
+	$(CONSOLE_CMD) $(TEST_LOG) &
 	make run
 else
 	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
@@ -97,11 +105,8 @@ ifeq ($(VCD),1)
 endif
 
 
-test: clean-testlog test1 test2 test3 test4 test5 test-log-parse
+test: clean-testlog test1 test2 test3 test4 test5
 	diff -q test.log test.expected
-
-test-log-parse: test.log
-	sed -i '/TESTBENCH:/d' test.log
 
 test1:
 	make all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"

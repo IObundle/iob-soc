@@ -32,7 +32,9 @@ void Timer(unsigned int half_cycles){
   for(int i = 0; i<half_cycles; i++){
     dut->clk = !(dut->clk);
     dut->eval();
+#ifdef VCD
     tfp->dump(main_time);
+#endif
     main_time += CLK_PERIOD/2;
   }
 }
@@ -75,22 +77,29 @@ int main(int argc, char **argv, char **env){
   Verilated::commandArgs(argc, argv);
   Verilated::traceEverOn(true);
   dut = new Vsystem_top;
+
+#ifdef VCD
   tfp = new VerilatedVcdC;
 
   dut->trace(tfp, 1);
   tfp->open("system.vcd");
+#endif
 
   dut->clk = 0;
   dut->reset = 0;
   dut->eval();
+#ifdef VCD
   tfp->dump(main_time);
+#endif
 
   // Reset sequence
   for(int i = 0; i<5; i++){
     dut->clk = !(dut->clk);
     if(i==2 || i==4) dut->reset = !(dut->reset);
     dut->eval();
+#ifdef VCD
     tfp->dump(main_time);
+#endif
     main_time += CLK_PERIOD/2;
   }
   dut->uart_valid = 0;
@@ -103,11 +112,8 @@ int main(int argc, char **argv, char **env){
   char rxread_reg = 0, txread_reg = 0;
   int n = 0;
 
-  while ((soc2cnsl_fd = fopen("./soc2cnsl", "rb+")) == NULL){
-    //printf("Could not open \"soc2cnsl\"\n");
-  }
+  while ((soc2cnsl_fd = fopen("./soc2cnsl", "rb+")) == NULL);
 
-  printf("TESTBENCH: connecting\n");
   while(1){
     if(dut->trap > 0){
         printf("\nTESTBENCH: force cpu trap exit\n");
@@ -118,7 +124,6 @@ int main(int argc, char **argv, char **env){
         break;
     }
     while(!rxread_reg && !txread_reg){
-      //$write("Loop %d: RX = %x; TX = %x\n", i, rxread_reg[0], txread_reg[0]);
       uartread(UART_RXREADY_ADDR, &rxread_reg);
       uartread(UART_TXREADY_ADDR, &txread_reg);
     }
@@ -126,21 +131,17 @@ int main(int argc, char **argv, char **env){
       n = fread(&cpu_char, sizeof(char), 1, soc2cnsl_fd);
       if(n == 0){
         uartread(UART_RXDATA_ADDR, &cpu_char);
-        //printf("Test 1! %x\n", cpu_char);
-        //$display("%x", cpu_char);
-        fwrite(&cpu_char, sizeof(char), 1, soc2cnsl_fd);
+        n = fwrite(&cpu_char, sizeof(char), 1, soc2cnsl_fd);
+        while(n != 0)
+          n = fseek(soc2cnsl_fd, 0, 0);
         rxread_reg = 0;
       }
-      n = fseek(soc2cnsl_fd, 0, 0);
     }
     if(txread_reg){
-      //$write("Enter TX\n");
       if ((cnsl2soc_fd = fopen("./cnsl2soc", "rb")) == NULL){
-        //printf("Could not open file cnsl2soc!\n");
         break;
       }
       n = fread(&cpu_char, sizeof(char), 1, cnsl2soc_fd);
-      //printf("Test 2! %x\n", cpu_char);
       if (n > 0){
         uartwrite(UART_TXDATA_ADDR, cpu_char);
         fclose(cnsl2soc_fd);
@@ -151,10 +152,11 @@ int main(int argc, char **argv, char **env){
     }
   }
   fclose(soc2cnsl_fd);
-  printf("TESTBENCH: finished\n\n");
 
   dut->final();
+#ifdef VCD
   tfp->close();
+#endif
   delete dut;
   dut = NULL;
   exit(0);

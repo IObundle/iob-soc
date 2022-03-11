@@ -7,15 +7,9 @@ incdir:=-I
 
 SIM_SERVER=$(VSIM_SERVER)
 SIM_USER=$(VSIM_USER)
-SIM_PROC=Vsystem
-
-CONSOLE_CMD=../../../software/console/console -L
+SIM_PROC=Vsystem_top
 
 include ../simulation.mk
-
-ifeq ($(INIT_MEM),0)
-CONSOLE_CMD+=-f
-endif
 
 # remove space between -I and directory for verilator
 INCLUDE_VERI=$(subst -I ,-I,$(INCLUDE))
@@ -61,17 +55,16 @@ VERILATOR_INPUT = $(INCLUDE_VERI) $(DEFINE) $(VSRC) --top-module system_top syst
 ######################################################################
 
 #simulator object
-Vsystem_top:
+$(SIM_PROC):
 	$(VERILATOR) $(VERILATOR_FLAGS) $(VERILATOR_INPUT)
-	cp obj_dir/Vsystem_top Vsystem_top
+	cp obj_dir/$@ .
 
 #run the simulator
-run: Vsystem_top
-	$(CONSOLE_CMD) &
-	./Vsystem_top $(TEST_LOG)
+run:
+	./$(SIM_PROC)
 
 clean: clean-remote
-	@rm -f Vsystem_top
+	@rm -f $(SIM_PROC)
 	@rm -rf obj_dir
 
 .PHONY: run clean
