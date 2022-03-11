@@ -25,9 +25,8 @@ sim:
 sim-test:
 	make -C $(SIM_DIR) test
 
-
 sim-clean:
-	make -C $(SIM_DIR) clean clean-testlog
+	make -C $(SIM_DIR) clean-all
 
 #
 # EMULATE ON PC
@@ -60,7 +59,7 @@ fpga-test:
 	make -C $(BOARD_DIR) test
 
 fpga-clean:
-	make -C $(BOARD_DIR) clean clean-testlog
+	make -C $(BOARD_DIR) clean-all
 
 fpga-clean-all:
 	make fpga-clean BOARD=CYCLONEV-GT-DK
@@ -81,7 +80,7 @@ asic-test:
 	make -C $(ASIC_DIR) test
 
 asic-clean:
-	make -C $(ASIC_DIR) clean clean-testlog
+	make -C $(ASIC_DIR) clean-all
 
 #
 # COMPILE DOCUMENTS
@@ -115,10 +114,12 @@ test-pc-emul: pc-emul-test
 test-pc-emul-clean: pc-emul-clean
 
 test-sim:
+	make sim-test SIMULATOR=verilator
 #	make sim-test SIMULATOR=xcelium
 	make sim-test SIMULATOR=icarus
 
 test-sim-clean:
+	make sim-clean SIMULATOR=verilator
 #	make sim-clean SIMULATOR=xcelium
 	make sim-clean SIMULATOR=icarus
 

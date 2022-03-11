@@ -5,112 +5,35 @@
 
 //PHEADER
 
-module system_tb;
+module system_top (
+   input                    clk,
+   input                    reset,
+   output                   trap,
+   //tester uart
+   input                    uart_valid,
+   input [`iob_uart_swreg_ADDR_W-1:0] uart_addr,
+   input [`DATA_W-1:0]      uart_wdata,
+   input [3:0]              uart_wstrb,
+   output [`DATA_W-1:0]     uart_rdata,
+   output                   uart_ready
+   );
 
-  parameter realtime clk_per = 1s/`FREQ;
+   
+   //PWIRES
 
-  //clock
-  reg clk = 1;
-  always #(clk_per/2) clk = ~clk;
-
-  //reset
-  reg reset = 1;
-
-  //received by getchar
-  reg  rxread_reg;
-  reg  txread_reg;
-  reg [7:0]  cpu_char;
-  integer soc2cnsl_fd = 0, cnsl2soc_fd = 0;
-
-
-  //tester uart
-  reg       uart_valid;
-  reg [`iob_uart_swreg_ADDR_W-1:0] uart_addr;
-  reg [`DATA_W-1:0]      uart_wdata;
-  reg [3:0]              uart_wstrb;
-  wire [`DATA_W-1:0]     uart_rdata;
-  wire                   uart_ready;
-
-  //iterator
-  integer                i = 0, n = 0;
-  integer                error, n_byte = 0;
-
-  //got enquiry (connect request)
-  reg                    gotENQ;
-
-  //PWIRES
-
-
-  /////////////////////////////////////////////
-  // TEST PROCEDURE
-  //
-  initial begin
+   
+   /////////////////////////////////////////////
+   // TEST PROCEDURE
+   //
+   initial begin
 
 `ifdef VCD
-    $dumpfile("system.vcd");
-    $dumpvars();
+      $dumpfile("system.vcd");
+      $dumpvars();
 `endif
 
-    //init cpu bus signals
-    uart_valid = 0;
-    uart_wstrb = 0;
-
-    // deassert rst
-    repeat (100) @(posedge clk) #1;
-    reset = 0;
-
-    //wait an arbitray (10) number of cycles
-    repeat (10) @(posedge clk) #1;
-
-    // configure uart
-    cpu_inituart();
-
-
-    gotENQ = 0;
-    cpu_char = 0;
-    rxread_reg = 0;
-    txread_reg = 0;
-
-
-    soc2cnsl_fd = $fopen("soc2cnsl", "r+");
-    if (!soc2cnsl_fd) begin
-      $display("Could not open \"soc2cnsl\"");
-      $finish;
-    end
-
-    while(1) begin
-      while(!rxread_reg && !txread_reg) begin
-        cpu_uartread(`UART_RXREADY_ADDR, rxread_reg);
-        cpu_uartread(`UART_TXREADY_ADDR, txread_reg);
-      end
-      if(rxread_reg) begin
-        n = $fgets(cpu_char, soc2cnsl_fd);
-        if(n == 0) begin
-          cpu_uartread(`UART_RXDATA_ADDR, cpu_char);
-          $fwriteh(soc2cnsl_fd, "%c", cpu_char);
-          rxread_reg = 0;
-        end
-        n = $fseek(soc2cnsl_fd, 0, 0);
-      end
-      if(txread_reg) begin
-        cnsl2soc_fd = $fopen("cnsl2soc", "r");
-        if (!cnsl2soc_fd) begin
-          $fclose(soc2cnsl_fd);
-          $finish;
-        end
-        n = $fscanf(cnsl2soc_fd, "%c", cpu_char);
-        if (n > 0) begin
-          cpu_uartwrite(`UART_TXDATA_ADDR, cpu_char);
-          $fclose(cnsl2soc_fd);
-          cnsl2soc_fd = $fopen("./cnsl2soc", "w");
-        end
-        $fclose(cnsl2soc_fd);
-        txread_reg = 0;
-      end
-    end
-  end
-
-
+   end
+   
    //
    // INSTANTIATE COMPONENTS
    //
@@ -160,10 +83,7 @@ module system_tb;
    wire                    ddr_rvalid;
    wire                    ddr_rready;
 `endif
-
-   //cpu trap signal
-   wire                    trap;
-
+   
    //
    // UNIT UNDER TEST
    //
@@ -182,20 +102,20 @@ module system_tb;
 	       .m_axi_awqos   (ddr_awqos),
 	       .m_axi_awvalid (ddr_awvalid),
 	       .m_axi_awready (ddr_awready),
-
-	       //write
+               
+	       //write  
 	       .m_axi_wdata   (ddr_wdata),
 	       .m_axi_wstrb   (ddr_wstrb),
 	       .m_axi_wlast   (ddr_wlast),
 	       .m_axi_wvalid  (ddr_wvalid),
 	       .m_axi_wready  (ddr_wready),
-
+               
 	       //write response
 	       .m_axi_bid     (ddr_bid[0]),
 	       .m_axi_bresp   (ddr_bresp),
 	       .m_axi_bvalid  (ddr_bvalid),
 	       .m_axi_bready  (ddr_bready),
-
+               
 	       //address read
 	       .m_axi_arid    (ddr_arid),
 	       .m_axi_araddr  (ddr_araddr),
@@ -208,15 +128,15 @@ module system_tb;
 	       .m_axi_arqos   (ddr_arqos),
 	       .m_axi_arvalid (ddr_arvalid),
 	       .m_axi_arready (ddr_arready),
-
-	       //read
+               
+	       //read   
 	       .m_axi_rid     (ddr_rid[0]),
 	       .m_axi_rdata   (ddr_rdata),
 	       .m_axi_rresp   (ddr_rresp),
 	       .m_axi_rlast   (ddr_rlast),
 	       .m_axi_rvalid  (ddr_rvalid),
-	       .m_axi_rready  (ddr_rready),
-`endif
+	       .m_axi_rready  (ddr_rready),	
+`endif               
 	       .clk           (clk),
 	       .reset         (reset),
 	       .trap          (trap)
@@ -225,7 +145,7 @@ module system_tb;
 
    //instantiate the axi memory
 `ifdef USE_DDR
-   axi_ram
+   axi_ram 
      #(
  `ifdef DDR_INIT
        .FILE("firmware.hex"),
@@ -248,7 +168,7 @@ module system_tb;
      		 .s_axi_awvalid  (ddr_awvalid),
 		 .s_axi_awready  (ddr_awready),
       
-		 //write
+		 //write  
 		 .s_axi_wvalid   (ddr_wvalid),
 		 .s_axi_wready   (ddr_wready),
 		 .s_axi_wdata    (ddr_wdata),
@@ -264,33 +184,31 @@ module system_tb;
 		 //address read
 		 .s_axi_arid     ({8{ddr_arid}}),
 		 .s_axi_araddr   (ddr_araddr[`DDR_ADDR_W-1:0]),
-		 .s_axi_arlen    (ddr_arlen),
-		 .s_axi_arsize   (ddr_arsize),
+		 .s_axi_arlen    (ddr_arlen), 
+		 .s_axi_arsize   (ddr_arsize),    
                  .s_axi_arburst  (ddr_arburst),
                  .s_axi_arlock   (ddr_arlock),
                  .s_axi_arcache  (ddr_arcache),
                  .s_axi_arprot   (ddr_arprot),
 		 .s_axi_arvalid  (ddr_arvalid),
 		 .s_axi_arready  (ddr_arready),
-
-		 //read
+      
+		 //read   
 		 .s_axi_rready   (ddr_rready),
 		 .s_axi_rid      (ddr_rid),
 		 .s_axi_rdata    (ddr_rdata),
 		 .s_axi_rresp    (ddr_rresp),
                  .s_axi_rlast    (ddr_rlast),
 		 .s_axi_rvalid   (ddr_rvalid)
-                 );
+                 );   
 `endif
 
-
-`include "cpu_tasks.v"
-
+   
    //finish simulation on trap
-   always @(posedge trap) begin
+/* always @(posedge trap) begin
       #10 $display("Found CPU trap condition");
       $finish;
-   end
+   end*/
 
    //sram monitor - use for debugging programs
    /*
@@ -312,5 +230,6 @@ module system_tb;
          //$finish;
       end
     */
-
+   
+   
 endmodule

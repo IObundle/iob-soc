@@ -75,9 +75,11 @@ ifneq ($(ASIC_SERVER),)
 	ssh $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE); make $@'
 endif
 
+clean-all: clean-testlog clean
+
 .PHONY: all \
 	mems synth \
 	sp-rom dp-ram 2p-ram sp-ram \
 	sim-post-synth \
 	test test1 test2 test3 \
-	clean-remote clean-testlog
+	clean-remote clean-testlog clean-all
