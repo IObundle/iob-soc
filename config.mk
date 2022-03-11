@@ -123,7 +123,6 @@ DEFINE+=$(defmacro)FIRM_ADDR_W=$(FIRM_ADDR_W)
 DEFINE+=$(defmacro)DCACHE_ADDR_W=$(DCACHE_ADDR_W)
 
 DEFINE+=$(defmacro)N_SLAVES=$(shell python3 $(SW_DIR)/submodule_utils.py get_n_slaves $(SUT_DIR))
-#DEFINE+=$(defmacro)TESTER_N_SLAVES=$(TESTER_N_SLAVES)
 
 #address selection bits
 E:=31 #extra memory bit
@@ -140,28 +139,6 @@ DEFINE+=$(defmacro)P=$P
 DEFINE+=$(defmacro)B=$B
 
 DEFINE+=$(shell python3 $(SW_DIR)/submodule_utils.py get_defines $(SUT_DIR) $(defmacro)) 
-#TODO: Change everything below for python
-#N_SLAVES:=0
-#create list of peripheral instances based on PERIPHERALS list
-#$(foreach d, $(sort $(PERIPHERALS)), $(eval TMP:=0) $(foreach p, $(filter $d,$(PERIPHERALS)), $(eval PERIPH_INSTANCES+=$d$(TMP)) $(eval $d$(TMP)_CORENAME=$d) $(eval TMP:=$(shell expr $(TMP) \+ 1)) ))
-#assign sequential numbers to peripheral instance names used as variables
-#$(foreach p, $(PERIPH_INSTANCES), $(eval $p=$(N_SLAVES)) $(eval N_SLAVES:=$(shell expr $(N_SLAVES) \+ 1)))
-#$(foreach p, $(PERIPH_INSTANCES), $(eval DEFINE+=$(defmacro)$p=$($p)))
-
-#ifneq ($(TESTER_ENABLED),)
-#TESTER_N_SLAVES:=0
-##create list of peripheral instances for Tester based on TESTER_PERIPHERALS list
-#$(foreach d, $(sort $(TESTER_PERIPHERALS)), $(eval TMP:=0) $(foreach p, $(filter $d,$(TESTER_PERIPHERALS)), $(eval TESTER_PERIPH_INSTANCES+=$d$(TMP)) $(eval $d$(TMP)_TESTER_CORENAME=$d) $(eval TMP:=$(shell expr $(TMP) \+ 1)) ))
-##assign sequential numbers to peripheral instance names used as variables
-#$(foreach p, $(TESTER_PERIPH_INSTANCES), $(eval $p_TESTER=$(TESTER_N_SLAVES)) $(eval TESTER_N_SLAVES:=$(shell expr $(TESTER_N_SLAVES) \+ 1)))
-#$(foreach p, $(TESTER_PERIPH_INSTANCES), $(eval DEFINE+=$(defmacro)$p_TESTER=$($p_TESTER)))
-
-##Add one more slave for REGFILEIF that communicates with SUT and Tester
-#$(eval N_SLAVES:=$(shell expr $(N_SLAVES) \+ 1))
-#$(eval TESTER_N_SLAVES:=$(shell expr $(TESTER_N_SLAVES) \+ 1))
-#DEFINE+=$(defmacro)REGFILEIF_SUT=$(shell expr $(N_SLAVES) \- 1)
-#DEFINE+=$(defmacro)REGFILEIF_TESTER=$(shell expr $(TESTER_N_SLAVES) \- 1)
-#endif
 
 #RULES
 gen-clean:

@@ -7,7 +7,6 @@
 #include "tester_periphs.h"
 #include "iob-uart.h"
 #include "printf.h"
-#include "iob-regfileif.h"
 
 int main()
 {
@@ -15,13 +14,12 @@ int main()
   int i = 0;
 
   //Init uart0
-  uart_init(UART0_TESTER_BASE,FREQ/BAUD);   
-  regfileif_setbaseaddr(REGFILEIF_TESTER_BASE);   
+  uart_init(UART0_BASE,FREQ/BAUD);   
 
   uart_puts("\n\nHello from tester!\n\n\n");
 
   //Init and switch to uart1 (connected to the SUT)
-  uart_init(UART1_TESTER_BASE,FREQ/BAUD);   
+  uart_init(UART1_BASE,FREQ/BAUD);   
 
   //Wait for ENQ signal from SUT
   while(uart_getc()!=ENQ);
@@ -39,7 +37,7 @@ int main()
   uart_finish();
   
   //Switch back to UART0
-  uart_setbaseaddr(UART0_TESTER_BASE);
+  uart_setbaseaddr(UART0_BASE);
   
   //Send messages previously stored from SUT
   uart_puts("#### Messages received on Tester by UART from SUT: ####\n\n");
@@ -47,13 +45,6 @@ int main()
     uart_putc(msgBuffer[i]);
   }
   uart_puts("\n#### End of messages received on Tester by UART from SUT ####\n\n");
-
-  //Read data from REGFILEIF (was written by the SUT)
-  uart_puts("REGFILEIF contents read by the Tester (contents written by the SUT):\n");
-  printf("%d \n", regfileif_readreg(0));
-  printf("%d \n", regfileif_readreg(1));
-  printf("%d \n", regfileif_readreg(2));
-  printf("%d \n", regfileif_readreg(3));
 
   //End UART0 connection
   uart_finish();

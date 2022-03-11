@@ -228,20 +228,22 @@ module tester_tb;
 		#(
 		.DATA_WIDTH (`DATA_W),
 		.ADDR_WIDTH (`DDR_ADDR_W),
-		.S_COUNT = 2,
-		.M_COUNT = 1,
+		.M_ADDR_WIDTH (32'd`DDR_ADDR_W),
+		.S_COUNT (2),
+		.M_COUNT (1)
 		)
 		system_axi_interconnect(
 			.clk            (clk),
 			.rst            (reset),
 
-			.s_axi_awid     ({8{ddr_awid[1]},8{ddr_awid[0]}}),
-			.s_axi_awaddr   (ddr_awaddr[1:0][`DDR_ADDR_W-1:0]),
+			.s_axi_awid     ({{8{ddr_awid[1]}},{8{ddr_awid[0]}}}),
+			.s_axi_awaddr   (ddr_awaddr[1:0]),
 			.s_axi_awlen    (ddr_awlen[1:0]),
 			.s_axi_awsize   (ddr_awsize[1:0]),
 			.s_axi_awburst  (ddr_awburst[1:0]),
 			.s_axi_awlock   (ddr_awlock[1:0]),
 			.s_axi_awprot   (ddr_awprot[1:0]),
+			.s_axi_awqos    (ddr_awqos[1:0]),
 			.s_axi_awcache  (ddr_awcache[1:0]),
 			.s_axi_awvalid  (ddr_awvalid[1:0]),
 			.s_axi_awready  (ddr_awready[1:0]),
@@ -260,14 +262,15 @@ module tester_tb;
 			.s_axi_bvalid   (ddr_bvalid[1:0]),
 
 			//address read
-			.s_axi_arid     ({8{ddr_arid[1]},8{ddr_arid[0]}}),
-			.s_axi_araddr   (ddr_araddr[1:0][`DDR_ADDR_W-1:0]),
+			.s_axi_arid     ({{8{ddr_arid[1]}},{8{ddr_arid[0]}}}),
+			.s_axi_araddr   (ddr_araddr[1:0]),
 			.s_axi_arlen    (ddr_arlen[1:0]), 
 			.s_axi_arsize   (ddr_arsize[1:0]),    
 			.s_axi_arburst  (ddr_arburst[1:0]),
 			.s_axi_arlock   (ddr_arlock[1:0]),
 			.s_axi_arcache  (ddr_arcache[1:0]),
 			.s_axi_arprot   (ddr_arprot[1:0]),
+			.s_axi_arqos    (ddr_arqos[1:0]),
 			.s_axi_arvalid  (ddr_arvalid[1:0]),
 			.s_axi_arready  (ddr_arready[1:0]),
 
@@ -277,15 +280,16 @@ module tester_tb;
 			.s_axi_rdata    (ddr_rdata[1:0]),
 			.s_axi_rresp    (ddr_rresp[1:0]),
 			.s_axi_rlast    (ddr_rlast[1:0]),
-			.s_axi_rvalid   (ddr_rvalid[1:0])
+			.s_axi_rvalid   (ddr_rvalid[1:0]),
 
 			.m_axi_awid     (memory_ddr_awid),
-			.m_axi_awaddr   (ddr_awaddr[2][`DDR_ADDR_W-1:0]),
+			.m_axi_awaddr   (ddr_awaddr[2]),
 			.m_axi_awlen    (ddr_awlen[2]),
 			.m_axi_awsize   (ddr_awsize[2]),
 			.m_axi_awburst  (ddr_awburst[2]),
 			.m_axi_awlock   (ddr_awlock[2]),
 			.m_axi_awprot   (ddr_awprot[2]),
+			.m_axi_awqos    (ddr_awqos[2]),
 			.m_axi_awcache  (ddr_awcache[2]),
 			.m_axi_awvalid  (ddr_awvalid[2]),
 			.m_axi_awready  (ddr_awready[2]),
@@ -305,13 +309,14 @@ module tester_tb;
 
 			//address read
 			.m_axi_arid     (memory_ddr_arid),
-			.m_axi_araddr   (ddr_araddr[2][`DDR_ADDR_W-1:0]),
+			.m_axi_araddr   (ddr_araddr[2]),
 			.m_axi_arlen    (ddr_arlen[2]), 
 			.m_axi_arsize   (ddr_arsize[2]),    
 			.m_axi_arburst  (ddr_arburst[2]),
 			.m_axi_arlock   (ddr_arlock[2]),
 			.m_axi_arcache  (ddr_arcache[2]),
 			.m_axi_arprot   (ddr_arprot[2]),
+			.m_axi_arqos    (ddr_arqos[2]),
 			.m_axi_arvalid  (ddr_arvalid[2]),
 			.m_axi_arready  (ddr_arready[2]),
 
@@ -321,7 +326,14 @@ module tester_tb;
 			.m_axi_rdata    (ddr_rdata[2]),
 			.m_axi_rresp    (ddr_rresp[2]),
 			.m_axi_rlast    (ddr_rlast[2]),
-			.m_axi_rvalid   (ddr_rvalid[2])
+			.m_axi_rvalid   (ddr_rvalid[2]),
+
+			//optional signals
+			.s_axi_awuser   (2'b00),
+			.s_axi_wuser    (2'b00),
+			.s_axi_aruser   (2'b00),
+			.m_axi_buser    (1'b0),
+			.m_axi_ruser    (1'b0)
 		);
 
 
@@ -330,7 +342,7 @@ module tester_tb;
 	axi_ram 
 		#(
 		`ifdef DDR_INIT
-		.FILE("init_ram_contents.hex"), //This file contains firmware for both systems
+		.FILE("init_ddr_contents.hex"), //This file contains firmware for both systems
 		`endif
 		.DATA_WIDTH (`DATA_W),
 		.ADDR_WIDTH (`DDR_ADDR_W)
@@ -341,7 +353,7 @@ module tester_tb;
 			.rst            (reset),
 
 			.s_axi_awid     (memory_ddr_awid),
-			.s_axi_awaddr   (ddr_awaddr[2][`DDR_ADDR_W-1:0]),
+			.s_axi_awaddr   (ddr_awaddr[2]),
 			.s_axi_awlen    (ddr_awlen[2]),
 			.s_axi_awsize   (ddr_awsize[2]),
 			.s_axi_awburst  (ddr_awburst[2]),
@@ -366,7 +378,7 @@ module tester_tb;
 
 			//address read
 			.s_axi_arid     (memory_ddr_arid),
-			.s_axi_araddr   (ddr_araddr[2][`DDR_ADDR_W-1:0]),
+			.s_axi_araddr   (ddr_araddr[2]),
 			.s_axi_arlen    (ddr_arlen[2]), 
 			.s_axi_arsize   (ddr_arsize[2]),    
 			.s_axi_arburst  (ddr_arburst[2]),

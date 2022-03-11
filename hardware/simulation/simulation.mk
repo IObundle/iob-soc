@@ -34,12 +34,14 @@ VSRC+=$(CACHE_DIR)/submodules/AXIMEM/rtl/axi_ram.v
 #testbench
 VSRC+=system_tb.v
 
+ALL_DEPENDENCIES=clean sw
+
 ifeq ($(TESTER_ENABLED),1)
 include $(TESTER_DIR)/simulation.mk
 endif
 
 #RULES
-all: clean sw
+all: $(ALL_DEPENDENCIES)
 ifeq ($(SIM_SERVER),)
 	make run 
 else

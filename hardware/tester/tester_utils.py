@@ -260,12 +260,27 @@ def create_tester():
     tester_contents = tester_contents[:start_index] + sut_instance_template.splitlines(True) + tester_contents[start_index:] 
 
     # Invert tester memory access bit
-    #TODO: Check if this is correct
-    tester_contents = [re.sub('.axi_awaddr\(m_axi_awaddr\[1\]\),', '.axi_awaddr({~m_axi_awaddr[1][`DDR_ADDR_W-1],m_axi_awaddr[1][`DDR_ADDR_W-2:0]}),', i) for i in tester_contents] 
-    tester_contents = [re.sub('.axi_araddr\(m_axi_araddr\[1\]\),', '.axi_araddr({~m_axi_araddr[1][`DDR_ADDR_W-1],m_axi_araddr[1][`DDR_ADDR_W-2:0]}),', i) for i in tester_contents] 
+    start_index = find_idx(tester_contents, "ext_mem ")-1
+    tester_contents.insert(start_index, "   assign m_axi_awaddr[1][`DDR_ADDR_W-1] = ~axi_invert_w_bit;\n")
+    tester_contents.insert(start_index, "   assign m_axi_awaddr[1][`DDR_ADDR_W-1] = ~axi_invert_r_bit;\n")
+    tester_contents.insert(start_index, "   wire axi_invert_w_bit;\n")
+    tester_contents.insert(start_index, "   wire axi_invert_r_bit;\n")
+    tester_contents = [re.sub('.axi_awaddr\(m_axi_awaddr\[1\]\),', '.axi_awaddr({axi_invert_w_bit,m_axi_awaddr[1][`DDR_ADDR_W-2:0]}),', i) for i in tester_contents] 
+    tester_contents = [re.sub('.axi_araddr\(m_axi_araddr\[1\]\),', '.axi_araddr({axi_invert_r_bit,m_axi_araddr[1][`DDR_ADDR_W-2:0]}),', i) for i in tester_contents] 
 
     # Replace N_SLAVES by TESTER_N_SLAVES
     tester_contents = [re.sub('`N_SLAVES', '`TESTER_N_SLAVES', i) for i in tester_contents] 
+
+    #Insert parameters on int_mem to load with tester firmware
+    int_mem_template = """\
+    int_mem
+         #(.FILE("tester_firmware"),
+           .BOOT_FILE("tester_boot"))
+        int_mem0
+    """
+    start_index = find_idx(tester_contents, "int_mem ")-1
+    tester_contents.pop(start_index)
+    tester_contents = tester_contents[:start_index] + int_mem_template.splitlines(True) + tester_contents[start_index:]
 
     # Insert Tester peripherals
     for corename in tester_instances_amount:
@@ -335,13 +350,9 @@ def create_tester():
                             tester_contents.insert(find_idx(tester_contents, "PWIRES"), '    wire {};\n'.format(pwires[mapped_signals[1][corename][i][signalModified]]))
                             # Mark this signal as been inserted
                             pwires_inserted[mapped_signals[1][corename][i][signalModified]] = True
-                        # Insert TESTER PORT #TODO: REMOVE THIS
-                        #tester_contents.insert(find_idx(tester_contents, "TESTERPORTS"), '        .{}({}),\n'.format(re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal),pwires[mapped_signals[1][corename][i][signalModified]]))
                     else: # Mapped to external interface
                         # Insert PIO
                         tester_contents.insert(find_idx(tester_contents, "PIO"), '    {} tester_{},\n'.format(peripheral_signals[corename][signal],re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
-                        # Insert TESTER PORT #TODO: REMOVE THIS
-                        #tester_contents.insert(find_idx(tester_contents, "TESTERPORTS"), '        .{}({}),\n'.format(re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal),"tester_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
                 else:
                     print("Error: signal {} of Tester.{}[{}] not mapped!".format(signal,corename,i))
                     exit(-1)
@@ -371,7 +382,7 @@ def create_testbench():
 
     # Insert headers of peripherals of both systems
     for i in {**sut_instances_amount, **tester_instances_amount}:
-        start_index = find_idx(template_contents, "PHEADER")
+        start_index = find_idx(testbench_contents, "PHEADER")
         for file in os.listdir(root_dir+"/submodules/"+submodule_directories[i]+"/hardware/include"):
             if file.endswith(".vh"):
                 testbench_contents.insert(start_index, '`include "{}"\n'.format(root_dir+"/submodules/"+submodule_directories[i]+"/hardware/include/"+file))
@@ -413,6 +424,45 @@ def create_testbench():
     testbench_file.writelines(testbench_contents)
     testbench_file.close()
 
+def print_tester_nslaves():
+    tester_instances_amount = get_tester_peripherals()
+    i=0
+    # Calculate total amount of instances
+    for corename in tester_instances_amount:
+        i=i+tester_instances_amount[corename]
+    print(i, end="")
+
+#Creates list of defines of sut instances with sequential numbers
+def print_tester_peripheral_defines(defmacro):
+    tester_instances_amount = get_tester_peripherals()
+    j=0
+    for corename in tester_instances_amount:
+        for i in range(tester_instances_amount[corename]):
+            print(defmacro+"TESTER_"+corename+str(i)+"="+str(j), end=" ")
+            j = j + 1
+
+#Replaces SUT peripheral sequential numbers with the ones from tester if they exist, otherwise, just add Tester peripheral numbers
+#For example, if DEFINE list contains UART0=0 (previously defined for the SUT), and the Tester has its UART0 mapped to 1 (UART0=1), then this function replaces the UART0=0 in the list by UART0=1. If the list did not contain UART0 then it just adds UART0=1.
+def replace_peripheral_defines(define_string, defmacro):
+    define_list = define_string.split(' ')
+    tester_instances_amount = get_tester_peripherals()
+    j=0
+    for corename in tester_instances_amount:
+        for i in range(tester_instances_amount[corename]):
+            # Check if this instance is already in the list
+            foundItem = False
+            for k in range(len(define_list)):
+                if(define_list[k].startswith(defmacro+corename+str(i))):
+                    # Was already defined in list, so replace its peripheral number
+                    define_list[k] = defmacro+corename+str(i)+"="+str(j)
+                    foundItem = True
+                    break
+            # Otherwise add it to the list
+            if (foundItem == False):
+                define_list.append(defmacro+corename+str(i)+"="+str(j))
+            j = j + 1
+    # Print complete list
+    print(*define_list)
 
 if __name__ == "__main__":
     # Parse arguments
@@ -425,6 +475,18 @@ if __name__ == "__main__":
             create_tester() 
         elif sys.argv[1] == "create_testbench":
             create_testbench() 
+        elif sys.argv[1] == "get_n_slaves":
+           print_tester_nslaves()
+        elif sys.argv[1] == "get_defines":
+            if len(sys.argv)>3:
+               print_tester_peripheral_defines(sys.argv[3])
+            else:
+                print("Unknown argument.\nUsage: {} print_defines <root_dir> <defmacro>\n".format(sys.argv[0]))
+        elif sys.argv[1] == "replace_peripheral_defines":
+            if len(sys.argv)>4:
+               replace_peripheral_defines(sys.argv[3],sys.argv[4])
+            else:
+                print("Unknown argument.\nUsage: {} replace_peripheral_defines <root_dir> <DEFINE_list> <defmacro>\n".format(sys.argv[0]))
         else:
             print("Unknown argument.\nUsage: {} <command> <root_dir>\n Commands: generate_config create_topsystem create_testbench".format(sys.argv[0]))
     else:

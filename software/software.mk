@@ -30,21 +30,15 @@ HDR=$(SW_DIR)/system.h
 #common sources (none so far)
 #SRC=$(SW_DIR)/*.c
 
+ifeq ($(TESTER_ENABLED),1)
+include $(SW_DIR)/tester/software.mk
+endif
+
 #peripherals' base addresses
 periphs.h: periphs_tmp.h
 	@is_diff=`diff -q -N $@ $<`; if [ "$$is_diff" ]; then cp $< $@; fi
 	@rm periphs_tmp.h
 
-#Tester peripherals' base addresses
-#TODO: move to dedicated makefile
-#tester_periphs.h: tester_periphs_tmp.h
-#	@is_diff=`diff -q -N $@ $<`; if [ "$$is_diff" ]; then cp $< $@; fi
-#	@rm tester_periphs_tmp.h
-
 periphs_tmp.h:
 	python3 $(SW_DIR)/periphs_tmp.py $P $(SUT_DIR)
-
-#tester_periphs_tmp.h:
-#	#define base addresses for tester peripherals
-#	$(foreach p, $(TESTER_PERIPH_INSTANCES), $(shell echo "#define $p_TESTER_BASE (1<<$P) |($p_TESTER<<($P-TESTER_N_SLAVES_W))" >> $@) )
 

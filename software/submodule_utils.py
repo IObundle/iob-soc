@@ -88,7 +88,8 @@ def print_nslaves():
         i=i+sut_instances_amount[corename]
     print(i, end="")
 
-def print_defines(defmacro):
+#Creates list of defines of sut instances with sequential numbers
+def print_sut_peripheral_defines(defmacro):
     sut_instances_amount = get_sut_peripherals()
     j=0
     for corename in sut_instances_amount:
@@ -108,7 +109,7 @@ if __name__ == "__main__":
            print_nslaves()
         elif sys.argv[1] == "get_defines":
             if len(sys.argv)>3:
-               print_defines(sys.argv[3])
+               print_sut_peripheral_defines(sys.argv[3])
             else:
                 print("Unknown argument.\nUsage: {} print_defines <root_dir> <defmacro>\n".format(sys.argv[0]))
         else:
