@@ -32,7 +32,9 @@ void Timer(unsigned int half_cycles){
   for(int i = 0; i<half_cycles; i++){
     dut->clk = !(dut->clk);
     dut->eval();
+#ifdef VCD
     tfp->dump(main_time);
+#endif
     main_time += CLK_PERIOD/2;
   }
 }
@@ -75,22 +77,29 @@ int main(int argc, char **argv, char **env){
   Verilated::commandArgs(argc, argv);
   Verilated::traceEverOn(true);
   dut = new Vsystem_top;
+
+#ifdef VCD
   tfp = new VerilatedVcdC;
 
   dut->trace(tfp, 1);
   tfp->open("system.vcd");
+#endif
 
   dut->clk = 0;
   dut->reset = 0;
   dut->eval();
+#ifdef VCD
   tfp->dump(main_time);
+#endif
 
   // Reset sequence
   for(int i = 0; i<5; i++){
     dut->clk = !(dut->clk);
     if(i==2 || i==4) dut->reset = !(dut->reset);
     dut->eval();
+#ifdef VCD
     tfp->dump(main_time);
+#endif
     main_time += CLK_PERIOD/2;
   }
   dut->uart_valid = 0;
@@ -145,7 +154,9 @@ int main(int argc, char **argv, char **env){
   fclose(soc2cnsl_fd);
 
   dut->final();
+#ifdef VCD
   tfp->close();
+#endif
   delete dut;
   dut = NULL;
   exit(0);
