@@ -11,6 +11,12 @@ DEFINE+=$(defmacro)FREQ=$(FREQ)
 #ddr controller address width
 DDR_ADDR_W=$(DCACHE_ADDR_W)
 
+CONSOLE_CMD=$(ROOT_DIR)/software/console/console -L
+
+ifeq ($(INIT_MEM),0)
+CONSOLE_CMD+=-f
+endif
+
 #produce waveform dump
 VCD ?=0
 
@@ -48,6 +54,8 @@ all: clean sw build
 ifeq ($(SIM_SERVER),)
 	if [ "`pgrep -u $(USER) console`" ]; then killall -q -9 console; fi
 	@rm -f soc2cnsl cnsl2soc
+	make $(SIM_PROC)
+	$(CONSOLE_CMD) $(TEST_LOG) &
 	make run
 else
 	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"

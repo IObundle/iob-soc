@@ -31,10 +31,10 @@ insert_tiehilo_cells -verbose
 delete_unloaded_undriven -all *
 #
 # reports
-report timing > timing_report.rpt
-report power > power_report.rpt
-report gates > gates_report.rpt
-report area > area_report.rpt
+report timing > timing.rpt
+report power > power.rpt
+report gates > gates.rpt
+report area > area.rpt
 #
 # outputs
 write_hdl -mapped -v2001 > system_synth.v
