@@ -40,7 +40,7 @@ $(DEFINE): sw boot.hex
 	cp boot.hex temp_src
 
 synth:  clean $(VSRC) $(VHDR) temp_src temp_inc $(DEFINE) 
-	cp -r /opt/OpenLane . 
+	cp -r $(OPENLANE_SRC_DIR) . 
 	cp boot.hex temp_src
 	sed -i "1i \`include \"iob-soc-defs.vh\"" temp_src/system.v
 	sed -i "4i \`include \"iob-soc-defs.vh\"" temp_src/boot_ctr.v
