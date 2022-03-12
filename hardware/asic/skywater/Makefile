@@ -1,7 +1,7 @@
 ROOT_DIR:=../../..
 include ../asic.mk
 OPENLANE_DESIGNS:=$(OPENLANE_HOME)/designs
-IMAGE_NAME ?= efabless/openlane:d49a0b6d731715308cae65613dcefdd650682ae8
+IMAGE_NAME ?= efabless/openlane:5f20beb7928c7329ea1a199b9f494f48f2e6c080
 SRAM_W = 7
 MKDIR := mkdir -p
 VSRC+=iob_ram_sp_be.v
@@ -18,15 +18,11 @@ endif
 
 DOK_CMD ?= docker run --rm -v $(OPENLANE_HOME):/openlane -v $(OPENLANE_DESIGNS):/openlane/install -v $(OPENLANE_HOME)/pdks:/$(OPENLANE_HOME)/pdks -e PDK_ROOT=$(OPENLANE_HOME)/pdks -e STD_CELL_LIBRARY=sky130_fd_sc_hd --user 1000:1000 -e DISPLAY=:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v /home/c/.Xauthority:/.Xauthority --network host -ti $(IMAGE_NAME)
 
-.PHONY: all clean_sram clean_asic clean_debug clean
+.PHONY: all clean_asic clean_debug clean
 
-all: sram synth test
+all: synth test
 test:
 	[ -f $(OPENLANE_DESIGNS)/system/runs/soc/results/synthesis/system.synthesis.v ] && echo "Synthesis and technology mapping successful" || echo "Synthesis or technology mapping failed"
-
-sram: openram_config.py
-	python3 $(OPENRAM_HOME)/openram.py openram_config.py
-	mv temp sram
 
 iob_ram_sp_be.v:
 	$(MEM_DIR)/software/python/memwrapper.py $(ASIC_MEM_TECH) iob_ram_sp_be $(ASIC_SPRAM_TYPE) 0 1 $(SRAM_W) 8 4 1 > $@
@@ -43,21 +39,21 @@ $(DEFINE): sw boot.hex
 	echo "\`define $@ $($@)"| sed 's/=/ /g' >> temp_inc/iob-soc-defs.vh
 	cp boot.hex temp_src
 
-synth:  clean $(VSRC) $(VHDR) sram temp_src temp_inc $(DEFINE)
-	cp -r /opt/OpenLane .
+synth:  clean $(VSRC) $(VHDR) temp_src temp_inc $(DEFINE) 
+	cp /opt/OpenLane . 
 	cp boot.hex temp_src
-	sed -i "s/m4/met4/g" $(wildcard sram/*.lef)
-	sed -i "s/m3/met3/g" $(wildcard sram/*.lef)
-	sed -i "s/m1/met1/g" $(wildcard sram/*.lef)
-	sed -i "s/m2/met2/g" $(wildcard sram/*.lef)
+	sed -i "s/m4/met4/g" $(wildcard *.lef)
+	sed -i "s/m3/met3/g" $(wildcard *.lef)
+	sed -i "s/m1/met1/g" $(wildcard *.lef)
+	sed -i "s/m2/met2/g" $(wildcard *.lef)
 	sed -i "1i \`include \"iob-soc-defs.vh\"" temp_src/system.v
 	sed -i "4i \`include \"iob-soc-defs.vh\"" temp_src/boot_ctr.v
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/src
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/inc
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/macros/lef
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/macros/gds
-	cp $(wildcard sram/*.lef) $(OPENLANE_DESIGNS)/system/macros/lef
-	cp $(wildcard sram/*.gds) $(OPENLANE_DESIGNS)/system/macros/gds
+	cp $(wildcard *.lef) $(OPENLANE_DESIGNS)/system/macros/lef
+	cp $(wildcard *.gds) $(OPENLANE_DESIGNS)/system/macros/gds
 	cp $(wildcard temp_src/*.v) $(OPENLANE_DESIGNS)/system/src
 	cp $(wildcard temp_inc/*.*) $(OPENLANE_DESIGNS)/system/inc
 	cp temp_src/boot.hex $(OPENLANE_DESIGNS)/system/src
@@ -73,11 +69,6 @@ debug: $(VSRC) $(VHDR)
 	echo $(VSRC)
 	echo $(VHDR)
 
-clean_sram:
-	rm -rf __pycache__
-	rm -rf sram
-	rm -rf temp
-
 clean_asic: clean-remote
 	rm -rf iob_ram_sp_be.v
 	rm -rf boot.hex
@@ -92,4 +83,4 @@ clean_asic: clean-remote
 clean_debug:
 	rm -rf debug
 
-clean: clean_sram clean_asic clean_debug 
+clean:  clean_asic clean_debug 
