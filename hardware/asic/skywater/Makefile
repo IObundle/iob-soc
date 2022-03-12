@@ -1,5 +1,6 @@
 ROOT_DIR:=../../..
 include ../asic.mk
+OPENLANE_HOME=./OpenLane
 OPENLANE_DESIGNS:=$(OPENLANE_HOME)/designs
 IMAGE_NAME ?= efabless/openlane:5f20beb7928c7329ea1a199b9f494f48f2e6c080
 SRAM_W = 7
