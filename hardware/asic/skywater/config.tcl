@@ -1,7 +1,6 @@
 # User config
 set ::env(DESIGN_NAME) system
 # Change if needed
-set ::env(MACRO_PLACEMENT_CFG) $::env(DESIGN_DIR)/macro_placement.cfg
 set ::env(VERILOG_INCLUDE_DIRS) "designs/system/inc"
 set ::env(VERILOG_FILES) "designs/system/src/*.v"
 set ::env(CLOCK_PERIOD) "10"

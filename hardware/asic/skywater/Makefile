@@ -42,18 +42,12 @@ $(DEFINE): sw boot.hex
 synth:  clean $(VSRC) $(VHDR) temp_src temp_inc $(DEFINE) 
 	cp /opt/OpenLane . 
 	cp boot.hex temp_src
-	sed -i "s/m4/met4/g" $(wildcard *.lef)
-	sed -i "s/m3/met3/g" $(wildcard *.lef)
-	sed -i "s/m1/met1/g" $(wildcard *.lef)
-	sed -i "s/m2/met2/g" $(wildcard *.lef)
 	sed -i "1i \`include \"iob-soc-defs.vh\"" temp_src/system.v
 	sed -i "4i \`include \"iob-soc-defs.vh\"" temp_src/boot_ctr.v
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/src
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/inc
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/macros/lef
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/macros/gds
-	cp $(wildcard *.lef) $(OPENLANE_DESIGNS)/system/macros/lef
-	cp $(wildcard *.gds) $(OPENLANE_DESIGNS)/system/macros/gds
 	cp $(wildcard temp_src/*.v) $(OPENLANE_DESIGNS)/system/src
 	cp $(wildcard temp_inc/*.*) $(OPENLANE_DESIGNS)/system/inc
 	cp temp_src/boot.hex $(OPENLANE_DESIGNS)/system/src
@@ -61,7 +55,7 @@ synth:  clean $(VSRC) $(VHDR) temp_src temp_inc $(DEFINE)
 	cp run_interactive.tcl $(OPENLANE_HOME)
 	cp config.tcl $(OPENLANE_DESIGNS)/system
 	cd $(OPENLANE_HOME);
-	$(DOK_CMD) sh -c "./flow.tcl -design system -tag soc -overwrite"
+	$(DOK_CMD) sh -c "./flow.tcl -interactive -file run_interactive.tcl"
 
 debug: $(VSRC) $(VHDR)
 	mkdir debug
