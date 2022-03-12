@@ -84,11 +84,8 @@ queue-out-remote:
 # Testing
 #
 
-test: clean-testlog test1 test2 test3 test-log-parse
+test: clean-testlog test1 test2 test3
 	diff -q test.log test.expected
-
-test-log-parse: test.log
-	sed -i '/IOb-Console:/d' test.log
 
 test1:
 	make clean
@@ -137,7 +134,7 @@ clean-all: clean-testlog clean
 
 .PRECIOUS: $(FPGA_OBJ)
 
-.PHONY: all run load build \
+.PHONY: all run build \
 	queue-in queue-out queue-wait queue-out-remote \
 	test test1 test2 test3 \
 	clean-remote clean-testlog clean-all

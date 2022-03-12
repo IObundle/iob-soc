@@ -5,6 +5,7 @@ ROOT_DIR:=../../..
 defmacro:=-D
 incdir:=-I 
 
+SIMULATOR=verilator
 SIM_SERVER=$(VSIM_SERVER)
 SIM_USER=$(VSIM_USER)
 SIM_PROC=Vsystem_top
