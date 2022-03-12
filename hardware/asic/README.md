@@ -37,8 +37,9 @@ where library name is one of the following:
 To run OpenLane, export following environment variables:
 
 ```bash
-export OPENLANE_HOME=path/to/OpenLane/root
+export OPENLANE_HOME=<path to OpenLane root>
 export PDK_ROOT=$OPENLANE_HOME/pdks
+export OPENLANE_SRC_DIR=<path to openlane src directory>
 ```
 
 For installation of Skywater PDK and OpenLane, type the following:
