@@ -13,8 +13,6 @@ set ::env(CELL_PAD) 0
 set ::env(GLB_RESIZER_TIMING_OPTIMIZATIONS) 0
 set ::env(RT_MAX_LAYER) {met4}
 set ::env(FP_PDN_CHECK_NODES) 0
-set ::env(EXTRA_LEFS) [glob $::env(DESIGN_DIR)/macros/lef/*.lef]
-set ::env(EXTRA_GDS_FILES) [glob $::env(DESIGN_DIR)/macros/gds/*.gds]
 set filename $::env(DESIGN_DIR)/$::env(PDK)_$::env(STD_CELL_LIBRARY)_config.tcl
 if { [file exists $filename] == 1} {
 	source $filename
