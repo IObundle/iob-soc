@@ -1,6 +1,6 @@
 ROOT_DIR:=../../..
 include ../asic.mk
-OPENLANE_HOME= ~/iob-soc/hardware/asic/skywater/OpenLane
+OPENLANE_HOME= $(PWD)/hardware/asic/skywater/OpenLane
 OPENLANE_DESIGNS:=$(OPENLANE_HOME)/designs
 IMAGE_NAME ?= efabless/openlane:5f20beb7928c7329ea1a199b9f494f48f2e6c080
 SRAM_W = 7
@@ -17,14 +17,13 @@ ifeq (0,$(shell docker -v 2>/dev/null | grep podman | wc -l))
    DOCKER_UID_OPTIONS = -u $(shell id -u $(USER)):$(shell id -g $(USER))
 endif
 
-DOK_CMD ?= docker run --rm -v $(OPENLANE_HOME):/openlane -v $(OPENLANE_DESIGNS):/openlane/install -v $(OPENLANE_HOME)/pdks:/$(OPENLANE_HOME)/pdks -e PDK_ROOT=$(OPENLANE_HOME)/pdks -e STD_CELL_LIBRARY=sky130_fd_sc_hd --user 1000:1000 -e DISPLAY=:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v /home/c/.Xauthority:/.Xauthority --network host -ti $(IMAGE_NAME)
+DOK_CMD = docker run --rm -v $(OPENLANE_HOME):/openlane -v $(OPENLANE_DESIGNS):/openlane/install -v $(OPENLANE_HOME)/pdks:/$(OPENLANE_HOME)/pdks -e PDK_ROOT=$(OPENLANE_HOME)/pdks -e STD_CELL_LIBRARY=sky130_fd_sc_hd --user 1007:1007 -e DISPLAY=:localhost:10.0 -v /tmp/.X11-unix:/tmp/.X11-unix -v /home/c/.Xauthority:/.Xauthority --network host -ti $(IMAGE_NAME)
 
 .PHONY: all clean_asic clean_debug clean
 
 all: synth test
 test:
 	[ -f $(OPENLANE_DESIGNS)/system/runs/soc/results/synthesis/system.synthesis.v ] && echo "Synthesis and technology mapping successful" || echo "Synthesis or technology mapping failed"
-
 iob_ram_sp_be.v:
 	$(MEM_DIR)/software/python/memwrapper.py $(ASIC_MEM_TECH) iob_ram_sp_be $(ASIC_SPRAM_TYPE) 0 1 $(SRAM_W) 8 4 1 > $@
 
@@ -78,4 +77,4 @@ clean_asic: clean-remote
 clean_debug:
 	rm -rf debug
 
-clean:  clean_asic clean_debug 
+clean:  clean_asic clean_debug
