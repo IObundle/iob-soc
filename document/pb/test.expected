@@ -16,7 +16,7 @@
 \gdef\HyperFirstAtBeginDocument#1{#1}
 \providecommand\HyField@AuxAddToFields[1]{}
 \providecommand\HyField@AuxAddToCoFields[2]{}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces High-level block diagram.}}{1}{figure.1}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces High-level block diagram.}}{1}{figure.1}\protected@file@percent }
 \newlabel{fig:bd}{{1}{1}{High-level block diagram}{figure.1}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces FPGA results for Kintex Ultrascale (left) and Cyclone V GT (right).}}{1}{table.1}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces FPGA results for Kintex Ultrascale (left) and Cyclone V GT (right).}}{1}{table.1}\protected@file@percent }
 \newlabel{tab:fpga_results}{{1}{1}{FPGA results for Kintex Ultrascale (left) and Cyclone V GT (right)}{table.1}{}}
