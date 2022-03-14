@@ -13,7 +13,7 @@ USE_NETLIST ?=0
 
 #include files
 VHDR+=$(wildcard $(UART_INC_DIR)/*.vh)
-VHDR+=$(TOP_MODULE)_swreg_gen.vh $(TOP_MODULE)_swreg_def.vh
+VHDR+=iob_uart_swreg_gen.vh iob_uart_swreg_def.vh
 VHDR+=$(LIB_DIR)/hardware/include/iob_lib.vh
 
 #hardware include dirs
