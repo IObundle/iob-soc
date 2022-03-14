@@ -31,6 +31,9 @@ include $(UART_DIR)/hardware/hardware.mk
 #CORE_UT
 include $($(CORE_UT)_DIR)/hardware/hardware.mk
 
+#include every other configured tester peripheral (in tester.mk of core under test)
+$(foreach p, $(TESTER_PERIPHERALS), $(eval include $($p_DIR)/hardware/hardware.mk))
+
 #HARDWARE PATHS
 INC_DIR:=$(HW_DIR)/include
 SRC_DIR:=$(HW_DIR)/src
@@ -60,7 +63,9 @@ IMAGES=boot.hex firmware.hex
 
 # make system.v with peripherals
 system.v: system_tmp.v
-	$(foreach p, $(PERIPHERALS), $(shell sed -i '/PHEADER/a `include \"$p.vh\"' $@)) # insert header file
+	$(foreach p, $(PERIPHERALS), $(eval HFILES=$(shell echo `ls $($p_DIR)/hardware/include/*.vh | grep -v pio | grep -v inst | grep -v swreg`)) \
+	$(eval HFILES+=$(shell echo `basename $($p_DIR)/hardware/include/*swreg.vh | sed 's/swreg/swreg_def/g'`)) \
+	$(if $(HFILES), $(foreach f, $(HFILES), sed -i '/PHEADER/a `include \"$f\"' $@;),)) # insert header files
 	$(foreach p, $(PERIPHERALS), if test -f $($p_DIR)/hardware/include/pio.vh; then sed -i '/PIO/r $($p_DIR)/hardware/include/pio.vh' $@; fi;) #insert system IOs for peripheral
 	$(foreach p, $(PERIPHERALS), if test -f $($p_DIR)/hardware/include/inst.vh; then sed -i '/endmodule/e cat $($p_DIR)/hardware/include/inst.vh' $@; fi;) # insert peripheral instances
 

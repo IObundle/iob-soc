@@ -11,22 +11,19 @@ SIM_PROC=a.out
 include ../simulation.mk
 
 #simulator flags
-VLOG = iverilog -W all -g2005-sv $(INCLUDE) $(DEFINE) 
+VLOG = iverilog -W all -g2005-sv $(INCLUDE) $(DEFINE)
 
-#simulator object 
-a.out: $(VSRC) $(VHDR) $(IMAGES)
+#simulator object
+$(SIM_PROC):
 	$(VLOG) $(VSRC)
 
+.PHONY: run clean debug
 
-.PHONY: run build clean debug
-
-run: build
-	./a.out $(TEST_LOG)
-
-build: a.out
+run:
+	./$(SIM_PROC)
 
 clean: clean-remote
-	@rm -f a.out
+	@rm -f $(SIM_PROC)
 
 debug:
 	@echo $(SUBMODULES)

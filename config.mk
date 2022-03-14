@@ -32,7 +32,7 @@ INIT_MEM ?=1
 #PERIPHERAL LIST
 #must match respective submodule CORE_NAME in the core.mk file of the submodule
 #PERIPHERALS:=UART
-PERIPHERALS ?=UART $(CORE_UT)
+PERIPHERALS ?=UART
 
 #RISC-V HARD MULTIPLIER AND DIVIDER INSTRUCTIONS
 USE_MUL_DIV ?=1
@@ -74,7 +74,6 @@ UART_HW_DIR:=$(UART_DIR)/hardware
 ifeq ($(RUN_EXTMEM),1)
 DEFINE+=$(defmacro)RUN_EXTMEM
 USE_DDR=1
-INIT_MEM=0
 endif
 
 ifeq ($(USE_DDR),1)
@@ -84,6 +83,13 @@ endif
 ifeq ($(INIT_MEM),1)
 DEFINE+=$(defmacro)INIT_MEM
 endif
+
+#include tester configuration from core under test directory
+include $(ROOT_DIR)/../../tester.mk
+#add core under test
+PERIPHERALS+=$(CORE_UT)
+#add other tester peripherals
+PERIPHERALS+=$(TESTER_PERIPHERALS)
 
 #submodule paths
 PICORV32_DIR=$(ROOT_DIR)/submodules/PICORV32

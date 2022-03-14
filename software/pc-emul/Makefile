@@ -12,7 +12,14 @@ CFLAGS=-Os -std=gnu99 -Wl,--strip-debug
 DEFINE+=-DPC
 
 #peripherals (pc)
-$(foreach p, $(PERIPHERALS), $(eval include $($p_DIR)/software/pc-emul/pc.mk))
+#uart
+include $(UART_DIR)/software/pc-emul/pc.mk
+
+#core_ut
+include $($(CORE_UT)_DIR)/software/pc-emul/pc.mk
+
+#include every other configured tester peripheral (in tester.mk of core under test)
+$(foreach p, $(TESTER_PERIPHERALS), $(eval include $($p_DIR)/software/pc-emul/pc.mk))
 
 #HEADERS
 HDR+=periphs.h
@@ -37,6 +44,6 @@ test:
 	diff -q $(PC_DIR)/test.log $(PC_DIR)/test.expected
 
 clean:
-	@rm -rf firmware.out periphs.h test.log *sw_reg.h
+	@rm -rf firmware.out periphs.h test.log *swreg.h
 
 .PHONY: all build run clean subs periphs_tmp.h test
