@@ -26,7 +26,7 @@ $(TOP_MODULE)_version.txt:
 	echo $(VERSION) > version.txt
 
 #cpu accessible registers
-$(TOP_MODULE)_swreg_def.vh $(TOP_MODULE)_swreg_gen.vh: $(UART_HW_DIR)/include/$(TOP_MODULE)_swreg.vh
+iob_uart_swreg_def.vh iob_uart_swreg_gen.vh: $(UART_HW_DIR)/include/iob_uart_swreg.vh
 	$(MKREGS) $< HW
 
 uart-gen-clean:
