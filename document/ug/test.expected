@@ -17,30 +17,52 @@
 \providecommand\HyField@AuxAddToFields[1]{}
 \providecommand\HyField@AuxAddToCoFields[2]{}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{5}{section.1}\protected@file@percent }
+\newlabel{sec:intro}{{1}{5}{Introduction}{section.1}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {2}Symbol}{5}{section.2}\protected@file@percent }
+\newlabel{sec:symb}{{2}{5}{Symbol}{section.2}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces IP core symbol.\relax }}{5}{figure.caption.4}\protected@file@percent }
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
 \newlabel{fig:symbol}{{1}{5}{IP core symbol.\relax }{figure.caption.4}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {3}Features}{5}{section.3}\protected@file@percent }
+\newlabel{sec:feat}{{3}{5}{Features}{section.3}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {4}Benefits}{6}{section.4}\protected@file@percent }
+\newlabel{sec:benef}{{4}{6}{Benefits}{section.4}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {5}Deliverables}{6}{section.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6}Block Diagram and Description}{7}{section.6}\protected@file@percent }
+\newlabel{sec:deliv}{{5}{6}{Deliverables}{section.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Block Diagram and Description}{6}{section.6}\protected@file@percent }
+\newlabel{sec:bdd}{{6}{6}{Block Diagram and Description}{section.6}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces High-level block diagram.\relax }}{7}{figure.caption.5}\protected@file@percent }
 \newlabel{fig:bd}{{2}{7}{High-level block diagram.\relax }{figure.caption.5}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {7}Synthesis Parameters and Macros}{7}{section.7}\protected@file@percent }
-\newlabel{sec:sp}{{7}{7}{Synthesis Parameters and Macros}{section.7}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Synthesis Parameters.\relax }}{7}{table.caption.6}\protected@file@percent }
-\newlabel{tab:sp}{{1}{7}{Synthesis Parameters.\relax }{table.caption.6}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Synthesis Macros.\relax }}{7}{table.caption.7}\protected@file@percent }
-\newlabel{tab:sm}{{2}{7}{Synthesis Macros.\relax }{table.caption.7}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {8}Interface Signals}{8}{section.8}\protected@file@percent }
-\newlabel{sec:is}{{8}{8}{Interface Signals}{section.8}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces General interface signals.\relax }}{8}{table.caption.8}\protected@file@percent }
-\newlabel{gen_if_tab:is}{{3}{8}{General interface signals.\relax }{table.caption.8}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces IObundle Interface Signals\relax }}{8}{table.caption.9}\protected@file@percent }
-\newlabel{tab:if_iob_s}{{4}{8}{IObundle Interface Signals\relax }{table.caption.9}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces RS232 Interface Signals\relax }}{8}{table.caption.10}\protected@file@percent }
-\newlabel{tab:if_rs232}{{5}{8}{RS232 Interface Signals\relax }{table.caption.10}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {9}Implementation Results}{9}{section.9}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces FPGA results for Kintex Ultrascale (left) and Cyclone V GT (right).\relax }}{9}{table.caption.11}\protected@file@percent }
-\newlabel{tab:fpga_results}{{6}{9}{FPGA results for Kintex Ultrascale (left) and Cyclone V GT (right).\relax }{table.caption.11}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Interface Signals}{7}{section.7}\protected@file@percent }
+\newlabel{sec:ifsig}{{7}{7}{Interface Signals}{section.7}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces General interface signals.\relax }}{7}{table.caption.6}\protected@file@percent }
+\newlabel{gen_if_tab:is}{{1}{7}{General interface signals.\relax }{table.caption.6}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces IObundle Interface Signals\relax }}{7}{table.caption.7}\protected@file@percent }
+\newlabel{tab:if_iob_s}{{2}{7}{IObundle Interface Signals\relax }{table.caption.7}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces RS232 Interface Signals\relax }}{8}{table.caption.8}\protected@file@percent }
+\newlabel{tab:if_rs232}{{3}{8}{RS232 Interface Signals\relax }{table.caption.8}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {8}Software Driver}{8}{section.8}\protected@file@percent }
+\newlabel{sec:sw}{{8}{8}{Software Driver}{section.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}Software Accessible Registers}{8}{subsection.8.1}\protected@file@percent }
+\newlabel{sec:swreg}{{8.1}{8}{Software Accessible Registers}{subsection.8.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces UART software accessible registers.\relax }}{8}{table.caption.9}\protected@file@percent }
+\newlabel{tab:sw_tx}{{4}{8}{UART software accessible registers.\relax }{table.caption.9}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}Software Operation}{8}{subsection.8.2}\protected@file@percent }
+\newlabel{sec:swop}{{8.2}{8}{Software Operation}{subsection.8.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {9}Instantiation and External Circuitry}{8}{section.9}\protected@file@percent }
+\newlabel{sec:inst}{{9}{8}{Instantiation and External Circuitry}{section.9}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Core instance and required surrounding blocks\relax }}{9}{figure.caption.10}\protected@file@percent }
+\newlabel{fig:inst}{{3}{9}{Core instance and required surrounding blocks\relax }{figure.caption.10}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {10}Simulation}{10}{section.10}\protected@file@percent }
+\newlabel{sec:tbbd}{{10}{10}{Simulation}{section.10}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Testbench block diagram\relax }}{10}{figure.caption.11}\protected@file@percent }
+\newlabel{fig:tbbd}{{4}{10}{Testbench block diagram\relax }{figure.caption.11}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {11}Synthesis}{11}{section.11}\protected@file@percent }
+\newlabel{sec:synth}{{11}{11}{Synthesis}{section.11}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.1}Synthesis Macros and Parameters}{11}{subsection.11.1}\protected@file@percent }
+\newlabel{sec:smp}{{11.1}{11}{Synthesis Macros and Parameters}{subsection.11.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.2}Synthesis Script and Timing Constraints}{11}{subsection.11.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {12}Implementation Results}{11}{section.12}\protected@file@percent }
+\newlabel{sec:results}{{12}{11}{Implementation Results}{section.12}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces FPGA results for Kintex Ultrascale (left) and Cyclone V GT (right).\relax }}{11}{table.caption.12}\protected@file@percent }
+\newlabel{tab:fpga_results}{{5}{11}{FPGA results for Kintex Ultrascale (left) and Cyclone V GT (right).\relax }{table.caption.12}{}}
