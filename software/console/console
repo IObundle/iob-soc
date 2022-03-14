@@ -45,8 +45,8 @@ def tb_read(number_of_bytes, is_file = False):
     data = b''
     transfered_bytes = 0
     read_percentage = 100
+    f = open('./soc2cnsl', "rb+")
     while(transfered_bytes < number_of_bytes):
-        f = open('./soc2cnsl', "rb+")
         byte = f.read(1)
         if(byte!=b''):
             data += byte
@@ -58,7 +58,7 @@ def tb_read(number_of_bytes, is_file = False):
                     if (not read_percentage%10): print("%3d %c" % (read_percentage, '%'))
             f.seek(0) # absolute file positioning
             f.truncate() # to erase all data
-        f.close()
+    f.close()
     return data
 
 # Print ERROR
@@ -69,7 +69,7 @@ def cnsl_perror(mesg):
 
 # Receive file name
 def cnsl_recvstr():
-    if SerialFlag: name = ser.read_until(b'\x00') # reads 80 bytes
+    if SerialFlag: name = ser.read_until(b'\x00')[:-1] # reads 80 bytes
     else: name = tb_read_until(b'\x00')
     print(PROGNAME, end = '')
     print(': file name {0} '.format(name))
