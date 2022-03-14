@@ -15,6 +15,9 @@ include $(UART_DIR)/software/embedded/embedded.mk
 #core_ut
 include $($(CORE_UT)_DIR)/software/embedded/embedded.mk
 
+#include every other configured tester peripheral (in tester.mk of core under test)
+$(foreach p, $(TESTER_PERIPHERALS), $(eval include $($p_DIR)/software/embedded/embedded.mk))
+
 #HEADERS
 HDR+=periphs.h
 

@@ -31,6 +31,9 @@ include $(UART_DIR)/hardware/hardware.mk
 #CORE_UT
 include $($(CORE_UT)_DIR)/hardware/hardware.mk
 
+#include every other configured tester peripheral (in tester.mk of core under test)
+$(foreach p, $(TESTER_PERIPHERALS), $(eval include $($p_DIR)/hardware/hardware.mk))
+
 #HARDWARE PATHS
 INC_DIR:=$(HW_DIR)/include
 SRC_DIR:=$(HW_DIR)/src
