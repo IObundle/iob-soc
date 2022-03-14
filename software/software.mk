@@ -6,8 +6,10 @@ include $(REGFILEIF_DIR)/core.mk
 INCLUDE+=-I$(REGFILEIF_SW_DIR)
 
 #headers
-HDR+=
+HDR+=$(REGFILEIF_SW_DIR)/*.h REGFILEIFsw_reg.h
 
 #sources
 SRC+=
 
+REGFILEIFsw_reg.h: REGFILEIFsw_reg.v
+	$(REGFILEIF_DIR)/software/mkregsregfileif.py $< SW $(LIB_DIR)/software

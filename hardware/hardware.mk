@@ -2,13 +2,6 @@ include $(REGFILEIF_DIR)/core.mk
 
 # SUBMODULES
 
-# Dual-port register file
-ifneq (DPREGFILE,$(filter DPREGFILE, $(SUBMODULES)))
-SUBMODULES+=DPREGFILE
-DPREGFILE_DIR:=$(MEM_DIR)/hardware/regfile/dp_reg_file
-VSRC+=$(DPREGFILE_DIR)/iob_dp_reg_file.v
-endif
-
 # Interconnect
 ifneq (INTERCON,$(filter INTERCON, $(SUBMODULES)))
 SUBMODULES+=INTERCON
@@ -27,7 +20,11 @@ INCLUDE+=$(incdir)$(REGFILEIF_HW_DIR)/include
 
 # includes
 VHDR+=$(wildcard $(REGFILEIF_HW_DIR)/include/*.vh)
+VHDR+=REGFILEIFsw_reg.v REGFILEIFsw_reg_gen.v REGFILEIFsw_reg.vh
 
 # sources
 VSRC+=$(wildcard $(REGFILEIF_SRC_DIR)/*.v)
 
+#cpu accessible registers
+REGFILEIFsw_reg_gen.v REGFILEIFsw_reg.vh: REGFILEIFsw_reg.v
+	$(REGFILEIF_DIR)/software/mkregsregfileif.py $< HW $(LIB_DIR)/software

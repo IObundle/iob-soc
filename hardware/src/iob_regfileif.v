@@ -3,6 +3,7 @@
 `include "iob_lib.vh"
 `include "interconnect.vh"
 `include "iob_regfileif.vh"
+`include "REGFILEIFsw_reg.vh"
 
 module iob_regfileif 
   # (
@@ -30,35 +31,8 @@ module iob_regfileif
 `include "gen_if.v"
     );
 
-   // BLOCK Register file interface.
-
-   iob_dp_reg_file
-     #(
-       .ADDR_W(ADDR_W),
-       .DATA_W(DATA_W)	        
-	   )
-   dp_reg_file
-     (
-      .clk    (clk),
-      .rst    (rst),
-
-      .weA    (|wstrb & valid),
-      .addrA  (address),
-      .wdataA (wdata),
-      .rdataA (rdata),
-
-      .weB    (|wstrb_ext & valid_ext),
-      .addrB  (address_ext),
-      .wdataB (wdata_ext),
-      .rdataB (rdata_ext)
-      );
-
-   `VAR(ready_var, 1)
-   `REG_AR(clk, rst, 1'b0, ready_var, valid)
-   `VAR2WIRE(ready, ready_var)
-
-   `VAR(ready_ext_var, 1)
-   `REG_AR(clk, rst, 1'b0, ready_ext_var, valid_ext)
-   `VAR2WIRE(ready_ext, ready_ext_var)
+	// BLOCK Register File & Holds the current configuration of the system as well as internal parameters. Data to be sent or that has been received is stored here temporarily.
+	`include "REGFILEIFsw_reg.v"
+	`include "REGFILEIFsw_reg_gen.v"
 
 endmodule
