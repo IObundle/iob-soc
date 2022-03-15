@@ -54,11 +54,10 @@ all: clean sw build sim
 
 sim:
 ifeq ($(SIM_SERVER),)
-	if [ "`pgrep -u $(USER) console`" ]; then killall -q -9 console; fi
 	@rm -f soc2cnsl cnsl2soc
 	make $(SIM_PROC)
 	$(CONSOLE_CMD) $(TEST_LOG) &
-	make run
+	bash -c "trap 'make kill-sim' INT TERM KILL; make run"
 else
 	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --delete --force --exclude .git $(SIM_SYNC_FLAGS) $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
@@ -101,10 +100,14 @@ VSRC+=$(foreach p, $(PERIPHERALS), $(shell if test -f $($p_DIR)/hardware/testben
 
 kill-remote-sim:
 	@echo "INFO: Remote simulator $(SIMULATOR) will be killed"
-	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'killall -q -u $(SIM_USER) -9 $(SIM_PROC); killall -q -u $(SIM_USER) -9 console'
+	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'killall -q -u $(SIM_USER) -9 $(SIM_PROC); \
+	make -C $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR) kill-sim'
 ifeq ($(VCD),1)
 	scp $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR)/*.vcd $(SIM_DIR)
 endif
+
+kill-sim:
+	kill -9 $$(ps aux | grep $(USER) | grep console | grep -v grep | awk '{print $$2}')
 
 
 test: clean-testlog test1 test2 test3 test4 test5
@@ -146,6 +149,6 @@ clean-all: clean-testlog clean
 .PRECIOUS: system.vcd test.log
 
 .PHONY: all build sim \
-	kill-remote-sim \
+	kill-remote-sim kill-sim \
 	test test1 test2 test3 test4 test5 \
 	clean-remote clean-testlog clean-all
