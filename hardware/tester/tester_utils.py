@@ -401,7 +401,8 @@ def create_testbench():
                 if mapped_signals[0][corename][i][signalModified] > -2:
                     if mapped_signals[0][corename][i][signalModified] == -1: # Mapped to external interface, therefore is a top_system port
                         # Insert PWIRES
-                        testbench_contents.insert(find_idx(testbench_contents, "PWIRES"), '    wire {};\n'.format("sut_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
+                        signal_size = re.search("(?:input|output)(.+)",peripheral_signals[corename][signal]).group(1).replace(" ", "")
+                        testbench_contents.insert(find_idx(testbench_contents, "PWIRES"), '    wire {} {};\n'.format(signal_size, "sut_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
                         # Insert PORTS
                         testbench_contents.insert(find_idx(testbench_contents, "PORTS"), '        .{}({}),\n'.format("sut_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal), "sut_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
                 else:
@@ -415,7 +416,8 @@ def create_testbench():
                 if mapped_signals[1][corename][i][signalModified] > -2:
                     if mapped_signals[1][corename][i][signalModified] == -1: # Mapped to external interface, therefore is a top_system port
                         # Insert PWIRES
-                        testbench_contents.insert(find_idx(testbench_contents, "PWIRES"), '    wire {};\n'.format("tester_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
+                        signal_size = re.search("(?:input|output)(.+)",peripheral_signals[corename][signal]).group(1).replace(" ", "")
+                        testbench_contents.insert(find_idx(testbench_contents, "PWIRES"), '    wire {} {};\n'.format(signal_size, "tester_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
                         # Insert PORTS
                         testbench_contents.insert(find_idx(testbench_contents, "PORTS"), '        .{}({}),\n'.format("tester_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal), "tester_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
                 else:
