@@ -13,6 +13,7 @@ include ./config.mk
 	test-doc test-doc-clean\
 	test test-clean\
 	clean clean-all\
+	python-cache-clean\
 	corename\
 	tester-portmap
 
@@ -152,6 +153,8 @@ test: test-clean test-pc-emul test-sim test-fpga test-doc
 
 test-clean: test-pc-emul-clean test-sim-clean test-fpga-clean test-asic-clean test-doc-clean
 
+python-cache-clean:
+	for i in `find . -name __pycache__`; do rm -r $$i; done
 
 #generic clean
 clean:
@@ -160,5 +163,6 @@ clean:
 	make fpga-clean
 	make asic-clean
 	#make doc-clean
+	make python-cache-clean
 
 clean-all: test-clean
