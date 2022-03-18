@@ -13,3 +13,6 @@
 [submodule "submodules/LIB"]
 	path = submodules/LIB
 	url = git@github.com:IObundle/iob-lib.git
+[submodule "submodules/REGFILEIF"]
+	path = submodules/REGFILEIF
+	url = git@github.com:arturum1/iob-regfileif.git
