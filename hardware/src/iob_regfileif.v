@@ -3,7 +3,7 @@
 `include "iob_lib.vh"
 `include "interconnect.vh"
 `include "iob_regfileif.vh"
-`include "REGFILEIFsw_reg.vh"
+// `include "REGFILEIFsw_reg.vh"
 
 module iob_regfileif 
   # (
@@ -33,6 +33,9 @@ module iob_regfileif
 
 	// BLOCK Register File & Holds the current configuration of the system as well as internal parameters. Data to be sent or that has been received is stored here temporarily.
 	`include "REGFILEIFsw_reg.v"
+	`include "REGFILEIFsw_reg_inverted.v"
 	`include "REGFILEIFsw_reg_gen.v"
+	`include "REGFILEIFsw_reg_inverted_gen.v"
+	`include "REGFILEIFsw_reg_wire_connections.v"
 
 endmodule
