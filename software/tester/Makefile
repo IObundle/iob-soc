@@ -27,7 +27,7 @@ include $(INTERCON_DIR)/software/software.mk
 
 #Replace SUT N_SLAVES by Tester N_SLAVES
 TESTER_N_SLAVES=$(shell python3 $(TESTER_DIR)/tester_utils.py get_n_slaves $(SUT_DIR))
-DEFINE:=$(patsubst N_SLAVES=%,N_SLAVES=$(TESTER_N_SLAVES),$(DEFINE))
+DEFINE:=$(patsubst $(defmacro)N_SLAVES=%,$(defmacro)N_SLAVES=$(TESTER_N_SLAVES),$(DEFINE))
 
 #Replace SUT peripheral sequential numbers by Tester peripheral sequetial numbers
 DEFINE:=$(shell python3 $(TESTER_DIR)/tester_utils.py replace_peripheral_defines $(SUT_DIR) "$(DEFINE)" $(defmacro))
