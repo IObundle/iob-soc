@@ -1,34 +1,32 @@
 `timescale 1ns/1ps
 `include "iob_lib.vh"
-`include "interconnect.vh"
-`include "iob_uart.vh"
-`include "UARTsw_reg.vh"
+`include "iob_uart_swreg_def.vh"
 
 module iob_uart 
-  # (//the below parameters are used in cpu if includes below
-     parameter ADDR_W = `UART_ADDR_W, //NODOC Address width
-     parameter DATA_W = `UART_RDATA_W, //NODOC CPU data width
-     parameter WDATA_W = `UART_WDATA_W //NODOC CPU data width
+  # (
+     parameter DATA_W = 32, //PARAM CPU data width
+     parameter ADDR_W = `iob_uart_swreg_ADDR_W //MACRO CPU address width
      )
 
   (
 
    //CPU interface
- `include "cpu_nat_s_if.v"
+`include "iob_s_if.vh"
 
    //additional inputs and outputs
 
-   //`OUTPUT(interrupt, 1), //to be done
-   `OUTPUT(txd, 1), //Serial transmit line
-   `INPUT(rxd, 1), //Serial receive line
-   `INPUT(cts, 1), //Clear to send; the destination is ready to receive a transmission sent by the UART
-   `OUTPUT(rts, 1), //Ready to send; the UART is ready to receive a transmission from the sender.
-`include "gen_if.v"
+   //START_IO_TABLE rs232
+   //`IOB_OUTPUT(interrupt, 1), //to be done
+   `IOB_OUTPUT(txd, 1), //Serial transmit line
+   `IOB_INPUT(rxd, 1), //Serial receive line
+   `IOB_INPUT(cts, 1), //Clear to send; the destination is ready to receive a transmission sent by the UART
+   `IOB_OUTPUT(rts, 1), //Ready to send; the UART is ready to receive a transmission from the sender.
+`include "gen_if.vh"
    );
 
-//BLOCK Register File & Holds the current configuration of the UART as well as internal parameters. Data to be sent or that has been received is stored here temporarily.
-`include "UARTsw_reg.v"
-`include "UARTsw_reg_gen.v"
+//BLOCK Register File & Configuration control and status register file.
+`include "iob_uart_swreg.vh"
+`include "iob_uart_swreg_gen.vh"
    
    uart_core uart_core0 
      (

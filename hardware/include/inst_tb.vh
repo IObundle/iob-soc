@@ -7,7 +7,7 @@
       
       .valid     (uart_valid),
       .address   (uart_addr),
-      .wdata     (uart_wdata[`UART_WDATA_W-1:0]),
+      .wdata     (uart_wdata),
       .wstrb     (uart_wstrb),
       .rdata     (uart_rdata),
       .ready     (uart_ready),

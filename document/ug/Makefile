@@ -1,11 +1,12 @@
 UART_DIR:=../..
+CORE_DIR:=$(UART_DIR)
 
-TAB=rs232_is_tab.tex cpu_nat_s_is_tab.tex cpu_axi4lite_s_is_tab.tex
+NOCLEAN=-name "ug.pdf" -o -name "if.tex" -o -name "td.tex" \
+	-o -name "swreg.tex" -o -name "swop.tex" -o -name "inst.tex" \
+	-o -name "sim.tex" -o -name "synth.tex" -o -name "custom.tex"
 
-NOCLEAN=-name "ug.pdf" -o -name "ifsignals.tex"
+figures:
+	mkdir -p ./figures
+	cp -r -u $(LIB_DIR)/document/figures/* ../figures/* ./figures
 
 include $(UART_DIR)/document/document.mk
-
-rs232_is_tab.tex: $(UART_HW_DIR)/src/iob_uart.v
-	$(TEX_SW_DIR)/io2tex.py $< $@
-

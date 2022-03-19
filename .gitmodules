@@ -1,9 +1,3 @@
-[submodule "submodules/INTERCON"]
-	path = submodules/INTERCON
-	url = git@github.com:IObundle/iob-interconnect.git
 [submodule "submodules/LIB"]
 	path = submodules/LIB
 	url = git@github.com:IObundle/iob-lib.git
-[submodule "submodules/TEX"]
-	path = submodules/TEX
-	url = git@github.com:IObundle/iob-tex.git

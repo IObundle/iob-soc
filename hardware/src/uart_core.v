@@ -1,24 +1,24 @@
 `timescale 1ns/1ps
-`include "iob_uart.vh"
+`include "iob_uart_swreg_def.vh"
 
 module uart_core 
   (
-   input                     clk,
-   input                     rst,
-   input                     rst_soft,
-   input                     tx_en,
-   input                     rx_en,
-   input [7:0]               tx_data,
-   output reg [7:0]          rx_data,
-   output reg                tx_ready,
-   output reg                rx_ready,
-   input                     rxd,
-   output                    txd,
-   input                     cts,
-   output reg                rts,
-   input                     data_write_en,
-   input                     data_read_en,
-   input [`UART_WDATA_W-1:0] bit_duration
+   input                   clk,
+   input                   rst,
+   input                   rst_soft,
+   input                   tx_en,
+   input                   rx_en,
+   input [7:0]             tx_data,
+   output reg [7:0]        rx_data,
+   output reg              tx_ready,
+   output reg              rx_ready,
+   input                   rxd,
+   output                  txd,
+   input                   cts,
+   output reg              rts,
+   input                   data_write_en,
+   input                   data_read_en,
+   input [`UART_DIV_W-1:0] bit_duration
    );
    
                   
@@ -29,7 +29,7 @@ module uart_core
    // TX
    ////////////////////////////////////////////////////////
 
-   //BLOCK Serial TX & After enabled, this block serializes the data previously written to the {\tt tx_data} register by the CPU, and sends the data word over the single transmit line connected to output {\tt txd}.
+   //BLOCK Serial Transmit Controller & This block serializes the data written to the UART\_TXDATA by the CPU, and sends it to the {\tt txd} ouput.
    
    //clear to send (cts) synchronizer
    reg [1:0]  cts_int;
@@ -110,7 +110,7 @@ module uart_core
    // RX
    ////////////////////////////////////////////////////////
 
-   //BLOCK Serial RX & After enabled, this block deserializes the data in the incoming single transmit line connected to pin {\tt txd}, and writes a data word to the {\tt rx_data} register for the CPU to read.
+   //BLOCK Serial Reiceive Controller & This block deserializes the data received from the pin {\tt rxd} input, and writes it to the UART\_RXDATA register, so the CPU can read it.
    
 
    // receiver program
