@@ -45,8 +45,8 @@ def tb_read(number_of_bytes, is_file = False):
     data = b''
     transfered_bytes = 0
     read_percentage = 100
-    f = open('./soc2cnsl', "rb+")
     while(transfered_bytes < number_of_bytes):
+        f = open('./soc2cnsl', "rb")
         while (os.path.getsize("./soc2cnsl") == 0): pass
         byte = f.read(1)
         data += byte
@@ -56,9 +56,9 @@ def tb_read(number_of_bytes, is_file = False):
             if(read_percentage!=new_percentage):
                 read_percentage = new_percentage
                 if (not read_percentage%10): print("%3d %c" % (read_percentage, '%'))
-        f.seek(0) # absolute file positioning
-        f.truncate() # to erase all data
-    f.close()
+        f.close()
+        f = open('./soc2cnsl',"w")
+        f.close()
     return data
 
 # Print ERROR
@@ -182,12 +182,8 @@ def init_serial():
 
 def init_files():
     f = open('./cnsl2soc',"w")
-    f.seek(0) # absolute file positioning
-    f.truncate() # to erase all data
     f.close()
     f = open('./soc2cnsl',"w")
-    f.seek(0) # absolute file positioning
-    f.truncate() # to erase all data
     f.close()
 
 
