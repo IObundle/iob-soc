@@ -1,4 +1,4 @@
-SUT_DIR:=../../../..
+ROOT_DIR:=../../../..
 
 BOARD_SERVER=$(KU40_SERVER)
 BOARD_USER=$(KU40_USER)

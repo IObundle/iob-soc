@@ -98,7 +98,7 @@ system sut (
 
 # Returns dictionary with amount of instances each peripheral of the Tester to be created 
 def get_tester_peripherals():
-    tester_peripherals = subprocess.run(['make', '--no-print-directory', '-C', root_dir+'/hardware/tester', 'tester-peripherals', 'SUT_DIR=../..', 'TESTER_ENABLED=1'], stdout=subprocess.PIPE)
+    tester_peripherals = subprocess.run(['make', '--no-print-directory', '-C', root_dir+'/hardware/tester', 'tester-peripherals', 'ROOT_DIR=../..', 'TESTER_ENABLED=1'], stdout=subprocess.PIPE)
     tester_peripherals = tester_peripherals.stdout.decode('ascii').split()
 
     tester_instances_amount = {}

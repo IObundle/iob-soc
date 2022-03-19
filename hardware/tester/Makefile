@@ -1,4 +1,4 @@
-include $(SUT_DIR)/config.mk
+include $(ROOT_DIR)/config.mk
 
 #RULES
 

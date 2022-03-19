@@ -31,15 +31,15 @@ insert_tiehilo_cells -verbose
 delete_unloaded_undriven -all *
 #
 # reports
-report timing > timing_report.txt
-report power > power_report.txt
-report gates > gates_report.txt
-report area > area_report.txt
+report timing > timing.rpt
+report power > power.rpt
+report gates > gates.rpt
+report area > area.rpt
 #
 # outputs
 write_hdl -mapped -v2001 > system_synth.v
 write_sdc -strict > system_synth.sdc
-write_db -to_file system_synth.sdc
+write_db -to_file system_synth.db
 #
 #
 exit

@@ -1,6 +1,6 @@
 `timescale 1 ns / 1 ps
 `include "system.vh"
-`include "interconnect.vh"
+`include "iob_intercon.vh"
 
 module boot_ctr
   #(
@@ -81,7 +81,7 @@ module boot_ctr
    always @(posedge clk, posedge reboot_rst)
      if(reboot_rst) begin
         sram_valid <= 1'b1;
-        ram_w_addr <= {(`SRAM_ADDR_W-2){1'b0}};
+        ram_w_addr <= -{1'b1,{`BOOTROM_ADDR_W-2{1'b0}}};
         sram_wstrb <= {`DATA_W/8{1'b1}};
      end else begin
         sram_valid <= rom_r_valid;
@@ -107,7 +107,7 @@ module boot_ctr
    //
    //INSTANTIATE ROM
    //
-   iob_sp_rom
+   iob_rom_sp
      #(
        .DATA_W(`DATA_W),
        .ADDR_W(`BOOTROM_ADDR_W-2),

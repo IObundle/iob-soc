@@ -1,12 +1,15 @@
 [submodule "submodules/UART"]
 	path = submodules/UART
 	url = git@github.com:IObundle/iob-uart.git
-[submodule "submodules/CPU"]
-	path = submodules/CPU
-	url = git@github.com:IObundle/iob-picorv32.git
 [submodule "submodules/CACHE"]
 	path = submodules/CACHE
 	url = git@github.com:IObundle/iob-cache.git
+[submodule "submodules/PICORV32"]
+	path = submodules/PICORV32
+	url = git@github.com:IObundle/iob-picorv32.git
+[submodule "submodules/AXI"]
+	path = submodules/AXI
+	url = git@github.com:IObundle/iob-axi.git
 [submodule "submodules/MEM"]
 	path = submodules/MEM
 	url = git@github.com:IObundle/iob-mem.git
@@ -15,4 +18,4 @@
 	url = git@github.com:IObundle/iob-lib.git
 [submodule "submodules/REGFILEIF"]
 	path = submodules/REGFILEIF
-	url = git@github.com:arturum1/iob-regfileif.git
+	url = git@github.com:IObundle/iob-regfileif.git

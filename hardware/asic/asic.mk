@@ -6,7 +6,7 @@ CASE=TC
 #ddr controller address width
 DDR_ADDR_W=24
 
-include $(SUT_DIR)/hardware/hardware.mk
+include $(ROOT_DIR)/hardware/hardware.mk
 
 # Memory sizes in log2
 BOOTROM_W:=$(shell echo '$(BOOTROM_ADDR_W)-2' | bc)
@@ -61,23 +61,25 @@ test3:
 
 clean-remote: hw-clean
 ifneq ($(ASIC_SERVER),)
-	ssh $(ASIC_USER)@$(ASIC_SERVER) "if [ ! -d $(REMOTE_SUT_DIR) ]; then git clone --recursive $(GITURL) $(REMOTE_SUT_DIR); fi"
-	rsync -avz --delete --exclude .git $(SUT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_SUT_DIR)
-	ssh $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_SUT_DIR)/hardware/asic/$(ASIC_NODE); make clean'
+	ssh $(ASIC_USER)@$(ASIC_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
+	rsync -avz --delete --force --exclude .git $(ROOT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)
+	ssh $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE); make clean'
 endif
 
 #clean test log only when asic testing begins
 clean-testlog:
 	@rm -f test.log
 ifneq ($(ASIC_SERVER),)
-	ssh $(ASIC_USER)@$(ASIC_SERVER) "if [ ! -d $(REMOTE_SUT_DIR) ]; then git clone --recursive $(GITURL) $(REMOTE_SUT_DIR); fi"
-	rsync -avz --delete --exclude .git $(SUT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_SUT_DIR)
-	ssh $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_SUT_DIR)/hardware/asic/$(ASIC_NODE); make $@'
+	ssh $(ASIC_USER)@$(ASIC_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
+	rsync -avz --delete --force --exclude .git $(ROOT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)
+	ssh $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE); make $@'
 endif
+
+clean-all: clean-testlog clean
 
 .PHONY: all \
 	mems synth \
 	sp-rom dp-ram 2p-ram sp-ram \
 	sim-post-synth \
 	test test1 test2 test3 \
-	clean-remote clean-testlog
+	clean-remote clean-testlog clean-all

@@ -4,6 +4,8 @@
 #
 ######################################################################
 
+IOBSOC_NAME:=IOBSOC
+
 #
 # PRIMARY PARAMETERS: CAN BE CHANGED BY USERS OR OVERRIDEN BY ENV VARS
 #
@@ -40,17 +42,12 @@ USE_MUL_DIV ?=1
 #RISC-V COMPRESSED INSTRUCTIONS
 USE_COMPRESSED ?=1
 
-
 #TESTER SYSTEM
 #list with corename of peripherals to be attached to Tester peripheral bus.
 TESTER_PERIPHERALS ?=UART UART NATIVEBRIDGEIF
 
-#REMOTE MACHINES
-#git url for cloning 
-GITURL := $(word 2, $(shell git remote -v))
-#SUT DIR ON REMOTE MACHINES
-REMOTE_SUT_DIR ?=sandbox/iob-soc-sut
-
+#ROOT DIRECTORY ON REMOTE MACHINES
+REMOTE_ROOT_DIR ?=sandbox/iob-soc-sut
 
 #SIMULATION
 #default simulator running locally or remotely
@@ -72,6 +69,8 @@ ASIC_NODE ?=umc130
 #default document to compile
 DOC ?= pb
 
+#IOB LIBRARY
+UART_HW_DIR:=$(UART_DIR)/hardware
 
 ####################################################################
 # DERIVED FROM PRIMARY PARAMETERS: DO NOT CHANGE BELOW THIS POINT
@@ -80,7 +79,6 @@ DOC ?= pb
 ifeq ($(RUN_EXTMEM),1)
 DEFINE+=$(defmacro)RUN_EXTMEM
 USE_DDR=1
-INIT_MEM=0
 endif
 
 ifeq ($(USE_DDR),1)
@@ -91,38 +89,37 @@ ifeq ($(INIT_MEM),1)
 DEFINE+=$(defmacro)INIT_MEM
 endif
 
+#submodule paths
+PICORV32_DIR=$(ROOT_DIR)/submodules/PICORV32
+CACHE_DIR=$(ROOT_DIR)/submodules/CACHE
+UART_DIR=$(ROOT_DIR)/submodules/UART
+LIB_DIR=$(ROOT_DIR)/submodules/LIB
+MEM_DIR=$(ROOT_DIR)/submodules/MEM
+AXI_DIR=$(ROOT_DIR)/submodules/AXI
+
 #sw paths
-SW_DIR:=$(SUT_DIR)/software
+SW_DIR:=$(ROOT_DIR)/software
 PC_DIR:=$(SW_DIR)/pc-emul
 FIRM_DIR:=$(SW_DIR)/firmware
 BOOT_DIR:=$(SW_DIR)/bootloader
 CONSOLE_DIR:=$(SW_DIR)/console
 
 #hw paths
-HW_DIR=$(SUT_DIR)/hardware
+HW_DIR=$(ROOT_DIR)/hardware
 SIM_DIR=$(HW_DIR)/simulation/$(SIMULATOR)
 ASIC_DIR=$(HW_DIR)/asic/$(ASIC_NODE)
 TESTER_DIR=$(HW_DIR)/tester
 BOARD_DIR ?=$(shell find hardware -name $(BOARD))
 
 #doc paths
-DOC_DIR=$(SUT_DIR)/document/$(DOC)
-TEX_DIR=$(UART_DIR)/submodules/TEX
-INTERCON_DIR=$(UART_DIR)/submodules/INTERCON
-
-#submodule paths
-SUBMODULES_DIR=$(SUT_DIR)/submodules
-SUBMODULES=
-SUBMODULE_DIRS=$(shell ls $(SUBMODULES_DIR))
-$(foreach d, $(SUBMODULE_DIRS), $(eval TMP=$(shell make -C $(SUBMODULES_DIR)/$d corename | grep -v make)) $(eval SUBMODULES+=$(TMP)) $(eval $(TMP)_DIR ?=$(SUBMODULES_DIR)/$d))
+DOC_DIR=$(ROOT_DIR)/document/$(DOC)
 
 #define macros
 DEFINE+=$(defmacro)BOOTROM_ADDR_W=$(BOOTROM_ADDR_W)
 DEFINE+=$(defmacro)SRAM_ADDR_W=$(SRAM_ADDR_W)
 DEFINE+=$(defmacro)FIRM_ADDR_W=$(FIRM_ADDR_W)
 DEFINE+=$(defmacro)DCACHE_ADDR_W=$(DCACHE_ADDR_W)
-
-DEFINE+=$(defmacro)N_SLAVES=$(shell python3 $(SW_DIR)/submodule_utils.py get_n_slaves $(SUT_DIR))
+DEFINE+=$(defmacro)N_SLAVES=$(shell python3 $(SW_DIR)/submodule_utils.py get_n_slaves $(ROOT_DIR)) #peripherals
 
 #address selection bits
 E:=31 #extra memory bit
@@ -138,7 +135,10 @@ DEFINE+=$(defmacro)E=$E
 DEFINE+=$(defmacro)P=$P
 DEFINE+=$(defmacro)B=$B
 
-DEFINE+=$(shell python3 $(SW_DIR)/submodule_utils.py get_defines $(SUT_DIR) $(defmacro)) 
+#PERIPHERAL IDs
+#assign sequential numbers to peripheral names used as variables
+#that define their base address in the software and instance name in the hardware
+DEFINE+=$(shell python3 $(SW_DIR)/submodule_utils.py get_defines $(ROOT_DIR) $(defmacro)) 
 
 #RULES
 gen-clean:

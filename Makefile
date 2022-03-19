@@ -1,11 +1,11 @@
-SUT_DIR:=.
+ROOT_DIR:=.
 include ./config.mk
 
-.PHONY: pc-emul pc-emul-test pc-emul-clean\
-	sim sim-test sim-clean tester-sim\
-	fpga-build fpga-run fpga-test fpga-clean\
+.PHONY: sim sim-test sim-clean tester-sim\
+	pc-emul pc-emul-test pc-emul-clean\
+	fpga-build fpga-build-all fpga-run fpga-test fpga-clean fpga-clean-all\
 	asic-synth asic-sim-post-synth asic-test asic-clean\
-	doc-build doc-test  doc-clean clean\
+	doc-build doc-build-all doc-test doc-clean doc-clean-all\
 	test-pc-emul test-pc-emul-clean\
 	test-sim test-sim-clean\
 	test-fpga test-fpga-clean\
@@ -13,16 +13,12 @@ include ./config.mk
 	test-doc test-doc-clean\
 	test test-clean\
 	clean clean-all\
-	python-cache-clean\
-	corename\
-	tester-portmap
-
-corename:
-	@echo "IOb-SoC"
+	tester-portmap\
+	debug
 
 # Generate configuration file for port mapping between the Tester, SUT and external interface of the Top System
 tester-portmap:
-	python3 hardware/tester/tester_utils.py generate_config $(SUT_DIR)
+	python3 hardware/tester/tester_utils.py generate_config $(ROOT_DIR)
 	@echo Portmap template generated in hardware/tester/peripheral_portmap.txt
 
 #
@@ -36,7 +32,7 @@ sim-test:
 	make -C $(SIM_DIR) test
 
 sim-clean:
-	make -C $(SIM_DIR) clean clean-testlog
+	make -C $(SIM_DIR) clean-all
 
 #Simulate SUT with Tester system
 tester-sim:
@@ -73,7 +69,7 @@ fpga-test:
 	make -C $(BOARD_DIR) test
 
 fpga-clean:
-	make -C $(BOARD_DIR) clean clean-testlog
+	make -C $(BOARD_DIR) clean-all
 
 fpga-clean-all:
 	make fpga-clean BOARD=CYCLONEV-GT-DK
@@ -94,19 +90,29 @@ asic-test:
 	make -C $(ASIC_DIR) test
 
 asic-clean:
-	make -C $(ASIC_DIR) clean clean-testlog
+	make -C $(ASIC_DIR) clean-all
 
 #
 # COMPILE DOCUMENTS
 #
 doc-build:
-	make -C $(DOC_DIR) all
+	make -C $(DOC_DIR) $(DOC).pdf
+
+doc-build-all:
+	make fpga-clean-all
+	make fpga-build-all
+	make doc-build DOC=presentation
+	make doc-build DOC=pb
 
 doc-test:
 	make -C $(DOC_DIR) test
 
 doc-clean:
 	make -C $(DOC_DIR) clean
+
+doc-clean-all:
+	make doc-clean DOC=presentation
+	make doc-clean DOC=pb
 
 
 #
@@ -118,11 +124,13 @@ test-pc-emul: pc-emul-test
 test-pc-emul-clean: pc-emul-clean
 
 test-sim:
-	make sim-test SIMULATOR=xcelium
+	make sim-test SIMULATOR=verilator
+#	make sim-test SIMULATOR=xcelium
 	make sim-test SIMULATOR=icarus
 
 test-sim-clean:
-	make sim-clean SIMULATOR=xcelium
+	make sim-clean SIMULATOR=verilator
+#	make sim-clean SIMULATOR=xcelium
 	make sim-clean SIMULATOR=icarus
 
 test-fpga:
@@ -135,9 +143,11 @@ test-fpga-clean:
 
 test-asic:
 	make asic-test ASIC_NODE=umc130
+	make asic-test ASIC_NODE=skywater
 
 test-asic-clean:
 	make asic-clean ASIC_NODE=umc130
+	make asic-clean ASIC_NODE=skywater
 
 test-doc:
 	make fpga-clean-all
@@ -151,18 +161,16 @@ test-doc-clean:
 
 test: test-clean test-pc-emul test-sim test-fpga test-doc
 
-test-clean: test-pc-emul-clean test-sim-clean test-fpga-clean test-asic-clean test-doc-clean
+test-clean: test-pc-emul-clean test-sim-clean test-fpga-clean test-doc-clean
 
 python-cache-clean:
 	for i in `find . -name __pycache__`; do rm -r $$i; done
 
 #generic clean
-clean:
-	make pc-emul-clean
-	make sim-clean
-	make fpga-clean
-	make asic-clean
-	#make doc-clean
-	make python-cache-clean
+clean: pc-emul-clean sim-clean fpga-clean doc-clean python-cache-clean
 
 clean-all: test-clean
+
+debug:
+	@echo $(UART_DIR)
+	@echo $(CACHE_DIR)

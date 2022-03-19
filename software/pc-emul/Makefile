@@ -1,4 +1,4 @@
-SUT_DIR:=../..
+ROOT_DIR:=../..
 include ../software.mk
 
 #default baud and freq for pc emulation
@@ -37,6 +37,6 @@ test:
 	diff -q $(PC_DIR)/test.log $(PC_DIR)/test.expected
 
 clean:
-	@rm -rf firmware.out periphs.h test.log *sw_reg.h
+	@rm -rf firmware.out periphs.h test.log *swreg.h
 
 .PHONY: all build run clean subs periphs_tmp.h test

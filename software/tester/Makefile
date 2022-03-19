@@ -1,4 +1,4 @@
-SUT_DIR=../..
+ROOT_DIR=../..
 include ../software.mk
 
 #additional compiler flags
@@ -26,16 +26,16 @@ $(if $(filter UART, $(TESTER_PERIPHERALS)),, $(eval include $(UART_DIR)/software
 include $(INTERCON_DIR)/software/software.mk
 
 #Replace SUT N_SLAVES by Tester N_SLAVES
-TESTER_N_SLAVES=$(shell python3 $(TESTER_DIR)/tester_utils.py get_n_slaves $(SUT_DIR))
+TESTER_N_SLAVES=$(shell python3 $(TESTER_DIR)/tester_utils.py get_n_slaves $(ROOT_DIR))
 DEFINE:=$(patsubst $(defmacro)N_SLAVES=%,$(defmacro)N_SLAVES=$(TESTER_N_SLAVES),$(DEFINE))
 
 #Replace SUT peripheral sequential numbers by Tester peripheral sequetial numbers
-DEFINE:=$(shell python3 $(TESTER_DIR)/tester_utils.py replace_peripheral_defines $(SUT_DIR) "$(DEFINE)" $(defmacro))
+DEFINE:=$(shell python3 $(TESTER_DIR)/tester_utils.py replace_peripheral_defines $(ROOT_DIR) "$(DEFINE)" $(defmacro))
 
 #RULES
 #make bootloader based on bootloader from SUT
 boot.c: $(BOOT_DIR)/boot.c 
-	python3 createTesterBoot.py $(SUT_DIR)
+	python3 createTesterBoot.py $(ROOT_DIR)
 
 boot.elf: ../template.lds  $(HDR) $(SRC) $(BOOT_SRC)
 	$(TOOLCHAIN_PREFIX)gcc -o $@ $(CFLAGS),$(BOOT_CFLAGS) $(DEFINE) $(INCLUDE) $(SRC) $(BOOT_SRC) -lgcc -lc -lnosys

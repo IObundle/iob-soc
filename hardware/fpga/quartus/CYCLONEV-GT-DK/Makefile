@@ -1,4 +1,4 @@
-SUT_DIR:=../../../..
+ROOT_DIR:=../../../..
 DEFINE+=$(defmacro)IS_CYCLONEV=1
 
 BOARD_SERVER=$(CYC5_SERVER)

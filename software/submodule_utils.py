@@ -21,7 +21,7 @@ def get_submodule_directories():
 # Returns dictionary with amount of instances each peripheral of the SUT to be created 
 def get_sut_peripherals():
     # Get peripherals list of config.mk
-    sut_peripherals = subprocess.run(['make', '--no-print-directory', '-C', root_dir+'/hardware/tester', 'sut-peripherals', 'SUT_DIR=../..'], stdout=subprocess.PIPE)
+    sut_peripherals = subprocess.run(['make', '--no-print-directory', '-C', root_dir+'/hardware/tester', 'sut-peripherals', 'ROOT_DIR=../..'], stdout=subprocess.PIPE)
     sut_peripherals = sut_peripherals.stdout.decode('ascii').split()
 
     # Count how many instances to create of each type of peripheral

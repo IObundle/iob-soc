@@ -1,20 +1,20 @@
-SUT_DIR:=../..
-include $(SUT_DIR)/config.mk
+ROOT_DIR:=../..
+include $(ROOT_DIR)/config.mk
 
 SERIAL:=/dev/ttyUSB0
-
-CC:=gcc
-CFLAGS:=-g -Wall
+TEST_BENCH:=0
 
 INCLUDE+=-I$(UART_DIR)/software -I$(FIRM_DIR)
 
-HDR:=console.c $(UART_DIR)/software $(FIRM_DIR)/UARTsw_reg.h
-
-SRC:=console.c rs232comm.c
+HDR:=$(UART_DIR)/software $(FIRM_DIR)/iob_uart_swreg.h
 
 CONSOLE_CMD=./console -s $(SERIAL)
 ifeq ($(INIT_MEM),0)
-	CONSOLE_CMD+=-f
+CONSOLE_CMD+=-f
+endif
+
+ifeq ($(TEST_BENCH),1)
+CONSOLE_CMD+=-L
 endif
 
 $(FIRM_DIR)/firmware.bin: $(FIRM_DIR)/firmware.c
@@ -23,13 +23,10 @@ $(FIRM_DIR)/firmware.bin: $(FIRM_DIR)/firmware.c
 firmware.bin: $(FIRM_DIR)/firmware.bin
 	cp $(FIRM_DIR)/firmware.bin .
 
-run: firmware.bin build 
+run: firmware.bin
 	$(CONSOLE_CMD) $(TEST_LOG)
 
-build: $(HDR) $(SRC)
-	$(CC) $(CFLAGS) $(INCLUDE) $(SRC) -o console
+clean: gen-clean
+	@rm -f firmware.bin
 
-clean:
-	rm -f *# *~ console firmware.bin
-
-.PHONY: run build clean
+.PHONY: run clean
