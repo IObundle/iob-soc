@@ -13,10 +13,6 @@ DDR_ADDR_W=$(DCACHE_ADDR_W)
 
 CONSOLE_CMD=$(ROOT_DIR)/software/console/console -L
 
-ifeq ($(INIT_MEM),0)
-CONSOLE_CMD+=-f
-endif
-
 #produce waveform dump
 VCD ?=0
 
@@ -25,6 +21,10 @@ DEFINE+=$(defmacro)VCD
 endif
 
 include $(ROOT_DIR)/hardware/hardware.mk
+
+ifeq ($(INIT_MEM),0)
+CONSOLE_CMD+=-f
+endif
 
 #SOURCES
 
@@ -107,7 +107,7 @@ ifeq ($(VCD),1)
 endif
 
 kill-sim:
-	kill -9 $$(ps aux | grep $(USER) | grep console | grep -v grep | awk '{print $$2}')
+	kill -9 $$(ps aux | grep $(USER) | grep console | grep python3 | grep -v grep | awk '{print $$2}')
 
 
 test: clean-testlog test1 test2 test3 test4 test5
