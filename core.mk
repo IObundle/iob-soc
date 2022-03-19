@@ -21,5 +21,5 @@ REMOTE_ROOT_DIR ?=sandbox/iob-regfileif
 DEFINE+=$(defmacro)REGFILEIF_ADDR_W=$(REGFILEIF_ADDR_W)
 
 #Target to get register configuration file from SUT
-REGFILEIFsw_reg.v: $(SUT_DIR)/REGFILEIFsw_reg.v
-	ln -s $(SUT_DIR)/REGFILEIFsw_reg.v $@
+REGFILEIFsw_reg.v: $(ROOT_DIR)/REGFILEIFsw_reg.v
+	ln -s $(ROOT_DIR)/REGFILEIFsw_reg.v $@
