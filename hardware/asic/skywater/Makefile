@@ -12,14 +12,11 @@ VHDR+=../../../submodules/LIB/hardware/include/iob_s_if.vh
 ASIC_MEM_TECH:=sky130A
 ASIC_SPRAM_TYPE:=spram
 DEFINE+=$(defmacro)USE_SPRAM=1
+PYTHON_BIN ?= python3
+ENV = ./OpenLane/env.py docker-config
+USR_ID = $(shell $(PYTHON_BIN) $(ENV))
 
-ifeq (0,$(shell docker -v 2>/dev/null | grep podman | wc -l))
-   DOCKER_UID_OPTIONS = -u $(shell id -u $(USER)):$(shell id -g $(USER))
-endif
-
-DOK_CMD = docker run --rm -v $(OPENLANE_HOME):/openlane -v $(OPENLANE_DESIGNS):/openlane/install -v $(OPENLANE_HOME)/pdks:/$(OPENLANE_HOME)/pdks -e PDK_ROOT=$(OPENLANE_HOME)/pdks -e STD_CELL_LIBRARY=sky130_fd_sc_hd --user 1007:1007 -e DISPLAY=:localhost:10.0 -v /tmp/.X11-unix:/tmp/.X11-unix -v /home/c/.Xauthority:/.Xauthority --network host -ti $(IMAGE_NAME)
-
-.PHONY: all clean_asic clean_debug clean
+.PHONY: all clean_asic clean_debug clean cp_openlane
 
 all: synth test
 test:
@@ -39,8 +36,14 @@ $(DEFINE): sw boot.hex
 	echo "\`define $@ $($@)"| sed 's/=/ /g' >> temp_inc/iob-soc-defs.vh
 	cp boot.hex temp_src
 
-synth:  clean $(VSRC) $(VHDR) temp_src temp_inc $(DEFINE) 
-	cp -r $(OPENLANE_SRC_DIR) . 
+cp_openlane:
+ifeq	("$(wildcard OpenLane)", "")
+	cp -r $(OPENLANE_SRC_DIR) .
+else
+	echo "OpenLane found locally!"
+endif
+
+synth:  clean $(VSRC) $(VHDR) temp_src temp_inc $(DEFINE) cp_openlane
 	cp boot.hex temp_src
 	sed -i "1i \`include \"iob-soc-defs.vh\"" temp_src/system.v
 	sed -i "4i \`include \"iob-soc-defs.vh\"" temp_src/boot_ctr.v
@@ -55,13 +58,14 @@ synth:  clean $(VSRC) $(VHDR) temp_src temp_inc $(DEFINE)
 	cp run_interactive.tcl $(OPENLANE_HOME)
 	cp config.tcl $(OPENLANE_DESIGNS)/system
 	cd $(OPENLANE_HOME);
-	$(DOK_CMD) sh -c "./flow.tcl -interactive -file run_interactive.tcl"
+	docker run --rm -v $(OPENLANE_HOME):/openlane -v $(OPENLANE_DESIGNS):/openlane/install -v $(OPENLANE_HOME)/pdks:/$(OPENLANE_HOME)/pdks -e PDK_ROOT=$(OPENLANE_HOME)/pdks -e STD_CELL_LIBRARY=sky130_fd_sc_hd $(USR_ID) -e DISPLAY=:localhost:10.0 -v /tmp/.X11-unix:/tmp/.X11-unix -v /home/c/.Xauthority:/.Xauthority --network host -ti $(IMAGE_NAME) sh -c "./flow.tcl -interactive -file run_interactive.tcl"
 
 debug: $(VSRC) $(VHDR)
 	mkdir debug
 	cp $(VSRC) $(VHDR) debug
 	echo $(VSRC)
 	echo $(VHDR)
+	echo $(USR_ID)
 
 clean_asic: clean-remote
 	rm -rf iob_ram_sp_be.v
@@ -72,9 +76,10 @@ clean_asic: clean-remote
 	rm -rf system_tmp.v
 	rm -rf UARTsw_reg_def.vh
 	rm -rf UARTsw_reg_gen.vh
-	rm -rf OpenLane
+	rm -rf OpenLane/designs/system
 
 clean_debug:
 	rm -rf debug
 
 clean:  clean_asic clean_debug
+
