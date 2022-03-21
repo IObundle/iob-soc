@@ -1,7 +1,6 @@
 `timescale 1ns/1ps
 
 `include "iob_lib.vh"
-`include "interconnect.vh"
 `include "iob_regfileif.vh"
 // `include "REGFILEIFsw_reg.vh"
 

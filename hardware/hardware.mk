@@ -27,4 +27,4 @@ VSRC+=$(wildcard $(REGFILEIF_SRC_DIR)/*.v)
 
 #cpu accessible registers
 REGFILEIFsw_reg_gen.v REGFILEIFsw_reg.vh: REGFILEIFsw_reg.v
-	$(REGFILEIF_DIR)/software/mkregsregfileif.py $< HW $(LIB_DIR)/software
+	$(REGFILEIF_DIR)/software/mkregsregfileif.py $< HW $(LIB_DIR)/software/python

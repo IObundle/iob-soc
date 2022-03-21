@@ -12,4 +12,4 @@ HDR+=$(REGFILEIF_SW_DIR)/*.h REGFILEIFsw_reg.h
 SRC+=
 
 REGFILEIFsw_reg.h: REGFILEIFsw_reg.v
-	$(REGFILEIF_DIR)/software/mkregsregfileif.py $< SW $(LIB_DIR)/software
+	$(REGFILEIF_DIR)/software/mkregsregfileif.py $< SW $(LIB_DIR)/software/python

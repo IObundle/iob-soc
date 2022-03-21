@@ -52,7 +52,7 @@ VSRC+=$(NATIVEBRIDGEIF_DIR)/hardware/src/iob_nativebridgeif.v
     fout.write(harware_mk_str)
     fout.close()
 
-    # ~~~~~~~~~~~~ Create include, iob_nativebridgeif.vh, inst.v and pio.v ~~~~~~~~~~~~
+    # ~~~~~~~~~~~~ Create include, iob_nativebridgeif.vh, inst.vh and pio.vh ~~~~~~~~~~~~
     os.mkdir(os.path.join(nativebridgeif_dir,"hardware/include"))
     # iob_nativebridgeif.vh
     fin = open (os.path.join(os.path.dirname(__file__), '../hardware/include/iob_regfileif.vh'), 'r')
@@ -63,18 +63,18 @@ VSRC+=$(NATIVEBRIDGEIF_DIR)/hardware/src/iob_nativebridgeif.v
     fout = open (os.path.join(nativebridgeif_dir,"hardware/include","iob_nativebridgeif.vh"), 'w')
     fout.writelines(verilogheader_content)
     fout.close()
-    # inst.v
-    fin = open (os.path.join(os.path.dirname(__file__), '../hardware/include/inst.v'), 'r')
+    # inst.vh
+    fin = open (os.path.join(os.path.dirname(__file__), '../hardware/include/inst.vh'), 'r')
     instv_content=fin.readlines()
     fin.close()
     for i in range(len(instv_content)):
         instv_content[i] = re.sub('regfileif','nativebridgeif', 
                            re.sub('REGFILEIF','NATIVEBRIDGEIF', instv_content[i]))
-    fout = open (os.path.join(nativebridgeif_dir,"hardware/include","inst.v"), 'w')
+    fout = open (os.path.join(nativebridgeif_dir,"hardware/include","inst.vh"), 'w')
     fout.writelines(instv_content)
     fout.close()
-    # pio.v
-    fin = open (os.path.join(os.path.dirname(__file__), '../hardware/include/pio.v'), 'r')
+    # pio.vh
+    fin = open (os.path.join(os.path.dirname(__file__), '../hardware/include/pio.vh'), 'r')
     pio_content=fin.readlines()
     fin.close()
     for i in range(len(pio_content)):
@@ -84,7 +84,7 @@ VSRC+=$(NATIVEBRIDGEIF_DIR)/hardware/src/iob_nativebridgeif.v
         else:
             pio_content[i] = re.sub('REGFILEIF','NATIVEBRIDGEIF', 
                              re.sub('output','input', pio_content[i]))
-    fout = open (os.path.join(nativebridgeif_dir,"hardware/include","pio.v"), 'w')
+    fout = open (os.path.join(nativebridgeif_dir,"hardware/include","pio.vh"), 'w')
     fout.writelines(pio_content)
     fout.close()
 
