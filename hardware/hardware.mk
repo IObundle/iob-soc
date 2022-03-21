@@ -74,7 +74,7 @@ endif
 
 # make system.v with peripherals
 system.v: $(SRC_DIR)/system_core.v
-	python3 $(HW_DIR)/createSystem.py $(ROOT_DIR)
+	$(HW_DIR)/createSystem.py $(ROOT_DIR)
 
 # make and copy memory init files
 PYTHON_DIR=$(MEM_DIR)/software/python

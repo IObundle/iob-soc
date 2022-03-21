@@ -19,7 +19,7 @@ include ./config.mk
 
 # Generate configuration file for port mapping between the Tester, SUT and external interface of the Top System
 tester-portmap:
-	python3 hardware/tester/tester_utils.py generate_config $(ROOT_DIR)
+	hardware/tester/tester_utils.py generate_config $(ROOT_DIR)
 	@echo Portmap template generated in hardware/tester/peripheral_portmap.txt
 
 #
@@ -165,7 +165,7 @@ test: test-clean test-pc-emul test-sim test-fpga test-doc
 test-clean: test-pc-emul-clean test-sim-clean test-fpga-clean test-doc-clean
 
 python-cache-clean:
-	for i in `find . -name __pycache__`; do rm -r $$i; done
+	find . -name "*__pycache__" -exec rm -rf {} \;
 
 #generic clean
 clean: pc-emul-clean sim-clean fpga-clean doc-clean python-cache-clean

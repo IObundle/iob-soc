@@ -142,7 +142,7 @@ DEFINE+=$(defmacro)BOOTROM_ADDR_W=$(BOOTROM_ADDR_W)
 DEFINE+=$(defmacro)SRAM_ADDR_W=$(SRAM_ADDR_W)
 DEFINE+=$(defmacro)FIRM_ADDR_W=$(FIRM_ADDR_W)
 DEFINE+=$(defmacro)DCACHE_ADDR_W=$(DCACHE_ADDR_W)
-DEFINE+=$(defmacro)N_SLAVES=$(shell python3 $(SW_DIR)/submodule_utils.py get_n_slaves $(ROOT_DIR)) #peripherals
+DEFINE+=$(defmacro)N_SLAVES=$(shell $(SW_DIR)/submodule_utils.py get_n_slaves $(ROOT_DIR)) #peripherals
 
 #address selection bits
 E:=31 #extra memory bit
@@ -161,7 +161,7 @@ DEFINE+=$(defmacro)B=$B
 #PERIPHERAL IDs
 #assign sequential numbers to peripheral names used as variables
 #that define their base address in the software and instance name in the hardware
-DEFINE+=$(shell python3 $(SW_DIR)/submodule_utils.py get_defines $(ROOT_DIR) $(defmacro)) 
+DEFINE+=$(shell $(SW_DIR)/submodule_utils.py get_defines $(ROOT_DIR) $(defmacro)) 
 
 #RULES
 gen-clean:

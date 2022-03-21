@@ -97,7 +97,7 @@ else
 
 #create testbench
 system_tb.v: $(TB_DIR)/system_core_tb.v
-	python3 $(HW_DIR)/simulation/createTestbench.py $(ROOT_DIR)
+	$(HW_DIR)/simulation/createTestbench.py $(ROOT_DIR)
 
 endif
 

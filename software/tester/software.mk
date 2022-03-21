@@ -5,5 +5,5 @@ tester_periphs.h: tester_periphs_tmp.h
 	@rm tester_periphs_tmp.h
 
 tester_periphs_tmp.h:
-	python3 $(SW_DIR)/tester/tester_periphs_tmp.py $P $(ROOT_DIR)
+	$(SW_DIR)/tester/tester_periphs_tmp.py $P $(ROOT_DIR)
 

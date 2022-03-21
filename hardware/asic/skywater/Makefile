@@ -25,7 +25,7 @@ test:
 	[ -f $(OPENLANE_DESIGNS)/system/runs/soc/results/synthesis/system.synthesis.v ] && echo "Synthesis and technology mapping successful" || echo "Synthesis or technology mapping failed"
 
 sram: openram_config.py
-	python3 $(OPENRAM_HOME)/openram.py openram_config.py
+	$(OPENRAM_HOME)/openram.py openram_config.py
 	mv temp sram
 
 iob_ram_sp_be.v:
