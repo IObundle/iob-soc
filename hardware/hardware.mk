@@ -28,6 +28,8 @@ include $(CACHE_DIR)/hardware/hardware.mk
 #UART
 include $(UART_DIR)/hardware/hardware.mk
 
+#REGFILEIF
+#include $(REGFILEIF_DIR)/hardware/hardware.mk
 
 #HARDWARE PATHS
 INC_DIR:=$(HW_DIR)/include

@@ -12,7 +12,11 @@ CFLAGS=-Os -std=gnu99 -Wl,--strip-debug
 DEFINE+=-DPC
 
 #peripherals (pc)
-$(foreach p, $(sort $(PERIPHERALS)), $(eval include $($p_DIR)/software/pc-emul/pc.mk))
+#uart
+include $(UART_DIR)/software/pc-emul/pc.mk
+
+#regfileif
+#include $(REGFILEIF_DIR)/software/pc-emul/pc.mk
 
 #HEADERS
 HDR+=periphs.h

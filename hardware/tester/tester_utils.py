@@ -98,7 +98,7 @@ system sut (
 
 # Returns dictionary with amount of instances each peripheral of the Tester to be created 
 def get_tester_peripherals():
-    tester_peripherals = subprocess.run(['make', '--no-print-directory', '-C', root_dir+'/hardware/tester', 'tester-peripherals', 'ROOT_DIR=../..', 'TESTER_ENABLED=1'], stdout=subprocess.PIPE)
+    tester_peripherals = subprocess.run(['make', '--no-print-directory', '-C', root_dir, 'tester-peripherals', 'ROOT_DIR=../..', 'TESTER_ENABLED=1'], stdout=subprocess.PIPE)
     tester_peripherals = tester_peripherals.stdout.decode('ascii').split()
 
     tester_instances_amount = {}
@@ -240,9 +240,9 @@ def create_tester():
     # Insert headers of peripherals of both systems
     for i in {**sut_instances_amount, **tester_instances_amount}:
         start_index = find_idx(tester_contents, "PHEADER")
-        for file in os.listdir(root_dir+"/submodules/"+submodule_directories[i]+"/hardware/include"):
+        for file in os.listdir(root_dir+"/"+submodule_directories[i]+"/hardware/include"):
             if file.endswith(".vh"):
-                tester_contents.insert(start_index, '`include "{}"\n'.format(root_dir+"/submodules/"+submodule_directories[i]+"/hardware/include/"+file))
+                tester_contents.insert(start_index, '`include "{}"\n'.format(root_dir+"/"+submodule_directories[i]+"/hardware/include/"+file))
 
     # Create PWIRES marker
     tester_contents.insert(find_idx(tester_contents, "endmodule")-1, '    //PWIRES\n')
@@ -279,8 +279,8 @@ def create_tester():
     #Insert parameters on int_mem to load with tester firmware
     int_mem_template = """\
     int_mem
-         #(.FILE("tester_firmware"),
-           .BOOT_FILE("tester_boot"))
+         #(.HEXFILE("tester_firmware"),
+           .BOOT_HEXFILE("tester_boot"))
         int_mem0
     """
     start_index = find_idx(tester_contents, "int_mem ")-1
@@ -289,8 +289,8 @@ def create_tester():
 
     # Insert Tester peripherals
     for corename in tester_instances_amount:
-        # Read inst.v file
-        instv_file = open(root_dir+"/submodules/"+submodule_directories[corename]+"/hardware/include/inst.v", "r")
+        # Read inst.vh file
+        instv_file = open(root_dir+"/"+submodule_directories[corename]+"/hardware/include/inst.vh", "r")
         instv_contents = instv_file.readlines() 
         # Insert for every instance
         for i in range(tester_instances_amount[corename]):
@@ -300,7 +300,7 @@ def create_tester():
                 # Check if this line contains a signal of PIO
                 strMatch = re.search("\((\/\*<InstanceName>\*\/[^\)]+)\)",j)
                 if strMatch and strMatch[1] in peripheral_signals[corename]:
-                    # Line contains a pio.v signal, therefore change signal name to match PIO or PWIRES
+                    # Line contains a pio.vh signal, therefore change signal name to match PIO or PWIRES
                     signalModified = re.sub("\/\*<InstanceName>\*\/",corename,strMatch[1])
                     if mapped_signals[1][corename][i][signalModified] > -1: # Not mapped to external interface
                         # Signal is connected to corresponding pwires
@@ -388,9 +388,9 @@ def create_testbench():
     # Insert headers of peripherals of both systems
     for i in {**sut_instances_amount, **tester_instances_amount}:
         start_index = find_idx(testbench_contents, "PHEADER")
-        for file in os.listdir(root_dir+"/submodules/"+submodule_directories[i]+"/hardware/include"):
+        for file in os.listdir(root_dir+"/"+submodule_directories[i]+"/hardware/include"):
             if file.endswith(".vh"):
-                testbench_contents.insert(start_index, '`include "{}"\n'.format(root_dir+"/submodules/"+submodule_directories[i]+"/hardware/include/"+file))
+                testbench_contents.insert(start_index, '`include "{}"\n'.format(root_dir+"/"+submodule_directories[i]+"/hardware/include/"+file))
 
     # Insert PORTS and PWIRES
     for corename in sut_instances_amount:

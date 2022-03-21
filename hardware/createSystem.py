@@ -21,16 +21,18 @@ def create_systemv():
 
     # Insert header files
     for corename in sut_instances_amount:
-        path = root_dir+"/submodules/"+submodule_directories[corename]+"/hardware/include"
+        path = root_dir+"/"+submodule_directories[corename]+"/hardware/include"
         start_index = find_idx(template_contents, "PHEADER")
         for file in os.listdir(path):
-            if file.endswith(".vh"):
+            if file.endswith(".vh") and not any(x in file for x in ["pio","inst","swreg"]):
                 template_contents.insert(start_index, '`include "{}"\n'.format(path+"/"+file))
+            if file.endswith("swreg.vh"):
+                template_contents.insert(start_index, '`include "{}"\n'.format(file.replace("swreg","swreg_def")))
 
     # Insert IOs and Instances for peripheral
     for corename in sut_instances_amount:
-        # Read inst.v file
-        instv_file = open(root_dir+"/submodules/"+submodule_directories[corename]+"/hardware/include/inst.v", "r")
+        # Read inst.vh file
+        instv_file = open(root_dir+"/"+submodule_directories[corename]+"/hardware/include/inst.vh", "r")
         instv_contents = instv_file.readlines() 
         # Insert for every instance
         for i in range(sut_instances_amount[corename]):

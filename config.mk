@@ -34,7 +34,7 @@ INIT_MEM ?=1
 #must match the 'corename' target in the Makefile inside the peripheral submodule directory.
 #to include multiple instances, write the corename of the peripheral multiple times.
 #(Example: 'PERIPHERALS ?=UART UART' will create 2 UART instances)
-PERIPHERALS ?=UART REGFILEIF
+PERIPHERALS ?=UART #REGFILEIF
 
 #RISC-V HARD MULTIPLIER AND DIVIDER INSTRUCTIONS
 USE_MUL_DIV ?=1
@@ -44,7 +44,7 @@ USE_COMPRESSED ?=1
 
 #TESTER SYSTEM
 #list with corename of peripherals to be attached to Tester peripheral bus.
-TESTER_PERIPHERALS ?=UART UART NATIVEBRIDGEIF
+TESTER_PERIPHERALS ?=UART UART #NATIVEBRIDGEIF
 
 #ROOT DIRECTORY ON REMOTE MACHINES
 REMOTE_ROOT_DIR ?=sandbox/iob-soc-sut
@@ -96,6 +96,9 @@ UART_DIR=$(ROOT_DIR)/submodules/UART
 LIB_DIR=$(ROOT_DIR)/submodules/LIB
 MEM_DIR=$(ROOT_DIR)/submodules/MEM
 AXI_DIR=$(ROOT_DIR)/submodules/AXI
+
+REGFILEIF_DIR=$(ROOT_DIR)/submodules/REGFILEIF
+NATIVEBRIDGEIF_DIR=$(ROOT_DIR)/submodules/NATIVEBRIDGEIF
 
 #sw paths
 SW_DIR:=$(ROOT_DIR)/software

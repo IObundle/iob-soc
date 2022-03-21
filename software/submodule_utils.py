@@ -6,22 +6,29 @@ import subprocess
 import os
 import re
 
-# Returns dictionary with a directory for every submodule in submodules folder
-def get_submodule_directories():
+# Returns dictionary with every directory defined in <root_dir>/config.mk
+def get_directories():
     # Get directories for each submodule
-    submodule_directories = {}
-    for file in os.listdir(root_dir+"/submodules"):
-        if os.path.isdir(root_dir+"/submodules/"+file):
-            corename = subprocess.run(['make', '--no-print-directory', '-C', root_dir+'/submodules/'+file, 'corename'], stdout=subprocess.PIPE).stdout.decode('utf-8').replace('\n','')
-            submodule_directories[corename] = file
-    #print(submodule_directories) #DEBUG
+    directories = {}
+    dirs_str = subprocess.run(['make', '--no-print-directory', '-C', root_dir, 'directories'], stdout=subprocess.PIPE).stdout.decode('utf-8').splitlines()
+    for line in dirs_str:
+        var_name, path  = line.split("=", 1)
+        directories[var_name] = path
+    return directories
 
-    return submodule_directories
+# Convert keys from format "CORENAME_DIR" to "CORENAME"
+# (Removes "_DIR" sufix from every key in the directories dictionary)
+def get_submodule_directories():
+    directories = get_directories()
+    keys = list(directories.keys())
+    for key in keys:
+        directories[key.replace("_DIR","")] = directories.pop(key)
+    return directories
 
 # Returns dictionary with amount of instances each peripheral of the SUT to be created 
 def get_sut_peripherals():
     # Get peripherals list of config.mk
-    sut_peripherals = subprocess.run(['make', '--no-print-directory', '-C', root_dir+'/hardware/tester', 'sut-peripherals', 'ROOT_DIR=../..'], stdout=subprocess.PIPE)
+    sut_peripherals = subprocess.run(['make', '--no-print-directory', '-C', root_dir, 'sut-peripherals', 'ROOT_DIR=../..'], stdout=subprocess.PIPE)
     sut_peripherals = sut_peripherals.stdout.decode('ascii').split()
 
     # Count how many instances to create of each type of peripheral
@@ -40,20 +47,20 @@ def get_peripherals_signals(list_of_peripherals, submodule_directories):
     peripheral_signals = {}
     for i in list_of_peripherals:
         peripheral_signals[i] = {}
-        pio_file = open(root_dir+"/submodules/"+submodule_directories[i]+"/hardware/include/pio.v", "r") 
+        pio_file = open(root_dir+"/"+submodule_directories[i]+"/hardware/include/pio.vh", "r")
         pio_contents = pio_file.readlines() 
         for j in pio_contents:
             signal = re.search("^\s*((?:(?:input)|(?:output))(?:\s|(?:\[.*\]))*)(.*),", j)
             if signal is not None:
-                # Store input or output and array size of pio.v 
+                # Store input or output and array size of pio.vh
                 peripheral_signals[i][signal.group(2)]=signal.group(1)
 
-                ## Find matching signal of inst.v # This is currently not used!
-                #with open(root_dir+"/submodules/"+submodule_directories[i]+"/hardware/include/inst.v", "r" ) as f:
+                ## Find matching signal of inst.vh # This is currently not used!
+                #with open(root_dir+"/"+submodule_directories[i]+"/hardware/include/inst.vh", "r" ) as f:
                 #    matching_signal = re.search("\.([^\s]+)\s+\({}\),".format(signal.group(2).replace("/","\/").replace("*","\*")),f.read(),re.MULTILINE).group(1)
                 ## Place an array that contains:
-                ##   input or output and array size of pio.v 
-                ##   matching signal in inst.v 
+                ##   input or output and array size of pio.vh
+                ##   matching signal in inst.vh
                 #peripheral_signals[i][signal.group(2)]=[signal.group(1),matching_signal]
         pio_file.close()
     #print(peripheral_signals) #DEBUG

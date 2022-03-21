@@ -22,8 +22,6 @@ FIRM_SRC= firmware.S firmware.c $(UART_DIR)/software/printf.c
 $(foreach p, $(sort $(TESTER_PERIPHERALS)), $(eval include $($p_DIR)/software/embedded/embedded.mk))
 #UART for bootloader
 $(if $(filter UART, $(TESTER_PERIPHERALS)),, $(eval include $(UART_DIR)/software/embedded/embedded.mk))	
-#interconnect for bootloader
-include $(INTERCON_DIR)/software/software.mk
 
 #Replace SUT N_SLAVES by Tester N_SLAVES
 TESTER_N_SLAVES=$(shell python3 $(TESTER_DIR)/tester_utils.py get_n_slaves $(ROOT_DIR))

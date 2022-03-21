@@ -15,17 +15,19 @@ def create_system_tb():
     peripheral_signals = get_peripherals_signals(sut_instances_amount, submodule_directories)
 
     # Read template file
-    template_file = open(root_dir+"/hardware/testbench/system_core_tb.v", "r")
+    template_file = open(root_dir+"/hardware/simulation/verilog_tb/system_core_tb.v", "r")
     template_contents = template_file.readlines() 
     template_file.close()
 
     # Insert header files
     for corename in sut_instances_amount:
-        path = root_dir+"/submodules/"+submodule_directories[corename]+"/hardware/include"
+        path = root_dir+"/"+submodule_directories[corename]+"/hardware/include"
         start_index = find_idx(template_contents, "PHEADER")
         for file in os.listdir(path):
-            if file.endswith(".vh"):
+            if file.endswith(".vh") and not any(x in file for x in ["pio","inst","swreg"]):
                 template_contents.insert(start_index, '`include "{}"\n'.format(path+"/"+file))
+            if file.endswith("swreg.vh"):
+                template_contents.insert(start_index, '`include "{}"\n'.format(file.replace("swreg","swreg_def")))
 
     # Insert wires and connect them to uut 
     for corename in sut_instances_amount:

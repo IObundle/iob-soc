@@ -4,7 +4,7 @@
 
 module boot_ctr
   #(
-    parameter FILE = "boot.hex"
+    parameter HEXFILE = "boot.hex"
  )
   (
    input                      clk,
@@ -111,7 +111,7 @@ module boot_ctr
      #(
        .DATA_W(`DATA_W),
        .ADDR_W(`BOOTROM_ADDR_W-2),
-       .FILE(FILE)
+       .HEXFILE(HEXFILE)
        )
    sp_rom0 (
             .clk(clk),
