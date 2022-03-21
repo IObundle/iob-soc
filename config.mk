@@ -4,7 +4,12 @@
 #
 ######################################################################
 
+ifeq ($(TESTING_CORE),1)
+#Use 'IOBTESTER' as the name if we are testing a core.
+IOBSOC_NAME:=IOBTESTER
+else
 IOBSOC_NAME:=IOBSOC
+endif
 
 #
 # PRIMARY PARAMETERS: CAN BE CHANGED BY USERS OR OVERRIDEN BY ENV VARS
@@ -89,6 +94,17 @@ ifeq ($(INIT_MEM),1)
 DEFINE+=$(defmacro)INIT_MEM
 endif
 
+
+ifeq ($(TESTING_CORE),1)
+#include tester configuration from core under test directory
+include $(ROOT_DIR)/../../tester.mk
+#add core under test
+PERIPHERALS+=$(CORE_UT)
+#add other tester peripherals.
+#Note: this is not the variable above. It should be overwritten by the tester.mk cofiguration file in the core under test.
+PERIPHERALS+=$(TESTER_PERIPHERALS)
+endif
+
 #submodule paths
 PICORV32_DIR=$(ROOT_DIR)/submodules/PICORV32
 CACHE_DIR=$(ROOT_DIR)/submodules/CACHE
@@ -96,6 +112,10 @@ UART_DIR=$(ROOT_DIR)/submodules/UART
 LIB_DIR=$(ROOT_DIR)/submodules/LIB
 MEM_DIR=$(ROOT_DIR)/submodules/MEM
 AXI_DIR=$(ROOT_DIR)/submodules/AXI
+ifeq ($(TESTING_CORE),1)
+#core under test
+$(CORE_UT)_DIR=$(ROOT_DIR)/../..
+endif
 
 REGFILEIF_DIR=$(ROOT_DIR)/submodules/REGFILEIF
 NATIVEBRIDGEIF_DIR=$(ROOT_DIR)/submodules/NATIVEBRIDGEIF

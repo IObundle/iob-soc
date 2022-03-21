@@ -31,6 +31,16 @@ include $(UART_DIR)/hardware/hardware.mk
 #REGFILEIF
 #include $(REGFILEIF_DIR)/hardware/hardware.mk
 
+# include CORE_UT and tester peripherals if we are testing a core
+ifeq ($(TESTING_CORE),1)
+#CORE_UT
+include $($(CORE_UT)_DIR)/hardware/hardware.mk
+
+#include every other configured tester peripheral (in tester.mk of core under test)
+$(foreach p, $(TESTER_PERIPHERALS), $(eval include $($p_DIR)/hardware/hardware.mk))
+endif
+
+
 #HARDWARE PATHS
 INC_DIR:=$(HW_DIR)/include
 SRC_DIR:=$(HW_DIR)/src
