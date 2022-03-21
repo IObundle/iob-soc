@@ -52,8 +52,10 @@ SFLAGS = -voptargs="+acc" -c system_tb
 
 .PHONY: all clean debug $(MACRO_LIST)
 
+vsimk:
+
+
 run: $(VSRC) $(VHDR) $(MACRO_LIST)
-	echo $(MODELSIM_SERVER)
 	./run_vsim.sh "$(VSRC)" "$(CFLAGS)" "$(SFLAGS)"
 
 clean: clean-remote
