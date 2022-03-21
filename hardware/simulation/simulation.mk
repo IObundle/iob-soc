@@ -49,14 +49,14 @@ else
 VSRC+=system_tb.v
 endif
 
-ALL_DEPENDENCIES=clean sw build sim
+ALL_DEPENDENCIES=sw
 
 ifeq ($(TESTER_ENABLED),1)
 include $(TESTER_DIR)/simulation.mk
 endif
 
 #RULES
-all: $(ALL_DEPENDENCIES)
+all: clean $(ALL_DEPENDENCIES) build sim
 ifeq ($(SIM_SERVER),)
 	@rm -f soc2cnsl cnsl2soc
 	make $(SIM_PROC)

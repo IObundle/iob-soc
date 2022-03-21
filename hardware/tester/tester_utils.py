@@ -239,10 +239,13 @@ def create_tester():
 
     # Insert headers of peripherals of both systems
     for i in {**sut_instances_amount, **tester_instances_amount}:
+        path = root_dir+"/"+submodule_directories[i]+"/hardware/include"
         start_index = find_idx(tester_contents, "PHEADER")
-        for file in os.listdir(root_dir+"/"+submodule_directories[i]+"/hardware/include"):
-            if file.endswith(".vh"):
-                tester_contents.insert(start_index, '`include "{}"\n'.format(root_dir+"/"+submodule_directories[i]+"/hardware/include/"+file))
+        for file in os.listdir(path):
+            if file.endswith(".vh") and not any(x in file for x in ["pio","inst","swreg"]):
+                tester_contents.insert(start_index, '`include "{}"\n'.format(path+"/"+file))
+            if file.endswith("swreg.vh"):
+                tester_contents.insert(start_index, '`include "{}"\n'.format(file.replace("swreg","swreg_def")))
 
     # Create PWIRES marker
     tester_contents.insert(find_idx(tester_contents, "endmodule")-1, '    //PWIRES\n')
@@ -387,10 +390,13 @@ def create_testbench():
 
     # Insert headers of peripherals of both systems
     for i in {**sut_instances_amount, **tester_instances_amount}:
+        path = root_dir+"/"+submodule_directories[i]+"/hardware/include"
         start_index = find_idx(testbench_contents, "PHEADER")
-        for file in os.listdir(root_dir+"/"+submodule_directories[i]+"/hardware/include"):
-            if file.endswith(".vh"):
-                testbench_contents.insert(start_index, '`include "{}"\n'.format(root_dir+"/"+submodule_directories[i]+"/hardware/include/"+file))
+        for file in os.listdir(path):
+            if file.endswith(".vh") and not any(x in file for x in ["pio","inst","swreg"]):
+                testbench_contents.insert(start_index, '`include "{}"\n'.format(path+"/"+file))
+            if file.endswith("swreg.vh"):
+                testbench_contents.insert(start_index, '`include "{}"\n'.format(file.replace("swreg","swreg_def")))
 
     # Insert PORTS and PWIRES
     for corename in sut_instances_amount:

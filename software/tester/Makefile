@@ -1,10 +1,9 @@
 ROOT_DIR=../..
 include ../software.mk
 
-#additional compiler flags
-CFLAGS+=--specs=nano.specs -Wl,-Bstatic,-T,../template.lds,--strip-debug
-BOOT_CFLAGS=-Map,boot.map
-FIRM_CFLAGS=-Map,firmware.map
+#additional linker flags
+FIRM_LFLAGS=$(LFLAGS) -Wl,-Map,firmware.map
+BOOT_LFLAGS=$(LFLAGS) -Wl,-Map,boot.map
 
 #cache
 ifeq ($(USE_DDR),1)
@@ -36,11 +35,11 @@ boot.c: $(BOOT_DIR)/boot.c
 	python3 createTesterBoot.py $(ROOT_DIR)
 
 boot.elf: ../template.lds  $(HDR) $(SRC) $(BOOT_SRC)
-	$(TOOLCHAIN_PREFIX)gcc -o $@ $(CFLAGS),$(BOOT_CFLAGS) $(DEFINE) $(INCLUDE) $(SRC) $(BOOT_SRC) -lgcc -lc -lnosys
+	$(TOOLCHAIN_PREFIX)gcc -o $@ $(CFLAGS) $(BOOT_LFLAGS) $(DEFINE) $(INCLUDE) $(SRC) $(BOOT_SRC) $(LLIBS)
 	$(TOOLCHAIN_PREFIX)objcopy -O binary boot.elf boot.bin
 
 firmware.elf: ../template.lds $(HDR) $(SRC) $(FIRM_SRC) $(FIRM_HDR)
-	$(TOOLCHAIN_PREFIX)gcc -o $@ $(CFLAGS),$(FIRM_CFLAGS) $(DEFINE) $(INCLUDE) $(SRC) $(FIRM_SRC) -lgcc -lc -lnosys
+	$(TOOLCHAIN_PREFIX)gcc -o $@ $(CFLAGS) $(FIRM_LFLAGS) $(DEFINE) $(INCLUDE) $(SRC) $(FIRM_SRC) $(LLIBS)
 	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
 
 clean: gen-clean 

@@ -28,10 +28,3 @@ Tester.UART[0].UART_txd : External
 Tester.UART[0].UART_rxd : External
 Tester.UART[0].UART_rts : External
 Tester.UART[0].UART_cts : External
-//Attach native bus of tester (using nativebridgeif) to the external native interface of regfileif in sut
-SUT.REGFILEIF[0].REGFILEIF_valid : Tester.NATIVEBRIDGEIF[0].NATIVEBRIDGEIF_valid
-SUT.REGFILEIF[0].REGFILEIF_address : Tester.NATIVEBRIDGEIF[0].NATIVEBRIDGEIF_address
-SUT.REGFILEIF[0].REGFILEIF_wdata : Tester.NATIVEBRIDGEIF[0].NATIVEBRIDGEIF_wdata
-SUT.REGFILEIF[0].REGFILEIF_wstrb : Tester.NATIVEBRIDGEIF[0].NATIVEBRIDGEIF_wstrb
-SUT.REGFILEIF[0].REGFILEIF_rdata : Tester.NATIVEBRIDGEIF[0].NATIVEBRIDGEIF_rdata
-SUT.REGFILEIF[0].REGFILEIF_ready : Tester.NATIVEBRIDGEIF[0].NATIVEBRIDGEIF_ready

@@ -14,11 +14,11 @@ tester.v: $(SRC_DIR)/system_core.v
 	
 # tester init files
 tester_boot.hex: $(SW_DIR)/tester/boot.bin
-	$(MEM_PYTHON_DIR)/makehex.py $(SW_DIR)/tester/boot.bin $(BOOTROM_ADDR_W) > $@
+	$(PYTHON_DIR)/makehex.py $(SW_DIR)/tester/boot.bin $(BOOTROM_ADDR_W) > $@
 
 tester_firmware.hex: $(SW_DIR)/tester/firmware.bin
-	$(MEM_PYTHON_DIR)/makehex.py $(SW_DIR)/tester/firmware.bin $(FIRM_ADDR_W) > $@
-	$(MEM_PYTHON_DIR)/hex_split.py tester_firmware
+	$(PYTHON_DIR)/makehex.py $(SW_DIR)/tester/firmware.bin $(FIRM_ADDR_W) > $@
+	$(PYTHON_DIR)/hex_split.py tester_firmware
 	cp $(SW_DIR)/tester/firmware.bin tester_firmware.bin
 
 # init file for external mem with firmware of both systems

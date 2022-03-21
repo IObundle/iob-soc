@@ -7,106 +7,110 @@
 
 module tester_tb;
 
-   parameter realtime clk_per = 1s/`FREQ;
+  parameter realtime clk_per = 1s/`FREQ;
 
-   //clock
-   reg clk = 1;
-   always #(clk_per/2) clk = ~clk;
+  //clock
+  reg clk = 1;
+  always #(clk_per/2) clk = ~clk;
 
-   //reset 
-   reg reset = 1;
+  //reset
+  reg reset = 1;
 
-   //received by getchar
-   reg [7:0] cpu_char = 0;
+  //received by getchar
+  reg  rxread_reg;
+  reg  txread_reg;
+  reg [7:0]  cpu_char;
+  integer soc2cnsl_fd = 0, cnsl2soc_fd = 0;
 
 
-   //tester uart
-   reg       uart_valid;
-   reg [`UART_ADDR_W-1:0] uart_addr;
-   reg [`DATA_W-1:0]      uart_wdata;
-   reg [3:0]              uart_wstrb;
-   wire [`DATA_W-1:0]     uart_rdata;
-   wire                   uart_ready;
+  //tester uart
+  reg       uart_valid;
+  reg [`iob_uart_swreg_ADDR_W-1:0] uart_addr;
+  reg [`DATA_W-1:0]      uart_wdata;
+  reg [3:0]              uart_wstrb;
+  wire [`DATA_W-1:0]     uart_rdata;
+  wire                   uart_ready;
 
-   //iterator
-   integer                i;
+  //iterator
+  integer                i = 0, n = 0;
+  integer                error, n_byte = 0;
 
-   //got enquiry (connect request)
-   reg                    gotENQ;
-   
-   //PWIRES
+  //got enquiry (connect request)
+  reg                    gotENQ;
 
-   
-   /////////////////////////////////////////////
-   // TEST PROCEDURE
-   //
-   initial begin
+  //PWIRES
+
+
+  /////////////////////////////////////////////
+  // TEST PROCEDURE
+  //
+  initial begin
 
 `ifdef VCD
-      $dumpfile("system.vcd");
-      $dumpvars();
+    $dumpfile("system.vcd");
+    $dumpvars();
 `endif
 
-      //init cpu bus signals
-      uart_valid = 0;
-      uart_wstrb = 0;
-      
-      // deassert rst
-      repeat (100) @(posedge clk) #1;
-      reset <= 0;
+    //init cpu bus signals
+    uart_valid = 0;
+    uart_wstrb = 0;
 
-      //wait an arbitray (10) number of cycles 
-      repeat (10) @(posedge clk) #1;
+    // deassert rst
+    repeat (100) @(posedge clk) #1;
+    reset = 0;
 
-      // configure uart
-      cpu_inituart();
+    //wait an arbitray (10) number of cycles
+    repeat (10) @(posedge clk) #1;
 
-      
-      gotENQ = 0;
-      
-      $write("TESTBENCH: connecting");
-      
-      while(1) begin
-         cpu_getchar(cpu_char);
+    // configure uart
+    cpu_inituart();
 
-         case(cpu_char)
-           `ENQ: begin
-              $write(".");
-              if(!gotENQ) begin
-                 gotENQ = 1;
-`ifdef LD_FW
-                 cpu_putchar(`FRX); //got request to sent file
-`else
-                 cpu_putchar(`ACK);              
-`endif      
-              end
-           end
-           
-           `EOT: begin
-              $display("TESTBENCH: exiting\n\n\n");
-              $finish;
-           end
-           
-           `FRX: begin
-              $display("TESTBENCH: got file send request");
-              cpu_sendfile();
-           end
 
-           `FTX: begin
-              $display("TESTBENCH: got file receive request");
-              cpu_recvfile();
-           end
+    gotENQ = 0;
+    cpu_char = 0;
+    rxread_reg = 0;
+    txread_reg = 0;
 
-           default: begin
-              $write("%c", cpu_char);
-           end
 
-         endcase         
+    soc2cnsl_fd = $fopen("soc2cnsl", "r+");
+    if (!soc2cnsl_fd) begin
+      $display("Could not open \"soc2cnsl\"");
+      $finish;
+    end
+
+    while(1) begin
+      while(!rxread_reg && !txread_reg) begin
+        cpu_uartread(`UART_RXREADY_ADDR, rxread_reg);
+        cpu_uartread(`UART_TXREADY_ADDR, txread_reg);
       end
+      if(rxread_reg) begin
+        n = $fgets(cpu_char, soc2cnsl_fd);
+        if(n == 0) begin
+          cpu_uartread(`UART_RXDATA_ADDR, cpu_char);
+          $fwriteh(soc2cnsl_fd, "%c", cpu_char);
+          rxread_reg = 0;
+        end
+        n = $fseek(soc2cnsl_fd, 0, 0);
+      end
+      if(txread_reg) begin
+        cnsl2soc_fd = $fopen("cnsl2soc", "r");
+        if (!cnsl2soc_fd) begin
+          $fclose(soc2cnsl_fd);
+          $finish;
+        end
+        n = $fscanf(cnsl2soc_fd, "%c", cpu_char);
+        if (n > 0) begin
+          cpu_uartwrite(`UART_TXDATA_ADDR, cpu_char);
+          $fclose(cnsl2soc_fd);
+          cnsl2soc_fd = $fopen("./cnsl2soc", "w");
+        end
+        $fclose(cnsl2soc_fd);
+        txread_reg = 0;
+      end
+    end
+  end
 
-   end
 
-   
    //
    // INSTANTIATE COMPONENTS
    //
@@ -162,7 +166,7 @@ module tester_tb;
 
    //cpu trap signal
    wire [1:0]                   trap;
-   
+
    //
    // UNIT UNDER TEST
    //
@@ -440,18 +444,18 @@ always @(posedge trap[1]) begin
      (
       .clk       (clk),
       .rst       (reset),
-      
+
       .valid     (uart_valid),
       .address   (uart_addr),
-      .wdata     (uart_wdata[`UART_WDATA_W-1:0]),
+      .wdata     (uart_wdata),
       .wstrb     (uart_wstrb),
       .rdata     (uart_rdata),
       .ready     (uart_ready),
-      
+
       .txd       (tester_UART0_rxd),
       .rxd       (tester_UART0_txd),
       .rts       (tester_UART0_cts),
       .cts       (tester_UART0_rts)
       );
-   
+
 endmodule
