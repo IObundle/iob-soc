@@ -165,7 +165,7 @@ test: test-clean test-pc-emul test-sim test-fpga test-doc
 test-clean: test-pc-emul-clean test-sim-clean test-fpga-clean test-doc-clean
 
 python-cache-clean:
-	find . -name "*__pycache__" -exec rm -rf {} \;
+	find . -name "*__pycache__" -exec rm -rf {} \; -prune
 
 #generic clean
 clean: pc-emul-clean sim-clean fpga-clean doc-clean python-cache-clean

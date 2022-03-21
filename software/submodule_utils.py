@@ -10,7 +10,7 @@ import re
 def get_directories():
     # Get directories for each submodule
     directories = {}
-    dirs_str = subprocess.run(['make', '--no-print-directory', '-C', root_dir, 'directories'], stdout=subprocess.PIPE).stdout.decode('utf-8').splitlines()
+    dirs_str = subprocess.run(['make', '--no-print-directory', '-C', root_dir, 'directories', 'ROOT_DIR=.'], stdout=subprocess.PIPE).stdout.decode('utf-8').splitlines()
     for line in dirs_str:
         var_name, path  = line.split("=", 1)
         directories[var_name] = path
@@ -28,7 +28,7 @@ def get_submodule_directories():
 # Returns dictionary with amount of instances each peripheral of the SUT to be created 
 def get_sut_peripherals():
     # Get peripherals list of config.mk
-    sut_peripherals = subprocess.run(['make', '--no-print-directory', '-C', root_dir, 'sut-peripherals', 'ROOT_DIR=../..'], stdout=subprocess.PIPE)
+    sut_peripherals = subprocess.run(['make', '--no-print-directory', '-C', root_dir, 'sut-peripherals', 'ROOT_DIR=.'], stdout=subprocess.PIPE)
     sut_peripherals = sut_peripherals.stdout.decode('ascii').split()
 
     # Count how many instances to create of each type of peripheral
@@ -47,7 +47,11 @@ def get_peripherals_signals(list_of_peripherals, submodule_directories):
     peripheral_signals = {}
     for i in list_of_peripherals:
         peripheral_signals[i] = {}
-        pio_file = open(root_dir+"/"+submodule_directories[i]+"/hardware/include/pio.vh", "r")
+        pio_path = root_dir+"/"+submodule_directories[i]+"/hardware/include/pio.vh"
+        #Skip iteration if peripheral does not have pio
+        if not os.path.isfile(pio_path):
+            continue
+        pio_file = open(pio_path, "r")
         pio_contents = pio_file.readlines() 
         for j in pio_contents:
             signal = re.search("^\s*((?:(?:input)|(?:output))(?:\s|(?:\[.*\]))*)(.*),", j)
