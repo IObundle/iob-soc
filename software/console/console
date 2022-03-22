@@ -166,7 +166,7 @@ def init_serial():
 
     # configure the serial connections (the parameters differs on the device connected to)
     ser = serial.Serial()
-    ser.port = "/dev/ttyUSB0"
+    ser.port = "/dev/usb-uart"
     ser.baudrate = 115200
     ser.bytesize = serial.EIGHTBITS #number of bits per bytes
     ser.parity = serial.PARITY_NONE #set parity check: no parity
