@@ -45,8 +45,8 @@ def tb_read(number_of_bytes, is_file = False):
     data = b''
     transfered_bytes = 0
     read_percentage = 100
-    f = open('./soc2cnsl', "rb+")
     while(transfered_bytes < number_of_bytes):
+        f = open('./soc2cnsl', "rb")
         while (os.path.getsize("./soc2cnsl") == 0): pass
         byte = f.read(1)
         data += byte
@@ -56,9 +56,9 @@ def tb_read(number_of_bytes, is_file = False):
             if(read_percentage!=new_percentage):
                 read_percentage = new_percentage
                 if (not read_percentage%10): print("%3d %c" % (read_percentage, '%'))
-        f.seek(0) # absolute file positioning
-        f.truncate() # to erase all data
-    f.close()
+        f.close()
+        f = open('./soc2cnsl',"w")
+        f.close()
     return data
 
 # Print ERROR
@@ -126,7 +126,7 @@ def cnsl_recvfile():
     print(': file received'.format(file_size))
 
 def usage(message):
-    cnsl_perror("usage: ./console -s <serial port> [ -f ] [ -L/--local ]")
+    print('{}:{}'.format(PROGNAME, "usage: ./console -s <serial port> [ -f ] [ -L/--local ]"))
     cnsl_perror(message)
 
 def clean_exit():
@@ -166,7 +166,7 @@ def init_serial():
 
     # configure the serial connections (the parameters differs on the device connected to)
     ser = serial.Serial()
-    ser.port = "/dev/ttyUSB0"
+    ser.port = "/dev/usb-uart"
     ser.baudrate = 115200
     ser.bytesize = serial.EIGHTBITS #number of bits per bytes
     ser.parity = serial.PARITY_NONE #set parity check: no parity
@@ -182,12 +182,8 @@ def init_serial():
 
 def init_files():
     f = open('./cnsl2soc',"w")
-    f.seek(0) # absolute file positioning
-    f.truncate() # to erase all data
     f.close()
     f = open('./soc2cnsl',"w")
-    f.seek(0) # absolute file positioning
-    f.truncate() # to erase all data
     f.close()
 
 
@@ -254,11 +250,7 @@ def main():
             print(': got file send request')
             cnsl_sendfile()
         else:
-            try:
-                print(str(byte, 'ascii'), end = '')
-            except UnicodeDecodeError as e:
-                print(PROGNAME, end = '')
-                print('Received byte that is not ascii.')
+            print(str(byte, 'iso-8859-1'), end = '')
             sys.stdout.flush()
 
 if __name__ == "__main__": main()

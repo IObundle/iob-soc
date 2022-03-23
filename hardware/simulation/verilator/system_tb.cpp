@@ -110,17 +110,18 @@ int main(int argc, char **argv, char **env){
   FILE *cnsl2soc_fd;
   char cpu_char = 0;
   char rxread_reg = 0, txread_reg = 0;
-  int n = 0;
+  int able2write = 0, able2read = 0;
 
-  while ((soc2cnsl_fd = fopen("./soc2cnsl", "rb+")) == NULL);
+  while ((cnsl2soc_fd = fopen("./cnsl2soc", "rb")) == NULL);
+  fclose(cnsl2soc_fd);
 
   while(1){
     if(dut->trap > 0){
         printf("\nTESTBENCH: force cpu trap exit\n");
-        fclose(soc2cnsl_fd);
         soc2cnsl_fd = fopen("./soc2cnsl", "wb");
         cpu_char = 4;
         fwrite(&cpu_char, sizeof(char), 1, soc2cnsl_fd);
+        fclose(soc2cnsl_fd);
         break;
     }
     while(!rxread_reg && !txread_reg){
@@ -128,21 +129,24 @@ int main(int argc, char **argv, char **env){
       uartread(UART_TXREADY_ADDR, &txread_reg);
     }
     if(rxread_reg){
-      n = fread(&cpu_char, sizeof(char), 1, soc2cnsl_fd);
-      if(n == 0){
-        uartread(UART_RXDATA_ADDR, &cpu_char);
-        n = fwrite(&cpu_char, sizeof(char), 1, soc2cnsl_fd);
-        while(n != 0)
-          n = fseek(soc2cnsl_fd, 0, 0);
-        rxread_reg = 0;
+      if((soc2cnsl_fd = fopen("./soc2cnsl", "rb")) != NULL){
+        able2read = fread(&cpu_char, sizeof(char), 1, soc2cnsl_fd);
+        if(able2read == 0){
+          fclose(soc2cnsl_fd);
+          uartread(UART_RXDATA_ADDR, &cpu_char);
+          soc2cnsl_fd = fopen("./soc2cnsl", "wb");
+          fwrite(&cpu_char, sizeof(char), 1, soc2cnsl_fd);
+          rxread_reg = 0;
+        }
+        fclose(soc2cnsl_fd);
       }
     }
     if(txread_reg){
       if ((cnsl2soc_fd = fopen("./cnsl2soc", "rb")) == NULL){
         break;
       }
-      n = fread(&cpu_char, sizeof(char), 1, cnsl2soc_fd);
-      if (n > 0){
+      able2write = fread(&cpu_char, sizeof(char), 1, cnsl2soc_fd);
+      if (able2write > 0){
         uartwrite(UART_TXDATA_ADDR, cpu_char);
         fclose(cnsl2soc_fd);
         cnsl2soc_fd = fopen("./cnsl2soc", "w");
@@ -151,7 +155,6 @@ int main(int argc, char **argv, char **env){
       txread_reg = 0;
     }
   }
-  fclose(soc2cnsl_fd);
 
   dut->final();
 #ifdef VCD
