@@ -250,11 +250,7 @@ def main():
             print(': got file send request')
             cnsl_sendfile()
         else:
-            try:
-                print(str(byte, 'ascii'), end = '')
-            except UnicodeDecodeError as e:
-                print(PROGNAME, end = '')
-                print('Received byte that is not ascii.')
+            print(str(byte, 'iso-8859-1'), end = '')
             sys.stdout.flush()
 
 if __name__ == "__main__": main()
