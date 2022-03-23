@@ -126,7 +126,7 @@ def cnsl_recvfile():
     print(': file received'.format(file_size))
 
 def usage(message):
-    cnsl_perror("usage: ./console -s <serial port> [ -f ] [ -L/--local ]")
+    print('{}:{}'.format(PROGNAME, "usage: ./console -s <serial port> [ -f ] [ -L/--local ]"))
     cnsl_perror(message)
 
 def clean_exit():

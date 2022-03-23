@@ -1,6 +1,7 @@
 ROOT_DIR:=../..
 include $(ROOT_DIR)/config.mk
 
+# Need to add udev rule to have this symlink
 SERIAL:=/dev/usb-uart
 TEST_BENCH:=0
 
