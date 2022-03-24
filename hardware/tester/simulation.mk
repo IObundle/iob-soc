@@ -7,9 +7,9 @@ VSRC+=tester_tb.v
 
 #axi interconnect
 ifeq ($(USE_DDR),1)
-VSRC+=$(CACHE_DIR)/submodules/AXIMEM/rtl/axi_interconnect.v
-VSRC+=$(CACHE_DIR)/submodules/AXIMEM/rtl/arbiter.v
-VSRC+=$(CACHE_DIR)/submodules/AXIMEM/rtl/priority_encoder.v
+VSRC+=$(AXI_DIR)/submodules/V_AXI/rtl/axi_interconnect.v
+VSRC+=$(AXI_DIR)/submodules/V_AXI/rtl/arbiter.v
+VSRC+=$(AXI_DIR)/submodules/V_AXI/rtl/priority_encoder.v
 endif
 
 ALL_DEPENDENCIES+=tester-sw
