@@ -61,6 +61,15 @@ def tb_read(number_of_bytes, is_file = False):
         f.close()
     return data
 
+def serial_read(number_of_bytes):
+    data = b''
+    i=0
+    while(i<number_of_bytes):
+        byte = ser.read(1)
+        data += byte
+        i = i+1;
+    return data
+
 # Print ERROR
 def cnsl_perror(mesg):
     print(PROGNAME, end = '')
@@ -110,11 +119,10 @@ def cnsl_recvfile():
     # open data file
     f = open(name, 'wb')
     if SerialFlag:
-        aux = ser.read(4)
-        file_size = int.from_bytes(aux, byteorder='little', signed=False)
+        file_size = int.from_bytes(serial_read(4), byteorder='little', signed=False)
         print(PROGNAME, end = ' ')
         print(': file size: {0} bytes'.format(file_size))
-        data = ser.read(file_size)
+        data = serial_read(file_size)
     else:
         file_size = int.from_bytes(tb_read(4), byteorder='little', signed=False)
         print(PROGNAME, end = ' ')
