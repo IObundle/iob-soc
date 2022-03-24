@@ -131,9 +131,7 @@ module top_system(
    //system clock
    wire 			sys_clk;
    
-`ifdef USE_DDR
-   wire                         ddr_aclk;
-`else 
+`ifndef USE_DDR
    clock_wizard #(
 		  .OUTPUT_PER(10),
 		  .INPUT_PER(4)
