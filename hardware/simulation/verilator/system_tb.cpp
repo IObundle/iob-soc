@@ -18,7 +18,7 @@
 // other macros
 #define FREQ 100000000
 #define BAUD 5000000
-#define CLK_PERIOD 10000 // 20 ns
+#define CLK_PERIOD 10000 // 10 ns
 
 vluint64_t main_time = 0;
 VerilatedVcdC* tfp = NULL;

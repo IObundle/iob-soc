@@ -74,11 +74,11 @@ queue-wait:
 
 queue-out:
 	sed '/$(JOB)/d' $(QUEUE_FILE) > queue; cat queue > $(QUEUE_FILE); rm queue
+	@if [ "`ps aux | grep $(USER) | grep console | grep python3 | grep -v grep`" ]; then \
+	kill -9 $$(ps aux | grep $(USER) | grep console | grep python3 | grep -v grep | awk '{print $$2}'); fi
 
 queue-out-remote:
-	ssh $(BOARD_USER)@$(BOARD_SERVER) \
-	"make -C $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD) queue-out;\
-	kill -9 $$(ps aux | grep $(BOARD_USER) | grep console | grep python3 | grep -v grep | awk '{print $$2}')"
+	ssh $(BOARD_USER)@$(BOARD_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD) queue-out'
 
 #
 # Testing
