@@ -2,7 +2,6 @@
 #Creates boot.c for tester
 
 import sys, os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import submodule_utils 
 from submodule_utils import find_idx
 

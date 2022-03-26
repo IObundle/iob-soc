@@ -16,4 +16,4 @@ ALL_DEPENDENCIES+=tester-sw
 
 #create testbench for Tester (Tester includes SUT system)
 tester_tb.v: $(TESTER_DIR)/tester_core_tb.v
-	$(TESTER_DIR)/tester_utils.py create_testbench $(ROOT_DIR)
+	$(SW_DIR)/python/tester_utils.py create_testbench $(ROOT_DIR)

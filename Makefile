@@ -19,7 +19,7 @@ include ./config.mk
 
 # Generate configuration file for port mapping between the Tester, SUT and external interface of the Top System
 tester-portmap:
-	hardware/tester/tester_utils.py generate_config $(ROOT_DIR)
+	$(SW_DIR)/python/tester_utils.py generate_config $(ROOT_DIR)
 	@echo Portmap template generated in hardware/tester/peripheral_portmap.txt
 
 #

@@ -4,11 +4,9 @@
 import sys, os
 
 # Add folder to path that contains python scripts to be imported
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import periphs_tmp 
 from periphs_tmp import *
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '../../hardware/tester'))
 import tester_utils
 from tester_utils import get_tester_peripherals
 
