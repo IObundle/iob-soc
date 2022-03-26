@@ -1,15 +1,15 @@
-defmacro:=-D
-incdir:=-I
-include $(REGFILEIF_DIR)/core.mk
+include $(REGFILEIF_DIR)/config.mk
+
+REGFILEIF_SW_DIR:=$(REGFILEIF_DIR)/software
 
 #include
 INCLUDE+=-I$(REGFILEIF_SW_DIR)
 
 #headers
-HDR+=$(REGFILEIF_SW_DIR)/*.h REGFILEIFsw_reg.h
+HDR+=$(REGFILEIF_SW_DIR)/*.h iob_regfileif_swreg.h
 
 #sources
 SRC+=
 
-REGFILEIFsw_reg.h: REGFILEIFsw_reg.v
-	$(REGFILEIF_DIR)/software/mkregsregfileif.py $< SW $(LIB_DIR)/software/python
+iob_regfileif_swreg.h: $(REGFILEIF_HW_DIR)/include/iob_regfileif_swreg.vh
+	$(REGFILEIF_DIR)/software/python/mkregsregfileif.py $< SW $(shell dirname $(MKREGS))

@@ -1,30 +1,29 @@
-include $(REGFILEIF_DIR)/core.mk
+ifeq ($(filter REGFILEIF, $(HW_MODULES)),)
 
-# SUBMODULES
+include $(REGFILEIF_DIR)/config.mk
 
-# Interconnect
-ifneq (INTERCON,$(filter INTERCON, $(SUBMODULES)))
-SUBMODULES+=INTERCON
-include $(INTERCON_DIR)/hardware/hardware.mk
+#add itself to HW_MODULES list
+HW_MODULES+=REGFILEIF
+
+
+REGFILEIF_INC_DIR:=$(REGFILEIF_HW_DIR)/include
+REGFILEIF_SRC_DIR:=$(REGFILEIF_HW_DIR)/src
+
+
+#include files
+VHDR+=$(wildcard $(REGFILEIF_INC_DIR)/*.vh)
+VHDR+=iob_regfileif_swreg_gen.vh iob_regfileif_swreg_def.vh
+VHDR+=$(LIB_DIR)/hardware/include/iob_lib.vh
+
+#hardware include dirs
+INCLUDE+=$(incdir). $(incdir)$(REGFILEIF_INC_DIR) $(incdir)$(LIB_DIR)/hardware/include
+
+#sources
+VSRC+=$(REGFILEIF_SRC_DIR)/iob_regfileif.v
+
+regfileif-hw-clean: regfileif-gen-clean
+	@rm -f *.v *.vh
+
+.PHONY: regfileif-hw-clean
+
 endif
-
-# Library
-ifneq (LIB,$(filter LIB, $(SUBMODULES)))
-SUBMODULES+=LIB
-INCLUDE+=$(incdir)$(LIB_DIR)/hardware/include
-VHDR+=$(wildcard $(LIB_DIR)/hardware/include/*.vh)
-endif
-
-# hardware include dirs
-INCLUDE+=$(incdir)$(REGFILEIF_HW_DIR)/include
-
-# includes
-VHDR+=$(wildcard $(REGFILEIF_HW_DIR)/include/*.vh)
-VHDR+=REGFILEIFsw_reg.v REGFILEIFsw_reg_gen.v REGFILEIFsw_reg.vh
-
-# sources
-VSRC+=$(wildcard $(REGFILEIF_SRC_DIR)/*.v)
-
-#cpu accessible registers
-REGFILEIFsw_reg_gen.v REGFILEIFsw_reg.vh: REGFILEIFsw_reg.v
-	$(REGFILEIF_DIR)/software/mkregsregfileif.py $< HW $(LIB_DIR)/software/python

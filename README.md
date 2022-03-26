@@ -27,17 +27,17 @@ When using two systems, such as SUT and Tester, the REGFILEIF is a peripheral of
 The connection between the REGFILEIF's external native interface and the peripheral bus of the Tester can be made using the peripheral\_portmap.txt
 
 However, to connect using the portmap, the native bus signals of the Tester must be externally accessible (the portmap configuration can only map signals that can be accessed externally).
-To do this, we use the peripheral **NATIVEBRIDGEIF**. This peripheral also has two native interfaces, one internal and one external, however, unlike REGFILEIF, the external interface of this peripheral is made to be connected to the native interface of another peripheral. The NATIVEBRIDGEIF, allows the peripheral bus signals of the system to be accessed externally.
+To do this, we use the peripheral **IOBNATIVEBRIDGEIF**. This peripheral also has two native interfaces, one internal and one external, however, unlike REGFILEIF, the external interface of this peripheral is made to be connected to the native interface of another peripheral. The IOBNATIVEBRIDGEIF, allows the peripheral bus signals of the system to be accessed externally.
 
-We use the NATIVEBRIDGEIF as a peripheral of the Tester to allows its peripheral bus signals to be accessed externally (and therefore be portmapped).
-To create the NATIVEBRIDGEIF we use the `software/nativebridge.py` script. We call this script along with the path to the directory in which the peripheral will be created.
+We use the IOBNATIVEBRIDGEIF as a peripheral of the Tester to allows its peripheral bus signals to be accessed externally (and therefore be portmapped).
+To create the IOBNATIVEBRIDGEIF we use the `software/python/iobnativebridge.py` script. We call this script along with the path to the directory in which the peripheral will be created.
 For example, if we are in the root directory of the system, we use:
 ```
-./submodules/REGFILEIF/software/nativebridge.py submodules/
+./submodules/REGFILEIF/software/python/iobnativebridge.py submodules/
 ```
-The command above creates the NATIVEBRIDGEIF peripheral inside de submodules folder.
+The command above creates the IOBNATIVEBRIDGEIF peripheral inside de submodules folder.
 
-We then change the PERIPHERALS and TESTER\_PERIPHERALS lists in config.mk to contain REGFILEIF and NATIVEBRIDGEIF, respectively.
+We then change the PERIPHERALS and TESTER\_PERIPHERALS lists in config.mk to contain REGFILEIF and IOBNATIVEBRIDGEIF, respectively.
 
 Using the tester-portmap target, we generate a template for the portmap configuration file:
 ```
@@ -47,12 +47,12 @@ make tester-portmap
 In the portmap file, we connect the regfileif signals and nativebridgeif signals together, and then the complete system is ready to be built!
 Example connection if peripheral\_portmap.txt file:
 ```
-SUT.REGFILEIF[0].REGFILEIF_valid : Tester.NATIVEBRIDGEIF[0].NATIVEBRIDGEIF_valid
-SUT.REGFILEIF[0].REGFILEIF_address : Tester.NATIVEBRIDGEIF[0].NATIVEBRIDGEIF_address
-SUT.REGFILEIF[0].REGFILEIF_wdata : Tester.NATIVEBRIDGEIF[0].NATIVEBRIDGEIF_wdata
-SUT.REGFILEIF[0].REGFILEIF_wstrb : Tester.NATIVEBRIDGEIF[0].NATIVEBRIDGEIF_wstrb
-SUT.REGFILEIF[0].REGFILEIF_rdata : Tester.NATIVEBRIDGEIF[0].NATIVEBRIDGEIF_rdata
-SUT.REGFILEIF[0].REGFILEIF_ready : Tester.NATIVEBRIDGEIF[0].NATIVEBRIDGEIF_ready
+SUT.REGFILEIF[0].REGFILEIF_valid : Tester.IOBNATIVEBRIDGEIF[0].IOBNATIVEBRIDGEIF_valid
+SUT.REGFILEIF[0].REGFILEIF_address : Tester.IOBNATIVEBRIDGEIF[0].IOBNATIVEBRIDGEIF_address
+SUT.REGFILEIF[0].REGFILEIF_wdata : Tester.IOBNATIVEBRIDGEIF[0].IOBNATIVEBRIDGEIF_wdata
+SUT.REGFILEIF[0].REGFILEIF_wstrb : Tester.IOBNATIVEBRIDGEIF[0].IOBNATIVEBRIDGEIF_wstrb
+SUT.REGFILEIF[0].REGFILEIF_rdata : Tester.IOBNATIVEBRIDGEIF[0].IOBNATIVEBRIDGEIF_rdata
+SUT.REGFILEIF[0].REGFILEIF_ready : Tester.IOBNATIVEBRIDGEIF[0].IOBNATIVEBRIDGEIF_ready
 ```
 
 ---

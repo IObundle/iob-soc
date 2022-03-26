@@ -5,14 +5,15 @@
 
 import sys
 import os
+import re
 
 mkregs_dir = ''
 
 if __name__ == "__main__" :
     #parse command line to get mkregs_dir
     if len(sys.argv) != 4:
-        print("Usage: {} COREsw_reg.v [HW|SW] [mkregs.py dir]".format(sys.argv[0]))
-        print(" REGFILEIFsw_reg.v:the software accessible registers definitions file")
+        print("Usage: {} iob_corename_swreg.vh [HW|SW] [mkregs.py dir]".format(sys.argv[0]))
+        print(" iob_regfileif_swreg.vh:the software accessible registers definitions file")
         print(" [HW|SW]: use HW to generate the hardware files or SW to generate the software files")
         print(" [mkregs.py dir]: directory of mkregs.py")
         quit()
@@ -24,7 +25,7 @@ sys.path.append(mkregs_dir)
 import mkregs
 from mkregs import *
 
-# Change <infile>sw_reg_gen.v to connect to external native bus
+# Change <infile>_gen.vh to connect to external native bus
 def connect_to_external_native(filename):
     fin = open (filename, 'r')
     file_contents = fin.readlines()
@@ -84,21 +85,21 @@ if __name__ == "__main__" :
 
     infile = infile.split('/')[-1].split('.')[0]
 
-    # Create normal sw_reg
-    mkregs.infile=infile
+    # Create normal swreg
+    mkregs.regvfile_name=infile
     swreg_parse (defsfile, hwsw)
 
     # Only create inverted files for Hardware
     if(hwsw == "HW"):
         # Make connections between read and write registers
-        connect_wires_between_regs(infile+"_wire_connections.v", defsfile)
+        connect_wires_between_regs(infile+"_wire_connections.vh", defsfile)
 
-        # Change <infile>sw_reg_gen.v to connect to external native bus
-        connect_to_external_native(infile+"_gen.v")
+        # Change <infile>_gen.vh to connect to external native bus
+        connect_to_external_native(infile+"_gen.vh")
 
-        # Create sw_reg with read and write registers inverted
+        # Create swreg with read and write registers inverted
         infile = infile + "_inverted"
-        mkregs.infile=infile
+        mkregs.regvfile_name=infile
         # invert registers type
         for i in range(len(defsfile)):
             if 'SWREG_W' in defsfile[i]:
@@ -106,8 +107,8 @@ if __name__ == "__main__" :
             else:
                 defsfile[i] = re.sub('SWREG_R\(([^,]+),','SWREG_W(\g<1>_INVERTED,', defsfile[i])
 
-        # write REGFILEIFsw_reg_inverted.v file
-        fout = open (infile+".v", 'w')
+        # write iob_REGFILEIF_swreg_inverted.vh file
+        fout = open (infile+".vh", 'w')
         fout.writelines(defsfile)
         fout.close()
 
