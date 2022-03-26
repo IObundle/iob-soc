@@ -1,3 +1,9 @@
+#
+# ADD TESTER SUBMODULES HARDWARE
+#
+
+#IOBNATIVEBRIDGEIF
+include $(IOBNATIVEBRIDGEIF_DIR)/hardware/hardware.mk
 
 VSRC+=tester.v
 IMAGES+=tester_boot.hex tester_firmware.hex init_ddr_contents.hex

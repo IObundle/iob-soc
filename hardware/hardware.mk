@@ -29,7 +29,7 @@ include $(CACHE_DIR)/hardware/hardware.mk
 include $(UART_DIR)/hardware/hardware.mk
 
 #REGFILEIF
-#include $(REGFILEIF_DIR)/hardware/hardware.mk
+include $(REGFILEIF_DIR)/hardware/hardware.mk
 
 # include CORE_UT and tester peripherals if we are testing a core
 ifeq ($(TESTING_CORE),1)

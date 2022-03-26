@@ -16,7 +16,7 @@ DEFINE+=-DPC
 include $(UART_DIR)/software/pc-emul/pc.mk
 
 #regfileif
-#include $(REGFILEIF_DIR)/software/pc-emul/pc.mk
+include $(REGFILEIF_DIR)/software/pc-emul/pc.mk
 
 # include CORE_UT and tester peripherals if we are testing a core
 ifeq ($(TESTING_CORE),1)

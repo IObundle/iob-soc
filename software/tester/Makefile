@@ -10,6 +10,13 @@ ifeq ($(USE_DDR),1)
 include $(CACHE_DIR)/software/software.mk
 endif
 
+#
+# ADD TESTER SUBMODULES SOFTWARE
+#
+
+#IOBNATIVEBRIDGEIF
+include $(IOBNATIVEBRIDGEIF_DIR)/software/embedded/embedded.mk
+
 #HEADERS
 FIRM_HDR=tester_periphs.h
 

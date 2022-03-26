@@ -9,11 +9,15 @@ ifeq ($(USE_DDR),1)
 include $(CACHE_DIR)/software/software.mk
 endif
 
+#
+# ADD SUBMODULES SOFTWARE
+#
+
 #uart
 include $(UART_DIR)/software/embedded/embedded.mk
 
 #regfileif
-#include $(REGFILEIF_DIR)/software/embedded/embedded.mk
+include $(REGFILEIF_DIR)/software/embedded/embedded.mk
 
 # include CORE_UT and tester peripherals if we are testing a core
 ifeq ($(TESTING_CORE),1)

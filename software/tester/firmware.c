@@ -7,7 +7,7 @@
 #include "tester_periphs.h"
 #include "iob-uart.h"
 #include "printf.h"
-//#include "iob-nativebridgeif.h"
+#include "iob-nativebridgeif.h"
 
 int main()
 {
@@ -16,7 +16,7 @@ int main()
 
   //Init uart0
   uart_init(UART0_BASE,FREQ/BAUD);   
-  //nativebridgeif_setbaseaddr(NATIVEBRIDGEIF0_BASE);
+  iobnativebridgeif_setbaseaddr(IOBNATIVEBRIDGEIF0_BASE);
 
   uart_puts("\n\nHello from tester!\n\n\n");
 
@@ -48,10 +48,10 @@ int main()
   }
   uart_puts("\n#### End of messages received on Tester by UART from SUT ####\n\n");
 
-  //Read data from NATIVEBRIDGEIF (was written by the SUT)
-  //uart_puts("REGFILEIF contents read by the Tester (contents written by the SUT; read using the Tester's NATIVEBRIDGEIF that is connected to SUT's REGFILEIF):\n");
-  //printf("%d \n", nativebridgeif_readreg(2));
-  //printf("%d \n", nativebridgeif_readreg(3));
+  //Read data from IOBNATIVEBRIDGEIF (was written by the SUT)
+  uart_puts("REGFILEIF contents read by the Tester (contents written by the SUT; read using the Tester's IOBNATIVEBRIDGEIF that is connected to SUT's REGFILEIF):\n");
+  printf("%d \n", iobnativebridgeif_readreg(2));
+  printf("%d \n", iobnativebridgeif_readreg(3));
 
   //End UART0 connection
   uart_finish();
