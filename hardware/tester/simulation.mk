@@ -1,6 +1,3 @@
-#Set memory width with enough space for firmware of SUT and Tester
-DDR_ADDR_W=$(shell expr $(FIRM_ADDR_W) \+ 1)
-
 #Replace system_tb with tester_tb
 VSRC:=$(filter-out system_tb.v, $(VSRC))
 VSRC+=tester_tb.v
