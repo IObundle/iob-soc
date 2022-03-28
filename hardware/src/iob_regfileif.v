@@ -1,64 +1,32 @@
 `timescale 1ns/1ps
-
 `include "iob_lib.vh"
-`include "interconnect.vh"
-`include "iob_regfileif.vh"
+`include "iob_regfileif_swreg_def.vh"
 
 module iob_regfileif 
   # (
-     parameter ADDR_W = `REGFILEIF_ADDR_W,
-     parameter DATA_W = `REGFILEIF_DATA_W,
-     parameter WDATA_W = `REGFILEIF_DATA_W
+     parameter DATA_W = `DATA_W,
+     parameter ADDR_W = `iob_regfileif_swreg_ADDR_W
      )
-   (
 
-   // CPU interface
-`ifndef USE_AXI4LITE
- `include "cpu_nat_s_if.v"
-`else
- `include "cpu_axi4lite_s_if.v"
-`endif
+  (
 
-    // additional inputs and outputs
-    `INPUT(valid_ext,   1),
-    `INPUT(address_ext, ADDR_W),
-    `INPUT(wdata_ext,   WDATA_W),
-    `INPUT(wstrb_ext,   WDATA_W/8),
-    `OUTPUT(rdata_ext,  DATA_W),
-    `OUTPUT(ready_ext,  1),
+   //CPU interface
+`include "iob_s_if.vh"
 
-`include "gen_if.v"
-    );
+   //additional inputs and outputs
+   `IOB_INPUT(valid_ext,   1),
+   `IOB_INPUT(address_ext, ADDR_W),
+   `IOB_INPUT(wdata_ext,   DATA_W),
+   `IOB_INPUT(wstrb_ext,   DATA_W/8),
+   `IOB_OUTPUT(rdata_ext,  DATA_W),
+   `IOB_OUTPUT(ready_ext,  1),
+`include "gen_if.vh"
+   );
 
-   // BLOCK Register file interface.
-
-   iob_dp_reg_file
-     #(
-       .ADDR_W(ADDR_W),
-       .DATA_W(DATA_W)	        
-	   )
-   dp_reg_file
-     (
-      .clk    (clk),
-      .rst    (rst),
-
-      .weA    (|wstrb & valid),
-      .addrA  (address),
-      .wdataA (wdata),
-      .rdataA (rdata),
-
-      .weB    (|wstrb_ext & valid_ext),
-      .addrB  (address_ext),
-      .wdataB (wdata_ext),
-      .rdataB (rdata_ext)
-      );
-
-   `VAR(ready_var, 1)
-   `REG_AR(clk, rst, 1'b0, ready_var, valid)
-   `VAR2WIRE(ready, ready_var)
-
-   `VAR(ready_ext_var, 1)
-   `REG_AR(clk, rst, 1'b0, ready_ext_var, valid_ext)
-   `VAR2WIRE(ready_ext, ready_ext_var)
-
+// BLOCK Register File & Holds the current configuration of the system as well as internal parameters. Data to be sent or that has been received is stored here temporarily.
+`include "iob_regfileif_swreg.vh"
+`include "iob_regfileif_swreg_inverted.vh"
+`include "iob_regfileif_swreg_gen.vh"
+`include "iob_regfileif_swreg_inverted_gen.vh"
+`include "iob_regfileif_swreg_wire_connections.vh"
 endmodule
