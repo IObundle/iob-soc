@@ -9,12 +9,12 @@ It also has an external native interface that connects to the native peripheral 
 ## Usage
 
 This peripheral need a register configuration file to determine how many registers it contains and the type of those registers.
-This configuration file must be named "REGFILEIFsw\_reg.v" and is placed in the root directory of the system that is using this component as a peripheral.
+This configuration file must be named "iob\_regfileif\_swreg.vh" and is placed in the root directory of the system that is using this component as a peripheral.
 
-The "REGFILEIFsw\_reg.v" file is based on a group of \`SWREG_ macros from IOb-Lib. An example configuration is:
+The "iob\_regfileif\_swreg.vh" file is based on a group of \`IOB\_SWREG_ macros from IOb-Lib. An example configuration is:
 ```
-`SWREG_W(REGFILEIF_REG1, 8, 0) // Write register: 8 bit
-`SWREG_R(REGFILEIF_REG3, 8, 0) // Read register: 8 bit
+`IOB\_SWREG_W(REGFILEIF_REG1, 8, 0) // Write register: 8 bit
+`IOB\_SWREG_R(REGFILEIF_REG3, 8, 0) // Read register: 8 bit
 ```
 
 When the system is built, the values from the configuration file are automatically read, and the peripheral is created according to the configuration.
