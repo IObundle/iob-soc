@@ -166,55 +166,51 @@ def read_portmap(sut_instances_amount, tester_instances_amount, peripheral_signa
 
     # Parse signals, map them and create pwires signals
     for idx, i in enumerate(portmap_contents):
-        if not i.startswith("//"):
-            i=i.replace(" ", "") # Remove all spaces
-            result = re.search("^([^\.]+)\.([^\[]+)\[(\d+)\]\.([^\:]+)\:(?:(?:External)|(?:([^\.\n]+)\.([^\[]+)\[(\d+)\]\.(.+)))$", i)
-            if result is not None:
-                try:
-                    # Make sure it has not been mapped before
-                    if mapped_signals[0 if result.group(1)=="SUT" else 1][result.group(2)][int(result.group(3))][result.group(4)] < -1:
-                        if result.group(5) is None: # Mapped to external interface
-                                mapped_signals[0 if result.group(1)=="SUT" else 1][result.group(2)][int(result.group(3))][result.group(4)] = -1
-                        else: # Mapped between SUT and Tester
-                            if result.group(1) != result.group(5): # Make sure we are not mapping SUT or Tester with itself 
-                                # Make sure it has not been mapped before
-                                if mapped_signals[0 if result.group(5)=="SUT" else 1][result.group(6)][int(result.group(7))][result.group(8)] < -1:
-                                    # Get signal with macro
-                                    signalWithMacro = [result.group(4).replace(result.group(2),"/*<InstanceName>*/"),result.group(8).replace(result.group(6),"/*<InstanceName>*/")]
-                                    # Make sure we are connecting an input and an output
-                                    if ("input" in peripheral_signals[result.group(2)][signalWithMacro[0]] and "output" in peripheral_signals[result.group(6)][signalWithMacro[1]]) or\
-                                       ("output" in peripheral_signals[result.group(2)][signalWithMacro[0]] and "input" in peripheral_signals[result.group(6)][signalWithMacro[1]]):
-                                        signal1_size = re.search("(?:input|output)(.+)",peripheral_signals[result.group(2)][signalWithMacro[0]]).group(1).replace(" ", "")
-                                        signal2_size = re.search("(?:input|output)(.+)",peripheral_signals[result.group(6)][signalWithMacro[1]]).group(1).replace(" ", "")
-                                        # Make sure signals have the same size (give warning if we are not sure, because it may be a macro)
-                                        if (signal1_size!=signal2_size):
-                                            print("Note: Portmap file line {}, signals have sizes {} and {}. These may or may not be equal!".format(idx+1,signal1_size,signal2_size))
-                                        # Create pwires signal to merge them
-                                        pwires.append(["merge_{}_{}_{}_with_{}_{}_{}".format(result.group(1),result.group(4),result.group(3),result.group(5),result.group(8),result.group(7)),signal1_size])
-                                        # Store index of pwires signal in mapping
-                                        mapped_signals[0 if result.group(1)=="SUT" else 1][result.group(2)][int(result.group(3))][result.group(4)] = len(pwires)-1
-                                        mapped_signals[0 if result.group(5)=="SUT" else 1][result.group(6)][int(result.group(7))][result.group(8)] = len(pwires)-1
-                                    else:
-                                        print("Error: Portmap file line {}, can't connect because both signals are of type {}!".format(idx+1,"input" if "input" in peripheral_signals[result.group(2)][signalWithMacro[0]] else "output"))
-                                        exit(-1)
-                                else:
-                                    print("Error: Portmap file line {}, Signal {} of {}.{}[{}] already mapped previously!".format(idx+1,result.group(8),result.group(5),result.group(6),result.group(7)))
-                                    exit(-1)
-                            else:
-                                print("Error: Portmap file line {}, can't map ports of {} with itself!".format(idx+1,result.group(1)))
-                                exit(-1)
-                    else:
-                        print("Error: Portmap file line {}, Signal {} of {}.{}[{}] already mapped previously!".format(idx+1,result.group(4),result.group(1),result.group(2),result.group(3)))
-                        exit(-1)
-                except KeyError as e:
-                    print("Error: Portmap file line {}, unknown parameter {}!".format(idx+1,e))
-                    exit(-1)
-                except IndexError as e:
-                    print("Error: Portmap file line {}, could not find peripheral with index given!".format(idx+1))
-                    exit(-1)
-            else:
-                print("Error parsing line {} of portmap file!".format(idx+1))
+        if i.startswith("//"): # Ignore comments
+            continue
+        i=i.replace(" ", "") # Remove all spaces
+        result = re.search("^([^\.]+)\.([^\[]+)\[(\d+)\]\.([^\:]+)\:(?:(?:External)|(?:([^\.\n]+)\.([^\[]+)\[(\d+)\]\.(.+)))$", i)
+        if result is None:
+            print("Error parsing line {} of portmap file!".format(idx+1))
+            exit(-1)
+        try:
+            # Make sure it has not been mapped before
+            if not (mapped_signals[0 if result.group(1)=="SUT" else 1][result.group(2)][int(result.group(3))][result.group(4)] < -1):
+                print("Error: Portmap file line {}, Signal {} of {}.{}[{}] already mapped previously!".format(idx+1,result.group(4),result.group(1),result.group(2),result.group(3)))
                 exit(-1)
+            if result.group(5) is None: # Mapped to external interface
+                    mapped_signals[0 if result.group(1)=="SUT" else 1][result.group(2)][int(result.group(3))][result.group(4)] = -1
+            else: # Mapped between SUT and Tester
+                if result.group(1) == result.group(5): # Make sure we are not mapping SUT or Tester with itself 
+                    print("Error: Portmap file line {}, can't map ports of {} with itself!".format(idx+1,result.group(1)))
+                    exit(-1)
+                # Make sure it has not been mapped before
+                if not (mapped_signals[0 if result.group(5)=="SUT" else 1][result.group(6)][int(result.group(7))][result.group(8)] < -1):
+                    print("Error: Portmap file line {}, Signal {} of {}.{}[{}] already mapped previously!".format(idx+1,result.group(8),result.group(5),result.group(6),result.group(7)))
+                    exit(-1)
+                # Get signal with macro
+                signalWithMacro = [result.group(4).replace(result.group(2),"/*<InstanceName>*/"),result.group(8).replace(result.group(6),"/*<InstanceName>*/")]
+                # Make sure we are connecting an input and an output
+                if ("input" in peripheral_signals[result.group(2)][signalWithMacro[0]] and "input" in peripheral_signals[result.group(6)][signalWithMacro[1]]) or\
+                   ("output" in peripheral_signals[result.group(2)][signalWithMacro[0]] and "output" in peripheral_signals[result.group(6)][signalWithMacro[1]]):
+                    print("Error: Portmap file line {}, can't connect because both signals are of type {}!".format(idx+1,"input" if "input" in peripheral_signals[result.group(2)][signalWithMacro[0]] else "output"))
+                    exit(-1)
+                signal1_size = re.search("(?:input|output)(.+)",peripheral_signals[result.group(2)][signalWithMacro[0]]).group(1).replace(" ", "")
+                signal2_size = re.search("(?:input|output)(.+)",peripheral_signals[result.group(6)][signalWithMacro[1]]).group(1).replace(" ", "")
+                # Make sure signals have the same size (give warning if we are not sure, because it may be a macro)
+                if (signal1_size!=signal2_size):
+                    print("Note: Portmap file line {}, signals have sizes {} and {}. These may or may not be equal!".format(idx+1,signal1_size,signal2_size))
+                # Create pwires signal to merge them
+                pwires.append(["merge_{}_{}_{}_with_{}_{}_{}".format(result.group(1),result.group(4),result.group(3),result.group(5),result.group(8),result.group(7)),signal1_size])
+                # Store index of pwires signal in mapping
+                mapped_signals[0 if result.group(1)=="SUT" else 1][result.group(2)][int(result.group(3))][result.group(4)] = len(pwires)-1
+                mapped_signals[0 if result.group(5)=="SUT" else 1][result.group(6)][int(result.group(7))][result.group(8)] = len(pwires)-1
+        except KeyError as e:
+            print("Error: Portmap file line {}, unknown parameter {}!".format(idx+1,e))
+            exit(-1)
+        except IndexError as e:
+            print("Error: Portmap file line {}, could not find peripheral with index given!".format(idx+1))
+            exit(-1)
 
     #print(pwires) #DEBUG
     #print(mapped_signals) #DEBUG
@@ -500,8 +496,8 @@ if __name__ == "__main__":
             else:
                 print("Unknown argument.\nUsage: {} replace_peripheral_defines <root_dir> <DEFINE_list> <defmacro>\n".format(sys.argv[0]))
         else:
-            print("Unknown argument.\nUsage: {} <command> <root_dir>\n Commands: generate_config create_topsystem create_testbench".format(sys.argv[0]))
+            print("Unknown argument.\nUsage: {} <command> <root_dir>\n Commands: generate_config create_tester create_testbench get_n_slaves get_defines".format(sys.argv[0]))
     else:
-        print("Needs two arguments.\nUsage: {} <command> <root_dir>".format(sys.argv[0]))
+        print("Needs at least two arguments.\nUsage: {} <command> <root_dir>".format(sys.argv[0]))
 
 
