@@ -1,33 +1,30 @@
+ifeq ($(filter UART, $(HW_MODULES)),)
+
 include $(UART_DIR)/config.mk
+
+#add itself to HW_MODULES list
+HW_MODULES+=UART
+
+
+UART_INC_DIR:=$(UART_HW_DIR)/include
+UART_SRC_DIR:=$(UART_HW_DIR)/src
 
 USE_NETLIST ?=0
 
-#add itself to MODULES list
-MODULES+=$(shell make -C $(UART_DIR) corename | grep -v make)
-
-#include submodule's hardware
-$(foreach p, $(SUBMODULES), $(if $(filter $p, $(MODULES)),,$(eval include $($p_DIR)/hardware/hardware.mk)))
-
-
-#UART HARDWARE
+#include files
+VHDR+=$(wildcard $(UART_INC_DIR)/*.vh)
+VHDR+=iob_uart_swreg_gen.vh iob_uart_swreg_def.vh
+VHDR+=$(LIB_DIR)/hardware/include/iob_lib.vh
 
 #hardware include dirs
-INCLUDE+=$(incdir)$(UART_INC_DIR)
+INCLUDE+=$(incdir). $(incdir)$(UART_INC_DIR) $(incdir)$(LIB_DIR)/hardware/include
 
-#included files
-VHDR+=$(wildcard $(UART_INC_DIR)/*.vh)
-VHDR+=UARTsw_reg_gen.v UARTsw_reg.vh
-VHDR+=$(UART_INC_DIR)/UARTsw_reg.v 
 #sources
 VSRC+=$(UART_SRC_DIR)/uart_core.v $(UART_SRC_DIR)/iob_uart.v
 
-#cpu accessible registers
-UARTsw_reg_gen.v UARTsw_reg.vh: $(UART_INC_DIR)/UARTsw_reg.v
-	$(LIB_DIR)/software/mkregs.py $< HW
+uart-hw-clean: uart-gen-clean
+	@rm -f *.v *.vh
 
-uart_clean_hw:
-	@rm -rf $(UART_INC_DIR)/UARTsw_reg_gen.v \
-	$(UART_INC_DIR)/UARTsw_reg.vh tmp
+.PHONY: uart-hw-clean
 
-.PHONY: uart_clean_hw
-
+endif
