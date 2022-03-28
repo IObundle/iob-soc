@@ -28,11 +28,18 @@ include $(CACHE_DIR)/hardware/hardware.mk
 #UART
 include $(UART_DIR)/hardware/hardware.mk
 
+#REGFILEIF
+include $(REGFILEIF_DIR)/hardware/hardware.mk
+
+# include CORE_UT and tester peripherals if we are testing a core
+ifeq ($(TESTING_CORE),1)
 #CORE_UT
 include $($(CORE_UT)_DIR)/hardware/hardware.mk
 
 #include every other configured tester peripheral (in tester.mk of core under test)
 $(foreach p, $(TESTER_PERIPHERALS), $(eval include $($p_DIR)/hardware/hardware.mk))
+endif
+
 
 #HARDWARE PATHS
 INC_DIR:=$(HW_DIR)/include
@@ -61,18 +68,13 @@ VSRC+=system.v
 
 IMAGES=boot.hex firmware.hex
 
+ifeq ($(TESTER_ENABLED),1)
+include $(TESTER_DIR)/hardware.mk
+endif
+
 # make system.v with peripherals
-system.v: system_tmp.v
-	$(foreach p, $(PERIPHERALS), $(eval HFILES=$(shell echo `ls $($p_DIR)/hardware/include/*.vh | grep -v pio | grep -v inst | grep -v swreg`)) \
-	$(eval HFILES+=$(shell echo `basename $($p_DIR)/hardware/include/*swreg.vh | sed 's/swreg/swreg_def/g'`)) \
-	$(if $(HFILES), $(foreach f, $(HFILES), sed -i '/PHEADER/a `include \"$f\"' $@;),)) # insert header files
-	$(foreach p, $(PERIPHERALS), if test -f $($p_DIR)/hardware/include/pio.vh; then sed -i '/PIO/r $($p_DIR)/hardware/include/pio.vh' $@; fi;) #insert system IOs for peripheral
-	$(foreach p, $(PERIPHERALS), if test -f $($p_DIR)/hardware/include/inst.vh; then sed -i '/endmodule/e cat $($p_DIR)/hardware/include/inst.vh' $@; fi;) # insert peripheral instances
-
-system_tmp.v: $(SRC_DIR)/system_core.v
-	cp $< $@; cp $@ system.v
-
-
+system.v: $(SRC_DIR)/system_core.v
+	$(SW_DIR)/python/createSystem.py $(ROOT_DIR)
 
 # make and copy memory init files
 PYTHON_DIR=$(MEM_DIR)/software/python
@@ -95,6 +97,7 @@ sw-clean:
 	make -C $(FIRM_DIR) clean
 	make -C $(BOOT_DIR) clean
 	make -C $(CONSOLE_DIR) clean
+	make -C $(SW_DIR)/tester clean
 
 #clean general hardware files
 hw-clean: sw-clean gen-clean

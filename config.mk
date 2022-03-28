@@ -4,7 +4,12 @@
 #
 ######################################################################
 
+ifeq ($(TESTING_CORE),1)
+#Use 'IOBTESTER' as the name if we are testing a core.
 IOBSOC_NAME:=IOBTESTER
+else
+IOBSOC_NAME:=IOBSOC
+endif
 
 #
 # PRIMARY PARAMETERS: CAN BE CHANGED BY USERS OR OVERRIDEN BY ENV VARS
@@ -30,9 +35,11 @@ BOOTROM_ADDR_W:=12
 INIT_MEM ?=1
 
 #PERIPHERAL LIST
-#must match respective submodule CORE_NAME in the core.mk file of the submodule
-#PERIPHERALS:=UART
-PERIPHERALS ?=UART
+#list with corename of peripherals to be attached to peripheral bus.
+#must match the 'corename' target in the Makefile inside the peripheral submodule directory.
+#to include multiple instances, write the corename of the peripheral multiple times.
+#(Example: 'PERIPHERALS ?=UART UART' will create 2 UART instances)
+PERIPHERALS ?=UART REGFILEIF
 
 #RISC-V HARD MULTIPLIER AND DIVIDER INSTRUCTIONS
 USE_MUL_DIV ?=1
@@ -40,9 +47,12 @@ USE_MUL_DIV ?=1
 #RISC-V COMPRESSED INSTRUCTIONS
 USE_COMPRESSED ?=1
 
-#ROOT DIRECTORY ON REMOTE MACHINES
-REMOTE_ROOT_DIR ?=sandbox/iob-soc
+#TESTER SYSTEM
+#list with corename of peripherals to be attached to Tester peripheral bus.
+TESTER_PERIPHERALS ?=UART UART IOBNATIVEBRIDGEIF
 
+#ROOT DIRECTORY ON REMOTE MACHINES
+REMOTE_ROOT_DIR ?=sandbox/iob-soc-sut
 
 #SIMULATION
 #default simulator running locally or remotely
@@ -84,12 +94,16 @@ ifeq ($(INIT_MEM),1)
 DEFINE+=$(defmacro)INIT_MEM
 endif
 
+
+ifeq ($(TESTING_CORE),1)
 #include tester configuration from core under test directory
 include $(ROOT_DIR)/../../tester.mk
 #add core under test
 PERIPHERALS+=$(CORE_UT)
-#add other tester peripherals
+#add other tester peripherals.
+#Note: this is not the variable above. It should be overwritten by the tester.mk cofiguration file in the core under test.
 PERIPHERALS+=$(TESTER_PERIPHERALS)
+endif
 
 #submodule paths
 PICORV32_DIR=$(ROOT_DIR)/submodules/PICORV32
@@ -98,8 +112,13 @@ UART_DIR=$(ROOT_DIR)/submodules/UART
 LIB_DIR=$(ROOT_DIR)/submodules/LIB
 MEM_DIR=$(ROOT_DIR)/submodules/MEM
 AXI_DIR=$(ROOT_DIR)/submodules/AXI
+ifeq ($(TESTING_CORE),1)
 #core under test
 $(CORE_UT)_DIR=$(ROOT_DIR)/../..
+endif
+
+REGFILEIF_DIR=$(ROOT_DIR)/submodules/REGFILEIF
+IOBNATIVEBRIDGEIF_DIR=$(ROOT_DIR)/submodules/IOBNATIVEBRIDGEIF
 
 #sw paths
 SW_DIR:=$(ROOT_DIR)/software
@@ -112,6 +131,7 @@ CONSOLE_DIR:=$(SW_DIR)/console
 HW_DIR=$(ROOT_DIR)/hardware
 SIM_DIR=$(HW_DIR)/simulation/$(SIMULATOR)
 ASIC_DIR=$(HW_DIR)/asic/$(ASIC_NODE)
+TESTER_DIR=$(HW_DIR)/tester
 BOARD_DIR ?=$(shell find hardware -name $(BOARD))
 
 #doc paths
@@ -122,7 +142,7 @@ DEFINE+=$(defmacro)BOOTROM_ADDR_W=$(BOOTROM_ADDR_W)
 DEFINE+=$(defmacro)SRAM_ADDR_W=$(SRAM_ADDR_W)
 DEFINE+=$(defmacro)FIRM_ADDR_W=$(FIRM_ADDR_W)
 DEFINE+=$(defmacro)DCACHE_ADDR_W=$(DCACHE_ADDR_W)
-DEFINE+=$(defmacro)N_SLAVES=$(N_SLAVES) #peripherals
+DEFINE+=$(defmacro)N_SLAVES=$(shell $(SW_DIR)/python/submodule_utils.py get_n_slaves $(ROOT_DIR)) #peripherals
 
 #address selection bits
 E:=31 #extra memory bit
@@ -141,9 +161,7 @@ DEFINE+=$(defmacro)B=$B
 #PERIPHERAL IDs
 #assign sequential numbers to peripheral names used as variables
 #that define their base address in the software and instance name in the hardware
-N_SLAVES:=0
-$(foreach p, $(PERIPHERALS), $(eval $p=$(N_SLAVES)) $(eval N_SLAVES:=$(shell expr $(N_SLAVES) \+ 1)))
-$(foreach p, $(PERIPHERALS), $(eval DEFINE+=$(defmacro)$p=$($p)))
+DEFINE+=$(shell $(SW_DIR)/python/submodule_utils.py get_defines $(ROOT_DIR) $(defmacro))
 
 #RULES
 gen-clean:

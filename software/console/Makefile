@@ -1,7 +1,8 @@
 ROOT_DIR:=../..
 include $(ROOT_DIR)/config.mk
 
-SERIAL:=/dev/ttyUSB0
+# Need to add udev rule to have this symlink
+SERIAL:=/dev/usb-uart
 TEST_BENCH:=0
 
 INCLUDE+=-I$(UART_DIR)/software -I$(FIRM_DIR)

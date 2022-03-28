@@ -149,6 +149,7 @@ module system_top (
      #(
  `ifdef DDR_INIT
        .FILE("firmware.hex"),
+       .FILE_SIZE(`FW_SIZE),
  `endif
        .DATA_WIDTH (`DATA_W),
        .ADDR_WIDTH (`DDR_ADDR_W)
@@ -230,6 +231,26 @@ module system_top (
          //$finish;
       end
     */
+
+	//Manually added testbench uart core. RS232 pins attached to the same pins
+	//of the uut UART0 instance to communicate with it
+   iob_uart uart_tb
+     (
+      .clk       (clk),
+      .rst       (reset),
+      
+      .valid     (uart_valid),
+      .address   (uart_addr),
+      .wdata     (uart_wdata[`UART_WDATA_W-1:0]),
+      .wstrb     (uart_wstrb),
+      .rdata     (uart_rdata),
+      .ready     (uart_ready),
+      
+      .txd       (UART0_rxd),
+      .rxd       (UART0_txd),
+      .rts       (UART0_cts),
+      .cts       (UART0_rts)
+      );
    
    
 endmodule

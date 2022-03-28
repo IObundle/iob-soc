@@ -7,7 +7,7 @@ DEFINE+=$(defmacro)FREQ=$(FREQ)
 
 #compiler settings
 TOOLCHAIN_PREFIX:=riscv64-unknown-elf-
-CFLAGS=-Os -nostdlib -march=$(MFLAGS) -mabi=ilp32 --specs=nano.specs
+CFLAGS=-Os -nostdlib -march=$(MFLAGS) -mabi=ilp32 --specs=nano.specs -Wcast-align=strict
 LFLAGS+= -Wl,-Bstatic,-T,../template.lds,--strip-debug
 LLIBS=-lgcc -lc -lnosys
 
@@ -35,11 +35,15 @@ HDR=$(SW_DIR)/system.h
 #common sources (none so far)
 #SRC=$(SW_DIR)/*.c
 
+ifeq ($(TESTER_ENABLED),1)
+include $(SW_DIR)/tester/software.mk
+endif
+
 #peripherals' base addresses
 periphs.h: periphs_tmp.h
 	@is_diff=`diff -q -N $@ $<`; if [ "$$is_diff" ]; then cp $< $@; fi
 	@rm periphs_tmp.h
 
 periphs_tmp.h:
-	$(foreach p, $(PERIPHERALS), $(shell echo "#define $p_BASE (1<<$P) |($p<<($P-N_SLAVES_W))" >> $@) )
+	$(SW_DIR)/python/periphs_tmp.py $P $(ROOT_DIR)
 

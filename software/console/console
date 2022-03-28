@@ -45,20 +45,29 @@ def tb_read(number_of_bytes, is_file = False):
     data = b''
     transfered_bytes = 0
     read_percentage = 100
-    f = open('./soc2cnsl', "rb+")
     while(transfered_bytes < number_of_bytes):
+        f = open('./soc2cnsl', "rb")
+        while (os.path.getsize("./soc2cnsl") == 0): pass
         byte = f.read(1)
-        if(byte!=b''):
-            data += byte
-            transfered_bytes += 1
-            if (is_file):
-                new_percentage = int(100/number_of_bytes*transfered_bytes)
-                if(read_percentage!=new_percentage):
-                    read_percentage = new_percentage
-                    if (not read_percentage%10): print("%3d %c" % (read_percentage, '%'))
-            f.seek(0) # absolute file positioning
-            f.truncate() # to erase all data
-    f.close()
+        data += byte
+        transfered_bytes += 1
+        if (is_file):
+            new_percentage = int(100/number_of_bytes*transfered_bytes)
+            if(read_percentage!=new_percentage):
+                read_percentage = new_percentage
+                if (not read_percentage%10): print("%3d %c" % (read_percentage, '%'))
+        f.close()
+        f = open('./soc2cnsl',"w")
+        f.close()
+    return data
+
+def serial_read(number_of_bytes):
+    data = b''
+    i=0
+    while(i<number_of_bytes):
+        byte = ser.read(1)
+        data += byte
+        i = i+1;
     return data
 
 # Print ERROR
@@ -110,11 +119,10 @@ def cnsl_recvfile():
     # open data file
     f = open(name, 'wb')
     if SerialFlag:
-        aux = ser.read(4)
-        file_size = int.from_bytes(aux, byteorder='little', signed=False)
+        file_size = int.from_bytes(serial_read(4), byteorder='little', signed=False)
         print(PROGNAME, end = ' ')
         print(': file size: {0} bytes'.format(file_size))
-        data = ser.read(file_size)
+        data = serial_read(file_size)
     else:
         file_size = int.from_bytes(tb_read(4), byteorder='little', signed=False)
         print(PROGNAME, end = ' ')
@@ -126,7 +134,7 @@ def cnsl_recvfile():
     print(': file received'.format(file_size))
 
 def usage(message):
-    cnsl_perror("usage: ./console -s <serial port> [ -f ] [ -L/--local ]")
+    print('{}:{}'.format(PROGNAME, "usage: ./console -s <serial port> [ -f ] [ -L/--local ]"))
     cnsl_perror(message)
 
 def clean_exit():
@@ -166,7 +174,7 @@ def init_serial():
 
     # configure the serial connections (the parameters differs on the device connected to)
     ser = serial.Serial()
-    ser.port = "/dev/ttyUSB0"
+    ser.port = "/dev/usb-uart"
     ser.baudrate = 115200
     ser.bytesize = serial.EIGHTBITS #number of bits per bytes
     ser.parity = serial.PARITY_NONE #set parity check: no parity
@@ -182,12 +190,8 @@ def init_serial():
 
 def init_files():
     f = open('./cnsl2soc',"w")
-    f.seek(0) # absolute file positioning
-    f.truncate() # to erase all data
     f.close()
     f = open('./soc2cnsl',"w")
-    f.seek(0) # absolute file positioning
-    f.truncate() # to erase all data
     f.close()
 
 
@@ -254,11 +258,7 @@ def main():
             print(': got file send request')
             cnsl_sendfile()
         else:
-            try:
-                print(str(byte, 'ascii'), end = '')
-            except IOError as e:
-                print(PROGNAME, end = '')
-                print('Received byte that is not ascii.')
+            print(str(byte, 'iso-8859-1'), end = '')
             sys.stdout.flush()
 
 if __name__ == "__main__": main()

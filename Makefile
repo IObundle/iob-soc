@@ -1,7 +1,7 @@
 ROOT_DIR:=.
 include ./config.mk
 
-.PHONY: sim sim-test sim-clean\
+.PHONY: sim sim-test sim-clean tester-sim\
 	pc-emul pc-emul-test pc-emul-clean\
 	fpga-build fpga-build-all fpga-run fpga-test fpga-clean fpga-clean-all\
 	asic-synth asic-sim-post-synth asic-test asic-clean\
@@ -13,7 +13,14 @@ include ./config.mk
 	test-doc test-doc-clean\
 	test test-clean\
 	clean clean-all\
+	tester-portmap\
+	sut-peripherals tester-peripherals directories\
 	debug
+
+# Generate configuration file for port mapping between the Tester, SUT and external interface of the Top System
+tester-portmap:
+	$(SW_DIR)/python/tester_utils.py generate_config $(ROOT_DIR)
+	@echo Portmap template generated in hardware/tester/peripheral_portmap.txt
 
 #
 # SIMULATE RTL
@@ -27,6 +34,10 @@ sim-test:
 
 sim-clean:
 	make -C $(SIM_DIR) clean-all
+
+#Simulate SUT with Tester system
+tester-sim:
+	make -C $(SIM_DIR) all TESTER_ENABLED=1
 
 #
 # EMULATE ON PC
@@ -153,11 +164,24 @@ test: test-clean test-pc-emul test-sim test-fpga test-doc
 
 test-clean: test-pc-emul-clean test-sim-clean test-fpga-clean test-doc-clean
 
+python-cache-clean:
+	find . -name "*__pycache__" -exec rm -rf {} \; -prune
 
 #generic clean
-clean: pc-emul-clean sim-clean fpga-clean doc-clean
+clean: pc-emul-clean sim-clean fpga-clean doc-clean python-cache-clean
 
 clean-all: test-clean
+
+#used by python scripts
+sut-peripherals:
+	@echo $(PERIPHERALS)
+tester-peripherals:
+	@echo $(TESTER_PERIPHERALS)
+directories:
+	@echo -n ""
+	@$(foreach V,$(sort $(.VARIABLES)),\
+	$(if $(filter %_DIR, $V),\
+	$(info $V=$($V))))
 
 
 debug:

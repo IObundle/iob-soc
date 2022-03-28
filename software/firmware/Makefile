@@ -9,20 +9,37 @@ ifeq ($(USE_DDR),1)
 include $(CACHE_DIR)/software/software.mk
 endif
 
+#
+# ADD SUBMODULES SOFTWARE
+#
+
 #uart
 include $(UART_DIR)/software/embedded/embedded.mk
 
+#regfileif
+include $(REGFILEIF_DIR)/software/embedded/embedded.mk
+
+# include CORE_UT and tester peripherals if we are testing a core
+ifeq ($(TESTING_CORE),1)
 #core_ut
 include $($(CORE_UT)_DIR)/software/embedded/embedded.mk
 
 #include every other configured tester peripheral (in tester.mk of core under test)
 $(foreach p, $(TESTER_PERIPHERALS), $(eval include $($p_DIR)/software/embedded/embedded.mk))
+endif
 
 #HEADERS
 HDR+=periphs.h
 
 #SOURCES
-SRC+= firmware.S firmware.c $(UART_DIR)/software/printf.c
+SRC+= firmware.S $(UART_DIR)/software/printf.c
+
+#Use core under test firmware if we are testing a core
+ifeq ($(TESTING_CORE),1)
+SRC+=cut_firmware.c
+else
+SRC+=firmware.c
+endif
 
 #RULES
 firmware.elf: ../template.lds $(HDR) $(SRC)

@@ -13,10 +13,6 @@ DDR_ADDR_W=$(DCACHE_ADDR_W)
 
 CONSOLE_CMD=$(ROOT_DIR)/software/console/console -L
 
-ifeq ($(INIT_MEM),0)
-CONSOLE_CMD+=-f
-endif
-
 #produce waveform dump
 VCD ?=0
 
@@ -25,6 +21,14 @@ DEFINE+=$(defmacro)VCD
 endif
 
 include $(ROOT_DIR)/hardware/hardware.mk
+
+ifeq ($(INIT_MEM),0)
+CONSOLE_CMD+=-f
+endif
+
+FW_SIZE=$(shell wc -l firmware.hex | awk '{print $$1}')
+
+DEFINE+=$(defmacro)FW_SIZE=$(FW_SIZE)
 
 #SOURCES
 
@@ -49,16 +53,19 @@ else
 VSRC+=system_tb.v
 endif
 
-#RULES
-all: clean sw build sim
+ALL_DEPENDENCIES=sw
 
-sim:
+ifeq ($(TESTER_ENABLED),1)
+include $(TESTER_DIR)/simulation.mk
+endif
+
+#RULES
+all: clean $(ALL_DEPENDENCIES) build sim
 ifeq ($(SIM_SERVER),)
-	if [ "`pgrep -u $(USER) console`" ]; then killall -q -9 console; fi
 	@rm -f soc2cnsl cnsl2soc
 	make $(SIM_PROC)
 	$(CONSOLE_CMD) $(TEST_LOG) &
-	make run
+	bash -c "trap 'make kill-sim' INT TERM KILL EXIT; make run"
 else
 	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --delete --force --exclude .git $(SIM_SYNC_FLAGS) $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
@@ -80,10 +87,6 @@ build: $(VSRC) $(VHDR) $(IMAGES)
 ifeq ($(SIMULATOR),verilator)
 #create top system module
 system_top.v: system_top_tmp.v
-else
-#create testbench
-system_tb.v: system_tb_tmp.v
-endif
 	$(foreach p, $(PERIPHERALS), $(eval HFILES=$(shell echo `ls $($p_DIR)/hardware/include/*.vh | grep -v pio | grep -v inst | grep -v swreg`)) \
 	$(eval HFILES+=$(shell echo `basename $($p_DIR)/hardware/include/*swreg.vh | sed 's/swreg/swreg_def/g'`)) \
 	$(if $(HFILES), $(foreach f, $(HFILES), sed -i '/PHEADER/a `include \"$f\"' $@;),)) # insert header files
@@ -91,20 +94,34 @@ endif
 	$(foreach p, $(PERIPHERALS), if test -f $($p_DIR)/hardware/include/pio.vh; then sed s/input// $($p_DIR)/hardware/include/pio.vh | sed s/output// | sed 's/\[.*\]//' | sed 's/\([A-Za-z].*\),/\.\1(\1),/' > ./ports.vh; sed -i '/PORTS/r ports.vh' $@; fi;) #insert and connect pins in uut instance
 	$(foreach p, $(PERIPHERALS), if test -f $($p_DIR)/hardware/include/inst_tb.vh; then sed -i '/endmodule/e cat $($p_DIR)/hardware/include/inst_tb.vh' $@; fi;) # insert peripheral instances
 
-system_tb_tmp.v: $(TB_DIR)/system_core_tb.v
-	cp $< $@; cp $@ system_tb.v
-
 system_top_tmp.v: $(TB_DIR)/system_top_core.v
 	cp $< $@; cp $@ system_top.v
+
+else
+
+#create testbench
+system_tb.v: $(TB_DIR)/system_core_tb.v
+	$(SW_DIR)/python/createTestbench.py $(ROOT_DIR)
+
+endif
+
+#What is this for?
+#Commented this for multi instance, because PERIPH_INSTANCES does not exist anymore. Probably should do this in python.
+#VSRC+=$(foreach p, $(PERIPH_INSTANCES), $(shell if test -f $($($p_CORENAME)_DIR)/hardware/testbench/module_tb.sv; then sed 's/\/\*<InstanceName>\*\//$p/g' $($($p_CORENAME)_DIR)/hardware/testbench/module_tb.sv; fi;)) #add test cores to list of sources 
 
 VSRC+=$(foreach p, $(PERIPHERALS), $(shell if test -f $($p_DIR)/hardware/testbench/module_tb.sv; then echo $($p_DIR)/hardware/testbench/module_tb.sv; fi;)) #add test cores to list of sources
 
 kill-remote-sim:
 	@echo "INFO: Remote simulator $(SIMULATOR) will be killed"
-	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'killall -q -u $(SIM_USER) -9 $(SIM_PROC); killall -q -u $(SIM_USER) -9 console'
+	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'killall -q -u $(SIM_USER) -9 $(SIM_PROC); \
+	make -C $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR) kill-sim'
 ifeq ($(VCD),1)
 	scp $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR)/*.vcd $(SIM_DIR)
 endif
+
+kill-sim:
+	@if [ "`ps aux | grep $(USER) | grep console | grep python3 | grep -v grep`" ]; then \
+	kill -9 $$(ps aux | grep $(USER) | grep console | grep python3 | grep -v grep | awk '{print $$2}'); fi
 
 
 test: clean-testlog test1 test2 test3 test4 test5
@@ -146,6 +163,6 @@ clean-all: clean-testlog clean
 .PRECIOUS: system.vcd test.log
 
 .PHONY: all build sim \
-	kill-remote-sim \
+	kill-remote-sim kill-sim \
 	test test1 test2 test3 test4 test5 \
 	clean-remote clean-testlog clean-all

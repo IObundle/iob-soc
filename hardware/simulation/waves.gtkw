@@ -1,13 +1,15 @@
 [*]
-[*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
-[*] Fri Feb 12 03:28:18 2021
+[*] GTKWave Analyzer v3.3.103 (w)1999-2019 BSI
+[*] Sun Sep 19 19:54:32 2021
 [*]
-[dumpfile] "(null)"
-[savefile] "/home/jsousa/sandbox/iob-soc/hardware/simulation/waves.gtkw"
-[timestart] 13966554000
-[size] 1918 1031
-[pos] -1 -1
-*-20.371645 13971110000 14260000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[dumpfile] "/home/jsousa/sandbox/iob-soc-sut/hardware/simulation/icarus/system.vcd"
+[dumpfile_mtime] "Sun Sep 19 19:53:48 2021"
+[dumpfile_size] 39781503
+[savefile] "/home/jsousa/sandbox/iob-soc-sut/hardware/simulation/waves.gtkw"
+[timestart] 276718000
+[size] 1920 1058
+[pos] 1919 -1
+*-20.926989 284360000 14260000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] system_tb.
 [treeopen] system_tb.uut.
 [treeopen] system_tb.uut.cpu.picorv32_core.
@@ -18,7 +20,7 @@
 [sst_width] 324
 [signals_width] 358
 [sst_expanded] 1
-[sst_vpaned_height] 440
+[sst_vpaned_height] 459
 @200
 -INT MEM
 @22
@@ -29,8 +31,7 @@ system_tb.uut.int_mem0.ram_i_resp[32:0]
 system_tb.uut.int_mem0.d_req[68:0]
 system_tb.uut.int_mem0.d_resp[32:0]
 @200
--TIMER
--sram
+-SRAM
 @28
 system_tb.uut.int_mem0.int_sram.i_valid
 @22
@@ -40,11 +41,10 @@ system_tb.uut.int_mem0.int_sram.i_rdata[31:0]
 system_tb.uut.int_mem0.int_sram.i_ready
 system_tb.uut.int_mem0.int_sram.d_valid
 @22
-system_tb.uut.int_mem0.int_sram.d_addr[13:0]
 system_tb.uut.int_mem0.int_sram.d_wdata[31:0]
 system_tb.uut.int_mem0.int_sram.d_wstrb[3:0]
 system_tb.uut.int_mem0.int_sram.d_rdata[31:0]
-@29
+@28
 system_tb.uut.int_mem0.int_sram.d_ready
 @200
 -SYSTEM
@@ -87,12 +87,20 @@ system_tb.uut.cpu.picorv32_core.mem_rdata[31:0]
 system_tb.uut.cpu.picorv32_core.mem_ready
 system_tb.uut.cpu.picorv32_core.trap
 @200
+-REGFILEIF
+@28
+system_tb.uut.regfileif.valid
+system_tb.uut.regfileif.ready
+@22
+system_tb.uut.regfileif.wstrb[3:0]
+system_tb.uut.regfileif.wdata[31:0]
+@23
+system_tb.uut.regfileif.rdata[31:0]
+@200
 -UART
 @28
 system_tb.uut.uart.txd
 system_tb.uut.uart.rxd
-system_tb.uut.uart.tx_ready
-system_tb.uut.uart.rx_ready
 system_tb.uut.uart.valid
 @24
 system_tb.uut.uart.address[2:0]
