@@ -43,51 +43,51 @@ system sut (
 
 `ifdef USE_DDR
     //address write
-    .m_axi_awid    (m_axi_awid[0]),
-    .m_axi_awaddr  (m_axi_awaddr[0]),
-    .m_axi_awlen   (m_axi_awlen[0]),
-    .m_axi_awsize  (m_axi_awsize[0]),
-    .m_axi_awburst (m_axi_awburst[0]),
-    .m_axi_awlock  (m_axi_awlock[0]),
-    .m_axi_awcache (m_axi_awcache[0]),
-    .m_axi_awprot  (m_axi_awprot[0]),
-    .m_axi_awqos   (m_axi_awqos[0]),
-    .m_axi_awvalid (m_axi_awvalid[0]),
-    .m_axi_awready (m_axi_awready[0]),
+    .m_axi_awid    (m_axi_awid),
+    .m_axi_awaddr  (m_axi_awaddr),
+    .m_axi_awlen   (m_axi_awlen),
+    .m_axi_awsize  (m_axi_awsize),
+    .m_axi_awburst (m_axi_awburst),
+    .m_axi_awlock  (m_axi_awlock),
+    .m_axi_awcache (m_axi_awcache),
+    .m_axi_awprot  (m_axi_awprot),
+    .m_axi_awqos   (m_axi_awqos),
+    .m_axi_awvalid (m_axi_awvalid),
+    .m_axi_awready (m_axi_awready),
 
     //write  
-    .m_axi_wdata   (m_axi_wdata[0]),
-    .m_axi_wstrb   (m_axi_wstrb[0]),
-    .m_axi_wlast   (m_axi_wlast[0]),
-    .m_axi_wvalid  (m_axi_wvalid[0]),
-    .m_axi_wready  (m_axi_wready[0]),
+    .m_axi_wdata   (m_axi_wdata),
+    .m_axi_wstrb   (m_axi_wstrb),
+    .m_axi_wlast   (m_axi_wlast),
+    .m_axi_wvalid  (m_axi_wvalid),
+    .m_axi_wready  (m_axi_wready),
 
     //write response
-    .m_axi_bid     (m_axi_bid[0]),
-    .m_axi_bresp   (m_axi_bresp[0]),
-    .m_axi_bvalid  (m_axi_bvalid[0]),
-    .m_axi_bready  (m_axi_bready[0]),
+    .m_axi_bid     (m_axi_bid),
+    .m_axi_bresp   (m_axi_bresp),
+    .m_axi_bvalid  (m_axi_bvalid),
+    .m_axi_bready  (m_axi_bready),
 
     //address read
-    .m_axi_arid    (m_axi_arid[0]),
-    .m_axi_araddr  (m_axi_araddr[0]),
-    .m_axi_arlen   (m_axi_arlen[0]),
-    .m_axi_arsize  (m_axi_arsize[0]),
-    .m_axi_arburst (m_axi_arburst[0]),
-    .m_axi_arlock  (m_axi_arlock[0]),
-    .m_axi_arcache (m_axi_arcache[0]),
-    .m_axi_arprot  (m_axi_arprot[0]),
-    .m_axi_arqos   (m_axi_arqos[0]),
-    .m_axi_arvalid (m_axi_arvalid[0]),
-    .m_axi_arready (m_axi_arready[0]),
+    .m_axi_arid    (m_axi_arid),
+    .m_axi_araddr  (m_axi_araddr),
+    .m_axi_arlen   (m_axi_arlen),
+    .m_axi_arsize  (m_axi_arsize),
+    .m_axi_arburst (m_axi_arburst),
+    .m_axi_arlock  (m_axi_arlock),
+    .m_axi_arcache (m_axi_arcache),
+    .m_axi_arprot  (m_axi_arprot),
+    .m_axi_arqos   (m_axi_arqos),
+    .m_axi_arvalid (m_axi_arvalid),
+    .m_axi_arready (m_axi_arready),
 
     //read   
-    .m_axi_rid     (m_axi_rid[0]),
-    .m_axi_rdata   (m_axi_rdata[0]),
-    .m_axi_rresp   (m_axi_rresp[0]),
-    .m_axi_rlast   (m_axi_rlast[0]),
-    .m_axi_rvalid  (m_axi_rvalid[0]),
-    .m_axi_rready  (m_axi_rready[0]),	
+    .m_axi_rid     (m_axi_rid),
+    .m_axi_rdata   (m_axi_rdata),
+    .m_axi_rresp   (m_axi_rresp),
+    .m_axi_rlast   (m_axi_rlast),
+    .m_axi_rvalid  (m_axi_rvalid),
+    .m_axi_rready  (m_axi_rready),	
 `endif               
     .clk           (clk),
     .reset         (reset),
@@ -253,23 +253,49 @@ def create_tester():
     # Attach tester cpu to instance 0 of trap signal array
     tester_contents = [re.sub('\(trap\)', '(trap[1])', i) for i in tester_contents] 
 
+    axi_sizes = {} #Store axi signal sizes 
     # Add another AXI bus for Tester memory
-    tester_contents = [re.sub('((?:(?:output)|(?:input))\s+)((?:\[[^\]]+\])*\s+m_axi_[^,]+,)', '\g<1>[1:0]\g<2>', i) for i in tester_contents] 
+    for i in range(len(tester_contents)):
+        strMatch = re.search('((?:output)|(?:input))\s+(?:\[([^\:]+)[^\]]+\])?\s+(m_axi_[^,]+),', tester_contents[i])
+        if not strMatch:
+            continue
+        if strMatch[2]==None or strMatch[2]=="0":
+            tester_contents[i]="   {} [1:0] {},\n".format(strMatch[1],strMatch[3])
+            axi_sizes[strMatch[3]]="0"
+        else:
+            tester_contents[i]="   {} [2*({}+1)-1:0] {},\n".format(strMatch[1],strMatch[2],strMatch[3])
+            axi_sizes[strMatch[3]]=strMatch[2]
     # Change Tester AXI interface to use instance 1 of AXI bus array
-    tester_contents = [re.sub('(\(m_axi_[^\)]+)\)', '\g<1>[1])', i) for i in tester_contents] 
+    for i in range(len(tester_contents)):
+        strMatch = re.search('\((m_axi_[^\)]+)\)', tester_contents[i])
+        if not strMatch:
+            continue
+        tester_contents[i]=re.sub('\(m_axi_[^\)]+\)', '({}[2*({}+1)-1:{}+1])'.format(strMatch[1],axi_sizes[strMatch[1]],axi_sizes[strMatch[1]]), tester_contents[i])
 
     # Insert SUT instance (includes SUTPORTS marker)
     start_index = find_idx(tester_contents, "endmodule")-1
-    tester_contents = tester_contents[:start_index] + sut_instance_template.splitlines(True) + tester_contents[start_index:] 
+    sut_instance_template_array = sut_instance_template.splitlines(True)
+    for i in range(len(sut_instance_template_array)):
+        strMatch = re.search('\((m_axi_[^\)]+)\)', sut_instance_template_array[i])
+        if not strMatch:
+            continue
+        sut_instance_template_array[i]=re.sub('\(m_axi_[^\)]+\)', '({}[{}:0])'.format(strMatch[1],axi_sizes[strMatch[1]]), sut_instance_template_array[i])
+    tester_contents = tester_contents[:start_index] + sut_instance_template_array + tester_contents[start_index:] 
 
     # Invert tester memory access bit
     start_index = find_idx(tester_contents, "ext_mem ")-1
-    tester_contents.insert(start_index, "   assign m_axi_awaddr[1][`DDR_ADDR_W-1] = ~axi_invert_w_bit;\n")
-    tester_contents.insert(start_index, "   assign m_axi_awaddr[1][`DDR_ADDR_W-1] = ~axi_invert_r_bit;\n")
+    tester_contents.insert(start_index, "`endif\n")
+    tester_contents.insert(start_index, "   assign m_axi_awaddr[2*`DDR_ADDR_W-1] = axi_invert_w_bit;\n")
+    tester_contents.insert(start_index, "   assign m_axi_awaddr[2*`DDR_ADDR_W-1] = axi_invert_r_bit;\n")
+    tester_contents.insert(start_index, "   //Dont invert bits if we dont run firmware of both systems from the DDR\n")
+    tester_contents.insert(start_index, "`else\n")
+    tester_contents.insert(start_index, "   assign m_axi_awaddr[2*`DDR_ADDR_W-1] = ~axi_invert_w_bit;\n")
+    tester_contents.insert(start_index, "   assign m_axi_awaddr[2*`DDR_ADDR_W-1] = ~axi_invert_r_bit;\n")
+    tester_contents.insert(start_index, "`ifdef RUN_EXTMEM_USE_SRAM\n")
     tester_contents.insert(start_index, "   wire axi_invert_w_bit;\n")
     tester_contents.insert(start_index, "   wire axi_invert_r_bit;\n")
-    tester_contents = [re.sub('.axi_awaddr\(m_axi_awaddr\[1\]\),', '.axi_awaddr({axi_invert_w_bit,m_axi_awaddr[1][`DDR_ADDR_W-2:0]}),', i) for i in tester_contents] 
-    tester_contents = [re.sub('.axi_araddr\(m_axi_araddr\[1\]\),', '.axi_araddr({axi_invert_r_bit,m_axi_araddr[1][`DDR_ADDR_W-2:0]}),', i) for i in tester_contents] 
+    tester_contents = [re.sub('.axi_awaddr\(m_axi_awaddr\[[^\]]\]\),', '.axi_awaddr({axi_invert_w_bit,m_axi_awaddr[2*`DDR_ADDR_W-2:`DDR_ADDR_W]}),', i) for i in tester_contents] 
+    tester_contents = [re.sub('.axi_araddr\(m_axi_araddr\[[^\]]\]\),', '.axi_araddr({axi_invert_r_bit,m_axi_araddr[2*`DDR_ADDR_W-2:`DDR_ADDR_W]}),', i) for i in tester_contents] 
 
     # Replace N_SLAVES by TESTER_N_SLAVES
     tester_contents = [re.sub('`N_SLAVES', '`TESTER_N_SLAVES', i) for i in tester_contents] 
