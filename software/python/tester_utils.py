@@ -294,8 +294,8 @@ def create_tester():
     tester_contents.insert(start_index, "`ifdef RUN_EXTMEM_USE_SRAM\n")
     tester_contents.insert(start_index, "   wire axi_invert_w_bit;\n")
     tester_contents.insert(start_index, "   wire axi_invert_r_bit;\n")
-    tester_contents = [re.sub('.axi_awaddr\(m_axi_awaddr\[[^\]]\]\),', '.axi_awaddr({axi_invert_w_bit,m_axi_awaddr[2*`DDR_ADDR_W-2:`DDR_ADDR_W]}),', i) for i in tester_contents] 
-    tester_contents = [re.sub('.axi_araddr\(m_axi_araddr\[[^\]]\]\),', '.axi_araddr({axi_invert_r_bit,m_axi_araddr[2*`DDR_ADDR_W-2:`DDR_ADDR_W]}),', i) for i in tester_contents] 
+    tester_contents = [re.sub('.axi_awaddr\(m_axi_awaddr\[[^\]]+\]\),', '.axi_awaddr({axi_invert_w_bit,m_axi_awaddr[2*`DDR_ADDR_W-2:`DDR_ADDR_W]}),', i) for i in tester_contents]
+    tester_contents = [re.sub('.axi_araddr\(m_axi_araddr\[[^\]]+\]\),', '.axi_araddr({axi_invert_r_bit,m_axi_araddr[2*`DDR_ADDR_W-2:`DDR_ADDR_W]}),', i) for i in tester_contents]
 
     # Replace N_SLAVES by TESTER_N_SLAVES
     tester_contents = [re.sub('`N_SLAVES', '`TESTER_N_SLAVES', i) for i in tester_contents] 
