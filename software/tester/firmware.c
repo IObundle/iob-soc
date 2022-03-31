@@ -53,18 +53,27 @@ int main()
   printf("%d \n", iobnativebridgeif_readreg(2));
   printf("%d \n", iobnativebridgeif_readreg(3));
 
+#ifdef USE_DDR
+#ifdef RUN_EXTMEM
   //Get address of first char in string stored in SUT's memory with first bit inverted
   sutStr=(char*)(iobnativebridgeif_readreg(4) ^ (0b1 << (DCACHE_ADDR_W-1))); //Note, DCACHE_ADDR_W may not be the same as DDR_ADDR_W when running in fpga
-  printf("%p %x",sutStr, *sutStr); //DEBUG
-  //TODO: Find address problem. Do these addresses map 1 to 1 with memory? does it include instruction memory addresses? Maybe check linker compilation files?
-  
-#ifdef USE_DDR
+
   //Print the string by accessing that address
-  uart_puts("String read by Tester directly from SUT's memory:\n");
+  uart_puts("\nString read by Tester directly from SUT's memory:\n");
+  for(i=0; sutStr[i]!='\0'; i++){
+    uart_putc(sutStr[i]);
+  }
+#else
+  //Print the string by reading DDR memory starting at address 0.
+  uart_puts("\nString read by Tester from DDR:\n");
+  sutStr=(char*)(0b1 << E); //Address 0 of DDR
   for(i=0; sutStr[i]!='\0'; i++){
     uart_putc(sutStr[i]);
   }
 #endif
+#endif
+
+  uart_putc('\n');
 
   //End UART0 connection
   uart_finish();
