@@ -347,6 +347,7 @@ module tester_tb;
 		#(
 		`ifdef DDR_INIT
 		.FILE("init_ddr_contents.hex"), //This file contains firmware for both systems
+		.FILE_SIZE(2**(`DDR_ADDR_W-2)),
 		`endif
 		.DATA_WIDTH (`DATA_W),
 		.ADDR_WIDTH (`DDR_ADDR_W)

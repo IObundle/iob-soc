@@ -286,11 +286,11 @@ def create_tester():
     start_index = find_idx(tester_contents, "ext_mem ")-1
     tester_contents.insert(start_index, "`endif\n")
     tester_contents.insert(start_index, "   assign m_axi_awaddr[2*`DDR_ADDR_W-1] = axi_invert_w_bit;\n")
-    tester_contents.insert(start_index, "   assign m_axi_awaddr[2*`DDR_ADDR_W-1] = axi_invert_r_bit;\n")
+    tester_contents.insert(start_index, "   assign m_axi_araddr[2*`DDR_ADDR_W-1] = axi_invert_r_bit;\n")
     tester_contents.insert(start_index, "   //Dont invert bits if we dont run firmware of both systems from the DDR\n")
     tester_contents.insert(start_index, "`else\n")
     tester_contents.insert(start_index, "   assign m_axi_awaddr[2*`DDR_ADDR_W-1] = ~axi_invert_w_bit;\n")
-    tester_contents.insert(start_index, "   assign m_axi_awaddr[2*`DDR_ADDR_W-1] = ~axi_invert_r_bit;\n")
+    tester_contents.insert(start_index, "   assign m_axi_araddr[2*`DDR_ADDR_W-1] = ~axi_invert_r_bit;\n")
     tester_contents.insert(start_index, "`ifdef RUN_EXTMEM_USE_SRAM\n")
     tester_contents.insert(start_index, "   wire axi_invert_w_bit;\n")
     tester_contents.insert(start_index, "   wire axi_invert_r_bit;\n")
