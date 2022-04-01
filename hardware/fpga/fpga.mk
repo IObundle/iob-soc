@@ -28,6 +28,8 @@ ifeq ($(BOARD_SERVER),)
 	if [ ! -f $(LOAD_FILE) ]; then touch $(LOAD_FILE); chown $(USER):dialout $(LOAD_FILE); chmod 664 $(LOAD_FILE); fi;\
 	bash -c "trap 'make queue-out' INT TERM KILL; make queue-in; if [ $(FORCE) = 1 -o \"`head -1 $(LOAD_FILE)`\" != \"$(JOB)\" ];\
 	then ../prog.sh; echo $(JOB) > $(LOAD_FILE); fi; rm -f $(CONSOLE_DIR)/test.log; make -C $(CONSOLE_DIR) run; make queue-out;\
+	if [ -f $(CONSOLE_DIR)/$(lastword $(TEST_LOG)) ]; then cat $(CONSOLE_DIR)/$(lastword $(TEST_LOG)) $(TEST_LOG); fi;\
+	rm -rf $(CONSOLE_DIR)/$(lastword $(TEST_LOG));\
 	if ls $(CONSOLE_DIR)/*.log > /dev/null 2>&1; then cp $(CONSOLE_DIR)/*.log .; fi"
 else
 	ssh $(BOARD_USER)@$(BOARD_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
