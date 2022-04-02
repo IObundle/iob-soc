@@ -2,7 +2,7 @@
 #include "iob-lib.h"
 #include "iob-uart.h"
 
-#if (USE_DDR_SW==1 && RUN_EXTMEM_SW==1)
+#ifdef RUN_EXTMEM
 #include "iob-cache.h"
 #endif
 
@@ -27,18 +27,19 @@ int main() {
   uart_puts (PROGNAME);
   uart_puts (": connected!\n");
 
-  if(USE_DDR_SW){
+#ifdef USE_DDR
     uart_puts (PROGNAME);
     uart_puts(": DDR in use\n");
-  }
-  if(RUN_EXTMEM_SW){
+#endif
+    
+#ifdef RUN_EXTMEM
     uart_puts (PROGNAME);
     uart_puts(": program to run from DDR\n");
-  }
+#endif
 
   // address to copy firmware to
   char *prog_start_addr;
-#if ( RUN_EXTMEM_SW == 1 )
+#ifdef RUN_EXTMEM
     prog_start_addr = (char *) EXTRA_BASE;
 #else
     prog_start_addr = (char *) (1<<BOOTROM_ADDR_W);
@@ -64,12 +65,10 @@ int main() {
   uart_puts (": Restart CPU to run user program...\n");
   uart_txwait();
 
-#if (USE_DDR && RUN_EXTMEM)
-  //by reading any DDR data, it forces the caches to first write everyting before reason (write-through write-not-allocate)
-  char force_cache_read = *prog_start_addr;
-  uart_rxen(force_cache_read);//this line prevents compiler from optimizing away force_cache_read
+#ifdef RUN_EXTMEM
+  while( !cache_wtb_empty() );
 #endif
   //reboot and run firmware (not bootloader)
-  MEM_SET(int, BOOTCTR_BASE, 0b10);//{cpu_rst_req=1, boot=0}
+  *((int *) BOOTCTR_BASE) = 0b10;
   
 }
