@@ -38,10 +38,11 @@ int main() {
 
   // address to copy firmware to
   char *prog_start_addr;
-  if (USE_DDR_SW==0 || (USE_DDR_SW==1 && RUN_EXTMEM_SW==0))	
-    prog_start_addr = (char *) (1<<BOOTROM_ADDR_W);
-  else
+#if ( RUN_EXTMEM_SW == 1 )
     prog_start_addr = (char *) EXTRA_BASE;
+#else
+    prog_start_addr = (char *) (1<<BOOTROM_ADDR_W);
+#endif
 
   //receive firmware from host 
   int file_size = 0;

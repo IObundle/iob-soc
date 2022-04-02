@@ -12,7 +12,7 @@ module ext_mem
     input                                    clk,
     input                                    rst,
 
-`ifdef RUN_EXTMEM_USE_SRAM
+`ifdef RUN_EXTMEM
     // Instruction bus
     input [1+`FIRM_ADDR_W-2+`WRITE_W-1:0]    i_req,
     output [`RESP_W-1:0]                     i_resp,
@@ -66,7 +66,7 @@ module ext_mem
     output                                   axi_rready
     );
 
-`ifdef RUN_EXTMEM_USE_SRAM
+`ifdef RUN_EXTMEM
    //
    // INSTRUCTION CACHE
    //
@@ -112,17 +112,17 @@ module ext_mem
            .mem_rdata (icache_be_resp[`rdata(0)]),
            .mem_ready (icache_be_resp[`ready(0)])
            );
-`endif //  `ifdef RUN_EXTMEM_USE_SRAM
+`endif //  `ifdef RUN_EXTMEM
 
    //l2 cache interface signals
    wire [1+`DCACHE_ADDR_W+`WRITE_W-1:0]       l2cache_req;
-   wire [`RESP_W-1:0]                        l2cache_resp;
+   wire [`RESP_W-1:0]                         l2cache_resp;
    
    //ext_mem control signals
-   wire                                      l2_wtb_empty;
-   wire                                      invalidate;
-   reg                                       invalidate_reg;
-   wire                                      l2_valid = l2cache_req[1+`DCACHE_ADDR_W+`WRITE_W-1];
+   wire                                       l2_wtb_empty;
+   wire                                       invalidate;
+   reg                                        invalidate_reg;
+   wire                                       l2_valid = l2cache_req[1+`DCACHE_ADDR_W+`WRITE_W-1];
    //Necessary logic to avoid invalidating L2 while it's being accessed by a request
    always @(posedge clk, posedge rst)
      if (rst)
@@ -184,7 +184,7 @@ module ext_mem
    iob_merge
      #(
        .ADDR_W(`DCACHE_ADDR_W),
-`ifdef RUN_EXTMEM_USE_SRAM
+`ifdef RUN_EXTMEM
        .N_MASTERS(2)
 `else
        .N_MASTERS(1)
@@ -195,7 +195,7 @@ module ext_mem
       .clk(clk),
       .rst(rst),
       // masters
-`ifdef RUN_EXTMEM_USE_SRAM
+`ifdef RUN_EXTMEM
       .m_req  ({icache_be_req, dcache_be_req}),
       .m_resp ({icache_be_resp, dcache_be_resp}),
 `else
