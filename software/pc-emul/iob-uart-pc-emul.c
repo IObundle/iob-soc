@@ -13,20 +13,20 @@ void uart_setbaseaddr(int v)
   return;
 }
 
-void uart_softrst(int v)
+void uart_softrst(uint8_t v)
 {
   div_value=0;
   return;
 }
 
-void uart_setdiv(int div)
+void uart_setdiv(uint16_t div)
 {
   div_value = div;
   return;
 }
 
 //tx functions
-void uart_txen(int v) {
+void uart_txen(uint8_t v) {
   return;
 }
 
@@ -34,16 +34,18 @@ void uart_txwait() {
   return;
 }
 
-int uart_istxready(){
+uint8_t uart_istxready(){
   return 1;
 }
 
 void uart_putc(char c) {
-  //send byte to console
+  //should send byte to console
+  //temporary solution:
+  putchar(c);
 }
 
 //rx functions
-void uart_rxen(int v) {
+void uart_rxen(uint8_t v) {
   return;
 }
 
@@ -51,7 +53,7 @@ void uart_rxwait(){
   return;
 }
 
-int uart_rxisready(){
+uint8_t uart_rxisready(){
   return 1;
 }
 
