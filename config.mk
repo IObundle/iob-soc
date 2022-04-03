@@ -4,7 +4,7 @@
 #
 ######################################################################
 
-ifeq ($(TESTING_CORE),1)
+ifneq ($(TESTING_CORE),)
 #Use 'IOBTESTER' as the name if we are testing a core.
 IOBSOC_NAME:=IOBTESTER
 else
@@ -94,7 +94,7 @@ DEFINE+=$(defmacro)INIT_MEM
 endif
 
 
-ifeq ($(TESTING_CORE),1)
+ifneq ($(TESTING_CORE),)
 #include tester configuration from core under test directory
 include $(ROOT_DIR)/../../tester.mk
 #add core under test
@@ -102,6 +102,8 @@ PERIPHERALS+=$(CORE_UT)
 #add other tester peripherals.
 #Note: this is not the variable above. It should be overwritten by the tester.mk cofiguration file in the core under test.
 PERIPHERALS+=$(TESTER_PERIPHERALS)
+#Set root directory of tester on remote machines in the submodules directory of CUT
+REMOTE_ROOT_DIR=$(REMOTE_CUT_DIR)/submodules/$(shell realpath $(ROOT_DIR) | xargs -I {} basename {})
 endif
 
 #submodule paths
@@ -111,7 +113,7 @@ UART_DIR=$(ROOT_DIR)/submodules/UART
 LIB_DIR=$(ROOT_DIR)/submodules/LIB
 MEM_DIR=$(ROOT_DIR)/submodules/MEM
 AXI_DIR=$(ROOT_DIR)/submodules/AXI
-ifeq ($(TESTING_CORE),1)
+ifneq ($(TESTING_CORE),)
 #core under test
 $(CORE_UT)_DIR=$(ROOT_DIR)/../..
 endif

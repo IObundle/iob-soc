@@ -63,6 +63,9 @@ clean-remote: hw-clean
 ifneq ($(ASIC_SERVER),)
 	ssh $(ASIC_USER)@$(ASIC_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --delete --force --exclude .git $(ROOT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)
+ifneq ($(TESTING_CORE),)
+	rsync -avz --delete --force --exclude .git $($(CORE_UT)_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_CUT_DIR)
+endif
 	ssh $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE); make clean'
 endif
 
@@ -72,6 +75,9 @@ clean-testlog:
 ifneq ($(ASIC_SERVER),)
 	ssh $(ASIC_USER)@$(ASIC_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --delete --force --exclude .git $(ROOT_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_ROOT_DIR)
+ifneq ($(TESTING_CORE),)
+	rsync -avz --delete --force --exclude .git $($(CORE_UT)_DIR) $(ASIC_USER)@$(ASIC_SERVER):$(REMOTE_CUT_DIR)
+endif
 	ssh $(ASIC_USER)@$(ASIC_SERVER) 'cd $(REMOTE_ROOT_DIR)/hardware/asic/$(ASIC_NODE); make $@'
 endif
 
