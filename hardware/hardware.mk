@@ -20,7 +20,7 @@ VHDR+=$(LIB_DIR)/hardware/include/iob_lib.vh
 INCLUDE+=$(incdir). $(incdir)$(UART_INC_DIR) $(incdir)$(LIB_DIR)/hardware/include
 
 #sources
-VSRC+=$(UART_SRC_DIR)/uart_core.v $(UART_SRC_DIR)/iob_uart.v $(LIB_DIR)/hardware/iob_wstrb2offset/iob_wstrb2offset.v
+VSRC+=$(UART_SRC_DIR)/uart_core.v $(UART_SRC_DIR)/iob_uart.v
 
 uart-hw-clean: uart-gen-clean
 	@rm -f *.v *.vh
