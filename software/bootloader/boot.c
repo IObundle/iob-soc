@@ -1,5 +1,4 @@
 #include "system.h"
-#include "iob-lib.h"
 #include "iob-uart.h"
 
 #ifdef RUN_EXTMEM
@@ -20,7 +19,7 @@ int main() {
   //connect with console
    do {
     if(uart_istxready())
-      uart_putc(ENQ);
+      uart_putc((char) ENQ);
   } while(!uart_isrxready());
 
   //welcome message
