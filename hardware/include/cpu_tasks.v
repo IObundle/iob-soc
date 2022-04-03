@@ -3,6 +3,16 @@
 //
 //this is a temporary solution
 
+//address macros
+`define UART_SOFTRESET_ADDR 0
+`define UART_DIV_ADDR 4
+`define UART_TXDATA_ADDR 8
+`define UART_TXEN_ADDR 12
+`define UART_TXREADY_ADDR 16
+`define UART_RXDATA_ADDR 20
+`define UART_RXEN_ADDR 24
+`define UART_RXREADY_ADDR 28
+
 //file seek macros
 `define SEEK_SET 0
 `define SEEK_CUR 1
