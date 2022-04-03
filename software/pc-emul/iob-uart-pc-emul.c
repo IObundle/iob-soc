@@ -10,6 +10,10 @@ static int div_value;
 void uart_setbaseaddr(int v)
 {
   //manage files to communicate with console here
+  FILE *cnsl2soc_fd;
+
+  while ((cnsl2soc_fd = fopen("./cnsl2soc", "rb")) == NULL);
+  fclose(cnsl2soc_fd);
   return;
 }
 
@@ -39,9 +43,24 @@ uint8_t uart_istxready(){
 }
 
 void uart_putc(char c) {
-  //should send byte to console
-  //temporary solution:
-  putchar(c);
+  // send byte to console
+  char aux_char;
+  int able2read;
+  FILE *soc2cnsl_fd;
+
+  while(1){
+    if((soc2cnsl_fd = fopen("./soc2cnsl", "rb")) != NULL){
+      able2read = fread(&aux_char, sizeof(char), 1, soc2cnsl_fd);
+      if(able2read == 0){
+        fclose(soc2cnsl_fd);
+        soc2cnsl_fd = fopen("./soc2cnsl", "wb");
+        fwrite(&c, sizeof(char), 1, soc2cnsl_fd);
+        fclose(soc2cnsl_fd);
+        break;
+      }
+      fclose(soc2cnsl_fd);
+    }
+  }
 }
 
 //rx functions
@@ -59,5 +78,22 @@ uint8_t uart_rxisready(){
 
 char uart_getc() {
   //get byte from console
-}
+  char c;
+  int able2write;
+  FILE *cnsl2soc_fd;
 
+  while(1){
+    if ((cnsl2soc_fd = fopen("./cnsl2soc", "rb")) == NULL){
+      break;
+    }
+    able2write = fread(&c, sizeof(char), 1, cnsl2soc_fd);
+    if (able2write > 0){
+      fclose(cnsl2soc_fd);
+      cnsl2soc_fd = fopen("./cnsl2soc", "w");
+      fclose(cnsl2soc_fd);
+      break;
+    }
+    fclose(cnsl2soc_fd);
+  }
+  return c;
+}
