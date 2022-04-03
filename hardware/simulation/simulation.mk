@@ -116,7 +116,7 @@ kill-sim:
 
 
 test: clean-testlog test1 test2 test3 test4 test5
-	diff -q test.log test.expected
+	diff -q test.log ../test.expected
 
 test1:
 	make all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
