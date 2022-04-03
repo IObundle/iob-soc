@@ -6,8 +6,14 @@
 include $(IOBNATIVEBRIDGEIF_DIR)/hardware/hardware.mk
 
 VSRC+=tester.v
-IMAGES+=tester_boot.hex tester_firmware.hex init_ddr_contents.hex
-
+IMAGES+=tester_boot.hex tester_firmware.hex
+ifeq ($(USE_DDR),1)
+ifeq ($(RUN_EXTMEM),1)
+ifeq ($(INIT_MEM),1)
+IMAGES+=init_ddr_contents.hex
+endif
+endif
+endif
 #Add TESTER_N_SLAVES to define list
 DEFINE+=$(defmacro)TESTER_N_SLAVES=$(shell $(SW_DIR)/python/tester_utils.py get_n_slaves $(ROOT_DIR))
 

@@ -500,30 +500,30 @@ def replace_peripheral_defines(define_string, defmacro):
 
 if __name__ == "__main__":
     # Parse arguments
-    if len(sys.argv)>2:
-        root_dir=sys.argv[2]
-        submodule_utils.root_dir = root_dir
-        if sys.argv[1] == "generate_config":
-           generate_portmap() 
-        elif sys.argv[1] == "create_tester":
-            create_tester() 
-        elif sys.argv[1] == "create_testbench":
-            create_testbench() 
-        elif sys.argv[1] == "get_n_slaves":
-           print_tester_nslaves()
-        elif sys.argv[1] == "get_defines":
-            if len(sys.argv)>3:
-               print_tester_peripheral_defines(sys.argv[3])
-            else:
-                print("Unknown argument.\nUsage: {} print_defines <root_dir> <defmacro>\n".format(sys.argv[0]))
-        elif sys.argv[1] == "replace_peripheral_defines":
-            if len(sys.argv)>4:
-               replace_peripheral_defines(sys.argv[3],sys.argv[4])
-            else:
-                print("Unknown argument.\nUsage: {} replace_peripheral_defines <root_dir> <DEFINE_list> <defmacro>\n".format(sys.argv[0]))
-        else:
-            print("Unknown argument.\nUsage: {} <command> <root_dir>\n Commands: generate_config create_tester create_testbench get_n_slaves get_defines".format(sys.argv[0]))
-    else:
+    if len(sys.argv)<3:
         print("Needs at least two arguments.\nUsage: {} <command> <root_dir>".format(sys.argv[0]))
-
-
+    root_dir=sys.argv[2]
+    submodule_utils.root_dir = root_dir
+    if sys.argv[1] == "generate_config":
+       generate_portmap()
+    elif sys.argv[1] == "create_tester":
+        create_tester()
+    elif sys.argv[1] == "create_testbench":
+        create_testbench()
+    elif sys.argv[1] == "get_n_slaves":
+       print_tester_nslaves()
+    elif sys.argv[1] == "get_defines":
+        if len(sys.argv)<4:
+           print_tester_peripheral_defines("")
+        else:
+           print_tester_peripheral_defines(sys.argv[3])
+    elif sys.argv[1] == "replace_peripheral_defines":
+        if len(sys.argv)<4:
+            print("Usage: {} replace_peripheral_defines <root_dir> <DEFINE_list> <defmacro>\n".format(sys.argv[0]))
+            exit(-1)
+        if len(sys.argv)<5:
+            replace_peripheral_defines(sys.argv[3],"")
+        else:
+            replace_peripheral_defines(sys.argv[3],sys.argv[4])
+    else:
+        print("Unknown argument.\nUsage: {} <command> <root_dir>\n Commands: generate_config create_tester create_testbench get_n_slaves get_defines".format(sys.argv[0]))

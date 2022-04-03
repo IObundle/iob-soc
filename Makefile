@@ -4,6 +4,7 @@ include ./config.mk
 .PHONY: sim sim-test sim-clean tester-sim\
 	pc-emul pc-emul-test pc-emul-clean\
 	fpga-build fpga-build-all fpga-run fpga-test fpga-clean fpga-clean-all\
+	tester-fpga-build tester-fpga-build-all tester-fpga-run\
 	asic-synth asic-sim-post-synth asic-test asic-clean\
 	doc-build doc-build-all doc-test doc-clean doc-clean-all\
 	test-pc-emul test-pc-emul-clean\
@@ -37,7 +38,7 @@ sim-clean:
 
 #Simulate SUT with Tester system
 tester-sim:
-	make -C $(SIM_DIR) all TESTER_ENABLED=1
+	make sim TESTER_ENABLED=1
 
 #
 # EMULATE ON PC
@@ -76,6 +77,15 @@ fpga-clean-all:
 	make fpga-clean BOARD=CYCLONEV-GT-DK
 	make fpga-clean BOARD=AES-KU040-DB-G
 
+#targets for SUT with Tester system
+tester-fpga-build:
+	make fpga-build TESTER_ENABLED=1
+
+tester-fpga-build-all:
+	make fpga-build-all TESTER_ENABLED=1
+
+tester-fpga-run:
+	make fpga-run TESTER_ENABLED=1
 
 #
 # SYNTHESIZE AND SIMULATE ASIC

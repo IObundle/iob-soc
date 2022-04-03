@@ -110,20 +110,21 @@ def print_sut_peripheral_defines(defmacro):
 
 if __name__ == "__main__":
     # Parse arguments
-    if len(sys.argv)>2:
-        root_dir=sys.argv[2]
-        if sys.argv[1] == "get_peripherals":
-           print_peripherals() 
-        elif sys.argv[1] == "get_instances":
-           print_instances()
-        elif sys.argv[1] == "get_n_slaves":
-           print_nslaves()
-        elif sys.argv[1] == "get_defines":
-            if len(sys.argv)>3:
-               print_sut_peripheral_defines(sys.argv[3])
-            else:
-                print("Unknown argument.\nUsage: {} print_defines <root_dir> <defmacro>\n".format(sys.argv[0]))
-        else:
-            print("Unknown argument.\nUsage: {} <command> <root_dir>\n".format(sys.argv[0]))
-    else:
+    if len(sys.argv)<3:
         print("Needs two arguments.\nUsage: {} <command> <root_dir>".format(sys.argv[0]))
+        exit(-1)
+    root_dir=sys.argv[2]
+    if sys.argv[1] == "get_peripherals":
+       print_peripherals()
+    elif sys.argv[1] == "get_instances":
+       print_instances()
+    elif sys.argv[1] == "get_n_slaves":
+       print_nslaves()
+    elif sys.argv[1] == "get_defines":
+        if len(sys.argv)<4:
+            print_sut_peripheral_defines("")
+        else:
+            print_sut_peripheral_defines(sys.argv[3])
+    else:
+        print("Unknown argument.\nUsage: {} <command> <root_dir>\n".format(sys.argv[0]))
+        exit(-1)

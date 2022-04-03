@@ -22,8 +22,8 @@ FIRM_ADDR_W ?=15
 SRAM_ADDR_W ?=15
 
 #DDR
-USE_DDR ?=1
-RUN_EXTMEM ?=1
+USE_DDR ?=0
+RUN_EXTMEM ?=0
 
 #DATA CACHE ADDRESS WIDTH (tag + index + offset)
 DCACHE_ADDR_W:=24
@@ -36,7 +36,6 @@ INIT_MEM ?=1
 
 #PERIPHERAL LIST
 #list with corename of peripherals to be attached to peripheral bus.
-#must match the 'corename' target in the Makefile inside the peripheral submodule directory.
 #to include multiple instances, write the corename of the peripheral multiple times.
 #(Example: 'PERIPHERALS ?=UART UART' will create 2 UART instances)
 PERIPHERALS ?=UART REGFILEIF
@@ -52,7 +51,7 @@ USE_COMPRESSED ?=1
 TESTER_PERIPHERALS ?=UART UART IOBNATIVEBRIDGEIF
 
 #ROOT DIRECTORY ON REMOTE MACHINES
-REMOTE_ROOT_DIR ?=sandbox/iob-soc-sut
+REMOTE_ROOT_DIR ?=sandbox/iob-soc-tester
 
 #SIMULATION
 #default simulator running locally or remotely
