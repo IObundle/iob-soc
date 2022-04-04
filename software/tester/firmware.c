@@ -11,7 +11,7 @@
 
 int main()
 {
-  char c, msgBuffer[512];
+  char c, msgBuffer[512], *sutStr;
   int i = 0;
 
   //Init uart0
@@ -49,9 +49,31 @@ int main()
   uart_puts("\n#### End of messages received on Tester by UART from SUT ####\n\n");
 
   //Read data from IOBNATIVEBRIDGEIF (was written by the SUT)
-  uart_puts("REGFILEIF contents read by the Tester (contents written by the SUT; read using the Tester's IOBNATIVEBRIDGEIF that is connected to SUT's REGFILEIF):\n");
+  uart_puts("REGFILEIF contents read by the Tester (contents written by SUT; read using the Tester's IOBNATIVEBRIDGEIF, connected to SUT's REGFILEIF):\n");
   printf("%d \n", iobnativebridgeif_readreg(2));
   printf("%d \n", iobnativebridgeif_readreg(3));
+
+#ifdef USE_DDR
+#ifdef RUN_EXTMEM
+  //Get address of first char in string stored in SUT's memory with first bit inverted
+  sutStr=(char*)(iobnativebridgeif_readreg(4) ^ (0b1 << (DCACHE_ADDR_W-1))); //Note, DCACHE_ADDR_W may not be the same as DDR_ADDR_W when running in fpga
+
+  //Print the string by accessing that address
+  uart_puts("\nString read by Tester directly from SUT's memory:\n");
+  for(i=0; sutStr[i]!='\0'; i++){
+    uart_putc(sutStr[i]);
+  }
+#else
+  //Print the string by reading DDR memory starting at address 0.
+  uart_puts("\nString read by Tester from DDR:\n");
+  sutStr=(char*)(0b1 << E); //Address 0 of DDR
+  for(i=0; sutStr[i]!='\0'; i++){
+    uart_putc(sutStr[i]);
+  }
+#endif
+#endif
+
+  uart_putc('\n');
 
   //End UART0 connection
   uart_finish();

@@ -45,5 +45,5 @@ periphs.h: periphs_tmp.h
 	@rm periphs_tmp.h
 
 periphs_tmp.h:
-	$(SW_DIR)/python/periphs_tmp.py $P $(ROOT_DIR)
+	$(SW_DIR)/python/periphs_tmp.py $P "$(PERIPHERALS)"
 

@@ -36,18 +36,21 @@ module top_system(
 
    assign sys_rst  = (rst_cnt != 16'h0);
 
+   wire [1:0]                   trap_signals;
+   assign trap = trap_signals[0] || trap_signals[1];
+
    //
-   // SYSTEM
+   // TESTER (includes SUT)
    //
-   system system (
+   tester tester (
       .clk           (sys_clk),
 		  .reset         (sys_rst),
-		  .trap          (trap),
+		  .trap          (trap_signals),
       //UART
-		  .UART0_txd      (uart_txd),
-		  .UART0_rxd      (uart_rxd),
-		  .UART0_rts      (),
-		  .UART0_cts      (1'b1)
+		  .tester_UART0_txd      (uart_txd),
+		  .tester_UART0_rxd      (uart_rxd),
+		  .tester_UART0_rts      (),
+		  .tester_UART0_cts      (1'b1)
 		);
 
 endmodule

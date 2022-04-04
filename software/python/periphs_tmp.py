@@ -25,9 +25,7 @@ def create_periphs_tmp(P, peripheral_instances_amount, filename):
 
 if __name__ == "__main__":
     # Parse arguments
-    if len(sys.argv)>2:
-        root_dir=sys.argv[2]
-        submodule_utils.root_dir = root_dir
-        create_periphs_tmp(sys.argv[1], get_sut_peripherals(), "periphs_tmp.h") 
-    else:
-        print("Needs two arguments.\nUsage: {} <address_selection_bits_of_peripherals (config.mk variable $P)> <root_dir>".format(sys.argv[0]))
+    if len(sys.argv)<3:
+        print("Needs two arguments.\nUsage: {} <address_selection_bits_of_peripherals (config.mk variable $P)> <sut_peripherals>".format(sys.argv[0]))
+        exit(-1)
+    create_periphs_tmp(sys.argv[1], get_sut_peripherals(sys.argv[2]), "periphs_tmp.h") 
