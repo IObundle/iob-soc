@@ -5,6 +5,7 @@ import sys
 import subprocess
 import os
 import re
+import math
 
 # Parameter: string with directories separated by '\n'
 # Returns dictionary with every directory defined in <root_dir>/config.mk
@@ -100,6 +101,14 @@ def print_nslaves(sut_peripherals_str):
         i=i+sut_instances_amount[corename]
     print(i, end="")
 
+def print_nslaves_w(sut_peripherals_str):
+    sut_instances_amount = get_sut_peripherals(sut_peripherals_str)
+    i=0
+    # Calculate total amount of instances
+    for corename in sut_instances_amount:
+        i=i+sut_instances_amount[corename]
+    print(math.ceil(math.log(i,2)))
+
 #Creates list of defines of sut instances with sequential numbers
 def print_sut_peripheral_defines(defmacro, sut_peripherals_str):
     sut_instances_amount = get_sut_peripherals(sut_peripherals_str)
@@ -126,6 +135,11 @@ if __name__ == "__main__":
             print("Usage: {} get_n_slaves <sut_peripherals>\n".format(sys.argv[0]))
             exit(-1)
         print_nslaves(sys.argv[2])
+    elif sys.argv[1] == "get_n_slaves_w":
+        if len(sys.argv)<3:
+            print("Usage: {} get_n_slaves_w <sut_peripherals>\n".format(sys.argv[0]))
+            exit(-1)
+        print_nslaves_w(sys.argv[2])
     elif sys.argv[1] == "get_defines":
         if len(sys.argv)<3:
             print("Usage: {} get_defines <sut_peripherals> <optional:defmacro>\n".format(sys.argv[0]))
@@ -135,5 +149,5 @@ if __name__ == "__main__":
         else:
             print_sut_peripheral_defines(sys.argv[3],sys.argv[2])
     else:
-        print("Unknown command.\nUsage: {} <command> <parameters>\n Commands: get_peripherals get_instances get_n_slaves get_defines print_sut_peripheral_defines".format(sys.argv[0]))
+        print("Unknown command.\nUsage: {} <command> <parameters>\n Commands: get_peripherals get_instances get_n_slaves get_n_slaves_w get_defines print_sut_peripheral_defines".format(sys.argv[0]))
         exit(-1)

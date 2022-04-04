@@ -14,7 +14,7 @@ module system_tb;
   always #(clk_per/2) clk = ~clk;
 
   //reset
-  reg reset = 1;
+  reg reset = 0;
 
   //received by getchar
   reg  rxread_reg;
@@ -54,6 +54,9 @@ module system_tb;
     //init cpu bus signals
     uart_valid = 0;
     uart_wstrb = 0;
+
+    //assert reset
+    #100 reset = 1;
 
     // deassert rst
     repeat (100) @(posedge clk) #1;

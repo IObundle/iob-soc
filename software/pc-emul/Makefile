@@ -8,7 +8,7 @@ FREQ=100000000
 #additional compiler flags
 CFLAGS=-Os -std=gnu99 -Wl,--strip-debug
 
-#DEFINE+=-DLONGLONG 
+#DEFINE+=-DLONGLONG
 DEFINE+=-DPC
 
 #peripherals (pc)
@@ -33,6 +33,9 @@ HDR+=periphs.h
 #SOURCES
 SRC+= $(FIRM_DIR)/firmware.c $(UART_DIR)/software/printf.c
 
+#CONSOLE
+CONSOLE_CMD=$(ROOT_DIR)/software/console/console -L
+
 #RULES
 
 all: build run
@@ -40,6 +43,8 @@ all: build run
 build: firmware.out
 
 run: firmware.out
+	@rm -f soc2cnsl cnsl2soc
+	$(CONSOLE_CMD) $(TEST_LOG) &
 	./firmware.out $(TEST_LOG)
 
 firmware.out: $(HDR) $(SRC)

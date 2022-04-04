@@ -32,6 +32,9 @@ $(if $(filter UART, $(TESTER_PERIPHERALS)),, $(eval include $(UART_DIR)/software
 #Replace SUT N_SLAVES by Tester N_SLAVES
 TESTER_N_SLAVES=$(shell $(SW_DIR)/python/tester_utils.py get_n_slaves "$(TESTER_PERIPHERALS)")
 DEFINE:=$(patsubst $(defmacro)N_SLAVES=%,$(defmacro)N_SLAVES=$(TESTER_N_SLAVES),$(DEFINE))
+#Replace SUT N_SLAVES_W by Tester N_SLAVES_W
+TESTER_N_SLAVES_W=$(shell $(SW_DIR)/python/tester_utils.py get_n_slaves_w "$(TESTER_PERIPHERALS)")
+DEFINE:=$(patsubst $(defmacro)N_SLAVES_W=%,$(defmacro)N_SLAVES_W=$(TESTER_N_SLAVES_W),$(DEFINE))
 
 #Replace SUT peripheral sequential numbers by Tester peripheral sequetial numbers
 DEFINE:=$(shell $(SW_DIR)/python/tester_utils.py replace_peripheral_defines "$(DEFINE)" "$(TESTER_PERIPHERALS)" $(defmacro))

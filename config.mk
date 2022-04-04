@@ -15,6 +15,10 @@ endif
 # PRIMARY PARAMETERS: CAN BE CHANGED BY USERS OR OVERRIDEN BY ENV VARS
 #
 
+#CPU ARCHITECTURE
+DATA_W := 32
+ADDR_W := 32
+
 #FIRMWARE SIZE (LOG2)
 FIRM_ADDR_W ?=15
 
@@ -147,11 +151,14 @@ GET_DIRS= $(eval ROOT_DIR_TMP:=$(ROOT_DIR))\
           $(eval ROOT_DIR:=$(ROOT_DIR_TMP))
 
 #define macros
+DEFINE+=$(defmacro)DATA_W=$(DATA_W)
+DEFINE+=$(defmacro)ADDR_W=$(ADDR_W)
 DEFINE+=$(defmacro)BOOTROM_ADDR_W=$(BOOTROM_ADDR_W)
 DEFINE+=$(defmacro)SRAM_ADDR_W=$(SRAM_ADDR_W)
 DEFINE+=$(defmacro)FIRM_ADDR_W=$(FIRM_ADDR_W)
 DEFINE+=$(defmacro)DCACHE_ADDR_W=$(DCACHE_ADDR_W)
 DEFINE+=$(defmacro)N_SLAVES=$(shell $(SW_DIR)/python/submodule_utils.py get_n_slaves "$(PERIPHERALS)") #peripherals
+DEFINE+=$(defmacro)N_SLAVES_W=$(shell $(SW_DIR)/python/submodule_utils.py get_n_slaves_w "$(PERIPHERALS)")
 
 #address selection bits
 E:=31 #extra memory bit
@@ -171,6 +178,7 @@ DEFINE+=$(defmacro)B=$B
 #assign sequential numbers to peripheral names used as variables
 #that define their base address in the software and instance name in the hardware
 DEFINE+=$(shell $(SW_DIR)/python/submodule_utils.py get_defines "$(PERIPHERALS)" $(defmacro))
+
 
 #RULES
 gen-clean:
