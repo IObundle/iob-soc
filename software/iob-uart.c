@@ -1,25 +1,8 @@
-#include <stdio.h>
+#include <stdint.h>
 #include "iob-uart.h"
 
-//UART printing functions
-void uart_puts(const char *s) {
-  while (*s) uart_putc(*s++);
-}
-
-/*
-void uart_printf(char* fmt, ...) {
-  va_list args;
-  char buffer[80] = {0};
-  va_start(args, fmt);
-  vsprintf (buffer, fmt, args);
-  va_end(args);
-  uart_puts(buffer);
-  uart_txwait();
-}
-*/
-
 //UART basic functions
-void uart_init(int base_address, int div) {
+void uart_init(int base_address, uint16_t div) {
   //capture base address for good
   uart_setbaseaddr(base_address);
   
@@ -42,7 +25,12 @@ void uart_finish() {
   uart_txwait();
 }
 
-//Sends the name of the file to use
+//Print string, excluding end of string (0)
+void uart_puts(const char *s) {
+  while (*s) uart_putc(*s++);
+}
+
+//Sends the name of the file to use, including end of string (0)
 void uart_sendstr (char* name) {
   int i=0;
   do
