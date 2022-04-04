@@ -6,30 +6,31 @@ import subprocess
 import os
 import re
 
+# Parameter: string with directories separated by '\n'
 # Returns dictionary with every directory defined in <root_dir>/config.mk
-def get_directories():
+def get_directories(directories_str):
     # Get directories for each submodule
     directories = {}
-    dirs_str = subprocess.run(['make', '--no-print-directory', '-C', root_dir, 'directories', 'ROOT_DIR=.'], stdout=subprocess.PIPE).stdout.decode('utf-8').splitlines()
-    for line in dirs_str:
-        var_name, path  = line.split("=", 1)
+    list_dirs_str = directories_str.split(';')
+    list_dirs_str.pop(-1)
+    for line in list_dirs_str:
+        var_name, path  = line.strip().split("=", 1)
         directories[var_name] = path
     return directories
 
 # Convert keys from format "CORENAME_DIR" to "CORENAME"
 # (Removes "_DIR" sufix from every key in the directories dictionary)
-def get_submodule_directories():
-    directories = get_directories()
+def get_submodule_directories(directories_str):
+    directories = get_directories(directories_str)
     keys = list(directories.keys())
     for key in keys:
         directories[key.replace("_DIR","")] = directories.pop(key)
     return directories
 
+# Parameter: PERIPHERALS string defined in config.mk
 # Returns dictionary with amount of instances each peripheral of the SUT to be created 
-def get_sut_peripherals():
-    # Get peripherals list of config.mk
-    sut_peripherals = subprocess.run(['make', '--no-print-directory', '-C', root_dir, 'sut-peripherals', 'ROOT_DIR=.'], stdout=subprocess.PIPE)
-    sut_peripherals = sut_peripherals.stdout.decode('ascii').split()
+def get_sut_peripherals(sut_peripherals_str):
+    sut_peripherals = sut_peripherals_str.split()
 
     # Count how many instances to create of each type of peripheral
     sut_instances_amount = {}
@@ -80,19 +81,19 @@ def find_idx(lines, word):
 ##########################################################
 # Functions to run when this script gets called directly #
 ##########################################################
-def print_instances():
-    sut_instances_amount = get_sut_peripherals()
+def print_instances(sut_peripherals_str):
+    sut_instances_amount = get_sut_peripherals(sut_peripherals_str)
     for corename in sut_instances_amount:
         for i in range(sut_instances_amount[corename]):
             print(corename+str(i), end=" ")
 
-def print_peripherals():
-    sut_instances_amount = get_sut_peripherals()
+def print_peripherals(sut_peripherals_str):
+    sut_instances_amount = get_sut_peripherals(sut_peripherals_str)
     for i in sut_instances_amount:
         print(i, end=" ")
 
-def print_nslaves():
-    sut_instances_amount = get_sut_peripherals()
+def print_nslaves(sut_peripherals_str):
+    sut_instances_amount = get_sut_peripherals(sut_peripherals_str)
     i=0
     # Calculate total amount of instances
     for corename in sut_instances_amount:
@@ -100,8 +101,8 @@ def print_nslaves():
     print(i, end="")
 
 #Creates list of defines of sut instances with sequential numbers
-def print_sut_peripheral_defines(defmacro):
-    sut_instances_amount = get_sut_peripherals()
+def print_sut_peripheral_defines(defmacro, sut_peripherals_str):
+    sut_instances_amount = get_sut_peripherals(sut_peripherals_str)
     j=0
     for corename in sut_instances_amount:
         for i in range(sut_instances_amount[corename]):
@@ -110,21 +111,29 @@ def print_sut_peripheral_defines(defmacro):
 
 if __name__ == "__main__":
     # Parse arguments
-    if len(sys.argv)<3:
-        print("Needs two arguments.\nUsage: {} <command> <root_dir>".format(sys.argv[0]))
-        exit(-1)
-    root_dir=sys.argv[2]
     if sys.argv[1] == "get_peripherals":
-       print_peripherals()
+        if len(sys.argv)<3:
+            print("Usage: {} get_peripherals <sut_peripherals>\n".format(sys.argv[0]))
+            exit(-1)
+        print_peripherals(sys.argv[2])
     elif sys.argv[1] == "get_instances":
-       print_instances()
+        if len(sys.argv)<3:
+            print("Usage: {} get_instances <sut_peripherals>\n".format(sys.argv[0]))
+            exit(-1)
+        print_instances(sys.argv[2])
     elif sys.argv[1] == "get_n_slaves":
-       print_nslaves()
+        if len(sys.argv)<3:
+            print("Usage: {} get_n_slaves <sut_peripherals>\n".format(sys.argv[0]))
+            exit(-1)
+        print_nslaves(sys.argv[2])
     elif sys.argv[1] == "get_defines":
+        if len(sys.argv)<3:
+            print("Usage: {} get_defines <sut_peripherals> <optional:defmacro>\n".format(sys.argv[0]))
+            exit(-1)
         if len(sys.argv)<4:
-            print_sut_peripheral_defines("")
+            print_sut_peripheral_defines("",sys.argv[2])
         else:
-            print_sut_peripheral_defines(sys.argv[3])
+            print_sut_peripheral_defines(sys.argv[3],sys.argv[2])
     else:
-        print("Unknown argument.\nUsage: {} <command> <root_dir>\n".format(sys.argv[0]))
+        print("Unknown command.\nUsage: {} <command> <parameters>\n Commands: get_peripherals get_instances get_n_slaves get_defines print_sut_peripheral_defines".format(sys.argv[0]))
         exit(-1)

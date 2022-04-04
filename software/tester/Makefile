@@ -30,11 +30,11 @@ $(foreach p, $(sort $(TESTER_PERIPHERALS)), $(eval include $($p_DIR)/software/em
 $(if $(filter UART, $(TESTER_PERIPHERALS)),, $(eval include $(UART_DIR)/software/embedded/embedded.mk))	
 
 #Replace SUT N_SLAVES by Tester N_SLAVES
-TESTER_N_SLAVES=$(shell $(SW_DIR)/python/tester_utils.py get_n_slaves $(ROOT_DIR))
+TESTER_N_SLAVES=$(shell $(SW_DIR)/python/tester_utils.py get_n_slaves "$(TESTER_PERIPHERALS)")
 DEFINE:=$(patsubst $(defmacro)N_SLAVES=%,$(defmacro)N_SLAVES=$(TESTER_N_SLAVES),$(DEFINE))
 
 #Replace SUT peripheral sequential numbers by Tester peripheral sequetial numbers
-DEFINE:=$(shell $(SW_DIR)/python/tester_utils.py replace_peripheral_defines $(ROOT_DIR) "$(DEFINE)" $(defmacro))
+DEFINE:=$(shell $(SW_DIR)/python/tester_utils.py replace_peripheral_defines "$(DEFINE)" "$(TESTER_PERIPHERALS)" $(defmacro))
 
 #RULES
 #make bootloader based on bootloader from SUT

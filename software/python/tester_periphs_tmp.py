@@ -13,10 +13,7 @@ from tester_utils import get_tester_peripherals
 
 if __name__ == "__main__":
     # Parse arguments
-    if len(sys.argv)>2:
-        root_dir=sys.argv[2]
-        periphs_tmp.root_dir = root_dir
-        tester_utils.root_dir = root_dir
-        create_periphs_tmp(sys.argv[1], get_tester_peripherals(), "tester_periphs_tmp.h") 
-    else:
-        print("Needs two arguments.\nUsage: {} <address_selection_bits_of_peripherals (config.mk variable $P)> <root_dir>".format(sys.argv[0]))
+    if len(sys.argv)<3:
+        print("Needs two arguments.\nUsage: {} <address_selection_bits_of_peripherals (config.mk variable $P)> <tester_peripherals_list>".format(sys.argv[0]))
+        exit(-1)
+    create_periphs_tmp(sys.argv[1], get_tester_peripherals(sys.argv[2]), "tester_periphs_tmp.h") 

@@ -95,10 +95,10 @@ system sut (
     );
 """
 
+# Parameter: TESTER_PERIPHERALS string defined in config.mk
 # Returns dictionary with amount of instances each peripheral of the Tester to be created 
-def get_tester_peripherals():
-    tester_peripherals = subprocess.run(['make', '--no-print-directory', '-C', root_dir, 'tester-peripherals', 'ROOT_DIR=.', 'TESTER_ENABLED=1'], stdout=subprocess.PIPE)
-    tester_peripherals = tester_peripherals.stdout.decode('ascii').split()
+def get_tester_peripherals(tester_peripherals_str):
+    tester_peripherals = tester_peripherals_str.split()
 
     tester_instances_amount = {}
     for i in tester_peripherals:
@@ -108,10 +108,10 @@ def get_tester_peripherals():
 
 
 # Overwrites portmap configuration file with a template, with every existing signal mapped to external interface by default
-def generate_portmap():
-    sut_instances_amount = get_sut_peripherals()
-    tester_instances_amount = get_tester_peripherals()
-    submodule_directories = get_submodule_directories()
+def generate_portmap(directories_str, sut_peripherals_str, tester_peripherals_str):
+    sut_instances_amount = get_sut_peripherals(sut_peripherals_str)
+    tester_instances_amount = get_tester_peripherals(tester_peripherals_str)
+    submodule_directories = get_submodule_directories(directories_str)
     peripheral_signals = get_peripherals_signals({**sut_instances_amount, **tester_instances_amount},submodule_directories)
 
     # Generate portmap file
@@ -217,11 +217,11 @@ def read_portmap(sut_instances_amount, tester_instances_amount, peripheral_signa
     return pwires, mapped_signals
 
 # Creates tester.v with SUT included 
-def create_tester():
+def create_tester(directories_str, sut_peripherals_str, tester_peripherals_str):
     # Get lists of peripherals and info about them
-    sut_instances_amount = get_sut_peripherals()
-    tester_instances_amount = get_tester_peripherals()
-    submodule_directories = get_submodule_directories()
+    sut_instances_amount = get_sut_peripherals(sut_peripherals_str)
+    tester_instances_amount = get_tester_peripherals(tester_peripherals_str)
+    submodule_directories = get_submodule_directories(directories_str)
     peripheral_signals = get_peripherals_signals({**sut_instances_amount, **tester_instances_amount},submodule_directories)
 
     # Read portmap file and get encoded data
@@ -394,11 +394,11 @@ def create_tester():
     tester_file.close()
 
 # Create testbench for simulation with the Tester
-def create_testbench():
+def create_testbench(directories_str, sut_peripherals_str, tester_peripherals_str):
     # Get lists of peripherals and info about them
-    sut_instances_amount = get_sut_peripherals()
-    tester_instances_amount = get_tester_peripherals()
-    submodule_directories = get_submodule_directories()
+    sut_instances_amount = get_sut_peripherals(sut_peripherals_str)
+    tester_instances_amount = get_tester_peripherals(tester_peripherals_str)
+    submodule_directories = get_submodule_directories(directories_str)
     peripheral_signals = get_peripherals_signals({**sut_instances_amount, **tester_instances_amount},submodule_directories)
 
     # Read portmap file and get encoded data
@@ -458,8 +458,8 @@ def create_testbench():
     testbench_file.writelines(testbench_contents)
     testbench_file.close()
 
-def print_tester_nslaves():
-    tester_instances_amount = get_tester_peripherals()
+def print_tester_nslaves(tester_peripherals_str):
+    tester_instances_amount = get_tester_peripherals(tester_peripherals_str)
     i=0
     # Calculate total amount of instances
     for corename in tester_instances_amount:
@@ -467,8 +467,8 @@ def print_tester_nslaves():
     print(i, end="")
 
 #Creates list of defines of sut instances with sequential numbers
-def print_tester_peripheral_defines(defmacro):
-    tester_instances_amount = get_tester_peripherals()
+def print_tester_peripheral_defines(defmacro, tester_peripherals_str):
+    tester_instances_amount = get_tester_peripherals(tester_peripherals_str)
     j=0
     for corename in tester_instances_amount:
         for i in range(tester_instances_amount[corename]):
@@ -477,9 +477,9 @@ def print_tester_peripheral_defines(defmacro):
 
 #Replaces SUT peripheral sequential numbers with the ones from tester if they exist, otherwise, just add Tester peripheral numbers
 #For example, if DEFINE list contains UART0=0 (previously defined for the SUT), and the Tester has its UART0 mapped to 1 (UART0=1), then this function replaces the UART0=0 in the list by UART0=1. If the list did not contain UART0 then it just adds UART0=1.
-def replace_peripheral_defines(define_string, defmacro):
+def replace_peripheral_defines(define_string, defmacro, tester_peripherals_str):
     define_list = define_string.split(' ')
-    tester_instances_amount = get_tester_peripherals()
+    tester_instances_amount = get_tester_peripherals(tester_peripherals_str)
     j=0
     for corename in tester_instances_amount:
         for i in range(tester_instances_amount[corename]):
@@ -500,30 +500,43 @@ def replace_peripheral_defines(define_string, defmacro):
 
 if __name__ == "__main__":
     # Parse arguments
-    if len(sys.argv)<3:
-        print("Needs at least two arguments.\nUsage: {} <command> <root_dir>".format(sys.argv[0]))
     root_dir=sys.argv[2]
     submodule_utils.root_dir = root_dir
     if sys.argv[1] == "generate_config":
-       generate_portmap()
+        if len(sys.argv)<6:
+            print("Usage: {} generate_config <root_dir> <directories_defined_in_config.mk> <sut_peripherals> <tester_peripherals>\n".format(sys.argv[0]))
+            exit(-1)
+        generate_portmap(sys.argv[3], sys.argv[4], sys.argv[5])
     elif sys.argv[1] == "create_tester":
-        create_tester()
+        if len(sys.argv)<6:
+            print("Usage: {} create_tester <root_dir> <directories_defined_in_config.mk> <sut_peripherals> <tester_peripherals>\n".format(sys.argv[0]))
+            exit(-1)
+        create_tester(sys.argv[3], sys.argv[4], sys.argv[5])
     elif sys.argv[1] == "create_testbench":
-        create_testbench()
+        if len(sys.argv)<6:
+            print("Usage: {} create_testbench <root_dir> <directories_defined_in_config.mk> <sut_peripherals> <tester_peripherals>\n".format(sys.argv[0]))
+            exit(-1)
+        create_testbench(sys.argv[3], sys.argv[4], sys.argv[5])
     elif sys.argv[1] == "get_n_slaves":
-       print_tester_nslaves()
+        if len(sys.argv)<3:
+            print("Usage: {} get_n_slaves <tester_peripherals>\n".format(sys.argv[0]))
+            exit(-1)
+        print_tester_nslaves(sys.argv[2])
     elif sys.argv[1] == "get_defines":
+        if len(sys.argv)<3:
+            print("Usage: {} get_defines <tester_peripherals> <optional: defmacro>\n".format(sys.argv[0]))
+            exit(-1)
         if len(sys.argv)<4:
-           print_tester_peripheral_defines("")
+            print_tester_peripheral_defines("",sys.argv[2])
         else:
-           print_tester_peripheral_defines(sys.argv[3])
+            print_tester_peripheral_defines(sys.argv[3], sys.argv[2])
     elif sys.argv[1] == "replace_peripheral_defines":
         if len(sys.argv)<4:
-            print("Usage: {} replace_peripheral_defines <root_dir> <DEFINE_list> <defmacro>\n".format(sys.argv[0]))
+            print("Usage: {} replace_peripheral_defines <DEFINE_list> <tester_peripherals> <optional: defmacro>\n".format(sys.argv[0]))
             exit(-1)
         if len(sys.argv)<5:
-            replace_peripheral_defines(sys.argv[3],"")
+            replace_peripheral_defines(sys.argv[2],"",sys.argv[3])
         else:
-            replace_peripheral_defines(sys.argv[3],sys.argv[4])
+            replace_peripheral_defines(sys.argv[2],sys.argv[4],sys.argv[3])
     else:
-        print("Unknown argument.\nUsage: {} <command> <root_dir>\n Commands: generate_config create_tester create_testbench get_n_slaves get_defines".format(sys.argv[0]))
+        print("Unknown command.\nUsage: {} <command> <parameters>\n Commands: generate_config create_tester create_testbench get_n_slaves get_defines replace_peripheral_defines".format(sys.argv[0]))

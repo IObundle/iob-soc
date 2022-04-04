@@ -15,12 +15,11 @@ include ./config.mk
 	test test-clean\
 	clean clean-all\
 	tester-portmap\
-	sut-peripherals tester-peripherals directories\
 	debug
 
 # Generate configuration file for port mapping between the Tester, SUT and external interface of the Top System
 tester-portmap:
-	$(SW_DIR)/python/tester_utils.py generate_config $(ROOT_DIR)
+	$(SW_DIR)/python/tester_utils.py generate_config $(ROOT_DIR) "$(GET_DIRS)" "$(PERIPHERALS)" "$(TESTER_PERIPHERALS)"
 	@echo Portmap template generated in hardware/tester/peripheral_portmap.txt
 
 #
@@ -181,18 +180,6 @@ python-cache-clean:
 clean: pc-emul-clean sim-clean fpga-clean doc-clean python-cache-clean
 
 clean-all: test-clean
-
-#used by python scripts
-sut-peripherals:
-	@echo $(PERIPHERALS)
-tester-peripherals:
-	@echo $(TESTER_PERIPHERALS)
-directories:
-	@echo -n ""
-	@$(foreach V,$(sort $(.VARIABLES)),\
-	$(if $(filter %_DIR, $V),\
-	$(info $V=$($V))))
-
 
 debug:
 	@echo $(UART_DIR)

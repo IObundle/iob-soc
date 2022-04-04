@@ -138,12 +138,20 @@ BOARD_DIR ?=$(shell find hardware -name $(BOARD))
 #doc paths
 DOC_DIR=$(ROOT_DIR)/document/$(DOC)
 
+#macro to return all defined directories separated by newline
+GET_DIRS= $(eval ROOT_DIR_TMP:=$(ROOT_DIR))\
+          $(eval ROOT_DIR=.)\
+          $(foreach V,$(sort $(.VARIABLES)),\
+          $(if $(filter %_DIR, $V),\
+          $V=$($V);))\
+          $(eval ROOT_DIR:=$(ROOT_DIR_TMP))
+
 #define macros
 DEFINE+=$(defmacro)BOOTROM_ADDR_W=$(BOOTROM_ADDR_W)
 DEFINE+=$(defmacro)SRAM_ADDR_W=$(SRAM_ADDR_W)
 DEFINE+=$(defmacro)FIRM_ADDR_W=$(FIRM_ADDR_W)
 DEFINE+=$(defmacro)DCACHE_ADDR_W=$(DCACHE_ADDR_W)
-DEFINE+=$(defmacro)N_SLAVES=$(shell $(SW_DIR)/python/submodule_utils.py get_n_slaves $(ROOT_DIR)) #peripherals
+DEFINE+=$(defmacro)N_SLAVES=$(shell $(SW_DIR)/python/submodule_utils.py get_n_slaves "$(PERIPHERALS)") #peripherals
 
 #address selection bits
 E:=31 #extra memory bit
@@ -162,7 +170,7 @@ DEFINE+=$(defmacro)B=$B
 #PERIPHERAL IDs
 #assign sequential numbers to peripheral names used as variables
 #that define their base address in the software and instance name in the hardware
-DEFINE+=$(shell $(SW_DIR)/python/submodule_utils.py get_defines $(ROOT_DIR) $(defmacro))
+DEFINE+=$(shell $(SW_DIR)/python/submodule_utils.py get_defines "$(PERIPHERALS)" $(defmacro))
 
 #RULES
 gen-clean:

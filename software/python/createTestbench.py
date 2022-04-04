@@ -7,10 +7,10 @@ import sys, os
 import submodule_utils 
 from submodule_utils import *
 
-def create_system_tb():
+def create_system_tb(directories_str, sut_peripherals_str):
     # Get peripherals, directories and signals
-    sut_instances_amount = get_sut_peripherals()
-    submodule_directories = get_submodule_directories()
+    sut_instances_amount = get_sut_peripherals(sut_peripherals_str)
+    submodule_directories = get_submodule_directories(directories_str)
     peripheral_signals = get_peripherals_signals(sut_instances_amount, submodule_directories)
 
     # Read template file
@@ -49,9 +49,9 @@ def create_system_tb():
 
 if __name__ == "__main__":
     # Parse arguments
-    if len(sys.argv)>1:
-        root_dir=sys.argv[1]
-        submodule_utils.root_dir = root_dir
-        create_system_tb() 
-    else:
-        print("Needs one argument.\nUsage: {} <root_dir>".format(sys.argv[0]))
+    if len(sys.argv)<4:
+        print("Usage: {} <root_dir> <directories_defined_in_config.mk> <sut_peripherals>\n".format(sys.argv[0]))
+        exit(-1)
+    root_dir=sys.argv[1]
+    submodule_utils.root_dir = root_dir
+    create_system_tb(sys.argv[2], sys.argv[3]) 

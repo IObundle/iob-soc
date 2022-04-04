@@ -15,14 +15,14 @@ endif
 endif
 endif
 #Add TESTER_N_SLAVES to define list
-DEFINE+=$(defmacro)TESTER_N_SLAVES=$(shell $(SW_DIR)/python/tester_utils.py get_n_slaves $(ROOT_DIR))
+DEFINE+=$(defmacro)TESTER_N_SLAVES=$(shell $(SW_DIR)/python/tester_utils.py get_n_slaves "$(TESTER_PERIPHERALS)")
 
 #Add Tester peripheral sequetial numbers
-DEFINE+=$(shell $(SW_DIR)/python/tester_utils.py get_defines $(ROOT_DIR) $(defmacro))
+DEFINE+=$(shell $(SW_DIR)/python/tester_utils.py get_defines "$(TESTER_PERIPHERALS)" $(defmacro))
 
 # Create tester from system_core.v and include SUT
 tester.v: $(SRC_DIR)/system_core.v
-	$(SW_DIR)/python/tester_utils.py create_tester $(ROOT_DIR)
+	$(SW_DIR)/python/tester_utils.py create_tester $(ROOT_DIR) "$(GET_DIRS)" "$(PERIPHERALS)" "$(TESTER_PERIPHERALS)"
 	
 # tester init files
 tester_boot.hex: $(SW_DIR)/tester/boot.bin

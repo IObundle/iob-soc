@@ -104,7 +104,7 @@ else
 
 #create testbench
 system_tb.v: $(TB_DIR)/system_core_tb.v
-	$(SW_DIR)/python/createTestbench.py $(ROOT_DIR)
+	$(SW_DIR)/python/createTestbench.py $(ROOT_DIR) "$(GET_DIRS)" "$(PERIPHERALS)"
 
 endif
 
