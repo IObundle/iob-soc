@@ -36,6 +36,7 @@ int main()
   for(i=0; ddrMemoryMessage[i]!='\0'; i++){
     strPtr[i]=ddrMemoryMessage[i];
   }
+  strPtr[i]='\0';
 #endif
 #endif
 
