@@ -1,6 +1,60 @@
 #include <stdint.h>
 #include "iob-uart.h"
 
+//base address
+static int base;
+
+void uart_setbaseaddr(int v)
+{
+  base = v;
+}
+
+void uart_softrst(uint8_t v)
+{
+    IO_SET(UART_SOFTRESET_TYPE, base, UART_SOFTRESET, v);
+}
+
+void uart_setdiv(uint16_t div)
+{
+    IO_SET(UART_DIV_TYPE, base, UART_DIV, div);
+}
+
+//TX FUNCTIONS
+void uart_txen(uint8_t v) {
+    IO_SET(UART_TXEN_TYPE, base, UART_TXEN, v);
+}
+
+void uart_txwait() {
+    while(!IO_GET(UART_TXREADY_TYPE, base, UART_TXREADY));
+}
+
+uint8_t uart_istxready() {
+    return IO_GET(UART_TXREADY_TYPE, base, UART_TXREADY);
+}
+
+void uart_putc(char c) {
+    while(!uart_istxready());
+    IO_SET(UART_TXDATA_TYPE, base, UART_TXDATA, c);
+}
+
+//RX FUNCTIONS
+void uart_rxen(uint8_t v) {
+    IO_SET(UART_RXEN_TYPE, base, UART_RXEN, v);
+}
+
+void uart_rxwait() {
+    while(!IO_GET(UART_RXREADY_TYPE, base, UART_RXREADY));
+}
+
+uint8_t uart_isrxready() {
+    return IO_GET(UART_RXREADY_TYPE, base, UART_RXREADY);
+}
+
+char uart_getc() {
+    while(!uart_isrxready());
+    return IO_GET(UART_RXDATA_TYPE, base, UART_RXDATA);
+}
+
 //UART basic functions
 void uart_init(int base_address, uint16_t div) {
   //capture base address for good
@@ -105,6 +159,3 @@ void uart_sendfile(char *file_name, int file_size, char *mem) {
   uart_puts(UART_PROGNAME);
   uart_puts(": file sent\n");
 }
-
-
-

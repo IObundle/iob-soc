@@ -1,5 +1,5 @@
 #uart common parameters
 include $(UART_DIR)/software/software.mk
 
-#pc sources
-SRC+=$(UART_SW_DIR)/pc-emul/iob-uart-pc-emul.c
+#include pc-emul headers
+INCLUDE+=$(incdir)$(UART_SW_DIR)/pc-emul/

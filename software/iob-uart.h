@@ -2,6 +2,10 @@
 #include <stdarg.h>
 #include <stdint.h>
 
+#include "iob-lib.h"
+#include "iob_uart_swreg.h"
+#include "iob-uart-platform.h"
+
 #define UART_PROGNAME "IOb-UART"
 
 //UART commands
