@@ -7,7 +7,7 @@ import os
 import re
 import math
 
-# Parameter: string with directories separated by '\n'
+# Parameter: string with directories separated by ';'
 # Returns dictionary with every directory defined in <root_dir>/config.mk
 def get_directories(directories_str):
     # Get directories for each submodule
@@ -60,14 +60,6 @@ def get_peripherals_signals(list_of_peripherals, submodule_directories):
             if signal is not None:
                 # Store input or output and array size of pio.vh
                 peripheral_signals[i][signal.group(2)]=signal.group(1)
-
-                ## Find matching signal of inst.vh # This is currently not used!
-                #with open(root_dir+"/"+submodule_directories[i]+"/hardware/include/inst.vh", "r" ) as f:
-                #    matching_signal = re.search("\.([^\s]+)\s+\({}\),".format(signal.group(2).replace("/","\/").replace("*","\*")),f.read(),re.MULTILINE).group(1)
-                ## Place an array that contains:
-                ##   input or output and array size of pio.vh
-                ##   matching signal in inst.vh
-                #peripheral_signals[i][signal.group(2)]=[signal.group(1),matching_signal]
         pio_file.close()
     #print(peripheral_signals) #DEBUG
     return peripheral_signals
