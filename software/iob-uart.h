@@ -2,6 +2,8 @@
 #include <stdarg.h>
 #include <stdint.h>
 
+#include "iob_uart_swreg.h"
+
 #define UART_PROGNAME "IOb-UART"
 
 //UART commands
@@ -16,20 +18,11 @@
 
 //UART functions
 
-//Set base address
-void uart_setbaseaddr(int v);
-
 //Reset UART and set the division factor
 void uart_init(int base_address, uint16_t div);
 
 //Close transmission
 void uart_finish();
-
-//Soft reset
-void uart_softrst(uint8_t v);
-
-//Set the division factor div (fclk/baud)
-void uart_setdiv(uint16_t v);
 
 //TX FUNCTIONS
 
@@ -38,9 +31,6 @@ void uart_txen(uint8_t val);
 
 //Wait for tx to be ready
 void uart_txwait();
-
-//Get tx status (0/1 = busy/ready)
-uint8_t uart_istxready();
 
 //Print char
 void uart_putc(char c);
@@ -53,14 +43,8 @@ void uart_sendfile(char* file_name, int file_size, char *mem);
 
 //RX FUNCTIONS
 
-//Enable / diable rx
-void uart_rxen(uint8_t val);
-
 //Wait for rx to be ready
 void uart_rxwait();
-
-//Get rx status (0/1 = busy/ready)
-uint8_t uart_isrxready();
 
 //Get char
 char uart_getc();
