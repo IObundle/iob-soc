@@ -11,6 +11,5 @@ INCLUDE+=$(incdir)$(UART_SW_DIR)/pc-emul/
 SRC+=iob_uart_swreg_pc_emul.c
 SRC+=$(UART_SW_DIR)/pc-emul/iob_uart_pc_emul.c
 
-iob_uart_swreg_pc_emul.h iob_uart_swreg_pc_emul.c: $(UART_HW_DIR)/include/iob_uart_swreg.vh
-	$(MKREGS) $< SW UART
-
+iob_uart_swreg_pc_emul.h iob_uart_swreg_pc_emul.c: iob_uart_swreg.h
+	
