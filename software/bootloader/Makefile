@@ -23,6 +23,6 @@ boot.elf: ../template.lds  $(HDR) $(SRC)
 	$(TOOLCHAIN_PREFIX)objcopy -O binary boot.elf boot.bin
 
 clean: gen-clean
-	@rm -rf boot.bin boot.elf boot.map *.hex *swreg.h
+	@rm -rf boot.bin boot.elf boot.map *.hex *swreg*.h *swreg*.c
 
 .PHONY: clean

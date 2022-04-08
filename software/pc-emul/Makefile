@@ -42,6 +42,6 @@ test:
 	diff -q $(PC_DIR)/test.log $(PC_DIR)/test.expected
 
 clean:
-	@rm -rf firmware.out periphs.h test.log *swreg.h
+	@rm -rf firmware.out periphs.h test.log *swreg*.h *swreg*.c
 
 .PHONY: all build run clean subs periphs_tmp.h test
