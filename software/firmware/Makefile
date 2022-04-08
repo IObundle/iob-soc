@@ -24,6 +24,7 @@ firmware.elf: ../template.lds $(HDR) $(SRC)
 	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
 
 clean: gen-clean 
-	@rm -rf firmware.bin firmware.elf firmware.map *.hex periphs.h *swreg.h
+	@rm -rf firmware.bin firmware.elf firmware.map *.hex periphs.h *swreg*.h \
+		*swreg*.c
 
 .PHONY: clean
