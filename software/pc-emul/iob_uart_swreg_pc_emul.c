@@ -4,11 +4,15 @@
 #include <stdio.h>
 
 #include "iob_uart_swreg.h"
-#include "iob_uart_swreg_pc_emul.h"
 
-static uint8_t div_value;
+static uint16_t div_value;
 
-void pc_emul_set_uart_softreset(int64_t value) {
+void UART_INIT_BASEADDR(uint32_t addr) {
+    base = addr;
+    return;
+}
+
+void UART_SET_SOFTRESET(uint8_t value) {
     //manage files to communicate with console here
     FILE *cnsl2soc_fd;
 
@@ -19,15 +23,14 @@ void pc_emul_set_uart_softreset(int64_t value) {
     return;
 }
 
-void pc_emul_set_uart_div(int64_t value) {
-    div_value = (UART_DIV_TYPE) value;
+void UART_SET_DIV(uint16_t value) {
+    div_value = value;
     return;
 }
 
-void pc_emul_set_uart_txdata(int64_t value) {
+void UART_SET_TXDATA(uint8_t value) {
     // send byte to console
     char aux_char;
-    UART_TXDATA_TYPE c = (UART_TXDATA_TYPE) value;
     int able2read;
     FILE *soc2cnsl_fd;
 
@@ -37,7 +40,7 @@ void pc_emul_set_uart_txdata(int64_t value) {
             if(able2read == 0){
                 fclose(soc2cnsl_fd);
                 soc2cnsl_fd = fopen("./soc2cnsl", "wb");
-                fwrite(&c, sizeof(char), 1, soc2cnsl_fd);
+                fwrite(&value, sizeof(char), 1, soc2cnsl_fd);
                 fclose(soc2cnsl_fd);
                 break;
             }
@@ -46,19 +49,19 @@ void pc_emul_set_uart_txdata(int64_t value) {
     }
 }
 
-void pc_emul_set_uart_txen(int64_t value) {
+void UART_SET_TXEN(uint8_t value) {
     return;
 }
 
-void pc_emul_set_uart_rxen(int64_t value) {
+void UART_SET_RXEN(uint8_t value) {
     return;
 }
 
-int64_t pc_emul_get_uart_txready() {
+uint8_t UART_GET_TXREADY() {
     return 1;
 }
 
-int64_t pc_emul_get_uart_rxdata() {
+uint8_t UART_GET_RXDATA() {
     //get byte from console
     char c;
     int able2write;
@@ -80,6 +83,6 @@ int64_t pc_emul_get_uart_rxdata() {
     return (int64_t) c;
 }
 
-int64_t pc_emul_get_uart_rxready() {
+uint8_t UART_GET_RXREADY() {
     return 1;
 }
