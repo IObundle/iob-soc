@@ -19,11 +19,14 @@ HDR+=periphs.h
 SRC+= firmware.S firmware.c $(UART_DIR)/software/printf.c
 
 #RULES
+
+build: firmware.elf
+
 firmware.elf: ../template.lds $(HDR) $(SRC)
 	$(TOOLCHAIN_PREFIX)gcc -o $@ $(CFLAGS) $(LFLAGS) $(DEFINE) $(INCLUDE) $(SRC) $(LLIBS)
 	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
 
-clean: gen-clean 
+clean:
 	@rm -rf firmware.bin firmware.elf firmware.map *.hex periphs.h *swreg.h
 
-.PHONY: clean
+.PHONY: build clean
