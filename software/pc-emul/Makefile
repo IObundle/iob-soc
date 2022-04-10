@@ -33,7 +33,7 @@ run: firmware.out
 	./firmware.out $(TEST_LOG)
 
 clean:
-	@rm -rf firmware.out periphs.h *swreg.h
+	@rm -rf firmware.out periphs.h *swreg*.h *swreg*.c
 
 test:
 	make run TEST_LOG="> test.log"
