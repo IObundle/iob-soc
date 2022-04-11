@@ -37,7 +37,7 @@ clean:
 
 test:
 	make run TEST_LOG="> test.log"
-	diff -q $(PC_DIR)/test.log $(PC_DIR)/test.expected
+	sleep 1; diff -q $(PC_DIR)/test.log $(PC_DIR)/test.expected
 
 test-clean: clean
 	@rm -f test.log

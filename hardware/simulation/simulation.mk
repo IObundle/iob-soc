@@ -11,7 +11,7 @@ DEFINE+=$(defmacro)FREQ=$(FREQ)
 #ddr controller address width
 DDR_ADDR_W=$(DCACHE_ADDR_W)
 
-CONSOLE_CMD=$(ROOT_DIR)/software/console/console -L
+CONSOLE_CMD=$(CONSOLE_DIR)/console -L
 
 #produce waveform dump
 VCD ?=0
@@ -47,25 +47,31 @@ endif
 include $(AXI_DIR)/hardware/axiram/hardware.mk
 
 #testbench
-ifeq ($(SIMULATOR),verilator)
-VSRC+=system_top.v
-else
+ifneq ($(SIMULATOR),verilator)
 VSRC+=system_tb.v
+else
+VSRC+=system_top_core.v
 endif
 
 #RULES
-all: clean sw build sim
-
-sim:
+build: $(VSRC) $(VHDR) $(HEXPROGS)
 ifeq ($(SIM_SERVER),)
-	@rm -f soc2cnsl cnsl2soc
-	make $(SIM_PROC)
-	$(CONSOLE_CMD) $(TEST_LOG) &
-	bash -c "trap 'make kill-sim' INT TERM KILL EXIT; make run"
+	bash -c "trap 'make kill-sim' INT TERM KILL EXIT; make comp"
 else
 	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --delete --force --exclude .git $(SIM_SYNC_FLAGS) $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
-	bash -c "trap 'make kill-remote-sim' INT TERM KILL; ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR) $@ INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) VCD=$(VCD) ASIC=$(ASIC) SYNTH=$(SYNTH) ASIC_MEM_FILES=$(ASIC_MEM_FILES) LIBS=$(LIBS) TEST_LOG=\"$(TEST_LOG)\"'"
+	bash -c "trap 'make kill-remote-sim' INT TERM KILL; ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'make -C $(REMOTE_ROOT_DIR) sim-build SIMULATOR=$(SIMULATOR) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) VCD=$(VCD) TEST_LOG=\"$(TEST_LOG)\"'"
+endif
+
+run: build
+ifeq ($(SIM_SERVER),)
+	@rm -f soc2cnsl cnsl2soc
+	$(CONSOLE_CMD) $(TEST_LOG) &
+	bash -c "trap 'make kill-sim' INT TERM KILL EXIT; make exec"
+else
+	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
+	rsync -avz --force --exclude .git $(SIM_SYNC_FLAGS) $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
+	bash -c "trap 'make kill-remote-sim' INT TERM KILL; ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'make -C $(REMOTE_ROOT_DIR) sim-run SIMULATOR=$(SIMULATOR) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) VCD=$(VCD) TEST_LOG=\"$(TEST_LOG)\"'"
 ifneq ($(TEST_LOG),)
 	scp $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR)/test.log $(SIM_DIR)
 endif
@@ -78,15 +84,18 @@ ifeq ($(VCD),1)
 	gtkwave -a ../waves.gtkw system.vcd &
 endif
 
-build: $(VSRC) $(VHDR) $(IMAGES)
+#
+#EDIT TOP OR TB DEPENDING ON SIMULATOR
+#
 
 ifeq ($(SIMULATOR),verilator)
 #create top system module
-system_top.v: system_top_tmp.v
+system_top_core.v: $(TB_DIR)/system_top_core.v
 else
 #create testbench
-system_tb.v: system_tb_tmp.v
+system_tb.v: $(TB_DIR)/system_core_tb.v
 endif
+	cp $< $@
 	$(foreach p, $(PERIPHERALS), $(eval HFILES=$(shell echo `ls $($p_DIR)/hardware/include/*.vh | grep -v pio | grep -v inst | grep -v swreg`)) \
 	$(eval HFILES+=$(shell echo `basename $($p_DIR)/hardware/include/*swreg.vh | sed 's/swreg/swreg_def/g'`)) \
 	$(if $(HFILES), $(foreach f, $(HFILES), sed -i '/PHEADER/a `include \"$f\"' $@;),)) # insert header files
@@ -94,13 +103,9 @@ endif
 	$(foreach p, $(PERIPHERALS), if test -f $($p_DIR)/hardware/include/pio.vh; then sed s/input// $($p_DIR)/hardware/include/pio.vh | sed s/output// | sed 's/\[.*\]//' | sed 's/\([A-Za-z].*\),/\.\1(\1),/' > ./ports.vh; sed -i '/PORTS/r ports.vh' $@; fi;) #insert and connect pins in uut instance
 	$(foreach p, $(PERIPHERALS), if test -f $($p_DIR)/hardware/include/inst_tb.vh; then sed -i '/endmodule/e cat $($p_DIR)/hardware/include/inst_tb.vh' $@; fi;) # insert peripheral instances
 
-system_tb_tmp.v: $(TB_DIR)/system_core_tb.v
-	cp $< $@; cp $@ system_tb.v
 
-system_top_tmp.v: $(TB_DIR)/system_top_core.v
-	cp $< $@; cp $@ system_top.v
-
-VSRC+=$(foreach p, $(PERIPHERALS), $(shell if test -f $($p_DIR)/hardware/testbench/module_tb.sv; then echo $($p_DIR)/hardware/testbench/module_tb.sv; fi;)) #add test cores to list of sources
+#add peripheral testbench sources
+VSRC+=$(foreach p, $(PERIPHERALS), $(shell if test -f $($p_DIR)/hardware/testbench/module_tb.sv; then echo $($p_DIR)/hardware/testbench/module_tb.sv; fi;)) 
 
 kill-remote-sim:
 	@echo "INFO: Remote simulator $(SIMULATOR) will be killed"
@@ -153,7 +158,7 @@ clean-all: clean-testlog clean
 
 .PRECIOUS: system.vcd test.log
 
-.PHONY: all build sim \
+.PHONY: build run \
 	kill-remote-sim kill-sim \
 	test test1 test2 test3 test4 test5 \
 	clean-remote clean-testlog clean-all

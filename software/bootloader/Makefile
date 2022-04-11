@@ -24,7 +24,7 @@ boot.elf: ../template.lds  $(HDR) $(SRC)
 	$(TOOLCHAIN_PREFIX)gcc -o $@ $(CFLAGS) $(LFLAGS) $(DEFINE) $(INCLUDE) $(SRC) $(LLIBS)
 	$(TOOLCHAIN_PREFIX)objcopy -O binary boot.elf boot.bin
 
-clean: gen-clean
+clean:
 	@rm -rf boot.bin boot.elf boot.map *.hex *swreg*.h *swreg*.c
 
 .PHONY: build clean

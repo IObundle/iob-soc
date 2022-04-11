@@ -18,9 +18,6 @@ ifeq ($(TEST_BENCH),1)
 CONSOLE_CMD+=-L
 endif
 
-$(FIRM_DIR)/firmware.bin: $(FIRM_DIR)/firmware.c
-	$(eval CONSOLE_CMD+=-f)
-
 firmware.bin: $(FIRM_DIR)/firmware.bin
 	cp $(FIRM_DIR)/firmware.bin .
 
