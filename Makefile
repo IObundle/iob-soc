@@ -40,7 +40,7 @@ pc-emul-test-clean: fw-clean
 sim-build: fw-build
 	make -C $(SIM_DIR) build
 
-sim-run: fw-build
+sim-run: sim-build
 	make -C $(SIM_DIR) run
 
 sim-clean: fw-clean
@@ -48,10 +48,6 @@ sim-clean: fw-clean
 
 sim-test:
 	make -C $(SIM_DIR) test
-
-sim-test-clean:
-	make -C $(SIM_DIR) test-clean
-
 
 #
 # BUILD, LOAD AND RUN ON FPGA BOARD

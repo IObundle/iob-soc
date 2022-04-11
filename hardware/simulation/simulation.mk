@@ -63,7 +63,7 @@ else
 	bash -c "trap 'make kill-remote-sim' INT TERM KILL; ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'make -C $(REMOTE_ROOT_DIR) sim-build SIMULATOR=$(SIMULATOR) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) VCD=$(VCD) TEST_LOG=\"$(TEST_LOG)\"'"
 endif
 
-run: build
+run:
 ifeq ($(SIM_SERVER),)
 	@rm -f soc2cnsl cnsl2soc
 	$(CONSOLE_CMD) $(TEST_LOG) &
@@ -122,15 +122,20 @@ test: clean-testlog test1 test2 test3 test4 test5
 	diff -q test.log ../test.expected
 
 test1:
-	make all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+	make -C $(ROOT_DIR) sim-clean
+	make -C $(ROOT_DIR) sim-run INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
 test2:
-	make all INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+	make -C $(ROOT_DIR) sim-clean
+	make -C $(ROOT_DIR) sim-run INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
 test3:
-	make all INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+	make -C $(ROOT_DIR) sim-clean
+	make -C $(ROOT_DIR) sim-run INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=0 TEST_LOG=">> test.log"
 test4:
-	make all INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
+	make -C $(ROOT_DIR) sim-clean
+	make -C $(ROOT_DIR) sim-run INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
 test5:
-	make all INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
+	make -C $(ROOT_DIR) sim-clean
+	make -C $(ROOT_DIR) sim-run INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
 
 
 #clean target common to all simulators
@@ -152,11 +157,8 @@ ifneq ($(SIM_SERVER),)
 	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'rm -f $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR)/test.log'
 endif
 
-clean-all: clean-testlog clean
-
 .PRECIOUS: system.vcd test.log
 
 .PHONY: build run \
-	kill-remote-sim kill-sim \
-	test test1 test2 test3 test4 test5 \
-	clean-remote clean-testlog clean-all
+	kill-remote-sim clean-remote kill-sim \
+	test test1 test2 test3 test4 test5 clean-testlog
