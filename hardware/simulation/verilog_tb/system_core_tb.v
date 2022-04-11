@@ -83,8 +83,8 @@ module system_tb;
           cpu_uartread(`UART_RXDATA_ADDR, cpu_char);
           $fwriteh(soc2cnsl_fd, "%c", cpu_char);
           rxread_reg = 0;
-          while($fseek(soc2cnsl_fd, 0, 0));
         end
+        n = $fseek(soc2cnsl_fd, 0, 0);
       end
       if(txread_reg) begin
         cnsl2soc_fd = $fopen("cnsl2soc", "r");
