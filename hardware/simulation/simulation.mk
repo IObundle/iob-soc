@@ -49,9 +49,9 @@ include $(AXI_DIR)/hardware/axiram/hardware.mk
 #testbench
 ifneq ($(SIMULATOR),verilator)
 VSRC+=system_tb.v
-else
-VSRC+=system_top_core.v
 endif
+
+VSRC+=system_top.v
 
 #RULES
 build: $(VSRC) $(VHDR) $(HEXPROGS)
@@ -88,13 +88,11 @@ endif
 #EDIT TOP OR TB DEPENDING ON SIMULATOR
 #
 
-ifeq ($(SIMULATOR),verilator)
-#create top system module
-system_top_core.v: $(TB_DIR)/system_top_core.v
-else
-#create testbench
-system_tb.v: $(TB_DIR)/system_core_tb.v
-endif
+system_tb.v:
+	cp $(TB_DIR)/system_core_tb.v system_tb.v
+
+#create  simulation top module
+system_top.v: $(TB_DIR)/system_top_core.v
 	cp $< $@
 	$(foreach p, $(PERIPHERALS), $(eval HFILES=$(shell echo `ls $($p_DIR)/hardware/include/*.vh | grep -v pio | grep -v inst | grep -v swreg`)) \
 	$(eval HFILES+=$(shell echo `basename $($p_DIR)/hardware/include/*swreg.vh | sed 's/swreg/swreg_def/g'`)) \
