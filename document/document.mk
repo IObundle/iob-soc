@@ -21,9 +21,15 @@ include $(LIB_DIR)/document/document.mk
 
 
 test: clean-all $(DOC).pdf
-	diff -q $(DOC).aux test.expected
+	make doc-build 
+diff -q $(DOC).aux test.expected
 
 clean-all: clean
 	rm -f $(DOC).pdf
 
+test-clean:
+	make doc-clean DOC=presentation
+	make doc-clean DOC=pb
+
 .PHONY: test clean-all
+
