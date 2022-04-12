@@ -19,7 +19,7 @@ VSRC+=./verilog/top_system.v
 #
 # Use
 #
-all: build run
+
 FORCE ?= 1
 
 run:
@@ -39,7 +39,7 @@ else
 endif
 endif
 
-build: sw $(FPGA_OBJ)
+build: $(FPGA_OBJ)
 
 ifeq ($(INIT_MEM),1)
 $(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex firmware.hex
@@ -92,15 +92,15 @@ test: clean-testlog test1 test2 test3
 	diff -q test.log test.expected
 
 test1:
-	make clean
-	make all INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+	make -C $(ROOT_DIR) fpga-clean
+	make -C $(ROOT_DIR) fpga-run INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
 
 test2: 
-	make all INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+	make -C $(ROOT_DIR) fpga-run INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
 
 test3:
-	make clean
-	make all INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
+	make -C $(ROOT_DIR) fpga-clean
+	make -C $(ROOT_DIR) fpga-run INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
 
 
 #
@@ -138,7 +138,7 @@ clean-all: clean-testlog clean
 
 .PRECIOUS: $(FPGA_OBJ)
 
-.PHONY: all run build \
+.PHONY: run build \
 	queue-in queue-out queue-wait queue-out-remote \
 	test test1 test2 test3 \
 	clean-remote clean-testlog clean-all

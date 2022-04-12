@@ -20,7 +20,14 @@ SWREGS=0
 include $(LIB_DIR)/document/document.mk
 
 
-test: clean-all $(DOC).pdf
+test: clean-all
+ifeq ($(DOC),pb)
+	make -C $(ROOT_DIR) fpga-test
+endif
+	make $(DOC).pdf
+
+
+$(DOC).pdf
 	make doc-build 
 diff -q $(DOC).aux test.expected
 
