@@ -2,16 +2,23 @@ TOP_MODULE=iob_regfileif
 
 #PATHS
 REMOTE_ROOT_DIR ?=sandbox/iob-regfileif
-REGFILEIF_FPGA_DIR:=$(REGFILEIF_HW_DIR)/fpga
-REGFILEIF_INC_DIR:=$(REGFILEIF_HW_DIR)/include
-REGFILEIF_SRC_DIR:=$(REGFILEIF_HW_DIR)/src
-REGFILEIF_TB_DIR:=$(REGFILEIF_HW_DIR)/testbench
+SIM_DIR ?=$(REGFILEIF_HW_DIR)/simulation
+FPGA_DIR ?=$(shell find $(REGFILEIF_DIR)/hardware -name $(FPGA_FAMILY))
+DOC_DIR ?=$(REGFILEIF_DIR)/document/$(DOC)
 
 LIB_DIR ?=$(REGFILEIF_DIR)/submodules/LIB
 REGFILEIF_HW_DIR:=$(REGFILEIF_DIR)/hardware
 
 #MAKE SW ACCESSIBLE REGISTER
 MKREGS:=$(shell find $(LIB_DIR) -name mkregs.py)
+
+#DEFAULT FPGA FAMILY AND FAMILY LIST
+FPGA_FAMILY ?=CYCLONEV-GT
+FPGA_FAMILY_LIST ?=CYCLONEV-GT XCKU
+
+#DEFAULT DOC AND doc LIST
+DOC ?=pb
+DOC_LIST ?=pb ug
 
 #Check that configuration file exists
 ifeq (,$(wildcard $(ROOT_DIR)/iob_regfileif_swreg.vh))

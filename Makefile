@@ -1,64 +1,108 @@
-#
-# TOP MAKEFILE
-#
-
 REGFILEIF_DIR:=.
-include core.mk
+include config.mk
+
+.PHONY: sim sim-test sim-clean \
+	fpga-build fpga-build-all fpga-test fpga-clean fpga-clean-all \
+	doc-build doc-build-all doc-test doc-clean doc-clean-all \
+	test-sim test-sim-clean \
+	test-fpga test-fpga-clean \
+	test-doc test-doc-clean \
+	test test-clean \
+	clean-all debug
+
 
 #
 # SIMULATE
 #
+VCD ?=0
 
 sim:
-ifeq ($(SIM_SERVER),)
-	make -C $(SIM_DIR) run SIMULATOR=$(SIMULATOR)
-else
-	ssh $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
-	make -C $(SIM_DIR) clean
-	rsync -avz --delete --exclude .git $(REGFILEIF_DIR) $(SIM_USER)@$(SIM_SERVER):$(USER)/$(REMOTE_ROOT_DIR)
-	ssh $(SIM_USER)@$(SIM_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(SIM_DIR) run SIMULATOR=$(SIMULATOR) SIM_SERVER=localhost'
-endif
+	make -C $(SIM_DIR) run
 
-sim-waves:
-	gtkwave $(SIM_DIR)/*.vcd &
+sim-test:
+	make -C $(SIM_DIR) test
 
 sim-clean:
-	make -C $(SIM_DIR) clean
-ifneq ($(SIM_SERVER),)
-	rsync -avz --delete --exclude .git $(REGFILEIF_DIR) $(SIM_USER)@$(SIM_SERVER):$(USER)/$(REMOTE_ROOT_DIR)
-	ssh $(SIM_USER)@$(SIM_SERVER) "if [ -d $(REMOTE_ROOT_DIR) ]; then cd $(REMOTE_ROOT_DIR); make -C $(SIM_DIR) clean; fi"
-endif
+	make -C $(SIM_DIR) clean-all
 
 #
 # FPGA COMPILE
 #
 
-fpga:
-ifeq ($(FPGA_SERVER),)
-	make -C $(FPGA_DIR) run DATA_W=$(DATA_W)
-else 
-	ssh $(FPGA_USER)@$(FPGA_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
-	rsync -avz --delete --exclude .git $(REGFILEIF_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(FPGA_USER)@$(FPGA_SERVER) 'cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) run FPGA_FAMILY=$(FPGA_FAMILY) FPGA_SERVER=localhost'
-	mkdir -p $(FPGA_DIR)/$(FPGA_FAMILY)
-	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/$(FPGA_DIR)/$(FPGA_FAMILY)/$(FPGA_LOG) $(FPGA_DIR)/$(FPGA_FAMILY)
-endif
+fpga-build:
+	make -C $(FPGA_DIR) build
+
+fpga-build-all:
+	$(foreach s, $(FPGA_FAMILY_LIST), make fpga-build FPGA_FAMILY=$s;)
+
+fpga-test:
+	make -C $(FPGA_DIR) test
 
 fpga-clean:
-	make -C $(FPGA_DIR) clean
-ifneq ($(FPGA_SERVER),)
-	rsync -avz --delete --exclude .git $(REGFILEIF_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(FPGA_USER)@$(FPGA_SERVER) "if [ -d $(REMOTE_ROOT_DIR) ]; then cd $(REMOTE_ROOT_DIR); make -C $(FPGA_DIR) clean; fi"
-endif
+	make -C $(FPGA_DIR) clean-all
+
+fpga-clean-all:
+	$(foreach s, $(FPGA_FAMILY_LIST), make fpga-clean FPGA_FAMILY=$s;)
 
 
+#
+# DOCUMENT
+#
+
+doc-build:
+	make -C $(DOC_DIR) $(DOC).pdf
+
+doc-build-all:
+	$(foreach s, $(DOC_LIST), make doc-build DOC=$s;)
+
+doc-test:
+	make -C $(DOC_DIR) test
+
+doc-clean:
+	make -C $(DOC_DIR) clean
+
+doc-clean-all:
+	$(foreach s, $(DOC_LIST), make doc-clean DOC=$s;)
+
+
+#
+# TEST ON SIMULATORS AND BOARDS
+#
+
+test-sim:
+	make sim-test
+
+test-sim-clean:
+	make sim-clean
+
+test-fpga:
+	make fpga-test FPGA_FAMILY=CYCLONEV-GT
+	make fpga-test FPGA_FAMILY=XCKU
+
+test-fpga-clean:
+	make fpga-clean FPGA_FAMILY=CYCLONEV-GT
+	make fpga-clean FPGA_FAMILY=XCKU
+
+test-doc:
+	make doc-test DOC=pb
+	make doc-test DOC=ug
+
+test-doc-clean:
+	make doc-clean DOC=pb
+	make doc-clean DOC=ug
+
+test: test-clean test-sim test-fpga test-doc
+
+test-clean: test-sim-clean test-fpga-clean test-doc-clean
+
+#
 # CLEAN ALL
-clean-all: sim-clean fpga-clean asic-clean
+# 
 
-corename:
-	@echo "REGFILEIF"
+clean-all: sim-clean fpga-clean-all doc-clean-all
 
-.PHONY: sim sim-waves sim-clean \
-	fpga fpga-clean \
-	clean-all \
-	corename
+
+debug:
+	@echo $(SIM_DIR)
+	@echo $(FPGA_DIR)
+	@echo $(DOC_DIR)
