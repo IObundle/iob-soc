@@ -13,6 +13,12 @@ include $(ROOT_DIR)/hardware/hardware.mk
 #SOURCES
 VSRC+=./verilog/top_system.v
 
+#console command 
+CONSOLE_CMD=$(CONSOLE_DIR)/console -s /dev/usb-uart
+ifeq ($(INIT_MEM),0)
+CONSOLE_CMD+=-f
+endif
+
 
 #RULES
 
@@ -27,15 +33,12 @@ ifeq ($(NORUN),0)
 ifeq ($(BOARD_SERVER),)
 	if [ ! -f $(LOAD_FILE) ]; then touch $(LOAD_FILE); chown $(USER):dialout $(LOAD_FILE); chmod 664 $(LOAD_FILE); fi;\
 	bash -c "trap 'make queue-out' INT TERM KILL; make queue-in; if [ $(FORCE) = 1 -o \"`head -1 $(LOAD_FILE)`\" != \"$(JOB)\" ];\
-	then ../prog.sh; echo $(JOB) > $(LOAD_FILE); fi; rm -f $(CONSOLE_DIR)/test.log; make -C $(CONSOLE_DIR) run; make queue-out;\
-	if [ -f $(CONSOLE_DIR)/$(lastword $(TEST_LOG)) ]; then cat $(CONSOLE_DIR)/$(lastword $(TEST_LOG)) $(TEST_LOG); fi;\
-	rm -rf $(CONSOLE_DIR)/$(lastword $(TEST_LOG));\
-	if ls $(CONSOLE_DIR)/*.log > /dev/null 2>&1; then cp $(CONSOLE_DIR)/*.log .; fi"
+	then ../prog.sh; echo $(JOB) > $(LOAD_FILE); fi; $(CONSOLE_CMD) $(TEST_LOG); make queue-out;"
 else
 	ssh $(BOARD_USER)@$(BOARD_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --delete --force --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR) 
 	bash -c "trap 'make queue-out-remote' INT TERM KILL; ssh $(BOARD_USER)@$(BOARD_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD) $@ INIT_MEM=$(INIT_MEM) FORCE=$(FORCE) TEST_LOG=\"$(TEST_LOG)\"'"
-	scp -r $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD)/*.log . 2>/dev/null || :
+	scp -r $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD)/*.log .
 endif
 endif
 
@@ -96,6 +99,7 @@ test1:
 	make -C $(ROOT_DIR) fpga-run INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
 
 test2: 
+	make -C $(ROOT_DIR) fpga-clean
 	make -C $(ROOT_DIR) fpga-run INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
 
 test3:
@@ -107,7 +111,8 @@ test3:
 # Clean
 #
 
-clean-remote: hw-clean
+clean-all: hw-clean
+	@rm -f $(FPGA_OBJ) $(FPGA_LOG)
 ifneq ($(FPGA_SERVER),)
 	ssh $(BOARD_USER)@$(BOARD_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --delete --force --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
@@ -122,23 +127,16 @@ endif
 #clean test log only when board testing begins
 clean-testlog:
 	@rm -f test.log
-ifneq ($(FPGA_SERVER),)
-	ssh $(BOARD_USER)@$(BOARD_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
-	rsync -avz --delete --force --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(FPGA_USER)@$(FPGA_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD) $@'
-endif
 ifneq ($(BOARD_SERVER),)
 	ssh $(BOARD_USER)@$(BOARD_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --delete --force --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR)
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD) $@'
 endif
 
-clean-all: clean-testlog clean
-	@rm -f $(FPGA_OBJ) $(FPGA_LOG)
 
 .PRECIOUS: $(FPGA_OBJ)
 
 .PHONY: run build \
 	queue-in queue-out queue-wait queue-out-remote \
 	test test1 test2 test3 \
-	clean-remote clean-testlog clean-all
+	clean-all clean-testlog
