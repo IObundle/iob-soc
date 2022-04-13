@@ -12,4 +12,4 @@ HDR+=$(UART_SW_DIR)/*.h iob_uart_swreg.h
 SRC+=$(UART_SW_DIR)/iob-uart.c
 
 iob_uart_swreg.h: $(UART_HW_DIR)/include/iob_uart_swreg.vh
-	$(MKREGS) $< SW
+	$(MKREGS) $< SW UART
