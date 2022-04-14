@@ -2,4 +2,4 @@
 include $(REGFILEIF_DIR)/software/software.mk
 
 #pc sources
-SRC+=$(REGFILEIF_SW_DIR)/pc-emul/iob-regfileif.c
+SRC+=$(REGFILEIF_SW_DIR)/pc-emul/iob_regfileif_swreg_pc_emul.c
