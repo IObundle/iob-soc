@@ -4,7 +4,7 @@
 #include "periphs.h"
 #include "iob-uart.h"
 #include "printf.h"
-#include "iob-regfileif.h"
+#include "iob_regfileif_swreg_inverted.h"
 
 int main()
 {
@@ -13,21 +13,21 @@ int main()
   uart_puts("\n\n\nHello world!\n\n\n");
 
   //run REGFILEIF tests if the system was built with it (and the Tester)
-  regfileif_setbaseaddr(REGFILEIF0_BASE);
+  REGFILEIF_INIT_BASEADDR(REGFILEIF0_BASE);
 
   //Write to UART0 connected to the Tester.
   uart_puts("This message was sent from SUT!\n");
 
   //Write data to the registers of REGFILEIF to be read by the Tester.
-  regfileif_writereg(2, 128);
-  regfileif_writereg(3, 1024);
+  REGFILEIF_SET_REG3_INVERTED(128);
+  REGFILEIF_SET_REG4_INVERTED(1024);
 
 #ifdef USE_DDR
 #ifdef RUN_EXTMEM
   char sutMemoryMessage[]="This message is stored in SUT's memory\n";
   
   //Give address of stored message to Tester using regfileif register 4
-  regfileif_writereg(4, (int)sutMemoryMessage);
+  REGFILEIF_SET_REG5_INVERTED((int)sutMemoryMessage);
 #else
   char ddrMemoryMessage[]="This message was written to DDR by the SUT\n", *strPtr;
   int i;

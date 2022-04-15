@@ -179,10 +179,6 @@ DEFINE+=$(defmacro)B=$B
 #the ID is used as an instance name index in the hardware and as a base address in the software
 DEFINE+=$(shell $(SW_DIR)/python/submodule_utils.py get_defines "$(PERIPHERALS)" $(defmacro))
 
-N_SLAVES_W = $(shell echo "import math; print(math.ceil(math.log($(N_SLAVES),2)))"|python3 )
-DEFINE+=$(defmacro)N_SLAVES_W=$(N_SLAVES_W)
-
-
 #default baud and system clock freq
 BAUD=5000000
 FREQ=100000000

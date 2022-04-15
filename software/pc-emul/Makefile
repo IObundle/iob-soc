@@ -10,18 +10,18 @@ DEFINE+=-DPC
 
 #peripherals (pc)
 #uart
-include $(UART_DIR)/software/pc-emul/pc.mk
+include $(UART_DIR)/software/pc-emul/pc-emul.mk
 
 #regfileif
-include $(REGFILEIF_DIR)/software/pc-emul/pc.mk
+include $(REGFILEIF_DIR)/software/pc-emul/pc-emul.mk
 
 # include CORE_UT and tester peripherals if we are testing a core
 ifeq ($(TESTING_CORE),1)
 #core_ut
-include $($(CORE_UT)_DIR)/software/pc-emul/pc.mk
+include $($(CORE_UT)_DIR)/software/pc-emul/pc-emul.mk
 
 #include every other configured tester peripheral (in tester.mk of core under test)
-$(foreach p, $(TESTER_PERIPHERALS), $(eval include $($p_DIR)/software/pc-emul/pc.mk))
+$(foreach p, $(TESTER_PERIPHERALS), $(eval include $($p_DIR)/software/pc-emul/pc-emul.mk))
 endif
 
 #HEADERS
