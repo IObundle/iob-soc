@@ -240,7 +240,7 @@ endif
     fout.writelines(src_content)
     fout.close()
 
-    # ~~~~~~~~~~~~ Create pc.mk ~~~~~~~~~~~~
+    # ~~~~~~~~~~~~ Create pc-emul.mk ~~~~~~~~~~~~
     os.mkdir(os.path.join(iobnativebridgeif_dir,"software/pc-emul"))
     pc_emul_str = """
 #nativebridge common parameters
@@ -249,7 +249,7 @@ include $(IOBNATIVEBRIDGEIF_DIR)/software/software.mk
 #pc sources
 SRC+=$(IOBNATIVEBRIDGEIF_DIR)/software/pc-emul/iob-nativebridgeif.c
     """
-    fout = open (os.path.join(iobnativebridgeif_dir,"software/pc-emul","pc.mk"), 'w')
+    fout = open (os.path.join(iobnativebridgeif_dir,"software/pc-emul","pc-emul.mk"), 'w')
     fout.write(pc_emul_str)
     fout.close()
     # iob-nativebridgeif.c for pc-emul

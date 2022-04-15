@@ -22,7 +22,6 @@ if __name__ == "__main__" :
 
 # Add folder to path that contains python scripts to be imported
 sys.path.append(mkregs_dir)
-import mkregs
 from mkregs import *
 
 # Change <infile>_gen.vh to connect to external native bus
@@ -86,10 +85,8 @@ if __name__ == "__main__" :
     infile = infile.split('/')[-1].split('.')[0]
 
     # Create normal swreg
-    mkregs.regvfile_name=infile
-    swreg_parse (defsfile, hwsw)
+    swreg_parse (defsfile, hwsw, infile, "REGFILEIF")
 
-    # Only create inverted files for Hardware
     if(hwsw == "HW"):
         # Make connections between read and write registers
         connect_wires_between_regs(infile+"_wire_connections.vh", defsfile)
@@ -97,20 +94,20 @@ if __name__ == "__main__" :
         # Change <infile>_gen.vh to connect to external native bus
         connect_to_external_native(infile+"_gen.vh")
 
-        # Create swreg with read and write registers inverted
-        infile = infile + "_inverted"
-        mkregs.regvfile_name=infile
-        # invert registers type
-        for i in range(len(defsfile)):
-            if 'SWREG_W' in defsfile[i]:
-                defsfile[i] = re.sub('SWREG_W\(([^,]+),','SWREG_R(\g<1>_INVERTED,', defsfile[i])
-            else:
-                defsfile[i] = re.sub('SWREG_R\(([^,]+),','SWREG_W(\g<1>_INVERTED,', defsfile[i])
+    # Create swreg with read and write registers inverted
+    infile = infile + "_inverted"
+    # invert registers type
+    for i in range(len(defsfile)):
+        if 'SWREG_W' in defsfile[i]:
+            defsfile[i] = re.sub('SWREG_W\(([^,]+),','SWREG_R(\g<1>_INVERTED,', defsfile[i])
+        else:
+            defsfile[i] = re.sub('SWREG_R\(([^,]+),','SWREG_W(\g<1>_INVERTED,', defsfile[i])
 
+    if(hwsw == "HW"):
         # write iob_REGFILEIF_swreg_inverted.vh file
         fout = open (infile+".vh", 'w')
         fout.writelines(defsfile)
         fout.close()
 
-        # create generated inverted files
-        swreg_parse (defsfile, hwsw)
+    # create generated inverted files
+    swreg_parse (defsfile, hwsw, infile, "REGFILEIF")
