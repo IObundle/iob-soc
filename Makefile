@@ -29,12 +29,8 @@ pc-emul-run: pc-emul-build
 pc-emul-clean: fw-clean
 	make -C $(PC_DIR) clean
 
-pc-emul-test: fw-build
+pc-emul-test: pc-emul-clean
 	make -C $(PC_DIR) test
-
-pc-emul-test-clean: fw-clean
-	make -C $(PC_DIR) test-clean
-
 
 
 #
@@ -68,18 +64,15 @@ tester-sim-run:
 fpga-build: fw-build
 	make -C $(BOARD_DIR) build
 
-fpga-clean:
-	make -C $(BOARD_DIR) clean
+fpga-run: fpga-build
+	make -C $(BOARD_DIR) run TEST_LOG="$(TEST_LOG)"
 
-fpga-run:
-	make -C $(BOARD_DIR) all TEST_LOG="$(TEST_LOG)"
+fpga-clean: fw-clean
+	make -C $(BOARD_DIR) clean
 
 fpga-test:
 	make -C $(BOARD_DIR) test
 
-
-fpga-test-clean:
-	make -C $(BOARD_DIR) test-clean
 
 #targets for SUT with Tester system
 tester-fpga-build:
@@ -98,20 +91,16 @@ asic-synth: fw-build
 asic-sim-post-synth:
 	make -C $(ASIC_DIR) all TEST_LOG="$(TEST_LOG)"
 
-asic-test:
-	make -C $(ASIC_DIR) test
-
 asic-clean:
 	make -C $(ASIC_DIR) clean-all
+
+asic-test:
+	make -C $(ASIC_DIR) test
 
 #
 # COMPILE DOCUMENTS
 #
 doc-build:
-ifeq ($(DOC),pb)
-	make fpga-build BOARD=CYCLONEV-GT-DK
-	make fpga-build BOARD=AES-KU040-DB-G
-endif
 	make -C $(DOC_DIR) $(DOC).pdf
 
 doc-clean:
@@ -187,7 +176,7 @@ debug:
 	pc-emul-test pc-emul-test-clean\
 	sim-build sim-run sim-clean sim-test sim-test-clean\
 	tester-sim-build tester-sim-run\
-	fpga-build fpga-run fpga-clean fpga-test fpga-test-clean\
+	fpga-build fpga-run fpga-clean fpga-test\
 	tester-fpga-build tester-fpga-run\
 	asic-synth asic-synth-clean \
 	asic-sim-post-synth asic-sim-post-synth-clean \
