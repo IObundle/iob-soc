@@ -1,3 +1,4 @@
+BUILD_ALL_DEPENDENCIES+=tester-build-all
 
 #Tester peripherals' base addresses
 tester_periphs.h: tester_periphs_tmp.h
@@ -7,3 +8,5 @@ tester_periphs.h: tester_periphs_tmp.h
 tester_periphs_tmp.h:
 	$(SW_DIR)/python/tester_periphs_tmp.py $P "$(TESTER_PERIPHERALS)"
 
+tester-build-all: 
+	make -C $(SW_DIR)/tester build

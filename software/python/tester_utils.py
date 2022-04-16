@@ -393,8 +393,8 @@ def create_tester(directories_str, sut_peripherals_str, tester_peripherals_str):
     tester_file.writelines(tester_contents)
     tester_file.close()
 
-# Create testbench for simulation with the Tester
-def create_testbench(directories_str, sut_peripherals_str, tester_peripherals_str):
+# Create top_system for simulation with the Tester
+def create_top_system(directories_str, sut_peripherals_str, tester_peripherals_str):
     # Get lists of peripherals and info about them
     sut_instances_amount = get_sut_peripherals(sut_peripherals_str)
     tester_instances_amount = get_tester_peripherals(tester_peripherals_str)
@@ -405,19 +405,19 @@ def create_testbench(directories_str, sut_peripherals_str, tester_peripherals_st
     _, mapped_signals = read_portmap(sut_instances_amount, tester_instances_amount, peripheral_signals)
 
     # Read template file
-    testbench_template_file = open(root_dir+"/hardware/tester/tester_core_tb.v", "r") 
-    testbench_contents = testbench_template_file.readlines() 
-    testbench_template_file.close()
+    topsystem_template_file = open(root_dir+"/hardware/tester/tester_top_core.v", "r") 
+    topsystem_contents = topsystem_template_file.readlines() 
+    topsystem_template_file.close()
 
     # Insert headers of peripherals of both systems
     for i in {**sut_instances_amount, **tester_instances_amount}:
         path = root_dir+"/"+submodule_directories[i]+"/hardware/include"
-        start_index = find_idx(testbench_contents, "PHEADER")
+        start_index = find_idx(topsystem_contents, "PHEADER")
         for file in os.listdir(path):
             if file.endswith(".vh") and not any(x in file for x in ["pio","inst","swreg"]):
-                testbench_contents.insert(start_index, '`include "{}"\n'.format(path+"/"+file))
+                topsystem_contents.insert(start_index, '`include "{}"\n'.format(path+"/"+file))
             if file.endswith("swreg.vh"):
-                testbench_contents.insert(start_index, '`include "{}"\n'.format(file.replace("swreg","swreg_def")))
+                topsystem_contents.insert(start_index, '`include "{}"\n'.format(file.replace("swreg","swreg_def")))
 
     # Insert PORTS and PWIRES
     for corename in sut_instances_amount:
@@ -429,9 +429,9 @@ def create_testbench(directories_str, sut_peripherals_str, tester_peripherals_st
                     if mapped_signals[0][corename][i][signalModified] == -1: # Mapped to external interface, therefore is a top_system port
                         # Insert PWIRES
                         signal_size = re.search("(?:input|output)(.+)",peripheral_signals[corename][signal]).group(1).replace(" ", "")
-                        testbench_contents.insert(find_idx(testbench_contents, "PWIRES"), '    wire {} {};\n'.format(signal_size, "sut_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
+                        topsystem_contents.insert(find_idx(topsystem_contents, "PWIRES"), '    wire {} {};\n'.format(signal_size, "sut_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
                         # Insert PORTS
-                        testbench_contents.insert(find_idx(testbench_contents, "PORTS"), '        .{}({}),\n'.format("sut_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal), "sut_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
+                        topsystem_contents.insert(find_idx(topsystem_contents, "PORTS"), '        .{}({}),\n'.format("sut_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal), "sut_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
                 else:
                     print("Error: signal {} of SUT.{}[{}] not mapped!".format(signal,corename,i))
                     exit(-1)
@@ -444,19 +444,19 @@ def create_testbench(directories_str, sut_peripherals_str, tester_peripherals_st
                     if mapped_signals[1][corename][i][signalModified] == -1: # Mapped to external interface, therefore is a top_system port
                         # Insert PWIRES
                         signal_size = re.search("(?:input|output)(.+)",peripheral_signals[corename][signal]).group(1).replace(" ", "")
-                        testbench_contents.insert(find_idx(testbench_contents, "PWIRES"), '    wire {} {};\n'.format(signal_size, "tester_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
+                        topsystem_contents.insert(find_idx(topsystem_contents, "PWIRES"), '    wire {} {};\n'.format(signal_size, "tester_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
                         # Insert PORTS
-                        testbench_contents.insert(find_idx(testbench_contents, "PORTS"), '        .{}({}),\n'.format("tester_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal), "tester_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
+                        topsystem_contents.insert(find_idx(topsystem_contents, "PORTS"), '        .{}({}),\n'.format("tester_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal), "tester_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
                 else:
                     print("Error: signal {} of Tester.{}[{}] not mapped!".format(signal,corename,i))
                     exit(-1)
 
 
 
-    # Write testbench 
-    testbench_file = open("tester_tb.v", "w")
-    testbench_file.writelines(testbench_contents)
-    testbench_file.close()
+    # Write topsystem 
+    topsystem_file = open("tester_top.v", "w")
+    topsystem_file.writelines(topsystem_contents)
+    topsystem_file.close()
 
 def print_tester_nslaves(tester_peripherals_str):
     tester_instances_amount = get_tester_peripherals(tester_peripherals_str)
@@ -512,11 +512,11 @@ if __name__ == "__main__":
             print("Usage: {} create_tester <root_dir> <directories_defined_in_config.mk> <sut_peripherals> <tester_peripherals>\n".format(sys.argv[0]))
             exit(-1)
         create_tester(sys.argv[3], sys.argv[4], sys.argv[5])
-    elif sys.argv[1] == "create_testbench":
+    elif sys.argv[1] == "create_top_system":
         if len(sys.argv)<6:
-            print("Usage: {} create_testbench <root_dir> <directories_defined_in_config.mk> <sut_peripherals> <tester_peripherals>\n".format(sys.argv[0]))
+            print("Usage: {} create_top_system <root_dir> <directories_defined_in_config.mk> <sut_peripherals> <tester_peripherals>\n".format(sys.argv[0]))
             exit(-1)
-        create_testbench(sys.argv[3], sys.argv[4], sys.argv[5])
+        create_top_system(sys.argv[3], sys.argv[4], sys.argv[5])
     elif sys.argv[1] == "get_n_slaves":
         if len(sys.argv)<3:
             print("Usage: {} get_n_slaves <tester_peripherals>\n".format(sys.argv[0]))
@@ -539,4 +539,4 @@ if __name__ == "__main__":
         else:
             replace_peripheral_defines(sys.argv[2],sys.argv[4],sys.argv[3])
     else:
-        print("Unknown command.\nUsage: {} <command> <parameters>\n Commands: generate_config create_tester create_testbench get_n_slaves get_defines replace_peripheral_defines".format(sys.argv[0]))
+        print("Unknown command.\nUsage: {} <command> <parameters>\n Commands: generate_config create_tester create_top_system get_n_slaves get_defines replace_peripheral_defines".format(sys.argv[0]))

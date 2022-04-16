@@ -12,7 +12,6 @@ int main()
   uart_init(UART0_BASE,FREQ/BAUD);   
   uart_puts("\n\n\nHello world!\n\n\n");
 
-  //run REGFILEIF tests if the system was built with it (and the Tester)
   REGFILEIF_INIT_BASEADDR(REGFILEIF0_BASE);
 
   //Write to UART0 connected to the Tester.

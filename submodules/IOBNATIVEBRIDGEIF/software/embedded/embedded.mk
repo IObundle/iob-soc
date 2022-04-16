@@ -5,8 +5,11 @@ SW_MODULES+=IOBNATIVEBRIDGEIF
 
 include $(IOBNATIVEBRIDGEIF_DIR)/software/software.mk
 
-#embeded sources
-SRC+=$(IOBNATIVEBRIDGEIF_DIR)/software/embedded/iob-nativebridgeif.c
+# add embeded sources
+SRC+=iob_nativebridgeif_swreg_emb.c
+
+iob_nativebridgeif_swreg_emb.c: iob_nativebridgeif_swreg.h
+	
 
 endif
     
