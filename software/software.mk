@@ -47,12 +47,13 @@ periphs.h: periphs_tmp.h
 periphs_tmp.h:
 	$(SW_DIR)/python/periphs_tmp.py $P "$(PERIPHERALS)"
 
-build-all:
+build-all: $(BUILD_ALL_DEPENDENCIES)
 	make -C $(FIRM_DIR) build
 	make -C $(BOOT_DIR) build
 
 clean-all: gen-clean
 	make -C $(FIRM_DIR) clean
 	make -C $(BOOT_DIR) clean
+	make -C $(SW_DIR)/tester clean
 
 .PHONY: build-all clean-all
