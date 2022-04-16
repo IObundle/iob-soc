@@ -19,7 +19,7 @@ $(TOP_MODULE)_version.txt:
 
 #cpu accessible registers
 iob_regfileif_swreg_def.vh iob_regfileif_swreg_gen.vh: $(REGFILEIF_HW_DIR)/include/iob_regfileif_swreg.vh
-	$(REGFILEIF_DIR)/software/python/mkregsregfileif.py $< HW $(shell dirname $(MKREGS))
+	$(REGFILEIF_DIR)/software/python/mkregsregfileif.py $< HW $(shell dirname $(MKREGS)) "REGFILEIF"
 
 regfileif-gen-clean:
 	@rm -rf *# *~ version.txt
