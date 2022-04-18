@@ -23,19 +23,21 @@ def create_iobnativebridgeif(directory):
     os.mkdir(os.path.join(iobnativebridgeif_dir,"hardware"))
     os.mkdir(os.path.join(iobnativebridgeif_dir,"software"))
 
-    # ~~~~~~~~~~~~ Create Makefile ~~~~~~~~~~~~
-    makefile_str = """
-corename:
-	@echo "IOBNATIVEBRIDGEIF"
-
-.PHONY: corename
-    """
-    fout = open (os.path.join(iobnativebridgeif_dir,"Makefile"), 'w')
-    fout.write(makefile_str)
-    fout.close()
-
     # ~~~~~~~~~~~~ Create config.mk ~~~~~~~~~~~~
     config_mk_str = """
+TOP_MODULE=iob_nativebridgeif
+
+#PATHS
+LIB_DIR ?=$(REGFILEIF_DIR)/submodules/LIB
+IOBNATIVEBRIDGEIF_HW_DIR:=$(IOBNATIVEBRIDGEIF_DIR)/hardware
+
+# VERSION
+VERSION ?=V0.1
+$(TOP_MODULE)_version.txt:
+	echo $(VERSION) > version.txt
+
+#MAKE SW ACCESSIBLE REGISTER
+MKREGS:=$(shell find $(LIB_DIR) -name mkregs.py)
 
 #target to create (and updated) swreg for nativebridgeif based on regfileif
 $(IOBNATIVEBRIDGEIF_DIR)/hardware/include/iob_nativebridgeif_swreg.vh: $(REGFILEIF_DIR)/hardware/include/iob_regfileif_swreg.vh
@@ -43,7 +45,7 @@ $(IOBNATIVEBRIDGEIF_DIR)/hardware/include/iob_nativebridgeif_swreg.vh: $(REGFILE
 
 #cpu accessible registers
 iob_nativebridgeif_swreg_def.vh iob_nativebridgeif_swreg_gen.vh: $(IOBNATIVEBRIDGEIF_DIR)/hardware/include/iob_nativebridgeif_swreg.vh
-	$(REGFILEIF_DIR)/software/python/mkregsregfileif.py $< HW $(shell dirname $(MKREGS))
+	$(REGFILEIF_DIR)/software/python/mkregsregfileif.py $< HW $(shell dirname $(MKREGS)) "IOBNATIVEBRIDGEIF"
 
     """
     fout = open (os.path.join(iobnativebridgeif_dir,"config.mk"), 'w')
@@ -67,19 +69,19 @@ include $(IOBNATIVEBRIDGEIF_DIR)/config.mk
 #add itself to HW_MODULES list
 HW_MODULES+=IOBNATIVEBRIDGEIF
 
-#LIB dir from regfileif peripheral
-LIB_DIR ?=$(REGFILEIF_DIR)/submodules/LIB
+IOBNATIVEBRIDGEIF_INC_DIR:=$(IOBNATIVEBRIDGEIF_HW_DIR)/include
+IOBNATIVEBRIDGEIF_SRC_DIR:=$(IOBNATIVEBRIDGEIF_HW_DIR)/src
 
 #include files
-VHDR+=$(wildcard $(IOBNATIVEBRIDGEIF_DIR)/hardware/include/*.vh)
+VHDR+=$(wildcard $(IOBNATIVEBRIDGEIF_INC_DIR)/*.vh)
 VHDR+=iob_nativebridgeif_swreg_gen.vh iob_nativebridgeif_swreg_def.vh
 VHDR+=$(LIB_DIR)/hardware/include/iob_lib.vh
 
 #hardware include dirs
-INCLUDE+=$(incdir). $(incdir)$(IOBNATIVEBRIDGEIF_DIR)/harware/include $(incdir)$(LIB_DIR)/hardware/include
+INCLUDE+=$(incdir). $(incdir)$(IOBNATIVEBRIDGEIF_INC_DIR) $(incdir)$(LIB_DIR)/hardware/include
 
 #sources
-VSRC+=$(IOBNATIVEBRIDGEIF_DIR)/hardware/src/iob_nativebridgeif.v
+VSRC+=$(IOBNATIVEBRIDGEIF_SRC_DIR)/iob_nativebridgeif.v
 
 endif
     """
@@ -128,12 +130,7 @@ fin = open (os.path.join(sys.argv[1], 'hardware/include/iob_regfileif_swreg.vh')
 swreg_content=fin.readlines()
 fin.close()
 for i in range(len(swreg_content)):
-    if 'SWREG_W' in swreg_content[i]:
-        swreg_content[i] = re.sub('REGFILEIF','IOBNATIVEBRIDGEIF', 
-                         re.sub('SWREG_W','SWREG_R', swreg_content[i]))
-    else:
-        swreg_content[i] = re.sub('REGFILEIF','IOBNATIVEBRIDGEIF', 
-                         re.sub('SWREG_R','SWREG_W', swreg_content[i]))
+    swreg_content[i] = re.sub('REGFILEIF','IOBNATIVEBRIDGEIF', swreg_content[i])
 fout = open (os.path.join(os.path.dirname(__file__),"../../hardware/include","iob_nativebridgeif_swreg.vh"), 'w')
 fout.writelines(swreg_content)
 fout.close()
@@ -188,29 +185,24 @@ endmodule
 
     # ~~~~~~~~~~~~ Create software.mk ~~~~~~~~~~~~
     software_str = """
-
 include $(IOBNATIVEBRIDGEIF_DIR)/config.mk
 
+IOBNATIVEBRIDGEIF_SW_DIR:=$(IOBNATIVEBRIDGEIF_DIR)/software
+
 #include
-INCLUDE+=-I$(IOBNATIVEBRIDGEIF_DIR)/software
+INCLUDE+=
 
 #headers
-HDR+=$(IOBNATIVEBRIDGEIF_DIR)/software/*.h
+HDR+=iob_nativebridgeif_swreg.h
 
 #sources
 SRC+=
+
+iob_nativebridgeif_swreg.h iob_nativebridgeif_swreg_inverted.h: $(IOBNATIVEBRIDGEIF_HW_DIR)/include/iob_nativebridgeif_swreg.vh
+	$(REGFILEIF_DIR)/software/python/mkregsregfileif.py $< SW $(shell dirname $(MKREGS)) "IOBNATIVEBRIDGEIF"
     """
     fout = open (os.path.join(iobnativebridgeif_dir,"software","software.mk"), 'w')
     fout.write(software_str)
-    fout.close()
-    # iob-nativebridgeif.h 
-    fin = open (os.path.join(os.path.dirname(__file__), '../iob-regfileif.h'), 'r')
-    src_content=fin.readlines()
-    fin.close()
-    for i in range(len(src_content)):
-        src_content[i] = re.sub('regfile','iobnativebridge', src_content[i])
-    fout = open (os.path.join(iobnativebridgeif_dir,"software","iob-nativebridgeif.h"), 'w')
-    fout.writelines(src_content)
     fout.close()
 
     # ~~~~~~~~~~~~ Create embedded.mk ~~~~~~~~~~~~
@@ -222,44 +214,38 @@ SW_MODULES+=IOBNATIVEBRIDGEIF
 
 include $(IOBNATIVEBRIDGEIF_DIR)/software/software.mk
 
-#embeded sources
-SRC+=$(IOBNATIVEBRIDGEIF_DIR)/software/embedded/iob-nativebridgeif.c
+# add embeded sources
+SRC+=iob_nativebridgeif_swreg_emb.c
+
+iob_nativebridgeif_swreg_emb.c: iob_nativebridgeif_swreg.h
+	
 
 endif
     """
     fout = open (os.path.join(iobnativebridgeif_dir,"software/embedded","embedded.mk"), 'w')
     fout.write(embedded_str)
     fout.close()
-    # iob-nativebridgeif.c
-    fin = open (os.path.join(os.path.dirname(__file__), '../embedded/iob-regfileif.c'), 'r')
-    src_content=fin.readlines()
-    fin.close()
-    for i in range(len(src_content)):
-        src_content[i] = re.sub('regfileif','iobnativebridgeif', src_content[i])
-    fout = open (os.path.join(iobnativebridgeif_dir,"software/embedded","iob-nativebridgeif.c"), 'w')
-    fout.writelines(src_content)
-    fout.close()
 
-    # ~~~~~~~~~~~~ Create pc.mk ~~~~~~~~~~~~
+    # ~~~~~~~~~~~~ Create pc-emul.mk ~~~~~~~~~~~~
     os.mkdir(os.path.join(iobnativebridgeif_dir,"software/pc-emul"))
     pc_emul_str = """
 #nativebridge common parameters
 include $(IOBNATIVEBRIDGEIF_DIR)/software/software.mk
 
 #pc sources
-SRC+=$(IOBNATIVEBRIDGEIF_DIR)/software/pc-emul/iob-nativebridgeif.c
+SRC+=$(IOBNATIVEBRIDGEIF_SW_DIR)/pc-emul/iob_nativebridgeif_swreg_emul.c
     """
-    fout = open (os.path.join(iobnativebridgeif_dir,"software/pc-emul","pc.mk"), 'w')
+    fout = open (os.path.join(iobnativebridgeif_dir,"software/pc-emul","pc-emul.mk"), 'w')
     fout.write(pc_emul_str)
     fout.close()
     # iob-nativebridgeif.c for pc-emul
-    fin = open (os.path.join(os.path.dirname(__file__), '../pc-emul/iob-regfileif.c'), 'r')
+    fin = open (os.path.join(os.path.dirname(__file__), '../pc-emul/iob_regfileif_swreg_pc_emul.c'), 'r')
     src_content=fin.readlines()
     fin.close()
     for i in range(len(src_content)):
         src_content[i] = re.sub('regfile','iobnativebridge', 
                          re.sub('REGFILE','IOBNATIVEBRIDGE', src_content[i]))
-    fout = open (os.path.join(iobnativebridgeif_dir,"software/pc-emul","iob-nativebridgeif.c"), 'w')
+    fout = open (os.path.join(iobnativebridgeif_dir,"software/pc-emul","iob_nativebridgeif_swreg_emul.c"), 'w')
     fout.writelines(src_content)
     fout.close()
 

@@ -1,17 +1,24 @@
+# README #
+
 # iob-regfileif
 
+## What is this repository for? ##
+
+The IObundle REGFILEIF is a RISC-V-based Peripheral written in Verilog, which users can download, modify, simulate and implement in FPGA or ASIC.  
 This peripheral contains registers to buffer communication between two systems using their respective peripheral buses.
-
 It has the internal native interface that connects to the peripheral bus of the system that uses this REGFILEIF as a peripheral.
-
 It also has an external native interface that connects to the native peripheral bus of an external system.
+
+## Integrate in SoC ##
+
+* Check out [IOb-SoC](https://github.com/IObundle/iob-soc)
 
 ## Usage
 
 This peripheral need a register configuration file to determine how many registers it contains and the type of those registers.
-This configuration file must be named "iob\_regfileif\_swreg.vh" and is placed in the root directory of the system that is using this component as a peripheral.
+This configuration file must be named "sut\_swreg.vh" and is placed in the root directory of the system that is using this component as a peripheral.
 
-The "iob\_regfileif\_swreg.vh" file is based on a group of \`IOB\_SWREG_ macros from IOb-Lib. An example configuration is:
+The "sut\_swreg.vh" file is based on a group of \`IOB\_SWREG_ macros from IOb-Lib. An example configuration is:
 ```
 `IOB\_SWREG_W(REGFILEIF_REG1, 8, 0) // Write register: 8 bit
 `IOB\_SWREG_R(REGFILEIF_REG3, 8, 0) // Read register: 8 bit

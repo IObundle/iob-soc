@@ -4,7 +4,10 @@ SW_MODULES+=REGFILEIF
 
 include $(REGFILEIF_DIR)/software/software.mk
 
-#embeded sources
-SRC+=$(REGFILEIF_SW_DIR)/embedded/iob-regfileif.c
+# add embeded sources
+SRC+=iob_regfileif_swreg_inverted_emb.c
+
+iob_regfileif_swreg_inverted_emb.c: iob_regfileif_swreg_inverted.h
+	
 
 endif

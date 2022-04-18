@@ -1,1 +1,1 @@
-../../../../iob_regfileif_swreg.vh
+../../../../sut_swreg.vh
