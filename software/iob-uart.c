@@ -1,40 +1,43 @@
-#include <stdio.h>
+#include <stdint.h>
 #include "iob-uart.h"
 
-//UART printing functions
-void uart_puts(const char *s) {
-  while (*s) uart_putc(*s++);
+//TX FUNCTIONS
+void uart_txwait() {
+    while(!UART_GET_TXREADY());
 }
 
-/*
-void uart_printf(char* fmt, ...) {
-  va_list args;
-  char buffer[80] = {0};
-  va_start(args, fmt);
-  vsprintf (buffer, fmt, args);
-  va_end(args);
-  uart_puts(buffer);
-  uart_txwait();
+void uart_putc(char c) {
+    while(!UART_GET_TXREADY());
+    UART_SET_TXDATA(c);
 }
-*/
+
+//RX FUNCTIONS
+void uart_rxwait() {
+    while(!UART_GET_RXREADY());
+}
+
+char uart_getc() {
+    while(!UART_GET_RXREADY());
+    return UART_GET_RXDATA();
+}
 
 //UART basic functions
-void uart_init(int base_address, int div) {
+void uart_init(int base_address, uint16_t div) {
   //capture base address for good
-  uart_setbaseaddr(base_address);
+  UART_INIT_BASEADDR(base_address);
   
   //pulse soft reset
-  uart_softrst(1);
-  uart_softrst(0);
+  UART_SET_SOFTRESET(1);
+  UART_SET_SOFTRESET(0);
 
   //Set the division factor div
   //div should be equal to round (fclk/baudrate)
-  //E.g for fclk = 100 Mhz for a baudrate of 115200 we should uart_setdiv(868)
-  uart_setdiv(div);
+  //E.g for fclk = 100 Mhz for a baudrate of 115200 we should UART_SET_DIV(868)
+  UART_SET_DIV(div);
 
   //enable TX and RX
-  uart_txen(1);
-  uart_rxen(1);
+  UART_SET_TXEN(1);
+  UART_SET_RXEN(1);
 }
 
 void uart_finish() {
@@ -42,7 +45,12 @@ void uart_finish() {
   uart_txwait();
 }
 
-//Sends the name of the file to use
+//Print string, excluding end of string (0)
+void uart_puts(const char *s) {
+  while (*s) uart_putc(*s++);
+}
+
+//Sends the name of the file to use, including end of string (0)
 void uart_sendstr (char* name) {
   int i=0;
   do
@@ -117,6 +125,3 @@ void uart_sendfile(char *file_name, int file_size, char *mem) {
   uart_puts(UART_PROGNAME);
   uart_puts(": file sent\n");
 }
-
-
-

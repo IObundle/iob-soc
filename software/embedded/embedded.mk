@@ -4,7 +4,10 @@ SW_MODULES+=UART
 
 include $(UART_DIR)/software/software.mk
 
-#embeded sources
-SRC+=$(UART_SW_DIR)/embedded/iob-uart-platform.c
+# add embeded sources
+SRC+=iob_uart_swreg_emb.c
+
+iob_uart_swreg_emb.c: iob_uart_swreg.h
+	
 
 endif

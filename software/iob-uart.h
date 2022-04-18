@@ -2,6 +2,8 @@
 #include <stdarg.h>
 #include <stdint.h>
 
+#include "iob_uart_swreg.h"
+
 #define UART_PROGNAME "IOb-UART"
 
 //UART commands
@@ -16,23 +18,19 @@
 
 //UART functions
 
-//Set base address
-void uart_setbaseaddr(int v);
-
-//Soft reset
-void uart_softrst(int v);
-
 //Reset UART and set the division factor
-void uart_init(int base_address, int div);
+void uart_init(int base_address, uint16_t div);
 
 //Close transmission
 void uart_finish();
 
-//Set the division factor div (fclk/baud)
-void uart_setdiv(int v);
+//TX FUNCTIONS
 
-//Get char
-char uart_getc();
+//Enable / disable tx
+void uart_txen(uint8_t val);
+
+//Wait for tx to be ready
+void uart_txwait();
 
 //Print char
 void uart_putc(char c);
@@ -40,40 +38,16 @@ void uart_putc(char c);
 //Print string
 void uart_puts(const char *s);
 
-//formated print
-//void uart_printf(char* fmt, ...);
+//Send file
+void uart_sendfile(char* file_name, int file_size, char *mem);
 
-//Enable / diable tx
-void uart_txen(int val);
-
-//Wait for tx to be ready
-void uart_txwait();
-
-//Get tx status (0/1 = busy/ready)
-int uart_istxready();
-
-//Enable / diable rx
-void uart_rxen(int val);
+//RX FUNCTIONS
 
 //Wait for rx to be ready
 void uart_rxwait();
 
-//Get rx status (0/1 = busy/ready)
-int uart_isrxready();
-
-//Loads firmware
-void uart_loadfw(char *mem);
-
-//Send file
-void uart_sendfile(char* file_name, int file_size, char *mem);
+//Get char
+char uart_getc();
 
 //Receive file 
 int uart_recvfile(char* file_name, char **mem);
-
-//Send file for pc-emul
-void uart_sendfile_pc(char* file_name, int file_size, char *mem);
-
-//Receive file for pc-emul
-int uart_recvfile_pc(char* file_name, char **mem);
-
-
