@@ -8,8 +8,8 @@ REGFILEIF_HW_DIR:=$(REGFILEIF_DIR)/hardware
 MKREGS:=$(shell find $(LIB_DIR) -name mkregs.py)
 
 #Check that configuration file exists
-ifeq (,$(wildcard $(ROOT_DIR)/iob_regfileif_swreg.vh))
-    $(error Missing 'iob_regfileif_swreg.vh' configuration file in root directory!)
+ifeq (,$(wildcard $(ROOT_DIR)/sut_swreg.vh))
+    $(error Missing 'sut_swreg.vh' configuration file in root directory!)
 endif
 
 # VERSION
