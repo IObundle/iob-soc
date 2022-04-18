@@ -1,8 +1,7 @@
-include $(ROOT_DIR)/config.mk
-
-#default baud and freq for hardware
+#default baud rate for hardware
 BAUD ?=115200
-FREQ ?=100000000
+
+include $(ROOT_DIR)/config.mk
 
 #add itself to MODULES list
 HW_MODULES+=$(IOBSOC_NAME)
@@ -51,7 +50,6 @@ DEFINE+=$(defmacro)DDR_ADDR_W=$(DDR_ADDR_W)
 #INCLUDES
 INCLUDE+=$(incdir). $(incdir)$(INC_DIR) $(incdir)$(LIB_DIR)/hardware/include
 
-
 #HEADERS
 VHDR+=$(INC_DIR)/system.vh $(LIB_DIR)/hardware/include/iob_intercon.vh
 
@@ -66,7 +64,7 @@ endif
 VSRC+=$(SRC_DIR)/boot_ctr.v $(SRC_DIR)/int_mem.v $(SRC_DIR)/sram.v
 VSRC+=system.v
 
-IMAGES=boot.hex firmware.hex
+HEXPROGS=boot.hex firmware.hex
 
 ifeq ($(TESTER_ENABLED),1)
 include $(TESTER_DIR)/hardware.mk
@@ -87,20 +85,8 @@ firmware.hex: $(FIRM_DIR)/firmware.bin
 	$(PYTHON_DIR)/hex_split.py firmware .
 	cp $(FIRM_DIR)/firmware.bin .
 
-# make embedded sw software
-sw:
-	make -C $(FIRM_DIR) firmware.elf FREQ=$(FREQ) BAUD=$(BAUD)
-	make -C $(BOOT_DIR) boot.elf FREQ=$(FREQ) BAUD=$(BAUD)
-	make -C $(CONSOLE_DIR) INIT_MEM=$(INIT_MEM)
-
-sw-clean:
-	make -C $(FIRM_DIR) clean
-	make -C $(BOOT_DIR) clean
-	make -C $(CONSOLE_DIR) clean
-	make -C $(SW_DIR)/tester clean
-
 #clean general hardware files
-hw-clean: sw-clean gen-clean
+hw-clean: gen-clean
 	@rm -f *.v *.hex *.bin $(SRC_DIR)/system.v $(TB_DIR)/system_tb.v *.vh
 
-.PHONY: sw sw-clean hw-clean
+.PHONY: hw-clean

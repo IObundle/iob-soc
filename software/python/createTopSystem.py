@@ -7,14 +7,14 @@ import sys, os
 import submodule_utils 
 from submodule_utils import *
 
-def create_system_tb(directories_str, sut_peripherals_str):
+def create_top_system(directories_str, sut_peripherals_str):
     # Get peripherals, directories and signals
     sut_instances_amount = get_sut_peripherals(sut_peripherals_str)
     submodule_directories = get_submodule_directories(directories_str)
     peripheral_signals = get_peripherals_signals(sut_instances_amount, submodule_directories)
 
     # Read template file
-    template_file = open(root_dir+"/hardware/simulation/verilog_tb/system_core_tb.v", "r")
+    template_file = open(root_dir+"/hardware/simulation/verilog_tb/system_top_core.v", "r")
     template_contents = template_file.readlines() 
     template_file.close()
 
@@ -42,7 +42,7 @@ def create_system_tb(directories_str, sut_peripherals_str):
                 template_contents.insert(start_index, '               .{signal}({signal}),\n'.format(signal=re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
 
     # Write system.v
-    systemv_file = open("system_tb.v", "w")
+    systemv_file = open("system_top.v", "w")
     systemv_file.writelines(template_contents)
     systemv_file.close()
 
@@ -54,4 +54,4 @@ if __name__ == "__main__":
         exit(-1)
     root_dir=sys.argv[1]
     submodule_utils.root_dir = root_dir
-    create_system_tb(sys.argv[2], sys.argv[3]) 
+    create_top_system(sys.argv[2], sys.argv[3]) 

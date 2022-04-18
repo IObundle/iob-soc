@@ -32,6 +32,9 @@ $(if $(filter UART, $(TESTER_PERIPHERALS)),, $(eval include $(UART_DIR)/software
 #Replace SUT N_SLAVES by Tester N_SLAVES
 TESTER_N_SLAVES=$(shell $(SW_DIR)/python/tester_utils.py get_n_slaves "$(TESTER_PERIPHERALS)")
 DEFINE:=$(patsubst $(defmacro)N_SLAVES=%,$(defmacro)N_SLAVES=$(TESTER_N_SLAVES),$(DEFINE))
+#Replace SUT N_SLAVES_W by Tester N_SLAVES_W
+TESTER_N_SLAVES_W=$(shell $(SW_DIR)/python/submodule_utils.py get_n_slaves_w "$(TESTER_PERIPHERALS)")
+DEFINE:=$(patsubst $(defmacro)N_SLAVES_W=%,$(defmacro)N_SLAVES_W=$(TESTER_N_SLAVES_W),$(DEFINE))
 
 #Replace SUT peripheral sequential numbers by Tester peripheral sequetial numbers
 DEFINE:=$(shell $(SW_DIR)/python/tester_utils.py replace_peripheral_defines "$(DEFINE)" "$(TESTER_PERIPHERALS)" $(defmacro))
@@ -40,6 +43,8 @@ DEFINE:=$(shell $(SW_DIR)/python/tester_utils.py replace_peripheral_defines "$(D
 #make bootloader based on bootloader from SUT
 boot.c: $(BOOT_DIR)/boot.c 
 	$(SW_DIR)/python/createTesterBoot.py $(ROOT_DIR)
+
+build: boot.elf firmware.elf
 
 boot.elf: ../template.lds  $(HDR) $(SRC) $(BOOT_SRC)
 	$(TOOLCHAIN_PREFIX)gcc -o $@ $(CFLAGS) $(BOOT_LFLAGS) $(DEFINE) $(INCLUDE) $(SRC) $(BOOT_SRC) $(LLIBS)
@@ -50,7 +55,7 @@ firmware.elf: ../template.lds $(HDR) $(SRC) $(FIRM_SRC) $(FIRM_HDR)
 	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
 
 clean: gen-clean 
-	@rm -rf boot.c boot.bin boot.elf boot.map *.hex *sw_reg.h
-	@rm -rf firmware.bin firmware.elf firmware.map *.hex periphs.h *sw_reg.h
+	@rm -rf boot.c boot.bin boot.elf boot.map *.hex *swreg*.h
+	@rm -rf firmware.bin firmware.elf firmware.map *.hex tester_periphs.h *swreg*.h
 
 .PHONY: clean

@@ -10,6 +10,7 @@ SIM_SERVER=$(VSIM_SERVER)
 SIM_USER=$(VSIM_USER)
 SIM_PROC=Vsystem_top
 
+
 include ../simulation.mk
 
 # remove space between -I and directory for verilator
@@ -55,17 +56,19 @@ VERILATOR_FLAGS += --error-limit 1000 # Exit if number of errors passes 1000
 VERILATOR_INPUT = $(INCLUDE_VERI) $(DEFINE) $(VSRC) --top-module system_top system_tb.cpp
 ######################################################################
 
-#simulator object
+comp: $(SIM_PROC)
+
+#simulator executable
 $(SIM_PROC):
 	$(VERILATOR) $(VERILATOR_FLAGS) $(VERILATOR_INPUT)
 	cp obj_dir/$@ .
 
 #run the simulator
-run:
+exec:
 	./$(SIM_PROC)
 
 clean: clean-remote
 	@rm -f $(SIM_PROC)
 	@rm -rf obj_dir
 
-.PHONY: run clean
+.PHONY: exec clean

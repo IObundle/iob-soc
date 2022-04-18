@@ -122,13 +122,13 @@
   \begin{itemize}
   \item Include the Timer IP core {\tt embedded.mk} file in {\tt ./firmware/Makefile} file:\\
     {\tt \tiny include \$(TIMER\_DIR)/software/embedded/embedded.mk}
-  \item Include the Timer IP core {\tt pc.mk} file in {\tt ./pc-emul/Makefile} file:\\
-    {\tt \tiny include \$(TIMER\_DIR)/software/pc-emul/pc.mk}
+  \item Include the Timer IP core {\tt pc-emul.mk} file in {\tt ./pc-emul/Makefile} file:\\
+    {\tt \tiny include \$(TIMER\_DIR)/software/pc-emul/pc-emul.mk}
   \item An IP core can be integrated into IOb-SoC if it provides the following files:
     \begin{itemize}
     \item CORE\_REPO/hardware/hardware.mk
     \item CORE\_REPO/software/embedded/embedded.mk
-    \item CORE\_REPO/software/pc-emul/pc.mk
+    \item CORE\_REPO/software/pc-emul/pc-emul.mk
     \end{itemize}
   \item Study these files and its references in the Timer IP core repository.
   \end{itemize}
