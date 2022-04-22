@@ -20,7 +20,7 @@ VHDR+=$(LIB_DIR)/hardware/include/iob_lib.vh
 INCLUDE+=$(incdir). $(incdir)$(AXISTREAMIN_INC_DIR) $(incdir)$(LIB_DIR)/hardware/include
 
 #sources
-VSRC+=$(AXISTREAMIN_SRC_DIR)/axistream_in_core.v $(AXISTREAMIN_SRC_DIR)/iob_axistream_in.v
+VSRC+=$(AXISTREAMIN_SRC_DIR)/iob_axistream_in.v
 
 axistream-in-hw-clean: axistream-in-gen-clean
 	@rm -f *.v *.vh

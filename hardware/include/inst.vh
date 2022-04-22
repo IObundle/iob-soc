@@ -6,11 +6,11 @@
 
    iob_axistream_in /*<InstanceName>*/
      (
-      //RS232 interface
-      .txd       (/*<InstanceName>*/_txd),
-      .rxd       (/*<InstanceName>*/_rxd),
-      .rts       (/*<InstanceName>*/_rts),
-      .cts       (/*<InstanceName>*/_cts),
+      //AXI4 Stream interface
+      .tdata       (/*<InstanceName>*/_tdata),
+      .tvalid       (/*<InstanceName>*/_tvalid),
+      .tready       (/*<InstanceName>*/_tready),
+      .tlast       (/*<InstanceName>*/_tlast),
       
       //CPU interface
       .clk       (clk),

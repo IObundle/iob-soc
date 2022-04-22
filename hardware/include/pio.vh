@@ -1,8 +1,6 @@
-//add primary io to system instance
-
 
    ///*<InstanceName>*/
-   output                   /*<InstanceName>*/_txd,
-   input                    /*<InstanceName>*/_rxd,
-   output                   /*<InstanceName>*/_rts,
-   input                    /*<InstanceName>*/_cts,
+   input [7:0]  /*<InstanceName>*/_tdata,
+   input        /*<InstanceName>*/_tvalid,
+   output       /*<InstanceName>*/_tready,
+   input        /*<InstanceName>*/_tlast,
