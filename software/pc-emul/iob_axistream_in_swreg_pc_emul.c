@@ -1,18 +1,18 @@
-/* PC Emulation of UART peripheral */
+/* PC Emulation of AXISTREAMIN peripheral */
 
 #include <stdint.h>
 #include <stdio.h>
 
-#include "iob_uart_swreg.h"
+#include "iob_axistream_in_swreg.h"
 
 static uint16_t div_value;
 
-void UART_INIT_BASEADDR(uint32_t addr) {
+void AXISTREAMIN_INIT_BASEADDR(uint32_t addr) {
     base = addr;
     return;
 }
 
-void UART_SET_SOFTRESET(uint8_t value) {
+void AXISTREAMIN_SET_SOFTRESET(uint8_t value) {
     //manage files to communicate with console here
     FILE *cnsl2soc_fd;
 
@@ -23,12 +23,12 @@ void UART_SET_SOFTRESET(uint8_t value) {
     return;
 }
 
-void UART_SET_DIV(uint16_t value) {
+void AXISTREAMIN_SET_DIV(uint16_t value) {
     div_value = value;
     return;
 }
 
-void UART_SET_TXDATA(uint8_t value) {
+void AXISTREAMIN_SET_TXDATA(uint8_t value) {
     // send byte to console
     char aux_char;
     int able2read;
@@ -49,19 +49,19 @@ void UART_SET_TXDATA(uint8_t value) {
     }
 }
 
-void UART_SET_TXEN(uint8_t value) {
+void AXISTREAMIN_SET_TXEN(uint8_t value) {
     return;
 }
 
-void UART_SET_RXEN(uint8_t value) {
+void AXISTREAMIN_SET_RXEN(uint8_t value) {
     return;
 }
 
-uint8_t UART_GET_TXREADY() {
+uint8_t AXISTREAMIN_GET_TXREADY() {
     return 1;
 }
 
-uint8_t UART_GET_RXDATA() {
+uint8_t AXISTREAMIN_GET_RXDATA() {
     //get byte from console
     char c;
     int able2write;
@@ -83,6 +83,6 @@ uint8_t UART_GET_RXDATA() {
     return (int64_t) c;
 }
 
-uint8_t UART_GET_RXREADY() {
+uint8_t AXISTREAMIN_GET_RXREADY() {
     return 1;
 }

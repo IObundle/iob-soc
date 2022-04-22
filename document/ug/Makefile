@@ -1,5 +1,5 @@
-UART_DIR:=../..
-CORE_DIR:=$(UART_DIR)
+AXISTREAMIN_DIR:=../..
+CORE_DIR:=$(AXISTREAMIN_DIR)
 
 NOCLEAN=-name "ug.pdf" -o -name "if.tex" -o -name "td.tex" \
 	-o -name "swreg.tex" -o -name "swop.tex" -o -name "inst.tex" \
@@ -9,4 +9,4 @@ figures:
 	mkdir -p ./figures
 	cp -r -u $(LIB_DIR)/document/figures/* ../figures/* ./figures
 
-include $(UART_DIR)/document/document.mk
+include $(AXISTREAMIN_DIR)/document/document.mk

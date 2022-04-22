@@ -1,13 +1,13 @@
-TOP_MODULE=iob_uart
+TOP_MODULE=iob_axistream_in
 
 #PATHS
-REMOTE_ROOT_DIR ?=sandbox/iob-uart
-SIM_DIR ?=$(UART_HW_DIR)/simulation
-FPGA_DIR ?=$(shell find $(UART_DIR)/hardware -name $(FPGA_FAMILY))
-DOC_DIR ?=$(UART_DIR)/document/$(DOC)
+REMOTE_ROOT_DIR ?=sandbox/iob-axistream-in
+SIM_DIR ?=$(AXISTREAMIN_HW_DIR)/simulation
+FPGA_DIR ?=$(shell find $(AXISTREAMIN_DIR)/hardware -name $(FPGA_FAMILY))
+DOC_DIR ?=$(AXISTREAMIN_DIR)/document/$(DOC)
 
-LIB_DIR ?=$(UART_DIR)/submodules/LIB
-UART_HW_DIR:=$(UART_DIR)/hardware
+LIB_DIR ?=$(AXISTREAMIN_DIR)/submodules/LIB
+AXISTREAMIN_HW_DIR:=$(AXISTREAMIN_DIR)/hardware
 
 #MAKE SW ACCESSIBLE REGISTER
 MKREGS:=$(shell find $(LIB_DIR) -name mkregs.py)
@@ -26,10 +26,10 @@ $(TOP_MODULE)_version.txt:
 	echo $(VERSION) > version.txt
 
 #cpu accessible registers
-iob_uart_swreg_def.vh iob_uart_swreg_gen.vh: $(UART_HW_DIR)/include/iob_uart_swreg.vh
+iob_axistream_in_swreg_def.vh iob_axistream_in_swreg_gen.vh: $(AXISTREAMIN_HW_DIR)/include/iob_axistream_in_swreg.vh
 	$(MKREGS) $< HW
 
-uart-gen-clean:
+axistream-in-gen-clean:
 	@rm -rf *# *~ version.txt
 
-.PHONY: uart-gen-clean
+.PHONY: axistream-in-gen-clean

@@ -2,13 +2,10 @@
 
 ## What is this repository for? ##
 
-The IObundle UART is a RISC-V-based Peripheral written in Verilog, which users
+The IObundle AXISTREAMIN is a RISC-V-based Peripheral written in Verilog, which users
 can download for free, modify, simulate and implement in FPGA or ASIC. It is
-written in Verilog and includes a C software driver.  The IObundle UART is a
-very compact IP that works at high clock rates if needed. It supports
-full-duplex operation and a configurable baud rate. The IObundle UART has a
-fixed configuration for the Start and Stop bits. More flexible licensable
-commercial versions are available upon request.
+written in Verilog and includes a C software driver.  The IObundle AXISTREAMIN is a
+very compact IP that works at high clock rates if needed. 
 
 ## Simulate
 
@@ -37,13 +34,13 @@ export XILINXPATH=/path/to/xilinx/fpga/tools
 export LM_LICENSE_FILE=port@host:lic_or_dat_file
 ```
 
-To generate an FPGA neltlist for the UART core type:
+To generate an FPGA neltlist for the AXISTREAMIN core type:
 ```
 make fpga-build [FPGA_FAMILY=<fpga family>]
 ```
 where <fpga family> is the FPGA family's folder name
 
-To generate all FPGA families for the UART core type:
+To generate all FPGA families for the AXISTREAMIN core type:
 ```
 make fpga-build-all [FPGA_FAMILY_LIST="<fpga family directory name list>"]
 ```

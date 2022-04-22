@@ -1,4 +1,4 @@
-#include "iob-uart.h"
+#include "iob-axistream-in.h"
 ///////////////////////////////////////////////////////////////////////////////
 // \author (c) Marco Paland (info@paland.com)
 //             2014-2019, PALANDesign Hannover, Germany
@@ -151,7 +151,7 @@ static inline void _out_char(char character, void* buffer, size_t idx, size_t ma
 {
   (void)buffer; (void)idx; (void)maxlen;
   if (character) {
-    uart_putc(character);
+    axistream_in_putc(character);
   }
 }
 

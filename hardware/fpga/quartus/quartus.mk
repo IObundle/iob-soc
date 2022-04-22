@@ -1,4 +1,4 @@
-FPGA_OBJ:=iob_uart_0.qxp
+FPGA_OBJ:=iob_axistream_in_0.qxp
 FPGA_LOG:=quartus.log
 
 CONSTRAINTS:=$(wildcard *.sdc)

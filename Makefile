@@ -1,4 +1,4 @@
-UART_DIR:=.
+AXISTREAMIN_DIR:=.
 include config.mk
 
 .PHONY: sim sim-test sim-clean \

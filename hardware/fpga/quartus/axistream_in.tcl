@@ -46,16 +46,16 @@ set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_RO
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 
 
-set_global_assignment -name PARTITION_NETLIST_TYPE POST_SYNTH -section_id "iob_uart:iob_uart_0"
+set_global_assignment -name PARTITION_NETLIST_TYPE POST_SYNTH -section_id "iob_axistream_in:iob_axistream_in_0"
 
-set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id "iob_uart:iob_uart_0"
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id "iob_axistream_in:iob_axistream_in_0"
 
-set_global_assignment -name PARTITION_COLOR 39423 -section_id "iob_uart:iob_uart_0"
+set_global_assignment -name PARTITION_COLOR 39423 -section_id "iob_axistream_in:iob_axistream_in_0"
 
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 
 set_global_assignment -name LAST_QUARTUS_VERSION $QUARTUS_VERSION
-set_global_assignment -name SDC_FILE ../uart.sdc
+set_global_assignment -name SDC_FILE ../axistream_in.sdc
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"

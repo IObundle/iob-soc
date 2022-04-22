@@ -9,7 +9,7 @@
 `define FTX 7 //transmit file
 `define FRX 8 //receive file
 
-module uart_tb;
+module axistream_in_tb;
 
    parameter clk_frequency = 100e6; //100 MHz
    parameter baud_rate = 1e6; //high value to speed sim
@@ -26,7 +26,7 @@ module uart_tb;
    reg                  rst_soft;
    reg                  wr_en;
    reg                  rd_en;   
-   reg [`UART_DIV_W-1:0] div;
+   reg [`AXISTREAMIN_DIV_W-1:0] div;
    
    reg                   tx_en;
    reg [7:0]             tx_data;
@@ -135,7 +135,7 @@ module uart_tb;
 
 
   // Instantiate the Unit Under Test (UUT)
-   uart_core uut
+   axistream_in_core uut
      (
       .clk(clk),
       .rst(rst),

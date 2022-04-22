@@ -1,15 +1,15 @@
-include $(UART_DIR)/config.mk
+include $(AXISTREAMIN_DIR)/config.mk
 
-UART_SW_DIR:=$(UART_DIR)/software
+AXISTREAMIN_SW_DIR:=$(AXISTREAMIN_DIR)/software
 
 #include
-INCLUDE+=-I$(UART_SW_DIR)
+INCLUDE+=-I$(AXISTREAMIN_SW_DIR)
 
 #headers
-HDR+=$(UART_SW_DIR)/*.h iob_uart_swreg.h
+HDR+=$(AXISTREAMIN_SW_DIR)/*.h iob_axistream_in_swreg.h
 
 #sources
-SRC+=$(UART_SW_DIR)/iob-uart.c
+SRC+=$(AXISTREAMIN_SW_DIR)/iob-axistream-in.c
 
-iob_uart_swreg.h: $(UART_HW_DIR)/include/iob_uart_swreg.vh
-	$(MKREGS) $< SW UART
+iob_axistream_in_swreg.h: $(AXISTREAMIN_HW_DIR)/include/iob_axistream_in_swreg.vh
+	$(MKREGS) $< SW AXISTREAMIN 

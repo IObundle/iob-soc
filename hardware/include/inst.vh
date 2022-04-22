@@ -4,7 +4,7 @@
    // /*<InstanceName>*/
    //
 
-   iob_uart /*<InstanceName>*/
+   iob_axistream_in /*<InstanceName>*/
      (
       //RS232 interface
       .txd       (/*<InstanceName>*/_txd),
@@ -16,7 +16,7 @@
       .clk       (clk),
       .rst       (reset),
       .valid(slaves_req[`valid(`/*<InstanceName>*/)]),
-      .address(slaves_req[`address(`/*<InstanceName>*/,`iob_uart_swreg_ADDR_W+2)-2]),
+      .address(slaves_req[`address(`/*<InstanceName>*/,`iob_axistream_in_swreg_ADDR_W+2)-2]),
       .wdata(slaves_req[`wdata(`/*<InstanceName>*/)]),
       .wstrb(slaves_req[`wstrb(`/*<InstanceName>*/)]),
       .rdata(slaves_resp[`rdata(`/*<InstanceName>*/)]),

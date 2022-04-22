@@ -1,28 +1,28 @@
 //#include "stdlib.h"
 #include "system.h"
 #include "periphs.h"
-#include "iob-uart.h"
+#include "iob-axistream-in.h"
 #include <stdint.h>
 
 int main()
 {
-  uart_init(UART_BASE,FREQ/BAUD);
+  axistream_in_init(AXISTREAMIN_BASE,FREQ/BAUD);
   /*
   //test hex
-  uart_puts("\ntest hex\n");
+  axistream_in_puts("\ntest hex\n");
   printf("%x\n", 0);
   printf("%x\n", 245);
   printf("%x\n", (uint32_t)(~0));
 
   //test unsigned 
-  uart_puts("\ntest unsigned\n");
+  axistream_in_puts("\ntest unsigned\n");
   printf("%u\n", 0);
   printf("%u\n", 245);
   printf("%u\n", (uint32_t)(~0));
 
 
   //test signed
-  uart_puts("\ntest signed\n");
+  axistream_in_puts("\ntest signed\n");
   printf("%d\n", 0);
   printf("%d\n", 245);
   printf("%d\n", (int32_t)(~0));
@@ -31,7 +31,7 @@ int main()
  
   
   //test unsigned long long
-  uart_puts("\ntest unsigned long long\n");
+  axistream_in_puts("\ntest unsigned long long\n");
 
   printf("%llu\n\n", 0LL);
   printf("%llu\n\n", (uint64_t)1<<29);
@@ -53,7 +53,7 @@ int main()
 
  
   //test signed long long
-  uart_puts("test signed long long\n\n");
+  axistream_in_puts("test signed long long\n\n");
   printf("%lld\n\n", 0LL);
   printf("%lld\n\n", 1LL<<29);
   printf("%lld\n\n", 1LL<<30);  

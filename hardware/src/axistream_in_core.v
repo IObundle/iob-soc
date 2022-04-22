@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
-`include "iob_uart_swreg_def.vh"
+`include "iob_axistream_in_swreg_def.vh"
 
-module uart_core 
+module axistream_in_core 
   (
    input                   clk,
    input                   rst,
@@ -18,7 +18,7 @@ module uart_core
    output reg              rts,
    input                   data_write_en,
    input                   data_read_en,
-   input [`UART_DIV_W-1:0] bit_duration
+   input [`AXISTREAMIN_DIV_W-1:0] bit_duration
    );
    
                   
@@ -29,7 +29,7 @@ module uart_core
    // TX
    ////////////////////////////////////////////////////////
 
-   //BLOCK Serial Transmit Controller & This block serializes the data written to the UART\_TXDATA by the CPU, and sends it to the {\tt txd} ouput.
+   //BLOCK Serial Transmit Controller & This block serializes the data written to the AXISTREAMIN\_TXDATA by the CPU, and sends it to the {\tt txd} ouput.
    
    //clear to send (cts) synchronizer
    reg [1:0]  cts_int;
@@ -110,7 +110,7 @@ module uart_core
    // RX
    ////////////////////////////////////////////////////////
 
-   //BLOCK Serial Reiceive Controller & This block deserializes the data received from the pin {\tt rxd} input, and writes it to the UART\_RXDATA register, so the CPU can read it.
+   //BLOCK Serial Reiceive Controller & This block deserializes the data received from the pin {\tt rxd} input, and writes it to the AXISTREAMIN\_RXDATA register, so the CPU can read it.
    
 
    // receiver program

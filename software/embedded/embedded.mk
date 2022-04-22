@@ -1,13 +1,13 @@
-ifeq ($(filter UART, $(SW_MODULES)),)
+ifeq ($(filter AXISTREAMIN, $(SW_MODULES)),)
 
-SW_MODULES+=UART
+SW_MODULES+=AXISTREAMIN
 
-include $(UART_DIR)/software/software.mk
+include $(AXISTREAMIN_DIR)/software/software.mk
 
 # add embeded sources
-SRC+=iob_uart_swreg_emb.c
+SRC+=iob_axistream_in_swreg_emb.c
 
-iob_uart_swreg_emb.c: iob_uart_swreg.h
+iob_axistream_in_swreg_emb.c: iob_axistream_in_swreg.h
 	
 
 endif
