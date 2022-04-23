@@ -7,6 +7,11 @@ can download for free, modify, simulate and implement in FPGA or ASIC. It is
 written in Verilog and includes a C software driver.  The IObundle AXISTREAMIN is a
 very compact IP that works at high clock rates if needed. 
 
+## TODO
+
+Currently, simulation, fpga building and documentation of this core (independently of a SoC, as described below) are not functioning. It was taken from iob-uart repository but not yet adapted to work with AXISTREAMIN core.
+However, this core is functional and can be used as a peripheral of a SoC as described in section **Integrate in SoC**.
+
 ## Simulate
 
 Install the latest stable version of the open-source Verilog simulator Icarus Verilog.
