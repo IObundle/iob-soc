@@ -12,13 +12,4 @@ void AXISTREAMIN_INIT_BASEADDR(uint32_t addr) {
     return;
 }
 
-//Get value from FIFO (returns true if this is last byte from stream)
-bool axistream_in_pop(char *returnValue){
-  *returnValue = 0;
-  return 1;
-}
-
-//Signal when FIFO empty
-bool axistream_in_empty(){
-  return 0;
-}
+//TODO
