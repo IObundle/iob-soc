@@ -27,13 +27,13 @@ build: fw_emul
 fw_emul: $(HDR) $(SRC)
 	gcc -o $@ $(CFLAGS) $(DEFINE) $(INCLUDE) $(SRC) -lgcc -lc
 
-run:
+run: build
 	@rm -f soc2cnsl cnsl2soc
 	$(CONSOLE_CMD) $(TEST_LOG) &
-	./firmware.out $(TEST_LOG)
+	./fw_emul $(TEST_LOG)
 
 clean:
-	@rm -rf firmware.out periphs.h *swreg*.h *swreg*.c test.log
+	@rm -rf fw_emul periphs.h *swreg*.h *swreg*.c test.log soc2cnsl cnsl2soc
 
 test:
 	make run TEST_LOG="> test.log"
