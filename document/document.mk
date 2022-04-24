@@ -26,10 +26,9 @@ ifeq ($(DOC),pb)
 endif
 	make $(DOC).pdf
 
-
-$(DOC).pdf
+$(DOC).pdf:
 	make doc-build 
-diff -q $(DOC).aux test.expected
+	diff -q $(DOC).aux test.expected
 
 clean-all: clean
 	rm -f $(DOC).pdf
