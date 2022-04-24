@@ -11,7 +11,7 @@ export RDI_VERBOSE = False
 
 post-build:
 
-clean: clean-remote
+clean: clean-all
 	@rm -rf .Xil/ .cache/ reports/ *.bit
 	if [ $(CLEANIP) ]; then rm -rf ip/ ; fi
 

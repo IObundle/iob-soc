@@ -46,12 +46,12 @@ endif
 #axi memory
 include $(AXI_DIR)/hardware/axiram/hardware.mk
 
+VSRC+=system_top.v
+
 #testbench
 ifneq ($(SIMULATOR),verilator)
 VSRC+=system_tb.v
 endif
-
-VSRC+=system_top.v
 
 ifeq ($(TESTER_ENABLED),1)
 include $(TESTER_DIR)/simulation.mk
@@ -96,7 +96,8 @@ endif
 #
 
 system_tb.v:
-	cp $(TB_DIR)/system_core_tb.v system_tb.v
+	cp $(TB_DIR)/system_core_tb.v $@
+	$(if $(HFILES), $(foreach f, $(HFILES), sed -i '/PHEADER/a `include \"$f\"' $@;),) # insert header files
 
 #create  simulation top module
 system_top.v: $(TB_DIR)/system_top_core.v
