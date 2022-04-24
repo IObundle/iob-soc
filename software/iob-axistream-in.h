@@ -1,10 +1,6 @@
-#include <stdlib.h>
-#include <stdarg.h>
-#include <stdint.h>
+#include <stdbool.h>
 
 #include "iob_axistream_in_swreg.h"
-
-#define AXISTREAMIN_PROGNAME "IOb-AXISTREAMIN"
 
 //AXISTREAMIN functions
 

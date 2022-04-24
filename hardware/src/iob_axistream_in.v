@@ -25,20 +25,12 @@ module iob_axistream_in
 //BLOCK Register File & Configuration control and status register file.
 `include "iob_axistream_in_swreg.vh"
 `include "iob_axistream_in_swreg_gen.vh"
-
-   //FIFO RAM
-   `IOB_WIRE(ext_mem_w_en, 1)                                                                                                                                                                                                                                       
-   `IOB_WIRE(ext_mem_w_data, 9)
-   `IOB_WIRE(ext_mem_w_addr, FIFO_DEPTH_LOG2)
-   `IOB_WIRE(ext_mem_r_en, 1)
-   `IOB_WIRE(ext_mem_r_data, 9)
-   `IOB_WIRE(ext_mem_r_addr, FIFO_DEPTH_LOG2)
    
    `IOB_WIRE(fifo_full, 1)
    `IOB_WIRE(fifo_read, 1)
-   `IOB_WIRE(axi_stream_next_delayed, 1)
+   `IOB_VAR(axi_stream_next_delayed, 1)
    //Only allow 1 clock with fifo_read enabled between toggles of AXISTREAMIN_NEXT
-   `IOB_REG(clk, axi_stream_next_delayed, AXISTREAMIN_NEXT) always @(posedge CLK) OUT <= IN;
+   `IOB_REG(clk, axi_stream_next_delayed, AXISTREAMIN_NEXT)
    assign fifo_read = AXISTREAMIN_NEXT & ~axi_stream_next_delayed;
    
   
@@ -50,15 +42,8 @@ module iob_axistream_in
        )
    fifo
      (
-      .arst            (1'd0),
       .rst             (rst),
       .clk             (clk),
-      .ext_mem_w_en    (ext_mem_w_en),
-      .ext_mem_w_data  (ext_mem_w_data),
-      .ext_mem_w_addr  (ext_mem_w_addr),
-      .ext_mem_r_en    (ext_mem_r_en),
-      .ext_mem_r_addr  (ext_mem_r_addr),
-      .ext_mem_r_data  (ext_mem_r_data),
       //read port
       .r_en            (fifo_read),
       .r_data          ({AXISTREAMIN_OUT,AXISTREAMIN_TLAST}),
@@ -71,23 +56,6 @@ module iob_axistream_in
       );
   
    `IOB_WIRE2WIRE(~fifo_full, tready)
-
-   //FIFO RAM
-   iob_ram_2p #(
-      .DATA_W (9),
-      .ADDR_W (FIFO_DEPTH_LOG2)
-    )
-   input_fifo_memory
-   (
-      .clk      (clk),
-      .w_en     (ext_mem_w_en),
-      .w_data   (ext_mem_w_data),
-      .w_addr   (ext_mem_w_addr),
-      .r_en     (ext_mem_r_en),
-      .r_data   (ext_mem_r_data),
-      .r_addr   (ext_mem_r_addr)
-   );
-
    
 endmodule
 
