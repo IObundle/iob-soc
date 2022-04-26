@@ -20,7 +20,8 @@ fw-clean:
 # EMULATE ON PC
 #
 
-pc-emul-build: fw-build
+pc-emul-build:
+	make fw-build BAUD=5000000
 	make -C $(PC_DIR) build
 
 pc-emul-run: pc-emul-build
@@ -37,7 +38,8 @@ pc-emul-test: pc-emul-clean
 # SIMULATE RTL
 #
 
-sim-build: fw-build
+sim-build:
+	make fw-build BAUD=5000000
 	make -C $(SIM_DIR) build
 
 sim-run: sim-build
@@ -61,7 +63,8 @@ tester-sim-run:
 # BUILD, LOAD AND RUN ON FPGA BOARD
 #
 
-fpga-build: fw-build
+fpga-build:
+	make fw-build
 	make -C $(BOARD_DIR) build
 
 fpga-run: fpga-build
@@ -85,7 +88,8 @@ tester-fpga-run:
 # SYNTHESIZE AND SIMULATE ASIC
 #
 
-asic-synth: fw-build
+asic-synth:
+	make fw-build
 	make -C $(ASIC_DIR) synth
 
 asic-sim-post-synth:

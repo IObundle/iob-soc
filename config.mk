@@ -180,8 +180,8 @@ DEFINE+=$(defmacro)B=$B
 DEFINE+=$(shell $(SW_DIR)/python/submodule_utils.py get_defines "$(PERIPHERALS)" $(defmacro))
 
 #default baud and system clock freq
-BAUD=5000000
-FREQ=100000000
+BAUD ?=115200
+FREQ ?=100000000
 
 SHELL = /bin/bash
 
