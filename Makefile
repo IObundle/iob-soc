@@ -52,7 +52,7 @@ sim-test:
 #
 
 fpga-build:
-	make fw-build BAUD=115200
+	make fw-build
 	make -C $(BOARD_DIR) build
 
 fpga-run: fpga-build
@@ -70,7 +70,7 @@ fpga-test:
 #
 
 asic-synth:
-	make fw-build BAUD=115200
+	make fw-build
 	make -C $(ASIC_DIR) synth
 
 asic-sim-post-synth:
