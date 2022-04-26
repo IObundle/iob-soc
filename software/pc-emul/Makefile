@@ -1,9 +1,6 @@
 ROOT_DIR:=../..
-include ../software.mk
 
-#default baud and freq for pc emulation
-BAUD=5000000
-FREQ=100000000
+include ../software.mk
 
 #additional compiler flags
 CFLAGS=-Os -std=gnu99 -Wl,--strip-debug
@@ -25,23 +22,21 @@ CONSOLE_CMD=$(ROOT_DIR)/software/console/console -L
 
 #RULES
 
-all: build run
+build: fw_emul
 
-build: firmware.out
-
-run: firmware.out
-	@rm -f soc2cnsl cnsl2soc
-	$(CONSOLE_CMD) $(TEST_LOG) &
-	./firmware.out $(TEST_LOG)
-
-firmware.out: $(HDR) $(SRC)
+fw_emul: $(HDR) $(SRC)
 	gcc -o $@ $(CFLAGS) $(DEFINE) $(INCLUDE) $(SRC) -lgcc -lc
 
-test:
-	make all TEST_LOG="> test.log"
-	diff -q $(PC_DIR)/test.log $(PC_DIR)/test.expected
+run: build
+	@rm -f soc2cnsl cnsl2soc
+	$(CONSOLE_CMD) $(TEST_LOG) &
+	./fw_emul $(TEST_LOG)
 
 clean:
-	@rm -rf firmware.out periphs.h test.log *swreg*.h *swreg*.c
+	@rm -rf fw_emul periphs.h *swreg*.h *swreg*.c test.log soc2cnsl cnsl2soc
 
-.PHONY: all build run clean subs periphs_tmp.h test
+test:
+	make run TEST_LOG="> test.log"
+	sleep 1; diff -q $(PC_DIR)/test.log $(PC_DIR)/test.expected
+
+.PHONY: build run clean test

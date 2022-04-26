@@ -1,8 +1,7 @@
-include $(ROOT_DIR)/config.mk
-
-#default baud and freq for hardware
+#default baud rate for hardware
 BAUD ?=115200
-FREQ ?=100000000
+
+include $(ROOT_DIR)/config.mk
 
 #add itself to MODULES list
 HW_MODULES+=$(IOBSOC_NAME)
@@ -39,7 +38,6 @@ DEFINE+=$(defmacro)DDR_ADDR_W=$(DDR_ADDR_W)
 #INCLUDES
 INCLUDE+=$(incdir). $(incdir)$(INC_DIR) $(incdir)$(LIB_DIR)/hardware/include
 
-
 #HEADERS
 VHDR+=$(INC_DIR)/system.vh $(LIB_DIR)/hardware/include/iob_intercon.vh
 
@@ -54,19 +52,16 @@ endif
 VSRC+=$(SRC_DIR)/boot_ctr.v $(SRC_DIR)/int_mem.v $(SRC_DIR)/sram.v
 VSRC+=system.v
 
-IMAGES=boot.hex firmware.hex
+HEXPROGS=boot.hex firmware.hex
 
 # make system.v with peripherals
-system.v: system_tmp.v
+system.v: $(SRC_DIR)/system_core.v
+	cp $< $@
 	$(foreach p, $(PERIPHERALS), $(eval HFILES=$(shell echo `ls $($p_DIR)/hardware/include/*.vh | grep -v pio | grep -v inst | grep -v swreg`)) \
 	$(eval HFILES+=$(shell echo `basename $($p_DIR)/hardware/include/*swreg.vh | sed 's/swreg/swreg_def/g'`)) \
 	$(if $(HFILES), $(foreach f, $(HFILES), sed -i '/PHEADER/a `include \"$f\"' $@;),)) # insert header files
 	$(foreach p, $(PERIPHERALS), if test -f $($p_DIR)/hardware/include/pio.vh; then sed -i '/PIO/r $($p_DIR)/hardware/include/pio.vh' $@; fi;) #insert system IOs for peripheral
 	$(foreach p, $(PERIPHERALS), if test -f $($p_DIR)/hardware/include/inst.vh; then sed -i '/endmodule/e cat $($p_DIR)/hardware/include/inst.vh' $@; fi;) # insert peripheral instances
-
-system_tmp.v: $(SRC_DIR)/system_core.v
-	cp $< $@; cp $@ system.v
-
 
 
 # make and copy memory init files
@@ -80,19 +75,8 @@ firmware.hex: $(FIRM_DIR)/firmware.bin
 	$(PYTHON_DIR)/hex_split.py firmware .
 	cp $(FIRM_DIR)/firmware.bin .
 
-# make embedded sw software
-sw:
-	make -C $(FIRM_DIR) firmware.elf FREQ=$(FREQ) BAUD=$(BAUD)
-	make -C $(BOOT_DIR) boot.elf FREQ=$(FREQ) BAUD=$(BAUD)
-	make -C $(CONSOLE_DIR) INIT_MEM=$(INIT_MEM)
-
-sw-clean:
-	make -C $(FIRM_DIR) clean
-	make -C $(BOOT_DIR) clean
-	make -C $(CONSOLE_DIR) clean
-
 #clean general hardware files
-hw-clean: sw-clean gen-clean
+hw-clean: gen-clean
 	@rm -f *.v *.hex *.bin $(SRC_DIR)/system.v $(TB_DIR)/system_tb.v *.vh
 
-.PHONY: sw sw-clean hw-clean
+.PHONY: hw-clean

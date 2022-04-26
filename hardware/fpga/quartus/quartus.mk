@@ -10,7 +10,7 @@ post-build:
 	mv output_files/top_system.sof $(FPGA_OBJ)
 	mv output_files/top_system.fit.summary $(FPGA_LOG)
 
-clean: clean-remote
+clean: clean-all
 	@rm -rf db/ incremental_db/ output_files/ \
 	*.qdf *.sof *.sld *.qpf *.qsf *.txt
 

@@ -43,3 +43,12 @@ periphs.h: periphs_tmp.h
 periphs_tmp.h:
 	$(foreach p, $(PERIPHERALS), $(shell echo "#define $p_BASE (1<<$P) |($p<<($P-N_SLAVES_W))" >> $@) )
 
+build-all:
+	make -C $(FIRM_DIR) build
+	make -C $(BOOT_DIR) build
+
+clean-all: gen-clean
+	make -C $(FIRM_DIR) clean
+	make -C $(BOOT_DIR) clean
+
+.PHONY: build-all clean-all
