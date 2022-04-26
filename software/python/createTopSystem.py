@@ -20,6 +20,7 @@ def create_top_system(directories_str, sut_peripherals_str):
 
     # Insert header files
     for corename in sut_instances_amount:
+        swreg_filename = ""
         path = root_dir+"/"+submodule_directories[corename]+"/hardware/include"
         start_index = find_idx(template_contents, "PHEADER")
         for file in os.listdir(path):
@@ -27,19 +28,20 @@ def create_top_system(directories_str, sut_peripherals_str):
                 template_contents.insert(start_index, '`include "{}"\n'.format(path+"/"+file))
             if file.endswith("swreg.vh"):
                 template_contents.insert(start_index, '`include "{}"\n'.format(file.replace("swreg","swreg_def")))
+                #Store swreg filename
+                swreg_filename = os.path.splitext(file)[0]
 
-    # Insert wires and connect them to uut 
-    for corename in sut_instances_amount:
-        # Insert for every instance
+        # Insert wires and connect them to uut 
         for i in range(sut_instances_amount[corename]):
+            pio_signals = get_pio_signals(peripheral_signals[corename])
             # Insert system IOs for peripheral
             start_index = find_idx(template_contents, "PWIRES")
-            for signal in peripheral_signals[corename]:
-                template_contents.insert(start_index, '   {}  {};\n'.format(re.sub("(?:(?:input)|(?:output))\s+","wire",peripheral_signals[corename][signal]),re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
+            for signal in pio_signals:
+                template_contents.insert(start_index, '   {}  {}_{};\n'.format(re.sub("(?:(?:input)|(?:output))\s+","wire ",peripheral_signals[corename][signal].replace("/*<SwregFilename>*/",swreg_filename)),corename+str(i),signal))
             # Connect wires to sut port
             start_index = find_idx(template_contents, "PORTS")
-            for signal in peripheral_signals[corename]:
-                template_contents.insert(start_index, '               .{signal}({signal}),\n'.format(signal=re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
+            for signal in pio_signals:
+                template_contents.insert(start_index, '               .{signal}({signal}),\n'.format(signal=corename+str(i)+"_"+signal))
 
     # Write system.v
     systemv_file = open("system_top.v", "w")
