@@ -28,7 +28,7 @@ endif
 
 FORCE ?= 1
 
-run:
+run: firmware.bin
 ifeq ($(NORUN),0)
 ifeq ($(BOARD_SERVER),)
 	if [ ! -f $(LOAD_FILE) ]; then touch $(LOAD_FILE); chown $(USER):dialout $(LOAD_FILE); chmod 664 $(LOAD_FILE); fi;\

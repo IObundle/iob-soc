@@ -11,7 +11,6 @@ fw-build:
 fw-clean:
 	make -C $(FIRM_DIR) clean-all
 
-
 #
 # EMULATE ON PC
 #
@@ -28,7 +27,6 @@ pc-emul-clean: fw-clean
 
 pc-emul-test: pc-emul-clean
 	make -C $(PC_DIR) test
-
 
 #
 # SIMULATE RTL
@@ -64,7 +62,6 @@ fpga-clean: fw-clean
 fpga-test:
 	make -C $(BOARD_DIR) test
 
-
 #
 # SYNTHESIZE AND SIMULATE ASIC
 #
@@ -85,6 +82,7 @@ asic-test:
 #
 # COMPILE DOCUMENTS
 #
+
 doc-build:
 	make -C $(DOC_DIR) $(DOC).pdf
 
@@ -94,10 +92,11 @@ doc-clean:
 doc-test:
 	make -C $(DOC_DIR) test
 
-doc-test-clean:
-	make -C $(DOC_DIR) test-clean
+#
+# CLEAN
+#
 
-
+clean: pc-emul-clean sim-clean fpga-clean doc-clean
 
 #
 # TEST ALL PLATFORMS
@@ -132,8 +131,10 @@ test-asic-clean:
 	make asic-clean ASIC_NODE=skywater
 
 test-doc:
-	make fpga-clean-all
-	make fpga-build-all
+	make fpga-clean BOARD=CYCLONEV-GT-DK
+	make fpga-clean BOARD=AES-KU040-DB-G
+	make fpga-build BOARD=CYCLONEV-GT-DK
+	make fpga-build BOARD=AES-KU040-DB-G
 	make doc-test DOC=pb
 	make doc-test DOC=presentation
 
@@ -145,25 +146,22 @@ test: test-clean test-pc-emul test-sim test-fpga test-doc
 
 test-clean: test-pc-emul-clean test-sim-clean test-fpga-clean test-doc-clean
 
-
 debug:
 	@echo $(UART_DIR)
 	@echo $(CACHE_DIR)
 
 
 .PHONY: fw-build fw-clean \
-	pc-emul-build pc-emul-run pc-emul-clean \
-	pc-emul-test pc-emul-test-clean\
-	sim-build sim-run sim-clean sim-test sim-test-clean\
-	fpga-build fpga-run fpga-clean fpga-test fpga-test-clean\
-	asic-synth asic-synth-clean \
-	asic-sim-post-synth asic-sim-post-synth-clean \
-	asic-test asic-test-clean\
-	doc-build doc-clean doc-test doc-test-clean\
-	test-pc-emul test-pc-emul-clean\
-	test-sim test-sim-clean\
-	test-fpga test-fpga-clean\
-	test-asic test-asic-clean\
-	test-doc test-doc-clean\
-	test test-clean
+	pc-emul-build pc-emul-run pc-emul-clean pc-emul-test \
+	sim-build sim-run sim-clean sim-test \
+	fpga-build fpga-run fpga-clean fpga-test \
+	asic-synth asic-sim-post-synth asic-test \
+	doc-build doc-clean doc-test \
+	clean \
+	test-pc-emul test-pc-emul-clean \
+	test-sim test-sim-clean \
+	test-fpga test-fpga-clean \
+	test-asic test-asic-clean \
+	test-doc test-doc-clean \
+	test test-clean \
 	debug
