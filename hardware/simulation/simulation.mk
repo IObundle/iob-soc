@@ -96,8 +96,7 @@ endif
 #
 
 system_tb.v:
-	cp $(TB_DIR)/system_core_tb.v $@
-	$(if $(HFILES), $(foreach f, $(HFILES), sed -i '/PHEADER/a `include \"$f\"' $@;),) # insert header files
+	$(SW_DIR)/python/createTestbench.py $(ROOT_DIR) "$(GET_DIRS)" "$(PERIPHERALS)"
 
 #create  simulation top module
 system_top.v: $(TB_DIR)/system_top_core.v
