@@ -1,1 +1,1 @@
-../../../../software/example_firmware.c
+../../../../software/tester_firmware.c
