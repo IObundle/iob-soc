@@ -345,6 +345,90 @@ type:
 make test
 ```
 
+### Using the Tester system
+
+This repository includes a Tester system that can run in parallel with the IOb-SoC being developed and interact with it.
+The Tester is particularly useful for verification of functional correctness of the developed IOb-SoC.
+
+The Tester firmware is located in `software/tester/firmware.c`. 
+
+The configuration options for the Tester are inherited from the ones used for IOb-SoC, located in the `config.mk` file. 
+The only exception is the list of peripherals attached, where the Tester has its own list named `TESTER_PERIPHERALS`.
+
+IOs from the peripherals attached to the IOb-SoC can be configured to inteconnect with peripherals attached to the Tester. 
+This configuration is made in the file `hardware/tester/peripheral_portmap.txt`.
+
+This repository already contains a template `peripheral_portmap.txt` configuration file.
+When modifing peripherals used in the system, a new template can be automatically generated using the command:
+```
+make tester-portmap
+```
+
+To simulate the Tester system along with the IOb-SoC being developed, type:
+```
+make tester-sim-run
+```
+
+To run the Tester system on a FPGA board along with the IOb-SoC being developed, type:
+```
+make tester-fpga-run
+```
+
+### Testing a core
+
+This repository can also be used for functional verification of core peripherals (hardware that does not include CPUs).
+A template for a new core can be found at: [TODO]
+
+To test a core, three components must be added to the core's repository:
+
+- The TESTER submodule: This submodule is this repository and contains the Tester system.
+To add this submodule, from the core's repository, type:
+```
+git submodule add git@github.com:IObundle/iob-soc-tester.git submodules/TESTER
+git submodule update ––init ––recursive
+```
+
+- The `tester.mk` file: This is a configuration file that includes settings for the Tester.
+Template `tester.mk`:
+```
+# Name of this core under test
+CORE_UT=TIMER
+
+# Tester peripherals to add (besides the default ones in IOb-SoC)
+TESTER_PERIPHERALS=UART
+
+# Submodule paths for Tester peripherals (listed above)
+UART_DIR=$($(CORE_UT)_DIR)/submodules/UART
+
+#Root directory on remote machines
+REMOTE_CUT_DIR ?=sandbox/iob-cut
+```
+
+- The `software/tester_firmware.c` file: This is the firmware that runs on the Tester.
+
+With these components present in the core's repository, the core can be tester using the following commands.
+When running the following commands the core is automatically added as a peripheral of the Tester.
+
+To test the core in simulation, type:
+```
+make -C submodules/TESTER sim-run TESTING_CORE=1
+```
+
+To test the core in a FPGA board, type:
+```
+make -C submodules/TESTER fpga-run TESTING_CORE=1
+```
+
+To verify the `tester_firmware.c` in pc emulation, type:
+```
+make -C submodules/TESTER pc-emul TESTING_CORE=1
+```
+
+To clean the TESTER submodule, type:
+```
+make -C submodules/TESTER clean
+```
+
 ## Cleaning
 
 The following command will clean the selected simulation, board, ASIC technology

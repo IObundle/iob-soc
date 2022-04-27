@@ -27,7 +27,7 @@ endif
 	make $(DOC).pdf
 
 $(DOC).pdf:
-	make doc-build
+	make doc-build 
 	diff -q $(DOC).aux test.expected
 
 clean-all: clean

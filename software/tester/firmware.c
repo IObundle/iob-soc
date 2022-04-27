@@ -42,14 +42,14 @@ int main()
   UART_INIT_BASEADDR(UART0_BASE);
   
   //Send messages previously stored from SUT
-  uart_puts("#### Messages received on Tester by UART from SUT: ####\n\n");
+  uart_puts("#### Messages received from SUT: ####\n\n");
   for(i=0; msgBuffer[i]!=EOT; i++){
     uart_putc(msgBuffer[i]);
   }
-  uart_puts("\n#### End of messages received on Tester by UART from SUT ####\n\n");
+  uart_puts("\n#### End of messages received from SUT ####\n\n");
 
   //Read data from IOBNATIVEBRIDGEIF (was written by the SUT)
-  uart_puts("REGFILEIF contents read by the Tester (contents written by SUT; read using the Tester's IOBNATIVEBRIDGEIF, connected to SUT's REGFILEIF):\n");
+  uart_puts("REGFILEIF contents read by the Tester:\n");
   printf("%d \n", IOBNATIVEBRIDGEIF_GET_REG3());
   printf("%d \n", IOBNATIVEBRIDGEIF_GET_REG4());
 

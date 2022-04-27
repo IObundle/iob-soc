@@ -51,7 +51,7 @@ endif
 
 build: $(FPGA_OBJ)
 
-$(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) $(IMAGES)
+$(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) $(HEXPROGS)
 ifeq ($(NORUN),0)
 ifeq ($(FPGA_SERVER),)
 	../build.sh "$(INCLUDE)" "$(DEFINE)" "$(VSRC)" "$(DEVICE)" "$(TESTER_ENABLED)"
