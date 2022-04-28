@@ -68,15 +68,14 @@ system.v: $(SRC_DIR)/system_core.v
 PYTHON_DIR=$(MEM_DIR)/software/python
 
 boot.hex: $(BOOT_DIR)/boot.bin
-	$(PYTHON_DIR)/makehex.py $(BOOT_DIR)/boot.bin $(BOOTROM_ADDR_W) > boot.hex
+	$(PYTHON_DIR)/makehex.py $< $(BOOTROM_ADDR_W) > $@
 
 firmware.hex: $(FIRM_DIR)/firmware.bin
-	$(PYTHON_DIR)/makehex.py $(FIRM_DIR)/firmware.bin $(FIRM_ADDR_W) > firmware.hex
+	$(PYTHON_DIR)/makehex.py $< $(FIRM_ADDR_W) > $@
 	$(PYTHON_DIR)/hex_split.py firmware .
-	cp $(FIRM_DIR)/firmware.bin .
 
 #clean general hardware files
 hw-clean: gen-clean
-	@rm -f *.v *.hex *.bin $(SRC_DIR)/system.v $(TB_DIR)/system_tb.v *.vh
+	@rm -f *.v *.vh *.hex *.bin $(SRC_DIR)/system.v $(TB_DIR)/system_tb.v
 
 .PHONY: hw-clean
