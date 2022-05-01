@@ -78,7 +78,7 @@ module boot_ctr
    always @(posedge clk, posedge reboot_rst)
      if(reboot_rst) begin
         sram_valid <= 1'b1;
-        ram_w_addr <= {(`SRAM_ADDR_W-2){1'b0}};
+        ram_w_addr <= -{1'b1,{`BOOTROM_ADDR_W-2{1'b0}}};
         sram_wstrb <= {`DATA_W/8{1'b1}};
      end else begin
         sram_valid <= rom_r_valid;
@@ -108,7 +108,7 @@ module boot_ctr
      #(
        .DATA_W(`DATA_W),
        .ADDR_W(`BOOTROM_ADDR_W-2),
-       .FILE("boot.hex")
+       .HEXFILE("boot.hex")
        )
    sp_rom0 (
             .clk(clk),

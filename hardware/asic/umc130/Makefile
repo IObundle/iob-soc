@@ -38,7 +38,7 @@ ASIC_SPRAM_SIM_MODEL=$(ASIC_SPRAM_TYPE)*.v
 
 # Log and report files
 ASIC_LOG=*.log
-ASIC_REPORTS=*.txt
+ASIC_REPORTS=*.rpt
 
 # Simulation libs
 ASIC_LIBS=/opt/ic_tools/pdk/faraday/umc130/LL/fsc0l_d/2009Q2v3.0/GENERIC_CORE/FrontEnd/verilog/fsc0l_d_generic_core_30.lib
@@ -68,6 +68,7 @@ synth: mems system_synth.v
 
 system_synth.v: $(VHDR) $(VSRC)
 ifeq ($(ASIC_SERVER),)
+	@rm -f rc.*
 	echo "set INCLUDE [list $(INCLUDE)]" > inc.tcl
 	echo "set DEFINE [list $(DEFINE)]" > defs.tcl
 	echo "set VSRC [list $(VSRC)]" > vsrc.tcl
@@ -176,16 +177,16 @@ endif
 
 
 sp_rom_wrap.v:
-	$(MEM_DIR)/software/python/memakerwrap.py $(ASIC_MEM_TECH) iob_sp_rom $(ASIC_SPROM_TYPE) 1 $(BOOTROM_W) 32 1 > $@
+	$(MEM_DIR)/software/python/memwrapper.py $(ASIC_MEM_TECH) iob_rom_sp $(ASIC_SPROM_TYPE) 1 $(BOOTROM_W) 32 1 > $@
 
 dp_ram_wrap.v:
-	$(MEM_DIR)/software/python/memakerwrap.py $(ASIC_MEM_TECH) iob_dp_ram_be $(ASIC_DPRAM_TYPE) 0 1 1 $(SRAM_W) 8 4 16 > $@
+	$(MEM_DIR)/software/python/memwrapper.py $(ASIC_MEM_TECH) iob_ram_dp_be $(ASIC_DPRAM_TYPE) 0 1 1 $(SRAM_W) 8 4 16 > $@
 
 2p_ram_wrap.v:
-	$(MEM_DIR)/software/python/memakerwrap.py $(ASIC_MEM_TECH) iob_2p_ram $(ASIC_2PRAM_TYPE) 0 0 2 5 49 1 4 5 58 1 4 > $@
+	$(MEM_DIR)/software/python/memwrapper.py $(ASIC_MEM_TECH) iob_ram_2p $(ASIC_2PRAM_TYPE) 0 0 2 5 49 1 4 5 58 1 4 > $@
 
 sp_ram_wrap.v:
-	$(MEM_DIR)/software/python/memakerwrap.py $(ASIC_MEM_TECH) iob_sp_ram $(ASIC_SPRAM_TYPE) 0 3 7 8 1 1 7 2 1 1 7 11 1 1 > $@
+	$(MEM_DIR)/software/python/memwrapper.py $(ASIC_MEM_TECH) iob_ram_sp $(ASIC_SPRAM_TYPE) 0 3 7 8 1 1 7 2 1 1 7 11 1 1 > $@
 
 
 
@@ -194,7 +195,7 @@ sp_ram_wrap.v:
 #
 
 clean: clean-remote
-	rm -rf *.txt rc.* fv libscore_work *.sdc *.lib *.lef *.ds
+	rm -rf *.rpt rc.* fv libscore_work *.sdc *.db *.lib *.lef *.ds
 	find *.tcl -type f -not -name synscript.tcl -not -name powscript.tcl -delete
 
 .PHONY: fix-sprom fix-dpram \

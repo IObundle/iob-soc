@@ -10,6 +10,10 @@ IOBSOC_NAME:=IOBSOC
 # PRIMARY PARAMETERS: CAN BE CHANGED BY USERS OR OVERRIDEN BY ENV VARS
 #
 
+#CPU ARCHITECTURE
+DATA_W := 32
+ADDR_W := 32
+
 #FIRMWARE SIZE (LOG2)
 FIRM_ADDR_W ?=15
 
@@ -74,7 +78,6 @@ UART_HW_DIR:=$(UART_DIR)/hardware
 ifeq ($(RUN_EXTMEM),1)
 DEFINE+=$(defmacro)RUN_EXTMEM
 USE_DDR=1
-INIT_MEM=0
 endif
 
 ifeq ($(USE_DDR),1)
@@ -110,6 +113,8 @@ BOARD_DIR ?=$(shell find hardware -name $(BOARD))
 DOC_DIR=$(ROOT_DIR)/document/$(DOC)
 
 #define macros
+DEFINE+=$(defmacro)DATA_W=$(DATA_W)
+DEFINE+=$(defmacro)ADDR_W=$(ADDR_W)
 DEFINE+=$(defmacro)BOOTROM_ADDR_W=$(BOOTROM_ADDR_W)
 DEFINE+=$(defmacro)SRAM_ADDR_W=$(SRAM_ADDR_W)
 DEFINE+=$(defmacro)FIRM_ADDR_W=$(FIRM_ADDR_W)
@@ -131,11 +136,21 @@ DEFINE+=$(defmacro)P=$P
 DEFINE+=$(defmacro)B=$B
 
 #PERIPHERAL IDs
-#assign sequential numbers to peripheral names used as variables
-#that define their base address in the software and instance name in the hardware
+#assign a sequential ID to each peripheral
+#the ID is used as an instance name index in the hardware and as a base address in the software
 N_SLAVES:=0
 $(foreach p, $(PERIPHERALS), $(eval $p=$(N_SLAVES)) $(eval N_SLAVES:=$(shell expr $(N_SLAVES) \+ 1)))
 $(foreach p, $(PERIPHERALS), $(eval DEFINE+=$(defmacro)$p=$($p)))
+
+N_SLAVES_W = $(shell echo "import math; print(math.ceil(math.log($(N_SLAVES),2)))"|python3 )
+DEFINE+=$(defmacro)N_SLAVES_W=$(N_SLAVES_W)
+
+
+#default baud and system clock freq
+BAUD ?=115200
+FREQ ?=100000000
+
+SHELL = /bin/bash
 
 #RULES
 gen-clean:
