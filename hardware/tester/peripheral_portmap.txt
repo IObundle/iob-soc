@@ -8,30 +8,30 @@
 //      or
 //    SUT.<peripheral_corename>[<peripheral_instance_number>].<peripheral_signal_name> : Tester.<peripheral_corename>[<peripheral_instance_number>].<peripheral_signal_name>
 // Example, to connect UART instance number 1 of SUT to UART instance number 0 of Tester:
-//    Tester.UART[0].UART_txd : SUT.UART[1].UART_rxd
-//    Tester.UART[0].UART_rxd : SUT.UART[1].UART_txd
-//    Tester.UART[0].UART_rts : SUT.UART[1].UART_cts
-//    Tester.UART[0].UART_cts : SUT.UART[1].UART_rts
+//    Tester.UART[0].txd : SUT.UART[1].rxd
+//    Tester.UART[0].rxd : SUT.UART[1].txd
+//    Tester.UART[0].rts : SUT.UART[1].cts
+//    Tester.UART[0].cts : SUT.UART[1].rts
 // Example, to connect UART instance number 0 of SUT to a dedicated external interface of the tester: 
-//    SUT.UART[0].UART_rxd : External
-//    SUT.UART[0].UART_txd : External
-//    SUT.UART[0].UART_cts : External
-//    SUT.UART[0].UART_rts : External
+//    SUT.UART[0].rxd : External
+//    SUT.UART[0].txd : External
+//    SUT.UART[0].cts : External
+//    SUT.UART[0].rts : External
 //********************************************************************************************************************************
 //Attach UART 0 instance of SUT to UART 1 instance of Tester (signals will be internal in the Tester)
-SUT.UART[0].UART_txd : Tester.UART[1].UART_rxd
-SUT.UART[0].UART_rxd : Tester.UART[1].UART_txd
-SUT.UART[0].UART_rts : Tester.UART[1].UART_cts
-SUT.UART[0].UART_cts : Tester.UART[1].UART_rts
+SUT.UART[0].txd : Tester.UART[1].rxd
+SUT.UART[0].rxd : Tester.UART[1].txd
+SUT.UART[0].cts : Tester.UART[1].rts
+SUT.UART[0].rts : Tester.UART[1].cts
 //Attach UART 0 instance of Tester to external interface (signals will be inputs/outputs of Tester)
-Tester.UART[0].UART_txd : External
-Tester.UART[0].UART_rxd : External
-Tester.UART[0].UART_rts : External
-Tester.UART[0].UART_cts : External
+Tester.UART[0].txd : External
+Tester.UART[0].rxd : External
+Tester.UART[0].cts : External
+Tester.UART[0].rts : External
 //Connect REGFILEIF to IOBNATIVEBRIDGEIF. This allows REGFILEIF of SUT to access peripheral bus signals of Tester.
-SUT.REGFILEIF[0].REGFILEIF_valid : Tester.IOBNATIVEBRIDGEIF[0].IOBNATIVEBRIDGEIF_valid
-SUT.REGFILEIF[0].REGFILEIF_address : Tester.IOBNATIVEBRIDGEIF[0].IOBNATIVEBRIDGEIF_address
-SUT.REGFILEIF[0].REGFILEIF_wdata : Tester.IOBNATIVEBRIDGEIF[0].IOBNATIVEBRIDGEIF_wdata
-SUT.REGFILEIF[0].REGFILEIF_wstrb : Tester.IOBNATIVEBRIDGEIF[0].IOBNATIVEBRIDGEIF_wstrb
-SUT.REGFILEIF[0].REGFILEIF_rdata : Tester.IOBNATIVEBRIDGEIF[0].IOBNATIVEBRIDGEIF_rdata
-SUT.REGFILEIF[0].REGFILEIF_ready : Tester.IOBNATIVEBRIDGEIF[0].IOBNATIVEBRIDGEIF_ready
+SUT.REGFILEIF[0].valid_ext : Tester.IOBNATIVEBRIDGEIF[0].valid_ext
+SUT.REGFILEIF[0].address_ext : Tester.IOBNATIVEBRIDGEIF[0].address_ext
+SUT.REGFILEIF[0].wdata_ext : Tester.IOBNATIVEBRIDGEIF[0].wdata_ext
+SUT.REGFILEIF[0].wstrb_ext : Tester.IOBNATIVEBRIDGEIF[0].wstrb_ext
+SUT.REGFILEIF[0].rdata_ext : Tester.IOBNATIVEBRIDGEIF[0].rdata_ext
+SUT.REGFILEIF[0].ready_ext : Tester.IOBNATIVEBRIDGEIF[0].ready_ext

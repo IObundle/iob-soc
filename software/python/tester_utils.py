@@ -10,6 +10,7 @@ import re
 # Add folder to path that contains python scripts to be imported
 import submodule_utils 
 from submodule_utils import *
+from createSystem import reserved_signals_template
 
 # Header to be put in portmap config file
 portmap_header = """\
@@ -121,14 +122,12 @@ def generate_portmap(directories_str, sut_peripherals_str, tester_peripherals_st
     # Create signals for every peripheral instance
     for corename in sut_instances_amount:
         for i in range(sut_instances_amount[corename]):
-            for signal in peripheral_signals[corename]:
-                signal = re.sub("\/\*<InstanceName>\*\/",corename,signal)
+            for signal in get_pio_signals(peripheral_signals[corename]):
                 portmap_file.write("SUT.{}[{}].{} : External\n".format(corename,i,signal))
     portmap_file.write("//Tester peripheral signals (you can remove some of these signals and map them to the SUT signals above instead)\n")
     for corename in tester_instances_amount:
         for i in range(tester_instances_amount[corename]):
-            for signal in peripheral_signals[corename]:
-                signal = re.sub("\/\*<InstanceName>\*\/",corename,signal)
+            for signal in get_pio_signals(peripheral_signals[corename]):
                 portmap_file.write("Tester.{}[{}].{} : External\n".format(corename,i,signal))
     portmap_file.close()
 
@@ -148,15 +147,13 @@ def read_portmap(sut_instances_amount, tester_instances_amount, peripheral_signa
         mapped_signals[0][corename] = []
         for i in range(sut_instances_amount[corename]):
             mapped_signals[0][corename].append({})
-            for signal in peripheral_signals[corename]:
-                signal = re.sub("\/\*<InstanceName>\*\/",corename,signal)
+            for signal in get_pio_signals(peripheral_signals[corename]):
                 mapped_signals[0][corename][i][signal] = -2
     for corename in tester_instances_amount:
         mapped_signals[1][corename] = []
         for i in range(tester_instances_amount[corename]):
             mapped_signals[1][corename].append({})
-            for signal in peripheral_signals[corename]:
-                signal = re.sub("\/\*<InstanceName>\*\/",corename,signal)
+            for signal in get_pio_signals(peripheral_signals[corename]):
                 mapped_signals[1][corename][i][signal] = -2
 
     # Read portmap file
@@ -188,20 +185,18 @@ def read_portmap(sut_instances_amount, tester_instances_amount, peripheral_signa
                 if not (mapped_signals[0 if result.group(5)=="SUT" else 1][result.group(6)][int(result.group(7))][result.group(8)] < -1):
                     print("Error: Portmap file line {}, Signal {} of {}.{}[{}] already mapped previously!".format(idx+1,result.group(8),result.group(5),result.group(6),result.group(7)))
                     exit(-1)
-                # Get signal with macro
-                signalWithMacro = [result.group(4).replace(result.group(2),"/*<InstanceName>*/"),result.group(8).replace(result.group(6),"/*<InstanceName>*/")]
                 # Make sure we are connecting an input and an output
-                if ("input" in peripheral_signals[result.group(2)][signalWithMacro[0]] and "input" in peripheral_signals[result.group(6)][signalWithMacro[1]]) or\
-                   ("output" in peripheral_signals[result.group(2)][signalWithMacro[0]] and "output" in peripheral_signals[result.group(6)][signalWithMacro[1]]):
-                    print("Error: Portmap file line {}, can't connect because both signals are of type {}!".format(idx+1,"input" if "input" in peripheral_signals[result.group(2)][signalWithMacro[0]] else "output"))
+                if ("input" in peripheral_signals[result.group(2)][result.group(4)] and "input" in peripheral_signals[result.group(6)][result.group(8)]) or\
+                   ("output" in peripheral_signals[result.group(2)][result.group(4)] and "output" in peripheral_signals[result.group(6)][result.group(8)]):
+                    print("Error: Portmap file line {}, can't connect because both signals are of type {}!".format(idx+1,"input" if "input" in peripheral_signals[result.group(2)][result.group(4)] else "output"))
                     exit(-1)
-                signal1_size = re.search("(?:input|output)(.+)",peripheral_signals[result.group(2)][signalWithMacro[0]]).group(1).replace(" ", "")
-                signal2_size = re.search("(?:input|output)(.+)",peripheral_signals[result.group(6)][signalWithMacro[1]]).group(1).replace(" ", "")
+                signal1_size = re.search("(?:input|output)(.+)",peripheral_signals[result.group(2)][result.group(4)]).group(1).replace(" ", "")
+                signal2_size = re.search("(?:input|output)(.+)",peripheral_signals[result.group(6)][result.group(8)]).group(1).replace(" ", "")
                 # Make sure signals have the same size (give warning if we are not sure, because it may be a macro)
                 if (signal1_size!=signal2_size):
                     print("Note: Portmap file line {}, signals have sizes {} and {}. These may or may not be equal!".format(idx+1,signal1_size,signal2_size))
                 # Create pwires signal to merge them
-                pwires.append(["merge_{}_{}_{}_with_{}_{}_{}".format(result.group(1),result.group(4),result.group(3),result.group(5),result.group(8),result.group(7)),signal1_size])
+                pwires.append(["merge_{}_{}{}_{}_with_{}_{}{}_{}".format(result.group(1),result.group(2),result.group(3),result.group(4),result.group(5),result.group(6),result.group(7),result.group(8)),signal1_size])
                 # Store index of pwires signal in mapping
                 mapped_signals[0 if result.group(1)=="SUT" else 1][result.group(2)][int(result.group(3))][result.group(4)] = len(pwires)-1
                 mapped_signals[0 if result.group(5)=="SUT" else 1][result.group(6)][int(result.group(7))][result.group(8)] = len(pwires)-1
@@ -313,80 +308,93 @@ def create_tester(directories_str, sut_peripherals_str, tester_peripherals_str):
 
     # Insert Tester peripherals
     for corename in tester_instances_amount:
-        # Read inst.vh file
-        instv_file = open(root_dir+"/"+submodule_directories[corename]+"/hardware/include/inst.vh", "r")
-        instv_contents = instv_file.readlines() 
+        swreg_filename = ""
+        # Get swreg filename
+        path = root_dir+"/"+submodule_directories[corename]+"/hardware/include"
+        for file in os.listdir(path):
+            if file.endswith("swreg.vh"):
+                swreg_filename = os.path.splitext(file)[0]
+
         # Insert for every instance
         for i in range(tester_instances_amount[corename]):
             # Insert peripheral instance
             start_index = find_idx(tester_contents, "endmodule")-1
-            for j in reversed(instv_contents):
-                # Check if this line contains a signal of PIO
-                strMatch = re.search("\((\/\*<InstanceName>\*\/[^\)]+)\)",j)
-                if strMatch and strMatch[1] in peripheral_signals[corename]:
-                    # Line contains a pio.vh signal, therefore change signal name to match PIO or PWIRES
-                    signalModified = re.sub("\/\*<InstanceName>\*\/",corename,strMatch[1])
-                    if mapped_signals[1][corename][i][signalModified] > -1: # Not mapped to external interface
+            tester_contents.insert(start_index, "      );\n")
+            # Insert reserved signals
+            for signal in reversed(reserved_signals_template.splitlines(True)):
+                tester_contents.insert(start_index, 
+                        re.sub("\/\*<InstanceName>\*\/","TESTER_"+corename+str(i),
+                        re.sub("\/\*<SwregFilename>\*\/",swreg_filename, 
+                            signal)))
+            # Insert io signals
+            for signal in get_pio_signals(peripheral_signals[corename]):
+                    if mapped_signals[1][corename][i][signal] > -1: # Not mapped to external interface
                         # Signal is connected to corresponding pwires
-                        tester_contents.insert(start_index, re.sub("\/\*<InstanceName>\*\/[^\)]+",pwires[mapped_signals[1][corename][i][signalModified]][0],j))
+                        tester_contents.insert(start_index, '      .{}({}),\n'.format(signal,pwires[mapped_signals[1][corename][i][signal]][0]))
                     else: # Mapped to external interface
                         # Signal is connected to corresponding pio
-                        tester_contents.insert(start_index, re.sub("\/\*<InstanceName>\*\/","tester_"+corename+str(i),j))
-                else:
-                    # Replace instace name verilog defines with tester defines (Because their values are different from SUT defines)
-                    j = re.sub("`\/\*<InstanceName>\*\/","`TESTER_"+corename+str(i),j)
-                    # Line did not contain any pio signal, so just insert it
-                    # Also, replace instance name macros if their not verilog defines
-                    tester_contents.insert(start_index, re.sub("\/\*<InstanceName>\*\/",corename+str(i),j))
-        instv_file.close()
+                        tester_contents.insert(start_index, '      .{}(tester_{}_{}),\n'.format(signal,corename+str(i),signal))
+            tester_contents.insert(start_index, "     (\n")
+            tester_contents.insert(start_index, "   {} {}\n".format(swreg_filename[:-6], corename+str(i)))
+            tester_contents.insert(start_index, "\n")
+            tester_contents.insert(start_index, "   // {}\n".format(corename+str(i)))
+            tester_contents.insert(start_index, "\n")
 
     # Array to store if pwires have been inserted
     pwires_inserted = [0] * len(pwires)
     # Insert PIO, PWIRES, SUTPORTS 
     for corename in sut_instances_amount:
+        swreg_filename = ""
+        # Get swreg filename
+        path = root_dir+"/"+submodule_directories[corename]+"/hardware/include"
+        for file in os.listdir(path):
+            if file.endswith("swreg.vh"):
+                swreg_filename = os.path.splitext(file)[0]
+
         for i in range(sut_instances_amount[corename]):
-            for signal in peripheral_signals[corename]:
-                signalModified = re.sub("\/\*<InstanceName>\*\/",corename,signal)
+            for signal in get_pio_signals(peripheral_signals[corename]):
                 # Make sure this signal is mapped
-                if mapped_signals[0][corename][i][signalModified] > -2:
-                    if mapped_signals[0][corename][i][signalModified] > -1: # Not mapped to external interface
-                        # Make sure we have not yet created PWIRE of this signal
-                        if pwires_inserted[mapped_signals[0][corename][i][signalModified]] == False:
-                            # Insert pwire
-                            tester_contents.insert(find_idx(tester_contents, "PWIRES"), '    wire {} {};\n'.format(pwires[mapped_signals[0][corename][i][signalModified]][1],pwires[mapped_signals[0][corename][i][signalModified]][0]))
-                            # Mark this signal as been inserted
-                            pwires_inserted[mapped_signals[0][corename][i][signalModified]] = True
-                        # Insert SUT PORT
-                        tester_contents.insert(find_idx(tester_contents, "SUTPORTS"), '        .{}({}),\n'.format(re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal),pwires[mapped_signals[0][corename][i][signalModified]][0]))
-                    else: # Mapped to external interface
-                        # Insert PIO
-                        tester_contents.insert(find_idx(tester_contents, "PIO"), '    {} sut_{},\n'.format(peripheral_signals[corename][signal],re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
-                        # Insert SUT PORT
-                        tester_contents.insert(find_idx(tester_contents, "SUTPORTS"), '        .{}({}),\n'.format(re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal),"sut_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
-                else:
+                if mapped_signals[0][corename][i][signal] < -1:
                     print("Error: signal {} of SUT.{}[{}] not mapped!".format(signal,corename,i))
                     exit(-1)
+                if mapped_signals[0][corename][i][signal] > -1: # Not mapped to external interface
+                    # Make sure we have not yet created PWIRE of this signal
+                    if pwires_inserted[mapped_signals[0][corename][i][signal]] == False:
+                        # Insert pwire
+                        tester_contents.insert(find_idx(tester_contents, "PWIRES"), '    wire {} {};\n'.format(pwires[mapped_signals[0][corename][i][signal]][1].replace("/*<SwregFilename>*/",swreg_filename),pwires[mapped_signals[0][corename][i][signal]][0]))
+                        # Mark this signal as been inserted
+                        pwires_inserted[mapped_signals[0][corename][i][signal]] = True
+                    # Insert SUT PORT
+                    tester_contents.insert(find_idx(tester_contents, "SUTPORTS"), '        .{}_{}({}),\n'.format(corename+str(i),signal,pwires[mapped_signals[0][corename][i][signal]][0]))
+                else: # Mapped to external interface
+                    # Insert PIO
+                    tester_contents.insert(find_idx(tester_contents, "PIO"), '    {} sut_{}_{},\n'.format(peripheral_signals[corename][signal].replace("/*<SwregFilename>*/",swreg_filename),corename+str(i),signal))
+                    # Insert SUT PORT
+                    tester_contents.insert(find_idx(tester_contents, "SUTPORTS"), '        .{}_{}(sut_{}_{}),\n'.format(corename+str(i),signal,corename+str(i),signal))
     for corename in tester_instances_amount:
+        swreg_filename = ""
+        # Get swreg filename
+        path = root_dir+"/"+submodule_directories[corename]+"/hardware/include"
+        for file in os.listdir(path):
+            if file.endswith("swreg.vh"):
+                swreg_filename = os.path.splitext(file)[0]
+
         for i in range(tester_instances_amount[corename]):
-            for signal in peripheral_signals[corename]:
-                signalModified = re.sub("\/\*<InstanceName>\*\/",corename,signal)
+            for signal in get_pio_signals(peripheral_signals[corename]):
                 # Make sure this signal is mapped
-                if mapped_signals[1][corename][i][signalModified] > -2:
-                    if mapped_signals[1][corename][i][signalModified] > -1: # Not mapped to external interface
-                        # Make sure we have not yet created PWIRE of this signal
-                        if pwires_inserted[mapped_signals[1][corename][i][signalModified]] == False:
-                            # Insert pwire
-                            tester_contents.insert(find_idx(tester_contents, "PWIRES"), '    wire {} {};\n'.format(pwires[mapped_signals[1][corename][i][signalModified]][1],pwires[mapped_signals[1][corename][i][signalModified]][0]))
-                            # Mark this signal as been inserted
-                            pwires_inserted[mapped_signals[1][corename][i][signalModified]] = True
-                    else: # Mapped to external interface
-                        # Insert PIO
-                        tester_contents.insert(find_idx(tester_contents, "PIO"), '    {} tester_{},\n'.format(peripheral_signals[corename][signal],re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
-                else:
+                if mapped_signals[1][corename][i][signal] < -1:
                     print("Error: signal {} of Tester.{}[{}] not mapped!".format(signal,corename,i))
                     exit(-1)
-
-
+                if mapped_signals[1][corename][i][signal] > -1: # Not mapped to external interface
+                    # Make sure we have not yet created PWIRE of this signal
+                    if pwires_inserted[mapped_signals[1][corename][i][signal]] == False:
+                        # Insert pwire
+                        tester_contents.insert(find_idx(tester_contents, "PWIRES"), '    wire {} {};\n'.format(pwires[mapped_signals[1][corename][i][signal]][1].replace("/*<SwregFilename>*/",swreg_filename),pwires[mapped_signals[1][corename][i][signal]][0]))
+                        # Mark this signal as been inserted
+                        pwires_inserted[mapped_signals[1][corename][i][signal]] = True
+                else: # Mapped to external interface
+                    # Insert PIO
+                    tester_contents.insert(find_idx(tester_contents, "PIO"), '    {} tester_{}_{},\n'.format(peripheral_signals[corename][signal].replace("/*<SwregFilename>*/",swreg_filename),corename+str(i),signal))
 
     # Write tester.v
     tester_file = open("tester.v", "w")
@@ -421,37 +429,45 @@ def create_top_system(directories_str, sut_peripherals_str, tester_peripherals_s
 
     # Insert PORTS and PWIRES
     for corename in sut_instances_amount:
+        swreg_filename = ""
+        # Get swreg filename
+        path = root_dir+"/"+submodule_directories[corename]+"/hardware/include"
+        for file in os.listdir(path):
+            if file.endswith("swreg.vh"):
+                swreg_filename = os.path.splitext(file)[0]
+
         for i in range(sut_instances_amount[corename]):
-            for signal in peripheral_signals[corename]:
-                signalModified = re.sub("\/\*<InstanceName>\*\/",corename,signal)
+            for signal in get_pio_signals(peripheral_signals[corename]):
                 # Make sure this signal is mapped
-                if mapped_signals[0][corename][i][signalModified] > -2:
-                    if mapped_signals[0][corename][i][signalModified] == -1: # Mapped to external interface, therefore is a top_system port
-                        # Insert PWIRES
-                        signal_size = re.search("(?:input|output)(.+)",peripheral_signals[corename][signal]).group(1).replace(" ", "")
-                        topsystem_contents.insert(find_idx(topsystem_contents, "PWIRES"), '    wire {} {};\n'.format(signal_size, "sut_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
-                        # Insert PORTS
-                        topsystem_contents.insert(find_idx(topsystem_contents, "PORTS"), '        .{}({}),\n'.format("sut_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal), "sut_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
-                else:
+                if mapped_signals[0][corename][i][signal] < -1:
                     print("Error: signal {} of SUT.{}[{}] not mapped!".format(signal,corename,i))
                     exit(-1)
+                if mapped_signals[0][corename][i][signal] == -1: # Mapped to external interface, therefore is a top_system port
+                    # Insert PWIRES
+                    signal_size = re.search("(?:input|output)(.+)",peripheral_signals[corename][signal]).group(1).replace(" ", "").replace("/*<SwregFilename>*/",swreg_filename)
+                    topsystem_contents.insert(find_idx(topsystem_contents, "PWIRES"), '    wire {} sut_{}_{};\n'.format(signal_size,corename+str(i),signal))
+                    # Insert PORTS
+                    topsystem_contents.insert(find_idx(topsystem_contents, "PORTS"), '        .sut_{}_{}(sut_{}_{}),\n'.format(corename+str(i),signal,corename+str(i),signal))
     for corename in tester_instances_amount:
+        swreg_filename = ""
+        # Get swreg filename
+        path = root_dir+"/"+submodule_directories[corename]+"/hardware/include"
+        for file in os.listdir(path):
+            if file.endswith("swreg.vh"):
+                swreg_filename = os.path.splitext(file)[0]
+
         for i in range(tester_instances_amount[corename]):
-            for signal in peripheral_signals[corename]:
-                signalModified = re.sub("\/\*<InstanceName>\*\/",corename,signal)
+            for signal in get_pio_signals(peripheral_signals[corename]):
                 # Make sure this signal is mapped
-                if mapped_signals[1][corename][i][signalModified] > -2:
-                    if mapped_signals[1][corename][i][signalModified] == -1: # Mapped to external interface, therefore is a top_system port
-                        # Insert PWIRES
-                        signal_size = re.search("(?:input|output)(.+)",peripheral_signals[corename][signal]).group(1).replace(" ", "")
-                        topsystem_contents.insert(find_idx(topsystem_contents, "PWIRES"), '    wire {} {};\n'.format(signal_size, "tester_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
-                        # Insert PORTS
-                        topsystem_contents.insert(find_idx(topsystem_contents, "PORTS"), '        .{}({}),\n'.format("tester_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal), "tester_"+re.sub("\/\*<InstanceName>\*\/",corename+str(i),signal)))
-                else:
+                if mapped_signals[1][corename][i][signal] < -1:
                     print("Error: signal {} of Tester.{}[{}] not mapped!".format(signal,corename,i))
                     exit(-1)
-
-
+                if mapped_signals[1][corename][i][signal] == -1: # Mapped to external interface, therefore is a top_system port
+                    # Insert PWIRES
+                    signal_size = re.search("(?:input|output)(.+)",peripheral_signals[corename][signal]).group(1).replace(" ", "").replace("/*<SwregFilename>*/",swreg_filename)
+                    topsystem_contents.insert(find_idx(topsystem_contents, "PWIRES"), '    wire {} tester_{}_{};\n'.format(signal_size,corename+str(i),signal))
+                    # Insert PORTS
+                    topsystem_contents.insert(find_idx(topsystem_contents, "PORTS"), '        .tester_{}_{}(tester_{}_{}),\n'.format(corename+str(i),signal,corename+str(i),signal))
 
     # Write topsystem 
     topsystem_file = open("tester_top.v", "w")

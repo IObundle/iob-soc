@@ -41,6 +41,72 @@ def get_sut_peripherals(sut_peripherals_str):
 
     return sut_instances_amount
 
+# Given lines read from the verilog file with a module declaration
+# this function returns the inputs and outputs defined in the port list
+# of that module. The return value is a dictionary, where the key is the 
+# signal name and the value is a string like "input [10:0]"
+def get_module_io(verilog_lines):
+    module_start = 0
+    #Find module declaration
+    for line in verilog_lines:
+        module_start += 1
+        if "module " in line:
+            break #Found module declaration
+
+    port_list_start = module_start
+    #Find module port list start 
+    for i in range(module_start, len(verilog_lines)):
+        port_list_start += 1
+        if verilog_lines[i].replace(" ", "").startswith("("):
+            break #Found port list start
+
+    module_signals = {}
+    #Get signals of this module
+    for i in range(port_list_start, len(verilog_lines)):
+        #Ignore comments and empty lines
+        if not verilog_lines[i] or verilog_lines[i].lstrip().startswith("//"):
+            continue
+        if ");" in verilog_lines[i]:
+            break #Found end of port list
+        #If this signal is declared in normal verilog format (no macros)
+        if any(x in verilog_lines[i] for x in ["input","output"]):
+            signal = re.search("^\s*((?:(?:input)|(?:output))(?:\s|(?:\[.*\]))*)(.*),?", verilog_lines[i])
+            if signal is not None:
+                # Store signal in dictionary with format: module_signals[signalname] = "input [size:0]"
+                module_signals[signal.group(2)]=signal.group(1).replace("ADDR_W","/*<SwregFilename>*/_ADDR_W")
+        elif "`IOB_INPUT" in verilog_lines[i]: #If it is a known verilog macro
+            signal = re.search("^\s*`IOB_INPUT\(\s*(\w+)\s*,\s*([^\s]+)\s*\),?", verilog_lines[i])
+            if signal is not None:
+                # Store signal in dictionary with format: module_signals[signalname] = "input [size:0]"
+                module_signals[signal.group(1)]="input [{}:0]".format(int(signal.group(2))-1 if signal.group(2).isdigit() else ("`"+signal.group(2)+"-1").replace("ADDR_W","/*<SwregFilename>*/_ADDR_W"))
+        elif "`IOB_OUTPUT" in verilog_lines[i]: #If it is a known verilog macro
+            signal = re.search("^\s*`IOB_OUTPUT\(\s*(\w+)\s*,\s*([^\s]+)\s*\),?", verilog_lines[i])
+            if signal is not None:
+                # Store signal in dictionary with format: module_signals[signalname] = "output [size:0]"
+                module_signals[signal.group(1)]="output [{}:0]".format(int(signal.group(2))-1 if signal.group(2).isdigit() else ("`"+signal.group(2)+"-1").replace("ADDR_W","/*<SwregFilename>*/_ADDR_W"))
+        elif '`include "gen_if.vh"' in verilog_lines[i]: #If it is a known verilog include
+            module_signals["clk"]="input "
+            module_signals["rst"]="input "
+        elif '`include "iob_s_if.vh"' in verilog_lines[i]: #If it is a known verilog include
+            module_signals["valid"]="input "
+            module_signals["address"]="input [/*<SwregFilename>*/_ADDR_W:0] "
+            module_signals["wdata"]="input [DATA_W:0] "
+            module_signals["wstrb"]="input [DATA_W/8:0] "
+            module_signals["rdata"]="output [DATA_W:0] "
+            module_signals["ready"]="output "
+        else:
+            print("Unknow macro/signal declaration '{}' in module '{}'".format(verilog_lines[i],verilog_lines[module_start-1]))
+            exit(-1)
+    return module_signals
+
+# Given a dictionary of signals, returns a dictionary with only pio signals.
+# It removes reserved signals, such as: clk, rst, valid, address, wdata, wstrb, rdata or ready
+def get_pio_signals(peripheral_signals):
+    pio_signals = peripheral_signals.copy()
+    for signal in ["clk","rst","valid","address","wdata","wstrb","rdata","ready"]:
+        if signal in pio_signals: pio_signals.pop(signal)
+    return pio_signals
+
 # Return dictionary with signals for each peripheral given in the input list 
 # Also need to provide a dictionary with directory location of each peripheral given
 # list_of_peripherals input can be {**sut_instances_amount, **tester_instances_amount} to get all peripherals from tester and SUT
@@ -49,18 +115,24 @@ def get_peripherals_signals(list_of_peripherals, submodule_directories):
     peripheral_signals = {}
     for i in list_of_peripherals:
         peripheral_signals[i] = {}
-        pio_path = root_dir+"/"+submodule_directories[i]+"/hardware/include/pio.vh"
-        #Skip iteration if peripheral does not have pio
-        if not os.path.isfile(pio_path):
+        # Find top module verilog file of peripheral
+        module_dir = root_dir+"/"+submodule_directories[i]+"/hardware/src"
+        module_filename = ""
+        for filename in os.listdir(module_dir):
+            if filename.startswith("iob_") and filename.endswith(".v"):
+                module_filename=filename
+                break
+        # Skip iteration if peripheral does not have top module
+        if not module_filename:
             continue
-        pio_file = open(pio_path, "r")
-        pio_contents = pio_file.readlines() 
-        for j in pio_contents:
-            signal = re.search("^\s*((?:(?:input)|(?:output))(?:\s|(?:\[.*\]))*)(.*),", j)
-            if signal is not None:
-                # Store input or output and array size of pio.vh
-                peripheral_signals[i][signal.group(2)]=signal.group(1)
-        pio_file.close()
+        module_path=os.path.join(module_dir,module_filename)
+        # Read file
+        module_file = open(module_path, "r")
+        module_contents = module_file.read().splitlines()
+        # Get module inputs and outputs
+        peripheral_signals[i] = get_module_io(module_contents)
+        
+        module_file.close()
     #print(peripheral_signals) #DEBUG
     return peripheral_signals
 
