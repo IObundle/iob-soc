@@ -5,6 +5,9 @@ include $(AXISTREAMIN_DIR)/config.mk
 #add itself to HW_MODULES list
 HW_MODULES+=AXISTREAMIN
 
+#include iob_fifo_sync
+include $(MEM_DIR)/hardware/fifo/iob_fifo_sync/hardware.mk
+include $(MEM_DIR)/hardware/ram/iob_ram_2p/hardware.mk
 
 AXISTREAMIN_INC_DIR:=$(AXISTREAMIN_HW_DIR)/include
 AXISTREAMIN_SRC_DIR:=$(AXISTREAMIN_HW_DIR)/src
