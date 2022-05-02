@@ -1,22 +1,28 @@
 include $(ROOT_DIR)/config.mk
 
-#FPGA results to include
-INTEL = 1
-XILINX = 1
-ASIC = 0
-XIL_FAMILY:=AES-KU040-DB-G
-INT_FAMILY:=CYCLONEV-GT-DK
+#RESULTS
+#results for intel FPGA
+INT_FAMILY ?=CYCLONEV-GT-DK
+#results for xilinx fpga
+XIL_FAMILY ?=AES-KU040-DB-G
+#results for asic nodes
+ASIC_NODE=
 
+NOCLEAN+=-o -name "test.expected" -o -name "Makefile"
+
+#PREPARE TO INCLUDE TEX SUBMODULE MAKEFILE SEGMENT
+#root directory
 CORE_DIR:=$(ROOT_DIR)
 
 BDTAB=0
 SWREGS=0
 
-include $(TEX_DIR)/document/document.mk
+include $(LIB_DIR)/document/document.mk
 
+test: clean-all $(DOC).pdf
+	diff -q $(DOC).aux test.expected
 
-test: clean all
-	diff -q $(DOC).aux $(DOC).expected
+clean-all: clean
+	rm -f $(DOC).pdf
 
-
-.PHONY: test
+.PHONY: test clean-all

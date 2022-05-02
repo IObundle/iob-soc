@@ -1,6 +1,7 @@
 `timescale 1 ns / 1 ps
 `include "system.vh"
-`include "interconnect.vh"
+`include "iob_lib.vh"
+`include "iob_intercon.vh"
 
 //do not remove line below
 //PHEADER
@@ -9,6 +10,7 @@ module system
   (
    //do not remove line below
    //PIO
+
 
 `ifdef USE_DDR //AXI MASTER INTERFACE
 
@@ -113,14 +115,15 @@ module system
    wire [`REQ_W-1:0]         int_mem_i_req;
    wire [`RESP_W-1:0]        int_mem_i_resp;
    //external memory instruction bus
-`ifdef RUN_EXTMEM_USE_SRAM
+`ifdef RUN_EXTMEM
    wire [`REQ_W-1:0]         ext_mem_i_req;
    wire [`RESP_W-1:0]        ext_mem_i_resp;
 `endif
 
    // INSTRUCTION BUS
-   split #(
-`ifdef RUN_EXTMEM_USE_SRAM
+   iob_split 
+     #(
+`ifdef RUN_EXTMEM
            .N_SLAVES(2),
 `else
            .N_SLAVES(1),
@@ -136,7 +139,7 @@ module system
       .m_resp ( cpu_i_resp                       ),
       
       // slaves interface
-`ifdef RUN_EXTMEM_USE_SRAM
+`ifdef RUN_EXTMEM
       .s_req  ( {ext_mem_i_req, int_mem_i_req}   ),
       .s_resp ( {ext_mem_i_resp, int_mem_i_resp} )
 `else
@@ -162,7 +165,7 @@ module system
    wire [`REQ_W-1:0]         pbus_req;
    wire [`RESP_W-1:0]        pbus_resp;
 
-   split 
+   iob_split 
      #(
 `ifdef USE_DDR
        .N_SLAVES(3), //E,P,I
@@ -199,7 +202,7 @@ module system
    wire [`N_SLAVES*`REQ_W-1:0] slaves_req;
    wire [`N_SLAVES*`RESP_W-1:0] slaves_resp;
 
-   split 
+   iob_split 
      #(
        .N_SLAVES(`N_SLAVES),
        .P_SLAVES(`P_BIT-1)
@@ -247,7 +250,7 @@ module system
       .clk                  (clk),
       .rst                  (cpu_reset),
       
- `ifdef RUN_EXTMEM_USE_SRAM
+ `ifdef RUN_EXTMEM
       // instruction bus
       .i_req                ({ext_mem_i_req[`valid(0)], ext_mem_i_req[`address(0, `FIRM_ADDR_W)-2], ext_mem_i_req[`write(0)]}),
       .i_resp               (ext_mem_i_resp),

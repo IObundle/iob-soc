@@ -4,9 +4,15 @@
 #
 ######################################################################
 
+IOBSOC_NAME:=IOBSOC
+
 #
 # PRIMARY PARAMETERS: CAN BE CHANGED BY USERS OR OVERRIDEN BY ENV VARS
 #
+
+#CPU ARCHITECTURE
+DATA_W := 32
+ADDR_W := 32
 
 #FIRMWARE SIZE (LOG2)
 FIRM_ADDR_W ?=15
@@ -62,6 +68,8 @@ ASIC_NODE ?=umc130
 #default document to compile
 DOC ?= pb
 
+#IOB LIBRARY
+UART_HW_DIR:=$(UART_DIR)/hardware
 
 ####################################################################
 # DERIVED FROM PRIMARY PARAMETERS: DO NOT CHANGE BELOW THIS POINT
@@ -70,7 +78,6 @@ DOC ?= pb
 ifeq ($(RUN_EXTMEM),1)
 DEFINE+=$(defmacro)RUN_EXTMEM
 USE_DDR=1
-INIT_MEM=0
 endif
 
 ifeq ($(USE_DDR),1)
@@ -80,6 +87,14 @@ endif
 ifeq ($(INIT_MEM),1)
 DEFINE+=$(defmacro)INIT_MEM
 endif
+
+#submodule paths
+PICORV32_DIR=$(ROOT_DIR)/submodules/PICORV32
+CACHE_DIR=$(ROOT_DIR)/submodules/CACHE
+UART_DIR=$(ROOT_DIR)/submodules/UART
+LIB_DIR=$(ROOT_DIR)/submodules/LIB
+MEM_DIR=$(ROOT_DIR)/submodules/MEM
+AXI_DIR=$(ROOT_DIR)/submodules/AXI
 
 #sw paths
 SW_DIR:=$(ROOT_DIR)/software
@@ -96,22 +111,15 @@ BOARD_DIR ?=$(shell find hardware -name $(BOARD))
 
 #doc paths
 DOC_DIR=$(ROOT_DIR)/document/$(DOC)
-TEX_DIR=$(UART_DIR)/submodules/TEX
-INTERCON_DIR=$(UART_DIR)/submodules/INTERCON
-
-#submodule paths
-SUBMODULES_DIR=$(ROOT_DIR)/submodules
-SUBMODULES=
-SUBMODULE_DIRS=$(shell ls $(SUBMODULES_DIR))
-$(foreach d, $(SUBMODULE_DIRS), $(eval TMP=$(shell make -C $(SUBMODULES_DIR)/$d corename | grep -v make)) $(eval SUBMODULES+=$(TMP)) $(eval $(TMP)_DIR ?=$(SUBMODULES_DIR)/$d))
 
 #define macros
+DEFINE+=$(defmacro)DATA_W=$(DATA_W)
+DEFINE+=$(defmacro)ADDR_W=$(ADDR_W)
 DEFINE+=$(defmacro)BOOTROM_ADDR_W=$(BOOTROM_ADDR_W)
 DEFINE+=$(defmacro)SRAM_ADDR_W=$(SRAM_ADDR_W)
 DEFINE+=$(defmacro)FIRM_ADDR_W=$(FIRM_ADDR_W)
 DEFINE+=$(defmacro)DCACHE_ADDR_W=$(DCACHE_ADDR_W)
-
-DEFINE+=$(defmacro)N_SLAVES=$(N_SLAVES)
+DEFINE+=$(defmacro)N_SLAVES=$(N_SLAVES) #peripherals
 
 #address selection bits
 E:=31 #extra memory bit
@@ -127,10 +135,22 @@ DEFINE+=$(defmacro)E=$E
 DEFINE+=$(defmacro)P=$P
 DEFINE+=$(defmacro)B=$B
 
+#PERIPHERAL IDs
+#assign a sequential ID to each peripheral
+#the ID is used as an instance name index in the hardware and as a base address in the software
 N_SLAVES:=0
-#assign sequential numbers to peripheral names used as variables
 $(foreach p, $(PERIPHERALS), $(eval $p=$(N_SLAVES)) $(eval N_SLAVES:=$(shell expr $(N_SLAVES) \+ 1)))
 $(foreach p, $(PERIPHERALS), $(eval DEFINE+=$(defmacro)$p=$($p)))
+
+N_SLAVES_W = $(shell echo "import math; print(math.ceil(math.log($(N_SLAVES),2)))"|python3 )
+DEFINE+=$(defmacro)N_SLAVES_W=$(N_SLAVES_W)
+
+
+#default baud and system clock freq
+BAUD ?=115200
+FREQ ?=100000000
+
+SHELL = /bin/bash
 
 #RULES
 gen-clean:
