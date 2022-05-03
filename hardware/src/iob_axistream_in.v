@@ -24,8 +24,21 @@ module iob_axistream_in
 
 //BLOCK Register File & Configuration control and status register file.
 `include "iob_axistream_in_swreg.vh"
-`include "iob_axistream_in_swreg_gen.vh"
-   
+//`include "iob_axistream_in_swreg_gen.vh"
+   //BYPASS output register from swreg to align 'AXISTREAMIN_OUT' with 'ready' signal
+   `IOB_VAR(rdata_int, DATA_W)
+   `IOB_VAR2WIRE(rdata_int, rdata)
+   always @* begin
+      case(address)
+        0: rdata_int = AXISTREAMIN_OUT;
+        1: rdata_int = AXISTREAMIN_EMPTY;
+        default: rdata_int = 1'b0;
+      endcase
+   end
+   `IOB_VAR(ready_int, 1)
+   `IOB_REG_AR(clk, rst, 0, ready_int, valid)
+   `IOB_VAR2WIRE(ready_int, ready)
+      
    `IOB_WIRE(fifo_full, 1)
    //FIFO RAM
    `IOB_WIRE(ext_mem_w_en, 1)
@@ -34,6 +47,9 @@ module iob_axistream_in
    `IOB_WIRE(ext_mem_r_en, 1)
    `IOB_WIRE(ext_mem_r_data, 9)
    `IOB_WIRE(ext_mem_r_addr, FIFO_DEPTH_LOG2)
+   //Delay rst by one clock, because tvalid signal after rested may come delayed from AXISTREAMOUT peripheral
+   `IOB_VAR(rst_delayed, 1)
+   `IOB_REG(clk, rst_delayed, rst)
   
    iob_fifo_sync
      #(
@@ -43,8 +59,8 @@ module iob_axistream_in
        )
    fifo
      (
-      .arst            (1'd0),
-      .rst             (rst),
+      .arst            (rst_delayed),
+      .rst             (1'd0),
       .clk             (clk),
       .ext_mem_w_en    (ext_mem_w_en),                                                                                                                                                                                                                                  
       .ext_mem_w_data  (ext_mem_w_data),
@@ -53,7 +69,7 @@ module iob_axistream_in
       .ext_mem_r_addr  (ext_mem_r_addr),
       .ext_mem_r_data  (ext_mem_r_data),
       //read port
-      .r_en            (valid & |wstrb & (address == `AXISTREAMIN_OUT_ADDR)),
+      .r_en            (valid & (address == `AXISTREAMIN_OUT_ADDR)),
       .r_data          (AXISTREAMIN_OUT),
       .r_empty         (AXISTREAMIN_EMPTY),
       //write port
