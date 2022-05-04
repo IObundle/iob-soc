@@ -111,29 +111,30 @@
     {\tt \tiny git submodule update ----init ----recursive}
   \item Add the Timer IP core to the list of peripherals in the {\tt ./config.mk} file:\\
     {\tt PERIPHERALS:=UART {\em TIMER}}
-  \item Include the Timer IP core {\tt hardware.mk} file in {\tt ./hardware.mk} file:\\
-    {\tt \tiny include \$(TIMER\_DIR)/hardware/hardware.mk}
-  \item Include the Timer IP core {\tt embedded.mk} file in {\tt ./firmware/Makefile} file:\\
-    {\tt \tiny include \$(TIMER\_DIR)/software/embedded/embedded.mk}
+  \item Add {\tt TIMER\_DIR} to the {\tt submodule peripherals} list in the {\tt ./config.mk} file:\\
+    {\tt \tiny TIMER\_DIR=\$(ROOT\_DIR)/submodules/TIMER}
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Instantiate an IP core in your SoC}
   \begin{itemize}
-  \item Include the Timer IP core {\tt pc.mk} file in {\tt ./pc-emul/Makefile} file:\\
-    {\tt \tiny include \$(TIMER\_DIR)/software/pc-emul/pc.mk}
+  \item Include the Timer IP core {\tt hardware.mk} file in {\tt ./hardware.mk} file:\\
+    {\tt \tiny include \$(TIMER\_DIR)/hardware/hardware.mk}
+  \item Include the Timer IP core {\tt embedded.mk} file in {\tt ./firmware/Makefile} file:\\
+    {\tt \tiny include \$(TIMER\_DIR)/software/embedded/embedded.mk}
   \item An IP core can be integrated into IOb-SoC if it provides the following files:
     \begin{itemize}
     \item CORE\_REPO/hardware/hardware.mk
     \item CORE\_REPO/software/embedded/embedded.mk
-    \item CORE\_REPO/software/pc-emul/pc.mk
+    \item CORE\_REPO/software/pc-emul/pc-emul.mk
     \end{itemize}
   \item Study these files and its references in the Timer IP core repository.
   \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]{Write the software to drive the new peripheral}
-  Edit the {\tt software/firmware/firmware.c} file to look as follows
+    Edit the {\tt software/firmware/firmware.c} file to look as follows (or check
+    {\tt \$(TIMER\_DIR)/software/example\_firmware.c}):
   \begin{tiny}
     \begin{lstlisting}
 #include "system.h"
@@ -171,7 +172,7 @@ int main()
 \begin{frame}[fragile]{Simulate IOb-SoC}
 \begin{itemize}
 \item Run the simulation with the firmware pre-initialised in the memory:\\
-  {\tt make sim}
+  {\tt make sim-run}
 \item The printed messages show that the firmware and bootloader C files are compiled
 \item The whole system's Verilog files are also compiled
 \item Finally the simulation is started and the following is printed:
@@ -180,16 +181,22 @@ int main()
 \begin{tiny}
   \begin{lstlisting}
 
-TESTBENCH: connecting..IOb-Bootloader: connected!
++-----------------------------------------------+
+|                   IOb-Console                 |
++-----------------------------------------------+
+
+IOb-Console: connecting...
+
+IOb-Bootloader: connected!
 IOb-Bootloader: Restart CPU to run user program...
 
 Hello world!
 
-Execution time: 4356 clock cycles
+Execution time: 4511 clock cycles
 
-Execution time: 44us @100MHz
+Execution time: 47us @100MHz
 
-TESTBENCH: exiting
+IOb-Console: exiting...
 
   \end{lstlisting}
 \end{tiny}
@@ -199,14 +206,14 @@ TESTBENCH: exiting
 \begin{frame}{Run IOb-SoC on an FPGA board (1)}
 \begin{itemize}
 \item To compile and run your SoC in one of our FPGA boards, contacts us at info@iobundle.com.
-\item To compile and run your SoC on your FPGA board, add a directory into {\tt ./hardware/fpga/<toolchain>}, where <toolchain> is either *vivado* or *quartus*. Use the existing board directories as examples
+\item To compile and run your SoC on your FPGA board, add a directory into {\tt ./hardware/fpga/<toolchain>/<new\_board>}, where <toolchain> is either *vivado* or *quartus*. Use the existing board directories as examples
 \item Then issue the following command:\\
-  {\tt make run BOARD=<board\_dir\_name> INIT\_MEM=0}\\
+  {\tt make fpga-run BOARD=<board\_dir\_name> INIT\_MEM=0}\\
   This will compile the software and the hardware, produce an FPGA bitstream,
   load it to the device, load the firmware binary using the UART ({\tt INIT\_MEM=0} prevents the FPGA memory initialisation), start the
   program and direct the standard output to your PC terminal.
 \item If you change only the firmware and repeat the above command, only the
-  firmware will be recompiled, reloaded and rerun
+  firmware will be recompiled, reloaded and rerun.
 \end{itemize}
 \end{frame}
 
@@ -251,7 +258,7 @@ IOb-Console: exiting...
   \item The addition of an example peripheral IP core has been illustrated
   \item A simple firmware that uses the IP core driver functions has been explained
   \item RTL simulation of the system running the firmware has been demonstrated
-  \item FPGA board running of the system running the firmware has been demonstrated
+  \item FPGA board example of the system running the firmware has been demonstrated
   \end{itemize}
 \end{frame}
 
