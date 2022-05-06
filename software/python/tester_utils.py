@@ -320,7 +320,7 @@ def create_tester(directories_str, sut_peripherals_str, tester_peripherals_str):
             # Insert peripheral instance
             start_index = find_idx(tester_contents, "endmodule")-1
             tester_contents.insert(start_index, "      );\n")
-            # Insert reserved signals
+            # Insert reserved signals #TODO: only insert signals present in IO
             for signal in reversed(reserved_signals_template.splitlines(True)):
                 tester_contents.insert(start_index, 
                         re.sub("\/\*<InstanceName>\*\/","TESTER_"+corename+str(i),
