@@ -320,12 +320,15 @@ def create_tester(directories_str, sut_peripherals_str, tester_peripherals_str):
             # Insert peripheral instance
             start_index = find_idx(tester_contents, "endmodule")-1
             tester_contents.insert(start_index, "      );\n")
-            # Insert reserved signals #TODO: only insert signals present in IO
+            # Insert reserved signals
             for signal in reversed(reserved_signals_template.splitlines(True)):
-                tester_contents.insert(start_index, 
-                        re.sub("\/\*<InstanceName>\*\/","TESTER_"+corename+str(i),
-                        re.sub("\/\*<SwregFilename>\*\/",swreg_filename, 
-                            signal)))
+                str_match=re.match("^\s*\.([^\(]+)\(",signal)
+                # Only insert if this reserved signal (from template) is present in IO of this peripheral
+                if (str_match is not None) and str_match.group(1) in peripheral_signals[corename]:
+                    tester_contents.insert(start_index, 
+                            re.sub("\/\*<InstanceName>\*\/","TESTER_"+corename+str(i),
+                            re.sub("\/\*<SwregFilename>\*\/",swreg_filename, 
+                                signal)))
             # Insert io signals
             for signal in get_pio_signals(peripheral_signals[corename]):
                     if mapped_signals[1][corename][i][signal] > -1: # Not mapped to external interface

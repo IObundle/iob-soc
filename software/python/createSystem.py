@@ -7,9 +7,11 @@ import sys, os
 import submodule_utils 
 from submodule_utils import *
 
+# Signals in this template will only be inserted if they exist in the peripheral IO
 reserved_signals_template = """\
       .clk(clk),
       .rst(reset),
+      .arst(reset),
       .valid(slaves_req[`valid(`/*<InstanceName>*/)]),
       .address(slaves_req[`address(`/*<InstanceName>*/,`/*<SwregFilename>*/_ADDR_W+2)-2]),
       .wdata(slaves_req[`wdata(`/*<InstanceName>*/)]),
@@ -52,12 +54,15 @@ def create_systemv(directories_str, sut_peripherals_str):
             # Insert peripheral instance
             start_index = find_idx(template_contents, "endmodule")-1
             template_contents.insert(start_index, "      );\n")
-            # Insert reserved signals #TODO: only insert signals present in IO
+            # Insert reserved signals 
             for signal in reversed(reserved_signals_template.splitlines(True)):
-                template_contents.insert(start_index, 
-                        re.sub("\/\*<InstanceName>\*\/",corename+str(i),
-                        re.sub("\/\*<SwregFilename>\*\/",swreg_filename, 
-                            signal)))
+                str_match=re.match("^\s*\.([^\(]+)\(",signal)
+                # Only insert if this reserved signal (from template) is present in IO of this peripheral
+                if (str_match is not None) and str_match.group(1) in peripheral_signals[corename]:
+                    template_contents.insert(start_index, 
+                            re.sub("\/\*<InstanceName>\*\/",corename+str(i),
+                            re.sub("\/\*<SwregFilename>\*\/",swreg_filename, 
+                                signal)))
             # Insert io signals
             for signal in pio_signals:
                 template_contents.insert(start_index, '      .{}({}_{}),\n'.format(signal,corename+str(i),signal))
