@@ -3,8 +3,13 @@ include ./config.mk
 
 # Generate configuration file for port mapping between the Tester, SUT and external interface of the Top System
 tester-portmap:
-	$(SW_DIR)/python/tester_utils.py generate_config $(ROOT_DIR) "$(GET_DIRS)" "$(PERIPHERALS)" "$(TESTER_PERIPHERALS)"
-	@echo Portmap template generated in hardware/tester/peripheral_portmap.txt
+ifeq ($(TESTING_CORE),)
+	$(SW_DIR)/python/tester_utils.py generate_portmap $(ROOT_DIR) "$(GET_DIRS)" "hardware/tester/peripheral_portmap.conf" "$(PERIPHERALS)" "$(TESTER_PERIPHERALS)"
+	@echo Portmap template generated in hardware/tester/peripheral_portmap.conf
+else
+	$(SW_DIR)/python/tester_utils.py generate_portmap $(ROOT_DIR) "$(GET_DIRS)" "../../peripheral_portmap.conf" "" "$(PERIPHERALS)"
+	@echo Portmap template generated in peripheral_portmap.conf
+endif
 
 #
 # BUILD EMBEDDED SOFTWARE

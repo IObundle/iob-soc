@@ -109,14 +109,14 @@ def get_tester_peripherals(tester_peripherals_str):
 
 
 # Overwrites portmap configuration file with a template, with every existing signal mapped to external interface by default
-def generate_portmap(directories_str, sut_peripherals_str, tester_peripherals_str):
+def generate_portmap(directories_str, sut_peripherals_str, tester_peripherals_str, portmap_path):
     sut_instances_amount = get_sut_peripherals(sut_peripherals_str)
     tester_instances_amount = get_tester_peripherals(tester_peripherals_str)
     submodule_directories = get_submodule_directories(directories_str)
     peripheral_signals = get_peripherals_signals({**sut_instances_amount, **tester_instances_amount},submodule_directories)
 
     # Generate portmap file
-    portmap_file = open(root_dir+"/hardware/tester/peripheral_portmap.txt", "w")
+    portmap_file = open(portmap_path, "w")
     portmap_file.write(portmap_header)
 
     # Create signals for every peripheral instance
@@ -137,7 +137,7 @@ def generate_portmap(directories_str, sut_peripherals_str, tester_peripherals_st
 #    mapped_signals: Dimensions=[<0 for SUT; 1 for Tester>][<corename>][<instance number>][<signal name with macro>]
 #                    This list of dictionaries stores the -2 for unmapped signals, -1 for mapped to external interface 
 #                    and >0 for signals mapped to a wire in pwires list with that index.
-def read_portmap(sut_instances_amount, tester_instances_amount, peripheral_signals):
+def read_portmap(sut_instances_amount, tester_instances_amount, peripheral_signals, portmap_path):
     # Wires internal to Tester that interface SUT and Tester peripherals
     pwires = []
     # Array to store if a signal has been mapped
@@ -157,7 +157,8 @@ def read_portmap(sut_instances_amount, tester_instances_amount, peripheral_signa
                 mapped_signals[1][corename][i][signal] = -2
 
     # Read portmap file
-    portmap_file = open(root_dir+"/hardware/tester/peripheral_portmap.txt", "r")
+    # root_dir+"/hardware/tester/peripheral_portmap.conf"
+    portmap_file = open(portmap_path, "r")
     portmap_contents = portmap_file.readlines() 
     portmap_file.close()
 
@@ -220,7 +221,7 @@ def create_tester(directories_str, sut_peripherals_str, tester_peripherals_str):
     peripheral_signals = get_peripherals_signals({**sut_instances_amount, **tester_instances_amount},submodule_directories)
 
     # Read portmap file and get encoded data
-    pwires, mapped_signals = read_portmap(sut_instances_amount, tester_instances_amount, peripheral_signals)
+    pwires, mapped_signals = read_portmap(sut_instances_amount, tester_instances_amount, peripheral_signals, root_dir+"/hardware/tester/peripheral_portmap.conf")
 
     # Read template file
     tester_template_file = open(root_dir+"/hardware/src/system_core.v", "r") 
@@ -413,7 +414,7 @@ def create_top_system(directories_str, sut_peripherals_str, tester_peripherals_s
     peripheral_signals = get_peripherals_signals({**sut_instances_amount, **tester_instances_amount},submodule_directories)
 
     # Read portmap file and get encoded data
-    _, mapped_signals = read_portmap(sut_instances_amount, tester_instances_amount, peripheral_signals)
+    _, mapped_signals = read_portmap(sut_instances_amount, tester_instances_amount, peripheral_signals, root_dir+"/hardware/tester/peripheral_portmap.conf")
 
     # Read template file
     topsystem_template_file = open(root_dir+"/hardware/tester/tester_top_core.v", "r") 
@@ -521,11 +522,11 @@ if __name__ == "__main__":
     # Parse arguments
     root_dir=sys.argv[2]
     submodule_utils.root_dir = root_dir
-    if sys.argv[1] == "generate_config":
-        if len(sys.argv)<6:
-            print("Usage: {} generate_config <root_dir> <directories_defined_in_config.mk> <sut_peripherals> <tester_peripherals>\n".format(sys.argv[0]))
+    if sys.argv[1] == "generate_portmap":
+        if len(sys.argv)<7:
+            print("Usage: {} generate_portmap <root_dir> <directories_defined_in_config.mk> <portmap_path> <sut_peripherals> <tester_peripherals>\n".format(sys.argv[0]))
             exit(-1)
-        generate_portmap(sys.argv[3], sys.argv[4], sys.argv[5])
+        generate_portmap(sys.argv[3], sys.argv[5], sys.argv[6], sys.argv[4])
     elif sys.argv[1] == "create_tester":
         if len(sys.argv)<6:
             print("Usage: {} create_tester <root_dir> <directories_defined_in_config.mk> <sut_peripherals> <tester_peripherals>\n".format(sys.argv[0]))
@@ -558,4 +559,4 @@ if __name__ == "__main__":
         else:
             replace_peripheral_defines(sys.argv[2],sys.argv[4],sys.argv[3])
     else:
-        print("Unknown command.\nUsage: {} <command> <parameters>\n Commands: generate_config create_tester create_top_system get_n_slaves get_defines replace_peripheral_defines".format(sys.argv[0]))
+        print("Unknown command.\nUsage: {} <command> <parameters>\n Commands: generate_portmap create_tester create_top_system get_n_slaves get_defines replace_peripheral_defines".format(sys.argv[0]))
