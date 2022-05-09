@@ -70,20 +70,30 @@ def get_module_io(verilog_lines):
             break #Found end of port list
         #If this signal is declared in normal verilog format (no macros)
         if any(x in verilog_lines[i] for x in ["input","output"]):
-            signal = re.search("^\s*((?:(?:input)|(?:output))(?:\s|(?:\[.*\]))*)(.*),?", verilog_lines[i])
+            signal = re.search("^\s*((?:input)|(?:output))(?:\s|(?:\[(.*\)]))*(.*),?", verilog_lines[i])
             if signal is not None:
                 # Store signal in dictionary with format: module_signals[signalname] = "input [size:0]"
-                module_signals[signal.group(2)]=signal.group(1).replace("ADDR_W","/*<SwregFilename>*/_ADDR_W")
+                if signal.group(2) is None:
+                    module_signals[signal.group(3)]=signal.group(1)
+                else:
+                    #FUTURE IMPROVEMENT: make python parse verilog macros.
+                    module_signals[signal.group(3)]="{} [{}{}]".format(signal.group(1), 
+                            "" if "`" in signal.group(2) else "`", # Set as macro if it was a parameter
+                            signal.group(2).replace("ADDR_W","/*<SwregFilename>*/_ADDR_W"))
         elif "`IOB_INPUT" in verilog_lines[i]: #If it is a known verilog macro
             signal = re.search("^\s*`IOB_INPUT\(\s*(\w+)\s*,\s*([^\s]+)\s*\),?", verilog_lines[i])
             if signal is not None:
                 # Store signal in dictionary with format: module_signals[signalname] = "input [size:0]"
-                module_signals[signal.group(1)]="input [{}:0]".format(int(signal.group(2))-1 if signal.group(2).isdigit() else ("`"+signal.group(2)+"-1").replace("ADDR_W","/*<SwregFilename>*/_ADDR_W"))
+                module_signals[signal.group(1)]="input [{}{}:0]".format(
+                        "" if "`" in signal.group(2) else "`", # Set as macro if it was a parameter
+                        int(signal.group(2))-1 if signal.group(2).isdigit() else (signal.group(2)+"-1").replace("ADDR_W","/*<SwregFilename>*/_ADDR_W")) # Replace keyword "ADDR_W" by "/*<SwregFilename>*/_ADDR_W"
         elif "`IOB_OUTPUT" in verilog_lines[i]: #If it is a known verilog macro
             signal = re.search("^\s*`IOB_OUTPUT\(\s*(\w+)\s*,\s*([^\s]+)\s*\),?", verilog_lines[i])
             if signal is not None:
                 # Store signal in dictionary with format: module_signals[signalname] = "output [size:0]"
-                module_signals[signal.group(1)]="output [{}:0]".format(int(signal.group(2))-1 if signal.group(2).isdigit() else ("`"+signal.group(2)+"-1").replace("ADDR_W","/*<SwregFilename>*/_ADDR_W"))
+                module_signals[signal.group(1)]="output [{}{}:0]".format(
+                        "" if "`" in signal.group(2) else "`", # Set as macro if it was a parameter
+                        int(signal.group(2))-1 if signal.group(2).isdigit() else (signal.group(2)+"-1").replace("ADDR_W","/*<SwregFilename>*/_ADDR_W")) # Replace keyword "ADDR_W" by "/*<SwregFilename>*/_ADDR_W"
         elif '`include "gen_if.vh"' in verilog_lines[i]: #If it is a known verilog include
             module_signals["clk"]="input "
             module_signals["rst"]="input "
@@ -103,9 +113,22 @@ def get_module_io(verilog_lines):
 # It removes reserved signals, such as: clk, rst, valid, address, wdata, wstrb, rdata or ready
 def get_pio_signals(peripheral_signals):
     pio_signals = peripheral_signals.copy()
-    for signal in ["clk","rst","valid","address","wdata","wstrb","rdata","ready"]:
+    for signal in ["clk","rst","arst","valid","address","wdata","wstrb","rdata","ready"]:
         if signal in pio_signals: pio_signals.pop(signal)
     return pio_signals
+
+# Given a path to a file containing the TOP_MODULE makefile variable declaration, return the value of that variable.
+def get_top_module(file_path):
+    config_file = open(file_path, "r")
+    config_contents = config_file.readlines()
+    config_file.close()
+    top_module = ""
+    for line in config_contents:
+        top_module_search = re.search("^\s*TOP_MODULE\s*:?\??=\s*([^\s]+)", line)
+        if top_module_search is not None:
+            top_module = top_module_search.group(1)
+            break;
+    return top_module
 
 # Return dictionary with signals for each peripheral given in the input list 
 # Also need to provide a dictionary with directory location of each peripheral given
@@ -117,15 +140,11 @@ def get_peripherals_signals(list_of_peripherals, submodule_directories):
         peripheral_signals[i] = {}
         # Find top module verilog file of peripheral
         module_dir = root_dir+"/"+submodule_directories[i]+"/hardware/src"
-        module_filename = ""
-        for filename in os.listdir(module_dir):
-            if filename.startswith("iob_") and filename.endswith(".v"):
-                module_filename=filename
-                break
-        # Skip iteration if peripheral does not have top module
-        if not module_filename:
-            continue
+        module_filename = get_top_module(submodule_directories[i]+"/config.mk")+".v";
         module_path=os.path.join(module_dir,module_filename)
+        # Skip iteration if peripheral does not have top module
+        if not os.path.isfile(module_path):
+            continue
         # Read file
         module_file = open(module_path, "r")
         module_contents = module_file.read().splitlines()

@@ -46,7 +46,9 @@ ifneq ($(TESTING_CORE),)
 	rsync -avz --delete --force --exclude .git $($(CORE_UT)_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_CUT_DIR)
 endif
 	bash -c "trap 'make queue-out-remote' INT TERM KILL; ssh $(BOARD_USER)@$(BOARD_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD) $@ INIT_MEM=$(INIT_MEM) FORCE=$(FORCE) TEST_LOG=\"$(TEST_LOG)\" TESTER_ENABLED=$(TESTER_ENABLED) TESTING_CORE=$(TESTING_CORE)'"
-	scp -r $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD)/*.log .
+ifneq ($(TEST_LOG),)
+	scp $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD)/test.log .
+endif
 endif
 endif
 
@@ -55,6 +57,7 @@ build: $(FPGA_OBJ)
 $(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) $(HEXPROGS)
 ifeq ($(NORUN),0)
 ifeq ($(FPGA_SERVER),)
+	@rm -f $(FPGA_LOG)
 	../build.sh "$(INCLUDE)" "$(DEFINE)" "$(VSRC)" "$(DEVICE)" "$(TESTER_ENABLED)"
 	make post-build
 else 
@@ -64,8 +67,8 @@ ifneq ($(TESTING_CORE),)
 	rsync -avz --delete --force --exclude .git $($(CORE_UT)_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_CUT_DIR)
 endif
 	ssh $(FPGA_USER)@$(FPGA_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD) $@ INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) TESTER_ENABLED=$(TESTER_ENABLED) TESTING_CORE=$(TESTING_CORE)'
-	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD)/$(FPGA_OBJ) $(FPGA_OBJ)
-	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD)/$(FPGA_LOG) $(FPGA_LOG) 
+	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD)/$(FPGA_OBJ) .
+	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD)/$(FPGA_LOG) .
 endif
 endif
 
