@@ -101,6 +101,9 @@ endif
 ifneq ($(TESTING_CORE),)
 #include tester configuration from core under test directory
 include $(ROOT_DIR)/../../tester.mk
+#add core under test
+#this works even if CUT is not a perihpheral
+PERIPHERALS+=$(CORE_UT)
 #add other tester peripherals.
 #Note: this is not the variable above. It should be overwritten by the tester.mk cofiguration file in the core under test.
 PERIPHERALS+=$(TESTER_PERIPHERALS)

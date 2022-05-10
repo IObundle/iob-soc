@@ -64,12 +64,12 @@ def get_module_io(verilog_lines):
     #Get signals of this module
     for i in range(port_list_start, len(verilog_lines)):
         #Ignore comments and empty lines
-        if not verilog_lines[i] or verilog_lines[i].lstrip().startswith("//"):
+        if not verilog_lines[i].strip() or verilog_lines[i].lstrip().startswith("//"):
             continue
         if ");" in verilog_lines[i]:
             break #Found end of port list
         #If this signal is declared in normal verilog format (no macros)
-        if any(x in verilog_lines[i] for x in ["input","output"]):
+        if any(verilog_lines[i].lstrip().startswith(x) for x in ["input","output"]):
             signal = re.search("^\s*((?:input)|(?:output))(?:\s|(?:\[(.*\)]))*(.*),?", verilog_lines[i])
             if signal is not None:
                 # Store signal in dictionary with format: module_signals[signalname] = "input [size:0]"
