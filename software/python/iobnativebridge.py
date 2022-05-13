@@ -39,13 +39,13 @@ $(TOP_MODULE)_version.txt:
 #MAKE SW ACCESSIBLE REGISTER
 MKREGS:=$(shell find $(LIB_DIR) -name mkregs.py)
 
-#target to create (and updated) swreg for nativebridgeif based on regfileif
-$(IOBNATIVEBRIDGEIF_DIR)/hardware/include/iob_nativebridgeif_swreg.vh: $(REGFILEIF_DIR)/hardware/include/iob_regfileif_swreg.vh
+#target to create (and update) swreg for nativebridgeif based on regfileif
+$(IOBNATIVEBRIDGEIF_DIR)/mkregs.conf: $(REGFILEIF_DIR)/mkregs.conf
 	$(IOBNATIVEBRIDGEIF_DIR)/software/python/createIObNativeIfSwreg.py $(REGFILEIF_DIR)
 
 #cpu accessible registers
-iob_nativebridgeif_swreg_def.vh iob_nativebridgeif_swreg_gen.vh: $(IOBNATIVEBRIDGEIF_DIR)/hardware/include/iob_nativebridgeif_swreg.vh
-	$(REGFILEIF_DIR)/software/python/mkregsregfileif.py $< HW $(shell dirname $(MKREGS)) "IOBNATIVEBRIDGEIF"
+iob_nativebridgeif_swreg_def.vh iob_nativebridgeif_swreg_gen.vh: $(IOBNATIVEBRIDGEIF_DIR)/mkregs.conf
+	$(REGFILEIF_DIR)/software/python/mkregsregfileif.py $< HW $(shell dirname $(MKREGS)) iob_nativebridgeif
 
     """
     fout = open (os.path.join(iobnativebridgeif_dir,"config.mk"), 'w')
@@ -116,7 +116,7 @@ endif
     fout = open (os.path.join(iobnativebridgeif_dir,"hardware/include","pio.vh"), 'w')
     fout.writelines(pio_content)
     fout.close()
-    # iob_nativebridgeif_swreg.vh
+    # createIObNativeIfSwreg.py
     os.mkdir(os.path.join(iobnativebridgeif_dir,"software/python"))
     swreg_python_creator = """\
 #!/usr/bin/env python3
@@ -126,12 +126,12 @@ import os
 import sys
 import re
 
-fin = open (os.path.join(sys.argv[1], 'hardware/include/iob_regfileif_swreg.vh'), 'r')
+fin = open (os.path.join(sys.argv[1], 'mkregs.conf'), 'r')
 swreg_content=fin.readlines()
 fin.close()
 for i in range(len(swreg_content)):
     swreg_content[i] = re.sub('REGFILEIF','IOBNATIVEBRIDGEIF', swreg_content[i])
-fout = open (os.path.join(os.path.dirname(__file__),"../../hardware/include","iob_nativebridgeif_swreg.vh"), 'w')
+fout = open (os.path.join(os.path.dirname(__file__),"../../","mkregs.conf"), 'w')
 fout.writelines(swreg_content)
 fout.close()
     """
@@ -198,8 +198,8 @@ HDR+=iob_nativebridgeif_swreg.h
 #sources
 SRC+=
 
-iob_nativebridgeif_swreg.h iob_nativebridgeif_swreg_inverted.h: $(IOBNATIVEBRIDGEIF_HW_DIR)/include/iob_nativebridgeif_swreg.vh
-	$(REGFILEIF_DIR)/software/python/mkregsregfileif.py $< SW $(shell dirname $(MKREGS)) "IOBNATIVEBRIDGEIF"
+iob_nativebridgeif_swreg.h iob_nativebridgeif_inverted_swreg.h: $(IOBNATIVEBRIDGEIF_DIR)/mkregs.conf
+	$(REGFILEIF_DIR)/software/python/mkregsregfileif.py $< SW $(shell dirname $(MKREGS)) iob_nativebridgeif
     """
     fout = open (os.path.join(iobnativebridgeif_dir,"software","software.mk"), 'w')
     fout.write(software_str)
