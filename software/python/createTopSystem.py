@@ -20,7 +20,6 @@ def create_top_system(directories_str, sut_peripherals_str):
 
     # Insert header files
     for corename in sut_instances_amount:
-        swreg_filename = ""
         path = root_dir+"/"+submodule_directories[corename]+"/hardware/include"
         start_index = find_idx(template_contents, "PHEADER")
         for file in os.listdir(path):
@@ -28,8 +27,8 @@ def create_top_system(directories_str, sut_peripherals_str):
                 template_contents.insert(start_index, '`include "{}"\n'.format(path+"/"+file))
             if file.endswith("swreg.vh"):
                 template_contents.insert(start_index, '`include "{}"\n'.format(file.replace("swreg","swreg_def")))
-                #Store swreg filename
-                swreg_filename = os.path.splitext(file)[0]
+
+        swreg_filename = get_top_module(root_dir+"/"+submodule_directories[corename]+"/config.mk")+"_swreg";
 
         # Insert wires and connect them to uut 
         for i in range(sut_instances_amount[corename]):

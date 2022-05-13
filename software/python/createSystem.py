@@ -32,7 +32,6 @@ def create_systemv(directories_str, sut_peripherals_str):
     template_file.close()
 
     for corename in sut_instances_amount:
-        swreg_filename = ""
         # Insert header files
         path = root_dir+"/"+submodule_directories[corename]+"/hardware/include"
         start_index = find_idx(template_contents, "PHEADER")
@@ -41,8 +40,8 @@ def create_systemv(directories_str, sut_peripherals_str):
                 template_contents.insert(start_index, '`include "{}"\n'.format(path+"/"+file))
             if file.endswith("swreg.vh"):
                 template_contents.insert(start_index, '`include "{}"\n'.format(file.replace("swreg","swreg_def")))
-                #Store swreg filename
-                swreg_filename = os.path.splitext(file)[0]
+
+        swreg_filename = get_top_module(root_dir+"/"+submodule_directories[corename]+"/config.mk")+"_swreg";
 
         # Insert IOs and Instances for this type of peripheral
         for i in range(sut_instances_amount[corename]):

@@ -309,12 +309,7 @@ def create_tester(directories_str, sut_peripherals_str, tester_peripherals_str):
 
     # Insert Tester peripherals
     for corename in tester_instances_amount:
-        swreg_filename = ""
-        # Get swreg filename
-        path = root_dir+"/"+submodule_directories[corename]+"/hardware/include"
-        for file in os.listdir(path):
-            if file.endswith("swreg.vh"):
-                swreg_filename = os.path.splitext(file)[0]
+        swreg_filename = get_top_module(root_dir+"/"+submodule_directories[corename]+"/config.mk")+"_swreg";
 
         # Insert for every instance
         for i in range(tester_instances_amount[corename]):
@@ -348,12 +343,7 @@ def create_tester(directories_str, sut_peripherals_str, tester_peripherals_str):
     pwires_inserted = [0] * len(pwires)
     # Insert PIO, PWIRES, SUTPORTS 
     for corename in sut_instances_amount:
-        swreg_filename = ""
-        # Get swreg filename
-        path = root_dir+"/"+submodule_directories[corename]+"/hardware/include"
-        for file in os.listdir(path):
-            if file.endswith("swreg.vh"):
-                swreg_filename = os.path.splitext(file)[0]
+        swreg_filename = get_top_module(root_dir+"/"+submodule_directories[corename]+"/config.mk")+"_swreg";
 
         for i in range(sut_instances_amount[corename]):
             for signal in get_pio_signals(peripheral_signals[corename]):
@@ -376,12 +366,7 @@ def create_tester(directories_str, sut_peripherals_str, tester_peripherals_str):
                     # Insert SUT PORT
                     tester_contents.insert(find_idx(tester_contents, "SUTPORTS"), '        .{}_{}(sut_{}_{}),\n'.format(corename+str(i),signal,corename+str(i),signal))
     for corename in tester_instances_amount:
-        swreg_filename = ""
-        # Get swreg filename
-        path = root_dir+"/"+submodule_directories[corename]+"/hardware/include"
-        for file in os.listdir(path):
-            if file.endswith("swreg.vh"):
-                swreg_filename = os.path.splitext(file)[0]
+        swreg_filename = get_top_module(root_dir+"/"+submodule_directories[corename]+"/config.mk")+"_swreg";
 
         for i in range(tester_instances_amount[corename]):
             for signal in get_pio_signals(peripheral_signals[corename]):
@@ -433,12 +418,7 @@ def create_top_system(directories_str, sut_peripherals_str, tester_peripherals_s
 
     # Insert PORTS and PWIRES
     for corename in sut_instances_amount:
-        swreg_filename = ""
-        # Get swreg filename
-        path = root_dir+"/"+submodule_directories[corename]+"/hardware/include"
-        for file in os.listdir(path):
-            if file.endswith("swreg.vh"):
-                swreg_filename = os.path.splitext(file)[0]
+        swreg_filename = get_top_module(root_dir+"/"+submodule_directories[corename]+"/config.mk")+"_swreg";
 
         for i in range(sut_instances_amount[corename]):
             for signal in get_pio_signals(peripheral_signals[corename]):
@@ -453,12 +433,7 @@ def create_top_system(directories_str, sut_peripherals_str, tester_peripherals_s
                     # Insert PORTS
                     topsystem_contents.insert(find_idx(topsystem_contents, "PORTS"), '        .sut_{}_{}(sut_{}_{}),\n'.format(corename+str(i),signal,corename+str(i),signal))
     for corename in tester_instances_amount:
-        swreg_filename = ""
-        # Get swreg filename
-        path = root_dir+"/"+submodule_directories[corename]+"/hardware/include"
-        for file in os.listdir(path):
-            if file.endswith("swreg.vh"):
-                swreg_filename = os.path.splitext(file)[0]
+        swreg_filename = get_top_module(root_dir+"/"+submodule_directories[corename]+"/config.mk")+"_swreg";
 
         for i in range(tester_instances_amount[corename]):
             for signal in get_pio_signals(peripheral_signals[corename]):

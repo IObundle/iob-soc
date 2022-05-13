@@ -12,6 +12,6 @@ HDR+=iob_nativebridgeif_swreg.h
 #sources
 SRC+=
 
-iob_nativebridgeif_swreg.h iob_nativebridgeif_swreg_inverted.h: $(IOBNATIVEBRIDGEIF_HW_DIR)/include/iob_nativebridgeif_swreg.vh
-	$(REGFILEIF_DIR)/software/python/mkregsregfileif.py $< SW $(shell dirname $(MKREGS)) "IOBNATIVEBRIDGEIF"
+iob_nativebridgeif_swreg.h iob_nativebridgeif_inverted_swreg.h: $(IOBNATIVEBRIDGEIF_DIR)/mkregs.conf
+	$(REGFILEIF_DIR)/software/python/mkregsregfileif.py $< SW $(shell dirname $(MKREGS)) iob_nativebridgeif
     
