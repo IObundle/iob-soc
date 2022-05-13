@@ -186,6 +186,12 @@ FREQ ?=100000000
 
 SHELL = /bin/bash
 
+ifneq ($(TESTING_CORE),)
+#include extra tester makefile targets
+INCLUDING_PATHS:=1
+include $(ROOT_DIR)/../../tester.mk
+endif
+
 #RULES
 gen-clean:
 	@rm -f *# *~

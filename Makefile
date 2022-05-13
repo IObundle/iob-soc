@@ -42,7 +42,7 @@ pc-emul-test: pc-emul-clean
 # SIMULATE RTL
 #
 
-sim-build:
+sim-build: $(SIM_DEPS)
 	make fw-build BAUD=5000000
 	make -C $(SIM_DIR) build
 
@@ -121,7 +121,7 @@ doc-test:
 # CLEAN
 #
 
-clean: pc-emul-clean sim-clean fpga-clean doc-clean python-cache-clean
+clean: pc-emul-clean sim-clean fpga-clean doc-clean python-cache-clean $(CLEAN_DEPS)
 
 #
 # TEST ALL PLATFORMS
