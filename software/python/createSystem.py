@@ -17,7 +17,7 @@ reserved_signals_template = """\
       .wdata(slaves_req[`wdata(`/*<InstanceName>*/)]),
       .wstrb(slaves_req[`wstrb(`/*<InstanceName>*/)]),
       .rdata(slaves_resp[`rdata(`/*<InstanceName>*/)]),
-      .ready(slaves_resp[`ready(`/*<InstanceName>*/)])
+      .ready(slaves_resp[`ready(`/*<InstanceName>*/)]),
 """
 
 def create_systemv(directories_str, sut_peripherals_str):
@@ -53,6 +53,7 @@ def create_systemv(directories_str, sut_peripherals_str):
             # Insert peripheral instance
             start_index = find_idx(template_contents, "endmodule")-1
             template_contents.insert(start_index, "      );\n")
+            first_reversed_signal=True
             # Insert reserved signals 
             for signal in reversed(reserved_signals_template.splitlines(True)):
                 str_match=re.match("^\s*\.([^\(]+)\(",signal)
@@ -62,6 +63,10 @@ def create_systemv(directories_str, sut_peripherals_str):
                             re.sub("\/\*<InstanceName>\*\/",corename+str(i),
                             re.sub("\/\*<SwregFilename>\*\/",swreg_filename, 
                                 signal)))
+                    # Remove comma at the end of last signal
+                    if first_reversed_signal == True:
+                        template_contents[start_index]=template_contents[start_index][::-1].replace(",","",1)[::-1]
+                        first_reversed_signal = False
             # Insert io signals
             for signal in pio_signals:
                 template_contents.insert(start_index, '      .{}({}_{}),\n'.format(signal,corename+str(i),signal))

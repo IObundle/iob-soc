@@ -316,6 +316,7 @@ def create_tester(directories_str, sut_peripherals_str, tester_peripherals_str):
             # Insert peripheral instance
             start_index = find_idx(tester_contents, "endmodule")-1
             tester_contents.insert(start_index, "      );\n")
+            first_reversed_signal=True
             # Insert reserved signals
             for signal in reversed(reserved_signals_template.splitlines(True)):
                 str_match=re.match("^\s*\.([^\(]+)\(",signal)
@@ -325,6 +326,10 @@ def create_tester(directories_str, sut_peripherals_str, tester_peripherals_str):
                             re.sub("\/\*<InstanceName>\*\/","TESTER_"+corename+str(i),
                             re.sub("\/\*<SwregFilename>\*\/",swreg_filename, 
                                 signal)))
+                    # Remove comma at the end of last signal
+                    if first_reversed_signal == True:
+                        tester_contents[start_index]=tester_contents[start_index][::-1].replace(",","",1)[::-1]
+                        first_reversed_signal = False
             # Insert io signals
             for signal in get_pio_signals(peripheral_signals[corename]):
                     if mapped_signals[1][corename][i][signal] > -1: # Not mapped to external interface
