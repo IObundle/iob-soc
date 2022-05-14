@@ -100,7 +100,11 @@ system_tb.v:
 
 #create  simulation top module
 system_top.v: $(TB_DIR)/system_top_core.v
-	$(SW_DIR)/python/createTopSystem.py $(ROOT_DIR) "$(GET_DIRS)" "$(PERIPHERALS)"
+ifeq ($(TESTING_CORE),)
+	$(SW_DIR)/python/createTopSystem.py $(ROOT_DIR) "peripheral_portmap.conf" "$(GET_DIRS)" "$(PERIPHERALS)" "$(TESTER_PERIPHERALS)" 0
+else
+	$(SW_DIR)/python/createTopSystem.py $(ROOT_DIR) "../../peripheral_portmap.conf" "$(GET_DIRS)" "" "$(PERIPHERALS)" 1
+endif
 
 #add peripheral testbench sources
 VSRC+=$(foreach p, $(PERIPHERALS), $(shell if test -f $($p_DIR)/hardware/testbench/module_tb.sv; then echo $($p_DIR)/hardware/testbench/module_tb.sv; fi;)) 

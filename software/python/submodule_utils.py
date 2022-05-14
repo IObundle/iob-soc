@@ -7,6 +7,20 @@ import os
 import re
 import math
 
+# Signals in this template will only be inserted if they exist in the peripheral IO
+reserved_signals_template = """\
+      .clk(clk),
+      .rst(reset),
+      .arst(reset),
+      .valid(slaves_req[`valid(`/*<InstanceName>*/)]),
+      .address(slaves_req[`address(`/*<InstanceName>*/,`/*<SwregFilename>*/_ADDR_W+2)-2]),
+      .wdata(slaves_req[`wdata(`/*<InstanceName>*/)]),
+      .wstrb(slaves_req[`wstrb(`/*<InstanceName>*/)]),
+      .rdata(slaves_resp[`rdata(`/*<InstanceName>*/)]),
+      .ready(slaves_resp[`ready(`/*<InstanceName>*/)]),
+"""
+
+
 # Parameter: string with directories separated by ';'
 # Returns dictionary with every directory defined in <root_dir>/config.mk
 def get_directories(directories_str):
@@ -29,17 +43,16 @@ def get_submodule_directories(directories_str):
     return directories
 
 # Parameter: PERIPHERALS string defined in config.mk
-# Returns dictionary with amount of instances each peripheral of the SUT to be created 
-def get_sut_peripherals(sut_peripherals_str):
-    sut_peripherals = sut_peripherals_str.split()
+# Returns dictionary with amount of instances each peripheral to be created 
+def get_peripherals(peripherals_str):
+    peripherals = peripherals_str.split()
 
     # Count how many instances to create of each type of peripheral
-    sut_instances_amount = {}
-    for i in sut_peripherals:
-        sut_instances_amount[i]=sut_peripherals.count(i)
-    #print(sut_instances_amount) #DEBUG
+    instances_amount = {}
+    for i in peripherals:
+        instances_amount[i]=peripherals.count(i)
 
-    return sut_instances_amount
+    return instances_amount
 
 # Given lines read from the verilog file with a module declaration
 # this function returns the inputs and outputs defined in the port list
@@ -170,18 +183,18 @@ def find_idx(lines, word):
 # Functions to run when this script gets called directly #
 ##########################################################
 def print_instances(sut_peripherals_str):
-    sut_instances_amount = get_sut_peripherals(sut_peripherals_str)
+    sut_instances_amount = get_peripherals(sut_peripherals_str)
     for corename in sut_instances_amount:
         for i in range(sut_instances_amount[corename]):
             print(corename+str(i), end=" ")
 
 def print_peripherals(sut_peripherals_str):
-    sut_instances_amount = get_sut_peripherals(sut_peripherals_str)
+    sut_instances_amount = get_peripherals(sut_peripherals_str)
     for i in sut_instances_amount:
         print(i, end=" ")
 
 def print_nslaves(sut_peripherals_str):
-    sut_instances_amount = get_sut_peripherals(sut_peripherals_str)
+    sut_instances_amount = get_peripherals(sut_peripherals_str)
     i=0
     # Calculate total amount of instances
     for corename in sut_instances_amount:
@@ -189,7 +202,7 @@ def print_nslaves(sut_peripherals_str):
     print(i, end="")
 
 def print_nslaves_w(sut_peripherals_str):
-    sut_instances_amount = get_sut_peripherals(sut_peripherals_str)
+    sut_instances_amount = get_peripherals(sut_peripherals_str)
     i=0
     # Calculate total amount of instances
     for corename in sut_instances_amount:
@@ -198,7 +211,7 @@ def print_nslaves_w(sut_peripherals_str):
 
 #Creates list of defines of sut instances with sequential numbers
 def print_sut_peripheral_defines(defmacro, sut_peripherals_str):
-    sut_instances_amount = get_sut_peripherals(sut_peripherals_str)
+    sut_instances_amount = get_peripherals(sut_peripherals_str)
     j=0
     for corename in sut_instances_amount:
         for i in range(sut_instances_amount[corename]):

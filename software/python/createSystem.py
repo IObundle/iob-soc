@@ -6,32 +6,33 @@ import sys, os
 # Add folder to path that contains python scripts to be imported
 import submodule_utils 
 from submodule_utils import *
+from tester_utils import read_portmap
 
-# Signals in this template will only be inserted if they exist in the peripheral IO
-reserved_signals_template = """\
-      .clk(clk),
-      .rst(reset),
-      .arst(reset),
-      .valid(slaves_req[`valid(`/*<InstanceName>*/)]),
-      .address(slaves_req[`address(`/*<InstanceName>*/,`/*<SwregFilename>*/_ADDR_W+2)-2]),
-      .wdata(slaves_req[`wdata(`/*<InstanceName>*/)]),
-      .wstrb(slaves_req[`wstrb(`/*<InstanceName>*/)]),
-      .rdata(slaves_resp[`rdata(`/*<InstanceName>*/)]),
-      .ready(slaves_resp[`ready(`/*<InstanceName>*/)]),
-"""
-
-def create_systemv(directories_str, sut_peripherals_str):
+# Testing_cut is either 1 or 0, if 0 then the system will be built as if it were a SUT, If 1 then it will be a tester
+def create_systemv(directories_str, sut_peripherals_str, tester_peripherals_str, portmap_path, testing_cut):
     # Get peripherals, directories and signals
-    sut_instances_amount = get_sut_peripherals(sut_peripherals_str)
+    sut_instances_amount = get_peripherals(sut_peripherals_str)
+    tester_instances_amount = get_peripherals(tester_peripherals_str)
     submodule_directories = get_submodule_directories(directories_str)
-    peripheral_signals = get_peripherals_signals(sut_instances_amount, submodule_directories)
+    peripheral_signals = get_peripherals_signals({**sut_instances_amount, **tester_instances_amount},submodule_directories)
+
+    # Read portmap file and get encoded data
+    pwires, mapped_signals = read_portmap(sut_instances_amount, tester_instances_amount, peripheral_signals, portmap_path)
+
+    if testing_cut:
+        instances_amount=tester_instances_amount
+    else:
+        instances_amount=sut_instances_amount
 
     # Read template file
     template_file = open(root_dir+"/hardware/src/system_core.v", "r")
     template_contents = template_file.readlines() 
     template_file.close()
 
-    for corename in sut_instances_amount:
+    # Array to store if pwires have been inserted
+    pwires_inserted = [0] * len(pwires)
+
+    for corename in instances_amount:
         # Insert header files
         path = root_dir+"/"+submodule_directories[corename]+"/hardware/include"
         start_index = find_idx(template_contents, "PHEADER")
@@ -43,14 +44,12 @@ def create_systemv(directories_str, sut_peripherals_str):
 
         swreg_filename = get_top_module(root_dir+"/"+submodule_directories[corename]+"/config.mk")+"_swreg";
 
+        pio_signals = get_pio_signals(peripheral_signals[corename])
+
         # Insert IOs and Instances for this type of peripheral
-        for i in range(sut_instances_amount[corename]):
-            pio_signals = get_pio_signals(peripheral_signals[corename])
-            # Insert system IOs for peripheral
-            start_index = find_idx(template_contents, "PIO")
-            for signal in pio_signals:
-                template_contents.insert(start_index, '    {} {}_{},\n'.format(peripheral_signals[corename][signal].replace("/*<SwregFilename>*/",swreg_filename),corename+str(i),signal))
-            # Insert peripheral instance
+        for i in range(instances_amount[corename]):
+
+            # Insert peripheral instance (in reverse order of lines)
             start_index = find_idx(template_contents, "endmodule")-1
             template_contents.insert(start_index, "      );\n")
             first_reversed_signal=True
@@ -67,9 +66,34 @@ def create_systemv(directories_str, sut_peripherals_str):
                     if first_reversed_signal == True:
                         template_contents[start_index]=template_contents[start_index][::-1].replace(",","",1)[::-1]
                         first_reversed_signal = False
+
             # Insert io signals
             for signal in pio_signals:
-                template_contents.insert(start_index, '      .{}({}_{}),\n'.format(signal,corename+str(i),signal))
+                # Make sure this signal is mapped
+                if mapped_signals[testing_cut][corename][i][signal] < -1:
+                    print("Error: signal {} of SUT.{}[{}] not mapped!".format(signal,corename,i))
+                    exit(-1)
+                # Check if not mapped to external interface and
+                # if it is mapped between SUT and SUT (its a signal internal to SUT)
+                if mapped_signals[testing_cut][corename][i][signal] > -1 and \
+                    1<len(re.findall('(?={})'.format("_Tester_" if testing_cut else "_SUT_"), pwires[mapped_signals[testing_cut][corename][i][signal]][0])):
+                    # Make sure we have not yet created PWIRE of this signal
+                    if pwires_inserted[mapped_signals[testing_cut][corename][i][signal]] == False:
+                        # Insert pwire
+                        template_contents.insert(find_idx(template_contents, "PWIRES"), '    wire {} {};\n'.format(pwires[mapped_signals[testing_cut][corename][i][signal]][1].replace("/*<SwregFilename>*/",swreg_filename),pwires[mapped_signals[testing_cut][corename][i][signal]][0]))
+                        start_index+=1 #Increment start_index because we inserted a line in this file
+                        # Mark this signal as been inserted
+                        pwires_inserted[mapped_signals[testing_cut][corename][i][signal]] = True
+                    # Insert io
+                    template_contents.insert(start_index, '      .{}({}),\n'.format(signal,pwires[mapped_signals[testing_cut][corename][i][signal]][0]))
+                else: # Mapped to external interface or to Tester
+                    # Insert PIO
+                    template_contents.insert(find_idx(template_contents, "PIO"), '    {} {}_{},\n'.format(peripheral_signals[corename][signal].replace("/*<SwregFilename>*/",swreg_filename),corename+str(i),signal))
+                    start_index+=1 #Increment start_index because we inserted a line in this file
+                    # Insert SUT PORT
+                    template_contents.insert(start_index, '      .{}({}_{}),\n'.format(signal,corename+str(i),signal))
+
+            # Insert syntax declaring start of verilog instance
             template_contents.insert(start_index, "     (\n")
             template_contents.insert(start_index, "   {} {}\n".format(swreg_filename[:-6], corename+str(i)))
             template_contents.insert(start_index, "\n")
@@ -84,10 +108,10 @@ def create_systemv(directories_str, sut_peripherals_str):
 
 if __name__ == "__main__":
     # Parse arguments
-    if len(sys.argv)<4:
-        print("Usage: {} <root_dir> <directories_defined_in_config.mk> <sut_peripherals>\n".format(sys.argv[0]))
+    if len(sys.argv)!=7:
+        print("Usage: {} <root_dir> <portmap_path> <directories_defined_in_config.mk> <sut_peripherals> <tester_peripherals> <testing_cut>\n".format(sys.argv[0]))
         exit(-1)
     root_dir=sys.argv[1]
     submodule_utils.root_dir = root_dir
 
-    create_systemv(sys.argv[2], sys.argv[3]) 
+    create_systemv(sys.argv[3], sys.argv[4], sys.argv[5], os.path.join(root_dir,sys.argv[2]), 1 if (sys.argv[6].lower() not in ['0','false','']) else 0) 

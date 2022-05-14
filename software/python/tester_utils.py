@@ -10,7 +10,6 @@ import re
 # Add folder to path that contains python scripts to be imported
 import submodule_utils 
 from submodule_utils import *
-from createSystem import reserved_signals_template
 
 # Header to be put in portmap config file
 portmap_header = """\
@@ -96,22 +95,10 @@ system sut (
     );
 """
 
-# Parameter: TESTER_PERIPHERALS string defined in config.mk
-# Returns dictionary with amount of instances each peripheral of the Tester to be created 
-def get_tester_peripherals(tester_peripherals_str):
-    tester_peripherals = tester_peripherals_str.split()
-
-    tester_instances_amount = {}
-    for i in tester_peripherals:
-        tester_instances_amount[i]=tester_peripherals.count(i)
-
-    return tester_instances_amount
-
-
 # Overwrites portmap configuration file with a template, with every existing signal mapped to external interface by default
 def generate_portmap(directories_str, sut_peripherals_str, tester_peripherals_str, portmap_path):
-    sut_instances_amount = get_sut_peripherals(sut_peripherals_str)
-    tester_instances_amount = get_tester_peripherals(tester_peripherals_str)
+    sut_instances_amount = get_peripherals(sut_peripherals_str)
+    tester_instances_amount = get_peripherals(tester_peripherals_str)
     submodule_directories = get_submodule_directories(directories_str)
     peripheral_signals = get_peripherals_signals({**sut_instances_amount, **tester_instances_amount},submodule_directories)
 
@@ -136,12 +123,12 @@ def generate_portmap(directories_str, sut_peripherals_str, tester_peripherals_st
 #    pwires: List of signals that will interconnect SUT with Tester peripherals. Each signal is an array with 2 dimensions. [0] is the signal name. [1] is the signal size.
 #    mapped_signals: Dimensions=[<0 for SUT; 1 for Tester>][<corename>][<instance number>][<signal name with macro>]
 #                    This list of dictionaries stores the -2 for unmapped signals, -1 for mapped to external interface 
-#                    and >0 for signals mapped to a wire in pwires list with that index.
+#                    and >-1 for signals mapped to a wire in pwires list with that index.
 def read_portmap(sut_instances_amount, tester_instances_amount, peripheral_signals, portmap_path):
     # Wires internal to Tester that interface SUT and Tester peripherals
     pwires = []
     # Array to store if a signal has been mapped
-    # -2 not mapped, -1 mapped to external interface, 0< mapped to signal in pwires (index)
+    # -2 not mapped, -1 mapped to external interface, >-1 mapped to signal in pwires (index)
     mapped_signals = [{},{}] # SUT signals and Tester Signals
     for corename in sut_instances_amount:
         mapped_signals[0][corename] = []
@@ -157,16 +144,15 @@ def read_portmap(sut_instances_amount, tester_instances_amount, peripheral_signa
                 mapped_signals[1][corename][i][signal] = -2
 
     # Read portmap file
-    # root_dir+"/hardware/tester/peripheral_portmap.conf"
     portmap_file = open(portmap_path, "r")
     portmap_contents = portmap_file.readlines() 
     portmap_file.close()
 
     # Parse signals, map them and create pwires signals
     for idx, i in enumerate(portmap_contents):
-        if i.startswith("//"): # Ignore comments
-            continue
         i=i.replace(" ", "") # Remove all spaces
+        if not i or i=="\n" or i.startswith("//"): # Ignore comments and empty lines
+            continue
         result = re.search("^([^\.]+)\.([^\[]+)\[(\d+)\]\.([^\:]+)\:(?:(?:External)|(?:([^\.\n]+)\.([^\[]+)\[(\d+)\]\.(.+)))$", i)
         if result is None:
             print("Error parsing line {} of portmap file!".format(idx+1))
@@ -178,10 +164,7 @@ def read_portmap(sut_instances_amount, tester_instances_amount, peripheral_signa
                 exit(-1)
             if result.group(5) is None: # Mapped to external interface
                     mapped_signals[0 if result.group(1)=="SUT" else 1][result.group(2)][int(result.group(3))][result.group(4)] = -1
-            else: # Mapped between SUT and Tester
-                if result.group(1) == result.group(5): # Make sure we are not mapping SUT or Tester with itself 
-                    print("Error: Portmap file line {}, can't map ports of {} with itself!".format(idx+1,result.group(1)))
-                    exit(-1)
+            else: # Mapped to SUT or Tester
                 # Make sure it has not been mapped before
                 if not (mapped_signals[0 if result.group(5)=="SUT" else 1][result.group(6)][int(result.group(7))][result.group(8)] < -1):
                     print("Error: Portmap file line {}, Signal {} of {}.{}[{}] already mapped previously!".format(idx+1,result.group(8),result.group(5),result.group(6),result.group(7)))
@@ -215,13 +198,13 @@ def read_portmap(sut_instances_amount, tester_instances_amount, peripheral_signa
 # Creates tester.v with SUT included 
 def create_tester(directories_str, sut_peripherals_str, tester_peripherals_str):
     # Get lists of peripherals and info about them
-    sut_instances_amount = get_sut_peripherals(sut_peripherals_str)
-    tester_instances_amount = get_tester_peripherals(tester_peripherals_str)
+    sut_instances_amount = get_peripherals(sut_peripherals_str)
+    tester_instances_amount = get_peripherals(tester_peripherals_str)
     submodule_directories = get_submodule_directories(directories_str)
     peripheral_signals = get_peripherals_signals({**sut_instances_amount, **tester_instances_amount},submodule_directories)
 
     # Read portmap file and get encoded data
-    pwires, mapped_signals = read_portmap(sut_instances_amount, tester_instances_amount, peripheral_signals, root_dir+"/hardware/tester/peripheral_portmap.conf")
+    pwires, mapped_signals = read_portmap(sut_instances_amount, tester_instances_amount, peripheral_signals, root_dir+"/peripheral_portmap.conf")
 
     # Read template file
     tester_template_file = open(root_dir+"/hardware/src/system_core.v", "r") 
@@ -237,9 +220,6 @@ def create_tester(directories_str, sut_peripherals_str, tester_peripherals_str):
                 tester_contents.insert(start_index, '`include "{}"\n'.format(path+"/"+file))
             if file.endswith("swreg.vh"):
                 tester_contents.insert(start_index, '`include "{}"\n'.format(file.replace("swreg","swreg_def")))
-
-    # Create PWIRES marker
-    tester_contents.insert(find_idx(tester_contents, "endmodule")-1, '    //PWIRES\n')
 
     # Rename verilog module form 'system' to 'tester'
     tester_contents[find_idx(tester_contents, "module system")-1] = "module tester\n"
@@ -357,14 +337,16 @@ def create_tester(directories_str, sut_peripherals_str, tester_peripherals_str):
                     print("Error: signal {} of SUT.{}[{}] not mapped!".format(signal,corename,i))
                     exit(-1)
                 if mapped_signals[0][corename][i][signal] > -1: # Not mapped to external interface
-                    # Make sure we have not yet created PWIRE of this signal
-                    if pwires_inserted[mapped_signals[0][corename][i][signal]] == False:
-                        # Insert pwire
-                        tester_contents.insert(find_idx(tester_contents, "PWIRES"), '    wire {} {};\n'.format(pwires[mapped_signals[0][corename][i][signal]][1].replace("/*<SwregFilename>*/",swreg_filename),pwires[mapped_signals[0][corename][i][signal]][0]))
-                        # Mark this signal as been inserted
-                        pwires_inserted[mapped_signals[0][corename][i][signal]] = True
-                    # Insert SUT PORT
-                    tester_contents.insert(find_idx(tester_contents, "SUTPORTS"), '        .{}_{}({}),\n'.format(corename+str(i),signal,pwires[mapped_signals[0][corename][i][signal]][0]))
+                    # Only insert this signal, if it is mapped between SUT and Tester (don't insert SUT : SUT signals)
+                    if 2>len(re.findall('(?=_SUT_)', pwires[mapped_signals[0][corename][i][signal]][0])):
+                        # Make sure we have not yet created PWIRE of this signal
+                        if pwires_inserted[mapped_signals[0][corename][i][signal]] == False:
+                            # Insert pwire
+                            tester_contents.insert(find_idx(tester_contents, "PWIRES"), '    wire {} {};\n'.format(pwires[mapped_signals[0][corename][i][signal]][1].replace("/*<SwregFilename>*/",swreg_filename),pwires[mapped_signals[0][corename][i][signal]][0]))
+                            # Mark this signal as been inserted
+                            pwires_inserted[mapped_signals[0][corename][i][signal]] = True
+                        # Insert SUT PORT
+                        tester_contents.insert(find_idx(tester_contents, "SUTPORTS"), '        .{}_{}({}),\n'.format(corename+str(i),signal,pwires[mapped_signals[0][corename][i][signal]][0]))
                 else: # Mapped to external interface
                     # Insert PIO
                     tester_contents.insert(find_idx(tester_contents, "PIO"), '    {} sut_{}_{},\n'.format(peripheral_signals[corename][signal].replace("/*<SwregFilename>*/",swreg_filename),corename+str(i),signal))
@@ -398,13 +380,13 @@ def create_tester(directories_str, sut_peripherals_str, tester_peripherals_str):
 # Create top_system for simulation with the Tester
 def create_top_system(directories_str, sut_peripherals_str, tester_peripherals_str):
     # Get lists of peripherals and info about them
-    sut_instances_amount = get_sut_peripherals(sut_peripherals_str)
-    tester_instances_amount = get_tester_peripherals(tester_peripherals_str)
+    sut_instances_amount = get_peripherals(sut_peripherals_str)
+    tester_instances_amount = get_peripherals(tester_peripherals_str)
     submodule_directories = get_submodule_directories(directories_str)
     peripheral_signals = get_peripherals_signals({**sut_instances_amount, **tester_instances_amount},submodule_directories)
 
     # Read portmap file and get encoded data
-    _, mapped_signals = read_portmap(sut_instances_amount, tester_instances_amount, peripheral_signals, root_dir+"/hardware/tester/peripheral_portmap.conf")
+    _, mapped_signals = read_portmap(sut_instances_amount, tester_instances_amount, peripheral_signals, root_dir+"/peripheral_portmap.conf")
 
     # Read template file
     topsystem_template_file = open(root_dir+"/hardware/tester/tester_top_core.v", "r") 
@@ -459,7 +441,7 @@ def create_top_system(directories_str, sut_peripherals_str, tester_peripherals_s
     topsystem_file.close()
 
 def print_tester_nslaves(tester_peripherals_str):
-    tester_instances_amount = get_tester_peripherals(tester_peripherals_str)
+    tester_instances_amount = get_peripherals(tester_peripherals_str)
     i=0
     # Calculate total amount of instances
     for corename in tester_instances_amount:
@@ -468,7 +450,7 @@ def print_tester_nslaves(tester_peripherals_str):
 
 #Creates list of defines of sut instances with sequential numbers
 def print_tester_peripheral_defines(defmacro, tester_peripherals_str):
-    tester_instances_amount = get_tester_peripherals(tester_peripherals_str)
+    tester_instances_amount = get_peripherals(tester_peripherals_str)
     j=0
     for corename in tester_instances_amount:
         for i in range(tester_instances_amount[corename]):
@@ -479,7 +461,7 @@ def print_tester_peripheral_defines(defmacro, tester_peripherals_str):
 #For example, if DEFINE list contains UART0=0 (previously defined for the SUT), and the Tester has its UART0 mapped to 1 (UART0=1), then this function replaces the UART0=0 in the list by UART0=1. If the list did not contain UART0 then it just adds UART0=1.
 def replace_peripheral_defines(define_string, defmacro, tester_peripherals_str):
     define_list = define_string.split(' ')
-    tester_instances_amount = get_tester_peripherals(tester_peripherals_str)
+    tester_instances_amount = get_peripherals(tester_peripherals_str)
     j=0
     for corename in tester_instances_amount:
         for i in range(tester_instances_amount[corename]):
