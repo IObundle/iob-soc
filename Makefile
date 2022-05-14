@@ -66,7 +66,7 @@ tester-sim-run:
 # BUILD, LOAD AND RUN ON FPGA BOARD
 #
 
-fpga-build:
+fpga-build: $(FPGA_DEPS)
 	make fw-build
 	make -C $(BOARD_DIR) build
 
