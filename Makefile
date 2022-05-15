@@ -96,7 +96,7 @@ doc-test:
 # CLEAN
 #
 
-clean: pc-emul-clean sim-clean fpga-clean doc-clean
+clean: pc-emul-clean sim-clean fpga-clean doc-clean python-cache-clean
 
 #
 # TEST ALL PLATFORMS
@@ -145,6 +145,9 @@ test-doc-clean:
 test: test-clean test-pc-emul test-sim test-fpga test-doc
 
 test-clean: test-pc-emul-clean test-sim-clean test-fpga-clean test-doc-clean
+
+python-cache-clean:
+	find . -name "*__pycache__" -exec rm -rf {} \; -prune
 
 debug:
 	@echo $(UART_DIR)

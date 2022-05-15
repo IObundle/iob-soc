@@ -41,7 +41,7 @@ periphs.h: periphs_tmp.h
 	@rm periphs_tmp.h
 
 periphs_tmp.h:
-	$(foreach p, $(PERIPHERALS), $(shell echo "#define $p_BASE (1<<$P) |($p<<($P-N_SLAVES_W))" >> $@) )
+	$(SW_DIR)/python/periphs_tmp.py $P "$(PERIPHERALS)"
 
 build-all:
 	make -C $(FIRM_DIR) build

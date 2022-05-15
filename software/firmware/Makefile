@@ -9,6 +9,10 @@ ifeq ($(USE_DDR),1)
 include $(CACHE_DIR)/software/software.mk
 endif
 
+#
+# ADD SUBMODULES SOFTWARE
+#
+
 #uart
 include $(UART_DIR)/software/embedded/embedded.mk
 

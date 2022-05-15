@@ -34,8 +34,9 @@ BOOTROM_ADDR_W:=12
 INIT_MEM ?=1
 
 #PERIPHERAL LIST
-#must match respective submodule CORE_NAME in the core.mk file of the submodule
-#PERIPHERALS:=UART
+#list with corename of peripherals to be attached to peripheral bus.
+#to include multiple instances, write the corename of the peripheral multiple times.
+#(Example: 'PERIPHERALS ?=UART UART' will create 2 UART instances)
 PERIPHERALS ?=UART
 
 #RISC-V HARD MULTIPLIER AND DIVIDER INSTRUCTIONS
@@ -112,6 +113,14 @@ BOARD_DIR ?=$(shell find hardware -name $(BOARD))
 #doc paths
 DOC_DIR=$(ROOT_DIR)/document/$(DOC)
 
+#macro to return all defined directories separated by newline
+GET_DIRS= $(eval ROOT_DIR_TMP:=$(ROOT_DIR))\
+          $(eval ROOT_DIR=.)\
+          $(foreach V,$(sort $(.VARIABLES)),\
+          $(if $(filter %_DIR, $V),\
+          $V=$($V);))\
+          $(eval ROOT_DIR:=$(ROOT_DIR_TMP))
+
 #define macros
 DEFINE+=$(defmacro)DATA_W=$(DATA_W)
 DEFINE+=$(defmacro)ADDR_W=$(ADDR_W)
@@ -119,7 +128,8 @@ DEFINE+=$(defmacro)BOOTROM_ADDR_W=$(BOOTROM_ADDR_W)
 DEFINE+=$(defmacro)SRAM_ADDR_W=$(SRAM_ADDR_W)
 DEFINE+=$(defmacro)FIRM_ADDR_W=$(FIRM_ADDR_W)
 DEFINE+=$(defmacro)DCACHE_ADDR_W=$(DCACHE_ADDR_W)
-DEFINE+=$(defmacro)N_SLAVES=$(N_SLAVES) #peripherals
+DEFINE+=$(defmacro)N_SLAVES=$(shell $(SW_DIR)/python/submodule_utils.py get_n_slaves "$(PERIPHERALS)") #peripherals
+DEFINE+=$(defmacro)N_SLAVES_W=$(shell $(SW_DIR)/python/submodule_utils.py get_n_slaves_w "$(PERIPHERALS)")
 
 #address selection bits
 E:=31 #extra memory bit
@@ -138,13 +148,7 @@ DEFINE+=$(defmacro)B=$B
 #PERIPHERAL IDs
 #assign a sequential ID to each peripheral
 #the ID is used as an instance name index in the hardware and as a base address in the software
-N_SLAVES:=0
-$(foreach p, $(PERIPHERALS), $(eval $p=$(N_SLAVES)) $(eval N_SLAVES:=$(shell expr $(N_SLAVES) \+ 1)))
-$(foreach p, $(PERIPHERALS), $(eval DEFINE+=$(defmacro)$p=$($p)))
-
-N_SLAVES_W = $(shell echo "import math; print(math.ceil(math.log($(N_SLAVES),2)))"|python3 )
-DEFINE+=$(defmacro)N_SLAVES_W=$(N_SLAVES_W)
-
+DEFINE+=$(shell $(SW_DIR)/python/submodule_utils.py get_defines "$(PERIPHERALS)" $(defmacro))
 
 #default baud and system clock freq
 BAUD ?=115200

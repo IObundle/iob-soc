@@ -43,10 +43,10 @@ module top_system(
       .trap          (trap),
 
       //UART
-      .uart_txd      (uart_txd),
-      .uart_rxd      (uart_rxd),
-      .uart_rts      (),
-      .uart_cts      (1'b1)
+      .UART0_txd      (uart_txd),
+      .UART0_rxd      (uart_rxd),
+      .UART0_rts      (),
+      .UART0_cts      (1'b1)
       );
 
 endmodule
