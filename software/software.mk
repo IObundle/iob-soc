@@ -6,10 +6,10 @@ REGFILEIF_SW_DIR:=$(REGFILEIF_DIR)/software
 INCLUDE+=
 
 #headers
-HDR+=iob_regfileif_swreg_inverted.h
+HDR+=iob_regfileif_inverted_swreg.h
 
 #sources
 SRC+=
 
-iob_regfileif_swreg.h iob_regfileif_swreg_inverted.h: $(REGFILEIF_HW_DIR)/include/iob_regfileif_swreg.vh
-	$(REGFILEIF_SW_DIR)/python/mkregsregfileif.py $< SW $(shell dirname $(MKREGS)) "REGFILEIF"
+iob_regfileif_swreg.h iob_regfileif_inverted_swreg.h: $(REGFILEIF_DIR)/mkregs.conf
+	$(REGFILEIF_SW_DIR)/python/mkregsregfileif.py $< SW $(shell dirname $(MKREGS)) iob_regfileif

@@ -24,9 +24,7 @@ module iob_regfileif
    );
 
 // BLOCK Register File & Holds the current configuration of the system as well as internal parameters. Data to be sent or that has been received is stored here temporarily.
-`include "iob_regfileif_swreg.vh"
-`include "iob_regfileif_swreg_inverted.vh"
 `include "iob_regfileif_swreg_gen.vh"
-`include "iob_regfileif_swreg_inverted_gen.vh"
+`include "iob_regfileif_inverted_swreg_gen.vh"
 `include "iob_regfileif_swreg_wire_connections.vh"
 endmodule

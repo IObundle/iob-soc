@@ -12,11 +12,11 @@ mkregs_dir = ''
 if __name__ == "__main__" :
     #parse command line to get mkregs_dir
     if len(sys.argv) != 5:
-        print("Usage: {} iob_corename_swreg.vh [HW|SW] [mkregs.py dir] [corename]".format(sys.argv[0]))
+        print("Usage: {} iob_corename_swreg.vh [HW|SW] [mkregs.py dir] [top_module_name]".format(sys.argv[0]))
         print(" iob_regfileif_swreg.vh:the software accessible registers definitions file")
         print(" [HW|SW]: use HW to generate the hardware files or SW to generate the software files")
         print(" [mkregs.py dir]: directory of mkregs.py")
-        print(" [corename]: corename of peripheral")
+        print(" [top_module_name]: Top/core module name")
         quit()
     else:
         mkregs_dir = sys.argv[3]
@@ -84,20 +84,18 @@ if __name__ == "__main__" :
     defsfile = fin.readlines()
     fin.close()
 
-    infile = infile.split('/')[-1].split('.')[0]
-
     # Create normal swreg
-    swreg_parse (defsfile, hwsw, infile, corename)
+    swreg_parse (defsfile, hwsw, corename)
 
     if(hwsw == "HW"):
         # Make connections between read and write registers
-        connect_wires_between_regs(infile+"_wire_connections.vh", defsfile)
+        connect_wires_between_regs(corename+"_swreg_wire_connections.vh", defsfile)
 
-        # Change <infile>_gen.vh to connect to external native bus
-        connect_to_external_native(infile+"_gen.vh")
+        # Change <corename>_gen.vh to connect to external native bus
+        connect_to_external_native(corename+"_swreg_gen.vh")
 
     # Create swreg with read and write registers inverted
-    infile = infile + "_inverted"
+    corename = corename + "_inverted"
     # invert registers type
     for i in range(len(defsfile)):
         if 'SWREG_W' in defsfile[i]:
@@ -106,10 +104,10 @@ if __name__ == "__main__" :
             defsfile[i] = re.sub('SWREG_R\(([^,]+),','SWREG_W(\g<1>_INVERTED,', defsfile[i])
 
     if(hwsw == "HW"):
-        # write iob_COREPREFIX_swreg_inverted.vh file
-        fout = open (infile+".vh", 'w')
+        # write iob_COREPREFIX_inverted_swreg.vh file
+        fout = open (corename+".vh", 'w')
         fout.writelines(defsfile)
         fout.close()
 
     # create generated inverted files
-    swreg_parse (defsfile, hwsw, infile, corename)
+    swreg_parse (defsfile, hwsw, corename)
