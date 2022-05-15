@@ -358,9 +358,9 @@ The configuration options for the Tester are inherited from the ones used for IO
 The only exception is the list of peripherals attached, where the Tester has its own list named `TESTER_PERIPHERALS`.
 
 IOs from the peripherals attached to the IOb-SoC can be configured to inteconnect with peripherals attached to the Tester. 
-This configuration is made in the file `hardware/tester/peripheral_portmap.txt`.
+This configuration is made in the file `peripheral_portmap.conf`.
 
-This repository already contains a template `peripheral_portmap.txt` configuration file.
+This repository already contains a template `peripheral_portmap.conf` configuration file.
 When modifing peripherals used in the system, a new template can be automatically generated using the command:
 ```
 make tester-portmap

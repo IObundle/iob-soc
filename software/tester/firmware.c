@@ -16,7 +16,7 @@ int main()
 
   //Init uart0
   uart_init(UART0_BASE,FREQ/BAUD);   
-  IOBNATIVEBRIDGEIF_INIT_BASEADDR(IOBNATIVEBRIDGEIF0_BASE);
+  IOB_NATIVEBRIDGEIF_INIT_BASEADDR(IOBNATIVEBRIDGEIF0_BASE);
 
   uart_puts("\n\nHello from tester!\n\n\n");
 
@@ -39,7 +39,7 @@ int main()
   uart_finish();
   
   //Switch back to UART0
-  UART_INIT_BASEADDR(UART0_BASE);
+  IOB_UART_INIT_BASEADDR(UART0_BASE);
   
   //Send messages previously stored from SUT
   uart_puts("#### Messages received from SUT: ####\n\n");
@@ -50,13 +50,13 @@ int main()
 
   //Read data from IOBNATIVEBRIDGEIF (was written by the SUT)
   uart_puts("REGFILEIF contents read by the Tester:\n");
-  printf("%d \n", IOBNATIVEBRIDGEIF_GET_REG3());
-  printf("%d \n", IOBNATIVEBRIDGEIF_GET_REG4());
+  printf("%d \n", IOB_NATIVEBRIDGEIF_GET_REG3());
+  printf("%d \n", IOB_NATIVEBRIDGEIF_GET_REG4());
 
 #ifdef USE_DDR
 #ifdef RUN_EXTMEM
   //Get address of first char in string stored in SUT's memory with first bit inverted
-  sutStr=(char*)(IOBNATIVEBRIDGEIF_GET_REG5() ^ (0b1 << (DCACHE_ADDR_W-1))); //Note, DCACHE_ADDR_W may not be the same as DDR_ADDR_W when running in fpga
+  sutStr=(char*)(IOB_NATIVEBRIDGEIF_GET_REG5() ^ (0b1 << (DCACHE_ADDR_W-1))); //Note, DCACHE_ADDR_W may not be the same as DDR_ADDR_W when running in fpga
 
   //Print the string by accessing that address
   uart_puts("\nString read by Tester directly from SUT's memory:\n");

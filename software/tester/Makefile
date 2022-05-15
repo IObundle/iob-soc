@@ -24,10 +24,8 @@ FIRM_HDR=tester_periphs.h
 BOOT_SRC=$(BOOT_DIR)/boot.S boot.c 
 FIRM_SRC= firmware.S firmware.c $(UART_DIR)/software/printf.c
 
-#peripherals (embedded)
-$(foreach p, $(sort $(TESTER_PERIPHERALS)), $(eval include $($p_DIR)/software/embedded/embedded.mk))
 #UART for bootloader
-$(if $(filter UART, $(TESTER_PERIPHERALS)),, $(eval include $(UART_DIR)/software/embedded/embedded.mk))	
+include $(UART_DIR)/software/embedded/embedded.mk
 
 #Replace SUT N_SLAVES by Tester N_SLAVES
 TESTER_N_SLAVES=$(shell $(SW_DIR)/python/tester_utils.py get_n_slaves "$(TESTER_PERIPHERALS)")

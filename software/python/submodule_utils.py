@@ -7,6 +7,20 @@ import os
 import re
 import math
 
+# Signals in this template will only be inserted if they exist in the peripheral IO
+reserved_signals_template = """\
+      .clk(clk),
+      .rst(reset),
+      .arst(reset),
+      .valid(slaves_req[`valid(`/*<InstanceName>*/)]),
+      .address(slaves_req[`address(`/*<InstanceName>*/,`/*<SwregFilename>*/_ADDR_W+2)-2]),
+      .wdata(slaves_req[`wdata(`/*<InstanceName>*/)]),
+      .wstrb(slaves_req[`wstrb(`/*<InstanceName>*/)]),
+      .rdata(slaves_resp[`rdata(`/*<InstanceName>*/)]),
+      .ready(slaves_resp[`ready(`/*<InstanceName>*/)]),
+"""
+
+
 # Parameter: string with directories separated by ';'
 # Returns dictionary with every directory defined in <root_dir>/config.mk
 def get_directories(directories_str):
@@ -29,17 +43,16 @@ def get_submodule_directories(directories_str):
     return directories
 
 # Parameter: PERIPHERALS string defined in config.mk
-# Returns dictionary with amount of instances each peripheral of the SUT to be created 
-def get_sut_peripherals(sut_peripherals_str):
-    sut_peripherals = sut_peripherals_str.split()
+# Returns dictionary with amount of instances each peripheral to be created 
+def get_peripherals(peripherals_str):
+    peripherals = peripherals_str.split()
 
     # Count how many instances to create of each type of peripheral
-    sut_instances_amount = {}
-    for i in sut_peripherals:
-        sut_instances_amount[i]=sut_peripherals.count(i)
-    #print(sut_instances_amount) #DEBUG
+    instances_amount = {}
+    for i in peripherals:
+        instances_amount[i]=peripherals.count(i)
 
-    return sut_instances_amount
+    return instances_amount
 
 # Given lines read from the verilog file with a module declaration
 # this function returns the inputs and outputs defined in the port list
@@ -64,36 +77,40 @@ def get_module_io(verilog_lines):
     #Get signals of this module
     for i in range(port_list_start, len(verilog_lines)):
         #Ignore comments and empty lines
-        if not verilog_lines[i] or verilog_lines[i].lstrip().startswith("//"):
+        if not verilog_lines[i].strip() or verilog_lines[i].lstrip().startswith("//"):
             continue
         if ");" in verilog_lines[i]:
             break #Found end of port list
         #If this signal is declared in normal verilog format (no macros)
-        if any(x in verilog_lines[i] for x in ["input","output"]):
-            signal = re.search("^\s*((?:input)|(?:output))(?:\s|(?:\[(.*\)]))*(.*),?", verilog_lines[i])
+        if any(verilog_lines[i].lstrip().startswith(x) for x in ["input","output"]):
+            signal = re.search("^\s*((?:input)|(?:output))(?:\s|(?:\[([^:]+):([^\]]+)\]))*(.*),?", verilog_lines[i])
             if signal is not None:
                 # Store signal in dictionary with format: module_signals[signalname] = "input [size:0]"
                 if signal.group(2) is None:
-                    module_signals[signal.group(3)]=signal.group(1)
+                    module_signals[signal.group(4)]=signal.group(1)
                 else:
                     #FUTURE IMPROVEMENT: make python parse verilog macros.
-                    module_signals[signal.group(3)]="{} [{}{}]".format(signal.group(1), 
-                            "" if "`" in signal.group(2) else "`", # Set as macro if it was a parameter
-                            signal.group(2).replace("ADDR_W","/*<SwregFilename>*/_ADDR_W"))
+                    module_signals[signal.group(4)]="{} [{}:{}]".format(signal.group(1), 
+                            signal.group(2) if signal.group(2).isdigit() else
+                            ("" if "`" in signal.group(2) else "`") # Set as macro if it was a parameter
+                            +signal.group(2).replace("ADDR_W","/*<SwregFilename>*/_ADDR_W"),
+                            signal.group(3))
         elif "`IOB_INPUT" in verilog_lines[i]: #If it is a known verilog macro
             signal = re.search("^\s*`IOB_INPUT\(\s*(\w+)\s*,\s*([^\s]+)\s*\),?", verilog_lines[i])
             if signal is not None:
                 # Store signal in dictionary with format: module_signals[signalname] = "input [size:0]"
-                module_signals[signal.group(1)]="input [{}{}:0]".format(
-                        "" if "`" in signal.group(2) else "`", # Set as macro if it was a parameter
-                        int(signal.group(2))-1 if signal.group(2).isdigit() else (signal.group(2)+"-1").replace("ADDR_W","/*<SwregFilename>*/_ADDR_W")) # Replace keyword "ADDR_W" by "/*<SwregFilename>*/_ADDR_W"
+                module_signals[signal.group(1)]="input [{}:0]".format(
+                        int(signal.group(2))-1 if signal.group(2).isdigit() else 
+                        (("" if "`" in signal.group(2) else "`") # Set as macro if it was a parameter
+                        +signal.group(2)+"-1").replace("ADDR_W","/*<SwregFilename>*/_ADDR_W")) # Replace keyword "ADDR_W" by "/*<SwregFilename>*/_ADDR_W"
         elif "`IOB_OUTPUT" in verilog_lines[i]: #If it is a known verilog macro
             signal = re.search("^\s*`IOB_OUTPUT\(\s*(\w+)\s*,\s*([^\s]+)\s*\),?", verilog_lines[i])
             if signal is not None:
                 # Store signal in dictionary with format: module_signals[signalname] = "output [size:0]"
-                module_signals[signal.group(1)]="output [{}{}:0]".format(
-                        "" if "`" in signal.group(2) else "`", # Set as macro if it was a parameter
-                        int(signal.group(2))-1 if signal.group(2).isdigit() else (signal.group(2)+"-1").replace("ADDR_W","/*<SwregFilename>*/_ADDR_W")) # Replace keyword "ADDR_W" by "/*<SwregFilename>*/_ADDR_W"
+                module_signals[signal.group(1)]="output [{}:0]".format(
+                        int(signal.group(2))-1 if signal.group(2).isdigit() else 
+                        (("" if "`" in signal.group(2) else "`")
+                        +signal.group(2)+"-1").replace("ADDR_W","/*<SwregFilename>*/_ADDR_W")) # Replace keyword "ADDR_W" by "/*<SwregFilename>*/_ADDR_W"
         elif '`include "gen_if.vh"' in verilog_lines[i]: #If it is a known verilog include
             module_signals["clk"]="input "
             module_signals["rst"]="input "
@@ -140,7 +157,7 @@ def get_peripherals_signals(list_of_peripherals, submodule_directories):
         peripheral_signals[i] = {}
         # Find top module verilog file of peripheral
         module_dir = root_dir+"/"+submodule_directories[i]+"/hardware/src"
-        module_filename = get_top_module(submodule_directories[i]+"/config.mk")+".v";
+        module_filename = get_top_module(root_dir+"/"+submodule_directories[i]+"/config.mk")+".v";
         module_path=os.path.join(module_dir,module_filename)
         # Skip iteration if peripheral does not have top module
         if not os.path.isfile(module_path):
@@ -166,18 +183,18 @@ def find_idx(lines, word):
 # Functions to run when this script gets called directly #
 ##########################################################
 def print_instances(sut_peripherals_str):
-    sut_instances_amount = get_sut_peripherals(sut_peripherals_str)
+    sut_instances_amount = get_peripherals(sut_peripherals_str)
     for corename in sut_instances_amount:
         for i in range(sut_instances_amount[corename]):
             print(corename+str(i), end=" ")
 
 def print_peripherals(sut_peripherals_str):
-    sut_instances_amount = get_sut_peripherals(sut_peripherals_str)
+    sut_instances_amount = get_peripherals(sut_peripherals_str)
     for i in sut_instances_amount:
         print(i, end=" ")
 
 def print_nslaves(sut_peripherals_str):
-    sut_instances_amount = get_sut_peripherals(sut_peripherals_str)
+    sut_instances_amount = get_peripherals(sut_peripherals_str)
     i=0
     # Calculate total amount of instances
     for corename in sut_instances_amount:
@@ -185,16 +202,20 @@ def print_nslaves(sut_peripherals_str):
     print(i, end="")
 
 def print_nslaves_w(sut_peripherals_str):
-    sut_instances_amount = get_sut_peripherals(sut_peripherals_str)
+    sut_instances_amount = get_peripherals(sut_peripherals_str)
     i=0
     # Calculate total amount of instances
     for corename in sut_instances_amount:
         i=i+sut_instances_amount[corename]
-    print(math.ceil(math.log(i,2)))
+
+    if not i:
+        print(0)
+    else:
+        print(math.ceil(math.log(i,2)))
 
 #Creates list of defines of sut instances with sequential numbers
 def print_sut_peripheral_defines(defmacro, sut_peripherals_str):
-    sut_instances_amount = get_sut_peripherals(sut_peripherals_str)
+    sut_instances_amount = get_peripherals(sut_peripherals_str)
     j=0
     for corename in sut_instances_amount:
         for i in range(sut_instances_amount[corename]):

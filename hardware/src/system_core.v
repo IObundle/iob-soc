@@ -305,6 +305,8 @@ module system
       );
 `endif
 
+   //do not remove line below
+   //PWIRES
    
 endmodule
  

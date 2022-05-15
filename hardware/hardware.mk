@@ -72,7 +72,11 @@ endif
 
 # make system.v with peripherals
 system.v: $(SRC_DIR)/system_core.v
-	$(SW_DIR)/python/createSystem.py $(ROOT_DIR) "$(GET_DIRS)" "$(PERIPHERALS)"
+ifeq ($(TESTING_CORE),)
+	$(SW_DIR)/python/createSystem.py $(ROOT_DIR) "peripheral_portmap.conf" "$(GET_DIRS)" "$(PERIPHERALS)" "$(TESTER_PERIPHERALS)" 0
+else
+	$(SW_DIR)/python/createSystem.py $(ROOT_DIR) "../../peripheral_portmap.conf" "$(GET_DIRS)" "" "$(PERIPHERALS)" 1
+endif
 
 # make and copy memory init files
 PYTHON_DIR=$(MEM_DIR)/software/python

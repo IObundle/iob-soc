@@ -3,8 +3,12 @@ include ./config.mk
 
 # Generate configuration file for port mapping between the Tester, SUT and external interface of the Top System
 tester-portmap:
-	$(SW_DIR)/python/tester_utils.py generate_config $(ROOT_DIR) "$(GET_DIRS)" "$(PERIPHERALS)" "$(TESTER_PERIPHERALS)"
-	@echo Portmap template generated in hardware/tester/peripheral_portmap.txt
+ifeq ($(TESTING_CORE),)
+	$(SW_DIR)/python/tester_utils.py generate_portmap $(ROOT_DIR) "$(GET_DIRS)" "peripheral_portmap.conf" "$(PERIPHERALS)" "$(TESTER_PERIPHERALS)"
+else
+	$(SW_DIR)/python/tester_utils.py generate_portmap $(ROOT_DIR) "$(GET_DIRS)" "../../peripheral_portmap.conf" "" "$(PERIPHERALS)"
+	@echo Portmap template generated in peripheral_portmap.conf
+endif
 
 #
 # BUILD EMBEDDED SOFTWARE
@@ -37,7 +41,7 @@ pc-emul-test: pc-emul-clean
 # SIMULATE RTL
 #
 
-sim-build:
+sim-build: $(SIM_DEPS)
 	make fw-build BAUD=5000000
 	make -C $(SIM_DIR) build
 
@@ -62,7 +66,7 @@ tester-sim-run:
 # BUILD, LOAD AND RUN ON FPGA BOARD
 #
 
-fpga-build:
+fpga-build: $(FPGA_DEPS)
 	make fw-build
 	make -C $(BOARD_DIR) build
 
@@ -116,7 +120,7 @@ doc-test:
 # CLEAN
 #
 
-clean: pc-emul-clean sim-clean fpga-clean doc-clean python-cache-clean
+clean: pc-emul-clean sim-clean fpga-clean doc-clean python-cache-clean $(CLEAN_DEPS)
 
 #
 # TEST ALL PLATFORMS

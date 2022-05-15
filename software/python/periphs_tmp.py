@@ -9,7 +9,7 @@ from submodule_utils import *
 
 # Arguments:
 #   P: $P variable in config.mk
-#   peripheral_instances_amount: list with amount of instances of each peripheral (returned by get_sut_peripherals() or get_tester_peripherals())
+#   peripheral_instances_amount: list with amount of instances of each peripheral (returned by get_peripherals())
 def create_periphs_tmp(P, peripheral_instances_amount, filename):
 
     template_contents = []
@@ -28,4 +28,4 @@ if __name__ == "__main__":
     if len(sys.argv)<3:
         print("Needs two arguments.\nUsage: {} <address_selection_bits_of_peripherals (config.mk variable $P)> <sut_peripherals>".format(sys.argv[0]))
         exit(-1)
-    create_periphs_tmp(sys.argv[1], get_sut_peripherals(sys.argv[2]), "periphs_tmp.h") 
+    create_periphs_tmp(sys.argv[1], get_peripherals(sys.argv[2]), "periphs_tmp.h") 

@@ -9,7 +9,7 @@ from submodule_utils import *
 
 def create_system_testbench(directories_str, sut_peripherals_str):
     # Get peripherals, directories and signals
-    sut_instances_amount = get_sut_peripherals(sut_peripherals_str)
+    sut_instances_amount = get_peripherals(sut_peripherals_str)
     submodule_directories = get_submodule_directories(directories_str)
     peripheral_signals = get_peripherals_signals(sut_instances_amount, submodule_directories)
 
