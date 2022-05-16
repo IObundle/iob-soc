@@ -143,11 +143,11 @@ BOARD_DIR ?=$(shell find hardware -name $(BOARD))
 #doc paths
 DOC_DIR=$(ROOT_DIR)/document/$(DOC)
 
-#macro to return all defined directories separated by newline
+#macro to return all defined peripheral directories separated by newline
 GET_DIRS= $(eval ROOT_DIR_TMP:=$(ROOT_DIR))\
           $(eval ROOT_DIR=.)\
           $(foreach V,$(sort $(.VARIABLES)),\
-          $(if $(filter %_DIR, $V),\
+          $(if $(filter $(addsuffix _DIR, $(PERIPHERALS) $(TESTER_PERIPHERALS)), $(filter %_DIR, $V)),\
           $V=$($V);))\
           $(eval ROOT_DIR:=$(ROOT_DIR_TMP))
 
