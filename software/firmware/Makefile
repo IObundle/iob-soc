@@ -25,7 +25,7 @@ ifeq ($(TESTING_CORE),1)
 -include $($(CORE_UT)_DIR)/software/embedded/embedded.mk
 
 #include every other configured tester peripheral (in tester.mk of core under test) (only include if embedded.mk exists)
-$(foreach p, $(TESTER_PERIPHERALS), $(eval -include $($p_DIR)/software/embedded/embedded.mk))
+$(foreach p, $(sort $(TESTER_PERIPHERALS)), $(eval -include $($p_DIR)/software/embedded/embedded.mk))
 endif
 
 #HEADERS
