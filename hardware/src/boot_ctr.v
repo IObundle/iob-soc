@@ -3,6 +3,9 @@
 `include "iob_intercon.vh"
 
 module boot_ctr
+  #(
+    parameter HEXFILE = "boot.hex"
+ )
   (
    input                      clk,
    input                      rst,
@@ -108,7 +111,7 @@ module boot_ctr
      #(
        .DATA_W(`DATA_W),
        .ADDR_W(`BOOTROM_ADDR_W-2),
-       .HEXFILE("boot.hex")
+       .HEXFILE(HEXFILE)
        )
    sp_rom0 (
             .clk(clk),

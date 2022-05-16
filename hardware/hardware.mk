@@ -56,13 +56,7 @@ HEXPROGS=boot.hex firmware.hex
 
 # make system.v with peripherals
 system.v: $(SRC_DIR)/system_core.v
-	cp $< $@
-	$(foreach p, $(PERIPHERALS), $(eval HFILES=$(shell echo `ls $($p_DIR)/hardware/include/*.vh | grep -v pio | grep -v inst | grep -v swreg`)) \
-	$(eval HFILES+=$(notdir $(filter %swreg_def.vh, $(VHDR)))) \
-	$(if $(HFILES), $(foreach f, $(HFILES), sed -i '/PHEADER/a `include \"$f\"' $@;),)) # insert header files
-	$(foreach p, $(PERIPHERALS), if test -f $($p_DIR)/hardware/include/pio.vh; then sed -i '/PIO/r $($p_DIR)/hardware/include/pio.vh' $@; fi;) #insert system IOs for peripheral
-	$(foreach p, $(PERIPHERALS), if test -f $($p_DIR)/hardware/include/inst.vh; then sed -i '/endmodule/e cat $($p_DIR)/hardware/include/inst.vh' $@; fi;) # insert peripheral instances
-
+	$(SW_DIR)/python/createSystem.py $(ROOT_DIR) "$(GET_DIRS)" "$(PERIPHERALS)"
 
 # make and copy memory init files
 PYTHON_DIR=$(MEM_DIR)/software/python
