@@ -8,6 +8,7 @@ import submodule_utils
 from submodule_utils import *
 from tester_utils import read_portmap
 
+#TODO: adapt this to have only the tester
 def create_top_system(directories_str, sut_peripherals_str, tester_peripherals_str, portmap_path, testing_cut):
     # Get peripherals, directories and signals
     sut_instances_amount = get_peripherals(sut_peripherals_str)

@@ -394,13 +394,13 @@ git submodule update ––init ––recursive
 Template `tester.mk`:
 ```
 # Name of this core under test
-CORE_UT=TIMER
+UUT_NAME=TIMER
 
 # Tester peripherals to add (besides the default ones in IOb-SoC)
 TESTER_PERIPHERALS=UART
 
 # Submodule paths for Tester peripherals (listed above)
-UART_DIR=$($(CORE_UT)_DIR)/submodules/UART
+UART_DIR=$($(UUT_NAME)_DIR)/submodules/UART
 
 #Root directory on remote machines
 REMOTE_CUT_DIR ?=sandbox/iob-cut

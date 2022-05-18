@@ -1,14 +1,10 @@
 ROOT_DIR:=.
 include ./config.mk
 
-# Generate configuration file for port mapping between the Tester, SUT and external interface of the Top System
+# Generate configuration file for port mapping between the Tester, UUT and external interface of the Top System
 tester-portmap:
-ifeq ($(TESTING_CORE),)
-	$(SW_DIR)/python/tester_utils.py generate_portmap $(ROOT_DIR) "$(GET_DIRS)" "peripheral_portmap.conf" "$(PERIPHERALS)" "$(TESTER_PERIPHERALS)"
-else
-	$(SW_DIR)/python/tester_utils.py generate_portmap $(ROOT_DIR) "$(GET_DIRS)" "../../peripheral_portmap.conf" "" "$(PERIPHERALS)"
+	$(SW_DIR)/python/tester_utils.py generate_portmap $(ROOT_DIR) "$(GET_DIRS)" "../../peripheral_portmap.conf" "$(PERIPHERALS)"
 	@echo Portmap template generated in peripheral_portmap.conf
-endif
 
 #
 # BUILD EMBEDDED SOFTWARE
@@ -54,14 +50,6 @@ sim-clean: fw-clean
 sim-test:
 	make -C $(SIM_DIR) test
 
-
-#Simulate SUT with Tester system
-tester-sim-build:
-	make sim-build TESTER_ENABLED=1
-
-tester-sim-run:
-	make sim-run TESTER_ENABLED=1
-
 #
 # BUILD, LOAD AND RUN ON FPGA BOARD
 #
@@ -78,13 +66,6 @@ fpga-clean: fw-clean
 
 fpga-test:
 	make -C $(BOARD_DIR) test
-
-#targets for SUT with Tester system
-tester-fpga-build:
-	make fpga-build TESTER_ENABLED=1
-
-tester-fpga-run:
-	make fpga-run TESTER_ENABLED=1
 
 #
 # SYNTHESIZE AND SIMULATE ASIC
@@ -180,9 +161,7 @@ debug:
 .PHONY: fw-build fw-clean \
 	pc-emul-build pc-emul-run pc-emul-clean pc-emul-test \
 	sim-build sim-run sim-clean sim-test \
-	tester-sim-build tester-sim-run\
 	fpga-build fpga-run fpga-clean fpga-test \
-	tester-fpga-build tester-fpga-run\
 	asic-synth asic-sim-post-synth asic-test \
 	doc-build doc-clean doc-test \
 	clean \

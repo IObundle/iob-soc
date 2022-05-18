@@ -19,10 +19,10 @@ include $(UART_DIR)/software/embedded/embedded.mk
 #regfileif
 include $(REGFILEIF_DIR)/software/embedded/embedded.mk
 
-# include CORE_UT and tester peripherals if we are testing a core
+# include UUT_NAME and tester peripherals if we are testing a core
 ifeq ($(TESTING_CORE),1)
-#core_ut (only include if embedded.mk exists)
--include $($(CORE_UT)_DIR)/software/embedded/embedded.mk
+#UUT_NAME (only include if embedded.mk exists)
+-include $($(UUT_NAME)_DIR)/software/embedded/embedded.mk
 
 #include every other configured tester peripheral (in tester.mk of core under test) (only include if embedded.mk exists)
 $(foreach p, $(sort $(TESTER_PERIPHERALS)), $(eval -include $($p_DIR)/software/embedded/embedded.mk))

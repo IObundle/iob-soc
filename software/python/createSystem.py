@@ -9,20 +9,16 @@ from submodule_utils import *
 from tester_utils import read_portmap
 
 # Testing_cut is either 1 or 0, if 0 then the system will be built as if it were a SUT, If 1 then it will be a tester
-def create_systemv(directories_str, sut_peripherals_str, tester_peripherals_str, portmap_path, testing_cut):
+def create_systemv(directories_str, peripherals_str, portmap_path):
     # Get peripherals, directories and signals
-    sut_instances_amount = get_peripherals(sut_peripherals_str)
-    tester_instances_amount = get_peripherals(tester_peripherals_str)
+    instances_amount = get_peripherals(peripherals_str)
     submodule_directories = get_submodule_directories(directories_str)
-    peripheral_signals = get_peripherals_signals({**sut_instances_amount, **tester_instances_amount},submodule_directories)
+    peripheral_signals = get_peripherals_signals(instances_amount,submodule_directories)
 
     # Read portmap file and get encoded data
-    pwires, mapped_signals = read_portmap(sut_instances_amount, tester_instances_amount, peripheral_signals, portmap_path)
+    pwires, mapped_signals = read_portmap(instances_amount, peripheral_signals, portmap_path)
 
-    if testing_cut:
-        instances_amount=tester_instances_amount
-    else:
-        instances_amount=sut_instances_amount
+    #TODO: Adapt below to be only tester
 
     # Read template file
     template_file = open(root_dir+"/hardware/src/system_core.v", "r")
@@ -108,10 +104,10 @@ def create_systemv(directories_str, sut_peripherals_str, tester_peripherals_str,
 
 if __name__ == "__main__":
     # Parse arguments
-    if len(sys.argv)!=7:
-        print("Usage: {} <root_dir> <portmap_path> <directories_defined_in_config.mk> <sut_peripherals> <tester_peripherals> <testing_cut>\n".format(sys.argv[0]))
+    if len(sys.argv)!=5:
+        print("Usage: {} <root_dir> <portmap_path> <directories_defined_in_config.mk> <tester_peripherals>\n".format(sys.argv[0]))
         exit(-1)
     root_dir=sys.argv[1]
     submodule_utils.root_dir = root_dir
 
-    create_systemv(sys.argv[3], sys.argv[4], sys.argv[5], os.path.join(root_dir,sys.argv[2]), 1 if (sys.argv[6].lower() not in ['0','false','']) else 0) 
+    create_systemv(sys.argv[3], sys.argv[4], os.path.join(root_dir,sys.argv[2])) 

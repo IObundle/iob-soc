@@ -1,3 +1,4 @@
+#TODO: This file is no longer required
 BUILD_ALL_DEPENDENCIES+=tester-build-all
 
 #Tester peripherals' base addresses

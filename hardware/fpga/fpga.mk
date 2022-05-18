@@ -19,11 +19,6 @@ ifeq ($(INIT_MEM),0)
 CONSOLE_CMD+=-f
 endif
 
-ifeq ($(TESTER_ENABLED),1)
-include $(TESTER_DIR)/fpga.mk
-endif
-
-
 #RULES
 
 #
@@ -42,10 +37,8 @@ ifeq ($(BOARD_SERVER),)
 else
 	ssh $(BOARD_USER)@$(BOARD_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --delete --force --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR) 
-ifneq ($(TESTING_CORE),)
-	rsync -avz --delete --force --exclude .git $($(CORE_UT)_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_CUT_DIR)
-endif
-	bash -c "trap 'make queue-out-remote' INT TERM KILL; ssh $(BOARD_USER)@$(BOARD_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD) $@ INIT_MEM=$(INIT_MEM) FORCE=$(FORCE) TEST_LOG=\"$(TEST_LOG)\" TESTER_ENABLED=$(TESTER_ENABLED) TESTING_CORE=$(TESTING_CORE)'"
+	rsync -avz --delete --force --exclude .git $($(UUT_NAME)_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_UUT_DIR)
+	bash -c "trap 'make queue-out-remote' INT TERM KILL; ssh $(BOARD_USER)@$(BOARD_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD) $@ INIT_MEM=$(INIT_MEM) FORCE=$(FORCE) TEST_LOG=\"$(TEST_LOG)\"'"
 ifneq ($(TEST_LOG),)
 	scp $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD)/test.log .
 endif
@@ -58,21 +51,17 @@ $(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) $(HEXPROGS)
 ifeq ($(NORUN),0)
 ifeq ($(FPGA_SERVER),)
 	@rm -f $(FPGA_LOG)
-	../build.sh "$(INCLUDE)" "$(DEFINE)" "$(VSRC)" "$(DEVICE)" "$(TESTER_ENABLED)"
+	../build.sh "$(INCLUDE)" "$(DEFINE)" "$(VSRC)" "$(DEVICE)"
 	make post-build
 else 
 	ssh $(FPGA_USER)@$(FPGA_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --delete --force --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
-ifneq ($(TESTING_CORE),)
-	rsync -avz --delete --force --exclude .git $($(CORE_UT)_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_CUT_DIR)
-endif
-	ssh $(FPGA_USER)@$(FPGA_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD) $@ INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) TESTER_ENABLED=$(TESTER_ENABLED) TESTING_CORE=$(TESTING_CORE)'
+	rsync -avz --delete --force --exclude .git $($(UUT_NAME)_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_UUT_DIR)
+	ssh $(FPGA_USER)@$(FPGA_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD) $@ INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM)'
 	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD)/$(FPGA_OBJ) .
 	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD)/$(FPGA_LOG) .
 endif
 endif
-
-
 
 #
 # Board access queue
@@ -126,17 +115,13 @@ clean-all: hw-clean
 ifneq ($(FPGA_SERVER),)
 	ssh $(FPGA_USER)@$(FPGA_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --delete --force --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
-ifneq ($(TESTING_CORE),)
-	rsync -avz --delete --force --exclude .git $($(CORE_UT)_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_CUT_DIR)
-endif
+	rsync -avz --delete --force --exclude .git $($(UUT_NAME)_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_UUT_DIR)
 	ssh $(FPGA_USER)@$(FPGA_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD) clean CLEANIP=$(CLEANIP)'
 endif
 ifneq ($(BOARD_SERVER),)
 	ssh $(BOARD_USER)@$(BOARD_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --delete --force --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR)
-ifneq ($(TESTING_CORE),)
-	rsync -avz --delete --force --exclude .git $($(CORE_UT)_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_CUT_DIR)
-endif
+	rsync -avz --delete --force --exclude .git $($(UUT_NAME)_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_UUT_DIR)
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD) clean'
 endif
 
@@ -146,9 +131,7 @@ clean-testlog:
 ifneq ($(BOARD_SERVER),)
 	ssh $(BOARD_USER)@$(BOARD_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --delete --force --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR)
-ifneq ($(TESTING_CORE),)
-	rsync -avz --delete --force --exclude .git $($(CORE_UT)_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_CUT_DIR)
-endif
+	rsync -avz --delete --force --exclude .git $($(UUT_NAME)_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_UUT_DIR)
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD) $@'
 endif
 
