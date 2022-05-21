@@ -8,21 +8,9 @@ CFLAGS=-Os -std=gnu99 -Wl,--strip-debug
 #DEFINE+=-DLONGLONG
 DEFINE+=-DPC
 
-#peripherals (pc)
-#uart
-include $(UART_DIR)/software/pc-emul/pc-emul.mk
-
-#regfileif
-include $(REGFILEIF_DIR)/software/pc-emul/pc-emul.mk
-
-# include UUT_NAME and tester peripherals if we are testing a core
-ifeq ($(TESTING_CORE),1)
-#UUT_NAME (only include if pc-emul.mk exists)
--include $($(UUT_NAME)_DIR)/software/pc-emul/pc-emul.mk
-
-#include every other configured tester peripheral (in tester.mk of core under test) (only include if pc-emul.mk exists)
-$(foreach p, $(sort $(TESTER_PERIPHERALS)), $(eval -include $($p_DIR)/software/pc-emul/pc-emul.mk))
-endif
+# include peripherals, UUT and extra tester peripherals (from tester.mk of unit under test)
+# this only includes if pc-emul.mk exists (it may not exist in non peripheral cores)
+$(foreach p, $(sort $(PERIPHERALS)), $(eval -include $($p_DIR)/software/pc-emul/pc-emul.mk))
 
 #HEADERS
 HDR+=periphs.h
