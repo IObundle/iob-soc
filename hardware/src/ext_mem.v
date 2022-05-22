@@ -78,8 +78,9 @@ module ext_mem
    //Instruction cache
    iob_cache 
      #(
-       .FE_ADDR_W (`FIRM_ADDR_W),
+       .ADDR_W (`FIRM_ADDR_W),
        .BE_ADDR_W (`DCACHE_ADDR_W),
+       .BE_DATA_W (`DATA_W),
        .NWAYS_W (1),
        .NLINES_W (7),
        .WORD_OFFSET_W (4),
@@ -89,8 +90,8 @@ module ext_mem
        )
    icache 
      (
-      .clk   (clk),
-      .reset (rst),
+      .clk (clk),
+      .rst (rst),
 
       //Cache invalidate and write-through buffer IO chain
       .invalidate_in(1'b0),
@@ -130,7 +131,9 @@ module ext_mem
    //Data cache
    iob_cache 
      #(
-       .FE_ADDR_W (`DCACHE_ADDR_W),
+       .ADDR_W (`DCACHE_ADDR_W),
+       .BE_ADDR_W (`DCACHE_ADDR_W),
+       .BE_DATA_W (`DATA_W),
        .NWAYS_W (1),
        .NLINES_W (7),
        .WORD_OFFSET_W (4),
@@ -140,8 +143,8 @@ module ext_mem
        )
    dcache 
      (
-      .clk   (clk),
-      .reset (rst),
+      .clk (clk),
+      .rst (rst),
       
       //Cache invalidate and write-through buffer IO chain
       .invalidate_in(1'b0), //L1 data cache is invalidated by sw only
@@ -200,8 +203,9 @@ module ext_mem
    //L2 cache
    iob_cache_axi
      #(
-       .FE_ADDR_W(`DCACHE_ADDR_W),
+       .ADDR_W(`DCACHE_ADDR_W),
        .BE_ADDR_W (`DDR_ADDR_W),
+       .BE_DATA_W (`DATA_W),
        .NWAYS_W (2),
        .NLINES_W (7),
        .WORD_OFFSET_W (4),
@@ -211,8 +215,8 @@ module ext_mem
        )
    l2cache 
      (
-      .clk   (clk),
-      .reset (rst),
+      .clk (clk),
+      .rst (rst),
 
       //Cache invalidate and write-through buffer IO chain
       .invalidate_in(l2_invalidate),
