@@ -36,7 +36,7 @@ ifeq ($(TESTING_CORE),1)
 include $($(CORE_UT)_DIR)/hardware/hardware.mk
 
 #include every other configured tester peripheral (in tester.mk of core under test)
-$(foreach p, $(TESTER_PERIPHERALS), $(eval include $($p_DIR)/hardware/hardware.mk))
+$(foreach p, $(sort $(TESTER_PERIPHERALS)), $(eval include $($p_DIR)/hardware/hardware.mk))
 endif
 
 
