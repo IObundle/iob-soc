@@ -50,6 +50,5 @@ build-all:
 clean-all: gen-clean
 	make -C $(FIRM_DIR) clean
 	make -C $(BOOT_DIR) clean
-	make -C $(SW_DIR)/tester clean
 
 .PHONY: build-all clean-all

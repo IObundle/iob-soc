@@ -1,8 +1,8 @@
 ROOT_DIR:=.
 include ./config.mk
 
-# Generate configuration file for port mapping between the Tester, UUT and external interface of the Top System
-tester-portmap:
+# Generate configuration file for port mapping between this (tester) system's peripherals (including UUT and other peripherals added in tester.mk)
+portmap:
 	$(SW_DIR)/python/tester_utils.py generate_portmap $(ROOT_DIR) "$(GET_DIRS)" "../../peripheral_portmap.conf" "$(PERIPHERALS)"
 	@echo Portmap template generated in peripheral_portmap.conf
 
@@ -171,5 +171,5 @@ debug:
 	test-asic test-asic-clean \
 	test-doc test-doc-clean \
 	test test-clean \
-	tester-portmap\
+	portmap\
 	debug

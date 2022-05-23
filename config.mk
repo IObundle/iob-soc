@@ -111,13 +111,11 @@ PC_DIR:=$(SW_DIR)/pc-emul
 FIRM_DIR:=$(SW_DIR)/firmware
 BOOT_DIR:=$(SW_DIR)/bootloader
 CONSOLE_DIR:=$(SW_DIR)/console
-TESTER_SW_DIR=$(SW_DIR)/tester
 
 #hw paths
 HW_DIR=$(ROOT_DIR)/hardware
 SIM_DIR=$(HW_DIR)/simulation/$(SIMULATOR)
 ASIC_DIR=$(HW_DIR)/asic/$(ASIC_NODE)
-TESTER_HW_DIR=$(HW_DIR)/tester
 BOARD_DIR ?=$(shell find $(ROOT_DIR)/hardware -name $(BOARD))
 
 #doc paths
