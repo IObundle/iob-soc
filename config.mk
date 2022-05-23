@@ -114,12 +114,10 @@ BOARD_DIR ?=$(shell find hardware -name $(BOARD))
 DOC_DIR=$(ROOT_DIR)/document/$(DOC)
 
 #macro to return all defined directories separated by newline
-GET_DIRS= $(eval ROOT_DIR_TMP:=$(ROOT_DIR))\
-          $(eval ROOT_DIR=.)\
+GET_DIRS= $(eval ROOT_DIR_TMP=.)\
           $(foreach V,$(sort $(.VARIABLES)),\
           $(if $(filter %_DIR, $V),\
-          $V=$($V);))\
-          $(eval ROOT_DIR:=$(ROOT_DIR_TMP))
+          $(eval TMP_VAR:=$(subst ROOT_DIR,ROOT_DIR_TMP,$(value $V)))$V=$(TMP_VAR);))
 
 #define macros
 DEFINE+=$(defmacro)DATA_W=$(DATA_W)
