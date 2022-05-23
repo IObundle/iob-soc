@@ -83,7 +83,7 @@ def get_module_io(verilog_lines):
             break #Found end of port list
         #If this signal is declared in normal verilog format (no macros)
         if any(verilog_lines[i].lstrip().startswith(x) for x in ["input","output"]):
-            signal = re.search("^\s*((?:input)|(?:output))(?:\s|(?:\[([^:]+):([^\]]+)\]))*(.*),?", verilog_lines[i])
+            signal = re.search("^\s*((?:input)|(?:output))(?:\s|(?:\[([^:]+):([^\]]+)\]))*([^,]*),?", verilog_lines[i])
             if signal is not None:
                 # Store signal in dictionary with format: module_signals[signalname] = "input [size:0]"
                 if signal.group(2) is None:
@@ -121,16 +121,20 @@ def get_module_io(verilog_lines):
             module_signals["wstrb"]="input [DATA_W/8:0] "
             module_signals["rdata"]="output [DATA_W:0] "
             module_signals["ready"]="output "
+        elif '`ifdef' in verilog_lines[i]: #TODO: Temporary fix to allow signals inside macros
+            pass
+        elif '`endif' in verilog_lines[i]: #TODO: Temporary fix to allow signals inside macros
+            pass
         else:
             print("Unknow macro/signal declaration '{}' in module '{}'".format(verilog_lines[i],verilog_lines[module_start-1]))
             exit(-1)
     return module_signals
 
 # Given a dictionary of signals, returns a dictionary with only pio signals.
-# It removes reserved signals, such as: clk, rst, valid, address, wdata, wstrb, rdata or ready
+# It removes reserved system signals, such as: clk, rst, valid, address, wdata, wstrb, rdata, ready, ...
 def get_pio_signals(peripheral_signals):
     pio_signals = peripheral_signals.copy()
-    for signal in ["clk","rst","arst","valid","address","wdata","wstrb","rdata","ready"]:
+    for signal in ["clk","rst","arst","valid","address","wdata","wstrb","rdata","ready","reset","trap"]:
         if signal in pio_signals: pio_signals.pop(signal)
     return pio_signals
 

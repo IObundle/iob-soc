@@ -1,15 +1,10 @@
 ######################################################################
 #
-# IOb-SoC Configuration File
+# IOb-SoC-Tester Configuration File
 #
 ######################################################################
 
-ifneq ($(TESTING_CORE),)
-#Use 'IOBTESTER' as the name if we are testing a core.
 IOBSOC_NAME:=IOBTESTER
-else
-IOBSOC_NAME:=IOBSOC
-endif
 
 #
 # PRIMARY PARAMETERS: CAN BE CHANGED BY USERS OR OVERRIDEN BY ENV VARS
@@ -42,17 +37,13 @@ INIT_MEM ?=1
 #list with corename of peripherals to be attached to peripheral bus.
 #to include multiple instances, write the corename of the peripheral multiple times.
 #(Example: 'PERIPHERALS ?=UART UART' will create 2 UART instances)
-PERIPHERALS ?=UART REGFILEIF
+PERIPHERALS ?=UART
 
 #RISC-V HARD MULTIPLIER AND DIVIDER INSTRUCTIONS
 USE_MUL_DIV ?=1
 
 #RISC-V COMPRESSED INSTRUCTIONS
 USE_COMPRESSED ?=1
-
-#TESTER SYSTEM
-#list with corename of peripherals to be attached to Tester peripheral bus.
-TESTER_PERIPHERALS ?=UART UART IOBNATIVEBRIDGEIF
 
 #ROOT DIRECTORY ON REMOTE MACHINES
 REMOTE_ROOT_DIR ?=sandbox/iob-soc-tester
@@ -71,7 +62,6 @@ BOARD ?=CYCLONEV-GT-DK
 #default asic node running locally or remotely
 #check the respective Makefile in hardware/asic/$(ASIC_NODE) for specific settings
 ASIC_NODE ?=umc130
-
 
 #DOCUMENTATION
 #default document to compile
@@ -97,19 +87,13 @@ ifeq ($(INIT_MEM),1)
 DEFINE+=$(defmacro)INIT_MEM
 endif
 
-
-ifneq ($(TESTING_CORE),)
-#include tester configuration from core under test directory
+#include tester configuration from Unit Under Test directory
 include $(ROOT_DIR)/../../tester.mk
-#add core under test
-#this works even if CUT is not a perihpheral
-PERIPHERALS+=$(CORE_UT)
-#add other tester peripherals.
-#Note: this is not the variable above. It should be overwritten by the tester.mk cofiguration file in the core under test.
-PERIPHERALS+=$(TESTER_PERIPHERALS)
-#Set root directory of tester on remote machines in the submodules directory of CUT
-REMOTE_ROOT_DIR=$(REMOTE_CUT_DIR)/submodules/$(shell realpath $(ROOT_DIR) | xargs -I {} basename {})
-endif
+#add unit under test
+#this works even if UUT is not a perihpheral
+PERIPHERALS+=$(UUT_NAME)
+#Set root directory of tester on remote machines in the submodules directory of UUT
+REMOTE_ROOT_DIR=$(REMOTE_UUT_DIR)/submodules/$(shell realpath $(ROOT_DIR) | xargs -I {} basename {})
 
 #submodule paths
 PICORV32_DIR=$(ROOT_DIR)/submodules/PICORV32
@@ -118,13 +102,8 @@ UART_DIR=$(ROOT_DIR)/submodules/UART
 LIB_DIR=$(ROOT_DIR)/submodules/LIB
 MEM_DIR=$(ROOT_DIR)/submodules/MEM
 AXI_DIR=$(ROOT_DIR)/submodules/AXI
-ifneq ($(TESTING_CORE),)
-#core under test
-$(CORE_UT)_DIR=$(ROOT_DIR)/../..
-endif
-
-REGFILEIF_DIR=$(ROOT_DIR)/submodules/REGFILEIF
-IOBNATIVEBRIDGEIF_DIR=$(ROOT_DIR)/submodules/IOBNATIVEBRIDGEIF
+#Unit Under Test path
+$(UUT_NAME)_DIR=$(ROOT_DIR)/../..
 
 #sw paths
 SW_DIR:=$(ROOT_DIR)/software
@@ -137,17 +116,16 @@ CONSOLE_DIR:=$(SW_DIR)/console
 HW_DIR=$(ROOT_DIR)/hardware
 SIM_DIR=$(HW_DIR)/simulation/$(SIMULATOR)
 ASIC_DIR=$(HW_DIR)/asic/$(ASIC_NODE)
-TESTER_DIR=$(HW_DIR)/tester
-BOARD_DIR ?=$(shell find hardware -name $(BOARD))
+BOARD_DIR ?=$(shell find $(ROOT_DIR)/hardware -name $(BOARD))
 
 #doc paths
 DOC_DIR=$(ROOT_DIR)/document/$(DOC)
 
-#macro to return all defined directories separated by newline
+#macro to return all defined peripheral directories separated by newline
 GET_DIRS= $(eval ROOT_DIR_TMP:=$(ROOT_DIR))\
           $(eval ROOT_DIR=.)\
           $(foreach V,$(sort $(.VARIABLES)),\
-          $(if $(filter %_DIR, $V),\
+          $(if $(filter $(addsuffix _DIR, $(PERIPHERALS)), $(filter %_DIR, $V)),\
           $V=$($V);))\
           $(eval ROOT_DIR:=$(ROOT_DIR_TMP))
 
@@ -186,11 +164,9 @@ FREQ ?=100000000
 
 SHELL = /bin/bash
 
-ifneq ($(TESTING_CORE),)
-#include extra tester makefile targets
+#include (extra) tester makefile targets from Unit Under Test config file
 INCLUDING_PATHS:=1
-include $(ROOT_DIR)/../../tester.mk
-endif
+include $($(UUT_NAME)_DIR)/tester.mk
 
 #RULES
 gen-clean:

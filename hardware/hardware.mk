@@ -24,20 +24,8 @@ include $(PICORV32_DIR)/hardware/hardware.mk
 #CACHE
 include $(CACHE_DIR)/hardware/hardware.mk
 
-#UART
-include $(UART_DIR)/hardware/hardware.mk
-
-#REGFILEIF
-include $(REGFILEIF_DIR)/hardware/hardware.mk
-
-# include CORE_UT and tester peripherals if we are testing a core
-ifeq ($(TESTING_CORE),1)
-#CORE_UT
-include $($(CORE_UT)_DIR)/hardware/hardware.mk
-
-#include every other configured tester peripheral (in tester.mk of core under test)
-$(foreach p, $(TESTER_PERIPHERALS), $(eval include $($p_DIR)/hardware/hardware.mk))
-endif
+# include peripherals, UUT and extra tester peripherals (from tester.mk of unit under test)
+$(foreach p, $(sort $(PERIPHERALS)), $(eval include $($p_DIR)/hardware/hardware.mk))
 
 
 #HARDWARE PATHS
@@ -65,18 +53,19 @@ VSRC+=$(SRC_DIR)/boot_ctr.v $(SRC_DIR)/int_mem.v $(SRC_DIR)/sram.v
 VSRC+=system.v
 
 HEXPROGS=boot.hex firmware.hex
-
-ifeq ($(TESTER_ENABLED),1)
-include $(TESTER_DIR)/hardware.mk
+#create init_ddr_contents (to merge UUT with Tester firmware, assuming that UUT has a firmware)
+#TODO: check if UUT has firmware
+ifeq ($(USE_DDR),1)
+ifeq ($(RUN_EXTMEM),1)
+ifeq ($(INIT_MEM),1)
+HEXPROGS+=init_ddr_contents.hex
+endif
+endif
 endif
 
 # make system.v with peripherals
 system.v: $(SRC_DIR)/system_core.v
-ifeq ($(TESTING_CORE),)
-	$(SW_DIR)/python/createSystem.py $(ROOT_DIR) "peripheral_portmap.conf" "$(GET_DIRS)" "$(PERIPHERALS)" "$(TESTER_PERIPHERALS)" 0
-else
-	$(SW_DIR)/python/createSystem.py $(ROOT_DIR) "../../peripheral_portmap.conf" "$(GET_DIRS)" "" "$(PERIPHERALS)" 1
-endif
+	$(SW_DIR)/python/createSystem.py $(ROOT_DIR) "../../peripheral_portmap.conf" "$(GET_DIRS)" "$(PERIPHERALS)"
 
 # make and copy memory init files
 PYTHON_DIR=$(MEM_DIR)/software/python
@@ -87,6 +76,10 @@ boot.hex: $(BOOT_DIR)/boot.bin
 firmware.hex: $(FIRM_DIR)/firmware.bin
 	$(PYTHON_DIR)/makehex.py $< $(FIRM_ADDR_W) > $@
 	$(PYTHON_DIR)/hex_split.py firmware .
+
+# init file for external mem with firmware of both systems
+init_ddr_contents.hex: uut_firmware.hex firmware.hex
+	$(SW_DIR)/python/joinHexFiles.py $^ $(DDR_ADDR_W) > $@
 
 #clean general hardware files
 hw-clean: gen-clean
