@@ -2,15 +2,15 @@ ROOT_DIR:=.
 include ./config.mk
 
 # Generate configuration file for port mapping between this (tester) system's peripherals (including UUT and other peripherals added in tester.mk)
-portmap:
-	$(SW_DIR)/python/tester_utils.py generate_portmap $(ROOT_DIR) "$(GET_DIRS)" "../../peripheral_portmap.conf" "$(PERIPHERALS)"
+portmap: $(BUILD_DEPS)
+	$(SW_DIR)/python/portmap_utils.py generate_portmap $(ROOT_DIR) "$(GET_DIRS)" "../../peripheral_portmap.conf" "$(PERIPHERALS)"
 	@echo Portmap template generated in peripheral_portmap.conf
 
 #
 # BUILD EMBEDDED SOFTWARE
 #
 
-fw-build:
+fw-build: $(BUILD_DEPS)
 	make -C $(FIRM_DIR) build-all
 
 fw-clean:

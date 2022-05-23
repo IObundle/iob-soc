@@ -2,6 +2,12 @@
 # It has functions to auto generate a template portmap based on peripherals list
 # It's also used to read the portmap file, verify its correctness 
 
+import sys
+import re
+
+import submodule_utils 
+from submodule_utils import *
+
 # Header to be put in portmap config file
 portmap_header = """\
 //********************************************************************************************************************************
