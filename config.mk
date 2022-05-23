@@ -73,6 +73,13 @@ UART_HW_DIR:=$(UART_DIR)/hardware
 ####################################################################
 # DERIVED FROM PRIMARY PARAMETERS: DO NOT CHANGE BELOW THIS POINT
 ####################################################################
+#include tester configuration from Unit Under Test directory
+include $(ROOT_DIR)/../../tester.mk
+#add unit under test
+#this works even if UUT is not a perihpheral
+PERIPHERALS+=$(UUT_NAME)
+#Set root directory of tester on remote machines in the submodules directory of UUT
+REMOTE_ROOT_DIR=$(REMOTE_UUT_DIR)/submodules/$(shell realpath $(ROOT_DIR) | xargs -I {} basename {})
 
 ifeq ($(RUN_EXTMEM),1)
 DEFINE+=$(defmacro)RUN_EXTMEM
@@ -86,14 +93,6 @@ endif
 ifeq ($(INIT_MEM),1)
 DEFINE+=$(defmacro)INIT_MEM
 endif
-
-#include tester configuration from Unit Under Test directory
-include $(ROOT_DIR)/../../tester.mk
-#add unit under test
-#this works even if UUT is not a perihpheral
-PERIPHERALS+=$(UUT_NAME)
-#Set root directory of tester on remote machines in the submodules directory of UUT
-REMOTE_ROOT_DIR=$(REMOTE_UUT_DIR)/submodules/$(shell realpath $(ROOT_DIR) | xargs -I {} basename {})
 
 #submodule paths
 PICORV32_DIR=$(ROOT_DIR)/submodules/PICORV32
