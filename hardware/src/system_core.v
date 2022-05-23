@@ -6,7 +6,7 @@
 //do not remove line below
 //PHEADER
 
-module system 
+module tester 
   (
    //do not remove line below
    //PIO
