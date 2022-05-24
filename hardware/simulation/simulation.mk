@@ -53,6 +53,9 @@ ifneq ($(SIMULATOR),verilator)
 VSRC+=system_tb.v
 endif
 
+#add peripheral testbench sources
+VSRC+=$(foreach p, $(sort PERIPHERALS), $(shell if test -f $($p_DIR)/hardware/testbench/module_tb.sv; then echo $($p_DIR)/hardware/testbench/module_tb.sv; fi;)) 
+
 #RULES
 build: $(VSRC) $(VHDR) $(HEXPROGS)
 ifeq ($(SIM_SERVER),)
@@ -94,9 +97,6 @@ system_tb.v:
 #create  simulation top module
 system_top.v: $(TB_DIR)/system_top_core.v
 	$(SW_DIR)/python/createTopSystem.py $(ROOT_DIR) "$(GET_DIRS)" "$(PERIPHERALS)"
-
-#add peripheral testbench sources
-VSRC+=$(foreach p, $(PERIPHERALS), $(shell if test -f $($p_DIR)/hardware/testbench/module_tb.sv; then echo $($p_DIR)/hardware/testbench/module_tb.sv; fi;)) 
 
 kill-remote-sim:
 	@echo "INFO: Remote simulator $(SIMULATOR) will be killed"
