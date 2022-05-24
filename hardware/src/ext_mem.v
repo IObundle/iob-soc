@@ -6,7 +6,9 @@
 module ext_mem
   #(
     parameter ADDR_W=`ADDR_W,
-    parameter DATA_W=`DATA_W
+    parameter DATA_W=`DATA_W,
+    parameter AXI_ADDR_W=`ADDR_W,
+    parameter AXI_DATA_W=`DATA_W
     )
    (
 `ifdef RUN_EXTMEM
