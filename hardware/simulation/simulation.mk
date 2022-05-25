@@ -36,12 +36,23 @@ DEFINE+=$(defmacro)FW_SIZE=$(FW_SIZE)
 TB_DIR:=$(HW_DIR)/simulation/verilog_tb
 
 #asic post-synthesis and post-pr sources
+ifeq ($(ASIC_NODE),umc130)
 ifeq ($(ASIC),1)
 ifeq ($(SYNTH),1)
 VSRC=$(ASIC_DIR)/system_synth.v
 endif
 VSRC+=$(wildcard $(ASIC_DIR)/$(ASIC_MEM_FILES))
 endif
+endif
+ifeq ($(ASIC_NODE),skywater)
+ifeq ($(ASIC),1)
+ifeq ($(SYNTH),1)
+VSRC = $(ASIC_DIR)/OpenLane/designs/system/runs/soc/results/synthesis/system.v
+endif
+ VSRC+=$(wildcard $(ASIC_DIR)/$(ASIC_MEM_FILES))
+endif
+endif
+
 
 #axi memory
 include $(AXI_DIR)/hardware/axiram/hardware.mk
@@ -52,7 +63,7 @@ VSRC+=system_top.v
 ifneq ($(SIMULATOR),verilator)
 VSRC+=system_tb.v
 endif
-
+all: build run
 #RULES
 build: $(VSRC) $(VHDR) $(HEXPROGS)
 ifeq ($(SIM_SERVER),)
@@ -72,7 +83,7 @@ ifeq ($(SIM_SERVER),)
 else
 	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --force --exclude .git $(SIM_SYNC_FLAGS) $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
-	bash -c "trap 'make kill-remote-sim' INT TERM KILL; ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'make -C $(REMOTE_ROOT_DIR) sim-run SIMULATOR=$(SIMULATOR) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) VCD=$(VCD) TEST_LOG=\"$(TEST_LOG)\"'"
+	bash -c "trap 'make kill-remote-sim' INT TERM KILL; ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'make -C $(REMOTE_ROOT_DIR) sim-run SIMULATOR=$(SIMULATOR) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) VCD=$(VCD) TEST_LOG=\"$(TEST_LOG)\" BAUD=115200'"
 ifneq ($(TEST_LOG),)
 	scp $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR)/test.log $(SIM_DIR)
 endif
@@ -161,6 +172,6 @@ endif
 
 .PRECIOUS: system.vcd test.log
 
-.PHONY: build run \
+.PHONY: build run all \
 	kill-remote-sim clean-remote kill-sim \
 	test test1 test2 test3 test4 test5 clean-testlog

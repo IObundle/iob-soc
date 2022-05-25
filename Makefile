@@ -71,6 +71,7 @@ asic-synth:
 	make -C $(ASIC_DIR) synth
 
 asic-sim-post-synth:
+	make fw-build
 	make -C $(ASIC_DIR) all TEST_LOG="$(TEST_LOG)"
 
 asic-clean:
