@@ -22,7 +22,7 @@ comp: $(VSRC) $(VHDR) $(MACRO_LIST)
 
 #elaborate
 elab: comp
-	vcs -debug_access+nomemcbk+dmptf -debug_region+cell system_tb
+	vcs -debug_access+nomemcbk+dmptf -debug_region+cell TOP
 
 exec: elab
 	./simv
