@@ -38,7 +38,7 @@ elab: comp
 	xmelab $(EFLAGS) worklib.system_tb:module
 
 #simulate
-run: elab
+exec: elab
 	xmsim  $(SFLAGS) worklib.system_tb:module
 ifeq ($(DO_COV),1)
 	ls -d cov_work/scope/* > all_ucd_file
@@ -49,4 +49,4 @@ endif
 clean: sim-clean
 	@rm -rf xcelium.d xmsim.key *.raw *.png *.hex *.log
 
-.PHONY: comp elab run clean
+.PHONY: comp elab exec clean
