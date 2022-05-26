@@ -18,11 +18,11 @@ EFLAGS = -errormax 15 -access +wc -status
 SFLAGS = -errormax 15 -status 
 
 comp:
-	$(INIT_SCRIPT); xmvlog $(CFLAGS) $(VSRC); xmelab $(EFLAGS) worklib.TOP:module
+	$(INIT_SCRIPT); xmvlog $(CFLAGS) $(VSRC); xmelab $(EFLAGS) worklib.system_tb:module
 
 #simulate
 exec:
-	$(INIT_SCRIPT); xmsim $(SFLAGS) worklib.TOP:module
+	$(INIT_SCRIPT); xmsim $(SFLAGS) worklib.system_tb:module
 	grep -v xcelium xmsim.log | grep -v xmsim | grep -v "\$finish" $(TEST_LOG)
 
 clean: clean-remote

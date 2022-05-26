@@ -66,9 +66,10 @@ $(SIM_PROC):
 #run the simulator
 exec:
 	./$(SIM_PROC)
+	sed -i 's/TOP/system_tb/g' *.vcd
 
 clean: clean-remote
 	@rm -f $(SIM_PROC)
 	@rm -rf obj_dir
 
-.PHONY: exec clean
+.PHONY: comp exec clean
