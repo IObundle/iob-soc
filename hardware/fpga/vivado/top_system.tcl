@@ -36,9 +36,26 @@ if { $USE_DDR < 0 } {
     #Always create new ip to make sure number of slave ports is correct
     create_ip -name axi_interconnect -vendor xilinx.com -library ip -version 1.7 -module_name axi_interconnect_0 -dir ./ip -force
 
+    #   set_property -dict \
+    #       [list \
+    #           CONFIG.NUM_SLAVE_PORTS {2}\
+    #           CONFIG.AXI_ADDR_WIDTH {30}\
+    #           CONFIG.ACLK_PERIOD {5000} \
+    #           CONFIG.INTERCONNECT_DATA_WIDTH {32}\
+    #           CONFIG.M00_AXI_IS_ACLK_ASYNC {1}\
+    #           CONFIG.M00_AXI_WRITE_FIFO_DEPTH {32}\
+    #           CONFIG.M00_AXI_READ_FIFO_DEPTH {32}\
+    #           CONFIG.S00_AXI_IS_ACLK_ASYNC {1}\
+    #           CONFIG.S00_AXI_READ_FIFO_DEPTH {32}\
+    #           CONFIG.S00_AXI_WRITE_FIFO_DEPTH {32}\
+    #           CONFIG.S01_AXI_IS_ACLK_ASYNC {1}\
+    #           CONFIG.S01_AXI_READ_FIFO_DEPTH {32}\
+    #           CONFIG.S01_AXI_WRITE_FIFO_DEPTH {32}\
+    #           ] [get_ips axi_interconnect_0]
+	 #   TODO: replace by declaration above to have interconnect for SUT+Tester
         set_property -dict \
             [list \
-                CONFIG.NUM_SLAVE_PORTS {2}\
+                CONFIG.NUM_SLAVE_PORTS {1}\
                 CONFIG.AXI_ADDR_WIDTH {30}\
                 CONFIG.ACLK_PERIOD {5000} \
                 CONFIG.INTERCONNECT_DATA_WIDTH {32}\
@@ -48,9 +65,6 @@ if { $USE_DDR < 0 } {
                 CONFIG.S00_AXI_IS_ACLK_ASYNC {1}\
                 CONFIG.S00_AXI_READ_FIFO_DEPTH {32}\
                 CONFIG.S00_AXI_WRITE_FIFO_DEPTH {32}\
-                CONFIG.S01_AXI_IS_ACLK_ASYNC {1}\
-                CONFIG.S01_AXI_READ_FIFO_DEPTH {32}\
-                CONFIG.S01_AXI_WRITE_FIFO_DEPTH {32}\
                 ] [get_ips axi_interconnect_0]
 
     generate_target all [get_files ./ip/axi_interconnect_0/axi_interconnect_0.xci]
