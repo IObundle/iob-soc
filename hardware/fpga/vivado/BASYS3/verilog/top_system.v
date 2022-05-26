@@ -36,7 +36,7 @@ module top_system(
    //
    // SYSTEM
    //
-   system system
+  tester tester0 
      (
       .clk           (clk),
       .reset         (sys_rst),
