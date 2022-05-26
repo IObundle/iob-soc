@@ -66,7 +66,9 @@ $(SIM_PROC):
 #run the simulator
 exec:
 	./$(SIM_PROC)
+ifeq ($(VCD),1)
 	sed -i 's/TOP/system_tb/g' *.vcd
+endif
 
 clean: clean-remote
 	@rm -f $(SIM_PROC)
