@@ -3,6 +3,7 @@ ROOT_DIR:=../../..
 defmacro:=-define 
 incdir:=-incdir 
 
+
 SIMULATOR=xcelium
 SIM_SERVER=$(CADENCE_SERVER)
 SIM_USER=$(CADENCE_USER)
@@ -12,22 +13,39 @@ SIM_SYNC_FLAGS=$(CADENCE_SYNC_FLAGS)
 
 include ../simulation.mk
 
-INIT_SCRIPT = set -e; source /opt/ic_tools/init/init-xcelium1903-hf013
+# Coverage test name
+TEST?=test
 
 #simulator flags
-CFLAGS = -errormax 15 -status -update -linedebug -sv $(INCLUDE) $(DEFINE)
+CFLAGS = -errormax 15 -status -update -linedebug -sv $(LIBS) $(INCLUDE) $(DEFINE)
+ifeq ($(DO_COV),0)
 EFLAGS = -errormax 15 -access +wc -status
-SFLAGS = -errormax 15 -status 
+SFLAGS = -errormax 15 -status -CMDFILE ../testbench
+else
+EFLAGS = -errormax 15 -access +wc -status -covdut iob_png_d_top -coverage A -covfile cov_commands.ccf
+SFLAGS = -LICQUEUE -errormax 15 -status -CMDFILE ../testbench -covoverwrite -covtest $(TEST)
+endif
 
-comp:
-	xmvlog $(CFLAGS) $(VSRC); xmelab $(EFLAGS) worklib.system_top:module
+.PHONY: run build clean
+
+#compile
+comp: $(VSRC) $(VHDR)
+	xmvlog $(CFLAGS) $(VSRC)
+
+#elaborate
+elab: comp
+	xmelab $(EFLAGS) worklib.system_tb:module
 
 #simulate
-exec:
-	$(INIT_SCRIPT); xmsim $(SFLAGS) worklib.system_top:module
-	grep -v xcelium xmsim.log | grep -v xmsim | grep -v "\$finish" $(TEST_LOG)
+exec: elab
+	xmsim  $(SFLAGS) worklib.system_tb:module
+ifeq ($(DO_COV),1)
+	ls -d cov_work/scope/* > all_ucd_file
+	imc -execcmd "merge -runfile all_ucd_file -overwrite -out merge_all"
+	imc -exec iob_png_d_run_cov.tcl
+endif
 
-clean: clean-remote
-	@rm -rf xcelium.d xmsim.key
+clean: sim-clean
+	@rm -rf xcelium.d xmsim.key *.raw *.png *.hex *.log
 
-.PHONY: comp exec clean
+.PHONY: comp elab exec clean
