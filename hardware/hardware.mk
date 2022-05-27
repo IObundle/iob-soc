@@ -24,9 +24,8 @@ include $(PICORV32_DIR)/hardware/hardware.mk
 #CACHE
 include $(CACHE_DIR)/hardware/hardware.mk
 
-# include peripherals, UUT and extra tester peripherals (from tester.mk of unit under test)
-$(foreach p, $(sort $(PERIPHERALS)), $(eval include $($p_DIR)/hardware/hardware.mk))
-
+# get VSRC, VHDR and DEFINES from peripherals, UUT and extra tester peripherals (from tester.mk of unit under test)
+$(foreach p, $(sort $(PERIPHERALS)), $(info $(shell make -f $(ROOT_DIR)/get_makefile_variables.mk get_vsrc get_vhdr get_defines PERIPHERAL_INC_DIR=$($p_DIR)/hardware/hardware.mk $p_DIR=$($p_DIR) ROOT_DIR=$($p_DIR))))
 
 #HARDWARE PATHS
 INC_DIR:=$(HW_DIR)/include
@@ -63,6 +62,9 @@ endif
 endif
 endif
 
+#Include targets to copy VSRC, VHDR and DEFINES
+include $(ROOT_DIR)/get_makefile_variables.mk
+
 # make system.v with peripherals
 system.v: $(SRC_DIR)/system_core.v
 	$(SW_DIR)/python/createSystem.py $(ROOT_DIR) "../../peripheral_portmap.conf" "$(GET_DIRS)" "$(PERIPHERALS)"
@@ -83,6 +85,7 @@ init_ddr_contents.hex: uut_firmware.hex firmware.hex
 
 #clean general hardware files
 hw-clean: gen-clean
-	@rm -f *.v *.vh *.hex *.bin $(SRC_DIR)/system.v $(TB_DIR)/system_tb.v
+	@rm -f *.v *.vh *.hex *.bin $(SRC_DIR)/system.v $(TB_DIR)/system_tb.v defines.txt
+	@rm -rf vsrc vhdr
 
 .PHONY: hw-clean

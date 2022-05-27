@@ -64,7 +64,7 @@ endif
 VSRC+=$(foreach p, $(sort PERIPHERALS), $(shell if test -f $($p_DIR)/hardware/testbench/module_tb.sv; then echo $($p_DIR)/hardware/testbench/module_tb.sv; fi;)) 
 
 #RULES
-build: $(VSRC) $(VHDR) $(HEXPROGS)
+build: $(VSRC) $(VHDR) $(HEXPROGS) get_vsrc get_vhdr get_tester_defines
 ifeq ($(SIM_SERVER),)
 	make comp
 else

@@ -60,12 +60,15 @@ fpga-build: $(FPGA_DEPS)
 
 fpga-run: fpga-build
 	make -C $(BOARD_DIR) run TEST_LOG="$(TEST_LOG)"
+	make fpga-post-run
 
 fpga-clean: fw-clean
 	make -C $(BOARD_DIR) clean
 
 fpga-test:
 	make -C $(BOARD_DIR) test
+
+fpga-post-run: $(FPGA_POST_RUN_DEPS)
 
 #
 # SYNTHESIZE AND SIMULATE ASIC
@@ -161,7 +164,7 @@ debug:
 .PHONY: fw-build fw-clean \
 	pc-emul-build pc-emul-run pc-emul-clean pc-emul-test \
 	sim-build sim-run sim-clean sim-test \
-	fpga-build fpga-run fpga-clean fpga-test \
+	fpga-build fpga-run fpga-clean fpga-test fpga-post-run\
 	asic-synth asic-sim-post-synth asic-test \
 	doc-build doc-clean doc-test \
 	clean \

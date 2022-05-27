@@ -11,13 +11,13 @@ SIM_PROC=a.out
 include ../simulation.mk
 
 #simulator flags
-VLOG = iverilog -W all -g2005-sv $(INCLUDE) $(DEFINE)
+VLOG = iverilog -W all -g2005-sv $(INCLUDE) $(incdir)vhdr $(addprefix $(defmacro),$(shell cat defines.txt))
 
 comp: $(SIM_PROC)
 
 #simulation executable
 $(SIM_PROC):
-	$(VLOG) $(VSRC)
+	$(VLOG) $(wildcard vsrc/*)
 
 .PHONY: run clean debug
 
