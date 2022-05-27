@@ -146,7 +146,8 @@ N_SLAVES_W = $(shell echo "import math; print(math.ceil(math.log($(N_SLAVES),2))
 DEFINE+=$(defmacro)N_SLAVES_W=$(N_SLAVES_W)
 
 
-#default system clock freq
+#default baud and system clock freq
+BAUD ?=5000000 #simulation default
 FREQ ?=100000000
 
 SHELL = /bin/bash
