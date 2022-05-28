@@ -19,16 +19,20 @@ def create_iobnativebridgeif(directory):
     # ~~~~~~~~~~~~ Create IOBNATIVEBRIDGEIF folder ~~~~~~~~~~~~
     os.mkdir(iobnativebridgeif_dir)
 
-    # ~~~~~~~~~~~~ Create harware and software dirs ~~~~~~~~~~~~
+    # ~~~~~~~~~~~~ Create harware, software and submodule dirs ~~~~~~~~~~~~
     os.mkdir(os.path.join(iobnativebridgeif_dir,"hardware"))
     os.mkdir(os.path.join(iobnativebridgeif_dir,"software"))
+    os.mkdir(os.path.join(iobnativebridgeif_dir,"submodules"))
+
+    # symlink LIB submodule from REGFILEIF
+    os.symlink(os.path.join(os.path.dirname(__file__),"../../submodules/LIB"),os.path.join(iobnativebridgeif_dir,"submodules/LIB"))
 
     # ~~~~~~~~~~~~ Create config.mk ~~~~~~~~~~~~
     config_mk_str = """
 TOP_MODULE=iob_nativebridgeif
 
 #PATHS
-LIB_DIR ?=$(REGFILEIF_DIR)/submodules/LIB
+LIB_DIR ?=$(IOBNATIVEBRIDGEIF_DIR)/submodules/LIB
 IOBNATIVEBRIDGEIF_HW_DIR:=$(IOBNATIVEBRIDGEIF_DIR)/hardware
 
 # VERSION
@@ -37,15 +41,15 @@ $(TOP_MODULE)_version.txt:
 	echo $(VERSION) > version.txt
 
 #MAKE SW ACCESSIBLE REGISTER
-MKREGS:=$(shell find $(LIB_DIR) -name mkregs.py)
+MKREGS:=$(shell find -L $(LIB_DIR) -name mkregs.py)
 
-#target to create (and update) swreg for nativebridgeif based on regfileif
-$(IOBNATIVEBRIDGEIF_DIR)/mkregs.conf: $(REGFILEIF_DIR)/mkregs.conf
-	$(IOBNATIVEBRIDGEIF_DIR)/software/python/createIObNativeIfSwreg.py $(REGFILEIF_DIR)
+#target to create (and update) swreg for nativebridgeif based on sut_swreg.conf
+$(IOBNATIVEBRIDGEIF_DIR)/mkregs.conf: $(IOBNATIVEBRIDGEIF_DIR)/../../sut_swreg.vh
+	$(IOBNATIVEBRIDGEIF_DIR)/software/python/createIObNativeIfSwreg.py $(IOBNATIVEBRIDGEIF_DIR)/../..
 
 #cpu accessible registers
 iob_nativebridgeif_swreg_def.vh iob_nativebridgeif_swreg_gen.vh: $(IOBNATIVEBRIDGEIF_DIR)/mkregs.conf
-	$(REGFILEIF_DIR)/software/python/mkregsregfileif.py $< HW $(shell dirname $(MKREGS)) iob_nativebridgeif
+	$(IOBNATIVEBRIDGEIF_DIR)/software/python/mkregsregfileif.py $< HW $(shell dirname $(MKREGS)) iob_nativebridgeif
 
     """
     fout = open (os.path.join(iobnativebridgeif_dir,"config.mk"), 'w')
@@ -121,12 +125,12 @@ endif
     swreg_python_creator = """\
 #!/usr/bin/env python3
 #Script created by iobnativebridge.py
-# Call this script with REGFILEIF_DIR to create the iob_nativebridge_swreg.vh
+# Call this script with ROOT_DIR to create the iob_nativebridge_swreg.vh
 import os
 import sys
 import re
 
-fin = open (os.path.join(sys.argv[1], 'mkregs.conf'), 'r')
+fin = open (os.path.join(sys.argv[1], 'sut_swreg.vh'), 'r')
 swreg_content=fin.readlines()
 fin.close()
 for i in range(len(swreg_content)):
@@ -139,6 +143,8 @@ fout.close()
     fout.writelines(swreg_python_creator)
     fout.close()
     os.chmod(os.path.join(iobnativebridgeif_dir,"software/python","createIObNativeIfSwreg.py"), 0o755)
+    # link mkregsregfileif.py
+    os.symlink(os.path.join(os.path.dirname(__file__),"mkregsregfileif.py"),os.path.join(iobnativebridgeif_dir,"software/python","mkregsregfileif.py"))
 
     # ~~~~~~~~~~~~ Create verilog source ~~~~~~~~~~~~
     os.mkdir(os.path.join(iobnativebridgeif_dir,"hardware/src"))
@@ -199,7 +205,7 @@ HDR+=iob_nativebridgeif_swreg.h
 SRC+=
 
 iob_nativebridgeif_swreg.h iob_nativebridgeif_inverted_swreg.h: $(IOBNATIVEBRIDGEIF_DIR)/mkregs.conf
-	$(REGFILEIF_DIR)/software/python/mkregsregfileif.py $< SW $(shell dirname $(MKREGS)) iob_nativebridgeif
+	$(IOBNATIVEBRIDGEIF_DIR)/software/python/mkregsregfileif.py $< SW $(shell dirname $(MKREGS)) iob_nativebridgeif
     """
     fout = open (os.path.join(iobnativebridgeif_dir,"software","software.mk"), 'w')
     fout.write(software_str)
