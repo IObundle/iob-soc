@@ -22,6 +22,6 @@ get_defines:
 
 #Add 'TESTER_' prefix to every define and remove defmacro
 get_tester_defines:
-	$(eval PREFIX_DEFINES=$(subst $$(defmacro),TESTER_,$(value DEFINE)))$(warning #########$(PREFIX_DEFINES))echo -n ' $(PREFIX_DEFINES)' >> defines.txt
+	$(eval PREFIX_DEFINES=$(subst $$(defmacro),TESTER_,$(value DEFINE)))echo -n ' $(PREFIX_DEFINES)' >> defines.txt
 
 .PHONY: get_vhdr get_vsrc get_defines get_tester_defines

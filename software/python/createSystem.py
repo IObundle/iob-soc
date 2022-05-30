@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#Creates system.v based on system_core.v template and on peripheral portmap configuration
+#Creates tester.v based on system_core.v template and on peripheral portmap configuration
 
 import sys, os
 
@@ -52,7 +52,7 @@ def create_systemv(directories_str, peripherals_str, portmap_path):
                 # Only insert if this reserved signal (from template) is present in IO of this peripheral
                 if (str_match is not None) and str_match.group(1) in peripheral_signals[corename]:
                     template_contents.insert(start_index, 
-                            re.sub("\/\*<InstanceName>\*\/",corename+str(i),
+                            re.sub("\/\*<InstanceName>\*\/","TESTER_"+corename+str(i),
                             re.sub("\/\*<SwregFilename>\*\/",swreg_filename, 
                                 signal)))
                     # Remove comma at the end of last signal
@@ -91,8 +91,8 @@ def create_systemv(directories_str, peripherals_str, portmap_path):
             template_contents.insert(start_index, "   // {}\n".format(corename+str(i)))
             template_contents.insert(start_index, "\n")
 
-    # Write system.v
-    systemv_file = open("system.v", "w")
+    # Write tester.v
+    systemv_file = open("tester.v", "w")
     systemv_file.writelines(template_contents)
     systemv_file.close()
 

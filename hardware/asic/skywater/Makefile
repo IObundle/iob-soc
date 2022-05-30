@@ -47,7 +47,7 @@ synth:  $(VSRC) $(VHDR) temp_src temp_inc $(DEFINE)
 	cp boot.hex temp_src
 	sed -i "s/m4/met4/g" $(wildcard sram/*.lef)
 	sed -i "s/m3/met3/g" $(wildcard sram/*.lef)
-	sed -i "1i \`include \"iob-soc-defs.vh\"" temp_src/system.v
+	sed -i "1i \`include \"iob-soc-defs.vh\"" temp_src/tester.v
 	sed -i "4i \`include \"iob-soc-defs.vh\"" temp_src/boot_ctr.v
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/src
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/inc

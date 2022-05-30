@@ -49,7 +49,7 @@ endif
 
 #system
 VSRC+=$(SRC_DIR)/boot_ctr.v $(SRC_DIR)/int_mem.v $(SRC_DIR)/sram.v
-VSRC+=system.v
+VSRC+=tester.v
 
 HEXPROGS=boot.hex firmware.hex
 #create init_ddr_contents (to merge UUT with Tester firmware, assuming that UUT has a firmware)
@@ -65,8 +65,8 @@ endif
 #Include targets to copy VSRC, VHDR and DEFINES
 include $(ROOT_DIR)/get_makefile_variables.mk
 
-# make system.v with peripherals
-system.v: $(SRC_DIR)/system_core.v
+# make tester.v with peripherals
+tester.v: $(SRC_DIR)/system_core.v
 	$(SW_DIR)/python/createSystem.py $(ROOT_DIR) "../../peripheral_portmap.conf" "$(GET_DIRS)" "$(PERIPHERALS)"
 
 # make and copy memory init files
@@ -85,7 +85,7 @@ init_ddr_contents.hex: uut_firmware.hex firmware.hex
 
 #clean general hardware files
 hw-clean: gen-clean
-	@rm -f *.v *.vh *.hex *.bin $(SRC_DIR)/system.v $(TB_DIR)/system_tb.v defines.txt
+	@rm -f *.v *.vh *.hex *.bin $(SRC_DIR)/tester.v $(TB_DIR)/system_tb.v defines.txt
 	@rm -rf vsrc vhdr
 
 .PHONY: hw-clean
