@@ -79,7 +79,7 @@ IOBNATIVEBRIDGEIF_SRC_DIR:=$(IOBNATIVEBRIDGEIF_HW_DIR)/src
 #include files
 VHDR+=$(wildcard $(IOBNATIVEBRIDGEIF_INC_DIR)/*.vh)
 VHDR+=iob_nativebridgeif_swreg_gen.vh iob_nativebridgeif_swreg_def.vh
-VHDR+=$(LIB_DIR)/hardware/include/iob_lib.vh $(LIB_DIR)/hardware/include/iob_s_if.vh $(LIB_DIR)/hardware/include/gen_if.vh
+VHDR+=$(LIB_DIR)/hardware/include/iob_lib.vh $(LIB_DIR)/hardware/include/iob_s_if.vh $(LIB_DIR)/hardware/include/iob_gen_if.vh
 
 
 
@@ -174,7 +174,7 @@ module iob_nativebridgeif
     `IOB_INPUT(ready_ext,  1),
 
 
-`include "gen_if.vh"
+`include "iob_gen_if.vh"
     );
 
     // Connect interfaces

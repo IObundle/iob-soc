@@ -20,7 +20,7 @@ module iob_regfileif
    `IOB_INPUT(wstrb_ext,   DATA_W/8),
    `IOB_OUTPUT(rdata_ext,  DATA_W),
    `IOB_OUTPUT(ready_ext,  1),
-`include "gen_if.vh"
+`include "iob_gen_if.vh"
    );
 
 // BLOCK Register File & Holds the current configuration of the system as well as internal parameters. Data to be sent or that has been received is stored here temporarily.
