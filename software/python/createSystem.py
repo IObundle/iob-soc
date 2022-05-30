@@ -32,16 +32,17 @@ def create_systemv(directories_str, peripherals_str):
     template_file.close()
 
     for corename in instances_amount:
+        swreg_filename = get_top_module(root_dir+"/"+submodule_directories[corename]+"/config.mk")+"_swreg";
+
         # Insert header files
         path = root_dir+"/"+submodule_directories[corename]+"/hardware/include"
         start_index = find_idx(template_contents, "PHEADER")
         for file in os.listdir(path):
             if file.endswith(".vh") and not any(x in file for x in ["pio","inst","swreg"]):
                 template_contents.insert(start_index, '`include "{}"\n'.format(path+"/"+file))
-            if file.endswith("swreg.vh"):
-                template_contents.insert(start_index, '`include "{}"\n'.format(file.replace("swreg","swreg_def")))
-
-        swreg_filename = get_top_module(root_dir+"/"+submodule_directories[corename]+"/config.mk")+"_swreg";
+        # Add topmodule_swreg_def.vh if mkregs.conf exists
+        if os.path.isfile(root_dir+"/"+submodule_directories[corename]+"/mkregs.conf"):
+            template_contents.insert(start_index, '`include "{}"\n'.format(swreg_filename+"_def.vh"))
 
         # Insert IOs and Instances for this type of peripheral
         for i in range(instances_amount[corename]):
