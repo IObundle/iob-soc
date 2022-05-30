@@ -43,6 +43,11 @@ endif
 VSRC+=$(wildcard $(ASIC_DIR)/$(ASIC_MEM_FILES))
 endif
 
+# AXI4 wires
+VHDR+=iob_cache_axi_wire.vh
+iob_cache_axi_wire.vh:
+	set -e; $(AXI_GEN) axi_wire iob_cache_
+
 #axi memory
 include $(AXI_DIR)/hardware/axiram/hardware.mk
 

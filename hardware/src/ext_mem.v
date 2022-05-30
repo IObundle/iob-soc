@@ -5,9 +5,9 @@
 
 module ext_mem
   #(
-    parameter ADDR_W=`ADDR_W,
     parameter DATA_W=`DATA_W,
-    parameter AXI_ADDR_W=`ADDR_W,
+    parameter ADDR_W=`ADDR_W,
+    parameter AXI_ADDR_W=`DCACHE_ADDR_W,
     parameter AXI_DATA_W=`DATA_W
     )
    (
@@ -69,13 +69,13 @@ module ext_mem
       .rdata (i_resp[`rdata(0)]),
       .ack (i_resp[`ready(0)]),
 
-      // Back-end interface
-      .mem_req (icache_be_req[1+`DCACHE_ADDR_W+`WRITE_W-1]),
-      .mem_addr  (icache_be_req[`address(0, `DCACHE_ADDR_W)]),
-      .mem_wdata (icache_be_req[`wdata(0)]),
-      .mem_wstrb (icache_be_req[`wstrb(0)]),
-      .mem_rdata (icache_be_resp[`rdata(0)]),
-      .mem_ack (icache_be_resp[`ready(0)])
+      // Back-end IOb interface
+      .be_req (icache_be_req[1+`DCACHE_ADDR_W+`WRITE_W-1]),
+      .be_addr  (icache_be_req[`address(0, `DCACHE_ADDR_W)]),
+      .be_wdata (icache_be_req[`wdata(0)]),
+      .be_wstrb (icache_be_req[`wstrb(0)]),
+      .be_rdata (icache_be_resp[`rdata(0)]),
+      .be_ack (icache_be_resp[`ready(0)])
       );
 `endif //  `ifdef RUN_EXTMEM
 
@@ -122,13 +122,13 @@ module ext_mem
       .rdata (d_resp[`rdata(0)]),
       .ack (d_resp[`ready(0)]),
 
-      // Back-end AXI interface
-      .mem_req (dcache_be_req[1+`DCACHE_ADDR_W+`WRITE_W-1]),
-      .mem_addr (dcache_be_req[`address(0,`DCACHE_ADDR_W)]),
-      .mem_wdata (dcache_be_req[`wdata(0)]),
-      .mem_wstrb (dcache_be_req[`wstrb(0)]),
-      .mem_rdata (dcache_be_resp[`rdata(0)]),
-      .mem_ack (dcache_be_resp[`ready(0)])
+      // Back-end IOb interface
+      .be_req (dcache_be_req[1+`DCACHE_ADDR_W+`WRITE_W-1]),
+      .be_addr (dcache_be_req[`address(0,`DCACHE_ADDR_W)]),
+      .be_wdata (dcache_be_req[`wdata(0)]),
+      .be_wstrb (dcache_be_req[`wstrb(0)]),
+      .be_rdata (dcache_be_resp[`rdata(0)]),
+      .be_ack (dcache_be_resp[`ready(0)])
       );
 
    // Merge L1 cache back-ends for L2

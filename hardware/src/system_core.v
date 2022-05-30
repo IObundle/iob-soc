@@ -10,7 +10,7 @@ module system
   #(
     parameter ADDR_W=`ADDR_W,
     parameter DATA_W=`DATA_W,
-    parameter AXI_ADDR_W=`ADDR_W,
+    parameter AXI_ADDR_W=`DCACHE_ADDR_W,
     parameter AXI_DATA_W=`DATA_W
     )
   (
@@ -202,7 +202,7 @@ module system
    //
    // EXTERNAL DDR MEMORY
    //
-   ext_mem ext_mem0 
+   ext_mem ext_mem0
      (
  `ifdef RUN_EXTMEM
       // instruction bus
