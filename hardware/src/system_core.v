@@ -199,12 +199,12 @@ module tester
    //
 
    //slaves bus
-   wire [`N_SLAVES*`REQ_W-1:0] slaves_req;
-   wire [`N_SLAVES*`RESP_W-1:0] slaves_resp;
+   wire [`TESTER_N_SLAVES*`REQ_W-1:0] slaves_req;
+   wire [`TESTER_N_SLAVES*`RESP_W-1:0] slaves_resp;
 
    iob_split 
      #(
-       .N_SLAVES(`N_SLAVES),
+       .N_SLAVES(`TESTER_N_SLAVES),
        .P_SLAVES(`P_BIT-1)
        )
    pbus_split

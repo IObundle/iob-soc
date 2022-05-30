@@ -24,9 +24,6 @@ include $(PICORV32_DIR)/hardware/hardware.mk
 #CACHE
 include $(CACHE_DIR)/hardware/hardware.mk
 
-# get VSRC, VHDR and DEFINES from peripherals, UUT and extra tester peripherals (from tester.mk of unit under test)
-$(foreach p, $(sort $(PERIPHERALS)), $(info $(shell make -f $(ROOT_DIR)/get_makefile_variables.mk get_vsrc get_vhdr get_defines PERIPHERAL_INC_DIR=$($p_DIR)/hardware/hardware.mk $p_DIR=$($p_DIR) ROOT_DIR=$($p_DIR))))
-
 #HARDWARE PATHS
 INC_DIR:=$(HW_DIR)/include
 SRC_DIR:=$(HW_DIR)/src
@@ -65,9 +62,11 @@ endif
 #Include targets to copy VSRC, VHDR and DEFINES
 include $(ROOT_DIR)/get_makefile_variables.mk
 
-# make tester.v with peripherals
+# make tester.v and copy vsrc, vhdr, defines from peripherals
 tester.v: $(SRC_DIR)/system_core.v
 	$(SW_DIR)/python/createSystem.py $(ROOT_DIR) "../../peripheral_portmap.conf" "$(GET_DIRS)" "$(PERIPHERALS)"
+	# get VSRC, VHDR and DEFINES from peripherals, UUT and extra tester peripherals (from tester.mk of unit under test)
+	$(foreach p, $(sort $(PERIPHERALS)), make -f $(ROOT_DIR)/get_makefile_variables.mk get_vsrc get_vhdr get_defines PERIPHERAL_INC_DIR=$($p_DIR)/hardware/hardware.mk $p_DIR=$($p_DIR) ROOT_DIR=$($p_DIR);)
 
 # make and copy memory init files
 PYTHON_DIR=$(MEM_DIR)/software/python

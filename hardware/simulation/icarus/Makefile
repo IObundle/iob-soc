@@ -11,7 +11,7 @@ SIM_PROC=a.out
 include ../simulation.mk
 
 #simulator flags
-VLOG = iverilog -W all -g2005-sv $(INCLUDE) $(incdir)vhdr $(addprefix $(defmacro),$(shell cat defines.txt))
+VLOG = iverilog -W all -g2005-sv $(incdir)vhdr $(addprefix $(defmacro),$(shell cat defines.txt))
 
 comp: $(SIM_PROC)
 

@@ -11,6 +11,7 @@ import math
 reserved_signals_template = """\
       .clk(clk),
       .rst(reset),
+      .reset(reset),
       .arst(reset),
       .valid(slaves_req[`valid(`/*<InstanceName>*/)]),
       .address(slaves_req[`address(`/*<InstanceName>*/,`/*<SwregFilename>*/_ADDR_W+2)-2]),
@@ -18,6 +19,7 @@ reserved_signals_template = """\
       .wstrb(slaves_req[`wstrb(`/*<InstanceName>*/)]),
       .rdata(slaves_resp[`rdata(`/*<InstanceName>*/)]),
       .ready(slaves_resp[`ready(`/*<InstanceName>*/)]),
+      .trap(),
 """
 
 
@@ -134,7 +136,7 @@ def get_module_io(verilog_lines):
 # It removes reserved system signals, such as: clk, rst, valid, address, wdata, wstrb, rdata, ready, ...
 def get_pio_signals(peripheral_signals):
     pio_signals = peripheral_signals.copy()
-    for signal in ["clk","rst","arst","valid","address","wdata","wstrb","rdata","ready","reset","trap"]:
+    for signal in ["clk","rst","reset","arst","valid","address","wdata","wstrb","rdata","ready","trap"]:
         if signal in pio_signals: pio_signals.pop(signal)
     return pio_signals
 
