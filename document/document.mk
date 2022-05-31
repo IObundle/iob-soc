@@ -5,8 +5,6 @@ include $(ROOT_DIR)/config.mk
 INT_FAMILY ?=CYCLONEV-GT-DK
 #results for xilinx fpga
 XIL_FAMILY ?=AES-KU040-DB-G
-#results for asic nodes
-ASIC_NODE=
 
 NOCLEAN+=-o -name "test.expected" -o -name "Makefile"
 

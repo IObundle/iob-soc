@@ -35,14 +35,6 @@ DEFINE+=$(defmacro)FW_SIZE=$(FW_SIZE)
 #verilog testbench
 TB_DIR:=$(HW_DIR)/simulation/verilog_tb
 
-#asic post-synthesis and post-pr sources
-ifeq ($(ASIC),1)
-ifeq ($(SYNTH),1)
-VSRC=$(ASIC_DIR)/system_synth.v
-endif
-VSRC+=$(wildcard $(ASIC_DIR)/$(ASIC_MEM_FILES))
-endif
-
 #axi memory
 include $(AXI_DIR)/hardware/axiram/hardware.mk
 
