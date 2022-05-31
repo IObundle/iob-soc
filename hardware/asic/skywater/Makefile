@@ -6,7 +6,6 @@ IMAGE_NAME ?= efabless/openlane:5f20beb7928c7329ea1a199b9f494f48f2e6c080
 SRAM_W = 9
 MKDIR := mkdir -p
 VSRC+=iob_ram_sp_be.v
-VSRC+=sky130_sram_2kbyte_1rw1r_32x512_8.v
 VHDR+=../../../submodules/LIB/hardware/include/gen_if.vh
 VSRC+=../../../submodules/MEM/hardware/rom/iob_rom_sp/iob_rom_sp.v
 VHDR+=../../../submodules/LIB/hardware/include/iob_s_if.vh
@@ -49,13 +48,14 @@ endif
 
 synth_sim: clean_asic $(VSRC) $(VHDR) temp_src temp_inc $(DEFINE)  $(HEXPROGS) cp_openlane
 	cp boot.hex temp_src
-	sed -i '46,62d' temp_src/iob_ram_sp_be.v >> temp_src/iob_ram_sp_be.v
 	sed -i "1i \`include \"iob-soc-defs.vh\"" temp_src/system.v
 	sed -i "4i \`include \"iob-soc-defs.vh\"" temp_src/boot_ctr.v
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/src
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/inc
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/macros/lef
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/macros/gds
+	cp $(wildcard *.lef) $(OPENLANE_DESIGNS)/system/macros/lef
+	cp $(wildcard *.gds) $(OPENLANE_DESIGNS)/system/macros/gds
 	cp $(wildcard temp_src/*.v) $(OPENLANE_DESIGNS)/system/src
 	cp $(wildcard temp_inc/*.*) $(OPENLANE_DESIGNS)/system/inc
 	cp temp_src/boot.hex $(OPENLANE_DESIGNS)/system/src
@@ -73,6 +73,8 @@ synth:  clean_asic $(VSRC) $(VHDR) temp_src temp_inc $(DEFINE) $(HEXPROGS) cp_op
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/inc
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/macros/lef
 	$(MKDIR) $(OPENLANE_DESIGNS)/system/macros/gds
+	cp $(wildcard *.lef) $(OPENLANE_DESIGNS)/system/macros/lef
+	cp $(wildcard *.gds) $(OPENLANE_DESIGNS)/system/macros/gds
 	cp $(wildcard temp_src/*.v) $(OPENLANE_DESIGNS)/system/src
 	cp $(wildcard temp_inc/*.*) $(OPENLANE_DESIGNS)/system/inc
 	cp temp_src/boot.hex $(OPENLANE_DESIGNS)/system/src
@@ -98,8 +100,11 @@ clean_asic:
 	rm -rf system_tmp.v
 	rm -rf UARTsw_reg_def.vh
 	rm -rf UARTsw_reg_gen.vh
+	rm -rf iob_uart_swreg_def.vh
+	rm -rf iob_uart_swreg_gen.vh
 	rm -rf OpenLane/designs/system
 	rm -rf firmware_*.hex
+	rm -rf firmware.hex
 
 clean_debug:
 	rm -rf debug

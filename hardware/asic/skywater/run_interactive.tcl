@@ -2,3 +2,12 @@
 package require openlane
 prep -design system config file /system/config.tcl -tag soc -overwrite
 run_synthesis
+init_floorplan
+add_macro_placement int_mem0.int_sram.main_mem_byte.ram 5.59000 168.23 N
+manual_macro_placement f
+place_io
+tap_decap_or
+gen_pdn
+run_placement
+run_cts
+run_routing

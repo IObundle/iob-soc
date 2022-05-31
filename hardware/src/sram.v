@@ -33,13 +33,8 @@ module sram #(
    wire [`DATA_W-1:0]       wdata = i_valid? i_wdata: d_wdata;
    wire [`DATA_W/8-1:0]     wstrb = i_valid? i_wstrb: d_wstrb;
    wire [`DATA_W-1:0]       rdata;
-   wire [`DATA_W/8-1:0] mask;
    assign d_rdata = rdata;
    assign i_rdata = rdata;
-   assign mask = 4'b1111;
-
-
-
 
    iob_ram_sp_be
      #(
@@ -57,8 +52,6 @@ module sram #(
       .we   (wstrb),
       .din  (wdata),
       .dout (rdata),
-       .wmask(mask)
-
       );
 `else
    wire                     d_valid_int = d_valid;
