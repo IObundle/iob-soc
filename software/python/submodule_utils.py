@@ -19,7 +19,7 @@ reserved_signals_template = """\
       .wstrb(slaves_req[`wstrb(`/*<InstanceName>*/)]),
       .rdata(slaves_resp[`rdata(`/*<InstanceName>*/)]),
       .ready(slaves_resp[`ready(`/*<InstanceName>*/)]),
-      .trap(),
+      .trap(trap[1]),
 """
 
 

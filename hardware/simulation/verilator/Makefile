@@ -53,7 +53,7 @@ VERILATOR_FLAGS += +1800-2005ext+v # Use SystemVerilog 2005 with file extension 
 VERILATOR_FLAGS += --error-limit 1000 # Exit if number of errors passes 1000
 
 # Verilator source files
-VERILATOR_INPUT = $(INCLUDE_VERI) $(DEFINE) $(VSRC) --top-module system_top system_tb.cpp
+VERILATOR_INPUT = -Ivhdr $(addprefix $(defmacro),$(shell cat defines.txt)) $(wildcard vsrc/*) --top-module system_top system_tb.cpp
 ######################################################################
 
 comp: $(SIM_PROC)

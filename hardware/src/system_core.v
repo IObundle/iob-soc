@@ -63,7 +63,7 @@ module tester
 `endif //  `ifdef USE_DDR
    input                    clk,
    input                    reset,
-   output                   trap
+   output [1:0]             trap
    );
 
    localparam ADDR_W=32;
@@ -95,7 +95,7 @@ module tester
         .clk     (clk),
         .rst     (cpu_reset),
         .boot    (boot),
-        .trap    (trap),
+        .trap    (trap[0]),
         
         //instruction bus
         .ibus_req(cpu_i_req),
@@ -225,7 +225,12 @@ module tester
    // INTERNAL SRAM MEMORY
    //
    
-   int_mem int_mem0 
+   int_mem 
+     #(
+       .HEXFILE("tester_firmware"),
+       .BOOT_HEXFILE("tester_boot")
+      )
+   int_mem0 
      (
       .clk                  (clk ),
       .rst                  (reset),

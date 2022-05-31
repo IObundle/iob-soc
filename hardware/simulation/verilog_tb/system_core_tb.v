@@ -7,7 +7,7 @@
 
 module TOP;
 
-  parameter realtime clk_per = 1s/`FREQ;
+  parameter realtime clk_per = 1s/`TESTER_FREQ;
 
   //clock
   reg clk = 1;

@@ -7,13 +7,13 @@ endif
 
 get_vsrc: $(VSRC)
 	mkdir -p vsrc
-	for p in '$^'; do\
+	for p in $(addprefix ",$(addsuffix ",$(VSRC))); do\
 		ln -fsr $$p vsrc/;\
 	done
 
 get_vhdr: $(VHDR)
 	mkdir -p vhdr
-	for p in '$^'; do\
+	for p in $(addprefix ",$(addsuffix ",$(VHDR))); do\
 		ln -fsr $$p vhdr/;\
 	done
 
