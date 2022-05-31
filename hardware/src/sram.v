@@ -51,7 +51,7 @@ module sram #(
       .addr (addr),
       .we   (wstrb),
       .din  (wdata),
-      .dout (rdata),
+      .dout (rdata)
       );
 `else
    wire                     d_valid_int = d_valid;
