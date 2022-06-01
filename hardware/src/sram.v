@@ -2,6 +2,8 @@
 `include "system.vh"
 
 module sram #(
+              parameter DATA_W=`DATA_W,
+              parameter SRAM_ADDR_W = `SRAM_ADDR_W,
               parameter HEXFILE = "none"
 	      )
    (
@@ -10,18 +12,18 @@ module sram #(
 
     // intruction bus
     input                    i_valid,
-    input [`SRAM_ADDR_W-3:0] i_addr,
-    input [`DATA_W-1:0]      i_wdata, //used for booting
-    input [`DATA_W/8-1:0]    i_wstrb, //used for booting
-    output [`DATA_W-1:0]     i_rdata,
+    input [SRAM_ADDR_W-3:0] i_addr,
+    input [DATA_W-1:0]      i_wdata, //used for booting
+    input [DATA_W/8-1:0]    i_wstrb, //used for booting
+    output [DATA_W-1:0]     i_rdata,
     output reg               i_ready,
 
     // data bus
     input                    d_valid,
-    input [`SRAM_ADDR_W-3:0] d_addr,
-    input [`DATA_W-1:0]      d_wdata,
-    input [`DATA_W/8-1:0]    d_wstrb,
-    output [`DATA_W-1:0]     d_rdata,
+    input [SRAM_ADDR_W-3:0] d_addr,
+    input [DATA_W-1:0]      d_wdata,
+    input [DATA_W/8-1:0]    d_wstrb,
+    output [DATA_W-1:0]     d_rdata,
     output reg               d_ready
     );
 
@@ -29,18 +31,18 @@ module sram #(
 
    wire                     d_valid_int = i_valid? 1'b0: d_valid;
    wire                     valid = i_valid? i_valid: d_valid;
-   wire [`SRAM_ADDR_W-3:0]  addr  = i_valid? i_addr: d_addr;
-   wire [`DATA_W-1:0]       wdata = i_valid? i_wdata: d_wdata;
-   wire [`DATA_W/8-1:0]     wstrb = i_valid? i_wstrb: d_wstrb;
-   wire [`DATA_W-1:0]       rdata;
+   wire [SRAM_ADDR_W-3:0]  addr  = i_valid? i_addr: d_addr;
+   wire [DATA_W-1:0]       wdata = i_valid? i_wdata: d_wdata;
+   wire [DATA_W/8-1:0]     wstrb = i_valid? i_wstrb: d_wstrb;
+   wire [DATA_W-1:0]       rdata;
    assign d_rdata = rdata;
    assign i_rdata = rdata;
 
    iob_ram_sp_be
      #(
        .HEXFILE(HEXFILE),
-       .ADDR_W(`SRAM_ADDR_W-2),
-       .DATA_W(`DATA_W)
+       .ADDR_W(SRAM_ADDR_W-2),
+       .DATA_W(DATA_W)
        )
    main_mem_byte
      (
@@ -59,8 +61,8 @@ module sram #(
    iob_ram_dp_be
      #(
        .HEXFILE(HEXFILE),
-       .ADDR_W(`SRAM_ADDR_W-2),
-       .DATA_W(`DATA_W)
+       .ADDR_W(SRAM_ADDR_W-2),
+       .DATA_W(DATA_W)
        )
    main_mem_byte
      (
