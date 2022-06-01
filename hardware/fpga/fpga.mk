@@ -47,11 +47,11 @@ endif
 
 build: $(FPGA_OBJ)
 
-$(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) $(HEXPROGS)
+$(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) $(HEXPROGS) get_vsrc get_vhdr get_tester_defines
 ifeq ($(NORUN),0)
 ifeq ($(FPGA_SERVER),)
 	@rm -f $(FPGA_LOG)
-	../build.sh "$(INCLUDE)" "$(DEFINE)" "$(VSRC)" "$(DEVICE)"
+	../build.sh "vhdr" "$(shell cat defines.txt)" "$(wildcard vsrc/*)" "$(DEVICE)"
 	make post-build
 else 
 	ssh $(FPGA_USER)@$(FPGA_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"

@@ -76,6 +76,9 @@ copy_uut_hexfiles:
 		make $$p 2> /dev/null &&\
 		ln -fsr $$p .;\
 	done
+	-for p in {0..3}; do\
+		ln -fsr "$($(UUT_NAME)_DIR)/software/firmware/firmware_$$p.hex" .;\
+	done
 
 # make and copy memory init files
 PYTHON_DIR=$(MEM_DIR)/software/python
