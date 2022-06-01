@@ -83,18 +83,6 @@ export CYC5_SERVER=cyc5server.myorg.com
 export CYC5_USER=cyc5username
 ```
 
-### Set up the remote ASIC toolchain server
-
-For example, in `hardware/asic/umc130/Makefile`, the variable for the server
-logical name, `ASIC_SERVER`, is set to `CADENCE_SERVER`, and the variable for 
-the user name `ASIC_USER` is set to `CADENCE_USER`. Hence, you need to set the 
-latter variables as in the following example:
-
-```Bash
-export CADENCE_SERVER=cadenceserver.myorg.com
-export CADENCE_USER=cadenceuser
-```
-
 In each remote server, the environment variables for the executable paths and license
 servers used must be defined as in the following example:
 
@@ -291,32 +279,6 @@ make test-fpga-clean
 
 
 
-### ASIC test
-
-To compile and run a series of ASIC tests on the ASIC technology node selected
-by the `ASIC_NODE` variable, type:
-
-```
-make asic-test [ASIC_NODE=<ASIC technology node directory name>]
-```
-
-The above command creates the file `hardware/simulation/xcelium/test.log`, which
-is compared to file `hardware/asic/<ASIC technology node name>/test.expected`;
-if they differ, the test is aborted.
-
-To run the series of ASIC tests on all supported ASIC technology nodes, type:
-
-```
-make test-asic 
-```
-
-To clean the files produced when testing all ASIC technology nodes, type:
-```
-make test-asic-clean
-```
-
-
-
 ### Documentation test
 
 To compile and test the document selected by the `DOC`, variable, type:
@@ -341,16 +303,15 @@ make test-doc-clean
 
 ### Total test
 
-To run all simulation, FPGA board, ASIC technology node and documentation tests,
-type:
+To run all simulation, FPGA board and documentation tests, type:
 ```
 make test
 ```
 
 ## Cleaning
 
-The following command will clean the selected simulation, board, ASIC technology
-node and document directories, locally and in the remote servers:
+The following command will clean the selected simulation, board and document
+directories, locally and in the remote servers:
 
 ```
 make clean

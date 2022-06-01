@@ -48,7 +48,6 @@ USE_COMPRESSED ?=1
 #ROOT DIRECTORY ON REMOTE MACHINES
 REMOTE_ROOT_DIR ?=sandbox/iob-soc
 
-
 #SIMULATION
 #default simulator running locally or remotely
 #check the respective Makefile in hardware/simulation/$(SIMULATOR) for specific settings
@@ -58,12 +57,6 @@ SIMULATOR ?=icarus
 #default board running locally or remotely
 #check the respective Makefile in hardware/fpga/$(BOARD) for specific settings
 BOARD ?=CYCLONEV-GT-DK
-
-#ASIC COMPILATION
-#default asic node running locally or remotely
-#check the respective Makefile in hardware/asic/$(ASIC_NODE) for specific settings
-ASIC_NODE ?=umc130
-
 
 #DOCUMENTATION
 #default document to compile
@@ -107,7 +100,6 @@ CONSOLE_DIR:=$(SW_DIR)/console
 #hw paths
 HW_DIR=$(ROOT_DIR)/hardware
 SIM_DIR=$(HW_DIR)/simulation/$(SIMULATOR)
-ASIC_DIR=$(HW_DIR)/asic/$(ASIC_NODE)
 BOARD_DIR ?=$(shell find hardware -name $(BOARD))
 
 #doc paths
