@@ -23,5 +23,7 @@ get_defines:
 #Add 'TESTER_' prefix to every define and remove defmacro
 get_tester_defines:
 	$(eval PREFIX_DEFINES=$(subst $$(defmacro),TESTER_,$(value DEFINE)))echo -n ' $(PREFIX_DEFINES)' >> defines.txt
+	#Override USE_DDR, RUN_EXTMEM, INIT_MEM, DDR_ADDR_W defines of UUT with the ones from Tester
+	$(eval PREFIX_DEFINES=$(filter USE_DDR RUN_EXTMEM INIT_MEM DDR_ADDR_W=%,$(subst $$(defmacro),,$(value DEFINE))))echo -n ' $(PREFIX_DEFINES)' >> defines.txt
 
 .PHONY: get_vhdr get_vsrc get_defines get_tester_defines

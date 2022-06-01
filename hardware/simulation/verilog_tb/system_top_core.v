@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-`include "system.vh"
+`include "tester.vh"
 
 
 //PHEADER
@@ -12,9 +12,9 @@ module system_top (
    //tester uart
    input                    uart_valid,
    input [`iob_uart_swreg_ADDR_W-1:0] uart_addr,
-   input [`DATA_W-1:0]      uart_wdata,
+   input [`TESTER_DATA_W-1:0]      uart_wdata,
    input [3:0]              uart_wstrb,
-   output [`DATA_W-1:0]     uart_rdata,
+   output [`TESTER_DATA_W-1:0]     uart_rdata,
    output                   uart_ready
    );
 
@@ -27,7 +27,7 @@ module system_top (
    //
    initial begin
 
-`ifdef VCD
+`ifdef TESTER_VCD
       $dumpfile("system.vcd");
       $dumpvars();
 `endif
@@ -39,10 +39,10 @@ module system_top (
    //
 
    //DDR AXI interface signals (2 for the two systems + 1 for memory)
-`ifdef USE_DDR
+`ifdef TESTER_USE_DDR
    //Write address
    wire [1:0]                   ddr_awid;
-   wire [3*`DDR_ADDR_W-1:0]     ddr_awaddr;
+   wire [3*`TESTER_DDR_ADDR_W-1:0]     ddr_awaddr;
    wire [3*(7+1)-1:0]           ddr_awlen;
    wire [3*(2+1)-1:0]           ddr_awsize;
    wire [3*(1+1)-1:0]           ddr_awburst;
@@ -65,7 +65,7 @@ module system_top (
    wire [2:0]                   ddr_bready;
    //Read address
    wire [1:0]                   ddr_arid;
-   wire [3*`DDR_ADDR_W-1:0]     ddr_araddr;
+   wire [3*`TESTER_DDR_ADDR_W-1:0]     ddr_araddr;
    wire [3*(7+1)-1:0]           ddr_arlen;
    wire [3*(2+1)-1:0]           ddr_arsize;
    wire [3*(1+1)-1:0]           ddr_arburst;
@@ -96,10 +96,10 @@ module system_top (
    //
    tester tester0 (
                //PORTS
-`ifdef USE_DDR
+`ifdef TESTER_USE_DDR
                //address write
 	       .m_axi_awid    (ddr_awid[1:0]),
-	       .m_axi_awaddr  (ddr_awaddr[2*`DDR_ADDR_W-1:0]),
+	       .m_axi_awaddr  (ddr_awaddr[2*`TESTER_DDR_ADDR_W-1:0]),
 	       .m_axi_awlen   (ddr_awlen[2*(7+1)-1:0]),
 	       .m_axi_awsize  (ddr_awsize[2*(2+1)-1:0]),
 	       .m_axi_awburst (ddr_awburst[2*(1+1)-1:0]),
@@ -125,7 +125,7 @@ module system_top (
                
 	       //address read
 	       .m_axi_arid    (ddr_arid[1:0]),
-	       .m_axi_araddr  (ddr_araddr[2*`DDR_ADDR_W-1:0]),
+	       .m_axi_araddr  (ddr_araddr[2*`TESTER_DDR_ADDR_W-1:0]),
 	       .m_axi_arlen   (ddr_arlen[2*(7+1)-1:0]),
 	       .m_axi_arsize  (ddr_arsize[2*(2+1)-1:0]),
 	       .m_axi_arburst (ddr_arburst[2*(1+1)-1:0]),
@@ -149,14 +149,14 @@ module system_top (
 	       .trap          (trap_signals)
 	       );
 
-`ifdef USE_DDR
+`ifdef TESTER_USE_DDR
 	//instantiate axi interconnect
 	//This connects Tester+SUT to the same memory
 	axi_interconnect
 		#(
-		.DATA_WIDTH (`DATA_W),
-		.ADDR_WIDTH (`DDR_ADDR_W),
-		.M_ADDR_WIDTH (32'd`DDR_ADDR_W),
+		.DATA_WIDTH (`TESTER_DATA_W),
+		.ADDR_WIDTH (`TESTER_DDR_ADDR_W),
+		.M_ADDR_WIDTH (32'd`TESTER_DDR_ADDR_W),
 		.S_COUNT (2),
 		.M_COUNT (1)
 		)
@@ -165,7 +165,7 @@ module system_top (
 			.rst            (reset),
 
 			.s_axi_awid     ({{8{ddr_awid[1]}},{8{ddr_awid[0]}}}),
-			.s_axi_awaddr   (ddr_awaddr[2*`DDR_ADDR_W-1:0]),
+			.s_axi_awaddr   (ddr_awaddr[2*`TESTER_DDR_ADDR_W-1:0]),
 			.s_axi_awlen    (ddr_awlen[2*(7+1)-1:0]),
 			.s_axi_awsize   (ddr_awsize[2*(2+1)-1:0]),
 			.s_axi_awburst  (ddr_awburst[2*(1+1)-1:0]),
@@ -191,7 +191,7 @@ module system_top (
 
 			//address read
 			.s_axi_arid     ({{8{ddr_arid[1]}},{8{ddr_arid[0]}}}),
-			.s_axi_araddr   (ddr_araddr[2*`DDR_ADDR_W-1:0]),
+			.s_axi_araddr   (ddr_araddr[2*`TESTER_DDR_ADDR_W-1:0]),
 			.s_axi_arlen    (ddr_arlen[2*(7+1)-1:0]), 
 			.s_axi_arsize   (ddr_arsize[2*(2+1)-1:0]),    
 			.s_axi_arburst  (ddr_arburst[2*(1+1)-1:0]),
@@ -211,7 +211,7 @@ module system_top (
 			.s_axi_rvalid   (ddr_rvalid[1:0]),
 
 			.m_axi_awid     (memory_ddr_awid),
-			.m_axi_awaddr   (ddr_awaddr[3*`DDR_ADDR_W-1:2*`DDR_ADDR_W]),
+			.m_axi_awaddr   (ddr_awaddr[3*`TESTER_DDR_ADDR_W-1:2*`TESTER_DDR_ADDR_W]),
 			.m_axi_awlen    (ddr_awlen[3*(7+1)-1:2*(7+1)]),
 			.m_axi_awsize   (ddr_awsize[3*(2+1)-1:2*(2+1)]),
 			.m_axi_awburst  (ddr_awburst[3*(1+1)-1:2*(1+1)]),
@@ -237,7 +237,7 @@ module system_top (
 
 			//address read
 			.m_axi_arid     (memory_ddr_arid),
-			.m_axi_araddr   (ddr_araddr[3*`DDR_ADDR_W-1:2*`DDR_ADDR_W]),
+			.m_axi_araddr   (ddr_araddr[3*`TESTER_DDR_ADDR_W-1:2*`TESTER_DDR_ADDR_W]),
 			.m_axi_arlen    (ddr_arlen[3*(7+1)-1:2*(7+1)]), 
 			.m_axi_arsize   (ddr_arsize[3*(2+1)-1:2*(2+1)]),    
 			.m_axi_arburst  (ddr_arburst[3*(1+1)-1:2*(1+1)]),
@@ -269,12 +269,12 @@ module system_top (
 	//Tester and SUT access the same memory.
 	axi_ram 
 		#(
-		`ifdef DDR_INIT
+		`ifdef TESTER_DDR_INIT
 		.FILE("init_ddr_contents.hex"), //This file contains firmware for both systems
-		.FILE_SIZE(2**(`DDR_ADDR_W-2)),
+		.FILE_SIZE(2**(`TESTER_DDR_ADDR_W-2)),
 		`endif
-		.DATA_WIDTH (`DATA_W),
-		.ADDR_WIDTH (`DDR_ADDR_W)
+		.DATA_WIDTH (`TESTER_DATA_W),
+		.ADDR_WIDTH (`TESTER_DDR_ADDR_W)
 		)
 		system_ddr_model_mem(
 			//address write
@@ -282,7 +282,7 @@ module system_top (
 			.rst            (reset),
 
 			.s_axi_awid     (memory_ddr_awid),
-			.s_axi_awaddr   (ddr_awaddr[3*`DDR_ADDR_W-1:2*`DDR_ADDR_W]),
+			.s_axi_awaddr   (ddr_awaddr[3*`TESTER_DDR_ADDR_W-1:2*`TESTER_DDR_ADDR_W]),
 			.s_axi_awlen    (ddr_awlen[3*(7+1)-1:2*(7+1)]),
 			.s_axi_awsize   (ddr_awsize[3*(2+1)-1:2*(2+1)]),
 			.s_axi_awburst  (ddr_awburst[3*(1+1)-1:2*(1+1)]),
@@ -307,7 +307,7 @@ module system_top (
 
 			//address read
 			.s_axi_arid     (memory_ddr_arid),
-			.s_axi_araddr   (ddr_araddr[3*`DDR_ADDR_W-1:2*`DDR_ADDR_W]),
+			.s_axi_araddr   (ddr_araddr[3*`TESTER_DDR_ADDR_W-1:2*`TESTER_DDR_ADDR_W]),
 			.s_axi_arlen    (ddr_arlen[3*(7+1)-1:2*(7+1)]), 
 			.s_axi_arsize   (ddr_arsize[3*(2+1)-1:2*(2+1)]),    
 			.s_axi_arburst  (ddr_arburst[3*(1+1)-1:2*(1+1)]),

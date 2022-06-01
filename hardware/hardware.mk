@@ -36,7 +36,7 @@ INCLUDE+=$(incdir). $(incdir)$(INC_DIR) $(incdir)$(LIB_DIR)/hardware/include
 
 #HEADERS
 VHDR+=$(wildcard $(HW_DIR)/include/*)
-VHDR+=$(INC_DIR)/system.vh $(LIB_DIR)/hardware/include/iob_intercon.vh
+VHDR+=$(INC_DIR)/tester.vh $(LIB_DIR)/hardware/include/iob_intercon.vh
 
 #SOURCES
 
@@ -51,7 +51,6 @@ VSRC+=tester.v
 
 HEXPROGS=tester_boot.hex tester_firmware.hex
 #create init_ddr_contents (to merge UUT with Tester firmware, assuming that UUT has a firmware)
-#TODO: check if UUT has firmware
 ifeq ($(USE_DDR),1)
 ifeq ($(RUN_EXTMEM),1)
 ifeq ($(INIT_MEM),1)

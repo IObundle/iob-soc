@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-`include "system.vh"
+`include "tester.vh"
 
 module top_system(
 	          input         clk,

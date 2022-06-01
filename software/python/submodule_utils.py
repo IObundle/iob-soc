@@ -19,7 +19,44 @@ reserved_signals_template = """\
       .wstrb(slaves_req[`wstrb(`/*<InstanceName>*/)]),
       .rdata(slaves_resp[`rdata(`/*<InstanceName>*/)]),
       .ready(slaves_resp[`ready(`/*<InstanceName>*/)]),
-      .trap(trap[1]),
+      .trap(trap[0]),
+      .m_axi_awid    (m_axi_awid[0:0]),
+      .m_axi_awaddr  (m_axi_awaddr[`DDR_ADDR_W-1:0]),
+      .m_axi_awlen   (m_axi_awlen[7:0]),
+      .m_axi_awsize  (m_axi_awsize[2:0]),
+      .m_axi_awburst (m_axi_awburst[1:0]),
+      .m_axi_awlock  (m_axi_awlock[0:0]),
+      .m_axi_awcache (m_axi_awcache[3:0]),
+      .m_axi_awprot  (m_axi_awprot[2:0]),
+      .m_axi_awqos   (m_axi_awqos[3:0]),
+      .m_axi_awvalid (m_axi_awvalid[0:0]),
+      .m_axi_awready (m_axi_awready[0:0]),
+      .m_axi_wdata   (m_axi_wdata[`DATA_W-1:0]),
+      .m_axi_wstrb   (m_axi_wstrb[`DATA_W/8-1:0]),
+      .m_axi_wlast   (m_axi_wlast[0:0]),
+      .m_axi_wvalid  (m_axi_wvalid[0:0]),
+      .m_axi_wready  (m_axi_wready[0:0]),
+      .m_axi_bid     (m_axi_bid[0:0]),
+      .m_axi_bresp   (m_axi_bresp[1:0]),
+      .m_axi_bvalid  (m_axi_bvalid[0:0]),
+      .m_axi_bready  (m_axi_bready[0:0]),
+      .m_axi_arid    (m_axi_arid[0:0]),
+      .m_axi_araddr  (m_axi_araddr[`DDR_ADDR_W-1:0]),
+      .m_axi_arlen   (m_axi_arlen[7:0]),
+      .m_axi_arsize  (m_axi_arsize[2:0]),
+      .m_axi_arburst (m_axi_arburst[1:0]),
+      .m_axi_arlock  (m_axi_arlock[0:0]),
+      .m_axi_arcache (m_axi_arcache[3:0]),
+      .m_axi_arprot  (m_axi_arprot[2:0]),
+      .m_axi_arqos   (m_axi_arqos[3:0]),
+      .m_axi_arvalid (m_axi_arvalid[0:0]),
+      .m_axi_arready (m_axi_arready[0:0]),
+      .m_axi_rid     (m_axi_rid[0:0]),
+      .m_axi_rdata   (m_axi_rdata[`DATA_W-1:0]),
+      .m_axi_rresp   (m_axi_rresp[1:0]),
+      .m_axi_rlast   (m_axi_rlast[0:0]),
+      .m_axi_rvalid  (m_axi_rvalid[0:0]),
+      .m_axi_rready  (m_axi_rready[0:0]),
 """
 
 
@@ -123,10 +160,6 @@ def get_module_io(verilog_lines):
             module_signals["wstrb"]="input [DATA_W/8:0] "
             module_signals["rdata"]="output [DATA_W:0] "
             module_signals["ready"]="output "
-        elif '`ifdef' in verilog_lines[i]: #TODO: Temporary fix to allow signals inside macros
-            pass
-        elif '`endif' in verilog_lines[i]: #TODO: Temporary fix to allow signals inside macros
-            pass
         else:
             print("Unknow macro/signal declaration '{}' in module '{}'".format(verilog_lines[i],verilog_lines[module_start-1]))
             exit(-1)
@@ -136,7 +169,7 @@ def get_module_io(verilog_lines):
 # It removes reserved system signals, such as: clk, rst, valid, address, wdata, wstrb, rdata, ready, ...
 def get_pio_signals(peripheral_signals):
     pio_signals = peripheral_signals.copy()
-    for signal in ["clk","rst","reset","arst","valid","address","wdata","wstrb","rdata","ready","trap"]:
+    for signal in ["clk","rst","reset","arst","valid","address","wdata","wstrb","rdata","ready","trap"]+[i for i in pio_signals if "m_axi_" in i]:
         if signal in pio_signals: pio_signals.pop(signal)
     return pio_signals
 

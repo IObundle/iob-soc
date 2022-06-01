@@ -49,7 +49,7 @@ def create_systemv(directories_str, peripherals_str, portmap_path):
             first_reversed_signal=True
             # Insert reserved signals 
             for signal in reversed(reserved_signals_template.splitlines(True)):
-                str_match=re.match("^\s*\.([^\(]+)\(",signal)
+                str_match=re.match("^\s*\.([^\(\s]+)\s*\(",signal)
                 # Only insert if this reserved signal (from template) is present in IO of this peripheral
                 if (str_match is not None) and str_match.group(1) in peripheral_signals[corename]:
                     template_contents.insert(start_index, 
