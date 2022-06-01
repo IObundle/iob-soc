@@ -7,7 +7,8 @@ module int_mem
     parameter ADDR_W=32,
     parameter DATA_W=32,
     parameter HEXFILE = "firmware",
-    parameter BOOT_HEXFILE = "boot"
+    parameter BOOT_HEXFILE = "boot",
+    parameter B_BIT = `B_BIT
     )
    (
     input                clk,
@@ -47,7 +48,7 @@ module int_mem
    iob_split 
      #(
        .N_SLAVES(2),
-       .P_SLAVES(`B_BIT)
+       .P_SLAVES(B_BIT)
        )
    data_bootctr_split
        (
