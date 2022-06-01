@@ -36,7 +36,7 @@ INCLUDE+=$(incdir). $(incdir)$(INC_DIR) $(incdir)$(LIB_DIR)/hardware/include
 
 #HEADERS
 VHDR+=$(wildcard $(HW_DIR)/include/*)
-VHDR+=$(INC_DIR)/tester.vh $(LIB_DIR)/hardware/include/iob_intercon.vh
+VHDR+=$(INC_DIR)/system.vh $(INC_DIR)/tester.vh $(LIB_DIR)/hardware/include/iob_intercon.vh
 
 #SOURCES
 
@@ -67,8 +67,14 @@ tester.v: $(SRC_DIR)/system_core.v get_peripherals_makefile_variables copy_uut_h
 	$(SW_DIR)/python/createSystem.py $(ROOT_DIR) "../../peripheral_portmap.conf" "$(GET_DIRS)" "$(PERIPHERALS)"
 
 #copy vsrc, vhdr, defines from peripherals
-get_peripherals_makefile_variables:
+get_peripherals_makefile_variables: set_default_defines
 	$(foreach p, $(sort $(PERIPHERALS)), make -f $(ROOT_DIR)/get_makefile_variables.mk get_vsrc get_vhdr get_defines PERIPHERAL_INC_DIR=$($p_DIR)/hardware/hardware.mk $p_DIR=$($p_DIR) ROOT_DIR=$($p_DIR);)
+
+#set default defines because they are required by multiple modules, even though these values will not be used
+#since they will always be overriden (at instantiation with parameters) by either tester defines or sut defines
+set_default_defines:
+	echo -n "ADDR_W=0 DATA_W=0 BOOTROM_ADDR_W=0 SRAM_ADDR_W=0 FIRM_ADDR_W=0 DCACHE_ADDR_W=0 E=0 V=0 P=0 B=0 USE_COMPRESSED=0 USE_MUL_DIV=0\
+           " >> defines.txt
 
 #Tries to build UUT bootloader and firmware (if targets exist) and copies them
 copy_uut_hexfiles:
@@ -99,4 +105,4 @@ hw-clean: gen-clean
 	@rm -f *.v *.vh *.hex *.bin $(SRC_DIR)/tester.v $(TB_DIR)/system_tb.v defines.txt
 	@rm -rf vsrc vhdr
 
-.PHONY: hw-clean get_peripherals_makefile_variables copy_uut_hexfiles
+.PHONY: hw-clean get_peripherals_makefile_variables copy_uut_hexfiles set_default_defines
