@@ -10,6 +10,7 @@ SIM_SERVER=$(VSIM_SERVER)
 SIM_USER=$(VSIM_USER)
 SIM_PROC=Vsystem_top
 
+HDR=iob_uart_swreg.h
 
 include ../simulation.mk
 
@@ -59,7 +60,7 @@ VERILATOR_INPUT = $(INCLUDE_VERI) $(DEFINE) $(VSRC) --top-module system_top syst
 comp: $(SIM_PROC)
 
 #simulator executable
-$(SIM_PROC):
+$(SIM_PROC): $(HDR)
 	$(VERILATOR) $(VERILATOR_FLAGS) $(VERILATOR_INPUT)
 	cp obj_dir/$@ .
 
@@ -67,8 +68,11 @@ $(SIM_PROC):
 exec:
 	./$(SIM_PROC)
 
+iob_uart_swreg.h: $(FIRM_DIR)/iob_uart_swreg.h
+	cp $< $@
+
 clean: clean-remote
-	@rm -f $(SIM_PROC)
+	@rm -f $(SIM_PROC) $(HDR)
 	@rm -rf obj_dir
 
 .PHONY: exec clean

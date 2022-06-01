@@ -5,25 +5,7 @@
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 
-// address macros
-#define UART_SOFTRESET_ADDR 0
-#define UART_DIV_ADDR 2
-#define UART_TXDATA_ADDR 4
-#define UART_TXEN_ADDR 5
-#define UART_RXEN_ADDR 6
-#define UART_TXREADY_ADDR 0
-#define UART_RXDATA_ADDR 4
-#define UART_RXREADY_ADDR 1
-
-//register/mem data width
-#define UART_SOFTRESET_W 8
-#define UART_DIV_W 16
-#define UART_TXDATA_W 8
-#define UART_TXEN_W 8
-#define UART_TXREADY_W 8
-#define UART_RXDATA_W 8
-#define UART_RXEN_W 8
-#define UART_RXREADY_W 8
+#include "iob_uart_swreg.h"
 
 // other macros
 #define FREQ 100000000
@@ -50,7 +32,7 @@ void Timer(unsigned int half_cycles){
 }
 
 // 1-cycle write
-void uartwrite(unsigned int cpu_address, char cpu_data, unsigned int nbytes){
+void uartwrite(unsigned int cpu_address, unsigned int cpu_data, unsigned int nbytes){
     char wstrb_int = 0;
     switch (nbytes) {
         case 1:
@@ -86,13 +68,13 @@ void uartread(unsigned int cpu_address, char *read_reg){
 
 void inituart(){
   //pulse reset uart
-  uartwrite(UART_SOFTRESET_ADDR, 1, UART_SOFTRESET_W/8);
-  uartwrite(UART_SOFTRESET_ADDR, 0, UART_SOFTRESET_W/8);
+  uartwrite(UART_SOFTRESET, 1, UART_SOFTRESET_W/8);
+  uartwrite(UART_SOFTRESET, 0, UART_SOFTRESET_W/8);
   //config uart div factor
-  uartwrite(UART_DIV_ADDR, int(FREQ/BAUD), UART_DIV_W/8);
+  uartwrite(UART_DIV, int(FREQ/BAUD), UART_DIV_W/8);
   //enable uart for receiving
-  uartwrite(UART_RXEN_ADDR, 1, UART_RXEN_W/8);
-  uartwrite(UART_TXEN_ADDR, 1, UART_TXEN_W/8);
+  uartwrite(UART_RXEN, 1, UART_RXEN_W/8);
+  uartwrite(UART_TXEN, 1, UART_TXEN_W/8);
 }
 
 int main(int argc, char **argv, char **env){
@@ -147,15 +129,15 @@ int main(int argc, char **argv, char **env){
         break;
     }
     while(!rxread_reg && !txread_reg){
-      uartread(UART_RXREADY_ADDR, &rxread_reg);
-      uartread(UART_TXREADY_ADDR, &txread_reg);
+      uartread(UART_RXREADY, &rxread_reg);
+      uartread(UART_TXREADY, &txread_reg);
     }
     if(rxread_reg){
       if((soc2cnsl_fd = fopen("./soc2cnsl", "rb")) != NULL){
         able2read = fread(&cpu_char, sizeof(char), 1, soc2cnsl_fd);
         if(able2read == 0){
           fclose(soc2cnsl_fd);
-          uartread(UART_RXDATA_ADDR, &cpu_char);
+          uartread(UART_RXDATA, &cpu_char);
           soc2cnsl_fd = fopen("./soc2cnsl", "wb");
           fwrite(&cpu_char, sizeof(char), 1, soc2cnsl_fd);
           rxread_reg = 0;
@@ -169,7 +151,7 @@ int main(int argc, char **argv, char **env){
       }
       able2write = fread(&cpu_char, sizeof(char), 1, cnsl2soc_fd);
       if (able2write > 0){
-        uartwrite(UART_TXDATA_ADDR, cpu_char, UART_TXDATA_W/8);
+        uartwrite(UART_TXDATA, cpu_char, UART_TXDATA_W/8);
         fclose(cnsl2soc_fd);
         cnsl2soc_fd = fopen("./cnsl2soc", "w");
       }
