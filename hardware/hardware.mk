@@ -15,8 +15,8 @@ include $(LIB_DIR)/hardware/iob_merge/hardware.mk
 include $(LIB_DIR)/hardware/iob_split/hardware.mk
 
 #include MEM modules
-include $(MEM_DIR)/hardware/rom/iob_rom_sp/hardware.mk
-include $(MEM_DIR)/hardware/ram/iob_ram_dp_be/hardware.mk
+include $(LIB_DIR)/hardware/rom/iob_rom_sp/hardware.mk
+include $(LIB_DIR)/hardware/ram/iob_ram_dp_be/hardware.mk
 
 #CPU
 include $(PICORV32_DIR)/hardware/hardware.mk
@@ -65,7 +65,7 @@ system.v: $(SRC_DIR)/system_core.v
 
 
 # make and copy memory init files
-PYTHON_DIR=$(MEM_DIR)/software/python
+PYTHON_DIR=$(LIB_DIR)/software/python
 
 boot.hex: $(BOOT_DIR)/boot.bin
 	$(PYTHON_DIR)/makehex.py $< $(BOOTROM_ADDR_W) > $@

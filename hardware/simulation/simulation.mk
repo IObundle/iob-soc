@@ -49,7 +49,7 @@ iob_cache_axi_wire.vh:
 	set -e; $(AXI_GEN) axi_wire iob_cache_
 
 #axi memory
-include $(AXI_DIR)/hardware/axiram/hardware.mk
+include $(LIB_DIR)/hardware/axiram/hardware.mk
 
 VSRC+=system_top.v
 
