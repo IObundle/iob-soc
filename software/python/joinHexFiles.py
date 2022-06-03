@@ -2,14 +2,22 @@
 #Joins two hex files, one starting at address 0 and one starting at address TOTALSIZE/2
 
 from sys import argv
+import os
 
 total_number_of_lines = 2**(int(argv[3])-2)
 
-with open(argv[1], "r") as f:
-    file1_contents = f.readlines()
+if os.path.isfile(argv[1]):
+    with open(argv[1], "r") as f:
+        file1_contents = f.readlines()
+else:
+    file1_contents = []
 
-with open(argv[2], "r") as f:
-    file2_contents = f.readlines()
+
+if os.path.isfile(argv[2]):
+    with open(argv[2], "r") as f:
+        file2_contents = f.readlines()
+else:
+    file2_contents = []
 
 # Trim lines of zeros from end of file
 def trimEndingZeros(data):

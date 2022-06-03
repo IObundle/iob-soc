@@ -98,8 +98,8 @@ tester_firmware.hex: $(FIRM_DIR)/firmware.bin
 	$(PYTHON_DIR)/hex_split.py tester_firmware .
 
 # init file for external mem with firmware of both systems
-init_ddr_contents.hex: firmware.hex tester_firmware.hex
-	$(SW_DIR)/python/joinHexFiles.py $^ $(DDR_ADDR_W) > $@
+init_ddr_contents.hex: tester_firmware.hex
+	$(SW_DIR)/python/joinHexFiles.py firmware.hex $^ $(DDR_ADDR_W) > $@
 
 #clean general hardware files
 hw-clean: gen-clean
