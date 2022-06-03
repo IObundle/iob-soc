@@ -163,9 +163,12 @@ module int_mem
    // INSTANTIATE RAM
    //
    sram
+        #(
 `ifdef SRAM_INIT
-        #(.HEXFILE(HEXFILE))
+        .HEXFILE(HEXFILE),
 `endif
+        .DATA_W(DATA_W),
+        .SRAM_ADDR_W(SRAM_ADDR_W))
    int_sram 
      (
       .clk           (clk),
