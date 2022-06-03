@@ -36,7 +36,8 @@ INCLUDE+=$(incdir). $(incdir)$(INC_DIR) $(incdir)$(LIB_DIR)/hardware/include
 
 #HEADERS
 VHDR+=$(wildcard $(HW_DIR)/include/*)
-VHDR+=$(INC_DIR)/system.vh $(INC_DIR)/tester.vh $(LIB_DIR)/hardware/include/iob_intercon.vh
+VHDR+=$(INC_DIR)/system.vh #Include system.vh because it is required by some verilog modules (such as boot_ctr.v), although its contents are never used by the tester.
+VHDR+=$(INC_DIR)/tester.vh $(LIB_DIR)/hardware/include/iob_intercon.vh
 
 #SOURCES
 
