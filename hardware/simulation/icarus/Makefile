@@ -19,8 +19,6 @@ comp: $(SIM_PROC)
 $(SIM_PROC):
 	$(VLOG) $(wildcard vsrc/*)
 
-.PHONY: run clean debug
-
 exec:
 	./$(SIM_PROC)
 

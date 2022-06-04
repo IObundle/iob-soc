@@ -58,11 +58,6 @@ SIMULATOR ?=icarus
 #check the respective Makefile in hardware/fpga/$(BOARD) for specific settings
 BOARD ?=CYCLONEV-GT-DK
 
-#ASIC COMPILATION
-#default asic node running locally or remotely
-#check the respective Makefile in hardware/asic/$(ASIC_NODE) for specific settings
-ASIC_NODE ?=umc130
-
 #DOCUMENTATION
 #default document to compile
 DOC ?= pb
@@ -114,7 +109,6 @@ CONSOLE_DIR:=$(SW_DIR)/console
 #hw paths
 HW_DIR=$(ROOT_DIR)/hardware
 SIM_DIR=$(HW_DIR)/simulation/$(SIMULATOR)
-ASIC_DIR=$(HW_DIR)/asic/$(ASIC_NODE)
 BOARD_DIR ?=$(shell find $(ROOT_DIR)/hardware -name $(BOARD))
 
 #doc paths
@@ -158,7 +152,7 @@ DEFINE+=$(defmacro)B=$B
 DEFINE+=$(shell $(SW_DIR)/python/submodule_utils.py get_defines "$(PERIPHERALS)" "$(defmacro)")
 
 #default baud and system clock freq
-BAUD ?=115200
+BAUD ?=5000000 #simulation default
 FREQ ?=100000000
 
 SHELL = /bin/bash
