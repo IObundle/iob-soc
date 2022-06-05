@@ -17,7 +17,7 @@ include ../simulation.mk
 TEST?=test
 
 #simulator flags
-CFLAGS = -errormax 15 -status -update -linedebug -sv $(LIBS) $(INCLUDE) $(DEFINE)
+CFLAGS = -errormax 15 -status -update -linedebug -sv $(LIBS) $(incdir)vhdr $(addprefix $(defmacro),$(shell cat defines.txt))
 ifeq ($(DO_COV),0)
 EFLAGS = -errormax 15 -access +wc -status
 SFLAGS = -errormax 15 -status -CMDFILE ../testbench
@@ -30,7 +30,7 @@ endif
 
 #compile
 comp: $(VSRC) $(VHDR)
-	xmvlog $(CFLAGS) $(VSRC)
+	xmvlog $(CFLAGS) $(wildcard vsrc/*)
 
 #elaborate
 elab: comp

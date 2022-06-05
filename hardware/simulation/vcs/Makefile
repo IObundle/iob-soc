@@ -18,7 +18,7 @@ VELAB =
 
 #compile
 comp: $(VSRC) $(VHDR) $(MACRO_LIST)
-	vlogan -nc -sverilog $(INCLUDE) $(DEFINE) $(VSRC)
+	vlogan -nc -sverilog $(incdir)vhdr $(addprefix $(defmacro),$(shell cat defines.txt)) $(wildcard vsrc/*)
 
 #elaborate
 elab: comp
