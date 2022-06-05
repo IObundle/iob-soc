@@ -209,6 +209,8 @@ def init_console():
             init_serial()
             ser.port = sys.argv[sys.argv.index('-s')+1]
             ser.open()
+            ser.flushInput()
+            ser.flushOutput()
         except Exception:
             usage("Error open serial port.")
     else:
