@@ -9,7 +9,7 @@ from submodule_utils import *
 
 def create_top_system(directories_str, peripherals_str):
     # Get peripherals, directories and signals
-    instances_amount = get_peripherals(peripherals_str)
+    instances_amount, _ = get_peripherals(peripherals_str)
     submodule_directories = get_submodule_directories(directories_str)
     peripheral_signals = get_peripherals_signals(instances_amount, submodule_directories)
 

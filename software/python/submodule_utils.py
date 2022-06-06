@@ -29,16 +29,32 @@ def get_submodule_directories(directories_str):
     return directories
 
 # Parameter: PERIPHERALS string defined in config.mk
-# Returns dictionary with amount of instances each peripheral of the SoC to be created 
+# Returns dictionary with amount of instances for each peripheral
+# Also returns dictionary with verilog parameters for each of those instance
+# instances_amount example: {'corename': numberOfInstances, 'anothercorename': numberOfInstances}
+# instances_parameters example: {'corename': [['instance1parameter1','instance1parameter2'],['instance2parameter1','instance2parameter2']]}
 def get_peripherals(peripherals_str):
     peripherals = peripherals_str.split()
 
-    # Count how many instances to create of each type of peripheral
     instances_amount = {}
+    instances_parameters = {}
+    # Count how many instances to create of each type of peripheral
     for i in peripherals:
-        instances_amount[i]=peripherals.count(i)
+        i = i.split("(") # Split corename and parameters
+        if len(i) < 2:
+            i.append("")
+        i[1] = i[1].strip(")") # Delete final ")" from parameter list
+        # Initialize corename in dictionary 
+        if i[0] not in instances_amount:
+            instances_amount[i[0]]=0
+            instances_parameters[i[0]]=[]
+        # Insert parameters of this instance
+        instances_parameters[i[0]].append(i[1].split(","))
+        # Increment amount of instances
+        instances_amount[i[0]]+=1
 
-    return instances_amount
+    #print(instances_parameters, file = sys.stderr) #Debug
+    return instances_amount, instances_parameters
 
 # Given lines read from the verilog file with a module declaration
 # this function returns the inputs and outputs defined in the port list
@@ -168,18 +184,18 @@ def find_idx(lines, word):
 # Functions to run when this script gets called directly #
 ##########################################################
 def print_instances(peripherals_str):
-    instances_amount = get_peripherals(peripherals_str)
+    instances_amount, _ = get_peripherals(peripherals_str)
     for corename in instances_amount:
         for i in range(instances_amount[corename]):
             print(corename+str(i), end=" ")
 
 def print_peripherals(peripherals_str):
-    instances_amount = get_peripherals(peripherals_str)
+    instances_amount, _ = get_peripherals(peripherals_str)
     for i in instances_amount:
         print(i, end=" ")
 
 def print_nslaves(peripherals_str):
-    instances_amount = get_peripherals(peripherals_str)
+    instances_amount, _ = get_peripherals(peripherals_str)
     i=0
     # Calculate total amount of instances
     for corename in instances_amount:
@@ -187,7 +203,7 @@ def print_nslaves(peripherals_str):
     print(i, end="")
 
 def print_nslaves_w(peripherals_str):
-    instances_amount = get_peripherals(peripherals_str)
+    instances_amount, _ = get_peripherals(peripherals_str)
     i=0
     # Calculate total amount of instances
     for corename in instances_amount:
@@ -196,7 +212,7 @@ def print_nslaves_w(peripherals_str):
 
 #Creates list of defines of peripheral instances with sequential numbers
 def print_peripheral_defines(defmacro, peripherals_str):
-    instances_amount = get_peripherals(peripherals_str)
+    instances_amount, _ = get_peripherals(peripherals_str)
     j=0
     for corename in instances_amount:
         for i in range(instances_amount[corename]):
