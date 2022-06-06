@@ -8,13 +8,13 @@
 [size] 1918 1031
 [pos] -1 -1
 *-20.371645 13971110000 14260000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
-[treeopen] TOP.system_top.
-[treeopen] TOP.system_top.uut.
-[treeopen] TOP.system_top.uut.cpu.picorv32_core.
-[treeopen] TOP.system_top.uut.cpu.picorv32_core.genblk1.
-[treeopen] TOP.system_top.uut.cpu.picorv32_core.genblk5.
-[treeopen] TOP.system_top.uut.int_mem0.
-[treeopen] TOP.system_top.uut.int_mem0.int_sram.
+[treeopen] system_tb.system_top.
+[treeopen] system_tb.system_top.uut.
+[treeopen] system_tb.system_top.uut.cpu.picorv32_core.
+[treeopen] system_tb.system_top.uut.cpu.picorv32_core.genblk1.
+[treeopen] system_tb.system_top.uut.cpu.picorv32_core.genblk5.
+[treeopen] system_tb.system_top.uut.int_mem0.
+[treeopen] system_tb.system_top.uut.int_mem0.int_sram.
 [sst_width] 324
 [signals_width] 358
 [sst_expanded] 1
@@ -22,92 +22,92 @@
 @200
 -INT MEM
 @22
-TOP.system_top.uut.int_mem0.i_req[68:0]
-TOP.system_top.uut.int_mem0.i_resp[32:0]
-TOP.system_top.uut.int_mem0.ram_i_req[68:0]
-TOP.system_top.uut.int_mem0.ram_i_resp[32:0]
-TOP.system_top.uut.int_mem0.d_req[68:0]
-TOP.system_top.uut.int_mem0.d_resp[32:0]
+system_tb.system_top.uut.int_mem0.i_req[68:0]
+system_tb.system_top.uut.int_mem0.i_resp[32:0]
+system_tb.system_top.uut.int_mem0.ram_i_req[68:0]
+system_tb.system_top.uut.int_mem0.ram_i_resp[32:0]
+system_tb.system_top.uut.int_mem0.d_req[68:0]
+system_tb.system_top.uut.int_mem0.d_resp[32:0]
 @200
 -TIMER
 -sram
 @28
-TOP.system_top.uut.int_mem0.int_sram.i_valid
+system_tb.system_top.uut.int_mem0.int_sram.i_valid
 @22
-TOP.system_top.uut.int_mem0.int_sram.i_wstrb[3:0]
-TOP.system_top.uut.int_mem0.int_sram.i_rdata[31:0]
+system_tb.system_top.uut.int_mem0.int_sram.i_wstrb[3:0]
+system_tb.system_top.uut.int_mem0.int_sram.i_rdata[31:0]
 @28
-TOP.system_top.uut.int_mem0.int_sram.i_ready
-TOP.system_top.uut.int_mem0.int_sram.d_valid
+system_tb.system_top.uut.int_mem0.int_sram.i_ready
+system_tb.system_top.uut.int_mem0.int_sram.d_valid
 @22
-TOP.system_top.uut.int_mem0.int_sram.d_addr[13:0]
-TOP.system_top.uut.int_mem0.int_sram.d_wdata[31:0]
-TOP.system_top.uut.int_mem0.int_sram.d_wstrb[3:0]
-TOP.system_top.uut.int_mem0.int_sram.d_rdata[31:0]
+system_tb.system_top.uut.int_mem0.int_sram.d_addr[13:0]
+system_tb.system_top.uut.int_mem0.int_sram.d_wdata[31:0]
+system_tb.system_top.uut.int_mem0.int_sram.d_wstrb[3:0]
+system_tb.system_top.uut.int_mem0.int_sram.d_rdata[31:0]
 @29
-TOP.system_top.uut.int_mem0.int_sram.d_ready
+system_tb.system_top.uut.int_mem0.int_sram.d_ready
 @200
 -SYSTEM
 @28
-TOP.system_top.uut.boot
+system_tb.system_top.uut.boot
 @22
-TOP.system_top.uut.cpu_i_req[68:0]
-TOP.system_top.uut.cpu_i_resp[32:0]
-TOP.system_top.uut.dbus_split.m_req[68:0]
-TOP.system_top.uut.cpu_d_req[68:0]
-TOP.system_top.uut.cpu_d_resp[32:0]
-TOP.system_top.uut.pbus_req[68:0]
-TOP.system_top.uut.pbus_resp[32:0]
-TOP.system_top.uut.int_mem_d_req[68:0]
-TOP.system_top.uut.int_mem_d_resp[32:0]
+system_tb.system_top.uut.cpu_i_req[68:0]
+system_tb.system_top.uut.cpu_i_resp[32:0]
+system_tb.system_top.uut.dbus_split.m_req[68:0]
+system_tb.system_top.uut.cpu_d_req[68:0]
+system_tb.system_top.uut.cpu_d_resp[32:0]
+system_tb.system_top.uut.pbus_req[68:0]
+system_tb.system_top.uut.pbus_resp[32:0]
+system_tb.system_top.uut.int_mem_d_req[68:0]
+system_tb.system_top.uut.int_mem_d_resp[32:0]
 @200
 -CPU
 @22
-TOP.system_top.uut.cpu.ibus_req[68:0]
-TOP.system_top.uut.cpu.dbus_req[68:0]
-TOP.system_top.uut.cpu.cpu_i_req[68:0]
-TOP.system_top.uut.cpu.cpu_d_req[68:0]
-TOP.system_top.uut.cpu.cpu_req[68:0]
+system_tb.system_top.uut.cpu.ibus_req[68:0]
+system_tb.system_top.uut.cpu.dbus_req[68:0]
+system_tb.system_top.uut.cpu.cpu_i_req[68:0]
+system_tb.system_top.uut.cpu.cpu_d_req[68:0]
+system_tb.system_top.uut.cpu.cpu_req[68:0]
 @28
-TOP.system_top.uut.cpu.cpu_instr
-TOP.system_top.uut.cpu.cpu_valid
+system_tb.system_top.uut.cpu.cpu_instr
+system_tb.system_top.uut.cpu.cpu_valid
 @200
 -PICORV32
 @28
-TOP.system_top.uut.cpu.clk
-TOP.system_top.uut.cpu.picorv32_core.resetn
-TOP.system_top.uut.cpu.picorv32_core.mem_instr
-TOP.system_top.uut.cpu.picorv32_core.mem_valid
+system_tb.system_top.uut.cpu.clk
+system_tb.system_top.uut.cpu.picorv32_core.resetn
+system_tb.system_top.uut.cpu.picorv32_core.mem_instr
+system_tb.system_top.uut.cpu.picorv32_core.mem_valid
 @22
-TOP.system_top.uut.cpu.picorv32_core.mem_addr[31:0]
-TOP.system_top.uut.cpu.picorv32_core.mem_wdata[31:0]
-TOP.system_top.uut.cpu.picorv32_core.mem_wstrb[3:0]
-TOP.system_top.uut.cpu.picorv32_core.mem_rdata[31:0]
+system_tb.system_top.uut.cpu.picorv32_core.mem_addr[31:0]
+system_tb.system_top.uut.cpu.picorv32_core.mem_wdata[31:0]
+system_tb.system_top.uut.cpu.picorv32_core.mem_wstrb[3:0]
+system_tb.system_top.uut.cpu.picorv32_core.mem_rdata[31:0]
 @28
-TOP.system_top.uut.cpu.picorv32_core.mem_ready
-TOP.system_top.uut.cpu.picorv32_core.trap
+system_tb.system_top.uut.cpu.picorv32_core.mem_ready
+system_tb.system_top.uut.cpu.picorv32_core.trap
 @200
 -UART
 @28
-TOP.system_top.uut.uart.txd
-TOP.system_top.uut.uart.rxd
-TOP.system_top.uut.uart.tx_ready
-TOP.system_top.uut.uart.rx_ready
-TOP.system_top.uut.uart.valid
+system_tb.system_top.uut.uart.txd
+system_tb.system_top.uut.uart.rxd
+system_tb.system_top.uut.uart.tx_ready
+system_tb.system_top.uut.uart.rx_ready
+system_tb.system_top.uut.uart.valid
 @24
-TOP.system_top.uut.uart.address[2:0]
+system_tb.system_top.uut.uart.address[2:0]
 @22
-TOP.system_top.uut.uart.wdata[15:0]
-TOP.system_top.uut.uart.wstrb[3:0]
-TOP.system_top.uut.uart.rdata[31:0]
+system_tb.system_top.uut.uart.wdata[15:0]
+system_tb.system_top.uut.uart.wstrb[3:0]
+system_tb.system_top.uut.uart.rdata[31:0]
 @28
-TOP.system_top.uut.uart.ready
+system_tb.system_top.uut.uart.ready
 @200
 -test_uart
 @28
-TOP.system_top.uart_tb.valid
-TOP.system_top.uart_tb.address[2:0]
-TOP.system_top.uart_tb.rxd
-TOP.system_top.uart_tb.txd
+system_tb.system_top.uart_tb.valid
+system_tb.system_top.uart_tb.address[2:0]
+system_tb.system_top.uart_tb.rxd
+system_tb.system_top.uart_tb.txd
 [pattern_trace] 1
 [pattern_trace] 0

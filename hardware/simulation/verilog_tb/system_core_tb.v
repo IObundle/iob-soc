@@ -1,13 +1,13 @@
 `timescale 1ns / 1ps
 
-`include "system.vh"
+`include "tester.vh"
 
 
 //PHEADER
 
-module TOP;
+module system_tb;
 
-  parameter realtime clk_per = 1s/`FREQ;
+  parameter realtime clk_per = 1s/`TESTER_FREQ;
 
   //clock
   reg clk = 1;
@@ -26,9 +26,9 @@ module TOP;
   //tester uart
   reg       uart_valid;
   reg [`iob_uart_swreg_ADDR_W-1:0] uart_addr;
-  reg [`DATA_W-1:0]      uart_wdata;
+  reg [`TESTER_DATA_W-1:0]      uart_wdata;
   reg [3:0]              uart_wstrb;
-  wire [`DATA_W-1:0]     uart_rdata;
+  wire [`TESTER_DATA_W-1:0]     uart_rdata;
   wire                   uart_ready;
 
   //iterator

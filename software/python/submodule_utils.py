@@ -11,6 +11,7 @@ import math
 reserved_signals_template = """\
       .clk(clk),
       .rst(reset),
+      .reset(reset),
       .arst(reset),
       .valid(slaves_req[`valid(`/*<InstanceName>*/)]),
       .address(slaves_req[`address(`/*<InstanceName>*/,`/*<SwregFilename>*/_ADDR_W+2)-2]),
@@ -18,6 +19,44 @@ reserved_signals_template = """\
       .wstrb(slaves_req[`wstrb(`/*<InstanceName>*/)]),
       .rdata(slaves_resp[`rdata(`/*<InstanceName>*/)]),
       .ready(slaves_resp[`ready(`/*<InstanceName>*/)]),
+      .trap(trap[0]),
+      .m_axi_awid    (m_axi_awid[0:0]),
+      .m_axi_awaddr  (m_axi_awaddr[`DDR_ADDR_W-1:0]),
+      .m_axi_awlen   (m_axi_awlen[7:0]),
+      .m_axi_awsize  (m_axi_awsize[2:0]),
+      .m_axi_awburst (m_axi_awburst[1:0]),
+      .m_axi_awlock  (m_axi_awlock[0:0]),
+      .m_axi_awcache (m_axi_awcache[3:0]),
+      .m_axi_awprot  (m_axi_awprot[2:0]),
+      .m_axi_awqos   (m_axi_awqos[3:0]),
+      .m_axi_awvalid (m_axi_awvalid[0:0]),
+      .m_axi_awready (m_axi_awready[0:0]),
+      .m_axi_wdata   (m_axi_wdata[`DATA_W-1:0]),
+      .m_axi_wstrb   (m_axi_wstrb[`DATA_W/8-1:0]),
+      .m_axi_wlast   (m_axi_wlast[0:0]),
+      .m_axi_wvalid  (m_axi_wvalid[0:0]),
+      .m_axi_wready  (m_axi_wready[0:0]),
+      .m_axi_bid     (m_axi_bid[0:0]),
+      .m_axi_bresp   (m_axi_bresp[1:0]),
+      .m_axi_bvalid  (m_axi_bvalid[0:0]),
+      .m_axi_bready  (m_axi_bready[0:0]),
+      .m_axi_arid    (m_axi_arid[0:0]),
+      .m_axi_araddr  (m_axi_araddr[`DDR_ADDR_W-1:0]),
+      .m_axi_arlen   (m_axi_arlen[7:0]),
+      .m_axi_arsize  (m_axi_arsize[2:0]),
+      .m_axi_arburst (m_axi_arburst[1:0]),
+      .m_axi_arlock  (m_axi_arlock[0:0]),
+      .m_axi_arcache (m_axi_arcache[3:0]),
+      .m_axi_arprot  (m_axi_arprot[2:0]),
+      .m_axi_arqos   (m_axi_arqos[3:0]),
+      .m_axi_arvalid (m_axi_arvalid[0:0]),
+      .m_axi_arready (m_axi_arready[0:0]),
+      .m_axi_rid     (m_axi_rid[0:0]),
+      .m_axi_rdata   (m_axi_rdata[`DATA_W-1:0]),
+      .m_axi_rresp   (m_axi_rresp[1:0]),
+      .m_axi_rlast   (m_axi_rlast[0:0]),
+      .m_axi_rvalid  (m_axi_rvalid[0:0]),
+      .m_axi_rready  (m_axi_rready[0:0]),
 """
 
 
@@ -43,16 +82,32 @@ def get_submodule_directories(directories_str):
     return directories
 
 # Parameter: PERIPHERALS string defined in config.mk
-# Returns dictionary with amount of instances each peripheral to be created 
+# Returns dictionary with amount of instances for each peripheral
+# Also returns dictionary with verilog parameters for each of those instance
+# instances_amount example: {'corename': numberOfInstances, 'anothercorename': numberOfInstances}
+# instances_parameters example: {'corename': [['instance1parameter1','instance1parameter2'],['instance2parameter1','instance2parameter2']]}
 def get_peripherals(peripherals_str):
     peripherals = peripherals_str.split()
 
-    # Count how many instances to create of each type of peripheral
     instances_amount = {}
+    instances_parameters = {}
+    # Count how many instances to create of each type of peripheral
     for i in peripherals:
-        instances_amount[i]=peripherals.count(i)
+        i = i.split("(") # Split corename and parameters
+        if len(i) < 2:
+            i.append("")
+        i[1] = i[1].strip(")") # Delete final ")" from parameter list
+        # Initialize corename in dictionary 
+        if i[0] not in instances_amount:
+            instances_amount[i[0]]=0
+            instances_parameters[i[0]]=[]
+        # Insert parameters of this instance
+        instances_parameters[i[0]].append(i[1].split(","))
+        # Increment amount of instances
+        instances_amount[i[0]]+=1
 
-    return instances_amount
+    #print(instances_parameters, file = sys.stderr) #Debug
+    return instances_amount, instances_parameters
 
 # Given lines read from the verilog file with a module declaration
 # this function returns the inputs and outputs defined in the port list
@@ -83,7 +138,7 @@ def get_module_io(verilog_lines):
             break #Found end of port list
         #If this signal is declared in normal verilog format (no macros)
         if any(verilog_lines[i].lstrip().startswith(x) for x in ["input","output"]):
-            signal = re.search("^\s*((?:input)|(?:output))(?:\s|(?:\[([^:]+):([^\]]+)\]))*(.*),?", verilog_lines[i])
+            signal = re.search("^\s*((?:input)|(?:output))(?:\s|(?:\[([^:]+):([^\]]+)\]))*([^,]*),?", verilog_lines[i])
             if signal is not None:
                 # Store signal in dictionary with format: module_signals[signalname] = "input [size:0]"
                 if signal.group(2) is None:
@@ -111,7 +166,7 @@ def get_module_io(verilog_lines):
                         int(signal.group(2))-1 if signal.group(2).isdigit() else 
                         (("" if "`" in signal.group(2) else "`")
                         +signal.group(2)+"-1").replace("ADDR_W","/*<SwregFilename>*/_ADDR_W")) # Replace keyword "ADDR_W" by "/*<SwregFilename>*/_ADDR_W"
-        elif '`include "gen_if.vh"' in verilog_lines[i]: #If it is a known verilog include
+        elif '`include "iob_gen_if.vh"' in verilog_lines[i]: #If it is a known verilog include
             module_signals["clk"]="input "
             module_signals["rst"]="input "
         elif '`include "iob_s_if.vh"' in verilog_lines[i]: #If it is a known verilog include
@@ -127,10 +182,10 @@ def get_module_io(verilog_lines):
     return module_signals
 
 # Given a dictionary of signals, returns a dictionary with only pio signals.
-# It removes reserved signals, such as: clk, rst, valid, address, wdata, wstrb, rdata or ready
+# It removes reserved system signals, such as: clk, rst, valid, address, wdata, wstrb, rdata, ready, ...
 def get_pio_signals(peripheral_signals):
     pio_signals = peripheral_signals.copy()
-    for signal in ["clk","rst","arst","valid","address","wdata","wstrb","rdata","ready"]:
+    for signal in ["clk","rst","reset","arst","valid","address","wdata","wstrb","rdata","ready","trap"]+[i for i in pio_signals if "m_axi_" in i]:
         if signal in pio_signals: pio_signals.pop(signal)
     return pio_signals
 
@@ -183,18 +238,18 @@ def find_idx(lines, word):
 # Functions to run when this script gets called directly #
 ##########################################################
 def print_instances(sut_peripherals_str):
-    sut_instances_amount = get_peripherals(sut_peripherals_str)
+    sut_instances_amount, _ = get_peripherals(sut_peripherals_str)
     for corename in sut_instances_amount:
         for i in range(sut_instances_amount[corename]):
             print(corename+str(i), end=" ")
 
 def print_peripherals(sut_peripherals_str):
-    sut_instances_amount = get_peripherals(sut_peripherals_str)
+    sut_instances_amount, _ = get_peripherals(sut_peripherals_str)
     for i in sut_instances_amount:
         print(i, end=" ")
 
 def print_nslaves(sut_peripherals_str):
-    sut_instances_amount = get_peripherals(sut_peripherals_str)
+    sut_instances_amount, _ = get_peripherals(sut_peripherals_str)
     i=0
     # Calculate total amount of instances
     for corename in sut_instances_amount:
@@ -202,7 +257,7 @@ def print_nslaves(sut_peripherals_str):
     print(i, end="")
 
 def print_nslaves_w(sut_peripherals_str):
-    sut_instances_amount = get_peripherals(sut_peripherals_str)
+    sut_instances_amount, _ = get_peripherals(sut_peripherals_str)
     i=0
     # Calculate total amount of instances
     for corename in sut_instances_amount:
@@ -215,7 +270,7 @@ def print_nslaves_w(sut_peripherals_str):
 
 #Creates list of defines of sut instances with sequential numbers
 def print_sut_peripheral_defines(defmacro, sut_peripherals_str):
-    sut_instances_amount = get_peripherals(sut_peripherals_str)
+    sut_instances_amount, _ = get_peripherals(sut_peripherals_str)
     j=0
     for corename in sut_instances_amount:
         for i in range(sut_instances_amount[corename]):

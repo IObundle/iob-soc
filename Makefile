@@ -1,20 +1,16 @@
 ROOT_DIR:=.
 include ./config.mk
 
-# Generate configuration file for port mapping between the Tester, SUT and external interface of the Top System
-tester-portmap:
-ifeq ($(TESTING_CORE),)
-	$(SW_DIR)/python/tester_utils.py generate_portmap $(ROOT_DIR) "$(GET_DIRS)" "peripheral_portmap.conf" "$(PERIPHERALS)" "$(TESTER_PERIPHERALS)"
-else
-	$(SW_DIR)/python/tester_utils.py generate_portmap $(ROOT_DIR) "$(GET_DIRS)" "../../peripheral_portmap.conf" "" "$(PERIPHERALS)"
+# Generate configuration file for port mapping between this (tester) system's peripherals (including UUT and other peripherals added in tester.mk)
+portmap: $(BUILD_DEPS)
+	$(SW_DIR)/python/portmap_utils.py generate_portmap $(ROOT_DIR) "$(GET_DIRS)" "../../peripheral_portmap.conf" "$(PERIPHERALS)"
 	@echo Portmap template generated in peripheral_portmap.conf
-endif
 
 #
 # BUILD EMBEDDED SOFTWARE
 #
 
-fw-build:
+fw-build: $(BUILD_DEPS)
 	make -C $(FIRM_DIR) build-all
 
 fw-clean:
@@ -25,8 +21,8 @@ fw-clean:
 #
 
 pc-emul-build:
-	make fw-build BAUD=5000000
-	make -C $(PC_DIR) build
+	make fw-build
+	make -C $(PC_DIR)
 
 pc-emul-run: pc-emul-build
 	make -C $(PC_DIR) run
@@ -42,7 +38,7 @@ pc-emul-test: pc-emul-clean
 #
 
 sim-build: $(SIM_DEPS)
-	make fw-build BAUD=5000000
+	make fw-build
 	make -C $(SIM_DIR) build
 
 sim-run: sim-build
@@ -54,24 +50,17 @@ sim-clean: fw-clean
 sim-test:
 	make -C $(SIM_DIR) test
 
-
-#Simulate SUT with Tester system
-tester-sim-build:
-	make sim-build TESTER_ENABLED=1
-
-tester-sim-run:
-	make sim-run TESTER_ENABLED=1
-
 #
 # BUILD, LOAD AND RUN ON FPGA BOARD
 #
 
 fpga-build: $(FPGA_DEPS)
-	make fw-build
+	make fw-build BAUD=115200
 	make -C $(BOARD_DIR) build
 
 fpga-run: fpga-build
 	make -C $(BOARD_DIR) run TEST_LOG="$(TEST_LOG)"
+	make fpga-post-run
 
 fpga-clean: fw-clean
 	make -C $(BOARD_DIR) clean
@@ -79,29 +68,7 @@ fpga-clean: fw-clean
 fpga-test:
 	make -C $(BOARD_DIR) test
 
-#targets for SUT with Tester system
-tester-fpga-build:
-	make fpga-build TESTER_ENABLED=1
-
-tester-fpga-run:
-	make fpga-run TESTER_ENABLED=1
-
-#
-# SYNTHESIZE AND SIMULATE ASIC
-#
-
-asic-synth:
-	make fw-build
-	make -C $(ASIC_DIR) synth
-
-asic-sim-post-synth:
-	make -C $(ASIC_DIR) all TEST_LOG="$(TEST_LOG)"
-
-asic-clean:
-	make -C $(ASIC_DIR) clean-all
-
-asic-test:
-	make -C $(ASIC_DIR) test
+fpga-post-run: $(FPGA_POST_RUN_DEPS)
 
 #
 # COMPILE DOCUMENTS
@@ -146,14 +113,6 @@ test-fpga-clean:
 	make fpga-clean BOARD=CYCLONEV-GT-DK
 	make fpga-clean BOARD=AES-KU040-DB-G
 
-test-asic:
-	make asic-test ASIC_NODE=umc130
-	make asic-test ASIC_NODE=skywater
-
-test-asic-clean:
-	make asic-clean ASIC_NODE=umc130
-	make asic-clean ASIC_NODE=skywater
-
 test-doc:
 	make fpga-clean BOARD=CYCLONEV-GT-DK
 	make fpga-clean BOARD=AES-KU040-DB-G
@@ -180,17 +139,13 @@ debug:
 .PHONY: fw-build fw-clean \
 	pc-emul-build pc-emul-run pc-emul-clean pc-emul-test \
 	sim-build sim-run sim-clean sim-test \
-	tester-sim-build tester-sim-run\
-	fpga-build fpga-run fpga-clean fpga-test \
-	tester-fpga-build tester-fpga-run\
-	asic-synth asic-sim-post-synth asic-test \
+	fpga-build fpga-run fpga-clean fpga-test fpga-post-run\
 	doc-build doc-clean doc-test \
 	clean \
 	test-pc-emul test-pc-emul-clean \
 	test-sim test-sim-clean \
 	test-fpga test-fpga-clean \
-	test-asic test-asic-clean \
 	test-doc test-doc-clean \
 	test test-clean \
-	tester-portmap\
+	portmap\
 	debug

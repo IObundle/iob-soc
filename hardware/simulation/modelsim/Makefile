@@ -15,11 +15,11 @@ include ../simulation.mk
 INIT_SCRIPT = set -e; source ~/questa_env
 
 #simulator flags
-CFLAGS = -sv $(INCLUDE) $(DEFINE)
+CFLAGS = -sv $(incdir)vhdr $(addprefix $(defmacro),$(shell cat defines.txt))
 SFLAGS = -voptargs="+acc" -c system_tb
 
 comp:
-	$(INIT_SCRIPT); vlog $(CFLAGS) $(VSRC)
+	$(INIT_SCRIPT); vlog $(CFLAGS) $(wildcard vsrc/*)
 
 exec:
 	$(INIT_SCRIPT); vsim $(SFLAGS) -do "run -all;quit"

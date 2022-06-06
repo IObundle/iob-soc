@@ -1,1 +1,0 @@
-../../../../software/tester_firmware.c

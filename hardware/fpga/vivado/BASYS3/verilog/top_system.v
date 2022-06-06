@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-`include "system.vh"
+`include "tester.vh"
 
 module top_system(
 	          input         clk,
@@ -33,14 +33,17 @@ module top_system(
 
    assign sys_rst = sys_rst_int;
 
+   wire [1:0]                   trap_signals;
+   assign trap = trap_signals[0] || trap_signals[1];
+
    //
-   // SYSTEM
+   // TESTER (includes UUT)
    //
-   system system
+   tester tester
      (
       .clk           (clk),
       .reset         (sys_rst),
-      .trap          (trap),
+      .trap          (trap_signals),
 
       //UART
       .UART0_txd      (uart_txd),

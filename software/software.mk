@@ -35,10 +35,6 @@ HDR=$(SW_DIR)/system.h
 #common sources (none so far)
 #SRC=$(SW_DIR)/*.c
 
-ifeq ($(TESTER_ENABLED),1)
-include $(SW_DIR)/tester/software.mk
-endif
-
 #peripherals' base addresses
 periphs.h: periphs_tmp.h
 	@is_diff=`diff -q -N $@ $<`; if [ "$$is_diff" ]; then cp $< $@; fi
@@ -47,13 +43,16 @@ periphs.h: periphs_tmp.h
 periphs_tmp.h:
 	$(SW_DIR)/python/periphs_tmp.py $P "$(PERIPHERALS)"
 
-build-all: $(BUILD_ALL_DEPENDENCIES)
+build-all:
 	make -C $(FIRM_DIR) build
 	make -C $(BOOT_DIR) build
+
+debug:
+	echo $(DEFINE)
+	echo $(INCLUDE)
 
 clean-all: gen-clean
 	make -C $(FIRM_DIR) clean
 	make -C $(BOOT_DIR) clean
-	make -C $(SW_DIR)/tester clean
 
-.PHONY: build-all clean-all
+.PHONY: build-all debug clean-all

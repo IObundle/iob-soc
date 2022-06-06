@@ -50,7 +50,7 @@ task cpu_inituart;
       cpu_uartwrite(`UART_SOFTRESET_ADDR, 1);
       cpu_uartwrite(`UART_SOFTRESET_ADDR, 0);
       //config uart div factor
-      cpu_uartwrite(`UART_DIV_ADDR, `FREQ/`BAUD);
+      cpu_uartwrite(`UART_DIV_ADDR, `TESTER_FREQ/`TESTER_BAUD);
       //enable uart for receiving
       cpu_uartwrite(`UART_RXEN_ADDR, 1);
       cpu_uartwrite(`UART_TXEN_ADDR, 1);
