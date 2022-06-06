@@ -36,7 +36,10 @@ INIT_MEM ?=1
 #PERIPHERAL LIST
 #list with corename of peripherals to be attached to peripheral bus.
 #to include multiple instances, write the corename of the peripheral multiple times.
-#(Example: 'PERIPHERALS ?=UART UART' will create 2 UART instances)
+#to pass verilog parameters to each instance, type the parameters inside parenthesis.
+#Example: 'PERIPHERALS ?=UART(1,\"textparam\") UART() UART' will create 3 UART instances, 
+#         the first one will be instantiated with verilog parameters 1 and "textparam", 
+#         the second and third will use default parameters.
 PERIPHERALS ?=UART
 
 #RISC-V HARD MULTIPLIER AND DIVIDER INSTRUCTIONS
@@ -48,7 +51,6 @@ USE_COMPRESSED ?=1
 #ROOT DIRECTORY ON REMOTE MACHINES
 REMOTE_ROOT_DIR ?=sandbox/iob-soc
 
-
 #SIMULATION
 #default simulator running locally or remotely
 #check the respective Makefile in hardware/simulation/$(SIMULATOR) for specific settings
@@ -58,12 +60,6 @@ SIMULATOR ?=icarus
 #default board running locally or remotely
 #check the respective Makefile in hardware/fpga/$(BOARD) for specific settings
 BOARD ?=CYCLONEV-GT-DK
-
-#ASIC COMPILATION
-#default asic node running locally or remotely
-#check the respective Makefile in hardware/asic/$(ASIC_NODE) for specific settings
-ASIC_NODE ?=umc130
-
 
 #DOCUMENTATION
 #default document to compile
@@ -107,19 +103,16 @@ CONSOLE_DIR:=$(SW_DIR)/console
 #hw paths
 HW_DIR=$(ROOT_DIR)/hardware
 SIM_DIR=$(HW_DIR)/simulation/$(SIMULATOR)
-ASIC_DIR=$(HW_DIR)/asic/$(ASIC_NODE)
 BOARD_DIR ?=$(shell find hardware -name $(BOARD))
 
 #doc paths
 DOC_DIR=$(ROOT_DIR)/document/$(DOC)
 
 #macro to return all defined directories separated by newline
-GET_DIRS= $(eval ROOT_DIR_TMP:=$(ROOT_DIR))\
-          $(eval ROOT_DIR=.)\
+GET_DIRS= $(eval ROOT_DIR_TMP=.)\
           $(foreach V,$(sort $(.VARIABLES)),\
           $(if $(filter %_DIR, $V),\
-          $V=$($V);))\
-          $(eval ROOT_DIR:=$(ROOT_DIR_TMP))
+          $(eval TMP_VAR:=$(subst ROOT_DIR,ROOT_DIR_TMP,$(value $V)))$V=$(TMP_VAR);))
 
 #define macros
 DEFINE+=$(defmacro)DATA_W=$(DATA_W)
@@ -148,10 +141,10 @@ DEFINE+=$(defmacro)B=$B
 #PERIPHERAL IDs
 #assign a sequential ID to each peripheral
 #the ID is used as an instance name index in the hardware and as a base address in the software
-DEFINE+=$(shell $(SW_DIR)/python/submodule_utils.py get_defines "$(PERIPHERALS)" $(defmacro))
+DEFINE+=$(shell $(SW_DIR)/python/submodule_utils.py get_defines "$(PERIPHERALS)" "$(defmacro)")
 
 #default baud and system clock freq
-BAUD ?=115200
+BAUD ?=5000000 #simulation default
 FREQ ?=100000000
 
 SHELL = /bin/bash

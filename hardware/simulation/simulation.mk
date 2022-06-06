@@ -35,14 +35,6 @@ DEFINE+=$(defmacro)FW_SIZE=$(FW_SIZE)
 #verilog testbench
 TB_DIR:=$(HW_DIR)/simulation/verilog_tb
 
-#asic post-synthesis and post-pr sources
-ifeq ($(ASIC),1)
-ifeq ($(SYNTH),1)
-VSRC=$(ASIC_DIR)/system_synth.v
-endif
-VSRC+=$(wildcard $(ASIC_DIR)/$(ASIC_MEM_FILES))
-endif
-
 #axi memory
 include $(AXI_DIR)/hardware/axiram/hardware.mk
 
@@ -52,6 +44,9 @@ VSRC+=system_top.v
 ifneq ($(SIMULATOR),verilator)
 VSRC+=system_tb.v
 endif
+
+#add peripheral testbench sources
+VSRC+=$(foreach p, $(sort PERIPHERALS), $(shell if test -f $($p_DIR)/hardware/testbench/module_tb.sv; then echo $($p_DIR)/hardware/testbench/module_tb.sv; fi;)) 
 
 #RULES
 build: $(VSRC) $(VHDR) $(HEXPROGS)
@@ -63,7 +58,12 @@ else
 	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'make -C $(REMOTE_ROOT_DIR) sim-build SIMULATOR=$(SIMULATOR) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) VCD=$(VCD) TEST_LOG=\"$(TEST_LOG)\"'
 endif
 
-run:
+run: sim
+ifeq ($(VCD),1)
+	if [ ! `pgrep -u $(USER) gtkwave` ]; then gtkwave -a ../waves.gtkw system.vcd; fi &
+endif
+
+sim:
 ifeq ($(SIM_SERVER),)
 	cp $(FIRM_DIR)/firmware.bin .
 	@rm -f soc2cnsl cnsl2soc
@@ -72,16 +72,13 @@ ifeq ($(SIM_SERVER),)
 else
 	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --force --exclude .git $(SIM_SYNC_FLAGS) $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
-	bash -c "trap 'make kill-remote-sim' INT TERM KILL; ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'make -C $(REMOTE_ROOT_DIR) sim-run SIMULATOR=$(SIMULATOR) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) VCD=$(VCD) TEST_LOG=\"$(TEST_LOG)\"'"
+	bash -c "trap 'make kill-remote-sim' INT TERM KILL; ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR) $@ SIMULATOR=$(SIMULATOR) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) VCD=$(VCD) TEST_LOG=\"$(TEST_LOG)\"'"
 ifneq ($(TEST_LOG),)
 	scp $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR)/test.log $(SIM_DIR)
 endif
 ifeq ($(VCD),1)
 	scp $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR)/*.vcd $(SIM_DIR)
 endif
-endif
-ifeq ($(VCD),1)
-	if [ ! `pgrep -u $(USER) gtkwave` ]; then gtkwave -a ../waves.gtkw system.vcd; fi &
 endif
 
 #
@@ -94,9 +91,6 @@ system_tb.v:
 #create  simulation top module
 system_top.v: $(TB_DIR)/system_top_core.v
 	$(SW_DIR)/python/createTopSystem.py $(ROOT_DIR) "$(GET_DIRS)" "$(PERIPHERALS)"
-
-#add peripheral testbench sources
-VSRC+=$(foreach p, $(PERIPHERALS), $(shell if test -f $($p_DIR)/hardware/testbench/module_tb.sv; then echo $($p_DIR)/hardware/testbench/module_tb.sv; fi;)) 
 
 kill-remote-sim:
 	@echo "INFO: Remote simulator $(SIMULATOR) will be killed"
@@ -152,6 +146,6 @@ endif
 
 .PRECIOUS: system.vcd test.log
 
-.PHONY: build run \
+.PHONY: build run sim \
 	kill-remote-sim clean-remote kill-sim \
 	test test1 test2 test3 test4 test5 clean-testlog
