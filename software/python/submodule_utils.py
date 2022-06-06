@@ -208,7 +208,11 @@ def print_nslaves_w(peripherals_str):
     # Calculate total amount of instances
     for corename in instances_amount:
         i=i+instances_amount[corename]
-    print(math.ceil(math.log(i,2)))
+
+    if not i:
+        print(0)
+    else:
+        print(math.ceil(math.log(i,2)))
 
 #Creates list of defines of peripheral instances with sequential numbers
 def print_peripheral_defines(defmacro, peripherals_str):
