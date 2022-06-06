@@ -36,7 +36,10 @@ INIT_MEM ?=1
 #PERIPHERAL LIST
 #list with corename of peripherals to be attached to peripheral bus.
 #to include multiple instances, write the corename of the peripheral multiple times.
-#(Example: 'PERIPHERALS ?=UART UART' will create 2 UART instances)
+#to pass verilog parameters to each instance, type the parameters inside parenthesis.
+#Example: 'PERIPHERALS ?=UART(1,\"textparam\") UART() UART' will create 3 UART instances, 
+#         the first one will be instantiated with verilog parameters 1 and "textparam", 
+#         the second and third will use default parameters.
 PERIPHERALS ?=UART
 
 #RISC-V HARD MULTIPLIER AND DIVIDER INSTRUCTIONS

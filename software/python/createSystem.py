@@ -10,7 +10,7 @@ from portmap_utils import read_portmap
 
 def create_systemv(directories_str, peripherals_str, portmap_path):
     # Get peripherals, directories and signals
-    instances_amount = get_peripherals(peripherals_str)
+    instances_amount, instances_parameters = get_peripherals(peripherals_str)
     submodule_directories = get_submodule_directories(directories_str)
     peripheral_signals = get_peripherals_signals(instances_amount,submodule_directories)
 
@@ -85,9 +85,15 @@ def create_systemv(directories_str, peripherals_str, portmap_path):
                     # Insert peripheral PORT
                     template_contents.insert(start_index, '      .{}({}_{}),\n'.format(signal,corename+str(i),signal))
 
-            # Insert syntax declaring start of verilog instance
-            template_contents.insert(start_index, "     (\n")
-            template_contents.insert(start_index, "   {} {}\n".format(swreg_filename[:-6], corename+str(i)))
+            # Insert syntax declaring start of verilog instance with parameters
+            template_contents.insert(start_index, "   ) {} (\n".format(corename+str(i)))
+            first_reversed_signal=True
+            # Insert parameters
+            for parameter in instances_parameters[corename][i]:
+                template_contents.insert(start_index, '      {}{}\n'.format(parameter,"" if first_reversed_signal else ","))
+                first_reversed_signal=False
+            template_contents.insert(start_index, "     #(\n")
+            template_contents.insert(start_index, "   {}\n".format(swreg_filename[:-6]))
             template_contents.insert(start_index, "\n")
             template_contents.insert(start_index, "   // {}\n".format(corename+str(i)))
             template_contents.insert(start_index, "\n")
