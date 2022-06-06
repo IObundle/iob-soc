@@ -104,10 +104,24 @@ if __name__ == "__main__" :
             defsfile[i] = re.sub('SWREG_R\(([^,]+),','SWREG_W(\g<1>_INVERTED,', defsfile[i])
 
     if(hwsw == "HW"):
-        # write iob_COREPREFIX_inverted_swreg.vh file
+        # write iob_COREPREFIX_inverted.vh file
         fout = open (corename+".vh", 'w')
         fout.writelines(defsfile)
         fout.close()
 
     # create generated inverted files
     swreg_parse (defsfile, hwsw, corename)
+
+    # Hack to rename 'write_reg' and 'read_reg' inside iob_COREPREFIX_inverted_swreg_gen.vh, because it would cause duplicates if inverted and non inverted swreg_gen.vh files were included
+    if(hwsw == "HW"):
+        fin = open (corename+"_swreg_gen.vh", 'r')
+        file_contents = fin.readlines()
+        fin.close()
+
+        for i in range(len(file_contents)):
+            file_contents[i] = re.sub('write_reg','write_reg_inverted', file_contents[i])
+            file_contents[i] = re.sub('read_reg','read_reg_inverted', file_contents[i])
+
+        fout = open (corename+"_swreg_gen.vh", 'w')
+        fout.writelines(file_contents)
+        fout.close()
