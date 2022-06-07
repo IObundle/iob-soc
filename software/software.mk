@@ -47,8 +47,12 @@ build-all:
 	make -C $(FIRM_DIR) build
 	make -C $(BOOT_DIR) build
 
+debug:
+	echo $(DEFINE)
+	echo $(INCLUDE)
+
 clean-all: gen-clean
 	make -C $(FIRM_DIR) clean
 	make -C $(BOOT_DIR) clean
 
-.PHONY: build-all clean-all
+.PHONY: build-all debug clean-all

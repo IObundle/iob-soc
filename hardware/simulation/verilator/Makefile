@@ -67,6 +67,9 @@ $(SIM_PROC): $(HDR)
 #run the simulator
 exec:
 	./$(SIM_PROC)
+ifeq ($(VCD),1)
+	sed -i 's/TOP/system_tb/g' *.vcd
+endif
 
 iob_uart_swreg.h: $(FIRM_DIR)/iob_uart_swreg.h
 	cp $< $@
@@ -75,4 +78,4 @@ clean: clean-remote
 	@rm -f $(SIM_PROC) $(HDR)
 	@rm -rf obj_dir
 
-.PHONY: exec clean
+.PHONY: comp exec clean
