@@ -46,7 +46,7 @@ void uartwrite(unsigned int cpu_address, unsigned int cpu_data, unsigned int nby
             break;
     }
 
-    dut->uart_addr = cpu_address & (~(0b011)); // 32 bit address (ignore 2 LSBs)
+    dut->uart_addr = cpu_address >> 2; // 32 bit address (ignore 2 LSBs)
     dut->uart_valid = 1;
     dut->uart_wstrb = wstrb_int << (cpu_address & 0b011);
     dut->uart_wdata = cpu_data << ((cpu_address & 0b011)*8); // align data to 32 bits
@@ -58,7 +58,7 @@ void uartwrite(unsigned int cpu_address, unsigned int cpu_data, unsigned int nby
 
 // 2-cycle read
 void uartread(unsigned int cpu_address, char *read_reg){
-    dut->uart_addr = cpu_address & (~(0b011)); // 32 bit address (ignore 2 LSBs)
+    dut->uart_addr = cpu_address >> 2; // 32 bit address (ignore 2 LSBs)
     dut->uart_valid = 1;
     Timer(2);
     *read_reg = (dut->uart_rdata) >> ((cpu_address & 0b011)*8); // align to 32 bits

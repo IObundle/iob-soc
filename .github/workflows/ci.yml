@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  # Don't forget to require approval for all outside collaborators
+  pull_request:
+    branches: '*'
+  # Allow manual workflow runs
+  workflow_dispatch:
+
+jobs:
+  pc-emul:
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+                submodules: 'recursive'
+      - name: test
+        run: make test-clean test-pc-emul
+  verilator:
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+                submodules: 'recursive'
+      - name: test
+        run: make sim-test SIMULATOR=verilator
+  vivado:
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+                submodules: 'recursive'
+      - name: test
+        run: make fpga-run BOARD=AES-KU040-DB-G
