@@ -22,6 +22,9 @@ get_defines:
 
 #Add 'TESTER_' prefix to every define and remove defmacro
 get_tester_defines:
+	#Make sure DDR_ADDR_W is not empyt (it is required to build the system)
+	$(if $(DDR_ADDR_W),,$(eval DDR_ADDR_W=30))
+	#Write Tester defines
 	$(eval PREFIX_DEFINES=$(subst $$(defmacro),TESTER_,$(value DEFINE)))echo -n ' $(PREFIX_DEFINES)' >> defines.txt
 	#Override USE_DDR, RUN_EXTMEM, INIT_MEM, DDR_ADDR_W, IS_CYCLONEV defines of UUT with the ones from Tester
 	$(eval PREFIX_DEFINES=$(filter USE_DDR RUN_EXTMEM INIT_MEM DDR_ADDR_W=% IS_CYCLONEV,$(subst $$(defmacro),,$(value DEFINE))))echo -n ' $(PREFIX_DEFINES)' >> defines.txt

@@ -11,9 +11,6 @@ DEFINE+=$(defmacro)IS_CYCLONEV
 #specify any conditions that prevent running this FPGA
 NORUN = $(USE_DDR)
 
-#Dummy DDR controller address width (only used for building system)
-DDR_ADDR_W=30
-
 include ../quartus.mk
 
 
