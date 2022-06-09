@@ -17,6 +17,7 @@ on:
 jobs:
   pc-emul:
     runs-on: self-hosted
+    timeout-minutes: 30
 
     steps:
       - uses: actions/checkout@v3
@@ -29,6 +30,7 @@ jobs:
 
   verilator:
     runs-on: self-hosted
+    timeout-minutes: 30
     # run even if previous job failed
     if: ${{ always() }}
     # run after indicated job
@@ -45,6 +47,7 @@ jobs:
 
   icarus:
     runs-on: self-hosted
+    timeout-minutes: 90
     if: ${{ always() }}
     needs: verilator
 
@@ -59,6 +62,7 @@ jobs:
 
   cyclonev:
     runs-on: self-hosted
+    timeout-minutes: 60
     if: ${{ always() }}
     needs: icarus
 
@@ -73,6 +77,7 @@ jobs:
 
   aes-ku040:
     runs-on: self-hosted
+    timeout-minutes: 90
     if: ${{ always() }}
     needs: cyclonev
 
@@ -87,8 +92,9 @@ jobs:
 
   doc:
     runs-on: self-hosted
+    timeout-minutes: 60
     if: ${{ always() }}
-    needs: cyclonev
+    needs: aes-ku040
 
     steps:
       - uses: actions/checkout@v3
