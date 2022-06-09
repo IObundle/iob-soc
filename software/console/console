@@ -7,6 +7,20 @@ import importlib.util
 import time
 import curses.ascii
 
+if __name__ == "__main__":
+    if '-e' in sys.argv:
+        #Get ethernet dir from string in arguments after '-e' flag
+        ethernet_dir = "../../" + sys.argv[sys.argv.index('-e')+1]
+
+        sys.path.append(ethernet_dir)
+        from software.python.ethBase import CreateSocket, SyncAckFirst, SyncAckLast
+        from software.python.ethRcvData import RcvFile
+        from software.python.ethSendData import SendFile
+        import subprocess
+        from software.console.eth_console import run_eth
+    else:
+        ethernet_dir=""
+
 # Global variables
 ser = None
 SerialFlag = True
@@ -16,7 +30,12 @@ ENQ = b'\x05' # Enquiry in Hexadecimal
 ACK = b'\x06' # Acknowledgement in Hexadecimal
 FTX = b'\x07' # Receive file request
 FRX = b'\x08' # Send file request
+EFTX = b'\x09' # Receive file by ethernet request
+EFRX = b'\x0a' # Send file by ethernet request
 
+#Returns ethernet submodule path (required by run_eth function)
+def get_eth_path():
+    return ethernet_dir
 
 def tb_write(data, number_of_bytes = 1, is_file = False):
     transfered_bytes = 0
@@ -109,6 +128,34 @@ def cnsl_sendfile():
     print(PROGNAME, end = '')
     print(': file sent')
 
+def cnsl_sendfile_ethernet():
+    file_size = 0
+    name = b''
+    socket = CreateSocket()
+
+    # receive file name
+    name = cnsl_recvstr()
+
+    file_size = os.path.getsize(name)
+
+    print(PROGNAME, end = '')
+    print(': file of size {0} bytes'.format(file_size))
+    if SerialFlag:
+        ser.write(file_size.to_bytes(4,  byteorder='little')) #send file size
+        while (ser.read() != ACK): pass
+    else:
+        tb_write(file_size.to_bytes(4,  byteorder='little'), 4)
+        while (tb_read(1) != ACK): pass
+
+    # Send Data File
+    SyncAckFirst(socket)
+    SendFile(socket,name)
+
+    print(PROGNAME, end = '')
+    print(': file sent')
+
+    # Close Socket
+    socket.close()
 def cnsl_recvfile():
     file_size = 0
     name = ""
@@ -133,16 +180,51 @@ def cnsl_recvfile():
     print(PROGNAME, end = '')
     print(': file received'.format(file_size))
 
+def cnsl_recvfile_ethernet():
+    file_size = 0
+    name = ""
+    socket = CreateSocket()
+
+    # receive file name
+    name = cnsl_recvstr()
+
+    if SerialFlag:
+        file_size = int.from_bytes(serial_read(4), byteorder='little', signed=False)
+        print(PROGNAME, end = ' ')
+        print(': file size: {0} bytes'.format(file_size))
+    else:
+        file_size = int.from_bytes(tb_read(4), byteorder='little', signed=False)
+        print(PROGNAME, end = ' ')
+        print(': file size: {0} bytes'.format(file_size))
+
+    # Receive Data File
+    SyncAckLast(socket)
+    RcvFile(socket,name,file_size)
+
+    print(PROGNAME, end = '')
+    print(': file received'.format(file_size))
+
+    # Close Socket
+    socket.close()
+
 def usage(message):
-    print('{}:{}'.format(PROGNAME, "usage: ./console -s <serial port> [ -f ] [ -L/--local ]"))
+    print('{}:{}'.format(PROGNAME, "usage: ./console -s <serial port> [ -f ] [ -L/--local ] -e <ethernet submodule directory (relative to root dir)>"))
     cnsl_perror(message)
 
-def clean_exit():
+def clean_exit(eth_stdout):
     if SerialFlag:
         ser.close()
     else:
         os.remove('./cnsl2soc')
         os.remove('./soc2cnsl')
+    if ethernet_dir:
+        # wait for ethernet makefile to finish
+        print("Waiting for ethernet target...")
+        eth_proc.wait()
+        print("Ethernet target finished")
+        print("Check ethernet.log for output")
+        # Close ethernet log file
+        eth_stdout.close()
     exit(0)
 
 def init_print():
@@ -226,6 +308,13 @@ def init_console():
 def main():
     load_fw = init_console()
     gotENQ = False
+    eth_stdout_name = "ethernet.log"
+
+    if ethernet_dir:
+        #Open ethernet log file
+        eth_stdout = open(eth_stdout_name, "w")
+        # run ethernet makefile target in parallel
+        eth_proc = run_eth(eth_stdout)
 
     # Reading the data from the serial port or FIFO files. This will be running in an infinite loop.
     while(True):
@@ -248,7 +337,7 @@ def main():
         elif (byte == EOT):
             print(PROGNAME, end = '')
             print(': exiting...')
-            clean_exit()
+            clean_exit(eth_stdout)
         elif (byte == FTX):
             print(PROGNAME, end = '')
             print(': got file receive request')
@@ -257,6 +346,14 @@ def main():
             print(PROGNAME, end = '')
             print(': got file send request')
             cnsl_sendfile()
+        elif (byte == EFTX):
+            print(PROGNAME, end = '')
+            print(': got file receive by ethernet request')
+            cnsl_recvfile_ethernet()
+        elif (byte == EFRX):
+            print(PROGNAME, end = '')
+            print(': got file send by ethernet request')
+            cnsl_sendfile_ethernet()
         else:
             print(str(byte, 'iso-8859-1'), end = '')
             sys.stdout.flush()
