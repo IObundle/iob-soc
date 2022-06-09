@@ -1,5 +1,10 @@
 name: CI
 
+# Set default shell as interactive (source ~/.bashrc)
+defaults:
+  run:
+    shell: bash -ieo pipefail {0}
+
 on:
   push:
     branches: [ master ]
@@ -16,24 +21,36 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-                submodules: 'recursive'
-      - name: test
-        run: make test-clean test-pc-emul
+          submodules: 'recursive'
+      - name: test-clean
+        run: make test-clean
+      - name: test-pc-emul
+        run: make test-pc-emul
   verilator:
     runs-on: self-hosted
+    # run even if previous job failed
+    if: ${{ always() }}
+    # run after indicated job
+    needs: pc-emul
 
     steps:
       - uses: actions/checkout@v3
         with:
-                submodules: 'recursive'
-      - name: test
+          submodules: 'recursive'
+      - name: test-clean
+        run: make test-clean
+      - name: test-verilator
         run: make sim-test SIMULATOR=verilator
   vivado:
     runs-on: self-hosted
+    if: ${{ always() }}
+    needs: verilator
 
     steps:
       - uses: actions/checkout@v3
         with:
-                submodules: 'recursive'
-      - name: test
+          submodules: 'recursive'
+      - name: test-clean
+        run: make test-clean
+      - name: run-vivado
         run: make fpga-run BOARD=AES-KU040-DB-G
