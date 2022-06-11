@@ -325,7 +325,7 @@ make clean
 
 ```
 git clone https://github.com/riscv/riscv-gnu-toolchain
-git checkout 2021.01.26
+git checkout 2022.06.10
 ```
 
 ### Prerequisites
