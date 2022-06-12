@@ -5,15 +5,7 @@
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 
-// address macros
-#define UART_SOFTRESET_ADDR 0
-#define UART_DIV_ADDR 1
-#define UART_TXDATA_ADDR 2
-#define UART_TXEN_ADDR 3
-#define UART_TXREADY_ADDR 4
-#define UART_RXDATA_ADDR 5
-#define UART_RXEN_ADDR 6
-#define UART_RXREADY_ADDR 7
+#include "iob_uart_swreg.h"
 
 // other macros
 #define FREQ 100000000
@@ -40,12 +32,24 @@ void Timer(unsigned int half_cycles){
 }
 
 // 1-cycle write
-void uartwrite(unsigned int cpu_address, char cpu_data){
+void uartwrite(unsigned int cpu_address, unsigned int cpu_data, unsigned int nbytes){
+    char wstrb_int = 0;
+    switch (nbytes) {
+        case 1:
+            wstrb_int = 0b01;
+            break;
+        case 2:
+            wstrb_int = 0b011;
+            break;
+        default:
+            wstrb_int = 0b01111;
+            break;
+    }
 
-    dut->uart_addr = cpu_address;
+    dut->uart_addr = cpu_address >> 2; // 32 bit address (ignore 2 LSBs)
     dut->uart_valid = 1;
-    dut->uart_wstrb = -1;
-    dut->uart_wdata = cpu_data;
+    dut->uart_wstrb = wstrb_int << (cpu_address & 0b011);
+    dut->uart_wdata = cpu_data << ((cpu_address & 0b011)*8); // align data to 32 bits
     Timer(2);
     dut->uart_wstrb = 0;
     dut->uart_valid = 0;
@@ -54,23 +58,23 @@ void uartwrite(unsigned int cpu_address, char cpu_data){
 
 // 2-cycle read
 void uartread(unsigned int cpu_address, char *read_reg){
-    dut->uart_addr = cpu_address;
+    dut->uart_addr = cpu_address >> 2; // 32 bit address (ignore 2 LSBs)
     dut->uart_valid = 1;
     Timer(2);
-    *read_reg = dut->uart_rdata;
+    *read_reg = (dut->uart_rdata) >> ((cpu_address & 0b011)*8); // align to 32 bits
     Timer(2);
     dut->uart_valid = 0;
 }
 
 void inituart(){
   //pulse reset uart
-  uartwrite(UART_SOFTRESET_ADDR, 1);
-  uartwrite(UART_SOFTRESET_ADDR, 0);
+  uartwrite(UART_SOFTRESET, 1, UART_SOFTRESET_W/8);
+  uartwrite(UART_SOFTRESET, 0, UART_SOFTRESET_W/8);
   //config uart div factor
-  uartwrite(UART_DIV_ADDR, int(FREQ/BAUD));
+  uartwrite(UART_DIV, int(FREQ/BAUD), UART_DIV_W/8);
   //enable uart for receiving
-  uartwrite(UART_RXEN_ADDR, 1);
-  uartwrite(UART_TXEN_ADDR, 1);
+  uartwrite(UART_RXEN, 1, UART_RXEN_W/8);
+  uartwrite(UART_TXEN, 1, UART_TXEN_W/8);
 }
 
 int main(int argc, char **argv, char **env){
@@ -125,15 +129,15 @@ int main(int argc, char **argv, char **env){
         break;
     }
     while(!rxread_reg && !txread_reg){
-      uartread(UART_RXREADY_ADDR, &rxread_reg);
-      uartread(UART_TXREADY_ADDR, &txread_reg);
+      uartread(UART_RXREADY, &rxread_reg);
+      uartread(UART_TXREADY, &txread_reg);
     }
     if(rxread_reg){
       if((soc2cnsl_fd = fopen("./soc2cnsl", "rb")) != NULL){
         able2read = fread(&cpu_char, sizeof(char), 1, soc2cnsl_fd);
         if(able2read == 0){
           fclose(soc2cnsl_fd);
-          uartread(UART_RXDATA_ADDR, &cpu_char);
+          uartread(UART_RXDATA, &cpu_char);
           soc2cnsl_fd = fopen("./soc2cnsl", "wb");
           fwrite(&cpu_char, sizeof(char), 1, soc2cnsl_fd);
           rxread_reg = 0;
@@ -147,7 +151,7 @@ int main(int argc, char **argv, char **env){
       }
       able2write = fread(&cpu_char, sizeof(char), 1, cnsl2soc_fd);
       if (able2write > 0){
-        uartwrite(UART_TXDATA_ADDR, cpu_char);
+        uartwrite(UART_TXDATA, cpu_char, UART_TXDATA_W/8);
         fclose(cnsl2soc_fd);
         cnsl2soc_fd = fopen("./cnsl2soc", "w");
       }
