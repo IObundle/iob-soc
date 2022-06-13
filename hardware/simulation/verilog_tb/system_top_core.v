@@ -86,8 +86,20 @@ module system_top (
    wire [7:0]                   memory_ddr_awid; 
    wire [7:0]                   memory_ddr_arid; 
 `endif
+`ifdef TESTER_USE_ETHERNET
+   // ETHERNET signals
+   wire                  ETH_RESETN;
 
-	//'Or' between trap signals of Tester and SUT
+   reg                   TX_CLK;
+   wire [3:0]            TX_DATA;
+   wire                  TX_EN;
+
+   reg                   RX_CLK;
+   wire [3:0]            RX_DATA;
+   reg                   RX_DV;
+`endif
+
+   //'Or' between trap signals of Tester and SUT
    wire [1:0]                   trap_signals;
    assign trap = trap_signals[0] || trap_signals[1];
 
@@ -143,6 +155,18 @@ module system_top (
 	       .m_axi_rlast   (ddr_rlast[1:0]),
 	       .m_axi_rvalid  (ddr_rvalid[1:0]),
 	       .m_axi_rready  (ddr_rready[1:0]),	
+`endif               
+`ifdef TESTER_USE_ETHERNET
+			//PLL
+			.PLL_LOCKED     (1'b1),
+			//PHY
+			.ETH_PHY_RESETN (ETH_RESETN),
+			.TX_CLK         (TX_CLK),
+			.TX_DATA        (TX_DATA),
+			.TX_EN          (TX_EN),
+			.RX_CLK         (RX_CLK),
+			.RX_DATA        (RX_DATA),
+			.RX_DV          (RX_DV),
 `endif               
 	       .clk           (clk),
 	       .reset         (reset),
