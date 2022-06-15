@@ -23,7 +23,7 @@ include $(ROOT_DIR)/hardware/hardware.mk
 ifeq ($(USE_ETHERNET),)
 CONSOLE_CMD=$(CONSOLE_DIR)/console -L
 else
-CONSOLE_CMD=$(CONSOLE_DIR)/console -L -e $(ETHERNET_DIR)
+CONSOLE_CMD=$(CONSOLE_DIR)/console -L -e $(ETHERNET_DIR) -i $(ETH_IF) -m $(RMAC_ADDR)
 endif
 
 ifeq ($(INIT_MEM),0)

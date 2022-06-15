@@ -13,11 +13,26 @@ if __name__ == "__main__":
         ethernet_dir = os.path.realpath(sys.argv[sys.argv.index('-e')+1])
 
         sys.path.append(ethernet_dir)
-        from software.python.ethBase import CreateSocket, SyncAckFirst, SyncAckLast
-        from software.python.ethRcvData import RcvFile
-        from software.python.ethSendData import SendFile
-        import subprocess
-        from software.console.eth_console import run_eth
+        #Save argv and override it with new values because ethBase requires them
+        saved_argv = sys.argv
+        try:
+            sys.argv = ['eth_comm.py',\
+                    sys.argv[sys.argv.index('-i')+1] if '-i' in sys.argv else 'eno1',\
+                    sys.argv[sys.argv.index('-m')+1] if '-m' in sys.argv else '4437e6a6893b',\
+                    'randomFile']
+            from software.python.ethBase import CreateSocket, SyncAckFirst, SyncAckLast
+            from software.python.ethRcvData import RcvFile
+            from software.python.ethSendData import SendFile
+            import subprocess
+            # Need to use importlib because eth_console does not have '.py' extension
+            import importlib.machinery, importlib.util
+            loader = importlib.machinery.SourceFileLoader('eth_console', ethernet_dir+'/software/console/eth_console')
+            spec = importlib.util.spec_from_loader(loader.name, loader)
+            eth_console = importlib.util.module_from_spec(spec)
+            loader.exec_module(eth_console)
+            run_eth = eth_console.run_eth
+        finally:
+            sys.argv = saved_argv
     else:
         ethernet_dir=""
 
@@ -208,7 +223,7 @@ def cnsl_recvfile_ethernet():
     socket.close()
 
 def usage(message):
-    print('{}:{}'.format(PROGNAME, "usage: ./console -s <serial port> [ -f ] [ -L/--local ] -e <ethernet submodule directory (relative to root dir)>"))
+    print('{}:{}'.format(PROGNAME, "usage: ./console -s <serial port> [ -f ] [ -L/--local ] -e <ethernet submodule directory (relative to root dir)> -i <ethernet interface> -m <ethernet mac address>"))
     cnsl_perror(message)
 
 def clean_exit(eth_stdout):
