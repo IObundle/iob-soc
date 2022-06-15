@@ -23,14 +23,6 @@ if __name__ == "__main__":
             from software.python.ethBase import CreateSocket, SyncAckFirst, SyncAckLast
             from software.python.ethRcvData import RcvFile
             from software.python.ethSendData import SendFile
-            import subprocess
-            # Need to use importlib because eth_console does not have '.py' extension
-            import importlib.machinery, importlib.util
-            loader = importlib.machinery.SourceFileLoader('eth_console', ethernet_dir+'/software/console/eth_console')
-            spec = importlib.util.spec_from_loader(loader.name, loader)
-            eth_console = importlib.util.module_from_spec(spec)
-            loader.exec_module(eth_console)
-            run_eth = eth_console.run_eth
         finally:
             sys.argv = saved_argv
     else:
@@ -47,10 +39,6 @@ FTX = b'\x07' # Receive file request
 FRX = b'\x08' # Send file request
 EFTX = b'\x11' # Receive file by ethernet request
 EFRX = b'\x12' # Send file by ethernet request
-
-#Returns ethernet submodule path (required by run_eth function)
-def get_eth_path():
-    return ethernet_dir
 
 def tb_write(data, number_of_bytes = 1, is_file = False):
     transfered_bytes = 0
@@ -226,20 +214,12 @@ def usage(message):
     print('{}:{}'.format(PROGNAME, "usage: ./console -s <serial port> [ -f ] [ -L/--local ] -e <ethernet submodule directory (relative to root dir)> -i <ethernet interface> -m <ethernet mac address>"))
     cnsl_perror(message)
 
-def clean_exit(eth_stdout):
+def clean_exit():
     if SerialFlag:
         ser.close()
     else:
         os.remove('./cnsl2soc')
         os.remove('./soc2cnsl')
-    if ethernet_dir:
-        # wait for ethernet makefile to finish
-        print("Waiting for ethernet target...")
-        eth_proc.wait()
-        print("Ethernet target finished")
-        print("Check ethernet.log for output")
-        # Close ethernet log file
-        eth_stdout.close()
     exit(0)
 
 def init_print():
@@ -323,14 +303,6 @@ def init_console():
 def main():
     load_fw = init_console()
     gotENQ = False
-    eth_stdout_name = "ethernet.log"
-    eth_stdout = None
-
-    if ethernet_dir:
-        #Open ethernet log file
-        eth_stdout = open(eth_stdout_name, "w")
-        # run ethernet makefile target in parallel
-        eth_proc = run_eth(eth_stdout)
 
     # Reading the data from the serial port or FIFO files. This will be running in an infinite loop.
     while(True):
@@ -353,7 +325,7 @@ def main():
         elif (byte == EOT):
             print(PROGNAME, end = '')
             print(': exiting...')
-            clean_exit(eth_stdout)
+            clean_exit()
         elif (byte == FTX):
             print(PROGNAME, end = '')
             print(': got file receive request')
