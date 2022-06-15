@@ -45,8 +45,8 @@ def connect_to_external_native(filename):
     fout.writelines(file_contents)
     fout.close()
 
-# Make connections between read and write registers
-def connect_wires_between_regs(filename, program):
+# Create file with registers and connect wires from internal native and external native interfaces
+def create_regs(filename, program):
     file_contents = []
 
     for line in program :
@@ -61,12 +61,27 @@ def connect_wires_between_regs(filename, program):
         #print flds[0]
         if ('SWREG_' in flds[0]): #software accessible registers
             reg_name = flds[1] #register name
+            reg_size_bits = int(flds[2])*8 #register size
+            reg_rst_val = flds[3] #register name
 
+            file_contents.append("`IOB_WIRE({}, {})\n".format(reg_name,reg_size_bits))
+            file_contents.append("iob_reg #(.DATA_W({}))\n".format(reg_size_bits))
+            file_contents.append("{} (\n".format(reg_name.lower()))
+            file_contents.append(".clk        (clk),\n\
+                    .arst       (rst),\n\
+                    .arst_val   ({reg_size_bits}'b{reg_rst_val}),\n\
+                    .rst        (rst),\n\
+                    .rst_val    ({reg_size_bits}'b{reg_rst_val}),\n".format(reg_size_bits=reg_size_bits,reg_rst_val=reg_rst_val))
             #register type
             if '_W' in flds[0]: #write register
-                file_contents.append("assign {}{} = {};\n".format(flds[1],"_INVERTED",flds[1]))
+                file_contents.append(".en         ({reg_name}_en),\n\
+                        .data_in    ({reg_name}_wdata_ext),\n\
+                        .data_out   ({reg_name}_INVERTED_rdata)\n".format(reg_name=reg_name))
             else: #read register
-                file_contents.append("assign {} = {}{};\n".format(flds[1],flds[1],"_INVERTED"))
+                file_contents.append(".en         ({reg_name}_INVERTED_en),\n\
+                        .data_in    ({reg_name}_INVERTED_wdata),\n\
+                        .data_out   ({reg_name}_rdata_ext)\n".format(reg_name=reg_name))
+            file_contents.append(");\n")
 
         else: continue #not a recognized macro
 
@@ -88,8 +103,8 @@ if __name__ == "__main__" :
     swreg_parse (defsfile, hwsw, corename)
 
     if(hwsw == "HW"):
-        # Make connections between read and write registers
-        connect_wires_between_regs(corename+"_swreg_wire_connections.vh", defsfile)
+        # Create regs
+        create_regs(corename+"_swreg_regs.vh", defsfile)
 
         # Change <corename>_gen.vh to connect to external native bus
         connect_to_external_native(corename+"_swreg_gen.vh")
