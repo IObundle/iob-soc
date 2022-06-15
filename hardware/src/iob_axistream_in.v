@@ -40,7 +40,7 @@ module iob_axistream_in
   
    iob_fifo_sync
      #(
-       .W_DATA_W (TDATA+1),
+       .W_DATA_W (TDATA_W+1),
        .R_DATA_W (9),
        .ADDR_W (FIFO_DEPTH_LOG2)
        )
@@ -57,8 +57,8 @@ module iob_axistream_in
       .ext_mem_r_data  (ext_mem_r_data),
       //read port
       .r_en            (valid & (address == `AXISTREAMIN_OUT_ADDR)),
-      .r_data          (AXISTREAMIN_OUT_rdata),
-      .r_empty         (AXISTREAMIN_EMPTY_rdata),
+      .r_data          (AXISTREAMIN_OUT_rdata[8:0]),
+      .r_empty         (AXISTREAMIN_EMPTY_rdata[0]),
       //write port
       .w_en            (tvalid),
       .w_data          ({tlast, tdata}), //Store TLAST signal in msb
@@ -70,7 +70,7 @@ module iob_axistream_in
 
    //FIFO RAM
    iob_ram_2p #(
-      .DATA_W (TDATA+1),
+      .DATA_W (TDATA_W+1),
       .ADDR_W (FIFO_DEPTH_LOG2)
     )
    fifo_memory
