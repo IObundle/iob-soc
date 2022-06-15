@@ -58,7 +58,7 @@ fpga-build: $(FPGA_DEPS)
 	make fw-build BAUD=115200
 	make -C $(BOARD_DIR) build
 
-fpga-run: fpga-build
+fpga-run: #fpga-build Remove this prerequisite temporarily because its always rebuilding the system
 	make -C $(BOARD_DIR) run TEST_LOG="$(TEST_LOG)"
 	make fpga-post-run
 
@@ -130,7 +130,7 @@ test: test-clean test-pc-emul test-sim test-fpga test-doc
 test-clean: test-pc-emul-clean test-sim-clean test-fpga-clean test-doc-clean
 
 python-cache-clean:
-	find . -name "*__pycache__" -exec rm -rf {} \; -prune
+	find ../.. -name "*__pycache__" -exec rm -rf {} \; -prune
 
 debug:
 	@echo $(UART_DIR)

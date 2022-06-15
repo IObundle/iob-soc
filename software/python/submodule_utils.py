@@ -57,6 +57,14 @@ reserved_signals_template = """\
       .m_axi_rlast   (m_axi_rlast[0:0]),
       .m_axi_rvalid  (m_axi_rvalid[0:0]),
       .m_axi_rready  (m_axi_rready[0:0]),
+      .PLL_LOCKED     (PLL_LOCKED),
+      .ETH_PHY_RESETN (ETH_PHY_RESETN),
+      .TX_CLK         (TX_CLK),
+      .TX_DATA        (TX_DATA),
+      .TX_EN          (TX_EN),
+      .RX_CLK         (RX_CLK),
+      .RX_DATA        (RX_DATA),
+      .RX_DV          (RX_DV),
 """
 
 
@@ -185,7 +193,9 @@ def get_module_io(verilog_lines):
 # It removes reserved system signals, such as: clk, rst, valid, address, wdata, wstrb, rdata, ready, ...
 def get_pio_signals(peripheral_signals):
     pio_signals = peripheral_signals.copy()
-    for signal in ["clk","rst","reset","arst","valid","address","wdata","wstrb","rdata","ready","trap"]+[i for i in pio_signals if "m_axi_" in i]:
+    for signal in ["clk","rst","reset","arst","valid","address","wdata","wstrb","rdata","ready","trap"]\
+                  +[i for i in pio_signals if "m_axi_" in i]\
+                  +["PLL_LOCKED","ETH_PHY_RESETN","TX_CLK","TX_DATA","TX_EN","RX_CLK","RX_DATA","RX_DV"]:
         if signal in pio_signals: pio_signals.pop(signal)
     return pio_signals
 

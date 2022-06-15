@@ -63,6 +63,20 @@ module tester
    input [1:0] m_axi_rvalid,
    output [1:0] m_axi_rready,
 //`endif //  `ifdef USE_DDR
+`ifdef TESTER_USE_ETHERNET
+   // PHY side
+   output ETH_PHY_RESETN, //PHY reset
+   // PLL
+   input PLL_LOCKED, //PLL locked
+   // RX
+   input RX_CLK, //RX clock
+   input [3:0] RX_DATA, //RX data nibble
+   input RX_DV, //RX DV signal
+   // TX
+   input TX_CLK, //TX clock
+   output TX_EN, //TX enable
+   output [3:0] TX_DATA, //TX data nibble
+`endif 
    input                    clk,
    input                    reset,
    output [1:0]             trap
