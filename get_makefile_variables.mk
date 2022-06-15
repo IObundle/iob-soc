@@ -22,7 +22,7 @@ get_defines:
 
 #Add 'TESTER_' prefix to every define and remove defmacro
 get_tester_defines:
-	#Make sure DDR_ADDR_W is not empyt (it is required to build the system)
+	#Make sure DDR_ADDR_W is not empty (it is required to build the system)
 	$(if $(DDR_ADDR_W),,$(eval DDR_ADDR_W=30))
 	#Write Tester defines
 	$(eval PREFIX_DEFINES=$(subst $$(defmacro),TESTER_,$(value DEFINE)))echo -n ' $(PREFIX_DEFINES)' >> defines.txt
