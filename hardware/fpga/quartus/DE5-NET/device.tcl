@@ -2,11 +2,11 @@
 # Build by Terasic System Builder
 #============================================================
 
-set_global_assignment -name FAMILY "Stratix V"
-set_global_assignment -name DEVICE 5SGXEA7N2F45C2
-set_global_assignment -name DEVICE_FILTER_PACKAGE FBGA
-set_global_assignment -name DEVICE_FILTER_PIN_COUNT 1932
-set_global_assignment -name DEVICE_FILTER_SPEED_GRADE 2_H2
+set FAMILY "Stratix V"
+set DEVICE 5SGXEA7N2F45C2
+# set_global_assignment -name DEVICE_FILTER_PACKAGE FBGA
+# set_global_assignment -name DEVICE_FILTER_PIN_COUNT 1932
+# set_global_assignment -name DEVICE_FILTER_SPEED_GRADE 2_H2
 
 #============================================================
 # CLOCK
@@ -45,7 +45,7 @@ set_instance_assignment -name IO_STANDARD "2.5 V" -to led_board[0]   ; # LED[0]
 # set_instance_assignment -name IO_STANDARD "2.5 V" -to led_board[1]   ; # LED[1]
 # set_instance_assignment -name IO_STANDARD "2.5 V" -to led_board[2]   ; # LED[2]
 # set_instance_assignment -name IO_STANDARD "2.5 V" -to led_board[3]   ; # LED[3]
-# set_instance_assignment -name IO_STANDARD "2.5 V" -to led_bracket[0] ; # LED_BRACKET[0]
+set_instance_assignment -name IO_STANDARD "2.5 V" -to led_bracket[0] ; # LED_BRACKET[0]
 # set_instance_assignment -name IO_STANDARD "2.5 V" -to led_bracket[1] ; # LED_BRACKET[1]
 # set_instance_assignment -name IO_STANDARD "2.5 V" -to led_bracket[2] ; # LED_BRACKET[2]
 # set_instance_assignment -name IO_STANDARD "2.5 V" -to led_bracket[3] ; # LED_BRACKET[3]
@@ -55,7 +55,7 @@ set_location_assignment PIN_AW37 -to led_board[0]     ; # LED[0]
 # set_location_assignment PIN_AV37 -to led_board[1]     ; # LED[1]
 # set_location_assignment PIN_BB36 -to led_board[2]     ; # LED[2]
 # set_location_assignment PIN_BB39 -to led_board[3]     ; # LED[3]
-# set_location_assignment PIN_AH15 -to led_bracket[0]   ; # LED_BRACKET[0]
+set_location_assignment PIN_AH15 -to led_bracket[0]   ; # LED_BRACKET[0]
 # set_location_assignment PIN_AH13 -to led_bracket[1]   ; # LED_BRACKET[1]
 # set_location_assignment PIN_AJ13 -to led_bracket[2]   ; # LED_BRACKET[2]
 # set_location_assignment PIN_AJ14 -to led_bracket[3]   ; # LED_BRACKET[3]
@@ -65,7 +65,7 @@ set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to led_board[0]
 # set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to led_board[1]
 # set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to led_board[2]
 # set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to led_board[3]
-# set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to led_bracket[0]
+set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to led_bracket[0]
 # set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to led_bracket[1]
 # set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to led_bracket[2]
 # set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to led_bracket[3]
@@ -75,7 +75,7 @@ set_instance_assignment -name SLEW_RATE 1 -to led_board[0]   ; # fast
 # set_instance_assignment -name SLEW_RATE 1 -to led_board[1]   ; # fast
 # set_instance_assignment -name SLEW_RATE 1 -to led_board[2]   ; # fast
 # set_instance_assignment -name SLEW_RATE 1 -to led_board[3]   ; # fast
-# set_instance_assignment -name SLEW_RATE 1 -to led_bracket[0] ; # fast
+set_instance_assignment -name SLEW_RATE 1 -to led_bracket[0] ; # fast
 # set_instance_assignment -name SLEW_RATE 1 -to led_bracket[1] ; # fast
 # set_instance_assignment -name SLEW_RATE 1 -to led_bracket[2] ; # fast
 # set_instance_assignment -name SLEW_RATE 1 -to led_bracket[3] ; # fast

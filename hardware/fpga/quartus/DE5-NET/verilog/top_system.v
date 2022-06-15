@@ -5,8 +5,8 @@ module top_system(
   input         clk,
   input         resetn,
 
-
-	output [0:0]       led_board
+  output [0:0]  led_bracket,
+  output [0:0]  led_board
   );
    //
    // CLOCK MANAGEMENT
@@ -15,6 +15,7 @@ module top_system(
    //system clock
    wire 			sys_clk = clk;
    assign led_board[0] = 0;
+   assign led_bracket[0] = 0;
    //
    // RESET MANAGEMENT
    //
