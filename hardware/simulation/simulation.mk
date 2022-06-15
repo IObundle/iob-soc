@@ -11,12 +11,6 @@ DEFINE+=$(defmacro)FREQ=$(FREQ)
 #ddr controller address width
 DDR_ADDR_W=$(DCACHE_ADDR_W)
 
-ifeq ($(USE_ETHERNET),)
-CONSOLE_CMD=$(CONSOLE_DIR)/console -L
-else
-CONSOLE_CMD=$(CONSOLE_DIR)/console -L -e $(ETHERNET_DIR)
-endif
-
 #produce waveform dump
 VCD ?=0
 
@@ -25,6 +19,12 @@ DEFINE+=$(defmacro)VCD
 endif
 
 include $(ROOT_DIR)/hardware/hardware.mk
+
+ifeq ($(USE_ETHERNET),)
+CONSOLE_CMD=$(CONSOLE_DIR)/console -L
+else
+CONSOLE_CMD=$(CONSOLE_DIR)/console -L -e $(ETHERNET_DIR)
+endif
 
 ifeq ($(INIT_MEM),0)
 CONSOLE_CMD+=-f

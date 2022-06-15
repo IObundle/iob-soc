@@ -10,7 +10,7 @@ import curses.ascii
 if __name__ == "__main__":
     if '-e' in sys.argv:
         #Get ethernet dir from string in arguments after '-e' flag
-        ethernet_dir = "../../" + sys.argv[sys.argv.index('-e')+1]
+        ethernet_dir = os.path.realpath(sys.argv[sys.argv.index('-e')+1])
 
         sys.path.append(ethernet_dir)
         from software.python.ethBase import CreateSocket, SyncAckFirst, SyncAckLast
