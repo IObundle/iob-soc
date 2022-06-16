@@ -23,6 +23,7 @@ set_property part $DEVICE [current_project]
 
 if { $USE_DDR < 0 } {
     read_verilog verilog/clock_wizard.v
+    read_xdc -quiet ./no_ddr.xdc
 } else {
 
     read_xdc ./ddr.xdc
