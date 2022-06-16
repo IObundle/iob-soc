@@ -138,7 +138,7 @@ ifneq ($(BOARD_SERVER),)
 endif
 
 
-.PRECIOUS: $(FPGA_OBJ)
+.PRECIOUS: $(FPGA_OBJ) test.log
 
 .PHONY: run build \
 	queue-in queue-out queue-wait queue-out-remote \
