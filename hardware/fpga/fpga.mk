@@ -13,6 +13,10 @@ include $(ROOT_DIR)/hardware/hardware.mk
 #SOURCES
 VSRC+=./verilog/top_system.v
 
+ifeq ($(RUN_EXTMEM),1)
+INIT_MEM=0
+endif
+
 #console command 
 CONSOLE_CMD=$(CONSOLE_DIR)/console -s /dev/usb-uart
 ifeq ($(INIT_MEM),0)
