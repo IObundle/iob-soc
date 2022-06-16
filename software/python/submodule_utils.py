@@ -113,7 +113,7 @@ def get_module_io(verilog_lines):
                         int(signal.group(2))-1 if signal.group(2).isdigit() else 
                         (("" if "`" in signal.group(2) else "`")
                         +signal.group(2)+"-1").replace("ADDR_W","/*<SwregFilename>*/_ADDR_W")) # Replace keyword "ADDR_W" by "/*<SwregFilename>*/_ADDR_W"
-        elif '`include "gen_if.vh"' in verilog_lines[i]: #If it is a known verilog include
+        elif '`include "iob_gen_if.vh"' in verilog_lines[i]: #If it is a known verilog include
             module_signals["clk"]="input "
             module_signals["rst"]="input "
         elif '`include "iob_s_if.vh"' in verilog_lines[i]: #If it is a known verilog include

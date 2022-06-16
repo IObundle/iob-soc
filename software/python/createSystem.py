@@ -71,13 +71,15 @@ def create_systemv(directories_str, peripherals_str):
             # Insert io signals
             for signal in pio_signals:
                 template_contents.insert(start_index, '      .{}({}_{}),\n'.format(signal,corename+str(i),signal))
-            template_contents.insert(start_index, "   ) {} (\n".format(corename+str(i)))
-            first_reversed_signal=True
-            # Insert parameters
-            for parameter in instances_parameters[corename][i]:
-                template_contents.insert(start_index, '      {}{}\n'.format(parameter,"" if first_reversed_signal else ","))
-                first_reversed_signal=False
-            template_contents.insert(start_index, "     #(\n")
+            template_contents.insert(start_index, "   {} (\n".format(corename+str(i)))
+            if len(instances_parameters[corename][i])>1 or instances_parameters[corename][i][0]:
+                template_contents.insert(start_index, "   )\n")
+                first_reversed_signal=True
+                # Insert parameters
+                for parameter in instances_parameters[corename][i]:
+                    template_contents.insert(start_index, '      {}{}\n'.format(parameter,"" if first_reversed_signal else ","))
+                    first_reversed_signal=False
+                template_contents.insert(start_index, "     #(\n")
             template_contents.insert(start_index, "   {}\n".format(swreg_filename[:-6]))
             template_contents.insert(start_index, "\n")
             template_contents.insert(start_index, "   // {}\n".format(corename+str(i)))
