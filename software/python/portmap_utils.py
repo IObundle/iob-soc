@@ -32,7 +32,7 @@ portmap_header = """\
 
 # Overwrites portmap configuration file with a template, with every existing signal mapped to external interface by default
 def generate_portmap(directories_str, peripherals_str, portmap_path):
-    instances_amount = get_peripherals(peripherals_str)
+    instances_amount, _ = get_peripherals(peripherals_str)
     submodule_directories = get_submodule_directories(directories_str)
     peripheral_signals = get_peripherals_signals(instances_amount,submodule_directories)
 

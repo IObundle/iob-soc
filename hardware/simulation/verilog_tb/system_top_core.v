@@ -86,18 +86,6 @@ module system_top (
    wire [7:0]                   memory_ddr_awid; 
    wire [7:0]                   memory_ddr_arid; 
 `endif
-`ifdef TESTER_USE_ETHERNET
-   // ETHERNET signals
-   wire                  ETH_RESETN;
-
-   reg                   TX_CLK;
-   wire [3:0]            TX_DATA;
-   wire                  TX_EN;
-
-   reg                   RX_CLK;
-   wire [3:0]            RX_DATA;
-   reg                   RX_DV;
-`endif
 
    //'Or' between trap signals of Tester and SUT
    wire [1:0]                   trap_signals;
@@ -155,18 +143,6 @@ module system_top (
 	       .m_axi_rlast   (ddr_rlast[1:0]),
 	       .m_axi_rvalid  (ddr_rvalid[1:0]),
 	       .m_axi_rready  (ddr_rready[1:0]),	
-`endif               
-`ifdef TESTER_USE_ETHERNET
-			//PLL
-			.PLL_LOCKED     (1'b1),
-			//PHY
-			.ETH_PHY_RESETN (ETH_RESETN),
-			.TX_CLK         (TX_CLK),
-			.TX_DATA        (TX_DATA),
-			.TX_EN          (TX_EN),
-			.RX_CLK         (RX_CLK),
-			.RX_DATA        (RX_DATA),
-			.RX_DV          (RX_DV),
 `endif               
 	       .clk           (clk),
 	       .reset         (reset),
@@ -405,5 +381,37 @@ always @(posedge trap[1]) begin
       .cts       (UART0_rts)
       );
    
+	//Ethernet
+`ifdef TESTER_USE_ETHERNET
+   //ethernet clock: 4x slower than system clock
+   reg [1:0] eth_cnt = 2'b0;
+   reg eth_clk;
+
+   always @(posedge clk) begin
+       eth_cnt <= eth_cnt + 1'b1;
+       eth_clk <= eth_cnt[1];
+   end
+
+   // Ethernet Interface signals
+   assign ETHERNET0_RX_CLK = eth_clk;
+   assign ETHERNET0_TX_CLK = eth_clk;
+   assign ETHERNET0_PLL_LOCKED = 1'b1;
+
+//add core test module in testbench
+iob_eth_tb_gen eth_tb(
+      .clk      (clk),
+      .reset    (reset),
+
+      // This module acts like a loopback
+      .RX_CLK(ETHERNET0_TX_CLK),
+      .RX_DATA(ETHERNET0_TX_DATA),
+      .RX_DV(ETHERNET0_TX_EN),
+
+      // The wires are thus reversed
+      .TX_CLK(ETHERNET0_RX_CLK),
+      .TX_DATA(ETHERNET0_RX_DATA),
+      .TX_EN(ETHERNET0_RX_DV)
+);
    
 endmodule
+`endif
