@@ -100,7 +100,7 @@ endif
 #
 
 test: clean-testlog test1 test2 test3
-	diff -q test.log test.expected
+	diff test.log test.expected
 
 test1:
 	make -C $(ROOT_DIR) fpga-clean
