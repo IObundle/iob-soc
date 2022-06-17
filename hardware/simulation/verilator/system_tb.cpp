@@ -10,7 +10,7 @@
 // other macros
 #define FREQ 100000000
 #define BAUD 5000000
-#define CLK_PERIOD 10000 // 10 ns
+#define CLK_PERIOD 10 // 10 ns
 
 vluint64_t main_time = 0;
 VerilatedVcdC* tfp = NULL;
@@ -20,14 +20,20 @@ double sc_time_stamp () {
   return main_time;
 }
 
-void Timer(unsigned int half_cycles){
-  for(int i = 0; i<half_cycles; i++){
-    dut->clk = !(dut->clk);
-    dut->eval();
+void Timer(unsigned int ns){
+  for(int i = 0; i<ns; i++){
+    if(!(main_time%(CLK_PERIOD/2))){
+      dut->clk = !(dut->clk);
+      dut->eval();
 #ifdef VCD
-    tfp->dump(main_time);
+      tfp->dump(main_time);
 #endif
-    main_time += CLK_PERIOD/2;
+    }
+    // To add a new clk follow the example
+    //if(!(main_time%(EXAMPLE_CLK_PERIOD/2))){
+    //  dut->example_clk_in = !(dut->example_clk_in);
+    //}
+    main_time += 1;
   }
 }
 
@@ -50,7 +56,7 @@ void uartwrite(unsigned int cpu_address, unsigned int cpu_data, unsigned int nby
     dut->uart_valid = 1;
     dut->uart_wstrb = wstrb_int << (cpu_address & 0b011);
     dut->uart_wdata = cpu_data << ((cpu_address & 0b011)*8); // align data to 32 bits
-    Timer(2);
+    Timer(CLK_PERIOD);
     dut->uart_wstrb = 0;
     dut->uart_valid = 0;
 
@@ -60,9 +66,9 @@ void uartwrite(unsigned int cpu_address, unsigned int cpu_data, unsigned int nby
 void uartread(unsigned int cpu_address, char *read_reg){
     dut->uart_addr = cpu_address >> 2; // 32 bit address (ignore 2 LSBs)
     dut->uart_valid = 1;
-    Timer(2);
+    Timer(CLK_PERIOD);
     *read_reg = (dut->uart_rdata) >> ((cpu_address & 0b011)*8); // align to 32 bits
-    Timer(2);
+    Timer(CLK_PERIOD);
     dut->uart_valid = 0;
 }
 
