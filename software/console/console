@@ -6,6 +6,7 @@ import sys
 import importlib.util
 import time
 import curses.ascii
+import time
 
 # Global variables
 ser = None
@@ -207,12 +208,16 @@ def init_console():
         # open connection
         try:
             init_serial()
+        except Exception:
+            cnsl_perror("Error init serial port.")
+        try:
+            time.sleep(2)
             ser.port = sys.argv[sys.argv.index('-s')+1]
             ser.open()
             ser.flushInput()
             ser.flushOutput()
         except Exception:
-            usage("Error open serial port.")
+            cnsl_perror("Error open serial port.")
     else:
         usage("PROGNAME: not enough program arguments")
     if ('-f' in sys.argv): load_fw = True
