@@ -52,6 +52,7 @@ VERILATOR_FLAGS += --trace # Make waveforms
 #VERILATOR_FLAGS += --gdbbt # Add this trace to get a backtrace in gdb
 VERILATOR_FLAGS += +1800-2005ext+v # Use SystemVerilog 2005 with file extension .v
 VERILATOR_FLAGS += --error-limit 1000 # Exit if number of errors passes 1000
+VERILATOR_FLAGS += --unroll-count 4096 # Increase loop unrolling amount
 
 # Verilator source files
 VERILATOR_INPUT = -Ivhdr $(addprefix $(defmacro),$(shell cat defines.txt)) $(wildcard vsrc/*) --top-module system_top system_tb.cpp
