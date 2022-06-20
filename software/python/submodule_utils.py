@@ -57,14 +57,6 @@ reserved_signals_template = """\
       .m_axi_rlast   (m_axi_rlast[0:0]),
       .m_axi_rvalid  (m_axi_rvalid[0:0]),
       .m_axi_rready  (m_axi_rready[0:0]),
-      .PLL_LOCKED     (PLL_LOCKED),
-      .ETH_PHY_RESETN (ETH_PHY_RESETN),
-      .TX_CLK         (TX_CLK),
-      .TX_DATA        (TX_DATA),
-      .TX_EN          (TX_EN),
-      .RX_CLK         (RX_CLK),
-      .RX_DATA        (RX_DATA),
-      .RX_DV          (RX_DV),
 """
 
 
@@ -114,6 +106,7 @@ def get_peripherals(peripherals_str):
         # Increment amount of instances
         instances_amount[i[0]]+=1
 
+    #print(instances_amount, file = sys.stderr) #Debug
     #print(instances_parameters, file = sys.stderr) #Debug
     return instances_amount, instances_parameters
 
@@ -166,8 +159,8 @@ def get_module_io(verilog_lines):
                         int(signal.group(2))-1 if signal.group(2).isdigit() else 
                         (("" if "`" in signal.group(2) else "`") # Set as macro if it was a parameter
                         +signal.group(2)+"-1").replace("ADDR_W","/*<SwregFilename>*/_ADDR_W")) # Replace keyword "ADDR_W" by "/*<SwregFilename>*/_ADDR_W"
-        elif "`IOB_OUTPUT" in verilog_lines[i]: #If it is a known verilog macro
-            signal = re.search("^\s*`IOB_OUTPUT\(\s*(\w+)\s*,\s*([^\s]+)\s*\),?", verilog_lines[i])
+        elif "`IOB_OUTPUT" in verilog_lines[i] or "`IOB_OUTPUT_VAR" in verilog_lines[i]: #If it is a known verilog macro
+            signal = re.search("^\s*`IOB_OUTPUT(?:_VAR)?\(\s*(\w+)\s*,\s*([^\s]+)\s*\),?", verilog_lines[i])
             if signal is not None:
                 # Store signal in dictionary with format: module_signals[signalname] = "output [size:0]"
                 module_signals[signal.group(1)]="output [{}:0]".format(
@@ -194,8 +187,7 @@ def get_module_io(verilog_lines):
 def get_pio_signals(peripheral_signals):
     pio_signals = peripheral_signals.copy()
     for signal in ["clk","rst","reset","arst","valid","address","wdata","wstrb","rdata","ready","trap"]\
-                  +[i for i in pio_signals if "m_axi_" in i]\
-                  +["PLL_LOCKED","ETH_PHY_RESETN","TX_CLK","TX_DATA","TX_EN","RX_CLK","RX_DATA","RX_DV"]:
+                  +[i for i in pio_signals if "m_axi_" in i]:
         if signal in pio_signals: pio_signals.pop(signal)
     return pio_signals
 
@@ -214,12 +206,10 @@ def get_top_module(file_path):
 
 # Return dictionary with signals for each peripheral given in the input list 
 # Also need to provide a dictionary with directory location of each peripheral given
-# list_of_peripherals input can be {**sut_instances_amount, **tester_instances_amount} to get all peripherals from tester and SUT
 def get_peripherals_signals(list_of_peripherals, submodule_directories):
     # Get signals of each peripheral
     peripheral_signals = {}
     for i in list_of_peripherals:
-        peripheral_signals[i] = {}
         # Find top module verilog file of peripheral
         module_dir = root_dir+"/"+submodule_directories[i]+"/hardware/src"
         module_filename = get_top_module(root_dir+"/"+submodule_directories[i]+"/config.mk")+".v";
@@ -247,27 +237,27 @@ def find_idx(lines, word):
 ##########################################################
 # Functions to run when this script gets called directly #
 ##########################################################
-def print_instances(sut_peripherals_str):
-    sut_instances_amount, _ = get_peripherals(sut_peripherals_str)
+def print_instances(peripherals_str):
+    sut_instances_amount, _ = get_peripherals(peripherals_str)
     for corename in sut_instances_amount:
         for i in range(sut_instances_amount[corename]):
             print(corename+str(i), end=" ")
 
-def print_peripherals(sut_peripherals_str):
-    sut_instances_amount, _ = get_peripherals(sut_peripherals_str)
+def print_peripherals(peripherals_str):
+    sut_instances_amount, _ = get_peripherals(peripherals_str)
     for i in sut_instances_amount:
         print(i, end=" ")
 
-def print_nslaves(sut_peripherals_str):
-    sut_instances_amount, _ = get_peripherals(sut_peripherals_str)
+def print_nslaves(peripherals_str):
+    sut_instances_amount, _ = get_peripherals(peripherals_str)
     i=0
     # Calculate total amount of instances
     for corename in sut_instances_amount:
         i=i+sut_instances_amount[corename]
     print(i, end="")
 
-def print_nslaves_w(sut_peripherals_str):
-    sut_instances_amount, _ = get_peripherals(sut_peripherals_str)
+def print_nslaves_w(peripherals_str):
+    sut_instances_amount, _ = get_peripherals(peripherals_str)
     i=0
     # Calculate total amount of instances
     for corename in sut_instances_amount:
@@ -279,8 +269,8 @@ def print_nslaves_w(sut_peripherals_str):
         print(math.ceil(math.log(i,2)))
 
 #Creates list of defines of sut instances with sequential numbers
-def print_sut_peripheral_defines(defmacro, sut_peripherals_str):
-    sut_instances_amount, _ = get_peripherals(sut_peripherals_str)
+def print_sut_peripheral_defines(defmacro, peripherals_str):
+    sut_instances_amount, _ = get_peripherals(peripherals_str)
     j=0
     for corename in sut_instances_amount:
         for i in range(sut_instances_amount[corename]):
