@@ -18,7 +18,7 @@ SWREGS=0
 include $(LIB_DIR)/document/document.mk
 
 test: clean-all $(DOC).pdf
-	diff -q $(DOC).aux test.expected
+	diff $(DOC).aux test.expected
 
 clean-all: clean
 	rm -f $(DOC).pdf

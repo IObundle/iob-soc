@@ -38,9 +38,9 @@ jobs:
     runs-on: self-hosted
     timeout-minutes: 30
     # run even if previous job failed
-    if: ${{ always() }}
+    if: ${{ !cancelled() }}
     # run after indicated job
-    needs: pc-emul
+    needs: aes-ku040
 
     steps:
       - uses: actions/checkout@v3
@@ -54,7 +54,7 @@ jobs:
   icarus:
     runs-on: self-hosted
     timeout-minutes: 90
-    if: ${{ always() }}
+    if: ${{ !cancelled() }}
     needs: verilator
 
     steps:
@@ -69,8 +69,8 @@ jobs:
   cyclonev:
     runs-on: self-hosted
     timeout-minutes: 60
-    if: ${{ always() }}
-    needs: icarus
+    if: ${{ !cancelled() }}
+    needs: pc-emul
 
     steps:
       - uses: actions/checkout@v3
@@ -84,7 +84,7 @@ jobs:
   aes-ku040:
     runs-on: self-hosted
     timeout-minutes: 90
-    if: ${{ always() }}
+    if: ${{ !cancelled() }}
     needs: cyclonev
 
     steps:
@@ -99,7 +99,7 @@ jobs:
   doc:
     runs-on: self-hosted
     timeout-minutes: 60
-    if: ${{ always() }}
+    if: ${{ !cancelled() }}
     needs: aes-ku040
 
     steps:
