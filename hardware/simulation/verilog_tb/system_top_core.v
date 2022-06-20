@@ -412,6 +412,6 @@ iob_eth_tb_gen eth_tb(
       .TX_DATA(ETHERNET0_RX_DATA),
       .TX_EN(ETHERNET0_RX_DV)
 );
-   
-endmodule
 `endif
+
+endmodule
