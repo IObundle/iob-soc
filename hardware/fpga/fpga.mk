@@ -21,7 +21,7 @@ endif
 ifeq ($(USE_ETHERNET),)
 CONSOLE_CMD=$(CONSOLE_DIR)/console -s /dev/usb-uart
 else
-CONSOLE_CMD=$(CONSOLE_DIR)/console -s /dev/usb-uart -e $(ETHERNET_DIR) -i $(ETH_IF) -m $(RMAC_ADDR)
+CONSOLE_CMD=source /opt/pyeth3/bin/activate; $(CONSOLE_DIR)/console -s /dev/usb-uart -e $(ETHERNET_DIR) -i $(ETH_IF) -m $(RMAC_ADDR)
 endif
 ifeq ($(INIT_MEM),0)
 CONSOLE_CMD+=-f
