@@ -13,6 +13,10 @@ include $(ROOT_DIR)/hardware/hardware.mk
 #SOURCES
 VSRC+=./verilog/top_system.v
 
+ifeq ($(RUN_EXTMEM),1)
+INIT_MEM=0
+endif
+
 #console command 
 ifeq ($(USE_ETHERNET),)
 CONSOLE_CMD=$(CONSOLE_DIR)/console -s /dev/usb-uart
@@ -95,7 +99,7 @@ endif
 #
 
 test: clean-testlog test1 test2 test3
-	diff -q test.log test.expected
+	diff test.log test.expected
 
 test1:
 	make -C $(ROOT_DIR) fpga-clean
@@ -140,7 +144,7 @@ ifneq ($(BOARD_SERVER),)
 endif
 
 
-.PRECIOUS: $(FPGA_OBJ)
+.PRECIOUS: $(FPGA_OBJ) test.log
 
 .PHONY: run build \
 	queue-in queue-out queue-wait queue-out-remote \
