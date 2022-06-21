@@ -29,9 +29,6 @@ $(TOP_MODULE)_version.txt:
 #cpu accessible registers
 iob_axistream_in_swreg_def.vh iob_axistream_in_swreg_gen.vh: $(AXISTREAMIN_DIR)/mkregs.conf
 	$(MKREGS) iob_axistream_in $(AXISTREAMIN_DIR) HW
-	#Hack to remove 1 clock delay from rdata_int register
-	sed -i 's/`IOB_VAR2WIRE(rdata_int2/`IOB_VAR2WIRE(rdata_int/g' iob_axistream_in_swreg_gen.vh
-	sed -i "/rdata_int2/d" iob_axistream_in_swreg_gen.vh
 
 axistream-in-gen-clean:
 	@rm -rf *# *~ version.txt

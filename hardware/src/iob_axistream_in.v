@@ -37,6 +37,11 @@ module iob_axistream_in
    //Delay rst by one clock, because tvalid signal after rested may come delayed from AXISTREAMOUT peripheral
    `IOB_VAR(rst_delayed, 1)
    `IOB_REG(clk, rst_delayed, rst)
+
+
+   // Set unused rdata bits to 0
+   `IOB_WIRE2WIRE({(`AXISTREAMIN_OUT_W-9){1'b0}}, AXISTREAMIN_OUT_rdata[`AXISTREAMIN_OUT_W-1:9])
+   `IOB_WIRE2WIRE({(`AXISTREAMIN_EMPTY_W-1){1'b0}}, AXISTREAMIN_EMPTY_rdata[`AXISTREAMIN_EMPTY_W-1:1])
   
    iob_fifo_sync
      #(
@@ -56,7 +61,7 @@ module iob_axistream_in
       .ext_mem_r_addr  (ext_mem_r_addr),
       .ext_mem_r_data  (ext_mem_r_data),
       //read port
-      .r_en            (valid & (address == `AXISTREAMIN_OUT_ADDR)),
+      .r_en            (AXISTREAMIN_OUT_ren),
       .r_data          (AXISTREAMIN_OUT_rdata[8:0]),
       .r_empty         (AXISTREAMIN_EMPTY_rdata[0]),
       //write port
