@@ -65,7 +65,7 @@ ifeq ($(SIM_SERVER),)
 	cp $(FIRM_DIR)/firmware.bin .
 	@rm -f soc2cnsl cnsl2soc
 	$(CONSOLE_CMD) $(TEST_LOG) &
-	bash -c "trap 'make kill-sim' INT TERM KILL EXIT; make exec"
+	bash -c "trap 'make kill-cnsl' INT TERM KILL EXIT; make exec"
 else
 	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --force --exclude .git $(SIM_SYNC_FLAGS) $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
@@ -103,15 +103,10 @@ VSRC+=$(foreach p, $(PERIPHERALS), $(shell if test -f $($p_DIR)/hardware/testben
 kill-remote-sim:
 	@echo "INFO: Remote simulator $(SIMULATOR) will be killed"
 	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'killall -q -u $(SIM_USER) -9 $(SIM_PROC); \
-	make -C $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR) kill-sim'
+	make -C $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR) kill-cnsl'
 ifeq ($(VCD),1)
 	scp $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR)/*.vcd $(SIM_DIR)
 endif
-
-kill-sim:
-	@if [ "`ps aux | grep $(USER) | grep console | grep python3 | grep -v grep`" ]; then \
-	kill -9 $$(ps aux | grep $(USER) | grep console | grep python3 | grep -v grep | awk '{print $$2}'); fi
-
 
 test: clean-testlog test1 test2 test3 test4 test5
 	diff test.log ../test.expected
@@ -155,5 +150,5 @@ endif
 .PRECIOUS: system.vcd test.log
 
 .PHONY: build run sim \
-	kill-remote-sim clean-remote kill-sim \
+	kill-remote-sim clean-remote \
 	test test1 test2 test3 test4 test5 clean-testlog
