@@ -17,7 +17,10 @@ int main()
   //test file receive
   char *buf = malloc(10000);
   int file_size = 0;
-  file_size = uart_recvfile("Makefile", &buf);
+  file_size = uart_recvfile("Makefile", buf);
+
+  //test file send
+  uart_sendfile("Makefile", file_size, buf);
 
   uart_finish();
 }
