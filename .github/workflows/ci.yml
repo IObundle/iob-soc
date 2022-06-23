@@ -96,7 +96,7 @@ jobs:
     runs-on: self-hosted
     timeout-minutes: 60
     if: ${{ !cancelled() }}
-    needs: [cyclonev aes-ku040]
+    needs: [ cyclonev, aes-ku040 ]
 
     steps:
       - uses: actions/checkout@v3
