@@ -13,4 +13,21 @@ Hello world!
 
 Value of Pi = 3.141500
 
+IOb-UART: requesting to receive file
+IOb-Console: got file send request
+IOb-Console: file name b'Makefile' 
+IOb-Console: file of size 870 bytes
+  0 %
+ 10 %
+ 20 %
+ 30 %
+ 40 %
+ 50 %
+ 60 %
+ 70 %
+ 80 %
+ 90 %
+100 %
+IOb-Console: file sent
+IOb-UART: file received
 IOb-Console: exiting...

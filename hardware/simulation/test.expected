@@ -15,6 +15,23 @@ Hello world!
 
 Value of Pi = 3.141500
 
+IOb-UART: requesting to receive file
+IOb-Console: got file send request
+IOb-Console: file name b'Makefile' 
+IOb-Console: file of size 2581 bytes
+  0 %
+ 10 %
+ 20 %
+ 30 %
+ 40 %
+ 50 %
+ 60 %
+ 70 %
+ 80 %
+ 90 %
+100 %
+IOb-Console: file sent
+IOb-UART: file received
 IOb-Console: exiting...
 
 +-----------------------------------------------+
@@ -27,7 +44,7 @@ IOb-Bootloader: connected!
 IOb-UART: requesting to receive file
 IOb-Console: got file send request
 IOb-Console: file name b'firmware.bin' 
-IOb-Console: file of size 19048 bytes
+IOb-Console: file of size 19116 bytes
   0 %
  10 %
  20 %
@@ -45,7 +62,7 @@ IOb-Bootloader: Loading firmware...
 IOb-UART: requesting to send file
 IOb-Console: got file receive request
 IOb-Console: file name b's_fw.bin' 
-IOb-Console : file size: 19048 bytes
+IOb-Console : file size: 19116 bytes
   0 %
  10 %
  20 %
@@ -68,6 +85,23 @@ Hello world!
 
 Value of Pi = 3.141500
 
+IOb-UART: requesting to receive file
+IOb-Console: got file send request
+IOb-Console: file name b'Makefile' 
+IOb-Console: file of size 2581 bytes
+  0 %
+ 10 %
+ 20 %
+ 30 %
+ 40 %
+ 50 %
+ 60 %
+ 70 %
+ 80 %
+ 90 %
+100 %
+IOb-Console: file sent
+IOb-UART: file received
 IOb-Console: exiting...
 
 +-----------------------------------------------+
@@ -87,6 +121,23 @@ Hello world!
 
 Value of Pi = 3.141500
 
+IOb-UART: requesting to receive file
+IOb-Console: got file send request
+IOb-Console: file name b'Makefile' 
+IOb-Console: file of size 2581 bytes
+  0 %
+ 10 %
+ 20 %
+ 30 %
+ 40 %
+ 50 %
+ 60 %
+ 70 %
+ 80 %
+ 90 %
+100 %
+IOb-Console: file sent
+IOb-UART: file received
 IOb-Console: exiting...
 
 +-----------------------------------------------+
@@ -107,6 +158,23 @@ Hello world!
 
 Value of Pi = 3.141500
 
+IOb-UART: requesting to receive file
+IOb-Console: got file send request
+IOb-Console: file name b'Makefile' 
+IOb-Console: file of size 2581 bytes
+  0 %
+ 10 %
+ 20 %
+ 30 %
+ 40 %
+ 50 %
+ 60 %
+ 70 %
+ 80 %
+ 90 %
+100 %
+IOb-Console: file sent
+IOb-UART: file received
 IOb-Console: exiting...
 
 +-----------------------------------------------+
@@ -121,7 +189,7 @@ IOb-Bootloader: program to run from DDR
 IOb-UART: requesting to receive file
 IOb-Console: got file send request
 IOb-Console: file name b'firmware.bin' 
-IOb-Console: file of size 19208 bytes
+IOb-Console: file of size 19276 bytes
   0 %
  10 %
  20 %
@@ -139,7 +207,7 @@ IOb-Bootloader: Loading firmware...
 IOb-UART: requesting to send file
 IOb-Console: got file receive request
 IOb-Console: file name b's_fw.bin' 
-IOb-Console : file size: 19208 bytes
+IOb-Console : file size: 19276 bytes
   0 %
  10 %
  20 %
@@ -162,4 +230,21 @@ Hello world!
 
 Value of Pi = 3.141500
 
+IOb-UART: requesting to receive file
+IOb-Console: got file send request
+IOb-Console: file name b'Makefile' 
+IOb-Console: file of size 2581 bytes
+  0 %
+ 10 %
+ 20 %
+ 30 %
+ 40 %
+ 50 %
+ 60 %
+ 70 %
+ 80 %
+ 90 %
+100 %
+IOb-Console: file sent
+IOb-UART: file received
 IOb-Console: exiting...
