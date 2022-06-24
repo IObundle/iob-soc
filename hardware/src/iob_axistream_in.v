@@ -29,10 +29,10 @@ module iob_axistream_in
    `IOB_WIRE(fifo_full, 1)
    //FIFO RAM
    `IOB_WIRE(ext_mem_w_en, 1)
-   `IOB_WIRE(ext_mem_w_data, 32)
+   `IOB_WIRE(ext_mem_w_data, TDATA_W)
    `IOB_WIRE(ext_mem_w_addr, FIFO_DEPTH_LOG2)
    `IOB_WIRE(ext_mem_r_en, 1)
-   `IOB_WIRE(ext_mem_r_data, 32)
+   `IOB_WIRE(ext_mem_r_data, TDATA_W)
    `IOB_WIRE(ext_mem_r_addr, FIFO_DEPTH_LOG2)
    //Delay rst by one clock, because tvalid signal after rested may come delayed from AXISTREAMOUT peripheral
    `IOB_VAR(rst_delayed, 1)
@@ -57,7 +57,6 @@ module iob_axistream_in
    `IOB_REG_RE(clk, rst | reset_register_last, 1'b0, tlast, rstrb, rstrb_int)
    `IOB_WIRE2WIRE(rstrb,AXISTREAMIN_LAST_rdata[3:0]) //Set bits [3:0] of AXISTREAMIN_LAST register as rstrb
 
-   `IOB_WIRE(AXISTREAMIN_LAST, 1)
    iob_reg #(.DATA_W(1))
    axistreamin_last (
        .clk        (clk),
@@ -102,7 +101,7 @@ module iob_axistream_in
 
    //FIFO RAM
    iob_ram_2p #(
-      .DATA_W (32),
+      .DATA_W (TDATA_W),
       .ADDR_W (FIFO_DEPTH_LOG2)
     )
    fifo_memory
