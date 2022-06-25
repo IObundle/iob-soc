@@ -3,6 +3,39 @@
 #include "iob-uart.h"
 #include "printf.h"
 
+char *send_string = "Sending this string as a file to console.\n"
+                    "The file is then requested back from console.\n"
+                    "The sent file is compared to the received file to confirm " 
+                    "correct file transfer via UART using console.\n"
+                    "Generating the file in the firmware creates an uniform "
+                    "file transfer between pc-emul, simulation and fpga without"
+                    " adding extra targets for file generation.\n";
+
+// copy src to dst
+// return number of copied chars (excluding '\0')
+int string_copy(char *dst, char *src) {
+    if (dst == NULL || src == NULL) {
+        return -1;
+    }
+    int cnt = 0;
+    while(src[cnt] != 0){
+        dst[cnt] = src[cnt];
+        cnt++;
+    }
+    dst[cnt] = '\0';
+    return cnt;
+}
+
+// 0: same string
+// otherwise: different
+int compare_str(char *str1, char *str2) {
+    int c = 0;
+    while( (str1[c] != 0) && (str2[c] != 0) && (str1[c] == str2[c]) ) {
+            c++;
+    }
+    return str1[c] - str2[c];
+}
+
 int main()
 {
   //init uart
@@ -14,13 +47,26 @@ int main()
   //test printf with floats 
   printf("Value of Pi = %f\n\n", 3.1415);
 
-  //test file receive
-  char *buf = malloc(10000);
-  int file_size = 0;
-  file_size = uart_recvfile("Makefile", buf);
-
   //test file send
-  uart_sendfile("Makefile", file_size, buf);
+  char *sendfile = malloc(1000);
+  int send_file_size = 0;
+  send_file_size = string_copy(sendfile, send_string);
+  uart_sendfile("Sendfile.txt", send_file_size, sendfile);
+
+  //test file receive
+  char *recvfile = malloc(10000);
+  int file_size = 0;
+  file_size = uart_recvfile("Sendfile.txt", recvfile);
+
+  //compare files
+  if (compare_str(sendfile, recvfile)) {
+      printf("FAILURE: Send and received file differ!\n");
+  } else {
+      printf("SUCCESS: Send and received file match!\n");
+  }
+
+  free(sendfile);
+  free(recvfile);
 
   uart_finish();
 }

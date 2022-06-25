@@ -34,6 +34,7 @@ run: build
 
 clean: kill-cnsl
 	@rm -rf fw_emul periphs.h *swreg*.h *swreg*.c test.log soc2cnsl cnsl2soc
+	@rm -rf *.txt
 
 test:
 	make run TEST_LOG="> test.log"
