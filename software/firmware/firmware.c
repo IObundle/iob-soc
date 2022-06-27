@@ -28,12 +28,15 @@ int string_copy(char *dst, char *src) {
 
 // 0: same string
 // otherwise: different
-int compare_str(char *str1, char *str2) {
+int compare_str(char *str1, char *str2, int str_size) {
     int c = 0;
-    while( (str1[c] != 0) && (str2[c] != 0) && (str1[c] == str2[c]) ) {
-            c++;
+    while(c < str_size) {
+        if (str1[c] != str2[c]){
+            return str1[c] - str2[c];
+        }
+        c++;
     }
-    return str1[c] - str2[c];
+    return 0;
 }
 
 int main()
@@ -59,7 +62,7 @@ int main()
   file_size = uart_recvfile("Sendfile.txt", recvfile);
 
   //compare files
-  if (compare_str(sendfile, recvfile)) {
+  if (compare_str(sendfile, recvfile, send_file_size)) {
       printf("FAILURE: Send and received file differ!\n");
   } else {
       printf("SUCCESS: Send and received file match!\n");
