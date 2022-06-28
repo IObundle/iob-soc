@@ -1,6 +1,3 @@
-#default baud rate for hardware
-BAUD ?=115200
-
 include $(ROOT_DIR)/config.mk
 
 #add itself to MODULES list

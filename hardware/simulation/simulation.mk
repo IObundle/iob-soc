@@ -1,8 +1,8 @@
-#DEFINES
+include $(ROOT_DIR)/hardware/hardware.mk
 
 #default baud and freq for simulation
-BAUD ?=5000000
-FREQ ?=100000000
+BAUD=$(SIM_BAUD)
+FREQ=$(SIM_FREQ)
 
 #define for testbench
 DEFINE+=$(defmacro)BAUD=$(BAUD)
@@ -20,13 +20,16 @@ ifeq ($(VCD),1)
 DEFINE+=$(defmacro)VCD
 endif
 
-include $(ROOT_DIR)/hardware/hardware.mk
+
+
 
 ifeq ($(INIT_MEM),0)
 CONSOLE_CMD+=-f
 endif
 
+ifneq ($(wildcard  firmware.hex),)
 FW_SIZE=$(shell wc -l firmware.hex | awk '{print $$1}')
+endif
 
 DEFINE+=$(defmacro)FW_SIZE=$(FW_SIZE)
 

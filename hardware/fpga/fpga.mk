@@ -1,14 +1,13 @@
-BOARD=$(shell basename `pwd`)
+include $(ROOT_DIR)/hardware/hardware.mk
+
+BAUD=$(BOARD_BAUD)
+FREQ=$(BOARD_FREQ)
 
 LOAD_FILE=/tmp/$(BOARD).load
-
 QUEUE_FILE=/tmp/$(BOARD).queue
-
 TOOL=$(shell find $(HW_DIR)/fpga -name $(BOARD) | cut -d"/" -f7)
-
 JOB=$(shell echo $(USER) `md5sum $(FPGA_OBJ)  | cut -d" " -f1`)
 
-include $(ROOT_DIR)/hardware/hardware.mk
 
 #SOURCES
 VSRC+=./verilog/top_system.v

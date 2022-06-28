@@ -9,7 +9,7 @@ DEVICE=xcku040-fbva676-1-c
 NORUN = 0
 
 #DDR controller address width
-DDR_ADDR_W=24
+DDR_ADDR_W=30
 
 include ../vivado.mk
 

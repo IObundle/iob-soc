@@ -5,6 +5,7 @@ FPGA_SERVER=$(QUARTUS_SERVER)
 FPGA_USER=$(QUARTUS_USER)
 
 include ../../fpga.mk
+include $(LIB_DIR)/hardware/iob_reset_sync/hardware.mk
 
 post-build:
 	mv output_files/top_system.sof $(FPGA_OBJ)

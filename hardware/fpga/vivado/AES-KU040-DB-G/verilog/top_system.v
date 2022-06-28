@@ -1,33 +1,34 @@
 `timescale 1ns / 1ps
 `include "system.vh"
 
-module top_system(
-	          input         c0_sys_clk_clk_p, 
-                  input         c0_sys_clk_clk_n, 
-	          input         reset,
+module top_system
+  (
+   input 	 c0_sys_clk_clk_p, 
+   input 	 c0_sys_clk_clk_n, 
+   input 	 reset,
 
 	          //uart
-	          output        uart_txd,
-	          input         uart_rxd,
+   output 	 uart_txd,
+   input 	 uart_rxd,
 
 `ifdef USE_DDR
-                  output        c0_ddr4_act_n,
-                  output [16:0] c0_ddr4_adr,
-                  output [1:0]  c0_ddr4_ba,
-                  output [0:0]  c0_ddr4_bg,
-                  output [0:0]  c0_ddr4_cke,
-                  output [0:0]  c0_ddr4_odt,
-                  output [0:0]  c0_ddr4_cs_n,
-                  output [0:0]  c0_ddr4_ck_t,
-                  output [0:0]  c0_ddr4_ck_c,
-                  output        c0_ddr4_reset_n,
-                  inout [3:0]   c0_ddr4_dm_dbi_n,
-                  inout [31:0]  c0_ddr4_dq,
-                  inout [3:0]   c0_ddr4_dqs_c,
-                  inout [3:0]   c0_ddr4_dqs_t, 
+   output 	 c0_ddr4_act_n,
+   output [16:0] c0_ddr4_adr,
+   output [1:0]  c0_ddr4_ba,
+   output [0:0]  c0_ddr4_bg,
+   output [0:0]  c0_ddr4_cke,
+   output [0:0]  c0_ddr4_odt,
+   output [0:0]  c0_ddr4_cs_n,
+   output [0:0]  c0_ddr4_ck_t,
+   output [0:0]  c0_ddr4_ck_c,
+   output 	 c0_ddr4_reset_n,
+   inout [3:0] 	 c0_ddr4_dm_dbi_n,
+   inout [31:0]  c0_ddr4_dq,
+   inout [3:0] 	 c0_ddr4_dqs_c,
+   inout [3:0] 	 c0_ddr4_dqs_t, 
 `endif                  
-		  output        trap
-		  );
+   output 	 trap
+   );
 
 `ifdef USE_DDR
    //
@@ -132,20 +133,21 @@ module top_system(
    wire 			sys_clk;
    
 `ifndef USE_DDR
-   clock_wizard #(
-		  .OUTPUT_PER(10),
-		  .INPUT_PER(4)
-		  )
-   clk_250_to_100_MHz(
-		      .clk_in1_p(c0_sys_clk_clk_p),
-		      .clk_in1_n(c0_sys_clk_clk_n),
-		      .clk_out1(sys_clk)
-		      );
+   clock_wizard 
+     #(
+       .OUTPUT_PER(10),
+       .INPUT_PER(4)
+       )
+   clk_250_to_100_MHz
+     (
+      .clk_in1_p(c0_sys_clk_clk_p),
+      .clk_in1_n(c0_sys_clk_clk_n),
+      .clk_out1(sys_clk)
+      );
 `endif
    
    //ddr clock output from ddr ctrl 
  
-
 
    //   
    // RESET MANAGEMENT

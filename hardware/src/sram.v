@@ -54,8 +54,6 @@ module sram #(
       .dout (rdata)
       );
 `else
-   wire                     d_valid_int = d_valid;
-
    iob_ram_dp_be
      #(
        .HEXFILE(HEXFILE),
