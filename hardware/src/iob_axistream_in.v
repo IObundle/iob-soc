@@ -22,18 +22,20 @@ module iob_axistream_in
    `IOB_INPUT(tlast, 1), 
 `include "iob_gen_if.vh"
    );
+	// FIFO Output width / Input width
+	localparam num_inputs_per_output=32/TDATA_W;
 
 //BLOCK Register File & Configuration control and status register file.
 `include "iob_axistream_in_swreg_gen.vh"
       
    `IOB_WIRE(fifo_full, 1)
    //FIFO RAM
-   `IOB_WIRE(ext_mem_w_en, 1)
-   `IOB_WIRE(ext_mem_w_data, TDATA_W)
-   `IOB_WIRE(ext_mem_w_addr, FIFO_DEPTH_LOG2)
+   `IOB_WIRE(ext_mem_w_en, num_inputs_per_output)
+   `IOB_WIRE(ext_mem_w_data, 32)
+   `IOB_WIRE(ext_mem_w_addr, (FIFO_DEPTH_LOG2-$clog2(num_inputs_per_output))*(num_inputs_per_output))
    `IOB_WIRE(ext_mem_r_en, 1)
-   `IOB_WIRE(ext_mem_r_data, TDATA_W)
-   `IOB_WIRE(ext_mem_r_addr, FIFO_DEPTH_LOG2)
+   `IOB_WIRE(ext_mem_r_data, 32)
+   `IOB_WIRE(ext_mem_r_addr, (FIFO_DEPTH_LOG2-$clog2(num_inputs_per_output))*(num_inputs_per_output))
    //Delay rst by one clock, because tvalid signal after rested may come delayed from AXISTREAMOUT peripheral
    `IOB_VAR(rst_delayed, 1)
    `IOB_REG(clk, rst_delayed, rst)
@@ -50,7 +52,7 @@ module iob_axistream_in
 	//keep filling rstrb_int after receiving TLAST to count how many random
 	//bytes to fill word in FIFO.
    `IOB_VAR(rstrb_int, 4)
-   `IOB_REG_RE(clk, rst | &rstrb_int | reset_register_last, 1'b1, tvalid & !(AXISTREAMIN_LAST_rdata[4] & rstrb_int == 4'b1), rstrb_int, (rstrb_int<<TDATA_W/8)+(TDATA_W/8){1'b1})
+   `IOB_REG_RE(clk, rst | &rstrb_int | reset_register_last, 1'b1, tvalid & !(AXISTREAMIN_LAST_rdata[4] & rstrb_int == 4'b1), rstrb_int, (rstrb_int<<TDATA_W/8)+{TDATA_W/8{1'b1}})
 
 	//Store rstrb at the moment TLAST was received 
    `IOB_VAR(rstrb, 4)
@@ -80,7 +82,7 @@ module iob_axistream_in
       .arst            (rst_delayed),
       .rst             (1'd0),
       .clk             (clk),
-      .ext_mem_w_en    (ext_mem_w_en),                                                                                                                                                                                                                                  
+      .ext_mem_w_en    (ext_mem_w_en),
       .ext_mem_w_data  (ext_mem_w_data),
       .ext_mem_w_addr  (ext_mem_w_addr),
       .ext_mem_r_en    (ext_mem_r_en),
@@ -91,7 +93,7 @@ module iob_axistream_in
       .r_data          (AXISTREAMIN_OUT_rdata),
       .r_empty         (AXISTREAMIN_EMPTY_rdata[0]),
       //write port
-      .w_en            ((tvalid & !AXISTREAMIN_LAST_rdata[4]) | (AXISTREAMIN_LAST_rdata[4] & rstrb_int == 4'b1)), //Fill FIFO if is valid OR fill with dummy values to complete 32bit word
+      .w_en            ((tvalid & !AXISTREAMIN_LAST_rdata[4]) | (AXISTREAMIN_LAST_rdata[4] & rstrb_int != 4'b1)), //Fill FIFO if is valid OR fill with dummy values to complete 32bit word
       .w_data          (tdata),
       .w_full          (fifo_full),
       .level           ()
@@ -99,15 +101,25 @@ module iob_axistream_in
   
    `IOB_WIRE2WIRE(~fifo_full & !AXISTREAMIN_LAST_rdata[4], tready) //Only ready for more data when fifo not full and CPU read AXISTREAMIN_LAST data
 
+	//Convert ext_mem_w_en signal to byte enable signal
+	localparam num_bytes_per_input = TDATA_W/8;
+   `IOB_WIRE(ext_mem_w_en_be, 32/8)
+   genvar c;
+   generate
+      for (c = 0; c < num_inputs_per_output; c = c + 1) begin
+         assign ext_mem_w_en_be[c*num_bytes_per_input+:num_bytes_per_input] = {num_bytes_per_input{ext_mem_w_en[c]}};
+      end
+   endgenerate
+
    //FIFO RAM
-   iob_ram_2p #(
-      .DATA_W (TDATA_W),
-      .ADDR_W (FIFO_DEPTH_LOG2)
+   iob_ram_2p_be #(
+      .DATA_W (32),
+      .ADDR_W ((FIFO_DEPTH_LOG2-$clog2(num_inputs_per_output))*(num_inputs_per_output))
     )
    fifo_memory
    (
       .clk      (clk),
-      .w_en     (ext_mem_w_en),
+      .w_en     (ext_mem_w_en_be),
       .w_data   (ext_mem_w_data),
       .w_addr   (ext_mem_w_addr),
       .r_en     (ext_mem_r_en),
