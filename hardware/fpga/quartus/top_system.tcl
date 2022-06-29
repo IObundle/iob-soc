@@ -19,6 +19,7 @@ set_global_assignment -name DEVICE $DEVICE
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
 set_global_assignment -name TOP_LEVEL_ENTITY $TOP
 set_global_assignment -name VERILOG_INPUT_VERSION SYSTEMVERILOG_2005
+set_global_assignment -name QIP_FILE qsys/alt_ddr3/synthesis/alt_ddr3.qip
 
 #file search paths
 foreach path [split $HW_INCLUDE \ ] {

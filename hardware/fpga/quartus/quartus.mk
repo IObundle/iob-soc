@@ -14,5 +14,6 @@ post-build:
 clean: clean-all
 	@rm -rf db/ incremental_db/ output_files/ \
 	*.qdf *.sof *.sld *.qpf *.qsf *.txt
+	 if [ $(CLEANIP) ]; then rm -rf qsys/alt_ddr3 qsys/alt_ddr3.sopcinfo ; fi
 
 .PHONY: post-build clean

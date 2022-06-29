@@ -18,6 +18,16 @@ NORUN = 0
 FREQ=50000000
 
 
-include ../quartus.mk
+VSRC+=$(LIB_DIR)/hardware/axi2axi/alt_axi2axi.v
 
+QIP_FILE=qsys/alt_ddr3/synthesis/alt_ddr3.qip
+
+$(QIP_FILE): qsys/alt_ddr3.qsys qsys/axi2axi_hw.tcl
+	qsys-generate  --synthesis qsys/alt_ddr3.qsys
+
+#DDR controller address and data widths
+DDR_ADDR_W=25
+DDR_DATA_W=256
+
+include ../quartus.mk
 

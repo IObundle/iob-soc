@@ -10,8 +10,13 @@ set DEVICE 5CGTFD9E5F35C7
 # ==========================
 
 #System 
-#set_location_assignment PIN_H19 -to clk #100MHz
-set_location_assignment PIN_V28 -to clk #50MHz
+
+#100MHz
+set_location_assignment PIN_H19 -to clk
+
+#50MHz
+set_location_assignment PIN_V28 -to clk 
+
 set_location_assignment PIN_AN8 -to resetn
 
 set_instance_assignment -name IO_STANDARD LVDS -to clk
@@ -139,18 +144,18 @@ set_location_assignment PIN_Y29 -to ddr3b_dqs_p[0]
 set_location_assignment PIN_Y30 -to ddr3b_dqs_n[0]
 set_location_assignment PIN_W29 -to ddr3b_dqs_p[1]
 set_location_assignment PIN_W30 -to ddr3b_dqs_n[1]
-set_location_assignment PIN_V23 -to ddr3b_dqs_n[2]
-set_location_assignment PIN_U25 -to ddr3b_dqs_n[3]
-set_location_assignment PIN_T23 -to ddr3b_dqs_n[4]
-set_location_assignment PIN_R25 -to ddr3b_dqs_n[5]
-set_location_assignment PIN_R24 -to ddr3b_dqs_n[6]
-set_location_assignment PIN_P25 -to ddr3b_dqs_n[7]
 set_location_assignment PIN_V24 -to ddr3b_dqs_p[2]
+set_location_assignment PIN_V23 -to ddr3b_dqs_n[2]
 set_location_assignment PIN_U24 -to ddr3b_dqs_p[3]
+set_location_assignment PIN_U25 -to ddr3b_dqs_n[3]
 set_location_assignment PIN_U23 -to ddr3b_dqs_p[4]
+set_location_assignment PIN_T23 -to ddr3b_dqs_n[4]
 set_location_assignment PIN_T25 -to ddr3b_dqs_p[5]
+set_location_assignment PIN_R25 -to ddr3b_dqs_n[5]
 set_location_assignment PIN_R23 -to ddr3b_dqs_p[6]
+set_location_assignment PIN_R24 -to ddr3b_dqs_n[6]
 set_location_assignment PIN_P24 -to ddr3b_dqs_p[7]
+set_location_assignment PIN_P25 -to ddr3b_dqs_n[7]
 set_location_assignment PIN_AA32 -to ddr3b_odt
 set_location_assignment PIN_Y32 -to ddr3b_rasn
 set_location_assignment PIN_AG31 -to ddr3b_resetn

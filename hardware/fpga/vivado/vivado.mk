@@ -13,6 +13,6 @@ post-build:
 
 clean: clean-all
 	@rm -rf .Xil/ .cache/ reports/ *.bit
-	if [ $(CLEANIP) ]; then rm -rf ip/ ; fi
+	if [ $(CLEANIP) ]; then rm -rf qsys/alt_ddr3 qsys/alt_ddr3.sopcinfo ; fi
 
 .PHONY: post-build clean
