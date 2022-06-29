@@ -40,10 +40,10 @@ def get_peripherals(peripherals_str):
     instances_parameters = {}
     # Count how many instances to create of each type of peripheral
     for i in peripherals:
-        i = i.split("(") # Split corename and parameters
+        i = i.split("[") # Split corename and parameters
         if len(i) < 2:
             i.append("")
-        i[1] = i[1].strip(")") # Delete final ")" from parameter list
+        i[1] = i[1].strip("]") # Delete final "]" from parameter list
         # Initialize corename in dictionary 
         if i[0] not in instances_amount:
             instances_amount[i[0]]=0
