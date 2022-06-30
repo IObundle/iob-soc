@@ -26,6 +26,6 @@ bool axistream_in_empty(){
 //If TDATA has 32 bits, then rstrb can only have value: 1111
 bool axistream_in_was_last(char *rstrb){
   uint16_t value = IOB_AXISTREAM_IN_GET_LAST();
-  *rstrb = (char)value;
-  return value & 0x100;
+  *rstrb = (char)value & 0xf;
+  return value & 0x10;
 }
