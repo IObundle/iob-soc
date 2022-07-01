@@ -37,7 +37,7 @@ INIT_MEM ?=1
 #list with corename of peripherals to be attached to peripheral bus.
 #to include multiple instances, write the corename of the peripheral multiple times.
 #to pass verilog parameters to each instance, type the parameters inside parenthesis.
-#Example: 'PERIPHERALS ?=UART(1,\"textparam\") UART() UART' will create 3 UART instances, 
+#Example: 'PERIPHERALS ?=UART[1,\"textparam\"] UART[] UART' will create 3 UART instances, 
 #         the first one will be instantiated with verilog parameters 1 and "textparam", 
 #         the second and third will use default parameters.
 PERIPHERALS ?=UART
@@ -121,7 +121,7 @@ DOC_DIR=$(ROOT_DIR)/document/$(DOC)
 GET_DIRS= $(eval ROOT_DIR_TMP:=$(ROOT_DIR))\
           $(eval ROOT_DIR=.)\
           $(foreach V,$(sort $(.VARIABLES)),\
-          $(if $(filter $(addsuffix _DIR, $(PERIPHERALS)), $(filter %_DIR, $V)),\
+          $(if $(filter $(addsuffix _DIR, $(shell sed "s/\[.*\]//" <<< '$(PERIPHERALS)')), $(filter %_DIR, $V)),\
           $V=$($V);))\
           $(eval ROOT_DIR:=$(ROOT_DIR_TMP))
 
@@ -165,7 +165,15 @@ INCLUDING_PATHS:=1
 include $($(UUT_NAME)_DIR)/tester.mk
 
 #RULES
+
+#kill "console", the background running program seriving simulators,
+#emulators and boards
+CNSL_PID:=ps aux | grep $(USER) | grep console | grep python3 | grep -v grep
+kill-cnsl:
+	@if [ "`$(CNSL_PID)`" ]; then \
+	kill -9 $$($(CNSL_PID) | awk '{print $$2}'); fi
+
 gen-clean:
 	@rm -f *# *~
 
-.PHONY: gen-clean
+.PHONY: gen-clean kill-cnsl
