@@ -86,6 +86,9 @@ fpga-run: fpga-build
 fpga-clean: fw-clean
 	make -C $(BOARD_DIR) clean
 
+fpga-debug:
+	make -C $(BOARD_DIR) debug
+
 fpga-test:
 	make -C $(BOARD_DIR) test
 

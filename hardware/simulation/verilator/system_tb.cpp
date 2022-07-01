@@ -90,7 +90,7 @@ int main(int argc, char **argv, char **env){
 #endif
 
   dut->clk = 0;
-  dut->reset = 0;
+  dut->rst = 0;
   dut->eval();
 #ifdef VCD
   tfp->dump(main_time);
@@ -99,7 +99,7 @@ int main(int argc, char **argv, char **env){
   // Reset sequence
   for(int i = 0; i<5; i++){
     dut->clk = !(dut->clk);
-    if(i==2 || i==4) dut->reset = !(dut->reset);
+    if(i==2 || i==4) dut->rst = !(dut->rst);
     dut->eval();
 #ifdef VCD
     tfp->dump(main_time);

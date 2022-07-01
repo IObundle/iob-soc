@@ -12,7 +12,7 @@ export RDI_VERBOSE = False
 post-build:
 
 clean: clean-all
-	@rm -rf .Xil/ .cache/ reports/ *.bit
-	if [ $(CLEANIP) ]; then rm -rf qsys/alt_ddr3 qsys/alt_ddr3.sopcinfo ; fi
+	@rm -rf .Xil/ .cache/ reports/ *.bit *.log
+	if [ $(CLEANIP) ]; then rm -rf ip/ ; fi
 
 .PHONY: post-build clean

@@ -52,6 +52,8 @@ build: $(FPGA_OBJ)
 
 ifeq ($(INIT_MEM),1)
 $(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex firmware.hex
+else ifeq ($(USE_DDR),1)
+$(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex $(QIP_FILE)
 else
 $(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex
 endif
@@ -139,6 +141,11 @@ ifneq ($(BOARD_SERVER),)
 	rsync -avz --delete --force --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR)
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD) $@'
 endif
+
+
+debug:
+	@echo $(VHDR)
+	@echo $(VSRC)
 
 
 .PRECIOUS: $(FPGA_OBJ) test.log
