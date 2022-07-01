@@ -88,8 +88,7 @@ queue-out:
 
 queue-out-remote:
 ifeq ($(BOARD_SERVER),)
-	@if [ "`ps aux | grep $(USER) | grep console | grep python3 | grep -v grep`" ]; then \
-	kill -9 $$(ps aux | grep $(USER) | grep console | grep python3 | grep -v grep | awk '{print $$2}'); fi
+	make kill-cnsl
 	make queue-out
 else
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD) $@'
@@ -100,7 +99,7 @@ endif
 #
 
 test: clean-testlog test1 test2 test3
-	diff -q test.log test.expected
+	diff test.log test.expected
 
 test1:
 	make -C $(ROOT_DIR) fpga-clean
@@ -120,7 +119,7 @@ test3:
 #
 
 clean-all: hw-clean
-	@rm -f $(FPGA_OBJ) $(FPGA_LOG)
+	@rm -f $(FPGA_OBJ) $(FPGA_LOG) *.txt
 ifneq ($(FPGA_SERVER),)
 	ssh $(BOARD_USER)@$(BOARD_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --delete --force --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)

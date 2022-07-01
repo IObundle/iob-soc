@@ -145,7 +145,15 @@ FREQ ?=100000000
 SHELL = /bin/bash
 
 #RULES
+
+#kill "console", the background running program seriving simulators,
+#emulators and boards
+CNSL_PID:=ps aux | grep $(USER) | grep console | grep python3 | grep -v grep
+kill-cnsl:
+	@if [ "`$(CNSL_PID)`" ]; then \
+	kill -9 $$($(CNSL_PID) | awk '{print $$2}'); fi
+
 gen-clean:
 	@rm -f *# *~
 
-.PHONY: gen-clean
+.PHONY: gen-clean kill-cnsl

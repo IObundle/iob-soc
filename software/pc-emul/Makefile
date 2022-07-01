@@ -30,13 +30,14 @@ fw_emul: $(HDR) $(SRC)
 run: build
 	@rm -f soc2cnsl cnsl2soc
 	$(CONSOLE_CMD) $(TEST_LOG) &
-	./fw_emul $(TEST_LOG)
+	bash -c "trap 'make kill-cnsl' INT TERM KILL EXIT; ./fw_emul $(TEST_LOG)"
 
-clean:
+clean: kill-cnsl
 	@rm -rf fw_emul periphs.h *swreg*.h *swreg*.c test.log soc2cnsl cnsl2soc
+	@rm -rf *.txt
 
 test:
 	make run TEST_LOG="> test.log"
-	sleep 1; diff -q $(PC_DIR)/test.log $(PC_DIR)/test.expected
+	sleep 1; diff $(PC_DIR)/test.log $(PC_DIR)/test.expected
 
 .PHONY: build run clean test
