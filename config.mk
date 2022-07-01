@@ -138,7 +138,15 @@ N_SLAVES_W = $(shell echo "import math; print(math.ceil(math.log($(N_SLAVES),2))
 DEFINE+=$(defmacro)N_SLAVES_W=$(N_SLAVES_W)
 
 #RULES
+
+#kill "console", the background running program seriving simulators,
+#emulators and boards
+CNSL_PID:=ps aux | grep $(USER) | grep console | grep python3 | grep -v grep
+kill-cnsl:
+	@if [ "`$(CNSL_PID)`" ]; then \
+	kill -9 $$($(CNSL_PID) | awk '{print $$2}'); fi
+
 gen-clean:
 	@rm -f *# *~
 
-.PHONY: gen-clean
+.PHONY: gen-clean kill-cnsl
