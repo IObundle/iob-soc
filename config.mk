@@ -115,13 +115,8 @@ DEFINE+=$(defmacro)N_SLAVES=$(N_SLAVES) #peripherals
 
 #address selection bits
 E:=31 #extra memory bit
-ifeq ($(USE_DDR),1)
 P:=30 #periphs
 B:=29 #boot controller
-else
-P:=31
-B:=30
-endif
 
 DEFINE+=$(defmacro)E=$E
 DEFINE+=$(defmacro)P=$P
