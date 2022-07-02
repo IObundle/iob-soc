@@ -223,6 +223,8 @@ def init_console():
     if ('-f' in sys.argv): load_fw = True
     if ('--no_file_transfer' in sys.argv):
         # Equal values to End of Transmission Byte so that it never ocurs
+        global FTX
+        global FRX
         FTX = b'\x04'
         FRX = b'\x04'
 
