@@ -1,5 +1,17 @@
 include $(ROOT_DIR)/hardware/hardware.mk
 
+
+#axi portmap for axi ram
+VHDR+=s_axi_portmap.vh
+s_axi_portmap.vh:
+	$(LIB_DIR)/software/python/axi_gen.py axi_portmap 's_' 's_' 'm_'
+
+#axi wires to connect system to axi ram in system_top
+VHDR+=m_axi_wire.vh
+m_axi_wire.vh:
+	$(LIB_DIR)/software/python/axi_gen.py axi_wire 'm_' 'm_' 'm_'
+
+
 #default baud and freq for simulation
 BAUD=$(SIM_BAUD)
 FREQ=$(SIM_FREQ)
@@ -19,9 +31,6 @@ VCD ?=0
 ifeq ($(VCD),1)
 DEFINE+=$(defmacro)VCD
 endif
-
-
-
 
 ifeq ($(INIT_MEM),0)
 CONSOLE_CMD+=-f
@@ -149,6 +158,16 @@ ifneq ($(SIM_SERVER),)
 	rsync -avz --delete --force --exclude .git $(SIM_SYNC_FLAGS) $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
 	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'rm -f $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR)/test.log'
 endif
+
+debug:
+	@echo $(VHDR)
+	@echo $(VSRC)
+	@echo $(INCLUDE)
+	@echo $(DEFINE)
+	@echo $(MEM_DIR)
+	@echo $(CPU_DIR)
+	@echo $(CACHE_DIR)
+	@echo $(UART_DIR)
 
 .PRECIOUS: system.vcd test.log
 

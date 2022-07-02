@@ -62,6 +62,9 @@ sim-clean: fw-clean
 sim-test:
 	make -C $(SIM_DIR) test
 
+sim-debug:
+	make -C $(SIM_DIR) debug
+
 #
 # BUILD, LOAD AND RUN ON FPGA BOARD
 #

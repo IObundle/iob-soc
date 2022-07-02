@@ -1,14 +1,12 @@
 `timescale 1ns / 1ps
 
+`include "iob_lib.vh"
 `include "system.vh"
-
 
 //PHEADER
 
 module system_top 
   (
-   input                              clk,
-   input                              rst,
    output                             trap,
    //tester uart
    input                              uart_valid,
@@ -16,10 +14,14 @@ module system_top
    input [`DATA_W-1:0]                uart_wdata,
    input [3:0]                        uart_wstrb,
    output [`DATA_W-1:0]               uart_rdata,
-   output                             uart_ready
+   output                             uart_ready,
+`include "iob_gen_if.vh"
    );
-
-   
+ 
+   localparam AXI_ID_W = 4;
+   localparam AXI_ADDR_W=`DDR_ADDR_W;
+   localparam AXI_DATA_W=`DATA_W;
+ 
    //PWIRES
 
    
@@ -50,8 +52,9 @@ module system_top
    //
    system
      #(
-       .AXI_ADDR_W(`ADDR_W),
-       .AXI_DATA_W(`DATA_W)
+       .AXI_ID_W(AXI_ID_W),
+       .AXI_ADDR_W(AXI_ADDR_W),
+       .AXI_DATA_W(AXI_DATA_W)
        )
    uut
      (
@@ -73,57 +76,15 @@ module system_top
        .FILE("firmware.hex"),
        .FILE_SIZE(`FW_SIZE),
  `endif
+       .ID_WIDTH(AXI_ID_W),
        .DATA_WIDTH (`DATA_W),
        .ADDR_WIDTH (`DDR_ADDR_W)
        )
    ddr_model_mem
      (
-      //address write
-      .clk            (clk),
-      .rst            (rst),
-      .s_axi_awid     ({8{ddr_awid}}),
-      .s_axi_awaddr   (ddr_awaddr[`DDR_ADDR_W-1:0]),
-      .s_axi_awlen    (ddr_awlen),
-      .s_axi_awsize   (ddr_awsize),
-      .s_axi_awburst  (ddr_awburst),
-      .s_axi_awlock   (ddr_awlock),
-      .s_axi_awprot   (ddr_awprot),
-      .s_axi_awcache  (ddr_awcache),
-      .s_axi_awvalid  (ddr_awvalid),
-      .s_axi_awready  (ddr_awready),
-      
-      //write  
-      .s_axi_wvalid   (ddr_wvalid),
-      .s_axi_wready   (ddr_wready),
-      .s_axi_wdata    (ddr_wdata),
-      .s_axi_wstrb    (ddr_wstrb),
-      .s_axi_wlast    (ddr_wlast),
-      
-      //write response
-      .s_axi_bready   (ddr_bready),
-      .s_axi_bid      (ddr_bid),
-      .s_axi_bresp    (ddr_bresp),
-      .s_axi_bvalid   (ddr_bvalid),
-      
-      //address read
-      .s_axi_arid     ({8{ddr_arid}}),
-      .s_axi_araddr   (ddr_araddr[`DDR_ADDR_W-1:0]),
-      .s_axi_arlen    (ddr_arlen), 
-      .s_axi_arsize   (ddr_arsize),    
-      .s_axi_arburst  (ddr_arburst),
-      .s_axi_arlock   (ddr_arlock),
-      .s_axi_arcache  (ddr_arcache),
-      .s_axi_arprot   (ddr_arprot),
-      .s_axi_arvalid  (ddr_arvalid),
-      .s_axi_arready  (ddr_arready),
-      
-      //read   
-      .s_axi_rready   (ddr_rready),
-      .s_axi_rid      (ddr_rid),
-      .s_axi_rdata    (ddr_rdata),
-      .s_axi_rresp    (ddr_rresp),
-      .s_axi_rlast    (ddr_rlast),
-      .s_axi_rvalid   (ddr_rvalid)
+ `include "s_axi_portmap.vh"
+      .clk(clk),
+      .rst(rst)
       );   
 `endif
 

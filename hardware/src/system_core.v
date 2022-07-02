@@ -10,6 +10,7 @@ module system
   #(
     parameter ADDR_W=`ADDR_W,
     parameter DATA_W=`DATA_W,
+    parameter AXI_ID_W=4,
     parameter AXI_ADDR_W=`ADDR_W,
     parameter AXI_DATA_W=`DATA_W
     )
@@ -205,8 +206,14 @@ module system
    //
    // EXTERNAL DDR MEMORY
    //
-   ext_mem ext_mem0 
-     (
+   ext_mem
+     #(
+       .AXI_ID_W(AXI_ID_W),
+       .AXI_ADDR_W(AXI_ADDR_W),
+       .AXI_DATA_W(AXI_DATA_W)
+       )
+   ext_mem0
+   (
  `ifdef RUN_EXTMEM
       // instruction bus
       .i_req ( {ext_mem_i_req[`valid(0)], ext_mem_i_req[`address(0, `FIRM_ADDR_W)-2], ext_mem_i_req[`write(0)]} ),
