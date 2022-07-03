@@ -1,8 +1,5 @@
-create_clock -period 10.00 [get_ports clk]
+create_clock -period 20.00 [get_ports {clk[0]}]
 
 derive_pll_clocks
 
 derive_clock_uncertainty
-
-set_clock_groups -asynchronous \
--group [get_clocks clk]

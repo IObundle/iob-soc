@@ -4,6 +4,7 @@
 
 module top_system
   (
+   //user clock
    input         clk, 
    input         resetn,
   
@@ -12,21 +13,22 @@ module top_system
    input         uart_rxd,
 
 `ifdef USE_DDR
-   output [13:0] ddr3_a, //SSTL15  //Address
-   output [2:0]  ddr3_ba, //SSTL15  //Bank Address
-   output        ddr3_rasn, //SSTL15  //Row Address Strobe
-   output        ddr3_casn, //SSTL15  //Column Address Strobe
-   output        ddr3_wen, //SSTL15  //Write Enable
-   output [3:0]  ddr3_dm, //SSTL15  //Data Write Mask
-   inout [31:0]  ddr3_dq, //SSTL15  //Data Bus
-   output        ddr3_clk_n, //SSTL15  //Diff Clock - Neg
-   output        ddr3_clk_p, //SSTL15  //Diff Clock - Pos
-   output        ddr3_cke, //SSTL15  //Clock Enable
-   output        ddr3_csn, //SSTL15  //Chip Select
-   inout [3:0]   ddr3_dqs_n, //SSTL15  //Diff Data Strobe - Neg
-   inout [3:0]   ddr3_dqs_p, //SSTL15  //Diff Data Strobe - Pos
-   output        ddr3_odt, //SSTL15  //On-Die Termination Enable
-   output        ddr3_resetn, //SSTL15  //Reset
+   input         clk_ddrpll_p,
+   output [13:0] ddr3b_a, //SSTL15  //Address
+   output [2:0]  ddr3b_ba, //SSTL15  //Bank Address
+   output        ddr3b_rasn, //SSTL15  //Row Address Strobe
+   output        ddr3b_casn, //SSTL15  //Column Address Strobe
+   output        ddr3b_wen, //SSTL15  //Write Enable
+   output [7:0]  ddr3b_dm, //SSTL15  //Data Write Mask
+   inout [63:0]  ddr3b_dq, //SSTL15  //Data Bus
+   output        ddr3b_clk_n, //SSTL15  //Diff Clock - Neg
+   output        ddr3b_clk_p, //SSTL15  //Diff Clock - Pos
+   output        ddr3b_cke, //SSTL15  //Clock Enable
+   output        ddr3b_csn, //SSTL15  //Chip Select
+   inout [7:0]   ddr3b_dqs_n, //SSTL15  //Diff Data Strobe - Neg
+   inout [7:0]   ddr3b_dqs_p, //SSTL15  //Diff Data Strobe - Pos
+   output        ddr3b_odt, //SSTL15  //On-Die Termination Enable
+   output        ddr3b_resetn, //SSTL15  //Reset
 
    input         rzqin,
 `endif
@@ -37,37 +39,48 @@ module top_system
    // Clocking / Reset
    //-----------------------------------------------------------------
 
-   //pll input reset
    wire 	 rst;
-   iob_reset_sync rst_sync (clk, (~resetn), rst);
-
    
 `ifdef USE_DDR
-   localparam AXI_ADDR_W=`ADDR_W;
+   parameter AXI_ID_W = 4;
+   localparam AXI_ADDR_W=`DDR_ADDR_W;
    localparam AXI_DATA_W=`DATA_W;
+   
+   //user reset
+   wire          locked;
+   iob_reset_sync rst_sync (clk, (~locked), rst);
+
    
  `include "m_axi_wire.vh"
 
    alt_ddr3 ddr30 
      (
-      .memory_0_mem_a                                           (ddr3_a),
-      .memory_0_mem_ba                                          (ddr3_ba),
-      .memory_0_mem_ck                                          (ddr3_clk_p),
-      .memory_0_mem_ck_n                                        (ddr3_clk_n),
-      .memory_0_mem_cke                                         (ddr3_cke),
-      .memory_0_mem_cs_n                                        (ddr3_csn),
-      .memory_0_mem_dm                                          (ddr3_dm),
-      .memory_0_mem_ras_n                                       (ddr3_rasn),
-      .memory_0_mem_cas_n                                       (ddr3_casn),
-      .memory_0_mem_we_n                                        (ddr3_wen),
-      .memory_0_mem_reset_n                                     (ddr3_resetn),
-      .memory_0_mem_dq                                          (ddr3_dq),
-      .memory_0_mem_dqs                                         (ddr3_dqs_p),
-      .memory_0_mem_dqs_n                                       (ddr3_dqs_n),
-      .memory_0_mem_odt                                         (ddr3_odt),
+      //ddr pll clock 
+      .clk_clk                                                  (clk_ddrpll_p),
+      .reset_reset_n                                            (resetn),
+
+      //user logic clock
+      .clk_0_clk                                                (clk),   
+      .reset_0_reset_n                                          (rst),
+      
+
+      .memory_0_mem_a                                           (ddr3b_a),
+      .memory_0_mem_ba                                          (ddr3b_ba),
+      .memory_0_mem_ck                                          (ddr3b_clk_p),
+      .memory_0_mem_ck_n                                        (ddr3b_clk_n),
+      .memory_0_mem_cke                                         (ddr3b_cke),
+      .memory_0_mem_cs_n                                        (ddr3b_csn),
+      .memory_0_mem_dm                                          (ddr3b_dm),
+      .memory_0_mem_ras_n                                       (ddr3b_rasn),
+      .memory_0_mem_cas_n                                       (ddr3b_casn),
+      .memory_0_mem_we_n                                        (ddr3b_wen),
+      .memory_0_mem_reset_n                                     (ddr3b_resetn),
+      .memory_0_mem_dq                                          (ddr3b_dq),
+      .memory_0_mem_dqs                                         (ddr3b_dqs_p),
+      .memory_0_mem_dqs_n                                       (ddr3b_dqs_n),
+      .memory_0_mem_odt                                         (ddr3b_odt),
+
       .oct_0_rzqin                                              (rzqin),
-      .clk_clk                                                  (clk),
-      .reset_reset_n                                            (~rst),
       .axi2axi_0_altera_axi_slave_awid                          (m_axi_awid),
       .axi2axi_0_altera_axi_slave_awaddr                        (m_axi_awaddr),
       .axi2axi_0_altera_axi_slave_awlen                         (m_axi_awlen),
@@ -107,7 +120,7 @@ module top_system
 
       .mem_if_ddr3_emif_1_pll_sharing_pll_mem_clk               (),
       .mem_if_ddr3_emif_1_pll_sharing_pll_write_clk             (),
-      .mem_if_ddr3_emif_1_pll_sharing_pll_locked                (),
+      .mem_if_ddr3_emif_1_pll_sharing_pll_locked                (locked),
       .mem_if_ddr3_emif_1_pll_sharing_pll_write_clk_pre_phy_clk (),
       .mem_if_ddr3_emif_1_pll_sharing_pll_addr_cmd_clk          (),
       .mem_if_ddr3_emif_1_pll_sharing_pll_avl_clk               (),
@@ -118,13 +131,22 @@ module top_system
       .mem_if_ddr3_emif_1_status_local_init_done                (),
       .mem_if_ddr3_emif_1_status_local_cal_success              (),
       .mem_if_ddr3_emif_1_status_local_cal_fail                 ()
-      );   
+      );
+
+`else
+   iob_reset_sync rst_sync (clk, (~resetn), rst);   
 `endif
 
    //
    // SYSTEM
    //
-   system system 
+   system
+     #(
+       .AXI_ID_W(AXI_ID_W),
+       .AXI_ADDR_W(AXI_ADDR_W),
+       .AXI_DATA_W(AXI_DATA_W)
+       )
+   system 
      (
       .clk(clk),
       .rst(rst),

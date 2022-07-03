@@ -9,8 +9,8 @@ DEVICE=5CGTFD9E5F35C7
 DEFINE+=$(defmacro)IS_CYCLONEV
 
 #DDR controller address and data widths
-DDR_ADDR_W=27
-DDR_DATA_W=32
+DDR_ADDR_W=25
+DDR_DATA_W=256
 
 #specify any conditions that prevent running this FPGA
 #NORUN = $(USE_DDR)
