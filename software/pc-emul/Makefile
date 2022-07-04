@@ -18,7 +18,7 @@ HDR+=periphs.h
 SRC+= $(FIRM_DIR)/firmware.c $(UART_DIR)/software/printf.c
 
 #CONSOLE
-CONSOLE_CMD=$(ROOT_DIR)/software/console/console -L
+CONSOLE_CMD=$(PYTHON_DIR)/console -L
 
 #RULES
 
