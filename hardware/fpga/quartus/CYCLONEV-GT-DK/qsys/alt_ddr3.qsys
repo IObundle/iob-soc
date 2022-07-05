@@ -6,7 +6,7 @@
    version="1.0"
    description=""
    tags=""
-   categories="" />
+   categories="System" />
  <parameter name="bonusData"><![CDATA[bonusData 
 {
    element axi_bridge_0
@@ -293,20 +293,20 @@
   <parameter name="MEM_RTT_WR" value="Dynamic ODT off" />
   <parameter name="MEM_SRT" value="Normal" />
   <parameter name="MEM_TCL" value="7" />
-  <parameter name="MEM_TFAW_NS" value="37.5" />
+  <parameter name="MEM_TFAW_NS" value="25.0" />
   <parameter name="MEM_TINIT_US" value="499" />
-  <parameter name="MEM_TMRD_CK" value="3" />
-  <parameter name="MEM_TRAS_NS" value="40.0" />
-  <parameter name="MEM_TRCD_NS" value="15.0" />
+  <parameter name="MEM_TMRD_CK" value="4" />
+  <parameter name="MEM_TRAS_NS" value="33.0" />
+  <parameter name="MEM_TRCD_NS" value="13.09" />
   <parameter name="MEM_TREFI_US" value="7.0" />
-  <parameter name="MEM_TRFC_NS" value="75.0" />
-  <parameter name="MEM_TRP_NS" value="15.0" />
-  <parameter name="MEM_TRRD_NS" value="7.5" />
+  <parameter name="MEM_TRFC_NS" value="500.0" />
+  <parameter name="MEM_TRP_NS" value="13.09" />
+  <parameter name="MEM_TRRD_NS" value="5.0" />
   <parameter name="MEM_TRTP_NS" value="7.5" />
   <parameter name="MEM_TWR_NS" value="15.0" />
-  <parameter name="MEM_TWTR" value="2" />
+  <parameter name="MEM_TWTR" value="4" />
   <parameter name="MEM_USER_LEVELING_MODE" value="Leveling" />
-  <parameter name="MEM_VENDOR" value="JEDEC" />
+  <parameter name="MEM_VENDOR" value="Micron" />
   <parameter name="MEM_VERBOSE" value="true" />
   <parameter name="MEM_VOLTAGE" value="1.5V DDR3" />
   <parameter name="MEM_WTCL" value="6" />
@@ -448,20 +448,20 @@
   <parameter name="TIMING_BOARD_TDS" value="0.0" />
   <parameter name="TIMING_BOARD_TIH" value="0.0" />
   <parameter name="TIMING_BOARD_TIS" value="0.0" />
-  <parameter name="TIMING_TDH" value="125" />
-  <parameter name="TIMING_TDQSCK" value="400" />
+  <parameter name="TIMING_TDH" value="20" />
+  <parameter name="TIMING_TDQSCK" value="180" />
   <parameter name="TIMING_TDQSCKDL" value="1200" />
   <parameter name="TIMING_TDQSCKDM" value="900" />
   <parameter name="TIMING_TDQSCKDS" value="450" />
-  <parameter name="TIMING_TDQSQ" value="120" />
-  <parameter name="TIMING_TDQSS" value="0.25" />
-  <parameter name="TIMING_TDS" value="50" />
-  <parameter name="TIMING_TDSH" value="0.2" />
-  <parameter name="TIMING_TDSS" value="0.2" />
-  <parameter name="TIMING_TIH" value="250" />
-  <parameter name="TIMING_TIS" value="175" />
-  <parameter name="TIMING_TQH" value="0.38" />
-  <parameter name="TIMING_TQSH" value="0.38" />
+  <parameter name="TIMING_TDQSQ" value="70" />
+  <parameter name="TIMING_TDQSS" value="0.27" />
+  <parameter name="TIMING_TDS" value="5" />
+  <parameter name="TIMING_TDSH" value="0.18" />
+  <parameter name="TIMING_TDSS" value="0.18" />
+  <parameter name="TIMING_TIH" value="75" />
+  <parameter name="TIMING_TIS" value="35" />
+  <parameter name="TIMING_TQH" value="0.4" />
+  <parameter name="TIMING_TQSH" value="0.4" />
   <parameter name="TRACKING_ERROR_TEST" value="false" />
   <parameter name="TRACKING_WATCH_TEST" value="false" />
   <parameter name="TREFI" value="35100" />

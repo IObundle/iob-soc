@@ -14,6 +14,10 @@ post-build:
 clean: clean-all
 	@rm -rf db/ incremental_db/ output_files/ \
 	*.qdf *.sof *.sld *.qpf *.qsf *.txt
-	 if [ $(CLEANIP) ]; then rm -rf qsys/alt_ddr3 qsys/alt_ddr3.sopcinfo ; fi
 
-.PHONY: post-build clean
+clean-ip:
+	rm -rf qsys/alt_ddr3 qsys/alt_ddr3.sopcinfo
+
+veryclean: clean clean-ip
+
+.PHONY: post-build clean clean-ip veryclean

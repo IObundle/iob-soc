@@ -9,8 +9,8 @@ DEVICE=5CGTFD9E5F35C7
 DEFINE+=$(defmacro)IS_CYCLONEV
 
 #DDR controller address and data widths
-DDR_ADDR_W=25
-DDR_DATA_W=256
+DDR_ADDR_W=28
+DDR_DATA_W=32
 
 #specify any conditions that prevent running this FPGA
 #NORUN = $(USE_DDR)
@@ -18,12 +18,9 @@ NORUN = 0
 
 FREQ=50000000
 
-
-VSRC+=$(LIB_DIR)/hardware/axi2axi/alt_axi2axi.v
-
 QIP_FILE=qsys/alt_ddr3/synthesis/alt_ddr3.qip
 
-$(QIP_FILE): qsys/alt_ddr3.qsys qsys/axi2axi_hw.tcl
+$(QIP_FILE): qsys/alt_ddr3.qsys
 	$(QUARTUSPATH)/nios2eds/nios2_command_shell.sh qsys-generate  --synthesis qsys/alt_ddr3.qsys
 
 include ../quartus.mk

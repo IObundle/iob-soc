@@ -4,6 +4,7 @@
 
 set_global_assignment -name FAMILY "Cyclone V"
 set_global_assignment -name DEVICE 5CGTFD9E5F35C7
+set_global_assignment -name IOBANK_VCCIO 1.5V -section_id 4A
 
 # Pin & Location Assignments
 # ==========================
@@ -28,7 +29,7 @@ set_instance_assignment -name IO_STANDARD "1.8 V" -to resetn
 #set_instance_assignment -name IO_STANDARD "2.5-V" -to led
 
 set_location_assignment  PIN_AE25 -to trap
-set_instance_assignment -name IO_STANDARD "2.5-V" -to trap
+set_instance_assignment -name IO_STANDARD "1.5-V" -to trap
 
 set_instance_assignment -name SLEW_RATE 1 -to trap
 set_instance_assignment -name CURRENT_STRENGTH_NEW DEFAULT -to trap
@@ -41,9 +42,9 @@ set_instance_assignment -name CURRENT_STRENGTH_NEW DEFAULT -to uart_txd
 set_location_assignment PIN_C12 -to uart_rxd
 set_instance_assignment -name IO_STANDARD "2.5-V" -to uart_rxd
 
-set_location_assignment PIN_AD29 -to cpu_resetn
+set_location_assignment PIN_AD29 -to resetn
 set_instance_assignment -name IO_STANDARD "1.5-V" -to rzqin
-set_instance_assignment -name IO_STANDARD "1.8 V" -to cpu_resetn
+set_instance_assignment -name IO_STANDARD "1.8 V" -to resetn
 set_instance_assignment -name IO_STANDARD "1.5 V" -to rzqin_1_5v
 
 #DDR3 A
@@ -91,48 +92,48 @@ set_location_assignment PIN_AP24 -to ddr3a_dq[12]
 set_location_assignment PIN_AP25 -to ddr3a_dq[13]
 set_location_assignment PIN_AN26 -to ddr3a_dq[14]
 set_location_assignment PIN_AN24 -to ddr3a_dq[15]
-set_location_assignment PIN_AP27 -to ddr3a_dq[16]
-set_location_assignment PIN_AN27 -to ddr3a_dq[17]
-set_location_assignment PIN_AK22 -to ddr3a_dq[18]
-set_location_assignment PIN_AJ21 -to ddr3a_dq[19]
-set_location_assignment PIN_AH21 -to ddr3a_dq[20]
-set_location_assignment PIN_AH22 -to ddr3a_dq[21]
-set_location_assignment PIN_AP30 -to ddr3a_dq[22]
-set_location_assignment PIN_AN28 -to ddr3a_dq[23]
-set_location_assignment PIN_AL23 -to ddr3a_dq[24]
-set_location_assignment PIN_AK23 -to ddr3a_dq[25]
-set_location_assignment PIN_AL25 -to ddr3a_dq[26]
-set_location_assignment PIN_AM26 -to ddr3a_dq[27]
-set_location_assignment PIN_AK24 -to ddr3a_dq[28]
-set_location_assignment PIN_AJ24 -to ddr3a_dq[29]
-set_location_assignment PIN_AN31 -to ddr3a_dq[30]
-set_location_assignment PIN_AL28 -to ddr3a_dq[31]
-set_location_assignment PIN_AH23 -to ddr3a_dq[32]
-set_location_assignment PIN_AG23 -to ddr3a_dq[33]
-set_location_assignment PIN_AN32 -to ddr3a_dq[34]
-set_location_assignment PIN_AN29 -to ddr3a_dq[35]
-set_location_assignment PIN_AK25 -to ddr3a_dq[36]
-set_location_assignment PIN_AJ25 -to ddr3a_dq[37]
-set_location_assignment PIN_AK28 -to ddr3a_dq[38]
-set_location_assignment PIN_AM30 -to ddr3a_dq[39]
+# set_location_assignment PIN_AP27 -to ddr3a_dq[16]
+# set_location_assignment PIN_AN27 -to ddr3a_dq[17]
+# set_location_assignment PIN_AK22 -to ddr3a_dq[18]
+# set_location_assignment PIN_AJ21 -to ddr3a_dq[19]
+# set_location_assignment PIN_AH21 -to ddr3a_dq[20]
+# set_location_assignment PIN_AH22 -to ddr3a_dq[21]
+# set_location_assignment PIN_AP30 -to ddr3a_dq[22]
+# set_location_assignment PIN_AN28 -to ddr3a_dq[23]
+# set_location_assignment PIN_AL23 -to ddr3a_dq[24]
+# set_location_assignment PIN_AK23 -to ddr3a_dq[25]
+# set_location_assignment PIN_AL25 -to ddr3a_dq[26]
+# set_location_assignment PIN_AM26 -to ddr3a_dq[27]
+# set_location_assignment PIN_AK24 -to ddr3a_dq[28]
+# set_location_assignment PIN_AJ24 -to ddr3a_dq[29]
+# set_location_assignment PIN_AN31 -to ddr3a_dq[30]
+# set_location_assignment PIN_AL28 -to ddr3a_dq[31]
+# set_location_assignment PIN_AH23 -to ddr3a_dq[32]
+# set_location_assignment PIN_AG23 -to ddr3a_dq[33]
+# set_location_assignment PIN_AN32 -to ddr3a_dq[34]
+# set_location_assignment PIN_AN29 -to ddr3a_dq[35]
+# set_location_assignment PIN_AK25 -to ddr3a_dq[36]
+# set_location_assignment PIN_AJ25 -to ddr3a_dq[37]
+# set_location_assignment PIN_AK28 -to ddr3a_dq[38]
+# set_location_assignment PIN_AM30 -to ddr3a_dq[39]
 
 set_location_assignment PIN_AL21 -to ddr3a_dm[0]
 set_location_assignment PIN_AM24 -to ddr3a_dm[1]
-set_location_assignment PIN_AM28 -to ddr3a_dm[2]
-set_location_assignment PIN_AL27 -to ddr3a_dm[3]
-set_location_assignment PIN_AL30 -to ddr3a_dm[4]
+# set_location_assignment PIN_AM28 -to ddr3a_dm[2]
+# set_location_assignment PIN_AL27 -to ddr3a_dm[3]
+# set_location_assignment PIN_AL30 -to ddr3a_dm[4]
 
 set_location_assignment PIN_AB19 -to ddr3a_dqs_p[0]
 set_location_assignment PIN_AD19 -to ddr3a_dqs_p[1]
-set_location_assignment PIN_AJ20 -to ddr3a_dqs_p[2]
-set_location_assignment PIN_Y20 -to ddr3a_dqs_p[3]
-set_location_assignment PIN_AC21 -to ddr3a_dqs_p[4]
+# set_location_assignment PIN_AJ20 -to ddr3a_dqs_p[2]
+# set_location_assignment PIN_Y20 -to ddr3a_dqs_p[3]
+# set_location_assignment PIN_AC21 -to ddr3a_dqs_p[4]
 
 set_location_assignment PIN_AC19 -to ddr3a_dqs_n[0]
 set_location_assignment PIN_AE19 -to ddr3a_dqs_n[1]
-set_location_assignment PIN_AK20 -to ddr3a_dqs_n[2]
-set_location_assignment PIN_AA20 -to ddr3a_dqs_n[3]
-set_location_assignment PIN_AD21 -to ddr3a_dqs_n[4]
+# set_location_assignment PIN_AK20 -to ddr3a_dqs_n[2]
+# set_location_assignment PIN_AA20 -to ddr3a_dqs_n[3]
+# set_location_assignment PIN_AD21 -to ddr3a_dqs_n[4]
 
 
 set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_csn
@@ -179,48 +180,48 @@ set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[12]
 set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[13]
 set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[14]
 set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[15]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[16]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[17]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[18]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[19]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[20]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[21]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[22]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[23]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[24]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[25]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[26]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[27]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[28]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[29]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[30]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[31]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[32]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[33]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[34]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[35]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[36]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[37]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[38]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[39]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[16]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[17]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[18]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[19]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[20]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[21]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[22]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[23]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[24]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[25]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[26]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[27]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[28]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[29]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[30]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[31]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[32]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[33]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[34]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[35]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[36]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[37]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[38]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dq[39]
 
 set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dm[0]
 set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dm[1]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dm[2]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dm[3]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dm[4]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dm[2]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dm[3]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dm[4]
 
 set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dqs_p[0]
 set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dqs_p[1]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dqs_p[2]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dqs_p[3]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dqs_p[4]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dqs_p[2]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dqs_p[3]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dqs_p[4]
 
 set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dqs_n[0]
 set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dqs_n[1]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dqs_n[2]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dqs_n[3]
-set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dqs_n[4]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dqs_n[2]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dqs_n[3]
+# set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to ddr3a_dqs_n[4]
 
 
 #DDR B

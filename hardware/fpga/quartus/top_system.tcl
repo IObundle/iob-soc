@@ -147,9 +147,9 @@ if [catch {qexec "[file join $::quartus(binpath) quartus_map] $project_name"} re
 
 #used for hard macro with no success
 
-source "./qsys/alt_ddr3/synthesis/submodules/alt_ddr3_mem_if_ddr3_emif_1_p0_parameters.tcl"
+source "./qsys/alt_ddr3/synthesis/submodules/alt_ddr3_mem_if_ddr3_emif_0_p0_parameters.tcl"
 
-source "./qsys/alt_ddr3/synthesis/submodules/alt_ddr3_mem_if_ddr3_emif_1_p0_pin_assignments.tcl"
+source "./qsys/alt_ddr3/synthesis/submodules/alt_ddr3_mem_if_ddr3_emif_0_p0_pin_assignments.tcl"
 
 # Compile the project and
 # exit using "qexit" if there is an error

@@ -13,6 +13,10 @@ post-build:
 
 clean: clean-all
 	@rm -rf .Xil/ .cache/ reports/ *.bit *.log
-	if [ $(CLEANIP) ]; then rm -rf ip/ ; fi
 
-.PHONY: post-build clean
+clean-ip:
+	rm -rf ip
+
+veryclean: clean clean-ip
+
+.PHONY: post-build clean clean-ip veryclean
