@@ -36,9 +36,9 @@
 }
 ]]></parameter>
  <parameter name="clockCrossingAdapter" value="HANDSHAKE" />
- <parameter name="device" value="5CEBA2F17A7" />
+ <parameter name="device" value="5CGTFD9E5F35C7" />
  <parameter name="deviceFamily" value="Cyclone V" />
- <parameter name="deviceSpeedGrade" value="7" />
+ <parameter name="deviceSpeedGrade" value="7_H5" />
  <parameter name="fabricMode" value="QSYS" />
  <parameter name="generateLegacySim" value="false" />
  <parameter name="generationId" value="0" />
@@ -60,6 +60,11 @@
    type="axi4"
    dir="end" />
  <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
+ <interface
+   name="mem_if_ddr3_emif_0_local_powerdown"
+   internal="mem_if_ddr3_emif_0.local_powerdown"
+   type="conduit"
+   dir="end" />
  <interface
    name="mem_if_ddr3_emif_0_pll_sharing"
    internal="mem_if_ddr3_emif_0.pll_sharing"
@@ -172,10 +177,10 @@
   <parameter name="ALTMEMPHY_COMPATIBLE_MODE" value="false" />
   <parameter name="AP_MODE" value="false" />
   <parameter name="AP_MODE_EN" value="0" />
-  <parameter name="AUTO_DEVICE" value="5CEBA2F17A7" />
-  <parameter name="AUTO_DEVICE_SPEEDGRADE" value="7" />
-  <parameter name="AUTO_PD_CYCLES" value="0" />
-  <parameter name="AUTO_POWERDN_EN" value="false" />
+  <parameter name="AUTO_DEVICE" value="5CGTFD9E5F35C7" />
+  <parameter name="AUTO_DEVICE_SPEEDGRADE" value="7_H5" />
+  <parameter name="AUTO_PD_CYCLES" value="4096" />
+  <parameter name="AUTO_POWERDN_EN" value="true" />
   <parameter name="AVL_DATA_WIDTH_PORT" value="32,32,32,32,32,32" />
   <parameter name="AVL_MAX_SIZE" value="64" />
   <parameter name="BYTE_ENABLE" value="true" />
@@ -183,7 +188,7 @@
   <parameter name="CALIBRATION_MODE" value="Skip" />
   <parameter name="CALIB_REG_WIDTH" value="8" />
   <parameter name="CFG_DATA_REORDERING_TYPE" value="INTER_BANK" />
-  <parameter name="CFG_REORDER_DATA" value="true" />
+  <parameter name="CFG_REORDER_DATA" value="false" />
   <parameter name="CFG_TCCD_NS" value="2.5" />
   <parameter name="COMMAND_PHASE" value="0.0" />
   <parameter name="CONTROLLER_LATENCY" value="5" />
@@ -242,7 +247,7 @@
   <parameter name="FORCE_SEQUENCER_TCL_DEBUG_MODE" value="false" />
   <parameter name="FORCE_SHADOW_REGS" value="AUTO" />
   <parameter name="FORCE_SYNTHESIS_LANGUAGE" value="" />
-  <parameter name="HARD_EMIF" value="true" />
+  <parameter name="HARD_EMIF" value="false" />
   <parameter name="HCX_COMPAT_MODE" value="false" />
   <parameter name="HHP_HPS" value="false" />
   <parameter name="HHP_HPS_SIMULATION" value="false" />
@@ -266,7 +271,7 @@
   <parameter name="MEM_CK_WIDTH" value="1" />
   <parameter name="MEM_CLK_EN_WIDTH" value="1" />
   <parameter name="MEM_CLK_FREQ" value="300.0" />
-  <parameter name="MEM_CLK_FREQ_MAX" value="400.0" />
+  <parameter name="MEM_CLK_FREQ_MAX" value="800.0" />
   <parameter name="MEM_COL_ADDR_WIDTH" value="10" />
   <parameter name="MEM_CS_WIDTH" value="1" />
   <parameter name="MEM_DEVICE" value="MISSING_MODEL" />
@@ -293,18 +298,18 @@
   <parameter name="MEM_RTT_WR" value="Dynamic ODT off" />
   <parameter name="MEM_SRT" value="Normal" />
   <parameter name="MEM_TCL" value="7" />
-  <parameter name="MEM_TFAW_NS" value="25.0" />
-  <parameter name="MEM_TINIT_US" value="499" />
+  <parameter name="MEM_TFAW_NS" value="50.0" />
+  <parameter name="MEM_TINIT_US" value="500" />
   <parameter name="MEM_TMRD_CK" value="4" />
-  <parameter name="MEM_TRAS_NS" value="33.0" />
-  <parameter name="MEM_TRCD_NS" value="13.09" />
-  <parameter name="MEM_TREFI_US" value="7.0" />
-  <parameter name="MEM_TRFC_NS" value="500.0" />
-  <parameter name="MEM_TRP_NS" value="13.09" />
-  <parameter name="MEM_TRRD_NS" value="5.0" />
+  <parameter name="MEM_TRAS_NS" value="37.5" />
+  <parameter name="MEM_TRCD_NS" value="13.125" />
+  <parameter name="MEM_TREFI_US" value="7.8" />
+  <parameter name="MEM_TRFC_NS" value="260.0" />
+  <parameter name="MEM_TRP_NS" value="13.125" />
+  <parameter name="MEM_TRRD_NS" value="7.5" />
   <parameter name="MEM_TRTP_NS" value="7.5" />
   <parameter name="MEM_TWR_NS" value="15.0" />
-  <parameter name="MEM_TWTR" value="4" />
+  <parameter name="MEM_TWTR" value="6" />
   <parameter name="MEM_USER_LEVELING_MODE" value="Leveling" />
   <parameter name="MEM_VENDOR" value="Micron" />
   <parameter name="MEM_VERBOSE" value="true" />
@@ -405,7 +410,7 @@
   <parameter name="PLL_WRITE_CLK_PHASE_PS_SIM_STR_PARAM" value="" />
   <parameter name="POWER_OF_TWO_BUS" value="false" />
   <parameter name="PRIORITY_PORT" value="1,1,1,1,1,1" />
-  <parameter name="RATE" value="Full" />
+  <parameter name="RATE" value="Half" />
   <parameter name="RDIMM_CONFIG" value="0000000000000000" />
   <parameter name="READ_DQ_DQS_CLOCK_SOURCE" value="INVERTED_DQS_BUS" />
   <parameter name="READ_FIFO_SIZE" value="8" />
@@ -424,9 +429,9 @@
   <parameter name="SYS_INFO_DEVICE_FAMILY" value="Cyclone V" />
   <parameter name="TIMING_BOARD_AC_EYE_REDUCTION_H" value="0.0" />
   <parameter name="TIMING_BOARD_AC_EYE_REDUCTION_SU" value="0.0" />
-  <parameter name="TIMING_BOARD_AC_SKEW" value="0.02" />
+  <parameter name="TIMING_BOARD_AC_SKEW" value="0.04" />
   <parameter name="TIMING_BOARD_AC_SLEW_RATE" value="1.0" />
-  <parameter name="TIMING_BOARD_AC_TO_CK_SKEW" value="0.0" />
+  <parameter name="TIMING_BOARD_AC_TO_CK_SKEW" value="0.04" />
   <parameter name="TIMING_BOARD_CK_CKN_SLEW_RATE" value="2.0" />
   <parameter name="TIMING_BOARD_DELTA_DQS_ARRIVAL_TIME" value="0.0" />
   <parameter name="TIMING_BOARD_DELTA_READ_DQS_ARRIVAL_TIME" value="0.0" />
@@ -434,34 +439,34 @@
   <parameter name="TIMING_BOARD_DQS_DQSN_SLEW_RATE" value="2.0" />
   <parameter name="TIMING_BOARD_DQ_EYE_REDUCTION" value="0.0" />
   <parameter name="TIMING_BOARD_DQ_SLEW_RATE" value="1.0" />
-  <parameter name="TIMING_BOARD_DQ_TO_DQS_SKEW" value="0.0" />
+  <parameter name="TIMING_BOARD_DQ_TO_DQS_SKEW" value="0.004" />
   <parameter name="TIMING_BOARD_ISI_METHOD" value="AUTO" />
-  <parameter name="TIMING_BOARD_MAX_CK_DELAY" value="0.6" />
-  <parameter name="TIMING_BOARD_MAX_DQS_DELAY" value="0.6" />
+  <parameter name="TIMING_BOARD_MAX_CK_DELAY" value="0.71" />
+  <parameter name="TIMING_BOARD_MAX_DQS_DELAY" value="0.67" />
   <parameter name="TIMING_BOARD_READ_DQ_EYE_REDUCTION" value="0.0" />
   <parameter name="TIMING_BOARD_SKEW_BETWEEN_DIMMS" value="0.05" />
-  <parameter name="TIMING_BOARD_SKEW_BETWEEN_DQS" value="0.02" />
-  <parameter name="TIMING_BOARD_SKEW_CKDQS_DIMM_MAX" value="0.01" />
-  <parameter name="TIMING_BOARD_SKEW_CKDQS_DIMM_MIN" value="-0.01" />
-  <parameter name="TIMING_BOARD_SKEW_WITHIN_DQS" value="0.02" />
+  <parameter name="TIMING_BOARD_SKEW_BETWEEN_DQS" value="0.0" />
+  <parameter name="TIMING_BOARD_SKEW_CKDQS_DIMM_MAX" value="0.04" />
+  <parameter name="TIMING_BOARD_SKEW_CKDQS_DIMM_MIN" value="0.0" />
+  <parameter name="TIMING_BOARD_SKEW_WITHIN_DQS" value="0.2" />
   <parameter name="TIMING_BOARD_TDH" value="0.0" />
   <parameter name="TIMING_BOARD_TDS" value="0.0" />
   <parameter name="TIMING_BOARD_TIH" value="0.0" />
   <parameter name="TIMING_BOARD_TIS" value="0.0" />
-  <parameter name="TIMING_TDH" value="20" />
-  <parameter name="TIMING_TDQSCK" value="180" />
+  <parameter name="TIMING_TDH" value="100" />
+  <parameter name="TIMING_TDQSCK" value="300" />
   <parameter name="TIMING_TDQSCKDL" value="1200" />
   <parameter name="TIMING_TDQSCKDM" value="900" />
   <parameter name="TIMING_TDQSCKDS" value="450" />
-  <parameter name="TIMING_TDQSQ" value="70" />
-  <parameter name="TIMING_TDQSS" value="0.27" />
-  <parameter name="TIMING_TDS" value="5" />
-  <parameter name="TIMING_TDSH" value="0.18" />
-  <parameter name="TIMING_TDSS" value="0.18" />
-  <parameter name="TIMING_TIH" value="75" />
-  <parameter name="TIMING_TIS" value="35" />
-  <parameter name="TIMING_TQH" value="0.4" />
-  <parameter name="TIMING_TQSH" value="0.4" />
+  <parameter name="TIMING_TDQSQ" value="150" />
+  <parameter name="TIMING_TDQSS" value="0.25" />
+  <parameter name="TIMING_TDS" value="25" />
+  <parameter name="TIMING_TDSH" value="0.2" />
+  <parameter name="TIMING_TDSS" value="0.2" />
+  <parameter name="TIMING_TIH" value="200" />
+  <parameter name="TIMING_TIS" value="125" />
+  <parameter name="TIMING_TQH" value="0.38" />
+  <parameter name="TIMING_TQSH" value="0.55" />
   <parameter name="TRACKING_ERROR_TEST" value="false" />
   <parameter name="TRACKING_WATCH_TEST" value="false" />
   <parameter name="TREFI" value="35100" />
@@ -479,27 +484,12 @@
    kind="avalon"
    version="20.1"
    start="axi_bridge_0.m0"
-   end="mem_if_ddr3_emif_0.avl_0">
+   end="mem_if_ddr3_emif_0.avl">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x0000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection kind="clock" version="20.1" start="clk_0.clk" end="axi_bridge_0.clk" />
- <connection
-   kind="clock"
-   version="20.1"
-   start="clk_0.clk"
-   end="mem_if_ddr3_emif_0.mp_cmd_clk_0" />
- <connection
-   kind="clock"
-   version="20.1"
-   start="clk_0.clk"
-   end="mem_if_ddr3_emif_0.mp_rfifo_clk_0" />
- <connection
-   kind="clock"
-   version="20.1"
-   start="clk_0.clk"
-   end="mem_if_ddr3_emif_0.mp_wfifo_clk_0" />
  <connection
    kind="clock"
    version="20.1"
@@ -515,21 +505,6 @@
    version="20.1"
    start="clk_0.clk_reset"
    end="mem_if_ddr3_emif_0.global_reset" />
- <connection
-   kind="reset"
-   version="20.1"
-   start="clk_0.clk_reset"
-   end="mem_if_ddr3_emif_0.mp_cmd_reset_n_0" />
- <connection
-   kind="reset"
-   version="20.1"
-   start="clk_0.clk_reset"
-   end="mem_if_ddr3_emif_0.mp_rfifo_reset_n_0" />
- <connection
-   kind="reset"
-   version="20.1"
-   start="clk_0.clk_reset"
-   end="mem_if_ddr3_emif_0.mp_wfifo_reset_n_0" />
  <connection
    kind="reset"
    version="20.1"
