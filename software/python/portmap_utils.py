@@ -97,8 +97,8 @@ def read_portmap(instances_amount, peripheral_signals, portmap_path):
                    ("output" in peripheral_signals[result.group(1)][result.group(3)] and "output" in peripheral_signals[result.group(4)][result.group(6)]):
                     print("Error: Portmap file line {}, can't connect because both signals are of type {}!".format(idx+1,"input" if "input" in peripheral_signals[result.group(1)][result.group(3)] else "output"))
                     exit(-1)
-                signal1_size = re.search("(?:input|output)(.+)",peripheral_signals[result.group(1)][result.group(3)]).group(1).replace(" ", "")
-                signal2_size = re.search("(?:input|output)(.+)",peripheral_signals[result.group(4)][result.group(6)]).group(1).replace(" ", "")
+                signal1_size = re.search("(?:inout|input|output)(.+)",peripheral_signals[result.group(1)][result.group(3)]).group(1).replace(" ", "")
+                signal2_size = re.search("(?:inout|input|output)(.+)",peripheral_signals[result.group(4)][result.group(6)]).group(1).replace(" ", "")
                 # Make sure signals have the same size (give warning if we are not sure, because it may be a macro)
                 if (signal1_size!=signal2_size):
                     print("Note: Portmap file line {}, signals have sizes {} and {}. These may or may not be equal!".format(idx+1,signal1_size,signal2_size))

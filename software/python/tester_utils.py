@@ -108,7 +108,7 @@ def create_tester(directories_str, sut_peripherals_str, tester_peripherals_str):
     axi_sizes = {} #Store axi signal sizes 
     # Add another AXI bus for Tester memory
     for i in range(len(tester_contents)):
-        strMatch = re.search('((?:output)|(?:input))\s+(?:\[([^\:]+)[^\]]+\])?\s+(m_axi_[^,]+),', tester_contents[i])
+        strMatch = re.search('(inout|input|output)\s+(?:\[([^\:]+)[^\]]+\])?\s+(m_axi_[^,]+),', tester_contents[i])
         if not strMatch:
             continue
         if strMatch[2]==None or strMatch[2]=="0":
@@ -291,7 +291,7 @@ def create_top_system(directories_str, sut_peripherals_str, tester_peripherals_s
                     exit(-1)
                 if mapped_signals[0][corename][i][signal] == -1: # Mapped to external interface, therefore is a top_system port
                     # Insert PWIRES
-                    signal_size = re.search("(?:input|output)(.+)",peripheral_signals[corename][signal]).group(1).replace(" ", "").replace("/*<SwregFilename>*/",swreg_filename)
+                    signal_size = re.search("(?:inout|input|output)(.+)",peripheral_signals[corename][signal]).group(1).replace(" ", "").replace("/*<SwregFilename>*/",swreg_filename)
                     topsystem_contents.insert(find_idx(topsystem_contents, "PWIRES"), '    wire {} sut_{}_{};\n'.format(signal_size,corename+str(i),signal))
                     # Insert PORTS
                     topsystem_contents.insert(find_idx(topsystem_contents, "PORTS"), '        .sut_{}_{}(sut_{}_{}),\n'.format(corename+str(i),signal,corename+str(i),signal))
@@ -306,7 +306,7 @@ def create_top_system(directories_str, sut_peripherals_str, tester_peripherals_s
                     exit(-1)
                 if mapped_signals[1][corename][i][signal] == -1: # Mapped to external interface, therefore is a top_system port
                     # Insert PWIRES
-                    signal_size = re.search("(?:input|output)(.+)",peripheral_signals[corename][signal]).group(1).replace(" ", "").replace("/*<SwregFilename>*/",swreg_filename)
+                    signal_size = re.search("(?:inout|input|output)(.+)",peripheral_signals[corename][signal]).group(1).replace(" ", "").replace("/*<SwregFilename>*/",swreg_filename)
                     topsystem_contents.insert(find_idx(topsystem_contents, "PWIRES"), '    wire {} tester_{}_{};\n'.format(signal_size,corename+str(i),signal))
                     # Insert PORTS
                     topsystem_contents.insert(find_idx(topsystem_contents, "PORTS"), '        .tester_{}_{}(tester_{}_{}),\n'.format(corename+str(i),signal,corename+str(i),signal))
