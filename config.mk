@@ -41,7 +41,7 @@ $(TOP_MODULE)_version.txt:
 
 #cpu accessible registers
 iob_gpio_swreg_def.vh iob_gpio_swreg_gen.vh: $(GPIO_DIR)/mkregs.conf
-	$(MKREGS) iob_gpio_in $(GPIO_DIR) HW
+	$(MKREGS) iob_gpio $(GPIO_DIR) HW
 
 gpio-gen-clean:
 	@rm -rf *# *~ version.txt

@@ -5,7 +5,7 @@
 
 module iob_gpio 
   # (
-     parameter GPIO_W = 8, //PARAM Number of GPIO (can be up to DATA_W)
+     parameter GPIO_W = 32, //PARAM Number of GPIO (can be up to DATA_W)
      parameter DATA_W = 32, //PARAM CPU data width
      parameter ADDR_W = `iob_gpio_swreg_ADDR_W //MACRO CPU address section width
      )
@@ -15,7 +15,7 @@ module iob_gpio
 `include "iob_s_if.vh"
 
     // additional inputs and outputs
-    `INOUT(gpio, GPIO_W),
+    `IOB_INOUT(gpio, 32),
 
 `include "iob_gen_if.vh"
     );
