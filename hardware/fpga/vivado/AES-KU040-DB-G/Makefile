@@ -12,5 +12,9 @@ NORUN = 0
 DDR_ADDR_W=30
 DDR_DATA_W=32
 
+VHDR+=ddr4_axi_wire.vh
+ddr4_axi_wire.vh:
+	$(LIB_DIR)/software/python/axi_gen.py axi_wire 'ddr4_' 'ddr4_' 'ddr4_'
+
 include ../vivado.mk
 

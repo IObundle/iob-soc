@@ -4,11 +4,10 @@
 
 #select top module and FPGA decive
 set TOP top_system
-set DEVICE [lindex $argv 3]
-
 set INCLUDE [lindex $argv 0]
 set DEFINE [lindex $argv 1]
 set VSRC [lindex $argv 2]
+set DEVICE [lindex $argv 3]
 
 set USE_DDR [string last "USE_DDR" $DEFINE]
 
@@ -20,6 +19,7 @@ foreach file [split $VSRC \ ] {
 }
 
 set_property part $DEVICE [current_project]
+read_xdc ./top_system.xdc
 
 if { $USE_DDR < 0 } {
     read_verilog verilog/clock_wizard.v
@@ -94,7 +94,6 @@ if { $USE_DDR < 0 } {
 
 }
 
-read_xdc ./top_system.xdc
 
 synth_design -include_dirs $INCLUDE -verilog_define $DEFINE -part $DEVICE -top $TOP
 

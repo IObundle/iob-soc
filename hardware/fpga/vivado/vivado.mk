@@ -9,7 +9,9 @@ include ../../fpga.mk
 # work-around for http://svn.clifford.at/handicraft/2016/vivadosig11
 export RDI_VERBOSE = False
 
-post-build:
+local-build:
+	$(VIVADOPATH)/settings64.sh && vivado -nojournal -log vivado.log -mode batch -source ../top_system.tcl -tclargs "$(INCLUDE)" "$(DEFINE)" "$(VSRC)" "$(DEVICE)"
+
 
 clean: clean-all
 	@rm -rf .Xil/ .cache/ reports/ *.bit *.log
@@ -19,4 +21,3 @@ clean-ip:
 
 veryclean: clean clean-ip
 
-.PHONY: post-build clean clean-ip veryclean

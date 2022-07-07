@@ -1,4 +1,5 @@
 include $(ROOT_DIR)/hardware/hardware.mk
+include $(LIB_DIR)/hardware/iob_reset_sync/hardware.mk
 
 BAUD=$(BOARD_BAUD)
 FREQ=$(BOARD_FREQ)
@@ -50,6 +51,7 @@ endif
 
 build: $(FPGA_OBJ)
 
+#make the FPGA programming file either locally or remotely
 ifeq ($(INIT_MEM),1)
 $(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex firmware.hex
 else ifeq ($(USE_DDR),1)
@@ -60,8 +62,7 @@ endif
 ifeq ($(NORUN),0)
 ifeq ($(FPGA_SERVER),)
 	@rm -f $(FPGA_LOG)
-	../build.sh "$(INCLUDE)" "$(DEFINE)" "$(VSRC)" "$(DEVICE)"
-	make post-build
+	make local-build
 else 
 	ssh $(BOARD_USER)@$(BOARD_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --delete --force --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
@@ -145,6 +146,8 @@ endif
 debug:
 	@echo $(VHDR)
 	@echo $(VSRC)
+	@echo $(INCLUDE)
+	@echo $(DEFINE)
 
 
 .PRECIOUS: $(FPGA_OBJ) test.log

@@ -33,6 +33,14 @@
 #------ Set the project name ------#
 set project_name top_system
 
+
+set INCLUDE [lindex $argv 0]
+set DEFINE [lindex $argv 1]
+set VSRC [lindex $argv 2]
+
+set USE_DDR [string last "USE_DDR" $DEFINE]
+
+
 load_package report
 
 proc get_slack_from_report {} {
@@ -79,28 +87,26 @@ if [project_exists $project_name] {
 }
 
 
-
-set HW_INCLUDE [lindex $argv 0]
-set HW_DEFINE [lindex $argv 1]
-set VSRC [lindex $argv 2]
-
 set_global_assignment -name TOP_LEVEL_ENTITY $project_name
 
 source device.tcl
 
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
 set_global_assignment -name VERILOG_INPUT_VERSION SYSTEMVERILOG_2005
+
+if { $USE_DDR >= 0 } {
 set_global_assignment -name QIP_FILE qsys/alt_ddr3/synthesis/alt_ddr3.qip
+}
 
 #file search paths
-foreach path [split $HW_INCLUDE \ ] {
+foreach path [split $INCLUDE \ ] {
     if {$path != ""} {
         set_global_assignment -name SEARCH_PATH $path
     }
 }
 
 #verilog macros
-foreach macro [split $HW_DEFINE \ ] {
+foreach macro [split $DEFINE \ ] {
     if {$macro != ""} {
         set_global_assignment -name VERILOG_MACRO $macro
     }
@@ -146,10 +152,11 @@ if [catch {qexec "[file join $::quartus(binpath) quartus_map] $project_name"} re
 }
 
 #used for hard macro with no success
+if { $USE_DDR >= 0 } {
+    source "./qsys/alt_ddr3/synthesis/submodules/alt_ddr3_mem_if_ddr3_emif_0_p0_parameters.tcl"
 
-source "./qsys/alt_ddr3/synthesis/submodules/alt_ddr3_mem_if_ddr3_emif_0_p0_parameters.tcl"
-
-source "./qsys/alt_ddr3/synthesis/submodules/alt_ddr3_mem_if_ddr3_emif_0_p0_pin_assignments.tcl"
+    source "./qsys/alt_ddr3/synthesis/submodules/alt_ddr3_mem_if_ddr3_emif_0_p0_pin_assignments.tcl"
+}
 
 # Compile the project and
 # exit using "qexit" if there is an error
@@ -164,11 +171,8 @@ if [catch {qexec "[file join $::quartus(binpath) quartus_asm] $project_name"} re
 }
 
 
-
-#$nios quartus_sta top_system -c top_system --do_report_timing
-#$nios quartus_asm top_system
-
 #------ Report Slack from report ------#
+# TODO: commented below as it does not work
 #report_slack
 
 project_close

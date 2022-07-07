@@ -11,6 +11,8 @@ module system
     parameter ADDR_W=`ADDR_W,
     parameter DATA_W=`DATA_W,
     parameter AXI_ID_W=4,
+    parameter AXI_LEN_W=4,
+    parameter AXI_LOCK_W=4,
     parameter AXI_ADDR_W=`ADDR_W,
     parameter AXI_DATA_W=`DATA_W
     )
@@ -209,6 +211,8 @@ module system
    ext_mem
      #(
        .AXI_ID_W(AXI_ID_W),
+       .AXI_LEN_W(AXI_LEN_W),
+       .AXI_LOCK_W(AXI_LOCK_W),
        .AXI_ADDR_W(AXI_ADDR_W),
        .AXI_DATA_W(AXI_DATA_W)
        )

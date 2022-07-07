@@ -33,29 +33,55 @@ module top_system
    output        trap
    );
    
-   //-----------------------------------------------------------------
-   // Clocking / Reset
-   //-----------------------------------------------------------------
-
-   wire 	 rst;
-   
-`ifdef USE_DDR
    parameter AXI_ID_W = 4;
    localparam AXI_ADDR_W=`DDR_ADDR_W;
    localparam AXI_DATA_W=`DDR_DATA_W;
+
+   wire 	 rst;
+  
+   //
+   // SYSTEM
+   //
+   system
+     #(
+       .AXI_ID_W(AXI_ID_W),
+       .AXI_ADDR_W(AXI_ADDR_W),
+       .AXI_DATA_W(AXI_DATA_W)
+       )
+   system 
+     (
+      .clk(clk),
+      .rst(rst),
+      .trap          (trap),
+
+`ifdef USE_DDR
+      `include "m_axi_portmap.vh"	
+`endif
+
+      //UART
+      .uart_txd      (uart_txd),
+      .uart_rxd      (uart_rxd),
+      .uart_rts      (),
+      .uart_cts      (1'b1)
+      );
+
+ 
+`ifdef USE_DDR
    
    //user reset
    wire          locked;
    wire          init_done;
 
    wire          rst_int = ~resetn | ~locked | ~init_done;
-//   wire          rst_int = ~resetn | ~locked;
    
    iob_reset_sync rst_sync (clk, rst_int, rst);
-
    
  `include "m_axi_wire.vh"
 
+   //
+   // DDR3 Controller
+   //
+   
    alt_ddr3 ddr3_ctrl 
      (
       .clk_clk (clk),
@@ -133,30 +159,5 @@ module top_system
    iob_reset_sync rst_sync (clk, (~resetn), rst);   
 `endif
 
-   //
-   // SYSTEM
-   //
-   system
-     #(
-       .AXI_ID_W(AXI_ID_W),
-       .AXI_ADDR_W(AXI_ADDR_W),
-       .AXI_DATA_W(AXI_DATA_W)
-       )
-   system 
-     (
-      .clk(clk),
-      .rst(rst),
-      .trap          (trap),
-
-`ifdef USE_DDR
-      `include "m_axi_portmap.vh"	
-`endif
-
-      //UART
-      .uart_txd      (uart_txd),
-      .uart_rxd      (uart_rxd),
-      .uart_rts      (),
-      .uart_cts      (1'b1)
-      );
 
 endmodule

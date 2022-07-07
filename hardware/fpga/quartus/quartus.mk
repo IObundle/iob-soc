@@ -5,9 +5,9 @@ FPGA_SERVER=$(QUARTUS_SERVER)
 FPGA_USER=$(QUARTUS_USER)
 
 include ../../fpga.mk
-include $(LIB_DIR)/hardware/iob_reset_sync/hardware.mk
 
-post-build:
+local-build:
+	$(QUARTUSPATH)/nios2eds/nios2_command_shell.sh quartus_sh -t ../top_system.tcl "$(INCLUDE)" "$(DEFINE)" "$(VSRC)"
 	mv output_files/top_system.sof $(FPGA_OBJ)
 	mv output_files/top_system.fit.summary $(FPGA_LOG)
 
@@ -20,4 +20,3 @@ clean-ip:
 
 veryclean: clean clean-ip
 
-.PHONY: post-build clean clean-ip veryclean
