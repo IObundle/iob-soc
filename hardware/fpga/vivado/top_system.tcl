@@ -19,14 +19,17 @@ foreach file [split $VSRC \ ] {
 }
 
 set_property part $DEVICE [current_project]
-read_xdc ./top_system.xdc
+
+if { $USE_DDR < 0 } {
+    read_xdc ./clock.xdc
+}
+
+
 
 if { $USE_DDR < 0 } {
     read_verilog verilog/clock_wizard.v
 } else {
-
     read_xdc ./ddr.xdc
-
 
     if { ![file isdirectory "./ip"]} {
         file mkdir ./ip
@@ -37,7 +40,6 @@ if { $USE_DDR < 0 } {
         read_ip ./ip/axi_interconnect_0/axi_interconnect_0.xci
         report_property [get_files ./ip/axi_interconnect_0/axi_interconnect_0.xci]
     } else {
-
         create_ip -name axi_interconnect -vendor xilinx.com -library ip -version 1.7 -module_name axi_interconnect_0 -dir ./ip -force
 
         set_property -dict \
@@ -91,9 +93,9 @@ if { $USE_DDR < 0 } {
 
         synth_ip [get_files ./ip/ddr4_0/ddr4_0.xci]
     }
-
 }
 
+read_xdc ./top_system.xdc
 
 synth_design -include_dirs $INCLUDE -verilog_define $DEFINE -part $DEVICE -top $TOP
 

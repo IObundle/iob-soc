@@ -4,7 +4,7 @@
 
 module top_system
   (
-   //user clock
+   //global clock and reset
    input         clk, 
    input         resetn,
   

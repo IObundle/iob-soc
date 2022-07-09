@@ -9,7 +9,7 @@ module top_system
    input         c0_sys_clk_clk_n,
 
    //global reset
-   input         reset,
+   input         resetn,
 
    //uart
    output        uart_txd,
@@ -29,20 +29,35 @@ module top_system
    inout [3:0]   c0_ddr4_dm_dbi_n,
    inout [31:0]  c0_ddr4_dq,
    inout [3:0]   c0_ddr4_dqs_c,
-   inout [3:0]   c0_ddr4_dqs_t, 
+   inout [3:0]   c0_ddr4_dqs_t,
+   output c0_init_calib_complete,
 `endif 
                  
    output        trap
    );
 
-   parameter AXI_ID_W = 1;
-   parameter AXI_LEN_W = 8;
+   parameter AXI_ID_W = 4;
    localparam AXI_ADDR_W=`DDR_ADDR_W;
    localparam AXI_DATA_W=`DDR_DATA_W;
 
    wire          clk;
    wire 	 rst;
-  
+   wire 	 rst_int;
+
+   //create reset pulse as reset is never pulled down without 
+   // human intervention 
+   iob_pulse_gen
+     #(
+       .START(0),
+       .DURATION(1024)
+       ) 
+   reset_pulse
+     (
+      .clk(clk),
+      .rst(~resetn),
+      .pulse_out(rst_int)
+      );
+   
 `ifdef USE_DDR
    //axi wires between system backend and axi bridge
  `include "m_axi_wire.vh"
@@ -55,7 +70,6 @@ module top_system
    system
      #(
        .AXI_ID_W(AXI_ID_W),
-       .AXI_LEN_W(AXI_LEN_W),
        .AXI_ADDR_W(AXI_ADDR_W),
        .AXI_DATA_W(AXI_DATA_W)
        )
@@ -86,36 +100,28 @@ module top_system
 
  `include "ddr4_axi_wire.vh"
 
-   //DDR4 controller user side clocks and resets
-   wire                         ddr4_axi_clk;
-   wire                         ddr4_axi_arstn;
-
-   //ddr initialization done
-   wire                         init_done;
-
-   //reset from axi bridge slave side output
-   wire                         arstn;
-
-   //combine resets
-   wire                         rst_int = reset | ~arstn;
-
-   //synchronize resets to create system reset
-   iob_reset_sync rst_sync (clk, rst_int, rst);
+   //DDR4 controller axi side clocks and resets
+   wire                         c0_ddr4_ui_clk;//controller output clock 200MHz
+   wire                         ddr4_axi_arstn;//controller input
+   
+   wire                         c0_ddr4_ui_clk_sync_rst; 
+   wire                         rstn;
+   assign rst = ~rstn;
+   
    
    //
-   // ASYNC AXI BRIDGE (between user logic (clk) and DDR controller (ddr4_axi_clk)
+   // ASYNC AXI BRIDGE (between user logic (clk) and DDR controller (c0_ddr4_ui_clk)
    //
-   
    axi_interconnect_0 axi_async_bridge 
      (
-      .INTERCONNECT_ACLK    (ddr4_axi_clk),
-      .INTERCONNECT_ARESETN (ddr4_axi_arstn),
+      .INTERCONNECT_ACLK    (c0_ddr4_ui_clk), //from ddr4 controller 
+      .INTERCONNECT_ARESETN (~c0_ddr4_ui_clk_sync_rst), //from ddr4 controller
       
       //
       // SYSTEM SIDE (slave)
       //
-      .S00_AXI_ARESET_OUT_N (arstn),
-      .S00_AXI_ACLK         (clk),
+      .S00_AXI_ARESET_OUT_N (rstn), //to system reset
+      .S00_AXI_ACLK         (clk), //from ddr4 controller PLL to be used by system
       
       //Write address
       .S00_AXI_AWID         (m_axi_awid),
@@ -166,11 +172,11 @@ module top_system
 
 
       //
-      // DDR SIDE (master)
+      // DDR CONTROLLER SIDE (master)
       //
 
-      .M00_AXI_ARESET_OUT_N  (ddr4_axi_arstn),
-      .M00_AXI_ACLK          (ddr4_axi_clk),
+      .M00_AXI_ARESET_OUT_N  (ddr4_axi_arstn), //to ddr controller axi slave port
+      .M00_AXI_ACLK          (c0_ddr4_ui_clk), //from ddr4 controller 200MHz clock
       
       //Write address
       .M00_AXI_AWID          (ddr4_axi_awid),
@@ -222,22 +228,20 @@ module top_system
 
    ddr4_0 ddr4_ctrl 
      (
-      .sys_rst                (reset),
+      .sys_rst                (resetn), //from input pin generated pulse (is sys_rstn?)
       .c0_sys_clk_p           (c0_sys_clk_clk_p),
       .c0_sys_clk_n           (c0_sys_clk_clk_n),
 
       .dbg_clk                (),
       .dbg_bus                (),
-      .c0_ddr4_ui_clk_sync_rst(),
 
-      //USER LOGIC CLOCK DERIVED
-      .addn_ui_clkout1        (clk),
-
-
+      //USER LOGIC CLOCK AND RESET      
+      .c0_ddr4_ui_clk_sync_rst(c0_ddr4_ui_clk_sync_rst), //to axi intercon
+      .addn_ui_clkout1 (clk), //to user logic 
 
       //AXI INTERFACE (slave)
-      .c0_ddr4_ui_clk (ddr4_axi_clk),
-      .c0_ddr4_aresetn (ddr4_axi_arstn),
+      .c0_ddr4_ui_clk (c0_ddr4_ui_clk), //to axi intercon general and master clocks
+      .c0_ddr4_aresetn (ddr4_axi_arstn),//from interconnect axi master
 
       //address write 
       .c0_ddr4_s_axi_awid (ddr4_axi_awid),
@@ -301,13 +305,12 @@ module top_system
       .c0_ddr4_dq (c0_ddr4_dq),
       .c0_ddr4_dqs_c (c0_ddr4_dqs_c),
       .c0_ddr4_dqs_t (c0_ddr4_dqs_t),
-      .c0_init_calib_complete (init_done)
+      .c0_init_calib_complete (c0_init_calib_complete)
       );
 
 
 `else
-   //DDR not used
-   //use PLL to get system clock
+   //if DDR not used use PLL to generate system clock
    clock_wizard 
      #(
        .OUTPUT_PER(10),
@@ -320,9 +323,9 @@ module top_system
       .clk_out1(clk)
       );
 
-   //use axi-bridge slave side reset output
-   iob_reset_sync rst_sync (clk, reset, rst);
-
+   //system reset
+   assign rst = rst_int; //from reset pin generated pulse
+   
 `endif
 
 endmodule

@@ -17,4 +17,5 @@ ddr4_axi_wire.vh:
 	$(LIB_DIR)/software/python/axi_gen.py axi_wire 'ddr4_' 'ddr4_' 'ddr4_'
 
 include ../vivado.mk
+include $(LIB_DIR)/hardware/iob_pulse_gen/hardware.mk
 
