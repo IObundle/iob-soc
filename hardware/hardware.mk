@@ -88,8 +88,6 @@ copy_uut_hexfiles:
 	done
 
 # make and copy memory init files
-PYTHON_DIR=$(MEM_DIR)/software/python
-
 tester_boot.hex: $(BOOT_DIR)/boot.bin
 	$(PYTHON_DIR)/makehex.py $< $(BOOTROM_ADDR_W) > $@
 

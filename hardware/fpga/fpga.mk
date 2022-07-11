@@ -19,9 +19,10 @@ endif
 
 #console command 
 ifeq ($(USE_ETHERNET),)
-CONSOLE_CMD=$(CONSOLE_DIR)/console -s /dev/usb-uart
+CONSOLE_CMD=$(PYTHON_DIR)/console -s /dev/usb-uart
 else
-CONSOLE_CMD=source /opt/pyeth3/bin/activate; $(CONSOLE_DIR)/console -s /dev/usb-uart -e $(ETHERNET_DIR) -i $(ETH_IF) -m $(RMAC_ADDR)
+#Use console ethernet wrapper along python environment with permissions to access ethernet interface
+CONSOLE_CMD=source /opt/pyeth3/bin/activate; $(SW_DIR)/python/console_ethernet.py -s /dev/usb-uart -c $(PYTHON_DIR)/console -e $(ETHERNET_DIR) -i $(ETH_IF) -m $(RMAC_ADDR)
 endif
 ifeq ($(INIT_MEM),0)
 CONSOLE_CMD+=-f
@@ -104,7 +105,7 @@ test1:
 	make -C $(ROOT_DIR) fpga-clean
 	make -C $(ROOT_DIR) fpga-run INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
 
-test2: 
+test2:
 	make -C $(ROOT_DIR) fpga-clean
 	make -C $(ROOT_DIR) fpga-run INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
 
