@@ -139,7 +139,7 @@ def get_module_io(verilog_lines):
             break #Found end of port list
         #If this signal is declared in normal verilog format (no macros)
         if any(verilog_lines[i].lstrip().startswith(x) for x in ["input","output"]):
-            signal = re.search("^\s*((?:input)|(?:output))(?:\s|(?:\[([^:]+):([^\]]+)\]))*([^,]*),?", verilog_lines[i])
+            signal = re.search("^\s*(inout|input|output)(?:\s|(?:\[([^:]+):([^\]]+)\]))*([^,]*),?", verilog_lines[i])
             if signal is not None:
                 # Store signal in dictionary with format: module_signals[signalname] = "input [size:0]"
                 if signal.group(2) is None:
@@ -166,6 +166,14 @@ def get_module_io(verilog_lines):
                 module_signals[signal.group(1)]="output [{}:0]".format(
                         int(signal.group(2))-1 if signal.group(2).isdigit() else 
                         (("" if "`" in signal.group(2) else "`")
+                        +signal.group(2)+"-1").replace("ADDR_W","/*<SwregFilename>*/_ADDR_W")) # Replace keyword "ADDR_W" by "/*<SwregFilename>*/_ADDR_W"
+        elif "`IOB_INOUT" in verilog_lines[i]: #If it is a known verilog macro
+            signal = re.search("^\s*`IOB_INOUT\(\s*(\w+)\s*,\s*([^\s]+)\s*\),?", verilog_lines[i])
+            if signal is not None:
+                # Store signal in dictionary with format: module_signals[signalname] = "inout [size:0]"
+                module_signals[signal.group(1)]="inout [{}:0]".format(
+                        int(signal.group(2))-1 if signal.group(2).isdigit() else 
+                        (("" if "`" in signal.group(2) else "`") # Set as macro if it was a parameter
                         +signal.group(2)+"-1").replace("ADDR_W","/*<SwregFilename>*/_ADDR_W")) # Replace keyword "ADDR_W" by "/*<SwregFilename>*/_ADDR_W"
         elif '`include "iob_gen_if.vh"' in verilog_lines[i]: #If it is a known verilog include
             module_signals["clk"]="input "

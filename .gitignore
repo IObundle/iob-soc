@@ -19,10 +19,7 @@ software/*/*
 !software/tester/firmware.c
 !software/tester/firmware.S
 
-!software/console/console.c
-!software/console/console.h
-!software/console/rs232comm.c
-!software/console/socketcomm.c
+!software/console/console
 
 #HARDWARE
 #sources

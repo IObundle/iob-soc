@@ -43,7 +43,7 @@ def create_top_system(directories_str, peripherals_str, portmap_path):
                 # Check if mapped to external interface
                 if mapped_signals[corename][i][signal] == -1:
                     # Insert system IOs for peripheral
-                    template_contents.insert(find_idx(template_contents, "PWIRES"), '   {}  {}_{};\n'.format(re.sub("(?:(?:input)|(?:output))\s+","wire ",peripheral_signals[corename][signal].replace("/*<SwregFilename>*/",swreg_filename)),corename+str(i),signal))
+                    template_contents.insert(find_idx(template_contents, "PWIRES"), '   {}  {}_{};\n'.format(re.sub("(?:inout|input|output)\s+","wire ",peripheral_signals[corename][signal].replace("/*<SwregFilename>*/",swreg_filename)),corename+str(i),signal))
                     # Connect wires to system port
                     template_contents.insert(find_idx(template_contents, "PORTS"), '               .{signal}({signal}),\n'.format(signal=corename+str(i)+"_"+signal))
 

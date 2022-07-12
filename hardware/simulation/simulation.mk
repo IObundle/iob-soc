@@ -21,9 +21,10 @@ endif
 include $(ROOT_DIR)/hardware/hardware.mk
 
 ifeq ($(USE_ETHERNET),)
-CONSOLE_CMD=$(CONSOLE_DIR)/console -L
+CONSOLE_CMD=$(PYTHON_DIR)/console -L
 else
-CONSOLE_CMD=$(CONSOLE_DIR)/console -L -e $(ETHERNET_DIR) -i $(ETH_IF) -m $(RMAC_ADDR)
+#Use console ethernet wrapper 
+CONSOLE_CMD=$(SW_DIR)/python/console_ethernet.py -L -c $(PYTHON_DIR)/console -e $(ETHERNET_DIR) -i $(ETH_IF) -m $(RMAC_ADDR)
 endif
 
 ifeq ($(INIT_MEM),0)
