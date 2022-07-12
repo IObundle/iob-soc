@@ -15,10 +15,7 @@ software/*/*
 !software/firmware/firmware.c
 !software/firmware/firmware.S
 
-!software/console/console.c
-!software/console/console.h
-!software/console/rs232comm.c
-!software/console/socketcomm.c
+!software/console/console
 
 #HARDWARE
 #sources
