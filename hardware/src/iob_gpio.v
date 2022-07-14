@@ -5,6 +5,7 @@
 
 module iob_gpio 
   # (
+     parameter FORCE_INPUT_MASK = 32'h0, //PARAM '1' valued bits from this parameter become inputs independently of GPIO_WRITE_MASK register
      parameter GPIO_W = 32, //PARAM Number of GPIO (can be up to DATA_W)
      parameter DATA_W = 32, //PARAM CPU data width
      parameter ADDR_W = `iob_gpio_swreg_ADDR_W //MACRO CPU address section width
@@ -55,7 +56,7 @@ module iob_gpio
    integer i;
    always @* begin
       for (i=0; i < GPIO_W; i=i+1) begin
-         if (!GPIO_WRITE_MASK[i]) begin
+         if (!GPIO_WRITE_MASK[i] | FORCE_INPUT_MASK[j]) begin
             gpio_rd_int[i] = gpio[i];
          end else begin
             gpio_rd_int[i] = 1'b0;
@@ -70,7 +71,7 @@ module iob_gpio
    integer j;
    always @* begin
       for (j=0; j < GPIO_W; j=j+1) begin
-         if (GPIO_WRITE_MASK[j]) begin
+         if (GPIO_WRITE_MASK[j] & ~FORCE_INPUT_MASK[j]) begin
             gpio_int[j] = GPIO_WRITE[j];
          end else begin
             gpio_int[j] = 1'bz;
