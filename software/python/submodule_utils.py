@@ -214,6 +214,18 @@ def print_nslaves_w(peripherals_str):
     else:
         print(math.ceil(math.log(i,2)))
 
+#Print list of peripherals without parameters and duplicates
+def remove_duplicates_and_params(peripherals_str):
+    peripherals = peripherals_str.split()
+    #Remove parameters from peripherals
+    for i in range(len(peripherals)):
+        peripherals[i] = peripherals[i].split("[")[0]
+    #Remove peripheral duplicates
+    peripherals = list(set(peripherals))
+    #Print list of peripherals
+    for p in peripherals:
+        print(p, end=" ")
+
 #Creates list of defines of peripheral instances with sequential numbers
 def print_peripheral_defines(defmacro, peripherals_str):
     instances_amount, _ = get_peripherals(peripherals_str)
@@ -245,6 +257,11 @@ if __name__ == "__main__":
             print("Usage: {} get_n_slaves_w <peripherals>\n".format(sys.argv[0]))
             exit(-1)
         print_nslaves_w(sys.argv[2])
+    elif sys.argv[1] == "remove_duplicates_and_params":
+        if len(sys.argv)<3:
+            print("Usage: {} remove_duplicates_and_params <peripherals>\n".format(sys.argv[0]))
+            exit(-1)
+        remove_duplicates_and_params(sys.argv[2])
     elif sys.argv[1] == "get_defines":
         if len(sys.argv)<3:
             print("Usage: {} get_defines <peripherals> <optional:defmacro>\n".format(sys.argv[0]))
