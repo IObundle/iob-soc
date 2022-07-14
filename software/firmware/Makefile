@@ -11,7 +11,7 @@ endif
 
 # include peripherals, UUT and extra tester peripherals (from tester.mk of unit under test)
 # this only includes if embedded.mk exists (it may not exist in non peripheral cores)
-$(foreach p, $(sort $(PERIPHERALS)), $(eval -include $($p_DIR)/software/embedded/embedded.mk))
+$(foreach p, $(shell $(SW_DIR)/python/submodule_utils.py remove_duplicates_and_params "$(PERIPHERALS)"), $(eval -include $($p_DIR)/software/embedded/embedded.mk))
 
 #HEADERS
 HDR+=periphs.h

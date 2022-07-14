@@ -69,7 +69,7 @@ tester.v: $(SRC_DIR)/system_core.v get_peripherals_makefile_variables copy_uut_h
 
 #copy vsrc, vhdr, defines from peripherals
 get_peripherals_makefile_variables: set_default_defines
-	$(foreach p, $(sort $(PERIPHERALS)), make -f $(ROOT_DIR)/get_makefile_variables.mk get_vsrc get_vhdr get_defines PERIPHERAL_INC_DIR=$($p_DIR)/hardware/hardware.mk $p_DIR=$($p_DIR) ROOT_DIR=$($p_DIR);)
+	$(foreach p, $(shell $(SW_DIR)/python/submodule_utils.py remove_duplicates_and_params "$(PERIPHERALS)"), make -f $(ROOT_DIR)/get_makefile_variables.mk get_vsrc get_vhdr get_defines PERIPHERAL_INC_DIR=$($p_DIR)/hardware/hardware.mk $p_DIR=$($p_DIR) ROOT_DIR=$($p_DIR);)
 
 #set default defines because they are required by multiple modules, even though these values will not be used
 #since they will always be overriden (at instantiation with parameters) by either tester defines or sut defines

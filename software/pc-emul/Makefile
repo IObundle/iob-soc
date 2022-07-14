@@ -10,7 +10,7 @@ DEFINE+=-DPC
 
 # include peripherals, UUT and extra tester peripherals (from tester.mk of unit under test)
 # this only includes if pc-emul.mk exists (it may not exist in non peripheral cores)
-$(foreach p, $(sort $(PERIPHERALS)), $(eval -include $($p_DIR)/software/pc-emul/pc-emul.mk))
+$(foreach p, $(shell $(SW_DIR)/python/submodule_utils.py remove_duplicates_and_params "$(PERIPHERALS)"), $(eval -include $($p_DIR)/software/pc-emul/pc-emul.mk))
 
 #HEADERS
 HDR+=periphs.h
