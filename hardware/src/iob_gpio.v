@@ -30,9 +30,9 @@ module iob_gpio
     gpio_write_mask (
         .clk        (clk),
         .arst       (rst),
-        .arst_val   (1'b0),
+        .arst_val   ({DATA_W{1'b0}}),
         .rst        (rst),
-        .rst_val    (1'b0),
+        .rst_val    ({DATA_W{1'b0}}),
         .en         (GPIO_WRITE_MASK_en),
         .data_in    (GPIO_WRITE_MASK_wdata),
         .data_out   (GPIO_WRITE_MASK)
@@ -43,9 +43,9 @@ module iob_gpio
     gpio_write      (
         .clk        (clk),
         .arst       (rst),
-        .arst_val   (1'b0),
+        .arst_val   ({DATA_W{1'b0}}),
         .rst        (rst),
-        .rst_val    (1'b0),
+        .rst_val    ({DATA_W{1'b0}}),
         .en         (GPIO_WRITE_en),
         .data_in    (GPIO_WRITE_wdata),
         .data_out   (GPIO_WRITE)
