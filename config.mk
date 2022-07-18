@@ -123,7 +123,7 @@ DOC_DIR=$(ROOT_DIR)/document/$(DOC)
 GET_DIRS= $(eval ROOT_DIR_TMP:=$(ROOT_DIR))\
           $(eval ROOT_DIR=.)\
           $(foreach V,$(sort $(.VARIABLES)),\
-          $(if $(filter $(addsuffix _DIR, $(shell sed "s/\[.*\]//" <<< '$(PERIPHERALS)')), $(filter %_DIR, $V)),\
+          $(if $(filter $(addsuffix _DIR, $(shell $(SW_DIR)/python/submodule_utils.py remove_duplicates_and_params "$(PERIPHERALS)")), $(filter %_DIR, $V)),\
           $V=$($V);))\
           $(eval ROOT_DIR:=$(ROOT_DIR_TMP))
 
