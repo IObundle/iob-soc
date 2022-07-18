@@ -61,13 +61,14 @@ int main() {
   
   //run firmware
   uart_puts (PROGNAME);
-  uart_puts (": Restart CPU to run user program...\n");
   uart_txwait();
 
 #ifdef RUN_EXTMEM
   while( !cache_wtb_empty() );
 #endif
+
   //reboot and run firmware (not bootloader)
+  uart_puts (": Restart CPU to run user program...\n");
   *((int *) BOOTCTR_BASE) = 0b10;
   
 }

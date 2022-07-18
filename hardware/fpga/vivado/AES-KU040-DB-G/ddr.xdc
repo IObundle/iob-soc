@@ -232,7 +232,7 @@ set_property PACKAGE_PIN T24 [get_ports {c0_ddr4_act_n}]
 set_property IOSTANDARD SSTL12_DCI [ get_ports {c0_ddr4_act_n} ]
 set_property OUTPUT_IMPEDANCE RDRV_40_40 [ get_ports {c0_ddr4_act_n} ]
 
-set_property PACKAGE_PIN T25 [get_ports {c0_ddr4_reset_n}]
+set_property PACKAGE_PIN T25 [get_ports c0_ddr4_reset_n]
 set_property IOSTANDARD LVCMOS12 [ get_ports {c0_ddr4_reset_n} ]
 set_property DRIVE 8 [get_ports c0_ddr4_reset_n]
 
@@ -259,6 +259,3 @@ set_property OUTPUT_IMPEDANCE RDRV_40_40 [ get_ports {c0_ddr4_ba[1]} ]
 set_property PACKAGE_PIN V24 [get_ports {c0_ddr4_bg[0]}]
 set_property IOSTANDARD SSTL12_DCI [ get_ports {c0_ddr4_bg[0]} ]
 set_property OUTPUT_IMPEDANCE RDRV_40_40 [ get_ports {c0_ddr4_bg[0]} ]
-
-set_property PACKAGE_PIN T18 [get_ports {c0_init_calib_complete}]
-set_property IOSTANDARD SSTL12_DCI [ get_ports {c0_init_calib_complete} ]

@@ -4,11 +4,9 @@
 module top_system
   (
 
-   //differential clock input
+   //differential clock input and reset
    input         c0_sys_clk_clk_p, 
    input         c0_sys_clk_clk_n,
-
-   //global reset
    input         resetn,
 
    //uart
@@ -49,7 +47,7 @@ module top_system
    iob_pulse_gen
      #(
        .START(0),
-       .DURATION(1024)
+       .DURATION(5)
        ) 
    reset_pulse
      (
@@ -228,7 +226,7 @@ module top_system
 
    ddr4_0 ddr4_ctrl 
      (
-      .sys_rst                (resetn), //from input pin generated pulse (is sys_rstn?)
+      .sys_rst                (rst_int),
       .c0_sys_clk_p           (c0_sys_clk_clk_p),
       .c0_sys_clk_n           (c0_sys_clk_clk_n),
 
@@ -323,8 +321,7 @@ module top_system
       .clk_out1(clk)
       );
 
-   //system reset
-   assign rst = rst_int; //from reset pin generated pulse
+   assign rst = rst_int; //from reset pulse generated from reset pin
    
 `endif
 

@@ -86,14 +86,14 @@ queue-wait:
 	while [ "`head -1 $(QUEUE_FILE)`" != "$(JOB)" ]; do echo "Job queued for board access. Queue length: `wc -l $(QUEUE_FILE) | cut -d" " -f1`"; sleep 10s; done
 
 queue-out:
+	make kill-cnsl
 	sed '/$(JOB)/d' $(QUEUE_FILE) > queue; cat queue > $(QUEUE_FILE); rm queue
 
 queue-out-remote:
 ifeq ($(BOARD_SERVER),)
-	make kill-cnsl
 	make queue-out
 else
-	ssh $(BOARD_USER)@$(BOARD_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD) $@'
+	ssh $(BOARD_USER)@$(BOARD_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD) queue-out'
 endif
 
 #
@@ -150,7 +150,7 @@ debug:
 	@echo $(DEFINE)
 
 
-.PRECIOUS: $(FPGA_OBJ) test.log
+.PRECIOUS: $(FPGA_OBJ) test.log s_fw.bin
 
 .PHONY: run build \
 	queue-in queue-out queue-wait queue-out-remote \

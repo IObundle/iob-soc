@@ -33,7 +33,7 @@ module boot_ctr
      else
        cpu_ready <= cpu_valid;
        
-   //boot register
+   //boot register: boot from internal memory (1) or exetrnal memory (0)
    always @(posedge clk, posedge rst)
      if(rst)
        boot <= 1'b1;
@@ -41,14 +41,20 @@ module boot_ctr
         boot <=  cpu_wdata[0];
 
    //cpu reset request self-clearing register
-   reg                        cpu_rst_req;
-   always @(posedge clk, posedge rst)
-     if(rst)
-       cpu_rst_req <= 1'b0;
-     else if(cpu_valid && cpu_wstrb)
-        cpu_rst_req <=  cpu_wdata[1];
-     else
-        cpu_rst_req <=  1'b0;
+   wire                       rst_pulse = cpu_valid & (|cpu_wstrb);
+   
+   iob_pulse_gen
+     #(
+       .START(0),
+       .DURATION(5)
+       ) 
+   reset_pulse
+     (
+      .clk(clk),
+      .rst(rst_pulse),
+      .pulse_out(cpu_rst_req)
+      );
+  
 
    //
    // READ BOOT ROM 
@@ -98,7 +104,7 @@ module boot_ctr
        cpu_rst <= 1'b1;
      else 
        //keep cpu reset while sram loading
-       cpu_rst <= (sram_valid || cpu_rst_req);
+       cpu_rst <= (sram_valid | cpu_rst_req);
    
 
    //
