@@ -45,7 +45,7 @@ USE_MUL_DIV ?=1
 USE_COMPRESSED ?=1
 
 #ROOT DIRECTORY ON REMOTE MACHINES
-REMOTE_ROOT_DIR ?=build/iob-soc
+REMOTE_ROOT_DIR ?=sandbox/iob-soc
 
 #SIMULATION
 #default simulator running locally or remotely

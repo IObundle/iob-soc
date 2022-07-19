@@ -41,20 +41,14 @@ module boot_ctr
         boot <=  cpu_wdata[0];
 
    //cpu reset request self-clearing register
-   wire                       rst_pulse = cpu_valid & (|cpu_wstrb);
-   
-   iob_pulse_gen
-     #(
-       .START(0),
-       .DURATION(5)
-       ) 
-   reset_pulse
-     (
-      .clk(clk),
-      .rst(rst_pulse),
-      .pulse_out(cpu_rst_req)
-      );
-  
+   reg                        cpu_rst_req;
+   always @(posedge clk, posedge rst)
+     if(rst)
+       cpu_rst_req <= 1'b0;
+     else if(cpu_valid && cpu_wstrb)
+        cpu_rst_req <=  cpu_wdata[1];
+     else
+        cpu_rst_req <=  1'b0;
 
    //
    // READ BOOT ROM 
@@ -116,11 +110,12 @@ module boot_ctr
        .ADDR_W(`BOOTROM_ADDR_W-2),
        .HEXFILE("boot.hex")
        )
-   sp_rom0 (
-            .clk(clk),
-            .r_en(rom_r_valid),
-            .addr(rom_r_addr),
-            .r_data(rom_r_rdata)
-            );
+   sp_rom0 
+     (
+      .clk(clk),
+      .r_en(rom_r_valid),
+      .addr(rom_r_addr),
+      .r_data(rom_r_rdata)
+      );
 
 endmodule

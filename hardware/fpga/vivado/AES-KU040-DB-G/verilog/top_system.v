@@ -34,7 +34,7 @@ module top_system
    output        trap
    );
 
-   parameter AXI_ID_W = 4;
+   localparam AXI_ID_W = 4;
    localparam AXI_ADDR_W=`DDR_ADDR_W;
    localparam AXI_DATA_W=`DDR_DATA_W;
 
@@ -96,6 +96,7 @@ module top_system
                  
 `ifdef USE_DDR
 
+   //axi wires between ddr4 contrl and axi interconnect
  `include "ddr4_axi_wire.vh"
 
    //DDR4 controller axi side clocks and resets

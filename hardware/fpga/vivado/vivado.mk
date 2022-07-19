@@ -10,7 +10,7 @@ include ../../fpga.mk
 export RDI_VERBOSE = False
 
 local-build:
-	$(VIVADOPATH)/settings64.sh && vivado -nojournal -log vivado.log -mode batch -source ../top_system.tcl -tclargs "$(INCLUDE)" "$(DEFINE)" "$(VSRC)" "$(DEVICE)"
+	source $(VIVADOPATH)/settings64.sh && vivado -nojournal -log vivado.log -mode batch -source ../top_system.tcl -tclargs "$(INCLUDE)" "$(DEFINE)" "$(VSRC)" "$(DEVICE)"
 
 
 clean: clean-all
