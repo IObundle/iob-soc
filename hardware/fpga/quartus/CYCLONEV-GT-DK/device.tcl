@@ -37,13 +37,10 @@ set_instance_assignment -name CURRENT_STRENGTH_NEW DEFAULT -to trap
 #Uart
 set_location_assignment PIN_F10 -to uart_txd
 set_instance_assignment -name IO_STANDARD "2.5-V" -to uart_txd
-set_instance_assignment -name SLEW_RATE 1 -to uart_txd
-set_instance_assignment -name CURRENT_STRENGTH_NEW DEFAULT -to uart_txd
+#set_instance_assignment -name SLEW_RATE 1 -to uart_txd
+#set_instance_assignment -name CURRENT_STRENGTH_NEW DEFAULT -to uart_txd
 set_location_assignment PIN_C12 -to uart_rxd
 set_instance_assignment -name IO_STANDARD "2.5-V" -to uart_rxd
-
-set_location_assignment PIN_AD29 -to resetn
-set_instance_assignment -name IO_STANDARD "1.8 V" -to resetn
 
 
 if { $USE_DDR >= 0 }  {

@@ -123,8 +123,8 @@ foreach file [split $VSRC \ ] {
 # ==========================
 
 #Force registers into IOBs
-set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to *
-set_instance_assignment -name FAST_INPUT_REGISTER ON -to *
+#set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to *
+#set_instance_assignment -name FAST_INPUT_REGISTER ON -to *
 #set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to *
 set_global_assignment -name LAST_QUARTUS_VERSION "18.0.0 Standard Edition"
 set_global_assignment -name SDC_FILE top_system.sdc

@@ -7,7 +7,7 @@ module top_system
    //differential clock input and reset
    input         c0_sys_clk_clk_p, 
    input         c0_sys_clk_clk_n,
-   input         resetn,
+   input         reset,
 
    //uart
    output        uart_txd,
@@ -28,7 +28,6 @@ module top_system
    inout [31:0]  c0_ddr4_dq,
    inout [3:0]   c0_ddr4_dqs_c,
    inout [3:0]   c0_ddr4_dqs_t,
-   output c0_init_calib_complete,
 `endif 
                  
    output        trap
@@ -40,21 +39,6 @@ module top_system
 
    wire          clk;
    wire 	 rst;
-   wire 	 rst_int;
-
-   //create reset pulse as reset is never pulled down without 
-   // human intervention 
-   iob_pulse_gen
-     #(
-       .START(0),
-       .DURATION(5)
-       ) 
-   reset_pulse
-     (
-      .clk(clk),
-      .rst(~resetn),
-      .pulse_out(rst_int)
-      );
    
 `ifdef USE_DDR
    //axi wires between system backend and axi bridge
@@ -105,6 +89,10 @@ module top_system
    
    wire                         c0_ddr4_ui_clk_sync_rst; 
    wire                         rstn;
+
+   wire                         calib_done;
+   
+   //assign rst = ~rstn & ~calib_done;
    assign rst = ~rstn;
    
    
@@ -227,7 +215,7 @@ module top_system
 
    ddr4_0 ddr4_ctrl 
      (
-      .sys_rst                (rst_int),
+      .sys_rst                (reset),
       .c0_sys_clk_p           (c0_sys_clk_clk_p),
       .c0_sys_clk_n           (c0_sys_clk_clk_n),
 
@@ -304,7 +292,7 @@ module top_system
       .c0_ddr4_dq (c0_ddr4_dq),
       .c0_ddr4_dqs_c (c0_ddr4_dqs_c),
       .c0_ddr4_dqs_t (c0_ddr4_dqs_t),
-      .c0_init_calib_complete (c0_init_calib_complete)
+      .c0_init_calib_complete (calib_done)
       );
 
 
@@ -322,8 +310,20 @@ module top_system
       .clk_out1(clk)
       );
 
-   assign rst = rst_int; //from reset pulse generated from reset pin
-   
+   //create reset pulse as reset is never activated manually 
+   iob_pulse_gen
+     #(
+       .START(5),
+       .DURATION(10)
+       ) 
+   reset_pulse
+     (
+      .clk(clk),
+      .rst(reset),
+      .restart(1'b0),
+      .pulse_out(rst)
+      );
+
 `endif
 
 endmodule

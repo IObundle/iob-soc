@@ -35,8 +35,7 @@ module system
    //
 
    wire   boot;
-   wire   boot_reset;   
-   wire   cpu_reset = rst | boot_reset;
+   wire   cpu_reset;
    
    //
    //  CPU
@@ -191,7 +190,7 @@ module system
       .clk (clk ),
       .rst (rst),
       .boot (boot),
-      .cpu_reset (boot_reset),
+      .cpu_reset (cpu_reset),
 
       // instruction bus
       .i_req (int_mem_i_req),

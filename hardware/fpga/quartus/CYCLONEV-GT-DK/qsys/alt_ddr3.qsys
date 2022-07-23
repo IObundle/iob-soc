@@ -433,7 +433,7 @@
   <parameter name="READ_FIFO_SIZE" value="8" />
   <parameter name="REFRESH_BURST_VALIDATION" value="false" />
   <parameter name="REFRESH_INTERVAL" value="15000" />
-  <parameter name="REF_CLK_FREQ" value="50.0" />
+  <parameter name="REF_CLK_FREQ" value="25.0" />
   <parameter name="REF_CLK_FREQ_MAX_PARAM" value="0.0" />
   <parameter name="REF_CLK_FREQ_MIN_PARAM" value="0.0" />
   <parameter name="REF_CLK_FREQ_PARAM_VALID" value="false" />

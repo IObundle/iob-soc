@@ -25,8 +25,6 @@ if { $USE_DDR < 0 } {
     read_verilog verilog/clock_wizard.v
 } else {
 
-    read_xdc ./ddr.xdc
-
 
     if { ![file isdirectory "./ip"]} {
         file mkdir ./ip
@@ -91,6 +89,8 @@ if { $USE_DDR < 0 } {
 
         synth_ip [get_files ./ip/ddr4_0/ddr4_0.xci]
     }
+
+    read_xdc ./ddr.xdc
 
 }
 

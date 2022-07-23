@@ -74,10 +74,10 @@ set_property PACKAGE_PIN H17 [get_ports {trap}]
 set_property IOSTANDARD LVCMOS18 [get_ports {trap}]
 
 ####### User PUSH Switches
-set_property PACKAGE_PIN N24 [get_ports {resetn}]
-set_property IOSTANDARD LVCMOS12 [get_ports {resetn}]
-#set_property PACKAGE_PIN K20 [get_ports {reset}]
+#set_property PACKAGE_PIN N24 [get_ports {reset}]
 #set_property IOSTANDARD LVCMOS12 [get_ports {reset}]
+set_property PACKAGE_PIN K20 [get_ports {reset}]
+set_property IOSTANDARD LVCMOS12 [get_ports {reset}]
 
 #set_property PACKAGE_PIN K18 [get_ports {gpio_push_sw_tri_i[0]}]
 #set_property IOSTANDARD LVCMOS12 [get_ports {gpio_push_sw_tri_i[0]}]

@@ -46,7 +46,7 @@ module system_top
 `ifdef USE_DDR
  `include "m_axi_wire.vh"
 `endif
-   
+
    //
    // UNIT UNDER TEST
    //
@@ -115,5 +115,5 @@ module system_top
     //$finish;
       end
     */
-   
+
 endmodule

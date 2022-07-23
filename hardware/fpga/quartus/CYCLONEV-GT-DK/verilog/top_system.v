@@ -37,15 +37,30 @@ module top_system
    localparam AXI_ADDR_W=`DDR_ADDR_W;
    localparam AXI_DATA_W=`DDR_DATA_W;
 
-   wire 	 rst;
+   wire 	 rst, rst_int;
   
+   //create reset pulse as reset is never activated manually
+   iob_pulse_gen
+     #(
+       .START(5),
+       .DURATION(9)
+       ) 
+   reset_pulse
+     (
+      .clk(clk),
+      .rst(~resetn),
+      .restart(1'b0),
+      .pulse_out(rst_int)
+      );
+
+
   
 `ifdef USE_DDR
    //axi wires between system backend and axi bridge
  `include "m_axi_wire.vh"
 `endif
 
-  //
+   //
    // SYSTEM
    //
    system
@@ -78,10 +93,8 @@ module top_system
    wire          locked;
    wire          init_done;
 
-   wire          rst_use_ddr = ~resetn | ~locked | ~init_done;
+   assign rst = rst_int | ~locked | ~init_done;
    
-   iob_reset_sync rst_sync (clk, rst_use_ddr, rst);
-
    //
    // DDR3 Controller
    //
@@ -158,23 +171,8 @@ module top_system
       .mem_if_ddr3_emif_0_status_local_cal_success (),
       .mem_if_ddr3_emif_0_status_local_cal_fail ()
       );
-
 `else
-   //create reset pulse as reset is never pulled down without 
-   // human intervention 
-   iob_pulse_gen
-     #(
-       .START(0),
-       .DURATION(100)
-       ) 
-   reset_pulse
-     (
-      .clk(clk),
-      .rst(~resetn),
-      .pulse_out(rst)
-      );
-
-   
+   assign rst = rst_int;
 `endif
 
 
