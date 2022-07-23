@@ -67,10 +67,10 @@ module top_system
 `endif
 
       //UART
-      .uart_txd      (uart_txd),
-      .uart_rxd      (uart_rxd),
-      .uart_rts      (),
-      .uart_cts      (1'b1)
+      .uart_txd (uart_txd),
+      .uart_rxd (uart_rxd),
+      .uart_rts (),
+      .uart_cts (1'b1)
       );
 
 
@@ -84,13 +84,13 @@ module top_system
  `include "ddr4_axi_wire.vh"
 
    //DDR4 controller axi side clocks and resets
-   wire                         c0_ddr4_ui_clk;//controller output clock 200MHz
-   wire                         ddr4_axi_arstn;//controller input
+   wire          c0_ddr4_ui_clk;//controller output clock 200MHz
+   wire          ddr4_axi_arstn;//controller input
    
-   wire                         c0_ddr4_ui_clk_sync_rst; 
-   wire                         rstn;
-
-   wire                         calib_done;
+   wire          c0_ddr4_ui_clk_sync_rst; 
+   wire          rstn;
+   
+   wire          calib_done;
    
    //assign rst = ~rstn & ~calib_done;
    assign rst = ~rstn;
@@ -111,12 +111,12 @@ module top_system
       .S00_AXI_ACLK         (clk), //from ddr4 controller PLL to be used by system
       
       //Write address
-      .S00_AXI_AWID         (m_axi_awid),
+      .S00_AXI_AWID         (m_axi_awid[0]),
       .S00_AXI_AWADDR       (m_axi_awaddr),
       .S00_AXI_AWLEN        (m_axi_awlen),
       .S00_AXI_AWSIZE       (m_axi_awsize),
       .S00_AXI_AWBURST      (m_axi_awburst),
-      .S00_AXI_AWLOCK       (m_axi_awlock),
+      .S00_AXI_AWLOCK       (m_axi_awlock[0]),
       .S00_AXI_AWCACHE      (m_axi_awcache),
       .S00_AXI_AWPROT       (m_axi_awprot),
       .S00_AXI_AWQOS        (m_axi_awqos),
@@ -131,18 +131,18 @@ module top_system
       .S00_AXI_WREADY       (m_axi_wready),
       
       //Write response
-      .S00_AXI_BID          (m_axi_bid),
+      .S00_AXI_BID          (m_axi_bid[0]),
       .S00_AXI_BRESP        (m_axi_bresp),
       .S00_AXI_BVALID       (m_axi_bvalid),
       .S00_AXI_BREADY       (m_axi_bready),
       
       //Read address
-      .S00_AXI_ARID         (m_axi_arid),
+      .S00_AXI_ARID         (m_axi_arid[0]),
       .S00_AXI_ARADDR       (m_axi_araddr),
       .S00_AXI_ARLEN        (m_axi_arlen),
       .S00_AXI_ARSIZE       (m_axi_arsize),
       .S00_AXI_ARBURST      (m_axi_arburst),
-      .S00_AXI_ARLOCK       (m_axi_arlock),
+      .S00_AXI_ARLOCK       (m_axi_arlock[0]),
       .S00_AXI_ARCACHE      (m_axi_arcache),
       .S00_AXI_ARPROT       (m_axi_arprot),
       .S00_AXI_ARQOS        (m_axi_arqos),
@@ -150,7 +150,7 @@ module top_system
       .S00_AXI_ARREADY      (m_axi_arready),
       
       //Read data
-      .S00_AXI_RID          (m_axi_rid),
+      .S00_AXI_RID          (m_axi_rid[0]),
       .S00_AXI_RDATA        (m_axi_rdata),
       .S00_AXI_RRESP        (m_axi_rresp),
       .S00_AXI_RLAST        (m_axi_rlast),
@@ -171,7 +171,7 @@ module top_system
       .M00_AXI_AWLEN         (ddr4_axi_awlen),
       .M00_AXI_AWSIZE        (ddr4_axi_awsize),
       .M00_AXI_AWBURST       (ddr4_axi_awburst),
-      .M00_AXI_AWLOCK        (ddr4_axi_awlock),
+      .M00_AXI_AWLOCK        (ddr4_axi_awlock[0]),
       .M00_AXI_AWCACHE       (ddr4_axi_awcache),
       .M00_AXI_AWPROT        (ddr4_axi_awprot),
       .M00_AXI_AWQOS         (ddr4_axi_awqos),
@@ -197,7 +197,7 @@ module top_system
       .M00_AXI_ARLEN        (ddr4_axi_arlen),
       .M00_AXI_ARSIZE       (ddr4_axi_arsize),
       .M00_AXI_ARBURST      (ddr4_axi_arburst),
-      .M00_AXI_ARLOCK       (ddr4_axi_arlock),
+      .M00_AXI_ARLOCK       (ddr4_axi_arlock[0]),
       .M00_AXI_ARCACHE      (ddr4_axi_arcache),
       .M00_AXI_ARPROT       (ddr4_axi_arprot),
       .M00_AXI_ARQOS        (ddr4_axi_arqos),
@@ -236,7 +236,7 @@ module top_system
       .c0_ddr4_s_axi_awlen (ddr4_axi_awlen),
       .c0_ddr4_s_axi_awsize (ddr4_axi_awsize),
       .c0_ddr4_s_axi_awburst (ddr4_axi_awburst),
-      .c0_ddr4_s_axi_awlock (ddr4_axi_awlock),
+      .c0_ddr4_s_axi_awlock (ddr4_axi_awlock[0]),
       .c0_ddr4_s_axi_awprot (ddr4_axi_awprot),
       .c0_ddr4_s_axi_awcache (ddr4_axi_awcache),
       .c0_ddr4_s_axi_awqos (ddr4_axi_awqos),
@@ -262,7 +262,7 @@ module top_system
       .c0_ddr4_s_axi_arlen (ddr4_axi_arlen), 
       .c0_ddr4_s_axi_arsize (ddr4_axi_arsize),    
       .c0_ddr4_s_axi_arburst (ddr4_axi_arburst),
-      .c0_ddr4_s_axi_arlock (ddr4_axi_arlock),
+      .c0_ddr4_s_axi_arlock (ddr4_axi_arlock[0]),
       .c0_ddr4_s_axi_arcache (ddr4_axi_arcache),
       .c0_ddr4_s_axi_arprot (ddr4_axi_arprot),
       .c0_ddr4_s_axi_arqos (ddr4_axi_arqos),
