@@ -68,9 +68,10 @@ module boot_ctr
         rom_r_addr <= {`BOOTROM_ADDR_W-2{1'b0}};
      end else if (boot && rom_r_addr != (2**(`BOOTROM_ADDR_W-2)-1))
        rom_r_addr <= rom_r_addr + 1'b1;
-     else
-       rom_r_valid <= 1'b0;
-   
+     else begin
+        rom_r_valid <= 1'b0;
+        rom_r_addr <= {`BOOTROM_ADDR_W-2{1'b0}};
+     end
    
    //
    // WRITE SRAM
@@ -79,13 +80,17 @@ module boot_ctr
    reg [`SRAM_ADDR_W-3:0] sram_w_addr;
    always @(posedge clk, posedge rst)
      if(rst) begin
-        sram_w_valid <= 1'b1;
+        sram_w_valid <= 1'b0;
         sram_w_addr <= -{1'b1,{`BOOTROM_ADDR_W-2{1'b0}}};
         sram_wstrb <= {`DATA_W/8{1'b1}};
      end else if (boot) begin
         sram_w_valid <= rom_r_valid;
         sram_w_addr <= rom_r_addr - { 1'b1,{`BOOTROM_ADDR_W-2{1'b0}} };
         sram_wstrb <= {`DATA_W/8{rom_r_valid}};
+     end else begin
+        sram_w_valid <= 1'b0;
+        sram_w_addr <= -{1'b1,{`BOOTROM_ADDR_W-2{1'b0}}};
+        sram_wstrb <= {`DATA_W/8{1'b1}};        
      end
    
    assign loading = rom_r_valid | sram_w_valid;
