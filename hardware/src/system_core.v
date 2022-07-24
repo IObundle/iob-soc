@@ -93,7 +93,7 @@ module system
    ibus_split
      (
       .clk (clk),
-      .rst (rst),
+      .rst (cpu_reset),
       // master interface
       .m_req (cpu_i_req),
       .m_resp (cpu_i_resp),
@@ -137,7 +137,7 @@ module system
    dbus_split    
      (
       .clk (clk),
-      .rst (rst),
+      .rst (cpu_reset),
 
       // master interface
       .m_req (cpu_d_req),
@@ -170,7 +170,7 @@ module system
    pbus_split
      (
       .clk (clk),
-      .rst (rst),
+      .rst (cpu_reset),
       // master interface
       .m_req (pbus_req),
       .m_resp (pbus_resp),

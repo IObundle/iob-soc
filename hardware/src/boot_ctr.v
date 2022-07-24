@@ -7,7 +7,7 @@ module boot_ctr
    input                      clk,
    input                      rst,
    output                     cpu_rst,
-   output reg                 boot,
+   output                     boot,
 
    //cpu interface
    input                      cpu_valid,
@@ -30,8 +30,10 @@ module boot_ctr
    iob_reg #(1,0) rdyreg (clk, rst, 1'b0, 1'b1, cpu_valid, cpu_ready);
        
    //boot register: (1) load bootloader to sram and run it: (0) run program
-   wire                       boot_wr = cpu_valid & |cpu_wstrb;   
-   iob_reg #(1,1) bootreg (clk, rst, 1'b0, boot_wr, cpu_wdata[0], boot);
+   wire                       boot_wr = cpu_valid & |cpu_wstrb; 
+   reg                        boot_nxt;  
+   iob_reg #(1,1) bootnxt (clk, rst, 1'b0, boot_wr, cpu_wdata[0], boot_nxt);
+   iob_reg #(1,1) bootreg (clk, rst, 1'b0, 1'b1, boot_nxt, boot);
 
 
    //create CPU reset pulse
@@ -53,7 +55,7 @@ module boot_ctr
       );
 
    wire                       loading;                   
-   assign cpu_rst = loading | cpu_rst_req | cpu_rst_pulse;
+   assign cpu_rst = loading | cpu_rst_pulse;
    
    //
    // READ BOOT ROM 
