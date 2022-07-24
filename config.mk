@@ -94,7 +94,9 @@ SW_DIR:=$(ROOT_DIR)/software
 PC_DIR:=$(SW_DIR)/pc-emul
 FIRM_DIR:=$(SW_DIR)/firmware
 BOOT_DIR:=$(SW_DIR)/bootloader
-CONSOLE_DIR:=$(SW_DIR)/console
+
+#scripts paths
+PYTHON_DIR=$(LIB_DIR)/software/python
 
 #hw paths
 HW_DIR=$(ROOT_DIR)/hardware
@@ -115,13 +117,8 @@ DEFINE+=$(defmacro)N_SLAVES=$(N_SLAVES) #peripherals
 
 #address selection bits
 E:=31 #extra memory bit
-ifeq ($(USE_DDR),1)
 P:=30 #periphs
 B:=29 #boot controller
-else
-P:=31
-B:=30
-endif
 
 DEFINE+=$(defmacro)E=$E
 DEFINE+=$(defmacro)P=$P
