@@ -68,7 +68,7 @@ module system
 
 
    //   
-   // SPLIT INTERNAL AND EXTERNAL MEMORY BUSES
+   // SPLIT CPU BUSES TO ACCESS INTERNAL OR EXTERNAL MEMORY
    //
 
    //internal memory instruction bus
@@ -127,7 +127,7 @@ module system
    dbus_split
      (
       .clk    ( clk   ),
-      .rst    ( reset ),
+      .rst    ( cpu_reset ),
 
       // master interface
       .m_req  ( cpu_d_req  ),
@@ -160,16 +160,14 @@ module system
       .clk (clk),
       .rst (cpu_reset),
 
-      // master interface
-      .m_req (cpu_d_req),
-      .m_resp (cpu_d_resp),
-
 `ifdef USE_DDR
-      .s_req  ( {ext_mem_d_req, pbus_req, int_mem_d_req} ),
-      .s_resp ( {ext_mem_d_resp, pbus_resp, int_mem_d_resp} )
+      // master interface
+      .m_req  ( int_d_req  ),
+      .m_resp ( int_d_resp ),
 `else
-      .s_req  ( {pbus_req, int_mem_d_req} ),
-      .s_resp ( {pbus_resp, int_mem_d_resp} )
+      // master interface
+      .m_req  ( cpu_d_req  ),
+      .m_resp ( cpu_d_resp ),
 `endif
 
       // slaves interface
@@ -211,7 +209,7 @@ module system
 
    int_mem int_mem0
      (
-      .clk (clk ),
+      .clk (clk),
       .rst (rst),
       .boot (boot),
       .cpu_reset (cpu_reset),
