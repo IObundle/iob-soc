@@ -36,7 +36,7 @@ module iob_gpio
         .rst        (rst),
         .rst_val    ({DATA_W{1'b0}}),
         .en         (GPIO_OUTPUT_ENABLE_en),
-        .data_in    (GPIO_OUTPUT_ENABLE_MASK_wdata),
+        .data_in    (GPIO_OUTPUT_ENABLE_wdata),
         .data_out   (GPIO_OUTPUT_ENABLE)
     );
 
