@@ -5,7 +5,7 @@
 module iob_axistream_in 
   # (
      parameter TDATA_W = 8, //PARAM axi stream tdata width
-     parameter FIFO_DEPTH_LOG2 = 10, //PARAM depth of FIFO
+     parameter FIFO_DEPTH_LOG2 = 4, //PARAM depth of FIFO
      parameter DATA_W = 32, //PARAM CPU data width
      parameter ADDR_W = `iob_axistream_in_swreg_ADDR_W //MACRO CPU address section width
      )
