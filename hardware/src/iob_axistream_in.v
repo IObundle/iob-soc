@@ -51,9 +51,15 @@ module iob_axistream_in
 	//output of TLAST register
    `IOB_WIRE(received_tlast, 1)
 	
-	//Save output of tlast register until the next request by the cpu (valid)
+   //Signal when cpu reads EMPTY register
+   `IOB_WIRE(AXISTREAMIN_EMPTY_ren, 1)
+   `IOB_WIRE2WIRE(valid & !wstrb & (address == (`AXISTREAMIN_EMPTY_ADDR >> 2)), AXISTREAMIN_EMPTY_ren)
+
+	//Save output of tlast register until the next read of the 'empty' register
+	//by the CPU
    `IOB_VAR(saved_last_rstrb_register, 5)
-   `IOB_REG_RE(clk, valid & |saved_last_rstrb_register, 1'b0, reset_register_last, saved_last_rstrb_register, {received_tlast,rstrb})
+   `IOB_REG_E(clk, AXISTREAMIN_EMPTY_ren, saved_last_rstrb_register, {received_tlast,rstrb})
+
    //Set bit 4 of AXISTREAMIN_LAST register as signal of received TLAST
    //Set bits [3:0] of AXISTREAMIN_LAST register as rstrb
    `IOB_WIRE2WIRE(saved_last_rstrb_register,AXISTREAMIN_LAST_rdata[4:0])
@@ -75,8 +81,8 @@ module iob_axistream_in
        .arst_val   (1'b0),
 	    .rst        (reset_register_last), 
        .rst_val    (1'b0),
-       .en         (tlast), //Set this register when receives TLAST signal
-       .data_in    (1'b1),
+       .en         (tvalid & tready), //Store tlast value if signal is valid and ready for new one
+       .data_in    (tlast),
        .data_out   (received_tlast)
    );
 
