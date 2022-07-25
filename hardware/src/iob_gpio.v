@@ -5,7 +5,6 @@
 
 module iob_gpio 
   # (
-     parameter FORCE_INPUT_MASK = 32'h0, //PARAM '1' valued bits from this parameter become inputs independently of GPIO_WRITE_MASK register
      parameter GPIO_W = 32, //PARAM Number of GPIO (can be up to DATA_W)
      parameter DATA_W = 32, //PARAM CPU data width
      parameter ADDR_W = `iob_gpio_swreg_ADDR_W //MACRO CPU address section width
@@ -15,8 +14,11 @@ module iob_gpio
    //CPU interface
 `include "iob_s_if.vh"
 
-    // additional inputs and outputs
-    `IOB_INOUT(gpio, 32),
+    // inputs and outputs have dedicated interface
+    `IOB_INPUT(gpio_input, 32),
+    `IOB_OUTPUT(gpio_output, 32),
+	 // output enable can be used to tristate outputs on external module
+    `IOB_OUTPUT(gpio_output_enable, 32),
 
 `include "iob_gen_if.vh"
     );
@@ -25,60 +27,37 @@ module iob_gpio
 `include "iob_gpio_swreg_gen.vh"
 
     // SWRegs
-    `IOB_WIRE(GPIO_WRITE_MASK, DATA_W)
+    `IOB_WIRE(GPIO_OUTPUT_ENABLE, DATA_W)
     iob_reg #(.DATA_W(DATA_W))
-    gpio_write_mask (
+    gpio_output_enable_reg (
         .clk        (clk),
         .arst       (rst),
         .arst_val   ({DATA_W{1'b0}}),
         .rst        (rst),
         .rst_val    ({DATA_W{1'b0}}),
-        .en         (GPIO_WRITE_MASK_en),
-        .data_in    (GPIO_WRITE_MASK_wdata),
-        .data_out   (GPIO_WRITE_MASK)
+        .en         (GPIO_OUTPUT_ENABLE_en),
+        .data_in    (GPIO_OUTPUT_ENABLE_MASK_wdata),
+        .data_out   (GPIO_OUTPUT_ENABLE)
     );
 
-    `IOB_WIRE(GPIO_WRITE, DATA_W)
+    `IOB_WIRE(GPIO_OUTPUT, DATA_W)
     iob_reg #(.DATA_W(DATA_W))
-    gpio_write      (
+    gpio_output_reg      (
         .clk        (clk),
         .arst       (rst),
         .arst_val   ({DATA_W{1'b0}}),
         .rst        (rst),
         .rst_val    ({DATA_W{1'b0}}),
-        .en         (GPIO_WRITE_en),
-        .data_in    (GPIO_WRITE_wdata),
-        .data_out   (GPIO_WRITE)
+        .en         (GPIO_OUTPUT_en),
+        .data_in    (GPIO_OUTPUT_wdata),
+        .data_out   (GPIO_OUTPUT)
     );
 
    // Read GPIO
-   reg [GPIO_W-1:0] gpio_rd_int;
-   integer i;
-   always @* begin
-      for (i=0; i < GPIO_W; i=i+1) begin
-         if (!GPIO_WRITE_MASK[i] | FORCE_INPUT_MASK[j]) begin
-            gpio_rd_int[i] = gpio[i];
-         end else begin
-            gpio_rd_int[i] = 1'b0;
-         end
-      end
-   end
-
-   assign GPIO_READ_rdata = gpio_rd_int;
+   assign GPIO_INPUT_rdata = gpio_input;
 
    // Write GPIO
-   reg [GPIO_W-1:0] gpio_int;
-   integer j;
-   always @* begin
-      for (j=0; j < GPIO_W; j=j+1) begin
-         if (GPIO_WRITE_MASK[j] & ~FORCE_INPUT_MASK[j]) begin
-            gpio_int[j] = GPIO_WRITE[j];
-         end else begin
-            gpio_int[j] = 1'bz;
-         end
-      end
-   end
-
-   assign gpio = gpio_int;
+   assign gpio_output = GPIO_OUTPUT;
+   assign gpio_output_enable = GPIO_OUTPUT_ENABLE;
 
 endmodule
