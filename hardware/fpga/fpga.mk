@@ -13,8 +13,12 @@ include $(ROOT_DIR)/hardware/hardware.mk
 #SOURCES
 VSRC+=./verilog/top_system.v
 
-#console command 
-CONSOLE_CMD=$(CONSOLE_DIR)/console -s /dev/usb-uart
+ifeq ($(RUN_EXTMEM),1)
+INIT_MEM=0
+endif
+
+#console command
+CONSOLE_CMD=$(PYTHON_DIR)/console -s /dev/usb-uart
 ifeq ($(INIT_MEM),0)
 CONSOLE_CMD+=-f
 endif
@@ -37,7 +41,7 @@ ifeq ($(BOARD_SERVER),)
 	then ../prog.sh; echo $(JOB) > $(LOAD_FILE); fi; $(CONSOLE_CMD) $(TEST_LOG); make queue-out;"
 else
 	ssh $(BOARD_USER)@$(BOARD_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
-	rsync -avz --delete --force --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR) 
+	rsync -avz --delete --force --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR)
 	bash -c "trap 'make queue-out-remote' INT TERM KILL; ssh $(BOARD_USER)@$(BOARD_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD) $@ INIT_MEM=$(INIT_MEM) FORCE=$(FORCE) TEST_LOG=\"$(TEST_LOG)\"'"
 ifneq ($(TEST_LOG),)
 	scp $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD)/test.log .
@@ -57,8 +61,8 @@ ifeq ($(FPGA_SERVER),)
 	@rm -f $(FPGA_LOG)
 	../build.sh "$(INCLUDE)" "$(DEFINE)" "$(VSRC)" "$(DEVICE)"
 	make post-build
-else 
-	ssh $(BOARD_USER)@$(BOARD_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
+else
+	ssh $(FPGA_USER)@$(FPGA_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --delete --force --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
 	ssh $(FPGA_USER)@$(FPGA_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD) $@ INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM)'
 	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD)/$(FPGA_OBJ) .
@@ -84,9 +88,8 @@ queue-out:
 
 queue-out-remote:
 ifeq ($(BOARD_SERVER),)
+	make kill-cnsl
 	make queue-out
-	@if [ "`ps aux | grep $(USER) | grep console | grep python3 | grep -v grep`" ]; then \
-	kill -9 $$(ps aux | grep $(USER) | grep console | grep python3 | grep -v grep | awk '{print $$2}'); fi
 else
 	ssh $(BOARD_USER)@$(BOARD_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD) $@'
 endif
@@ -96,13 +99,13 @@ endif
 #
 
 test: clean-testlog test1 test2 test3
-	diff -q test.log test.expected
+	diff test.log test.expected
 
 test1:
 	make -C $(ROOT_DIR) fpga-clean
 	make -C $(ROOT_DIR) fpga-run INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
 
-test2: 
+test2:
 	make -C $(ROOT_DIR) fpga-clean
 	make -C $(ROOT_DIR) fpga-run INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
 
@@ -116,7 +119,7 @@ test3:
 #
 
 clean-all: hw-clean
-	@rm -f $(FPGA_OBJ) $(FPGA_LOG)
+	@rm -f $(FPGA_OBJ) $(FPGA_LOG) *.txt
 ifneq ($(FPGA_SERVER),)
 	ssh $(BOARD_USER)@$(BOARD_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --delete --force --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
@@ -138,7 +141,7 @@ ifneq ($(BOARD_SERVER),)
 endif
 
 
-.PRECIOUS: $(FPGA_OBJ)
+.PRECIOUS: $(FPGA_OBJ) test.log
 
 .PHONY: run build \
 	queue-in queue-out queue-wait queue-out-remote \

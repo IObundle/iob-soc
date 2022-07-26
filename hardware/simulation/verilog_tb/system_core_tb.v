@@ -5,7 +5,7 @@
 
 //PHEADER
 
-module TOP;
+module system_tb;
 
   parameter realtime clk_per = 1s/`FREQ;
 
@@ -94,7 +94,7 @@ module TOP;
         end
         n = $fscanf(cnsl2soc_fd, "%c", cpu_char);
         if (n > 0) begin
-          cpu_uartwrite(`UART_TXDATA_ADDR, cpu_char);
+          cpu_uartwrite(`UART_TXDATA_ADDR, cpu_char, `UART_TXDATA_W/8);
           $fclose(cnsl2soc_fd);
           cnsl2soc_fd = $fopen("./cnsl2soc", "w");
         end

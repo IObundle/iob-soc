@@ -65,7 +65,7 @@ system.v: $(SRC_DIR)/system_core.v
 
 
 # make and copy memory init files
-PYTHON_DIR=$(LIB_DIR)/software/python
+PYTHON_DIR=$(MEM_DIR)/software/python
 
 boot.hex: $(BOOT_DIR)/boot.bin
 	$(PYTHON_DIR)/makehex.py $< $(BOOTROM_ADDR_W) > $@
