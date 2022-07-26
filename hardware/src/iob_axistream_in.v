@@ -73,9 +73,13 @@ module iob_axistream_in
    `IOB_VAR(rstrb_int, 4)
    `IOB_REG_RE(clk, rst | &rstrb_int | reset_register_last, default_rstrb_value & {4{!rst}} & {4{!reset_register_last}}, (tvalid & !received_tlast) | (received_tlast & rstrb_int != default_rstrb_value), rstrb_int, (rstrb_int<<TDATA_W/8)+default_rstrb_value)
 
-	//Store rstrb at the moment TLAST was received 
+	//Delay TLAST by one clock
+   `IOB_VAR(tlast_delayed, 1)
+   `IOB_REG(clk, tlast_delayed, tlast)
+
+	//Store rstrb one clock after TLAST was received 
    `IOB_VAR(rstrb, 4)
-   `IOB_REG_RE(clk, rst | reset_register_last, 1'b0, tlast, rstrb, rstrb_int)
+   `IOB_REG_RE(clk, rst | reset_register_last, 1'b0, tlast_delayed, rstrb, rstrb_int)
 
    iob_reg #(.DATA_W(1))
    axistreamin_last (
