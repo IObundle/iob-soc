@@ -5,7 +5,8 @@
 module top_system
   (
    //global clock and reset
-   input         clk, 
+   input         clk100, 
+   input         clk50, 
    input         resetn,
   
    //uart
@@ -37,21 +38,9 @@ module top_system
    localparam AXI_ADDR_W=`DDR_ADDR_W;
    localparam AXI_DATA_W=`DDR_DATA_W;
 
-   wire 	 rst, rst_int;
-  
-   //create reset pulse as reset is never activated manually
-   iob_pulse_gen
-     #(
-       .START(5),
-       .DURATION(9)
-       ) 
-   reset_pulse
-     (
-      .clk(clk),
-      .rst(~resetn),
-      .restart(1'b0),
-      .pulse_out(rst_int)
-      );
+   wire 	 rst;
+   
+
 
 
   
@@ -71,7 +60,7 @@ module top_system
        )
    system 
      (
-      .clk (clk),
+      .clk (clk50),
       .rst (rst),
       .trap (trap),
 
@@ -93,16 +82,22 @@ module top_system
    wire          locked;
    wire          init_done;
 
-   assign rst = rst_int | ~locked | ~init_done;
-   
+   //compute system reset
+   assign rst_unsynced = ~resetn | ~locked | ~init_done;
+   iob_reset_sync rst_sync (clk50, rst_unsynced, rst);
+
    //
    // DDR3 Controller
    //
    
    alt_ddr3 ddr3_ctrl 
      (
-      .clk_clk (clk),
+      .clk_clk (clk50),
       .reset_reset_n (resetn),
+
+      .clk_0_clk (clk100),
+      .reset_0_reset_n (resetn),
+
       .oct_rzqin (rzqin),
 
       .memory_mem_a (ddr3b_a),
@@ -156,7 +151,8 @@ module top_system
       .axi_bridge_0_s0_rlast (m_axi_rlast),
       .axi_bridge_0_s0_rvalid (m_axi_rvalid),
       .axi_bridge_0_s0_rready (m_axi_rready),
-
+      
+      .mem_if_ddr3_emif_0_local_powerdown_local_powerdn_ack (),
       .mem_if_ddr3_emif_0_pll_sharing_pll_mem_clk (),
       .mem_if_ddr3_emif_0_pll_sharing_pll_write_clk (),
       .mem_if_ddr3_emif_0_pll_sharing_pll_locked (locked),
@@ -170,9 +166,25 @@ module top_system
       .mem_if_ddr3_emif_0_status_local_init_done (init_done),
       .mem_if_ddr3_emif_0_status_local_cal_success (),
       .mem_if_ddr3_emif_0_status_local_cal_fail ()
+      
       );
 `else
-   assign rst = rst_int;
+   wire          rst_int;
+   //create reset pulse as reset is never activated manually
+   iob_pulse_gen
+     #(
+       .START(5),
+       .DURATION(9)
+       ) 
+   reset_pulse
+     (
+      .clk(clk50),
+      .rst(~resetn),
+      .restart(1'b0),
+      .pulse_out(rst_int)
+      );
+
+   iob_reset_sync rst_sync (clk50, rst_int, rst);
 `endif
 
 
