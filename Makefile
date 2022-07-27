@@ -107,7 +107,7 @@ fpga-test:
 #
 # COMPILE DOCUMENTS
 #
-
+DOC_DIR=document/$(DOC)
 doc-build:
 	make -C $(DOC_DIR) $(DOC).pdf
 
