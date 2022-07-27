@@ -109,13 +109,13 @@
   <parameter name="COMBINED_ACCEPTANCE_CAPABILITY" value="16" />
   <parameter name="COMBINED_ISSUING_CAPABILITY" value="16" />
   <parameter name="DATA_WIDTH" value="32" />
-  <parameter name="M0_ID_WIDTH" value="4" />
+  <parameter name="M0_ID_WIDTH" value="1" />
   <parameter name="READ_ACCEPTANCE_CAPABILITY" value="16" />
   <parameter name="READ_ADDR_USER_WIDTH" value="64" />
   <parameter name="READ_DATA_REORDERING_DEPTH" value="1" />
   <parameter name="READ_DATA_USER_WIDTH" value="64" />
   <parameter name="READ_ISSUING_CAPABILITY" value="16" />
-  <parameter name="S0_ID_WIDTH" value="4" />
+  <parameter name="S0_ID_WIDTH" value="1" />
   <parameter name="USE_M0_ARBURST" value="1" />
   <parameter name="USE_M0_ARCACHE" value="1" />
   <parameter name="USE_M0_ARID" value="1" />
@@ -199,7 +199,7 @@
   <parameter name="AUTO_PD_CYCLES" value="4096" />
   <parameter name="AUTO_POWERDN_EN" value="true" />
   <parameter name="AVL_DATA_WIDTH_PORT" value="32,32,32,32,32,32" />
-  <parameter name="AVL_MAX_SIZE" value="64" />
+  <parameter name="AVL_MAX_SIZE" value="8" />
   <parameter name="BYTE_ENABLE" value="true" />
   <parameter name="C2P_WRITE_CLOCK_ADD_PHASE" value="0.0" />
   <parameter name="CALIBRATION_MODE" value="Skip" />
@@ -504,11 +504,11 @@
    enabled="1">
   <parameter name="ADDRESS_UNITS" value="SYMBOLS" />
   <parameter name="ADDRESS_WIDTH" value="28" />
-  <parameter name="COMMAND_FIFO_DEPTH" value="64" />
+  <parameter name="COMMAND_FIFO_DEPTH" value="16" />
   <parameter name="DATA_WIDTH" value="32" />
   <parameter name="MASTER_SYNC_DEPTH" value="2" />
-  <parameter name="MAX_BURST_SIZE" value="32" />
-  <parameter name="RESPONSE_FIFO_DEPTH" value="64" />
+  <parameter name="MAX_BURST_SIZE" value="8" />
+  <parameter name="RESPONSE_FIFO_DEPTH" value="16" />
   <parameter name="SLAVE_SYNC_DEPTH" value="2" />
   <parameter name="SYMBOL_WIDTH" value="8" />
   <parameter name="SYSINFO_ADDR_WIDTH" value="28" />

@@ -33,28 +33,59 @@ module top_system
    output        trap
    );
    
+   //axi4 parameters
+   parameter AXI_ID_W = 1;
+   localparam AXI_ADDR_W=`DDR_ADDR_W;
+   localparam AXI_DATA_W=`DDR_DATA_W;
+   
    //-----------------------------------------------------------------
    // Clocking / Reset
    //-----------------------------------------------------------------
 
    wire 	 rst;
+
+`ifdef USE_DDR
+   //axi wires between system backend and axi bridge
+ `include "m_axi_wire.vh"
+`endif
+
+   //
+   // SYSTEM
+   //
+   system
+     #(
+       .AXI_ID_W(AXI_ID_W),
+       .AXI_ADDR_W(AXI_ADDR_W),
+       .AXI_DATA_W(AXI_DATA_W)
+       )
+   system 
+     (
+      .clk (clk),
+      .rst (rst),
+      .trap (trap),
+
+`ifdef USE_DDR
+      `include "m_axi_portmap.vh"	
+`endif
+
+      //UART
+      .uart_txd      (uart_txd),
+      .uart_rxd      (uart_rxd),
+      .uart_rts      (),
+      .uart_cts      (1'b1)
+      );
+
    
 `ifdef USE_DDR
-   parameter AXI_ID_W = 4;
-   localparam AXI_ADDR_W=`DDR_ADDR_W;
-   localparam AXI_DATA_W=`DDR_DATA_W;
-   
    //user reset
    wire          locked;
    wire          init_done;
 
+   //determine system reset
    wire          rst_int = ~resetn | ~locked | ~init_done;
 //   wire          rst_int = ~resetn | ~locked;
    
    iob_reset_sync rst_sync (clk, rst_int, rst);
-
-   
- `include "m_axi_wire.vh"
 
    alt_ddr3 ddr3_ctrl 
      (
@@ -133,30 +164,5 @@ module top_system
    iob_reset_sync rst_sync (clk, (~resetn), rst);   
 `endif
 
-   //
-   // SYSTEM
-   //
-   system
-     #(
-       .AXI_ID_W(AXI_ID_W),
-       .AXI_ADDR_W(AXI_ADDR_W),
-       .AXI_DATA_W(AXI_DATA_W)
-       )
-   system 
-     (
-      .clk(clk),
-      .rst(rst),
-      .trap          (trap),
-
-`ifdef USE_DDR
-      `include "m_axi_portmap.vh"	
-`endif
-
-      //UART
-      .uart_txd      (uart_txd),
-      .uart_rxd      (uart_rxd),
-      .uart_rts      (),
-      .uart_cts      (1'b1)
-      );
 
 endmodule

@@ -82,10 +82,7 @@ BOARD_BAUD = 115200
 #default board frequency
 BOARD_FREQ ?=100000000
 ifeq ($(BOARD), CYCLONEV-GT-DK)
-ifeq ($(USE_DDR),1)
-#BOARD_FREQ =75000000
 BOARD_FREQ =50000000
-endif
 endif
 
 fpga-build:
