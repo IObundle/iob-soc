@@ -137,7 +137,7 @@ set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
 #------ Compile using ::quartus::flow ------#
 #execute_flow -compile
 
-set_global_assignment -name SEED 2
+set_global_assignment -name SEED 23
 
 #------ Manually recompile and perform timing analysis again using qexec ------#
 

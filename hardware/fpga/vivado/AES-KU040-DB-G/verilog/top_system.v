@@ -310,7 +310,8 @@ module top_system
       .clk_out1(clk)
       );
 
-   //create reset pulse as reset is never activated manually 
+   //create reset pulse as reset is never activated manually
+   //also, during bitstream loading, the reset pin is not pulled high
    iob_pulse_gen
      #(
        .START(5),
@@ -323,7 +324,6 @@ module top_system
       .restart(1'b0),
       .pulse_out(rst)
       );
-
 `endif
 
 endmodule

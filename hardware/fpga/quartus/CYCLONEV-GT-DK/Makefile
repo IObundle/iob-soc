@@ -14,8 +14,6 @@ DDR_DATA_W=32
 #NORUN = $(USE_DDR)
 NORUN = 0
 
-FREQ=50000000
-
 QIP_FILE=qsys/alt_ddr3/synthesis/alt_ddr3.qip
 
 $(QIP_FILE): qsys/alt_ddr3.qsys

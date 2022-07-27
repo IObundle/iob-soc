@@ -5,8 +5,8 @@
 module top_system
   (
    //global clock and reset
-   input         clk100, 
    input         clk50, 
+   input         clk100, 
    input         resetn,
   
    //uart
@@ -29,20 +29,19 @@ module top_system
    inout [1:0]   ddr3b_dqs_p, //SSTL15  //Diff Data Strobe - Pos
    output        ddr3b_odt, //SSTL15  //On-Die Termination Enable
    output        ddr3b_resetn, //SSTL15  //Reset
-   input         rzqin,
+   input         rzqin, //do not remove (synth error)
 `endif
    output        trap
    );
-   
-   localparam AXI_ID_W = 4;
+
+   //axi4 parameters
+   localparam AXI_ID_W = 1;
    localparam AXI_ADDR_W=`DDR_ADDR_W;
    localparam AXI_DATA_W=`DDR_DATA_W;
 
+   //system reset
    wire 	 rst;
    
-
-
-
   
 `ifdef USE_DDR
    //axi wires between system backend and axi bridge
@@ -60,7 +59,11 @@ module top_system
        )
    system 
      (
-      .clk (clk50),
+ `ifdef USE_DDR
+     .clk (clk50),
+ `else
+     .clk (clk100),
+ `endif
       .rst (rst),
       .trap (trap),
 
@@ -81,25 +84,33 @@ module top_system
    //user reset
    wire          locked;
    wire          init_done;
-
-   //compute system reset
-   assign rst_unsynced = ~resetn | ~locked | ~init_done;
-   iob_reset_sync rst_sync (clk50, rst_unsynced, rst);
-
+   
    //
    // DDR3 Controller
    //
-   
+
+   wire          clk75;
+   wire          rstn;
+
+   //determin system reset
+   wire rst_int = ~rstn | ~locked | ~init_done;
+   //wire rst_int = ~resetn;
+   iob_reset_sync rst_sync (clk50, rst_int, rst);
+
    alt_ddr3 ddr3_ctrl 
      (
+
+      //user logic clock
       .clk_clk (clk50),
-      .reset_reset_n (resetn),
+      .reset_reset_n (~rst),
 
-      .clk_0_clk (clk100),
+      .mem_if_ddr3_emif_0_afi_reset_export_reset_n (rstn),
+      .mem_if_ddr3_emif_0_afi_half_clk_clk (clk75),
+
+      //PLL ref clock
+      .clk_0_clk (clk50),
       .reset_0_reset_n (resetn),
-
-      .oct_rzqin (rzqin),
-
+      
       .memory_mem_a (ddr3b_a),
       .memory_mem_ba (ddr3b_ba),
       .memory_mem_ck (ddr3b_clk_p),
@@ -165,26 +176,11 @@ module top_system
       .mem_if_ddr3_emif_0_pll_sharing_pll_avl_phy_clk (),
       .mem_if_ddr3_emif_0_status_local_init_done (init_done),
       .mem_if_ddr3_emif_0_status_local_cal_success (),
-      .mem_if_ddr3_emif_0_status_local_cal_fail ()
-      
+      .mem_if_ddr3_emif_0_status_local_cal_fail (),
+      .oct_rzqin (rzqin)
       );
 `else
-   wire          rst_int;
-   //create reset pulse as reset is never activated manually
-   iob_pulse_gen
-     #(
-       .START(5),
-       .DURATION(9)
-       ) 
-   reset_pulse
-     (
-      .clk(clk50),
-      .rst(~resetn),
-      .restart(1'b0),
-      .pulse_out(rst_int)
-      );
-
-   iob_reset_sync rst_sync (clk50, rst_int, rst);
+   iob_reset_sync rst_sync (clk100, ~resetn, rst);
 `endif
 
 

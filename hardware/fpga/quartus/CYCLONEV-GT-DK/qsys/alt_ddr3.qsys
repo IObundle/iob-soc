@@ -21,7 +21,7 @@
    {
       datum _sortIndex
       {
-         value = "2";
+         value = "3";
          type = "int";
       }
    }
@@ -45,7 +45,7 @@
    {
       datum _sortIndex
       {
-         value = "3";
+         value = "2";
          type = "int";
       }
    }
@@ -78,6 +78,16 @@
  <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
  <interface name="clk_0" internal="clk_1.clk_in" type="clock" dir="end" />
  <interface
+   name="mem_if_ddr3_emif_0_afi_half_clk"
+   internal="mem_if_ddr3_emif_0.afi_half_clk"
+   type="clock"
+   dir="start" />
+ <interface
+   name="mem_if_ddr3_emif_0_afi_reset_export"
+   internal="mem_if_ddr3_emif_0.afi_reset_export"
+   type="reset"
+   dir="start" />
+ <interface
    name="mem_if_ddr3_emif_0_local_powerdown"
    internal="mem_if_ddr3_emif_0.local_powerdown" />
  <interface
@@ -105,16 +115,16 @@
    enabled="1">
   <parameter name="ADDR_WIDTH" value="28" />
   <parameter name="AXI_VERSION" value="AXI4" />
-  <parameter name="COMBINED_ACCEPTANCE_CAPABILITY" value="16" />
-  <parameter name="COMBINED_ISSUING_CAPABILITY" value="16" />
+  <parameter name="COMBINED_ACCEPTANCE_CAPABILITY" value="8" />
+  <parameter name="COMBINED_ISSUING_CAPABILITY" value="8" />
   <parameter name="DATA_WIDTH" value="32" />
-  <parameter name="M0_ID_WIDTH" value="4" />
-  <parameter name="READ_ACCEPTANCE_CAPABILITY" value="16" />
-  <parameter name="READ_ADDR_USER_WIDTH" value="64" />
+  <parameter name="M0_ID_WIDTH" value="1" />
+  <parameter name="READ_ACCEPTANCE_CAPABILITY" value="8" />
+  <parameter name="READ_ADDR_USER_WIDTH" value="28" />
   <parameter name="READ_DATA_REORDERING_DEPTH" value="1" />
-  <parameter name="READ_DATA_USER_WIDTH" value="64" />
-  <parameter name="READ_ISSUING_CAPABILITY" value="16" />
-  <parameter name="S0_ID_WIDTH" value="4" />
+  <parameter name="READ_DATA_USER_WIDTH" value="32" />
+  <parameter name="READ_ISSUING_CAPABILITY" value="8" />
+  <parameter name="S0_ID_WIDTH" value="1" />
   <parameter name="USE_M0_ARBURST" value="1" />
   <parameter name="USE_M0_ARCACHE" value="1" />
   <parameter name="USE_M0_ARID" value="1" />
@@ -161,14 +171,14 @@
   <parameter name="USE_S0_RUSER" value="0" />
   <parameter name="USE_S0_WLAST" value="1" />
   <parameter name="USE_S0_WUSER" value="0" />
-  <parameter name="WRITE_ACCEPTANCE_CAPABILITY" value="16" />
-  <parameter name="WRITE_ADDR_USER_WIDTH" value="64" />
-  <parameter name="WRITE_DATA_USER_WIDTH" value="64" />
-  <parameter name="WRITE_ISSUING_CAPABILITY" value="16" />
-  <parameter name="WRITE_RESP_USER_WIDTH" value="64" />
+  <parameter name="WRITE_ACCEPTANCE_CAPABILITY" value="8" />
+  <parameter name="WRITE_ADDR_USER_WIDTH" value="28" />
+  <parameter name="WRITE_DATA_USER_WIDTH" value="32" />
+  <parameter name="WRITE_ISSUING_CAPABILITY" value="8" />
+  <parameter name="WRITE_RESP_USER_WIDTH" value="32" />
  </module>
  <module name="clk_0" kind="clock_source" version="20.1" enabled="1">
-  <parameter name="clockFrequency" value="50000000" />
+  <parameter name="clockFrequency" value="75000000" />
   <parameter name="clockFrequencyKnown" value="true" />
   <parameter name="inputClockFrequency" value="0" />
   <parameter name="resetSynchronousEdges" value="DEASSERT" />
@@ -204,7 +214,7 @@
   <parameter name="AUTO_PD_CYCLES" value="4096" />
   <parameter name="AUTO_POWERDN_EN" value="false" />
   <parameter name="AVL_DATA_WIDTH_PORT" value="32,32,32,32,32,32" />
-  <parameter name="AVL_MAX_SIZE" value="16" />
+  <parameter name="AVL_MAX_SIZE" value="8" />
   <parameter name="BYTE_ENABLE" value="true" />
   <parameter name="C2P_WRITE_CLOCK_ADD_PHASE" value="0.0" />
   <parameter name="CALIBRATION_MODE" value="Skip" />
@@ -259,7 +269,7 @@
   <parameter name="ENABLE_NON_DES_CAL_TEST" value="false" />
   <parameter name="ENABLE_SEQUENCER_MARGINING_ON_BY_DEFAULT" value="false" />
   <parameter name="ENABLE_USER_ECC" value="false" />
-  <parameter name="EXPORT_AFI_HALF_CLK" value="false" />
+  <parameter name="EXPORT_AFI_HALF_CLK" value="true" />
   <parameter name="EXTRA_SETTINGS" value="" />
   <parameter name="FIX_READ_LATENCY" value="8" />
   <parameter name="FORCED_NON_LDC_ADDR_CMD_MEM_CK_INVERT" value="false" />
@@ -438,7 +448,7 @@
   <parameter name="READ_FIFO_SIZE" value="8" />
   <parameter name="REFRESH_BURST_VALIDATION" value="false" />
   <parameter name="REFRESH_INTERVAL" value="15000" />
-  <parameter name="REF_CLK_FREQ" value="100.0" />
+  <parameter name="REF_CLK_FREQ" value="50.0" />
   <parameter name="REF_CLK_FREQ_MAX_PARAM" value="0.0" />
   <parameter name="REF_CLK_FREQ_MIN_PARAM" value="0.0" />
   <parameter name="REF_CLK_FREQ_PARAM_VALID" value="false" />
@@ -509,11 +519,11 @@
    enabled="1">
   <parameter name="ADDRESS_UNITS" value="SYMBOLS" />
   <parameter name="ADDRESS_WIDTH" value="28" />
-  <parameter name="COMMAND_FIFO_DEPTH" value="32" />
+  <parameter name="COMMAND_FIFO_DEPTH" value="16" />
   <parameter name="DATA_WIDTH" value="32" />
   <parameter name="MASTER_SYNC_DEPTH" value="2" />
-  <parameter name="MAX_BURST_SIZE" value="16" />
-  <parameter name="RESPONSE_FIFO_DEPTH" value="32" />
+  <parameter name="MAX_BURST_SIZE" value="8" />
+  <parameter name="RESPONSE_FIFO_DEPTH" value="16" />
   <parameter name="SLAVE_SYNC_DEPTH" value="2" />
   <parameter name="SYMBOL_WIDTH" value="8" />
   <parameter name="SYSINFO_ADDR_WIDTH" value="28" />

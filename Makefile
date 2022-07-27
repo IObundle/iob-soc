@@ -1,6 +1,12 @@
 SHELL = /bin/bash
 export 
 
+#run on external memory implies DDR use
+ifeq ($(RUN_EXTMEM),1)
+USE_DDR=1
+endif
+
+
 #
 # BUILD EMBEDDED SOFTWARE
 #
@@ -73,10 +79,13 @@ BOARD ?=CYCLONEV-GT-DK
 BOARD_DIR =$(shell find hardware -name $(BOARD))
 #default baud and system clock freq for boards
 BOARD_BAUD = 115200
-ifeq ($(BOARD), AES-KU040-DB-G)
-BOARD_FREQ =100000000
-else 
+#default board frequency
+BOARD_FREQ ?=100000000
+ifeq ($(BOARD), CYCLONEV-GT-DK)
+ifeq ($(USE_DDR),1)
+#BOARD_FREQ =75000000
 BOARD_FREQ =50000000
+endif
 endif
 
 fpga-build:
