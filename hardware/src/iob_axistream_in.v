@@ -65,13 +65,17 @@ module iob_axistream_in
    `IOB_WIRE2WIRE(saved_last_rstrb_register,AXISTREAMIN_LAST_rdata[4:0])
 
 	localparam default_rstrb_value = {TDATA_W/8{1'b1}};
+   `IOB_VAR(rstrb_int, 4)
+   `IOB_WIRE(rstrb_int_en, 1)
+   `IOB_WIRE(rstrb_int_next_val, 4)
 	//Keep track of valid bytes in lastest word of FIFO and
 	//keep filling rstrb_int after receiving TLAST to count how many random
 	//bytes to completly fill word in FIFO.
 	//Reset value is zero (no bytes valid) when receives reset signal
 	//Reset due to &rstrb_int (rstrb has all bytes valid) is the default_rstrb_value (to go to next word).
-   `IOB_VAR(rstrb_int, 4)
-   `IOB_REG_RE(clk, rst | &rstrb_int | reset_register_last, default_rstrb_value & {4{!rst}} & {4{!reset_register_last}}, (tvalid & !received_tlast) | (received_tlast & rstrb_int != default_rstrb_value), rstrb_int, (rstrb_int<<TDATA_W/8)+default_rstrb_value)
+   `IOB_WIRE2WIRE((tvalid & !received_tlast) | (received_tlast & rstrb_int != 4'hf), rstrb_int_en)
+   `IOB_WIRE2WIRE(((&rstrb_int) ? 4'd0 : rstrb_int<<TDATA_W/8) + default_rstrb_value, rstrb_int_next_val)
+   `IOB_REG_RE(clk, rst | reset_register_last, 4'd0, rstrb_int_en, rstrb_int, rstrb_int_next_val)
 
 	//Delay TLAST by one clock
    `IOB_VAR(tlast_delayed, 1)
@@ -115,7 +119,7 @@ module iob_axistream_in
       .r_data          (AXISTREAMIN_OUT_rdata),
       .r_empty         (AXISTREAMIN_EMPTY_rdata[0]),
       //write port
-      .w_en            ((tvalid & !received_tlast) | (received_tlast & rstrb_int != default_rstrb_value)), //Fill FIFO if is valid OR fill with dummy values to complete 32bit word
+      .w_en            ((tvalid & !received_tlast) | (received_tlast & rstrb_int != 4'hf)), //Fill FIFO if is valid OR fill with dummy values to complete 32bit word
       .w_data          (tdata),
       .w_full          (fifo_full),
       .level           ()
