@@ -12,12 +12,14 @@ set_global_assignment -name IOBANK_VCCIO 1.5V -section_id 4A
 #System 
 
 #DDR PLL ref clock 100MHz
-set_location_assignment PIN_H19 -to clk100
-set_instance_assignment -name IO_STANDARD LVDS -to clk100
+#set_location_assignment PIN_H19 -to clk100
+#set_instance_assignment -name IO_STANDARD LVDS -to clk100
 
 #User clock 50MHz
-set_location_assignment PIN_V28 -to clk50
-set_instance_assignment -name IO_STANDARD "1.5 V" -to clk50
+#set_location_assignment PIN_V28 -to clk50
+#set_instance_assignment -name IO_STANDARD "1.5 V" -to clk50
+set_location_assignment PIN_V28 -to clk
+set_instance_assignment -name IO_STANDARD "1.5 V" -to clk
 
 #User reset
 set_location_assignment PIN_AD29 -to resetn

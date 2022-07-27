@@ -4,9 +4,8 @@
 
 module top_system
   (
-   //global clock and reset
-   input         clk50, 
-   input         clk100, 
+   //user clock
+   input         clk, 
    input         resetn,
   
    //uart
@@ -29,88 +28,40 @@ module top_system
    inout [1:0]   ddr3b_dqs_p, //SSTL15  //Diff Data Strobe - Pos
    output        ddr3b_odt, //SSTL15  //On-Die Termination Enable
    output        ddr3b_resetn, //SSTL15  //Reset
-   input         rzqin, //do not remove (synth error)
+   input         rzqin,
 `endif
    output        trap
    );
+   
+   //-----------------------------------------------------------------
+   // Clocking / Reset
+   //-----------------------------------------------------------------
 
-   //axi4 parameters
-   localparam AXI_ID_W = 1;
-   localparam AXI_ADDR_W=`DDR_ADDR_W;
-   localparam AXI_DATA_W=`DDR_DATA_W;
-
-   //system reset
    wire 	 rst;
    
-  
 `ifdef USE_DDR
-   //axi wires between system backend and axi bridge
- `include "m_axi_wire.vh"
-`endif
-
-   //
-   // SYSTEM
-   //
-   system
-     #(
-       .AXI_ID_W(AXI_ID_W),
-       .AXI_ADDR_W(AXI_ADDR_W),
-       .AXI_DATA_W(AXI_DATA_W)
-       )
-   system 
-     (
- `ifdef USE_DDR
-     .clk (clk50),
- `else
-     .clk (clk100),
- `endif
-      .rst (rst),
-      .trap (trap),
-
-`ifdef USE_DDR
-      `include "m_axi_portmap.vh"	
-`endif
-
-      //UART
-      .uart_txd      (uart_txd),
-      .uart_rxd      (uart_rxd),
-      .uart_rts      (),
-      .uart_cts      (1'b1)
-      );
-
- 
-`ifdef USE_DDR
+   parameter AXI_ID_W = 4;
+   localparam AXI_ADDR_W=`DDR_ADDR_W;
+   localparam AXI_DATA_W=`DDR_DATA_W;
    
    //user reset
    wire          locked;
    wire          init_done;
+
+   wire          rst_int = ~resetn | ~locked | ~init_done;
+//   wire          rst_int = ~resetn | ~locked;
    
-   //
-   // DDR3 Controller
-   //
+   iob_reset_sync rst_sync (clk, rst_int, rst);
 
-   wire          clk75;
-   wire          rstn;
-
-   //determin system reset
-   wire rst_int = ~rstn | ~locked | ~init_done;
-   //wire rst_int = ~resetn;
-   iob_reset_sync rst_sync (clk50, rst_int, rst);
+   
+ `include "m_axi_wire.vh"
 
    alt_ddr3 ddr3_ctrl 
      (
+      .clk_clk (clk),
+      .reset_reset_n (resetn),
+      .oct_rzqin (rzqin),
 
-      //user logic clock
-      .clk_clk (clk50),
-      .reset_reset_n (~rst),
-
-      .mem_if_ddr3_emif_0_afi_reset_export_reset_n (rstn),
-      .mem_if_ddr3_emif_0_afi_half_clk_clk (clk75),
-
-      //PLL ref clock
-      .clk_0_clk (clk50),
-      .reset_0_reset_n (resetn),
-      
       .memory_mem_a (ddr3b_a),
       .memory_mem_ba (ddr3b_ba),
       .memory_mem_ck (ddr3b_clk_p),
@@ -162,8 +113,7 @@ module top_system
       .axi_bridge_0_s0_rlast (m_axi_rlast),
       .axi_bridge_0_s0_rvalid (m_axi_rvalid),
       .axi_bridge_0_s0_rready (m_axi_rready),
-      
-      .mem_if_ddr3_emif_0_local_powerdown_local_powerdn_ack (),
+
       .mem_if_ddr3_emif_0_pll_sharing_pll_mem_clk (),
       .mem_if_ddr3_emif_0_pll_sharing_pll_write_clk (),
       .mem_if_ddr3_emif_0_pll_sharing_pll_locked (locked),
@@ -176,12 +126,37 @@ module top_system
       .mem_if_ddr3_emif_0_pll_sharing_pll_avl_phy_clk (),
       .mem_if_ddr3_emif_0_status_local_init_done (init_done),
       .mem_if_ddr3_emif_0_status_local_cal_success (),
-      .mem_if_ddr3_emif_0_status_local_cal_fail (),
-      .oct_rzqin (rzqin)
+      .mem_if_ddr3_emif_0_status_local_cal_fail ()
       );
+
 `else
-   iob_reset_sync rst_sync (clk100, ~resetn, rst);
+   iob_reset_sync rst_sync (clk, (~resetn), rst);   
 `endif
 
+   //
+   // SYSTEM
+   //
+   system
+     #(
+       .AXI_ID_W(AXI_ID_W),
+       .AXI_ADDR_W(AXI_ADDR_W),
+       .AXI_DATA_W(AXI_DATA_W)
+       )
+   system 
+     (
+      .clk(clk),
+      .rst(rst),
+      .trap          (trap),
+
+`ifdef USE_DDR
+      `include "m_axi_portmap.vh"	
+`endif
+
+      //UART
+      .uart_txd      (uart_txd),
+      .uart_rxd      (uart_rxd),
+      .uart_rts      (),
+      .uart_cts      (1'b1)
+      );
 
 endmodule
