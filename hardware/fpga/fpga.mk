@@ -55,7 +55,7 @@ build: $(FPGA_OBJ)
 ifeq ($(INIT_MEM),1)
 $(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex firmware.hex
 else ifeq ($(USE_DDR),1)
-$(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex $(QIP_FILE)
+$(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex
 else
 $(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex
 endif
