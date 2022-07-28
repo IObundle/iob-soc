@@ -14,7 +14,7 @@ local-build:
 
 
 clean: clean-all
-	@rm -rf .Xil/ .cache/ reports/ *.bit *.log
+	@rm -rf .Xil/ .cache/ reports/ *.bit
 
 clean-ip:
 	rm -rf ip

@@ -104,15 +104,15 @@ test: clean-testlog test1 test2 test3
 	diff test.log test.expected
 
 test1:
-	make -C $(ROOT_DIR) fpga-clean
+	make -C $(ROOT_DIR) fpga-clean BOARD=$(BOARD)
 	make -C $(ROOT_DIR) fpga-run INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
 
 test2:
-	make -C $(ROOT_DIR) fpga-clean
+	make -C $(ROOT_DIR) fpga-clean BOARD=$(BOARD)
 	make -C $(ROOT_DIR) fpga-run INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
 
 test3:
-	make -C $(ROOT_DIR) fpga-clean
+	make -C $(ROOT_DIR) fpga-clean BOARD=$(BOARD)
 	make -C $(ROOT_DIR) fpga-run INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
 
 
@@ -135,7 +135,7 @@ endif
 
 #clean test log only when board testing begins
 clean-testlog:
-	@rm -f test.log
+	@rm -f *.log
 ifneq ($(BOARD_SERVER),)
 	ssh $(BOARD_USER)@$(BOARD_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --delete --force --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR)

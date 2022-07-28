@@ -118,19 +118,19 @@ test: clean-testlog test1 test2 test3 test4 test5
 	diff test.log ../test.expected
 
 test1:
-	make -C $(ROOT_DIR) sim-clean
+	make -C $(ROOT_DIR) sim-clean SIMULATOR=$(SIMULATOR)
 	make -C $(ROOT_DIR) sim-run INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
 test2:
-	make -C $(ROOT_DIR) sim-clean
+	make -C $(ROOT_DIR) sim-clean SIMULATOR=$(SIMULATOR)
 	make -C $(ROOT_DIR) sim-run INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
 test3:
-	make -C $(ROOT_DIR) sim-clean
+	make -C $(ROOT_DIR) sim-clean SIMULATOR=$(SIMULATOR)
 	make -C $(ROOT_DIR) sim-run INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=0 TEST_LOG=">> test.log"
 test4:
-	make -C $(ROOT_DIR) sim-clean
+	make -C $(ROOT_DIR) sim-clean SIMULATOR=$(SIMULATOR)
 	make -C $(ROOT_DIR) sim-run INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
 test5:
-	make -C $(ROOT_DIR) sim-clean
+	make -C $(ROOT_DIR) sim-clean SIMULATOR=$(SIMULATOR)
 	make -C $(ROOT_DIR) sim-run INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
 
 
