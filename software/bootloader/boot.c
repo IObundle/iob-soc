@@ -67,7 +67,5 @@ int main() {
 #ifdef RUN_EXTMEM
   while( !cache_wtb_empty() );
 #endif
-  //reboot and run firmware (not bootloader)
-  *((int *) BOOTCTR_BASE) = 0b10;
-  
+
 }

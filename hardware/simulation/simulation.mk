@@ -1,8 +1,14 @@
-#DEFINES
+include $(ROOT_DIR)/hardware/hardware.mk
+
+
+#axi portmap for axi ram
+VHDR+=s_axi_portmap.vh
+s_axi_portmap.vh:
+	$(LIB_DIR)/software/python/axi_gen.py axi_portmap 's_' 's_' 'm_'
 
 #default baud and freq for simulation
-BAUD ?=5000000
-FREQ ?=100000000
+BAUD=$(SIM_BAUD)
+FREQ=$(SIM_FREQ)
 
 #define for testbench
 DEFINE+=$(defmacro)BAUD=$(BAUD)
@@ -20,13 +26,13 @@ ifeq ($(VCD),1)
 DEFINE+=$(defmacro)VCD
 endif
 
-include $(ROOT_DIR)/hardware/hardware.mk
-
 ifeq ($(INIT_MEM),0)
 CONSOLE_CMD+=-f
 endif
 
+ifneq ($(wildcard  firmware.hex),)
 FW_SIZE=$(shell wc -l firmware.hex | awk '{print $$1}')
+endif
 
 DEFINE+=$(defmacro)FW_SIZE=$(FW_SIZE)
 
@@ -57,7 +63,7 @@ endif
 
 run: sim
 ifeq ($(VCD),1)
-	if [ ! `pgrep -u $(USER) gtkwave` ]; then gtkwave -a ../waves.gtkw system.vcd; fi &
+	if [ ! `pgrep -u $(USER) gtkwave` ]; then gtkwave system.vcd; fi &
 endif
 
 sim:
@@ -112,19 +118,19 @@ test: clean-testlog test1 test2 test3 test4 test5
 	diff test.log ../test.expected
 
 test1:
-	make -C $(ROOT_DIR) sim-clean
+	make -C $(ROOT_DIR) sim-clean SIMULATOR=$(SIMULATOR)
 	make -C $(ROOT_DIR) sim-run INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
 test2:
-	make -C $(ROOT_DIR) sim-clean
+	make -C $(ROOT_DIR) sim-clean SIMULATOR=$(SIMULATOR)
 	make -C $(ROOT_DIR) sim-run INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
 test3:
-	make -C $(ROOT_DIR) sim-clean
+	make -C $(ROOT_DIR) sim-clean SIMULATOR=$(SIMULATOR)
 	make -C $(ROOT_DIR) sim-run INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=0 TEST_LOG=">> test.log"
 test4:
-	make -C $(ROOT_DIR) sim-clean
+	make -C $(ROOT_DIR) sim-clean SIMULATOR=$(SIMULATOR)
 	make -C $(ROOT_DIR) sim-run INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
 test5:
-	make -C $(ROOT_DIR) sim-clean
+	make -C $(ROOT_DIR) sim-clean SIMULATOR=$(SIMULATOR)
 	make -C $(ROOT_DIR) sim-run INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
 
 
@@ -146,6 +152,16 @@ ifneq ($(SIM_SERVER),)
 	rsync -avz --delete --force --exclude .git $(SIM_SYNC_FLAGS) $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
 	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'rm -f $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR)/test.log'
 endif
+
+debug:
+	@echo $(VHDR)
+	@echo $(VSRC)
+	@echo $(INCLUDE)
+	@echo $(DEFINE)
+	@echo $(MEM_DIR)
+	@echo $(CPU_DIR)
+	@echo $(CACHE_DIR)
+	@echo $(UART_DIR)
 
 .PRECIOUS: system.vcd test.log
 
