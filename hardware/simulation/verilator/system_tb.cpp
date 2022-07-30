@@ -23,9 +23,6 @@ void Timer(unsigned int ns){
     if(!(main_time%(CLK_PERIOD/2))){
       dut->clk = !(dut->clk);
       dut->eval();
-#ifdef VCD
-      tfp->dump(main_time);
-#endif
     }
     // To add a new clk follow the example
     //if(!(main_time%(EXAMPLE_CLK_PERIOD/2))){
@@ -94,22 +91,14 @@ int main(int argc, char **argv, char **env){
 #endif
 
   dut->clk = 0;
-  dut->reset = 0;
-  dut->eval();
-#ifdef VCD
-  tfp->dump(main_time);
-#endif
+  dut->rst = 0;
 
   // Reset sequence
-  for(int i = 0; i<5; i++){
-    dut->clk = !(dut->clk);
-    if(i==2 || i==4) dut->reset = !(dut->reset);
-    dut->eval();
-#ifdef VCD
-    tfp->dump(main_time);
-#endif
-    main_time += CLK_PERIOD/2;
-  }
+  Timer(100);
+  dut->rst = 1;
+  Timer(100);
+  dut->rst = 0;
+
   dut->uart_valid = 0;
   dut->uart_wstrb = 0;
   inituart();

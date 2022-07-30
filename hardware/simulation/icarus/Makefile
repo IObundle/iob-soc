@@ -25,8 +25,4 @@ exec:
 clean: clean-remote
 	@rm -f $(SIM_PROC)
 
-debug:
-	@echo $(CACHE_DIR)
-	@echo $(UART_DIR)
-
 .PHONY: comp exec clean debug

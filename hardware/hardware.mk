@@ -10,8 +10,6 @@ include $(ROOT_DIR)/config.mk
 #include LIB modules
 include hardware/iob_merge/hardware.mk
 include hardware/iob_split/hardware.mk
-
-#include MEM modules
 include hardware/rom/iob_rom_sp/hardware.mk
 include hardware/ram/iob_ram_dp_be/hardware.mk
 
@@ -26,6 +24,7 @@ include $(UART_DIR)/hardware/hardware.mk
 
 
 #DEFINES
+DEFINE+=$(defmacro)DDR_DATA_W=$(DDR_DATA_W)
 DEFINE+=$(defmacro)DDR_ADDR_W=$(DDR_ADDR_W)
 
 #HEADERS
@@ -69,8 +68,6 @@ $(BUILD_VSRC_DIR)/system.v: $(ROOT_DIR)/hardware/src/system_core.v
 HEXPROGS=boot.hex firmware.hex
 
 # make and copy memory init files
-PYTHON_DIR=$(MEM_DIR)/software/python
-
 boot.hex: $(BOOT_DIR)/boot.bin
 	$(PYTHON_DIR)/makehex.py $< $(BOOTROM_ADDR_W) > $@
 
