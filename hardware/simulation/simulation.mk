@@ -58,7 +58,7 @@ VSRC+=system_tb.v
 endif
 
 #add peripheral testbench sources
-VSRC+=$(foreach p, $(sort PERIPHERALS), $(shell if test -f $($p_DIR)/hardware/testbench/module_tb.sv; then echo $($p_DIR)/hardware/testbench/module_tb.sv; fi;)) 
+VSRC+=$(foreach p, $(shell $(SW_DIR)/python/submodule_utils.py remove_duplicates_and_params "$(PERIPHERALS)"), $(shell if test -f $($p_DIR)/hardware/testbench/module_tb.sv; then echo $($p_DIR)/hardware/testbench/module_tb.sv; fi;)) 
 
 #RULES
 build: $(VSRC) $(VHDR) $(HEXPROGS) get_vsrc get_vhdr get_tester_defines

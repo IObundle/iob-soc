@@ -128,15 +128,16 @@ def get_peripherals(peripherals_str):
     # Count how many instances to create of each type of peripheral
     for i in peripherals:
         i = i.split("[") # Split corename and parameters
-        if len(i) < 2:
-            i.append("")
-        i[1] = i[1].strip("]") # Delete final "]" from parameter list
         # Initialize corename in dictionary 
         if i[0] not in instances_amount:
             instances_amount[i[0]]=0
             instances_parameters[i[0]]=[]
-        # Insert parameters of this instance
-        instances_parameters[i[0]].append(i[1].split(","))
+        # Insert parameters of this instance (if there are any)
+        if len(i) > 1:
+            i[1] = i[1].strip("]") # Delete final "]" from parameter list
+            instances_parameters[i[0]].append(i[1].split(","))
+        else:
+            instances_parameters[i[0]].append([])
         # Increment amount of instances
         instances_amount[i[0]]+=1
 
@@ -179,41 +180,34 @@ def get_module_io(verilog_lines):
                 if signal.group(2) is None:
                     module_signals[signal.group(4)]=signal.group(1)
                 else:
-                    module_signals[signal.group(4)]="{} [{}:{}]".format(signal.group(1), 
-                            signal.group(2) if signal.group(2).isdigit() else
-                            ("" if "`" in signal.group(2) else "`") # Set as macro if it was a parameter
-                            +signal.group(2).replace("ADDR_W","/*<SwregFilename>*/_ADDR_W"),
-                            signal.group(3))
+                    module_signals[signal.group(4)]="{} [{}:{}]".format(signal.group(1), signal.group(2), signal.group(3))
         elif "`IOB_INPUT" in verilog_lines[i]: #If it is a known verilog macro
             signal = re.search("^\s*`IOB_INPUT\(\s*(\w+)\s*,\s*([^\s]+)\s*\),?", verilog_lines[i])
             if signal is not None:
                 # Store signal in dictionary with format: module_signals[signalname] = "input [size:0]"
                 module_signals[signal.group(1)]="input [{}:0]".format(
-                        int(signal.group(2))-1 if signal.group(2).isdigit() else 
-                        (("" if "`" in signal.group(2) else "`") # Set as macro if it was a parameter
-                        +signal.group(2)+"-1").replace("ADDR_W","/*<SwregFilename>*/_ADDR_W")) # Replace keyword "ADDR_W" by "/*<SwregFilename>*/_ADDR_W"
+                        int(signal.group(2))-1 if signal.group(2).isdigit() else # Calculate size here if only contains digits
+                        signal.group(2)+"-1") # Leave calculation for verilog
         elif "`IOB_OUTPUT" in verilog_lines[i] or "`IOB_OUTPUT_VAR" in verilog_lines[i]: #If it is a known verilog macro
             signal = re.search("^\s*`IOB_OUTPUT(?:_VAR)?\(\s*(\w+)\s*,\s*([^\s]+)\s*\),?", verilog_lines[i])
             if signal is not None:
                 # Store signal in dictionary with format: module_signals[signalname] = "output [size:0]"
                 module_signals[signal.group(1)]="output [{}:0]".format(
-                        int(signal.group(2))-1 if signal.group(2).isdigit() else 
-                        (("" if "`" in signal.group(2) else "`")
-                        +signal.group(2)+"-1").replace("ADDR_W","/*<SwregFilename>*/_ADDR_W")) # Replace keyword "ADDR_W" by "/*<SwregFilename>*/_ADDR_W"
+                        int(signal.group(2))-1 if signal.group(2).isdigit() else # Calculate size here if only contains digits
+                        signal.group(2)+"-1") # Leave calculation for verilog
         elif "`IOB_INOUT" in verilog_lines[i]: #If it is a known verilog macro
             signal = re.search("^\s*`IOB_INOUT\(\s*(\w+)\s*,\s*([^\s]+)\s*\),?", verilog_lines[i])
             if signal is not None:
                 # Store signal in dictionary with format: module_signals[signalname] = "inout [size:0]"
                 module_signals[signal.group(1)]="inout [{}:0]".format(
-                        int(signal.group(2))-1 if signal.group(2).isdigit() else 
-                        (("" if "`" in signal.group(2) else "`") # Set as macro if it was a parameter
-                        +signal.group(2)+"-1").replace("ADDR_W","/*<SwregFilename>*/_ADDR_W")) # Replace keyword "ADDR_W" by "/*<SwregFilename>*/_ADDR_W"
+                        int(signal.group(2))-1 if signal.group(2).isdigit() else # Calculate size here if only contains digits
+                        signal.group(2)+"-1") # Leave calculation for verilog
         elif '`include "iob_gen_if.vh"' in verilog_lines[i]: #If it is a known verilog include
             module_signals["clk"]="input "
             module_signals["rst"]="input "
         elif '`include "iob_s_if.vh"' in verilog_lines[i]: #If it is a known verilog include
             module_signals["valid"]="input "
-            module_signals["address"]="input [/*<SwregFilename>*/_ADDR_W:0] "
+            module_signals["address"]="input [ADDR_W:0] "
             module_signals["wdata"]="input [DATA_W:0] "
             module_signals["wstrb"]="input [DATA_W/8:0] "
             module_signals["rdata"]="output [DATA_W:0] "
@@ -319,30 +313,30 @@ def find_idx(lines, word):
 # Functions to run when this script gets called directly #
 ##########################################################
 def print_instances(peripherals_str):
-    sut_instances_amount, _ = get_peripherals(peripherals_str)
-    for corename in sut_instances_amount:
-        for i in range(sut_instances_amount[corename]):
+    instances_amount, _ = get_peripherals(peripherals_str)
+    for corename in instances_amount:
+        for i in range(instances_amount[corename]):
             print(corename+str(i), end=" ")
 
 def print_peripherals(peripherals_str):
-    sut_instances_amount, _ = get_peripherals(peripherals_str)
-    for i in sut_instances_amount:
+    instances_amount, _ = get_peripherals(peripherals_str)
+    for i in instances_amount:
         print(i, end=" ")
 
 def print_nslaves(peripherals_str):
-    sut_instances_amount, _ = get_peripherals(peripherals_str)
+    instances_amount, _ = get_peripherals(peripherals_str)
     i=0
     # Calculate total amount of instances
-    for corename in sut_instances_amount:
-        i=i+sut_instances_amount[corename]
+    for corename in instances_amount:
+        i=i+instances_amount[corename]
     print(i, end="")
 
 def print_nslaves_w(peripherals_str):
-    sut_instances_amount, _ = get_peripherals(peripherals_str)
+    instances_amount, _ = get_peripherals(peripherals_str)
     i=0
     # Calculate total amount of instances
-    for corename in sut_instances_amount:
-        i=i+sut_instances_amount[corename]
+    for corename in instances_amount:
+        i=i+instances_amount[corename]
 
     if not i:
         print(0)
@@ -361,12 +355,12 @@ def remove_duplicates_and_params(peripherals_str):
     for p in peripherals:
         print(p, end=" ")
 
-#Creates list of defines of sut instances with sequential numbers
-def print_sut_peripheral_defines(defmacro, peripherals_str):
-    sut_instances_amount, _ = get_peripherals(peripherals_str)
+#Creates list of defines of peripheral instances with sequential numbers
+def print_peripheral_defines(defmacro, peripherals_str):
+    instances_amount, _ = get_peripherals(peripherals_str)
     j=0
-    for corename in sut_instances_amount:
-        for i in range(sut_instances_amount[corename]):
+    for corename in instances_amount:
+        for i in range(instances_amount[corename]):
             print(defmacro+corename+str(i)+"="+str(j), end=" ")
             j = j + 1
 
@@ -374,22 +368,22 @@ if __name__ == "__main__":
     # Parse arguments
     if sys.argv[1] == "get_peripherals":
         if len(sys.argv)<3:
-            print("Usage: {} get_peripherals <sut_peripherals>\n".format(sys.argv[0]))
+            print("Usage: {} get_peripherals <peripherals>\n".format(sys.argv[0]))
             exit(-1)
         print_peripherals(sys.argv[2])
     elif sys.argv[1] == "get_instances":
         if len(sys.argv)<3:
-            print("Usage: {} get_instances <sut_peripherals>\n".format(sys.argv[0]))
+            print("Usage: {} get_instances <peripherals>\n".format(sys.argv[0]))
             exit(-1)
         print_instances(sys.argv[2])
     elif sys.argv[1] == "get_n_slaves":
         if len(sys.argv)<3:
-            print("Usage: {} get_n_slaves <sut_peripherals>\n".format(sys.argv[0]))
+            print("Usage: {} get_n_slaves <peripherals>\n".format(sys.argv[0]))
             exit(-1)
         print_nslaves(sys.argv[2])
     elif sys.argv[1] == "get_n_slaves_w":
         if len(sys.argv)<3:
-            print("Usage: {} get_n_slaves_w <sut_peripherals>\n".format(sys.argv[0]))
+            print("Usage: {} get_n_slaves_w <peripherals>\n".format(sys.argv[0]))
             exit(-1)
         print_nslaves_w(sys.argv[2])
     elif sys.argv[1] == "remove_duplicates_and_params":
@@ -399,12 +393,12 @@ if __name__ == "__main__":
         remove_duplicates_and_params(sys.argv[2])
     elif sys.argv[1] == "get_defines":
         if len(sys.argv)<3:
-            print("Usage: {} get_defines <sut_peripherals> <optional:defmacro>\n".format(sys.argv[0]))
+            print("Usage: {} get_defines <peripherals> <optional:defmacro>\n".format(sys.argv[0]))
             exit(-1)
         if len(sys.argv)<4:
-            print_sut_peripheral_defines("",sys.argv[2])
+            print_peripheral_defines("",sys.argv[2])
         else:
-            print_sut_peripheral_defines(sys.argv[3],sys.argv[2])
+            print_peripheral_defines(sys.argv[3],sys.argv[2])
     else:
-        print("Unknown command.\nUsage: {} <command> <parameters>\n Commands: get_peripherals get_instances get_n_slaves get_n_slaves_w get_defines print_sut_peripheral_defines".format(sys.argv[0]))
+        print("Unknown command.\nUsage: {} <command> <parameters>\n Commands: get_peripherals get_instances get_n_slaves get_n_slaves_w get_defines print_peripheral_defines".format(sys.argv[0]))
         exit(-1)

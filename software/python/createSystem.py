@@ -26,7 +26,7 @@ def create_systemv(directories_str, peripherals_str, portmap_path):
     pwires_inserted = [0] * len(pwires)
 
     for corename in instances_amount:
-        swreg_filename = get_top_module(root_dir+"/"+submodule_directories[corename]+"/config.mk")+"_swreg";
+        top_module_name = get_top_module(root_dir+"/"+submodule_directories[corename]+"/config.mk");
 
         # Insert header files
         path = root_dir+"/"+submodule_directories[corename]+"/hardware/include"
@@ -37,7 +37,7 @@ def create_systemv(directories_str, peripherals_str, portmap_path):
                     template_contents.insert(start_index, '`include "{}"\n'.format(path+"/"+file))
         # Add topmodule_swreg_def.vh if mkregs.conf exists
         if os.path.isfile(root_dir+"/"+submodule_directories[corename]+"/mkregs.conf"):
-            template_contents.insert(start_index, '`include "{}"\n'.format(swreg_filename+"_def.vh"))
+            template_contents.insert(start_index, '`include "{}"\n'.format(top_module_name+"_swreg_def.vh"))
 
         pio_signals = get_pio_signals(peripheral_signals[corename])
 
@@ -54,8 +54,8 @@ def create_systemv(directories_str, peripherals_str, portmap_path):
                 if (str_match is not None) and str_match.group(1) in peripheral_signals[corename]:
                     template_contents.insert(start_index, 
                             re.sub("\/\*<InstanceName>\*\/","TESTER_"+corename+str(i),
-                            re.sub("\/\*<SwregFilename>\*\/",swreg_filename, 
-                                signal)))
+                            re.sub("\/\*<SwregFilename>\*\/",top_module_name+"_swreg",
+                            signal)))
                     # Remove comma at the end of last signal
                     if first_reversed_signal == True:
                         template_contents[start_index]=template_contents[start_index][::-1].replace(",","",1)[::-1]
@@ -72,7 +72,10 @@ def create_systemv(directories_str, peripherals_str, portmap_path):
                     # Make sure we have not yet created PWIRE of this signal
                     if pwires_inserted[mapped_signals[corename][i][signal]] == False:
                         # Insert pwire
-                        template_contents.insert(find_idx(template_contents, "PWIRES"), '    wire {} {};\n'.format(pwires[mapped_signals[corename][i][signal]][1].replace("/*<SwregFilename>*/",swreg_filename),pwires[mapped_signals[corename][i][signal]][0]))
+                        signal_size = replaceByParameterValue(pwires[mapped_signals[corename][i][signal]][1],\
+                                      peripheral_parameters[corename],\
+                                      instances_parameters[corename][i])
+                        template_contents.insert(find_idx(template_contents, "PWIRES"), '    wire {} {};\n'.format(signal_size,pwires[mapped_signals[corename][i][signal]][0]))
                         start_index+=1 #Increment start_index because we inserted a line in this file
                         # Mark this signal as been inserted
                         pwires_inserted[mapped_signals[corename][i][signal]] = True
@@ -80,7 +83,7 @@ def create_systemv(directories_str, peripherals_str, portmap_path):
                     template_contents.insert(start_index, '      .{}({}),\n'.format(signal,pwires[mapped_signals[corename][i][signal]][0]))
                 else: # Mapped to external interface
                     # Insert PIO
-                    signal_size = replaceByParameterValue(peripheral_signals[corename][signal].replace("/*<SwregFilename>*/",swreg_filename),\
+                    signal_size = replaceByParameterValue(peripheral_signals[corename][signal],\
                                   peripheral_parameters[corename],\
                                   instances_parameters[corename][i])
                     template_contents.insert(find_idx(template_contents, "PIO"), '    {} {}_{},\n'.format(signal_size,corename+str(i),signal))
@@ -90,7 +93,7 @@ def create_systemv(directories_str, peripherals_str, portmap_path):
 
             # Insert syntax declaring start of verilog instance with parameters
             template_contents.insert(start_index, "   {} (\n".format(corename+str(i)))
-            if len(instances_parameters[corename][i])>1 or instances_parameters[corename][i][0]:
+            if len(instances_parameters[corename][i])>0:
                 template_contents.insert(start_index, "   )\n")
                 first_reversed_signal=True
                 # Insert parameters
@@ -98,7 +101,7 @@ def create_systemv(directories_str, peripherals_str, portmap_path):
                     template_contents.insert(start_index, '      {}{}\n'.format(parameter,"" if first_reversed_signal else ","))
                     first_reversed_signal=False
                 template_contents.insert(start_index, "     #(\n")
-            template_contents.insert(start_index, "   {}\n".format(swreg_filename[:-6]))
+            template_contents.insert(start_index, "   {}\n".format(top_module_name))
             template_contents.insert(start_index, "\n")
             template_contents.insert(start_index, "   // {}\n".format(corename+str(i)))
             template_contents.insert(start_index, "\n")

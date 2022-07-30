@@ -62,7 +62,7 @@ ifeq ($(FPGA_SERVER),)
 	@rm -f $(FPGA_LOG)
 	../build.sh "vhdr" "$(shell cat defines.txt)" "$(wildcard vsrc/*)" "$(DEVICE)"
 	make post-build
-else 
+else
 	ssh $(FPGA_USER)@$(FPGA_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --delete --force --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
 	rsync -avz --delete --force --exclude .git $($(UUT_NAME)_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_UUT_DIR)

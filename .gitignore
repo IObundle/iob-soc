@@ -33,6 +33,7 @@ hardware/simulation/*/*
 !hardware/simulation/*/Makefile
 !hardware/simulation/*/*.expected
 !hardware/simulation/*/*.sh
+!hardware/simulation/verilator/*.cpp
 
 #fpga
 hardware/fpga/*/*/*
