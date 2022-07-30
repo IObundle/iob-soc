@@ -34,7 +34,7 @@ portmap_header = """\
 def generate_portmap(directories_str, peripherals_str, portmap_path):
     instances_amount, _ = get_peripherals(peripherals_str)
     submodule_directories = get_submodule_directories(directories_str)
-    peripheral_signals = get_peripherals_signals(instances_amount,submodule_directories)
+    peripheral_signals, _ = get_peripherals_signals(instances_amount,submodule_directories)
 
     # Generate portmap file
     portmap_file = open(portmap_path, "w")

@@ -81,6 +81,36 @@ def get_submodule_directories(directories_str):
         directories[key.replace("_DIR","")] = directories.pop(key)
     return directories
 
+# Replaces a verilog parameter in a string with its value.
+# The value is determined based on default value and ordered parameters given (that may override the default)
+# Arguments: 
+#   string_with_parameter: string with parameter that will be replaced. Example: "input [SIZE_PARAMETER:0]"
+#   parameters_default_values: dictionary of parameters where key is parameter name 
+#                              and value is default value of this parameter. 
+#                              Example: {"SIZE_PARAMETER":16, "ANOTHER_PARAMETER":0}
+#   ordered_parameter_values: list of ordered parameter values that override default ones.
+#                              Example: ["32", "5"]
+# Returns: 
+#   String with parameter replaced. Example: "input [32:0]"
+def replaceByParameterValue(string_with_parameter, parameters_default_values, ordered_parameter_values)
+    parameter_idx=0
+    parameter_name=""
+
+    #Find parameter name
+    for parameter in parameters_default_values:
+        if parameter in string_with_parameter:
+            parameter_name=parameter
+            break
+        parameter_idx+=1
+
+    #If parameter should be overriden
+    if(len(ordered_parameter_values)>parameter_idx):
+        #Replace parameter in string with value from parameter override
+        return string_with_parameter.replace(parameter_name,ordered_parameter_values[parameter_idx])
+    else:
+        #Replace parameter in string with default value 
+        return string_with_parameter.replace(parameter_name,parameters_default_values[parameter_name])
+
 # Parameter: PERIPHERALS string defined in config.mk
 # Returns dictionary with amount of instances for each peripheral
 # Also returns dictionary with verilog parameters for each of those instance
@@ -145,7 +175,6 @@ def get_module_io(verilog_lines):
                 if signal.group(2) is None:
                     module_signals[signal.group(4)]=signal.group(1)
                 else:
-                    #FUTURE IMPROVEMENT: make python parse verilog macros.
                     module_signals[signal.group(4)]="{} [{}:{}]".format(signal.group(1), 
                             signal.group(2) if signal.group(2).isdigit() else
                             ("" if "`" in signal.group(2) else "`") # Set as macro if it was a parameter
@@ -190,6 +219,42 @@ def get_module_io(verilog_lines):
             exit(-1)
     return module_signals
 
+# Given lines read from the verilog file with a module declaration
+# this function returns the parameters of that module. 
+# The return value is a dictionary, where the key is the 
+# parameter name and the value is the default value assigned to the parameter.
+def get_module_parameters(verilog_lines):
+    module_start = 0
+    #Find module declaration
+    for line in verilog_lines:
+        module_start += 1
+        if "module " in line:
+            break #Found module declaration
+
+    parameter_list_start = module_start
+    #Find module parameter list start 
+    for i in range(module_start, len(verilog_lines)):
+        parameter_list_start += 1
+        if verilog_lines[i].replace(" ", "").startswith("#("):
+            break #Found parameter list start
+
+    module_parameters = {}
+    #Get parameters of this module
+    for i in range(parameter_list_start, len(verilog_lines)):
+        #Ignore comments and empty lines
+        if not verilog_lines[i].strip() or verilog_lines[i].lstrip().startswith("//"):
+            continue
+        if ")" in verilog_lines[i]:
+            break #Found end of parameter list
+
+        # Parse parameter
+        parameter = re.search("^\s*parameter\s+([^=\s]+)\s*=\s*([^\s,]+),?", verilog_lines[i])
+        if parameter is not None:
+            # Store parameter in dictionary with format: module_parameters[parametername] = "default value"
+                module_parameters[parameter.group(1)]=parameter.group(2)
+
+    return module_parameters
+
 # Given a dictionary of signals, returns a dictionary with only pio signals.
 # It removes reserved system signals, such as: clk, rst, valid, address, wdata, wstrb, rdata, ready, ...
 def get_pio_signals(peripheral_signals):
@@ -212,11 +277,14 @@ def get_top_module(file_path):
             break;
     return top_module
 
-# Return dictionary with signals for each peripheral given in the input list 
-# Also need to provide a dictionary with directory location of each peripheral given
+# Arguments: - list_of_peripherals: dictionary with corename of each peripheral
+#            - submodule_directories: dictionary with directory location of each peripheral given
+# Returns: - dictionary with signals from port list in top module of each peripheral
+#          - dictionary with parameters in top module of each peripheral
 def get_peripherals_signals(list_of_peripherals, submodule_directories):
-    # Get signals of each peripheral
     peripheral_signals = {}
+    peripheral_parameters = {}
+    # Get signals of each peripheral
     for i in list_of_peripherals:
         # Find top module verilog file of peripheral
         module_dir = root_dir+"/"+submodule_directories[i]+"/hardware/src"
@@ -230,10 +298,11 @@ def get_peripherals_signals(list_of_peripherals, submodule_directories):
         module_contents = module_file.read().splitlines()
         # Get module inputs and outputs
         peripheral_signals[i] = get_module_io(module_contents)
+        peripheral_parameters[i] = get_module_parameters(module_contents)
         
         module_file.close()
     #print(peripheral_signals) #DEBUG
-    return peripheral_signals
+    return peripheral_signals, peripheral_parameters
 
 # Find index of word in array with multiple strings
 def find_idx(lines, word):

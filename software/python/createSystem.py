@@ -12,7 +12,7 @@ def create_systemv(directories_str, peripherals_str, portmap_path):
     # Get peripherals, directories and signals
     instances_amount, instances_parameters = get_peripherals(peripherals_str)
     submodule_directories = get_submodule_directories(directories_str)
-    peripheral_signals = get_peripherals_signals(instances_amount,submodule_directories)
+    peripheral_signals, peripheral_parameters = get_peripherals_signals(instances_amount,submodule_directories)
 
     # Read portmap file and get encoded data
     pwires, mapped_signals = read_portmap(instances_amount, peripheral_signals, portmap_path)
@@ -80,7 +80,10 @@ def create_systemv(directories_str, peripherals_str, portmap_path):
                     template_contents.insert(start_index, '      .{}({}),\n'.format(signal,pwires[mapped_signals[corename][i][signal]][0]))
                 else: # Mapped to external interface
                     # Insert PIO
-                    template_contents.insert(find_idx(template_contents, "PIO"), '    {} {}_{},\n'.format(peripheral_signals[corename][signal].replace("/*<SwregFilename>*/",swreg_filename),corename+str(i),signal))
+                    signal_size = replaceByParameterValue(peripheral_signals[corename][signal].replace("/*<SwregFilename>*/",swreg_filename),\
+                                  peripheral_parameters[corename],\
+                                  instances_parameters[corename][i])
+                    template_contents.insert(find_idx(template_contents, "PIO"), '    {} {}_{},\n'.format(signal_size,corename+str(i),signal))
                     start_index+=1 #Increment start_index because we inserted a line in this file
                     # Insert peripheral PORT
                     template_contents.insert(start_index, '      .{}({}_{}),\n'.format(signal,corename+str(i),signal))
