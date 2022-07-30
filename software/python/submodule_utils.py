@@ -92,7 +92,7 @@ def get_submodule_directories(directories_str):
 #                              Example: ["32", "5"]
 # Returns: 
 #   String with parameter replaced. Example: "input [32:0]"
-def replaceByParameterValue(string_with_parameter, parameters_default_values, ordered_parameter_values)
+def replaceByParameterValue(string_with_parameter, parameters_default_values, ordered_parameter_values):
     parameter_idx=0
     parameter_name=""
 
@@ -102,6 +102,10 @@ def replaceByParameterValue(string_with_parameter, parameters_default_values, or
             parameter_name=parameter
             break
         parameter_idx+=1
+
+    #Return unmodified string if there is no parameter in string
+    if not parameter_name:
+        return string_with_parameter;
 
     #If parameter should be overriden
     if(len(ordered_parameter_values)>parameter_idx):
