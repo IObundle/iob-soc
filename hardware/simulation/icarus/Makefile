@@ -19,16 +19,10 @@ comp: $(SIM_PROC)
 $(SIM_PROC):
 	$(VLOG) $(VSRC)
 
-.PHONY: run clean debug
-
 exec:
 	./$(SIM_PROC)
 
 clean: clean-remote
 	@rm -f $(SIM_PROC)
-
-debug:
-	@echo $(CACHE_DIR)
-	@echo $(UART_DIR)
 
 .PHONY: comp exec clean debug

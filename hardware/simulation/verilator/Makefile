@@ -3,13 +3,14 @@ SHELL := /bin/bash
 ROOT_DIR:=../../..
 
 defmacro:=-D
-incdir:=-I 
+incdir:=-I
 
 SIMULATOR=verilator
 SIM_SERVER=$(VSIM_SERVER)
 SIM_USER=$(VSIM_USER)
 SIM_PROC=Vsystem_top
 
+HDR=iob_uart_swreg.h
 
 include ../simulation.mk
 
@@ -51,6 +52,7 @@ VERILATOR_FLAGS += --trace # Make waveforms
 #VERILATOR_FLAGS += --gdbbt # Add this trace to get a backtrace in gdb
 VERILATOR_FLAGS += +1800-2005ext+v # Use SystemVerilog 2005 with file extension .v
 VERILATOR_FLAGS += --error-limit 1000 # Exit if number of errors passes 1000
+VERILATOR_FLAGS += -MAKEFLAGS "CXXFLAGS=\"$(DEFINE)\"" # Pass defines to the verilator cpp testbench compilation
 
 # Verilator source files
 VERILATOR_INPUT = $(INCLUDE_VERI) $(DEFINE) $(VSRC) --top-module system_top system_tb.cpp
@@ -59,7 +61,7 @@ VERILATOR_INPUT = $(INCLUDE_VERI) $(DEFINE) $(VSRC) --top-module system_top syst
 comp: $(SIM_PROC)
 
 #simulator executable
-$(SIM_PROC):
+$(SIM_PROC): $(HDR)
 	$(VERILATOR) $(VERILATOR_FLAGS) $(VERILATOR_INPUT)
 	cp obj_dir/$@ .
 
@@ -67,8 +69,11 @@ $(SIM_PROC):
 exec:
 	./$(SIM_PROC)
 
+iob_uart_swreg.h: $(FIRM_DIR)/iob_uart_swreg.h
+	cp $< $@
+
 clean: clean-remote
-	@rm -f $(SIM_PROC)
+	@rm -f $(SIM_PROC) $(HDR)
 	@rm -rf obj_dir
 
-.PHONY: exec clean
+.PHONY: comp exec clean

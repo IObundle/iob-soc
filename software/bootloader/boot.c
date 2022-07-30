@@ -48,7 +48,7 @@ int main() {
   int file_size = 0;
   char r_fw[] = "firmware.bin";
   if (uart_getc() == FRX) {//file receive: load firmware
-    file_size = uart_recvfile(r_fw, &prog_start_addr);
+    file_size = uart_recvfile(r_fw, prog_start_addr);
     uart_puts (PROGNAME);
     uart_puts (": Loading firmware...\n");
   }

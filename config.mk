@@ -47,7 +47,6 @@ USE_COMPRESSED ?=1
 #ROOT DIRECTORY ON REMOTE MACHINES
 REMOTE_ROOT_DIR ?=sandbox/iob-soc
 
-
 #SIMULATION
 #default simulator running locally or remotely
 #check the respective Makefile in hardware/simulation/$(SIMULATOR) for specific settings
@@ -57,12 +56,6 @@ SIMULATOR ?=icarus
 #default board running locally or remotely
 #check the respective Makefile in hardware/fpga/$(BOARD) for specific settings
 BOARD ?=CYCLONEV-GT-DK
-
-#ASIC COMPILATION
-#default asic node running locally or remotely
-#check the respective Makefile in hardware/asic/$(ASIC_NODE) for specific settings
-ASIC_NODE ?=umc130
-
 
 #DOCUMENTATION
 #default document to compile
@@ -99,12 +92,13 @@ SW_DIR:=$(ROOT_DIR)/software
 PC_DIR:=$(SW_DIR)/pc-emul
 FIRM_DIR:=$(SW_DIR)/firmware
 BOOT_DIR:=$(SW_DIR)/bootloader
-CONSOLE_DIR:=$(SW_DIR)/console
+
+#scripts paths
+PYTHON_DIR=$(LIB_DIR)/software/python
 
 #hw paths
 HW_DIR=$(ROOT_DIR)/hardware
 SIM_DIR=$(HW_DIR)/simulation/$(SIMULATOR)
-ASIC_DIR=$(HW_DIR)/asic/$(ASIC_NODE)
 BOARD_DIR ?=$(shell find hardware -name $(BOARD))
 
 #doc paths
@@ -121,13 +115,8 @@ DEFINE+=$(defmacro)N_SLAVES=$(N_SLAVES) #peripherals
 
 #address selection bits
 E:=31 #extra memory bit
-ifeq ($(USE_DDR),1)
 P:=30 #periphs
 B:=29 #boot controller
-else
-P:=31
-B:=30
-endif
 
 DEFINE+=$(defmacro)E=$E
 DEFINE+=$(defmacro)P=$P
@@ -143,15 +132,16 @@ $(foreach p, $(PERIPHERALS), $(eval DEFINE+=$(defmacro)$p=$($p)))
 N_SLAVES_W = $(shell echo "import math; print(math.ceil(math.log($(N_SLAVES),2)))"|python3 )
 DEFINE+=$(defmacro)N_SLAVES_W=$(N_SLAVES_W)
 
-
-#default baud and system clock freq
-BAUD ?=115200
-FREQ ?=100000000
-
-SHELL = /bin/bash
-
 #RULES
+
+#kill "console", the background running program seriving simulators,
+#emulators and boards
+CNSL_PID:=ps aux | grep $(USER) | grep console | grep python3 | grep -v grep
+kill-cnsl:
+	@if [ "`$(CNSL_PID)`" ]; then \
+	kill -9 $$($(CNSL_PID) | awk '{print $$2}'); fi
+
 gen-clean:
 	@rm -f *# *~
 
-.PHONY: gen-clean
+.PHONY: gen-clean kill-cnsl

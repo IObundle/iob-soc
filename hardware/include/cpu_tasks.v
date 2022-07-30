@@ -3,15 +3,7 @@
 //
 //this is a temporary solution
 
-//address macros
-`define UART_SOFTRESET_ADDR 0
-`define UART_DIV_ADDR 1
-`define UART_TXDATA_ADDR 2
-`define UART_TXEN_ADDR 3
-`define UART_TXREADY_ADDR 4
-`define UART_RXDATA_ADDR 5
-`define UART_RXEN_ADDR 6
-`define UART_RXREADY_ADDR 7
+`include "iob_uart_swreg_def.vh"
 
 //file seek macros
 `define SEEK_SET 0
@@ -20,13 +12,20 @@
 
 // 1-cycle write
 task cpu_uartwrite;
-   input [3:0]  cpu_address;
+   input [2:0]  cpu_address;
    input [31:0] cpu_data;
+   input [2:0] nbytes;
+   reg [4:0] wstrb_int;
    begin
-      #1 uart_addr = cpu_address;
+      #1 uart_addr = cpu_address[2]; // use 32 bit address
       uart_valid = 1;
-      uart_wstrb = 4'hf;
-      uart_wdata = cpu_data;
+      case (nbytes)
+          1: wstrb_int = 4'b0001;
+          2: wstrb_int = 4'b0011;
+          default: wstrb_int = 4'b1111;
+      endcase
+      uart_wstrb = wstrb_int << (cpu_address[1:0]);
+      uart_wdata = cpu_data << (cpu_address[1:0]*8);
       @ (posedge clk) #1 uart_wstrb = 0;
       uart_valid = 0;
    end
@@ -34,12 +33,13 @@ endtask //cpu_uartwrite
 
 // 2-cycle read
 task cpu_uartread;
-   input [3:0]   cpu_address;
+   input [2:0]   cpu_address;
    output [31:0] read_reg;
    begin
-      #1 uart_addr = cpu_address;
+      #1 uart_addr = cpu_address[2]; // use 32 bit address
       uart_valid = 1;
-      @ (posedge clk) #1 read_reg = {24'd0, uart_rdata[7:0]};
+      @ (posedge clk) #1 
+      read_reg = uart_rdata >> (cpu_address[1:0]*8);
       @ (posedge clk) #1 uart_valid = 0;
    end
 endtask
@@ -47,12 +47,12 @@ endtask
 task cpu_inituart;
    begin
       //pulse reset uart
-      cpu_uartwrite(`UART_SOFTRESET_ADDR, 1);
-      cpu_uartwrite(`UART_SOFTRESET_ADDR, 0);
+      cpu_uartwrite(`UART_SOFTRESET_ADDR, 1, `UART_SOFTRESET_W/8);
+      cpu_uartwrite(`UART_SOFTRESET_ADDR, 0, `UART_SOFTRESET_W/8);
       //config uart div factor
-      cpu_uartwrite(`UART_DIV_ADDR, `FREQ/`BAUD);
+      cpu_uartwrite(`UART_DIV_ADDR, `FREQ/`BAUD, `UART_DIV_W/8);
       //enable uart for receiving
-      cpu_uartwrite(`UART_RXEN_ADDR, 1);
-      cpu_uartwrite(`UART_TXEN_ADDR, 1);
+      cpu_uartwrite(`UART_RXEN_ADDR, 1, `UART_RXEN_W/8);
+      cpu_uartwrite(`UART_TXEN_ADDR, 1, `UART_TXEN_W/8);
    end
 endtask

@@ -15,10 +15,7 @@ software/*/*
 !software/firmware/firmware.c
 !software/firmware/firmware.S
 
-!software/console/console.c
-!software/console/console.h
-!software/console/rs232comm.c
-!software/console/socketcomm.c
+!software/console/console
 
 #HARDWARE
 #sources
@@ -32,6 +29,7 @@ hardware/simulation/*/*
 !hardware/simulation/*/Makefile
 !hardware/simulation/*/*.expected
 !hardware/simulation/*/*.sh
+!hardware/simulation/verilator/*.cpp
 
 #fpga
 hardware/fpga/*/*/*
@@ -43,17 +41,7 @@ hardware/fpga/*/*/*
 !hardware/fpga/*/*/doc
 !hardware/fpga/vivado/*/*.xdc
 !hardware/fpga/quartus/*/*.sdc
-
-#asic
-hardware/asic/*/*
-!hardware/asic/asic.mk
-!hardware/asic/*/Makefile
-!hardware/asic/*/*.tcl
-!hardware/asic/*/*.sh
-!hardware/asic/*/verilog
-!hardware/asic/*/synscript.tcl
-!hardware/asic/*/powscript.tcl
-!hardware/asic/skywater/openram_config.py
+!hardware/fpga/quartus/*/qsys
 
 #DOCUMENT
 document/*/*

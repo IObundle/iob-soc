@@ -1,0 +1,108 @@
+name: CI
+
+# Set default shell as interactive (source ~/.bashrc)
+defaults:
+  run:
+    shell: bash -ieo pipefail {0}
+
+# Run only one instance of this workflow at a time
+# cancel-in-progress: stop running workflow and run latest instead
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches: [ master ]
+  # Don't forget to require approval for all outside collaborators
+  pull_request:
+    branches: '*'
+  # Allow manual workflow runs
+  workflow_dispatch:
+
+jobs:
+  pc-emul:
+    runs-on: self-hosted
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: test-clean
+        run: make test-clean
+      - name: test-pc-emul
+        run: make test-pc-emul
+
+  verilator:
+    runs-on: self-hosted
+    timeout-minutes: 30
+    # run even if previous job failed
+    if: ${{ !cancelled() }}
+    # run after indicated job
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: test-clean
+        run: make test-clean
+      - name: test-verilator
+        run: make sim-test SIMULATOR=verilator
+
+  icarus:
+    runs-on: self-hosted
+    timeout-minutes: 90
+    if: ${{ !cancelled() }}
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: test-clean
+        run: make test-clean
+      - name: test-icarus
+        run: make sim-test SIMULATOR=icarus
+
+  cyclonev:
+    runs-on: self-hosted
+    timeout-minutes: 60
+    if: ${{ !cancelled() }}
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: test-clean
+        run: make test-clean
+      - name: test-cyclonev
+        run: make fpga-test BOARD=CYCLONEV-GT-DK
+
+  aes-ku040:
+    runs-on: self-hosted
+    timeout-minutes: 90
+    if: ${{ !cancelled() }}
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: test-clean
+        run: make test-clean
+      - name: test-aes-ku040
+        run: make fpga-test BOARD=AES-KU040-DB-G
+
+  doc:
+    runs-on: self-hosted
+    timeout-minutes: 60
+    if: ${{ !cancelled() }}
+    needs: [ cyclonev, aes-ku040 ]
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: test-clean
+        run: make test-clean
+      - name: test-doc
+        run: make test-doc

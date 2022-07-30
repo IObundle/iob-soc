@@ -4,4 +4,3 @@
 
 //boot controller base address
 #define BOOTCTR_BASE (1<<B)
-
