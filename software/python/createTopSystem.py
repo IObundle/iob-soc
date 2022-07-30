@@ -15,7 +15,7 @@ def create_top_system(directories_str, peripherals_str, portmap_path):
     peripheral_signals, peripheral_parameters = get_peripherals_signals(instances_amount,submodule_directories)
 
     # Read portmap file and get encoded data
-    pwires, mapped_signals = read_portmap(instances_amount, peripheral_signals, portmap_path)
+    pwires, mapped_signals = read_portmap(instances_amount, instances_parameters, peripheral_signals, peripheral_parameters, portmap_path)
 
     # Read template file
     template_file = open(root_dir+"/hardware/simulation/verilog_tb/system_top_core.v", "r")

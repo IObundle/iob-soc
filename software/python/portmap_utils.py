@@ -53,7 +53,7 @@ def generate_portmap(directories_str, peripherals_str, portmap_path):
 #    mapped_signals: Dimensions=[<corename>][<instance number>][<signal name>]
 #                    This list of dictionaries stores the -2 for unmapped signals, -1 for mapped to external interface 
 #                    and >-1 for signals mapped to a wire in pwires list with that index.
-def read_portmap(instances_amount, peripheral_signals, portmap_path):
+def read_portmap(instances_amount, instances_parameters, peripheral_signals, peripheral_parameters, portmap_path):
     # Wires internal to the system that interface between peripherals
     pwires = []
     # Array to store if a signal has been mapped
@@ -97,11 +97,19 @@ def read_portmap(instances_amount, peripheral_signals, portmap_path):
                    ("output" in peripheral_signals[result.group(1)][result.group(3)] and "output" in peripheral_signals[result.group(4)][result.group(6)]):
                     print("Error: Portmap file line {}, can't connect because both signals are of type {}!".format(idx+1,"input" if "input" in peripheral_signals[result.group(1)][result.group(3)] else "output"))
                     exit(-1)
+                #Get signal sizes, replacing verilog parameters by their values
                 signal1_size = re.search("(?:inout|input|output)(.+)",peripheral_signals[result.group(1)][result.group(3)]).group(1).replace(" ", "")
                 signal2_size = re.search("(?:inout|input|output)(.+)",peripheral_signals[result.group(4)][result.group(6)]).group(1).replace(" ", "")
-                # Make sure signals have the same size (give warning if we are not sure, because it may be a macro)
+                signal1_size = replaceByParameterValue(signal1_size,
+                              peripheral_parameters[result.group(1)],
+                              instances_parameters[result.group(1)][int(result.group(2))])
+                signal2_size = replaceByParameterValue(signal2_size,
+                              peripheral_parameters[result.group(4)],
+                              instances_parameters[result.group(4)][int(result.group(5))])
+                # Make sure signals have the same size
                 if (signal1_size!=signal2_size):
-                    print("Note: Portmap file line {}, signals have sizes {} and {}. These may or may not be equal!".format(idx+1,signal1_size,signal2_size))
+                    print("Error: Portmap file line {}, signals have different sizes: {} and {}. They must be equal!".format(idx+1,signal1_size,signal2_size))
+                    exit(-1)
                 # Create pwires signal to merge them
                 pwires.append(["merge_{}{}_{}_with_{}{}_{}".format(result.group(1),result.group(2),result.group(3),result.group(4),result.group(5),result.group(6)),signal1_size])
                 # Store index of pwires signal in mapping
