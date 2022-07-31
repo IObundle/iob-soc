@@ -15,10 +15,15 @@ uint32_t axistream_in_pop_word(){
 //Get value from FIFO
 //Returns true if this word was tlast, false otherwise
 //Arguments:
-//    fifo_word: Word popped from fifo (32 bits)
+//    byte_array: byte array to be filled with 4 bytes popped from fifo word
 //    n_valid_bytes: Number of valid bytes in this word (will always be 4 if tlast is not active)
-bool axistream_in_pop(uint32_t *fifo_word, uint8_t *n_valid_bytes){
-  *fifo_word = IOB_AXISTREAM_IN_GET_OUT(0);
+bool axistream_in_pop(uint8_t *byte_array, uint8_t *n_valid_bytes){
+  uint32_t fifo_word = IOB_AXISTREAM_IN_GET_OUT(0);
+  byte_array[0]= fifo_word & 0xff;
+  byte_array[1]= fifo_word>>8 & 0xff;
+  byte_array[2]= fifo_word>>16 & 0xff;
+  byte_array[3]= fifo_word>>24 & 0xff;
+
   uint8_t value = IOB_AXISTREAM_IN_GET_LAST();
   if(!axistream_in_empty() && (value & 0x10)){ //This is tlast word
      //TODO: [Optimization] make register return number of valid bytes instead of rstrb (this removes need for counting here)
