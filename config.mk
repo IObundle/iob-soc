@@ -140,12 +140,6 @@ DEFINE+=$(defmacro)B=$B
 #the ID is used as an instance name index in the hardware and as a base address in the software
 DEFINE+=$(shell $(SW_DIR)/python/submodule_utils.py get_defines "$(PERIPHERALS)" "$(defmacro)")
 
-#default baud and system clock freq
-BAUD ?=5000000 #simulation default
-FREQ ?=100000000
-
-SHELL = /bin/bash
-
 #RULES
 
 #kill "console", the background running program seriving simulators,

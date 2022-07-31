@@ -10,9 +10,9 @@ import math
 # Signals in this template will only be inserted if they exist in the peripheral IO
 reserved_signals_template = """\
       .clk(clk),
-      .rst(reset),
-      .reset(reset),
-      .arst(reset),
+      .rst(rst),
+      .reset(rst),
+      .arst(rst),
       .valid(slaves_req[`valid(`/*<InstanceName>*/)]),
       .address(slaves_req[`address(`/*<InstanceName>*/,`/*<SwregFilename>*/_ADDR_W+2)-2]),
       .wdata(slaves_req[`wdata(`/*<InstanceName>*/)]),

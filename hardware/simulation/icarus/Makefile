@@ -25,20 +25,4 @@ exec:
 clean: clean-remote
 	@rm -f $(SIM_PROC)
 
-debug:
-	@echo $(SUBMODULES)
-	@echo $(MODULES)
-	@echo $(MEM_MODULES)
-	@echo $(AXIMEM_DIR)
-	@echo $(INTERCON_DIR)
-	@echo $(MEM_DIR)
-	@echo $(CPU_DIR)
-	@echo $(CACHE_DIR)
-	@echo $(UART_DIR)
-	@echo $(VHDR)
-	@echo $(VSRC)
-	@echo $(INCLUDE)
-	@echo $(DEFINE)
-	@echo $(MODULE)
-
 .PHONY: comp exec clean debug
