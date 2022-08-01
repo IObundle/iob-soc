@@ -114,7 +114,7 @@ ifeq ($(VCD),1)
 endif
 
 test: clean-testlog test1 test2 test3 test4 test5
-	diff test.log ../test.expected
+	diff test.log $($(UUT_NAME)_DIR)/$(SIM_TEST_PATH)
 
 test1:
 	make -C $(ROOT_DIR) sim-clean

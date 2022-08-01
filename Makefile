@@ -65,7 +65,7 @@ fpga-run: $(FPGA_DEPS) #fpga-build #Remove this prerequisite temporarily because
 fpga-clean: fw-clean
 	make -C $(BOARD_DIR) clean
 
-fpga-test:
+fpga-test: fpga-build #Needs fpga build because it was temporarily removed above
 	make -C $(BOARD_DIR) test
 
 fpga-post-run: $(FPGA_POST_RUN_DEPS)
