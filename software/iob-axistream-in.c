@@ -8,8 +8,33 @@ void axistream_in_init(int base_address){
 }
 
 //Get value from FIFO
-uint32_t axistream_in_pop(){
+uint32_t axistream_in_pop_word(){
   return IOB_AXISTREAM_IN_GET_OUT(0);
+}
+
+//Get value from FIFO
+//Returns true if this word was tlast, false otherwise
+//Arguments:
+//    byte_array: byte array to be filled with 4 bytes popped from fifo word
+//    n_valid_bytes: Number of valid bytes in this word (will always be 4 if tlast is not active)
+bool axistream_in_pop(uint8_t *byte_array, uint8_t *n_valid_bytes){
+  uint32_t fifo_word = IOB_AXISTREAM_IN_GET_OUT(0);
+  byte_array[0]= fifo_word & 0xff;
+  byte_array[1]= fifo_word>>8 & 0xff;
+  byte_array[2]= fifo_word>>16 & 0xff;
+  byte_array[3]= fifo_word>>24 & 0xff;
+
+  uint8_t value = IOB_AXISTREAM_IN_GET_LAST();
+  if(!axistream_in_empty() && (value & 0x10)){ //This is tlast word
+     //TODO: [Optimization] make register return number of valid bytes instead of rstrb (this removes need for counting here)
+     value = value & 0xff; //Leave only rstrb
+     for(*n_valid_bytes = 0; value; value>>1) //Count amount of valid bytes
+       (*n_valid_bytes)++;
+    return true;
+  } else { 
+    *n_valid_bytes = 4;
+    return false;
+  }
 }
 
 //Signal when FIFO empty
@@ -25,7 +50,7 @@ bool axistream_in_empty(){
 //If TDATA has 16 bits, then rstrb can have values: 0011, 1111
 //If TDATA has 32 bits, then rstrb can only have value: 1111
 bool axistream_in_was_last(char *rstrb){
-  uint16_t value = IOB_AXISTREAM_IN_GET_LAST();
+  uint8_t value = IOB_AXISTREAM_IN_GET_LAST();
   *rstrb = (char)value & 0xf;
   return value & 0x10;
 }
