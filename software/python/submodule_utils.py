@@ -7,6 +7,59 @@ import os
 import re
 import math
 
+# Signals in this template will only be inserted if they exist in the peripheral IO
+reserved_signals_template = """\
+      .clk(clk),
+      .rst(rst),
+      .reset(rst),
+      .arst(rst),
+      .valid(slaves_req[`valid(`/*<InstanceName>*/)]),
+      .address(slaves_req[`address(`/*<InstanceName>*/,`/*<SwregFilename>*/_ADDR_W+2)-2]),
+      .wdata(slaves_req[`wdata(`/*<InstanceName>*/)]),
+      .wstrb(slaves_req[`wstrb(`/*<InstanceName>*/)]),
+      .rdata(slaves_resp[`rdata(`/*<InstanceName>*/)]),
+      .ready(slaves_resp[`ready(`/*<InstanceName>*/)]),
+      .trap(trap[0]),
+      .m_axi_awid    (m_axi_awid[0:0]),
+      .m_axi_awaddr  (m_axi_awaddr[`DDR_ADDR_W-1:0]),
+      .m_axi_awlen   (m_axi_awlen[7:0]),
+      .m_axi_awsize  (m_axi_awsize[2:0]),
+      .m_axi_awburst (m_axi_awburst[1:0]),
+      .m_axi_awlock  (m_axi_awlock[0:0]),
+      .m_axi_awcache (m_axi_awcache[3:0]),
+      .m_axi_awprot  (m_axi_awprot[2:0]),
+      .m_axi_awqos   (m_axi_awqos[3:0]),
+      .m_axi_awvalid (m_axi_awvalid[0:0]),
+      .m_axi_awready (m_axi_awready[0:0]),
+      .m_axi_wdata   (m_axi_wdata[`DATA_W-1:0]),
+      .m_axi_wstrb   (m_axi_wstrb[`DATA_W/8-1:0]),
+      .m_axi_wlast   (m_axi_wlast[0:0]),
+      .m_axi_wvalid  (m_axi_wvalid[0:0]),
+      .m_axi_wready  (m_axi_wready[0:0]),
+      .m_axi_bid     (m_axi_bid[0:0]),
+      .m_axi_bresp   (m_axi_bresp[1:0]),
+      .m_axi_bvalid  (m_axi_bvalid[0:0]),
+      .m_axi_bready  (m_axi_bready[0:0]),
+      .m_axi_arid    (m_axi_arid[0:0]),
+      .m_axi_araddr  (m_axi_araddr[`DDR_ADDR_W-1:0]),
+      .m_axi_arlen   (m_axi_arlen[7:0]),
+      .m_axi_arsize  (m_axi_arsize[2:0]),
+      .m_axi_arburst (m_axi_arburst[1:0]),
+      .m_axi_arlock  (m_axi_arlock[0:0]),
+      .m_axi_arcache (m_axi_arcache[3:0]),
+      .m_axi_arprot  (m_axi_arprot[2:0]),
+      .m_axi_arqos   (m_axi_arqos[3:0]),
+      .m_axi_arvalid (m_axi_arvalid[0:0]),
+      .m_axi_arready (m_axi_arready[0:0]),
+      .m_axi_rid     (m_axi_rid[0:0]),
+      .m_axi_rdata   (m_axi_rdata[`DATA_W-1:0]),
+      .m_axi_rresp   (m_axi_rresp[1:0]),
+      .m_axi_rlast   (m_axi_rlast[0:0]),
+      .m_axi_rvalid  (m_axi_rvalid[0:0]),
+      .m_axi_rready  (m_axi_rready[0:0]),
+"""
+
+
 # Parameter: string with directories separated by ';'
 # Returns dictionary with every directory defined in <root_dir>/config.mk
 def get_directories(directories_str):
@@ -28,6 +81,40 @@ def get_submodule_directories(directories_str):
         directories[key.replace("_DIR","")] = directories.pop(key)
     return directories
 
+# Replaces a verilog parameter in a string with its value.
+# The value is determined based on default value and ordered parameters given (that may override the default)
+# Arguments: 
+#   string_with_parameter: string with parameter that will be replaced. Example: "input [SIZE_PARAMETER:0]"
+#   parameters_default_values: dictionary of parameters where key is parameter name 
+#                              and value is default value of this parameter. 
+#                              Example: {"SIZE_PARAMETER":16, "ANOTHER_PARAMETER":0}
+#   ordered_parameter_values: list of ordered parameter values that override default ones.
+#                              Example: ["32", "5"]
+# Returns: 
+#   String with parameter replaced. Example: "input [32:0]"
+def replaceByParameterValue(string_with_parameter, parameters_default_values, ordered_parameter_values):
+    parameter_idx=0
+    parameter_name=""
+
+    #Find parameter name
+    for parameter in parameters_default_values:
+        if parameter in string_with_parameter:
+            parameter_name=parameter
+            break
+        parameter_idx+=1
+
+    #Return unmodified string if there is no parameter in string
+    if not parameter_name:
+        return string_with_parameter;
+
+    #If parameter should be overriden
+    if(len(ordered_parameter_values)>parameter_idx):
+        #Replace parameter in string with value from parameter override
+        return string_with_parameter.replace(parameter_name,ordered_parameter_values[parameter_idx])
+    else:
+        #Replace parameter in string with default value 
+        return string_with_parameter.replace(parameter_name,parameters_default_values[parameter_name])
+
 # Parameter: PERIPHERALS string defined in config.mk
 # Returns dictionary with amount of instances for each peripheral
 # Also returns dictionary with verilog parameters for each of those instance
@@ -41,18 +128,20 @@ def get_peripherals(peripherals_str):
     # Count how many instances to create of each type of peripheral
     for i in peripherals:
         i = i.split("[") # Split corename and parameters
-        if len(i) < 2:
-            i.append("")
-        i[1] = i[1].strip("]") # Delete final "]" from parameter list
         # Initialize corename in dictionary 
         if i[0] not in instances_amount:
             instances_amount[i[0]]=0
             instances_parameters[i[0]]=[]
-        # Insert parameters of this instance
-        instances_parameters[i[0]].append(i[1].split(","))
+        # Insert parameters of this instance (if there are any)
+        if len(i) > 1:
+            i[1] = i[1].strip("]") # Delete final "]" from parameter list
+            instances_parameters[i[0]].append(i[1].split(","))
+        else:
+            instances_parameters[i[0]].append([])
         # Increment amount of instances
         instances_amount[i[0]]+=1
 
+    #print(instances_amount, file = sys.stderr) #Debug
     #print(instances_parameters, file = sys.stderr) #Debug
     return instances_amount, instances_parameters
 
@@ -85,40 +174,40 @@ def get_module_io(verilog_lines):
             break #Found end of port list
         #If this signal is declared in normal verilog format (no macros)
         if any(verilog_lines[i].lstrip().startswith(x) for x in ["input","output"]):
-            signal = re.search("^\s*((?:input)|(?:output))(?:\s|(?:\[([^:]+):([^\]]+)\]))*(.*),?", verilog_lines[i])
+            signal = re.search("^\s*(inout|input|output)(?:\s|(?:\[([^:]+):([^\]]+)\]))*([^,]*),?", verilog_lines[i])
             if signal is not None:
                 # Store signal in dictionary with format: module_signals[signalname] = "input [size:0]"
                 if signal.group(2) is None:
                     module_signals[signal.group(4)]=signal.group(1)
                 else:
-                    #FUTURE IMPROVEMENT: make python parse verilog macros.
-                    module_signals[signal.group(4)]="{} [{}:{}]".format(signal.group(1), 
-                            signal.group(2) if signal.group(2).isdigit() else
-                            ("" if "`" in signal.group(2) else "`") # Set as macro if it was a parameter
-                            +signal.group(2).replace("ADDR_W","/*<SwregFilename>*/_ADDR_W"),
-                            signal.group(3))
+                    module_signals[signal.group(4)]="{} [{}:{}]".format(signal.group(1), signal.group(2), signal.group(3))
         elif "`IOB_INPUT" in verilog_lines[i]: #If it is a known verilog macro
             signal = re.search("^\s*`IOB_INPUT\(\s*(\w+)\s*,\s*([^\s]+)\s*\),?", verilog_lines[i])
             if signal is not None:
                 # Store signal in dictionary with format: module_signals[signalname] = "input [size:0]"
                 module_signals[signal.group(1)]="input [{}:0]".format(
-                        int(signal.group(2))-1 if signal.group(2).isdigit() else 
-                        (("" if "`" in signal.group(2) else "`") # Set as macro if it was a parameter
-                        +signal.group(2)+"-1").replace("ADDR_W","/*<SwregFilename>*/_ADDR_W")) # Replace keyword "ADDR_W" by "/*<SwregFilename>*/_ADDR_W"
-        elif "`IOB_OUTPUT" in verilog_lines[i]: #If it is a known verilog macro
-            signal = re.search("^\s*`IOB_OUTPUT\(\s*(\w+)\s*,\s*([^\s]+)\s*\),?", verilog_lines[i])
+                        int(signal.group(2))-1 if signal.group(2).isdigit() else # Calculate size here if only contains digits
+                        signal.group(2)+"-1") # Leave calculation for verilog
+        elif "`IOB_OUTPUT" in verilog_lines[i] or "`IOB_OUTPUT_VAR" in verilog_lines[i]: #If it is a known verilog macro
+            signal = re.search("^\s*`IOB_OUTPUT(?:_VAR)?\(\s*(\w+)\s*,\s*([^\s]+)\s*\),?", verilog_lines[i])
             if signal is not None:
                 # Store signal in dictionary with format: module_signals[signalname] = "output [size:0]"
                 module_signals[signal.group(1)]="output [{}:0]".format(
-                        int(signal.group(2))-1 if signal.group(2).isdigit() else 
-                        (("" if "`" in signal.group(2) else "`")
-                        +signal.group(2)+"-1").replace("ADDR_W","/*<SwregFilename>*/_ADDR_W")) # Replace keyword "ADDR_W" by "/*<SwregFilename>*/_ADDR_W"
+                        int(signal.group(2))-1 if signal.group(2).isdigit() else # Calculate size here if only contains digits
+                        signal.group(2)+"-1") # Leave calculation for verilog
+        elif "`IOB_INOUT" in verilog_lines[i]: #If it is a known verilog macro
+            signal = re.search("^\s*`IOB_INOUT\(\s*(\w+)\s*,\s*([^\s]+)\s*\),?", verilog_lines[i])
+            if signal is not None:
+                # Store signal in dictionary with format: module_signals[signalname] = "inout [size:0]"
+                module_signals[signal.group(1)]="inout [{}:0]".format(
+                        int(signal.group(2))-1 if signal.group(2).isdigit() else # Calculate size here if only contains digits
+                        signal.group(2)+"-1") # Leave calculation for verilog
         elif '`include "iob_gen_if.vh"' in verilog_lines[i]: #If it is a known verilog include
             module_signals["clk"]="input "
             module_signals["rst"]="input "
         elif '`include "iob_s_if.vh"' in verilog_lines[i]: #If it is a known verilog include
             module_signals["valid"]="input "
-            module_signals["address"]="input [/*<SwregFilename>*/_ADDR_W:0] "
+            module_signals["address"]="input [ADDR_W:0] "
             module_signals["wdata"]="input [DATA_W:0] "
             module_signals["wstrb"]="input [DATA_W/8:0] "
             module_signals["rdata"]="output [DATA_W:0] "
@@ -128,11 +217,48 @@ def get_module_io(verilog_lines):
             exit(-1)
     return module_signals
 
+# Given lines read from the verilog file with a module declaration
+# this function returns the parameters of that module. 
+# The return value is a dictionary, where the key is the 
+# parameter name and the value is the default value assigned to the parameter.
+def get_module_parameters(verilog_lines):
+    module_start = 0
+    #Find module declaration
+    for line in verilog_lines:
+        module_start += 1
+        if "module " in line:
+            break #Found module declaration
+
+    parameter_list_start = module_start
+    #Find module parameter list start 
+    for i in range(module_start, len(verilog_lines)):
+        parameter_list_start += 1
+        if verilog_lines[i].replace(" ", "").startswith("#("):
+            break #Found parameter list start
+
+    module_parameters = {}
+    #Get parameters of this module
+    for i in range(parameter_list_start, len(verilog_lines)):
+        #Ignore comments and empty lines
+        if not verilog_lines[i].strip() or verilog_lines[i].lstrip().startswith("//"):
+            continue
+        if ")" in verilog_lines[i]:
+            break #Found end of parameter list
+
+        # Parse parameter
+        parameter = re.search("^\s*parameter\s+([^=\s]+)\s*=\s*([^\s,]+),?", verilog_lines[i])
+        if parameter is not None:
+            # Store parameter in dictionary with format: module_parameters[parametername] = "default value"
+                module_parameters[parameter.group(1)]=parameter.group(2)
+
+    return module_parameters
+
 # Given a dictionary of signals, returns a dictionary with only pio signals.
-# It removes reserved signals, such as: clk, rst, valid, address, wdata, wstrb, rdata or ready
+# It removes reserved system signals, such as: clk, rst, valid, address, wdata, wstrb, rdata, ready, ...
 def get_pio_signals(peripheral_signals):
     pio_signals = peripheral_signals.copy()
-    for signal in ["clk","rst","arst","valid","address","wdata","wstrb","rdata","ready"]:
+    for signal in ["clk","rst","reset","arst","valid","address","wdata","wstrb","rdata","ready","trap"]\
+                  +[i for i in pio_signals if "m_axi_" in i]:
         if signal in pio_signals: pio_signals.pop(signal)
     return pio_signals
 
@@ -149,13 +275,15 @@ def get_top_module(file_path):
             break;
     return top_module
 
-# Return dictionary with signals for each peripheral given in the input list 
-# Also need to provide a dictionary with directory location of each peripheral given
+# Arguments: - list_of_peripherals: dictionary with corename of each peripheral
+#            - submodule_directories: dictionary with directory location of each peripheral given
+# Returns: - dictionary with signals from port list in top module of each peripheral
+#          - dictionary with parameters in top module of each peripheral
 def get_peripherals_signals(list_of_peripherals, submodule_directories):
-    # Get signals of each peripheral
     peripheral_signals = {}
+    peripheral_parameters = {}
+    # Get signals of each peripheral
     for i in list_of_peripherals:
-        peripheral_signals[i] = {}
         # Find top module verilog file of peripheral
         module_dir = root_dir+"/"+submodule_directories[i]+"/hardware/src"
         module_filename = get_top_module(root_dir+"/"+submodule_directories[i]+"/config.mk")+".v";
@@ -168,10 +296,11 @@ def get_peripherals_signals(list_of_peripherals, submodule_directories):
         module_contents = module_file.read().splitlines()
         # Get module inputs and outputs
         peripheral_signals[i] = get_module_io(module_contents)
+        peripheral_parameters[i] = get_module_parameters(module_contents)
         
         module_file.close()
     #print(peripheral_signals) #DEBUG
-    return peripheral_signals
+    return peripheral_signals, peripheral_parameters
 
 # Find index of word in array with multiple strings
 def find_idx(lines, word):

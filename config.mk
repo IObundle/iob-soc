@@ -37,7 +37,7 @@ INIT_MEM ?=1
 #list with corename of peripherals to be attached to peripheral bus.
 #to include multiple instances, write the corename of the peripheral multiple times.
 #to pass verilog parameters to each instance, type the parameters inside parenthesis.
-#Example: 'PERIPHERALS ?=UART[1,\"textparam\"] UART[] UART' will create 3 UART instances, 
+#Example: 'PERIPHERALS ?=UART[1,\"textparam\"] UART UART' will create 3 UART instances, 
 #         the first one will be instantiated with verilog parameters 1 and "textparam", 
 #         the second and third will use default parameters.
 PERIPHERALS ?=UART
@@ -139,12 +139,6 @@ DEFINE+=$(defmacro)B=$B
 #assign a sequential ID to each peripheral
 #the ID is used as an instance name index in the hardware and as a base address in the software
 DEFINE+=$(shell $(SW_DIR)/python/submodule_utils.py get_defines "$(PERIPHERALS)" "$(defmacro)")
-
-#default baud and system clock freq
-BAUD ?=5000000 #simulation default
-FREQ ?=100000000
-
-SHELL = /bin/bash
 
 #RULES
 

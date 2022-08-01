@@ -3,7 +3,7 @@ SHELL := /bin/bash
 ROOT_DIR:=../../..
 
 defmacro:=-D
-incdir:=-I 
+incdir:=-I
 
 SIMULATOR=verilator
 SIM_SERVER=$(VSIM_SERVER)
@@ -52,6 +52,7 @@ VERILATOR_FLAGS += --trace # Make waveforms
 #VERILATOR_FLAGS += --gdbbt # Add this trace to get a backtrace in gdb
 VERILATOR_FLAGS += +1800-2005ext+v # Use SystemVerilog 2005 with file extension .v
 VERILATOR_FLAGS += --error-limit 1000 # Exit if number of errors passes 1000
+VERILATOR_FLAGS += -MAKEFLAGS "CXXFLAGS=\"$(DEFINE)\"" # Pass defines to the verilator cpp testbench compilation
 
 # Verilator source files
 VERILATOR_INPUT = $(INCLUDE_VERI) $(DEFINE) $(VSRC) --top-module system_top system_tb.cpp
@@ -67,9 +68,6 @@ $(SIM_PROC): $(HDR)
 #run the simulator
 exec:
 	./$(SIM_PROC)
-ifeq ($(VCD),1)
-	sed -i 's/TOP/system_tb/g' *.vcd
-endif
 
 iob_uart_swreg.h: $(FIRM_DIR)/iob_uart_swreg.h
 	cp $< $@

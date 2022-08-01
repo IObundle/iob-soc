@@ -1,14 +1,14 @@
-BOARD=$(shell basename `pwd`)
+include $(ROOT_DIR)/hardware/hardware.mk
+include $(LIB_DIR)/hardware/iob_reset_sync/hardware.mk
+
+BAUD=$(BOARD_BAUD)
+FREQ=$(BOARD_FREQ)
 
 LOAD_FILE=/tmp/$(BOARD).load
-
 QUEUE_FILE=/tmp/$(BOARD).queue
-
 TOOL=$(shell find $(HW_DIR)/fpga -name $(BOARD) | cut -d"/" -f7)
-
 JOB=$(shell echo $(USER) `md5sum $(FPGA_OBJ)  | cut -d" " -f1`)
 
-include $(ROOT_DIR)/hardware/hardware.mk
 
 #SOURCES
 VSRC+=./verilog/top_system.v
@@ -51,20 +51,22 @@ endif
 
 build: $(FPGA_OBJ)
 
+#make the FPGA programming file either locally or remotely
 ifeq ($(INIT_MEM),1)
 $(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex firmware.hex
+else ifeq ($(USE_DDR),1)
+$(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex
 else
 $(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex
 endif
 ifeq ($(NORUN),0)
 ifeq ($(FPGA_SERVER),)
 	@rm -f $(FPGA_LOG)
-	../build.sh "$(INCLUDE)" "$(DEFINE)" "$(VSRC)" "$(DEVICE)"
-	make post-build
+	make local-build
 else 
 	ssh $(FPGA_USER)@$(FPGA_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --delete --force --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(FPGA_USER)@$(FPGA_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD) $@ INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM)'
+	ssh $(FPGA_USER)@$(FPGA_SERVER) 'make -C $(REMOTE_ROOT_DIR) fpga-build BOARD=$(BOARD) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM)'
 	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD)/$(FPGA_OBJ) .
 	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD)/$(FPGA_LOG) .
 endif
@@ -84,14 +86,14 @@ queue-wait:
 	while [ "`head -1 $(QUEUE_FILE)`" != "$(JOB)" ]; do echo "Job queued for board access. Queue length: `wc -l $(QUEUE_FILE) | cut -d" " -f1`"; sleep 10s; done
 
 queue-out:
+	make kill-cnsl
 	sed '/$(JOB)/d' $(QUEUE_FILE) > queue; cat queue > $(QUEUE_FILE); rm queue
 
 queue-out-remote:
 ifeq ($(BOARD_SERVER),)
-	make kill-cnsl
 	make queue-out
 else
-	ssh $(BOARD_USER)@$(BOARD_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD) $@'
+	ssh $(BOARD_USER)@$(BOARD_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD) queue-out'
 endif
 
 #
@@ -102,15 +104,15 @@ test: clean-testlog test1 test2 test3
 	diff test.log test.expected
 
 test1:
-	make -C $(ROOT_DIR) fpga-clean
+	make -C $(ROOT_DIR) fpga-clean BOARD=$(BOARD)
 	make -C $(ROOT_DIR) fpga-run INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
 
 test2:
-	make -C $(ROOT_DIR) fpga-clean
+	make -C $(ROOT_DIR) fpga-clean BOARD=$(BOARD)
 	make -C $(ROOT_DIR) fpga-run INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
 
 test3:
-	make -C $(ROOT_DIR) fpga-clean
+	make -C $(ROOT_DIR) fpga-clean BOARD=$(BOARD)
 	make -C $(ROOT_DIR) fpga-run INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
 
 
@@ -133,7 +135,7 @@ endif
 
 #clean test log only when board testing begins
 clean-testlog:
-	@rm -f test.log
+	@rm -f *.log
 ifneq ($(BOARD_SERVER),)
 	ssh $(BOARD_USER)@$(BOARD_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --delete --force --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR)
@@ -141,7 +143,14 @@ ifneq ($(BOARD_SERVER),)
 endif
 
 
-.PRECIOUS: $(FPGA_OBJ) test.log
+debug:
+	@echo $(VHDR)
+	@echo $(VSRC)
+	@echo $(INCLUDE)
+	@echo $(DEFINE)
+
+
+.PRECIOUS: $(FPGA_OBJ) test.log s_fw.bin
 
 .PHONY: run build \
 	queue-in queue-out queue-wait queue-out-remote \
