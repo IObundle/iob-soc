@@ -2,7 +2,7 @@
 `include "system.vh"
 
 module top_system(
-  input        IE_PERST_n,
+  input        PCIE_PERST_n,
   input        PCIE_REFCLK_p,
   input [7:0]  PCIE_RX_p,
   input        PCIE_SMBCLK,
@@ -32,8 +32,8 @@ module top_system(
 
    reg [15:0] 			rst_cnt;
 
-   always @(posedge sys_clk, negedge IE_PERST_n)
-     if(!IE_PERST_n)
+   always @(posedge sys_clk, negedge PCIE_PERST_n)
+     if(!PCIE_PERST_n)
        rst_cnt <= 16'hFFFF;
      else if (rst_cnt != 16'h0)
        rst_cnt <= rst_cnt - 1'b1;
