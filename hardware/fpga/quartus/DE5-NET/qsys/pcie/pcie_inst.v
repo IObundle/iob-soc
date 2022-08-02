@@ -1,0 +1,41 @@
+	pcie u0 (
+		.clk_clk                 (<connected-to-clk_clk>),                 //             clk.clk
+		.reset_reset_n           (<connected-to-reset_reset_n>),           //           reset.reset_n
+		.axi_bridge_0_s0_awid    (<connected-to-axi_bridge_0_s0_awid>),    // axi_bridge_0_s0.awid
+		.axi_bridge_0_s0_awaddr  (<connected-to-axi_bridge_0_s0_awaddr>),  //                .awaddr
+		.axi_bridge_0_s0_awlen   (<connected-to-axi_bridge_0_s0_awlen>),   //                .awlen
+		.axi_bridge_0_s0_awsize  (<connected-to-axi_bridge_0_s0_awsize>),  //                .awsize
+		.axi_bridge_0_s0_awburst (<connected-to-axi_bridge_0_s0_awburst>), //                .awburst
+		.axi_bridge_0_s0_awlock  (<connected-to-axi_bridge_0_s0_awlock>),  //                .awlock
+		.axi_bridge_0_s0_awcache (<connected-to-axi_bridge_0_s0_awcache>), //                .awcache
+		.axi_bridge_0_s0_awprot  (<connected-to-axi_bridge_0_s0_awprot>),  //                .awprot
+		.axi_bridge_0_s0_awvalid (<connected-to-axi_bridge_0_s0_awvalid>), //                .awvalid
+		.axi_bridge_0_s0_awready (<connected-to-axi_bridge_0_s0_awready>), //                .awready
+		.axi_bridge_0_s0_wid     (<connected-to-axi_bridge_0_s0_wid>),     //                .wid
+		.axi_bridge_0_s0_wdata   (<connected-to-axi_bridge_0_s0_wdata>),   //                .wdata
+		.axi_bridge_0_s0_wstrb   (<connected-to-axi_bridge_0_s0_wstrb>),   //                .wstrb
+		.axi_bridge_0_s0_wlast   (<connected-to-axi_bridge_0_s0_wlast>),   //                .wlast
+		.axi_bridge_0_s0_wvalid  (<connected-to-axi_bridge_0_s0_wvalid>),  //                .wvalid
+		.axi_bridge_0_s0_wready  (<connected-to-axi_bridge_0_s0_wready>),  //                .wready
+		.axi_bridge_0_s0_bid     (<connected-to-axi_bridge_0_s0_bid>),     //                .bid
+		.axi_bridge_0_s0_bresp   (<connected-to-axi_bridge_0_s0_bresp>),   //                .bresp
+		.axi_bridge_0_s0_bvalid  (<connected-to-axi_bridge_0_s0_bvalid>),  //                .bvalid
+		.axi_bridge_0_s0_bready  (<connected-to-axi_bridge_0_s0_bready>),  //                .bready
+		.axi_bridge_0_s0_arid    (<connected-to-axi_bridge_0_s0_arid>),    //                .arid
+		.axi_bridge_0_s0_araddr  (<connected-to-axi_bridge_0_s0_araddr>),  //                .araddr
+		.axi_bridge_0_s0_arlen   (<connected-to-axi_bridge_0_s0_arlen>),   //                .arlen
+		.axi_bridge_0_s0_arsize  (<connected-to-axi_bridge_0_s0_arsize>),  //                .arsize
+		.axi_bridge_0_s0_arburst (<connected-to-axi_bridge_0_s0_arburst>), //                .arburst
+		.axi_bridge_0_s0_arlock  (<connected-to-axi_bridge_0_s0_arlock>),  //                .arlock
+		.axi_bridge_0_s0_arcache (<connected-to-axi_bridge_0_s0_arcache>), //                .arcache
+		.axi_bridge_0_s0_arprot  (<connected-to-axi_bridge_0_s0_arprot>),  //                .arprot
+		.axi_bridge_0_s0_arvalid (<connected-to-axi_bridge_0_s0_arvalid>), //                .arvalid
+		.axi_bridge_0_s0_arready (<connected-to-axi_bridge_0_s0_arready>), //                .arready
+		.axi_bridge_0_s0_rid     (<connected-to-axi_bridge_0_s0_rid>),     //                .rid
+		.axi_bridge_0_s0_rdata   (<connected-to-axi_bridge_0_s0_rdata>),   //                .rdata
+		.axi_bridge_0_s0_rresp   (<connected-to-axi_bridge_0_s0_rresp>),   //                .rresp
+		.axi_bridge_0_s0_rlast   (<connected-to-axi_bridge_0_s0_rlast>),   //                .rlast
+		.axi_bridge_0_s0_rvalid  (<connected-to-axi_bridge_0_s0_rvalid>),  //                .rvalid
+		.axi_bridge_0_s0_rready  (<connected-to-axi_bridge_0_s0_rready>)   //                .rready
+	);
+
