@@ -2,13 +2,15 @@
 `include "system.vh"
 
 module top_system(
-  input        IE_PERST_n,
-  input        PCIE_REFCLK_p,
-  input [7:0]  PCIE_RX_p,
-  input        PCIE_SMBCLK,
-  output       PCIE_SMBDAT,
-  output [7:0] PCIE_TX_p,
-  output       PCIE_WAKE_n
+		  input        clk,
+		  input        resetn,
+		  input        PCIE_PERST_n,
+		  input        PCIE_REFCLK_p,
+		  input [7:0]  PCIE_RX_p,
+		  input        PCIE_SMBCLK,
+		  output       PCIE_SMBDAT,
+		  output [7:0] PCIE_TX_p,
+		  output       PCIE_WAKE_n
 		  
   // output [0:0] led_bracket,
   // output [0:0] led_board
@@ -19,7 +21,7 @@ module top_system(
    //
 
    //system clock
-   wire 			sys_clk = PCIE_REFCLK_p;
+   wire 			sys_clk = clk;
    // assign led_board[0] = 0;
    // assign led_bracket[0] = 0;
    //
@@ -32,8 +34,8 @@ module top_system(
 
    reg [15:0] 			rst_cnt;
 
-   always @(posedge sys_clk, negedge IE_PERST_n)
-     if(!IE_PERST_n)
+   always @(posedge sys_clk, negedge resetn)
+     if(!resetn)
        rst_cnt <= 16'hFFFF;
      else if (rst_cnt != 16'h0)
        rst_cnt <= rst_cnt - 1'b1;
