@@ -33,7 +33,7 @@ $(BUILD_VSRC_DIR)/system.vh: $(ROOT_DIR)/hardware/include/system.vh
 	cp $< $@
 
 VHDR+=hardware/include/iob_intercon.vh
-$(BUILD_VSRC_DIR)/iob_cache.vh: hardware/include/iob_intercon.vh
+$(BUILD_VSRC_DIR)/iob_intercon.vh: hardware/include/iob_intercon.vh
 	cp $< $@
 
 #

@@ -6,3 +6,7 @@ VERSION=0010
 TOP_MODULE?=system
 # core path as seen from LIB's makefile
 ROOT_DIR=$(CORE_DIR)
+
+SETUP_SIM=1
+SETUP_FPGA=0
+SETUP_DOC=0
