@@ -28,11 +28,11 @@ DEFINE+=$(defmacro)DDR_DATA_W=$(DDR_DATA_W)
 DEFINE+=$(defmacro)DDR_ADDR_W=$(DDR_ADDR_W)
 
 #HEADERS
-VHDR+=$(ROOT_DIR)/hardware/include/system.vh
+VHDR+=$(BUILD_VSRC_DIR)/system.vh
 $(BUILD_VSRC_DIR)/system.vh: $(ROOT_DIR)/hardware/include/system.vh
 	cp $< $@
 
-VHDR+=hardware/include/iob_intercon.vh
+VHDR+=$(BUILD_VSRC_DIR)/iob_intercon.vh
 $(BUILD_VSRC_DIR)/iob_intercon.vh: hardware/include/iob_intercon.vh
 	cp $< $@
 
