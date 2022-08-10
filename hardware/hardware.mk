@@ -1,7 +1,7 @@
 #default baud rate for hardware
 BAUD ?=115200
 
-include $(ROOT_DIR)/config.mk
+# include $(ROOT_DIR)/config.mk
 
 #
 # ADD SUBMODULES HARDWARE
@@ -14,14 +14,35 @@ include hardware/rom/iob_rom_sp/hardware.mk
 include hardware/ram/iob_ram_dp_be/hardware.mk
 
 #CPU
+PICORV32_DIR:=$(CORE_DIR)/submodules/PICORV32
 include $(PICORV32_DIR)/hardware/hardware.mk
 
 #CACHE
-include $(CACHE_DIR)/hardware/hardware.mk
-
+# include $(CACHE_DIR)/hardware/hardware.mk
 #UART
-include $(UART_DIR)/hardware/hardware.mk
+# include $(UART_DIR)/hardware/hardware.mk
 
+
+
+#CACHE verilog sources and headers
+CACHE_BUILD_DIR=$(shell find $(CORE_DIR)/submodules/CACHE/ -maxdepth 1 -type d -name iob_cache_V*)/pproc/hw
+VHDR+=$(patsubst $(CACHE_BUILD_DIR)/%, $(BUILD_VSRC_DIR)/%,$(wildcard $(CACHE_BUILD_DIR)/*.vh))
+$(BUILD_VSRC_DIR)/%.vh: $(CACHE_BUILD_DIR)/%.vh
+	cp $< $@
+
+VSRC+=$(patsubst $(CACHE_BUILD_DIR)/%, $(BUILD_VSRC_DIR)/%,$(wildcard $(CACHE_BUILD_DIR)/*.v))
+$(BUILD_VSRC_DIR)/%.v: $(CACHE_BUILD_DIR)/%.v
+	cp $< $@
+
+#UART verilog sources and headers
+UART_BUILD_DIR=$(shell find $(CORE_DIR)/submodules/UART/ -maxdepth 1 -type d -name iob_uart_V*)/pproc/hw
+VHDR+=$(patsubst $(UART_BUILD_DIR)/%, $(BUILD_VSRC_DIR)/%,$(wildcard $(UART_BUILD_DIR)/*.vh))
+$(BUILD_VSRC_DIR)/%.vh: $(UART_BUILD_DIR)/%.vh
+	cp $< $@
+
+VSRC+=$(patsubst $(UART_BUILD_DIR)/%, $(BUILD_VSRC_DIR)/%,$(wildcard $(UART_BUILD_DIR)/*.v))
+$(BUILD_VSRC_DIR)/%.v: $(UART_BUILD_DIR)/%.v
+	cp $< $@
 
 #DEFINES
 DEFINE+=$(defmacro)DDR_DATA_W=$(DDR_DATA_W)
@@ -75,31 +96,8 @@ firmware.hex: $(FIRM_DIR)/firmware.bin
 	$(PYTHON_DIR)/makehex.py $< $(FIRM_ADDR_W) > $@
 	$(PYTHON_DIR)/hex_split.py firmware .
 
-#
-# SIMULATION FILES
-#
-
-#axi memory
-include hardware/axiram/hardware.mk
-
-VSRC+=$(BUILD_VSRC_DIR)/system_tb.v $(BUILD_VSRC_DIR)/system_top.v
-
-$(BUILD_VSRC_DIR)/system_tb.v:
-	cp $(ROOT_DIR)/hardware/simulation/verilog_tb/system_core_tb.v $@
-	$(if $(HFILES), $(foreach f, $(HFILES), sed -i '/PHEADER/a `include \"$f\"' $@;),) # insert header files
-
-#create  simulation top module
-$(BUILD_VSRC_DIR)/system_top.v: $(ROOT_DIR)/hardware/simulation/verilog_tb/system_top_core.v
-	cp $< $@
-	$(foreach p, $(PERIPHERALS), $(eval HFILES=$(shell echo `ls $($p_DIR)/hardware/include/*.vh | grep -v pio | grep -v inst | grep -v swreg`)) \
-	$(eval HFILES+=$(notdir $(filter %swreg_def.vh, $(VHDR)))) \
-	$(if $(HFILES), $(foreach f, $(HFILES), sed -i '/PHEADER/a `include \"$f\"' $@;),)) # insert header files
-	$(foreach p, $(PERIPHERALS), if test -f $($p_DIR)/hardware/include/pio.vh; then sed s/input/wire/ $($p_DIR)/hardware/include/pio.vh | sed s/output/wire/  | sed s/\,/\;/ > wires_tb.vh; sed -i '/PWIRES/r wires_tb.vh' $@; fi;) # declare and insert wire declarations
-	$(foreach p, $(PERIPHERALS), if test -f $($p_DIR)/hardware/include/pio.vh; then sed s/input// $($p_DIR)/hardware/include/pio.vh | sed s/output// | sed 's/\[.*\]//' | sed 's/\([A-Za-z].*\),/\.\1(\1),/' > ./ports.vh; sed -i '/PORTS/r ports.vh' $@; fi;) #insert and connect pins in uut instance
-	$(foreach p, $(PERIPHERALS), if test -f $($p_DIR)/hardware/include/inst_tb.vh; then sed -i '/endmodule/e cat $($p_DIR)/hardware/include/inst_tb.vh' $@; fi;) # insert peripheral instances
-
 #clean general hardware files
 hw-clean: gen-clean
-	@rm -f *.v *.vh *.hex *.bin $(ROOT_DIR)/hardware/src/system.v $(ROOT_DIR)/hardware/simulation/verilog_tb/system_tb.v
+	@rm -f *.v *.vh *.hex *.bin $(ROOT_DIR)/hardware/src/system.v
 
 .PHONY: hw-clean
