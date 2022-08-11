@@ -8,8 +8,6 @@
 
 ROOT_SW_DIR:=$(ROOT_DIR)/software
 
-# TODO: sub cores software sources: need to split into pc-emul and embedded
-
 #
 # Common Headers and Sources
 #
@@ -120,4 +118,5 @@ periphs.h: periphs_tmp.h
 	@rm periphs_tmp.h
 
 periphs_tmp.h:
+	$(shell echo "#include \"defines.h\"" > $@)
 	$(foreach p, $(PERIPHERALS), $(shell echo "#define $p_BASE (1<<$P) |($p<<($P-N_SLAVES_W))" >> $@) )
