@@ -12,7 +12,7 @@ TB_DIR:=$(CORE_DIR)/hardware/simulation/verilog_tb
 #axi portmap for axi ram
 VHDR+=s_axi_portmap.vh
 s_axi_portmap.vh:
-	$(LIB_DIR)/software/python/axi_gen.py axi_portmap 's_' 's_' 'm_'
+	software/python/axi_gen.py axi_portmap 's_' 's_' 'm_'
 
 # AXI4 wires
 VHDR+=iob_cache_axi_wire.vh
