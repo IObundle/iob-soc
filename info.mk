@@ -7,6 +7,7 @@ TOP_MODULE?=system
 # core path as seen from LIB's makefile
 ROOT_DIR=$(CORE_DIR)
 
+SETUP_SW=1
 SETUP_SIM=1
 SETUP_FPGA=0
 SETUP_DOC=0
@@ -42,6 +43,12 @@ $(foreach p, $(PERIPHERALS), $(eval DEFINE+=$(defmacro)$p=$($p)))
 N_SLAVES_W = $(shell echo "import math; print(math.ceil(math.log($(N_SLAVES),2)))"|python3 )
 DEFINE+=$(defmacro)N_SLAVES_W=$(N_SLAVES_W)
 
+#RISC-V HARD MULTIPLIER AND DIVIDER INSTRUCTIONS
+USE_MUL_DIV ?=1
+
+#RISC-V COMPRESSED INSTRUCTIONS
+USE_COMPRESSED ?=1
+
 #default baud and system clock frequency
 SIM_BAUD = 2500000
 SIM_FREQ =50000000
@@ -50,7 +57,25 @@ SIM_FREQ =50000000
 BAUD ?=$(SIM_BAUD)
 FREQ ?=$(SIM_FREQ)
 
+#CPU ARCHITECTURE
+DATA_W := 32
+ADDR_W := 32
+
+#DATA CACHE ADDRESS WIDTH (tag + index + offset)
+DCACHE_ADDR_W:=24
+
 #FIRMWARE SIZE (LOG2)
 FIRM_ADDR_W ?=15
 
+#SRAM SIZE (LOG2)
+SRAM_ADDR_W ?=15
+
+#ROM SIZE (LOG2)
+BOOTROM_ADDR_W:=12
+
+DEFINE+=$(defmacro)DATA_W=$(DATA_W)
+DEFINE+=$(defmacro)ADDR_W=$(ADDR_W)
 DEFINE+=$(defmacro)FIRM_ADDR_W=$(FIRM_ADDR_W)
+DEFINE+=$(defmacro)SRAM_ADDR_W=$(SRAM_ADDR_W)
+DEFINE+=$(defmacro)BOOTROM_ADDR_W=$(BOOTROM_ADDR_W)
+DEFINE+=$(defmacro)N_SLAVES=$(N_SLAVES) #peripherals

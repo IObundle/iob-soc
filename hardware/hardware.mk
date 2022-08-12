@@ -57,6 +57,10 @@ VHDR+=$(BUILD_VSRC_DIR)/iob_intercon.vh
 $(BUILD_VSRC_DIR)/iob_intercon.vh: hardware/include/iob_intercon.vh
 	cp $< $@
 
+VHDR+=$(BUILD_VSRC_DIR)/iob_gen_if.vh
+$(BUILD_VSRC_DIR)/iob_gen_if.vh: hardware/include/iob_gen_if.vh
+	cp $< $(BUILD_VSRC_DIR)
+
 #
 # Sources
 #

@@ -24,6 +24,10 @@ iob_cache_axi_wire.vh:
 #axi memory
 include hardware/axiram/hardware.mk
 
+VSRC+=$(BUILD_VSRC_DIR)/cpu_tasks.v
+$(BUILD_VSRC_DIR)/cpu_tasks.v: $(CORE_DIR)/hardware/include/cpu_tasks.v
+	cp $< $@
+
 VSRC+=$(BUILD_VSRC_DIR)/system_tb.v $(BUILD_VSRC_DIR)/system_top.v
 
 $(BUILD_VSRC_DIR)/system_tb.v:
