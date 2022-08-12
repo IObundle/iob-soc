@@ -1,6 +1,9 @@
+# Local pc-emul makefile fragment for custom pc emulation targets.
+# This file is included in BUILD_DIR/sw/pc/Makefile.
+
 # DEFINES
-DEFINE+=FREQ=$(FREQ)
-DEFINE+=BAUD=$(BAUD)
+DEFINE+=$(defmacro)FREQ=$(FREQ)
+DEFINE+=$(defmacro)BAUD=$(BAUD)
 
 # HEADERS
 HDR+=defines.h

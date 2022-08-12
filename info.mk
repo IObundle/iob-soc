@@ -20,6 +20,10 @@ E:=31 #extra memory bit
 P:=30 #periphs
 B:=29 #boot controller
 
+DEFINE+=$(defmacro)E=$E
+DEFINE+=$(defmacro)P=$P
+DEFINE+=$(defmacro)B=$B
+
 #kill "console", the background running program seriving simulators,
 #emulators and boards
 #used by fpga and pc-emul makefiles
@@ -45,3 +49,8 @@ SIM_FREQ =50000000
 #default baud and frequency if not given
 BAUD ?=$(SIM_BAUD)
 FREQ ?=$(SIM_FREQ)
+
+#FIRMWARE SIZE (LOG2)
+FIRM_ADDR_W ?=15
+
+DEFINE+=$(defmacro)FIRM_ADDR_W=$(FIRM_ADDR_W)
