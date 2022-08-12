@@ -74,8 +74,8 @@ HDR+=$(patsubst $(CACHE_EMB_BUILD_DIR)/%, $(BUILD_SW_EMB_DIR)/%,$(wildcard $(CAC
 $(BUILD_SW_EMB_DIR)/%.h: $(CACHE_EMB_BUILD_DIR)/%.h
 	cp $< $@
 
-VSRC+=$(patsubst $(CACHE_EMB_BUILD_DIR)/%, $(BUILD_SW_EMB_DIR)/%,$(wildcard $(CACHE_EMB_BUILD_DIR)/*.so))
-$(BUILD_SW_EMB_DIR)/%.so: $(CACHE_EMB_BUILD_DIR)/%.so
+VSRC+=$(patsubst $(CACHE_EMB_BUILD_DIR)/%, $(BUILD_SW_EMB_DIR)/%,$(wildcard $(CACHE_EMB_BUILD_DIR)/*.a))
+$(BUILD_SW_EMB_DIR)/%.a: $(CACHE_EMB_BUILD_DIR)/%.a
 	cp $< $@
 
 # UART sources and headers
@@ -84,8 +84,8 @@ HDR+=$(patsubst $(UART_EMB_BUILD_DIR)/%, $(BUILD_SW_EMB_DIR)/%,$(wildcard $(UART
 $(BUILD_SW_EMB_DIR)/%.h: $(UART_EMB_BUILD_DIR)/%.h
 	cp $< $@
 
-SRC+=$(patsubst $(UART_EMB_BUILD_DIR)/%, $(BUILD_SW_EMB_DIR)/%,$(wildcard $(UART_EMB_BUILD_DIR)/*.so))
-$(BUILD_SW_EMB_DIR)/%.so: $(UART_EMB_BUILD_DIR)/%.so
+SRC+=$(patsubst $(UART_EMB_BUILD_DIR)/%, $(BUILD_SW_EMB_DIR)/%,$(wildcard $(UART_EMB_BUILD_DIR)/*.a))
+$(BUILD_SW_EMB_DIR)/%.a: $(UART_EMB_BUILD_DIR)/%.a
 	cp $< $@
 
 #
@@ -98,8 +98,8 @@ HDR+=$(patsubst $(CACHE_PC_BUILD_DIR)/%, $(BUILD_SW_PC_DIR)/%,$(wildcard $(CACHE
 $(BUILD_SW_PC_DIR)/%.h: $(CACHE_PC_BUILD_DIR)/%.h
 	cp $< $@
 
-SRC+=$(patsubst $(CACHE_PC_BUILD_DIR)/%, $(BUILD_SW_PC_DIR)/%,$(wildcard $(CACHE_PC_BUILD_DIR)/*.so))
-$(BUILD_SW_PC_DIR)/%.so: $(CACHE_PC_BUILD_DIR)/%.so
+SRC+=$(patsubst $(CACHE_PC_BUILD_DIR)/%, $(BUILD_SW_PC_DIR)/%,$(wildcard $(CACHE_PC_BUILD_DIR)/*.a))
+$(BUILD_SW_PC_DIR)/%.a: $(CACHE_PC_BUILD_DIR)/%.a
 	cp $< $@
 
 # UART sources and headers
@@ -108,8 +108,8 @@ HDR+=$(patsubst $(UART_PC_BUILD_DIR)/%, $(BUILD_SW_PC_DIR)/%,$(wildcard $(UART_P
 $(BUILD_SW_PC_DIR)/%.h: $(UART_PC_BUILD_DIR)/%.h
 	cp $< $@
 
-SRC+=$(patsubst $(UART_PC_BUILD_DIR)/%, $(BUILD_SW_PC_DIR)/%,$(wildcard $(UART_PC_BUILD_DIR)/*.so))
-$(BUILD_SW_PC_DIR)/%.so: $(UART_PC_BUILD_DIR)/%.so
+SRC+=$(patsubst $(UART_PC_BUILD_DIR)/%, $(BUILD_SW_PC_DIR)/%,$(wildcard $(UART_PC_BUILD_DIR)/*.a))
+$(BUILD_SW_PC_DIR)/%.a: $(UART_PC_BUILD_DIR)/%.a
 	cp $< $@
 
 #peripherals' base addresses
