@@ -5,13 +5,36 @@ BAUD ?=115200
 
 #
 # ADD SUBMODULES HARDWARE
+# SUBCORES hardware is copied first, so that possible duplicated source modules
+# are overwritten
 #
+
+#CACHE verilog sources and headers
+CACHE_HW_BUILD_DIR=$(shell find $(CORE_DIR)/submodules/CACHE/ -maxdepth 1 -type d -name iob_cache_V*)/hw/vsrc
+VHDR+=$(patsubst $(CACHE_HW_BUILD_DIR)/%, $(BUILD_VSRC_DIR)/%,$(wildcard $(CACHE_HW_BUILD_DIR)/*.vh))
+$(BUILD_VSRC_DIR)/%.vh: $(CACHE_HW_BUILD_DIR)/%.vh
+	cp $< $@
+
+VSRC+=$(patsubst $(CACHE_HW_BUILD_DIR)/%, $(BUILD_VSRC_DIR)/%,$(wildcard $(CACHE_HW_BUILD_DIR)/*.v))
+$(BUILD_VSRC_DIR)/%.v: $(CACHE_HW_BUILD_DIR)/%.v
+	cp $< $@
+
+#UART verilog sources and headers
+UART_HW_BUILD_DIR=$(shell find $(CORE_DIR)/submodules/UART/ -maxdepth 1 -type d -name iob_uart_V*)/hw/vsrc
+VHDR+=$(patsubst $(UART_HW_BUILD_DIR)/%, $(BUILD_VSRC_DIR)/%,$(wildcard $(UART_HW_BUILD_DIR)/*.vh))
+$(BUILD_VSRC_DIR)/%.vh: $(UART_HW_BUILD_DIR)/%.vh
+	cp $< $@
+
+VSRC+=$(patsubst $(UART_HW_BUILD_DIR)/%, $(BUILD_VSRC_DIR)/%,$(wildcard $(UART_HW_BUILD_DIR)/*.v))
+$(BUILD_VSRC_DIR)/%.v: $(UART_HW_BUILD_DIR)/%.v
+	cp $< $@
 
 #include LIB modules
 include hardware/iob_merge/hardware.mk
 include hardware/iob_split/hardware.mk
 include hardware/rom/iob_rom_sp/hardware.mk
 include hardware/ram/iob_ram_dp_be/hardware.mk
+include hardware/iob_pulse_gen/hardware.mk
 
 #CPU
 PICORV32_DIR:=$(CORE_DIR)/submodules/PICORV32
@@ -23,26 +46,6 @@ include $(PICORV32_DIR)/hardware/hardware.mk
 # include $(UART_DIR)/hardware/hardware.mk
 
 
-
-#CACHE verilog sources and headers
-CACHE_HW_BUILD_DIR=$(shell find $(CORE_DIR)/submodules/CACHE/ -maxdepth 1 -type d -name iob_cache_V*)/pproc/hw
-VHDR+=$(patsubst $(CACHE_HW_BUILD_DIR)/%, $(BUILD_VSRC_DIR)/%,$(wildcard $(CACHE_HW_BUILD_DIR)/*.vh))
-$(BUILD_VSRC_DIR)/%.vh: $(CACHE_HW_BUILD_DIR)/%.vh
-	cp $< $@
-
-VSRC+=$(patsubst $(CACHE_HW_BUILD_DIR)/%, $(BUILD_VSRC_DIR)/%,$(wildcard $(CACHE_HW_BUILD_DIR)/*.v))
-$(BUILD_VSRC_DIR)/%.v: $(CACHE_HW_BUILD_DIR)/%.v
-	cp $< $@
-
-#UART verilog sources and headers
-UART_HW_BUILD_DIR=$(shell find $(CORE_DIR)/submodules/UART/ -maxdepth 1 -type d -name iob_uart_V*)/pproc/hw
-VHDR+=$(patsubst $(UART_HW_BUILD_DIR)/%, $(BUILD_VSRC_DIR)/%,$(wildcard $(UART_HW_BUILD_DIR)/*.vh))
-$(BUILD_VSRC_DIR)/%.vh: $(UART_HW_BUILD_DIR)/%.vh
-	cp $< $@
-
-VSRC+=$(patsubst $(UART_HW_BUILD_DIR)/%, $(BUILD_VSRC_DIR)/%,$(wildcard $(UART_HW_BUILD_DIR)/*.v))
-$(BUILD_VSRC_DIR)/%.v: $(UART_HW_BUILD_DIR)/%.v
-	cp $< $@
 
 #DEFINES
 DEFINE+=$(defmacro)DDR_DATA_W=$(DDR_DATA_W)

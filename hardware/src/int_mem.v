@@ -7,7 +7,8 @@ module int_mem
     parameter ADDR_W=32,
     parameter DATA_W=32,
     parameter BOOTROM_ADDR_W=0,
-    parameter SRAM_ADDR_W=0
+    parameter SRAM_ADDR_W=0,
+    parameter B_BIT=0
     )
    (
     input                clk,
@@ -47,7 +48,7 @@ module int_mem
    iob_split 
      #(
        .N_SLAVES(2),
-       .P_SLAVES(`B_BIT)
+       .P_SLAVES(B_BIT)
        )
    data_bootctr_split
        (

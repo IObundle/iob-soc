@@ -41,6 +41,26 @@ VHDR+=defines.vh
 defines.vh:
 	../../sw/python/hw_defines.py $@ $(defmacro) $(DEFINE)
 
+VHDR+=boot.hex firmware.hex
+
+boot.hex: ../../sw/emb/boot.bin
+	../../sw/python/makehex.py $< $(BOOTROM_ADDR_W) > $@
+
+firmware.hex: ../../sw/emb/firmware.bin
+	../../sw/python/makehex.py $< $(FIRM_ADDR_W) > $@
+	../../sw/python/hex_split.py firmware .
+
+../../sw/emb%.bin:
+	make -C ../../ fw-build
+
+# SOURCES
+# remove cpu_tasks.v from source list
+VSRC:=$(filter-out %cpu_tasks.v, $(VSRC))
+# remove non-system testbenches
+NON_SOC_TB=$(filter-out %system_tb.v, $(filter %_tb.v, $(VSRC)))
+$(warning $(NON_SOC_TB))
+VSRC:=$(filter-out $(NON_SOC_TB), $(VSRC))
+
 TEST_LIST+=test1
 test1:
 	make -C $(ROOT_DIR) sim-clean SIMULATOR=$(SIMULATOR)

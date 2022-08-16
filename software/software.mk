@@ -27,36 +27,36 @@ $(BUILD_SW_SRC_DIR)/periphs.h: periphs.h
 # firmware
 HDR1=$(wildcard $(ROOT_SW_DIR)/firmware/*.h)
 HDR+=$(patsubst $(ROOT_SW_DIR)/firmware/%,$(BUILD_SW_HDR_DIR)/%,$(HDR1))
-$(BUILD_SW_SRC_DIR)/%.h: $(ROOT_SW_DIR)/firmware/*.h
+$(BUILD_SW_SRC_DIR)/%.h: $(ROOT_SW_DIR)/firmware/%.h
 	cp $< $@
 
 # bootloader
 HDR2=$(wildcard $(ROOT_SW_DIR)/bootloader/*.h)
 HDR+=$(patsubst $(ROOT_SW_DIR)/bootloader/%,$(BUILD_SW_HDR_DIR)/%,$(HDR2))
-$(BUILD_SW_SRC_DIR)/%.h: $(ROOT_SW_DIR)/bootloader/*.h
+$(BUILD_SW_SRC_DIR)/%.h: $(ROOT_SW_DIR)/bootloader/%.h
 	cp $< $@
 
 # SOURCES
 # firmware
 SRC1=$(wildcard $(ROOT_SW_DIR)/firmware/*.c)
 SRC+=$(patsubst $(ROOT_SW_DIR)/firmware/%,$(BUILD_SW_SRC_DIR)/%,$(SRC1))
-$(BUILD_SW_SRC_DIR)/%.c: $(ROOT_SW_DIR)/firmware/*.c
+$(BUILD_SW_SRC_DIR)/%.c: $(ROOT_SW_DIR)/firmware/%.c
 	cp $< $@
 
 SRC2=$(wildcard $(ROOT_SW_DIR)/firmware/*.S)
 SRC+=$(patsubst $(ROOT_SW_DIR)/firmware/%,$(BUILD_SW_SRC_DIR)/%,$(SRC2))
-$(BUILD_SW_SRC_DIR)/%.S: $(ROOT_SW_DIR)/firmware/*.S
+$(BUILD_SW_SRC_DIR)/%.S: $(ROOT_SW_DIR)/firmware/%.S
 	cp $< $@
 
 # bootloader
 SRC3=$(wildcard $(ROOT_SW_DIR)/bootloader/*.c)
 SRC+=$(patsubst $(ROOT_SW_DIR)/bootloader/%,$(BUILD_SW_SRC_DIR)/%,$(SRC3))
-$(BUILD_SW_SRC_DIR)/%.c: $(root_sw_dir)/bootloader/*.c
+$(BUILD_SW_SRC_DIR)/%.c: $(ROOT_SW_DIR)/bootloader/%.c
 	cp $< $@
 
 SRC4=$(wildcard $(ROOT_SW_DIR)/bootloader/*.S)
 SRC+=$(patsubst $(ROOT_SW_DIR)/bootloader/%,$(BUILD_SW_SRC_DIR)/%,$(SRC4))
-$(BUILD_SW_SRC_DIR)/%.S: $(ROOT_SW_DIR)/bootloader/*.S
+$(BUILD_SW_SRC_DIR)/%.S: $(ROOT_SW_DIR)/bootloader/%.S
 	cp $< $@
 
 SW_EMB_HDR:=$(HDR)
@@ -69,23 +69,23 @@ SW_PC_SRC:=$(SRC)
 #
 
 # CACHE sources and headers
-CACHE_EMB_BUILD_DIR=$(shell find $(CORE_DIR)/submodules/CACHE/ -maxdepth 1 -type d -name iob_cache_V*)/pproc/sw/emb
+CACHE_EMB_BUILD_DIR=$(shell find $(CORE_DIR)/submodules/CACHE/ -maxdepth 1 -type d -name iob_cache_V*)/sw/src
 HDR+=$(patsubst $(CACHE_EMB_BUILD_DIR)/%, $(BUILD_SW_EMB_DIR)/%,$(wildcard $(CACHE_EMB_BUILD_DIR)/*.h))
 $(BUILD_SW_EMB_DIR)/%.h: $(CACHE_EMB_BUILD_DIR)/%.h
 	cp $< $@
 
-VSRC+=$(patsubst $(CACHE_EMB_BUILD_DIR)/%, $(BUILD_SW_EMB_DIR)/%,$(wildcard $(CACHE_EMB_BUILD_DIR)/*.a))
-$(BUILD_SW_EMB_DIR)/%.a: $(CACHE_EMB_BUILD_DIR)/%.a
+SRC+=$(filter-out %pc_emul.c, $(patsubst $(CACHE_EMB_BUILD_DIR)/%, $(BUILD_SW_EMB_DIR)/%,$(wildcard $(CACHE_EMB_BUILD_DIR)/*.c)))
+$(BUILD_SW_EMB_DIR)/%.c: $(CACHE_EMB_BUILD_DIR)/%.c
 	cp $< $@
 
 # UART sources and headers
-UART_EMB_BUILD_DIR=$(shell find $(CORE_DIR)/submodules/UART/ -maxdepth 1 -type d -name iob_uart_V*)/pproc/sw/emb
+UART_EMB_BUILD_DIR=$(shell find $(CORE_DIR)/submodules/UART/ -maxdepth 1 -type d -name iob_uart_V*)/sw/src
 HDR+=$(patsubst $(UART_EMB_BUILD_DIR)/%, $(BUILD_SW_EMB_DIR)/%,$(wildcard $(UART_EMB_BUILD_DIR)/*.h))
 $(BUILD_SW_EMB_DIR)/%.h: $(UART_EMB_BUILD_DIR)/%.h
 	cp $< $@
 
-SRC+=$(patsubst $(UART_EMB_BUILD_DIR)/%, $(BUILD_SW_EMB_DIR)/%,$(wildcard $(UART_EMB_BUILD_DIR)/*.a))
-$(BUILD_SW_EMB_DIR)/%.a: $(UART_EMB_BUILD_DIR)/%.a
+SRC+=$(filter-out %pc_emul.c, $(patsubst $(UART_EMB_BUILD_DIR)/%, $(BUILD_SW_EMB_DIR)/%,$(wildcard $(UART_EMB_BUILD_DIR)/*.c)))
+$(BUILD_SW_EMB_DIR)/%.c: $(UART_EMB_BUILD_DIR)/%.c
 	cp $< $@
 
 #

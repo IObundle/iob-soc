@@ -34,6 +34,11 @@ $(BUILD_VSRC_DIR)/system_tb.v:
 	cp $(ROOT_DIR)/hardware/simulation/verilog_tb/system_core_tb.v $@
 	$(if $(HFILES), $(foreach f, $(HFILES), sed -i '/PHEADER/a `include \"$f\"' $@;),) # insert header files
 
+# SCRIPTS
+VHDR+=$(BUILD_SW_PYTHON_DIR)/makehex.py $(BUILD_SW_PYTHON_DIR)/hex_split.py
+$(BUILD_SW_PYTHON_DIR)/%.py: software/python/%.py
+	cp $< $@
+
 #create  simulation top module
 $(BUILD_VSRC_DIR)/system_top.v: $(ROOT_DIR)/hardware/simulation/verilog_tb/system_top_core.v
 	cp $< $@

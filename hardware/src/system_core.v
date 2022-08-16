@@ -215,7 +215,8 @@ module system
         .ADDR_W(ADDR_W),
         .DATA_W(DATA_W),
         .BOOTROM_ADDR_W(BOOTROM_ADDR_W),
-        .SRAM_ADDR_W(SRAM_ADDR_W)
+        .SRAM_ADDR_W(SRAM_ADDR_W),
+        .B_BIT(`B_BIT)
     )
     int_mem0
      (
