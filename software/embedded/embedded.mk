@@ -2,8 +2,8 @@
 # This file is included in BUILD_DIR/sw/emb/Makefile.
 
 # DEFINES
-DEFINE+=$(defmacro)FREQ=$(FREQ)
-DEFINE+=$(defmacro)BAUD=$(BAUD)
+DEFINE+=FREQ=$(FREQ)
+DEFINE+=BAUD=$(BAUD)
 
 # HEADERS
 HDR+=defines.h

@@ -48,8 +48,8 @@ include $(PICORV32_DIR)/hardware/hardware.mk
 
 
 #DEFINES
-DEFINE+=$(defmacro)DDR_DATA_W=$(DDR_DATA_W)
-DEFINE+=$(defmacro)DDR_ADDR_W=$(DDR_ADDR_W)
+DEFINE+=DDR_DATA_W=$(DDR_DATA_W)
+DEFINE+=DDR_ADDR_W=$(DDR_ADDR_W)
 
 #HEADERS
 VHDR+=$(BUILD_VSRC_DIR)/system.vh

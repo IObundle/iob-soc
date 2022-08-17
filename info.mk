@@ -20,9 +20,9 @@ E:=31 #extra memory bit
 P:=30 #periphs
 B:=29 #boot controller
 
-DEFINE+=$(defmacro)E=$E
-DEFINE+=$(defmacro)P=$P
-DEFINE+=$(defmacro)B=$B
+DEFINE+=E=$E
+DEFINE+=P=$P
+DEFINE+=B=$B
 
 #kill "console", the background running program seriving simulators,
 #emulators and boards
@@ -37,10 +37,10 @@ kill-cnsl:
 #the ID is used as an instance name index in the hardware and as a base address in the software
 N_SLAVES:=0
 $(foreach p, $(PERIPHERALS), $(eval $p=$(N_SLAVES)) $(eval N_SLAVES:=$(shell expr $(N_SLAVES) \+ 1)))
-$(foreach p, $(PERIPHERALS), $(eval DEFINE+=$(defmacro)$p=$($p)))
+$(foreach p, $(PERIPHERALS), $(eval DEFINE+=$p=$($p)))
 
 N_SLAVES_W = $(shell echo "import math; print(math.ceil(math.log($(N_SLAVES),2)))"|python3 )
-DEFINE+=$(defmacro)N_SLAVES_W=$(N_SLAVES_W)
+DEFINE+=N_SLAVES_W=$(N_SLAVES_W)
 
 #RISC-V HARD MULTIPLIER AND DIVIDER INSTRUCTIONS
 USE_MUL_DIV ?=1
@@ -72,9 +72,9 @@ SRAM_ADDR_W ?=15
 #ROM SIZE (LOG2)
 BOOTROM_ADDR_W:=12
 
-DEFINE+=$(defmacro)DATA_W=$(DATA_W)
-DEFINE+=$(defmacro)ADDR_W=$(ADDR_W)
-DEFINE+=$(defmacro)FIRM_ADDR_W=$(FIRM_ADDR_W)
-DEFINE+=$(defmacro)SRAM_ADDR_W=$(SRAM_ADDR_W)
-DEFINE+=$(defmacro)BOOTROM_ADDR_W=$(BOOTROM_ADDR_W)
-DEFINE+=$(defmacro)N_SLAVES=$(N_SLAVES) #peripherals
+DEFINE+=DATA_W=$(DATA_W)
+DEFINE+=ADDR_W=$(ADDR_W)
+DEFINE+=FIRM_ADDR_W=$(FIRM_ADDR_W)
+DEFINE+=SRAM_ADDR_W=$(SRAM_ADDR_W)
+DEFINE+=BOOTROM_ADDR_W=$(BOOTROM_ADDR_W)
+DEFINE+=N_SLAVES=$(N_SLAVES) #peripherals
