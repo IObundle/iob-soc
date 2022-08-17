@@ -3,6 +3,7 @@
 //
 //this is a temporary solution
 
+`include "defines.vh"
 `include "iob_uart_swreg_def.vh"
 
 //file seek macros

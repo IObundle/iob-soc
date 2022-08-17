@@ -1,4 +1,5 @@
 `timescale 1 ns / 1 ps
+`include "defines.vh"
 `include "system.vh"
 `include "iob_lib.vh"
 `include "iob_intercon.vh"
@@ -10,6 +11,8 @@ module system
   #(
     parameter ADDR_W=`ADDR_W,
     parameter DATA_W=`DATA_W,
+    parameter BOOTROM_ADDR_W=`BOOTROM_ADDR_W,
+    parameter SRAM_ADDR_W=`SRAM_ADDR_W,
     parameter AXI_ID_W=0,
     parameter AXI_ADDR_W=`ADDR_W,
     parameter AXI_DATA_W=`DATA_W
@@ -207,7 +210,15 @@ module system
    // INTERNAL SRAM MEMORY
    //
 
-   int_mem int_mem0
+   int_mem 
+    #(
+        .ADDR_W(ADDR_W),
+        .DATA_W(DATA_W),
+        .BOOTROM_ADDR_W(BOOTROM_ADDR_W),
+        .SRAM_ADDR_W(SRAM_ADDR_W),
+        .B_BIT(`B_BIT)
+    )
+    int_mem0
      (
       .clk (clk),
       .rst (rst),

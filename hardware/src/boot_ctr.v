@@ -3,6 +3,12 @@
 `include "iob_intercon.vh"
 
 module boot_ctr
+  #(
+      parameter DATA_W = 0,
+      parameter ADDR_W = 0,
+      parameter BOOTROM_ADDR_W = 0,
+      parameter SRAM_ADDR_W = 0
+    )
   (
    input                      clk,
    input                      rst,
@@ -12,21 +18,21 @@ module boot_ctr
    //cpu interface
    input                      cpu_valid,
    input [1:0]                cpu_wdata,
-   input [`DATA_W/8-1:0]      cpu_wstrb,
-   output [`DATA_W-1:0]       cpu_rdata,
+   input [DATA_W/8-1:0]      cpu_wstrb,
+   output [DATA_W-1:0]       cpu_rdata,
    output reg                 cpu_ready,
 
 
    //sram master write interface
    output reg                 sram_valid,
-   output [`ADDR_W-1:0]       sram_addr,
-   output [`DATA_W-1:0]       sram_wdata,
-   output reg [`DATA_W/8-1:0] sram_wstrb
+   output [ADDR_W-1:0]       sram_addr,
+   output [DATA_W-1:0]       sram_wdata,
+   output reg [DATA_W/8-1:0] sram_wstrb
    );
 
 
    //cpu interface: rdata and ready
-   assign cpu_rdata = {{(`DATA_W-1){1'b0}},boot};
+   assign cpu_rdata = {{(DATA_W-1){1'b0}},boot};
    iob_reg #(1,0) rdyreg (clk, rst, 1'b0, 1'b1, cpu_valid, cpu_ready);
        
    //boot register: (1) load bootloader to sram and run it: (0) run program
@@ -61,38 +67,38 @@ module boot_ctr
    // READ BOOT ROM 
    //
    reg                        rom_r_valid;
-   reg [`BOOTROM_ADDR_W-3: 0] rom_r_addr;
-   wire [`DATA_W-1: 0]        rom_r_rdata;
+   reg [BOOTROM_ADDR_W-3: 0] rom_r_addr;
+   wire [DATA_W-1: 0]        rom_r_rdata;
 
    always @(posedge clk, posedge rst)
      if(rst) begin
         rom_r_valid <= 1'b1;
-        rom_r_addr <= {`BOOTROM_ADDR_W-2{1'b0}};
-     end else if (boot && rom_r_addr != (2**(`BOOTROM_ADDR_W-2)-1))
+        rom_r_addr <= {BOOTROM_ADDR_W-2{1'b0}};
+     end else if (boot && rom_r_addr != (2**(BOOTROM_ADDR_W-2)-1))
        rom_r_addr <= rom_r_addr + 1'b1;
      else begin
         rom_r_valid <= 1'b0;
-        rom_r_addr <= {`BOOTROM_ADDR_W-2{1'b0}};
+        rom_r_addr <= {BOOTROM_ADDR_W-2{1'b0}};
      end
    
    //
    // WRITE SRAM
    //
    reg sram_w_valid;
-   reg [`SRAM_ADDR_W-3:0] sram_w_addr;
+   reg [SRAM_ADDR_W-3:0] sram_w_addr;
    always @(posedge clk, posedge rst)
      if(rst) begin
         sram_w_valid <= 1'b0;
-        sram_w_addr <= -{1'b1,{`BOOTROM_ADDR_W-2{1'b0}}};
-        sram_wstrb <= {`DATA_W/8{1'b1}};
+        sram_w_addr <= -{1'b1,{BOOTROM_ADDR_W-2{1'b0}}};
+        sram_wstrb <= {DATA_W/8{1'b1}};
      end else if (boot) begin
         sram_w_valid <= rom_r_valid;
-        sram_w_addr <= rom_r_addr - { 1'b1,{`BOOTROM_ADDR_W-2{1'b0}} };
-        sram_wstrb <= {`DATA_W/8{rom_r_valid}};
+        sram_w_addr <= rom_r_addr - { 1'b1,{BOOTROM_ADDR_W-2{1'b0}} };
+        sram_wstrb <= {DATA_W/8{rom_r_valid}};
      end else begin
         sram_w_valid <= 1'b0;
-        sram_w_addr <= -{1'b1,{`BOOTROM_ADDR_W-2{1'b0}}};
-        sram_wstrb <= {`DATA_W/8{1'b1}};        
+        sram_w_addr <= -{1'b1,{BOOTROM_ADDR_W-2{1'b0}}};
+        sram_wstrb <= {DATA_W/8{1'b1}};        
      end
    
    assign loading = rom_r_valid | sram_w_valid;
@@ -106,8 +112,8 @@ module boot_ctr
    //
    iob_rom_sp
      #(
-       .DATA_W(`DATA_W),
-       .ADDR_W(`BOOTROM_ADDR_W-2),
+       .DATA_W(DATA_W),
+       .ADDR_W(BOOTROM_ADDR_W-2),
        .HEXFILE("boot.hex")
        )
    sp_rom0 
