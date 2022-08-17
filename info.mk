@@ -11,7 +11,6 @@ SETUP_SW=1
 SETUP_SIM=1
 SETUP_FPGA=0
 SETUP_DOC=0
-SETUP_PPROC=0
 
 # Needed by software/simulation.mk to generate periphs_tmp.h
 PERIPHERALS:=UART

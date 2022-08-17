@@ -93,23 +93,23 @@ $(BUILD_SW_EMB_DIR)/%.c: $(UART_EMB_BUILD_DIR)/%.c
 #
 
 # CACHE sources and headers
-CACHE_PC_BUILD_DIR=$(shell find $(CORE_DIR)/submodules/CACHE/ -maxdepth 1 -type d -name iob_cache_V*)/pproc/sw/pc
+CACHE_PC_BUILD_DIR=$(shell find $(CORE_DIR)/submodules/CACHE/ -maxdepth 1 -type d -name iob_cache_V*)/sw/src
 HDR+=$(patsubst $(CACHE_PC_BUILD_DIR)/%, $(BUILD_SW_PC_DIR)/%,$(wildcard $(CACHE_PC_BUILD_DIR)/*.h))
 $(BUILD_SW_PC_DIR)/%.h: $(CACHE_PC_BUILD_DIR)/%.h
 	cp $< $@
 
-SRC+=$(patsubst $(CACHE_PC_BUILD_DIR)/%, $(BUILD_SW_PC_DIR)/%,$(wildcard $(CACHE_PC_BUILD_DIR)/*.a))
-$(BUILD_SW_PC_DIR)/%.a: $(CACHE_PC_BUILD_DIR)/%.a
+SRC+=$(filter-out %emb.c, $(patsubst $(CACHE_PC_BUILD_DIR)/%, $(BUILD_SW_PC_DIR)/%,$(wildcard $(CACHE_PC_BUILD_DIR)/*.c)))
+$(BUILD_SW_PC_DIR)/%.c: $(CACHE_PC_BUILD_DIR)/%.c
 	cp $< $@
 
 # UART sources and headers
-UART_PC_BUILD_DIR=$(shell find $(CORE_DIR)/submodules/UART/ -maxdepth 1 -type d -name iob_uart_V*)/pproc/sw/pc
+UART_PC_BUILD_DIR=$(shell find $(CORE_DIR)/submodules/UART/ -maxdepth 1 -type d -name iob_uart_V*)/sw/src
 HDR+=$(patsubst $(UART_PC_BUILD_DIR)/%, $(BUILD_SW_PC_DIR)/%,$(wildcard $(UART_PC_BUILD_DIR)/*.h))
 $(BUILD_SW_PC_DIR)/%.h: $(UART_PC_BUILD_DIR)/%.h
 	cp $< $@
 
-SRC+=$(patsubst $(UART_PC_BUILD_DIR)/%, $(BUILD_SW_PC_DIR)/%,$(wildcard $(UART_PC_BUILD_DIR)/*.a))
-$(BUILD_SW_PC_DIR)/%.a: $(UART_PC_BUILD_DIR)/%.a
+SRC+=$(filter-out %emb.c, $(patsubst $(UART_PC_BUILD_DIR)/%, $(BUILD_SW_PC_DIR)/%,$(wildcard $(UART_PC_BUILD_DIR)/*.c)))
+$(BUILD_SW_PC_DIR)/%.c: $(UART_PC_BUILD_DIR)/%.c
 	cp $< $@
 
 #peripherals' base addresses
