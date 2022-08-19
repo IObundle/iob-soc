@@ -42,7 +42,7 @@ int compare_str(char *str1, char *str2, int str_size) {
 int main()
 {
   //init uart
-  uart_init(UART_BASE,FREQ/BAUD);
+  uart_init(UART0_BASE,FREQ/BAUD);   
 
   //test puts
   uart_puts("\n\n\nHello world!\n\n\n");

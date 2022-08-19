@@ -12,5 +12,4 @@ clean:
 debug:
 	cd $(LIB_DIR); ./iob-lib.sh $(CORE_DIR) $@
 
-
 .PHONY: setup clean debug

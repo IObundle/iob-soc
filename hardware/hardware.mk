@@ -82,29 +82,5 @@ $(BUILD_VSRC_DIR)/%.v: $(ROOT_DIR)/hardware/src/%.v
 
 # make system.v with peripherals
 $(BUILD_VSRC_DIR)/system.v: $(ROOT_DIR)/hardware/src/system_core.v
-	cp $< $@
-	$(foreach p, $(PERIPHERALS), $(eval HFILES=$(shell echo `ls $($p_DIR)/hardware/include/*.vh | grep -v pio | grep -v inst | grep -v swreg`)) \
-	$(eval HFILES+=$(notdir $(filter %swreg_def.vh, $(VHDR)))) \
-	$(if $(HFILES), $(foreach f, $(HFILES), sed -i '/PHEADER/a `include \"$f\"' $@;),)) # insert header files
-	$(foreach p, $(PERIPHERALS), if test -f $($p_DIR)/hardware/include/pio.vh; then sed -i '/PIO/r $($p_DIR)/hardware/include/pio.vh' $@; fi;) #insert system IOs for peripheral
-	$(foreach p, $(PERIPHERALS), if test -f $($p_DIR)/hardware/include/inst.vh; then sed -i '/endmodule/e cat $($p_DIR)/hardware/include/inst.vh' $@; fi;) # insert peripheral instances
-
-#
-# SOFTWARE FILES
-#
-
-HEXPROGS=boot.hex firmware.hex
-
-# make and copy memory init files
-boot.hex: $(BOOT_DIR)/boot.bin
-	$(PYTHON_DIR)/makehex.py $< $(BOOTROM_ADDR_W) > $@
-
-firmware.hex: $(FIRM_DIR)/firmware.bin
-	$(PYTHON_DIR)/makehex.py $< $(FIRM_ADDR_W) > $@
-	$(PYTHON_DIR)/hex_split.py firmware .
-
-#clean general hardware files
-hw-clean: gen-clean
-	@rm -f *.v *.vh *.hex *.bin $(ROOT_DIR)/hardware/src/system.v
-
-.PHONY: hw-clean
+	$(SW_DIR)/python/createSystem.py $(ROOT_DIR) "$(GET_DIRS)" "$(PERIPHERALS)"
+	cp system.v $@
