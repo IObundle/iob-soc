@@ -6,8 +6,9 @@ import sys, os
 # Add folder to path that contains python scripts to be imported
 import submodule_utils 
 from submodule_utils import *
+import createSystem
 
-def create_top_system(directories_str, peripherals_str):
+def create_top_system(root_dir, directories_str, peripherals_str):
     # Get peripherals, directories and signals
     instances_amount, instances_parameters = get_peripherals(peripherals_str)
     submodule_directories = get_submodule_directories(directories_str)
@@ -18,19 +19,10 @@ def create_top_system(directories_str, peripherals_str):
     template_contents = template_file.readlines() 
     template_file.close()
 
-    for corename in instances_amount:
-        top_module_name = get_top_module(root_dir+"/"+submodule_directories[corename]+"/config.mk");
+    createSystem.insert_header_files(template_contents, root_dir)
 
-        # Insert header files
-        path = root_dir+"/"+submodule_directories[corename]+"/hardware/include"
-        if os.path.isdir(path):
-            start_index = find_idx(template_contents, "PHEADER")
-            for file in os.listdir(path):
-                if file.endswith(".vh") and not any(x in file for x in ["pio","inst","swreg"]):
-                    template_contents.insert(start_index, '`include "{}"\n'.format(path+"/"+file))
-        # Add topmodule_swreg_def.vh if mkregs.conf exists
-        if os.path.isfile(root_dir+"/"+submodule_directories[corename]+"/mkregs.conf"):
-            template_contents.insert(start_index, '`include "{}"\n'.format(top_module_name+"_swreg_def.vh"))
+    for corename in instances_amount:
+        top_module_name = get_top_module_from_dir(f'{root_dir}/{submodule_directories[corename]}')
 
         pio_signals = get_pio_signals(peripheral_signals[corename])
 
@@ -57,8 +49,8 @@ def create_top_system(directories_str, peripherals_str):
 if __name__ == "__main__":
     # Parse arguments
     if len(sys.argv)<4:
-        print("Usage: {} <root_dir> <directories_defined_in_config.mk> <peripherals>\n".format(sys.argv[0]))
+        print("Usage: {} <root_dir> <directories_defined_in_info.mk> <peripherals>\n".format(sys.argv[0]))
         exit(-1)
     root_dir=sys.argv[1]
     submodule_utils.root_dir = root_dir
-    create_top_system(sys.argv[2], sys.argv[3]) 
+    create_top_system(root_dir, sys.argv[2], sys.argv[3]) 

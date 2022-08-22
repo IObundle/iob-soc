@@ -36,7 +36,7 @@ $(BUILD_VSRC_DIR)/system_tb.v: $(ROOT_DIR)/hardware/simulation/verilog_tb/system
 
 #create  simulation top module
 $(BUILD_VSRC_DIR)/system_top.v: $(ROOT_DIR)/hardware/simulation/verilog_tb/system_top_core.v
-	$(SW_DIR)/python/createTopSystem.py $(ROOT_DIR) "$(GET_DIRS)" "$(PERIPHERALS)"
+	$(ROOT_DIR)/software/python/createTopSystem.py $(ROOT_DIR) "$(GET_DIRS)" "$(PERIPHERALS)"
 	cp system_top.v $@
 
 # SCRIPTS
