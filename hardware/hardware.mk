@@ -82,5 +82,5 @@ $(BUILD_VSRC_DIR)/%.v: $(ROOT_DIR)/hardware/src/%.v
 
 # make system.v with peripherals
 $(BUILD_VSRC_DIR)/system.v: $(ROOT_DIR)/hardware/src/system_core.v
-	$(SW_DIR)/python/createSystem.py $(ROOT_DIR) "$(GET_DIRS)" "$(PERIPHERALS)"
+	$(ROOT_DIR)/software/python/createSystem.py $(ROOT_DIR) "$(GET_DIRS)" "$(PERIPHERALS)"
 	cp system.v $@

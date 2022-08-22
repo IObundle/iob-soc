@@ -59,6 +59,21 @@ reserved_signals_template = """\
       .m_axi_rready  (m_axi_rready[0:0]),
 """
 
+# Get path to build directory of directory
+# Parameter: directory: path to core directory
+# Returns: string with path to build directory
+def get_build_lib(directory):
+    # pattern: <any_string>_V[number].[number]
+    # example: iob_CORE_V1.23
+    build_dir_pattern = re.compile("(.*?)_V[0-9]+.[0-9]+")
+
+    dir_entries = os.scandir(directory)
+    for d in dir_entries:
+        if d.is_dir() and build_dir_pattern.match(d.name):
+            print(d)
+            print(d.path)
+            return d.path
+    return ""
 
 # Parameter: string with directories separated by ';'
 # Returns dictionary with every directory defined in <root_dir>/config.mk
@@ -275,6 +290,16 @@ def get_top_module(file_path):
             break;
     return top_module
 
+
+# Given a path to a core, return the top module name.
+# NOTE: assumes that core is setup (run make -C core_dir)
+def get_top_module_from_dir(core_dir):
+    module_build_dir = get_build_lib(f'{core_dir}')
+    module_dir = f'{module_build_dir}/hw/vsrc'
+    top_module_filename = get_top_module(f'{module_build_dir}/info.mk')
+    return top_module_filename
+
+
 # Arguments: - list_of_peripherals: dictionary with corename of each peripheral
 #            - submodule_directories: dictionary with directory location of each peripheral given
 # Returns: - dictionary with signals from port list in top module of each peripheral
@@ -285,8 +310,9 @@ def get_peripherals_signals(list_of_peripherals, submodule_directories):
     # Get signals of each peripheral
     for i in list_of_peripherals:
         # Find top module verilog file of peripheral
-        module_dir = root_dir+"/"+submodule_directories[i]+"/hardware/src"
-        module_filename = get_top_module(root_dir+"/"+submodule_directories[i]+"/config.mk")+".v";
+        module_build_dir = get_build_lib(f'{root_dir}/{submodule_directories[i]}')
+        module_dir = f'{module_build_dir}/hw/vsrc'
+        module_filename = get_top_module(f'{module_build_dir}/info.mk')+".v";
         module_path=os.path.join(module_dir,module_filename)
         # Skip iteration if peripheral does not have top module
         if not os.path.isfile(module_path):
