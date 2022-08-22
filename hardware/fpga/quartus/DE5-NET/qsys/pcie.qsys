@@ -6,7 +6,7 @@
    version="1.0"
    description=""
    tags=""
-   categories="" />
+   categories="System" />
  <parameter name="bonusData"><![CDATA[bonusData 
 {
    element axi_bridge_0
@@ -136,7 +136,7 @@
   <parameter name="WRITE_RESP_USER_WIDTH" value="64" />
  </module>
  <module name="clk_0" kind="clock_source" version="20.1" enabled="1">
-  <parameter name="clockFrequency" value="50000000" />
+  <parameter name="clockFrequency" value="100000000" />
   <parameter name="clockFrequencyKnown" value="true" />
   <parameter name="inputClockFrequency" value="0" />
   <parameter name="resetSynchronousEdges" value="NONE" />
@@ -289,7 +289,7 @@
   <parameter name="advanced_default_hwtcl_wrong_device_id" value="disable" />
   <parameter name="advanced_default_parameter_override" value="0" />
   <parameter name="avmm_width_hwtcl" value="64" />
-  <parameter name="bar0_type_hwtcl" value="0" />
+  <parameter name="bar0_type_hwtcl" value="2" />
   <parameter name="bar1_type_hwtcl" value="0" />
   <parameter name="bar2_type_hwtcl" value="0" />
   <parameter name="bar3_type_hwtcl" value="0" />
@@ -380,14 +380,20 @@
   <parameter name="vsec_rev_hwtcl" value="0" />
  </module>
  <connection
-   kind="avalon"
+   kind="clock"
    version="20.1"
-   start="axi_bridge_0.m0"
-   end="pcie_sv_hip_avmm_0.Txs">
-  <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0000" />
-  <parameter name="defaultConnection" value="false" />
- </connection>
+   start="clk_0.clk"
+   end="pcie_sv_hip_avmm_0.refclk" />
+ <connection
+   kind="clock"
+   version="20.1"
+   start="pcie_sv_hip_avmm_0.coreclkout"
+   end="axi_bridge_0.clk" />
+ <connection
+   kind="reset"
+   version="20.1"
+   start="pcie_sv_hip_avmm_0.nreset_status"
+   end="axi_bridge_0.clk_reset" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
  <interconnectRequirement for="$system" name="qsys_mm.enableEccProtection" value="FALSE" />
  <interconnectRequirement for="$system" name="qsys_mm.insertDefaultSlave" value="FALSE" />
