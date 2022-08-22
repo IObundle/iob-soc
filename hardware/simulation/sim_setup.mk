@@ -31,7 +31,7 @@ $(BUILD_VSRC_DIR)/cpu_tasks.v: $(CORE_DIR)/hardware/include/cpu_tasks.v
 VSRC+=$(BUILD_VSRC_DIR)/system_tb.v $(BUILD_VSRC_DIR)/system_top.v
 
 $(BUILD_VSRC_DIR)/system_tb.v: $(ROOT_DIR)/hardware/simulation/verilog_tb/system_core_tb.v
-	$(SW_DIR)/python/createTestbench.py $(ROOT_DIR) "$(GET_DIRS)" "$(PERIPHERALS)"
+	$(ROOT_DIR)/software/python/createTestbench.py $(ROOT_DIR) "$(GET_DIRS)" "$(PERIPHERALS)"
 	cp system_tb.v $@
 
 #create  simulation top module

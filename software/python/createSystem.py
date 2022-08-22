@@ -95,7 +95,7 @@ def create_systemv(root_dir, directories_str, peripherals_str):
 if __name__ == "__main__":
     # Parse arguments
     if len(sys.argv)<4:
-        print("Usage: {} <root_dir> <directories_defined_in_config.mk> <peripherals>\n".format(sys.argv[0]))
+        print("Usage: {} <root_dir> <directories_defined_in_info.mk> <peripherals>\n".format(sys.argv[0]))
         exit(-1)
     root_dir=sys.argv[1]
     submodule_utils.root_dir = root_dir
