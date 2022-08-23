@@ -13,9 +13,10 @@ from submodule_utils import *
 def create_periphs_tmp(P, peripheral_instances_amount, filename):
 
     template_contents = []
+    template_contents.insert(0,"#include \"defines.h\"\n")
     for corename in peripheral_instances_amount:
         for i in range(peripheral_instances_amount[corename]):
-            template_contents.insert(0,"#define {}_BASE (1<<{}) |({}<<({}-N_SLAVES_W))\n".format(corename+str(i),P,corename+str(i),P))
+            template_contents.extend("#define {}_BASE (1<<{}) |({}<<({}-N_SLAVES_W))\n".format(corename+str(i),P,corename+str(i),P))
 
     # Write system.v
     periphs_tmp_file = open(filename, "w")

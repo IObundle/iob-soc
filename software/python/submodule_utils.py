@@ -70,8 +70,6 @@ def get_build_lib(directory):
     dir_entries = os.scandir(directory)
     for d in dir_entries:
         if d.is_dir() and build_dir_pattern.match(d.name):
-            print(d)
-            print(d.path)
             return d.path
     return ""
 
