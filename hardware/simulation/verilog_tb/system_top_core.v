@@ -117,4 +117,24 @@ module system_top
       end
     */
 
+	//Manually added testbench uart core. RS232 pins attached to the same pins
+	//of the uut UART0 instance to communicate with it
+   iob_uart uart_tb
+     (
+      .clk       (clk),
+      .rst       (rst),
+      
+      .valid     (uart_valid),
+      .address   (uart_addr),
+      .wdata     (uart_wdata),
+      .wstrb     (uart_wstrb),
+      .rdata     (uart_rdata),
+      .ready     (uart_ready),
+      
+      .txd       (UART0_rxd),
+      .rxd       (UART0_txd),
+      .rts       (UART0_cts),
+      .cts       (UART0_rts)
+      );
+
 endmodule

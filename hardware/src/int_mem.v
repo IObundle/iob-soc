@@ -4,11 +4,13 @@
   
 module int_mem
   #(
-    parameter ADDR_W=32,
-    parameter DATA_W=32,
-    parameter BOOTROM_ADDR_W=0,
-    parameter SRAM_ADDR_W=0,
-    parameter B_BIT=0
+    parameter ADDR_W=`ADDR_W,
+    parameter DATA_W=`DATA_W,
+    parameter HEXFILE = "firmware",
+    parameter BOOT_HEXFILE = "boot",
+    parameter SRAM_ADDR_W = `SRAM_ADDR_W,
+    parameter BOOTROM_ADDR_W = `BOOTROM_ADDR_W,
+    parameter B_BIT = `B_BIT
     )
    (
     input                clk,
@@ -72,14 +74,14 @@ module int_mem
    wire [`REQ_W-1:0]     ram_w_req;
    wire [`RESP_W-1:0]    ram_w_resp;
 
-   boot_ctr  
-    #(
-        .DATA_W(DATA_W),
-        .ADDR_W(ADDR_W),
-        .BOOTROM_ADDR_W(BOOTROM_ADDR_W),
-        .SRAM_ADDR_W(SRAM_ADDR_W)
-    )
-    boot_ctr0
+   boot_ctr 
+        #(.HEXFILE({BOOT_HEXFILE,".hex"}),
+          .DATA_W(DATA_W),
+          .ADDR_W(ADDR_W),
+          .BOOTROM_ADDR_W(BOOTROM_ADDR_W),
+          .SRAM_ADDR_W(SRAM_ADDR_W)
+		  )
+	boot_ctr0 
        (
         .clk(clk),
         .rst(rst),
@@ -109,7 +111,8 @@ module int_mem
    wire [`REQ_W-1:0]  ram_r_req;
    wire [`RESP_W-1:0] ram_r_resp;
 
-   wire [SRAM_ADDR_W-1:0] boot_offset = -({{(SRAM_ADDR_W-1){1'b0}},{1'b1}} << BOOTROM_ADDR_W);
+   wire [SRAM_ADDR_W-1:0] boot_offset = -('b1 << BOOTROM_ADDR_W);
+   //wire [SRAM_ADDR_W-1:0] boot_offset = -(SRAM_ADDR_W'b1 << BOOTROM_ADDR_W); //Verilog does not accept a parameter to define number of bits?
    
 //`define BOOT_OFFSET ((1'b1<<SRAM_ADDR_W)-(1'b1<<BOOTROM_ADDR_W))
 //`define BOOT_OFFSET ((2**SRAM_ADDR_W)-(2**BOOTROM_ADDR_W))
@@ -160,9 +163,12 @@ module int_mem
    // INSTANTIATE RAM
    //
    sram
+        #(
 `ifdef SRAM_INIT
-        #(.HEXFILE("firmware"))
+        .HEXFILE(HEXFILE),
 `endif
+        .DATA_W(DATA_W),
+        .SRAM_ADDR_W(SRAM_ADDR_W))
    int_sram 
      (
       .clk           (clk),

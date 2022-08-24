@@ -112,11 +112,17 @@ SRC+=$(filter-out %emb.c, $(patsubst $(UART_PC_BUILD_DIR)/%, $(BUILD_SW_PC_DIR)/
 $(BUILD_SW_PC_DIR)/%.c: $(UART_PC_BUILD_DIR)/%.c
 	cp $< $@
 
+#
+# Python Scripts
+#
+HDR+=$(patsubst $(ROOT_DIR)/software/python/%,$(BUILD_SW_PYTHON_DIR)/%,$(wildcard $(ROOT_DIR)/software/python/*.py))
+$(BUILD_SW_PYTHON_DIR)/%.py: $(ROOT_DIR)/software/python/%.py
+	cp $< $@
+
 #peripherals' base addresses
 periphs.h: periphs_tmp.h
 	@is_diff=`diff -q -N $@ $<`; if [ "$$is_diff" ]; then cp $< $@; fi
 	@rm periphs_tmp.h
 
 periphs_tmp.h:
-	$(shell echo "#include \"defines.h\"" > $@)
-	$(foreach p, $(PERIPHERALS), $(shell echo "#define $p_BASE (1<<$P) |($p<<($P-N_SLAVES_W))" >> $@) )
+	$(ROOT_DIR)/software/python/periphs_tmp.py $P "$(PERIPHERALS)"

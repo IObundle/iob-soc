@@ -13,6 +13,8 @@ DEFINE+=DDR_ADDR_W=$(DDR_ADDR_W)
 #use hard multiplier and divider instructions
 DEFINE+=USE_MUL_DIV=$(USE_MUL_DIV)
 
+DDR_DATA_W=$(DATA_W)
+
 #use compressed instructions
 DEFINE+=USE_COMPRESSED=$(USE_COMPRESSED)
 

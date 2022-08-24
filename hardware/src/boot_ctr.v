@@ -4,11 +4,12 @@
 
 module boot_ctr
   #(
-      parameter DATA_W = 0,
-      parameter ADDR_W = 0,
-      parameter BOOTROM_ADDR_W = 0,
-      parameter SRAM_ADDR_W = 0
-    )
+    parameter HEXFILE = "boot.hex",
+    parameter DATA_W = `DATA_W,
+    parameter ADDR_W = `ADDR_W,
+    parameter BOOTROM_ADDR_W = `BOOTROM_ADDR_W,
+    parameter SRAM_ADDR_W = `SRAM_ADDR_W
+ )
   (
    input                      clk,
    input                      rst,
@@ -114,7 +115,7 @@ module boot_ctr
      #(
        .DATA_W(DATA_W),
        .ADDR_W(BOOTROM_ADDR_W-2),
-       .HEXFILE("boot.hex")
+       .HEXFILE(HEXFILE)
        )
    sp_rom0 
      (
