@@ -13,15 +13,6 @@ CACHE_DIR=$(ROOT_DIR)/submodules/CACHE
 UART_DIR=$(ROOT_DIR)/submodules/UART
 LIB_DIR=$(ROOT_DIR)/submodules/LIB
 
-#address selection bits
-E:=31 #extra memory bit
-P:=30 #periphs
-B:=29 #boot controller
-
-DEFINE+=E=$E
-DEFINE+=P=$P
-DEFINE+=B=$B
-
 #kill "console", the background running program seriving simulators,
 #emulators and boards
 #used by fpga and pc-emul makefiles
@@ -30,18 +21,11 @@ kill-cnsl:
 	@if [ "`$(CNSL_PID)`" ]; then \
 	kill -9 $$($(CNSL_PID) | awk '{print $$2}'); fi
 
-#PERIPHERAL IDs
-#assign a sequential ID to each peripheral
-#the ID is used as an instance name index in the hardware and as a base address in the software
-DEFINE+=$(shell $(CORE_DIR)/sw/python/submodule_utils.py get_defines "$(PERIPHERALS)" "$(defmacro)")
-DEFINE+=$(defmacro)N_SLAVES=$(shell $(CORE_DIR)/sw/python/submodule_utils.py get_n_slaves "$(PERIPHERALS)") #peripherals
-DEFINE+=$(defmacro)N_SLAVES_W=$(shell $(CORE_DIR)/sw/python/submodule_utils.py get_n_slaves_w "$(PERIPHERALS)")
-
 #RISC-V HARD MULTIPLIER AND DIVIDER INSTRUCTIONS
-USE_MUL_DIV ?=1
+USE_MUL_DIV=1
 
 #RISC-V COMPRESSED INSTRUCTIONS
-USE_COMPRESSED ?=1
+USE_COMPRESSED=1
 
 #default baud and system clock frequency
 SIM_BAUD = 2500000
@@ -51,27 +35,12 @@ SIM_FREQ =50000000
 BAUD ?=$(SIM_BAUD)
 FREQ ?=$(SIM_FREQ)
 
-#CPU ARCHITECTURE
+# #CPU ARCHITECTURE
 DATA_W := 32
-ADDR_W := 32
+# ADDR_W := 32
 
 #DATA CACHE ADDRESS WIDTH (tag + index + offset)
 DCACHE_ADDR_W:=24
-
-#FIRMWARE SIZE (LOG2)
-FIRM_ADDR_W ?=15
-
-#SRAM SIZE (LOG2)
-SRAM_ADDR_W ?=15
-
-#ROM SIZE (LOG2)
-BOOTROM_ADDR_W:=12
-
-DEFINE+=DATA_W=$(DATA_W)
-DEFINE+=ADDR_W=$(ADDR_W)
-DEFINE+=FIRM_ADDR_W=$(FIRM_ADDR_W)
-DEFINE+=SRAM_ADDR_W=$(SRAM_ADDR_W)
-DEFINE+=BOOTROM_ADDR_W=$(BOOTROM_ADDR_W)
 
 #macro to return all defined directories separated by newline
 GET_DIRS= $(eval ROOT_DIR_TMP=.)\

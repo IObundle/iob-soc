@@ -1,3 +1,4 @@
+`include "iob_soc.vh"
 //init sram/ddr with firmware
 `ifdef INIT_MEM
  `ifdef RUN_EXTMEM

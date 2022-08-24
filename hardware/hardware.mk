@@ -56,6 +56,10 @@ VHDR+=$(BUILD_VSRC_DIR)/system.vh
 $(BUILD_VSRC_DIR)/system.vh: $(ROOT_DIR)/hardware/include/system.vh
 	cp $< $@
 
+VHDR+=$(BUILD_VSRC_DIR)/iob_soc.vh
+$(BUILD_VSRC_DIR)/iob_soc.vh:
+	./$(BUILD_SW_PYTHON_DIR)/hw_defines.py  $@ $(SOC_DEFINE)
+
 VHDR+=$(BUILD_VSRC_DIR)/iob_intercon.vh
 $(BUILD_VSRC_DIR)/iob_intercon.vh: hardware/include/iob_intercon.vh
 	cp $< $@

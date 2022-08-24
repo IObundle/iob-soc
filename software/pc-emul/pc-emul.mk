@@ -2,11 +2,16 @@
 # This file is included in BUILD_DIR/sw/pc/Makefile.
 
 # DEFINES
-DEFINE+=FREQ=$(FREQ)
-DEFINE+=BAUD=$(BAUD)
+SW_DEFINE+=FREQ=$(FREQ)
+SW_DEFINE+=BAUD=$(BAUD)
+
+SW_DEFINE+=PC
 
 # HEADERS
-HDR+=defines.h
+HDR+=iob_soc_conf.h
+
+iob_soc_conf.h:
+	../python/sw_defines.py $@ $(SW_DEFINE)
 
 # SOURCES
 # exclude bootloader sources
@@ -16,9 +21,7 @@ TEST_LIST+=test1
 test1:
 	make run TEST_LOG="> test.log"
 
-defines.h:
-	../python/sw_defines.py $@ $(DEFINE)
 
 CLEAN_LIST+=clean1
 clean1:
-	@rm -rf defines.h
+	@rm -rf iob_soc_conf.h

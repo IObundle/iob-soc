@@ -16,6 +16,10 @@ HDR+=$(BUILD_SW_SRC_DIR)/system.h
 $(BUILD_SW_SRC_DIR)/system.h: $(ROOT_SW_DIR)/system.h
 	cp $< $@
 
+HDR+=$(BUILD_SW_SRC_DIR)/iob_soc.h
+$(BUILD_SW_SRC_DIR)/iob_soc.h:
+	./$(BUILD_SW_PYTHON_DIR)/sw_defines.py $@ $(SOC_DEFINE)
+
 HDR+=$(BUILD_SW_SRC_DIR)/template.lds
 $(BUILD_SW_SRC_DIR)/template.lds: $(ROOT_SW_DIR)/template.lds
 	cp $< $@

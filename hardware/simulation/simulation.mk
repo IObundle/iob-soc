@@ -3,20 +3,12 @@ BAUD=$(SIM_BAUD)
 FREQ=$(SIM_FREQ)
 
 #define for testbench
-DEFINE+=BAUD=$(BAUD)
-DEFINE+=FREQ=$(FREQ)
+CONF_DEFINE+=BAUD=$(BAUD)
+CONF_DEFINE+=FREQ=$(FREQ)
 
-#ddr controller address width
-DDR_ADDR_W=$(DCACHE_ADDR_W)
-DEFINE+=DDR_ADDR_W=$(DDR_ADDR_W)
-
-#use hard multiplier and divider instructions
-DEFINE+=USE_MUL_DIV=$(USE_MUL_DIV)
-
-DDR_DATA_W=$(DATA_W)
-
-#use compressed instructions
-DEFINE+=USE_COMPRESSED=$(USE_COMPRESSED)
+#ddr controller address and data width
+CONF_DEFINE+=DDR_ADDR_W=$(DCACHE_ADDR_W)
+CONF_DEFINE+=DDR_DATA_W=$(DATA_W)
 
 CONSOLE_CMD=../../sw/python/console -L
 
@@ -24,7 +16,7 @@ CONSOLE_CMD=../../sw/python/console -L
 VCD ?=0
 
 ifeq ($(VCD),1)
-DEFINE+=VCD
+TB_DEFINE+=VCD
 endif
 
 ifeq ($(INIT_MEM),0)
@@ -35,13 +27,16 @@ ifneq ($(wildcard firmware.hex),)
 FW_SIZE=$(shell wc -l firmware.hex | awk '{print $$1}')
 endif
 
-DEFINE+=FW_SIZE=$(FW_SIZE)
+TB_DEFINE+=FW_SIZE=$(FW_SIZE)
 
 # HEADERS
-VHDR+=defines.vh
+VHDR+=iob_soc_conf.vh iob_soc_tb_conf.vh
 
-defines.vh:
-	../../sw/python/hw_defines.py $@ $(DEFINE)
+iob_soc_conf.vh:
+	../../sw/python/hw_defines.py $@ $(CONF_DEFINE)
+
+iob_soc_tb_conf.vh:
+	../../sw/python/hw_defines.py $@ $(TB_DEFINE)
 
 VHDR+=boot.hex firmware.hex
 
