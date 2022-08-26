@@ -12,31 +12,31 @@ ROOT_SW_DIR:=$(ROOT_DIR)/software
 # Common Headers and Sources
 #
 #HEADERS
-HDR+=$(BUILD_SW_SRC_DIR)/system.h
+SRC+=$(BUILD_SW_SRC_DIR)/system.h
 $(BUILD_SW_SRC_DIR)/system.h: $(ROOT_SW_DIR)/system.h
 	cp $< $@
 
-HDR+=$(BUILD_SW_SRC_DIR)/iob_soc.h
+SRC+=$(BUILD_SW_SRC_DIR)/iob_soc.h
 $(BUILD_SW_SRC_DIR)/iob_soc.h:
-	./$(BUILD_SW_PYTHON_DIR)/sw_defines.py $@ $(SOC_DEFINE)
+	./software/python/sw_defines.py $@ $(SOC_DEFINE)
 
-HDR+=$(BUILD_SW_SRC_DIR)/template.lds
+SRC+=$(BUILD_SW_SRC_DIR)/template.lds
 $(BUILD_SW_SRC_DIR)/template.lds: $(ROOT_SW_DIR)/template.lds
 	cp $< $@
 
-HDR+=$(BUILD_SW_SRC_DIR)/periphs.h
+SRC+=$(BUILD_SW_SRC_DIR)/periphs.h
 $(BUILD_SW_SRC_DIR)/periphs.h: periphs.h
 	cp $< $@
 
 # firmware
 HDR1=$(wildcard $(ROOT_SW_DIR)/firmware/*.h)
-HDR+=$(patsubst $(ROOT_SW_DIR)/firmware/%,$(BUILD_SW_HDR_DIR)/%,$(HDR1))
+SRC+=$(patsubst $(ROOT_SW_DIR)/firmware/%,$(BUILD_SW_HDR_DIR)/%,$(HDR1))
 $(BUILD_SW_SRC_DIR)/%.h: $(ROOT_SW_DIR)/firmware/%.h
 	cp $< $@
 
 # bootloader
 HDR2=$(wildcard $(ROOT_SW_DIR)/bootloader/*.h)
-HDR+=$(patsubst $(ROOT_SW_DIR)/bootloader/%,$(BUILD_SW_HDR_DIR)/%,$(HDR2))
+SRC+=$(patsubst $(ROOT_SW_DIR)/bootloader/%,$(BUILD_SW_HDR_DIR)/%,$(HDR2))
 $(BUILD_SW_SRC_DIR)/%.h: $(ROOT_SW_DIR)/bootloader/%.h
 	cp $< $@
 
@@ -63,18 +63,13 @@ SRC+=$(patsubst $(ROOT_SW_DIR)/bootloader/%,$(BUILD_SW_SRC_DIR)/%,$(SRC4))
 $(BUILD_SW_SRC_DIR)/%.S: $(ROOT_SW_DIR)/bootloader/%.S
 	cp $< $@
 
-SW_EMB_HDR:=$(HDR)
-SW_EMB_SRC:=$(SRC)
-SW_PC_HDR:=$(HDR)
-SW_PC_SRC:=$(SRC)
-
 #
 # Embedded Sources
 #
 
 # CACHE sources and headers
 CACHE_EMB_BUILD_DIR=$(shell find $(CORE_DIR)/submodules/CACHE/ -maxdepth 1 -type d -name iob_cache_V*)/sw/src
-HDR+=$(patsubst $(CACHE_EMB_BUILD_DIR)/%, $(BUILD_SW_EMB_DIR)/%,$(wildcard $(CACHE_EMB_BUILD_DIR)/*.h))
+SRC+=$(patsubst $(CACHE_EMB_BUILD_DIR)/%, $(BUILD_SW_EMB_DIR)/%,$(wildcard $(CACHE_EMB_BUILD_DIR)/*.h))
 $(BUILD_SW_EMB_DIR)/%.h: $(CACHE_EMB_BUILD_DIR)/%.h
 	cp $< $@
 
@@ -84,7 +79,7 @@ $(BUILD_SW_EMB_DIR)/%.c: $(CACHE_EMB_BUILD_DIR)/%.c
 
 # UART sources and headers
 UART_EMB_BUILD_DIR=$(shell find $(CORE_DIR)/submodules/UART/ -maxdepth 1 -type d -name iob_uart_V*)/sw/src
-HDR+=$(patsubst $(UART_EMB_BUILD_DIR)/%, $(BUILD_SW_EMB_DIR)/%,$(wildcard $(UART_EMB_BUILD_DIR)/*.h))
+SRC+=$(patsubst $(UART_EMB_BUILD_DIR)/%, $(BUILD_SW_EMB_DIR)/%,$(wildcard $(UART_EMB_BUILD_DIR)/*.h))
 $(BUILD_SW_EMB_DIR)/%.h: $(UART_EMB_BUILD_DIR)/%.h
 	cp $< $@
 
@@ -98,7 +93,7 @@ $(BUILD_SW_EMB_DIR)/%.c: $(UART_EMB_BUILD_DIR)/%.c
 
 # CACHE sources and headers
 CACHE_PC_BUILD_DIR=$(shell find $(CORE_DIR)/submodules/CACHE/ -maxdepth 1 -type d -name iob_cache_V*)/sw/src
-HDR+=$(patsubst $(CACHE_PC_BUILD_DIR)/%, $(BUILD_SW_PC_DIR)/%,$(wildcard $(CACHE_PC_BUILD_DIR)/*.h))
+SRC+=$(patsubst $(CACHE_PC_BUILD_DIR)/%, $(BUILD_SW_PC_DIR)/%,$(wildcard $(CACHE_PC_BUILD_DIR)/*.h))
 $(BUILD_SW_PC_DIR)/%.h: $(CACHE_PC_BUILD_DIR)/%.h
 	cp $< $@
 
@@ -108,7 +103,7 @@ $(BUILD_SW_PC_DIR)/%.c: $(CACHE_PC_BUILD_DIR)/%.c
 
 # UART sources and headers
 UART_PC_BUILD_DIR=$(shell find $(CORE_DIR)/submodules/UART/ -maxdepth 1 -type d -name iob_uart_V*)/sw/src
-HDR+=$(patsubst $(UART_PC_BUILD_DIR)/%, $(BUILD_SW_PC_DIR)/%,$(wildcard $(UART_PC_BUILD_DIR)/*.h))
+SRC+=$(patsubst $(UART_PC_BUILD_DIR)/%, $(BUILD_SW_PC_DIR)/%,$(wildcard $(UART_PC_BUILD_DIR)/*.h))
 $(BUILD_SW_PC_DIR)/%.h: $(UART_PC_BUILD_DIR)/%.h
 	cp $< $@
 
@@ -119,8 +114,12 @@ $(BUILD_SW_PC_DIR)/%.c: $(UART_PC_BUILD_DIR)/%.c
 #
 # Python Scripts
 #
-HDR+=$(patsubst $(ROOT_DIR)/software/python/%,$(BUILD_SW_PYTHON_DIR)/%,$(wildcard $(ROOT_DIR)/software/python/*.py))
+SRC+=$(patsubst $(ROOT_DIR)/software/python/%,$(BUILD_SW_PYTHON_DIR)/%,$(wildcard $(ROOT_DIR)/software/python/*.py))
 $(BUILD_SW_PYTHON_DIR)/%.py: $(ROOT_DIR)/software/python/%.py
+	cp $< $@
+
+SRC+=$(BUILD_SW_PYTHON_DIR)/sw_defines.py
+$(BUILD_SW_PYTHON_DIR)/sw_defines.py: software/python/sw_defines.py
 	cp $< $@
 
 #peripherals' base addresses
