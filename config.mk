@@ -21,6 +21,13 @@ kill-cnsl:
 	@if [ "`$(CNSL_PID)`" ]; then \
 	kill -9 $$($(CNSL_PID) | awk '{print $$2}'); fi
 
+#PRE-INIT MEMORY WITH PROGRAM AND DATA
+INIT_MEM ?=1
+
+#DDR
+USE_DDR ?=0
+RUN_EXTMEM ?=0
+
 #RISC-V HARD MULTIPLIER AND DIVIDER INSTRUCTIONS
 USE_MUL_DIV=1
 
@@ -41,6 +48,10 @@ DATA_W := 32
 
 #DATA CACHE ADDRESS WIDTH (tag + index + offset)
 DCACHE_ADDR_W:=24
+
+FIRM_ADDR_W=15
+BOOTROM_ADDR_W=12
+
 
 #macro to return all defined directories separated by newline
 GET_DIRS= $(eval ROOT_DIR_TMP=.)\

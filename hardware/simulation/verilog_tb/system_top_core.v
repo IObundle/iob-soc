@@ -33,7 +33,7 @@ module system_top
    initial begin
 
 `ifdef VCD
-      $dumpfile("system.vcd");
+      $dumpfile("uut.vcd");
       $dumpvars();
 `endif
 

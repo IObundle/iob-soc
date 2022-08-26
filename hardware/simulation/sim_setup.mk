@@ -24,20 +24,24 @@ iob_cache_axi_wire.vh:
 #axi memory
 include hardware/axiram/hardware.mk
 
-SRC+=$(BUILD_VSRC_DIR)/cpu_tasks.v
-$(BUILD_VSRC_DIR)/cpu_tasks.v: $(CORE_DIR)/hardware/include/cpu_tasks.v
+SRC+=$(BUILD_SIM_DIR)/cpu_tasks.v
+$(BUILD_SIM_DIR)/cpu_tasks.v: $(CORE_DIR)/hardware/include/cpu_tasks.v
 	cp $< $@
 
-SRC+=$(BUILD_VSRC_DIR)/system_tb.v $(BUILD_VSRC_DIR)/system_top.v
+SRC+=$(BUILD_SIM_DIR)/system_tb.v $(BUILD_SIM_DIR)/system_top.v
 
-$(BUILD_VSRC_DIR)/system_tb.v: $(ROOT_DIR)/hardware/simulation/verilog_tb/system_core_tb.v
+$(BUILD_SIM_DIR)/system_tb.v: $(ROOT_DIR)/hardware/simulation/verilog_tb/system_core_tb.v
 	$(ROOT_DIR)/software/python/createTestbench.py $(ROOT_DIR) "$(GET_DIRS)" "$(PERIPHERALS)"
 	cp system_tb.v $@
 
-#create  simulation top module
-$(BUILD_VSRC_DIR)/system_top.v: $(ROOT_DIR)/hardware/simulation/verilog_tb/system_top_core.v
+#create simulation top module
+$(BUILD_SIM_DIR)/system_top.v: $(ROOT_DIR)/hardware/simulation/verilog_tb/system_top_core.v
 	$(ROOT_DIR)/software/python/createTopSystem.py $(ROOT_DIR) "$(GET_DIRS)" "$(PERIPHERALS)"
 	cp system_top.v $@
+
+SRC+=$(BUILD_SIM_DIR)/iob_soc_tb.cpp
+$(BUILD_SIM_DIR)/iob_soc_tb.cpp: $(CORE_DIR)/hardware/simulation/verilator/iob_soc_tb.cpp
+	cp $< $@
 
 #
 # SCRIPTS
