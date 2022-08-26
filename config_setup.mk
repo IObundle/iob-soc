@@ -19,7 +19,30 @@ UART_DIR=$(ROOT_DIR)/submodules/UART
 LIB_DIR=$(ROOT_DIR)/submodules/LIB
 
 #address selection bits
+E:=31 #extra memory bit
 P:=30 #periphs
+B:=29 #boot controller
+
+# SOC DEFINES
+# list of defines that have the same value regardless of system configuration
+SOC_DEFINE+=USE_MUL_DIV=1
+SOC_DEFINE+=USE_COMPRESSED=1
+SOC_DEFINE+=E=$E
+SOC_DEFINE+=P=$P
+SOC_DEFINE+=B=$B
+SOC_DEFINE+=B=$B
+#PERIPHERAL IDs
+#assign a sequential ID to each peripheral
+#the ID is used as an instance name index in the hardware and as a base address in the software
+SOC_DEFINE+=$(shell $(CORE_DIR)/software/python/submodule_utils.py get_defines "$(PERIPHERALS)" "$(defmacro)")
+SOC_DEFINE+=N_SLAVES=$(shell $(CORE_DIR)/software/python/submodule_utils.py get_n_slaves "$(PERIPHERALS)") #peripherals
+SOC_DEFINE+=N_SLAVES_W=$(shell $(CORE_DIR)/software/python/submodule_utils.py get_n_slaves_w "$(PERIPHERALS)")
+
+SOC_DEFINE+=DATA_W=32
+SOC_DEFINE+=ADDR_W=32
+SOC_DEFINE+=FIRM_ADDR_W=15
+SOC_DEFINE+=SRAM_ADDR_W=15
+SOC_DEFINE+=BOOTROM_ADDR_W=12
 
 #macro to return all defined directories separated by newline
 GET_DIRS= $(eval ROOT_DIR_TMP=.)\

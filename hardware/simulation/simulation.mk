@@ -3,20 +3,25 @@ BAUD=$(SIM_BAUD)
 FREQ=$(SIM_FREQ)
 
 #define for testbench
-DEFINE+=BAUD=$(BAUD)
-DEFINE+=FREQ=$(FREQ)
+CONF_DEFINE+=BAUD=$(BAUD)
+CONF_DEFINE+=FREQ=$(FREQ)
 
-#ddr controller address width
-DDR_ADDR_W=$(DCACHE_ADDR_W)
-DEFINE+=DDR_ADDR_W=$(DDR_ADDR_W)
+#ddr controller address and data width
+CONF_DEFINE+=DDR_ADDR_W=$(DCACHE_ADDR_W)
+CONF_DEFINE+=DDR_DATA_W=$(DATA_W)
 
-#use hard multiplier and divider instructions
-DEFINE+=USE_MUL_DIV=$(USE_MUL_DIV)
+# DDR configuration
+ifeq ($(USE_DDR),1)
+CONF_DEFINE+=USE_DDR
+endif
+ifeq ($(RUN_EXTMEM),1)
+CONF_DEFINE+=RUN_EXTMEM
+endif
 
-DDR_DATA_W=$(DATA_W)
-
-#use compressed instructions
-DEFINE+=USE_COMPRESSED=$(USE_COMPRESSED)
+# Initialize Memory configuration
+ifeq ($(INIT_MEM),1)
+CONF_DEFINE+=INIT_MEM
+endif
 
 CONSOLE_CMD=../../sw/python/console -L
 
@@ -24,62 +29,90 @@ CONSOLE_CMD=../../sw/python/console -L
 VCD ?=0
 
 ifeq ($(VCD),1)
-DEFINE+=VCD
+TB_DEFINE+=VCD
 endif
 
 ifeq ($(INIT_MEM),0)
 CONSOLE_CMD+=-f
 endif
 
-ifneq ($(wildcard firmware.hex),)
 FW_SIZE=$(shell wc -l firmware.hex | awk '{print $$1}')
-endif
 
-DEFINE+=FW_SIZE=$(FW_SIZE)
+TB_DEFINE+=FW_SIZE=$(FW_SIZE)
+
+# Simulation programs
+VHDR+=boot.hex firmware.bin firmware.hex
 
 # HEADERS
-VHDR+=defines.vh
+VHDR+=iob_soc_conf.vh iob_soc_tb_conf.vh
 
-defines.vh:
-	../../sw/python/hw_defines.py $@ $(DEFINE)
+iob_soc_conf.vh:
+	../../sw/python/hw_defines.py $@ $(CONF_DEFINE)
 
-VHDR+=boot.hex firmware.hex
+iob_soc_tb_conf.vh:
+	../../sw/python/hw_defines.py $@ $(TB_DEFINE)
 
 boot.hex: ../../sw/emb/boot.bin
 	../../sw/python/makehex.py $< $(BOOTROM_ADDR_W) > $@
 
-firmware.hex: ../../sw/emb/firmware.bin
+firmware.hex: firmware.bin
 	../../sw/python/makehex.py $< $(FIRM_ADDR_W) > $@
 	../../sw/python/hex_split.py firmware .
+
+firmware.bin: ../../sw/emb/firmware.bin
+	cp $< $@
 
 ../../sw/emb%.bin:
 	make -C ../../ fw-build
 
 # SOURCES
 # remove cpu_tasks.v from source list
-VSRC:=$(filter-out %cpu_tasks.v, $(VSRC))
-# remove non-system testbenches
-NON_SOC_TB=$(filter-out %system_tb.v, $(filter %_tb.v, $(VSRC)))
-$(warning $(NON_SOC_TB))
-VSRC:=$(filter-out $(NON_SOC_TB), $(VSRC))
+VSRC:=$(filter-out cpu_tasks.v, $(VSRC))
+
+VSRC+=system_top.v
+
+ifeq ($(SIMULATOR),verilator)
+# get header files (needed for iob_soc_tb.cpp
+VHDR+=iob_uart_swreg.h
+iob_uart_swreg.h: ../../sw/emb/iob_uart_swreg.h
+	cp $< $@
+
+VHDR+=iob_soc_conf.h iob_soc_tb_conf.h
+iob_soc_conf.h:
+	../../sw/python/sw_defines.py $@ $(CONF_DEFINE)
+
+iob_soc_tb_conf.h:
+	../../sw/python/sw_defines.py $@ $(TB_DEFINE)
+
+# remove system_tb.v from source list
+VSRC:=$(filter-out system_tb.v, $(VSRC))
+endif
+
+# verilator top module
+VTOP:=system_top
 
 TEST_LIST+=test1
 test1:
 	make -C $(ROOT_DIR) sim-clean SIMULATOR=$(SIMULATOR)
-	make -C $(ROOT_DIR) sim-run INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0
-TEST_LIST+=test2
+	make -C $(ROOT_DIR) sim-run SIMULATOR=$(SIMULATOR) INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+TEST_LIST+=test2 TEST_LOG=">> test.log"
 test2:
 	make -C $(ROOT_DIR) sim-clean SIMULATOR=$(SIMULATOR)
-	make -C $(ROOT_DIR) sim-run INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0
-TEST_LIST+=test3
-test3:
-	make -C $(ROOT_DIR) sim-clean SIMULATOR=$(SIMULATOR)
-	make -C $(ROOT_DIR) sim-run INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=0
-TEST_LIST+=test4
-test4:
-	make -C $(ROOT_DIR) sim-clean SIMULATOR=$(SIMULATOR)
-	make -C $(ROOT_DIR) sim-run INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=1
-TEST_LIST+=test5
-test5:
-	make -C $(ROOT_DIR) sim-clean SIMULATOR=$(SIMULATOR)
-	make -C $(ROOT_DIR) sim-run INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1
+	make -C $(ROOT_DIR) sim-run SIMULATOR=$(SIMULATOR) INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+# TEST_LIST+=test3 TEST_LOG=">> test.log"
+# test3:
+# 	make -C $(ROOT_DIR) sim-clean SIMULATOR=$(SIMULATOR)
+# 	make -C $(ROOT_DIR) sim-run SIMULATOR=$(SIMULATOR) INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+# TEST_LIST+=test4 TEST_LOG=">> test.log"
+# test4:
+# 	make -C $(ROOT_DIR) sim-clean SIMULATOR=$(SIMULATOR)
+# 	make -C $(ROOT_DIR) sim-run SIMULATOR=$(SIMULATOR) INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
+# TEST_LIST+=test5 TEST_LOG=">> test.log"
+# test5:
+# 	make -C $(ROOT_DIR) sim-clean SIMULATOR=$(SIMULATOR)
+# 	make -C $(ROOT_DIR) sim-run SIMULATOR=$(SIMULATOR) INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
+
+NOCLEAN+=-o -name "cpu_tasks.v"
+NOCLEAN+=-o -name "system_tb.v"
+NOCLEAN+=-o -name "system_top.v"
+NOCLEAN+=-o -name "iob_soc_tb.cpp"

@@ -1,5 +1,4 @@
 `timescale 1 ns / 1 ps
-`include "defines.vh"
 `include "system.vh"
 `include "iob_lib.vh"
 `include "iob_intercon.vh"
@@ -53,7 +52,12 @@ module system
    wire [`RESP_W-1:0] cpu_d_resp;
    
    //instantiate the cpu
-   iob_picorv32 cpu
+   iob_picorv32 
+     #(
+       .ADDR_W(ADDR_W),
+       .DATA_W(DATA_W)
+       )
+   cpu
        (
         .clk (clk),
         .rst (cpu_reset),

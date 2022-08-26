@@ -1,6 +1,7 @@
 `timescale 1ns / 1ps
 
-`include "defines.vh"
+`include "iob_soc_conf.vh"
+`include "iob_soc_tb_conf.vh"
 `include "iob_lib.vh"
 `include "system.vh"
 
@@ -32,7 +33,7 @@ module system_top
    initial begin
 
 `ifdef VCD
-      $dumpfile("system.vcd");
+      $dumpfile("uut.vcd");
       $dumpvars();
 `endif
 

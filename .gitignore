@@ -25,7 +25,7 @@ hardware/testbench/system_tb.v
 
 #simulation
 hardware/simulation/*/*
-!hardware/simulation/verilog_tb
+!hardware/simulation/verilog_tb/*
 !hardware/simulation/simulation.mk
 !hardware/simulation/*/Makefile
 !hardware/simulation/*/*.expected

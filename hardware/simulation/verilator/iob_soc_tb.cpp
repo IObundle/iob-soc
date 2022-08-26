@@ -5,6 +5,8 @@
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 
+#include "iob_soc_conf.h"
+#include "iob_soc_tb_conf.h"
 #include "iob_uart_swreg.h"
 
 // other macros
@@ -87,7 +89,7 @@ int main(int argc, char **argv, char **env){
   tfp = new VerilatedVcdC;
 
   dut->trace(tfp, 1);
-  tfp->open("system.vcd");
+  tfp->open("uut.vcd");
 #endif
 
   dut->clk = 0;

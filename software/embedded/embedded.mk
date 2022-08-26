@@ -2,14 +2,14 @@
 # This file is included in BUILD_DIR/sw/emb/Makefile.
 
 # DEFINES
-DEFINE+=FREQ=$(FREQ)
-DEFINE+=BAUD=$(BAUD)
+SW_DEFINE+=FREQ=$(FREQ)
+SW_DEFINE+=BAUD=$(BAUD)
 
 # HEADERS
-HDR+=defines.h
+HDR+=iob_soc_conf.h
 
-defines.h:
-	../python/sw_defines.py $@ $(DEFINE)
+iob_soc_conf.h:
+	../python/sw_defines.py $@ $(SW_DEFINE)
 
 # SOURCES
 # exclude print from bootloader sources
@@ -17,4 +17,4 @@ BOOT_SRC:=$(filter-out printf.c, $(BOOT_SRC))
 
 CLEAN_LIST+=clean1
 clean1:
-	@rm -rf defines.h
+	@rm -rf iob_soc_conf.h
