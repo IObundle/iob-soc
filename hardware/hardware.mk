@@ -1,8 +1,3 @@
-#default baud rate for hardware
-BAUD ?=115200
-
-# include $(ROOT_DIR)/config.mk
-
 #
 # ADD SUBMODULES HARDWARE
 # SUBCORES hardware is copied first, so that possible duplicated source modules
@@ -53,7 +48,7 @@ DEFINE+=DDR_ADDR_W=$(DDR_ADDR_W)
 
 #HEADERS
 SRC+=$(BUILD_VSRC_DIR)/system.vh
-$(BUILD_VSRC_DIR)/system.vh: $(ROOT_DIR)/hardware/include/system.vh
+$(BUILD_VSRC_DIR)/system.vh: $(CORE_DIR)/hardware/include/system.vh
 	cp $< $@
 
 SRC+=$(BUILD_VSRC_DIR)/iob_soc.vh
@@ -81,12 +76,12 @@ endif
 SRC+=$(BUILD_VSRC_DIR)/boot_ctr.v $(BUILD_VSRC_DIR)/int_mem.v $(BUILD_VSRC_DIR)/sram.v
 SRC+=$(BUILD_VSRC_DIR)/system.v
 
-$(BUILD_VSRC_DIR)/%.v: $(ROOT_DIR)/hardware/src/%.v
+$(BUILD_VSRC_DIR)/%.v: $(CORE_DIR)/hardware/src/%.v
 	cp $< $@
 
 # make system.v with peripherals
-$(BUILD_VSRC_DIR)/system.v: $(ROOT_DIR)/hardware/src/system_core.v
-	$(ROOT_DIR)/software/python/createSystem.py $(ROOT_DIR) "$(GET_DIRS)" "$(PERIPHERALS)"
+$(BUILD_VSRC_DIR)/system.v: $(CORE_DIR)/hardware/src/system_core.v
+	$(CORE_DIR)/software/python/createSystem.py $(CORE_DIR) "$(GET_DIRS)" "$(PERIPHERALS)"
 	cp system.v $@
 
 #

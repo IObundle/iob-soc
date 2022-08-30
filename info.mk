@@ -4,5 +4,3 @@ NAME=iob_soc
 VERSION=0010
 # top-leel module
 TOP_MODULE?=system
-# core path as seen from LIB's makefile
-ROOT_DIR=$(CORE_DIR)

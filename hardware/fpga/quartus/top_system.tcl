@@ -28,18 +28,13 @@
 # 
 #--------------------------------------------------------------#
 
-#------ Get Slack from the Report File ------#
-
-#------ Set the project name ------#
 set project_name top_system
 
 
 set INCLUDE [lindex $argv 0]
 set DEFINE [lindex $argv 1]
 set VSRC [lindex $argv 2]
-
 set USE_DDR [string last "USE_DDR" $DEFINE]
-
 
 load_package report
 

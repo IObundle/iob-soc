@@ -13,10 +13,10 @@ SETUP_DOC=0
 PERIPHERALS ?=UART
 
 #submodule paths
-PICORV32_DIR=$(ROOT_DIR)/submodules/PICORV32
-CACHE_DIR=$(ROOT_DIR)/submodules/CACHE
-UART_DIR=$(ROOT_DIR)/submodules/UART
-LIB_DIR=$(ROOT_DIR)/submodules/LIB
+PICORV32_DIR=$(CORE_DIR)/submodules/PICORV32
+CACHE_DIR=$(CORE_DIR)/submodules/CACHE
+UART_DIR=$(CORE_DIR)/submodules/UART
+LIB_DIR=$(CORE_DIR)/submodules/LIB
 
 #address selection bits
 E:=31 #extra memory bit
@@ -30,11 +30,11 @@ SOC_DEFINE+=USE_COMPRESSED=1
 SOC_DEFINE+=E=$E
 SOC_DEFINE+=P=$P
 SOC_DEFINE+=B=$B
-SOC_DEFINE+=B=$B
+
 #PERIPHERAL IDs
 #assign a sequential ID to each peripheral
 #the ID is used as an instance name index in the hardware and as a base address in the software
-SOC_DEFINE+=$(shell $(CORE_DIR)/software/python/submodule_utils.py get_defines "$(PERIPHERALS)" "$(defmacro)")
+SOC_DEFINE+=$(shell $(CORE_DIR)/software/python/submodule_utils.py get_defines "$(PERIPHERALS)" "")
 SOC_DEFINE+=N_SLAVES=$(shell $(CORE_DIR)/software/python/submodule_utils.py get_n_slaves "$(PERIPHERALS)") #peripherals
 SOC_DEFINE+=N_SLAVES_W=$(shell $(CORE_DIR)/software/python/submodule_utils.py get_n_slaves_w "$(PERIPHERALS)")
 
