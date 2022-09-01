@@ -3,6 +3,13 @@ SETUP_SIM=1
 SETUP_FPGA=0
 SETUP_DOC=0
 
+SOC_DIR=.
+#submodule paths
+PICORV32_DIR=$(SOC_DIR)/submodules/PICORV32
+CACHE_DIR=$(SOC_DIR)/submodules/CACHE
+UART_DIR=$(SOC_DIR)/submodules/UART
+LIB_DIR=$(SOC_DIR)/submodules/LIB
+
 #PERIPHERAL LIST
 #list with corename of peripherals to be attached to peripheral bus.
 #to include multiple instances, write the corename of the peripheral multiple times.
@@ -11,12 +18,6 @@ SETUP_DOC=0
 #         the first one will be instantiated with verilog parameters 1 and "textparam", 
 #         the second and third will use default parameters.
 PERIPHERALS ?=UART
-
-#submodule paths
-PICORV32_DIR=$(CORE_DIR)/submodules/PICORV32
-CACHE_DIR=$(CORE_DIR)/submodules/CACHE
-UART_DIR=$(CORE_DIR)/submodules/UART
-LIB_DIR=$(CORE_DIR)/submodules/LIB
 
 #address selection bits
 E:=31 #extra memory bit
@@ -34,9 +35,9 @@ SOC_DEFINE+=B=$B
 #PERIPHERAL IDs
 #assign a sequential ID to each peripheral
 #the ID is used as an instance name index in the hardware and as a base address in the software
-SOC_DEFINE+=$(shell $(CORE_DIR)/software/python/submodule_utils.py get_defines "$(PERIPHERALS)" "")
-SOC_DEFINE+=N_SLAVES=$(shell $(CORE_DIR)/software/python/submodule_utils.py get_n_slaves "$(PERIPHERALS)") #peripherals
-SOC_DEFINE+=N_SLAVES_W=$(shell $(CORE_DIR)/software/python/submodule_utils.py get_n_slaves_w "$(PERIPHERALS)")
+SOC_DEFINE+=$(shell $(SOC_DIR)/software/python/submodule_utils.py get_defines "$(PERIPHERALS)" "")
+SOC_DEFINE+=N_SLAVES=$(shell $(SOC_DIR)/software/python/submodule_utils.py get_n_slaves "$(PERIPHERALS)") #peripherals
+SOC_DEFINE+=N_SLAVES_W=$(shell $(SOC_DIR)/software/python/submodule_utils.py get_n_slaves_w "$(PERIPHERALS)")
 
 SOC_DEFINE+=DATA_W=32
 SOC_DEFINE+=ADDR_W=32

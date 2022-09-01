@@ -5,7 +5,7 @@
 #
 
 AXI_GEN ?=software/python/axi_gen.py
-TB_DIR:=$(CORE_DIR)/hardware/simulation/verilog_tb
+TB_DIR:=$(SOC_DIR)/hardware/simulation/verilog_tb
 
 # HEADERS
 
@@ -22,10 +22,10 @@ iob_cache_axi_wire.vh:
 # SOURCES 
 
 #axi memory
-include hardware/axiram/hardware.mk
+include $(LIB_DIR)/hardware/axiram/hardware.mk
 
 SRC+=$(BUILD_SIM_DIR)/cpu_tasks.v
-$(BUILD_SIM_DIR)/cpu_tasks.v: $(CORE_DIR)/hardware/include/cpu_tasks.v
+$(BUILD_SIM_DIR)/cpu_tasks.v: $(SOC_DIR)/hardware/include/cpu_tasks.v
 	cp $< $@
 
 SRC+=$(BUILD_SIM_DIR)/system_tb.v $(BUILD_SIM_DIR)/system_top.v
@@ -40,7 +40,7 @@ $(BUILD_SIM_DIR)/system_top.v: $(ROOT_DIR)/hardware/simulation/verilog_tb/system
 	cp system_top.v $@
 
 SRC+=$(BUILD_SIM_DIR)/iob_soc_tb.cpp
-$(BUILD_SIM_DIR)/iob_soc_tb.cpp: $(CORE_DIR)/hardware/simulation/verilator/iob_soc_tb.cpp
+$(BUILD_SIM_DIR)/iob_soc_tb.cpp: $(SOC_DIR)/hardware/simulation/verilator/iob_soc_tb.cpp
 	cp $< $@
 
 #

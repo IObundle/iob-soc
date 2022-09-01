@@ -11,7 +11,7 @@ include $(CACHE_DIR)/software/software.mk
 include $(UART_DIR)/software/software.mk
 
 
-CORE_SW_DIR:=$(CORE_DIR)/software
+CORE_SW_DIR:=$(SOC_DIR)/software
 
 #HEADERS
 SRC+=$(BUILD_SW_SRC_DIR)/system.h
@@ -68,8 +68,8 @@ $(BUILD_SW_SRC_DIR)/%.S: $(CORE_SW_DIR)/bootloader/%.S
 #
 # Python Scripts
 #
-SRC+=$(patsubst $(CORE_DIR)/software/python/%,$(BUILD_SW_PYTHON_DIR)/%,$(wildcard $(CORE_DIR)/software/python/*.py))
-$(BUILD_SW_PYTHON_DIR)/%.py: $(CORE_DIR)/software/python/%.py
+SRC+=$(patsubst $(SOC_DIR)/software/python/%,$(BUILD_SW_PYTHON_DIR)/%,$(wildcard $(SOC_DIR)/software/python/*.py))
+$(BUILD_SW_PYTHON_DIR)/%.py: $(SOC_DIR)/software/python/%.py
 	cp $< $@
 
 SRC+=$(BUILD_SW_PYTHON_DIR)/sw_defines.py
@@ -82,4 +82,4 @@ periphs.h: periphs_tmp.h
 	@rm periphs_tmp.h
 
 periphs_tmp.h:
-	$(CORE_DIR)/software/python/periphs_tmp.py $P "$(PERIPHERALS)"
+	$(SOC_DIR)/software/python/periphs_tmp.py $P "$(PERIPHERALS)"

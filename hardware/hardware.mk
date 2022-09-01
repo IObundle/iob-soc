@@ -4,41 +4,24 @@
 # are overwritten
 #
 
-#CACHE verilog sources and headers
-CACHE_HW_BUILD_DIR=$(shell find $(CORE_DIR)/submodules/CACHE/ -maxdepth 1 -type d -name iob_cache_V*)/hw/vsrc
-SRC+=$(patsubst $(CACHE_HW_BUILD_DIR)/%, $(BUILD_VSRC_DIR)/%,$(wildcard $(CACHE_HW_BUILD_DIR)/*.vh))
-$(BUILD_VSRC_DIR)/%.vh: $(CACHE_HW_BUILD_DIR)/%.vh
-	cp $< $@
-
-SRC+=$(patsubst $(CACHE_HW_BUILD_DIR)/%, $(BUILD_VSRC_DIR)/%,$(wildcard $(CACHE_HW_BUILD_DIR)/*.v))
-$(BUILD_VSRC_DIR)/%.v: $(CACHE_HW_BUILD_DIR)/%.v
-	cp $< $@
-
-#UART verilog sources and headers
-UART_HW_BUILD_DIR=$(shell find $(CORE_DIR)/submodules/UART/ -maxdepth 1 -type d -name iob_uart_V*)/hw/vsrc
-SRC+=$(patsubst $(UART_HW_BUILD_DIR)/%, $(BUILD_VSRC_DIR)/%,$(wildcard $(UART_HW_BUILD_DIR)/*.vh))
-$(BUILD_VSRC_DIR)/%.vh: $(UART_HW_BUILD_DIR)/%.vh
-	cp $< $@
-
-SRC+=$(patsubst $(UART_HW_BUILD_DIR)/%, $(BUILD_VSRC_DIR)/%,$(wildcard $(UART_HW_BUILD_DIR)/*.v))
-$(BUILD_VSRC_DIR)/%.v: $(UART_HW_BUILD_DIR)/%.v
-	cp $< $@
-
-#include LIB modules
-include hardware/iob_merge/hardware.mk
-include hardware/iob_split/hardware.mk
-include hardware/rom/iob_rom_sp/hardware.mk
-include hardware/ram/iob_ram_dp_be/hardware.mk
-include hardware/iob_pulse_gen/hardware.mk
+#LIB
+include $(LIB_DIR)/hardware/iob_merge/hardware.mk
+include $(LIB_DIR)/hardware/iob_split/hardware.mk
+include $(LIB_DIR)/hardware/rom/iob_rom_sp/hardware.mk
+include $(LIB_DIR)/hardware/ram/iob_ram_dp_be/hardware.mk
+include $(LIB_DIR)/hardware/iob_pulse_gen/hardware.mk
+include $(LIB_DIR)/hardware/include/hardware.mk
 
 #CPU
-PICORV32_DIR:=$(CORE_DIR)/submodules/PICORV32
+PICORV32_DIR:=$(SOC_DIR)/submodules/PICORV32
 include $(PICORV32_DIR)/hardware/hardware.mk
 
 #CACHE
-# include $(CACHE_DIR)/hardware/hardware.mk
+include $(CACHE_DIR)/hardware/hardware.mk
+
 #UART
-# include $(UART_DIR)/hardware/hardware.mk
+include $(UART_DIR)/hardware/hardware.mk
+
 
 
 
@@ -48,20 +31,16 @@ DEFINE+=DDR_ADDR_W=$(DDR_ADDR_W)
 
 #HEADERS
 SRC+=$(BUILD_VSRC_DIR)/system.vh
-$(BUILD_VSRC_DIR)/system.vh: $(CORE_DIR)/hardware/include/system.vh
+$(BUILD_VSRC_DIR)/system.vh: $(SOC_DIR)/hardware/include/system.vh
 	cp $< $@
 
 SRC+=$(BUILD_VSRC_DIR)/iob_soc.vh
 $(BUILD_VSRC_DIR)/iob_soc.vh:
-	./software/python/hw_defines.py  $@ $(SOC_DEFINE)
+	$(LIB_DIR)/software/python/hw_defines.py  $@ $(SOC_DEFINE)
 
 SRC+=$(BUILD_VSRC_DIR)/iob_intercon.vh
-$(BUILD_VSRC_DIR)/iob_intercon.vh: hardware/include/iob_intercon.vh
+$(BUILD_VSRC_DIR)/iob_intercon.vh: $(LIB_DIR)/hardware/include/iob_intercon.vh
 	cp $< $@
-
-SRC+=$(BUILD_VSRC_DIR)/iob_gen_if.vh
-$(BUILD_VSRC_DIR)/iob_gen_if.vh: hardware/include/iob_gen_if.vh
-	cp $< $(BUILD_VSRC_DIR)
 
 #
 # Sources
@@ -76,12 +55,12 @@ endif
 SRC+=$(BUILD_VSRC_DIR)/boot_ctr.v $(BUILD_VSRC_DIR)/int_mem.v $(BUILD_VSRC_DIR)/sram.v
 SRC+=$(BUILD_VSRC_DIR)/system.v
 
-$(BUILD_VSRC_DIR)/%.v: $(CORE_DIR)/hardware/src/%.v
+$(BUILD_VSRC_DIR)/%.v: $(SOC_DIR)/hardware/src/%.v
 	cp $< $@
 
 # make system.v with peripherals
-$(BUILD_VSRC_DIR)/system.v: $(CORE_DIR)/hardware/src/system_core.v
-	$(CORE_DIR)/software/python/createSystem.py $(CORE_DIR) "$(GET_DIRS)" "$(PERIPHERALS)"
+$(BUILD_VSRC_DIR)/system.v: $(SOC_DIR)/hardware/src/system_core.v
+	$(SOC_DIR)/software/python/createSystem.py $(SOC_DIR) "$(GET_DIRS)" "$(PERIPHERALS)"
 	cp system.v $@
 
 #

@@ -7,12 +7,6 @@
 #         the second and third will use default parameters.
 PERIPHERALS ?=UART
 
-#submodule paths
-PICORV32_DIR=$(ROOT_DIR)/submodules/PICORV32
-CACHE_DIR=$(ROOT_DIR)/submodules/CACHE
-UART_DIR=$(ROOT_DIR)/submodules/UART
-LIB_DIR=$(ROOT_DIR)/submodules/LIB
-
 #kill "console", the background running program seriving simulators,
 #emulators and boards
 #used by fpga and pc-emul makefiles
