@@ -53,15 +53,13 @@ endif
 
 #system
 SRC+=$(BUILD_VSRC_DIR)/boot_ctr.v $(BUILD_VSRC_DIR)/int_mem.v $(BUILD_VSRC_DIR)/sram.v
-SRC+=$(BUILD_VSRC_DIR)/system.v
-
 $(BUILD_VSRC_DIR)/%.v: $(SOC_DIR)/hardware/src/%.v
 	cp $< $@
 
 # make system.v with peripherals
+SRC+=$(BUILD_VSRC_DIR)/system.v
 $(BUILD_VSRC_DIR)/system.v: $(SOC_DIR)/hardware/src/system_core.v
-	$(SOC_DIR)/software/python/createSystem.py $(SOC_DIR) "$(GET_DIRS)" "$(PERIPHERALS)"
-	cp system.v $@
+	$(SOC_DIR)/software/python/createSystem.py $(SOC_DIR) "$(GET_DIRS)" "$(PERIPHERALS)" && mv system.v $@
 
 #
 # Scripts
