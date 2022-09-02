@@ -35,41 +35,41 @@ periphs_tmp.h:
 	$(SOC_DIR)/software/python/periphs_tmp.py $P "$(PERIPHERALS)"
 
 
+# SOURCES
+
+# bootloader
+BHDR=$(wildcard $(SOC_SW_DIR)/bootloader/*.h)
+SRC+=$(patsubst $(SOC_SW_DIR)/bootloader/%,$(BUILD_SW_BSRC_DIR)/%,$(BHDR))
+$(BUILD_SW_BSRC_DIR)/%.h: $(SOC_SW_DIR)/bootloader/%.h
+	cp $< $@
+
+BSRC=$(wildcard $(SOC_SW_DIR)/bootloader/*.c)
+SRC+=$(patsubst $(SOC_SW_DIR)/bootloader/%,$(BUILD_SW_BSRC_DIR)/%,$(BSRC))
+$(BUILD_SW_BSRC_DIR)/%.c: $(SOC_SW_DIR)/bootloader/%.c
+	cp $< $@
+
+BSRCS=$(wildcard $(SOC_SW_DIR)/bootloader/*.S)
+SRC+=$(patsubst $(SOC_SW_DIR)/bootloader/%,$(BUILD_SW_BSRC_DIR)/%,$(BSRCS))
+$(BUILD_SW_BSRC_DIR)/%.S: $(SOC_SW_DIR)/bootloader/%.S
+	cp $< $@
 
 # firmware
-HDR1=$(wildcard $(SOC_SW_DIR)/firmware/*.h)
-SRC+=$(patsubst $(SOC_SW_DIR)/firmware/%,$(BUILD_SW_HDR_DIR)/%,$(HDR1))
+HDR=$(wildcard $(SOC_SW_DIR)/firmware/*.h)
+SRC+=$(patsubst $(SOC_SW_DIR)/firmware/%,$(BUILD_SW_SRC_DIR)/%,$(HDR))
 $(BUILD_SW_SRC_DIR)/%.h: $(SOC_SW_DIR)/firmware/%.h
 	cp $< $@
 
-# bootloader
-HDR2=$(wildcard $(SOC_SW_DIR)/bootloader/*.h)
-SRC+=$(patsubst $(SOC_SW_DIR)/bootloader/%,$(BUILD_SW_HDR_DIR)/%,$(HDR2))
-$(BUILD_SW_SRC_DIR)/%.h: $(SOC_SW_DIR)/bootloader/%.h
-	cp $< $@
-
-# SOURCES
-# firmware
 SRC1=$(wildcard $(SOC_SW_DIR)/firmware/*.c)
 SRC+=$(patsubst $(SOC_SW_DIR)/firmware/%,$(BUILD_SW_SRC_DIR)/%,$(SRC1))
 $(BUILD_SW_SRC_DIR)/%.c: $(SOC_SW_DIR)/firmware/%.c
 	cp $< $@
 
-SRC2=$(wildcard $(SOC_SW_DIR)/firmware/*.S)
-SRC+=$(patsubst $(SOC_SW_DIR)/firmware/%,$(BUILD_SW_SRC_DIR)/%,$(SRC2))
+SRCS=$(wildcard $(SOC_SW_DIR)/firmware/*.S)
+SRC+=$(patsubst $(SOC_SW_DIR)/firmware/%,$(BUILD_SW_SRC_DIR)/%,$(SRCS))
 $(BUILD_SW_SRC_DIR)/%.S: $(SOC_SW_DIR)/firmware/%.S
 	cp $< $@
 
-# bootloader
-SRC3=$(wildcard $(SOC_SW_DIR)/bootloader/*.c)
-SRC+=$(patsubst $(SOC_SW_DIR)/bootloader/%,$(BUILD_SW_SRC_DIR)/%,$(SRC3))
-$(BUILD_SW_SRC_DIR)/%.c: $(SOC_SW_DIR)/bootloader/%.c
-	cp $< $@
 
-SRC4=$(wildcard $(SOC_SW_DIR)/bootloader/*.S)
-SRC+=$(patsubst $(SOC_SW_DIR)/bootloader/%,$(BUILD_SW_SRC_DIR)/%,$(SRC4))
-$(BUILD_SW_SRC_DIR)/%.S: $(SOC_SW_DIR)/bootloader/%.S
-	cp $< $@
 
 #
 # Python Scripts
