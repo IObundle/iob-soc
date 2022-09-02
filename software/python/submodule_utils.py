@@ -292,9 +292,7 @@ def get_top_module(file_path):
 # Given a path to a core, return the top module name.
 # NOTE: assumes that core is setup (run make -C core_dir)
 def get_top_module_from_dir(core_dir):
-    module_build_dir = get_build_lib(f'{core_dir}')
-    module_dir = f'{module_build_dir}/hw/vsrc'
-    top_module_filename = get_top_module(f'{module_build_dir}/info.mk')
+    top_module_filename = get_top_module(f'{core_dir}/info.mk')
     return top_module_filename
 
 
@@ -305,13 +303,12 @@ def get_top_module_from_dir(core_dir):
 def get_peripherals_signals(list_of_peripherals, submodule_directories):
     peripheral_signals = {}
     peripheral_parameters = {}
+    vsrc_dir = f'{get_build_lib(root_dir)}/hw/vsrc'
     # Get signals of each peripheral
     for i in list_of_peripherals:
         # Find top module verilog file of peripheral
-        module_build_dir = get_build_lib(f'{root_dir}/{submodule_directories[i]}')
-        module_dir = f'{module_build_dir}/hw/vsrc'
-        module_filename = get_top_module(f'{module_build_dir}/info.mk')+".v";
-        module_path=os.path.join(module_dir,module_filename)
+        module_filename = get_top_module(f'{root_dir}/{submodule_directories[i]}/info.mk')+".v";
+        module_path=os.path.join(vsrc_dir,module_filename)
         # Skip iteration if peripheral does not have top module
         if not os.path.isfile(module_path):
             continue
