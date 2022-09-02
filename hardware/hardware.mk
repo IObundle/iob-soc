@@ -68,5 +68,5 @@ $(BUILD_VSRC_DIR)/system.v: $(SOC_DIR)/hardware/src/system_core.v
 #
 # console script
 SRC+=$(BUILD_SW_PYTHON_DIR)/console
-$(BUILD_SW_PYTHON_DIR)/console: ./software/python/console
+$(BUILD_SW_PYTHON_DIR)/console: $(LIB_DIR)/software/python/console
 	cp $< $@
