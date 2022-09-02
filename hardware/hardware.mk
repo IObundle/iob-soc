@@ -18,9 +18,17 @@ include $(PICORV32_DIR)/hardware/hardware.mk
 
 #CACHE
 include $(CACHE_DIR)/hardware/hardware.mk
+SRC+=$(BUILD_VSRC_DIR)/iob_cache_version.vh
+$(BUILD_VSRC_DIR)/iob_cache_version.vh:
+	$(LIB_DIR)/software/python/version.py iob_cache 0000 && mv iob_cache_version.vh $@ && rm iob_cache_version.tex
 
 #UART
 include $(UART_DIR)/hardware/hardware.mk
+SRC+=$(BUILD_VSRC_DIR)/iob_uart_version.vh
+$(BUILD_VSRC_DIR)/iob_uart_version.vh:
+	$(LIB_DIR)/software/python/version.py iob_uart 0000 && mv iob_uart_version.vh $@ && rm iob_uart_version.tex
+
+
 
 
 
