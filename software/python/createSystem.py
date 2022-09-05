@@ -31,7 +31,7 @@ def create_systemv(root_dir, directories_str, peripherals_str):
     print(f'peripheral_parameters: {peripheral_parameters}')
 
     # Read template file
-    template_file = open(root_dir+"/hardware/src/system_core.v", "r")
+    template_file = open(root_dir+"/hardware/src/system.vt", "r")
     template_contents = template_file.readlines() 
     template_file.close()
 

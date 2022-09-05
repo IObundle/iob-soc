@@ -121,7 +121,7 @@ system_top system_top
    );
 
 
-`include "cpu_tasks.v"
+`include "cpu_tasks.vh"
 
    //finish simulation on trap
    always @(posedge trap) begin

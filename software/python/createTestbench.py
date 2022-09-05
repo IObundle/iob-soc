@@ -14,7 +14,7 @@ def create_system_testbench(root_dir, directories_str, peripherals_str):
     submodule_directories = get_submodule_directories(directories_str)
 
     # Read template file
-    template_file = open(root_dir+"/hardware/simulation/verilog_tb/system_core_tb.v", "r")
+    template_file = open(root_dir+"/hardware/simulation/system_tb.vt", "r")
     template_contents = template_file.readlines() 
     template_file.close()
 

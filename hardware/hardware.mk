@@ -30,13 +30,17 @@ DEFINE+=DDR_ADDR_W=$(DDR_ADDR_W)
 
 #HEADERS
 
+SRC+=$(subst $(SOC_DIR)/hardware/src, $(BUILD_VSRC_DIR), $(wildcard $(SOC_DIR)/hardware/src/*.vh) )
+$(BUILD_VSRC_DIR)/%.vh: $(SOC_DIR)/hardware/src/%.vh
+	cp $< $@
+
 SRC+=$(BUILD_VSRC_DIR)/iob_soc_version.vh
 $(BUILD_VSRC_DIR)/iob_soc_version.vh:
 	$(LIB_DIR)/software/python/version.py -v $(SOC_DIR)
 	mv iob_soc_version.vh $(BUILD_VSRC_DIR)
 
 SRC+=$(BUILD_VSRC_DIR)/system.vh
-$(BUILD_VSRC_DIR)/system.vh: $(SOC_DIR)/hardware/include/system.vh
+$(BUILD_VSRC_DIR)/system.vh: $(SOC_DIR)/hardware/src/system.vh
 	cp $< $@
 
 SRC+=$(BUILD_VSRC_DIR)/iob_soc.vh
@@ -63,7 +67,7 @@ $(BUILD_VSRC_DIR)/%.v: $(SOC_DIR)/hardware/src/%.v
 
 # make system.v with peripherals
 SRC+=$(BUILD_VSRC_DIR)/system.v
-$(BUILD_VSRC_DIR)/system.v: $(SOC_DIR)/hardware/src/system_core.v
+$(BUILD_VSRC_DIR)/system.v: $(SOC_DIR)/hardware/src/system.vt
 	$(SOC_DIR)/software/python/createSystem.py $(SOC_DIR) "$(GET_DIRS)" "$(PERIPHERALS)" && mv system.v $@
 
 #

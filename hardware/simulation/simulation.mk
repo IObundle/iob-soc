@@ -66,15 +66,11 @@ firmware.bin: ../../sw/emb/firmware.bin
 	make -C ../../ fw-build
 
 # SOURCES
-# remove cpu_tasks.v from source list
-VSRC:=$(filter-out cpu_tasks.v, $(VSRC))
-
-VSRC+=system_top.v
-
 ifeq ($(SIMULATOR),verilator)
+
 # get header files (needed for iob_soc_tb.cpp
 VHDR+=iob_uart_swreg.h
-iob_uart_swreg.h: ../../sw/emb/iob_uart_swreg.h
+iob_uart_swreg.h: ../../sw/src/iob_uart_swreg.h
 	cp $< $@
 
 VHDR+=iob_soc_conf.h iob_soc_tb_conf.h
@@ -93,26 +89,25 @@ VTOP:=system_top
 
 TEST_LIST+=test1
 test1:
-	make -C $(ROOT_DIR) sim-clean SIMULATOR=$(SIMULATOR)
-	make -C $(ROOT_DIR) sim-run SIMULATOR=$(SIMULATOR) INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
-TEST_LIST+=test2 TEST_LOG=">> test.log"
-test2:
-	make -C $(ROOT_DIR) sim-clean SIMULATOR=$(SIMULATOR)
-	make -C $(ROOT_DIR) sim-run SIMULATOR=$(SIMULATOR) INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+	make clean SIMULATOR=$(SIMULATOR)
+	make run SIMULATOR=$(SIMULATOR) INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+#TEST_LIST+=test2 TEST_LOG=">> test.log"
+#test2:
+#	make clean SIMULATOR=$(SIMULATOR)
+#	make run SIMULATOR=$(SIMULATOR) INIT_MEM=0 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
 # TEST_LIST+=test3 TEST_LOG=">> test.log"
 # test3:
-# 	make -C $(ROOT_DIR) sim-clean SIMULATOR=$(SIMULATOR)
-# 	make -C $(ROOT_DIR) sim-run SIMULATOR=$(SIMULATOR) INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+# 	make -C $(SOC_DIR) sim-clean SIMULATOR=$(SIMULATOR)
+# 	make -C $(SOC_DIR) sim-run SIMULATOR=$(SIMULATOR) INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=0 TEST_LOG=">> test.log"
 # TEST_LIST+=test4 TEST_LOG=">> test.log"
 # test4:
-# 	make -C $(ROOT_DIR) sim-clean SIMULATOR=$(SIMULATOR)
-# 	make -C $(ROOT_DIR) sim-run SIMULATOR=$(SIMULATOR) INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
+# 	make -C $(SOC_DIR) sim-clean SIMULATOR=$(SIMULATOR)
+# 	make -C $(SOC_DIR) sim-run SIMULATOR=$(SIMULATOR) INIT_MEM=1 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
 # TEST_LIST+=test5 TEST_LOG=">> test.log"
 # test5:
-# 	make -C $(ROOT_DIR) sim-clean SIMULATOR=$(SIMULATOR)
-# 	make -C $(ROOT_DIR) sim-run SIMULATOR=$(SIMULATOR) INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
+# 	make -C $(SOC_DIR) sim-clean SIMULATOR=$(SIMULATOR)
+# 	make -C $(SOC_DIR) sim-run SIMULATOR=$(SIMULATOR) INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
 
-NOCLEAN+=-o -name "cpu_tasks.v"
 NOCLEAN+=-o -name "system_tb.v"
 NOCLEAN+=-o -name "system_top.v"
 NOCLEAN+=-o -name "iob_soc_tb.cpp"

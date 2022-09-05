@@ -15,7 +15,7 @@ def create_top_system(root_dir, directories_str, peripherals_str):
     peripheral_signals, peripheral_parameters = get_peripherals_signals(instances_amount,submodule_directories)
 
     # Read template file
-    template_file = open(root_dir+"/hardware/simulation/verilog_tb/system_top_core.v", "r")
+    template_file = open(root_dir+"/hardware/simulation/system_top.vt", "r")
     template_contents = template_file.readlines() 
     template_file.close()
 
