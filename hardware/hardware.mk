@@ -29,6 +29,12 @@ DEFINE+=DDR_DATA_W=$(DDR_DATA_W)
 DEFINE+=DDR_ADDR_W=$(DDR_ADDR_W)
 
 #HEADERS
+
+SRC+=$(BUILD_VSRC_DIR)/iob_soc_version.vh
+$(BUILD_VSRC_DIR)/iob_soc_version.vh:
+	$(LIB_DIR)/software/python/version.py -v $(SOC_DIR)
+	mv iob_soc_version.vh $(BUILD_VSRC_DIR)
+
 SRC+=$(BUILD_VSRC_DIR)/system.vh
 $(BUILD_VSRC_DIR)/system.vh: $(SOC_DIR)/hardware/include/system.vh
 	cp $< $@
