@@ -30,40 +30,16 @@ DEFINE+=DDR_ADDR_W=$(DDR_ADDR_W)
 
 #HEADERS
 
-SRC+=$(subst $(SOC_DIR)/hardware/src, $(BUILD_VSRC_DIR), $(wildcard $(SOC_DIR)/hardware/src/*.vh) )
-$(BUILD_VSRC_DIR)/%.vh: $(SOC_DIR)/hardware/src/%.vh
-	cp $< $@
-
 SRC+=$(BUILD_VSRC_DIR)/iob_soc_version.vh
 $(BUILD_VSRC_DIR)/iob_soc_version.vh:
 	$(LIB_DIR)/software/python/version.py -v $(SOC_DIR)
 	mv iob_soc_version.vh $(BUILD_VSRC_DIR)
 
-SRC+=$(BUILD_VSRC_DIR)/system.vh
-$(BUILD_VSRC_DIR)/system.vh: $(SOC_DIR)/hardware/src/system.vh
-	cp $< $@
-
 SRC+=$(BUILD_VSRC_DIR)/iob_soc.vh
 $(BUILD_VSRC_DIR)/iob_soc.vh:
 	$(LIB_DIR)/software/python/hw_defines.py  $@ $(SOC_DEFINE)
 
-SRC+=$(BUILD_VSRC_DIR)/iob_intercon.vh
-$(BUILD_VSRC_DIR)/iob_intercon.vh: $(LIB_DIR)/hardware/include/iob_intercon.vh
-	cp $< $@
-
-#
-# Sources
-#
-
-#external memory interface
-ifeq ($(USE_DDR),1)
-SRC+=$(BUILD_VSRC_DIR)/ext_mem.v
-endif
-
-#system
-SRC+=$(BUILD_VSRC_DIR)/boot_ctr.v $(BUILD_VSRC_DIR)/int_mem.v $(BUILD_VSRC_DIR)/sram.v
-$(BUILD_VSRC_DIR)/%.v: $(SOC_DIR)/hardware/src/%.v
-	cp $< $@
+#SOURCES
 
 # make system.v with peripherals
 SRC+=$(BUILD_VSRC_DIR)/system.v

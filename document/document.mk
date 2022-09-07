@@ -3,8 +3,6 @@
 # This makefile segment is used at build-time in $(BUILD_DIR)/doc/Makefile
 #
 
-include $(ROOT_DIR)/config.mk
-
 #Set ASICSYNTH to 1 to include an ASIC synthesis section
 ASICSYNTH?=0
 

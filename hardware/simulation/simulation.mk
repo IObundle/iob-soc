@@ -24,16 +24,13 @@ CONF_DEFINE+=INIT_MEM
 endif
 
 CONSOLE_CMD=../../sw/python/console -L
-
-#produce waveform dump
-VCD ?=0
-
-ifeq ($(VCD),1)
-TB_DEFINE+=VCD
-endif
-
 ifeq ($(INIT_MEM),0)
 CONSOLE_CMD+=-f
+endif
+
+#produce waveform dump
+ifeq ($(VCD),1)
+TB_DEFINE+=VCD
 endif
 
 FW_SIZE=$(shell wc -l firmware.hex | awk '{print $$1}')
@@ -41,7 +38,7 @@ FW_SIZE=$(shell wc -l firmware.hex | awk '{print $$1}')
 TB_DEFINE+=FW_SIZE=$(FW_SIZE)
 
 # Simulation programs
-VHDR+=boot.hex firmware.bin firmware.hex
+VHDR+=boot.hex firmware.hex
 
 # HEADERS
 VHDR+=iob_soc_conf.vh iob_soc_tb_conf.vh
