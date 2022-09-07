@@ -1,14 +1,12 @@
-SETUP_SW=1
-SETUP_SIM=1
-SETUP_FPGA=0
-SETUP_DOC=0
-
 SOC_DIR=.
 #submodule paths
 PICORV32_DIR=$(SOC_DIR)/submodules/PICORV32
 CACHE_DIR=$(SOC_DIR)/submodules/CACHE
 UART_DIR=$(SOC_DIR)/submodules/UART
 LIB_DIR=$(SOC_DIR)/submodules/LIB
+
+SIMULATOR=verilator
+BOARD=CYCLONEV-GT-DK
 
 #PERIPHERAL LIST
 #list with corename of peripherals to be attached to peripheral bus.

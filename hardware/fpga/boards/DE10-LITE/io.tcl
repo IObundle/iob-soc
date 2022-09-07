@@ -1,11 +1,3 @@
-#
-# SYNTHESIS AND IMPLEMENTATION SCRIPT
-#
-
-set FAMILY "MAX 10"
-set DEVICE 10M50DAF484C7G
-
-
 # Pin & Location Assignments
 # ==========================
 
