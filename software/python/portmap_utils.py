@@ -47,6 +47,21 @@ def generate_portmap(directories_str, peripherals_str, portmap_path):
                 portmap_file.write("{}[{}].{} : External\n".format(corename,i,signal))
     portmap_file.close()
 
+
+# Evaluate math expressions in signal sizes
+# Example given a string like "[10-1:0]", returns "[9:0]"
+def calculate_signal_size(signal_size):
+    signal_size_limits = signal_size[1:-1].split(":") #Trim '[' ']' and split into array
+
+    try:
+        #Evaluate math expression in strings
+        for i in range(len(signal_size_limits)):
+            signal_size_limits[i] = str(eval(signal_size_limits[i], {'__builtins__':None}))
+    except:
+        pass #print("Invalid math expression")
+
+    return f'[{signal_size_limits[0]}:{signal_size_limits[1]}]'
+
 # Reads portmap file
 # Returns:
 #    pwires: List of signals that will interconnect peripherals. Each signal is an array with 2 dimensions. [0] is the signal name. [1] is the signal size.
@@ -106,6 +121,9 @@ def read_portmap(instances_amount, instances_parameters, peripheral_signals, per
                 signal2_size = replaceByParameterValue(signal2_size,
                               peripheral_parameters[result.group(4)],
                               instances_parameters[result.group(4)][int(result.group(5))])
+                # Evaluate math expressions in signal sizes
+                signal1_size = calculate_signal_size(signal1_size)
+                signal2_size = calculate_signal_size(signal2_size)
                 # Make sure signals have the same size
                 if (signal1_size!=signal2_size):
                     print("Error: Portmap file line {}, signals have different sizes: {} and {}. They must be equal!".format(idx+1,signal1_size,signal2_size))

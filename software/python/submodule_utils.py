@@ -239,8 +239,12 @@ def get_module_parameters(verilog_lines):
     module_parameters = {}
     #Get parameters of this module
     for i in range(parameter_list_start, len(verilog_lines)):
-        #Ignore comments and empty lines
-        if not verilog_lines[i].strip() or verilog_lines[i].lstrip().startswith("//"):
+        #Strip comments
+        idx = verilog_lines[i].find("//")
+        if idx > -1:
+            verilog_lines[i] = verilog_lines[i][:idx]
+        #Empty lines
+        if not verilog_lines[i].strip():
             continue
         if ")" in verilog_lines[i]:
             break #Found end of parameter list
