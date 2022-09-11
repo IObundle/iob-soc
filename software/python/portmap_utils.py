@@ -51,6 +51,9 @@ def generate_portmap(directories_str, peripherals_str, portmap_path):
 # Evaluate math expressions in signal sizes
 # Example given a string like "[10-1:0]", returns "[9:0]"
 def calculate_signal_size(signal_size):
+    if not signal_size:
+        return "[0:0]" #Return 1 bit wide signal if given empty string
+
     signal_size_limits = signal_size[1:-1].split(":") #Trim '[' ']' and split into array
 
     try:
@@ -113,8 +116,8 @@ def read_portmap(instances_amount, instances_parameters, peripheral_signals, per
                     print("Error: Portmap file line {}, can't connect because both signals are of type {}!".format(idx+1,"input" if "input" in peripheral_signals[result.group(1)][result.group(3)] else "output"))
                     exit(-1)
                 #Get signal sizes, replacing verilog parameters by their values
-                signal1_size = re.search("(?:inout|input|output)(.+)",peripheral_signals[result.group(1)][result.group(3)]).group(1).replace(" ", "")
-                signal2_size = re.search("(?:inout|input|output)(.+)",peripheral_signals[result.group(4)][result.group(6)]).group(1).replace(" ", "")
+                signal1_size = re.search("(?:inout|input|output)(.*)",peripheral_signals[result.group(1)][result.group(3)]).group(1).replace(" ", "")
+                signal2_size = re.search("(?:inout|input|output)(.*)",peripheral_signals[result.group(4)][result.group(6)]).group(1).replace(" ", "")
                 signal1_size = replaceByParameterValue(signal1_size,
                               peripheral_parameters[result.group(1)],
                               instances_parameters[result.group(1)][int(result.group(2))])
