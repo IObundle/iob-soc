@@ -47,6 +47,24 @@ def generate_portmap(directories_str, peripherals_str, portmap_path):
                 portmap_file.write("{}[{}].{} : External\n".format(corename,i,signal))
     portmap_file.close()
 
+
+# Evaluate math expressions in signal sizes
+# Example given a string like "[10-1:0]", returns "[9:0]"
+def calculate_signal_size(signal_size):
+    if not signal_size:
+        return "[0:0]" #Return 1 bit wide signal if given empty string
+
+    signal_size_limits = signal_size[1:-1].split(":") #Trim '[' ']' and split into array
+
+    try:
+        #Evaluate math expression in strings
+        for i in range(len(signal_size_limits)):
+            signal_size_limits[i] = str(eval(signal_size_limits[i], {'__builtins__':None}))
+    except:
+        pass #print("Invalid math expression")
+
+    return f'[{signal_size_limits[0]}:{signal_size_limits[1]}]'
+
 # Reads portmap file
 # Returns:
 #    pwires: List of signals that will interconnect peripherals. Each signal is an array with 2 dimensions. [0] is the signal name. [1] is the signal size.
@@ -98,14 +116,17 @@ def read_portmap(instances_amount, instances_parameters, peripheral_signals, per
                     print("Error: Portmap file line {}, can't connect because both signals are of type {}!".format(idx+1,"input" if "input" in peripheral_signals[result.group(1)][result.group(3)] else "output"))
                     exit(-1)
                 #Get signal sizes, replacing verilog parameters by their values
-                signal1_size = re.search("(?:inout|input|output)(.+)",peripheral_signals[result.group(1)][result.group(3)]).group(1).replace(" ", "")
-                signal2_size = re.search("(?:inout|input|output)(.+)",peripheral_signals[result.group(4)][result.group(6)]).group(1).replace(" ", "")
+                signal1_size = re.search("(?:inout|input|output)(.*)",peripheral_signals[result.group(1)][result.group(3)]).group(1).replace(" ", "")
+                signal2_size = re.search("(?:inout|input|output)(.*)",peripheral_signals[result.group(4)][result.group(6)]).group(1).replace(" ", "")
                 signal1_size = replaceByParameterValue(signal1_size,
                               peripheral_parameters[result.group(1)],
                               instances_parameters[result.group(1)][int(result.group(2))])
                 signal2_size = replaceByParameterValue(signal2_size,
                               peripheral_parameters[result.group(4)],
                               instances_parameters[result.group(4)][int(result.group(5))])
+                # Evaluate math expressions in signal sizes
+                signal1_size = calculate_signal_size(signal1_size)
+                signal2_size = calculate_signal_size(signal2_size)
                 # Make sure signals have the same size
                 if (signal1_size!=signal2_size):
                     print("Error: Portmap file line {}, signals have different sizes: {} and {}. They must be equal!".format(idx+1,signal1_size,signal2_size))

@@ -99,7 +99,7 @@ endif
 #
 
 test: clean-testlog test1 test2 test3
-	diff test.log test.expected
+	diff test.log $($(UUT_NAME)_DIR)/$(FPGA_TEST_PATH)
 
 test1:
 	make -C $(ROOT_DIR) fpga-clean
