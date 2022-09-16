@@ -1,3 +1,6 @@
+SHELL = /bin/bash
+export 
+
 ROOT_DIR:=.
 include ./config.mk
 
@@ -15,6 +18,9 @@ fw-build: $(BUILD_DEPS)
 
 fw-clean:
 	make -C $(FIRM_DIR) clean-all
+
+fw-debug:
+	make -C $(FIRM_DIR) debug
 
 #
 # EMULATE ON PC
@@ -37,6 +43,9 @@ pc-emul-test: pc-emul-clean
 # SIMULATE RTL
 #
 
+#default baud and system clock frequency
+SIM_BAUD = 2500000
+SIM_FREQ =50000000
 sim-build: $(SIM_DEPS)
 	make fw-build
 	make -C $(SIM_DIR) build
@@ -50,12 +59,23 @@ sim-clean: fw-clean
 sim-test:
 	make -C $(SIM_DIR) test
 
+sim-debug:
+	make -C $(SIM_DIR) debug
+
 #
 # BUILD, LOAD AND RUN ON FPGA BOARD
 #
 
+#default baud and system clock freq for boards
+BOARD_BAUD = 115200
+#default board frequency
+BOARD_FREQ ?=100000000
+ifeq ($(BOARD), CYCLONEV-GT-DK)
+BOARD_FREQ =50000000
+endif
+
 fpga-build: $(FPGA_DEPS)
-	make fw-build BAUD=115200
+	make fw-build BAUD=$(BOARD_BAUD) FREQ=$(BOARD_FREQ)
 	make -C $(BOARD_DIR) build
 
 fpga-run: $(FPGA_DEPS) #fpga-build #Remove this prerequisite temporarily because its always rebuilding the system
@@ -64,6 +84,12 @@ fpga-run: $(FPGA_DEPS) #fpga-build #Remove this prerequisite temporarily because
 
 fpga-clean: fw-clean
 	make -C $(BOARD_DIR) clean
+
+fpga-veryclean:
+	make -C $(BOARD_DIR) veryclean
+
+fpga-debug:
+	make -C $(BOARD_DIR) debug
 
 fpga-test: fpga-build #Needs fpga build because it was temporarily removed above
 	make -C $(BOARD_DIR) test
@@ -136,10 +162,11 @@ debug:
 	@echo $(UART_DIR)
 	@echo $(CACHE_DIR)
 
-.PHONY: fw-build fw-clean \
+
+.PHONY: fw-build fw-clean fw-debug\
 	pc-emul-build pc-emul-run pc-emul-clean pc-emul-test \
-	sim-build sim-run sim-clean sim-test \
-	fpga-build fpga-run fpga-clean fpga-test fpga-post-run\
+	sim-build sim-run sim-clean sim-test sim-debug \
+	fpga-build fpga-run fpga-clean fpga-test fpga-debug fpga-post-run\
 	doc-build doc-clean doc-test \
 	clean \
 	test-pc-emul test-pc-emul-clean \

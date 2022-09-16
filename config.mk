@@ -119,13 +119,11 @@ BOARD_DIR ?=$(shell find $(ROOT_DIR)/hardware -name $(BOARD))
 #doc paths
 DOC_DIR=$(ROOT_DIR)/document/$(DOC)
 
-#macro to return all defined peripheral directories separated by newline
-GET_DIRS= $(eval ROOT_DIR_TMP:=$(ROOT_DIR))\
-          $(eval ROOT_DIR=.)\
+#macro to return all defined directories separated by newline
+GET_DIRS= $(eval ROOT_DIR_TMP=.)\
           $(foreach V,$(sort $(.VARIABLES)),\
-          $(if $(filter $(addsuffix _DIR, $(shell $(SW_DIR)/python/submodule_utils.py remove_duplicates_and_params "$(PERIPHERALS)")), $(filter %_DIR, $V)),\
-          $V=$($V);))\
-          $(eval ROOT_DIR:=$(ROOT_DIR_TMP))
+          $(if $(filter %_DIR, $V),\
+          $(eval TMP_VAR:=$(subst ROOT_DIR,ROOT_DIR_TMP,$(value $V)))$V=$(TMP_VAR);))
 
 #define macros
 DEFINE+=$(defmacro)DATA_W=$(DATA_W)
@@ -150,12 +148,6 @@ DEFINE+=$(defmacro)B=$B
 #assign a sequential ID to each peripheral
 #the ID is used as an instance name index in the hardware and as a base address in the software
 DEFINE+=$(shell $(SW_DIR)/python/submodule_utils.py get_defines "$(PERIPHERALS)" "$(defmacro)")
-
-#default baud and system clock freq
-BAUD ?=5000000 #simulation default
-FREQ ?=100000000
-
-SHELL = /bin/bash
 
 #include (extra) tester makefile targets from Unit Under Test config file
 INCLUDING_PATHS:=1

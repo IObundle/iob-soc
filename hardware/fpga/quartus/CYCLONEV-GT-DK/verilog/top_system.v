@@ -1,262 +1,175 @@
 `timescale 1ns / 1ps
 `include "tester.vh"
+`include "iob_lib.vh"
 
-module top_system(
-	          input         clk, 
-	          input         resetn,
-
-	          //uart
-	          output        uart_txd,
-	          input         uart_rxd,
-
-`ifdef TESTER_USE_DDR
-                  output        c0_ddr4_act_n,
-                  output [16:0] c0_ddr4_adr,
-                  output [1:0]  c0_ddr4_ba,
-                  output [0:0]  c0_ddr4_bg,
-                  output [0:0]  c0_ddr4_cke,
-                  output [0:0]  c0_ddr4_odt,
-                  output [0:0]  c0_ddr4_cs_n,
-                  output [0:0]  c0_ddr4_ck_t,
-                  output [0:0]  c0_ddr4_ck_c,
-                  output        c0_ddr4_reset_n,
-                  inout [3:0]   c0_ddr4_dm_dbi_n,
-                  inout [31:0]  c0_ddr4_dq,
-                  inout [3:0]   c0_ddr4_dqs_c,
-                  inout [3:0]   c0_ddr4_dqs_t, 
-`endif                  
-		  output        trap
-		  );
+module top_system
+  (
+   //user clock
+   input         clk, 
+   input         resetn,
+  
+   //uart
+   output        uart_txd,
+   input         uart_rxd,
 
 `ifdef TESTER_USE_DDR
-   //
-   // AXI INTERCONNECT
-   //
-                         
-   // SYSTEM/SLAVE SIDE
-   // address write
-   wire [1:0]			sys_awid;
-   wire [63:0]       sys_awaddr;
-   wire [15:0] 			sys_awlen;
-   wire [5:0] 			sys_awsize;
-   wire [3:0] 			sys_awburst;
-   wire [1:0]			sys_awlock;
-   wire [7:0]			sys_awcache;
-   wire [5:0] 			sys_awprot;
-   wire [7:0] 			sys_awqos;
-   wire [1:0]			sys_awvalid;
-   wire [1:0]			sys_awready;
-   //write
-   wire [63:0]                  sys_wdata;
-   wire [7:0] 			sys_wstrb;
-   wire [1:0]			sys_wlast;
-   wire [1:0]			sys_wvalid;
-   wire [1:0]			sys_wready;
-   //write response
-   wire [1:0]			sys_bid;
-   wire [3:0] 			sys_bresp;
-   wire [1:0]			sys_bvalid;
-   wire [1:0]			sys_bready;
-   //address read
-   wire [1:0]			sys_arid;
-   wire [63:0]       sys_araddr;
-   wire [15:0] 			sys_arlen;
-   wire [5:0] 			sys_arsize;
-   wire [3:0] 			sys_arburst;
-   wire [1:0]			sys_arlock;
-   wire [7:0] 			sys_arcache;
-   wire [5:0] 			sys_arprot;
-   wire [7:0] 			sys_arqos;
-   wire [1:0]			sys_arvalid;
-   wire [1:0]			sys_arready;
-   //read
-   wire [1:0]			sys_rid;
-   wire [2*`TESTER_DATA_W-1:0]           sys_rdata;   
-   wire [3:0]                   sys_rresp;   
-   wire [1:0]			sys_rlast;
-   wire [1:0]			sys_rvalid;
-   wire [1:0]			sys_rready;
-
-   // DDR/MASTER SIDE
-   //Write address
-   wire [3:0] 			ddr_awid;
-   wire [31:0] 			ddr_awaddr;
-   wire [7:0] 			ddr_awlen;
-   wire [2:0] 			ddr_awsize;
-   wire [1:0] 			ddr_awburst;
-   wire 			ddr_awlock;
-   wire [3:0] 			ddr_awcache;
-   wire [2:0] 			ddr_awprot;
-   wire [3:0] 			ddr_awqos;
-   wire 			ddr_awvalid;
-   wire 			ddr_awready;
-   //Write data
-   wire [31:0] 			ddr_wdata;
-   wire [3:0] 			ddr_wstrb;
-   wire 			ddr_wlast;
-   wire 			ddr_wvalid;
-   wire 			ddr_wready;
-   //Write response
-   wire [3:0]                   ddr_bid;
-   wire [1:0] 			ddr_bresp;
-   wire 			ddr_bvalid;
-   wire 			ddr_bready;
-   //Read address
-   wire [3:0] 			ddr_arid;
-   wire [31:0] 			ddr_araddr;
-   wire [7:0] 			ddr_arlen;
-   wire [2:0] 			ddr_arsize;
-   wire [1:0] 			ddr_arburst;
-   wire 			ddr_arlock;
-   wire [3:0] 			ddr_arcache;
-   wire [2:0] 			ddr_arprot;
-   wire [3:0] 			ddr_arqos;
-   wire 			ddr_arvalid;
-   wire 			ddr_arready;
-   //Read data
-   wire [3:0]			ddr_rid;
-   wire [31:0] 			ddr_rdata;
-   wire [1:0] 			ddr_rresp;
-   wire 			ddr_rlast;
-   wire 			ddr_rvalid;
-   wire 			ddr_rready;
+   output [13:0] ddr3b_a, //SSTL15  //Address
+   output [2:0]  ddr3b_ba, //SSTL15  //Bank Address
+   output        ddr3b_rasn, //SSTL15  //Row Address Strobe
+   output        ddr3b_casn, //SSTL15  //Column Address Strobe
+   output        ddr3b_wen, //SSTL15  //Write Enable
+   output [1:0]  ddr3b_dm, //SSTL15  //Data Write Mask
+   inout [15:0]  ddr3b_dq, //SSTL15  //Data Bus
+   output        ddr3b_clk_n, //SSTL15  //Diff Clock - Neg
+   output        ddr3b_clk_p, //SSTL15  //Diff Clock - Pos
+   output        ddr3b_cke, //SSTL15  //Clock Enable
+   output        ddr3b_csn, //SSTL15  //Chip Select
+   inout [1:0]   ddr3b_dqs_n, //SSTL15  //Diff Data Strobe - Neg
+   inout [1:0]   ddr3b_dqs_p, //SSTL15  //Diff Data Strobe - Pos
+   output        ddr3b_odt, //SSTL15  //On-Die Termination Enable
+   output        ddr3b_resetn, //SSTL15  //Reset
+   input         rzqin,
 `endif
-
-
-   //
-   // CLOCK MANAGEMENT
-   //
-
-   //system clock
-   wire 			sys_clk = clk;
+   output        trap
+   );
    
-`ifdef TESTER_USE_DDR
-   wire                         ddr_aclk;
-`endif
+   //axi4 parameters
+   parameter AXI_ID_W = 2*1;
+   localparam AXI_ADDR_W=2*`TESTER_DDR_ADDR_W;
+   localparam AXI_DATA_W=2*`TESTER_DDR_DATA_W;
    
-   //ddr clock output from ddr ctrl 
- 
+   //-----------------------------------------------------------------
+   // Clocking / Reset
+   //-----------------------------------------------------------------
 
+   wire [1:0]                   rstn;
+   wire 	 rst;
 
-   //   
-   // RESET MANAGEMENT
-   //
+   assign rst  = ~rstn[0] || ~rstn[1];
 
-   //system reset
- 
-   wire                         sys_rst;
-
-`ifdef TESTER_USE_DDR
-   wire                         init_calib_complete;
-   wire [1:0]                   sys_rstn;
-
-   assign sys_rst  = ~sys_rstn[0] || ~sys_rstn[1];
-`else
-   reg [15:0] 			rst_cnt;
-   
-   always @(posedge sys_clk, negedge resetn)
-     if(!resetn)
-       rst_cnt <= 16'hFFFF;
-     else if (rst_cnt != 16'h0)
-       rst_cnt <= rst_cnt - 1'b1;
-   
-   assign sys_rst  = (rst_cnt != 16'h0);
-`endif
-
-`ifdef TESTER_USE_DDR
-   //AXI DDR side reset (ddr_arst) : generated by MIG itself
-   wire                         ddr_arstn;   
-   wire                         ddr_ui_clk;
-`endif
-   
    wire [1:0]                   trap_signals;
    assign trap = trap_signals[0] || trap_signals[1];
 
+`ifdef TESTER_USE_DDR
+   //axi wires between system backend and axi bridge
+ `include "m_axi_wire.vh"
+`endif
+
+
    //
-   // DDR CONTROLLER
+   // TESTER (includes UUT)
    //
-                 
-`ifdef TESTER_USE_DDR   
-   ddr4_0 ddr4_ram (
-                    .sys_rst                (reset),
-                    .c0_sys_clk_p           (c0_sys_clk_clk_p),
-                    .c0_sys_clk_n           (c0_sys_clk_clk_n),
+   tester
+     #(
+       .AXI_ID_W(AXI_ID_W),
+       .AXI_ADDR_W(AXI_ADDR_W),
+       .AXI_DATA_W(AXI_DATA_W)
+       )
+   tester 
+     (
+      .clk (clk),
+      .rst (rst),
+      .trap (trap_signals),
 
-                    .dbg_clk                (),
-                    .dbg_bus                (),
+`ifdef TESTER_USE_DDR
+      `include "m_axi_portmap.vh"	
+`endif
 
-                    //EXTERNAL SIDE
-                    .c0_ddr4_act_n          (c0_ddr4_act_n),
-                    .c0_ddr4_adr            (c0_ddr4_adr),
-                    .c0_ddr4_ba             (c0_ddr4_ba),
-                    .c0_ddr4_bg             (c0_ddr4_bg),
-                    .c0_ddr4_cke            (c0_ddr4_cke),
-                    .c0_ddr4_odt            (c0_ddr4_odt),
-                    .c0_ddr4_cs_n           (c0_ddr4_cs_n),
-                    .c0_ddr4_ck_t           (c0_ddr4_ck_t),
-                    .c0_ddr4_ck_c           (c0_ddr4_ck_c),
-                    .c0_ddr4_reset_n        (c0_ddr4_reset_n),
-                    .c0_ddr4_dm_dbi_n       (c0_ddr4_dm_dbi_n),
-                    .c0_ddr4_dq             (c0_ddr4_dq),
-                    .c0_ddr4_dqs_c          (c0_ddr4_dqs_c),
-                    .c0_ddr4_dqs_t          (c0_ddr4_dqs_t),
-                    .c0_init_calib_complete (init_calib_complete),
+      //UART
+		  .UART0_txd      (uart_txd),
+		  .UART0_rxd      (uart_rxd),
+		  .UART0_rts      (),
+		  .UART0_cts      (1'b1)
+      );
 
-                    //generated clocks and resets
-                    .c0_ddr4_ui_clk         (ddr_ui_clk),
-                    .c0_ddr4_ui_clk_sync_rst(ddr_ui_rst),
-                    .addn_ui_clkout1        (sys_clk),
+   
+`ifdef TESTER_USE_DDR
+   //user reset
+   wire          locked;
+   wire          init_done;
 
-                    //USER AXI INTERFACE
-                    //address write 
-                    .c0_ddr4_aresetn        (ddr_arstn),
-		    .c0_ddr4_s_axi_awid     (ddr_awid),
-		    .c0_ddr4_s_axi_awaddr   (ddr_awaddr[29:0]),
-                    .c0_ddr4_s_axi_awlen    (ddr_awlen),
-                    .c0_ddr4_s_axi_awsize   (ddr_awsize),
-                    .c0_ddr4_s_axi_awburst  (ddr_awburst),
-                    .c0_ddr4_s_axi_awlock   (ddr_awlock),
-		    .c0_ddr4_s_axi_awprot   (ddr_awprot),
-		    .c0_ddr4_s_axi_awcache  (ddr_awcache),
-                    .c0_ddr4_s_axi_awqos    (ddr_awqos),
-     		    .c0_ddr4_s_axi_awvalid  (ddr_awvalid),
-		    .c0_ddr4_s_axi_awready  (ddr_awready),
+   //determine system reset
+   wire          rst_int = ~resetn | ~locked | ~init_done;
+//   wire          rst_int = ~resetn | ~locked;
+   
+   iob_reset_sync rst_sync (clk, rst_int, rst);
 
-		    //write  
-		    .c0_ddr4_s_axi_wvalid   (ddr_wvalid),
-		    .c0_ddr4_s_axi_wready   (ddr_wready),
-		    .c0_ddr4_s_axi_wdata    (ddr_wdata),
-		    .c0_ddr4_s_axi_wstrb    (ddr_wstrb),
-                    .c0_ddr4_s_axi_wlast    (ddr_wlast),
+   alt_ddr3 ddr3_ctrl 
+     (
+      .clk_clk (clk),
+      .reset_reset_n (resetn),
+      .oct_rzqin (rzqin),
 
-		    //write response
-		    .c0_ddr4_s_axi_bready   (ddr_bready),
-                    .c0_ddr4_s_axi_bid      (ddr_bid),
-                    .c0_ddr4_s_axi_bresp    (ddr_bresp),
-		    .c0_ddr4_s_axi_bvalid   (ddr_bvalid),
+      .memory_mem_a (ddr3b_a),
+      .memory_mem_ba (ddr3b_ba),
+      .memory_mem_ck (ddr3b_clk_p),
+      .memory_mem_ck_n (ddr3b_clk_n),
+      .memory_mem_cke (ddr3b_cke),
+      .memory_mem_cs_n (ddr3b_csn),
+      .memory_mem_dm (ddr3b_dm),
+      .memory_mem_ras_n (ddr3b_rasn),
+      .memory_mem_cas_n (ddr3b_casn),
+      .memory_mem_we_n (ddr3b_wen),
+      .memory_mem_reset_n (ddr3b_resetn),
+      .memory_mem_dq (ddr3b_dq),
+      .memory_mem_dqs (ddr3b_dqs_p),
+      .memory_mem_dqs_n (ddr3b_dqs_n),
+      .memory_mem_odt (ddr3b_odt),
+      
+      .axi_bridge_0_s0_awid (ddr_awid),
+      .axi_bridge_0_s0_awaddr (ddr_awaddr),
+      .axi_bridge_0_s0_awlen (ddr_awlen),
+      .axi_bridge_0_s0_awsize (ddr_awsize),
+      .axi_bridge_0_s0_awburst (ddr_awburst),
+      .axi_bridge_0_s0_awlock (ddr_awlock),
+      .axi_bridge_0_s0_awcache (ddr_awcache),
+      .axi_bridge_0_s0_awprot (ddr_awprot),
+      .axi_bridge_0_s0_awvalid (ddr_awvalid),
+      .axi_bridge_0_s0_awready (ddr_awready),
+      .axi_bridge_0_s0_wdata (ddr_wdata),
+      .axi_bridge_0_s0_wstrb (ddr_wstrb),
+      .axi_bridge_0_s0_wlast (ddr_wlast),
+      .axi_bridge_0_s0_wvalid (ddr_wvalid),
+      .axi_bridge_0_s0_wready (ddr_wready),
+      .axi_bridge_0_s0_bid (ddr_bid),
+      .axi_bridge_0_s0_bresp (ddr_bresp),
+      .axi_bridge_0_s0_bvalid (ddr_bvalid),
+      .axi_bridge_0_s0_bready (ddr_bready),
+      .axi_bridge_0_s0_arid (ddr_arid),
+      .axi_bridge_0_s0_araddr (ddr_araddr),
+      .axi_bridge_0_s0_arlen (ddr_arlen),
+      .axi_bridge_0_s0_arsize (ddr_arsize),
+      .axi_bridge_0_s0_arburst (ddr_arburst),
+      .axi_bridge_0_s0_arlock (ddr_arlock),
+      .axi_bridge_0_s0_arcache (ddr_arcache),
+      .axi_bridge_0_s0_arprot (ddr_arprot),
+      .axi_bridge_0_s0_arvalid (ddr_arvalid),
+      .axi_bridge_0_s0_arready (ddr_arready),
+      .axi_bridge_0_s0_rid (ddr_rid),
+      .axi_bridge_0_s0_rdata (ddr_rdata),
+      .axi_bridge_0_s0_rresp (ddr_rresp),
+      .axi_bridge_0_s0_rlast (ddr_rlast),
+      .axi_bridge_0_s0_rvalid (ddr_rvalid),
+      .axi_bridge_0_s0_rready (ddr_rready),
 
-		    //address read
-		    .c0_ddr4_s_axi_arid     (ddr_arid),
-		    .c0_ddr4_s_axi_araddr   (ddr_araddr[29:0]),
-		    .c0_ddr4_s_axi_arlen    (ddr_arlen), 
-		    .c0_ddr4_s_axi_arsize   (ddr_arsize),    
-                    .c0_ddr4_s_axi_arburst  (ddr_arburst),
-                    .c0_ddr4_s_axi_arlock   (ddr_arlock),
-                    .c0_ddr4_s_axi_arcache  (ddr_arcache),
-                    .c0_ddr4_s_axi_arprot   (ddr_arprot),
-                    .c0_ddr4_s_axi_arqos    (ddr_arqos),
-		    .c0_ddr4_s_axi_arvalid  (ddr_arvalid),
-		    .c0_ddr4_s_axi_arready  (ddr_arready),
+      .mem_if_ddr3_emif_0_pll_sharing_pll_mem_clk (),
+      .mem_if_ddr3_emif_0_pll_sharing_pll_write_clk (),
+      .mem_if_ddr3_emif_0_pll_sharing_pll_locked (locked),
+      .mem_if_ddr3_emif_0_pll_sharing_pll_write_clk_pre_phy_clk (),
+      .mem_if_ddr3_emif_0_pll_sharing_pll_addr_cmd_clk (),
+      .mem_if_ddr3_emif_0_pll_sharing_pll_avl_clk (),
+      .mem_if_ddr3_emif_0_pll_sharing_pll_config_clk (),
+      .mem_if_ddr3_emif_0_pll_sharing_pll_mem_phy_clk (),
+      .mem_if_ddr3_emif_0_pll_sharing_afi_phy_clk (),
+      .mem_if_ddr3_emif_0_pll_sharing_pll_avl_phy_clk (),
+      .mem_if_ddr3_emif_0_status_local_init_done (init_done),
+      .mem_if_ddr3_emif_0_status_local_cal_success (),
+      .mem_if_ddr3_emif_0_status_local_cal_fail ()
+      );
 
-		    //read   
-		    .c0_ddr4_s_axi_rready   (ddr_rready),
-		    .c0_ddr4_s_axi_rid      (ddr_rid),
-		    .c0_ddr4_s_axi_rdata    (ddr_rdata),
-		    .c0_ddr4_s_axi_rresp    (ddr_rresp),
-                    .c0_ddr4_s_axi_rlast    (ddr_rlast),
-		    .c0_ddr4_s_axi_rvalid   (ddr_rvalid)
-                    );   
-
+`else
+   iob_reset_sync rst_sync (clk, (~resetn), rst);   
+`endif
 
    axi_interconnect_0 cache2ddr (
 				 .INTERCONNECT_ACLK     (ddr_ui_clk),
@@ -265,109 +178,109 @@ module top_system(
       //
       // SYSTEM SUT SIDE
       //
-      .S00_AXI_ARESET_OUT_N (sys_rstn[0]),
-      .S00_AXI_ACLK         (sys_clk),
+      .S00_AXI_ARESET_OUT_N (rstn[0]),
+      .S00_AXI_ACLK         (clk),
       
       //Write address
-      .S00_AXI_AWID         (sys_awid[0]),
-      .S00_AXI_AWADDR       (sys_awaddr[`TESTER_DDR_ADDR_W-1:0]),
-      .S00_AXI_AWLEN        (sys_awlen[7:0]),
-      .S00_AXI_AWSIZE       (sys_awsize[2:0]),
-      .S00_AXI_AWBURST      (sys_awburst[1:0]),
-      .S00_AXI_AWLOCK       (sys_awlock[0]),
-      .S00_AXI_AWCACHE      (sys_awcache[3:0]),
-      .S00_AXI_AWPROT       (sys_awprot[2:0]),
-      .S00_AXI_AWQOS        (sys_awqos[3:0]),
-      .S00_AXI_AWVALID      (sys_awvalid[0]),
-      .S00_AXI_AWREADY      (sys_awready[0]),
+      .S00_AXI_AWID         (m_axi_awid[0]),
+      .S00_AXI_AWADDR       (m_axi_awaddr[`TESTER_DDR_ADDR_W-1:0]),
+      .S00_AXI_AWLEN        (m_axi_awlen[7:0]),
+      .S00_AXI_AWSIZE       (m_axi_awsize[2:0]),
+      .S00_AXI_AWBURST      (m_axi_awburst[1:0]),
+      .S00_AXI_AWLOCK       (m_axi_awlock[0]),
+      .S00_AXI_AWCACHE      (m_axi_awcache[3:0]),
+      .S00_AXI_AWPROT       (m_axi_awprot[2:0]),
+      .S00_AXI_AWQOS        (m_axi_awqos[3:0]),
+      .S00_AXI_AWVALID      (m_axi_awvalid[0]),
+      .S00_AXI_AWREADY      (m_axi_awready[0]),
 
       //Write data
-      .S00_AXI_WDATA        (sys_wdata[31:0]),
-      .S00_AXI_WSTRB        (sys_wstrb[3:0]),
-      .S00_AXI_WLAST        (sys_wlast[0]),
-      .S00_AXI_WVALID       (sys_wvalid[0]),
-      .S00_AXI_WREADY       (sys_wready[0]),
+      .S00_AXI_WDATA        (m_axi_wdata[31:0]),
+      .S00_AXI_WSTRB        (m_axi_wstrb[3:0]),
+      .S00_AXI_WLAST        (m_axi_wlast[0]),
+      .S00_AXI_WVALID       (m_axi_wvalid[0]),
+      .S00_AXI_WREADY       (m_axi_wready[0]),
       
       //Write response
-      .S00_AXI_BID           (sys_bid[0]),
-      .S00_AXI_BRESP         (sys_bresp[1:0]),
-      .S00_AXI_BVALID        (sys_bvalid[0]),
-      .S00_AXI_BREADY        (sys_bready[0]),
+      .S00_AXI_BID           (m_axi_bid[0]),
+      .S00_AXI_BRESP         (m_axi_bresp[1:0]),
+      .S00_AXI_BVALID        (m_axi_bvalid[0]),
+      .S00_AXI_BREADY        (m_axi_bready[0]),
       
       //Read address
-      .S00_AXI_ARID         (sys_arid[0]),
-      .S00_AXI_ARADDR       (sys_araddr[`TESTER_DDR_ADDR_W-1:0]),
-      .S00_AXI_ARLEN        (sys_arlen[7:0]),
-      .S00_AXI_ARSIZE       (sys_arsize[2:0]),
-      .S00_AXI_ARBURST      (sys_arburst[1:0]),
-      .S00_AXI_ARLOCK       (sys_arlock[0]),
-      .S00_AXI_ARCACHE      (sys_arcache[3:0]),
-      .S00_AXI_ARPROT       (sys_arprot[2:0]),
-      .S00_AXI_ARQOS        (sys_arqos[3:0]),
-      .S00_AXI_ARVALID      (sys_arvalid[0]),
-      .S00_AXI_ARREADY      (sys_arready[0]),
+      .S00_AXI_ARID         (m_axi_arid[0]),
+      .S00_AXI_ARADDR       (m_axi_araddr[`TESTER_DDR_ADDR_W-1:0]),
+      .S00_AXI_ARLEN        (m_axi_arlen[7:0]),
+      .S00_AXI_ARSIZE       (m_axi_arsize[2:0]),
+      .S00_AXI_ARBURST      (m_axi_arburst[1:0]),
+      .S00_AXI_ARLOCK       (m_axi_arlock[0]),
+      .S00_AXI_ARCACHE      (m_axi_arcache[3:0]),
+      .S00_AXI_ARPROT       (m_axi_arprot[2:0]),
+      .S00_AXI_ARQOS        (m_axi_arqos[3:0]),
+      .S00_AXI_ARVALID      (m_axi_arvalid[0]),
+      .S00_AXI_ARREADY      (m_axi_arready[0]),
       
       //Read data
-      .S00_AXI_RID          (sys_rid[0]),
-      .S00_AXI_RDATA        (sys_rdata[31:0]),
-      .S00_AXI_RRESP        (sys_rresp[1:0]),
-      .S00_AXI_RLAST        (sys_rlast[0]),
-      .S00_AXI_RVALID       (sys_rvalid[0]),
-      .S00_AXI_RREADY       (sys_rready[0]),
+      .S00_AXI_RID          (m_axi_rid[0]),
+      .S00_AXI_RDATA        (m_axi_rdata[31:0]),
+      .S00_AXI_RRESP        (m_axi_rresp[1:0]),
+      .S00_AXI_RLAST        (m_axi_rlast[0]),
+      .S00_AXI_RVALID       (m_axi_rvalid[0]),
+      .S00_AXI_RREADY       (m_axi_rready[0]),
 
 
       //
       // SYSTEM TESTER SIDE
       //
-      .S01_AXI_ARESET_OUT_N (sys_rstn[1]),
-      .S01_AXI_ACLK         (sys_clk),
+      .S01_AXI_ARESET_OUT_N (rstn[1]),
+      .S01_AXI_ACLK         (clk),
       
       //Write address
-      .S01_AXI_AWID         (sys_awid[1]),
-      .S01_AXI_AWADDR       (sys_awaddr[2*`TESTER_DDR_ADDR_W-1:`TESTER_DDR_ADDR_W]),
-      .S01_AXI_AWLEN        (sys_awlen[15:8]),
-      .S01_AXI_AWSIZE       (sys_awsize[5:3]),
-      .S01_AXI_AWBURST      (sys_awburst[3:2]),
-      .S01_AXI_AWLOCK       (sys_awlock[1]),
-      .S01_AXI_AWCACHE      (sys_awcache[7:4]),
-      .S01_AXI_AWPROT       (sys_awprot[5:3]),
-      .S01_AXI_AWQOS        (sys_awqos[7:4]),
-      .S01_AXI_AWVALID      (sys_awvalid[1]),
-      .S01_AXI_AWREADY      (sys_awready[1]),
+      .S01_AXI_AWID         (m_axi_awid[1]),
+      .S01_AXI_AWADDR       (m_axi_awaddr[2*`TESTER_DDR_ADDR_W-1:`TESTER_DDR_ADDR_W]),
+      .S01_AXI_AWLEN        (m_axi_awlen[15:8]),
+      .S01_AXI_AWSIZE       (m_axi_awsize[5:3]),
+      .S01_AXI_AWBURST      (m_axi_awburst[3:2]),
+      .S01_AXI_AWLOCK       (m_axi_awlock[1]),
+      .S01_AXI_AWCACHE      (m_axi_awcache[7:4]),
+      .S01_AXI_AWPROT       (m_axi_awprot[5:3]),
+      .S01_AXI_AWQOS        (m_axi_awqos[7:4]),
+      .S01_AXI_AWVALID      (m_axi_awvalid[1]),
+      .S01_AXI_AWREADY      (m_axi_awready[1]),
 
       //Write data
-      .S01_AXI_WDATA        (sys_wdata[63:32]),
-      .S01_AXI_WSTRB        (sys_wstrb[7:4]),
-      .S01_AXI_WLAST        (sys_wlast[1]),
-      .S01_AXI_WVALID       (sys_wvalid[1]),
-      .S01_AXI_WREADY       (sys_wready[1]),
+      .S01_AXI_WDATA        (m_axi_wdata[63:32]),
+      .S01_AXI_WSTRB        (m_axi_wstrb[7:4]),
+      .S01_AXI_WLAST        (m_axi_wlast[1]),
+      .S01_AXI_WVALID       (m_axi_wvalid[1]),
+      .S01_AXI_WREADY       (m_axi_wready[1]),
       
       //Write response
-      .S01_AXI_BID           (sys_bid[1]),
-      .S01_AXI_BRESP         (sys_bresp[3:2]),
-      .S01_AXI_BVALID        (sys_bvalid[1]),
-      .S01_AXI_BREADY        (sys_bready[1]),
+      .S01_AXI_BID           (m_axi_bid[1]),
+      .S01_AXI_BRESP         (m_axi_bresp[3:2]),
+      .S01_AXI_BVALID        (m_axi_bvalid[1]),
+      .S01_AXI_BREADY        (m_axi_bready[1]),
       
       //Read address
-      .S01_AXI_ARID         (sys_arid[1]),
-      .S01_AXI_ARADDR       (sys_araddr[2*`TESTER_DDR_ADDR_W-1:`TESTER_DDR_ADDR_W]),
-      .S01_AXI_ARLEN        (sys_arlen[15:8]),
-      .S01_AXI_ARSIZE       (sys_arsize[5:3]),
-      .S01_AXI_ARBURST      (sys_arburst[3:2]),
-      .S01_AXI_ARLOCK       (sys_arlock[1]),
-      .S01_AXI_ARCACHE      (sys_arcache[7:4]),
-      .S01_AXI_ARPROT       (sys_arprot[5:3]),
-      .S01_AXI_ARQOS        (sys_arqos[7:4]),
-      .S01_AXI_ARVALID      (sys_arvalid[1]),
-      .S01_AXI_ARREADY      (sys_arready[1]),
+      .S01_AXI_ARID         (m_axi_arid[1]),
+      .S01_AXI_ARADDR       (m_axi_araddr[2*`TESTER_DDR_ADDR_W-1:`TESTER_DDR_ADDR_W]),
+      .S01_AXI_ARLEN        (m_axi_arlen[15:8]),
+      .S01_AXI_ARSIZE       (m_axi_arsize[5:3]),
+      .S01_AXI_ARBURST      (m_axi_arburst[3:2]),
+      .S01_AXI_ARLOCK       (m_axi_arlock[1]),
+      .S01_AXI_ARCACHE      (m_axi_arcache[7:4]),
+      .S01_AXI_ARPROT       (m_axi_arprot[5:3]),
+      .S01_AXI_ARQOS        (m_axi_arqos[7:4]),
+      .S01_AXI_ARVALID      (m_axi_arvalid[1]),
+      .S01_AXI_ARREADY      (m_axi_arready[1]),
       
       //Read data
-      .S01_AXI_RID          (sys_rid[1]),
-      .S01_AXI_RDATA        (sys_rdata[63:32]),
-      .S01_AXI_RRESP        (sys_rresp[3:2]),
-      .S01_AXI_RLAST        (sys_rlast[1]),
-      .S01_AXI_RVALID       (sys_rvalid[1]),
-      .S01_AXI_RREADY       (sys_rready[1]),
+      .S01_AXI_RID          (m_axi_rid[1]),
+      .S01_AXI_RDATA        (m_axi_rdata[63:32]),
+      .S01_AXI_RRESP        (m_axi_rresp[3:2]),
+      .S01_AXI_RLAST        (m_axi_rlast[1]),
+      .S01_AXI_RVALID       (m_axi_rvalid[1]),
+      .S01_AXI_RREADY       (m_axi_rready[1]),
 
 				//
 				// DDR SIDE
@@ -425,68 +338,5 @@ module top_system(
 				 );
 `endif
 
-   //
-   // TESTER (includes UUT)
-   //
-   tester tester (
-        	  .clk           (sys_clk),
-		  .reset         (sys_rst),
-		  .trap          (trap_signals),
-
-`ifdef TESTER_USE_DDR
-          //address write
-		  .m_axi_awid    (sys_awid),
-		  .m_axi_awaddr  (sys_awaddr),
-		  .m_axi_awlen   (sys_awlen),
-		  .m_axi_awsize  (sys_awsize),
-		  .m_axi_awburst (sys_awburst),
-		  .m_axi_awlock  (sys_awlock),
-		  .m_axi_awcache (sys_awcache),
-		  .m_axi_awprot  (sys_awprot),
-		  .m_axi_awqos   (sys_awqos),
-		  .m_axi_awvalid (sys_awvalid),
-		  .m_axi_awready (sys_awready),
-
-		  //write  
-		  .m_axi_wdata   (sys_wdata),
-		  .m_axi_wstrb   (sys_wstrb),
-		  .m_axi_wlast   (sys_wlast),
-		  .m_axi_wvalid  (sys_wvalid),
-		  .m_axi_wready  (sys_wready),
-
-		  //write response
-		  .m_axi_bid     (sys_bid),
-		  .m_axi_bresp   (sys_bresp),
-		  .m_axi_bvalid  (sys_bvalid),
-		  .m_axi_bready  (sys_bready),
-
-		  //address read
-		  .m_axi_arid    (sys_arid),
-		  .m_axi_araddr  (sys_araddr),
-		  .m_axi_arlen   (sys_arlen),
-		  .m_axi_arsize  (sys_arsize),
-		  .m_axi_arburst (sys_arburst),
-		  .m_axi_arlock  (sys_arlock),
-		  .m_axi_arcache (sys_arcache),
-		  .m_axi_arprot  (sys_arprot),
-		  .m_axi_arqos   (sys_arqos),
-		  .m_axi_arvalid (sys_arvalid),
-		  .m_axi_arready (sys_arready),
-
-		  //read   
-		  .m_axi_rid     (sys_rid),
-		  .m_axi_rdata   (sys_rdata),
-		  .m_axi_rresp   (sys_rresp),
-		  .m_axi_rlast   (sys_rlast),
-		  .m_axi_rvalid  (sys_rvalid),
-		  .m_axi_rready  (sys_rready),	
-`endif
-
-                  //UART
-		  .UART0_txd      (uart_txd),
-		  .UART0_rxd      (uart_rxd),
-		  .UART0_rts      (),
-		  .UART0_cts      (1'b1)
-		  );
 
 endmodule

@@ -7,64 +7,24 @@
 //PHEADER
 
 module tester
+  #(
+    parameter ADDR_W=`TESTER_ADDR_W,
+    parameter DATA_W=`TESTER_DATA_W,
+    parameter AXI_ID_W=0,
+    parameter AXI_ADDR_W=`TESTER_ADDR_W,
+    parameter AXI_DATA_W=`TESTER_DATA_W
+    )
   (
    //do not remove line below
    //PIO
 
-
 //Temporarily comment ifdef, because python will always try to insert m_axi_*
 //signals in sut instance ports, so they need to exist here aswell
-//`ifdef TESTER_USE_DDR //AXI MASTER INTERFACE
-
-   //address write
-   output [1:0] m_axi_awid,
-   output [2*(`TESTER_DDR_ADDR_W-1+1)-1:0] m_axi_awaddr,
-   output [2*(7+1)-1:0] m_axi_awlen,
-   output [2*(2+1)-1:0] m_axi_awsize,
-   output [2*(1+1)-1:0] m_axi_awburst,
-   output [1:0] m_axi_awlock,
-   output [2*(3+1)-1:0] m_axi_awcache,
-   output [2*(2+1)-1:0] m_axi_awprot,
-   output [2*(3+1)-1:0] m_axi_awqos,
-   output [1:0] m_axi_awvalid,
-   input [1:0] m_axi_awready,
-
-   //write
-   output [2*(`TESTER_DATA_W-1+1)-1:0] m_axi_wdata,
-   output [2*(`TESTER_DATA_W/8-1+1)-1:0] m_axi_wstrb,
-   output [1:0] m_axi_wlast,
-   output [1:0] m_axi_wvalid,
-   input [1:0] m_axi_wready,
-
-   //write response
-   input [1:0] m_axi_bid,
-   input [2*(1+1)-1:0] m_axi_bresp,
-   input [1:0] m_axi_bvalid,
-   output [1:0] m_axi_bready,
-  
-   //address read
-   output [1:0] m_axi_arid,
-   output [2*(`TESTER_DDR_ADDR_W-1+1)-1:0] m_axi_araddr,
-   output [2*(7+1)-1:0] m_axi_arlen,
-   output [2*(2+1)-1:0] m_axi_arsize,
-   output [2*(1+1)-1:0] m_axi_arburst,
-   output [1:0] m_axi_arlock,
-   output [2*(3+1)-1:0] m_axi_arcache,
-   output [2*(2+1)-1:0] m_axi_arprot,
-   output [2*(3+1)-1:0] m_axi_arqos,
-   output [1:0] m_axi_arvalid,
-   input [1:0] m_axi_arready,
-
-   //read
-   input [1:0] m_axi_rid,
-   input [2*(`TESTER_DATA_W-1+1)-1:0] m_axi_rdata,
-   input [2*(1+1)-1:0] m_axi_rresp,
-   input [1:0] m_axi_rlast,
-   input [1:0] m_axi_rvalid,
-   output [1:0] m_axi_rready,
+//`ifdef TESTER_USE_DDR
+ //AXI MASTER INTERFACE
+   `include "m_axi_m_port.vh"
 //`endif //  `ifdef USE_DDR
-   input                    clk,
-   input                    reset,
+   `include "iob_gen_if.vh"
    output [1:0]             trap
    );
 
@@ -75,21 +35,20 @@ module tester
    // SYSTEM RESET
    //
 
-   wire                      boot;
-   wire                      boot_reset;
-   wire                      cpu_reset = reset | boot_reset;
-
+   wire   boot;
+   wire   cpu_reset;
+   
    //
    //  CPU
    //
 
    // instruction bus
-   wire [`REQ_W-1:0]         cpu_i_req;
-   wire [`RESP_W-1:0]        cpu_i_resp;
+   wire [`REQ_W-1:0] cpu_i_req;
+   wire [`RESP_W-1:0] cpu_i_resp;
 
    // data cat bus
-   wire [`REQ_W-1:0]         cpu_d_req;
-   wire [`RESP_W-1:0]        cpu_d_resp;
+   wire [`REQ_W-1:0]  cpu_d_req;
+   wire [`RESP_W-1:0] cpu_d_resp;
    
    //instantiate the cpu
    iob_picorv32 
@@ -110,22 +69,22 @@ module tester
         .trap    (trap[1]),
         
         //instruction bus
-        .ibus_req(cpu_i_req),
-        .ibus_resp(cpu_i_resp),
+        .ibus_req (cpu_i_req),
+        .ibus_resp (cpu_i_resp),
         
         //data bus
-        .dbus_req(cpu_d_req),
-        .dbus_resp(cpu_d_resp)
+        .dbus_req (cpu_d_req),
+        .dbus_resp (cpu_d_resp)
         );
 
 
    //   
-   // SPLIT INTERNAL AND EXTERNAL MEMORY BUSES
+   // SPLIT CPU BUSES TO ACCESS INTERNAL OR EXTERNAL MEMORY
    //
 
    //internal memory instruction bus
-   wire [`REQ_W-1:0]         int_mem_i_req;
-   wire [`RESP_W-1:0]        int_mem_i_resp;
+   wire [`REQ_W-1:0]  int_mem_i_req;
+   wire [`RESP_W-1:0] int_mem_i_resp;
    //external memory instruction bus
 `ifdef TESTER_RUN_EXTMEM
    wire [`REQ_W-1:0]         ext_mem_i_req;
@@ -144,19 +103,19 @@ module tester
            )
    ibus_split
      (
-      .clk    ( clk                              ),
-      .rst    ( reset                            ),
+      .clk (clk),
+      .rst (cpu_reset),
       // master interface
-      .m_req  ( cpu_i_req                        ),
-      .m_resp ( cpu_i_resp                       ),
-
+      .m_req (cpu_i_req),
+      .m_resp (cpu_i_resp),
+      
       // slaves interface
 `ifdef TESTER_RUN_EXTMEM
-      .s_req  ( {ext_mem_i_req, int_mem_i_req}   ),
+      .s_req ( {ext_mem_i_req, int_mem_i_req} ),
       .s_resp ( {ext_mem_i_resp, int_mem_i_resp} )
 `else
-      .s_req  (  int_mem_i_req                   ),
-      .s_resp ( int_mem_i_resp                   )
+      .s_req (int_mem_i_req),
+      .s_resp ( int_mem_i_resp)
 `endif
       );
 
@@ -179,7 +138,7 @@ module tester
    dbus_split
      (
       .clk    ( clk   ),
-      .rst    ( reset ),
+      .rst    ( cpu_reset ),
 
       // master interface
       .m_req  ( cpu_d_req  ),
@@ -209,8 +168,8 @@ module tester
        )
    int_dbus_split
      (
-      .clk    ( clk   ),
-      .rst    ( reset ),
+      .clk (clk),
+      .rst (cpu_reset),
 
 `ifdef USE_DDR
       // master interface
@@ -243,27 +202,26 @@ module tester
        )
    pbus_split
      (
-      .clk    ( clk   ),
-      .rst    ( reset ),
+      .clk (clk),
+      .rst (cpu_reset),
       // master interface
-      .m_req   ( pbus_req    ),
-      .m_resp  ( pbus_resp   ),
-
+      .m_req (pbus_req),
+      .m_resp (pbus_resp),
+      
       // slaves interface
-      .s_req   ( slaves_req  ),
-      .s_resp  ( slaves_resp )
+      .s_req (slaves_req),
+      .s_resp (slaves_resp)
       );
 
 
    //
    // INTERNAL SRAM MEMORY
    //
-   
    int_mem 
      #(.HEXFILE("tester_firmware"),
        .BOOT_HEXFILE("tester_boot"),
-       .ADDR_W(`TESTER_ADDR_W),
-       .DATA_W(`TESTER_DATA_W),
+       .ADDR_W(ADDR_W),
+       .DATA_W(DATA_W),
        .SRAM_ADDR_W (`TESTER_SRAM_ADDR_W),
        .BOOTROM_ADDR_W (`TESTER_BOOTROM_ADDR_W),
        .B_BIT(`TESTER_B_BIT)
@@ -271,17 +229,17 @@ module tester
    int_mem0 
       (
       .clk                  (clk ),
-      .rst                  (reset),
+      .rst                  (rst),
       .boot                 (boot),
-      .cpu_reset            (boot_reset),
+      .cpu_reset            (cpu_reset),
 
       // instruction bus
-      .i_req                (int_mem_i_req),
-      .i_resp               (int_mem_i_resp),
+      .i_req (int_mem_i_req),
+      .i_resp (int_mem_i_resp),
 
       //data bus
-      .d_req                (int_mem_d_req),
-      .d_resp               (int_mem_d_resp)
+      .d_req (int_mem_d_req),
+      .d_resp (int_mem_d_resp)
       );
 
 `ifdef TESTER_USE_DDR
@@ -300,8 +258,9 @@ module tester
 `endif
    ext_mem
     #(
-      .ADDR_W(ADDR_W),
-      .DATA_W(DATA_W),
+      .AXI_ID_W(AXI_ID_W),
+      .AXI_ADDR_W(AXI_ADDR_W),
+      .AXI_DATA_W(AXI_DATA_W),
       .FIRM_ADDR_W(`TESTER_FIRM_ADDR_W),
       .DCACHE_ADDR_W(`TESTER_DCACHE_ADDR_W),
       .DDR_ADDR_W(`TESTER_DDR_ADDR_W)

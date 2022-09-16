@@ -104,17 +104,18 @@ module system_tb;
     end
   end
 
-system_top system_top(
-   .clk               (clk),
-   .reset           (reset),
-   .trap             (trap),
+system_top system_top
+  (
+   .clk (clk),
+   .rst (reset),
+   .trap (trap),
 
-   .uart_valid  (uart_valid),
-   .uart_addr    (uart_addr),
-   .uart_wdata  (uart_wdata),
-   .uart_wstrb  (uart_wstrb),
-   .uart_rdata  (uart_rdata),
-   .uart_ready  (uart_ready)
+   .uart_valid (uart_valid),
+   .uart_addr (uart_addr),
+   .uart_wdata (uart_wdata),
+   .uart_wstrb (uart_wstrb),
+   .uart_rdata (uart_rdata),
+   .uart_ready (uart_ready)
    );
 
 
