@@ -120,10 +120,12 @@ BOARD_DIR ?=$(shell find $(ROOT_DIR)/hardware -name $(BOARD))
 DOC_DIR=$(ROOT_DIR)/document/$(DOC)
 
 #macro to return all defined directories separated by newline
-GET_DIRS= $(eval ROOT_DIR_TMP=.)\
+GET_DIRS= $(eval ROOT_DIR_TMP:=$(ROOT_DIR))\
+          $(eval ROOT_DIR=.)\
           $(foreach V,$(sort $(.VARIABLES)),\
-          $(if $(filter %_DIR, $V),\
-          $(eval TMP_VAR:=$(subst ROOT_DIR,ROOT_DIR_TMP,$(value $V)))$V=$(TMP_VAR);))
+          $(if $(filter $(addsuffix _DIR, $(shell $(SW_DIR)/python/submodule_utils.py remove_duplicates_and_params "$(PERIPHERALS)")), $(filter %_DIR, $V)),\
+          $V=$($V);))\
+          $(eval ROOT_DIR:=$(ROOT_DIR_TMP))
 
 #define macros
 DEFINE+=$(defmacro)DATA_W=$(DATA_W)
