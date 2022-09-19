@@ -14,4 +14,4 @@ UART_DIR ?= $(SOC_DIR)/submodules/UART
 LIB_DIR ?= $(SOC_DIR)/submodules/LIB
 
 # default configuration
-SOC_CONFIG ?= base
+CONFIG ?= base

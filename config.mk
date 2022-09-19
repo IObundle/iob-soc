@@ -24,9 +24,9 @@ PERIPHERALS ?=UART
 #PERIPHERAL IDs
 #assign a sequential ID to each peripheral
 #the ID is used as an instance name index in the hardware and as a base address in the software
-SOC_DEFINE+=$(shell $(SOC_DIR)/software/python/submodule_utils.py get_defines "$(PERIPHERALS)" "")
-SOC_DEFINE+=N_SLAVES=$(shell $(SOC_DIR)/software/python/submodule_utils.py get_n_slaves "$(PERIPHERALS)") #peripherals
-SOC_DEFINE+=N_SLAVES_W=$(shell $(SOC_DIR)/software/python/submodule_utils.py get_n_slaves_w "$(PERIPHERALS)")
+SOC_DEFINE+=$(shell $(LIB_DIR)/scripts/submodule_utils.py get_defines "$(PERIPHERALS)" "")
+SOC_DEFINE+=N_SLAVES=$(shell $(LIB_DIR)/scripts/submodule_utils.py get_n_slaves "$(PERIPHERALS)") #peripherals
+SOC_DEFINE+=N_SLAVES_W=$(shell $(LIB_DIR)/scripts/submodule_utils.py get_n_slaves_w "$(PERIPHERALS)")
 
 #macro to return all defined directories separated by newline
 GET_DIRS= $(eval ROOT_DIR_TMP=.)\

@@ -4,6 +4,8 @@
 # are overwritten
 #
 
+include $(SOC_DIR)/config.mk
+
 #LIB
 include $(LIB_DIR)/hardware/iob_merge/hw_setup.mk
 include $(LIB_DIR)/hardware/iob_split/hw_setup.mk
@@ -27,9 +29,9 @@ SOC_DEFINE+=DDR_DATA_W=$(DDR_DATA_W)
 SOC_DEFINE+=DDR_ADDR_W=$(DDR_ADDR_W)
 
 #HEADER
-SRC+=$(BUILD_VSRC_DIR)/iob_soc_base.vh
-$(BUILD_VSRC_DIR)/iob_soc_base.vh:
-	$(LIB_DIR)/software/python/hw_defines.py  $@ $(SOC_DEFINE)
+SRC+=$(BUILD_VSRC_DIR)/iob_soc_conf_base.vh
+hardware/src/$(NAME)_conf_$(CONFIG).vh:
+	$(LIB_DIR)/scripts/hw_defines.py $@ $(SOC_DEFINE)
 
 #SOURCES
 # make system.v with peripherals
@@ -38,5 +40,5 @@ SRC+=$(BUILD_VSRC_DIR)/iob_soc.v
 $(BUILD_VSRC_DIR)/iob_soc.v: system.v
 	cp $< $@
 
-$(BUILD_VSRC_DIR)/system.v: $(SOC_DIR)/hardware/src/system.vt
-	$(LIB_DIR)/scripts/createSystem.py $(SOC_DIR) "$(GET_DIRS)" "$(PERIPHERALS)"
+system.v: $(SOC_DIR)/hardware/src/system.vt
+	$(LIB_DIR)/scripts/createSystem.py "$(SOC_DIR)" "$(GET_DIRS)" "$(PERIPHERALS)"
