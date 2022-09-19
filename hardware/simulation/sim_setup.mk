@@ -16,7 +16,7 @@ $(BUILD_SIM_DIR)/s_axi_portmap.vh:
 # SOURCES
 
 #axi memory
-include $(LIB_DIR)/hardware/axiram/hardware.mk
+include $(LIB_DIR)/hardware/axiram/hw_setup.mk
 
 SRC+=$(BUILD_SIM_DIR)/system_tb.v $(BUILD_SIM_DIR)/system_top.v
 
