@@ -37,8 +37,6 @@ hardware/src/$(NAME)_conf_$(CONFIG).vh:
 # make system.v with peripherals
 SRC+=$(BUILD_VSRC_DIR)/iob_soc.v
 
-$(BUILD_VSRC_DIR)/iob_soc.v: system.v
-	cp $< $@
+$(BUILD_VSRC_DIR)/iob_soc.v: $(SOC_DIR)/hardware/src/system.vt
+	$(LIB_DIR)/scripts/createSystem.py "$(SOC_DIR)" "$(GET_DIRS)" "$(PERIPHERALS)" "$@"
 
-system.v: $(SOC_DIR)/hardware/src/system.vt
-	$(LIB_DIR)/scripts/createSystem.py "$(SOC_DIR)" "$(GET_DIRS)" "$(PERIPHERALS)"

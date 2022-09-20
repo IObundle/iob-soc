@@ -7,7 +7,7 @@
 # HEADERS
 
 #axi portmap for axi ram instance
-AXI_GEN ?=$(LIB_DIR)/software/python/axi_gen.py
+AXI_GEN ?=$(LIB_DIR)/scripts/axi_gen.py
 SRC+=$(BUILD_SIM_DIR)/s_axi_portmap.vh
 $(BUILD_SIM_DIR)/s_axi_portmap.vh:
 	$(AXI_GEN) axi_portmap 's_' 's_' 'm_' && mv s_axi_portmap.vh $@
@@ -21,19 +21,19 @@ include $(LIB_DIR)/hardware/axiram/hw_setup.mk
 SRC+=$(BUILD_SIM_DIR)/system_tb.v $(BUILD_SIM_DIR)/system_top.v
 
 $(BUILD_SIM_DIR)/system_tb.v:
-	$(SOC_DIR)/software/python/createTestbench.py $(SOC_DIR) "$(GET_DIRS)" "$(PERIPHERALS)" && mv system_tb.v $@
+	$(LIB_DIR)/scripts/createTestbench.py "$(SOC_DIR)" "$(GET_DIRS)" "$(PERIPHERALS)" "$@"
 
 $(BUILD_SIM_DIR)/system_top.v:
-	$(SOC_DIR)/software/python/createTopSystem.py $(SOC_DIR) "$(GET_DIRS)" "$(PERIPHERALS)" && mv system_top.v $@
+	$(LIB_DIR)/scripts/createTopSystem.py "$(SOC_DIR)" "$(GET_DIRS)" "$(PERIPHERALS)" "$@"
 
 
 #
 # SCRIPTS
 #
 SRC+=$(BUILD_SW_PYTHON_DIR)/makehex.py $(BUILD_SW_PYTHON_DIR)/hex_split.py
-$(BUILD_SW_PYTHON_DIR)/%.py: $(LIB_DIR)/software/python/%.py
+$(BUILD_SW_PYTHON_DIR)/%.py: $(LIB_DIR)/scripts/%.py
 	cp $< $@
 
 SRC+=$(BUILD_SW_PYTHON_DIR)/hw_defines.py
-$(BUILD_SW_PYTHON_DIR)/hw_defines.py: $(LIB_DIR)/software/python/hw_defines.py
+$(BUILD_SW_PYTHON_DIR)/hw_defines.py: $(LIB_DIR)/scripts/hw_defines.py
 	cp $< $@
