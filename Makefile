@@ -1,5 +1,4 @@
 SHELL = /bin/bash
-export 
 
 ROOT_DIR:=.
 include ./config.mk
@@ -47,7 +46,7 @@ pc-emul-test: pc-emul-clean
 SIM_BAUD = 2500000
 SIM_FREQ =50000000
 sim-build: $(SIM_DEPS)
-	make fw-build
+	make fw-build SIM_BAUD=$(SIM_BAUD) SIM_FREQ=$(SIM_FREQ)
 	make -C $(SIM_DIR) build
 
 sim-run: sim-build
