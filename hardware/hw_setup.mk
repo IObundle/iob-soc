@@ -4,8 +4,6 @@
 # are overwritten
 #
 
-include $(SOC_DIR)/config.mk
-
 #LIB
 include $(LIB_DIR)/hardware/iob_merge/hw_setup.mk
 include $(LIB_DIR)/hardware/iob_split/hw_setup.mk
@@ -24,17 +22,10 @@ include $(CACHE_DIR)/hardware/hw_setup.mk
 #UART
 include $(UART_DIR)/hardware/hw_setup.mk
 
-#DEFINES
-SOC_DEFINE+=DDR_DATA_W=$(DDR_DATA_W)
-SOC_DEFINE+=DDR_ADDR_W=$(DDR_ADDR_W)
-
-#HEADER
-SRC+=$(BUILD_VSRC_DIR)/iob_soc_conf_base.vh
-%/$(NAME)_conf_$(CONFIG).vh:
-	$(LIB_DIR)/scripts/hw_defines.py $@ $(SOC_DEFINE)
 
 #SOURCES
-# make system.v with peripherals
+
+# make iob_soc top with CPU memory and peripherals
 SRC+=$(BUILD_VSRC_DIR)/iob_soc.v
 
 $(BUILD_VSRC_DIR)/iob_soc.v: $(SOC_DIR)/hardware/src/system.vt
