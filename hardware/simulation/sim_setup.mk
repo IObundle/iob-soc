@@ -21,10 +21,10 @@ include $(LIB_DIR)/hardware/axiram/hw_setup.mk
 SRC+=$(BUILD_SIM_DIR)/system_tb.v $(BUILD_SIM_DIR)/system_top.v
 
 $(BUILD_SIM_DIR)/system_tb.v:
-	$(LIB_DIR)/scripts/createTestbench.py "$(SOC_DIR)" "$(GET_DIRS)" "$(PERIPHERALS)" "$@"
+	$(LIB_DIR)/scripts/createTestbench.py "$(SOC_DIR)" "$(PERIPHERALS)" "$@"
 
 $(BUILD_SIM_DIR)/system_top.v:
-	$(LIB_DIR)/scripts/createTopSystem.py "$(SOC_DIR)" "$(GET_DIRS)" "$(PERIPHERALS)" "$@"
+	$(LIB_DIR)/scripts/createTopSystem.py "$(SOC_DIR)" "$(PERIPHERALS)" "$@"
 
 
 #

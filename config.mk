@@ -19,16 +19,9 @@ SOC_DEFINE+=DCACHE_ADDR_W=24
 #PERIPHERAL IDs
 #assign a sequential ID to each peripheral
 #the ID is used as an instance name index in the hardware and as a base address in the software
-SOC_DEFINE+=$(shell $(LIB_DIR)/scripts/submodule_utils.py get_defines "$(PERIPHERALS)" "")
+SOC_DEFINE+=$(shell $(LIB_DIR)/scripts/submodule_utils.py get_periphs_id "$(PERIPHERALS)" "")
 
-SOC_DEFINE+=N_SLAVES=$(shell $(LIB_DIR)/scripts/submodule_utils.py get_n_slaves "$(PERIPHERALS)") #peripherals
-SOC_DEFINE+=N_SLAVES_W=$(shell $(LIB_DIR)/scripts/submodule_utils.py get_n_slaves_w "$(PERIPHERALS)")
-
-#macro to return all defined directories separated by newline
-GET_DIRS= $(eval ROOT_DIR_TMP=.)\
-          $(foreach V,$(sort $(.VARIABLES)),\
-          $(if $(filter %_DIR, $V),\
-          $(eval TMP_VAR:=$(subst ROOT_DIR,ROOT_DIR_TMP,$(value $V)))$V=$(TMP_VAR);))
-
+SOC_DEFINE+=N_SLAVES=$(shell $(LIB_DIR)/scripts/submodule_utils.py get_n_periphs "$(PERIPHERALS)") #peripherals
+SOC_DEFINE+=N_SLAVES_W=$(shell $(LIB_DIR)/scripts/submodule_utils.py get_n_periphs_w "$(PERIPHERALS)")
 
 
