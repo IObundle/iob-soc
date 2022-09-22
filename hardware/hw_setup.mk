@@ -30,7 +30,7 @@ SOC_DEFINE+=DDR_ADDR_W=$(DDR_ADDR_W)
 
 #HEADER
 SRC+=$(BUILD_VSRC_DIR)/iob_soc_conf_base.vh
-hardware/src/$(NAME)_conf_$(CONFIG).vh:
+%/$(NAME)_conf_$(CONFIG).vh:
 	$(LIB_DIR)/scripts/hw_defines.py $@ $(SOC_DEFINE)
 
 #SOURCES
