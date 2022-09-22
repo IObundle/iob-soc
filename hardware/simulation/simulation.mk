@@ -1,28 +1,3 @@
-#default baud and freq for simulation
-BAUD=$(SIM_BAUD)
-FREQ=$(SIM_FREQ)
-
-#define for testbench
-CONF_DEFINE+=BAUD=$(BAUD)
-CONF_DEFINE+=FREQ=$(FREQ)
-
-#ddr controller address and data width
-CONF_DEFINE+=DDR_ADDR_W=$(DCACHE_ADDR_W)
-CONF_DEFINE+=DDR_DATA_W=$(DATA_W)
-
-# DDR configuration
-ifeq ($(USE_DDR),1)
-CONF_DEFINE+=USE_DDR
-endif
-ifeq ($(RUN_EXTMEM),1)
-CONF_DEFINE+=RUN_EXTMEM
-endif
-
-# Initialize Memory configuration
-ifeq ($(INIT_MEM),1)
-CONF_DEFINE+=INIT_MEM
-endif
-
 CONSOLE_CMD=../../sw/python/console -L
 ifeq ($(INIT_MEM),0)
 CONSOLE_CMD+=-f
