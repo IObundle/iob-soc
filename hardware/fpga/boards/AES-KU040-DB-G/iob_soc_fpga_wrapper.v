@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 `include "system.vh"
 
-module top_system
+module iob_soc_fpga_wrapper
   (
 
    //differential clock input and reset

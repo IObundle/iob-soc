@@ -2,7 +2,7 @@
 `include "system.vh"
 `include "iob_lib.vh"
 
-module top_system
+module iob_soc_fpga_wrapper
   (
    //user clock
    input         clk, 

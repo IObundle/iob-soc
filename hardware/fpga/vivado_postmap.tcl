@@ -116,6 +116,5 @@ report_cdc -details -file reports/cdc.txt
 report_synchronizer_mtbf -file reports/synchronizer_mtbf.txt
 report_utilization -hierarchical -file reports/utilization.txt
 
-write_bitstream -force top_system.bit
+write_bitstream -force $TOP.bit
 
-write_verilog -force top_system.v
