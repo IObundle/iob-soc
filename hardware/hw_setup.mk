@@ -29,5 +29,5 @@ include $(UART_DIR)/hardware/hw_setup.mk
 SRC+=$(BUILD_VSRC_DIR)/iob_soc.v
 
 $(BUILD_VSRC_DIR)/iob_soc.v: $(SOC_DIR)/hardware/src/system.vt
-	$(LIB_DIR)/scripts/createSystem.py "$(SOC_DIR)" "$(GET_DIRS)" "$(PERIPHERALS)" "$@"
+	$(LIB_DIR)/scripts/createSystem.py "$(SOC_DIR)" "$(PERIPHERALS)" "$@"
 

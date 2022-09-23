@@ -21,19 +21,16 @@ include $(LIB_DIR)/hardware/axiram/hw_setup.mk
 SRC+=$(BUILD_SIM_DIR)/system_tb.v $(BUILD_SIM_DIR)/system_top.v
 
 $(BUILD_SIM_DIR)/system_tb.v:
-	$(LIB_DIR)/scripts/createTestbench.py "$(SOC_DIR)" "$(GET_DIRS)" "$(PERIPHERALS)" "$@"
+	$(LIB_DIR)/scripts/createTestbench.py "$(SOC_DIR)" "$(PERIPHERALS)" "$@"
 
 $(BUILD_SIM_DIR)/system_top.v:
-	$(LIB_DIR)/scripts/createTopSystem.py "$(SOC_DIR)" "$(GET_DIRS)" "$(PERIPHERALS)" "$@"
+	$(LIB_DIR)/scripts/createTopSystem.py "$(SOC_DIR)" "$(PERIPHERALS)" "$@"
 
 
 #
 # SCRIPTS
 #
-SRC+=$(BUILD_SW_PYTHON_DIR)/makehex.py $(BUILD_SW_PYTHON_DIR)/hex_split.py
+SRC+=$(BUILD_SW_PYTHON_DIR)/makehex.py $(BUILD_SW_PYTHON_DIR)/hex_split.py $(BUILD_SW_PYTHON_DIR)/hw_defines.py
 $(BUILD_SW_PYTHON_DIR)/%.py: $(LIB_DIR)/scripts/%.py
-	cp $< $@
-
-SRC+=$(BUILD_SW_PYTHON_DIR)/hw_defines.py
-$(BUILD_SW_PYTHON_DIR)/hw_defines.py: $(LIB_DIR)/scripts/hw_defines.py
+	mkdir -p `dirname $@`
 	cp $< $@
