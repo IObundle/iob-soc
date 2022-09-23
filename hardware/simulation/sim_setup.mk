@@ -30,10 +30,7 @@ $(BUILD_SIM_DIR)/system_top.v:
 #
 # SCRIPTS
 #
-SRC+=$(BUILD_SW_PYTHON_DIR)/makehex.py $(BUILD_SW_PYTHON_DIR)/hex_split.py
+SRC+=$(BUILD_SW_PYTHON_DIR)/makehex.py $(BUILD_SW_PYTHON_DIR)/hex_split.py $(BUILD_SW_PYTHON_DIR)/hw_defines.py
 $(BUILD_SW_PYTHON_DIR)/%.py: $(LIB_DIR)/scripts/%.py
-	cp $< $@
-
-SRC+=$(BUILD_SW_PYTHON_DIR)/hw_defines.py
-$(BUILD_SW_PYTHON_DIR)/hw_defines.py: $(LIB_DIR)/scripts/hw_defines.py
+	mkdir -p `dirname $@`
 	cp $< $@
