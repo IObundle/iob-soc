@@ -13,7 +13,7 @@ local-build: $(QIP_FILE)
 
 clean: clean-all
 	@rm -rf db/ incremental_db/ output_files/ \
-	*.qdf *.sof *.sld *.qpf *.qsf *.txt
+	*.qdf *.sof *.sld *.txt
 
 clean-ip:
 	rm -rf qsys/alt_ddr3 qsys/alt_ddr3.sopcinfo
