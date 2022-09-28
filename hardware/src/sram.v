@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-`include "system.vh"
+`include "iob_soc.vh"
 
 module sram #(
               parameter DATA_W=`DATA_W,

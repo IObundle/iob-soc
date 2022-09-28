@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-`include "system.vh"
+`include "iob_soc.vh"
 `include "iob_lib.vh"
 
 module iob_soc_fpga_wrapper

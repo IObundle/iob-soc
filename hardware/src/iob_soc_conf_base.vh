@@ -15,8 +15,7 @@
 `define RUN_EXTMEM (0)
 `define DCACHE_ADDR_W (24)
 `define DDR_DATA_W (32)
-`define DDR_ADDR_W_SIM (24)
-`define DDR_ADDR_W_HW (30)
+`define DDR_ADDR_W (30)
 `define N_SLAVES (0)
 `define N_SLAVES_W (0)
 
