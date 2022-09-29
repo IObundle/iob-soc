@@ -14,13 +14,13 @@ module system_top
    input [`TESTER_DATA_W-1:0]      uart_wdata,
    input [3:0]              uart_wstrb,
    output [`TESTER_DATA_W-1:0]     uart_rdata,
-   output                   uart_ready
+   output                   uart_ready,
    `include "iob_gen_if.vh"
    );
  
    localparam AXI_ID_W = 4;
    localparam AXI_ADDR_W=`TESTER_DDR_ADDR_W;
-   localparam AXI_DATA_W=`TESTER_DATA_W;
+   localparam AXI_DATA_W=`TESTER_DDR_DATA_W;
  
    //PWIRES
 
@@ -155,7 +155,7 @@ module system_top
 	       .m_axi_rready  (m_axi_rready[1:0]),	
 `endif               
 	       .clk           (clk),
-	       .reset         (rst),
+	       .rst         (rst),
 	       .trap          (trap_signals)
 	       );
 

@@ -1,10 +1,13 @@
 `timescale 1 ns / 1 ps
 
+`include "iob_lib.vh"
 `include "system.vh"
 `include "iob_intercon.vh"
 
 module ext_mem
   #(
+    parameter ADDR_W=`ADDR_W,
+    parameter DATA_W=`DATA_W,
     parameter FIRM_ADDR_W=`FIRM_ADDR_W,
     parameter DCACHE_ADDR_W=`DCACHE_ADDR_W,
     parameter DDR_ADDR_W=`DDR_ADDR_W,

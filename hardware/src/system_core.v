@@ -24,12 +24,9 @@ module tester
  //AXI MASTER INTERFACE
    `include "m_axi_m_port.vh"
 //`endif //  `ifdef USE_DDR
+   output [1:0]             trap,
    `include "iob_gen_if.vh"
-   output [1:0]             trap
    );
-
-   localparam ADDR_W=`TESTER_ADDR_W;
-   localparam DATA_W=`TESTER_DATA_W;
    
    //
    // SYSTEM RESET
@@ -258,6 +255,8 @@ module tester
 `endif
    ext_mem
     #(
+      .ADDR_W(ADDR_W),
+      .DATA_W(DATA_W),
       .AXI_ID_W(AXI_ID_W),
       .AXI_ADDR_W(AXI_ADDR_W),
       .AXI_DATA_W(AXI_DATA_W),
@@ -281,47 +280,47 @@ module tester
 
       //AXI INTERFACE
       //address write
-      .axi_awid(m_axi_awid[2*(0+1)-1:0+1]), 
-      .axi_awaddr({axi_invert_w_bit,m_axi_awaddr[2*`TESTER_DDR_ADDR_W-2:`TESTER_DDR_ADDR_W]}), 
-      .axi_awlen(m_axi_awlen[2*(7+1)-1:7+1]), 
-      .axi_awsize(m_axi_awsize[2*(2+1)-1:2+1]), 
-      .axi_awburst(m_axi_awburst[2*(1+1)-1:1+1]), 
-      .axi_awlock(m_axi_awlock[2*(0+1)-1:0+1]), 
-      .axi_awcache(m_axi_awcache[2*(3+1)-1:3+1]), 
-      .axi_awprot(m_axi_awprot[2*(2+1)-1:2+1]),
-      .axi_awqos(m_axi_awqos[2*(3+1)-1:3+1]), 
-      .axi_awvalid(m_axi_awvalid[2*(0+1)-1:0+1]), 
-      .axi_awready(m_axi_awready[2*(0+1)-1:0+1]), 
+      .m_axi_awid(m_axi_awid[2*(0+1)-1:0+1]), 
+      .m_axi_awaddr({axi_invert_w_bit,m_axi_awaddr[2*`TESTER_DDR_ADDR_W-2:`TESTER_DDR_ADDR_W]}), 
+      .m_axi_awlen(m_axi_awlen[2*(7+1)-1:7+1]), 
+      .m_axi_awsize(m_axi_awsize[2*(2+1)-1:2+1]), 
+      .m_axi_awburst(m_axi_awburst[2*(1+1)-1:1+1]), 
+      .m_axi_awlock(m_axi_awlock[2*(0+1)-1:0+1]), 
+      .m_axi_awcache(m_axi_awcache[2*(3+1)-1:3+1]), 
+      .m_axi_awprot(m_axi_awprot[2*(2+1)-1:2+1]),
+      .m_axi_awqos(m_axi_awqos[2*(3+1)-1:3+1]), 
+      .m_axi_awvalid(m_axi_awvalid[2*(0+1)-1:0+1]), 
+      .m_axi_awready(m_axi_awready[2*(0+1)-1:0+1]), 
         //write
-      .axi_wdata(m_axi_wdata[2*(`TESTER_DATA_W-1+1)-1:`TESTER_DATA_W-1+1]), 
-      .axi_wstrb(m_axi_wstrb[2*(`TESTER_DATA_W/8-1+1)-1:`TESTER_DATA_W/8-1+1]), 
-      .axi_wlast(m_axi_wlast[2*(0+1)-1:0+1]), 
-      .axi_wvalid(m_axi_wvalid[2*(0+1)-1:0+1]), 
-      .axi_wready(m_axi_wready[2*(0+1)-1:0+1]), 
+      .m_axi_wdata(m_axi_wdata[2*(`TESTER_DATA_W-1+1)-1:`TESTER_DATA_W-1+1]), 
+      .m_axi_wstrb(m_axi_wstrb[2*(`TESTER_DATA_W/8-1+1)-1:`TESTER_DATA_W/8-1+1]), 
+      .m_axi_wlast(m_axi_wlast[2*(0+1)-1:0+1]), 
+      .m_axi_wvalid(m_axi_wvalid[2*(0+1)-1:0+1]), 
+      .m_axi_wready(m_axi_wready[2*(0+1)-1:0+1]), 
       //write response
-      .axi_bid(m_axi_bid[2*(0+1)-1:0+1]),
-      .axi_bresp(m_axi_bresp[2*(1+1)-1:1+1]), 
-      .axi_bvalid(m_axi_bvalid[2*(0+1)-1:0+1]), 
-      .axi_bready(m_axi_bready[2*(0+1)-1:0+1]), 
+      .m_axi_bid(m_axi_bid[2*(0+1)-1:0+1]),
+      .m_axi_bresp(m_axi_bresp[2*(1+1)-1:1+1]), 
+      .m_axi_bvalid(m_axi_bvalid[2*(0+1)-1:0+1]), 
+      .m_axi_bready(m_axi_bready[2*(0+1)-1:0+1]), 
       //address read
-      .axi_arid(m_axi_arid[2*(0+1)-1:0+1]), 
-      .axi_araddr({axi_invert_r_bit,m_axi_araddr[2*`TESTER_DDR_ADDR_W-2:`TESTER_DDR_ADDR_W]}), 
-      .axi_arlen(m_axi_arlen[2*(7+1)-1:7+1]), 
-      .axi_arsize(m_axi_arsize[2*(2+1)-1:2+1]), 
-      .axi_arburst(m_axi_arburst[2*(1+1)-1:1+1]), 
-      .axi_arlock(m_axi_arlock[2*(0+1)-1:0+1]), 
-      .axi_arcache(m_axi_arcache[2*(3+1)-1:3+1]), 
-      .axi_arprot(m_axi_arprot[2*(2+1)-1:2+1]), 
-      .axi_arqos(m_axi_arqos[2*(3+1)-1:3+1]), 
-      .axi_arvalid(m_axi_arvalid[2*(0+1)-1:0+1]), 
-      .axi_arready(m_axi_arready[2*(0+1)-1:0+1]), 
+      .m_axi_arid(m_axi_arid[2*(0+1)-1:0+1]), 
+      .m_axi_araddr({axi_invert_r_bit,m_axi_araddr[2*`TESTER_DDR_ADDR_W-2:`TESTER_DDR_ADDR_W]}), 
+      .m_axi_arlen(m_axi_arlen[2*(7+1)-1:7+1]), 
+      .m_axi_arsize(m_axi_arsize[2*(2+1)-1:2+1]), 
+      .m_axi_arburst(m_axi_arburst[2*(1+1)-1:1+1]), 
+      .m_axi_arlock(m_axi_arlock[2*(0+1)-1:0+1]), 
+      .m_axi_arcache(m_axi_arcache[2*(3+1)-1:3+1]), 
+      .m_axi_arprot(m_axi_arprot[2*(2+1)-1:2+1]), 
+      .m_axi_arqos(m_axi_arqos[2*(3+1)-1:3+1]), 
+      .m_axi_arvalid(m_axi_arvalid[2*(0+1)-1:0+1]), 
+      .m_axi_arready(m_axi_arready[2*(0+1)-1:0+1]), 
       //read 
-      .axi_rid(m_axi_rid[2*(0+1)-1:0+1]),
-      .axi_rdata(m_axi_rdata[2*(`TESTER_DATA_W-1+1)-1:`TESTER_DATA_W-1+1]), 
-      .axi_rresp(m_axi_rresp[2*(1+1)-1:1+1]), 
-      .axi_rlast(m_axi_rlast[2*(0+1)-1:0+1]), 
-      .axi_rvalid(m_axi_rvalid[2*(0+1)-1:0+1]),  
-      .axi_rready(m_axi_rready[2*(0+1)-1:0+1])
+      .m_axi_rid(m_axi_rid[2*(0+1)-1:0+1]),
+      .m_axi_rdata(m_axi_rdata[2*(`TESTER_DATA_W-1+1)-1:`TESTER_DATA_W-1+1]), 
+      .m_axi_rresp(m_axi_rresp[2*(1+1)-1:1+1]), 
+      .m_axi_rlast(m_axi_rlast[2*(0+1)-1:0+1]), 
+      .m_axi_rvalid(m_axi_rvalid[2*(0+1)-1:0+1]),  
+      .m_axi_rready(m_axi_rready[2*(0+1)-1:0+1])
       );
 `endif
 
