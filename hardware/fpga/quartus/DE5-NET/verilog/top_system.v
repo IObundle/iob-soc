@@ -41,6 +41,8 @@
 //                      Express module and the Terasic DE5 Development Board.
 // Author:              Dustin Richmond (@darichmond)
 //-----------------------------------------------------------------------------
+`include "system.vh"
+`include "iob_lib.vh"
 `include "functions.vh"
 `include "riffa.vh"
 `include "altera.vh"
@@ -155,96 +157,134 @@ module top_system
 
     // ----------LED's----------
     assign LED[7:0] = 8'hff;
-    QSysDE5QGen1x8If64
-        pcie_system_inst
-            (
-             // Outputs
-             .rx_st_startofpacket              (rx_st_sop[0:0]),
-             .rx_st_endofpacket                (rx_st_eop[0:0]),
-             .rx_st_valid                      (rx_st_valid[0:0]),
-             .rx_st_data                       (rx_st_data[63:0]),
-             .tx_st_ready                      (tx_st_ready),
-             .pciehip_reset_status             (reset_status),
-             .pciehip_serdes_pll_locked        (serdes_pll_locked),
-             .pciecfg_tl_cfg_add               (tl_cfg_add[3:0]),
-             .pciecfg_tl_cfg_ctl               (tl_cfg_ctl[31:0]),
-             .pciecfg_tl_cfg_sts               (tl_cfg_sts[52:0]),
-             .pciecoreclk_clk                  (coreclkout_hip),
-             .pcieserial_tx_out0               (PCIE_TX_OUT[0]),
-             .pcieserial_tx_out1               (PCIE_TX_OUT[1]),
-             .pcieserial_tx_out2               (PCIE_TX_OUT[2]),
-             .pcieserial_tx_out3               (PCIE_TX_OUT[3]),
-             .pcieserial_tx_out4               (PCIE_TX_OUT[4]),
-             .pcieserial_tx_out5               (PCIE_TX_OUT[5]),
-             .pcieserial_tx_out6               (PCIE_TX_OUT[6]),
-             .pcieserial_tx_out7               (PCIE_TX_OUT[7]),
-             .pciemsi_app_int_ack              (app_int_ack),
-             .pciemsi_app_msi_ack              (app_msi_ack),
-             .pciestat_derr_cor_ext_rcv        (derr_cor_ext_rcv),
-             .pciestat_derr_cor_ext_rpl        (derr_cor_ext_rpl),
-             .pciestat_derr_rpl                (derr_rpl),
-             .pciestat_dlup                    (dlup),
-             .pciestat_dlup_exit               (dlup_exit),
-             .pciestat_ev128ns                 (ev128ns),
-             .pciestat_ev1us                   (ev1us),
-             .pciestat_hotrst_exit             (hotrst_exit),
-             .pciestat_int_status              (int_status),
-             .pciestat_l2_exit                 (l2_exit),
-             .pciestat_lane_act                (lane_act),
-             .pciestat_ltssmstate              (ltssmstate),
-             .pciestat_rx_par_err              (rx_par_err),
-             .pciestat_tx_par_err              (tx_par_err),
-             .pciestat_cfg_par_err             (cfg_par_err),
-             .pciestat_ko_cpl_spc_header       (ko_cpl_spc_header),
-             .pciestat_ko_cpl_spc_data         (ko_cpl_spc_data),
-             // Inputs
-             .rx_st_ready                      (rx_st_ready),
-             .tx_st_startofpacket              (tx_st_sop[0:0]),
-             .tx_st_endofpacket                (tx_st_eop[0:0]),
-             .tx_st_valid                      (tx_st_valid[0:0]),
-             .tx_st_data                       (tx_st_data[63:0]),
-             .pciehip_pld_core_ready           (pld_core_ready),
-             .pcienpor_npor                    (npor),
-             .pcienpor_pin_perst               (pin_perst),
-             .pcierefclk_clk                   (refclk),
-             .reconfigrefclk_clk               (reconfig_xcvr_clk),
-             .pciepld_clk                      (pld_clk),
-             .reconfigrst_reset                (reconfig_xcvr_rst),
-             .mgmtrst_reset                    (mgmt_rst_reset),
-             .mgmtclk_clk                      (mgmt_clk_clk),
-             .reconfigpldclk_clk               (pld_clk),
-             .pcieserial_rx_in0                (PCIE_RX_IN[0]),
-             .pcieserial_rx_in1                (PCIE_RX_IN[1]),
-             .pcieserial_rx_in2                (PCIE_RX_IN[2]),
-             .pcieserial_rx_in3                (PCIE_RX_IN[3]),
-             .pcieserial_rx_in4                (PCIE_RX_IN[4]),
-             .pcieserial_rx_in5                (PCIE_RX_IN[5]),
-             .pcieserial_rx_in6                (PCIE_RX_IN[6]),
-             .pcieserial_rx_in7                (PCIE_RX_IN[7]),
-             .pciemsi_app_msi_req              (app_msi_req),
-             .drvstat_derr_cor_ext_rcv         (derr_cor_ext_rcv),
-             .drvstat_derr_cor_ext_rpl         (derr_cor_ext_rpl),
-             .drvstat_derr_rpl                 (derr_rpl),
-             .drvstat_dlup                     (dlup),
-             .drvstat_dlup_exit                (dlup_exit),
-             .drvstat_ev128ns                  (ev128ns),
-             .drvstat_ev1us                    (ev1us),
-             .drvstat_hotrst_exit              (hotrst_exit),
-             .drvstat_int_status               (int_status),
-             .drvstat_l2_exit                  (l2_exit),
-             .drvstat_lane_act                 (lane_act),
-             .drvstat_ltssmstate               (ltssmstate),
-             .drvstat_rx_par_err               (rx_par_err),
-             .drvstat_tx_par_err               (tx_par_err),
-             .drvstat_cfg_par_err              (cfg_par_err),
-             .drvstat_ko_cpl_spc_header        (ko_cpl_spc_header),
-             .drvstat_ko_cpl_spc_data          (ko_cpl_spc_data));
-
-    // -------------------- END ALTERA IP INSTANTIATION  --------------------
-    // -------------------- BEGIN RIFFA INSTANTAION --------------------
-
-    // RIFFA channel interface
-    wire                        rst_out;
+   
+   QSysDE5QGen1x8If64
+     pcie_system_inst
+       (
+	.axi_bridge_0_s0_awid(axi_bridge_0_s0_awid),
+        .axi_bridge_0_s0_awaddr(axi_bridge_0_s0_awaddr),
+        .axi_bridge_0_s0_awlen(axi_bridge_0_s0_awlen),
+        .axi_bridge_0_s0_awsize (axi_bridge_0_s0_awsize),
+        .axi_bridge_0_s0_awburst (axi_bridge_0_s0_awburst),
+        .axi_bridge_0_s0_awlock (axi_bridge_0_s0_awlock),
+        .axi_bridge_0_s0_awcache(axi_bridge_0_s0_awcache),
+        .axi_bridge_0_s0_awprot (axi_bridge_0_s0_awprot),
+        .axi_bridge_0_s0_awvalid(axi_bridge_0_s0_awvalid),
+        .axi_bridge_0_s0_awready(axi_bridge_0_s0_awready),
+        .axi_bridge_0_s0_wid (axi_bridge_0_s0_wid),
+        .axi_bridge_0_s0_wdata(wdat),
+        .axi_bridge_0_s0_wstrb(axi_bridge_0_s0_wstrb),
+        .axi_bridge_0_s0_wlast (axi_bridge_0_s0_wlast),
+        .axi_bridge_0_s0_wvalid(axi_bridge_0_s0_wvalid),
+        .axi_bridge_0_s0_wready(axi_bridge_0_s0_bready),
+        .axi_bridge_0_s0_bid (axi_bridge_0_s0_bid),
+        .axi_bridge_0_s0_bresp(axi_bridge_0_s0_bresp),
+        .axi_bridge_0_s0_bvalid(axi_bridge_0_s0_bvalid),
+        .axi_bridge_0_s0_bready(axi_bridge_0_s0_bready),
+        .axi_bridge_0_s0_arid  (axi_bridge_0_s0_arrid),
+        .axi_bridge_0_s0_araddr(axi_bridge_0_s0_araddr),
+        .axi_bridge_0_s0_arlen (axi_bridge_0_s0_arlen),
+        .axi_bridge_0_s0_arsize(axi_bridge_0_s0_arsize),
+        .axi_bridge_0_s0_arburst(axi_bridge_0_s0_arbust),
+        .axi_bridge_0_s0_arlock (axi_bridge_0_s0_arlock),
+        .axi_bridge_0_s0_arcache(axi_bridge_0_s0_arcache),
+        .axi_bridge_0_s0_arprot (axi_bridge_0_s0_arprot),
+        .axi_bridge_0_s0_arvalid(axi_bridge_0_s0_arvalid),
+        .axi_bridge_0_s0_arready(axi_bridge_0_s0_arready),
+        .axi_bridge_0_s0_rid (axi_bridge_0_s0_rid),
+        .axi_bridge_0_s0_rdata(axi_bridge_0_s0_rdate),
+        .axi_bridge_0_s0_rresp(axi_bridge_0_s0_rresp),
+        .axi_bridge_0_s0_rlast (axi_bridge_0_s0_rlast),
+        .axi_bridge_0_s0_rvalid(axi_bridge_0_s0_rvalid),
+        .axi_bridge_0_s0_rready(axi_bridge_0_s0_ready),
+	
+        // Outputs
+        .rx_st_startofpacket              (rx_st_sop[0:0]),
+        .rx_st_endofpacket                (rx_st_eop[0:0]),
+        .rx_st_valid                      (rx_st_valid[0:0]),
+        .rx_st_data                       (rx_st_data[63:0]),
+        .tx_st_ready                      (tx_st_ready),
+        .pciehip_reset_status             (reset_status),
+        .pciehip_serdes_pll_locked        (serdes_pll_locked),
+        .pciecfg_tl_cfg_add               (tl_cfg_add[3:0]),
+        .pciecfg_tl_cfg_ctl               (tl_cfg_ctl[31:0]),
+        .pciecfg_tl_cfg_sts               (tl_cfg_sts[52:0]),
+        .pciecoreclk_clk                  (coreclkout_hip),
+        .pcieserial_tx_out0               (PCIE_TX_OUT[0]),
+        .pcieserial_tx_out1               (PCIE_TX_OUT[1]),
+        .pcieserial_tx_out2               (PCIE_TX_OUT[2]),
+        .pcieserial_tx_out3               (PCIE_TX_OUT[3]),
+        .pcieserial_tx_out4               (PCIE_TX_OUT[4]),
+        .pcieserial_tx_out5               (PCIE_TX_OUT[5]),
+        .pcieserial_tx_out6               (PCIE_TX_OUT[6]),
+        .pcieserial_tx_out7               (PCIE_TX_OUT[7]),
+        .pciemsi_app_int_ack              (app_int_ack),
+        .pciemsi_app_msi_ack              (app_msi_ack),
+        .pciestat_derr_cor_ext_rcv        (derr_cor_ext_rcv),
+        .pciestat_derr_cor_ext_rpl        (derr_cor_ext_rpl),
+        .pciestat_derr_rpl                (derr_rpl),
+        .pciestat_dlup                    (dlup),
+        .pciestat_dlup_exit               (dlup_exit),
+        .pciestat_ev128ns                 (ev128ns),
+        .pciestat_ev1us                   (ev1us),
+        .pciestat_hotrst_exit             (hotrst_exit),
+        .pciestat_int_status              (int_status),
+        .pciestat_l2_exit                 (l2_exit),
+        .pciestat_lane_act                (lane_act),
+        .pciestat_ltssmstate              (ltssmstate),
+        .pciestat_rx_par_err              (rx_par_err),
+        .pciestat_tx_par_err              (tx_par_err),
+        .pciestat_cfg_par_err             (cfg_par_err),
+        .pciestat_ko_cpl_spc_header       (ko_cpl_spc_header),
+        .pciestat_ko_cpl_spc_data         (ko_cpl_spc_data),
+        // Inputs
+        .rx_st_ready                      (rx_st_ready),
+        .tx_st_startofpacket              (tx_st_sop[0:0]),
+        .tx_st_endofpacket                (tx_st_eop[0:0]),
+        .tx_st_valid                      (tx_st_valid[0:0]),
+        .tx_st_data                       (tx_st_data[63:0]),
+        .pciehip_pld_core_ready           (pld_core_ready),
+        .pcienpor_npor                    (npor),
+        .pcienpor_pin_perst               (pin_perst),
+        .pcierefclk_clk                   (refclk),
+        .reconfigrefclk_clk               (reconfig_xcvr_clk),
+        .pciepld_clk                      (pld_clk),
+        .reconfigrst_reset                (reconfig_xcvr_rst),
+        .mgmtrst_reset                    (mgmt_rst_reset),
+        .mgmtclk_clk                      (mgmt_clk_clk),
+        .reconfigpldclk_clk               (pld_clk),
+        .pcieserial_rx_in0                (PCIE_RX_IN[0]),
+        .pcieserial_rx_in1                (PCIE_RX_IN[1]),
+        .pcieserial_rx_in2                (PCIE_RX_IN[2]),
+        .pcieserial_rx_in3                (PCIE_RX_IN[3]),
+        .pcieserial_rx_in4                (PCIE_RX_IN[4]),
+        .pcieserial_rx_in5                (PCIE_RX_IN[5]),
+        .pcieserial_rx_in6                (PCIE_RX_IN[6]),
+        .pcieserial_rx_in7                (PCIE_RX_IN[7]),
+        .pciemsi_app_msi_req              (app_msi_req),
+        .drvstat_derr_cor_ext_rcv         (derr_cor_ext_rcv),
+        .drvstat_derr_cor_ext_rpl         (derr_cor_ext_rpl),
+        .drvstat_derr_rpl                 (derr_rpl),
+        .drvstat_dlup                     (dlup),
+        .drvstat_dlup_exit                (dlup_exit),
+        .drvstat_ev128ns                  (ev128ns),
+        .drvstat_ev1us                    (ev1us),
+        .drvstat_hotrst_exit              (hotrst_exit),
+        .drvstat_int_status               (int_status),
+        .drvstat_l2_exit                  (l2_exit),
+        .drvstat_lane_act                 (lane_act),
+        .drvstat_ltssmstate               (ltssmstate),
+        .drvstat_rx_par_err               (rx_par_err),
+        .drvstat_tx_par_err               (tx_par_err),
+        .drvstat_cfg_par_err              (cfg_par_err),
+        .drvstat_ko_cpl_spc_header        (ko_cpl_spc_header),
+        .drvstat_ko_cpl_spc_data          (ko_cpl_spc_data));
+   
+   // -------------------- END ALTERA IP INSTANTIATION  --------------------
+   // -------------------- BEGIN RIFFA INSTANTAION --------------------
+   
+   // RIFFA channel interface
+   wire 			rst_out;
     wire [C_NUM_CHNL-1:0]       chnl_rx_clk;
     wire [C_NUM_CHNL-1:0]       chnl_rx;
     wire [C_NUM_CHNL-1:0]       chnl_rx_ack;
@@ -367,4 +407,18 @@ module top_system
     endgenerate
     // --------------------  END USER CODE  --------------------
 
+
+
+   // ----------------------the instantiation of the axi bridge should be here and or the custom core for our use case ----------------------
+   // -----------------it can also be changed with the chnl_tester ----------------------
+   
+
+
+
+
+
+
+
+
+ 
 endmodule
