@@ -1,9 +1,6 @@
 include $(ROOT_DIR)/hardware/hardware.mk
 include $(LIB_DIR)/hardware/iob_reset_sync/hardware.mk
 
-BAUD=$(BOARD_BAUD)
-FREQ=$(BOARD_FREQ)
-
 LOAD_FILE=/tmp/$(BOARD).load
 QUEUE_FILE=/tmp/$(BOARD).queue
 TOOL=$(shell find $(HW_DIR)/fpga -name $(BOARD) | cut -d"/" -f7)
