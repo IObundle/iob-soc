@@ -73,9 +73,6 @@ UART_HW_DIR:=$(UART_DIR)/hardware
 ####################################################################
 #include tester configuration from Unit Under Test directory
 include $(ROOT_DIR)/../../tester.mk
-#add unit under test
-#this works even if UUT is not a perihpheral
-PERIPHERALS+=$(UUT_NAME)
 #Set root directory of tester on remote machines in the submodules directory of UUT
 REMOTE_ROOT_DIR=$(REMOTE_UUT_DIR)/submodules/$(shell realpath $(ROOT_DIR) | xargs -I {} basename {})
 

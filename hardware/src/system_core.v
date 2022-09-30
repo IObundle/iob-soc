@@ -11,8 +11,8 @@ module tester
     parameter ADDR_W=`TESTER_ADDR_W,
     parameter DATA_W=`TESTER_DATA_W,
     parameter AXI_ID_W=0,
-    parameter AXI_ADDR_W=`TESTER_ADDR_W,
-    parameter AXI_DATA_W=`TESTER_DATA_W
+    parameter AXI_ADDR_W=`TESTER_DDR_ADDR_W,
+    parameter AXI_DATA_W=`TESTER_DDR_DATA_W
     )
   (
    //do not remove line below
@@ -22,7 +22,43 @@ module tester
 //signals in sut instance ports, so they need to exist here aswell
 //`ifdef TESTER_USE_DDR
  //AXI MASTER INTERFACE
-   `include "m_axi_m_port.vh"
+ `IOB_OUTPUT(m_axi_awid, 2*AXI_ID_W), //Address write channel ID
+ `IOB_OUTPUT(m_axi_awaddr, 2*AXI_ADDR_W), //Address write channel address
+ `IOB_OUTPUT(m_axi_awlen, 2*8), //Address write channel burst length
+ `IOB_OUTPUT(m_axi_awsize, 2*3), //Address write channel burst size. This signal indicates the size of each transfer in the burst
+ `IOB_OUTPUT(m_axi_awburst, 2*2), //Address write channel burst type
+ `IOB_OUTPUT(m_axi_awlock, 2*2), //Address write channel lock type
+ `IOB_OUTPUT(m_axi_awcache, 2*4), //Address write channel memory type. Transactions set with Normal Non-cacheable Modifiable and Bufferable (0011).
+ `IOB_OUTPUT(m_axi_awprot, 2*3), //Address write channel protection type. Transactions set with Normal, Secure, and Data attributes (000).
+ `IOB_OUTPUT(m_axi_awqos, 2*4), //Address write channel quality of service
+ `IOB_OUTPUT(m_axi_awvalid, 2*1), //Address write channel valid
+ `IOB_INPUT(m_axi_awready, 2*1), //Address write channel ready
+ `IOB_OUTPUT(m_axi_wdata, 2*AXI_DATA_W), //Write channel data
+ `IOB_OUTPUT(m_axi_wstrb, 2*(AXI_DATA_W/8)), //Write channel write strobe
+ `IOB_OUTPUT(m_axi_wlast, 2*1), //Write channel last word flag
+ `IOB_OUTPUT(m_axi_wvalid, 2*1), //Write channel valid
+ `IOB_INPUT(m_axi_wready, 2*1), //Write channel ready
+ `IOB_INPUT(m_axi_bid, 2*AXI_ID_W), //Write response channel ID
+ `IOB_INPUT(m_axi_bresp, 2*2), //Write response channel response
+ `IOB_INPUT(m_axi_bvalid, 2*1), //Write response channel valid
+ `IOB_OUTPUT(m_axi_bready, 2*1), //Write response channel ready
+ `IOB_OUTPUT(m_axi_arid, 2*AXI_ID_W), //Address read channel ID
+ `IOB_OUTPUT(m_axi_araddr, 2*AXI_ADDR_W), //Address read channel address
+ `IOB_OUTPUT(m_axi_arlen, 2*8), //Address read channel burst length
+ `IOB_OUTPUT(m_axi_arsize, 2*3), //Address read channel burst size. This signal indicates the size of each transfer in the burst
+ `IOB_OUTPUT(m_axi_arburst, 2*2), //Address read channel burst type
+ `IOB_OUTPUT(m_axi_arlock, 2*2), //Address read channel lock type
+ `IOB_OUTPUT(m_axi_arcache, 2*4), //Address read channel memory type. Transactions set with Normal Non-cacheable Modifiable and Bufferable (0011).
+ `IOB_OUTPUT(m_axi_arprot, 2*3), //Address read channel protection type. Transactions set with Normal, Secure, and Data attributes (000).
+ `IOB_OUTPUT(m_axi_arqos, 2*4), //Address read channel quality of service
+ `IOB_OUTPUT(m_axi_arvalid, 2*1), //Address read channel valid
+ `IOB_INPUT(m_axi_arready, 2*1), //Address read channel ready
+ `IOB_INPUT(m_axi_rid, 2*AXI_ID_W), //Read channel ID
+ `IOB_INPUT(m_axi_rdata, 2*AXI_DATA_W), //Read channel data
+ `IOB_INPUT(m_axi_rresp, 2*2), //Read channel response
+ `IOB_INPUT(m_axi_rlast, 2*1), //Read channel last word
+ `IOB_INPUT(m_axi_rvalid, 2*1), //Read channel valid
+ `IOB_OUTPUT(m_axi_rready, 2*1), //Read channel ready
 //`endif //  `ifdef USE_DDR
    output [1:0]             trap,
    `include "iob_gen_if.vh"
@@ -246,12 +282,12 @@ module tester
    wire axi_invert_r_bit;
    wire axi_invert_w_bit;
 `ifdef TESTER_RUN_EXTMEM
-   assign m_axi_araddr[2*`TESTER_DDR_ADDR_W-1] = ~axi_invert_r_bit;
-   assign m_axi_awaddr[2*`TESTER_DDR_ADDR_W-1] = ~axi_invert_w_bit;
+   assign m_axi_araddr[2*AXI_ADDR_W-1] = ~axi_invert_r_bit;
+   assign m_axi_awaddr[2*AXI_ADDR_W-1] = ~axi_invert_w_bit;
 `else
    //Dont invert bits if we dont run firmware of both systems from the DDR
-   assign m_axi_araddr[2*`TESTER_DDR_ADDR_W-1] = axi_invert_r_bit;
-   assign m_axi_awaddr[2*`TESTER_DDR_ADDR_W-1] = axi_invert_w_bit;
+   assign m_axi_araddr[2*AXI_ADDR_W-1] = axi_invert_r_bit;
+   assign m_axi_awaddr[2*AXI_ADDR_W-1] = axi_invert_w_bit;
 `endif
    ext_mem
     #(
@@ -262,7 +298,7 @@ module tester
       .AXI_DATA_W(AXI_DATA_W),
       .FIRM_ADDR_W(`TESTER_FIRM_ADDR_W),
       .DCACHE_ADDR_W(`TESTER_DCACHE_ADDR_W),
-      .DDR_ADDR_W(`TESTER_DDR_ADDR_W)
+      .DDR_ADDR_W(AXI_ADDR_W)
       )
     ext_mem0 
      (
@@ -280,43 +316,43 @@ module tester
 
       //AXI INTERFACE
       //address write
-      .m_axi_awid(m_axi_awid[2*(0+1)-1:0+1]), 
-      .m_axi_awaddr({axi_invert_w_bit,m_axi_awaddr[2*`TESTER_DDR_ADDR_W-2:`TESTER_DDR_ADDR_W]}), 
+      .m_axi_awid(m_axi_awid[2*(AXI_ID_W)-1:AXI_ID_W]), 
+      .m_axi_awaddr({axi_invert_w_bit,m_axi_awaddr[2*AXI_ADDR_W-2:AXI_ADDR_W]}), 
       .m_axi_awlen(m_axi_awlen[2*(7+1)-1:7+1]), 
       .m_axi_awsize(m_axi_awsize[2*(2+1)-1:2+1]), 
       .m_axi_awburst(m_axi_awburst[2*(1+1)-1:1+1]), 
-      .m_axi_awlock(m_axi_awlock[2*(0+1)-1:0+1]), 
+      .m_axi_awlock(m_axi_awlock[2*(1+1)-1:1+1]), 
       .m_axi_awcache(m_axi_awcache[2*(3+1)-1:3+1]), 
       .m_axi_awprot(m_axi_awprot[2*(2+1)-1:2+1]),
       .m_axi_awqos(m_axi_awqos[2*(3+1)-1:3+1]), 
       .m_axi_awvalid(m_axi_awvalid[2*(0+1)-1:0+1]), 
       .m_axi_awready(m_axi_awready[2*(0+1)-1:0+1]), 
         //write
-      .m_axi_wdata(m_axi_wdata[2*(`TESTER_DATA_W-1+1)-1:`TESTER_DATA_W-1+1]), 
-      .m_axi_wstrb(m_axi_wstrb[2*(`TESTER_DATA_W/8-1+1)-1:`TESTER_DATA_W/8-1+1]), 
+      .m_axi_wdata(m_axi_wdata[2*(AXI_DATA_W-1+1)-1:AXI_DATA_W-1+1]), 
+      .m_axi_wstrb(m_axi_wstrb[2*(AXI_DATA_W/8-1+1)-1:AXI_DATA_W/8-1+1]), 
       .m_axi_wlast(m_axi_wlast[2*(0+1)-1:0+1]), 
       .m_axi_wvalid(m_axi_wvalid[2*(0+1)-1:0+1]), 
       .m_axi_wready(m_axi_wready[2*(0+1)-1:0+1]), 
       //write response
-      .m_axi_bid(m_axi_bid[2*(0+1)-1:0+1]),
+      .m_axi_bid(m_axi_bid[2*(AXI_ID_W)-1:AXI_ID_W]),
       .m_axi_bresp(m_axi_bresp[2*(1+1)-1:1+1]), 
       .m_axi_bvalid(m_axi_bvalid[2*(0+1)-1:0+1]), 
       .m_axi_bready(m_axi_bready[2*(0+1)-1:0+1]), 
       //address read
-      .m_axi_arid(m_axi_arid[2*(0+1)-1:0+1]), 
-      .m_axi_araddr({axi_invert_r_bit,m_axi_araddr[2*`TESTER_DDR_ADDR_W-2:`TESTER_DDR_ADDR_W]}), 
+      .m_axi_arid(m_axi_arid[2*(AXI_ID_W)-1:AXI_ID_W]), 
+      .m_axi_araddr({axi_invert_r_bit,m_axi_araddr[2*AXI_ADDR_W-2:AXI_ADDR_W]}), 
       .m_axi_arlen(m_axi_arlen[2*(7+1)-1:7+1]), 
       .m_axi_arsize(m_axi_arsize[2*(2+1)-1:2+1]), 
       .m_axi_arburst(m_axi_arburst[2*(1+1)-1:1+1]), 
-      .m_axi_arlock(m_axi_arlock[2*(0+1)-1:0+1]), 
+      .m_axi_arlock(m_axi_arlock[2*(1+1)-1:1+1]), 
       .m_axi_arcache(m_axi_arcache[2*(3+1)-1:3+1]), 
       .m_axi_arprot(m_axi_arprot[2*(2+1)-1:2+1]), 
       .m_axi_arqos(m_axi_arqos[2*(3+1)-1:3+1]), 
       .m_axi_arvalid(m_axi_arvalid[2*(0+1)-1:0+1]), 
       .m_axi_arready(m_axi_arready[2*(0+1)-1:0+1]), 
       //read 
-      .m_axi_rid(m_axi_rid[2*(0+1)-1:0+1]),
-      .m_axi_rdata(m_axi_rdata[2*(`TESTER_DATA_W-1+1)-1:`TESTER_DATA_W-1+1]), 
+      .m_axi_rid(m_axi_rid[2*(AXI_ID_W)-1:AXI_ID_W]),
+      .m_axi_rdata(m_axi_rdata[2*(AXI_DATA_W-1+1)-1:AXI_DATA_W-1+1]), 
       .m_axi_rresp(m_axi_rresp[2*(1+1)-1:1+1]), 
       .m_axi_rlast(m_axi_rlast[2*(0+1)-1:0+1]), 
       .m_axi_rvalid(m_axi_rvalid[2*(0+1)-1:0+1]),  
