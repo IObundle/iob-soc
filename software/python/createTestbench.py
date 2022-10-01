@@ -17,16 +17,19 @@ def create_system_testbench(directories_str, peripherals_str):
     template_contents = template_file.readlines() 
     template_file.close()
 
-    # Insert header files
     for corename in instances_amount:
+        top_module_name = get_top_module(root_dir+"/"+submodule_directories[corename]+"/config.mk");
+
+        # Insert header files
         path = root_dir+"/"+submodule_directories[corename]+"/hardware/include"
         if os.path.isdir(path):
             start_index = find_idx(template_contents, "PHEADER")
             for file in os.listdir(path):
                 if file.endswith(".vh") and not any(x in file for x in ["pio","inst","swreg"]):
                     template_contents.insert(start_index, '`include "{}"\n'.format(path+"/"+file))
-                if file.endswith("swreg.vh"):
-                    template_contents.insert(start_index, '`include "{}"\n'.format(file.replace("swreg","swreg_def")))
+        # Add topmodule_swreg_def.vh if mkregs.conf exists
+        if os.path.isfile(root_dir+"/"+submodule_directories[corename]+"/mkregs.conf"):
+            template_contents.insert(start_index, '`include "{}"\n'.format(top_module_name+"_swreg_def.vh"))
 
     # Write system.v
     systemv_file = open("system_tb.v", "w")
