@@ -1,23 +1,24 @@
 `timescale 1ns / 1ps
 `include "system.vh"
 
-module top_system(
-		  input        clk,
-		  input        resetn,
-		  /*		  input        PCIE_PERST_n,
-		   input        PCIE_REFCLK_p,
-		   input [7:0]  PCIE_RX_p,
-		   input        PCIE_SMBCLK,
-		   output       PCIE_SMBDAT,
-		   output [7:0] PCIE_TX_p,
-		   output       PCIE_WAKE_n,
-		  */		  input uart_rxd,
-		  output       uart_txd,
-		  output reg   rs422_re_n,
-		  output reg   rs422_de,
-		  output reg   rs422_te,
+module top_system
+  (
+   input 	clk,
+   input 	resetn,
+   /*		  input        PCIE_PERST_n,
+    input        PCIE_REFCLK_p,
+    input [7:0]  PCIE_RX_p,
+    input        PCIE_SMBCLK,
+    output       PCIE_SMBDAT,
+    output [7:0] PCIE_TX_p,
+    output       PCIE_WAKE_n,
+   */		  input uart_rxd,
+   output 	uart_txd,
+   output reg 	rs422_re_n,
+   output reg 	rs422_de,
+   output reg 	rs422_te,
 		  
-		  output [0:0] led_bracket
+   output [0:0] led_bracket
   // output [0:0] led_board
 		  
   );
@@ -26,10 +27,9 @@ module top_system(
 
    
    always @* begin
-      rs422_te = 1;
+      rs422_te = 0;
       rs422_de = 1;
       rs422_re_n = 0;
-      
    end
       
 
@@ -63,15 +63,16 @@ module top_system(
    //
    // SYSTEM
    //
-   system system (
-   		  .clk           (sys_clk),
-   		  .rst         (sys_rst),
-   		  .trap          (),
-   		  //UART
-   		  .uart_txd      (uart_txd),
-   		  .uart_rxd      (uart_rxd),
-   		  .uart_rts      (uart_rts),
-   		  .uart_cts      (1'b1)
-   		  );
-
+   system system 
+     (
+      .clk           (sys_clk),
+      .rst         (sys_rst),
+      .trap          (),
+      //UART
+      .uart_txd      (uart_txd),
+      .uart_rxd      (uart_rxd),
+      .uart_rts      (uart_rts),
+      .uart_cts      (1'b1)
+      );
+   
 endmodule

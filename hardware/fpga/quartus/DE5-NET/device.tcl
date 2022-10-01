@@ -177,11 +177,11 @@ set_location_assignment PIN_AE18 -to uart_rxd                       ; # RS422_DI
 set_location_assignment PIN_AE17 -to uart_txd                       ; # RS422_DOUT
 set_location_assignment PIN_AF17 -to rs422_re_n                     ; # RS422_RE_n
 set_location_assignment PIN_AF16 -to rs422_te                       ; # RS422_TE
-# set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to rs422_de
-# set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to uart_rxd
-# set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to uart_txd
-# set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to rs422_re_n
-# set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to rs422_te
+set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to rs422_de
+set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to uart_rxd
+set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to uart_txd
+set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to rs422_re_n
+set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to rs422_te
 set_instance_assignment -name SLEW_RATE 1 -to rs422_de     ; # fast
 set_instance_assignment -name SLEW_RATE 1 -to uart_rxd     ; # fast
 set_instance_assignment -name SLEW_RATE 1 -to uart_txd     ; # fast
