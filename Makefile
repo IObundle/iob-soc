@@ -43,11 +43,11 @@ pc-emul-test: pc-emul-clean
 #
 
 #default baud and system clock frequency
-SIM_BAUD = 2500000
-SIM_FREQ =50000000
+SIM_BAUD ?= 2500000
+SIM_FREQ ?=50000000
 sim-build: $(SIM_DEPS)
 	make fw-build BAUD=$(SIM_BAUD) FREQ=$(SIM_FREQ)
-	make -C $(SIM_DIR) build
+	make -C $(SIM_DIR) build BAUD=$(SIM_BAUD) FREQ=$(SIM_FREQ)
 
 sim-run: sim-build
 	make -C $(SIM_DIR) run
@@ -66,16 +66,17 @@ sim-debug:
 #
 
 #default baud and system clock freq for boards
-BOARD_BAUD = 115200
+BOARD_BAUD ?= 115200
 #default board frequency
-BOARD_FREQ ?=100000000
 ifeq ($(BOARD), CYCLONEV-GT-DK)
-BOARD_FREQ =50000000
+BOARD_FREQ ?=50000000
+else
+BOARD_FREQ ?=100000000
 endif
 
 fpga-build: $(FPGA_DEPS)
 	make fw-build BAUD=$(BOARD_BAUD) FREQ=$(BOARD_FREQ)
-	make -C $(BOARD_DIR) build
+	make -C $(BOARD_DIR) build BAUD=$(BOARD_BAUD) FREQ=$(BOARD_FREQ)
 
 fpga-run: $(FPGA_DEPS) #fpga-build #Remove this prerequisite temporarily because its always rebuilding the system
 	make -C $(BOARD_DIR) run TEST_LOG="$(TEST_LOG)"
