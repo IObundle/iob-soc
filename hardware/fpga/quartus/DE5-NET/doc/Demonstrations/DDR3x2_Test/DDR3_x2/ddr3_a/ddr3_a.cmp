@@ -1,0 +1,52 @@
+	component ddr3_a is
+		port (
+			global_reset_n             : in    std_logic                      := 'X';             -- reset_n
+			soft_reset_n               : in    std_logic                      := 'X';             -- reset_n
+			afi_clk                    : in    std_logic                      := 'X';             -- clk
+			afi_half_clk               : in    std_logic                      := 'X';             -- clk
+			afi_reset_n                : in    std_logic                      := 'X';             -- reset_n
+			mem_a                      : out   std_logic_vector(14 downto 0);                     -- mem_a
+			mem_ba                     : out   std_logic_vector(2 downto 0);                      -- mem_ba
+			mem_ck                     : out   std_logic_vector(0 downto 0);                      -- mem_ck
+			mem_ck_n                   : out   std_logic_vector(0 downto 0);                      -- mem_ck_n
+			mem_cke                    : out   std_logic_vector(0 downto 0);                      -- mem_cke
+			mem_cs_n                   : out   std_logic_vector(0 downto 0);                      -- mem_cs_n
+			mem_dm                     : out   std_logic_vector(7 downto 0);                      -- mem_dm
+			mem_ras_n                  : out   std_logic_vector(0 downto 0);                      -- mem_ras_n
+			mem_cas_n                  : out   std_logic_vector(0 downto 0);                      -- mem_cas_n
+			mem_we_n                   : out   std_logic_vector(0 downto 0);                      -- mem_we_n
+			mem_reset_n                : out   std_logic;                                         -- mem_reset_n
+			mem_dq                     : inout std_logic_vector(63 downto 0)  := (others => 'X'); -- mem_dq
+			mem_dqs                    : inout std_logic_vector(7 downto 0)   := (others => 'X'); -- mem_dqs
+			mem_dqs_n                  : inout std_logic_vector(7 downto 0)   := (others => 'X'); -- mem_dqs_n
+			mem_odt                    : out   std_logic_vector(0 downto 0);                      -- mem_odt
+			avl_ready                  : out   std_logic;                                         -- waitrequest_n
+			avl_burstbegin             : in    std_logic                      := 'X';             -- beginbursttransfer
+			avl_addr                   : in    std_logic_vector(24 downto 0)  := (others => 'X'); -- address
+			avl_rdata_valid            : out   std_logic;                                         -- readdatavalid
+			avl_rdata                  : out   std_logic_vector(511 downto 0);                    -- readdata
+			avl_wdata                  : in    std_logic_vector(511 downto 0) := (others => 'X'); -- writedata
+			avl_be                     : in    std_logic_vector(63 downto 0)  := (others => 'X'); -- byteenable
+			avl_read_req               : in    std_logic                      := 'X';             -- read
+			avl_write_req              : in    std_logic                      := 'X';             -- write
+			avl_size                   : in    std_logic_vector(2 downto 0)   := (others => 'X'); -- burstcount
+			local_init_done            : out   std_logic;                                         -- local_init_done
+			local_cal_success          : out   std_logic;                                         -- local_cal_success
+			local_cal_fail             : out   std_logic;                                         -- local_cal_fail
+			seriesterminationcontrol   : in    std_logic_vector(15 downto 0)  := (others => 'X'); -- seriesterminationcontrol
+			parallelterminationcontrol : in    std_logic_vector(15 downto 0)  := (others => 'X'); -- parallelterminationcontrol
+			pll_mem_clk                : in    std_logic                      := 'X';             -- pll_mem_clk
+			pll_write_clk              : in    std_logic                      := 'X';             -- pll_write_clk
+			pll_locked                 : in    std_logic                      := 'X';             -- pll_locked
+			pll_write_clk_pre_phy_clk  : in    std_logic                      := 'X';             -- pll_write_clk_pre_phy_clk
+			pll_addr_cmd_clk           : in    std_logic                      := 'X';             -- pll_addr_cmd_clk
+			pll_avl_clk                : in    std_logic                      := 'X';             -- pll_avl_clk
+			pll_config_clk             : in    std_logic                      := 'X';             -- pll_config_clk
+			pll_hr_clk                 : in    std_logic                      := 'X';             -- pll_hr_clk
+			pll_p2c_read_clk           : in    std_logic                      := 'X';             -- pll_p2c_read_clk
+			pll_c2p_write_clk          : in    std_logic                      := 'X';             -- pll_c2p_write_clk
+			dll_pll_locked             : out   std_logic;                                         -- dll_pll_locked
+			dll_delayctrl              : in    std_logic_vector(6 downto 0)   := (others => 'X')  -- dll_delayctrl
+		);
+	end component ddr3_a;
+

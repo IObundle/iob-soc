@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="ChooseWorkspaceDialogSettings">
+		<item value="231" key="DIALOG_Y_ORIGIN"/>
+		<item value="205" key="DIALOG_X_ORIGIN"/>
+	</section>
+	<section name="WORKBENCH_SETTINGS">
+		<list key="ENABLED_TRANSFERS">
+		</list>
+	</section>
+	<section name="CleanDialogSettings">
+		<item value="500" key="DIALOG_WIDTH"/>
+		<item value="true" key="BUILD_NOW"/>
+		<item value="272" key="DIALOG_Y_ORIGIN"/>
+		<item value="true" key="BUILD_ALL"/>
+		<item value="356" key="DIALOG_X_ORIGIN"/>
+		<item value="445" key="DIALOG_HEIGHT"/>
+		<item value="false" key="TOGGLE_SELECTED"/>
+	</section>
+</section>

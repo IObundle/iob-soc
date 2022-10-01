@@ -1,0 +1,25 @@
+﻿Build started 2016/4/19 下午 07:15:40.
+     1>Project "D:\richard\PCIe_DDR3_PC\PCIE_DDR3\PCIE_DDR3.vcxproj" on node 2 (Rebuild target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\x86_amd64\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /GL /D WIN64 /D _CRT_SECURE_NO_WARNINGS /D _CONSOLE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Release\\" /Fd"x64\Release\vc110.pdb" /Gd /TC /errorReport:prompt PCIE.c
+         PCIE.c
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\x86_amd64\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /GL /D WIN64 /D _CRT_SECURE_NO_WARNINGS /D _CONSOLE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Release\\" /Fd"x64\Release\vc110.pdb" /Gd /TP /errorReport:prompt PCIE_DDR3.cpp stdafx.cpp
+         PCIE_DDR3.cpp
+     1>PCIE_DDR3.cpp(87): warning C4101: 'Status' : unreferenced local variable
+     1>PCIE_DDR3.cpp(194): warning C4018: '<' : signed/unsigned mismatch
+     1>PCIE_DDR3.cpp(214): warning C4018: '<' : signed/unsigned mismatch
+     1>PCIE_DDR3.cpp(276): warning C4307: '*' : integral constant overflow
+     1>PCIE_DDR3.cpp(279): warning C4307: '*' : integral constant overflow
+         stdafx.cpp
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"D:\richard\PCIe_DDR3_PC\x64\Release\PCIE_DDR3.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\richard\PCIe_DDR3_PC\x64\Release\PCIE_DDR3.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\richard\PCIe_DDR3_PC\x64\Release\PCIE_DDR3.lib" /MACHINE:X64 x64\Release\PCIE.obj
+         x64\Release\PCIE_DDR3.obj
+         x64\Release\stdafx.obj
+         Generating code
+         Finished generating code
+         PCIE_DDR3.vcxproj -> D:\richard\PCIe_DDR3_PC\x64\Release\PCIE_DDR3.exe
+     1>Done Building Project "D:\richard\PCIe_DDR3_PC\PCIE_DDR3\PCIE_DDR3.vcxproj" (Rebuild target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:01.09

@@ -1,0 +1,34 @@
+# # File gsaved with Nlview version 6.3.8  2013-12-19 bk=1.2992 VDI=34 GEI=35
+# 
+preplace inst top.pio_button -pg 1 -lvl 3 -y 310
+preplace inst top.pcie_256_dma -pg 1 -lvl 1 -y 30
+preplace inst top.clk_0 -pg 1 -lvl 1 -y 630
+preplace inst top -pg 1 -lvl 1 -y 40 -regy -20
+preplace inst top.alt_xcvr_reconfig_0 -pg 1 -lvl 3 -y 510
+preplace inst top.onchip_memory2_0 -pg 1 -lvl 3 -y 170
+preplace inst top.pio_led -pg 1 -lvl 3 -y 410
+preplace inst top.pcie_reconfig_driver_0 -pg 1 -lvl 2 -y 610
+preplace netloc EXPORT<net_container>top</net_container>(SLAVE)pcie_256_dma.reconfig_clk_locked,(SLAVE)top.pcie_256_hip_avmm_0_reconfig_clk_locked) 1 0 1 NJ
+preplace netloc POINT_TO_POINT<net_container>top</net_container>(SLAVE)pcie_256_dma.reconfig_from_xcvr,(SLAVE)alt_xcvr_reconfig_0.reconfig_from_xcvr) 1 0 3 290 580 NJ 580 NJ
+preplace netloc POINT_TO_POINT<net_container>top</net_container>(SLAVE)alt_xcvr_reconfig_0.reconfig_to_xcvr,(SLAVE)pcie_256_dma.reconfig_to_xcvr) 1 0 3 310 600 NJ 600 NJ
+preplace netloc FAN_OUT<net_container>top</net_container>(MASTER)clk_0.clk,(SLAVE)pcie_reconfig_driver_0.reconfig_xcvr_clk,(SLAVE)alt_xcvr_reconfig_0.mgmt_clk_clk) 1 1 2 640 520 NJ
+preplace netloc POINT_TO_POINT<net_container>top</net_container>(SLAVE)pcie_256_dma.hip_currentspeed,(SLAVE)pcie_reconfig_driver_0.hip_currentspeed) 1 0 2 230 620 NJ
+preplace netloc EXPORT<net_container>top</net_container>(SLAVE)top.pio_led_external_connection,(SLAVE)pio_led.external_connection) 1 0 3 NJ 480 NJ 440 NJ
+preplace netloc POINT_TO_POINT<net_container>top</net_container>(SLAVE)pcie_reconfig_driver_0.reconfig_busy,(SLAVE)alt_xcvr_reconfig_0.reconfig_busy) 1 1 2 660 560 NJ
+preplace netloc FAN_OUT<net_container>top</net_container>(SLAVE)pio_led.clk,(MASTER)pcie_256_dma.coreclkout,(SLAVE)pcie_reconfig_driver_0.pld_clk,(SLAVE)onchip_memory2_0.clk1,(SLAVE)onchip_memory2_0.clk2,(SLAVE)pio_button.clk) 1 1 2 620 200 900
+preplace netloc EXPORT<net_container>top</net_container>(SLAVE)pcie_256_dma.refclk,(SLAVE)top.refclk) 1 0 1 NJ
+preplace netloc FAN_OUT<net_container>top</net_container>(SLAVE)onchip_memory2_0.reset1,(SLAVE)pio_button.reset,(MASTER)pcie_256_dma.nreset_status,(SLAVE)pio_led.reset,(SLAVE)onchip_memory2_0.reset2) 1 1 2 N 220 880
+preplace netloc FAN_OUT<net_container>top</net_container>(MASTER)clk_0.clk_reset,(SLAVE)pcie_reconfig_driver_0.reconfig_xcvr_rst,(SLAVE)alt_xcvr_reconfig_0.mgmt_rst_reset) 1 1 2 580 540 NJ
+preplace netloc EXPORT<net_container>top</net_container>(SLAVE)pcie_256_dma.npor,(SLAVE)top.pcie_rstn) 1 0 1 NJ
+preplace netloc EXPORT<net_container>top</net_container>(SLAVE)pcie_256_dma.hip_ctrl,(SLAVE)top.hip_ctrl) 1 0 1 NJ
+preplace netloc FAN_IN<net_container>top</net_container>(MASTER)pcie_256_dma.rd_dcm_master,(SLAVE)pcie_256_dma.Txs,(MASTER)pcie_256_dma.wr_dcm_master) 1 0 2 250 420 560
+preplace netloc EXPORT<net_container>top</net_container>(SLAVE)top.pio_button_external_connection,(SLAVE)pio_button.external_connection) 1 0 3 NJ 460 NJ 340 NJ
+preplace netloc INTERCONNECT<net_container>top</net_container>(SLAVE)pcie_256_dma.wr_dts_slave,(SLAVE)pio_button.s1,(SLAVE)onchip_memory2_0.s1,(MASTER)pcie_256_dma.dma_rd_master,(SLAVE)pcie_256_dma.rd_dts_slave,(SLAVE)pio_led.s1,(MASTER)pcie_256_dma.Rxm_BAR4) 1 0 3 270 440 580 260 860
+preplace netloc EXPORT<net_container>top</net_container>(SLAVE)clk_0.clk_in_reset,(SLAVE)top.reset) 1 0 1 NJ
+preplace netloc POINT_TO_POINT<net_container>top</net_container>(SLAVE)alt_xcvr_reconfig_0.reconfig_mgmt,(MASTER)pcie_reconfig_driver_0.reconfig_mgmt) 1 2 1 900
+preplace netloc EXPORT<net_container>top</net_container>(SLAVE)top.hip_serial,(SLAVE)pcie_256_dma.hip_serial) 1 0 1 NJ
+preplace netloc EXPORT<net_container>top</net_container>(SLAVE)top.hip_pipe,(SLAVE)pcie_256_dma.hip_pipe) 1 0 1 NJ
+preplace netloc EXPORT<net_container>top</net_container>(SLAVE)clk_0.clk_in,(SLAVE)top.clk) 1 0 1 NJ
+preplace netloc POINT_TO_POINT<net_container>top</net_container>(MASTER)pcie_256_dma.dma_wr_master,(SLAVE)onchip_memory2_0.s2) 1 1 2 600 280 NJ
+levelinfo -pg 1 0 200 1120
+levelinfo -hier top 210 340 690 950 1110

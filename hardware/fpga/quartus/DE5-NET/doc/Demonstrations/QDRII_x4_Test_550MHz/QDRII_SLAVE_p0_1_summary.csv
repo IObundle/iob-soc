@@ -1,0 +1,26 @@
+Core: QDRII_SLAVE_p0 - Instance: QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst
+Path, Setup Margin, Hold Margin
+"Address Command (Slow 900mV 85C Model)",0.229,0.226
+"Core (Slow 900mV 85C Model)",0.155,0.022
+"Core Recovery/Removal (Slow 900mV 85C Model)",0.894,0.209
+"Read Capture (Slow 900mV 85C Model)",0.109,0.105
+"Read Resync (Slow 900mV 85C Model)",2.709,19.023
+"Write (Slow 900mV 85C Model)",0.139,0.139
+"Address Command (Slow 900mV 0C Model)",0.32,0.277
+"Core (Slow 900mV 0C Model)",0.224,0.078
+"Core Recovery/Removal (Slow 900mV 0C Model)",1.128,0.201
+"Read Capture (Slow 900mV 0C Model)",0.125,0.121
+"Read Resync (Slow 900mV 0C Model)",2.771,19.08
+"Write (Slow 900mV 0C Model)",0.186,0.186
+"Address Command (Fast 900mV 85C Model)",0.386,0.369
+"Core (Fast 900mV 85C Model)",0.128,0.083
+"Core Recovery/Removal (Fast 900mV 85C Model)",1.791,0.166
+"Read Capture (Fast 900mV 85C Model)",0.147,0.143
+"Read Resync (Fast 900mV 85C Model)",2.957,19.299
+"Write (Fast 900mV 85C Model)",0.182,0.182
+"Address Command (Fast 900mV 0C Model)",0.446,0.398
+"Core (Fast 900mV 0C Model)",0.129,0.118
+"Core Recovery/Removal (Fast 900mV 0C Model)",1.957,0.165
+"Read Capture (Fast 900mV 0C Model)",0.147,0.143
+"Read Resync (Fast 900mV 0C Model)",2.958,19.293
+"Write (Fast 900mV 0C Model)",0.201,0.201

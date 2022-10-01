@@ -1,0 +1,1948 @@
+!SESSION 2012-06-06 20:33:52.059 -----------------------------------------------
+eclipse.buildId=M20100909-0800
+java.version=1.6.0_23
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=zh_TW
+Framework arguments:  -product org.eclipse.epp.package.cpp.product -perspective com.altera.sbtgui.ui.cPerspective
+Command-line arguments:  -os win32 -ws win32 -arch x86 -product org.eclipse.epp.package.cpp.product -perspective com.altera.sbtgui.ui.cPerspective
+
+!ENTRY org.eclipse.cdt.core 1 0 2012-06-06 20:34:31.598
+!MESSAGE Indexed 'NIOS_PFL_bsp' (81 sources, 60 headers) in 0.81 sec: 957 declarations; 2,374 references; 117 unresolved inclusions; 5 syntax errors; 199 unresolved names (5.64%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2012-06-06 20:34:35.060
+!MESSAGE Indexed 'NIOS_PFL' (1 sources, 13 headers) in 0.01 sec: 1 declarations; 1 references; 14 unresolved inclusions; 0 syntax errors; 0 unresolved names (0.00%)
+!SESSION 2012-06-20 15:47:07.629 -----------------------------------------------
+eclipse.buildId=M20100909-0800
+java.version=1.6.0_23
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=zh_TW
+Framework arguments:  -product org.eclipse.epp.package.cpp.product -perspective com.altera.sbtgui.ui.cPerspective
+Command-line arguments:  -os win32 -ws win32 -arch x86 -product org.eclipse.epp.package.cpp.product -perspective com.altera.sbtgui.ui.cPerspective
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 15:47:51.609
+!MESSAGE Executing: [C:\Windows\system32\cmd.exe, /C, C:/altera/12.0/quartus\bin\cygwin\bin\bash.exe, -c, nios2-download '--cable=DE5 Standard on localhost [USB-1]' --device=1 --instance=0 --stop --sidp=0x100000a8 --id=0x0 --timestamp=1340176726]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 15:47:55.101
+!MESSAGE Executing: [C:\Windows\system32\cmd.exe, /C, C:/altera/12.0/quartus\bin\cygwin\bin\bash.exe, -c, nios2-download '--cable=DE5 Standard on localhost [USB-1]' --device=1 --instance=0 --go --sidp=0x100000a8 --id=0x0 --timestamp=1340176726 /cygdrive/d/svn2/F45M/PFL/software/NIOS_PFL/NIOS_PFL.elf]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 15:49:32.473
+!MESSAGE Executing: [C:\Windows\system32\cmd.exe, /C, C:/altera/12.0/quartus\bin\cygwin\bin\bash.exe, -c, nios2-download '--cable=DE5 Standard on localhost [USB-1]' --device=1 --instance=0 --stop --sidp=0x100000a8 --id=0x0 --timestamp=1340176726]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 15:49:35.755
+!MESSAGE Executing: [C:\Windows\system32\cmd.exe, /C, C:/altera/12.0/quartus\bin\cygwin\bin\bash.exe, -c, nios2-download '--cable=DE5 Standard on localhost [USB-1]' --device=1 --instance=0 --go --sidp=0x100000a8 --id=0x0 --timestamp=1340176726 /cygdrive/d/svn2/F45M/PFL/software/NIOS_PFL/NIOS_PFL.elf]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 15:52:45.487
+!MESSAGE Executing: [C:\Windows\system32\cmd.exe, /C, C:/altera/12.0/quartus\bin\cygwin\bin\bash.exe, -c, nios2-download '--cable=DE5 Standard on localhost [USB-1]' --device=1 --instance=0 --stop --sidp=0x100000a8 --id=0x0 --timestamp=1340176726]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 15:52:49.029
+!MESSAGE Executing: [C:\Windows\system32\cmd.exe, /C, C:/altera/12.0/quartus\bin\cygwin\bin\bash.exe, -c, nios2-download '--cable=DE5 Standard on localhost [USB-1]' --device=1 --instance=0 --go --sidp=0x100000a8 --id=0x0 --timestamp=1340176726 /cygdrive/d/svn2/F45M/PFL/software/NIOS_PFL/NIOS_PFL.elf]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 15:54:16.322
+!MESSAGE Executing: [C:\Windows\system32\cmd.exe, /C, C:/altera/12.0/quartus\bin\cygwin\bin\bash.exe, -c, nios2-download '--cable=DE5 Standard on localhost [USB-1]' --device=1 --instance=0 --stop --sidp=0x100000a8 --id=0x0 --timestamp=1340176726]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 15:54:19.754
+!MESSAGE Executing: [C:\Windows\system32\cmd.exe, /C, C:/altera/12.0/quartus\bin\cygwin\bin\bash.exe, -c, nios2-download '--cable=DE5 Standard on localhost [USB-1]' --device=1 --instance=0 --go --sidp=0x100000a8 --id=0x0 --timestamp=1340176726 /cygdrive/d/svn2/F45M/PFL/software/NIOS_PFL/NIOS_PFL.elf]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 15:55:40.636
+!MESSAGE Terminated Launch with connection: 10DE5 Standard on localhost [USB-1]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 15:55:42.316
+!MESSAGE Executing: [C:\Windows\system32\cmd.exe, /C, C:/altera/12.0/quartus\bin\cygwin\bin\bash.exe, -c, nios2-download '--cable=DE5 Standard on localhost [USB-1]' --device=1 --instance=0 --stop --sidp=0x100000a8 --id=0x0 --timestamp=1340176726]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 15:55:45.828
+!MESSAGE Executing: [C:\Windows\system32\cmd.exe, /C, C:/altera/12.0/quartus\bin\cygwin\bin\bash.exe, -c, nios2-download '--cable=DE5 Standard on localhost [USB-1]' --device=1 --instance=0 --go --sidp=0x100000a8 --id=0x0 --timestamp=1340176726 /cygdrive/d/svn2/F45M/PFL/software/NIOS_PFL/NIOS_PFL.elf]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 15:56:45.760
+!MESSAGE Terminated Launch with connection: 10DE5 Standard on localhost [USB-1]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 15:56:47.180
+!MESSAGE Executing: [C:\Windows\system32\cmd.exe, /C, C:/altera/12.0/quartus\bin\cygwin\bin\bash.exe, -c, nios2-download '--cable=DE5 Standard on localhost [USB-1]' --device=1 --instance=0 --stop --sidp=0x100000a8 --id=0x0 --timestamp=1340176726]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 15:56:50.181
+!MESSAGE Executing: [C:\Windows\system32\cmd.exe, /C, C:/altera/12.0/quartus\bin\cygwin\bin\bash.exe, -c, nios2-download '--cable=DE5 Standard on localhost [USB-1]' --device=1 --instance=0 --go --sidp=0x100000a8 --id=0x0 --timestamp=1340176726 /cygdrive/d/svn2/F45M/PFL/software/NIOS_PFL/NIOS_PFL.elf]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 15:57:35.273
+!MESSAGE Executing: [C:\Windows\system32\cmd.exe, /C, C:/altera/12.0/quartus\bin\cygwin\bin\bash.exe, -c, nios2-download '--cable=DE5 Standard on localhost [USB-1]' --device=1 --instance=0 --stop --sidp=0x100000a8 --id=0x0 --timestamp=1340176726]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 15:57:38.264
+!MESSAGE Executing: [C:\Windows\system32\cmd.exe, /C, C:/altera/12.0/quartus\bin\cygwin\bin\bash.exe, -c, nios2-download '--cable=DE5 Standard on localhost [USB-1]' --device=1 --instance=0 --go --sidp=0x100000a8 --id=0x0 --timestamp=1340176726 /cygdrive/d/svn2/F45M/PFL/software/NIOS_PFL/NIOS_PFL.elf]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 16:03:25.134
+!MESSAGE Terminated Launch with connection: 10DE5 Standard on localhost [USB-1]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 16:03:26.614
+!MESSAGE Executing: [C:\Windows\system32\cmd.exe, /C, C:/altera/12.0/quartus\bin\cygwin\bin\bash.exe, -c, nios2-download '--cable=DE5 Standard on localhost [USB-1]' --device=1 --instance=0 --stop --sidp=0x100000a8 --id=0x0 --timestamp=1340176726]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 16:03:29.595
+!MESSAGE Executing: [C:\Windows\system32\cmd.exe, /C, C:/altera/12.0/quartus\bin\cygwin\bin\bash.exe, -c, nios2-download '--cable=DE5 Standard on localhost [USB-1]' --device=1 --instance=0 --go --sidp=0x100000a8 --id=0x0 --timestamp=1340176726 /cygdrive/d/svn2/F45M/PFL/software/NIOS_PFL/NIOS_PFL.elf]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 16:03:52.918
+!MESSAGE Terminated Launch with connection: 10DE5 Standard on localhost [USB-1]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 16:03:54.328
+!MESSAGE Executing: [C:\Windows\system32\cmd.exe, /C, C:/altera/12.0/quartus\bin\cygwin\bin\bash.exe, -c, nios2-download '--cable=DE5 Standard on localhost [USB-1]' --device=1 --instance=0 --stop --sidp=0x100000a8 --id=0x0 --timestamp=1340176726]
+
+!ENTRY org.eclipse.debug.ui 4 120 2012-06-20 16:03:56.749
+!MESSAGE Error logged from Debug UI: 
+!STACK 0
+java.io.IOException
+	at org.eclipse.debug.internal.core.StreamsProxy.write(StreamsProxy.java:129)
+	at org.eclipse.debug.internal.ui.views.console.ProcessConsole$InputReadJob.run(ProcessConsole.java:681)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 16:03:57.299
+!MESSAGE Executing: [C:\Windows\system32\cmd.exe, /C, C:/altera/12.0/quartus\bin\cygwin\bin\bash.exe, -c, nios2-download '--cable=DE5 Standard on localhost [USB-1]' --device=1 --instance=0 --go --sidp=0x100000a8 --id=0x0 --timestamp=1340176726 /cygdrive/d/svn2/F45M/PFL/software/NIOS_PFL/NIOS_PFL.elf]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 16:04:29.301
+!MESSAGE Terminated Launch with connection: 10DE5 Standard on localhost [USB-1]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 16:04:30.771
+!MESSAGE Executing: [C:\Windows\system32\cmd.exe, /C, C:/altera/12.0/quartus\bin\cygwin\bin\bash.exe, -c, nios2-download '--cable=DE5 Standard on localhost [USB-1]' --device=1 --instance=0 --stop --sidp=0x100000a8 --id=0x0 --timestamp=1340176726]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 16:04:33.753
+!MESSAGE Executing: [C:\Windows\system32\cmd.exe, /C, C:/altera/12.0/quartus\bin\cygwin\bin\bash.exe, -c, nios2-download '--cable=DE5 Standard on localhost [USB-1]' --device=1 --instance=0 --go --sidp=0x100000a8 --id=0x0 --timestamp=1340176726 /cygdrive/d/svn2/F45M/PFL/software/NIOS_PFL/NIOS_PFL.elf]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 16:04:48.645
+!MESSAGE Terminated Launch with connection: 10DE5 Standard on localhost [USB-1]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 16:04:50.235
+!MESSAGE Executing: [C:\Windows\system32\cmd.exe, /C, C:/altera/12.0/quartus\bin\cygwin\bin\bash.exe, -c, nios2-download '--cable=DE5 Standard on localhost [USB-1]' --device=1 --instance=0 --stop --sidp=0x100000a8 --id=0x0 --timestamp=1340176726]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 16:04:53.697
+!MESSAGE Executing: [C:\Windows\system32\cmd.exe, /C, C:/altera/12.0/quartus\bin\cygwin\bin\bash.exe, -c, nios2-download '--cable=DE5 Standard on localhost [USB-1]' --device=1 --instance=0 --go --sidp=0x100000a8 --id=0x0 --timestamp=1340176726 /cygdrive/d/svn2/F45M/PFL/software/NIOS_PFL/NIOS_PFL.elf]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 16:05:25.429
+!MESSAGE Terminated Launch with connection: 10DE5 Standard on localhost [USB-1]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 16:05:27.059
+!MESSAGE Executing: [C:\Windows\system32\cmd.exe, /C, C:/altera/12.0/quartus\bin\cygwin\bin\bash.exe, -c, nios2-download '--cable=DE5 Standard on localhost [USB-1]' --device=1 --instance=0 --stop --sidp=0x100000a8 --id=0x0 --timestamp=1340176726]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 16:05:30.541
+!MESSAGE Executing: [C:\Windows\system32\cmd.exe, /C, C:/altera/12.0/quartus\bin\cygwin\bin\bash.exe, -c, nios2-download '--cable=DE5 Standard on localhost [USB-1]' --device=1 --instance=0 --go --sidp=0x100000a8 --id=0x0 --timestamp=1340176726 /cygdrive/d/svn2/F45M/PFL/software/NIOS_PFL/NIOS_PFL.elf]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 16:06:09.523
+!MESSAGE Terminated Launch with connection: 10DE5 Standard on localhost [USB-1]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 16:06:11.403
+!MESSAGE Executing: [C:\Windows\system32\cmd.exe, /C, C:/altera/12.0/quartus\bin\cygwin\bin\bash.exe, -c, nios2-download '--cable=DE5 Standard on localhost [USB-1]' --device=1 --instance=0 --stop --sidp=0x100000a8 --id=0x0 --timestamp=1340176726]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 16:06:14.729
+!MESSAGE Executing: [C:\Windows\system32\cmd.exe, /C, C:/altera/12.0/quartus\bin\cygwin\bin\bash.exe, -c, nios2-download '--cable=DE5 Standard on localhost [USB-1]' --device=1 --instance=0 --go --sidp=0x100000a8 --id=0x0 --timestamp=1340176726 /cygdrive/d/svn2/F45M/PFL/software/NIOS_PFL/NIOS_PFL.elf]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 16:08:05.073
+!MESSAGE Terminated Launch with connection: 10DE5 Standard on localhost [USB-1]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 16:08:06.743
+!MESSAGE Executing: [C:\Windows\system32\cmd.exe, /C, C:/altera/12.0/quartus\bin\cygwin\bin\bash.exe, -c, nios2-download '--cable=DE5 Standard on localhost [USB-1]' --device=1 --instance=0 --stop --sidp=0x100000a8 --id=0x0 --timestamp=1340176726]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2012-06-20 16:08:10.245
+!MESSAGE Executing: [C:\Windows\system32\cmd.exe, /C, C:/altera/12.0/quartus\bin\cygwin\bin\bash.exe, -c, nios2-download '--cable=DE5 Standard on localhost [USB-1]' --device=1 --instance=0 --go --sidp=0x100000a8 --id=0x0 --timestamp=1340176726 /cygdrive/d/svn2/F45M/PFL/software/NIOS_PFL/NIOS_PFL.elf]
+!SESSION 2012-11-22 11:45:28.262 -----------------------------------------------
+eclipse.buildId=M20120208-0800
+java.version=1.6.0_23
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=zh_TW
+Framework arguments:  -product org.eclipse.epp.package.cpp.product -perspective com.altera.sbtgui.ui.cPerspective
+Command-line arguments:  -os win32 -ws win32 -arch x86 -product org.eclipse.epp.package.cpp.product -perspective com.altera.sbtgui.ui.cPerspective
+
+!ENTRY org.eclipse.cdt.core 1 0 2012-11-22 11:45:36.668
+!MESSAGE Indexed 'NIOS_PFL' (2 sources, 74 headers) in 1.30 sec: 3,148 declarations; 3,123 references; 9 unresolved inclusions; 2 syntax errors; 123 unresolved names (1.92%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2012-11-22 11:45:37.617
+!MESSAGE Indexed 'NIOS_PFL_bsp' (81 sources, 124 headers) in 0.87 sec: 4,085 declarations; 5,261 references; 0 unresolved inclusions; 3 syntax errors; 10 unresolved names (0.11%)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.394
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.397
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.398
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.401
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.403
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.406
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.408
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.410
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.412
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.414
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.420
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.422
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.424
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.426
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.428
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.430
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.432
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.435
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.437
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.440
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.443
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.445
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.447
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.450
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.452
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.454
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.456
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.459
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.462
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.464
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.630
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.632
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.634
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.636
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.638
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.640
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.642
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.644
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.646
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.647
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.698
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.700
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.702
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.704
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.706
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.707
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.709
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.711
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.713
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.715
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.765
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.767
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.770
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.771
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.773
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.775
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.777
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.778
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.781
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.783
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.848
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.850
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.852
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.854
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.855
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.858
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.859
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.861
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.863
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.864
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.934
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.937
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.939
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.941
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.944
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.946
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.948
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.950
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.952
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.cdt.codan.core 4 1 2012-11-22 11:45:42.954
+!MESSAGE Internal Error
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:811)
+	at org.eclipse.cdt.internal.core.model.TranslationUnit.getAST(TranslationUnit.java:768)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.CxxModelsCache.getAST(CxxModelsCache.java:63)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processFile(AbstractIndexAstChecker.java:73)
+	at org.eclipse.cdt.codan.core.cxx.model.AbstractIndexAstChecker.processResource(AbstractIndexAstChecker.java:54)
+	at org.eclipse.cdt.codan.core.model.AbstractChecker.processResource(AbstractChecker.java:248)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:151)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:97)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:182)
+	at org.eclipse.cdt.codan.internal.core.CodanBuilder.processResource(CodanBuilder.java:109)
+	at org.eclipse.cdt.codan.internal.ui.actions.RunCodeAnalysis$1.run(RunCodeAnalysis.java:56)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+!SESSION 2017-03-22 09:31:00.909 -----------------------------------------------
+eclipse.buildId=4.3.2.M20140221-1700
+java.version=1.8.0_05
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=zh_CN
+Framework arguments:  -product org.eclipse.epp.package.cpp.product -pluginCustomization D:/intelfpga/16.1/nios2eds/bin/eclipse_nios2/plugin_customization.ini
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.cpp.product -pluginCustomization D:/intelfpga/16.1/nios2eds/bin/eclipse_nios2/plugin_customization.ini
+
+!ENTRY org.eclipse.cdt.core 1 0 2017-03-22 09:31:22.911
+!MESSAGE Indexed 'NIOS_PFL' (2 sources, 2 headers) in 1.07 sec: 159 declarations; 573 references; 16 unresolved inclusions; 0 syntax errors; 117 unresolved names (13.78%)
+
+!ENTRY org.eclipse.egit.ui 2 0 2017-03-22 09:31:23.939
+!MESSAGE Warning: EGit couldn't detect the installation path "gitPrefix" of native Git. Hence EGit can't respect system level
+Git settings which might be configured in ${gitPrefix}/etc/gitconfig under the native Git installation directory.
+The most important of these settings is core.autocrlf. Git for Windows by default sets this parameter to true in
+this system level configuration. The Git installation location can be configured on the
+Team > Git > Configuration preference page's 'System Settings' tab.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+
+!ENTRY org.eclipse.cdt.core 1 0 2017-03-22 09:31:34.970
+!MESSAGE Indexed 'NIOS_PFL_bsp' (168 sources, 271 headers) in 4.60 sec: 6,227 declarations; 11,210 references; 0 unresolved inclusions; 5 syntax errors; 50 unresolved names (0.29%)
+!SESSION 2017-03-22 09:41:14.829 -----------------------------------------------
+eclipse.buildId=4.3.2.M20140221-1700
+java.version=1.8.0_05
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=zh_CN
+Framework arguments:  -product org.eclipse.epp.package.cpp.product -pluginCustomization D:/intelfpga/16.1/nios2eds/bin/eclipse_nios2/plugin_customization.ini
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.cpp.product -pluginCustomization D:/intelfpga/16.1/nios2eds/bin/eclipse_nios2/plugin_customization.ini
+
+!ENTRY org.eclipse.egit.ui 2 0 2017-03-22 09:41:26.390
+!MESSAGE Warning: EGit couldn't detect the installation path "gitPrefix" of native Git. Hence EGit can't respect system level
+Git settings which might be configured in ${gitPrefix}/etc/gitconfig under the native Git installation directory.
+The most important of these settings is core.autocrlf. Git for Windows by default sets this parameter to true in
+this system level configuration. The Git installation location can be configured on the
+Team > Git > Configuration preference page's 'System Settings' tab.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.

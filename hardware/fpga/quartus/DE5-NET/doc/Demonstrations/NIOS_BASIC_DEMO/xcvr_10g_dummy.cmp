@@ -1,0 +1,27 @@
+	component xcvr_10g_dummy is
+		port (
+			phy_mgmt_clk         : in  std_logic                      := 'X';             -- clk
+			phy_mgmt_clk_reset   : in  std_logic                      := 'X';             -- reset
+			phy_mgmt_address     : in  std_logic_vector(8 downto 0)   := (others => 'X'); -- address
+			phy_mgmt_read        : in  std_logic                      := 'X';             -- read
+			phy_mgmt_readdata    : out std_logic_vector(31 downto 0);                     -- readdata
+			phy_mgmt_waitrequest : out std_logic;                                         -- waitrequest
+			phy_mgmt_write       : in  std_logic                      := 'X';             -- write
+			phy_mgmt_writedata   : in  std_logic_vector(31 downto 0)  := (others => 'X'); -- writedata
+			tx_ready             : out std_logic;                                         -- export
+			rx_ready             : out std_logic;                                         -- export
+			pll_ref_clk          : in  std_logic_vector(0 downto 0)   := (others => 'X'); -- clk
+			pll_locked           : out std_logic_vector(0 downto 0);                      -- export
+			tx_serial_data       : out std_logic_vector(0 downto 0);                      -- export
+			rx_serial_data       : in  std_logic_vector(0 downto 0)   := (others => 'X'); -- export
+			rx_is_lockedtoref    : out std_logic_vector(0 downto 0);                      -- export
+			rx_is_lockedtodata   : out std_logic_vector(0 downto 0);                      -- export
+			tx_clkout            : out std_logic_vector(0 downto 0);                      -- export
+			rx_clkout            : out std_logic_vector(0 downto 0);                      -- export
+			tx_parallel_data     : in  std_logic_vector(39 downto 0)  := (others => 'X'); -- export
+			rx_parallel_data     : out std_logic_vector(39 downto 0);                     -- export
+			reconfig_from_xcvr   : out std_logic_vector(91 downto 0);                     -- reconfig_from_xcvr
+			reconfig_to_xcvr     : in  std_logic_vector(139 downto 0) := (others => 'X')  -- reconfig_to_xcvr
+		);
+	end component xcvr_10g_dummy;
+

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pinplan
+ variation_name="xcvr_10g_dummy"
+ megafunction_name="ALTERA_XCVR_LOW_LATENCY_PHY"
+ intended_family="Stratix V"
+ specifies="all_ports">
+ <global>
+  <pin name="phy_mgmt_clk" direction="input" scope="external" />
+  <pin name="phy_mgmt_clk_reset" direction="input" scope="external" />
+  <pin name="phy_mgmt_address[8..0]" direction="input" scope="external" />
+  <pin name="phy_mgmt_read" direction="input" scope="external" />
+  <pin name="phy_mgmt_readdata[31..0]" direction="output" scope="external" />
+  <pin name="phy_mgmt_waitrequest" direction="output" scope="external" />
+  <pin name="phy_mgmt_write" direction="input" scope="external" />
+  <pin name="phy_mgmt_writedata[31..0]" direction="input" scope="external" />
+  <pin name="tx_ready" direction="output" scope="external" />
+  <pin name="rx_ready" direction="output" scope="external" />
+  <pin name="pll_ref_clk" direction="input" scope="external" />
+  <pin name="pll_locked" direction="output" scope="external" />
+  <pin name="tx_serial_data" direction="output" scope="external" />
+  <pin name="rx_serial_data" direction="input" scope="external" />
+  <pin name="rx_is_lockedtoref" direction="output" scope="external" />
+  <pin name="rx_is_lockedtodata" direction="output" scope="external" />
+  <pin name="tx_clkout" direction="output" scope="external" />
+  <pin name="rx_clkout" direction="output" scope="external" />
+  <pin name="tx_parallel_data[39..0]" direction="input" scope="external" />
+  <pin name="rx_parallel_data[39..0]" direction="output" scope="external" />
+  <pin name="reconfig_from_xcvr[91..0]" direction="output" scope="external" />
+  <pin name="reconfig_to_xcvr[139..0]" direction="input" scope="external" />
+ </global>
+</pinplan>

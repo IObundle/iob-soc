@@ -1,0 +1,57 @@
+!SESSION 2012-06-20 00:18:36.306 -----------------------------------------------
+eclipse.buildId=M20100909-0800
+java.version=1.6.0_23
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=zh_TW
+Framework arguments:  -product org.eclipse.epp.package.cpp.product -perspective com.altera.sbtgui.ui.cPerspective
+Command-line arguments:  -os win32 -ws win32 -arch x86 -product org.eclipse.epp.package.cpp.product -perspective com.altera.sbtgui.ui.cPerspective
+
+!ENTRY org.eclipse.cdt.core 1 0 2012-06-20 00:19:17.368
+!MESSAGE Indexed 'NIOS_DEMO_bsp' (80 sources, 58 headers) in 0.67 sec: 950 declarations; 2,343 references; 117 unresolved inclusions; 5 syntax errors; 197 unresolved names (5.64%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2012-06-20 00:19:19.969
+!MESSAGE Indexed 'NIOS_DEMO' (1 sources, 13 headers) in 0.01 sec: 1 declarations; 1 references; 14 unresolved inclusions; 0 syntax errors; 0 unresolved names (0.00%)
+!SESSION 2012-11-22 12:48:10.742 -----------------------------------------------
+eclipse.buildId=M20120208-0800
+java.version=1.6.0_23
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=zh_TW
+Framework arguments:  -product org.eclipse.epp.package.cpp.product -perspective com.altera.sbtgui.ui.cPerspective
+Command-line arguments:  -os win32 -ws win32 -arch x86 -product org.eclipse.epp.package.cpp.product -perspective com.altera.sbtgui.ui.cPerspective
+
+!ENTRY org.eclipse.cdt.core 1 0 2012-11-22 12:48:18.257
+!MESSAGE Indexed 'NIOS_DEMO' (3 sources, 75 headers) in 1.25 sec: 3,223 declarations; 3,365 references; 9 unresolved inclusions; 2 syntax errors; 146 unresolved names (2.17%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2012-11-22 12:48:19.107
+!MESSAGE Indexed 'NIOS_DEMO_bsp' (80 sources, 122 headers) in 0.78 sec: 4,078 declarations; 5,236 references; 0 unresolved inclusions; 3 syntax errors; 10 unresolved names (0.11%)
+!SESSION 2014-07-24 17:43:30.274 -----------------------------------------------
+eclipse.buildId=M20120208-0800
+java.version=1.6.0_23
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=zh_TW
+Framework arguments:  -product org.eclipse.epp.package.cpp.product -perspective com.altera.sbtgui.ui.cPerspective
+Command-line arguments:  -os win32 -ws win32 -arch x86 -product org.eclipse.epp.package.cpp.product -perspective com.altera.sbtgui.ui.cPerspective
+
+!ENTRY org.eclipse.cdt.core 1 0 2014-07-24 17:45:01.985
+!MESSAGE Indexed 'NIOS_DEMO' (4 sources, 101 headers) in 0.82 sec: 3,842 declarations; 4,609 references; 0 unresolved inclusions; 2 syntax errors; 6 unresolved names (0.07%)
+!SESSION 2017-03-21 15:18:08.453 -----------------------------------------------
+eclipse.buildId=4.3.2.M20140221-1700
+java.version=1.8.0_05
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=zh_CN
+Framework arguments:  -product org.eclipse.epp.package.cpp.product -pluginCustomization D:/intelfpga/16.1/nios2eds/bin/eclipse_nios2/plugin_customization.ini
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.cpp.product -pluginCustomization D:/intelfpga/16.1/nios2eds/bin/eclipse_nios2/plugin_customization.ini
+
+!ENTRY org.eclipse.cdt.core 1 0 2017-03-21 15:18:23.068
+!MESSAGE Indexed 'NIOS_DEMO' (4 sources, 4 headers) in 0.59 sec: 289 declarations; 1,017 references; 16 unresolved inclusions; 0 syntax errors; 159 unresolved names (10.85%)
+
+!ENTRY org.eclipse.egit.ui 2 0 2017-03-21 15:18:28.668
+!MESSAGE Warning: EGit couldn't detect the installation path "gitPrefix" of native Git. Hence EGit can't respect system level
+Git settings which might be configured in ${gitPrefix}/etc/gitconfig under the native Git installation directory.
+The most important of these settings is core.autocrlf. Git for Windows by default sets this parameter to true in
+this system level configuration. The Git installation location can be configured on the
+Team > Git > Configuration preference page's 'System Settings' tab.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+
+!ENTRY org.eclipse.cdt.core 1 0 2017-03-21 15:18:36.094
+!MESSAGE Indexed 'NIOS_DEMO_bsp' (170 sources, 279 headers) in 4.53 sec: 6,566 declarations; 11,666 references; 0 unresolved inclusions; 5 syntax errors; 49 unresolved names (0.27%)

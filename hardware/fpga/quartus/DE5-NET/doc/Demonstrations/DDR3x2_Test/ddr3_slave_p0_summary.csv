@@ -1,0 +1,29 @@
+Core: ddr3_slave_p0 - Instance: DDR3_A_B|DDR3A|ddr3_slave_inst
+Path, Setup Margin, Hold Margin
+"Address Command (Slow 850mV 85C Model)",0.119,0.189
+"Bus Turnaround Time (Slow 850mV 85C Model)",1.386,--
+"Core (Slow 850mV 85C Model)",0.172,0.081
+"Core Recovery/Removal (Slow 850mV 85C Model)",1.201,0.149
+"Read Capture (Slow 850mV 85C Model)",0.096,0.072
+"Read Resync (Slow 850mV 85C Model)",1.481,1.062
+"Write (Slow 850mV 85C Model)",0.515,0.515
+"Write Leveling tDQSS (Slow 850mV 85C Model)",0.0,-0.436
+"Write Leveling tDSS/tDSH (Slow 850mV 85C Model)",0.344,0.344
+"Address Command (Slow 850mV 0C Model)",0.117,0.227
+"Bus Turnaround Time (Slow 850mV 0C Model)",1.464,--
+"Core (Slow 850mV 0C Model)",0.238,0.108
+"Core Recovery/Removal (Slow 850mV 0C Model)",1.408,0.156
+"Read Capture (Slow 850mV 0C Model)",0.109,0.085
+"Read Resync (Slow 850mV 0C Model)",1.542,1.113
+"Write (Slow 850mV 0C Model)",0.522,0.522
+"Write Leveling tDQSS (Slow 850mV 0C Model)",0.0,-0.33
+"Write Leveling tDSS/tDSH (Slow 850mV 0C Model)",0.344,0.344
+"Address Command (Fast 850mV 0C Model)",0.184,0.253
+"Bus Turnaround Time (Fast 850mV 0C Model)",1.754,--
+"Core (Fast 850mV 0C Model)",0.147,0.003
+"Core Recovery/Removal (Fast 850mV 0C Model)",1.854,0.079
+"Read Capture (Fast 850mV 0C Model)",0.151,0.127
+"Read Resync (Fast 850mV 0C Model)",1.804,1.418
+"Write (Fast 850mV 0C Model)",0.541,0.541
+"Write Leveling tDQSS (Fast 850mV 0C Model)",0.0,-0.101
+"Write Leveling tDSS/tDSH (Fast 850mV 0C Model)",0.344,0.344

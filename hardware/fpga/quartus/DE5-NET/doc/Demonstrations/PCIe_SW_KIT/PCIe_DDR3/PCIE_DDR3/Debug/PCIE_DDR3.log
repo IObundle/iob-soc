@@ -1,0 +1,37 @@
+﻿Build started 1/13/2016 9:12:10 AM.
+     1>Project "C:\richard\PCIE_DDR3\PCIE_DDR3\PCIE_DDR3.vcxproj" on node 2 (Rebuild target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TC /analyze- /errorReport:prompt PCIE.c
+         PCIE.c
+     1>c:\richard\pcie_ddr3\pcie_ddr3\pcie.c(36): warning C4133: 'function' : incompatible types - from 'char [9]' to 'LPCWSTR'
+     1>c:\richard\pcie_ddr3\pcie_ddr3\pcie.c(44): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(110) : see declaration of 'strcpy'
+     1>c:\richard\pcie_ddr3\pcie_ddr3\pcie.c(48): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(110) : see declaration of 'strcpy'
+     1>c:\richard\pcie_ddr3\pcie_ddr3\pcie.c(63): warning C4133: 'function' : incompatible types - from 'char [256]' to 'LPCWSTR'
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt PCIE_DDR3.cpp stdafx.cpp
+         stdafx.cpp
+         PCIE_DDR3.cpp
+     1>c:\richard\pcie_ddr3\pcie_ddr3\pcie_ddr3.cpp(40): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(290) : see declaration of 'scanf'
+     1>c:\richard\pcie_ddr3\pcie_ddr3\pcie_ddr3.cpp(50): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(290) : see declaration of 'scanf'
+     1>c:\richard\pcie_ddr3\pcie_ddr3\pcie_ddr3.cpp(96): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(357) : see declaration of 'sprintf'
+     1>c:\richard\pcie_ddr3\pcie_ddr3\pcie_ddr3.cpp(108): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(357) : see declaration of 'sprintf'
+     1>c:\richard\pcie_ddr3\pcie_ddr3\pcie_ddr3.cpp(116): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(357) : see declaration of 'sprintf'
+     1>c:\richard\pcie_ddr3\pcie_ddr3\pcie_ddr3.cpp(121): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(357) : see declaration of 'sprintf'
+         Generating Code...
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\richard\PCIE_DDR3\Debug\PCIE_DDR3.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\richard\PCIE_DDR3\Debug\PCIE_DDR3.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\richard\PCIE_DDR3\Debug\PCIE_DDR3.lib" /MACHINE:X86 Debug\PCIE.obj
+         Debug\PCIE_DDR3.obj
+         Debug\stdafx.obj
+         PCIE_DDR3.vcxproj -> C:\richard\PCIE_DDR3\Debug\PCIE_DDR3.exe
+     1>Done Building Project "C:\richard\PCIE_DDR3\PCIE_DDR3\PCIE_DDR3.vcxproj" (Rebuild target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:01.54

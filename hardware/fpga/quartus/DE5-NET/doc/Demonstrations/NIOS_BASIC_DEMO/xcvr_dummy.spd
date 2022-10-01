@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simPackage>
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/altera_xcvr_functions.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/altera_xcvr_functions.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/altera_xcvr_low_latency_phy.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/altera_xcvr_low_latency_phy.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/alt_pma_controller_tgx.v"
+   type="VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/alt_pma_controller_tgx.v"
+   type="VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/alt_xcvr_resync.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/alt_xcvr_resync.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/alt_xcvr_csr_common_h.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/alt_xcvr_csr_common.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/alt_xcvr_csr_pcs8g_h.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/alt_xcvr_csr_pcs8g.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/alt_xcvr_csr_selector.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/alt_xcvr_mgmt2dec.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/altera_wait_generate.v"
+   type="VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/alt_xcvr_csr_common_h.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/alt_xcvr_csr_common.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/alt_xcvr_csr_pcs8g_h.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/alt_xcvr_csr_pcs8g.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/alt_xcvr_csr_selector.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/alt_xcvr_mgmt2dec.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/altera_wait_generate.v"
+   type="VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/altera_xcvr_reset_control.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/alt_xcvr_reset_counter.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/altera_xcvr_reset_control.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/alt_xcvr_reset_counter.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/sv_xcvr_low_latency_phy_nr.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/sv_xcvr_low_latency_phy_nr.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/sv_xcvr_10g_custom_native.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/sv_xcvr_10g_custom_native.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/sv_xcvr_custom_native.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/sv_xcvr_custom_native.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/sv_pcs.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/sv_pcs_ch.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/sv_pma.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/sv_reconfig_bundle_to_xcvr.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/sv_reconfig_bundle_to_ip.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/sv_reconfig_bundle_merger.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/sv_rx_pma.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/sv_tx_pma.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/sv_tx_pma_ch.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/sv_xcvr_h.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/sv_xcvr_avmm_csr.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/sv_xcvr_avmm_dcd.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/sv_xcvr_avmm.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/sv_xcvr_data_adapter.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/sv_xcvr_native.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/sv_xcvr_plls.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/sv_pcs.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/sv_pcs_ch.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/sv_pma.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/sv_reconfig_bundle_to_xcvr.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/sv_reconfig_bundle_to_ip.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/sv_reconfig_bundle_merger.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/sv_rx_pma.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/sv_tx_pma.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/sv_tx_pma_ch.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/sv_xcvr_h.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/sv_xcvr_avmm_csr.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/sv_xcvr_avmm_dcd.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/sv_xcvr_avmm.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/sv_xcvr_data_adapter.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/sv_xcvr_native.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/sv_xcvr_plls.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/sv_hssi_10g_rx_pcs_rbc.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/sv_hssi_10g_tx_pcs_rbc.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/sv_hssi_8g_rx_pcs_rbc.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/sv_hssi_8g_tx_pcs_rbc.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/sv_hssi_8g_pcs_aggregate_rbc.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/sv_hssi_common_pcs_pma_interface_rbc.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/sv_hssi_common_pld_pcs_interface_rbc.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/sv_hssi_pipe_gen1_2_rbc.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/sv_hssi_pipe_gen3_rbc.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/sv_hssi_rx_pcs_pma_interface_rbc.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/sv_hssi_rx_pld_pcs_interface_rbc.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/sv_hssi_tx_pcs_pma_interface_rbc.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/sv_hssi_tx_pld_pcs_interface_rbc.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/sv_hssi_10g_rx_pcs_rbc.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/sv_hssi_10g_tx_pcs_rbc.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/sv_hssi_8g_rx_pcs_rbc.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/sv_hssi_8g_tx_pcs_rbc.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/sv_hssi_8g_pcs_aggregate_rbc.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/sv_hssi_common_pcs_pma_interface_rbc.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/sv_hssi_common_pld_pcs_interface_rbc.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/sv_hssi_pipe_gen1_2_rbc.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/sv_hssi_pipe_gen3_rbc.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/sv_hssi_rx_pcs_pma_interface_rbc.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/sv_hssi_rx_pld_pcs_interface_rbc.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/sv_hssi_tx_pcs_pma_interface_rbc.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/sv_hssi_tx_pld_pcs_interface_rbc.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/alt_xcvr_arbiter.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/alt_xcvr_m2s.sv"
+   type="SYSTEM_VERILOG"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/alt_xcvr_arbiter.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor/alt_xcvr_m2s.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="xcvr_dummy"
+   simulator="modelsim" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/plain_files.txt"
+   type="OTHER"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/mentor_files.txt"
+   type="OTHER"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/cadence_files.txt"
+   type="OTHER"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/synopsys_files.txt"
+   type="OTHER"
+   library="xcvr_dummy" />
+ <file
+   path="xcvr_dummy_sim/altera_xcvr_low_latency_phy/aldec_files.txt"
+   type="OTHER"
+   library="xcvr_dummy" />
+ <file path="xcvr_dummy_sim/xcvr_dummy.v" type="VERILOG" />
+ <topLevel name="xcvr_dummy" />
+ <deviceFamily name="stratixv" />
+</simPackage>

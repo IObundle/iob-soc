@@ -1,0 +1,26 @@
+Fitter Status : Successful - Wed Mar 22 10:36:16 2017
+Quartus Prime Version : 16.1.2 Build 203 01/18/2017 SJ Standard Edition
+Revision Name : Si570_Demonstration
+Top-level Entity Name : SI570_Demonstration
+Family : Stratix V
+Device : 5SGXEA7N2F45C2
+Timing Models : Final
+Logic utilization (in ALMs) : 718 / 234,720 ( < 1 % )
+Total registers : 296
+Total pins : 145 / 1,064 ( 14 % )
+Total virtual pins : 0
+Total block memory bits : 0 / 52,428,800 ( 0 % )
+Total RAM Blocks : 0 / 2,560 ( 0 % )
+Total DSP Blocks : 4 / 256 ( 2 % )
+Total HSSI STD RX PCSs : 0 / 48 ( 0 % )
+Total HSSI 10G RX PCSs : 1 / 48 ( 2 % )
+Total HSSI GEN3 RX PCSs : 0 / 48 ( 0 % )
+Total HSSI PMA RX Deserializers : 1 / 48 ( 2 % )
+Total HSSI STD TX PCSs : 0 / 48 ( 0 % )
+Total HSSI 10G TX PCSs : 1 / 48 ( 2 % )
+Total HSSI GEN3 TX PCSs : 0 / 48 ( 0 % )
+Total HSSI PMA TX Serializers : 1 / 48 ( 2 % )
+Total HSSI PIPE GEN1_2s : 0 / 48 ( 0 % )
+Total HSSI GEN3s : 0 / 48 ( 0 % )
+Total PLLs : 3 / 92 ( 3 % )
+Total DLLs : 0 / 4 ( 0 % )

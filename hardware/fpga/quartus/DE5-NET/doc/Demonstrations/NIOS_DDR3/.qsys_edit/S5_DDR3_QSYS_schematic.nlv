@@ -1,0 +1,49 @@
+# # File gsaved with Nlview version 6.3.8  2013-12-19 bk=1.2992 VDI=34 GEI=35
+# 
+preplace inst S5_DDR3_QSYS.mem_if_ddr3_emif.c0.afi_clk -pg 1
+preplace inst S5_DDR3_QSYS.button -pg 1 -lvl 4 -y 210
+preplace inst S5_DDR3_QSYS.mem_if_ddr3_emif.oct0 -pg 1
+preplace inst S5_DDR3_QSYS.mem_if_ddr3_emif.c0.ng0 -pg 1
+preplace inst S5_DDR3_QSYS.mem_if_ddr3_emif.c0 -pg 1
+preplace inst S5_DDR3_QSYS.mem_if_ddr3_emif.p0 -pg 1
+preplace inst S5_DDR3_QSYS.mem_if_ddr3_emif.afi_reset -pg 1
+preplace inst S5_DDR3_QSYS.mem_if_ddr3_emif -pg 1 -lvl 2 -y 320
+preplace inst S5_DDR3_QSYS.mm_clock_crossing_bridge_io -pg 1 -lvl 3 -y 270
+preplace inst S5_DDR3_QSYS.mem_if_ddr3_emif.c0.afi_half_clk -pg 1
+preplace inst S5_DDR3_QSYS.mem_if_ddr3_emif.as0 -pg 1
+preplace inst S5_DDR3_QSYS.mem_if_ddr3_emif.global_reset -pg 1
+preplace inst S5_DDR3_QSYS.sysid_qsys -pg 1 -lvl 4 -y 310
+preplace inst S5_DDR3_QSYS.timer -pg 1 -lvl 4 -y 390
+preplace inst S5_DDR3_QSYS.ddr3_status -pg 1 -lvl 4 -y 490
+preplace inst S5_DDR3_QSYS.mem_if_ddr3_emif.afi_half_clk -pg 1
+preplace inst S5_DDR3_QSYS.mem_if_ddr3_emif.soft_reset -pg 1
+preplace inst S5_DDR3_QSYS.mem_if_ddr3_emif.c0.a0 -pg 1
+preplace inst S5_DDR3_QSYS.mem_if_ddr3_emif.pll_ref_clk -pg 1
+preplace inst S5_DDR3_QSYS.nios2_qsys -pg 1 -lvl 1 -y 50
+preplace inst S5_DDR3_QSYS.mem_if_ddr3_emif.c0.afi_reset -pg 1
+preplace inst S5_DDR3_QSYS.mem_if_ddr3_emif.s0 -pg 1
+preplace inst S5_DDR3_QSYS.jtag_uart -pg 1 -lvl 4 -y 110
+preplace inst S5_DDR3_QSYS.mem_if_ddr3_emif.afi_clk -pg 1
+preplace inst S5_DDR3_QSYS.clk_50 -pg 1 -lvl 1 -y 250
+preplace inst S5_DDR3_QSYS.mem_if_ddr3_emif.m0 -pg 1
+preplace inst S5_DDR3_QSYS.mem_if_ddr3_emif.afi_reset_export -pg 1
+preplace inst S5_DDR3_QSYS.mem_if_ddr3_emif.pll_bridge -pg 1
+preplace inst S5_DDR3_QSYS.onchip_memory2 -pg 1 -lvl 4 -y 30
+preplace inst S5_DDR3_QSYS.mem_if_ddr3_emif.dll0 -pg 1
+preplace inst S5_DDR3_QSYS.mem_if_ddr3_emif.pll0 -pg 1
+preplace inst S5_DDR3_QSYS -pg 1 -lvl 1 -y 40 -regy -20
+preplace netloc EXPORT<net_container>S5_DDR3_QSYS</net_container>(SLAVE)S5_DDR3_QSYS.button_external_connection,(SLAVE)button.external_connection) 1 0 4 NJ 240 NJ 240 NJ 240 NJ
+preplace netloc EXPORT<net_container>S5_DDR3_QSYS</net_container>(SLAVE)mem_if_ddr3_emif.status,(SLAVE)S5_DDR3_QSYS.mem_if_ddr3_emif_status) 1 0 2 NJ 470 NJ
+preplace netloc EXPORT<net_container>S5_DDR3_QSYS</net_container>(SLAVE)S5_DDR3_QSYS.memory,(SLAVE)mem_if_ddr3_emif.memory) 1 0 2 NJ 370 NJ
+preplace netloc FAN_OUT<net_container>S5_DDR3_QSYS</net_container>(SLAVE)nios2_qsys.clk,(MASTER)mem_if_ddr3_emif.afi_clk,(SLAVE)onchip_memory2.clk1,(SLAVE)mm_clock_crossing_bridge_io.s0_clk) 1 0 4 230 180 NJ 180 840 100 NJ
+preplace netloc INTERCONNECT<net_container>S5_DDR3_QSYS</net_container>(SLAVE)jtag_uart.reset,(SLAVE)mm_clock_crossing_bridge_io.m0_reset,(MASTER)clk_50.clk_reset,(SLAVE)mem_if_ddr3_emif.soft_reset,(SLAVE)mm_clock_crossing_bridge_io.s0_reset,(SLAVE)ddr3_status.reset,(MASTER)nios2_qsys.jtag_debug_module_reset,(SLAVE)nios2_qsys.reset_n,(SLAVE)mem_if_ddr3_emif.global_reset,(SLAVE)onchip_memory2.reset1,(SLAVE)timer.reset,(SLAVE)sysid_qsys.reset,(SLAVE)button.reset) 1 0 4 270 220 520 280 860 400 1150
+preplace netloc EXPORT<net_container>S5_DDR3_QSYS</net_container>(SLAVE)S5_DDR3_QSYS.reset,(SLAVE)clk_50.clk_in_reset) 1 0 1 NJ
+preplace netloc FAN_OUT<net_container>S5_DDR3_QSYS</net_container>(MASTER)nios2_qsys.d_irq,(SLAVE)timer.irq,(SLAVE)jtag_uart.irq) 1 1 3 NJ 80 NJ 80 1090
+preplace netloc EXPORT<net_container>S5_DDR3_QSYS</net_container>(SLAVE)clk_50.clk_in,(SLAVE)S5_DDR3_QSYS.clk) 1 0 1 NJ
+preplace netloc INTERCONNECT<net_container>S5_DDR3_QSYS</net_container>(SLAVE)mem_if_ddr3_emif.avl,(MASTER)nios2_qsys.data_master,(SLAVE)nios2_qsys.jtag_debug_module,(SLAVE)jtag_uart.avalon_jtag_slave,(MASTER)nios2_qsys.instruction_master,(SLAVE)onchip_memory2.s1,(SLAVE)mm_clock_crossing_bridge_io.s0) 1 0 4 250 200 540 140 900 120 1130
+preplace netloc EXPORT<net_container>S5_DDR3_QSYS</net_container>(SLAVE)S5_DDR3_QSYS.ddr3_status_external_connection,(SLAVE)ddr3_status.external_connection) 1 0 4 NJ 520 NJ 520 NJ 520 NJ
+preplace netloc FAN_OUT<net_container>S5_DDR3_QSYS</net_container>(SLAVE)mem_if_ddr3_emif.pll_ref_clk,(SLAVE)timer.clk,(SLAVE)ddr3_status.clk,(SLAVE)mm_clock_crossing_bridge_io.m0_clk,(SLAVE)jtag_uart.clk,(SLAVE)button.clk,(SLAVE)sysid_qsys.clk,(MASTER)clk_50.clk) 1 1 3 560 260 880 260 1130
+preplace netloc EXPORT<net_container>S5_DDR3_QSYS</net_container>(SLAVE)mem_if_ddr3_emif.oct,(SLAVE)S5_DDR3_QSYS.oct) 1 0 2 NJ 390 NJ
+preplace netloc FAN_OUT<net_container>S5_DDR3_QSYS</net_container>(SLAVE)sysid_qsys.control_slave,(MASTER)mm_clock_crossing_bridge_io.m0,(SLAVE)button.s1,(SLAVE)timer.s1,(SLAVE)ddr3_status.s1) 1 3 1 1110
+levelinfo -pg 1 0 200 1350
+levelinfo -hier S5_DDR3_QSYS 210 300 660 960 1190 1340

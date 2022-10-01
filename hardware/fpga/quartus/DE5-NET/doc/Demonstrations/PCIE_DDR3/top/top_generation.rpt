@@ -1,0 +1,515 @@
+Info: Starting: Create block symbol file (.bsf)
+Info: qsys-generate D:\xxpeng\DE5-NET-NEW\PCIE_DDR3\top.qsys --block-symbol-file --output-directory=D:\xxpeng\DE5-NET-NEW\PCIE_DDR3\top --family="Stratix V" --part=5SGXEA7N2F45C2
+Progress: Loading PCIE_DDR3/top.qsys
+Progress: Reading input file
+Progress: Adding alt_xcvr_reconfig_0 [alt_xcvr_reconfig 16.1]
+Progress: Parameterizing module alt_xcvr_reconfig_0
+Progress: Adding clk_0 [clock_source 16.1]
+Progress: Parameterizing module clk_0
+Progress: Adding ddr3a_status [altera_avalon_pio 16.1]
+Progress: Parameterizing module ddr3a_status
+Progress: Adding ddr3b_status [altera_avalon_pio 16.1]
+Progress: Parameterizing module ddr3b_status
+Progress: Adding mem_if_ddr3a [altera_mem_if_ddr3_emif 16.1]
+Progress: Parameterizing module mem_if_ddr3a
+Progress: Adding mem_if_ddr3b [altera_mem_if_ddr3_emif 16.1]
+Progress: Parameterizing module mem_if_ddr3b
+Progress: Adding mm_clock_crossing_bridge_ddr3a [altera_avalon_mm_clock_crossing_bridge 16.1]
+Progress: Parameterizing module mm_clock_crossing_bridge_ddr3a
+Progress: Adding mm_clock_crossing_bridge_ddr3b [altera_avalon_mm_clock_crossing_bridge 16.1]
+Progress: Parameterizing module mm_clock_crossing_bridge_ddr3b
+Progress: Adding onchip_memory2_0 [altera_avalon_onchip_memory2 16.1]
+Progress: Parameterizing module onchip_memory2_0
+Progress: Adding pcie_256_dma [altera_pcie_256_hip_avmm 16.1]
+Progress: Parameterizing module pcie_256_dma
+Progress: Adding pcie_reconfig_driver_0 [altera_pcie_reconfig_driver 16.1]
+Progress: Parameterizing module pcie_reconfig_driver_0
+Progress: Adding pio_button [altera_avalon_pio 16.1]
+Progress: Parameterizing module pio_button
+Progress: Adding pio_led [altera_avalon_pio 16.1]
+Progress: Parameterizing module pio_led
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+Info: top.alt_xcvr_reconfig_0: reconfig_from_xcvr port width is 11*46 bits
+Info: top.alt_xcvr_reconfig_0: reconfig_to_xcvr port width is 11*70 bits
+Info: top.ddr3a_status: PIO inputs are not hardwired in test bench. Undefined values will be read from PIO inputs during simulation.
+Info: top.ddr3b_status: PIO inputs are not hardwired in test bench. Undefined values will be read from PIO inputs during simulation.
+Warning: top.mem_if_ddr3a: 'Quick' simulation modes are NOT timing accurate. Some simulation memory models may issue warnings or errors
+Warning: top.mem_if_ddr3a.pll_bridge: pll_bridge.pll_sharing cannot be both connected and exported
+Warning: top.mem_if_ddr3b: 'Quick' simulation modes are NOT timing accurate. Some simulation memory models may issue warnings or errors
+Warning: top.mem_if_ddr3b.pll_bridge: pll_bridge.pll_sharing cannot be both connected and exported
+Info: top.pcie_256_dma: The application clock frequency (pld_clk) is 250 Mhz
+Warning: top.pcie_256_dma: BAR1 is disabled as BAR0 is set to 64-bit prefetchable memory
+Info: top.pcie_256_dma: Family: Stratix V
+Info: top.pcie_256_dma: 11 reconfiguration interfaces are required for connection to the external reconfiguration controller and the reconfig driver
+Info: top.pcie_256_dma:  BAR 4 size mask is 27
+Info: top.pcie_256_dma: Credit allocation in the 16 KBytes receive buffer:
+Info: top.pcie_256_dma: Posted    : header=16  data=16
+Info: top.pcie_256_dma: Non posted: header=16  data=0
+Info: top.pcie_256_dma: Completion: header=195 data=781
+Info: top.pio_button: PIO inputs are not hardwired in test bench. Undefined values will be read from PIO inputs during simulation.
+Warning: top.mem_if_ddr3a: mem_if_ddr3a.pll_sharing must be exported, or connected to a matching conduit.
+Warning: top.mem_if_ddr3b: mem_if_ddr3b.pll_sharing must be exported, or connected to a matching conduit.
+Warning: top.pcie_256_dma: pcie_256_dma.INTX_Interface must be exported, or connected to a matching conduit.
+Warning: top.pcie_256_dma: pcie_256_dma.MSI_Interface must be exported, or connected to a matching conduit.
+Warning: top.pcie_256_dma: pcie_256_dma.MSIX_Interface must be exported, or connected to a matching conduit.
+Warning: top.pcie_256_dma: pcie_256_dma.hip_status must be exported, or connected to a matching conduit.
+Warning: top.pcie_256_dma: pcie_256_dma.config_tl must be exported, or connected to a matching conduit.
+Warning: top.pcie_reconfig_driver_0: pcie_reconfig_driver_0.hip_status_drv must be exported, or connected to a matching conduit.
+Warning: top.pcie_256_dma: pcie_256_dma.Cra must be connected to an Avalon-MM master
+Info: qsys-generate succeeded.
+Info: Finished: Create block symbol file (.bsf)
+Info: 
+Info: Starting: Create HDL design files for synthesis
+Info: qsys-generate D:\xxpeng\DE5-NET-NEW\PCIE_DDR3\top.qsys --synthesis=VERILOG --output-directory=D:\xxpeng\DE5-NET-NEW\PCIE_DDR3\top\synthesis --family="Stratix V" --part=5SGXEA7N2F45C2
+Progress: Loading PCIE_DDR3/top.qsys
+Progress: Reading input file
+Progress: Adding alt_xcvr_reconfig_0 [alt_xcvr_reconfig 16.1]
+Progress: Parameterizing module alt_xcvr_reconfig_0
+Progress: Adding clk_0 [clock_source 16.1]
+Progress: Parameterizing module clk_0
+Progress: Adding ddr3a_status [altera_avalon_pio 16.1]
+Progress: Parameterizing module ddr3a_status
+Progress: Adding ddr3b_status [altera_avalon_pio 16.1]
+Progress: Parameterizing module ddr3b_status
+Progress: Adding mem_if_ddr3a [altera_mem_if_ddr3_emif 16.1]
+Progress: Parameterizing module mem_if_ddr3a
+Progress: Adding mem_if_ddr3b [altera_mem_if_ddr3_emif 16.1]
+Progress: Parameterizing module mem_if_ddr3b
+Progress: Adding mm_clock_crossing_bridge_ddr3a [altera_avalon_mm_clock_crossing_bridge 16.1]
+Progress: Parameterizing module mm_clock_crossing_bridge_ddr3a
+Progress: Adding mm_clock_crossing_bridge_ddr3b [altera_avalon_mm_clock_crossing_bridge 16.1]
+Progress: Parameterizing module mm_clock_crossing_bridge_ddr3b
+Progress: Adding onchip_memory2_0 [altera_avalon_onchip_memory2 16.1]
+Progress: Parameterizing module onchip_memory2_0
+Progress: Adding pcie_256_dma [altera_pcie_256_hip_avmm 16.1]
+Progress: Parameterizing module pcie_256_dma
+Progress: Adding pcie_reconfig_driver_0 [altera_pcie_reconfig_driver 16.1]
+Progress: Parameterizing module pcie_reconfig_driver_0
+Progress: Adding pio_button [altera_avalon_pio 16.1]
+Progress: Parameterizing module pio_button
+Progress: Adding pio_led [altera_avalon_pio 16.1]
+Progress: Parameterizing module pio_led
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+Info: top.alt_xcvr_reconfig_0: reconfig_from_xcvr port width is 11*46 bits
+Info: top.alt_xcvr_reconfig_0: reconfig_to_xcvr port width is 11*70 bits
+Info: top.ddr3a_status: PIO inputs are not hardwired in test bench. Undefined values will be read from PIO inputs during simulation.
+Info: top.ddr3b_status: PIO inputs are not hardwired in test bench. Undefined values will be read from PIO inputs during simulation.
+Warning: top.mem_if_ddr3a: 'Quick' simulation modes are NOT timing accurate. Some simulation memory models may issue warnings or errors
+Warning: top.mem_if_ddr3a.pll_bridge: pll_bridge.pll_sharing cannot be both connected and exported
+Warning: top.mem_if_ddr3b: 'Quick' simulation modes are NOT timing accurate. Some simulation memory models may issue warnings or errors
+Warning: top.mem_if_ddr3b.pll_bridge: pll_bridge.pll_sharing cannot be both connected and exported
+Info: top.pcie_256_dma: The application clock frequency (pld_clk) is 250 Mhz
+Warning: top.pcie_256_dma: BAR1 is disabled as BAR0 is set to 64-bit prefetchable memory
+Info: top.pcie_256_dma: Family: Stratix V
+Info: top.pcie_256_dma: 11 reconfiguration interfaces are required for connection to the external reconfiguration controller and the reconfig driver
+Info: top.pcie_256_dma:  BAR 4 size mask is 27
+Info: top.pcie_256_dma: Credit allocation in the 16 KBytes receive buffer:
+Info: top.pcie_256_dma: Posted    : header=16  data=16
+Info: top.pcie_256_dma: Non posted: header=16  data=0
+Info: top.pcie_256_dma: Completion: header=195 data=781
+Info: top.pio_button: PIO inputs are not hardwired in test bench. Undefined values will be read from PIO inputs during simulation.
+Warning: top.mem_if_ddr3a: mem_if_ddr3a.pll_sharing must be exported, or connected to a matching conduit.
+Warning: top.mem_if_ddr3b: mem_if_ddr3b.pll_sharing must be exported, or connected to a matching conduit.
+Warning: top.pcie_256_dma: pcie_256_dma.INTX_Interface must be exported, or connected to a matching conduit.
+Warning: top.pcie_256_dma: pcie_256_dma.MSI_Interface must be exported, or connected to a matching conduit.
+Warning: top.pcie_256_dma: pcie_256_dma.MSIX_Interface must be exported, or connected to a matching conduit.
+Warning: top.pcie_256_dma: pcie_256_dma.hip_status must be exported, or connected to a matching conduit.
+Warning: top.pcie_256_dma: pcie_256_dma.config_tl must be exported, or connected to a matching conduit.
+Warning: top.pcie_reconfig_driver_0: pcie_reconfig_driver_0.hip_status_drv must be exported, or connected to a matching conduit.
+Warning: top.pcie_256_dma: pcie_256_dma.Cra must be connected to an Avalon-MM master
+Info: top: Generating top "top" for QUARTUS_SYNTH
+Info: Inserting clock-crossing logic between cmd_demux.src3 and cmd_mux_003.sink0
+Info: Inserting clock-crossing logic between cmd_demux.src4 and cmd_mux_004.sink0
+Info: Inserting clock-crossing logic between rsp_demux_003.src0 and rsp_mux.sink3
+Info: Inserting clock-crossing logic between rsp_demux_004.src0 and rsp_mux.sink4
+Info: Interconnect is inserted between master mm_clock_crossing_bridge_ddr3a.m0 and slave mem_if_ddr3a.avl because the master has burstcount signal 8 bit wide, but the slave is 3 bit wide.
+Info: Interconnect is inserted between master mm_clock_crossing_bridge_ddr3a.m0 and slave mem_if_ddr3a.avl because the master has address signal 31 bit wide, but the slave is 25 bit wide.
+Info: Interconnect is inserted between master mm_clock_crossing_bridge_ddr3a.m0 and slave mem_if_ddr3a.avl because the master has debugaccess signal 1 bit wide, but the slave is 0 bit wide.
+Info: Interconnect is inserted between master mm_clock_crossing_bridge_ddr3b.m0 and slave mem_if_ddr3b.avl because the master has burstcount signal 8 bit wide, but the slave is 3 bit wide.
+Info: Interconnect is inserted between master mm_clock_crossing_bridge_ddr3b.m0 and slave mem_if_ddr3b.avl because the master has address signal 31 bit wide, but the slave is 25 bit wide.
+Info: Interconnect is inserted between master mm_clock_crossing_bridge_ddr3b.m0 and slave mem_if_ddr3b.avl because the master has debugaccess signal 1 bit wide, but the slave is 0 bit wide.
+Info: alt_xcvr_reconfig_0: add_fileset_file ./altera_xcvr_functions.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/altera_xcvr_functions.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./sv_xcvr_h.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/sv/sv_xcvr_h.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_resync.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/ctrl/alt_xcvr_resync.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_h.sv SYSTEM_VERILOG PATH .//alt_xcvr_reconfig_h.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./sv_xcvr_dfe_cal_sweep_h.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_dfe/sv_xcvr_dfe_cal_sweep_h.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig.sv SYSTEM_VERILOG PATH .//alt_xcvr_reconfig.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_sv.sv SYSTEM_VERILOG PATH .//alt_xcvr_reconfig_sv.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_cal_seq.sv SYSTEM_VERILOG PATH .//alt_xcvr_reconfig_cal_seq.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xreconf_cif.sv SYSTEM_VERILOG PATH .//alt_xreconf_cif.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xreconf_uif.sv SYSTEM_VERILOG PATH .//alt_xreconf_uif.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xreconf_basic_acq.sv SYSTEM_VERILOG PATH .//alt_xreconf_basic_acq.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_analog.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_analog/alt_xcvr_reconfig_analog.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_analog_sv.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_analog/alt_xcvr_reconfig_analog_sv.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xreconf_analog_datactrl.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_analog/alt_xreconf_analog_datactrl.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xreconf_analog_rmw.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_analog/alt_xreconf_analog_rmw.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xreconf_analog_ctrlsm.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_analog/alt_xreconf_analog_ctrlsm.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_offset_cancellation.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_offset_cancellation/alt_xcvr_reconfig_offset_cancellation.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_offset_cancellation_sv.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_offset_cancellation/alt_xcvr_reconfig_offset_cancellation_sv.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_eyemon.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_eyemon/alt_xcvr_reconfig_eyemon.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_eyemon_sv.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_eyemon/alt_xcvr_reconfig_eyemon_sv.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_eyemon_ctrl_sv.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_eyemon/alt_xcvr_reconfig_eyemon_ctrl_sv.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_eyemon_ber_sv.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_eyemon/alt_xcvr_reconfig_eyemon_ber_sv.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./ber_reader_dcfifo.v VERILOG PATH ../alt_xcvr_reconfig_eyemon/ber_reader_dcfifo.v
+Info: alt_xcvr_reconfig_0: add_fileset_file ./step_to_mon_sv.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_eyemon/step_to_mon_sv.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./mon_to_step_sv.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_eyemon/mon_to_step_sv.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_dfe.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_dfe/alt_xcvr_reconfig_dfe.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_dfe_sv.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_dfe/alt_xcvr_reconfig_dfe_sv.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_dfe_reg_sv.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_dfe/alt_xcvr_reconfig_dfe_reg_sv.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_dfe_cal_sv.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_dfe/alt_xcvr_reconfig_dfe_cal_sv.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_dfe_cal_sweep_sv.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_dfe/alt_xcvr_reconfig_dfe_cal_sweep_sv.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_dfe_cal_sweep_datapath_sv.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_dfe/alt_xcvr_reconfig_dfe_cal_sweep_datapath_sv.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_dfe_oc_cal_sv.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_dfe/alt_xcvr_reconfig_dfe_oc_cal_sv.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_dfe_pi_phase_sv.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_dfe/alt_xcvr_reconfig_dfe_pi_phase_sv.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_dfe_step_to_mon_en_sv.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_dfe/alt_xcvr_reconfig_dfe_step_to_mon_en_sv.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_dfe_adapt_tap_sv.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_dfe/alt_xcvr_reconfig_dfe_adapt_tap_sv.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_dfe_ctrl_mux_sv.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_dfe/alt_xcvr_reconfig_dfe_ctrl_mux_sv.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_dfe_local_reset_sv.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_dfe/alt_xcvr_reconfig_dfe_local_reset_sv.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_dfe_cal_sim_sv.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_dfe/alt_xcvr_reconfig_dfe_cal_sim_sv.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_dfe_adapt_tap_sim_sv.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_dfe/alt_xcvr_reconfig_dfe_adapt_tap_sim_sv.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_adce.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_adce/alt_xcvr_reconfig_adce.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_adce_sv.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_adce/alt_xcvr_reconfig_adce_sv.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_adce_datactrl_sv.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_adce/alt_xcvr_reconfig_adce_datactrl_sv.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_dcd.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_dcd/alt_xcvr_reconfig_dcd.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_dcd_sv.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_dcd/alt_xcvr_reconfig_dcd_sv.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_dcd_cal.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_dcd/alt_xcvr_reconfig_dcd_cal.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_dcd_control.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_dcd/alt_xcvr_reconfig_dcd_control.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_dcd_datapath.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_dcd/alt_xcvr_reconfig_dcd_datapath.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_dcd_pll_reset.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_dcd/alt_xcvr_reconfig_dcd_pll_reset.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_dcd_eye_width.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_dcd/alt_xcvr_reconfig_dcd_eye_width.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_dcd_align_clk.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_dcd/alt_xcvr_reconfig_dcd_align_clk.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_dcd_get_sum.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_dcd/alt_xcvr_reconfig_dcd_get_sum.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_dcd_cal_sim_model.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_dcd/alt_xcvr_reconfig_dcd_cal_sim_model.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_mif.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_mif/alt_xcvr_reconfig_mif.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./sv_xcvr_reconfig_mif.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_mif/sv_xcvr_reconfig_mif.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./sv_xcvr_reconfig_mif_ctrl.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_mif/sv_xcvr_reconfig_mif_ctrl.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./sv_xcvr_reconfig_mif_avmm.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_mif/sv_xcvr_reconfig_mif_avmm.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_pll.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_pll/alt_xcvr_reconfig_pll.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./sv_xcvr_reconfig_pll.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_pll/sv_xcvr_reconfig_pll.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./sv_xcvr_reconfig_pll_ctrl.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_pll/sv_xcvr_reconfig_pll_ctrl.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_soc.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_soc/alt_xcvr_reconfig_soc.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_cpu_ram.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_soc/alt_xcvr_reconfig_cpu_ram.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_cpu_ram.hex OTHER PATH ../alt_xcvr_reconfig_soc/software/alt_xcvr_reconfig/mem_init/alt_xcvr_reconfig_cpu_ram.hex
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_direct.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_direct/alt_xcvr_reconfig_direct.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./sv_xrbasic_l2p_addr.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_basic/sv_xrbasic_l2p_addr.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./sv_xrbasic_l2p_ch.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_basic/sv_xrbasic_l2p_ch.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./sv_xrbasic_l2p_rom.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_basic/sv_xrbasic_l2p_rom.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./sv_xrbasic_lif_csr.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_basic/sv_xrbasic_lif_csr.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./sv_xrbasic_lif.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_basic/sv_xrbasic_lif.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./sv_xcvr_reconfig_basic.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_basic/sv_xcvr_reconfig_basic.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_arbiter_acq.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_basic/alt_arbiter_acq.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_basic.sv SYSTEM_VERILOG PATH ../alt_xcvr_reconfig_basic/alt_xcvr_reconfig_basic.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig.sdc OTHER PATH .//alt_xcvr_reconfig.sdc
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_arbiter.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/ctrl/alt_xcvr_arbiter.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_m2s.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/ctrl/alt_xcvr_m2s.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./altera_wait_generate.v VERILOG PATH ../../altera_xcvr_generic/ctrl/altera_wait_generate.v
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_csr_selector.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/ctrl/alt_xcvr_csr_selector.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./sv_reconfig_bundle_to_basic.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/sv/sv_reconfig_bundle_to_basic.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_cpu.v VERILOG PATH ../../../../../../WINDOWS/TEMP/alt7246_662908221437274520.dir/0001_alt_xcvr_reconfig_0_gen/QUARTUS_SYNTH/alt_xcvr_reconfig_cpu.v
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_cpu_reconfig_cpu.v VERILOG PATH ../../../../../../WINDOWS/TEMP/alt7246_662908221437274520.dir/0001_alt_xcvr_reconfig_0_gen/QUARTUS_SYNTH/submodules/alt_xcvr_reconfig_cpu_reconfig_cpu.v
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_cpu_reconfig_cpu_rf_ram_a.mif OTHER PATH ../../../../../../WINDOWS/TEMP/alt7246_662908221437274520.dir/0001_alt_xcvr_reconfig_0_gen/QUARTUS_SYNTH/submodules/alt_xcvr_reconfig_cpu_reconfig_cpu_rf_ram_a.mif
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_cpu_reconfig_cpu_rf_ram_b.mif OTHER PATH ../../../../../../WINDOWS/TEMP/alt7246_662908221437274520.dir/0001_alt_xcvr_reconfig_0_gen/QUARTUS_SYNTH/submodules/alt_xcvr_reconfig_cpu_reconfig_cpu_rf_ram_b.mif
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_cpu_reconfig_cpu_test_bench.v VERILOG PATH ../../../../../../WINDOWS/TEMP/alt7246_662908221437274520.dir/0001_alt_xcvr_reconfig_0_gen/QUARTUS_SYNTH/submodules/alt_xcvr_reconfig_cpu_reconfig_cpu_test_bench.v
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_cpu_mm_interconnect_0.v VERILOG PATH ../../../../../../WINDOWS/TEMP/alt7246_662908221437274520.dir/0001_alt_xcvr_reconfig_0_gen/QUARTUS_SYNTH/submodules/alt_xcvr_reconfig_cpu_mm_interconnect_0.v
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_cpu_irq_mapper.sv SYSTEM_VERILOG PATH ../../../../../../WINDOWS/TEMP/alt7246_662908221437274520.dir/0001_alt_xcvr_reconfig_0_gen/QUARTUS_SYNTH/submodules/alt_xcvr_reconfig_cpu_irq_mapper.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./altera_reset_controller.v VERILOG PATH ../../../../../../WINDOWS/TEMP/alt7246_662908221437274520.dir/0001_alt_xcvr_reconfig_0_gen/QUARTUS_SYNTH/submodules/altera_reset_controller.v
+Info: alt_xcvr_reconfig_0: add_fileset_file ./altera_reset_synchronizer.v VERILOG PATH ../../../../../../WINDOWS/TEMP/alt7246_662908221437274520.dir/0001_alt_xcvr_reconfig_0_gen/QUARTUS_SYNTH/submodules/altera_reset_synchronizer.v
+Info: alt_xcvr_reconfig_0: add_fileset_file ./altera_reset_controller.sdc OTHER PATH ../../../../../../WINDOWS/TEMP/alt7246_662908221437274520.dir/0001_alt_xcvr_reconfig_0_gen/QUARTUS_SYNTH/submodules/altera_reset_controller.sdc
+Info: alt_xcvr_reconfig_0: add_fileset_file ./altera_merlin_master_translator.sv SYSTEM_VERILOG PATH ../../../../../../WINDOWS/TEMP/alt7246_662908221437274520.dir/0001_alt_xcvr_reconfig_0_gen/QUARTUS_SYNTH/submodules/altera_merlin_master_translator.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./altera_merlin_slave_translator.sv SYSTEM_VERILOG PATH ../../../../../../WINDOWS/TEMP/alt7246_662908221437274520.dir/0001_alt_xcvr_reconfig_0_gen/QUARTUS_SYNTH/submodules/altera_merlin_slave_translator.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./altera_merlin_master_agent.sv SYSTEM_VERILOG PATH ../../../../../../WINDOWS/TEMP/alt7246_662908221437274520.dir/0001_alt_xcvr_reconfig_0_gen/QUARTUS_SYNTH/submodules/altera_merlin_master_agent.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./altera_merlin_slave_agent.sv SYSTEM_VERILOG PATH ../../../../../../WINDOWS/TEMP/alt7246_662908221437274520.dir/0001_alt_xcvr_reconfig_0_gen/QUARTUS_SYNTH/submodules/altera_merlin_slave_agent.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./altera_merlin_burst_uncompressor.sv SYSTEM_VERILOG PATH ../../../../../../WINDOWS/TEMP/alt7246_662908221437274520.dir/0001_alt_xcvr_reconfig_0_gen/QUARTUS_SYNTH/submodules/altera_merlin_burst_uncompressor.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./altera_avalon_sc_fifo.v VERILOG PATH ../../../../../../WINDOWS/TEMP/alt7246_662908221437274520.dir/0001_alt_xcvr_reconfig_0_gen/QUARTUS_SYNTH/submodules/altera_avalon_sc_fifo.v
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_cpu_mm_interconnect_0_router.sv SYSTEM_VERILOG PATH ../../../../../../WINDOWS/TEMP/alt7246_662908221437274520.dir/0001_alt_xcvr_reconfig_0_gen/QUARTUS_SYNTH/submodules/alt_xcvr_reconfig_cpu_mm_interconnect_0_router.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_cpu_mm_interconnect_0_router_001.sv SYSTEM_VERILOG PATH ../../../../../../WINDOWS/TEMP/alt7246_662908221437274520.dir/0001_alt_xcvr_reconfig_0_gen/QUARTUS_SYNTH/submodules/alt_xcvr_reconfig_cpu_mm_interconnect_0_router_001.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_cpu_mm_interconnect_0_router_002.sv SYSTEM_VERILOG PATH ../../../../../../WINDOWS/TEMP/alt7246_662908221437274520.dir/0001_alt_xcvr_reconfig_0_gen/QUARTUS_SYNTH/submodules/alt_xcvr_reconfig_cpu_mm_interconnect_0_router_002.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_cpu_mm_interconnect_0_router_003.sv SYSTEM_VERILOG PATH ../../../../../../WINDOWS/TEMP/alt7246_662908221437274520.dir/0001_alt_xcvr_reconfig_0_gen/QUARTUS_SYNTH/submodules/alt_xcvr_reconfig_cpu_mm_interconnect_0_router_003.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_cpu_mm_interconnect_0_cmd_demux.sv SYSTEM_VERILOG PATH ../../../../../../WINDOWS/TEMP/alt7246_662908221437274520.dir/0001_alt_xcvr_reconfig_0_gen/QUARTUS_SYNTH/submodules/alt_xcvr_reconfig_cpu_mm_interconnect_0_cmd_demux.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_cpu_mm_interconnect_0_cmd_demux_001.sv SYSTEM_VERILOG PATH ../../../../../../WINDOWS/TEMP/alt7246_662908221437274520.dir/0001_alt_xcvr_reconfig_0_gen/QUARTUS_SYNTH/submodules/alt_xcvr_reconfig_cpu_mm_interconnect_0_cmd_demux_001.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_cpu_mm_interconnect_0_cmd_mux.sv SYSTEM_VERILOG PATH ../../../../../../WINDOWS/TEMP/alt7246_662908221437274520.dir/0001_alt_xcvr_reconfig_0_gen/QUARTUS_SYNTH/submodules/alt_xcvr_reconfig_cpu_mm_interconnect_0_cmd_mux.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./altera_merlin_arbitrator.sv SYSTEM_VERILOG PATH ../../../../../../WINDOWS/TEMP/alt7246_662908221437274520.dir/0001_alt_xcvr_reconfig_0_gen/QUARTUS_SYNTH/submodules/altera_merlin_arbitrator.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_cpu_mm_interconnect_0_cmd_mux_001.sv SYSTEM_VERILOG PATH ../../../../../../WINDOWS/TEMP/alt7246_662908221437274520.dir/0001_alt_xcvr_reconfig_0_gen/QUARTUS_SYNTH/submodules/alt_xcvr_reconfig_cpu_mm_interconnect_0_cmd_mux_001.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_cpu_mm_interconnect_0_rsp_mux.sv SYSTEM_VERILOG PATH ../../../../../../WINDOWS/TEMP/alt7246_662908221437274520.dir/0001_alt_xcvr_reconfig_0_gen/QUARTUS_SYNTH/submodules/alt_xcvr_reconfig_cpu_mm_interconnect_0_rsp_mux.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_cpu_mm_interconnect_0_rsp_mux_001.sv SYSTEM_VERILOG PATH ../../../../../../WINDOWS/TEMP/alt7246_662908221437274520.dir/0001_alt_xcvr_reconfig_0_gen/QUARTUS_SYNTH/submodules/alt_xcvr_reconfig_cpu_mm_interconnect_0_rsp_mux_001.sv
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_cpu_mm_interconnect_0_avalon_st_adapter.v VERILOG PATH ../../../../../../WINDOWS/TEMP/alt7246_662908221437274520.dir/0001_alt_xcvr_reconfig_0_gen/QUARTUS_SYNTH/submodules/alt_xcvr_reconfig_cpu_mm_interconnect_0_avalon_st_adapter.v
+Info: alt_xcvr_reconfig_0: add_fileset_file ./alt_xcvr_reconfig_cpu_mm_interconnect_0_avalon_st_adapter_error_adapter_0.sv SYSTEM_VERILOG PATH ../../../../../../WINDOWS/TEMP/alt7246_662908221437274520.dir/0001_alt_xcvr_reconfig_0_gen/QUARTUS_SYNTH/submodules/alt_xcvr_reconfig_cpu_mm_interconnect_0_avalon_st_adapter_error_adapter_0.sv
+Info: alt_xcvr_reconfig_0: "top" instantiated alt_xcvr_reconfig "alt_xcvr_reconfig_0"
+Info: ddr3a_status: Starting RTL generation for module 'top_ddr3a_status'
+Info: ddr3a_status:   Generation command is [exec C:/intelfpga/16.1/quartus/bin64/perl/bin/perl.exe -I C:/intelfpga/16.1/quartus/bin64/perl/lib -I C:/intelfpga/16.1/quartus/sopc_builder/bin/europa -I C:/intelfpga/16.1/quartus/sopc_builder/bin/perl_lib -I C:/intelfpga/16.1/quartus/sopc_builder/bin -I C:/intelfpga/16.1/quartus/../ip/altera/sopc_builder_ip/common -I C:/intelfpga/16.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- C:/intelfpga/16.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=top_ddr3a_status --dir=C:/WINDOWS/TEMP/alt7246_662908221437274520.dir/0002_ddr3a_status_gen/ --quartus_dir=C:/intelfpga/16.1/quartus --verilog --config=C:/WINDOWS/TEMP/alt7246_662908221437274520.dir/0002_ddr3a_status_gen//top_ddr3a_status_component_configuration.pl  --do_build_sim=0  ]
+Info: ddr3a_status: Done RTL generation for module 'top_ddr3a_status'
+Info: ddr3a_status: "top" instantiated altera_avalon_pio "ddr3a_status"
+Info: mem_if_ddr3a: "top" instantiated altera_mem_if_ddr3_emif "mem_if_ddr3a"
+Info: mem_if_ddr3b: "top" instantiated altera_mem_if_ddr3_emif "mem_if_ddr3b"
+Info: mm_clock_crossing_bridge_ddr3a: "top" instantiated altera_avalon_mm_clock_crossing_bridge "mm_clock_crossing_bridge_ddr3a"
+Info: onchip_memory2_0: Starting RTL generation for module 'top_onchip_memory2_0'
+Info: onchip_memory2_0:   Generation command is [exec C:/intelfpga/16.1/quartus/bin64/perl/bin/perl.exe -I C:/intelfpga/16.1/quartus/bin64/perl/lib -I C:/intelfpga/16.1/quartus/sopc_builder/bin/europa -I C:/intelfpga/16.1/quartus/sopc_builder/bin/perl_lib -I C:/intelfpga/16.1/quartus/sopc_builder/bin -I C:/intelfpga/16.1/quartus/../ip/altera/sopc_builder_ip/common -I C:/intelfpga/16.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_onchip_memory2 -- C:/intelfpga/16.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_onchip_memory2/generate_rtl.pl --name=top_onchip_memory2_0 --dir=C:/WINDOWS/TEMP/alt7246_662908221437274520.dir/0004_onchip_memory2_0_gen/ --quartus_dir=C:/intelfpga/16.1/quartus --verilog --config=C:/WINDOWS/TEMP/alt7246_662908221437274520.dir/0004_onchip_memory2_0_gen//top_onchip_memory2_0_component_configuration.pl  --do_build_sim=0  ]
+Info: onchip_memory2_0: Done RTL generation for module 'top_onchip_memory2_0'
+Info: onchip_memory2_0: "top" instantiated altera_avalon_onchip_memory2 "onchip_memory2_0"
+Info: pcie_256_dma: add_fileset_file ./altera_xcvr_functions.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/altera_xcvr_functions.sv
+Info: pcie_256_dma: add_fileset_file ./sv_pcs.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/sv/sv_pcs.sv
+Info: pcie_256_dma: add_fileset_file ./sv_pcs_ch.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/sv/sv_pcs_ch.sv
+Info: pcie_256_dma: add_fileset_file ./sv_pma.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/sv/sv_pma.sv
+Info: pcie_256_dma: add_fileset_file ./sv_reconfig_bundle_to_xcvr.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/sv/sv_reconfig_bundle_to_xcvr.sv
+Info: pcie_256_dma: add_fileset_file ./sv_reconfig_bundle_to_ip.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/sv/sv_reconfig_bundle_to_ip.sv
+Info: pcie_256_dma: add_fileset_file ./sv_reconfig_bundle_merger.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/sv/sv_reconfig_bundle_merger.sv
+Info: pcie_256_dma: add_fileset_file ./sv_rx_pma.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/sv/sv_rx_pma.sv
+Info: pcie_256_dma: add_fileset_file ./sv_tx_pma.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/sv/sv_tx_pma.sv
+Info: pcie_256_dma: add_fileset_file ./sv_tx_pma_ch.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/sv/sv_tx_pma_ch.sv
+Info: pcie_256_dma: add_fileset_file ./sv_xcvr_h.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/sv/sv_xcvr_h.sv
+Info: pcie_256_dma: add_fileset_file ./sv_xcvr_avmm_csr.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/sv/sv_xcvr_avmm_csr.sv
+Info: pcie_256_dma: add_fileset_file ./sv_xcvr_avmm_dcd.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/sv/sv_xcvr_avmm_dcd.sv
+Info: pcie_256_dma: add_fileset_file ./sv_xcvr_avmm.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/sv/sv_xcvr_avmm.sv
+Info: pcie_256_dma: add_fileset_file ./sv_xcvr_data_adapter.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/sv/sv_xcvr_data_adapter.sv
+Info: pcie_256_dma: add_fileset_file ./sv_xcvr_native.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/sv/sv_xcvr_native.sv
+Info: pcie_256_dma: add_fileset_file ./sv_xcvr_plls.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/sv/sv_xcvr_plls.sv
+Info: pcie_256_dma: add_fileset_file ./alt_xcvr_resync.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/ctrl/alt_xcvr_resync.sv
+Info: pcie_256_dma: add_fileset_file ./sv_hssi_10g_rx_pcs_rbc.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/sv/rbc/sv_hssi_10g_rx_pcs_rbc.sv
+Info: pcie_256_dma: add_fileset_file ./sv_hssi_10g_tx_pcs_rbc.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/sv/rbc/sv_hssi_10g_tx_pcs_rbc.sv
+Info: pcie_256_dma: add_fileset_file ./sv_hssi_8g_rx_pcs_rbc.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/sv/rbc/sv_hssi_8g_rx_pcs_rbc.sv
+Info: pcie_256_dma: add_fileset_file ./sv_hssi_8g_tx_pcs_rbc.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/sv/rbc/sv_hssi_8g_tx_pcs_rbc.sv
+Info: pcie_256_dma: add_fileset_file ./sv_hssi_8g_pcs_aggregate_rbc.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/sv/rbc/sv_hssi_8g_pcs_aggregate_rbc.sv
+Info: pcie_256_dma: add_fileset_file ./sv_hssi_common_pcs_pma_interface_rbc.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/sv/rbc/sv_hssi_common_pcs_pma_interface_rbc.sv
+Info: pcie_256_dma: add_fileset_file ./sv_hssi_common_pld_pcs_interface_rbc.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/sv/rbc/sv_hssi_common_pld_pcs_interface_rbc.sv
+Info: pcie_256_dma: add_fileset_file ./sv_hssi_pipe_gen1_2_rbc.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/sv/rbc/sv_hssi_pipe_gen1_2_rbc.sv
+Info: pcie_256_dma: add_fileset_file ./sv_hssi_pipe_gen3_rbc.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/sv/rbc/sv_hssi_pipe_gen3_rbc.sv
+Info: pcie_256_dma: add_fileset_file ./sv_hssi_rx_pcs_pma_interface_rbc.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/sv/rbc/sv_hssi_rx_pcs_pma_interface_rbc.sv
+Info: pcie_256_dma: add_fileset_file ./sv_hssi_rx_pld_pcs_interface_rbc.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/sv/rbc/sv_hssi_rx_pld_pcs_interface_rbc.sv
+Info: pcie_256_dma: add_fileset_file ./sv_hssi_tx_pcs_pma_interface_rbc.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/sv/rbc/sv_hssi_tx_pcs_pma_interface_rbc.sv
+Info: pcie_256_dma: add_fileset_file ./sv_hssi_tx_pld_pcs_interface_rbc.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/sv/rbc/sv_hssi_tx_pld_pcs_interface_rbc.sv
+Info: pcie_256_dma: add_fileset_file ./alt_reset_ctrl_lego.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/ctrl/alt_reset_ctrl_lego.sv
+Info: pcie_256_dma: add_fileset_file ./alt_reset_ctrl_tgx_cdrauto.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/ctrl/alt_reset_ctrl_tgx_cdrauto.sv
+Info: pcie_256_dma: add_fileset_file ./alt_xcvr_csr_common_h.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/ctrl/alt_xcvr_csr_common_h.sv
+Info: pcie_256_dma: add_fileset_file ./alt_xcvr_csr_common.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/ctrl/alt_xcvr_csr_common.sv
+Info: pcie_256_dma: add_fileset_file ./alt_xcvr_csr_pcs8g_h.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/ctrl/alt_xcvr_csr_pcs8g_h.sv
+Info: pcie_256_dma: add_fileset_file ./alt_xcvr_csr_pcs8g.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/ctrl/alt_xcvr_csr_pcs8g.sv
+Info: pcie_256_dma: add_fileset_file ./alt_xcvr_csr_selector.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/ctrl/alt_xcvr_csr_selector.sv
+Info: pcie_256_dma: add_fileset_file ./alt_xcvr_mgmt2dec.sv SYSTEM_VERILOG PATH ../../altera_xcvr_generic/ctrl/alt_xcvr_mgmt2dec.sv
+Info: pcie_256_dma: add_fileset_file ./altera_wait_generate.v VERILOG PATH ../../altera_xcvr_generic/ctrl/altera_wait_generate.v
+Info: pcie_256_dma: add_fileset_file ./sv_xcvr_emsip_adapter.sv SYSTEM_VERILOG PATH ../../altera_pcie_pipe/sv/sv_xcvr_emsip_adapter.sv
+Info: pcie_256_dma: add_fileset_file ./sv_xcvr_pipe_native.sv SYSTEM_VERILOG PATH ../../altera_pcie_pipe/sv/sv_xcvr_pipe_native.sv
+Info: pcie_256_dma: "top" instantiated altera_pcie_256_hip_avmm "pcie_256_dma"
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_xcvr_functions.sv
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/sv_xcvr_h.sv
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/alt_xcvr_resync.sv
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/alt_xcvr_csr_selector.sv
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_wait_generate.v
+Warning: Overwriting different file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/plain_files.txt
+Info: pcie_reconfig_driver_0: "top" instantiated altera_pcie_reconfig_driver "pcie_reconfig_driver_0"
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/alt_xcvr_reconfig_h.sv
+Info: pio_button: Starting RTL generation for module 'top_pio_button'
+Info: pio_button:   Generation command is [exec C:/intelfpga/16.1/quartus/bin64/perl/bin/perl.exe -I C:/intelfpga/16.1/quartus/bin64/perl/lib -I C:/intelfpga/16.1/quartus/sopc_builder/bin/europa -I C:/intelfpga/16.1/quartus/sopc_builder/bin/perl_lib -I C:/intelfpga/16.1/quartus/sopc_builder/bin -I C:/intelfpga/16.1/quartus/../ip/altera/sopc_builder_ip/common -I C:/intelfpga/16.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- C:/intelfpga/16.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=top_pio_button --dir=C:/WINDOWS/TEMP/alt7246_662908221437274520.dir/0007_pio_button_gen/ --quartus_dir=C:/intelfpga/16.1/quartus --verilog --config=C:/WINDOWS/TEMP/alt7246_662908221437274520.dir/0007_pio_button_gen//top_pio_button_component_configuration.pl  --do_build_sim=0  ]
+Info: pio_button: Done RTL generation for module 'top_pio_button'
+Info: pio_button: "top" instantiated altera_avalon_pio "pio_button"
+Info: pio_led: Starting RTL generation for module 'top_pio_led'
+Info: pio_led:   Generation command is [exec C:/intelfpga/16.1/quartus/bin64/perl/bin/perl.exe -I C:/intelfpga/16.1/quartus/bin64/perl/lib -I C:/intelfpga/16.1/quartus/sopc_builder/bin/europa -I C:/intelfpga/16.1/quartus/sopc_builder/bin/perl_lib -I C:/intelfpga/16.1/quartus/sopc_builder/bin -I C:/intelfpga/16.1/quartus/../ip/altera/sopc_builder_ip/common -I C:/intelfpga/16.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- C:/intelfpga/16.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=top_pio_led --dir=C:/WINDOWS/TEMP/alt7246_662908221437274520.dir/0008_pio_led_gen/ --quartus_dir=C:/intelfpga/16.1/quartus --verilog --config=C:/WINDOWS/TEMP/alt7246_662908221437274520.dir/0008_pio_led_gen//top_pio_led_component_configuration.pl  --do_build_sim=0  ]
+Info: pio_led: Done RTL generation for module 'top_pio_led'
+Info: pio_led: "top" instantiated altera_avalon_pio "pio_led"
+Info: avalon_st_adapter: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_001: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_002: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_003: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_004: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_005: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_006: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_007: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_008: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_009: Inserting error_adapter: error_adapter_0
+Info: mm_interconnect_0: "top" instantiated altera_mm_interconnect "mm_interconnect_0"
+Info: avalon_st_adapter: Inserting error_adapter: error_adapter_0
+Info: mm_interconnect_1: "top" instantiated altera_mm_interconnect "mm_interconnect_1"
+Info: avalon_st_adapter: Inserting error_adapter: error_adapter_0
+Info: mm_interconnect_2: "top" instantiated altera_mm_interconnect "mm_interconnect_2"
+Info: avalon_st_adapter: Inserting error_adapter: error_adapter_0
+Info: mm_interconnect_3: "top" instantiated altera_mm_interconnect "mm_interconnect_3"
+Info: rst_controller: "top" instantiated altera_reset_controller "rst_controller"
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_reset_controller.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_reset_synchronizer.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_reset_controller.sdc
+Info: pll0: "mem_if_ddr3a" instantiated altera_mem_if_ddr3_pll "pll0"
+Info: p0: Generating clock pair generator
+Info: p0: Generating top_mem_if_ddr3a_p0_altdqdqs
+Info: p0: 
+Info: p0: *****************************
+Info: p0: 
+Info: p0: Remember to run the top_mem_if_ddr3a_p0_pin_assignments.tcl
+Info: p0: script after running Synthesis and before Fitting.
+Info: p0: 
+Info: p0: *****************************
+Info: p0: 
+Info: p0: "mem_if_ddr3a" instantiated altera_mem_if_ddr3_phy_core "p0"
+Info: m0: "mem_if_ddr3a" instantiated altera_mem_if_ddr3_afi_mux "m0"
+Info: s0: Generating Qsys sequencer system
+Info: s0: QSYS sequencer system generated successfully
+Info: s0: "mem_if_ddr3a" instantiated altera_mem_if_ddr3_qseq "s0"
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_merlin_burst_uncompressor.sv
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_merlin_master_agent.sv
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_merlin_slave_agent.sv
+Info: dmaster: "mem_if_ddr3a" instantiated altera_jtag_avalon_master "dmaster"
+Info: c0: "mem_if_ddr3a" instantiated altera_mem_if_nextgen_ddr3_controller "c0"
+Info: oct0: "mem_if_ddr3a" instantiated altera_mem_if_oct "oct0"
+Info: dll0: "mem_if_ddr3a" instantiated altera_mem_if_dll "dll0"
+Info: mm_interconnect_0: "mem_if_ddr3a" instantiated altera_mm_interconnect "mm_interconnect_0"
+Info: pll0: "mem_if_ddr3b" instantiated altera_mem_if_ddr3_pll "pll0"
+Info: p0: Generating clock pair generator
+Info: p0: Generating top_mem_if_ddr3b_p0_altdqdqs
+Info: p0: 
+Info: p0: *****************************
+Info: p0: 
+Info: p0: Remember to run the top_mem_if_ddr3b_p0_pin_assignments.tcl
+Info: p0: script after running Synthesis and before Fitting.
+Info: p0: 
+Info: p0: *****************************
+Info: p0: 
+Info: p0: "mem_if_ddr3b" instantiated altera_mem_if_ddr3_phy_core "p0"
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altdq_dqs2_stratixv.sv
+Info: s0: Generating Qsys sequencer system
+Info: s0: QSYS sequencer system generated successfully
+Info: s0: "mem_if_ddr3b" instantiated altera_mem_if_ddr3_qseq "s0"
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_avalon_mm_bridge.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_mem_if_sequencer_cpu_no_ifdef_params_synth_cpu_inst.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_mem_if_sequencer_cpu_no_ifdef_params_synth_cpu_inst_test_bench.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_mem_if_sequencer_mem_no_ifdef_params.sv
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_mem_if_sequencer_rst.sv
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_merlin_burst_uncompressor.sv
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_merlin_master_agent.sv
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_merlin_reorder_memory.sv
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_merlin_slave_agent.sv
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_merlin_traffic_limiter.sv
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/rw_manager_ac_ROM_no_ifdef_params.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/rw_manager_ac_ROM_reg.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/rw_manager_bitcheck.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/rw_manager_core.sv
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/rw_manager_datamux.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/rw_manager_data_broadcast.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/rw_manager_data_decoder.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/rw_manager_ddr3.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/rw_manager_di_buffer.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/rw_manager_di_buffer_wrap.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/rw_manager_dm_decoder.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/rw_manager_generic.sv
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/rw_manager_inst_ROM_no_ifdef_params.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/rw_manager_inst_ROM_reg.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/rw_manager_jumplogic.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/rw_manager_lfsr12.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/rw_manager_lfsr36.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/rw_manager_lfsr72.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/rw_manager_pattern_fifo.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/rw_manager_ram.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/rw_manager_ram_csr.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/rw_manager_read_datapath.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/rw_manager_write_decoder.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/sequencer_data_mgr.sv
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/sequencer_phy_mgr.sv
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/sequencer_reg_file.sv
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/sequencer_scc_acv_phase_decode.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/sequencer_scc_acv_wrapper.sv
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/sequencer_scc_mgr.sv
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/sequencer_scc_reg_file.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/sequencer_scc_siii_phase_decode.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/sequencer_scc_siii_wrapper.sv
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/sequencer_scc_sv_phase_decode.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/sequencer_scc_sv_wrapper.sv
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/sequencer_trk_mgr.sv
+Info: pcie_256_dma_Rxm_BAR4_translator: "mm_interconnect_0" instantiated altera_merlin_master_translator "pcie_256_dma_Rxm_BAR4_translator"
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_merlin_master_translator.sv
+Info: onchip_memory2_0_s1_translator: "mm_interconnect_0" instantiated altera_merlin_slave_translator "onchip_memory2_0_s1_translator"
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_merlin_slave_translator.sv
+Info: pcie_256_dma_Rxm_BAR4_agent: "mm_interconnect_0" instantiated altera_merlin_master_agent "pcie_256_dma_Rxm_BAR4_agent"
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_merlin_master_agent.sv
+Info: onchip_memory2_0_s1_agent: "mm_interconnect_0" instantiated altera_merlin_slave_agent "onchip_memory2_0_s1_agent"
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_merlin_slave_agent.sv
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_merlin_burst_uncompressor.sv
+Info: onchip_memory2_0_s1_agent_rsp_fifo: "mm_interconnect_0" instantiated altera_avalon_sc_fifo "onchip_memory2_0_s1_agent_rsp_fifo"
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_avalon_sc_fifo.v
+Info: router: "mm_interconnect_0" instantiated altera_merlin_router "router"
+Info: router_001: "mm_interconnect_0" instantiated altera_merlin_router "router_001"
+Info: router_002: "mm_interconnect_0" instantiated altera_merlin_router "router_002"
+Info: router_003: "mm_interconnect_0" instantiated altera_merlin_router "router_003"
+Info: router_004: "mm_interconnect_0" instantiated altera_merlin_router "router_004"
+Info: router_008: "mm_interconnect_0" instantiated altera_merlin_router "router_008"
+Info: router_009: "mm_interconnect_0" instantiated altera_merlin_router "router_009"
+Info: router_012: "mm_interconnect_0" instantiated altera_merlin_router "router_012"
+Info: pcie_256_dma_Rxm_BAR4_limiter: "mm_interconnect_0" instantiated altera_merlin_traffic_limiter "pcie_256_dma_Rxm_BAR4_limiter"
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_merlin_traffic_limiter.sv
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_merlin_reorder_memory.sv
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_avalon_sc_fifo.v
+Info: onchip_memory2_0_s1_burst_adapter: "mm_interconnect_0" instantiated altera_merlin_burst_adapter "onchip_memory2_0_s1_burst_adapter"
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_avalon_st_pipeline_base.v
+Info: cmd_demux: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "cmd_demux"
+Info: cmd_demux_001: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "cmd_demux_001"
+Info: cmd_demux_002: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "cmd_demux_002"
+Info: cmd_mux: "mm_interconnect_0" instantiated altera_merlin_multiplexer "cmd_mux"
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: cmd_mux_001: "mm_interconnect_0" instantiated altera_merlin_multiplexer "cmd_mux_001"
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: cmd_mux_005: "mm_interconnect_0" instantiated altera_merlin_multiplexer "cmd_mux_005"
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: cmd_mux_006: "mm_interconnect_0" instantiated altera_merlin_multiplexer "cmd_mux_006"
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: rsp_demux: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "rsp_demux"
+Info: rsp_demux_001: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "rsp_demux_001"
+Info: rsp_demux_003: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "rsp_demux_003"
+Info: rsp_demux_005: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "rsp_demux_005"
+Info: rsp_demux_006: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "rsp_demux_006"
+Info: rsp_mux: "mm_interconnect_0" instantiated altera_merlin_multiplexer "rsp_mux"
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: rsp_mux_001: "mm_interconnect_0" instantiated altera_merlin_multiplexer "rsp_mux_001"
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: rsp_mux_002: "mm_interconnect_0" instantiated altera_merlin_multiplexer "rsp_mux_002"
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: pcie_256_dma_Rxm_BAR4_to_onchip_memory2_0_s1_cmd_width_adapter: "mm_interconnect_0" instantiated altera_merlin_width_adapter "pcie_256_dma_Rxm_BAR4_to_onchip_memory2_0_s1_cmd_width_adapter"
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_merlin_address_alignment.sv
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_merlin_burst_uncompressor.sv
+Info: async_fifo: "mm_interconnect_0" instantiated altera_avalon_dc_fifo "async_fifo"
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_avalon_dc_fifo.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_dcfifo_synchronizer_bundle.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_std_synchronizer_nocut.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_avalon_dc_fifo.sdc
+Info: limiter_pipeline: "mm_interconnect_0" instantiated altera_avalon_st_pipeline_stage "limiter_pipeline"
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_avalon_st_pipeline_stage.sv
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_avalon_st_pipeline_base.v
+Info: avalon_st_adapter: "mm_interconnect_0" instantiated altera_avalon_st_adapter "avalon_st_adapter"
+Info: avalon_st_adapter_001: "mm_interconnect_0" instantiated altera_avalon_st_adapter "avalon_st_adapter_001"
+Info: avalon_st_adapter_006: "mm_interconnect_0" instantiated altera_avalon_st_adapter "avalon_st_adapter_006"
+Info: router: "mm_interconnect_1" instantiated altera_merlin_router "router"
+Info: router_001: "mm_interconnect_1" instantiated altera_merlin_router "router_001"
+Info: cmd_demux: "mm_interconnect_1" instantiated altera_merlin_demultiplexer "cmd_demux"
+Info: cmd_mux: "mm_interconnect_1" instantiated altera_merlin_multiplexer "cmd_mux"
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: rsp_mux: "mm_interconnect_1" instantiated altera_merlin_multiplexer "rsp_mux"
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: router: "mm_interconnect_3" instantiated altera_merlin_router "router"
+Info: router_002: "mm_interconnect_3" instantiated altera_merlin_router "router_002"
+Info: cmd_demux: "mm_interconnect_3" instantiated altera_merlin_demultiplexer "cmd_demux"
+Info: cmd_mux: "mm_interconnect_3" instantiated altera_merlin_multiplexer "cmd_mux"
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: rsp_demux: "mm_interconnect_3" instantiated altera_merlin_demultiplexer "rsp_demux"
+Info: rsp_mux: "mm_interconnect_3" instantiated altera_merlin_multiplexer "rsp_mux"
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: jtag_phy_embedded_in_jtag_master: "dmaster" instantiated altera_jtag_dc_streaming "jtag_phy_embedded_in_jtag_master"
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_std_synchronizer_nocut.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_avalon_st_pipeline_base.v
+Info: Reusing file D:/xxpeng/DE5-NET-NEW/PCIE_DDR3/top/synthesis/submodules/altera_avalon_st_pipeline_stage.sv
+Info: timing_adt: "dmaster" instantiated timing_adapter "timing_adt"
+Info: b2p: "dmaster" instantiated altera_avalon_st_bytes_to_packets "b2p"
+Info: p2b: "dmaster" instantiated altera_avalon_st_packets_to_bytes "p2b"
+Info: transacto: "dmaster" instantiated altera_avalon_packets_to_master "transacto"
+Info: b2p_adapter: "dmaster" instantiated channel_adapter "b2p_adapter"
+Info: p2b_adapter: "dmaster" instantiated channel_adapter "p2b_adapter"
+Info: ng0: "c0" instantiated altera_mem_if_nextgen_ddr3_controller_core "ng0"
+Info: a0: "c0" instantiated alt_mem_ddrx_mm_st_converter "a0"
+Info: error_adapter_0: "avalon_st_adapter" instantiated error_adapter "error_adapter_0"
+Info: error_adapter_0: "avalon_st_adapter_001" instantiated error_adapter "error_adapter_0"
+Info: error_adapter_0: "avalon_st_adapter_006" instantiated error_adapter "error_adapter_0"
+Info: top: Done "top" with 87 modules, 486 files
+Info: qsys-generate succeeded.
+Info: Finished: Create HDL design files for synthesis

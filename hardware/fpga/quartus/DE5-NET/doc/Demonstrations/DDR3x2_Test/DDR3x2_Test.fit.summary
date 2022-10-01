@@ -1,0 +1,26 @@
+Fitter Status : Successful - Tue Mar 21 13:53:10 2017
+Quartus Prime Version : 16.1.2 Build 203 01/18/2017 SJ Standard Edition
+Revision Name : DDR3x2_Test
+Top-level Entity Name : DDR3x2_Test
+Family : Stratix V
+Device : 5SGXEA7N2F45C2
+Timing Models : Final
+Logic utilization (in ALMs) : 11,369 / 234,720 ( 5 % )
+Total registers : 20775
+Total pins : 369 / 1,064 ( 35 % )
+Total virtual pins : 0
+Total block memory bits : 314,880 / 52,428,800 ( < 1 % )
+Total RAM Blocks : 43 / 2,560 ( 2 % )
+Total DSP Blocks : 0 / 256 ( 0 % )
+Total HSSI STD RX PCSs : 0 / 48 ( 0 % )
+Total HSSI 10G RX PCSs : 0 / 48 ( 0 % )
+Total HSSI GEN3 RX PCSs : 0 / 48 ( 0 % )
+Total HSSI PMA RX Deserializers : 0 / 48 ( 0 % )
+Total HSSI STD TX PCSs : 0 / 48 ( 0 % )
+Total HSSI 10G TX PCSs : 0 / 48 ( 0 % )
+Total HSSI GEN3 TX PCSs : 0 / 48 ( 0 % )
+Total HSSI PMA TX Serializers : 0 / 48 ( 0 % )
+Total HSSI PIPE GEN1_2s : 0 / 48 ( 0 % )
+Total HSSI GEN3s : 0 / 48 ( 0 % )
+Total PLLs : 1 / 92 ( 1 % )
+Total DLLs : 1 / 4 ( 25 % )

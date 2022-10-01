@@ -1,0 +1,728 @@
+------------------------------------------------------------
+TimeQuest Timing Analyzer Summary
+------------------------------------------------------------
+
+Type  : Slow 900mV 85C Model Setup 'u0|mem_if_ddr3_emif|pll0|pll_p2c_read_clk'
+Slack : 0.127
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'u0|mem_if_ddr3_emif|pll0|pll_c2p_write_clk'
+Slack : 0.179
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'u0|mem_if_ddr3_emif|pll0|pll_dq_write_clk'
+Slack : 0.304
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'u0|mem_if_ddr3_emif|pll0|pll_afi_clk'
+Slack : 0.317
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'u0|mem_if_ddr3_emif|pll0|pll_hr_clk'
+Slack : 0.336
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'u0|mem_if_ddr3_emif|pll0|pll_write_clk'
+Slack : 0.469
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'u0|mem_if_ddr3_emif|pll0|pll_avl_clk'
+Slack : 1.188
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'OSC_50_B7A'
+Slack : 1.950
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'u0|mem_if_ddr3_emif|pll0|pll_config_clk'
+Slack : 3.248
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'altera_reserved_tck'
+Slack : 11.053
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'u0|mem_if_ddr3_emif|pll0|pll_write_clk'
+Slack : 0.091
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'u0|mem_if_ddr3_emif|pll0|pll_afi_clk'
+Slack : 0.094
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'altera_reserved_tck'
+Slack : 0.101
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'OSC_50_B7A'
+Slack : 0.111
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'u0|mem_if_ddr3_emif|pll0|pll_config_clk'
+Slack : 0.176
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'u0|mem_if_ddr3_emif|pll0|pll_p2c_read_clk'
+Slack : 0.191
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'u0|mem_if_ddr3_emif|pll0|pll_avl_clk'
+Slack : 0.196
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'u0|mem_if_ddr3_emif|pll0|pll_hr_clk'
+Slack : 0.231
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'u0|mem_if_ddr3_emif|pll0|pll_dq_write_clk'
+Slack : 0.403
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'u0|mem_if_ddr3_emif|pll0|pll_c2p_write_clk'
+Slack : 0.670
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Recovery 'u0|mem_if_ddr3_emif|pll0|pll_p2c_read_clk'
+Slack : 0.680
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Recovery 'u0|mem_if_ddr3_emif|pll0|pll_afi_clk'
+Slack : 0.937
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Recovery 'u0|mem_if_ddr3_emif|pll0|pll_hr_clk'
+Slack : 1.210
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Recovery 'u0|mem_if_ddr3_emif|pll0|pll_avl_clk'
+Slack : 6.715
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Recovery 'OSC_50_B7A'
+Slack : 15.739
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Recovery 'altera_reserved_tck'
+Slack : 16.260
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Recovery 'u0|mem_if_ddr3_emif|pll0|pll_config_clk'
+Slack : 17.473
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Removal 'OSC_50_B7A'
+Slack : 0.219
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Removal 'u0|mem_if_ddr3_emif|pll0|pll_avl_clk'
+Slack : 0.299
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Removal 'u0|mem_if_ddr3_emif|pll0|pll_config_clk'
+Slack : 0.303
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Removal 'u0|mem_if_ddr3_emif|pll0|pll_afi_clk'
+Slack : 0.320
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Removal 'altera_reserved_tck'
+Slack : 0.421
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Removal 'u0|mem_if_ddr3_emif|pll0|pll_p2c_read_clk'
+Slack : 0.623
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Removal 'u0|mem_if_ddr3_emif|pll0|pll_hr_clk'
+Slack : 0.669
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|pll0|pll_dq_write_clk'
+Slack : 0.256
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|pll0|pll_write_clk'
+Slack : 0.256
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|pll0|pll_hr_clk'
+Slack : 0.628
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|pll0|pll_p2c_read_clk'
+Slack : 0.666
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|pll0|pll_c2p_write_clk'
+Slack : 0.875
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|S5_DDR3_QSYS_mem_if_ddr3_emif_p0_sampling_clock'
+Slack : 1.091
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|pll0|pll_afi_clk'
+Slack : 1.612
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|pll0|pll_avl_clk'
+Slack : 4.159
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|pll0|pll_config_clk'
+Slack : 6.667
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'OSC_50_B7A'
+Slack : 9.179
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'altera_reserved_tck'
+Slack : 15.751
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'u0|mem_if_ddr3_emif|pll0|pll_p2c_read_clk'
+Slack : 0.263
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'u0|mem_if_ddr3_emif|pll0|pll_dq_write_clk'
+Slack : 0.348
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'u0|mem_if_ddr3_emif|pll0|pll_c2p_write_clk'
+Slack : 0.437
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'u0|mem_if_ddr3_emif|pll0|pll_hr_clk'
+Slack : 0.484
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'u0|mem_if_ddr3_emif|pll0|pll_afi_clk'
+Slack : 0.495
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'u0|mem_if_ddr3_emif|pll0|pll_write_clk'
+Slack : 0.500
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'u0|mem_if_ddr3_emif|pll0|pll_avl_clk'
+Slack : 1.505
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'OSC_50_B7A'
+Slack : 2.010
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'u0|mem_if_ddr3_emif|pll0|pll_config_clk'
+Slack : 3.500
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'altera_reserved_tck'
+Slack : 11.366
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'u0|mem_if_ddr3_emif|pll0|pll_write_clk'
+Slack : 0.049
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'u0|mem_if_ddr3_emif|pll0|pll_config_clk'
+Slack : 0.141
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'altera_reserved_tck'
+Slack : 0.163
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'u0|mem_if_ddr3_emif|pll0|pll_avl_clk'
+Slack : 0.167
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'u0|mem_if_ddr3_emif|pll0|pll_afi_clk'
+Slack : 0.171
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'OSC_50_B7A'
+Slack : 0.197
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'u0|mem_if_ddr3_emif|pll0|pll_p2c_read_clk'
+Slack : 0.201
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'u0|mem_if_ddr3_emif|pll0|pll_hr_clk'
+Slack : 0.205
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'u0|mem_if_ddr3_emif|pll0|pll_dq_write_clk'
+Slack : 0.360
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'u0|mem_if_ddr3_emif|pll0|pll_c2p_write_clk'
+Slack : 0.463
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Recovery 'u0|mem_if_ddr3_emif|pll0|pll_p2c_read_clk'
+Slack : 0.908
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Recovery 'u0|mem_if_ddr3_emif|pll0|pll_hr_clk'
+Slack : 1.285
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Recovery 'u0|mem_if_ddr3_emif|pll0|pll_afi_clk'
+Slack : 1.319
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Recovery 'u0|mem_if_ddr3_emif|pll0|pll_avl_clk'
+Slack : 6.923
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Recovery 'OSC_50_B7A'
+Slack : 16.004
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Recovery 'altera_reserved_tck'
+Slack : 16.191
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Recovery 'u0|mem_if_ddr3_emif|pll0|pll_config_clk'
+Slack : 17.614
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Removal 'u0|mem_if_ddr3_emif|pll0|pll_avl_clk'
+Slack : 0.260
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Removal 'OSC_50_B7A'
+Slack : 0.272
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Removal 'u0|mem_if_ddr3_emif|pll0|pll_config_clk'
+Slack : 0.280
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Removal 'u0|mem_if_ddr3_emif|pll0|pll_afi_clk'
+Slack : 0.393
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Removal 'altera_reserved_tck'
+Slack : 0.403
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Removal 'u0|mem_if_ddr3_emif|pll0|pll_hr_clk'
+Slack : 0.607
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Removal 'u0|mem_if_ddr3_emif|pll0|pll_p2c_read_clk'
+Slack : 0.637
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|pll0|pll_dq_write_clk'
+Slack : 0.265
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|pll0|pll_write_clk'
+Slack : 0.265
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|pll0|pll_hr_clk'
+Slack : 0.628
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|pll0|pll_p2c_read_clk'
+Slack : 0.676
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|pll0|pll_c2p_write_clk'
+Slack : 0.872
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|S5_DDR3_QSYS_mem_if_ddr3_emif_p0_sampling_clock'
+Slack : 1.082
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|pll0|pll_afi_clk'
+Slack : 1.653
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|pll0|pll_avl_clk'
+Slack : 4.150
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|pll0|pll_config_clk'
+Slack : 6.667
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'OSC_50_B7A'
+Slack : 9.122
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'altera_reserved_tck'
+Slack : 15.866
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'u0|mem_if_ddr3_emif|pll0|pll_dq_write_clk'
+Slack : 0.228
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'u0|mem_if_ddr3_emif|pll0|pll_write_clk'
+Slack : 0.458
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'u0|mem_if_ddr3_emif|pll0|pll_p2c_read_clk'
+Slack : 0.839
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'u0|mem_if_ddr3_emif|pll0|pll_hr_clk'
+Slack : 0.883
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'u0|mem_if_ddr3_emif|pll0|pll_c2p_write_clk'
+Slack : 0.907
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'u0|mem_if_ddr3_emif|pll0|pll_afi_clk'
+Slack : 1.015
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'u0|mem_if_ddr3_emif|pll0|pll_avl_clk'
+Slack : 2.306
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'OSC_50_B7A'
+Slack : 2.805
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'u0|mem_if_ddr3_emif|pll0|pll_config_clk'
+Slack : 5.687
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'altera_reserved_tck'
+Slack : 13.008
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'u0|mem_if_ddr3_emif|pll0|pll_afi_clk'
+Slack : 0.055
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'altera_reserved_tck'
+Slack : 0.064
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'OSC_50_B7A'
+Slack : 0.087
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'u0|mem_if_ddr3_emif|pll0|pll_p2c_read_clk'
+Slack : 0.098
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'u0|mem_if_ddr3_emif|pll0|pll_config_clk'
+Slack : 0.137
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'u0|mem_if_ddr3_emif|pll0|pll_avl_clk'
+Slack : 0.148
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'u0|mem_if_ddr3_emif|pll0|pll_hr_clk'
+Slack : 0.172
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'u0|mem_if_ddr3_emif|pll0|pll_write_clk'
+Slack : 0.340
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'u0|mem_if_ddr3_emif|pll0|pll_c2p_write_clk'
+Slack : 0.367
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'u0|mem_if_ddr3_emif|pll0|pll_dq_write_clk'
+Slack : 0.652
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Recovery 'u0|mem_if_ddr3_emif|pll0|pll_p2c_read_clk'
+Slack : 1.303
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Recovery 'u0|mem_if_ddr3_emif|pll0|pll_hr_clk'
+Slack : 1.666
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Recovery 'u0|mem_if_ddr3_emif|pll0|pll_afi_clk'
+Slack : 2.267
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Recovery 'u0|mem_if_ddr3_emif|pll0|pll_avl_clk'
+Slack : 7.813
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Recovery 'altera_reserved_tck'
+Slack : 16.756
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Recovery 'OSC_50_B7A'
+Slack : 17.079
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Recovery 'u0|mem_if_ddr3_emif|pll0|pll_config_clk'
+Slack : 18.287
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Removal 'OSC_50_B7A'
+Slack : 0.164
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Removal 'u0|mem_if_ddr3_emif|pll0|pll_avl_clk'
+Slack : 0.222
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Removal 'u0|mem_if_ddr3_emif|pll0|pll_afi_clk'
+Slack : 0.229
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Removal 'u0|mem_if_ddr3_emif|pll0|pll_config_clk'
+Slack : 0.260
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Removal 'altera_reserved_tck'
+Slack : 0.300
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Removal 'u0|mem_if_ddr3_emif|pll0|pll_p2c_read_clk'
+Slack : 0.400
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Removal 'u0|mem_if_ddr3_emif|pll0|pll_hr_clk'
+Slack : 0.468
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|pll0|pll_dq_write_clk'
+Slack : 0.299
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|pll0|pll_write_clk'
+Slack : 0.300
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|pll0|pll_hr_clk'
+Slack : 0.891
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|pll0|pll_p2c_read_clk'
+Slack : 0.902
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|pll0|pll_c2p_write_clk'
+Slack : 0.910
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|S5_DDR3_QSYS_mem_if_ddr3_emif_p0_sampling_clock'
+Slack : 1.154
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|pll0|pll_afi_clk'
+Slack : 1.670
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|pll0|pll_avl_clk'
+Slack : 4.198
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|pll0|pll_config_clk'
+Slack : 6.667
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'OSC_50_B7A'
+Slack : 9.351
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'altera_reserved_tck'
+Slack : 15.706
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'u0|mem_if_ddr3_emif|pll0|pll_dq_write_clk'
+Slack : 0.328
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'u0|mem_if_ddr3_emif|pll0|pll_write_clk'
+Slack : 0.553
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'u0|mem_if_ddr3_emif|pll0|pll_p2c_read_clk'
+Slack : 0.880
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'u0|mem_if_ddr3_emif|pll0|pll_hr_clk'
+Slack : 0.994
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'u0|mem_if_ddr3_emif|pll0|pll_c2p_write_clk'
+Slack : 1.042
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'u0|mem_if_ddr3_emif|pll0|pll_afi_clk'
+Slack : 1.132
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'u0|mem_if_ddr3_emif|pll0|pll_avl_clk'
+Slack : 2.512
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'OSC_50_B7A'
+Slack : 2.875
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'u0|mem_if_ddr3_emif|pll0|pll_config_clk'
+Slack : 5.894
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'altera_reserved_tck'
+Slack : 13.195
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'altera_reserved_tck'
+Slack : 0.071
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'u0|mem_if_ddr3_emif|pll0|pll_config_clk'
+Slack : 0.107
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'u0|mem_if_ddr3_emif|pll0|pll_afi_clk'
+Slack : 0.112
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'u0|mem_if_ddr3_emif|pll0|pll_p2c_read_clk'
+Slack : 0.121
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'u0|mem_if_ddr3_emif|pll0|pll_avl_clk'
+Slack : 0.122
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'OSC_50_B7A'
+Slack : 0.138
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'u0|mem_if_ddr3_emif|pll0|pll_hr_clk'
+Slack : 0.142
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'u0|mem_if_ddr3_emif|pll0|pll_c2p_write_clk'
+Slack : 0.241
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'u0|mem_if_ddr3_emif|pll0|pll_write_clk'
+Slack : 0.309
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'u0|mem_if_ddr3_emif|pll0|pll_dq_write_clk'
+Slack : 0.620
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Recovery 'u0|mem_if_ddr3_emif|pll0|pll_p2c_read_clk'
+Slack : 1.444
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Recovery 'u0|mem_if_ddr3_emif|pll0|pll_hr_clk'
+Slack : 1.704
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Recovery 'u0|mem_if_ddr3_emif|pll0|pll_afi_clk'
+Slack : 2.504
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Recovery 'u0|mem_if_ddr3_emif|pll0|pll_avl_clk'
+Slack : 7.922
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Recovery 'altera_reserved_tck'
+Slack : 16.785
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Recovery 'OSC_50_B7A'
+Slack : 17.210
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Recovery 'u0|mem_if_ddr3_emif|pll0|pll_config_clk'
+Slack : 18.372
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Removal 'u0|mem_if_ddr3_emif|pll0|pll_avl_clk'
+Slack : 0.181
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Removal 'OSC_50_B7A'
+Slack : 0.198
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Removal 'u0|mem_if_ddr3_emif|pll0|pll_config_clk'
+Slack : 0.223
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Removal 'u0|mem_if_ddr3_emif|pll0|pll_afi_clk'
+Slack : 0.274
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Removal 'altera_reserved_tck'
+Slack : 0.276
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Removal 'u0|mem_if_ddr3_emif|pll0|pll_hr_clk'
+Slack : 0.411
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Removal 'u0|mem_if_ddr3_emif|pll0|pll_p2c_read_clk'
+Slack : 0.412
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|pll0|pll_dq_write_clk'
+Slack : 0.288
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|pll0|pll_write_clk'
+Slack : 0.288
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|pll0|pll_hr_clk'
+Slack : 0.902
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|pll0|pll_c2p_write_clk'
+Slack : 0.909
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|pll0|pll_p2c_read_clk'
+Slack : 0.922
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|S5_DDR3_QSYS_mem_if_ddr3_emif_p0_sampling_clock'
+Slack : 1.140
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|pll0|pll_afi_clk'
+Slack : 1.704
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|pll0|pll_avl_clk'
+Slack : 4.197
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'u0|mem_if_ddr3_emif|pll0|pll_config_clk'
+Slack : 6.667
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'OSC_50_B7A'
+Slack : 9.353
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'altera_reserved_tck'
+Slack : 15.711
+TNS   : 0.000
+
+------------------------------------------------------------
+Info: see the "DDR report" for DDR timing results
+------------------------------------------------------------
+------------------------------------------------------------

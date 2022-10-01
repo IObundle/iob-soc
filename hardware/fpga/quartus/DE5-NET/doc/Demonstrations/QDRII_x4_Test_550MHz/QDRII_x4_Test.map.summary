@@ -1,0 +1,23 @@
+Analysis & Synthesis Status : Successful - Wed Mar 22 10:45:40 2017
+Quartus Prime Version : 16.1.2 Build 203 01/18/2017 SJ Standard Edition
+Revision Name : QDRII_x4_Test
+Top-level Entity Name : QDRII_x4_Test
+Family : Stratix V
+Logic utilization (in ALMs) : N/A
+Total registers : 9507
+Total pins : 403
+Total virtual pins : 0
+Total block memory bits : 368,640
+Total DSP Blocks : 0
+Total HSSI STD RX PCSs : 0
+Total HSSI 10G RX PCSs : 0
+Total HSSI GEN3 RX PCSs : 0
+Total HSSI PMA RX Deserializers : 0
+Total HSSI STD TX PCSs : 0
+Total HSSI 10G TX PCSs : 0
+Total HSSI GEN3 TX PCSs : 0
+Total HSSI PMA TX Serializers : 0
+Total HSSI PIPE GEN1_2s : 0
+Total HSSI GEN3s : 0
+Total PLLs : 2
+Total DLLs : 2

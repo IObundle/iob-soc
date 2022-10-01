@@ -1,0 +1,529 @@
+name: QDRII_SLAVE_s0
+generated files (just this core):
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/QDRII_SLAVE_s0.v (268334)
+generated files (children of this core):
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/altera_mem_if_sequencer_cpu_no_ifdef_params_synth_cpu_inst.v (85632)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/altera_mem_if_sequencer_cpu_no_ifdef_params_synth_cpu_inst_test_bench.v (33763)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/sequencer_scc_mgr.sv (31755)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/sequencer_scc_siii_wrapper.sv (4837)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/sequencer_scc_siii_phase_decode.v (11947)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/sequencer_scc_sv_wrapper.sv (7358)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/sequencer_scc_sv_phase_decode.v (4117)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/sequencer_scc_acv_wrapper.sv (5407)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/sequencer_scc_acv_phase_decode.v (1918)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/sequencer_scc_reg_file.v (2626)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/sequencer_reg_file.sv (7494)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/sequencer_phy_mgr.sv (17143)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/sequencer_data_mgr.sv (3856)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_qdrii.v (6491)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_ac_ROM_reg.v (1456)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_bitcheck.v (3398)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_core.sv (19302)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_data_broadcast.v (2357)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_data_decoder.v (2899)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_datamux.v (1733)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_di_buffer.v (4084)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_di_buffer_wrap.v (2373)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_dm_decoder.v (1770)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_generic.sv (7889)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_inst_ROM_reg.v (1480)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_jumplogic.v (3340)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_lfsr72.v (1391)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_lfsr36.v (2107)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_lfsr12.v (1448)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_pattern_fifo.v (2851)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_ram.v (1322)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_ram_csr.v (2522)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_read_datapath.v (3618)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_write_decoder.v (2858)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_ac_ROM_no_ifdef_params.v (3141)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_inst_ROM_no_ifdef_params.v (3056)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/altera_mem_if_sequencer_mem_no_ifdef_params.sv (3119)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/altera_merlin_master_translator.sv (16806)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/altera_merlin_slave_translator.sv (16047)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/altera_merlin_master_agent.sv (10371)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/altera_merlin_slave_agent.sv (22803)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/altera_merlin_burst_uncompressor.sv (11575)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/altera_avalon_sc_fifo.v (32228)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/QDRII_SLAVE_s0_addr_router.sv (7541)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/QDRII_SLAVE_s0_addr_router_001.sv (6056)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/QDRII_SLAVE_s0_id_router.sv (5977)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/QDRII_SLAVE_s0_id_router_003.sv (6070)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/altera_reset_controller.v (3599)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/altera_reset_synchronizer.v (3568)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/altera_reset_controller.sdc (1179)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/QDRII_SLAVE_s0_cmd_xbar_demux.sv (6650)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/QDRII_SLAVE_s0_cmd_xbar_demux_001.sv (3498)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/altera_merlin_arbitrator.sv (9460)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/QDRII_SLAVE_s0_cmd_xbar_mux_003.sv (11862)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/QDRII_SLAVE_s0_rsp_xbar_demux_003.sv (4130)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/QDRII_SLAVE_s0_rsp_xbar_mux.sv (14475)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/QDRII_SLAVE_s0_irq_mapper.sv (1695)
+Instantiates the following:
+   cpu_inst : altera_mem_if_sequencer_cpu_no_ifdef_params_synth_cpu_inst
+   sequencer_scc_mgr_inst : sequencer_scc_mgr
+   sequencer_reg_file_inst : sequencer_reg_file
+   sequencer_phy_mgr_inst : sequencer_phy_mgr
+   sequencer_data_mgr_inst : sequencer_data_mgr
+   sequencer_rw_mgr_inst : rw_manager_qdrii
+   sequencer_mem : altera_mem_if_sequencer_mem_no_ifdef_params
+   cpu_inst_data_master_translator, cpu_inst_instruction_master_translator : altera_merlin_master_translator
+   sequencer_phy_mgr_inst_avl_translator, sequencer_data_mgr_inst_avl_translator, sequencer_rw_mgr_inst_avl_translator, sequencer_mem_s1_translator, sequencer_scc_mgr_inst_avl_translator, sequencer_reg_file_inst_avl_translator : altera_merlin_slave_translator
+   cpu_inst_data_master_translator_avalon_universal_master_0_agent, cpu_inst_instruction_master_translator_avalon_universal_master_0_agent : altera_merlin_master_agent
+   sequencer_phy_mgr_inst_avl_translator_avalon_universal_slave_0_agent, sequencer_data_mgr_inst_avl_translator_avalon_universal_slave_0_agent, sequencer_rw_mgr_inst_avl_translator_avalon_universal_slave_0_agent, sequencer_mem_s1_translator_avalon_universal_slave_0_agent, sequencer_scc_mgr_inst_avl_translator_avalon_universal_slave_0_agent, sequencer_reg_file_inst_avl_translator_avalon_universal_slave_0_agent : altera_merlin_slave_agent
+   sequencer_phy_mgr_inst_avl_translator_avalon_universal_slave_0_agent_rsp_fifo, sequencer_data_mgr_inst_avl_translator_avalon_universal_slave_0_agent_rsp_fifo, sequencer_rw_mgr_inst_avl_translator_avalon_universal_slave_0_agent_rsp_fifo, sequencer_mem_s1_translator_avalon_universal_slave_0_agent_rsp_fifo, sequencer_scc_mgr_inst_avl_translator_avalon_universal_slave_0_agent_rsp_fifo, sequencer_reg_file_inst_avl_translator_avalon_universal_slave_0_agent_rsp_fifo : altera_avalon_sc_fifo
+   addr_router : QDRII_SLAVE_s0_addr_router
+   addr_router_001 : QDRII_SLAVE_s0_addr_router_001
+   id_router, id_router_001, id_router_002, id_router_004, id_router_005 : QDRII_SLAVE_s0_id_router
+   id_router_003 : QDRII_SLAVE_s0_id_router_003
+   rst_controller : altera_reset_controller
+   cmd_xbar_demux : QDRII_SLAVE_s0_cmd_xbar_demux
+   cmd_xbar_demux_001, rsp_xbar_demux, rsp_xbar_demux_001, rsp_xbar_demux_002, rsp_xbar_demux_004, rsp_xbar_demux_005 : QDRII_SLAVE_s0_cmd_xbar_demux_001
+   cmd_xbar_mux_003 : QDRII_SLAVE_s0_cmd_xbar_mux_003
+   rsp_xbar_demux_003 : QDRII_SLAVE_s0_rsp_xbar_demux_003
+   rsp_xbar_mux : QDRII_SLAVE_s0_rsp_xbar_mux
+   irq_mapper : QDRII_SLAVE_s0_irq_mapper
+ 
+name: altera_mem_if_sequencer_cpu_no_ifdef_params_synth_cpu_inst
+generated files (just this core):
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/altera_mem_if_sequencer_cpu_no_ifdef_params_synth_cpu_inst.v (85632)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/altera_mem_if_sequencer_cpu_no_ifdef_params_synth_cpu_inst_test_bench.v (33763)
+ 
+name: sequencer_scc_mgr
+generated files (just this core):
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/sequencer_scc_mgr.sv (31755)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/sequencer_scc_siii_wrapper.sv (4837)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/sequencer_scc_siii_phase_decode.v (11947)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/sequencer_scc_sv_wrapper.sv (7358)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/sequencer_scc_sv_phase_decode.v (4117)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/sequencer_scc_acv_wrapper.sv (5407)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/sequencer_scc_acv_phase_decode.v (1918)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/sequencer_scc_reg_file.v (2626)
+ 
+name: sequencer_reg_file
+generated files (just this core):
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/sequencer_reg_file.sv (7494)
+ 
+name: sequencer_phy_mgr
+generated files (just this core):
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/sequencer_phy_mgr.sv (17143)
+ 
+name: sequencer_data_mgr
+generated files (just this core):
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/sequencer_data_mgr.sv (3856)
+ 
+name: rw_manager_qdrii
+generated files (just this core):
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_qdrii.v (6491)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_ac_ROM_reg.v (1456)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_bitcheck.v (3398)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_core.sv (19302)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_data_broadcast.v (2357)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_data_decoder.v (2899)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_datamux.v (1733)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_di_buffer.v (4084)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_di_buffer_wrap.v (2373)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_dm_decoder.v (1770)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_generic.sv (7889)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_inst_ROM_reg.v (1480)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_jumplogic.v (3340)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_lfsr72.v (1391)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_lfsr36.v (2107)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_lfsr12.v (1448)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_pattern_fifo.v (2851)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_ram.v (1322)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_ram_csr.v (2522)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_read_datapath.v (3618)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_write_decoder.v (2858)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_ac_ROM_no_ifdef_params.v (3141)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/rw_manager_inst_ROM_no_ifdef_params.v (3056)
+ 
+name: altera_mem_if_sequencer_mem_no_ifdef_params
+generated files (just this core):
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/altera_mem_if_sequencer_mem_no_ifdef_params.sv (3119)
+ 
+name: altera_merlin_master_translator
+generated files (just this core):
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/altera_merlin_master_translator.sv (16806)
+ 
+name: altera_merlin_slave_translator
+generated files (just this core):
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/altera_merlin_slave_translator.sv (16047)
+ 
+name: altera_merlin_master_agent
+generated files (just this core):
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/altera_merlin_master_agent.sv (10371)
+ 
+name: altera_merlin_slave_agent
+generated files (just this core):
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/altera_merlin_slave_agent.sv (22803)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/altera_merlin_burst_uncompressor.sv (11575)
+ 
+name: altera_avalon_sc_fifo
+generated files (just this core):
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/altera_avalon_sc_fifo.v (32228)
+ 
+name: QDRII_SLAVE_s0_addr_router
+generated files (just this core):
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/QDRII_SLAVE_s0_addr_router.sv (7541)
+ 
+name: QDRII_SLAVE_s0_addr_router_001
+generated files (just this core):
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/QDRII_SLAVE_s0_addr_router_001.sv (6056)
+ 
+name: QDRII_SLAVE_s0_id_router
+generated files (just this core):
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/QDRII_SLAVE_s0_id_router.sv (5977)
+ 
+name: QDRII_SLAVE_s0_id_router_003
+generated files (just this core):
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/QDRII_SLAVE_s0_id_router_003.sv (6070)
+ 
+name: altera_reset_controller
+generated files (just this core):
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/altera_reset_controller.v (3599)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/altera_reset_synchronizer.v (3568)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/altera_reset_controller.sdc (1179)
+ 
+name: QDRII_SLAVE_s0_cmd_xbar_demux
+generated files (just this core):
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/QDRII_SLAVE_s0_cmd_xbar_demux.sv (6650)
+ 
+name: QDRII_SLAVE_s0_cmd_xbar_demux_001
+generated files (just this core):
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/QDRII_SLAVE_s0_cmd_xbar_demux_001.sv (3498)
+ 
+name: QDRII_SLAVE_s0_cmd_xbar_mux_003
+generated files (just this core):
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/altera_merlin_arbitrator.sv (9460)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/QDRII_SLAVE_s0_cmd_xbar_mux_003.sv (11862)
+ 
+name: QDRII_SLAVE_s0_rsp_xbar_demux_003
+generated files (just this core):
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/QDRII_SLAVE_s0_rsp_xbar_demux_003.sv (4130)
+ 
+name: QDRII_SLAVE_s0_rsp_xbar_mux
+generated files (just this core):
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/altera_merlin_arbitrator.sv (9460)
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/QDRII_SLAVE_s0_rsp_xbar_mux.sv (14475)
+ 
+name: QDRII_SLAVE_s0_irq_mapper
+generated files (just this core):
+   E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/QDRII_SLAVE_s0_irq_mapper.sv (1695)
+ 
+ 
+ [Debug] QDRII_SLAVE_s0.avl_clk: Timing: ELA:1/0.001s
+ [Debug] QDRII_SLAVE_s0.avl_reset: Timing: ELA:1/0.001s
+ [Debug] QDRII_SLAVE_s0.cpu_inst: Timing: VAL:9/0.008s/0.058s ELA:9/0.037s/0.295s
+ [Debug] QDRII_SLAVE_s0.sequencer_scc_mgr_inst: Timing: VAL:1/0.001s ELA:1/0.005s
+ [Debug] QDRII_SLAVE_s0.sequencer_reg_file_inst: Timing: VAL:1/0.001s ELA:1/0.003s
+ [Debug] QDRII_SLAVE_s0.sequencer_phy_mgr_inst: Timing: VAL:2/0.000s/0.001s ELA:2/0.046s/0.088s
+ [Debug] QDRII_SLAVE_s0.sequencer_data_mgr_inst: Timing: VAL:2/0.000s/0.000s ELA:2/0.002s/0.003s
+ [Debug] QDRII_SLAVE_s0.afi_clk: Timing: ELA:1/0.001s
+ [Debug] QDRII_SLAVE_s0.afi_reset: Timing: ELA:1/0.001s
+ [Debug] QDRII_SLAVE_s0.sequencer_rw_mgr_inst: Timing: VAL:2/0.001s/0.001s ELA:2/0.004s/0.004s
+ [Debug] QDRII_SLAVE_s0.sequencer_mem: Timing: VAL:2/0.000s/0.001s ELA:2/0.002s/0.003s
+ [Debug] QDRII_SLAVE_s0.scc_clk: Timing: ELA:1/0.001s
+ [Debug] QDRII_SLAVE_s0.scc_reset: Timing: ELA:1/0.001s
+ [Warning] QDRII_SLAVE_s0.sequencer_rw_mgr_inst: <b>sequencer_rw_mgr_inst.csr</b> must be exported, or connected to a matching conduit.
+ [Debug] QDRII_SLAVE_s0: Timing: VAL:1/0.001s COM:1/1.627s
+ [Info] QDRII_SLAVE_s0: Generating <b>qsys_sequencer_110</b> "<b>QDRII_SLAVE_s0</b>" for QUARTUS_SYNTH
+ [Debug] QDRII_SLAVE_s0: queue size: 0 starting:qsys_sequencer_110 "QDRII_SLAVE_s0"
+ [Info] QDRII_SLAVE_s0: Running transform <b>AvalonTransform</b>
+ [Debug] Transform: PipelineBridgeSwap
+ [Info] pipeline_bridge_swap_transform: After transform: <b>13</b> modules, <b>25</b> connections
+ [Debug] Transform: ClockCrossingBridgeSwap
+ [Debug] Transform: QsysBetaIPSwap
+ [Debug] Transform: CustomInstructionTransform
+ [Info] No custom instruction connections, skipping transform 
+ [Debug] Transform: TristateConduitUpgradeTransform
+ [Debug] Transform: TranslatorTransform
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Info] merlin_translator_transform: After transform: <b>21</b> modules, <b>49</b> connections
+ [Debug] Transform: IDPadTransform
+ [Debug] Transform: DomainTransform
+ [Debug] Transform merlin_domain_transform not run on matched interfaces cpu_inst.data_master and cpu_inst_data_master_translator.avalon_anti_master_0
+ [Debug] Transform merlin_domain_transform not run on matched interfaces cpu_inst.instruction_master and cpu_inst_instruction_master_translator.avalon_anti_master_0
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Debug] Transform merlin_domain_transform not run on matched interfaces sequencer_phy_mgr_inst_avl_translator.avalon_anti_slave_0 and sequencer_phy_mgr_inst.avl
+ [Debug] Transform merlin_domain_transform not run on matched interfaces sequencer_data_mgr_inst_avl_translator.avalon_anti_slave_0 and sequencer_data_mgr_inst.avl
+ [Debug] Transform merlin_domain_transform not run on matched interfaces sequencer_rw_mgr_inst_avl_translator.avalon_anti_slave_0 and sequencer_rw_mgr_inst.avl
+ [Debug] Transform merlin_domain_transform not run on matched interfaces sequencer_mem_s1_translator.avalon_anti_slave_0 and sequencer_mem.s1
+ [Debug] Transform merlin_domain_transform not run on matched interfaces sequencer_scc_mgr_inst_avl_translator.avalon_anti_slave_0 and sequencer_scc_mgr_inst.avl
+ [Debug] Transform merlin_domain_transform not run on matched interfaces sequencer_reg_file_inst_avl_translator.avalon_anti_slave_0 and sequencer_reg_file_inst.avl
+ [Info] merlin_domain_transform: After transform: <b>36</b> modules, <b>128</b> connections
+ [Debug] Transform: RouterTransform
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Info] merlin_router_transform: After transform: <b>44</b> modules, <b>152</b> connections
+ [Debug] Transform: TrafficLimiterTransform
+ [Debug] Transform: BurstTransform
+ [Debug] Transform: CombinedWidthTransform
+ [Debug] Transform: ResetAdaptation
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Info] reset_adaptation_transform: After transform: <b>45</b> modules, <b>154</b> connections
+ [Debug] Transform: NetworkToSwitchTransform
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Info] merlin_network_to_switch_transform: After transform: <b>60</b> modules, <b>184</b> connections
+ [Debug] Transform: WidthTransform
+ [Debug] Transform: RouterTableTransform
+ [Debug] Transform: ClockCrossingTransform
+ [Debug] Transform: TrafficLimiterUpdateTransform
+ [Debug] Transform: InterruptMapperTransform
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Info] merlin_interrupt_mapper_transform: After transform: <b>61</b> modules, <b>187</b> connections
+ [Debug] Transform: InterruptSyncTransform
+ [Debug] Transform: InterruptFanoutTransform
+ [Info] QDRII_SLAVE_s0: Running transform <b>AvalonTransform</b> took 1.050s
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_mem_if_sequencer_cpu</b> "<b>submodules/altera_mem_if_sequencer_cpu_no_ifdef_params_synth_cpu_inst</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>sequencer_scc_mgr_110</b> "<b>submodules/sequencer_scc_mgr</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>sequencer_reg_file_111</b> "<b>submodules/sequencer_reg_file</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>sequencer_phy_mgr_100</b> "<b>submodules/sequencer_phy_mgr</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>sequencer_data_mgr_110</b> "<b>submodules/sequencer_data_mgr</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>sequencer_rw_mgr_qdrii_110</b> "<b>submodules/rw_manager_qdrii</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_mem_if_sequencer_mem</b> "<b>submodules/altera_mem_if_sequencer_mem_no_ifdef_params</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_master_translator</b> "<b>submodules/altera_merlin_master_translator</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_master_translator</b> "<b>submodules/altera_merlin_master_translator</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_slave_translator</b> "<b>submodules/altera_merlin_slave_translator</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_slave_translator</b> "<b>submodules/altera_merlin_slave_translator</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_slave_translator</b> "<b>submodules/altera_merlin_slave_translator</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_slave_translator</b> "<b>submodules/altera_merlin_slave_translator</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_slave_translator</b> "<b>submodules/altera_merlin_slave_translator</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_slave_translator</b> "<b>submodules/altera_merlin_slave_translator</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_master_agent</b> "<b>submodules/altera_merlin_master_agent</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_master_agent</b> "<b>submodules/altera_merlin_master_agent</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_slave_agent</b> "<b>submodules/altera_merlin_slave_agent</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_avalon_sc_fifo</b> "<b>submodules/altera_avalon_sc_fifo</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_slave_agent</b> "<b>submodules/altera_merlin_slave_agent</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_avalon_sc_fifo</b> "<b>submodules/altera_avalon_sc_fifo</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_slave_agent</b> "<b>submodules/altera_merlin_slave_agent</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_avalon_sc_fifo</b> "<b>submodules/altera_avalon_sc_fifo</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_slave_agent</b> "<b>submodules/altera_merlin_slave_agent</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_avalon_sc_fifo</b> "<b>submodules/altera_avalon_sc_fifo</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_slave_agent</b> "<b>submodules/altera_merlin_slave_agent</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_avalon_sc_fifo</b> "<b>submodules/altera_avalon_sc_fifo</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_slave_agent</b> "<b>submodules/altera_merlin_slave_agent</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_avalon_sc_fifo</b> "<b>submodules/altera_avalon_sc_fifo</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_router</b> "<b>submodules/QDRII_SLAVE_s0_addr_router</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_router</b> "<b>submodules/QDRII_SLAVE_s0_addr_router_001</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_router</b> "<b>submodules/QDRII_SLAVE_s0_id_router</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_router</b> "<b>submodules/QDRII_SLAVE_s0_id_router</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_router</b> "<b>submodules/QDRII_SLAVE_s0_id_router</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_router</b> "<b>submodules/QDRII_SLAVE_s0_id_router_003</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_router</b> "<b>submodules/QDRII_SLAVE_s0_id_router</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_router</b> "<b>submodules/QDRII_SLAVE_s0_id_router</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_reset_controller</b> "<b>submodules/altera_reset_controller</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_demultiplexer</b> "<b>submodules/QDRII_SLAVE_s0_cmd_xbar_demux</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_demultiplexer</b> "<b>submodules/QDRII_SLAVE_s0_cmd_xbar_demux_001</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_multiplexer</b> "<b>submodules/QDRII_SLAVE_s0_cmd_xbar_mux_003</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_demultiplexer</b> "<b>submodules/QDRII_SLAVE_s0_cmd_xbar_demux_001</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_demultiplexer</b> "<b>submodules/QDRII_SLAVE_s0_cmd_xbar_demux_001</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_demultiplexer</b> "<b>submodules/QDRII_SLAVE_s0_cmd_xbar_demux_001</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_demultiplexer</b> "<b>submodules/QDRII_SLAVE_s0_rsp_xbar_demux_003</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_demultiplexer</b> "<b>submodules/QDRII_SLAVE_s0_cmd_xbar_demux_001</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_demultiplexer</b> "<b>submodules/QDRII_SLAVE_s0_cmd_xbar_demux_001</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_merlin_multiplexer</b> "<b>submodules/QDRII_SLAVE_s0_rsp_xbar_mux</b>"
+ [Debug] QDRII_SLAVE_s0: "<b>QDRII_SLAVE_s0</b>" reuses <b>altera_irq_mapper</b> "<b>submodules/QDRII_SLAVE_s0_irq_mapper</b>"
+ [Debug] QDRII_SLAVE_s0: queue size: 48 starting:altera_mem_if_sequencer_cpu "submodules/altera_mem_if_sequencer_cpu_no_ifdef_params_synth_cpu_inst"
+ [Info] cpu_inst: "<b>QDRII_SLAVE_s0</b>" instantiated <b>altera_mem_if_sequencer_cpu</b> "<b>cpu_inst</b>"
+ [Debug] QDRII_SLAVE_s0: queue size: 47 starting:sequencer_scc_mgr_110 "submodules/sequencer_scc_mgr"
+ [Info] sequencer_scc_mgr_inst: "<b>QDRII_SLAVE_s0</b>" instantiated <b>sequencer_scc_mgr_110</b> "<b>sequencer_scc_mgr_inst</b>"
+ [Debug] QDRII_SLAVE_s0: queue size: 46 starting:sequencer_reg_file_111 "submodules/sequencer_reg_file"
+ [Info] sequencer_reg_file_inst: "<b>QDRII_SLAVE_s0</b>" instantiated <b>sequencer_reg_file_111</b> "<b>sequencer_reg_file_inst</b>"
+ [Debug] QDRII_SLAVE_s0: queue size: 45 starting:sequencer_phy_mgr_100 "submodules/sequencer_phy_mgr"
+ [Info] sequencer_phy_mgr_inst: "<b>QDRII_SLAVE_s0</b>" instantiated <b>sequencer_phy_mgr_100</b> "<b>sequencer_phy_mgr_inst</b>"
+ [Debug] QDRII_SLAVE_s0: queue size: 44 starting:sequencer_data_mgr_110 "submodules/sequencer_data_mgr"
+ [Info] sequencer_data_mgr_inst: "<b>QDRII_SLAVE_s0</b>" instantiated <b>sequencer_data_mgr_110</b> "<b>sequencer_data_mgr_inst</b>"
+ [Debug] QDRII_SLAVE_s0: queue size: 43 starting:sequencer_rw_mgr_qdrii_110 "submodules/rw_manager_qdrii"
+ [Info] sequencer_rw_mgr_inst: "<b>QDRII_SLAVE_s0</b>" instantiated <b>sequencer_rw_mgr_qdrii_110</b> "<b>sequencer_rw_mgr_inst</b>"
+ [Debug] QDRII_SLAVE_s0: queue size: 42 starting:altera_mem_if_sequencer_mem "submodules/altera_mem_if_sequencer_mem_no_ifdef_params"
+ [Info] sequencer_mem: "<b>QDRII_SLAVE_s0</b>" instantiated <b>altera_mem_if_sequencer_mem</b> "<b>sequencer_mem</b>"
+ [Debug] QDRII_SLAVE_s0: queue size: 41 starting:altera_merlin_master_translator "submodules/altera_merlin_master_translator"
+ [Info] cpu_inst_data_master_translator: "<b>QDRII_SLAVE_s0</b>" instantiated <b>altera_merlin_master_translator</b> "<b>cpu_inst_data_master_translator</b>"
+ [Debug] QDRII_SLAVE_s0: queue size: 39 starting:altera_merlin_slave_translator "submodules/altera_merlin_slave_translator"
+ [Info] sequencer_phy_mgr_inst_avl_translator: "<b>QDRII_SLAVE_s0</b>" instantiated <b>altera_merlin_slave_translator</b> "<b>sequencer_phy_mgr_inst_avl_translator</b>"
+ [Debug] QDRII_SLAVE_s0: queue size: 33 starting:altera_merlin_master_agent "submodules/altera_merlin_master_agent"
+ [Info] cpu_inst_data_master_translator_avalon_universal_master_0_agent: "<b>QDRII_SLAVE_s0</b>" instantiated <b>altera_merlin_master_agent</b> "<b>cpu_inst_data_master_translator_avalon_universal_master_0_agent</b>"
+ [Debug] QDRII_SLAVE_s0: queue size: 31 starting:altera_merlin_slave_agent "submodules/altera_merlin_slave_agent"
+ [Info] sequencer_phy_mgr_inst_avl_translator_avalon_universal_slave_0_agent: "<b>QDRII_SLAVE_s0</b>" instantiated <b>altera_merlin_slave_agent</b> "<b>sequencer_phy_mgr_inst_avl_translator_avalon_universal_slave_0_agent</b>"
+ [Debug] QDRII_SLAVE_s0: queue size: 30 starting:altera_avalon_sc_fifo "submodules/altera_avalon_sc_fifo"
+ [Info] sequencer_phy_mgr_inst_avl_translator_avalon_universal_slave_0_agent_rsp_fifo: "<b>QDRII_SLAVE_s0</b>" instantiated <b>altera_avalon_sc_fifo</b> "<b>sequencer_phy_mgr_inst_avl_translator_avalon_universal_slave_0_agent_rsp_fifo</b>"
+ [Debug] QDRII_SLAVE_s0: queue size: 19 starting:altera_merlin_router "submodules/QDRII_SLAVE_s0_addr_router"
+ [Info] addr_router: "<b>QDRII_SLAVE_s0</b>" instantiated <b>altera_merlin_router</b> "<b>addr_router</b>"
+ [Debug] QDRII_SLAVE_s0: queue size: 18 starting:altera_merlin_router "submodules/QDRII_SLAVE_s0_addr_router_001"
+ [Info] addr_router_001: "<b>QDRII_SLAVE_s0</b>" instantiated <b>altera_merlin_router</b> "<b>addr_router_001</b>"
+ [Debug] QDRII_SLAVE_s0: queue size: 17 starting:altera_merlin_router "submodules/QDRII_SLAVE_s0_id_router"
+ [Info] id_router: "<b>QDRII_SLAVE_s0</b>" instantiated <b>altera_merlin_router</b> "<b>id_router</b>"
+ [Debug] QDRII_SLAVE_s0: queue size: 14 starting:altera_merlin_router "submodules/QDRII_SLAVE_s0_id_router_003"
+ [Info] id_router_003: "<b>QDRII_SLAVE_s0</b>" instantiated <b>altera_merlin_router</b> "<b>id_router_003</b>"
+ [Debug] QDRII_SLAVE_s0: queue size: 11 starting:altera_reset_controller "submodules/altera_reset_controller"
+ [Info] rst_controller: "<b>QDRII_SLAVE_s0</b>" instantiated <b>altera_reset_controller</b> "<b>rst_controller</b>"
+ [Debug] QDRII_SLAVE_s0: queue size: 10 starting:altera_merlin_demultiplexer "submodules/QDRII_SLAVE_s0_cmd_xbar_demux"
+ [Info] cmd_xbar_demux: "<b>QDRII_SLAVE_s0</b>" instantiated <b>altera_merlin_demultiplexer</b> "<b>cmd_xbar_demux</b>"
+ [Debug] QDRII_SLAVE_s0: queue size: 9 starting:altera_merlin_demultiplexer "submodules/QDRII_SLAVE_s0_cmd_xbar_demux_001"
+ [Info] cmd_xbar_demux_001: "<b>QDRII_SLAVE_s0</b>" instantiated <b>altera_merlin_demultiplexer</b> "<b>cmd_xbar_demux_001</b>"
+ [Debug] QDRII_SLAVE_s0: queue size: 8 starting:altera_merlin_multiplexer "submodules/QDRII_SLAVE_s0_cmd_xbar_mux_003"
+ [Info] cmd_xbar_mux_003: "<b>QDRII_SLAVE_s0</b>" instantiated <b>altera_merlin_multiplexer</b> "<b>cmd_xbar_mux_003</b>"
+ [Debug] QDRII_SLAVE_s0: queue size: 4 starting:altera_merlin_demultiplexer "submodules/QDRII_SLAVE_s0_rsp_xbar_demux_003"
+ [Info] rsp_xbar_demux_003: "<b>QDRII_SLAVE_s0</b>" instantiated <b>altera_merlin_demultiplexer</b> "<b>rsp_xbar_demux_003</b>"
+ [Debug] QDRII_SLAVE_s0: queue size: 1 starting:altera_merlin_multiplexer "submodules/QDRII_SLAVE_s0_rsp_xbar_mux"
+ [Info] rsp_xbar_mux: "<b>QDRII_SLAVE_s0</b>" instantiated <b>altera_merlin_multiplexer</b> "<b>rsp_xbar_mux</b>"
+ [Info] Reusing file <b>E:/Dee/DE5_NET/QDRIIx4_new_board_skew/DE5_NET_QDRII_x4_Test/QDRII_SLAVE_s0/submodules/altera_merlin_arbitrator.sv</b>
+ [Debug] QDRII_SLAVE_s0: queue size: 0 starting:altera_irq_mapper "submodules/QDRII_SLAVE_s0_irq_mapper"
+ [Info] irq_mapper: "<b>QDRII_SLAVE_s0</b>" instantiated <b>altera_irq_mapper</b> "<b>irq_mapper</b>"
+ [Info] QDRII_SLAVE_s0: Done <b>QDRII_SLAVE_s0</b>" with 24 modules, 89 files, 1249622 bytes

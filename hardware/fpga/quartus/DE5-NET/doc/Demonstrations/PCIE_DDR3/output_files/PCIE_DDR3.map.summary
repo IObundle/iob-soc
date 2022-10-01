@@ -1,0 +1,23 @@
+Analysis & Synthesis Status : Successful - Wed Mar 22 03:40:21 2017
+Quartus Prime Version : 16.1.2 Build 203 01/18/2017 SJ Standard Edition
+Revision Name : PCIE_DDR3
+Top-level Entity Name : PCIE_DDR3
+Family : Stratix V
+Logic utilization (in ALMs) : N/A
+Total registers : 94871
+Total pins : 310
+Total virtual pins : 0
+Total block memory bits : 8,609,624
+Total DSP Blocks : 0
+Total HSSI STD RX PCSs : 9
+Total HSSI 10G RX PCSs : 0
+Total HSSI GEN3 RX PCSs : 9
+Total HSSI PMA RX Deserializers : 8
+Total HSSI STD TX PCSs : 9
+Total HSSI 10G TX PCSs : 0
+Total HSSI GEN3 TX PCSs : 9
+Total HSSI PMA TX Serializers : 9
+Total HSSI PIPE GEN1_2s : 9
+Total HSSI GEN3s : 9
+Total PLLs : 12
+Total DLLs : 2

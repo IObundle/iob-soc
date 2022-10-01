@@ -1,0 +1,181 @@
+------------------------------------------------------------
+TimeQuest Timing Analyzer Summary
+------------------------------------------------------------
+
+Type  : Slow 900mV 85C Model Setup 'OSC_50_B3B'
+Slack : -17.974
+TNS   : -106.182
+
+Type  : Slow 900mV 85C Model Setup 'mgmt_pll_inst|mgmt_pll_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk'
+Slack : 6.370
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'n/a'
+Slack : 18.250
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'mgmt_pll_inst|mgmt_pll_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.142
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'OSC_50_B3B'
+Slack : 0.152
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'n/a'
+Slack : 10.532
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'SFP_A|low_latency_xcvr_1x32_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_10g_custom_native_inst|sv_xcvr_native_insts[0].gen_bonded_group_native.sv_xcvr_native_inst|inst_sv_pma|rx_pma.sv_rx_pma_inst|rx_pmas[0].rx_pma.rx_cdr|clk90bdes'
+Slack : 0.096
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'SFP_A|low_latency_xcvr_1x32_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_10g_custom_native_inst|sv_xcvr_native_insts[0].gen_bonded_group_native.sv_xcvr_native_inst|inst_sv_pma|rx_pma.sv_rx_pma_inst|rx_pmas[0].rx_pma.rx_pma_deser|clk90b'
+Slack : 1.303
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'mgmt_pll_inst|mgmt_pll_inst|altera_pll_i|general[0].gpll~FRACTIONAL_PLL|vcoph[0]'
+Slack : 1.333
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'mgmt_pll_inst|mgmt_pll_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk'
+Slack : 3.400
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'OSC_50_B3B'
+Slack : 9.056
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'OSC_50_B3B'
+Slack : -17.516
+TNS   : -103.127
+
+Type  : Slow 900mV 0C Model Setup 'mgmt_pll_inst|mgmt_pll_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk'
+Slack : 6.500
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'n/a'
+Slack : 17.989
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'mgmt_pll_inst|mgmt_pll_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.219
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'OSC_50_B3B'
+Slack : 0.252
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'n/a'
+Slack : 10.925
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'SFP_A|low_latency_xcvr_1x32_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_10g_custom_native_inst|sv_xcvr_native_insts[0].gen_bonded_group_native.sv_xcvr_native_inst|inst_sv_pma|rx_pma.sv_rx_pma_inst|rx_pmas[0].rx_pma.rx_cdr|clk90bdes'
+Slack : 0.096
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'SFP_A|low_latency_xcvr_1x32_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_10g_custom_native_inst|sv_xcvr_native_insts[0].gen_bonded_group_native.sv_xcvr_native_inst|inst_sv_pma|rx_pma.sv_rx_pma_inst|rx_pmas[0].rx_pma.rx_pma_deser|clk90b'
+Slack : 1.303
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'mgmt_pll_inst|mgmt_pll_inst|altera_pll_i|general[0].gpll~FRACTIONAL_PLL|vcoph[0]'
+Slack : 1.333
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'mgmt_pll_inst|mgmt_pll_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk'
+Slack : 3.413
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'OSC_50_B3B'
+Slack : 9.181
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'OSC_50_B3B'
+Slack : -4.315
+TNS   : -11.575
+
+Type  : Fast 900mV 85C Model Setup 'mgmt_pll_inst|mgmt_pll_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk'
+Slack : 7.024
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'n/a'
+Slack : 18.424
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'OSC_50_B3B'
+Slack : 0.095
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'mgmt_pll_inst|mgmt_pll_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.103
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'n/a'
+Slack : 10.729
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'SFP_A|low_latency_xcvr_1x32_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_10g_custom_native_inst|sv_xcvr_native_insts[0].gen_bonded_group_native.sv_xcvr_native_inst|inst_sv_pma|rx_pma.sv_rx_pma_inst|rx_pmas[0].rx_pma.rx_cdr|clk90bdes'
+Slack : 0.096
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'mgmt_pll_inst|mgmt_pll_inst|altera_pll_i|general[0].gpll~FRACTIONAL_PLL|vcoph[0]'
+Slack : 1.333
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'SFP_A|low_latency_xcvr_1x32_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_10g_custom_native_inst|sv_xcvr_native_insts[0].gen_bonded_group_native.sv_xcvr_native_inst|inst_sv_pma|rx_pma.sv_rx_pma_inst|rx_pmas[0].rx_pma.rx_pma_deser|clk90b'
+Slack : 1.482
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'mgmt_pll_inst|mgmt_pll_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk'
+Slack : 3.642
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'OSC_50_B3B'
+Slack : 9.065
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'OSC_50_B3B'
+Slack : -3.101
+TNS   : -6.821
+
+Type  : Fast 900mV 0C Model Setup 'mgmt_pll_inst|mgmt_pll_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk'
+Slack : 7.136
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'n/a'
+Slack : 18.587
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'OSC_50_B3B'
+Slack : 0.142
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'mgmt_pll_inst|mgmt_pll_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.154
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'n/a'
+Slack : 10.658
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'SFP_A|low_latency_xcvr_1x32_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_10g_custom_native_inst|sv_xcvr_native_insts[0].gen_bonded_group_native.sv_xcvr_native_inst|inst_sv_pma|rx_pma.sv_rx_pma_inst|rx_pmas[0].rx_pma.rx_cdr|clk90bdes'
+Slack : 0.096
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'mgmt_pll_inst|mgmt_pll_inst|altera_pll_i|general[0].gpll~FRACTIONAL_PLL|vcoph[0]'
+Slack : 1.333
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'SFP_A|low_latency_xcvr_1x32_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_10g_custom_native_inst|sv_xcvr_native_insts[0].gen_bonded_group_native.sv_xcvr_native_inst|inst_sv_pma|rx_pma.sv_rx_pma_inst|rx_pmas[0].rx_pma.rx_pma_deser|clk90b'
+Slack : 1.467
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'mgmt_pll_inst|mgmt_pll_inst|altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER|divclk'
+Slack : 3.663
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'OSC_50_B3B'
+Slack : 9.048
+TNS   : 0.000
+
+------------------------------------------------------------

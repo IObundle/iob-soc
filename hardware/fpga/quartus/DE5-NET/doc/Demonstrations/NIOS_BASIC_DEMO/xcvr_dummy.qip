@@ -1,0 +1,158 @@
+set_global_assignment -entity "xcvr_dummy" -library "xcvr_dummy" -name IP_TOOL_NAME "altera_xcvr_low_latency_phy"
+set_global_assignment -entity "xcvr_dummy" -library "xcvr_dummy" -name IP_TOOL_VERSION "16.1"
+set_global_assignment -entity "xcvr_dummy" -library "xcvr_dummy" -name IP_TOOL_ENV "mwpim"
+set_global_assignment -library "xcvr_dummy" -name MISC_FILE [file join $::quartus(qip_path) "xcvr_dummy.cmp"]
+set_global_assignment -entity "xcvr_dummy" -library "xcvr_dummy" -name IP_TARGETED_DEVICE_FAMILY "Stratix V"
+set_global_assignment -entity "xcvr_dummy" -library "xcvr_dummy" -name IP_GENERATED_DEVICE_FAMILY "{Stratix V}"
+set_global_assignment -entity "xcvr_dummy" -library "xcvr_dummy" -name IP_QSYS_MODE "UNKNOWN"
+set_global_assignment -name SYNTHESIS_ONLY_QIP ON
+set_global_assignment -entity "xcvr_dummy" -library "xcvr_dummy" -name IP_COMPONENT_NAME "eGN2cl9kdW1teQ=="
+set_global_assignment -entity "xcvr_dummy" -library "xcvr_dummy" -name IP_COMPONENT_DISPLAY_NAME "TG93IExhdGVuY3kgUEhZ"
+set_global_assignment -entity "xcvr_dummy" -library "xcvr_dummy" -name IP_COMPONENT_REPORT_HIERARCHY "Off"
+set_global_assignment -entity "xcvr_dummy" -library "xcvr_dummy" -name IP_COMPONENT_INTERNAL "On"
+set_global_assignment -entity "xcvr_dummy" -library "xcvr_dummy" -name IP_COMPONENT_AUTHOR "QWx0ZXJhIENvcnBvcmF0aW9u"
+set_global_assignment -entity "xcvr_dummy" -library "xcvr_dummy" -name IP_COMPONENT_VERSION "MTYuMQ=="
+set_global_assignment -entity "xcvr_dummy" -library "xcvr_dummy" -name IP_COMPONENT_DESCRIPTION "U3RhbmRhcmQgVHJhbnNjZWl2ZXIgUENTIExvdyBMYXRlbmN5IFBIWSBJUA=="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_NAME "YWx0ZXJhX3hjdnJfbG93X2xhdGVuY3lfcGh5"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_DISPLAY_NAME "TG93IExhdGVuY3kgUEhZ"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_REPORT_HIERARCHY "Off"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_INTERNAL "On"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_AUTHOR "QWx0ZXJhIENvcnBvcmF0aW9u"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_VERSION "MTYuMQ=="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_DESCRIPTION "U3RhbmRhcmQgVHJhbnNjZWl2ZXIgUENTIExvdyBMYXRlbmN5IFBIWSBJUA=="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "aW50ZW5kZWRfZGV2aWNlX3ZhcmlhbnQ=::QU5Z::SW50ZW5kZWQgZGV2aWNlIHZhcmlhbnQ="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Z3VpX2RhdGFfcGF0aF90eXBl::UEFSQU1fTUFQUEVE::RGF0YSBwYXRoIHR5cGU="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "ZGF0YV9wYXRoX3R5cGU=::OEc=::ZGF0YV9wYXRoX3R5cGU="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "b3BlcmF0aW9uX21vZGU=::RFVQTEVY::TW9kZSBvZiBvcGVyYXRpb24="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "bGFuZXM=::MQ==::TnVtYmVyIG9mIGxhbmVz"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Z3VpX2JvbmRpbmdfZW5hYmxl::MA==::RW5hYmxlIGxhbmUgYm9uZGluZw=="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Z3VpX2JvbmRlZF9tb2Rl::eE4=::Qm9uZGluZyBtb2Rl"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Ym9uZGVkX21vZGU=::eE4=::Ym9uZGVkX21vZGU="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Z3VpX3NlcmlhbGl6YXRpb25fZmFjdG9y::UEFSQU1fTUFQUEVE::RlBHQSBmYWJyaWMgdHJhbnNjZWl2ZXIgaW50ZXJmYWNlIHdpZHRo"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "c2VyaWFsaXphdGlvbl9mYWN0b3I=::OA==::RlBHQSBmYWJyaWMgdHJhbnNjZWl2ZXIgaW50ZXJmYWNlIHdpZHRo"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "cG1hX3dpZHRo::OA==::UENTLVBNQSBpbnRlcmZhY2Ugd2lkdGg="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Z3VpX3BtYV93aWR0aA==::UEFSQU1fREVGQVVMVA==::UENTLVBNQSBpbnRlcmZhY2Ugd2lkdGg="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Z3VpX3BsbF90eXBl::Q01V::UExMIHR5cGU="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "ZGF0YV9yYXRl::MTAwMCBNYnBz::RGF0YSByYXRl"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Z3VpX2Jhc2VfZGF0YV9yYXRl::MTI1MCBNYnBz::QmFzZSBkYXRhIHJhdGU="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "YmFzZV9kYXRhX3JhdGU=::MTAwMCBNYnBz::YmFzZV9kYXRhX3JhdGU="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Z3VpX3BsbF9yZWZjbGtfZnJlcQ==::NjIuNSBNSHo=::SW5wdXQgY2xvY2sgZnJlcXVlbmN5"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "cGxsX3JlZmNsa19mcmVx::NjIuNSBNSHo=::cGxsX3JlZmNsa19mcmVx"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Ym9uZGVkX2dyb3VwX3NpemU=::MQ==::Ym9uZGVkX2dyb3VwX3NpemU="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Z3VpX3NlbGVjdF8xMGdfcGNz::REVQUkVDQVRFRA==::Z3VpX3NlbGVjdF8xMGdfcGNz"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "c2VsZWN0XzEwZ19wY3M=::MA==::c2VsZWN0XzEwZ19wY3M="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Z3VpX3R4X3VzZV9jb3JlY2xr::MA==::RW5hYmxlIHR4X2NvcmVjbGtpbg=="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Z3VpX3J4X3VzZV9jb3JlY2xr::MA==::RW5hYmxlIHJ4X2NvcmVjbGtpbg=="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "dHhfYml0c2xpcF9lbmFibGU=::MA==::RW5hYmxlIFRYIGJpdHNsaXA="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "dHhfYml0c2xpcF93aWR0aA==::NQ==::VFggYml0c2xpcCBwb3J0IHdpZHRoLg=="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "cnhfYml0c2xpcF9lbmFibGU=::MA==::RW5hYmxlIFJYIGJpdHNsaXA="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Z3VpX3BwbV9kZXRfdGhyZXNob2xk::MTAw::UFBNIERldGVjdG9yIFRocmVzaG9sZA=="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "cHBtX2RldF90aHJlc2hvbGQ=::MTAw::UFBNIERldGVjdG9yIFRocmVzaG9sZA=="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Z3VpX2VuYWJsZV9hdHRfcmVzZXRfZ2F0ZQ==::MA==::Q0RSIHJlc2V0IGRpc2FibGUgY29udHJvbCBwb3J0"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "cGhhc2VfY29tcF9maWZvX21vZGU=::Tk9ORQ==::UGhhc2UgY29tcGVuc2F0aW9uIEZJRk8gbW9kZQ=="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "bG9vcGJhY2tfbW9kZQ==::Tk9ORQ==::TG9vcGJhY2sgbW9kZQ=="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "dXNlX2RvdWJsZV9kYXRhX21vZGU=::REVQUkVDQVRFRA==::dXNlX2RvdWJsZV9kYXRhX21vZGU="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Z3hiX2FuYWxvZ19wb3dlcg==::QVVUTw==::R1hCIGFuYWxvZyBwb3dlcg=="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "cGxsX2xvY2tfc3BlZWQ=::QVVUTw==::UExMIGxvY2sgc3BlZWQ="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "dHhfYW5hbG9nX3Bvd2Vy::QVVUTw==::VFggYW5hbG9nIHBvd2Vy"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "dHhfc2xld19yYXRl::T0ZG::VFggc2xldyByYXRl"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "dHhfdGVybWluYXRpb24=::T0NUXzEwMF9PSE1T::U2VsZWN0IHRoZSB0cmFuc21pdHRlciB0ZXJtaW5hdGlvbiByZXNpc3RhbmNl"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "dHhfdXNlX2V4dGVybmFsX3Rlcm1pbmF0aW9u::ZmFsc2U=::RW5hYmxlIHJlY2VpdmVyIGV4dGVybmFsIHRlcm1pbmF0aW9u"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "dHhfcHJlZW1wX3ByZXRhcA==::MA==::U2VsZWN0IHRoZSBwcmUtZW1waGFzaXMgcHJlLXRhcCBzZXR0aW5n"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Z3VpX3R4X3ByZWVtcF9wcmV0YXBfaW52::ZmFsc2U=::RW5hYmxlIHRoZSBwcmUtZW1waGFzaXMgcHJlLXRhcCBwb2xhcml0eSBpbnZlcnNpb24="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "dHhfcHJlZW1wX3ByZXRhcF9pbnY=::ZmFsc2U=::dHhfcHJlZW1wX3ByZXRhcF9pbnY="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "dHhfcHJlZW1wX3RhcF8x::MA==::U2VsZWN0IHRoZSBwcmUtZW1waGFzaXMgZmlyc3QgcG9zdC10YXAgc2V0dGluZw=="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "dHhfcHJlZW1wX3RhcF8y::MA==::U3BlY2lmaWVzIHRoZSBwcmUtZW1waGFzaXMgc2Vjb25kIHBvc3QtdGFwIHNldHRpbmc="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Z3VpX3R4X3ByZWVtcF90YXBfMl9pbnY=::ZmFsc2U=::RW5hYmxlIHRoZSBwcmUtZW1waGFzaXMgc2Vjb25kIHBvc3QtdGFwIHBvbGFyaXR5IGludmVyc2lvbg=="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "dHhfcHJlZW1wX3RhcF8yX2ludg==::ZmFsc2U=::dHhfcHJlZW1wX3RhcF8yX2ludg=="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "dHhfdm9kX3NlbGVjdGlvbg==::Mg==::U2VsZWN0IHRoZSB0cmFuc21pdHRlciBWT0QgY29udHJvbCBzZXR0aW5n"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "dHhfY29tbW9uX21vZGU=::MC42NVY=::VFggY29tbW9uIG1vZGU="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "cnhfcGxsX2xvY2tfc3BlZWQ=::QVVUTw==::UlggUExMIGxvY2sgc3BlZWQ="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "cnhfY29tbW9uX21vZGU=::MC44MlY=::U2VsZWN0IHRoZSByZWNlaXZlciBjb21tb24gbW9kZSB2b2x0YWdl"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "cnhfdGVybWluYXRpb24=::T0NUXzEwMF9PSE1T::U2VsZWN0IHRoZSByZWNlaXZlciB0ZXJtaW5hdGlvbiByZXNpc3RhbmNl"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "cnhfdXNlX2V4dGVybmFsX3Rlcm1pbmF0aW9u::ZmFsc2U=::RW5hYmxlIHJlY2VpdmVyIGV4dGVybmFsIHRlcm1pbmF0aW9u"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "cnhfZXFfZGNfZ2Fpbg==::MQ==::U2VsZWN0IHRoZSByZWNlaXZlciBEQyBnYWlu"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "cnhfZXFfY3RybA==::MTY=::U2VsZWN0IHRoZSByZWNlaXZlciBzdGF0aWMgZXF1YWxpemVyIHNldHRpbmc="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "c3RhcnRpbmdfY2hhbm5lbF9udW1iZXI=::MA==::U3RhcnRpbmcgY2hhbm5lbCBudW1iZXI="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "cGxsX3JlZmNsa19jbnQ=::MQ==::cGxsX3JlZmNsa19jbnQ="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "ZW5fc3luY2Vfc3VwcG9ydA==::MA==::ZW5fc3luY2Vfc3VwcG9ydA=="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "cGxscw==::MQ==::cGxscw=="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "cGxsX3JlZmNsa19zZWxlY3Q=::MA==::cGxsX3JlZmNsa19zZWxlY3Q="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Y2RyX3JlZmNsa19zZWxlY3Q=::MA==::Y2RyX3JlZmNsa19zZWxlY3Q="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "cGxsX3R5cGU=::Q01V::cGxsX3R5cGU="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "cGxsX3NlbGVjdA==::MA==::cGxsX3NlbGVjdA=="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "cGxsX3JlY29uZmln::MA==::cGxsX3JlY29uZmln"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Y2hhbm5lbF9pbnRlcmZhY2U=::MA==::RW5hYmxlIENoYW5uZWwgSW50ZXJmYWNl"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "cGxsX2ZlZWRiYWNrX3BhdGg=::bm9fY29tcGVuc2F0aW9u::cGxsX2ZlZWRiYWNrX3BhdGg="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "ZW5hYmxlX2ZwbGxfY2xrZGl2MzM=::MQ==::R2VuZXJhdGUgLzY2IFRYIGludGVyZmFjZSBjbG9jayB1c2luZyBmUExM"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Z3VpX3BsbF9yZWNvbmZpZ19lbmFibGVfcGxsX3JlY29uZmln::ZmFsc2U=::QWxsb3cgUExML0NEUiBSZWNvbmZpZ3VyYXRpb24="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Z3VpX3BsbF9yZWNvbmZpZ19wbGxfY291bnQ=::MQ==::TnVtYmVyIG9mIFRYIFBMTHM="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Z3VpX3BsbF9yZWNvbmZpZ19yZWZjbGtfY291bnQ=::MQ==::TnVtYmVyIG9mIHJlZmVyZW5jZSBjbG9ja3M="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Z3VpX3BsbF9yZWNvbmZpZ19tYWluX3BsbF9pbmRleA==::MA==::TWFpbiBUWCBQTEwgbG9naWNhbCBpbmRleA=="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Z3VpX3BsbF9yZWNvbmZpZ19jZHJfcGxsX3JlZmNsa19zZWw=::MA==::Q0RSIFBMTCBpbnB1dCBjbG9jayBzb3VyY2U="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Z3VpX3BsbF9yZWNvbmZpZ19wbGwwX3BsbF90eXBl::Q01V::UExMIHR5cGU="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Z3VpX3BsbF9yZWNvbmZpZ19wbGwwX2RhdGFfcmF0ZQ==::MCBNYnBz::UExMIGJhc2UgZGF0YSByYXRl"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Z3VpX3BsbF9yZWNvbmZpZ19wbGwwX2RhdGFfcmF0ZV9kZXI=::MTAwMCBNYnBz::UExMIGJhc2UgZGF0YSByYXRl"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Z3VpX3BsbF9yZWNvbmZpZ19wbGwwX3JlZmNsa19mcmVx::MCBNSHo=::UmVmZXJlbmNlIGNsb2NrIGZyZXF1ZW5jeQ=="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Z3VpX3BsbF9yZWNvbmZpZ19wbGwwX3JlZmNsa19zZWw=::MA==::U2VsZWN0ZWQgcmVmZXJlbmNlIGNsb2NrIHNvdXJjZQ=="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Z3VpX3BsbF9yZWNvbmZpZ19wbGwwX2Nsa19uZXR3b3Jr::eDE=::U2VsZWN0ZWQgY2xvY2sgbmV0d29yaw=="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "bWdtdF9jbGtfaW5fbWh6::MTUw::bWdtdF9jbGtfaW5fbWh6"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Z3VpX21nbXRfY2xrX2luX2h6::MTUwMDAwMDAw::Z3VpX21nbXRfY2xrX2luX2h6"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Z3VpX2VtYmVkZGVkX3Jlc2V0::MQ==::RW5hYmxlZCBlbWJlZGRlZCByZXNldCBjb250cm9sbGVy"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "ZW1iZWRkZWRfcmVzZXQ=::MQ==::ZW1iZWRkZWRfcmVzZXQ="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Z3VpX3NwbGl0X2ludGVyZmFjZXM=::MA==::RW5hYmxlIGF2YWxvbiBkYXRhIGludGVyZmFjZXMgYW5kIGJpdCByZXZlcnNhbA=="
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_COMPONENT_PARAMETER "Z3VpX2F2YWxvbl9zeW1ib2xfc2l6ZQ==::MA==::QXZhbG9uIGRhdGEgc3ltYm9sIHNpemU="
+
+set_global_assignment -library "xcvr_dummy" -name VERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy.v"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/altera_xcvr_functions.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/altera_xcvr_low_latency_phy.sv"]
+set_global_assignment -library "xcvr_dummy" -name VERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/alt_pma_controller_tgx.v"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/alt_xcvr_resync.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/alt_xcvr_csr_common_h.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/alt_xcvr_csr_common.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/alt_xcvr_csr_pcs8g_h.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/alt_xcvr_csr_pcs8g.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/alt_xcvr_csr_selector.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/alt_xcvr_mgmt2dec.sv"]
+set_global_assignment -library "xcvr_dummy" -name VERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/altera_wait_generate.v"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/altera_xcvr_reset_control.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/alt_xcvr_reset_counter.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/sv_xcvr_low_latency_phy_nr.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/sv_xcvr_10g_custom_native.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/sv_xcvr_custom_native.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/sv_pcs.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/sv_pcs_ch.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/sv_pma.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/sv_reconfig_bundle_to_xcvr.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/sv_reconfig_bundle_to_ip.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/sv_reconfig_bundle_merger.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/sv_rx_pma.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/sv_tx_pma.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/sv_tx_pma_ch.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/sv_xcvr_h.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/sv_xcvr_avmm_csr.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/sv_xcvr_avmm_dcd.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/sv_xcvr_avmm.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/sv_xcvr_data_adapter.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/sv_xcvr_native.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/sv_xcvr_plls.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/sv_hssi_10g_rx_pcs_rbc.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/sv_hssi_10g_tx_pcs_rbc.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/sv_hssi_8g_rx_pcs_rbc.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/sv_hssi_8g_tx_pcs_rbc.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/sv_hssi_8g_pcs_aggregate_rbc.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/sv_hssi_common_pcs_pma_interface_rbc.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/sv_hssi_common_pld_pcs_interface_rbc.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/sv_hssi_pipe_gen1_2_rbc.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/sv_hssi_pipe_gen3_rbc.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/sv_hssi_rx_pcs_pma_interface_rbc.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/sv_hssi_rx_pld_pcs_interface_rbc.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/sv_hssi_tx_pcs_pma_interface_rbc.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/sv_hssi_tx_pld_pcs_interface_rbc.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/alt_xcvr_arbiter.sv"]
+set_global_assignment -library "xcvr_dummy" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "xcvr_dummy/alt_xcvr_m2s.sv"]
+set_global_assignment -library "xcvr_dummy" -name SOURCE_FILE [file join $::quartus(qip_path) "xcvr_dummy/plain_files.txt"]
+
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_TOOL_NAME "altera_xcvr_low_latency_phy"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_TOOL_VERSION "16.1"
+set_global_assignment -entity "altera_xcvr_low_latency_phy" -library "xcvr_dummy" -name IP_TOOL_ENV "mwpim"

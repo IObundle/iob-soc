@@ -1,0 +1,136 @@
+/*
+WARNING: Do NOT edit the input and output ports in this file in a text
+editor if you plan to continue editing the block that represents it in
+the Block Editor! File corruption is VERY likely to occur.
+*/
+/*
+Copyright (C) 1991-2012 Altera Corporation
+Your use of Altera Corporation's design tools, logic functions 
+and other software and tools, and its AMPP partner logic 
+functions, and any output files from any of the foregoing 
+(including device programming or simulation files), and any 
+associated documentation or information are expressly subject 
+to the terms and conditions of the Altera Program License 
+Subscription Agreement, Altera MegaCore Function License 
+Agreement, or other applicable license agreement, including, 
+without limitation, that your use is for the sole purpose of 
+programming logic devices manufactured by Altera and sold by 
+Altera or its authorized distributors.  Please refer to the 
+applicable agreement for further details.
+*/
+(header "symbol" (version "1.1"))
+(symbol
+	(rect 0 0 640 424)
+	(text "DE5_NET_QSYS" (rect 269 -1 353 11)(font "Arial" (font_size 10)))
+	(text "inst" (rect 8 408 36 420)(font "Arial" ))
+	(port
+		(pt 0 72)
+		(input)
+		(text "clk_clk" (rect 0 0 49 12)(font "Arial" (font_size 8)))
+		(text "clk_clk" (rect 4 61 46 72)(font "Arial" (font_size 8)))
+		(line (pt 0 72)(pt 288 72)(line_width 1))
+	)
+	(port
+		(pt 0 112)
+		(input)
+		(text "reset_reset_n" (rect 0 0 92 12)(font "Arial" (font_size 8)))
+		(text "reset_reset_n" (rect 4 101 82 112)(font "Arial" (font_size 8)))
+		(line (pt 0 112)(pt 288 112)(line_width 1))
+	)
+	(port
+		(pt 0 272)
+		(input)
+		(text "ddr3_b_local_status_external_connection_export[2..0]" (rect 0 0 368 12)(font "Arial" (font_size 8)))
+		(text "ddr3_b_local_status_external_connection_export[2..0]" (rect 4 261 316 272)(font "Arial" (font_size 8)))
+		(line (pt 0 272)(pt 288 272)(line_width 3))
+	)
+	(port
+		(pt 0 312)
+		(input)
+		(text "ddr3_a_local_status_external_connection_export[2..0]" (rect 0 0 368 12)(font "Arial" (font_size 8)))
+		(text "ddr3_a_local_status_external_connection_export[2..0]" (rect 4 301 316 312)(font "Arial" (font_size 8)))
+		(line (pt 0 312)(pt 288 312)(line_width 3))
+	)
+	(port
+		(pt 0 352)
+		(input)
+		(text "ddr3_a_drv_status_external_connection_export[2..0]" (rect 0 0 354 12)(font "Arial" (font_size 8)))
+		(text "ddr3_a_drv_status_external_connection_export[2..0]" (rect 4 341 304 352)(font "Arial" (font_size 8)))
+		(line (pt 0 352)(pt 288 352)(line_width 3))
+	)
+	(port
+		(pt 0 392)
+		(input)
+		(text "ddr3_b_drv_status_external_connection_export[2..0]" (rect 0 0 354 12)(font "Arial" (font_size 8)))
+		(text "ddr3_b_drv_status_external_connection_export[2..0]" (rect 4 381 304 392)(font "Arial" (font_size 8)))
+		(line (pt 0 392)(pt 288 392)(line_width 3))
+	)
+	(port
+		(pt 0 152)
+		(output)
+		(text "ddr3_software_reset_n_external_connection_export" (rect 0 0 339 12)(font "Arial" (font_size 8)))
+		(text "ddr3_software_reset_n_external_connection_export" (rect 4 141 292 152)(font "Arial" (font_size 8)))
+		(line (pt 0 152)(pt 288 152)(line_width 1))
+	)
+	(port
+		(pt 0 192)
+		(output)
+		(text "ddr3_global_reset_n_external_connection_export" (rect 0 0 325 12)(font "Arial" (font_size 8)))
+		(text "ddr3_global_reset_n_external_connection_export" (rect 4 181 280 192)(font "Arial" (font_size 8)))
+		(line (pt 0 192)(pt 288 192)(line_width 1))
+	)
+	(port
+		(pt 0 232)
+		(output)
+		(text "ddr3_start_n_external_connection_export" (rect 0 0 276 12)(font "Arial" (font_size 8)))
+		(text "ddr3_start_n_external_connection_export" (rect 4 221 238 232)(font "Arial" (font_size 8)))
+		(line (pt 0 232)(pt 288 232)(line_width 1))
+	)
+	(drawing
+		(text "clk" (rect 273 43 564 99)(font "Arial" (color 128 0 0)(font_size 9)))
+		(text "clk" (rect 293 67 604 144)(font "Arial" (color 0 0 0)))
+		(text "reset" (rect 259 83 548 179)(font "Arial" (color 128 0 0)(font_size 9)))
+		(text "reset_n" (rect 293 107 628 224)(font "Arial" (color 0 0 0)))
+		(text "ddr3_software_reset_n_external_connection" (rect 27 123 300 259)(font "Arial" (color 128 0 0)(font_size 9)))
+		(text "export" (rect 293 147 622 304)(font "Arial" (color 0 0 0)))
+		(text "ddr3_global_reset_n_external_connection" (rect 45 163 324 339)(font "Arial" (color 128 0 0)(font_size 9)))
+		(text "export" (rect 293 187 622 384)(font "Arial" (color 0 0 0)))
+		(text "ddr3_start_n_external_connection" (rect 90 203 372 419)(font "Arial" (color 128 0 0)(font_size 9)))
+		(text "export" (rect 293 227 622 464)(font "Arial" (color 0 0 0)))
+		(text "ddr3_b_local_status_external_connection" (rect 47 243 328 499)(font "Arial" (color 128 0 0)(font_size 9)))
+		(text "export" (rect 293 267 622 544)(font "Arial" (color 0 0 0)))
+		(text "ddr3_a_local_status_external_connection" (rect 47 283 328 579)(font "Arial" (color 128 0 0)(font_size 9)))
+		(text "export" (rect 293 307 622 624)(font "Arial" (color 0 0 0)))
+		(text "ddr3_a_drv_status_external_connection" (rect 55 323 332 659)(font "Arial" (color 128 0 0)(font_size 9)))
+		(text "export" (rect 293 347 622 704)(font "Arial" (color 0 0 0)))
+		(text "ddr3_b_drv_status_external_connection" (rect 55 363 332 739)(font "Arial" (color 128 0 0)(font_size 9)))
+		(text "export" (rect 293 387 622 784)(font "Arial" (color 0 0 0)))
+		(text " DE5_NET_QSYS " (rect 560 408 1204 826)(font "Arial" ))
+		(line (pt 289 52)(pt 289 76)(line_width 1))
+		(line (pt 290 52)(pt 290 76)(line_width 1))
+		(line (pt 289 92)(pt 289 116)(line_width 1))
+		(line (pt 290 92)(pt 290 116)(line_width 1))
+		(line (pt 289 132)(pt 289 156)(line_width 1))
+		(line (pt 290 132)(pt 290 156)(line_width 1))
+		(line (pt 289 172)(pt 289 196)(line_width 1))
+		(line (pt 290 172)(pt 290 196)(line_width 1))
+		(line (pt 289 212)(pt 289 236)(line_width 1))
+		(line (pt 290 212)(pt 290 236)(line_width 1))
+		(line (pt 289 252)(pt 289 276)(line_width 1))
+		(line (pt 290 252)(pt 290 276)(line_width 1))
+		(line (pt 289 292)(pt 289 316)(line_width 1))
+		(line (pt 290 292)(pt 290 316)(line_width 1))
+		(line (pt 289 332)(pt 289 356)(line_width 1))
+		(line (pt 290 332)(pt 290 356)(line_width 1))
+		(line (pt 289 372)(pt 289 396)(line_width 1))
+		(line (pt 290 372)(pt 290 396)(line_width 1))
+		(line (pt 288 32)(pt 352 32)(line_width 1))
+		(line (pt 352 32)(pt 352 408)(line_width 1))
+		(line (pt 288 408)(pt 352 408)(line_width 1))
+		(line (pt 288 32)(pt 288 408)(line_width 1))
+		(line (pt 0 0)(pt 640 0)(line_width 1))
+		(line (pt 640 0)(pt 640 424)(line_width 1))
+		(line (pt 0 424)(pt 640 424)(line_width 1))
+		(line (pt 0 0)(pt 0 424)(line_width 1))
+	)
+)

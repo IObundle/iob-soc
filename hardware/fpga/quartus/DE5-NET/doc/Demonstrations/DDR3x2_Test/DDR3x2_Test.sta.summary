@@ -1,0 +1,696 @@
+------------------------------------------------------------
+TimeQuest Timing Analyzer Summary
+------------------------------------------------------------
+
+Type  : Slow 900mV 85C Model Setup 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll9~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.284
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll10~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.300
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll2~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.300
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll8~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.300
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.416
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll3~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.468
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll6~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.949
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll7~PLL_OUTPUT_COUNTER|divclk'
+Slack : 3.089
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'OSC_50_B3B'
+Slack : 17.519
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'OSC_50_B7A'
+Slack : 18.665
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll3~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.088
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.100
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'OSC_50_B7A'
+Slack : 0.175
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll9~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.191
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'OSC_50_B3B'
+Slack : 0.192
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll7~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.204
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll6~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.211
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll8~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.220
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll2~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.406
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll10~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.569
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Recovery 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll9~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.797
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Recovery 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll8~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.836
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Recovery 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 1.264
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Recovery 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll6~PLL_OUTPUT_COUNTER|divclk'
+Slack : 6.286
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Recovery 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll7~PLL_OUTPUT_COUNTER|divclk'
+Slack : 18.081
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Removal 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.208
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Removal 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll7~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.317
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Removal 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll9~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.423
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Removal 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll6~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.703
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Removal 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll8~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.714
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll2~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.255
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll3~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.255
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll1~FRACTIONAL_PLL|vcoph[0]'
+Slack : 0.625
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll8~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.628
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll9~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.649
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll10~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.875
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'DDR3_A_B|DDR3A|ddr3_a_inst|ddr3_a_p0_sampling_clock'
+Slack : 1.091
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|ddr3_b_p0_sampling_clock'
+Slack : 1.091
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 1.609
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll6~PLL_OUTPUT_COUNTER|divclk'
+Slack : 4.157
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll7~PLL_OUTPUT_COUNTER|divclk'
+Slack : 6.667
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'OSC_50_B7A'
+Slack : 9.269
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'OSC_50_B3B'
+Slack : 9.558
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll9~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.276
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll2~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.347
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll8~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.403
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll3~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.499
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll10~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.571
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.686
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll6~PLL_OUTPUT_COUNTER|divclk'
+Slack : 1.247
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll7~PLL_OUTPUT_COUNTER|divclk'
+Slack : 3.436
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'OSC_50_B3B'
+Slack : 17.678
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'OSC_50_B7A'
+Slack : 18.749
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll3~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.044
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.125
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll7~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.178
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll6~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.181
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll8~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.197
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll9~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.201
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'OSC_50_B3B'
+Slack : 0.262
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'OSC_50_B7A'
+Slack : 0.277
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll10~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.356
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll2~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.362
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Recovery 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll8~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.921
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Recovery 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll9~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.955
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Recovery 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 1.594
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Recovery 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll6~PLL_OUTPUT_COUNTER|divclk'
+Slack : 6.562
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Recovery 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll7~PLL_OUTPUT_COUNTER|divclk'
+Slack : 18.171
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Removal 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.269
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Removal 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll7~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.284
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Removal 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll9~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.475
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Removal 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll6~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.634
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Removal 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll8~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.655
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll2~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.264
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll3~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.264
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll1~FRACTIONAL_PLL|vcoph[0]'
+Slack : 0.625
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll8~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.628
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll9~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.667
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll10~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.872
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'DDR3_A_B|DDR3A|ddr3_a_inst|ddr3_a_p0_sampling_clock'
+Slack : 1.082
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|ddr3_b_p0_sampling_clock'
+Slack : 1.082
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 1.648
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll6~PLL_OUTPUT_COUNTER|divclk'
+Slack : 4.147
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll7~PLL_OUTPUT_COUNTER|divclk'
+Slack : 6.667
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'OSC_50_B7A'
+Slack : 9.223
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'OSC_50_B3B'
+Slack : 9.510
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll2~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.224
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll3~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.458
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll8~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.871
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll9~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.925
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll10~PLL_OUTPUT_COUNTER|divclk'
+Slack : 1.022
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 1.149
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll6~PLL_OUTPUT_COUNTER|divclk'
+Slack : 2.231
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll7~PLL_OUTPUT_COUNTER|divclk'
+Slack : 5.564
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'OSC_50_B3B'
+Slack : 18.441
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'OSC_50_B7A'
+Slack : 19.214
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.081
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll9~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.098
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'OSC_50_B7A'
+Slack : 0.108
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'OSC_50_B3B'
+Slack : 0.132
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll7~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.146
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll6~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.150
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll8~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.159
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll10~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.267
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll3~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.341
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll2~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.656
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Recovery 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll9~PLL_OUTPUT_COUNTER|divclk'
+Slack : 1.338
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Recovery 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll8~PLL_OUTPUT_COUNTER|divclk'
+Slack : 1.411
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Recovery 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 2.508
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Recovery 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll6~PLL_OUTPUT_COUNTER|divclk'
+Slack : 7.502
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Recovery 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll7~PLL_OUTPUT_COUNTER|divclk'
+Slack : 18.746
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Removal 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.155
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Removal 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll7~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.231
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Removal 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll9~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.305
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Removal 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll6~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.502
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Removal 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll8~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.533
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll2~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.299
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll3~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.300
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll1~FRACTIONAL_PLL|vcoph[0]'
+Slack : 0.625
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll9~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.890
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll8~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.895
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll10~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.909
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'DDR3_A_B|DDR3A|ddr3_a_inst|ddr3_a_p0_sampling_clock'
+Slack : 1.154
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|ddr3_b_p0_sampling_clock'
+Slack : 1.154
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 1.665
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll6~PLL_OUTPUT_COUNTER|divclk'
+Slack : 4.191
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll7~PLL_OUTPUT_COUNTER|divclk'
+Slack : 6.667
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'OSC_50_B3B'
+Slack : 9.390
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'OSC_50_B7A'
+Slack : 9.614
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll2~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.325
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll3~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.550
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll9~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.952
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll8~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.982
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll10~PLL_OUTPUT_COUNTER|divclk'
+Slack : 1.157
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 1.274
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll6~PLL_OUTPUT_COUNTER|divclk'
+Slack : 2.429
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll7~PLL_OUTPUT_COUNTER|divclk'
+Slack : 5.799
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'OSC_50_B3B'
+Slack : 18.576
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'OSC_50_B7A'
+Slack : 19.297
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.107
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll9~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.121
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll7~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.122
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll6~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.125
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll8~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.135
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'OSC_50_B7A'
+Slack : 0.157
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll10~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.174
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'OSC_50_B3B'
+Slack : 0.187
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll3~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.309
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll2~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.624
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Recovery 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll9~PLL_OUTPUT_COUNTER|divclk'
+Slack : 1.454
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Recovery 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll8~PLL_OUTPUT_COUNTER|divclk'
+Slack : 1.456
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Recovery 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 2.687
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Recovery 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll6~PLL_OUTPUT_COUNTER|divclk'
+Slack : 7.648
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Recovery 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll7~PLL_OUTPUT_COUNTER|divclk'
+Slack : 18.811
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Removal 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.190
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Removal 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll7~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.198
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Removal 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll9~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.321
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Removal 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll6~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.441
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Removal 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll8~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.483
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll2~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.288
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll3~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.289
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll1~FRACTIONAL_PLL|vcoph[0]'
+Slack : 0.625
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll8~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.903
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll10~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.909
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll9~PLL_OUTPUT_COUNTER|divclk'
+Slack : 0.915
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'DDR3_A_B|DDR3A|ddr3_a_inst|ddr3_a_p0_sampling_clock'
+Slack : 1.140
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|ddr3_b_p0_sampling_clock'
+Slack : 1.140
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll1~PLL_OUTPUT_COUNTER|divclk'
+Slack : 1.702
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll6~PLL_OUTPUT_COUNTER|divclk'
+Slack : 4.194
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'DDR3_A_B|DDR3B|ddr3_b_inst|pll0|pll7~PLL_OUTPUT_COUNTER|divclk'
+Slack : 6.667
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'OSC_50_B3B'
+Slack : 9.390
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'OSC_50_B7A'
+Slack : 9.622
+TNS   : 0.000
+
+------------------------------------------------------------
+Info: see the "DDR report" for DDR timing results
+------------------------------------------------------------
+------------------------------------------------------------

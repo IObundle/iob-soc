@@ -1,0 +1,113 @@
+<sld_project_info>
+  <project>
+    <hash md5_digest_80b="7c42ee6bd7778f394deb"/>
+  </project>
+  <file_info>
+    <file device="5SGXEA7N2F45C2" path="Golden_top.sof" usercode="0xFFFFFFFF"/>
+  </file_info>
+  <hub_info hub_ir_width="4" ir_width="2" node_addr_width="1" node_count="1"/>
+  <node_info>
+    <node hpath="S5_DDR3_QSYS:u0|S5_DDR3_QSYS_nios2_qsys:nios2_qsys|S5_DDR3_QSYS_nios2_qsys_cpu:cpu|S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci:the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci|S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper:the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper|sld_virtual_jtag_basic:S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy|sld_virtual_jtag_impl:sld_virtual_jtag_impl_inst" instance_id="0" mfg_id="70" node_id="34" sld_node_info="0x19104600" version="3">
+      <parameters>
+        <parameter name="sld_mfg_id" type="dec" value="70"/>
+        <parameter name="sld_type_id" type="dec" value="34"/>
+        <parameter name="sld_version" type="dec" value="3"/>
+        <parameter name="sld_instance_index" type="dec" value="0"/>
+        <parameter name="sld_auto_instance_index" type="string" value="YES"/>
+        <parameter name="sld_ir_width" type="dec" value="2"/>
+        <parameter name="SLD_NODE_INFO" type="dec" value="420496896"/>
+      </parameters>
+      <inputs>
+        <port name="usr_tdo" source="S5_DDR3_QSYS:u0|S5_DDR3_QSYS_nios2_qsys:nios2_qsys|S5_DDR3_QSYS_nios2_qsys_cpu:cpu|S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci:the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci|S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper:the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper|sld_virtual_jtag_basic:S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy|tdo"/>
+        <port name="usr_ir_out[0]" source="S5_DDR3_QSYS:u0|S5_DDR3_QSYS_nios2_qsys:nios2_qsys|S5_DDR3_QSYS_nios2_qsys_cpu:cpu|S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci:the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci|S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper:the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper|sld_virtual_jtag_basic:S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy|ir_out[0]"/>
+        <port name="usr_ir_out[1]" source="S5_DDR3_QSYS:u0|S5_DDR3_QSYS_nios2_qsys:nios2_qsys|S5_DDR3_QSYS_nios2_qsys_cpu:cpu|S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci:the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci|S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper:the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper|sld_virtual_jtag_basic:S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy|ir_out[1]"/>
+        <port name="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_raw_tck" source="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_raw_tck"/>
+        <port name="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_raw_tms" source="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_raw_tms"/>
+        <port name="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_tdi" source="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_tdi"/>
+        <port name="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_jtag_state_tlr" source="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_jtag_state_tlr"/>
+        <port name="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_jtag_state_rti" source="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_jtag_state_rti"/>
+        <port name="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_jtag_state_sdrs" source="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_jtag_state_sdrs"/>
+        <port name="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_jtag_state_cdr" source="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_jtag_state_cdr"/>
+        <port name="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_jtag_state_sdr" source="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_jtag_state_sdr"/>
+        <port name="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_jtag_state_e1dr" source="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_jtag_state_e1dr"/>
+        <port name="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_jtag_state_pdr" source="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_jtag_state_pdr"/>
+        <port name="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_jtag_state_e2dr" source="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_jtag_state_e2dr"/>
+        <port name="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_jtag_state_udr" source="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_jtag_state_udr"/>
+        <port name="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_jtag_state_sirs" source="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_jtag_state_sirs"/>
+        <port name="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_jtag_state_cir" source="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_jtag_state_cir"/>
+        <port name="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_jtag_state_sir" source="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_jtag_state_sir"/>
+        <port name="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_jtag_state_e1ir" source="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_jtag_state_e1ir"/>
+        <port name="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_jtag_state_pir" source="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_jtag_state_pir"/>
+        <port name="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_jtag_state_e2ir" source="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_jtag_state_e2ir"/>
+        <port name="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_jtag_state_uir" source="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_jtag_state_uir"/>
+        <port name="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_usr1" source="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_usr1"/>
+        <port name="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_clr" source="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_clr"/>
+        <port name="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_ena" source="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_ena"/>
+        <port name="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_ir_in_0_" source="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_ir_in_0_"/>
+        <port name="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_ir_in_1_" source="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_ir_in_1_"/>
+      </inputs>
+      <outputs>
+        <port name="usr_tck"/>
+        <port name="usr_tdi"/>
+        <port name="usr_ir_in[0]"/>
+        <port name="usr_ir_in[1]"/>
+        <port name="usr_virtual_state_cdr"/>
+        <port name="usr_virtual_state_sdr"/>
+        <port name="usr_virtual_state_e1dr"/>
+        <port name="usr_virtual_state_pdr"/>
+        <port name="usr_virtual_state_e2dr"/>
+        <port name="usr_virtual_state_udr"/>
+        <port name="usr_virtual_state_cir"/>
+        <port name="usr_virtual_state_uir"/>
+        <port name="usr_tms"/>
+        <port name="usr_jtag_state_tlr"/>
+        <port name="usr_jtag_state_rti"/>
+        <port name="usr_jtag_state_sdrs"/>
+        <port name="usr_jtag_state_cdr"/>
+        <port name="usr_jtag_state_sdr"/>
+        <port name="usr_jtag_state_e1dr"/>
+        <port name="usr_jtag_state_pdr"/>
+        <port name="usr_jtag_state_e2dr"/>
+        <port name="usr_jtag_state_udr"/>
+        <port name="usr_jtag_state_sirs"/>
+        <port name="usr_jtag_state_cir"/>
+        <port name="usr_jtag_state_sir"/>
+        <port name="usr_jtag_state_e1ir"/>
+        <port name="usr_jtag_state_pir"/>
+        <port name="usr_jtag_state_e2ir"/>
+        <port name="usr_jtag_state_uir"/>
+        <port name="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_tdo"/>
+        <port name="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_ir_out_0_"/>
+        <port name="jtag.bp.u0_nios2_qsys_cpu_the_S5_DDR3_QSYS_nios2_qsys_cpu_nios2_oci_the_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_wrapper_S5_DDR3_QSYS_nios2_qsys_cpu_debug_slave_phy_sld_virtual_jtag_impl_inst_ir_out_1_"/>
+      </outputs>
+    </node>
+  </node_info>
+  <sld_infos>
+    <sld_info hpath="S5_DDR3_QSYS:u0|S5_DDR3_QSYS_jtag_uart:jtag_uart|alt_jtag_atlantic:S5_DDR3_QSYS_jtag_uart_alt_jtag_atlantic|altera_sld_agent_endpoint:inst|altera_fabric_endpoint:ep" library="work" name="ep">
+      <assignment_values/>
+      <parameters>
+        <assignment name="SLD_NODE_INFO" type="dec" value="0"/>
+        <assignment name="sld_endpoint_type" type="dec" value="0"/>
+        <assignment name="send_width" type="dec" value="3"/>
+        <assignment name="receive_width" type="dec" value="24"/>
+        <assignment name="num_clocks" type="dec" value="0"/>
+        <assignment name="settings" type="string" value="{fabric sld dir agent mfr_code 110 type_code 128 version 1 instance -1 ir_width 1 bridge_agent 0 prefer_host { } psig 9b67919e}"/>
+        <assignment name=" constraint(settings)" type="string" value="1 to 127"/>
+        <assignment name=" constraint(send)" type="string" value="2 downto 0"/>
+        <assignment name=" constraint(receive)" type="string" value="23 downto 0"/>
+      </parameters>
+    </sld_info>
+    <sld_info hpath="S5_DDR3_QSYS:u0" name="u0">
+      <assignment_values>
+        <assignment_value text="QSYS_NAME S5_DDR3_QSYS HAS_SOPCINFO 1 GENERATION_ID 1490081008"/>
+      </assignment_values>
+      <parameters/>
+    </sld_info>
+    <sld_info hpath="sld_hub:auto_hub|alt_sld_fab:\instrumentation_fabric_with_node_gen:instrumentation_fabric" library="alt_sld_fab" name="instrumentation_fabric">
+      <assignment_values>
+        <assignment_value text="QSYS_NAME alt_sld_fab HAS_SOPCINFO 1"/>
+      </assignment_values>
+      <parameters/>
+    </sld_info>
+  </sld_infos>
+</sld_project_info>

@@ -1,0 +1,2824 @@
+------------------------------------------------------------
+TimeQuest Timing Analyzer Summary
+------------------------------------------------------------
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dqs_select|clkout_leveling_clock_k_0'
+Slack : 0.154
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.154
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[1].cps|clkout_leveling_clock_ac_2'
+Slack : 0.154
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_8'
+Slack : 0.154
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[7].cps|clkout_leveling_clock_ac_1'
+Slack : 0.154
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.154
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[1].cps|clkout_leveling_clock_ac_4'
+Slack : 0.154
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[6].cps|clkout_leveling_clock_ac_16'
+Slack : 0.154
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.155
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_20'
+Slack : 0.155
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[3].cps|clkout_leveling_clock_ac_8'
+Slack : 0.155
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[4].cps|clkout_leveling_clock_ac_4'
+Slack : 0.155
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dqs_select|clkout_leveling_clock_k_0'
+Slack : 0.156
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_k_0'
+Slack : 0.157
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.157
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_20'
+Slack : 0.157
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[19].cps|clkout_leveling_clock_ac_10'
+Slack : 0.158
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_9'
+Slack : 0.158
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[3].cps|clkout_leveling_clock_ac_1'
+Slack : 0.158
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.158
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_5'
+Slack : 0.158
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.197
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_8'
+Slack : 0.197
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[6].cps|clkout_leveling_clock_ac_1'
+Slack : 0.197
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[7].cps|clkout_leveling_clock_ac_6'
+Slack : 0.197
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.198
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_k_0'
+Slack : 0.198
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_afi_clk'
+Slack : 0.436
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_avl_clk'
+Slack : 0.464
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_c2p_write_clk'
+Slack : 0.500
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_avl_clk'
+Slack : 0.507
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_1'
+Slack : 0.518
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_0'
+Slack : 0.518
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_2'
+Slack : 0.518
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_3'
+Slack : 0.518
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_0'
+Slack : 0.520
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_2'
+Slack : 0.520
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_3'
+Slack : 0.520
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_1'
+Slack : 0.520
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_3'
+Slack : 0.521
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_2'
+Slack : 0.521
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_1'
+Slack : 0.521
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_0'
+Slack : 0.521
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_0'
+Slack : 0.561
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_3'
+Slack : 0.561
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_1'
+Slack : 0.561
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_2'
+Slack : 0.562
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_afi_clk'
+Slack : 0.683
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_c2p_write_clk'
+Slack : 0.829
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_config_clk'
+Slack : 5.742
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_config_clk'
+Slack : 5.845
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'OSC_50_B3B'
+Slack : 17.856
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'OSC_50_B4A'
+Slack : 19.970
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'OSC_50_B8D'
+Slack : 19.970
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_3'
+Slack : 0.022
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_2'
+Slack : 0.022
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_1'
+Slack : 0.022
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_0'
+Slack : 0.022
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_0'
+Slack : 0.022
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_2'
+Slack : 0.022
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_3'
+Slack : 0.022
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_1'
+Slack : 0.022
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_0'
+Slack : 0.032
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_1'
+Slack : 0.033
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_2'
+Slack : 0.033
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_3'
+Slack : 0.033
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_afi_clk'
+Slack : 0.098
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_2'
+Slack : 0.098
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_0'
+Slack : 0.098
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_3'
+Slack : 0.098
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_1'
+Slack : 0.098
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_afi_clk'
+Slack : 0.140
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'OSC_50_B3B'
+Slack : 0.169
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_config_clk'
+Slack : 0.179
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_config_clk'
+Slack : 0.200
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_avl_clk'
+Slack : 0.203
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_avl_clk'
+Slack : 0.218
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[19].cps|clkout_leveling_clock_ac_10'
+Slack : 0.554
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.554
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_5'
+Slack : 0.554
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_9'
+Slack : 0.556
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[3].cps|clkout_leveling_clock_ac_1'
+Slack : 0.556
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_k_0'
+Slack : 0.556
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dqs_select|clkout_leveling_clock_k_0'
+Slack : 0.556
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.556
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_20'
+Slack : 0.556
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[3].cps|clkout_leveling_clock_ac_8'
+Slack : 0.563
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[4].cps|clkout_leveling_clock_ac_4'
+Slack : 0.563
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dqs_select|clkout_leveling_clock_k_0'
+Slack : 0.566
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.567
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[1].cps|clkout_leveling_clock_ac_2'
+Slack : 0.567
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_8'
+Slack : 0.567
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[7].cps|clkout_leveling_clock_ac_1'
+Slack : 0.567
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.567
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_20'
+Slack : 0.567
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.569
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[1].cps|clkout_leveling_clock_ac_4'
+Slack : 0.569
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[6].cps|clkout_leveling_clock_ac_16'
+Slack : 0.569
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.631
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_8'
+Slack : 0.631
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[6].cps|clkout_leveling_clock_ac_1'
+Slack : 0.631
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[7].cps|clkout_leveling_clock_ac_6'
+Slack : 0.631
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.632
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_k_0'
+Slack : 0.632
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_c2p_write_clk'
+Slack : 0.730
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_c2p_write_clk'
+Slack : 0.917
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'OSC_50_B4A'
+Slack : 1.250
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'OSC_50_B8D'
+Slack : 1.250
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Recovery 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_afi_clk'
+Slack : 0.719
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Recovery 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_afi_clk'
+Slack : 1.267
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Recovery 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_avl_clk'
+Slack : 7.109
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Recovery 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_avl_clk'
+Slack : 8.085
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Recovery 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_config_clk'
+Slack : 20.049
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Recovery 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_config_clk'
+Slack : 20.756
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Removal 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_avl_clk'
+Slack : 0.209
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Removal 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_afi_clk'
+Slack : 0.218
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Removal 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_afi_clk'
+Slack : 0.224
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Removal 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_config_clk'
+Slack : 0.357
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Removal 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_config_clk'
+Slack : 0.441
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Removal 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_avl_clk'
+Slack : 0.551
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_1'
+Slack : 0.520
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_0'
+Slack : 0.520
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_2'
+Slack : 0.520
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_3'
+Slack : 0.520
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dqs_select|clkout_leveling_clock_k_0'
+Slack : 0.520
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.521
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[1].cps|clkout_leveling_clock_ac_2'
+Slack : 0.521
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_8'
+Slack : 0.521
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[7].cps|clkout_leveling_clock_ac_1'
+Slack : 0.521
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.521
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_20'
+Slack : 0.521
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.522
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[1].cps|clkout_leveling_clock_ac_4'
+Slack : 0.522
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[6].cps|clkout_leveling_clock_ac_16'
+Slack : 0.522
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_0'
+Slack : 0.524
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_2'
+Slack : 0.524
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_3'
+Slack : 0.524
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_1'
+Slack : 0.524
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dqs_select|clkout_leveling_clock_k_0'
+Slack : 0.524
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_3'
+Slack : 0.525
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_2'
+Slack : 0.525
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_1'
+Slack : 0.525
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_0'
+Slack : 0.525
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[19].cps|clkout_leveling_clock_ac_10'
+Slack : 0.525
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_k_0'
+Slack : 0.525
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.525
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_5'
+Slack : 0.525
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[3].cps|clkout_leveling_clock_ac_8'
+Slack : 0.525
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[4].cps|clkout_leveling_clock_ac_4'
+Slack : 0.525
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.525
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_20'
+Slack : 0.525
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_9'
+Slack : 0.526
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[3].cps|clkout_leveling_clock_ac_1'
+Slack : 0.526
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_2'
+Slack : 0.536
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_0'
+Slack : 0.536
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_3'
+Slack : 0.536
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_1'
+Slack : 0.536
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.536
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_8'
+Slack : 0.536
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[6].cps|clkout_leveling_clock_ac_1'
+Slack : 0.536
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[7].cps|clkout_leveling_clock_ac_6'
+Slack : 0.536
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_k_0'
+Slack : 0.536
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.537
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_write_clk'
+Slack : 0.759
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_write_clk'
+Slack : 0.774
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_afi_clk'
+Slack : 0.929
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_afi_clk'
+Slack : 0.937
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_c2p_write_clk'
+Slack : 1.489
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_c2p_write_clk'
+Slack : 1.527
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_avl_clk'
+Slack : 4.608
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_avl_clk'
+Slack : 4.612
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'OSC_50_B3B'
+Slack : 9.559
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'OSC_50_B4A'
+Slack : 9.831
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'OSC_50_B8D'
+Slack : 9.831
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_config_clk'
+Slack : 10.303
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_config_clk'
+Slack : 10.303
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dqs_select|clkout_leveling_clock_k_0'
+Slack : 0.222
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.222
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[1].cps|clkout_leveling_clock_ac_2'
+Slack : 0.222
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_8'
+Slack : 0.222
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[7].cps|clkout_leveling_clock_ac_1'
+Slack : 0.222
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.223
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_20'
+Slack : 0.223
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.223
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[1].cps|clkout_leveling_clock_ac_4'
+Slack : 0.223
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[6].cps|clkout_leveling_clock_ac_16'
+Slack : 0.223
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[3].cps|clkout_leveling_clock_ac_8'
+Slack : 0.228
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[4].cps|clkout_leveling_clock_ac_4'
+Slack : 0.228
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_9'
+Slack : 0.230
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[3].cps|clkout_leveling_clock_ac_1'
+Slack : 0.230
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_k_0'
+Slack : 0.230
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dqs_select|clkout_leveling_clock_k_0'
+Slack : 0.230
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[19].cps|clkout_leveling_clock_ac_10'
+Slack : 0.231
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.231
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_5'
+Slack : 0.231
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.231
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_20'
+Slack : 0.231
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_k_0'
+Slack : 0.261
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.262
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_8'
+Slack : 0.262
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[6].cps|clkout_leveling_clock_ac_1'
+Slack : 0.262
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[7].cps|clkout_leveling_clock_ac_6'
+Slack : 0.262
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.262
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_1'
+Slack : 0.583
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_0'
+Slack : 0.583
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_2'
+Slack : 0.583
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_3'
+Slack : 0.583
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_3'
+Slack : 0.591
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_2'
+Slack : 0.591
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_1'
+Slack : 0.591
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_0'
+Slack : 0.591
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_0'
+Slack : 0.591
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_2'
+Slack : 0.591
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_3'
+Slack : 0.591
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_1'
+Slack : 0.591
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_2'
+Slack : 0.622
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_0'
+Slack : 0.622
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_3'
+Slack : 0.622
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_1'
+Slack : 0.622
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_avl_clk'
+Slack : 0.644
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_afi_clk'
+Slack : 0.698
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_avl_clk'
+Slack : 0.734
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_c2p_write_clk'
+Slack : 0.849
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_afi_clk'
+Slack : 0.873
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_c2p_write_clk'
+Slack : 1.169
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_config_clk'
+Slack : 5.922
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_config_clk'
+Slack : 6.049
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'OSC_50_B3B'
+Slack : 18.078
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'OSC_50_B4A'
+Slack : 19.970
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'OSC_50_B8D'
+Slack : 19.970
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_3'
+Slack : 0.078
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_2'
+Slack : 0.078
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_1'
+Slack : 0.078
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_0'
+Slack : 0.078
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_0'
+Slack : 0.078
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_2'
+Slack : 0.078
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_3'
+Slack : 0.078
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_1'
+Slack : 0.078
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_1'
+Slack : 0.091
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_0'
+Slack : 0.091
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_2'
+Slack : 0.091
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_3'
+Slack : 0.091
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_2'
+Slack : 0.139
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_0'
+Slack : 0.139
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_3'
+Slack : 0.139
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_1'
+Slack : 0.139
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_avl_clk'
+Slack : 0.173
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_config_clk'
+Slack : 0.175
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_afi_clk'
+Slack : 0.182
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_config_clk'
+Slack : 0.182
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_avl_clk'
+Slack : 0.195
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_afi_clk'
+Slack : 0.201
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'OSC_50_B3B'
+Slack : 0.244
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_c2p_write_clk'
+Slack : 0.552
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[19].cps|clkout_leveling_clock_ac_10'
+Slack : 0.612
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_k_0'
+Slack : 0.612
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dqs_select|clkout_leveling_clock_k_0'
+Slack : 0.612
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.612
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_5'
+Slack : 0.612
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.612
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_20'
+Slack : 0.612
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_9'
+Slack : 0.613
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[3].cps|clkout_leveling_clock_ac_1'
+Slack : 0.613
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[3].cps|clkout_leveling_clock_ac_8'
+Slack : 0.619
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[4].cps|clkout_leveling_clock_ac_4'
+Slack : 0.619
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dqs_select|clkout_leveling_clock_k_0'
+Slack : 0.625
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.625
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[1].cps|clkout_leveling_clock_ac_2'
+Slack : 0.625
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_8'
+Slack : 0.625
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[7].cps|clkout_leveling_clock_ac_1'
+Slack : 0.625
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.625
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_20'
+Slack : 0.625
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.625
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[1].cps|clkout_leveling_clock_ac_4'
+Slack : 0.625
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[6].cps|clkout_leveling_clock_ac_16'
+Slack : 0.625
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.673
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_8'
+Slack : 0.673
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[6].cps|clkout_leveling_clock_ac_1'
+Slack : 0.673
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[7].cps|clkout_leveling_clock_ac_6'
+Slack : 0.673
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.673
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_k_0'
+Slack : 0.673
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_c2p_write_clk'
+Slack : 0.770
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'OSC_50_B4A'
+Slack : 1.250
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'OSC_50_B8D'
+Slack : 1.250
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Recovery 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_afi_clk'
+Slack : 0.902
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Recovery 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_afi_clk'
+Slack : 1.443
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Recovery 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_avl_clk'
+Slack : 7.344
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Recovery 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_avl_clk'
+Slack : 8.237
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Recovery 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_config_clk'
+Slack : 20.126
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Recovery 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_config_clk'
+Slack : 20.791
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Removal 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_avl_clk'
+Slack : 0.201
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Removal 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_afi_clk'
+Slack : 0.270
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Removal 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_afi_clk'
+Slack : 0.275
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Removal 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_config_clk'
+Slack : 0.331
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Removal 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_config_clk'
+Slack : 0.423
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Removal 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_avl_clk'
+Slack : 0.522
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_1'
+Slack : 0.535
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_0'
+Slack : 0.535
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_2'
+Slack : 0.535
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_3'
+Slack : 0.535
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dqs_select|clkout_leveling_clock_k_0'
+Slack : 0.535
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.536
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[1].cps|clkout_leveling_clock_ac_2'
+Slack : 0.536
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_8'
+Slack : 0.536
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[7].cps|clkout_leveling_clock_ac_1'
+Slack : 0.536
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.536
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_20'
+Slack : 0.536
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.537
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[1].cps|clkout_leveling_clock_ac_4'
+Slack : 0.537
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[6].cps|clkout_leveling_clock_ac_16'
+Slack : 0.537
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_0'
+Slack : 0.542
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_2'
+Slack : 0.542
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_3'
+Slack : 0.542
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_1'
+Slack : 0.542
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_3'
+Slack : 0.543
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_2'
+Slack : 0.543
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_1'
+Slack : 0.543
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_0'
+Slack : 0.543
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[19].cps|clkout_leveling_clock_ac_10'
+Slack : 0.543
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_k_0'
+Slack : 0.543
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dqs_select|clkout_leveling_clock_k_0'
+Slack : 0.543
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.543
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_5'
+Slack : 0.543
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[3].cps|clkout_leveling_clock_ac_8'
+Slack : 0.543
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[4].cps|clkout_leveling_clock_ac_4'
+Slack : 0.543
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_9'
+Slack : 0.544
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[3].cps|clkout_leveling_clock_ac_1'
+Slack : 0.544
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.544
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_20'
+Slack : 0.544
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_2'
+Slack : 0.549
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_0'
+Slack : 0.549
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_3'
+Slack : 0.549
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_1'
+Slack : 0.549
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.549
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_8'
+Slack : 0.549
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[6].cps|clkout_leveling_clock_ac_1'
+Slack : 0.549
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[7].cps|clkout_leveling_clock_ac_6'
+Slack : 0.549
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_k_0'
+Slack : 0.549
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.550
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_write_clk'
+Slack : 0.769
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_write_clk'
+Slack : 0.782
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_afi_clk'
+Slack : 0.967
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_afi_clk'
+Slack : 0.975
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_c2p_write_clk'
+Slack : 1.484
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_c2p_write_clk'
+Slack : 1.521
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_avl_clk'
+Slack : 4.593
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_avl_clk'
+Slack : 4.600
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'OSC_50_B3B'
+Slack : 9.501
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'OSC_50_B4A'
+Slack : 9.772
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'OSC_50_B8D'
+Slack : 9.772
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_config_clk'
+Slack : 10.303
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_config_clk'
+Slack : 10.303
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.137
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[1].cps|clkout_leveling_clock_ac_2'
+Slack : 0.137
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_8'
+Slack : 0.137
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[7].cps|clkout_leveling_clock_ac_1'
+Slack : 0.137
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.137
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[19].cps|clkout_leveling_clock_ac_10'
+Slack : 0.137
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[1].cps|clkout_leveling_clock_ac_4'
+Slack : 0.137
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[6].cps|clkout_leveling_clock_ac_16'
+Slack : 0.137
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dqs_select|clkout_leveling_clock_k_0'
+Slack : 0.137
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.137
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_5'
+Slack : 0.137
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.137
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_20'
+Slack : 0.137
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dqs_select|clkout_leveling_clock_k_0'
+Slack : 0.138
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.138
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_20'
+Slack : 0.138
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_9'
+Slack : 0.138
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[3].cps|clkout_leveling_clock_ac_1'
+Slack : 0.138
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[3].cps|clkout_leveling_clock_ac_8'
+Slack : 0.138
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[4].cps|clkout_leveling_clock_ac_4'
+Slack : 0.138
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_k_0'
+Slack : 0.139
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.202
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_8'
+Slack : 0.202
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[6].cps|clkout_leveling_clock_ac_1'
+Slack : 0.202
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[7].cps|clkout_leveling_clock_ac_6'
+Slack : 0.202
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.204
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_k_0'
+Slack : 0.204
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_0'
+Slack : 0.504
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_2'
+Slack : 0.504
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_3'
+Slack : 0.504
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_1'
+Slack : 0.504
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_1'
+Slack : 0.505
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_0'
+Slack : 0.505
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_2'
+Slack : 0.505
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_3'
+Slack : 0.505
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_3'
+Slack : 0.506
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_2'
+Slack : 0.506
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_1'
+Slack : 0.506
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_0'
+Slack : 0.506
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_2'
+Slack : 0.571
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_0'
+Slack : 0.571
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_3'
+Slack : 0.571
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_1'
+Slack : 0.571
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_c2p_write_clk'
+Slack : 1.339
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_avl_clk'
+Slack : 1.407
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_avl_clk'
+Slack : 1.529
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_c2p_write_clk'
+Slack : 1.560
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_afi_clk'
+Slack : 1.562
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_afi_clk'
+Slack : 1.675
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_config_clk'
+Slack : 7.649
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_config_clk'
+Slack : 7.662
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'OSC_50_B3B'
+Slack : 18.668
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'OSC_50_B4A'
+Slack : 19.970
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'OSC_50_B8D'
+Slack : 19.970
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_afi_clk'
+Slack : 0.081
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_afi_clk'
+Slack : 0.087
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'OSC_50_B3B'
+Slack : 0.123
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_config_clk'
+Slack : 0.145
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_config_clk'
+Slack : 0.150
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_avl_clk'
+Slack : 0.150
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_avl_clk'
+Slack : 0.151
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_3'
+Slack : 0.346
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_2'
+Slack : 0.346
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_1'
+Slack : 0.346
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_0'
+Slack : 0.346
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_0'
+Slack : 0.347
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_2'
+Slack : 0.347
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_3'
+Slack : 0.347
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_1'
+Slack : 0.347
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_1'
+Slack : 0.355
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_0'
+Slack : 0.355
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_2'
+Slack : 0.355
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_3'
+Slack : 0.355
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_2'
+Slack : 0.399
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_0'
+Slack : 0.399
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_3'
+Slack : 0.399
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_1'
+Slack : 0.399
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_c2p_write_clk'
+Slack : 0.599
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_c2p_write_clk'
+Slack : 0.733
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[19].cps|clkout_leveling_clock_ac_10'
+Slack : 0.880
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_k_0'
+Slack : 0.880
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.880
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_5'
+Slack : 0.880
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_9'
+Slack : 0.881
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[3].cps|clkout_leveling_clock_ac_1'
+Slack : 0.881
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dqs_select|clkout_leveling_clock_k_0'
+Slack : 0.881
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.881
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_20'
+Slack : 0.881
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[3].cps|clkout_leveling_clock_ac_8'
+Slack : 0.884
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[4].cps|clkout_leveling_clock_ac_4'
+Slack : 0.884
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.888
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[1].cps|clkout_leveling_clock_ac_4'
+Slack : 0.888
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[6].cps|clkout_leveling_clock_ac_16'
+Slack : 0.888
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dqs_select|clkout_leveling_clock_k_0'
+Slack : 0.889
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.889
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[1].cps|clkout_leveling_clock_ac_2'
+Slack : 0.889
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_8'
+Slack : 0.889
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[7].cps|clkout_leveling_clock_ac_1'
+Slack : 0.889
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.889
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_20'
+Slack : 0.889
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.931
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_8'
+Slack : 0.931
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[6].cps|clkout_leveling_clock_ac_1'
+Slack : 0.931
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[7].cps|clkout_leveling_clock_ac_6'
+Slack : 0.931
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.933
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_k_0'
+Slack : 0.933
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'OSC_50_B4A'
+Slack : 1.250
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'OSC_50_B8D'
+Slack : 1.250
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Recovery 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_afi_clk'
+Slack : 1.738
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Recovery 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_afi_clk'
+Slack : 1.998
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Recovery 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_avl_clk'
+Slack : 8.360
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Recovery 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_avl_clk'
+Slack : 9.011
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Recovery 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_config_clk'
+Slack : 20.640
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Recovery 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_config_clk'
+Slack : 21.168
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Removal 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_afi_clk'
+Slack : 0.162
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Removal 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_afi_clk'
+Slack : 0.165
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Removal 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_avl_clk'
+Slack : 0.193
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Removal 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_config_clk'
+Slack : 0.292
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Removal 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_config_clk'
+Slack : 0.350
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Removal 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_avl_clk'
+Slack : 0.427
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_1'
+Slack : 0.569
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_0'
+Slack : 0.569
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_2'
+Slack : 0.569
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_3'
+Slack : 0.569
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_0'
+Slack : 0.569
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_2'
+Slack : 0.569
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_3'
+Slack : 0.569
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_1'
+Slack : 0.569
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_3'
+Slack : 0.571
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_2'
+Slack : 0.571
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_1'
+Slack : 0.571
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_0'
+Slack : 0.571
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dqs_select|clkout_leveling_clock_k_0'
+Slack : 0.572
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.572
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[1].cps|clkout_leveling_clock_ac_2'
+Slack : 0.572
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_8'
+Slack : 0.572
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[7].cps|clkout_leveling_clock_ac_1'
+Slack : 0.572
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.572
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_20'
+Slack : 0.572
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dqs_select|clkout_leveling_clock_k_0'
+Slack : 0.572
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.572
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_20'
+Slack : 0.572
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.573
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[1].cps|clkout_leveling_clock_ac_4'
+Slack : 0.573
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[6].cps|clkout_leveling_clock_ac_16'
+Slack : 0.573
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[19].cps|clkout_leveling_clock_ac_10'
+Slack : 0.574
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_9'
+Slack : 0.574
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[3].cps|clkout_leveling_clock_ac_1'
+Slack : 0.574
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_k_0'
+Slack : 0.574
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.574
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_5'
+Slack : 0.574
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[3].cps|clkout_leveling_clock_ac_8'
+Slack : 0.575
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[4].cps|clkout_leveling_clock_ac_4'
+Slack : 0.575
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_2'
+Slack : 0.590
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_0'
+Slack : 0.590
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_3'
+Slack : 0.590
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_1'
+Slack : 0.590
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.593
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_k_0'
+Slack : 0.593
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.594
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_8'
+Slack : 0.594
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[6].cps|clkout_leveling_clock_ac_1'
+Slack : 0.594
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[7].cps|clkout_leveling_clock_ac_6'
+Slack : 0.594
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_write_clk'
+Slack : 0.803
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_write_clk'
+Slack : 0.824
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_afi_clk'
+Slack : 0.992
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_afi_clk'
+Slack : 0.999
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_c2p_write_clk'
+Slack : 1.497
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_c2p_write_clk'
+Slack : 1.533
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_avl_clk'
+Slack : 4.645
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_avl_clk'
+Slack : 4.655
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'OSC_50_B3B'
+Slack : 9.391
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'OSC_50_B4A'
+Slack : 9.964
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'OSC_50_B8D'
+Slack : 9.964
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_config_clk'
+Slack : 10.303
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_config_clk'
+Slack : 10.303
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dqs_select|clkout_leveling_clock_k_0'
+Slack : 0.257
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.258
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[1].cps|clkout_leveling_clock_ac_2'
+Slack : 0.258
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_8'
+Slack : 0.258
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[7].cps|clkout_leveling_clock_ac_1'
+Slack : 0.258
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.258
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_20'
+Slack : 0.258
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.260
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[1].cps|clkout_leveling_clock_ac_4'
+Slack : 0.260
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[6].cps|clkout_leveling_clock_ac_16'
+Slack : 0.260
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dqs_select|clkout_leveling_clock_k_0'
+Slack : 0.260
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[19].cps|clkout_leveling_clock_ac_10'
+Slack : 0.261
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_9'
+Slack : 0.261
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[3].cps|clkout_leveling_clock_ac_1'
+Slack : 0.261
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_k_0'
+Slack : 0.261
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.261
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_5'
+Slack : 0.261
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.261
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_20'
+Slack : 0.261
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[3].cps|clkout_leveling_clock_ac_8'
+Slack : 0.262
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[4].cps|clkout_leveling_clock_ac_4'
+Slack : 0.262
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.310
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_8'
+Slack : 0.310
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[6].cps|clkout_leveling_clock_ac_1'
+Slack : 0.310
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[7].cps|clkout_leveling_clock_ac_6'
+Slack : 0.310
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_k_0'
+Slack : 0.310
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.311
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_1'
+Slack : 0.625
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_0'
+Slack : 0.625
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_2'
+Slack : 0.625
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_3'
+Slack : 0.625
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_0'
+Slack : 0.628
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_2'
+Slack : 0.628
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_3'
+Slack : 0.628
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_1'
+Slack : 0.628
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_3'
+Slack : 0.629
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_2'
+Slack : 0.629
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_1'
+Slack : 0.629
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_0'
+Slack : 0.629
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_2'
+Slack : 0.678
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_0'
+Slack : 0.678
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_3'
+Slack : 0.678
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_1'
+Slack : 0.678
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_c2p_write_clk'
+Slack : 1.565
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_avl_clk'
+Slack : 1.601
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_avl_clk'
+Slack : 1.669
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_afi_clk'
+Slack : 1.733
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_c2p_write_clk'
+Slack : 1.769
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_afi_clk'
+Slack : 1.845
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_config_clk'
+Slack : 7.811
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_config_clk'
+Slack : 7.812
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'OSC_50_B3B'
+Slack : 18.817
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'OSC_50_B4A'
+Slack : 19.970
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'OSC_50_B8D'
+Slack : 19.970
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_config_clk'
+Slack : 0.118
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_afi_clk'
+Slack : 0.121
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_afi_clk'
+Slack : 0.121
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_config_clk'
+Slack : 0.121
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_avl_clk'
+Slack : 0.123
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_avl_clk'
+Slack : 0.123
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'OSC_50_B3B'
+Slack : 0.170
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_3'
+Slack : 0.364
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_2'
+Slack : 0.364
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_1'
+Slack : 0.364
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_0'
+Slack : 0.364
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_0'
+Slack : 0.364
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_2'
+Slack : 0.364
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_3'
+Slack : 0.364
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_1'
+Slack : 0.364
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_1'
+Slack : 0.370
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_0'
+Slack : 0.370
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_2'
+Slack : 0.370
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_3'
+Slack : 0.370
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_2'
+Slack : 0.402
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_0'
+Slack : 0.402
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_3'
+Slack : 0.402
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_1'
+Slack : 0.402
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_c2p_write_clk'
+Slack : 0.512
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_c2p_write_clk'
+Slack : 0.641
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[19].cps|clkout_leveling_clock_ac_10'
+Slack : 0.898
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_k_0'
+Slack : 0.898
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dqs_select|clkout_leveling_clock_k_0'
+Slack : 0.898
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.898
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_5'
+Slack : 0.898
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_9'
+Slack : 0.899
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[3].cps|clkout_leveling_clock_ac_1'
+Slack : 0.899
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.899
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_20'
+Slack : 0.899
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[3].cps|clkout_leveling_clock_ac_8'
+Slack : 0.901
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[4].cps|clkout_leveling_clock_ac_4'
+Slack : 0.901
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dqs_select|clkout_leveling_clock_k_0'
+Slack : 0.904
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.905
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[1].cps|clkout_leveling_clock_ac_2'
+Slack : 0.905
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_8'
+Slack : 0.905
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[7].cps|clkout_leveling_clock_ac_1'
+Slack : 0.905
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.905
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_20'
+Slack : 0.905
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.905
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[1].cps|clkout_leveling_clock_ac_4'
+Slack : 0.905
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[6].cps|clkout_leveling_clock_ac_16'
+Slack : 0.905
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.936
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_8'
+Slack : 0.936
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[6].cps|clkout_leveling_clock_ac_1'
+Slack : 0.936
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[7].cps|clkout_leveling_clock_ac_6'
+Slack : 0.936
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_k_0'
+Slack : 0.936
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.937
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'OSC_50_B4A'
+Slack : 1.250
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'OSC_50_B8D'
+Slack : 1.250
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Recovery 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_afi_clk'
+Slack : 1.877
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Recovery 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_afi_clk'
+Slack : 2.140
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Recovery 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_avl_clk'
+Slack : 8.480
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Recovery 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_avl_clk'
+Slack : 9.087
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Recovery 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_config_clk'
+Slack : 20.687
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Recovery 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_config_clk'
+Slack : 21.205
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Removal 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_avl_clk'
+Slack : 0.165
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Removal 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_afi_clk'
+Slack : 0.192
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Removal 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_afi_clk'
+Slack : 0.193
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Removal 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_config_clk'
+Slack : 0.255
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Removal 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_config_clk'
+Slack : 0.310
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Removal 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_avl_clk'
+Slack : 0.393
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_1'
+Slack : 0.564
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_0'
+Slack : 0.564
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_2'
+Slack : 0.564
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_3'
+Slack : 0.564
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dqs_select|clkout_leveling_clock_k_0'
+Slack : 0.565
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.565
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[1].cps|clkout_leveling_clock_ac_2'
+Slack : 0.565
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_8'
+Slack : 0.565
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[7].cps|clkout_leveling_clock_ac_1'
+Slack : 0.565
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.565
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_A|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_20'
+Slack : 0.565
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_0'
+Slack : 0.565
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_2'
+Slack : 0.565
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_3'
+Slack : 0.565
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_1'
+Slack : 0.565
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.566
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[1].cps|clkout_leveling_clock_ac_4'
+Slack : 0.566
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[6].cps|clkout_leveling_clock_ac_16'
+Slack : 0.566
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dqs_select|clkout_leveling_clock_k_0'
+Slack : 0.566
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.566
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_20'
+Slack : 0.566
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_3'
+Slack : 0.567
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_2'
+Slack : 0.567
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_1'
+Slack : 0.567
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_0'
+Slack : 0.567
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[19].cps|clkout_leveling_clock_ac_10'
+Slack : 0.567
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.567
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_5'
+Slack : 0.567
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_9'
+Slack : 0.568
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[3].cps|clkout_leveling_clock_ac_1'
+Slack : 0.568
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_k_0'
+Slack : 0.568
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[3].cps|clkout_leveling_clock_ac_8'
+Slack : 0.568
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_C|qdrii_slave_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[4].cps|clkout_leveling_clock_ac_4'
+Slack : 0.568
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select|clkout_leveling_clock_d_2'
+Slack : 0.582
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_1|clkout_leveling_clock_d_0'
+Slack : 0.582
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate_2|clkout_leveling_clock_d_3'
+Slack : 0.582
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|dq_ddio[0].uwrite|altdq_dqs2_inst|dq_select~_Duplicate|clkout_leveling_clock_d_1'
+Slack : 0.582
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[0].cps|clkout_leveling_clock_ac_0'
+Slack : 0.583
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[2].cps|clkout_leveling_clock_ac_8'
+Slack : 0.583
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[6].cps|clkout_leveling_clock_ac_1'
+Slack : 0.583
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uaddress_pad|sdio_out[7].cps|clkout_leveling_clock_ac_6'
+Slack : 0.583
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|urps_n_pad|sdio_out[0].cps|clkout_leveling_clock_ac_21'
+Slack : 0.583
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|p0|umemphy|uio_pads|uaddr_cmd_pads|uwps_n_pad|sdio_out[0].cps|clkout_leveling_clock_k_0'
+Slack : 0.583
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_write_clk'
+Slack : 0.798
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_write_clk'
+Slack : 0.816
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_afi_clk'
+Slack : 1.025
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_afi_clk'
+Slack : 1.032
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_c2p_write_clk'
+Slack : 1.508
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_c2p_write_clk'
+Slack : 1.539
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_avl_clk'
+Slack : 4.646
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_avl_clk'
+Slack : 4.656
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'OSC_50_B3B'
+Slack : 9.391
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'OSC_50_B4A'
+Slack : 9.958
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'OSC_50_B8D'
+Slack : 9.958
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_B|qdrii_master_inst|pll0|pll_config_clk'
+Slack : 10.303
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'QDRII_A_B_C_D|QDRII_D|qdrii_d_inst|pll0|pll_config_clk'
+Slack : 10.303
+TNS   : 0.000
+
+------------------------------------------------------------
+Info: see the "DDR report" for DDR timing results
+------------------------------------------------------------
+------------------------------------------------------------

@@ -1,0 +1,45 @@
+PLL_Name	DDR3_x2:DDR3_A_B|ddr3_b:DDR3B|ddr3_b_0002:ddr3_b_inst|ddr3_b_pll0:pll0|pll1~FRACTIONAL_PLL
+PLLJITTER	19
+PLLSPEmax	50
+PLLSPEmin	-50
+
+PLL_Name	DDR3_x2:DDR3_A_B|ddr3_b:DDR3B|ddr3_b_0002:ddr3_b_inst|ddr3_b_pll0:pll0|pll1~PLL_OUTPUT_COUNTER
+PLLJITTER	NA
+PLLSPEmax	NA
+PLLSPEmin	NA
+
+PLL_Name	DDR3_x2:DDR3_A_B|ddr3_b:DDR3B|ddr3_b_0002:ddr3_b_inst|ddr3_b_pll0:pll0|pll2~PLL_OUTPUT_COUNTER
+PLLJITTER	NA
+PLLSPEmax	NA
+PLLSPEmin	NA
+
+PLL_Name	DDR3_x2:DDR3_A_B|ddr3_b:DDR3B|ddr3_b_0002:ddr3_b_inst|ddr3_b_pll0:pll0|pll3~PLL_OUTPUT_COUNTER
+PLLJITTER	NA
+PLLSPEmax	NA
+PLLSPEmin	NA
+
+PLL_Name	DDR3_x2:DDR3_A_B|ddr3_b:DDR3B|ddr3_b_0002:ddr3_b_inst|ddr3_b_pll0:pll0|pll6~PLL_OUTPUT_COUNTER
+PLLJITTER	NA
+PLLSPEmax	NA
+PLLSPEmin	NA
+
+PLL_Name	DDR3_x2:DDR3_A_B|ddr3_b:DDR3B|ddr3_b_0002:ddr3_b_inst|ddr3_b_pll0:pll0|pll7~PLL_OUTPUT_COUNTER
+PLLJITTER	NA
+PLLSPEmax	NA
+PLLSPEmin	NA
+
+PLL_Name	DDR3_x2:DDR3_A_B|ddr3_b:DDR3B|ddr3_b_0002:ddr3_b_inst|ddr3_b_pll0:pll0|pll8~PLL_OUTPUT_COUNTER
+PLLJITTER	NA
+PLLSPEmax	NA
+PLLSPEmin	NA
+
+PLL_Name	DDR3_x2:DDR3_A_B|ddr3_b:DDR3B|ddr3_b_0002:ddr3_b_inst|ddr3_b_pll0:pll0|pll9~PLL_OUTPUT_COUNTER
+PLLJITTER	NA
+PLLSPEmax	NA
+PLLSPEmin	NA
+
+PLL_Name	DDR3_x2:DDR3_A_B|ddr3_b:DDR3B|ddr3_b_0002:ddr3_b_inst|ddr3_b_pll0:pll0|pll10~PLL_OUTPUT_COUNTER
+PLLJITTER	NA
+PLLSPEmax	NA
+PLLSPEmin	NA
+

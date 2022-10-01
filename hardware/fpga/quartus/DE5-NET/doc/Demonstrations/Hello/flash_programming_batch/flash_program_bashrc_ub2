@@ -1,0 +1,12 @@
+# file: nios2_sdk_shell_bashrc
+
+
+#conver to .flash
+"$SOPC_KIT_NIOS2/nios2_command_shell.sh" sof2flash --input=Golden_top.sof --output=flash_hw.flash --offset=0x20C0000 --pfl --optionbit=0x00030000 --programmingmode=PS
+"$SOPC_KIT_NIOS2/nios2_command_shell.sh" elf2flash --base=0x0 --end=0x0FFFFFFF --reset=0x04940000 --input=HELLO_NIOS.elf --output=flash_sw.flash --boot=$SOPC_KIT_NIOS2/components/altera_nios2/boot_loader_cfi.srec
+
+
+
+#Programming with .flash
+"$SOPC_KIT_NIOS2/nios2_command_shell.sh" nios2-flash-programmer --base=0x0 flash_hw.flash
+"$SOPC_KIT_NIOS2/nios2_command_shell.sh" nios2-flash-programmer --base=0x0 flash_sw.flash

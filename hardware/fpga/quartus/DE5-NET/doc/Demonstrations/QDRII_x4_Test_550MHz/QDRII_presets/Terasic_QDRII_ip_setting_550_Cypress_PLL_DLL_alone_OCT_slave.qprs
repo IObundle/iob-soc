@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ip>
+ <presets version="12.1">
+  <preset
+     name="Terasic_QDRII_ip_setting_550_Cypress_PLL_DLL_alone_OCT_slave"
+     kind="altera_mem_if_qdrii_emif"
+     version="12.1"
+     description="">
+   <parameter name="MEM_BURST_LENGTH" value="4" />
+   <parameter name="CORE_DEBUG_CONNECTION" value="EXPORT" />
+   <parameter name="SOPC_COMPAT_RESET" value="false" />
+   <parameter name="SEQUENCER_TYPE" value="NIOS" />
+   <parameter name="TIMING_BOARD_DATA_TO_CQ_SKEW" value="8" />
+   <parameter name="PHY_ONLY" value="false" />
+   <parameter name="PACKAGE_DESKEW" value="true" />
+   <parameter name="EXPORT_AFI_HALF_CLK" value="false" />
+   <parameter name="MEM_T_RL" value="2.5" />
+   <parameter name="TIMING_BOARD_SKEW_WITHIN_CQ" value="20" />
+   <parameter name="TIMING_ADDR_CTRL_SKEW" value="20" />
+   <parameter name="MEM_CLK_FREQ" value="550.0" />
+   <parameter name="CTL_LATENCY" value="1" />
+   <parameter name="REF_CLK_FREQ" value="50.0" />
+   <parameter name="AC_PACKAGE_DESKEW" value="true" />
+   <parameter name="C2P_WRITE_CLOCK_ADD_PHASE" value="0.0" />
+   <parameter name="TIMING_BOARD_SKEW_WITHIN_K" value="20" />
+   <parameter name="MEM_DM_WIDTH" value="2" />
+   <parameter name="MEM_T_WL" value="1" />
+   <parameter name="TIMING_TKHKnH" value="770" />
+   <parameter name="DLL_SHARING_MODE" value="None" />
+   <parameter name="AVL_MAX_SIZE" value="1" />
+   <parameter name="SKIP_MEM_INIT" value="true" />
+   <parameter name="TIMING_BOARD_DATA_TO_K_SKEW" value="11" />
+   <parameter name="DEVICE_WIDTH" value="1" />
+   <parameter name="MEM_VERBOSE" value="true" />
+   <parameter name="MEM_ADDR_WIDTH" value="20" />
+   <parameter name="TIMING_BOARD_AC_EYE_REDUCTION_H" value="0" />
+   <parameter name="TIMING_QDR_INTERNAL_JITTER" value="250" />
+   <parameter name="MEM_DQ_WIDTH" value="18" />
+   <parameter name="BYTE_ENABLE" value="false" />
+   <parameter name="PLL_SHARING_MODE" value="None" />
+   <parameter name="TIMING_BOARD_DELTA_DQS_ARRIVAL_TIME" value="0" />
+   <parameter name="TIMING_TCQHCQnH" value="655" />
+   <parameter name="TIMING_BOARD_AC_TO_CK_SKEW" value="11" />
+   <parameter name="MEM_READ_DQS_WIDTH" value="1" />
+   <parameter name="RATE" value="Half" />
+   <parameter name="IO_STANDARD" value="1.8-V HSTL" />
+   <parameter name="ENABLE_EXPORT_SEQ_DEBUG_BRIDGE" value="false" />
+   <parameter name="POWER_OF_TWO_BUS" value="false" />
+   <parameter name="TIMING_BOARD_AC_EYE_REDUCTION_SU" value="0" />
+   <parameter name="TIMING_TSA" value="230" />
+   <parameter name="CALIBRATION_MODE" value="Full" />
+   <parameter name="TIMING_BOARD_SKEW_BETWEEN_DQS" value="20" />
+   <parameter name="TIMING_BOARD_DQ_EYE_REDUCTION" value="0" />
+   <parameter name="TIMING_TSD" value="180" />
+   <parameter name="OCT_SHARING_MODE" value="Slave" />
+   <parameter name="USER_DEBUG_LEVEL" value="0" />
+   <parameter name="TIMING_THA" value="230" />
+   <parameter name="MEM_WRITE_DQS_WIDTH" value="1" />
+   <parameter name="TIMING_BOARD_SKEW_BETWEEN_DIMMS" value="0" />
+   <parameter name="TIMING_TCQDOH" value="-150" />
+   <parameter name="SPEED_GRADE" value="2" />
+   <parameter name="TIMING_TCQD" value="150" />
+   <parameter name="TIMING_THD" value="180" />
+  </preset>
+ </presets>
+</ip>

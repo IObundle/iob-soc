@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<instance entity-name="altera_xcvr_low_latency_phy" version="11.1" >
+<generic name="device_family" value="Stratix V" />
+<generic name="intended_device_variant" value="ANY" />
+<generic name="gui_data_path_type" value="PARAM_MAPPED" />
+<generic name="operation_mode" value="DUPLEX" />
+<generic name="lanes" value="1" />
+<generic name="gui_bonding_enable" value="0" />
+<generic name="gui_bonded_mode" value="xN" />
+<generic name="gui_serialization_factor" value="PARAM_MAPPED" />
+<generic name="gui_pma_width" value="PARAM_DEFAULT" />
+<generic name="gui_pll_type" value="CMU" />
+<generic name="data_rate" value="1000 Mbps" />
+<generic name="gui_base_data_rate" value="1250 Mbps" />
+<generic name="gui_pll_refclk_freq" value="62.5 MHz" />
+<generic name="gui_select_10g_pcs" value="DEPRECATED" />
+<generic name="gui_tx_use_coreclk" value="0" />
+<generic name="gui_rx_use_coreclk" value="0" />
+<generic name="tx_bitslip_enable" value="0" />
+<generic name="rx_bitslip_enable" value="0" />
+<generic name="phase_comp_fifo_mode" value="NONE" />
+<generic name="loopback_mode" value="NONE" />
+<generic name="use_double_data_mode" value="DEPRECATED" />
+<generic name="gxb_analog_power" value="AUTO" />
+<generic name="pll_lock_speed" value="AUTO" />
+<generic name="tx_analog_power" value="AUTO" />
+<generic name="tx_slew_rate" value="OFF" />
+<generic name="tx_termination" value="OCT_100_OHMS" />
+<generic name="tx_use_external_termination" value="false" />
+<generic name="tx_preemp_pretap" value="0" />
+<generic name="gui_tx_preemp_pretap_inv" value="false" />
+<generic name="tx_preemp_tap_1" value="0" />
+<generic name="tx_preemp_tap_2" value="0" />
+<generic name="gui_tx_preemp_tap_2_inv" value="false" />
+<generic name="tx_vod_selection" value="2" />
+<generic name="tx_common_mode" value="0.65V" />
+<generic name="rx_pll_lock_speed" value="AUTO" />
+<generic name="rx_common_mode" value="0.82V" />
+<generic name="rx_termination" value="OCT_100_OHMS" />
+<generic name="rx_use_external_termination" value="false" />
+<generic name="rx_eq_dc_gain" value="1" />
+<generic name="rx_eq_ctrl" value="16" />
+<generic name="starting_channel_number" value="0" />
+<generic name="channel_interface" value="0" />
+<generic name="gui_pll_reconfig_enable_pll_reconfig" value="false" />
+<generic name="gui_pll_reconfig_pll_count" value="1" />
+<generic name="gui_pll_reconfig_refclk_count" value="1" />
+<generic name="gui_pll_reconfig_main_pll_index" value="0" />
+<generic name="gui_pll_reconfig_cdr_pll_refclk_sel" value="0" />
+<generic name="gui_pll_reconfig_pll0_pll_type" value="CMU" />
+<generic name="gui_pll_reconfig_pll0_data_rate" value="0 Mbps" />
+<generic name="gui_pll_reconfig_pll0_refclk_freq" value="0 MHz" />
+<generic name="gui_pll_reconfig_pll0_refclk_sel" value="0" />
+<generic name="gui_pll_reconfig_pll1_pll_type" value="CMU" />
+<generic name="gui_pll_reconfig_pll1_data_rate" value="0 Mbps" />
+<generic name="gui_pll_reconfig_pll1_refclk_freq" value="0 MHz" />
+<generic name="gui_pll_reconfig_pll1_refclk_sel" value="0" />
+<generic name="gui_pll_reconfig_pll2_pll_type" value="CMU" />
+<generic name="gui_pll_reconfig_pll2_data_rate" value="0 Mbps" />
+<generic name="gui_pll_reconfig_pll2_refclk_freq" value="0 MHz" />
+<generic name="gui_pll_reconfig_pll2_refclk_sel" value="0" />
+<generic name="gui_pll_reconfig_pll3_pll_type" value="CMU" />
+<generic name="gui_pll_reconfig_pll3_data_rate" value="0 Mbps" />
+<generic name="gui_pll_reconfig_pll3_refclk_freq" value="0 MHz" />
+<generic name="gui_pll_reconfig_pll3_refclk_sel" value="0" />
+<generic name="gui_mgmt_clk_in_hz" value="150000000" />
+<generic name="gui_embedded_reset" value="1" />
+<generic name="gui_split_interfaces" value="0" />
+<generic name="gui_avalon_symbol_size" value="0" />
+<generic name="AUTO_PHY_MGMT_CLK_CLOCK_RATE" value="-1" />
+<generic name="AUTO_PLL_REF_CLK_CLOCK_RATE" value="-1" />
+</instance>

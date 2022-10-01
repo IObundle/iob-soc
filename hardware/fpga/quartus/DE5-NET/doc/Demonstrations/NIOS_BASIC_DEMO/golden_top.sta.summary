@@ -1,0 +1,373 @@
+------------------------------------------------------------
+TimeQuest Timing Analyzer Summary
+------------------------------------------------------------
+
+Type  : Slow 900mV 85C Model Setup 'OSC_50_B3B'
+Slack : 11.269
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'altera_reserved_tck'
+Slack : 13.651
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'OSC_50_B4A'
+Slack : 17.632
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'altera_reserved_tck'
+Slack : 0.127
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'OSC_50_B3B'
+Slack : 0.137
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'OSC_50_B4A'
+Slack : 0.140
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Recovery 'OSC_50_B3B'
+Slack : 15.304
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Recovery 'altera_reserved_tck'
+Slack : 15.345
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Recovery 'OSC_50_B4A'
+Slack : 18.040
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Removal 'OSC_50_B3B'
+Slack : 0.208
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Removal 'OSC_50_B4A'
+Slack : 0.508
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Removal 'altera_reserved_tck'
+Slack : 0.536
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'xcvr_10g_dummy_sfp|xcvr_10g_dummy_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_10g_custom_native_inst|sv_xcvr_native_insts[0].gen_bonded_group_native.sv_xcvr_native_inst|inst_sv_pma|rx_pma.sv_rx_pma_inst|rx_pmas[0].rx_pma.rx_cdr|clk90bdes'
+Slack : 0.096
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'xcvr_dummy_sata_host_0|xcvr_dummy_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_custom_inst|gen.sv_xcvr_native_insts[0].gen_bonded_group.sv_xcvr_native_inst|inst_sv_pma|rx_pma.sv_rx_pma_inst|rx_pmas[0].rx_pma.rx_cdr|clk90bdes'
+Slack : 1.000
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'xcvr_dummy_sata_host_1|xcvr_dummy_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_custom_inst|gen.sv_xcvr_native_insts[0].gen_bonded_group.sv_xcvr_native_inst|inst_sv_pma|rx_pma.sv_rx_pma_inst|rx_pmas[0].rx_pma.rx_cdr|clk90bdes'
+Slack : 1.000
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'xcvr_10g_dummy_sfp|xcvr_10g_dummy_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_10g_custom_native_inst|sv_xcvr_native_insts[0].gen_bonded_group_native.sv_xcvr_native_inst|inst_sv_pma|rx_pma.sv_rx_pma_inst|rx_pmas[0].rx_pma.rx_pma_deser|clk90b'
+Slack : 1.801
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'xcvr_dummy_sata_host_0|xcvr_dummy_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_custom_inst|gen.sv_xcvr_native_insts[0].gen_bonded_group.sv_xcvr_native_inst|inst_sv_pma|rx_pma.sv_rx_pma_inst|rx_pmas[0].rx_pma.rx_pma_deser|clk90b'
+Slack : 3.871
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'xcvr_dummy_sata_host_1|xcvr_dummy_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_custom_inst|gen.sv_xcvr_native_insts[0].gen_bonded_group.sv_xcvr_native_inst|inst_sv_pma|rx_pma.sv_rx_pma_inst|rx_pmas[0].rx_pma.rx_pma_deser|clk90b'
+Slack : 3.871
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'xcvr_dummy_sata_host_0|xcvr_dummy_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_custom_inst|gen.sv_xcvr_native_insts[0].gen_bonded_group.sv_xcvr_native_inst|inst_sv_pcs|ch[0].inst_sv_pcs_ch|inst_sv_hssi_8g_rx_pcs|wys|clocktopld'
+Slack : 3.902
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'xcvr_dummy_sata_host_1|xcvr_dummy_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_custom_inst|gen.sv_xcvr_native_insts[0].gen_bonded_group.sv_xcvr_native_inst|inst_sv_pcs|ch[0].inst_sv_pcs_ch|inst_sv_hssi_8g_rx_pcs|wys|clocktopld'
+Slack : 3.917
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'OSC_50_B4A'
+Slack : 9.256
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'OSC_50_B3B'
+Slack : 9.425
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'altera_reserved_tck'
+Slack : 16.028
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'OSC_50_B3B'
+Slack : 11.879
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'altera_reserved_tck'
+Slack : 13.803
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'OSC_50_B4A'
+Slack : 17.921
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'altera_reserved_tck'
+Slack : 0.125
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'OSC_50_B3B'
+Slack : 0.184
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'OSC_50_B4A'
+Slack : 0.241
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Recovery 'altera_reserved_tck'
+Slack : 15.351
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Recovery 'OSC_50_B3B'
+Slack : 15.689
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Recovery 'OSC_50_B4A'
+Slack : 18.254
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Removal 'OSC_50_B3B'
+Slack : 0.263
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Removal 'altera_reserved_tck'
+Slack : 0.554
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Removal 'OSC_50_B4A'
+Slack : 0.617
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'xcvr_10g_dummy_sfp|xcvr_10g_dummy_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_10g_custom_native_inst|sv_xcvr_native_insts[0].gen_bonded_group_native.sv_xcvr_native_inst|inst_sv_pma|rx_pma.sv_rx_pma_inst|rx_pmas[0].rx_pma.rx_cdr|clk90bdes'
+Slack : 0.096
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'xcvr_dummy_sata_host_0|xcvr_dummy_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_custom_inst|gen.sv_xcvr_native_insts[0].gen_bonded_group.sv_xcvr_native_inst|inst_sv_pma|rx_pma.sv_rx_pma_inst|rx_pmas[0].rx_pma.rx_cdr|clk90bdes'
+Slack : 1.000
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'xcvr_dummy_sata_host_1|xcvr_dummy_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_custom_inst|gen.sv_xcvr_native_insts[0].gen_bonded_group.sv_xcvr_native_inst|inst_sv_pma|rx_pma.sv_rx_pma_inst|rx_pmas[0].rx_pma.rx_cdr|clk90bdes'
+Slack : 1.000
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'xcvr_10g_dummy_sfp|xcvr_10g_dummy_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_10g_custom_native_inst|sv_xcvr_native_insts[0].gen_bonded_group_native.sv_xcvr_native_inst|inst_sv_pma|rx_pma.sv_rx_pma_inst|rx_pmas[0].rx_pma.rx_pma_deser|clk90b'
+Slack : 1.776
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'xcvr_dummy_sata_host_0|xcvr_dummy_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_custom_inst|gen.sv_xcvr_native_insts[0].gen_bonded_group.sv_xcvr_native_inst|inst_sv_pma|rx_pma.sv_rx_pma_inst|rx_pmas[0].rx_pma.rx_pma_deser|clk90b'
+Slack : 3.846
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'xcvr_dummy_sata_host_1|xcvr_dummy_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_custom_inst|gen.sv_xcvr_native_insts[0].gen_bonded_group.sv_xcvr_native_inst|inst_sv_pma|rx_pma.sv_rx_pma_inst|rx_pmas[0].rx_pma.rx_pma_deser|clk90b'
+Slack : 3.846
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'xcvr_dummy_sata_host_0|xcvr_dummy_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_custom_inst|gen.sv_xcvr_native_insts[0].gen_bonded_group.sv_xcvr_native_inst|inst_sv_pcs|ch[0].inst_sv_pcs_ch|inst_sv_hssi_8g_rx_pcs|wys|clocktopld'
+Slack : 3.872
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'xcvr_dummy_sata_host_1|xcvr_dummy_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_custom_inst|gen.sv_xcvr_native_insts[0].gen_bonded_group.sv_xcvr_native_inst|inst_sv_pcs|ch[0].inst_sv_pcs_ch|inst_sv_hssi_8g_rx_pcs|wys|clocktopld'
+Slack : 3.888
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'OSC_50_B4A'
+Slack : 9.216
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'OSC_50_B3B'
+Slack : 9.389
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'altera_reserved_tck'
+Slack : 16.138
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'OSC_50_B3B'
+Slack : 14.353
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'altera_reserved_tck'
+Slack : 14.972
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'OSC_50_B4A'
+Slack : 18.554
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'altera_reserved_tck'
+Slack : 0.077
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'OSC_50_B3B'
+Slack : 0.085
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'OSC_50_B4A'
+Slack : 0.086
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Recovery 'altera_reserved_tck'
+Slack : 16.154
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Recovery 'OSC_50_B3B'
+Slack : 16.928
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Recovery 'OSC_50_B4A'
+Slack : 18.805
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Removal 'OSC_50_B3B'
+Slack : 0.155
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Removal 'OSC_50_B4A'
+Slack : 0.199
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Removal 'altera_reserved_tck'
+Slack : 0.376
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'xcvr_10g_dummy_sfp|xcvr_10g_dummy_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_10g_custom_native_inst|sv_xcvr_native_insts[0].gen_bonded_group_native.sv_xcvr_native_inst|inst_sv_pma|rx_pma.sv_rx_pma_inst|rx_pmas[0].rx_pma.rx_cdr|clk90bdes'
+Slack : 0.096
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'xcvr_dummy_sata_host_0|xcvr_dummy_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_custom_inst|gen.sv_xcvr_native_insts[0].gen_bonded_group.sv_xcvr_native_inst|inst_sv_pma|rx_pma.sv_rx_pma_inst|rx_pmas[0].rx_pma.rx_cdr|clk90bdes'
+Slack : 1.000
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'xcvr_dummy_sata_host_1|xcvr_dummy_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_custom_inst|gen.sv_xcvr_native_insts[0].gen_bonded_group.sv_xcvr_native_inst|inst_sv_pma|rx_pma.sv_rx_pma_inst|rx_pmas[0].rx_pma.rx_cdr|clk90bdes'
+Slack : 1.000
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'xcvr_10g_dummy_sfp|xcvr_10g_dummy_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_10g_custom_native_inst|sv_xcvr_native_insts[0].gen_bonded_group_native.sv_xcvr_native_inst|inst_sv_pma|rx_pma.sv_rx_pma_inst|rx_pmas[0].rx_pma.rx_pma_deser|clk90b'
+Slack : 1.868
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'xcvr_dummy_sata_host_0|xcvr_dummy_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_custom_inst|gen.sv_xcvr_native_insts[0].gen_bonded_group.sv_xcvr_native_inst|inst_sv_pcs|ch[0].inst_sv_pcs_ch|inst_sv_hssi_8g_rx_pcs|wys|clocktopld'
+Slack : 3.939
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'xcvr_dummy_sata_host_0|xcvr_dummy_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_custom_inst|gen.sv_xcvr_native_insts[0].gen_bonded_group.sv_xcvr_native_inst|inst_sv_pma|rx_pma.sv_rx_pma_inst|rx_pmas[0].rx_pma.rx_pma_deser|clk90b'
+Slack : 3.950
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'xcvr_dummy_sata_host_1|xcvr_dummy_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_custom_inst|gen.sv_xcvr_native_insts[0].gen_bonded_group.sv_xcvr_native_inst|inst_sv_pcs|ch[0].inst_sv_pcs_ch|inst_sv_hssi_8g_rx_pcs|wys|clocktopld'
+Slack : 3.950
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'xcvr_dummy_sata_host_1|xcvr_dummy_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_custom_inst|gen.sv_xcvr_native_insts[0].gen_bonded_group.sv_xcvr_native_inst|inst_sv_pma|rx_pma.sv_rx_pma_inst|rx_pmas[0].rx_pma.rx_pma_deser|clk90b'
+Slack : 3.950
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'OSC_50_B3B'
+Slack : 9.123
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'OSC_50_B4A'
+Slack : 9.628
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'altera_reserved_tck'
+Slack : 15.931
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'OSC_50_B3B'
+Slack : 14.745
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'altera_reserved_tck'
+Slack : 15.114
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'OSC_50_B4A'
+Slack : 18.710
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'altera_reserved_tck'
+Slack : 0.065
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'OSC_50_B4A'
+Slack : 0.136
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'OSC_50_B3B'
+Slack : 0.137
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Recovery 'altera_reserved_tck'
+Slack : 16.216
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Recovery 'OSC_50_B3B'
+Slack : 17.148
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Recovery 'OSC_50_B4A'
+Slack : 18.945
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Removal 'OSC_50_B3B'
+Slack : 0.191
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Removal 'OSC_50_B4A'
+Slack : 0.244
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Removal 'altera_reserved_tck'
+Slack : 0.357
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'xcvr_10g_dummy_sfp|xcvr_10g_dummy_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_10g_custom_native_inst|sv_xcvr_native_insts[0].gen_bonded_group_native.sv_xcvr_native_inst|inst_sv_pma|rx_pma.sv_rx_pma_inst|rx_pmas[0].rx_pma.rx_cdr|clk90bdes'
+Slack : 0.096
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'xcvr_dummy_sata_host_0|xcvr_dummy_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_custom_inst|gen.sv_xcvr_native_insts[0].gen_bonded_group.sv_xcvr_native_inst|inst_sv_pma|rx_pma.sv_rx_pma_inst|rx_pmas[0].rx_pma.rx_cdr|clk90bdes'
+Slack : 1.000
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'xcvr_dummy_sata_host_1|xcvr_dummy_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_custom_inst|gen.sv_xcvr_native_insts[0].gen_bonded_group.sv_xcvr_native_inst|inst_sv_pma|rx_pma.sv_rx_pma_inst|rx_pmas[0].rx_pma.rx_cdr|clk90bdes'
+Slack : 1.000
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'xcvr_10g_dummy_sfp|xcvr_10g_dummy_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_10g_custom_native_inst|sv_xcvr_native_insts[0].gen_bonded_group_native.sv_xcvr_native_inst|inst_sv_pma|rx_pma.sv_rx_pma_inst|rx_pmas[0].rx_pma.rx_pma_deser|clk90b'
+Slack : 1.853
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'xcvr_dummy_sata_host_0|xcvr_dummy_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_custom_inst|gen.sv_xcvr_native_insts[0].gen_bonded_group.sv_xcvr_native_inst|inst_sv_pcs|ch[0].inst_sv_pcs_ch|inst_sv_hssi_8g_rx_pcs|wys|clocktopld'
+Slack : 3.934
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'xcvr_dummy_sata_host_1|xcvr_dummy_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_custom_inst|gen.sv_xcvr_native_insts[0].gen_bonded_group.sv_xcvr_native_inst|inst_sv_pcs|ch[0].inst_sv_pcs_ch|inst_sv_hssi_8g_rx_pcs|wys|clocktopld'
+Slack : 3.942
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'xcvr_dummy_sata_host_0|xcvr_dummy_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_custom_inst|gen.sv_xcvr_native_insts[0].gen_bonded_group.sv_xcvr_native_inst|inst_sv_pma|rx_pma.sv_rx_pma_inst|rx_pmas[0].rx_pma.rx_pma_deser|clk90b'
+Slack : 3.949
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'xcvr_dummy_sata_host_1|xcvr_dummy_inst|sv_xcvr_low_latency_phy_nr_inst|sv_xcvr_custom_inst|gen.sv_xcvr_native_insts[0].gen_bonded_group.sv_xcvr_native_inst|inst_sv_pma|rx_pma.sv_rx_pma_inst|rx_pmas[0].rx_pma.rx_pma_deser|clk90b'
+Slack : 3.949
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'OSC_50_B3B'
+Slack : 9.129
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'OSC_50_B4A'
+Slack : 9.641
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'altera_reserved_tck'
+Slack : 15.941
+TNS   : 0.000
+
+------------------------------------------------------------

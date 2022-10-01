@@ -1,0 +1,117 @@
+# # File gsaved with Nlview version 6.3.8  2013-12-19 bk=1.2992 VDI=34 GEI=35
+# 
+preplace inst top.mem_if_ddr3b.c0.afi_clk -pg 1
+preplace inst top.mem_if_ddr3a.dmaster.p2b -pg 1
+preplace inst top.mem_if_ddr3b.dmaster.timing_adt -pg 1
+preplace inst top.mem_if_ddr3b.afi_half_clk -pg 1
+preplace inst top.mem_if_ddr3a.dll0 -pg 1
+preplace inst top.mem_if_ddr3b.c0 -pg 1
+preplace inst top.mem_if_ddr3b.global_reset -pg 1
+preplace inst top.mem_if_ddr3a.afi_half_clk -pg 1
+preplace inst top.mem_if_ddr3b.dmaster.p2b_adapter -pg 1
+preplace inst top.pio_button -pg 1 -lvl 3 -y 1210
+preplace inst top.mem_if_ddr3a.s0 -pg 1
+preplace inst top.mem_if_ddr3a.dmaster.b2p_adapter -pg 1
+preplace inst top.mem_if_ddr3b.s0 -pg 1
+preplace inst top.mem_if_ddr3a.c0.afi_half_clk -pg 1
+preplace inst top -pg 1 -lvl 1 -y 40 -regy -20
+preplace inst top.mem_if_ddr3b.dmaster.clk_src -pg 1
+preplace inst top.mem_if_ddr3a.afi_reset_export -pg 1
+preplace inst top.mem_if_ddr3a.m0 -pg 1
+preplace inst top.mem_if_ddr3b.dmaster.jtag_phy_embedded_in_jtag_master -pg 1
+preplace inst top.mem_if_ddr3b.soft_reset -pg 1
+preplace inst top.mem_if_ddr3b.afi_reset_export -pg 1
+preplace inst top.clk_0 -pg 1 -lvl 1 -y 610
+preplace inst top.mem_if_ddr3b.afi_reset -pg 1
+preplace inst top.mem_if_ddr3b.dmaster.clk_rst -pg 1
+preplace inst top.mem_if_ddr3a.c0.a0 -pg 1
+preplace inst top.mem_if_ddr3a.dmaster.b2p -pg 1
+preplace inst top.mem_if_ddr3b.c0.ng0 -pg 1
+preplace inst top.mem_if_ddr3a.soft_reset -pg 1
+preplace inst top.mem_if_ddr3b.dmaster.fifo -pg 1
+preplace inst top.mem_if_ddr3a.c0.afi_clk -pg 1
+preplace inst top.onchip_memory2_0 -pg 1 -lvl 3 -y 970
+preplace inst top.mem_if_ddr3b.dmaster.transacto -pg 1
+preplace inst top.mem_if_ddr3a.c0.ng0 -pg 1
+preplace inst top.mem_if_ddr3a.pll_bridge -pg 1
+preplace inst top.pcie_reconfig_driver_0 -pg 1 -lvl 2 -y 530
+preplace inst top.mem_if_ddr3a.dmaster.clk_rst -pg 1
+preplace inst top.ddr3a_status -pg 1 -lvl 3 -y 770
+preplace inst top.mem_if_ddr3a -pg 1 -lvl 3 -y 370
+preplace inst top.mm_clock_crossing_bridge_ddr3a -pg 1 -lvl 2 -y 330
+preplace inst top.mem_if_ddr3b.oct0 -pg 1
+preplace inst top.mem_if_ddr3b -pg 1 -lvl 3 -y 1360
+preplace inst top.mm_clock_crossing_bridge_ddr3b -pg 1 -lvl 2 -y 990
+preplace inst top.mem_if_ddr3a.dmaster.clk_src -pg 1
+preplace inst top.mem_if_ddr3b.dmaster.p2b -pg 1
+preplace inst top.mem_if_ddr3a.oct0 -pg 1
+preplace inst top.mem_if_ddr3b.dll0 -pg 1
+preplace inst top.pio_led -pg 1 -lvl 3 -y 1110
+preplace inst top.mem_if_ddr3a.dmaster -pg 1
+preplace inst top.mem_if_ddr3b.c0.a0 -pg 1
+preplace inst top.mem_if_ddr3b.afi_clk -pg 1
+preplace inst top.mem_if_ddr3a.pll_ref_clk -pg 1
+preplace inst top.mem_if_ddr3b.pll0 -pg 1
+preplace inst top.pcie_256_dma -pg 1 -lvl 1 -y 30
+preplace inst top.mem_if_ddr3a.global_reset -pg 1
+preplace inst top.mem_if_ddr3b.pll_ref_clk -pg 1
+preplace inst top.mem_if_ddr3b.c0.afi_reset -pg 1
+preplace inst top.mem_if_ddr3b.m0 -pg 1
+preplace inst top.mem_if_ddr3a.dmaster.transacto -pg 1
+preplace inst top.mem_if_ddr3b.dmaster.b2p -pg 1
+preplace inst top.mem_if_ddr3a.as0 -pg 1
+preplace inst top.mem_if_ddr3b.c0.afi_half_clk -pg 1
+preplace inst top.ddr3b_status -pg 1 -lvl 3 -y 870
+preplace inst top.mem_if_ddr3b.pll_bridge -pg 1
+preplace inst top.mem_if_ddr3a.pll0 -pg 1
+preplace inst top.mem_if_ddr3b.dmaster -pg 1
+preplace inst top.mem_if_ddr3a.dmaster.jtag_phy_embedded_in_jtag_master -pg 1
+preplace inst top.mem_if_ddr3a.c0 -pg 1
+preplace inst top.mem_if_ddr3a.dmaster.p2b_adapter -pg 1
+preplace inst top.mem_if_ddr3a.dmaster.timing_adt -pg 1
+preplace inst top.mem_if_ddr3a.afi_clk -pg 1
+preplace inst top.mem_if_ddr3b.dmaster.b2p_adapter -pg 1
+preplace inst top.mem_if_ddr3a.p0 -pg 1
+preplace inst top.mem_if_ddr3b.as0 -pg 1
+preplace inst top.mem_if_ddr3a.afi_reset -pg 1
+preplace inst top.mem_if_ddr3a.c0.afi_reset -pg 1
+preplace inst top.mem_if_ddr3a.dmaster.fifo -pg 1
+preplace inst top.alt_xcvr_reconfig_0 -pg 1 -lvl 3 -y 630
+preplace inst top.mem_if_ddr3b.p0 -pg 1
+preplace netloc FAN_OUT<net_container>top</net_container>(SLAVE)mem_if_ddr3a.global_reset,(SLAVE)mm_clock_crossing_bridge_ddr3a.s0_reset,(SLAVE)mm_clock_crossing_bridge_ddr3b.s0_reset,(SLAVE)pcie_reconfig_driver_0.reconfig_xcvr_rst,(MASTER)clk_0.clk_reset,(SLAVE)alt_xcvr_reconfig_0.mgmt_rst_reset,(SLAVE)mm_clock_crossing_bridge_ddr3a.m0_reset,(SLAVE)mm_clock_crossing_bridge_ddr3b.m0_reset,(SLAVE)mem_if_ddr3a.soft_reset,(SLAVE)mem_if_ddr3b.soft_reset,(SLAVE)mem_if_ddr3b.global_reset) 1 1 2 640 1120 950
+preplace netloc EXPORT<net_container>top</net_container>(SLAVE)pcie_256_dma.npor,(SLAVE)top.pcie_rstn) 1 0 1 NJ
+preplace netloc EXPORT<net_container>top</net_container>(SLAVE)mem_if_ddr3b.memory,(SLAVE)top.mem_if_ddr3b_mem) 1 0 3 NJ 1410 NJ 1410 NJ
+preplace netloc EXPORT<net_container>top</net_container>(SLAVE)top.hip_pipe,(SLAVE)pcie_256_dma.hip_pipe) 1 0 1 NJ
+preplace netloc EXPORT<net_container>top</net_container>(SLAVE)top.mem_if_ddr3b_pll_ref_clk,(SLAVE)mem_if_ddr3b.pll_ref_clk) 1 0 3 NJ 1450 NJ 1450 NJ
+preplace netloc EXPORT<net_container>top</net_container>(SLAVE)pio_button.external_connection,(SLAVE)top.pio_button_external_connection) 1 0 3 NJ 1240 NJ 1240 NJ
+preplace netloc EXPORT<net_container>top</net_container>(SLAVE)pcie_256_dma.hip_serial,(SLAVE)top.hip_serial) 1 0 1 NJ
+preplace netloc POINT_TO_POINT<net_container>top</net_container>(SLAVE)pcie_256_dma.hip_currentspeed,(SLAVE)pcie_reconfig_driver_0.hip_currentspeed) 1 0 2 230 540 NJ
+preplace netloc EXPORT<net_container>top</net_container>(SLAVE)top.pcie_256_hip_avmm_0_reconfig_clk_locked,(SLAVE)pcie_256_dma.reconfig_clk_locked) 1 0 1 NJ
+preplace netloc EXPORT<net_container>top</net_container>(SLAVE)mem_if_ddr3a.memory,(SLAVE)top.mem_if_ddr3a_mem) 1 0 3 NJ 480 NJ 480 NJ
+preplace netloc EXPORT<net_container>top</net_container>(SLAVE)pcie_256_dma.hip_ctrl,(SLAVE)top.hip_ctrl) 1 0 1 NJ
+preplace netloc EXPORT<net_container>top</net_container>(SLAVE)top.pio_led_external_connection,(SLAVE)pio_led.external_connection) 1 0 3 NJ 1140 NJ 1140 NJ
+preplace netloc POINT_TO_POINT<net_container>top</net_container>(SLAVE)alt_xcvr_reconfig_0.reconfig_to_xcvr,(SLAVE)pcie_256_dma.reconfig_to_xcvr) 1 0 3 290 740 NJ 740 NJ
+preplace netloc POINT_TO_POINT<net_container>top</net_container>(SLAVE)pcie_256_dma.reconfig_from_xcvr,(SLAVE)alt_xcvr_reconfig_0.reconfig_from_xcvr) 1 0 3 270 720 NJ 720 NJ
+preplace netloc FAN_IN<net_container>top</net_container>(MASTER)pcie_256_dma.wr_dcm_master,(SLAVE)pcie_256_dma.Txs,(MASTER)pcie_256_dma.rd_dcm_master) 1 0 2 250 420 560
+preplace netloc POINT_TO_POINT<net_container>top</net_container>(SLAVE)pcie_reconfig_driver_0.reconfig_busy,(SLAVE)alt_xcvr_reconfig_0.reconfig_busy) 1 1 2 680 700 NJ
+preplace netloc INTERCONNECT<net_container>top</net_container>(MASTER)pcie_256_dma.dma_rd_master,(SLAVE)onchip_memory2_0.s2,(SLAVE)pcie_256_dma.wr_dts_slave,(SLAVE)mm_clock_crossing_bridge_ddr3b.s0,(SLAVE)pio_led.s1,(SLAVE)mm_clock_crossing_bridge_ddr3a.s0,(MASTER)pcie_256_dma.Rxm_BAR4,(SLAVE)ddr3b_status.s1,(SLAVE)pcie_256_dma.rd_dts_slave,(SLAVE)onchip_memory2_0.s1,(SLAVE)ddr3a_status.s1,(SLAVE)pio_button.s1,(MASTER)pcie_256_dma.dma_wr_master) 1 0 3 310 440 580 1260 970
+preplace netloc EXPORT<net_container>top</net_container>(SLAVE)clk_0.clk_in,(SLAVE)top.clk) 1 0 1 NJ
+preplace netloc POINT_TO_POINT<net_container>top</net_container>(SLAVE)mm_clock_crossing_bridge_ddr3b.m0_clk,(MASTER)mem_if_ddr3b.afi_clk) 1 1 3 680 1320 NJ 1320 1370
+preplace netloc EXPORT<net_container>top</net_container>(SLAVE)top.mem_if_ddr3b_oct,(SLAVE)mem_if_ddr3b.oct) 1 0 3 NJ 1430 NJ 1430 NJ
+preplace netloc EXPORT<net_container>top</net_container>(SLAVE)clk_0.clk_in_reset,(SLAVE)top.reset) 1 0 1 NJ
+preplace netloc FAN_OUT<net_container>top</net_container>(SLAVE)onchip_memory2_0.reset2,(SLAVE)onchip_memory2_0.reset1,(SLAVE)ddr3a_status.reset,(MASTER)pcie_256_dma.nreset_status,(SLAVE)pio_button.reset,(SLAVE)ddr3b_status.reset,(SLAVE)pio_led.reset) 1 1 2 600 820 1010
+preplace netloc POINT_TO_POINT<net_container>top</net_container>(SLAVE)mem_if_ddr3b.avl,(MASTER)mm_clock_crossing_bridge_ddr3b.m0) 1 2 1 910
+preplace netloc FAN_OUT<net_container>top</net_container>(SLAVE)pio_led.clk,(SLAVE)onchip_memory2_0.clk2,(SLAVE)mm_clock_crossing_bridge_ddr3a.s0_clk,(MASTER)pcie_256_dma.coreclkout,(SLAVE)mm_clock_crossing_bridge_ddr3b.s0_clk,(SLAVE)onchip_memory2_0.clk1,(SLAVE)pcie_reconfig_driver_0.pld_clk,(SLAVE)pio_button.clk) 1 1 2 620 980 990
+preplace netloc EXPORT<net_container>top</net_container>(SLAVE)mem_if_ddr3a.pll_ref_clk,(SLAVE)top.mem_if_ddr3a_pll_ref_clk) 1 0 3 NJ 460 NJ 460 NJ
+preplace netloc FAN_OUT<net_container>top</net_container>(SLAVE)ddr3a_status.clk,(SLAVE)ddr3b_status.clk,(SLAVE)alt_xcvr_reconfig_0.mgmt_clk_clk,(MASTER)clk_0.clk,(SLAVE)pcie_reconfig_driver_0.reconfig_xcvr_clk) 1 1 2 660 680 1030
+preplace netloc EXPORT<net_container>top</net_container>(SLAVE)top.refclk,(SLAVE)pcie_256_dma.refclk) 1 0 1 NJ
+preplace netloc POINT_TO_POINT<net_container>top</net_container>(MASTER)mem_if_ddr3a.afi_clk,(SLAVE)mm_clock_crossing_bridge_ddr3a.m0_clk) 1 1 3 640 320 NJ 320 1370
+preplace netloc EXPORT<net_container>top</net_container>(SLAVE)ddr3b_status.external_connection,(SLAVE)top.ddr3b_status_external_connection) 1 0 3 NJ 900 NJ 900 NJ
+preplace netloc POINT_TO_POINT<net_container>top</net_container>(MASTER)mm_clock_crossing_bridge_ddr3a.m0,(SLAVE)mem_if_ddr3a.avl) 1 2 1 N
+preplace netloc EXPORT<net_container>top</net_container>(SLAVE)top.mem_if_ddr3a_status,(SLAVE)mem_if_ddr3a.status) 1 0 3 NJ 520 NJ 520 NJ
+preplace netloc POINT_TO_POINT<net_container>top</net_container>(SLAVE)alt_xcvr_reconfig_0.reconfig_mgmt,(MASTER)pcie_reconfig_driver_0.reconfig_mgmt) 1 2 1 1090
+preplace netloc EXPORT<net_container>top</net_container>(SLAVE)top.mem_if_ddr3b_status,(SLAVE)mem_if_ddr3b.status) 1 0 3 NJ 1510 NJ 1510 NJ
+preplace netloc EXPORT<net_container>top</net_container>(SLAVE)mem_if_ddr3a.oct,(SLAVE)top.mem_if_ddr3a_oct) 1 0 3 NJ 500 NJ 500 NJ
+preplace netloc EXPORT<net_container>top</net_container>(SLAVE)ddr3a_status.external_connection,(SLAVE)top.ddr3a_status_external_connection) 1 0 3 NJ 800 NJ 800 NJ
+levelinfo -pg 1 0 200 1410
+levelinfo -hier top 210 340 740 1190 1390

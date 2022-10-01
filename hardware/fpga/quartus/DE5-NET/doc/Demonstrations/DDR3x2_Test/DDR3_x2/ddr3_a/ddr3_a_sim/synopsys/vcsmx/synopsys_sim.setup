@@ -1,0 +1,19 @@
+
+WORK > DEFAULT
+DEFAULT:               ./libraries/work/                 
+work:                  ./libraries/work/                 
+a0:                    ./libraries/a0/                   
+ng0:                   ./libraries/ng0/                  
+c0:                    ./libraries/c0/                   
+s0:                    ./libraries/s0/                   
+m0:                    ./libraries/m0/                   
+p0:                    ./libraries/p0/                   
+ddr3_a:                ./libraries/ddr3_a/               
+altera_ver:            ./libraries/altera_ver/           
+lpm_ver:               ./libraries/lpm_ver/              
+sgate_ver:             ./libraries/sgate_ver/            
+altera_mf_ver:         ./libraries/altera_mf_ver/        
+altera_lnsim_ver:      ./libraries/altera_lnsim_ver/     
+stratixv_ver:          ./libraries/stratixv_ver/         
+stratixv_hssi_ver:     ./libraries/stratixv_hssi_ver/    
+stratixv_pcie_hip_ver: ./libraries/stratixv_pcie_hip_ver/

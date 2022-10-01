@@ -1,0 +1,26 @@
+Fitter Status : Successful - Wed Mar 22 10:55:56 2017
+Quartus Prime Version : 16.1.2 Build 203 01/18/2017 SJ Standard Edition
+Revision Name : QDRII_x4_Test
+Top-level Entity Name : QDRII_x4_Test
+Family : Stratix V
+Device : 5SGXEA7N2F45C2
+Timing Models : Final
+Logic utilization (in ALMs) : 6,365 / 234,720 ( 3 % )
+Total registers : 9673
+Total pins : 403 / 1,064 ( 38 % )
+Total virtual pins : 0
+Total block memory bits : 360,448 / 52,428,800 ( < 1 % )
+Total RAM Blocks : 32 / 2,560 ( 1 % )
+Total DSP Blocks : 0 / 256 ( 0 % )
+Total HSSI STD RX PCSs : 0 / 48 ( 0 % )
+Total HSSI 10G RX PCSs : 0 / 48 ( 0 % )
+Total HSSI GEN3 RX PCSs : 0 / 48 ( 0 % )
+Total HSSI PMA RX Deserializers : 0 / 48 ( 0 % )
+Total HSSI STD TX PCSs : 0 / 48 ( 0 % )
+Total HSSI 10G TX PCSs : 0 / 48 ( 0 % )
+Total HSSI GEN3 TX PCSs : 0 / 48 ( 0 % )
+Total HSSI PMA TX Serializers : 0 / 48 ( 0 % )
+Total HSSI PIPE GEN1_2s : 0 / 48 ( 0 % )
+Total HSSI GEN3s : 0 / 48 ( 0 % )
+Total PLLs : 2 / 92 ( 2 % )
+Total DLLs : 2 / 4 ( 50 % )

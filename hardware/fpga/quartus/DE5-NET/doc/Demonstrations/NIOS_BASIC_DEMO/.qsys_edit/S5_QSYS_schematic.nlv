@@ -1,0 +1,44 @@
+# # File gsaved with Nlview version 6.3.8  2013-12-19 bk=1.2992 VDI=34 GEI=35
+# 
+preplace inst S5_QSYS.ref_clock_10g_count -pg 1 -lvl 3 -y 1570
+preplace inst S5_QSYS.jtag_uart -pg 1 -lvl 3 -y 1170
+preplace inst S5_QSYS.timer -pg 1 -lvl 3 -y 1350
+preplace inst S5_QSYS.temp_sda -pg 1 -lvl 3 -y 950
+preplace inst S5_QSYS.button -pg 1 -lvl 3 -y 1050
+preplace inst S5_QSYS.clk_i2c_sda -pg 1 -lvl 3 -y 230
+preplace inst S5_QSYS.ref_clock_sata_count -pg 1 -lvl 3 -y 530
+preplace inst S5_QSYS -pg 1 -lvl 1 -y 40 -regy -20
+preplace inst S5_QSYS.led -pg 1 -lvl 3 -y 430
+preplace inst S5_QSYS.temp_int_n -pg 1 -lvl 3 -y 650
+preplace inst S5_QSYS.clk_50 -pg 1 -lvl 1 -y 1390
+preplace inst S5_QSYS.temp_overt_n -pg 1 -lvl 3 -y 750
+preplace inst S5_QSYS.fan -pg 1 -lvl 3 -y 330
+preplace inst S5_QSYS.sw -pg 1 -lvl 3 -y 1450
+preplace inst S5_QSYS.temp_scl -pg 1 -lvl 3 -y 850
+preplace inst S5_QSYS.clk_i2c_scl -pg 1 -lvl 3 -y 130
+preplace inst S5_QSYS.nios2_qsys -pg 1 -lvl 2 -y 1350
+preplace inst S5_QSYS.onchip_memory2 -pg 1 -lvl 3 -y 1270
+preplace inst S5_QSYS.cdcm -pg 1 -lvl 3 -y 30
+preplace netloc EXPORT<net_container>S5_QSYS</net_container>(SLAVE)temp_scl.external_connection,(SLAVE)S5_QSYS.temp_scl_external_connection) 1 0 3 NJ 880 NJ 880 NJ
+preplace netloc EXPORT<net_container>S5_QSYS</net_container>(SLAVE)S5_QSYS.ref_clock_sata_count_clk_in_ref,(SLAVE)ref_clock_sata_count.clk_in_ref) 1 0 3 NJ 580 NJ 580 NJ
+preplace netloc FAN_OUT<net_container>S5_QSYS</net_container>(SLAVE)timer.irq,(SLAVE)sw.irq,(MASTER)nios2_qsys.d_irq,(SLAVE)jtag_uart.irq,(SLAVE)button.irq) 1 2 1 740
+preplace netloc EXPORT<net_container>S5_QSYS</net_container>(SLAVE)S5_QSYS.clk_i2c_sda_external_connection,(SLAVE)clk_i2c_sda.external_connection) 1 0 3 NJ 260 NJ 260 NJ
+preplace netloc EXPORT<net_container>S5_QSYS</net_container>(SLAVE)fan.external_connection,(SLAVE)S5_QSYS.fan_external_connection) 1 0 3 NJ 360 NJ 360 NJ
+preplace netloc EXPORT<net_container>S5_QSYS</net_container>(SLAVE)S5_QSYS.temp_int_n_external_connection,(SLAVE)temp_int_n.external_connection) 1 0 3 NJ 680 NJ 680 NJ
+preplace netloc EXPORT<net_container>S5_QSYS</net_container>(SLAVE)S5_QSYS.ref_clock_sata_count_clk_in_target,(SLAVE)ref_clock_sata_count.clk_in_target) 1 0 3 NJ 600 NJ 600 NJ
+preplace netloc EXPORT<net_container>S5_QSYS</net_container>(SLAVE)temp_overt_n.external_connection,(SLAVE)S5_QSYS.temp_overt_n_external_connection) 1 0 3 NJ 780 NJ 780 NJ
+preplace netloc EXPORT<net_container>S5_QSYS</net_container>(SLAVE)clk_i2c_scl.external_connection,(SLAVE)S5_QSYS.clk_i2c_scl_external_connection) 1 0 3 NJ 160 NJ 160 NJ
+preplace netloc EXPORT<net_container>S5_QSYS</net_container>(SLAVE)led.external_connection,(SLAVE)S5_QSYS.led_external_connection) 1 0 3 NJ 460 NJ 460 NJ
+preplace netloc EXPORT<net_container>S5_QSYS</net_container>(SLAVE)S5_QSYS.button_external_connection,(SLAVE)button.external_connection) 1 0 3 NJ 1080 NJ 1080 NJ
+preplace netloc EXPORT<net_container>S5_QSYS</net_container>(SLAVE)S5_QSYS.ref_clock_10g_count_clk_in_ref,(SLAVE)ref_clock_10g_count.clk_in_ref) 1 0 3 NJ 1620 NJ 1620 NJ
+preplace netloc INTERCONNECT<net_container>S5_QSYS</net_container>(SLAVE)temp_sda.s1,(SLAVE)temp_scl.s1,(SLAVE)clk_i2c_scl.s1,(SLAVE)sw.s1,(SLAVE)ref_clock_sata_count.Slave,(SLAVE)clk_i2c_sda.s1,(SLAVE)temp_overt_n.s1,(MASTER)nios2_qsys.data_master,(SLAVE)timer.s1,(SLAVE)temp_int_n.s1,(SLAVE)jtag_uart.avalon_jtag_slave,(SLAVE)cdcm.avalon_slave,(SLAVE)led.s1,(MASTER)nios2_qsys.instruction_master,(SLAVE)fan.s1,(SLAVE)button.s1,(SLAVE)onchip_memory2.s1,(SLAVE)nios2_qsys.jtag_debug_module,(SLAVE)ref_clock_10g_count.Slave) 1 1 2 430 1340 700
+preplace netloc INTERCONNECT<net_container>S5_QSYS</net_container>(SLAVE)timer.reset,(SLAVE)led.reset,(SLAVE)ref_clock_10g_count.reset,(SLAVE)temp_int_n.reset,(SLAVE)temp_overt_n.reset,(SLAVE)clk_i2c_sda.reset,(SLAVE)cdcm.clock_sink_reset,(SLAVE)nios2_qsys.reset_n,(SLAVE)ref_clock_sata_count.reset,(SLAVE)onchip_memory2.reset1,(MASTER)nios2_qsys.jtag_debug_module_reset,(SLAVE)sw.reset,(MASTER)clk_50.clk_reset,(SLAVE)jtag_uart.reset,(SLAVE)clk_i2c_scl.reset,(SLAVE)temp_scl.reset,(SLAVE)fan.reset,(SLAVE)button.reset,(SLAVE)temp_sda.reset) 1 1 2 410 1660 720
+preplace netloc FAN_OUT<net_container>S5_QSYS</net_container>(SLAVE)onchip_memory2.clk1,(SLAVE)temp_scl.clk,(SLAVE)temp_sda.clk,(SLAVE)temp_overt_n.clk,(SLAVE)cdcm.clock_sink,(SLAVE)clk_i2c_sda.clk,(SLAVE)timer.clk,(MASTER)clk_50.clk,(SLAVE)clk_i2c_scl.clk,(SLAVE)ref_clock_sata_count.clk,(SLAVE)temp_int_n.clk,(SLAVE)ref_clock_10g_count.clk,(SLAVE)nios2_qsys.clk,(SLAVE)fan.clk,(SLAVE)button.clk,(SLAVE)sw.clk,(SLAVE)jtag_uart.clk,(SLAVE)led.clk) 1 1 2 410 1320 680
+preplace netloc EXPORT<net_container>S5_QSYS</net_container>(SLAVE)S5_QSYS.cdcm_conduit_end,(SLAVE)cdcm.conduit_end) 1 0 3 NJ 100 NJ 100 NJ
+preplace netloc EXPORT<net_container>S5_QSYS</net_container>(SLAVE)S5_QSYS.temp_sda_external_connection,(SLAVE)temp_sda.external_connection) 1 0 3 NJ 980 NJ 980 NJ
+preplace netloc EXPORT<net_container>S5_QSYS</net_container>(SLAVE)S5_QSYS.sw_external_connection,(SLAVE)sw.external_connection) 1 0 3 NJ 1480 NJ 1480 NJ
+preplace netloc EXPORT<net_container>S5_QSYS</net_container>(SLAVE)S5_QSYS.ref_clock_10g_count_clk_in_target,(SLAVE)ref_clock_10g_count.clk_in_target) 1 0 3 NJ 1640 NJ 1640 NJ
+preplace netloc EXPORT<net_container>S5_QSYS</net_container>(SLAVE)S5_QSYS.clk_50_clk_in_reset,(SLAVE)clk_50.clk_in_reset) 1 0 1 NJ
+preplace netloc EXPORT<net_container>S5_QSYS</net_container>(SLAVE)clk_50.clk_in,(SLAVE)S5_QSYS.clk_50_clk_in) 1 0 1 NJ
+levelinfo -pg 1 0 200 950
+levelinfo -hier S5_QSYS 210 240 460 790 940

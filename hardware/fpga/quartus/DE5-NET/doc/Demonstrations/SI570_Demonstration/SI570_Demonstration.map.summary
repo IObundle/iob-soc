@@ -1,0 +1,23 @@
+Analysis & Synthesis Status : Successful - Wed Mar 22 10:32:36 2017
+Quartus Prime Version : 16.1.2 Build 203 01/18/2017 SJ Standard Edition
+Revision Name : Si570_Demonstration
+Top-level Entity Name : SI570_Demonstration
+Family : Stratix V
+Logic utilization (in ALMs) : N/A
+Total registers : 340
+Total pins : 142
+Total virtual pins : 0
+Total block memory bits : 0
+Total DSP Blocks : 4
+Total HSSI STD RX PCSs : 0
+Total HSSI 10G RX PCSs : 1
+Total HSSI GEN3 RX PCSs : 0
+Total HSSI PMA RX Deserializers : 1
+Total HSSI STD TX PCSs : 0
+Total HSSI 10G TX PCSs : 1
+Total HSSI GEN3 TX PCSs : 0
+Total HSSI PMA TX Serializers : 1
+Total HSSI PIPE GEN1_2s : 0
+Total HSSI GEN3s : 0
+Total PLLs : 3
+Total DLLs : 0

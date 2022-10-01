@@ -1,0 +1,20 @@
+
+-- File Name = F:/SVN/tr5_f45m/trunk/cd/DE5_NET_CDROM_NoJungo/Demonstrations/SI570_Demonstration/reconfig_mif/low_latency_xcvr_1x32_inst_txpll0.mif.mif
+WIDTH=16;
+DEPTH=10;
+
+ADDRESS_RADIX=UNS;
+DATA_RADIX=BIN;
+
+CONTENT BEGIN
+	0   :   0000000001000001; -- Start of MIF opcode - FAMILY - Stratix V
+	1   :   0000000000100010; -- Type of MIF opcode
+	2   :   0000000000000011; -- RefClk switch opcode
+	3   :   0010100000001100; -- PMA - RX (PLL section)
+	4   :   0100000000000001;
+	5   :   0000000000000000;
+	6   :   0000110100100000;
+	7   :   1000000001000110;
+	8   :   0100000000000000;
+	9   :   0000000000011111; -- End of MIF opcode
+END;

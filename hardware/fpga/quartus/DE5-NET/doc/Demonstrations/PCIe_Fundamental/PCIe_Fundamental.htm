@@ -1,0 +1,2810 @@
+<html>
+<body>
+<h1 align="center">DE5 NET Configuration</h1>
+<br />
+<br />
+<h2 align="left">Pin Assignments:</h2>
+<ul>
+<a href="#CLOCK"><li>CLOCK</li></a>
+<br />
+<a href="#LED x 10"><li>LED x 10</li></a>
+<br />
+<a href="#BUTTON x 4 and CPU_RESET_n"><li>BUTTON x 4 and CPU_RESET_n</li></a>
+<br />
+<a href="#SWITCH x 4"><li>SWITCH x 4</li></a>
+<br />
+<a href="#7-Segement"><li>7-Segement</li></a>
+<br />
+<a href="#Temperature"><li>Temperature</li></a>
+<br />
+<a href="#Fan"><li>Fan</li></a>
+<br />
+<a href="#RS232"><li>RS232</li></a>
+<br />
+<a href="#PCIe x 8"><li>PCIe x 8</li></a>
+<br />
+<a href="#Flash/MAX Address/Data Share Bus"><li>Flash/MAX Address/Data Share Bus</li></a>
+<br />
+<a href="#Flash Control"><li>Flash Control</li></a>
+<br />
+<a href="#RZQ"><li>RZQ</li></a>
+<br />
+<a href="#DDR3 SODIMM"><li>DDR3 SODIMM</li></a>
+<br />
+<a href="#DDR3 SODIMM"><li>DDR3 SODIMM</li></a>
+<br />
+</ul>
+<br />
+<br />
+<br />
+<h2 align="left">Pin Assignment Table:</h2>
+<h2><a name="CLOCK"></a></h2><table border="3">
+<caption  align="left">CLOCK</caption>
+<br />
+<br />
+<tr>
+   <th align="left" bgcolor="Khaki">Name</th>
+   <th align="left" bgcolor="Khaki">Location</th>
+   <th align="left" bgcolor="Khaki">Direction</th>
+   <th align="left" bgcolor="Khaki">Standard</th>
+</tr>
+<tr>
+   <td align="left">OSC_50_B3B</td>
+   <td align="left">AW35</td>
+   <td align="left">input </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">OSC_50_B3D</td>
+   <td align="left">BC28</td>
+   <td align="left">input </td>
+   <td align="left">1.8 V</td>
+</tr>
+<tr>
+   <td align="left">OSC_50_B4A</td>
+   <td align="left">AP10</td>
+   <td align="left">input </td>
+   <td align="left">1.8 V</td>
+</tr>
+<tr>
+   <td align="left">OSC_50_B4D</td>
+   <td align="left">AY18</td>
+   <td align="left">input </td>
+   <td align="left">1.8 V</td>
+</tr>
+<tr>
+   <td align="left">OSC_50_B7A</td>
+   <td align="left">M8</td>
+   <td align="left">input </td>
+   <td align="left">1.5 V</td>
+</tr>
+<tr>
+   <td align="left">OSC_50_B7D</td>
+   <td align="left">J18</td>
+   <td align="left">input </td>
+   <td align="left">1.5 V</td>
+</tr>
+<tr>
+   <td align="left">OSC_50_B8A</td>
+   <td align="left">R36</td>
+   <td align="left">input </td>
+   <td align="left">1.5 V</td>
+</tr>
+<tr>
+   <td align="left">OSC_50_B8D</td>
+   <td align="left">R25</td>
+   <td align="left">input </td>
+   <td align="left">1.8 V</td>
+</tr>
+</table>
+<h2><a name="LED x 10"></a></h2><table border="3">
+<caption  align="left">LED x 10</caption>
+<br />
+<br />
+<tr>
+   <th align="left" bgcolor="Khaki">Name</th>
+   <th align="left" bgcolor="Khaki">Location</th>
+   <th align="left" bgcolor="Khaki">Direction</th>
+   <th align="left" bgcolor="Khaki">Standard</th>
+</tr>
+<tr>
+   <td align="left">LED[0]</td>
+   <td align="left">AW37</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">LED[1]</td>
+   <td align="left">AV37</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">LED[2]</td>
+   <td align="left">BB36</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">LED[3]</td>
+   <td align="left">BB39</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">LED_BRACKET[0]</td>
+   <td align="left">AH15</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">LED_BRACKET[1]</td>
+   <td align="left">AH13</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">LED_BRACKET[2]</td>
+   <td align="left">AJ13</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">LED_BRACKET[3]</td>
+   <td align="left">AJ14</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">LED_RJ45_L</td>
+   <td align="left">AG15</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">LED_RJ45_R</td>
+   <td align="left">AG16</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+</table>
+<h2><a name="BUTTON x 4 and CPU_RESET_n"></a></h2><table border="3">
+<caption  align="left">BUTTON x 4 and CPU_RESET_n</caption>
+<br />
+<br />
+<tr>
+   <th align="left" bgcolor="Khaki">Name</th>
+   <th align="left" bgcolor="Khaki">Location</th>
+   <th align="left" bgcolor="Khaki">Direction</th>
+   <th align="left" bgcolor="Khaki">Standard</th>
+</tr>
+<tr>
+   <td align="left">BUTTON[0]</td>
+   <td align="left">AK15</td>
+   <td align="left">input </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">BUTTON[1]</td>
+   <td align="left">AK14</td>
+   <td align="left">input </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">BUTTON[2]</td>
+   <td align="left">AL14</td>
+   <td align="left">input </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">BUTTON[3]</td>
+   <td align="left">AL15</td>
+   <td align="left">input </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">CPU_RESET_n</td>
+   <td align="left">BC37</td>
+   <td align="left">input </td>
+   <td align="left">2.5 V</td>
+</tr>
+</table>
+<h2><a name="SWITCH x 4"></a></h2><table border="3">
+<caption  align="left">SWITCH x 4</caption>
+<br />
+<br />
+<tr>
+   <th align="left" bgcolor="Khaki">Name</th>
+   <th align="left" bgcolor="Khaki">Location</th>
+   <th align="left" bgcolor="Khaki">Direction</th>
+   <th align="left" bgcolor="Khaki">Standard</th>
+</tr>
+<tr>
+   <td align="left">SW[0]</td>
+   <td align="left">B25</td>
+   <td align="left">input </td>
+   <td align="left">1.8 V</td>
+</tr>
+<tr>
+   <td align="left">SW[1]</td>
+   <td align="left">A25</td>
+   <td align="left">input </td>
+   <td align="left">1.8 V</td>
+</tr>
+<tr>
+   <td align="left">SW[2]</td>
+   <td align="left">B23</td>
+   <td align="left">input </td>
+   <td align="left">1.8 V</td>
+</tr>
+<tr>
+   <td align="left">SW[3]</td>
+   <td align="left">A23</td>
+   <td align="left">input </td>
+   <td align="left">1.8 V</td>
+</tr>
+</table>
+<h2><a name="7-Segement"></a></h2><table border="3">
+<caption  align="left">7-Segement</caption>
+<br />
+<br />
+<tr>
+   <th align="left" bgcolor="Khaki">Name</th>
+   <th align="left" bgcolor="Khaki">Location</th>
+   <th align="left" bgcolor="Khaki">Direction</th>
+   <th align="left" bgcolor="Khaki">Standard</th>
+</tr>
+<tr>
+   <td align="left">HEX0_DP</td>
+   <td align="left">P8</td>
+   <td align="left">output</td>
+   <td align="left">1.5 V</td>
+</tr>
+<tr>
+   <td align="left">HEX0_D[0]</td>
+   <td align="left">G8</td>
+   <td align="left">output</td>
+   <td align="left">1.5 V</td>
+</tr>
+<tr>
+   <td align="left">HEX0_D[1]</td>
+   <td align="left">H8</td>
+   <td align="left">output</td>
+   <td align="left">1.5 V</td>
+</tr>
+<tr>
+   <td align="left">HEX0_D[2]</td>
+   <td align="left">J9</td>
+   <td align="left">output</td>
+   <td align="left">1.5 V</td>
+</tr>
+<tr>
+   <td align="left">HEX0_D[3]</td>
+   <td align="left">K10</td>
+   <td align="left">output</td>
+   <td align="left">1.5 V</td>
+</tr>
+<tr>
+   <td align="left">HEX0_D[4]</td>
+   <td align="left">K8</td>
+   <td align="left">output</td>
+   <td align="left">1.5 V</td>
+</tr>
+<tr>
+   <td align="left">HEX0_D[5]</td>
+   <td align="left">K9</td>
+   <td align="left">output</td>
+   <td align="left">1.5 V</td>
+</tr>
+<tr>
+   <td align="left">HEX0_D[6]</td>
+   <td align="left">N8</td>
+   <td align="left">output</td>
+   <td align="left">1.5 V</td>
+</tr>
+<tr>
+   <td align="left">HEX1_DP</td>
+   <td align="left">E9</td>
+   <td align="left">output</td>
+   <td align="left">1.5 V</td>
+</tr>
+<tr>
+   <td align="left">HEX1_D[0]</td>
+   <td align="left">H18</td>
+   <td align="left">output</td>
+   <td align="left">1.5 V</td>
+</tr>
+<tr>
+   <td align="left">HEX1_D[1]</td>
+   <td align="left">G16</td>
+   <td align="left">output</td>
+   <td align="left">1.5 V</td>
+</tr>
+<tr>
+   <td align="left">HEX1_D[2]</td>
+   <td align="left">F16</td>
+   <td align="left">output</td>
+   <td align="left">1.5 V</td>
+</tr>
+<tr>
+   <td align="left">HEX1_D[3]</td>
+   <td align="left">A7</td>
+   <td align="left">output</td>
+   <td align="left">1.5 V</td>
+</tr>
+<tr>
+   <td align="left">HEX1_D[4]</td>
+   <td align="left">B7</td>
+   <td align="left">output</td>
+   <td align="left">1.5 V</td>
+</tr>
+<tr>
+   <td align="left">HEX1_D[5]</td>
+   <td align="left">C9</td>
+   <td align="left">output</td>
+   <td align="left">1.5 V</td>
+</tr>
+<tr>
+   <td align="left">HEX1_D[6]</td>
+   <td align="left">D10</td>
+   <td align="left">output</td>
+   <td align="left">1.5 V</td>
+</tr>
+</table>
+<h2><a name="Temperature"></a></h2><table border="3">
+<caption  align="left">Temperature</caption>
+<br />
+<br />
+<tr>
+   <th align="left" bgcolor="Khaki">Name</th>
+   <th align="left" bgcolor="Khaki">Location</th>
+   <th align="left" bgcolor="Khaki">Direction</th>
+   <th align="left" bgcolor="Khaki">Standard</th>
+</tr>
+<tr>
+   <td align="left">TEMP_CLK</td>
+   <td align="left">D21</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">TEMP_DATA</td>
+   <td align="left">D20</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">TEMP_INT_n</td>
+   <td align="left">C21</td>
+   <td align="left">input </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">TEMP_OVERT_n</td>
+   <td align="left">C22</td>
+   <td align="left">input </td>
+   <td align="left">2.5 V</td>
+</tr>
+</table>
+<h2><a name="Fan"></a></h2><table border="3">
+<caption  align="left">Fan</caption>
+<br />
+<br />
+<tr>
+   <th align="left" bgcolor="Khaki">Name</th>
+   <th align="left" bgcolor="Khaki">Location</th>
+   <th align="left" bgcolor="Khaki">Direction</th>
+   <th align="left" bgcolor="Khaki">Standard</th>
+</tr>
+<tr>
+   <td align="left">FAN_CTRL</td>
+   <td align="left">AR32</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+</table>
+<h2><a name="RS232"></a></h2><table border="3">
+<caption  align="left">RS232</caption>
+<br />
+<br />
+<tr>
+   <th align="left" bgcolor="Khaki">Name</th>
+   <th align="left" bgcolor="Khaki">Location</th>
+   <th align="left" bgcolor="Khaki">Direction</th>
+   <th align="left" bgcolor="Khaki">Standard</th>
+</tr>
+<tr>
+   <td align="left">RS422_DE</td>
+   <td align="left">AG14</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">RS422_DIN</td>
+   <td align="left">AE18</td>
+   <td align="left">input </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">RS422_DOUT</td>
+   <td align="left">AE17</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">RS422_RE_n</td>
+   <td align="left">AF17</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">RS422_TE</td>
+   <td align="left">AF16</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+</table>
+<h2><a name="PCIe x 8"></a></h2><table border="3">
+<caption  align="left">PCIe x 8</caption>
+<br />
+<br />
+<tr>
+   <th align="left" bgcolor="Khaki">Name</th>
+   <th align="left" bgcolor="Khaki">Location</th>
+   <th align="left" bgcolor="Khaki">Direction</th>
+   <th align="left" bgcolor="Khaki">Standard</th>
+</tr>
+<tr>
+   <td align="left">PCIE_PERST_n</td>
+   <td align="left">AU33</td>
+   <td align="left">input </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">PCIE_REFCLK_p</td>
+   <td align="left">AK38</td>
+   <td align="left">input </td>
+   <td align="left">HCSL</td>
+</tr>
+<tr>
+   <td align="left">PCIE_RX_p[0]</td>
+   <td align="left">BB43</td>
+   <td align="left">input </td>
+   <td align="left">1.5-V PCML</td>
+</tr>
+<tr>
+   <td align="left">PCIE_RX_p[1]</td>
+   <td align="left">BA41</td>
+   <td align="left">input </td>
+   <td align="left">1.5-V PCML</td>
+</tr>
+<tr>
+   <td align="left">PCIE_RX_p[2]</td>
+   <td align="left">AW41</td>
+   <td align="left">input </td>
+   <td align="left">1.5-V PCML</td>
+</tr>
+<tr>
+   <td align="left">PCIE_RX_p[3]</td>
+   <td align="left">AY43</td>
+   <td align="left">input </td>
+   <td align="left">1.5-V PCML</td>
+</tr>
+<tr>
+   <td align="left">PCIE_RX_p[4]</td>
+   <td align="left">AT43</td>
+   <td align="left">input </td>
+   <td align="left">1.5-V PCML</td>
+</tr>
+<tr>
+   <td align="left">PCIE_RX_p[5]</td>
+   <td align="left">AP43</td>
+   <td align="left">input </td>
+   <td align="left">1.5-V PCML</td>
+</tr>
+<tr>
+   <td align="left">PCIE_RX_p[6]</td>
+   <td align="left">AM43</td>
+   <td align="left">input </td>
+   <td align="left">1.5-V PCML</td>
+</tr>
+<tr>
+   <td align="left">PCIE_RX_p[7]</td>
+   <td align="left">AK43</td>
+   <td align="left">input </td>
+   <td align="left">1.5-V PCML</td>
+</tr>
+<tr>
+   <td align="left">PCIE_SMBCLK</td>
+   <td align="left">BD34</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">PCIE_SMBDAT</td>
+   <td align="left">AT33</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">PCIE_TX_p[0]</td>
+   <td align="left">AY39</td>
+   <td align="left">output</td>
+   <td align="left">1.5-V PCML</td>
+</tr>
+<tr>
+   <td align="left">PCIE_TX_p[1]</td>
+   <td align="left">AV39</td>
+   <td align="left">output</td>
+   <td align="left">1.5-V PCML</td>
+</tr>
+<tr>
+   <td align="left">PCIE_TX_p[2]</td>
+   <td align="left">AT39</td>
+   <td align="left">output</td>
+   <td align="left">1.5-V PCML</td>
+</tr>
+<tr>
+   <td align="left">PCIE_TX_p[3]</td>
+   <td align="left">AU41</td>
+   <td align="left">output</td>
+   <td align="left">1.5-V PCML</td>
+</tr>
+<tr>
+   <td align="left">PCIE_TX_p[4]</td>
+   <td align="left">AN41</td>
+   <td align="left">output</td>
+   <td align="left">1.5-V PCML</td>
+</tr>
+<tr>
+   <td align="left">PCIE_TX_p[5]</td>
+   <td align="left">AL41</td>
+   <td align="left">output</td>
+   <td align="left">1.5-V PCML</td>
+</tr>
+<tr>
+   <td align="left">PCIE_TX_p[6]</td>
+   <td align="left">AJ41</td>
+   <td align="left">output</td>
+   <td align="left">1.5-V PCML</td>
+</tr>
+<tr>
+   <td align="left">PCIE_TX_p[7]</td>
+   <td align="left">AG41</td>
+   <td align="left">output</td>
+   <td align="left">1.5-V PCML</td>
+</tr>
+<tr>
+   <td align="left">PCIE_WAKE_n</td>
+   <td align="left">BD35</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+</table>
+<h2><a name="Flash/MAX Address/Data Share Bus"></a></h2><table border="3">
+<caption  align="left">Flash/MAX Address/Data Share Bus</caption>
+<br />
+<br />
+<tr>
+   <th align="left" bgcolor="Khaki">Name</th>
+   <th align="left" bgcolor="Khaki">Location</th>
+   <th align="left" bgcolor="Khaki">Direction</th>
+   <th align="left" bgcolor="Khaki">Standard</th>
+</tr>
+<tr>
+   <td align="left">FSM_A[0]</td>
+   <td align="left">AU32</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_A[1]</td>
+   <td align="left">AH30</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_A[2]</td>
+   <td align="left">AJ30</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_A[3]</td>
+   <td align="left">AH31</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_A[4]</td>
+   <td align="left">AK30</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_A[5]</td>
+   <td align="left">AJ32</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_A[6]</td>
+   <td align="left">AG33</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_A[7]</td>
+   <td align="left">AL30</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_A[8]</td>
+   <td align="left">AK33</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_A[9]</td>
+   <td align="left">AJ33</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_A[10]</td>
+   <td align="left">AN30</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_A[11]</td>
+   <td align="left">AH33</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_A[12]</td>
+   <td align="left">AK32</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_A[13]</td>
+   <td align="left">AM32</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_A[14]</td>
+   <td align="left">AM31</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_A[15]</td>
+   <td align="left">AL31</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_A[16]</td>
+   <td align="left">AN33</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_A[17]</td>
+   <td align="left">AP33</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_A[18]</td>
+   <td align="left">AT32</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_A[19]</td>
+   <td align="left">AT29</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_A[20]</td>
+   <td align="left">AP31</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_A[21]</td>
+   <td align="left">AR30</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_A[22]</td>
+   <td align="left">AU30</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_A[23]</td>
+   <td align="left">AJ31</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_A[24]</td>
+   <td align="left">AP30</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_A[25]</td>
+   <td align="left">AN31</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_A[26]</td>
+   <td align="left">AT30</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_D[0]</td>
+   <td align="left">AG26</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_D[1]</td>
+   <td align="left">AD33</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_D[2]</td>
+   <td align="left">AE34</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_D[3]</td>
+   <td align="left">AF31</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_D[4]</td>
+   <td align="left">AG28</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_D[5]</td>
+   <td align="left">AG30</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_D[6]</td>
+   <td align="left">AF29</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_D[7]</td>
+   <td align="left">AE29</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_D[8]</td>
+   <td align="left">AG25</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_D[9]</td>
+   <td align="left">AF34</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_D[10]</td>
+   <td align="left">AE33</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_D[11]</td>
+   <td align="left">AE31</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_D[12]</td>
+   <td align="left">AF28</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_D[13]</td>
+   <td align="left">AE30</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_D[14]</td>
+   <td align="left">AG29</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_D[15]</td>
+   <td align="left">AG27</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_D[16]</td>
+   <td align="left">AP28</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_D[17]</td>
+   <td align="left">AN28</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_D[18]</td>
+   <td align="left">AU31</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_D[19]</td>
+   <td align="left">AW32</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_D[20]</td>
+   <td align="left">BD32</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_D[21]</td>
+   <td align="left">AY31</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_D[22]</td>
+   <td align="left">BA30</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_D[23]</td>
+   <td align="left">BB30</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_D[24]</td>
+   <td align="left">AM29</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_D[25]</td>
+   <td align="left">AR29</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_D[26]</td>
+   <td align="left">AV31</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_D[27]</td>
+   <td align="left">AV32</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_D[28]</td>
+   <td align="left">BC31</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_D[29]</td>
+   <td align="left">AW30</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_D[30]</td>
+   <td align="left">BC32</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FSM_D[31]</td>
+   <td align="left">BD31</td>
+   <td align="left">inout </td>
+   <td align="left">2.5 V</td>
+</tr>
+</table>
+<h2><a name="Flash Control"></a></h2><table border="3">
+<caption  align="left">Flash Control</caption>
+<br />
+<br />
+<tr>
+   <th align="left" bgcolor="Khaki">Name</th>
+   <th align="left" bgcolor="Khaki">Location</th>
+   <th align="left" bgcolor="Khaki">Direction</th>
+   <th align="left" bgcolor="Khaki">Standard</th>
+</tr>
+<tr>
+   <td align="left">FLASH_ADV_n</td>
+   <td align="left">AK29</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FLASH_CE_n[0]</td>
+   <td align="left">AE27</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FLASH_CE_n[1]</td>
+   <td align="left">BA31</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FLASH_CLK</td>
+   <td align="left">AL29</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FLASH_OE_n</td>
+   <td align="left">AY30</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FLASH_RDY_BSY_n[0]</td>
+   <td align="left">BA29</td>
+   <td align="left">input </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FLASH_RDY_BSY_n[1]</td>
+   <td align="left">BB32</td>
+   <td align="left">input </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FLASH_RESET_n</td>
+   <td align="left">AE28</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">FLASH_WE_n</td>
+   <td align="left">AR31</td>
+   <td align="left">output</td>
+   <td align="left">2.5 V</td>
+</tr>
+</table>
+<h2><a name="RZQ"></a></h2><table border="3">
+<caption  align="left">RZQ</caption>
+<br />
+<br />
+<tr>
+   <th align="left" bgcolor="Khaki">Name</th>
+   <th align="left" bgcolor="Khaki">Location</th>
+   <th align="left" bgcolor="Khaki">Direction</th>
+   <th align="left" bgcolor="Khaki">Standard</th>
+</tr>
+<tr>
+   <td align="left">RZQ_0</td>
+   <td align="left">BA36</td>
+   <td align="left">input </td>
+   <td align="left">2.5 V</td>
+</tr>
+<tr>
+   <td align="left">RZQ_1</td>
+   <td align="left">AR8</td>
+   <td align="left">input </td>
+   <td align="left">1.8 V</td>
+</tr>
+<tr>
+   <td align="left">RZQ_4</td>
+   <td align="left">H9</td>
+   <td align="left">input </td>
+   <td align="left">1.5 V</td>
+</tr>
+<tr>
+   <td align="left">RZQ_5</td>
+   <td align="left">P35</td>
+   <td align="left">input </td>
+   <td align="left">1.5 V</td>
+</tr>
+</table>
+<h2><a name="DDR3 SODIMM"></a></h2><table border="3">
+<caption  align="left">DDR3 SODIMM_A</caption>
+<br />
+<br />
+<tr>
+   <th align="left" bgcolor="Khaki">Name</th>
+   <th align="left" bgcolor="Khaki">Location</th>
+   <th align="left" bgcolor="Khaki">Direction</th>
+   <th align="left" bgcolor="Khaki">Standard</th>
+   <th align="left" bgcolor="Khaki">DDR3 SODIMM Pin Index</th>
+</tr>
+<tr>
+   <td align="left">DDR3A_A[0]</td>
+   <td align="left">M39</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">98</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_A[1]</td>
+   <td align="left">L35</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">97</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_A[2]</td>
+   <td align="left">N38</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">96</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_A[3]</td>
+   <td align="left">L36</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">95</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_A[4]</td>
+   <td align="left">H36</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">92</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_A[5]</td>
+   <td align="left">K29</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">91</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_A[6]</td>
+   <td align="left">D37</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">90</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_A[7]</td>
+   <td align="left">K35</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">86</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_A[8]</td>
+   <td align="left">K32</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">89</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_A[9]</td>
+   <td align="left">K37</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">85</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_A[10]</td>
+   <td align="left">M38</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">107</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_A[11]</td>
+   <td align="left">C37</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">84</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_A[12]</td>
+   <td align="left">K36</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">83</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_A[13]</td>
+   <td align="left">M33</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">119</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_A[14]</td>
+   <td align="left">K34</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">80</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_A[15]</td>
+   <td align="left">B38</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">78</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_BA[0]</td>
+   <td align="left">M37</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">109</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_BA[1]</td>
+   <td align="left">P39</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">108</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_BA[2]</td>
+   <td align="left">J36</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">79</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_CAS_n</td>
+   <td align="left">M36</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">115</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_CK[0]</td>
+   <td align="left">G37</td>
+   <td align="left">output</td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">101</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_CK[1]</td>
+   <td align="left">J37</td>
+   <td align="left">output</td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">102</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_CKE[0]</td>
+   <td align="left">E36</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">73</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_CKE[1]</td>
+   <td align="left">B35</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">74</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_CK_n[0]</td>
+   <td align="left">F36</td>
+   <td align="left">output</td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">103</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_CK_n[1]</td>
+   <td align="left">H37</td>
+   <td align="left">output</td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">104</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_CS_n[0]</td>
+   <td align="left">P36</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">114</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_CS_n[1]</td>
+   <td align="left">R28</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">121</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DM[0]</td>
+   <td align="left">C36</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">11</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DM[1]</td>
+   <td align="left">E32</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">28</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DM[2]</td>
+   <td align="left">H34</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">46</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DM[3]</td>
+   <td align="left">L32</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">63</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DM[4]</td>
+   <td align="left">N32</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">136</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DM[5]</td>
+   <td align="left">W32</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">153</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DM[6]</td>
+   <td align="left">K30</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">170</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DM[7]</td>
+   <td align="left">T28</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">187</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[0]</td>
+   <td align="left">A35</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">5</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[1]</td>
+   <td align="left">A34</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">7</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[2]</td>
+   <td align="left">D36</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">15</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[3]</td>
+   <td align="left">C33</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">17</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[4]</td>
+   <td align="left">B32</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">4</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[5]</td>
+   <td align="left">D35</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">6</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[6]</td>
+   <td align="left">D33</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">16</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[7]</td>
+   <td align="left">E33</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">18</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[8]</td>
+   <td align="left">A32</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">21</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[9]</td>
+   <td align="left">A31</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">23</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[10]</td>
+   <td align="left">C30</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">33</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[11]</td>
+   <td align="left">D30</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">35</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[12]</td>
+   <td align="left">B29</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">22</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[13]</td>
+   <td align="left">E30</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">24</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[14]</td>
+   <td align="left">F31</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">34</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[15]</td>
+   <td align="left">G31</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">36</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[16]</td>
+   <td align="left">F35</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">39</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[17]</td>
+   <td align="left">G34</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">41</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[18]</td>
+   <td align="left">J33</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">51</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[19]</td>
+   <td align="left">J34</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">53</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[20]</td>
+   <td align="left">F34</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">40</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[21]</td>
+   <td align="left">E35</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">42</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[22]</td>
+   <td align="left">J31</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">50</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[23]</td>
+   <td align="left">K31</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">52</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[24]</td>
+   <td align="left">P34</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">57</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[25]</td>
+   <td align="left">R33</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">59</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[26]</td>
+   <td align="left">M34</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">67</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[27]</td>
+   <td align="left">L33</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">69</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[28]</td>
+   <td align="left">R34</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">56</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[29]</td>
+   <td align="left">T34</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">58</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[30]</td>
+   <td align="left">W34</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">68</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[31]</td>
+   <td align="left">V35</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">70</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[32]</td>
+   <td align="left">P33</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">129</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[33]</td>
+   <td align="left">P32</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">131</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[34]</td>
+   <td align="left">V33</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">141</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[35]</td>
+   <td align="left">V34</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">143</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[36]</td>
+   <td align="left">N31</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">130</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[37]</td>
+   <td align="left">M31</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">132</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[38]</td>
+   <td align="left">U32</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">140</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[39]</td>
+   <td align="left">U33</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">142</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[40]</td>
+   <td align="left">R31</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">147</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[41]</td>
+   <td align="left">W31</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">149</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[42]</td>
+   <td align="left">U30</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">157</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[43]</td>
+   <td align="left">P31</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">159</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[44]</td>
+   <td align="left">T31</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">146</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[45]</td>
+   <td align="left">Y32</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">148</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[46]</td>
+   <td align="left">T29</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">158</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[47]</td>
+   <td align="left">P30</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">160</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[48]</td>
+   <td align="left">H32</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">163</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[49]</td>
+   <td align="left">H31</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">165</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[50]</td>
+   <td align="left">L30</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">175</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[51]</td>
+   <td align="left">L29</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">177</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[52]</td>
+   <td align="left">F32</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">164</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[53]</td>
+   <td align="left">G32</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">166</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[54]</td>
+   <td align="left">M30</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">174</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[55]</td>
+   <td align="left">N29</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">176</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[56]</td>
+   <td align="left">U29</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">181</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[57]</td>
+   <td align="left">V28</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">183</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[58]</td>
+   <td align="left">Y28</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">191</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[59]</td>
+   <td align="left">W29</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">193</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[60]</td>
+   <td align="left">V30</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">180</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[61]</td>
+   <td align="left">V29</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">182</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[62]</td>
+   <td align="left">W28</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">192</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQ[63]</td>
+   <td align="left">Y27</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">194</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQS[0]</td>
+   <td align="left">C34</td>
+   <td align="left">inout </td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">12</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQS[1]</td>
+   <td align="left">C31</td>
+   <td align="left">inout </td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">29</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQS[2]</td>
+   <td align="left">H35</td>
+   <td align="left">inout </td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">47</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQS[3]</td>
+   <td align="left">U35</td>
+   <td align="left">inout </td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">64</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQS[4]</td>
+   <td align="left">T33</td>
+   <td align="left">inout </td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">137</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQS[5]</td>
+   <td align="left">T30</td>
+   <td align="left">inout </td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">154</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQS[6]</td>
+   <td align="left">J30</td>
+   <td align="left">inout </td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">171</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQS[7]</td>
+   <td align="left">Y30</td>
+   <td align="left">inout </td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">188</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQS_n[0]</td>
+   <td align="left">B34</td>
+   <td align="left">inout </td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">10</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQS_n[1]</td>
+   <td align="left">B31</td>
+   <td align="left">inout </td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">27</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQS_n[2]</td>
+   <td align="left">G35</td>
+   <td align="left">inout </td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">45</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQS_n[3]</td>
+   <td align="left">T35</td>
+   <td align="left">inout </td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">62</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQS_n[4]</td>
+   <td align="left">T32</td>
+   <td align="left">inout </td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">135</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQS_n[5]</td>
+   <td align="left">R30</td>
+   <td align="left">inout </td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">152</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQS_n[6]</td>
+   <td align="left">H30</td>
+   <td align="left">inout </td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">169</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_DQS_n[7]</td>
+   <td align="left">Y29</td>
+   <td align="left">inout </td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">186</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_EVENT_n</td>
+   <td align="left">K19</td>
+   <td align="left">input </td>
+   <td align="left">1.5 V</td>
+   <td align="left">198</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_ODT[0]</td>
+   <td align="left">V36</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">116</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_ODT[1]</td>
+   <td align="left">W35</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">120</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_RAS_n</td>
+   <td align="left">P38</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">110</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_RESET_n</td>
+   <td align="left">H33</td>
+   <td align="left">output</td>
+   <td align="left">1.5 V</td>
+   <td align="left">30</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_SCL</td>
+   <td align="left">C15</td>
+   <td align="left">output</td>
+   <td align="left">1.5 V</td>
+   <td align="left">202</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_SDA</td>
+   <td align="left">P15</td>
+   <td align="left">inout </td>
+   <td align="left">1.5 V</td>
+   <td align="left">200</td>
+</tr>
+<tr>
+   <td align="left">DDR3A_WE_n</td>
+   <td align="left">N37</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">113</td>
+</tr>
+</table>
+<h2><a name="DDR3 SODIMM"></a></h2><table border="3">
+<caption  align="left">DDR3 SODIMM_B</caption>
+<br />
+<br />
+<tr>
+   <th align="left" bgcolor="Khaki">Name</th>
+   <th align="left" bgcolor="Khaki">Location</th>
+   <th align="left" bgcolor="Khaki">Direction</th>
+   <th align="left" bgcolor="Khaki">Standard</th>
+   <th align="left" bgcolor="Khaki">DDR3 SODIMM Pin Index</th>
+</tr>
+<tr>
+   <td align="left">DDR3B_A[0]</td>
+   <td align="left">G17</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">98</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_A[1]</td>
+   <td align="left">F17</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">97</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_A[2]</td>
+   <td align="left">N17</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">96</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_A[3]</td>
+   <td align="left">F19</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">95</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_A[4]</td>
+   <td align="left">N19</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">92</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_A[5]</td>
+   <td align="left">H16</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">91</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_A[6]</td>
+   <td align="left">M17</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">90</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_A[7]</td>
+   <td align="left">T18</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">86</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_A[8]</td>
+   <td align="left">H17</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">89</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_A[9]</td>
+   <td align="left">J19</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">85</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_A[10]</td>
+   <td align="left">C19</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">107</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_A[11]</td>
+   <td align="left">R18</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">84</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_A[12]</td>
+   <td align="left">K18</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">83</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_A[13]</td>
+   <td align="left">E18</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">119</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_A[14]</td>
+   <td align="left">T19</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">80</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_A[15]</td>
+   <td align="left">R19</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">78</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_BA[0]</td>
+   <td align="left">C18</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">109</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_BA[1]</td>
+   <td align="left">G19</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">108</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_BA[2]</td>
+   <td align="left">M20</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">79</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_CAS_n</td>
+   <td align="left">A17</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">115</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_CK[0]</td>
+   <td align="left">B16</td>
+   <td align="left">output</td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">101</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_CK[1]</td>
+   <td align="left">E17</td>
+   <td align="left">output</td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">102</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_CKE[0]</td>
+   <td align="left">P17</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">73</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_CKE[1]</td>
+   <td align="left">V18</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">74</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_CK_n[0]</td>
+   <td align="left">A16</td>
+   <td align="left">output</td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">103</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_CK_n[1]</td>
+   <td align="left">D17</td>
+   <td align="left">output</td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">104</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_CS_n[0]</td>
+   <td align="left">B19</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">114</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_CS_n[1]</td>
+   <td align="left">B17</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">121</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DM[0]</td>
+   <td align="left">R15</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">11</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DM[1]</td>
+   <td align="left">K15</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">28</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DM[2]</td>
+   <td align="left">V12</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">46</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DM[3]</td>
+   <td align="left">G10</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">63</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DM[4]</td>
+   <td align="left">T12</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">136</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DM[5]</td>
+   <td align="left">C16</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">153</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DM[6]</td>
+   <td align="left">H15</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">170</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DM[7]</td>
+   <td align="left">B11</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">187</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[0]</td>
+   <td align="left">Y17</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">5</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[1]</td>
+   <td align="left">W17</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">7</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[2]</td>
+   <td align="left">V15</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">15</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[3]</td>
+   <td align="left">T15</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">17</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[4]</td>
+   <td align="left">V13</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">4</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[5]</td>
+   <td align="left">V16</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">6</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[6]</td>
+   <td align="left">W14</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">16</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[7]</td>
+   <td align="left">U15</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">18</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[8]</td>
+   <td align="left">T17</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">21</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[9]</td>
+   <td align="left">T16</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">23</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[10]</td>
+   <td align="left">R16</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">33</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[11]</td>
+   <td align="left">P16</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">35</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[12]</td>
+   <td align="left">N16</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">22</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[13]</td>
+   <td align="left">M15</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">24</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[14]</td>
+   <td align="left">M14</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">34</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[15]</td>
+   <td align="left">L14</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">36</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[16]</td>
+   <td align="left">T14</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">39</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[17]</td>
+   <td align="left">U14</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">41</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[18]</td>
+   <td align="left">U11</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">51</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[19]</td>
+   <td align="left">T13</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">53</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[20]</td>
+   <td align="left">U12</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">40</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[21]</td>
+   <td align="left">R13</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">42</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[22]</td>
+   <td align="left">P13</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">50</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[23]</td>
+   <td align="left">N13</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">52</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[24]</td>
+   <td align="left">K12</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">57</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[25]</td>
+   <td align="left">J12</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">59</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[26]</td>
+   <td align="left">J10</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">67</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[27]</td>
+   <td align="left">H12</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">69</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[28]</td>
+   <td align="left">N11</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">56</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[29]</td>
+   <td align="left">M11</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">58</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[30]</td>
+   <td align="left">H10</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">68</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[31]</td>
+   <td align="left">H11</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">70</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[32]</td>
+   <td align="left">T10</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">129</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[33]</td>
+   <td align="left">R10</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">131</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[34]</td>
+   <td align="left">M12</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">141</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[35]</td>
+   <td align="left">L12</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">143</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[36]</td>
+   <td align="left">V10</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">130</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[37]</td>
+   <td align="left">V9</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">132</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[38]</td>
+   <td align="left">R12</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">140</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[39]</td>
+   <td align="left">P12</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">142</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[40]</td>
+   <td align="left">D14</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">147</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[41]</td>
+   <td align="left">C13</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">149</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[42]</td>
+   <td align="left">B14</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">157</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[43]</td>
+   <td align="left">B13</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">159</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[44]</td>
+   <td align="left">E14</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">146</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[45]</td>
+   <td align="left">F14</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">148</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[46]</td>
+   <td align="left">A14</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">158</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[47]</td>
+   <td align="left">A13</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">160</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[48]</td>
+   <td align="left">K13</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">163</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[49]</td>
+   <td align="left">K16</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">165</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[50]</td>
+   <td align="left">H13</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">175</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[51]</td>
+   <td align="left">H14</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">177</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[52]</td>
+   <td align="left">J13</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">164</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[53]</td>
+   <td align="left">J16</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">166</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[54]</td>
+   <td align="left">G13</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">174</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[55]</td>
+   <td align="left">F13</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">176</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[56]</td>
+   <td align="left">D11</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">181</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[57]</td>
+   <td align="left">C10</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">183</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[58]</td>
+   <td align="left">A10</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">191</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[59]</td>
+   <td align="left">B10</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">193</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[60]</td>
+   <td align="left">G11</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">180</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[61]</td>
+   <td align="left">F11</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">182</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[62]</td>
+   <td align="left">E11</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">192</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQ[63]</td>
+   <td align="left">E12</td>
+   <td align="left">inout </td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">194</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQS[0]</td>
+   <td align="left">Y16</td>
+   <td align="left">inout </td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">12</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQS[1]</td>
+   <td align="left">V17</td>
+   <td align="left">inout </td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">29</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQS[2]</td>
+   <td align="left">P14</td>
+   <td align="left">inout </td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">47</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQS[3]</td>
+   <td align="left">K11</td>
+   <td align="left">inout </td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">64</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQS[4]</td>
+   <td align="left">U9</td>
+   <td align="left">inout </td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">137</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQS[5]</td>
+   <td align="left">E15</td>
+   <td align="left">inout </td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">154</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQS[6]</td>
+   <td align="left">L15</td>
+   <td align="left">inout </td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">171</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQS[7]</td>
+   <td align="left">D12</td>
+   <td align="left">inout </td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">188</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQS_n[0]</td>
+   <td align="left">W16</td>
+   <td align="left">inout </td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">10</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQS_n[1]</td>
+   <td align="left">U17</td>
+   <td align="left">inout </td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">27</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQS_n[2]</td>
+   <td align="left">N14</td>
+   <td align="left">inout </td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">45</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQS_n[3]</td>
+   <td align="left">L11</td>
+   <td align="left">inout </td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">62</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQS_n[4]</td>
+   <td align="left">T9</td>
+   <td align="left">inout </td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">135</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQS_n[5]</td>
+   <td align="left">D15</td>
+   <td align="left">inout </td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">152</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQS_n[6]</td>
+   <td align="left">K14</td>
+   <td align="left">inout </td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">169</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_DQS_n[7]</td>
+   <td align="left">C12</td>
+   <td align="left">inout </td>
+   <td align="left">Differential 1.5-V SSTL Class I</td>
+   <td align="left">186</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_EVENT_n</td>
+   <td align="left">K17</td>
+   <td align="left">input </td>
+   <td align="left">1.5 V</td>
+   <td align="left">198</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_ODT[0]</td>
+   <td align="left">M18</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">116</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_ODT[1]</td>
+   <td align="left">A19</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">120</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_RAS_n</td>
+   <td align="left">H19</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">110</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_RESET_n</td>
+   <td align="left">T20</td>
+   <td align="left">output</td>
+   <td align="left">1.5 V</td>
+   <td align="left">30</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_SCL</td>
+   <td align="left">P18</td>
+   <td align="left">output</td>
+   <td align="left">1.5 V</td>
+   <td align="left">202</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_SDA</td>
+   <td align="left">P19</td>
+   <td align="left">inout </td>
+   <td align="left">1.5 V</td>
+   <td align="left">200</td>
+</tr>
+<tr>
+   <td align="left">DDR3B_WE_n</td>
+   <td align="left">D18</td>
+   <td align="left">output</td>
+   <td align="left">SSTL-15 Class I</td>
+   <td align="left">113</td>
+</tr>
+</table>
+</html>
+</body>

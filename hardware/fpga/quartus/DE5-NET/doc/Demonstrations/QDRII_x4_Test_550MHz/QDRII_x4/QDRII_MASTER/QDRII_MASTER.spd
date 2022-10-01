@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simPackage>
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/altera_mem_if_dll_stratixv.sv"
+   type="SYSTEM_VERILOG"
+   library="dll0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/altera_mem_if_oct_stratixv.sv"
+   type="SYSTEM_VERILOG"
+   library="oct0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/alt_qdr_controller_hr_bl4.sv"
+   type="SYSTEM_VERILOG"
+   library="c0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/alt_qdr_controller_top_hr_bl4.sv"
+   type="SYSTEM_VERILOG"
+   library="c0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/alt_qdr_afi_hr_bl4.sv"
+   type="SYSTEM_VERILOG"
+   library="c0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/alt_qdr_fsm_no_ifdef_params.sv"
+   type="SYSTEM_VERILOG"
+   library="c0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/memctl_parity.sv"
+   type="SYSTEM_VERILOG"
+   library="c0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/memctl_reset_sync.v"
+   type="VERILOG"
+   library="c0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/memctl_burst_latency_shifter_ctl_bl_is_one.sv"
+   type="SYSTEM_VERILOG"
+   library="c0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/memctl_data_if_ctl_bl_is_one_qdrii.sv"
+   type="SYSTEM_VERILOG"
+   library="c0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_s0_software/sequencer.c"
+   type="OTHER"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_s0_software/sequencer.h"
+   type="OTHER"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_s0_software/sequencer_defines.h"
+   type="OTHER"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_s0_make_qsys_seq.tcl"
+   type="OTHER"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_s0.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/altera_avalon_sc_fifo.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/altera_mem_if_sequencer_cpu_no_ifdef_params_sim_cpu_inst.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/altera_mem_if_sequencer_cpu_no_ifdef_params_sim_cpu_inst_test_bench.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/altera_mem_if_sequencer_mem_no_ifdef_params.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/altera_mem_if_sequencer_rst.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/altera_merlin_arbitrator.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/altera_merlin_burst_uncompressor.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/altera_merlin_master_agent.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/altera_merlin_master_translator.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/altera_merlin_slave_agent.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/altera_merlin_slave_translator.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_s0_irq_mapper.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_s0_mm_interconnect_0.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_s0_mm_interconnect_0_avalon_st_adapter.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_s0_mm_interconnect_0_avalon_st_adapter_error_adapter_0.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_s0_mm_interconnect_0_cmd_demux.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_s0_mm_interconnect_0_cmd_demux_001.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_s0_mm_interconnect_0_cmd_mux.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_s0_mm_interconnect_0_cmd_mux_003.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_s0_mm_interconnect_0_router.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_s0_mm_interconnect_0_router_001.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_s0_mm_interconnect_0_router_002.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_s0_mm_interconnect_0_router_005.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_s0_mm_interconnect_0_rsp_demux_003.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_s0_mm_interconnect_0_rsp_mux.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_s0_mm_interconnect_0_rsp_mux_001.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/rw_manager_ac_ROM_no_ifdef_params.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/rw_manager_ac_ROM_reg.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/rw_manager_bitcheck.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/rw_manager_core.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/rw_manager_datamux.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/rw_manager_data_broadcast.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/rw_manager_data_decoder.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/rw_manager_di_buffer.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/rw_manager_di_buffer_wrap.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/rw_manager_dm_decoder.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/rw_manager_generic.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/rw_manager_inst_ROM_no_ifdef_params.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/rw_manager_inst_ROM_reg.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/rw_manager_jumplogic.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/rw_manager_lfsr12.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/rw_manager_lfsr36.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/rw_manager_lfsr72.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/rw_manager_pattern_fifo.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/rw_manager_qdrii.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/rw_manager_ram.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/rw_manager_ram_csr.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/rw_manager_read_datapath.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/rw_manager_write_decoder.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/sequencer_data_mgr.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/sequencer_phy_mgr.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/sequencer_reg_file.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/sequencer_scc_acv_phase_decode.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/sequencer_scc_acv_wrapper.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/sequencer_scc_mgr.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/sequencer_scc_reg_file.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/sequencer_scc_siii_phase_decode.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/sequencer_scc_siii_wrapper.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/sequencer_scc_sv_phase_decode.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/sequencer_scc_sv_wrapper.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_s0_AC_ROM.hex"
+   type="HEX"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_s0_inst_ROM.hex"
+   type="HEX"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_s0_sequencer_mem.hex"
+   type="HEX"
+   library="s0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/afi_mux_qdrii.v"
+   type="VERILOG"
+   library="m0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_p0_clock_pair_generator.v"
+   type="VERILOG"
+   library="p0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_p0_read_valid_selector.v"
+   type="VERILOG"
+   library="p0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_p0_addr_cmd_datapath.v"
+   type="VERILOG"
+   library="p0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_p0_reset.v"
+   type="VERILOG"
+   library="p0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_p0_acv_ldc.v"
+   type="VERILOG"
+   library="p0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_p0_memphy.sv"
+   type="SYSTEM_VERILOG"
+   library="p0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_p0_reset_sync.v"
+   type="VERILOG"
+   library="p0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_p0_new_io_pads.v"
+   type="VERILOG"
+   library="p0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_p0_flop_mem.v"
+   type="VERILOG"
+   library="p0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_p0_fr_cycle_shifter.v"
+   type="VERILOG"
+   library="p0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_p0_read_datapath.sv"
+   type="SYSTEM_VERILOG"
+   library="p0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_p0_write_datapath.v"
+   type="VERILOG"
+   library="p0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_p0_simple_ddio_out.sv"
+   type="SYSTEM_VERILOG"
+   library="p0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_p0_addr_cmd_ldc_pads.v"
+   type="VERILOG"
+   library="p0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_p0_addr_cmd_ldc_pad.v"
+   type="VERILOG"
+   library="p0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_p0_addr_cmd_non_ldc_pad.v"
+   type="VERILOG"
+   library="p0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/read_fifo_hard_abstract_no_ifdef_params.sv"
+   type="SYSTEM_VERILOG"
+   library="p0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_p0_read_fifo_hard.v"
+   type="VERILOG"
+   library="p0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_p0.sv"
+   type="SYSTEM_VERILOG"
+   library="p0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_p0_altdqdqs.v"
+   type="VERILOG"
+   library="p0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/altdq_dqs2_stratixv.sv"
+   type="SYSTEM_VERILOG"
+   library="p0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/altdq_dqs2_abstract.sv"
+   type="SYSTEM_VERILOG"
+   library="p0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/altdq_dqs2_cal_delays.sv"
+   type="SYSTEM_VERILOG"
+   library="p0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_p0_altdqdqs_in.v"
+   type="VERILOG"
+   library="p0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_pll0.sv"
+   type="SYSTEM_VERILOG"
+   library="pll0" />
+ <file
+   path="QDRII_MASTER_sim/QDRII_MASTER/QDRII_MASTER_0002.v"
+   type="VERILOG"
+   library="QDRII_MASTER" />
+ <file path="QDRII_MASTER_sim/QDRII_MASTER.v" type="VERILOG" />
+ <topLevel name="QDRII_MASTER" />
+ <deviceFamily name="stratixv" />
+</simPackage>

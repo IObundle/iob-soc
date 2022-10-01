@@ -1,0 +1,71 @@
+﻿Build started 2015/9/24 下午 02:33:24.
+     1>Project "D:\svn_2015\de5a-net-dev\pcie-dev\PCIE_FUNDAMENTAL\PCIE_FUNDAMENTAL\PCIE_FUNDAMENTAL.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TC /analyze- /errorReport:prompt PCIE.c
+         PCIE.c
+     1>d:\svn_2015\de5a-net-dev\pcie-dev\pcie_fundamental\pcie_fundamental\PCIE.h(48): error C2365: 'PCIE_Open' : redefinition; previous definition was 'function'
+                 d:\svn_2015\de5a-net-dev\pcie-dev\pcie_fundamental\pcie_fundamental\TERASIC_PCIE_AVMM.h(123) : see declaration of 'PCIE_Open'
+     1>d:\svn_2015\de5a-net-dev\pcie-dev\pcie_fundamental\pcie_fundamental\PCIE.h(49): error C2365: 'PCIE_Close' : redefinition; previous definition was 'function'
+                 d:\svn_2015\de5a-net-dev\pcie-dev\pcie_fundamental\pcie_fundamental\TERASIC_PCIE_AVMM.h(124) : see declaration of 'PCIE_Close'
+     1>d:\svn_2015\de5a-net-dev\pcie-dev\pcie_fundamental\pcie_fundamental\PCIE.h(50): error C2365: 'PCIE_Read32' : redefinition; previous definition was 'function'
+                 d:\svn_2015\de5a-net-dev\pcie-dev\pcie_fundamental\pcie_fundamental\TERASIC_PCIE_AVMM.h(125) : see declaration of 'PCIE_Read32'
+     1>d:\svn_2015\de5a-net-dev\pcie-dev\pcie_fundamental\pcie_fundamental\PCIE.h(51): error C2365: 'PCIE_Write32' : redefinition; previous definition was 'function'
+                 d:\svn_2015\de5a-net-dev\pcie-dev\pcie_fundamental\pcie_fundamental\TERASIC_PCIE_AVMM.h(126) : see declaration of 'PCIE_Write32'
+     1>d:\svn_2015\de5a-net-dev\pcie-dev\pcie_fundamental\pcie_fundamental\PCIE.h(52): error C2061: syntax error : identifier 'PCIE_Read16'
+     1>d:\svn_2015\de5a-net-dev\pcie-dev\pcie_fundamental\pcie_fundamental\PCIE.h(52): error C2059: syntax error : ';'
+     1>d:\svn_2015\de5a-net-dev\pcie-dev\pcie_fundamental\pcie_fundamental\PCIE.h(53): error C2061: syntax error : identifier 'PCIE_Write16'
+     1>d:\svn_2015\de5a-net-dev\pcie-dev\pcie_fundamental\pcie_fundamental\PCIE.h(53): error C2059: syntax error : ';'
+     1>d:\svn_2015\de5a-net-dev\pcie-dev\pcie_fundamental\pcie_fundamental\PCIE.h(54): error C2061: syntax error : identifier 'PCIE_Read8'
+     1>d:\svn_2015\de5a-net-dev\pcie-dev\pcie_fundamental\pcie_fundamental\PCIE.h(54): error C2059: syntax error : ';'
+     1>d:\svn_2015\de5a-net-dev\pcie-dev\pcie_fundamental\pcie_fundamental\PCIE.h(55): error C2061: syntax error : identifier 'PCIE_Write8'
+     1>d:\svn_2015\de5a-net-dev\pcie-dev\pcie_fundamental\pcie_fundamental\PCIE.h(55): error C2059: syntax error : ';'
+     1>d:\svn_2015\de5a-net-dev\pcie-dev\pcie_fundamental\pcie_fundamental\PCIE.h(56): error C2365: 'PCIE_DmaWrite' : redefinition; previous definition was 'function'
+                 d:\svn_2015\de5a-net-dev\pcie-dev\pcie_fundamental\pcie_fundamental\TERASIC_PCIE_AVMM.h(128) : see declaration of 'PCIE_DmaWrite'
+     1>d:\svn_2015\de5a-net-dev\pcie-dev\pcie_fundamental\pcie_fundamental\PCIE.h(57): error C2365: 'PCIE_DmaRead' : redefinition; previous definition was 'function'
+                 d:\svn_2015\de5a-net-dev\pcie-dev\pcie_fundamental\pcie_fundamental\TERASIC_PCIE_AVMM.h(127) : see declaration of 'PCIE_DmaRead'
+     1>d:\svn_2015\de5a-net-dev\pcie-dev\pcie_fundamental\pcie_fundamental\PCIE.h(58): error C2061: syntax error : identifier 'PCIE_DmaFifoWrite'
+     1>d:\svn_2015\de5a-net-dev\pcie-dev\pcie_fundamental\pcie_fundamental\PCIE.h(58): error C2059: syntax error : ';'
+     1>d:\svn_2015\de5a-net-dev\pcie-dev\pcie_fundamental\pcie_fundamental\PCIE.h(59): error C2061: syntax error : identifier 'PCIE_DmaFifoRead'
+     1>d:\svn_2015\de5a-net-dev\pcie-dev\pcie_fundamental\pcie_fundamental\PCIE.h(59): error C2059: syntax error : ';'
+     1>PCIE.c(16): error C2365: 'PCIE_Open' : redefinition; previous definition was 'function'
+                 d:\svn_2015\de5a-net-dev\pcie-dev\pcie_fundamental\pcie_fundamental\TERASIC_PCIE_AVMM.h(123) : see declaration of 'PCIE_Open'
+     1>PCIE.c(17): error C2365: 'PCIE_Close' : redefinition; previous definition was 'function'
+                 d:\svn_2015\de5a-net-dev\pcie-dev\pcie_fundamental\pcie_fundamental\TERASIC_PCIE_AVMM.h(124) : see declaration of 'PCIE_Close'
+     1>PCIE.c(18): error C2365: 'PCIE_Read32' : redefinition; previous definition was 'function'
+                 d:\svn_2015\de5a-net-dev\pcie-dev\pcie_fundamental\pcie_fundamental\TERASIC_PCIE_AVMM.h(125) : see declaration of 'PCIE_Read32'
+     1>PCIE.c(19): error C2365: 'PCIE_Write32' : redefinition; previous definition was 'function'
+                 d:\svn_2015\de5a-net-dev\pcie-dev\pcie_fundamental\pcie_fundamental\TERASIC_PCIE_AVMM.h(126) : see declaration of 'PCIE_Write32'
+     1>PCIE.c(20): error C2365: 'PCIE_DmaWrite' : redefinition; previous definition was 'function'
+                 d:\svn_2015\de5a-net-dev\pcie-dev\pcie_fundamental\pcie_fundamental\TERASIC_PCIE_AVMM.h(128) : see declaration of 'PCIE_DmaWrite'
+     1>PCIE.c(21): error C2365: 'PCIE_DmaRead' : redefinition; previous definition was 'function'
+                 d:\svn_2015\de5a-net-dev\pcie-dev\pcie_fundamental\pcie_fundamental\TERASIC_PCIE_AVMM.h(127) : see declaration of 'PCIE_DmaRead'
+     1>PCIE.c(34): warning C4133: 'function' : incompatible types - from 'char [9]' to 'LPCWSTR'
+     1>PCIE.c(42): error C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>PCIE.c(46): error C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>PCIE.c(61): warning C4133: 'function' : incompatible types - from 'char [256]' to 'LPCWSTR'
+     1>PCIE.c(68): error C2106: '=' : left operand must be l-value
+     1>PCIE.c(68): warning C4550: expression evaluates to a function which is missing an argument list
+     1>PCIE.c(69): error C2106: '=' : left operand must be l-value
+     1>PCIE.c(69): warning C4550: expression evaluates to a function which is missing an argument list
+     1>PCIE.c(70): error C2106: '=' : left operand must be l-value
+     1>PCIE.c(70): warning C4550: expression evaluates to a function which is missing an argument list
+     1>PCIE.c(71): error C2106: '=' : left operand must be l-value
+     1>PCIE.c(71): warning C4550: expression evaluates to a function which is missing an argument list
+     1>PCIE.c(72): error C2106: '=' : left operand must be l-value
+     1>PCIE.c(72): warning C4550: expression evaluates to a function which is missing an argument list
+     1>PCIE.c(73): error C2106: '=' : left operand must be l-value
+     1>PCIE.c(73): warning C4550: expression evaluates to a function which is missing an argument list
+     1>PCIE.c(74): warning C4550: expression evaluates to a function which is missing an argument list
+     1>PCIE.c(75): warning C4550: expression evaluates to a function which is missing an argument list
+     1>PCIE.c(76): error C2065: 'PCIE_Read16' : undeclared identifier
+     1>PCIE.c(76): error C2065: 'PCIE_Write16' : undeclared identifier
+     1>PCIE.c(77): error C2065: 'PCIE_Read8' : undeclared identifier
+     1>PCIE.c(77): error C2065: 'PCIE_Write8' : undeclared identifier
+     1>PCIE.c(78): warning C4550: expression evaluates to a function which is missing an argument list
+     1>PCIE.c(79): error C2065: 'PCIE_DmaFifoWrite' : undeclared identifier
+     1>PCIE.c(80): error C2065: 'PCIE_DmaFifoRead' : undeclared identifier
+     1>Done Building Project "D:\svn_2015\de5a-net-dev\pcie-dev\PCIE_FUNDAMENTAL\PCIE_FUNDAMENTAL\PCIE_FUNDAMENTAL.vcxproj" (Build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:00.50

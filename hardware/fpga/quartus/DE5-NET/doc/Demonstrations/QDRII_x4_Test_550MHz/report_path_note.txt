@@ -1,0 +1,48 @@
+report_path -from [get_registers {Avalon_bus_RW_Test:QDRII_A_VERIFY|cal_data*}] -to [get_registers {Avalon_bus_RW_Test:QDRII_A_VERIFY|avl_writedata*}] -npaths 100 -panel_name {Report Path}
+Report Path: Found 100 paths. Longest delay is 4.089
+100 4.089
+report_path -from [get_registers {Avalon_bus_RW_Test:QDRII_B_VERIFY|cal_data*}] -to [get_registers {Avalon_bus_RW_Test:QDRII_B_VERIFY|avl_writedata*}] -npaths 100 -panel_name {Report Path}
+Report Path: Found 100 paths. Longest delay is 4.213
+100 4.213
+report_path -from [get_registers {Avalon_bus_RW_Test:QDRII_C_VERIFY|cal_data*}] -to [get_registers {Avalon_bus_RW_Test:QDRII_C_VERIFY|avl_writedata*}] -npaths 100 -panel_name {Report Path}
+Report Path: Found 100 paths. Longest delay is 3.987
+100 3.987
+report_path -from [get_registers {Avalon_bus_RW_Test:QDRII_D_VERIFY|cal_data*}] -to [get_registers {Avalon_bus_RW_Test:QDRII_D_VERIFY|avl_writedata*}] -npaths 100 -panel_name {Report Path}
+Report Path: Found 100 paths. Longest delay is 4.176
+100 4.176
+report_path -from [get_registers {Avalon_bus_RW_Test:QDRII_A_VERIFY|avl_address*}] -to [get_registers {Avalon_bus_RW_Test:QDRII_A_VERIFY|avl_writedata*}] -npaths 10 -panel_name {Report Path}
+Report Path: Found 10 paths. Longest delay is 4.595
+10 4.595
+report_path -from [get_registers {Avalon_bus_RW_Test:QDRII_B_VERIFY|avl_address*}] -to [get_registers {Avalon_bus_RW_Test:QDRII_B_VERIFY|avl_writedata*}] -npaths 10 -panel_name {Report Path}
+Report Path: Found 10 paths. Longest delay is 5.389
+10 5.389
+report_path -from [get_registers {Avalon_bus_RW_Test:QDRII_C_VERIFY|avl_address*}] -to [get_registers {Avalon_bus_RW_Test:QDRII_C_VERIFY|avl_writedata*}] -npaths 10 -panel_name {Report Path}
+Report Path: Found 10 paths. Longest delay is 4.565
+10 4.565
+report_path -from [get_registers {Avalon_bus_RW_Test:QDRII_D_VERIFY|avl_address*}] -to [get_registers {Avalon_bus_RW_Test:QDRII_D_VERIFY|avl_writedata*}] -npaths 10 -panel_name {Report Path}
+Report Path: Found 10 paths. Longest delay is 4.590
+10 4.590
+report_path -from [get_registers {Avalon_bus_RW_Test:QDRII_A_VERIFY|data_reg*}] -to [get_registers {Avalon_bus_RW_Test:QDRII_A_VERIFY|c_state*}] -npaths 10 -panel_name {Report Path}
+Report Path: Found 10 paths. Longest delay is 2.488
+10 2.488
+report_path -from [get_registers {Avalon_bus_RW_Test:QDRII_B_VERIFY|data_reg*}] -to [get_registers {Avalon_bus_RW_Test:QDRII_B_VERIFY|c_state*}] -npaths 10 -panel_name {Report Path}
+Report Path: Found 10 paths. Longest delay is 2.445
+10 2.445
+report_path -from [get_registers {Avalon_bus_RW_Test:QDRII_C_VERIFY|data_reg*}] -to [get_registers {Avalon_bus_RW_Test:QDRII_C_VERIFY|c_state*}] -npaths 10 -panel_name {Report Path}
+Report Path: Found 10 paths. Longest delay is 2.398
+10 2.398
+report_path -from [get_registers {Avalon_bus_RW_Test:QDRII_D_VERIFY|data_reg*}] -to [get_registers {Avalon_bus_RW_Test:QDRII_D_VERIFY|c_state*}] -npaths 10 -panel_name {Report Path}
+Report Path: Found 10 paths. Longest delay is 2.303
+10 2.303
+report_path -from [get_registers {Avalon_bus_RW_Test:QDRII_A_VERIFY|avl_writedata*}] -to [get_registers {Avalon_bus_RW_Test:QDRII_A_VERIFY|c_state*}] -npaths 10 -panel_name {Report Path}
+Report Path: Found 10 paths. Longest delay is 2.842
+10 2.842
+report_path -from [get_registers {Avalon_bus_RW_Test:QDRII_B_VERIFY|avl_writedata*}] -to [get_registers {Avalon_bus_RW_Test:QDRII_B_VERIFY|c_state*}] -npaths 10 -panel_name {Report Path}
+Report Path: Found 10 paths. Longest delay is 2.702
+10 2.702
+report_path -from [get_registers {Avalon_bus_RW_Test:QDRII_C_VERIFY|avl_writedata*}] -to [get_registers {Avalon_bus_RW_Test:QDRII_C_VERIFY|c_state*}] -npaths 10 -panel_name {Report Path}
+Report Path: Found 10 paths. Longest delay is 2.794
+10 2.794
+report_path -from [get_registers {Avalon_bus_RW_Test:QDRII_D_VERIFY|avl_writedata*}] -to [get_registers {Avalon_bus_RW_Test:QDRII_D_VERIFY|c_state*}] -npaths 10 -panel_name {Report Path}
+Report Path: Found 10 paths. Longest delay is 2.674
+10 2.674

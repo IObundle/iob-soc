@@ -1,0 +1,26 @@
+Fitter Status : Successful - Tue Mar 21 15:16:43 2017
+Quartus Prime Version : 16.1.2 Build 203 01/18/2017 SJ Standard Edition
+Revision Name : golden_top
+Top-level Entity Name : golden_top
+Family : Stratix V
+Device : 5SGXEA7N2F45C2
+Timing Models : Final
+Logic utilization (in ALMs) : 1,648 / 234,720 ( < 1 % )
+Total registers : 2632
+Total pins : 155 / 1,064 ( 15 % )
+Total virtual pins : 0
+Total block memory bits : 2,111,936 / 52,428,800 ( 4 % )
+Total RAM Blocks : 140 / 2,560 ( 5 % )
+Total DSP Blocks : 2 / 256 ( < 1 % )
+Total HSSI STD RX PCSs : 2 / 48 ( 4 % )
+Total HSSI 10G RX PCSs : 1 / 48 ( 2 % )
+Total HSSI GEN3 RX PCSs : 0 / 48 ( 0 % )
+Total HSSI PMA RX Deserializers : 3 / 48 ( 6 % )
+Total HSSI STD TX PCSs : 2 / 48 ( 4 % )
+Total HSSI 10G TX PCSs : 1 / 48 ( 2 % )
+Total HSSI GEN3 TX PCSs : 0 / 48 ( 0 % )
+Total HSSI PMA TX Serializers : 3 / 48 ( 6 % )
+Total HSSI PIPE GEN1_2s : 0 / 48 ( 0 % )
+Total HSSI GEN3s : 0 / 48 ( 0 % )
+Total PLLs : 5 / 92 ( 5 % )
+Total DLLs : 0 / 4 ( 0 % )

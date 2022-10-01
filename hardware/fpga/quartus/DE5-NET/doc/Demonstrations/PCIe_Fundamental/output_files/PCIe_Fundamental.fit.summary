@@ -1,0 +1,26 @@
+Fitter Status : Successful - Wed Mar 22 05:02:22 2017
+Quartus Prime Version : 16.1.2 Build 203 01/18/2017 SJ Standard Edition
+Revision Name : PCIe_Fundamental
+Top-level Entity Name : PCIe_Fundamental
+Family : Stratix V
+Device : 5SGXEA7N2F45C2
+Timing Models : Final
+Logic utilization (in ALMs) : 16,200 / 234,720 ( 7 % )
+Total registers : 28689
+Total pins : 163 / 1,064 ( 15 % )
+Total virtual pins : 0
+Total block memory bits : 4,720,882 / 52,428,800 ( 9 % )
+Total RAM Blocks : 304 / 2,560 ( 12 % )
+Total DSP Blocks : 0 / 256 ( 0 % )
+Total HSSI STD RX PCSs : 9 / 48 ( 19 % )
+Total HSSI 10G RX PCSs : 0 / 48 ( 0 % )
+Total HSSI GEN3 RX PCSs : 9 / 48 ( 19 % )
+Total HSSI PMA RX Deserializers : 8 / 48 ( 17 % )
+Total HSSI STD TX PCSs : 9 / 48 ( 19 % )
+Total HSSI 10G TX PCSs : 0 / 48 ( 0 % )
+Total HSSI GEN3 TX PCSs : 9 / 48 ( 19 % )
+Total HSSI PMA TX Serializers : 9 / 48 ( 19 % )
+Total HSSI PIPE GEN1_2s : 9 / 48 ( 19 % )
+Total HSSI GEN3s : 9 / 48 ( 19 % )
+Total PLLs : 10 / 92 ( 11 % )
+Total DLLs : 0 / 4 ( 0 % )

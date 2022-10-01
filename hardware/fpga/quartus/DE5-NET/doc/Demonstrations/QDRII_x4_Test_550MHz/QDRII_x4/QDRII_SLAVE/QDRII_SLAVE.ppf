@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pinplan
+ variation_name="QDRII_SLAVE"
+ megafunction_name="ALTERA_MEM_IF_QDRII_EMIF"
+ intended_family="Stratix V"
+ specifies="all_ports">
+ <global>
+  <pin name="global_reset_n" direction="input" scope="external" />
+  <pin name="soft_reset_n" direction="input" scope="external" />
+  <pin name="afi_clk" direction="input" scope="external" />
+  <pin name="afi_half_clk" direction="input" scope="external" />
+  <pin name="afi_reset_n" direction="input" scope="external" />
+  <pin name="mem_d[17..0]" direction="output" scope="external" />
+  <pin name="mem_wps_n" direction="output" scope="external" />
+  <pin name="mem_bws_n[1..0]" direction="output" scope="external" />
+  <pin name="mem_a[19..0]" direction="output" scope="external" />
+  <pin name="mem_q[17..0]" direction="input" scope="external" />
+  <pin name="mem_rps_n" direction="output" scope="external" />
+  <pin name="mem_k" direction="output" scope="external" />
+  <pin name="mem_k_n" direction="output" scope="external" />
+  <pin name="mem_cq" direction="input" scope="external" />
+  <pin name="mem_cq_n" direction="input" scope="external" />
+  <pin name="mem_doff_n" direction="output" scope="external" />
+  <pin name="avl_w_write_req" direction="input" scope="external" />
+  <pin name="avl_w_ready" direction="output" scope="external" />
+  <pin name="avl_w_addr[19..0]" direction="input" scope="external" />
+  <pin name="avl_w_size" direction="input" scope="external" />
+  <pin name="avl_w_wdata[71..0]" direction="input" scope="external" />
+  <pin name="avl_r_read_req" direction="input" scope="external" />
+  <pin name="avl_r_ready" direction="output" scope="external" />
+  <pin name="avl_r_addr[19..0]" direction="input" scope="external" />
+  <pin name="avl_r_size" direction="input" scope="external" />
+  <pin name="avl_r_rdata_valid" direction="output" scope="external" />
+  <pin name="avl_r_rdata[71..0]" direction="output" scope="external" />
+  <pin name="local_init_done" direction="output" scope="external" />
+  <pin name="local_cal_success" direction="output" scope="external" />
+  <pin name="local_cal_fail" direction="output" scope="external" />
+  <pin
+     name="seriesterminationcontrol[15..0]"
+     direction="input"
+     scope="external" />
+  <pin
+     name="parallelterminationcontrol[15..0]"
+     direction="input"
+     scope="external" />
+  <pin name="pll_mem_clk" direction="input" scope="external" />
+  <pin name="pll_write_clk" direction="input" scope="external" />
+  <pin name="pll_locked" direction="input" scope="external" />
+  <pin name="pll_write_clk_pre_phy_clk" direction="input" scope="external" />
+  <pin name="pll_addr_cmd_clk" direction="input" scope="external" />
+  <pin name="pll_avl_clk" direction="input" scope="external" />
+  <pin name="pll_config_clk" direction="input" scope="external" />
+  <pin name="pll_p2c_read_clk" direction="input" scope="external" />
+  <pin name="pll_c2p_write_clk" direction="input" scope="external" />
+  <pin name="dll_pll_locked" direction="output" scope="external" />
+  <pin name="dll_delayctrl[6..0]" direction="input" scope="external" />
+ </global>
+</pinplan>

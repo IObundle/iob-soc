@@ -1,0 +1,57 @@
+version 1.3.1 (2017.03.08)
+---------------------------
+1. System Builder update to V2.0.3. Bug fix: CPU_RESET_n has a wrong pin assignment in a special case.
+
+
+version 1.3.0 (2016.01.06)
+---------------------------
+1. Add Interupt fucntion in PCIe_Fundamental demo
+
+version 1.2.2 (2015.09.14)
+---------------------------
+1. Add ISSI QDRII+ 550 datasheet
+
+
+version 1.2.1 (2014.10.28)
+---------------------------
+1. Update user manaul section 5.2 for si570 controller ip
+
+
+
+version 1.2.0 (2014.04.26)
+---------------------------
+
+1. Add ISSI/GSI QDRII+ SRAM datasheet
+
+2. Add X2Y capacitor sponsor manufacture part number
+
+3. Add sponsor's manufacture part number ( Johanson and Panasonic )
+
+
+version 1.1.0 (2013.07.25)
+---------------------------
+1. Update Manual: MSEL switch index fix (SW5 change to SW6)
+
+2. correct: Setting Position 2 of SW5 to low --> Setting Position 2 of SW5 to high
+
+3. fix figure 7-12, remove DE4 text
+
+
+
+version 1.0.5 (2013.01.25)
+---------------------------
+update qdrii+ and ddr3 rtl example
+
+1. qdrii+: modify avalon_read_write to remove timing warning
+
+2. ddr3: modify avalon_read_write and set ddr3 ununsed parameter to zero to remove timing warning
+
+
+
+
+version 1.0.4 (2012.11.28)
+---------------------------
+1. demo code update to quartus 12.1 except for PCIe demo because Peli consider the PCIe IP has bug in Quaruts 12.1
+2. Remove copper spf+ loopback in users manual
+3. change quaruts version inf users manual
+

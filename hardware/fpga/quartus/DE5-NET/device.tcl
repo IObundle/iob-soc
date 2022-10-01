@@ -41,7 +41,7 @@ set_location_assignment PIN_AW35 -to clk ; # OSC_50_B3B
 #============================================================
 # LED x 10
 #============================================================
-set_instance_assignment -name IO_STANDARD "2.5 V" -to led_board[0]   ; # LED[0]
+#set_instance_assignment -name IO_STANDARD "2.5 V" -to led_board[0]   ; # LED[0]
 # set_instance_assignment -name IO_STANDARD "2.5 V" -to led_board[1]   ; # LED[1]
 # set_instance_assignment -name IO_STANDARD "2.5 V" -to led_board[2]   ; # LED[2]
 # set_instance_assignment -name IO_STANDARD "2.5 V" -to led_board[3]   ; # LED[3]
@@ -51,7 +51,7 @@ set_instance_assignment -name IO_STANDARD "2.5 V" -to led_bracket[0] ; # LED_BRA
 # set_instance_assignment -name IO_STANDARD "2.5 V" -to led_bracket[3] ; # LED_BRACKET[3]
 # set_instance_assignment -name IO_STANDARD "2.5 V" -to led_rj45[0]    ; # LED_RJ45_L
 # set_instance_assignment -name IO_STANDARD "2.5 V" -to led_rj45[1]    ; # LED_RJ45_R
-set_location_assignment PIN_AW37 -to led_board[0]     ; # LED[0]
+#set_location_assignment PIN_AW37 -to led_board[0]     ; # LED[0]
 # set_location_assignment PIN_AV37 -to led_board[1]     ; # LED[1]
 # set_location_assignment PIN_BB36 -to led_board[2]     ; # LED[2]
 # set_location_assignment PIN_BB39 -to led_board[3]     ; # LED[3]
@@ -61,7 +61,7 @@ set_location_assignment PIN_AH15 -to led_bracket[0]   ; # LED_BRACKET[0]
 # set_location_assignment PIN_AJ14 -to led_bracket[3]   ; # LED_BRACKET[3]
 # set_location_assignment PIN_AG15 -to led_rj45[0]      ; # LED_RJ45_L
 # set_location_assignment PIN_AG16 -to led_rj45[1]      ; # LED_RJ45_R
-set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to led_board[0]
+#set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to led_board[0]
 # set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to led_board[1]
 # set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to led_board[2]
 # set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to led_board[3]
@@ -71,7 +71,7 @@ set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to led_bracket[0]
 # set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to led_bracket[3]
 # set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to led_rj45[0]
 # set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to led_rj45[1]
-set_instance_assignment -name SLEW_RATE 1 -to led_board[0]   ; # fast
+#set_instance_assignment -name SLEW_RATE 1 -to led_board[0]   ; # fast
 # set_instance_assignment -name SLEW_RATE 1 -to led_board[1]   ; # fast
 # set_instance_assignment -name SLEW_RATE 1 -to led_board[2]   ; # fast
 # set_instance_assignment -name SLEW_RATE 1 -to led_board[3]   ; # fast
@@ -167,72 +167,72 @@ set_location_assignment PIN_BC37 -to resetn ; # CPU_RESET_n
 #============================================================
 # RS422
 #============================================================
-# set_instance_assignment -name IO_STANDARD "2.5 V" -to rs422_de      ; # RS422_DE
-# set_instance_assignment -name IO_STANDARD "2.5 V" -to uart_rxd      ; # RS422_DIN
-# set_instance_assignment -name IO_STANDARD "2.5 V" -to uart_txd      ; # RS422_DOUT
-# set_instance_assignment -name IO_STANDARD "2.5 V" -to rs422_re_n    ; # RS422_RE_n
-# set_instance_assignment -name IO_STANDARD "2.5 V" -to rs422_te      ; # RS422_TE
-# set_location_assignment PIN_AG14 -to rs422_de                       ; # RS422_DE
-# set_location_assignment PIN_AE18 -to uart_rxd                       ; # RS422_DIN
-# set_location_assignment PIN_AE17 -to uart_txd                       ; # RS422_DOUT
-# set_location_assignment PIN_AF17 -to rs422_re_n                     ; # RS422_RE_n
-# set_location_assignment PIN_AF16 -to rs422_te                       ; # RS422_TE
+set_instance_assignment -name IO_STANDARD "2.5 V" -to rs422_de      ; # RS422_DE
+set_instance_assignment -name IO_STANDARD "2.5 V" -to uart_rxd      ; # RS422_DIN
+set_instance_assignment -name IO_STANDARD "2.5 V" -to uart_txd      ; # RS422_DOUT
+set_instance_assignment -name IO_STANDARD "2.5 V" -to rs422_re_n    ; # RS422_RE_n
+set_instance_assignment -name IO_STANDARD "2.5 V" -to rs422_te      ; # RS422_TE
+set_location_assignment PIN_AG14 -to rs422_de                       ; # RS422_DE
+set_location_assignment PIN_AE18 -to uart_rxd                       ; # RS422_DIN
+set_location_assignment PIN_AE17 -to uart_txd                       ; # RS422_DOUT
+set_location_assignment PIN_AF17 -to rs422_re_n                     ; # RS422_RE_n
+set_location_assignment PIN_AF16 -to rs422_te                       ; # RS422_TE
 # set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to rs422_de
 # set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to uart_rxd
 # set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to uart_txd
 # set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to rs422_re_n
 # set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to rs422_te
-# set_instance_assignment -name SLEW_RATE 1 -to rs422_de     ; # fast
-# set_instance_assignment -name SLEW_RATE 1 -to uart_rxd     ; # fast
-# set_instance_assignment -name SLEW_RATE 1 -to uart_txd     ; # fast
-# set_instance_assignment -name SLEW_RATE 1 -to rs422_re_n   ; # fast
-# set_instance_assignment -name SLEW_RATE 1 -to rs422_te     ; # fast
+set_instance_assignment -name SLEW_RATE 1 -to rs422_de     ; # fast
+set_instance_assignment -name SLEW_RATE 1 -to uart_rxd     ; # fast
+set_instance_assignment -name SLEW_RATE 1 -to uart_txd     ; # fast
+set_instance_assignment -name SLEW_RATE 1 -to rs422_re_n   ; # fast
+set_instance_assignment -name SLEW_RATE 1 -to rs422_te     ; # fast
 
 #============================================================
 # PCIe x 8
 #============================================================
-set_instance_assignment -name IO_STANDARD "2.5 V" -to pcie_reset_pin_perst_n ; # PCIE_PERST_n
-set_instance_assignment -name IO_STANDARD "HCSL" -to pcie_refclk_clk ; # PCIE_REFCLK_p
-set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_rx_in0 ; # PCIE_RX_p[0]
-set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_rx_in1 ; # PCIE_RX_p[1]
-set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_rx_in2 ; # PCIE_RX_p[2]
-set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_rx_in3 ; # PCIE_RX_p[3]
-set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_rx_in4 ; # PCIE_RX_p[4]
-set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_rx_in5 ; # PCIE_RX_p[5]
-set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_rx_in6 ; # PCIE_RX_p[6]
-set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_rx_in7 ; # PCIE_RX_p[7]
-set_instance_assignment -name IO_STANDARD "2.5 V" -to PCIE_SMBCLK
-set_instance_assignment -name IO_STANDARD "2.5 V" -to PCIE_SMBDAT
-set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_tx_out0 ; # PCIE_TX_p[0]
-set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_tx_out1 ; # PCIE_TX_p[1]
-set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_tx_out2 ; # PCIE_TX_p[2]
-set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_tx_out3 ; # PCIE_TX_p[3]
-set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_tx_out4 ; # PCIE_TX_p[4]
-set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_tx_out5 ; # PCIE_TX_p[5]
-set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_tx_out6 ; # PCIE_TX_p[6]
-set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_tx_out7 ; # PCIE_TX_p[7]
-set_instance_assignment -name IO_STANDARD "2.5 V" -to PCIE_WAKE_n
-set_location_assignment PIN_AU33 -to pcie_reset_pin_perst_n ; # PCIE_PERST_n
-set_location_assignment PIN_AK38 -to pcie_refclk_clk ; # PCIE_REFCLK_p
-set_location_assignment PIN_BB43 -to pcie_serial_rx_in0 ; # PCIE_RX_p[0]
-set_location_assignment PIN_BA41 -to pcie_serial_rx_in1 ; # PCIE_RX_p[1]
-set_location_assignment PIN_AW41 -to pcie_serial_rx_in2 ; # PCIE_RX_p[2]
-set_location_assignment PIN_AY43 -to pcie_serial_rx_in3 ; # PCIE_RX_p[3]
-set_location_assignment PIN_AT43 -to pcie_serial_rx_in4 ; # PCIE_RX_p[4]
-set_location_assignment PIN_AP43 -to pcie_serial_rx_in5 ; # PCIE_RX_p[5]
-set_location_assignment PIN_AM43 -to pcie_serial_rx_in6 ; # PCIE_RX_p[6]
-set_location_assignment PIN_AK43 -to pcie_serial_rx_in7 ; # PCIE_RX_p[7]
-set_location_assignment PIN_BD34 -to PCIE_SMBCLK
-set_location_assignment PIN_AT33 -to PCIE_SMBDAT
-set_location_assignment PIN_AY39 -to pcie_serial_tx_out0 ; # PCIE_TX_p[0]
-set_location_assignment PIN_AV39 -to pcie_serial_tx_out1 ; # PCIE_TX_p[1]
-set_location_assignment PIN_AT39 -to pcie_serial_tx_out2 ; # PCIE_TX_p[2]
-set_location_assignment PIN_AU41 -to pcie_serial_tx_out3 ; # PCIE_TX_p[3]
-set_location_assignment PIN_AN41 -to pcie_serial_tx_out4 ; # PCIE_TX_p[4]
-set_location_assignment PIN_AL41 -to pcie_serial_tx_out5 ; # PCIE_TX_p[5]
-set_location_assignment PIN_AJ41 -to pcie_serial_tx_out6 ; # PCIE_TX_p[6]
-set_location_assignment PIN_AG41 -to pcie_serial_tx_out7 ; # PCIE_TX_p[7]
-set_location_assignment PIN_BD35 -to PCIE_WAKE_n
+# set_instance_assignment -name IO_STANDARD "2.5 V" -to pcie_reset_pin_perst_n ; # PCIE_PERST_n
+# set_instance_assignment -name IO_STANDARD "HCSL" -to pcie_refclk_clk ; # PCIE_REFCLK_p
+# set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_rx_in0 ; # PCIE_RX_p[0]
+# set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_rx_in1 ; # PCIE_RX_p[1]
+# set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_rx_in2 ; # PCIE_RX_p[2]
+# set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_rx_in3 ; # PCIE_RX_p[3]
+# set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_rx_in4 ; # PCIE_RX_p[4]
+# set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_rx_in5 ; # PCIE_RX_p[5]
+# set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_rx_in6 ; # PCIE_RX_p[6]
+# set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_rx_in7 ; # PCIE_RX_p[7]
+# set_instance_assignment -name IO_STANDARD "2.5 V" -to PCIE_SMBCLK
+# set_instance_assignment -name IO_STANDARD "2.5 V" -to PCIE_SMBDAT
+# set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_tx_out0 ; # PCIE_TX_p[0]
+# set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_tx_out1 ; # PCIE_TX_p[1]
+# set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_tx_out2 ; # PCIE_TX_p[2]
+# set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_tx_out3 ; # PCIE_TX_p[3]
+# set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_tx_out4 ; # PCIE_TX_p[4]
+# set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_tx_out5 ; # PCIE_TX_p[5]
+# set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_tx_out6 ; # PCIE_TX_p[6]
+# set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_tx_out7 ; # PCIE_TX_p[7]
+# set_instance_assignment -name IO_STANDARD "2.5 V" -to PCIE_WAKE_n
+# set_location_assignment PIN_AU33 -to pcie_reset_pin_perst_n ; # PCIE_PERST_n
+# set_location_assignment PIN_AK38 -to pcie_refclk_clk ; # PCIE_REFCLK_p
+# set_location_assignment PIN_BB43 -to pcie_serial_rx_in0 ; # PCIE_RX_p[0]
+# set_location_assignment PIN_BA41 -to pcie_serial_rx_in1 ; # PCIE_RX_p[1]
+# set_location_assignment PIN_AW41 -to pcie_serial_rx_in2 ; # PCIE_RX_p[2]
+# set_location_assignment PIN_AY43 -to pcie_serial_rx_in3 ; # PCIE_RX_p[3]
+# set_location_assignment PIN_AT43 -to pcie_serial_rx_in4 ; # PCIE_RX_p[4]
+# set_location_assignment PIN_AP43 -to pcie_serial_rx_in5 ; # PCIE_RX_p[5]
+# set_location_assignment PIN_AM43 -to pcie_serial_rx_in6 ; # PCIE_RX_p[6]
+# set_location_assignment PIN_AK43 -to pcie_serial_rx_in7 ; # PCIE_RX_p[7]
+# set_location_assignment PIN_BD34 -to PCIE_SMBCLK
+# set_location_assignment PIN_AT33 -to PCIE_SMBDAT
+# set_location_assignment PIN_AY39 -to pcie_serial_tx_out0 ; # PCIE_TX_p[0]
+# set_location_assignment PIN_AV39 -to pcie_serial_tx_out1 ; # PCIE_TX_p[1]
+# set_location_assignment PIN_AT39 -to pcie_serial_tx_out2 ; # PCIE_TX_p[2]
+# set_location_assignment PIN_AU41 -to pcie_serial_tx_out3 ; # PCIE_TX_p[3]
+# set_location_assignment PIN_AN41 -to pcie_serial_tx_out4 ; # PCIE_TX_p[4]
+# set_location_assignment PIN_AL41 -to pcie_serial_tx_out5 ; # PCIE_TX_p[5]
+# set_location_assignment PIN_AJ41 -to pcie_serial_tx_out6 ; # PCIE_TX_p[6]
+# set_location_assignment PIN_AG41 -to pcie_serial_tx_out7 ; # PCIE_TX_p[7]
+# set_location_assignment PIN_BD35 -to PCIE_WAKE_n
 
 #============================================================
 # Flash/MAX Address/Data Share Bus

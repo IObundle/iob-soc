@@ -1,0 +1,16 @@
+﻿Build started 2015/9/24 下午 02:23:44.
+     1>Project "D:\svn_2015\de5a-net-dev\pcie-dev\PCIE_FUNDAMENTAL\PCIE_FUNDAMENTAL\PCIE_FUNDAMENTAL.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt PCIE_FUNDAMENTAL.cpp stdafx.cpp
+         stdafx.cpp
+         PCIE_FUNDAMENTAL.cpp
+         Generating Code...
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\svn_2015\de5a-net-dev\pcie-dev\PCIE_FUNDAMENTAL\Debug\PCIE_FUNDAMENTAL.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\svn_2015\de5a-net-dev\pcie-dev\PCIE_FUNDAMENTAL\Debug\PCIE_FUNDAMENTAL.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\svn_2015\de5a-net-dev\pcie-dev\PCIE_FUNDAMENTAL\Debug\PCIE_FUNDAMENTAL.lib" /MACHINE:X86 Debug\PCIE_FUNDAMENTAL.obj
+         Debug\stdafx.obj
+         PCIE_FUNDAMENTAL.vcxproj -> D:\svn_2015\de5a-net-dev\pcie-dev\PCIE_FUNDAMENTAL\Debug\PCIE_FUNDAMENTAL.exe
+     1>Done Building Project "D:\svn_2015\de5a-net-dev\pcie-dev\PCIE_FUNDAMENTAL\PCIE_FUNDAMENTAL\PCIE_FUNDAMENTAL.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.96

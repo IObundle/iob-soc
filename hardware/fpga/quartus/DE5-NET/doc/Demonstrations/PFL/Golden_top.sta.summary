@@ -1,0 +1,165 @@
+------------------------------------------------------------
+TimeQuest Timing Analyzer Summary
+------------------------------------------------------------
+
+Type  : Slow 900mV 85C Model Setup 'OSC_50_B3B'
+Slack : 7.007
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Setup 'altera_reserved_tck'
+Slack : 13.598
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'OSC_50_B3B'
+Slack : 0.151
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Hold 'altera_reserved_tck'
+Slack : 0.160
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Recovery 'OSC_50_B3B'
+Slack : 14.972
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Recovery 'altera_reserved_tck'
+Slack : 15.667
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Removal 'OSC_50_B3B'
+Slack : 0.334
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Removal 'altera_reserved_tck'
+Slack : 0.549
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'OSC_50_B3B'
+Slack : 9.424
+TNS   : 0.000
+
+Type  : Slow 900mV 85C Model Minimum Pulse Width 'altera_reserved_tck'
+Slack : 16.063
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'OSC_50_B3B'
+Slack : 8.046
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Setup 'altera_reserved_tck'
+Slack : 13.678
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'altera_reserved_tck'
+Slack : 0.156
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Hold 'OSC_50_B3B'
+Slack : 0.184
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Recovery 'OSC_50_B3B'
+Slack : 15.390
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Recovery 'altera_reserved_tck'
+Slack : 15.684
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Removal 'OSC_50_B3B'
+Slack : 0.389
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Removal 'altera_reserved_tck'
+Slack : 0.494
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'OSC_50_B3B'
+Slack : 9.392
+TNS   : 0.000
+
+Type  : Slow 900mV 0C Model Minimum Pulse Width 'altera_reserved_tck'
+Slack : 16.167
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'OSC_50_B3B'
+Slack : 11.332
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Setup 'altera_reserved_tck'
+Slack : 14.972
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'altera_reserved_tck'
+Slack : 0.087
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Hold 'OSC_50_B3B'
+Slack : 0.093
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Recovery 'altera_reserved_tck'
+Slack : 16.387
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Recovery 'OSC_50_B3B'
+Slack : 16.594
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Removal 'OSC_50_B3B'
+Slack : 0.230
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Removal 'altera_reserved_tck'
+Slack : 0.295
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'OSC_50_B3B'
+Slack : 9.125
+TNS   : 0.000
+
+Type  : Fast 900mV 85C Model Minimum Pulse Width 'altera_reserved_tck'
+Slack : 15.947
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'OSC_50_B3B'
+Slack : 11.870
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Setup 'altera_reserved_tck'
+Slack : 15.078
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'altera_reserved_tck'
+Slack : 0.081
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Hold 'OSC_50_B3B'
+Slack : 0.139
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Recovery 'altera_reserved_tck'
+Slack : 16.442
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Recovery 'OSC_50_B3B'
+Slack : 16.864
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Removal 'altera_reserved_tck'
+Slack : 0.261
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Removal 'OSC_50_B3B'
+Slack : 0.264
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'OSC_50_B3B'
+Slack : 9.130
+TNS   : 0.000
+
+Type  : Fast 900mV 0C Model Minimum Pulse Width 'altera_reserved_tck'
+Slack : 15.955
+TNS   : 0.000
+
+------------------------------------------------------------

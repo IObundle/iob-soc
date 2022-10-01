@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<pin_planner>
+	<pin_info>
+		<pin name="QDRIIA_K_n" direction="Output" source="Hierarchy Database" diff_pair_node="QDRIIA_K_p" >
+		</pin>
+		<pin name="QDRIIA_K_p" direction="Output" source="Hierarchy Database" diff_pair_node="QDRIIA_K_n" >
+		</pin>
+		<pin name="QDRIIB_K_n" direction="Output" source="Hierarchy Database" diff_pair_node="QDRIIB_K_p" >
+		</pin>
+		<pin name="QDRIIB_K_p" direction="Output" source="Hierarchy Database" diff_pair_node="QDRIIB_K_n" >
+		</pin>
+		<pin name="QDRIIC_K_n" direction="Output" source="Hierarchy Database" diff_pair_node="QDRIIC_K_p" >
+		</pin>
+		<pin name="QDRIIC_K_p" direction="Output" source="Hierarchy Database" diff_pair_node="QDRIIC_K_n" >
+		</pin>
+		<pin name="QDRIID_K_n" direction="Output" source="Hierarchy Database" diff_pair_node="QDRIID_K_p" >
+		</pin>
+		<pin name="QDRIID_K_p" direction="Output" source="Hierarchy Database" diff_pair_node="QDRIID_K_n" >
+		</pin>
+		<pin name="DDR3A_CK[0]" source="Assignments" diff_pair_node="DDR3A_CK_n[0]" >
+		</pin>
+		<pin name="DDR3A_CK[1]" source="Assignments" diff_pair_node="DDR3A_CK_n[1]" >
+		</pin>
+		<pin name="DDR3A_CK_n[0]" source="Assignments" diff_pair_node="DDR3A_CK[0]" >
+		</pin>
+		<pin name="DDR3A_CK_n[1]" source="Assignments" diff_pair_node="DDR3A_CK[1]" >
+		</pin>
+		<pin name="DDR3A_DQS[0]" source="Assignments" diff_pair_node="DDR3A_DQS_n[0]" >
+		</pin>
+		<pin name="DDR3A_DQS[1]" source="Assignments" diff_pair_node="DDR3A_DQS_n[1]" >
+		</pin>
+		<pin name="DDR3A_DQS[2]" source="Assignments" diff_pair_node="DDR3A_DQS_n[2]" >
+		</pin>
+		<pin name="DDR3A_DQS[3]" source="Assignments" diff_pair_node="DDR3A_DQS_n[3]" >
+		</pin>
+		<pin name="DDR3A_DQS[4]" source="Assignments" diff_pair_node="DDR3A_DQS_n[4]" >
+		</pin>
+		<pin name="DDR3A_DQS[5]" source="Assignments" diff_pair_node="DDR3A_DQS_n[5]" >
+		</pin>
+		<pin name="DDR3A_DQS[6]" source="Assignments" diff_pair_node="DDR3A_DQS_n[6]" >
+		</pin>
+		<pin name="DDR3A_DQS[7]" source="Assignments" diff_pair_node="DDR3A_DQS_n[7]" >
+		</pin>
+		<pin name="DDR3A_DQS_n[0]" source="Assignments" diff_pair_node="DDR3A_DQS[0]" >
+		</pin>
+		<pin name="DDR3A_DQS_n[1]" source="Assignments" diff_pair_node="DDR3A_DQS[1]" >
+		</pin>
+		<pin name="DDR3A_DQS_n[2]" source="Assignments" diff_pair_node="DDR3A_DQS[2]" >
+		</pin>
+		<pin name="DDR3A_DQS_n[3]" source="Assignments" diff_pair_node="DDR3A_DQS[3]" >
+		</pin>
+		<pin name="DDR3A_DQS_n[4]" source="Assignments" diff_pair_node="DDR3A_DQS[4]" >
+		</pin>
+		<pin name="DDR3A_DQS_n[5]" source="Assignments" diff_pair_node="DDR3A_DQS[5]" >
+		</pin>
+		<pin name="DDR3A_DQS_n[6]" source="Assignments" diff_pair_node="DDR3A_DQS[6]" >
+		</pin>
+		<pin name="DDR3A_DQS_n[7]" source="Assignments" diff_pair_node="DDR3A_DQS[7]" >
+		</pin>
+		<pin name="DDR3B_CK[0]" source="Assignments" diff_pair_node="DDR3B_CK_n[0]" >
+		</pin>
+		<pin name="DDR3B_CK[1]" source="Assignments" diff_pair_node="DDR3B_CK_n[1]" >
+		</pin>
+		<pin name="DDR3B_CK_n[0]" source="Assignments" diff_pair_node="DDR3B_CK[0]" >
+		</pin>
+		<pin name="DDR3B_CK_n[1]" source="Assignments" diff_pair_node="DDR3B_CK[1]" >
+		</pin>
+		<pin name="DDR3B_DQS[0]" source="Assignments" diff_pair_node="DDR3B_DQS_n[0]" >
+		</pin>
+		<pin name="DDR3B_DQS[1]" source="Assignments" diff_pair_node="DDR3B_DQS_n[1]" >
+		</pin>
+		<pin name="DDR3B_DQS[2]" source="Assignments" diff_pair_node="DDR3B_DQS_n[2]" >
+		</pin>
+		<pin name="DDR3B_DQS[3]" source="Assignments" diff_pair_node="DDR3B_DQS_n[3]" >
+		</pin>
+		<pin name="DDR3B_DQS[4]" source="Assignments" diff_pair_node="DDR3B_DQS_n[4]" >
+		</pin>
+		<pin name="DDR3B_DQS[5]" source="Assignments" diff_pair_node="DDR3B_DQS_n[5]" >
+		</pin>
+		<pin name="DDR3B_DQS[6]" source="Assignments" diff_pair_node="DDR3B_DQS_n[6]" >
+		</pin>
+		<pin name="DDR3B_DQS[7]" source="Assignments" diff_pair_node="DDR3B_DQS_n[7]" >
+		</pin>
+		<pin name="DDR3B_DQS_n[0]" source="Assignments" diff_pair_node="DDR3B_DQS[0]" >
+		</pin>
+		<pin name="DDR3B_DQS_n[1]" source="Assignments" diff_pair_node="DDR3B_DQS[1]" >
+		</pin>
+		<pin name="DDR3B_DQS_n[2]" source="Assignments" diff_pair_node="DDR3B_DQS[2]" >
+		</pin>
+		<pin name="DDR3B_DQS_n[3]" source="Assignments" diff_pair_node="DDR3B_DQS[3]" >
+		</pin>
+		<pin name="DDR3B_DQS_n[4]" source="Assignments" diff_pair_node="DDR3B_DQS[4]" >
+		</pin>
+		<pin name="DDR3B_DQS_n[5]" source="Assignments" diff_pair_node="DDR3B_DQS[5]" >
+		</pin>
+		<pin name="DDR3B_DQS_n[6]" source="Assignments" diff_pair_node="DDR3B_DQS[6]" >
+		</pin>
+		<pin name="DDR3B_DQS_n[7]" source="Assignments" diff_pair_node="DDR3B_DQS[7]" >
+		</pin>
+	</pin_info>
+	<buses>
+	</buses>
+	<group_file_association>
+	</group_file_association>
+	<pin_planner_file_specifies>
+	</pin_planner_file_specifies>
+</pin_planner>

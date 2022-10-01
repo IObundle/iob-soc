@@ -1,0 +1,730 @@
+name: S5_DDR3_QSYS_mem_if_ddr3_emif_s0
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/S5_DDR3_QSYS_mem_if_ddr3_emif_s0.v (393547)
+generated files (children of this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_mem_if_sequencer_cpu_no_ifdef_params_synth_cpu_inst.v (85619)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_mem_if_sequencer_cpu_no_ifdef_params_synth_cpu_inst_test_bench.v (33750)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/sequencer_scc_mgr.sv (30919)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/sequencer_scc_siii_wrapper.sv (4704)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/sequencer_scc_siii_phase_decode.v (11473)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/sequencer_scc_sv_wrapper.sv (7107)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/sequencer_scc_sv_phase_decode.v (3939)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/sequencer_scc_acv_wrapper.sv (5253)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/sequencer_scc_acv_phase_decode.v (1836)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/sequencer_scc_reg_file.v (2545)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/sequencer_reg_file.sv (7189)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_avalon_mm_bridge.v (11549)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/sequencer_phy_mgr.sv (18655)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/sequencer_data_mgr.sv (3684)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_ddr3.v (7438)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_ac_ROM_reg.v (1407)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_bitcheck.v (3299)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_core.sv (19015)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_data_broadcast.v (2289)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_data_decoder.v (2809)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_datamux.v (1691)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_di_buffer.v (3934)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_di_buffer_wrap.v (2631)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_dm_decoder.v (1685)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_generic.sv (7777)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_inst_ROM_reg.v (1430)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_jumplogic.v (3232)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_lfsr72.v (1337)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_lfsr36.v (2025)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_lfsr12.v (1390)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_pattern_fifo.v (2756)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_ram.v (1263)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_ram_csr.v (2433)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_read_datapath.v (3483)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_write_decoder.v (2746)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_ac_ROM_no_ifdef_params.v (3035)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_inst_ROM_no_ifdef_params.v (2953)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/sequencer_trk_mgr.sv (43233)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_mem_if_sequencer_mem_no_ifdef_params.sv (3020)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_merlin_master_translator.sv (16791)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_merlin_slave_translator.sv (16032)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_merlin_master_agent.sv (10667)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_merlin_slave_agent.sv (22861)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_merlin_burst_uncompressor.sv (12940)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_avalon_sc_fifo.v (32228)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_addr_router.sv (6796)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_addr_router_001.sv (6109)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_addr_router_002.sv (6109)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_id_router.sv (6111)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_id_router_001.sv (6123)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_id_router_002.sv (6042)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_addr_router_003.sv (7343)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_id_router_003.sv (6042)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_merlin_traffic_limiter.sv (15501)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_avalon_st_pipeline_base.v (4990)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_reset_controller.v (3584)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_reset_synchronizer.v (3553)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_reset_controller.sdc (1734)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_cmd_xbar_demux.sv (4790)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_cmd_xbar_demux_001.sv (3569)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_merlin_arbitrator.sv (9447)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_cmd_xbar_mux.sv (12119)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_rsp_xbar_demux.sv (4193)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_rsp_xbar_mux.sv (12237)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_cmd_xbar_demux_003.sv (6077)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_rsp_xbar_demux_003.sv (3569)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_rsp_xbar_mux_003.sv (13857)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_irq_mapper.sv (1711)
+Instantiates the following:
+   cpu_inst : altera_mem_if_sequencer_cpu_no_ifdef_params_synth_cpu_inst
+   sequencer_scc_mgr_inst : sequencer_scc_mgr
+   sequencer_reg_file_inst : sequencer_reg_file
+   trk_mm_bridge : altera_avalon_mm_bridge
+   sequencer_phy_mgr_inst : sequencer_phy_mgr
+   sequencer_data_mgr_inst : sequencer_data_mgr
+   sequencer_rw_mgr_inst : rw_manager_ddr3
+   sequencer_trk_mgr_inst : sequencer_trk_mgr
+   sequencer_mem : altera_mem_if_sequencer_mem_no_ifdef_params
+   cpu_inst_data_master_translator, cpu_inst_instruction_master_translator, sequencer_trk_mgr_inst_trkm_translator, trk_mm_bridge_m0_translator : altera_merlin_master_translator
+   trk_mm_bridge_s0_translator, sequencer_mem_s1_translator, sequencer_trk_mgr_inst_trks_translator, sequencer_phy_mgr_inst_avl_translator, sequencer_data_mgr_inst_avl_translator, sequencer_rw_mgr_inst_avl_translator, sequencer_scc_mgr_inst_avl_translator, sequencer_reg_file_inst_avl_translator : altera_merlin_slave_translator
+   cpu_inst_data_master_translator_avalon_universal_master_0_agent, cpu_inst_instruction_master_translator_avalon_universal_master_0_agent, sequencer_trk_mgr_inst_trkm_translator_avalon_universal_master_0_agent, trk_mm_bridge_m0_translator_avalon_universal_master_0_agent : altera_merlin_master_agent
+   trk_mm_bridge_s0_translator_avalon_universal_slave_0_agent, sequencer_mem_s1_translator_avalon_universal_slave_0_agent, sequencer_trk_mgr_inst_trks_translator_avalon_universal_slave_0_agent, sequencer_phy_mgr_inst_avl_translator_avalon_universal_slave_0_agent, sequencer_data_mgr_inst_avl_translator_avalon_universal_slave_0_agent, sequencer_rw_mgr_inst_avl_translator_avalon_universal_slave_0_agent, sequencer_scc_mgr_inst_avl_translator_avalon_universal_slave_0_agent, sequencer_reg_file_inst_avl_translator_avalon_universal_slave_0_agent : altera_merlin_slave_agent
+   trk_mm_bridge_s0_translator_avalon_universal_slave_0_agent_rsp_fifo, sequencer_mem_s1_translator_avalon_universal_slave_0_agent_rsp_fifo, sequencer_trk_mgr_inst_trks_translator_avalon_universal_slave_0_agent_rsp_fifo, sequencer_phy_mgr_inst_avl_translator_avalon_universal_slave_0_agent_rsp_fifo, sequencer_data_mgr_inst_avl_translator_avalon_universal_slave_0_agent_rsp_fifo, sequencer_rw_mgr_inst_avl_translator_avalon_universal_slave_0_agent_rsp_fifo, sequencer_scc_mgr_inst_avl_translator_avalon_universal_slave_0_agent_rsp_fifo, sequencer_reg_file_inst_avl_translator_avalon_universal_slave_0_agent_rsp_fifo : altera_avalon_sc_fifo
+   addr_router : S5_DDR3_QSYS_mem_if_ddr3_emif_s0_addr_router
+   addr_router_001 : S5_DDR3_QSYS_mem_if_ddr3_emif_s0_addr_router_001
+   addr_router_002 : S5_DDR3_QSYS_mem_if_ddr3_emif_s0_addr_router_002
+   id_router : S5_DDR3_QSYS_mem_if_ddr3_emif_s0_id_router
+   id_router_001 : S5_DDR3_QSYS_mem_if_ddr3_emif_s0_id_router_001
+   id_router_002 : S5_DDR3_QSYS_mem_if_ddr3_emif_s0_id_router_002
+   addr_router_003 : S5_DDR3_QSYS_mem_if_ddr3_emif_s0_addr_router_003
+   id_router_003, id_router_004, id_router_005, id_router_006, id_router_007 : S5_DDR3_QSYS_mem_if_ddr3_emif_s0_id_router_003
+   limiter : altera_merlin_traffic_limiter
+   rst_controller : altera_reset_controller
+   cmd_xbar_demux : S5_DDR3_QSYS_mem_if_ddr3_emif_s0_cmd_xbar_demux
+   cmd_xbar_demux_001, cmd_xbar_demux_002, rsp_xbar_demux_002 : S5_DDR3_QSYS_mem_if_ddr3_emif_s0_cmd_xbar_demux_001
+   cmd_xbar_mux, cmd_xbar_mux_001 : S5_DDR3_QSYS_mem_if_ddr3_emif_s0_cmd_xbar_mux
+   rsp_xbar_demux, rsp_xbar_demux_001 : S5_DDR3_QSYS_mem_if_ddr3_emif_s0_rsp_xbar_demux
+   rsp_xbar_mux : S5_DDR3_QSYS_mem_if_ddr3_emif_s0_rsp_xbar_mux
+   cmd_xbar_demux_003 : S5_DDR3_QSYS_mem_if_ddr3_emif_s0_cmd_xbar_demux_003
+   rsp_xbar_demux_003, rsp_xbar_demux_004, rsp_xbar_demux_005, rsp_xbar_demux_006, rsp_xbar_demux_007 : S5_DDR3_QSYS_mem_if_ddr3_emif_s0_rsp_xbar_demux_003
+   rsp_xbar_mux_003 : S5_DDR3_QSYS_mem_if_ddr3_emif_s0_rsp_xbar_mux_003
+   irq_mapper : S5_DDR3_QSYS_mem_if_ddr3_emif_s0_irq_mapper
+ 
+name: altera_mem_if_sequencer_cpu_no_ifdef_params_synth_cpu_inst
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_mem_if_sequencer_cpu_no_ifdef_params_synth_cpu_inst.v (85619)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_mem_if_sequencer_cpu_no_ifdef_params_synth_cpu_inst_test_bench.v (33750)
+ 
+name: sequencer_scc_mgr
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/sequencer_scc_mgr.sv (30919)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/sequencer_scc_siii_wrapper.sv (4704)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/sequencer_scc_siii_phase_decode.v (11473)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/sequencer_scc_sv_wrapper.sv (7107)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/sequencer_scc_sv_phase_decode.v (3939)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/sequencer_scc_acv_wrapper.sv (5253)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/sequencer_scc_acv_phase_decode.v (1836)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/sequencer_scc_reg_file.v (2545)
+ 
+name: sequencer_reg_file
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/sequencer_reg_file.sv (7189)
+ 
+name: altera_avalon_mm_bridge
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_avalon_mm_bridge.v (11549)
+ 
+name: sequencer_phy_mgr
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/sequencer_phy_mgr.sv (18655)
+ 
+name: sequencer_data_mgr
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/sequencer_data_mgr.sv (3684)
+ 
+name: rw_manager_ddr3
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_ddr3.v (7438)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_ac_ROM_reg.v (1407)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_bitcheck.v (3299)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_core.sv (19015)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_data_broadcast.v (2289)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_data_decoder.v (2809)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_datamux.v (1691)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_di_buffer.v (3934)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_di_buffer_wrap.v (2631)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_dm_decoder.v (1685)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_generic.sv (7777)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_inst_ROM_reg.v (1430)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_jumplogic.v (3232)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_lfsr72.v (1337)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_lfsr36.v (2025)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_lfsr12.v (1390)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_pattern_fifo.v (2756)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_ram.v (1263)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_ram_csr.v (2433)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_read_datapath.v (3483)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_write_decoder.v (2746)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_ac_ROM_no_ifdef_params.v (3035)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/rw_manager_inst_ROM_no_ifdef_params.v (2953)
+ 
+name: sequencer_trk_mgr
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/sequencer_trk_mgr.sv (43233)
+ 
+name: altera_mem_if_sequencer_mem_no_ifdef_params
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_mem_if_sequencer_mem_no_ifdef_params.sv (3020)
+ 
+name: altera_merlin_master_translator
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_merlin_master_translator.sv (16791)
+ 
+name: altera_merlin_slave_translator
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_merlin_slave_translator.sv (16032)
+ 
+name: altera_merlin_master_agent
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_merlin_master_agent.sv (10667)
+ 
+name: altera_merlin_slave_agent
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_merlin_slave_agent.sv (22861)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_merlin_burst_uncompressor.sv (12940)
+ 
+name: altera_avalon_sc_fifo
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_avalon_sc_fifo.v (32228)
+ 
+name: S5_DDR3_QSYS_mem_if_ddr3_emif_s0_addr_router
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_addr_router.sv (6796)
+ 
+name: S5_DDR3_QSYS_mem_if_ddr3_emif_s0_addr_router_001
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_addr_router_001.sv (6109)
+ 
+name: S5_DDR3_QSYS_mem_if_ddr3_emif_s0_addr_router_002
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_addr_router_002.sv (6109)
+ 
+name: S5_DDR3_QSYS_mem_if_ddr3_emif_s0_id_router
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_id_router.sv (6111)
+ 
+name: S5_DDR3_QSYS_mem_if_ddr3_emif_s0_id_router_001
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_id_router_001.sv (6123)
+ 
+name: S5_DDR3_QSYS_mem_if_ddr3_emif_s0_id_router_002
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_id_router_002.sv (6042)
+ 
+name: S5_DDR3_QSYS_mem_if_ddr3_emif_s0_addr_router_003
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_addr_router_003.sv (7343)
+ 
+name: S5_DDR3_QSYS_mem_if_ddr3_emif_s0_id_router_003
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_id_router_003.sv (6042)
+ 
+name: altera_merlin_traffic_limiter
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_merlin_traffic_limiter.sv (15501)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_avalon_st_pipeline_base.v (4990)
+ 
+name: altera_reset_controller
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_reset_controller.v (3584)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_reset_synchronizer.v (3553)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_reset_controller.sdc (1734)
+ 
+name: S5_DDR3_QSYS_mem_if_ddr3_emif_s0_cmd_xbar_demux
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_cmd_xbar_demux.sv (4790)
+ 
+name: S5_DDR3_QSYS_mem_if_ddr3_emif_s0_cmd_xbar_demux_001
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_cmd_xbar_demux_001.sv (3569)
+ 
+name: S5_DDR3_QSYS_mem_if_ddr3_emif_s0_cmd_xbar_mux
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_merlin_arbitrator.sv (9447)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_cmd_xbar_mux.sv (12119)
+ 
+name: S5_DDR3_QSYS_mem_if_ddr3_emif_s0_rsp_xbar_demux
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_rsp_xbar_demux.sv (4193)
+ 
+name: S5_DDR3_QSYS_mem_if_ddr3_emif_s0_rsp_xbar_mux
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_merlin_arbitrator.sv (9447)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_rsp_xbar_mux.sv (12237)
+ 
+name: S5_DDR3_QSYS_mem_if_ddr3_emif_s0_cmd_xbar_demux_003
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_cmd_xbar_demux_003.sv (6077)
+ 
+name: S5_DDR3_QSYS_mem_if_ddr3_emif_s0_rsp_xbar_demux_003
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_rsp_xbar_demux_003.sv (3569)
+ 
+name: S5_DDR3_QSYS_mem_if_ddr3_emif_s0_rsp_xbar_mux_003
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_merlin_arbitrator.sv (9447)
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_rsp_xbar_mux_003.sv (13857)
+ 
+name: S5_DDR3_QSYS_mem_if_ddr3_emif_s0_irq_mapper
+generated files (just this core):
+   D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_irq_mapper.sv (1711)
+ 
+ 
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0.avl_clk: Timing: ELA:1/0.000s
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0.avl_reset: Timing: ELA:1/0.001s
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0.cpu_inst: Timing: VAL:13/0.001s/0.004s ELA:13/0.014s/0.138s
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0.sequencer_scc_mgr_inst: Timing: VAL:1/0.000s ELA:1/0.005s
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0.sequencer_reg_file_inst: Timing: VAL:1/0.001s ELA:1/0.006s
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0.trk_mm_bridge: Timing: ELA:2/0.001s/0.001s
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0.sequencer_phy_mgr_inst: Timing: VAL:1/0.000s ELA:1/0.004s
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0.sequencer_data_mgr_inst: Timing: VAL:1/0.000s ELA:1/0.002s
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0.afi_clk: Timing: ELA:1/0.000s
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0.afi_reset: Timing: ELA:1/0.000s
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0.sequencer_rw_mgr_inst: Timing: VAL:1/0.001s ELA:1/0.007s
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0.sequencer_trk_mgr_inst: Timing: VAL:2/0.000s/0.000s ELA:2/0.002s/0.003s
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0.sequencer_mem: Timing: VAL:2/0.000s/0.000s ELA:2/0.002s/0.003s
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0.scc_clk: Timing: ELA:1/0.000s
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0.scc_reset: Timing: ELA:1/0.000s
+ [Warning] S5_DDR3_QSYS_mem_if_ddr3_emif_s0.sequencer_rw_mgr_inst: <b>sequencer_rw_mgr_inst.csr</b> must be exported, or connected to a matching conduit.
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: Timing: VAL:1/0.001s COM:1/1.291s
+ [Info] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: Generating <b>qsys_sequencer_110</b> "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" for QUARTUS_SYNTH
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 0 starting:qsys_sequencer_110 "S5_DDR3_QSYS_mem_if_ddr3_emif_s0"
+ [Debug] Transform: PipelineBridgeSwap
+ [Info] pipeline_bridge_swap_transform: After transform: <b>15</b> modules, <b>32</b> connections
+ [Debug] Transform: ClockCrossingBridgeSwap
+ [Debug] Transform: QsysBetaIPSwap
+ [Debug] Transform: CustomInstructionTransform
+ [Info] No custom instruction connections, skipping transform 
+ [Debug] Transform: TristateConduitUpgradeTransform
+ [Debug] Transform: TranslatorTransform
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Info] merlin_translator_transform: After transform: <b>27</b> modules, <b>68</b> connections
+ [Debug] Transform: AXI4TranslatorTransform
+ [Debug] Transform merlin_axi_translator_transform not run on matched interfaces cpu_inst.data_master and cpu_inst_data_master_translator.avalon_anti_master_0
+ [Debug] Transform merlin_axi_translator_transform not run on matched interfaces cpu_inst.instruction_master and cpu_inst_instruction_master_translator.avalon_anti_master_0
+ [Debug] Transform merlin_axi_translator_transform not run on matched interfaces sequencer_trk_mgr_inst.trkm and sequencer_trk_mgr_inst_trkm_translator.avalon_anti_master_0
+ [Debug] Transform merlin_axi_translator_transform not run on matched interfaces trk_mm_bridge_s0_translator.avalon_anti_slave_0 and trk_mm_bridge.s0
+ [Debug] Transform merlin_axi_translator_transform not run on matched interfaces sequencer_mem_s1_translator.avalon_anti_slave_0 and sequencer_mem.s1
+ [Debug] Transform merlin_axi_translator_transform not run on matched interfaces sequencer_trk_mgr_inst_trks_translator.avalon_anti_slave_0 and sequencer_trk_mgr_inst.trks
+ [Debug] Transform merlin_axi_translator_transform not run on matched interfaces trk_mm_bridge.m0 and trk_mm_bridge_m0_translator.avalon_anti_master_0
+ [Debug] Transform merlin_axi_translator_transform not run on matched interfaces sequencer_phy_mgr_inst_avl_translator.avalon_anti_slave_0 and sequencer_phy_mgr_inst.avl
+ [Debug] Transform merlin_axi_translator_transform not run on matched interfaces sequencer_data_mgr_inst_avl_translator.avalon_anti_slave_0 and sequencer_data_mgr_inst.avl
+ [Debug] Transform merlin_axi_translator_transform not run on matched interfaces sequencer_rw_mgr_inst_avl_translator.avalon_anti_slave_0 and sequencer_rw_mgr_inst.avl
+ [Debug] Transform merlin_axi_translator_transform not run on matched interfaces sequencer_scc_mgr_inst_avl_translator.avalon_anti_slave_0 and sequencer_scc_mgr_inst.avl
+ [Debug] Transform merlin_axi_translator_transform not run on matched interfaces sequencer_reg_file_inst_avl_translator.avalon_anti_slave_0 and sequencer_reg_file_inst.avl
+ [Debug] Transform: IDPadTransform
+ [Debug] Transform: DomainTransform
+ [Debug] Transform merlin_domain_transform not run on matched interfaces cpu_inst.data_master and cpu_inst_data_master_translator.avalon_anti_master_0
+ [Debug] Transform merlin_domain_transform not run on matched interfaces cpu_inst.instruction_master and cpu_inst_instruction_master_translator.avalon_anti_master_0
+ [Debug] Transform merlin_domain_transform not run on matched interfaces sequencer_trk_mgr_inst.trkm and sequencer_trk_mgr_inst_trkm_translator.avalon_anti_master_0
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Debug] Transform merlin_domain_transform not run on matched interfaces trk_mm_bridge_s0_translator.avalon_anti_slave_0 and trk_mm_bridge.s0
+ [Debug] Transform merlin_domain_transform not run on matched interfaces sequencer_mem_s1_translator.avalon_anti_slave_0 and sequencer_mem.s1
+ [Debug] Transform merlin_domain_transform not run on matched interfaces sequencer_trk_mgr_inst_trks_translator.avalon_anti_slave_0 and sequencer_trk_mgr_inst.trks
+ [Debug] Transform merlin_domain_transform not run on matched interfaces trk_mm_bridge.m0 and trk_mm_bridge_m0_translator.avalon_anti_master_0
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Debug] Transform merlin_domain_transform not run on matched interfaces sequencer_phy_mgr_inst_avl_translator.avalon_anti_slave_0 and sequencer_phy_mgr_inst.avl
+ [Debug] Transform merlin_domain_transform not run on matched interfaces sequencer_data_mgr_inst_avl_translator.avalon_anti_slave_0 and sequencer_data_mgr_inst.avl
+ [Debug] Transform merlin_domain_transform not run on matched interfaces sequencer_rw_mgr_inst_avl_translator.avalon_anti_slave_0 and sequencer_rw_mgr_inst.avl
+ [Debug] Transform merlin_domain_transform not run on matched interfaces sequencer_scc_mgr_inst_avl_translator.avalon_anti_slave_0 and sequencer_scc_mgr_inst.avl
+ [Debug] Transform merlin_domain_transform not run on matched interfaces sequencer_reg_file_inst_avl_translator.avalon_anti_slave_0 and sequencer_reg_file_inst.avl
+ [Info] merlin_domain_transform: After transform: <b>49</b> modules, <b>182</b> connections
+ [Debug] Transform: RouterTransform
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Info] merlin_router_transform: After transform: <b>61</b> modules, <b>218</b> connections
+ [Debug] Transform: TrafficLimiterTransform
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Info] merlin_traffic_limiter_transform: After transform: <b>62</b> modules, <b>222</b> connections
+ [Debug] Transform: BurstTransform
+ [Debug] Transform: CombinedWidthTransform
+ [Debug] Transform: ResetAdaptation
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Info] reset_adaptation_transform: After transform: <b>63</b> modules, <b>224</b> connections
+ [Debug] Transform: NetworkToSwitchTransform
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Info] merlin_network_to_switch_transform: After transform: <b>85</b> modules, <b>268</b> connections
+ [Debug] Transform: WidthTransform
+ [Debug] Transform: RouterTableTransform
+ [Debug] Transform: ClockCrossingTransform
+ [Debug] Transform: TrafficLimiterUpdateTransform
+ [Info] limiter_update_transform: After transform: <b>85</b> modules, <b>269</b> connections
+ [Debug] Transform: InterruptMapperTransform
+ [Progress] min: 0
+ [Progress] max: 1
+ [Progress] current: 1
+ [Info] merlin_interrupt_mapper_transform: After transform: <b>86</b> modules, <b>272</b> connections
+ [Debug] Transform: InterruptSyncTransform
+ [Debug] Transform: InterruptFanoutTransform
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_mem_if_sequencer_cpu</b> "<b>submodules/altera_mem_if_sequencer_cpu_no_ifdef_params_synth_cpu_inst</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>sequencer_scc_mgr_110</b> "<b>submodules/sequencer_scc_mgr</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>sequencer_reg_file_111</b> "<b>submodules/sequencer_reg_file</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_avalon_mm_bridge</b> "<b>submodules/altera_avalon_mm_bridge</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>sequencer_phy_mgr_100</b> "<b>submodules/sequencer_phy_mgr</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>sequencer_data_mgr_110</b> "<b>submodules/sequencer_data_mgr</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>sequencer_rw_mgr_ddr3_110</b> "<b>submodules/rw_manager_ddr3</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>sequencer_trk_mgr</b> "<b>submodules/sequencer_trk_mgr</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_mem_if_sequencer_mem</b> "<b>submodules/altera_mem_if_sequencer_mem_no_ifdef_params</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_master_translator</b> "<b>submodules/altera_merlin_master_translator</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_master_translator</b> "<b>submodules/altera_merlin_master_translator</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_master_translator</b> "<b>submodules/altera_merlin_master_translator</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_slave_translator</b> "<b>submodules/altera_merlin_slave_translator</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_slave_translator</b> "<b>submodules/altera_merlin_slave_translator</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_slave_translator</b> "<b>submodules/altera_merlin_slave_translator</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_master_translator</b> "<b>submodules/altera_merlin_master_translator</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_slave_translator</b> "<b>submodules/altera_merlin_slave_translator</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_slave_translator</b> "<b>submodules/altera_merlin_slave_translator</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_slave_translator</b> "<b>submodules/altera_merlin_slave_translator</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_slave_translator</b> "<b>submodules/altera_merlin_slave_translator</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_slave_translator</b> "<b>submodules/altera_merlin_slave_translator</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_master_agent</b> "<b>submodules/altera_merlin_master_agent</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_master_agent</b> "<b>submodules/altera_merlin_master_agent</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_master_agent</b> "<b>submodules/altera_merlin_master_agent</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_slave_agent</b> "<b>submodules/altera_merlin_slave_agent</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_avalon_sc_fifo</b> "<b>submodules/altera_avalon_sc_fifo</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_slave_agent</b> "<b>submodules/altera_merlin_slave_agent</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_avalon_sc_fifo</b> "<b>submodules/altera_avalon_sc_fifo</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_slave_agent</b> "<b>submodules/altera_merlin_slave_agent</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_avalon_sc_fifo</b> "<b>submodules/altera_avalon_sc_fifo</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_master_agent</b> "<b>submodules/altera_merlin_master_agent</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_slave_agent</b> "<b>submodules/altera_merlin_slave_agent</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_avalon_sc_fifo</b> "<b>submodules/altera_avalon_sc_fifo</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_slave_agent</b> "<b>submodules/altera_merlin_slave_agent</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_avalon_sc_fifo</b> "<b>submodules/altera_avalon_sc_fifo</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_slave_agent</b> "<b>submodules/altera_merlin_slave_agent</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_avalon_sc_fifo</b> "<b>submodules/altera_avalon_sc_fifo</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_slave_agent</b> "<b>submodules/altera_merlin_slave_agent</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_avalon_sc_fifo</b> "<b>submodules/altera_avalon_sc_fifo</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_slave_agent</b> "<b>submodules/altera_merlin_slave_agent</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_avalon_sc_fifo</b> "<b>submodules/altera_avalon_sc_fifo</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_router</b> "<b>submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_addr_router</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_router</b> "<b>submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_addr_router_001</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_router</b> "<b>submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_addr_router_002</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_router</b> "<b>submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_id_router</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_router</b> "<b>submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_id_router_001</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_router</b> "<b>submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_id_router_002</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_router</b> "<b>submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_addr_router_003</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_router</b> "<b>submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_id_router_003</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_router</b> "<b>submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_id_router_003</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_router</b> "<b>submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_id_router_003</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_router</b> "<b>submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_id_router_003</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_router</b> "<b>submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_id_router_003</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_traffic_limiter</b> "<b>submodules/altera_merlin_traffic_limiter</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_reset_controller</b> "<b>submodules/altera_reset_controller</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_demultiplexer</b> "<b>submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_cmd_xbar_demux</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_demultiplexer</b> "<b>submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_cmd_xbar_demux_001</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_demultiplexer</b> "<b>submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_cmd_xbar_demux_001</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_multiplexer</b> "<b>submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_cmd_xbar_mux</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_multiplexer</b> "<b>submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_cmd_xbar_mux</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_demultiplexer</b> "<b>submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_rsp_xbar_demux</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_demultiplexer</b> "<b>submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_rsp_xbar_demux</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_demultiplexer</b> "<b>submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_cmd_xbar_demux_001</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_multiplexer</b> "<b>submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_rsp_xbar_mux</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_demultiplexer</b> "<b>submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_cmd_xbar_demux_003</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_demultiplexer</b> "<b>submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_rsp_xbar_demux_003</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_demultiplexer</b> "<b>submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_rsp_xbar_demux_003</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_demultiplexer</b> "<b>submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_rsp_xbar_demux_003</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_demultiplexer</b> "<b>submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_rsp_xbar_demux_003</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_demultiplexer</b> "<b>submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_rsp_xbar_demux_003</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_merlin_multiplexer</b> "<b>submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_rsp_xbar_mux_003</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" reuses <b>altera_irq_mapper</b> "<b>submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_irq_mapper</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 71 starting:altera_mem_if_sequencer_cpu "submodules/altera_mem_if_sequencer_cpu_no_ifdef_params_synth_cpu_inst"
+ [Info] cpu_inst: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>altera_mem_if_sequencer_cpu</b> "<b>cpu_inst</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 70 starting:sequencer_scc_mgr_110 "submodules/sequencer_scc_mgr"
+ [Info] sequencer_scc_mgr_inst: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>sequencer_scc_mgr_110</b> "<b>sequencer_scc_mgr_inst</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 69 starting:sequencer_reg_file_111 "submodules/sequencer_reg_file"
+ [Info] sequencer_reg_file_inst: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>sequencer_reg_file_111</b> "<b>sequencer_reg_file_inst</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 68 starting:altera_avalon_mm_bridge "submodules/altera_avalon_mm_bridge"
+ [Info] trk_mm_bridge: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>altera_avalon_mm_bridge</b> "<b>trk_mm_bridge</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 67 starting:sequencer_phy_mgr_100 "submodules/sequencer_phy_mgr"
+ [Info] sequencer_phy_mgr_inst: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>sequencer_phy_mgr_100</b> "<b>sequencer_phy_mgr_inst</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 66 starting:sequencer_data_mgr_110 "submodules/sequencer_data_mgr"
+ [Info] sequencer_data_mgr_inst: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>sequencer_data_mgr_110</b> "<b>sequencer_data_mgr_inst</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 65 starting:sequencer_rw_mgr_ddr3_110 "submodules/rw_manager_ddr3"
+ [Info] sequencer_rw_mgr_inst: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>sequencer_rw_mgr_ddr3_110</b> "<b>sequencer_rw_mgr_inst</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 64 starting:sequencer_trk_mgr "submodules/sequencer_trk_mgr"
+ [Info] sequencer_trk_mgr_inst: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>sequencer_trk_mgr</b> "<b>sequencer_trk_mgr_inst</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 63 starting:altera_mem_if_sequencer_mem "submodules/altera_mem_if_sequencer_mem_no_ifdef_params"
+ [Info] sequencer_mem: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>altera_mem_if_sequencer_mem</b> "<b>sequencer_mem</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 62 starting:altera_merlin_master_translator "submodules/altera_merlin_master_translator"
+ [Info] cpu_inst_data_master_translator: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>altera_merlin_master_translator</b> "<b>cpu_inst_data_master_translator</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 59 starting:altera_merlin_slave_translator "submodules/altera_merlin_slave_translator"
+ [Info] trk_mm_bridge_s0_translator: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>altera_merlin_slave_translator</b> "<b>trk_mm_bridge_s0_translator</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 50 starting:altera_merlin_master_agent "submodules/altera_merlin_master_agent"
+ [Info] cpu_inst_data_master_translator_avalon_universal_master_0_agent: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>altera_merlin_master_agent</b> "<b>cpu_inst_data_master_translator_avalon_universal_master_0_agent</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 47 starting:altera_merlin_slave_agent "submodules/altera_merlin_slave_agent"
+ [Info] trk_mm_bridge_s0_translator_avalon_universal_slave_0_agent: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>altera_merlin_slave_agent</b> "<b>trk_mm_bridge_s0_translator_avalon_universal_slave_0_agent</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 46 starting:altera_avalon_sc_fifo "submodules/altera_avalon_sc_fifo"
+ [Info] trk_mm_bridge_s0_translator_avalon_universal_slave_0_agent_rsp_fifo: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>altera_avalon_sc_fifo</b> "<b>trk_mm_bridge_s0_translator_avalon_universal_slave_0_agent_rsp_fifo</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 30 starting:altera_merlin_router "submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_addr_router"
+ [Info] addr_router: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>altera_merlin_router</b> "<b>addr_router</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 29 starting:altera_merlin_router "submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_addr_router_001"
+ [Info] addr_router_001: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>altera_merlin_router</b> "<b>addr_router_001</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 28 starting:altera_merlin_router "submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_addr_router_002"
+ [Info] addr_router_002: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>altera_merlin_router</b> "<b>addr_router_002</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 27 starting:altera_merlin_router "submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_id_router"
+ [Info] id_router: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>altera_merlin_router</b> "<b>id_router</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 26 starting:altera_merlin_router "submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_id_router_001"
+ [Info] id_router_001: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>altera_merlin_router</b> "<b>id_router_001</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 25 starting:altera_merlin_router "submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_id_router_002"
+ [Info] id_router_002: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>altera_merlin_router</b> "<b>id_router_002</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 24 starting:altera_merlin_router "submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_addr_router_003"
+ [Info] addr_router_003: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>altera_merlin_router</b> "<b>addr_router_003</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 23 starting:altera_merlin_router "submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_id_router_003"
+ [Info] id_router_003: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>altera_merlin_router</b> "<b>id_router_003</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 18 starting:altera_merlin_traffic_limiter "submodules/altera_merlin_traffic_limiter"
+ [Info] limiter: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>altera_merlin_traffic_limiter</b> "<b>limiter</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 17 starting:altera_reset_controller "submodules/altera_reset_controller"
+ [Info] rst_controller: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>altera_reset_controller</b> "<b>rst_controller</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 16 starting:altera_merlin_demultiplexer "submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_cmd_xbar_demux"
+ [Info] cmd_xbar_demux: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>altera_merlin_demultiplexer</b> "<b>cmd_xbar_demux</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 15 starting:altera_merlin_demultiplexer "submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_cmd_xbar_demux_001"
+ [Info] cmd_xbar_demux_001: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>altera_merlin_demultiplexer</b> "<b>cmd_xbar_demux_001</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 13 starting:altera_merlin_multiplexer "submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_cmd_xbar_mux"
+ [Info] cmd_xbar_mux: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>altera_merlin_multiplexer</b> "<b>cmd_xbar_mux</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 11 starting:altera_merlin_demultiplexer "submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_rsp_xbar_demux"
+ [Info] rsp_xbar_demux: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>altera_merlin_demultiplexer</b> "<b>rsp_xbar_demux</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 8 starting:altera_merlin_multiplexer "submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_rsp_xbar_mux"
+ [Info] rsp_xbar_mux: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>altera_merlin_multiplexer</b> "<b>rsp_xbar_mux</b>"
+ [Info] Reusing file <b>D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_merlin_arbitrator.sv</b>
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 7 starting:altera_merlin_demultiplexer "submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_cmd_xbar_demux_003"
+ [Info] cmd_xbar_demux_003: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>altera_merlin_demultiplexer</b> "<b>cmd_xbar_demux_003</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 6 starting:altera_merlin_demultiplexer "submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_rsp_xbar_demux_003"
+ [Info] rsp_xbar_demux_003: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>altera_merlin_demultiplexer</b> "<b>rsp_xbar_demux_003</b>"
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 1 starting:altera_merlin_multiplexer "submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_rsp_xbar_mux_003"
+ [Info] rsp_xbar_mux_003: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>altera_merlin_multiplexer</b> "<b>rsp_xbar_mux_003</b>"
+ [Info] Reusing file <b>D:/svn2/F45M_Q12.1/NIOS_DDR3/S5_DDR3_QSYS_mem_if_ddr3_emif_s0/submodules/altera_merlin_arbitrator.sv</b>
+ [Debug] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: queue size: 0 starting:altera_irq_mapper "submodules/S5_DDR3_QSYS_mem_if_ddr3_emif_s0_irq_mapper"
+ [Info] irq_mapper: "<b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" instantiated <b>altera_irq_mapper</b> "<b>irq_mapper</b>"
+ [Info] S5_DDR3_QSYS_mem_if_ddr3_emif_s0: Done <b>S5_DDR3_QSYS_mem_if_ddr3_emif_s0</b>" with 34 modules, 116 files, 1755347 bytes

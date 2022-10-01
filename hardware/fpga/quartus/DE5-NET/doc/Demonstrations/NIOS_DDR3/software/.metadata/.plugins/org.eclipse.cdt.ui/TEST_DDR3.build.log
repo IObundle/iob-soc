@@ -1,0 +1,9 @@
+09:13:16 **** Incremental Build of configuration Nios II for project TEST_DDR3 ****
+make all 
+Info: Building ../TEST_DDR3_bsp/
+D:/intelFPGA/16.1/nios2eds/bin/gnu/H-x86_64-mingw32/bin/make --no-print-directory -C ../TEST_DDR3_bsp/
+[BSP build complete]
+[TEST_DDR3 build complete]
+
+09:13:18 Build Finished (took 1s.880ms)
+

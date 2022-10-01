@@ -1,0 +1,33 @@
+# # File gsaved with Nlview version 6.3.8  2013-12-19 bk=1.2992 VDI=34 GEI=35
+# 
+preplace inst HELLO_QSYS.ext_flash.clk -pg 1
+preplace inst HELLO_QSYS.ext_flash -pg 1 -lvl 3 -y 380
+preplace inst HELLO_QSYS.ext_flash.slave_translator -pg 1
+preplace inst HELLO_QSYS.jtag_uart -pg 1 -lvl 4 -y 410
+preplace inst HELLO_QSYS.ext_flash.tda -pg 1
+preplace inst HELLO_QSYS.cpu -pg 1 -lvl 2 -y 440
+preplace inst HELLO_QSYS.sys_clk -pg 1 -lvl 1 -y 520
+preplace inst HELLO_QSYS.ext_flash.reset -pg 1
+preplace inst HELLO_QSYS.cfi_flash_atb_bridge_0 -pg 1 -lvl 4 -y 310
+preplace inst HELLO_QSYS.led -pg 1 -lvl 4 -y 130
+preplace inst HELLO_QSYS -pg 1 -lvl 1 -y 40 -regy -20
+preplace inst HELLO_QSYS.button -pg 1 -lvl 4 -y 30
+preplace inst HELLO_QSYS.onchip_memory -pg 1 -lvl 4 -y 610
+preplace inst HELLO_QSYS.merged_resets -pg 1 -lvl 2 -y 600
+preplace inst HELLO_QSYS.ext_flash.tdt -pg 1
+preplace inst HELLO_QSYS.sysid -pg 1 -lvl 4 -y 230
+preplace inst HELLO_QSYS.timer -pg 1 -lvl 4 -y 510
+preplace inst HELLO_QSYS.pb_cpu_to_io -pg 1 -lvl 3 -y 480
+preplace netloc POINT_TO_POINT<net_container>HELLO_QSYS</net_container>(MASTER)ext_flash.tcm,(SLAVE)cfi_flash_atb_bridge_0.tcs) 1 3 1 910
+preplace netloc EXPORT<net_container>HELLO_QSYS</net_container>(SLAVE)merged_resets.in_reset,(SLAVE)HELLO_QSYS.merged_resets_in_reset) 1 0 2 NJ 610 NJ
+preplace netloc FAN_OUT<net_container>HELLO_QSYS</net_container>(MASTER)cpu.d_irq,(SLAVE)jtag_uart.irq,(SLAVE)timer.irq) 1 2 2 750 590 910
+preplace netloc FAN_OUT<net_container>HELLO_QSYS</net_container>(SLAVE)button.s1,(SLAVE)led.s1,(MASTER)pb_cpu_to_io.m0,(SLAVE)jtag_uart.avalon_jtag_slave,(SLAVE)timer.s1,(SLAVE)sysid.control_slave) 1 3 1 930
+preplace netloc INTERCONNECT<net_container>HELLO_QSYS</net_container>(MASTER)cpu.instruction_master,(MASTER)cpu.data_master,(SLAVE)cpu.jtag_debug_module,(SLAVE)pb_cpu_to_io.s0,(SLAVE)ext_flash.uas,(SLAVE)onchip_memory.s1) 1 1 3 440 570 710 660 NJ
+preplace netloc INTERCONNECT<net_container>HELLO_QSYS</net_container>(SLAVE)sys_clk.clk_in_reset,(SLAVE)timer.reset,(SLAVE)cpu.reset_n,(SLAVE)ext_flash.reset,(MASTER)cpu.jtag_debug_module_reset,(SLAVE)led.reset,(SLAVE)cfi_flash_atb_bridge_0.reset,(MASTER)merged_resets.out_reset,(MASTER)sys_clk.clk_reset,(SLAVE)jtag_uart.reset,(SLAVE)onchip_memory.reset1,(SLAVE)sysid.reset,(SLAVE)pb_cpu_to_io.reset,(SLAVE)button.reset) 1 0 4 200 510 400 590 730 610 970
+preplace netloc EXPORT<net_container>HELLO_QSYS</net_container>(SLAVE)HELLO_QSYS.led_external_connection,(SLAVE)led.external_connection) 1 0 4 NJ 160 NJ 160 NJ 160 NJ
+preplace netloc EXPORT<net_container>HELLO_QSYS</net_container>(SLAVE)button.external_connection,(SLAVE)HELLO_QSYS.button_external_connection) 1 0 4 NJ 60 NJ 60 NJ 60 NJ
+preplace netloc EXPORT<net_container>HELLO_QSYS</net_container>(SLAVE)HELLO_QSYS.sys_clk,(SLAVE)sys_clk.clk_in) 1 0 1 NJ
+preplace netloc EXPORT<net_container>HELLO_QSYS</net_container>(SLAVE)HELLO_QSYS.cfi_flash_atb_bridge_0_out,(SLAVE)cfi_flash_atb_bridge_0.out) 1 0 4 NJ 340 NJ 340 NJ 340 NJ
+preplace netloc FAN_OUT<net_container>HELLO_QSYS</net_container>(SLAVE)jtag_uart.clk,(SLAVE)sysid.clk,(SLAVE)pb_cpu_to_io.clk,(SLAVE)timer.clk,(MASTER)sys_clk.clk,(SLAVE)cpu.clk,(SLAVE)ext_flash.clk,(SLAVE)button.clk,(SLAVE)led.clk,(SLAVE)cfi_flash_atb_bridge_0.clk,(SLAVE)onchip_memory.clk1) 1 1 3 420 430 690 570 950
+levelinfo -pg 1 0 170 1200
+levelinfo -hier HELLO_QSYS 180 230 470 810 1040 1190

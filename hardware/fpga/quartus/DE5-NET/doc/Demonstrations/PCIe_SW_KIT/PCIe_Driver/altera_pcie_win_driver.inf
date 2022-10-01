@@ -1,0 +1,129 @@
+;/*++
+;
+;   Copyright (c) 2014 Netpace Inc  All rights reserved.
+;
+;   THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY
+;   KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+;   IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR
+;   PURPOSE.
+;
+;Module Name:
+;
+;    AltPCI.INF
+;
+;Abstract:
+;    INF file for a generic PCI device.
+;
+;--*/
+
+[Version]
+Signature      = "$WINDOWS NT$"
+Class          = AlteraPCI
+ClassGuid      = {78A1C341-4539-11d3-B88D-00C04FAD5171}
+Provider       = %ALTERA%
+DriverVer=11/05/2014,16.2.11.340
+CatalogFile    = altera_pcie_win_driver.cat
+
+[DestinationDirs]
+DefaultDestDir  = 12
+
+;-------------------------------------------------------------------------
+; Class Section
+;-------------------------------------------------------------------------
+[ClassInstall32]
+Addreg         = AlteraPCIClassReg
+
+[AlteraPCIClassReg]
+HKR,,,0,%ClassName%
+HKR,,Icon,,-5
+HKR,,DeviceCharacteristics,0x10001,0x100     ;Use same security checks on relative opens
+HKR,,Security,,"D:P(A;;GA;;;SY)(A;;GA;;;BA)" ;Allow generic all access to system and built-in Admin.
+
+;-------------------------------------------------------------------------
+; Device Install Section
+;-------------------------------------------------------------------------
+[ControlFlags]
+ExcludeFromSelect = *
+
+[Manufacturer]
+%ALTERA%=ALTERA,NTamd64
+
+[SourceDisksFiles]
+altera_pcie_win_driver.sys     = 1
+
+[SourceDisksNames]
+1=%DISK_NAME%,
+
+
+; For XP and later     
+
+
+[ALTERA.NTamd64]
+; DisplayName            Section           DeviceId
+; -----------            -------           --------
+%AltPCI.DRVDESC%=        AltPCI_Inst,      PCI\VEN_1172&DEV_E001
+%AltPCI.DRVDESC%=        AltPCI_Inst,      PCI\VEN_1172&DEV_E003
+
+[AltPCI_Inst.NT]
+CopyFiles      = AltPCI.CopyFiles
+
+
+[AltPCI.CopyFiles]
+altera_pcie_win_driver.sys
+
+
+[AltPCI_Inst.NT.Services]
+AddService     = AltPCI,0x00000002,AltPCI_Service
+
+[AltPCI_Service]
+DisplayName    = %AltPCI.SVCDESC%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\altera_pcie_win_driver.sys
+
+;-------------------------------------------------------------------------
+; WDF Coinstaller installation
+;-------------------------------------------------------------------------
+[DestinationDirs]
+CoInstaller_CopyFiles = 11
+
+[AltPCI_Inst.NT.CoInstallers]
+AddReg         = CoInstaller_AddReg
+CopyFiles      = CoInstaller_CopyFiles
+
+[CoInstaller_CopyFiles]
+WdfCoInstaller01011.dll
+
+[SourceDisksFiles]
+WdfCoInstaller01011.dll = 1 ; make sure the number matches with SourceDisksNames
+
+[CoInstaller_AddReg]
+HKR,,CoInstallers32,0x00010000, "WdfCoInstaller01011.dll,WdfCoInstaller"
+
+[AltPCI_Inst.NT.Wdf]
+KmdfService    = AltPCI, AltPCI_wdfsect
+
+[AltPCI_wdfsect]
+KmdfLibraryVersion = 1.11
+
+[AltPCI_Inst.NT.HW]
+AddReg=MSI_Interrupts
+
+
+[MSI_Interrupts]
+HKR,Interrupt Management,,0x00000800
+HKR,Interrupt Management\MessageSignaledInterruptProperties,,0x00000800
+HKR,Interrupt Management\MessageSignaledInterruptProperties,MSISupported,0x00010001,1
+
+
+;------------------------------------------------------------------------------
+;  String Definitions
+;------------------------------------------------------------------------------
+
+[Strings]
+ALTERA         = "Altera Corporation"
+ClassName      = "Altera PCI Device"
+AltPCI.SVCDESC = "Altera PCI API Driver"
+AltPCI.DRVDESC = "Altera PCI API Driver"
+DISK_NAME      = "AltPCI Sample Install Disk"

@@ -1,0 +1,665 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simPackage>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_mm_st_converter.v"
+   type="VERILOG"
+   library="a0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_addr_cmd.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_addr_cmd_wrap.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_ddr2_odt_gen.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_ddr3_odt_gen.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_lpddr2_addr_cmd.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_odt_gen.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_rdwr_data_tmg.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_arbiter.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_burst_gen.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_cmd_gen.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_csr.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_buffer.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_buffer_manager.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_burst_tracking.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_dataid_manager.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_fifo.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_list.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_rdata_path.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_wdata_path.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_ecc_decoder.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_ecc_decoder_32_syn.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_ecc_decoder_64_syn.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_ecc_encoder.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_ecc_encoder_32_syn.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_ecc_encoder_64_syn.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_ecc_encoder_decoder_wrapper.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_axi_st_converter.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_input_if.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_rank_timer.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_sideband.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_tbp.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_timing_param.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_controller.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_controller_st_top.v"
+   type="VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/alt_mem_if_nextgen_ddr3_controller_core.sv"
+   type="SYSTEM_VERILOG"
+   library="ng0">
+  <include path="ddr3_b_sim/ddr3_b/alt_mem_ddrx_define.iv" />
+ </file>
+ <file
+   path="ddr3_b_sim/ddr3_b/altera_mem_if_dll_stratixv.sv"
+   type="SYSTEM_VERILOG"
+   library="dll0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/altera_mem_if_oct_stratixv.sv"
+   type="SYSTEM_VERILOG"
+   library="oct0" />
+ <file path="ddr3_b_sim/ddr3_b/ddr3_b_c0.v" type="VERILOG" library="c0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_s0_software/sequencer.c"
+   type="OTHER"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_s0_software/sequencer.h"
+   type="OTHER"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_s0_software/sequencer_defines.h"
+   type="OTHER"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_s0_make_qsys_seq.tcl"
+   type="OTHER"
+   library="s0" />
+ <file path="ddr3_b_sim/ddr3_b/ddr3_b_s0.v" type="VERILOG" library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/altera_avalon_mm_bridge.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/altera_avalon_sc_fifo.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/altera_avalon_st_pipeline_base.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/altera_mem_if_sequencer_cpu_no_ifdef_params_sim_cpu_inst.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/altera_mem_if_sequencer_cpu_no_ifdef_params_sim_cpu_inst_test_bench.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/altera_mem_if_sequencer_mem_no_ifdef_params.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/altera_mem_if_sequencer_rst.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/altera_merlin_arbitrator.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/altera_merlin_burst_uncompressor.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/altera_merlin_master_agent.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/altera_merlin_master_translator.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/altera_merlin_reorder_memory.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/altera_merlin_slave_agent.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/altera_merlin_slave_translator.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/altera_merlin_traffic_limiter.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_s0_irq_mapper.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_s0_mm_interconnect_0.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_s0_mm_interconnect_0_avalon_st_adapter.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_s0_mm_interconnect_0_avalon_st_adapter_error_adapter_0.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_s0_mm_interconnect_0_cmd_demux.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_s0_mm_interconnect_0_cmd_demux_001.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_s0_mm_interconnect_0_cmd_mux.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_s0_mm_interconnect_0_cmd_mux_002.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_s0_mm_interconnect_0_router.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_s0_mm_interconnect_0_router_001.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_s0_mm_interconnect_0_router_002.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_s0_mm_interconnect_0_router_003.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_s0_mm_interconnect_0_router_004.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_s0_mm_interconnect_0_router_005.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_s0_mm_interconnect_0_rsp_demux.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_s0_mm_interconnect_0_rsp_mux.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_s0_mm_interconnect_0_rsp_mux_001.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_s0_mm_interconnect_1.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_s0_mm_interconnect_1_cmd_demux.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_s0_mm_interconnect_1_cmd_mux.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_s0_mm_interconnect_1_router.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_s0_mm_interconnect_1_router_001.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_s0_mm_interconnect_1_rsp_demux.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_s0_mm_interconnect_1_rsp_mux.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/rw_manager_ac_ROM_no_ifdef_params.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/rw_manager_ac_ROM_reg.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/rw_manager_bitcheck.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/rw_manager_core.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/rw_manager_datamux.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/rw_manager_data_broadcast.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/rw_manager_data_decoder.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/rw_manager_ddr3.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/rw_manager_di_buffer.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/rw_manager_di_buffer_wrap.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/rw_manager_dm_decoder.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/rw_manager_generic.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/rw_manager_inst_ROM_no_ifdef_params.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/rw_manager_inst_ROM_reg.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/rw_manager_jumplogic.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/rw_manager_lfsr12.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/rw_manager_lfsr36.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/rw_manager_lfsr72.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/rw_manager_pattern_fifo.v"
+   type="VERILOG"
+   library="s0" />
+ <file path="ddr3_b_sim/ddr3_b/rw_manager_ram.v" type="VERILOG" library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/rw_manager_ram_csr.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/rw_manager_read_datapath.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/rw_manager_write_decoder.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/sequencer_data_mgr.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/sequencer_phy_mgr.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/sequencer_reg_file.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/sequencer_scc_acv_phase_decode.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/sequencer_scc_acv_wrapper.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/sequencer_scc_mgr.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/sequencer_scc_reg_file.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/sequencer_scc_siii_phase_decode.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/sequencer_scc_siii_wrapper.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/sequencer_scc_sv_phase_decode.v"
+   type="VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/sequencer_scc_sv_wrapper.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/sequencer_trk_mgr.sv"
+   type="SYSTEM_VERILOG"
+   library="s0" />
+ <file path="ddr3_b_sim/ddr3_b/ddr3_b_s0_AC_ROM.hex" type="HEX" library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_s0_inst_ROM.hex"
+   type="HEX"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_s0_sequencer_mem.hex"
+   type="HEX"
+   library="s0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/afi_mux_ddr3_ddrx.v"
+   type="VERILOG"
+   library="m0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_p0_clock_pair_generator.v"
+   type="VERILOG"
+   library="p0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_p0_read_valid_selector.v"
+   type="VERILOG"
+   library="p0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_p0_addr_cmd_datapath.v"
+   type="VERILOG"
+   library="p0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_p0_reset.v"
+   type="VERILOG"
+   library="p0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_p0_acv_ldc.v"
+   type="VERILOG"
+   library="p0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_p0_memphy.sv"
+   type="SYSTEM_VERILOG"
+   library="p0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_p0_reset_sync.v"
+   type="VERILOG"
+   library="p0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_p0_new_io_pads.v"
+   type="VERILOG"
+   library="p0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_p0_fr_cycle_shifter.v"
+   type="VERILOG"
+   library="p0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_p0_fr_cycle_extender.v"
+   type="VERILOG"
+   library="p0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_p0_read_datapath.sv"
+   type="SYSTEM_VERILOG"
+   library="p0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_p0_write_datapath.v"
+   type="VERILOG"
+   library="p0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_p0_core_shadow_registers.sv"
+   type="SYSTEM_VERILOG"
+   library="p0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_p0_simple_ddio_out.sv"
+   type="SYSTEM_VERILOG"
+   library="p0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_p0_phy_csr.sv"
+   type="SYSTEM_VERILOG"
+   library="p0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_p0_iss_probe.v"
+   type="VERILOG"
+   library="p0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_p0_addr_cmd_ldc_pads.v"
+   type="VERILOG"
+   library="p0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_p0_addr_cmd_ldc_pad.v"
+   type="VERILOG"
+   library="p0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_p0_addr_cmd_non_ldc_pad.v"
+   type="VERILOG"
+   library="p0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/read_fifo_hard_abstract_ddrx_lpddrx.sv"
+   type="SYSTEM_VERILOG"
+   library="p0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_p0_read_fifo_hard.v"
+   type="VERILOG"
+   library="p0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_p0.sv"
+   type="SYSTEM_VERILOG"
+   library="p0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_p0_altdqdqs.v"
+   type="VERILOG"
+   library="p0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/altdq_dqs2_stratixv.sv"
+   type="SYSTEM_VERILOG"
+   library="p0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/altdq_dqs2_abstract.sv"
+   type="SYSTEM_VERILOG"
+   library="p0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/altdq_dqs2_cal_delays.sv"
+   type="SYSTEM_VERILOG"
+   library="p0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_pll0.sv"
+   type="SYSTEM_VERILOG"
+   library="pll0" />
+ <file
+   path="ddr3_b_sim/ddr3_b/ddr3_b_0002.v"
+   type="VERILOG"
+   library="ddr3_b" />
+ <file path="ddr3_b_sim/ddr3_b.v" type="VERILOG" />
+ <topLevel name="ddr3_b" />
+ <deviceFamily name="stratixv" />
+ <modelMap controllerPath="ddr3_b" modelPath="ddr3_b" />
+</simPackage>
