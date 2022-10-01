@@ -84,6 +84,10 @@ BOARD_FREQ ?=100000000
 ifeq ($(BOARD), CYCLONEV-GT-DK)
 BOARD_FREQ =50000000
 endif
+ifeq ($(BOARD), DE5-NET)
+BOARD_FREQ =50000000
+endif
+
 
 fpga-build:
 	make fw-build BAUD=$(BOARD_BAUD) FREQ=$(BOARD_FREQ)
