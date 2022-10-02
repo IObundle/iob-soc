@@ -16,12 +16,14 @@ int main() {
   //init uart 
   uart_init(UART_BASE, FREQ/BAUD);
 
+  char c;
+  
   //connect with console
   while (1) {
     if (IOB_UART_GET_TXREADY())
       uart_putc((char) ENQ);
+
     if (IOB_UART_GET_RXREADY())
-      if (uart_getc() == ACK)
 	break;
   } 
 
