@@ -18,7 +18,7 @@ INIT_MEM=0
 endif
 
 #console command
-CONSOLE_CMD=$(PYTHON_DIR)/console -s /dev/usb-uart
+CONSOLE_CMD=$(PYTHON_DIR)/console -s /dev/usb-uart -b $(BOARD_BAUD)
 ifeq ($(INIT_MEM),0)
 CONSOLE_CMD+=-f
 endif
