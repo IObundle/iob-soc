@@ -20,6 +20,11 @@ FREQ ?=$(SIM_FREQ)
 fw-build:
 	make -C $(FIRM_DIR) build-all
 
+change_baud_to_default:
+	@sed -i 's/ser.baudrate =.*#/ser.baudrate = $(DEF_BAUD)              #/' submodules/LIB/software/python/console
+	@sed -i 's/^BOARD_BAUD =.*/BOARD_BAUD = $(DEF_BAUD)/' ./Makefile
+
+
 fw-clean:
 	make -C $(FIRM_DIR) clean-all
 
@@ -77,8 +82,10 @@ sim-debug:
 #default board running locally or remotely
 BOARD ?=CYCLONEV-GT-DK
 BOARD_DIR =$(shell find hardware -name $(BOARD))
-#default baud and system clock freq for boards
+#default baud and system clock freq for board
+DEF_BAUD?=115200
 BOARD_BAUD = 115200
+
 #default board frequency
 BOARD_FREQ ?=100000000
 ifeq ($(BOARD), CYCLONEV-GT-DK)
@@ -86,6 +93,12 @@ BOARD_FREQ =50000000
 endif
 ifeq ($(BOARD), DE5-NET)
 BOARD_FREQ =50000000
+###for de5-net the max baud is 19200###
+BOARD_BAUD = 115200
+endif
+
+ifeq ($(DEF_BAUD),$(DEF_BAUD))
+fw-build: change_baud_to_default
 endif
 
 
