@@ -1,11 +1,6 @@
 # IOb-SoC-(OpenCrypto)Tester
 
-IOb-SoC is a System-on-Chip (SoC) template comprising an open-source RISC-V
-processor (picorv32), an internal SRAM memory subsystem, a UART (iob-uart), and
-an optional interface to an external memory. If the external memory interface is
-selected, an instruction L1 cache, a data L1 cache and a shared L2 cache are
-added to the system. The L2 cache communicates with a 3rd party memory
-controller IP (typically a DDR controller) using an AXI4 master bus.
+This project aims to develop a System-on-Chip (SoC) used mainly to verify cryptographic systems that improve internet security but can also be used on any SoC. It is synergetic with several other NGI Assure-funded open-source projects – notably OpenCryptoHW (Coarse-Grained Reconfigurable Array cryptographic hardware) and OpenCryptoLinux. The proposed SoC will support test instruments as peripherals and use OpenCryptoHW as the System Under Test (SUT), hopefully opening the way for open-source test instrumentation operated under Linux.
 
 
 ## Operating Systems
