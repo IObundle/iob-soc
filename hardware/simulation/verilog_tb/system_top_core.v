@@ -163,7 +163,7 @@ module system_top
 		.ID_WIDTH(AXI_ID_W),
 		.DATA_WIDTH (AXI_DATA_W),
 		.ADDR_WIDTH (AXI_ADDR_W),
-		.M_ADDR_WIDTH (32'd`TESTER_DDR_ADDR_W),
+		.M_ADDR_WIDTH (AXI_ADDR_W),
 		.S_COUNT (2),
 		.M_COUNT (1)
 		)
