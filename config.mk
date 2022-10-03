@@ -73,9 +73,6 @@ UART_HW_DIR:=$(UART_DIR)/hardware
 ####################################################################
 #include tester configuration from Unit Under Test directory
 include $(ROOT_DIR)/../../tester.mk
-#add unit under test
-#this works even if UUT is not a perihpheral
-PERIPHERALS+=$(UUT_NAME)
 #Set root directory of tester on remote machines in the submodules directory of UUT
 REMOTE_ROOT_DIR=$(REMOTE_UUT_DIR)/submodules/$(shell realpath $(ROOT_DIR) | xargs -I {} basename {})
 
@@ -119,7 +116,7 @@ BOARD_DIR ?=$(shell find $(ROOT_DIR)/hardware -name $(BOARD))
 #doc paths
 DOC_DIR=$(ROOT_DIR)/document/$(DOC)
 
-#macro to return all defined peripheral directories separated by newline
+#macro to return all defined directories separated by newline
 GET_DIRS= $(eval ROOT_DIR_TMP:=$(ROOT_DIR))\
           $(eval ROOT_DIR=.)\
           $(foreach V,$(sort $(.VARIABLES)),\
@@ -150,12 +147,6 @@ DEFINE+=$(defmacro)B=$B
 #assign a sequential ID to each peripheral
 #the ID is used as an instance name index in the hardware and as a base address in the software
 DEFINE+=$(shell $(SW_DIR)/python/submodule_utils.py get_defines "$(PERIPHERALS)" "$(defmacro)")
-
-#default baud and system clock freq
-BAUD ?=5000000 #simulation default
-FREQ ?=100000000
-
-SHELL = /bin/bash
 
 #include (extra) tester makefile targets from Unit Under Test config file
 INCLUDING_PATHS:=1

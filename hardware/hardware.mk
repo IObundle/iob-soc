@@ -1,6 +1,3 @@
-#default baud rate for hardware
-BAUD ?=115200
-
 include $(ROOT_DIR)/config.mk
 
 #add itself to MODULES list
@@ -13,6 +10,8 @@ HW_MODULES+=$(IOBSOC_NAME)
 #include LIB modules
 include $(LIB_DIR)/hardware/iob_merge/hardware.mk
 include $(LIB_DIR)/hardware/iob_split/hardware.mk
+include $(LIB_DIR)/hardware/iob_pulse_gen/hardware.mk
+include $(LIB_DIR)/hardware/iob_edge_detect/hardware.mk
 
 #include MEM modules
 include $(MEM_DIR)/hardware/rom/iob_rom_sp/hardware.mk
@@ -29,6 +28,7 @@ INC_DIR:=$(HW_DIR)/include
 SRC_DIR:=$(HW_DIR)/src
 
 #DEFINES
+DEFINE+=$(defmacro)DDR_DATA_W=$(DDR_DATA_W)
 DEFINE+=$(defmacro)DDR_ADDR_W=$(DDR_ADDR_W)
 
 #INCLUDES
@@ -38,6 +38,11 @@ INCLUDE+=$(incdir). $(incdir)$(INC_DIR) $(incdir)$(LIB_DIR)/hardware/include
 VHDR+=$(wildcard $(HW_DIR)/include/*)
 VHDR+=$(INC_DIR)/system.vh #Include system.vh because it is required by some verilog modules (such as boot_ctr.v), although its contents are never used by the tester.
 VHDR+=$(INC_DIR)/tester.vh $(LIB_DIR)/hardware/include/iob_intercon.vh
+
+#axi wires to connect cache to external memory in system top
+VHDR+=m_axi_wire.vh
+m_axi_wire.vh:
+	$(LIB_DIR)/software/python/axi_gen.py axi_wire 'm_' 'm_' 'm_'
 
 #SOURCES
 

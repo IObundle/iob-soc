@@ -7,89 +7,81 @@
 //PHEADER
 
 module tester
+  #(
+    parameter ADDR_W=`TESTER_ADDR_W,
+    parameter DATA_W=`TESTER_DATA_W,
+    parameter AXI_ID_W=0,
+    parameter AXI_ADDR_W=`TESTER_DDR_ADDR_W,
+    parameter AXI_DATA_W=`TESTER_DDR_DATA_W
+    )
   (
    //do not remove line below
    //PIO
 
-
 //Temporarily comment ifdef, because python will always try to insert m_axi_*
 //signals in sut instance ports, so they need to exist here aswell
-//`ifdef TESTER_USE_DDR //AXI MASTER INTERFACE
-
-   //address write
-   output [1:0] m_axi_awid,
-   output [2*(`TESTER_DDR_ADDR_W-1+1)-1:0] m_axi_awaddr,
-   output [2*(7+1)-1:0] m_axi_awlen,
-   output [2*(2+1)-1:0] m_axi_awsize,
-   output [2*(1+1)-1:0] m_axi_awburst,
-   output [1:0] m_axi_awlock,
-   output [2*(3+1)-1:0] m_axi_awcache,
-   output [2*(2+1)-1:0] m_axi_awprot,
-   output [2*(3+1)-1:0] m_axi_awqos,
-   output [1:0] m_axi_awvalid,
-   input [1:0] m_axi_awready,
-
-   //write
-   output [2*(`TESTER_DATA_W-1+1)-1:0] m_axi_wdata,
-   output [2*(`TESTER_DATA_W/8-1+1)-1:0] m_axi_wstrb,
-   output [1:0] m_axi_wlast,
-   output [1:0] m_axi_wvalid,
-   input [1:0] m_axi_wready,
-
-   //write response
-   input [1:0] m_axi_bid,
-   input [2*(1+1)-1:0] m_axi_bresp,
-   input [1:0] m_axi_bvalid,
-   output [1:0] m_axi_bready,
-  
-   //address read
-   output [1:0] m_axi_arid,
-   output [2*(`TESTER_DDR_ADDR_W-1+1)-1:0] m_axi_araddr,
-   output [2*(7+1)-1:0] m_axi_arlen,
-   output [2*(2+1)-1:0] m_axi_arsize,
-   output [2*(1+1)-1:0] m_axi_arburst,
-   output [1:0] m_axi_arlock,
-   output [2*(3+1)-1:0] m_axi_arcache,
-   output [2*(2+1)-1:0] m_axi_arprot,
-   output [2*(3+1)-1:0] m_axi_arqos,
-   output [1:0] m_axi_arvalid,
-   input [1:0] m_axi_arready,
-
-   //read
-   input [1:0] m_axi_rid,
-   input [2*(`TESTER_DATA_W-1+1)-1:0] m_axi_rdata,
-   input [2*(1+1)-1:0] m_axi_rresp,
-   input [1:0] m_axi_rlast,
-   input [1:0] m_axi_rvalid,
-   output [1:0] m_axi_rready,
+//`ifdef TESTER_USE_DDR
+ //AXI MASTER INTERFACE
+ `IOB_OUTPUT(m_axi_awid, 2*AXI_ID_W), //Address write channel ID
+ `IOB_OUTPUT(m_axi_awaddr, 2*AXI_ADDR_W), //Address write channel address
+ `IOB_OUTPUT(m_axi_awlen, 2*8), //Address write channel burst length
+ `IOB_OUTPUT(m_axi_awsize, 2*3), //Address write channel burst size. This signal indicates the size of each transfer in the burst
+ `IOB_OUTPUT(m_axi_awburst, 2*2), //Address write channel burst type
+ `IOB_OUTPUT(m_axi_awlock, 2*2), //Address write channel lock type
+ `IOB_OUTPUT(m_axi_awcache, 2*4), //Address write channel memory type. Transactions set with Normal Non-cacheable Modifiable and Bufferable (0011).
+ `IOB_OUTPUT(m_axi_awprot, 2*3), //Address write channel protection type. Transactions set with Normal, Secure, and Data attributes (000).
+ `IOB_OUTPUT(m_axi_awqos, 2*4), //Address write channel quality of service
+ `IOB_OUTPUT(m_axi_awvalid, 2*1), //Address write channel valid
+ `IOB_INPUT(m_axi_awready, 2*1), //Address write channel ready
+ `IOB_OUTPUT(m_axi_wdata, 2*AXI_DATA_W), //Write channel data
+ `IOB_OUTPUT(m_axi_wstrb, 2*(AXI_DATA_W/8)), //Write channel write strobe
+ `IOB_OUTPUT(m_axi_wlast, 2*1), //Write channel last word flag
+ `IOB_OUTPUT(m_axi_wvalid, 2*1), //Write channel valid
+ `IOB_INPUT(m_axi_wready, 2*1), //Write channel ready
+ `IOB_INPUT(m_axi_bid, 2*AXI_ID_W), //Write response channel ID
+ `IOB_INPUT(m_axi_bresp, 2*2), //Write response channel response
+ `IOB_INPUT(m_axi_bvalid, 2*1), //Write response channel valid
+ `IOB_OUTPUT(m_axi_bready, 2*1), //Write response channel ready
+ `IOB_OUTPUT(m_axi_arid, 2*AXI_ID_W), //Address read channel ID
+ `IOB_OUTPUT(m_axi_araddr, 2*AXI_ADDR_W), //Address read channel address
+ `IOB_OUTPUT(m_axi_arlen, 2*8), //Address read channel burst length
+ `IOB_OUTPUT(m_axi_arsize, 2*3), //Address read channel burst size. This signal indicates the size of each transfer in the burst
+ `IOB_OUTPUT(m_axi_arburst, 2*2), //Address read channel burst type
+ `IOB_OUTPUT(m_axi_arlock, 2*2), //Address read channel lock type
+ `IOB_OUTPUT(m_axi_arcache, 2*4), //Address read channel memory type. Transactions set with Normal Non-cacheable Modifiable and Bufferable (0011).
+ `IOB_OUTPUT(m_axi_arprot, 2*3), //Address read channel protection type. Transactions set with Normal, Secure, and Data attributes (000).
+ `IOB_OUTPUT(m_axi_arqos, 2*4), //Address read channel quality of service
+ `IOB_OUTPUT(m_axi_arvalid, 2*1), //Address read channel valid
+ `IOB_INPUT(m_axi_arready, 2*1), //Address read channel ready
+ `IOB_INPUT(m_axi_rid, 2*AXI_ID_W), //Read channel ID
+ `IOB_INPUT(m_axi_rdata, 2*AXI_DATA_W), //Read channel data
+ `IOB_INPUT(m_axi_rresp, 2*2), //Read channel response
+ `IOB_INPUT(m_axi_rlast, 2*1), //Read channel last word
+ `IOB_INPUT(m_axi_rvalid, 2*1), //Read channel valid
+ `IOB_OUTPUT(m_axi_rready, 2*1), //Read channel ready
 //`endif //  `ifdef USE_DDR
-   input                    clk,
-   input                    reset,
-   output [1:0]             trap
+   output [1:0]             trap,
+   `include "iob_gen_if.vh"
    );
-
-   localparam ADDR_W=`TESTER_ADDR_W;
-   localparam DATA_W=`TESTER_DATA_W;
    
    //
    // SYSTEM RESET
    //
 
-   wire                      boot;
-   wire                      boot_reset;
-   wire                      cpu_reset = reset | boot_reset;
-
+   wire   boot;
+   wire   cpu_reset;
+   
    //
    //  CPU
    //
 
    // instruction bus
-   wire [`REQ_W-1:0]         cpu_i_req;
-   wire [`RESP_W-1:0]        cpu_i_resp;
+   wire [`REQ_W-1:0] cpu_i_req;
+   wire [`RESP_W-1:0] cpu_i_resp;
 
    // data cat bus
-   wire [`REQ_W-1:0]         cpu_d_req;
-   wire [`RESP_W-1:0]        cpu_d_resp;
+   wire [`REQ_W-1:0]  cpu_d_req;
+   wire [`RESP_W-1:0] cpu_d_resp;
    
    //instantiate the cpu
    iob_picorv32 
@@ -110,22 +102,22 @@ module tester
         .trap    (trap[1]),
         
         //instruction bus
-        .ibus_req(cpu_i_req),
-        .ibus_resp(cpu_i_resp),
+        .ibus_req (cpu_i_req),
+        .ibus_resp (cpu_i_resp),
         
         //data bus
-        .dbus_req(cpu_d_req),
-        .dbus_resp(cpu_d_resp)
+        .dbus_req (cpu_d_req),
+        .dbus_resp (cpu_d_resp)
         );
 
 
    //   
-   // SPLIT INTERNAL AND EXTERNAL MEMORY BUSES
+   // SPLIT CPU BUSES TO ACCESS INTERNAL OR EXTERNAL MEMORY
    //
 
    //internal memory instruction bus
-   wire [`REQ_W-1:0]         int_mem_i_req;
-   wire [`RESP_W-1:0]        int_mem_i_resp;
+   wire [`REQ_W-1:0]  int_mem_i_req;
+   wire [`RESP_W-1:0] int_mem_i_resp;
    //external memory instruction bus
 `ifdef TESTER_RUN_EXTMEM
    wire [`REQ_W-1:0]         ext_mem_i_req;
@@ -144,19 +136,19 @@ module tester
            )
    ibus_split
      (
-      .clk    ( clk                              ),
-      .rst    ( reset                            ),
+      .clk (clk),
+      .rst (cpu_reset),
       // master interface
-      .m_req  ( cpu_i_req                        ),
-      .m_resp ( cpu_i_resp                       ),
-
+      .m_req (cpu_i_req),
+      .m_resp (cpu_i_resp),
+      
       // slaves interface
 `ifdef TESTER_RUN_EXTMEM
-      .s_req  ( {ext_mem_i_req, int_mem_i_req}   ),
+      .s_req ( {ext_mem_i_req, int_mem_i_req} ),
       .s_resp ( {ext_mem_i_resp, int_mem_i_resp} )
 `else
-      .s_req  (  int_mem_i_req                   ),
-      .s_resp ( int_mem_i_resp                   )
+      .s_req (int_mem_i_req),
+      .s_resp ( int_mem_i_resp)
 `endif
       );
 
@@ -179,7 +171,7 @@ module tester
    dbus_split
      (
       .clk    ( clk   ),
-      .rst    ( reset ),
+      .rst    ( cpu_reset ),
 
       // master interface
       .m_req  ( cpu_d_req  ),
@@ -209,8 +201,8 @@ module tester
        )
    int_dbus_split
      (
-      .clk    ( clk   ),
-      .rst    ( reset ),
+      .clk (clk),
+      .rst (cpu_reset),
 
 `ifdef USE_DDR
       // master interface
@@ -243,27 +235,26 @@ module tester
        )
    pbus_split
      (
-      .clk    ( clk   ),
-      .rst    ( reset ),
+      .clk (clk),
+      .rst (cpu_reset),
       // master interface
-      .m_req   ( pbus_req    ),
-      .m_resp  ( pbus_resp   ),
-
+      .m_req (pbus_req),
+      .m_resp (pbus_resp),
+      
       // slaves interface
-      .s_req   ( slaves_req  ),
-      .s_resp  ( slaves_resp )
+      .s_req (slaves_req),
+      .s_resp (slaves_resp)
       );
 
 
    //
    // INTERNAL SRAM MEMORY
    //
-   
    int_mem 
      #(.HEXFILE("tester_firmware"),
        .BOOT_HEXFILE("tester_boot"),
-       .ADDR_W(`TESTER_ADDR_W),
-       .DATA_W(`TESTER_DATA_W),
+       .ADDR_W(ADDR_W),
+       .DATA_W(DATA_W),
        .SRAM_ADDR_W (`TESTER_SRAM_ADDR_W),
        .BOOTROM_ADDR_W (`TESTER_BOOTROM_ADDR_W),
        .B_BIT(`TESTER_B_BIT)
@@ -271,17 +262,17 @@ module tester
    int_mem0 
       (
       .clk                  (clk ),
-      .rst                  (reset),
+      .rst                  (rst),
       .boot                 (boot),
-      .cpu_reset            (boot_reset),
+      .cpu_reset            (cpu_reset),
 
       // instruction bus
-      .i_req                (int_mem_i_req),
-      .i_resp               (int_mem_i_resp),
+      .i_req (int_mem_i_req),
+      .i_resp (int_mem_i_resp),
 
       //data bus
-      .d_req                (int_mem_d_req),
-      .d_resp               (int_mem_d_resp)
+      .d_req (int_mem_d_req),
+      .d_resp (int_mem_d_resp)
       );
 
 `ifdef TESTER_USE_DDR
@@ -291,20 +282,23 @@ module tester
    wire axi_invert_r_bit;
    wire axi_invert_w_bit;
 `ifdef TESTER_RUN_EXTMEM
-   assign m_axi_araddr[2*`TESTER_DDR_ADDR_W-1] = ~axi_invert_r_bit;
-   assign m_axi_awaddr[2*`TESTER_DDR_ADDR_W-1] = ~axi_invert_w_bit;
+   assign m_axi_araddr[2*AXI_ADDR_W-1] = ~axi_invert_r_bit;
+   assign m_axi_awaddr[2*AXI_ADDR_W-1] = ~axi_invert_w_bit;
 `else
    //Dont invert bits if we dont run firmware of both systems from the DDR
-   assign m_axi_araddr[2*`TESTER_DDR_ADDR_W-1] = axi_invert_r_bit;
-   assign m_axi_awaddr[2*`TESTER_DDR_ADDR_W-1] = axi_invert_w_bit;
+   assign m_axi_araddr[2*AXI_ADDR_W-1] = axi_invert_r_bit;
+   assign m_axi_awaddr[2*AXI_ADDR_W-1] = axi_invert_w_bit;
 `endif
    ext_mem
     #(
       .ADDR_W(ADDR_W),
       .DATA_W(DATA_W),
+      .AXI_ID_W(AXI_ID_W),
+      .AXI_ADDR_W(AXI_ADDR_W),
+      .AXI_DATA_W(AXI_DATA_W),
       .FIRM_ADDR_W(`TESTER_FIRM_ADDR_W),
       .DCACHE_ADDR_W(`TESTER_DCACHE_ADDR_W),
-      .DDR_ADDR_W(`TESTER_DDR_ADDR_W)
+      .DDR_ADDR_W(AXI_ADDR_W)
       )
     ext_mem0 
      (
@@ -322,47 +316,47 @@ module tester
 
       //AXI INTERFACE
       //address write
-      .axi_awid(m_axi_awid[2*(0+1)-1:0+1]), 
-      .axi_awaddr({axi_invert_w_bit,m_axi_awaddr[2*`TESTER_DDR_ADDR_W-2:`TESTER_DDR_ADDR_W]}), 
-      .axi_awlen(m_axi_awlen[2*(7+1)-1:7+1]), 
-      .axi_awsize(m_axi_awsize[2*(2+1)-1:2+1]), 
-      .axi_awburst(m_axi_awburst[2*(1+1)-1:1+1]), 
-      .axi_awlock(m_axi_awlock[2*(0+1)-1:0+1]), 
-      .axi_awcache(m_axi_awcache[2*(3+1)-1:3+1]), 
-      .axi_awprot(m_axi_awprot[2*(2+1)-1:2+1]),
-      .axi_awqos(m_axi_awqos[2*(3+1)-1:3+1]), 
-      .axi_awvalid(m_axi_awvalid[2*(0+1)-1:0+1]), 
-      .axi_awready(m_axi_awready[2*(0+1)-1:0+1]), 
+      .m_axi_awid(m_axi_awid[2*(AXI_ID_W)-1:AXI_ID_W]), 
+      .m_axi_awaddr({axi_invert_w_bit,m_axi_awaddr[2*AXI_ADDR_W-2:AXI_ADDR_W]}), 
+      .m_axi_awlen(m_axi_awlen[2*(7+1)-1:7+1]), 
+      .m_axi_awsize(m_axi_awsize[2*(2+1)-1:2+1]), 
+      .m_axi_awburst(m_axi_awburst[2*(1+1)-1:1+1]), 
+      .m_axi_awlock(m_axi_awlock[2*(1+1)-1:1+1]), 
+      .m_axi_awcache(m_axi_awcache[2*(3+1)-1:3+1]), 
+      .m_axi_awprot(m_axi_awprot[2*(2+1)-1:2+1]),
+      .m_axi_awqos(m_axi_awqos[2*(3+1)-1:3+1]), 
+      .m_axi_awvalid(m_axi_awvalid[2*(0+1)-1:0+1]), 
+      .m_axi_awready(m_axi_awready[2*(0+1)-1:0+1]), 
         //write
-      .axi_wdata(m_axi_wdata[2*(`TESTER_DATA_W-1+1)-1:`TESTER_DATA_W-1+1]), 
-      .axi_wstrb(m_axi_wstrb[2*(`TESTER_DATA_W/8-1+1)-1:`TESTER_DATA_W/8-1+1]), 
-      .axi_wlast(m_axi_wlast[2*(0+1)-1:0+1]), 
-      .axi_wvalid(m_axi_wvalid[2*(0+1)-1:0+1]), 
-      .axi_wready(m_axi_wready[2*(0+1)-1:0+1]), 
+      .m_axi_wdata(m_axi_wdata[2*(AXI_DATA_W-1+1)-1:AXI_DATA_W-1+1]), 
+      .m_axi_wstrb(m_axi_wstrb[2*(AXI_DATA_W/8-1+1)-1:AXI_DATA_W/8-1+1]), 
+      .m_axi_wlast(m_axi_wlast[2*(0+1)-1:0+1]), 
+      .m_axi_wvalid(m_axi_wvalid[2*(0+1)-1:0+1]), 
+      .m_axi_wready(m_axi_wready[2*(0+1)-1:0+1]), 
       //write response
-      .axi_bid(m_axi_bid[2*(0+1)-1:0+1]),
-      .axi_bresp(m_axi_bresp[2*(1+1)-1:1+1]), 
-      .axi_bvalid(m_axi_bvalid[2*(0+1)-1:0+1]), 
-      .axi_bready(m_axi_bready[2*(0+1)-1:0+1]), 
+      .m_axi_bid(m_axi_bid[2*(AXI_ID_W)-1:AXI_ID_W]),
+      .m_axi_bresp(m_axi_bresp[2*(1+1)-1:1+1]), 
+      .m_axi_bvalid(m_axi_bvalid[2*(0+1)-1:0+1]), 
+      .m_axi_bready(m_axi_bready[2*(0+1)-1:0+1]), 
       //address read
-      .axi_arid(m_axi_arid[2*(0+1)-1:0+1]), 
-      .axi_araddr({axi_invert_r_bit,m_axi_araddr[2*`TESTER_DDR_ADDR_W-2:`TESTER_DDR_ADDR_W]}), 
-      .axi_arlen(m_axi_arlen[2*(7+1)-1:7+1]), 
-      .axi_arsize(m_axi_arsize[2*(2+1)-1:2+1]), 
-      .axi_arburst(m_axi_arburst[2*(1+1)-1:1+1]), 
-      .axi_arlock(m_axi_arlock[2*(0+1)-1:0+1]), 
-      .axi_arcache(m_axi_arcache[2*(3+1)-1:3+1]), 
-      .axi_arprot(m_axi_arprot[2*(2+1)-1:2+1]), 
-      .axi_arqos(m_axi_arqos[2*(3+1)-1:3+1]), 
-      .axi_arvalid(m_axi_arvalid[2*(0+1)-1:0+1]), 
-      .axi_arready(m_axi_arready[2*(0+1)-1:0+1]), 
+      .m_axi_arid(m_axi_arid[2*(AXI_ID_W)-1:AXI_ID_W]), 
+      .m_axi_araddr({axi_invert_r_bit,m_axi_araddr[2*AXI_ADDR_W-2:AXI_ADDR_W]}), 
+      .m_axi_arlen(m_axi_arlen[2*(7+1)-1:7+1]), 
+      .m_axi_arsize(m_axi_arsize[2*(2+1)-1:2+1]), 
+      .m_axi_arburst(m_axi_arburst[2*(1+1)-1:1+1]), 
+      .m_axi_arlock(m_axi_arlock[2*(1+1)-1:1+1]), 
+      .m_axi_arcache(m_axi_arcache[2*(3+1)-1:3+1]), 
+      .m_axi_arprot(m_axi_arprot[2*(2+1)-1:2+1]), 
+      .m_axi_arqos(m_axi_arqos[2*(3+1)-1:3+1]), 
+      .m_axi_arvalid(m_axi_arvalid[2*(0+1)-1:0+1]), 
+      .m_axi_arready(m_axi_arready[2*(0+1)-1:0+1]), 
       //read 
-      .axi_rid(m_axi_rid[2*(0+1)-1:0+1]),
-      .axi_rdata(m_axi_rdata[2*(`TESTER_DATA_W-1+1)-1:`TESTER_DATA_W-1+1]), 
-      .axi_rresp(m_axi_rresp[2*(1+1)-1:1+1]), 
-      .axi_rlast(m_axi_rlast[2*(0+1)-1:0+1]), 
-      .axi_rvalid(m_axi_rvalid[2*(0+1)-1:0+1]),  
-      .axi_rready(m_axi_rready[2*(0+1)-1:0+1])
+      .m_axi_rid(m_axi_rid[2*(AXI_ID_W)-1:AXI_ID_W]),
+      .m_axi_rdata(m_axi_rdata[2*(AXI_DATA_W-1+1)-1:AXI_DATA_W-1+1]), 
+      .m_axi_rresp(m_axi_rresp[2*(1+1)-1:1+1]), 
+      .m_axi_rlast(m_axi_rlast[2*(0+1)-1:0+1]), 
+      .m_axi_rvalid(m_axi_rvalid[2*(0+1)-1:0+1]),  
+      .m_axi_rready(m_axi_rready[2*(0+1)-1:0+1])
       );
 `endif
 
