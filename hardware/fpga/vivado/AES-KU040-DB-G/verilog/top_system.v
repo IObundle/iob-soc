@@ -48,9 +48,9 @@ module top_system
 		  output        trap
 		  );
 
-   localparam AXI_ID_W = 2*4;
-   localparam AXI_ADDR_W=2*`DDR_ADDR_W;
-   localparam AXI_DATA_W=2*`DDR_DATA_W;
+   localparam AXI_ID_W = 4;
+   localparam AXI_ADDR_W=`TESTER_DDR_ADDR_W;
+   localparam AXI_DATA_W=`TESTER_DDR_DATA_W;
 
    wire          clk;
    wire 	 rst;
@@ -93,7 +93,43 @@ module top_system
 
 `ifdef TESTER_USE_DDR
    //axi wires between system backend and axi bridge
- `include "m_axi_wire.vh"
+	`IOB_WIRE(m_axi_awid, 2*AXI_ID_W) //Address write channel ID
+	`IOB_WIRE(m_axi_awaddr, 2*AXI_ADDR_W) //Address write channel address
+	`IOB_WIRE(m_axi_awlen, 2*8) //Address write channel burst length
+	`IOB_WIRE(m_axi_awsize, 2*3) //Address write channel burst size. This signal indicates the size of each transfer in the burst
+	`IOB_WIRE(m_axi_awburst, 2*2) //Address write channel burst type
+	`IOB_WIRE(m_axi_awlock, 2*2) //Address write channel lock type
+	`IOB_WIRE(m_axi_awcache, 2*4) //Address write channel memory type. Transactions set with Normal Non-cacheable Modifiable and Bufferable (0011).
+	`IOB_WIRE(m_axi_awprot, 2*3) //Address write channel protection type. Transactions set with Normal, Secure, and Data attributes (000).
+	`IOB_WIRE(m_axi_awqos, 2*4) //Address write channel quality of service
+	`IOB_WIRE(m_axi_awvalid, 2*1) //Address write channel valid
+	`IOB_WIRE(m_axi_awready, 2*1) //Address write channel ready
+	`IOB_WIRE(m_axi_wdata, 2*AXI_DATA_W) //Write channel data
+	`IOB_WIRE(m_axi_wstrb, 2*(AXI_DATA_W/8)) //Write channel write strobe
+	`IOB_WIRE(m_axi_wlast, 2*1) //Write channel last word flag
+	`IOB_WIRE(m_axi_wvalid, 2*1) //Write channel valid
+	`IOB_WIRE(m_axi_wready, 2*1) //Write channel ready
+	`IOB_WIRE(m_axi_bid, 2*AXI_ID_W) //Write response channel ID
+	`IOB_WIRE(m_axi_bresp, 2*2) //Write response channel response
+	`IOB_WIRE(m_axi_bvalid, 2*1) //Write response channel valid
+	`IOB_WIRE(m_axi_bready, 2*1) //Write response channel ready
+	`IOB_WIRE(m_axi_arid, 2*AXI_ID_W) //Address read channel ID
+	`IOB_WIRE(m_axi_araddr, 2*AXI_ADDR_W) //Address read channel address
+	`IOB_WIRE(m_axi_arlen, 2*8) //Address read channel burst length
+	`IOB_WIRE(m_axi_arsize, 2*3) //Address read channel burst size. This signal indicates the size of each transfer in the burst
+	`IOB_WIRE(m_axi_arburst, 2*2) //Address read channel burst type
+	`IOB_WIRE(m_axi_arlock, 2*2) //Address read channel lock type
+	`IOB_WIRE(m_axi_arcache, 2*4) //Address read channel memory type. Transactions set with Normal Non-cacheable Modifiable and Bufferable (0011).
+	`IOB_WIRE(m_axi_arprot, 2*3) //Address read channel protection type. Transactions set with Normal, Secure, and Data attributes (000).
+	`IOB_WIRE(m_axi_arqos, 2*4) //Address read channel quality of service
+	`IOB_WIRE(m_axi_arvalid, 2*1) //Address read channel valid
+	`IOB_WIRE(m_axi_arready, 2*1) //Address read channel ready
+	`IOB_WIRE(m_axi_rid, 2*AXI_ID_W) //Read channel ID
+	`IOB_WIRE(m_axi_rdata, 2*AXI_DATA_W) //Read channel data
+	`IOB_WIRE(m_axi_rresp, 2*2) //Read channel response
+	`IOB_WIRE(m_axi_rlast, 2*1) //Read channel last word
+	`IOB_WIRE(m_axi_rvalid, 2*1) //Read channel valid
+	`IOB_WIRE(m_axi_rready, 2*1) //Read channel ready
 `endif
 
 
@@ -138,6 +174,7 @@ module top_system
       .UART0_cts (1'b1)
       );
 
+`ifdef TESTER_USE_DDR
    ddr4_0 ddr4_ctrl 
      (
       .sys_rst                (reset),
@@ -289,8 +326,8 @@ module top_system
       .S00_AXI_ACLK         (clk), //from ddr4 controller PLL to be used by system
       
       //Write address
-      .S00_AXI_AWID         (m_axi_awid[0]),
-      .S00_AXI_AWADDR       (m_axi_awaddr[`TESTER_DDR_ADDR_W-1:0]),
+      .S00_AXI_AWID         (m_axi_awid[0+:AXI_ID_W]),
+      .S00_AXI_AWADDR       (m_axi_awaddr[0*AXI_ADDR_W+:AXI_ADDR_W]),
       .S00_AXI_AWLEN        (m_axi_awlen[7:0]),
       .S00_AXI_AWSIZE       (m_axi_awsize[2:0]),
       .S00_AXI_AWBURST      (m_axi_awburst[1:0]),
@@ -302,21 +339,21 @@ module top_system
       .S00_AXI_AWREADY      (m_axi_awready[0]),
 
       //Write data
-      .S00_AXI_WDATA        (m_axi_wdata[31:0]),
-      .S00_AXI_WSTRB        (m_axi_wstrb[3:0]),
+      .S00_AXI_WDATA        (m_axi_wdata[0*AXI_DATA_W+:AXI_DATA_W]),
+      .S00_AXI_WSTRB        (m_axi_wstrb[0*(AXI_DATA_W/8)+:(AXI_DATA_W/8)]),
       .S00_AXI_WLAST        (m_axi_wlast[0]),
       .S00_AXI_WVALID       (m_axi_wvalid[0]),
       .S00_AXI_WREADY       (m_axi_wready[0]),
       
       //Write response
-      .S00_AXI_BID           (m_axi_bid[0]),
+      .S00_AXI_BID           (m_axi_bid[0+:AXI_ID_W]),
       .S00_AXI_BRESP         (m_axi_bresp[1:0]),
       .S00_AXI_BVALID        (m_axi_bvalid[0]),
       .S00_AXI_BREADY        (m_axi_bready[0]),
       
       //Read address
-      .S00_AXI_ARID         (m_axi_arid[0]),
-      .S00_AXI_ARADDR       (m_axi_araddr[`TESTER_DDR_ADDR_W-1:0]),
+      .S00_AXI_ARID         (m_axi_arid[0+:AXI_ID_W]),
+      .S00_AXI_ARADDR       (m_axi_araddr[0*AXI_ADDR_W+:AXI_ADDR_W]),
       .S00_AXI_ARLEN        (m_axi_arlen[7:0]),
       .S00_AXI_ARSIZE       (m_axi_arsize[2:0]),
       .S00_AXI_ARBURST      (m_axi_arburst[1:0]),
@@ -328,7 +365,7 @@ module top_system
       .S00_AXI_ARREADY      (m_axi_arready[0]),
       
       //Read data
-      .S00_AXI_RID          (m_axi_rid[0]),
+      .S00_AXI_RID          (m_axi_rid[0+:AXI_ID_W]),
       .S00_AXI_RDATA        (m_axi_rdata[31:0]),
       .S00_AXI_RRESP        (m_axi_rresp[1:0]),
       .S00_AXI_RLAST        (m_axi_rlast[0]),
@@ -343,8 +380,8 @@ module top_system
       .S01_AXI_ACLK         (clk),
       
       //Write address
-      .S01_AXI_AWID         (m_axi_awid[1]),
-      .S01_AXI_AWADDR       (m_axi_awaddr[2*`TESTER_DDR_ADDR_W-1:`TESTER_DDR_ADDR_W]),
+      .S01_AXI_AWID         (m_axi_awid[AXI_ID_W+:AXI_ID_W]),
+      .S01_AXI_AWADDR       (m_axi_awaddr[1*AXI_ADDR_W+:AXI_ADDR_W]),
       .S01_AXI_AWLEN        (m_axi_awlen[15:8]),
       .S01_AXI_AWSIZE       (m_axi_awsize[5:3]),
       .S01_AXI_AWBURST      (m_axi_awburst[3:2]),
@@ -356,21 +393,21 @@ module top_system
       .S01_AXI_AWREADY      (m_axi_awready[1]),
 
       //Write data
-      .S01_AXI_WDATA        (m_axi_wdata[63:32]),
-      .S01_AXI_WSTRB        (m_axi_wstrb[7:4]),
+      .S01_AXI_WDATA        (m_axi_wdata[1*AXI_DATA_W+:AXI_DATA_W]),
+      .S01_AXI_WSTRB        (m_axi_wstrb[1*(AXI_DATA_W/8)+:(AXI_DATA_W/8)]),
       .S01_AXI_WLAST        (m_axi_wlast[1]),
       .S01_AXI_WVALID       (m_axi_wvalid[1]),
       .S01_AXI_WREADY       (m_axi_wready[1]),
       
       //Write response
-      .S01_AXI_BID           (m_axi_bid[1]),
+      .S01_AXI_BID           (m_axi_bid[AXI_ID_W+:AXI_ID_W]),
       .S01_AXI_BRESP         (m_axi_bresp[3:2]),
       .S01_AXI_BVALID        (m_axi_bvalid[1]),
       .S01_AXI_BREADY        (m_axi_bready[1]),
       
       //Read address
-      .S01_AXI_ARID         (m_axi_arid[1]),
-      .S01_AXI_ARADDR       (m_axi_araddr[2*`TESTER_DDR_ADDR_W-1:`TESTER_DDR_ADDR_W]),
+      .S01_AXI_ARID         (m_axi_arid[AXI_ID_W+:AXI_ID_W]),
+      .S01_AXI_ARADDR       (m_axi_araddr[1*AXI_ADDR_W+:AXI_ADDR_W]),
       .S01_AXI_ARLEN        (m_axi_arlen[15:8]),
       .S01_AXI_ARSIZE       (m_axi_arsize[5:3]),
       .S01_AXI_ARBURST      (m_axi_arburst[3:2]),
@@ -382,7 +419,7 @@ module top_system
       .S01_AXI_ARREADY      (m_axi_arready[1]),
       
       //Read data
-      .S01_AXI_RID          (m_axi_rid[1]),
+      .S01_AXI_RID          (m_axi_rid[AXI_ID_W+:AXI_ID_W]),
       .S01_AXI_RDATA        (m_axi_rdata[63:32]),
       .S01_AXI_RRESP        (m_axi_rresp[3:2]),
       .S01_AXI_RLAST        (m_axi_rlast[1]),
@@ -445,5 +482,6 @@ module top_system
       .M00_AXI_RREADY       (ddr4_axi_rready)
       );
 
+`endif
 
 endmodule
