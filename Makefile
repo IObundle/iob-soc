@@ -1,4 +1,3 @@
-include config.mk
 CONF_NAME ?= base
 
 setup clean debug:
