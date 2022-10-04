@@ -16,3 +16,6 @@
 [submodule "submodules/LIB"]
 	path = submodules/LIB
 	url = git@github.com:IObundle/iob-lib.git
+[submodule "submodules/PCIE"]
+	path = submodules/PCIE
+	url = git@github.com:behzadjoudat/iob-pcie.git

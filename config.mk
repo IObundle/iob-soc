@@ -35,8 +35,8 @@ INIT_MEM ?=1
 
 #PERIPHERAL LIST
 #must match respective submodule CORE_NAME in the core.mk file of the submodule
-#PERIPHERALS:=UART
-PERIPHERALS ?=UART
+PERIPHERALS:= UART PCIE
+#PERIPHERALS ?=UART
 
 #RISC-V HARD MULTIPLIER AND DIVIDER INSTRUCTIONS
 USE_MUL_DIV ?=1
@@ -88,6 +88,7 @@ UART_DIR=$(ROOT_DIR)/submodules/UART
 LIB_DIR=$(ROOT_DIR)/submodules/LIB
 MEM_DIR=$(ROOT_DIR)/submodules/MEM
 AXI_DIR=$(ROOT_DIR)/submodules/AXI
+PCIE_DIR=$(ROOT_DIR)/submodules/PCIE
 
 #sw paths
 SW_DIR:=$(ROOT_DIR)/software
