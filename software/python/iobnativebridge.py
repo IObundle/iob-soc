@@ -25,7 +25,10 @@ def create_iobnativebridgeif(directory):
     os.mkdir(os.path.join(iobnativebridgeif_dir,"submodules"))
 
     # symlink LIB submodule from REGFILEIF
-    os.symlink(os.path.join(os.path.dirname(__file__),"../../submodules/LIB"),os.path.join(iobnativebridgeif_dir,"submodules/LIB"))
+    os.symlink(os.path.relpath(
+                   os.path.join(os.path.dirname(__file__),"../../submodules/LIB"),
+                   os.path.join(iobnativebridgeif_dir,"submodules")
+               ),os.path.join(iobnativebridgeif_dir,"submodules/LIB"))
 
     # ~~~~~~~~~~~~ Create config.mk ~~~~~~~~~~~~
     config_mk_str = """
@@ -146,7 +149,10 @@ fout.close()
     fout.close()
     os.chmod(os.path.join(iobnativebridgeif_dir,"software/python","createIObNativeIfSwreg.py"), 0o755)
     # link mkregsregfileif.py
-    os.symlink(os.path.join(os.path.dirname(__file__),"mkregsregfileif.py"),os.path.join(iobnativebridgeif_dir,"software/python","mkregsregfileif.py"))
+    os.symlink(os.path.relpath(
+                   os.path.join(os.path.dirname(__file__),"mkregsregfileif.py"),
+                   os.path.join(iobnativebridgeif_dir,"software/python")
+               ),os.path.join(iobnativebridgeif_dir,"software/python","mkregsregfileif.py"))
 
     # ~~~~~~~~~~~~ Create verilog source ~~~~~~~~~~~~
     os.mkdir(os.path.join(iobnativebridgeif_dir,"hardware/src"))
