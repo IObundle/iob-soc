@@ -8,6 +8,7 @@ software/*/*
 !software/*/Makefile
 !software/*/*.expected
 !software/*/*.py
+!software/*/*.mk
 
 !software/bootloader/boot.c
 !software/bootloader/boot.S

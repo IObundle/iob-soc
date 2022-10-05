@@ -48,11 +48,10 @@ def create_top_system(directories_str, peripherals_str):
             for signal in pio_signals:
                 template_contents.insert(start_index, '               .{signal}({signal}),\n'.format(signal=corename+str(i)+"_"+signal))
 
-    # Write system.v
-    systemv_file = open("system_top.v", "w")
-    systemv_file.writelines(template_contents)
-    systemv_file.close()
-
+    # Write system_top.v
+    systemtop_file = open("system_top.v", "w")
+    systemtop_file.writelines(template_contents)
+    systemtop_file.close()
 
 if __name__ == "__main__":
     # Parse arguments

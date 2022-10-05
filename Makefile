@@ -1,21 +1,12 @@
-SHELL = /bin/bash
-export 
+export SHELL = /bin/bash
 
-#run on external memory implies DDR use
-ifeq ($(RUN_EXTMEM),1)
-USE_DDR=1
-endif
+ROOT_DIR:=.
+include ./config.mk
 
 
 #
 # BUILD EMBEDDED SOFTWARE
 #
-SW_DIR:=./software
-FIRM_DIR:=$(SW_DIR)/firmware
-
-#default baud and frequency if not given
-BAUD ?=$(SIM_BAUD)
-FREQ ?=$(SIM_FREQ)
 
 fw-build:
 	make -C $(FIRM_DIR) build-all
@@ -30,7 +21,6 @@ fw-debug:
 # EMULATE ON PC
 #
 
-PC_DIR:=$(SW_DIR)/pc-emul
 pc-emul-build:
 	make fw-build
 	make -C $(PC_DIR)
@@ -44,20 +34,16 @@ pc-emul-clean: fw-clean
 pc-emul-test: pc-emul-clean
 	make -C $(PC_DIR) test
 
-
-HW_DIR=./hardware
 #
 # SIMULATE RTL
 #
-#default simulator running locally or remotely
-SIMULATOR ?=icarus
-SIM_DIR=$(HW_DIR)/simulation/$(SIMULATOR)
+
 #default baud and system clock frequency
-SIM_BAUD = 2500000
-SIM_FREQ =50000000
+SIM_BAUD ?= 2500000
+SIM_FREQ ?=50000000
 sim-build:
-	make fw-build
-	make -C $(SIM_DIR) build
+	make fw-build BAUD=$(SIM_BAUD) FREQ=$(SIM_FREQ)
+	make -C $(SIM_DIR) build BAUD=$(SIM_BAUD) FREQ=$(SIM_FREQ)
 
 sim-run: sim-build
 	make -C $(SIM_DIR) run
@@ -74,20 +60,19 @@ sim-debug:
 #
 # BUILD, LOAD AND RUN ON FPGA BOARD
 #
-#default board running locally or remotely
-BOARD ?=CYCLONEV-GT-DK
-BOARD_DIR =$(shell find hardware -name $(BOARD))
+
 #default baud and system clock freq for boards
-BOARD_BAUD = 115200
+BOARD_BAUD ?= 115200
 #default board frequency
-BOARD_FREQ ?=100000000
 ifeq ($(BOARD), CYCLONEV-GT-DK)
-BOARD_FREQ =50000000
+BOARD_FREQ ?=50000000
+else
+BOARD_FREQ ?=100000000
 endif
 
 fpga-build:
 	make fw-build BAUD=$(BOARD_BAUD) FREQ=$(BOARD_FREQ)
-	make -C $(BOARD_DIR) build
+	make -C $(BOARD_DIR) build BAUD=$(BOARD_BAUD) FREQ=$(BOARD_FREQ) SHELL=$(SHELL)
 
 fpga-run: fpga-build
 	make -C $(BOARD_DIR) run TEST_LOG="$(TEST_LOG)"
@@ -107,9 +92,7 @@ fpga-test:
 #
 # COMPILE DOCUMENTS
 #
-#default document to compile
-DOC ?= pb
-DOC_DIR=document/$(DOC)
+
 doc-build:
 	make -C $(DOC_DIR) $(DOC).pdf
 
@@ -175,8 +158,8 @@ debug:
 
 .PHONY: fw-build fw-clean fw-debug\
 	pc-emul-build pc-emul-run pc-emul-clean pc-emul-test \
-	sim-build sim-run sim-clean sim-test \
-	fpga-build fpga-run fpga-clean fpga-test \
+	sim-build sim-run sim-clean sim-test sim-debug \
+	fpga-build fpga-run fpga-clean fpga-test fpga-debug \
 	doc-build doc-clean doc-test \
 	clean \
 	test-pc-emul test-pc-emul-clean \

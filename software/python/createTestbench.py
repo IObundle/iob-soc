@@ -31,10 +31,10 @@ def create_system_testbench(directories_str, peripherals_str):
         if os.path.isfile(root_dir+"/"+submodule_directories[corename]+"/mkregs.conf"):
             template_contents.insert(start_index, '`include "{}"\n'.format(top_module_name+"_swreg_def.vh"))
 
-    # Write system.v
-    systemv_file = open("system_tb.v", "w")
-    systemv_file.writelines(template_contents)
-    systemv_file.close()
+    # Write system_tb.v
+    systemtb_file = open("system_tb.v", "w")
+    systemtb_file.writelines(template_contents)
+    systemtb_file.close()
 
 
 if __name__ == "__main__":

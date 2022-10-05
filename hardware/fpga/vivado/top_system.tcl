@@ -61,7 +61,7 @@ if { $USE_DDR < 0 } {
     }
     
     if { [file isdirectory "./ip/ddr4_0"] } {
-	read_ip ./ip/ddr4_0/ddr4_0.xci
+        read_ip ./ip/ddr4_0/ddr4_0.xci
         report_property [get_files ./ip/ddr4_0/ddr4_0.xci]
     } else {
 

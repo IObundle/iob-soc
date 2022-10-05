@@ -1,14 +1,9 @@
 include $(ROOT_DIR)/hardware/hardware.mk
 
-
 #axi portmap for axi ram
 VHDR+=s_axi_portmap.vh
 s_axi_portmap.vh:
 	$(LIB_DIR)/software/python/axi_gen.py axi_portmap 's_' 's_' 'm_'
-
-#default baud and freq for simulation
-BAUD=$(SIM_BAUD)
-FREQ=$(SIM_FREQ)
 
 #define for testbench
 DEFINE+=$(defmacro)BAUD=$(BAUD)

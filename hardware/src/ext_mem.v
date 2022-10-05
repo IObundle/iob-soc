@@ -1,5 +1,6 @@
 `timescale 1 ns / 1 ps
 
+`include "iob_lib.vh"
 `include "system.vh"
 `include "iob_intercon.vh"
 
