@@ -38,8 +38,9 @@ def connect_to_external_native(filename):
                 re.sub('rdata','rdata_ext', 
                 re.sub('address','address_ext', 
                 re.sub('ready','ready_ext', 
+                re.sub('addr_reg','addr_ext_reg', 
                 file_contents[i]
-                ))))))
+                )))))))
 
     fout = open (filename, 'w')
     fout.writelines(file_contents)
@@ -65,13 +66,11 @@ def create_regs(filename, program):
             reg_rst_val = flds[3] #register name
 
             file_contents.append("`IOB_WIRE({}, {})\n".format(reg_name,reg_size_bits))
-            file_contents.append("iob_reg #(.DATA_W({}))\n".format(reg_size_bits))
+            file_contents.append("iob_reg #(.DATA_W({}),.RST_VAL({}))\n".format(reg_size_bits,reg_rst_val))
             file_contents.append("{} (\n".format(reg_name.lower()))
             file_contents.append(".clk        (clk),\n\
                     .arst       (rst),\n\
-                    .arst_val   ({reg_size_bits}'b{reg_rst_val}),\n\
-                    .rst        (rst),\n\
-                    .rst_val    ({reg_size_bits}'b{reg_rst_val}),\n".format(reg_size_bits=reg_size_bits,reg_rst_val=reg_rst_val))
+                    .rst        (rst),\n")
             #register type
             if '_W' in flds[0]: #write register
                 file_contents.append(".en         ({reg_name}_en),\n\
