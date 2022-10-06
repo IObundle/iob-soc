@@ -5,6 +5,9 @@ VERSION=0070
 # include implementation in document (disabled by default)
 DOC_RESULTS=
 
+#supported flows
+FLOWS := pc-emul
+
 # root directory when building locally
 SOC_DIR ?= .
 #submodule paths

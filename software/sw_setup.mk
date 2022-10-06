@@ -10,6 +10,15 @@
 include $(CACHE_DIR)/software/sw_setup.mk
 include $(UART_DIR)/software/sw_setup.mk
 
+# CACHE sources
+SRC+=$(patsubst $(CACHE_DIR)/software/src/%,$(BUILD_PSRC_DIR)/%,$(wildcard $(CACHE_DIR)/software/src/*))
+$(BUILD_PSRC_DIR)/%: $(CACHE_DIR)/software/src/%
+	cp $< $@
+SRC+=$(patsubst $(CACHE_DIR)/software/psrc/%,$(BUILD_PSRC_DIR)/%,$(wildcard $(CACHE_DIR)/software/psrc/*))
+$(BUILD_PSRC_DIR)/%: $(CACHE_DIR)/software/psrc/%
+	cp $< $@
+
+
 # UART sources
 SRC+=$(patsubst $(UART_DIR)/software/src/%,$(BUILD_PSRC_DIR)/%,$(wildcard $(UART_DIR)/software/src/*))
 $(BUILD_PSRC_DIR)/%: $(UART_DIR)/software/src/%
