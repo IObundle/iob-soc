@@ -34,7 +34,7 @@ module top_system
    );
    
    //axi4 parameters
-   parameter AXI_ID_W = 1;
+   localparam AXI_ID_W = 1;
    localparam AXI_ADDR_W=`DDR_ADDR_W;
    localparam AXI_DATA_W=`DDR_DATA_W;
    
