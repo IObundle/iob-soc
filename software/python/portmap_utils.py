@@ -129,8 +129,8 @@ def read_portmap(instances_amount, instances_parameters, peripheral_signals, per
                 signal2_size = calculate_signal_size(signal2_size)
                 # Make sure signals have the same size
                 if (signal1_size!=signal2_size):
-                    print("Error: Portmap file line {}, signals have different sizes: {} and {}. They must be equal!".format(idx+1,signal1_size,signal2_size))
-                    exit(-1)
+                    print("Warning: Portmap file line {}, signals may have different sizes: {} and {}. They must be equal!".format(idx+1,signal1_size,signal2_size))
+                    #exit(-1) # Only give warning, because signals may contain different macros that evaluate to the same value.
                 # Create pwires signal to merge them
                 pwires.append(["merge_{}{}_{}_with_{}{}_{}".format(result.group(1),result.group(2),result.group(3),result.group(4),result.group(5),result.group(6)),signal1_size])
                 # Store index of pwires signal in mapping
