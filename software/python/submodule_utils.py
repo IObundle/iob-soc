@@ -98,7 +98,9 @@ def replaceByParameterValue(string_with_parameter, parameters_default_values, or
 
     #Find parameter name
     for parameter in parameters_default_values:
-        if parameter in string_with_parameter:
+        #Check if parameter is in string, and is not followed by any other letters that could be considered part of the parameter
+        result = re.search(f"[^a-zA-Z_`]{parameter}[^a-zA-Z_]", string_with_parameter)
+        if result is not None:
             parameter_name=parameter
             break
         parameter_idx+=1
