@@ -1,5 +1,6 @@
 `timescale 1ns / 1ps
 `include "tester.vh"
+`include "iob_lib.vh"
 
 module top_system
   (
