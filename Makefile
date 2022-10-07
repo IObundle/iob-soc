@@ -25,26 +25,26 @@ fw-debug:
 # EMULATE ON PC
 #
 
+#default baud and system clock frequency
+SIM_BAUD ?= 2500000
+SIM_FREQ ?=50000000
 pc-emul-build:
-	make fw-build
-	make -C $(PC_DIR)
+	make fw-build BAUD=$(SIM_BAUD) FREQ=$(SIM_FREQ)
+	make -C $(PC_DIR) BAUD=$(SIM_BAUD) FREQ=$(SIM_FREQ)
 
 pc-emul-run: pc-emul-build
-	make -C $(PC_DIR) run
+	make -C $(PC_DIR) run BAUD=$(SIM_BAUD) FREQ=$(SIM_FREQ)
 
 pc-emul-clean: fw-clean
 	make -C $(PC_DIR) clean
 
 pc-emul-test: pc-emul-clean
-	make -C $(PC_DIR) test
+	make -C $(PC_DIR) test BAUD=$(SIM_BAUD) FREQ=$(SIM_FREQ)
 
 #
 # SIMULATE RTL
 #
 
-#default baud and system clock frequency
-SIM_BAUD ?= 2500000
-SIM_FREQ ?=50000000
 sim-build: $(SIM_DEPS)
 	make fw-build BAUD=$(SIM_BAUD) FREQ=$(SIM_FREQ)
 	make -C $(SIM_DIR) build BAUD=$(SIM_BAUD) FREQ=$(SIM_FREQ)
