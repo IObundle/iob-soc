@@ -52,7 +52,8 @@ VSRC+=$(AXI_DIR)/submodules/V_AXI/rtl/arbiter.v
 VSRC+=$(AXI_DIR)/submodules/V_AXI/rtl/priority_encoder.v
 endif
 
-VSRC+=system_top.v
+SIMULATION_TOP_SYSTEM ?=system_top.v
+VSRC+=$(SIMULATION_TOP_SYSTEM)
 
 #testbench
 ifneq ($(SIMULATOR),verilator)

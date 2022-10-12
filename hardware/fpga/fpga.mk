@@ -8,7 +8,8 @@ JOB=$(shell echo $(USER) `md5sum $(FPGA_OBJ)  | cut -d" " -f1`)
 
 
 #SOURCES
-VSRC+=./verilog/top_system.v
+BOARD_TOP_SYSTEM ?=./verilog/top_system.v
+VSRC+=$(BOARD_TOP_SYSTEM)
 
 ifeq ($(RUN_EXTMEM),1)
 INIT_MEM=0
@@ -54,7 +55,7 @@ endif
 build: $(FPGA_OBJ)
 
 $(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) $(HEXPROGS) get_vsrc get_vhdr get_tester_defines
-ifeq ($(NORUN),0)
+#ifeq ($(NORUN),0) #Allow building even if NORUN to check FPGA resources used
 ifeq ($(FPGA_SERVER),)
 	@rm -f $(FPGA_LOG)
 	make local-build
@@ -66,7 +67,7 @@ else
 	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD)/$(FPGA_OBJ) .
 	scp $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)/hardware/fpga/$(TOOL)/$(BOARD)/$(FPGA_LOG) .
 endif
-endif
+#endif
 
 #
 # Board access queue
