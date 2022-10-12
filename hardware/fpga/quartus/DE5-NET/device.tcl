@@ -27,6 +27,370 @@ set_location_assignment PIN_AW35 -to clk ; # OSC_50_B3B
 # set_location_assignment PIN_J18 -to OSC_50_B7D
 # set_location_assignment PIN_R36 -to OSC_50_B8A
 # set_location_assignment PIN_R25 -to OSC_50_B8D
+#============================================================
+# BUTTON x 4 and CPU_RESET_n
+#============================================================
+# set_instance_assignment -name IO_STANDARD "2.5 V" -to BUTTON[0]
+# set_instance_assignment -name IO_STANDARD "2.5 V" -to BUTTON[1]
+# set_instance_assignment -name IO_STANDARD "2.5 V" -to BUTTON[2]
+# set_instance_assignment -name IO_STANDARD "2.5 V" -to BUTTON[3]
+set_instance_assignment -name IO_STANDARD "2.5 V" -to resetn ; # CPU_RESET_n
+# set_location_assignment PIN_AK15 -to BUTTON[0]
+# set_location_assignment PIN_AK14 -to BUTTON[1]
+# set_location_assignment PIN_AL14 -to BUTTON[2]
+# set_location_assignment PIN_AL15 -to BUTTON[3]
+set_location_assignment PIN_BC37 -to resetn ; # CPU_RESET_n
+
+#============================================================
+# RS422
+#============================================================
+set_instance_assignment -name IO_STANDARD "2.5 V" -to rs422_de      ; # RS422_DE
+set_instance_assignment -name IO_STANDARD "2.5 V" -to uart_rxd      ; # RS422_DIN
+set_instance_assignment -name IO_STANDARD "2.5 V" -to uart_txd      ; # RS422_DOUT
+set_instance_assignment -name IO_STANDARD "2.5 V" -to rs422_re_n    ; # RS422_RE_n
+set_instance_assignment -name IO_STANDARD "2.5 V" -to rs422_te      ; # RS422_TE
+set_location_assignment PIN_AG14 -to rs422_de                       ; # RS422_DE
+set_location_assignment PIN_AE18 -to uart_rxd                       ; # RS422_DIN
+set_location_assignment PIN_AE17 -to uart_txd                       ; # RS422_DOUT
+set_location_assignment PIN_AF17 -to rs422_re_n                     ; # RS422_RE_n
+set_location_assignment PIN_AF16 -to rs422_te                       ; # RS422_TE
+set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to rs422_de
+set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to uart_rxd
+set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to uart_txd
+set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to rs422_re_n
+set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to rs422_te
+set_instance_assignment -name SLEW_RATE 1 -to rs422_de     ; # fast
+set_instance_assignment -name SLEW_RATE 1 -to uart_rxd     ; # fast
+set_instance_assignment -name SLEW_RATE 1 -to uart_txd     ; # fast
+set_instance_assignment -name SLEW_RATE 1 -to rs422_re_n   ; # fast
+set_instance_assignment -name SLEW_RATE 1 -to rs422_te     ; # fast
+
+################################################################################
+# PCIE Connections
+################################################################################
+# PCIe clk (100 MHz)
+set_location_assignment PIN_AK38 -to PCIE_REFCLK
+set_instance_assignment -name IO_STANDARD HCSL -to PCIE_REFCLK
+
+set_location_assignment PIN_AK39 -to "PCIE_REFCLK(n)"
+set_instance_assignment -name IO_STANDARD HCSL -to "PCIE_REFCLK(n)"
+
+set_location_assignment PIN_AU33 -to PCIE_RESET_N
+set_instance_assignment -name IO_STANDARD "2.5 V" -to PCIE_RESET_N
+
+################################################################################
+#PCIE Pins
+################################################################################
+# Settings from SV PCIE User Guide (AV-ST)
+# 100 Ohm Termination 
+# 1.5V PCML 
+# XCVR_VCCR_VCCT_VOLTAGE 0_9V (GEN 1/2 CMU)
+# XCVR_VCCA_VOLTAGE 2_5V (GEN 1/2 CMU)
+# We use CMU PLL's (http://www.altera.com/literature/hb/stratix-v/stx5_52003.pdf)
+
+################################################################################
+#PCIE RX_IN 0
+################################################################################
+
+set_location_assignment PIN_BB43 -to PCIE_RX_IN[0]
+set_location_assignment PIN_BB44 -to "PCIE_RX_IN[0](n)"
+
+set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to PCIE_RX_IN[0]
+set_instance_assignment -name XCVR_ANALOG_SETTINGS_PROTOCOL PCIE_GEN1 -to PCIE_RX_IN[0]
+set_instance_assignment -name XCVR_VCCR_VCCT_VOLTAGE 0_9V -to PCIE_RX_IN[0]
+set_instance_assignment -name XCVR_VCCA_VOLTAGE 2_5V -to PCIE_RX_IN[0]
+
+set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to "PCIE_RX_IN[0](n)"
+set_instance_assignment -name XCVR_ANALOG_SETTINGS_PROTOCOL PCIE_GEN1 -to "PCIE_RX_IN[0](n)"
+set_instance_assignment -name XCVR_VCCR_VCCT_VOLTAGE 0_9V -to "PCIE_RX_IN[0](n)"
+set_instance_assignment -name XCVR_VCCA_VOLTAGE 2_5V -to "PCIE_RX_IN[0](n)"
+
+################################################################################
+#PCIE RX_IN 1
+################################################################################
+
+set_location_assignment PIN_BA41 -to PCIE_RX_IN[1]
+set_location_assignment PIN_BA42 -to "PCIE_RX_IN[1](n)"
+
+set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to PCIE_RX_IN[1]
+set_instance_assignment -name XCVR_ANALOG_SETTINGS_PROTOCOL PCIE_GEN1 -to PCIE_RX_IN[1]
+set_instance_assignment -name XCVR_VCCR_VCCT_VOLTAGE 0_9V -to PCIE_RX_IN[1]
+set_instance_assignment -name XCVR_VCCA_VOLTAGE 2_5V -to PCIE_RX_IN[1]
+
+set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to "PCIE_RX_IN[1](n)"
+set_instance_assignment -name XCVR_ANALOG_SETTINGS_PROTOCOL PCIE_GEN1 -to "PCIE_RX_IN[1](n)"
+set_instance_assignment -name XCVR_VCCR_VCCT_VOLTAGE 0_9V -to "PCIE_RX_IN[1](n)"
+set_instance_assignment -name XCVR_VCCA_VOLTAGE 2_5V -to "PCIE_RX_IN[1](n)"
+
+################################################################################
+#PCIE RX_IN 2
+################################################################################
+
+set_location_assignment PIN_AW41 -to PCIE_RX_IN[2]
+set_location_assignment PIN_AW42 -to "PCIE_RX_IN[2](n)"
+
+set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to PCIE_RX_IN[2]
+set_instance_assignment -name XCVR_ANALOG_SETTINGS_PROTOCOL PCIE_GEN1 -to PCIE_RX_IN[2]
+set_instance_assignment -name XCVR_VCCR_VCCT_VOLTAGE 0_9V -to PCIE_RX_IN[2]
+set_instance_assignment -name XCVR_VCCA_VOLTAGE 2_5V -to PCIE_RX_IN[2]
+
+set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to "PCIE_RX_IN[2](n)"
+set_instance_assignment -name XCVR_ANALOG_SETTINGS_PROTOCOL PCIE_GEN1 -to "PCIE_RX_IN[2](n)"
+set_instance_assignment -name XCVR_VCCR_VCCT_VOLTAGE 0_9V -to "PCIE_RX_IN[2](n)"
+set_instance_assignment -name XCVR_VCCA_VOLTAGE 2_5V -to "PCIE_RX_IN[2](n)"
+
+################################################################################
+#PCIE RX_IN 3
+################################################################################
+
+set_location_assignment PIN_AY43 -to PCIE_RX_IN[3]
+set_location_assignment PIN_AY44 -to "PCIE_RX_IN[3](n)"
+
+set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to PCIE_RX_IN[3]
+set_instance_assignment -name XCVR_ANALOG_SETTINGS_PROTOCOL PCIE_GEN1 -to PCIE_RX_IN[3]
+set_instance_assignment -name XCVR_VCCR_VCCT_VOLTAGE 0_9V -to PCIE_RX_IN[3]
+set_instance_assignment -name XCVR_VCCA_VOLTAGE 2_5V -to PCIE_RX_IN[3]
+
+set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to "PCIE_RX_IN[3](n)"
+set_instance_assignment -name XCVR_ANALOG_SETTINGS_PROTOCOL PCIE_GEN1 -to "PCIE_RX_IN[3](n)"
+set_instance_assignment -name XCVR_VCCR_VCCT_VOLTAGE 0_9V -to "PCIE_RX_IN[3](n)"
+set_instance_assignment -name XCVR_VCCA_VOLTAGE 2_5V -to "PCIE_RX_IN[3](n)"
+
+################################################################################
+#PCIE RX_IN 4
+################################################################################
+
+set_location_assignment PIN_AT43 -to PCIE_RX_IN[4]
+set_location_assignment PIN_AT44 -to "PCIE_RX_IN[4](n)"
+
+set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to PCIE_RX_IN[4]
+set_instance_assignment -name XCVR_ANALOG_SETTINGS_PROTOCOL PCIE_GEN1 -to PCIE_RX_IN[4]
+set_instance_assignment -name XCVR_VCCR_VCCT_VOLTAGE 0_9V -to PCIE_RX_IN[4]
+set_instance_assignment -name XCVR_VCCA_VOLTAGE 2_5V -to PCIE_RX_IN[4]
+
+set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to "PCIE_RX_IN[4](n)"
+set_instance_assignment -name XCVR_ANALOG_SETTINGS_PROTOCOL PCIE_GEN1 -to "PCIE_RX_IN[4](n)"
+set_instance_assignment -name XCVR_VCCR_VCCT_VOLTAGE 0_9V -to "PCIE_RX_IN[4](n)"
+set_instance_assignment -name XCVR_VCCA_VOLTAGE 2_5V -to "PCIE_RX_IN[4](n)"
+
+################################################################################
+#PCIE RX_IN 5
+################################################################################
+
+set_location_assignment PIN_AP43 -to PCIE_RX_IN[5]
+set_location_assignment PIN_AP44 -to "PCIE_RX_IN[5](n)"
+
+set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to PCIE_RX_IN[5]
+set_instance_assignment -name XCVR_ANALOG_SETTINGS_PROTOCOL PCIE_GEN1 -to PCIE_RX_IN[5]
+set_instance_assignment -name XCVR_VCCR_VCCT_VOLTAGE 0_9V -to PCIE_RX_IN[5]
+set_instance_assignment -name XCVR_VCCA_VOLTAGE 2_5V -to PCIE_RX_IN[5]
+
+set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to "PCIE_RX_IN[5](n)"
+set_instance_assignment -name XCVR_ANALOG_SETTINGS_PROTOCOL PCIE_GEN1 -to "PCIE_RX_IN[5](n)"
+set_instance_assignment -name XCVR_VCCR_VCCT_VOLTAGE 0_9V -to "PCIE_RX_IN[5](n)"
+set_instance_assignment -name XCVR_VCCA_VOLTAGE 2_5V -to "PCIE_RX_IN[5](n)"
+
+################################################################################
+#PCIE RX_IN 6
+################################################################################
+
+set_location_assignment PIN_AM43 -to PCIE_RX_IN[6]
+set_location_assignment PIN_AM44 -to "PCIE_RX_IN[6](n)"
+
+set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to PCIE_RX_IN[6]
+set_instance_assignment -name XCVR_ANALOG_SETTINGS_PROTOCOL PCIE_GEN1 -to PCIE_RX_IN[6]
+set_instance_assignment -name XCVR_VCCR_VCCT_VOLTAGE 0_9V -to PCIE_RX_IN[6]
+set_instance_assignment -name XCVR_VCCA_VOLTAGE 2_5V -to PCIE_RX_IN[6]
+
+set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to "PCIE_RX_IN[6](n)"
+set_instance_assignment -name XCVR_ANALOG_SETTINGS_PROTOCOL PCIE_GEN1 -to "PCIE_RX_IN[6](n)"
+set_instance_assignment -name XCVR_VCCR_VCCT_VOLTAGE 0_9V -to "PCIE_RX_IN[6](n)"
+set_instance_assignment -name XCVR_VCCA_VOLTAGE 2_5V -to "PCIE_RX_IN[6](n)"
+
+################################################################################
+#PCIE RX_IN 7
+################################################################################
+
+set_location_assignment PIN_AK43 -to PCIE_RX_IN[7]
+set_location_assignment PIN_AK44 -to "PCIE_RX_IN[7](n)"
+
+set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to PCIE_RX_IN[7]
+set_instance_assignment -name XCVR_ANALOG_SETTINGS_PROTOCOL PCIE_GEN1 -to PCIE_RX_IN[7]
+set_instance_assignment -name XCVR_VCCR_VCCT_VOLTAGE 0_9V -to PCIE_RX_IN[7]
+set_instance_assignment -name XCVR_VCCA_VOLTAGE 2_5V -to PCIE_RX_IN[7]
+
+set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to "PCIE_RX_IN[7](n)"
+set_instance_assignment -name XCVR_ANALOG_SETTINGS_PROTOCOL PCIE_GEN1 -to "PCIE_RX_IN[7](n)"
+set_instance_assignment -name XCVR_VCCR_VCCT_VOLTAGE 0_9V -to "PCIE_RX_IN[7](n)"
+set_instance_assignment -name XCVR_VCCA_VOLTAGE 2_5V -to "PCIE_RX_IN[7](n)"
+
+################################################################################
+#PCIE TX_OUT 0
+################################################################################
+set_location_assignment PIN_AY39 -to PCIE_TX_OUT[0]
+set_location_assignment PIN_AY40 -to "PCIE_TX_OUT[0](n)"
+
+set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to PCIE_TX_OUT[0]
+set_instance_assignment -name XCVR_ANALOG_SETTINGS_PROTOCOL PCIE_GEN1 -to PCIE_TX_OUT[0]
+set_instance_assignment -name XCVR_VCCR_VCCT_VOLTAGE 0_9V -to PCIE_TX_OUT[0]
+set_instance_assignment -name XCVR_VCCA_VOLTAGE 2_5V -to PCIE_TX_OUT[0]
+
+set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to "PCIE_TX_OUT[0](n)"
+set_instance_assignment -name XCVR_ANALOG_SETTINGS_PROTOCOL PCIE_GEN1 -to "PCIE_TX_OUT[0](n)"
+set_instance_assignment -name XCVR_VCCR_VCCT_VOLTAGE 0_9V -to "PCIE_TX_OUT[0](n)"
+set_instance_assignment -name XCVR_VCCA_VOLTAGE 2_5V -to "PCIE_TX_OUT[0](n)"
+
+################################################################################
+#PCIE TX_OUT 1
+################################################################################
+set_location_assignment PIN_AV39 -to PCIE_TX_OUT[1]
+set_location_assignment PIN_AV40 -to "PCIE_TX_OUT[1](n)"
+
+set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to PCIE_TX_OUT[1]
+set_instance_assignment -name XCVR_ANALOG_SETTINGS_PROTOCOL PCIE_GEN1 -to PCIE_TX_OUT[1]
+set_instance_assignment -name XCVR_VCCR_VCCT_VOLTAGE 0_9V -to PCIE_TX_OUT[1]
+set_instance_assignment -name XCVR_VCCA_VOLTAGE 2_5V -to PCIE_TX_OUT[1]
+
+set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to "PCIE_TX_OUT[1](n)"
+set_instance_assignment -name XCVR_ANALOG_SETTINGS_PROTOCOL PCIE_GEN1 -to "PCIE_TX_OUT[1](n)"
+set_instance_assignment -name XCVR_VCCR_VCCT_VOLTAGE 0_9V -to "PCIE_TX_OUT[1](n)"
+set_instance_assignment -name XCVR_VCCA_VOLTAGE 2_5V -to "PCIE_TX_OUT[1](n)"
+
+################################################################################
+#PCIE TX_OUT 2
+################################################################################
+set_location_assignment PIN_AT39 -to PCIE_TX_OUT[2]
+set_location_assignment PIN_AT40 -to "PCIE_TX_OUT[2](n)"
+
+set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to PCIE_TX_OUT[2]
+set_instance_assignment -name XCVR_ANALOG_SETTINGS_PROTOCOL PCIE_GEN1 -to PCIE_TX_OUT[2]
+set_instance_assignment -name XCVR_VCCR_VCCT_VOLTAGE 0_9V -to PCIE_TX_OUT[2]
+set_instance_assignment -name XCVR_VCCA_VOLTAGE 2_5V -to PCIE_TX_OUT[2]
+
+set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to "PCIE_TX_OUT[2](n)"
+set_instance_assignment -name XCVR_ANALOG_SETTINGS_PROTOCOL PCIE_GEN1 -to "PCIE_TX_OUT[2](n)"
+set_instance_assignment -name XCVR_VCCR_VCCT_VOLTAGE 0_9V -to "PCIE_TX_OUT[2](n)"
+set_instance_assignment -name XCVR_VCCA_VOLTAGE 2_5V -to "PCIE_TX_OUT[2](n)"
+
+################################################################################
+#PCIE TX_OUT 3
+################################################################################
+set_location_assignment PIN_AU41 -to PCIE_TX_OUT[3]
+set_location_assignment PIN_AU42 -to "PCIE_TX_OUT[3](n)"
+
+set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to PCIE_TX_OUT[3]
+set_instance_assignment -name XCVR_ANALOG_SETTINGS_PROTOCOL PCIE_GEN1 -to PCIE_TX_OUT[3]
+set_instance_assignment -name XCVR_VCCR_VCCT_VOLTAGE 0_9V -to PCIE_TX_OUT[3]
+set_instance_assignment -name XCVR_VCCA_VOLTAGE 2_5V -to PCIE_TX_OUT[3]
+
+set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to "PCIE_TX_OUT[3](n)"
+set_instance_assignment -name XCVR_ANALOG_SETTINGS_PROTOCOL PCIE_GEN1 -to "PCIE_TX_OUT[3](n)"
+set_instance_assignment -name XCVR_VCCR_VCCT_VOLTAGE 0_9V -to "PCIE_TX_OUT[3](n)"
+set_instance_assignment -name XCVR_VCCA_VOLTAGE 2_5V -to "PCIE_TX_OUT[3](n)"
+
+################################################################################
+#PCIE TX_OUT 4
+################################################################################
+set_location_assignment PIN_AN41 -to PCIE_TX_OUT[4]
+set_location_assignment PIN_AN42 -to "PCIE_TX_OUT[4](n)"
+
+set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to PCIE_TX_OUT[4]
+set_instance_assignment -name XCVR_ANALOG_SETTINGS_PROTOCOL PCIE_GEN1 -to PCIE_TX_OUT[4]
+set_instance_assignment -name XCVR_VCCR_VCCT_VOLTAGE 0_9V -to PCIE_TX_OUT[4]
+set_instance_assignment -name XCVR_VCCA_VOLTAGE 2_5V -to PCIE_TX_OUT[4]
+
+set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to "PCIE_TX_OUT[4](n)"
+set_instance_assignment -name XCVR_ANALOG_SETTINGS_PROTOCOL PCIE_GEN1 -to "PCIE_TX_OUT[4](n)"
+set_instance_assignment -name XCVR_VCCR_VCCT_VOLTAGE 0_9V -to "PCIE_TX_OUT[4](n)"
+set_instance_assignment -name XCVR_VCCA_VOLTAGE 2_5V -to "PCIE_TX_OUT[4](n)"
+
+################################################################################
+#PCIE TX_OUT 5
+################################################################################
+set_location_assignment PIN_AL41 -to PCIE_TX_OUT[5]
+set_location_assignment PIN_AL42 -to "PCIE_TX_OUT[5](n)"
+
+set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to PCIE_TX_OUT[5]
+set_instance_assignment -name XCVR_ANALOG_SETTINGS_PROTOCOL PCIE_GEN1 -to PCIE_TX_OUT[5]
+set_instance_assignment -name XCVR_VCCR_VCCT_VOLTAGE 0_9V -to PCIE_TX_OUT[5]
+set_instance_assignment -name XCVR_VCCA_VOLTAGE 2_5V -to PCIE_TX_OUT[5]
+
+set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to "PCIE_TX_OUT[5](n)"
+set_instance_assignment -name XCVR_ANALOG_SETTINGS_PROTOCOL PCIE_GEN1 -to "PCIE_TX_OUT[5](n)"
+set_instance_assignment -name XCVR_VCCR_VCCT_VOLTAGE 0_9V -to "PCIE_TX_OUT[5](n)"
+set_instance_assignment -name XCVR_VCCA_VOLTAGE 2_5V -to "PCIE_TX_OUT[5](n)"
+
+################################################################################
+#PCIE TX_OUT 6
+################################################################################
+set_location_assignment PIN_AJ41 -to PCIE_TX_OUT[6]
+set_location_assignment PIN_AJ42 -to "PCIE_TX_OUT[6](n)"
+
+set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to PCIE_TX_OUT[6]
+set_instance_assignment -name XCVR_ANALOG_SETTINGS_PROTOCOL PCIE_GEN1 -to PCIE_TX_OUT[6]
+set_instance_assignment -name XCVR_VCCR_VCCT_VOLTAGE 0_9V -to PCIE_TX_OUT[6]
+set_instance_assignment -name XCVR_VCCA_VOLTAGE 2_5V -to PCIE_TX_OUT[6]
+
+set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to "PCIE_TX_OUT[6](n)"
+set_instance_assignment -name XCVR_ANALOG_SETTINGS_PROTOCOL PCIE_GEN1 -to "PCIE_TX_OUT[6](n)"
+set_instance_assignment -name XCVR_VCCR_VCCT_VOLTAGE 0_9V -to "PCIE_TX_OUT[6](n)"
+set_instance_assignment -name XCVR_VCCA_VOLTAGE 2_5V -to "PCIE_TX_OUT[6](n)"
+
+################################################################################
+#PCIE TX_OUT 7
+################################################################################
+
+set_location_assignment PIN_AG41 -to PCIE_TX_OUT[7]
+set_location_assignment PIN_AG42 -to "PCIE_TX_OUT[7](n)"
+
+set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to PCIE_TX_OUT[7]
+set_instance_assignment -name XCVR_ANALOG_SETTINGS_PROTOCOL PCIE_GEN1 -to PCIE_TX_OUT[7]
+set_instance_assignment -name XCVR_VCCR_VCCT_VOLTAGE 0_9V -to PCIE_TX_OUT[7]
+set_instance_assignment -name XCVR_VCCA_VOLTAGE 2_5V -to PCIE_TX_OUT[7]
+
+set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to "PCIE_TX_OUT[7](n)"
+set_instance_assignment -name XCVR_ANALOG_SETTINGS_PROTOCOL PCIE_GEN1 -to "PCIE_TX_OUT[7](n)"
+set_instance_assignment -name XCVR_VCCR_VCCT_VOLTAGE 0_9V -to "PCIE_TX_OUT[7](n)"
+set_instance_assignment -name XCVR_VCCA_VOLTAGE 2_5V -to "PCIE_TX_OUT[7](n)"
+
+################################################################################
+# LED's
+################################################################################
+set_instance_assignment -name IO_STANDARD "2.5 V" -to LED[0]
+set_instance_assignment -name IO_STANDARD "2.5 V" -to LED[1]
+set_instance_assignment -name IO_STANDARD "2.5 V" -to LED[2]
+set_instance_assignment -name IO_STANDARD "2.5 V" -to LED[3]
+set_instance_assignment -name IO_STANDARD "2.5 V" -to LED[4]
+set_instance_assignment -name IO_STANDARD "2.5 V" -to LED[5]
+set_instance_assignment -name IO_STANDARD "2.5 V" -to LED[6]
+set_instance_assignment -name IO_STANDARD "2.5 V" -to LED[7]
+
+set_location_assignment PIN_AW37 -to LED[0]
+set_location_assignment PIN_AV37 -to LED[1]
+set_location_assignment PIN_BB36 -to LED[2]
+set_location_assignment PIN_BB39 -to LED[3]
+set_location_assignment PIN_AH15 -to LED[4]
+set_location_assignment PIN_AH13 -to LED[5]
+set_location_assignment PIN_AJ13 -to LED[6]
+set_location_assignment PIN_AJ14 -to LED[7]
+
+################################################################################
+# OSCILLATORS
+################################################################################
+
+set_location_assignment PIN_BC28 -to OSC_BANK3D_50MHZ
+set_instance_assignment -name IO_STANDARD "1.8 V" -to OSC_BANK3D_50MHZ
+
+################################################################################
+# End Custom Instantiations
+###############################################################################
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
+set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
+set_global_assignment -name VERILOG_INPUT_VERSION SYSTEMVERILOG_2005
+set_global_assignment -name VERILOG_SHOW_LMF_MAPPING_MESSAGES OFF
 
 #============================================================
 # SMA
@@ -45,7 +409,7 @@ set_location_assignment PIN_AW35 -to clk ; # OSC_50_B3B
 # set_instance_assignment -name IO_STANDARD "2.5 V" -to led_board[1]   ; # LED[1]
 # set_instance_assignment -name IO_STANDARD "2.5 V" -to led_board[2]   ; # LED[2]
 # set_instance_assignment -name IO_STANDARD "2.5 V" -to led_board[3]   ; # LED[3]
-set_instance_assignment -name IO_STANDARD "2.5 V" -to led_bracket[0] ; # LED_BRACKET[0]
+#set_instance_assignment -name IO_STANDARD "2.5 V" -to led_bracket[0] ; # LED_BRACKET[0]
 # set_instance_assignment -name IO_STANDARD "2.5 V" -to led_bracket[1] ; # LED_BRACKET[1]
 # set_instance_assignment -name IO_STANDARD "2.5 V" -to led_bracket[2] ; # LED_BRACKET[2]
 # set_instance_assignment -name IO_STANDARD "2.5 V" -to led_bracket[3] ; # LED_BRACKET[3]
@@ -55,7 +419,7 @@ set_instance_assignment -name IO_STANDARD "2.5 V" -to led_bracket[0] ; # LED_BRA
 # set_location_assignment PIN_AV37 -to led_board[1]     ; # LED[1]
 # set_location_assignment PIN_BB36 -to led_board[2]     ; # LED[2]
 # set_location_assignment PIN_BB39 -to led_board[3]     ; # LED[3]
-set_location_assignment PIN_AH15 -to led_bracket[0]   ; # LED_BRACKET[0]
+#set_location_assignment PIN_AH15 -to led_bracket[0]   ; # LED_BRACKET[0]
 # set_location_assignment PIN_AH13 -to led_bracket[1]   ; # LED_BRACKET[1]
 # set_location_assignment PIN_AJ13 -to led_bracket[2]   ; # LED_BRACKET[2]
 # set_location_assignment PIN_AJ14 -to led_bracket[3]   ; # LED_BRACKET[3]
@@ -65,7 +429,7 @@ set_location_assignment PIN_AH15 -to led_bracket[0]   ; # LED_BRACKET[0]
 # set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to led_board[1]
 # set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to led_board[2]
 # set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to led_board[3]
-set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to led_bracket[0]
+#set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to led_bracket[0]
 # set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to led_bracket[1]
 # set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to led_bracket[2]
 # set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to led_bracket[3]
@@ -75,27 +439,12 @@ set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to led_bracket[0]
 # set_instance_assignment -name SLEW_RATE 1 -to led_board[1]   ; # fast
 # set_instance_assignment -name SLEW_RATE 1 -to led_board[2]   ; # fast
 # set_instance_assignment -name SLEW_RATE 1 -to led_board[3]   ; # fast
-set_instance_assignment -name SLEW_RATE 1 -to led_bracket[0] ; # fast
+#set_instance_assignment -name SLEW_RATE 1 -to led_bracket[0] ; # fast
 # set_instance_assignment -name SLEW_RATE 1 -to led_bracket[1] ; # fast
 # set_instance_assignment -name SLEW_RATE 1 -to led_bracket[2] ; # fast
 # set_instance_assignment -name SLEW_RATE 1 -to led_bracket[3] ; # fast
 # set_instance_assignment -name SLEW_RATE 1 -to led_rj45[0]    ; # fast
 # set_instance_assignment -name SLEW_RATE 1 -to led_rj45[1]    ; # fast
-
-#============================================================
-# BUTTON x 4 and CPU_RESET_n
-#============================================================
-# set_instance_assignment -name IO_STANDARD "2.5 V" -to BUTTON[0]
-# set_instance_assignment -name IO_STANDARD "2.5 V" -to BUTTON[1]
-# set_instance_assignment -name IO_STANDARD "2.5 V" -to BUTTON[2]
-# set_instance_assignment -name IO_STANDARD "2.5 V" -to BUTTON[3]
-set_instance_assignment -name IO_STANDARD "2.5 V" -to resetn ; # CPU_RESET_n
-# set_location_assignment PIN_AK15 -to BUTTON[0]
-# set_location_assignment PIN_AK14 -to BUTTON[1]
-# set_location_assignment PIN_AL14 -to BUTTON[2]
-# set_location_assignment PIN_AL15 -to BUTTON[3]
-set_location_assignment PIN_BC37 -to resetn ; # CPU_RESET_n
-
 #============================================================
 # SWITCH x 4
 #============================================================
@@ -160,80 +509,9 @@ set_location_assignment PIN_BC37 -to resetn ; # CPU_RESET_n
 # Fan
 #============================================================
 # set_instance_assignment -name IO_STANDARD "2.5 V" -to fan_fan ; # FAN_CTRL
-# set_location_assignment PIN_AR32 -to fan_fan ; # FAN_CTRL
+# set_location_assignment PIN_AR32 -to fan_fan ; # FAN_CTRL
 # set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to fan_fan
 # set_instance_assignment -name SLEW_RATE 1 -to fan_fan ; # fast
-
-#============================================================
-# RS422
-#============================================================
-set_instance_assignment -name IO_STANDARD "2.5 V" -to rs422_de      ; # RS422_DE
-set_instance_assignment -name IO_STANDARD "2.5 V" -to uart_rxd      ; # RS422_DIN
-set_instance_assignment -name IO_STANDARD "2.5 V" -to uart_txd      ; # RS422_DOUT
-set_instance_assignment -name IO_STANDARD "2.5 V" -to rs422_re_n    ; # RS422_RE_n
-set_instance_assignment -name IO_STANDARD "2.5 V" -to rs422_te      ; # RS422_TE
-set_location_assignment PIN_AG14 -to rs422_de                       ; # RS422_DE
-set_location_assignment PIN_AE18 -to uart_rxd                       ; # RS422_DIN
-set_location_assignment PIN_AE17 -to uart_txd                       ; # RS422_DOUT
-set_location_assignment PIN_AF17 -to rs422_re_n                     ; # RS422_RE_n
-set_location_assignment PIN_AF16 -to rs422_te                       ; # RS422_TE
-set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to rs422_de
-set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to uart_rxd
-set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to uart_txd
-set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to rs422_re_n
-set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to rs422_te
-set_instance_assignment -name SLEW_RATE 1 -to rs422_de     ; # fast
-set_instance_assignment -name SLEW_RATE 1 -to uart_rxd     ; # fast
-set_instance_assignment -name SLEW_RATE 1 -to uart_txd     ; # fast
-set_instance_assignment -name SLEW_RATE 1 -to rs422_re_n   ; # fast
-set_instance_assignment -name SLEW_RATE 1 -to rs422_te     ; # fast
-
-#============================================================
-# PCIe x 8
-#============================================================
-# set_instance_assignment -name IO_STANDARD "2.5 V" -to pcie_reset_pin_perst_n ; # PCIE_PERST_n
-# set_instance_assignment -name IO_STANDARD "HCSL" -to pcie_refclk_clk ; # PCIE_REFCLK_p
-# set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_rx_in0 ; # PCIE_RX_p[0]
-# set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_rx_in1 ; # PCIE_RX_p[1]
-# set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_rx_in2 ; # PCIE_RX_p[2]
-# set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_rx_in3 ; # PCIE_RX_p[3]
-# set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_rx_in4 ; # PCIE_RX_p[4]
-# set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_rx_in5 ; # PCIE_RX_p[5]
-# set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_rx_in6 ; # PCIE_RX_p[6]
-# set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_rx_in7 ; # PCIE_RX_p[7]
-# set_instance_assignment -name IO_STANDARD "2.5 V" -to PCIE_SMBCLK
-# set_instance_assignment -name IO_STANDARD "2.5 V" -to PCIE_SMBDAT
-# set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_tx_out0 ; # PCIE_TX_p[0]
-# set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_tx_out1 ; # PCIE_TX_p[1]
-# set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_tx_out2 ; # PCIE_TX_p[2]
-# set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_tx_out3 ; # PCIE_TX_p[3]
-# set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_tx_out4 ; # PCIE_TX_p[4]
-# set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_tx_out5 ; # PCIE_TX_p[5]
-# set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_tx_out6 ; # PCIE_TX_p[6]
-# set_instance_assignment -name IO_STANDARD "1.5-V PCML" -to pcie_serial_tx_out7 ; # PCIE_TX_p[7]
-# set_instance_assignment -name IO_STANDARD "2.5 V" -to PCIE_WAKE_n
-# set_location_assignment PIN_AU33 -to pcie_reset_pin_perst_n ; # PCIE_PERST_n
-# set_location_assignment PIN_AK38 -to pcie_refclk_clk ; # PCIE_REFCLK_p
-# set_location_assignment PIN_BB43 -to pcie_serial_rx_in0 ; # PCIE_RX_p[0]
-# set_location_assignment PIN_BA41 -to pcie_serial_rx_in1 ; # PCIE_RX_p[1]
-# set_location_assignment PIN_AW41 -to pcie_serial_rx_in2 ; # PCIE_RX_p[2]
-# set_location_assignment PIN_AY43 -to pcie_serial_rx_in3 ; # PCIE_RX_p[3]
-# set_location_assignment PIN_AT43 -to pcie_serial_rx_in4 ; # PCIE_RX_p[4]
-# set_location_assignment PIN_AP43 -to pcie_serial_rx_in5 ; # PCIE_RX_p[5]
-# set_location_assignment PIN_AM43 -to pcie_serial_rx_in6 ; # PCIE_RX_p[6]
-# set_location_assignment PIN_AK43 -to pcie_serial_rx_in7 ; # PCIE_RX_p[7]
-# set_location_assignment PIN_BD34 -to PCIE_SMBCLK
-# set_location_assignment PIN_AT33 -to PCIE_SMBDAT
-# set_location_assignment PIN_AY39 -to pcie_serial_tx_out0 ; # PCIE_TX_p[0]
-# set_location_assignment PIN_AV39 -to pcie_serial_tx_out1 ; # PCIE_TX_p[1]
-# set_location_assignment PIN_AT39 -to pcie_serial_tx_out2 ; # PCIE_TX_p[2]
-# set_location_assignment PIN_AU41 -to pcie_serial_tx_out3 ; # PCIE_TX_p[3]
-# set_location_assignment PIN_AN41 -to pcie_serial_tx_out4 ; # PCIE_TX_p[4]
-# set_location_assignment PIN_AL41 -to pcie_serial_tx_out5 ; # PCIE_TX_p[5]
-# set_location_assignment PIN_AJ41 -to pcie_serial_tx_out6 ; # PCIE_TX_p[6]
-# set_location_assignment PIN_AG41 -to pcie_serial_tx_out7 ; # PCIE_TX_p[7]
-# set_location_assignment PIN_BD35 -to PCIE_WAKE_n
-
 #============================================================
 # Flash/MAX Address/Data Share Bus
 #============================================================
@@ -355,7 +633,6 @@ set_instance_assignment -name SLEW_RATE 1 -to rs422_te     ; # fast
 # set_location_assignment PIN_AW30 -to FSM_D[29]
 # set_location_assignment PIN_BC32 -to FSM_D[30]
 # set_location_assignment PIN_BD31 -to FSM_D[31]
-
 #============================================================
 # Flash Control
 #============================================================
@@ -377,7 +654,7 @@ set_instance_assignment -name SLEW_RATE 1 -to rs422_te     ; # fast
 # set_location_assignment PIN_BB32 -to FLASH_RDY_BSY_n[1]
 # set_location_assignment PIN_AE28 -to FLASH_RESET_n
 # set_location_assignment PIN_AR31 -to FLASH_WE_n
-
+ 
 #============================================================
 # SATA
 #============================================================
@@ -401,7 +678,7 @@ set_instance_assignment -name SLEW_RATE 1 -to rs422_te     ; # fast
 # set_location_assignment PIN_H2 -to SATA_HOST_RX_p[1]
 # set_location_assignment PIN_K6 -to SATA_HOST_TX_p[0]
 # set_location_assignment PIN_H6 -to SATA_HOST_TX_p[1]
-
+ 
 #============================================================
 # RZQ
 #============================================================
@@ -413,7 +690,6 @@ set_instance_assignment -name SLEW_RATE 1 -to rs422_te     ; # fast
 # set_location_assignment PIN_AR8 -to RZQ_1
 # set_location_assignment PIN_H9 -to RZQ_4
 # set_location_assignment PIN_P35 -to RZQ_5
-
 #============================================================
 # QDRII+ SRAM A
 #============================================================
@@ -553,7 +829,6 @@ set_instance_assignment -name SLEW_RATE 1 -to rs422_te     ; # fast
 # set_location_assignment PIN_AL24 -to QDRIIA_Q[17]
 # set_location_assignment PIN_AT26 -to QDRIIA_RPS_n
 # set_location_assignment PIN_AK24 -to QDRIIA_WPS_n
-
 #============================================================
 # QDRII+ SRAM B
 #============================================================
@@ -693,7 +968,6 @@ set_instance_assignment -name SLEW_RATE 1 -to rs422_te     ; # fast
 # set_location_assignment PIN_AN20 -to QDRIIB_Q[17]
 # set_location_assignment PIN_AW20 -to QDRIIB_RPS_n
 # set_location_assignment PIN_AU20 -to QDRIIB_WPS_n
-
 #============================================================
 # QDRII+ SRAM C
 #============================================================
@@ -833,7 +1107,6 @@ set_instance_assignment -name SLEW_RATE 1 -to rs422_te     ; # fast
 # set_location_assignment PIN_BA10 -to QDRIIC_Q[17]
 # set_location_assignment PIN_AH10 -to QDRIIC_RPS_n
 # set_location_assignment PIN_AL11 -to QDRIIC_WPS_n
-
 #============================================================
 # QDRII+ SRAM D
 #============================================================
@@ -973,7 +1246,6 @@ set_instance_assignment -name SLEW_RATE 1 -to rs422_te     ; # fast
 # set_location_assignment PIN_H29 -to QDRIID_Q[17]
 # set_location_assignment PIN_F24 -to QDRIID_RPS_n
 # set_location_assignment PIN_M23 -to QDRIID_WPS_n
-
 #============================================================
 # DDR3 SODIMM, DDR3 SODIMM_A
 #============================================================
@@ -1225,7 +1497,6 @@ set_instance_assignment -name SLEW_RATE 1 -to rs422_te     ; # fast
 # set_location_assignment PIN_C15 -to DDR3A_SCL
 # set_location_assignment PIN_P15 -to DDR3A_SDA
 # set_location_assignment PIN_N37 -to DDR3A_WE_n
-
 #============================================================
 # DDR3 SODIMM, DDR3 SODIMM_B
 #============================================================
@@ -1477,7 +1748,6 @@ set_instance_assignment -name SLEW_RATE 1 -to rs422_te     ; # fast
 # set_location_assignment PIN_P18 -to DDR3B_SCL
 # set_location_assignment PIN_P19 -to DDR3B_SDA
 # set_location_assignment PIN_D18 -to DDR3B_WE_n
-
 #============================================================
 # SFP+ A
 #============================================================
@@ -1511,7 +1781,6 @@ set_instance_assignment -name SLEW_RATE 1 -to rs422_te     ; # fast
 # set_instance_assignment -name SLEW_RATE 1 -to sfp0_sfp_ratesel[0] ; # fast
 # set_instance_assignment -name SLEW_RATE 1 -to sfp0_sfp_ratesel[1] ; # fast
 # set_instance_assignment -name SLEW_RATE 1 -to sfp0_sfp_txdis      ; # fast
-
 #============================================================
 # SFP+ B
 #============================================================
@@ -1545,7 +1814,6 @@ set_instance_assignment -name SLEW_RATE 1 -to rs422_te     ; # fast
 # set_instance_assignment -name SLEW_RATE 1 -to sfp1_sfp_ratesel[0] ; # fast
 # set_instance_assignment -name SLEW_RATE 1 -to sfp1_sfp_ratesel[1] ; # fast
 # set_instance_assignment -name SLEW_RATE 1 -to sfp1_sfp_txdis      ; # fast
-
 #============================================================
 # SFP+ C
 #============================================================
@@ -1579,7 +1847,6 @@ set_instance_assignment -name SLEW_RATE 1 -to rs422_te     ; # fast
 # set_instance_assignment -name SLEW_RATE 1 -to sfp2_sfp_ratesel[0] ; # fast
 # set_instance_assignment -name SLEW_RATE 1 -to sfp2_sfp_ratesel[1] ; # fast
 # set_instance_assignment -name SLEW_RATE 1 -to sfp2_sfp_txdis      ; # fast
-
 #============================================================
 # SFP+ D
 #============================================================
@@ -1613,7 +1880,6 @@ set_instance_assignment -name SLEW_RATE 1 -to rs422_te     ; # fast
 # set_instance_assignment -name SLEW_RATE 1 -to sfp3_sfp_ratesel[0] ; # fast
 # set_instance_assignment -name SLEW_RATE 1 -to sfp3_sfp_ratesel[1] ; # fast
 # set_instance_assignment -name SLEW_RATE 1 -to sfp3_sfp_txdis      ; # fast
-
 #============================================================
 # SFP+ 10G Referece Clock and Programmable Oscillator Si570
 #============================================================
@@ -1627,13 +1893,12 @@ set_instance_assignment -name SLEW_RATE 1 -to rs422_te     ; # fast
 # set_instance_assignment -name CURRENT_STRENGTH_NEW 12MA -to si570_i2c_scl
 # set_instance_assignment -name SLEW_RATE 1 -to si570_i2c_sda ; # fast
 # set_instance_assignment -name SLEW_RATE 1 -to si570_i2c_scl ; # fast
-
+ 
 #============================================================
 # SFP+ 1G Referece Clock
 #============================================================
 # set_instance_assignment -name IO_STANDARD "HCSL" -to phy_clk_clk ; # SFP1G_REFCLK_p
 # set_location_assignment PIN_AH6 -to phy_clk_clk ; # SFP1G_REFCLK_p
-
 #============================================================
 # Programmable Oscillator CDCM61001/CDCM61004 for SPF1G/SATA
 #============================================================
