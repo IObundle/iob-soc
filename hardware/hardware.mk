@@ -29,6 +29,9 @@ include $(UART_DIR)/hardware/hardware.mk
 #PCIE
 include $(PCIE_DIR)/hardware/hardware.mk
 
+ifeq ($(BOARD), DE5-NET)
+DEFINE+=$(defmacro)PCIE=1
+endif
 
 #HARDWARE PATHS
 INC_DIR:=$(HW_DIR)/include
