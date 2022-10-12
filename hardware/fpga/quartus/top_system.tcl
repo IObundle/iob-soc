@@ -98,6 +98,9 @@ if { $USE_DDR >= 0 } {
 set_global_assignment -name QIP_FILE qsys/alt_ddr3/synthesis/alt_ddr3.qip
 }
 
+set_global_assignment -name QIP_FILE qsys/QSysDE5QGen1x8If64/synthesis/QSysDE5QGen1x8If64.qip
+
+
 #file search paths
 foreach path [split $INCLUDE \ ] {
     if {$path != ""} {
