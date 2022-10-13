@@ -12,8 +12,7 @@ DDR_DATA_W=32
 
 #specify any conditions that prevent running this FPGA
 #NORUN = $(USE_DDR)
-#Need to check ethernet constraints are correct before allowing to run
-NORUN = 1
+NORUN = 0
 
 QIP_FILE=qsys/alt_ddr3/synthesis/alt_ddr3.qip
 

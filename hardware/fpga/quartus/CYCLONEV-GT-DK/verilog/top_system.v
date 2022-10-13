@@ -80,24 +80,40 @@ module top_system
     assign RX_DATA = {ENET_RX_D3, ENET_RX_D2, ENET_RX_D1, ENET_RX_D0};
 
     //eth clock
-	 assign ETH_CLK = ENET_RX_CLK;
-	 assign ENET_GTX_CLK = ETH_CLK;
-    /* These are Xilinx primitives 
-     * https://www.intel.com/content/www/us/en/docs/programmable/683562/17-1/replacing-primitives.html
-    IBUFG rxclk_buf (
-          .I (ENET_RX_CLK),
-          .O (ETH_CLK)
-          );
-    ODDRE1 ODDRE1_inst (
-             .Q  (ENET_GTX_CLK),
-             .C  (ETH_CLK),
-             .D1 (1'b1),
-             .D2 (1'b0),
-             .SR (~ENET_RESETN)
-             );
-    */
+   clk_buf txclk_buf (
+	              .inclk  (ENET_RX_CLK),
+	              .outclk (ETH_CLK)
+	              );
+   
+   
+/*   
+   pll25_multi_out pll25_inst (
+		               .refclk   (TX_CLK_int),
+		               .rst      (~ENET_RESETN),
+		               .outclk_0 (), //0 degrees
+		               .outclk_1 (), //45 degrees
+		               .outclk_2 (TX_CLK), //90 degrees
+		               .outclk_3 (), //135 degrees
+		               .outclk_4 (), //180 degrees
+		               .outclk_5 (), //225 degrees: mutes sys
+		               .outclk_6 (), //270 degrees
+		               .outclk_7 (), //315 degrees
+		               .locked   (eth_pll_locked)
+	                       );
+  
+*/
 
     assign eth_locked = 1'b1; 
+
+
+   ddio_out_clkbuf ddio_out_clkbuf_inst (
+                                         .aclr ( ~ENET_RESETN ),
+                                         .datain_h ( 1'b0 ),
+                                         .datain_l ( 1'b1 ),
+                                         .outclock ( ETH_CLK ),
+                                         .dataout ( ENET_GTX_CLK )
+                                         );
+
 `endif                  
 
 
