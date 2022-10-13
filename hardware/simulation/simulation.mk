@@ -109,7 +109,7 @@ system_tb.v:
 
 #create  simulation top module
 system_top.v: $(SIMULATION_TOP_SYSTEM)
-	$(SW_DIR)/python/createTopSystem.py $(ROOT_DIR) "../../peripheral_portmap.conf" "$(GET_DIRS)" "$(PERIPHERALS)"
+	$(SW_DIR)/python/createTopSystem.py $(ROOT_DIR) "$<"  "$(ROOT_DIR)/../../peripheral_portmap.conf" "$(GET_DIRS)" "$(PERIPHERALS)"
 
 kill-remote-sim:
 	@echo "INFO: Remote simulator $(SIMULATOR) will be killed"
