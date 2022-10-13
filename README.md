@@ -2,432 +2,130 @@
 
 This project aims to develop a System-on-Chip (SoC) used mainly to verify cryptographic systems that improve internet security but can also be used on any SoC. It is synergetic with several other NGI Assure-funded open-source projects – notably OpenCryptoHW (Coarse-Grained Reconfigurable Array cryptographic hardware) and OpenCryptoLinux. The proposed SoC will support test instruments as peripherals and use OpenCryptoHW as the System Under Test (SUT), hopefully opening the way for open-source test instrumentation operated under Linux.
 
+This repository is a Tester SoC based on [IOb-SoC](https://github.com/IObundle/iob-soc).
+This system is compatible with any Unit Under Tester (UUT) as long as it follows the set of minimum requirements below.
 
-## Operating Systems
+## UUT Minimum Requirements
 
-IOb-SoC can be used in Linux Operating Systems. The following instructions work
-for CentOS 7 and Ubuntu 18.04 or 20.04 LTS.
+The Unit Under Test (UUT) repository must contain at least the following files and directories to be compatible with this Tester:
+- Must contain the `hardware/hardware.mk` file. 
+- Must contain the `config.mk` file. 
+- Must contain the `hardware/src/` directory, that will house the top module source file.
+- Must contain the `submodules/` directory, that will house a folder with this Tester repository.
+- Must contain the `peripheral_portmap.conf` file.
+- Must contain the `tester.mk` file.
+- Must contain the `software/tester_firmware.c` file.
+    
+### hardware.mk
 
-## Clone the repository
+The `hardware/hardware.mk` Makefile segment of the UUT provides the Tester with Verilog-related information about the UUT. It can also be used to generate UUT sources and headers dynamically.
 
-The first step is to clone this repository. IOb-SoC uses git sub-module trees, and
-GitHub will ask for your password for each downloaded module if you clone by *https*. To avoid this,
-setup GitHub access with *ssh* and type:
-```
-git clone --recursive git@github.com:IObundle/iob-soc.git
-cd iob-soc
-```
+This file should define the makefile variables: `VSRC`, `VHDR`, `DEFINE`.
 
-Alternatively, you can still clone this repository using *https* if you cache
-your credentials before cloning the repository, using: ``git config --global
-credential.helper 'cache --timeout=<time_in_seconds>'``
+The `VSRC` and `VHDR` variables inform the Tester of the location of the UUT's Verilog source and header files. These variables are a whitespace-separated list of file locations.
+Makefile targets can also be defined in this file to generate Verilog files from those lists dynamically. The Tester will try to call Makefile targets to generate Verilog files that do not exist.
 
+The `DEFINE` variable is a whitespace-separated list of Verilog macros with the format `macro=definition`.
 
-## Configure your SoC
+When the Tester calls this file, it already defines the `ROOT_DIR` and `[UUTNAME]_DIR` variables. Both of them contain the relative path to the root directory of the UUT. This file can use these variables to find the root directory of the UUT independently from where it is called.
+`[UUTNAME]` is replaced by the name of the UUT given in the `tester.mk` file.
 
-To configure your system edit the `config.mk` file, which can be found at the
-repository root. This file has the system configuration variables;
-hopefully, each variable is explained by a comment.
+### config.mk
 
+The `config.mk` Makefile segment of the UUT provides the Tester with the UUT's Verilog top module file name.
 
-## Set environment variables for local or remote building and running
-
-The various simulators, FPGA compilers and FPGA boards may run locally or
-remotely. For running a tool remotely, you need to set two environmental
-variables: the server logical name and the server user name. Consider placing
-these settings in your `.bashrc` file, so that they apply to every session.
-
-
-### Set up the remote simulator server
-
-Using open-source simulator Icarus Verilog as an example, note that in
-`hardware/simulation/icarus/Makefile`, the variable for the server logical name,
-`SIM_SERVER`, is set to `IVSIM_SERVER`, and the variable for the user name,
-`SIM_USER`, is set to `IVSIM_USER`. If you do not set these variables the 
-simulator will run locally. To run the simulator on server 
-*mysimserver.myorg.com* as user *ivsimuser*, set the following environmental 
-variables beforehand:
+This file should define the makefile variable: `TOP_MODULE`.
 
-```Bash
-export IVSIM_SERVER=ivsimserver.myorg.com
-export IVSIM_USER=ivsimuser
-```
-
-### Set up the remote FPGA toolchain and board servers
+The `TOP_MODULE` variable contains the file name (without file extension '.v') of the UUT's Verilog top module. The location of this file is given in the `VSRC` list by the `hardware.mk` Makefile segment.
 
-Using the CYCLONEV-GT-DK board as an example, note that in
-`hardware/fpga/quartus/CYCLONEV-GT-DK/Makefile` the variable for the FPGA tool
-server logical name, `FPGA_SERVER`, is set to `QUARTUS_SERVER`, and the 
-variable for the user name, `FPGA_USER`, is set to `QUARTUS_USER`; the 
-variable for the board server, `BOARD_SERVER`, is set to `CYC5_SERVER`, and 
-the variable for the board user, `BOARD_USER`, is set to `CYC5_USER`. As in the 
-previous example, set these variables as follows:
-
-```Bash
-export QUARTUS_SERVER=quartusserver.myorg.com
-export QUARTUS_USER=quartususer
-export CYC5_SERVER=cyc5server.myorg.com
-export CYC5_USER=cyc5username
-```
-
-In each remote server, the environment variables for the executable paths and license
-servers used must be defined as in the following example:
-
-```Bash
-export QUARTUSPATH=/path/to/quartus
-export VIVADOPATH=/path/to/vivado
-...
-export LM_LICENSE_FILE=port@licenseserver.myorg.com;lic_or_dat_file
-```
-
-
-## Simulate the system
-
-To simulate IOb-SoC, the simulator must be installed, either locally or
-remotely, and must have a run directory under the `hardware/simulation`
-directory, such as the `hardware/simulation/icarus` directory. To simulate,
-type:
-
-```
-make [sim-run] [SIMULATOR=<simulator directory name>] [<control parameters>]
-```
-
-`<simulator directory name>` is the name of the simulator's run directory,
-
-`<control parameters>` are system configuration parameters passed in the
-command line, overriding those in the `config.mk` file. Example control
-parameters are `INIT_MEM=0 RUN_EXTMEM=1`. For example,
-```
-make sim-run SIMULATOR=icarus INIT_MEM=0 RUN_EXTMEM=1
-```
-
-To visualise simulation waveforms use the `VCD=1` control parameter. It will
-open the Gtkwave waveform visualisation program.
-
-To clean simulation generated files, type:
-```
-make sim-clean [SIMULATOR=<simulator directory name>] 
-# Example
-make sim-clean SIMULATOR=icarus
-```
-
-For more details, read the Makefile in each simulator directory. The Makefile
-includes the Makefile segment `simulation.mk`, which contains statements that
-apply to any simulator. In turn, `simulation.mk` includes the Makefile segment
-`hardware.mk`, which contains targets common to all hardware tools. The 
-`hardware.mk` includes `config.mk`,  which contains main system parameters. The
-Makefile in the simulator's directory, with the segments recursively included as
-described, is construed as a single large Makefile.
-
-## Emulate the system on PC 
-
-If there are embedded software compilation or runtime issues you can
-*emulate* the system on a PC to debug the issues. To emulate IOb-SoC's embedded
-software on a PC, type:
-
-```
-make pc-emul [<control parameters>]
-```
-where `<control parameters>` are system configuration parameters passed in the
-command line, overriding those in the `config.mk` file. Example control
-parameters are `INIT_MEM=0 RUN_EXTMEM=1`. For example,
-```
-make pc-emul INIT_MEM=0 RUN_EXTMEM=1
-```
-
-To clean the PC compilation generated files, type:
-```
-make pc-emul-clean
-```
-
-For more details, read the Makefile in the `software/pc-emul` directory. As
-explained for the simulation make file, note the Makefile segments recursively
-included.
-
+The UUT's Verilog top module has some limitations for compatibility with the Tester:
+- This file should only contain one Verilog module.
+- The port list of this Verilog module must only use the following keywords for IO port definition: `input`, `output`, `inout`, `IOB_INPUT`, `IOB_OUTPUT`, and `IOB_INOUT`.
+- The port list of this Verilog module can not include other Verilog files (except `iob_gen_if.vh` and `iob_s_if.vh`).
+- The port list of this Verilog module can not contain compiler directives (except for the `` `include`` directive for the files listed above).
 
-## Build and run on FPGA board
+### src directory
 
-To build and run IOb-SoC on an FPGA board, the FPGA design tools must be
-installed, either locally or remotely, the board must be attached to the local
-host or to a remote host, and each board must have a build directory under the
-`hardware/fpga/<tool>` directory, for example the `hardware/fpga/vivado/BASYS3`
-directory. The FPGA tools and board hosts may be different.
-
-To build only, type
-``` 
-make fpga-build [BOARD=<board directory name>] [<control parameters>]
-``` 
-where `<board directory name>` is the name of the board's run directory, and
-`<control parameters>` are system configuration parameters passed in the command
-line, overriding those in the `config.mk` file. For example, 
-``` 
-make fpga-build BOARD=BASYS3 INIT_MEM=0 RUN_EXTMEM=1
-``` 
-
-For more details read the Makefile in the board directory, and follow the
-recursively included Makefile segments as explained before.
+The `hardware/src/` directory in the UUT's repository contains the UUT's verilog top module.
 
-To build and run, type:
-``` 
-make fpga-run [BOARD=<board directory name>] [<control parameters>]
-``` 
+### submodules directory
 
-The FPGA is loaded with the configuration bitstream before running. However,
-this step is skipped if the bitstream checksum matches that of the last loaded
-bitstream, kept in file `/tmp/<board directory name>.load`. If, for some reason,
-the run gets stuck, you may interrupt it with `Ctr-C`. Then, you may try again
-forcing the bitstream to be reloaded using control parameter `FORCE=1`.
+The `submodules/` directory in the UUT's repository should contain a folder (usually named 'TESTER') with this Tester's repository.
 
-If many users are trying to run the same FPGA board they will be queued in file
-`/tmp/<board directory name>.queue`. Users will orderly load their bitstream
-onto the board and start running it. After a successful run or `Ctr-C` 
-interrupt, the user is de-queued.
+If the UUT's repository is git based, then we suggest adding this Tester's repository as a git submodule.
 
-
-To clean the FPGA compilation generated files, type
-``` 
-make fpga-clean [BOARD=<board directory name>]
-``` 
-
-## Compile the documentation
-
-To compile documents, the LaTeX document preparation software must be
-installed. Each document that can be compiled has a build directory under the
-`document` directory. Currently there are two document build directories:
-`presentation` and `pb` (product brief). The document to build is specified by
-the DOC control parameter. To compile the document, type:
-```
-make doc [DOC=<document directory name>]
-```
-
-
-To clean the document's build directory, type:
-```
-make doc-clean [DOC=<document directory name>]
-```
-
-For more details, read the Makefile in each document's directory, and follow the
-recursively included Makefile segments as explained before.
-
-
-## Testing
-
-### Simulation test
-
-To run a series of simulation tests on the simulator selected by the SIMULATOR
-variable, type:
-
-```
-make sim-test [SIMULATOR=<simulator directory>]
-```
-
-The above command produces a test log file called `test.log` in the simulator's
-directory. The `test.log` file is compared with the `test.expected` file, which
-resides in the same directory; if they differ, the test fails; otherwise, it
-passes.
-
-To run the series of simulation tests on all supported simulators, type:
-
-```
-make test-sim 
-```
-
-To clean the files produced when testing all simulators, type:
-
-```
-make test-sim-clean
-```
-
-
-### Board test
-
-To compile and run a series of board tests on the board selected by the `BOARD`
-variable, type:
-
-```
-make fpga-test [BOARD=<board directory name>]
-```
-
-The above command produces a test log file called `test.log` in the board's
-directory. The `test.log` file is compared with the `test.expected` file, which
-resides in the same directory; if they differ, the test fails; otherwise, it
-passes.
-
-To run the series of board tests on all supported boards, type:
-
-```
-make test-fpga 
-```
-
-To clean the files produced when testing all boards, type:
-```
-make test-fpga-clean
-```
-
-
-
-### Documentation test
-
-To compile and test the document selected by the `DOC`, variable, type:
-
-```
-make doc-test [DOC=<document directory name>]
-```
-
-The resulting Latex .aux file is compared with a known-good .aux file. If the
-match the test passes; otherwise it fails.
-
-To test all supported documents, type:
-
-```
-make test-doc
-```
-
-To clean the files produced when testing all documents, type:
-```
-make test-doc-clean
-```
-
-### Total test
-
-To run all simulation, FPGA board and documentation tests, type:
-```
-make test
-```
-
-### Using the Tester system
-
-This repository includes a Tester system that can run in parallel with the IOb-SoC being developed and interact with it.
-The Tester is particularly useful for verification of functional correctness of the developed IOb-SoC.
-
-The Tester firmware is located in `software/tester/firmware.c`. 
-
-The configuration options for the Tester are inherited from the ones used for IOb-SoC, located in the `config.mk` file. 
-The only exception is the list of peripherals attached, where the Tester has its own list named `TESTER_PERIPHERALS`.
-
-IOs from the peripherals attached to the IOb-SoC can be configured to inteconnect with peripherals attached to the Tester. 
-This configuration is made in the file `peripheral_portmap.conf`.
-
-This repository already contains a template `peripheral_portmap.conf` configuration file.
-When modifing peripherals used in the system, a new template can be automatically generated using the command:
-```
-make tester-portmap
-```
-
-To simulate the Tester system along with the IOb-SoC being developed, type:
-```
-make tester-sim-run
-```
-
-To run the Tester system on a FPGA board along with the IOb-SoC being developed, type:
-```
-make tester-fpga-run
-```
-
-### Testing a core
-
-This repository can also be used for functional verification of core peripherals (hardware that does not include CPUs).
-A template for a new core can be found at: [TODO]
-
-To test a core, three components must be added to the core's repository:
-
-- The TESTER submodule: This submodule is this repository and contains the Tester system.
-To add this submodule, from the core's repository, type:
+To add this repository as git submodule, from the UUT's repository, run:
 ```
 git submodule add git@github.com:IObundle/iob-soc-tester.git submodules/TESTER
 git submodule update ––init ––recursive
 ```
 
-- The `tester.mk` file: This is a configuration file that includes settings for the Tester.
-Template `tester.mk`:
+### peripheral\_portmap.conf
+
+The `peripheral_portmap.conf` file in the UUT's repository configures connections between the Tester's peripherals, the UUT's IO, and the external Tester interface.
+
+The Tester provides a Makefile target to automatically generate a template for this file with all the required signals. 
+This template contains a header with instructions on how to map the signals.
+
+To generate this template, from the UUT's repository, run:
 ```
-# Name of this core under test
-UUT_NAME=TIMER
-
-# Tester peripherals to add (besides the default ones in IOb-SoC)
-TESTER_PERIPHERALS=UART
-
-# Submodule paths for Tester peripherals (listed above)
-UART_DIR=$($(UUT_NAME)_DIR)/submodules/UART
-
-#Root directory on remote machines
-REMOTE_CUT_DIR ?=sandbox/iob-cut
+make -C submodules/TESTER/ portmap .
 ```
 
-- The `software/tester_firmware.c` file: This is the firmware that runs on the Tester.
+### tester.mk
 
-With these components present in the core's repository, the core can be tester using the following commands.
-When running the following commands the core is automatically added as a peripheral of the Tester.
+The `tester.mk` Makefile segment in the UUT's repository contains the Tester configuration. It may also have additional Makefile targets for generating application-specific files.
 
-To test the core in simulation, type:
+The `example_tester.mk` file in this repository can be used as a basis for a new `tester.mk` file. 
+It includes commonly used settings along with their descriptions.
+
+The Tester divides this file into two sections, one for Makefile variable/macro definitions and another for Makefile targets.
+It will include this Makefile segment twice, one with the `INCLUDING_VARS` variables defined and another without it.
+
+It starts by including this file with `INCLUDING_VARS` defined. Any variables defined by the `tester.mk` during this can be used by other internal Tester macros and targets.
+The second time it includes this file without `INCLUDING_VARS` defined. During this call, any targets defined by the `tester.mk` can use internal Tester macros and targets.
+
+### tester\_firmware.c
+
+The `software/tester_firmware.c` file in the UUT's repository contains the Tester's firmware with the verification sequence.
+
+### Optional: software.mk
+
+The `software/software.mk` Makefile segment of the UUT is optional. It provides the Tester with software-related information about the UUT. It can also be used to generate software for the UUT dynamically.
+
+### Optional: boot.hex firmware.hex
+
+The `software/firmware/boot.hex` and `software/firmware/firmware.hex` files in the UUT's repository are optional.
+They usually contain the bootloader and firmware for the UUT. The Tester will copy these files to the run directory if they exist.
+
+## Build and run the Tester (along with UUT)
+
+With the UUT's minimum requirements met, the steps for building and running the Tester are similar to those of [IOb-SoC](https://github.com/IObundle/iob-soc).
+
+To build the Tester for simulation, from the UUT's repository, run:
 ```
-make -C submodules/TESTER sim-run TESTING_CORE=1
+make -C submodules/TESTER sim-build
 ```
 
-To test the core in a FPGA board, type:
+To simulate the Tester, from the UUT's repository, run:
 ```
-make -C submodules/TESTER fpga-run TESTING_CORE=1
-```
-
-To verify the `tester_firmware.c` in pc emulation, type:
-```
-make -C submodules/TESTER pc-emul TESTING_CORE=1
+make -C submodules/TESTER sim-run
 ```
 
-To clean the TESTER submodule, type:
+To build the Tester for FPGA, from the UUT's repository, run:
+```
+make -C submodules/TESTER fpga-build
+```
+
+To run the Tester in the FPGA, from the UUT's repository, run:
+```
+make -C submodules/TESTER fpga-run
+```
+
+To clean Tester build files, from the UUT's repository, run:
 ```
 make -C submodules/TESTER clean
 ```
-
-## Cleaning
-
-The following command will clean the selected simulation, board and document
-directories, locally and in the remote servers:
-
-```
-make clean
-```
-
-
-
-## Instructions for Installing the RISC-V GNU Compiler Toolchain
-
-### Get sources and checkout the supported stable version
-
-```
-git clone https://github.com/riscv/riscv-gnu-toolchain
-git checkout 2022.06.10
-```
-
-### Prerequisites
-
-For the Ubuntu OS and its variants:
-
-```
-sudo apt install autoconf automake autotools-dev curl python3 python2 libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev
-```
-
-For CentOS and its variants:
-```
-sudo yum install autoconf automake python3 python2 libmpc-devel mpfr-devel gmp-devel gawk  bison flex texinfo patchutils gcc gcc-c++ zlib-devel expat-devel
-```
-
-### Installation
-
-```
-cd riscv-gnu-toolchain
-./configure --prefix=/path/to/riscv --enable-multilib
-sudo make -j$(nproc)
-```
-
-This will take a while. After it is done, type:
-```
-export PATH=$PATH:/path/to/riscv/bin
-```
-
-The above command should be added to your `~/.bashrc` file, so that
-you do not have to type it on every session.
-
 
 # Acknowledgement
 This project is funded through the NGI Assure Fund, a fund established by NLnet
