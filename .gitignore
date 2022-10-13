@@ -46,6 +46,7 @@ hardware/fpga/*/*/*
 !hardware/fpga/vivado/*/*.xdc
 !hardware/fpga/quartus/*/*.sdc
 !hardware/fpga/quartus/*/qsys
+!hardware/fpga/quartus/*/components
 
 #DOCUMENT
 document/*/*

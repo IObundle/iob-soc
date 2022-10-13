@@ -80,28 +80,11 @@ module top_system
     assign RX_DATA = {ENET_RX_D3, ENET_RX_D2, ENET_RX_D1, ENET_RX_D0};
 
     //eth clock
-   clk_buf txclk_buf (
+   clk_buf_altclkctrl_0 txclk_buf (
 	              .inclk  (ENET_RX_CLK),
 	              .outclk (ETH_CLK)
 	              );
    
-   
-/*   
-   pll25_multi_out pll25_inst (
-		               .refclk   (TX_CLK_int),
-		               .rst      (~ENET_RESETN),
-		               .outclk_0 (), //0 degrees
-		               .outclk_1 (), //45 degrees
-		               .outclk_2 (TX_CLK), //90 degrees
-		               .outclk_3 (), //135 degrees
-		               .outclk_4 (), //180 degrees
-		               .outclk_5 (), //225 degrees: mutes sys
-		               .outclk_6 (), //270 degrees
-		               .outclk_7 (), //315 degrees
-		               .locked   (eth_pll_locked)
-	                       );
-  
-*/
 
     assign eth_locked = 1'b1; 
 
