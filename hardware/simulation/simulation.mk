@@ -52,8 +52,11 @@ VSRC+=$(AXI_DIR)/submodules/V_AXI/rtl/arbiter.v
 VSRC+=$(AXI_DIR)/submodules/V_AXI/rtl/priority_encoder.v
 endif
 
-SIMULATION_TOP_SYSTEM ?=system_top.v
-VSRC+=$(SIMULATION_TOP_SYSTEM)
+VSRC+=system_top.v
+
+#default template for system_top.v (tester.mk can override this variable)
+SIMULATION_TOP_SYSTEM ?=$(TB_DIR)/system_top_core.v
+
 
 #testbench
 ifneq ($(SIMULATOR),verilator)
@@ -105,7 +108,7 @@ system_tb.v:
 	$(SW_DIR)/python/createTestbench.py $(ROOT_DIR) "$(GET_DIRS)" "$(PERIPHERALS)"
 
 #create  simulation top module
-system_top.v: $(TB_DIR)/system_top_core.v
+system_top.v: $(SIMULATION_TOP_SYSTEM)
 	$(SW_DIR)/python/createTopSystem.py $(ROOT_DIR) "../../peripheral_portmap.conf" "$(GET_DIRS)" "$(PERIPHERALS)"
 
 kill-remote-sim:
