@@ -14,6 +14,9 @@ DDR_DATA_W=32
 #NORUN = $(USE_DDR)
 NORUN = 0
 
+#Add quartus generated components for ethernet
+VSRC+=$(wildcard components/*.v)
+
 QIP_FILE=qsys/alt_ddr3/synthesis/alt_ddr3.qip
 
 $(QIP_FILE): qsys/alt_ddr3.qsys

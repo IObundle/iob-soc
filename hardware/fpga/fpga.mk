@@ -8,7 +8,8 @@ JOB=$(shell echo $(USER) `md5sum $(FPGA_OBJ)  | cut -d" " -f1`)
 
 
 #SOURCES
-VSRC+=./verilog/top_system.v
+BOARD_TOP_SYSTEM ?=./verilog/top_system.v
+VSRC+=$(BOARD_TOP_SYSTEM)
 
 ifeq ($(RUN_EXTMEM),1)
 INIT_MEM=0

@@ -46,10 +46,15 @@ PERIPHERALS+=$(UUT_NAME)
 
 # Other tester peripherals to add (besides the default ones in IOb-SoC-Tester config.mk)
 PERIPHERALS+=UART
+#
+# Instance 0 of ETHERNET has default MAC address. Instance 1 has the same MAC address as the console (this way, the UUT always connects to the console's MAC address).
+#PERIPHERALS+=ETHERNET
+#PERIPHERALS+=ETHERNET[32,\`iob_eth_swreg_ADDR_W,48'h$(RMAC_ADDR)]
 
 # Submodule paths for Tester peripherals (listed above)
 # The Tester already provides $($(UUT_NAME)_DIR) macro to access the root directory of UUT
 UART_DIR=$($(UUT_NAME)_DIR)/submodules/UART
+#ETHERNET_DIR=$($(UUT_NAME)_DIR)/submodules/ETHERNET
 
 #REQUIRED: Root directory on remote machines
 REMOTE_UUT_DIR ?=sandbox/iob-soc-sut

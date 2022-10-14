@@ -8,7 +8,7 @@ import submodule_utils
 from submodule_utils import *
 from portmap_utils import read_portmap
 
-def create_top_system(directories_str, peripherals_str, portmap_path):
+def create_top_system(directories_str, peripherals_str, portmap_path, top_system_template_path):
     # Get peripherals, directories and signals
     instances_amount, instances_parameters = get_peripherals(peripherals_str)
     submodule_directories = get_submodule_directories(directories_str)
@@ -18,7 +18,7 @@ def create_top_system(directories_str, peripherals_str, portmap_path):
     pwires, mapped_signals = read_portmap(instances_amount, instances_parameters, peripheral_signals, peripheral_parameters, portmap_path)
 
     # Read template file
-    template_file = open(root_dir+"/hardware/simulation/verilog_tb/system_top_core.v", "r")
+    template_file = open(top_system_template_path, "r")
     template_contents = template_file.readlines() 
     template_file.close()
 
@@ -58,10 +58,10 @@ def create_top_system(directories_str, peripherals_str, portmap_path):
 
 if __name__ == "__main__":
     # Parse arguments
-    if len(sys.argv)!=5:
-        print("Usage: {} <root_dir> <portmap_path> <directories_defined_in_config.mk> <peripherals>\n".format(sys.argv[0]))
+    if len(sys.argv)!=6:
+        print("Usage: {} <root_dir> <top_system_template_path> <portmap_path> <directories_defined_in_config.mk> <peripherals>\n".format(sys.argv[0]))
         exit(-1)
     root_dir=sys.argv[1]
     submodule_utils.root_dir = root_dir
 
-    create_top_system(sys.argv[3], sys.argv[4], os.path.join(root_dir,sys.argv[2])) 
+    create_top_system(sys.argv[4], sys.argv[5], sys.argv[3], sys.argv[2]) 

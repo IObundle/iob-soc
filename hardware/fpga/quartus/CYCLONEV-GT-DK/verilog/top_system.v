@@ -30,6 +30,22 @@ module top_system
    output        ddr3b_resetn, //SSTL15  //Reset
    input         rzqin,
 `endif
+
+`ifdef TESTER_USE_ETHERNET
+        output ENET_RESETN,
+        input  ENET_RX_CLK,
+        output ENET_GTX_CLK,
+        input  ENET_RX_D0,
+        input  ENET_RX_D1,
+        input  ENET_RX_D2,
+        input  ENET_RX_D3,
+        input  ENET_RX_DV,
+        output ENET_TX_D0,
+        output ENET_TX_D1,
+        output ENET_TX_D2,
+        output ENET_TX_D3,
+        output ENET_TX_EN,
+`endif                  
    output        trap
    );
    
@@ -46,6 +62,43 @@ module top_system
 
    wire [1:0]                   trap_signals;
    assign trap = trap_signals[0] || trap_signals[1];
+    // 
+    // Logic to contatenate data pins and ethernet clock
+    //
+`ifdef TESTER_USE_ETHERNET
+    //buffered eth clock
+    wire            ETH_CLK;
+
+    //PLL
+    wire            eth_locked;
+
+    //MII
+    wire [3:0]      TX_DATA;   
+    wire [3:0]      RX_DATA;
+
+    assign {ENET_TX_D3, ENET_TX_D2, ENET_TX_D1, ENET_TX_D0} = TX_DATA;
+    assign RX_DATA = {ENET_RX_D3, ENET_RX_D2, ENET_RX_D1, ENET_RX_D0};
+
+    //eth clock
+   clk_buf_altclkctrl_0 txclk_buf (
+	              .inclk  (ENET_RX_CLK),
+	              .outclk (ETH_CLK)
+	              );
+   
+
+    assign eth_locked = 1'b1; 
+
+
+   ddio_out_clkbuf ddio_out_clkbuf_inst (
+                                         .aclr ( ~ENET_RESETN ),
+                                         .datain_h ( 1'b0 ),
+                                         .datain_l ( 1'b1 ),
+                                         .outclock ( ETH_CLK ),
+                                         .dataout ( ENET_GTX_CLK )
+                                         );
+
+`endif                  
+
 
 `ifdef TESTER_USE_DDR
    //axi wires between system backend and axi bridge
@@ -104,7 +157,20 @@ module top_system
       .clk (clk),
       .rst (rst),
       .trap (trap_signals),
-
+`ifdef TESTER_USE_ETHERNET
+            //ETHERNET
+            //PHY
+            .ETHERNET0_ETH_PHY_RESETN(ENET_RESETN),
+            //PLL
+            .ETHERNET0_PLL_LOCKED(eth_locked),
+            //MII
+            .ETHERNET0_RX_CLK(ETH_CLK),
+            .ETHERNET0_RX_DATA(RX_DATA),
+            .ETHERNET0_RX_DV(ENET_RX_DV),
+            .ETHERNET0_TX_CLK(ETH_CLK),
+            .ETHERNET0_TX_DATA(TX_DATA),
+            .ETHERNET0_TX_EN(ENET_TX_EN),
+`endif
 `ifdef TESTER_USE_DDR
       //axi system backend interface
  `include "m_axi_portmap.vh"	

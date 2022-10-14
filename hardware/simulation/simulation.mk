@@ -54,6 +54,10 @@ endif
 
 VSRC+=system_top.v
 
+#default template for system_top.v (tester.mk can override this variable)
+SIMULATION_TOP_SYSTEM ?=$(TB_DIR)/system_top_core.v
+
+
 #testbench
 ifneq ($(SIMULATOR),verilator)
 VSRC+=system_tb.v
@@ -104,8 +108,8 @@ system_tb.v:
 	$(SW_DIR)/python/createTestbench.py $(ROOT_DIR) "$(GET_DIRS)" "$(PERIPHERALS)"
 
 #create  simulation top module
-system_top.v: $(TB_DIR)/system_top_core.v
-	$(SW_DIR)/python/createTopSystem.py $(ROOT_DIR) "../../peripheral_portmap.conf" "$(GET_DIRS)" "$(PERIPHERALS)"
+system_top.v: $(SIMULATION_TOP_SYSTEM)
+	$(SW_DIR)/python/createTopSystem.py $(ROOT_DIR) "$<"  "$(ROOT_DIR)/../../peripheral_portmap.conf" "$(GET_DIRS)" "$(PERIPHERALS)"
 
 kill-remote-sim:
 	@echo "INFO: Remote simulator $(SIMULATOR) will be killed"
