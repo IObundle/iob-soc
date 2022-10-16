@@ -36,17 +36,10 @@ void Timer(unsigned int ns){
 void uartwrite(unsigned int cpu_address, unsigned int cpu_data, unsigned int nbytes){
     char wstrb_int = 0;
     switch (nbytes) {
-        case 1:
-            wstrb_int = 0b01;
-            break;
-        case 2:
-            wstrb_int = 0b011;
-            break;
-        default:
-            wstrb_int = 0b01111;
-            break;
+        case 1:  wstrb_int = 0b01; break;
+        case 2:  wstrb_int = 0b011; break;
+        default: wstrb_int = 0b01111; break;
     }
-
     dut->uart_addr = cpu_address >> 2; // 32 bit address (ignore 2 LSBs)
     dut->uart_valid = 1;
     dut->uart_wstrb = wstrb_int << (cpu_address & 0b011);
@@ -54,7 +47,6 @@ void uartwrite(unsigned int cpu_address, unsigned int cpu_data, unsigned int nby
     Timer(CLK_PERIOD);
     dut->uart_wstrb = 0;
     dut->uart_valid = 0;
-
 }
 
 // 2-cycle read
@@ -63,7 +55,6 @@ void uartread(unsigned int cpu_address, char *read_reg){
     dut->uart_valid = 1;
     Timer(CLK_PERIOD);
     *read_reg = (dut->uart_rdata) >> ((cpu_address & 0b011)*8); // align to 32 bits
-    Timer(CLK_PERIOD);
     dut->uart_valid = 0;
 }
 
