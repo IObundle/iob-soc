@@ -15,6 +15,19 @@ without investing much time installing the tools:
 1. Donwload and install [Oracle's VirtualBox](https://www.virtualbox.org/wiki/Downloads)
 2. Download [IOb-SoC VM](https://drive.google.com/file/d/1gb9O4K4H6fDPyzebjzteXBuiTqnbt2Wi/view?usp=sharing)
 
+## Dependencies
+
+Before building the system, install the following tools:
+- GNU Bash
+- GNU Make
+- RISC-V GNU Compiler Toolchain (Instructions at the end of this README)
+- Python3
+- Python3-Parse
+Optional tools, depending on desired run strategy:
+- Icarus Verilog
+- Verilator
+- Vivado
+- Quartus
 
 ## Operating Systems
 
@@ -316,8 +329,6 @@ directories, locally and in the remote servers:
 ```
 make clean
 ```
-
-
 
 ## Instructions for Installing the RISC-V GNU Compiler Toolchain
 
