@@ -3,6 +3,9 @@
 This project aims to develop a System-on-Chip (SoC) used mainly to verify cryptographic systems that improve internet security but can also be used on any SoC. It is synergetic with several other NGI Assure-funded open-source projects – notably OpenCryptoHW (Coarse-Grained Reconfigurable Array cryptographic hardware) and OpenCryptoLinux. The proposed SoC will support test instruments as peripherals and use OpenCryptoHW as the System Under Test (SUT), hopefully opening the way for open-source test instrumentation operated under Linux.
 
 This repository is a Tester SoC based on [IOb-SoC](https://github.com/IObundle/iob-soc).
+
+An example System Under Test with this Tester configured is available at the [IOb-SoC-SUT](https://github.com/IObundle/iob-soc-sut) repository.
+
 This system is compatible with any Unit Under Tester (UUT) as long as it follows the set of minimum requirements below.
 
 ## UUT Minimum Requirements
