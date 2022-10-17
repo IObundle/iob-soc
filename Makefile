@@ -1,4 +1,4 @@
-export SHELL = /bin/bash
+export SHELL = /usr/bin/env bash
 
 ROOT_DIR:=.
 include ./config.mk
