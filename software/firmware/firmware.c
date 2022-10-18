@@ -2,6 +2,7 @@
 #include "periphs.h"
 #include "iob-uart.h"
 #include "printf.h"
+#include "iob_pcie_swreg.h"
 
 char *send_string = "Sending this string as a file to console.\n"
                     "The file is then requested back from console.\n"
@@ -49,7 +50,12 @@ int main()
 
   //test printf with floats 
   printf("Value of Pi = %f\n\n", 3.1415);
+  
+  IOB_PCIE_INIT_BASEADDR(PCIE_BASE);
 
+  int b = IOB_PCIE_GET_RX_DATA();
+  printf("this is pcie getter %d\n", b);
+  
   //test file send
   char *sendfile = malloc(1000);
   int send_file_size = 0;
