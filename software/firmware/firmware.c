@@ -54,7 +54,13 @@ int main()
   IOB_PCIE_INIT_BASEADDR(PCIE_BASE);
 
   int b = IOB_PCIE_GET_RX_DATA();
-  printf("this is pcie getter %d\n", b);
+  int c = IOB_PCIE_GET_RX_DATA1();
+  printf("this is pcie getter the last value on the pcie_chnl_tx_data %d adn the length of the values sent %d \n", b, c);
+
+
+
+  int the_result = b * 2;
+  IOB_PCIE_SET_TX_DATA(the_result);
   
   //test file send
   char *sendfile = malloc(1000);
