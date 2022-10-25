@@ -3,7 +3,7 @@
 # Use this file to set/override tester parameters and makefile targets
 # Any variables preceded by the comment 'REQUIRED:' need to be defined for compatibility with the Tester. Any other variables defined here are optional.
 #
-ifeq ($(INCLUDING_PATHS),)
+ifneq ($(INCLUDING_VARS),)
 # MAKEFILE VARIABLES: PLACE BELOW VARIABLES USED BY THE TESTER
 #
 
