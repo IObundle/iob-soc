@@ -71,8 +71,11 @@ UART_HW_DIR:=$(UART_DIR)/hardware
 ####################################################################
 # DERIVED FROM PRIMARY PARAMETERS: DO NOT CHANGE BELOW THIS POINT
 ####################################################################
-#include tester configuration from Unit Under Test directory
+#include variables from tester configuration in Unit Under Test directory
+override INCLUDING_VARS:=1
 include $(ROOT_DIR)/../../tester.mk
+override undefine INCLUDING_VARS
+
 #Set root directory of tester on remote machines in the submodules directory of UUT
 REMOTE_ROOT_DIR=$(REMOTE_UUT_DIR)/submodules/$(shell realpath $(ROOT_DIR) | xargs -I {} basename {})
 
@@ -148,8 +151,7 @@ DEFINE+=$(defmacro)B=$B
 #the ID is used as an instance name index in the hardware and as a base address in the software
 DEFINE+=$(shell $(SW_DIR)/python/submodule_utils.py get_defines "$(PERIPHERALS)" "$(defmacro)")
 
-#include (extra) tester makefile targets from Unit Under Test config file
-INCLUDING_PATHS:=1
+#include targets from tester configuration in Unit Under Test directory
 include $($(UUT_NAME)_DIR)/tester.mk
 
 #RULES
