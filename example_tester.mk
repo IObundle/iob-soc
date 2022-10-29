@@ -32,12 +32,12 @@ INIT_MEM:=1
 #SIMULATION
 #default simulator running locally or remotely
 #check the respective Makefile in TESTER/hardware/simulation/$(SIMULATOR) for specific settings
-SIMULATOR:=icarus
+SIMULATOR ?=icarus
 
 #BOARD
 #default board running locally or remotely
 #check the respective Makefile in TESTER/hardware/fpga/$(BOARD) for specific settings
-BOARD:=CYCLONEV-GT-DK
+BOARD ?=CYCLONEV-GT-DK
 
 #REQUIRED: Add Unit Under Test to Tester peripherals list
 #this works even if UUT is not a "peripheral"
@@ -59,16 +59,11 @@ UART_DIR=$($(UUT_NAME)_DIR)/submodules/UART
 #REQUIRED: Root directory on remote machines
 REMOTE_UUT_DIR ?=sandbox/iob-soc-sut
 
-#Define SIM macro when running in simulation
-#ifneq ($(ISSIMULATION),)
-#DEFINE+=$(defmacro)SIM=1
-#endif
-
 #MAC address of pc interface connected to ethernet peripheral
 #ifeq ($(BOARD),AES-KU040-DB-G) # Arroz eth if MAC
 #RMAC_ADDR:=4437e6a6893b
 #else # Pudim eth if MAC
-#RMAC_ADDR:=309c231e624a
+#RMAC_ADDR:=309c231e624b
 #endif
 #Auto-set ethernet interface name based on MAC address
 #ETH_IF:=$(shell ip -br link | sed 's/://g' | grep $(RMAC_ADDR) | cut -d " " -f1)
@@ -76,6 +71,11 @@ REMOTE_UUT_DIR ?=sandbox/iob-soc-sut
 #Configure Tester to use ethernet
 #USE_ETHERNET:=1
 #DEFINE+=$(defmacro)USE_ETHERNET=1
+
+#Define SIM macro when running in simulation
+#ifneq ($(ISSIMULATION),)
+#DEFINE+=$(defmacro)SIM=1
+#endif
 
 #Extra tester target dependencies
 #Run before building the system
@@ -103,7 +103,7 @@ clean-top-module:
 
 #Target to build UUT bootloader and firmware
 $($(UUT_NAME)_DIR)/software/firmware/boot.hex $($(UUT_NAME)_DIR)/software/firmware/firmware.hex:
-	make -C $($(UUT_NAME)_DIR)/software/firmware build-all BAUD=$(BAUD)
+	make -C $($(UUT_NAME)_DIR)/software/firmware build-all BAUD=$(BAUD) FREQ=$(FREQ) BOARD=$(BOARD)
 	make -C $($(UUT_NAME)_DIR)/software/firmware -f ../../hardware/hardware.mk boot.hex firmware.hex ROOT_DIR=../..
 
 clean-sut-fw:
