@@ -17,6 +17,7 @@ clean: clean-all
 
 clean-ip:
 	rm -rf qsys/alt_ddr3 qsys/alt_ddr3.sopcinfo
+	rm -rf qsys/QSysDE5QGen1x8If64/ qsys/QSysDE5QGen1x8If64.sopcinfo
 
 veryclean: clean clean-ip
 

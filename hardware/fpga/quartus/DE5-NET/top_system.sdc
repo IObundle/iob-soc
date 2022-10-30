@@ -8,7 +8,7 @@ set_clock_groups -asynchronous \
 -group [get_clocks clk]
 
 create_clock -name PCIE_REFCLK -period 10.000 [get_ports {PCIE_REFCLK}]
-create_clock -name osc_50MHz -period 20.000 [get_ports {OSC_BANK3D_50MHZ}]
+#create_clock -name osc_50MHz -period 20.000 [get_ports {OSC_BANK3D_50MHZ}]
 
 ################################################################################
 # 13.1 Workround for http://www.altera.com/support/kdb/solutions/rd12162013_581.html?GSA_pos=1&WT.oss_r=1&WT.oss=adce_off_r
