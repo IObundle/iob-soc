@@ -15,8 +15,6 @@ module top_system
     parameter C_LOG_NUM_TAGS = 5
     )
    (
-   input 		    clk,
-   input 		    resetn,
    input 		    uart_rxd,
    output 		    uart_txd,
    output reg 		    rs422_re_n,
@@ -109,12 +107,14 @@ module top_system
     wire [11:0]                 ko_cpl_spc_data;
 
     // ----------Clocks----------
-    assign pld_clk = coreclkout_hip;
-    assign mgmt_clk_clk = PCIE_REFCLK;
-    assign reconfig_xcvr_clk = PCIE_REFCLK;
-    assign refclk = PCIE_REFCLK;
-    assign pld_core_ready = serdes_pll_locked;
-    
+//    assign pld_clk = coreclkout_hip;
+   assign pld_clk = coreclkout_hip;
+   assign mgmt_clk_clk = PCIE_REFCLK;
+   assign reconfig_xcvr_clk = PCIE_REFCLK;
+   assign refclk = PCIE_REFCLK;
+   assign pld_core_ready = serdes_pll_locked;
+
+   
     // ----------Resets----------
     assign reconfig_xcvr_rst = 1'b0;
     assign mgmt_rst_reset = 1'b0;
@@ -293,6 +293,24 @@ module top_system
          .CHNL_TX_DATA_VALID            (chnl_tx_data_valid[C_NUM_CHNL-1:0])
 	 );
 
+
+   
+   wire 		       uart_rts;
+
+   
+   always @* begin
+      rs422_te = 0;
+      rs422_de = 1;
+      rs422_re_n = 0;
+   end
+      
+
+   //
+   // CLOCK MANAGEMENT
+   //
+
+/*
+
        genvar                                   i;
     generate
         for (i = 0; i < C_NUM_CHNL; i = i + 1) begin : test_channels
@@ -330,79 +348,46 @@ module top_system
                   );    
         end
     endgenerate
-
-   
-   wire 		       uart_rts;
-
-   
-   always @* begin
-      rs422_te = 0;
-      rs422_de = 1;
-      rs422_re_n = 0;
-   end
-      
-
-   //
-   // CLOCK MANAGEMENT
-   //
-
-   //system clock
-   wire 			sys_clk = clk;
-   // assign led_board[0] = 0;
-   // assign led_bracket[0] = 0;
-   //
-   // RESET MANAGEMENT
-   //
-
-   
-   //system reset
-
-   wire                         sys_rst;
-
-   reg [15:0] 			rst_cnt;
-
-   always @(posedge sys_clk, negedge resetn)
-     if(!resetn)
-       rst_cnt <= 16'hFFFF;
-     else if (rst_cnt != 16'h0)
-       rst_cnt <= rst_cnt - 1'b1;
-
-   assign sys_rst  = (rst_cnt != 16'h0);
-
-   
+*/   
    //
    // SYSTEM
    //
-   system system 
-     (
-      .clk           (sys_clk),
-      .rst         (sys_rst),
-      .trap          (),
-      //UART
-      .uart_txd      (uart_txd),
-      .uart_rxd      (uart_rxd),
-      .uart_rts      (uart_rts),
-      .uart_cts      (1'b1),
-      .PCIE_CLK_IF(one),
-      .PCIE_RST_IF(two),
-      .PCIE_CHNL_RX_IF(three),
-      .PCIE_CHNL_RX_CLK_IF(four),
-      .PCIE_CHNL_RX_ACK_IF(five),
-      .PCIE_CHNL_RX_LAST_IF(six),
-      .PCIE_CHNL_RX_LEN_IF(ten),
-      .PCIE_CHNL_RX_OFF_IF(twenty),
-      .PCIE_CHNL_RX_DATA_IF(eleven),
-      .PCIE_CHNL_RX_DATA_VALID_IF(seven),
-      .PCIE_CHNL_RX_DATA_REN_IF(eight),
-      .PCIE_CHNL_TX_CLK_IF(nine),
-      .PCIE_CHNL_TX_IF(one_one),
-      .PCIE_CHNL_TX_ACK_IF(one_two),
-      .PCIE_CHNL_TX_LAST_IF(one_three),
-      .PCIE_CHNL_TX_LEN_IF(twelve),
-      .PCIE_CHNL_TX_OFF_IF(twentyone),
-      .PCIE_CHNL_TX_DATA_IF(thirteen),
-      .PCIE_CHNL_TX_DATA_VALID_IF(one_four),
-      .PCIE_CHNL_TX_DATA_REN_IF(one_five)
-      );
    
+
+
+        // Instantiate and assign modules to RIFFA channels. Users should 
+         // replace the chnl_tester instantiation with their own core.
+	 system system (
+			.clk           (chnl_clk),
+			.rst         (chnl_reset),
+			.trap          (),
+			//UART
+			.uart_txd      (uart_txd),
+			.uart_rxd      (uart_rxd),
+			.uart_rts      (uart_rts),
+			.uart_cts      (1'b1),
+//			.PCIE_CLK_IF(chnl_clk),
+//			.PCIE_RST_IF(chnl_reset),
+			.PCIE_CHNL_RX_IF(chnl_rx[0]),
+			.PCIE_CHNL_RX_CLK_IF(chnl_rx_clk[0]),
+			.PCIE_CHNL_RX_ACK_IF(chnl_rx_ack[0]),
+			.PCIE_CHNL_RX_LAST_IF(chnl_rx_last[0]),
+			.PCIE_CHNL_RX_LEN_IF(chnl_rx_len[`SIG_CHNL_LENGTH_W*0 +:`SIG_CHNL_LENGTH_W]),
+			.PCIE_CHNL_RX_OFF_IF(chnl_rx_off[`SIG_CHNL_OFFSET_W*0 +:`SIG_CHNL_OFFSET_W]),
+			.PCIE_CHNL_RX_DATA_IF(chnl_rx_data[C_PCI_DATA_WIDTH*0 +:C_PCI_DATA_WIDTH]),
+			.PCIE_CHNL_RX_DATA_VALID_IF(chnl_rx_data_valid[0]),
+			.PCIE_CHNL_RX_DATA_REN_IF(chnl_rx_data_ren[0]),
+			.PCIE_CHNL_TX_CLK_IF(chnl_tx_clk[0]),
+			.PCIE_CHNL_TX_IF(chnl_tx[0]),
+			.PCIE_CHNL_TX_ACK_IF(chnl_tx_ack[0]),
+			.PCIE_CHNL_TX_LAST_IF(chnl_tx_last[0]),
+			.PCIE_CHNL_TX_LEN_IF(chnl_tx_len[`SIG_CHNL_LENGTH_W*0 +:`SIG_CHNL_LENGTH_W]),
+			.PCIE_CHNL_TX_OFF_IF(chnl_tx_off[`SIG_CHNL_OFFSET_W*0 +:`SIG_CHNL_OFFSET_W]),
+			.PCIE_CHNL_TX_DATA_IF(chnl_tx_data[C_PCI_DATA_WIDTH*0 +:C_PCI_DATA_WIDTH]),
+			.PCIE_CHNL_TX_DATA_VALID_IF(chnl_tx_data_valid[0]),
+			.PCIE_CHNL_TX_DATA_REN_IF(chnl_tx_data_ren[0])
+			);
+
+
+
 endmodule
