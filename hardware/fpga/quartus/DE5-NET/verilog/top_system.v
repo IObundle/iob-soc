@@ -15,8 +15,6 @@ module top_system
     parameter C_LOG_NUM_TAGS = 5
     )
    (
-   input 		    clk,
-   input 		    resetn,
    input 		    uart_rxd,
    output 		    uart_txd,
    output reg 		    rs422_re_n,
@@ -110,7 +108,7 @@ module top_system
 
     // ----------Clocks----------
 //    assign pld_clk = coreclkout_hip;
-   assign pld_clk = clk;
+   assign pld_clk = coreclkout_hip;
    assign mgmt_clk_clk = PCIE_REFCLK;
    assign reconfig_xcvr_clk = PCIE_REFCLK;
    assign refclk = PCIE_REFCLK;
@@ -311,28 +309,6 @@ module top_system
    // CLOCK MANAGEMENT
    //
 
-   //system clock
-   wire 			sys_clk = clk;
-   // assign led_board[0] = 0;
-   // assign led_bracket[0] = 0;
-   //
-   // RESET MANAGEMENT
-   //
-
-   
-   //system reset
-
-   wire                         sys_rst;
-
-   reg [15:0] 			rst_cnt;
-
-   always @(posedge sys_clk, negedge resetn)
-     if(!resetn)
-       rst_cnt <= 16'hFFFF;
-     else if (rst_cnt != 16'h0)
-       rst_cnt <= rst_cnt - 1'b1;
-
-   assign sys_rst  = (rst_cnt != 16'h0);
 /*
 
        genvar                                   i;
@@ -382,8 +358,8 @@ module top_system
         // Instantiate and assign modules to RIFFA channels. Users should 
          // replace the chnl_tester instantiation with their own core.
 	 system system (
-			.clk           (sys_clk),
-			.rst         (sys_rst),
+			.clk           (chnl_clk),
+			.rst         (chnl_reset),
 			.trap          (),
 			//UART
 			.uart_txd      (uart_txd),
