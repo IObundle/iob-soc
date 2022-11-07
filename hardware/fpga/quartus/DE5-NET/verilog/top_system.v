@@ -15,6 +15,8 @@ module top_system
     parameter C_LOG_NUM_TAGS = 5
     )
    (
+   input 		    clk,
+   input 		    resetn,
    input 		    uart_rxd,
    output 		    uart_txd,
    output reg 		    rs422_re_n,
@@ -107,7 +109,6 @@ module top_system
     wire [11:0]                 ko_cpl_spc_data;
 
     // ----------Clocks----------
-//    assign pld_clk = coreclkout_hip;
    assign pld_clk = coreclkout_hip;
    assign mgmt_clk_clk = PCIE_REFCLK;
    assign reconfig_xcvr_clk = PCIE_REFCLK;
@@ -294,99 +295,78 @@ module top_system
 	 );
 
 
+   wire 				     uart_rts;
    
-   wire 		       uart_rts;
-
    
    always @* begin
       rs422_te = 0;
       rs422_de = 1;
       rs422_re_n = 0;
    end
-      
 
    //
    // CLOCK MANAGEMENT
    //
 
-/*
+   //system clock
+   wire 			sys_clk = clk;
 
-       genvar                                   i;
-    generate
-        for (i = 0; i < C_NUM_CHNL; i = i + 1) begin : test_channels
-            // Instantiate and assign modules to RIFFA channels. Users should 
-            // replace the chnl_tester instantiation with their own core.
-            chnl_tester 
-                 #(
-                   .C_PCI_DATA_WIDTH(C_PCI_DATA_WIDTH)
-                   )
-            chnl_tester_i
-                 (
+   //
+   // RESET MANAGEMENT
+   //
 
-                  .CLK(chnl_clk),
-                  .RST(chnl_reset), // chnl_reset includes riffa_endpoint resets
-                  // Rx interface
-                  .CHNL_RX_CLK(chnl_rx_clk[i]), 
-                  .CHNL_RX(chnl_rx[i]), 
-                  .CHNL_RX_ACK(chnl_rx_ack[i]), 
-                  .CHNL_RX_LAST(chnl_rx_last[i]), 
-                  .CHNL_RX_LEN(chnl_rx_len[`SIG_CHNL_LENGTH_W*i +:`SIG_CHNL_LENGTH_W]), 
-                  .CHNL_RX_OFF(chnl_rx_off[`SIG_CHNL_OFFSET_W*i +:`SIG_CHNL_OFFSET_W]), 
-                  .CHNL_RX_DATA(chnl_rx_data[C_PCI_DATA_WIDTH*i +:C_PCI_DATA_WIDTH]), 
-                  .CHNL_RX_DATA_VALID(chnl_rx_data_valid[i]), 
-                  .CHNL_RX_DATA_REN(chnl_rx_data_ren[i]),
-                  // Tx interface
-                  .CHNL_TX_CLK(chnl_tx_clk[i]), 
-                  .CHNL_TX(chnl_tx[i]), 
-                  .CHNL_TX_ACK(chnl_tx_ack[i]), 
-                  .CHNL_TX_LAST(chnl_tx_last[i]), 
-                  .CHNL_TX_LEN(chnl_tx_len[`SIG_CHNL_LENGTH_W*i +:`SIG_CHNL_LENGTH_W]), 
-                  .CHNL_TX_OFF(chnl_tx_off[`SIG_CHNL_OFFSET_W*i +:`SIG_CHNL_OFFSET_W]), 
-                  .CHNL_TX_DATA(chnl_tx_data[C_PCI_DATA_WIDTH*i +:C_PCI_DATA_WIDTH]), 
-                  .CHNL_TX_DATA_VALID(chnl_tx_data_valid[i]), 
-                  .CHNL_TX_DATA_REN(chnl_tx_data_ren[i])
-                  );    
-        end
-    endgenerate
-*/   
+
+   //system reset
+
+   wire                         sys_rst;
+
+   reg [15:0] 			rst_cnt;
+
+   always @(posedge sys_clk, negedge resetn)
+     if(!resetn)
+       rst_cnt <= 16'hFFFF;
+     else if (rst_cnt != 16'h0)
+       rst_cnt <= rst_cnt - 1'b1;
+
+   assign sys_rst  = (rst_cnt != 16'h0);
+
    //
    // SYSTEM
    //
-   
 
-
-        // Instantiate and assign modules to RIFFA channels. Users should 
-         // replace the chnl_tester instantiation with their own core.
-	 system system (
-			.clk           (chnl_clk),
-			.rst         (chnl_reset),
-			.trap          (),
-			//UART
-			.uart_txd      (uart_txd),
-			.uart_rxd      (uart_rxd),
-			.uart_rts      (uart_rts),
-			.uart_cts      (1'b1),
-//			.PCIE_CLK_IF(chnl_clk),
-//			.PCIE_RST_IF(chnl_reset),
-			.PCIE_CHNL_RX_IF(chnl_rx[0]),
-			.PCIE_CHNL_RX_CLK_IF(chnl_rx_clk[0]),
-			.PCIE_CHNL_RX_ACK_IF(chnl_rx_ack[0]),
-			.PCIE_CHNL_RX_LAST_IF(chnl_rx_last[0]),
-			.PCIE_CHNL_RX_LEN_IF(chnl_rx_len[`SIG_CHNL_LENGTH_W*0 +:`SIG_CHNL_LENGTH_W]),
-			.PCIE_CHNL_RX_OFF_IF(chnl_rx_off[`SIG_CHNL_OFFSET_W*0 +:`SIG_CHNL_OFFSET_W]),
-			.PCIE_CHNL_RX_DATA_IF(chnl_rx_data[C_PCI_DATA_WIDTH*0 +:C_PCI_DATA_WIDTH]),
-			.PCIE_CHNL_RX_DATA_VALID_IF(chnl_rx_data_valid[0]),
-			.PCIE_CHNL_RX_DATA_REN_IF(chnl_rx_data_ren[0]),
-			.PCIE_CHNL_TX_CLK_IF(chnl_tx_clk[0]),
-			.PCIE_CHNL_TX_IF(chnl_tx[0]),
-			.PCIE_CHNL_TX_ACK_IF(chnl_tx_ack[0]),
-			.PCIE_CHNL_TX_LAST_IF(chnl_tx_last[0]),
-			.PCIE_CHNL_TX_LEN_IF(chnl_tx_len[`SIG_CHNL_LENGTH_W*0 +:`SIG_CHNL_LENGTH_W]),
-			.PCIE_CHNL_TX_OFF_IF(chnl_tx_off[`SIG_CHNL_OFFSET_W*0 +:`SIG_CHNL_OFFSET_W]),
-			.PCIE_CHNL_TX_DATA_IF(chnl_tx_data[C_PCI_DATA_WIDTH*0 +:C_PCI_DATA_WIDTH]),
-			.PCIE_CHNL_TX_DATA_VALID_IF(chnl_tx_data_valid[0]),
-			.PCIE_CHNL_TX_DATA_REN_IF(chnl_tx_data_ren[0])
-			);
+   // Instantiate and assign modules to RIFFA channels. Users should
+   // replace the chnl_tester instantiation with their own core.
+   system system
+     (
+      .clk           (sys_clk),
+      .rst         (sys_rst),
+      .trap          (),
+      //UART
+      .uart_txd      (uart_txd),
+      .uart_rxd      (uart_rxd),
+      .uart_rts      (uart_rts),
+      .uart_cts      (1'b1),
+      .PLD_CLK_IF(chnl_clk),
+      .PLD_RST_IF(chnl_reset),
+      .PCIE_CHNL_RX_IF(chnl_rx[0]),
+      .PCIE_CHNL_RX_CLK_IF(chnl_rx_clk[0]),
+      .PCIE_CHNL_RX_ACK_IF(chnl_rx_ack[0]),
+      .PCIE_CHNL_RX_LAST_IF(chnl_rx_last[0]),
+      .PCIE_CHNL_RX_LEN_IF(chnl_rx_len[`SIG_CHNL_LENGTH_W*0 +:`SIG_CHNL_LENGTH_W]),
+      .PCIE_CHNL_RX_OFF_IF(chnl_rx_off[`SIG_CHNL_OFFSET_W*0 +:`SIG_CHNL_OFFSET_W]),
+      .PCIE_CHNL_RX_DATA_IF(chnl_rx_data[C_PCI_DATA_WIDTH*0 +:C_PCI_DATA_WIDTH]),
+      .PCIE_CHNL_RX_DATA_VALID_IF(chnl_rx_data_valid[0]),
+      .PCIE_CHNL_RX_DATA_REN_IF(chnl_rx_data_ren[0]),
+      .PCIE_CHNL_TX_CLK_IF(chnl_tx_clk[0]),
+      .PCIE_CHNL_TX_IF(chnl_tx[0]),
+      .PCIE_CHNL_TX_ACK_IF(chnl_tx_ack[0]),
+      .PCIE_CHNL_TX_LAST_IF(chnl_tx_last[0]),
+      .PCIE_CHNL_TX_LEN_IF(chnl_tx_len[`SIG_CHNL_LENGTH_W*0 +:`SIG_CHNL_LENGTH_W]),
+      .PCIE_CHNL_TX_OFF_IF(chnl_tx_off[`SIG_CHNL_OFFSET_W*0 +:`SIG_CHNL_OFFSET_W]),
+      .PCIE_CHNL_TX_DATA_IF(chnl_tx_data[C_PCI_DATA_WIDTH*0 +:C_PCI_DATA_WIDTH]),
+      .PCIE_CHNL_TX_DATA_VALID_IF(chnl_tx_data_valid[0]),
+      .PCIE_CHNL_TX_DATA_REN_IF(chnl_tx_data_ren[0])
+      );
 
 
 
