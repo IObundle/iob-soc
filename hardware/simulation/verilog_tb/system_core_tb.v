@@ -67,10 +67,11 @@ module system_tb;
 
 
     soc2cnsl_fd = $fopen("soc2cnsl", "r+");
-    if (!soc2cnsl_fd) begin
+    while (!soc2cnsl_fd) begin
       $display("Could not open \"soc2cnsl\"");
-      $finish;
+      soc2cnsl_fd = $fopen("soc2cnsl", "r+");
     end
+    $fclose(soc2cnsl_fd);
 
     while(1) begin
       while(!rxread_reg && !txread_reg) begin
@@ -78,18 +79,20 @@ module system_tb;
         cpu_uartread(`UART_TXREADY_ADDR, txread_reg);
       end
       if(rxread_reg) begin
+        soc2cnsl_fd = $fopen("soc2cnsl", "r");
         n = $fgets(cpu_char, soc2cnsl_fd);
         if(n == 0) begin
-          cpu_uartread(`UART_RXDATA_ADDR, cpu_char);
-          $fwriteh(soc2cnsl_fd, "%c", cpu_char);
-          rxread_reg = 0;
+            $fclose(soc2cnsl_fd);
+            cpu_uartread(`UART_RXDATA_ADDR, cpu_char);
+            soc2cnsl_fd = $fopen("soc2cnsl", "w");
+            $fwriteh(soc2cnsl_fd, "%c", cpu_char);
+            rxread_reg = 0;
         end
-        n = $fseek(soc2cnsl_fd, 0, 0);
+        $fclose(soc2cnsl_fd);
       end
       if(txread_reg) begin
         cnsl2soc_fd = $fopen("cnsl2soc", "r");
         if (!cnsl2soc_fd) begin
-          $fclose(soc2cnsl_fd);
           $finish;
         end
         n = $fscanf(cnsl2soc_fd, "%c", cpu_char);

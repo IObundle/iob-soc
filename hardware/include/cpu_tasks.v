@@ -40,7 +40,7 @@ task cpu_uartread;
       uart_valid = 1;
       @ (posedge clk) #1 
       read_reg = uart_rdata >> (cpu_address[1:0]*8);
-      @ (posedge clk) #1 uart_valid = 0;
+      uart_valid = 0;
    end
 endtask
 
