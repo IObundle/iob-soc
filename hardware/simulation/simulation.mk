@@ -136,7 +136,8 @@ test5:
 
 #clean target common to all simulators
 clean-remote: hw-clean
-	@rm -f soc2cnsl cnsl2soc *.txt
+	find . -name "*.txt" -not -name "commands.txt" -delete
+	@rm -f soc2cnsl cnsl2soc
 	@rm -f system.vcd
 ifneq ($(SIM_SERVER),)
 	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
