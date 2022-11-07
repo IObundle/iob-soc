@@ -1,6 +1,6 @@
 # IOb-SoC-(OpenCrypto)Tester
 
-This project aims to develop a System-on-Chip (SoC) used mainly to verify cryptographic systems that improve internet security but can also be used on any SoC. It is synergetic with several other NGI Assure-funded open-source projects – notably OpenCryptoHW (Coarse-Grained Reconfigurable Array cryptographic hardware) and OpenCryptoLinux. The proposed SoC will support test instruments as peripherals and use OpenCryptoHW as the System Under Test (SUT), hopefully opening the way for open-source test instrumentation operated under Linux.
+This [project](https://nlnet.nl/project/OpenCryptoTester#ack) aims to develop a System-on-Chip (SoC) used mainly to verify cryptographic systems that improve internet security but can also be used on any SoC. It is synergetic with several other NGI Assure-funded open-source projects – notably [OpenCryptoHW](https://nlnet.nl/project/OpenCryptoHW) (Coarse-Grained Reconfigurable Array cryptographic hardware) and [OpenCryptoLinux](https://nlnet.nl/project/OpenCryptoLinux). The proposed SoC will support test instruments as peripherals and use OpenCryptoHW as the System Under Test (SUT), hopefully opening the way for open-source test instrumentation operated under Linux.
 
 This repository is a Tester SoC based on [IOb-SoC](https://github.com/IObundle/iob-soc).
 
@@ -135,3 +135,10 @@ This project is funded through the NGI Assure Fund, a fund established by NLnet
 with financial support from the European Commission's Next Generation Internet
 programme, under the aegis of DG Communications Networks, Content and Technology
 under grant agreement No 957073.
+
+<table>
+    <tr>
+        <td align="center" width="50%"><img src="https://nlnet.nl/logo/banner.svg" alt="NLnet foundation logo" style="width:90%"></td>
+        <td align="center"><img src="https://nlnet.nl/image/logos/NGIAssure_tag.svg" alt="NGI Assure logo" style="width:90%"></td>
+    </tr>
+</table>
