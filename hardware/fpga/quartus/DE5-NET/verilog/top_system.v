@@ -333,7 +333,9 @@ module top_system
    //
    // SYSTEM
    //
-
+   assign chnl_rx_clk[0] = chnl_clk;
+   assign chnl_tx_clk[0] = chnl_clk;
+   
    // Instantiate and assign modules to RIFFA channels. Users should
    // replace the chnl_tester instantiation with their own core.
    system system
@@ -349,7 +351,7 @@ module top_system
       .PLD_CLK_IF(chnl_clk),
       .PLD_RST_IF(chnl_reset),
       .PCIE_CHNL_RX_IF(chnl_rx[0]),
-      .PCIE_CHNL_RX_CLK_IF(chnl_rx_clk[0]),
+//      .PCIE_CHNL_RX_CLK_IF(chnl_rx_clk[0]),
       .PCIE_CHNL_RX_ACK_IF(chnl_rx_ack[0]),
       .PCIE_CHNL_RX_LAST_IF(chnl_rx_last[0]),
       .PCIE_CHNL_RX_LEN_IF(chnl_rx_len[`SIG_CHNL_LENGTH_W*0 +:`SIG_CHNL_LENGTH_W]),
@@ -357,7 +359,7 @@ module top_system
       .PCIE_CHNL_RX_DATA_IF(chnl_rx_data[C_PCI_DATA_WIDTH*0 +:C_PCI_DATA_WIDTH]),
       .PCIE_CHNL_RX_DATA_VALID_IF(chnl_rx_data_valid[0]),
       .PCIE_CHNL_RX_DATA_REN_IF(chnl_rx_data_ren[0]),
-      .PCIE_CHNL_TX_CLK_IF(chnl_tx_clk[0]),
+  //    .PCIE_CHNL_TX_CLK_IF(chnl_tx_clk[0]),
       .PCIE_CHNL_TX_IF(chnl_tx[0]),
       .PCIE_CHNL_TX_ACK_IF(chnl_tx_ack[0]),
       .PCIE_CHNL_TX_LAST_IF(chnl_tx_last[0]),

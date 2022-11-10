@@ -51,54 +51,61 @@ int main()
   uart_puts("\n\n\nTest PCIE!\n\n\n");
 
 
+  
   //while(1);
   
   IOB_PCIE_INIT_BASEADDR(PCIE_BASE);
 
+
+
+
+
+  
   while(1) {
 
-    
+    //        IOB_PCIE_SET_LEN_ACK(1);
     //state 0
 
-    while  (! IOB_PCIE_GET_LEN_VALID());
+    while  (!IOB_PCIE_GET_RXCHNL());
 
-    IOB_PCIE_SET_LEN_ACK(1);
-    int rLen =  IOB_PCIE_GET_LEN();
 
+    int rLen =  IOB_PCIE_GET_RXCHNL_LEN();
+
+    IOB_PCIE_SET_RXCHNL_DATA_REN(1);
+    IOB_PCIE_SET_RXCHNL_ACK(1);
+    IOB_PCIE_SET_TXCHNL_LEN(rLen);
+    
     long long rData [100];
   
     //state 1
 
     for (int i = 0 ; i < rLen ; i++){
-
-      while(!IOB_PCIE_GET_DATA_VALID());
       
-      rData[i] = IOB_PCIE_GET_DATAH();
-
+      while(!IOB_PCIE_GET_RXCHNL_DATA_VALID());
+      
+      rData[i] = IOB_PCIE_GET_RXCHNL_DATAH();
+     
   };
-  
+
+
+    IOB_PCIE_SET_TXCHNL(1);
+    IOB_PCIE_SET_TXCHNL_DATA_VALID(1);
 
     
   //state 2
 
-  IOB_PCIE_SET_CHNL(1);
 
   for (int i = 0 ; i < rLen ; i++){
-    IOB_PCIE_SET_DATA_VALID(0);
-    while (!IOB_PCIE_GET_DATA_REN());
-    IOB_PCIE_SET_DATAH(rData[i]+2);
-    IOB_PCIE_SET_DATA_VALID(1);
+    //    IOB_PCIE_SET_DATA_VALID(0);
+    while (!IOB_PCIE_GET_TXCHNL_DATA_REN());
+    IOB_PCIE_SET_TXCHNL_DATAH(rData[i]+2);
+    //    IOB_PCIE_SET_DATA_VALID(1);
   };
 };
     
   
+   
   
-  
-  
-  
-  
-  
-
     
   
   //test file send
