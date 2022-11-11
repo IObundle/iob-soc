@@ -57,8 +57,15 @@ int main()
   IOB_PCIE_INIT_BASEADDR(PCIE_BASE);
 
 
-
-
+  IOB_PCIE_SET_TXCHNL(1);
+  IOB_PCIE_SET_TXCHNL_LEN(20);
+  IOB_PCIE_SET_TXCHNL_DATA_VALID(1);
+  for (int i = 0 ; i < 20 ; i++){
+     
+    IOB_PCIE_SET_TXCHNL_DATAH(i);
+    
+  };
+  
 
   
   while(1) {
@@ -68,9 +75,12 @@ int main()
 
     while  (!IOB_PCIE_GET_RXCHNL());
 
+    printf("SUCCESS: got rx!\n");
 
     int rLen =  IOB_PCIE_GET_RXCHNL_LEN();
 
+    printf("SUCCESS: got len! %d \n", rLen);
+        
     IOB_PCIE_SET_RXCHNL_DATA_REN(1);
     IOB_PCIE_SET_RXCHNL_ACK(1);
     IOB_PCIE_SET_TXCHNL_LEN(rLen);
@@ -84,7 +94,7 @@ int main()
       while(!IOB_PCIE_GET_RXCHNL_DATA_VALID());
       
       rData[i] = IOB_PCIE_GET_RXCHNL_DATAH();
-     
+      printf("SUCCESS: data [%d]! %d \n",i, rData);
   };
 
 
