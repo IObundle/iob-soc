@@ -60,10 +60,14 @@ int main()
   IOB_PCIE_SET_TXCHNL(1);
   IOB_PCIE_SET_TXCHNL_LEN(20);
   IOB_PCIE_SET_TXCHNL_DATA_VALID(1);
-  for (int i = 0 ; i < 20 ; i++){
-     
-    IOB_PCIE_SET_TXCHNL_DATAH(i);
+
+  for (int i = 0 ; i < 20 ; i+=2){
     
+    IOB_PCIE_SET_TXCHNL_DATA_VALID(0);
+    IOB_PCIE_SET_TXCHNL_DATA(i);
+    IOB_PCIE_SET_TXCHNL_DATA(i+1);
+    IOB_PCIE_SET_TXCHNL_DATA_VALID(1);
+    printf("datasent[%d] \n",i);
   };
   
 
@@ -89,12 +93,12 @@ int main()
   
     //state 1
 
-    for (int i = 0 ; i < rLen ; i++){
+    for (int i = 0 ; i < rLen ; i+=2){
       
       while(!IOB_PCIE_GET_RXCHNL_DATA_VALID());
       
-      rData[i] = IOB_PCIE_GET_RXCHNL_DATAH();
-      printf("SUCCESS: data [%d]! %d \n",i, rData);
+      rData[i] = IOB_PCIE_GET_RXCHNL_DATA();
+      printf("data[%d]! %d \n",i, rData[i]);
   };
 
 
@@ -103,14 +107,14 @@ int main()
 
     
   //state 2
-
+    /*
 
   for (int i = 0 ; i < rLen ; i++){
     //    IOB_PCIE_SET_DATA_VALID(0);
     while (!IOB_PCIE_GET_TXCHNL_DATA_REN());
     IOB_PCIE_SET_TXCHNL_DATAH(rData[i]+2);
     //    IOB_PCIE_SET_DATA_VALID(1);
-  };
+    };*/
 };
     
   
