@@ -105,7 +105,7 @@ int main()
     IOB_PCIE_SET_TXCHNL(1);
     IOB_PCIE_SET_TXCHNL_DATA_VALID(1);
 
-    
+    break;
   //state 2
     /*
 
@@ -120,7 +120,7 @@ int main()
   
    
   
-    
+  /*  
   
   //test file send
   char *sendfile = malloc(1000);
@@ -142,6 +142,6 @@ int main()
 
   free(sendfile);
   free(recvfile);
-
+*/
   uart_finish();
 }
