@@ -63,7 +63,7 @@ endif
 
 run: sim
 ifeq ($(VCD),1)
-	if [ ! `pgrep -u $(USER) gtkwave` ]; then gtkwave system.vcd; fi &
+	if [ ! `pgrep -u $(USER) gtkwave` ]; then gtkwave -a ../uut.gtkw system.vcd; fi &
 endif
 
 sim:
