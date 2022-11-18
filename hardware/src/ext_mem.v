@@ -8,6 +8,7 @@ module ext_mem
     parameter ADDR_W=`ADDR_W,
     parameter DATA_W=`DATA_W,
     parameter AXI_ID_W=0,
+    parameter AXI_LEN_W=0,
     parameter AXI_ADDR_W=`ADDR_W,
     parameter AXI_DATA_W=`DATA_W
     )
@@ -175,6 +176,7 @@ module ext_mem
    iob_cache_axi # 
      (
       .AXI_ID_W(AXI_ID_W),
+      .AXI_LEN_W(AXI_LEN_W),
       .FE_ADDR_W(`DCACHE_ADDR_W),
       .BE_ADDR_W(`DDR_ADDR_W),
       .BE_DATA_W(`DDR_DATA_W),

@@ -18,7 +18,8 @@ module system_top
 `include "iob_gen_if.vh"
    );
  
-   localparam AXI_ID_W = 4;
+   localparam AXI_ID_W  = 4;
+   localparam AXI_LEN_W = 8;
    localparam AXI_ADDR_W=`DDR_ADDR_W;
    localparam AXI_DATA_W=`DATA_W;
  
@@ -53,6 +54,7 @@ module system_top
    system
      #(
        .AXI_ID_W(AXI_ID_W),
+       .AXI_LEN_W(AXI_LEN_W),
        .AXI_ADDR_W(AXI_ADDR_W),
        .AXI_DATA_W(AXI_DATA_W)
        )
