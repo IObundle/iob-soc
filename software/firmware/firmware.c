@@ -54,64 +54,56 @@ int main()
   
   IOB_PCIE_INIT_BASEADDR(PCIE_BASE);
 
+    
+  
+
+  
+  
+
+  long long rData [100];  
+
+
+#ifndef SIM
+
+  while  (!IOB_PCIE_GET_RXCHNL());
+  int rLen =  IOB_PCIE_GET_RXCHNL_LEN();
+  
+  for (int i = 0 ; i < 2 * rLen ; i++){
+    rData[i] = IOB_PCIE_GET_RXCHNL_DATA();
+    printf("data[%d]! %d \n",i, rData[i]);
+    };
 
   IOB_PCIE_SET_TXCHNL(1);
-  IOB_PCIE_SET_TXCHNL_LEN(20);
+  IOB_PCIE_SET_TXCHNL_LEN(rLen);
 
-  for (int i = 0 ; i < 20 ; i+=2){
-    IOB_PCIE_SET_TXCHNL_DATA(i);
+  for (int i = 0 ; i < 2 * rLen ; i++){
+    IOB_PCIE_SET_TXCHNL_DATA(rData[i]);
     printf("datasent[%d] \n",i);
   };
   
 
+
+#else
+  IOB_PCIE_SET_TXCHNL(1);
+  IOB_PCIE_SET_TXCHNL_LEN(20);
+
+  for (int i = 0 ; i < 2 * 20 ; i++){
+    IOB_PCIE_SET_TXCHNL_DATA(i);
+    printf("datasent[%d] \n",i);
+  };
+
+#endif
   
-    while  (!IOB_PCIE_GET_RXCHNL());
-    printf("SUCCESS: got rx!\n");
-
-    int rLen =  IOB_PCIE_GET_RXCHNL_LEN();
-    printf("SUCCESS: got len! %d \n", rLen);
-        
-    
-    long long rData [100];
   
-    for (int i = 0 ; i < rLen ; i+=2){
-      rData[i] = IOB_PCIE_GET_RXCHNL_DATA();
-      printf("data[%d]! %d \n",i, rData[i]);
-    };
 
-    //state 2
-    /*
+#ifdef SIM
+  while  (!IOB_PCIE_GET_RXCHNL());
+  int rLen =  IOB_PCIE_GET_RXCHNL_LEN();
+  for (int i = 0 ; i < 2 * rLen ; i++){
+    rData[i] = IOB_PCIE_GET_RXCHNL_DATA();
+    printf("data[%d]! %d \n",i, rData[i]);
+  };
+#endif
 
-      for (int i = 0 ; i < rLen ; i++){
-      IOB_PCIE_SET_TXCHNL_DATA(rData[i]);
-      };*/
-
-    
-  
-   
-  
-  /*  
-  
-  //test file send
-  char *sendfile = malloc(1000);
-  int send_file_size = 0;
-  send_file_size = string_copy(sendfile, send_string);
-  uart_sendfile("Sendfile.txt", send_file_size, sendfile);
-
-  //test file receive
-  char *recvfile = malloc(10000);
-  int file_size = 0;
-  file_size = uart_recvfile("Sendfile.txt", recvfile);
-
-  //compare files
-  if (compare_str(sendfile, recvfile, send_file_size)) {
-      printf("FAILURE: Send and received file differ!\n");
-  } else {
-      printf("SUCCESS: Send and received file match!\n");
-  }
-
-  free(sendfile);
-  free(recvfile);
-*/
   uart_finish();
 }

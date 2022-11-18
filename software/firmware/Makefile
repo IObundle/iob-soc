@@ -1,6 +1,10 @@
 ROOT_DIR=../..
 include ../software.mk
 
+ifneq ($(SIM),)
+DEFINE+=$(defmacro)SIM
+endif
+
 #additional linker flag
 LFLAGS+=-Wl,-Map,firmware.map
 
