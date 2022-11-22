@@ -2,7 +2,7 @@
 
 open_hw
 connect_hw_server -url localhost:3121
-current_hw_target [get_hw_targets */xilinx_tcf/Digilent/210183625030A]
+current_hw_target [get_hw_targets */xilinx_tcf/Digilent/*]
 open_hw_target
 
 # Program and Refresh the XC7K325T Device
