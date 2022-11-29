@@ -65,7 +65,7 @@ int main()
 
 #ifndef SIM
 
-  while  (!IOB_PCIE_GET_RXCHNL());
+ 
   int rLen =  IOB_PCIE_GET_RXCHNL_LEN();
   
   for (int i = 0 ; i < 2 * rLen ; i++){
@@ -73,7 +73,7 @@ int main()
     printf("data[%d]! %d \n",i, rData[i]);
     };
 
-  IOB_PCIE_SET_TXCHNL(1);
+  
   IOB_PCIE_SET_TXCHNL_LEN(rLen);
 
   for (int i = 0 ; i < 2 * rLen ; i++){
@@ -84,7 +84,7 @@ int main()
 
 
 #else
-  IOB_PCIE_SET_TXCHNL(1);
+  
   IOB_PCIE_SET_TXCHNL_LEN(20);
 
   for (int i = 0 ; i < 2 * 20 ; i++){
@@ -97,7 +97,7 @@ int main()
   
 
 #ifdef SIM
-  while  (!IOB_PCIE_GET_RXCHNL());
+  
   int rLen =  IOB_PCIE_GET_RXCHNL_LEN();
   for (int i = 0 ; i < 2 * rLen ; i++){
     rData[i] = IOB_PCIE_GET_RXCHNL_DATA();
