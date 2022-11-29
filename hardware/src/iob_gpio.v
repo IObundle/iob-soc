@@ -32,9 +32,7 @@ module iob_gpio
     gpio_output_enable_reg (
         .clk        (clk),
         .arst       (rst),
-        .arst_val   ({DATA_W{1'b0}}),
         .rst        (rst),
-        .rst_val    ({DATA_W{1'b0}}),
         .en         (GPIO_OUTPUT_ENABLE_en),
         .data_in    (GPIO_OUTPUT_ENABLE_wdata),
         .data_out   (GPIO_OUTPUT_ENABLE)
@@ -45,9 +43,7 @@ module iob_gpio
     gpio_output_reg      (
         .clk        (clk),
         .arst       (rst),
-        .arst_val   ({DATA_W{1'b0}}),
         .rst        (rst),
-        .rst_val    ({DATA_W{1'b0}}),
         .en         (GPIO_OUTPUT_en),
         .data_in    (GPIO_OUTPUT_wdata),
         .data_out   (GPIO_OUTPUT)
