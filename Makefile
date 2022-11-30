@@ -53,7 +53,7 @@ HW_DIR=./hardware
 SIMULATOR ?=icarus
 SIM_DIR=$(HW_DIR)/simulation/$(SIMULATOR)
 #default baud and system clock frequency
-SIM_BAUD = 4500000
+SIM_BAUD = 3000000
 SIM_FREQ =50000000
 sim-build:
 	make fw-build
@@ -61,6 +61,9 @@ sim-build:
 
 sim-run: sim-build
 	make -C $(SIM_DIR) run
+
+sim-waves:
+	make -C $(SIM_DIR) waves
 
 sim-clean: fw-clean
 	make -C $(SIM_DIR) clean

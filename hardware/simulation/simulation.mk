@@ -84,6 +84,10 @@ ifeq ($(VCD),1)
 endif
 endif
 
+waves:
+	if [ ! `pgrep -u $(USER) gtkwave` ]; then gtkwave system.vcd; fi &
+
+
 #
 #EDIT TOP OR TB DEPENDING ON SIMULATOR
 #
@@ -166,6 +170,6 @@ debug:
 
 .PRECIOUS: system.vcd test.log
 
-.PHONY: build run sim \
+.PHONY: build run sim waves\
 	kill-remote-sim clean-remote \
 	test test1 test2 test3 test4 test5 clean-testlog
