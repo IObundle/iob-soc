@@ -22,7 +22,7 @@ INCLUDE+=$(incdir). $(incdir)$(GPIO_INC_DIR) $(incdir)$(LIB_DIR)/hardware/includ
 VSRC+=$(wildcard $(GPIO_SRC_DIR)/*.v)
 
 gpio-hw-clean:
-	@rm -rf $(GPIO_FPGA_DIR)/vivado/XCKU $(GPIO_FPGA_DIR)/quartus/CYCLONEV-GT
+	@rm -rf $(GPIO_HW_DIR)/fpga/vivado/XCKU $(GPIO_HW_DIR)/fpga/quartus/CYCLONEV-GT
 
 .PHONY: gpio-hw-clean
 

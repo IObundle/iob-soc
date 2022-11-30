@@ -15,10 +15,10 @@ module iob_gpio
 `include "iob_s_if.vh"
 
     // inputs and outputs have dedicated interface
-    `IOB_INPUT(gpio_input, GPIO_W),
-    `IOB_OUTPUT(gpio_output, GPIO_W),
-	 // output enable can be used to tristate outputs on external module
-    `IOB_OUTPUT(gpio_output_enable, GPIO_W),
+    input [GPIO_W-1:0] gpio_input,
+    output [GPIO_W-1:0] gpio_output,
+    // output enable can be used to tristate outputs on external module
+    output [GPIO_W-1:0] gpio_output_enable,
 
 `include "iob_gen_if.vh"
     );

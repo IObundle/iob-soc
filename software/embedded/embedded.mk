@@ -8,6 +8,5 @@ include $(GPIO_DIR)/software/software.mk
 SRC+=iob_gpio_swreg_emb.c
 
 iob_gpio_swreg_emb.c: iob_gpio_swreg.h
-	
 
 endif
