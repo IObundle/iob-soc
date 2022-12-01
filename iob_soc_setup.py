@@ -4,6 +4,8 @@ import os, sys
 sys.path.insert(0, os.getcwd()+'/submodules/LIB/scripts')
 from setup import setup
 from submodule_utils import get_n_periphs, get_n_periphs_w, get_periphs_id_as_parameters
+from ios import get_peripheral_ios
+from blocks import get_peripheral_blocks
 
 top = 'iob_soc'
 version = 'V0.70'
@@ -61,7 +63,7 @@ ios = \
     ]}
 ]
 # Append peripherals IO 
-ios.extend(get_peripheral_ios(next(i['val'] for i in confs if i['name'] == 'PERIPHERALS')))
+ios.extend(get_peripheral_ios(next(i['val'] for i in confs if i['name'] == 'PERIPHERALS'),os.path.dirname(__file__)))
 
 
 blocks = \
@@ -81,7 +83,8 @@ blocks = \
     ]}
 ]
 # Append peripherals instances
-blocks.extend(get_peripheral_instances(next(i['val'] for i in confs if i['name'] == 'PERIPHERALS')))
+blocks.append({'name':'peripherals', 'descr':'Peripheral modules', 'blocks':
+        get_peripheral_blocks(next(i['val'] for i in confs if i['name'] == 'PERIPHERALS'),os.path.dirname(__file__))})
 
-
-setup(top, version, confs, ios, None, blocks)
+if __name__ == "__main__":
+    setup(top, version, confs, ios, None, blocks)
