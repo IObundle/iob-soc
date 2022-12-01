@@ -6,7 +6,7 @@ VERSION=0070
 DOC_RESULTS=
 
 #supported flows
-FLOWS := pc-emul
+FLOWS := pc-emul sim doc
 
 # root directory when building locally
 SOC_DIR ?= .

@@ -17,6 +17,8 @@ PICORV32_DIR:=$(SOC_DIR)/submodules/PICORV32
 include $(PICORV32_DIR)/hardware/hw_setup.mk
 
 #CACHE
+#select cache configuration
+CACHE_CONFIG:=iob
 include $(CACHE_DIR)/hardware/hw_setup.mk
 
 #UART
