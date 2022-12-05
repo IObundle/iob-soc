@@ -97,3 +97,8 @@ $(BUILD_PSRC_DIR)/%.S: $(SOC_SW_DIR)/firmware/%.S
 SRC+=$(BUILD_SW_PYTHON_DIR)/sw_defines.py $(BUILD_SW_PYTHON_DIR)/console
 $(BUILD_SW_PYTHON_DIR)/%: $(LIB_DIR)/scripts/%
 	cp $< $@
+
+SRC+=$(BUILD_DIR)/console.mk
+$(BUILD_DIR)/console.mk: $(LIB_DIR)/scripts/console.mk
+	cp $< $@
+
