@@ -38,14 +38,16 @@ confs = \
     {'name':'AXI_ID_W',      'type':'M', 'val':'0', 'min':'1', 'max':'32', 'descr':"AXI ID bus width"},
     {'name':'AXI_ADDR_W',    'type':'M', 'val':'`IOB_SOC_ADDR_W', 'min':'1', 'max':'32', 'descr':"AXI address bus width"},
     {'name':'AXI_DATA_W',    'type':'M', 'val':'`IOB_SOC_DATA_W', 'min':'1', 'max':'32', 'descr':"AXI data bus width"},
+    {'name':'AXI_LEN_W',    'type':'M', 'val':'4', 'min':'1', 'max':'4', 'descr':"AXI burst length width"},
+
     # SoC parameters
-    {'name':'ADDR_W',        'type':'P', 'val':'`IOB_SOC_ADDR_W', 'min':'1', 'max':'32', 'descr':"Address bus width"},
-    {'name':'DATA_W',        'type':'P', 'val':'`IOB_SOC_DATA_W', 'min':'1', 'max':'32', 'descr':"Data bus width"},
-    {'name':'BOOTROM_ADDR_W','type':'P', 'val':'`IOB_SOC_BOOTROM_ADDR_W', 'min':'1', 'max':'32', 'descr':"Boot ROM address width"},
-    {'name':'SRAM_ADDR_W',   'type':'P', 'val':'`IOB_SOC_SRAM_ADDR_W', 'min':'1', 'max':'32', 'descr':"SRAM address width"},
-    {'name':'AXI_ID_W',      'type':'P', 'val':'`IOB_SOC_AXI_ID_W', 'min':'1', 'max':'32', 'descr':"AXI ID bus width"},
-    {'name':'AXI_ADDR_W',    'type':'P', 'val':'`IOB_SOC_AXI_ADDR_W', 'min':'1', 'max':'32', 'descr':"AXI address bus width"},
-    {'name':'AXI_DATA_W',    'type':'P', 'val':'`IOB_SOC_AXI_DATA_W', 'min':'1', 'max':'32', 'descr':"AXI data bus width"},
+    {'name':'ADDR_W',        'type':'P', 'descr':"Address bus width"},
+    {'name':'DATA_W',        'type':'P', 'descr':"Data bus width"},
+    {'name':'BOOTROM_ADDR_W','type':'P', 'descr':"Boot ROM address width"},
+    {'name':'SRAM_ADDR_W',   'type':'P', 'descr':"SRAM address width"},
+    {'name':'AXI_ID_W',      'type':'P', 'descr':"AXI ID bus width"},
+    {'name':'AXI_ADDR_W',    'type':'P', 'descr':"AXI address bus width"},
+    {'name':'AXI_DATA_W',    'type':'P', 'descr':"AXI data bus width"},
 ]
 # Append macros with ID of each peripheral
 confs.extend(get_periphs_id_as_macros(next(i['val'] for i in confs if i['name'] == 'PERIPHERALS')))
@@ -95,5 +97,6 @@ if __name__ == "__main__":
     # Setup submodules
     setup_submodule(f"../{top+'_'+version}","submodules/UART")
     setup_submodule(f"../{top+'_'+version}","submodules/CACHE")
+    setup_submodule(f"../{top+'_'+version}","submodules/PICORV32")
     # Setup this system
     setup(top, version, confs, ios, None, blocks)
