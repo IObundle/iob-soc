@@ -1,35 +1,20 @@
 `timescale 1 ns / 1 ps
 `include "iob_soc.vh"
 `include "iob_lib.vh"
-`include "iob_intercon.vh"
 
 //do not remove line below
 //PHEADER
 
+//Temporary PHEADER FIX, as currently 'createSystem.py' does not find these files, probably because they are only generated after that script runs.
+`include "iob_cache_swreg_def.vh"
+`include "iob_uart_swreg_def.vh"
+
 module system
   #(
-    parameter ADDR_W=`ADDR_W,
-    parameter DATA_W=`DATA_W,
-    parameter BOOTROM_ADDR_W=`BOOTROM_ADDR_W,
-    parameter SRAM_ADDR_W=`SRAM_ADDR_W,
-    parameter AXI_ID_W=0,
-    parameter AXI_ADDR_W=`ADDR_W,
-    parameter AXI_DATA_W=`DATA_W
+`include "iob_soc_params.vh"
     )
   (
-   //do not remove line below
-   //PIO
-
-   //CPU TRAP
-   output trap,
-          
-          
-`ifdef USE_DDR 
-//AXI MASTER INTERFACE
- `include "m_axi_m_port.vh"
-`endif
-          
-`include "iob_gen_if.vh"
+`include "iob_soc_io.vh"
    );
    
    //
@@ -59,10 +44,10 @@ module system
        )
    cpu
        (
-        .clk (clk),
+        .clk (clk_i),
         .rst (cpu_reset),
         .boot (boot),
-        .trap (trap),
+        .trap (trap_o),
         
         //instruction bus
         .ibus_req (cpu_i_req),
@@ -99,7 +84,7 @@ module system
        )
    ibus_split
      (
-      .clk (clk),
+      .clk (clk_i),
       .rst (cpu_reset),
       // master interface
       .m_req (cpu_i_req),
@@ -133,7 +118,7 @@ module system
        )
    dbus_split
      (
-      .clk    ( clk   ),
+      .clk    ( clk_i   ),
       .rst    ( cpu_reset ),
 
       // master interface
@@ -164,7 +149,7 @@ module system
        )
    int_dbus_split
      (
-      .clk (clk),
+      .clk (clk_i),
       .rst (cpu_reset),
 
 `ifdef USE_DDR
@@ -188,17 +173,17 @@ module system
    //
 
    //slaves bus
-   wire [`N_SLAVES*`REQ_W-1:0] slaves_req;
-   wire [`N_SLAVES*`RESP_W-1:0] slaves_resp;
+   wire [`IOB_SOC_N_SLAVES*`REQ_W-1:0] slaves_req;
+   wire [`IOB_SOC_N_SLAVES*`RESP_W-1:0] slaves_resp;
 
    iob_split
      #(
-       .N_SLAVES(`N_SLAVES),
+       .N_SLAVES(`IOB_SOC_N_SLAVES),
        .P_SLAVES(`P_BIT-1)
        )
    pbus_split
      (
-      .clk (clk),
+      .clk (clk_i),
       .rst (cpu_reset),
       // master interface
       .m_req (pbus_req),
@@ -224,8 +209,8 @@ module system
     )
     int_mem0
      (
-      .clk (clk),
-      .rst (rst),
+      .clk (clk_i),
+      .rst (rst_i),
       .boot (boot),
       .cpu_reset (cpu_reset),
 
@@ -261,7 +246,7 @@ module system
 
       //AXI INTERFACE 
 `include "m_axi_portmap.vh"
-      .clk (clk),
+      .clk (clk_i),
       .rst (cpu_reset)
       );
 `endif

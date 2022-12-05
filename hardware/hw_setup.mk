@@ -17,8 +17,7 @@ PICORV32_DIR:=$(SOC_DIR)/submodules/PICORV32
 include $(PICORV32_DIR)/hardware/hw_setup.mk
 
 #CACHE
-#select cache configuration
-CACHE_CONFIG:=iob
+CACHE_CONFIG ?= iob
 include $(CACHE_DIR)/hardware/hw_setup.mk
 
 #UART
@@ -27,9 +26,22 @@ include $(UART_DIR)/hardware/hw_setup.mk
 
 #SOURCES
 
+#Build version file required by cache # FIXME: this is probably not the best solution
+SRC+=$(BUILD_VSRC_DIR)/iob_cache_version.vh
+$(BUILD_VSRC_DIR)/iob_cache_version.vh: $(CACHE_DIR)/config_setup.mk
+	env -C $(CACHE_DIR) -- $(LIB_DIR)/scripts/version.py -v . -o $(shell realpath --relative-to $(CACHE_DIR) $(@D))
+
 # make iob_soc top with CPU memory and peripherals
 SRC+=$(BUILD_VSRC_DIR)/iob_soc.v
-
 $(BUILD_VSRC_DIR)/iob_soc.v: $(SOC_DIR)/hardware/src/system.vt
 	$(LIB_DIR)/scripts/createSystem.py "$(SOC_DIR)" "$(PERIPHERALS)" "$@"
 
+# generate axi ports
+SRC+=$(BUILD_VSRC_DIR)/iob_soc_axi_m_port.vh
+$(BUILD_VSRC_DIR)/iob_soc_axi_m_port.vh:
+	$(AXI_GEN) axi_m_port $(@D)/iob_soc_ --top
+
+# generate portmap for axi instance
+SRC+=$(BUILD_VSRC_DIR)/iob_soc_axi_m_m_portmap.vh
+$(BUILD_VSRC_DIR)/iob_soc_axi_m_m_portmap.vh:
+	$(AXI_GEN) axi_m_m_portmap $(@D)/iob_soc_

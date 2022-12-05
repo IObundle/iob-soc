@@ -2,8 +2,8 @@
 
 import os, sys
 sys.path.insert(0, os.getcwd()+'/submodules/LIB/scripts')
-from setup import setup
-from submodule_utils import get_n_periphs, get_n_periphs_w, get_periphs_id_as_parameters
+from setup import setup, setup_submodule
+from submodule_utils import get_n_periphs, get_n_periphs_w, get_periphs_id_as_macros
 from ios import get_peripheral_ios
 from blocks import get_peripheral_blocks
 
@@ -28,22 +28,27 @@ confs = \
     {'name':'RUN_EXTMEM',    'type':'M', 'val':'0', 'min':'0', 'max':'1', 'descr':"Run firmware from external memory"},
     {'name':'DCACHE_ADDR_W', 'type':'M', 'val':'24', 'min':'1', 'max':'32', 'descr':"DCACHE address width"},
     {'name':'DDR_DATA_W',    'type':'M', 'val':'32', 'min':'1', 'max':'32', 'descr':"DDR data bus width"},
-    {'name':'DDR_ADDR_W_SIM','type':'M', 'val':'24', 'min':'1', 'max':'32', 'descr':"DDR address bus width in simulation"},
+    {'name':'DDR_ADDR_W','type':'M', 'val':'24', 'min':'1', 'max':'32', 'descr':"DDR address bus width in simulation"},
+    #TODO: Need to find a way to use value below when running on fpga
     {'name':'DDR_ADDR_W_HW', 'type':'M', 'val':'30', 'min':'1', 'max':'32', 'descr':"DDR address bus width"},
+    #TODO: Need to find a way to use value below when running on fpga
     {'name':'BAUD_HW',       'type':'M', 'val':'115200', 'min':'1', 'max':'NA', 'descr':"UART baud rate"},
-    {'name':'BAUD_SIM',      'type':'M', 'val':'5000000', 'min':'1', 'max':'NA', 'descr':"UART baud rate for simulation"},
+    {'name':'BAUD',      'type':'M', 'val':'5000000', 'min':'1', 'max':'NA', 'descr':"UART baud rate for simulation"},
     {'name':'FREQ',          'type':'M', 'val':'100000000', 'min':'1', 'max':'NA', 'descr':"System clock frequency"},
+    {'name':'AXI_ID_W',      'type':'M', 'val':'0', 'min':'1', 'max':'32', 'descr':"AXI ID bus width"},
+    {'name':'AXI_ADDR_W',    'type':'M', 'val':'`IOB_SOC_ADDR_W', 'min':'1', 'max':'32', 'descr':"AXI address bus width"},
+    {'name':'AXI_DATA_W',    'type':'M', 'val':'`IOB_SOC_DATA_W', 'min':'1', 'max':'32', 'descr':"AXI data bus width"},
     # SoC parameters
-    {'name':'ADDR_W',        'type':'P', 'val':'`ADDR_W', 'min':'1', 'max':'32', 'descr':"Address bus width"},
-    {'name':'DATA_W',        'type':'P', 'val':'`DATA_W', 'min':'1', 'max':'32', 'descr':"Data bus width"},
-    {'name':'BOOTROM_ADDR_W','type':'P', 'val':'`BOOTROM_ADDR_W', 'min':'1', 'max':'32', 'descr':"Boot ROM address width"},
-    {'name':'SRAM_ADDR_W',   'type':'P', 'val':'`SRAM_ADDR_W', 'min':'1', 'max':'32', 'descr':"SRAM address width"},
-    {'name':'AXI_ID_W',      'type':'P', 'val':'0', 'min':'1', 'max':'32', 'descr':"AXI ID bus width"},
-    {'name':'AXI_ADDR_W',    'type':'P', 'val':'`ADDR_W', 'min':'1', 'max':'32', 'descr':"AXI address bus width"},
-    {'name':'AXI_DATA_W',    'type':'P', 'val':'`DATA_W', 'min':'1', 'max':'32', 'descr':"AXI data bus width"},
+    {'name':'ADDR_W',        'type':'P', 'val':'`IOB_SOC_ADDR_W', 'min':'1', 'max':'32', 'descr':"Address bus width"},
+    {'name':'DATA_W',        'type':'P', 'val':'`IOB_SOC_DATA_W', 'min':'1', 'max':'32', 'descr':"Data bus width"},
+    {'name':'BOOTROM_ADDR_W','type':'P', 'val':'`IOB_SOC_BOOTROM_ADDR_W', 'min':'1', 'max':'32', 'descr':"Boot ROM address width"},
+    {'name':'SRAM_ADDR_W',   'type':'P', 'val':'`IOB_SOC_SRAM_ADDR_W', 'min':'1', 'max':'32', 'descr':"SRAM address width"},
+    {'name':'AXI_ID_W',      'type':'P', 'val':'`IOB_SOC_AXI_ID_W', 'min':'1', 'max':'32', 'descr':"AXI ID bus width"},
+    {'name':'AXI_ADDR_W',    'type':'P', 'val':'`IOB_SOC_AXI_ADDR_W', 'min':'1', 'max':'32', 'descr':"AXI address bus width"},
+    {'name':'AXI_DATA_W',    'type':'P', 'val':'`IOB_SOC_AXI_DATA_W', 'min':'1', 'max':'32', 'descr':"AXI data bus width"},
 ]
 # Append macros with ID of each peripheral
-confs.extend(get_periphs_id_as_parameters(next(i['val'] for i in confs if i['name'] == 'PERIPHERALS')))
+confs.extend(get_periphs_id_as_macros(next(i['val'] for i in confs if i['name'] == 'PERIPHERALS')))
 # Append macro with number of peripherals
 confs.append({'name':'N_SLAVES',   'type':'M', 'val':get_n_periphs(next(i['val'] for i in confs if i['name'] == 'PERIPHERALS')), 'min':'NA', 'max':'NA', 'descr':"Number of peripherals"})
 # Append macro with width of peripheral bus
@@ -87,4 +92,8 @@ blocks.append({'name':'peripherals', 'descr':'Peripheral modules', 'blocks':
         get_peripheral_blocks(next(i['val'] for i in confs if i['name'] == 'PERIPHERALS'),os.path.dirname(__file__))})
 
 if __name__ == "__main__":
+    # Setup submodules
+    setup_submodule(f"../{top+'_'+version}","submodules/UART")
+    setup_submodule(f"../{top+'_'+version}","submodules/CACHE")
+    # Setup this system
     setup(top, version, confs, ios, None, blocks)

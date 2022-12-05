@@ -13,16 +13,16 @@ module system_top
    //tester uart
    input                              uart_valid,
    input [`iob_uart_swreg_ADDR_W-1:0] uart_addr,
-   input [`DATA_W-1:0]                uart_wdata,
+   input [`IOB_SOC_DATA_W-1:0]                uart_wdata,
    input [3:0]                        uart_wstrb,
-   output [`DATA_W-1:0]               uart_rdata,
+   output [`IOB_SOC_DATA_W-1:0]               uart_rdata,
    output                             uart_ready,
 `include "iob_gen_if.vh"
    );
  
    localparam AXI_ID_W = 4;
-   localparam AXI_ADDR_W=`DDR_ADDR_W;
-   localparam AXI_DATA_W=`DATA_W;
+   localparam AXI_ADDR_W=`IOB_SOC_DDR_ADDR_W;
+   localparam AXI_DATA_W=`IOB_SOC_DATA_W;
  
    //PWIRES
 
@@ -76,11 +76,11 @@ module system_top
      #(
  `ifdef DDR_INIT
        .FILE("firmware.hex"),
-       .FILE_SIZE(`FW_SIZE),
+       .FILE_SIZE(`IOB_FW_SIZE),
  `endif
        .ID_WIDTH(AXI_ID_W),
-       .DATA_WIDTH (`DATA_W),
-       .ADDR_WIDTH (`DDR_ADDR_W)
+       .DATA_WIDTH (`IOB_SOC_DATA_W),
+       .ADDR_WIDTH (`IOB_SOC_DDR_ADDR_W)
        )
    ddr_model_mem
      (
@@ -99,16 +99,16 @@ module system_top
 
    //sram monitor - use for debugging programs
    /*
-    wire [`SRAM_ADDR_W-1:0] sram_daddr = uut.int_mem0.int_sram.d_addr;
+    wire [`IOB_SOC_SRAM_ADDR_W-1:0] sram_daddr = uut.int_mem0.int_sram.d_addr;
     wire sram_dwstrb = |uut.int_mem0.int_sram.d_wstrb & uut.int_mem0.int_sram.d_valid;
     wire sram_drdstrb = !uut.int_mem0.int_sram.d_wstrb & uut.int_mem0.int_sram.d_valid;
-    wire [`DATA_W-1:0] sram_dwdata = uut.int_mem0.int_sram.d_wdata;
+    wire [`IOB_SOC_DATA_W-1:0] sram_dwdata = uut.int_mem0.int_sram.d_wdata;
 
 
     wire sram_iwstrb = |uut.int_mem0.int_sram.i_wstrb & uut.int_mem0.int_sram.i_valid;
     wire sram_irdstrb = !uut.int_mem0.int_sram.i_wstrb & uut.int_mem0.int_sram.i_valid;
-    wire [`SRAM_ADDR_W-1:0] sram_iaddr = uut.int_mem0.int_sram.i_addr;
-    wire [`DATA_W-1:0] sram_irdata = uut.int_mem0.int_sram.i_rdata;
+    wire [`IOB_SOC_SRAM_ADDR_W-1:0] sram_iaddr = uut.int_mem0.int_sram.i_addr;
+    wire [`IOB_SOC_DATA_W-1:0] sram_irdata = uut.int_mem0.int_sram.i_rdata;
 
     
     always @(posedge sram_dwstrb)

@@ -1,19 +1,19 @@
 `timescale 1 ns / 1 ps
 
 `include "iob_soc.vh"
-`include "iob_intercon.vh"
+`include "iob_lib.vh"
 
 module ext_mem
   #(
-    parameter ADDR_W=`ADDR_W,
-    parameter DATA_W=`DATA_W,
-    parameter FIRM_ADDR_W=`FIRM_ADDR_W,
-    parameter DCACHE_ADDR_W=`DCACHE_ADDR_W,
-    parameter DDR_ADDR_W=`DDR_ADDR_W,
-    parameter DDR_DATA_W=`DDR_DATA_W,
+    parameter ADDR_W=`IOB_SOC_ADDR_W,
+    parameter DATA_W=`IOB_SOC_DATA_W,
+    parameter FIRM_ADDR_W=`IOB_SOC_FIRM_ADDR_W,
+    parameter DCACHE_ADDR_W=`IOB_SOC_DCACHE_ADDR_W,
+    parameter DDR_ADDR_W=`IOB_SOC_DDR_ADDR_W,
+    parameter DDR_DATA_W=`IOB_SOC_DDR_DATA_W,
     parameter AXI_ID_W=0,
-    parameter AXI_ADDR_W=`ADDR_W,
-    parameter AXI_DATA_W=`DATA_W
+    parameter AXI_ADDR_W=`IOB_SOC_ADDR_W,
+    parameter AXI_DATA_W=`IOB_SOC_DATA_W
     )
    (
 `ifdef RUN_EXTMEM
@@ -27,8 +27,9 @@ module ext_mem
     output [`RESP_W-1:0] 		      d_resp,
 
     // AXI interface 
-`include "m_axi_m_port.vh"
-`include "iob_gen_if.vh"
+`include "iob_soc_axi_m_port.vh"
+	input [1-1:0] clk_i, //clock input.
+	input [1-1:0] rst_i //reset  asynchronous and active high.
     );
 
 `ifdef RUN_EXTMEM
@@ -55,8 +56,8 @@ module ext_mem
       )
    icache 
      (
-      .clk   (clk),
-      .reset (rst),
+      .clk   (clk_i),
+      .reset (rst_i),
 
       // Front-end interface
       .valid (i_req[1+FIRM_ADDR_W-2+`WRITE_W-1]),
@@ -90,8 +91,8 @@ module ext_mem
    reg                                        invalidate_reg;
    wire                                       l2_valid = l2cache_req[1+DCACHE_ADDR_W+`WRITE_W-1];
    //Necessary logic to avoid invalidating L2 while it's being accessed by a request
-   always @(posedge clk, posedge rst)
-     if (rst)
+   always @(posedge clk_i, posedge rst_i)
+     if (rst_i)
        invalidate_reg <= 1'b0;
      else 
        if (invalidate)
@@ -123,8 +124,8 @@ module ext_mem
       )
    dcache 
      (
-      .clk   (clk),
-      .reset (rst),
+      .clk   (clk_i),
+      .reset (rst_i),
 
       // Front-end interface
       .valid (d_req[2+DCACHE_ADDR_W-2+`WRITE_W-1]),
@@ -159,8 +160,8 @@ module ext_mem
        )
    merge_i_d_buses_into_l2
      (
-      .clk(clk),
-      .rst(rst),
+      .clk(clk_i),
+      .rst(rst_i),
       // masters
 `ifdef RUN_EXTMEM
       .m_req  ({icache_be_req, dcache_be_req}),
@@ -204,9 +205,9 @@ module ext_mem
       .wtb_empty_in(1'b1),
       .wtb_empty_out(l2_wtb_empty),
       // AXI interface
-`include "m_axi_portmap.vh"
-      .clk(clk),
-      .reset(rst)
+`include "iob_soc_axi_m_m_portmap.vh"
+      .clk(clk_i),
+      .reset(rst_i)
       );
 
 endmodule

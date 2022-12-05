@@ -2,8 +2,8 @@
 `include "iob_soc.vh"
 
 module sram #(
-              parameter DATA_W=`DATA_W,
-              parameter SRAM_ADDR_W = `SRAM_ADDR_W,
+              parameter DATA_W=`IOB_SOC_DATA_W,
+              parameter SRAM_ADDR_W = `IOB_SOC_SRAM_ADDR_W,
               parameter HEXFILE = "none"
 	      )
    (
