@@ -25,9 +25,6 @@ LIB_DIR ?= $(SOC_DIR)/submodules/LIB
 #         the second and third will use default parameters.
 PERIPHERALS ?=UART
 
-# default configuration
-CONFIG ?= base
-
 # needed for periphs_tmp.py script
 P=30
 

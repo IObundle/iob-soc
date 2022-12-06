@@ -1,35 +1,20 @@
 `timescale 1 ns / 1 ps
 `include "iob_soc.vh"
 `include "iob_lib.vh"
-`include "iob_intercon.vh"
 
 //do not remove line below
 //PHEADER
 
+//Temporary PHEADER FIX, as currently 'createSystem.py' does not find these files, probably because they are only generated after that script runs.
+`include "iob_cache_swreg_def.vh"
+`include "iob_uart_swreg_def.vh"
+
 module system
   #(
-    parameter ADDR_W=`ADDR_W,
-    parameter DATA_W=`DATA_W,
-    parameter BOOTROM_ADDR_W=`BOOTROM_ADDR_W,
-    parameter SRAM_ADDR_W=`SRAM_ADDR_W,
-    parameter AXI_ID_W=0,
-    parameter AXI_ADDR_W=`ADDR_W,
-    parameter AXI_DATA_W=`DATA_W
+`include "iob_soc_params.vh"
     )
   (
-   //do not remove line below
-   //PIO
-
-   //CPU TRAP
-   output trap,
-          
-          
-`ifdef USE_DDR 
-//AXI MASTER INTERFACE
- `include "m_axi_m_port.vh"
-`endif
-          
-`include "iob_gen_if.vh"
+`include "iob_soc_io.vh"
    );
    
    //
@@ -55,14 +40,16 @@ module system
    iob_picorv32 
      #(
        .ADDR_W(ADDR_W),
-       .DATA_W(DATA_W)
+       .DATA_W(DATA_W),
+       .USE_COMPRESSED(`IOB_SOC_USE_COMPRESSED),
+       .USE_MUL_DIV(`IOB_SOC_USE_MUL_DIV)
        )
    cpu
        (
-        .clk (clk),
+        .clk (clk_i),
         .rst (cpu_reset),
         .boot (boot),
-        .trap (trap),
+        .trap (trap_o),
         
         //instruction bus
         .ibus_req (cpu_i_req),
@@ -99,19 +86,19 @@ module system
        )
    ibus_split
      (
-      .clk (clk),
-      .rst (cpu_reset),
+      .clk_i (clk_i),
+      .rst_i (cpu_reset),
       // master interface
-      .m_req (cpu_i_req),
-      .m_resp (cpu_i_resp),
+      .m_req_i (cpu_i_req),
+      .m_resp_o (cpu_i_resp),
       
       // slaves interface
 `ifdef RUN_EXTMEM
-      .s_req ( {ext_mem_i_req, int_mem_i_req} ),
-      .s_resp ( {ext_mem_i_resp, int_mem_i_resp} )
+      .s_req_o ( {ext_mem_i_req, int_mem_i_req} ),
+      .s_resp_i ( {ext_mem_i_resp, int_mem_i_resp} )
 `else
-      .s_req (int_mem_i_req),
-      .s_resp ( int_mem_i_resp)
+      .s_req_o (int_mem_i_req),
+      .s_resp_i ( int_mem_i_resp)
 `endif
       );
 
@@ -133,16 +120,16 @@ module system
        )
    dbus_split
      (
-      .clk    ( clk   ),
-      .rst    ( cpu_reset ),
+      .clk_i    ( clk_i   ),
+      .rst_i    ( cpu_reset ),
 
       // master interface
-      .m_req  ( cpu_d_req  ),
-      .m_resp ( cpu_d_resp ),
+      .m_req_i  ( cpu_d_req  ),
+      .m_resp_o ( cpu_d_resp ),
 
       // slaves interface
-      .s_req  ( {ext_mem_d_req, int_d_req}   ),
-      .s_resp ( {ext_mem_d_resp, int_d_resp} )
+      .s_req_o  ( {ext_mem_d_req, int_d_req}   ),
+      .s_resp_i ( {ext_mem_d_resp, int_d_resp} )
       );
 `endif
 
@@ -164,22 +151,22 @@ module system
        )
    int_dbus_split
      (
-      .clk (clk),
-      .rst (cpu_reset),
+      .clk_i (clk_i),
+      .rst_i (cpu_reset),
 
 `ifdef USE_DDR
       // master interface
-      .m_req  ( int_d_req  ),
-      .m_resp ( int_d_resp ),
+      .m_req_i  ( int_d_req  ),
+      .m_resp_o ( int_d_resp ),
 `else
       // master interface
-      .m_req  ( cpu_d_req  ),
-      .m_resp ( cpu_d_resp ),
+      .m_req_i  ( cpu_d_req  ),
+      .m_resp_o ( cpu_d_resp ),
 `endif
 
       // slaves interface
-      .s_req  ( {pbus_req, int_mem_d_req}   ),
-      .s_resp ( {pbus_resp, int_mem_d_resp} )
+      .s_req_o  ( {pbus_req, int_mem_d_req}   ),
+      .s_resp_i ( {pbus_resp, int_mem_d_resp} )
       );
 
 
@@ -188,25 +175,25 @@ module system
    //
 
    //slaves bus
-   wire [`N_SLAVES*`REQ_W-1:0] slaves_req;
-   wire [`N_SLAVES*`RESP_W-1:0] slaves_resp;
+   wire [`IOB_SOC_N_SLAVES*`REQ_W-1:0] slaves_req;
+   wire [`IOB_SOC_N_SLAVES*`RESP_W-1:0] slaves_resp;
 
    iob_split
      #(
-       .N_SLAVES(`N_SLAVES),
+       .N_SLAVES(`IOB_SOC_N_SLAVES),
        .P_SLAVES(`P_BIT-1)
        )
    pbus_split
      (
-      .clk (clk),
-      .rst (cpu_reset),
+      .clk_i (clk_i),
+      .rst_i (cpu_reset),
       // master interface
-      .m_req (pbus_req),
-      .m_resp (pbus_resp),
+      .m_req_i (pbus_req),
+      .m_resp_o (pbus_resp),
       
       // slaves interface
-      .s_req (slaves_req),
-      .s_resp (slaves_resp)
+      .s_req_o (slaves_req),
+      .s_resp_i (slaves_resp)
       );
 
 
@@ -224,8 +211,8 @@ module system
     )
     int_mem0
      (
-      .clk (clk),
-      .rst (rst),
+      .clk_i (clk_i),
+      .rst_i (rst_i),
       .boot (boot),
       .cpu_reset (cpu_reset),
 
@@ -261,7 +248,7 @@ module system
 
       //AXI INTERFACE 
 `include "m_axi_portmap.vh"
-      .clk (clk),
+      .clk (clk_i),
       .rst (cpu_reset)
       );
 `endif

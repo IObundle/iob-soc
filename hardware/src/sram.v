@@ -2,13 +2,13 @@
 `include "iob_soc.vh"
 
 module sram #(
-              parameter DATA_W=`DATA_W,
-              parameter SRAM_ADDR_W = `SRAM_ADDR_W,
+              parameter DATA_W=`IOB_SOC_DATA_W,
+              parameter SRAM_ADDR_W = `IOB_SOC_SRAM_ADDR_W,
               parameter HEXFILE = "none"
 	      )
    (
-    input                    clk,
-    input                    rst,
+    input                    clk_i,
+    input                    rst_i,
 
     // intruction bus
     input                    i_valid,
@@ -46,14 +46,14 @@ module sram #(
        )
    main_mem_byte
      (
-      .clk   (clk),
+      .clk_i   (clk_i),
 
       // data port
-      .en   (valid),
-      .addr (addr),
-      .we   (wstrb),
-      .din  (wdata),
-      .dout (rdata)
+      .en_i   (valid),
+      .addr_i (addr),
+      .we_i   (wstrb),
+      .din_i  (wdata),
+      .dout_o (rdata)
       );
 `else
    iob_ram_dp_be
@@ -64,26 +64,26 @@ module sram #(
        )
    main_mem_byte
      (
-      .clk   (clk),
+      .clk_i   (clk_i),
 
       // data port
-      .enA   (d_valid),
-      .addrA (d_addr),
-      .weA   (d_wstrb),
-      .dinA  (d_wdata),
-      .doutA (d_rdata),
+      .enA_i   (d_valid),
+      .addrA_i (d_addr),
+      .weA_i   (d_wstrb),
+      .dA_i  (d_wdata),
+      .dA_o (d_rdata),
 
       // instruction port
-      .enB   (i_valid),
-      .addrB (i_addr),
-      .weB   (i_wstrb),
-      .dinB  (i_wdata),
-      .doutB (i_rdata)
+      .enB_i   (i_valid),
+      .addrB_i (i_addr),
+      .weB_i   (i_wstrb),
+      .dB_i  (i_wdata),
+      .dB_o (i_rdata)
       );
 `endif
    // reply with ready 
-   always @(posedge clk, posedge rst)
-     if(rst) begin
+   always @(posedge clk_i, posedge rst_i)
+     if(rst_i) begin
 	    d_ready <= 1'b0;
 	    i_ready <= 1'b0;
      end else begin 
