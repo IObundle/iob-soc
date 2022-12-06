@@ -11,7 +11,7 @@ module ext_mem
     parameter DCACHE_ADDR_W=`IOB_SOC_DCACHE_ADDR_W,
     parameter DDR_ADDR_W=`IOB_SOC_DDR_ADDR_W,
     parameter DDR_DATA_W=`IOB_SOC_DDR_DATA_W,
-    parameter AXI_ID_W=0,
+    parameter AXI_ID_W=1,
     parameter AXI_ADDR_W=`IOB_SOC_AXI_ADDR_W,
     parameter AXI_DATA_W=`IOB_SOC_AXI_DATA_W,
     parameter AXI_LEN_W=`IOB_SOC_AXI_LEN_W
@@ -46,7 +46,7 @@ module ext_mem
    // Instruction cache instance
    iob_cache # 
      (
-      .ADDR_W(FIRM_ADDR_W),
+      .FE_ADDR_W(FIRM_ADDR_W),
       .BE_ADDR_W(DCACHE_ADDR_W),
       .NWAYS_W(2),        //Number of ways
       .NLINES_W(7),    //Cache Line Offset (number of lines)
@@ -115,7 +115,7 @@ module ext_mem
    // Data cache instance
    iob_cache # 
      (
-      .ADDR_W(DCACHE_ADDR_W),
+      .FE_ADDR_W(DCACHE_ADDR_W),
       .NWAYS_W(2),        //Number of ways
       .NLINES_W(7),    //Cache Line Offset (number of lines)
       .WORD_OFFSET_W(3),    //Word Offset (number of words per line)
@@ -181,7 +181,7 @@ module ext_mem
    iob_cache_axi # 
      (
       .AXI_ID_W(AXI_ID_W),
-      .ADDR_W(DCACHE_ADDR_W),
+      .FE_ADDR_W(DCACHE_ADDR_W),
       .BE_ADDR_W(DDR_ADDR_W),
       .BE_DATA_W(DDR_DATA_W),
       .NWAYS_W(4),        //Number of Ways

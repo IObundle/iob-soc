@@ -76,7 +76,7 @@ module system_top
      #(
  `ifdef DDR_INIT
        .FILE("firmware.hex"),
-       .FILE_SIZE(`IOB_FW_SIZE),
+       .FILE_SIZE(`IOB_SOC_FW_SIZE),
  `endif
        .ID_WIDTH(AXI_ID_W),
        .DATA_WIDTH (`IOB_SOC_DATA_W),

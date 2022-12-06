@@ -36,7 +36,7 @@ confs = \
     {'name':'BAUD',      'type':'M', 'val':'5000000', 'min':'1', 'max':'NA', 'descr':"UART baud rate for simulation"},
     {'name':'FREQ',          'type':'M', 'val':'100000000', 'min':'1', 'max':'NA', 'descr':"System clock frequency"},
     {'name':'AXI_ID_W',      'type':'M', 'val':'0', 'min':'1', 'max':'32', 'descr':"AXI ID bus width"},
-    {'name':'AXI_ADDR_W',    'type':'M', 'val':'`IOB_SOC_ADDR_W', 'min':'1', 'max':'32', 'descr':"AXI address bus width"},
+    {'name':'AXI_ADDR_W',    'type':'M', 'val':'`IOB_SOC_DCACHE_ADDR_W', 'min':'1', 'max':'32', 'descr':"AXI address bus width"},
     {'name':'AXI_DATA_W',    'type':'M', 'val':'`IOB_SOC_DATA_W', 'min':'1', 'max':'32', 'descr':"AXI data bus width"},
     {'name':'AXI_LEN_W',    'type':'M', 'val':'4', 'min':'1', 'max':'4', 'descr':"AXI burst length width"},
 

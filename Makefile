@@ -1,6 +1,6 @@
 CONF_NAME ?= base
 
-setup clean debug:
+setup clean python-cache-clean debug:
 	make -f submodules/LIB/setup.mk $@
 
 config:
