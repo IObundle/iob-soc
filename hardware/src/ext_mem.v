@@ -165,15 +165,15 @@ module ext_mem
       .rst_i(rst_i),
       // masters
 `ifdef RUN_EXTMEM
-      .m_req  ({icache_be_req, dcache_be_req}),
-      .m_resp ({icache_be_resp, dcache_be_resp}),
+      .m_req_i  ({icache_be_req, dcache_be_req}),
+      .m_resp_o ({icache_be_resp, dcache_be_resp}),
 `else
-      .m_req  (dcache_be_req),
-      .m_resp (dcache_be_resp),
+      .m_req_i  (dcache_be_req),
+      .m_resp_o (dcache_be_resp),
 `endif                 
       // slave
-      .s_req  (l2cache_req),
-      .s_resp (l2cache_resp)
+      .s_req_o  (l2cache_req),
+      .s_resp_i (l2cache_resp)
       );
 
    

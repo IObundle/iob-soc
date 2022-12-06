@@ -14,8 +14,8 @@ module int_mem
     parameter B_BIT = `IOB_SOC_B
     )
    (
-    input                clk,
-    input                rst,
+    input                clk_i,
+    input                rst_i,
 
     output               boot,
     output               cpu_reset,
@@ -55,15 +55,15 @@ module int_mem
        )
    data_bootctr_split
        (
-        .clk    ( clk                         ),
-        .rst    ( rst                         ),
+        .clk_i    ( clk_i                         ),
+        .rst_i    ( rst_i                         ),
         // master interface
-        .m_req  ( d_req                       ),
-        .m_resp ( d_resp                      ),
+        .m_req_i  ( d_req                       ),
+        .m_resp_o ( d_resp                      ),
         
         // slaves interface
-        .s_req  ( {boot_ctr_req, ram_d_req}   ),
-        .s_resp ( {boot_ctr_resp, ram_d_resp} )
+        .s_req_o ( {boot_ctr_req, ram_d_req}   ),
+        .s_resp_i ( {boot_ctr_resp, ram_d_resp} )
         );
 
 
@@ -84,8 +84,8 @@ module int_mem
 		  )
 	boot_ctr0 
        (
-        .clk(clk),
-        .rst(rst),
+        .clk_i(clk_i),
+        .rst_i(rst_i),
         .cpu_rst(cpu_reset),
         .boot(boot),
         
@@ -148,16 +148,16 @@ module int_mem
            )
    ibus_merge
      (
-      .clk    ( clk                      ),
-      .rst    ( rst                      ),
+      .clk_i    ( clk_i                      ),
+      .rst_i    ( rst_i                      ),
 
       //master
-      .m_req  ( {ram_w_req, ram_r_req}   ),
-      .m_resp ( {ram_w_resp, ram_r_resp} ),
+      .m_req_i  ( {ram_w_req, ram_r_req}   ),
+      .m_resp_o ( {ram_w_resp, ram_r_resp} ),
 
       //slave  
-      .s_req  ( ram_i_req                ),
-      .s_resp ( ram_i_resp               )
+      .s_req_o  ( ram_i_req                ),
+      .s_resp_i ( ram_i_resp               )
       );
    
    //
@@ -172,8 +172,8 @@ module int_mem
         .SRAM_ADDR_W(SRAM_ADDR_W))
    int_sram 
      (
-      .clk           (clk),
-      .rst           (rst),
+      .clk_i           (clk_i),
+      .rst_i           (rst_i),
       
       //instruction bus
       .i_valid       (ram_i_req[`valid(0)]),

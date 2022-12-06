@@ -86,19 +86,19 @@ module system
        )
    ibus_split
      (
-      .clk (clk_i),
-      .rst (cpu_reset),
+      .clk_i (clk_i),
+      .rst_i (cpu_reset),
       // master interface
-      .m_req (cpu_i_req),
-      .m_resp (cpu_i_resp),
+      .m_req_i (cpu_i_req),
+      .m_resp_o (cpu_i_resp),
       
       // slaves interface
 `ifdef RUN_EXTMEM
-      .s_req ( {ext_mem_i_req, int_mem_i_req} ),
-      .s_resp ( {ext_mem_i_resp, int_mem_i_resp} )
+      .s_req_o ( {ext_mem_i_req, int_mem_i_req} ),
+      .s_resp_i ( {ext_mem_i_resp, int_mem_i_resp} )
 `else
-      .s_req (int_mem_i_req),
-      .s_resp ( int_mem_i_resp)
+      .s_req_o (int_mem_i_req),
+      .s_resp_i ( int_mem_i_resp)
 `endif
       );
 
@@ -120,16 +120,16 @@ module system
        )
    dbus_split
      (
-      .clk    ( clk_i   ),
-      .rst    ( cpu_reset ),
+      .clk_i    ( clk_i   ),
+      .rst_i    ( cpu_reset ),
 
       // master interface
-      .m_req  ( cpu_d_req  ),
-      .m_resp ( cpu_d_resp ),
+      .m_req_i  ( cpu_d_req  ),
+      .m_resp_o ( cpu_d_resp ),
 
       // slaves interface
-      .s_req  ( {ext_mem_d_req, int_d_req}   ),
-      .s_resp ( {ext_mem_d_resp, int_d_resp} )
+      .s_req_o  ( {ext_mem_d_req, int_d_req}   ),
+      .s_resp_i ( {ext_mem_d_resp, int_d_resp} )
       );
 `endif
 
@@ -151,22 +151,22 @@ module system
        )
    int_dbus_split
      (
-      .clk (clk_i),
-      .rst (cpu_reset),
+      .clk_i (clk_i),
+      .rst_i (cpu_reset),
 
 `ifdef USE_DDR
       // master interface
-      .m_req  ( int_d_req  ),
-      .m_resp ( int_d_resp ),
+      .m_req_i  ( int_d_req  ),
+      .m_resp_o ( int_d_resp ),
 `else
       // master interface
-      .m_req  ( cpu_d_req  ),
-      .m_resp ( cpu_d_resp ),
+      .m_req_i  ( cpu_d_req  ),
+      .m_resp_o ( cpu_d_resp ),
 `endif
 
       // slaves interface
-      .s_req  ( {pbus_req, int_mem_d_req}   ),
-      .s_resp ( {pbus_resp, int_mem_d_resp} )
+      .s_req_o  ( {pbus_req, int_mem_d_req}   ),
+      .s_resp_i ( {pbus_resp, int_mem_d_resp} )
       );
 
 
@@ -185,15 +185,15 @@ module system
        )
    pbus_split
      (
-      .clk (clk_i),
-      .rst (cpu_reset),
+      .clk_i (clk_i),
+      .rst_i (cpu_reset),
       // master interface
-      .m_req (pbus_req),
-      .m_resp (pbus_resp),
+      .m_req_i (pbus_req),
+      .m_resp_o (pbus_resp),
       
       // slaves interface
-      .s_req (slaves_req),
-      .s_resp (slaves_resp)
+      .s_req_o (slaves_req),
+      .s_resp_i (slaves_resp)
       );
 
 
@@ -211,8 +211,8 @@ module system
     )
     int_mem0
      (
-      .clk (clk_i),
-      .rst (rst_i),
+      .clk_i (clk_i),
+      .rst_i (rst_i),
       .boot (boot),
       .cpu_reset (cpu_reset),
 

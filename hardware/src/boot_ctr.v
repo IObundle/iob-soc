@@ -11,8 +11,8 @@ module boot_ctr
     parameter SRAM_ADDR_W = `IOB_SOC_SRAM_ADDR_W
  )
   (
-   input                      clk,
-   input                      rst,
+   input                      clk_i,
+   input                      rst_i,
    output                     cpu_rst,
    output                     boot,
 
@@ -34,13 +34,13 @@ module boot_ctr
 
    //cpu interface: rdata and ready
    assign cpu_rdata = {{(DATA_W-1){1'b0}},boot};
-   iob_reg #(1,0) rdyreg (clk, rst, 1'b0, 1'b1, cpu_valid, cpu_ready);
+   iob_reg #(1,0) rdyreg (clk_i, rst_i, 1'b0, 1'b1, cpu_valid, cpu_ready);
        
    //boot register: (1) load bootloader to sram and run it: (0) run program
    wire                       boot_wr = cpu_valid & |cpu_wstrb; 
    reg                        boot_nxt;  
-   iob_reg #(1,1) bootnxt (clk, rst, 1'b0, boot_wr, cpu_wdata[0], boot_nxt);
-   iob_reg #(1,1) bootreg (clk, rst, 1'b0, 1'b1, boot_nxt, boot);
+   iob_reg #(1,1) bootnxt (clk_i, rst_i, 1'b0, boot_wr, cpu_wdata[0], boot_nxt);
+   iob_reg #(1,1) bootreg (clk_i, rst_i, 1'b0, 1'b1, boot_nxt, boot);
 
 
    //create CPU reset pulse
@@ -55,10 +55,11 @@ module boot_ctr
        ) 
    reset_pulse
      (
-      .clk(clk),
-      .rst(rst),
-      .restart(cpu_rst_req),
-      .pulse_out(cpu_rst_pulse)
+      .clk_i(clk_i),
+      .arst_i(rst_i),
+      .rst_i(rst_i),
+      .start_i(cpu_rst_req),
+      .pulse_o(cpu_rst_pulse)
       );
 
    wire                       loading;                   
@@ -71,8 +72,8 @@ module boot_ctr
    reg [BOOTROM_ADDR_W-3: 0] rom_r_addr;
    wire [DATA_W-1: 0]        rom_r_rdata;
 
-   always @(posedge clk, posedge rst)
-     if(rst) begin
+   always @(posedge clk_i, posedge rst_i)
+     if(rst_i) begin
         rom_r_valid <= 1'b1;
         rom_r_addr <= {BOOTROM_ADDR_W-2{1'b0}};
      end else if (boot && rom_r_addr != (2**(BOOTROM_ADDR_W-2)-1))
@@ -87,8 +88,8 @@ module boot_ctr
    //
    reg sram_w_valid;
    reg [SRAM_ADDR_W-3:0] sram_w_addr;
-   always @(posedge clk, posedge rst)
-     if(rst) begin
+   always @(posedge clk_i, posedge rst_i)
+     if(rst_i) begin
         sram_w_valid <= 1'b0;
         sram_w_addr <= -{1'b1,{BOOTROM_ADDR_W-2{1'b0}}};
         sram_wstrb <= {DATA_W/8{1'b1}};
@@ -119,10 +120,10 @@ module boot_ctr
        )
    sp_rom0 
      (
-      .clk(clk),
-      .r_en(rom_r_valid),
-      .addr(rom_r_addr),
-      .r_data(rom_r_rdata)
+      .clk_i(clk_i),
+      .r_en_i(rom_r_valid),
+      .addr_i(rom_r_addr),
+      .r_data_o(rom_r_rdata)
       );
 
 endmodule

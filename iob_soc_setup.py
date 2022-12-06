@@ -48,6 +48,7 @@ confs = \
     {'name':'AXI_ID_W',      'type':'P', 'descr':"AXI ID bus width"},
     {'name':'AXI_ADDR_W',    'type':'P', 'descr':"AXI address bus width"},
     {'name':'AXI_DATA_W',    'type':'P', 'descr':"AXI data bus width"},
+    {'name':'AXI_LEN_W',    'type':'P', 'descr':"AXI burst length width"},
 ]
 # Append macros with ID of each peripheral
 confs.extend(get_periphs_id_as_macros(next(i['val'] for i in confs if i['name'] == 'PERIPHERALS')))
