@@ -58,8 +58,8 @@ ios = \
         {'name':"rst_i", 'type':"I", 'n_bits':'1', 'descr':"System reset, synchronous and active high"},
         {'name':"trap_o", 'type':"O", 'n_bits':'1', 'descr':"CPU trap signal"}
     ]},
-    {'name': 'axi_m_port', 'descr':'AXI master interface', 'ports': [
-    ]}
+#    {'name': 'axi_m_port', 'descr':'AXI master interface', 'ports': [
+#    ]}
 ]
 # Append peripherals IO 
 ios.extend(get_peripheral_ios(next(i['val'] for i in confs if i['name'] == 'PERIPHERALS'),os.path.dirname(__file__)))
