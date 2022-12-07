@@ -4,7 +4,6 @@
 //this is a temporary solution
 
 `include "iob_soc_conf.vh"
-`include "iob_soc_tb_conf.vh"
 `include "iob_uart_swreg_def.vh"
 
 //file seek macros
@@ -49,12 +48,12 @@ endtask
 task cpu_inituart;
    begin
       //pulse reset uart
-      cpu_uartwrite(`UART_SOFTRESET_ADDR, 1, `UART_SOFTRESET_W/8);
-      cpu_uartwrite(`UART_SOFTRESET_ADDR, 0, `UART_SOFTRESET_W/8);
+      cpu_uartwrite(`IOB_UART_SOFTRESET_ADDR, 1, `IOB_UART_SOFTRESET_W/8);
+      cpu_uartwrite(`IOB_UART_SOFTRESET_ADDR, 0, `IOB_UART_SOFTRESET_W/8);
       //config uart div factor
-      cpu_uartwrite(`UART_DIV_ADDR, `FREQ/`BAUD, `UART_DIV_W/8);
+      cpu_uartwrite(`IOB_UART_DIV_ADDR, `IOB_SOC_FREQ/`IOB_SOC_BAUD, `IOB_UART_DIV_W/8);
       //enable uart for receiving
-      cpu_uartwrite(`UART_RXEN_ADDR, 1, `UART_RXEN_W/8);
-      cpu_uartwrite(`UART_TXEN_ADDR, 1, `UART_TXEN_W/8);
+      cpu_uartwrite(`IOB_UART_RXEN_ADDR, 1, `IOB_UART_RXEN_W/8);
+      cpu_uartwrite(`IOB_UART_TXEN_ADDR, 1, `IOB_UART_TXEN_W/8);
    end
 endtask

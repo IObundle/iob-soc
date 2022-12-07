@@ -1,7 +1,6 @@
 `timescale 1ns / 1ps
 
 `include "iob_soc_conf.vh"
-`include "iob_soc_tb_conf.vh"
 `include "iob_lib.vh"
 `include "iob_soc.vh"
 
@@ -9,15 +8,17 @@
 
 module system_top 
   (
-   output                             trap,
+   output                             trap_o,
    //tester uart
    input                              uart_valid,
-   input [`iob_uart_swreg_ADDR_W-1:0] uart_addr,
+   input [`IOB_UART_SWREG_ADDR_W-1:0] uart_addr,
    input [`IOB_SOC_DATA_W-1:0]                uart_wdata,
    input [3:0]                        uart_wstrb,
    output [`IOB_SOC_DATA_W-1:0]               uart_rdata,
    output                             uart_ready,
-`include "iob_gen_if.vh"
+   output                             uart_rvalid,
+   `IOB_INPUT(clk_i,          1), //V2TEX_IO System clock input.
+   `IOB_INPUT(rst_i,         1)  //V2TEX_IO System reset, asynchronous and active high.
    );
  
    localparam AXI_ID_W = 4;
@@ -64,9 +65,9 @@ module system_top
 `ifdef USE_DDR
  `include "m_axi_portmap.vh"
 `endif               
-      .clk (clk),
-      .rst (rst),
-      .trap (trap)
+      .clk_i (clk_i),
+      .rst_i (rst_i),
+      .trap_o (trap_o)
       );
 
 
@@ -85,8 +86,8 @@ module system_top
    ddr_model_mem
      (
  `include "s_axi_portmap.vh"
-      .clk(clk),
-      .rst(rst)
+      .clk_i(clk_i),
+      .rst_i(rst_i)
       );   
 `endif
 
@@ -122,15 +123,16 @@ module system_top
 	//of the uut UART0 instance to communicate with it
    iob_uart uart_tb
      (
-      .clk       (clk),
-      .rst       (rst),
+      .clk_i       (clk_i),
+      .arst_i      (rst_i),
       
-      .valid     (uart_valid),
-      .address   (uart_addr),
-      .wdata     (uart_wdata),
-      .wstrb     (uart_wstrb),
-      .rdata     (uart_rdata),
-      .ready     (uart_ready),
+      .iob_valid     (uart_valid),
+      .iob_addr      (uart_addr),
+      .iob_wdata     (uart_wdata),
+      .iob_wstrb     (uart_wstrb),
+      .iob_rdata     (uart_rdata),
+      .iob_ready     (uart_ready),
+      .iob_rvalid    (uart_rvalid),
       
       .txd       (UART0_rxd),
       .rxd       (UART0_txd),
