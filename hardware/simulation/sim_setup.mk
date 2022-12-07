@@ -8,8 +8,8 @@
 
 #axi portmap for axi ram instance
 AXI_GEN ?=$(LIB_DIR)/scripts/if_gen.py
-SRC+=$(BUILD_SIM_DIR)/s_axi_portmap.vh
-$(BUILD_SIM_DIR)/s_axi_portmap.vh:
+SRC+=$(BUILD_SIM_DIR)/src/s_axi_portmap.vh
+$(BUILD_SIM_DIR)/src/s_axi_portmap.vh:
 	$(AXI_GEN) axi_portmap 's_' 's_' 'm_' && mv s_axi_portmap.vh $@
 
 
@@ -18,12 +18,12 @@ $(BUILD_SIM_DIR)/s_axi_portmap.vh:
 #axi memory
 include $(LIB_DIR)/hardware/axi_ram/hw_setup.mk
 
-SRC+=$(BUILD_SIM_DIR)/system_tb.v $(BUILD_SIM_DIR)/system_top.v
+SRC+=$(BUILD_SIM_DIR)/src/system_tb.v $(BUILD_SIM_DIR)/src/system_top.v
 
-$(BUILD_SIM_DIR)/system_tb.v:
+$(BUILD_SIM_DIR)/src/system_tb.v:
 	$(LIB_DIR)/scripts/createTestbench.py "$(SOC_DIR)" "$(PERIPHERALS)" "$@"
 
-$(BUILD_SIM_DIR)/system_top.v:
+$(BUILD_SIM_DIR)/src/system_top.v:
 	$(LIB_DIR)/scripts/createTopSystem.py "$(SOC_DIR)" "$(PERIPHERALS)" "$@"
 
 

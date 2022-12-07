@@ -66,7 +66,7 @@ module ext_mem
       .wdata (i_req[`wdata(0)]),
       .wstrb (i_req[`wstrb(0)]),
       .rdata (i_resp[`rdata(0)]),
-      .ack (i_resp[`ready(0)]),
+      .ack (i_resp[`rvalid(0)]),
       //Control IO
       .invalidate_in(1'b0),
       .invalidate_out(),
@@ -78,7 +78,7 @@ module ext_mem
       .be_wdata (icache_be_req[`wdata(0)]),
       .be_wstrb (icache_be_req[`wstrb(0)]),
       .be_rdata (icache_be_resp[`rdata(0)]),
-      .be_ack (icache_be_resp[`ready(0)])
+      .be_ack (icache_be_resp[`rvalid(0)])
       );
 `endif //  `ifdef RUN_EXTMEM
 
@@ -134,7 +134,7 @@ module ext_mem
       .wdata (d_req[`wdata(0)]),
       .wstrb (d_req[`wstrb(0)]),
       .rdata (d_resp[`rdata(0)]),
-      .ack (d_resp[`ready(0)]),
+      .ack (d_resp[`rvalid(0)]),
       //Control IO
       .invalidate_in(1'b0),
       .invalidate_out(invalidate),
@@ -146,7 +146,7 @@ module ext_mem
       .be_wdata (dcache_be_req[`wdata(0)]),
       .be_wstrb (dcache_be_req[`wstrb(0)]),
       .be_rdata (dcache_be_resp[`rdata(0)]),
-      .be_ack (dcache_be_resp[`ready(0)])
+      .be_ack (dcache_be_resp[`rvalid(0)])
       );
 
    // Merge cache back-ends
@@ -199,7 +199,7 @@ module ext_mem
       .wdata    (l2cache_req[`wdata(0)]),
       .wstrb    (l2cache_req[`wstrb(0)]),
       .rdata    (l2cache_resp[`rdata(0)]),
-      .ack    (l2cache_resp[`ready(0)]),
+      .ack    (l2cache_resp[`rvalid(0)]),
       //Control IO
       .invalidate_in(invalidate_reg & ~l2_valid),
       .invalidate_out(),
