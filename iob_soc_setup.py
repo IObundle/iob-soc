@@ -18,7 +18,7 @@ confs = \
     {'name':'ADDR_W',        'type':'M', 'val':'32', 'min':'1', 'max':'32', 'descr':"Address bus width"},
     {'name':'FIRM_ADDR_W',   'type':'M', 'val':'15', 'min':'1', 'max':'32', 'descr':"Firmware address width"},
     {'name':'SRAM_ADDR_W',   'type':'M', 'val':'15', 'min':'1', 'max':'32', 'descr':"SRAM address width"},
-    {'name':'BOOTROM_ADDR_W','type':'M', 'val':'12', 'min':'1', 'max':'32', 'descr':"Boot ROM address width"},
+    {'name':'BOOTROM_ADDR_W','type':'M', 'val':'15', 'min':'1', 'max':'32', 'descr':"Boot ROM address width"},
     {'name':'USE_MUL_DIV',   'type':'M', 'val':'1', 'min':'0', 'max':'1', 'descr':"Enable MUL and DIV CPU instrunctions"},
     {'name':'USE_COMPRESSED','type':'M', 'val':'1', 'min':'0', 'max':'1', 'descr':"Use compressed CPU instructions"},
     {'name':'E',             'type':'M', 'val':'31', 'min':'1', 'max':'32', 'descr':"Address selection bit for external memory"},

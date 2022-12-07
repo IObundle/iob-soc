@@ -1,63 +1,52 @@
-CONSOLE_CMD=../../sw/python/console -L
+CONSOLE_CMD=../../scripts/console -L
 ifeq ($(INIT_MEM),0)
 CONSOLE_CMD+=-f
 endif
 
 #produce waveform dump
 ifeq ($(VCD),1)
-TB_DEFINE+=VCD
+UFLAGS+=VCD
 endif
 
-FW_SIZE=$(shell wc -l firmware.hex | awk '{print $$1}')
-
-TB_DEFINE+=FW_SIZE=$(FW_SIZE)
+UFLAGS+=FW_SIZE=$(shell wc -l firmware.hex | awk '{print $$1}')
 
 # Simulation programs
 VHDR+=boot.hex firmware.hex
 
-# HEADERS
-VHDR+=iob_soc_conf.vh iob_soc_tb_conf.vh
+#Function to obtain parameter named $(1) in verilog header file located in $(2)
+#Usage: $(call GET_PARAM,<param_name>,<vh_path>)
+GET_PARAM = $(shell grep $(1) $(2) | rev | cut -d" " -f1 | rev)
 
-iob_soc_conf.vh:
-	../../sw/python/hw_defines.py $@ $(CONF_DEFINE)
+#Function to obtain parameter named $(1) from iob_soc_conf.vh
+GET_CONF_PARAM = $(call GET_PARAM,$(1),../src/iob_soc_conf.vh)
 
-iob_soc_tb_conf.vh:
-	../../sw/python/hw_defines.py $@ $(TB_DEFINE)
-
-boot.hex: ../../sw/emb/boot.bin
-	../../sw/python/makehex.py $< $(BOOTROM_ADDR_W) > $@
+boot.hex: ../../software/embedded/boot.bin
+	../../scripts/makehex.py $< $(call GET_CONF_PARAM,BOOTROM_ADDR_W) > $@
 
 firmware.hex: firmware.bin
-	../../sw/python/makehex.py $< $(FIRM_ADDR_W) > $@
-	../../sw/python/hex_split.py firmware .
+	../../scripts/makehex.py $< $(call GET_CONF_PARAM,FIRM_ADDR_W) > $@
+	../../scripts/hex_split.py firmware .
 
-firmware.bin: ../../sw/emb/firmware.bin
+firmware.bin: ../../software/embedded/firmware.bin
 	cp $< $@
 
-../../sw/emb%.bin:
+../../software/embedded/%.bin:
 	make -C ../../ fw-build
 
 # SOURCES
 ifeq ($(SIMULATOR),verilator)
 
-# get header files (needed for iob_soc_tb.cpp
+# get header files (needed for iob_soc_tb.cpp)
 VHDR+=iob_uart_swreg.h
-iob_uart_swreg.h: ../../sw/src/iob_uart_swreg.h
+iob_uart_swreg.h: ../../software/esrc/iob_uart_swreg.h
 	cp $< $@
 
-VHDR+=iob_soc_conf.h iob_soc_tb_conf.h
-iob_soc_conf.h:
-	../../sw/python/sw_defines.py $@ $(CONF_DEFINE)
-
-iob_soc_tb_conf.h:
-	../../sw/python/sw_defines.py $@ $(TB_DEFINE)
-
 # remove system_tb.v from source list
-VSRC:=$(filter-out system_tb.v, $(VSRC))
+#VSRC:=$(filter-out system_tb.v, $(VSRC))
 endif
 
 # verilator top module
-VTOP:=system_top
+#VTOP:=system_top
 
 TEST_LIST+=test1
 test1:
@@ -80,6 +69,6 @@ test1:
 # 	make -C $(SOC_DIR) sim-clean SIMULATOR=$(SIMULATOR)
 # 	make -C $(SOC_DIR) sim-run SIMULATOR=$(SIMULATOR) INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
 
-NOCLEAN+=-o -name "system_tb.v"
-NOCLEAN+=-o -name "system_top.v"
-NOCLEAN+=-o -name "iob_soc_tb.cpp"
+#NOCLEAN+=-o -name "system_tb.v"
+#NOCLEAN+=-o -name "system_top.v"
+#NOCLEAN+=-o -name "iob_soc_tb.cpp"

@@ -6,7 +6,7 @@ VERSION=0070
 DOC_RESULTS=
 
 #supported flows
-FLOWS := pc-emul sim doc
+FLOWS := pc-emul emb sim doc
 
 # root directory when building locally
 SOC_DIR ?= .
@@ -32,7 +32,7 @@ SOC_DEFINE+=DATA_W=32
 SOC_DEFINE+=ADDR_W=32
 SOC_DEFINE+=FIRM_ADDR_W=15
 SOC_DEFINE+=SRAM_ADDR_W=15
-SOC_DEFINE+=BOOTROM_ADDR_W=12
+SOC_DEFINE+=BOOTROM_ADDR_W=15
 SOC_DEFINE+=USE_MUL_DIV=1
 SOC_DEFINE+=USE_COMPRESSED=1
 SOC_DEFINE+=E=31 #select secondary data memory
