@@ -239,11 +239,11 @@ module system
    (
  `ifdef RUN_EXTMEM
       // instruction bus
-      .i_req ( {ext_mem_i_req[`wvalid(0)], ext_mem_i_req[`address(0, SRAM_ADDR_W)-2], ext_mem_i_req[`write(0)]} ),
+      .i_req ( {ext_mem_i_req[`avalid(0)], ext_mem_i_req[`address(0, SRAM_ADDR_W)-2], ext_mem_i_req[`write(0)]} ),
       .i_resp (ext_mem_i_resp),
  `endif
       //data bus
-      .d_req ( {ext_mem_d_req[`wvalid(0)], ext_mem_d_req[`address(0, `DCACHE_ADDR_W+1)-2], ext_mem_d_req[`write(0)]} ),
+      .d_req ( {ext_mem_d_req[`avalid(0)], ext_mem_d_req[`address(0, `DCACHE_ADDR_W+1)-2], ext_mem_d_req[`write(0)]} ),
       .d_resp (ext_mem_d_resp),
 
       //AXI INTERFACE 
