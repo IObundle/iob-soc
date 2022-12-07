@@ -24,7 +24,7 @@ boot.hex: ../../software/embedded/boot.bin
 	../../scripts/makehex.py $< $(call GET_CONF_PARAM,BOOTROM_ADDR_W) > $@
 
 firmware.hex: firmware.bin
-	../../scripts/makehex.py $< $(call GET_CONF_PARAM,FIRM_ADDR_W) > $@
+	../../scripts/makehex.py $< $(call GET_CONF_PARAM,SRAM_ADDR_W) > $@
 	../../scripts/hex_split.py firmware .
 
 firmware.bin: ../../software/embedded/firmware.bin
@@ -68,7 +68,3 @@ test1:
 # test5:
 # 	make -C $(SOC_DIR) sim-clean SIMULATOR=$(SIMULATOR)
 # 	make -C $(SOC_DIR) sim-run SIMULATOR=$(SIMULATOR) INIT_MEM=0 USE_DDR=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
-
-#NOCLEAN+=-o -name "system_tb.v"
-#NOCLEAN+=-o -name "system_top.v"
-#NOCLEAN+=-o -name "iob_soc_tb.cpp"

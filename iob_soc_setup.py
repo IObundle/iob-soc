@@ -14,41 +14,32 @@ confs = \
 [
     # SoC macros
     {'name':'PERIPHERALS',   'type':'M', 'val':'UART', 'min':'NA', 'max':'NA', 'descr':"List with corename of peripherals to be attached to peripheral bus"},
-    {'name':'DATA_W',        'type':'M', 'val':'32', 'min':'1', 'max':'32', 'descr':"Data bus width"},
-    {'name':'ADDR_W',        'type':'M', 'val':'32', 'min':'1', 'max':'32', 'descr':"Address bus width"},
-    {'name':'FIRM_ADDR_W',   'type':'M', 'val':'15', 'min':'1', 'max':'32', 'descr':"Firmware address width"},
-    {'name':'SRAM_ADDR_W',   'type':'M', 'val':'15', 'min':'1', 'max':'32', 'descr':"SRAM address width"},
-    {'name':'BOOTROM_ADDR_W','type':'M', 'val':'15', 'min':'1', 'max':'32', 'descr':"Boot ROM address width"},
     {'name':'USE_MUL_DIV',   'type':'M', 'val':'1', 'min':'0', 'max':'1', 'descr':"Enable MUL and DIV CPU instrunctions"},
     {'name':'USE_COMPRESSED','type':'M', 'val':'1', 'min':'0', 'max':'1', 'descr':"Use compressed CPU instructions"},
+    {'name':'INIT_MEM',      'type':'M', 'val':'1', 'min':'0', 'max':'1', 'descr':"Enable memory initialization"},
+    {'name':'RUN_EXTMEM',    'type':'M', 'val':'0', 'min':'0', 'max':'1', 'descr':"Run firmware from external memory"}, #This is the new USE_DDR
     {'name':'E',             'type':'M', 'val':'31', 'min':'1', 'max':'32', 'descr':"Address selection bit for external memory"},
     {'name':'P',             'type':'M', 'val':'30', 'min':'1', 'max':'32', 'descr':"Address selection bit for peripherals"},
     {'name':'B',             'type':'M', 'val':'29', 'min':'1', 'max':'32', 'descr':"Address selection bit for boot ROM"},
-    {'name':'INIT_MEM',      'type':'M', 'val':'1', 'min':'0', 'max':'1', 'descr':"Enable memory initialization"},
-    {'name':'RUN_EXTMEM',    'type':'M', 'val':'0', 'min':'0', 'max':'1', 'descr':"Run firmware from external memory"},
     {'name':'DCACHE_ADDR_W', 'type':'M', 'val':'24', 'min':'1', 'max':'32', 'descr':"DCACHE address width"},
     {'name':'DDR_DATA_W',    'type':'M', 'val':'32', 'min':'1', 'max':'32', 'descr':"DDR data bus width"},
-    {'name':'DDR_ADDR_W','type':'M', 'val':'24', 'min':'1', 'max':'32', 'descr':"DDR address bus width in simulation"},
+    {'name':'DDR_ADDR_W',    'type':'M', 'val':'24', 'min':'1', 'max':'32', 'descr':"DDR address bus width in simulation"},
     #TODO: Need to find a way to use value below when running on fpga
     {'name':'DDR_ADDR_W_HW', 'type':'M', 'val':'30', 'min':'1', 'max':'32', 'descr':"DDR address bus width"},
     #TODO: Need to find a way to use value below when running on fpga
     {'name':'BAUD_HW',       'type':'M', 'val':'115200', 'min':'1', 'max':'NA', 'descr':"UART baud rate"},
-    {'name':'BAUD',      'type':'M', 'val':'5000000', 'min':'1', 'max':'NA', 'descr':"UART baud rate for simulation"},
+    {'name':'BAUD',          'type':'M', 'val':'5000000', 'min':'1', 'max':'NA', 'descr':"UART baud rate for simulation"},
     {'name':'FREQ',          'type':'M', 'val':'100000000', 'min':'1', 'max':'NA', 'descr':"System clock frequency"},
-    {'name':'AXI_ID_W',      'type':'M', 'val':'0', 'min':'1', 'max':'32', 'descr':"AXI ID bus width"},
-    {'name':'AXI_ADDR_W',    'type':'M', 'val':'`IOB_SOC_DCACHE_ADDR_W', 'min':'1', 'max':'32', 'descr':"AXI address bus width"},
-    {'name':'AXI_DATA_W',    'type':'M', 'val':'`IOB_SOC_DATA_W', 'min':'1', 'max':'32', 'descr':"AXI data bus width"},
-    {'name':'AXI_LEN_W',    'type':'M', 'val':'4', 'min':'1', 'max':'4', 'descr':"AXI burst length width"},
 
     # SoC parameters
-    {'name':'ADDR_W',        'type':'P', 'descr':"Address bus width"},
-    {'name':'DATA_W',        'type':'P', 'descr':"Data bus width"},
-    {'name':'BOOTROM_ADDR_W','type':'P', 'descr':"Boot ROM address width"},
-    {'name':'SRAM_ADDR_W',   'type':'P', 'descr':"SRAM address width"},
-    {'name':'AXI_ID_W',      'type':'P', 'descr':"AXI ID bus width"},
-    {'name':'AXI_ADDR_W',    'type':'P', 'descr':"AXI address bus width"},
-    {'name':'AXI_DATA_W',    'type':'P', 'descr':"AXI data bus width"},
-    {'name':'AXI_LEN_W',    'type':'P', 'descr':"AXI burst length width"},
+    {'name':'ADDR_W',        'type':'P', 'val':'32', 'min':'1', 'max':'32', 'descr':"Address bus width"},
+    {'name':'DATA_W',        'type':'P', 'val':'32', 'min':'1', 'max':'32', 'descr':"Data bus width"},
+    {'name':'BOOTROM_ADDR_W','type':'P', 'val':'15', 'min':'1', 'max':'32', 'descr':"Boot ROM address width"},
+    {'name':'SRAM_ADDR_W',   'type':'P', 'val':'15', 'min':'1', 'max':'32', 'descr':"SRAM address width"}, #This is the new FIRM_ADDR_W
+    {'name':'AXI_ID_W',      'type':'P', 'val':'0', 'min':'1', 'max':'32', 'descr':"AXI ID bus width"},
+    {'name':'AXI_ADDR_W',    'type':'P', 'val':'`IOB_SOC_DCACHE_ADDR_W', 'min':'1', 'max':'32', 'descr':"AXI address bus width"},
+    {'name':'AXI_DATA_W',    'type':'P', 'val':'`IOB_SOC_DATA_W', 'min':'1', 'max':'32', 'descr':"AXI data bus width"},
+    {'name':'AXI_LEN_W',     'type':'P', 'val':'4', 'min':'1', 'max':'4', 'descr':"AXI burst length width"},
 ]
 # Append macros with ID of each peripheral
 confs.extend(get_periphs_id_as_macros(next(i['val'] for i in confs if i['name'] == 'PERIPHERALS')))
