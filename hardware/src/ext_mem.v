@@ -7,7 +7,7 @@ module ext_mem
   #(
     parameter ADDR_W=`IOB_SOC_ADDR_W,
     parameter DATA_W=`IOB_SOC_DATA_W,
-    parameter FIRM_ADDR_W=`IOB_SOC_FIRM_ADDR_W,
+    parameter FIRM_ADDR_W=`IOB_SOC_SRAM_ADDR_W,
     parameter DCACHE_ADDR_W=`IOB_SOC_DCACHE_ADDR_W,
     parameter DDR_ADDR_W=`IOB_SOC_DDR_ADDR_W,
     parameter DDR_DATA_W=`IOB_SOC_DDR_DATA_W,

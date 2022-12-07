@@ -239,7 +239,7 @@ module system
    (
  `ifdef RUN_EXTMEM
       // instruction bus
-      .i_req ( {ext_mem_i_req[`wvalid(0)], ext_mem_i_req[`address(0, `FIRM_ADDR_W)-2], ext_mem_i_req[`write(0)]} ),
+      .i_req ( {ext_mem_i_req[`wvalid(0)], ext_mem_i_req[`address(0, SRAM_ADDR_W)-2], ext_mem_i_req[`write(0)]} ),
       .i_resp (ext_mem_i_resp),
  `endif
       //data bus
