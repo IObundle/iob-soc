@@ -19,7 +19,7 @@ task cpu_uartwrite;
    reg [4:0] wstrb_int;
    begin
       #1 uart_addr = cpu_address[2]; // use 32 bit address
-      uart_valid = 1;
+      uart_avalid = 1;
       case (nbytes)
           1: wstrb_int = 4'b0001;
           2: wstrb_int = 4'b0011;
@@ -28,7 +28,7 @@ task cpu_uartwrite;
       uart_wstrb = wstrb_int << (cpu_address[1:0]);
       uart_wdata = cpu_data << (cpu_address[1:0]*8);
       @ (posedge clk) #1 uart_wstrb = 0;
-      uart_valid = 0;
+      uart_avalid = 0;
    end
 endtask //cpu_uartwrite
 
@@ -38,10 +38,10 @@ task cpu_uartread;
    output [31:0] read_reg;
    begin
       #1 uart_addr = cpu_address[2]; // use 32 bit address
-      uart_valid = 1;
+      uart_avalid = 1;
       @ (posedge clk) #1 
       read_reg = uart_rdata >> (cpu_address[1:0]*8);
-      @ (posedge clk) #1 uart_valid = 0;
+      @ (posedge clk) #1 uart_avalid = 0;
    end
 endtask
 

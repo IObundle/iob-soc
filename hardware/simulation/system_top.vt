@@ -10,11 +10,11 @@ module system_top
   (
    output                             trap_o,
    //tester uart
-   input                              uart_valid,
+   input                              uart_avalid,
    input [`IOB_UART_SWREG_ADDR_W-1:0] uart_addr,
-   input [`IOB_SOC_DATA_W-1:0]                uart_wdata,
+   input [`IOB_SOC_DATA_W-1:0]        uart_wdata,
    input [3:0]                        uart_wstrb,
-   output [`IOB_SOC_DATA_W-1:0]               uart_rdata,
+   output [`IOB_SOC_DATA_W-1:0]       uart_rdata,
    output                             uart_ready,
    output                             uart_rvalid,
    `IOB_INPUT(clk_i,          1), //V2TEX_IO System clock input.
@@ -126,13 +126,13 @@ module system_top
       .clk_i       (clk_i),
       .arst_i      (rst_i),
       
-      .iob_valid     (uart_valid),
+      .iob_avalid    (uart_avalid),
       .iob_addr      (uart_addr),
       .iob_wdata     (uart_wdata),
       .iob_wstrb     (uart_wstrb),
       .iob_rdata     (uart_rdata),
-      .iob_ready     (uart_ready),
       .iob_rvalid    (uart_rvalid),
+      .iob_ready     (uart_ready),
       
       .txd       (UART0_rxd),
       .rxd       (UART0_txd),
