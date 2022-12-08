@@ -34,7 +34,6 @@ $(BUILD_VSRC_DIR)/iob_cache_version.vh: $(CACHE_DIR)/config_setup.mk
 # make iob_soc top with CPU memory and peripherals
 SRC+=$(BUILD_VSRC_DIR)/iob_soc.v
 $(BUILD_VSRC_DIR)/iob_soc.v: $(SOC_DIR)/hardware/src/system.vt
-	$(LIB_DIR)/scripts/createSystem.py "$(SOC_DIR)" "$(PERIPHERALS)" "$@"
 
 # generate axi ports
 SRC+=$(BUILD_VSRC_DIR)/iob_soc_axi_m_port.vh
