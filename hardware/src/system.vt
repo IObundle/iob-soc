@@ -5,10 +5,6 @@
 //do not remove line below
 //PHEADER
 
-//Temporary PHEADER FIX, as currently 'createSystem.py' does not find these files, probably because they are only generated after that script runs.
-`include "iob_cache_swreg_def.vh"
-`include "iob_uart_swreg_def.vh"
-
 module system
   #(
 `include "iob_soc_params.vh"
