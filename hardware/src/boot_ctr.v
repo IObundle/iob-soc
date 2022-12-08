@@ -57,7 +57,6 @@ module boot_ctr
      (
       .clk_i(clk_i),
       .arst_i(rst_i),
-      .rst_i(rst_i),
       .start_i(cpu_rst_req),
       .pulse_o(cpu_rst_pulse)
       );
