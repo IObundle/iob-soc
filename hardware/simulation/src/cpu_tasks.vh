@@ -4,7 +4,6 @@
 //this is a temporary solution
 
 `include "iob_soc_conf.vh"
-`include "iob_soc_tb_conf.vh"
 `include "iob_uart_swreg_def.vh"
 
 //file seek macros
@@ -20,7 +19,7 @@ task cpu_uartwrite;
    reg [4:0] wstrb_int;
    begin
       #1 uart_addr = cpu_address[2]; // use 32 bit address
-      uart_valid = 1;
+      uart_avalid = 1;
       case (nbytes)
           1: wstrb_int = 4'b0001;
           2: wstrb_int = 4'b0011;
@@ -29,7 +28,7 @@ task cpu_uartwrite;
       uart_wstrb = wstrb_int << (cpu_address[1:0]);
       uart_wdata = cpu_data << (cpu_address[1:0]*8);
       @ (posedge clk) #1 uart_wstrb = 0;
-      uart_valid = 0;
+      uart_avalid = 0;
    end
 endtask //cpu_uartwrite
 
@@ -39,22 +38,22 @@ task cpu_uartread;
    output [31:0] read_reg;
    begin
       #1 uart_addr = cpu_address[2]; // use 32 bit address
-      uart_valid = 1;
+      uart_avalid = 1;
       @ (posedge clk) #1 
       read_reg = uart_rdata >> (cpu_address[1:0]*8);
-      @ (posedge clk) #1 uart_valid = 0;
+      @ (posedge clk) #1 uart_avalid = 0;
    end
 endtask
 
 task cpu_inituart;
    begin
       //pulse reset uart
-      cpu_uartwrite(`UART_SOFTRESET_ADDR, 1, `UART_SOFTRESET_W/8);
-      cpu_uartwrite(`UART_SOFTRESET_ADDR, 0, `UART_SOFTRESET_W/8);
+      cpu_uartwrite(`IOB_UART_SOFTRESET_ADDR, 1, `IOB_UART_SOFTRESET_W/8);
+      cpu_uartwrite(`IOB_UART_SOFTRESET_ADDR, 0, `IOB_UART_SOFTRESET_W/8);
       //config uart div factor
-      cpu_uartwrite(`UART_DIV_ADDR, `FREQ/`BAUD, `UART_DIV_W/8);
+      cpu_uartwrite(`IOB_UART_DIV_ADDR, `IOB_SOC_FREQ/`IOB_SOC_BAUD, `IOB_UART_DIV_W/8);
       //enable uart for receiving
-      cpu_uartwrite(`UART_RXEN_ADDR, 1, `UART_RXEN_W/8);
-      cpu_uartwrite(`UART_TXEN_ADDR, 1, `UART_TXEN_W/8);
+      cpu_uartwrite(`IOB_UART_RXEN_ADDR, 1, `IOB_UART_RXEN_W/8);
+      cpu_uartwrite(`IOB_UART_TXEN_ADDR, 1, `IOB_UART_TXEN_W/8);
    end
 endtask

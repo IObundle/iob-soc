@@ -1,7 +1,6 @@
 `timescale 1ns / 1ps
 
 `include "iob_soc_conf.vh"
-`include "iob_soc_tb_conf.vh"
 `include "iob_soc.vh"
 
 
@@ -26,12 +25,13 @@ module system_tb;
 
 
   //tester uart
-  reg       uart_valid;
-  reg [`iob_uart_swreg_ADDR_W-1:0] uart_addr;
+  reg       uart_avalid;
+  reg [`IOB_UART_SWREG_ADDR_W-1:0] uart_addr;
   reg [`IOB_SOC_DATA_W-1:0]      uart_wdata;
   reg [3:0]              uart_wstrb;
   wire [`IOB_SOC_DATA_W-1:0]     uart_rdata;
   wire                   uart_ready;
+  wire                   uart_rvalid;
 
   //iterator
   integer                i = 0, n = 0;
@@ -45,7 +45,7 @@ module system_tb;
 
   initial begin
     //init cpu bus signals
-    uart_valid = 0;
+    uart_avalid = 0;
     uart_wstrb = 0;
 
     //assert reset
@@ -108,16 +108,17 @@ module system_tb;
 
 system_top system_top
   (
-   .clk (clk),
-   .rst (reset),
-   .trap (trap),
+   .clk_i (clk),
+   .rst_i (reset),
+   .trap_o (trap),
 
-   .uart_valid (uart_valid),
-   .uart_addr (uart_addr),
+   .uart_avalid(uart_avalid),
+   .uart_addr  (uart_addr),
    .uart_wdata (uart_wdata),
    .uart_wstrb (uart_wstrb),
    .uart_rdata (uart_rdata),
-   .uart_ready (uart_ready)
+   .uart_ready (uart_ready),
+   .uart_rvalid(uart_rvalid)
    );
 
 
