@@ -13,7 +13,7 @@ IOb-SoC can be run on a VirtualBox VM. This way, the system can be quickly tried
 without investing much time installing the tools:
 
 1. Donwload and install [Oracle's VirtualBox](https://www.virtualbox.org/wiki/Downloads)
-2. Download [IOb-SoC VM](https://drive.google.com/file/d/1gb9O4K4H6fDPyzebjzteXBuiTqnbt2Wi/view?usp=sharing)
+2. Download [IOb-SoC VM](https://drive.google.com/file/d/1X4OXI4JiBLwK7BJPAEG1voxVaFYS9V-f/view?usp=share_link)
 
 
 ## Operating Systems
