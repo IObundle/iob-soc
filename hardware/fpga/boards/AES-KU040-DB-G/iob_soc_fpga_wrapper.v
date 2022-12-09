@@ -33,7 +33,8 @@ module iob_soc_fpga_wrapper
    output        trap
    );
 
-   localparam AXI_ID_W = 4;
+   localparam AXI_ID_W  = 4;
+   localparam AXI_LEN_W = 8;
    localparam AXI_ADDR_W=`DDR_ADDR_W;
    localparam AXI_DATA_W=`DDR_DATA_W;
 
@@ -52,6 +53,7 @@ module iob_soc_fpga_wrapper
    system
      #(
        .AXI_ID_W(AXI_ID_W),
+       .AXI_LEN_W(AXI_LEN_W),
        .AXI_ADDR_W(AXI_ADDR_W),
        .AXI_DATA_W(AXI_DATA_W)
        )

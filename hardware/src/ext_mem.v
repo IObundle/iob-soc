@@ -12,9 +12,9 @@ module ext_mem
     parameter DDR_ADDR_W=`IOB_SOC_DDR_ADDR_W,
     parameter DDR_DATA_W=`IOB_SOC_DDR_DATA_W,
     parameter AXI_ID_W=1,
+    parameter AXI_LEN_W=`IOB_SOC_AXI_LEN_W,
     parameter AXI_ADDR_W=`IOB_SOC_AXI_ADDR_W,
-    parameter AXI_DATA_W=`IOB_SOC_AXI_DATA_W,
-    parameter AXI_LEN_W=`IOB_SOC_AXI_LEN_W
+    parameter AXI_DATA_W=`IOB_SOC_AXI_DATA_W
     )
    (
 `ifdef RUN_EXTMEM
@@ -181,15 +181,16 @@ module ext_mem
    iob_cache_axi # 
      (
       .AXI_ID_W(AXI_ID_W),
+      .AXI_LEN_W(AXI_LEN_W),
       .FE_ADDR_W(DCACHE_ADDR_W),
       .BE_ADDR_W(DDR_ADDR_W),
       .BE_DATA_W(DDR_DATA_W),
-      .NWAYS_W(4),        //Number of Ways
-      .NLINES_W(7),    //Cache Line Offset (number of lines)
-      .WORD_OFFSET_W(3),    //Word Offset (number of words per line)
+      .N_WAYS(4),        //Number of Ways
+      .NLINES_W(7),      //Cache Line Offset (number of lines)
+      .WORD_OFFSET_W(3), //Word Offset (number of words per line)
       .WTBUF_DEPTH_W(5), //FIFO's depth -- 5 minimum for BRAM implementation
-      .USE_CTRL (0),   //Cache-Control can't be accessed
-      .USE_CTRL_CNT(0)       //Remove counters
+      .USE_CTRL (0),     //Cache-Control can't be accessed
+      .USE_CTRL_CNT(0)   //Remove counters
       )
    l2cache 
      (

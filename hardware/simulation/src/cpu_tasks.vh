@@ -13,7 +13,7 @@
 
 // 1-cycle write
 task cpu_uartwrite;
-   input [2:0]  cpu_address;
+   input [3:0]  cpu_address;
    input [31:0] cpu_data;
    input [2:0] nbytes;
    reg [4:0] wstrb_int;
@@ -34,14 +34,14 @@ endtask //cpu_uartwrite
 
 // 2-cycle read
 task cpu_uartread;
-   input [2:0]   cpu_address;
+   input [3:0]   cpu_address;
    output [31:0] read_reg;
    begin
       #1 uart_addr = cpu_address[2]; // use 32 bit address
       uart_avalid = 1;
       @ (posedge clk) #1 
       read_reg = uart_rdata >> (cpu_address[1:0]*8);
-      @ (posedge clk) #1 uart_avalid = 0;
+      uart_valid = 0;
    end
 endtask
 

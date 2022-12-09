@@ -39,7 +39,7 @@ module top_system(
    system system
      (
       .clk           (clk),
-      .reset         (sys_rst),
+      .rst           (sys_rst),
       .trap          (trap),
 
       //UART
