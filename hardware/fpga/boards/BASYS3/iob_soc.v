@@ -38,15 +38,15 @@ module top_system(
    //
    system system
      (
-      .clk           (clk),
-      .rst           (sys_rst),
-      .trap          (trap),
+      .clk_i     (clk),
+      .rst_i     (sys_rst),
+      .trap_o    (trap),
 
       //UART
-      .UART0_txd      (uart_txd),
-      .UART0_rxd      (uart_rxd),
-      .UART0_rts      (),
-      .UART0_cts      (1'b1)
+      .UART0_txd (uart_txd),
+      .UART0_rxd (uart_rxd),
+      .UART0_rts (),
+      .UART0_cts (1'b1)
       );
 
 endmodule
