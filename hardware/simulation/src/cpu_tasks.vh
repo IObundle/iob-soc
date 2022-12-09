@@ -15,14 +15,16 @@
 task cpu_uartwrite;
    input [3:0]  cpu_address;
    input [31:0] cpu_data;
-   input [2:0] nbytes;
+   input [5:0] nbits;
    reg [4:0] wstrb_int;
+   static byte nbytes;
    begin
-      #1 uart_addr = cpu_address[2]; // use 32 bit address
+      nbytes = (nbits-1)/8;
+      #1 uart_addr = cpu_address[3:2]; // use 32 bit address
       uart_avalid = 1;
       case (nbytes)
-          1: wstrb_int = 4'b0001;
-          2: wstrb_int = 4'b0011;
+          0: wstrb_int = 4'b0001;
+          1: wstrb_int = 4'b0011;
           default: wstrb_int = 4'b1111;
       endcase
       uart_wstrb = wstrb_int << (cpu_address[1:0]);
@@ -48,12 +50,12 @@ endtask
 task cpu_inituart;
    begin
       //pulse reset uart
-      cpu_uartwrite(`IOB_UART_SOFTRESET_ADDR, 1, `IOB_UART_SOFTRESET_W/8);
-      cpu_uartwrite(`IOB_UART_SOFTRESET_ADDR, 0, `IOB_UART_SOFTRESET_W/8);
+      cpu_uartwrite(`IOB_UART_SOFTRESET_ADDR, 1, `IOB_UART_SOFTRESET_W);
+      cpu_uartwrite(`IOB_UART_SOFTRESET_ADDR, 0, `IOB_UART_SOFTRESET_W);
       //config uart div factor
-      cpu_uartwrite(`IOB_UART_DIV_ADDR, `IOB_SOC_FREQ/`IOB_SOC_BAUD, `IOB_UART_DIV_W/8);
+      cpu_uartwrite(`IOB_UART_DIV_ADDR, `IOB_SOC_FREQ/`IOB_SOC_BAUD, `IOB_UART_DIV_W);
       //enable uart for receiving
-      cpu_uartwrite(`IOB_UART_RXEN_ADDR, 1, `IOB_UART_RXEN_W/8);
-      cpu_uartwrite(`IOB_UART_TXEN_ADDR, 1, `IOB_UART_TXEN_W/8);
+      cpu_uartwrite(`IOB_UART_RXEN_ADDR, 1, `IOB_UART_RXEN_W);
+      cpu_uartwrite(`IOB_UART_TXEN_ADDR, 1, `IOB_UART_TXEN_W);
    end
 endtask
