@@ -11,6 +11,7 @@ include $(LIB_DIR)/hardware/rom/iob_rom_sp/hw_setup.mk
 include $(LIB_DIR)/hardware/ram/iob_ram_dp_be/hw_setup.mk
 include $(LIB_DIR)/hardware/iob_pulse_gen/hw_setup.mk
 include $(LIB_DIR)/hardware/include/hw_setup.mk
+include $(LIB_DIR)/hardware/iob_tasks/hw_setup.mk
 
 #CPU
 PICORV32_DIR:=$(SOC_DIR)/submodules/PICORV32
