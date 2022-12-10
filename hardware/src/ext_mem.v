@@ -185,7 +185,7 @@ module ext_mem
       .FE_ADDR_W(DCACHE_ADDR_W),
       .BE_ADDR_W(DDR_ADDR_W),
       .BE_DATA_W(DDR_DATA_W),
-      .N_WAYS_W(2),        //Number of Ways
+      .NWAYS_W(2),        //Number of Ways
       .NLINES_W(7),      //Cache Line Offset (number of lines)
       .WORD_OFFSET_W(3), //Word Offset (number of words per line)
       .WTBUF_DEPTH_W(5), //FIFO's depth -- 5 minimum for BRAM implementation
