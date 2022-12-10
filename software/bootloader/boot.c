@@ -26,15 +26,10 @@ int main() {
   //welcome message
   uart_puts (PROGNAME);
   uart_puts (": connected!\n");
-
-#ifdef USE_DDR
-    uart_puts (PROGNAME);
-    uart_puts(": DDR in use\n");
-#endif
     
 #ifdef RUN_EXTMEM
     uart_puts (PROGNAME);
-    uart_puts(": program to run from DDR\n");
+    uart_puts(": DDR in use and program runs from DDR\n");
 #endif
 
   // address to copy firmware to

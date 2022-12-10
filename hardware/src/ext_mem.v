@@ -90,7 +90,7 @@ module ext_mem
    wire                                       l2_wtb_empty;
    wire                                       invalidate;
    reg                                        invalidate_reg;
-   wire                                       l2_valid = l2cache_req[1+DCACHE_ADDR_W+`WRITE_W-1];
+   wire                                       l2_avalid = l2cache_req[1+DCACHE_ADDR_W+`WRITE_W-1];
    //Necessary logic to avoid invalidating L2 while it's being accessed by a request
    always @(posedge clk_i, posedge rst_i)
      if (rst_i)
@@ -99,7 +99,7 @@ module ext_mem
        if (invalidate)
          invalidate_reg <= 1'b1;
        else 
-         if(~l2_valid)
+         if(~l2_avalid)
            invalidate_reg <= 1'b0;
          else
            invalidate_reg <= invalidate_reg;
@@ -202,7 +202,7 @@ module ext_mem
       .rdata    (l2cache_resp[`rdata(0)]),
       .ack    (l2cache_resp[`rvalid(0)]),
       //Control IO
-      .invalidate_in(invalidate_reg & ~l2_valid),
+      .invalidate_in(invalidate_reg & ~l2_avalid),
       .invalidate_out(),
       .wtb_empty_in(1'b1),
       .wtb_empty_out(l2_wtb_empty),

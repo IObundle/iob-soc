@@ -1,5 +1,5 @@
 `timescale 1 ns / 1 ps
-`include "iob_soc_conf.vh"
+
 `include "iob_soc.vh"
 `include "iob_lib.vh"
   
@@ -40,7 +40,6 @@ module int_mem
    ////////////////////////////////////////////////////////
    // BOOT HARDWARE
    //
-
    //boot controller bus to write program in sram
    wire [`REQ_W-1:0]     boot_ctr_req;
    wire [`RESP_W-1:0]    boot_ctr_resp;
@@ -91,14 +90,14 @@ module int_mem
         
         //cpu slave interface
         //no address bus since single address
-        .cpu_valid(boot_ctr_req[`avalid(0)]),
+        .cpu_avalid(boot_ctr_req[`avalid(0)]),
         .cpu_wdata(boot_ctr_req[`wdata(0)-(DATA_W-2)]),
         .cpu_wstrb(boot_ctr_req[`wstrb(0)]),
         .cpu_rdata(boot_ctr_resp[`rdata(0)]),
-        .cpu_ready(boot_ctr_resp[`rvalid(0)]),
+        .cpu_rvalid(boot_ctr_resp[`rvalid(0)]),
 
         //sram write master interface
-        .sram_valid(ram_w_req[`avalid(0)]),
+        .sram_avalid(ram_w_req[`avalid(0)]),
         .sram_addr(ram_w_req[`address(0, ADDR_W)]),
         .sram_wdata(ram_w_req[`wdata(0)]),
         .sram_wstrb(ram_w_req[`wstrb(0)])
@@ -176,20 +175,20 @@ module int_mem
       .rst_i           (rst_i),
       
       //instruction bus
-      .i_valid       (ram_i_req[`avalid(0)]),
+      .i_avalid       (ram_i_req[`avalid(0)]),
       .i_addr        (ram_i_req[`address(0, SRAM_ADDR_W)-2]), 
       .i_wdata       (ram_i_req[`wdata(0)]),
       .i_wstrb       (ram_i_req[`wstrb(0)]),
       .i_rdata       (ram_i_resp[`rdata(0)]),
-      .i_ready       (ram_i_resp[`rvalid(0)]),
+      .i_rvalid       (ram_i_resp[`rvalid(0)]),
 	     
       //data bus
-      .d_valid       (ram_d_req[`avalid(0)]),
+      .d_avalid       (ram_d_req[`avalid(0)]),
       .d_addr        (ram_d_addr),
       .d_wdata       (ram_d_req[`wdata(0)]),
       .d_wstrb       (ram_d_req[`wstrb(0)]),
       .d_rdata       (ram_d_resp[`rdata(0)]),
-      .d_ready       (ram_d_resp[`rvalid(0)])
+      .d_rvalid       (ram_d_resp[`rvalid(0)])
       );
 
 endmodule
