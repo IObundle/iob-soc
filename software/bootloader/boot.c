@@ -2,7 +2,7 @@
 #include "iob_soc_conf.h"
 #include "iob-uart.h"
 
-#if RUN_EXTMEM
+#ifdef RUN_EXTMEM
 #include "iob-cache.h"
 #endif
 
@@ -27,14 +27,14 @@ int main() {
   uart_puts (PROGNAME);
   uart_puts (": connected!\n");
     
-#if RUN_EXTMEM
+#ifdef RUN_EXTMEM
     uart_puts (PROGNAME);
     uart_puts(": DDR in use and program runs from DDR\n");
 #endif
 
   // address to copy firmware to
   char *prog_start_addr;
-#if RUN_EXTMEM
+#ifdef RUN_EXTMEM
     prog_start_addr = (char *) EXTRA_BASE;
 #else
     prog_start_addr = (char *) (1<<BOOTROM_ADDR_W);
@@ -60,7 +60,7 @@ int main() {
   uart_puts (": Restart CPU to run user program...\n");
   uart_txwait();
 
-#if RUN_EXTMEM
+#ifdef RUN_EXTMEM
   while( !cache_wtb_empty() );
 #endif
   //restart to run firmware

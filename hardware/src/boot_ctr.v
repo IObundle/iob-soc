@@ -22,6 +22,7 @@ module boot_ctr
    input [DATA_W/8-1:0] cpu_wstrb,
    output [DATA_W-1:0]  cpu_rdata,
    output reg           cpu_rvalid,
+   output reg           cpu_ready,
 
 
    //sram master write interface
@@ -34,7 +35,8 @@ module boot_ctr
 
    //cpu interface: rdata and ready
    assign cpu_rdata = {{(DATA_W-1){1'b0}},boot};
-   iob_reg_are #(1,0) rdyreg (clk_i, rst_i, 1'b0, 1'b1, cpu_avalid, cpu_rvalid);
+   iob_reg_are #(1,0) rvalid_reg (clk_i, rst_i, 1'b0, 1'b1, cpu_avalid, cpu_rvalid);
+   iob_reg_are #(1,0) ready_reg  (clk_i, rst_i, 1'b0, 1'b1, 1'b1, cpu_ready);
        
    //boot register: (1) load bootloader to sram and run it: (0) run program
    wire                       boot_wr = cpu_avalid & |cpu_wstrb; 
@@ -67,7 +69,7 @@ module boot_ctr
    //
    // READ BOOT ROM 
    //
-   reg                        rom_r_avalid;
+   reg                       rom_r_avalid;
    reg [BOOTROM_ADDR_W-3: 0] rom_r_addr;
    wire [DATA_W-1: 0]        rom_r_rdata;
 
