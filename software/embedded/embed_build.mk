@@ -6,7 +6,7 @@ HDR+=$(wildcard ../*.h)
 
 # Aditional flags to pass to the compiles
 #Include software/ directory as it contains system.h file
-CFLAGS+=-I..
+INCLUDES+=-I..
 
 # Aditional sources to pass to the compiles
 #FW_SRC+=
