@@ -2,13 +2,11 @@
 # This file is included in BUILD_DIR/sw/emb/Makefile.
 
 ## HEADERS
-HDR+=../system.h
+HDR+=$(wildcard ../*.h)
 
-#Include software/ directory as it contains system.h file
-INCLUDES+=-I..
-# Aditional defines to pass to the compiles
-DEFINES+=
 # Aditional flags to pass to the compiles
-CFLAGS+=
+#Include software/ directory as it contains system.h file
+CFLAGS+=-I..
+
 # Aditional sources to pass to the compiles
 #FW_SRC+=

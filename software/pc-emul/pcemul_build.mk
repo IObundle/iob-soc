@@ -1,6 +1,9 @@
 # Local pc-emul makefile fragment for custom pc emulation targets.
 # This file is included in BUILD_DIR/sw/pc/Makefile.
 
+# Include directory with system.h
+INCLUDE=-I..
+
 # SOURCES
 # exclude bootloader sources
 SRC:=$(filter-out %boot.c,$(SRC))

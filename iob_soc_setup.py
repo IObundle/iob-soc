@@ -112,7 +112,7 @@ if __name__ == "__main__":
     setup(top, version, confs, ios, None, blocks)
     # periphs_tmp.h
     periphs_tmp.create_periphs_tmp(next(i['val'] for i in confs if i['name'] == 'P'),
-                                   peripherals_list, f"../{top+'_'+version}/software/esrc/periphs.h")
+                                   peripherals_list, f"../{top+'_'+version}/software/periphs.h")
     # iob_soc.v
     createSystem.create_systemv(dirs['soc'], top, peripherals_list, os.path.join(dirs['build'],'hardware/src/iob_soc.v'))
     # system_tb.v
