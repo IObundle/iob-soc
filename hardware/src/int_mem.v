@@ -95,6 +95,7 @@ module int_mem
         .cpu_wstrb(boot_ctr_req[`wstrb(0)]),
         .cpu_rdata(boot_ctr_resp[`rdata(0)]),
         .cpu_rvalid(boot_ctr_resp[`rvalid(0)]),
+        .cpu_ready(boot_ctr_resp[`ready(0)]),
 
         //sram write master interface
         .sram_avalid(ram_w_req[`avalid(0)]),
@@ -171,24 +172,26 @@ module int_mem
         .SRAM_ADDR_W(SRAM_ADDR_W))
    int_sram 
      (
-      .clk_i           (clk_i),
-      .rst_i           (rst_i),
+      .clk_i    (clk_i),
+      .rst_i    (rst_i),
       
       //instruction bus
-      .i_avalid       (ram_i_req[`avalid(0)]),
-      .i_addr        (ram_i_req[`address(0, SRAM_ADDR_W)-2]), 
-      .i_wdata       (ram_i_req[`wdata(0)]),
-      .i_wstrb       (ram_i_req[`wstrb(0)]),
-      .i_rdata       (ram_i_resp[`rdata(0)]),
-      .i_rvalid       (ram_i_resp[`rvalid(0)]),
+      .i_avalid (ram_i_req[`avalid(0)]),
+      .i_addr   (ram_i_req[`address(0, SRAM_ADDR_W)-2]), 
+      .i_wdata  (ram_i_req[`wdata(0)]),
+      .i_wstrb  (ram_i_req[`wstrb(0)]),
+      .i_rdata  (ram_i_resp[`rdata(0)]),
+      .i_rvalid (ram_i_resp[`rvalid(0)]),
+      .i_ready  (ram_i_resp[`ready(0)]),
 	     
       //data bus
-      .d_avalid       (ram_d_req[`avalid(0)]),
-      .d_addr        (ram_d_addr),
-      .d_wdata       (ram_d_req[`wdata(0)]),
-      .d_wstrb       (ram_d_req[`wstrb(0)]),
-      .d_rdata       (ram_d_resp[`rdata(0)]),
-      .d_rvalid       (ram_d_resp[`rvalid(0)])
+      .d_avalid (ram_d_req[`avalid(0)]),
+      .d_addr   (ram_d_addr),
+      .d_wdata  (ram_d_req[`wdata(0)]),
+      .d_wstrb  (ram_d_req[`wstrb(0)]),
+      .d_rdata  (ram_d_resp[`rdata(0)]),
+      .d_rvalid (ram_d_resp[`rvalid(0)]),
+      .d_ready  (ram_d_resp[`ready(0)])
       );
 
 endmodule
