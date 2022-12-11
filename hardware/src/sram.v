@@ -84,15 +84,15 @@ module sram #(
       .dB_o (i_rdata)
       );
 `endif
-   // reply with ready 
-   always @(posedge clk_i, posedge rst_i)
-     if(rst_i) begin
-	    d_rvalid <= 1'b0;
-	    i_rvalid <= 1'b0;
+  // reply with ready 
+  always @(posedge clk_i, posedge rst_i)
+    if(rst_i) begin
+      d_rvalid <= 1'b0;
+      i_rvalid <= 1'b0;
       d_ready  <= 1'b1;
       i_ready  <= 1'b1;
-     end else begin 
-	    d_rvalid <= d_avalid;
-	    i_rvalid <= i_avalid;
-     end
+    end else begin 
+      d_rvalid <= d_avalid;
+      i_rvalid <= i_avalid;
+    end
 endmodule
