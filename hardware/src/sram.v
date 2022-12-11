@@ -18,6 +18,7 @@ module sram #(
     input [DATA_W/8-1:0]    i_wstrb, //used for booting
     output [DATA_W-1:0]     i_rdata,
     output reg              i_rvalid,
+    output reg              i_ready,
 
     // data bus
     input                   d_avalid,
@@ -25,16 +26,17 @@ module sram #(
     input [DATA_W-1:0]      d_wdata,
     input [DATA_W/8-1:0]    d_wstrb,
     output [DATA_W-1:0]     d_rdata,
-    output reg              d_rvalid
+    output reg              d_rvalid,
+    output reg              d_ready
     );
 
 `ifdef USE_SPRAM
 
    wire                   d_avalid_int = i_avalid? 1'b0: d_avalid;
-   wire                   valid = i_avalid? i_avalid: d_avalid;
-   wire [SRAM_ADDR_W-3:0] addr  = i_avalid? i_addr: d_addr;
-   wire [DATA_W-1:0]      wdata = i_avalid? i_wdata: d_wdata;
-   wire [DATA_W/8-1:0]    wstrb = i_avalid? i_wstrb: d_wstrb;
+   wire                   avalid = i_avalid? i_avalid: d_avalid;
+   wire [SRAM_ADDR_W-3:0] addr   = i_avalid? i_addr: d_addr;
+   wire [DATA_W-1:0]      wdata  = i_avalid? i_wdata: d_wdata;
+   wire [DATA_W/8-1:0]    wstrb  = i_avalid? i_wstrb: d_wstrb;
    wire [DATA_W-1:0]      rdata;
    assign d_rdata = rdata;
    assign i_rdata = rdata;
@@ -50,7 +52,7 @@ module sram #(
       .clk_i   (clk_i),
 
       // data port
-      .en_i   (valid),
+      .en_i   (avalid),
       .addr_i (addr),
       .we_i   (wstrb),
       .din_i  (wdata),
@@ -82,13 +84,15 @@ module sram #(
       .dB_o (i_rdata)
       );
 `endif
-   // reply with ready 
-   always @(posedge clk_i, posedge rst_i)
-     if(rst_i) begin
-	    d_rvalid <= 1'b0;
-	    i_rvalid <= 1'b0;
-     end else begin 
-	    d_rvalid <= d_avalid;
-	    i_rvalid <= i_avalid;
-     end
+  // reply with ready 
+  always @(posedge clk_i, posedge rst_i)
+    if(rst_i) begin
+      d_rvalid <= 1'b0;
+      i_rvalid <= 1'b0;
+      d_ready  <= 1'b1;
+      i_ready  <= 1'b1;
+    end else begin 
+      d_rvalid <= d_avalid;
+      i_rvalid <= i_avalid;
+    end
 endmodule
