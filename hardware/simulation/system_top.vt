@@ -47,7 +47,7 @@ module system_top
 
    //AXI wires for connecting system to memory
 
-`ifdef USE_DDR
+`ifdef IOB_SOC_RUN_EXTMEM
  `include "m_axi_wire.vh"
 `endif
 
@@ -64,7 +64,7 @@ module system_top
    uut
      (
       //PORTS
-`ifdef USE_DDR
+`ifdef IOB_SOC_RUN_EXTMEM
  `include "m_axi_portmap.vh"
 `endif               
       .clk_i (clk_i),
@@ -74,7 +74,7 @@ module system_top
 
 
    //instantiate the axi memory
-`ifdef USE_DDR
+`ifdef IOB_SOC_RUN_EXTMEM
    axi_ram 
      #(
  `ifdef DDR_INIT

@@ -12,8 +12,12 @@ import createSystem
 import createTestbench
 import createTopSystem
 
-top = 'iob_soc'
-version = 'V0.70'
+meta = \
+{
+'name':'iob_soc',
+'version':'V0.70',
+'flows':'pc-emul emb sim doc'
+}
 
 blocks = \
 [
@@ -39,7 +43,7 @@ peripherals_list=next(i['blocks'] for i in blocks if i['name'] == 'peripherals')
 
 dirs = {
 'soc':'.',
-'build':f"../{top+'_'+version}",
+'build':f"../{meta['name']+'_'+meta['version']}",
 }
 dirs |= {
 'picorv32':f"{dirs['soc']}/submodules/PICORV32",
@@ -105,16 +109,16 @@ ios.extend(get_peripheral_ios(peripherals_list,os.path.dirname(__file__)))
 
 if __name__ == "__main__":
     # Setup submodules
-    setup_submodule(f"../{top+'_'+version}","submodules/UART")
-    setup_submodule(f"../{top+'_'+version}","submodules/CACHE")
-    setup_submodule(f"../{top+'_'+version}","submodules/PICORV32")
+    setup_submodule(f"../{meta['name']+'_'+meta['version']}","submodules/UART")
+    setup_submodule(f"../{meta['name']+'_'+meta['version']}","submodules/CACHE")
+    setup_submodule(f"../{meta['name']+'_'+meta['version']}","submodules/PICORV32")
     # Setup this system
-    setup(top, version, confs, ios, None, blocks)
+    setup(meta['name'], meta['version'], confs, ios, None, blocks)
     # periphs_tmp.h
     periphs_tmp.create_periphs_tmp(next(i['val'] for i in confs if i['name'] == 'P'),
-                                   peripherals_list, f"../{top+'_'+version}/software/periphs.h")
+                                   peripherals_list, f"../{meta['name']+'_'+meta['version']}/software/periphs.h")
     # iob_soc.v
-    createSystem.create_systemv(dirs['soc'], top, peripherals_list, os.path.join(dirs['build'],'hardware/src/iob_soc.v'))
+    createSystem.create_systemv(dirs['soc'], meta['name'], peripherals_list, os.path.join(dirs['build'],'hardware/src/iob_soc.v'))
     # system_tb.v
     createTestbench.create_system_testbench(dirs['soc'], peripherals_list, os.path.join(dirs['build'],'hardware/simulation/src/system_tb.v'))
     # system_top.v
