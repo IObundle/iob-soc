@@ -120,26 +120,27 @@ module system_top
     //$finish;
       end
     */
-
+  wire en_i = 1'b1;
 	//Manually added testbench uart core. RS232 pins attached to the same pins
 	//of the uut UART0 instance to communicate with it
    iob_uart uart_tb
      (
-      .clk_i       (clk_i),
-      .arst_i      (rst_i),
+      .clk_i      (clk_i),
+      .en_i       (en_i),
+      .arst_i     (rst_i),
       
-      .iob_avalid    (uart_avalid),
-      .iob_addr      (uart_addr),
-      .iob_wdata     (uart_wdata),
-      .iob_wstrb     (uart_wstrb),
-      .iob_rdata     (uart_rdata),
-      .iob_rvalid    (uart_rvalid),
-      .iob_ready     (uart_ready),
+      .iob_avalid (uart_avalid),
+      .iob_addr   (uart_addr),
+      .iob_wdata  (uart_wdata),
+      .iob_wstrb  (uart_wstrb),
+      .iob_rdata  (uart_rdata),
+      .iob_rvalid (uart_rvalid),
+      .iob_ready  (uart_ready),
       
-      .txd       (UART0_rxd),
-      .rxd       (UART0_txd),
-      .rts       (UART0_cts),
-      .cts       (UART0_rts)
+      .txd        (UART0_rxd),
+      .rxd        (UART0_txd),
+      .rts        (UART0_cts),
+      .cts        (UART0_rts)
       );
 
 endmodule
