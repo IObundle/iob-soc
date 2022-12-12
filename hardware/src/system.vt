@@ -19,6 +19,9 @@ module system
 
    wire   boot;
    wire   cpu_reset;
+
+   wire en_i;
+   assign en_i = 1'b1;
    
    //
    //  CPU
