@@ -46,7 +46,7 @@ iob_uart_swreg.h: ../../software/esrc/iob_uart_swreg.h
 endif
 
 # verilator top module
-#VTOP:=system_top
+VTOP:=system_top
 
 TEST_LIST+=test1
 test1:
