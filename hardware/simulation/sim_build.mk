@@ -1,4 +1,4 @@
-CONSOLE_CMD=../../scripts/console -L
+CONSOLE_CMD=../../scripts/console.py -L
 ifeq ($(INIT_MEM),0)
 CONSOLE_CMD+=-f
 endif

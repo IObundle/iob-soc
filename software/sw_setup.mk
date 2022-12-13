@@ -106,7 +106,7 @@ $(BUILD_PSRC_DIR)/%: $(UART_DIR)/software/psrc/%
 #
 # LIB Scripts
 #
-SRC+=$(BUILD_SW_PYTHON_DIR)/sw_defines.py $(BUILD_SW_PYTHON_DIR)/console
+SRC+=$(BUILD_SW_PYTHON_DIR)/sw_defines.py $(BUILD_SW_PYTHON_DIR)/console.py
 $(BUILD_SW_PYTHON_DIR)/%: $(LIB_DIR)/scripts/%
 	cp $< $@
 

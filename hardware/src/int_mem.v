@@ -16,6 +16,7 @@ module int_mem
    (
     input                clk_i,
     input                rst_i,
+    input                en_i,
 
     output               boot,
     output               cpu_reset,
@@ -85,6 +86,7 @@ module int_mem
        (
         .clk_i(clk_i),
         .rst_i(rst_i),
+        .en_i(en_i),
         .cpu_rst(cpu_reset),
         .boot(boot),
         
@@ -165,7 +167,7 @@ module int_mem
    //
    sram
         #(
-`ifdef SRAM_INIT
+`ifdef IOB_SOC_INIT_MEM
         .HEXFILE(HEXFILE),
 `endif
         .DATA_W(DATA_W),

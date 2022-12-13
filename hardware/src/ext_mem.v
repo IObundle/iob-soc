@@ -17,7 +17,7 @@ module ext_mem
     parameter AXI_DATA_W=`IOB_SOC_AXI_DATA_W
     )
    (
-`ifdef RUN_EXTMEM
+`ifdef IOB_SOC_RUN_EXTMEM
     // Instruction bus
     input [1+FIRM_ADDR_W-2+`WRITE_W-1:0]     i_req,
     output [`RESP_W-1:0] 		      i_resp,
@@ -33,7 +33,7 @@ module ext_mem
 	input [1-1:0] rst_i //reset  asynchronous and active high.
     );
 
-`ifdef RUN_EXTMEM
+`ifdef IOB_SOC_RUN_EXTMEM
    //
    // INSTRUCTION CACHE
    //
@@ -153,7 +153,7 @@ module ext_mem
    iob_merge
      #(
        .ADDR_W(DCACHE_ADDR_W),
-`ifdef RUN_EXTMEM
+`ifdef IOB_SOC_RUN_EXTMEM
        .N_MASTERS(2)
 `else
        .N_MASTERS(1)
@@ -164,7 +164,7 @@ module ext_mem
       .clk_i(clk_i),
       .rst_i(rst_i),
       // masters
-`ifdef RUN_EXTMEM
+`ifdef IOB_SOC_RUN_EXTMEM
       .m_req_i  ({icache_be_req, dcache_be_req}),
       .m_resp_o ({icache_be_resp, dcache_be_resp}),
 `else
