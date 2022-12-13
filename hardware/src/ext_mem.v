@@ -17,11 +17,9 @@ module ext_mem
     parameter AXI_DATA_W=`IOB_SOC_AXI_DATA_W
     )
    (
-`ifdef IOB_SOC_RUN_EXTMEM
     // Instruction bus
     input [1+FIRM_ADDR_W-2+`WRITE_W-1:0]     i_req,
     output [`RESP_W-1:0] 		      i_resp,
-`endif
 
     // Data bus
     input [1+1+DCACHE_ADDR_W-2+`WRITE_W-1:0] d_req,
@@ -33,7 +31,6 @@ module ext_mem
 	input [1-1:0] rst_i //reset  asynchronous and active high.
     );
 
-`ifdef IOB_SOC_RUN_EXTMEM
    //
    // INSTRUCTION CACHE
    //
@@ -80,7 +77,6 @@ module ext_mem
       .be_rdata (icache_be_resp[`rdata(0)]),
       .be_ack (icache_be_resp[`rvalid(0)])
       );
-`endif //  `ifdef RUN_EXTMEM
 
    //l2 cache interface signals
    wire [1+DCACHE_ADDR_W+`WRITE_W-1:0]       l2cache_req;
@@ -153,24 +149,15 @@ module ext_mem
    iob_merge
      #(
        .ADDR_W(DCACHE_ADDR_W),
-`ifdef IOB_SOC_RUN_EXTMEM
        .N_MASTERS(2)
-`else
-       .N_MASTERS(1)
-`endif
        )
    merge_i_d_buses_into_l2
      (
       .clk_i(clk_i),
       .rst_i(rst_i),
       // masters
-`ifdef IOB_SOC_RUN_EXTMEM
       .m_req_i  ({icache_be_req, dcache_be_req}),
-      .m_resp_o ({icache_be_resp, dcache_be_resp}),
-`else
-      .m_req_i  (dcache_be_req),
-      .m_resp_o (dcache_be_resp),
-`endif                 
+      .m_resp_o ({icache_be_resp, dcache_be_resp}),         
       // slave
       .s_req_o  (l2cache_req),
       .s_resp_i (l2cache_resp)

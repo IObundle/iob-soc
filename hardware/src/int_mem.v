@@ -167,7 +167,7 @@ module int_mem
    //
    sram
         #(
-`ifdef IOB_SOC_INIT_MEM
+`ifdef INIT_MEM
         .HEXFILE(HEXFILE),
 `endif
         .DATA_W(DATA_W),
