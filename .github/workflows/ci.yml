@@ -54,7 +54,7 @@ jobs:
       - name: setup
         run: make setup
       - name: verilator test
-        run: make -C iob_soc_* sim-test SIMULATOR=verilator
+        run: make -C ../iob_soc_* sim-test SIMULATOR=verilator
   
   icarus:
     runs-on: self-hosted
@@ -70,7 +70,7 @@ jobs:
       - name: setup
         run: make setup
       - name: icarus test
-        run: make -C iob_soc_* sim-test SIMULATOR=icarus
+        run: make -C ../iob_soc_* sim-test SIMULATOR=icarus
   
   # cyclonev:
   #   runs-on: self-hosted
