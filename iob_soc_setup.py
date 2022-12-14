@@ -42,14 +42,14 @@ blocks = \
 peripherals_list=next(i['blocks'] for i in blocks if i['name'] == 'peripherals')
 
 dirs = {
-'soc':'.',
+'setup':'.',
 'build':f"../{meta['name']+'_'+meta['version']}",
 }
-dirs |= {
-'picorv32':f"{dirs['soc']}/submodules/PICORV32",
-'cache':f"{dirs['soc']}/submodules/CACHE",
-'uart':f"{dirs['soc']}/submodules/UART",
-'lib':f"{dirs['soc']}/submodules/LIB",
+submodule_dirs = {
+'PICORV32':f"{dirs['setup']}/submodules/PICORV32",
+'CACHE':f"{dirs['setup']}/submodules/CACHE",
+'UART':f"{dirs['setup']}/submodules/UART",
+'LIB':f"{dirs['setup']}/submodules/LIB",
 }
 
 confs = \
@@ -105,21 +105,27 @@ ios = \
 #    ]}
 ]
 # Append peripherals IO 
-ios.extend(get_peripheral_ios(peripherals_list,os.path.dirname(__file__)))
+ios.extend(get_peripheral_ios(peripherals_list, submodule_dirs,os.path.dirname(__file__)))
 
-if __name__ == "__main__":
+
+# Main function to setup this system and its components
+# build_dir and gen_tex may be modified if this system is to be generated as a submodule of another
+def main(build_dir=dirs['build'], gen_tex=True):
     # Setup submodules
-    setup_submodule(f"../{meta['name']+'_'+meta['version']}","submodules/UART")
-    setup_submodule(f"../{meta['name']+'_'+meta['version']}","submodules/CACHE")
-    setup_submodule(f"../{meta['name']+'_'+meta['version']}","submodules/PICORV32")
+    setup_submodule(build_dir,"submodules/PICORV32")
+    setup_submodule(build_dir,"submodules/CACHE")
+    setup_submodule(build_dir,"submodules/UART")
     # Setup this system
-    setup(meta, confs, ios, None, blocks)
+    setup(meta, confs, ios, None, blocks, build_dir=build_dir, gen_tex=gen_tex)
     # periphs_tmp.h
     periphs_tmp.create_periphs_tmp(next(i['val'] for i in confs if i['name'] == 'P'),
-                                   peripherals_list, f"../{meta['name']+'_'+meta['version']}/software/periphs.h")
+                                   peripherals_list, f"{build_dir}/software/periphs.h")
     # iob_soc.v
-    createSystem.create_systemv(dirs['soc'], meta['name'], peripherals_list, os.path.join(dirs['build'],'hardware/src/iob_soc.v'))
+    createSystem.create_systemv(os.path.dirname(__file__), submodule_dirs, meta['name'], peripherals_list, os.path.join(build_dir,'hardware/src/iob_soc.v'))
     # system_tb.v
-    createTestbench.create_system_testbench(dirs['soc'], peripherals_list, os.path.join(dirs['build'],'hardware/simulation/src/system_tb.v'))
+    createTestbench.create_system_testbench(os.path.dirname(__file__), submodule_dirs, peripherals_list, os.path.join(build_dir,'hardware/simulation/src/system_tb.v'))
     # system_top.v
-    createTopSystem.create_top_system(dirs['soc'], peripherals_list, os.path.join(dirs['build'],'hardware/simulation/src/system_top.v'))
+    createTopSystem.create_top_system(os.path.dirname(__file__), submodule_dirs, peripherals_list, os.path.join(build_dir,'hardware/simulation/src/system_top.v'))
+
+if __name__ == "__main__":
+    main()
