@@ -1,6 +1,6 @@
 # IOb-SoC-(OpenCrypto)Tester
 
-This [project](https://nlnet.nl/project/OpenCryptoTester#ack) aims to develop a System-on-Chip (SoC) used mainly to verify cryptographic systems that improve internet security but can also be used on any SoC. It is synergetic with several other NGI Assure-funded open-source projects – notably [OpenCryptoHW](https://nlnet.nl/project/OpenCryptoHW) (Coarse-Grained Reconfigurable Array cryptographic hardware) and [OpenCryptoLinux](https://nlnet.nl/project/OpenCryptoLinux). The proposed SoC will support test instruments as peripherals and use OpenCryptoHW as the System Under Test (SUT), hopefully opening the way for open-source test instrumentation operated under Linux.
+This [project](https://nlnet.nl/project/OpenCryptoTester#ack) aims to develop a System-on-Chip (SoC) used mainly to verify cryptographic systems that improve internet security but can also be used on any SoC. It is synergetic with several other NGI Assure-funded open-source projects - notably [OpenCryptoHW](https://nlnet.nl/project/OpenCryptoHW) (Coarse-Grained Reconfigurable Array cryptographic hardware) and [OpenCryptoLinux](https://nlnet.nl/project/OpenCryptoLinux). The proposed SoC will support test instruments as peripherals and use OpenCryptoHW as the System Under Test (SUT), hopefully opening the way for open-source test instrumentation operated under Linux.
 
 This repository is a Tester SoC based on [IOb-SoC](https://github.com/IObundle/iob-soc).
 
@@ -60,7 +60,7 @@ If the UUT's repository is git based, then we suggest adding this Tester's repos
 To add this repository as git submodule, from the UUT's repository, run:
 ```
 git submodule add git@github.com:IObundle/iob-soc-tester.git submodules/TESTER
-git submodule update ––init ––recursive
+git submodule update --init --recursive
 ```
 
 ### peripheral\_portmap.conf
