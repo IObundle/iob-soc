@@ -110,13 +110,14 @@ ios.extend(get_peripheral_ios(peripherals_list, submodule_dirs,os.path.dirname(_
 
 # Main function to setup this system and its components
 # build_dir and gen_tex may be modified if this system is to be generated as a submodule of another
-def main(build_dir=dirs['build'], gen_tex=True):
+def main(build_dir=None, gen_tex=True):
+    # Setup this system
+    setup(meta, confs, ios, None, blocks, build_dir=build_dir, gen_tex=gen_tex)
+    build_dir=dirs['build']
     # Setup submodules
     setup_submodule(build_dir,"submodules/PICORV32")
     setup_submodule(build_dir,"submodules/CACHE")
     setup_submodule(build_dir,"submodules/UART")
-    # Setup this system
-    setup(meta, confs, ios, None, blocks, build_dir=build_dir, gen_tex=gen_tex)
     # periphs_tmp.h
     periphs_tmp.create_periphs_tmp(next(i['val'] for i in confs if i['name'] == 'P'),
                                    peripherals_list, f"{build_dir}/software/periphs.h")
