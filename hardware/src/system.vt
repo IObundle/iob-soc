@@ -234,8 +234,8 @@ module tester
    //
    wire axi_invert_r_bit;
    wire axi_invert_w_bit;
-   assign m_axi_araddr[2*AXI_ADDR_W-1] = ~axi_invert_r_bit;
-   assign m_axi_awaddr[2*AXI_ADDR_W-1] = ~axi_invert_w_bit;
+   assign axi_araddr_o[2*AXI_ADDR_W-1] = ~axi_invert_r_bit;
+   assign axi_awaddr_o[2*AXI_ADDR_W-1] = ~axi_invert_w_bit;
 
    ext_mem
     #(

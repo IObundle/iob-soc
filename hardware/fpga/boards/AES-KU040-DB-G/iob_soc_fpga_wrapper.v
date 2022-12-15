@@ -13,7 +13,7 @@ module iob_soc_fpga_wrapper
    output        uart_txd,
    input         uart_rxd,
 
-`ifdef IOB_SOC_TESTER_USE_DDR
+`ifdef RUN_EXTMEM
    output        c0_ddr4_act_n,
    output [16:0] c0_ddr4_adr,
    output [1:0]  c0_ddr4_ba,
@@ -92,7 +92,7 @@ module iob_soc_fpga_wrapper
     assign locked = 1'b1; 
 `endif                  
 
-`ifdef IOB_SOC_TESTER_USE_DDR
+`ifdef RUN_EXTMEM
    //axi wires between system backend and axi bridge
 	`IOB_WIRE(m_axi_awid, 2*AXI_ID_W) //Address write channel ID
 	`IOB_WIRE(m_axi_awaddr, 2*AXI_ADDR_W) //Address write channel address
@@ -147,9 +147,9 @@ module iob_soc_fpga_wrapper
        )
    tester 
      (
-      .clk (clk),
-      .rst (rst),
-      .trap (trap_signals),
+      .clk_i (clk),
+      .rst_i (rst),
+      .trap_o (trap_signals),
 `ifdef IOB_SOC_TESTER_USE_ETHERNET
             //ETHERNET
             //PHY
@@ -164,9 +164,9 @@ module iob_soc_fpga_wrapper
             .ETHERNET0_TX_DATA(TX_DATA),
             .ETHERNET0_TX_EN(ENET_TX_EN),
 `endif
-`ifdef IOB_SOC_TESTER_USE_DDR
-      //axi system backend interface
- `include "m_axi_portmap.vh"	
+`ifdef RUN_EXTMEM
+  //axi system backend interface
+ `include "iob_soc_tester_axi_m_portmap.vh"	
 `endif
 
       //UART
@@ -176,7 +176,7 @@ module iob_soc_fpga_wrapper
       .UART0_cts (1'b1)
       );
 
-`ifdef IOB_SOC_TESTER_USE_DDR
+`ifdef RUN_EXTMEM
    ddr4_0 ddr4_ctrl 
      (
       .sys_rst                (reset),
@@ -295,7 +295,7 @@ module iob_soc_fpga_wrapper
    // DDR4 CONTROLLER
    //
                  
-`ifdef IOB_SOC_TESTER_USE_DDR
+`ifdef RUN_EXTMEM
 
    //axi wires between ddr4 contrl and axi interconnect
  `include "ddr4_axi_wire.vh"

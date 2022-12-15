@@ -70,7 +70,7 @@ set_instance_assignment -name IO_STANDARD "2.5-V" -to ENET_TX_D2
 set_instance_assignment -name IO_STANDARD "2.5-V" -to ENET_TX_D3
 set_instance_assignment -name IO_STANDARD "2.5-V" -to ENET_TX_EN
 
-if { $USE_DDR >= 0 }  {
+if { $RUN_EXTMEM >= 0 }  {
 
     #set_instance_assignment -name IO_STANDARD "1.5-V" -to rzqin
     #set_instance_assignment -name IO_STANDARD "1.5 V" -to rzqin_1_5v

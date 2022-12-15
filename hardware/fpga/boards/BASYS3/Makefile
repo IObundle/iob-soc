@@ -6,6 +6,6 @@ BOARD_USER=$(BAS3_USER)
 DEVICE=xc7a35tcpg236-1
 
 #specify any conditions that prevent running this FPGA
-NORUN = $(USE_DDR)
+NORUN = $(RUN_EXTMEM)
 
 include ../vivado.mk
