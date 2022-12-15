@@ -6,9 +6,10 @@ This repository is a Tester SoC based on [IOb-SoC](https://github.com/IObundle/i
 
 An example System Under Test with this Tester configured is available at the [IOb-SoC-SUT](https://github.com/IObundle/iob-soc-sut) repository.
 
-This system is compatible with any Unit Under Tester (UUT) as long as it follows the set of minimum requirements below.
+This system is compatible with any Unit Under Tester (UUT) as it does not impose any hardware constraints.
+Nonetheless, the UUT's repository must follow the set of minimum requirements presented below.
 
-## UUT Minimum Requirements
+## UUT's Repository Minimum Requirements
 
 The Unit Under Test (UUT) repository must contain at least the following files and directories to be compatible with this Tester:
 - Must contain the `hardware/hardware.mk` file. 

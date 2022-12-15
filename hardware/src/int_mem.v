@@ -1,20 +1,22 @@
 `timescale 1 ns / 1 ps
-`include "system.vh"
-`include "iob_intercon.vh"
+
+`include "iob_soc.vh"
+`include "iob_lib.vh"
   
 module int_mem
   #(
-    parameter ADDR_W=`ADDR_W,
-    parameter DATA_W=`DATA_W,
+    parameter ADDR_W=`IOB_SOC_ADDR_W,
+    parameter DATA_W=`IOB_SOC_DATA_W,
     parameter HEXFILE = "firmware",
     parameter BOOT_HEXFILE = "boot",
-    parameter SRAM_ADDR_W = `SRAM_ADDR_W,
-    parameter BOOTROM_ADDR_W = `BOOTROM_ADDR_W,
-    parameter B_BIT = `B_BIT
+    parameter SRAM_ADDR_W = `IOB_SOC_SRAM_ADDR_W,
+    parameter BOOTROM_ADDR_W = `IOB_SOC_BOOTROM_ADDR_W,
+    parameter B_BIT = `IOB_SOC_B
     )
    (
-    input                clk,
-    input                rst,
+    input                clk_i,
+    input                rst_i,
+    input                en_i,
 
     output               boot,
     output               cpu_reset,
@@ -39,7 +41,6 @@ module int_mem
    ////////////////////////////////////////////////////////
    // BOOT HARDWARE
    //
-
    //boot controller bus to write program in sram
    wire [`REQ_W-1:0]     boot_ctr_req;
    wire [`RESP_W-1:0]    boot_ctr_resp;
@@ -54,15 +55,15 @@ module int_mem
        )
    data_bootctr_split
        (
-        .clk    ( clk                         ),
-        .rst    ( rst                         ),
+        .clk_i    ( clk_i                         ),
+        .rst_i    ( rst_i                         ),
         // master interface
-        .m_req  ( d_req                       ),
-        .m_resp ( d_resp                      ),
+        .m_req_i  ( d_req                       ),
+        .m_resp_o ( d_resp                      ),
         
         // slaves interface
-        .s_req  ( {boot_ctr_req, ram_d_req}   ),
-        .s_resp ( {boot_ctr_resp, ram_d_resp} )
+        .s_req_o ( {boot_ctr_req, ram_d_req}   ),
+        .s_resp_i ( {boot_ctr_resp, ram_d_resp} )
         );
 
 
@@ -83,21 +84,23 @@ module int_mem
 		  )
 	boot_ctr0 
        (
-        .clk(clk),
-        .rst(rst),
+        .clk_i(clk_i),
+        .rst_i(rst_i),
+        .en_i(en_i),
         .cpu_rst(cpu_reset),
         .boot(boot),
         
         //cpu slave interface
         //no address bus since single address
-        .cpu_valid(boot_ctr_req[`valid(0)]),
+        .cpu_avalid(boot_ctr_req[`avalid(0)]),
         .cpu_wdata(boot_ctr_req[`wdata(0)-(DATA_W-2)]),
         .cpu_wstrb(boot_ctr_req[`wstrb(0)]),
         .cpu_rdata(boot_ctr_resp[`rdata(0)]),
+        .cpu_rvalid(boot_ctr_resp[`rvalid(0)]),
         .cpu_ready(boot_ctr_resp[`ready(0)]),
 
         //sram write master interface
-        .sram_valid(ram_w_req[`valid(0)]),
+        .sram_avalid(ram_w_req[`avalid(0)]),
         .sram_addr(ram_w_req[`address(0, ADDR_W)]),
         .sram_wdata(ram_w_req[`wdata(0)]),
         .sram_wstrb(ram_w_req[`wstrb(0)])
@@ -114,15 +117,15 @@ module int_mem
    wire [SRAM_ADDR_W-1:0] boot_offset = -('b1 << BOOTROM_ADDR_W);
    //wire [SRAM_ADDR_W-1:0] boot_offset = -(SRAM_ADDR_W'b1 << BOOTROM_ADDR_W); //Verilog does not accept a parameter to define number of bits?
    
-//`define BOOT_OFFSET ((1'b1<<`SRAM_ADDR_W)-(1'b1<<`BOOTROM_ADDR_W))
-//`define BOOT_OFFSET ((2**`SRAM_ADDR_W)-(2**`BOOTROM_ADDR_W))
+//`define BOOT_OFFSET ((1'b1<<SRAM_ADDR_W)-(1'b1<<BOOTROM_ADDR_W))
+//`define BOOT_OFFSET ((2**SRAM_ADDR_W)-(2**BOOTROM_ADDR_W))
 
    //
    //modify addresses to run  boot program
    //
 
    //instruction bus: connect directly but address
-   assign ram_r_req[`valid(0)] = i_req[`valid(0)];
+   assign ram_r_req[`avalid(0)] = i_req[`avalid(0)];
    assign ram_r_req[`address(0, ADDR_W)] = boot? i_req[`address(0, ADDR_W)] + boot_offset : i_req[`address(0, ADDR_W)];
    assign ram_r_req[`write(0)] = i_req[`write(0)];
    assign i_resp[`resp(0)] = ram_r_resp[`resp(0)];
@@ -147,16 +150,16 @@ module int_mem
            )
    ibus_merge
      (
-      .clk    ( clk                      ),
-      .rst    ( rst                      ),
+      .clk_i    ( clk_i                      ),
+      .rst_i    ( rst_i                      ),
 
       //master
-      .m_req  ( {ram_w_req, ram_r_req}   ),
-      .m_resp ( {ram_w_resp, ram_r_resp} ),
+      .m_req_i  ( {ram_w_req, ram_r_req}   ),
+      .m_resp_o ( {ram_w_resp, ram_r_resp} ),
 
       //slave  
-      .s_req  ( ram_i_req                ),
-      .s_resp ( ram_i_resp               )
+      .s_req_o  ( ram_i_req                ),
+      .s_resp_i ( ram_i_resp               )
       );
    
    //
@@ -164,31 +167,33 @@ module int_mem
    //
    sram
         #(
-`ifdef SRAM_INIT
+`ifdef INIT_MEM
         .HEXFILE(HEXFILE),
 `endif
         .DATA_W(DATA_W),
         .SRAM_ADDR_W(SRAM_ADDR_W))
    int_sram 
      (
-      .clk           (clk),
-      .rst           (rst),
+      .clk_i    (clk_i),
+      .rst_i    (rst_i),
       
       //instruction bus
-      .i_valid       (ram_i_req[`valid(0)]),
-      .i_addr        (ram_i_req[`address(0, SRAM_ADDR_W)-2]), 
-      .i_wdata       (ram_i_req[`wdata(0)]),
-      .i_wstrb       (ram_i_req[`wstrb(0)]),
-      .i_rdata       (ram_i_resp[`rdata(0)]),
-      .i_ready       (ram_i_resp[`ready(0)]),
+      .i_avalid (ram_i_req[`avalid(0)]),
+      .i_addr   (ram_i_req[`address(0, SRAM_ADDR_W)-2]), 
+      .i_wdata  (ram_i_req[`wdata(0)]),
+      .i_wstrb  (ram_i_req[`wstrb(0)]),
+      .i_rdata  (ram_i_resp[`rdata(0)]),
+      .i_rvalid (ram_i_resp[`rvalid(0)]),
+      .i_ready  (ram_i_resp[`ready(0)]),
 	     
       //data bus
-      .d_valid       (ram_d_req[`valid(0)]),
-      .d_addr        (ram_d_addr),
-      .d_wdata       (ram_d_req[`wdata(0)]),
-      .d_wstrb       (ram_d_req[`wstrb(0)]),
-      .d_rdata       (ram_d_resp[`rdata(0)]),
-      .d_ready       (ram_d_resp[`ready(0)])
+      .d_avalid (ram_d_req[`avalid(0)]),
+      .d_addr   (ram_d_addr),
+      .d_wdata  (ram_d_req[`wdata(0)]),
+      .d_wstrb  (ram_d_req[`wstrb(0)]),
+      .d_rdata  (ram_d_resp[`rdata(0)]),
+      .d_rvalid (ram_d_resp[`rvalid(0)]),
+      .d_ready  (ram_d_resp[`ready(0)])
       );
 
 endmodule
