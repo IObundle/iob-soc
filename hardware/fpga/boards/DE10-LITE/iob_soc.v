@@ -1,5 +1,4 @@
 `timescale 1ns / 1ps
-`include "iob_soc.vh"
 
 module top_system(
   input         clk,
