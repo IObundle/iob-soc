@@ -8,7 +8,7 @@ BOARD_USER=$(DE10_USER)
 DEVICE=10M50DAF484C7G
 
 #specify any conditions that prevent running this FPGA
-NORUN = $(USE_DDR)
+NORUN = $(RUN_EXTMEM)
 
 FREQ=50000000
 

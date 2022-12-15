@@ -1,8 +1,7 @@
 `timescale 1ns / 1ps
 
-`include "iob_soc_conf.vh"
-`include "iob_lib.vh"
 `include "iob_soc.vh"
+`include "iob_lib.vh"
 
 //PHEADER
 
@@ -48,7 +47,7 @@ module system_top
    //AXI wires for connecting system to memory
 
 `ifdef RUN_EXTMEM
- `include "m_axi_wire.vh"
+ `include "iob_soc_axi_m_wire.vh"
 `endif
 
    //
@@ -65,7 +64,7 @@ module system_top
      (
       //PORTS
 `ifdef RUN_EXTMEM
- `include "m_axi_portmap.vh"
+ `include "iob_soc_axi_m_portmap.vh"
 `endif               
       .clk_i (clk_i),
       .rst_i (rst_i),
