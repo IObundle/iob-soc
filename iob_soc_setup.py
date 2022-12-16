@@ -16,8 +16,9 @@ meta = \
 {
 'name':'iob_soc',
 'version':'V0.70',
-'flows':'pc-emul emb sim doc'
-}
+'flows':'pc-emul emb sim doc',
+'setup_dir':'.'}
+meta['build_dir']=f"../{meta['name']+'_'+meta['version']}"
 
 blocks = \
 [
@@ -113,20 +114,19 @@ ios.extend(get_peripheral_ios(peripherals_list, submodule_dirs,os.path.dirname(_
 def main(build_dir=None, gen_tex=True):
     # Setup this system
     setup(meta, confs, ios, None, blocks, build_dir=build_dir, gen_tex=gen_tex)
-    build_dir=dirs['build']
     # Setup submodules
-    setup_submodule(build_dir,"submodules/PICORV32")
-    setup_submodule(build_dir,"submodules/CACHE")
-    setup_submodule(build_dir,"submodules/UART")
+    setup_submodule(meta['build_dir'],submodule_dirs["PICORV32"])
+    setup_submodule(meta['build_dir'],submodule_dirs["CACHE"])
+    setup_submodule(meta['build_dir'],submodule_dirs["UART"])
     # periphs_tmp.h
     periphs_tmp.create_periphs_tmp(next(i['val'] for i in confs if i['name'] == 'P'),
-                                   peripherals_list, f"{build_dir}/software/periphs.h")
+                                   peripherals_list, f"{meta['build_dir']}/software/periphs.h")
     # iob_soc.v
-    createSystem.create_systemv(os.path.dirname(__file__), submodule_dirs, meta['name'], peripherals_list, os.path.join(build_dir,'hardware/src/iob_soc.v'))
+    createSystem.create_systemv(os.path.dirname(__file__), submodule_dirs, meta['name'], peripherals_list, os.path.join(meta['build_dir'],'hardware/src/iob_soc.v'))
     # system_tb.v
-    createTestbench.create_system_testbench(os.path.dirname(__file__), submodule_dirs, peripherals_list, os.path.join(build_dir,'hardware/simulation/src/system_tb.v'))
+    createTestbench.create_system_testbench(os.path.dirname(__file__), submodule_dirs, peripherals_list, os.path.join(meta['build_dir'],'hardware/simulation/src/system_tb.v'))
     # system_top.v
-    createTopSystem.create_top_system(os.path.dirname(__file__), submodule_dirs, peripherals_list, os.path.join(build_dir,'hardware/simulation/src/system_top.v'))
+    createTopSystem.create_top_system(os.path.dirname(__file__), submodule_dirs, peripherals_list, os.path.join(meta['build_dir'],'hardware/simulation/src/system_top.v'))
 
 if __name__ == "__main__":
     main()
