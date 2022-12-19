@@ -15,8 +15,7 @@ module ext_mem
     parameter AXI_LEN_W=`IOB_SOC_AXI_LEN_W,
     parameter AXI_ADDR_W=`IOB_SOC_AXI_ADDR_W,
     parameter AXI_DATA_W=`IOB_SOC_AXI_DATA_W
-    )
-   (
+  ) (
     // Instruction bus
     input [1+FIRM_ADDR_W-2+`WRITE_W-1:0]     i_req,
     output [`RESP_W-1:0] 		      i_resp,
@@ -26,10 +25,9 @@ module ext_mem
     output [`RESP_W-1:0] 		      d_resp,
 
     // AXI interface 
-`include "iob_soc_axi_m_port.vh"
-	input [1-1:0] clk_i, //clock input.
-	input [1-1:0] rst_i //reset  asynchronous and active high.
-    );
+    `include "axi_m_port.vh"
+    `include "iob_clkrst_port.vh"
+  );
 
    //
    // INSTRUCTION CACHE
@@ -55,7 +53,7 @@ module ext_mem
    icache 
      (
       .clk_i   (clk_i),
-      .rst_i (rst_i),
+      .rst_i (arst_i),
 
       // Front-end interface
       .req (i_req[1+FIRM_ADDR_W-2+`WRITE_W-1]),
@@ -88,8 +86,8 @@ module ext_mem
    reg                                        invalidate_reg;
    wire                                       l2_avalid = l2cache_req[1+DCACHE_ADDR_W+`WRITE_W-1];
    //Necessary logic to avoid invalidating L2 while it's being accessed by a request
-   always @(posedge clk_i, posedge rst_i)
-     if (rst_i)
+   always @(posedge clk_i, posedge arst_i)
+     if (arst_i)
        invalidate_reg <= 1'b0;
      else 
        if (invalidate)
@@ -122,7 +120,7 @@ module ext_mem
    dcache 
      (
       .clk_i   (clk_i),
-      .rst_i (rst_i),
+      .rst_i (arst_i),
 
       // Front-end interface
       .req (d_req[2+DCACHE_ADDR_W-2+`WRITE_W-1]),
@@ -154,7 +152,7 @@ module ext_mem
    merge_i_d_buses_into_l2
      (
       .clk_i(clk_i),
-      .rst_i(rst_i),
+      .rst_i(arst_i),
       // masters
       .m_req_i  ({icache_be_req, dcache_be_req}),
       .m_resp_o ({icache_be_resp, dcache_be_resp}),         
@@ -194,9 +192,9 @@ module ext_mem
       .wtb_empty_in(1'b1),
       .wtb_empty_out(l2_wtb_empty),
       // AXI interface
-`include "iob_soc_axi_m_m_portmap.vh"
+`include "axi_m_m_portmap.vh"
       .clk_i(clk_i),
-      .rst_i(rst_i)
+      .rst_i(arst_i)
       );
 
 endmodule

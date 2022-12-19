@@ -102,12 +102,12 @@ ios = \
         {'name':"rst_i", 'type':"I", 'n_bits':'1', 'descr':"System reset, synchronous and active high"},
         {'name':"trap_o", 'type':"O", 'n_bits':'1', 'descr':"CPU trap signal"}
     ]},
-#    {'name': 'axi_m_port', 'descr':'AXI master interface', 'ports': [
-#    ]}
 ]
 # Append peripherals IO 
 ios.extend(get_peripheral_ios(peripherals_list, submodule_dirs,os.path.dirname(__file__)))
 
+v_headers = [ 'axi_m_m_portmap', 'axi_m_port' ]
+lib_hw_modules = [ 'iob_merge', 'iob_split' ]
 
 # Main function to setup this system and its components
 # build_dir and gen_tex may be modified if this system is to be generated as a submodule of another
