@@ -106,14 +106,26 @@ ios = \
 # Append peripherals IO 
 ios.extend(get_peripheral_ios(peripherals_list, submodule_dirs,os.path.dirname(__file__)))
 
-v_headers = [ 'axi_m_m_portmap', 'axi_m_port' ]
-lib_hw_modules = [ 'iob_merge', 'iob_split' ]
+lib_srcs = {
+    'hw_setup': {
+        'v_headers' : [ 'axi_m_m_portmap', 'axi_m_port' ],
+        'hw_modules': [ 'iob_merge.v', 'iob_split.v', 'iob_rom_sp.v', 'iob_ram_dp_be.v', 'iob_pulse_gen.v' ]
+    },
+    'sim_setup': {
+        'v_headers' : [  ],
+        'hw_modules': [ 'axi_ram.v' ]
+    },
+    'sw_setup': {
+        'sw_headers': [  ],
+        'sw_modules': [  ]
+    },
+}
 
 # Main function to setup this system and its components
 # build_dir and gen_tex may be modified if this system is to be generated as a submodule of another
 def main(build_dir=None, gen_tex=True):
     # Setup this system
-    setup(meta, confs, ios, None, blocks, build_dir=build_dir, gen_tex=gen_tex)
+    setup(meta, confs, ios, None, blocks, lib_srcs, build_dir=build_dir, gen_tex=gen_tex)
     # Setup submodules
     setup_submodule(meta['build_dir'],submodule_dirs["PICORV32"])
     setup_submodule(meta['build_dir'],submodule_dirs["CACHE"])
