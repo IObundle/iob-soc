@@ -42,7 +42,7 @@ blocks = \
 peripherals_list=next(i['blocks'] for i in blocks if i['name'] == 'peripherals')
 
 dirs = {
-'setup':'.',
+'setup':os.path.dirname(__file__),
 'build':f"../{meta['name']+'_'+meta['version']}",
 }
 submodule_dirs = {
@@ -154,9 +154,9 @@ ios.extend(get_peripheral_ios(peripherals_list, submodule_dirs,os.path.dirname(_
 # build_dir and gen_tex may be modified if this system is to be generated as a submodule of another
 def main(build_dir=dirs['build'], gen_tex=True):
     # Setup submodules
-    setup_submodule(build_dir,"submodules/PICORV32")
-    setup_submodule(build_dir,"submodules/CACHE")
-    setup_submodule(build_dir,"submodules/UART")
+    setup_submodule(build_dir,submodule_dirs['PICORV32'])
+    setup_submodule(build_dir,submodule_dirs['CACHE'])
+    setup_submodule(build_dir,submodule_dirs['UART'])
     # Setup this system
     setup(meta, confs, ios, None, blocks, build_dir=build_dir, gen_tex=gen_tex)
     # periphs_tmp.h

@@ -281,7 +281,7 @@ module tester
       .axi_wlast_o      (axi_wlast_o   [2*(0+1)-1:0+1]), 
       .axi_wvalid_o     (axi_wvalid_o  [2*(0+1)-1:0+1]), 
       .axi_wready_i     (axi_wready_i  [2*(0+1)-1:0+1]), 
-      //write response    se                                               se           
+      //write response 
       .axi_bid_i        (axi_bid_i     [2*(AXI_ID_W)-1:AXI_ID_W]),
       .axi_bresp_i      (axi_bresp_i   [2*(1+1)-1:1+1]), 
       .axi_bvalid_i     (axi_bvalid_i  [2*(0+1)-1:0+1]), 
