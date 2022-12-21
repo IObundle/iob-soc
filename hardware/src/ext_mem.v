@@ -25,7 +25,7 @@ module ext_mem
     output [`RESP_W-1:0] 		      d_resp,
 
     // AXI interface 
-    `include "axi_m_port.vh"
+    `include "iob_axi_m_port.vh"
     `include "iob_clkrst_port.vh"
   );
 
@@ -192,7 +192,7 @@ module ext_mem
       .wtb_empty_in(1'b1),
       .wtb_empty_out(l2_wtb_empty),
       // AXI interface
-`include "axi_m_m_portmap.vh"
+`include "iob_axi_m_m_portmap.vh"
       .clk_i(clk_i),
       .rst_i(arst_i)
       );

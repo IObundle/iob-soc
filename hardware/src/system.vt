@@ -243,7 +243,7 @@ module system
       .i_resp (ext_mem_i_resp),
 
       //AXI INTERFACE 
-`include "iob_soc_axi_m_portmap.vh"
+      `include "iob_axi_m_portmap.vh"
       .clk (clk_i),
       .rst (cpu_reset)
       );
