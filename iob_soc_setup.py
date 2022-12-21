@@ -16,8 +16,8 @@ meta = \
 {
 'name':'iob_soc',
 'version':'V0.70',
-'flows':'pc-emul emb sim doc',
-'setup_dir':'.'}
+'flows':'pc-emul emb sim doc fpga',
+'core_dir':'.'}
 meta['build_dir']=f"../{meta['name']+'_'+meta['version']}"
 
 blocks = \
@@ -109,7 +109,7 @@ ios.extend(get_peripheral_ios(peripherals_list, submodule_dirs,os.path.dirname(_
 lib_srcs = {
     'hw_setup': {
         'v_headers' : [ 'axi_m_m_portmap', 'axi_m_port' ],
-        'hw_modules': [ 'iob_merge.v', 'iob_split.v', 'iob_rom_sp.v', 'iob_ram_dp_be.v', 'iob_pulse_gen.v' ]
+        'hw_modules': [ 'iob_merge.v', 'iob_split.v', 'iob_rom_sp.v', 'iob_ram_dp_be.v', 'iob_pulse_gen.v', 'iob_reg_are.v', 'iob_counter.v', 'iob_ram_2p_asym.v' ]
     },
     'sim_setup': {
         'v_headers' : [  ],
