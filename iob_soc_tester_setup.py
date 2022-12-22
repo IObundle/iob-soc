@@ -146,8 +146,8 @@ ios = \
 #`endif //  `ifdef USE_DDR
 
 ]
-# Append peripherals IO 
-ios.extend(get_peripheral_ios(peripherals_list, submodule_dirs,os.path.dirname(__file__)))
+# Dont append peripherals IOs for the Tester. They will be added by the portmap functions.
+#ios.extend(get_peripheral_ios(peripherals_list, submodule_dirs,os.path.dirname(__file__)))
 
 
 # Main function to setup this system and its components
