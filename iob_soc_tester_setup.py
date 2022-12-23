@@ -158,7 +158,7 @@ def main(build_dir=dirs['build'], gen_tex=True):
     setup_submodule(build_dir,submodule_dirs['CACHE'])
     setup_submodule(build_dir,submodule_dirs['UART'])
     # Setup this system
-    setup(meta, confs, ios, None, blocks, build_dir=build_dir, gen_tex=gen_tex)
+    setup(meta, confs, ios, None, blocks, build_dir=build_dir, gen_tex=gen_tex,ios_prefix=True)
     # periphs_tmp.h
     periphs_tmp.create_periphs_tmp(next(i['val'] for i in confs if i['name'] == 'P'),
                                    peripherals_list, f"{build_dir}/software/periphs.h")
