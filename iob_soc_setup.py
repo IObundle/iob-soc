@@ -2,7 +2,7 @@
 
 import os, sys
 sys.path.insert(0, os.getcwd()+'/submodules/LIB/scripts')
-from setup import setup, setup_submodule
+from setup import setup
 from submodule_utils import get_n_periphs, get_n_periphs_w, get_periphs_id_as_macros
 from ios import get_peripheral_ios
 from blocks import get_peripheral_blocks
@@ -19,6 +19,20 @@ meta = \
 'flows':'pc-emul emb sim doc fpga',
 'core_dir':'.'}
 meta['build_dir']=f"../{meta['name']+'_'+meta['version']}"
+meta['submodules'] = {
+    'hw_setup': {
+        'v_headers' : [ 'axi_m_m_portmap', 'axi_m_port' ],
+        'hw_modules': [ 'PICORV32', 'CACHE', 'UART', 'iob_merge', 'iob_split', 'iob_rom_sp', 'iob_ram_dp_be', 'iob_pulse_gen', 'iob_reg_are', 'iob_counter', 'iob_ram_2p_asym' ]
+    },
+    'sim_setup': {
+        'v_headers' : [  ],
+        'hw_modules': [ 'axi_ram' ]
+    },
+    'sw_setup': {
+        'sw_headers': [  ],
+        'sw_modules': [  ]
+    },
+}
 
 blocks = \
 [
@@ -40,18 +54,10 @@ blocks = \
     ]},
 ]
 # Get peripherals list from 'peripherals' table in blocks list
-peripherals_list=next(i['blocks'] for i in blocks if i['name'] == 'peripherals')
-
-dirs = {
-'setup':'.',
-'build':f"../{meta['name']+'_'+meta['version']}",
-}
-submodule_dirs = {
-'PICORV32':f"{dirs['setup']}/submodules/PICORV32",
-'CACHE':f"{dirs['setup']}/submodules/CACHE",
-'UART':f"{dirs['setup']}/submodules/UART",
-'LIB':f"{dirs['setup']}/submodules/LIB",
-}
+peripherals_list=[]
+for i in blocks:
+    if i['name'] == 'peripherals':
+        peripherals_list.extend(i['blocks'])
 
 confs = \
 [
@@ -93,7 +99,7 @@ confs.append({'name':'N_SLAVES', 'type':'M', 'val':get_n_periphs(peripherals_lis
 confs.append({'name':'N_SLAVES_W', 'type':'M', 'val':get_n_periphs_w(peripherals_list), 'min':'NA', 'max':'NA', 'descr':"Peripheral bus width"})
 
 
-# regs = []
+# regs = [] 
 
 ios = \
 [
@@ -104,32 +110,15 @@ ios = \
     ]},
 ]
 # Append peripherals IO 
-ios.extend(get_peripheral_ios(peripherals_list, submodule_dirs,os.path.dirname(__file__)))
+ios.extend(get_peripheral_ios(peripherals_list, meta['submodules'], meta['core_dir']))
 
-lib_srcs = {
-    'hw_setup': {
-        'v_headers' : [ 'axi_m_m_portmap', 'axi_m_port' ],
-        'hw_modules': [ 'iob_merge.v', 'iob_split.v', 'iob_rom_sp.v', 'iob_ram_dp_be.v', 'iob_pulse_gen.v', 'iob_reg_are.v', 'iob_counter.v', 'iob_ram_2p_asym.v' ]
-    },
-    'sim_setup': {
-        'v_headers' : [  ],
-        'hw_modules': [ 'axi_ram.v' ]
-    },
-    'sw_setup': {
-        'sw_headers': [  ],
-        'sw_modules': [  ]
-    },
-}
 
 # Main function to setup this system and its components
 # build_dir and gen_tex may be modified if this system is to be generated as a submodule of another
-def main(build_dir=None, gen_tex=True):
+def main(gen_tex=True):
     # Setup this system
-    setup(meta, confs, ios, None, blocks, lib_srcs, build_dir=build_dir, gen_tex=gen_tex)
-    # Setup submodules
-    setup_submodule(meta['build_dir'],submodule_dirs["PICORV32"])
-    setup_submodule(meta['build_dir'],submodule_dirs["CACHE"])
-    setup_submodule(meta['build_dir'],submodule_dirs["UART"])
+    setup(meta, confs, ios, None, blocks, gen_tex=gen_tex)
+
     # periphs_tmp.h
     periphs_tmp.create_periphs_tmp(next(i['val'] for i in confs if i['name'] == 'P'),
                                    peripherals_list, f"{meta['build_dir']}/software/periphs.h")
