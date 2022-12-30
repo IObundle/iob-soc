@@ -22,11 +22,11 @@ meta['build_dir']=f"../{meta['name']+'_'+meta['version']}"
 meta['submodules'] = {
     'hw_setup': {
         'v_headers' : [ 'axi_m_m_portmap', 'axi_m_port' ],
-        'hw_modules': [ 'PICORV32', 'CACHE', 'UART', 'iob_merge', 'iob_split', 'iob_rom_sp', 'iob_ram_dp_be', 'iob_pulse_gen', 'iob_reg_are', 'iob_counter', 'iob_ram_2p_asym' ]
+        'hw_modules': [ 'PICORV32', 'CACHE', 'UART', 'iob_merge.v', 'iob_split.v', 'iob_rom_sp.v', 'iob_ram_dp_be.v', 'iob_pulse_gen.v', 'iob_reg_are.v', 'iob_counter.v', 'iob_ram_2p_asym.v' ]
     },
     'sim_setup': {
         'v_headers' : [  ],
-        'hw_modules': [ 'axi_ram' ]
+        'hw_modules': [ 'axi_ram.v' ]
     },
     'sw_setup': {
         'sw_headers': [  ],
@@ -123,11 +123,11 @@ def main(gen_tex=True):
     periphs_tmp.create_periphs_tmp(next(i['val'] for i in confs if i['name'] == 'P'),
                                    peripherals_list, f"{meta['build_dir']}/software/periphs.h")
     # iob_soc.v
-    createSystem.create_systemv(os.path.dirname(__file__), submodule_dirs, meta['name'], peripherals_list, os.path.join(meta['build_dir'],'hardware/src/iob_soc.v'))
+    createSystem.create_systemv(meta['core_dir'], meta['name'], peripherals_list, os.path.join(meta['build_dir'],'hardware/src/iob_soc.v'))
     # system_tb.v
-    createTestbench.create_system_testbench(os.path.dirname(__file__), submodule_dirs, peripherals_list, os.path.join(meta['build_dir'],'hardware/simulation/src/system_tb.v'))
+    createTestbench.create_system_testbench(meta['core_dir'], peripherals_list, os.path.join(meta['build_dir'],'hardware/simulation/src/system_tb.v'))
     # system_top.v
-    createTopSystem.create_top_system(os.path.dirname(__file__), submodule_dirs, peripherals_list, os.path.join(meta['build_dir'],'hardware/simulation/src/system_top.v'))
+    createTopSystem.create_top_system(meta['core_dir'], peripherals_list, os.path.join(meta['build_dir'],'hardware/simulation/src/system_top.v'))
 
 if __name__ == "__main__":
     main()
