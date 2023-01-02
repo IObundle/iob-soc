@@ -13,6 +13,11 @@ module system
 `include "iob_soc_io.vh"
    );
    
+	// Assign general io signals to local wires
+   wire clk_i = general_clk_i;
+   wire rst_i = general_rst_i;
+   assign general_trap_o = trap_o;
+
    //
    // SYSTEM RESET
    //

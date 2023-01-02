@@ -2,7 +2,7 @@
 
 import os, sys
 sys.path.insert(0, os.getcwd()+'/submodules/LIB/scripts')
-from setup import setup, setup_submodule
+from setup import setup
 from submodule_utils import get_n_periphs, get_n_periphs_w, get_periphs_id_as_macros
 from ios import get_peripheral_ios
 from blocks import get_peripheral_blocks
@@ -17,7 +17,31 @@ meta = \
 'name':'iob_soc',
 'version':'V0.70',
 'flows':'pc-emul emb sim doc fpga',
+'setup_dir':os.path.dirname(__file__)}
+meta['build_dir']=f"../{meta['name']+'_'+meta['version']}"
+meta['submodules'] = {
+    'hw_setup': {
+        'v_headers' : [ 'axi_m_m_portmap', 'axi_m_port' ],
+        'hw_modules': [ 'PICORV32', 'CACHE', 'UART', 'iob_merge.v', 'iob_split.v', 'iob_rom_sp.v', 'iob_ram_dp_be.v', 'iob_pulse_gen.v', 'iob_reg_are.v', 'iob_counter.v', 'iob_ram_2p_asym.v' ]
+    },
+    'sim_setup': {
+        'v_headers' : [  ],
+        'hw_modules': [ 'axi_ram.v' ]
+    },
+    'sw_setup': {
+        'sw_headers': [  ],
+        'sw_modules': [  ]
+    },
+    'dirs': {
+#        'PICORV32':f"{meta['setup_dir']}/submodules/PICORV32",
+#        'CACHE':f"{meta['setup_dir']}/submodules/CACHE",
+#        'UART':f"{meta['setup_dir']}/submodules/UART",
+#        'LIB':f"{meta['setup_dir']}/submodules/LIB",
+    },
 }
+# Auto add submodules directories (same name as their folder, located inside the submodules/ directory)
+for submodule in os.listdir(f"{meta['setup_dir']}/submodules"):
+    meta['submodules']['dirs'].update({submodule:f"{meta['setup_dir']}/submodules/{submodule}"})
 
 blocks = \
 [
@@ -40,17 +64,6 @@ blocks = \
 ]
 # Get peripherals list from 'peripherals' table in blocks list
 peripherals_list=next(i['blocks'] for i in blocks if i['name'] == 'peripherals')
-
-dirs = {
-'setup':os.path.dirname(__file__),
-'build':f"../{meta['name']+'_'+meta['version']}",
-}
-submodule_dirs = {
-'PICORV32':f"{dirs['setup']}/submodules/PICORV32",
-'CACHE':f"{dirs['setup']}/submodules/CACHE",
-'UART':f"{dirs['setup']}/submodules/UART",
-'LIB':f"{dirs['setup']}/submodules/LIB",
-}
 
 confs = \
 [
@@ -92,7 +105,7 @@ confs.append({'name':'N_SLAVES', 'type':'M', 'val':get_n_periphs(peripherals_lis
 confs.append({'name':'N_SLAVES_W', 'type':'M', 'val':get_n_periphs_w(peripherals_list), 'min':'NA', 'max':'NA', 'descr':"Peripheral bus width"})
 
 
-# regs = []
+# regs = [] 
 
 ios = \
 [
@@ -103,48 +116,23 @@ ios = \
     ]},
 ]
 # Append peripherals IO 
-ios.extend(get_peripheral_ios(peripherals_list, submodule_dirs,os.path.dirname(__file__)))
+ios.extend(get_peripheral_ios(peripherals_list, meta['submodules']))
 
-lib_srcs = {
-    'hw_setup': {
-        'v_headers' : [ 'axi_m_m_portmap', 'axi_m_port' ],
-        'hw_modules': [ 'iob_merge.v', 'iob_split.v', 'iob_rom_sp.v', 'iob_ram_dp_be.v', 'iob_pulse_gen.v', 'iob_reg_are.v', 'iob_counter.v', 'iob_ram_2p_asym.v' ]
-    },
-    'sim_setup': {
-        'v_headers' : [  ],
-        'hw_modules': [ 'axi_ram.v' ]
-    },
-    'fpga_setup': {
-        'v_headers': [  ],
-        'hw_modules': [  ]
-    },
-    'sw_setup': {
-        'sw_headers': [  ],
-        'sw_modules': [  ]
-    },
-}
 
 # Main function to setup this system and its components
-# Gen_tex and gen_makefile are created by default. However, when this system is a submodule of another, we don't want these files of this system.
-# dirs_override: allows overriding some directories. This is useful when a top system wants to override the default build directory of this system.
-def main(dirs_override={}, gen_tex=True, gen_makefile=True):
-    #Override dirs
-    dirs.update(dirs_override)
+def main():
     # Setup this system
-    setup(meta, confs, ios, None, blocks, lib_srcs, dirs=dirs, gen_tex=gen_tex, gen_makefile=gen_makefile)
-    # Setup submodules
-    setup_submodule(dirs['build'],submodule_dirs["PICORV32"])
-    setup_submodule(dirs['build'],submodule_dirs["CACHE"])
-    setup_submodule(dirs['build'],submodule_dirs["UART"])
+    setup(meta, confs, ios, None, blocks, ios_prefix=True )
+
     # periphs_tmp.h
     periphs_tmp.create_periphs_tmp(next(i['val'] for i in confs if i['name'] == 'P'),
-                                   peripherals_list, f"{dirs['build']}/software/periphs.h")
+                                   peripherals_list, f"{meta['build_dir']}/software/periphs.h")
     # iob_soc.v
-    createSystem.create_systemv(os.path.dirname(__file__), submodule_dirs, meta['name'], peripherals_list, os.path.join(dirs['build'],'hardware/src/iob_soc.v'))
+    createSystem.create_systemv(meta['setup_dir'], meta['submodules']['dirs'], meta['name'], peripherals_list, os.path.join(meta['build_dir'],'hardware/src/iob_soc.v'))
     # system_tb.v
-    createTestbench.create_system_testbench(os.path.dirname(__file__), submodule_dirs, peripherals_list, os.path.join(dirs['build'],'hardware/simulation/src/system_tb.v'))
+    createTestbench.create_system_testbench(meta['setup_dir'], meta['submodules']['dirs'], peripherals_list, os.path.join(meta['build_dir'],'hardware/simulation/src/system_tb.v'))
     # system_top.v
-    createTopSystem.create_top_system(os.path.dirname(__file__), submodule_dirs, peripherals_list, os.path.join(dirs['build'],'hardware/simulation/src/system_top.v'))
+    createTopSystem.create_top_system(meta['setup_dir'], meta['submodules']['dirs'], peripherals_list, os.path.join(meta['build_dir'],'hardware/simulation/src/system_top.v'))
 
 if __name__ == "__main__":
     main()

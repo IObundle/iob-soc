@@ -66,9 +66,9 @@ module system_top
 `ifdef RUN_EXTMEM
  `include "iob_soc_axi_m_portmap.vh"
 `endif               
-      .clk_i (clk_i),
-      .rst_i (rst_i),
-      .trap_o (trap_o)
+      .general_clk_i (clk_i),
+      .general_rst_i (rst_i),
+      .general_trap_o (trap_o)
       );
 
 
