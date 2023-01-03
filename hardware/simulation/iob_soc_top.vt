@@ -150,9 +150,9 @@ module system_top
 	       .axi_rvalid  (axi_rvalid_i    [1:0]),
 	       .axi_rready  (axi_rready_o    [1:0]),	
 `endif               
-	       .clk_i         (clk_i),
-	       .rst_i         (rst_i),
-	       .trap        (trap_signals)
+	       .general_clk_i         (clk_i),
+	       .general_rst_i         (rst_i),
+	       .general_trap_o        (trap_signals)
 	       );
 
 `ifdef IOB_SOC_TESTER_USE_DDR
@@ -212,7 +212,6 @@ module system_top
 			.s_axi_rlast    (axi_rlast_i     [1:0]),
 			.s_axi_rvalid   (axi_rvalid_i    [1:0]),
 			.s_axi_rready   (axi_rready_o    [1:0]),
-
 
 			.m_axi_awid     (axi_awid_o      [3*AXI_ID_W-1:2*AXI_ID_W]),
 			.m_axi_awaddr   (axi_awaddr_o    [3*AXI_ADDR_W-1:2*AXI_ADDR_W]),

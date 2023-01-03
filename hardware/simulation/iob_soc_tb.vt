@@ -11,6 +11,10 @@ module system_tb;
 
   parameter realtime clk_per = 1s/`IOB_SOC_FREQ;
 
+  localparam ADDR_W = `IOB_SOC_ADDR_W;
+  localparam DATA_W = `IOB_SOC_DATA_W;
+  localparam UART_DATA_W = `IOB_UART_UART_DATA_W;
+
   //clock
   reg clk = 1;
   always #(clk_per/2) clk = ~clk;
@@ -124,9 +128,6 @@ system_top system_top
    .uart_ready (iob_ready_o),
    .uart_rvalid(iob_rvalid_o)
    );
-
-  localparam ADDR_W = `IOB_SOC_ADDR_W;
-  localparam DATA_W = `IOB_SOC_DATA_W;
 
 task cpu_inituart;
    begin
