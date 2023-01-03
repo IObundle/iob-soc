@@ -13,7 +13,7 @@ module iob_soc_fpga_wrapper
    output        uart_txd,
    input         uart_rxd,
 
-`ifdef USE_DDR
+`ifdef RUN_EXTMEM
    output        c0_ddr4_act_n,
    output [16:0] c0_ddr4_adr,
    output [1:0]  c0_ddr4_ba,
@@ -35,15 +35,15 @@ module iob_soc_fpga_wrapper
 
    localparam AXI_ID_W  = 4;
    localparam AXI_LEN_W = 8;
-   localparam AXI_ADDR_W=`DDR_ADDR_W;
-   localparam AXI_DATA_W=`DDR_DATA_W;
+   localparam AXI_ADDR_W=`IOB_SOC_DDR_ADDR_W;
+   localparam AXI_DATA_W=`IOB_SOC_DDR_DATA_W;
 
    wire          clk;
    wire 	 rst;
    
-`ifdef USE_DDR
+`ifdef RUN_EXTMEM
    //axi wires between system backend and axi bridge
- `include "m_axi_wire.vh"
+ `include "iob_soc_axi_m_wire.vh"
 `endif
 
    //
@@ -59,13 +59,13 @@ module iob_soc_fpga_wrapper
        )
    system 
      (
-      .clk (clk),
-      .rst (rst),
-      .trap (trap),
+      .clk_i (clk),
+      .rst_i (rst),
+      .trap_o (trap),
 
-`ifdef USE_DDR
+`ifdef RUN_EXTMEM
       //axi system backend interface
- `include "m_axi_portmap.vh"	
+ `include "iob_soc_axi_m_portmap.vh"	
 `endif
 
       //UART
@@ -80,7 +80,7 @@ module iob_soc_fpga_wrapper
    // DDR4 CONTROLLER
    //
                  
-`ifdef USE_DDR
+`ifdef RUN_EXTMEM
 
    //axi wires between ddr4 contrl and axi interconnect
  `include "ddr4_axi_wire.vh"
@@ -113,51 +113,47 @@ module iob_soc_fpga_wrapper
       .S00_AXI_ACLK         (clk), //from ddr4 controller PLL to be used by system
       
       //Write address
-      .S00_AXI_AWID         (m_axi_awid[0]),
-      .S00_AXI_AWADDR       (m_axi_awaddr),
-      .S00_AXI_AWLEN        (m_axi_awlen),
-      .S00_AXI_AWSIZE       (m_axi_awsize),
-      .S00_AXI_AWBURST      (m_axi_awburst),
-      .S00_AXI_AWLOCK       (m_axi_awlock[0]),
-      .S00_AXI_AWCACHE      (m_axi_awcache),
-      .S00_AXI_AWPROT       (m_axi_awprot),
-      .S00_AXI_AWQOS        (m_axi_awqos),
-      .S00_AXI_AWVALID      (m_axi_awvalid),
-      .S00_AXI_AWREADY      (m_axi_awready),
-
+      .S00_AXI_AWID         (axi_awid_o  [0]),
+      .S00_AXI_AWADDR       (axi_awaddr_o   ),
+      .S00_AXI_AWLEN        (axi_awlen_o    ),
+      .S00_AXI_AWSIZE       (axi_awsize_o   ),
+      .S00_AXI_AWBURST      (axi_awburst_o  ),
+      .S00_AXI_AWLOCK       (axi_awlock_o[0]),
+      .S00_AXI_AWCACHE      (axi_awcache_o  ),
+      .S00_AXI_AWPROT       (axi_awprot_o   ),
+      .S00_AXI_AWQOS        (axi_awqos_o    ),
+      .S00_AXI_AWVALID      (axi_awvalid_o  ),
+      .S00_AXI_AWREADY      (axi_awready_i  ),
       //Write data
-      .S00_AXI_WDATA        (m_axi_wdata),
-      .S00_AXI_WSTRB        (m_axi_wstrb),
-      .S00_AXI_WLAST        (m_axi_wlast),
-      .S00_AXI_WVALID       (m_axi_wvalid),
-      .S00_AXI_WREADY       (m_axi_wready),
-      
+      .S00_AXI_WDATA        (axi_wdata_o    ),
+      .S00_AXI_WSTRB        (axi_wstrb_o    ),
+      .S00_AXI_WLAST        (axi_wlast_o    ),
+      .S00_AXI_WVALID       (axi_wvalid_o   ),
+      .S00_AXI_WREADY       (axi_wready_i   ),
       //Write response
-      .S00_AXI_BID          (m_axi_bid[0]),
-      .S00_AXI_BRESP        (m_axi_bresp),
-      .S00_AXI_BVALID       (m_axi_bvalid),
-      .S00_AXI_BREADY       (m_axi_bready),
-      
+      .S00_AXI_BID          (axi_bid_i   [0]),
+      .S00_AXI_BRESP        (axi_bresp_i    ),
+      .S00_AXI_BVALID       (axi_bvalid_i   ),
+      .S00_AXI_BREADY       (axi_bready_o   ),
       //Read address
-      .S00_AXI_ARID         (m_axi_arid[0]),
-      .S00_AXI_ARADDR       (m_axi_araddr),
-      .S00_AXI_ARLEN        (m_axi_arlen),
-      .S00_AXI_ARSIZE       (m_axi_arsize),
-      .S00_AXI_ARBURST      (m_axi_arburst),
-      .S00_AXI_ARLOCK       (m_axi_arlock[0]),
-      .S00_AXI_ARCACHE      (m_axi_arcache),
-      .S00_AXI_ARPROT       (m_axi_arprot),
-      .S00_AXI_ARQOS        (m_axi_arqos),
-      .S00_AXI_ARVALID      (m_axi_arvalid),
-      .S00_AXI_ARREADY      (m_axi_arready),
-      
+      .S00_AXI_ARID         (axi_arid_o  [0]),
+      .S00_AXI_ARADDR       (axi_araddr_o   ),
+      .S00_AXI_ARLEN        (axi_arlen_o    ),
+      .S00_AXI_ARSIZE       (axi_arsize_o   ),
+      .S00_AXI_ARBURST      (axi_arburst_o  ),
+      .S00_AXI_ARLOCK       (axi_arlock_o[0]),
+      .S00_AXI_ARCACHE      (axi_arcache_o  ),
+      .S00_AXI_ARPROT       (axi_arprot_o   ),
+      .S00_AXI_ARQOS        (axi_arqos_o    ),
+      .S00_AXI_ARVALID      (axi_arvalid_o  ),
+      .S00_AXI_ARREADY      (axi_arready_i  ),
       //Read data
-      .S00_AXI_RID          (m_axi_rid[0]),
-      .S00_AXI_RDATA        (m_axi_rdata),
-      .S00_AXI_RRESP        (m_axi_rresp),
-      .S00_AXI_RLAST        (m_axi_rlast),
-      .S00_AXI_RVALID       (m_axi_rvalid),
-      .S00_AXI_RREADY       (m_axi_rready),
+      .S00_AXI_RID          (axi_rid_i   [0]),
+      .S00_AXI_RDATA        (axi_rdata_i    ),
+      .S00_AXI_RRESP        (axi_rresp_i    ),
+      .S00_AXI_RLAST        (axi_rlast_i    ),
+      .S00_AXI_RVALID       (axi_rvalid_i   ),
+      .S00_AXI_RREADY       (axi_rready_o   ),
 
 
       //

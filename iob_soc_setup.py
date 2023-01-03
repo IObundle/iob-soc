@@ -2,21 +2,28 @@
 
 import os, sys
 sys.path.insert(0, os.getcwd()+'/submodules/LIB/scripts')
-from setup import setup, setup_submodule
-from submodule_utils import get_n_periphs, get_n_periphs_w, get_periphs_id_as_macros
-from ios import get_peripheral_ios
-from blocks import get_peripheral_blocks
-
-import periphs_tmp
-import createSystem
-import createTestbench
-import createTopSystem
+from setup import setup
 
 meta = \
 {
 'name':'iob_soc',
 'version':'V0.70',
-'flows':'pc-emul emb sim doc'
+'flows':'pc-emul emb sim doc fpga',
+'setup_dir':os.path.dirname(__file__)}
+meta['build_dir']=f"../{meta['name']+'_'+meta['version']}"
+meta['submodules'] = {
+    'hw_setup': {
+        'v_headers' : [ 'axi_m_m_portmap', 'axi_m_port' ],
+        'hw_modules': [ 'PICORV32', 'CACHE', 'UART', 'iob_merge.v', 'iob_split.v', 'iob_rom_sp.v', 'iob_ram_dp_be.v', 'iob_pulse_gen.v', 'iob_reg_are.v', 'iob_counter.v', 'iob_ram_2p_asym.v' ]
+    },
+    'sim_setup': {
+        'v_headers' : [  ],
+        'hw_modules': [ 'axi_ram.v' ]
+    },
+    'sw_setup': {
+        'sw_headers': [  ],
+        'sw_modules': [  ]
+    },
 }
 
 blocks = \
@@ -38,19 +45,6 @@ blocks = \
         {'name':'UART0', 'type':'UART', 'descr':'Default UART interface', 'params':{}},
     ]},
 ]
-# Get peripherals list from 'peripherals' table in blocks list
-peripherals_list=next(i['blocks'] for i in blocks if i['name'] == 'peripherals')
-
-dirs = {
-'setup':'.',
-'build':f"../{meta['name']+'_'+meta['version']}",
-}
-submodule_dirs = {
-'PICORV32':f"{dirs['setup']}/submodules/PICORV32",
-'CACHE':f"{dirs['setup']}/submodules/CACHE",
-'UART':f"{dirs['setup']}/submodules/UART",
-'LIB':f"{dirs['setup']}/submodules/LIB",
-}
 
 confs = \
 [
@@ -84,15 +78,8 @@ confs = \
     {'name':'AXI_DATA_W',    'type':'P', 'val':'`IOB_SOC_DATA_W', 'min':'1', 'max':'32', 'descr':"AXI data bus width"},
     {'name':'AXI_LEN_W',     'type':'P', 'val':'4', 'min':'1', 'max':'4', 'descr':"AXI burst length width"},
 ]
-# Append macros with ID of each peripheral
-confs.extend(get_periphs_id_as_macros(peripherals_list))
-# Append macro with number of peripherals
-confs.append({'name':'N_SLAVES', 'type':'M', 'val':get_n_periphs(peripherals_list), 'min':'NA', 'max':'NA', 'descr':"Number of peripherals"})
-# Append macro with width of peripheral bus
-confs.append({'name':'N_SLAVES_W', 'type':'M', 'val':get_n_periphs_w(peripherals_list), 'min':'NA', 'max':'NA', 'descr':"Peripheral bus width"})
 
-
-# regs = []
+regs = [] 
 
 ios = \
 [
@@ -101,31 +88,13 @@ ios = \
         {'name':"rst_i", 'type':"I", 'n_bits':'1', 'descr':"System reset, synchronous and active high"},
         {'name':"trap_o", 'type':"O", 'n_bits':'1', 'descr':"CPU trap signal"}
     ]},
-#    {'name': 'axi_m_port', 'descr':'AXI master interface', 'ports': [
-#    ]}
 ]
-# Append peripherals IO 
-ios.extend(get_peripheral_ios(peripherals_list, submodule_dirs,os.path.dirname(__file__)))
 
 
 # Main function to setup this system and its components
-# build_dir and gen_tex may be modified if this system is to be generated as a submodule of another
-def main(build_dir=dirs['build'], gen_tex=True):
-    # Setup submodules
-    setup_submodule(build_dir,"submodules/PICORV32")
-    setup_submodule(build_dir,"submodules/CACHE")
-    setup_submodule(build_dir,"submodules/UART")
+def main():
     # Setup this system
-    setup(meta, confs, ios, None, blocks, build_dir=build_dir, gen_tex=gen_tex)
-    # periphs_tmp.h
-    periphs_tmp.create_periphs_tmp(next(i['val'] for i in confs if i['name'] == 'P'),
-                                   peripherals_list, f"{build_dir}/software/periphs.h")
-    # iob_soc.v
-    createSystem.create_systemv(os.path.dirname(__file__), submodule_dirs, meta['name'], peripherals_list, os.path.join(build_dir,'hardware/src/iob_soc.v'))
-    # system_tb.v
-    createTestbench.create_system_testbench(os.path.dirname(__file__), submodule_dirs, peripherals_list, os.path.join(build_dir,'hardware/simulation/src/system_tb.v'))
-    # system_top.v
-    createTopSystem.create_top_system(os.path.dirname(__file__), submodule_dirs, peripherals_list, os.path.join(build_dir,'hardware/simulation/src/system_top.v'))
+    setup(meta, confs, ios, regs, blocks, ios_prefix=True )
 
 if __name__ == "__main__":
     main()

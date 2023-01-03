@@ -9,7 +9,7 @@ set DEFINE [lindex $argv 1]
 set VSRC [lindex $argv 2]
 set DEVICE [lindex $argv 3]
 
-set USE_DDR [string last "USE_DDR" $DEFINE]
+set RUN_EXTMEM [string last "RUN_EXTMEM" $DEFINE]
 
 #verilog sources
 foreach file [split $VSRC \ ] {
@@ -21,7 +21,7 @@ foreach file [split $VSRC \ ] {
 set_property part $DEVICE [current_project]
 read_xdc ./top_system.xdc
 
-if { $USE_DDR < 0 } {
+if { $RUN_EXTMEM < 0 } {
     read_verilog verilog/clock_wizard.v
 } else {
 
