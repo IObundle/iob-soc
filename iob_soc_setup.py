@@ -3,14 +3,6 @@
 import os, sys
 sys.path.insert(0, os.getcwd()+'/submodules/LIB/scripts')
 from setup import setup
-from submodule_utils import get_n_periphs, get_n_periphs_w, get_periphs_id_as_macros
-from ios import get_peripheral_ios
-from blocks import get_peripheral_blocks
-
-import periphs_tmp
-import createSystem
-import createTestbench
-import createTopSystem
 
 meta = \
 {
@@ -32,16 +24,7 @@ meta['submodules'] = {
         'sw_headers': [  ],
         'sw_modules': [  ]
     },
-    'dirs': {
-#        'PICORV32':f"{meta['setup_dir']}/submodules/PICORV32",
-#        'CACHE':f"{meta['setup_dir']}/submodules/CACHE",
-#        'UART':f"{meta['setup_dir']}/submodules/UART",
-#        'LIB':f"{meta['setup_dir']}/submodules/LIB",
-    },
 }
-# Auto add submodules directories (same name as their folder, located inside the submodules/ directory)
-for submodule in os.listdir(f"{meta['setup_dir']}/submodules"):
-    meta['submodules']['dirs'].update({submodule:f"{meta['setup_dir']}/submodules/{submodule}"})
 
 blocks = \
 [
@@ -62,8 +45,6 @@ blocks = \
         {'name':'UART0', 'type':'UART', 'descr':'Default UART interface', 'params':{}},
     ]},
 ]
-# Get peripherals list from 'peripherals' table in blocks list
-peripherals_list=next(i['blocks'] for i in blocks if i['name'] == 'peripherals')
 
 confs = \
 [
@@ -97,15 +78,8 @@ confs = \
     {'name':'AXI_DATA_W',    'type':'P', 'val':'`IOB_SOC_DATA_W', 'min':'1', 'max':'32', 'descr':"AXI data bus width"},
     {'name':'AXI_LEN_W',     'type':'P', 'val':'4', 'min':'1', 'max':'4', 'descr':"AXI burst length width"},
 ]
-# Append macros with ID of each peripheral
-confs.extend(get_periphs_id_as_macros(peripherals_list))
-# Append macro with number of peripherals
-confs.append({'name':'N_SLAVES', 'type':'M', 'val':get_n_periphs(peripherals_list), 'min':'NA', 'max':'NA', 'descr':"Number of peripherals"})
-# Append macro with width of peripheral bus
-confs.append({'name':'N_SLAVES_W', 'type':'M', 'val':get_n_periphs_w(peripherals_list), 'min':'NA', 'max':'NA', 'descr':"Peripheral bus width"})
 
-
-# regs = [] 
+regs = [] 
 
 ios = \
 [
@@ -115,24 +89,12 @@ ios = \
         {'name':"trap_o", 'type':"O", 'n_bits':'1', 'descr':"CPU trap signal"}
     ]},
 ]
-# Append peripherals IO 
-ios.extend(get_peripheral_ios(peripherals_list, meta['submodules']))
 
 
 # Main function to setup this system and its components
 def main():
     # Setup this system
-    setup(meta, confs, ios, None, blocks, ios_prefix=True )
-
-    # periphs_tmp.h
-    periphs_tmp.create_periphs_tmp(next(i['val'] for i in confs if i['name'] == 'P'),
-                                   peripherals_list, f"{meta['build_dir']}/software/periphs.h")
-    # iob_soc.v
-    createSystem.create_systemv(meta['setup_dir'], meta['submodules']['dirs'], meta['name'], peripherals_list, os.path.join(meta['build_dir'],'hardware/src/iob_soc.v'))
-    # system_tb.v
-    createTestbench.create_system_testbench(meta['setup_dir'], meta['submodules']['dirs'], peripherals_list, os.path.join(meta['build_dir'],'hardware/simulation/src/system_tb.v'))
-    # system_top.v
-    createTopSystem.create_top_system(meta['setup_dir'], meta['submodules']['dirs'], peripherals_list, os.path.join(meta['build_dir'],'hardware/simulation/src/system_top.v'))
+    setup(meta, confs, ios, regs, blocks, ios_prefix=True )
 
 if __name__ == "__main__":
     main()
