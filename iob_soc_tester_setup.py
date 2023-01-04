@@ -2,7 +2,7 @@
 
 import os, sys
 sys.path.insert(0, os.getcwd()+'/submodules/LIB/scripts')
-from setup import setup
+from tester import setup_tester
 
 meta = \
 {
@@ -134,14 +134,27 @@ ios = \
 
 ]
 
-#TODO: Modify setup function to NOT fill ios with peripherals IOs, as this will be handled by the portmap functions
-
-#TODO: Ensure the createSystem and other functions create the iob_soc_tester.v output file
+# ----------- Tester module configuration -----------
+#module_parameters = {
+#    extra_peripherals: 
+#    [
+#        {'name':'UART0', 'type':'UART', 'descr':'Default UART interface', 'params':{}}, # It is possible to override default tester peripherals with new parameters
+#    ],
+#
+#    extra_peripherals_dirs:{UART:'./submodules/UART'},
+#
+#    peripheral_portmap:
+#    [
+#        ({'corename':'UART0', 'if_name':'rs232', 'port':'', 'bits':[]},{'corename':'', 'if_name':'', 'port':'', 'bits':[]}), #Map UART0 of tester to external interface
+#    ],
+#}
 
 # Main function to setup this system and its components
 def main():
     # Setup this system
-    setup(meta, confs, ios, regs, blocks, ios_prefix=True )
+    #setup(meta, confs, ios, regs, blocks, ios_prefix=True, peripheral_ios=False)
+    setup_tester(meta, confs, ios, regs, blocks, module_parameters)
+    #setup_tester(meta, extra_peripherals, peripheral_portmap):
 
 if __name__ == "__main__":
     main()
