@@ -1,5 +1,5 @@
 `timescale 1 ns / 1 ps
-`include "tester.vh"
+`include "iob_soc_tester.vh"
 `include "iob_lib.vh"
 
 //do not remove line below

@@ -152,9 +152,7 @@ ios = \
 # Main function to setup this system and its components
 def main():
     # Setup this system
-    #setup(meta, confs, ios, regs, blocks, ios_prefix=True, peripheral_ios=False)
     setup_tester(meta, confs, ios, regs, blocks, module_parameters)
-    #setup_tester(meta, extra_peripherals, peripheral_portmap):
 
 if __name__ == "__main__":
     main()
