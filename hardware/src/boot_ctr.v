@@ -13,6 +13,7 @@ module boot_ctr
   (
    input  clk_i,
    input  rst_i,
+   input  cke_i,
    input  en_i,
    output cpu_rst,
    output boot,
@@ -36,14 +37,14 @@ module boot_ctr
 
    //cpu interface: rdata and ready
    assign cpu_rdata = {{(DATA_W-1){1'b0}},boot};
-   iob_reg_are #(1,0) rvalid_reg (clk_i, rst_i, 1'b0, en_i, cpu_avalid, cpu_rvalid);
-   iob_reg_are #(1,0) ready_reg  (clk_i, rst_i, 1'b1, en_i, 1'b1, cpu_ready);
+   iob_reg_re #(1,0) rvalid_reg (clk_i, rst_i, cke_i, 1'b0, en_i, cpu_avalid, cpu_rvalid);
+   iob_reg_re #(1,0) ready_reg  (clk_i, rst_i, cke_i, 1'b1, en_i, 1'b1, cpu_ready);
        
    //boot register: (1) load bootloader to sram and run it: (0) run program
    wire                       boot_wr = cpu_avalid & |cpu_wstrb; 
    reg                        boot_nxt;  
-   iob_reg_are #(1,1) bootnxt (clk_i, rst_i, 1'b0, boot_wr, cpu_wdata[0], boot_nxt);
-   iob_reg_are #(1,1) bootreg (clk_i, rst_i, 1'b0, en_i, boot_nxt, boot);
+   iob_reg_re #(1,1) bootnxt (clk_i, rst_i, cke_i, 1'b0, boot_wr, cpu_wdata[0], boot_nxt);
+   iob_reg_re #(1,1) bootreg (clk_i, rst_i, cke_i, 1'b0, en_i, boot_nxt, boot);
 
 
    //create CPU reset pulse
@@ -60,7 +61,7 @@ module boot_ctr
      (
       .clk_i(clk_i),
       .arst_i(rst_i),
-      .en_i(en_i),
+      .cke_i(en_i),
       .start_i(cpu_rst_req),
       .pulse_o(cpu_rst_pulse)
       );

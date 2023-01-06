@@ -119,13 +119,13 @@ module system_top
     //$finish;
       end
     */
-  wire en_i = 1'b1;
 	//Manually added testbench uart core. RS232 pins attached to the same pins
 	//of the uut UART0 instance to communicate with it
+   wire cke_i = 1'b1;
    iob_uart uart_tb
      (
       .clk_i      (clk_i),
-      .en_i       (en_i),
+      .cke_i      (cke_i),
       .arst_i     (rst_i),
       
       .iob_avalid (uart_avalid),
