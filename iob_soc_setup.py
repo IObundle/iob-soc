@@ -22,7 +22,7 @@ meta['submodules'] = {
     },
     'sw_setup': {
         'sw_headers': [  ],
-        'sw_modules': [  ]
+        'sw_modules': [ 'CACHE', 'UART', ]
     },
 }
 
