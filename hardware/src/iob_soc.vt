@@ -28,6 +28,8 @@ module system
 
    wire en_i;
    assign en_i = 1'b1;
+   wire cke_i;
+   assign cke_i = 1'b1;
    
    //
    //  CPU
@@ -51,8 +53,9 @@ module system
        )
    cpu
        (
-        .clk (clk_i),
-        .rst (cpu_reset),
+        .clk_i (clk_i),
+        .rst_i (cpu_reset),
+        .cke_i (cke_i),
         .boot (boot),
         .trap (trap_o),
         
@@ -216,8 +219,9 @@ module system
     )
     int_mem0
      (
-      .clk_i (clk_i),
-      .rst_i (rst_i),
+      .clk_i(clk_i),
+      .rst_i(rst_i),
+      .cke_i(cke_i),
       .en_i (en_i),
       .boot (boot),
       .cpu_reset (cpu_reset),

@@ -13,16 +13,16 @@ meta = \
 meta['build_dir']=f"../{meta['name']+'_'+meta['version']}"
 meta['submodules'] = {
     'hw_setup': {
-        'v_headers' : [ 'axi_m_m_portmap', 'axi_m_port' ],
-        'hw_modules': [ 'PICORV32', 'CACHE', 'UART', 'iob_merge.v', 'iob_split.v', 'iob_rom_sp.v', 'iob_ram_dp_be.v', 'iob_pulse_gen.v', 'iob_reg_are.v', 'iob_counter.v', 'iob_ram_2p_asym.v' ]
+        'v_headers' : [ 'iob_wire', 'axi_wire', 'axi_m_m_portmap', 'axi_m_port', 'axi_m_portmap', ],
+        'hw_modules': [ 'PICORV32', 'CACHE', 'UART', 'iob_merge.v', 'iob_split.v', 'iob_rom_sp.v', 'iob_ram_dp_be.v', 'iob_pulse_gen.v', 'iob_counter.v', 'iob_ram_2p_asym.v', 'iob_reg.v', 'iob_reg_re.v' ]
     },
     'sim_setup': {
-        'v_headers' : [  ],
+        'v_headers' : [ 'axi_wire', 'axi_s_portmap', 'axi_m_portmap' ],
         'hw_modules': [ 'axi_ram.v' ]
     },
     'sw_setup': {
         'sw_headers': [  ],
-        'sw_modules': [  ]
+        'sw_modules': [ 'CACHE', 'UART', ]
     },
 }
 
