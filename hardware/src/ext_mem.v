@@ -1,6 +1,6 @@
 `timescale 1 ns / 1 ps
 
-`include "tester.vh"
+`include "iob_soc_tester.vh"
 `include "iob_lib.vh"
 
 module ext_mem
@@ -27,7 +27,7 @@ module ext_mem
     // AXI interface 
     `include "iob_axi_m_port.vh"
     `include "iob_clkrst_port.vh"
-    );
+  );
 
     //assign d_resp[`rvalid(0)] = d_resp[`ready(0)];
     //assign i_resp[`rvalid(0)] = i_resp[`ready(0)];
