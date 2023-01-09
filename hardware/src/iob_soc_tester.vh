@@ -1,4 +1,4 @@
-`include "iob_soc_conf.vh"
+`include "iob_soc_tester_conf.vh"
  
 // data bus select bits
 `define V_BIT (`REQ_W - 1) //valid bit

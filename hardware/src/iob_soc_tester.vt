@@ -28,6 +28,8 @@ module tester
 
    wire en_i;
    assign en_i = 1'b1;
+   wire cke_i;
+   assign cke_i = 1'b1;
    
    //
    //  CPU
@@ -54,8 +56,9 @@ module tester
        )
    cpu
        (
-        .clk (clk_i),
-        .rst (cpu_reset),
+        .clk_i (clk_i),
+        .rst_i (cpu_reset),
+        .cke_i (cke_i),
         .boot (boot),
         .trap (trap_o[1]),
         
@@ -208,6 +211,7 @@ module tester
    //
    // INTERNAL SRAM MEMORY
    //
+
    int_mem 
      #(.HEXFILE("tester_firmware"),
        .BOOT_HEXFILE("tester_boot"),
@@ -221,6 +225,7 @@ module tester
       (
       .clk_i (clk_i),
       .rst_i (rst_i),
+      .cke_i (cke_i),
       .en_i (en_i),
       .boot (boot),
       .cpu_reset (cpu_reset),
@@ -314,7 +319,6 @@ module tester
       );
 `endif
 
-   //do not remove line below
-   //PWIRES
-   
+   //peripheral instances are inserted here
+
 endmodule

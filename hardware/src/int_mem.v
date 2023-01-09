@@ -16,6 +16,7 @@ module int_mem
    (
     input                clk_i,
     input                rst_i,
+    input                cke_i,
     input                en_i,
 
     output               boot,
@@ -86,6 +87,7 @@ module int_mem
        (
         .clk_i(clk_i),
         .rst_i(rst_i),
+        .cke_i(cke_i),
         .en_i(en_i),
         .cpu_rst(cpu_reset),
         .boot(boot),
