@@ -44,15 +44,13 @@ module system
    wire [`RESP_W-1:0] cpu_d_resp;
    
    //instantiate the cpu
-   iob_picorv32 
-     #(
+   iob_picorv32 #(
        .ADDR_W(ADDR_W),
        .DATA_W(DATA_W),
        .USE_COMPRESSED(`IOB_SOC_USE_COMPRESSED),
        .USE_MUL_DIV(`IOB_SOC_USE_MUL_DIV)
        )
-   cpu
-       (
+   cpu (
         .clk_i (clk_i),
         .rst_i (cpu_reset),
         .cke_i (cke_i),
@@ -83,8 +81,7 @@ module system
 `endif
 
    // INSTRUCTION BUS
-   iob_split
-     #(
+   iob_split #(
 `ifdef RUN_EXTMEM
        .N_SLAVES(2),
 `else
@@ -92,8 +89,7 @@ module system
 `endif
        .P_SLAVES(`E_BIT)
        )
-   ibus_split
-     (
+   ibus_split (
       .clk_i (clk_i),
       .rst_i (cpu_reset),
       // master interface
@@ -121,13 +117,11 @@ module system
    wire [`REQ_W-1:0]         int_d_req;
    wire [`RESP_W-1:0]        int_d_resp;
 
-   iob_split
-     #(
+   iob_split #(
        .N_SLAVES(2), //E,{P,I}
        .P_SLAVES(`E_BIT)
        )
-   dbus_split
-     (
+   dbus_split (
       .clk_i    ( clk_i   ),
       .rst_i    ( cpu_reset ),
 
@@ -152,13 +146,11 @@ module system
    wire [`REQ_W-1:0]         pbus_req;
    wire [`RESP_W-1:0]        pbus_resp;
 
-   iob_split
-     #(
+   iob_split #(
        .N_SLAVES(2), //P,I
        .P_SLAVES(`P_BIT)
        )
-   int_dbus_split
-     (
+   int_dbus_split (
       .clk_i (clk_i),
       .rst_i (cpu_reset),
 
@@ -186,13 +178,11 @@ module system
    wire [`IOB_SOC_N_SLAVES*`REQ_W-1:0] slaves_req;
    wire [`IOB_SOC_N_SLAVES*`RESP_W-1:0] slaves_resp;
 
-   iob_split
-     #(
+   iob_split #(
        .N_SLAVES(`IOB_SOC_N_SLAVES),
        .P_SLAVES(`P_BIT-1)
        )
-   pbus_split
-     (
+   pbus_split (
       .clk_i (clk_i),
       .rst_i (cpu_reset),
       // master interface
@@ -209,16 +199,14 @@ module system
    // INTERNAL SRAM MEMORY
    //
 
-   int_mem 
-    #(
-        .ADDR_W(ADDR_W),
-        .DATA_W(DATA_W),
-        .BOOTROM_ADDR_W(BOOTROM_ADDR_W),
-        .SRAM_ADDR_W(SRAM_ADDR_W),
-        .B_BIT(`B_BIT)
-    )
-    int_mem0
-     (
+   int_mem #(
+      .ADDR_W(ADDR_W),
+      .DATA_W(DATA_W),
+      .BOOTROM_ADDR_W(BOOTROM_ADDR_W),
+      .SRAM_ADDR_W(SRAM_ADDR_W),
+      .B_BIT(`B_BIT)
+      ) 
+   int_mem0 (
       .clk_i(clk_i),
       .rst_i(rst_i),
       .cke_i(cke_i),
@@ -239,23 +227,25 @@ module system
    //
    // EXTERNAL DDR MEMORY
    //
-   ext_mem
-     #(
+   ext_mem #(
        .AXI_ID_W(AXI_ID_W),
        .AXI_LEN_W(AXI_LEN_W),
        .AXI_ADDR_W(AXI_ADDR_W),
        .AXI_DATA_W(AXI_DATA_W)
        )
-   ext_mem0
-   (
+   ext_mem0 (
       // instruction bus
       .i_req ( {ext_mem_i_req[`avalid(0)], ext_mem_i_req[`address(0, SRAM_ADDR_W)-2], ext_mem_i_req[`write(0)]} ),
       .i_resp (ext_mem_i_resp),
 
+      // data bus
+      .d_req ( {ext_mem_d_req[`avalid(0)], ext_mem_d_req[`address(0, DCACHE_ADDR_W+1)-2], ext_mem_d_req[`write(0)]} ),
+      .d_resp (ext_mem_d_resp),
+
       //AXI INTERFACE 
-      `include "iob_axi_m_portmap.vh"
-      .clk (clk_i),
-      .rst (cpu_reset)
+      `include "iob_axi_m_m_portmap.vh"
+      .clk_i  (clk_i),
+      .arst_i (cpu_reset)
       );
 `endif
 
