@@ -1,5 +1,5 @@
 #include "system.h"
-#include "iob_soc_conf.h"
+#include "iob_soc_tester_conf.h"
 
 .section .init
 .global main

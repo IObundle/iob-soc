@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-`include "tester.vh"
+`include "iob_soc_tester_conf.vh"
 `include "iob_lib.vh"
 
 //PHEADER
@@ -92,7 +92,7 @@ module system_top
 
    //'Or' between trap signals of Tester and SUT
    wire [1:0]                   trap_signals;
-   assign trap = trap_signals[0] || trap_signals[1];
+   assign trap_o = trap_signals[0] || trap_signals[1];
 
    //
    // Tester (also includes Unit Under Test)

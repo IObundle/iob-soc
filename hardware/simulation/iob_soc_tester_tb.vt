@@ -1,7 +1,6 @@
 `timescale 1ns / 1ps
 
-`include "iob_soc_conf.vh"
-`include "iob_soc.vh"
+`include "iob_soc_tester_conf.vh"
 `include "iob_uart_swreg_def.vh"
 
 
@@ -9,10 +8,10 @@
 
 module system_tb;
 
-  parameter realtime clk_per = 1s/`IOB_SOC_FREQ;
+  parameter realtime clk_per = 1s/`IOB_SOC_TESTER_FREQ;
 
-  localparam ADDR_W = `IOB_SOC_ADDR_W;
-  localparam DATA_W = `IOB_SOC_DATA_W;
+  localparam ADDR_W = `IOB_SOC_TESTER_ADDR_W;
+  localparam DATA_W = `IOB_SOC_TESTER_DATA_W;
   localparam UART_DATA_W = `IOB_UART_UART_DATA_W;
 
   //clock
@@ -32,9 +31,9 @@ module system_tb;
   //tester uart
   reg       iob_avalid_i;
   reg [`IOB_UART_SWREG_ADDR_W-1:0] iob_addr_i;
-  reg [`IOB_SOC_DATA_W-1:0]      iob_wdata_i;
+  reg [`IOB_SOC_TESTER_DATA_W-1:0]      iob_wdata_i;
   reg [3:0]              iob_wstrb_i;
-  wire [`IOB_SOC_DATA_W-1:0]     iob_rdata_o;
+  wire [`IOB_SOC_TESTER_DATA_W-1:0]     iob_rdata_o;
   wire                   iob_ready_o;
   wire                   iob_rvalid_o;
 
@@ -135,7 +134,7 @@ task cpu_inituart;
       iob_write(`IOB_UART_SOFTRESET_ADDR, 1, `IOB_UART_SOFTRESET_W);
       iob_write(`IOB_UART_SOFTRESET_ADDR, 0, `IOB_UART_SOFTRESET_W);
       //config uart div factor
-      iob_write(`IOB_UART_DIV_ADDR, `IOB_SOC_FREQ/`IOB_SOC_BAUD, `IOB_UART_DIV_W);
+      iob_write(`IOB_UART_DIV_ADDR, `IOB_SOC_TESTER_FREQ/`IOB_SOC_TESTER_BAUD, `IOB_UART_DIV_W);
       //enable uart for receiving
       iob_write(`IOB_UART_RXEN_ADDR, 1, `IOB_UART_RXEN_W);
       iob_write(`IOB_UART_TXEN_ADDR, 1, `IOB_UART_TXEN_W);

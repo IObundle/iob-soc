@@ -1,10 +1,10 @@
 `timescale 1ns / 1ps
 
-`include "iob_soc.vh"
+`include "iob_soc_tester_conf.vh"
 
 module sram #(
-              parameter DATA_W=`IOB_SOC_DATA_W,
-              parameter SRAM_ADDR_W = `IOB_SOC_SRAM_ADDR_W,
+              parameter DATA_W=`IOB_SOC_TESTER_DATA_W,
+              parameter SRAM_ADDR_W = `IOB_SOC_TESTER_SRAM_ADDR_W,
               parameter HEXFILE = "none"
 	      )
    (

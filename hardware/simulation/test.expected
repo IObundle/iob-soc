@@ -10,10 +10,14 @@ IOb-Bootloader: Restart CPU to run user program...
 
 
 
-Hello world!
+Hello from Tester!
 
 
-Value of Pi = 3.141500
+
+
+
+Default Tester firmware running...
+
 
 IOb-UART: requesting to send file
 IOb-Console: got file receive request

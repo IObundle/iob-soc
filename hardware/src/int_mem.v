@@ -1,17 +1,17 @@
 `timescale 1 ns / 1 ps
 
-`include "iob_soc.vh"
+`include "iob_soc_tester_conf.vh"
 `include "iob_lib.vh"
   
 module int_mem
   #(
-    parameter ADDR_W=`IOB_SOC_ADDR_W,
-    parameter DATA_W=`IOB_SOC_DATA_W,
+    parameter ADDR_W=`IOB_SOC_TESTER_ADDR_W,
+    parameter DATA_W=`IOB_SOC_TESTER_DATA_W,
     parameter HEXFILE = "firmware",
     parameter BOOT_HEXFILE = "boot",
-    parameter SRAM_ADDR_W = `IOB_SOC_SRAM_ADDR_W,
-    parameter BOOTROM_ADDR_W = `IOB_SOC_BOOTROM_ADDR_W,
-    parameter B_BIT = `IOB_SOC_B
+    parameter SRAM_ADDR_W = `IOB_SOC_TESTER_SRAM_ADDR_W,
+    parameter BOOTROM_ADDR_W = `IOB_SOC_TESTER_BOOTROM_ADDR_W,
+    parameter B_BIT = `IOB_SOC_TESTER_B
     )
    (
     input                clk_i,

@@ -1,7 +1,7 @@
 # core name
-NAME=iob_soc
+NAME=iob_soc_tester
 # core version 
-VERSION=0070
+VERSION=0050
 # include implementation in document (disabled by default)
 DOC_RESULTS=
 

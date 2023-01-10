@@ -129,20 +129,25 @@ ios = \
     ]},
 ]
 
-# ----------- Tester module configuration -----------
-#module_parameters = {
-#    extra_peripherals: 
-#    [
+# ----------- Example Tester module configuration -----------
+# 'module_parameters' dictionary will be overriden if it is called by another core/system by defining the following hardware module:
+#     'hw_modules': [ ('TESTER',module_parameters) ]
+module_parameters = {
+    'extra_peripherals': 
+    [
 #        {'name':'UART0', 'type':'UART', 'descr':'Default UART interface', 'params':{}}, # It is possible to override default tester peripherals with new parameters
-#    ],
-#
-#    extra_peripherals_dirs:{UART:'./submodules/UART'},
-#
-#    peripheral_portmap:
-#    [
-#        ({'corename':'UART0', 'if_name':'rs232', 'port':'', 'bits':[]},{'corename':'', 'if_name':'', 'port':'', 'bits':[]}), #Map UART0 of tester to external interface
-#    ],
-#}
+    ],
+
+    'extra_peripherals_dirs':
+    {
+#        UART:'./submodules/UART'
+    },
+
+    'peripheral_portmap':
+    [
+        ({'corename':'UART0', 'if_name':'rs232', 'port':'', 'bits':[]},{'corename':'', 'if_name':'', 'port':'', 'bits':[]}), #Map UART0 of tester to external interface
+    ],
+}
 
 # Main function to setup this system and its components
 def main():
