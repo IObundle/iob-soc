@@ -23,55 +23,55 @@ on:
   workflow_dispatch:
 
 jobs:
-  # pc-emul:
-  #   runs-on: self-hosted
-  #   timeout-minutes: 5
+  pc-emul:
+    runs-on: self-hosted
+    timeout-minutes: 5
 
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         submodules: 'recursive'
-  #     - name: clean
-  #       run: make clean
-  #     - name: setup
-  #       run: make setup
-  #     - name: pc-emul test
-  #       run: make -C ../iob_soc_* pc-emul-test
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: clean
+        run: make clean
+      - name: setup
+        run: make setup
+      - name: pc-emul test
+        run: make -C ../iob_soc_* pc-emul-test
 
-  # verilator:
-  #   runs-on: self-hosted
-  #   timeout-minutes: 30
-  #   # run even if previous job failed
-  #   if: ${{ !cancelled() }}
-  #   # run after indicated job
-  # 
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         submodules: 'recursive'
-  #     - name: clean
-  #       run: make clean
-  #     - name: setup
-  #       run: make setup
-  #     - name: verilator test
-  #       run: nix-shell -p verilator --run 'make -C ../iob_soc_* sim-test SIMULATOR=verilator'
-  # 
-  # icarus:
-  #   runs-on: self-hosted
-  #   timeout-minutes: 90
-  #   if: ${{ !cancelled() }}
-  # 
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         submodules: 'recursive'
-  #     - name: clean
-  #       run: make clean
-  #     - name: setup
-  #       run: make setup
-  #     - name: icarus test
-  #       run: make -C ../iob_soc_* sim-test SIMULATOR=icarus
-  # 
+  verilator:
+    runs-on: self-hosted
+    timeout-minutes: 30
+    # run even if previous job failed
+    if: ${{ !cancelled() }}
+    # run after indicated job
+  
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: clean
+        run: make clean
+      - name: setup
+        run: make setup
+      - name: verilator test
+        run: nix-shell -p verilator --run 'make -C ../iob_soc_* sim-test SIMULATOR=verilator'
+  
+  icarus:
+    runs-on: self-hosted
+    timeout-minutes: 90
+    if: ${{ !cancelled() }}
+  
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: clean
+        run: make clean
+      - name: setup
+        run: make setup
+      - name: icarus test
+        run: make -C ../iob_soc_* sim-test SIMULATOR=icarus
+  
   # cyclonev:
   #   runs-on: self-hosted
   #   timeout-minutes: 60
