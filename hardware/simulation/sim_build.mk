@@ -8,10 +8,10 @@ ifeq ($(VCD),1)
 UFLAGS+=VCD
 endif
 
-UFLAGS+=FW_SIZE=$(shell wc -l firmware.hex | awk '{print $$1}')
+UFLAGS+=FW_SIZE=$(shell wc -l iob_soc_firmware.hex | awk '{print $$1}')
 
 # Simulation programs
-VHDR+=boot.hex firmware.hex
+VHDR+=iob_soc_boot.hex iob_soc_firmware.hex
 
 #Function to obtain parameter named $(1) in verilog header file located in $(2)
 #Usage: $(call GET_PARAM,<param_name>,<vh_path>)
@@ -20,14 +20,14 @@ GET_PARAM = $(shell grep $(1) $(2) | rev | cut -d" " -f1 | rev)
 #Function to obtain parameter named $(1) from iob_soc_conf.vh
 GET_CONF_PARAM = $(call GET_PARAM,$(1),../src/iob_soc_conf.vh)
 
-boot.hex: ../../software/embedded/boot.bin
+iob_soc_boot.hex: ../../software/embedded/iob_soc_boot.bin
 	../../scripts/makehex.py $< $(call GET_CONF_PARAM,BOOTROM_ADDR_W) > $@
 
-firmware.hex: firmware.bin
+iob_soc_firmware.hex: iob_soc_firmware.bin
 	../../scripts/makehex.py $< $(call GET_CONF_PARAM,SRAM_ADDR_W) > $@
-	../../scripts/hex_split.py firmware .
+	../../scripts/hex_split.py iob_soc_firmware .
 
-firmware.bin: ../../software/embedded/firmware.bin
+iob_soc_firmware.bin: ../../software/embedded/iob_soc_firmware.bin
 	cp $< $@
 
 ../../software/embedded/%.bin:

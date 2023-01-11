@@ -47,6 +47,9 @@ module system
    iob_picorv32 #(
        .ADDR_W(ADDR_W),
        .DATA_W(DATA_W),
+       .V_BIT(`V_BIT),
+       .E_BIT(`E_BIT),
+       .P_BIT(`P_BIT),
        .USE_COMPRESSED(`IOB_SOC_USE_COMPRESSED),
        .USE_MUL_DIV(`IOB_SOC_USE_MUL_DIV)
        )
@@ -200,6 +203,8 @@ module system
    //
 
    int_mem #(
+      .HEXFILE("iob_soc_firmware"),
+      .BOOT_HEXFILE("iob_soc_boot"),
       .ADDR_W(ADDR_W),
       .DATA_W(DATA_W),
       .BOOTROM_ADDR_W(BOOTROM_ADDR_W),
@@ -207,9 +212,9 @@ module system
       .B_BIT(`B_BIT)
       ) 
    int_mem0 (
-      .clk_i(clk_i),
-      .rst_i(rst_i),
-      .cke_i(cke_i),
+      .clk_i (clk_i),
+      .rst_i (rst_i),
+      .cke_i (cke_i),
       .en_i (en_i),
       .boot (boot),
       .cpu_reset (cpu_reset),
