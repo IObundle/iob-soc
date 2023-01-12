@@ -8,8 +8,6 @@ ifeq ($(VCD),1)
 UFLAGS+=VCD
 endif
 
-UFLAGS+=FW_SIZE=$(shell wc -l iob_soc_tester_firmware.hex | awk '{print $$1}')
-
 # Simulation programs
 VHDR+=iob_soc_tester_boot.hex iob_soc_tester_firmware.hex
 

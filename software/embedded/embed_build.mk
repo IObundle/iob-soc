@@ -1,27 +1,24 @@
 # Local embedded makefile fragment for custom bootloader and firmware targets.
-# This file is included in BUILD_DIR/sw/emb/Makefile.
+# This file may be appended to embed_build.mk files of other systems/cores
 
-UTARGETS=build_software
+UTARGETS+=build_tester_software
 
-INCLUDES=-I. -I.. -I../esrc
+TESTER_INCLUDES=-I. -I.. -I../esrc -I../src
 
-LFLAGS= -Wl,-Bstatic,-T,$(TEMPLATE_LDS),--strip-debug
+TESTER_LFLAGS=-Wl,-Bstatic,-T,$(TEMPLATE_LDS),--strip-debug
 
 #FW_SRC=$(wildcard *.c)
-FW_SRC=$(wildcard ../firmware/*)
-FW_SRC+=$(wildcard ../esrc/*.c)
+TESTER_FW_SRC=$(wildcard ../firmware/*)
+TESTER_FW_SRC+=$(wildcard ../esrc/*.c)
+TESTER_FW_SRC+=$(wildcard ../src/*.c)
 
-BOOT_SRC=$(wildcard ../bootloader/*)
-BOOT_SRC+=$(filter-out ../esrc/printf.c, $(wildcard ../esrc/*.c))
+TESTER_BOOT_SRC=$(wildcard ../bootloader/*)
+TESTER_BOOT_SRC+=$(wildcard ../esrc/*.c)
+TESTER_BOOT_SRC+=$(filter-out ../src/printf.c, $(wildcard ../src/*.c))
 
-
-HDR=$(wildcard *.h)
-HDR+=$(wildcard ../*.h)
-HDR+=$(wildcard ../esrc/*.h)
-
-build_software:
-	make iob_soc_tester_firmware.elf INCLUDES="$(INCLUDES) -I../firmware " LFLAGS="$(LFLAGS) -Wl,-Map,iob_soc_tester_firmware.map" SRC="$(FW_SRC)" HDR="$(HDR)"
-	make iob_soc_tester_boot.elf INCLUDES="$(INCLUDES) -I../bootloader " LFLAGS="$(LFLAGS) -Wl,-Map,iob_soc_tester_boot.map" SRC="$(BOOT_SRC)" HDR="$(HDR)"
+build_tester_software:
+	make iob_soc_tester_firmware.elf INCLUDES="$(TESTER_INCLUDES) -I../firmware " LFLAGS="$(TESTER_LFLAGS) -Wl,-Map,iob_soc_tester_firmware.map" SRC="$(TESTER_FW_SRC)"
+	make iob_soc_tester_boot.elf INCLUDES="$(TESTER_INCLUDES) -I../bootloader " LFLAGS="$(TESTER_LFLAGS) -Wl,-Map,iob_soc_tester_boot.map" SRC="$(TESTER_BOOT_SRC)"
 
 
-.PHONE: build_software
+.PHONE: build_tester_software
