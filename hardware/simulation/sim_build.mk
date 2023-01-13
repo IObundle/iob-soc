@@ -8,6 +8,8 @@ ifeq ($(VCD),1)
 UFLAGS+=VCD
 endif
 
+VTOP:=system_tb
+
 # Simulation programs
 VHDR+=iob_soc_tester_boot.hex iob_soc_tester_firmware.hex
 
@@ -41,10 +43,11 @@ iob_uart_swreg.h: ../../software/esrc/iob_uart_swreg.h
 
 # remove system_tb.v from source list
 #VSRC:=$(filter-out system_tb.v, $(VSRC))
-endif
-
+#
 # verilator top module
 VTOP:=system_top
+
+endif
 
 TEST_LIST+=test1
 test1:
