@@ -8,7 +8,7 @@ ifeq ($(VCD),1)
 UFLAGS+=VCD
 endif
 
-UFLAGS+=FW_SIZE=$(shell wc -l iob_soc_firmware.hex | awk '{print $$1}')
+VTOP:=system_tb
 
 # Simulation programs
 VHDR+=iob_soc_boot.hex iob_soc_firmware.hex
@@ -43,10 +43,11 @@ iob_uart_swreg.h: ../../software/esrc/iob_uart_swreg.h
 
 # remove system_tb.v from source list
 #VSRC:=$(filter-out system_tb.v, $(VSRC))
-endif
-
+#
 # verilator top module
 VTOP:=system_top
+
+endif
 
 TEST_LIST+=test1
 test1:
