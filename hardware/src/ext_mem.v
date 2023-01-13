@@ -37,7 +37,7 @@ module ext_mem #(
    reg  i_wr_e; // Instruction write enable register
    reg  i_ready;
    iob_reg_e #(1,0) i_wr_e_reg (clk_i, arst_i, cke_i, i_req[1+FIRM_ADDR_W-2+`WRITE_W-1], {| i_req[`wstrb(0)]}, i_wr_e);
-   iob_reg_e #(1,0) i_ready_reg (clk_i, arst_i, cke_i, i_ack | i_req[1+FIRM_ADDR_W-2+`WRITE_W-1], ~i_req[1+FIRM_ADDR_W-2+`WRITE_W-1], i_ready);
+   iob_reg_e #(1,1) i_ready_reg (clk_i, arst_i, cke_i, i_ack | i_req[1+FIRM_ADDR_W-2+`WRITE_W-1], ~i_req[1+FIRM_ADDR_W-2+`WRITE_W-1], i_ready);
    assign i_resp[`rvalid(0)] = ~i_wr_e ? i_ack : 1'b0;
    assign i_resp[`ready(0)] = i_ack ? i_ack : i_ready;
 
@@ -163,7 +163,7 @@ module ext_mem #(
       )
    merge_i_d_buses_into_l2 (
       .clk_i(clk_i),
-      .rst_i(arst_i),
+      .arst_i(arst_i),
       // masters
       .m_req_i  ({icache_be_req, dcache_be_req}),
       .m_resp_o ({icache_be_resp, dcache_be_resp}),         
