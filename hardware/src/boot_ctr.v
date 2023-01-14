@@ -37,7 +37,7 @@ module boot_ctr
    //cpu interface: rdata and ready
    assign cpu_rdata = {{(DATA_W-1){1'b0}},boot};
    iob_reg_e #(1,0) rvalid_reg (clk_i, arst_i, cke_i, en_i, cpu_avalid, cpu_rvalid);
-   iob_reg_e #(1,1) ready_reg (clk_i, arst_i, cke_i, cpu_rvalid | cpu_avalid, ~cpu_avalid, cpu_ready);
+   assign cpu_ready = 1'b1;
        
    //boot register: (1) load bootloader to sram and run it: (0) run program
    wire                       boot_wr = cpu_avalid & |cpu_wstrb; 

@@ -87,7 +87,7 @@ module sram #(
 
   iob_reg #(1,0) i_rvalid_reg (clk_i, arst_i, cke_i, i_avalid, i_rvalid);
   iob_reg #(1,0) d_rvalid_reg (clk_i, arst_i, cke_i, d_avalid, d_rvalid);
-  iob_reg_e #(1,1) i_ready_reg (clk_i, arst_i, cke_i, i_rvalid | i_avalid, ~i_avalid, i_ready);
-  iob_reg_e #(1,1) d_ready_reg (clk_i, arst_i, cke_i, d_rvalid | d_avalid, ~d_avalid, d_ready);
+  assign i_ready = 1'b1; // SRAM ready is supposed to always be 1 since requests can be continuous
+  assign d_ready = 1'b1;
 
 endmodule

@@ -47,8 +47,7 @@ module int_mem
    //
    // SPLIT DATA BUS BETWEEN SRAM AND BOOT CONTROLLER
    //
-   iob_split 
-     #(
+   iob_split #(
        .N_SLAVES(2),
        .P_SLAVES(B_BIT)
        )
@@ -74,13 +73,13 @@ module int_mem
    wire [`REQ_W-1:0]     ram_w_req;
    wire [`RESP_W-1:0]    ram_w_resp;
 
-   boot_ctr 
-        #(.HEXFILE({BOOT_HEXFILE,".hex"}),
-          .DATA_W(DATA_W),
-          .ADDR_W(ADDR_W),
-          .BOOTROM_ADDR_W(BOOTROM_ADDR_W),
-          .SRAM_ADDR_W(SRAM_ADDR_W)
-		  )
+   boot_ctr #(
+        .HEXFILE({BOOT_HEXFILE,".hex"}),
+        .DATA_W(DATA_W),
+        .ADDR_W(ADDR_W),
+        .BOOTROM_ADDR_W(BOOTROM_ADDR_W),
+        .SRAM_ADDR_W(SRAM_ADDR_W)
+		)
 	boot_ctr0 
        (
         .clk_i(clk_i),
