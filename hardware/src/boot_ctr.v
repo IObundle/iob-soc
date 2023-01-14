@@ -36,7 +36,7 @@ module boot_ctr
 
    //cpu interface: rdata and ready
    assign cpu_rdata = {{(DATA_W-1){1'b0}},boot};
-   iob_reg_e #(1,0) rvalid_reg (clk_i, arst_i, cke_i, en_i, cpu_avalid, cpu_rvalid);
+   iob_reg #(1,0) rvalid_reg (clk_i, arst_i, cke_i, cpu_avalid & ~(|cpu_wstrb), cpu_rvalid);
    assign cpu_ready = 1'b1;
        
    //boot register: (1) load bootloader to sram and run it: (0) run program
@@ -51,8 +51,7 @@ module boot_ctr
    assign cpu_rst_req = cpu_avalid & (|cpu_wstrb) & cpu_wdata[1];
    wire                       cpu_rst_pulse;
    
-   iob_pulse_gen
-     #(
+   iob_pulse_gen #(
        .START(0),
        .DURATION(100)
        ) 
@@ -115,8 +114,7 @@ module boot_ctr
    //
    //INSTANTIATE ROM
    //
-   iob_rom_sp
-     #(
+   iob_rom_sp #(
        .DATA_W(DATA_W),
        .ADDR_W(BOOTROM_ADDR_W-2),
        .HEXFILE(HEXFILE)

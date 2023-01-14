@@ -38,7 +38,7 @@ module ext_mem #(
    reg  i_ready;
    iob_reg_e #(1,0) i_wr_e_reg (clk_i, arst_i, cke_i, i_req[1+FIRM_ADDR_W-2+`WRITE_W-1], {| i_req[`wstrb(0)]}, i_wr_e);
    //iob_reg_e #(1,1) i_ready_reg (clk_i, arst_i, cke_i, i_ack | i_req[1+FIRM_ADDR_W-2+`WRITE_W-1], i_ack, i_ready);
-   assign i_resp[`rvalid(0)] = i_ack;
+   assign i_resp[`rvalid(0)] = i_wr_e? 1'b0 : i_ack;
    assign i_resp[`ready(0)] = i_ack;
 
   // Back-end bus
@@ -114,7 +114,7 @@ module ext_mem #(
    reg  d_ready;
    iob_reg_e #(1,0) d_wr_e_reg (clk_i, arst_i, cke_i, d_req[1+FIRM_ADDR_W-2+`WRITE_W-1], {| d_req[`wstrb(0)]}, d_wr_e);
    //iob_reg_e #(1,0) d_ready_reg (clk_i, arst_i, cke_i, d_ack | d_req[1+FIRM_ADDR_W-2+`WRITE_W-1], ~d_req[1+FIRM_ADDR_W-2+`WRITE_W-1], d_ready);
-   assign d_resp[`rvalid(0)] = d_ack;
+   assign d_resp[`rvalid(0)] =  i_wr_e? 1'b0 : d_ack;
    assign d_resp[`ready(0)] = d_ack;
 
    // Back-end bus

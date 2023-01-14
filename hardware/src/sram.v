@@ -85,8 +85,8 @@ module sram #(
 `endif
   // reply with ready 
 
-  iob_reg #(1,0) i_rvalid_reg (clk_i, arst_i, cke_i, i_avalid, i_rvalid);
-  iob_reg #(1,0) d_rvalid_reg (clk_i, arst_i, cke_i, d_avalid, d_rvalid);
+  iob_reg #(1,0) i_rvalid_reg (clk_i, arst_i, cke_i, i_avalid & ~(| i_wstrb), i_rvalid);
+  iob_reg #(1,0) d_rvalid_reg (clk_i, arst_i, cke_i, d_avalid & ~(| d_wstrb), d_rvalid);
   assign i_ready = 1'b1; // SRAM ready is supposed to always be 1 since requests can be continuous
   assign d_ready = 1'b1;
 
