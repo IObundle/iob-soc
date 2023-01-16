@@ -14,9 +14,6 @@ module int_mem
     parameter B_BIT = `IOB_SOC_B
     )
    (
-    input                clk_i,
-    input                rst_i,
-    input                cke_i,
     input                en_i,
 
     output               boot,
@@ -28,7 +25,8 @@ module int_mem
 
     //data bus
     input [`REQ_W-1:0]   d_req,
-    output [`RESP_W-1:0] d_resp
+    output [`RESP_W-1:0] d_resp,
+    `include "iob_clkenrst_port.vh"
     );
 
    //sram data bus  interface
@@ -49,15 +47,14 @@ module int_mem
    //
    // SPLIT DATA BUS BETWEEN SRAM AND BOOT CONTROLLER
    //
-   iob_split 
-     #(
+   iob_split #(
        .N_SLAVES(2),
        .P_SLAVES(B_BIT)
        )
    data_bootctr_split
        (
         .clk_i    ( clk_i                         ),
-        .rst_i    ( rst_i                         ),
+        .arst_i    ( arst_i                         ),
         // master interface
         .m_req_i  ( d_req                       ),
         .m_resp_o ( d_resp                      ),
@@ -76,17 +73,17 @@ module int_mem
    wire [`REQ_W-1:0]     ram_w_req;
    wire [`RESP_W-1:0]    ram_w_resp;
 
-   boot_ctr 
-        #(.HEXFILE({BOOT_HEXFILE,".hex"}),
-          .DATA_W(DATA_W),
-          .ADDR_W(ADDR_W),
-          .BOOTROM_ADDR_W(BOOTROM_ADDR_W),
-          .SRAM_ADDR_W(SRAM_ADDR_W)
-		  )
+   boot_ctr #(
+        .HEXFILE({BOOT_HEXFILE,".hex"}),
+        .DATA_W(DATA_W),
+        .ADDR_W(ADDR_W),
+        .BOOTROM_ADDR_W(BOOTROM_ADDR_W),
+        .SRAM_ADDR_W(SRAM_ADDR_W)
+		)
 	boot_ctr0 
        (
         .clk_i(clk_i),
-        .rst_i(rst_i),
+        .arst_i(arst_i),
         .cke_i(cke_i),
         .en_i(en_i),
         .cpu_rst(cpu_reset),
@@ -146,14 +143,12 @@ module int_mem
    wire [`REQ_W-1:0]     ram_i_req;
    wire [`RESP_W-1:0]    ram_i_resp;
    
-   iob_merge 
-     #(
+   iob_merge #(
            .N_MASTERS(2)
            )
-   ibus_merge
-     (
+   ibus_merge (
       .clk_i    ( clk_i                      ),
-      .rst_i    ( rst_i                      ),
+      .arst_i    ( arst_i                      ),
 
       //master
       .m_req_i  ( {ram_w_req, ram_r_req}   ),
@@ -167,17 +162,17 @@ module int_mem
    //
    // INSTANTIATE RAM
    //
-   sram
-        #(
+   sram #(
 `ifdef INIT_MEM
         .HEXFILE(HEXFILE),
 `endif
         .DATA_W(DATA_W),
-        .SRAM_ADDR_W(SRAM_ADDR_W))
-   int_sram 
-     (
+        .SRAM_ADDR_W(SRAM_ADDR_W)
+        ) 
+    int_sram (
       .clk_i    (clk_i),
-      .rst_i    (rst_i),
+      .cke_i    (cke_i),
+      .arst_i    (arst_i),
       
       //instruction bus
       .i_avalid (ram_i_req[`avalid(0)]),

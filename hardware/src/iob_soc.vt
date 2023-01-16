@@ -15,7 +15,7 @@ module system
    
 	// Assign general io signals to local wires
    wire clk_i = general_clk_i;
-   wire rst_i = general_rst_i;
+   wire arst_i = general_rst_i;
 	wire trap_o;
    assign general_trap_o = trap_o;
 
@@ -90,10 +90,10 @@ module system
        .P_SLAVES(`E_BIT)
        )
    ibus_split (
-      .clk_i (clk_i),
-      .rst_i (cpu_reset),
+      .clk_i  (clk_i),
+      .arst_i (cpu_reset),
       // master interface
-      .m_req_i (cpu_i_req),
+      .m_req_i  (cpu_i_req),
       .m_resp_o (cpu_i_resp),
       
       // slaves interface
@@ -123,7 +123,7 @@ module system
        )
    dbus_split (
       .clk_i    ( clk_i   ),
-      .rst_i    ( cpu_reset ),
+      .arst_i   ( cpu_reset ),
 
       // master interface
       .m_req_i  ( cpu_d_req  ),
@@ -151,8 +151,8 @@ module system
        .P_SLAVES(`P_BIT)
        )
    int_dbus_split (
-      .clk_i (clk_i),
-      .rst_i (cpu_reset),
+      .clk_i  (clk_i),
+      .arst_i (cpu_reset),
 
 `ifdef RUN_EXTMEM
       // master interface
@@ -183,14 +183,14 @@ module system
        .P_SLAVES(`P_BIT-1)
        )
    pbus_split (
-      .clk_i (clk_i),
-      .rst_i (cpu_reset),
+      .clk_i  (clk_i),
+      .arst_i (cpu_reset),
       // master interface
-      .m_req_i (pbus_req),
+      .m_req_i  (pbus_req),
       .m_resp_o (pbus_resp),
       
       // slaves interface
-      .s_req_o (slaves_req),
+      .s_req_o  (slaves_req),
       .s_resp_i (slaves_resp)
       );
 
@@ -208,7 +208,7 @@ module system
       ) 
    int_mem0 (
       .clk_i(clk_i),
-      .rst_i(rst_i),
+      .arst_i(arst_i),
       .cke_i(cke_i),
       .en_i (en_i),
       .boot (boot),
