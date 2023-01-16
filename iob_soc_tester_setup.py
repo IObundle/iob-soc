@@ -102,7 +102,7 @@ ios = \
         {'name':'m_axi_awvalid', 'type':'O', 'n_bits':'2*1', 'descr':'Address write channel valid'},
         {'name':'m_axi_awready', 'type':'I', 'n_bits':'2*1', 'descr':'Address write channel ready'},
         {'name':'m_axi_wdata', 'type':'O', 'n_bits':'2*AXI_DATA_W', 'descr':'Write channel data'},
-        {'name':'m_axi_wstrb', 'type':'O', 'n_bits':'2*(AXI_DATA_W/8', 'descr':'Write channel write strobe'},
+        {'name':'m_axi_wstrb', 'type':'O', 'n_bits':'2*(AXI_DATA_W/8)', 'descr':'Write channel write strobe'},
         {'name':'m_axi_wlast', 'type':'O', 'n_bits':'2*1', 'descr':'Write channel last word flag'},
         {'name':'m_axi_wvalid', 'type':'O', 'n_bits':'2*1', 'descr':'Write channel valid'},
         {'name':'m_axi_wready', 'type':'I', 'n_bits':'2*1', 'descr':'Write channel ready'},
