@@ -153,7 +153,7 @@ module_parameters = {
 # Main function to setup this system and its components
 def main():
     # Setup this system
-    setup_tester(sys.modules[__name__], module_parameters)
+    setup_tester(sys.modules[__name__])
 
 if __name__ == "__main__":
     main()
