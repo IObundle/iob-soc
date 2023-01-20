@@ -15,7 +15,7 @@ module int_mem
     )
    (
     input                clk_i,
-    input                rst_i,
+    input                arst_i,
     input                cke_i,
     input                en_i,
 
@@ -57,7 +57,7 @@ module int_mem
    data_bootctr_split
        (
         .clk_i    ( clk_i                         ),
-        .rst_i    ( rst_i                         ),
+        .arst_i    ( arst_i                         ),
         // master interface
         .m_req_i  ( d_req                       ),
         .m_resp_o ( d_resp                      ),
@@ -86,7 +86,7 @@ module int_mem
 	boot_ctr0 
        (
         .clk_i(clk_i),
-        .rst_i(rst_i),
+        .rst_i(arst_i),
         .cke_i(cke_i),
         .en_i(en_i),
         .cpu_rst(cpu_reset),
@@ -153,7 +153,7 @@ module int_mem
    ibus_merge
      (
       .clk_i    ( clk_i                      ),
-      .rst_i    ( rst_i                      ),
+      .arst_i    ( arst_i                      ),
 
       //master
       .m_req_i  ( {ram_w_req, ram_r_req}   ),
@@ -177,7 +177,7 @@ module int_mem
    int_sram 
      (
       .clk_i    (clk_i),
-      .rst_i    (rst_i),
+      .rst_i    (arst_i),
       
       //instruction bus
       .i_avalid (ram_i_req[`avalid(0)]),
