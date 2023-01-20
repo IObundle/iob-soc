@@ -3,8 +3,7 @@
 `include "iob_soc.vh"
 `include "iob_lib.vh"
 
-module ext_mem
-  #(
+module ext_mem #(
     parameter ADDR_W=`IOB_SOC_ADDR_W,
     parameter DATA_W=`IOB_SOC_DATA_W,
     parameter FIRM_ADDR_W=`IOB_SOC_SRAM_ADDR_W,
@@ -26,35 +25,39 @@ module ext_mem
 
     // AXI interface 
     `include "iob_axi_m_port.vh"
-    `include "iob_clkrst_port.vh"
+    `include "iob_clkenrst_port.vh"
   );
 
-    //assign d_resp[`rvalid(0)] = d_resp[`ready(0)];
-    //assign i_resp[`rvalid(0)] = i_resp[`ready(0)];
+  //
+  // INSTRUCTION CACHE
+  //
 
-   //
-   // INSTRUCTION CACHE
-   //
+   // IOb ready and rvalid signals
+   wire i_ack;
+   reg  i_wr_e; // Instruction write enable register
+   reg  i_ready;
+   iob_reg_e #(1,0) i_wr_e_reg (clk_i, arst_i, cke_i, i_req[1+FIRM_ADDR_W-2+`WRITE_W-1], {| i_req[`wstrb(0)]}, i_wr_e);
+   //iob_reg_e #(1,1) i_ready_reg (clk_i, arst_i, cke_i, i_ack | i_req[1+FIRM_ADDR_W-2+`WRITE_W-1], i_ack, i_ready);
+   assign i_resp[`rvalid(0)] = i_wr_e? 1'b0 : i_ack;
+   assign i_resp[`ready(0)] = i_ack;
 
-   // Back-end bus
-   wire [1+DCACHE_ADDR_W+`WRITE_W-1:0] icache_be_req;
-   wire [`RESP_W-1:0] 			       icache_be_resp;
+  // Back-end bus
+  wire [1+DCACHE_ADDR_W+`WRITE_W-1:0] icache_be_req;
+  wire [`RESP_W-1:0] 			       icache_be_resp;
 
 
-   // Instruction cache instance
-   iob_cache # 
-     (
+  // Instruction cache instance
+  iob_cache_iob #(
       .FE_ADDR_W(FIRM_ADDR_W),
       .BE_ADDR_W(DCACHE_ADDR_W),
-      .NWAYS_W(2),        //Number of ways
-      .NLINES_W(7),    //Cache Line Offset (number of lines)
-      .WORD_OFFSET_W(3),    //Word Offset (number of words per line)
+      .NWAYS_W(2),       //Number of ways
+      .NLINES_W(7),      //Cache Line Offset (number of lines)
+      .WORD_OFFSET_W(3), //Word Offset (number of words per line)
       .WTBUF_DEPTH_W(5), //FIFO's depth -- 5 minimum for BRAM implementation
-      .USE_CTRL (0),   //Cache-Control can't be accessed
-      .USE_CTRL_CNT(0)       //Remove counters
+      .USE_CTRL (0),     //Cache-Control can't be accessed
+      .USE_CTRL_CNT(0)   //Remove counters
       )
-   icache 
-     (
+  icache (
       .clk_i   (clk_i),
       .rst_i (arst_i),
 
@@ -64,7 +67,7 @@ module ext_mem
       .wdata (i_req[`wdata(0)]),
       .wstrb (i_req[`wstrb(0)]),
       .rdata (i_resp[`rdata(0)]),
-      .ack (i_resp[`ready(0)]),
+      .ack   (i_ack),
       //Control IO
       .invalidate_in(1'b0),
       .invalidate_out(),
@@ -84,10 +87,10 @@ module ext_mem
    wire [`RESP_W-1:0] 			       l2cache_resp;
    
    //ext_mem control signals
-   wire                                       l2_wtb_empty;
-   wire                                       invalidate;
-   reg                                        invalidate_reg;
-   wire                                       l2_avalid = l2cache_req[1+DCACHE_ADDR_W+`WRITE_W-1];
+   wire l2_wtb_empty;
+   wire invalidate;
+   reg  invalidate_reg;
+   wire l2_avalid = l2cache_req[1+DCACHE_ADDR_W+`WRITE_W-1];
    //Necessary logic to avoid invalidating L2 while it's being accessed by a request
    always @(posedge clk_i, posedge arst_i)
      if (arst_i)
@@ -105,13 +108,21 @@ module ext_mem
    // DATA CACHE
    //
 
+    // IOb ready and rvalid signals
+   wire d_ack;
+   reg  d_wr_e; // Instruction write enable register
+   reg  d_ready;
+   iob_reg_e #(1,0) d_wr_e_reg (clk_i, arst_i, cke_i, d_req[1+FIRM_ADDR_W-2+`WRITE_W-1], {| d_req[`wstrb(0)]}, d_wr_e);
+   //iob_reg_e #(1,0) d_ready_reg (clk_i, arst_i, cke_i, d_ack | d_req[1+FIRM_ADDR_W-2+`WRITE_W-1], ~d_req[1+FIRM_ADDR_W-2+`WRITE_W-1], d_ready);
+   assign d_resp[`rvalid(0)] =  i_wr_e? 1'b0 : d_ack;
+   assign d_resp[`ready(0)] = d_ack;
+
    // Back-end bus
    wire [1+DCACHE_ADDR_W+`WRITE_W-1:0]       dcache_be_req;
    wire [`RESP_W-1:0] 			      dcache_be_resp;
    
    // Data cache instance
-   iob_cache # 
-     (
+   iob_cache_iob #(
       .FE_ADDR_W(DCACHE_ADDR_W),
       .NWAYS_W(2),        //Number of ways
       .NLINES_W(7),    //Cache Line Offset (number of lines)
@@ -120,9 +131,8 @@ module ext_mem
       .USE_CTRL (1),   //Either 1 to enable cache-control or 0 to disable
       .USE_CTRL_CNT(1)       //do not change (it's implementation depends on the previous)
       )
-   dcache 
-     (
-      .clk_i   (clk_i),
+   dcache (
+      .clk_i (clk_i),
       .rst_i (arst_i),
 
       // Front-end interface
@@ -131,7 +141,7 @@ module ext_mem
       .wdata (d_req[`wdata(0)]),
       .wstrb (d_req[`wstrb(0)]),
       .rdata (d_resp[`rdata(0)]),
-      .ack (d_resp[`ready(0)]),
+      .ack   (d_ack),
       //Control IO
       .invalidate_in(1'b0),
       .invalidate_out(invalidate),
@@ -147,15 +157,13 @@ module ext_mem
       );
 
    // Merge cache back-ends
-   iob_merge
-     #(
-       .ADDR_W(DCACHE_ADDR_W),
-       .N_MASTERS(2)
-       )
-   merge_i_d_buses_into_l2
-     (
+   iob_merge #(
+      .ADDR_W(DCACHE_ADDR_W),
+      .N_MASTERS(2)
+      )
+   merge_i_d_buses_into_l2 (
       .clk_i(clk_i),
-      .rst_i(arst_i),
+      .arst_i(arst_i),
       // masters
       .m_req_i  ({icache_be_req, dcache_be_req}),
       .m_resp_o ({icache_be_resp, dcache_be_resp}),         
@@ -166,8 +174,7 @@ module ext_mem
 
    
    // L2 cache instance
-   iob_cache_axi # 
-     (
+   iob_cache_axi #(
       .AXI_ID_W(AXI_ID_W),
       .AXI_LEN_W(AXI_LEN_W),
       .FE_ADDR_W(DCACHE_ADDR_W),
@@ -195,7 +202,7 @@ module ext_mem
       .wtb_empty_in(1'b1),
       .wtb_empty_out(l2_wtb_empty),
       // AXI interface
-`include "iob_axi_m_m_portmap.vh"
+      `include "iob_axi_m_m_portmap.vh"
       .clk_i(clk_i),
       .rst_i(arst_i)
       );
