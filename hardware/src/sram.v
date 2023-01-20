@@ -8,9 +8,6 @@ module sram #(
               parameter HEXFILE = "none"
 	      )
    (
-    input                    clk_i,
-    input                    rst_i,
-
     // intruction bus
     input                   i_avalid,
     input [SRAM_ADDR_W-3:0] i_addr,
@@ -27,7 +24,9 @@ module sram #(
     input [DATA_W/8-1:0]    d_wstrb,
     output [DATA_W-1:0]     d_rdata,
     output reg              d_rvalid,
-    output reg              d_ready
+    output reg              d_ready,
+
+    `include "iob_clkenrst_port.vh"
     );
 
 `ifdef USE_SPRAM
@@ -85,14 +84,10 @@ module sram #(
       );
 `endif
   // reply with ready 
-  always @(posedge clk_i, posedge rst_i)
-    if(rst_i) begin
-      d_rvalid <= 1'b0;
-      i_rvalid <= 1'b0;
-      d_ready  <= 1'b1;
-      i_ready  <= 1'b1;
-    end else begin 
-      d_rvalid <= d_avalid;
-      i_rvalid <= i_avalid;
-    end
+
+  iob_reg #(1,0) i_rvalid_reg (clk_i, arst_i, cke_i, i_avalid & ~(| i_wstrb), i_rvalid);
+  iob_reg #(1,0) d_rvalid_reg (clk_i, arst_i, cke_i, d_avalid & ~(| d_wstrb), d_rvalid);
+  assign i_ready = 1'b1; // SRAM ready is supposed to always be 1 since requests can be continuous
+  assign d_ready = 1'b1;
+
 endmodule
