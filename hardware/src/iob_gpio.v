@@ -3,57 +3,29 @@
 `include "iob_lib.vh"
 `include "iob_gpio_swreg_def.vh"
 
-module iob_gpio 
-  # (
-     parameter GPIO_W = 32, //PARAM Number of GPIO (can be up to DATA_W)
-     parameter DATA_W = 32, //PARAM CPU data width
-     parameter ADDR_W = `iob_gpio_swreg_ADDR_W //MACRO CPU address section width
-     )
-   (
-
-   //CPU interface
-`include "iob_s_if.vh"
-
-    // inputs and outputs have dedicated interface
-    input [GPIO_W-1:0] gpio_input,
-    output [GPIO_W-1:0] gpio_output,
-    // output enable can be used to tristate outputs on external module
-    output [GPIO_W-1:0] gpio_output_enable,
-
-`include "iob_gen_if.vh"
+module iob_gpio # (
+     `include "iob_gpio_params.vh"
+   ) (
+     `include "iob_gpio_io.vh"
     );
+   
+    // This mapping is required because "iob_gpio_swreg_inst.vh" uses "iob_s_portmap.vh" (This would not be needed if mkregs used "iob_s_s_portmap.vh" instead)
+    wire [1-1:0] iob_avalid = iob_avalid_i; //Request valid.
+    wire [ADDR_W-1:0] iob_addr = iob_addr_i; //Address.
+    wire [DATA_W-1:0] iob_wdata = iob_wdata_i; //Write data.
+    wire [(DATA_W/8)-1:0] iob_wstrb = iob_wstrb_i; //Write strobe.
+    wire [1-1:0] iob_rvalid; assign iob_rvalid_o = iob_rvalid; //Read data valid.
+    wire [DATA_W-1:0] iob_rdata; assign iob_rdata_o = iob_rdata; //Read data.
+    wire [1-1:0] iob_ready; assign iob_ready_o = iob_ready; //Interface ready.
 
-//BLOCK Register File & Configuration control and status register file.
-`include "iob_gpio_swreg_gen.vh"
+    //BLOCK Register File & Configuration control and status register file.
+    `include "iob_gpio_swreg_inst.vh"
 
-    // SWRegs
-    `IOB_WIRE(GPIO_OUTPUT_ENABLE, DATA_W)
-    iob_reg #(.DATA_W(DATA_W))
-    gpio_output_enable_reg (
-        .clk        (clk),
-        .arst       (rst),
-        .rst        (rst),
-        .en         (GPIO_OUTPUT_ENABLE_en),
-        .data_in    (GPIO_OUTPUT_ENABLE_wdata),
-        .data_out   (GPIO_OUTPUT_ENABLE)
-    );
+    // Write GPIO
+    assign output_ports = GPIO_OUTPUT;
+    assign output_enable = GPIO_OUTPUT_ENABLE;
 
-    `IOB_WIRE(GPIO_OUTPUT, DATA_W)
-    iob_reg #(.DATA_W(DATA_W))
-    gpio_output_reg      (
-        .clk        (clk),
-        .arst       (rst),
-        .rst        (rst),
-        .en         (GPIO_OUTPUT_en),
-        .data_in    (GPIO_OUTPUT_wdata),
-        .data_out   (GPIO_OUTPUT)
-    );
-
-   // Read GPIO
-   assign GPIO_INPUT_rdata = gpio_input;
-
-   // Write GPIO
-   assign gpio_output = GPIO_OUTPUT;
-   assign gpio_output_enable = GPIO_OUTPUT_ENABLE;
+    // Read GPIO
+    assign GPIO_INPUT = input_ports;
 
 endmodule
