@@ -2,10 +2,11 @@
 # This file is included in BUILD_DIR/sw/pc/Makefile.
 
 # Include directory with system.h
-INCLUDE+=-I.. -I../psrc
+INCLUDE+=-I.. -I../psrc -I../src
 
 # SOURCES
 # exclude bootloader sources
+SRC+=$(wildcard ../src/*.c)
 SRC:=$(filter-out %boot.c,$(SRC))
 
 TEST_LIST+=test1

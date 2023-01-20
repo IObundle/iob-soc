@@ -2,7 +2,7 @@
 
 import os, sys
 sys.path.insert(0, os.getcwd()+'/submodules/LIB/scripts')
-from setup import setup
+import setup
 
 meta = \
 {
@@ -13,16 +13,16 @@ meta = \
 meta['build_dir']=f"../{meta['name']+'_'+meta['version']}"
 meta['submodules'] = {
     'hw_setup': {
-        'v_headers' : [ 'iob_wire', 'axi_wire', 'axi_m_m_portmap', 'axi_m_port', 'axi_m_m_portmap', ],
-        'hw_modules': [ 'PICORV32', 'CACHE', 'UART', 'iob_merge.v', 'iob_split.v', 'iob_rom_sp.v', 'iob_ram_dp_be.v', 'iob_pulse_gen.v', 'iob_counter.v', 'iob_ram_2p_asym.v', 'iob_reg.v', 'iob_reg_re.v' ]
+        'headers' : [ 'iob_wire', 'axi_wire', 'axi_m_m_portmap', 'axi_m_port', 'axi_m_m_portmap', ],
+        'modules': [ 'PICORV32', 'CACHE', 'UART', 'iob_merge.v', 'iob_split.v', 'iob_rom_sp.v', 'iob_ram_dp_be.v', 'iob_pulse_gen.v', 'iob_counter.v', 'iob_ram_2p_asym.v', 'iob_reg.v', 'iob_reg_re.v']
     },
     'sim_setup': {
-        'v_headers' : [ 'axi_wire', 'axi_s_portmap', 'axi_m_portmap' ],
-        'hw_modules': [ 'axi_ram.v' ]
+        'headers' : [ 'axi_wire', 'axi_s_portmap', 'axi_m_portmap' ],
+        'modules': [ 'axi_ram.v', 'iob_tasks.vh'  ]
     },
     'sw_setup': {
-        'sw_headers': [  ],
-        'sw_modules': [ 'CACHE', 'UART', ]
+        'headers': [  ],
+        'modules': [ 'CACHE', 'UART', ]
     },
 }
 
@@ -95,7 +95,7 @@ ios = \
 # Main function to setup this system and its components
 def main():
     # Setup this system
-    setup(meta, confs, ios, regs, blocks, ios_prefix=True )
+    setup.setup(sys.modules[__name__], ios_prefix=True )
 
 if __name__ == "__main__":
     main()

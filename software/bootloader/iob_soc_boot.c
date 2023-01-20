@@ -42,7 +42,7 @@ int main() {
 
   //receive firmware from host 
   int file_size = 0;
-  char r_fw[] = "firmware.bin";
+  char r_fw[] = "iob_soc_firmware.bin";
   if (uart_getc() == FRX) {//file receive: load firmware
     file_size = uart_recvfile(r_fw, prog_start_addr);
     uart_puts (PROGNAME);
