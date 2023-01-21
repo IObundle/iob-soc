@@ -12,7 +12,7 @@ controller IP (typically a DDR controller) using an AXI4 master bus.
 IOb-SoC can be run on a VirtualBox VM. This way, the system can be quickly tried
 without investing much time installing the tools:
 
-1. Donwload and install [Oracle's VirtualBox](https://www.virtualbox.org/wiki/Downloads)
+1. Download and install [Oracle's VirtualBox](https://www.virtualbox.org/wiki/Downloads)
 2. Download [IOb-SoC VM](https://drive.google.com/file/d/1X4OXI4JiBLwK7BJPAEG1voxVaFYS9V-f/view?usp=share_link)
 
 
@@ -139,13 +139,23 @@ If there are embedded software compilation or runtime issues you can
 software on a PC, type:
 
 ```
-make pc-emul [<control parameters>]
+make pc-emul-build [<control parameters>]
 ```
 where `<control parameters>` are system configuration parameters passed in the
 command line, overriding those in the `config.mk` file. Example control
 parameters are `INIT_MEM=0 RUN_EXTMEM=1`. For example,
 ```
-make pc-emul INIT_MEM=0 RUN_EXTMEM=1
+make pc-emul-build INIT_MEM=0 RUN_EXTMEM=1
+```
+
+To run:
+```
+make pc-emul-run
+```
+
+To test:
+```
+make pc-emul-test
 ```
 
 To clean the PC compilation generated files, type:
@@ -325,6 +335,7 @@ make clean
 
 ```
 git clone https://github.com/riscv/riscv-gnu-toolchain
+cd riscv-gnu-toolchain
 git checkout 2022.06.10
 ```
 
@@ -341,10 +352,14 @@ For CentOS and its variants:
 sudo yum install autoconf automake python3 python2 libmpc-devel mpfr-devel gmp-devel gawk  bison flex texinfo patchutils gcc gcc-c++ zlib-devel expat-devel
 ```
 
+For Arch Linux and its variants:
+```
+sudo pacman -S autoconf automake curl python python2 mpc mpfr gmp gawk base-devel bison flex texinfo gperf libtool patchutils bc zlib expat
+```
+
 ### Installation
 
 ```
-cd riscv-gnu-toolchain
 ./configure --prefix=/path/to/riscv --enable-multilib
 sudo make -j$(nproc)
 ```
