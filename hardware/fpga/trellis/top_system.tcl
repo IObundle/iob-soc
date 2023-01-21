@@ -31,9 +31,11 @@ exec yosys -D $DEFINE -T $yosys_script -t -q -ql "${project_name}_synthesis.log"
 
 #------ Place & Route ------#
 puts "-> Synthesis done! Place & Route now\n"
-exec nextpnr-ecp5 --ignore-loops --25k --package CABGA256 --speed 6 --freq 25 \
-                  --json $project_name.json --textcfg ${project_name}.config -ql "${project_name}_pnr.log"
-#TODO: --lpf $pin_mapping_file (depends on revision)
+exec -ignorestderr nextpnr-ecp5 --ignore-loops --25k --package CABGA256 --speed 6 --freq 25 \
+                  --json $project_name.json --textcfg $project_name.config  \
+                    --lpf $project_name.lpf --lpf-allow-unconstrained -ql "${project_name}_pnr.log"
+# FIXME: $pin_mapping_file should be auto generated for each board revision (6.0/8.0, 7.1, etc..)
+# FIXME: does '--ignore-loops' break the system? 
 
 #------ Bitstream Generation ------#
 puts "-> Place & Route done! Generating bitstream... \n"
