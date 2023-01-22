@@ -61,7 +61,7 @@ BOARD ?=CYCLONEV-GT-DK
 #some colorlight boards have different revisions
 # if you are using a colorlight board, this setting should be set 
 # either here or when invoking make build command
-BOARD ?=
+REVISION ?=
 
 #DOCUMENTATION
 #default document to compile
