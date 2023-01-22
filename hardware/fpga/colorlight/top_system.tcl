@@ -19,11 +19,17 @@ set BOARD [lindex $argv 3]
 set REVISION [lindex $argv 4]
 
 #------ Auto generate pin constraints ------#
-if { $REVISION in $POSSIBLE_REVISIONS } {
-    create_lpf_file $REVISION $PIN_MAP_DICT
+set BOARDS_WITH_REVISIONS { "5A-75E" "5A-75B" }
+if { $BOARD in $BOARDS_WITH_REVISIONS } {
+    if { $REVISION in $POSSIBLE_REVISIONS } {
+        create_lpf_file_dict $BOARD $REVISION $PIN_MAP_DICT
+    } else {
+        error "Error: REVISION for $BOARD must be one of these options: $POSSIBLE_REVISIONS \n"
+    }
 } else {
-    error "Error: REVISION for $BOARD must be one of these options: $POSSIBLE_REVISIONS \n"
+    create_lpf_file $BOARD $PIN_MAP
 }
+
 
 #------ Set include path ------#
 set INCLUDE_PATH [set_include_path $INCLUDE]
@@ -45,7 +51,6 @@ exec -ignorestderr nextpnr-ecp5 \
     --ignore-loops --25k --package CABGA256 --speed 6 --freq 25 \
     --json $project_name.json --textcfg $project_name.config \
     --lpf $project_name.lpf --lpf-allow-unconstrained -ql "${project_name}_pnr.log"
-# TODO: $pin_mapping_file should be auto generated for each board revision (6.0/8.0, 7.1, etc..)
 # FIXME: does '--ignore-loops' break the system?
 
 #------ Bitstream Generation ------#
