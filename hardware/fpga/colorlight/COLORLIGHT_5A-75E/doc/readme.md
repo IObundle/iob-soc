@@ -2,9 +2,12 @@
 
 ## Revisions
 This board has 3 different revisions:
-- `6.0` ([hardware information](hardware_v6-0_v8-0.md))
-- `7.1` ([hardware information](hardware_v7-1.md))
-- `8.0` ([hardware information](hardware_v6-0_v8-0.md))
+- `6.0` ([hardware information](./hardware_V6.0.md))
+    - <img src="images/cl-5a-75e-v60-front.jpg" width="400" />
+- `7.1` ([hardware information](./hardware_V7.1.md))
+    - <img src="images/cl-5a-75e-v71-front.jpg" width="400" />
+- `8.0` ([hardware information](./hardware_V6.0.md))
+    - <img src="images/cl-5a-75e-v80-front.jpg" width="400" />
 
 ## PIN constraints
 

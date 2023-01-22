@@ -4,8 +4,13 @@ Credits: https://github.com/q3k/chubby75/tree/master/5a-75e
 
 Both V6.0 and V8.0 appear to have the same pinout.
 
-* [Front image](images/cl-5a-75e-v60-front.jpg)
-* [Back image](images/cl-5a-75e-v60-back.jpg)
+## 6.0
+<img src="images/cl-5a-75e-v60-front.jpg" width="400" />
+<img src="images/cl-5a-75e-v60-back.jpg" width="400" />
+
+## 8.0
+<img src="images/cl-5a-75e-v80-front.jpg" width="400" />
+
 
 ## Components
 
