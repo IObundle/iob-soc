@@ -5,7 +5,7 @@
 //do not remove line below
 //PHEADER
 
-module system
+module iob_soc
   #(
 `include "iob_soc_params.vh"
     )

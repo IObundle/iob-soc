@@ -11,10 +11,11 @@ meta = \
 'flows':'pc-emul emb sim doc fpga',
 'setup_dir':os.path.dirname(__file__)}
 meta['build_dir']=f"../{meta['name']+'_'+meta['version']}"
+meta['board'] = 'CYCLONEV-GT-DK'
 meta['submodules'] = {
     'hw_setup': {
         'v_headers' : [ 'iob_wire', 'axi_wire', 'axi_m_m_portmap', 'axi_m_port', 'axi_m_m_portmap', ],
-        'hw_modules': [ 'PICORV32', 'CACHE', 'UART', 'iob_merge.v', 'iob_split.v', 'iob_rom_sp.v', 'iob_ram_dp_be.v', 'iob_pulse_gen.v', 'iob_counter.v', 'iob_ram_2p_asym.v', 'iob_reg.v', 'iob_reg_re.v' ]
+        'hw_modules': [ 'PICORV32', 'CACHE', 'UART', 'iob_merge.v', 'iob_split.v', 'iob_rom_sp.v', 'iob_ram_dp_be.v', 'iob_pulse_gen.v', 'iob_counter.v', 'iob_ram_2p_asym.v', 'iob_reg.v', 'iob_reg_re.v', 'iob_ram_sp_be.v', 'iob_ram_dp.v' ]
     },
     'sim_setup': {
         'v_headers' : [ 'axi_wire', 'axi_s_portmap', 'axi_m_portmap' ],
@@ -62,10 +63,9 @@ confs = \
     {'name':'DDR_ADDR_W',    'type':'M', 'val':'24', 'min':'1', 'max':'32', 'descr':"DDR address bus width in simulation"},
     #TODO: Need to find a way to use value below when running on fpga
     {'name':'DDR_ADDR_W_HW', 'type':'M', 'val':'30', 'min':'1', 'max':'32', 'descr':"DDR address bus width"},
-    #TODO: Need to find a way to use value below when running on fpga
-    {'name':'BAUD_HW',       'type':'M', 'val':'115200', 'min':'1', 'max':'NA', 'descr':"UART baud rate"},
-    {'name':'BAUD',          'type':'M', 'val':'5000000', 'min':'1', 'max':'NA', 'descr':"UART baud rate for simulation"},
-    {'name':'FREQ',          'type':'M', 'val':'100000000', 'min':'1', 'max':'NA', 'descr':"System clock frequency"},
+    {'name':'BAUD',          'type':'M', 'val':'115200', 'min':'1', 'max':'NA', 'descr':"UART baud rate"},
+    {'name':'FREQ',          'type':'M', 'val':'50000000', 'min':'1', 'max':'NA', 'descr':"System clock frequency"},
+    {'name':'IOB_MEM_NO_READ_ON_WRITE', 'type':'M', 'val':'1', 'min':'1', 'max':'NA', 'descr':"System clock frequency"},
 
     # SoC parameters
     {'name':'ADDR_W',        'type':'P', 'val':'32', 'min':'1', 'max':'32', 'descr':"Address bus width"},
