@@ -57,6 +57,12 @@ SIMULATOR ?=icarus
 #check the respective Makefile in hardware/fpga/$(BOARD) for specific settings
 BOARD ?=CYCLONEV-GT-DK
 
+#REVISION
+#some colorlight boards have different revisions
+# if you are using a colorlight board, this setting should be set 
+# either here or when invoking make build command
+BOARD ?=
+
 #DOCUMENTATION
 #default document to compile
 DOC ?= pb

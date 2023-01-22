@@ -5,13 +5,12 @@
 
 set POSSIBLE_REVISIONS { "7.0" }
 
-set EXTRA_PNR_ARGUMENTS [dict create
-7.0 { --ignore-loops --25k --package CABGA381 --speed 6 }
+set EXTRA_PNR_ARGUMENTS [dict create \
+    7.0 "--ignore-loops --25k --package CABGA381 --speed 6"
 ]
 # FIXME: does '--ignore-loops' break the system?
 
-set PIN_MAP_DICT [dict create
-7.0 {
+set PIN_MAP_DICT [dict create 7.0 {
     {LOCATE COMP "clk" SITE "P3"}
     {IOBUF PORT "clk" IO_TYPE=LVCMOS33}
     {FREQUENCY PORT "clk" 25 MHZ}

@@ -31,10 +31,10 @@ exec yosys -T $yosys_script -q -q -t -l "${PROJECT_NAME}_synthesis.log"
 
 #------ Place & Route ------#
 puts "-> Synthesis done! Place & Route now\n"
-set $pnr_arguments [dict get $EXTRA_PNR_ARGUMENTS $REVISION] ;# board+revision specific p&r arguments
-exec -ignorestderr nextpnr-ecp5 $pnr_arguments \
+set pnr_arguments [dict get $EXTRA_PNR_ARGUMENTS $REVISION] ;# board+revision specific p&r arguments
+eval exec -ignorestderr nextpnr-ecp5 $pnr_arguments \
     --json $PROJECT_NAME.json --textcfg $PROJECT_NAME.config \
-    --lpf $PROJECT_NAME.lpf --lpf-allow-unconstrained \
+    --lpf ${BOARD}_$REVISION.lpf --lpf-allow-unconstrained \
     -ql "${PROJECT_NAME}_pnr.log"
 
 #------ Bitstream Generation ------#

@@ -1,14 +1,20 @@
 # IoB-SoC on Colorlight boards
 
+The Colorlight board family is a powerful and versatile solution for managing LED displays. These FPGA-based boards, equipped with Lattice ECP5 FPGA, are primarily designed for the purpose of controlling large LED video panels, but they offer much more than just that: it allows you to leverage a fully open-source FPGA development toolchain.
+
+> For the price of a gourmet hamburger, you get an FPGA that’s big enough to run a RISC-V softcore, two 166 MHz, 2 MB SDRAMS, flash for the FPGA bitstream, a bazillion digital outputs on 5 V level shifters, and two gigabit Ethernet ports. The JTAG port is broken out in 0.1″ headers, and it works with OpenOCD, which is ridiculously convenient. How’s that for a well-stocked budget FPGA dev board that’s served by a completely open source toolchain?
+
+*(Source: https://hackaday.com/2020/01/24/new-part-day-led-driver-is-fpga-dev-board-in-disguise/)*
+
 ## Dependencies
-You can program this boards using **a fully open source toolchain**:
+You can program these boards using **a fully open source toolchain**:
 - [yosys](https://github.com/YosysHQ/yosys) – Yosys Open Synthesis Suite.
 - [nextpnr-ecp5](https://github.com/YosysHQ/nextpnr) - A portable FPGA place and route tool (for Lattice ECP5 FPGA).
 - [prjtrellis](https://github.com/YosysHQ/prjtrellis) - Device database and tools for bitstream creation (fully open source flow for ECP5 FPGA).
 - [openFPGALoader](https://github.com/trabucayre/openFPGALoader) - Universal utility for programming FPGA
 
 ## REVISION
-Some colorlight boards have different revisions, for example, `Colorlight 5A-75E` has revision `6.0`, `7.1` and `8.0`.
+Colorlight boards have different revisions, for example, `Colorlight 5A-75E` has revision `6.0`, `7.1` and `8.0`.
 In this case, each board hardware/pin mapping may differ, so you if you are using a board with different revisions, you must set `REVISION` variable to your revision, e.g:
 
 > When building, specify it like this:
@@ -33,7 +39,6 @@ Boards with its revisions:
   - `6.1` ([hardware information](COLORLIGHT_5A-75B/hardware_v6-1.md))
   - `7.0` ([hardware information](COLORLIGHT_5A-75B/hardware_v7-0.md))
   - `8.0` ([hardware information](COLORLIGHT_5A-75B/hardware_v8-0.md))
-
 
 ## Logging
 When building for these boards, all compilation (synthesis/place&route) logs are stored inside:
