@@ -17,18 +17,7 @@ proc create_lpf_file_dict {board_version board_revision pin_map_dict} {
         error "Error: Could not get PIN MAPPING of $board_version $board_revision \n"
     }
 
-    set lpf_file [open "colorlight_$board_version-_-$board_revision.lpf" w]
-    puts $lpf_file [join $pin_map ";\n"]
-    close $lpf_file
-}
-
-# Auto generates a pin constraint file depending on the board revision
-proc create_lpf_file {board_version pin_map} {
-    if { $pin_map == {} } {
-        error "Error: Could not get PIN MAPPING of $board_version \n"
-    }
-
-    set lpf_file [open "colorlight_$board_version.lpf" w]
+    set lpf_file [open "colorlight_${board_version}_$board_revision.lpf" w]
     puts $lpf_file [join $pin_map ";\n"]
     close $lpf_file
 }

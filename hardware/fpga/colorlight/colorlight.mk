@@ -1,8 +1,8 @@
 FPGA_OBJ=top_system.bit
 FPGA_LOG=colorlight.log
 
-FPGA_SERVER=$(QUARTUS_SERVER)
-FPGA_USER=$(QUARTUS_USER)
+FPGA_SERVER=$(TRELLIS_SERVER)
+FPGA_USER=$(TRELLIS_USER)
 
 include ../../fpga.mk
 
