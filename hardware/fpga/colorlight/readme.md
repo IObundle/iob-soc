@@ -24,21 +24,21 @@ make fpga-build BOARD=COLORLIGHT_5A-75E REVISION=6.0
 
 **or**
 
-> Change it on `config.mk`.
+Change it on `config.mk`.
 
-**This is important because, the pin constraints file (`.lpf`) is auto generated depending on the board revision.** You can add/change/remove pin constraints on each board by changing `BOARD_NAME/pin_constraints.tcl` source file.
+⚠️ **This is important because, the pin constraints file (`.lpf`) is auto generated depending on the board revision.** You can add/change/remove pin constraints on each board by changing `BOARD_NAME/pin_constraints.tcl` source file. ⚠️
 
 Boards with its revisions:
 - Colorlight 5A-75E
-  - `6.0` ([hardware information](COLORLIGHT_5A-75E/hardware_v6-0_v8-0.md))
-  - `7.1` ([hardware information](COLORLIGHT_5A-75E/hardware_v7-1.md))
-  - `8.0` ([hardware information](COLORLIGHT_5A-75E/hardware_v6-0_v8-0.md))
+  - `6.0` ([hardware information](./COLORLIGHT_5A-75E/doc/hardware_V6.0.md))
+  - `7.1` ([hardware information](./COLORLIGHT_5A-75E/doc/hardware_V7.1.md))
+  - `8.0` ([hardware information](./COLORLIGHT_5A-75E/doc/hardware_V6.0.md))
 - Colorlight i5
   - `7.0`
 - Colorlight 5A-75B
-  - `6.1` ([hardware information](COLORLIGHT_5A-75B/hardware_v6-1.md))
-  - `7.0` ([hardware information](COLORLIGHT_5A-75B/hardware_v7-0.md))
-  - `8.0` ([hardware information](COLORLIGHT_5A-75B/hardware_v8-0.md))
+  - `6.1` ([hardware information](./COLORLIGHT_5A-75B/doc/hardware_V6.1.md))
+  - `7.0` ([hardware information](./COLORLIGHT_5A-75B/doc/hardware_V7.0.md))
+  - `8.0` ([hardware information](./COLORLIGHT_5A-75B/doc/hardware_V8.0.md))
 
 ## Logging
 When building for these boards, all compilation (synthesis/place&route) logs are stored inside:
