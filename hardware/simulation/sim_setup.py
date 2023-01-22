@@ -14,3 +14,9 @@ if not filecmp.cmp(src_file, dst_file):
 
     f1.close()
     f2.close()
+
+#Override 'NAME' makefile variable with tester name
+#This is useful when we are building the tester with another core that may have set NAME variable.
+with open(dst_file, 'a+') as file:
+    file.write("\n#Override 'NAME' variable with Tester's name\n")
+    file.write(f"NAME:={meta['name']}\n")
