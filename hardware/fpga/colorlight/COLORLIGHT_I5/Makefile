@@ -3,13 +3,12 @@ ROOT_DIR:=../../../..
 BOARD=COLORLIGHT_I5
 
 #TODO
-BOARD_SERVER=$(DE10_SERVER)
-BOARD_USER=$(DE10_USER)
+BOARD_SERVER=$(I5_SERVER)
+BOARD_USER=$(I5_USER)
 
-#depends on revision
-DEVICE=123
+DEVICE=LFE5U-25F-6BG381C
 
-#TODO?: specify any conditions that prevent running this FPGA
+#specify any conditions that prevent running this FPGA
 NORUN = 0
 
 FREQ=25000000 #25MHz
