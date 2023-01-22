@@ -14,6 +14,6 @@ NORUN = 0
 
 FREQ=25000000 #25MHz
 
-include ../trellis.mk
+include ../colorlight.mk
 
 

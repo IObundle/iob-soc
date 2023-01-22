@@ -1,7 +1,5 @@
-#import functions from utils.tcl
-#since top_system.tcl is getting executed inside board folder
-#we have to go back 1 folder 
 source ../utils.tcl
+source pin_constraints.tcl
 
 set project_name top_system
 
@@ -17,10 +15,15 @@ set project_name top_system
 set INCLUDE [lindex $argv 0]
 set DEFINE [lindex $argv 1]
 set VSRC [lindex $argv 2]
-set REVISION [lindex $argv 3]
+set BOARD [lindex $argv 3]
+set REVISION [lindex $argv 4]
 
 #------ Auto generate pin constraints ------#
-create_lpf_file $REVISION
+if { $REVISION in $POSSIBLE_REVISIONS } {
+    create_lpf_file $REVISION $PIN_MAP_DICT
+} else {
+    error "Error: REVISION for $BOARD must be one of these options: $POSSIBLE_REVISIONS \n"
+}
 
 #------ Set include path ------#
 set INCLUDE_PATH [set_include_path $INCLUDE]
