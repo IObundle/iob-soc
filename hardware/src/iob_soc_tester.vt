@@ -1,0 +1,314 @@
+`timescale 1 ns / 1 ps
+`include "iob_soc_tester.vh"
+`include "iob_soc_tester_conf.vh"
+`include "iob_lib.vh"
+
+//do not remove line below
+//PHEADER
+
+module tester
+  #(
+`include "iob_soc_tester_params.vh"
+    )
+  (
+`include "iob_soc_tester_io.vh"
+   );
+   
+	// Assign general io signals to local wires
+   wire clk_i = general_clk_i;
+   wire arst_i = general_rst_i;
+	wire [1:0] trap_o;
+   assign general_trap_o = trap_o;
+
+   //
+   // SYSTEM RESET
+   //
+
+   wire   boot;
+   wire   cpu_reset;
+
+   wire en_i;
+   assign en_i = 1'b1;
+   wire cke_i;
+   assign cke_i = 1'b1;
+   
+   //
+   //  CPU
+   //
+
+   // instruction bus
+   wire [`REQ_W-1:0] cpu_i_req;
+   wire [`RESP_W-1:0] cpu_i_resp;
+
+   // data cat bus
+   wire [`REQ_W-1:0]  cpu_d_req;
+   wire [`RESP_W-1:0] cpu_d_resp;
+   
+   //instantiate the cpu
+   iob_picorv32 #(
+       .ADDR_W(ADDR_W),
+       .DATA_W(DATA_W),
+       .V_BIT(`V_BIT),
+       .E_BIT(`E_BIT),
+       .P_BIT(`P_BIT),
+       .USE_COMPRESSED(`IOB_SOC_TESTER_USE_COMPRESSED),
+       .USE_MUL_DIV(`IOB_SOC_TESTER_USE_MUL_DIV)
+       )
+   cpu (
+        .clk_i (clk_i),
+        .rst_i (cpu_reset),
+        .cke_i (cke_i),
+        .boot (boot),
+        .trap (trap_o[1]),
+        
+        //instruction bus
+        .ibus_req (cpu_i_req),
+        .ibus_resp (cpu_i_resp),
+        
+        //data bus
+        .dbus_req (cpu_d_req),
+        .dbus_resp (cpu_d_resp)
+        );
+
+
+   //   
+   // SPLIT CPU BUSES TO ACCESS INTERNAL OR EXTERNAL MEMORY
+   //
+
+   //internal memory instruction bus
+   wire [`REQ_W-1:0]  int_mem_i_req;
+   wire [`RESP_W-1:0] int_mem_i_resp;
+   //external memory instruction bus
+`ifdef TESTER_RUN_EXTMEM
+   wire [`REQ_W-1:0]  ext_mem_i_req;
+   wire [`RESP_W-1:0] ext_mem_i_resp;
+`endif
+
+   // INSTRUCTION BUS
+   iob_split #(
+`ifdef TESTER_RUN_EXTMEM
+       .N_SLAVES(2),
+`else
+       .N_SLAVES(1),
+`endif
+       .P_SLAVES(`E_BIT)
+       )
+   ibus_split (
+      .clk_i (clk_i),
+      .arst_i (cpu_reset),
+      // master interface
+      .m_req_i (cpu_i_req),
+      .m_resp_o (cpu_i_resp),
+      
+      // slaves interface
+`ifdef TESTER_RUN_EXTMEM
+      .s_req_o ( {ext_mem_i_req, int_mem_i_req} ),
+      .s_resp_i ( {ext_mem_i_resp, int_mem_i_resp} )
+`else
+      .s_req_o (int_mem_i_req),
+      .s_resp_i ( int_mem_i_resp)
+`endif
+      );
+
+
+   // DATA BUS
+
+`ifdef TESTER_RUN_EXTMEM
+   //external memory data bus
+   wire [`REQ_W-1:0]         ext_mem_d_req;
+   wire [`RESP_W-1:0]        ext_mem_d_resp;
+   //internal data bus
+   wire [`REQ_W-1:0]         int_d_req;
+   wire [`RESP_W-1:0]        int_d_resp;
+
+   iob_split #(
+       .N_SLAVES(2), //E,{P,I}
+       .P_SLAVES(`E_BIT)
+       )
+   dbus_split (
+      .clk_i    ( clk_i   ),
+      .arst_i    ( cpu_reset ),
+
+      // master interface
+      .m_req_i  ( cpu_d_req  ),
+      .m_resp_o ( cpu_d_resp ),
+
+      // slaves interface
+      .s_req_o  ( {ext_mem_d_req, int_d_req}   ),
+      .s_resp_i ( {ext_mem_d_resp, int_d_resp} )
+      );
+`endif
+
+   //
+   // SPLIT INTERNAL MEMORY AND PERIPHERALS BUS
+   //
+
+   //internal memory data bus
+   wire [`REQ_W-1:0]         int_mem_d_req;
+   wire [`RESP_W-1:0]        int_mem_d_resp;
+   //peripheral bus
+   wire [`REQ_W-1:0]         pbus_req;
+   wire [`RESP_W-1:0]        pbus_resp;
+
+   iob_split #(
+       .N_SLAVES(2), //P,I
+       .P_SLAVES(`P_BIT)
+       )
+   int_dbus_split (
+      .clk_i (clk_i),
+      .arst_i (cpu_reset),
+
+`ifdef RUN_EXTMEM
+      // master interface
+      .m_req_i  ( int_d_req  ),
+      .m_resp_o ( int_d_resp ),
+`else
+      // master interface
+      .m_req_i  ( cpu_d_req  ),
+      .m_resp_o ( cpu_d_resp ),
+`endif
+
+      // slaves interface
+      .s_req_o  ( {pbus_req, int_mem_d_req}   ),
+      .s_resp_i ( {pbus_resp, int_mem_d_resp} )
+      );
+
+
+   //
+   // SPLIT PERIPHERAL BUS
+   //
+
+   //slaves bus
+   wire [`IOB_SOC_TESTER_N_SLAVES*`REQ_W-1:0] slaves_req;
+   wire [`IOB_SOC_TESTER_N_SLAVES*`RESP_W-1:0] slaves_resp;
+
+   iob_split #(
+       .N_SLAVES(`IOB_SOC_TESTER_N_SLAVES),
+       .P_SLAVES(`P_BIT-1)
+       )
+   pbus_split (
+      .clk_i (clk_i),
+      .arst_i (cpu_reset),
+      // master interface
+      .m_req_i (pbus_req),
+      .m_resp_o (pbus_resp),
+      
+      // slaves interface
+      .s_req_o (slaves_req),
+      .s_resp_i (slaves_resp)
+      );
+
+
+   //
+   // INTERNAL SRAM MEMORY
+   //
+
+   int_mem #(
+      .HEXFILE("iob_soc_tester_firmware"),
+      .BOOT_HEXFILE("iob_soc_tester_boot"),
+      .ADDR_W(ADDR_W),
+      .DATA_W(DATA_W),
+      .BOOTROM_ADDR_W(BOOTROM_ADDR_W),
+      .SRAM_ADDR_W(SRAM_ADDR_W),
+      .B_BIT(`B_BIT)
+      ) 
+   int_mem0 (
+      .clk_i (clk_i),
+      .arst_i (arst_i),
+      .cke_i (cke_i),
+      .en_i (en_i),
+      .boot (boot),
+      .cpu_reset (cpu_reset),
+
+      // instruction bus
+      .i_req (int_mem_i_req),
+      .i_resp (int_mem_i_resp),
+
+      //data bus
+      .d_req (int_mem_d_req),
+      .d_resp (int_mem_d_resp)
+      );
+
+`ifdef TESTER_RUN_EXTMEM
+   //
+   // EXTERNAL DDR MEMORY
+   //
+   wire axi_invert_r_bit;
+   wire axi_invert_w_bit;
+   assign axi_araddr_o[2*AXI_ADDR_W-1] = ~axi_invert_r_bit;
+   assign axi_awaddr_o[2*AXI_ADDR_W-1] = ~axi_invert_w_bit;
+
+   ext_mem
+    #(
+      .ADDR_W(ADDR_W),
+      .DATA_W(DATA_W),
+      .AXI_ID_W(AXI_ID_W),
+      .AXI_LEN_W(AXI_LEN_W),
+      .AXI_ADDR_W(AXI_ADDR_W),
+      .AXI_DATA_W(AXI_DATA_W),
+      .FIRM_ADDR_W(`TESTER_FIRM_ADDR_W),
+      .DCACHE_ADDR_W(`TESTER_DCACHE_ADDR_W),
+      .DDR_ADDR_W(AXI_ADDR_W)
+      )
+    ext_mem0 
+     (
+      .clk (clk_i),
+      .rst (cpu_reset)
+      
+      // instruction bus
+      .i_req                ({ext_mem_i_req[`avalid(0)], ext_mem_i_req[`address(0, `IOB_SOC_TESTER_SRAM_ADDR_W)-2], ext_mem_i_req[`write(0)]}),
+      .i_resp               (ext_mem_i_resp),
+
+      //data bus
+      .d_req                ({ext_mem_d_req[`valid(0)], ext_mem_d_req[`address(0, `TESTER_DCACHE_ADDR_W+1)-2], ext_mem_d_req[`write(0)]}),
+      .d_resp               (ext_mem_d_resp),
+
+      //AXI INTERFACE
+      //address write
+      .axi_awid_o       (axi_awid_o    [2*(AXI_ID_W)-1:AXI_ID_W]), 
+      .axi_awaddr_o     ({axi_invert_w_bit, axi_awaddr_o[2*AXI_ADDR_W-2:AXI_ADDR_W]}), 
+      .axi_awlen_o      (axi_awlen_o   [2*(7+1)-1:7+1]), 
+      .axi_awsize_o     (axi_awsize_o  [2*(2+1)-1:2+1]), 
+      .axi_awburst_o    (axi_awburst_o [2*(1+1)-1:1+1]), 
+      .axi_awlock_o     (axi_awlock_o  [2*(1+1)-1:1+1]), 
+      .axi_awcache_o    (axi_awcache_o [2*(3+1)-1:3+1]), 
+      .axi_awprot_o     (axi_awprot_o  [2*(2+1)-1:2+1]),
+      .axi_awqos_o      (axi_awqos_o   [2*(3+1)-1:3+1]), 
+      .axi_awvalid_o    (axi_awvalid_o [2*(0+1)-1:0+1]), 
+      .axi_awready_i    (axi_awready_i [2*(0+1)-1:0+1]), 
+      //write                                                                           
+      .axi_wdata_o      (axi_wdata_o   [2*(AXI_DATA_W-1+1)-1:AXI_DATA_W-1+1]), 
+      .axi_wstrb_o      (axi_wstrb_o   [2*(AXI_DATA_W/8-1+1)-1:AXI_DATA_W/8-1+1]), 
+      .axi_wlast_o      (axi_wlast_o   [2*(0+1)-1:0+1]), 
+      .axi_wvalid_o     (axi_wvalid_o  [2*(0+1)-1:0+1]), 
+      .axi_wready_i     (axi_wready_i  [2*(0+1)-1:0+1]), 
+      //write response 
+      .axi_bid_i        (axi_bid_i     [2*(AXI_ID_W)-1:AXI_ID_W]),
+      .axi_bresp_i      (axi_bresp_i   [2*(1+1)-1:1+1]), 
+      .axi_bvalid_i     (axi_bvalid_i  [2*(0+1)-1:0+1]), 
+      .axi_bready_o     (axi_bready_o  [2*(0+1)-1:0+1]), 
+      //address read                                                                    
+      .axi_arid_o       (axi_arid_o    [2*(AXI_ID_W)-1:AXI_ID_W]), 
+      .axi_araddr_o     ({axi_invert_r_bit,axi_araddr_o[2*AXI_ADDR_W-2:AXI_ADDR_W]}), 
+      .axi_arlen_o      (axi_arlen_o   [2*(7+1)-1:7+1]), 
+      .axi_arsize_o     (axi_arsize_o  [2*(2+1)-1:2+1]), 
+      .axi_arburst_o    (axi_arburst_o [2*(1+1)-1:1+1]), 
+      .axi_arlock_o     (axi_arlock_o  [2*(1+1)-1:1+1]), 
+      .axi_arcache_o    (axi_arcache_o [2*(3+1)-1:3+1]), 
+      .axi_arprot_o     (axi_arprot_o  [2*(2+1)-1:2+1]), 
+      .axi_arqos_o      (axi_arqos_o   [2*(3+1)-1:3+1]), 
+      .axi_arvalid_o    (axi_arvalid_o [2*(0+1)-1:0+1]), 
+      .axi_arready_i    (axi_arready_i [2*(0+1)-1:0+1]), 
+      //read                                                                            
+      .axi_rid_i        (axi_rid_i     [2*(AXI_ID_W)-1:AXI_ID_W]),
+      .axi_rdata_i      (axi_rdata_i   [2*(AXI_DATA_W-1+1)-1:AXI_DATA_W-1+1]), 
+      .axi_rresp_i      (axi_rresp_i   [2*(1+1)-1:1+1]), 
+      .axi_rlast_i      (axi_rlast_i   [2*(0+1)-1:0+1]), 
+      .axi_rvalid_i     (axi_rvalid_i  [2*(0+1)-1:0+1]),  
+      .axi_rready_o     (axi_rready_o  [2*(0+1)-1:0+1])
+      );
+`endif
+
+   //peripheral instances are inserted here
+
+endmodule

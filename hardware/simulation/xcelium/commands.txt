@@ -1,3 +1,0 @@
-dumptcf -scope system_tb:uut -overwrite -output system.tcf
-run
-dumptcf -end
