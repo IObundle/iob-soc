@@ -51,17 +51,17 @@ endif
 
 TEST_LIST+=test1
 test1:
-	make clean SIMULATOR=$(SIMULATOR)
+	make -C ../../ clean SIMULATOR=$(SIMULATOR)
 	make run SIMULATOR=$(SIMULATOR) INIT_MEM=1 RUN_EXTMEM=0 TEST_LOG=">> test.log"
-#TEST_LIST+=test2 TEST_LOG=">> test.log"
-#test2:
-#	make clean SIMULATOR=$(SIMULATOR)
-#	make run SIMULATOR=$(SIMULATOR) INIT_MEM=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
-# TEST_LIST+=test3 TEST_LOG=">> test.log"
-# test3:
-# 	make -C $(SOC_DIR) sim-clean SIMULATOR=$(SIMULATOR)
-# 	make -C $(SOC_DIR) sim-run SIMULATOR=$(SIMULATOR) INIT_MEM=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
-# TEST_LIST+=test4 TEST_LOG=">> test.log"
-# test4:
-# 	make -C $(SOC_DIR) sim-clean SIMULATOR=$(SIMULATOR)
-# 	make -C $(SOC_DIR) sim-run SIMULATOR=$(SIMULATOR) INIT_MEM=0 RUN_EXTMEM=1 TEST_LOG=">> test.log"
+TEST_LIST+=test2
+test2:
+	make -C ../../ clean SIMULATOR=$(SIMULATOR)
+	make run SIMULATOR=$(SIMULATOR) INIT_MEM=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"
+TEST_LIST+=test3
+test3:
+	make -C ../../ clean SIMULATOR=$(SIMULATOR)
+	make run SIMULATOR=$(SIMULATOR) INIT_MEM=1 RUN_EXTMEM=1 TEST_LOG=">> test.log"
+TEST_LIST+=test4
+test4:
+	make -C ../../ clean SIMULATOR=$(SIMULATOR)
+	make run SIMULATOR=$(SIMULATOR) INIT_MEM=0 RUN_EXTMEM=1 TEST_LOG=">> test.log"
