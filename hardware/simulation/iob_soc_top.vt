@@ -70,7 +70,7 @@ module system_top (
    //instantiate the axi memory
 `ifdef RUN_EXTMEM
     axi_ram #(
-      .FILE("firmware.hex"),
+      .FILE("iob_soc_firmware.hex"),
       .FILE_SIZE(2**(`IOB_SOC_SRAM_ADDR_W-2)),
       .ID_WIDTH(AXI_ID_W),
       .DATA_WIDTH (`IOB_SOC_DATA_W),
