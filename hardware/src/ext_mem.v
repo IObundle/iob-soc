@@ -162,15 +162,16 @@ module ext_mem #(
       .N_MASTERS(2)
       )
    merge_i_d_buses_into_l2 (
-      .clk_i(clk_i),
-      .arst_i(arst_i),
-      // masters
-      .m_req_i  ({icache_be_req, dcache_be_req}),
-      .m_resp_o ({icache_be_resp, dcache_be_resp}),         
-      // slave
-      .s_req_o  (l2cache_req),
-      .s_resp_i (l2cache_resp)
-      );
+        .clk_i  (clk_i),
+        .arst_i (arst_i),
+        .cke_i  (cke_i),
+        // masters
+        .m_req_i  ({icache_be_req, dcache_be_req}),
+        .m_resp_o ({icache_be_resp, dcache_be_resp}),
+        // slave
+        .s_req_o  (l2cache_req),
+        .s_resp_i (l2cache_resp)
+        );
 
    
    // L2 cache instance

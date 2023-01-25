@@ -52,7 +52,7 @@ module iob_soc_fpga_wrapper
    //
    // SYSTEM
    //
-   system
+   iob_soc
      #(
        .AXI_ID_W(AXI_ID_W),
        .AXI_LEN_W(AXI_LEN_W),
@@ -61,9 +61,9 @@ module iob_soc_fpga_wrapper
        )
    system 
      (
-      .clk_i (clk),
-      .rst_i (rst),
-      .trap_o (trap),
+      .general_clk_i (clk),
+      .general_rst_i (rst),
+      .general_trap_o (trap),
 
 `ifdef RUN_EXTMEM
       `include "iob_soc_axi_m_portmap.vh"	
