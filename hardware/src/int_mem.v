@@ -14,7 +14,6 @@ module int_mem
     parameter B_BIT = `IOB_SOC_B
     )
    (
-    input                en_i,
 
     output               boot,
     output               cpu_reset,
@@ -85,7 +84,6 @@ module int_mem
         .clk_i(clk_i),
         .arst_i(arst_i),
         .cke_i(cke_i),
-        .en_i(en_i),
         .cpu_rst(cpu_reset),
         .boot(boot),
         
