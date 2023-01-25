@@ -52,15 +52,13 @@ module iob_soc_fpga_wrapper
    //
    // SYSTEM
    //
-   system
-     #(
+   iob_soc #(
        .AXI_ID_W(AXI_ID_W),
        .AXI_LEN_W(AXI_LEN_W),
        .AXI_ADDR_W(AXI_ADDR_W),
        .AXI_DATA_W(AXI_DATA_W)
        )
-   system 
-     (
+   iob_soc (
       .clk_i (clk),
       .rst_i (rst),
       .trap_o (trap),

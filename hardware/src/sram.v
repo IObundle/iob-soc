@@ -54,8 +54,8 @@ module sram #(
       .en_i   (avalid),
       .addr_i (addr),
       .we_i   (wstrb),
-      .din_i  (wdata),
-      .dout_o (rdata)
+      .d_i  (wdata),
+      .dt_o (rdata)
       );
 `else
    iob_ram_dp_be

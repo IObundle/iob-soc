@@ -50,17 +50,16 @@ module int_mem
        .N_SLAVES(2),
        .P_SLAVES(B_BIT)
        )
-   data_bootctr_split
-       (
-        .clk_i    ( clk_i                         ),
-        .arst_i    ( arst_i                         ),
+   data_bootctr_split (
+        .clk_i  (clk_i),
+        .arst_i (arst_i),
         // master interface
-        .m_req_i  ( d_req                       ),
-        .m_resp_o ( d_resp                      ),
-        
+        .m_req_i  (d_req),
+        .m_resp_o (d_resp),
+
         // slaves interface
-        .s_req_o ( {boot_ctr_req, ram_d_req}   ),
-        .s_resp_i ( {boot_ctr_resp, ram_d_resp} )
+        .s_req_o  ({boot_ctr_req, ram_d_req}),
+        .s_resp_i ({boot_ctr_resp, ram_d_resp})
         );
 
 
@@ -145,17 +144,17 @@ module int_mem
            .N_MASTERS(2)
            )
    ibus_merge (
-      .clk_i    ( clk_i                      ),
-      .arst_i    ( arst_i                      ),
+        .clk_i  (clk_i),
+        .arst_i (arst_i),
 
-      //master
-      .m_req_i  ( {ram_w_req, ram_r_req}   ),
-      .m_resp_o ( {ram_w_resp, ram_r_resp} ),
+        //master
+        .m_req_i  ({ram_w_req, ram_r_req}),
+        .m_resp_o ({ram_w_resp, ram_r_resp}),
 
-      //slave  
-      .s_req_o  ( ram_i_req                ),
-      .s_resp_i ( ram_i_resp               )
-      );
+        //slave  
+        .s_req_o  (ram_i_req),
+        .s_resp_i (ram_i_resp)
+        );
    
    //
    // INSTANTIATE RAM
