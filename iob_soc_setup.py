@@ -11,7 +11,7 @@ meta = \
 'flows':'pc-emul emb sim doc fpga',
 'setup_dir':os.path.dirname(__file__)}
 meta['build_dir']=f"../{meta['name']+'_'+meta['version']}"
-meta['board'] = 'CYCLONEV-GT-DK'
+meta['board'] = 'AES-KU040-DB-G'
 meta['submodules'] = {
     'hw_setup': {
         'headers' : [ 'iob_wire', 'axi_wire', 'axi_m_m_portmap', 'axi_m_port', 'axi_m_m_portmap', ],
@@ -59,13 +59,6 @@ confs = \
     {'name':'E',             'type':'M', 'val':'31', 'min':'1', 'max':'32', 'descr':"Address selection bit for external memory"},
     {'name':'P',             'type':'M', 'val':'30', 'min':'1', 'max':'32', 'descr':"Address selection bit for peripherals"},
     {'name':'B',             'type':'M', 'val':'29', 'min':'1', 'max':'32', 'descr':"Address selection bit for boot ROM"},
-    {'name':'DDR_DATA_W',    'type':'M', 'val':'32', 'min':'1', 'max':'32', 'descr':"DDR data bus width"},
-    {'name':'DDR_ADDR_W',    'type':'M', 'val':'24', 'min':'1', 'max':'32', 'descr':"DDR address bus width in simulation"},
-    #TODO: Need to find a way to use value below when running on fpga
-    {'name':'DDR_ADDR_W_HW', 'type':'M', 'val':'30', 'min':'1', 'max':'32', 'descr':"DDR address bus width"},
-    {'name':'BAUD',          'type':'M', 'val':'115200', 'min':'1', 'max':'NA', 'descr':"UART baud rate"},
-    {'name':'FREQ',          'type':'M', 'val':'100000000', 'min':'1', 'max':'NA', 'descr':"System clock frequency"},
-    {'name':'MEM_NO_READ_ON_WRITE', 'type':'M', 'val':'0', 'min':'0', 'max':'1', 'descr':"System clock frequency"},
 
     # SoC parameters
     {'name':'ADDR_W',        'type':'P', 'val':'32', 'min':'1', 'max':'32', 'descr':"Address bus width"},
