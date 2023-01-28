@@ -64,8 +64,8 @@ confs = \
     #TODO: Need to find a way to use value below when running on fpga
     {'name':'DDR_ADDR_W_HW', 'type':'M', 'val':'30', 'min':'1', 'max':'32', 'descr':"DDR address bus width"},
     {'name':'BAUD',          'type':'M', 'val':'115200', 'min':'1', 'max':'NA', 'descr':"UART baud rate"},
-    {'name':'FREQ',          'type':'M', 'val':'50000000', 'min':'1', 'max':'NA', 'descr':"System clock frequency"},
-    {'name':'IOB_MEM_NO_READ_ON_WRITE', 'type':'M', 'val':'1', 'min':'1', 'max':'NA', 'descr':"System clock frequency"},
+    {'name':'FREQ',          'type':'M', 'val':'100000000', 'min':'1', 'max':'NA', 'descr':"System clock frequency"},
+    {'name':'MEM_NO_READ_ON_WRITE', 'type':'M', 'val':'0', 'min':'0', 'max':'1', 'descr':"System clock frequency"},
 
     # SoC parameters
     {'name':'ADDR_W',        'type':'P', 'val':'32', 'min':'1', 'max':'32', 'descr':"Address bus width"},

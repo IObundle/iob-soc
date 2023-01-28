@@ -50,18 +50,18 @@ module iob_soc_fpga_wrapper
    // SYSTEM
    //
 
-   system
+   iob_soc
      #(
        .AXI_ID_W(AXI_ID_W),
        .AXI_LEN_W(AXI_LEN_W),
        .AXI_ADDR_W(AXI_ADDR_W),
        .AXI_DATA_W(AXI_DATA_W)
        )
-   system 
+   iob_soc 
      (
-      .clk_i (clk),
-      .rst_i (rst),
-      .trap_o (trap),
+      .general_clk_i (clk),
+      .general_rst_i (rst),
+      .general_trap_o (trap),
 
 `ifdef RUN_EXTMEM
       //axi system backend interface
@@ -317,10 +317,11 @@ module iob_soc_fpga_wrapper
        ) 
    reset_pulse
      (
-      .clk(clk),
-      .rst(reset),
-      .restart(1'b0),
-      .pulse_out(rst)
+      .clk_i(clk),
+      .arst_i(reset),
+      .cke_i(1'b1),
+      .start_i(1'b0),
+      .pulse_o(rst)
       );
 `endif
 

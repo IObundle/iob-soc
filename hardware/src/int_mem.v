@@ -110,16 +110,11 @@ module int_mem
    wire [`REQ_W-1:0]  ram_r_req;
    wire [`RESP_W-1:0] ram_r_resp;
 
-   wire [SRAM_ADDR_W-1:0] boot_offset = -('b1 << BOOTROM_ADDR_W);
-   //wire [SRAM_ADDR_W-1:0] boot_offset = -(SRAM_ADDR_W'b1 << BOOTROM_ADDR_W); //Verilog does not accept a parameter to define number of bits?
-   
-//`define BOOT_OFFSET ((1'b1<<SRAM_ADDR_W)-(1'b1<<BOOTROM_ADDR_W))
-//`define BOOT_OFFSET ((2**SRAM_ADDR_W)-(2**BOOTROM_ADDR_W))
-
    //
    //modify addresses to run  boot program
    //
 
+   localparam boot_offset = -('b1 << BOOTROM_ADDR_W);
    //instruction bus: connect directly but address
    assign ram_r_req[`avalid(0)] = i_req[`avalid(0)];
    assign ram_r_req[`address(0, ADDR_W)] = boot? i_req[`address(0, ADDR_W)] + boot_offset : i_req[`address(0, ADDR_W)];

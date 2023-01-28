@@ -62,7 +62,8 @@ module sram #(
      #(
        .HEXFILE(HEXFILE),
        .ADDR_W(SRAM_ADDR_W-2),
-       .DATA_W(DATA_W)
+       .DATA_W(DATA_W),
+       .MEM_NO_READ_ON_WRITE(`IOB_SOC_MEM_NO_READ_ON_WRITE)
        )
    main_mem_byte
      (
