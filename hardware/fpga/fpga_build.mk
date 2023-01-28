@@ -1,3 +1,7 @@
+IS_FPGA=1
+
+include ../../software/sw_build.mk
+
 TEST_LIST+=test1
 test1:
 	make -C $(ROOT_DIR) fpga-clean BOARD=$(BOARD)

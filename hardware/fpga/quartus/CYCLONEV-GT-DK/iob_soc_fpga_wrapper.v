@@ -52,18 +52,16 @@ module iob_soc_fpga_wrapper
    //
    // SYSTEM
    //
-   system
-     #(
+   iob_soc #(
        .AXI_ID_W(AXI_ID_W),
        .AXI_LEN_W(AXI_LEN_W),
        .AXI_ADDR_W(AXI_ADDR_W),
        .AXI_DATA_W(AXI_DATA_W)
        )
-   system 
-     (
-      .clk_i (clk),
-      .rst_i (rst),
-      .trap_o (trap),
+   iob_soc (
+      .general_clk_i (clk),
+      .general_rst_i (rst),
+      .general_trap_o (trap),
 
 `ifdef RUN_EXTMEM
       `include "iob_soc_axi_m_portmap.vh"	
@@ -86,7 +84,7 @@ module iob_soc_fpga_wrapper
    wire          rst_int = ~resetn | ~locked | ~init_done;
 //   wire          rst_int = ~resetn | ~locked;
    
-   iob_reset_sync rst_sync (clk, rst_int, rst);
+   iob_reset_sync rst_sync (clk, rst_int, 1'b1, rst);
 
    alt_ddr3 ddr3_ctrl 
      (
@@ -162,8 +160,8 @@ module iob_soc_fpga_wrapper
       .mem_if_ddr3_emif_0_status_local_cal_fail ()
       );
 
-`else
-   iob_reset_sync rst_sync (clk, (~resetn), rst);   
+`else 
+   iob_reset_sync rst_sync (clk, (~resetn), 1'b1, rst);   
 `endif
 
 

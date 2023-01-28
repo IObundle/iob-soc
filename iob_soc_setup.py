@@ -11,10 +11,11 @@ meta = \
 'flows':'pc-emul emb sim doc fpga',
 'setup_dir':os.path.dirname(__file__)}
 meta['build_dir']=f"../{meta['name']+'_'+meta['version']}"
+meta['board'] = 'AES-KU040-DB-G'
 meta['submodules'] = {
     'hw_setup': {
         'headers' : [ 'iob_wire', 'axi_wire', 'axi_m_m_portmap', 'axi_m_port', 'axi_m_m_portmap', ],
-        'modules': [ 'PICORV32', 'CACHE', 'UART', 'iob_merge.v', 'iob_split.v', 'iob_rom_sp.v', 'iob_ram_dp_be.v', 'iob_pulse_gen.v', 'iob_counter.v', 'iob_ram_2p_asym.v', 'iob_reg.v', 'iob_reg_re.v']
+        'modules': [ 'PICORV32', 'CACHE', 'UART', 'iob_merge', 'iob_split', 'iob_rom_sp.v', 'iob_ram_dp_be.v', 'iob_pulse_gen.v', 'iob_counter.v', 'iob_ram_2p_asym.v', 'iob_reg.v', 'iob_reg_re.v', 'iob_ram_sp_be.v', 'iob_ram_dp.v', 'iob_reset_sync.v']
     },
     'sim_setup': {
         'headers' : [ 'axi_wire', 'axi_s_portmap', 'axi_m_portmap' ],
@@ -58,14 +59,6 @@ confs = \
     {'name':'E',             'type':'M', 'val':'31', 'min':'1', 'max':'32', 'descr':"Address selection bit for external memory"},
     {'name':'P',             'type':'M', 'val':'30', 'min':'1', 'max':'32', 'descr':"Address selection bit for peripherals"},
     {'name':'B',             'type':'M', 'val':'29', 'min':'1', 'max':'32', 'descr':"Address selection bit for boot ROM"},
-    {'name':'DDR_DATA_W',    'type':'M', 'val':'32', 'min':'1', 'max':'32', 'descr':"DDR data bus width"},
-    {'name':'DDR_ADDR_W',    'type':'M', 'val':'24', 'min':'1', 'max':'32', 'descr':"DDR address bus width in simulation"},
-    #TODO: Need to find a way to use value below when running on fpga
-    {'name':'DDR_ADDR_W_HW', 'type':'M', 'val':'30', 'min':'1', 'max':'32', 'descr':"DDR address bus width"},
-    #TODO: Need to find a way to use value below when running on fpga
-    {'name':'BAUD_HW',       'type':'M', 'val':'115200', 'min':'1', 'max':'NA', 'descr':"UART baud rate"},
-    {'name':'BAUD',          'type':'M', 'val':'5000000', 'min':'1', 'max':'NA', 'descr':"UART baud rate for simulation"},
-    {'name':'FREQ',          'type':'M', 'val':'100000000', 'min':'1', 'max':'NA', 'descr':"System clock frequency"},
 
     # SoC parameters
     {'name':'ADDR_W',        'type':'P', 'val':'32', 'min':'1', 'max':'32', 'descr':"Address bus width"},

@@ -11,7 +11,6 @@ module boot_ctr
     parameter SRAM_ADDR_W = `IOB_SOC_SRAM_ADDR_W
  )
   (
-   input  en_i,
    output cpu_rst,
    output boot,
 
@@ -43,7 +42,7 @@ module boot_ctr
    wire                       boot_wr = cpu_avalid & |cpu_wstrb; 
    reg                        boot_nxt;  
    iob_reg_re #(1,1) bootnxt (clk_i, arst_i, cke_i, 1'b0, boot_wr, cpu_wdata[0], boot_nxt);
-   iob_reg_re #(1,1) bootreg (clk_i, arst_i, cke_i, 1'b0, en_i, boot_nxt, boot);
+   iob_reg_r #(1,1) bootreg (clk_i, arst_i, cke_i, 1'b0, boot_nxt, boot);
 
 
    //create CPU reset pulse

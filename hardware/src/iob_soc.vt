@@ -5,19 +5,17 @@
 //do not remove line below
 //PHEADER
 
-module system
-  #(
-`include "iob_soc_params.vh"
-    )
-  (
-`include "iob_soc_io.vh"
-   );
+module iob_soc #(
+    `include "iob_soc_params.vh"
+    ) (
+    `include "iob_soc_io.vh"
+    );
    
 	// Assign general io signals to local wires
-   wire clk_i = general_clk_i;
-   wire arst_i = general_rst_i;
+    wire clk_i = general_clk_i;
+    wire arst_i = general_rst_i;
 	wire trap_o;
-   assign general_trap_o = trap_o;
+    assign general_trap_o = trap_o;
 
    //
    // SYSTEM RESET
@@ -26,8 +24,6 @@ module system
    wire   boot;
    wire   cpu_reset;
 
-   wire en_i;
-   assign en_i = 1'b1;
    wire cke_i;
    assign cke_i = 1'b1;
    
@@ -81,15 +77,10 @@ module system
 `ifdef RUN_EXTMEM
    wire [`REQ_W-1:0]  ext_mem_i_req;
    wire [`RESP_W-1:0] ext_mem_i_resp;
-`endif
 
    // INSTRUCTION BUS
    iob_split #(
-`ifdef RUN_EXTMEM
        .N_SLAVES(2),
-`else
-       .N_SLAVES(1),
-`endif
        .P_SLAVES(`E_BIT)
        )
    ibus_split (
@@ -100,25 +91,24 @@ module system
       .m_resp_o (cpu_i_resp),
       
       // slaves interface
-`ifdef RUN_EXTMEM
       .s_req_o ( {ext_mem_i_req, int_mem_i_req} ),
       .s_resp_i ( {ext_mem_i_resp, int_mem_i_resp} )
-`else
-      .s_req_o (int_mem_i_req),
-      .s_resp_i ( int_mem_i_resp)
-`endif
       );
+`else
+      assign int_mem_i_req = cpu_i_req;
+      assign cpu_i_resp = int_mem_i_resp;
+`endif
 
 
    // DATA BUS
 
+   //internal data bus
+   wire [`REQ_W-1:0]         int_d_req;
+   wire [`RESP_W-1:0]        int_d_resp;
 `ifdef RUN_EXTMEM
    //external memory data bus
    wire [`REQ_W-1:0]         ext_mem_d_req;
    wire [`RESP_W-1:0]        ext_mem_d_resp;
-   //internal data bus
-   wire [`REQ_W-1:0]         int_d_req;
-   wire [`RESP_W-1:0]        int_d_resp;
 
    iob_split #(
        .N_SLAVES(2), //E,{P,I}
@@ -136,6 +126,9 @@ module system
       .s_req_o  ( {ext_mem_d_req, int_d_req}   ),
       .s_resp_i ( {ext_mem_d_resp, int_d_resp} )
       );
+`else
+      assign int_d_req = cpu_d_req;
+      assign cpu_d_resp = int_d_resp;
 `endif
 
    //
@@ -157,15 +150,9 @@ module system
       .clk_i  (clk_i),
       .arst_i (cpu_reset),
 
-`ifdef RUN_EXTMEM
       // master interface
       .m_req_i  ( int_d_req  ),
       .m_resp_o ( int_d_resp ),
-`else
-      // master interface
-      .m_req_i  ( cpu_d_req  ),
-      .m_resp_o ( cpu_d_resp ),
-`endif
 
       // slaves interface
       .s_req_o  ( {pbus_req, int_mem_d_req}   ),
@@ -215,7 +202,6 @@ module system
       .clk_i (clk_i),
       .arst_i (arst_i),
       .cke_i (cke_i),
-      .en_i (en_i),
       .boot (boot),
       .cpu_reset (cpu_reset),
 
