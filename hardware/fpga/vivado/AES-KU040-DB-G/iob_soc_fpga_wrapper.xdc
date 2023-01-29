@@ -37,6 +37,8 @@ set_property PACKAGE_PIN H23 [get_ports {c0_sys_clk_clk_n}]
 set_property IOSTANDARD DIFF_SSTL12 [get_ports {c0_sys_clk_clk_p}]
 set_property IOSTANDARD DIFF_SSTL12 [get_ports {c0_sys_clk_clk_n}]
 
+create_clock -period 4.0 [get_ports {c0_sys_clk_clk_p}]
+
 #derive_pll_clocks
 #derive_clock_uncertainty
 

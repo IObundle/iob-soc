@@ -57,13 +57,13 @@ module sram #(
       .d_i  (wdata),
       .dt_o (rdata)
       );
-`else
+`else // !`ifdef USE_SPRAM
+ `ifdef IOB_SOC_MEM_NO_READ_ON_WRITE
    iob_ram_dp_be
      #(
        .HEXFILE(HEXFILE),
        .ADDR_W(SRAM_ADDR_W-2),
-       .DATA_W(DATA_W),
-       .MEM_NO_READ_ON_WRITE(`IOB_SOC_MEM_NO_READ_ON_WRITE)
+       .DATA_W(DATA_W)
        )
    main_mem_byte
      (
@@ -83,7 +83,34 @@ module sram #(
       .dB_i  (i_wdata),
       .dB_o (i_rdata)
       );
+ `else // !`ifdef IOB_SOC_MEM_NO_READ_ON_WRITE
+   iob_ram_dp_be_xil
+     #(
+       .HEXFILE(HEXFILE),
+       .ADDR_W(SRAM_ADDR_W-2),
+       .DATA_W(DATA_W)
+       )
+   main_mem_byte
+     (
+      .clk_i   (clk_i),
+
+      // data port
+      .enA_i   (d_avalid),
+      .addrA_i (d_addr),
+      .weA_i   (d_wstrb),
+      .dA_i  (d_wdata),
+      .dA_o (d_rdata),
+
+      // instruction port
+      .enB_i   (i_avalid),
+      .addrB_i (i_addr),
+      .weB_i   (i_wstrb),
+      .dB_i  (i_wdata),
+      .dB_o (i_rdata)
+      );   
+ `endif
 `endif
+
   // reply with ready 
 
   iob_reg #(1,0) i_rvalid_reg (clk_i, arst_i, cke_i, i_avalid & ~(| i_wstrb), i_rvalid);
