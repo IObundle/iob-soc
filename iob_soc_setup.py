@@ -4,17 +4,15 @@ import os, sys
 sys.path.insert(0, os.getcwd()+'/submodules/LIB/scripts')
 import setup
 
-meta = \
-{
-'name':'iob_soc',
-'version':'V0.70',
-'flows':'pc-emul emb sim doc fpga',
-'setup_dir':os.path.dirname(__file__)}
-meta['build_dir']=f"../{meta['name']+'_'+meta['version']}"
-meta['board'] = 'AES-KU040-DB-G'
-#meta['board'] = 'CYCLONEV-GT-DK'
+name='iob_soc'
+version='V0.70'
+flows='pc-emul emb sim doc fpga'
+setup_dir=os.path.dirname(__file__)
+build_dir=f"../{name}_{version}"
+board='AES-KU040-DB-G'
+#board='CYCLONEV-GT-DK'
 
-meta['submodules'] = {
+submodules = {
     'hw_setup': {
         'headers' : [ 'iob_wire', 'axi_wire', 'axi_m_m_portmap', 'axi_m_port', 'axi_m_m_portmap', ],
         'modules': [ 'PICORV32', 'CACHE', 'UART', 'iob_merge', 'iob_split', 'iob_rom_sp.v', 'iob_ram_dp_be.v', 'iob_ram_dp_be_xil.v', 'iob_pulse_gen.v', 'iob_counter.v', 'iob_ram_2p_asym.v', 'iob_reg.v', 'iob_reg_re.v', 'iob_ram_sp_be.v', 'iob_ram_dp.v', 'iob_reset_sync.v']
