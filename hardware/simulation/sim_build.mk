@@ -1,11 +1,7 @@
 VHDR+=iob_soc_boot.hex iob_soc_firmware.hex
 include ../../software/sw_build.mk
 
-CONSOLE_CMD=../../scripts/console.py -L
-
-
 VTOP:=system_tb
-
 
 # SOURCES
 ifeq ($(SIMULATOR),verilator)

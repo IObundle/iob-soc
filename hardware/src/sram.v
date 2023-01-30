@@ -63,17 +63,18 @@ module sram #(
      #(
        .HEXFILE(HEXFILE),
        .ADDR_W(SRAM_ADDR_W-2),
-       .DATA_W(DATA_W)
+       .DATA_W(DATA_W),
+       .MEM_NO_READ_ON_WRITE(1)
        )
    main_mem_byte
      (
       .clk_i   (clk_i),
 
       // data port
-      .enA_i   (d_avalid),
+      .enA_i (d_avalid),
       .addrA_i (d_addr),
-      .weA_i   (d_wstrb),
-      .dA_i  (d_wdata),
+      .weA_i (d_wstrb),
+      .dA_i (d_wdata),
       .dA_o (d_rdata),
 
       // instruction port
@@ -95,17 +96,17 @@ module sram #(
       .clk_i   (clk_i),
 
       // data port
-      .enA_i   (d_avalid),
+      .enA_i (d_avalid),
       .addrA_i (d_addr),
-      .weA_i   (d_wstrb),
-      .dA_i  (d_wdata),
+      .weA_i (d_wstrb),
+      .dA_i (d_wdata),
       .dA_o (d_rdata),
 
       // instruction port
-      .enB_i   (i_avalid),
+      .enB_i (i_avalid),
       .addrB_i (i_addr),
-      .weB_i   (i_wstrb),
-      .dB_i  (i_wdata),
+      .weB_i (i_wstrb),
+      .dB_i (i_wdata),
       .dB_o (i_rdata)
       );   
  `endif

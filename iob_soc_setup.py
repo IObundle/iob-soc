@@ -11,8 +11,8 @@ meta = \
 'flows':'pc-emul emb sim doc fpga',
 'setup_dir':os.path.dirname(__file__)}
 meta['build_dir']=f"../{meta['name']+'_'+meta['version']}"
-#meta['board'] = 'AES-KU040-DB-G'
-meta['board'] = 'CYCLONEV-GT-DK'
+meta['board'] = 'AES-KU040-DB-G'
+#meta['board'] = 'CYCLONEV-GT-DK'
 
 meta['submodules'] = {
     'hw_setup': {
@@ -54,7 +54,7 @@ confs = \
     # SoC defines
 
     # SoC macros
-#    {'name':'INIT_MEM',      'type':'M', 'val':'1', 'min':'0', 'max':'1', 'descr':"Enable memory initialization"},
+    {'name':'INIT_MEM',      'type':'M', 'val':'1', 'min':'0', 'max':'1', 'descr':"Enable memory initialization"},
 #    {'name':'RUN_EXTMEM',    'type':'M', 'val':'0', 'min':'0', 'max':'1', 'descr':"Run firmware from external memory"}, # USE_DDR was merged with RUN_EXTMEM
     {'name':'USE_MUL_DIV',   'type':'M', 'val':'1', 'min':'0', 'max':'1', 'descr':"Enable MUL and DIV CPU instructions"},
     {'name':'USE_COMPRESSED','type':'M', 'val':'1', 'min':'0', 'max':'1', 'descr':"Use compressed CPU instructions"},
