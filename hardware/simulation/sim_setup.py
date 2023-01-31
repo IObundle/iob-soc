@@ -15,7 +15,7 @@ test_file_name='test'
 if next((i for i in setup_module.confs if i['name']=='INIT_MEM'), False) and setup_module.confs['INIT_MEM']['val'] != 'NA':
     test_file_name+='_initmem'
 #Check if setup with RUN_EXTMEM (check if macro exists)
-if next((i for i in setup_module.confs if i['name']=='RUN_EXTMEM'), False):
+if next((i for i in setup_module.confs if i['name']=='RUN_EXTMEM'), False) and setup_module.confs['RUN_EXTMEM']['val'] != 'NA':
     test_file_name+='_extmem'
 test_file_name+='.expected'
 
