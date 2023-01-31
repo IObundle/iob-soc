@@ -3,15 +3,13 @@
 import os, sys
 sys.path.insert(0, os.getcwd()+'/submodules/LIB/scripts')
 import setup
+from mk_configuration import update_define
 
 name='iob_soc'
 version='V0.70'
 flows='pc-emul emb sim doc fpga'
 setup_dir=os.path.dirname(__file__)
 build_dir=f"../{name}_{version}"
-board=''
-#board='AES-KU040-DB-G'
-#board='CYCLONEV-GT-DK'
 
 submodules = {
     'hw_setup': {
@@ -83,11 +81,21 @@ ios = \
     {'name': 'axi_m_port', 'descr':'General interface signals', 'ports': [], 'if_defined':'RUN_EXTMEM'},
 ]
 
-
 # Main function to setup this system and its components
 def main():
+    # Add the following arguments:
+    # "INIT_MEM=x":   allows choosing if should setup with init_mem or not
+    # "RUN_EXTMEM=x": allows choosing if should setup with run_extmem or not
+    for arg in sys.argv[1:]:
+        if arg.startswith("INIT_MEM="):
+            if arg[-1:]!="0": update_define(confs, "INIT_MEM",True)
+            else: update_define(confs, "INIT_MEM",False)
+        if arg.startswith("RUN_EXTMEM="):
+            if arg[-1:]!="0": update_define(confs, "RUN_EXTMEM",True)
+            else: update_define(confs, "RUN_EXTMEM",False)
+
     # Setup this system
-    setup.setup(sys.modules[__name__], ios_prefix=True )
+    setup.setup(sys.modules[__name__], ios_prefix=True)
 
 if __name__ == "__main__":
     main()
