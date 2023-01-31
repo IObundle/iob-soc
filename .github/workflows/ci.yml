@@ -36,7 +36,7 @@ jobs:
       - name: setup
         run: make setup
       - name: pc-emul test
-        run: make -C ../iob_soc_* pc-emul-test
+        run: make -C ../iob_soc_V* pc-emul-test
 
   verilator:
     runs-on: self-hosted
@@ -54,7 +54,7 @@ jobs:
       - name: setup
         run: make setup
       - name: verilator test
-        run: nix-shell -p verilator --run 'make -C ../iob_soc_* sim-test SIMULATOR=verilator'
+        run: nix-shell -p verilator --run 'make -C ../iob_soc_V* sim-test SIMULATOR=verilator'
   
   icarus:
     runs-on: self-hosted
@@ -70,36 +70,40 @@ jobs:
       - name: setup
         run: make setup
       - name: icarus test
-        run: make -C ../iob_soc_* sim-test SIMULATOR=icarus
+        run: make -C ../iob_soc_V* sim-test SIMULATOR=icarus
   
-  # cyclonev:
-  #   runs-on: self-hosted
-  #   timeout-minutes: 60
-  #   if: ${{ !cancelled() }}
-  #
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         submodules: 'recursive'
-  #     - name: test-clean
-  #       run: make test-clean
-  #     - name: test-cyclonev
-  #       run: make fpga-test BOARD=CYCLONEV-GT-DK
-  #
-  # aes-ku040:
-  #   runs-on: self-hosted
-  #   timeout-minutes: 90
-  #   if: ${{ !cancelled() }}
-  #
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         submodules: 'recursive'
-  #     - name: test-clean
-  #       run: make test-clean
-  #     - name: test-aes-ku040
-  #       run: make fpga-test BOARD=AES-KU040-DB-G
-  #
+  cyclonev:
+    runs-on: self-hosted
+    timeout-minutes: 60
+    if: ${{ !cancelled() }}
+  
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: clean
+        run: make clean
+      - name: setup
+        run: make setup
+      - name: cyclonev test
+        run: make -C ../iob_soc_V* fpga-test BOARD=CYCLONEV-GT-DK
+  
+  aes-ku040:
+    runs-on: self-hosted
+    timeout-minutes: 90
+    if: ${{ !cancelled() }}
+  
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: clean
+        run: make clean
+      - name: setup
+        run: make setup
+      - name: ku040 test
+        run: make -C ../iob_soc_V* fpga-test BOARD=AES-KU040-DB-G
+  
   # doc:
   #   runs-on: self-hosted
   #   timeout-minutes: 60
