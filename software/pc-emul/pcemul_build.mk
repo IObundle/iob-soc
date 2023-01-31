@@ -2,7 +2,7 @@
 # This file is included in BUILD_DIR/sw/pc/Makefile.
 
 # Include directory with system.h
-INCLUDE+=-I.. -I../psrc -I../src
+INCLUDE+=-I.. -I../psrc -I../src -I../esrc
 
 # SOURCES
 # exclude bootloader sources

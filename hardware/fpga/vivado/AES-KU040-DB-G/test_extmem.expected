@@ -6,6 +6,7 @@
 IOb-Console: connecting...
 
 IOb-Bootloader: connected!
+IOb-Bootloader: DDR in use and program runs from DDR
 IOb-UART: requesting to receive file
 IOb-Console: got file send request
 IOb-Console: file name b'iob_soc_firmware.bin' 

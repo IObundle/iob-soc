@@ -3,18 +3,15 @@
 import os, sys
 sys.path.insert(0, os.getcwd()+'/submodules/LIB/scripts')
 import setup
+from mk_configuration import update_define
 
-meta = \
-{
-'name':'iob_soc',
-'version':'V0.70',
-'flows':'pc-emul emb sim doc fpga',
-'setup_dir':os.path.dirname(__file__)}
-meta['build_dir']=f"../{meta['name']+'_'+meta['version']}"
-meta['board'] = 'AES-KU040-DB-G'
-#meta['board'] = 'CYCLONEV-GT-DK'
+name='iob_soc'
+version='V0.70'
+flows='pc-emul emb sim doc fpga'
+setup_dir=os.path.dirname(__file__)
+build_dir=f"../{name}_{version}"
 
-meta['submodules'] = {
+submodules = {
     'hw_setup': {
         'headers' : [ 'iob_wire', 'axi_wire', 'axi_m_m_portmap', 'axi_m_port', 'axi_m_m_portmap', ],
         'modules': [ 'PICORV32', 'CACHE', 'UART', 'iob_merge', 'iob_split', 'iob_rom_sp.v', 'iob_ram_dp_be.v', 'iob_ram_dp_be_xil.v', 'iob_pulse_gen.v', 'iob_counter.v', 'iob_ram_2p_asym.v', 'iob_reg.v', 'iob_reg_re.v', 'iob_ram_sp_be.v', 'iob_ram_dp.v', 'iob_reset_sync.v']
@@ -51,11 +48,9 @@ blocks = \
 
 confs = \
 [
-    # SoC defines
-
     # SoC macros
-    {'name':'INIT_MEM',      'type':'M', 'val':'1', 'min':'0', 'max':'1', 'descr':"Enable memory initialization"},
-#    {'name':'RUN_EXTMEM',    'type':'M', 'val':'0', 'min':'0', 'max':'1', 'descr':"Run firmware from external memory"}, # USE_DDR was merged with RUN_EXTMEM
+    {'name':'INIT_MEM',      'type':'M', 'val':'-', 'min':'-', 'max':'-', 'descr':"Enable memory initialization"},
+    #{'name':'RUN_EXTMEM',    'type':'M', 'val':'-', 'min':'-', 'max':'-', 'descr':"Run firmware from external memory"},
     {'name':'USE_MUL_DIV',   'type':'M', 'val':'1', 'min':'0', 'max':'1', 'descr':"Enable MUL and DIV CPU instructions"},
     {'name':'USE_COMPRESSED','type':'M', 'val':'1', 'min':'0', 'max':'1', 'descr':"Use compressed CPU instructions"},
     {'name':'E',             'type':'M', 'val':'31', 'min':'1', 'max':'32', 'descr':"Address selection bit for external memory"},
@@ -86,11 +81,21 @@ ios = \
     {'name': 'axi_m_port', 'descr':'General interface signals', 'ports': [], 'if_defined':'RUN_EXTMEM'},
 ]
 
-
 # Main function to setup this system and its components
 def main():
+    # Add the following arguments:
+    # "INIT_MEM=x":   allows choosing if should setup with init_mem or not
+    # "RUN_EXTMEM=x": allows choosing if should setup with run_extmem or not
+    for arg in sys.argv[1:]:
+        if arg.startswith("INIT_MEM="):
+            if arg[-1:]!="0": update_define(confs, "INIT_MEM",True)
+            else: update_define(confs, "INIT_MEM",False)
+        if arg.startswith("RUN_EXTMEM="):
+            if arg[-1:]!="0": update_define(confs, "RUN_EXTMEM",True)
+            else: update_define(confs, "RUN_EXTMEM",False)
+
     # Setup this system
-    setup.setup(sys.modules[__name__], ios_prefix=True )
+    setup.setup(sys.modules[__name__], ios_prefix=True)
 
 if __name__ == "__main__":
     main()

@@ -18,4 +18,4 @@ endif
 
 TEST_LIST+=test1
 test1:
-	make -C ../../ clean SIMULATOR=$(SIMULATOR) && make run SIMULATOR=$(SIMULATOR)
+	make -C ../../ fw-clean SIMULATOR=$(SIMULATOR) && make -C ../../ sim-clean SIMULATOR=$(SIMULATOR) && make run SIMULATOR=$(SIMULATOR) TEST_LOG="| tee -a test.log"
