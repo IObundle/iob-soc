@@ -44,6 +44,7 @@ jobs:
     # run even if previous job failed
     if: ${{ !cancelled() }}
     # run after indicated job
+    needs: [ pc-emul ]
   
     steps:
       - uses: actions/checkout@v3
@@ -82,6 +83,7 @@ jobs:
     runs-on: self-hosted
     timeout-minutes: 90
     if: ${{ !cancelled() }}
+    needs: [ pc-emul ]
   
     steps:
       - uses: actions/checkout@v3
@@ -120,6 +122,7 @@ jobs:
     runs-on: self-hosted
     timeout-minutes: 60
     if: ${{ !cancelled() }}
+    needs: [ icarus, verilator ]
   
     steps:
       - uses: actions/checkout@v3
@@ -158,6 +161,7 @@ jobs:
     runs-on: self-hosted
     timeout-minutes: 90
     if: ${{ !cancelled() }}
+    needs: [ icarus, verilator ]
   
     steps:
       - uses: actions/checkout@v3
