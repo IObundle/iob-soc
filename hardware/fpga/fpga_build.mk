@@ -5,5 +5,7 @@ IS_FPGA=1
 
 TEST_LIST+=test1
 test1:
-	make -C $(ROOT_DIR) fpga-clean BOARD=$(BOARD)
-	make -C $(ROOT_DIR) fpga-run TEST_LOG=">> test.log"
+	make -C ../../ fw-clean BOARD=$(BOARD)
+	make -C ../../ fpga-clean BOARD=$(BOARD)
+	make run BOARD=$(BOARD)
+	diff run.log $(FPGA_TOOL)/$(BOARD)/test.expected
