@@ -196,17 +196,19 @@ jobs:
       - name: ku040 test
         run: make -C ../iob_soc_V* fpga-test BOARD=AES-KU040-DB-G
   
-  # doc:
-  #   runs-on: self-hosted
-  #   timeout-minutes: 60
-  #   if: ${{ !cancelled() }}
-  #   needs: [ cyclonev, aes-ku040 ]
-  #
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         submodules: 'recursive'
-  #     - name: test-clean
-  #       run: make test-clean
-  #     - name: test-doc
-  #       run: make test-doc
+  doc:
+    runs-on: self-hosted
+    timeout-minutes: 60
+    if: ${{ !cancelled() }}
+    needs: [ cyclonev, aes-ku040 ]
+  
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: clean
+        run: make clean
+      - name: setup
+        run: make setup
+      - name: doc test
+        run: make -C ../iob_soc_V* doc-test

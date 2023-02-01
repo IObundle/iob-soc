@@ -34,11 +34,11 @@ int main() {
 
   // address to copy firmware to
   char *prog_start_addr;
-#ifdef RUN_EXTMEM
-    prog_start_addr = (char *) EXTRA_BASE;
-#else
+//#ifdef RUN_EXTMEM
+//    prog_start_addr = (char *) EXTRA_BASE; //FIXME: Temporarly disabled as there is an issue loading firmware
+//#else
     prog_start_addr = (char *) (1<<BOOTROM_ADDR_W);
-#endif
+//#endif
 
   while(uart_getc() != ACK){
     uart_puts (PROGNAME);
