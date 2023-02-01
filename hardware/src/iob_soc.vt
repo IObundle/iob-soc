@@ -47,7 +47,12 @@ module iob_soc #(
        .E_BIT(`E_BIT),
        .P_BIT(`P_BIT),
        .USE_COMPRESSED(`IOB_SOC_USE_COMPRESSED),
-       .USE_MUL_DIV(`IOB_SOC_USE_MUL_DIV)
+       .USE_MUL_DIV(`IOB_SOC_USE_MUL_DIV),
+`ifdef IOB_SOC_RUN_EXTMEM
+       .RUN_EXTMEM(1)
+`else
+       .RUN_EXTMEM(0)
+`endif
        )
    cpu (
         .clk_i (clk_i),
@@ -74,7 +79,7 @@ module iob_soc #(
    wire [`REQ_W-1:0]  int_mem_i_req;
    wire [`RESP_W-1:0] int_mem_i_resp;
    //external memory instruction bus
-`ifdef RUN_EXTMEM
+`ifdef IOB_SOC_RUN_EXTMEM
    wire [`REQ_W-1:0]  ext_mem_i_req;
    wire [`RESP_W-1:0] ext_mem_i_resp;
 
@@ -105,7 +110,7 @@ module iob_soc #(
    //internal data bus
    wire [`REQ_W-1:0]         int_d_req;
    wire [`RESP_W-1:0]        int_d_resp;
-`ifdef RUN_EXTMEM
+`ifdef IOB_SOC_RUN_EXTMEM
    //external memory data bus
    wire [`REQ_W-1:0]         ext_mem_d_req;
    wire [`RESP_W-1:0]        ext_mem_d_resp;
@@ -214,7 +219,7 @@ module iob_soc #(
       .d_resp (int_mem_d_resp)
       );
 
-`ifdef RUN_EXTMEM
+`ifdef IOB_SOC_RUN_EXTMEM
    //
    // EXTERNAL DDR MEMORY
    //
