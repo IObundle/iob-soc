@@ -43,7 +43,7 @@ module system_top (
 
    //AXI wires for connecting system to memory
 
-`ifdef RUN_EXTMEM
+`ifdef IOB_SOC_RUN_EXTMEM
    `include "iob_axi_wire.vh"
 `endif
 
@@ -58,7 +58,7 @@ module system_top (
       )
     uut (
       //PORTS
-`ifdef RUN_EXTMEM
+`ifdef IOB_SOC_RUN_EXTMEM
       `include "iob_axi_m_portmap.vh"
 `endif               
       .general_clk_i (clk_i),
@@ -68,7 +68,7 @@ module system_top (
 
 
    //instantiate the axi memory
-`ifdef RUN_EXTMEM
+`ifdef IOB_SOC_RUN_EXTMEM
     axi_ram #(
       .FILE("iob_soc_firmware.hex"),
       .FILE_SIZE(2**(`IOB_SOC_SRAM_ADDR_W-2)),

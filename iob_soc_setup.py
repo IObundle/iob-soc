@@ -78,7 +78,7 @@ ios = \
         {'name':"rst_i", 'type':"I", 'n_bits':'1', 'descr':"System reset, synchronous and active high"},
         {'name':"trap_o", 'type':"O", 'n_bits':'1', 'descr':"CPU trap signal"}
     ]},
-    {'name': 'axi_m_port', 'descr':'General interface signals', 'ports': [], 'if_defined':'RUN_EXTMEM'},
+    {'name': 'axi_m_port', 'descr':'General interface signals', 'ports': [], 'if_defined':'IOB_SOC_RUN_EXTMEM'},
 ]
 
 # Main function to setup this system and its components

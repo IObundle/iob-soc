@@ -11,7 +11,7 @@ module iob_soc_fpga_wrapper
    output        uart_txd,
    input         uart_rxd,
 
-`ifdef RUN_EXTMEM
+`ifdef IOB_SOC_RUN_EXTMEM
    output [13:0] ddr3b_a, //SSTL15  //Address
    output [2:0]  ddr3b_ba, //SSTL15  //Bank Address
    output        ddr3b_rasn, //SSTL15  //Row Address Strobe
@@ -44,7 +44,7 @@ module iob_soc_fpga_wrapper
 
    wire 	 rst;
 
-`ifdef RUN_EXTMEM
+`ifdef IOB_SOC_RUN_EXTMEM
    //axi wires between system backend and axi bridge
  `include "iob_soc_axi_m_wire.vh"
 `endif
@@ -63,7 +63,7 @@ module iob_soc_fpga_wrapper
       .general_rst_i (rst),
       .general_trap_o (trap),
 
-`ifdef RUN_EXTMEM
+`ifdef IOB_SOC_RUN_EXTMEM
       `include "iob_soc_axi_m_portmap.vh"	
 `endif
 
@@ -75,7 +75,7 @@ module iob_soc_fpga_wrapper
       );
 
    
-`ifdef RUN_EXTMEM
+`ifdef IOB_SOC_RUN_EXTMEM
    //user reset
    wire          locked;
    wire          init_done;
