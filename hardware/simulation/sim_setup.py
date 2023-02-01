@@ -12,10 +12,12 @@ for file in os.listdir(dirpath):
 # Find out correct test.expected filename
 test_file_name='test'
 #Check if setup with INIT_MEM (check if macro exists)
-if next((i for i in setup_module.confs if i['name']=='INIT_MEM'), False):
+macro = next((i for i in setup_module.confs if i['name']=='INIT_MEM'), False)
+if macro and macro['val'] != 'NA':
     test_file_name+='_initmem'
 #Check if setup with RUN_EXTMEM (check if macro exists)
-if next((i for i in setup_module.confs if i['name']=='RUN_EXTMEM'), False):
+macro = next((i for i in setup_module.confs if i['name']=='RUN_EXTMEM'), False)
+if macro and macro['val'] != 'NA':
     test_file_name+='_extmem'
 test_file_name+='.expected'
 
