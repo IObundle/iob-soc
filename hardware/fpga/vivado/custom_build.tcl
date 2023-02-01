@@ -1,30 +1,6 @@
-#
-# SYNTHESIS AND IMPLEMENTATION SCRIPT
-#
+set RUN_EXTMEM $CUSTOM_ARGS
 
-#select top module and FPGA decive
-set TOP top_system
-set INCLUDE [lindex $argv 0]
-set DEFINE [lindex $argv 1]
-set VSRC [lindex $argv 2]
-set DEVICE [lindex $argv 3]
-
-set RUN_EXTMEM [string last "RUN_EXTMEM" $DEFINE]
-
-#verilog sources
-foreach file [split $VSRC \ ] {
-    if {$file != ""} {
-        read_verilog -sv $file
-    }
-}
-
-set_property part $DEVICE [current_project]
-read_xdc ./top_system.xdc
-
-if { $RUN_EXTMEM < 0 } {
-    read_verilog verilog/clock_wizard.v
-} else {
-
+if { $RUN_EXTMEM == 1 } {
 
     if { ![file isdirectory "./ip"]} {
         file mkdir ./ip
@@ -92,29 +68,6 @@ if { $RUN_EXTMEM < 0 } {
 
     read_xdc ./ddr.xdc
 
+} else {
+    read_verilog vivado/$BOARD/clock_wizard.v
 }
-
-
-synth_design -include_dirs $INCLUDE -verilog_define $DEFINE -part $DEVICE -top $TOP
-
-opt_design
-
-place_design
-
-route_design
-
-report_utilization
-
-report_timing
-
-file mkdir reports
-
-report_timing -file reports/timing.txt -max_paths 30
-report_clocks -file reports/clocks.txt
-report_clock_interaction -file reports/clock_interaction.txt
-report_cdc -details -file reports/cdc.txt
-report_synchronizer_mtbf -file reports/synchronizer_mtbf.txt
-report_utilization -hierarchical -file reports/utilization.txt
-
-write_bitstream -force $TOP.bit
-

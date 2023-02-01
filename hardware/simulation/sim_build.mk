@@ -1,4 +1,4 @@
-VHDR+=iob_soc_boot.hex iob_soc_firmware.hex
+HEX+=iob_soc_boot.hex iob_soc_firmware.hex
 include ../../software/sw_build.mk
 
 VTOP:=system_tb

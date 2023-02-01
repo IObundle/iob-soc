@@ -49,8 +49,8 @@ blocks = \
 confs = \
 [
     # SoC macros
-    {'name':'INIT_MEM',      'type':'M', 'val':'-', 'min':'-', 'max':'-', 'descr':"Enable memory initialization"},
-    #{'name':'RUN_EXTMEM',    'type':'M', 'val':'-', 'min':'-', 'max':'-', 'descr':"Run firmware from external memory"},
+    {'name':'INIT_MEM',      'type':'M', 'val':'1', 'min':'0', 'max':'1', 'descr':"Enable memory initialization"},
+    {'name':'RUN_EXTMEM',    'type':'M', 'val':'NA', 'min':'0', 'max':'1', 'descr':"Run firmware from external memory"},
     {'name':'USE_MUL_DIV',   'type':'M', 'val':'1', 'min':'0', 'max':'1', 'descr':"Enable MUL and DIV CPU instructions"},
     {'name':'USE_COMPRESSED','type':'M', 'val':'1', 'min':'0', 'max':'1', 'descr':"Use compressed CPU instructions"},
     {'name':'E',             'type':'M', 'val':'31', 'min':'1', 'max':'32', 'descr':"Address selection bit for external memory"},
