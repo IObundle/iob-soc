@@ -38,6 +38,7 @@ set_property IOSTANDARD DIFF_SSTL12 [get_ports {c0_sys_clk_clk_p}]
 set_property IOSTANDARD DIFF_SSTL12 [get_ports {c0_sys_clk_clk_n}]
 
 create_clock -period 4.0 [get_ports {c0_sys_clk_clk_p}]
+set_property CONFIG_VOLTAGE 2.5 [current_design]
 
 #derive_pll_clocks
 #derive_clock_uncertainty
