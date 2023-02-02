@@ -1,6 +1,6 @@
-set USE_DDR $CUSTOM_ARGS
+set USE_EXTMEM $CUSTOM_ARGS
 
-if { $USE_DDR > 0 } {
+if { $USE_EXTMEM > 0 } {
 
     if { ![file isdirectory "./ip"]} {
         file mkdir ./ip
