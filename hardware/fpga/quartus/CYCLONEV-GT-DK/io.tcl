@@ -42,7 +42,7 @@ set_location_assignment PIN_C12 -to uart_rxd
 set_instance_assignment -name IO_STANDARD "2.5-V" -to uart_rxd
 
 
-if { $RUN_EXTMEM >= 0 }  {
+if { $USE_EXTMEM > 0 }  {
 
     #set_instance_assignment -name IO_STANDARD "1.5-V" -to rzqin
     #set_instance_assignment -name IO_STANDARD "1.5 V" -to rzqin_1_5v

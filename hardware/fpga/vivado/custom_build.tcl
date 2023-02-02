@@ -1,6 +1,6 @@
-set RUN_EXTMEM $CUSTOM_ARGS
+set USE_EXTMEM $CUSTOM_ARGS
 
-if { $RUN_EXTMEM == 1 } {
+if { $USE_EXTMEM > 0 } {
 
     if { ![file isdirectory "./ip"]} {
         file mkdir ./ip
