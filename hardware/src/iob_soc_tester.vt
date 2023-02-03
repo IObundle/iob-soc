@@ -6,20 +6,18 @@
 //do not remove line below
 //PHEADER
 
-module tester
+module iob_soc_tester
   #(
 `include "iob_soc_tester_params.vh"
     )
   (
 `include "iob_soc_tester_io.vh"
    );
-   
-	// Assign general io signals to local wires
-   wire clk_i = general_clk_i;
-   wire arst_i = general_rst_i;
-	wire [1:0] trap_o;
-   assign general_trap_o = trap_o;
 
+	localparam E_BIT = `IOB_SOC_TESTER_E;
+	localparam P_BIT = `IOB_SOC_TESTER_P;
+	localparam B_BIT = `IOB_SOC_TESTER_B;
+   
    //
    // SYSTEM RESET
    //

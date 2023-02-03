@@ -6,7 +6,7 @@
 
 //PHEADER
 
-module system_tb;
+module iob_soc_tester_tb;
 
   parameter realtime clk_per = 1s/`IOB_SOC_TESTER_FREQ;
 
@@ -113,7 +113,7 @@ module system_tb;
     end
   end
 
-system_top system_top
+iob_soc_tester_top system_top
   (
    .clk_i (clk),
    .rst_i (reset),

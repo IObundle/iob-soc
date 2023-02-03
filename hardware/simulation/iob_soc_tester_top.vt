@@ -5,7 +5,7 @@
 
 //PHEADER
 
-module system_top 
+module iob_soc_tester_top 
   (
    output                             trap_o,
    //tester uart
@@ -97,7 +97,7 @@ module system_top
    //
    // Tester (also includes Unit Under Test)
    //
-   tester 
+   iob_soc_tester 
      #(
        .AXI_ID_W(AXI_ID_W),
        .AXI_LEN_W(AXI_LEN_W),
@@ -150,9 +150,9 @@ module system_top
 	       .axi_rvalid  (axi_rvalid_i    [1:0]),
 	       .axi_rready  (axi_rready_o    [1:0]),	
 `endif               
-	       .general_clk_i         (clk_i),
-	       .general_rst_i         (rst_i),
-	       .general_trap_o        (trap_signals)
+	       .clk_i         (clk_i),
+	       .arst_i         (rst_i),
+	       .trap_o        (trap_signals)
 	       );
 
 `ifdef IOB_SOC_TESTER_USE_DDR

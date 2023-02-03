@@ -86,7 +86,7 @@ ios = \
 [
     {'name': 'general', 'descr':'General interface signals', 'ports': [
         {'name':"clk_i", 'type':"I", 'n_bits':'1', 'descr':"System clock input"},
-        {'name':"rst_i", 'type':"I", 'n_bits':'1', 'descr':"System reset, synchronous and active high"},
+        {'name':"arst_i", 'type':"I", 'n_bits':'1', 'descr':"System reset, synchronous and active high"},
         {'name':"trap_o", 'type':"O", 'n_bits':'2', 'descr':"CPU trap signal"}
     ]},
     {'name': 'axi_m_port', 'descr':'AXI master interface', 'if_defined':'RUN_EXTMEM', 'ports': [

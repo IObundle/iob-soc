@@ -8,7 +8,7 @@ ifeq ($(VCD),1)
 UFLAGS+=VCD
 endif
 
-VTOP:=system_tb
+VTOP:=iob_soc_tester_tb
 
 # Simulation programs
 VHDR+=iob_soc_tester_boot.hex iob_soc_tester_firmware.hex
@@ -18,13 +18,13 @@ VHDR+=iob_soc_tester_boot.hex iob_soc_tester_firmware.hex
 GET_PARAM = $(shell grep $(1) $(2) | rev | cut -d" " -f1 | rev)
 
 #Function to obtain parameter named $(1) from iob_soc_conf.vh
-GET_CONF_PARAM = $(call GET_PARAM,$(1),../src/iob_soc_tester_conf.vh)
+GET_TESTER_CONF_PARAM = $(call GET_PARAM,IOB_SOC_TESTER_$(1),../src/iob_soc_tester_conf.vh)
 
 iob_soc_tester_boot.hex: ../../software/embedded/iob_soc_tester_boot.bin
-	../../scripts/makehex.py $< $(call GET_CONF_PARAM,BOOTROM_ADDR_W) > $@
+	../../scripts/makehex.py $< $(call GET_TESTER_CONF_PARAM,BOOTROM_ADDR_W) > $@
 
 iob_soc_tester_firmware.hex: iob_soc_tester_firmware.bin
-	../../scripts/makehex.py $< $(call GET_CONF_PARAM,SRAM_ADDR_W) > $@
+	../../scripts/makehex.py $< $(call GET_TESTER_CONF_PARAM,SRAM_ADDR_W) > $@
 	../../scripts/hex_split.py $(basename $@) .
 
 iob_soc_tester_firmware.bin: ../../software/embedded/iob_soc_tester_firmware.bin
@@ -45,7 +45,7 @@ iob_uart_swreg.h: ../../software/esrc/iob_uart_swreg.h
 #VSRC:=$(filter-out system_tb.v, $(VSRC))
 #
 # verilator top module
-VTOP:=system_top
+VTOP:=iob_soc_tester_top
 
 endif
 
