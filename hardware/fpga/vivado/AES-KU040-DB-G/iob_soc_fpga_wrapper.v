@@ -65,7 +65,7 @@ module iob_soc_fpga_wrapper
 
 `ifdef IOB_SOC_RUN_EXTMEM
       //axi system backend interface
- `include "iob_axi_m_portmap.vh"	
+      `include "iob_axi_m_portmap.vh"	
 `endif
 
       //UART
@@ -83,7 +83,7 @@ module iob_soc_fpga_wrapper
 `ifdef IOB_SOC_RUN_EXTMEM
 
    //axi wires between ddr4 contrl and axi interconnect
- `include "ddr4_axi_wire.vh"
+   `include "ddr4_axi_wire.vh"
 
    //DDR4 controller axi side clocks and resets
    wire          c0_ddr4_ui_clk;//controller output clock 200MHz
@@ -113,47 +113,47 @@ module iob_soc_fpga_wrapper
       .S00_AXI_ACLK         (clk), //from ddr4 controller PLL to be used by system
       
       //Write address
-      .S00_AXI_AWID         (axi_awid_o  [0]),
-      .S00_AXI_AWADDR       (axi_awaddr_o   ),
-      .S00_AXI_AWLEN        (axi_awlen_o    ),
-      .S00_AXI_AWSIZE       (axi_awsize_o   ),
-      .S00_AXI_AWBURST      (axi_awburst_o  ),
-      .S00_AXI_AWLOCK       (axi_awlock_o[0]),
-      .S00_AXI_AWCACHE      (axi_awcache_o  ),
-      .S00_AXI_AWPROT       (axi_awprot_o   ),
-      .S00_AXI_AWQOS        (axi_awqos_o    ),
-      .S00_AXI_AWVALID      (axi_awvalid_o  ),
-      .S00_AXI_AWREADY      (axi_awready_i  ),
+      .S00_AXI_AWID         (axi_awid  [0]),
+      .S00_AXI_AWADDR       (axi_awaddr   ),
+      .S00_AXI_AWLEN        (axi_awlen    ),
+      .S00_AXI_AWSIZE       (axi_awsize   ),
+      .S00_AXI_AWBURST      (axi_awburst  ),
+      .S00_AXI_AWLOCK       (axi_awlock[0]),
+      .S00_AXI_AWCACHE      (axi_awcache  ),
+      .S00_AXI_AWPROT       (axi_awprot   ),
+      .S00_AXI_AWQOS        (axi_awqos    ),
+      .S00_AXI_AWVALID      (axi_awvalid  ),
+      .S00_AXI_AWREADY      (axi_awready  ),
       //Write data
-      .S00_AXI_WDATA        (axi_wdata_o    ),
-      .S00_AXI_WSTRB        (axi_wstrb_o    ),
-      .S00_AXI_WLAST        (axi_wlast_o    ),
-      .S00_AXI_WVALID       (axi_wvalid_o   ),
-      .S00_AXI_WREADY       (axi_wready_i   ),
+      .S00_AXI_WDATA        (axi_wdata    ),
+      .S00_AXI_WSTRB        (axi_wstrb    ),
+      .S00_AXI_WLAST        (axi_wlast    ),
+      .S00_AXI_WVALID       (axi_wvalid   ),
+      .S00_AXI_WREADY       (axi_wready   ),
       //Write response
-      .S00_AXI_BID          (axi_bid_i   [0]),
-      .S00_AXI_BRESP        (axi_bresp_i    ),
-      .S00_AXI_BVALID       (axi_bvalid_i   ),
-      .S00_AXI_BREADY       (axi_bready_o   ),
+      .S00_AXI_BID          (axi_bid   [0]),
+      .S00_AXI_BRESP        (axi_bresp    ),
+      .S00_AXI_BVALID       (axi_bvalid   ),
+      .S00_AXI_BREADY       (axi_bready   ),
       //Read address
-      .S00_AXI_ARID         (axi_arid_o  [0]),
-      .S00_AXI_ARADDR       (axi_araddr_o   ),
-      .S00_AXI_ARLEN        (axi_arlen_o    ),
-      .S00_AXI_ARSIZE       (axi_arsize_o   ),
-      .S00_AXI_ARBURST      (axi_arburst_o  ),
-      .S00_AXI_ARLOCK       (axi_arlock_o[0]),
-      .S00_AXI_ARCACHE      (axi_arcache_o  ),
-      .S00_AXI_ARPROT       (axi_arprot_o   ),
-      .S00_AXI_ARQOS        (axi_arqos_o    ),
-      .S00_AXI_ARVALID      (axi_arvalid_o  ),
-      .S00_AXI_ARREADY      (axi_arready_i  ),
+      .S00_AXI_ARID         (axi_arid  [0]),
+      .S00_AXI_ARADDR       (axi_araddr   ),
+      .S00_AXI_ARLEN        (axi_arlen    ),
+      .S00_AXI_ARSIZE       (axi_arsize   ),
+      .S00_AXI_ARBURST      (axi_arburst  ),
+      .S00_AXI_ARLOCK       (axi_arlock[0]),
+      .S00_AXI_ARCACHE      (axi_arcache  ),
+      .S00_AXI_ARPROT       (axi_arprot   ),
+      .S00_AXI_ARQOS        (axi_arqos    ),
+      .S00_AXI_ARVALID      (axi_arvalid  ),
+      .S00_AXI_ARREADY      (axi_arready  ),
       //Read data
-      .S00_AXI_RID          (axi_rid_i   [0]),
-      .S00_AXI_RDATA        (axi_rdata_i    ),
-      .S00_AXI_RRESP        (axi_rresp_i    ),
-      .S00_AXI_RLAST        (axi_rlast_i    ),
-      .S00_AXI_RVALID       (axi_rvalid_i   ),
-      .S00_AXI_RREADY       (axi_rready_o   ),
+      .S00_AXI_RID          (axi_rid   [0]),
+      .S00_AXI_RDATA        (axi_rdata    ),
+      .S00_AXI_RRESP        (axi_rresp    ),
+      .S00_AXI_RLAST        (axi_rlast    ),
+      .S00_AXI_RVALID       (axi_rvalid   ),
+      .S00_AXI_RREADY       (axi_rready   ),
 
 
       //

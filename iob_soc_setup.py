@@ -81,8 +81,7 @@ ios = \
     {'name': 'axi_m_port', 'descr':'General interface signals', 'ports': [], 'if_defined':'IOB_SOC_RUN_EXTMEM'},
 ]
 
-# Main function to setup this system and its components
-def main():
+def custom_setup():
     # Add the following arguments:
     # "INIT_MEM=x":   allows choosing if should setup with init_mem or not
     # "RUN_EXTMEM=x": allows choosing if should setup with run_extmem or not
@@ -93,7 +92,15 @@ def main():
         if arg.startswith("RUN_EXTMEM="):
             if arg[-1:]!="0": update_define(confs, "RUN_EXTMEM",True)
             else: update_define(confs, "RUN_EXTMEM",False)
+    
+    for conf in confs:
+        if (conf['name'] == 'RUN_EXTMEM') and (conf['val'] == '1'):
+            submodules['hw_setup']['headers'].append([ 'ddr4_', 'axi_wire', 'ddr4_', 'ddr4_' ])
 
+
+# Main function to setup this system and its components
+def main():
+    custom_setup()
     # Setup this system
     setup.setup(sys.modules[__name__], ios_prefix=True)
 
