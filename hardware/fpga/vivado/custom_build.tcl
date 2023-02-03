@@ -66,7 +66,7 @@ if { $USE_EXTMEM > 0 } {
         synth_ip [get_files ./ip/ddr4_0/ddr4_0.xci]
     }
 
-    read_xdc ./ddr.xdc
+    read_xdc vivado/$BOARD/ddr.xdc
 
 } else {
     read_verilog vivado/$BOARD/clock_wizard.v
