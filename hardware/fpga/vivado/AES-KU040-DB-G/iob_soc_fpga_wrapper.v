@@ -295,34 +295,38 @@ module iob_soc_fpga_wrapper
 
 
 `else
-   //if DDR not used use PLL to generate system clock
-   clock_wizard 
-     #(
-       .OUTPUT_PER(10),
-       .INPUT_PER(4)
-       )
-   clk_250_to_100_MHz
-     (
-      .clk_in1_p(c0_sys_clk_clk_p),
-      .clk_in1_n(c0_sys_clk_clk_n),
-      .clk_out1(clk)
-      );
+    //if DDR not used use PLL to generate system clock
+    clock_wizard #(
+        .OUTPUT_PER(10),
+        .INPUT_PER(4)
+        )
+    clk_250_to_100_MHz (
+        .clk_in1_p(c0_sys_clk_clk_p),
+        .clk_in1_n(c0_sys_clk_clk_n),
+        .clk_out1(clk)
+        );
 
-   //create reset pulse as reset is never activated manually
-   //also, during bitstream loading, the reset pin is not pulled high
-   iob_pulse_gen
-     #(
-       .START(5),
-       .DURATION(10)
-       ) 
-   reset_pulse
-     (
-      .clk_i(clk),
-      .arst_i(reset),
-      .cke_i(1'b1),
-      .start_i(1'b0),
-      .pulse_o(rst)
-      );
+    wire start;
+    iob_reset_sync start_sync (
+        .clk_i(clk),
+        .arst_i(reset),
+        .cke_i(1'b1),
+        .rst_o(start)
+        );
+
+    //create reset pulse as reset is never activated manually
+    //also, during bitstream loading, the reset pin is not pulled high
+    iob_pulse_gen #(
+        .START(5),
+        .DURATION(10)
+        ) 
+    reset_pulse (
+        .clk_i(clk),
+        .arst_i(reset),
+        .cke_i(1'b1),
+        .start_i(start),
+        .pulse_o(rst)
+        );
 `endif
 
 endmodule
