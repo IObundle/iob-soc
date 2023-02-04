@@ -8,11 +8,11 @@ TESTER_INCLUDES=-I. -I.. -I../esrc -I../src
 TESTER_LFLAGS=-Wl,-Bstatic,-T,$(TEMPLATE_LDS),--strip-debug
 
 #FW_SRC=$(wildcard *.c)
-TESTER_FW_SRC=../firmware/iob_soc_tester_firmware.c
+TESTER_FW_SRC=$(wildcard ../firmware/iob_soc_tester_firmware.*)
 TESTER_FW_SRC+=$(wildcard ../esrc/*.c)
 TESTER_FW_SRC+=$(wildcard ../src/*.c)
 
-TESTER_BOOT_SRC=../bootloader/iob_soc_tester_boot.c
+TESTER_BOOT_SRC=$(wildcard ../bootloader/iob_soc_tester_boot.*)
 TESTER_BOOT_SRC+=$(wildcard ../esrc/*.c)
 TESTER_BOOT_SRC+=$(filter-out ../src/printf.c, $(wildcard ../src/*.c))
 
