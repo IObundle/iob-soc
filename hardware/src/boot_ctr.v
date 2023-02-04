@@ -1,5 +1,5 @@
 `timescale 1 ns / 1 ps
-`include "iob_soc.vh"
+`include "iob_soc_conf.vh"
 `include "iob_lib.vh"
 
 module boot_ctr

@@ -8,11 +8,11 @@ INCLUDES=-I. -I.. -I../esrc -I../src
 LFLAGS=-Wl,-Bstatic,-T,$(TEMPLATE_LDS),--strip-debug
 
 #FW_SRC=$(wildcard *.c)
-FW_SRC=$(wildcard ../firmware/*)
+FW_SRC=$(wildcard ../firmware/iob_soc_firmware.*)
 FW_SRC+=$(wildcard ../esrc/*.c)
 FW_SRC+=$(wildcard ../src/*.c)
 
-BOOT_SRC=$(wildcard ../bootloader/*)
+BOOT_SRC=$(wildcard ../bootloader/iob_soc_boot.*)
 BOOT_SRC+=$(wildcard ../esrc/*.c)
 BOOT_SRC+=$(filter-out ../src/printf.c, $(wildcard ../src/*.c))
 

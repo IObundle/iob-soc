@@ -75,7 +75,7 @@ ios = \
 [
     {'name': 'general', 'descr':'General interface signals', 'ports': [
         {'name':"clk_i", 'type':"I", 'n_bits':'1', 'descr':"System clock input"},
-        {'name':"rst_i", 'type':"I", 'n_bits':'1', 'descr':"System reset, synchronous and active high"},
+        {'name':"arst_i", 'type':"I", 'n_bits':'1', 'descr':"System reset, synchronous and active high"},
         {'name':"trap_o", 'type':"O", 'n_bits':'1', 'descr':"CPU trap signal"}
     ]},
     {'name': 'axi_m_port', 'descr':'General interface signals', 'ports': [], 'if_defined':'IOB_SOC_RUN_EXTMEM'},
@@ -102,7 +102,7 @@ def custom_setup():
 def main():
     custom_setup()
     # Setup this system
-    setup.setup(sys.modules[__name__], ios_prefix=True)
+    setup.setup(sys.modules[__name__])
 
 if __name__ == "__main__":
     main()

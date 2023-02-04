@@ -1,7 +1,7 @@
 HEX+=iob_soc_boot.hex iob_soc_firmware.hex
 include ../../software/sw_build.mk
 
-VTOP:=system_tb
+VTOP:=iob_soc_tb
 
 # SOURCES
 ifeq ($(SIMULATOR),verilator)
@@ -12,7 +12,7 @@ iob_uart_swreg.h: ../../software/esrc/iob_uart_swreg.h
 	cp $< $@
 
 # verilator top module
-VTOP:=system_top
+VTOP:=iob_soc_top
 
 endif
 
