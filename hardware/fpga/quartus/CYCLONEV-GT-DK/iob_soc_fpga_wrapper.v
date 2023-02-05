@@ -59,9 +59,9 @@ module iob_soc_fpga_wrapper
        .AXI_DATA_W(AXI_DATA_W)
        )
    iob_soc (
-      .general_clk_i (clk),
-      .general_rst_i (rst),
-      .general_trap_o (trap),
+      .clk_i (clk),
+      .arst_i (rst),
+      .trap_o (trap),
 
 `ifdef IOB_SOC_RUN_EXTMEM
       `include "iob_axi_m_portmap.vh"	
