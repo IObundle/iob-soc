@@ -1,7 +1,7 @@
 # Local pc-emul makefile fragment for custom pc emulation targets.
 # This file is included in BUILD_DIR/sw/pc/Makefile.
 
-# Include directory with system.h
+# Include directory with iob_soc_system.h
 INCLUDE+=-I.. -I../psrc -I../src -I../esrc
 
 # SOURCES

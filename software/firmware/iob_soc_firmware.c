@@ -1,5 +1,5 @@
-#include "system.h"
-#include "periphs.h"
+#include "iob_soc_system.h"
+#include "iob_soc_periphs.h"
 #include "iob_soc_conf.h"
 #include "iob-uart.h"
 #include "printf.h"
