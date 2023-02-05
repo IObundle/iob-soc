@@ -1,5 +1,5 @@
 `timescale 1 ns / 1 ps
-`include "iob_soc_tester.vh"
+`include "iob_soc_tester_conf.vh"
 `include "iob_lib.vh"
 
 module boot_ctr
@@ -11,7 +11,6 @@ module boot_ctr
     parameter SRAM_ADDR_W = `IOB_SOC_TESTER_SRAM_ADDR_W
  )
   (
-   input  en_i,
    output cpu_rst,
    output boot,
 
@@ -43,7 +42,7 @@ module boot_ctr
    wire                       boot_wr = cpu_avalid & |cpu_wstrb; 
    reg                        boot_nxt;  
    iob_reg_re #(1,1) bootnxt (clk_i, arst_i, cke_i, 1'b0, boot_wr, cpu_wdata[0], boot_nxt);
-   iob_reg_re #(1,1) bootreg (clk_i, arst_i, cke_i, 1'b0, en_i, boot_nxt, boot);
+   iob_reg_r #(1,1) bootreg (clk_i, arst_i, cke_i, 1'b0, boot_nxt, boot);
 
 
    //create CPU reset pulse
@@ -77,38 +76,38 @@ module boot_ctr
    always @(posedge clk_i, posedge arst_i)
      if(arst_i) begin
         rom_r_avalid <= 1'b1;
-        rom_r_addr <= {BOOTROM_ADDR_W-2{1'b0}};
+        rom_r_addr <= {(BOOTROM_ADDR_W-2){1'b0}};
      end else if (boot && rom_r_addr != (2**(BOOTROM_ADDR_W-2)-1))
        rom_r_addr <= rom_r_addr + 1'b1;
      else begin
         rom_r_avalid <= 1'b0;
-        rom_r_addr <= {BOOTROM_ADDR_W-2{1'b0}};
+        rom_r_addr <= {(BOOTROM_ADDR_W-2){1'b0}};
      end
    
    //
    // WRITE SRAM
    //
    reg sram_w_avalid;
-   reg [SRAM_ADDR_W-3:0] sram_w_addr;
+   reg [SRAM_ADDR_W-2-1:0] sram_w_addr;
    always @(posedge clk_i, posedge arst_i)
      if(arst_i) begin
         sram_w_avalid <= 1'b0;
-        sram_w_addr <= -{1'b1,{BOOTROM_ADDR_W-2{1'b0}}};
+        sram_w_addr <= -{1'b1,{(BOOTROM_ADDR_W-2){1'b0}}};
         sram_wstrb <= {DATA_W/8{1'b1}};
      end else if (boot) begin
         sram_w_avalid <= rom_r_avalid;
-        sram_w_addr <= rom_r_addr - { 1'b1,{BOOTROM_ADDR_W-2{1'b0}} };
+        sram_w_addr <= -{1'b1,{(BOOTROM_ADDR_W-2){1'b0}}} + rom_r_addr;
         sram_wstrb <= {DATA_W/8{rom_r_avalid}};
      end else begin
         sram_w_avalid <= 1'b0;
-        sram_w_addr <= -{1'b1,{BOOTROM_ADDR_W-2{1'b0}}};
+        sram_w_addr <= -{1'b1,{(BOOTROM_ADDR_W-2){1'b0}}};
         sram_wstrb <= {DATA_W/8{1'b1}};        
      end
    
    assign loading = rom_r_avalid | sram_w_avalid;
 
    assign sram_avalid = sram_w_avalid;
-   assign sram_addr = sram_w_addr<<2;
+   assign sram_addr = {sram_w_addr, 2'b00};
    assign sram_wdata = rom_r_rdata;
 
    //

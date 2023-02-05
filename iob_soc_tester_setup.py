@@ -3,27 +3,26 @@
 import os, sys
 sys.path.insert(0, os.getcwd()+'/submodules/LIB/scripts')
 import setup
+from mk_configuration import update_define
 from tester import setup_tester
 
-meta = \
-{
-'name':'iob_soc_tester',
-'version':'V0.50',
-'flows':'pc-emul emb sim doc fpga',
-'setup_dir':os.path.dirname(__file__)}
-meta['build_dir']=f"../{meta['name']+'_'+meta['version']}"
-meta['submodules'] = {
+name='iob_soc_tester'
+version='V0.50'
+flows='pc-emul emb sim doc fpga'
+setup_dir=os.path.dirname(__file__)
+build_dir=f"../{name}_{version}"
+submodules = {
     'hw_setup': {
-        'headers' : [ 'iob_wire', 'axi_wire', 'axi_m_m_portmap', 'axi_m_port', 'axi_m_m_portmap', ],
-        'modules': [ 'PICORV32', 'CACHE', 'UART', 'iob_merge.v', 'iob_split.v', 'iob_rom_sp.v', 'iob_ram_dp_be.v', 'iob_pulse_gen.v', 'iob_counter.v', 'iob_ram_2p_asym.v', 'iob_reg.v', 'iob_reg_re.v']
+        'headers' : [ 'iob_wire', 'axi_wire', 'axi_m_m_portmap', 'axi_m_port', 'axi_m_m_portmap', 'axi_m_portmap' ],
+        'modules': [ 'PICORV32', 'CACHE', 'UART', 'iob_merge', 'iob_split', 'iob_rom_sp.v', 'iob_ram_dp_be.v', 'iob_ram_dp_be_xil.v', 'iob_pulse_gen.v', 'iob_counter.v', 'iob_ram_2p_asym.v', 'iob_reg.v', 'iob_reg_re.v', 'iob_ram_sp_be.v', 'iob_ram_dp.v', 'iob_reset_sync']
     },
     'sim_setup': {
-        'headers' : [ 'axi_wire', 'axi_s_portmap', 'axi_m_portmap' ],
-        'modules': [ 'axi_ram.v' , 'iob_tasks.vh' ]
+        'headers' : [ 'axi_s_portmap' ],
+        'modules': [ 'axi_ram.v', 'iob_tasks.vh'  ]
     },
     'sw_setup': {
         'headers': [  ],
-        'modules': [ 'CACHE', 'UART' ]
+        'modules': [ 'CACHE', 'UART', ]
     },
 }
 
@@ -49,24 +48,14 @@ blocks = \
 
 confs = \
 [
-    # SoC defines
-    {'name':'INIT_MEM',      'type':'D', 'val':'1', 'min':'0', 'max':'1', 'descr':"Enable memory initialization"},
-    {'name':'RUN_EXTMEM',    'type':'D', 'val':'0', 'min':'0', 'max':'1', 'descr':"Run firmware from external memory"}, # USE_DDR was merged with RUN_EXTMEM
-
     # SoC macros
-    {'name':'USE_MUL_DIV',   'type':'M', 'val':'1', 'min':'0', 'max':'1', 'descr':"Enable MUL and DIV CPU instrunctions"},
+    {'name':'INIT_MEM',      'type':'M', 'val':'1', 'min':'0', 'max':'1', 'descr':"Enable memory initialization"},
+    {'name':'RUN_EXTMEM',    'type':'M', 'val':'NA', 'min':'0', 'max':'1', 'descr':"Run firmware from external memory"},
+    {'name':'USE_MUL_DIV',   'type':'M', 'val':'1', 'min':'0', 'max':'1', 'descr':"Enable MUL and DIV CPU instructions"},
     {'name':'USE_COMPRESSED','type':'M', 'val':'1', 'min':'0', 'max':'1', 'descr':"Use compressed CPU instructions"},
     {'name':'E',             'type':'M', 'val':'31', 'min':'1', 'max':'32', 'descr':"Address selection bit for external memory"},
     {'name':'P',             'type':'M', 'val':'30', 'min':'1', 'max':'32', 'descr':"Address selection bit for peripherals"},
     {'name':'B',             'type':'M', 'val':'29', 'min':'1', 'max':'32', 'descr':"Address selection bit for boot ROM"},
-    {'name':'DDR_DATA_W',    'type':'M', 'val':'32', 'min':'1', 'max':'32', 'descr':"DDR data bus width"},
-    {'name':'DDR_ADDR_W',    'type':'M', 'val':'24', 'min':'1', 'max':'32', 'descr':"DDR address bus width in simulation"},
-    #TODO: Need to find a way to use value below when running on fpga
-    {'name':'DDR_ADDR_W_HW', 'type':'M', 'val':'30', 'min':'1', 'max':'32', 'descr':"DDR address bus width"},
-    #TODO: Need to find a way to use value below when running on fpga
-    {'name':'BAUD_HW',       'type':'M', 'val':'115200', 'min':'1', 'max':'NA', 'descr':"UART baud rate"},
-    {'name':'BAUD',          'type':'M', 'val':'5000000', 'min':'1', 'max':'NA', 'descr':"UART baud rate for simulation"},
-    {'name':'FREQ',          'type':'M', 'val':'100000000', 'min':'1', 'max':'NA', 'descr':"System clock frequency"},
 
     # SoC parameters
     {'name':'ADDR_W',        'type':'P', 'val':'32', 'min':'1', 'max':'32', 'descr':"Address bus width"},
@@ -87,9 +76,9 @@ ios = \
     {'name': 'general', 'descr':'General interface signals', 'ports': [
         {'name':"clk_i", 'type':"I", 'n_bits':'1', 'descr':"System clock input"},
         {'name':"arst_i", 'type':"I", 'n_bits':'1', 'descr':"System reset, synchronous and active high"},
-        {'name':"trap_o", 'type':"O", 'n_bits':'2', 'descr':"CPU trap signal"}
+        {'name':"trap_o", 'type':"O", 'n_bits':'2', 'descr':"CPU trap signal (One for tester and one optionally for SUT)"}
     ]},
-    {'name': 'axi_m_port', 'descr':'AXI master interface', 'if_defined':'RUN_EXTMEM', 'ports': [
+    {'name': 'axi_m_port', 'descr':'AXI master interface', 'if_defined':'IOB_SOC_TESTER_RUN_EXTMEM', 'ports': [
         {'name':'m_axi_awid', 'type':'O', 'n_bits':'2*AXI_ID_W', 'descr':'Address write channel ID'},
         {'name':'m_axi_awaddr', 'type':'O', 'n_bits':'2*AXI_ADDR_W', 'descr':'Address write channel address'},
         {'name':'m_axi_awlen', 'type':'O', 'n_bits':'2*8', 'descr':'Address write channel burst length'},
@@ -150,8 +139,25 @@ module_parameters = {
     ],
 }
 
+def custom_setup():
+    # Add the following arguments:
+    # "INIT_MEM=x":   allows choosing if should setup with init_mem or not
+    # "RUN_EXTMEM=x": allows choosing if should setup with run_extmem or not
+    for arg in sys.argv[1:]:
+        if arg.startswith("INIT_MEM="):
+            if arg[-1:]!="0": update_define(confs, "INIT_MEM",True)
+            else: update_define(confs, "INIT_MEM",False)
+        if arg.startswith("RUN_EXTMEM="):
+            if arg[-1:]!="0": update_define(confs, "RUN_EXTMEM",True)
+            else: update_define(confs, "RUN_EXTMEM",False)
+    
+    for conf in confs:
+        if (conf['name'] == 'RUN_EXTMEM') and (conf['val'] == '1'):
+            submodules['hw_setup']['headers'].append([ 'ddr4_', 'axi_wire', 'ddr4_', 'ddr4_' ])
+
 # Main function to setup this system and its components
 def main():
+    custom_setup()
     # Setup this system
     setup_tester(sys.modules[__name__])
 

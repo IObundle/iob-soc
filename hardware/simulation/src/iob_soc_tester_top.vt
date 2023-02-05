@@ -5,8 +5,7 @@
 
 //PHEADER
 
-module iob_soc_tester_top 
-  (
+module iob_soc_tester_top (
    output                             trap_o,
    //tester uart
    input                               uart_avalid,
@@ -32,12 +31,10 @@ module iob_soc_tester_top
    // TEST PROCEDURE
    //
    initial begin
-
 `ifdef VCD
       $dumpfile("tester.vcd");
       $dumpvars();
 `endif
-
    end
    
    //
@@ -45,7 +42,7 @@ module iob_soc_tester_top
    //
 
    //DDR AXI interface signals (2 for the two systems + 1 for memory)
-`ifdef RUN_EXTMEM
+`ifdef IOB_SOC_TESTER_RUN_EXTMEM
    //Write address
    wire [3*AXI_ID_W-1:0]     axi_awid_o;
    wire [3*AXI_ADDR_W-1:0]   axi_awaddr_o;
@@ -94,17 +91,16 @@ module iob_soc_tester_top
    wire [1:0]                   trap_signals;
    assign trap_o = trap_signals[0] || trap_signals[1];
 
-   //
+    //
    // Tester (also includes Unit Under Test)
-   //
-   iob_soc_tester 
-     #(
-       .AXI_ID_W(AXI_ID_W),
-       .AXI_LEN_W(AXI_LEN_W),
-       .AXI_ADDR_W(AXI_ADDR_W),
-       .AXI_DATA_W(AXI_DATA_W)
-       )
-	tester0 (
+    //
+   iob_soc_tester #(
+      .AXI_ID_W(AXI_ID_W),
+      .AXI_LEN_W(AXI_LEN_W),
+      .AXI_ADDR_W(AXI_ADDR_W),
+      .AXI_DATA_W(AXI_DATA_W)
+      )
+   tester0 (
            //PORTS
 `ifdef IOB_SOC_TESTER_USE_DDR
            //address write
@@ -150,10 +146,10 @@ module iob_soc_tester_top
 	       .axi_rvalid  (axi_rvalid_i    [1:0]),
 	       .axi_rready  (axi_rready_o    [1:0]),	
 `endif               
-	       .clk_i         (clk_i),
-	       .arst_i         (rst_i),
-	       .trap_o        (trap_signals)
-	       );
+      .clk_i (clk_i),
+      .arst_i (rst_i),
+      .trap_o (trap_signals)
+      );
 
 `ifdef IOB_SOC_TESTER_USE_DDR
 	//instantiate axi interconnect
@@ -264,67 +260,63 @@ module iob_soc_tester_top
 		);
 
 
-   //instantiate the axi memory 
+   //instantiate the axi memory
 	//Tester and SUT access the same memory.
 	axi_ram 
 		#(
-		`ifdef IOB_SOC_TESTER_DDR_INIT
 		.FILE("init_ddr_contents.hex"), //This file contains firmware for both systems
 		.FILE_SIZE(2**(AXI_ADDR_W-2)),
-		`endif
 		.ID_WIDTH (AXI_ID_W),
 		.DATA_WIDTH (AXI_DATA_W),
 		.ADDR_WIDTH (AXI_ADDR_W)
 		)
 		ddr_model_mem(
-			//address write
-			.clk            (clk_i),
-			.rst            (rst_i),
+		.s_axi_awid     (axi_awid_o      [3*AXI_ID_W-1:2*AXI_ID_W]),
+		.s_axi_awaddr   (axi_awaddr_o    [3*AXI_ADDR_W-1:2*AXI_ADDR_W]),
+		.s_axi_awlen    (axi_awlen_o     [3*(7+1)-1:2*(7+1)]),
+		.s_axi_awsize   (axi_awsize_o    [3*(2+1)-1:2*(2+1)]),
+		.s_axi_awburst  (axi_awburst_o   [3*(1+1)-1:2*(1+1)]),
+		.s_axi_awlock   (axi_awlock_o    [3*(1+1)-1:2*(1+1)]),
+		.s_axi_awcache  (axi_awcache_o   [3*(3+1)-1:2*(3+1)]),
+		.s_axi_awprot   (axi_awprot_o    [3*(2+1)-1:2*(2+1)]),
+		.s_axi_awqos    (axi_awqos_o     [3*(3+1)-1:2*(3+1)]),
+		.s_axi_awvalid  (axi_awvalid_o   [2]),
+		.s_axi_awready  (axi_awready_i   [2]),
+		//write                                              
+		.s_axi_wvalid   (axi_wvalid_o    [2]),
+		.s_axi_wready   (axi_wready_i    [2]),
+		.s_axi_wdata    (axi_wdata_o     [3*(31+1)-1:2*(31+1)]),
+		.s_axi_wstrb    (axi_wstrb_o     [3*(3+1)-1:2*(3+1)]),
+		.s_axi_wlast    (axi_wlast_o     [2]),
+		//write response                                     
+		.s_axi_bready   (axi_bready_o    [2]),
+		.s_axi_bid      (axi_bid_i       [3*AXI_ID_W-1:2*AXI_ID_W]),
+		.s_axi_bresp    (axi_bresp_i     [3*(1+1)-1:2*(1+1)]),
+		.s_axi_bvalid   (axi_bvalid_i    [2]),
+		//address read                                       
+		.s_axi_arid     (axi_arid_o      [3*AXI_ID_W-1:2*AXI_ID_W]),
+		.s_axi_araddr   (axi_araddr_o    [3*AXI_ADDR_W-1:2*AXI_ADDR_W]),
+		.s_axi_arlen    (axi_arlen_o     [3*(7+1)-1:2*(7+1)]), 
+		.s_axi_arsize   (axi_arsize_o    [3*(2+1)-1:2*(2+1)]),    
+		.s_axi_arburst  (axi_arburst_o   [3*(1+1)-1:2*(1+1)]),
+		.s_axi_arlock   (axi_arlock_o    [3*(1+1)-1:2*(1+1)]),
+		.s_axi_arcache  (axi_arcache_o   [3*(3+1)-1:2*(3+1)]),
+		.s_axi_arprot   (axi_arprot_o    [3*(2+1)-1:2*(2+1)]),
+		.s_axi_arqos    (axi_arqos_o     [3*(3+1)-1:2*(3+1)]),
+		.s_axi_arvalid  (axi_arvalid_o   [2]),
+		.s_axi_arready  (axi_arready_i   [2]),
+		//read                                               
+		.s_axi_rdata    (axi_rdata_i     [3*(31+1)-1:2*(31+1)]),
+		.s_axi_rresp    (axi_rresp_i     [3*(1+1)-1:2*(1+1)]),
+		.s_axi_rlast    (axi_rlast_i     [2]),
+		.s_axi_rvalid   (axi_rvalid_i    [2])
+		.s_axi_rid      (axi_rid_i       [3*AXI_ID_W-1:2*AXI_ID_W]),
+		.s_axi_rready   (axi_rready_o    [2]),
 
-			.s_axi_awid     (axi_awid_o      [3*AXI_ID_W-1:2*AXI_ID_W]),
-			.s_axi_awaddr   (axi_awaddr_o    [3*AXI_ADDR_W-1:2*AXI_ADDR_W]),
-			.s_axi_awlen    (axi_awlen_o     [3*(7+1)-1:2*(7+1)]),
-			.s_axi_awsize   (axi_awsize_o    [3*(2+1)-1:2*(2+1)]),
-			.s_axi_awburst  (axi_awburst_o   [3*(1+1)-1:2*(1+1)]),
-			.s_axi_awlock   (axi_awlock_o    [3*(1+1)-1:2*(1+1)]),
-			.s_axi_awcache  (axi_awcache_o   [3*(3+1)-1:2*(3+1)]),
-			.s_axi_awprot   (axi_awprot_o    [3*(2+1)-1:2*(2+1)]),
-			.s_axi_awqos    (axi_awqos_o     [3*(3+1)-1:2*(3+1)]),
-			.s_axi_awvalid  (axi_awvalid_o   [2]),
-			.s_axi_awready  (axi_awready_i   [2]),
-			//write                                              
-			.s_axi_wvalid   (axi_wvalid_o    [2]),
-			.s_axi_wready   (axi_wready_i    [2]),
-			.s_axi_wdata    (axi_wdata_o     [3*(31+1)-1:2*(31+1)]),
-			.s_axi_wstrb    (axi_wstrb_o     [3*(3+1)-1:2*(3+1)]),
-			.s_axi_wlast    (axi_wlast_o     [2]),
-			//write response                                     
-			.s_axi_bready   (axi_bready_o    [2]),
-			.s_axi_bid      (axi_bid_i       [3*AXI_ID_W-1:2*AXI_ID_W]),
-			.s_axi_bresp    (axi_bresp_i     [3*(1+1)-1:2*(1+1)]),
-			.s_axi_bvalid   (axi_bvalid_i    [2]),
-			//address read                                       
-			.s_axi_arid     (axi_arid_o      [3*AXI_ID_W-1:2*AXI_ID_W]),
-			.s_axi_araddr   (axi_araddr_o    [3*AXI_ADDR_W-1:2*AXI_ADDR_W]),
-			.s_axi_arlen    (axi_arlen_o     [3*(7+1)-1:2*(7+1)]), 
-			.s_axi_arsize   (axi_arsize_o    [3*(2+1)-1:2*(2+1)]),    
-			.s_axi_arburst  (axi_arburst_o   [3*(1+1)-1:2*(1+1)]),
-			.s_axi_arlock   (axi_arlock_o    [3*(1+1)-1:2*(1+1)]),
-			.s_axi_arcache  (axi_arcache_o   [3*(3+1)-1:2*(3+1)]),
-			.s_axi_arprot   (axi_arprot_o    [3*(2+1)-1:2*(2+1)]),
-			.s_axi_arqos    (axi_arqos_o     [3*(3+1)-1:2*(3+1)]),
-			.s_axi_arvalid  (axi_arvalid_o   [2]),
-			.s_axi_arready  (axi_arready_i   [2]),
-			//read                                               
-			.s_axi_rdata    (axi_rdata_i     [3*(31+1)-1:2*(31+1)]),
-			.s_axi_rresp    (axi_rresp_i     [3*(1+1)-1:2*(1+1)]),
-			.s_axi_rlast    (axi_rlast_i     [2]),
-			.s_axi_rvalid   (axi_rvalid_i    [2])
-			.s_axi_rid      (axi_rid_i       [3*AXI_ID_W-1:2*AXI_ID_W]),
-			.s_axi_rready   (axi_rready_o    [2]),
-		);   
+      .clk_i(clk_i),
+      .rst_i(rst_i)
+      );   
 `endif
-
 
 //finish simulation on trap
 /* //Sut
@@ -340,16 +332,16 @@ always @(posedge trap[1]) begin
 
    //sram monitor - use for debugging programs
    /*
-    wire [`IOB_SOC_SRAM_ADDR_W-1:0] sram_daddr = uut.int_mem0.int_sram.d_addr;
+    wire [`IOB_SOC_TESTER_SRAM_ADDR_W-1:0] sram_daddr = uut.int_mem0.int_sram.d_addr;
     wire sram_dwstrb = |uut.int_mem0.int_sram.d_wstrb & uut.int_mem0.int_sram.d_valid;
     wire sram_drdstrb = !uut.int_mem0.int_sram.d_wstrb & uut.int_mem0.int_sram.d_valid;
-    wire [`IOB_SOC_DATA_W-1:0] sram_dwdata = uut.int_mem0.int_sram.d_wdata;
+    wire [`IOB_SOC_TESTER_DATA_W-1:0] sram_dwdata = uut.int_mem0.int_sram.d_wdata;
 
 
     wire sram_iwstrb = |uut.int_mem0.int_sram.i_wstrb & uut.int_mem0.int_sram.i_valid;
     wire sram_irdstrb = !uut.int_mem0.int_sram.i_wstrb & uut.int_mem0.int_sram.i_valid;
-    wire [`IOB_SOC_SRAM_ADDR_W-1:0] sram_iaddr = uut.int_mem0.int_sram.i_addr;
-    wire [`IOB_SOC_DATA_W-1:0] sram_irdata = uut.int_mem0.int_sram.i_rdata;
+    wire [`IOB_SOC_TESTER_SRAM_ADDR_W-1:0] sram_iaddr = uut.int_mem0.int_sram.i_addr;
+    wire [`IOB_SOC_TESTER_DATA_W-1:0] sram_irdata = uut.int_mem0.int_sram.i_rdata;
 
     
     always @(posedge sram_dwstrb)
@@ -358,7 +350,6 @@ always @(posedge trap[1]) begin
     //$finish;
       end
     */
-  wire en_i = 1'b1;
 	//Manually added testbench uart core. RS232 pins attached to the same pins
 	//of the Tester UART0 instance to communicate with it
 	// The interface of Tester UART0 is assumed to be the first portmapped interface (portmap_0_*)

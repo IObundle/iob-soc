@@ -1,7 +1,7 @@
 import filecmp
 
-src_file = meta['setup_dir']+"/software/embedded/embed_build.mk"
-dst_file = meta['build_dir']+"/software/embedded/embed_build.mk"
+src_file = setup_module.setup_dir+"/software/embedded/embed_build.mk"
+dst_file = setup_module.build_dir+"/software/embedded/embed_build.mk"
 
 # Make sure files are not equal
 # They may be equal if the python scripts already copied it

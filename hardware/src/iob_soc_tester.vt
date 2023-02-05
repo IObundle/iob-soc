@@ -1,23 +1,20 @@
 `timescale 1 ns / 1 ps
 `include "iob_soc_tester.vh"
-`include "iob_soc_tester_conf.vh"
 `include "iob_lib.vh"
 
 //do not remove line below
 //PHEADER
 
-module iob_soc_tester
-  #(
-`include "iob_soc_tester_params.vh"
-    )
-  (
-`include "iob_soc_tester_io.vh"
-   );
+module iob_soc_tester #(
+   `include "iob_soc_tester_params.vh"
+    ) (
+   `include "iob_soc_tester_io.vh"
+    );
 
-	localparam E_BIT = `IOB_SOC_TESTER_E;
-	localparam P_BIT = `IOB_SOC_TESTER_P;
-	localparam B_BIT = `IOB_SOC_TESTER_B;
-   
+   localparam E_BIT = `IOB_SOC_TESTER_E;
+   localparam P_BIT = `IOB_SOC_TESTER_P;
+   localparam B_BIT = `IOB_SOC_TESTER_B;
+
    //
    // SYSTEM RESET
    //
@@ -25,8 +22,6 @@ module iob_soc_tester
    wire   boot;
    wire   cpu_reset;
 
-   wire en_i;
-   assign en_i = 1'b1;
    wire cke_i;
    assign cke_i = 1'b1;
    
@@ -50,7 +45,12 @@ module iob_soc_tester
        .E_BIT(`E_BIT),
        .P_BIT(`P_BIT),
        .USE_COMPRESSED(`IOB_SOC_TESTER_USE_COMPRESSED),
-       .USE_MUL_DIV(`IOB_SOC_TESTER_USE_MUL_DIV)
+       .USE_MUL_DIV(`IOB_SOC_TESTER_USE_MUL_DIV),
+`ifdef IOB_SOC_TESTER_RUN_EXTMEM
+       .RUN_EXTMEM(1)
+`else
+       .RUN_EXTMEM(0)
+`endif
        )
    cpu (
         .clk_i (clk_i),
@@ -77,18 +77,13 @@ module iob_soc_tester
    wire [`REQ_W-1:0]  int_mem_i_req;
    wire [`RESP_W-1:0] int_mem_i_resp;
    //external memory instruction bus
-`ifdef TESTER_RUN_EXTMEM
+`ifdef IOB_SOC_TESTER_RUN_EXTMEM
    wire [`REQ_W-1:0]  ext_mem_i_req;
    wire [`RESP_W-1:0] ext_mem_i_resp;
-`endif
 
    // INSTRUCTION BUS
    iob_split #(
-`ifdef TESTER_RUN_EXTMEM
        .N_SLAVES(2),
-`else
-       .N_SLAVES(1),
-`endif
        .P_SLAVES(`E_BIT)
        )
    ibus_split (
@@ -99,25 +94,24 @@ module iob_soc_tester
       .m_resp_o (cpu_i_resp),
       
       // slaves interface
-`ifdef TESTER_RUN_EXTMEM
       .s_req_o ( {ext_mem_i_req, int_mem_i_req} ),
       .s_resp_i ( {ext_mem_i_resp, int_mem_i_resp} )
-`else
-      .s_req_o (int_mem_i_req),
-      .s_resp_i ( int_mem_i_resp)
-`endif
       );
+`else
+      assign int_mem_i_req = cpu_i_req;
+      assign cpu_i_resp = int_mem_i_resp;
+`endif
 
 
    // DATA BUS
 
-`ifdef TESTER_RUN_EXTMEM
-   //external memory data bus
-   wire [`REQ_W-1:0]         ext_mem_d_req;
-   wire [`RESP_W-1:0]        ext_mem_d_resp;
    //internal data bus
    wire [`REQ_W-1:0]         int_d_req;
    wire [`RESP_W-1:0]        int_d_resp;
+`ifdef IOB_SOC_TESTER_RUN_EXTMEM
+   //external memory data bus
+   wire [`REQ_W-1:0]         ext_mem_d_req;
+   wire [`RESP_W-1:0]        ext_mem_d_resp;
 
    iob_split #(
        .N_SLAVES(2), //E,{P,I}
@@ -125,7 +119,7 @@ module iob_soc_tester
        )
    dbus_split (
       .clk_i    ( clk_i   ),
-      .arst_i    ( cpu_reset ),
+      .arst_i   ( cpu_reset ),
 
       // master interface
       .m_req_i  ( cpu_d_req  ),
@@ -135,6 +129,9 @@ module iob_soc_tester
       .s_req_o  ( {ext_mem_d_req, int_d_req}   ),
       .s_resp_i ( {ext_mem_d_resp, int_d_resp} )
       );
+`else
+      assign int_d_req = cpu_d_req;
+      assign cpu_d_resp = int_d_resp;
 `endif
 
    //
@@ -156,15 +153,9 @@ module iob_soc_tester
       .clk_i (clk_i),
       .arst_i (cpu_reset),
 
-`ifdef RUN_EXTMEM
       // master interface
       .m_req_i  ( int_d_req  ),
       .m_resp_o ( int_d_resp ),
-`else
-      // master interface
-      .m_req_i  ( cpu_d_req  ),
-      .m_resp_o ( cpu_d_resp ),
-`endif
 
       // slaves interface
       .s_req_o  ( {pbus_req, int_mem_d_req}   ),
@@ -214,7 +205,6 @@ module iob_soc_tester
       .clk_i (clk_i),
       .arst_i (arst_i),
       .cke_i (cke_i),
-      .en_i (en_i),
       .boot (boot),
       .cpu_reset (cpu_reset),
 
@@ -227,7 +217,7 @@ module iob_soc_tester
       .d_resp (int_mem_d_resp)
       );
 
-`ifdef TESTER_RUN_EXTMEM
+`ifdef IOB_SOC_TESTER_RUN_EXTMEM
    //
    // EXTERNAL DDR MEMORY
    //
@@ -236,32 +226,27 @@ module iob_soc_tester
    assign axi_araddr_o[2*AXI_ADDR_W-1] = ~axi_invert_r_bit;
    assign axi_awaddr_o[2*AXI_ADDR_W-1] = ~axi_invert_w_bit;
 
-   ext_mem
-    #(
+   ext_mem #(
       .ADDR_W(ADDR_W),
       .DATA_W(DATA_W),
       .AXI_ID_W(AXI_ID_W),
       .AXI_LEN_W(AXI_LEN_W),
       .AXI_ADDR_W(AXI_ADDR_W),
       .AXI_DATA_W(AXI_DATA_W),
-      .FIRM_ADDR_W(`TESTER_FIRM_ADDR_W),
-      .DCACHE_ADDR_W(`TESTER_DCACHE_ADDR_W),
+      .FIRM_ADDR_W(`IOB_SOC_TESTER_SRAM_ADDR_W),
+      .DCACHE_ADDR_W(`IOB_SOC_TESTER_DCACHE_ADDR_W),
       .DDR_ADDR_W(AXI_ADDR_W)
       )
-    ext_mem0 
-     (
-      .clk (clk_i),
-      .rst (cpu_reset)
-      
+   ext_mem0 (
       // instruction bus
-      .i_req                ({ext_mem_i_req[`avalid(0)], ext_mem_i_req[`address(0, `IOB_SOC_TESTER_SRAM_ADDR_W)-2], ext_mem_i_req[`write(0)]}),
-      .i_resp               (ext_mem_i_resp),
+      .i_req ({ext_mem_i_req[`avalid(0)], ext_mem_i_req[`address(0, `IOB_SOC_TESTER_SRAM_ADDR_W)-2], ext_mem_i_req[`write(0)]}),
+      .i_resp (ext_mem_i_resp),
 
       //data bus
-      .d_req                ({ext_mem_d_req[`valid(0)], ext_mem_d_req[`address(0, `TESTER_DCACHE_ADDR_W+1)-2], ext_mem_d_req[`write(0)]}),
-      .d_resp               (ext_mem_d_resp),
+      .d_req ({ext_mem_d_req[`avalid(0)], ext_mem_d_req[`address(0, `IOB_SOC_TESTER_DCACHE_ADDR_W+1)-2], ext_mem_d_req[`write(0)]}),
+      .d_resp (ext_mem_d_resp),
 
-      //AXI INTERFACE
+      //AXI INTERFACE 
       //address write
       .axi_awid_o       (axi_awid_o    [2*(AXI_ID_W)-1:AXI_ID_W]), 
       .axi_awaddr_o     ({axi_invert_w_bit, axi_awaddr_o[2*AXI_ADDR_W-2:AXI_ADDR_W]}), 
@@ -303,7 +288,10 @@ module iob_soc_tester
       .axi_rresp_i      (axi_rresp_i   [2*(1+1)-1:1+1]), 
       .axi_rlast_i      (axi_rlast_i   [2*(0+1)-1:0+1]), 
       .axi_rvalid_i     (axi_rvalid_i  [2*(0+1)-1:0+1]),  
-      .axi_rready_o     (axi_rready_o  [2*(0+1)-1:0+1])
+      .axi_rready_o     (axi_rready_o  [2*(0+1)-1:0+1]),
+
+      .clk_i  (clk_i),
+      .arst_i (cpu_reset)
       );
 `endif
 
