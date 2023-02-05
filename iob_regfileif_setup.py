@@ -5,14 +5,12 @@ sys.path.insert(0, os.getcwd()+'/submodules/LIB/scripts')
 import setup
 import mkregs
 
-meta = \
-{
-'name':'iob_regfileif',
-'version':'V0.10',
-'flows':'sim',
-'setup_dir':os.path.dirname(__file__)}
-meta['build_dir']=f"../{meta['name']+'_'+meta['version']}"
-meta['submodules'] = {
+name='iob_regfileif'
+version='V0.10'
+flows='sim'
+setup_dir=os.path.dirname(__file__)
+build_dir=f"../{name}_{version}"
+submodules = {
     'hw_setup': {
         'headers' : [ 'iob_s_port', 'iob_s_portmap' ],
         'modules': [ 'iob_reg.v', 'iob_reg_e.v' ]
@@ -66,11 +64,11 @@ def main():
     # Get register table
     reg_table = mkregs_obj.get_reg_table(regs, False)
     # Create inverted register hardware
-    mkregs_obj.write_hwheader(reg_table, meta['build_dir']+'/hardware/src', f"{meta['name']}_inverted")
-    mkregs_obj.write_hwcode(reg_table, meta['build_dir']+'/hardware/src', f"{meta['name']}_inverted")
+    mkregs_obj.write_hwheader(reg_table, build_dir+'/hardware/src', f"{name}_inverted")
+    mkregs_obj.write_hwcode(reg_table, build_dir+'/hardware/src', f"{name}_inverted")
 
     #### Modify `*_swreg_inst.vh` file to prevent overriding definitions of the `*_inverted_swreg_inst.vh` file
-    with open(f"{meta['build_dir']}/hardware/src/{meta['name']}_swreg_inst.vh", "r") as file:
+    with open(f"{build_dir}/hardware/src/{name}_swreg_inst.vh", "r") as file:
         lines = file.readlines()
     # Modify lines
     for idx, line in enumerate(lines):
@@ -96,25 +94,25 @@ def main():
     lines.insert(0,"`IOB_WIRE(iob_ready_nxt2, 1)\n")
     lines.insert(0,"`IOB_WIRE(iob_rvalid_nxt2, 1)\n")
     # Write modified lines to file
-    with open(f"{meta['build_dir']}/hardware/src/{meta['name']}_swreg_inst.vh", "w") as file:
+    with open(f"{build_dir}/hardware/src/{name}_swreg_inst.vh", "w") as file:
         file.writelines(lines)
 
     #### Modify "iob_regfileif_inverted_swreg_def" to include `IOB_REGFILEIF_SWREG_ADDR_W`
-    with open(f"{meta['build_dir']}/hardware/src/{meta['name']}_inverted_swreg_def.vh", "r") as file: lines = file.readlines()
+    with open(f"{build_dir}/hardware/src/{name}_inverted_swreg_def.vh", "r") as file: lines = file.readlines()
     for idx, line in enumerate(lines):
         if line.startswith("`define IOB_REGFILEIF_INVERTED_SWREG_ADDR_W"):
             lines.insert(idx,line.replace("_INVERTED",""))
             break
-    with open(f"{meta['build_dir']}/hardware/src/{meta['name']}_inverted_swreg_def.vh", "w") as file: file.writelines(lines)
+    with open(f"{build_dir}/hardware/src/{name}_inverted_swreg_def.vh", "w") as file: file.writelines(lines)
 
     #### Create params, inst_params and conf files for inverted hardware. (Use symlinks to save disk space and highlight they are equal)
-    os.symlink(f"{meta['name']}_conf.vh", f"{meta['build_dir']}/hardware/src/{meta['name']}_inverted_conf.vh")
-    os.symlink(f"{meta['name']}_params.vh", f"{meta['build_dir']}/hardware/src/{meta['name']}_inverted_params.vh")
-    os.symlink(f"{meta['name']}_inst_params.vh", f"{meta['build_dir']}/hardware/src/{meta['name']}_inverted_inst_params.vh")
+    os.symlink(f"{name}_conf.vh", f"{build_dir}/hardware/src/{name}_inverted_conf.vh")
+    os.symlink(f"{name}_params.vh", f"{build_dir}/hardware/src/{name}_inverted_params.vh")
+    os.symlink(f"{name}_inst_params.vh", f"{build_dir}/hardware/src/{name}_inverted_inst_params.vh")
 
     #### Create inverted register software
-    mkregs_obj.write_swheader(reg_table, meta['build_dir']+'/software/esrc', f"{meta['name']}_inverted")
-    mkregs_obj.write_swcode(reg_table, meta['build_dir']+'/software/esrc', f"{meta['name']}_inverted")
+    mkregs_obj.write_swheader(reg_table, build_dir+'/software/esrc', f"{name}_inverted")
+    mkregs_obj.write_swcode(reg_table, build_dir+'/software/esrc', f"{name}_inverted")
 
 if __name__ == "__main__":
     main()
