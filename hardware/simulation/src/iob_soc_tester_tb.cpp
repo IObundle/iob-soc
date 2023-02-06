@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "Vsystem_top.h"
+#include "Viob_soc_tester_top.h"
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 
@@ -13,7 +13,7 @@
 
 vluint64_t main_time = 0;
 VerilatedVcdC* tfp = NULL;
-Vsystem_top* dut = NULL;
+Viob_soc_tester_top* dut = NULL;
 
 double sc_time_stamp () {
   return main_time;
@@ -73,7 +73,7 @@ void inituart(){
 int main(int argc, char **argv, char **env){
   Verilated::commandArgs(argc, argv);
   Verilated::traceEverOn(true);
-  dut = new Vsystem_top;
+  dut = new Viob_soc_tester_top;
 
 #ifdef VCD
   tfp = new VerilatedVcdC;

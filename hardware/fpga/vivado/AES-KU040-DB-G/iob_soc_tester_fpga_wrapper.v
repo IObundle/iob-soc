@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
-`include "tester.vh"
+`include "iob_soc_tester.vh"
 
-module iob_soc_fpga_wrapper
+module iob_soc_tester_fpga_wrapper
   (
 
    //differential clock input and reset
@@ -13,7 +13,7 @@ module iob_soc_fpga_wrapper
    output        uart_txd,
    input         uart_rxd,
 
-`ifdef RUN_EXTMEM
+`ifdef IOB_SOC_TESTER_RUN_EXTMEM
    output        c0_ddr4_act_n,
    output [16:0] c0_ddr4_adr,
    output [1:0]  c0_ddr4_ba,
@@ -92,7 +92,7 @@ module iob_soc_fpga_wrapper
     assign locked = 1'b1; 
 `endif                  
 
-`ifdef RUN_EXTMEM
+`ifdef IOB_SOC_TESTER_RUN_EXTMEM
    //axi wires between system backend and axi bridge
 	`IOB_WIRE(m_axi_awid, 2*AXI_ID_W) //Address write channel ID
 	`IOB_WIRE(m_axi_awaddr, 2*AXI_ADDR_W) //Address write channel address
@@ -138,7 +138,7 @@ module iob_soc_fpga_wrapper
    // TESTER (includes UUT)
    //
 
-   tester
+   iob_soc_tester
      #(
        .AXI_ID_W(AXI_ID_W),
        .AXI_LEN_W(AXI_LEN_W),
@@ -148,7 +148,7 @@ module iob_soc_fpga_wrapper
    tester 
      (
       .clk_i (clk),
-      .rst_i (rst),
+      .arst_i (rst),
       .trap_o (trap_signals),
 `ifdef IOB_SOC_TESTER_USE_ETHERNET
             //ETHERNET
@@ -164,9 +164,9 @@ module iob_soc_fpga_wrapper
             .ETHERNET0_TX_DATA(TX_DATA),
             .ETHERNET0_TX_EN(ENET_TX_EN),
 `endif
-`ifdef RUN_EXTMEM
-  //axi system backend interface
- `include "iob_soc_tester_axi_m_portmap.vh"	
+`ifdef IOB_SOC_TESTER_RUN_EXTMEM
+      //axi system backend interface
+      `include "iob_axi_m_portmap.vh"	
 `endif
 
       //UART
@@ -176,126 +176,13 @@ module iob_soc_fpga_wrapper
       .UART0_cts (1'b1)
       );
 
-`ifdef RUN_EXTMEM
-   ddr4_0 ddr4_ctrl 
-     (
-      .sys_rst                (reset),
-      .c0_sys_clk_p           (c0_sys_clk_clk_p),
-      .c0_sys_clk_n           (c0_sys_clk_clk_n),
-
-      .dbg_clk                (),
-      .dbg_bus                (),
-
-      //USER LOGIC CLOCK AND RESET      
-      .c0_ddr4_ui_clk_sync_rst(c0_ddr4_ui_clk_sync_rst), //to axi intercon
-      .addn_ui_clkout1 (clk), //to user logic 
-
-      //AXI INTERFACE (slave)
-      .c0_ddr4_ui_clk (c0_ddr4_ui_clk), //to axi intercon general and master clocks
-      .c0_ddr4_aresetn (ddr4_axi_arstn),//from interconnect axi master
-
-      //address write 
-      .c0_ddr4_s_axi_awid (ddr4_axi_awid),
-      .c0_ddr4_s_axi_awaddr (ddr4_axi_awaddr),
-      .c0_ddr4_s_axi_awlen (ddr4_axi_awlen),
-      .c0_ddr4_s_axi_awsize (ddr4_axi_awsize),
-      .c0_ddr4_s_axi_awburst (ddr4_axi_awburst),
-      .c0_ddr4_s_axi_awlock (ddr4_axi_awlock[0]),
-      .c0_ddr4_s_axi_awprot (ddr4_axi_awprot),
-      .c0_ddr4_s_axi_awcache (ddr4_axi_awcache),
-      .c0_ddr4_s_axi_awqos (ddr4_axi_awqos),
-      .c0_ddr4_s_axi_awvalid (ddr4_axi_awvalid),
-      .c0_ddr4_s_axi_awready (ddr4_axi_awready),
-
-      //write  
-      .c0_ddr4_s_axi_wvalid (ddr4_axi_wvalid),
-      .c0_ddr4_s_axi_wready (ddr4_axi_wready),
-      .c0_ddr4_s_axi_wdata (ddr4_axi_wdata),
-      .c0_ddr4_s_axi_wstrb (ddr4_axi_wstrb),
-      .c0_ddr4_s_axi_wlast (ddr4_axi_wlast),
-
-      //write response
-      .c0_ddr4_s_axi_bready (ddr4_axi_bready),
-      .c0_ddr4_s_axi_bid (ddr4_axi_bid),
-      .c0_ddr4_s_axi_bresp (ddr4_axi_bresp),
-      .c0_ddr4_s_axi_bvalid (ddr4_axi_bvalid),
-
-      //address read
-      .c0_ddr4_s_axi_arid (ddr4_axi_arid),
-      .c0_ddr4_s_axi_araddr (ddr4_axi_araddr),
-      .c0_ddr4_s_axi_arlen (ddr4_axi_arlen), 
-      .c0_ddr4_s_axi_arsize (ddr4_axi_arsize),    
-      .c0_ddr4_s_axi_arburst (ddr4_axi_arburst),
-      .c0_ddr4_s_axi_arlock (ddr4_axi_arlock[0]),
-      .c0_ddr4_s_axi_arcache (ddr4_axi_arcache),
-      .c0_ddr4_s_axi_arprot (ddr4_axi_arprot),
-      .c0_ddr4_s_axi_arqos (ddr4_axi_arqos),
-      .c0_ddr4_s_axi_arvalid (ddr4_axi_arvalid),
-      .c0_ddr4_s_axi_arready (ddr4_axi_arready),
-      
-      //read   
-      .c0_ddr4_s_axi_rready (ddr4_axi_rready),
-      .c0_ddr4_s_axi_rid (ddr4_axi_rid),
-      .c0_ddr4_s_axi_rdata (ddr4_axi_rdata),
-      .c0_ddr4_s_axi_rresp (ddr4_axi_rresp),
-      .c0_ddr4_s_axi_rlast (ddr4_axi_rlast),
-      .c0_ddr4_s_axi_rvalid (ddr4_axi_rvalid),
-
-      //DDR4 INTERFACE (master of external DDR4 module)
-      .c0_ddr4_act_n (c0_ddr4_act_n),
-      .c0_ddr4_adr (c0_ddr4_adr),
-      .c0_ddr4_ba (c0_ddr4_ba),
-      .c0_ddr4_bg (c0_ddr4_bg),
-      .c0_ddr4_cke (c0_ddr4_cke),
-      .c0_ddr4_odt (c0_ddr4_odt),
-      .c0_ddr4_cs_n (c0_ddr4_cs_n),
-      .c0_ddr4_ck_t (c0_ddr4_ck_t),
-      .c0_ddr4_ck_c (c0_ddr4_ck_c),
-      .c0_ddr4_reset_n (c0_ddr4_reset_n),
-      .c0_ddr4_dm_dbi_n (c0_ddr4_dm_dbi_n),
-      .c0_ddr4_dq (c0_ddr4_dq),
-      .c0_ddr4_dqs_c (c0_ddr4_dqs_c),
-      .c0_ddr4_dqs_t (c0_ddr4_dqs_t),
-      .c0_init_calib_complete (calib_done)
-      );
-
-
-`else
-   //if DDR not used use PLL to generate system clock
-   clock_wizard 
-     #(
-       .OUTPUT_PER(10),
-       .INPUT_PER(4)
-       )
-   clk_250_to_100_MHz
-     (
-      .clk_in1_p(c0_sys_clk_clk_p),
-      .clk_in1_n(c0_sys_clk_clk_n),
-      .clk_out1(clk)
-      );
-
-   //create reset pulse as reset is never activated manually
-   //also, during bitstream loading, the reset pin is not pulled high
-   iob_pulse_gen
-     #(
-       .START(5),
-       .DURATION(10)
-       ) 
-   reset_pulse
-     (
-      .clk(clk),
-      .rst(reset),
-      .restart(1'b0),
-      .pulse_out(rst)
-      );
-`endif
-
 
    //
    // DDR4 CONTROLLER
    //
                  
-`ifdef RUN_EXTMEM
+`ifdef IOB_SOC_TESTER_RUN_EXTMEM
+
 
    //axi wires between ddr4 contrl and axi interconnect
  `include "ddr4_axi_wire.vh"
@@ -484,6 +371,122 @@ module iob_soc_fpga_wrapper
       .M00_AXI_RREADY       (ddr4_axi_rready)
       );
 
+   ddr4_0 ddr4_ctrl 
+     (
+      .sys_rst                (reset),
+      .c0_sys_clk_p           (c0_sys_clk_clk_p),
+      .c0_sys_clk_n           (c0_sys_clk_clk_n),
+
+      .dbg_clk                (),
+      .dbg_bus                (),
+
+      //USER LOGIC CLOCK AND RESET      
+      .c0_ddr4_ui_clk_sync_rst(c0_ddr4_ui_clk_sync_rst), //to axi intercon
+      .addn_ui_clkout1 (clk), //to user logic 
+
+      //AXI INTERFACE (slave)
+      .c0_ddr4_ui_clk (c0_ddr4_ui_clk), //to axi intercon general and master clocks
+      .c0_ddr4_aresetn (ddr4_axi_arstn),//from interconnect axi master
+
+      //address write 
+      .c0_ddr4_s_axi_awid (ddr4_axi_awid),
+      .c0_ddr4_s_axi_awaddr (ddr4_axi_awaddr),
+      .c0_ddr4_s_axi_awlen (ddr4_axi_awlen),
+      .c0_ddr4_s_axi_awsize (ddr4_axi_awsize),
+      .c0_ddr4_s_axi_awburst (ddr4_axi_awburst),
+      .c0_ddr4_s_axi_awlock (ddr4_axi_awlock[0]),
+      .c0_ddr4_s_axi_awprot (ddr4_axi_awprot),
+      .c0_ddr4_s_axi_awcache (ddr4_axi_awcache),
+      .c0_ddr4_s_axi_awqos (ddr4_axi_awqos),
+      .c0_ddr4_s_axi_awvalid (ddr4_axi_awvalid),
+      .c0_ddr4_s_axi_awready (ddr4_axi_awready),
+
+      //write  
+      .c0_ddr4_s_axi_wvalid (ddr4_axi_wvalid),
+      .c0_ddr4_s_axi_wready (ddr4_axi_wready),
+      .c0_ddr4_s_axi_wdata (ddr4_axi_wdata),
+      .c0_ddr4_s_axi_wstrb (ddr4_axi_wstrb),
+      .c0_ddr4_s_axi_wlast (ddr4_axi_wlast),
+
+      //write response
+      .c0_ddr4_s_axi_bready (ddr4_axi_bready),
+      .c0_ddr4_s_axi_bid (ddr4_axi_bid),
+      .c0_ddr4_s_axi_bresp (ddr4_axi_bresp),
+      .c0_ddr4_s_axi_bvalid (ddr4_axi_bvalid),
+
+      //address read
+      .c0_ddr4_s_axi_arid (ddr4_axi_arid),
+      .c0_ddr4_s_axi_araddr (ddr4_axi_araddr),
+      .c0_ddr4_s_axi_arlen (ddr4_axi_arlen), 
+      .c0_ddr4_s_axi_arsize (ddr4_axi_arsize),    
+      .c0_ddr4_s_axi_arburst (ddr4_axi_arburst),
+      .c0_ddr4_s_axi_arlock (ddr4_axi_arlock[0]),
+      .c0_ddr4_s_axi_arcache (ddr4_axi_arcache),
+      .c0_ddr4_s_axi_arprot (ddr4_axi_arprot),
+      .c0_ddr4_s_axi_arqos (ddr4_axi_arqos),
+      .c0_ddr4_s_axi_arvalid (ddr4_axi_arvalid),
+      .c0_ddr4_s_axi_arready (ddr4_axi_arready),
+      
+      //read   
+      .c0_ddr4_s_axi_rready (ddr4_axi_rready),
+      .c0_ddr4_s_axi_rid (ddr4_axi_rid),
+      .c0_ddr4_s_axi_rdata (ddr4_axi_rdata),
+      .c0_ddr4_s_axi_rresp (ddr4_axi_rresp),
+      .c0_ddr4_s_axi_rlast (ddr4_axi_rlast),
+      .c0_ddr4_s_axi_rvalid (ddr4_axi_rvalid),
+
+      //DDR4 INTERFACE (master of external DDR4 module)
+      .c0_ddr4_act_n (c0_ddr4_act_n),
+      .c0_ddr4_adr (c0_ddr4_adr),
+      .c0_ddr4_ba (c0_ddr4_ba),
+      .c0_ddr4_bg (c0_ddr4_bg),
+      .c0_ddr4_cke (c0_ddr4_cke),
+      .c0_ddr4_odt (c0_ddr4_odt),
+      .c0_ddr4_cs_n (c0_ddr4_cs_n),
+      .c0_ddr4_ck_t (c0_ddr4_ck_t),
+      .c0_ddr4_ck_c (c0_ddr4_ck_c),
+      .c0_ddr4_reset_n (c0_ddr4_reset_n),
+      .c0_ddr4_dm_dbi_n (c0_ddr4_dm_dbi_n),
+      .c0_ddr4_dq (c0_ddr4_dq),
+      .c0_ddr4_dqs_c (c0_ddr4_dqs_c),
+      .c0_ddr4_dqs_t (c0_ddr4_dqs_t),
+      .c0_init_calib_complete (calib_done)
+      );
+
+
+`else
+    //if DDR not used use PLL to generate system clock
+    clock_wizard #(
+        .OUTPUT_PER(10),
+        .INPUT_PER(4)
+        )
+    clk_250_to_100_MHz (
+        .clk_in1_p(c0_sys_clk_clk_p),
+        .clk_in1_n(c0_sys_clk_clk_n),
+        .clk_out1(clk)
+        );
+
+    wire start;
+    iob_reset_sync start_sync (
+        .clk_i(clk),
+        .arst_i(reset),
+        .cke_i(1'b1),
+        .rst_o(start)
+        );
+
+    //create reset pulse as reset is never activated manually
+    //also, during bitstream loading, the reset pin is not pulled high
+    iob_pulse_gen #(
+        .START(5),
+        .DURATION(10)
+        ) 
+    reset_pulse (
+        .clk_i(clk),
+        .arst_i(reset),
+        .cke_i(1'b1),
+        .start_i(start),
+        .pulse_o(rst)
+        );
 `endif
 
 endmodule

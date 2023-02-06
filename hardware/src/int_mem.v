@@ -1,5 +1,4 @@
 `timescale 1 ns / 1 ps
-
 `include "iob_soc_tester_conf.vh"
 `include "iob_lib.vh"
   
@@ -14,7 +13,6 @@ module int_mem
     parameter B_BIT = `IOB_SOC_TESTER_B
     )
    (
-    input                en_i,
 
     output               boot,
     output               cpu_reset,
@@ -51,17 +49,16 @@ module int_mem
        .N_SLAVES(2),
        .P_SLAVES(B_BIT)
        )
-   data_bootctr_split
-       (
-        .clk_i    ( clk_i                         ),
-        .arst_i    ( arst_i                         ),
+   data_bootctr_split (
+        .clk_i  (clk_i),
+        .arst_i (arst_i),
         // master interface
-        .m_req_i  ( d_req                       ),
-        .m_resp_o ( d_resp                      ),
-        
+        .m_req_i  (d_req),
+        .m_resp_o (d_resp),
+
         // slaves interface
-        .s_req_o ( {boot_ctr_req, ram_d_req}   ),
-        .s_resp_i ( {boot_ctr_resp, ram_d_resp} )
+        .s_req_o  ({boot_ctr_req, ram_d_req}),
+        .s_resp_i ({boot_ctr_resp, ram_d_resp})
         );
 
 
@@ -85,7 +82,6 @@ module int_mem
         .clk_i(clk_i),
         .arst_i(arst_i),
         .cke_i(cke_i),
-        .en_i(en_i),
         .cpu_rst(cpu_reset),
         .boot(boot),
         
@@ -113,16 +109,11 @@ module int_mem
    wire [`REQ_W-1:0]  ram_r_req;
    wire [`RESP_W-1:0] ram_r_resp;
 
-   wire [SRAM_ADDR_W-1:0] boot_offset = -('b1 << BOOTROM_ADDR_W);
-   //wire [SRAM_ADDR_W-1:0] boot_offset = -(SRAM_ADDR_W'b1 << BOOTROM_ADDR_W); //Verilog does not accept a parameter to define number of bits?
-   
-//`define BOOT_OFFSET ((1'b1<<SRAM_ADDR_W)-(1'b1<<BOOTROM_ADDR_W))
-//`define BOOT_OFFSET ((2**SRAM_ADDR_W)-(2**BOOTROM_ADDR_W))
-
    //
    //modify addresses to run  boot program
    //
 
+   localparam boot_offset = -('b1 << BOOTROM_ADDR_W);
    //instruction bus: connect directly but address
    assign ram_r_req[`avalid(0)] = i_req[`avalid(0)];
    assign ram_r_req[`address(0, ADDR_W)] = boot? i_req[`address(0, ADDR_W)] + boot_offset : i_req[`address(0, ADDR_W)];
@@ -147,23 +138,23 @@ module int_mem
            .N_MASTERS(2)
            )
    ibus_merge (
-      .clk_i    ( clk_i                      ),
-      .arst_i    ( arst_i                      ),
+        .clk_i  (clk_i),
+        .arst_i (arst_i),
 
-      //master
-      .m_req_i  ( {ram_w_req, ram_r_req}   ),
-      .m_resp_o ( {ram_w_resp, ram_r_resp} ),
+        //master
+        .m_req_i  ({ram_w_req, ram_r_req}),
+        .m_resp_o ({ram_w_resp, ram_r_resp}),
 
-      //slave  
-      .s_req_o  ( ram_i_req                ),
-      .s_resp_i ( ram_i_resp               )
-      );
+        //slave  
+        .s_req_o  (ram_i_req),
+        .s_resp_i (ram_i_resp)
+        );
    
    //
    // INSTANTIATE RAM
    //
    sram #(
-`ifdef INIT_MEM
+`ifdef IOB_SOC_TESTER_INIT_MEM
         .HEXFILE(HEXFILE),
 `endif
         .DATA_W(DATA_W),

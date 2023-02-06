@@ -1,4 +1,4 @@
-#include "system.h"
+#include "iob_soc_tester_system.h"
 #include "iob_soc_tester_conf.h"
 
 .section .init

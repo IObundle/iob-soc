@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
-`include "tester.vh"
+`include "iob_soc_tester.vh"
 
-module iob_soc_fpga_wrapper
+module iob_soc_tester_fpga_wrapper
   (
    //user clock
    input         clk, 
@@ -11,7 +11,7 @@ module iob_soc_fpga_wrapper
    output        uart_txd,
    input         uart_rxd,
 
-`ifdef RUN_EXTMEM
+`ifdef IOB_SOC_TESTER_RUN_EXTMEM
    output [13:0] ddr3b_a, //SSTL15  //Address
    output [2:0]  ddr3b_ba, //SSTL15  //Bank Address
    output        ddr3b_rasn, //SSTL15  //Row Address Strobe
@@ -100,7 +100,7 @@ module iob_soc_fpga_wrapper
 `endif                  
 
 
-`ifdef RUN_EXTMEM
+`ifdef IOB_SOC_TESTER_RUN_EXTMEM
    //axi wires between system backend and axi bridge
 	`IOB_WIRE(axi_awid_o    , 3*AXI_ID_W) //Address write channel ID
 	`IOB_WIRE(axi_awaddr_o  , 3*AXI_ADDR_W) //Address write channel address
@@ -145,9 +145,7 @@ module iob_soc_fpga_wrapper
    //
    // TESTER (includes UUT)
    //
-
-   tester
-     #(
+   iob_soc_tester #(
        .AXI_ID_W(AXI_ID_W),
        .AXI_LEN_W(AXI_LEN_W),
        .AXI_ADDR_W(AXI_ADDR_W),
@@ -156,7 +154,7 @@ module iob_soc_fpga_wrapper
    tester 
      (
       .clk_i (clk),
-      .rst_i (rst),
+      .arst_i (rst),
       .trap_o (trap_signals),
 `ifdef IOB_SOC_TESTER_USE_ETHERNET
             //ETHERNET
@@ -172,9 +170,9 @@ module iob_soc_fpga_wrapper
             .ETHERNET0_TX_DATA(TX_DATA),
             .ETHERNET0_TX_EN(ENET_TX_EN),
 `endif
-`ifdef RUN_EXTMEM
+`ifdef IOB_SOC_TESTER_RUN_EXTMEM
       //axi system backend interface
- `include "iob_soc_tester_axi_m_portmap.vh"	
+      `include "iob_axi_m_portmap.vh"	
 `endif
 
       //UART
@@ -184,7 +182,7 @@ module iob_soc_fpga_wrapper
       .UART0_cts (1'b1)
       );
 
-`ifdef RUN_EXTMEM
+`ifdef IOB_SOC_TESTER_RUN_EXTMEM
    //user reset
    wire          locked;
    wire          init_done;
@@ -193,7 +191,7 @@ module iob_soc_fpga_wrapper
    wire          rst_int = ~resetn | ~locked | ~init_done;
 //   wire          rst_int = ~resetn | ~locked;
    
-   iob_reset_sync rst_sync (clk, rst_int, rst);
+   iob_reset_sync rst_sync (clk, rst_int, 1'b1, rst);
 
    alt_ddr3 ddr3_ctrl 
      (
@@ -268,11 +266,11 @@ module iob_soc_fpga_wrapper
       .mem_if_ddr3_emif_0_status_local_cal_fail ()
       );
 
-`else
-   iob_reset_sync rst_sync (clk, (~resetn), rst);   
+`else 
+   iob_reset_sync rst_sync (clk, (~resetn), 1'b1, rst);   
 `endif
 
-`ifdef RUN_EXTMEM
+`ifdef IOB_SOC_TESTER_RUN_EXTMEM
 	//instantiate axi interconnect
 	//This connects Tester+SUT to the same memory
 	axi_interconnect
