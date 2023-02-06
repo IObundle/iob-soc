@@ -291,6 +291,7 @@ module iob_soc_tester #(
       .axi_rready_o     (axi_rready_o  [2*(0+1)-1:0+1]),
 
       .clk_i  (clk_i),
+      .cke_i (cke_i),
       .arst_i (cpu_reset)
       );
 `endif

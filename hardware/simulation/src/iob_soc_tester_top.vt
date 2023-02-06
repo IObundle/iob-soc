@@ -102,56 +102,56 @@ module iob_soc_tester_top (
       )
    tester0 (
            //PORTS
-`ifdef IOB_SOC_TESTER_USE_DDR
+`ifdef IOB_SOC_TESTER_RUN_EXTMEM
            //address write
-	       .axi_awid_o  (axi_awid_o      [2*AXI_ID_W-1:0]),
-	       .axi_awaddr  (axi_awaddr_o    [2*AXI_ADDR_W-1:0]),
-	       .axi_awlen   (axi_awlen_o     [2*(7+1)-1:0]),
-	       .axi_awsize  (axi_awsize_o    [2*(2+1)-1:0]),
-	       .axi_awburst (axi_awburst_o   [2*(1+1)-1:0]),
-	       .axi_awlock  (axi_awlock_o    [2*(1+1)-1:0]),
-	       .axi_awcache (axi_awcache_o   [2*(3+1)-1:0]),
-	       .axi_awprot  (axi_awprot_o    [2*(2+1)-1:0]),
-	       .axi_awqos   (axi_awqos_o     [2*(3+1)-1:0]),
-	       .axi_awvalid (axi_awvalid_o   [1:0]),
-	       .axi_awready (axi_awready_i   [1:0]),
-	       //write                       
-	       .axi_wdata   (axi_wdata_o     [2*(31+1)-1:0]),
-	       .axi_wstrb   (axi_wstrb_o     [2*(3+1)-1:0]),
-	       .axi_wlast   (axi_wlast_o     [1:0]),
-	       .axi_wvalid  (axi_wvalid_o    [1:0]),
-	       .axi_wready  (axi_wready_i    [1:0]),
-	       //write response              
-	       .axi_bid     (axi_bid_i       [2*AXI_ID_W-1:0]),
-	       .axi_bresp   (axi_bresp_i     [2*(1+1)-1:0]),
-	       .axi_bvalid  (axi_bvalid_i    [1:0]),
-	       .axi_bready  (axi_bready_o    [1:0]),
-	       //address read                
-	       .axi_arid    (axi_arid_o      [2*AXI_ID_W-1:0]),
-	       .axi_araddr  (axi_araddr_o    [2*AXI_ADDR_W-1:0]),
-	       .axi_arlen   (axi_arlen_o     [2*(7+1)-1:0]),
-	       .axi_arsize  (axi_arsize_o    [2*(2+1)-1:0]),
-	       .axi_arburst (axi_arburst_o   [2*(1+1)-1:0]),
-	       .axi_arlock  (axi_arlock_o    [2*(1+1)-1:0]),
-	       .axi_arcache (axi_arcache_o   [2*(3+1)-1:0]),
-	       .axi_arprot  (axi_arprot_o    [2*(2+1)-1:0]),
-	       .axi_arqos   (axi_arqos_o     [2*(3+1)-1:0]),
-	       .axi_arvalid (axi_arvalid_o   [1:0]),
-	       .axi_arready (axi_arready_i   [1:0]),
-	       //read                        
-	       .axi_rid     (axi_rid_i       [2*AXI_ID_W-1:0]),
-	       .axi_rdata   (axi_rdata_i     [2*(31+1)-1:0]),
-	       .axi_rresp   (axi_rresp_i     [2*(1+1)-1:0]),
-	       .axi_rlast   (axi_rlast_i     [1:0]),
-	       .axi_rvalid  (axi_rvalid_i    [1:0]),
-	       .axi_rready  (axi_rready_o    [1:0]),	
+	       .axi_awid_o    (axi_awid_o      [2*AXI_ID_W-1:0]),
+	       .axi_awaddr_o  (axi_awaddr_o    [2*AXI_ADDR_W-1:0]),
+	       .axi_awlen_o   (axi_awlen_o     [2*(7+1)-1:0]),
+	       .axi_awsize_o  (axi_awsize_o    [2*(2+1)-1:0]),
+	       .axi_awburst_o (axi_awburst_o   [2*(1+1)-1:0]),
+	       .axi_awlock_o  (axi_awlock_o    [2*(1+1)-1:0]),
+	       .axi_awcache_o (axi_awcache_o   [2*(3+1)-1:0]),
+	       .axi_awprot_o  (axi_awprot_o    [2*(2+1)-1:0]),
+	       .axi_awqos_o   (axi_awqos_o     [2*(3+1)-1:0]),
+	       .axi_awvalid_o (axi_awvalid_o   [1:0]),
+	       .axi_awready_i (axi_awready_i   [1:0]),
+	        //write
+	       .axi_wdata_o   (axi_wdata_o     [2*(31+1)-1:0]),
+	       .axi_wstrb_o   (axi_wstrb_o     [2*(3+1)-1:0]),
+	       .axi_wlast_o   (axi_wlast_o     [1:0]),
+	       .axi_wvalid_o  (axi_wvalid_o    [1:0]),
+	       .axi_wready_i  (axi_wready_i    [1:0]),
+	        //write response
+	       .axi_bid_i     (axi_bid_i       [2*AXI_ID_W-1:0]),
+	       .axi_bresp_i   (axi_bresp_i     [2*(1+1)-1:0]),
+	       .axi_bvalid_i  (axi_bvalid_i    [1:0]),
+	       .axi_bready_o  (axi_bready_o    [1:0]),
+	        //address read
+	       .axi_arid_o    (axi_arid_o      [2*AXI_ID_W-1:0]),
+	       .axi_araddr_o  (axi_araddr_o    [2*AXI_ADDR_W-1:0]),
+	       .axi_arlen_o   (axi_arlen_o     [2*(7+1)-1:0]),
+	       .axi_arsize_o  (axi_arsize_o    [2*(2+1)-1:0]),
+	       .axi_arburst_o (axi_arburst_o   [2*(1+1)-1:0]),
+	       .axi_arlock_o  (axi_arlock_o    [2*(1+1)-1:0]),
+	       .axi_arcache_o (axi_arcache_o   [2*(3+1)-1:0]),
+	       .axi_arprot_o  (axi_arprot_o    [2*(2+1)-1:0]),
+	       .axi_arqos_o   (axi_arqos_o     [2*(3+1)-1:0]),
+	       .axi_arvalid_o (axi_arvalid_o   [1:0]),
+	       .axi_arready_i (axi_arready_i   [1:0]),
+	        //read
+	       .axi_rid_i     (axi_rid_i       [2*AXI_ID_W-1:0]),
+	       .axi_rdata_i   (axi_rdata_i     [2*(31+1)-1:0]),
+	       .axi_rresp_i   (axi_rresp_i     [2*(1+1)-1:0]),
+	       .axi_rlast_i   (axi_rlast_i     [1:0]),
+	       .axi_rvalid_i  (axi_rvalid_i    [1:0]),
+	       .axi_rready_o  (axi_rready_o    [1:0]),
 `endif               
       .clk_i (clk_i),
       .arst_i (rst_i),
       .trap_o (trap_signals)
       );
 
-`ifdef IOB_SOC_TESTER_USE_DDR
+`ifdef IOB_SOC_TESTER_RUN_EXTMEM
 	//instantiate axi interconnect
 	//This connects Tester+SUT to the same memory
 	axi_interconnect
@@ -173,7 +173,7 @@ module iob_soc_tester_top (
 			.s_axi_awsize   (axi_awsize_o    [2*(2+1)-1:0]),
 			.s_axi_awburst  (axi_awburst_o   [2*(1+1)-1:0]),
 			.s_axi_awlock   ({axi_awlock_o[2],axi_awlock_o[0]}),
-			.s_axi_awcache  (m_axi_awcache    axi_awcache_o   [2*(3+1)-1:0]),
+			.s_axi_awcache  (axi_awcache_o   [2*(3+1)-1:0]),
 			.s_axi_awprot   (axi_awprot_o    [2*(2+1)-1:0]),
 			.s_axi_awqos    (axi_awqos_o     [2*(3+1)-1:0]),
 			.s_axi_awvalid  (axi_awvalid_o   [1:0]),
@@ -271,47 +271,47 @@ module iob_soc_tester_top (
 		.ADDR_WIDTH (AXI_ADDR_W)
 		)
 		ddr_model_mem(
-		.s_axi_awid     (axi_awid_o      [3*AXI_ID_W-1:2*AXI_ID_W]),
-		.s_axi_awaddr   (axi_awaddr_o    [3*AXI_ADDR_W-1:2*AXI_ADDR_W]),
-		.s_axi_awlen    (axi_awlen_o     [3*(7+1)-1:2*(7+1)]),
-		.s_axi_awsize   (axi_awsize_o    [3*(2+1)-1:2*(2+1)]),
-		.s_axi_awburst  (axi_awburst_o   [3*(1+1)-1:2*(1+1)]),
-		.s_axi_awlock   (axi_awlock_o    [3*(1+1)-1:2*(1+1)]),
-		.s_axi_awcache  (axi_awcache_o   [3*(3+1)-1:2*(3+1)]),
-		.s_axi_awprot   (axi_awprot_o    [3*(2+1)-1:2*(2+1)]),
-		.s_axi_awqos    (axi_awqos_o     [3*(3+1)-1:2*(3+1)]),
-		.s_axi_awvalid  (axi_awvalid_o   [2]),
-		.s_axi_awready  (axi_awready_i   [2]),
-		//write                                              
-		.s_axi_wvalid   (axi_wvalid_o    [2]),
-		.s_axi_wready   (axi_wready_i    [2]),
-		.s_axi_wdata    (axi_wdata_o     [3*(31+1)-1:2*(31+1)]),
-		.s_axi_wstrb    (axi_wstrb_o     [3*(3+1)-1:2*(3+1)]),
-		.s_axi_wlast    (axi_wlast_o     [2]),
-		//write response                                     
-		.s_axi_bready   (axi_bready_o    [2]),
-		.s_axi_bid      (axi_bid_i       [3*AXI_ID_W-1:2*AXI_ID_W]),
-		.s_axi_bresp    (axi_bresp_i     [3*(1+1)-1:2*(1+1)]),
-		.s_axi_bvalid   (axi_bvalid_i    [2]),
-		//address read                                       
-		.s_axi_arid     (axi_arid_o      [3*AXI_ID_W-1:2*AXI_ID_W]),
-		.s_axi_araddr   (axi_araddr_o    [3*AXI_ADDR_W-1:2*AXI_ADDR_W]),
-		.s_axi_arlen    (axi_arlen_o     [3*(7+1)-1:2*(7+1)]), 
-		.s_axi_arsize   (axi_arsize_o    [3*(2+1)-1:2*(2+1)]),    
-		.s_axi_arburst  (axi_arburst_o   [3*(1+1)-1:2*(1+1)]),
-		.s_axi_arlock   (axi_arlock_o    [3*(1+1)-1:2*(1+1)]),
-		.s_axi_arcache  (axi_arcache_o   [3*(3+1)-1:2*(3+1)]),
-		.s_axi_arprot   (axi_arprot_o    [3*(2+1)-1:2*(2+1)]),
-		.s_axi_arqos    (axi_arqos_o     [3*(3+1)-1:2*(3+1)]),
-		.s_axi_arvalid  (axi_arvalid_o   [2]),
-		.s_axi_arready  (axi_arready_i   [2]),
-		//read                                               
-		.s_axi_rdata    (axi_rdata_i     [3*(31+1)-1:2*(31+1)]),
-		.s_axi_rresp    (axi_rresp_i     [3*(1+1)-1:2*(1+1)]),
-		.s_axi_rlast    (axi_rlast_i     [2]),
-		.s_axi_rvalid   (axi_rvalid_i    [2])
-		.s_axi_rid      (axi_rid_i       [3*AXI_ID_W-1:2*AXI_ID_W]),
-		.s_axi_rready   (axi_rready_o    [2]),
+		.axi_awid_i     (axi_awid_o      [3*AXI_ID_W-1:2*AXI_ID_W]),
+		.axi_awaddr_i   (axi_awaddr_o    [3*AXI_ADDR_W-1:2*AXI_ADDR_W]),
+		.axi_awlen_i    (axi_awlen_o     [3*(7+1)-1:2*(7+1)]),
+		.axi_awsize_i   (axi_awsize_o    [3*(2+1)-1:2*(2+1)]),
+		.axi_awburst_i  (axi_awburst_o   [3*(1+1)-1:2*(1+1)]),
+		.axi_awlock_i   (axi_awlock_o    [3*(1+1)-1:2*(1+1)]),
+		.axi_awcache_i  (axi_awcache_o   [3*(3+1)-1:2*(3+1)]),
+		.axi_awprot_i   (axi_awprot_o    [3*(2+1)-1:2*(2+1)]),
+		.axi_awqos_i    (axi_awqos_o     [3*(3+1)-1:2*(3+1)]),
+		.axi_awvalid_i  (axi_awvalid_o   [2]),
+		.axi_awready_o  (axi_awready_i   [2]),
+		 //write
+		.axi_wvalid_i   (axi_wvalid_o    [2]),
+		.axi_wready_o   (axi_wready_i    [2]),
+		.axi_wdata_i    (axi_wdata_o     [3*(31+1)-1:2*(31+1)]),
+		.axi_wstrb_i    (axi_wstrb_o     [3*(3+1)-1:2*(3+1)]),
+		.axi_wlast_i    (axi_wlast_o     [2]),
+		 //write response
+		.axi_bready_i   (axi_bready_o    [2]),
+		.axi_bid_o      (axi_bid_i       [3*AXI_ID_W-1:2*AXI_ID_W]),
+		.axi_bresp_o    (axi_bresp_i     [3*(1+1)-1:2*(1+1)]),
+		.axi_bvalid_o   (axi_bvalid_i    [2]),
+		 //address read
+		.axi_arid_i     (axi_arid_o      [3*AXI_ID_W-1:2*AXI_ID_W]),
+		.axi_araddr_i   (axi_araddr_o    [3*AXI_ADDR_W-1:2*AXI_ADDR_W]),
+		.axi_arlen_i    (axi_arlen_o     [3*(7+1)-1:2*(7+1)]), 
+		.axi_arsize_i   (axi_arsize_o    [3*(2+1)-1:2*(2+1)]),    
+		.axi_arburst_i  (axi_arburst_o   [3*(1+1)-1:2*(1+1)]),
+		.axi_arlock_i   (axi_arlock_o    [3*(1+1)-1:2*(1+1)]),
+		.axi_arcache_i  (axi_arcache_o   [3*(3+1)-1:2*(3+1)]),
+		.axi_arprot_i   (axi_arprot_o    [3*(2+1)-1:2*(2+1)]),
+		.axi_arqos_i    (axi_arqos_o     [3*(3+1)-1:2*(3+1)]),
+		.axi_arvalid_i  (axi_arvalid_o   [2]),
+		.axi_arready_o  (axi_arready_i   [2]),
+		 //read
+		.axi_rdata_o    (axi_rdata_i     [3*(31+1)-1:2*(31+1)]),
+		.axi_rresp_o    (axi_rresp_i     [3*(1+1)-1:2*(1+1)]),
+		.axi_rlast_o    (axi_rlast_i     [2]),
+		.axi_rvalid_o   (axi_rvalid_i    [2]),
+		.axi_rid_o      (axi_rid_i       [3*AXI_ID_W-1:2*AXI_ID_W]),
+		.axi_rready_i   (axi_rready_o    [2]),
 
       .clk_i(clk_i),
       .rst_i(rst_i)
