@@ -264,8 +264,10 @@ module iob_soc_tester_top (
 	//Tester and SUT access the same memory.
 	axi_ram 
 		#(
+`ifdef IOB_SOC_TESTER_INIT_MEM
 		.FILE("init_ddr_contents.hex"), //This file contains firmware for both systems
 		.FILE_SIZE(2**(AXI_ADDR_W-2)),
+`endif
 		.ID_WIDTH (AXI_ID_W),
 		.DATA_WIDTH (AXI_DATA_W),
 		.ADDR_WIDTH (AXI_ADDR_W)
