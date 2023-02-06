@@ -1,14 +1,13 @@
 `timescale 1ns / 1ps
 
 `include "iob_soc_conf.vh"
-`include "iob_soc.vh"
 `include "iob_uart_conf.vh"
 `include "iob_uart_swreg_def.vh"
 
 
 //PHEADER
 
-module system_tb;
+module iob_soc_tb;
 
   parameter realtime clk_per = 1s/`IOB_SOC_FREQ;
 
@@ -115,7 +114,7 @@ module system_tb;
     end
   end
 
-system_top system_top
+iob_soc_top iob_soc_top
   (
    .clk_i (clk),
    .rst_i (reset),

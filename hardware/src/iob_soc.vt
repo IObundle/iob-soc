@@ -10,12 +10,10 @@ module iob_soc #(
     ) (
     `include "iob_soc_io.vh"
     );
-   
-	// Assign general io signals to local wires
-    wire clk_i = general_clk_i;
-    wire arst_i = general_rst_i;
-	wire trap_o;
-    assign general_trap_o = trap_o;
+
+   localparam E_BIT = `IOB_SOC_E;
+   localparam P_BIT = `IOB_SOC_P;
+   localparam B_BIT = `IOB_SOC_B;
 
    //
    // SYSTEM RESET
