@@ -6,6 +6,7 @@ INCLUDE+=-I.. -I../psrc -I../src -I../esrc
 
 # SOURCES
 # exclude bootloader sources
+SRC+=../firmware/iob_soc_firmware.c
 SRC+=$(wildcard ../src/*.c)
 SRC:=$(filter-out %boot.c,$(SRC))
 
