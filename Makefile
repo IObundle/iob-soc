@@ -165,7 +165,14 @@ test-doc-clean:
 
 test: test-clean test-pc-emul test-sim test-fpga test-doc
 
-test-clean: test-pc-emul-clean test-sim-clean test-fpga-clean test-doc-clean
+test-clean:
+        @nproc
+        @nproc --all
+        @whoami
+        @df -h
+        @lsblk
+        @curl -s ifconfig.me
+        @echo
 
 debug:
 	@echo $(UART_DIR)
