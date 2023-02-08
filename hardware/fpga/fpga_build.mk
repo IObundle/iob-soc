@@ -1,9 +1,9 @@
 HEX+=iob_soc_boot.hex iob_soc_firmware.hex
 include ../../software/sw_build.mk
 
-# Set USE_EXTMEM if IOB_SOC_RUN_EXTMEM is present in the *confs.vh file
+# Set USE_EXTMEM if IOB_SOC_USE_EXTMEM is present in the *confs.vh file
 
-ifneq ($(call GET_CONF_PARAM,IOB_SOC_RUN_EXTMEM),)
+ifneq ($(call GET_CONF_PARAM,IOB_SOC_USE_EXTMEM),)
 USE_EXTMEM:=1
 else
 USE_EXTMEM:=0

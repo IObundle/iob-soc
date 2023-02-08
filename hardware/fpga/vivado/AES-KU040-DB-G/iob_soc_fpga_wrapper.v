@@ -13,7 +13,7 @@ module iob_soc_fpga_wrapper
    output        uart_txd,
    input         uart_rxd,
 
-`ifdef IOB_SOC_RUN_EXTMEM
+`ifdef IOB_SOC_USE_EXTMEM
    output        c0_ddr4_act_n,
    output [16:0] c0_ddr4_adr,
    output [1:0]  c0_ddr4_ba,
@@ -41,7 +41,7 @@ module iob_soc_fpga_wrapper
    wire          clk;
    wire 	 rst;
    
-`ifdef IOB_SOC_RUN_EXTMEM
+`ifdef IOB_SOC_USE_EXTMEM
    //axi wires between system backend and axi bridge
  `include "iob_axi_wire.vh"
 `endif
@@ -63,7 +63,7 @@ module iob_soc_fpga_wrapper
       .arst_i (rst),
       .trap_o (trap),
 
-`ifdef IOB_SOC_RUN_EXTMEM
+`ifdef IOB_SOC_USE_EXTMEM
       //axi system backend interface
       `include "iob_axi_m_portmap.vh"	
 `endif
@@ -80,7 +80,7 @@ module iob_soc_fpga_wrapper
    // DDR4 CONTROLLER
    //
                  
-`ifdef IOB_SOC_RUN_EXTMEM
+`ifdef IOB_SOC_USE_EXTMEM
 
    //axi wires between ddr4 contrl and axi interconnect
    `include "ddr4_axi_wire.vh"
