@@ -1,5 +1,6 @@
 `timescale 1ns / 1ps
-`include "iob_soc.vh"
+`include "iob_soc_conf.vh"
+`include "build_configuration.vh"
 
 module iob_soc_fpga_wrapper
   (
@@ -35,8 +36,8 @@ module iob_soc_fpga_wrapper
    //axi4 parameters
    localparam AXI_ID_W  = 1;
    localparam AXI_LEN_W = 4;
-   localparam AXI_ADDR_W=`IOB_SOC_DDR_ADDR_W;
-   localparam AXI_DATA_W=`IOB_SOC_DDR_DATA_W;
+   localparam AXI_ADDR_W=`DDR_ADDR_W;
+   localparam AXI_DATA_W=`DDR_DATA_W;
    
    //-----------------------------------------------------------------
    // Clocking / Reset

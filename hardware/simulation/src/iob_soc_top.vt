@@ -1,5 +1,6 @@
 `timescale 1ns / 1ps
 
+`include "build_configuration.vh"
 `include "iob_soc_conf.vh"
 `include "iob_lib.vh"
 
@@ -21,7 +22,7 @@ module iob_soc_top (
  
    localparam AXI_ID_W  = 4;
    localparam AXI_LEN_W = 8;
-   localparam AXI_ADDR_W=`IOB_SOC_DDR_ADDR_W;
+   localparam AXI_ADDR_W=`DDR_ADDR_W;
    localparam AXI_DATA_W=`IOB_SOC_DATA_W;
  
    //PWIRES
@@ -74,7 +75,7 @@ module iob_soc_top (
       .FILE_SIZE(2**(`IOB_SOC_SRAM_ADDR_W-2)),
       .ID_WIDTH(AXI_ID_W),
       .DATA_WIDTH (`IOB_SOC_DATA_W),
-      .ADDR_WIDTH (`IOB_SOC_DDR_ADDR_W)
+      .ADDR_WIDTH (`DDR_ADDR_W)
       )
     ddr_model_mem (
       `include "iob_axi_s_portmap.vh"
