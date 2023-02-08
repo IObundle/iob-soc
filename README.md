@@ -109,9 +109,9 @@ make [sim-run] [SIMULATOR=<simulator directory name>] [<control parameters>]
 
 `<control parameters>` are system configuration parameters passed in the
 command line, overriding those in the `config.mk` file. Example control
-parameters are `INIT_MEM=0 RUN_EXTMEM=1`. For example,
+parameters are `INIT_MEM=0 USE_EXTMEM=1`. For example,
 ```
-make sim-run SIMULATOR=icarus INIT_MEM=0 RUN_EXTMEM=1
+make sim-run SIMULATOR=icarus INIT_MEM=0 USE_EXTMEM=1
 ```
 
 To visualise simulation waveforms use the `VCD=1` control parameter. It will
@@ -143,9 +143,9 @@ make pc-emul [<control parameters>]
 ```
 where `<control parameters>` are system configuration parameters passed in the
 command line, overriding those in the `config.mk` file. Example control
-parameters are `INIT_MEM=0 RUN_EXTMEM=1`. For example,
+parameters are `INIT_MEM=0 USE_EXTMEM=1`. For example,
 ```
-make pc-emul INIT_MEM=0 RUN_EXTMEM=1
+make pc-emul INIT_MEM=0 USE_EXTMEM=1
 ```
 
 To clean the PC compilation generated files, type:
@@ -174,7 +174,7 @@ where `<board directory name>` is the name of the board's run directory, and
 `<control parameters>` are system configuration parameters passed in the command
 line, overriding those in the `config.mk` file. For example, 
 ``` 
-make fpga-build BOARD=BASYS3 INIT_MEM=0 RUN_EXTMEM=1
+make fpga-build BOARD=BASYS3 INIT_MEM=0 USE_EXTMEM=1
 ``` 
 
 For more details read the Makefile in the board directory, and follow the
