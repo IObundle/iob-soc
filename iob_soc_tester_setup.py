@@ -78,7 +78,7 @@ ios = \
         {'name':"arst_i", 'type':"I", 'n_bits':'1', 'descr':"System reset, synchronous and active high"},
         {'name':"trap_o", 'type':"O", 'n_bits':'2', 'descr':"CPU trap signal (One for tester and one optionally for SUT)"}
     ]},
-    {'name': 'axi_m_custom_port', 'descr':'Bus of AXI master interfaces. One for Tester, one optionally from SUT', 'if_defined':'IOB_SOC_TESTER_RUN_EXTMEM', 'ports': [
+    {'name': 'axi_m_custom_port', 'descr':'Bus of AXI master interfaces. One for Tester, one optionally from SUT', 'if_defined':'RUN_EXTMEM', 'ports': [
         {'name':'axi_awid_o', 'type':'O', 'n_bits':'2*AXI_ID_W', 'descr':'Address write channel ID'},
         {'name':'axi_awaddr_o', 'type':'O', 'n_bits':'2*AXI_ADDR_W', 'descr':'Address write channel address'},
         {'name':'axi_awlen_o', 'type':'O', 'n_bits':'2*8', 'descr':'Address write channel burst length'},

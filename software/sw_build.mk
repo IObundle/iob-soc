@@ -4,7 +4,6 @@ GET_MACRO = $(shell grep $(1) $(2) | rev | cut -d" " -f1 | rev)
 
 #Function to obtain parameter named $(1) from iob_soc_tester_conf.vh
 GET_TESTER_CONF_MACRO = $(call GET_MACRO,IOB_SOC_TESTER_$(1),../src/iob_soc_tester_conf.vh)
-GET_TESTER_BUILD_MACRO = $(call GET_MACRO,IOB_SOC_TESTER_$(1),../src/build_configuration.vh)
 
 iob_soc_tester_boot.hex: ../../software/embedded/iob_soc_tester_boot.bin
 	../../scripts/makehex.py $< $(call GET_TESTER_CONF_MACRO,BOOTROM_ADDR_W) > $@
