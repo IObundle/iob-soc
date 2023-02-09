@@ -68,7 +68,7 @@ jobs:
       - name: clean
         run: make clean
       - name: setup init_mem ext_mem
-        run: make setup INIT_MEM=0 USE_EXTMEM=1
+        run: make setup INIT_MEM=1 USE_EXTMEM=1
       - name: verilator test
         run: nix-shell -p verilator --run 'make -C ../iob_soc_V* sim-test SIMULATOR=verilator'
       # No init mem and Ext mem

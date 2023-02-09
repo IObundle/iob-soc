@@ -15,8 +15,8 @@ fpga-test:
 
 test-all:
 	make clean && make setup && make -C ../iob_soc_V*/ pc-emul-test
+	#make sim-test SIMULATOR=icarus
 	make sim-test SIMULATOR=verilator
 	make fpga-test BOARD=CYCLONEV-GT-DK
 	make fpga-test BOARD=AES-KU040-DB-G
 	make clean && make setup && make -C ../iob_soc_V*/ doc-test
-#make sim-test SIMULATOR=icarus
