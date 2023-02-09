@@ -1,5 +1,5 @@
 #Function to obtain parameter named $(1) in verilog header file located in $(2)
-#Usage: $(call GET_PARAM,<param_name>,<vh_path>)
+#Usage: $(call GET_MACRO,<param_name>,<vh_path>)
 GET_MACRO = $(shell grep $(1) $(2) | rev | cut -d" " -f1 | rev)
 
 #Function to obtain parameter named $(1) from iob_soc_tester_conf.vh
