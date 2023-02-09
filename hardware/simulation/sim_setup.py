@@ -13,11 +13,11 @@ for file in os.listdir(dirpath):
 test_file_name='test'
 #Check if setup with INIT_MEM (check if macro exists)
 macro = next((i for i in setup_module.confs if i['name']=='INIT_MEM'), False)
-if macro and macro['val'] != 'NA':
+if macro and macro['val']:
     test_file_name+='_initmem'
 #Check if setup with USE_EXTMEM (check if macro exists)
 macro = next((i for i in setup_module.confs if i['name']=='USE_EXTMEM'), False)
-if macro and macro['val'] != 'NA':
+if macro and macro['val']:
     test_file_name+='_extmem'
 test_file_name+='.expected'
 

@@ -2,11 +2,11 @@ include submodules/LIB/setup.mk
 
 INIT_MEM ?= 1
 
-ifneq ($(INIT_MEM),)
+ifeq ($(INIT_MEM),1)
 SETUP_ARGS += INIT_MEM
 endif
 
-ifneq ($(USE_EXTMEM),)
+ifeq ($(USE_EXTMEM),1)
 SETUP_ARGS += USE_EXTMEM
 endif
 

@@ -49,8 +49,6 @@ blocks = \
 confs = \
 [
     # macros
-    {'name':'INIT_MEM',      'type':'M', 'val':'1', 'min':'0', 'max':'1', 'descr':"Enable memory initialization"},
-    {'name':'USE_EXTMEM',    'type':'M', 'val':'NA', 'min':'0', 'max':'1', 'descr':"Run firmware from external memory"},
     {'name':'USE_MUL_DIV',   'type':'M', 'val':'1', 'min':'0', 'max':'1', 'descr':"Enable MUL and DIV CPU instructions"},
     {'name':'USE_COMPRESSED','type':'M', 'val':'1', 'min':'0', 'max':'1', 'descr':"Use compressed CPU instructions"},
     {'name':'E',             'type':'M', 'val':'31', 'min':'1', 'max':'32', 'descr':"Address selection bit for external memory"},
@@ -85,18 +83,16 @@ ios = \
 
 def custom_setup():
     # Add the following arguments:
-    # "INIT_MEM=x":   allows choosing if should setup with init_mem or not
-    # "USE_EXTMEM=x": allows choosing if should setup with run_extmem or not
+    # "INIT_MEM": if should setup with init_mem or not
+    # "USE_EXTMEM": if should setup with extmem or not
     for arg in sys.argv[1:]:
-        if arg.startswith("INIT_MEM="):
-            if arg[-1:]!="0": update_define(confs, "INIT_MEM",True)
-            else: update_define(confs, "INIT_MEM",False)
-        if arg.startswith("USE_EXTMEM="):
-            if arg[-1:]!="1": update_define(confs, "USE_EXTMEM",False)
-            else: update_define(confs, "USE_EXTMEM",True)
+        if arg == "INIT_MEM":
+            update_define(confs, "INIT_MEM",True)
+        if arg == "USE_EXTMEM":
+            update_define(confs, "USE_EXTMEM",True)
     
     for conf in confs:
-        if (conf['name'] == 'USE_EXTMEM') and (conf['val'] == '1'):
+        if (conf['name'] == 'USE_EXTMEM') and conf['val']:
             submodules['hw_setup']['headers'].append([ 'ddr4_', 'axi_wire', 'ddr4_', 'ddr4_' ])
 
 
