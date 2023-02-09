@@ -50,7 +50,7 @@ confs = \
 [
     # SoC macros
     {'name':'INIT_MEM',      'type':'M', 'val':'1', 'min':'0', 'max':'1', 'descr':"Enable memory initialization"},
-    {'name':'RUN_EXTMEM',    'type':'M', 'val':'NA', 'min':'0', 'max':'1', 'descr':"Run firmware from external memory"},
+    {'name':'USE_EXTMEM',    'type':'M', 'val':'NA', 'min':'0', 'max':'1', 'descr':"Run firmware from external memory"},
     {'name':'USE_MUL_DIV',   'type':'M', 'val':'1', 'min':'0', 'max':'1', 'descr':"Enable MUL and DIV CPU instructions"},
     {'name':'USE_COMPRESSED','type':'M', 'val':'1', 'min':'0', 'max':'1', 'descr':"Use compressed CPU instructions"},
     {'name':'E',             'type':'M', 'val':'31', 'min':'1', 'max':'32', 'descr':"Address selection bit for external memory"},
@@ -78,7 +78,7 @@ ios = \
         {'name':"arst_i", 'type':"I", 'n_bits':'1', 'descr':"System reset, synchronous and active high"},
         {'name':"trap_o", 'type':"O", 'n_bits':'2', 'descr':"CPU trap signal (One for tester and one optionally for SUT)"}
     ]},
-    {'name': 'axi_m_custom_port', 'descr':'Bus of AXI master interfaces. One for Tester, one optionally from SUT', 'if_defined':'RUN_EXTMEM', 'ports': [
+    {'name': 'axi_m_custom_port', 'descr':'Bus of AXI master interfaces. One for Tester, one optionally from SUT', 'if_defined':'USE_EXTMEM', 'ports': [
         {'name':'axi_awid_o', 'type':'O', 'n_bits':'2*AXI_ID_W', 'descr':'Address write channel ID'},
         {'name':'axi_awaddr_o', 'type':'O', 'n_bits':'2*AXI_ADDR_W', 'descr':'Address write channel address'},
         {'name':'axi_awlen_o', 'type':'O', 'n_bits':'2*8', 'descr':'Address write channel burst length'},
@@ -142,17 +142,17 @@ module_parameters = {
 def custom_setup():
     # Add the following arguments:
     # "INIT_MEM=x":   allows choosing if should setup with init_mem or not
-    # "RUN_EXTMEM=x": allows choosing if should setup with run_extmem or not
+    # "USE_EXTMEM=x": allows choosing if should setup with run_extmem or not
     for arg in sys.argv[1:]:
         if arg.startswith("INIT_MEM="):
             if arg[-1:]!="0": update_define(confs, "INIT_MEM",True)
             else: update_define(confs, "INIT_MEM",False)
-        if arg.startswith("RUN_EXTMEM="):
-            if arg[-1:]!="0": update_define(confs, "RUN_EXTMEM",True)
-            else: update_define(confs, "RUN_EXTMEM",False)
+        if arg.startswith("USE_EXTMEM="):
+            if arg[-1:]!="1": update_define(confs, "USE_EXTMEM",False)
+            else: update_define(confs, "USE_EXTMEM",True)
     
     for conf in confs:
-        if (conf['name'] == 'RUN_EXTMEM') and (conf['val'] == '1'):
+        if (conf['name'] == 'USE_EXTMEM') and (conf['val'] == '1'):
             submodules['hw_setup']['headers'].append([ 'ddr4_', 'axi_wire', 'ddr4_', 'ddr4_' ])
             submodules['hw_setup']['modules'].append('axi_interconnect')
 

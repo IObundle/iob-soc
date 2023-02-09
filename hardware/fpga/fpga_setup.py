@@ -11,8 +11,8 @@ if setup_module.build_dir==f"../{setup_module.name}_{setup_module.version}":
     macro = next((i for i in setup_module.confs if i['name']=='INIT_MEM'), False)
     if macro and macro['val'] != 'NA':
         test_file_name+='_initmem'
-    #Check if setup with RUN_EXTMEM (check if macro exists)
-    macro = next((i for i in setup_module.confs if i['name']=='RUN_EXTMEM'), False)
+    #Check if setup with USE_EXTMEM (check if macro exists)
+    macro = next((i for i in setup_module.confs if i['name']=='USE_EXTMEM'), False)
     if macro and macro['val'] != 'NA':
         test_file_name+='_extmem'
     test_file_name+='.expected'

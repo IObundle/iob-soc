@@ -1,5 +1,6 @@
 `timescale 1ns / 1ps
 
+`include "build_configuration.vh"
 `include "iob_soc_tester_conf.vh"
 `include "iob_lib.vh"
 
@@ -21,8 +22,8 @@ module iob_soc_tester_top (
  
    localparam AXI_ID_W = 4;
    localparam AXI_LEN_W = 8;
-   localparam AXI_ADDR_W=`IOB_SOC_TESTER_DDR_ADDR_W;
-   localparam AXI_DATA_W=`IOB_SOC_TESTER_DDR_DATA_W;
+   localparam AXI_ADDR_W=`DDR_ADDR_W;
+   localparam AXI_DATA_W=`DDR_DATA_W;
  
    //PWIRES
 
@@ -42,7 +43,7 @@ module iob_soc_tester_top (
    //
 
    //DDR AXI interface signals (2 for the two systems + 1 for memory)
-`ifdef IOB_SOC_TESTER_RUN_EXTMEM
+`ifdef IOB_SOC_TESTER_USE_EXTMEM
    //Write address
    wire [3*AXI_ID_W-1:0]     axi_awid_o;
    wire [3*AXI_ADDR_W-1:0]   axi_awaddr_o;
@@ -102,7 +103,7 @@ module iob_soc_tester_top (
       )
    tester0 (
            //PORTS
-`ifdef IOB_SOC_TESTER_RUN_EXTMEM
+`ifdef IOB_SOC_TESTER_USE_EXTMEM
            //address write
 	       .axi_awid_o    (axi_awid_o      [2*AXI_ID_W-1:0]),
 	       .axi_awaddr_o  (axi_awaddr_o    [2*AXI_ADDR_W-1:0]),
@@ -151,7 +152,7 @@ module iob_soc_tester_top (
       .trap_o (trap_signals)
       );
 
-`ifdef IOB_SOC_TESTER_RUN_EXTMEM
+`ifdef IOB_SOC_TESTER_USE_EXTMEM
 	//instantiate axi interconnect
 	//This connects Tester+SUT to the same memory
 	axi_interconnect

@@ -1,19 +1,18 @@
 `timescale 1 ns / 1 ps
-`include "iob_soc_tester_conf.vh"
+
 `include "iob_lib.vh"
 
-module ext_mem
-  #(
-    parameter ADDR_W=`IOB_SOC_TESTER_ADDR_W,
-    parameter DATA_W=`IOB_SOC_TESTER_DATA_W,
-    parameter FIRM_ADDR_W=`IOB_SOC_TESTER_SRAM_ADDR_W,
-    parameter DCACHE_ADDR_W=`IOB_SOC_TESTER_DCACHE_ADDR_W,
-    parameter DDR_ADDR_W=`IOB_SOC_TESTER_DDR_ADDR_W,
-    parameter DDR_DATA_W=`IOB_SOC_TESTER_DDR_DATA_W,
-    parameter AXI_ID_W=1,
-    parameter AXI_LEN_W=`IOB_SOC_TESTER_AXI_LEN_W,
-    parameter AXI_ADDR_W=`IOB_SOC_TESTER_AXI_ADDR_W,
-    parameter AXI_DATA_W=`IOB_SOC_TESTER_AXI_DATA_W
+module ext_mem #(
+    parameter ADDR_W=0,
+    parameter DATA_W=0,
+    parameter FIRM_ADDR_W=0,
+    parameter DCACHE_ADDR_W=0,
+    parameter DDR_ADDR_W=0,
+    parameter DDR_DATA_W=0,
+    parameter AXI_ID_W=0,
+    parameter AXI_LEN_W=0,
+    parameter AXI_ADDR_W=0,
+    parameter AXI_DATA_W=0
   ) (
     // Instruction bus
     input [1+FIRM_ADDR_W-2+`WRITE_W-1:0] i_req,
