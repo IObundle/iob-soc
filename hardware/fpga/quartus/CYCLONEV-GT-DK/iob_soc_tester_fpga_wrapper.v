@@ -142,7 +142,6 @@ module iob_soc_tester_fpga_wrapper
 	`IOB_WIRE(axi_rready  , 3*1) //Read channel ready
 `endif
 
-
    //
    // TESTER (includes UUT)
    //
@@ -152,8 +151,7 @@ module iob_soc_tester_fpga_wrapper
        .AXI_ADDR_W(AXI_ADDR_W),
        .AXI_DATA_W(AXI_DATA_W)
        )
-   tester 
-     (
+   tester (
       .clk_i (clk),
       .arst_i (rst),
       .trap_o (trap_signals),
@@ -177,10 +175,10 @@ module iob_soc_tester_fpga_wrapper
 `endif
 
       //UART
-      .UART0_txd (uart_txd),
-      .UART0_rxd (uart_rxd),
-      .UART0_rts (),
-      .UART0_cts (1'b1)
+      .portmap_0_txd (uart_txd),
+      .portmap_0_rxd (uart_rxd),
+      .portmap_0_rts (),
+      .portmap_0_cts (1'b1)
       );
 
 `ifdef IOB_SOC_TESTER_USE_EXTMEM

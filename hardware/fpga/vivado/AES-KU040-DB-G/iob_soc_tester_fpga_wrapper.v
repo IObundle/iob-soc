@@ -46,8 +46,9 @@ module iob_soc_tester_fpga_wrapper
         output ENET_TX_D3,
         output ENET_TX_EN,
 `endif                  
-		  output        trap
-		  );
+
+   output        trap
+   );
 
    localparam AXI_ID_W = 4;
    localparam AXI_LEN_W = 8;
@@ -171,10 +172,10 @@ module iob_soc_tester_fpga_wrapper
 `endif
 
       //UART
-      .UART0_txd (uart_txd),
-      .UART0_rxd (uart_rxd),
-      .UART0_rts (),
-      .UART0_cts (1'b1)
+      .portmap_0_txd (uart_txd),
+      .portmap_0_rxd (uart_rxd),
+      .portmap_0_rts (),
+      .portmap_0_cts (1'b1)
       );
 
 
