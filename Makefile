@@ -1,5 +1,8 @@
 include submodules/LIB/setup.mk
 
+INIT_MEM ?= 1
+USE_EXTMEM ?= 0
+
 SETUP_ARGS=INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM)
 
 sim-test:
