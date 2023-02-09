@@ -1,9 +1,14 @@
 include submodules/LIB/setup.mk
 
 INIT_MEM ?= 1
-USE_EXTMEM ?= 0
 
-SETUP_ARGS=INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM)
+ifneq ($(INIT_MEM),)
+SETUP_ARGS += INIT_MEM
+endif
+
+ifneq ($(USE_EXTMEM),)
+SETUP_ARGS += USE_EXTMEM
+endif
 
 sim-test:
 	make clean && make setup && make -C ../iob_soc_V*/ sim-test
