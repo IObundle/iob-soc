@@ -22,7 +22,7 @@ submodules = {
     },
     'sw_setup': {
         'headers': [  ],
-        'modules': [ 'CACHE', 'UART', ]
+        'modules': [ 'CACHE', 'UART', 'BOOT' ]
     },
 }
 
