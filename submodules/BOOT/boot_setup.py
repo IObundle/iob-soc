@@ -12,7 +12,7 @@ build_dir=f"../{name}_{version}"
 submodules = {
     'hw_setup': {
         'headers' : [ 'iob_s_port' ],
-        'modules': [ 'iob_reg.v', 'iob_reg_e.v', 'iob_pulse_gen.v', 'iob_rom_sp.v' ]
+        'modules': [ 'iob_reg.v', 'iob_reg_e.v', 'iob_pulse_gen.v', 'iob_rom_dp.v' ]
     },
 }
 
@@ -30,16 +30,18 @@ confs = \
 
 ios = \
 [
-    {'name': 'iob_s_port', 'descr':'CPU native interface', 'ports': [
+    {'name': 'iob_s_port', 'descr':'IOb control interface for CPU', 'ports': [
     ]},
-    {'name': 'sram_w_if', 'descr':'SRAM write interface', 'ports': [
-        {'name':"sram_w_avalid_o" , 'type':"O", 'n_bits':'1', 'descr':"SRAM write valid."},
-        {'name':"sram_w_addr_o" , 'type':"O", 'n_bits':'SRAM_ADDR_W', 'descr':"SRAM write address."},
-        {'name':"sram_w_data_o" , 'type':"O", 'n_bits':'DATA_W', 'descr':"SRAM write data."},
-        {'name':"sram_w_strb_o" , 'type':"O", 'n_bits':'DATA_W/8', 'descr':"SRAM write strobe."}
+    {'name': 'ibus', 'descr':'Instruction bus', 'ports': [
+        {'name':"ibus_avalid_1" , 'type':"O", 'n_bits':'1', 'descr':"Address is valid."},
+        {'name':"ibus_addr_i" , 'type':"O", 'n_bits':'256', 'descr':"Address."},
+        {'name':"ibus_rdata_o" , 'type':"O", 'n_bits':'DATA_W', 'descr':"SRAM write data."},
+        {'name':"ibus_rvalid_o" , 'type':"O", 'n_bits':'DATA_W/8', 'descr':"SRAM write strobe."},
+        {'name':"ibus_ready_o" , 'type':"O", 'n_bits':'DATA_W/8', 'descr':"SRAM write strobe."}
     ]},
     {'name': 'general', 'descr':'GENERAL INTERFACE SIGNALS', 'ports': [
         {'name':"cpu_rst_o" , 'type':"O", 'n_bits':'1', 'descr':"CPU sync reset."},
+        {'name':"preboot_o" , 'type':"O", 'n_bits':'1', 'descr':"System preboot indicator."},
         {'name':"boot_o" , 'type':"O", 'n_bits':'1', 'descr':"System boot indicator."},
         {'name':"clk_i" , 'type':"I", 'n_bits':'1', 'descr':"System clock input"},
         {'name':"arst_i", 'type':"I", 'n_bits':'1', 'descr':"System reset, asynchronous and active high"},
@@ -50,9 +52,8 @@ ios = \
 regs = \
 [
     {'name': 'boot', 'descr':'Boot controlregister.', 'regs': [
-        {'name':'ROM', 'type':'R', 'n_bits':'DATA_W', 'rst_val':0, 'addr':32*2**12, 'log2n_items':'12', 'autologic':False, 'descr':"Bootloader ROM."},
-        {'name':'CTR_WR', 'type':'W', 'n_bits':2, 'rst_val':0, 'addr':-1, 'log2n_items':0, 'autologic':False, 'descr':"Boot control register (write)."},
-        {'name':'CTR_RD', 'type':'R', 'n_bits':2, 'rst_val':0, 'addr':-1, 'log2n_items':0, 'autologic':False, 'descr':"Boot control register (read)."}
+        {'name':'ROM', 'type':'R', 'n_bits':'DATA_W', 'rst_val':0, 'addr':0x40000000, 'log2n_items':'12', 'autologic':False, 'descr':"Bootloader ROM."},
+        {'name':'CTR_WR', 'type':'W', 'n_bits':3, 'rst_val':0, 'addr':-1, 'log2n_items':0, 'autologic':False, 'descr':"Boot control register (write)."}
     ]}
 ]
 

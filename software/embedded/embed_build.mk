@@ -14,12 +14,19 @@ BOOT_SRC=../bootloader/iob_soc_boot.S ../bootloader/iob_soc_boot.c
 BOOT_SRC+=$(wildcard ../esrc/*.c)
 BOOT_SRC+=$(filter-out ../src/printf.c, $(wildcard ../src/*.c))
 
-build_software: build_firmware build_bootloader
+
+PREBOOT_SRC=../preboot/iob_soc_preboot.S
+
+
+build_software: build_firmware build_bootloader build_preboot
+
+build_preboot: $(PREBOOT_SRC)
+	make iob_soc_preboot.elf INCLUDES="$(INCLUDES)" LDFLAGS="$(LDFLAGS)" SRC="$(PREBOOT_SRC)" LDS="../preboot/template.lds"
 
 build_bootloader: $(BOOT_SRC)
-	make iob_soc_boot.elf INCLUDES="$(INCLUDES) -I../bootloader " LFLAGS="$(LFLAGS) -Wl,-Map,iob_soc_boot.map" SRC="$(BOOT_SRC)" LDS="../bootloader/template.lds"
+	make iob_soc_boot.elf INCLUDES="$(INCLUDES) " LDFLAGS="$(LDFLAGS) -Wl,-Map,iob_soc_boot.map" SRC="$(BOOT_SRC)" LDS="../bootloader/template.lds"
 
 build_firmware: $(FW_SRC)
-	make iob_soc_firmware.elf INCLUDES="$(INCLUDES) -I../firmware " LFLAGS="$(LFLAGS) -Wl,-Map,iob_soc_firmware.map" SRC="$(FW_SRC)" LDS="../firmware/template.lds"
+	make iob_soc_firmware.elf INCLUDES="$(INCLUDES) " LDFLAGS="$(LDFLAGS) -Wl,-Map,iob_soc_firmware.map" SRC="$(FW_SRC)" LDS="../firmware/template.lds"
 
 .PHONE: build_software
