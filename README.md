@@ -7,6 +7,33 @@ selected, an instruction L1 cache, a data L1 cache and a shared L2 cache are
 added to the system. The L2 cache communicates with a 3rd party memory
 controller IP (typically a DDR controller) using an AXI4 master bus.
 
+## Dependencies
+
+Before building the system, install the following tools:
+- GNU Bash >=5.1.16
+- GNU Make >=4.3
+- RISC-V GNU Compiler Toolchain =2022.06.10  (Instructions at the end of this README)
+- Python3 >=3.10.6
+- Python3-Parse >=1.19.0
+
+Optional tools, depending on desired run strategy:
+- Icarus Verilog >=10.3
+- Verilator >=5.002
+- gtkwave >=3.3.113
+- Vivado >=2020.2
+- Quartus >=20.1
+
+Older versions of the dependencies above may work but were not tested.
+
+## Nix environment
+
+Instead of manually installing the dependencies above, you can use 
+[nix-shell](https://nixos.org/download.html#nix-install-linux) to run 
+IOb-SoC in a [Nix](https://nixos.org/) environment with all dependencies 
+available except for Vivado and Quartus.
+
+- Run `nix-shell` from the IOb-SoC root directory to install and start the environment with all the required dependencies.
+
 ## Virtual Machine
 
 IOb-SoC can be run on a VirtualBox VM. This way, the system can be quickly tried
@@ -93,27 +120,82 @@ export VIVADOPATH=/path/to/vivado
 export LM_LICENSE_FILE=port@licenseserver.myorg.com;lic_or_dat_file
 ```
 
+### Set up Nix environment on remote servers
+
+If you want to run IOb-SoC on the remote servers inside a [Nix](https://nixos.org/) environment, you should 
+edit the server's `.bashrc` file to launch the environment before running the commands.
+The IOb-SoC system uses the command `ssh <remote> <command>` to run commands on the remote server.
+
+Add the following code to the top of the server's `.bashrc` file to launch the Nix environment
+when ssh commands are executed:
+
+```Bash
+# Check if connected via ssh and is a non interactive session
+if [ -n "$SSH_CONNECTION" ] && [[ $- != *i* ]]; then
+    # Get command sent via ssh, that should run in the Nix environment
+    NIX_CMD=`ps -o args= $$ | cut -d ' ' -f3-`
+    # Replace current shell by a nix-shell environment and run the command
+    exec $NIX_PATH/nix-shell $NIX_DEPS/shell.nix --run "$NIX_CMD"
+fi
+```
+
+NOTE: The `$NIX_PATH` variable should be replaced by the path to the nix-shell binary.
+Run `whereis nix-shell` on the remote machine to obtain the correct path.
+
+NOTE: The `$NIX_DEPS` variable should be replaced by the path to the [shell.nix](https://github.com/IObundle/iob-lib/blob/python-setup/nix/shell.nix) file.
+This file is located in the `nix/` directory of the [IOb-Lib](https://github.com/IObundle/iob-lib) repository. 
+Copy this file to a fixed location on the remote machine and replace the `$NIX_DEPS` variable by it's path.
+
+
+It is possible to add an extra `if` statement to only run certain tools in the Nix environment.
+This may be useful since some tools, like quartus, don't run well in the Nix environment.
+
+```Bash
+# Check if connected via ssh and is a non interactive session
+if [ -n "$SSH_CONNECTION" ] && [[ $- != *i* ]]; then
+    # Get command sent via ssh, that should run in the Nix environment
+    NIX_CMD=`ps -o args= $$ | cut -d ' ' -f3-`
+    # Only run environment if a specified tool is used in the command
+    if [[ "$NIX_CMD" == *"verilator"* ]]; then
+        # Replace current shell by a nix-shell environment and run the command
+        exec $NIX_PATH/nix-shell -p verilator --run "$NIX_CMD"
+    fi
+fi
+```
+
+
+
+## Setup the system
+
+The main configuration for the system is located in the `iob_soc_setup.py` file.
+
+To setup the system, type:
+
+```
+make setup [<control parameters>]
+```
+
+`<control parameters>` are system configuration parameters passed in the
+command line, overriding those in the `iob_soc_setup.py` file. Example control
+parameters are `INIT_MEM=0 USE_EXTMEM=1`. For example,
+```
+make setup INIT_MEM=0 USE_EXTMEM=1
+```
+
+The setup process will create a build directory that contains all the files required for building the system.
 
 ## Simulate the system
 
 To simulate IOb-SoC, the simulator must be installed, either locally or
-remotely, and must have a run directory under the `hardware/simulation`
-directory, such as the `hardware/simulation/icarus` directory. To simulate,
-type:
+remotely. If you are using the Nix environment the simulator is automatically installed.
+To simulate, from the build directory, type:
 
 ```
-make [sim-run] [SIMULATOR=<simulator directory name>] [<control parameters>]
+make [sim-run] [SIMULATOR=<simulator directory name>]
 ```
 
 `<simulator directory name>` is the name of the simulator's run directory,
-
-`<control parameters>` are system configuration parameters passed in the
-command line, overriding those in the `config.mk` file. Example control
-parameters are `INIT_MEM=0 USE_EXTMEM=1`. For example,
-```
-make sim-run SIMULATOR=icarus INIT_MEM=0 USE_EXTMEM=1
-```
-
+TODO: UPDATE BELOW
 To visualise simulation waveforms use the `VCD=1` control parameter. It will
 open the Gtkwave waveform visualisation program.
 
@@ -325,6 +407,7 @@ make clean
 
 ```
 git clone https://github.com/riscv/riscv-gnu-toolchain
+cd riscv-gnu-toolchain
 git checkout 2022.06.10
 ```
 
@@ -344,7 +427,6 @@ sudo yum install autoconf automake python3 python2 libmpc-devel mpfr-devel gmp-d
 ### Installation
 
 ```
-cd riscv-gnu-toolchain
 ./configure --prefix=/path/to/riscv --enable-multilib
 sudo make -j$(nproc)
 ```
