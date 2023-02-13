@@ -10,15 +10,6 @@ module boot
 `include "boot_io.vh"
    );
 
-    // This mapping is required because "iob_uart_swreg_inst.vh" uses "iob_s_portmap.vh" (This would not be needed if mkregs used "iob_s_s_portmap.vh" instead)
-    wire [1-1:0] iob_avalid = iob_avalid_i; //Request valid.
-    wire [ADDR_W-1:0] iob_addr = iob_addr_i; //Address.
-    wire [DATA_W-1:0] iob_wdata = iob_wdata_i; //Write data.
-    wire [(DATA_W/8)-1:0] iob_wstrb = iob_wstrb_i; //Write strobe.
-    wire [1-1:0] iob_rvalid; assign iob_rvalid_o = iob_rvalid; //Read data valid.
-    wire [DATA_W-1:0] iob_rdata; assign iob_rdata_o = iob_rdata; //Read data.
-    wire [1-1:0] iob_ready; assign iob_ready_o = iob_ready; //Interface ready.
-   
 `include "boot_swreg_inst.vh"
    
    //cpu interface: rdata, rvalid and ready
@@ -26,11 +17,10 @@ module boot
    iob_reg #(1,0) rvalid_reg (clk_i, arst_i, cke_i, iob_avalid & ~(|iob_wstrb), iob_rvalid);
    assign iob_ready = 1'b1;
        
-   //boot control register: {boot, preboot}
-   wire                       boot_wr = iob_avalid & |iob_wstrb; 
-   reg                        boot_nxt;  
-   iob_reg_re #(1,1) bootnxt (clk_i, arst_i, cke_i, 1'b0, boot_wr, iob_wdata[0], boot_nxt);
-   iob_reg_r #(1,1) bootreg (clk_i, arst_i, cke_i, 1'b0, boot_nxt, boot_o);
+   //boot control register: {cpu_reset, boot, preboot}
+   wire                       bootctr_wr = iob_avalid & (iob_addr_i == `BOOT_CTR_ADDR) |iob_wstrb; 
+   iob_reg_e #(2,1) bootnxt (clk_i, arst_i, cke_i, boot_wr, iob_wdata[1:0], CTR);
+
 
 
    //create CPU reset pulse

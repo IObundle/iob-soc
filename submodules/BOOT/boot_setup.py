@@ -11,7 +11,7 @@ setup_dir=os.path.dirname(__file__)
 build_dir=f"../{name}_{version}"
 submodules = {
     'hw_setup': {
-        'headers' : [ 'iob_s_port' ],
+        'headers' : [ 'iob_s_port', 'iob_s_s_portmap' ],
         'modules': [ 'iob_reg.v', 'iob_reg_e.v', 'iob_pulse_gen.v', 'iob_rom_dp.v' ]
     },
 }
@@ -53,7 +53,7 @@ regs = \
 [
     {'name': 'boot', 'descr':'Boot controlregister.', 'regs': [
         {'name':'ROM', 'type':'R', 'n_bits':'DATA_W', 'rst_val':0, 'addr':0x40000000, 'log2n_items':'12', 'autologic':False, 'descr':"Bootloader ROM."},
-        {'name':'CTR_WR', 'type':'W', 'n_bits':3, 'rst_val':0, 'addr':-1, 'log2n_items':0, 'autologic':False, 'descr':"Boot control register (write)."}
+        {'name':'CTR', 'type':'W', 'n_bits':3, 'rst_val':0, 'addr':(0x40000000+2**12), 'log2n_items':0, 'autologic':False, 'descr':"Boot control register (write). The register has the following fields: 0: preboot enable, 1: boot enable, 2: CPU reset"},
     ]}
 ]
 
