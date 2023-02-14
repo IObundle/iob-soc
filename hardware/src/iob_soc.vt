@@ -228,7 +228,7 @@ module iob_soc #(
        .ADDR_W(ADDR_W),
        .DATA_W(DATA_W),
        .FIRM_ADDR_W(SRAM_ADDR_W),
-       .DCACHE_ADDR_W(DCACHE_ADDR_W),
+       .MEM_ADDR_W(`MEM_ADDR_W),
        .DDR_ADDR_W(`DDR_ADDR_W),
        .DDR_DATA_W(`DDR_DATA_W),
        .AXI_ID_W(AXI_ID_W),
@@ -242,7 +242,7 @@ module iob_soc #(
       .i_resp (ext_mem_i_resp),
 
       // data bus
-      .d_req ( {ext_mem_d_req[`avalid(0)], ext_mem_d_req[`address(0, DCACHE_ADDR_W+1)-2], ext_mem_d_req[`write(0)]} ),
+      .d_req ( {ext_mem_d_req[`avalid(0)], ext_mem_d_req[`address(0, `MEM_ADDR_W+1)-2], ext_mem_d_req[`write(0)]} ),
       .d_resp (ext_mem_d_resp),
 
       //AXI INTERFACE 

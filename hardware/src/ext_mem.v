@@ -6,7 +6,7 @@ module ext_mem #(
     parameter ADDR_W=0,
     parameter DATA_W=0,
     parameter FIRM_ADDR_W=0,
-    parameter DCACHE_ADDR_W=0,
+    parameter MEM_ADDR_W=0,
     parameter DDR_ADDR_W=0,
     parameter DDR_DATA_W=0,
     parameter AXI_ID_W=0,
@@ -19,7 +19,7 @@ module ext_mem #(
     output [`RESP_W-1:0] 		         i_resp,
 
     // Data bus
-    input [1+1+DCACHE_ADDR_W-2+`WRITE_W-1:0] d_req,
+    input [1+1+MEM_ADDR_W-2+`WRITE_W-1:0] d_req,
     output [`RESP_W-1:0] 		             d_resp,
 
     // AXI interface 
@@ -41,14 +41,14 @@ module ext_mem #(
    assign i_resp[`ready(0)] = i_ack;
 
   // Back-end bus
-  wire [1+DCACHE_ADDR_W+`WRITE_W-1:0] icache_be_req;
+  wire [1+MEM_ADDR_W+`WRITE_W-1:0] icache_be_req;
   wire [`RESP_W-1:0] 			       icache_be_resp;
 
 
   // Instruction cache instance
   iob_cache_iob #(
       .FE_ADDR_W(FIRM_ADDR_W),
-      .BE_ADDR_W(DCACHE_ADDR_W),
+      .BE_ADDR_W(MEM_ADDR_W),
       .NWAYS_W(2),       //Number of ways
       .NLINES_W(7),      //Cache Line Offset (number of lines)
       .WORD_OFFSET_W(3), //Word Offset (number of words per line)
@@ -73,8 +73,8 @@ module ext_mem #(
       .wtb_empty_in(1'b1),
       .wtb_empty_out(),
       // Back-end interface
-      .be_req (icache_be_req[1+DCACHE_ADDR_W+`WRITE_W-1]),
-      .be_addr  (icache_be_req[`address(0, DCACHE_ADDR_W)]),
+      .be_req (icache_be_req[1+MEM_ADDR_W+`WRITE_W-1]),
+      .be_addr  (icache_be_req[`address(0, MEM_ADDR_W)]),
       .be_wdata (icache_be_req[`wdata(0)]),
       .be_wstrb (icache_be_req[`wstrb(0)]),
       .be_rdata (icache_be_resp[`rdata(0)]),
@@ -82,14 +82,14 @@ module ext_mem #(
       );
 
    //l2 cache interface signals
-   wire [1+DCACHE_ADDR_W+`WRITE_W-1:0] l2cache_req;
+   wire [1+MEM_ADDR_W+`WRITE_W-1:0] l2cache_req;
    wire [`RESP_W-1:0] 			       l2cache_resp;
    
    //ext_mem control signals
    wire l2_wtb_empty;
    wire invalidate;
    reg  invalidate_reg;
-   wire l2_avalid = l2cache_req[1+DCACHE_ADDR_W+`WRITE_W-1];
+   wire l2_avalid = l2cache_req[1+MEM_ADDR_W+`WRITE_W-1];
    //Necessary logic to avoid invalidating L2 while it's being accessed by a request
    always @(posedge clk_i, posedge arst_i)
      if (arst_i)
@@ -117,12 +117,12 @@ module ext_mem #(
    assign d_resp[`ready(0)] = d_ack;
 
    // Back-end bus
-   wire [1+DCACHE_ADDR_W+`WRITE_W-1:0]       dcache_be_req;
+   wire [1+MEM_ADDR_W+`WRITE_W-1:0]       dcache_be_req;
    wire [`RESP_W-1:0] 			      dcache_be_resp;
    
    // Data cache instance
    iob_cache_iob #(
-      .FE_ADDR_W(DCACHE_ADDR_W),
+      .FE_ADDR_W(MEM_ADDR_W),
       .NWAYS_W(2),        //Number of ways
       .NLINES_W(7),    //Cache Line Offset (number of lines)
       .WORD_OFFSET_W(3),    //Word Offset (number of words per line)
@@ -135,8 +135,8 @@ module ext_mem #(
       .rst_i (arst_i),
 
       // Front-end interface
-      .req (d_req[2+DCACHE_ADDR_W-2+`WRITE_W-1]),
-      .addr  (d_req[`address(0,1+DCACHE_ADDR_W-2)]),
+      .req (d_req[2+MEM_ADDR_W-2+`WRITE_W-1]),
+      .addr  (d_req[`address(0,1+MEM_ADDR_W-2)]),
       .wdata (d_req[`wdata(0)]),
       .wstrb (d_req[`wstrb(0)]),
       .rdata (d_resp[`rdata(0)]),
@@ -147,8 +147,8 @@ module ext_mem #(
       .wtb_empty_in(l2_wtb_empty),
       .wtb_empty_out(),
       // Back-end interface
-      .be_req (dcache_be_req[1+DCACHE_ADDR_W+`WRITE_W-1]),
-      .be_addr  (dcache_be_req[`address(0,DCACHE_ADDR_W)]),
+      .be_req (dcache_be_req[1+MEM_ADDR_W+`WRITE_W-1]),
+      .be_addr  (dcache_be_req[`address(0,MEM_ADDR_W)]),
       .be_wdata (dcache_be_req[`wdata(0)]),
       .be_wstrb (dcache_be_req[`wstrb(0)]),
       .be_rdata (dcache_be_resp[`rdata(0)]),
@@ -157,7 +157,7 @@ module ext_mem #(
 
    // Merge cache back-ends
    iob_merge #(
-      .ADDR_W(DCACHE_ADDR_W),
+      .ADDR_W(MEM_ADDR_W),
       .N_MASTERS(2)
       )
    merge_i_d_buses_into_l2 (
@@ -176,7 +176,7 @@ module ext_mem #(
    iob_cache_axi #(
       .AXI_ID_W(AXI_ID_W),
       .AXI_LEN_W(AXI_LEN_W),
-      .FE_ADDR_W(DCACHE_ADDR_W),
+      .FE_ADDR_W(MEM_ADDR_W),
       .BE_ADDR_W(DDR_ADDR_W),
       .BE_DATA_W(DDR_DATA_W),
       .NWAYS_W(2),        //Number of Ways
@@ -189,8 +189,8 @@ module ext_mem #(
    l2cache 
      (
       // Native interface
-      .req    (l2cache_req[1+DCACHE_ADDR_W+`WRITE_W-1]),
-      .addr     (l2cache_req[`address(0, DCACHE_ADDR_W)-2]),
+      .req    (l2cache_req[1+MEM_ADDR_W+`WRITE_W-1]),
+      .addr     (l2cache_req[`address(0, MEM_ADDR_W)-2]),
       .wdata    (l2cache_req[`wdata(0)]),
       .wstrb    (l2cache_req[`wstrb(0)]),
       .rdata    (l2cache_resp[`rdata(0)]),
