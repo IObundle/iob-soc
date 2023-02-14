@@ -4,7 +4,7 @@
 `include "iob_soc_tester_conf.vh"
 `include "iob_lib.vh"
 
-//PHEADER
+//IOB_PRAGMA_PHEADERS
 
 module iob_soc_tester_top (
    output                             trap_o,
@@ -25,7 +25,7 @@ module iob_soc_tester_top (
    localparam AXI_ADDR_W=`DDR_ADDR_W;
    localparam AXI_DATA_W=`DDR_DATA_W;
  
-   //PWIRES
+   //IOB_PRAGMA_PWIRES
 
    
    /////////////////////////////////////////////
@@ -102,7 +102,7 @@ module iob_soc_tester_top (
       .AXI_DATA_W(AXI_DATA_W)
       )
    tester0 (
-           //PORTS
+           //IOB_PRAGMA_PPORTMAPS
 `ifdef IOB_SOC_TESTER_USE_EXTMEM
            //address write
 	       .axi_awid_o    (axi_awid_o      [2*AXI_ID_W-1:0]),

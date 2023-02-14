@@ -6,7 +6,7 @@
 `include "iob_uart_swreg_def.vh"
 
 
-//PHEADER
+//IOB_PRAGMA_PHEADERS
 
 module iob_soc_tester_tb;
 

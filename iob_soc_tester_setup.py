@@ -62,9 +62,8 @@ confs = \
     #mandatory parameters (do not change them!)
     {'name':'ADDR_W',        'type':'P', 'val':'32', 'min':'1', 'max':'32', 'descr':"Address bus width"},
     {'name':'DATA_W',        'type':'P', 'val':'32', 'min':'1', 'max':'32', 'descr':"Data bus width"},
-    {'name':'DCACHE_ADDR_W', 'type':'P', 'val':'24', 'min':'1', 'max':'32', 'descr':"DCACHE address width"},
     {'name':'AXI_ID_W',      'type':'P', 'val':'0', 'min':'1', 'max':'32', 'descr':"AXI ID bus width"},
-    {'name':'AXI_ADDR_W',    'type':'P', 'val':'`IOB_SOC_TESTER_DCACHE_ADDR_W', 'min':'1', 'max':'32', 'descr':"AXI address bus width"},
+    {'name':'AXI_ADDR_W',    'type':'P', 'val':'`MEM_ADDR_W', 'min':'1', 'max':'32', 'descr':"AXI address bus width"},
     {'name':'AXI_DATA_W',    'type':'P', 'val':'`IOB_SOC_TESTER_DATA_W', 'min':'1', 'max':'32', 'descr':"AXI data bus width"},
     {'name':'AXI_LEN_W',     'type':'P', 'val':'4', 'min':'1', 'max':'4', 'descr':"AXI burst length width"},
 ]
