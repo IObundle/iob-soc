@@ -13,7 +13,7 @@ jal ra, main
 
 //reboot to run bootloader
 li s5, 3 //cpu_rst_req=1, boot=1
-#ifdef RUN_EXTMEM //need to set MSB to address internal mem and boot controller
+#ifdef USE_EXTMEM //need to set MSB to address internal mem and boot controller
 li s6, EXTRA_BASE | BOOTCTR_BASE
 #else
 li s6, BOOTCTR_BASE

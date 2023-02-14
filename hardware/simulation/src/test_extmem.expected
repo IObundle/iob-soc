@@ -91,3 +91,5 @@ IOb-Console: file sent
 IOb-UART: file received
 SUCCESS: Send and received file match!
 IOb-Console: exiting...
+Addressing configuration for axi_interconnect instance TOP.iob_soc_tester_top.system_axi_interconnect
+ 0 ( 0): 000000 / 24 -- 000000-ffffff

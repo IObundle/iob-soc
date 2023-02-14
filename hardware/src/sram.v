@@ -1,4 +1,6 @@
 `timescale 1ns / 1ps
+
+`include "build_configuration.vh"
 `include "iob_soc_tester_conf.vh"
 
 module sram #(
@@ -57,7 +59,7 @@ module sram #(
       .dt_o (rdata)
       );
 `else // !`ifdef USE_SPRAM
- `ifdef IOB_SOC_TESTER_MEM_NO_READ_ON_WRITE
+ `ifdef MEM_NO_READ_ON_WRITE
    iob_ram_dp_be
      #(
        .HEXFILE(HEXFILE),
@@ -83,7 +85,7 @@ module sram #(
       .dB_i  (i_wdata),
       .dB_o (i_rdata)
       );
- `else // !`ifdef IOB_SOC_TESTER_MEM_NO_READ_ON_WRITE
+ `else // !`ifdef MEM_NO_READ_ON_WRITE
    iob_ram_dp_be_xil
      #(
        .HEXFILE(HEXFILE),

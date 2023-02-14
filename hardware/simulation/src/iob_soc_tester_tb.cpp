@@ -5,6 +5,7 @@
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 
+#include "build_configuration.h"
 #include "iob_soc_tester_conf.h"
 #include "iob_uart_swreg.h"
 

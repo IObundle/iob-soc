@@ -1,14 +1,13 @@
 `timescale 1 ns / 1 ps
-`include "iob_soc_tester_conf.vh"
 `include "iob_lib.vh"
 
 module boot_ctr
   #(
     parameter HEXFILE = "boot.hex",
-    parameter DATA_W = `IOB_SOC_TESTER_DATA_W,
-    parameter ADDR_W = `IOB_SOC_TESTER_ADDR_W,
-    parameter BOOTROM_ADDR_W = `IOB_SOC_TESTER_BOOTROM_ADDR_W,
-    parameter SRAM_ADDR_W = `IOB_SOC_TESTER_SRAM_ADDR_W
+    parameter DATA_W = 0,
+    parameter ADDR_W = 0,
+    parameter BOOTROM_ADDR_W = 0,
+    parameter SRAM_ADDR_W = 0
  )
   (
    output cpu_rst,

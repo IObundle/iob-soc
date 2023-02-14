@@ -48,23 +48,22 @@ blocks = \
 
 confs = \
 [
-    # SoC macros
-    {'name':'INIT_MEM',      'type':'M', 'val':'1', 'min':'0', 'max':'1', 'descr':"Enable memory initialization"},
-    {'name':'RUN_EXTMEM',    'type':'M', 'val':'NA', 'min':'0', 'max':'1', 'descr':"Run firmware from external memory"},
+    # macros
     {'name':'USE_MUL_DIV',   'type':'M', 'val':'1', 'min':'0', 'max':'1', 'descr':"Enable MUL and DIV CPU instructions"},
     {'name':'USE_COMPRESSED','type':'M', 'val':'1', 'min':'0', 'max':'1', 'descr':"Use compressed CPU instructions"},
     {'name':'E',             'type':'M', 'val':'31', 'min':'1', 'max':'32', 'descr':"Address selection bit for external memory"},
     {'name':'P',             'type':'M', 'val':'30', 'min':'1', 'max':'32', 'descr':"Address selection bit for peripherals"},
     {'name':'B',             'type':'M', 'val':'29', 'min':'1', 'max':'32', 'descr':"Address selection bit for boot ROM"},
 
-    # SoC parameters
-    {'name':'ADDR_W',        'type':'P', 'val':'32', 'min':'1', 'max':'32', 'descr':"Address bus width"},
-    {'name':'DATA_W',        'type':'P', 'val':'32', 'min':'1', 'max':'32', 'descr':"Data bus width"},
+    # parameters
     {'name':'BOOTROM_ADDR_W','type':'P', 'val':'12', 'min':'1', 'max':'32', 'descr':"Boot ROM address width"},
     {'name':'SRAM_ADDR_W',   'type':'P', 'val':'15', 'min':'1', 'max':'32', 'descr':"SRAM address width"},
-    {'name':'DCACHE_ADDR_W', 'type':'P', 'val':'24', 'min':'1', 'max':'32', 'descr':"DCACHE address width"},
+
+    #mandatory parameters (do not change them!)
+    {'name':'ADDR_W',        'type':'P', 'val':'32', 'min':'1', 'max':'32', 'descr':"Address bus width"},
+    {'name':'DATA_W',        'type':'P', 'val':'32', 'min':'1', 'max':'32', 'descr':"Data bus width"},
     {'name':'AXI_ID_W',      'type':'P', 'val':'0', 'min':'1', 'max':'32', 'descr':"AXI ID bus width"},
-    {'name':'AXI_ADDR_W',    'type':'P', 'val':'`IOB_SOC_TESTER_DCACHE_ADDR_W', 'min':'1', 'max':'32', 'descr':"AXI address bus width"},
+    {'name':'AXI_ADDR_W',    'type':'P', 'val':'`MEM_ADDR_W', 'min':'1', 'max':'32', 'descr':"AXI address bus width"},
     {'name':'AXI_DATA_W',    'type':'P', 'val':'`IOB_SOC_TESTER_DATA_W', 'min':'1', 'max':'32', 'descr':"AXI data bus width"},
     {'name':'AXI_LEN_W',     'type':'P', 'val':'4', 'min':'1', 'max':'4', 'descr':"AXI burst length width"},
 ]
@@ -78,7 +77,7 @@ ios = \
         {'name':"arst_i", 'type':"I", 'n_bits':'1', 'descr':"System reset, synchronous and active high"},
         {'name':"trap_o", 'type':"O", 'n_bits':'2', 'descr':"CPU trap signal (One for tester and one optionally for SUT)"}
     ]},
-    {'name': 'axi_m_custom_port', 'descr':'Bus of AXI master interfaces. One for Tester, one optionally from SUT', 'if_defined':'IOB_SOC_TESTER_RUN_EXTMEM', 'ports': [
+    {'name': 'axi_m_custom_port', 'descr':'Bus of AXI master interfaces. One for Tester, one optionally from SUT', 'if_defined':'USE_EXTMEM', 'ports': [
         {'name':'axi_awid_o', 'type':'O', 'n_bits':'2*AXI_ID_W', 'descr':'Address write channel ID'},
         {'name':'axi_awaddr_o', 'type':'O', 'n_bits':'2*AXI_ADDR_W', 'descr':'Address write channel address'},
         {'name':'axi_awlen_o', 'type':'O', 'n_bits':'2*8', 'descr':'Address write channel burst length'},
@@ -122,37 +121,50 @@ ios = \
 # ----------- Example Tester module configuration -----------
 # 'module_parameters' dictionary will be overriden if it is called by another core/system by defining the following hardware module:
 #     'hw_modules': [ ('TESTER',module_parameters) ]
-module_parameters = {
-    'extra_peripherals': 
-    [
-#        {'name':'UART0', 'type':'UART', 'descr':'Default UART interface', 'params':{}}, # It is possible to override default tester peripherals with new parameters
-    ],
+if 'module_parameters' not in vars():
+    module_parameters = {
+        # Allows overriding entries in 'confs' dictionary of the 'blocks' dictionary in iob_soc_tester.py
+        'extra_peripherals': 
+        [
+#           {'name':'UART0', 'type':'UART', 'descr':'Default UART interface', 'params':{}}, # It is possible to override default tester peripherals with new parameters
+        ],
 
-    'extra_peripherals_dirs':
-    {
-#        UART:'./submodules/UART'
-    },
+        # Allows for manual configuration of directory paths for peripherals added in 'extra_peripherals' list
+        'extra_peripherals_dirs':
+        {
+#           UART:'./submodules/UART'
+        },
 
-    'peripheral_portmap':
-    [
-        ({'corename':'UART0', 'if_name':'rs232', 'port':'', 'bits':[]},{'corename':'', 'if_name':'', 'port':'', 'bits':[]}), #Map UART0 of tester to external interface
-    ],
-}
+        # Map IO connections of Tester peripherals with UUT's IO and the top system.
+        'peripheral_portmap':
+        [
+            ({'corename':'UART0', 'if_name':'rs232', 'port':'', 'bits':[]},{'corename':'', 'if_name':'', 'port':'', 'bits':[]}), #Map UART0 of tester to external interface
+        ],
+
+        # Allows overriding entries in 'confs' dictionary of iob_soc_tester.py
+        'confs':
+        [
+            # Override default values of Tester params
+            #{'name':'BOOTROM_ADDR_W','type':'P', 'val':'13', 'min':'1', 'max':'32', 'descr':"Boot ROM address width"},
+            #{'name':'SRAM_ADDR_W',   'type':'P', 'val':'16', 'min':'1', 'max':'32', 'descr':"SRAM address width"},
+        ],
+
+        # Name of the System Under Test (SUT) firmmware. Used by tester to initialize external memory in simulation.
+        #'sut_fw_name':name+'_firmware'
+    }
 
 def custom_setup():
     # Add the following arguments:
-    # "INIT_MEM=x":   allows choosing if should setup with init_mem or not
-    # "RUN_EXTMEM=x": allows choosing if should setup with run_extmem or not
+    # "INIT_MEM": if should setup with init_mem or not
+    # "USE_EXTMEM": if should setup with extmem or not
     for arg in sys.argv[1:]:
-        if arg.startswith("INIT_MEM="):
-            if arg[-1:]!="0": update_define(confs, "INIT_MEM",True)
-            else: update_define(confs, "INIT_MEM",False)
-        if arg.startswith("RUN_EXTMEM="):
-            if arg[-1:]!="0": update_define(confs, "RUN_EXTMEM",True)
-            else: update_define(confs, "RUN_EXTMEM",False)
+        if arg == "INIT_MEM":
+            update_define(confs, "INIT_MEM",True)
+        if arg == "USE_EXTMEM":
+            update_define(confs, "USE_EXTMEM",True)
     
     for conf in confs:
-        if (conf['name'] == 'RUN_EXTMEM') and (conf['val'] == '1'):
+        if (conf['name'] == 'USE_EXTMEM') and conf['val']:
             submodules['hw_setup']['headers'].append([ 'ddr4_', 'axi_wire', 'ddr4_', 'ddr4_' ])
             submodules['hw_setup']['modules'].append('axi_interconnect')
 

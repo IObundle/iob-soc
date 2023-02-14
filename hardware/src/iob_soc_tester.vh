@@ -1,5 +1,3 @@
-`include "iob_soc_tester_conf.vh"
- 
 // data bus select bits
 `define V_BIT (`REQ_W - 1) //valid bit
 `define E_BIT (`REQ_W - (ADDR_W-E_BIT+1)) //extra mem select bit
