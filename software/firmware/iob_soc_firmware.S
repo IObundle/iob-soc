@@ -1,23 +1,21 @@
-#include "iob_soc_system.h"
 #include "iob_soc_conf.h"
+#include "boot_conf.h"
+
+#define CTR_ADDR (BOOT_BASE+(1<<IOB_SOC_ROM_ADDR_W))
 
 .section .init
 .global main
 
 //set stack pointer
-lui sp, %hi(1<<SRAM_ADDR_W)
-addi sp, sp, %lo(1<<SRAM_ADDR_W)
+lui sp, %hi(1<<IOB_SOC_RAM_ADDR_W)
+addi sp, sp, %lo(1<<IOB_SOC_RAM_ADDR_W)
 
 //call main
 jal ra, main
 
 //reboot to run bootloader
-li s5, 3 //cpu_rst_req=1, boot=1
-#ifdef USE_EXTMEM //need to set MSB to address internal mem and boot controller
-li s6, EXTRA_BASE | BOOTCTR_BASE
-#else
-li s6, BOOTCTR_BASE
-#endif
+li s5, 6 //cpu_rst=1, boot=1, preboot=0
+li s6, CTR_ADDR
 sw s5, 0(s6)
 
 ebreak

@@ -1,10 +1,10 @@
-#include "iob_soc_system.h"
 #include "iob_soc_conf.h"
-#include "iob_soc_periphs.h"
-        
-#define BOOTROM 0x40000100
-#define BOOTRAM ((1<<31) + (1<<SRAM_ADDR_W) - (1<<BOOTROM_ADDR_W))
-#define LENGTH (1 << BOOTROM_ADDR_W)
+#include "boot_conf.h"
+
+#define BOOTROM (BOOT_BASE+0x100)
+#define BOOTRAM ((1<<31) + (1<<IOB_SOC_RAM_ADDR_W) - (1<<IOB_SOC_ROM_ADDR_W))
+#define LENGTH (1 << IOB_SOC_ROM_ADDR_W)
+#define CTR_ADDR (BOOT_BASE+(1<<IOB_SOC_ROM_ADDR_W))
         
 .section .init
 .globl _start
@@ -24,7 +24,7 @@ copy_loop:
 
 //reboot to run bootloader
 li s5, 6 //cpu_rst_req=1, bootload=1, preload=0
-li s6, BOOT0_BASE
+li s6, CTR_ADDR
 sw s5, 0(s6)
 
 ebreak

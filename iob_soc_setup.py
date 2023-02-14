@@ -11,10 +11,13 @@ flows='pc-emul emb sim doc fpga'
 setup_dir=os.path.dirname(__file__)
 build_dir=f"../{name}_{version}"
 
+ROM_ADDR_W = 12
+BOOT_BASE = 0x20000000
+
 submodules = {
     'hw_setup': {
         'headers' : [ 'iob_wire', 'axi_wire', 'axi_m_m_portmap', 'axi_m_port', 'axi_m_m_portmap', 'axi_m_portmap' ],
-        'modules': [ 'BOOT', 'PICORV32', 'CACHE', 'UART', 'iob_merge', 'iob_split', 'iob_ram_dp_be.v', 'iob_ram_dp_be_xil.v', 'iob_pulse_gen.v', 'iob_counter.v', 'iob_ram_2p_asym.v', 'iob_reg.v', 'iob_reg_re.v', 'iob_ram_sp_be.v', 'iob_ram_dp.v', 'iob_reset_sync', 'iob_rom_sp']
+        'modules': [ ('BOOT', {'BASE':BOOT_BASE, 'ROM_ADDR_W':ROM_ADDR_W}), 'PICORV32', 'CACHE', 'UART', 'iob_merge', 'iob_split', 'iob_ram_dp_be.v', 'iob_ram_dp_be_xil.v', 'iob_pulse_gen.v', 'iob_counter.v', 'iob_ram_2p_asym.v', 'iob_reg.v', 'iob_reg_re.v', 'iob_ram_sp_be.v', 'iob_ram_dp.v', 'iob_reset_sync', 'iob_rom_sp']
     },
     'sim_setup': {
         'headers' : [ 'axi_s_portmap' ],
@@ -22,7 +25,7 @@ submodules = {
     },
     'sw_setup': {
         'headers': [  ],
-        'modules': [ 'CACHE', 'UART', 'BOOT' ]
+        'modules': [ ('BOOT', {'BASE':BOOT_BASE, 'ROM_ADDR_W':ROM_ADDR_W}), 'CACHE', 'UART' ]
     },
 }
 
@@ -50,12 +53,12 @@ blocks = \
 confs = \
 [
     # parameters that can be changed by the user
-    {'name':'BOOTROM_ADDR_W','type':'P', 'val':'12', 'min':'1', 'max':'32', 'descr':"Boot ROM address width"},
-    {'name':'SRAM_ADDR_W',   'type':'P', 'val':'15', 'min':'1', 'max':'32', 'descr':"SRAM address width"},
+    {'name':'ROM_ADDR_W', 'type':'P', 'val':str(ROM_ADDR_W), 'min':'1', 'max':'32', 'descr':"Boot ROM address width"},
+    {'name':'RAM_ADDR_W', 'type':'P', 'val':'15', 'min':'1', 'max':'32', 'descr':"SRAM address width"},
 
     #parameters that cannot be changed by the user but are necessary for the system to work
-    {'name':'ADDR_W',        'type':'P', 'val':'32', 'min':'1', 'max':'32', 'descr':"Address bus width"},
-    {'name':'DATA_W',        'type':'P', 'val':'32', 'min':'1', 'max':'32', 'descr':"Data bus width"},
+    {'name':'ADDR_W',        'type':'P', 'val':'32', 'min':'32', 'max':'32', 'descr':"Address bus width"},
+    {'name':'DATA_W',        'type':'P', 'val':'32', 'min':'32', 'max':'32', 'descr':"Data bus width"},
     {'name':'DCACHE_ADDR_W', 'type':'P', 'val':'24', 'min':'1', 'max':'32', 'descr':"DCACHE address width"},
     {'name':'AXI_ID_W',      'type':'P', 'val':'0', 'min':'1', 'max':'32', 'descr':"AXI ID bus width"},
     {'name':'AXI_ADDR_W',    'type':'P', 'val':'`IOB_SOC_DCACHE_ADDR_W', 'min':'1', 'max':'32', 'descr':"AXI address bus width"},

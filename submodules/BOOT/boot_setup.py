@@ -16,16 +16,24 @@ submodules = {
     },
 }
 
+#these 2 values should be passed from the top level but are hardcoded for now
+BASE = 0x20000000
+ROM_ADDR_W = 12
+
+#BASE = module_parameters['BASE']
+#ROM_ADDR_W = module_parameters['ROM_ADDR_W']
+
+
+
 confs = \
 [
     # Macros
 
     # Parameters
-    {'name':'DATA_W',      'type':'P', 'val':'32', 'min':'32', 'max':'32', 'descr':"Data bus width"},
-    {'name':'ADDR_W',      'type':'P', 'val':'`BOOT_SWREG_ADDR_W', 'min':'NA', 'max':'NA', 'descr':"Address bus width"},
+    {'name':'DATA_W', 'type':'P', 'val':'32', 'min':'32', 'max':'32', 'descr':"Data bus width"},
     {'name':'HEXFILE', 'type':'P', 'val':'0', 'min':'NA', 'max':'NA', 'descr':""},
-    {'name':'BOOTROM_ADDR_W', 'type':'P', 'val':'12', 'min':'12', 'max':'12', 'descr':""},
-    {'name':'SRAM_ADDR_W', 'type':'P', 'val':'15', 'min':'15', 'max':'15', 'descr':""}
+    {'name':'BASE', 'type':'P', 'val':str(BASE), 'min':str(BASE), 'max':str(BASE), 'descr':"Base address"},
+    {'name':'ROM_ADDR_W', 'type':'P', 'val':str(ROM_ADDR_W), 'min':str(ROM_ADDR_W), 'max':str(ROM_ADDR_W), 'descr':"ROM address width"},
 ]
 
 ios = \
@@ -52,8 +60,8 @@ ios = \
 regs = \
 [
     {'name': 'boot', 'descr':'Boot controlregister.', 'regs': [
-        {'name':'ROM', 'type':'R', 'n_bits':'DATA_W', 'rst_val':0, 'addr':0x40000000, 'log2n_items':'12', 'autologic':False, 'descr':"Bootloader ROM."},
-        {'name':'CTR', 'type':'W', 'n_bits':3, 'rst_val':0, 'addr':(0x40000000+2**12), 'log2n_items':0, 'autologic':False, 'descr':"Boot control register (write). The register has the following fields: 0: preboot enable, 1: boot enable, 2: CPU reset"},
+        {'name':'ROM', 'type':'R', 'n_bits':'DATA_W', 'rst_val':0, 'addr':BASE, 'log2n_items':ROM_ADDR_W, 'autologic':False, 'descr':"Bootloader ROM."},
+        {'name':'CTR', 'type':'W', 'n_bits':3, 'rst_val':0, 'addr':BASE+2**ROM_ADDR_W, 'log2n_items':0, 'autologic':False, 'descr':"Boot control register (write). The register has the following fields: 0: preboot enable, 1: boot enable, 2: CPU reset"},
     ]}
 ]
 
