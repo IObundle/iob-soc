@@ -6,7 +6,7 @@
 `include "iob_lib.vh"
 
 //do not remove line below
-//PHEADER
+//IOB_PRAGMA_PHEADERS
 
 module iob_soc #(
     `include "iob_soc_params.vh"
@@ -253,6 +253,6 @@ module iob_soc #(
       );
 `endif
 
-   //peripheral instances are inserted here
+  //IOB_PRAGMA_PERIPHS
 
 endmodule

@@ -4,7 +4,7 @@
 `include "iob_soc_conf.vh"
 `include "iob_lib.vh"
 
-//PHEADER
+//IOB_PRAGMA_PHEADERS
 
 module iob_soc_top (
    output                             trap_o,
@@ -25,7 +25,7 @@ module iob_soc_top (
    localparam AXI_ADDR_W=`DDR_ADDR_W;
    localparam AXI_DATA_W=`IOB_SOC_DATA_W;
  
-   //PWIRES
+   //IOB_PRAGMA_PWIRES
 
    
    /////////////////////////////////////////////
@@ -58,7 +58,7 @@ module iob_soc_top (
       .AXI_DATA_W(AXI_DATA_W)
       )
     uut (
-      //PORTS
+      //IOB_PRAGMA_PPORTMAPS
 `ifdef IOB_SOC_USE_EXTMEM
       `include "iob_axi_m_portmap.vh"
 `endif               
