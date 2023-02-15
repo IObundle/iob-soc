@@ -109,7 +109,7 @@ make setup [<control parameters>]
 
 `<control parameters>` are system configuration parameters passed in the
 command line, overriding those in the `iob_soc_tester_setup.py` file. Example control
-parameters are `INIT_MEM=0 USE_EXTMEM=1`. For example,
+parameters are `INIT_MEM=0 USE_EXTMEM=1`.
 
 To build and run the Tester in simulation, type:
 
