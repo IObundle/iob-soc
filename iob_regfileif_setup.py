@@ -4,6 +4,8 @@ import os, sys
 sys.path.insert(0, os.getcwd()+'/submodules/LIB/scripts')
 import setup
 import mkregs
+import shutil
+import copy
 
 name='iob_regfileif'
 version='V0.10'
@@ -53,7 +55,8 @@ def main():
     setup.setup(sys.modules[__name__])
 
     #### Invert registers type to create drivers for Secondary system
-    for table in regs: 
+    inverted_regs = copy.deepcopy(regs)
+    for table in inverted_regs: 
         for reg in table['regs']:
             if reg['type'] == 'W': reg['type']='R'
             else: reg['type']='W'
@@ -62,7 +65,7 @@ def main():
     mkregs_obj = mkregs.mkregs()
     mkregs_obj.config = confs
     # Get register table
-    reg_table = mkregs_obj.get_reg_table(regs, False)
+    reg_table = mkregs_obj.get_reg_table(inverted_regs, False)
     # Create inverted register hardware
     mkregs_obj.write_hwheader(reg_table, build_dir+'/hardware/src', f"{name}_inverted")
     mkregs_obj.write_hwcode(reg_table, build_dir+'/hardware/src', f"{name}_inverted")
@@ -106,13 +109,31 @@ def main():
     with open(f"{build_dir}/hardware/src/{name}_inverted_swreg_def.vh", "w") as file: file.writelines(lines)
 
     #### Create params, inst_params and conf files for inverted hardware. (Use symlinks to save disk space and highlight they are equal)
-    os.symlink(f"{name}_conf.vh", f"{build_dir}/hardware/src/{name}_inverted_conf.vh")
-    os.symlink(f"{name}_params.vh", f"{build_dir}/hardware/src/{name}_inverted_params.vh")
-    os.symlink(f"{name}_inst_params.vh", f"{build_dir}/hardware/src/{name}_inverted_inst_params.vh")
+    if not os.path.isfile(f"{build_dir}/hardware/src/{name}_inverted_conf.vh"): os.symlink(f"{name}_conf.vh", f"{build_dir}/hardware/src/{name}_inverted_conf.vh")
+    if not os.path.isfile(f"{build_dir}/hardware/src/{name}_inverted_params.vh"): os.symlink(f"{name}_params.vh", f"{build_dir}/hardware/src/{name}_inverted_params.vh")
+    if not os.path.isfile(f"{build_dir}/hardware/src/{name}_inverted_inst_params.vh"): os.symlink(f"{name}_inst_params.vh", f"{build_dir}/hardware/src/{name}_inverted_inst_params.vh")
 
     #### Create inverted register software
     mkregs_obj.write_swheader(reg_table, build_dir+'/software/esrc', f"{name}_inverted")
+    mkregs_obj.write_swheader(reg_table, build_dir+'/software/psrc', f"{name}_inverted")
     mkregs_obj.write_swcode(reg_table, build_dir+'/software/esrc', f"{name}_inverted")
+
+    #### Create pc-emul drivers
+    # Copy iob_regfileif_inverted_swreg_emb.c
+    shutil.copyfile(f"{build_dir}/software/esrc/{name}_inverted_swreg_emb.c",
+                    f"{build_dir}/software/psrc/{name}_inverted_swreg_pc_emul.c")
+
+    # Modify copied iob_regfileif_inverted_swreg_pc_emul.c file
+    with open(f"{build_dir}/software/psrc/{name}_inverted_swreg_pc_emul.c", "r") as file: 
+        contents = file.readlines()
+    for idx, line in enumerate(contents):
+        # Always return '1' on read registers
+        if 'return' in line: contents[idx] = 'return 1; //Always return "1"\n'
+        # Do nothing in write registers
+        if 'value));' in line: contents[idx] = '//Not implemented \n'
+    with open(f"{build_dir}/software/psrc/{name}_inverted_swreg_pc_emul.c", "w") as file: 
+        file.writelines(contents)
+
 
 if __name__ == "__main__":
     main()
