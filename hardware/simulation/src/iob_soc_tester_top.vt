@@ -1,0 +1,413 @@
+`timescale 1ns / 1ps
+
+`include "build_configuration.vh"
+`include "iob_soc_tester_conf.vh"
+`include "iob_lib.vh"
+
+//IOB_PRAGMA_PHEADERS
+
+module iob_soc_tester_top (
+   output                             trap_o,
+   //tester uart
+   input                               uart_avalid,
+   input [`IOB_UART_SWREG_ADDR_W-1:0]  uart_addr,
+   input [`IOB_SOC_TESTER_DATA_W-1:0]  uart_wdata,
+   input [3:0]                         uart_wstrb,
+   output [`IOB_SOC_TESTER_DATA_W-1:0] uart_rdata,
+   output                              uart_ready,
+   output                              uart_rvalid,
+   `IOB_INPUT(clk_i,1), //V2TEX_IO System clock input.
+   `IOB_INPUT(rst_i,1)  //V2TEX_IO System reset, asynchronous and active high.
+   );
+ 
+   localparam AXI_ID_W = 4;
+   localparam AXI_LEN_W = 8;
+   localparam AXI_ADDR_W=`DDR_ADDR_W;
+   localparam AXI_DATA_W=`DDR_DATA_W;
+ 
+   //IOB_PRAGMA_PWIRES
+
+   
+   /////////////////////////////////////////////
+   // TEST PROCEDURE
+   //
+   initial begin
+`ifdef VCD
+      $dumpfile("tester.vcd");
+      $dumpvars();
+`endif
+   end
+   
+   //
+   // INSTANTIATE COMPONENTS
+   //
+
+   //DDR AXI interface signals (2 for the two systems + 1 for memory)
+`ifdef IOB_SOC_TESTER_USE_EXTMEM
+   //Write address
+   wire [3*AXI_ID_W-1:0]     axi_awid_o;
+   wire [3*AXI_ADDR_W-1:0]   axi_awaddr_o;
+   wire [3*(7+1)-1:0]        axi_awlen_o;
+   wire [3*(2+1)-1:0]        axi_awsize_o;
+   wire [3*(1+1)-1:0]        axi_awburst_o;
+   wire [3*(1+1)-1:0]        axi_awlock_o;
+   wire [3*(3+1)-1:0]        axi_awcache_o;
+   wire [3*(2+1)-1:0]        axi_awprot_o;
+   wire [3*(3+1)-1:0]        axi_awqos_o;
+   wire [2:0]                axi_awvalid_o;
+   wire [2:0]                axi_awready_i;
+   //Write data              
+   wire [3*(31+1)-1:0]       axi_wdata_o;
+   wire [3*(3+1)-1:0]        axi_wstrb_o;
+   wire [2:0]                axi_wlast_o;
+   wire [2:0]                axi_wvalid_o;
+   wire [2:0]                axi_wready_i;
+   //Write response          
+   wire [3*AXI_ID_W-1:0]     axi_bid_i;
+   wire [3*(1+1)-1:0]        axi_bresp_i;
+   wire [2:0]                axi_bvalid_i;
+   wire [2:0]                axi_bready_o;
+   //Read address            
+   wire [3*AXI_ID_W-1:0]     axi_arid_o;
+   wire [3*AXI_ADDR_W-1:0]   axi_araddr_o;
+   wire [3*(7+1)-1:0]        axi_arlen_o;
+   wire [3*(2+1)-1:0]        axi_arsize_o;
+   wire [3*(1+1)-1:0]        axi_arburst_o;
+   wire [3*(1+1)-1:0]        axi_arlock_o;
+   wire [3*(3+1)-1:0]        axi_arcache_o;
+   wire [3*(2+1)-1:0]        axi_arprot_o;
+   wire [3*(3+1)-1:0]        axi_arqos_o;
+   wire [2:0]                axi_arvalid_o;
+   wire [2:0]                axi_arready_i;
+   //Read data               
+   wire [3*AXI_ID_W-1:0]     axi_rid_i;
+   wire [3*(31+1)-1:0]       axi_rdata_i;
+   wire [3*(1+1)-1:0]        axi_rresp_i;
+   wire [2:0]                axi_rlast_i;
+   wire [2:0]                axi_rvalid_i;
+   wire [2:0]                axi_rready_o;
+`endif
+
+   //'Or' between trap signals of Tester and SUT
+   wire [1:0]                   trap_signals;
+   assign trap_o = trap_signals[0] || trap_signals[1];
+
+    //
+   // Tester (also includes Unit Under Test)
+    //
+   iob_soc_tester #(
+      .AXI_ID_W(AXI_ID_W),
+      .AXI_LEN_W(AXI_LEN_W),
+      .AXI_ADDR_W(AXI_ADDR_W),
+      .AXI_DATA_W(AXI_DATA_W)
+      )
+   tester0 (
+           //IOB_PRAGMA_PPORTMAPS
+`ifdef IOB_SOC_TESTER_USE_EXTMEM
+           //address write
+	       .axi_awid_o    (axi_awid_o      [2*AXI_ID_W-1:0]),
+	       .axi_awaddr_o  (axi_awaddr_o    [2*AXI_ADDR_W-1:0]),
+	       .axi_awlen_o   (axi_awlen_o     [2*(7+1)-1:0]),
+	       .axi_awsize_o  (axi_awsize_o    [2*(2+1)-1:0]),
+	       .axi_awburst_o (axi_awburst_o   [2*(1+1)-1:0]),
+	       .axi_awlock_o  (axi_awlock_o    [2*(1+1)-1:0]),
+	       .axi_awcache_o (axi_awcache_o   [2*(3+1)-1:0]),
+	       .axi_awprot_o  (axi_awprot_o    [2*(2+1)-1:0]),
+	       .axi_awqos_o   (axi_awqos_o     [2*(3+1)-1:0]),
+	       .axi_awvalid_o (axi_awvalid_o   [1:0]),
+	       .axi_awready_i (axi_awready_i   [1:0]),
+	        //write
+	       .axi_wdata_o   (axi_wdata_o     [2*(31+1)-1:0]),
+	       .axi_wstrb_o   (axi_wstrb_o     [2*(3+1)-1:0]),
+	       .axi_wlast_o   (axi_wlast_o     [1:0]),
+	       .axi_wvalid_o  (axi_wvalid_o    [1:0]),
+	       .axi_wready_i  (axi_wready_i    [1:0]),
+	        //write response
+	       .axi_bid_i     (axi_bid_i       [2*AXI_ID_W-1:0]),
+	       .axi_bresp_i   (axi_bresp_i     [2*(1+1)-1:0]),
+	       .axi_bvalid_i  (axi_bvalid_i    [1:0]),
+	       .axi_bready_o  (axi_bready_o    [1:0]),
+	        //address read
+	       .axi_arid_o    (axi_arid_o      [2*AXI_ID_W-1:0]),
+	       .axi_araddr_o  (axi_araddr_o    [2*AXI_ADDR_W-1:0]),
+	       .axi_arlen_o   (axi_arlen_o     [2*(7+1)-1:0]),
+	       .axi_arsize_o  (axi_arsize_o    [2*(2+1)-1:0]),
+	       .axi_arburst_o (axi_arburst_o   [2*(1+1)-1:0]),
+	       .axi_arlock_o  (axi_arlock_o    [2*(1+1)-1:0]),
+	       .axi_arcache_o (axi_arcache_o   [2*(3+1)-1:0]),
+	       .axi_arprot_o  (axi_arprot_o    [2*(2+1)-1:0]),
+	       .axi_arqos_o   (axi_arqos_o     [2*(3+1)-1:0]),
+	       .axi_arvalid_o (axi_arvalid_o   [1:0]),
+	       .axi_arready_i (axi_arready_i   [1:0]),
+	        //read
+	       .axi_rid_i     (axi_rid_i       [2*AXI_ID_W-1:0]),
+	       .axi_rdata_i   (axi_rdata_i     [2*(31+1)-1:0]),
+	       .axi_rresp_i   (axi_rresp_i     [2*(1+1)-1:0]),
+	       .axi_rlast_i   (axi_rlast_i     [1:0]),
+	       .axi_rvalid_i  (axi_rvalid_i    [1:0]),
+	       .axi_rready_o  (axi_rready_o    [1:0]),
+`endif               
+      .clk_i (clk_i),
+      .arst_i (rst_i),
+      .trap_o (trap_signals)
+      );
+
+`ifdef IOB_SOC_TESTER_USE_EXTMEM
+	//instantiate axi interconnect
+	//This connects Tester+SUT to the same memory
+	axi_interconnect
+		#(
+		.ID_WIDTH(AXI_ID_W),
+		.DATA_WIDTH (AXI_DATA_W),
+		.ADDR_WIDTH (AXI_ADDR_W),
+		.M_ADDR_WIDTH (AXI_ADDR_W),
+		.S_COUNT (2),
+		.M_COUNT (1)
+		)
+		system_axi_interconnect(
+			.clk            (clk_i),
+			.rst            (rst_i),
+
+			.s_axi_awid     (axi_awid_o      [2*AXI_ID_W-1:0]),
+			.s_axi_awaddr   (axi_awaddr_o    [2*AXI_ADDR_W-1:0]),
+			.s_axi_awlen    (axi_awlen_o     [2*(7+1)-1:0]),
+			.s_axi_awsize   (axi_awsize_o    [2*(2+1)-1:0]),
+			.s_axi_awburst  (axi_awburst_o   [2*(1+1)-1:0]),
+			.s_axi_awlock   ({axi_awlock_o[2],axi_awlock_o[0]}),
+			.s_axi_awcache  (axi_awcache_o   [2*(3+1)-1:0]),
+			.s_axi_awprot   (axi_awprot_o    [2*(2+1)-1:0]),
+			.s_axi_awqos    (axi_awqos_o     [2*(3+1)-1:0]),
+			.s_axi_awvalid  (axi_awvalid_o   [1:0]),
+			.s_axi_awready  (axi_awready_i   [1:0]),
+			//write                                        
+			.s_axi_wdata    (axi_wdata_o     [2*(31+1)-1:0]),
+			.s_axi_wstrb    (axi_wstrb_o     [2*(3+1)-1:0]),
+			.s_axi_wlast    (axi_wlast_o     [1:0]),
+			.s_axi_wvalid   (axi_wvalid_o    [1:0]),
+			.s_axi_wready   (axi_wready_i    [1:0]),
+			//write response                  se           
+			.s_axi_bid      (axi_bid_i       [2*AXI_ID_W-1:0]),
+			.s_axi_bresp    (axi_bresp_i     [2*(1+1)-1:0]),
+			.s_axi_bvalid   (axi_bvalid_i    [1:0]),
+			.s_axi_bready   (axi_bready_o    [1:0]),
+			//address read                                 
+			.s_axi_arid     (axi_arid_o      [2*AXI_ID_W-1:0]),
+			.s_axi_araddr   (axi_araddr_o    [2*AXI_ADDR_W-1:0]),
+			.s_axi_arlen    (axi_arlen_o     [2*(7+1)-1:0]), 
+			.s_axi_arsize   (axi_arsize_o    [2*(2+1)-1:0]),    
+			.s_axi_arburst  (axi_arburst_o   [2*(1+1)-1:0]),
+			.s_axi_arlock   ({axi_arlock_o[2],axi_arlock_o[0]}),
+			.s_axi_arcache  (axi_arcache_o   [2*(3+1)-1:0]),
+			.s_axi_arprot   (axi_arprot_o    [2*(2+1)-1:0]),
+			.s_axi_arqos    (axi_arqos_o     [2*(3+1)-1:0]),
+			.s_axi_arvalid  (axi_arvalid_o   [1:0]),
+			.s_axi_arready  (axi_arready_i   [1:0]),
+			//read                                         
+			.s_axi_rid      (axi_rid_i       [2*AXI_ID_W-1:0]),
+			.s_axi_rdata    (axi_rdata_i     [2*(31+1)-1:0]),
+			.s_axi_rresp    (axi_rresp_i     [2*(1+1)-1:0]),
+			.s_axi_rlast    (axi_rlast_i     [1:0]),
+			.s_axi_rvalid   (axi_rvalid_i    [1:0]),
+			.s_axi_rready   (axi_rready_o    [1:0]),
+
+			.m_axi_awid     (axi_awid_o      [3*AXI_ID_W-1:2*AXI_ID_W]),
+			.m_axi_awaddr   (axi_awaddr_o    [3*AXI_ADDR_W-1:2*AXI_ADDR_W]),
+			.m_axi_awlen    (axi_awlen_o     [3*(7+1)-1:2*(7+1)]),
+			.m_axi_awsize   (axi_awsize_o    [3*(2+1)-1:2*(2+1)]),
+			.m_axi_awburst  (axi_awburst_o   [3*(1+1)-1:2*(1+1)]),
+			.m_axi_awlock   (axi_awlock_o    [4]),
+			.m_axi_awcache  (axi_awcache_o   [3*(3+1)-1:2*(3+1)]),
+			.m_axi_awprot   (axi_awprot_o    [3*(2+1)-1:2*(2+1)]),
+			.m_axi_awqos    (axi_awqos_o     [3*(3+1)-1:2*(3+1)]),
+			.m_axi_awvalid  (axi_awvalid_o   [2]),
+			.m_axi_awready  (axi_awready_i   [2]),
+			//write                                        
+			.m_axi_wvalid   (axi_wvalid_o    [2]),
+			.m_axi_wready   (axi_wready_i    [2]),
+			.m_axi_wdata    (axi_wdata_o     [3*(31+1)-1:2*(31+1)]),
+			.m_axi_wstrb    (axi_wstrb_o     [3*(3+1)-1:2*(3+1)]),
+			.m_axi_wlast    (axi_wlast_o     [2]),
+			//write response                  se           
+			.m_axi_bready   (axi_bready_o    [2]),
+			.m_axi_bid      (axi_bid_i       [3*AXI_ID_W-1:2*AXI_ID_W]),
+			.m_axi_bresp    (axi_bresp_i     [3*(1+1)-1:2*(1+1)]),
+			.m_axi_bvalid   (axi_bvalid_i    [2]),
+			//address read                                 
+			.m_axi_arid     (axi_arid_o      [3*AXI_ID_W-1:2*AXI_ID_W]),
+			.m_axi_araddr   (axi_araddr_o    [3*AXI_ADDR_W-1:2*AXI_ADDR_W]),
+			.m_axi_arlen    (axi_arlen_o     [3*(7+1)-1:2*(7+1)]), 
+			.m_axi_arsize   (axi_arsize_o    [3*(2+1)-1:2*(2+1)]),    
+			.m_axi_arburst  (axi_arburst_o   [3*(1+1)-1:2*(1+1)]),
+			.m_axi_arlock   (axi_arlock_o    [4]),
+			.m_axi_arcache  (axi_arcache_o   [3*(3+1)-1:2*(3+1)]),
+			.m_axi_arprot   (axi_arprot_o    [3*(2+1)-1:2*(2+1)]),
+			.m_axi_arqos    (axi_arqos_o     [3*(3+1)-1:2*(3+1)]),
+			.m_axi_arvalid  (axi_arvalid_o   [2]),
+			.m_axi_arready  (axi_arready_i   [2]),
+			//read                                         
+			.m_axi_rdata    (axi_rdata_i     [3*(31+1)-1:2*(31+1)]),
+			.m_axi_rresp    (axi_rresp_i     [3*(1+1)-1:2*(1+1)]),
+			.m_axi_rlast    (axi_rlast_i     [2]),
+			.m_axi_rvalid   (axi_rvalid_i    [2]),
+			.m_axi_rid      (axi_rid_i       [3*AXI_ID_W-1:2*AXI_ID_W]),
+			.m_axi_rready   (axi_rready_o    [2]),
+
+			//optional signals
+			.s_axi_awuser   (2'b00),
+			.s_axi_wuser    (2'b00),
+			.s_axi_aruser   (2'b00),
+			.m_axi_buser    (1'b0),
+			.m_axi_ruser    (1'b0)
+		);
+
+
+   //instantiate the axi memory
+	//Tester and SUT access the same memory.
+	axi_ram 
+		#(
+`ifdef IOB_SOC_TESTER_INIT_MEM
+		.FILE("init_ddr_contents.hex"), //This file contains firmware for both systems
+		.FILE_SIZE(2**(AXI_ADDR_W-2)),
+`endif
+		.ID_WIDTH (AXI_ID_W),
+		.DATA_WIDTH (AXI_DATA_W),
+		.ADDR_WIDTH (AXI_ADDR_W)
+		)
+		ddr_model_mem(
+		.axi_awid_i     (axi_awid_o      [3*AXI_ID_W-1:2*AXI_ID_W]),
+		.axi_awaddr_i   (axi_awaddr_o    [3*AXI_ADDR_W-1:2*AXI_ADDR_W]),
+		.axi_awlen_i    (axi_awlen_o     [3*(7+1)-1:2*(7+1)]),
+		.axi_awsize_i   (axi_awsize_o    [3*(2+1)-1:2*(2+1)]),
+		.axi_awburst_i  (axi_awburst_o   [3*(1+1)-1:2*(1+1)]),
+		.axi_awlock_i   (axi_awlock_o    [3*(1+1)-1:2*(1+1)]),
+		.axi_awcache_i  (axi_awcache_o   [3*(3+1)-1:2*(3+1)]),
+		.axi_awprot_i   (axi_awprot_o    [3*(2+1)-1:2*(2+1)]),
+		.axi_awqos_i    (axi_awqos_o     [3*(3+1)-1:2*(3+1)]),
+		.axi_awvalid_i  (axi_awvalid_o   [2]),
+		.axi_awready_o  (axi_awready_i   [2]),
+		 //write
+		.axi_wvalid_i   (axi_wvalid_o    [2]),
+		.axi_wready_o   (axi_wready_i    [2]),
+		.axi_wdata_i    (axi_wdata_o     [3*(31+1)-1:2*(31+1)]),
+		.axi_wstrb_i    (axi_wstrb_o     [3*(3+1)-1:2*(3+1)]),
+		.axi_wlast_i    (axi_wlast_o     [2]),
+		 //write response
+		.axi_bready_i   (axi_bready_o    [2]),
+		.axi_bid_o      (axi_bid_i       [3*AXI_ID_W-1:2*AXI_ID_W]),
+		.axi_bresp_o    (axi_bresp_i     [3*(1+1)-1:2*(1+1)]),
+		.axi_bvalid_o   (axi_bvalid_i    [2]),
+		 //address read
+		.axi_arid_i     (axi_arid_o      [3*AXI_ID_W-1:2*AXI_ID_W]),
+		.axi_araddr_i   (axi_araddr_o    [3*AXI_ADDR_W-1:2*AXI_ADDR_W]),
+		.axi_arlen_i    (axi_arlen_o     [3*(7+1)-1:2*(7+1)]), 
+		.axi_arsize_i   (axi_arsize_o    [3*(2+1)-1:2*(2+1)]),    
+		.axi_arburst_i  (axi_arburst_o   [3*(1+1)-1:2*(1+1)]),
+		.axi_arlock_i   (axi_arlock_o    [3*(1+1)-1:2*(1+1)]),
+		.axi_arcache_i  (axi_arcache_o   [3*(3+1)-1:2*(3+1)]),
+		.axi_arprot_i   (axi_arprot_o    [3*(2+1)-1:2*(2+1)]),
+		.axi_arqos_i    (axi_arqos_o     [3*(3+1)-1:2*(3+1)]),
+		.axi_arvalid_i  (axi_arvalid_o   [2]),
+		.axi_arready_o  (axi_arready_i   [2]),
+		 //read
+		.axi_rdata_o    (axi_rdata_i     [3*(31+1)-1:2*(31+1)]),
+		.axi_rresp_o    (axi_rresp_i     [3*(1+1)-1:2*(1+1)]),
+		.axi_rlast_o    (axi_rlast_i     [2]),
+		.axi_rvalid_o   (axi_rvalid_i    [2]),
+		.axi_rid_o      (axi_rid_i       [3*AXI_ID_W-1:2*AXI_ID_W]),
+		.axi_rready_i   (axi_rready_o    [2]),
+
+      .clk_i(clk_i),
+      .rst_i(rst_i)
+      );   
+`endif
+
+//finish simulation on trap
+/* //Sut
+always @(posedge trap[0]) begin
+	#10 $display("Found SUT CPU trap condition");
+	$finish;
+   end
+//Tester
+always @(posedge trap[1]) begin
+	#10 $display("Found Tester CPU trap condition");
+	$finish;
+   end */
+
+   //sram monitor - use for debugging programs
+   /*
+    wire [`IOB_SOC_TESTER_SRAM_ADDR_W-1:0] sram_daddr = uut.int_mem0.int_sram.d_addr;
+    wire sram_dwstrb = |uut.int_mem0.int_sram.d_wstrb & uut.int_mem0.int_sram.d_valid;
+    wire sram_drdstrb = !uut.int_mem0.int_sram.d_wstrb & uut.int_mem0.int_sram.d_valid;
+    wire [`IOB_SOC_TESTER_DATA_W-1:0] sram_dwdata = uut.int_mem0.int_sram.d_wdata;
+
+
+    wire sram_iwstrb = |uut.int_mem0.int_sram.i_wstrb & uut.int_mem0.int_sram.i_valid;
+    wire sram_irdstrb = !uut.int_mem0.int_sram.i_wstrb & uut.int_mem0.int_sram.i_valid;
+    wire [`IOB_SOC_TESTER_SRAM_ADDR_W-1:0] sram_iaddr = uut.int_mem0.int_sram.i_addr;
+    wire [`IOB_SOC_TESTER_DATA_W-1:0] sram_irdata = uut.int_mem0.int_sram.i_rdata;
+
+    
+    always @(posedge sram_dwstrb)
+    if(sram_daddr == 13'h090d)  begin
+    #10 $display("Found CPU memory condition at %f : %x : %x", $time, sram_daddr, sram_dwdata );
+    //$finish;
+      end
+    */
+	//Manually added testbench uart core. RS232 pins attached to the same pins
+	//of the Tester UART0 instance to communicate with it
+	// The interface of Tester UART0 is assumed to be the first portmapped interface (portmap_0_*)
+   wire cke_i = 1'b1;
+   iob_uart uart_tb
+     (
+      .clk_i      (clk_i),
+      .cke_i      (cke_i),
+      .arst_i     (rst_i),
+      
+      .iob_avalid_i (uart_avalid),
+      .iob_addr_i   (uart_addr),
+      .iob_wdata_i  (uart_wdata),
+      .iob_wstrb_i  (uart_wstrb),
+      .iob_rdata_o  (uart_rdata),
+      .iob_rvalid_o (uart_rvalid),
+      .iob_ready_o  (uart_ready),
+      
+      .txd        (portmap_0_rxd),
+      .rxd        (portmap_0_txd),
+      .rts        (portmap_0_cts),
+      .cts        (portmap_0_rts)
+      );
+   
+	//Ethernet
+`ifdef IOB_SOC_TESTER_USE_ETHERNET
+   //ethernet clock: 4x slower than system clock
+   reg [1:0] eth_cnt = 2'b0;
+   reg eth_clk;
+
+   always @(posedge clk_i) begin
+       eth_cnt <= eth_cnt + 1'b1;
+       eth_clk <= eth_cnt[1];
+   end
+
+   // Ethernet Interface signals
+   assign ETHERNET0_RX_CLK = eth_clk;
+   assign ETHERNET0_TX_CLK = eth_clk;
+   assign ETHERNET0_PLL_LOCKED = 1'b1;
+
+//add core test module in testbench
+iob_eth_tb_gen eth_tb(
+      .clk      (clk_i),
+      .reset    (rst_i),
+
+      // This module acts like a loopback
+      .RX_CLK(ETHERNET0_TX_CLK),
+      .RX_DATA(ETHERNET0_TX_DATA),
+      .RX_DV(ETHERNET0_TX_EN),
+
+      // The wires are thus reversed
+      .TX_CLK(ETHERNET0_RX_CLK),
+      .TX_DATA(ETHERNET0_RX_DATA),
+      .TX_EN(ETHERNET0_RX_DV)
+);
+`endif
+
+endmodule

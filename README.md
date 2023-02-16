@@ -1,133 +1,151 @@
 # IOb-SoC-(OpenCrypto)Tester
 
-This [project](https://nlnet.nl/project/OpenCryptoTester#ack) aims to develop a System-on-Chip (SoC) used mainly to verify cryptographic systems that improve internet security but can also be used on any SoC. It is synergetic with several other NGI Assure-funded open-source projects – notably [OpenCryptoHW](https://nlnet.nl/project/OpenCryptoHW) (Coarse-Grained Reconfigurable Array cryptographic hardware) and [OpenCryptoLinux](https://nlnet.nl/project/OpenCryptoLinux). The proposed SoC will support test instruments as peripherals and use OpenCryptoHW as the System Under Test (SUT), hopefully opening the way for open-source test instrumentation operated under Linux.
+This [project](https://nlnet.nl/project/OpenCryptoTester#ack) aims to develop a System-on-Chip (SoC) used mainly to verify cryptographic systems that improve internet security but can also be used on any SoC. It is synergetic with several other NGI Assure-funded open-source projects - notably [OpenCryptoHW](https://nlnet.nl/project/OpenCryptoHW) (Coarse-Grained Reconfigurable Array cryptographic hardware) and [OpenCryptoLinux](https://nlnet.nl/project/OpenCryptoLinux). The proposed SoC will support test instruments as peripherals and use OpenCryptoHW as the System Under Test (SUT), hopefully opening the way for open-source test instrumentation operated under Linux.
 
 This repository is a Tester SoC based on [IOb-SoC](https://github.com/IObundle/iob-soc).
 
 An example System Under Test with this Tester configured is available at the [IOb-SoC-SUT](https://github.com/IObundle/iob-soc-sut) repository.
 
-This system is compatible with any Unit Under Tester (UUT) as long as it follows the set of minimum requirements below.
+This system is compatible with any Unit Under Tester (UUT) as it does not impose any hardware constraints.
+Nonetheless, the UUT's repository must follow the [set of minimum requirements](#uuts-repository-minimum-requirements) presented below.
 
-## UUT Minimum Requirements
+## Dependencies
 
-The Unit Under Test (UUT) repository must contain at least the following files and directories to be compatible with this Tester:
-- Must contain the `hardware/hardware.mk` file. 
-- Must contain the `config.mk` file. 
-- Must contain the `hardware/src/` directory, that will house the top module source file.
-- Must contain the `submodules/` directory, that will house a folder with this Tester repository.
-- Must contain the `peripheral_portmap.conf` file.
-- Must contain the `tester.mk` file.
-- Must contain the `software/tester_firmware.c` file.
-    
-### hardware.mk
+Before building the system, install the following tools:
+- GNU Bash >=5.1.16
+- GNU Make >=4.3
+- RISC-V GNU Compiler Toolchain =2022.06.10  (Instructions at the end of this README)
+- Python3 >=3.10.6
+- Python3-Parse >=1.19.0
 
-The `hardware/hardware.mk` Makefile segment of the UUT provides the Tester with Verilog-related information about the UUT. It can also be used to generate UUT sources and headers dynamically.
+Optional tools, depending on desired run strategy:
+- Icarus Verilog >=10.3
+- Verilator >=5.002
+- gtkwave >=3.3.113
+- Vivado >=2020.2
+- Quartus >=20.1
 
-This file should define the makefile variables: `VSRC`, `VHDR`, `DEFINE`.
+Older versions of the dependencies above may work but were not tested.
 
-The `VSRC` and `VHDR` variables inform the Tester of the location of the UUT's Verilog source and header files. These variables are a whitespace-separated list of file locations.
-Makefile targets can also be defined in this file to generate Verilog files from those lists dynamically. The Tester will try to call Makefile targets to generate Verilog files that do not exist.
+## Nix environment
 
-The `DEFINE` variable is a whitespace-separated list of Verilog macros with the format `macro=definition`.
+Instead of manually installing the dependencies above, you can use
+[nix-shell](https://nixos.org/download.html#nix-install-linux) to run
+IOb-SoC-Tester in a [Nix](https://nixos.org/) environment with all dependencies
+available except for Vivado and Quartus.
 
-When the Tester calls this file, it already defines the `ROOT_DIR` and `[UUTNAME]_DIR` variables. Both of them contain the relative path to the root directory of the UUT. This file can use these variables to find the root directory of the UUT independently from where it is called.
-`[UUTNAME]` is replaced by the name of the UUT given in the `tester.mk` file.
+- Run `nix-shell` from the IOb-SoC-Tester root directory to install and start the environment with all the required dependencies.
 
-### config.mk
 
-The `config.mk` Makefile segment of the UUT provides the Tester with the UUT's Verilog top module file name.
+## UUT's Repository Minimum Requirements
 
-This file should define the makefile variable: `TOP_MODULE`.
+The Unit Under Test (UUT) repository must contain at least the `<uut_name>_setup.py` file to be compatible with this Tester:
 
-The `TOP_MODULE` variable contains the file name (without file extension '.v') of the UUT's Verilog top module. The location of this file is given in the `VSRC` list by the `hardware.mk` Makefile segment.
+The `<uut_name>_setup.py` python script provides the Tester with information about the UUT, and should contain the following objects:
 
-The UUT's Verilog top module has some limitations for compatibility with the Tester:
-- This file should only contain one Verilog module.
-- The port list of this Verilog module must only use the following keywords for IO port definition: `input`, `output`, `inout`, `IOB_INPUT`, `IOB_OUTPUT`, and `IOB_INOUT`.
-- The port list of this Verilog module can not include other Verilog files (except `iob_gen_if.vh` and `iob_s_if.vh`).
-- The port list of this Verilog module can not contain compiler directives (except for the `` `include`` directive for the files listed above).
+- Must contain the `name` string variable.
+- Must contain the `confs` dictionary variable.
+- Must contain the `ios` dictionary variable.
 
-### src directory
+### name
 
-The `hardware/src/` directory in the UUT's repository contains the UUT's verilog top module.
+The `name` variable should contain a string equal to the name of the UUT's Verilog top module.
 
-### submodules directory
+### confs
 
-The `submodules/` directory in the UUT's repository should contain a folder (usually named 'TESTER') with this Tester's repository.
+The `confs` variable should be a dictionary with a similar structure to the one in the `iob_soc_tester_setup.py` file.
+This dictionary informs the Tester of the parameters available for the UUT's Verilog top module.
+
+### ios
+
+The `ios` variable should be a dictionary with a similar structure to the one in the `iob_soc_tester_setup.py` file.
+This dictionary informs the Tester of the IOs in the UUT's Verilog top module.
+
+## Clone the Tester's repository
 
 If the UUT's repository is git based, then we suggest adding this Tester's repository as a git submodule.
 
-To add this repository as git submodule, from the UUT's repository, run:
-```
+To add this repository as a git submodule inside the `submodules/` folder, from the UUT's repository, run:
+
+```Bash
 git submodule add git@github.com:IObundle/iob-soc-tester.git submodules/TESTER
-git submodule update ––init ––recursive
+git submodule update --init --recursive
 ```
 
-### peripheral\_portmap.conf
+Otherwise, clone the Tester's repository to a location of your choosing with the following command:
 
-The `peripheral_portmap.conf` file in the UUT's repository configures connections between the Tester's peripherals, the UUT's IO, and the external Tester interface.
-
-The Tester provides a Makefile target to automatically generate a template for this file with all the required signals. 
-This template contains a header with instructions on how to map the signals.
-
-To generate this template, from the UUT's repository, run:
-```
-make -C submodules/TESTER/ portmap .
+```Bash
+git clone --recursive git@github.com:IObundle/iob-soc-tester.git
 ```
 
-### tester.mk
+## Configure the Tester
 
-The `tester.mk` Makefile segment in the UUT's repository contains the Tester configuration. It may also have additional Makefile targets for generating application-specific files.
+The Tester's setup, build and run steps are similar to the ones used in [IOb-SoC](https://github.com/IObundle/iob-soc).
+Check the `README.md` file of that repository for more details on the process of setup, building and running IOb-SoC-based systems.
 
-The `example_tester.mk` file in this repository can be used as a basis for a new `tester.mk` file. 
-It includes commonly used settings along with their descriptions.
+The Tester's main configuration is stored in `iob_soc_tester_setup.py` python script.
+Most configurations in this file are similar to the ones in [`iob_soc_setup.py`](https://github.com/IObundle/iob-soc/blob/python-setup/iob_soc_setup.py).
 
-The Tester divides this file into two sections, one for Makefile variable/macro definitions and another for Makefile targets.
-It will include this Makefile segment twice, one with the `INCLUDING_VARS` variables defined and another without it.
+The only Tester-specific configurations that must be modified according to the UUT, are located inside the `module_parameters` dictionary variable of the `iob_soc_tester_setup.py` file.
 
-It starts by including this file with `INCLUDING_VARS` defined. Any variables defined by the `tester.mk` during this can be used by other internal Tester macros and targets.
-The second time it includes this file without `INCLUDING_VARS` defined. During this call, any targets defined by the `tester.mk` can use internal Tester macros and targets.
+When adding a new UUT, the modifications required in the `module_parameters` dictionary are the following:
 
-### tester\_firmware.c
+1. Add an entry to the `extra_peripherals_dirs` dictionary with the UUT's 'type' name and path to the directory containing the `<uut_name>_setup.py` file.
+2. Add an entry to the `extra_peripherals` dictionary with the UUTs instance name, 'type' name, description, and optionally Verilog parameters to pass to that instance.
+3. Add an entry to the `peripheral_portmap` dictionary for each IO of the UUT instance. Each entry defines where to connect the UUT IO ports. Each entry may map a single bit, selected bits, an entire port or an entire interface.
 
-The `software/tester_firmware.c` file in the UUT's repository contains the Tester's firmware with the verification sequence.
+As an example, see the `tester_options` dictionary variable from the `iob_soc_sut_setup.py` script in the [IOb-SoC-SUT](https://github.com/IObundle/iob-soc-sut) repository.
+The `tester_options` dictionary variable of the SUT's repository overrides the default `module_parameters` dictionary of the Tester.
 
-### Optional: software.mk
+## Setup, build and run the Tester along with UUT
 
-The `software/software.mk` Makefile segment of the UUT is optional. It provides the Tester with software-related information about the UUT. It can also be used to generate software for the UUT dynamically.
+With the UUT's minimum requirements met, the steps for setup, building and running the Tester are similar to those of [IOb-SoC](https://github.com/IObundle/iob-soc).
 
-### Optional: boot.hex firmware.hex
+To set up the Tester, type:
 
-The `software/firmware/boot.hex` and `software/firmware/firmware.hex` files in the UUT's repository are optional.
-They usually contain the bootloader and firmware for the UUT. The Tester will copy these files to the run directory if they exist.
-
-## Build and run the Tester (along with UUT)
-
-With the UUT's minimum requirements met, the steps for building and running the Tester are similar to those of [IOb-SoC](https://github.com/IObundle/iob-soc).
-
-To build the Tester for simulation, from the UUT's repository, run:
-```
-make -C submodules/TESTER sim-build
+```Bash
+make setup [<control parameters>]
 ```
 
-To simulate the Tester, from the UUT's repository, run:
-```
-make -C submodules/TESTER sim-run
+`<control parameters>` are system configuration parameters passed in the
+command line, overriding those in the `iob_soc_tester_setup.py` file. Example control
+parameters are `INIT_MEM=0 USE_EXTMEM=1`.
+
+To build and run the Tester in simulation, type:
+
+```Bash
+make -C ../iob_soc_tester_V* sim-run [SIMULATOR=<simulator name>]
 ```
 
-To build the Tester for FPGA, from the UUT's repository, run:
-```
-make -C submodules/TESTER fpga-build
+`<simulator name>` is the name of the simulator's Makefile segment.
+
+To build the Tester for the FPGA, type:
+
+```Bash
+make -C ../iob_soc_tester_V* fpga-build [BOARD=<board directory name>]
 ```
 
-To run the Tester in the FPGA, from the UUT's repository, run:
-```
-make -C submodules/TESTER fpga-run
+`<board directory name>` is the name of the board's run directory.
+
+To run the Tester in the FPGA, type:
+
+```Bash
+make -C ../iob_soc_tester_V* fpga-run [BOARD=<board directory name>]
 ```
 
-To clean Tester build files, from the UUT's repository, run:
+## Cleaning
+
+The following command will clean the selected simulation, board and document
+directories, locally and in the remote servers:
+
+```Bash
+make -C ../iob_soc_tester_V* clean
 ```
-make -C submodules/TESTER clean
+
+The following command will delete the build directory:
+
+```Bash
+make clean
 ```
 
 # Acknowledgement
