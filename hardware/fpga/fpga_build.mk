@@ -3,6 +3,7 @@ include ../../software/sw_build.mk
 
 IS_FPGA=1
 
+FPGA_TOP=iob_soc_fpga_wrapper
 
 QUARTUS_SEED=1
 
