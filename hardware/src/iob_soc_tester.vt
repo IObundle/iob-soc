@@ -243,11 +243,11 @@ module iob_soc_tester #(
       )
    ext_mem0 (
       // instruction bus
-      .i_req ({ext_mem_i_req[`avalid(0)], ext_mem_i_req[`address(0, `IOB_SOC_TESTER_SRAM_ADDR_W)-2], ext_mem_i_req[`write(0)]}),
+      .i_req ({ext_mem_i_req[`AVALID(0)], ext_mem_i_req[`ADDRESS(0, `IOB_SOC_TESTER_SRAM_ADDR_W)-2], ext_mem_i_req[`WRITE(0)]}),
       .i_resp (ext_mem_i_resp),
 
       //data bus
-      .d_req ({ext_mem_d_req[`avalid(0)], ext_mem_d_req[`address(0, `MEM_ADDR_W+1)-2], ext_mem_d_req[`write(0)]}),
+      .d_req ({ext_mem_d_req[`AVALID(0)], ext_mem_d_req[`ADDRESS(0, `MEM_ADDR_W+1)-2], ext_mem_d_req[`WRITE(0)]}),
       .d_resp (ext_mem_d_resp),
 
       //AXI INTERFACE 

@@ -88,18 +88,18 @@ module int_mem
         
         //cpu slave interface
         //no address bus since single address
-        .cpu_avalid(boot_ctr_req[`avalid(0)]),
-        .cpu_wdata(boot_ctr_req[`wdata(0)-(DATA_W-2)]),
-        .cpu_wstrb(boot_ctr_req[`wstrb(0)]),
-        .cpu_rdata(boot_ctr_resp[`rdata(0)]),
-        .cpu_rvalid(boot_ctr_resp[`rvalid(0)]),
-        .cpu_ready(boot_ctr_resp[`ready(0)]),
+        .cpu_avalid(boot_ctr_req[`AVALID(0)]),
+        .cpu_wdata(boot_ctr_req[`WDATA(0)-(DATA_W-2)]),
+        .cpu_wstrb(boot_ctr_req[`WSTRB(0)]),
+        .cpu_rdata(boot_ctr_resp[`RDATA(0)]),
+        .cpu_rvalid(boot_ctr_resp[`RVALID(0)]),
+        .cpu_ready(boot_ctr_resp[`READY(0)]),
 
         //sram write master interface
-        .sram_avalid(ram_w_req[`avalid(0)]),
-        .sram_addr(ram_w_req[`address(0, ADDR_W)]),
-        .sram_wdata(ram_w_req[`wdata(0)]),
-        .sram_wstrb(ram_w_req[`wstrb(0)])
+        .sram_avalid(ram_w_req[`AVALID(0)]),
+        .sram_addr(ram_w_req[`ADDRESS(0, ADDR_W)]),
+        .sram_wdata(ram_w_req[`WDATA(0)]),
+        .sram_wstrb(ram_w_req[`WSTRB(0)])
         );
    
    //
@@ -116,15 +116,15 @@ module int_mem
 
    localparam boot_offset = -('b1 << BOOTROM_ADDR_W);
    //instruction bus: connect directly but address
-   assign ram_r_req[`avalid(0)] = i_req[`avalid(0)];
-   assign ram_r_req[`address(0, ADDR_W)] = boot? i_req[`address(0, ADDR_W)] + boot_offset : i_req[`address(0, ADDR_W)];
-   assign ram_r_req[`write(0)] = i_req[`write(0)];
-   assign i_resp[`resp(0)] = ram_r_resp[`resp(0)];
+   assign ram_r_req[`AVALID(0)] = i_req[`AVALID(0)];
+   assign ram_r_req[`ADDRESS(0, ADDR_W)] = boot? i_req[`ADDRESS(0, ADDR_W)] + boot_offset : i_req[`ADDRESS(0, ADDR_W)];
+   assign ram_r_req[`WRITE(0)] = i_req[`WRITE(0)];
+   assign i_resp[`RESP(0)] = ram_r_resp[`RESP(0)];
 
    //data bus: just replace address
    assign ram_d_addr = boot? 
-                       ram_d_req[`address(0, SRAM_ADDR_W)-2] + boot_offset[SRAM_ADDR_W-1:2]: 
-                       ram_d_req[`address(0, SRAM_ADDR_W)-2];
+                       ram_d_req[`ADDRESS(0, SRAM_ADDR_W)-2] + boot_offset[SRAM_ADDR_W-1:2]: 
+                       ram_d_req[`ADDRESS(0, SRAM_ADDR_W)-2];
 
    
    //
@@ -167,22 +167,22 @@ module int_mem
       .arst_i    (arst_i),
       
       //instruction bus
-      .i_avalid (ram_i_req[`avalid(0)]),
-      .i_addr   (ram_i_req[`address(0, SRAM_ADDR_W)-2]), 
-      .i_wdata  (ram_i_req[`wdata(0)]),
-      .i_wstrb  (ram_i_req[`wstrb(0)]),
-      .i_rdata  (ram_i_resp[`rdata(0)]),
-      .i_rvalid (ram_i_resp[`rvalid(0)]),
-      .i_ready  (ram_i_resp[`ready(0)]),
+      .i_avalid (ram_i_req[`AVALID(0)]),
+      .i_addr   (ram_i_req[`ADDRESS(0, SRAM_ADDR_W)-2]), 
+      .i_wdata  (ram_i_req[`WDATA(0)]),
+      .i_wstrb  (ram_i_req[`WSTRB(0)]),
+      .i_rdata  (ram_i_resp[`RDATA(0)]),
+      .i_rvalid (ram_i_resp[`RVALID(0)]),
+      .i_ready  (ram_i_resp[`READY(0)]),
 	     
       //data bus
-      .d_avalid (ram_d_req[`avalid(0)]),
+      .d_avalid (ram_d_req[`AVALID(0)]),
       .d_addr   (ram_d_addr),
-      .d_wdata  (ram_d_req[`wdata(0)]),
-      .d_wstrb  (ram_d_req[`wstrb(0)]),
-      .d_rdata  (ram_d_resp[`rdata(0)]),
-      .d_rvalid (ram_d_resp[`rvalid(0)]),
-      .d_ready  (ram_d_resp[`ready(0)])
+      .d_wdata  (ram_d_req[`WDATA(0)]),
+      .d_wstrb  (ram_d_req[`WSTRB(0)]),
+      .d_rdata  (ram_d_resp[`RDATA(0)]),
+      .d_rvalid (ram_d_resp[`RVALID(0)]),
+      .d_ready  (ram_d_resp[`READY(0)])
       );
 
 endmodule
