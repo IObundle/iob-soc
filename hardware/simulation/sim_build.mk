@@ -14,9 +14,9 @@ iob_uart_swreg.h: ../../software/esrc/iob_uart_swreg.h
 # verilator top module
 VTOP:=iob_soc_top
 
-CONSOLE_CMD=../../scripts/console.py -L
-
 endif
+
+CONSOLE_CMD=../../scripts/console.py -L
 
 TEST_LIST+=test1
 test1:
