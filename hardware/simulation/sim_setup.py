@@ -24,7 +24,7 @@ if setup_module.build_dir==f"../{setup_module.name}_{setup_module.version}":
     test_file_name+='.expected'
 
     # Copy correct test.expected file to build dir
-    shutil.copyfile(os.path.join(setup_module.setup_dir, "hardware/simulation/src", test_file_name),os.path.join(dirpath,"test.expected"))
+    shutil.copyfile(os.path.join(setup_module.setup_dir, "hardware/simulation/src", test_file_name),os.path.join(setup_module.build_dir, "hardware/simulation/test.expected"))
 
 ######### Append tester sim_build.mk to UUT's sim_build.mk #########
 import filecmp
