@@ -12,3 +12,6 @@ test1:
 	make -C ../../ fpga-clean BOARD=$(BOARD)
 	make run BOARD=$(BOARD)
 	diff run.log $(FPGA_TOOL)/$(BOARD)/test.expected
+
+# Undefine FPGA_TOP var in case it was set by UUT.
+undefine FPGA_TOP

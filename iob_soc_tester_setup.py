@@ -4,7 +4,7 @@ import os, sys
 sys.path.insert(0, os.getcwd()+'/submodules/LIB/scripts')
 import setup
 from mk_configuration import update_define
-from tester import setup_tester
+from tester import setup_tester, update_tester_conf
 
 name='iob_soc_tester'
 version='V0.50'
@@ -152,6 +152,9 @@ if 'module_parameters' not in vars():
         # Name of the System Under Test (SUT) firmmware. Used by tester to initialize external memory in simulation.
         #'sut_fw_name':name+'_firmware'
     }
+
+# Update tester configuration based on module_parameters
+update_tester_conf(sys.modules[__name__])
 
 def custom_setup():
     # Add the following arguments:
