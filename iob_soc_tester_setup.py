@@ -13,7 +13,7 @@ setup_dir=os.path.dirname(__file__)
 build_dir=f"../{name}_{version}"
 submodules = {
     'hw_setup': {
-        'headers' : [ 'iob_wire', 'axi_wire', 'axi_m_m_portmap', 'axi_m_port', 'axi_m_m_portmap', 'axi_m_portmap' ],
+        'headers' : [ 'iob_wire', 'axi_wire', 'axi_m_m_portmap', 'axi_m_port', 'axi_m_m_portmap', 'axi_m_portmap'],
         'modules': [ 'PICORV32', 'CACHE', 'UART', 'iob_merge', 'iob_split', 'iob_rom_sp.v', 'iob_ram_dp_be.v', 'iob_ram_dp_be_xil.v', 'iob_pulse_gen.v', 'iob_counter.v', 'iob_ram_2p_asym.v', 'iob_reg.v', 'iob_reg_re.v', 'iob_ram_sp_be.v', 'iob_ram_dp.v', 'iob_reset_sync']
     },
     'sim_setup': {
@@ -170,6 +170,14 @@ def custom_setup():
         if (conf['name'] == 'USE_EXTMEM') and conf['val']:
             submodules['hw_setup']['headers'].append({ 'file_prefix':'ddr4_', 'interface':'axi_wire', 'wire_prefix':'ddr4_', 'port_prefix':'ddr4_' })
             submodules['hw_setup']['modules'].append('axi_interconnect')
+            submodules['hw_setup']['headers'] += [
+                     { 'file_prefix':'iob_bus_0_2_', 'interface':'axi_m_portmap', 'wire_prefix':'', 'port_prefix':'', 'bus_start':0, 'bus_end':2 },
+                     { 'file_prefix':'iob_bus_2_3_', 'interface':'axi_s_portmap', 'wire_prefix':'', 'port_prefix':'', 'bus_start':2, 'bus_end':3 },
+                     { 'file_prefix':'iob_bus_0_2_s_', 'interface':'axi_portmap', 'wire_prefix':'s_', 'port_prefix':'', 'bus_start':0, 'bus_end':2 },
+                     { 'file_prefix':'iob_bus_2_3_m_', 'interface':'axi_portmap', 'wire_prefix':'m_', 'port_prefix':'', 'bus_start':2, 'bus_end':3 },
+                     { 'file_prefix':'iob_bus_3_', 'interface':'axi_wire', 'wire_prefix':'', 'port_prefix':'', 'bus_size':3 },
+                     { 'file_prefix':'iob_bus_2_', 'interface':'axi_wire', 'wire_prefix':'', 'port_prefix':'', 'bus_size':2 },
+                    ]
 
 # Main function to setup this system and its components
 def main():
