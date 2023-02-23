@@ -22,5 +22,5 @@ if macro and macro['val']:
 test_file_name+='.expected'
 
 # Copy correct test.expected file to build dir
-shutil.copyfile(os.path.join(setup_module.setup_dir, "hardware/simulation/src", test_file_name),os.path.join(dirpath,"test.expected"))
+shutil.copyfile(os.path.join(setup_module.setup_dir, "hardware/simulation/src", test_file_name),os.path.join(setup_module.build_dir, "hardware/simulation/test.expected"))
 
