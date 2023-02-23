@@ -92,7 +92,7 @@ def custom_setup():
     
     for conf in confs:
         if (conf['name'] == 'USE_EXTMEM') and conf['val']:
-            submodules['hw_setup']['headers'].append([ 'ddr4_', 'axi_wire', 'ddr4_', 'ddr4_' ])
+            submodules['hw_setup']['headers'].append({ 'file_prefix':'ddr4_', 'interface':'axi_wire', 'wire_prefix':'ddr4_', 'port_prefix':'ddr4_' })
 
 
 # Main function to setup this system and its components
