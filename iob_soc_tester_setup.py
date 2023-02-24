@@ -171,10 +171,10 @@ def custom_setup():
             submodules['hw_setup']['headers'].append({ 'file_prefix':'ddr4_', 'interface':'axi_wire', 'wire_prefix':'ddr4_', 'port_prefix':'ddr4_' })
             submodules['hw_setup']['modules'].append('axi_interconnect')
             submodules['hw_setup']['headers'] += [
-                     { 'file_prefix':'iob_bus_0_2_', 'interface':'axi_m_portmap', 'wire_prefix':'', 'port_prefix':'', 'bus_start':0, 'bus_end':2 },
-                     { 'file_prefix':'iob_bus_2_3_', 'interface':'axi_s_portmap', 'wire_prefix':'', 'port_prefix':'', 'bus_start':2, 'bus_end':3 },
-                     { 'file_prefix':'iob_bus_0_2_s_', 'interface':'axi_portmap', 'wire_prefix':'', 'port_prefix':'s_', 'bus_start':0, 'bus_end':2 },
-                     { 'file_prefix':'iob_bus_2_3_m_', 'interface':'axi_portmap', 'wire_prefix':'', 'port_prefix':'m_', 'bus_start':2, 'bus_end':3 },
+                     { 'file_prefix':'iob_bus_0_2_', 'interface':'axi_m_portmap', 'wire_prefix':'', 'port_prefix':'', 'bus_start':0, 'bus_size':2 },
+                     { 'file_prefix':'iob_bus_2_3_', 'interface':'axi_s_portmap', 'wire_prefix':'', 'port_prefix':'', 'bus_start':2, 'bus_size':1 },
+                     { 'file_prefix':'iob_bus_0_2_s_', 'interface':'axi_portmap', 'wire_prefix':'', 'port_prefix':'s_', 'bus_start':0, 'bus_size':2 },
+                     { 'file_prefix':'iob_bus_2_3_m_', 'interface':'axi_portmap', 'wire_prefix':'', 'port_prefix':'m_', 'bus_start':2, 'bus_size':1 },
                      { 'file_prefix':'iob_bus_3_', 'interface':'axi_wire', 'wire_prefix':'', 'port_prefix':'', 'bus_size':3 },
                      { 'file_prefix':'iob_bus_2_', 'interface':'axi_wire', 'wire_prefix':'', 'port_prefix':'', 'bus_size':2 },
                     ]
