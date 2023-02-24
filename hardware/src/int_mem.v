@@ -47,6 +47,8 @@ module int_mem
    // SPLIT DATA BUS BETWEEN SRAM AND BOOT CONTROLLER
    //
    iob_split #(
+       .ADDR_W(ADDR_W),
+       .DATA_W(DATA_W),
        .N_SLAVES(2),
        .P_SLAVES(B_BIT)
        )
