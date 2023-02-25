@@ -1,6 +1,5 @@
 `timescale 1ns / 1ps
 `include "iob_soc_conf.vh"
-`include "build_configuration.vh"
 
 module iob_soc_fpga_wrapper
   (
