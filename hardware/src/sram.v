@@ -1,6 +1,5 @@
 `timescale 1ns / 1ps
 
-`include "build_configuration.vh"
 `include "iob_soc_tester_conf.vh"
 
 module sram #(
