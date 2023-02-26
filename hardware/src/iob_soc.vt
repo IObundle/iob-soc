@@ -86,6 +86,8 @@ module iob_soc #(
 
    // INSTRUCTION BUS
    iob_split #(
+       .ADDR_W(ADDR_W),
+       .DATA_W(DATA_W),
        .N_SLAVES(2),
        .P_SLAVES(`E_BIT)
        )
@@ -117,6 +119,8 @@ module iob_soc #(
    wire [`RESP_W-1:0]        ext_mem_d_resp;
 
    iob_split #(
+       .ADDR_W(ADDR_W),
+       .DATA_W(DATA_W),
        .N_SLAVES(2), //E,{P,I}
        .P_SLAVES(`E_BIT)
        )
@@ -149,6 +153,8 @@ module iob_soc #(
    wire [`RESP_W-1:0]        pbus_resp;
 
    iob_split #(
+       .ADDR_W(ADDR_W),
+       .DATA_W(DATA_W),
        .N_SLAVES(2), //P,I
        .P_SLAVES(`P_BIT)
        )
@@ -175,6 +181,8 @@ module iob_soc #(
    wire [`IOB_SOC_N_SLAVES*`RESP_W-1:0] slaves_resp;
 
    iob_split #(
+       .ADDR_W(ADDR_W),
+       .DATA_W(DATA_W),
        .N_SLAVES(`IOB_SOC_N_SLAVES),
        .P_SLAVES(`P_BIT-1)
        )
