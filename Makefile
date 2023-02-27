@@ -28,3 +28,5 @@ test-all:
 	make fpga-test BOARD=CYCLONEV-GT-DK
 	make fpga-test BOARD=AES-KU040-DB-G
 	make clean && make setup && make -C ../iob_soc_V*/ doc-test
+
+.PHONY: sim-test fpga-test test-all
