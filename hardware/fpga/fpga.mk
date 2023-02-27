@@ -54,8 +54,6 @@ build: $(FPGA_OBJ)
 #make the FPGA programming file either locally or remotely
 ifeq ($(INIT_MEM),1)
 $(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex firmware.hex
-else ifeq ($(USE_DDR),1)
-$(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex
 else
 $(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex
 endif
