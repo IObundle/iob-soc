@@ -435,7 +435,7 @@ module iob_soc_tester_fpga_wrapper
     iob_reset_sync start_sync (
         .clk_i(clk),
         .arst_i(reset),
-        .rst_o(start)
+        .arst_o(start)
         );
 
     //create reset pulse as reset is never activated manually
