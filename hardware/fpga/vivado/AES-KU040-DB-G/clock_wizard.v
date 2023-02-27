@@ -65,26 +65,30 @@
 `timescale 1ps/1ps
 
 module clock_wizard #(
-		      parameter OUTPUT_PER = 10,
+		      parameter CLK_OUTPUT_PER = 10,
+		      parameter MCLK_OUTPUT_PER = 7,
 		      parameter INPUT_PER = 4
 		      ) 
 
   (// Clock in ports
    // Clock out ports
-   output clk_out1,
    input  clk_in1_p,
-   input  clk_in1_n
+   input  clk_in1_n,
+   output clk_out1,
+   output clk_out2
    );
    // Input buffering
    //------------------------------------
+
    wire   clk_in1_clock_wizard;
    wire   clk_in2_clock_wizard;
+
    IBUFDS clkin1_ibufds
-     (.O  (clk_in1_clock_wizard),
+     (
       .I  (clk_in1_p),
-      .IB (clk_in1_n));
-
-
+      .IB (clk_in1_n),
+      .O  (clk_in1_clock_wizard)
+      );
 
 
    // Clocking PRIMITIVE
@@ -115,10 +119,6 @@ module clock_wizard #(
    wire        clkinstopped_unused;
 
    
-
-   // Auto Instantiation//
-
-   
    PLLE3_ADV
      #(
        .COMPENSATION         ("AUTO"),
@@ -126,9 +126,12 @@ module clock_wizard #(
        .DIVCLK_DIVIDE        (1),
        .CLKFBOUT_MULT        (4),
        .CLKFBOUT_PHASE       (0.000),
-       .CLKOUT0_DIVIDE       (4*OUTPUT_PER/INPUT_PER),
+       .CLKOUT0_DIVIDE       (4*CLK_OUTPUT_PER/INPUT_PER),
        .CLKOUT0_PHASE        (0.000),
        .CLKOUT0_DUTY_CYCLE   (0.500),
+       .CLKOUT1_DIVIDE       (4*MCLK_OUTPUT_PER/INPUT_PER),
+       .CLKOUT1_PHASE        (0.000),
+       .CLKOUT1_DUTY_CYCLE   (0.500),
        .CLKIN_PERIOD         (INPUT_PER))
    plle3_adv_inst
      // Output clocks
@@ -136,7 +139,7 @@ module clock_wizard #(
       .CLKFBOUT            (clkfbout_clock_wizard),
       .CLKOUT0             (clk_out1_clock_wizard),
       .CLKOUT0B            (clkout0b_unused),
-      .CLKOUT1             (clkout1_unused),
+      .CLKOUT1             (clkout2_clock_wizard),
       .CLKOUT1B            (clkout1b_unused),
       // Input clock control
       .CLKFBIN             (clkfbout_clock_wizard),
@@ -157,22 +160,18 @@ module clock_wizard #(
       .RST                 (1'b0));
 
 
-
-   // Clock Monitor clock assigning
-   //--------------------------------------
-   // Output buffering
-   //-----------------------------------
-
-
-
-
-
-
+   // Output clock buffers
    BUFG clkout1_buf
-     (.O   (clk_out1),
-      .I   (clk_out1_clock_wizard));
+     (
+      .I   (clk_out1_clock_wizard),
+      .O   (clk_out1)
+      );
 
 
-
+   BUFG clkout2_buf
+     (
+      .I   (clk_out2_clock_wizard),
+      .O   (clk_out2)
+      );
 
 endmodule
