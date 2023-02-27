@@ -4,7 +4,7 @@ import os, sys
 sys.path.insert(0, os.getcwd()+'/submodules/LIB/scripts')
 import setup
 from mk_configuration import update_define
-from tester import setup_tester
+from tester import setup_tester, update_tester_conf
 
 name='iob_soc_tester'
 version='V0.50'
@@ -13,7 +13,7 @@ setup_dir=os.path.dirname(__file__)
 build_dir=f"../{name}_{version}"
 submodules = {
     'hw_setup': {
-        'headers' : [ 'iob_wire', 'axi_wire', 'axi_m_m_portmap', 'axi_m_port', 'axi_m_m_portmap', 'axi_m_portmap' ],
+        'headers' : [ 'iob_wire', 'axi_wire', 'axi_m_m_portmap', 'axi_m_port', 'axi_m_m_portmap', 'axi_m_portmap'],
         'modules': [ 'PICORV32', 'CACHE', 'UART', 'iob_merge', 'iob_split', 'iob_rom_sp.v', 'iob_ram_dp_be.v', 'iob_ram_dp_be_xil.v', 'iob_pulse_gen.v', 'iob_counter.v', 'iob_ram_2p_asym.v', 'iob_reg.v', 'iob_reg_re.v', 'iob_ram_sp_be.v', 'iob_ram_dp.v', 'iob_reset_sync']
     },
     'sim_setup': {
@@ -153,6 +153,9 @@ if 'module_parameters' not in vars():
         #'sut_fw_name':name+'_firmware'
     }
 
+# Update tester configuration based on module_parameters
+update_tester_conf(sys.modules[__name__])
+
 def custom_setup():
     # Add the following arguments:
     # "INIT_MEM": if should setup with init_mem or not
@@ -165,8 +168,16 @@ def custom_setup():
     
     for conf in confs:
         if (conf['name'] == 'USE_EXTMEM') and conf['val']:
-            submodules['hw_setup']['headers'].append([ 'ddr4_', 'axi_wire', 'ddr4_', 'ddr4_' ])
+            submodules['hw_setup']['headers'].append({ 'file_prefix':'ddr4_', 'interface':'axi_wire', 'wire_prefix':'ddr4_', 'port_prefix':'ddr4_' })
             submodules['hw_setup']['modules'].append('axi_interconnect')
+            submodules['hw_setup']['headers'] += [
+                     { 'file_prefix':'iob_bus_0_2_', 'interface':'axi_m_portmap', 'wire_prefix':'', 'port_prefix':'', 'bus_start':0, 'bus_size':2 },
+                     { 'file_prefix':'iob_bus_2_3_', 'interface':'axi_s_portmap', 'wire_prefix':'', 'port_prefix':'', 'bus_start':2, 'bus_size':1 },
+                     { 'file_prefix':'iob_bus_0_2_s_', 'interface':'axi_portmap', 'wire_prefix':'', 'port_prefix':'s_', 'bus_start':0, 'bus_size':2 },
+                     { 'file_prefix':'iob_bus_2_3_m_', 'interface':'axi_portmap', 'wire_prefix':'', 'port_prefix':'m_', 'bus_start':2, 'bus_size':1 },
+                     { 'file_prefix':'iob_bus_3_', 'interface':'axi_wire', 'wire_prefix':'', 'port_prefix':'', 'bus_size':3 },
+                     { 'file_prefix':'iob_bus_2_', 'interface':'axi_wire', 'wire_prefix':'', 'port_prefix':'', 'bus_size':2 },
+                    ]
 
 # Main function to setup this system and its components
 def main():

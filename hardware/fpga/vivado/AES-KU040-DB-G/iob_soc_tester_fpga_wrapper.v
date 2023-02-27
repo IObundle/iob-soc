@@ -1,6 +1,5 @@
 `timescale 1ns / 1ps
 `include "iob_soc_tester_conf.vh"
-`include "build_configuration.vh"
 
 module iob_soc_tester_fpga_wrapper
   (
@@ -96,43 +95,7 @@ module iob_soc_tester_fpga_wrapper
 
 `ifdef IOB_SOC_TESTER_USE_EXTMEM
    //axi wires between system backend and axi bridge
-	`IOB_WIRE(axi_awid, 2*AXI_ID_W) //Address write channel ID
-	`IOB_WIRE(axi_awaddr, 2*AXI_ADDR_W) //Address write channel address
-	`IOB_WIRE(axi_awlen, 2*8) //Address write channel burst length
-	`IOB_WIRE(axi_awsize, 2*3) //Address write channel burst size. This signal indicates the size of each transfer in the burst
-	`IOB_WIRE(axi_awburst, 2*2) //Address write channel burst type
-	`IOB_WIRE(axi_awlock, 2*2) //Address write channel lock type
-	`IOB_WIRE(axi_awcache, 2*4) //Address write channel memory type. Transactions set with Normal Non-cacheable Modifiable and Bufferable (0011).
-	`IOB_WIRE(axi_awprot, 2*3) //Address write channel protection type. Transactions set with Normal, Secure, and Data attributes (000).
-	`IOB_WIRE(axi_awqos, 2*4) //Address write channel quality of service
-	`IOB_WIRE(axi_awvalid, 2*1) //Address write channel valid
-	`IOB_WIRE(axi_awready, 2*1) //Address write channel ready
-	`IOB_WIRE(axi_wdata, 2*AXI_DATA_W) //Write channel data
-	`IOB_WIRE(axi_wstrb, 2*(AXI_DATA_W/8)) //Write channel write strobe
-	`IOB_WIRE(axi_wlast, 2*1) //Write channel last word flag
-	`IOB_WIRE(axi_wvalid, 2*1) //Write channel valid
-	`IOB_WIRE(axi_wready, 2*1) //Write channel ready
-	`IOB_WIRE(axi_bid, 2*AXI_ID_W) //Write response channel ID
-	`IOB_WIRE(axi_bresp, 2*2) //Write response channel response
-	`IOB_WIRE(axi_bvalid, 2*1) //Write response channel valid
-	`IOB_WIRE(axi_bready, 2*1) //Write response channel ready
-	`IOB_WIRE(axi_arid, 2*AXI_ID_W) //Address read channel ID
-	`IOB_WIRE(axi_araddr, 2*AXI_ADDR_W) //Address read channel address
-	`IOB_WIRE(axi_arlen, 2*8) //Address read channel burst length
-	`IOB_WIRE(axi_arsize, 2*3) //Address read channel burst size. This signal indicates the size of each transfer in the burst
-	`IOB_WIRE(axi_arburst, 2*2) //Address read channel burst type
-	`IOB_WIRE(axi_arlock, 2*2) //Address read channel lock type
-	`IOB_WIRE(axi_arcache, 2*4) //Address read channel memory type. Transactions set with Normal Non-cacheable Modifiable and Bufferable (0011).
-	`IOB_WIRE(axi_arprot, 2*3) //Address read channel protection type. Transactions set with Normal, Secure, and Data attributes (000).
-	`IOB_WIRE(axi_arqos, 2*4) //Address read channel quality of service
-	`IOB_WIRE(axi_arvalid, 2*1) //Address read channel valid
-	`IOB_WIRE(axi_arready, 2*1) //Address read channel ready
-	`IOB_WIRE(axi_rid, 2*AXI_ID_W) //Read channel ID
-	`IOB_WIRE(axi_rdata, 2*AXI_DATA_W) //Read channel data
-	`IOB_WIRE(axi_rresp, 2*2) //Read channel response
-	`IOB_WIRE(axi_rlast, 2*1) //Read channel last word
-	`IOB_WIRE(axi_rvalid, 2*1) //Read channel valid
-	`IOB_WIRE(axi_rready, 2*1) //Read channel ready
+   `include "iob_bus_2_axi_wire.vh"
 `endif
 
 
