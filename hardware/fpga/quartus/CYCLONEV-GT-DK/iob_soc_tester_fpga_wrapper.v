@@ -152,7 +152,7 @@ module iob_soc_tester_fpga_wrapper
    wire          rst_int = ~resetn | ~locked | ~init_done;
 //   wire          rst_int = ~resetn | ~locked;
    
-   iob_reset_sync rst_sync (clk, rst_int, 1'b1, rst);
+   iob_reset_sync rst_sync (clk, rst_int, rst);
 
    alt_ddr3 ddr3_ctrl 
      (
@@ -228,7 +228,7 @@ module iob_soc_tester_fpga_wrapper
       );
 
 `else 
-   iob_reset_sync rst_sync (clk, (~resetn), 1'b1, rst);   
+   iob_reset_sync rst_sync (clk, (~resetn), rst);   
 `endif
 
 `ifdef IOB_SOC_TESTER_USE_EXTMEM

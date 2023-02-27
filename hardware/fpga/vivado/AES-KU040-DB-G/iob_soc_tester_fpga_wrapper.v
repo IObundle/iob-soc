@@ -435,7 +435,6 @@ module iob_soc_tester_fpga_wrapper
     iob_reset_sync start_sync (
         .clk_i(clk),
         .arst_i(reset),
-        .cke_i(1'b1),
         .rst_o(start)
         );
 
