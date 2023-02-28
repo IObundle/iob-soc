@@ -1,4 +1,4 @@
-#include "iob_soc_tester_system.h"
+#include "iob_soc_system.h"
 #include "iob_soc_tester_periphs.h"
 #include "iob_soc_tester_conf.h"
 #include "iob-uart.h"

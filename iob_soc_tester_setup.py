@@ -2,6 +2,7 @@
 
 import os, sys
 sys.path.insert(0, os.getcwd()+'/submodules/LIB/scripts')
+sys.path.insert(0, os.path.dirname(__file__)+'/scripts')
 import setup
 from mk_configuration import update_define
 from tester import setup_tester, update_tester_conf
