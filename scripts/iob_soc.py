@@ -10,10 +10,26 @@ import createTestbench
 import createTopSystem
 from submodule_utils import iob_soc_peripheral_setup, set_default_submodule_dirs
 from setup import setup
+import shutil
+from build_srcs import copy_without_override
+
+# Copy files common to all iob-soc based systems from the iob-soc directory
+def copy_common_files(build_dir, exclude_files):
+    exclude_file_list = [
+        '*.vt',
+    ]
+
+    exclude_file_list+=exclude_files
+
+    # Copy hardware
+    shutil.copytree(os.path.join(os.path.dirname(__file__),'../hardware'), os.path.join(build_dir,'hardware'), dirs_exist_ok=True, copy_function=copy_without_override, ignore=shutil.ignore_patterns(*exclude_file_list))
+    # Copy software
+    shutil.copytree(os.path.join(os.path.dirname(__file__),'../software'), os.path.join(build_dir,'software'), dirs_exist_ok=True, copy_function=copy_without_override, ignore=shutil.ignore_patterns(*exclude_file_list))
 
 # peripheral_ios: Optional argument. Selects if should append peripheral IOs to 'ios' list
 # internal_wires: Optional argument. List of extra wires for creste_systemv to create inside this core/system module
-def setup_iob_soc( python_module, peripheral_ios=True, internal_wires=None):
+# exclude_files: Optional argument. List of files to exclude when copying from the iob-soc directory
+def setup_iob_soc( python_module, peripheral_ios=True, internal_wires=None, exclude_files=[]):
     confs = python_module.confs
     build_dir = python_module.build_dir
     submodules = python_module.submodules
@@ -42,5 +58,6 @@ def setup_iob_soc( python_module, peripheral_ios=True, internal_wires=None):
     # Try to build simulation system_top.v if template is available
     createTopSystem.create_top_system(python_module.setup_dir, submodules['dirs'], name, peripherals_list, ios, confs, os.path.join(build_dir,f'hardware/simulation/src/{name}_top.v'))
 
-
+    # Copy files common to all iob-soc based systems
+    copy_common_files(build_dir, exclude_files)
 
