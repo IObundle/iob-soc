@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 
 import os, sys
+
+sys.path.insert(0, os.path.dirname(__file__)+'/scripts')
 sys.path.insert(0, os.getcwd()+'/submodules/LIB/scripts')
+
 import setup
 from mk_configuration import update_define
+from iob_soc import setup_iob_soc
 
 name='iob_soc'
 version='V0.70'
@@ -99,7 +103,7 @@ def custom_setup():
 def main():
     custom_setup()
     # Setup this system
-    setup.setup(sys.modules[__name__])
+    setup_iob_soc(sys.modules[__name__])
 
 if __name__ == "__main__":
     main()
