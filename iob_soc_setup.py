@@ -7,13 +7,14 @@ sys.path.insert(0, os.getcwd()+'/submodules/LIB/scripts')
 
 import setup
 from mk_configuration import update_define
-from iob_soc import setup_iob_soc
+import iob_soc
 
 name='iob_soc'
 version='V0.70'
 flows='pc-emul emb sim doc fpga'
-setup_dir=os.path.dirname(__file__)
-build_dir=f"../{name}_{version}"
+if setup.is_top_module(sys.modules[__name__]):
+    setup_dir=os.path.dirname(__file__)
+    build_dir=f"../{name}_{version}"
 
 submodules = {
     'hw_setup': {
@@ -84,6 +85,9 @@ ios = \
     {'name': 'axi_m_port', 'descr':'General interface signals', 'ports': [], 'if_defined':'USE_EXTMEM'},
 ]
 
+# Add IOb-SoC modules. These will copy and generate common files from the IOb-SoC repository.
+iob_soc.add_iob_soc_modules(sys.modules[__name__])
+
 def custom_setup():
     # Add the following arguments:
     # "INIT_MEM": if should setup with init_mem or not
@@ -103,7 +107,7 @@ def custom_setup():
 def main():
     custom_setup()
     # Setup this system
-    setup_iob_soc(sys.modules[__name__])
+    setup.setup(sys.modules[__name__])
 
 if __name__ == "__main__":
     main()
