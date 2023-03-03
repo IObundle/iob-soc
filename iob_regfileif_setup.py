@@ -10,8 +10,9 @@ import copy
 name='iob_regfileif'
 version='V0.10'
 flows='sim'
-setup_dir=os.path.dirname(__file__)
-build_dir=f"../{name}_{version}"
+if setup.is_top_module(sys.modules[__name__]):
+    setup_dir=os.path.dirname(__file__)
+    build_dir=f"../{name}_{version}"
 submodules = {
     'hw_setup': {
         'headers' : [ 'iob_s_port', 'iob_s_portmap' ],

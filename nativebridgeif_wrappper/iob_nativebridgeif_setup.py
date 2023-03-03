@@ -14,7 +14,8 @@ regfileif_core_module=import_setup(f"{setup_dir}/..")
 # Copy some fields from the regfileif core
 version=regfileif_core_module.version
 flows=regfileif_core_module.flows
-build_dir=f"../{name}_{version}"
+if setup.is_top_module(sys.modules[__name__]):
+    build_dir=f"../{name}_{version}"
 
 confs = regfileif_core_module.confs
 
