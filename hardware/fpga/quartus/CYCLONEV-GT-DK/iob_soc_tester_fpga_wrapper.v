@@ -178,7 +178,7 @@ module iob_soc_tester_fpga_wrapper
       
       .axi_bridge_0_s0_awid       (axi_awid    [3*AXI_ID_W-1:2*AXI_ID_W]),
       .axi_bridge_0_s0_awaddr     (axi_awaddr  [3*AXI_ADDR_W-1:2*AXI_ADDR_W]),
-      .axi_bridge_0_s0_awlen      (axi_awlen   [3*(7+1)-1:2*(7+1)]),
+      .axi_bridge_0_s0_awlen      (axi_awlen   [3*(AXI_LEN_W)-1:2*(AXI_LEN_W)]),
       .axi_bridge_0_s0_awsize     (axi_awsize  [3*(2+1)-1:2*(2+1)]),
       .axi_bridge_0_s0_awburst    (axi_awburst [3*(1+1)-1:2*(1+1)]),
       .axi_bridge_0_s0_awlock     (axi_awlock  [4]),
@@ -197,7 +197,7 @@ module iob_soc_tester_fpga_wrapper
       .axi_bridge_0_s0_bready     (axi_bready  [2]),
       .axi_bridge_0_s0_arid       (axi_arid    [3*AXI_ID_W-1:2*AXI_ID_W]),
       .axi_bridge_0_s0_araddr     (axi_araddr  [3*AXI_ADDR_W-1:2*AXI_ADDR_W]),
-      .axi_bridge_0_s0_arlen      (axi_arlen   [3*(7+1)-1:2*(7+1)]),
+      .axi_bridge_0_s0_arlen      (axi_arlen   [3*(AXI_LEN_W)-1:2*(AXI_LEN_W)]),
       .axi_bridge_0_s0_arsize     (axi_arsize  [3*(2+1)-1:2*(2+1)]),
       .axi_bridge_0_s0_arburst    (axi_arburst [3*(1+1)-1:2*(1+1)]),
       .axi_bridge_0_s0_arlock     (axi_arlock  [4]),
