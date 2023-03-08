@@ -1,4 +1,5 @@
 `timescale 1ns / 1ps
+`include "bsp.vh"
 `include "iob_soc_tester_conf.vh"
 
 module iob_soc_tester_fpga_wrapper
