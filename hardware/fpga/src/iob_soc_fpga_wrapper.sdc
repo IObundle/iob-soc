@@ -2,4 +2,4 @@
 ## Clocks
 ################################################################################
 
-create_clock -name "clk" -period $clk_period [get_ports {$clk_port}]
+create_clock -name "clk" -period $clk_period [get_ports "$clk_port"]
