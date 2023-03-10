@@ -2,16 +2,21 @@
 
 import os, sys
 sys.path.insert(0, os.getcwd()+'/submodules/LIB/scripts')
-sys.path.insert(0, os.path.dirname(__file__)+'/scripts')
 import setup
 from mk_configuration import update_define
+
+sys.path.insert(0, os.path.dirname(__file__)+'/scripts')
 from tester import setup_tester, update_tester_conf
+
+sys.path.insert(0, os.path.dirname(__file__)+'/submodules/IOBSOC/scripts')
+import iob_soc
 
 name='iob_soc_tester'
 version='V0.50'
 flows='pc-emul emb sim doc fpga'
-setup_dir=os.path.dirname(__file__)
-build_dir=f"../{name}_{version}"
+if setup.is_top_module(sys.modules[__name__]):
+    setup_dir=os.path.dirname(__file__)
+    build_dir=f"../{name}_{version}"
 submodules = {
     'hw_setup': {
         'headers' : [ 'iob_wire', 'axi_wire', 'axi_m_m_portmap', 'axi_m_port', 'axi_m_m_portmap', 'axi_m_portmap'],
@@ -157,6 +162,10 @@ if 'module_parameters' not in vars():
 # Update tester configuration based on module_parameters
 update_tester_conf(sys.modules[__name__])
 
+# Add IOb-SoC modules. These will copy and generate common files from the IOb-SoC repository.
+# Don't add module to 'hw_setup'. This will be added by the setup_tester function.
+iob_soc.add_iob_soc_modules(sys.modules[__name__], peripheral_ios=False, filter_modules=['sim_setup','fpga_setup','sw_setup'])
+
 def custom_setup():
     # Add the following arguments:
     # "INIT_MEM": if should setup with init_mem or not
@@ -174,8 +183,9 @@ def custom_setup():
             submodules['hw_setup']['headers'] += [
                      { 'file_prefix':'iob_bus_0_2_', 'interface':'axi_m_portmap', 'wire_prefix':'', 'port_prefix':'', 'bus_start':0, 'bus_size':2 },
                      { 'file_prefix':'iob_bus_2_3_', 'interface':'axi_s_portmap', 'wire_prefix':'', 'port_prefix':'', 'bus_start':2, 'bus_size':1 },
-                     { 'file_prefix':'iob_bus_0_2_s_', 'interface':'axi_portmap', 'wire_prefix':'', 'port_prefix':'s_', 'bus_start':0, 'bus_size':2 },
-                     { 'file_prefix':'iob_bus_2_3_m_', 'interface':'axi_portmap', 'wire_prefix':'', 'port_prefix':'m_', 'bus_start':2, 'bus_size':1 },
+                     # Can't use portmaps below, because it creates axi_awlock and axi_arlock with 2 bits instead of 1 (these are used for axi_interconnect)
+                     #{ 'file_prefix':'iob_bus_0_2_s_', 'interface':'axi_portmap', 'wire_prefix':'', 'port_prefix':'s_', 'bus_start':0, 'bus_size':2 },
+                     #{ 'file_prefix':'iob_bus_2_3_m_', 'interface':'axi_portmap', 'wire_prefix':'', 'port_prefix':'m_', 'bus_start':2, 'bus_size':1 },
                      { 'file_prefix':'iob_bus_3_', 'interface':'axi_wire', 'wire_prefix':'', 'port_prefix':'', 'bus_size':3 },
                      { 'file_prefix':'iob_bus_2_', 'interface':'axi_wire', 'wire_prefix':'', 'port_prefix':'', 'bus_size':2 },
                     ]

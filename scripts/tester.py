@@ -6,11 +6,13 @@ import os, sys
 sys.path.insert(0, os.getcwd()+'/submodules/LIB/scripts')
 sys.path.insert(0, os.path.dirname(__file__)+'/../submodules/IOBSOC/scripts')
 
-from submodule_utils import import_setup, get_table_ports, add_prefix_to_parameters_in_port, eval_param_expression_from_config, iob_soc_peripheral_setup, set_default_submodule_dirs
+from submodule_utils import import_setup, get_table_ports, add_prefix_to_parameters_in_port, eval_param_expression_from_config, set_default_submodule_dirs
 from ios import get_interface_mapping
-from iob_soc import setup_iob_soc
+import setup 
+import iob_soc 
 import build_srcs
 import iob_colors
+import createTopSystem
 
 # Add tester modules to the list of hw, sim, sw and fpga modules of the current core/system
 # python_module: python module of the current system
@@ -109,6 +111,7 @@ def setup_tester( python_module ):
     module_parameters = python_module.module_parameters
     confs = python_module.confs
     submodules = python_module.submodules
+    name = python_module.name
 
     tester_peripherals_list=next(i['blocks'] for i in blocks if i['name'] == 'peripherals')
 
@@ -143,8 +146,6 @@ def setup_tester( python_module ):
 
         # Import module of one of the given core types (to access its IO)
         module = import_setup(submodules['dirs'][mapping_items[0]['type']])
-        set_default_submodule_dirs(module)
-        iob_soc_peripheral_setup(module)
 
         #Get ports of configured interface
         interface_table = next((i for i in module.ios if i['name'] == mapping[0]['if_name']), None) 
@@ -224,8 +225,15 @@ def setup_tester( python_module ):
             #Insert mapping between IO and wire for mapping[1] (if its not external interface)
             if mapping_external_interface!=1: map_IO_to_wire(mapping_items[1]['IO'], mapping[1]['port'], eval_param_expression_from_config(port2['n_bits'],module2.confs,'max'), mapping[1]['bits'], wire_name)
 
+    # Add IOb-SoC hw module.
+    iob_soc.add_iob_soc_modules(python_module, peripheral_ios=False, internal_wires=peripheral_wires, filter_modules=['hw_setup'])
+
     # Call setup function for the tester
-    setup_iob_soc(python_module, peripheral_ios=False, internal_wires=peripheral_wires)
+    setup.setup(python_module)
+
+    # Recreate iob_soc_tester_top.v, as it may have been generated during sim_setup, however at that time, the ios had not been updated by this function.
+    os.remove(os.path.join(python_module.build_dir,f'hardware/simulation/src/{name}_top.v'))
+    createTopSystem.create_top_system(os.path.join(python_module.setup_dir,f'hardware/simulation/src/{name}_top.vt'), submodules['dirs'], name, tester_peripherals_list, ios, confs, os.path.join(python_module.build_dir,f'hardware/simulation/src/{name}_top.v'))
 
     #Check if setup with INIT_MEM and USE_EXTMEM (check if macro exists)
     extmem_macro = next((i for i in confs if i['name']=='USE_EXTMEM'), False)
@@ -240,6 +248,6 @@ def setup_tester( python_module ):
             file.write("init_ddr_contents.hex: iob_soc_tester_firmware.hex\n")
 
             sut_firmware_name = module_parameters['sut_fw_name'].replace('.c','')+'.hex' if 'sut_fw_name' in module_parameters.keys() else '-'
-            file.write(f"	../../scripts/joinHexFiles.py {sut_firmware_name} $^ $(shell cat ../../build_defines.txt | sed -n 's/.*DDR_ADDR_W=\([^ ]*\).*/\\1/p') > $@\n")
+            file.write(f"	../../scripts/joinHexFiles.py {sut_firmware_name} $^ $(shell cat ../../software/embedded/bsp.h | sed -n 's/.*DDR_ADDR_W \([^ ]*\).*/\\1/p') > $@\n")
         # Copy joinHexFiles.py from LIB
         build_srcs.copy_files( "submodules/LIB", f"{python_module.build_dir}/scripts", [ "joinHexFiles.py" ], '*.py' )
