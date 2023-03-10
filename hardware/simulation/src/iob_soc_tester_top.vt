@@ -33,7 +33,7 @@ module iob_soc_tester_top (
    //
    initial begin
 `ifdef VCD
-      $dumpfile("tester.vcd");
+      $dumpfile("uut.vcd");
       $dumpvars();
 `endif
    end
