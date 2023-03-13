@@ -229,7 +229,7 @@ always @(posedge trap[1]) begin
     */
 	//Manually added testbench uart core. RS232 pins attached to the same pins
 	//of the Tester UART0 instance to communicate with it
-	// The interface of Tester UART0 is assumed to be the first portmapped interface (portmap_0_*)
+	// The interface of Tester UART0 is assumed to be the first portmapped interface (UART_*)
    wire cke_i = 1'b1;
    iob_uart uart_tb
      (
@@ -245,10 +245,10 @@ always @(posedge trap[1]) begin
       .iob_rvalid_o (uart_rvalid),
       .iob_ready_o  (uart_ready),
       
-      .txd        (portmap_0_rxd),
-      .rxd        (portmap_0_txd),
-      .rts        (portmap_0_cts),
-      .cts        (portmap_0_rts)
+      .txd        (UART_rxd),
+      .rxd        (UART_txd),
+      .rts        (UART_cts),
+      .cts        (UART_rts)
       );
    
 	//Ethernet

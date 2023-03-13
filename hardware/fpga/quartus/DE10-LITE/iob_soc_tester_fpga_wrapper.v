@@ -37,10 +37,10 @@ module iob_soc_tester_fpga_wrapper(
 		.arst_i (sys_rst),
 		.trap_o (trap),
 		//UART
-		.portmap_0_txd (uart_txd),
-		.portmap_0_rxd (uart_rxd),
-		.portmap_0_rts (),
-		.portmap_0_cts (1'b1)
+		.UART_txd (uart_txd),
+		.UART_rxd (uart_rxd),
+		.UART_rts (),
+		.UART_cts (1'b1)
 	);
 
 endmodule
