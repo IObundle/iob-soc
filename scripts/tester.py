@@ -229,12 +229,13 @@ def setup_tester( python_module ):
     # Add IOb-SoC hw module.
     iob_soc.add_iob_soc_modules(python_module, peripheral_ios=False, internal_wires=peripheral_wires, filter_modules=['hw_setup'])
 
+    # Recreate iob_soc_tester_top.v, as it may have been generated during sim_setup, however at that time, the ios had not been updated by this function.
+    if os.path.isfile(os.path.join(python_module.build_dir,f'hardware/simulation/src/{name}_top.v')):
+        os.remove(os.path.join(python_module.build_dir,f'hardware/simulation/src/{name}_top.v'))
+        createTopSystem.create_top_system(os.path.join(python_module.setup_dir,f'hardware/simulation/src/{name}_top.vt'), submodules['dirs'], name, tester_peripherals_list, ios, confs, os.path.join(python_module.build_dir,f'hardware/simulation/src/{name}_top.v'))
+
     # Call setup function for the tester
     setup.setup(python_module)
-
-    # Recreate iob_soc_tester_top.v, as it may have been generated during sim_setup, however at that time, the ios had not been updated by this function.
-    os.remove(os.path.join(python_module.build_dir,f'hardware/simulation/src/{name}_top.v'))
-    createTopSystem.create_top_system(os.path.join(python_module.setup_dir,f'hardware/simulation/src/{name}_top.vt'), submodules['dirs'], name, tester_peripherals_list, ios, confs, os.path.join(python_module.build_dir,f'hardware/simulation/src/{name}_top.v'))
 
     #Check if setup with INIT_MEM and USE_EXTMEM (check if macro exists)
     extmem_macro = next((i for i in confs if i['name']=='USE_EXTMEM'), False)
