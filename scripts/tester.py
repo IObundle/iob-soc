@@ -48,6 +48,7 @@ def map_IO_to_wire(io_dict, port_name, port_size, port_bits, wire_name):
         # Map the selected bits to the corresponding wire bits
         # Each element in the bit list of this port will be a tuple containign the name of the wire to connect to and the bit of that wire.
         for wire_bit, bit in enumerate(port_bits):
+            assert bit < len(io_dict[port_name]), f"{iob_colors.FAIL}Peripheral port {port_name} does not have bit {bit}!{iob_colors.ENDC}"
             assert not io_dict[port_name][bit], f"{iob_colors.FAIL}Peripheral port {port_name} bit {bit} has already been previously mapped!{iob_colors.ENDC}"
             io_dict[port_name][bit] = (wire_name, wire_bit)
 
@@ -228,12 +229,13 @@ def setup_tester( python_module ):
     # Add IOb-SoC hw module.
     iob_soc.add_iob_soc_modules(python_module, peripheral_ios=False, internal_wires=peripheral_wires, filter_modules=['hw_setup'])
 
+    # Recreate iob_soc_tester_top.v, as it may have been generated during sim_setup, however at that time, the ios had not been updated by this function.
+    if os.path.isfile(os.path.join(python_module.build_dir,f'hardware/simulation/src/{name}_top.v')):
+        os.remove(os.path.join(python_module.build_dir,f'hardware/simulation/src/{name}_top.v'))
+        createTopSystem.create_top_system(os.path.join(python_module.setup_dir,f'hardware/simulation/src/{name}_top.vt'), submodules['dirs'], name, tester_peripherals_list, ios, confs, os.path.join(python_module.build_dir,f'hardware/simulation/src/{name}_top.v'))
+
     # Call setup function for the tester
     setup.setup(python_module)
-
-    # Recreate iob_soc_tester_top.v, as it may have been generated during sim_setup, however at that time, the ios had not been updated by this function.
-    os.remove(os.path.join(python_module.build_dir,f'hardware/simulation/src/{name}_top.v'))
-    createTopSystem.create_top_system(os.path.join(python_module.setup_dir,f'hardware/simulation/src/{name}_top.vt'), submodules['dirs'], name, tester_peripherals_list, ios, confs, os.path.join(python_module.build_dir,f'hardware/simulation/src/{name}_top.v'))
 
     #Check if setup with INIT_MEM and USE_EXTMEM (check if macro exists)
     extmem_macro = next((i for i in confs if i['name']=='USE_EXTMEM'), False)
