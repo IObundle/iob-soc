@@ -110,7 +110,7 @@ module iob_soc_tb;
       end
    end
 
-   iob_soc_top iob_soc_top
+   iob_soc_sim_wrapper iob_soc_sim_wrapper
      (
       .clk_i (clk),
       .rst_i (reset),
