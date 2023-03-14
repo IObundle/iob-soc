@@ -241,7 +241,7 @@ def setup_tester( python_module ):
     # Recreate iob_soc_tester_sim_wrapper.v, as it may have been generated during sim_setup, however at that time, the ios had not been updated by this function.
     if os.path.isfile(os.path.join(python_module.build_dir,f'hardware/simulation/src/{name}_sim_wrapper.v')):
         os.remove(os.path.join(python_module.build_dir,f'hardware/simulation/src/{name}_sim_wrapper.v'))
-        sim_wrapper.create_sim_wrapper_system(os.path.join(python_module.setup_dir,f'hardware/simulation/src/{name}_sim_wrapper.vt'), submodules['dirs'], name, tester_peripherals_list, ios, confs, os.path.join(python_module.build_dir,f'hardware/simulation/src/{name}_sim_wrapper.v'))
+        sim_wrapper.create_sim_wrapper(os.path.join(python_module.setup_dir,f'hardware/simulation/src/{name}_sim_wrapper.vt'), submodules['dirs'], name, tester_peripherals_list, ios, confs, os.path.join(python_module.build_dir,f'hardware/simulation/src/{name}_sim_wrapper.v'))
 
     # Call setup function for the tester
     setup.setup(python_module)
