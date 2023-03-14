@@ -6,7 +6,7 @@
 
 //IOB_PRAGMA_PHEADERS
 
-module iob_soc_tester_top (
+module iob_soc_tester_sim_wrapper (
    output                             trap_o,
    //tester uart
    input                               uart_avalid,

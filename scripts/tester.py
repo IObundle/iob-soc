@@ -12,7 +12,7 @@ import setup
 import iob_soc 
 import build_srcs
 import iob_colors
-import createTopSystem
+import sim_wrapper
 
 # Add tester modules to the list of hw, sim, sw and fpga modules of the current core/system
 # python_module: python module of the current system
@@ -238,10 +238,10 @@ def setup_tester( python_module ):
     # Add IOb-SoC hw module.
     iob_soc.add_iob_soc_modules(python_module, peripheral_ios=False, internal_wires=peripheral_wires, filter_modules=['hw_setup'])
 
-    # Recreate iob_soc_tester_top.v, as it may have been generated during sim_setup, however at that time, the ios had not been updated by this function.
-    if os.path.isfile(os.path.join(python_module.build_dir,f'hardware/simulation/src/{name}_top.v')):
-        os.remove(os.path.join(python_module.build_dir,f'hardware/simulation/src/{name}_top.v'))
-        createTopSystem.create_top_system(os.path.join(python_module.setup_dir,f'hardware/simulation/src/{name}_top.vt'), submodules['dirs'], name, tester_peripherals_list, ios, confs, os.path.join(python_module.build_dir,f'hardware/simulation/src/{name}_top.v'))
+    # Recreate iob_soc_tester_sim_wrapper.v, as it may have been generated during sim_setup, however at that time, the ios had not been updated by this function.
+    if os.path.isfile(os.path.join(python_module.build_dir,f'hardware/simulation/src/{name}_sim_wrapper.v')):
+        os.remove(os.path.join(python_module.build_dir,f'hardware/simulation/src/{name}_sim_wrapper.v'))
+        sim_wrapper.create_sim_wrapper_system(os.path.join(python_module.setup_dir,f'hardware/simulation/src/{name}_sim_wrapper.vt'), submodules['dirs'], name, tester_peripherals_list, ios, confs, os.path.join(python_module.build_dir,f'hardware/simulation/src/{name}_sim_wrapper.v'))
 
     # Call setup function for the tester
     setup.setup(python_module)
