@@ -13,7 +13,7 @@ import iob_soc
 
 name='iob_soc_tester'
 version='V0.50'
-
+flows='pc-emul emb sim doc fpga'
 if setup.is_top_module(sys.modules[__name__]):
     setup_dir=os.path.dirname(__file__)
     build_dir=f"../{name}_{version}"
@@ -144,7 +144,7 @@ if 'module_parameters' not in vars():
         # Map IO connections of Tester peripherals with UUT's IO and the top system.
         'peripheral_portmap':
         [
-            ({'corename':'UART0', 'if_name':'rs232', 'port':'', 'bits':[]},{'corename':'', 'if_name':'', 'port':'', 'bits':[]}), #Map UART0 of tester to external interface
+            ({'corename':'UART0', 'if_name':'rs232', 'port':'', 'bits':[]},{'corename':'self', 'if_name':'UART', 'port':'', 'bits':[]}), #Map UART0 of tester to external interface
         ],
 
         # Allows overriding entries in 'confs' dictionary of iob_soc_tester.py
