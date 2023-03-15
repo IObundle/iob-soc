@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 #include "bsp.h"
-#include "Viob_soc_top.h"
+#include "Viob_soc_sim_wrapper.h"
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 
@@ -14,7 +14,7 @@
 
 vluint64_t main_time = 0;
 VerilatedVcdC* tfp = NULL;
-Viob_soc_top* dut = NULL;
+Viob_soc_sim_wrapper* dut = NULL;
 
 double sc_time_stamp () {
   return main_time;
@@ -74,7 +74,7 @@ void inituart(){
 int main(int argc, char **argv, char **env){
   Verilated::commandArgs(argc, argv);
   Verilated::traceEverOn(true);
-  dut = new Viob_soc_top;
+  dut = new Viob_soc_sim_wrapper;
 
 #ifdef VCD
   tfp = new VerilatedVcdC;

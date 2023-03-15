@@ -7,7 +7,7 @@ sys.path.insert(0, os.getcwd()+'/submodules/LIB/scripts')
 import periphs_tmp
 import createSystem
 import createTestbench
-import createTopSystem
+import sim_wrapper
 from submodule_utils import iob_soc_peripheral_setup, set_default_submodule_dirs, get_peripherals_list
 from setup import setup
 import shutil
@@ -96,9 +96,9 @@ def add_iob_soc_modules( python_module, peripheral_ios=True, internal_wires=None
         # Try to build simulation <system_name>_tb.v if template <system_name>_tb.vt is available and iob_soc_tb.vt not in exclude list
         if not fnmatch.filter(exclude_files,'iob_soc_tb.vt'):
             createTestbench.create_system_testbench(os.path.join(build_dir,f'hardware/simulation/src/{name}_tb.vt'), submodules['dirs'], name, peripherals_list, os.path.join(build_dir,f'hardware/simulation/src/{name}_tb.v'))
-        # Try to build simulation <system_name>_top.v if template <system_name>_top.vt is available and iob_soc_top.vt not in exclude list
-        if not fnmatch.filter(exclude_files,'iob_soc_top.vt'):
-            createTopSystem.create_top_system(os.path.join(build_dir,f'hardware/simulation/src/{name}_top.vt'), submodules['dirs'], name, peripherals_list, ios, confs, os.path.join(build_dir,f'hardware/simulation/src/{name}_top.v'))
+        # Try to build simulation <system_name>_sim_wrapper.v if template <system_name>_sim_wrapper.vt is available and iob_soc_sim_wrapper.vt not in exclude list
+        if not fnmatch.filter(exclude_files,'iob_soc_sim_wrapper.vt'):
+            sim_wrapper.create_sim_wrapper(os.path.join(build_dir,f'hardware/simulation/src/{name}_sim_wrapper.vt'), submodules['dirs'], name, peripherals_list, ios, confs, os.path.join(build_dir,f'hardware/simulation/src/{name}_sim_wrapper.v'))
 
     def iob_soc_fpga_setup():
         copy_common_files(build_dir, name, "hardware/fpga", exclude_files)

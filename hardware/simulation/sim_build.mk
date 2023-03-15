@@ -12,7 +12,7 @@ iob_uart_swreg.h: ../../software/esrc/iob_uart_swreg.h
 	cp $< $@
 
 # verilator top module
-VTOP:=iob_soc_top
+VTOP:=iob_soc_sim_wrapper
 
 endif
 
