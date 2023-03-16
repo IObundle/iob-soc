@@ -6,11 +6,16 @@
 
 The IObundle REGFILEIF is a RISC-V-based Peripheral written in Verilog, which users can download, modify, simulate and implement in FPGA or ASIC.
 This peripheral contains registers to buffer communication between two systems using their respective peripheral buses.
-It provides an IOb-native interface to the system, allowing it to be controlled via registers by another primary system.
+It provides an external IOb-native interface to the secondary system, allowing it to be controlled via registers by another primary system.
 
 This peripheral has two IOb-native interfaces:
 - It has the internal IOb-native interface that connects to the peripheral bus of the system that will be controlled and contains the registers.
 - It also has an external IOb-native interface that connects to the native peripheral bus of an external (primary) system.
+
+This repository also provides a peripheral for the primary system, that allows it to access registers of the secondary system.
+This peripheral, named IOBNATIVEBRIDGEIF is located in the `nativebridgeif_wrappper` directory of this repository.
+
+The IOBNATIVEBRIDGEIF can be used by primary systems like the [IOb-SoC-Tester](https://github.com/IObundle/iob-soc-tester) [project](https://nlnet.nl/project/OpenCryptoTester#ack), to access registers of a secondary system like the [IOb-SoC-SUT](https://github.com/IObundle/iob-soc-sut).
 
 ## Integrate in SoC ##
 
