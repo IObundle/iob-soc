@@ -4,7 +4,7 @@
 
 ## What is this repository for? ##
 
-The IObundle REGFILEIF is a RISC-V-based Peripheral written in Verilog, which users can download, modify, simulate and implement in FPGA or ASIC.  
+The IObundle REGFILEIF is a RISC-V-based Peripheral written in Verilog, which users can download, modify, simulate and implement in FPGA or ASIC.
 This peripheral contains registers to buffer communication between two systems using their respective peripheral buses.
 It provides an IOb-native interface to the system, allowing it to be controlled via registers by another primary system.
 
@@ -40,9 +40,9 @@ regfileif_options = {
 ```
 
 These options are then passed to the REGFILEIF peripheral of the system using module parameters.
-To do this, use a tuple in the `modules` list of the `submodules` dictionary, where the first element of the tuple is the module name and the second element are the module parameters.
+To do this, use a tuple in the `modules` list of the `submodules` dictionary, where the first element of the tuple is the module name and the second element is the module parameters.
 
-The `iob_soc_sut_setup.py` script uses the following tuple pass the module parameters above to the REGFILEIF peripheral:
+The `iob_soc_sut_setup.py` script uses the following tuple to pass the module parameters above to the REGFILEIF peripheral:
 ```Python
 ('REGFILEIF',regfileif_options)
 ```
@@ -72,17 +72,17 @@ The connection between the external IOb-native interface of the system with the 
 However, to connect using the portmap, the IOb-native bus signals of the Tester must be externally accessible (the portmap configuration can only map signals that can be accessed externally).
 
 To do this, we use the peripheral **IOBNATIVEBRIDGEIF**, located inside the `nativebridgeif_wrappper` directory of this repository.
-This peripheral also has two IOb-native interfaces, one internal and one external. 
-However, unlike REGFILEIF, the external interface of this peripheral is a master interface. This allows it be connected to the slave IOb-native interface of another module, such as the REGFILEIF. 
+This peripheral also has two IOb-native interfaces, one internal and one external.
+However, unlike REGFILEIF, the external interface of this peripheral is a master interface. This allows it to be connected to the slave IOb-native interface of another module, such as the REGFILEIF.
 The IOBNATIVEBRIDGEIF, allows the peripheral bus signals of the system to be accessed externally.
 
-We use the IOBNATIVEBRIDGEIF as a peripheral of the Tester to allows its peripheral bus signals to be accessed externally, and therefore be portmapped.
+We use the IOBNATIVEBRIDGEIF as a peripheral of the Tester to allow its peripheral bus signals to be accessed externally, and therefore be port mapped.
 
-To instantiate the IOBNATIVEBRIDGEIF peripheral we add an new dictionary to the `peripherals` list of the `blocks` dictionary, similar to the REGFILEIF instantiation.
+To instantiate the IOBNATIVEBRIDGEIF peripheral we add a new dictionary to the `peripherals` list of the `blocks` dictionary, similar to the REGFILEIF instantiation.
 
 In the `iob_soc_sut_setup.py` script, the IOBNATIVEBRIDGEIF is a peripheral of the Tester, therefore it is instantiated in the `extra_peripherals` list of the Tester module parameters:
 ```Python
-    'extra_peripherals': 
+    'extra_peripherals':
     [
         {'name':'IOBNATIVEBRIDGEIF0', 'type':'IOBNATIVEBRIDGEIF', 'descr':'IOb native interface for communication with SUT. Essentially a REGFILEIF without any registers.', 'params':{}},
 
