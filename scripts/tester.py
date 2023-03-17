@@ -142,11 +142,13 @@ def setup_tester( python_module ):
         # Store -1 if we are not mapping to external interface
         mapping_external_interface = mapping_items.index(None) if None in mapping_items else -1
 
-        # List of tester IOs from ports of this mapping
-        tester_mapping_ios=[]
-        # Add peripherals table to ios of tester
-        assert mapping[0]['if_name'] if mapping_external_interface==0 else mapping[1]['if_name'], f"{iob_colors.FAIL}Portmap index {map_idx} needs an interface name for the 'self' corename!{iob_colors.ENDC}"
-        ios.append({'name': mapping[0]['if_name'] if mapping_external_interface==0 else mapping[1]['if_name'], 'descr':f"IOs for peripherals based on portmap index {map_idx}", 'ports': tester_mapping_ios, 'ios_table_prefix':True})
+        # Create interface for this portmap if it is connected to external interface
+        if mapping_external_interface>-1:
+            # List of tester IOs from ports of this mapping
+            tester_mapping_ios=[]
+            # Add peripherals table to ios of tester
+            assert mapping[0]['if_name'] if mapping_external_interface==0 else mapping[1]['if_name'], f"{iob_colors.FAIL}Portmap index {map_idx} needs an interface name for the 'self' corename!{iob_colors.ENDC}"
+            ios.append({'name': mapping[0]['if_name'] if mapping_external_interface==0 else mapping[1]['if_name'], 'descr':f"IOs for peripherals based on portmap index {map_idx}", 'ports': tester_mapping_ios, 'ios_table_prefix':True})
 
         # Import module of one of the given core types (to access its IO)
         module = import_setup(submodules['dirs'][mapping_items[0]['type']])
