@@ -1,6 +1,7 @@
 `timescale 1ns/1ps
 
 `include "iob_lib.vh"
+`include "iob_gpio_conf.vh"
 `include "iob_gpio_swreg_def.vh"
 
 module iob_gpio # (
