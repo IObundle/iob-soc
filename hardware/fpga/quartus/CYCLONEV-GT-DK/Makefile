@@ -15,10 +15,9 @@ DDR_DATA_W=32
 #NORUN = $(USE_DDR)
 NORUN = 0
 
-QIP_FILE=qsys/alt_ddr3/synthesis/alt_ddr3.qip
-
-$(QIP_FILE): qsys/alt_ddr3.qsys
-	$(QUARTUSPATH)/nios2eds/nios2_command_shell.sh qsys-generate  --synthesis qsys/alt_ddr3.qsys
+ifeq ($(USE_DDR),1)
+VSRC += qsys/alt_ddr3.qsys
+endif
 
 include ../quartus.mk
 

@@ -94,9 +94,9 @@ source device.tcl
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
 set_global_assignment -name VERILOG_INPUT_VERSION SYSTEMVERILOG_2005
 
-if { $USE_DDR >= 0 } {
-set_global_assignment -name QIP_FILE qsys/alt_ddr3/synthesis/alt_ddr3.qip
-}
+#if { $USE_DDR >= 0 } {
+#set_global_assignment -name QIP_FILE qsys/alt_ddr3/synthesis/alt_ddr3.qip
+#}
 
 #file search paths
 foreach path [split $INCLUDE \ ] {
@@ -114,7 +114,9 @@ foreach macro [split $DEFINE \ ] {
 
 #verilog sources
 foreach file [split $VSRC \ ] {
-    if {$file != ""} {
+    if {[file extension $file] == ".qsys"} {
+        set_global_assignment -name QSYS_FILE $file
+    } elseif {$file != ""} {
         set_global_assignment -name VERILOG_FILE $file
     }
 }
@@ -153,9 +155,8 @@ if [catch {qexec "[file join $::quartus(binpath) quartus_map] $project_name"} re
 
 #used for hard macro with no success
 if { $USE_DDR >= 0 } {
-    source "./qsys/alt_ddr3/synthesis/submodules/alt_ddr3_mem_if_ddr3_emif_0_p0_parameters.tcl"
-
-    source "./qsys/alt_ddr3/synthesis/submodules/alt_ddr3_mem_if_ddr3_emif_0_p0_pin_assignments.tcl"
+    source "./db/ip/alt_ddr3/submodules/alt_ddr3_mem_if_ddr3_emif_0_p0_parameters.tcl"
+    source "./db/ip/alt_ddr3/submodules/alt_ddr3_mem_if_ddr3_emif_0_p0_pin_assignments.tcl"
 }
 
 # Compile the project and
