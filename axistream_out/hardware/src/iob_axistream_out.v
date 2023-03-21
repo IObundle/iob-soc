@@ -1,32 +1,27 @@
 `timescale 1ns/1ps
 `include "iob_lib.vh"
+`include "iob_axistream_out_conf.vh"
 `include "iob_axistream_out_swreg_def.vh"
 
-module iob_axistream_out 
-  # (
-     parameter TDATA_W = 8, //PARAM axi stream tdata width
-     parameter FIFO_DEPTH_LOG2 = 4, //PARAM depth of FIFO
-     parameter DATA_W = 32, //PARAM CPU data width
-     parameter ADDR_W = `iob_axistream_out_swreg_ADDR_W //MACRO CPU address section width
-     )
-
-  (
-
-   //CPU interface
-`include "iob_s_if.vh"
-
-   //additional inputs and outputs
-   `IOB_OUTPUT(tdata, TDATA_W),
-   `IOB_OUTPUT(tvalid, 1),
-   `IOB_INPUT(tready, 1),
-   `IOB_OUTPUT(tlast, 1), 
-`include "iob_gen_if.vh"
+module iob_axistream_out # (
+     `include "iob_axistream_out_params.vh"
+   ) (
+     `include "iob_axistream_out_io.vh"
    );
 	// FIFO Input width / Ouput width
 	localparam N=32/TDATA_W;
 
-//BLOCK Register File & Configuration control and status register file.
-`include "iob_axistream_out_swreg_gen.vh"
+    // This mapping is required because "iob_axistream_out_swreg_inst.vh" uses "iob_s_portmap.vh" (This would not be needed if mkregs used "iob_s_s_portmap.vh" instead)
+    wire [1-1:0] iob_avalid = iob_avalid_i; //Request valid.
+    wire [ADDR_W-1:0] iob_addr = iob_addr_i; //Address.
+    wire [DATA_W-1:0] iob_wdata = iob_wdata_i; //Write data.
+    wire [(DATA_W/8)-1:0] iob_wstrb = iob_wstrb_i; //Write strobe.
+    wire [1-1:0] iob_rvalid; assign iob_rvalid_o = iob_rvalid; //Read data valid.
+    wire [DATA_W-1:0] iob_rdata; assign iob_rdata_o = iob_rdata; //Read data.
+    wire [1-1:0] iob_ready; assign iob_ready_o = iob_ready; //Interface ready.
+
+    //BLOCK Register File & Configuration control and status register file.
+    `include "iob_axistream_out_swreg_inst.vh"
    
    `IOB_WIRE(fifo_empty, 1)
    `IOB_WIRE(fifo_full, 1)

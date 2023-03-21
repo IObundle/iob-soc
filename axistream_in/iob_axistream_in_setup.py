@@ -48,9 +48,9 @@ ios = \
 regs = \
 [
     {'name': 'axistream', 'descr':'Axistream software accessible registers.', 'regs': [
-        {'name':"AXISTREAMIN_OUT", 'type':"R", 'n_bits':32, 'rst_val':0, 'addr':-1, 'log2n_items':0, 'autologic':True, 'descr':"32 bits: Get next FIFO output (Reading from this register makes it pop the next value from FIFO)"},
-        {'name':"AXISTREAMIN_EMPTY", 'type':"R", 'n_bits':1, 'rst_val':0, 'addr':-1, 'log2n_items':0, 'autologic':True, 'descr':"1 bit: Return if FIFO is empty (May be empty due to waiting for more data or because it received a TLAST signal)"},
-        {'name':"AXISTREAMIN_LAST", 'type':"R", 'n_bits':5, 'rst_val':0, 'addr':-1, 'log2n_items':0, 'autologic':True, 'descr':"1+4 bits: [Bit 4] Signals if FIFO is empty due to receiving a TLAST signal; [Bit 3-0] Tells which bytes (from latest value of AXISTREAMIN_OUT) are valid (similar to WSTRB signal of AXI Stream). (Reading from this register makes it reset and starts filling FIFO with next frame)"},
+        {'name':"OUT", 'type':"R", 'n_bits':32, 'rst_val':0, 'addr':-1, 'log2n_items':0, 'autologic':True, 'descr':"32 bits: Get next FIFO output (Reading from this register makes it pop the next value from FIFO)"},
+        {'name':"EMPTY", 'type':"R", 'n_bits':1, 'rst_val':0, 'addr':-1, 'log2n_items':0, 'autologic':True, 'descr':"1 bit: Return if FIFO is empty (May be empty due to waiting for more data or because it received a TLAST signal)"},
+        {'name':"LAST", 'type':"R", 'n_bits':5, 'rst_val':0, 'addr':-1, 'log2n_items':0, 'autologic':True, 'descr':"1+4 bits: [Bit 4] Signals if FIFO is empty due to receiving a TLAST signal; [Bit 3-0] Tells which bytes (from latest value of AXISTREAMIN_OUT) are valid (similar to WSTRB signal of AXI Stream). (Reading from this register makes it reset and starts filling FIFO with next frame)"},
 
     ]}
 ]
