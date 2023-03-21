@@ -3,6 +3,9 @@
 import os
 import shutil
 
+# Override premap.tcl from build dir, with Tester's premap.tcl 
+shutil.copyfile(setup_module.setup_dir+"/hardware/fpga/vivado/premap.tcl", setup_module.build_dir+"/hardware/fpga/vivado/premap.tcl")
+
 # If we are using the tester by itself (no UUT), then copy the Tester's test.expected files
 if setup_module.build_dir==f"../{setup_module.name}_{setup_module.version}":
     # Find out correct test.expected filename
