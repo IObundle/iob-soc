@@ -8,7 +8,7 @@ QUARTUS_SEED=10
 
 TEST_LIST+=test1
 test1:
+	ln -sf $(FPGA_TOOL)/$(BOARD)/test.expected test.expected
 	make -C ../../ fw-clean BOARD=$(BOARD)
 	make -C ../../ fpga-clean BOARD=$(BOARD)
 	make run BOARD=$(BOARD)
-	diff run.log $(FPGA_TOOL)/$(BOARD)/test.expected
