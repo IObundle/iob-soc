@@ -1,4 +1,4 @@
-SHELL = /bin/bash
+SHELL = bash
 export 
 
 #run on external memory implies DDR use

@@ -22,7 +22,8 @@ CONSOLE_CMD=$(PYTHON_DIR)/console -s /dev/usb-uart
 ifeq ($(INIT_MEM),0)
 CONSOLE_CMD+=-f
 endif
-
+GRAB_CMD=while $(PYTHON_DIR)/board_client.py grab $(USER) | grep "busy" --color=never; do sleep 10; done
+RELEASE_CMD=$(PYTHON_DIR)/board_client.py release $(USER)
 
 #RULES
 
@@ -36,9 +37,7 @@ run:
 ifeq ($(NORUN),0)
 ifeq ($(BOARD_SERVER),)
 	cp $(FIRM_DIR)/firmware.bin .
-	if [ ! -f $(LOAD_FILE) ]; then touch $(LOAD_FILE); chown $(USER):dialout $(LOAD_FILE); chmod 664 $(LOAD_FILE); fi;\
-	bash -c "trap 'make queue-out' INT TERM KILL; make queue-in; if [ $(FORCE) = 1 -o \"`head -1 $(LOAD_FILE)`\" != \"$(JOB)\" ];\
-	then ../prog.sh; echo $(JOB) > $(LOAD_FILE); fi; $(CONSOLE_CMD) $(TEST_LOG); make queue-out;"
+	bash -c "trap '$(RELEASE_CMD)' INT TERM KILL; $(GRAB_CMD); ../prog.sh; $(CONSOLE_CMD) $(TEST_LOG); $(RELEASE_CMD);"
 else
 	ssh $(BOARD_USER)@$(BOARD_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --delete --force --exclude .git $(ROOT_DIR) $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_ROOT_DIR)

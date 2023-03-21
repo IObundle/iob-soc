@@ -1,4 +1,4 @@
-SHELL := /bin/bash
+SHELL := bash
 
 ROOT_DIR:=../../..
 
