@@ -25,7 +25,11 @@ CONSOLE_CMD=$(PYTHON_DIR)/console -L
 build: fw_emul
 
 fw_emul: $(HDR) $(SRC)
+ifneq ($(VALGRIND),)
+	valgrind --leak-check=full --show-leak-kinds=all -s gcc -o $@ $(CFLAGS) $(DEFINE) $(INCLUDE) $(SRC) -lgcc -lc
+else
 	gcc -o $@ $(CFLAGS) $(DEFINE) $(INCLUDE) $(SRC) -lgcc -lc
+endif
 
 run: build
 	@rm -f soc2cnsl cnsl2soc
