@@ -44,7 +44,8 @@ int compare_str(char *str1, char *str2, int str_size) {
 
 int main()
 {
-  char test_log [1000] = "";
+char pass_string[] = "Test passed!";
+char fail_string[] = "Test failed!";
 
   //init uart
   uart_init(UART0_BASE,FREQ/BAUD);   
@@ -76,15 +77,12 @@ int main()
   free(sendfile);
   free(recvfile);
 
-  // Test.log messages
-#ifdef INIT_MEM
-  iob_strcpy(test_log+iob_strlen(test_log), "Memory was initialized.\n");
-#endif
-#ifdef USE_EXTMEM
-  iob_strcpy(test_log+iob_strlen(test_log), "Used external memory.\n");
-#endif
-  iob_strcpy(test_log+iob_strlen(test_log), "Test passed!");
-  uart_sendfile("test.log", iob_strlen(test_log), test_log);
+//#ifdef USE_EXTMEM
+//  if(memory_access_failed)
+//      uart_sendfile("test.log", iob_strlen(fail_string), fail_string);
+//      uart_finish();
+//#endif
+  uart_sendfile("test.log", iob_strlen(pass_string), pass_string);
 
   uart_finish();
 }
