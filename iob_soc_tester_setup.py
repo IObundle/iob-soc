@@ -13,7 +13,7 @@ import iob_soc
 
 name='iob_soc_tester'
 version='V0.50'
-flows='pc-emul emb sim doc fpga'
+flows='pc-emul emb sim fpga'
 if setup.is_top_module(sys.modules[__name__]):
     setup_dir=os.path.dirname(__file__)
     build_dir=f"../{name}_{version}"
