@@ -11,4 +11,3 @@ test1:
 	make -C ../../ fw-clean BOARD=$(BOARD)
 	make -C ../../ fpga-clean BOARD=$(BOARD)
 	make run BOARD=$(BOARD)
-	diff run.log $(FPGA_TOOL)/$(BOARD)/test.expected

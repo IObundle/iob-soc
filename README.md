@@ -344,9 +344,8 @@ make -C ../iob_soc_V* sim-test [SIMULATOR=<simulator directory>]
 ```
 
 The above command produces a test log file called `test.log` in the simulator's
-directory. The `test.log` file is compared with the `test.expected` file, which
-resides in the same directory; if they differ, the test fails; otherwise, it
-passes.
+directory. The `test.log` file contents are compared with the `Test passed!` string;
+if they differ, the test fails; otherwise, it passes.
 
 To test the setup, build and simulation process for all configurations, type:
 
@@ -365,9 +364,8 @@ make -C ../iob_soc_V* fpga-test [BOARD=<board directory name>]
 ```
 
 The above command produces a test log file called `test.log` in the board's
-directory. The `test.log` file is compared with the `test.expected` file, which
-resides in the same directory; if they differ, the test fails; otherwise, it
-passes.
+directory. The `test.log` file contents are compared with the `Test passed!` string;
+if they differ, the test fails; otherwise, it passes.
 
 To test the setup, build and FPGA run process for all configurations, type:
 

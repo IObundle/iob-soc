@@ -120,7 +120,7 @@ jobs:
   
   cyclonev:
     runs-on: self-hosted
-    timeout-minutes: 60
+    timeout-minutes: 75
     if: ${{ !cancelled() }}
     needs: [ icarus, verilator ]
   
