@@ -20,8 +20,10 @@ CONSOLE_CMD=$(PYTHON_DIR)/console -s /dev/usb-uart
 ifeq ($(INIT_MEM),0)
 CONSOLE_CMD+=-f
 endif
-GRAB_CMD=while $(PYTHON_DIR)/board_client.py grab $(USER) | grep "busy" --color=never; do sleep 10; done
-RELEASE_CMD=$(PYTHON_DIR)/board_client.py release $(USER)
+
+GRAB_CMD=board_client.py grab
+RELEASE_CMD=board_client.py release
+
 FPGA_PROG=../prog.sh
 
 #RULES
