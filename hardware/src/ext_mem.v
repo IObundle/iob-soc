@@ -1,6 +1,7 @@
 `timescale 1 ns / 1 ps
 
 `include "iob_lib.vh"
+`include "bsp.vh"
 
 module ext_mem #(
     parameter ADDR_W=0,
@@ -54,7 +55,8 @@ module ext_mem #(
       .WORD_OFFSET_W(3), //Word Offset (number of words per line)
       .WTBUF_DEPTH_W(5), //FIFO's depth -- 5 minimum for BRAM implementation
       .USE_CTRL (0),     //Cache-Control can't be accessed
-      .USE_CTRL_CNT(0)   //Remove counters
+      .USE_CTRL_CNT(0),   //Remove counters
+      .MEM_NO_READ_ON_WRITE(`MEM_NO_READ_ON_WRITE) //Read on write
       )
   icache (
       .clk_i   (clk_i),
