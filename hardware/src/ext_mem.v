@@ -50,7 +50,7 @@ module ext_mem #(
   iob_cache_iob #(
       .FE_ADDR_W(FIRM_ADDR_W),
       .BE_ADDR_W(MEM_ADDR_W),
-      .NWAYS_W(2),       //Number of ways
+      .NWAYS_W(1),       //Number of ways
       .NLINES_W(7),      //Cache Line Offset (number of lines)
       .WORD_OFFSET_W(3), //Word Offset (number of words per line)
       .WTBUF_DEPTH_W(5), //FIFO's depth -- 5 minimum for BRAM implementation
@@ -125,7 +125,7 @@ module ext_mem #(
    // Data cache instance
    iob_cache_iob #(
       .FE_ADDR_W(MEM_ADDR_W),
-      .NWAYS_W(2),        //Number of ways
+      .NWAYS_W(1),        //Number of ways
       .NLINES_W(7),    //Cache Line Offset (number of lines)
       .WORD_OFFSET_W(3),    //Word Offset (number of words per line)
       .WTBUF_DEPTH_W(5), //FIFO's depth -- 5 minimum for BRAM implementation
