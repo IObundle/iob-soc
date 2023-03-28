@@ -1,4 +1,6 @@
-HEX+=iob_soc_tester_boot.hex iob_soc_tester_firmware.hex
+RUN_DEPS+=iob_soc_tester_boot.hex iob_soc_tester_firmware.hex
+# Don't add firmware to BUILD_DEPS if we are using external memory since we don't want to rebuild bitstream when we modify it.
+BUILD_DEPS+=iob_soc_tester_boot.hex $(if $(filter $(INIT_MEM),1),,iob_soc_tester_firmware.hex)
 include ../../software/sw_build.mk
 
 IS_FPGA=1

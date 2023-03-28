@@ -134,7 +134,7 @@ module iob_soc_tester_fpga_wrapper
 `endif
 `ifdef IOB_SOC_TESTER_USE_EXTMEM
       //axi system backend interface
-      `include "iob_axi_m_portmap.vh"	
+      `include "iob_bus_0_2_axi_m_portmap.vh"	
 `endif
 
       //UART
