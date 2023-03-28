@@ -1,7 +1,6 @@
 `timescale 1 ns / 1 ps
 
 `include "iob_lib.vh"
-`include "bsp.vh"
 
 module ext_mem #(
     parameter ADDR_W=0,
