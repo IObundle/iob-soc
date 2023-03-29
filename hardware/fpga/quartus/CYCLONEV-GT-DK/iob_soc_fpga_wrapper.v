@@ -83,7 +83,7 @@ module iob_soc_fpga_wrapper
 
    //determine system reset
    wire          rst_int = ~resetn | ~locked | ~init_done;
-//   wire          rst_int = ~resetn | ~locked;
+   //wire          rst_int = ~resetn | ~locked;
    
    iob_reset_sync rst_sync (clk, rst_int, rst);
 
