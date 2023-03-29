@@ -4,7 +4,7 @@ include ../../software/sw_build.mk
 IS_FPGA=1
 
 
-QUARTUS_SEED=10
+QUARTUS_SEED=5
 
 TEST_LIST+=test1
 test1:
