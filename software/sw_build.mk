@@ -42,6 +42,7 @@ FW_SRC+=$(filter-out %_emul.c, $(wildcard src/*swreg*.c))
 BOOT_SRC+=src/iob_soc_boot.S
 BOOT_SRC+=src/iob_soc_boot.c
 BOOT_SRC+=$(filter-out %_emul.c, $(wildcard src/iob*uart*.c))
+BOOT_SRC+=$(filter-out %_emul.c, $(wildcard src/iob*cache*.c))
 
 build_software:
 	make iob_soc_firmware.elf INCLUDES="$(INCLUDES)" LFLAGS="$(LFLAGS) -Wl,-Map,iob_soc_firmware.map" SRC="$(FW_SRC)"
