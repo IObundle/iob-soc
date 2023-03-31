@@ -4,6 +4,7 @@
 #include "iob_soc_tester_conf.h"
 #include "iob-uart.h"
 #include "printf.h"
+#include "iob_str.h"
 
 char *send_string = "Sending this string as a file to console.\n"
                     "The file is then requested back from console.\n"
@@ -43,6 +44,9 @@ int compare_str(char *str1, char *str2, int str_size) {
 
 int main()
 {
+char pass_string[] = "Test passed!";
+char fail_string[] = "Test failed!";
+
   //init uart
   uart_init(UART0_BASE,FREQ/BAUD);   
 
@@ -71,6 +75,13 @@ int main()
 
   free(sendfile);
   free(recvfile);
+
+//#ifdef USE_EXTMEM
+//  if(memory_access_failed)
+//      uart_sendfile("test.log", iob_strlen(fail_string), fail_string);
+//      uart_finish();
+//#endif
+  uart_sendfile("test.log", iob_strlen(pass_string), pass_string);
 
   uart_finish();
 }
