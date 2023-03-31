@@ -7,11 +7,9 @@ IS_FPGA=1
 
 QUARTUS_SEED=5
 
-TEST_LIST:=test1
-test1:
-	make -C ../../ fw-clean BOARD=$(BOARD)
-	make -C ../../ fpga-clean BOARD=$(BOARD)
-	make run BOARD=$(BOARD)
-
-# Undefine FPGA_TOP var in case it was set by UUT.
+# Undefine FPGA_TOP, as it may have been set by UUT.
 undefine FPGA_TOP
+
+ifneq ($(wildcard uut_build.mk),)
+include uut_build.mk
+endif
