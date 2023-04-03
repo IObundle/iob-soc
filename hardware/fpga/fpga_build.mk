@@ -5,7 +5,7 @@ include ../../software/sw_build.mk
 
 IS_FPGA=1
 
-QUARTUS_SEED=5
+QUARTUS_SEED ?=5
 
 # Undefine FPGA_TOP, as it may have been set by UUT.
 undefine FPGA_TOP
