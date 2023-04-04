@@ -1,3 +1,4 @@
+CORE := iob_soc_tester
 include submodules/LIB/setup.mk
 
 INIT_MEM ?= 1

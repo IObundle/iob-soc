@@ -13,7 +13,7 @@ import iob_soc
 
 name='iob_soc_tester'
 version='V0.50'
-flows='pc-emul emb sim doc fpga'
+flows='pc-emul emb sim fpga'
 if setup.is_top_module(sys.modules[__name__]):
     setup_dir=os.path.dirname(__file__)
     build_dir=f"../{name}_{version}"
@@ -23,12 +23,12 @@ submodules = {
         'modules': [ 'PICORV32', 'CACHE', 'UART', 'iob_merge', 'iob_split', 'iob_rom_sp.v', 'iob_ram_dp_be.v', 'iob_ram_dp_be_xil.v', 'iob_pulse_gen.v', 'iob_counter.v', 'iob_ram_2p_asym.v', 'iob_reg.v', 'iob_reg_re.v', 'iob_ram_sp_be.v', 'iob_ram_dp.v', 'iob_reset_sync']
     },
     'sim_setup': {
-        'headers' : [ 'axi_s_portmap' ],
-        'modules': [ 'axi_ram.v', 'iob_tasks.vh'  ]
+        'headers' : [ 'axi_s_portmap', 'iob_tasks.vh'  ],
+        'modules': [ 'axi_ram.v' ]
     },
     'sw_setup': {
         'headers': [  ],
-        'modules': [ 'CACHE', 'UART', ]
+        'modules': [ 'CACHE', 'UART', 'iob_str'  ]
     },
 }
 

@@ -261,6 +261,6 @@ def setup_tester( python_module ):
             file.write("init_ddr_contents.hex: iob_soc_tester_firmware.hex\n")
 
             sut_firmware_name = module_parameters['sut_fw_name'].replace('.c','')+'.hex' if 'sut_fw_name' in module_parameters.keys() else '-'
-            file.write(f"	../../scripts/joinHexFiles.py {sut_firmware_name} $^ $(shell cat ../../software/embedded/bsp.h | sed -n 's/.*DDR_ADDR_W \([^ ]*\).*/\\1/p') > $@\n")
+            file.write(f"	../../scripts/joinHexFiles.py {sut_firmware_name} $^ $(shell cat ../../software/bsp.h | sed -n 's/.*DDR_ADDR_W \([^ ]*\).*/\\1/p') > $@\n")
         # Copy joinHexFiles.py from LIB
         build_srcs.copy_files( "submodules/LIB", f"{python_module.build_dir}/scripts", [ "joinHexFiles.py" ], '*.py' )

@@ -8,7 +8,7 @@ ifeq ($(SIMULATOR),verilator)
 
 # get header files (needed for iob_soc_tester_tb.cpp)
 VHDR+=iob_uart_swreg.h
-iob_uart_swreg.h: ../../software/esrc/iob_uart_swreg.h
+iob_uart_swreg.h: ../../software/src/iob_uart_swreg.h
 	cp $< $@
 
 # verilator top module
@@ -18,5 +18,6 @@ endif
 
 CONSOLE_CMD=../../scripts/console.py -L
 
-
+ifneq ($(wildcard uut_build.mk),)
 include uut_build.mk
+endif
