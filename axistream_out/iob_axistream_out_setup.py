@@ -40,9 +40,9 @@ ios = \
 regs = \
 [
     {'name': 'axistream', 'descr':'Axistream software accessible registers.', 'regs': [
-        {'name':"IN", 'type':"W", 'n_bits':32, 'rst_val':0, 'addr':-1, 'log2n_items':0, 'autologic':True, 'descr':"32 bits: Set next FIFO input (Writing to this register pushes the value into the FIFO)"},
+        {'name':"IN", 'type':"W", 'n_bits':32, 'rst_val':0, 'addr':-1, 'log2n_items':0, 'autologic':False, 'descr':"32 bits: Set next FIFO input (Writing to this register pushes the value into the FIFO)"},
         {'name':"FULL", 'type':"R", 'n_bits':1, 'rst_val':0, 'addr':-1, 'log2n_items':0, 'autologic':True, 'descr':"1 bit: Return if FIFO is full"},
-        {'name':"WSTRB_NEXT_WORD_LAST", 'type':"W", 'n_bits':5, 'rst_val':0, 'addr':-1, 'log2n_items':0, 'autologic':True, 'descr':"From 1 to 4 bits: Set which output words of the next input word in AXISTREAMOUT_IN are valid and send TLAST signal along with last valid byte. (If this register has value 0, all 4 bytes will be valid and it will not send a TLAST signal with the last byte [MSB]). When the output word width (TDATA) is 8, 16 or 32 bits, this register has size 4, 2 or 1 bits respectively."},
+        {'name':"WSTRB_NEXT_WORD_LAST", 'type':"W", 'n_bits':5, 'rst_val':0, 'addr':8, 'log2n_items':0, 'autologic':False, 'descr':"From 1 to 4 bits: Set which output words of the next input word in AXISTREAMOUT_IN are valid and send TLAST signal along with last valid byte. (If this register has value 0, all 4 bytes will be valid and it will not send a TLAST signal with the last byte [MSB]). When the output word width (TDATA) is 8, 16 or 32 bits, this register has size 4, 2 or 1 bits respectively."},
 
     ]}
 ]
