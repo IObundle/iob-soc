@@ -88,7 +88,7 @@ module iob_axistream_out # (
     );
   
   //Set FIFO full register when it is full or is waiting to send TLAST word.
-  assign FULL[0] = fifo_full | |last_wstrb;
+  assign FULL[0] = fifo_full | (last_wstrb != {N{1'b0}}); 
   
   //Next is valid if: 
   //    is valid now and receiver is not ready
