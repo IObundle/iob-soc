@@ -43,12 +43,12 @@ module iob_axistream_in # (
   assign LAST_ready = 1'b1;
   assign LAST_rvalid = 1'b1;
 
+  //output of TLAST register
+  wire [1-1:0] received_tlast;
+
   //Reset register when it is read and FIFO is empty
   wire [1-1:0] reset_register_last;
   assign reset_register_last = iob_avalid & !iob_wstrb & (iob_addr == (`IOB_AXISTREAM_IN_LAST_ADDR >> 2)) & EMPTY[0] & received_tlast;
-
-  //output of TLAST register
-  wire [1-1:0] received_tlast;
 
   wire [3:0] rstrb;
 
