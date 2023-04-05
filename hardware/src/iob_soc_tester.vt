@@ -232,10 +232,17 @@ module iob_soc_tester #(
    //
    // EXTERNAL DDR MEMORY
    //
-   wire axi_invert_r_bit;
-   wire axi_invert_w_bit;
-   assign axi_araddr_o[2*AXI_ADDR_W-1] = ~axi_invert_r_bit;
-   assign axi_awaddr_o[2*AXI_ADDR_W-1] = ~axi_invert_w_bit;
+
+   // Create bus that contains the highest bit of MEM_ADDR_W and other higher bits up to AXI_ADDR_W.
+   wire [AXI_ADDR_W-`MEM_ADDR_W:0] axi_higher_araddr_bits;
+   wire [AXI_ADDR_W-`MEM_ADDR_W:0] axi_higher_awaddr_bits;
+   // Invert highest bit of MEM_ADDR_W. Leave all higher bits unaltered.
+   assign axi_araddr_o[AXI_ADDR_W+`MEM_ADDR_W-1] = ~axi_higher_araddr_bits[0];
+   assign axi_awaddr_o[AXI_ADDR_W+`MEM_ADDR_W-1] = ~axi_higher_awaddr_bits[0];
+   generate if ((AXI_ADDR_W-`MEM_ADDR_W)>0) begin
+           assign axi_araddr_o[AXI_ADDR_W+`MEM_ADDR_W+:AXI_ADDR_W-`MEM_ADDR_W] = axi_higher_araddr_bits[1+:AXI_ADDR_W-`MEM_ADDR_W];
+           assign axi_awaddr_o[AXI_ADDR_W+`MEM_ADDR_W+:AXI_ADDR_W-`MEM_ADDR_W] = axi_higher_awaddr_bits[1+:AXI_ADDR_W-`MEM_ADDR_W];
+   end endgenerate
 
    ext_mem #(
       .ADDR_W(ADDR_W),
@@ -261,7 +268,7 @@ module iob_soc_tester #(
       //AXI INTERFACE 
       //address write
       .axi_awid_o       (axi_awid_o    [2*(AXI_ID_W)-1:AXI_ID_W]), 
-      .axi_awaddr_o     ({axi_invert_w_bit, axi_awaddr_o[2*AXI_ADDR_W-2:AXI_ADDR_W]}), 
+      .axi_awaddr_o     ({axi_higher_awaddr_bits, axi_awaddr_o[AXI_ADDR_W+:`MEM_ADDR_W-1]}), 
       .axi_awlen_o      (axi_awlen_o   [2*(7+1)-1:7+1]), 
       .axi_awsize_o     (axi_awsize_o  [2*(2+1)-1:2+1]), 
       .axi_awburst_o    (axi_awburst_o [2*(1+1)-1:1+1]), 
@@ -284,7 +291,7 @@ module iob_soc_tester #(
       .axi_bready_o     (axi_bready_o  [2*(0+1)-1:0+1]), 
       //address read                                                                    
       .axi_arid_o       (axi_arid_o    [2*(AXI_ID_W)-1:AXI_ID_W]), 
-      .axi_araddr_o     ({axi_invert_r_bit,axi_araddr_o[2*AXI_ADDR_W-2:AXI_ADDR_W]}), 
+      .axi_araddr_o     ({axi_higher_araddr_bits,axi_araddr_o[AXI_ADDR_W+:`MEM_ADDR_W-1]}), 
       .axi_arlen_o      (axi_arlen_o   [2*(7+1)-1:7+1]), 
       .axi_arsize_o     (axi_arsize_o  [2*(2+1)-1:2+1]), 
       .axi_arburst_o    (axi_arburst_o [2*(1+1)-1:1+1]), 
