@@ -31,10 +31,10 @@ module iob_axistream_out # (
   //FIFO RAM
   wire [N-1:0] ext_mem_w_en;
   wire [32-1:0] ext_mem_w_data;
-  wire [(FIFO_DEPTH_LOG2-$clog2(N))*(N)-1:0] ext_mem_w_addr;
-  wire [1-1:0] ext_mem_r_en;
+  wire [(FIFO_DEPTH_LOG2-$clog2(N))-1:0] ext_mem_w_addr;
+  wire [N-1:0] ext_mem_r_en;
   wire [32-1:0] ext_mem_r_data;
-  wire [(FIFO_DEPTH_LOG2-$clog2(N))*(N)-1:0] ext_mem_r_addr;
+  wire [(FIFO_DEPTH_LOG2-$clog2(N))-1:0] ext_mem_r_addr;
       
   //Register to store tlast wstrb
   wire [N-1:0] last_wstrb;
@@ -127,7 +127,7 @@ module iob_axistream_out # (
   //FIFO RAM
   iob_ram_2p_be #(
     .DATA_W (32),
-    .ADDR_W ((FIFO_DEPTH_LOG2-$clog2(N))*(N))
+    .ADDR_W ((FIFO_DEPTH_LOG2-$clog2(N)))
   )
   fifo_memory
   (
@@ -135,7 +135,7 @@ module iob_axistream_out # (
     .w_en_i     (ext_mem_w_en_be),
     .w_data_i   (ext_mem_w_data),
     .w_addr_i   (ext_mem_w_addr),
-    .r_en_i     (ext_mem_r_en),
+    .r_en_i     (|ext_mem_r_en),
     .r_addr_i   (ext_mem_r_addr),
     .r_data_o   (ext_mem_r_data)
   );

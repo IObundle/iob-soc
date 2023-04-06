@@ -27,10 +27,10 @@ module iob_axistream_in # (
   //FIFO RAM
   wire [num_inputs_per_output-1:0] ext_mem_w_en;
   wire [32-1:0] ext_mem_w_data;
-  wire [(FIFO_DEPTH_LOG2-$clog2(num_inputs_per_output))*(num_inputs_per_output)-1:0] ext_mem_w_addr;
-  wire [1-1:0] ext_mem_r_en;
+  wire [(FIFO_DEPTH_LOG2-$clog2(num_inputs_per_output))-1:0] ext_mem_w_addr;
+  wire [num_inputs_per_output-1:0] ext_mem_r_en;
   wire [32-1:0] ext_mem_r_data;
-  wire [(FIFO_DEPTH_LOG2-$clog2(num_inputs_per_output))*(num_inputs_per_output)-1:0] ext_mem_r_addr;
+  wire [(FIFO_DEPTH_LOG2-$clog2(num_inputs_per_output))-1:0] ext_mem_r_addr;
   //Delay rst by one clock, because tvalid signal after rested may come delayed from AXISTREAMOUT peripheral
   //wire rst_delayed;
   //iob_reg #(1,0) rst_delayed_reg (clk_i, arst_i, cke_i, 1'b0, rst_delayed);
@@ -143,7 +143,7 @@ module iob_axistream_in # (
   //FIFO RAM
   iob_ram_2p_be #(
      .DATA_W (32),
-     .ADDR_W ((FIFO_DEPTH_LOG2-$clog2(num_inputs_per_output))*(num_inputs_per_output))
+     .ADDR_W ((FIFO_DEPTH_LOG2-$clog2(num_inputs_per_output)))
    )
   fifo_memory
   (
@@ -151,7 +151,7 @@ module iob_axistream_in # (
      .w_en_i     (ext_mem_w_en_be),
      .w_data_i   (ext_mem_w_data),
      .w_addr_i   (ext_mem_w_addr),
-     .r_en_i     (ext_mem_r_en),
+     .r_en_i     (|ext_mem_r_en),
      .r_addr_i   (ext_mem_r_addr),
      .r_data_o   (ext_mem_r_data)
   );
