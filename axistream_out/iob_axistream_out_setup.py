@@ -20,6 +20,12 @@ submodules = axistream_in_module.submodules
 
 confs = axistream_in_module.confs
 
+# Find ADDR_W from confs and change its val to OUT_SWREG_ADDR_W
+for conf in confs:
+    if conf['name']=='ADDR_W':
+        conf['val']='`IOB_AXISTREAM_OUT_SWREG_ADDR_W'
+        break
+
 ios = \
 [
     {'name': 'iob_s_port', 'descr':'CPU native interface', 'ports': [
