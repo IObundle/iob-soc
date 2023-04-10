@@ -73,14 +73,14 @@ module iob_axistream_in # (
   //Reset due to &rstrb_int (rstrb has all bytes valid) is the default_rstrb_value (to go to next word).
   assign  rstrb_int_en = (tvalid_i & !received_tlast) | (received_tlast & rstrb_int != 4'hf);
   assign  rstrb_int_next_val = ((&rstrb_int) ? 4'd0 : rstrb_int<<TDATA_W/8) + default_rstrb_value;
-  iob_reg_re #(4,4'd0) rstrb_int_reg (clk_i, arst_i, cke_i, reset_register_last, rstrb_int_en, rstrb_int_next_val, rstrb_int);
+  iob_reg_re #(4,4'd0) rstrb_int_reg (clk_i, arst_i, cke_i, SOFTRESET | reset_register_last, rstrb_int_en, rstrb_int_next_val, rstrb_int);
 
   //Delay TLAST by one clock
   wire [1-1:0] tlast_delayed;
-  iob_reg #(1,0) tlast_delayed_reg (clk_i, arst_i, cke_i, tlast_i, tlast_delayed);
+  iob_reg_r #(1,0) tlast_delayed_reg (clk_i, arst_i, cke_i, SOFTRESET, tlast_i, tlast_delayed);
 
   //Store rstrb one clock after TLAST was received 
-  iob_reg_re #(4,1'b0) rstrb_reg (clk_i, arst_i, cke_i, reset_register_last, tlast_delayed, rstrb_int, rstrb);
+  iob_reg_re #(4,1'b0) rstrb_reg (clk_i, arst_i, cke_i, SOFTRESET | reset_register_last, tlast_delayed, rstrb_int, rstrb);
 
   iob_reg_re #(
     .RST_VAL(1'b0),
@@ -89,7 +89,7 @@ module iob_axistream_in # (
       .clk_i        (clk_i),
       .arst_i       (arst_i),
       .cke_i        (cke_i),
-      .rst_i        (reset_register_last), 
+      .rst_i        (reset_register_last | SOFTRESET), 
       .en_i         (tvalid_i & tready_o), //Store tlast value if signal is valid and ready for new one
       .data_i    (tlast_i),
       .data_o   (received_tlast)
@@ -108,7 +108,7 @@ module iob_axistream_in # (
   fifo
     (
      .arst_i            (arst_i),
-     .rst_i             (1'd0),
+     .rst_i             (SOFTRESET),
      .clk_i             (clk_i),
      .cke_i             (cke_i),
      .ext_mem_w_en_o    (ext_mem_w_en),

@@ -16,3 +16,6 @@ bool axistream_in_empty();
 
 //Returns if last value of FIFO was the end of frame (by TLAST signal) and get rstrb from that value
 bool axistream_in_was_last(char *rstrb);
+
+//Soft reset
+void axistream_in_reset();
