@@ -54,3 +54,10 @@ bool axistream_in_was_last(char *rstrb){
   *rstrb = (char)value & 0xf;
   return value & 0x10;
 }
+
+
+//pulse soft reset
+void axistream_in_reset(){
+  IOB_AXISTREAM_IN_SET_SOFTRESET(1);
+  IOB_AXISTREAM_IN_SET_SOFTRESET(0);
+}

@@ -97,3 +97,9 @@ void axistream_out_push(uint8_t *byte_array, uint8_t n_valid_bytes, bool is_tlas
 bool axistream_out_full(){
   return IOB_AXISTREAM_OUT_GET_FULL();
 }
+
+//pulse soft reset
+void axistream_out_reset(){
+  IOB_AXISTREAM_OUT_SET_SOFTRESET(1);
+  IOB_AXISTREAM_OUT_SET_SOFTRESET(0);
+}

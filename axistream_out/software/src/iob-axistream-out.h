@@ -17,3 +17,6 @@ bool axistream_out_full();
 
 //Free memory from initialized instances
 void axistream_out_free();
+
+//Soft reset
+void axistream_out_reset();

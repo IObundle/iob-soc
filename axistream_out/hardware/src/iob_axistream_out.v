@@ -31,10 +31,10 @@ module iob_axistream_out # (
   //FIFO RAM
   wire [N-1:0] ext_mem_w_en;
   wire [32-1:0] ext_mem_w_data;
-  wire [(FIFO_DEPTH_LOG2-$clog2(N))*(N)-1:0] ext_mem_w_addr;
-  wire [1-1:0] ext_mem_r_en;
+  wire [(FIFO_DEPTH_LOG2-$clog2(N))-1:0] ext_mem_w_addr;
+  wire [N-1:0] ext_mem_r_en;
   wire [32-1:0] ext_mem_r_data;
-  wire [(FIFO_DEPTH_LOG2-$clog2(N))*(N)-1:0] ext_mem_r_addr;
+  wire [(FIFO_DEPTH_LOG2-$clog2(N))-1:0] ext_mem_r_addr;
       
   //Register to store tlast wstrb
   wire [N-1:0] last_wstrb;
@@ -45,7 +45,7 @@ module iob_axistream_out # (
      .clk_i        (clk_i),
      .arst_i       (arst_i),
      .cke_i        (cke_i),
-     .rst_i        (fifo_empty & storing_tlast_word), //Reset when TLAST word is sent
+     .rst_i        ((fifo_empty & storing_tlast_word) | SOFTRESET), //Reset when TLAST word is sent
      .en_i         (WSTRB_NEXT_WORD_LAST_wen), 
      .data_i    (iob_wdata[0+:N]),
      .data_o   (last_wstrb) 
@@ -55,7 +55,7 @@ module iob_axistream_out # (
       //Enable when TLAST word wstrb has been defined (in the last_wstrb register) 
       //and a value has been inserted word.
       //Reset when TLAST word is sent.
-  iob_reg_re #(1,1'b0) storing_tlast_word_reg (clk_i, arst_i, cke_i, fifo_empty & storing_tlast_word, &last_wstrb & IN_wen, 1'b1, storing_tlast_word);
+  iob_reg_re #(1,1'b0) storing_tlast_word_reg (clk_i, arst_i, cke_i, SOFTRESET | (fifo_empty & storing_tlast_word), &last_wstrb & IN_wen, 1'b1, storing_tlast_word);
   
   wire [FIFO_DEPTH_LOG2+1-1:0] fifo_level;
   iob_fifo_sync
@@ -67,7 +67,7 @@ module iob_axistream_out # (
   fifo
    (
     .arst_i            (arst_i),
-    .rst_i             (1'd0),
+    .rst_i             (SOFTRESET),
     .clk_i             (clk_i),
     .cke_i             (cke_i),
     .ext_mem_w_en_o    (ext_mem_w_en),                                                                                                                                                                                                                                  
@@ -100,7 +100,7 @@ module iob_axistream_out # (
   //        or
   //          TLAST word is stored, is on the last word and on a valid
   //          portion of wstrb
-  iob_reg #(1,0) tvalid_int_reg (clk_i, arst_i, cke_i, (tvalid_int & ~tready_i) | (~fifo_empty & tready_i & (!storing_tlast_word | fifo_level>N | last_wstrb[N-fifo_level])), tvalid_int);
+  iob_reg_r #(1,0) tvalid_int_reg (clk_i, arst_i, cke_i, SOFTRESET, (tvalid_int & ~tready_i) | (~fifo_empty & tready_i & (!storing_tlast_word | fifo_level>N | last_wstrb[N-fifo_level])), tvalid_int);
   assign tvalid_o = tvalid_int;
   
   //Next is tlast if: 
@@ -110,7 +110,7 @@ module iob_axistream_out # (
   //        next portion of wstrb is zero (meaning this is the last portion of wstrb) (can only happen if fifo_level>1)
   //        or
   //        fifo_level is 1 (only reaches this value when wstrb is all ones)
-  iob_reg #(1,0) tlast_int_reg (clk_i, arst_i, cke_i, (tlast_int & ~tready_i) | (~fifo_empty & tready_i & storing_tlast_word & fifo_level<=N & (fifo_level>1?~last_wstrb[N-fifo_level+1]:fifo_level==1)), tlast_int);
+  iob_reg_r #(1,0) tlast_int_reg (clk_i, arst_i, cke_i, SOFTRESET, (tlast_int & ~tready_i) | (~fifo_empty & tready_i & storing_tlast_word & fifo_level<=N & (fifo_level>1?~last_wstrb[N-fifo_level+1]:fifo_level==1)), tlast_int);
   // TLAST active only while data is valid
   assign tlast_o = tlast_int & tvalid_int;
   
@@ -127,7 +127,7 @@ module iob_axistream_out # (
   //FIFO RAM
   iob_ram_2p_be #(
     .DATA_W (32),
-    .ADDR_W ((FIFO_DEPTH_LOG2-$clog2(N))*(N))
+    .ADDR_W ((FIFO_DEPTH_LOG2-$clog2(N)))
   )
   fifo_memory
   (
@@ -135,7 +135,7 @@ module iob_axistream_out # (
     .w_en_i     (ext_mem_w_en_be),
     .w_data_i   (ext_mem_w_data),
     .w_addr_i   (ext_mem_w_addr),
-    .r_en_i     (ext_mem_r_en),
+    .r_en_i     (|ext_mem_r_en),
     .r_addr_i   (ext_mem_r_addr),
     .r_data_o   (ext_mem_r_data)
   );
