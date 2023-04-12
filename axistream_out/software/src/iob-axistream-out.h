@@ -20,3 +20,6 @@ void axistream_out_free();
 
 //Soft reset
 void axistream_out_reset();
+
+void axistream_out_enable();
+void axistream_out_disable();

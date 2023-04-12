@@ -128,7 +128,8 @@ module iob_axistream_in # (
      .level_o          ()
      );
   
-  assign tready_o = ~fifo_full & !received_tlast;  //Only ready for more data when fifo not full and CPU read AXISTREAMIN_LAST data
+  //Only ready for more data when fifo not full, CPU has read AXISTREAMIN_LAST data, and `ENABLE` register is active
+  assign tready_o = ~fifo_full & !received_tlast & ENABLE;
 
   //Convert ext_mem_w_en signal to byte enable signal
   localparam num_bytes_per_input = TDATA_W/8;

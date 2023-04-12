@@ -61,3 +61,13 @@ void axistream_in_reset(){
   IOB_AXISTREAM_IN_SET_SOFTRESET(1);
   IOB_AXISTREAM_IN_SET_SOFTRESET(0);
 }
+
+//Enable peripheral
+void axistream_in_enable(){
+  IOB_AXISTREAM_IN_SET_ENABLE(1);
+}
+
+//Disable tready signal, preventing new transfers
+void axistream_in_disable(){
+  IOB_AXISTREAM_IN_SET_ENABLE(0);
+}
