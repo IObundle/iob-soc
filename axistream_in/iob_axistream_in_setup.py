@@ -52,6 +52,7 @@ regs = \
         {'name':"EMPTY", 'type':"R", 'n_bits':1, 'rst_val':0, 'addr':4, 'log2n_items':0, 'autologic':False, 'descr':"1 bit: Return if FIFO is empty (May be empty due to waiting for more data or because it received a TLAST signal)"},
         {'name':"LAST", 'type':"R", 'n_bits':5, 'rst_val':0, 'addr':8, 'log2n_items':0, 'autologic':False, 'descr':"1+4 bits: [Bit 4] Signals if FIFO is empty due to receiving a TLAST signal; [Bit 3-0] Tells which bytes (from latest value of AXISTREAMIN_OUT) are valid (similar to WSTRB signal of AXI Stream). (Reading from this register makes it reset and starts filling FIFO with next frame)"},
         {'name':"SOFTRESET", 'type':"W", 'n_bits':1, 'rst_val':0, 'addr':12, 'log2n_items':0, 'autologic':True, 'descr':"Soft reset."},
+        {'name':"ENABLE", 'type':"W", 'n_bits':1, 'rst_val':1, 'addr':13, 'log2n_items':0, 'autologic':True, 'descr':"Enable peripheral."},
 
     ]}
 ]

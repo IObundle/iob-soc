@@ -19,3 +19,6 @@ bool axistream_in_was_last(char *rstrb);
 
 //Soft reset
 void axistream_in_reset();
+
+void axistream_in_enable();
+void axistream_in_disable();

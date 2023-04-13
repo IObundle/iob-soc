@@ -77,7 +77,7 @@ module iob_axistream_out # (
     .ext_mem_r_addr_o  (ext_mem_r_addr),
     .ext_mem_r_data_i  (ext_mem_r_data),
     //read port
-    .r_en_i            (tready_i),
+    .r_en_i            (tready_i & ENABLE),
     .r_data_o          (tdata_o),
     .r_empty_o         (fifo_empty),
     //write port
@@ -93,24 +93,24 @@ module iob_axistream_out # (
   //Next is valid if: 
   //    is valid now and receiver is not ready
   //    or
-  //    fifo is not empty, receiver is ready and:
+  //    fifo is not empty, receiver is ready, `ENABLE` register is active, and:
   //          TLAST word is not stored
   //        or
   //          TLAST word is stored and is not on the last word
   //        or
   //          TLAST word is stored, is on the last word and on a valid
   //          portion of wstrb
-  iob_reg_r #(1,0) tvalid_int_reg (clk_i, arst_i, cke_i, SOFTRESET, (tvalid_int & ~tready_i) | (~fifo_empty & tready_i & (!storing_tlast_word | fifo_level>N | last_wstrb[N-fifo_level])), tvalid_int);
+  iob_reg_r #(1,0) tvalid_int_reg (clk_i, arst_i, cke_i, SOFTRESET, (tvalid_int & ~tready_i) | (~fifo_empty & tready_i & ENABLE & (!storing_tlast_word | fifo_level>N | last_wstrb[N-fifo_level])), tvalid_int);
   assign tvalid_o = tvalid_int;
   
   //Next is tlast if: 
   //    is tlast now and receiver is not ready
   //    or
-  //    fifo is not empty, receiver is ready and TLAST word is stored, is on the last word and:
+  //    fifo is not empty, receiver is ready, `ENABLE` register is active, and TLAST word is stored, is on the last word and:
   //        next portion of wstrb is zero (meaning this is the last portion of wstrb) (can only happen if fifo_level>1)
   //        or
   //        fifo_level is 1 (only reaches this value when wstrb is all ones)
-  iob_reg_r #(1,0) tlast_int_reg (clk_i, arst_i, cke_i, SOFTRESET, (tlast_int & ~tready_i) | (~fifo_empty & tready_i & storing_tlast_word & fifo_level<=N & (fifo_level>1?~last_wstrb[N-fifo_level+1]:fifo_level==1)), tlast_int);
+  iob_reg_r #(1,0) tlast_int_reg (clk_i, arst_i, cke_i, SOFTRESET, (tlast_int & ~tready_i) | (~fifo_empty & tready_i & ENABLE & storing_tlast_word & fifo_level<=N & (fifo_level>1?~last_wstrb[N-fifo_level+1]:fifo_level==1)), tlast_int);
   // TLAST active only while data is valid
   assign tlast_o = tlast_int & tvalid_int;
   
