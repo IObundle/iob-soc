@@ -16,7 +16,7 @@ VTOP:=iob_soc_sim_wrapper
 
 endif
 
-CONSOLE_CMD=../../scripts/console.py -L
+CONSOLE_CMD=rm -f soc2cnsl cnsl2soc; ../../scripts/console.py -L
 
 TEST_LIST+=test1
 test1:
