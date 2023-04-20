@@ -58,7 +58,7 @@ ifeq ($(SIM_SERVER),)
 else
 	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --delete --force --exclude .git $(SIM_SYNC_FLAGS) $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'make -C $(REMOTE_ROOT_DIR) sim-build SIMULATOR=$(SIMULATOR) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) VCD=$(VCD) TEST_LOG=\"$(TEST_LOG)\"'
+	ssh -t $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'make -C $(REMOTE_ROOT_DIR) sim-build SIMULATOR=$(SIMULATOR) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) VCD=$(VCD) TEST_LOG=\"$(TEST_LOG)\"'
 endif
 
 run: sim
@@ -66,16 +66,18 @@ ifeq ($(VCD),1)
 	if [ ! `pgrep -u $(USER) gtkwave` ]; then gtkwave system.vcd; fi &
 endif
 
+#board client command
+BOARD_GRAB_CMD=$(PYTHON_DIR)/board_client.py grab 300
+
 sim:
 ifeq ($(SIM_SERVER),)
 	cp $(FIRM_DIR)/firmware.bin .
 	@rm -f soc2cnsl cnsl2soc
-	$(CONSOLE_CMD) $(TEST_LOG) &
-	bash -c "trap 'make kill-cnsl' INT TERM KILL EXIT; make exec"
+	$(BOARD_GRAB_CMD) -s 'make exec' -c '$(CONSOLE_CMD) $(TEST_LOG)'
 else
 	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --force --exclude .git $(SIM_SYNC_FLAGS) $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
-	bash -c "trap 'make kill-remote-sim' INT TERM KILL; ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR) $@ SIMULATOR=$(SIMULATOR) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) VCD=$(VCD) TEST_LOG=\"$(TEST_LOG)\"'"
+	ssh -t $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'make -C $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR) $@ SIMULATOR=$(SIMULATOR) INIT_MEM=$(INIT_MEM) USE_DDR=$(USE_DDR) RUN_EXTMEM=$(RUN_EXTMEM) VCD=$(VCD) TEST_LOG="$(TEST_LOG)"'
 ifneq ($(TEST_LOG),)
 	scp $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR)/test.log $(SIM_DIR)
 endif
@@ -110,14 +112,6 @@ system_top.v: $(TB_DIR)/system_top_core.v
 #add peripheral testbench sources
 VSRC+=$(foreach p, $(PERIPHERALS), $(shell if test -f $($p_DIR)/hardware/testbench/module_tb.sv; then echo $($p_DIR)/hardware/testbench/module_tb.sv; fi;))
 
-kill-remote-sim:
-	@echo "INFO: Remote simulator $(SIMULATOR) will be killed"
-	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'killall -q -u $(SIM_USER) -9 $(SIM_PROC); \
-	make -C $(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR) kill-cnsl'
-ifeq ($(VCD),1)
-	scp $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)/hardware/simulation/$(SIMULATOR)/*.vcd $(SIM_DIR)
-endif
-
 test: clean-testlog test1 test2 test3 test4 test5
 	diff test.log ../test.expected
 
@@ -146,7 +140,7 @@ clean-remote: hw-clean
 ifneq ($(SIM_SERVER),)
 	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --delete --force --exclude .git $(SIM_SYNC_FLAGS) $(ROOT_DIR) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_ROOT_DIR)
-	ssh $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'make -C $(REMOTE_ROOT_DIR) sim-clean SIMULATOR=$(SIMULATOR)'
+	ssh -t $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'make -C $(REMOTE_ROOT_DIR) sim-clean SIMULATOR=$(SIMULATOR)'
 endif
 
 #clean test log only when sim testing begins
@@ -171,5 +165,5 @@ debug:
 .PRECIOUS: system.vcd test.log
 
 .PHONY: build run sim waves\
-	kill-remote-sim clean-remote \
+	clean-remote \
 	test test1 test2 test3 test4 test5 clean-testlog
