@@ -67,7 +67,7 @@ ifeq ($(VCD),1)
 endif
 
 #board client command
-BOARD_GRAB_CMD=$(PYTHON_DIR)/board_client.py grab 300
+BOARD_GRAB_CMD=$(PYTHON_DIR)/board_client.py grab 5400
 
 sim:
 ifeq ($(SIM_SERVER),)
