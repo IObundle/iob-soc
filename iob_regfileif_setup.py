@@ -56,7 +56,7 @@ def main():
     global regs
     # Ensure user has configured registers for this peripheral
     assert 'regs' in module_parameters, "Error: REGFILEIF 'regs' dictionary not found."
-    regs=module_parameters['regs']
+    regs=module_parameters['regs'].copy()
 
     setup.setup(sys.modules[__name__])
 
