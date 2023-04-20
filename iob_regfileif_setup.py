@@ -42,7 +42,12 @@ ios = \
     ]},
 ]
 
-regs=[]
+regs = \
+[
+    {'name': 'dummy', 'descr':'Dummy registers to run register setup functions', 'regs': [
+        {'name':"DUMMY", 'type':"R", 'n_bits':1, 'rst_val':0, 'addr':-1, 'log2n_items':0, 'autologic':False, 'descr':"Dummy Register"},
+    ]}
+]
 
 blocks = []
 
@@ -51,7 +56,7 @@ def main():
     global regs
     # Ensure user has configured registers for this peripheral
     assert 'regs' in module_parameters, "Error: REGFILEIF 'regs' dictionary not found."
-    regs+=module_parameters['regs']
+    regs=module_parameters['regs']
 
     setup.setup(sys.modules[__name__])
 
