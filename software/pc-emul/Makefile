@@ -31,12 +31,14 @@ else
 	gcc -o $@ $(CFLAGS) $(DEFINE) $(INCLUDE) $(SRC) -lgcc -lc
 endif
 
+#board client command
+BOARD_GRAB_CMD=$(PYTHON_DIR)/board_client.py grab 300
+
 run: build
 	@rm -f soc2cnsl cnsl2soc
-	$(CONSOLE_CMD) $(TEST_LOG) &
-	bash -c "trap 'make kill-cnsl' INT TERM KILL EXIT; ./fw_emul $(TEST_LOG)"
+	$(BOARD_GRAB_CMD) -s './fw_emul $(TEST_LOG)' -c '$(CONSOLE_CMD) $(TEST_LOG)'
 
-clean: kill-cnsl
+clean: 
 	@rm -rf fw_emul periphs.h *swreg*.h *swreg*.c test.log soc2cnsl cnsl2soc
 	@rm -rf *.txt
 
