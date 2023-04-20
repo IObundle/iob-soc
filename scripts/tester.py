@@ -181,7 +181,7 @@ def setup_tester( python_module ):
                     # Not mapped to external interface
                     # Create peripheral wire name based on mapping.
                     wire_name = f"connect_{mapping[0]['corename']}_{mapping[0]['if_name']}_{port['name']}_to_{mapping[1]['corename']}_{mapping[1]['if_name']}_{if_mapping[port['name']]}"
-                    peripheral_wires.append({'name':wire_name, 'n_bits':port['n_bits']})
+                    peripheral_wires.append({'name':wire_name, 'n_bits':add_prefix_to_parameters_in_port(port,module.confs,mapping[0]['corename']+"_")['n_bits']})
                 else:
                     #Mapped to external interface
                     #Add tester IO for this port
@@ -219,7 +219,7 @@ def setup_tester( python_module ):
                 # Not mapped to external interface
                 # Create wire name based on mapping
                 wire_name = f"connect_{mapping[0]['corename']}_{mapping[0]['if_name']}_{mapping[0]['port']}_to_{mapping[1]['corename']}_{mapping[1]['if_name']}_{mapping[1]['port']}"
-                peripheral_wires.append({'name':wire_name, 'n_bits':n_bits})
+                peripheral_wires.append({'name':wire_name, 'n_bits':add_prefix_to_parameters_in_port(port,module.confs,mapping[0]['corename']+"_")['n_bits']})
             else:
                 #Mapped to external interface
                 #Add tester IO for this port
