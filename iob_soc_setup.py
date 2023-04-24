@@ -85,6 +85,12 @@ ios = \
     {'name': 'axi_m_port', 'descr':'General interface signals', 'ports': [], 'if_defined':'USE_EXTMEM'},
 ]
 
+
+peripheral_portmap = \
+[
+    ({'corename':'UART0', 'if_name':'rs232', 'port':'', 'bits':[]},{'corename':'external', 'if_name':'UART0', 'port':'', 'bits':[]}), #Map UART0 of tester to external interface
+]
+
 # Add IOb-SoC modules. These will copy and generate common files from the IOb-SoC repository.
 iob_soc.add_iob_soc_modules(sys.modules[__name__])
 
