@@ -8,13 +8,14 @@ import periphs_tmp
 import createSystem
 import createTestbench
 import sim_wrapper
-from submodule_utils import import_setup, get_table_ports, add_prefix_to_parameters_in_port, eval_param_expression_from_config, iob_soc_peripheral_setup, set_default_submodule_dirs, get_peripherals_list
+from submodule_utils import import_setup, get_table_ports, add_prefix_to_parameters_in_port, eval_param_expression_from_config, iob_soc_peripheral_setup, set_default_submodule_dirs, get_peripherals_list, reserved_signals
 from ios import get_interface_mapping
 from setup import setup
 import iob_colors
 import shutil
 from pathlib import Path
 import fnmatch
+import if_gen
 
 # Creates a function that:
 #   - Only copies a file if destination does not exist
@@ -171,8 +172,20 @@ def peripheral_portmap(python_module, peripherals_list):
     # Add default portmap for peripherals not configured in peripheral_portmap
     for peripheral in peripherals_list:
         if peripheral['name'] not in [i[0]['corename'] for i in peripheral_portmap or []]+[i[1]['corename'] for i in peripheral_portmap or []]:
-            perperipheral_portmap.append(({'corename':peripheral['name'], 'if_name':'', 'port':'', 'bits':[]},{'corename':'external', 'if_name':peripheral['name'], 'port':'', 'bits':[]}))
-        
+            # Import module of one of the given core types (to access its IO)
+            module = import_setup(submodules['dirs'][peripheral['type']])
+            # Map all ports of all interfaces
+            for interface in module.ios:
+                if interface['ports']:
+                    for port in interface['ports']:
+                        if port['name'] not in reserved_signals:
+                            # Map port to the external system interface
+                            peripheral_portmap.append(({'corename':peripheral['name'], 'if_name':interface['name'], 'port':port['name'], 'bits':[]}, {'corename':'external', 'if_name':peripheral['name'], 'port':'', 'bits':[]}))
+                else: 
+                    if interface['name'] not in if_gen.interfaces:
+                        # Map entire interface to the external system interface
+                        peripheral_portmap.append(({'corename':peripheral['name'], 'if_name':interface['name'], 'port':'', 'bits':[]}, {'corename':'external', 'if_name':peripheral['name'], 'port':'', 'bits':[]}))
+
     # Add 'IO" attribute to every peripheral
     for peripheral in peripherals_list:
         peripheral['IO']={}
