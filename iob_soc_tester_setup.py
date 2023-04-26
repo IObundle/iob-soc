@@ -164,7 +164,7 @@ update_tester_conf(sys.modules[__name__])
 
 # Add IOb-SoC modules. These will copy and generate common files from the IOb-SoC repository.
 # Don't add module to 'hw_setup'. This will be added by the setup_tester function.
-iob_soc.add_iob_soc_modules(sys.modules[__name__], peripheral_ios=False, filter_modules=['sim_setup','fpga_setup','sw_setup'])
+iob_soc.add_iob_soc_modules(sys.modules[__name__])
 
 def custom_setup():
     # Add the following arguments:
