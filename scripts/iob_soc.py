@@ -222,6 +222,7 @@ def peripheral_portmap(python_module, peripherals_list):
 
         # Import module of one of the given core types (to access its IO)
         module = import_setup(submodules['dirs'][mapping_items[0]['type']])
+        print(f"DEBUG: {module.name} {module.ios}", file=sys.stderr)
 
         #Get ports of configured interface
         interface_table = next((i for i in module.ios if i['name'] == mapping[0]['if_name']), None) 
@@ -306,5 +307,19 @@ def peripheral_portmap(python_module, peripherals_list):
 
             #Insert mapping between IO and wire for mapping[1] (if its not external interface)
             if mapping_external_interface!=1: map_IO_to_wire(mapping_items[1]['IO'], mapping[1]['port'], eval_param_expression_from_config(port2['n_bits'],module2.confs,'max'), mapping[1]['bits'], wire_name)
+
+    # Merge interfaces with the same name into a single interface
+    interface_names = set([interface['name'] for interface in ios])
+    new_ios = []
+    for interface_name in interface_names:
+        first_interface_instance = None
+        for interface in ios:
+            if interface['name'] == interface_name:
+                if not first_interface_instance:
+                    first_interface_instance = interface
+                    new_ios.append(interface)
+                else:
+                    first_interface_instance['ports']+=interface['ports']
+    python_module.ios=new_ios
 
     return peripheral_wires
