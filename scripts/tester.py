@@ -76,6 +76,8 @@ def update_tester_conf( python_module ):
         else: #this is a new peripheral since it did not update a default (existing) peripheral
             tester_peripherals_list.append(peripheral)
 
+    python_module.peripheral_portmap=module_parameters['peripheral_portmap']
+
 
 # Setup a Tester 
 # module_parameters is a dictionary that contains the following elements:
