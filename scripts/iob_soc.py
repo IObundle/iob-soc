@@ -65,7 +65,6 @@ def add_iob_soc_modules( python_module, filter_modules=['hw_setup','sim_setup','
     build_dir = python_module.build_dir
     submodules = python_module.submodules
     name = python_module.name
-    ios = python_module.ios
 
     set_default_submodule_dirs(python_module)
 
@@ -99,7 +98,7 @@ def add_iob_soc_modules( python_module, filter_modules=['hw_setup','sim_setup','
             createTestbench.create_system_testbench(os.path.join(build_dir,f'hardware/simulation/src/{name}_tb.vt'), submodules['dirs'], name, peripherals_list, os.path.join(build_dir,f'hardware/simulation/src/{name}_tb.v'))
         # Try to build simulation <system_name>_sim_wrapper.v if template <system_name>_sim_wrapper.vt is available and iob_soc_sim_wrapper.vt not in exclude list
         if not fnmatch.filter(exclude_files,'iob_soc_sim_wrapper.vt'):
-            sim_wrapper.create_sim_wrapper(os.path.join(build_dir,f'hardware/simulation/src/{name}_sim_wrapper.vt'), submodules['dirs'], name, peripherals_list, ios, confs, os.path.join(build_dir,f'hardware/simulation/src/{name}_sim_wrapper.v'))
+            sim_wrapper.create_sim_wrapper(os.path.join(build_dir,f'hardware/simulation/src/{name}_sim_wrapper.vt'), submodules['dirs'], name, peripherals_list, python_module.ios, confs, os.path.join(build_dir,f'hardware/simulation/src/{name}_sim_wrapper.v'))
 
     def iob_soc_fpga_setup():
         copy_common_files(build_dir, name, "hardware/fpga", exclude_files)
@@ -222,7 +221,7 @@ def peripheral_portmap(python_module, peripherals_list):
 
         # Import module of one of the given core types (to access its IO)
         module = import_setup(submodules['dirs'][mapping_items[0]['type']])
-        print(f"DEBUG: {module.name} {module.ios}", file=sys.stderr)
+        #print(f"DEBUG: {module.name} {module.ios}", file=sys.stderr)
 
         #Get ports of configured interface
         interface_table = next((i for i in module.ios if i['name'] == mapping[0]['if_name']), None) 
@@ -321,5 +320,6 @@ def peripheral_portmap(python_module, peripherals_list):
                 else:
                     first_interface_instance['ports']+=interface['ports']
     python_module.ios=new_ios
+    #print(f"### Debug python_module.ios: {python_module.ios}", file=sys.stderr)
 
     return peripheral_wires
