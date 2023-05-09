@@ -76,11 +76,11 @@ int main() {
   free(sendfile);
   free(recvfile);
 
-  //#ifdef USE_EXTMEM
-  //  if(memory_access_failed)
-  //      uart_sendfile("test.log", iob_strlen(fail_string), fail_string);
-  //      uart_finish();
-  //#endif
+  // #ifdef USE_EXTMEM
+  //   if(memory_access_failed)
+  //       uart_sendfile("test.log", iob_strlen(fail_string), fail_string);
+  //       uart_finish();
+  // #endif
   uart_sendfile("test.log", iob_strlen(pass_string), pass_string);
 
   uart_finish();
