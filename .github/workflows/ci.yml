@@ -95,28 +95,28 @@ jobs:
       - name: setup init_mem
         run: nix-shell --run "make setup"
       - name: icarus test
-        run: make -C ../iob_soc_V* sim-test SIMULATOR=icarus
+        run: nix-shell --run "make -C ../iob_soc_V* sim-test SIMULATOR=icarus"
       # No init mem - Disabled because it takes too long and is already checked by verilator
       #- name: clean
       #  run: make clean
       #- name: setup
       #  run: nix-shell --run "make setup INIT_MEM=0"
       #- name: icarus test
-      #  run: make -C ../iob_soc_V* sim-test SIMULATOR=icarus
+      #  run: nix-shell --run "make -C ../iob_soc_V* sim-test SIMULATOR=icarus"
       # Init mem and Ext mem
       - name: clean
         run: make clean
       - name: setup init_mem ext_mem
         run: nix-shell --run "make setup INIT_MEM=1 USE_EXTMEM=1"
       - name: icarus test
-        run: make -C ../iob_soc_V* sim-test SIMULATOR=icarus
+        run: nix-shell --run "make -C ../iob_soc_V* sim-test SIMULATOR=icarus"
       # No init mem and Ext mem - Disabled because it takes too long and is already checked by verilator
       #- name: clean
       #  run: make clean
       #- name: setup ext_mem
       #  run: nix-shell --run "make setup INIT_MEM=0 USE_EXTMEM=1"
       #- name: icarus test
-      #  run: make -C ../iob_soc_V* sim-test SIMULATOR=icarus
+      #  run: nix-shell --run "make -C ../iob_soc_V* sim-test SIMULATOR=icarus"
   
   cyclonev:
     runs-on: self-hosted
