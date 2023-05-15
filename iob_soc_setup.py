@@ -25,6 +25,10 @@ submodules = {
             "axi_m_port",
             "axi_m_m_portmap",
             "axi_m_portmap",
+            "iob_lib.vh",
+            "iob_utils.vh",
+            "iob_clkenrst_portmap.vh",
+            "iob_clkenrst_port.vh",
         ],
         "modules": [
             "PICORV32",

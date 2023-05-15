@@ -11,6 +11,9 @@ ifeq ($(USE_EXTMEM),1)
 SETUP_ARGS += USE_EXTMEM
 endif
 
+sim-run:
+	make clean && make setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../iob_soc_V*/ sim-run SIMULATOR=$(SIMULATOR)
+
 sim-test:
 	make clean && make setup && make -C ../iob_soc_V*/ sim-test
 	make clean && make setup INIT_MEM=0 && make -C ../iob_soc_V*/ sim-test

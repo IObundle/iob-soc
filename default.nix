@@ -1,1 +1,1 @@
-submodules/LIB/nix/shell.nix
+submodules/LIB/scripts/shell.nix
