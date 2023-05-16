@@ -37,6 +37,7 @@ def copy_with_rename(system_name):
 
     return copy_func
 
+# TODO: Move this to setup() in LIB
 # Copy files common to all iob-soc based systems from the iob-soc directory
 # Files containing 'iob_soc' in the name or inside them will be renamed to the new 'system_name'.
 # build_dir: path to the build directory
@@ -52,6 +53,7 @@ def copy_common_files(build_dir, system_name, directory, exclude_file_list):
 
 
 
+# TODO: Deprecate this
 # This function should be called fromt the *_setup.py module of the iob-soc based system being constructed.
 # This function adds function to the 'modules' lists that will generate and copy common iob-soc files from this repository.
 # python_module: *_setup.py module of the iob-soc based system being setup.
@@ -133,6 +135,46 @@ def add_iob_soc_modules( python_module, filter_modules=['hw_setup','sim_setup','
             vars(python_module)['imported_iob_soc_'+i] = True
             #print(f"DEBUG {name} {func}", file=sys.stderr)
             #print(f"##########DEBUG {name} {i} {submodules[i]['modules']}", file=sys.stderr)
+
+
+def setup_iob_soc(python_module):
+    confs = python_module.confs
+    build_dir = python_module.build_dir
+    submodules = python_module.submodules
+    name = python_module.name
+    module_parameters = python_module.module_parameters
+
+    set_default_submodule_dirs(python_module)
+
+    # Create peripheral list
+    peripherals_list = iob_soc_peripheral_setup(python_module)
+    python_module.internal_wires = peripheral_portmap(python_module, peripherals_list)
+
+    #TODO: Modify setup() function to implement `copy_common_files` function.
+    #      We need to allow the setup() function to have a configurable system name.
+
+    # Call setup function for the tester
+    setup.setup(python_module)
+
+    # Check if was setup with INIT_MEM and USE_EXTMEM (check if macro exists)
+    extmem_macro = next((i for i in confs if i['name']=='USE_EXTMEM'), False)
+    initmem_macro = next((i for i in confs if i['name']=='INIT_MEM'), False)
+    if extmem_macro and extmem_macro['val'] and \
+       initmem_macro and initmem_macro['val']:
+        # Append init_ddr_contents.hex target to sw_build.mk
+        with open(f"{python_module.build_dir}/software/sw_build.mk", 'a') as file:
+            file.write("\n#Auto-generated target to create init_ddr_contents.hex\n")
+            file.write("HEX+=init_ddr_contents.hex\n")
+            file.write("# init file for external mem with firmware of both systems\n")
+            file.write("init_ddr_contents.hex: iob_soc_tester_firmware.hex\n")
+
+            sut_firmware_name = module_parameters['sut_fw_name'].replace('.c','')+'.hex' if 'sut_fw_name' in module_parameters.keys() else '-'
+            file.write(f"	../../scripts/joinHexFiles.py {sut_firmware_name} $^ $(shell cat ../../software/bsp.h | sed -n 's/.*MEM_ADDR_W \([^ ]*\).*/\\1/p') > $@\n")
+        # Copy joinHexFiles.py from LIB
+        build_srcs.copy_files( "submodules/LIB", f"{python_module.build_dir}/scripts", [ "joinHexFiles.py" ], '*.py' )
+
+
+
 
 
 #Given the io dictionary of ports, the port name (and size, and optional bit list) and a wire, it will map the selected bits of the port to the given wire.
@@ -358,3 +400,6 @@ def peripheral_portmap(python_module, peripherals_list):
     #print(f"### Debug python_module.ios: {python_module.ios}", file=sys.stderr)
 
     return peripheral_wires
+
+
+

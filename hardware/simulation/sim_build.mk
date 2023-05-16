@@ -1,4 +1,6 @@
+# Add iob-soc software as a build dependency
 HEX+=iob_soc_boot.hex iob_soc_firmware.hex
+
 include ../../software/sw_build.mk
 
 VTOP:=iob_soc_tb
@@ -23,3 +25,8 @@ GRAB_TIMEOUT ?= 3600
 TEST_LIST+=test1
 test1:
 	make -C ../../ fw-clean SIMULATOR=$(SIMULATOR) && make -C ../../ sim-clean SIMULATOR=$(SIMULATOR) && make run SIMULATOR=$(SIMULATOR)
+
+# Include the UUT configuration if iob-soc is used as a Tester
+ifneq ($(wildcard uut_build.mk),)
+include uut_build.mk
+endif

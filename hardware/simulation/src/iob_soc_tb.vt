@@ -31,7 +31,7 @@ module iob_soc_tb;
    integer            soc2cnsl_fd = 0, cnsl2soc_fd = 0;
 
 
-   //tester uart
+   //IOb-SoC uart
    reg                iob_avalid_i;
    reg [`IOB_UART_SWREG_ADDR_W-1:0] iob_addr_i;
    reg [`IOB_SOC_DATA_W-1:0]        iob_wdata_i;
