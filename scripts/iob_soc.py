@@ -384,8 +384,11 @@ def peripheral_portmap(python_module, peripherals_list):
             if mapping_internal_interface!=1 and mapping_external_interface!=1:
                 map_IO_to_wire(mapping_items[1]['IO'], mapping[1]['port'], eval_param_expression_from_config(port2['n_bits'],module2.confs,'max'), mapping[1]['bits'], wire_name)
 
-    # Merge multiple interfaces with the same name into a single interface
-    interface_names = set([interface['name'] for interface in ios])
+    # Merge interfaces with the same name into a single interface
+    interface_names = []
+    for interface in ios:
+        if interface['name'] not in interface_names:
+            interface_names.append(interface['name'])
     new_ios = []
     for interface_name in interface_names:
         first_interface_instance = None
