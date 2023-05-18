@@ -71,6 +71,7 @@ def iob_soc_sim_setup(python_module, peripherals_list, exclude_files=[]):
     confs = python_module.confs
     build_dir = python_module.build_dir
     name = python_module.name
+    submodules = python_module.submodules
     #print(f"DEBUG {name} sim func()", file=sys.stderr)
     copy_common_files(build_dir, name, "hardware/simulation", exclude_files)
     # Try to build simulation <system_name>_tb.v if template <system_name>_tb.vt is available and iob_soc_tb.vt not in exclude list
@@ -83,7 +84,7 @@ def iob_soc_sim_setup(python_module, peripherals_list, exclude_files=[]):
 def iob_soc_fpga_setup(python_module, exclude_files=[]):
     copy_common_files(python_module.build_dir, python_module.name, "hardware/fpga", exclude_files)
 
-def iob_soc_hw_setup(python_module, exclude_files=[]):
+def iob_soc_hw_setup(python_module, peripherals_list, exclude_files=[]):
     build_dir = python_module.build_dir
     name = python_module.name
 
@@ -92,7 +93,7 @@ def iob_soc_hw_setup(python_module, exclude_files=[]):
     # Note, it checks for iob_soc.vt in exclude files, instead of <system_name>.vt, to be consistent with the copy_common_files() function.
     #[If a user does not want to build <system_name>.v from the template, then he also does not want to copy the template from the iob-soc]
     if not fnmatch.filter(exclude_files,'iob_soc.vt'):
-        createSystem.create_systemv(os.path.join(build_dir,f'hardware/src/{name}.vt'), submodules['dirs'], name, peripherals_list, os.path.join(build_dir,f'hardware/src/{name}.v'), internal_wires=python_module.internal_wires)
+        createSystem.create_systemv(os.path.join(build_dir,f'hardware/src/{name}.vt'), python_module.submodules['dirs'], name, peripherals_list, os.path.join(build_dir,f'hardware/src/{name}.v'), internal_wires=python_module.internal_wires)
 
     # Delete verilog templates from build dir
     for p in Path(build_dir).rglob("*.vt"):
@@ -100,7 +101,7 @@ def iob_soc_hw_setup(python_module, exclude_files=[]):
 
 ######################################
 
-
+# Run specialized iob-soc setup sequence
 def setup_iob_soc(python_module):
     confs = python_module.confs
     build_dir = python_module.build_dir
@@ -118,10 +119,10 @@ def setup_iob_soc(python_module):
     iob_soc_sim_setup(python_module, peripherals_list)
     iob_soc_fpga_setup(python_module)
     iob_soc_sw_setup(python_module, peripherals_list)
-    iob_soc_hw_setup(python_module)
+    iob_soc_hw_setup(python_module, peripherals_list)
 
     # Call setup function for iob_soc
-    setup.setup(python_module, disable_file_copy=False)
+    setup(python_module, disable_file_copy=False)
 
     # Check if was setup with INIT_MEM and USE_EXTMEM (check if macro exists)
     extmem_macro = next((i for i in confs if i['name']=='USE_EXTMEM'), False)
@@ -211,10 +212,14 @@ def peripheral_portmap(python_module, peripherals_list):
         # The 'internal' keyword in corename is reserved to map signals to the internal interface, causing it to create an internal system wire
 
         # Get system block of peripheral in mapping[0]
-        if mapping[0]['corename'] not in ['external','internal']: mapping_items[0]=next(i for i in peripherals_list if i['name'] == mapping[0]['corename'])
+        if mapping[0]['corename'] not in ['external','internal']:
+            assert any(i for i in peripherals_list if i['name'] == mapping[0]['corename']), f"{iob_colors.FAIL}{map_idx} Peripheral instance named '{mapping[0]['corename']}' not found!{iob_colors.ENDC}"
+            mapping_items[0]=next(i for i in peripherals_list if i['name'] == mapping[0]['corename'])
 
         # Get system block of peripheral in mapping[1]
-        if mapping[1]['corename'] not in ['external','internal']: mapping_items[1]=next(i for i in peripherals_list if i['name'] == mapping[1]['corename'])
+        if mapping[1]['corename'] not in ['external','internal']:
+            assert any(i for i in peripherals_list if i['name'] == mapping[1]['corename']), f"{iob_colors.FAIL}{map_idx} Peripheral instance named '{mapping[1]['corename']}' not found!{iob_colors.ENDC}"
+            mapping_items[1]=next(i for i in peripherals_list if i['name'] == mapping[1]['corename'])
 
         #Make sure we are not mapping two external or internal interfaces
         assert mapping_items != [None, None], f"{iob_colors.FAIL}{map_idx} Cannot map between two internal/external interfaces!{iob_colors.ENDC}"
@@ -370,6 +375,5 @@ def peripheral_portmap(python_module, peripherals_list):
     #print(f"### Debug python_module.ios: {python_module.ios}", file=sys.stderr)
 
     return peripheral_wires
-
 
 

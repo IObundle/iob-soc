@@ -503,7 +503,7 @@ if "module_parameters" not in vars():
         "peripheral_portmap": [
             (
                 {"corename": "UART0", "if_name": "rs232", "port": "", "bits": []},
-                {"corename": "self", "if_name": "UART", "port": "", "bits": []},
+                {"corename": "external", "if_name": "UART", "port": "", "bits": []},
             ),  # Map UART0 of tester to external interface
         ],
         # Allows overriding entries in 'confs' dictionary of iob_soc.py
