@@ -55,7 +55,7 @@ submodules = {
         "headers": ["axi_s_portmap", "iob_tasks.vh"],
         "modules": ["axi_ram.v"],
     },
-    "sw_setup": {"headers": [], "modules": ["CACHE", "UART", "iob_str"]},
+    "sw_setup": {"headers": [], "modules": ["iob_str"]},
 }
 
 blocks = [
@@ -519,6 +519,7 @@ if "module_parameters" not in vars():
 # Update tester configuration based on module_parameters
 update_tester_conf(sys.modules[__name__])
 
+
 def custom_setup():
     # Add the following arguments:
     # "INIT_MEM": if should setup with init_mem or not
@@ -581,8 +582,7 @@ def custom_setup():
 def main():
     custom_setup()
     # Setup this system
-    setup_tester(sys.modules[__name__])
-    #setup.setup(sys.modules[__name__])
+    iob_soc.setup_iob_soc(sys.modules[__name__])
 
 
 if __name__ == "__main__":

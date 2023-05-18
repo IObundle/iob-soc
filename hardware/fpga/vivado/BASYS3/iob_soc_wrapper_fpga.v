@@ -31,18 +31,18 @@ module iob_soc_fpga_wrapper (
 
    assign sys_rst = sys_rst_int;
 
-     //
-     // SYSTEM
-     //
-     iob_soc iob_soc (
-	     .clk_i (clk),
-	     .arst_i (sys_rst),
-	     .trap_o (trap),
-	     //UART
-	     .UART_txd (uart_txd),
-	     .UART_rxd (uart_rxd),
-	     .UART_rts (),
-	     .UART_cts (1'b1)
-     );
+   //
+   // SYSTEM
+   //
+   iob_soc iob_soc (
+      .clk_i   (clk),
+      .arst_i  (sys_rst),
+      .trap_o  (trap),
+      //UART
+      .UART_txd(uart_txd),
+      .UART_rxd(uart_rxd),
+      .UART_rts(),
+      .UART_cts(1'b1)
+   );
 
 endmodule

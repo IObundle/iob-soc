@@ -37,7 +37,6 @@ def copy_with_rename(system_name):
 
     return copy_func
 
-# TODO: Move this to setup() in LIB
 # Copy files common to all iob-soc based systems from the iob-soc directory
 # Files containing 'iob_soc' in the name or inside them will be renamed to the new 'system_name'.
 # build_dir: path to the build directory
@@ -52,89 +51,54 @@ def copy_common_files(build_dir, system_name, directory, exclude_file_list):
     shutil.copytree(os.path.join(os.path.dirname(__file__),'..', directory), os.path.join(build_dir,directory), dirs_exist_ok=True, copy_function=copy_with_rename(system_name), ignore=shutil.ignore_patterns(*exclude_file_list))
 
 
+######################################
+# Specialized IOb-SoC setup functions.
+######################################
 
-# TODO: Deprecate this
-# This function should be called fromt the *_setup.py module of the iob-soc based system being constructed.
-# This function adds function to the 'modules' lists that will generate and copy common iob-soc files from this repository.
-# python_module: *_setup.py module of the iob-soc based system being setup.
-# filter_modules: Optional argument. List with the specific iob-soc modules that should be setup. Default is all modules.
-# exclude_files: Optional argument. List of files to exclude when copying from the iob-soc directory
-#                                   This list accepts ignore patterns, for example with '*.v' it will not copy any verilog sources from the iob-soc directory.
-#                                   The ignore file names should have the name of the source file (of the iob-soc directory) and not the resulting file name after copy (the resulting file name may have the name of the system instead of 'iob-soc').
-#                                   If the verilog template '*.vt' files are ignored, it will also prevent this function from generating the verilog files based on those templates.
-def add_iob_soc_modules( python_module, filter_modules=['hw_setup','sim_setup','fpga_setup','sw_setup'], exclude_files=[]):
+def iob_soc_sw_setup(python_module, peripherals_list, exclude_files=[]):
     confs = python_module.confs
     build_dir = python_module.build_dir
-    submodules = python_module.submodules
     name = python_module.name
 
-    set_default_submodule_dirs(python_module)
+    # Build periphs_tmp.h
+    if peripherals_list: periphs_tmp.create_periphs_tmp(next(i['val'] for i in confs if i['name'] == 'P'),
+                                   peripherals_list, f"{build_dir}/software/{name}_periphs.h")
 
-    # Only run iob-soc setup once (this function may execute multiple times)
-    if 'ran_iob_soc_setup' not in vars(python_module):
-        peripherals_list = iob_soc_peripheral_setup(python_module)
-        python_module.internal_wires = peripheral_portmap(python_module, peripherals_list)
-        python_module.ran_iob_soc_setup = True
-    else:
-        # Get peripherals list from 'peripherals' table in blocks list
-        peripherals_list = get_peripherals_list(python_module.blocks)
+    # Copy files common to all iob-soc based systems
+    copy_common_files(build_dir, name, "software", exclude_files)
 
-    ################# Setup functions that will run right after setup of build dir #################
-    # These functions will be inserted in the begining of the respective 'modules' list.
-    # They will, therefore, run before copying files from any of the other submodules,
-    # but after copying the module's files.
+def iob_soc_sim_setup(python_module, peripherals_list, exclude_files=[]):
+    confs = python_module.confs
+    build_dir = python_module.build_dir
+    name = python_module.name
+    #print(f"DEBUG {name} sim func()", file=sys.stderr)
+    copy_common_files(build_dir, name, "hardware/simulation", exclude_files)
+    # Try to build simulation <system_name>_tb.v if template <system_name>_tb.vt is available and iob_soc_tb.vt not in exclude list
+    if not fnmatch.filter(exclude_files,'iob_soc_tb.vt'):
+        createTestbench.create_system_testbench(os.path.join(build_dir,f'hardware/simulation/src/{name}_tb.vt'), submodules['dirs'], name, peripherals_list, os.path.join(build_dir,f'hardware/simulation/src/{name}_tb.v'))
+    # Try to build simulation <system_name>_sim_wrapper.v if template <system_name>_sim_wrapper.vt is available and iob_soc_sim_wrapper.vt not in exclude list
+    if not fnmatch.filter(exclude_files,'iob_soc_sim_wrapper.vt'):
+        sim_wrapper.create_sim_wrapper(os.path.join(build_dir,f'hardware/simulation/src/{name}_sim_wrapper.vt'), submodules['dirs'], name, peripherals_list, python_module.ios, confs, os.path.join(build_dir,f'hardware/simulation/src/{name}_sim_wrapper.v'))
 
-    def iob_soc_sw_setup():
-        #print(f"DEBUG {name} sw func()", file=sys.stderr)
-        # Build periphs_tmp.h
-        if peripherals_list: periphs_tmp.create_periphs_tmp(next(i['val'] for i in confs if i['name'] == 'P'),
-                                       peripherals_list, f"{build_dir}/software/{name}_periphs.h")
-        # Copy files common to all iob-soc based systems
-        copy_common_files(build_dir, name, "software", exclude_files)
+def iob_soc_fpga_setup(python_module, exclude_files=[]):
+    copy_common_files(python_module.build_dir, python_module.name, "hardware/fpga", exclude_files)
 
-    def iob_soc_sim_setup():
-        #print(f"DEBUG {name} sim func()", file=sys.stderr)
-        copy_common_files(build_dir, name, "hardware/simulation", exclude_files)
-        # Try to build simulation <system_name>_tb.v if template <system_name>_tb.vt is available and iob_soc_tb.vt not in exclude list
-        if not fnmatch.filter(exclude_files,'iob_soc_tb.vt'):
-            createTestbench.create_system_testbench(os.path.join(build_dir,f'hardware/simulation/src/{name}_tb.vt'), submodules['dirs'], name, peripherals_list, os.path.join(build_dir,f'hardware/simulation/src/{name}_tb.v'))
-        # Try to build simulation <system_name>_sim_wrapper.v if template <system_name>_sim_wrapper.vt is available and iob_soc_sim_wrapper.vt not in exclude list
-        if not fnmatch.filter(exclude_files,'iob_soc_sim_wrapper.vt'):
-            sim_wrapper.create_sim_wrapper(os.path.join(build_dir,f'hardware/simulation/src/{name}_sim_wrapper.vt'), submodules['dirs'], name, peripherals_list, python_module.ios, confs, os.path.join(build_dir,f'hardware/simulation/src/{name}_sim_wrapper.v'))
+def iob_soc_hw_setup(python_module, exclude_files=[]):
+    build_dir = python_module.build_dir
+    name = python_module.name
 
-    def iob_soc_fpga_setup():
-        copy_common_files(build_dir, name, "hardware/fpga", exclude_files)
+    copy_common_files(build_dir, name, "hardware/src", exclude_files)
+    # Try to build <system_name>.v if template <system_name>.vt is available and iob_soc.vt not in exclude list
+    # Note, it checks for iob_soc.vt in exclude files, instead of <system_name>.vt, to be consistent with the copy_common_files() function.
+    #[If a user does not want to build <system_name>.v from the template, then he also does not want to copy the template from the iob-soc]
+    if not fnmatch.filter(exclude_files,'iob_soc.vt'):
+        createSystem.create_systemv(os.path.join(build_dir,f'hardware/src/{name}.vt'), submodules['dirs'], name, peripherals_list, os.path.join(build_dir,f'hardware/src/{name}.v'), internal_wires=python_module.internal_wires)
 
-    def iob_soc_hw_setup():
-        #print(f"DEBUG {name} hw func()", file=sys.stderr)
+    # Delete verilog templates from build dir
+    for p in Path(build_dir).rglob("*.vt"):
+        p.unlink()
 
-        copy_common_files(build_dir, name, "hardware/src", exclude_files)
-        # Try to build <system_name>.v if template <system_name>.vt is available and iob_soc.vt not in exclude list
-        # Note, it checks for iob_soc.vt in exclude files, instead of <system_name>.vt, to be consistent with the copy_common_files() function.
-        #[If a user does not want to build <system_name>.v from the template, then he also does not want to copy the template from the iob-soc]
-        if not fnmatch.filter(exclude_files,'iob_soc.vt'):
-            createSystem.create_systemv(os.path.join(build_dir,f'hardware/src/{name}.vt'), submodules['dirs'], name, peripherals_list, os.path.join(build_dir,f'hardware/src/{name}.v'), internal_wires=python_module.internal_wires)
-
-        # Delete verilog templates from build dir
-        for p in Path(build_dir).rglob("*.vt"):
-            p.unlink()
-    ################################################################################################
-
-    # Make sure lists exist
-    for i in ['hw_setup','sim_setup','fpga_setup','sw_setup']:
-        if i not in submodules: submodules[i] = { 'headers' : [], 'modules': [] }
-
-    # Add iob-soc functions to begining of 'modules' lists.
-    for i, func in [('hw_setup',iob_soc_hw_setup),('sim_setup',iob_soc_sim_setup),\
-                   ('fpga_setup',iob_soc_fpga_setup),('sw_setup',iob_soc_sw_setup)]:
-        # Only add module if it was not added before and only if it is filtered
-        if (not 'imported_iob_soc_'+i in vars(python_module) or not vars(python_module)['imported_iob_soc_'+i]) and\
-        i in filter_modules:
-            submodules[i]['modules'].insert(0,func)
-            # Store that we have already added this iob_soc module in this system's python module
-            vars(python_module)['imported_iob_soc_'+i] = True
-            #print(f"DEBUG {name} {func}", file=sys.stderr)
-            #print(f"##########DEBUG {name} {i} {submodules[i]['modules']}", file=sys.stderr)
+######################################
 
 
 def setup_iob_soc(python_module):
@@ -150,11 +114,14 @@ def setup_iob_soc(python_module):
     peripherals_list = iob_soc_peripheral_setup(python_module)
     python_module.internal_wires = peripheral_portmap(python_module, peripherals_list)
 
-    #TODO: Modify setup() function to implement `copy_common_files` function.
-    #      We need to allow the setup() function to have a configurable system name.
+    # Run iob-soc specialized setup sequence
+    iob_soc_sim_setup(python_module, peripherals_list)
+    iob_soc_fpga_setup(python_module)
+    iob_soc_sw_setup(python_module, peripherals_list)
+    iob_soc_hw_setup(python_module)
 
-    # Call setup function for the tester
-    setup.setup(python_module)
+    # Call setup function for iob_soc
+    setup.setup(python_module, disable_file_copy=False)
 
     # Check if was setup with INIT_MEM and USE_EXTMEM (check if macro exists)
     extmem_macro = next((i for i in confs if i['name']=='USE_EXTMEM'), False)
