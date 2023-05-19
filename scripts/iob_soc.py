@@ -10,15 +10,15 @@ import createTestbench
 import sim_wrapper
 from submodule_utils import import_setup, get_table_ports, add_prefix_to_parameters_in_port, eval_param_expression_from_config, iob_soc_peripheral_setup, set_default_submodule_dirs, get_peripherals_list, reserved_signals
 from ios import get_interface_mapping
-from setup import setup
+import setup
 import iob_colors
 import shutil
 from pathlib import Path
 import fnmatch
 import if_gen
+import verilog_tools
 
 # Creates a function that:
-#   - Only copies a file if destination does not exist
 #   - Renames any 'iob_soc' string inside de src file and in its name, to the given 'system_name' string argument.
 def copy_with_rename(system_name):
     def copy_func(src, dst):
@@ -27,13 +27,12 @@ def copy_with_rename(system_name):
                 os.path.basename(dst.replace('iob_soc',system_name).replace('IOB_SOC',system_name.upper()))
                 )
         #print(f"### DEBUG: {src} {dst}")
-        if not os.path.isfile(dst):
-            with open(src, 'r') as file:
-                lines = file.readlines()
-            for idx in range(len(lines)): 
-                lines[idx]=lines[idx].replace('iob_soc',system_name).replace('IOB_SOC',system_name.upper())
-            with open(dst, 'w') as file:
-                file.writelines(lines)
+        with open(src, 'r') as file:
+            lines = file.readlines()
+        for idx in range(len(lines)): 
+            lines[idx]=lines[idx].replace('iob_soc',system_name).replace('IOB_SOC',system_name.upper())
+        with open(dst, 'w') as file:
+            file.writelines(lines)
 
     return copy_func
 
@@ -84,6 +83,14 @@ def iob_soc_sim_setup(python_module, peripherals_list, exclude_files=[]):
 def iob_soc_fpga_setup(python_module, exclude_files=[]):
     copy_common_files(python_module.build_dir, python_module.name, "hardware/fpga", exclude_files)
 
+def iob_soc_doc_setup(python_module, exclude_files=[]):
+    # Copy and rename files, except figures (we don't want to process figures)
+    copy_common_files(python_module.build_dir, python_module.name, "document/", ['*.odg']+exclude_files)
+    # Copy .odg figures without processing
+    shutil.copytree(os.path.join(os.path.dirname(__file__),'..', "document/"),
+            os.path.join(python_module.build_dir,"document/"), dirs_exist_ok=True,
+            ignore=lambda directory, contents: [f for f in contents if os.path.splitext(f)[1] not in ['.odg', '']])
+
 def iob_soc_hw_setup(python_module, peripherals_list, exclude_files=[]):
     build_dir = python_module.build_dir
     name = python_module.name
@@ -115,14 +122,18 @@ def setup_iob_soc(python_module):
     peripherals_list = iob_soc_peripheral_setup(python_module)
     python_module.internal_wires = peripheral_portmap(python_module, peripherals_list)
 
+    # Call setup function for iob_soc
+    setup.setup(python_module, disable_file_copy=True)
+
     # Run iob-soc specialized setup sequence
     iob_soc_sim_setup(python_module, peripherals_list)
     iob_soc_fpga_setup(python_module)
     iob_soc_sw_setup(python_module, peripherals_list)
     iob_soc_hw_setup(python_module, peripherals_list)
+    iob_soc_doc_setup(python_module)
 
-    # Call setup function for iob_soc
-    setup(python_module, disable_file_copy=False)
+    if setup.is_top_module(python_module):
+        verilog_tools.replace_includes([build_dir + "/hardware"])
 
     # Check if was setup with INIT_MEM and USE_EXTMEM (check if macro exists)
     extmem_macro = next((i for i in confs if i['name']=='USE_EXTMEM'), False)
