@@ -17,6 +17,7 @@ from pathlib import Path
 import fnmatch
 import if_gen
 import verilog_tools
+import build_srcs
 
 # Creates a function that:
 #   - Renames any 'iob_soc' string inside de src file and in its name, to the given 'system_name' string argument.
@@ -138,19 +139,20 @@ def setup_iob_soc(python_module):
     # Check if was setup with INIT_MEM and USE_EXTMEM (check if macro exists)
     extmem_macro = next((i for i in confs if i['name']=='USE_EXTMEM'), False)
     initmem_macro = next((i for i in confs if i['name']=='INIT_MEM'), False)
+    mem_add_w_parameter = next((i for i in confs if i['name']=='MEM_ADDR_W'), False)
     if extmem_macro and extmem_macro['val'] and \
        initmem_macro and initmem_macro['val']:
         # Append init_ddr_contents.hex target to sw_build.mk
-        with open(f"{python_module.build_dir}/software/sw_build.mk", 'a') as file:
+        with open(f"{build_dir}/software/sw_build.mk", 'a') as file:
             file.write("\n#Auto-generated target to create init_ddr_contents.hex\n")
             file.write("HEX+=init_ddr_contents.hex\n")
             file.write("# init file for external mem with firmware of both systems\n")
-            file.write("init_ddr_contents.hex: iob_soc_tester_firmware.hex\n")
+            file.write(f"init_ddr_contents.hex: {name}_firmware.hex\n")
 
             sut_firmware_name = module_parameters['sut_fw_name'].replace('.c','')+'.hex' if 'sut_fw_name' in module_parameters.keys() else '-'
-            file.write(f"	../../scripts/joinHexFiles.py {sut_firmware_name} $^ $(shell cat ../../software/bsp.h | sed -n 's/.*MEM_ADDR_W \([^ ]*\).*/\\1/p') > $@\n")
+            file.write(f"	../../scripts/joinHexFiles.py {sut_firmware_name} $^ {mem_add_w_parameter['val']} > $@\n")
         # Copy joinHexFiles.py from LIB
-        build_srcs.copy_files( "submodules/LIB", f"{python_module.build_dir}/scripts", [ "joinHexFiles.py" ], '*.py' )
+        build_srcs.copy_files( "submodules/LIB", f"{build_dir}/scripts", [ "joinHexFiles.py" ], '*.py' )
 
 
 
