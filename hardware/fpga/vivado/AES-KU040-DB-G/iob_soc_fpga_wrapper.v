@@ -4,49 +4,49 @@
 
 module iob_soc_fpga_wrapper (
 
-    //differential clock input and reset
-    input c0_sys_clk_clk_p,
-    input c0_sys_clk_clk_n,
-    input reset,
+   //differential clock input and reset
+   input c0_sys_clk_clk_p,
+   input c0_sys_clk_clk_n,
+   input reset,
 
-    //uart
-    output uart_txd,
-    input  uart_rxd,
+   //uart
+   output uart_txd,
+   input  uart_rxd,
 
 `ifdef IOB_SOC_USE_EXTMEM
-    output        c0_ddr4_act_n,
-    output [16:0] c0_ddr4_adr,
-    output [ 1:0] c0_ddr4_ba,
-    output [ 0:0] c0_ddr4_bg,
-    output [ 0:0] c0_ddr4_cke,
-    output [ 0:0] c0_ddr4_odt,
-    output [ 0:0] c0_ddr4_cs_n,
-    output [ 0:0] c0_ddr4_ck_t,
-    output [ 0:0] c0_ddr4_ck_c,
-    output        c0_ddr4_reset_n,
-    inout  [ 3:0] c0_ddr4_dm_dbi_n,
-    inout  [31:0] c0_ddr4_dq,
-    inout  [ 3:0] c0_ddr4_dqs_c,
-    inout  [ 3:0] c0_ddr4_dqs_t,
+   output        c0_ddr4_act_n,
+   output [16:0] c0_ddr4_adr,
+   output [ 1:0] c0_ddr4_ba,
+   output [ 0:0] c0_ddr4_bg,
+   output [ 0:0] c0_ddr4_cke,
+   output [ 0:0] c0_ddr4_odt,
+   output [ 0:0] c0_ddr4_cs_n,
+   output [ 0:0] c0_ddr4_ck_t,
+   output [ 0:0] c0_ddr4_ck_c,
+   output        c0_ddr4_reset_n,
+   inout  [ 3:0] c0_ddr4_dm_dbi_n,
+   inout  [31:0] c0_ddr4_dq,
+   inout  [ 3:0] c0_ddr4_dqs_c,
+   inout  [ 3:0] c0_ddr4_dqs_t,
 `endif
 
 `ifdef IOB_SOC_USE_ETHERNET
-    output ENET_RESETN,
-    input  ENET_RX_CLK,
-    output ENET_GTX_CLK,
-    input  ENET_RX_D0,
-    input  ENET_RX_D1,
-    input  ENET_RX_D2,
-    input  ENET_RX_D3,
-    input  ENET_RX_DV,
-    output ENET_TX_D0,
-    output ENET_TX_D1,
-    output ENET_TX_D2,
-    output ENET_TX_D3,
-    output ENET_TX_EN,
+   output ENET_RESETN,
+   input  ENET_RX_CLK,
+   output ENET_GTX_CLK,
+   input  ENET_RX_D0,
+   input  ENET_RX_D1,
+   input  ENET_RX_D2,
+   input  ENET_RX_D3,
+   input  ENET_RX_DV,
+   output ENET_TX_D0,
+   output ENET_TX_D1,
+   output ENET_TX_D2,
+   output ENET_TX_D3,
+   output ENET_TX_EN,
 `endif
 
-    output trap
+   output trap
 );
 
    localparam AXI_ID_W = 4;
@@ -107,10 +107,10 @@ module iob_soc_fpga_wrapper (
    //
 
    iob_soc #(
-       .AXI_ID_W  (AXI_ID_W),
-       .AXI_LEN_W (AXI_LEN_W),
-       .AXI_ADDR_W(AXI_ADDR_W),
-       .AXI_DATA_W(AXI_DATA_W)
+      .AXI_ID_W  (AXI_ID_W),
+      .AXI_LEN_W (AXI_LEN_W),
+      .AXI_ADDR_W(AXI_ADDR_W),
+      .AXI_DATA_W(AXI_DATA_W)
    ) iob_soc (
       .clk_i                   (clk),
       .arst_i                  (rst),
@@ -419,8 +419,8 @@ module iob_soc_fpga_wrapper (
 `else
    //if DDR not used use PLL to generate system clock
    clock_wizard #(
-       .OUTPUT_PER(10),
-       .INPUT_PER (4)
+      .OUTPUT_PER(10),
+      .INPUT_PER (4)
    ) clk_250_to_100_MHz (
       .clk_in1_p(c0_sys_clk_clk_p),
       .clk_in1_n(c0_sys_clk_clk_n),
@@ -437,8 +437,8 @@ module iob_soc_fpga_wrapper (
    //create reset pulse as reset is never activated manually
    //also, during bitstream loading, the reset pin is not pulled high
    iob_pulse_gen #(
-       .START   (5),
-       .DURATION(10)
+      .START   (5),
+      .DURATION(10)
    ) reset_pulse (
       .clk_i  (clk),
       .arst_i (reset),

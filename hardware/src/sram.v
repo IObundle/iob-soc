@@ -3,29 +3,29 @@
 `include "bsp.vh"
 
 module sram #(
-    parameter DATA_W      = `IOB_SOC_DATA_W,
-    parameter SRAM_ADDR_W = `IOB_SOC_SRAM_ADDR_W,
-    parameter HEXFILE     = "none"
+   parameter DATA_W      = `IOB_SOC_DATA_W,
+   parameter SRAM_ADDR_W = `IOB_SOC_SRAM_ADDR_W,
+   parameter HEXFILE     = "none"
 ) (
-    // intruction bus
-    input                        i_avalid,
-    input      [SRAM_ADDR_W-3:0] i_addr,
-    input      [     DATA_W-1:0] i_wdata,   //used for booting
-    input      [   DATA_W/8-1:0] i_wstrb,   //used for booting
-    output     [     DATA_W-1:0] i_rdata,
-    output reg                   i_rvalid,
-    output reg                   i_ready,
+   // intruction bus
+   input                        i_avalid,
+   input      [SRAM_ADDR_W-3:0] i_addr,
+   input      [     DATA_W-1:0] i_wdata,   //used for booting
+   input      [   DATA_W/8-1:0] i_wstrb,   //used for booting
+   output     [     DATA_W-1:0] i_rdata,
+   output reg                   i_rvalid,
+   output reg                   i_ready,
 
-    // data bus
-    input                        d_avalid,
-    input      [SRAM_ADDR_W-3:0] d_addr,
-    input      [     DATA_W-1:0] d_wdata,
-    input      [   DATA_W/8-1:0] d_wstrb,
-    output     [     DATA_W-1:0] d_rdata,
-    output reg                   d_rvalid,
-    output reg                   d_ready,
+   // data bus
+   input                        d_avalid,
+   input      [SRAM_ADDR_W-3:0] d_addr,
+   input      [     DATA_W-1:0] d_wdata,
+   input      [   DATA_W/8-1:0] d_wstrb,
+   output     [     DATA_W-1:0] d_rdata,
+   output reg                   d_rvalid,
+   output reg                   d_ready,
 
-    `include "iob_clkenrst_port.vh"
+   `include "iob_clkenrst_port.vh"
 );
 
 `ifdef USE_SPRAM
@@ -40,9 +40,9 @@ module sram #(
    assign i_rdata = rdata;
 
    iob_ram_sp_be #(
-       .HEXFILE(HEXFILE),
-       .ADDR_W (SRAM_ADDR_W - 2),
-       .DATA_W (DATA_W)
+      .HEXFILE(HEXFILE),
+      .ADDR_W (SRAM_ADDR_W - 2),
+      .DATA_W (DATA_W)
    ) main_mem_byte (
       .clk_i(clk_i),
 
@@ -56,10 +56,10 @@ module sram #(
 `else  // !`ifdef USE_SPRAM
 `ifdef MEM_NO_READ_ON_WRITE
    iob_ram_dp_be #(
-       .HEXFILE             (HEXFILE),
-       .ADDR_W              (SRAM_ADDR_W - 2),
-       .DATA_W              (DATA_W),
-       .MEM_NO_READ_ON_WRITE(1)
+      .HEXFILE             (HEXFILE),
+      .ADDR_W              (SRAM_ADDR_W - 2),
+      .DATA_W              (DATA_W),
+      .MEM_NO_READ_ON_WRITE(1)
    ) main_mem_byte (
       .clk_i(clk_i),
 
@@ -79,9 +79,9 @@ module sram #(
    );
 `else  // !`ifdef MEM_NO_READ_ON_WRITE
    iob_ram_dp_be_xil #(
-       .HEXFILE(HEXFILE),
-       .ADDR_W (SRAM_ADDR_W - 2),
-       .DATA_W (DATA_W)
+      .HEXFILE(HEXFILE),
+      .ADDR_W (SRAM_ADDR_W - 2),
+      .DATA_W (DATA_W)
    ) main_mem_byte (
       .clk_i(clk_i),
 

@@ -2,31 +2,31 @@
 `include "iob_lib.vh"
 
 module boot_ctr #(
-    parameter HEXFILE        = "boot.hex",
-    parameter DATA_W         = 0,
-    parameter ADDR_W         = 0,
-    parameter BOOTROM_ADDR_W = 0,
-    parameter SRAM_ADDR_W    = 0
+   parameter HEXFILE        = "boot.hex",
+   parameter DATA_W         = 0,
+   parameter ADDR_W         = 0,
+   parameter BOOTROM_ADDR_W = 0,
+   parameter SRAM_ADDR_W    = 0
 ) (
-    output cpu_rst,
-    output boot,
+   output cpu_rst,
+   output boot,
 
-    //cpu interface
-    input                     cpu_avalid,
-    input      [         1:0] cpu_wdata,
-    input      [DATA_W/8-1:0] cpu_wstrb,
-    output     [  DATA_W-1:0] cpu_rdata,
-    output reg                cpu_rvalid,
-    output reg                cpu_ready,
+   //cpu interface
+   input                     cpu_avalid,
+   input      [         1:0] cpu_wdata,
+   input      [DATA_W/8-1:0] cpu_wstrb,
+   output     [  DATA_W-1:0] cpu_rdata,
+   output reg                cpu_rvalid,
+   output reg                cpu_ready,
 
 
-    //sram master write interface
-    output reg                sram_avalid,
-    output     [  ADDR_W-1:0] sram_addr,
-    output     [  DATA_W-1:0] sram_wdata,
-    output reg [DATA_W/8-1:0] sram_wstrb,
+   //sram master write interface
+   output reg                sram_avalid,
+   output     [  ADDR_W-1:0] sram_addr,
+   output     [  DATA_W-1:0] sram_wdata,
+   output reg [DATA_W/8-1:0] sram_wstrb,
 
-    `include "iob_clkenrst_port.vh"
+   `include "iob_clkenrst_port.vh"
 );
 
 
@@ -69,8 +69,8 @@ module boot_ctr #(
    wire cpu_rst_pulse;
 
    iob_pulse_gen #(
-       .START   (0),
-       .DURATION(100)
+      .START   (0),
+      .DURATION(100)
    ) reset_pulse (
       .clk_i  (clk_i),
       .arst_i (arst_i),
@@ -130,9 +130,9 @@ module boot_ctr #(
    //INSTANTIATE ROM
    //
    iob_rom_sp #(
-       .DATA_W (DATA_W),
-       .ADDR_W (BOOTROM_ADDR_W - 2),
-       .HEXFILE(HEXFILE)
+      .DATA_W (DATA_W),
+      .ADDR_W (BOOTROM_ADDR_W - 2),
+      .HEXFILE(HEXFILE)
    ) sp_rom0 (
       .clk_i   (clk_i),
       .r_en_i  (rom_r_avalid),
