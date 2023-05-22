@@ -117,6 +117,11 @@ def setup_iob_soc(python_module):
     name = python_module.name
     module_parameters = python_module.module_parameters
 
+    # Replace IOb-SoC name in values of confs
+    for conf in confs:
+        if type(conf['val']) == str:
+            conf['val'] = conf['val'].replace('iob_soc',name).replace('IOB_SOC',name.upper())
+
     set_default_submodule_dirs(python_module)
 
     # Create peripheral list
