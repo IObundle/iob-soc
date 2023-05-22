@@ -38,6 +38,10 @@ def update_tester_conf( python_module ):
     confs = python_module.confs
     submodules = python_module.submodules
 
+    # Add correct system name
+    if 'name' in module_parameters.keys(): 
+        python_module.name = module_parameters['name']
+
     #Add extra 'headers', 'modules' to corresponding lists if they exist (hw_setup, sw_setup, ...)
     if 'submodules' in module_parameters.keys(): 
         for setup_type in ['hw_setup','sw_setup','sim_setup','fpga_setup']:
