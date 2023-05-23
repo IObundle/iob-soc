@@ -40,9 +40,9 @@ module sram #(
    assign i_rdata = rdata;
 
    iob_ram_sp_be #(
-       .HEXFILE(HEXFILE),
-       .ADDR_W (SRAM_ADDR_W - 2),
-       .DATA_W (DATA_W)
+      .HEXFILE(HEXFILE),
+      .ADDR_W (SRAM_ADDR_W - 2),
+      .DATA_W (DATA_W)
    ) main_mem_byte (
       .clk_i(clk_i),
 
@@ -56,10 +56,10 @@ module sram #(
 `else  // !`ifdef USE_SPRAM
 `ifdef MEM_NO_READ_ON_WRITE
    iob_ram_dp_be #(
-       .HEXFILE             (HEXFILE),
-       .ADDR_W              (SRAM_ADDR_W - 2),
-       .DATA_W              (DATA_W),
-       .MEM_NO_READ_ON_WRITE(1)
+      .HEXFILE             (HEXFILE),
+      .ADDR_W              (SRAM_ADDR_W - 2),
+      .DATA_W              (DATA_W),
+      .MEM_NO_READ_ON_WRITE(1)
    ) main_mem_byte (
       .clk_i(clk_i),
 
@@ -79,9 +79,9 @@ module sram #(
    );
 `else  // !`ifdef MEM_NO_READ_ON_WRITE
    iob_ram_dp_be_xil #(
-       .HEXFILE(HEXFILE),
-       .ADDR_W (SRAM_ADDR_W - 2),
-       .DATA_W (DATA_W)
+      .HEXFILE(HEXFILE),
+      .ADDR_W (SRAM_ADDR_W - 2),
+      .DATA_W (DATA_W)
    ) main_mem_byte (
       .clk_i(clk_i),
 
@@ -102,21 +102,27 @@ module sram #(
 `endif
 `endif
 
-   // reply with ready 
+   // reply with ready
 
-   iob_reg #(1, 0) i_rvalid_reg (
-      clk_i,
-      arst_i,
-      cke_i,
-      i_avalid & ~(|i_wstrb),
-      i_rvalid
+   iob_reg #(
+      .DATA_W (1),
+      .RST_VAL(0)
+   ) i_rvalid_reg (
+      .clk_i (clk_i),
+      .arst_i(arst_i),
+      .cke_i (cke_i),
+      .data_i(i_avalid & ~(|i_wstrb)),
+      .data_o(i_rvalid)
    );
-   iob_reg #(1, 0) d_rvalid_reg (
-      clk_i,
-      arst_i,
-      cke_i,
-      d_avalid & ~(|d_wstrb),
-      d_rvalid
+   iob_reg #(
+      .DATA_W (1),
+      .RST_VAL(0)
+   ) d_rvalid_reg (
+      .clk_i (clk_i),
+      .arst_i(arst_i),
+      .cke_i (cke_i),
+      .data_i(d_avalid & ~(|d_wstrb)),
+      .data_o(d_rvalid)
    );
    assign i_ready = 1'b1;  // SRAM ready is supposed to always be 1 since requests can be continuous
    assign d_ready = 1'b1;
