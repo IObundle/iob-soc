@@ -2,9 +2,8 @@
 
 `include "iob_soc_conf.vh"
 `include "iob_lib.vh"
-  
-module int_mem
-  #(
+
+module int_mem #(
     parameter ADDR_W = 0,
     parameter DATA_W = 0,
     parameter HEXFILE = "firmware",
@@ -12,12 +11,11 @@ module int_mem
     parameter SRAM_ADDR_W = 0,
     parameter BOOTROM_ADDR_W = 0,
     parameter B_BIT = 0
-    )
-   (
+    ) (
 
     output               boot,
     output               cpu_reset,
-    
+
     //instruction bus
     input [`REQ_W-1:0]   i_req,
     output [`RESP_W-1:0] i_resp,
@@ -73,21 +71,19 @@ module int_mem
    wire [`REQ_W-1:0]     ram_w_req;
    wire [`RESP_W-1:0]    ram_w_resp;
 
-   boot_ctr #(
+    boot_ctr #(
         .HEXFILE({BOOT_HEXFILE,".hex"}),
         .DATA_W(DATA_W),
         .ADDR_W(ADDR_W),
         .BOOTROM_ADDR_W(BOOTROM_ADDR_W),
         .SRAM_ADDR_W(SRAM_ADDR_W)
-		)
-	boot_ctr0 
-       (
+    ) boot_ctr0 (
         .clk_i(clk_i),
         .arst_i(arst_i),
         .cke_i(cke_i),
         .cpu_rst(cpu_reset),
         .boot(boot),
-        
+
         //cpu slave interface
         //no address bus since single address
         .cpu_avalid(boot_ctr_req[`AVALID(0)]),
@@ -103,7 +99,7 @@ module int_mem
         .sram_wdata(ram_w_req[`WDATA(0)]),
         .sram_wstrb(ram_w_req[`WSTRB(0)])
         );
-   
+
    //
    //MODIFY INSTRUCTION READ ADDRESS DURING BOOT
    //
@@ -128,7 +124,7 @@ module int_mem
                        ram_d_req[`ADDRESS(0, SRAM_ADDR_W)-2] + boot_offset[SRAM_ADDR_W-1:2]: 
                        ram_d_req[`ADDRESS(0, SRAM_ADDR_W)-2];
 
-   
+
    //
    //MERGE BOOT WRITE BUS AND CPU READ BUS
    //
@@ -136,7 +132,7 @@ module int_mem
    //sram instruction bus
    wire [`REQ_W-1:0]     ram_i_req;
    wire [`RESP_W-1:0]    ram_i_resp;
-   
+
    iob_merge #(
            .N_MASTERS(2)
            )
@@ -148,11 +144,11 @@ module int_mem
         .m_req_i  ({ram_w_req, ram_r_req}),
         .m_resp_o ({ram_w_resp, ram_r_resp}),
 
-        //slave  
+        //slave
         .s_req_o  (ram_i_req),
         .s_resp_i (ram_i_resp)
         );
-   
+
    //
    // INSTANTIATE RAM
    //
@@ -162,12 +158,11 @@ module int_mem
 `endif
         .DATA_W(DATA_W),
         .SRAM_ADDR_W(SRAM_ADDR_W)
-        ) 
-    int_sram (
+  ) int_sram (
       .clk_i    (clk_i),
       .cke_i    (cke_i),
       .arst_i    (arst_i),
-      
+
       //instruction bus
       .i_avalid (ram_i_req[`AVALID(0)]),
       .i_addr   (ram_i_req[`ADDRESS(0, SRAM_ADDR_W)-2]), 
@@ -176,7 +171,7 @@ module int_mem
       .i_rdata  (ram_i_resp[`RDATA(0)]),
       .i_rvalid (ram_i_resp[`RVALID(0)]),
       .i_ready  (ram_i_resp[`READY(0)]),
-	     
+
       //data bus
       .d_avalid (ram_d_req[`AVALID(0)]),
       .d_addr   (ram_d_addr),
