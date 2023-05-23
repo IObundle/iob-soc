@@ -9,7 +9,7 @@ import copy
 
 name='iob_regfileif'
 version='V0.10'
-flows='sim'
+flows=''
 if setup.is_top_module(sys.modules[__name__]):
     setup_dir=os.path.dirname(__file__)
     build_dir=f"../{name}_{version}"
@@ -83,6 +83,7 @@ def main():
     for idx, line in enumerate(lines):
         # Remove wires, as they have already been declared in the `*_inverted_swreg_inst.vh` file
         if line.startswith("`IOB_WIRE"): lines[idx] = ""
+        if line.startswith("wire "): lines[idx] = ""
         # Replace name of swreg_0 instance
         if line.startswith(") swreg_0 ("): lines[idx] = ") swreg_1 (\n"
         # Rename `iob_ready_ and iob_rvalid` ports as this mapping was already used in the `*_inverted_swreg_inst.vh` file

@@ -6,7 +6,7 @@ import setup
 from submodule_utils import import_setup
 
 name='iob_nativebridgeif'
-flows='sim'
+flows=''
 setup_dir=os.path.dirname(__file__)
 submodules = {}
 
