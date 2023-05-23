@@ -16,13 +16,13 @@ module ext_mem #(
   ) (
     // Instruction bus
     input [1+FIRM_ADDR_W-2+`WRITE_W-1:0] i_req,
-    output [`RESP_W-1:0] 		         i_resp,
+    output [`RESP_W-1:0] i_resp,
 
     // Data bus
     input [1+1+MEM_ADDR_W-2+`WRITE_W-1:0] d_req,
-    output [`RESP_W-1:0] 		             d_resp,
+    output [`RESP_W-1:0] d_resp,
 
-    // AXI interface 
+    // AXI interface
     `include "iob_axi_m_port.vh"
     `include "iob_clkenrst_port.vh"
   );
@@ -31,18 +31,28 @@ module ext_mem #(
   // INSTRUCTION CACHE
   //
 
-   // IOb ready and rvalid signals
-   wire i_ack;
-   reg  i_wr_e; // Instruction write enable register
-   reg  i_ready;
-   iob_reg_e #(1,0) i_wr_e_reg (clk_i, arst_i, cke_i, i_req[1+FIRM_ADDR_W-2+`WRITE_W-1], {| i_req[`WSTRB(0)]}, i_wr_e);
-   //iob_reg_e #(1,1) i_ready_reg (clk_i, arst_i, cke_i, i_ack | i_req[1+FIRM_ADDR_W-2+`WRITE_W-1], i_ack, i_ready);
-   assign i_resp[`RVALID(0)] = i_wr_e? 1'b0 : i_ack;
-   assign i_resp[`READY(0)] = i_ack;
+  // IOb ready and rvalid signals
+  wire i_ack;
+  reg  i_wr_e; // Instruction write enable register
+  reg  i_ready;
+  iob_reg_e #(
+      .DATA_W (1),
+      .RST_VAL(0)
+    ) i_wr_e_reg (
+      .clk_i (clk_i),
+      .arst_i(arst_i),
+      .cke_i (cke_i),
+      .en_i  (i_req[1+FIRM_ADDR_W-2+`WRITE_W-1]),
+      .data_i({| i_req[`WSTRB(0)]}),
+      .data_o(i_wr_e)
+    );
+  //iob_reg_e #(1,1) i_ready_reg (clk_i, arst_i, cke_i, i_ack | i_req[1+FIRM_ADDR_W-2+`WRITE_W-1], i_ack, i_ready);
+  assign i_resp[`RVALID(0)] = i_wr_e? 1'b0 : i_ack;
+  assign i_resp[`READY(0)] = i_ack;
 
   // Back-end bus
   wire [1+MEM_ADDR_W+`WRITE_W-1:0] icache_be_req;
-  wire [`RESP_W-1:0] 			       icache_be_resp;
+  wire [`RESP_W-1:0] icache_be_resp;
 
 
   // Instruction cache instance
@@ -83,8 +93,8 @@ module ext_mem #(
 
    //l2 cache interface signals
    wire [1+MEM_ADDR_W+`WRITE_W-1:0] l2cache_req;
-   wire [`RESP_W-1:0] 			       l2cache_resp;
-   
+   wire [`RESP_W-1:0] l2cache_resp;
+
    //ext_mem control signals
    wire l2_wtb_empty;
    wire invalidate;
@@ -94,32 +104,42 @@ module ext_mem #(
    always @(posedge clk_i, posedge arst_i)
      if (arst_i)
        invalidate_reg <= 1'b0;
-     else 
+     else
        if (invalidate)
          invalidate_reg <= 1'b1;
-       else 
+       else
          if(~l2_avalid)
            invalidate_reg <= 1'b0;
          else
            invalidate_reg <= invalidate_reg;
-   
-   //
-   // DATA CACHE
-   //
 
-    // IOb ready and rvalid signals
-   wire d_ack;
-   reg  d_wr_e; // Instruction write enable register
-   reg  d_ready;
-   iob_reg_e #(1,0) d_wr_e_reg (clk_i, arst_i, cke_i, d_req[1+FIRM_ADDR_W-2+`WRITE_W-1], {| d_req[`WSTRB(0)]}, d_wr_e);
+  //
+  // DATA CACHE
+  //
+
+  // IOb ready and rvalid signals
+  wire d_ack;
+  reg  d_wr_e; // Instruction write enable register
+  reg  d_ready;
+  iob_reg_e #(
+      .DATA_W (1),
+      .RST_VAL(0)
+    ) d_wr_e_reg (
+      .clk_i (clk_i),
+      .arst_i(arst_i),
+      .cke_i (cke_i),
+      .en_i  (d_req[1+FIRM_ADDR_W-2+`WRITE_W-1]),
+      .data_i({| d_req[`WSTRB(0)]}),
+      .data_o(d_wr_e)
+    );
    //iob_reg_e #(1,0) d_ready_reg (clk_i, arst_i, cke_i, d_ack | d_req[1+FIRM_ADDR_W-2+`WRITE_W-1], ~d_req[1+FIRM_ADDR_W-2+`WRITE_W-1], d_ready);
    assign d_resp[`RVALID(0)] =  i_wr_e? 1'b0 : d_ack;
    assign d_resp[`READY(0)] = d_ack;
 
    // Back-end bus
    wire [1+MEM_ADDR_W+`WRITE_W-1:0]       dcache_be_req;
-   wire [`RESP_W-1:0] 			      dcache_be_resp;
-   
+   wire [`RESP_W-1:0] dcache_be_resp;
+
    // Data cache instance
    iob_cache_iob #(
       .FE_ADDR_W(MEM_ADDR_W),
@@ -171,9 +191,9 @@ module ext_mem #(
         .s_resp_i (l2cache_resp)
         );
 
-   
-   // L2 cache instance
-   iob_cache_axi #(
+
+  // L2 cache instance
+  iob_cache_axi #(
       .AXI_ID_W(AXI_ID_W),
       .AXI_LEN_W(AXI_LEN_W),
       .FE_ADDR_W(MEM_ADDR_W),
@@ -185,9 +205,7 @@ module ext_mem #(
       .WTBUF_DEPTH_W(5), //FIFO's depth -- 5 minimum for BRAM implementation
       .USE_CTRL (0),     //Cache-Control can't be accessed
       .USE_CTRL_CNT(0)   //Remove counters
-      )
-   l2cache 
-     (
+    ) l2cache (
       // Native interface
       .req    (l2cache_req[1+MEM_ADDR_W+`WRITE_W-1]),
       .addr     (l2cache_req[`ADDRESS(0, MEM_ADDR_W)-2]),
