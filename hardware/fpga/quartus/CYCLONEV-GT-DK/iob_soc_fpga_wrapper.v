@@ -84,9 +84,9 @@ module iob_soc_fpga_wrapper (
    //wire          rst_int = ~resetn | ~locked;
 
    iob_reset_sync rst_sync (
-      clk,
-      rst_int,
-      rst
+      .clk_i(clk),
+      .arst_i(rst_int),
+      .arst_o(rst)
    );
 
    alt_ddr3 ddr3_ctrl (
@@ -164,9 +164,9 @@ module iob_soc_fpga_wrapper (
 
 `else
    iob_reset_sync rst_sync (
-      clk,
-      (~resetn),
-      rst
+      .clk_i(clk),
+      .arst_i((~resetn)),
+      .arst_o(rst)
    );
 `endif
 
