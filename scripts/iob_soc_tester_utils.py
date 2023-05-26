@@ -30,6 +30,7 @@ def add_tester_modules(python_module, tester_options):
     # This is required if the UUT is creating the build directory because it handles the flows enabled in config_build.mk
     python_module.flows += ' emb sim fpga'
 
+# TODO: DEPRECATE the rest of this function
 # Update tester configuration based on module_parameters
 # python_module: Tester python module
 def update_tester_conf( python_module ):
@@ -52,7 +53,7 @@ def update_tester_conf( python_module ):
                 submodules[setup_type]['headers']+=module_parameters['submodules'][setup_type]['headers']
                 submodules[setup_type]['modules']+=module_parameters['submodules'][setup_type]['modules']
 
-    #Override Tester confs if any are given in the 'confs' dictionary of the 'module_parameters' dictionary
+    #Override Tester confs if any are given in the 'confs' dictionary of the 'module_parameters' dictionary #Done! moved to iob-soc
     if 'confs' in module_parameters.keys(): 
         for entry in module_parameters['confs']:
             #If entry exists in confs, then update it

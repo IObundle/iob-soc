@@ -1,27 +1,53 @@
 #!/usr/bin/env python3
 
 import os
+import sys
 
 from iob_module import iob_module
-from setup import setup
+from iob_block_group import iob_block_group
+from iob_soc_utils import setup_iob_soc
 
 class iob_soc(iob_module):
     def __init__(self, **kwargs):
+        # Allow name override via kwargs
+        if 'name' not in kwargs:
+            kwargs['name'] = "iob_soc"
+
+        self.peripherals = []
+        self.peripheral_portmap = []
+
         super().__init__(
-                name="iob_soc",
                 version="V0.70",
                 flows="pc-emul emb sim doc fpga",
                 setup_dir=os.path.dirname(__file__),
                 **kwargs
                 )
 
-    def setup(self):
+    # IOb-SoC accepts the following list of non standard parameters:
+    # peripherals: list with instances peripherals to include in system
+    # peripheral_portmap: list of tuples, each tuple corresponds to a port map
+    def setup(self, peripherals=[], peripheral_portmap=[], **kwargs):
+        super().setup(**kwargs)
+
         self.setup_submodules()
+        self.setup_block_groups()
         self.setup_confs()
         self.setup_ios()
-        print('DEBUG')
-        # Call setup from LIB
-        #setup(self)
+
+        self.peripherals+=peripherals
+        self.peripherals.append(iob_uart()) #TODO: Fix this
+
+        self.peripheral_portmap+=peripheral_portmap
+        self.peripheral_portmap+=[
+            (
+                {"corename": "UART0", "if_name": "rs232", "port": "", "bits": []},
+                {"corename": "external", "if_name": "UART", "port": "", "bits": []},
+            ),  # Map UART0 of tester to external interface
+        ],
+
+        self.custom_setup()
+        # Setup this system using specialized iob-soc function
+        setup_iob_soc(self)
 
     def setup_submodules(self):
         # TODO: Deprecate this dictionary.
@@ -67,62 +93,34 @@ class iob_soc(iob_module):
             "sw_setup": {"headers": [], "modules": ["iob_str"]},
         }
 
-        # TODO: Deprecate this dictionary.
-        self.blocks = [
-            {
-                "name": "cpu",
-                "descr": "CPU module",
-                "blocks": [
-                    {"name": "cpu", "descr": "PicoRV32 CPU"},
-                ],
-            },
-            {
-                "name": "bus_split",
-                "descr": "Split modules for buses",
-                "blocks": [
-                    {
-                        "name": "ibus_split",
-                        "descr": "Split CPU instruction bus into internal and external memory buses",
-                    },
-                    {
-                        "name": "dbus_split",
-                        "descr": "Split CPU data bus into internal and external memory buses",
-                    },
-                    {
-                        "name": "int_dbus_split",
-                        "descr": "Split internal data bus into internal memory and peripheral buses",
-                    },
-                    {
-                        "name": "pbus_split",
-                        "descr": "Split peripheral bus into a bus for each peripheral",
-                    },
-                ],
-            },
-            {
-                "name": "memories",
-                "descr": "Memory modules",
-                "blocks": [
-                    {"name": "int_mem0", "descr": "Internal SRAM memory"},
-                    {"name": "ext_mem0", "descr": "External DDR memory"},
-                ],
-            },
-            {
-                "name": "peripherals",
-                "descr": "peripheral modules",
-                "blocks": [
-                    {
-                        "name": "UART0",
-                        "type": "UART",
-                        "descr": "Default UART interface",
-                        "params": {},
-                    },
-                ],
-            },
+    def setup_block_groups(self):
+        self.block_groups += [
+            iob_block_group(
+                name="cpu",
+                description="CPU module",
+                blocks=[self.cpu]
+            ),
+            iob_block_group(
+                name="bus_split",
+                description="Split modules for buses",
+                blocks=[self.ibus_split, self.dbus_split, self.int_dbus_split, self.pbus_split]
+            ),
+            iob_block_group(
+                name="mem",
+                description="Memory module",
+                blocks=[self.int_mem, self.ext_mem]
+            ),
+            iob_block_group(
+                name="peripheral",
+                description="Peripheral module",
+                blocks=self.peripherals
+            ),
         ]
 
 
     def setup_confs(self):
-        self.confs = [
+        # Append confs or override them if they exist
+        super().setup_confs([
             # macros
             {
                 "name": "USE_MUL_DIV",
@@ -238,10 +236,10 @@ class iob_soc(iob_module):
                 "max": "4",
                 "descr": "AXI burst length width",
             },
-        ]
+        ])
 
     def setup_ios(self):
-        self.ios = [
+        self.ios += [
             {
                 "name": "general",
                 "descr": "General interface signals",
@@ -498,104 +496,59 @@ class iob_soc(iob_module):
         ]
 
 
-# ----------- Example Tester module configuration -----------
-# 'module_parameters' dictionary will be overriden if it is called by another core/system by defining the following hardware module:
-#     'hw_modules': [ ('TESTER',module_parameters) ]
-if "module_parameters" not in vars():
-    module_parameters = {
-        # Allows overriding entries in 'confs' dictionary of the 'blocks' dictionary in iob_soc.py
-        "peripherals": [
-            #           {'name':'UART0', 'type':'UART', 'descr':'Default UART interface', 'params':{}}, # It is possible to override default tester peripherals with new parameters
-        ],
-        # Allows for manual configuration of directory paths for peripherals added in 'peripherals' list
-        "peripherals_dirs": {
-            #           UART:'./submodules/UART'
-        },
-        # Map IO connections of Tester peripherals with UUT's IO and the top system.
-        "peripheral_portmap": [
-            (
-                {"corename": "UART0", "if_name": "rs232", "port": "", "bits": []},
-                {"corename": "external", "if_name": "UART", "port": "", "bits": []},
-            ),  # Map UART0 of tester to external interface
-        ],
-        # Allows overriding entries in 'confs' dictionary of iob_soc.py
-        "confs": [
-            # Override default values of Tester params
-            # {'name':'BOOTROM_ADDR_W','type':'P', 'val':'13', 'min':'1', 'max':'32', 'descr':"Boot ROM address width"},
-            # {'name':'SRAM_ADDR_W',   'type':'P', 'val':'16', 'min':'1', 'max':'32', 'descr':"SRAM address width"},
-        ],
-        # Name of the System Under Test (SUT) firmmware. Used by tester to initialize external memory in simulation.
-        #'sut_fw_name':name+'_firmware'
-    }
+    def custom_setup(self):
+        # Add the following arguments:
+        # "INIT_MEM": if should setup with init_mem or not
+        # "USE_EXTMEM": if should setup with extmem or not
+        for arg in sys.argv[1:]:
+            if arg == "INIT_MEM":
+                update_define(self.confs, "INIT_MEM", True)
+            if arg == "USE_EXTMEM":
+                update_define(self.confs, "USE_EXTMEM", True)
 
-# Update tester configuration based on module_parameters
-#update_tester_conf(sys.modules[__name__])
-
-
-def custom_setup():
-    # Add the following arguments:
-    # "INIT_MEM": if should setup with init_mem or not
-    # "USE_EXTMEM": if should setup with extmem or not
-    for arg in sys.argv[1:]:
-        if arg == "INIT_MEM":
-            update_define(confs, "INIT_MEM", True)
-        if arg == "USE_EXTMEM":
-            update_define(confs, "USE_EXTMEM", True)
-
-    for conf in confs:
-        if (conf["name"] == "USE_EXTMEM") and conf["val"]:
-            submodules["hw_setup"]["headers"].append(
-                {
-                    "file_prefix": "ddr4_",
-                    "interface": "axi_wire",
-                    "wire_prefix": "ddr4_",
-                    "port_prefix": "ddr4_",
-                }
-            )
-            submodules["hw_setup"]["modules"].append("axi_interconnect")
-            submodules["hw_setup"]["headers"] += [
-                {
-                    "file_prefix": "iob_bus_0_2_",
-                    "interface": "axi_m_portmap",
-                    "wire_prefix": "",
-                    "port_prefix": "",
-                    "bus_start": 0,
-                    "bus_size": 2,
-                },
-                {
-                    "file_prefix": "iob_bus_2_3_",
-                    "interface": "axi_s_portmap",
-                    "wire_prefix": "",
-                    "port_prefix": "",
-                    "bus_start": 2,
-                    "bus_size": 1,
-                },
-                # Can't use portmaps below, because it creates axi_awlock and axi_arlock with 2 bits instead of 1 (these are used for axi_interconnect)
-                # { 'file_prefix':'iob_bus_0_2_s_', 'interface':'axi_portmap', 'wire_prefix':'', 'port_prefix':'s_', 'bus_start':0, 'bus_size':2 },
-                # { 'file_prefix':'iob_bus_2_3_m_', 'interface':'axi_portmap', 'wire_prefix':'', 'port_prefix':'m_', 'bus_start':2, 'bus_size':1 },
-                {
-                    "file_prefix": "iob_bus_3_",
-                    "interface": "axi_wire",
-                    "wire_prefix": "",
-                    "port_prefix": "",
-                    "bus_size": 3,
-                },
-                {
-                    "file_prefix": "iob_bus_2_",
-                    "interface": "axi_wire",
-                    "wire_prefix": "",
-                    "port_prefix": "",
-                    "bus_size": 2,
-                },
-            ]
-
-
-# Main function to setup this system and its components
-def main():
-    custom_setup()
-    # Setup this system
-    iob_soc.setup_iob_soc(sys.modules[__name__])
-
-
-if __name__ == "__main__":
-    main()
+        for conf in self.confs:
+            if (conf["name"] == "USE_EXTMEM") and conf["val"]:
+                self.submodules["hw_setup"]["headers"].append(
+                    {
+                        "file_prefix": "ddr4_",
+                        "interface": "axi_wire",
+                        "wire_prefix": "ddr4_",
+                        "port_prefix": "ddr4_",
+                    }
+                )
+                self.submodules["hw_setup"]["modules"].append("axi_interconnect")
+                self.submodules["hw_setup"]["headers"] += [
+                    {
+                        "file_prefix": "iob_bus_0_2_",
+                        "interface": "axi_m_portmap",
+                        "wire_prefix": "",
+                        "port_prefix": "",
+                        "bus_start": 0,
+                        "bus_size": 2,
+                    },
+                    {
+                        "file_prefix": "iob_bus_2_3_",
+                        "interface": "axi_s_portmap",
+                        "wire_prefix": "",
+                        "port_prefix": "",
+                        "bus_start": 2,
+                        "bus_size": 1,
+                    },
+                    # Can't use portmaps below, because it creates axi_awlock and axi_arlock with 2 bits instead of 1 (these are used for axi_interconnect)
+                    # { 'file_prefix':'iob_bus_0_2_s_', 'interface':'axi_portmap', 'wire_prefix':'', 'port_prefix':'s_', 'bus_start':0, 'bus_size':2 },
+                    # { 'file_prefix':'iob_bus_2_3_m_', 'interface':'axi_portmap', 'wire_prefix':'', 'port_prefix':'m_', 'bus_start':2, 'bus_size':1 },
+                    {
+                        "file_prefix": "iob_bus_3_",
+                        "interface": "axi_wire",
+                        "wire_prefix": "",
+                        "port_prefix": "",
+                        "bus_size": 3,
+                    },
+                    {
+                        "file_prefix": "iob_bus_2_",
+                        "interface": "axi_wire",
+                        "wire_prefix": "",
+                        "port_prefix": "",
+                        "bus_size": 2,
+                    },
+                ]
