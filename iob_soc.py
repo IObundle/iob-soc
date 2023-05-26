@@ -7,35 +7,100 @@ from iob_module import iob_module
 from iob_block_group import iob_block_group
 from iob_soc_utils import setup_iob_soc
 
+# Submodules
+from iob_picorv32 import iob_picorv32
+from iob_cache import iob_cache
+from iob_uart import iob_uart
+from iob_submodule_utils import iob_submodule_utils
+from iob_utils import iob_utils
+from iob_clkenrst_portmap import iob_clkenrst_portmap
+from iob_clkenrst_port import iob_clkenrst_port
+from iob_merge import iob_merge
+from iob_split import iob_split
+from iob_rom_sp import iob_rom_sp
+from iob_ram_dp_be import iob_ram_dp_be
+from iob_ram_dp_be_xil import iob_ram_dp_be_xil
+from iob_pulse_gen import iob_pulse_gen
+from iob_counter import iob_counter
+from iob_ram_2p_asym import iob_ram_2p_asym
+from iob_reg import iob_reg
+from iob_reg_re import iob_reg_re
+from iob_ram_sp_be import iob_ram_sp_be
+from iob_ram_dp import iob_ram_dp
+from iob_reset_sync import iob_reset_sync
+from axi_ram import axi_ram
+from axi_s_portmap import axi_s_portmap
+from iob_tasks import iob_tasks
+from iob_str import iob_str
+# Optional submodules
+from axi_interconnect import axi_interconnect
+
 class iob_soc(iob_module):
-    def __init__(self, **kwargs):
-        # Allow name override via kwargs
-        if 'name' not in kwargs:
-            kwargs['name'] = "iob_soc"
-
-        self.peripherals = []
-        self.peripheral_portmap = []
-
+    def __init__(self):
         super().__init__(
+                name="iob_soc",
                 version="V0.70",
                 flows="pc-emul emb sim doc fpga",
                 setup_dir=os.path.dirname(__file__),
                 **kwargs
                 )
 
-    # IOb-SoC accepts the following list of non standard parameters:
-    # peripherals: list with instances peripherals to include in system
-    # peripheral_portmap: list of tuples, each tuple corresponds to a port map
-    def setup(self, peripherals=[], peripheral_portmap=[], **kwargs):
+    def setup(self):
         super().setup(**kwargs)
 
-        self.setup_submodules()
+        # Submodules
+        iob_picorv32.setup()
+        iob_cache.setup()
+        iob_uart.setup()
+
+        # Hardware headers & modules
+        iob_submodule_utils.generate("iob_wire")
+        iob_submodule_utils.generate("axi_wire")
+        iob_submodule_utils.generate("axi_m_port")
+        iob_submodule_utils.generate("axi_m_m_portmap")
+        iob_submodule_utils.generate("axi_m_portmap")
+        iob_submodule_utils.setup()
+        iob_utils.setup()
+        iob_clkenrst_portmap.setup()
+        iob_clkenrst_port.setup()
+
+        iob_merge.setup()
+        iob_split.setup()
+        iob_rom_sp.setup()
+        iob_ram_dp_be.setup()
+        iob_ram_dp_be_xil.setup()
+        iob_pulse_gen.setup()
+        iob_counter.setup()
+        iob_ram_2p_asym.setup()
+        iob_reg.setup()
+        iob_reg_re.setup()
+        iob_ram_sp_be.setup()
+        iob_ram_dp.setup()
+        iob_reset_sync.setup()
+
+        # Simulation headers & modules
+        axi_ram.setup(purpose="simulation")
+        axi_s_portmap.setup(purpose="simulation")
+        iob_tasks.setup(purpose="simulation")
+
+        # Software modules
+        iob_str.setup(purpose="software")
+
+        # Verilog modules instances
+        self.cpu = iob_picorv32.instance()
+        self.ibus_split = iob_split.instance()
+        self.dbus_split = iob_split.instance()
+        self.int_dbus_split = iob_split.instance()
+        self.pbus_split = iob_split.instance()
+        self.int_mem = iob_merge.instance()
+        self.ext_mem = iob_merge.instance()
+        self.peripherals = [
+                iob_uart.instance(),
+                ]
+
         self.setup_block_groups()
         self.setup_confs()
         self.setup_ios()
-
-        self.peripherals+=peripherals
-        self.peripherals.append(iob_uart()) #TODO: Fix this
 
         self.peripheral_portmap+=peripheral_portmap
         self.peripheral_portmap+=[
@@ -49,49 +114,6 @@ class iob_soc(iob_module):
         # Setup this system using specialized iob-soc function
         setup_iob_soc(self)
 
-    def setup_submodules(self):
-        # TODO: Deprecate this dictionary.
-        # Instatiate modules directly instead.
-        # In relation to the `headers` list, move them to a single `headers` list
-        self.submodules = {
-            "hw_setup": {
-                "headers": [
-                    "iob_wire",
-                    "axi_wire",
-                    "axi_m_m_portmap",
-                    "axi_m_port",
-                    "axi_m_m_portmap",
-                    "axi_m_portmap",
-                    "iob_lib.vh",
-                    "iob_utils.vh",
-                    "iob_clkenrst_portmap.vh",
-                    "iob_clkenrst_port.vh",
-                ],
-                "modules": [
-                    "PICORV32",
-                    "CACHE",
-                    "UART",
-                    "iob_merge",
-                    "iob_split",
-                    "iob_rom_sp.v",
-                    "iob_ram_dp_be.v",
-                    "iob_ram_dp_be_xil.v",
-                    "iob_pulse_gen.v",
-                    "iob_counter.v",
-                    "iob_ram_2p_asym.v",
-                    "iob_reg.v",
-                    "iob_reg_re.v",
-                    "iob_ram_sp_be.v",
-                    "iob_ram_dp.v",
-                    "iob_reset_sync",
-                ],
-            },
-            "sim_setup": {
-                "headers": ["axi_s_portmap", "iob_tasks.vh"],
-                "modules": ["axi_ram.v"],
-            },
-            "sw_setup": {"headers": [], "modules": ["iob_str"]},
-        }
 
     def setup_block_groups(self):
         self.block_groups += [
@@ -508,7 +530,7 @@ class iob_soc(iob_module):
 
         for conf in self.confs:
             if (conf["name"] == "USE_EXTMEM") and conf["val"]:
-                self.submodules["hw_setup"]["headers"].append(
+                iob_submodule_utils.generate(
                     {
                         "file_prefix": "ddr4_",
                         "interface": "axi_wire",
@@ -516,8 +538,8 @@ class iob_soc(iob_module):
                         "port_prefix": "ddr4_",
                     }
                 )
-                self.submodules["hw_setup"]["modules"].append("axi_interconnect")
-                self.submodules["hw_setup"]["headers"] += [
+                axi_interconnect.setup()
+                iob_submodule_utils.generate(
                     {
                         "file_prefix": "iob_bus_0_2_",
                         "interface": "axi_m_portmap",
@@ -525,7 +547,8 @@ class iob_soc(iob_module):
                         "port_prefix": "",
                         "bus_start": 0,
                         "bus_size": 2,
-                    },
+                    })
+                iob_submodule_utils.generate(
                     {
                         "file_prefix": "iob_bus_2_3_",
                         "interface": "axi_s_portmap",
@@ -533,7 +556,8 @@ class iob_soc(iob_module):
                         "port_prefix": "",
                         "bus_start": 2,
                         "bus_size": 1,
-                    },
+                    })
+                iob_submodule_utils.generate(
                     # Can't use portmaps below, because it creates axi_awlock and axi_arlock with 2 bits instead of 1 (these are used for axi_interconnect)
                     # { 'file_prefix':'iob_bus_0_2_s_', 'interface':'axi_portmap', 'wire_prefix':'', 'port_prefix':'s_', 'bus_start':0, 'bus_size':2 },
                     # { 'file_prefix':'iob_bus_2_3_m_', 'interface':'axi_portmap', 'wire_prefix':'', 'port_prefix':'m_', 'bus_start':2, 'bus_size':1 },
@@ -543,12 +567,12 @@ class iob_soc(iob_module):
                         "wire_prefix": "",
                         "port_prefix": "",
                         "bus_size": 3,
-                    },
+                    })
+                iob_submodule_utils.generate(
                     {
                         "file_prefix": "iob_bus_2_",
                         "interface": "axi_wire",
                         "wire_prefix": "",
                         "port_prefix": "",
                         "bus_size": 2,
-                    },
-                ]
+                    })
