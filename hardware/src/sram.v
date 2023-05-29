@@ -3,29 +3,29 @@
 `include "bsp.vh"
 
 module sram #(
-    parameter DATA_W      = `IOB_SOC_DATA_W,
-    parameter SRAM_ADDR_W = `IOB_SOC_SRAM_ADDR_W,
-    parameter HEXFILE     = "none"
+   parameter DATA_W      = `IOB_SOC_DATA_W,
+   parameter SRAM_ADDR_W = `IOB_SOC_SRAM_ADDR_W,
+   parameter HEXFILE     = "none"
 ) (
-    // intruction bus
-    input                        i_avalid,
-    input      [SRAM_ADDR_W-3:0] i_addr,
-    input      [     DATA_W-1:0] i_wdata,   //used for booting
-    input      [   DATA_W/8-1:0] i_wstrb,   //used for booting
-    output     [     DATA_W-1:0] i_rdata,
-    output reg                   i_rvalid,
-    output reg                   i_ready,
+   // intruction bus
+   input                        i_avalid,
+   input      [SRAM_ADDR_W-3:0] i_addr,
+   input      [     DATA_W-1:0] i_wdata,   //used for booting
+   input      [   DATA_W/8-1:0] i_wstrb,   //used for booting
+   output     [     DATA_W-1:0] i_rdata,
+   output reg                   i_rvalid,
+   output reg                   i_ready,
 
-    // data bus
-    input                        d_avalid,
-    input      [SRAM_ADDR_W-3:0] d_addr,
-    input      [     DATA_W-1:0] d_wdata,
-    input      [   DATA_W/8-1:0] d_wstrb,
-    output     [     DATA_W-1:0] d_rdata,
-    output reg                   d_rvalid,
-    output reg                   d_ready,
+   // data bus
+   input                        d_avalid,
+   input      [SRAM_ADDR_W-3:0] d_addr,
+   input      [     DATA_W-1:0] d_wdata,
+   input      [   DATA_W/8-1:0] d_wstrb,
+   output     [     DATA_W-1:0] d_rdata,
+   output reg                   d_rvalid,
+   output reg                   d_ready,
 
-    `include "iob_clkenrst_port.vs"
+   `include "iob_clkenrst_port.vs"
 );
 
 `ifdef USE_SPRAM

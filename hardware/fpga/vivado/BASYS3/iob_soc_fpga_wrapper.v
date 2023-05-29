@@ -1,12 +1,12 @@
 `timescale 1ns / 1ps
 
 module iob_soc_fpga_wrapper (
-    input clk,
-    input reset,
+   input clk,
+   input reset,
 
-    //uart
-    output uart_txd,
-    input  uart_rxd
+   //uart
+   output uart_txd,
+   input  uart_rxd
 );
 
    //

@@ -65,13 +65,13 @@
 `timescale 1ps / 1ps
 
 module clock_wizard #(
-    parameter OUTPUT_PER = 10,
-    parameter INPUT_PER  = 4
+   parameter OUTPUT_PER = 10,
+   parameter INPUT_PER  = 4
 ) (  // Clock in ports
      // Clock out ports
-    output clk_out1,
-    input  clk_in1_p,
-    input  clk_in1_n
+   output clk_out1,
+   input  clk_in1_p,
+   input  clk_in1_n
 );
    // Input buffering
    //------------------------------------
@@ -119,15 +119,15 @@ module clock_wizard #(
 
 
    PLLE3_ADV #(
-       .COMPENSATION      ("AUTO"),
-       .STARTUP_WAIT      ("FALSE"),
-       .DIVCLK_DIVIDE     (1),
-       .CLKFBOUT_MULT     (4),
-       .CLKFBOUT_PHASE    (0.000),
-       .CLKOUT0_DIVIDE    (4 * OUTPUT_PER / INPUT_PER),
-       .CLKOUT0_PHASE     (0.000),
-       .CLKOUT0_DUTY_CYCLE(0.500),
-       .CLKIN_PERIOD      (INPUT_PER)
+      .COMPENSATION      ("AUTO"),
+      .STARTUP_WAIT      ("FALSE"),
+      .DIVCLK_DIVIDE     (1),
+      .CLKFBOUT_MULT     (4),
+      .CLKFBOUT_PHASE    (0.000),
+      .CLKOUT0_DIVIDE    (4 * OUTPUT_PER / INPUT_PER),
+      .CLKOUT0_PHASE     (0.000),
+      .CLKOUT0_DUTY_CYCLE(0.500),
+      .CLKIN_PERIOD      (INPUT_PER)
    ) plle3_adv_inst
    // Output clocks
    (

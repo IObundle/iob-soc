@@ -3,33 +3,33 @@
 `include "iob_soc_conf.vh"
 
 module iob_soc_fpga_wrapper (
-    //user clock
-    input clk,
-    input resetn,
+   //user clock
+   input clk,
+   input resetn,
 
-    //uart
-    output uart_txd,
-    input  uart_rxd,
+   //uart
+   output uart_txd,
+   input  uart_rxd,
 
 `ifdef IOB_SOC_USE_EXTMEM
-    output [13:0] ddr3b_a,       //SSTL15  //Address
-    output [ 2:0] ddr3b_ba,      //SSTL15  //Bank Address
-    output        ddr3b_rasn,    //SSTL15  //Row Address Strobe
-    output        ddr3b_casn,    //SSTL15  //Column Address Strobe
-    output        ddr3b_wen,     //SSTL15  //Write Enable
-    output [ 1:0] ddr3b_dm,      //SSTL15  //Data Write Mask
-    inout  [15:0] ddr3b_dq,      //SSTL15  //Data Bus
-    output        ddr3b_clk_n,   //SSTL15  //Diff Clock - Neg
-    output        ddr3b_clk_p,   //SSTL15  //Diff Clock - Pos
-    output        ddr3b_cke,     //SSTL15  //Clock Enable
-    output        ddr3b_csn,     //SSTL15  //Chip Select
-    inout  [ 1:0] ddr3b_dqs_n,   //SSTL15  //Diff Data Strobe - Neg
-    inout  [ 1:0] ddr3b_dqs_p,   //SSTL15  //Diff Data Strobe - Pos
-    output        ddr3b_odt,     //SSTL15  //On-Die Termination Enable
-    output        ddr3b_resetn,  //SSTL15  //Reset
-    input         rzqin,
+   output [13:0] ddr3b_a,       //SSTL15  //Address
+   output [ 2:0] ddr3b_ba,      //SSTL15  //Bank Address
+   output        ddr3b_rasn,    //SSTL15  //Row Address Strobe
+   output        ddr3b_casn,    //SSTL15  //Column Address Strobe
+   output        ddr3b_wen,     //SSTL15  //Write Enable
+   output [ 1:0] ddr3b_dm,      //SSTL15  //Data Write Mask
+   inout  [15:0] ddr3b_dq,      //SSTL15  //Data Bus
+   output        ddr3b_clk_n,   //SSTL15  //Diff Clock - Neg
+   output        ddr3b_clk_p,   //SSTL15  //Diff Clock - Pos
+   output        ddr3b_cke,     //SSTL15  //Clock Enable
+   output        ddr3b_csn,     //SSTL15  //Chip Select
+   inout  [ 1:0] ddr3b_dqs_n,   //SSTL15  //Diff Data Strobe - Neg
+   inout  [ 1:0] ddr3b_dqs_p,   //SSTL15  //Diff Data Strobe - Pos
+   output        ddr3b_odt,     //SSTL15  //On-Die Termination Enable
+   output        ddr3b_resetn,  //SSTL15  //Reset
+   input         rzqin,
 `endif
-    output        trap
+   output        trap
 );
 
    //axi4 parameters
@@ -53,10 +53,10 @@ module iob_soc_fpga_wrapper (
    // SYSTEM
    //
    iob_soc #(
-       .AXI_ID_W  (AXI_ID_W),
-       .AXI_LEN_W (AXI_LEN_W),
-       .AXI_ADDR_W(AXI_ADDR_W),
-       .AXI_DATA_W(AXI_DATA_W)
+      .AXI_ID_W  (AXI_ID_W),
+      .AXI_LEN_W (AXI_LEN_W),
+      .AXI_ADDR_W(AXI_ADDR_W),
+      .AXI_DATA_W(AXI_DATA_W)
    ) iob_soc (
       .clk_i (clk),
       .arst_i(rst),
@@ -84,7 +84,7 @@ module iob_soc_fpga_wrapper (
    //wire          rst_int = ~resetn | ~locked;
 
    iob_reset_sync rst_sync (
-      .clk_i(clk),
+      .clk_i (clk),
       .arst_i(rst_int),
       .arst_o(rst)
    );
@@ -164,7 +164,7 @@ module iob_soc_fpga_wrapper (
 
 `else
    iob_reset_sync rst_sync (
-      .clk_i(clk),
+      .clk_i (clk),
       .arst_i((~resetn)),
       .arst_o(rst)
    );
