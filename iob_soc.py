@@ -36,20 +36,19 @@ from iob_str import iob_str
 from axi_interconnect import axi_interconnect
 
 class iob_soc(iob_module):
-    def __init__(self):
-        super().__init__(
-                name="iob_soc",
-                version="V0.70",
-                flows="pc-emul emb sim doc fpga",
-                setup_dir=os.path.dirname(__file__),
-                **kwargs
-                )
+    name="iob_soc"
+    version="V0.70"
+    flows="pc-emul emb sim doc fpga"
+    setup_dir=os.path.dirname(__file__)
 
-    def setup(self):
-        super().setup(**kwargs)
+    # IOb-SoC has the following list of non standard attributes:
+    peripherals=[] # List with instances peripherals to include in system
+    peripheral_portmap=[] # List of tuples, each tuple corresponds to a port map
 
+    # Method that runs the setup process of this class
+    @classmethod
+    def _run_setup(cls):
         # Submodules
-        iob_picorv32.setup()
         iob_cache.setup()
         iob_uart.setup()
 
@@ -59,7 +58,6 @@ class iob_soc(iob_module):
         iob_submodule_utils.generate("axi_m_port")
         iob_submodule_utils.generate("axi_m_m_portmap")
         iob_submodule_utils.generate("axi_m_portmap")
-        iob_submodule_utils.setup()
         iob_utils.setup()
         iob_clkenrst_portmap.setup()
         iob_clkenrst_port.setup()
@@ -87,62 +85,61 @@ class iob_soc(iob_module):
         iob_str.setup(purpose="software")
 
         # Verilog modules instances
-        self.cpu = iob_picorv32.instance()
-        self.ibus_split = iob_split.instance()
-        self.dbus_split = iob_split.instance()
-        self.int_dbus_split = iob_split.instance()
-        self.pbus_split = iob_split.instance()
-        self.int_mem = iob_merge.instance()
-        self.ext_mem = iob_merge.instance()
-        self.peripherals = [
-                iob_uart.instance(),
-                ]
+        cls.cpu = iob_picorv32.instance("cpu_0")
+        cls.ibus_split = iob_split.instance("ibus_split_0")
+        cls.dbus_split = iob_split.instance("dbus_split_0")
+        cls.int_dbus_split = iob_split.instance("int_dbus_split_0")
+        cls.pbus_split = iob_split.instance("pbus_split_0")
+        cls.int_mem = iob_merge.instance("iob_merge_0")
+        cls.ext_mem = iob_merge.instance("iob_merge_1")
+        cls.peripherals.append(iob_uart.instance("iob_uart_0"))
 
-        self.setup_block_groups()
-        self.setup_confs()
-        self.setup_ios()
+        cls._setup_block_groups()
+        cls._setup_confs()
+        cls._setup_ios()
 
-        self.peripheral_portmap+=peripheral_portmap
-        self.peripheral_portmap+=[
+        cls.peripheral_portmap+=[
             (
                 {"corename": "UART0", "if_name": "rs232", "port": "", "bits": []},
                 {"corename": "external", "if_name": "UART", "port": "", "bits": []},
             ),  # Map UART0 of tester to external interface
         ],
 
-        self.custom_setup()
+        cls._custom_setup()
         # Setup this system using specialized iob-soc function
-        setup_iob_soc(self)
+        setup_iob_soc(cls)
 
 
-    def setup_block_groups(self):
-        self.block_groups += [
+    @classmethod
+    def _setup_block_groups(cls):
+        cls.block_groups += [
             iob_block_group(
                 name="cpu",
                 description="CPU module",
-                blocks=[self.cpu]
+                blocks=[cls.cpu]
             ),
             iob_block_group(
                 name="bus_split",
                 description="Split modules for buses",
-                blocks=[self.ibus_split, self.dbus_split, self.int_dbus_split, self.pbus_split]
+                blocks=[cls.ibus_split, cls.dbus_split, cls.int_dbus_split, cls.pbus_split]
             ),
             iob_block_group(
                 name="mem",
                 description="Memory module",
-                blocks=[self.int_mem, self.ext_mem]
+                blocks=[cls.int_mem, cls.ext_mem]
             ),
             iob_block_group(
                 name="peripheral",
                 description="Peripheral module",
-                blocks=self.peripherals
+                blocks=cls.peripherals
             ),
         ]
 
 
-    def setup_confs(self):
+    @classmethod
+    def _setup_confs(cls):
         # Append confs or override them if they exist
-        super().setup_confs([
+        super()._setup_confs([
             # macros
             {
                 "name": "USE_MUL_DIV",
@@ -260,8 +257,9 @@ class iob_soc(iob_module):
             },
         ])
 
-    def setup_ios(self):
-        self.ios += [
+    @classmethod
+    def _setup_ios(cls):
+        cls.ios += [
             {
                 "name": "general",
                 "descr": "General interface signals",
@@ -518,17 +516,18 @@ class iob_soc(iob_module):
         ]
 
 
-    def custom_setup(self):
+    @classmethod
+    def _custom_setup(cls):
         # Add the following arguments:
         # "INIT_MEM": if should setup with init_mem or not
         # "USE_EXTMEM": if should setup with extmem or not
         for arg in sys.argv[1:]:
             if arg == "INIT_MEM":
-                update_define(self.confs, "INIT_MEM", True)
+                update_define(cls.confs, "INIT_MEM", True)
             if arg == "USE_EXTMEM":
-                update_define(self.confs, "USE_EXTMEM", True)
+                update_define(cls.confs, "USE_EXTMEM", True)
 
-        for conf in self.confs:
+        for conf in cls.confs:
             if (conf["name"] == "USE_EXTMEM") and conf["val"]:
                 iob_submodule_utils.generate(
                     {
