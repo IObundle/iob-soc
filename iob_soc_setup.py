@@ -53,7 +53,14 @@ submodules = {
         "headers": ["axi_s_portmap", "iob_tasks.vh"],
         "modules": ["axi_ram.v"],
     },
-    "sw_setup": {"headers": [], "modules": ["iob_str"]},
+    "sw_setup": {
+        "headers": [],
+        "modules": [
+            "iob_str",
+            "UART",
+            "CACHE",
+        ],
+    },
 }
 
 blocks = [
