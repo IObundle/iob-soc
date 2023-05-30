@@ -189,12 +189,12 @@ module ext_mem #(
    wire l2cache_rdata;
    wire l2cache_ack;
 
-   assign l2cache_valid = l2cache_req[1+MEM_ADDR_W+`WRITE_W-1];
-   assign l2cache_addr  = l2cache_req[`ADDRESS(0, MEM_ADDR_W)-2];
-   assign l2cache_wdata = l2cache_req[`WDATA(0)];
-   assign l2cache_wstrb = l2cache_req[`WSTRB(0)];
-   assign l2cache_rdata = l2cache_resp[`RDATA(0)];
-   assign l2cache_ack   = l2cache_resp[`READY(0)];
+   assign l2cache_valid           = l2cache_req[1+MEM_ADDR_W+`WRITE_W-1];
+   assign l2cache_addr            = l2cache_req[`ADDRESS(0, MEM_ADDR_W)-2];
+   assign l2cache_wdata           = l2cache_req[`WDATA(0)];
+   assign l2cache_wstrb           = l2cache_req[`WSTRB(0)];
+   assign l2cache_resp[`RDATA(0)] = l2cache_rdata;
+   assign l2cache_resp[`READY(0)] = l2cache_ack;
 
    // L2 cache instance
    iob_cache_axi #(

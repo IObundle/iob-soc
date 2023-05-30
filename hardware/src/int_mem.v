@@ -118,7 +118,7 @@ module int_mem #(
    localparam boot_offset = -('b1 << BOOTROM_ADDR_W);
 
    //instruction bus: connect directly but address
-   assign ram_r_addr = ram_r_req[`ADDRESS(0, ADDR_W)];
+   assign ram_r_req[`ADDRESS(0, ADDR_W)] = ram_r_addr;
    assign boot_i_addr = i_req[`ADDRESS(0, ADDR_W)] + boot_offset;
    assign i_addr = i_req[`ADDRESS(0, ADDR_W)];
 
