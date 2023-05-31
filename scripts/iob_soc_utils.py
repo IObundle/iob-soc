@@ -2,11 +2,9 @@
 import sys
 import os
 
-sys.path.insert(0, os.getcwd()+'/submodules/LIB/scripts')
-
 import periphs_tmp
 import createSystem
-import createTestbench
+from iob_soc_create_testbench import create_system_testbench
 import sim_wrapper
 from submodule_utils import import_setup, get_table_ports, add_prefix_to_parameters_in_port, eval_param_expression_from_config, iob_soc_peripheral_setup, set_default_submodule_dirs, get_peripherals_list, reserved_signals
 from ios import get_interface_mapping
@@ -55,7 +53,8 @@ def copy_common_files(build_dir, system_name, directory, exclude_file_list):
 # Specialized IOb-SoC setup functions.
 ######################################
 
-def iob_soc_sw_setup(python_module, peripherals_list, exclude_files=[]):
+def iob_soc_sw_setup(python_module, exclude_files=[]):
+    peripherals_list = python_module.peripherals
     confs = python_module.confs
     build_dir = python_module.build_dir
     name = python_module.name
@@ -67,19 +66,19 @@ def iob_soc_sw_setup(python_module, peripherals_list, exclude_files=[]):
     # Copy files common to all iob-soc based systems
     copy_common_files(build_dir, name, "software", exclude_files)
 
-def iob_soc_sim_setup(python_module, peripherals_list, exclude_files=[]):
+def iob_soc_sim_setup(python_module, exclude_files=[]):
+    peripherals_list = python_module.peripherals
     confs = python_module.confs
     build_dir = python_module.build_dir
     name = python_module.name
-    submodules = python_module.submodules
     #print(f"DEBUG {name} sim func()", file=sys.stderr)
     copy_common_files(build_dir, name, "hardware/simulation", exclude_files)
     # Try to build simulation <system_name>_tb.v if template <system_name>_tb.vt is available and iob_soc_tb.vt not in exclude list
     if not fnmatch.filter(exclude_files,'iob_soc_tb.vt'):
-        createTestbench.create_system_testbench(os.path.join(build_dir,f'hardware/simulation/src/{name}_tb.vt'), submodules['dirs'], name, peripherals_list, os.path.join(build_dir,f'hardware/simulation/src/{name}_tb.v'))
+        create_system_testbench(os.path.join(build_dir,f'hardware/simulation/src/{name}_tb.vt'), name, peripherals_list, os.path.join(build_dir,f'hardware/simulation/src/{name}_tb.v'))
     # Try to build simulation <system_name>_sim_wrapper.v if template <system_name>_sim_wrapper.vt is available and iob_soc_sim_wrapper.vt not in exclude list
     if not fnmatch.filter(exclude_files,'iob_soc_sim_wrapper.vt'):
-        sim_wrapper.create_sim_wrapper(os.path.join(build_dir,f'hardware/simulation/src/{name}_sim_wrapper.vt'), submodules['dirs'], name, peripherals_list, python_module.ios, confs, os.path.join(build_dir,f'hardware/simulation/src/{name}_sim_wrapper.v'))
+        sim_wrapper.create_sim_wrapper(os.path.join(build_dir,f'hardware/simulation/src/{name}_sim_wrapper.vt'), name, peripherals_list, python_module.ios, confs, os.path.join(build_dir,f'hardware/simulation/src/{name}_sim_wrapper.v'))
 
 def iob_soc_fpga_setup(python_module, exclude_files=[]):
     copy_common_files(python_module.build_dir, python_module.name, "hardware/fpga", exclude_files)
@@ -92,7 +91,8 @@ def iob_soc_doc_setup(python_module, exclude_files=[]):
             os.path.join(python_module.build_dir,"document/"), dirs_exist_ok=True,
             ignore=lambda directory, contents: [f for f in contents if os.path.splitext(f)[1] not in ['.odg', '']])
 
-def iob_soc_hw_setup(python_module, peripherals_list, exclude_files=[]):
+def iob_soc_hw_setup(python_module, exclude_files=[]):
+    peripherals_list = python_module.peripherals
     build_dir = python_module.build_dir
     name = python_module.name
 
@@ -101,7 +101,7 @@ def iob_soc_hw_setup(python_module, peripherals_list, exclude_files=[]):
     # Note, it checks for iob_soc.vt in exclude files, instead of <system_name>.vt, to be consistent with the copy_common_files() function.
     #[If a user does not want to build <system_name>.v from the template, then he also does not want to copy the template from the iob-soc]
     if not fnmatch.filter(exclude_files,'iob_soc.vt'):
-        createSystem.create_systemv(os.path.join(build_dir,f'hardware/src/{name}.vt'), python_module.submodules['dirs'], name, peripherals_list, os.path.join(build_dir,f'hardware/src/{name}.v'), internal_wires=python_module.internal_wires)
+        createSystem.create_systemv(os.path.join(build_dir,f'hardware/src/{name}.vt'), name, peripherals_list, os.path.join(build_dir,f'hardware/src/{name}.v'), internal_wires=python_module.internal_wires)
 
     # Delete verilog templates from build dir
     for p in Path(build_dir).rglob("*.vt"):
@@ -113,9 +113,7 @@ def iob_soc_hw_setup(python_module, peripherals_list, exclude_files=[]):
 def setup_iob_soc(python_module):
     confs = python_module.confs
     build_dir = python_module.build_dir
-    submodules = python_module.submodules
     name = python_module.name
-    module_parameters = python_module.module_parameters
 
     # Replace IOb-SoC name in values of confs
     for conf in confs:
@@ -124,18 +122,18 @@ def setup_iob_soc(python_module):
 
     set_default_submodule_dirs(python_module)
 
-    # Create peripheral list
-    peripherals_list = iob_soc_peripheral_setup(python_module)
-    python_module.internal_wires = peripheral_portmap(python_module, peripherals_list)
+    # Setup peripherals
+    iob_soc_peripheral_setup(python_module)
+    python_module.internal_wires = peripheral_portmap(python_module)
 
     # Call setup function for iob_soc
     setup.setup(python_module, disable_file_copy=True)
 
     # Run iob-soc specialized setup sequence
-    iob_soc_sim_setup(python_module, peripherals_list)
+    iob_soc_sim_setup(python_module)
     iob_soc_fpga_setup(python_module)
-    iob_soc_sw_setup(python_module, peripherals_list)
-    iob_soc_hw_setup(python_module, peripherals_list)
+    iob_soc_sw_setup(python_module)
+    iob_soc_hw_setup(python_module)
     iob_soc_doc_setup(python_module)
 
     if setup.is_top_module(python_module):
@@ -154,7 +152,7 @@ def setup_iob_soc(python_module):
             file.write("# init file for external mem with firmware of both systems\n")
             file.write(f"init_ddr_contents.hex: {name}_firmware.hex\n")
 
-            sut_firmware_name = module_parameters['sut_fw_name'].replace('.c','')+'.hex' if 'sut_fw_name' in module_parameters.keys() else '-'
+            sut_firmware_name = python_module.sut_fw_name.replace('.c','.hex') if 'sut_fw_name' in python_module.__dict__.keys() else '-'
             file.write(f"	../../scripts/joinHexFiles.py {sut_firmware_name} $^ {mem_add_w_parameter['val']} > $@\n")
         # Copy joinHexFiles.py from LIB
         build_srcs.copy_files( "submodules/LIB", f"{build_dir}/scripts", [ "joinHexFiles.py" ], '*.py' )
@@ -186,9 +184,9 @@ def map_IO_to_wire(io_dict, port_name, port_size, port_bits, wire_name):
             io_dict[port_name][bit] = (wire_name, wire_bit)
 
 # Function to handle portmap connections between: peripherals, internal, and external system interfaces.
-def peripheral_portmap(python_module, peripherals_list):
+def peripheral_portmap(python_module):
+    peripherals_list = python_module.peripherals
     ios = python_module.ios
-    submodules = python_module.submodules
 
     # Generate an empty list if peripheral_portmap does not exist
     if not 'peripheral_portmap' in vars(python_module):

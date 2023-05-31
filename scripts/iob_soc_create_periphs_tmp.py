@@ -15,7 +15,7 @@ def create_periphs_tmp(periph_addr_select_bit, peripherals_list, out_file):
 
     template_contents = []
     for instance in peripherals_list:
-        template_contents.extend("#define {}_BASE (1<<{}) |({}<<({}-N_SLAVES_W))\n".format(instance['name'],periph_addr_select_bit,instance['name'],periph_addr_select_bit))
+        template_contents.extend("#define {}_BASE (1<<{}) |({}<<({}-N_SLAVES_W))\n".format(instance.name,periph_addr_select_bit,instance.name,periph_addr_select_bit))
 
     # Write system.v
     os.makedirs(os.path.dirname(out_file), exist_ok=True)
