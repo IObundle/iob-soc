@@ -143,7 +143,7 @@ fi
 NOTE: The `$NIX_PATH` variable should be replaced by the path to the nix-shell binary.
 Run `whereis nix-shell` on the remote machine to obtain the correct path.
 
-NOTE: The `$NIX_DEPS` variable should be replaced by the path to the [shell.nix](https://github.com/IObundle/iob-lib/blob/python-setup/nix/shell.nix) file.
+NOTE: The `$NIX_DEPS` variable should be replaced by the path to the [shell.nix](https://github.com/IObundle/iob-lib/blob/python-setup/scripts/shell.nix) file.
 This file is located in the `nix/` directory of the [IOb-Lib](https://github.com/IObundle/iob-lib) repository.
 Copy this file to a fixed location on the remote machine and replace the `$NIX_DEPS` variable with its path.
 
