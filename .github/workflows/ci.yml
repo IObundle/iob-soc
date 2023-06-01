@@ -52,32 +52,32 @@ jobs:
           submodules: 'recursive'
       # Init mem
       - name: clean
-        run: make clean
+        run: nix-shell --run "make clean"
       - name: setup init_mem
         run: nix-shell --run "make setup"
       - name: verilator test
-        run: make -C ../iob_soc_V* sim-test SIMULATOR=verilator
+        run: nix-shell --run "make -C ../iob_soc_V* sim-test SIMULATOR=verilator"
       # No init mem
       - name: clean
-        run: make clean
+        run: nix-shell --run "make clean"
       - name: setup
         run: nix-shell --run "make setup INIT_MEM=0"
       - name: verilator test
-        run: make -C ../iob_soc_V* sim-test SIMULATOR=verilator
+        run: nix-shell --run "make -C ../iob_soc_V* sim-test SIMULATOR=verilator"
       # Init mem and Ext mem
       - name: clean
-        run: make clean
+        run: nix-shell --run "make clean"
       - name: setup init_mem ext_mem
         run: nix-shell --run "make setup INIT_MEM=1 USE_EXTMEM=1"
       - name: verilator test
-        run: make -C ../iob_soc_V* sim-test SIMULATOR=verilator
+        run: nix-shell --run "make -C ../iob_soc_V* sim-test SIMULATOR=verilator"
       # No init mem and Ext mem
       - name: clean
-        run: make clean
+        run: nix-shell --run "make clean"
       - name: setup ext_mem
         run: nix-shell --run "make setup INIT_MEM=0 USE_EXTMEM=1"
       - name: verilator test
-        run: make -C ../iob_soc_V* sim-test SIMULATOR=verilator
+        run: nix-shell --run "make -C ../iob_soc_V* sim-test SIMULATOR=verilator"
   
   icarus:
     runs-on: self-hosted
