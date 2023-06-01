@@ -11,7 +11,6 @@ from iob_soc_utils import setup_iob_soc
 from iob_picorv32 import iob_picorv32
 from iob_cache import iob_cache
 from iob_uart import iob_uart
-from iob_submodule_utils import iob_submodule_utils
 from iob_utils import iob_utils
 from iob_clkenrst_portmap import iob_clkenrst_portmap
 from iob_clkenrst_port import iob_clkenrst_port
@@ -22,14 +21,12 @@ from iob_ram_dp_be import iob_ram_dp_be
 from iob_ram_dp_be_xil import iob_ram_dp_be_xil
 from iob_pulse_gen import iob_pulse_gen
 from iob_counter import iob_counter
-from iob_ram_2p_asym import iob_ram_2p_asym
 from iob_reg import iob_reg
 from iob_reg_re import iob_reg_re
 from iob_ram_sp_be import iob_ram_sp_be
 from iob_ram_dp import iob_ram_dp
 from iob_reset_sync import iob_reset_sync
 from axi_ram import axi_ram
-from axi_s_portmap import axi_s_portmap
 from iob_tasks import iob_tasks
 from iob_str import iob_str
 # Optional submodules
@@ -53,11 +50,11 @@ class iob_soc(iob_module):
         iob_uart.setup()
 
         # Hardware headers & modules
-        iob_submodule_utils.generate("iob_wire")
-        iob_submodule_utils.generate("axi_wire")
-        iob_submodule_utils.generate("axi_m_port")
-        iob_submodule_utils.generate("axi_m_m_portmap")
-        iob_submodule_utils.generate("axi_m_portmap")
+        iob_module.generate("iob_wire")
+        iob_module.generate("axi_wire")
+        iob_module.generate("axi_m_port")
+        iob_module.generate("axi_m_m_portmap")
+        iob_module.generate("axi_m_portmap")
         iob_utils.setup()
         iob_clkenrst_portmap.setup()
         iob_clkenrst_port.setup()
@@ -69,7 +66,6 @@ class iob_soc(iob_module):
         iob_ram_dp_be_xil.setup()
         iob_pulse_gen.setup()
         iob_counter.setup()
-        iob_ram_2p_asym.setup()
         iob_reg.setup()
         iob_reg_re.setup()
         iob_ram_sp_be.setup()
@@ -78,7 +74,7 @@ class iob_soc(iob_module):
 
         # Simulation headers & modules
         axi_ram.setup(purpose="simulation")
-        axi_s_portmap.setup(purpose="simulation")
+        iob_module.generate("axi_s_portmap", purpose="simulation")
         iob_tasks.setup(purpose="simulation")
 
         # Software modules
@@ -529,7 +525,7 @@ class iob_soc(iob_module):
 
         for conf in cls.confs:
             if (conf["name"] == "USE_EXTMEM") and conf["val"]:
-                iob_submodule_utils.generate(
+                iob_module.generate(
                     {
                         "file_prefix": "ddr4_",
                         "interface": "axi_wire",
@@ -538,7 +534,7 @@ class iob_soc(iob_module):
                     }
                 )
                 axi_interconnect.setup()
-                iob_submodule_utils.generate(
+                iob_module.generate(
                     {
                         "file_prefix": "iob_bus_0_2_",
                         "interface": "axi_m_portmap",
@@ -547,7 +543,7 @@ class iob_soc(iob_module):
                         "bus_start": 0,
                         "bus_size": 2,
                     })
-                iob_submodule_utils.generate(
+                iob_module.generate(
                     {
                         "file_prefix": "iob_bus_2_3_",
                         "interface": "axi_s_portmap",
@@ -556,7 +552,7 @@ class iob_soc(iob_module):
                         "bus_start": 2,
                         "bus_size": 1,
                     })
-                iob_submodule_utils.generate(
+                iob_module.generate(
                     # Can't use portmaps below, because it creates axi_awlock and axi_arlock with 2 bits instead of 1 (these are used for axi_interconnect)
                     # { 'file_prefix':'iob_bus_0_2_s_', 'interface':'axi_portmap', 'wire_prefix':'', 'port_prefix':'s_', 'bus_start':0, 'bus_size':2 },
                     # { 'file_prefix':'iob_bus_2_3_m_', 'interface':'axi_portmap', 'wire_prefix':'', 'port_prefix':'m_', 'bus_start':2, 'bus_size':1 },
@@ -567,7 +563,7 @@ class iob_soc(iob_module):
                         "port_prefix": "",
                         "bus_size": 3,
                     })
-                iob_submodule_utils.generate(
+                iob_module.generate(
                     {
                         "file_prefix": "iob_bus_2_",
                         "interface": "axi_wire",
