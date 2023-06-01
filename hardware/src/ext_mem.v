@@ -182,12 +182,12 @@ module ext_mem #(
       .s_resp_i(l2cache_resp)
    );
 
-   wire l2cache_valid;
-   wire l2cache_addr;
-   wire l2cache_wdata;
-   wire l2cache_wstrb;
-   wire l2cache_rdata;
-   wire l2cache_ack;
+   wire                  l2cache_valid;
+   wire [MEM_ADDR_W-3:0] l2cache_addr;
+   wire [    DATA_W-1:0] l2cache_wdata;
+   wire [  DATA_W/8-1:0] l2cache_wstrb;
+   wire [    DATA_W-1:0] l2cache_rdata;
+   wire                  l2cache_ack;
 
    assign l2cache_valid           = l2cache_req[1+MEM_ADDR_W+`WRITE_W-1];
    assign l2cache_addr            = l2cache_req[`ADDRESS(0, MEM_ADDR_W)-2];
