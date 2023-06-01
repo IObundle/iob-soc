@@ -45,7 +45,7 @@ module iob_soc_tb;
    integer error, n_byte = 0;
 
    //got enquiry (connect request)
-   reg        gotENQ;
+   reg  gotENQ;
 
    //cpu trap signal
    wire trap;
