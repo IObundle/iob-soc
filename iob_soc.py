@@ -13,6 +13,7 @@ from iob_picorv32 import iob_picorv32
 from iob_cache import iob_cache
 from iob_uart import iob_uart
 from iob_utils import iob_utils
+from iob_lib import iob_lib
 from iob_clkenrst_portmap import iob_clkenrst_portmap
 from iob_clkenrst_port import iob_clkenrst_port
 from iob_merge import iob_merge
@@ -60,6 +61,7 @@ class iob_soc(iob_module):
         iob_module.generate("axi_m_m_portmap")
         iob_module.generate("axi_m_portmap")
         iob_utils.setup()
+        iob_lib.setup()
         iob_clkenrst_portmap.setup()
         iob_clkenrst_port.setup()
 

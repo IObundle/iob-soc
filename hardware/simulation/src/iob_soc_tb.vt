@@ -48,7 +48,7 @@ module iob_soc_tb;
    reg        gotENQ;
 
    //cpu trap signal
-   wire [1:0] trap;
+   wire trap;
 
    initial begin
       //init cpu bus signals
@@ -140,7 +140,7 @@ module iob_soc_tb;
    `include "iob_tasks.vh"
 
    //finish simulation on trap
-   always @(posedge |trap) begin
+   always @(posedge trap) begin
       #10 $display("Found CPU trap condition");
       $finish;
    end
