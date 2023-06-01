@@ -2,13 +2,11 @@
 
 module iob_soc_fpga_wrapper (
    input clk,
-   input resetn,
+   input reset,
 
    //uart
    output uart_txd,
-   input  uart_rxd,
-
-   output trap
+   input  uart_rxd
 );
 
    //
@@ -20,12 +18,18 @@ module iob_soc_fpga_wrapper (
    wire        sys_rst;
 
    reg  [15:0] rst_cnt;
+   reg         sys_rst_int;
 
-   always @(posedge clk, negedge resetn)
-      if (!resetn) rst_cnt <= 16'hFFFF;
-      else if (rst_cnt != 16'h0) rst_cnt <= rst_cnt - 1'b1;
+   always @(posedge clk, posedge reset)
+      if (reset) begin
+         sys_rst_int <= 1'b0;
+         rst_cnt     <= 16'hFFFF;
+      end else begin
+         if (rst_cnt != 16'h0) rst_cnt <= rst_cnt - 1'b1;
+         sys_rst_int <= (rst_cnt != 16'h0);
+      end
 
-   assign sys_rst = (rst_cnt != 16'h0);
+   assign sys_rst = sys_rst_int;
 
    //
    // SYSTEM

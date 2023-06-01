@@ -25,6 +25,10 @@ submodules = {
             "axi_m_port",
             "axi_m_m_portmap",
             "axi_m_portmap",
+            "iob_lib.vh",
+            "iob_utils.vh",
+            "iob_clkenrst_portmap.vs",
+            "iob_clkenrst_port.vs",
         ],
         "modules": [
             "PICORV32",
@@ -49,7 +53,14 @@ submodules = {
         "headers": ["axi_s_portmap", "iob_tasks.vh"],
         "modules": ["axi_ram.v"],
     },
-    "sw_setup": {"headers": [], "modules": ["CACHE", "UART", "iob_str"]},
+    "sw_setup": {
+        "headers": [],
+        "modules": [
+            "iob_str",
+            "UART",
+            "CACHE",
+        ],
+    },
 }
 
 blocks = [
