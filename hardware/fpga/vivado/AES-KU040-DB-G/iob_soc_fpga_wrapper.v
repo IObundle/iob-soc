@@ -43,7 +43,7 @@ module iob_soc_fpga_wrapper (
 
 `ifdef IOB_SOC_USE_EXTMEM
    //axi wires between system backend and axi bridge
-   `include "iob_axi_wire.vh"
+   `include "iob_axi_wire.vs"
 `endif
 
    //
@@ -62,7 +62,7 @@ module iob_soc_fpga_wrapper (
 
 `ifdef IOB_SOC_USE_EXTMEM
       //axi system backend interface
-      `include "iob_axi_m_portmap.vh"
+      `include "iob_axi_m_portmap.vs"
 `endif
 
       //UART
@@ -80,7 +80,7 @@ module iob_soc_fpga_wrapper (
 `ifdef IOB_SOC_USE_EXTMEM
 
    //axi wires between ddr4 contrl and axi interconnect
-   `include "ddr4_axi_wire.vh"
+   `include "ddr4_axi_wire.vs"
 
    //DDR4 controller axi side clocks and resets
    wire c0_ddr4_ui_clk;  //controller output clock 200MHz
