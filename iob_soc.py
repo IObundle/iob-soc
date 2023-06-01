@@ -29,18 +29,20 @@ from iob_reset_sync import iob_reset_sync
 from axi_ram import axi_ram
 from iob_tasks import iob_tasks
 from iob_str import iob_str
+
 # Optional submodules
 from axi_interconnect import axi_interconnect
 
+
 class iob_soc(iob_module):
-    name="iob_soc"
-    version="V0.70"
-    flows="pc-emul emb sim doc fpga"
-    setup_dir=os.path.dirname(__file__)
+    name = "iob_soc"
+    version = "V0.70"
+    flows = "pc-emul emb sim doc fpga"
+    setup_dir = os.path.dirname(__file__)
 
     # IOb-SoC has the following list of non standard attributes:
-    peripherals=[] # List with instances peripherals to include in system
-    peripheral_portmap=[] # List of tuples, each tuple corresponds to a port map
+    peripherals = []  # List with instances peripherals to include in system
+    peripheral_portmap = []  # List of tuples, each tuple corresponds to a port map
 
     # Method that runs the setup process of this class
     @classmethod
@@ -94,164 +96,167 @@ class iob_soc(iob_module):
         cls._setup_confs()
         cls._setup_ios()
 
-        cls.peripheral_portmap+=[
-            (
-                {"corename": "UART0", "if_name": "rs232", "port": "", "bits": []},
-                {"corename": "external", "if_name": "UART", "port": "", "bits": []},
-            ),  # Map UART0 of tester to external interface
-        ],
+        cls.peripheral_portmap += (
+            [
+                (
+                    {"corename": "UART0", "if_name": "rs232", "port": "", "bits": []},
+                    {"corename": "external", "if_name": "UART", "port": "", "bits": []},
+                ),  # Map UART0 of tester to external interface
+            ],
+        )
 
         cls._custom_setup()
         # Setup this system using specialized iob-soc function
         setup_iob_soc(cls)
 
-
     @classmethod
     def _setup_block_groups(cls):
         cls.block_groups += [
-            iob_block_group(
-                name="cpu",
-                description="CPU module",
-                blocks=[cls.cpu]
-            ),
+            iob_block_group(name="cpu", description="CPU module", blocks=[cls.cpu]),
             iob_block_group(
                 name="bus_split",
                 description="Split modules for buses",
-                blocks=[cls.ibus_split, cls.dbus_split, cls.int_dbus_split, cls.pbus_split]
+                blocks=[
+                    cls.ibus_split,
+                    cls.dbus_split,
+                    cls.int_dbus_split,
+                    cls.pbus_split,
+                ],
             ),
             iob_block_group(
                 name="mem",
                 description="Memory module",
-                blocks=[cls.int_mem, cls.ext_mem]
+                blocks=[cls.int_mem, cls.ext_mem],
             ),
             iob_block_group(
                 name="peripheral",
                 description="Peripheral module",
-                blocks=cls.peripherals
+                blocks=cls.peripherals,
             ),
         ]
-
 
     @classmethod
     def _setup_confs(cls):
         # Append confs or override them if they exist
-        super()._setup_confs([
-            # macros
-            {
-                "name": "USE_MUL_DIV",
-                "type": "M",
-                "val": "1",
-                "min": "0",
-                "max": "1",
-                "descr": "Enable MUL and DIV CPU instructions",
-            },
-            {
-                "name": "USE_COMPRESSED",
-                "type": "M",
-                "val": "1",
-                "min": "0",
-                "max": "1",
-                "descr": "Use compressed CPU instructions",
-            },
-            {
-                "name": "E",
-                "type": "M",
-                "val": "31",
-                "min": "1",
-                "max": "32",
-                "descr": "Address selection bit for external memory",
-            },
-            {
-                "name": "P",
-                "type": "M",
-                "val": "30",
-                "min": "1",
-                "max": "32",
-                "descr": "Address selection bit for peripherals",
-            },
-            {
-                "name": "B",
-                "type": "M",
-                "val": "29",
-                "min": "1",
-                "max": "32",
-                "descr": "Address selection bit for boot ROM",
-            },
-            # parameters
-            {
-                "name": "BOOTROM_ADDR_W",
-                "type": "P",
-                "val": "12",
-                "min": "1",
-                "max": "32",
-                "descr": "Boot ROM address width",
-            },
-            {
-                "name": "SRAM_ADDR_W",
-                "type": "P",
-                "val": "15",
-                "min": "1",
-                "max": "32",
-                "descr": "SRAM address width",
-            },
-            {
-                "name": "MEM_ADDR_W",
-                "type": "P",
-                "val": "24",
-                "min": "1",
-                "max": "32",
-                "descr": "Memory bus address width",
-            },
-            # mandatory parameters (do not change them!)
-            {
-                "name": "ADDR_W",
-                "type": "P",
-                "val": "32",
-                "min": "1",
-                "max": "32",
-                "descr": "Address bus width",
-            },
-            {
-                "name": "DATA_W",
-                "type": "P",
-                "val": "32",
-                "min": "1",
-                "max": "32",
-                "descr": "Data bus width",
-            },
-            {
-                "name": "AXI_ID_W",
-                "type": "P",
-                "val": "0",
-                "min": "1",
-                "max": "32",
-                "descr": "AXI ID bus width",
-            },
-            {
-                "name": "AXI_ADDR_W",
-                "type": "P",
-                "val": "`IOB_SOC_MEM_ADDR_W",
-                "min": "1",
-                "max": "32",
-                "descr": "AXI address bus width",
-            },
-            {
-                "name": "AXI_DATA_W",
-                "type": "P",
-                "val": "`IOB_SOC_DATA_W",
-                "min": "1",
-                "max": "32",
-                "descr": "AXI data bus width",
-            },
-            {
-                "name": "AXI_LEN_W",
-                "type": "P",
-                "val": "4",
-                "min": "1",
-                "max": "4",
-                "descr": "AXI burst length width",
-            },
-        ])
+        super()._setup_confs(
+            [
+                # macros
+                {
+                    "name": "USE_MUL_DIV",
+                    "type": "M",
+                    "val": "1",
+                    "min": "0",
+                    "max": "1",
+                    "descr": "Enable MUL and DIV CPU instructions",
+                },
+                {
+                    "name": "USE_COMPRESSED",
+                    "type": "M",
+                    "val": "1",
+                    "min": "0",
+                    "max": "1",
+                    "descr": "Use compressed CPU instructions",
+                },
+                {
+                    "name": "E",
+                    "type": "M",
+                    "val": "31",
+                    "min": "1",
+                    "max": "32",
+                    "descr": "Address selection bit for external memory",
+                },
+                {
+                    "name": "P",
+                    "type": "M",
+                    "val": "30",
+                    "min": "1",
+                    "max": "32",
+                    "descr": "Address selection bit for peripherals",
+                },
+                {
+                    "name": "B",
+                    "type": "M",
+                    "val": "29",
+                    "min": "1",
+                    "max": "32",
+                    "descr": "Address selection bit for boot ROM",
+                },
+                # parameters
+                {
+                    "name": "BOOTROM_ADDR_W",
+                    "type": "P",
+                    "val": "12",
+                    "min": "1",
+                    "max": "32",
+                    "descr": "Boot ROM address width",
+                },
+                {
+                    "name": "SRAM_ADDR_W",
+                    "type": "P",
+                    "val": "15",
+                    "min": "1",
+                    "max": "32",
+                    "descr": "SRAM address width",
+                },
+                {
+                    "name": "MEM_ADDR_W",
+                    "type": "P",
+                    "val": "24",
+                    "min": "1",
+                    "max": "32",
+                    "descr": "Memory bus address width",
+                },
+                # mandatory parameters (do not change them!)
+                {
+                    "name": "ADDR_W",
+                    "type": "P",
+                    "val": "32",
+                    "min": "1",
+                    "max": "32",
+                    "descr": "Address bus width",
+                },
+                {
+                    "name": "DATA_W",
+                    "type": "P",
+                    "val": "32",
+                    "min": "1",
+                    "max": "32",
+                    "descr": "Data bus width",
+                },
+                {
+                    "name": "AXI_ID_W",
+                    "type": "P",
+                    "val": "0",
+                    "min": "1",
+                    "max": "32",
+                    "descr": "AXI ID bus width",
+                },
+                {
+                    "name": "AXI_ADDR_W",
+                    "type": "P",
+                    "val": "`IOB_SOC_MEM_ADDR_W",
+                    "min": "1",
+                    "max": "32",
+                    "descr": "AXI address bus width",
+                },
+                {
+                    "name": "AXI_DATA_W",
+                    "type": "P",
+                    "val": "`IOB_SOC_DATA_W",
+                    "min": "1",
+                    "max": "32",
+                    "descr": "AXI data bus width",
+                },
+                {
+                    "name": "AXI_LEN_W",
+                    "type": "P",
+                    "val": "4",
+                    "min": "1",
+                    "max": "4",
+                    "descr": "AXI burst length width",
+                },
+            ]
+        )
 
     @classmethod
     def _setup_ios(cls):
@@ -511,7 +516,6 @@ class iob_soc(iob_module):
             },
         ]
 
-
     @classmethod
     def _custom_setup(cls):
         # Add the following arguments:
@@ -542,7 +546,8 @@ class iob_soc(iob_module):
                         "port_prefix": "",
                         "bus_start": 0,
                         "bus_size": 2,
-                    })
+                    }
+                )
                 iob_module.generate(
                     {
                         "file_prefix": "iob_bus_2_3_",
@@ -551,7 +556,8 @@ class iob_soc(iob_module):
                         "port_prefix": "",
                         "bus_start": 2,
                         "bus_size": 1,
-                    })
+                    }
+                )
                 iob_module.generate(
                     # Can't use portmaps below, because it creates axi_awlock and axi_arlock with 2 bits instead of 1 (these are used for axi_interconnect)
                     # { 'file_prefix':'iob_bus_0_2_s_', 'interface':'axi_portmap', 'wire_prefix':'', 'port_prefix':'s_', 'bus_start':0, 'bus_size':2 },
@@ -562,7 +568,8 @@ class iob_soc(iob_module):
                         "wire_prefix": "",
                         "port_prefix": "",
                         "bus_size": 3,
-                    })
+                    }
+                )
                 iob_module.generate(
                     {
                         "file_prefix": "iob_bus_2_",
@@ -570,4 +577,5 @@ class iob_soc(iob_module):
                         "wire_prefix": "",
                         "port_prefix": "",
                         "bus_size": 2,
-                    })
+                    }
+                )
