@@ -6,6 +6,7 @@ import sys
 from iob_module import iob_module
 from iob_block_group import iob_block_group
 from iob_soc_utils import setup_iob_soc
+from mk_configuration import update_define
 
 # Submodules
 from iob_picorv32 import iob_picorv32
@@ -48,6 +49,7 @@ class iob_soc(iob_module):
     @classmethod
     def _run_setup(cls):
         # Submodules
+        iob_picorv32.setup()
         iob_cache.setup()
         iob_uart.setup()
 
@@ -90,20 +92,18 @@ class iob_soc(iob_module):
         cls.pbus_split = iob_split.instance("pbus_split_0")
         cls.int_mem = iob_merge.instance("iob_merge_0")
         cls.ext_mem = iob_merge.instance("iob_merge_1")
-        cls.peripherals.append(iob_uart.instance("iob_uart_0"))
+        cls.peripherals.append(iob_uart.instance("UART0"))
 
         cls._setup_block_groups()
         cls._setup_confs()
         cls._setup_ios()
 
-        cls.peripheral_portmap += (
-            [
-                (
-                    {"corename": "UART0", "if_name": "rs232", "port": "", "bits": []},
-                    {"corename": "external", "if_name": "UART", "port": "", "bits": []},
-                ),  # Map UART0 of tester to external interface
-            ],
-        )
+        cls.peripheral_portmap += [
+            (
+                {"corename": "UART0", "if_name": "rs232", "port": "", "bits": []},
+                {"corename": "external", "if_name": "UART", "port": "", "bits": []},
+            ),  # Map UART0 of tester to external interface
+        ]
 
         cls._custom_setup()
         # Setup this system using specialized iob-soc function

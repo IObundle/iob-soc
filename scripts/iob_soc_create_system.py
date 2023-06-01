@@ -2,7 +2,7 @@
 import sys, os
 
 # Add folder to path that contains python scripts to be imported
-from submodule_utils import find_idx, import_setup, get_pio_signals, get_peripherals_ports_params_top, get_reserved_signal_connection
+from submodule_utils import find_idx, import_setup, get_pio_signals, get_peripherals_ports_params_top, get_reserved_signals, get_reserved_signal_connection
 from ios import get_peripheral_port_mapping
 
 # Automatically include <corename>_swreg_def.vh verilog headers after IOB_PRAGMA_PHEADERS comment
