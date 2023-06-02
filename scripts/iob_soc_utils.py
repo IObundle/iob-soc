@@ -135,7 +135,7 @@ def setup_iob_soc(python_module):
     iob_soc_doc_setup(python_module)
 
     if python_module.is_top_module:
-        verilog_tools.replace_includes([build_dir + "/hardware"])
+        verilog_tools.replace_includes(python_module.setup_dir, build_dir)
 
     # Check if was setup with INIT_MEM and USE_EXTMEM (check if macro exists)
     extmem_macro = next((i for i in confs if i['name']=='USE_EXTMEM'), False)

@@ -137,7 +137,7 @@ module iob_soc_tb;
       end
    endtask
 
-   `include "iob_tasks.vs"
+   `include "iob_tasks.vh"
 
    //finish simulation on trap
    always @(posedge trap) begin

@@ -239,7 +239,7 @@ module iob_soc #(
    // Invert highest bit of MEM_ADDR_W. Leave all higher bits unaltered.
    assign axi_araddr_o[AXI_ADDR_W+MEM_ADDR_W-1] = ~axi_higher_araddr_bits[0];
    assign axi_awaddr_o[AXI_ADDR_W+MEM_ADDR_W-1] = ~axi_higher_awaddr_bits[0];
-   generate if ((AXI_ADDR_W-MEM_ADDR_W)>0) begin
+   generate if ((AXI_ADDR_W-MEM_ADDR_W)>0) begin: axi_higher_bits
            assign axi_araddr_o[AXI_ADDR_W+MEM_ADDR_W+:AXI_ADDR_W-MEM_ADDR_W] = axi_higher_araddr_bits[1+:AXI_ADDR_W-MEM_ADDR_W];
            assign axi_awaddr_o[AXI_ADDR_W+MEM_ADDR_W+:AXI_ADDR_W-MEM_ADDR_W] = axi_higher_awaddr_bits[1+:AXI_ADDR_W-MEM_ADDR_W];
    end endgenerate

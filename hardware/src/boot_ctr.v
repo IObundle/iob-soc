@@ -32,34 +32,43 @@ module boot_ctr #(
 
    //cpu interface: rdata and ready
    assign cpu_rdata = {{(DATA_W - 1) {1'b0}}, boot};
-   iob_reg #(1, 0) rvalid_reg (
-      clk_i,
-      arst_i,
-      cke_i,
-      cpu_avalid & ~(|cpu_wstrb),
-      cpu_rvalid
+   iob_reg #(
+      .DATA_W (1),
+      .RST_VAL(0)
+   ) rvalid_reg (
+      .clk_i (clk_i),
+      .arst_i(arst_i),
+      .cke_i (cke_i),
+      .data_i(cpu_avalid & ~(|cpu_wstrb)),
+      .data_o(cpu_rvalid)
    );
    assign cpu_ready = 1'b1;
 
    //boot register: (1) load bootloader to sram and run it: (0) run program
    wire boot_wr = cpu_avalid & |cpu_wstrb;
    reg                                     boot_nxt;
-   iob_reg_re #(1, 1) bootnxt (
-      clk_i,
-      arst_i,
-      cke_i,
-      1'b0,
-      boot_wr,
-      cpu_wdata[0],
-      boot_nxt
+   iob_reg_re #(
+      .DATA_W (1),
+      .RST_VAL(1)
+   ) bootnxt (
+      .clk_i (clk_i),
+      .arst_i(arst_i),
+      .cke_i (cke_i),
+      .rst_i (1'b0),
+      .en_i  (boot_wr),
+      .data_i(cpu_wdata[0]),
+      .data_o(boot_nxt)
    );
-   iob_reg_r #(1, 1) bootreg (
-      clk_i,
-      arst_i,
-      cke_i,
-      1'b0,
-      boot_nxt,
-      boot
+   iob_reg_r #(
+      .DATA_W (1),
+      .RST_VAL(1)
+   ) bootreg (
+      .clk_i (clk_i),
+      .arst_i(arst_i),
+      .cke_i (cke_i),
+      .rst_i (1'b0),
+      .data_i(boot_nxt),
+      .data_o(boot)
    );
 
 

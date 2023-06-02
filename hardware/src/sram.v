@@ -104,19 +104,25 @@ module sram #(
 
    // reply with ready 
 
-   iob_reg #(1, 0) i_rvalid_reg (
-      clk_i,
-      arst_i,
-      cke_i,
-      i_avalid & ~(|i_wstrb),
-      i_rvalid
+   iob_reg #(
+      .DATA_W (1),
+      .RST_VAL(0)
+   ) i_rvalid_reg (
+      .clk_i (clk_i),
+      .arst_i(arst_i),
+      .cke_i (cke_i),
+      .data_i(i_avalid & ~(|i_wstrb)),
+      .data_o(i_rvalid)
    );
-   iob_reg #(1, 0) d_rvalid_reg (
-      clk_i,
-      arst_i,
-      cke_i,
-      d_avalid & ~(|d_wstrb),
-      d_rvalid
+   iob_reg #(
+      .DATA_W (1),
+      .RST_VAL(0)
+   ) d_rvalid_reg (
+      .clk_i (clk_i),
+      .arst_i(arst_i),
+      .cke_i (cke_i),
+      .data_i(d_avalid & ~(|d_wstrb)),
+      .data_o(d_rvalid)
    );
    assign i_ready = 1'b1;  // SRAM ready is supposed to always be 1 since requests can be continuous
    assign d_ready = 1'b1;
