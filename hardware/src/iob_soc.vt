@@ -9,9 +9,9 @@
 //IOB_PRAGMA_PHEADERS
 
 module iob_soc #(
-   `include "iob_soc_params.vh"
+   `include "iob_soc_params.vs"
     ) (
-   `include "iob_soc_io.vh"
+   `include "iob_soc_io.vs"
     );
 
    localparam E_BIT = `IOB_SOC_E;

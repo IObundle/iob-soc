@@ -101,7 +101,7 @@ module iob_soc_fpga_wrapper (
 
 
 `ifdef IOB_SOC_USE_EXTMEM
-   `include "iob_bus_3_axi_wire.vh"
+   `include "iob_bus_3_axi_wire.vs"
 `endif
 
    //
@@ -132,7 +132,7 @@ module iob_soc_fpga_wrapper (
 `endif
 `ifdef IOB_SOC_USE_EXTMEM
       //axi system backend interface
-      `include "iob_bus_0_2_axi_m_portmap.vh"
+      `include "iob_bus_0_2_axi_m_portmap.vs"
 `endif
 
       //UART
@@ -251,7 +251,7 @@ module iob_soc_fpga_wrapper (
       .clk(clk),
       .rst(rst),
 
-      //`include "iob_bus_0_2_s_axi_portmap.vh"
+      //`include "iob_bus_0_2_s_axi_portmap.vs"
       // Need to use manually defined connections because awlock and arlock of interconnect is only on bit for each slave
       .s_axi_awid(axi_awid[0*AXI_ID_W+:2*AXI_ID_W]),  //Address write channel ID.
       .s_axi_awaddr(axi_awaddr[0*AXI_ADDR_W+:2*AXI_ADDR_W]),  //Address write channel address.
@@ -291,7 +291,7 @@ module iob_soc_fpga_wrapper (
       .s_axi_rvalid(axi_rvalid[0*1+:2*1]),  //Read channel valid.
       .s_axi_rready(axi_rready[0*1+:2*1]),  //Read channel ready.
 
-      //`include "iob_bus_2_3_m_axi_portmap.vh"
+      //`include "iob_bus_2_3_m_axi_portmap.vs"
       // Need to use manually defined connections because awlock and arlock of interconnect is only on bit
       .m_axi_awid(axi_awid[2*AXI_ID_W+:1*AXI_ID_W]),  //Address write channel ID.
       .m_axi_awaddr(axi_awaddr[2*AXI_ADDR_W+:1*AXI_ADDR_W]),  //Address write channel address.

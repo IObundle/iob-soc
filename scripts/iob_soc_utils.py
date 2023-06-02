@@ -194,6 +194,10 @@ def peripheral_portmap(python_module):
             module = peripheral.module
             # Map all ports of all interfaces
             for interface in module.ios:
+                # If table has 'doc_only' attribute set to True, skip it
+                if "doc_only" in interface.keys() and interface["doc_only"]:
+                    continue
+
                 if interface['ports']:
                     for port in interface['ports']:
                         if port['name'] not in reserved_signals:

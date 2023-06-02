@@ -26,6 +26,10 @@ def create_sim_wrapper(template_file, name, peripherals_list, ios, confs, out_fi
 
     # Insert wires and connect them to system 
     for table in ios:
+        # If table has 'doc_only' attribute set to True, skip it
+        if "doc_only" in table.keys() and table["doc_only"]:
+            continue
+
         pio_signals = get_pio_signals(table['ports'])
 
         # Insert system IOs for peripheral
