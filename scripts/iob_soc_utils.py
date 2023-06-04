@@ -253,8 +253,10 @@ def peripheral_portmap(python_module):
             # List of system IOs from ports of this mapping
             mapping_ios=[]
             # Add peripherals table to ios of system
-            assert mapping[0]['if_name'] if mapping_external_interface==0 else mapping[1]['if_name'], f"{iob_colors.FAIL}Portmap index {map_idx} needs an interface name for the 'external' corename!{iob_colors.ENDC}"
-            ios.append({'name': mapping[0]['if_name'] if mapping_external_interface==0 else mapping[1]['if_name'], 'descr':f"IOs for peripherals based on portmap index {map_idx}", 'ports': mapping_ios, 'ios_table_prefix':True})
+            assert mapping[mapping_external_interface]['if_name'], f"{iob_colors.FAIL}Portmap index {map_idx} needs an interface name for the 'external' corename!{iob_colors.ENDC}"
+            ios.append({'name': mapping[mapping_external_interface]['if_name'], 'descr':f"IOs for peripherals based on portmap index {map_idx}", 'ports': mapping_ios,
+                        # Only set `ios_table_prefix` if user has not specified a value in the portmap entry
+                        'ios_table_prefix':True if 'ios_table_prefix' not in mapping[mapping_external_interface] else mapping[mapping_external_interface]['ios_table_prefix']})
 
         # Import module of one of the given core types (to access its IO)
         module = mapping_items[0].module
@@ -303,11 +305,20 @@ def peripheral_portmap(python_module):
                     #Mapped to external interface
                     #Add system IO for this port
                     mapping_ios.append(add_prefix_to_parameters_in_port(port,module.confs,mapping[0]['corename']+"_"))
-                    #Wire name generated the same way as ios inserted in verilog 
-                    if mapping_external_interface==0:
-                        wire_name = f"{mapping[0]['if_name']+'_'}{port['name']}"
+                    # Dont add `if_name` prefix if `iob_table_prefix` is set to False
+                    if 'ios_table_prefix' in mapping[mapping_external_interface] and not mapping[mapping_external_interface]['ios_table_prefix']:
+                        signal_prefix = ""
                     else:
-                        wire_name = f"{mapping[1]['if_name']+'_'}{port['name']}"
+                        signal_prefix = mapping[mapping_external_interface]['if_name']+'_'
+
+                    if 'remove_string_from_port_names' in mapping[mapping_external_interface]:
+                        signal_name = port['name'].replace(mapping[mapping_external_interface]['remove_string_from_port_names'],"")
+                        # Update port name previsously inserted in mapping_ios
+                        mapping_ios[-1]['name'] = signal_name
+                    else:
+                        signal_name = port['name']
+                    #Wire name generated the same way as ios inserted in verilog 
+                    wire_name = f"{signal_prefix}{signal_name}"
 
                 #Insert mapping between IO and wire for mapping[0] (if its not internal/external interface)
                 if mapping_internal_interface!=0 and mapping_external_interface!=0:
@@ -355,11 +366,20 @@ def peripheral_portmap(python_module):
                 #Add system IO for this port
                 mapping_ios.append(add_prefix_to_parameters_in_port({'name':port['name'], 'type':port['type'], 'n_bits':n_bits, 'descr':port['descr']},
                                                                            module.confs,mapping[0]['corename']+"_"))
-                #Wire name generated the same way as ios inserted in verilog 
-                if mapping_external_interface==0:
-                    wire_name = f"{mapping[0]['if_name']+'_'}{port['name']}"
+                # Dont add `if_name` prefix if `iob_table_prefix` is set to False
+                if 'ios_table_prefix' in mapping[mapping_external_interface] and not mapping[mapping_external_interface]['ios_table_prefix']:
+                    signal_prefix = ""
                 else:
-                    wire_name = f"{mapping[1]['if_name']+'_'}{port['name']}"
+                    signal_prefix = mapping[mapping_external_interface]['if_name']+'_'
+
+                if 'remove_string_from_port_names' in mapping[mapping_external_interface]:
+                    signal_name = port['name'].replace(mapping[mapping_external_interface]['remove_string_from_port_names'],"")
+                    # Update port name previsously inserted in mapping_ios
+                    mapping_ios[-1]['name'] = signal_name
+                else:
+                    signal_name = port['name']
+                #Wire name generated the same way as ios inserted in verilog 
+                wire_name = f"{signal_prefix}{signal_name}"
 
             #Insert mapping between IO and wire for mapping[0] (if its not internal/external interface)
             if mapping_internal_interface!=0 and mapping_external_interface!=0:
