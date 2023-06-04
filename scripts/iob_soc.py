@@ -6,7 +6,6 @@ sys.path.insert(0, os.getcwd()+'/submodules/LIB/scripts')
 
 import periphs_tmp
 import createSystem
-import createTestbench
 import sim_wrapper
 from submodule_utils import import_setup, get_table_ports, add_prefix_to_parameters_in_port, eval_param_expression_from_config, iob_soc_peripheral_setup, set_default_submodule_dirs, get_peripherals_list, reserved_signals
 from ios import get_interface_mapping
@@ -93,12 +92,9 @@ def add_iob_soc_modules( python_module, filter_modules=['hw_setup','sim_setup','
     def iob_soc_sim_setup():
         #print(f"DEBUG {name} sim func()", file=sys.stderr)
         copy_common_files(build_dir, name, "hardware/simulation", exclude_files)
-        # Try to build simulation <system_name>_tb.v if template <system_name>_tb.vt is available and iob_soc_tb.vt not in exclude list
-        if not fnmatch.filter(exclude_files,'iob_soc_tb.vt'):
-            createTestbench.create_system_testbench(os.path.join(build_dir,f'hardware/simulation/src/{name}_tb.vt'), submodules['dirs'], name, peripherals_list, os.path.join(build_dir,f'hardware/simulation/src/{name}_tb.v'))
-        # Try to build simulation <system_name>_sim_wrapper.v if template <system_name>_sim_wrapper.vt is available and iob_soc_sim_wrapper.vt not in exclude list
-        if not fnmatch.filter(exclude_files,'iob_soc_sim_wrapper.vt'):
-            sim_wrapper.create_sim_wrapper(os.path.join(build_dir,f'hardware/simulation/src/{name}_sim_wrapper.vt'), submodules['dirs'], name, peripherals_list, python_module.ios, confs, os.path.join(build_dir,f'hardware/simulation/src/{name}_sim_wrapper.v'))
+        # Build necessary .vs if template <system_name>_sim_wrapper.v is available and iob_soc_sim_wrapper.v not in exclude list
+        if not fnmatch.filter(exclude_files,'iob_soc_sim_wrapper.v'):
+            sim_wrapper.create_sim_wrapper(build_dir, name, python_module.ios, confs)
 
     def iob_soc_fpga_setup():
         copy_common_files(build_dir, name, "hardware/fpga", exclude_files)
@@ -107,15 +103,12 @@ def add_iob_soc_modules( python_module, filter_modules=['hw_setup','sim_setup','
         #print(f"DEBUG {name} hw func()", file=sys.stderr)
 
         copy_common_files(build_dir, name, "hardware/src", exclude_files)
-        # Try to build <system_name>.v if template <system_name>.vt is available and iob_soc.vt not in exclude list
-        # Note, it checks for iob_soc.vt in exclude files, instead of <system_name>.vt, to be consistent with the copy_common_files() function.
+        # Build necessary .vs files if template <system_name>.v is available and iob_soc.v not in exclude list
+        # Note, it checks for iob_soc.v in exclude files, instead of <system_name>.vt, to be consistent with the copy_common_files() function.
         #[If a user does not want to build <system_name>.v from the template, then he also does not want to copy the template from the iob-soc]
-        if not fnmatch.filter(exclude_files,'iob_soc.vt'):
+        if not fnmatch.filter(exclude_files,'iob_soc.v'):
             createSystem.create_systemv(build_dir, submodules['dirs'], name, peripherals_list, internal_wires=python_module.internal_wires)
 
-        # Delete verilog templates from build dir
-        for p in Path(build_dir).rglob("*.vt"):
-            p.unlink()
     ################################################################################################
 
     # Make sure lists exist

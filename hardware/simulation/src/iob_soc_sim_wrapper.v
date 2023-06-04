@@ -33,7 +33,7 @@ module iob_soc_sim_wrapper (
    localparam AXI_ADDR_W = `DDR_ADDR_W;
    localparam AXI_DATA_W = `IOB_SOC_DATA_W;
 
-   //IOB_PRAGMA_PWIRES
+   `include "iob_soc_pwires.vs"
 
 
    /////////////////////////////////////////////
@@ -65,7 +65,7 @@ module iob_soc_sim_wrapper (
       .AXI_ADDR_W(AXI_ADDR_W),
       .AXI_DATA_W(AXI_DATA_W)
    ) uut (
-      //IOB_PRAGMA_PPORTMAPS
+      `include "iob_soc_pportmaps.vs"
 `ifdef IOB_SOC_USE_EXTMEM
       `include "iob_axi_m_portmap.vs"
 `endif

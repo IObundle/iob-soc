@@ -32,7 +32,7 @@ def insert_header_files(dest_dir, name, peripherals_list, submodule_dirs):
 # out_file: path to output file
 # internal_wires: Optional argument. List of extra wires to create inside module
 def create_systemv(build_dir, submodule_dirs, top, peripherals_list, internal_wires=None):
-    out_dir = os.path.join(build_dir,f'hardware/simulation/src/')
+    out_dir = os.path.join(build_dir,f'hardware/src/')
 
     insert_header_files(out_dir, top, peripherals_list, submodule_dirs)
 
