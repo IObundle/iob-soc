@@ -4,9 +4,9 @@
 `include "iob_nativebridgeif_swreg_def.vh"
 
 module iob_nativebridgeif # (
-     `include "iob_nativebridgeif_params.vh"
+     `include "iob_nativebridgeif_params.vs"
    ) (
-     `include "iob_nativebridgeif_io.vh"
+     `include "iob_nativebridgeif_io.vs"
    );
 
     // Connect interfaces
