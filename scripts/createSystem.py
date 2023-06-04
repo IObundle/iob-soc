@@ -8,10 +8,8 @@ from submodule_utils import *
 import ios
 
 # Automatically include <corename>_swreg_def.vh verilog headers after IOB_PRAGMA_PHEADERS comment
-def insert_header_files(template_contents, peripherals_list, submodule_dirs):
-    header_index = find_idx(template_contents, "IOB_PRAGMA_PHEADERS")-1
-    template_contents.pop(header_index)
-
+def insert_header_files(dest_dir, name, peripherals_list, submodule_dirs):
+    fd_out = open(f"{dest_dir}/{name}_periphs_swreg_def.vs", "w")
     # Get each type of peripheral used
     included_peripherals = []
     for instance in peripherals_list:
@@ -22,7 +20,8 @@ def insert_header_files(template_contents, peripherals_list, submodule_dirs):
             # Only insert swreg file if module has regiters
             if hasattr(module,'regs') and module.regs:
                 top = module.name
-                template_contents.insert(header_index, f'`include "{top}_swreg_def.vh"\n')
+                fd_out.write(f'`include "{top}_swreg_def.vh"\n')
+    fd_out.close()
 
 
 #Creates system based on {top}.vt template 
@@ -32,21 +31,23 @@ def insert_header_files(template_contents, peripherals_list, submodule_dirs):
 # peripherals_list: list of dictionaries each of them describes a peripheral instance
 # out_file: path to output file
 # internal_wires: Optional argument. List of extra wires to create inside module
-def create_systemv(template_file, submodule_dirs, top, peripherals_list, out_file, internal_wires=None):
-    # Only create systemv if template is available
-    if not os.path.isfile(template_file): return
-    # Don't override output file
-    if os.path.isfile(out_file): return
+def create_systemv(build_dir, submodule_dirs, top, peripherals_list, internal_wires=None):
+    out_dir = os.path.join(build_dir,f'hardware/simulation/src/')
 
-    # Read template file
-    with open(template_file, "r") as file:
-        template_contents = file.readlines() 
-
-    insert_header_files(template_contents, peripherals_list, submodule_dirs)
+    insert_header_files(out_dir, top, peripherals_list, submodule_dirs)
 
     # Get port list, parameter list and top module name for each type of peripheral used
     port_list, params_list, top_list = get_peripherals_ports_params_top(peripherals_list, submodule_dirs)
 
+    fd_periphs = open(f"{out_dir}/{top}_periphs_inst.vs", "w")
+    fd_wires = open(f"{out_dir}/{top}_periphs_wires.vs", "w")
+
+    # Insert internal module wires (if any)
+    if internal_wires:
+        #Insert internal wires
+        for wire in internal_wires:
+            fd_wires.write(f"    wire [{wire['n_bits']}-1:0] {wire['name']};\n")
+    
     # Insert IOs and Instances for this type of peripheral
     for instance in peripherals_list:
         # Insert peripheral instance (in reverse order of lines)
@@ -96,17 +97,8 @@ def create_systemv(template_file, submodule_dirs, top, peripherals_list, out_fil
         template_contents.insert(start_index, "\n")
 
     # Delete PRAGMA comment
-    start_index = find_idx(template_contents, "IOB_PRAGMA_PERIPHS")-1
-    template_contents.pop(start_index)
-
-    # Insert internal module wires (if any)
-    if internal_wires:
-        # Find end of module header
-        start_index = find_idx(template_contents, ");")
-        #Insert internal wires
-        for wire in internal_wires:
-            template_contents.insert(start_index, f"    wire [{wire['n_bits']}-1:0] {wire['name']};\n")
-        template_contents.insert(start_index, "    // Module internal wires\n")
+    fd_periphs.close()
+    fd_wires.close()
 
     # Write system.v
     systemv_file = open(out_file, "w")

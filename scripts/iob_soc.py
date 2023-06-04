@@ -111,7 +111,7 @@ def add_iob_soc_modules( python_module, filter_modules=['hw_setup','sim_setup','
         # Note, it checks for iob_soc.vt in exclude files, instead of <system_name>.vt, to be consistent with the copy_common_files() function.
         #[If a user does not want to build <system_name>.v from the template, then he also does not want to copy the template from the iob-soc]
         if not fnmatch.filter(exclude_files,'iob_soc.vt'):
-            createSystem.create_systemv(os.path.join(build_dir,f'hardware/src/{name}.vt'), submodules['dirs'], name, peripherals_list, os.path.join(build_dir,f'hardware/src/{name}.v'), internal_wires=python_module.internal_wires)
+            createSystem.create_systemv(build_dir, submodules['dirs'], name, peripherals_list, internal_wires=python_module.internal_wires)
 
         # Delete verilog templates from build dir
         for p in Path(build_dir).rglob("*.vt"):

@@ -5,8 +5,8 @@
 `include "iob_soc.vh"
 `include "iob_lib.vh"
 
-//do not remove line below
-//IOB_PRAGMA_PHEADERS
+//The following Verilog Snippet contains the peripherals _swreg_def.vh files includes.
+`include "iob_soc_periphs_swreg_def.vs"
 
 module iob_soc #(
    `include "iob_soc_params.vs"
@@ -17,6 +17,8 @@ module iob_soc #(
    localparam E_BIT = `IOB_SOC_E;
    localparam P_BIT = `IOB_SOC_P;
    localparam B_BIT = `IOB_SOC_B;
+
+   `include "iob_soc_periphs_wires.vs"
 
    //
    // SYSTEM RESET
@@ -71,7 +73,7 @@ module iob_soc #(
    );
 
 
-   //   
+   //
    // SPLIT CPU BUSES TO ACCESS INTERNAL OR EXTERNAL MEMORY
    //
 
@@ -266,6 +268,6 @@ module iob_soc #(
    );
 `endif
 
-   //IOB_PRAGMA_PERIPHS
+   `include "iob_soc_periphs_inst.vs"
 
 endmodule
