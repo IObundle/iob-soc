@@ -22,9 +22,7 @@ def create_sim_wrapper(template_file, submodule_dirs, name, peripherals_list, io
 
     # Read template file
     with open(template_file, "r") as file:
-        template_contents = file.readlines() 
-
-    createSystem.insert_header_files(template_contents, peripherals_list, submodule_dirs)
+        template_contents = file.readlines()
 
     # Insert wires and connect them to system 
     for table in ios:

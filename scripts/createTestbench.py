@@ -20,10 +20,7 @@ def create_system_testbench(template_file, submodule_dirs, top, peripherals_list
 
     # Read template file
     with open(template_file, "r") as file:
-        template_contents = file.readlines() 
-
-    # Insert header files
-    createSystem.insert_header_files(template_contents, peripherals_list, submodule_dirs)
+        template_contents = file.readlines()
 
     # Write system_tb.v
     output_file = open(out_file, "w")

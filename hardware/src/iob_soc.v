@@ -5,7 +5,7 @@
 `include "iob_soc.vh"
 `include "iob_lib.vh"
 
-//The following Verilog Snippet contains the peripherals _swreg_def.vh files includes.
+//Peripherals _swreg_def.vh file includes.
 `include "iob_soc_periphs_swreg_def.vs"
 
 module iob_soc #(

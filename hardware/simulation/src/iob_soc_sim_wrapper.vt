@@ -4,7 +4,8 @@
 `include "iob_soc_conf.vh"
 `include "iob_lib.vh"
 
-//IOB_PRAGMA_PHEADERS
+//Peripherals _swreg_def.vh file includes.
+`include "iob_soc_periphs_swreg_def.vs"
 
 `ifndef IOB_UART_SWREG_ADDR_W
 `define IOB_UART_SWREG_ADDR_W 16

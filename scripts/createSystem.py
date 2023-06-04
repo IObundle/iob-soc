@@ -39,69 +39,56 @@ def create_systemv(build_dir, submodule_dirs, top, peripherals_list, internal_wi
     # Get port list, parameter list and top module name for each type of peripheral used
     port_list, params_list, top_list = get_peripherals_ports_params_top(peripherals_list, submodule_dirs)
 
-    fd_periphs = open(f"{out_dir}/{top}_periphs_inst.vs", "w")
-    fd_wires = open(f"{out_dir}/{top}_periphs_wires.vs", "w")
-
     # Insert internal module wires (if any)
+    periphs_wires_str = ""
     if internal_wires:
         #Insert internal wires
         for wire in internal_wires:
-            fd_wires.write(f"    wire [{wire['n_bits']}-1:0] {wire['name']};\n")
+            periphs_wires_str += f"    wire [{wire['n_bits']}-1:0] {wire['name']};\n"
     
+    periphs_inst_str = ""
     # Insert IOs and Instances for this type of peripheral
     for instance in peripherals_list:
-        # Insert peripheral instance (in reverse order of lines)
-        start_index = find_idx(template_contents, "IOB_PRAGMA_PERIPHS")
-        template_contents.insert(start_index, "      );\n")
-
-        # Insert reserved signals
-        first_reversed_signal=True
-        for signal in get_reserved_signals(port_list[instance['type']]):
-            if 'if_defined' in signal.keys(): template_contents.insert(start_index,"`endif\n")
-            template_contents.insert(start_index,"      "+
-                                     get_reserved_signal_connection(signal['name'],
-                                                                    top.upper()+"_"+instance['name'],
-                                                                    top_list[instance['type']].upper()+"_SWREG")+",\n")
-            # Remove comma at the end of last signal (first one to insert)
-            if first_reversed_signal:
-                template_contents[start_index]=template_contents[start_index][::-1].replace(",","",1)[::-1]
-                first_reversed_signal = False
-            if 'if_defined' in signal.keys(): template_contents.insert(start_index,f"`ifdef {top.upper()}_{signal['if_defined']}\n")
-
-        # Insert io signals
-        for signal in get_pio_signals(port_list[instance['type']]):
-            if 'if_defined' in signal.keys(): template_contents.insert(start_index,"`endif\n")
-            template_contents.insert(start_index, '      .{}({}),\n'.format(signal['name'],ios.get_peripheral_port_mapping(instance,signal['name_without_prefix'])))
-            # Remove comma at the end of last signal (first one to insert)
-            if first_reversed_signal:
-                template_contents[start_index]=template_contents[start_index][::-1].replace(",","",1)[::-1]
-                first_reversed_signal = False
-            if 'if_defined' in signal.keys(): template_contents.insert(start_index,f"`ifdef {top.upper()}_{signal['if_defined']}\n")
-
-        # Insert peripheral instance name
-        template_contents.insert(start_index, "   {} (\n".format(instance['name']))
+        # Create peripheral instance Verilog Snippet
+        periphs_inst_str += "\n"
+        # Insert peripheral comment
+        periphs_inst_str += "   // {}\n".format(instance['name'])
+        periphs_inst_str += "\n"
+        # Insert peripheral type
+        periphs_inst_str += "   {}\n".format(top_list[instance['type']])
         # Insert peripheral parameters (if any)
         if params_list[instance['type']]:
-            template_contents.insert(start_index, "   )\n")
-            first_reversed_signal=True
+            periphs_inst_str += "     #(\n"
             # Insert parameters
             for param in params_list[instance['type']]:
-                template_contents.insert(start_index, '      .{}({}){}\n'.format(param['name'],instance['name']+"_"+param['name'],"" if first_reversed_signal else ","))
-                first_reversed_signal=False
-            template_contents.insert(start_index, "     #(\n")
-        # Insert peripheral type
-        template_contents.insert(start_index, "   {}\n".format(top_list[instance['type']]))
-        template_contents.insert(start_index, "\n")
-        # Insert peripheral comment
-        template_contents.insert(start_index, "   // {}\n".format(instance['name']))
-        template_contents.insert(start_index, "\n")
+                periphs_inst_str += '      .{}({}){}\n'.format(param['name'],instance['name']+"_"+param['name'],",")
+            # Remove comma at the end of last parameter
+            periphs_inst_str=periphs_inst_str[::-1].replace(",","",1)[::-1]
+            periphs_inst_str += "   )\n"
+        # Insert peripheral instance name
+        periphs_inst_str += "   {} (\n".format(instance['name'])
+        # Insert io signals
+        for signal in get_pio_signals(port_list[instance['type']]):
+            if 'if_defined' in signal.keys(): periphs_inst_str += f"`ifdef {top.upper()}_{signal['if_defined']}\n"
+            periphs_inst_str += '      .{}({}),\n'.format(signal['name'],ios.get_peripheral_port_mapping(instance,signal['name_without_prefix']))
+            if 'if_defined' in signal.keys(): periphs_inst_str += "`endif\n"
+        # Insert reserved signals
+        for signal in get_reserved_signals(port_list[instance['type']]):
+            if 'if_defined' in signal.keys(): periphs_inst_str += f"`ifdef {top.upper()}_{signal['if_defined']}\n"
+            periphs_inst_str += "      "+get_reserved_signal_connection(signal['name'],
+                                      top.upper()+"_"+instance['name'],
+                                      top_list[instance['type']].upper()+"_SWREG")+",\n"
+            if 'if_defined' in signal.keys(): periphs_inst_str += "`endif\n"
+        # Remove comma at the end of last signal
+        periphs_inst_str=periphs_inst_str[::-1].replace(",","",1)[::-1]
+        
+        periphs_inst_str += "      );\n"
 
-    # Delete PRAGMA comment
-    fd_periphs.close()
+    fd_wires = open(f"{out_dir}/{top}_periphs_wires.vs", "w")
+    fd_wires.write(periphs_wires_str)
     fd_wires.close()
-
-    # Write system.v
-    systemv_file = open(out_file, "w")
-    systemv_file.writelines(template_contents)
-    systemv_file.close()
+    
+    fd_periphs = open(f"{out_dir}/{top}_periphs_inst.vs", "w")
+    fd_periphs.write(periphs_inst_str)
+    fd_periphs.close()
 
