@@ -7,7 +7,7 @@ sys.path.insert(0, os.getcwd()+'/submodules/LIB/scripts')
 from submodule_utils import *
 import createSystem
 
-#Creates simulation wrapper based on {name}_sim_wrapper.vt template 
+#Creates the Verilog Snippet (.vs) files required by {name}_sim_wrapper.v
 # template_file: path to template file
 # submodule_dirs: dictionary with directory of each submodule. Format: {"PERIPHERALCORENAME1":"PATH_TO_DIRECTORY", "PERIPHERALCORENAME2":"PATH_TO_DIRECTORY2"}
 # peripherals_list: list of dictionaries each of them describes a peripheral instance

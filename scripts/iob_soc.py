@@ -58,7 +58,7 @@ def copy_common_files(build_dir, system_name, directory, exclude_file_list):
 # exclude_files: Optional argument. List of files to exclude when copying from the iob-soc directory
 #                                   This list accepts ignore patterns, for example with '*.v' it will not copy any verilog sources from the iob-soc directory.
 #                                   The ignore file names should have the name of the source file (of the iob-soc directory) and not the resulting file name after copy (the resulting file name may have the name of the system instead of 'iob-soc').
-#                                   If the verilog template '*.vt' files are ignored, it will also prevent this function from generating the verilog files based on those templates.
+#                                   If the verilog '*.v' files are ignored, it will also prevent this function from generating the verilog snippet files required by them.
 def add_iob_soc_modules( python_module, filter_modules=['hw_setup','sim_setup','fpga_setup','sw_setup'], exclude_files=[]):
     confs = python_module.confs
     build_dir = python_module.build_dir
@@ -104,7 +104,7 @@ def add_iob_soc_modules( python_module, filter_modules=['hw_setup','sim_setup','
 
         copy_common_files(build_dir, name, "hardware/src", exclude_files)
         # Build necessary .vs files if template <system_name>.v is available and iob_soc.v not in exclude list
-        # Note, it checks for iob_soc.v in exclude files, instead of <system_name>.vt, to be consistent with the copy_common_files() function.
+        # Note, it checks for iob_soc.v in exclude files, instead of <system_name>.v, to be consistent with the copy_common_files() function.
         #[If a user does not want to build <system_name>.v from the template, then he also does not want to copy the template from the iob-soc]
         if not fnmatch.filter(exclude_files,'iob_soc.v'):
             createSystem.create_systemv(build_dir, submodules['dirs'], name, peripherals_list, internal_wires=python_module.internal_wires)

@@ -24,7 +24,7 @@ def insert_header_files(dest_dir, name, peripherals_list, submodule_dirs):
     fd_out.close()
 
 
-#Creates system based on {top}.vt template 
+#Creates the Verilog Snippet (.vs) files required by {top}.v 
 # template_file: path to template file
 # submodule_dirs: dictionary with directory of each submodule. Format: {"PERIPHERALCORENAME1":"PATH_TO_DIRECTORY", "PERIPHERALCORENAME2":"PATH_TO_DIRECTORY2"}
 # top: top name of the system
