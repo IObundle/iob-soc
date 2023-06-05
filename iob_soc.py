@@ -43,8 +43,8 @@ class iob_soc(iob_module):
     setup_dir = os.path.dirname(__file__)
 
     # IOb-SoC has the following list of non standard attributes:
-    peripherals = []  # List with instances peripherals to include in system
-    peripheral_portmap = []  # List of tuples, each tuple corresponds to a port map
+    peripherals = None  # List with instances peripherals to include in system
+    peripheral_portmap = None  # List of tuples, each tuple corresponds to a port map
 
     # Method that runs the setup process of this class
     @classmethod
@@ -138,7 +138,7 @@ class iob_soc(iob_module):
         ]
 
     @classmethod
-    def _setup_confs(cls):
+    def _setup_confs(cls, extra_confs=[]):
         # Append confs or override them if they exist
         super()._setup_confs(
             [
@@ -257,7 +257,7 @@ class iob_soc(iob_module):
                     "max": "4",
                     "descr": "AXI burst length width",
                 },
-            ]
+            ] + extra_confs
         )
 
     @classmethod
@@ -581,3 +581,12 @@ class iob_soc(iob_module):
                         "bus_size": 2,
                     }
                 )
+
+    # Public method to set dynamic attributes
+    # This method is automatically called by the `setup` method
+    @classmethod
+    def set_dynamic_attributes(cls):
+        super().set_dynamic_attributes()
+        # Initialize empty lists for attributes (We can't initialize in the attribute declaration because it would cause every subclass to reference the same list)
+        cls.peripherals = []
+        cls.peripheral_portmap = []
