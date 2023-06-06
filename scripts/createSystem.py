@@ -84,7 +84,7 @@ def create_systemv(build_dir, submodule_dirs, top, peripherals_list, internal_wi
         
         periphs_inst_str += "      );\n"
 
-    fd_wires = open(f"{out_dir}/{top}_periphs_wires.vs", "w")
+    fd_wires = open(f"{out_dir}/{top}_pwires.vs", "w")
     fd_wires.write(periphs_wires_str)
     fd_wires.close()
     

@@ -45,6 +45,6 @@ def create_sim_wrapper(build_dir, name, ios, confs):
     fd_pportmaps.write(pportmaps_str)
     fd_pportmaps.close()
     
-    fd_periphs = open(f"{out_dir}/{name}_pwires.vs", "w")
+    fd_periphs = open(f"{out_dir}/{name}_sim_pwires.vs", "w")
     fd_periphs.write(pwires_str)
     fd_periphs.close()

@@ -18,7 +18,7 @@ module iob_soc #(
    localparam P_BIT = `IOB_SOC_P;
    localparam B_BIT = `IOB_SOC_B;
 
-   `include "iob_soc_periphs_wires.vs"
+   `include "iob_soc_pwires.vs"
 
    //
    // SYSTEM RESET
