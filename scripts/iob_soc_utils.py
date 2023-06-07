@@ -4,14 +4,12 @@ import os
 
 from iob_soc_create_periphs_tmp import create_periphs_tmp
 from iob_soc_create_system import create_systemv
-from iob_soc_create_testbench import create_system_testbench
 from iob_soc_create_sim_wrapper import create_sim_wrapper
-from submodule_utils import import_setup, get_table_ports, add_prefix_to_parameters_in_port, eval_param_expression_from_config, iob_soc_peripheral_setup, set_default_submodule_dirs, reserved_signals
+from submodule_utils import get_table_ports, add_prefix_to_parameters_in_port, eval_param_expression_from_config, iob_soc_peripheral_setup, reserved_signals
 from ios import get_interface_mapping
 import setup
 import iob_colors
 import shutil
-from pathlib import Path
 import fnmatch
 import if_gen
 import verilog_tools
@@ -73,12 +71,9 @@ def iob_soc_sim_setup(python_module, exclude_files=[]):
     name = python_module.name
     #print(f"DEBUG {name} sim func()", file=sys.stderr)
     #copy_common_files(build_dir, name, "hardware/simulation", exclude_files)
-    # Try to build simulation <system_name>_tb.v if template <system_name>_tb.vt is available and iob_soc_tb.vt not in exclude list
-    if not fnmatch.filter(exclude_files,'iob_soc_tb.vt'):
-        create_system_testbench(os.path.join(build_dir,f'hardware/simulation/src/{name}_tb.vt'), name, peripherals_list, os.path.join(build_dir,f'hardware/simulation/src/{name}_tb.v'))
-    # Try to build simulation <system_name>_sim_wrapper.v if template <system_name>_sim_wrapper.vt is available and iob_soc_sim_wrapper.vt not in exclude list
-    if not fnmatch.filter(exclude_files,'iob_soc_sim_wrapper.vt'):
-        create_sim_wrapper(os.path.join(build_dir,f'hardware/simulation/src/{name}_sim_wrapper.vt'), name, peripherals_list, python_module.ios, confs, os.path.join(build_dir,f'hardware/simulation/src/{name}_sim_wrapper.v'))
+    # Try to build simulation <system_name>_sim_wrapper.v if template <system_name>_sim_wrapper.v is available and iob_soc_sim_wrapper.v not in exclude list
+    if not fnmatch.filter(exclude_files,'iob_soc_sim_wrapper.v'):
+        create_sim_wrapper(build_dir, name, python_module.ios, confs)
 
 def iob_soc_fpga_setup(python_module, exclude_files=[]):
     #copy_common_files(python_module.build_dir, python_module.name, "hardware/fpga", exclude_files)
@@ -98,15 +93,11 @@ def iob_soc_hw_setup(python_module, exclude_files=[]):
     name = python_module.name
 
     #copy_common_files(build_dir, name, "hardware/src", exclude_files)
-    # Try to build <system_name>.v if template <system_name>.vt is available and iob_soc.vt not in exclude list
-    # Note, it checks for iob_soc.vt in exclude files, instead of <system_name>.vt, to be consistent with the copy_common_files() function.
+    # Try to build <system_name>.v if template <system_name>.v is available and iob_soc.v not in exclude list
+    # Note, it checks for iob_soc.v in exclude files, instead of <system_name>.v to be consistent with the copy_common_files() function.
     #[If a user does not want to build <system_name>.v from the template, then he also does not want to copy the template from the iob-soc]
-    if not fnmatch.filter(exclude_files,'iob_soc.vt'):
-        create_systemv(os.path.join(build_dir,f'hardware/src/{name}.vt'), name, peripherals_list, os.path.join(build_dir,f'hardware/src/{name}.v'), internal_wires=python_module.internal_wires)
-
-    # Delete verilog templates from build dir
-    for p in Path(build_dir).rglob("*.vt"):
-        p.unlink()
+    if not fnmatch.filter(exclude_files,'iob_soc.v'):
+        create_systemv(build_dir, name, peripherals_list, internal_wires=python_module.internal_wires)
 
 ######################################
 
@@ -155,9 +146,6 @@ def setup_iob_soc(python_module):
             file.write(f"	../../scripts/joinHexFiles.py {sut_firmware_name} $^ {mem_add_w_parameter['val']} > $@\n")
         # Copy joinHexFiles.py from LIB
         build_srcs.copy_files( "submodules/LIB", f"{build_dir}/scripts", [ "joinHexFiles.py" ], '*.py' )
-
-
-
 
 
 #Given the io dictionary of ports, the port name (and size, and optional bit list) and a wire, it will map the selected bits of the port to the given wire.

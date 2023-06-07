@@ -260,7 +260,8 @@ class iob_soc(iob_module):
                     "max": "4",
                     "descr": "AXI burst length width",
                 },
-            ] + extra_confs
+            ]
+            + extra_confs
         )
 
     @classmethod

@@ -4,7 +4,8 @@
 `include "iob_soc_conf.vh"
 `include "iob_lib.vh"
 
-//IOB_PRAGMA_PHEADERS
+//Peripherals _swreg_def.vh file includes.
+`include "iob_soc_periphs_swreg_def.vs"
 
 `ifndef IOB_UART_SWREG_ADDR_W
 `define IOB_UART_SWREG_ADDR_W 16
@@ -32,7 +33,7 @@ module iob_soc_sim_wrapper (
    localparam AXI_ADDR_W = `DDR_ADDR_W;
    localparam AXI_DATA_W = `DDR_DATA_W;
 
-   //IOB_PRAGMA_PWIRES
+   `include "iob_soc_sim_pwires.vs"
 
 
    /////////////////////////////////////////////
@@ -67,7 +68,7 @@ module iob_soc_sim_wrapper (
       .AXI_ADDR_W(AXI_ADDR_W),
       .AXI_DATA_W(AXI_DATA_W)
    ) iob_soc0 (
-      //IOB_PRAGMA_PPORTMAPS
+      `include "iob_soc_pportmaps.vs"
 `ifdef IOB_SOC_USE_EXTMEM
       `include "iob_bus_0_2_axi_m_portmap.vs"
 `endif

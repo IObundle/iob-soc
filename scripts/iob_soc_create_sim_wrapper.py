@@ -1,28 +1,12 @@
 #!/usr/bin/env python3
 
-import sys
 import os
 
-from submodule_utils import find_idx, get_pio_signals, add_prefix_to_parameters_in_string
-from iob_soc_create_system import insert_header_files
+from submodule_utils import get_pio_signals, add_prefix_to_parameters_in_string
 
-#Creates simulation wrapper based on {name}_sim_wrapper.vt template 
-# template_file: path to template file
-# peripherals_list: list of dictionaries each of them describes a peripheral instance
-# ios: ios dictionary of system
-# confs: confs dictionary of system
-# out_file: path to output file
-def create_sim_wrapper(template_file, name, peripherals_list, ios, confs, out_file):
-    # Only create testbench if template is available
-    if not os.path.isfile(template_file): return
-    # Don't override output file
-    if os.path.isfile(out_file): return
-
-    # Read template file
-    with open(template_file, "r") as file:
-        template_contents = file.readlines() 
-
-    insert_header_files(template_contents, peripherals_list)
+#Creates the Verilog Snippet (.vs) files required by {name}_sim_wrapper.v
+def create_sim_wrapper(build_dir, name, ios, confs):
+    out_dir = os.path.join(build_dir,f'hardware/simulation/src/')
 
     # Insert wires and connect them to system 
     for table in ios:
@@ -33,29 +17,25 @@ def create_sim_wrapper(template_file, name, peripherals_list, ios, confs, out_fi
         pio_signals = get_pio_signals(table['ports'])
 
         # Insert system IOs for peripheral
-        start_index = find_idx(template_contents, "IOB_PRAGMA_PWIRES")
-        if pio_signals and 'if_defined' in table.keys(): template_contents.insert(start_index, "`endif\n")
+        pwires_str = ""
+        if pio_signals and 'if_defined' in table.keys(): pwires_str += f"`ifdef {table['if_defined']}\n"
         for signal in pio_signals:
-            template_contents.insert(start_index, '   wire [{}-1:0] {}_{};\n'.format(add_prefix_to_parameters_in_string(signal['n_bits'],confs,"`"+name.upper()+"_"),
+            pwires_str += '   wire [{}-1:0] {}_{};\n'.format(add_prefix_to_parameters_in_string(signal['n_bits'],confs,"`"+name.upper()+"_"),
                                                                              table['name'],
-                                                                             signal['name']))
-        if pio_signals and 'if_defined' in table.keys(): template_contents.insert(start_index, f"`ifdef {table['if_defined']}\n")
+                                                                             signal['name'])
+        if pio_signals and 'if_defined' in table.keys(): pwires_str += "`endif\n"
 
         # Connect wires to soc port
-        start_index = find_idx(template_contents, "IOB_PRAGMA_PPORTMAPS")
-        if pio_signals and 'if_defined' in table.keys(): template_contents.insert(start_index, "`endif\n")
+        pportmaps_str = ""
+        if pio_signals and 'if_defined' in table.keys(): pportmaps_str += f"`ifdef {table['if_defined']}\n"
         for signal in pio_signals:
-            template_contents.insert(start_index, '               .{signal}({signal}),\n'.format(signal=table['name']+"_"+signal['name']))
-        if pio_signals and 'if_defined' in table.keys(): template_contents.insert(start_index, f"`ifdef {table['if_defined']}\n")
+            pportmaps_str += '               .{signal}({signal}),\n'.format(signal=table['name']+"_"+signal['name'])
+        if pio_signals and 'if_defined' in table.keys(): pportmaps_str += "`endif\n"
 
-    # Delete PRAGMA comments
-    start_index = find_idx(template_contents, "IOB_PRAGMA_PWIRES")-1
-    template_contents.pop(start_index)
-    start_index = find_idx(template_contents, "IOB_PRAGMA_PPORTMAPS")-1
-    template_contents.pop(start_index)
-
-    # Write output file
-    output_file = open(out_file, "w")
-    output_file.writelines(template_contents)
-    output_file.close()
-
+    fd_pportmaps = open(f"{out_dir}/{name}_pportmaps.vs", "w")
+    fd_pportmaps.write(pportmaps_str)
+    fd_pportmaps.close()
+    
+    fd_periphs = open(f"{out_dir}/{name}_sim_pwires.vs", "w")
+    fd_periphs.write(pwires_str)
+    fd_periphs.close()

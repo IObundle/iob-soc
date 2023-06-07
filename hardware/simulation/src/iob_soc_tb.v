@@ -7,7 +7,8 @@
 `include "iob_uart_swreg_def.vh"
 
 
-//IOB_PRAGMA_PHEADERS
+//Peripherals _swreg_def.vh file includes.
+`include "iob_soc_periphs_swreg_def.vs"
 
 module iob_soc_tb;
 
