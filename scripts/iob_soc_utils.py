@@ -19,21 +19,21 @@ import build_srcs
 
 # Creates a function that:
 #   - Renames any 'iob_soc' string inside de src file and in its name, to the given 'system_name' string argument.
-def copy_with_rename(system_name):
-    def copy_func(src, dst):
-        dst = os.path.join(
-                os.path.dirname(dst),
-                os.path.basename(dst.replace('iob_soc',system_name).replace('IOB_SOC',system_name.upper()))
-                )
-        #print(f"### DEBUG: {src} {dst}")
-        with open(src, 'r') as file:
-            lines = file.readlines()
-        for idx in range(len(lines)): 
-            lines[idx]=lines[idx].replace('iob_soc',system_name).replace('IOB_SOC',system_name.upper())
-        with open(dst, 'w') as file:
-            file.writelines(lines)
-
-    return copy_func
+#def copy_with_rename(system_name):
+#    def copy_func(src, dst):
+#        dst = os.path.join(
+#                os.path.dirname(dst),
+#                os.path.basename(dst.replace('iob_soc',system_name).replace('IOB_SOC',system_name.upper()))
+#                )
+#        #print(f"### DEBUG: {src} {dst}")
+#        with open(src, 'r') as file:
+#            lines = file.readlines()
+#        for idx in range(len(lines)): 
+#            lines[idx]=lines[idx].replace('iob_soc',system_name).replace('IOB_SOC',system_name.upper())
+#        with open(dst, 'w') as file:
+#            file.writelines(lines)
+#
+#    return copy_func
 
 # Copy files common to all iob-soc based systems from the iob-soc directory
 # Files containing 'iob_soc' in the name or inside them will be renamed to the new 'system_name'.
@@ -44,10 +44,10 @@ def copy_with_rename(system_name):
 #                    For example, using the ignore pattern '*.v' would prevent from copying every Verilog source file.
 #                    Note, if the new system name is 'my_system', we would still use the 'iob_soc' system name in the ignore patterns.
 #                    For example, if we dont want it to generate the 'my_system_firmware.c' based on the 'iob_soc_firmware.c', then we should add 'iob_soc_firmware.c' to the ignore list.
-def copy_common_files(build_dir, system_name, directory, exclude_file_list):
-    # Copy hardware
-    shutil.copytree(os.path.join(os.path.dirname(__file__),'..', directory), os.path.join(build_dir,directory), dirs_exist_ok=True, copy_function=copy_with_rename(system_name), ignore=shutil.ignore_patterns(*exclude_file_list))
-
+#def copy_common_files(build_dir, system_name, directory, exclude_file_list):
+#    # Copy hardware
+#    shutil.copytree(os.path.join(os.path.dirname(__file__),'..', directory), os.path.join(build_dir,directory), dirs_exist_ok=True, copy_function=copy_with_rename(system_name), ignore=shutil.ignore_patterns(*exclude_file_list))
+#
 
 ######################################
 # Specialized IOb-SoC setup functions.
@@ -64,7 +64,7 @@ def iob_soc_sw_setup(python_module, exclude_files=[]):
                                    peripherals_list, f"{build_dir}/software/{name}_periphs.h")
 
     # Copy files common to all iob-soc based systems
-    copy_common_files(build_dir, name, "software", exclude_files)
+    #copy_common_files(build_dir, name, "software", exclude_files)
 
 def iob_soc_sim_setup(python_module, exclude_files=[]):
     peripherals_list = python_module.peripherals
@@ -72,7 +72,7 @@ def iob_soc_sim_setup(python_module, exclude_files=[]):
     build_dir = python_module.build_dir
     name = python_module.name
     #print(f"DEBUG {name} sim func()", file=sys.stderr)
-    copy_common_files(build_dir, name, "hardware/simulation", exclude_files)
+    #copy_common_files(build_dir, name, "hardware/simulation", exclude_files)
     # Try to build simulation <system_name>_tb.v if template <system_name>_tb.vt is available and iob_soc_tb.vt not in exclude list
     if not fnmatch.filter(exclude_files,'iob_soc_tb.vt'):
         create_system_testbench(os.path.join(build_dir,f'hardware/simulation/src/{name}_tb.vt'), name, peripherals_list, os.path.join(build_dir,f'hardware/simulation/src/{name}_tb.v'))
@@ -81,11 +81,12 @@ def iob_soc_sim_setup(python_module, exclude_files=[]):
         create_sim_wrapper(os.path.join(build_dir,f'hardware/simulation/src/{name}_sim_wrapper.vt'), name, peripherals_list, python_module.ios, confs, os.path.join(build_dir,f'hardware/simulation/src/{name}_sim_wrapper.v'))
 
 def iob_soc_fpga_setup(python_module, exclude_files=[]):
-    copy_common_files(python_module.build_dir, python_module.name, "hardware/fpga", exclude_files)
+    #copy_common_files(python_module.build_dir, python_module.name, "hardware/fpga", exclude_files)
+    pass
 
 def iob_soc_doc_setup(python_module, exclude_files=[]):
     # Copy and rename files, except figures (we don't want to process figures)
-    copy_common_files(python_module.build_dir, python_module.name, "document/", ['*.odg']+exclude_files)
+    #copy_common_files(python_module.build_dir, python_module.name, "document/", ['*.odg']+exclude_files)
     # Copy .odg figures without processing
     shutil.copytree(os.path.join(os.path.dirname(__file__),'..', "document/"),
             os.path.join(python_module.build_dir,"document/"), dirs_exist_ok=True,
@@ -96,7 +97,7 @@ def iob_soc_hw_setup(python_module, exclude_files=[]):
     build_dir = python_module.build_dir
     name = python_module.name
 
-    copy_common_files(build_dir, name, "hardware/src", exclude_files)
+    #copy_common_files(build_dir, name, "hardware/src", exclude_files)
     # Try to build <system_name>.v if template <system_name>.vt is available and iob_soc.vt not in exclude list
     # Note, it checks for iob_soc.vt in exclude files, instead of <system_name>.vt, to be consistent with the copy_common_files() function.
     #[If a user does not want to build <system_name>.v from the template, then he also does not want to copy the template from the iob-soc]

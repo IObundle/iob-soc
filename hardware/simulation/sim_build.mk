@@ -1,7 +1,8 @@
 # Add iob-soc software as a build dependency
 HEX+=iob_soc_boot.hex iob_soc_firmware.hex
 
-include ../../software/sw_build.mk
+ROOT_DIR :=../..
+include $(ROOT_DIR)/software/sw_build.mk
 
 VTOP:=iob_soc_tb
 

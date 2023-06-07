@@ -1,6 +1,7 @@
 #########################################
 #            Embedded targets           #
 #########################################
+ROOT_DIR ?=..
 # Local embedded makefile settings for custom bootloader and firmware targets.
 
 #Function to obtain parameter named $(1) in verilog header file located in $(2)
@@ -23,7 +24,7 @@ iob_soc_firmware.bin: ../../software/iob_soc_firmware.bin
 ../../software/%.bin:
 	make -C ../../ fw-build
 
-UTARGETS+=build_software
+UTARGETS+=build_iob_soc_software
 
 IOB_SOC_INCLUDES=-I. -Isrc 
 
@@ -44,12 +45,17 @@ IOB_SOC_BOOT_SRC+=src/iob_soc_boot.c
 IOB_SOC_BOOT_SRC+=$(filter-out %_emul.c, $(wildcard src/iob*uart*.c))
 IOB_SOC_BOOT_SRC+=$(filter-out %_emul.c, $(wildcard src/iob*cache*.c))
 
-build_software:
+build_iob_soc_software:
 	make iob_soc_firmware.elf INCLUDES="$(IOB_SOC_INCLUDES)" LFLAGS="$(IOB_SOC_LFLAGS) -Wl,-Map,iob_soc_firmware.map" SRC="$(IOB_SOC_FW_SRC)"
 	make iob_soc_boot.elf INCLUDES="$(IOB_SOC_INCLUDES)" LFLAGS="$(IOB_SOC_LFLAGS) -Wl,-Map,iob_soc_boot.map" SRC="$(IOB_SOC_BOOT_SRC)"
 
 
-.PHONE: build_software
+.PHONE: build_iob_soc_software
+
+# Include the UUT configuration if iob-soc is used as a Tester
+ifneq ($(wildcard $(ROOT_DIR)/software/uut_build_for_iob_soc.mk),)
+include $(ROOT_DIR)/software/uut_build_for_iob_soc.mk
+endif
 
 #########################################
 #         PC emulation targets          #

@@ -107,6 +107,9 @@ class iob_soc(iob_module):
             ),  # Map UART0 of tester to external interface
         ]
 
+        # Copy sources of this module to the build directory
+        super()._run_setup()
+
         cls._custom_setup()
         # Setup this system using specialized iob-soc function
         setup_iob_soc(cls)
