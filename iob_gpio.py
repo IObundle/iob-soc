@@ -32,6 +32,9 @@ class iob_gpio(iob_module):
         # Verilog modules instances
         # TODO
 
+        # Copy sources of this module to the build directory
+        super()._run_setup()
+
         # Setup core using LIB function
         setup(cls)
 
