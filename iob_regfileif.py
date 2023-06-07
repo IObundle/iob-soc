@@ -37,6 +37,9 @@ class iob_regfileif(iob_module):
         # Ensure user has configured registers for this peripheral
         assert cls.regs, f"{iob_colors.FAIL}REGFILEIF register list is empty.{iob_colors.ENDC}"
 
+        # Copy sources of this module to the build directory
+        super()._run_setup()
+
         # Setup core using LIB function
         setup(cls)
 
