@@ -73,7 +73,7 @@ def setup_iob_soc(python_module):
     python_module.internal_wires = peripheral_portmap(python_module)
 
     # Call setup function for iob_soc
-    setup.setup(python_module, disable_file_copy=True)
+    setup.setup(python_module)
 
     # Run iob-soc specialized setup sequence
     iob_soc_sim_setup(python_module)
