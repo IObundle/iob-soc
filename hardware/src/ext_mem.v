@@ -136,6 +136,7 @@ module ext_mem #(
    // Data cache instance
    iob_cache_iob #(
       .FE_ADDR_W    (MEM_ADDR_W),
+      .BE_ADDR_W    (MEM_ADDR_W),
       .NWAYS_W      (1),           //Number of ways
       .NLINES_W     (7),           //Cache Line Offset (number of lines)
       .WORD_OFFSET_W(3),           //Word Offset (number of words per line)

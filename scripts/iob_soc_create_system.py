@@ -27,6 +27,8 @@ def insert_header_files(dest_dir, name, peripherals_list):
 # peripherals_list: list of dictionaries each of them describes a peripheral instance
 # internal_wires: Optional argument. List of extra wires to create inside module
 def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
+    num_peripherals_with_axi_s_port = 0
+
     out_dir = os.path.join(build_dir,f'hardware/src/')
 
     insert_header_files(out_dir, top, peripherals_list)
@@ -74,6 +76,9 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
                                       top.upper()+"_"+instance.name,
                                       top_list[instance.module.name].upper()+"_SWREG")+",\n"
             if 'if_defined' in signal.keys(): periphs_inst_str += "`endif\n"
+            # Increment number of peripherals connected to axi_s_port if this is one of them (by checking axi_awid_o signal)
+            if signal['name']=="axi_awid_o":
+                num_peripherals_with_axi_s_port+=1
         # Remove comma at the end of last signal
         periphs_inst_str=periphs_inst_str[::-1].replace(",","",1)[::-1]
         
@@ -82,8 +87,45 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
     fd_wires = open(f"{out_dir}/{top}_pwires.vs", "w")
     fd_wires.write(periphs_wires_str)
     fd_wires.close()
+
+    # Map axi_s interface to ground if ther are no peripherals with axi_s port
+    if num_peripherals_with_axi_s_port==0:
+        periphs_inst_str += map_axi_s_interface_to_groud(0)
     
     fd_periphs = open(f"{out_dir}/{top}_periphs_inst.vs", "w")
     fd_periphs.write(periphs_inst_str)
     fd_periphs.close()
 
+# Returns a list of strings mapping the system axi_s interface to ground
+# Use this function to prevent and axi_s port with high impedance
+# if_num: Interface number of the axi_s bus to connect to ground
+def map_axi_s_interface_to_groud(if_num):
+    return f"""
+    // Connect outputs of the AXI slave interface {if_num} of system to ground, preventing high impedance
+    assign axi_awid_o    [{if_num}+:AXI_ID_W] = 'b0;
+    assign axi_awaddr_o  [{if_num}+:AXI_ADDR_W] = 'b0;
+    assign axi_awlen_o   [{if_num}+:AXI_LEN_W] = 'b0;
+    assign axi_awsize_o  [{if_num}+:3] = 'b0;
+    assign axi_awburst_o [{if_num}+:2] = 'b0;
+    assign axi_awlock_o  [{if_num}+:2] = 'b0;
+    assign axi_awcache_o [{if_num}+:4] = 'b0;
+    assign axi_awprot_o  [{if_num}+:3] = 'b0;
+    assign axi_awqos_o   [{if_num}+:4] = 'b0;
+    assign axi_awvalid_o [{if_num}+:1] = 'b0;
+    assign axi_wdata_o   [{if_num}+:AXI_DATA_W] = 'b0;
+    assign axi_wstrb_o   [{if_num}+:(AXI_DATA_W/8)] = 'b0;
+    assign axi_wlast_o   [{if_num}+:1] = 'b0;
+    assign axi_wvalid_o  [{if_num}+:1] = 'b0;
+    assign axi_bready_o  [{if_num}+:1] = 'b0;
+    assign axi_arid_o    [{if_num}+:AXI_ID_W] = 'b0;
+    assign axi_araddr_o  [{if_num}+:AXI_ADDR_W] = 'b0;
+    assign axi_arlen_o   [{if_num}+:AXI_LEN_W] = 'b0;
+    assign axi_arsize_o  [{if_num}+:3] = 'b0;
+    assign axi_arburst_o [{if_num}+:2] = 'b0;
+    assign axi_arlock_o  [{if_num}+:2] = 'b0;
+    assign axi_arcache_o [{if_num}+:4] = 'b0;
+    assign axi_arprot_o  [{if_num}+:3] = 'b0;
+    assign axi_arqos_o   [{if_num}+:4] = 'b0;
+    assign axi_arvalid_o [{if_num}+:1] = 'b0;
+    assign axi_rready_o  [{if_num}+:1] = 'b0;
+"""
