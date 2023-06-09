@@ -90,7 +90,7 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
 
     # Map axi_s interface to ground if ther are no peripherals with axi_s port
     if num_peripherals_with_axi_s_port==0:
-        periphs_inst_str += map_axi_s_interface_to_groud(0)
+        periphs_inst_str += map_axi_s_interface_to_groud(top,0)
     
     fd_periphs = open(f"{out_dir}/{top}_periphs_inst.vs", "w")
     fd_periphs.write(periphs_inst_str)
@@ -98,9 +98,11 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
 
 # Returns a list of strings mapping the system axi_s interface to ground
 # Use this function to prevent and axi_s port with high impedance
+# name: System name
 # if_num: Interface number of the axi_s bus to connect to ground
-def map_axi_s_interface_to_groud(if_num):
+def map_axi_s_interface_to_groud(name, if_num):
     return f"""
+`ifdef {name.upper()}_USE_EXTMEM
     // Connect outputs of the AXI slave interface {if_num} of system to ground, preventing high impedance
     assign axi_awid_o    [{if_num}+:AXI_ID_W] = 'b0;
     assign axi_awaddr_o  [{if_num}+:AXI_ADDR_W] = 'b0;
@@ -128,4 +130,5 @@ def map_axi_s_interface_to_groud(if_num):
     assign axi_arqos_o   [{if_num}+:4] = 'b0;
     assign axi_arvalid_o [{if_num}+:1] = 'b0;
     assign axi_rready_o  [{if_num}+:1] = 'b0;
+`endif
 """
