@@ -49,70 +49,81 @@ class iob_soc(iob_module):
     # Method that runs the setup process of this class
     @classmethod
     def _run_setup(cls):
-        # Submodules
-        iob_picorv32.setup()
-        iob_cache.setup()
-        iob_uart.setup()
+        # Copy sources of this module to the build directory
+        super()._run_setup()
 
-        # Hardware headers & modules
-        iob_module.generate("iob_wire")
-        iob_module.generate("axi_wire")
-        iob_module.generate("axi_m_port")
-        iob_module.generate("axi_m_m_portmap")
-        iob_module.generate("axi_m_portmap")
-        iob_utils.setup()
-        iob_lib.setup()
-        iob_clkenrst_portmap.setup()
-        iob_clkenrst_port.setup()
-
-        iob_merge.setup()
-        iob_split.setup()
-        iob_rom_sp.setup()
-        iob_ram_dp_be.setup()
-        iob_ram_dp_be_xil.setup()
-        iob_pulse_gen.setup()
-        iob_counter.setup()
-        iob_reg.setup()
-        iob_reg_re.setup()
-        iob_ram_sp_be.setup()
-        iob_ram_dp.setup()
-        iob_reset_sync.setup()
-
-        # Simulation headers & modules
-        axi_ram.setup(purpose="simulation")
-        iob_module.generate("axi_s_portmap", purpose="simulation")
-        iob_tasks.setup(purpose="simulation")
-
-        # Software modules
-        iob_str.setup(purpose="software")
-
-        # Verilog modules instances
-        cls.cpu = iob_picorv32.instance("cpu_0")
-        cls.ibus_split = iob_split.instance("ibus_split_0")
-        cls.dbus_split = iob_split.instance("dbus_split_0")
-        cls.int_dbus_split = iob_split.instance("int_dbus_split_0")
-        cls.pbus_split = iob_split.instance("pbus_split_0")
-        cls.int_mem = iob_merge.instance("iob_merge_0")
-        cls.ext_mem = iob_merge.instance("iob_merge_1")
-        cls.peripherals.append(iob_uart.instance("UART0"))
+        cls._create_instances()
 
         cls._setup_block_groups()
         cls._setup_confs()
         cls._setup_ios()
-
-        cls.peripheral_portmap += [
-            (
-                {"corename": "UART0", "if_name": "rs232", "port": "", "bits": []},
-                {"corename": "external", "if_name": "UART", "port": "", "bits": []},
-            ),  # Map UART0 of tester to external interface
-        ]
-
-        # Copy sources of this module to the build directory
-        super()._run_setup()
+        cls._setup_portmap()
 
         cls._custom_setup()
         # Setup this system using specialized iob-soc function
         setup_iob_soc(cls)
+
+    @classmethod
+    def _create_instances(cls):
+        # Verilog modules instances if we have them in the setup list (they may not be in the list if a subclass decided to remove them).
+        if iob_picorv32 in cls.submodule_setup_list:
+            cls.cpu = iob_picorv32.instance("cpu_0")
+        if iob_split in cls.submodule_setup_list:
+            cls.ibus_split = iob_split.instance("ibus_split_0")
+            cls.dbus_split = iob_split.instance("dbus_split_0")
+            cls.int_dbus_split = iob_split.instance("int_dbus_split_0")
+            cls.pbus_split = iob_split.instance("pbus_split_0")
+        if iob_merge in cls.submodule_setup_list:
+            cls.int_mem = iob_merge.instance("iob_merge_0")
+            cls.ext_mem = iob_merge.instance("iob_merge_1")
+        if iob_uart in cls.submodule_setup_list:
+            cls.peripherals.append(iob_uart.instance("UART0"))
+
+    @classmethod
+    def _create_submodules_list(cls):
+        # Submodules
+        cls.submodule_setup_list += [
+            iob_picorv32,
+            iob_cache,
+            iob_uart,
+            # Hardware headers & modules
+            "iob_wire",
+            "axi_wire",
+            "axi_m_port",
+            "axi_m_m_portmap",
+            "axi_m_portmap",
+            iob_utils,
+            iob_lib,
+            iob_clkenrst_portmap,
+            iob_clkenrst_port,
+            iob_merge,
+            iob_split,
+            iob_rom_sp,
+            iob_ram_dp_be,
+            iob_ram_dp_be_xil,
+            iob_pulse_gen,
+            iob_counter,
+            iob_reg,
+            iob_reg_re,
+            iob_ram_sp_be,
+            iob_ram_dp,
+            iob_reset_sync,
+            # Simulation headers & modules
+            (axi_ram, {"purpose": "simulation"}),
+            ("axi_s_portmap", {"purpose": "simulation"}),
+            (iob_tasks, {"purpose": "simulation"}),
+            # Software modules
+            (iob_str, {"purpose": "software"}),
+        ]
+
+    @classmethod
+    def _setup_portmap(cls):
+        cls.peripheral_portmap += [
+            (
+                {"corename": "UART0", "if_name": "rs232", "port": "", "bits": []},
+                {"corename": "external", "if_name": "UART", "port": "", "bits": []},
+            ),  # Map UART0 of iob-soc to external interface
+        ]
 
     @classmethod
     def _setup_block_groups(cls):
