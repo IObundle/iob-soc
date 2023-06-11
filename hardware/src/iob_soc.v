@@ -14,9 +14,9 @@ module iob_soc #(
    `include "iob_soc_io.vs"
     );
 
-   localparam E_BIT = `IOB_SOC_E;
-   localparam P_BIT = `IOB_SOC_P;
-   localparam B_BIT = `IOB_SOC_B;
+   localparam integer E_BIT = `IOB_SOC_E;
+   localparam integer P_BIT = `IOB_SOC_P;
+   localparam integer B_BIT = `IOB_SOC_B;
 
    `include "iob_soc_pwires.vs"
 
