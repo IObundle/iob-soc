@@ -31,6 +31,7 @@ from iob_reset_sync import iob_reset_sync
 from axi_ram import axi_ram
 from iob_tasks import iob_tasks
 from iob_str import iob_str
+from iob_ctls import iob_ctls
 
 # Optional submodules
 from axi_interconnect import axi_interconnect
@@ -108,6 +109,7 @@ class iob_soc(iob_module):
             iob_ram_sp_be,
             iob_ram_dp,
             iob_reset_sync,
+            iob_ctls,
             # Simulation headers & modules
             (axi_ram, {"purpose": "simulation"}),
             ("axi_s_portmap", {"purpose": "simulation"}),
