@@ -92,7 +92,7 @@ module boot_ctr #(
    assign cpu_rst = loading | cpu_rst_pulse;
 
    //
-   // READ BOOT ROM
+   // READ BOOT ROM 
    //
    reg                       rom_r_avalid;
    reg  [BOOTROM_ADDR_W-3:0] rom_r_addr;

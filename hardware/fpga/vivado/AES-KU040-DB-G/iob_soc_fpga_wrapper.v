@@ -30,6 +30,22 @@ module iob_soc_fpga_wrapper (
    inout  [ 3:0] c0_ddr4_dqs_t,
 `endif
 
+`ifdef IOB_SOC_USE_ETHERNET
+   output ENET_RESETN,
+   input  ENET_RX_CLK,
+   output ENET_GTX_CLK,
+   input  ENET_RX_D0,
+   input  ENET_RX_D1,
+   input  ENET_RX_D2,
+   input  ENET_RX_D3,
+   input  ENET_RX_DV,
+   output ENET_TX_D0,
+   output ENET_TX_D1,
+   output ENET_TX_D2,
+   output ENET_TX_D3,
+   output ENET_TX_EN,
+`endif
+
    output trap
 );
 
@@ -38,16 +54,56 @@ module iob_soc_fpga_wrapper (
    localparam AXI_ADDR_W = `DDR_ADDR_W;
    localparam AXI_DATA_W = `DDR_DATA_W;
 
-   wire clk;
-   wire rst;
+   wire       clk;
+   wire       rst;
+
+   wire       clk;
+   wire       rst;
+
+   wire [1:0] trap_signals;
+   assign trap = trap_signals[0] || trap_signals[1];
+
+   // 
+   // Logic to contatenate data pins and ethernet clock
+   //
+`ifdef IOB_SOC_USE_ETHERNET
+   //buffered eth clock
+   wire       ETH_CLK;
+
+   //PLL
+   wire       locked;
+
+   //MII
+   wire [3:0] TX_DATA;
+   wire [3:0] RX_DATA;
+
+   assign {ENET_TX_D3, ENET_TX_D2, ENET_TX_D1, ENET_TX_D0} = TX_DATA;
+   assign RX_DATA = {ENET_RX_D3, ENET_RX_D2, ENET_RX_D1, ENET_RX_D0};
+
+   //eth clock
+   IBUFG rxclk_buf (
+      .I(ENET_RX_CLK),
+      .O(ETH_CLK)
+   );
+   ODDRE1 ODDRE1_inst (
+      .Q (ENET_GTX_CLK),
+      .C (ETH_CLK),
+      .D1(1'b1),
+      .D2(1'b0),
+      .SR(~ENET_RESETN)
+   );
+
+   assign locked = 1'b1;
+`endif
 
 `ifdef IOB_SOC_USE_EXTMEM
    //axi wires between system backend and axi bridge
-   `include "iob_axi_wire.vs"
+   `include "iob_bus_2_axi_wire.vs"
 `endif
 
+
    //
-   // SYSTEM
+   // IOb-SoC
    //
 
    iob_soc #(
@@ -56,20 +112,33 @@ module iob_soc_fpga_wrapper (
       .AXI_ADDR_W(AXI_ADDR_W),
       .AXI_DATA_W(AXI_DATA_W)
    ) iob_soc (
-      .clk_i (clk),
-      .arst_i(rst),
-      .trap_o(trap),
-
+      .clk_i                   (clk),
+      .arst_i                  (rst),
+      .trap_o                  (trap_signals),
+`ifdef IOB_SOC_USE_ETHERNET
+      //ETHERNET
+      //PHY
+      .ETHERNET0_ETH_PHY_RESETN(ENET_RESETN),
+      //PLL
+      .ETHERNET0_PLL_LOCKED    (locked),
+      //MII
+      .ETHERNET0_RX_CLK        (ETH_CLK),
+      .ETHERNET0_RX_DATA       (RX_DATA),
+      .ETHERNET0_RX_DV         (ENET_RX_DV),
+      .ETHERNET0_TX_CLK        (ETH_CLK),
+      .ETHERNET0_TX_DATA       (TX_DATA),
+      .ETHERNET0_TX_EN         (ENET_TX_EN),
+`endif
 `ifdef IOB_SOC_USE_EXTMEM
       //axi system backend interface
-      `include "iob_axi_m_portmap.vs"
+      `include "iob_bus_0_2_axi_m_portmap.vs"
 `endif
 
       //UART
-      .UART0_txd(uart_txd),
-      .UART0_rxd(uart_rxd),
-      .UART0_rts(),
-      .UART0_cts(1'b1)
+      .UART_txd(uart_txd),
+      .UART_rxd(uart_rxd),
+      .UART_rts(),
+      .UART_cts(1'b1)
    );
 
 
@@ -83,16 +152,16 @@ module iob_soc_fpga_wrapper (
    `include "ddr4_axi_wire.vs"
 
    //DDR4 controller axi side clocks and resets
-   wire c0_ddr4_ui_clk;  //controller output clock 200MHz
-   wire ddr4_axi_arstn;  //controller input
+   wire       c0_ddr4_ui_clk;  //controller output clock 200MHz
+   wire       ddr4_axi_arstn;  //controller input
 
-   wire c0_ddr4_ui_clk_sync_rst;
-   wire rstn;
+   wire       c0_ddr4_ui_clk_sync_rst;
+   wire [1:0] rstn;
 
-   wire calib_done;
+   wire       calib_done;
 
    //assign rst = ~rstn & ~calib_done;
-   assign rst = ~rstn;
+   assign rst = ~rstn[0] || ~rstn[1];
 
 
    //
@@ -105,51 +174,109 @@ module iob_soc_fpga_wrapper (
       //
       // SYSTEM SIDE (slave)
       //
-      .S00_AXI_ARESET_OUT_N(rstn),  //to system reset
-      .S00_AXI_ACLK        (clk),   //from ddr4 controller PLL to be used by system
+      .S00_AXI_ARESET_OUT_N(rstn[0]),  //to system reset
+      .S00_AXI_ACLK        (clk),      //from ddr4 controller PLL to be used by system
 
       //Write address
-      .S00_AXI_AWID   (axi_awid[0]),
-      .S00_AXI_AWADDR (axi_awaddr),
-      .S00_AXI_AWLEN  (axi_awlen),
-      .S00_AXI_AWSIZE (axi_awsize),
-      .S00_AXI_AWBURST(axi_awburst),
+      .S00_AXI_AWID   (axi_awid[0+:1]),
+      .S00_AXI_AWADDR (axi_awaddr[0*AXI_ADDR_W+:AXI_ADDR_W]),
+      .S00_AXI_AWLEN  (axi_awlen[7:0]),
+      .S00_AXI_AWSIZE (axi_awsize[2:0]),
+      .S00_AXI_AWBURST(axi_awburst[1:0]),
       .S00_AXI_AWLOCK (axi_awlock[0]),
-      .S00_AXI_AWCACHE(axi_awcache),
-      .S00_AXI_AWPROT (axi_awprot),
-      .S00_AXI_AWQOS  (axi_awqos),
-      .S00_AXI_AWVALID(axi_awvalid),
-      .S00_AXI_AWREADY(axi_awready),
+      .S00_AXI_AWCACHE(axi_awcache[3:0]),
+      .S00_AXI_AWPROT (axi_awprot[2:0]),
+      .S00_AXI_AWQOS  (axi_awqos[3:0]),
+      .S00_AXI_AWVALID(axi_awvalid[0]),
+      .S00_AXI_AWREADY(axi_awready[0]),
+
       //Write data
-      .S00_AXI_WDATA  (axi_wdata),
-      .S00_AXI_WSTRB  (axi_wstrb),
-      .S00_AXI_WLAST  (axi_wlast),
-      .S00_AXI_WVALID (axi_wvalid),
-      .S00_AXI_WREADY (axi_wready),
+      .S00_AXI_WDATA (axi_wdata[0*AXI_DATA_W+:AXI_DATA_W]),
+      .S00_AXI_WSTRB (axi_wstrb[0*(AXI_DATA_W/8)+:(AXI_DATA_W/8)]),
+      .S00_AXI_WLAST (axi_wlast[0]),
+      .S00_AXI_WVALID(axi_wvalid[0]),
+      .S00_AXI_WREADY(axi_wready[0]),
+
       //Write response
-      .S00_AXI_BID    (axi_bid[0]),
-      .S00_AXI_BRESP  (axi_bresp),
-      .S00_AXI_BVALID (axi_bvalid),
-      .S00_AXI_BREADY (axi_bready),
+      .S00_AXI_BID   (axi_bid[0+:1]),
+      .S00_AXI_BRESP (axi_bresp[1:0]),
+      .S00_AXI_BVALID(axi_bvalid[0]),
+      .S00_AXI_BREADY(axi_bready[0]),
+
       //Read address
-      .S00_AXI_ARID   (axi_arid[0]),
-      .S00_AXI_ARADDR (axi_araddr),
-      .S00_AXI_ARLEN  (axi_arlen),
-      .S00_AXI_ARSIZE (axi_arsize),
-      .S00_AXI_ARBURST(axi_arburst),
+      .S00_AXI_ARID   (axi_arid[0+:1]),
+      .S00_AXI_ARADDR (axi_araddr[0*AXI_ADDR_W+:AXI_ADDR_W]),
+      .S00_AXI_ARLEN  (axi_arlen[7:0]),
+      .S00_AXI_ARSIZE (axi_arsize[2:0]),
+      .S00_AXI_ARBURST(axi_arburst[1:0]),
       .S00_AXI_ARLOCK (axi_arlock[0]),
-      .S00_AXI_ARCACHE(axi_arcache),
-      .S00_AXI_ARPROT (axi_arprot),
-      .S00_AXI_ARQOS  (axi_arqos),
-      .S00_AXI_ARVALID(axi_arvalid),
-      .S00_AXI_ARREADY(axi_arready),
+      .S00_AXI_ARCACHE(axi_arcache[3:0]),
+      .S00_AXI_ARPROT (axi_arprot[2:0]),
+      .S00_AXI_ARQOS  (axi_arqos[3:0]),
+      .S00_AXI_ARVALID(axi_arvalid[0]),
+      .S00_AXI_ARREADY(axi_arready[0]),
+
       //Read data
-      .S00_AXI_RID    (axi_rid[0]),
-      .S00_AXI_RDATA  (axi_rdata),
-      .S00_AXI_RRESP  (axi_rresp),
-      .S00_AXI_RLAST  (axi_rlast),
-      .S00_AXI_RVALID (axi_rvalid),
-      .S00_AXI_RREADY (axi_rready),
+      .S00_AXI_RID   (axi_rid[0+:1]),
+      .S00_AXI_RDATA (axi_rdata[31:0]),
+      .S00_AXI_RRESP (axi_rresp[1:0]),
+      .S00_AXI_RLAST (axi_rlast[0]),
+      .S00_AXI_RVALID(axi_rvalid[0]),
+      .S00_AXI_RREADY(axi_rready[0]),
+
+
+      //
+      // SYSTEM IOB-SOC SIDE
+      //
+      .S01_AXI_ARESET_OUT_N(rstn[1]),
+      .S01_AXI_ACLK        (clk),
+
+      //Write address
+      .S01_AXI_AWID   (axi_awid[AXI_ID_W+:1]),
+      .S01_AXI_AWADDR (axi_awaddr[1*AXI_ADDR_W+:AXI_ADDR_W]),
+      .S01_AXI_AWLEN  (axi_awlen[15:8]),
+      .S01_AXI_AWSIZE (axi_awsize[5:3]),
+      .S01_AXI_AWBURST(axi_awburst[3:2]),
+      .S01_AXI_AWLOCK (axi_awlock[2]),
+      .S01_AXI_AWCACHE(axi_awcache[7:4]),
+      .S01_AXI_AWPROT (axi_awprot[5:3]),
+      .S01_AXI_AWQOS  (axi_awqos[7:4]),
+      .S01_AXI_AWVALID(axi_awvalid[1]),
+      .S01_AXI_AWREADY(axi_awready[1]),
+
+      //Write data
+      .S01_AXI_WDATA (axi_wdata[1*AXI_DATA_W+:AXI_DATA_W]),
+      .S01_AXI_WSTRB (axi_wstrb[1*(AXI_DATA_W/8)+:(AXI_DATA_W/8)]),
+      .S01_AXI_WLAST (axi_wlast[1]),
+      .S01_AXI_WVALID(axi_wvalid[1]),
+      .S01_AXI_WREADY(axi_wready[1]),
+
+      //Write response
+      .S01_AXI_BID   (axi_bid[AXI_ID_W+:1]),
+      .S01_AXI_BRESP (axi_bresp[3:2]),
+      .S01_AXI_BVALID(axi_bvalid[1]),
+      .S01_AXI_BREADY(axi_bready[1]),
+
+      //Read address
+      .S01_AXI_ARID   (axi_arid[AXI_ID_W+:1]),
+      .S01_AXI_ARADDR (axi_araddr[1*AXI_ADDR_W+:AXI_ADDR_W]),
+      .S01_AXI_ARLEN  (axi_arlen[15:8]),
+      .S01_AXI_ARSIZE (axi_arsize[5:3]),
+      .S01_AXI_ARBURST(axi_arburst[3:2]),
+      .S01_AXI_ARLOCK (axi_arlock[1]),
+      .S01_AXI_ARCACHE(axi_arcache[7:4]),
+      .S01_AXI_ARPROT (axi_arprot[5:3]),
+      .S01_AXI_ARQOS  (axi_arqos[7:4]),
+      .S01_AXI_ARVALID(axi_arvalid[1]),
+      .S01_AXI_ARREADY(axi_arready[1]),
+
+      //Read data
+      .S01_AXI_RID   (axi_rid[AXI_ID_W+:1]),
+      .S01_AXI_RDATA (axi_rdata[63:32]),
+      .S01_AXI_RRESP (axi_rresp[3:2]),
+      .S01_AXI_RLAST (axi_rlast[1]),
+      .S01_AXI_RVALID(axi_rvalid[1]),
+      .S01_AXI_RREADY(axi_rready[1]),
 
 
       //

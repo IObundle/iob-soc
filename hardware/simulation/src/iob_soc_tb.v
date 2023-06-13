@@ -32,7 +32,7 @@ module iob_soc_tb;
    integer soc2cnsl_fd = 0, cnsl2soc_fd = 0;
 
 
-   //tester uart
+   //IOb-SoC uart
    reg                               iob_avalid_i;
    reg  [`IOB_UART_SWREG_ADDR_W-1:0] iob_addr_i;
    reg  [       `IOB_SOC_DATA_W-1:0] iob_wdata_i;
@@ -70,10 +70,10 @@ module iob_soc_tb;
       txread_reg  = 0;
 
 
-      soc2cnsl_fd = $fopen("soc2cnsl", "r");
+      soc2cnsl_fd = $fopen("soc2cnsl", "r+");
       while (!soc2cnsl_fd) begin
          $display("Could not open \"soc2cnsl\"");
-         soc2cnsl_fd = $fopen("soc2cnsl", "r");
+         soc2cnsl_fd = $fopen("soc2cnsl", "r+");
       end
       $fclose(soc2cnsl_fd);
 
@@ -97,7 +97,7 @@ module iob_soc_tb;
          if (txread_reg) begin
             cnsl2soc_fd = $fopen("cnsl2soc", "r");
             if (!cnsl2soc_fd) begin
-               $finish();
+               $finish;
             end
             n = $fscanf(cnsl2soc_fd, "%c", cpu_char);
             if (n > 0) begin
@@ -138,12 +138,12 @@ module iob_soc_tb;
       end
    endtask
 
-   `include "iob_tasks.vh"
+   `include "iob_tasks.vs"
 
    //finish simulation on trap
    always @(posedge trap) begin
       #10 $display("Found CPU trap condition");
-      $finish();
+      $finish;
    end
 
 endmodule

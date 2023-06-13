@@ -35,14 +35,14 @@ module iob_soc_fpga_wrapper (
    // SYSTEM
    //
    iob_soc iob_soc (
-      .clk_i    (clk),
-      .arst_i   (sys_rst),
-      .trap_o   (trap),
+      .clk_i   (clk),
+      .arst_i  (sys_rst),
+      .trap_o  (trap),
       //UART
-      .UART0_txd(uart_txd),
-      .UART0_rxd(uart_rxd),
-      .UART0_rts(),
-      .UART0_cts(1'b1)
+      .UART_txd(uart_txd),
+      .UART_rxd(uart_rxd),
+      .UART_rts(),
+      .UART_cts(1'b1)
    );
 
 endmodule

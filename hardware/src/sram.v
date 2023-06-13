@@ -102,7 +102,7 @@ module sram #(
 `endif
 `endif
 
-   // reply with ready
+   // reply with ready 
 
    iob_reg #(
       .DATA_W (1),
