@@ -100,8 +100,8 @@ class iob_regfileif(iob_module):
 
         #### Create params, inst_params and conf files for inverted hardware. (Use symlinks to save disk space and highlight they are equal)
         if not os.path.isfile(f"{cls.build_dir}/hardware/src/{cls.name}_inverted_conf.vh"): os.symlink(f"{cls.name}_conf.vh", f"{cls.build_dir}/hardware/src/{cls.name}_inverted_conf.vh")
-        if not os.path.isfile(f"{cls.build_dir}/hardware/src/{cls.name}_inverted_params.vs"): os.symlink(f"{cls.name}_params.vs", f"{cls.build_dir}/hardware/src/{cls.name}_inverted_params.vs")
-        if not os.path.isfile(f"{cls.build_dir}/hardware/src/{cls.name}_inverted_inst_params.vs"): os.symlink(f"{cls.name}_inst_params.vs", f"{cls.build_dir}/hardware/src/{cls.name}_inverted_inst_params.vs")
+        if not os.path.isfile(f"{cls.build_dir}/hardware/src/{cls.name}_inverted_params.vs"): shutil.copy(f"{cls.build_dir}/hardware/src/{cls.name}_params.vs", f"{cls.build_dir}/hardware/src/{cls.name}_inverted_params.vs")
+        if not os.path.isfile(f"{cls.build_dir}/hardware/src/{cls.name}_inverted_inst_params.vs"): shutil.copy(f"{cls.build_dir}/hardware/src/{cls.name}_inst_params.vs", f"{cls.build_dir}/hardware/src/{cls.name}_inverted_inst_params.vs")
 
         #### Create inverted register software
         mkregs_obj.write_swheader(reg_table, cls.build_dir+'/software/src', f"{cls.name}_inverted")
