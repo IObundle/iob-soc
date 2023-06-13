@@ -6,7 +6,7 @@ import setup
 from submodule_utils import import_setup
 
 name='iob_nativebridgeif'
-flows='sim'
+flows=''
 setup_dir=os.path.dirname(__file__)
 submodules = {}
 
@@ -41,7 +41,7 @@ def main():
     setup.setup(sys.modules[__name__])
 
     # Remove swreg_gen and swreg_inst files
-    os.remove(f"{build_dir}/hardware/src/{name}_swreg_inst.vh")
+    os.remove(f"{build_dir}/hardware/src/{name}_swreg_inst.vs")
     os.remove(f"{build_dir}/hardware/src/{name}_swreg_gen.v")
 
     # Modify iob_nativebridgeif_swreg_def.vh
