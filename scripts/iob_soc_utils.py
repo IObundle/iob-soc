@@ -148,7 +148,8 @@ def peripheral_portmap(python_module):
                             # Map port to the external system interface
                             peripheral_portmap.append(({'corename':peripheral.name, 'if_name':interface['name'], 'port':port['name'], 'bits':[]}, {'corename':'external', 'if_name':peripheral.name, 'port':'', 'bits':[]}))
                 else: 
-                    if interface['name'] not in if_gen.interfaces:
+                    # Auto-map if_gen interfaces, except for the ones that have reserved signals.
+                    if interface['name'] in if_gen.interfaces and interface['name'] not in ['iob_s_port','axi_m_port']:
                         # Map entire interface to the external system interface
                         peripheral_portmap.append(({'corename':peripheral.name, 'if_name':interface['name'], 'port':'', 'bits':[]}, {'corename':'external', 'if_name':peripheral.name, 'port':'', 'bits':[]}))
 
