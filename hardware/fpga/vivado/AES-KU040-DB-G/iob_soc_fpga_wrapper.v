@@ -57,9 +57,6 @@ module iob_soc_fpga_wrapper (
    wire       clk;
    wire       rst;
 
-   wire       clk;
-   wire       rst;
-
    wire [1:0] trap_signals;
    assign trap = trap_signals[0] || trap_signals[1];
 
