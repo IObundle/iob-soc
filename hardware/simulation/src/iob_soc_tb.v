@@ -97,7 +97,7 @@ module iob_soc_tb;
          if (txread_reg) begin
             cnsl2soc_fd = $fopen("cnsl2soc", "r");
             if (!cnsl2soc_fd) begin
-               $finish;
+               $finish();
             end
             n = $fscanf(cnsl2soc_fd, "%c", cpu_char);
             if (n > 0) begin
@@ -143,7 +143,7 @@ module iob_soc_tb;
    //finish simulation on trap
    always @(posedge trap) begin
       #10 $display("Found CPU trap condition");
-      $finish;
+      $finish();
    end
 
 endmodule
