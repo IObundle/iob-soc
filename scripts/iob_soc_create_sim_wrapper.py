@@ -5,7 +5,7 @@ import os
 from submodule_utils import get_pio_signals, add_prefix_to_parameters_in_string
 
 #Creates the Verilog Snippet (.vs) files required by {name}_sim_wrapper.v
-def create_sim_wrapper(build_dir, name, ios, confs):
+def create_sim_wrapper(build_dir, name, ios, confs, num_extmem_connections):
     out_dir = os.path.join(build_dir,f'hardware/simulation/src/')
     pwires_str = ""
     pportmaps_str = ""
@@ -32,10 +32,148 @@ def create_sim_wrapper(build_dir, name, ios, confs):
             pportmaps_str += '               .{signal}({signal}),\n'.format(signal=table['name']+"_"+signal['name'])
         if pio_signals and 'if_defined' in table.keys(): pportmaps_str += "`endif\n"
 
-    fd_pportmaps = open(f"{out_dir}/{name}_pportmaps.vs", "w")
-    fd_pportmaps.write(pportmaps_str)
-    fd_pportmaps.close()
+    # Add extmem wires for system
+    pwires_str += f"""
+   //DDR AXI interface signals
+`ifdef {name.upper()}_USE_EXTMEM
+   // Wires for the system and its peripherals
+   `include "iob_bus_{num_extmem_connections}_axi_wire.vs"
+   // Wires to connect the interconnect with the memory
+   `include "iob_memory_axi_wire.vs"
+`endif
+"""
     
     fd_periphs = open(f"{out_dir}/{name}_sim_pwires.vs", "w")
     fd_periphs.write(pwires_str)
     fd_periphs.close()
+
+    # Add extmem portmap for system
+    pportmaps_str +=f"""
+`ifdef {name.upper()}_USE_EXTMEM
+      `include "iob_bus_0_{num_extmem_connections}_axi_m_portmap.vs"
+`endif
+"""
+
+    fd_pportmaps = open(f"{out_dir}/{name}_pportmaps.vs", "w")
+    fd_pportmaps.write(pportmaps_str)
+    fd_pportmaps.close()
+
+    create_interconnect_instance(out_dir, name, num_extmem_connections)
+
+def create_interconnect_instance(out_dir, name, num_extmem_connections):
+    # Create strings for awlock and arlock
+    awlock_str = arlock_str = ' }'
+    for i in range(num_extmem_connections):
+        awlock_str = f', axi_awlock[{i*2}]' + awlock_str
+        arlock_str = f', axi_arlock[{i*2}]' + arlock_str
+    awlock_str = "{" + awlock_str[1:]
+    arlock_str = "{" + arlock_str[1:]
+
+
+    interconnect_str = f"""
+`ifdef IOB_SOC_USE_EXTMEM
+   //instantiate axi interconnect
+   axi_interconnect #(
+      .ID_WIDTH    (AXI_ID_W),
+      .DATA_WIDTH  (AXI_DATA_W),
+      .ADDR_WIDTH  (AXI_ADDR_W),
+      .M_ADDR_WIDTH(AXI_ADDR_W),
+      .S_COUNT     ({num_extmem_connections}),
+      .M_COUNT     (1)
+   ) system_axi_interconnect (
+      .clk(clk_i),
+      .rst(rst_i),
+
+      // Need to use manually defined connections because awlock and arlock of interconnect is only on bit for each slave
+      .s_axi_awid    (axi_awid),    //Address write channel ID.
+      .s_axi_awaddr  (axi_awaddr),  //Address write channel address.
+      .s_axi_awlen   (axi_awlen),   //Address write channel burst length.
+      .s_axi_awsize  (axi_awsize),  //Address write channel burst size. This signal indicates the size of each transfer in the burst.
+      .s_axi_awburst (axi_awburst), //Address write channel burst type.
+      .s_axi_awlock  ({awlock_str}),//Address write channel lock type.
+      .s_axi_awcache (axi_awcache), //Address write channel memory type. Transactions set with Normal, Non-cacheable, Modifiable, and Bufferable (0011).
+      .s_axi_awprot  (axi_awprot),  //Address write channel protection type. Transactions set with Normal, Secure, and Data attributes (000).
+      .s_axi_awqos   (axi_awqos),   //Address write channel quality of service.
+      .s_axi_awvalid (axi_awvalid), //Address write channel valid.
+      .s_axi_awready (axi_awready), //Address write channel ready.
+      .s_axi_wdata   (axi_wdata),   //Write channel data.
+      .s_axi_wstrb   (axi_wstrb),   //Write channel write strobe.
+      .s_axi_wlast   (axi_wlast),   //Write channel last word flag.
+      .s_axi_wvalid  (axi_wvalid),  //Write channel valid.
+      .s_axi_wready  (axi_wready),  //Write channel ready.
+      .s_axi_bid     (axi_bid),     //Write response channel ID.
+      .s_axi_bresp   (axi_bresp),   //Write response channel response.
+      .s_axi_bvalid  (axi_bvalid),  //Write response channel valid.
+      .s_axi_bready  (axi_bready),  //Write response channel ready.
+      .s_axi_arid    (axi_arid),    //Address read channel ID.
+      .s_axi_araddr  (axi_araddr),  //Address read channel address.
+      .s_axi_arlen   (axi_arlen),   //Address read channel burst length.
+      .s_axi_arsize  (axi_arsize),  //Address read channel burst size. This signal indicates the size of each transfer in the burst.
+      .s_axi_arburst (axi_arburst), //Address read channel burst type.
+      .s_axi_arlock  ({arlock_str}),//Address read channel lock type.
+      .s_axi_arcache (axi_arcache), //Address read channel memory type. Transactions set with Normal, Non-cacheable, Modifiable, and Bufferable (0011).
+      .s_axi_arprot  (axi_arprot),  //Address read channel protection type. Transactions set with Normal, Secure, and Data attributes (000).
+      .s_axi_arqos   (axi_arqos),   //Address read channel quality of service.
+      .s_axi_arvalid (axi_arvalid), //Address read channel valid.
+      .s_axi_arready (axi_arready), //Address read channel ready.
+      .s_axi_rid     (axi_rid),     //Read channel ID.
+      .s_axi_rdata   (axi_rdata),   //Read channel data.
+      .s_axi_rresp   (axi_rresp),   //Read channel response.
+      .s_axi_rlast   (axi_rlast),   //Read channel last word.
+      .s_axi_rvalid  (axi_rvalid),  //Read channel valid.
+      .s_axi_rready  (axi_rready),  //Read channel ready.
+
+      // Used manually defined connections because awlock and arlock of interconnect is only on bit.
+      .m_axi_awid    (memory_axi_awid[0+:AXI_ID_W]),         //Address write channel ID.
+      .m_axi_awaddr  (memory_axi_awaddr[0+:AXI_ADDR_W]),     //Address write channel address.
+      .m_axi_awlen   (memory_axi_awlen[0+:AXI_LEN_W]),       //Address write channel burst length.
+      .m_axi_awsize  (memory_axi_awsize[0+:3]),              //Address write channel burst size. This signal indicates the size of each transfer in the burst.
+      .m_axi_awburst (memory_axi_awburst[0+:2]),             //Address write channel burst type.
+      .m_axi_awlock  (memory_axi_awlock[0+:1]),              //Address write channel lock type.
+      .m_axi_awcache (memory_axi_awcache[0+:4]),             //Address write channel memory type. Transactions set with Normal, Non-cacheable, Modifiable, and Bufferable (0011).
+      .m_axi_awprot  (memory_axi_awprot[0+:3]),              //Address write channel protection type. Transactions set with Normal, Secure, and Data attributes (000).
+      .m_axi_awqos   (memory_axi_awqos[0+:4]),               //Address write channel quality of service.
+      .m_axi_awvalid (memory_axi_awvalid[0+:1]),             //Address write channel valid.
+      .m_axi_awready (memory_axi_awready[0+:1]),             //Address write channel ready.
+      .m_axi_wdata   (memory_axi_wdata[0+:AXI_DATA_W]),      //Write channel data.
+      .m_axi_wstrb   (memory_axi_wstrb[0+:(AXI_DATA_W/8)]),  //Write channel write strobe.
+      .m_axi_wlast   (memory_axi_wlast[0+:1]),               //Write channel last word flag.
+      .m_axi_wvalid  (memory_axi_wvalid[0+:1]),              //Write channel valid.
+      .m_axi_wready  (memory_axi_wready[0+:1]),              //Write channel ready.
+      .m_axi_bid     (memory_axi_bid[0+:AXI_ID_W]),          //Write response channel ID.
+      .m_axi_bresp   (memory_axi_bresp[0+:2]),               //Write response channel response.
+      .m_axi_bvalid  (memory_axi_bvalid[0+:1]),              //Write response channel valid.
+      .m_axi_bready  (memory_axi_bready[0+:1]),              //Write response channel ready.
+      .m_axi_arid    (memory_axi_arid[0+:AXI_ID_W]),         //Address read channel ID.
+      .m_axi_araddr  (memory_axi_araddr[0+:AXI_ADDR_W]),     //Address read channel address.
+      .m_axi_arlen   (memory_axi_arlen[0+:AXI_LEN_W]),       //Address read channel burst length.
+      .m_axi_arsize  (memory_axi_arsize[0+:3]),              //Address read channel burst size. This signal indicates the size of each transfer in the burst.
+      .m_axi_arburst (memory_axi_arburst[0+:2]),             //Address read channel burst type.
+      .m_axi_arlock  (memory_axi_arlock[0+:1]),              //Address read channel lock type.
+      .m_axi_arcache (memory_axi_arcache[0+:4]),             //Address read channel memory type. Transactions set with Normal, Non-cacheable, Modifiable, and Bufferable (0011).
+      .m_axi_arprot  (memory_axi_arprot[0+:3]),              //Address read channel protection type. Transactions set with Normal, Secure, and Data attributes (000).
+      .m_axi_arqos   (memory_axi_arqos[0+:4]),               //Address read channel quality of service.
+      .m_axi_arvalid (memory_axi_arvalid[0+:1]),             //Address read channel valid.
+      .m_axi_arready (memory_axi_arready[0+:1]),             //Address read channel ready.
+      .m_axi_rid     (memory_axi_rid[0+:AXI_ID_W]),          //Read channel ID.
+      .m_axi_rdata   (memory_axi_rdata[0+:AXI_DATA_W]),      //Read channel data.
+      .m_axi_rresp   (memory_axi_rresp[0+:2]),               //Read channel response.
+      .m_axi_rlast   (memory_axi_rlast[0+:1]),               //Read channel last word.
+      .m_axi_rvalid  (memory_axi_rvalid[0+:1]),              //Read channel valid.
+      .m_axi_rready  (memory_axi_rready[0+:1]),              //Read channel ready.
+
+      //optional signals
+      .s_axi_awuser({num_extmem_connections}'b0),
+      .s_axi_wuser ({num_extmem_connections}'b0),
+      .s_axi_aruser({num_extmem_connections}'b0),
+      .m_axi_buser (1'b0),
+      .m_axi_ruser (1'b0)
+   );
+`endif
+"""
+
+    fp_interconnect = open(f"{out_dir}/{name}_interconnect.vs", "w")
+    fp_interconnect.write(interconnect_str)
+    fp_interconnect.close()
+
+
