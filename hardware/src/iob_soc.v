@@ -61,7 +61,7 @@ module iob_soc #(
       .rst_i(cpu_reset),
       .cke_i(cke_i),
       .boot (boot),
-      .trap (trap_o[1]),
+      .trap (cpu_trap_o),
 
       //instruction bus
       .ibus_req (cpu_i_req),

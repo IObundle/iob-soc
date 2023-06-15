@@ -50,10 +50,6 @@ module iob_soc_sim_wrapper (
    // INSTANTIATE COMPONENTS
    //
 
-   //'Or' between trap signals of IOb-SoC and SUT
-   wire [1:0] trap_signals;
-   assign trap_o = trap_signals[0] || trap_signals[1];
-
    //
    // IOb-SoC (may also include Unit Under Test)
    //
@@ -66,7 +62,7 @@ module iob_soc_sim_wrapper (
       `include "iob_soc_pportmaps.vs"
       .clk_i (clk_i),
       .arst_i(rst_i),
-      .trap_o(trap_signals)
+      .trap_o(trap_o)
    );
 
    `include "iob_soc_interconnect.vs"

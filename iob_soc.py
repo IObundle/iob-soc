@@ -299,8 +299,8 @@ class iob_soc(iob_module):
                     {
                         "name": "trap_o",
                         "type": "O",
-                        "n_bits": "2",
-                        "descr": "CPU trap signal (One for iob-soc and one optionally for SUT)",
+                        "n_bits": "1",
+                        "descr": "CPU trap signal",
                     },
                 ],
             },

@@ -28,9 +28,9 @@ def insert_header_files(dest_dir, name, peripherals_list):
 # peripherals_list: list of dictionaries each of them describes a peripheral instance
 # internal_wires: Optional argument. List of extra wires to create inside module
 def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
-    # Dictionary of peripherals that use extmem. The value is the numer of extmem interfaces (size of the bus) for each perihperal.
     num_extmem_connections = 1 # By default, one connection for iob-soc's cache
     latest_extmem_bus_size = -1
+    peripherals_with_trap = [] # List of peripherals with trap output
 
     out_dir = os.path.join(build_dir,f'hardware/src/')
 
@@ -91,6 +91,10 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
                                               str(latest_extmem_bus_size))
             if 'if_defined' in signal.keys(): periphs_inst_str += "`endif\n"
 
+            if signal['name']=="trap_o":
+                peripherals_with_trap.append(instance)
+
+
         # Remove comma at the end of last signal
         periphs_inst_str=periphs_inst_str[::-1].replace(",","",1)[::-1]
         
@@ -100,6 +104,19 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
     periphs_wires_str += "\n    // Internal wires for shared access to the external memory address bus\n"
     periphs_wires_str += f"    wire [{num_extmem_connections}*AXI_ADDR_W-1:0] internal_axi_awaddr_o;\n"
     periphs_wires_str += f"    wire [{num_extmem_connections}*AXI_ADDR_W-1:0] internal_axi_araddr_o;\n"
+
+
+    # Create internal wires to connect the peripherals trap signals
+    periphs_wires_str += "\n    // Internal wires for trap signals\n"
+    periphs_wires_str += "    wire cpu_trap_o;\n"
+    trap_or_str = "    assign trap_o = cpu_trap_o" 
+    for peripheral in peripherals_with_trap:
+        periphs_wires_str += f"    wire {peripheral.name}_trap_o;\n"
+        trap_or_str += f"| {peripheral.name}_trap_o"
+    trap_or_str += ";\n"
+
+    # Logic OR of trap signals
+    periphs_wires_str += trap_or_str
 
     fd_wires = open(f"{out_dir}/{top}_pwires.vs", "w")
     fd_wires.write(periphs_wires_str)
