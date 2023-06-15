@@ -32,10 +32,10 @@ module sram #(
 
    wire d_avalid_int = i_avalid ? 1'b0 : d_avalid;
    wire avalid = i_avalid ? i_avalid : d_avalid;
-   wire [SRAM_ADDR_W-3:0] addr = i_avalid ? i_addr : d_addr;
-   wire [DATA_W-1:0] wdata = i_avalid ? i_wdata : d_wdata;
-   wire [DATA_W/8-1:0] wstrb = i_avalid ? i_wstrb : d_wstrb;
-   wire [DATA_W-1:0] rdata;
+   wire                                            [SRAM_ADDR_W-3:0] addr = i_avalid ? i_addr : d_addr;
+   wire                                            [     DATA_W-1:0] wdata = i_avalid ? i_wdata : d_wdata;
+   wire                                            [   DATA_W/8-1:0] wstrb = i_avalid ? i_wstrb : d_wstrb;
+   wire                                            [     DATA_W-1:0]                                       rdata;
    assign d_rdata = rdata;
    assign i_rdata = rdata;
 
