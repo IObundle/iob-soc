@@ -1,4 +1,15 @@
-set USE_EXTMEM $CUSTOM_ARGS
+if {$N_INTERCONNECT_SLAVES eq ""} {
+    set N_INTERCONNECT_SLAVES 1 ; # Default value when not provided
+}
+
+proc generate_slave_config_lines {num_slaves} {
+    for {set i 0} {$i < $num_slaves} {incr i} {
+        set slave_number [format "%02d" $i]
+        set_property "CONFIG.S${slave_number}_AXI_IS_ACLK_ASYNC" 1 [get_ips axi_interconnect_0]
+        set_property "CONFIG.S${slave_number}_AXI_READ_FIFO_DEPTH" 32 [get_ips axi_interconnect_0]
+        set_property "CONFIG.S${slave_number}_AXI_WRITE_FIFO_DEPTH" 32 [get_ips axi_interconnect_0]
+    }
+}
 
 if { $USE_EXTMEM > 0 } {
 
@@ -13,23 +24,16 @@ if { $USE_EXTMEM > 0 } {
     } else {
 
         create_ip -name axi_interconnect -vendor xilinx.com -library ip -version 1.7 -module_name axi_interconnect_0 -dir ./ip -force
+        
+        set_property CONFIG.NUM_SLAVE_PORTS $N_INTERCONNECT_SLAVES [get_ips axi_interconnect_0]
+        set_property CONFIG.AXI_ADDR_WIDTH 30 [get_ips axi_interconnect_0]
+        set_property CONFIG.ACLK_PERIOD 5000 [get_ips axi_interconnect_0]
+        set_property CONFIG.INTERCONNECT_DATA_WIDTH 32 [get_ips axi_interconnect_0]
+        set_property CONFIG.M00_AXI_IS_ACLK_ASYNC 1 [get_ips axi_interconnect_0]
+        set_property CONFIG.M00_AXI_WRITE_FIFO_DEPTH 32 [get_ips axi_interconnect_0]
+        set_property CONFIG.M00_AXI_READ_FIFO_DEPTH 32 [get_ips axi_interconnect_0]
 
-        set_property -dict \
-            [list \
-                 CONFIG.NUM_SLAVE_PORTS {2}\
-                 CONFIG.AXI_ADDR_WIDTH {30}\
-                 CONFIG.ACLK_PERIOD {5000} \
-                 CONFIG.INTERCONNECT_DATA_WIDTH {32}\
-                 CONFIG.M00_AXI_IS_ACLK_ASYNC {1}\
-                 CONFIG.M00_AXI_WRITE_FIFO_DEPTH {32}\
-                 CONFIG.M00_AXI_READ_FIFO_DEPTH {32}\
-                 CONFIG.S00_AXI_IS_ACLK_ASYNC {1}\
-                 CONFIG.S00_AXI_READ_FIFO_DEPTH {32}\
-                 CONFIG.S00_AXI_WRITE_FIFO_DEPTH {32}\
-                 CONFIG.S01_AXI_IS_ACLK_ASYNC {1}\
-                 CONFIG.S01_AXI_READ_FIFO_DEPTH {32}\
-                 CONFIG.S01_AXI_WRITE_FIFO_DEPTH {32}\
-                 ] [get_ips axi_interconnect_0]
+        generate_slave_config_lines $N_INTERCONNECT_SLAVES
 
         generate_target all [get_files ./ip/axi_interconnect_0/axi_interconnect_0.xci]
 

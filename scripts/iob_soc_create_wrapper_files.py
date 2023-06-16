@@ -4,8 +4,8 @@ import os
 
 from submodule_utils import get_pio_signals, add_prefix_to_parameters_in_string
 
-#Creates the Verilog Snippet (.vs) files required by {name}_sim_wrapper.v
-def create_sim_wrapper(build_dir, name, ios, confs, num_extmem_connections):
+#Creates the Verilog Snippet (.vs) files required by wrappers
+def create_wrapper_files(build_dir, name, ios, confs, num_extmem_connections):
     out_dir = os.path.join(build_dir,f'hardware/simulation/src/')
     pwires_str = ""
     pportmaps_str = ""
@@ -43,7 +43,7 @@ def create_sim_wrapper(build_dir, name, ios, confs, num_extmem_connections):
 `endif
 """
     
-    fd_periphs = open(f"{out_dir}/{name}_sim_pwires.vs", "w")
+    fd_periphs = open(f"{out_dir}/{name}_wrapper_pwires.vs", "w")
     fd_periphs.write(pwires_str)
     fd_periphs.close()
 
@@ -59,6 +59,7 @@ def create_sim_wrapper(build_dir, name, ios, confs, num_extmem_connections):
     fd_pportmaps.close()
 
     create_interconnect_instance(out_dir, name, num_extmem_connections)
+    create_ku040_interconnect_s_portmap(out_dir, name, num_extmem_connections)
 
 def create_interconnect_instance(out_dir, name, num_extmem_connections):
     # Create strings for awlock and arlock
@@ -173,6 +174,70 @@ def create_interconnect_instance(out_dir, name, num_extmem_connections):
 """
 
     fp_interconnect = open(f"{out_dir}/{name}_interconnect.vs", "w")
+    fp_interconnect.write(interconnect_str)
+    fp_interconnect.close()
+
+
+def create_ku040_interconnect_s_portmap(out_dir, name, num_extmem_connections):
+    interconnect_str = ""
+    for i in range(num_extmem_connections):
+        interconnect_str += f"""
+      //
+      // External memory connection {i}
+      //
+      .S{i:02d}_AXI_ARESET_OUT_N(rstn[{i}]),  //to system reset
+      .S{i:02d}_AXI_ACLK        (clk),      //from ddr4 controller PLL to be used by system
+
+      //Write address
+      .S{i:02d}_AXI_AWID   (axi_awid[{i}*1+:1]),
+      .S{i:02d}_AXI_AWADDR (axi_awaddr[{i}*AXI_ADDR_W+:AXI_ADDR_W]),
+      .S{i:02d}_AXI_AWLEN  (axi_awlen[{i}*8+:8]),
+      .S{i:02d}_AXI_AWSIZE (axi_awsize[{i}*3+:3]),
+      .S{i:02d}_AXI_AWBURST(axi_awburst[{i}*2+:2]),
+      .S{i:02d}_AXI_AWLOCK (axi_awlock[{i}*1+:1]),
+      .S{i:02d}_AXI_AWCACHE(axi_awcache[{i}*4+:4]),
+      .S{i:02d}_AXI_AWPROT (axi_awprot[{i}*3+:3]),
+      .S{i:02d}_AXI_AWQOS  (axi_awqos[{i}*4+:4]),
+      .S{i:02d}_AXI_AWVALID(axi_awvalid[{i}*1+:1]),
+      .S{i:02d}_AXI_AWREADY(axi_awready[{i}*1+:1]),
+
+      //Write data
+      .S{i:02d}_AXI_WDATA (axi_wdata[{i}*AXI_DATA_W+:AXI_DATA_W]),
+      .S{i:02d}_AXI_WSTRB (axi_wstrb[{i}*(AXI_DATA_W/8)+:(AXI_DATA_W/8)]),
+      .S{i:02d}_AXI_WLAST (axi_wlast[{i}*1+:1]),
+      .S{i:02d}_AXI_WVALID(axi_wvalid[{i}*1+:1]),
+      .S{i:02d}_AXI_WREADY(axi_wready[{i}*1+:1]),
+
+      //Write response
+      .S{i:02d}_AXI_BID   (axi_bid[{i}*1+:1]),
+      .S{i:02d}_AXI_BRESP (axi_bresp[{i}*2+:2]),
+      .S{i:02d}_AXI_BVALID(axi_bvalid[{i}*1+:1]),
+      .S{i:02d}_AXI_BREADY(axi_bready[{i}*1+:1]),
+
+      //Read address
+      .S{i:02d}_AXI_ARID   (axi_arid[{i}*1+:1]),
+      .S{i:02d}_AXI_ARADDR (axi_araddr[{i}*AXI_ADDR_W+:AXI_ADDR_W]),
+      .S{i:02d}_AXI_ARLEN  (axi_arlen[{i}*8+:8]),
+      .S{i:02d}_AXI_ARSIZE (axi_arsize[{i}*3+:3]),
+      .S{i:02d}_AXI_ARBURST(axi_arburst[{i}*2+:2]),
+      .S{i:02d}_AXI_ARLOCK (axi_arlock[{i}*1+:1]),
+      .S{i:02d}_AXI_ARCACHE(axi_arcache[{i}*4+:4]),
+      .S{i:02d}_AXI_ARPROT (axi_arprot[{i}*3+:3]),
+      .S{i:02d}_AXI_ARQOS  (axi_arqos[{i}*4+:4]),
+      .S{i:02d}_AXI_ARVALID(axi_arvalid[{i}*1+:1]),
+      .S{i:02d}_AXI_ARREADY(axi_arready[{i}*1+:1]),
+
+      //Read data
+      .S{i:02d}_AXI_RID   (axi_rid[{i}*1+:1]),
+      .S{i:02d}_AXI_RDATA (axi_wdata[{i}*AXI_DATA_W+:AXI_DATA_W]),
+      .S{i:02d}_AXI_RRESP (axi_rresp[{i}*2+:2]),
+      .S{i:02d}_AXI_RLAST (axi_rlast[{i}*1+:1]),
+      .S{i:02d}_AXI_RVALID(axi_rvalid[{i}*1+:1]),
+      .S{i:02d}_AXI_RREADY(axi_rready[{i}*1+:1]),
+
+"""
+
+    fp_interconnect = open(f"{out_dir}/{name}_ku040_interconnect_s_portmap.vs", "w")
     fp_interconnect.write(interconnect_str)
     fp_interconnect.close()
 
