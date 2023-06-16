@@ -125,7 +125,7 @@ module iob_soc_fpga_wrapper (
       `include "iob_soc_pportmaps.vs"
       .clk_i (clk),
       .arst_i(rst),
-      .trap_o(trap),
+      .trap_o(trap)
    );
 
    // UART

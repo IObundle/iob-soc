@@ -33,6 +33,9 @@ module iob_soc_sim_wrapper (
    localparam AXI_ADDR_W = `DDR_ADDR_W;
    localparam AXI_DATA_W = `DDR_DATA_W;
 
+   wire clk = clk_i;
+   wire rst = rst_i;
+
    `include "iob_soc_wrapper_pwires.vs"
 
 
@@ -60,8 +63,8 @@ module iob_soc_sim_wrapper (
       .AXI_DATA_W(AXI_DATA_W)
    ) iob_soc0 (
       `include "iob_soc_pportmaps.vs"
-      .clk_i (clk_i),
-      .arst_i(rst_i),
+      .clk_i (clk),
+      .arst_i(rst),
       .trap_o(trap_o)
    );
 
@@ -81,8 +84,8 @@ module iob_soc_sim_wrapper (
    ) ddr_model_mem (
       `include "iob_memory_axi_s_portmap.vs"
 
-      .clk_i(clk_i),
-      .rst_i(rst_i)
+      .clk_i(clk),
+      .rst_i(rst)
    );
 `endif
 
@@ -121,11 +124,11 @@ always @(posedge trap[1]) begin
    //Manually added testbench uart core. RS232 pins attached to the same pins
    //of the iob_soc UART0 instance to communicate with it
    // The interface of iob_soc UART0 is assumed to be the first portmapped interface (UART_*)
-   wire cke_i = 1'b1;
+   wire cke = 1'b1;
    iob_uart uart_tb (
-      .clk_i (clk_i),
-      .cke_i (cke_i),
-      .arst_i(rst_i),
+      .clk_i (clk),
+      .cke_i (cke),
+      .arst_i(rst),
 
       .iob_avalid_i(uart_avalid),
       .iob_addr_i  (uart_addr),
@@ -147,7 +150,7 @@ always @(posedge trap[1]) begin
    reg [1:0] eth_cnt = 2'b0;
    reg       eth_clk;
 
-   always @(posedge clk_i) begin
+   always @(posedge clk) begin
       eth_cnt <= eth_cnt + 1'b1;
       eth_clk <= eth_cnt[1];
    end
@@ -159,8 +162,8 @@ always @(posedge trap[1]) begin
 
    //add core test module in testbench
    iob_eth_tb_gen eth_tb (
-      .clk  (clk_i),
-      .reset(rst_i),
+      .clk  (clk),
+      .reset(rst),
 
       // This module acts like a loopback
       .RX_CLK (ETHERNET0_TX_CLK),
