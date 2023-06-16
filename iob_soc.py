@@ -184,14 +184,6 @@ class iob_soc(iob_module):
                     "descr": "Address selection bit for external memory",
                 },
                 {
-                    "name": "P",
-                    "type": "M",
-                    "val": "30",
-                    "min": "1",
-                    "max": "32",
-                    "descr": "Address selection bit for peripherals",
-                },
-                {
                     "name": "B",
                     "type": "M",
                     "val": "29",
