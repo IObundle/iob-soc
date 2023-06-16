@@ -56,8 +56,6 @@ module iob_soc_fpga_wrapper (
 
    `include "iob_soc_wrapper_pwires.vs"
 
-   `include "iob_soc_ku040_rstn.vs"
-
    wire clk;
    wire rst;
 
@@ -138,6 +136,8 @@ module iob_soc_fpga_wrapper (
    //
 
 `ifdef IOB_SOC_USE_EXTMEM
+
+   `include "iob_soc_ku040_rstn.vs"
 
    //axi wires between ddr4 contrl and axi interconnect
    `include "ddr4_axi_wire.vs"
