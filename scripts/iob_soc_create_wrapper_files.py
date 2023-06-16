@@ -60,6 +60,7 @@ def create_wrapper_files(build_dir, name, ios, confs, num_extmem_connections):
 
     create_interconnect_instance(out_dir, name, num_extmem_connections)
     create_ku040_interconnect_s_portmap(out_dir, name, num_extmem_connections)
+    create_ku040_rstn(out_dir, name, num_extmem_connections)
 
 def create_interconnect_instance(out_dir, name, num_extmem_connections):
     # Create strings for awlock and arlock
@@ -178,14 +179,21 @@ def create_interconnect_instance(out_dir, name, num_extmem_connections):
     fp_interconnect.close()
 
 
-def create_ku040_interconnect_s_portmap(out_dir, name, num_extmem_connections):
+def create_ku040_rstn(out_dir, name, num_extmem_connections):
     rstn_str = ""
     for i in range(num_extmem_connections):
         rstn_str += f" ~rstn[{i}] ||"
     rstn_str = rstn_str[:-3]
 
-    interconnect_str = f"      wire [{num_extmem_connections}-1:0] rstn;"
-    interconnect_str = f"      assign rst ={rstn_str};"
+    file_str = f"      wire [{num_extmem_connections}-1:0] rstn;"
+    file_str += f"      assign rst ={rstn_str};"
+
+    fp_rstn = open(f"{out_dir}/{name}_ku040_rstn.vs", "w")
+    fp_rstn.write(file_str)
+    fp_rstn.close()
+
+def create_ku040_interconnect_s_portmap(out_dir, name, num_extmem_connections):
+    interconnect_str = ""
     for i in range(num_extmem_connections):
         interconnect_str += f"""
       //

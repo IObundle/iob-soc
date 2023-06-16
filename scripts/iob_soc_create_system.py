@@ -134,11 +134,11 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
 # axi_awid_width: String representing the width of the axi_awid signal.
 def get_extmem_bus_size(axi_awid_width: str):
     # Parse the size of the ext_mem bus, it should be something like "N*AXI_ID_W", where N is the size of the bus
-    bus_size=re.findall("^(?:(\d+)\*)?AXI_ID_W$",signal['n_bits'])
+    bus_size=re.findall("^(?:(\d+)\*)?AXI_ID_W$",axi_awid_width)
     # Make sure parse of with was successful
-    assert bus_size!=[], f"{iob_colors.FAIL} Could not parse bus size of 'axi_awid' signal with width \"{signal['n_bits']}\".{iob_colors.ENDC}"
+    assert bus_size!=[], f"{iob_colors.FAIL} Could not parse bus size of 'axi_awid' signal with width \"{axi_awid_width}\".{iob_colors.ENDC}"
     # Convert to integer
-    return 1 if bus_size == "" else int(bus_size)
+    return 1 if bus_size[0] == "" else int(bus_size[0])
 
 
 # Generate a verilog string with the `iob_addr_zone_selector` instances

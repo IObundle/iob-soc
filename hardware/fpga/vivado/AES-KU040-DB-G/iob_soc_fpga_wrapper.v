@@ -56,6 +56,8 @@ module iob_soc_fpga_wrapper (
 
    `include "iob_soc_wrapper_pwires.vs"
 
+   `include "iob_soc_ku040_rstn.vs"
+
    wire clk;
    wire rst;
 
@@ -75,7 +77,7 @@ module iob_soc_fpga_wrapper (
    wire [3:0] RX_DATA;
 
    assign {ENET_TX_D3, ENET_TX_D2, ENET_TX_D1, ENET_TX_D0} = TX_DATA;
-   assign RX_DATA = {ENET_RX_D3, ENET_RX_D2, ENET_RX_D1, ENET_RX_D0};
+   assign RX_DATA                                          = {ENET_RX_D3, ENET_RX_D2, ENET_RX_D1, ENET_RX_D0};
 
    //eth clock
    IBUFG rxclk_buf (
@@ -141,12 +143,12 @@ module iob_soc_fpga_wrapper (
    `include "ddr4_axi_wire.vs"
 
    //DDR4 controller axi side clocks and resets
-   wire       c0_ddr4_ui_clk;  //controller output clock 200MHz
-   wire       ddr4_axi_arstn;  //controller input
+   wire c0_ddr4_ui_clk;  //controller output clock 200MHz
+   wire ddr4_axi_arstn;  //controller input
 
-   wire       c0_ddr4_ui_clk_sync_rst;
+   wire c0_ddr4_ui_clk_sync_rst;
 
-   wire       calib_done;
+   wire calib_done;
 
 
    //

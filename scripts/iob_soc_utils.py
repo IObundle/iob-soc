@@ -154,7 +154,7 @@ def setup_iob_soc(python_module):
     num_extmem_connections = update_ios_with_extmem_connections(python_module)
 
     # Call setup function for iob_soc
-    setup.setup(python_module)
+    setup.setup(python_module, replace_includes=False)
 
     # Run iob-soc specialized setup sequence
     iob_soc_wrapper_setup(python_module, num_extmem_connections)
