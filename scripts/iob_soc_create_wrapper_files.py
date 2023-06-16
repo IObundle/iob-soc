@@ -179,7 +179,13 @@ def create_interconnect_instance(out_dir, name, num_extmem_connections):
 
 
 def create_ku040_interconnect_s_portmap(out_dir, name, num_extmem_connections):
-    interconnect_str = ""
+    rstn_str = ""
+    for i in range(num_extmem_connections):
+        rstn_str += f" ~rstn[{i}] ||"
+    rstn_str = rstn_str[:-3]
+
+    interconnect_str = f"      wire [{num_extmem_connections}-1:0] rstn;"
+    interconnect_str = f"      assign rst ={rstn_str};"
     for i in range(num_extmem_connections):
         interconnect_str += f"""
       //
