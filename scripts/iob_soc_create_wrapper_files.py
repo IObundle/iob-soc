@@ -189,12 +189,12 @@ def create_ku040_interconnect_s_portmap(out_dir, name, num_extmem_connections):
       .S{i:02d}_AXI_ACLK        (clk),      //from ddr4 controller PLL to be used by system
 
       //Write address
-      .S{i:02d}_AXI_AWID   (axi_awid[{i}*1+:1]),
+      .S{i:02d}_AXI_AWID   (axi_awid[{i}*AXI_ID_W+:1]),
       .S{i:02d}_AXI_AWADDR (axi_awaddr[{i}*AXI_ADDR_W+:AXI_ADDR_W]),
-      .S{i:02d}_AXI_AWLEN  (axi_awlen[{i}*8+:8]),
+      .S{i:02d}_AXI_AWLEN  (axi_awlen[{i}*AXI_LEN_W+:AXI_LEN_W]),
       .S{i:02d}_AXI_AWSIZE (axi_awsize[{i}*3+:3]),
       .S{i:02d}_AXI_AWBURST(axi_awburst[{i}*2+:2]),
-      .S{i:02d}_AXI_AWLOCK (axi_awlock[{i}*1+:1]),
+      .S{i:02d}_AXI_AWLOCK (axi_awlock[{i}*2+:1]),
       .S{i:02d}_AXI_AWCACHE(axi_awcache[{i}*4+:4]),
       .S{i:02d}_AXI_AWPROT (axi_awprot[{i}*3+:3]),
       .S{i:02d}_AXI_AWQOS  (axi_awqos[{i}*4+:4]),
@@ -209,18 +209,18 @@ def create_ku040_interconnect_s_portmap(out_dir, name, num_extmem_connections):
       .S{i:02d}_AXI_WREADY(axi_wready[{i}*1+:1]),
 
       //Write response
-      .S{i:02d}_AXI_BID   (axi_bid[{i}*1+:1]),
+      .S{i:02d}_AXI_BID   (axi_bid[{i}*AXI_ID_W+:1]),
       .S{i:02d}_AXI_BRESP (axi_bresp[{i}*2+:2]),
       .S{i:02d}_AXI_BVALID(axi_bvalid[{i}*1+:1]),
       .S{i:02d}_AXI_BREADY(axi_bready[{i}*1+:1]),
 
       //Read address
-      .S{i:02d}_AXI_ARID   (axi_arid[{i}*1+:1]),
+      .S{i:02d}_AXI_ARID   (axi_arid[{i}*AXI_ID_W+:1]),
       .S{i:02d}_AXI_ARADDR (axi_araddr[{i}*AXI_ADDR_W+:AXI_ADDR_W]),
-      .S{i:02d}_AXI_ARLEN  (axi_arlen[{i}*8+:8]),
+      .S{i:02d}_AXI_ARLEN  (axi_arlen[{i}*AXI_LEN_W+:AXI_LEN_W]),
       .S{i:02d}_AXI_ARSIZE (axi_arsize[{i}*3+:3]),
       .S{i:02d}_AXI_ARBURST(axi_arburst[{i}*2+:2]),
-      .S{i:02d}_AXI_ARLOCK (axi_arlock[{i}*1+:1]),
+      .S{i:02d}_AXI_ARLOCK (axi_arlock[{i}*2+:1]),
       .S{i:02d}_AXI_ARCACHE(axi_arcache[{i}*4+:4]),
       .S{i:02d}_AXI_ARPROT (axi_arprot[{i}*3+:3]),
       .S{i:02d}_AXI_ARQOS  (axi_arqos[{i}*4+:4]),
@@ -228,8 +228,8 @@ def create_ku040_interconnect_s_portmap(out_dir, name, num_extmem_connections):
       .S{i:02d}_AXI_ARREADY(axi_arready[{i}*1+:1]),
 
       //Read data
-      .S{i:02d}_AXI_RID   (axi_rid[{i}*1+:1]),
-      .S{i:02d}_AXI_RDATA (axi_wdata[{i}*AXI_DATA_W+:AXI_DATA_W]),
+      .S{i:02d}_AXI_RID   (axi_rid[{i}*AXI_ID_W+:1]),
+      .S{i:02d}_AXI_RDATA (axi_rdata[{i}*AXI_DATA_W+:AXI_DATA_W]),
       .S{i:02d}_AXI_RRESP (axi_rresp[{i}*2+:2]),
       .S{i:02d}_AXI_RLAST (axi_rlast[{i}*1+:1]),
       .S{i:02d}_AXI_RVALID(axi_rvalid[{i}*1+:1]),
