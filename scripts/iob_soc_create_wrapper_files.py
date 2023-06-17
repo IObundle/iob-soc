@@ -73,7 +73,7 @@ def create_interconnect_instance(out_dir, name, num_extmem_connections):
 
 
     interconnect_str = f"""
-`ifdef IOB_SOC_USE_EXTMEM
+`ifdef {name.upper()}_USE_EXTMEM
    //instantiate axi interconnect
    axi_interconnect #(
       .ID_WIDTH    (AXI_ID_W),

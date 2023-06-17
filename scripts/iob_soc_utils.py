@@ -162,8 +162,12 @@ def setup_iob_soc(python_module):
     iob_soc_hw_setup(python_module)
     iob_soc_doc_setup(python_module)
 
-    if python_module.is_top_module:
-        verilog_tools.replace_includes(python_module.setup_dir, build_dir)
+    if not python_module.is_top_module:
+        return
+    ### Only run lines below if this system is the top module ###
+
+    # Replace verilog snippet files
+    verilog_tools.replace_includes(python_module.setup_dir, build_dir)
 
     # Check if was setup with INIT_MEM and USE_EXTMEM (check if macro exists)
     extmem_macro = bool(next((i['val'] for i in confs if i['name']=='USE_EXTMEM'), False))

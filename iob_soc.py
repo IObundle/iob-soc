@@ -50,17 +50,17 @@ class iob_soc(iob_module):
     # Method that runs the setup process of this class
     @classmethod
     def _run_setup(cls):
-        # Copy sources of this module to the build directory
-        super()._run_setup()
-
-        cls._create_instances()
-
-        cls._setup_block_groups()
         cls._setup_confs()
         cls._setup_ios()
         cls._setup_portmap()
 
         cls._custom_setup()
+
+        # Copy sources of this module to the build directory
+        super()._run_setup()
+        cls._create_instances()
+        cls._setup_block_groups()
+
         # Setup this system using specialized iob-soc function
         setup_iob_soc(cls)
 
