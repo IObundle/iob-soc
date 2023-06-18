@@ -173,12 +173,6 @@ class iob_axistream_out(iob_module):
             }
         ]
 
-blocks = []
-
-# Main function to setup this core and its components
-def main():
-    setup.setup(sys.modules[__name__])
-
-
-if __name__ == "__main__":
-    main()
+    @classmethod
+    def _setup_block_groups(cls):
+        cls.block_groups += []
