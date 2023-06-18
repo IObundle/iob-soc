@@ -77,7 +77,7 @@ module iob_soc_fpga_wrapper (
    wire [3:0] RX_DATA;
 
    assign {ENET_TX_D3, ENET_TX_D2, ENET_TX_D1, ENET_TX_D0} = TX_DATA;
-   assign RX_DATA                                          = {ENET_RX_D3, ENET_RX_D2, ENET_RX_D1, ENET_RX_D0};
+   assign RX_DATA = {ENET_RX_D3, ENET_RX_D2, ENET_RX_D1, ENET_RX_D0};
 
    //eth clock
    clk_buf_altclkctrl_0 txclk_buf (

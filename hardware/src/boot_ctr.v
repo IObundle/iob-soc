@@ -102,7 +102,8 @@ module boot_ctr #(
       if (arst_i) begin
          rom_r_avalid <= 1'b1;
          rom_r_addr   <= {(BOOTROM_ADDR_W - 2) {1'b0}};
-      end else if (boot && rom_r_addr != (2 ** (BOOTROM_ADDR_W - 2) - 1)) rom_r_addr <= rom_r_addr + 1'b1;
+      end else if (boot && rom_r_addr != (2 ** (BOOTROM_ADDR_W - 2) - 1))
+         rom_r_addr <= rom_r_addr + 1'b1;
       else begin
          rom_r_avalid <= 1'b0;
          rom_r_addr   <= {(BOOTROM_ADDR_W - 2) {1'b0}};

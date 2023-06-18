@@ -15,17 +15,17 @@
 `endif
 
 module iob_soc_sim_wrapper (
-   output                              trap_o,
+   output trap_o,
    //IOb-SoC uart
-   input                               uart_avalid,
-   input  [`IOB_UART_SWREG_ADDR_W-1:0] uart_addr,
-   input  [       `IOB_SOC_DATA_W-1:0] uart_wdata,
-   input  [                       3:0] uart_wstrb,
-   output [       `IOB_SOC_DATA_W-1:0] uart_rdata,
-   output                              uart_ready,
-   output                              uart_rvalid,
-   input  [                     1-1:0] clk_i,        //V2TEX_IO System clock input.
-   input  [                     1-1:0] rst_i         //V2TEX_IO System reset, asynchronous and active high.
+   input uart_avalid,
+   input [`IOB_UART_SWREG_ADDR_W-1:0] uart_addr,
+   input [`IOB_SOC_DATA_W-1:0] uart_wdata,
+   input [3:0] uart_wstrb,
+   output [`IOB_SOC_DATA_W-1:0] uart_rdata,
+   output uart_ready,
+   output uart_rvalid,
+   input [1-1:0] clk_i,  //V2TEX_IO System clock input.
+   input [1-1:0] rst_i  //V2TEX_IO System reset, asynchronous and active high.
 );
 
    localparam AXI_ID_W = 4;
