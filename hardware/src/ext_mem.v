@@ -91,13 +91,13 @@ module ext_mem #(
    );
 
    //l2 cache interface signals
-   wire [1+MEM_ADDR_W+`WRITE_W-1:0] l2cache_req;
-   wire [`RESP_W-1:0] l2cache_resp;
+   wire                                                   [1+MEM_ADDR_W+`WRITE_W-1:0] l2cache_req;
+   wire                                                   [              `RESP_W-1:0] l2cache_resp;
 
    //ext_mem control signals
-   wire l2_wtb_empty;
-   wire invalidate;
-   reg invalidate_reg;
+   wire                                                                               l2_wtb_empty;
+   wire                                                                               invalidate;
+   reg                                                                                invalidate_reg;
    wire l2_avalid = l2cache_req[1+MEM_ADDR_W+`WRITE_W-1];
    //Necessary logic to avoid invalidating L2 while it's being accessed by a request
    always @(posedge clk_i, posedge arst_i)

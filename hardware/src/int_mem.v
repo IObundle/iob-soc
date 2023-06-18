@@ -119,18 +119,18 @@ module int_mem #(
 
    //instruction bus: connect directly but address
    assign ram_r_req[`ADDRESS(0, ADDR_W)] = ram_r_addr;
-   assign boot_i_addr = i_req[`ADDRESS(0, ADDR_W)] + boot_offset;
-   assign i_addr = i_req[`ADDRESS(0, ADDR_W)];
+   assign boot_i_addr                    = i_req[`ADDRESS(0, ADDR_W)] + boot_offset;
+   assign i_addr                         = i_req[`ADDRESS(0, ADDR_W)];
 
-   assign ram_r_req[`AVALID(0)] = i_req[`AVALID(0)];
-   assign ram_r_addr = boot ? boot_i_addr : i_addr;
-   assign ram_r_req[`WRITE(0)] = i_req[`WRITE(0)];
-   assign i_resp[`RESP(0)] = ram_r_resp[`RESP(0)];
+   assign ram_r_req[`AVALID(0)]          = i_req[`AVALID(0)];
+   assign ram_r_addr                     = boot ? boot_i_addr : i_addr;
+   assign ram_r_req[`WRITE(0)]           = i_req[`WRITE(0)];
+   assign i_resp[`RESP(0)]               = ram_r_resp[`RESP(0)];
 
    //data bus: just replace address
-   assign boot_ram_d_addr = ram_d_req[`ADDRESS(0, SRAM_ADDR_W)-2] + boot_offset[SRAM_ADDR_W-1:2];
-   assign ram_d_addr_int = ram_d_req[`ADDRESS(0, SRAM_ADDR_W)-2];
-   assign ram_d_addr = boot ? boot_ram_d_addr : ram_d_addr_int;
+   assign boot_ram_d_addr                = ram_d_req[`ADDRESS(0, SRAM_ADDR_W)-2] + boot_offset[SRAM_ADDR_W-1:2];
+   assign ram_d_addr_int                 = ram_d_req[`ADDRESS(0, SRAM_ADDR_W)-2];
+   assign ram_d_addr                     = boot ? boot_ram_d_addr : ram_d_addr_int;
 
    //
    //MERGE BOOT WRITE BUS AND CPU READ BUS

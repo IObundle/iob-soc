@@ -3,9 +3,9 @@ import sys
 import os
 
 from iob_soc_create_periphs_tmp import create_periphs_tmp
-from iob_soc_create_system import create_systemv
-from iob_soc_create_sim_wrapper import create_sim_wrapper
-from submodule_utils import get_table_ports, add_prefix_to_parameters_in_port, eval_param_expression_from_config, iob_soc_peripheral_setup, reserved_signals
+from iob_soc_create_system import create_systemv, get_extmem_bus_size
+from iob_soc_create_wrapper_files import create_wrapper_files
+from submodule_utils import get_table_ports, add_prefix_to_parameters_in_port, eval_param_expression_from_config, iob_soc_peripheral_setup, reserved_signals, if_gen_interface
 from ios import get_interface_mapping
 import setup
 import iob_colors
@@ -14,6 +14,8 @@ import fnmatch
 import if_gen
 import verilog_tools
 import build_srcs
+from iob_module import iob_module
+from axi_interconnect import axi_interconnect
 
 ######################################
 # Specialized IOb-SoC setup functions.
@@ -29,14 +31,64 @@ def iob_soc_sw_setup(python_module, exclude_files=[]):
     if peripherals_list: create_periphs_tmp(next(i['val'] for i in confs if i['name'] == 'P'),
                                    peripherals_list, f"{build_dir}/software/{name}_periphs.h")
 
-def iob_soc_sim_setup(python_module, exclude_files=[]):
+def iob_soc_wrapper_setup(python_module, num_extmem_connections, exclude_files=[]):
     peripherals_list = python_module.peripherals
     confs = python_module.confs
     build_dir = python_module.build_dir
     name = python_module.name
-    # Try to build simulation <system_name>_sim_wrapper.v if template <system_name>_sim_wrapper.v is available and iob_soc_sim_wrapper.v not in exclude list
-    if not fnmatch.filter(exclude_files,'iob_soc_sim_wrapper.v'):
-        create_sim_wrapper(build_dir, name, python_module.ios, confs)
+    # Try to build wrapper files
+    #if not fnmatch.filter(exclude_files,'iob_soc_sim_wrapper.v'):
+    create_wrapper_files(build_dir, name, python_module.ios, confs, num_extmem_connections)
+
+    # Check if USE_EXTMEM is set
+    for conf in python_module.confs:
+        if (conf["name"] == "USE_EXTMEM") and conf["val"]:
+            # Setup interconnect
+            axi_interconnect.setup()
+            # Create extmem wrapper files
+            iob_module.generate(
+                {
+                    "file_prefix": "ddr4_",
+                    "interface": "axi_wire",
+                    "wire_prefix": "ddr4_",
+                    "port_prefix": "ddr4_",
+                }
+            )
+            iob_module.generate(
+                {
+                    "file_prefix": f"iob_bus_{num_extmem_connections}_",
+                    "interface": "axi_wire",
+                    "wire_prefix": "",
+                    "port_prefix": "",
+                    "bus_size": num_extmem_connections,
+                }
+            )
+            iob_module.generate(
+                {
+                    "file_prefix": f"iob_bus_0_{num_extmem_connections}_",
+                    "interface": "axi_m_portmap",
+                    "wire_prefix": "",
+                    "port_prefix": "",
+                    "bus_start": 0,
+                    "bus_size": num_extmem_connections,
+                }
+            )
+            iob_module.generate(
+                {
+                    "file_prefix": f"iob_memory_",
+                    "interface": "axi_wire",
+                    "wire_prefix": "memory_",
+                    "port_prefix": "",
+                }
+            )
+            iob_module.generate(
+                {
+                    "file_prefix": "iob_memory_",
+                    "interface": "axi_s_portmap",
+                    "wire_prefix": "memory_",
+                    "port_prefix": "",
+                }
+            )
 
 def iob_soc_doc_setup(python_module, exclude_files=[]):
     # Copy .odg figures without processing
@@ -55,6 +107,34 @@ def iob_soc_hw_setup(python_module, exclude_files=[]):
     if not fnmatch.filter(exclude_files,'iob_soc.v'):
         create_systemv(build_dir, name, peripherals_list, internal_wires=python_module.internal_wires)
 
+def update_ios_with_extmem_connections(python_module):
+    ios = python_module.ios
+    peripherals_list = python_module.peripherals
+
+    num_extmem_connections = 1 # By default, one connection for iob-soc's cache
+    # Count numer of external memory connections
+    for peripheral in peripherals_list:
+            module = peripheral.module
+            for interface in module.ios:
+                    for port in interface['ports']:
+                        if port['name'] == 'axi_awid_o':
+                            num_extmem_connections+=get_extmem_bus_size(port['n_bits'])
+                            # Break the inner loop...
+                            break
+                    else:
+                        # Continue if the inner loop wasn't broken.
+                        continue
+                    # Inner loop was broken, break the outer.
+                    break
+
+    for interface in ios:
+        if interface['name'] == 'extmem':
+            # Create bus of axi_m_port with size `num_extmem_connections`
+            interface['ports'] = if_gen_interface("axi_m_port", "", bus_size=num_extmem_connections)
+
+    return num_extmem_connections
+
+
 ######################################
 
 # Run specialized iob-soc setup sequence
@@ -71,25 +151,42 @@ def setup_iob_soc(python_module):
     # Setup peripherals
     iob_soc_peripheral_setup(python_module)
     python_module.internal_wires = peripheral_portmap(python_module)
+    num_extmem_connections = update_ios_with_extmem_connections(python_module)
 
     # Call setup function for iob_soc
-    setup.setup(python_module)
+    setup.setup(python_module, replace_includes=False)
 
     # Run iob-soc specialized setup sequence
-    iob_soc_sim_setup(python_module)
+    iob_soc_wrapper_setup(python_module, num_extmem_connections)
     iob_soc_sw_setup(python_module)
     iob_soc_hw_setup(python_module)
     iob_soc_doc_setup(python_module)
 
-    if python_module.is_top_module:
-        verilog_tools.replace_includes(python_module.setup_dir, build_dir)
+    if not python_module.is_top_module:
+        return
+    ### Only run lines below if this system is the top module ###
+
+    # Replace verilog snippet files
+    verilog_tools.replace_includes(python_module.setup_dir, build_dir)
 
     # Check if was setup with INIT_MEM and USE_EXTMEM (check if macro exists)
-    extmem_macro = next((i for i in confs if i['name']=='USE_EXTMEM'), False)
-    initmem_macro = next((i for i in confs if i['name']=='INIT_MEM'), False)
+    extmem_macro = bool(next((i['val'] for i in confs if i['name']=='USE_EXTMEM'), False))
+    initmem_macro = bool(next((i['val'] for i in confs if i['name']=='INIT_MEM'), False))
+
+    # Set variables in fpga_build.mk
+    with open(python_module.build_dir+"/hardware/fpga/fpga_build.mk",'r') as file: contents = file.readlines()
+    contents.insert(0,"\n")
+    # Set N_INTERCONNECT_SLAVES variable
+    contents.insert(0,f"N_INTERCONNECT_SLAVES:={num_extmem_connections}\n")
+    # Set USE_EXTMEM variable
+    contents.insert(0,f"USE_EXTMEM:={int(extmem_macro)}\n")
+    # Set INIT_MEM variable
+    contents.insert(0,f"INIT_MEM:={int(initmem_macro)}\n")
+    contents.insert(0,"#Lines below were auto generated by iob_soc_utils.py\n")
+    with open(python_module.build_dir+"/hardware/fpga/fpga_build.mk",'w') as file: file.writelines(contents)
+
     mem_add_w_parameter = next((i for i in confs if i['name']=='MEM_ADDR_W'), False)
-    if extmem_macro and extmem_macro['val'] and \
-       initmem_macro and initmem_macro['val']:
+    if extmem_macro and initmem_macro:
         # Append init_ddr_contents.hex target to sw_build.mk
         with open(f"{build_dir}/software/sw_build.mk", 'a') as file:
             file.write("\n#Auto-generated target to create init_ddr_contents.hex\n")
@@ -98,7 +195,7 @@ def setup_iob_soc(python_module):
             file.write(f"init_ddr_contents.hex: {name}_firmware.hex\n")
 
             sut_firmware_name = python_module.sut_fw_name.replace('.c','.hex') if 'sut_fw_name' in python_module.__dict__.keys() else '-'
-            file.write(f"	../../scripts/joinHexFiles.py {sut_firmware_name} $^ {mem_add_w_parameter['val']} > $@\n")
+            file.write(f"	../../scripts/joinHexFiles.py $^ {sut_firmware_name} {mem_add_w_parameter['val']} > $@\n")
         # Copy joinHexFiles.py from LIB
         build_srcs.copy_files( "submodules/LIB", f"{build_dir}/scripts", [ "joinHexFiles.py" ], '*.py' )
 
