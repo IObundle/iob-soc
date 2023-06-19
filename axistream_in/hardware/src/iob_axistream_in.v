@@ -143,6 +143,20 @@ module iob_axistream_in #(
    // OUT Manual logic
    assign OUT_ready  = 1'b1;
    assign OUT_rvalid = 1'b1;
+   
+   //Delay OUT_ren by one clock
+   wire [1-1:0] out_ren_delayed;
+   iob_reg_r #(
+      .DATA_W (1),
+      .RST_VAL(0)
+   ) out_ren_delayed_reg (
+      .clk_i (clk_i),
+      .arst_i(arst_i),
+      .cke_i (cke_i),
+      .rst_i (SOFTRESET),
+      .data_i(OUT_ren),
+      .data_o(out_ren_delayed)
+   );
 
    iob_fifo_sync #(
       .W_DATA_W(TDATA_W),
@@ -160,7 +174,7 @@ module iob_axistream_in #(
       .ext_mem_r_addr_o(ext_mem_r_addr),
       .ext_mem_r_data_i(ext_mem_r_data),
       //read port
-      .r_en_i(OUT_ren),
+      .r_en_i(OUT_ren & (!out_ren_delayed | iob_rvalid)),
       .r_data_o(OUT),
       .r_empty_o(EMPTY[0]),
       //write port
