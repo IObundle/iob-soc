@@ -30,7 +30,7 @@ TEMPLATE_LDS=src/$@.lds
 
 IOB_SOC_INCLUDES=-I. -Isrc 
 
-IOB_SOC_LFLAGS=-Wl,-Bstatic,-T,src/$@.lds,--strip-debug
+IOB_SOC_LFLAGS=-Wl,-Bstatic,-T,$(TEMPLATE_LDS),--strip-debug
 
 # FIRMWARE SOURCES
 IOB_SOC_FW_SRC=src/iob_soc_firmware.S
