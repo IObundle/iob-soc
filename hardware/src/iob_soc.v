@@ -14,8 +14,8 @@ module iob_soc #(
    `include "iob_soc_io.vs"
 );
 
-   localparam integer E_BIT = `IOB_SOC_E;
-   localparam integer B_BIT = `IOB_SOC_B;
+   localparam integer Bbit = `IOB_SOC_B;
+   localparam integer AddrMsb = `REQ_W - 2;
 
    `include "iob_soc_pwires.vs"
 
@@ -45,8 +45,7 @@ module iob_soc #(
    iob_picorv32 #(
       .ADDR_W        (ADDR_W),
       .DATA_W        (DATA_W),
-      .V_BIT         (`V_BIT),
-      .E_BIT         (`E_BIT),
+      .N_PERIPHERALS (`IOB_SOC_N_SLAVES + 1),
       .USE_COMPRESSED(`IOB_SOC_USE_COMPRESSED),
       .USE_MUL_DIV   (`IOB_SOC_USE_MUL_DIV),
 `ifdef IOB_SOC_USE_EXTMEM
@@ -88,7 +87,7 @@ module iob_soc #(
       .ADDR_W  (ADDR_W),
       .DATA_W  (DATA_W),
       .N_SLAVES(2),
-      .P_SLAVES(`E_BIT)
+      .P_SLAVES(AddrMsb)
    ) ibus_split (
       .clk_i   (clk_i),
       .arst_i  (cpu_reset),
@@ -118,8 +117,8 @@ module iob_soc #(
    iob_split #(
       .ADDR_W  (ADDR_W),
       .DATA_W  (DATA_W),
-      .N_SLAVES(2),       //E,{P,I}
-      .P_SLAVES(`E_BIT)
+      .N_SLAVES(2),          //E,{P,I}
+      .P_SLAVES(AddrMsb)
    ) dbus_split (
       .clk_i   (clk_i),
       .arst_i  (cpu_reset),
@@ -139,18 +138,15 @@ module iob_soc #(
    // SPLIT INTERNAL MEMORY AND PERIPHERALS BUS
    //
 
-   //internal memory data bus
-   wire [                   `REQ_W-1:0] int_mem_d_req;
-   wire [                  `RESP_W-1:0] int_mem_d_resp;
-   //slaves bus
-   wire [ `IOB_SOC_N_SLAVES*`REQ_W-1:0] slaves_req;
-   wire [`IOB_SOC_N_SLAVES*`RESP_W-1:0] slaves_resp;
+   //slaves bus (includes internal memory + periphrals)
+   wire [ (`IOB_SOC_N_SLAVES+1)*`REQ_W-1:0] slaves_req;
+   wire [(`IOB_SOC_N_SLAVES+1)*`RESP_W-1:0] slaves_resp;
 
    iob_split #(
       .ADDR_W  (ADDR_W),
       .DATA_W  (DATA_W),
       .N_SLAVES(`IOB_SOC_N_SLAVES + 1),
-      .P_SLAVES(`E_BIT - 1)
+      .P_SLAVES(AddrMsb-1)
    ) pbus_split (
       .clk_i   (clk_i),
       .arst_i  (cpu_reset),
@@ -158,8 +154,8 @@ module iob_soc #(
       .m_req_i (int_d_req),
       .m_resp_o(int_d_resp),
       // slaves interface
-      .s_req_o ({slaves_req, int_mem_d_req}),
-      .s_resp_i({slaves_resp, int_mem_d_resp})
+      .s_req_o (slaves_req),
+      .s_resp_i(slaves_resp)
    );
 
 
@@ -187,8 +183,8 @@ module iob_soc #(
       .i_resp(int_mem_i_resp),
 
       //data bus
-      .d_req (int_mem_d_req),
-      .d_resp(int_mem_d_resp)
+      .d_req (slaves_req[0+:`REQ_W]),
+      .d_resp(slaves_resp[0+:`RESP_W])
    );
 
 `ifdef IOB_SOC_USE_EXTMEM

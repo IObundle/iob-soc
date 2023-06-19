@@ -186,7 +186,7 @@ class iob_soc(iob_module):
                 {
                     "name": "B",
                     "type": "M",
-                    "val": "29",
+                    "val": "20",
                     "min": "1",
                     "max": "32",
                     "descr": "Address selection bit for boot ROM",
