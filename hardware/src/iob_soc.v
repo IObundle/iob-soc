@@ -45,7 +45,6 @@ module iob_soc #(
    iob_picorv32 #(
       .ADDR_W        (ADDR_W),
       .DATA_W        (DATA_W),
-      .N_PERIPHERALS (`IOB_SOC_N_SLAVES + 1),
       .USE_COMPRESSED(`IOB_SOC_USE_COMPRESSED),
       .USE_MUL_DIV   (`IOB_SOC_USE_MUL_DIV),
 `ifdef IOB_SOC_USE_EXTMEM
@@ -117,7 +116,7 @@ module iob_soc #(
    iob_split #(
       .ADDR_W  (ADDR_W),
       .DATA_W  (DATA_W),
-      .N_SLAVES(2),          //E,{P,I}
+      .N_SLAVES(2),       //E,{P,I}
       .P_SLAVES(AddrMsb)
    ) dbus_split (
       .clk_i   (clk_i),
@@ -139,14 +138,14 @@ module iob_soc #(
    //
 
    //slaves bus (includes internal memory + periphrals)
-   wire [ (`IOB_SOC_N_SLAVES+1)*`REQ_W-1:0] slaves_req;
-   wire [(`IOB_SOC_N_SLAVES+1)*`RESP_W-1:0] slaves_resp;
+   wire [ (`IOB_SOC_N_SLAVES)*`REQ_W-1:0] slaves_req;
+   wire [(`IOB_SOC_N_SLAVES)*`RESP_W-1:0] slaves_resp;
 
    iob_split #(
       .ADDR_W  (ADDR_W),
       .DATA_W  (DATA_W),
-      .N_SLAVES(`IOB_SOC_N_SLAVES + 1),
-      .P_SLAVES(AddrMsb-1)
+      .N_SLAVES(`IOB_SOC_N_SLAVES),
+      .P_SLAVES(AddrMsb - 1)
    ) pbus_split (
       .clk_i   (clk_i),
       .arst_i  (cpu_reset),
@@ -205,19 +204,6 @@ module iob_soc #(
       ext_mem_d_req[`ADDRESS(0, MEM_ADDR_W+1)-2],
       ext_mem_d_req[`WRITE(0)]
    };
-
-   // Create bus that contains the highest bit of MEM_ADDR_W and other higher bits up to AXI_ADDR_W.
-   wire [AXI_ADDR_W-MEM_ADDR_W:0] axi_higher_araddr_bits;
-   wire [AXI_ADDR_W-MEM_ADDR_W:0] axi_higher_awaddr_bits;
-   // Invert highest bit of MEM_ADDR_W. Leave all higher bits unaltered.
-   assign axi_araddr_o[AXI_ADDR_W+MEM_ADDR_W-1] = ~axi_higher_araddr_bits[0];
-   assign axi_awaddr_o[AXI_ADDR_W+MEM_ADDR_W-1] = ~axi_higher_awaddr_bits[0];
-   generate
-      if ((AXI_ADDR_W - MEM_ADDR_W) > 0) begin : g_axi_higher_bits
-         assign axi_araddr_o[AXI_ADDR_W+MEM_ADDR_W+:AXI_ADDR_W-MEM_ADDR_W] = axi_higher_araddr_bits[1+:AXI_ADDR_W-MEM_ADDR_W];
-         assign axi_awaddr_o[AXI_ADDR_W+MEM_ADDR_W+:AXI_ADDR_W-MEM_ADDR_W] = axi_higher_awaddr_bits[1+:AXI_ADDR_W-MEM_ADDR_W];
-      end
-   endgenerate
 
    ext_mem #(
       .ADDR_W     (ADDR_W),
