@@ -4,14 +4,19 @@ SECTIONS {
   .init : { *(.init) }
   .text : { *(.text) }
 
-  /* Read-only data */
-  .rodata : { *(.rodata) }
+  .memory : { 
+    /* Read-only data */
+    *(.rodata);
 
-  /* Initialized data */
-  .data : { *(.data) }
+    /* Initialized data */
+    *(.data);
 
-  /* Uninitialized data */
-  .bss : { *(.bss) }
+    /* Uninitialized data */
+    *(.bss);
+
+    /* Any symbols not explicitly mentioned in previous sections are included in this section */
+    *(*);
+  }
 
   /* Stack */
   stack_start = .;
