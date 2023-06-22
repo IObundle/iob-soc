@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#Creates periphs_tmp.h
+# Creates periphs_tmp.h
 
 import sys, os
 
@@ -11,15 +11,19 @@ from submodule_utils import *
 #   peripherals_list: list with amount of instances of each peripheral (returned by get_peripherals())
 def create_periphs_tmp(addr_w, peripherals_list, out_file):
     # Don't override output file
-    if os.path.isfile(out_file): return
+    if os.path.isfile(out_file):
+        return
 
     template_contents = []
     for instance in peripherals_list:
-        template_contents.extend("#define {}_BASE ({}<<({}-1-N_SLAVES_W))\n".format(instance.name,instance.name,addr_w))
+        template_contents.extend(
+            "#define {}_BASE ({}<<({}-1-N_SLAVES_W))\n".format(
+                instance.name, instance.name, addr_w
+            )
+        )
 
     # Write system.v
     os.makedirs(os.path.dirname(out_file), exist_ok=True)
     periphs_tmp_file = open(out_file, "w")
     periphs_tmp_file.writelines(template_contents)
     periphs_tmp_file.close()
-
