@@ -112,8 +112,10 @@ module ext_mem #(
 
    // IOb ready and rvalid signals
    wire d_ack;
-   reg  d_wr_e;  // Instruction write enable register
+   wire d_wr_e;  // Instruction write enable
+   wire d_wr_er;  // Instruction write enable register
    reg  d_ready;
+   assign d_wr_e = |d_req[`WSTRB(0)];
    iob_reg_e #(
       .DATA_W (1),
       .RST_VAL(0)
@@ -122,8 +124,8 @@ module ext_mem #(
       .arst_i(arst_i),
       .cke_i (cke_i),
       .en_i  (d_req[1+FIRM_ADDR_W-2+`WRITE_W-1]),
-      .data_i({|d_req[`WSTRB(0)]}),
-      .data_o(d_wr_e)
+      .data_i(d_wr_e),
+      .data_o(d_wr_er)
    );
    //iob_reg_e #(1,0) d_ready_reg (clk_i, arst_i, cke_i, d_ack | d_req[1+FIRM_ADDR_W-2+`WRITE_W-1], ~d_req[1+FIRM_ADDR_W-2+`WRITE_W-1], d_ready);
    assign d_resp[`RVALID(0)] = i_wr_e ? 1'b0 : d_ack;
