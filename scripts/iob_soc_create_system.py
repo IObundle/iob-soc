@@ -137,8 +137,8 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
     periphs_wires_str += "    wire cpu_trap_o;\n"
     trap_or_str = "    assign trap_o = cpu_trap_o"
     for peripheral in peripherals_with_trap:
-        periphs_wires_str += f"    wire {peripheral.name}_trap_o;\n"
-        trap_or_str += f"| {peripheral.name}_trap_o"
+        periphs_wires_str += f"    wire {top.upper()}_{peripheral.name}_trap_o;\n"
+        trap_or_str += f"| {top.upper()}_{peripheral.name}_trap_o"
     trap_or_str += ";\n"
 
     # Logic OR of trap signals
