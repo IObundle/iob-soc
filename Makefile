@@ -1,6 +1,8 @@
 CORE := iob_soc
 SIMULATOR ?= icarus
 
+DISABLE_LINT:=1
+
 include submodules/LIB/setup.mk
 
 INIT_MEM ?= 1
