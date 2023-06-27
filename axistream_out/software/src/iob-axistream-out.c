@@ -109,7 +109,7 @@ void axistream_out_enable(){
   IOB_AXISTREAM_OUT_SET_ENABLE(1);
 }
 
-//Disable tready signal, preventing new transfers
+//Disable peripheral, preventing new transfers
 void axistream_out_disable(){
   IOB_AXISTREAM_OUT_SET_ENABLE(0);
 }
