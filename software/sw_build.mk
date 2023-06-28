@@ -79,6 +79,8 @@ EMUL_SRC+=src/iob_str.c
 # PERIPHERAL SOURCES
 EMUL_SRC+=$(wildcard src/iob-*.c)
 
+EMUL_CFLAGS+=-D PCEMUL
+
 EMUL_TEST_LIST+=pcemul_test1
 pcemul_test1:
 	make run_emul TEST_LOG="> test.log"
