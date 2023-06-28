@@ -4,33 +4,43 @@ import os
 
 from submodule_utils import get_pio_signals, add_prefix_to_parameters_in_string
 
-#Creates the Verilog Snippet (.vs) files required by wrappers
+# Creates the Verilog Snippet (.vs) files required by wrappers
 def create_wrapper_files(build_dir, name, ios, confs, num_extmem_connections):
-    out_dir = os.path.join(build_dir,f'hardware/simulation/src/')
+    out_dir = os.path.join(build_dir, f"hardware/simulation/src/")
     pwires_str = ""
     pportmaps_str = ""
 
-    # Insert wires and connect them to system 
+    # Insert wires and connect them to system
     for table in ios:
         # If table has 'doc_only' attribute set to True, skip it
         if "doc_only" in table.keys() and table["doc_only"]:
             continue
 
-        pio_signals = get_pio_signals(table['ports'])
+        pio_signals = get_pio_signals(table["ports"])
 
         # Insert system IOs for peripheral
-        if pio_signals and 'if_defined' in table.keys(): pwires_str += f"`ifdef {table['if_defined']}\n"
+        if pio_signals and "if_defined" in table.keys():
+            pwires_str += f"`ifdef {table['if_defined']}\n"
         for signal in pio_signals:
-            pwires_str += '   wire [{}-1:0] {}_{};\n'.format(add_prefix_to_parameters_in_string(signal['n_bits'],confs,"`"+name.upper()+"_"),
-                                                                             table['name'],
-                                                                             signal['name'])
-        if pio_signals and 'if_defined' in table.keys(): pwires_str += "`endif\n"
+            pwires_str += "   wire [{}-1:0] {}_{};\n".format(
+                add_prefix_to_parameters_in_string(
+                    signal["n_bits"], confs, "`" + name.upper() + "_"
+                ),
+                table["name"],
+                signal["name"],
+            )
+        if pio_signals and "if_defined" in table.keys():
+            pwires_str += "`endif\n"
 
         # Connect wires to soc port
-        if pio_signals and 'if_defined' in table.keys(): pportmaps_str += f"`ifdef {table['if_defined']}\n"
+        if pio_signals and "if_defined" in table.keys():
+            pportmaps_str += f"`ifdef {table['if_defined']}\n"
         for signal in pio_signals:
-            pportmaps_str += '               .{signal}({signal}),\n'.format(signal=table['name']+"_"+signal['name'])
-        if pio_signals and 'if_defined' in table.keys(): pportmaps_str += "`endif\n"
+            pportmaps_str += "               .{signal}({signal}),\n".format(
+                signal=table["name"] + "_" + signal["name"]
+            )
+        if pio_signals and "if_defined" in table.keys():
+            pportmaps_str += "`endif\n"
 
     # Add extmem wires for system
     pwires_str += f"""
@@ -42,13 +52,13 @@ def create_wrapper_files(build_dir, name, ios, confs, num_extmem_connections):
    `include "iob_memory_axi_wire.vs"
 `endif
 """
-    
+
     fd_periphs = open(f"{out_dir}/{name}_wrapper_pwires.vs", "w")
     fd_periphs.write(pwires_str)
     fd_periphs.close()
 
     # Add extmem portmap for system
-    pportmaps_str +=f"""
+    pportmaps_str += f"""
 `ifdef {name.upper()}_USE_EXTMEM
       `include "iob_bus_0_{num_extmem_connections}_axi_m_portmap.vs"
 `endif
@@ -62,15 +72,15 @@ def create_wrapper_files(build_dir, name, ios, confs, num_extmem_connections):
     create_ku040_interconnect_s_portmap(out_dir, name, num_extmem_connections)
     create_ku040_rstn(out_dir, name, num_extmem_connections)
 
+
 def create_interconnect_instance(out_dir, name, num_extmem_connections):
     # Create strings for awlock and arlock
-    awlock_str = arlock_str = ' }'
+    awlock_str = arlock_str = " }"
     for i in range(num_extmem_connections):
-        awlock_str = f', axi_awlock[{i*2}]' + awlock_str
-        arlock_str = f', axi_arlock[{i*2}]' + arlock_str
+        awlock_str = f", axi_awlock[{i*2}]" + awlock_str
+        arlock_str = f", axi_arlock[{i*2}]" + arlock_str
     awlock_str = "{" + awlock_str[1:]
     arlock_str = "{" + arlock_str[1:]
-
 
     interconnect_str = f"""
 `ifdef {name.upper()}_USE_EXTMEM
@@ -192,6 +202,7 @@ def create_ku040_rstn(out_dir, name, num_extmem_connections):
     fp_rstn.write(file_str)
     fp_rstn.close()
 
+
 def create_ku040_interconnect_s_portmap(out_dir, name, num_extmem_connections):
     interconnect_str = ""
     for i in range(num_extmem_connections):
@@ -254,5 +265,3 @@ def create_ku040_interconnect_s_portmap(out_dir, name, num_extmem_connections):
     fp_interconnect = open(f"{out_dir}/{name}_ku040_interconnect_s_portmap.vs", "w")
     fp_interconnect.write(interconnect_str)
     fp_interconnect.close()
-
-
