@@ -55,13 +55,14 @@ def iob_soc_wrapper_setup(python_module, num_extmem_connections, exclude_files=[
         build_dir, name, python_module.ios, confs, num_extmem_connections
     )
 
-    # Check if USE_EXTMEM is set
-    for conf in python_module.confs:
-        if (conf["name"] == "USE_EXTMEM") and conf["val"]:
-            # Setup interconnect
-            axi_interconnect.setup()
+    # Note:
+    # The settings below are only used with `USE_EXTMEM=1`.
+    # Currently they are always being set up (even with USE_EXTMEM=0) to allow
+    # the users to manually add USE_EXTMEM=1 in the build_dir.
+    # As we no longer support build-time defines, we may need to change this in the future.
 
-    # These files always need to be created because `verilog_tools.py` throws an error if they don't exist when it tries to replace the includes.
+    # Setup interconnect
+    axi_interconnect.setup()
     # Create extmem wrapper files
     iob_module.generate(
         {
