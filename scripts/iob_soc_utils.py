@@ -60,50 +60,52 @@ def iob_soc_wrapper_setup(python_module, num_extmem_connections, exclude_files=[
         if (conf["name"] == "USE_EXTMEM") and conf["val"]:
             # Setup interconnect
             axi_interconnect.setup()
-            # Create extmem wrapper files
-            iob_module.generate(
-                {
-                    "file_prefix": "ddr4_",
-                    "interface": "axi_wire",
-                    "wire_prefix": "ddr4_",
-                    "port_prefix": "ddr4_",
-                }
-            )
-            iob_module.generate(
-                {
-                    "file_prefix": f"iob_bus_{num_extmem_connections}_",
-                    "interface": "axi_wire",
-                    "wire_prefix": "",
-                    "port_prefix": "",
-                    "bus_size": num_extmem_connections,
-                }
-            )
-            iob_module.generate(
-                {
-                    "file_prefix": f"iob_bus_0_{num_extmem_connections}_",
-                    "interface": "axi_m_portmap",
-                    "wire_prefix": "",
-                    "port_prefix": "",
-                    "bus_start": 0,
-                    "bus_size": num_extmem_connections,
-                }
-            )
-            iob_module.generate(
-                {
-                    "file_prefix": f"iob_memory_",
-                    "interface": "axi_wire",
-                    "wire_prefix": "memory_",
-                    "port_prefix": "",
-                }
-            )
-            iob_module.generate(
-                {
-                    "file_prefix": "iob_memory_",
-                    "interface": "axi_s_portmap",
-                    "wire_prefix": "memory_",
-                    "port_prefix": "",
-                }
-            )
+
+    # These files always need to be created because `verilog_tools.py` throws an error if they don't exist when it tries to replace the includes.
+    # Create extmem wrapper files
+    iob_module.generate(
+        {
+            "file_prefix": "ddr4_",
+            "interface": "axi_wire",
+            "wire_prefix": "ddr4_",
+            "port_prefix": "ddr4_",
+        }
+    )
+    iob_module.generate(
+        {
+            "file_prefix": f"iob_bus_{num_extmem_connections}_",
+            "interface": "axi_wire",
+            "wire_prefix": "",
+            "port_prefix": "",
+            "bus_size": num_extmem_connections,
+        }
+    )
+    iob_module.generate(
+        {
+            "file_prefix": f"iob_bus_0_{num_extmem_connections}_",
+            "interface": "axi_m_portmap",
+            "wire_prefix": "",
+            "port_prefix": "",
+            "bus_start": 0,
+            "bus_size": num_extmem_connections,
+        }
+    )
+    iob_module.generate(
+        {
+            "file_prefix": f"iob_memory_",
+            "interface": "axi_wire",
+            "wire_prefix": "memory_",
+            "port_prefix": "",
+        }
+    )
+    iob_module.generate(
+        {
+            "file_prefix": "iob_memory_",
+            "interface": "axi_s_portmap",
+            "wire_prefix": "memory_",
+            "port_prefix": "",
+        }
+    )
 
 
 def iob_soc_doc_setup(python_module, exclude_files=[]):

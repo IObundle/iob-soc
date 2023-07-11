@@ -115,7 +115,7 @@ class iob_soc(iob_module):
             ("axi_s_portmap", {"purpose": "simulation"}),
             (iob_tasks, {"purpose": "simulation"}),
             # Software modules
-            (iob_str, {"purpose": "software"}),
+            iob_str,
         ]
 
     @classmethod
