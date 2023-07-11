@@ -318,8 +318,8 @@ class iob_soc(iob_module):
     # Public method to set dynamic attributes
     # This method is automatically called by the `setup` method
     @classmethod
-    def set_dynamic_attributes(cls):
-        super().set_dynamic_attributes()
+    def init_attributes(cls):
+        super().init_attributes()
         # Initialize empty lists for attributes (We can't initialize in the attribute declaration because it would cause every subclass to reference the same list)
         cls.peripherals = []
         cls.peripheral_portmap = []
