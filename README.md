@@ -66,7 +66,7 @@ credential.helper 'cache --timeout=<time_in_seconds>'``
 
 ## Configure your SoC
 
-To configure your system, edit the `iob_soc_setup.py` file, which can be found at the
+To configure your system, edit the `iob_soc.py` file, which can be found at the
 repository root. This file has the system configuration variables;
 hopefully, each variable is explained by a comment.
 
@@ -164,7 +164,7 @@ fi
 
 ## Setup the system
 
-The main configuration for the system is located in the `iob_soc_setup.py` file.
+The main configuration for the system is located in the `iob_soc.py` file.
 
 To set up the system, type:
 
@@ -173,7 +173,7 @@ make setup [<control parameters>]
 ```
 
 `<control parameters>` are system configuration parameters passed in the
-command line, overriding those in the `iob_soc_setup.py` file. Example control
+command line, overriding those in the `iob_soc.py` file. Example control
 parameters are `INIT_MEM=0 USE_EXTMEM=1`. For example,
 
 ```Bash
