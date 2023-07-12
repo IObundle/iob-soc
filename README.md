@@ -21,9 +21,9 @@ The following steps describe the process of creating an AXISTREAMIN peripheral i
 1) Import the `iob_axistream_in` class
 2) Run the `iob_axistream_in.setup()` method to copy the required sources of this module to the build directory.
 3) Run the `iob_axistream_in.instance(...)` method to create a Verilog instance of the AXISTREAMIN peripheral.
-To use this core as a peripheral of an IOb-SoC-based system:
-  4) Add the created instance to the peripherals list of the IOb-SoC-based system.
-  5) Write the firmware to run in the system, including the `iob-axistream-in.h` C header and use its driver functions to control this core.
+4) Use this core as a peripheral of an IOb-SoC-based system:
+    1) Add the created instance to the peripherals list of the IOb-SoC-based system.
+    2) Write the firmware to run in the system, including the `iob-axistream-in.h` C header and use its driver functions to control this core.
 
 ## Example configuration
 
