@@ -14,8 +14,6 @@ from iob_cache import iob_cache
 from iob_uart import iob_uart
 from iob_utils import iob_utils
 from iob_lib import iob_lib
-from iob_clkenrst_portmap import iob_clkenrst_portmap
-from iob_clkenrst_port import iob_clkenrst_port
 from iob_merge import iob_merge
 from iob_split import iob_split
 from iob_rom_sp import iob_rom_sp
@@ -92,8 +90,8 @@ class iob_soc(iob_module):
             "axi_m_portmap",
             iob_utils,
             iob_lib,
-            iob_clkenrst_portmap,
-            iob_clkenrst_port,
+            "clk_en_rst_portmap",
+            "clk_en_rst_port",
             iob_merge,
             iob_split,
             iob_rom_sp,
