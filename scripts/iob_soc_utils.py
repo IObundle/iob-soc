@@ -14,12 +14,10 @@ from submodule_utils import (
     if_gen_interface,
 )
 from ios import get_interface_mapping
-import setup
 import iob_colors
 import shutil
 import fnmatch
 import if_gen
-import verilog_tools
 import build_srcs
 from iob_module import iob_module
 from axi_interconnect import axi_interconnect
@@ -45,7 +43,6 @@ def iob_soc_sw_setup(python_module, exclude_files=[]):
 
 
 def iob_soc_wrapper_setup(python_module, num_extmem_connections, exclude_files=[]):
-    peripherals_list = python_module.peripherals
     confs = python_module.confs
     build_dir = python_module.build_dir
     name = python_module.name
@@ -171,9 +168,8 @@ def update_ios_with_extmem_connections(python_module):
 ######################################
 
 # Run specialized iob-soc setup sequence
-def setup_iob_soc(python_module):
+def pre_setup_iob_soc(python_module):
     confs = python_module.confs
-    build_dir = python_module.build_dir
     name = python_module.name
 
     # Replace IOb-SoC name in values of confs
@@ -188,8 +184,13 @@ def setup_iob_soc(python_module):
     python_module.internal_wires = peripheral_portmap(python_module)
     num_extmem_connections = update_ios_with_extmem_connections(python_module)
 
-    # Call setup function for iob_soc
-    setup.setup(python_module, replace_includes=False)
+    return num_extmem_connections
+
+
+def post_setup_iob_soc(python_module, num_extmem_connections):
+    confs = python_module.confs
+    build_dir = python_module.build_dir
+    name = python_module.name
 
     # Run iob-soc specialized setup sequence
     iob_soc_wrapper_setup(python_module, num_extmem_connections)
@@ -200,9 +201,6 @@ def setup_iob_soc(python_module):
     if not python_module.is_top_module:
         return
     ### Only run lines below if this system is the top module ###
-
-    # Replace verilog snippet files
-    verilog_tools.replace_includes(python_module.setup_dir, build_dir)
 
     # Check if was setup with INIT_MEM and USE_EXTMEM (check if macro exists)
     extmem_macro = bool(

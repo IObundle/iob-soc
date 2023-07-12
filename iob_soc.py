@@ -5,7 +5,7 @@ import sys
 
 from iob_module import iob_module
 from iob_block_group import iob_block_group
-from iob_soc_utils import setup_iob_soc
+from iob_soc_utils import pre_setup_iob_soc, post_setup_iob_soc
 from mk_configuration import update_define
 
 # Submodules
@@ -33,9 +33,6 @@ from iob_tasks import iob_tasks
 from iob_str import iob_str
 from iob_ctls import iob_ctls
 
-# Optional submodules
-from axi_interconnect import axi_interconnect
-
 
 class iob_soc(iob_module):
     name = "iob_soc"
@@ -49,20 +46,20 @@ class iob_soc(iob_module):
 
     # Method that runs the setup process of this class
     @classmethod
-    def _run_setup(cls):
-        cls._setup_confs()
-        cls._setup_ios()
+    def _specific_setup(cls):
         cls._setup_portmap()
-
         cls._custom_setup()
 
-        # Copy sources of this module to the build directory
-        super()._run_setup()
-        cls._create_instances()
-        cls._setup_block_groups()
-
-        # Setup this system using specialized iob-soc function
-        setup_iob_soc(cls)
+    @classmethod
+    def _generate_files(cls):
+        '''Setup this system using specialized iob-soc functions
+        '''
+        # Pre-setup specialized IOb-SoC functions
+        num_extmem_connections = pre_setup_iob_soc(cls)
+        # Generate hw, sw, doc files
+        super()._generate_files()
+        # Post-setup specialized IOb-SoC functions
+        post_setup_iob_soc(cls, num_extmem_connections)
 
     @classmethod
     def _create_instances(cls):
@@ -315,11 +312,8 @@ class iob_soc(iob_module):
             if arg == "USE_EXTMEM":
                 update_define(cls.confs, "USE_EXTMEM", True)
 
-    # Public method to set dynamic attributes
-    # This method is automatically called by the `setup` method
     @classmethod
-    def init_attributes(cls):
-        super().init_attributes()
+    def _init_attributes(cls):
         # Initialize empty lists for attributes (We can't initialize in the attribute declaration because it would cause every subclass to reference the same list)
         cls.peripherals = []
         cls.peripheral_portmap = []
