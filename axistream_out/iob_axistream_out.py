@@ -26,7 +26,8 @@ class iob_axistream_out(iob_module):
         iob_module.generate("iob_s_portmap")
         iob_reg.setup()
         iob_reg_e.setup()
-        iob_ram_2p_be.setup()
+        iob_ram_2p_be.setup(purpose="simulation")
+        iob_ram_2p_be.setup(purpose="fpga")
 
         cls._setup_confs()
         cls._setup_ios()
