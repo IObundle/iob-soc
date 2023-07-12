@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 
 import os
-import sys
 import shutil
 import copy
 
 import iob_colors
 from iob_module import iob_module
-from setup import setup
 from mkregs import mkregs
 
 # Submodules
@@ -21,15 +19,12 @@ class iob_regfileif(iob_module):
     setup_dir=os.path.dirname(__file__)
 
     @classmethod
-    def _run_setup(cls):
+    def _specific_setup(cls):
         # Hardware headers & modules
         iob_module.generate("iob_s_port")
         iob_module.generate("iob_s_portmap")
         iob_reg.setup()
         iob_reg_e.setup()
-
-        cls._setup_confs()
-        cls._setup_ios()
 
         # Verilog modules instances
         # TODO
@@ -37,11 +32,9 @@ class iob_regfileif(iob_module):
         # Ensure user has configured registers for this peripheral
         assert cls.regs, f"{iob_colors.FAIL}REGFILEIF register list is empty.{iob_colors.ENDC}"
 
-        # Copy sources of this module to the build directory
-        super()._run_setup()
-
-        # Setup core using LIB function
-        setup(cls)
+    @classmethod
+    def _generate_files(cls):
+        super()._generate_files()
 
         #### Invert registers type to create drivers for Secondary system
         inverted_regs = copy.deepcopy(cls.regs)
