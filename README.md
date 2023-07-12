@@ -37,7 +37,7 @@ class iob_soc_sut(iob_soc):
   ...
   # Method that runs the setup process of the SUT system
   @classmethod
-  def _run_setup(cls):
+  def _post_setup(cls):
     ...
     # Setup the AXISTREAMIN module (Copies every file and dependency required to the build directory)
     iob_axistream_in.setup()
