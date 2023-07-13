@@ -8,23 +8,23 @@ from iob_module import iob_module
 from iob_reg import iob_reg
 from iob_reg_e import iob_reg_e
 
+
 class iob_gpio(iob_module):
-    name='iob_gpio'
-    version="V0.10"
-    flows="sim emb"
-    setup_dir=os.path.dirname(__file__)
+    name = 'iob_gpio'
+    version = "V0.10"
+    flows = "sim emb"
+    setup_dir = os.path.dirname(__file__)
 
     @classmethod
-    def _specific_setup(cls):
-        # Hardware headers & modules
-        iob_module.generate("iob_s_port")
-        iob_module.generate("iob_s_portmap")
-        iob_reg.setup()
-        iob_reg_e.setup()
-
-        # Verilog modules instances
-        # TODO
-
+    def _create_submodules_list(cls):
+        ''' Create submodules list with dependencies of this module
+        '''
+        super()._create_submodules_list([
+            "iob_s_port",
+            "iob_s_portmap",
+            iob_reg,
+            iob_reg_e,
+        ])
 
     @classmethod
     def _setup_confs(cls):
