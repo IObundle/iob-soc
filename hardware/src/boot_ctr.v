@@ -26,7 +26,7 @@ module boot_ctr #(
    output     [  DATA_W-1:0] sram_wdata,
    output reg [DATA_W/8-1:0] sram_wstrb,
 
-   `include "iob_clkenrst_port.vs"
+   `include "iob_clk_en_rst_port.vs"
 );
 
 

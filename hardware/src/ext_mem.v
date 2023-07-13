@@ -24,7 +24,7 @@ module ext_mem #(
 
    // AXI interface
    `include "iob_axi_m_port.vs"
-   `include "iob_clkenrst_port.vs"
+   `include "iob_clk_en_rst_port.vs"
 );
 
    //
