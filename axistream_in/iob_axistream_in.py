@@ -1,45 +1,33 @@
 #!/usr/bin/env python3
 
 import os
-import sys
 
 from iob_module import iob_module
-from setup import setup
 
 # Submodules
 from iob_reg import iob_reg
 from iob_reg_e import iob_reg_e
 from iob_ram_2p_be import iob_ram_2p_be
 
+
 class iob_axistream_in(iob_module):
-    name='iob_axistream_in'
+    name = 'iob_axistream_in'
     version = "V0.10"
     flows = "emb"
     setup_dir = os.path.dirname(__file__)
 
     @classmethod
-    def _run_setup(cls):
-        # Hardware headers & modules
-        iob_module.generate("iob_s_port")
-        iob_module.generate("iob_s_portmap")
-        iob_reg.setup()
-        iob_reg_e.setup()
-        iob_ram_2p_be.setup(purpose="simulation")
-        iob_ram_2p_be.setup(purpose="fpga")
-
-        cls._setup_confs()
-        cls._setup_ios()
-        cls._setup_regs()
-        cls._setup_block_groups()
-
-        # Verilog modules instances
-        # TODO
-
-        # Copy sources of this module to the build directory
-        super()._run_setup()
-
-        # Setup core using LIB function
-        setup(cls)
+    def _create_submodules_list(cls):
+        ''' Create submodules list with dependencies of this module
+        '''
+        super()._create_submodules_list([
+            "iob_s_port",
+            "iob_s_portmap",
+            iob_reg,
+            iob_reg_e,
+            (iob_ram_2p_be, {"purpose": "simulation"}),
+            (iob_ram_2p_be, {"purpose": "fpga"}),
+        ])
 
     @classmethod
     def _setup_confs(cls):
