@@ -23,7 +23,7 @@ module int_mem #(
    //data bus
    input  [ `REQ_W-1:0] d_req,
    output [`RESP_W-1:0] d_resp,
-   `include "clk_en_rst_port.vs"
+   `include "iob_clk_en_rst_port.vs"
 );
 
    //sram data bus  interface
