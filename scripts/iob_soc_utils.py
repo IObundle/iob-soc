@@ -58,44 +58,46 @@ def iob_soc_wrapper_setup(python_module, num_extmem_connections, exclude_files=[
     # the users to manually add USE_EXTMEM=1 in the build_dir.
     # As we no longer support build-time defines, we may need to change this in the future.
 
-    python_module._setup_submodules([
-        # Setup interconnect
-        axi_interconnect,
-        # Create extmem wrapper files
-        {
-            "file_prefix": "ddr4_",
-            "interface": "axi_wire",
-            "wire_prefix": "ddr4_",
-            "port_prefix": "ddr4_",
-        },
-        {
-            "file_prefix": f"iob_bus_{num_extmem_connections}_",
-            "interface": "axi_wire",
-            "wire_prefix": "",
-            "port_prefix": "",
-            "bus_size": num_extmem_connections,
-        },
-        {
-            "file_prefix": f"iob_bus_0_{num_extmem_connections}_",
-            "interface": "axi_m_portmap",
-            "wire_prefix": "",
-            "port_prefix": "",
-            "bus_start": 0,
-            "bus_size": num_extmem_connections,
-        },
-        {
-            "file_prefix": "iob_memory_",
-            "interface": "axi_wire",
-            "wire_prefix": "memory_",
-            "port_prefix": "",
-        },
-        {
-            "file_prefix": "iob_memory_",
-            "interface": "axi_s_portmap",
-            "wire_prefix": "memory_",
-            "port_prefix": "",
-        },
-    ])
+    python_module._setup_submodules(
+        [
+            # Setup interconnect
+            axi_interconnect,
+            # Create extmem wrapper files
+            {
+                "file_prefix": "ddr4_",
+                "interface": "axi_wire",
+                "wire_prefix": "ddr4_",
+                "port_prefix": "ddr4_",
+            },
+            {
+                "file_prefix": f"iob_bus_{num_extmem_connections}_",
+                "interface": "axi_wire",
+                "wire_prefix": "",
+                "port_prefix": "",
+                "bus_size": num_extmem_connections,
+            },
+            {
+                "file_prefix": f"iob_bus_0_{num_extmem_connections}_",
+                "interface": "axi_m_portmap",
+                "wire_prefix": "",
+                "port_prefix": "",
+                "bus_start": 0,
+                "bus_size": num_extmem_connections,
+            },
+            {
+                "file_prefix": "iob_memory_",
+                "interface": "axi_wire",
+                "wire_prefix": "memory_",
+                "port_prefix": "",
+            },
+            {
+                "file_prefix": "iob_memory_",
+                "interface": "axi_s_portmap",
+                "wire_prefix": "memory_",
+                "port_prefix": "",
+            },
+        ]
+    )
 
 
 def iob_soc_doc_setup(python_module, exclude_files=[]):

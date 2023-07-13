@@ -50,8 +50,7 @@ class iob_soc(iob_module):
 
     @classmethod
     def _generate_files(cls):
-        '''Setup this system using specialized iob-soc functions
-        '''
+        """Setup this system using specialized iob-soc functions"""
         # Pre-setup specialized IOb-SoC functions
         num_extmem_connections = pre_setup_iob_soc(cls)
         # Generate hw, sw, doc files
@@ -77,42 +76,44 @@ class iob_soc(iob_module):
 
     @classmethod
     def _create_submodules_list(cls, extra_submodules=[]):
-        ''' Create submodules list with dependencies of this module
-        '''
-        super()._create_submodules_list([
-            iob_picorv32,
-            iob_cache,
-            iob_uart,
-            # Hardware headers & modules
-            "iob_wire",
-            "axi_wire",
-            "axi_m_port",
-            "axi_m_m_portmap",
-            "axi_m_portmap",
-            iob_utils,
-            iob_lib,
-            "clk_en_rst_portmap",
-            "clk_en_rst_port",
-            iob_merge,
-            iob_split,
-            iob_rom_sp,
-            iob_ram_dp_be,
-            iob_ram_dp_be_xil,
-            iob_pulse_gen,
-            iob_counter,
-            iob_reg,
-            iob_reg_re,
-            iob_ram_sp_be,
-            iob_ram_dp,
-            iob_reset_sync,
-            iob_ctls,
-            # Simulation headers & modules
-            (axi_ram, {"purpose": "simulation"}),
-            ("axi_s_portmap", {"purpose": "simulation"}),
-            (iob_tasks, {"purpose": "simulation"}),
-            # Software modules
-            iob_str,
-        ] + extra_submodules)
+        """Create submodules list with dependencies of this module"""
+        super()._create_submodules_list(
+            [
+                iob_picorv32,
+                iob_cache,
+                iob_uart,
+                # Hardware headers & modules
+                "iob_wire",
+                "axi_wire",
+                "axi_m_port",
+                "axi_m_m_portmap",
+                "axi_m_portmap",
+                iob_utils,
+                iob_lib,
+                "clk_en_rst_portmap",
+                "clk_en_rst_port",
+                iob_merge,
+                iob_split,
+                iob_rom_sp,
+                iob_ram_dp_be,
+                iob_ram_dp_be_xil,
+                iob_pulse_gen,
+                iob_counter,
+                iob_reg,
+                iob_reg_re,
+                iob_ram_sp_be,
+                iob_ram_dp,
+                iob_reset_sync,
+                iob_ctls,
+                # Simulation headers & modules
+                (axi_ram, {"purpose": "simulation"}),
+                ("axi_s_portmap", {"purpose": "simulation"}),
+                (iob_tasks, {"purpose": "simulation"}),
+                # Software modules
+                iob_str,
+            ]
+            + extra_submodules
+        )
 
     @classmethod
     def _setup_portmap(cls):
