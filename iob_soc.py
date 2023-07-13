@@ -62,23 +62,24 @@ class iob_soc(iob_module):
     @classmethod
     def _create_instances(cls):
         # Verilog modules instances if we have them in the setup list (they may not be in the list if a subclass decided to remove them).
-        if iob_picorv32 in cls.submodule_setup_list:
+        if iob_picorv32 in cls.submodule_list:
             cls.cpu = iob_picorv32.instance("cpu_0")
-        if iob_split in cls.submodule_setup_list:
+        if iob_split in cls.submodule_list:
             cls.ibus_split = iob_split.instance("ibus_split_0")
             cls.dbus_split = iob_split.instance("dbus_split_0")
             cls.int_dbus_split = iob_split.instance("int_dbus_split_0")
             cls.pbus_split = iob_split.instance("pbus_split_0")
-        if iob_merge in cls.submodule_setup_list:
+        if iob_merge in cls.submodule_list:
             cls.int_mem = iob_merge.instance("iob_merge_0")
             cls.ext_mem = iob_merge.instance("iob_merge_1")
-        if iob_uart in cls.submodule_setup_list:
+        if iob_uart in cls.submodule_list:
             cls.peripherals.append(iob_uart.instance("UART0"))
 
     @classmethod
-    def _create_submodules_list(cls):
-        # Submodules
-        cls.submodule_setup_list += [
+    def _create_submodules_list(cls, extra_submodules=[]):
+        ''' Create submodules list with dependencies of this module
+        '''
+        super()._create_submodules_list([
             iob_picorv32,
             iob_cache,
             iob_uart,
@@ -111,7 +112,7 @@ class iob_soc(iob_module):
             (iob_tasks, {"purpose": "simulation"}),
             # Software modules
             iob_str,
-        ]
+        ] + extra_submodules)
 
     @classmethod
     def _setup_portmap(cls):
