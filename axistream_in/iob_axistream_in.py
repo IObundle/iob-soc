@@ -9,23 +9,24 @@ from iob_reg import iob_reg
 from iob_reg_e import iob_reg_e
 from iob_ram_2p_be import iob_ram_2p_be
 
+
 class iob_axistream_in(iob_module):
-    name='iob_axistream_in'
+    name = 'iob_axistream_in'
     version = "V0.10"
     flows = "emb"
     setup_dir = os.path.dirname(__file__)
 
     @classmethod
-    def _specific_setup(cls):
-        # Hardware headers & modules
-        iob_module.generate("iob_s_port")
-        iob_module.generate("iob_s_portmap")
-        iob_reg.setup()
-        iob_reg_e.setup()
-        iob_ram_2p_be.setup()
-
-        # Verilog modules instances
-        # TODO
+    def _create_submodules_list(cls):
+        ''' Create submodules list with dependencies of this module
+        '''
+        super()._create_submodules_list([
+            "iob_s_port",
+            "iob_s_portmap",
+            iob_reg,
+            iob_reg_e,
+            iob_ram_2p_be,
+        ])
 
     @classmethod
     def _setup_confs(cls):

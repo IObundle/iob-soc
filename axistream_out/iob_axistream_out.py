@@ -10,6 +10,7 @@ from iob_reg_e import iob_reg_e
 from iob_ram_2p_be import iob_ram_2p_be
 from iob_axistream_in import iob_axistream_in
 
+
 class iob_axistream_out(iob_module):
     name = "iob_axistream_out"
     version = iob_axistream_in.version
@@ -17,17 +18,17 @@ class iob_axistream_out(iob_module):
     setup_dir = os.path.dirname(__file__)
 
     @classmethod
-    def _specific_setup(cls):
-        # TODO: Copy submodules from iob_axistream_in. Probably should create a superclass iob_axistream with the base for these
-        # Hardware headers & modules
-        iob_module.generate("iob_s_port")
-        iob_module.generate("iob_s_portmap")
-        iob_reg.setup()
-        iob_reg_e.setup()
-        iob_ram_2p_be.setup()
-
-        # Verilog modules instances
-        # TODO
+    def _create_submodules_list(cls):
+        ''' Create submodules list with dependencies of this module
+        '''
+        super()._create_submodules_list([
+            # TODO: Copy submodules from iob_axistream_in. Probably should create a superclass iob_axistream with the base for these
+            "iob_s_port",
+            "iob_s_portmap",
+            iob_reg,
+            iob_reg_e,
+            iob_ram_2p_be,
+        ])
 
     @classmethod
     def _setup_confs(cls):
