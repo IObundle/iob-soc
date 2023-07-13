@@ -27,7 +27,8 @@ class iob_axistream_out(iob_module):
             "iob_s_portmap",
             iob_reg,
             iob_reg_e,
-            iob_ram_2p_be,
+            (iob_ram_2p_be, {"purpose": "simulation"}),
+            (iob_ram_2p_be, {"purpose": "fpga"}),
         ])
 
     @classmethod
