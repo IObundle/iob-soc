@@ -1,47 +1,47 @@
 #!/usr/bin/env python3
 
 import os
-import sys
 import shutil
 import copy
 
 import iob_colors
 from iob_module import iob_module
-from setup import setup
 from mkregs import mkregs
 
 # Submodules
 from iob_reg import iob_reg
 from iob_reg_e import iob_reg_e
 
+
 class iob_regfileif(iob_module):
-    name='iob_regfileif'
-    version="V0.10"
-    flows=""
-    setup_dir=os.path.dirname(__file__)
+    name = 'iob_regfileif'
+    version = "V0.10"
+    flows = ""
+    setup_dir = os.path.dirname(__file__)
 
     @classmethod
-    def _run_setup(cls):
+    def _create_submodules_list(cls):
+        ''' Create submodules list with dependencies of this module
+        '''
+        super()._create_submodules_list([
+            "iob_s_port",
+            "iob_s_portmap",
+            iob_reg,
+            iob_reg_e,
+        ])
+
+    @classmethod
+    def _specific_setup(cls):
         # Hardware headers & modules
-        iob_module.generate("iob_s_port")
-        iob_module.generate("iob_s_portmap")
-        iob_reg.setup()
-        iob_reg_e.setup()
-
-        cls._setup_confs()
-        cls._setup_ios()
-
         # Verilog modules instances
         # TODO
 
         # Ensure user has configured registers for this peripheral
         assert cls.regs, f"{iob_colors.FAIL}REGFILEIF register list is empty.{iob_colors.ENDC}"
 
-        # Copy sources of this module to the build directory
-        super()._run_setup()
-
-        # Setup core using LIB function
-        setup(cls)
+    @classmethod
+    def _generate_files(cls):
+        super()._generate_files()
 
         #### Invert registers type to create drivers for Secondary system
         inverted_regs = copy.deepcopy(cls.regs)
@@ -100,8 +100,8 @@ class iob_regfileif(iob_module):
 
         #### Create params, inst_params and conf files for inverted hardware. (Use symlinks to save disk space and highlight they are equal)
         if not os.path.isfile(f"{cls.build_dir}/hardware/src/{cls.name}_inverted_conf.vh"): os.symlink(f"{cls.name}_conf.vh", f"{cls.build_dir}/hardware/src/{cls.name}_inverted_conf.vh")
-        if not os.path.isfile(f"{cls.build_dir}/hardware/src/{cls.name}_inverted_params.vs"): os.symlink(f"{cls.name}_params.vs", f"{cls.build_dir}/hardware/src/{cls.name}_inverted_params.vs")
-        if not os.path.isfile(f"{cls.build_dir}/hardware/src/{cls.name}_inverted_inst_params.vs"): os.symlink(f"{cls.name}_inst_params.vs", f"{cls.build_dir}/hardware/src/{cls.name}_inverted_inst_params.vs")
+        if not os.path.isfile(f"{cls.build_dir}/hardware/src/{cls.name}_inverted_params.vs"): shutil.copy(f"{cls.build_dir}/hardware/src/{cls.name}_params.vs", f"{cls.build_dir}/hardware/src/{cls.name}_inverted_params.vs")
+        if not os.path.isfile(f"{cls.build_dir}/hardware/src/{cls.name}_inverted_inst_params.vs"): shutil.copy(f"{cls.build_dir}/hardware/src/{cls.name}_inst_params.vs", f"{cls.build_dir}/hardware/src/{cls.name}_inverted_inst_params.vs")
 
         #### Create inverted register software
         mkregs_obj.write_swheader(reg_table, cls.build_dir+'/software/src', f"{cls.name}_inverted")
