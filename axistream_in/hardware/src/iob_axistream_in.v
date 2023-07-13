@@ -11,23 +11,15 @@ module iob_axistream_in #(
    // FIFO Output width / Input width
    localparam num_inputs_per_output = 32 / TDATA_W;
 
-   // This mapping is required because "iob_axistream_in_swreg_inst.vh" uses "iob_s_portmap.vh" (This would not be needed if mkregs used "iob_s_s_portmap.vh" instead)
-   wire [         1-1:0] iob_avalid = iob_avalid_i;  //Request valid.
-   wire [    ADDR_W-1:0] iob_addr = iob_addr_i;  //Address.
-   wire [    DATA_W-1:0] iob_wdata = iob_wdata_i;  //Write data.
-   wire [(DATA_W/8)-1:0] iob_wstrb = iob_wstrb_i;  //Write strobe.
-   wire [         1-1:0]                                              iob_rvalid;
-   assign iob_rvalid_o = iob_rvalid;  //Read data valid.
-   wire [DATA_W-1:0] iob_rdata;
-   assign iob_rdata_o = iob_rdata;  //Read data.
-   wire [1-1:0] iob_ready;
-   assign iob_ready_o = iob_ready;  //Interface ready.
+   //Dummy iob_ready_nxt_o and iob_rvalid_nxt_o to be used in swreg (unused ports)
+   wire iob_ready_nxt_o;
+   wire iob_rvalid_nxt_o;
 
-   //BLOCK Register File & Configuration control and status register file.
+   // Configuration control and status register file.
    `include "iob_axistream_in_swreg_inst.vs"
 
    wire [                                              1-1:0] fifo_full;
-   //FIFO RAM
+   // FIFO RAM
    wire [                          num_inputs_per_output-1:0] ext_mem_w_en;
    wire [                                             32-1:0] ext_mem_w_data;
    wire [(FIFO_DEPTH_LOG2-$clog2(num_inputs_per_output))-1:0] ext_mem_w_addr;
@@ -51,7 +43,7 @@ module iob_axistream_in #(
 
    //Reset register when it is read and FIFO is empty
    wire [1-1:0] reset_register_last;
-   assign reset_register_last = iob_avalid & !iob_wstrb & (iob_addr == (`IOB_AXISTREAM_IN_LAST_ADDR >> 2)) & EMPTY[0] & received_tlast;
+   assign reset_register_last = iob_avalid_i & !iob_wstrb_i & (iob_addr_i == (`IOB_AXISTREAM_IN_LAST_ADDR >> 2)) & EMPTY[0] & received_tlast;
 
    wire [  3:0] rstrb;
 
@@ -143,7 +135,7 @@ module iob_axistream_in #(
    // OUT Manual logic
    assign OUT_ready  = 1'b1;
    assign OUT_rvalid = 1'b1;
-   
+
    //Delay OUT_ren by one clock
    wire [1-1:0] out_ren_delayed;
    iob_reg_r #(
@@ -174,7 +166,7 @@ module iob_axistream_in #(
       .ext_mem_r_addr_o(ext_mem_r_addr),
       .ext_mem_r_data_i(ext_mem_r_data),
       //read port
-      .r_en_i(OUT_ren & (!out_ren_delayed | iob_rvalid)),
+      .r_en_i(OUT_ren & (!out_ren_delayed | iob_rvalid_o)),
       .r_data_o(OUT),
       .r_empty_o(EMPTY[0]),
       //write port

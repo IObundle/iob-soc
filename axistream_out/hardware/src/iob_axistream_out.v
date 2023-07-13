@@ -11,17 +11,9 @@ module iob_axistream_out #(
    // FIFO Input width / Ouput width
    localparam N = 32 / TDATA_W;
 
-   // This mapping is required because "iob_axistream_out_swreg_inst.vh" uses "iob_s_portmap.vh" (This would not be needed if mkregs used "iob_s_s_portmap.vh" instead)
-   wire [         1-1:0] iob_avalid = iob_avalid_i;  //Request valid.
-   wire [    ADDR_W-1:0] iob_addr = iob_addr_i;  //Address.
-   wire [    DATA_W-1:0] iob_wdata = iob_wdata_i;  //Write data.
-   wire [(DATA_W/8)-1:0] iob_wstrb = iob_wstrb_i;  //Write strobe.
-   wire [         1-1:0]                                              iob_rvalid;
-   assign iob_rvalid_o = iob_rvalid;  //Read data valid.
-   wire [DATA_W-1:0] iob_rdata;
-   assign iob_rdata_o = iob_rdata;  //Read data.
-   wire [1-1:0] iob_ready;
-   assign iob_ready_o = iob_ready;  //Interface ready.
+   //Dummy iob_ready_nxt_o and iob_rvalid_nxt_o to be used in swreg (unused ports)
+   wire iob_ready_nxt_o;
+   wire iob_rvalid_nxt_o;
 
    //BLOCK Register File & Configuration control and status register file.
    `include "iob_axistream_out_swreg_inst.vs"
@@ -50,7 +42,7 @@ module iob_axistream_out #(
       .cke_i (cke_i),
       .rst_i ((fifo_empty & storing_tlast_word) | SOFTRESET),  //Reset when TLAST word is sent
       .en_i  (WSTRB_NEXT_WORD_LAST_wen),
-      .data_i(iob_wdata[0+:N]),
+      .data_i(iob_wdata_i[0+:N]),
       .data_o(last_wstrb)
    );
 
@@ -93,7 +85,7 @@ module iob_axistream_out #(
       .r_empty_o       (fifo_empty),
       //write port
       .w_en_i          (IN_wen),
-      .w_data_i        (iob_wdata),
+      .w_data_i        (iob_wdata_i),
       .w_full_o        (fifo_full),
       .level_o         (fifo_level)
    );
