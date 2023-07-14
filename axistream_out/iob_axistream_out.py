@@ -23,8 +23,8 @@ class iob_axistream_out(iob_module):
         '''
         super()._create_submodules_list([
             # TODO: Copy submodules from iob_axistream_in. Probably should create a superclass iob_axistream with the base for these
-            "iob_s_port",
-            "iob_s_portmap",
+            {"interface": "iob_s_port"},
+            {"interface": "iob_s_portmap"},
             iob_reg,
             iob_reg_e,
             (iob_ram_2p_be, {"purpose": "simulation"}),
