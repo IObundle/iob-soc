@@ -136,6 +136,11 @@ module iob_soc_fpga_wrapper (
    //
 
 `ifdef IOB_SOC_USE_EXTMEM
+   localparam DDR4_AXI_ID_W = AXI_ID_W;
+   localparam DDR4_AXI_LEN_W = AXI_LEN_W;
+   localparam DDR4_AXI_ADDR_W = AXI_ADDR_W;
+   localparam DDR4_AXI_DATA_W = AXI_DATA_W;
+
 
    `include "iob_soc_ku040_rstn.vs"
 
