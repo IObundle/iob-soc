@@ -20,8 +20,8 @@ class iob_gpio(iob_module):
         ''' Create submodules list with dependencies of this module
         '''
         super()._create_submodules_list([
-            "iob_s_port",
-            "iob_s_portmap",
+            {"interface": "iob_s_port"},
+            {"interface": "iob_s_portmap"},
             iob_reg,
             iob_reg_e,
         ])
