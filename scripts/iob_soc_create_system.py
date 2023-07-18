@@ -17,12 +17,11 @@ def insert_header_files(dest_dir, name, peripherals_list):
     # Get each type of peripheral used
     included_peripherals = []
     for instance in peripherals_list:
-        module = instance.module
-        if module.name not in included_peripherals:
-            included_peripherals.append(module.name)
+        if instance.name not in included_peripherals:
+            included_peripherals.append(instance.name)
             # Only insert swreg file if module has regiters
-            if hasattr(module, "regs") and module.regs:
-                top = module.name
+            if hasattr(instance, "regs") and instance.regs:
+                top = instance.name
                 fd_out.write(f'`include "{top}_swreg_def.vh"\n')
     fd_out.close()
 
@@ -59,25 +58,25 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
         # Create peripheral instance Verilog Snippet
         periphs_inst_str += "\n"
         # Insert peripheral comment
-        periphs_inst_str += "   // {}\n".format(instance.name)
+        periphs_inst_str += "   // {}\n".format(instance.instance_name)
         periphs_inst_str += "\n"
         # Insert peripheral type
-        periphs_inst_str += "   {}\n".format(top_list[instance.module.name])
+        periphs_inst_str += "   {}\n".format(top_list[instance.name])
         # Insert peripheral parameters (if any)
-        if params_list[instance.module.name]:
+        if params_list[instance.name]:
             periphs_inst_str += "     #(\n"
             # Insert parameters
-            for param in params_list[instance.module.name]:
+            for param in params_list[instance.name]:
                 periphs_inst_str += "      .{}({}){}\n".format(
-                    param["name"], instance.name + "_" + param["name"], ","
+                    param["name"], instance.instance_name + "_" + param["name"], ","
                 )
             # Remove comma at the end of last parameter
             periphs_inst_str = periphs_inst_str[::-1].replace(",", "", 1)[::-1]
             periphs_inst_str += "   )\n"
         # Insert peripheral instance name
-        periphs_inst_str += "   {} (\n".format(instance.name)
+        periphs_inst_str += "   {} (\n".format(instance.instance_name)
         # Insert io signals
-        for signal in get_pio_signals(port_list[instance.module.name]):
+        for signal in get_pio_signals(port_list[instance.name]):
             if "if_defined" in signal.keys():
                 periphs_inst_str += f"`ifdef {top.upper()}_{signal['if_defined']}\n"
             periphs_inst_str += "      .{}({}),\n".format(
@@ -87,7 +86,7 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
             if "if_defined" in signal.keys():
                 periphs_inst_str += "`endif\n"
         # Insert reserved signals
-        for signal in get_reserved_signals(port_list[instance.module.name]):
+        for signal in get_reserved_signals(port_list[instance.name]):
             # Check if should append this peripheral to the list of peripherals with extmem interfaces
             # Note: This implementation assumes that the axi_awid_o will be the first signal of the ext_mem interface
             if signal["name"] == "axi_awid_o":
@@ -100,8 +99,8 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
             periphs_inst_str += "      " + (
                 get_reserved_signal_connection(
                     signal["name"],
-                    top.upper() + "_" + instance.name,
-                    top_list[instance.module.name].upper() + "_SWREG",
+                    top.upper() + "_" + instance.instance_name,
+                    top_list[instance.name].upper() + "_SWREG",
                 )
                 + ",\n"
             ).replace(
