@@ -18,7 +18,7 @@ def create_periphs_tmp(addr_w, peripherals_list, out_file):
     for instance in peripherals_list:
         template_contents.extend(
             "#define {}_BASE ({}<<({}-1-N_SLAVES_W))\n".format(
-                instance.instance_name, instance.instance_name, addr_w
+                instance.name, instance.name, addr_w
             )
         )
 

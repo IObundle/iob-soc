@@ -278,7 +278,7 @@ def peripheral_portmap(python_module):
 
     # Add default portmap for peripherals not configured in peripheral_portmap
     for peripheral in peripherals_list:
-        if peripheral.instance_name not in [
+        if peripheral.name not in [
             i[0]["corename"] for i in peripheral_portmap or []
         ] + [i[1]["corename"] for i in peripheral_portmap or []]:
             # Map all ports of all interfaces
@@ -294,14 +294,14 @@ def peripheral_portmap(python_module):
                             peripheral_portmap.append(
                                 (
                                     {
-                                        "corename": peripheral.instance_name,
+                                        "corename": peripheral.name,
                                         "if_name": interface["name"],
                                         "port": port["name"],
                                         "bits": [],
                                     },
                                     {
                                         "corename": "external",
-                                        "if_name": peripheral.instance_name,
+                                        "if_name": peripheral.name,
                                         "port": "",
                                         "bits": [],
                                     },
@@ -316,14 +316,14 @@ def peripheral_portmap(python_module):
                         peripheral_portmap.append(
                             (
                                 {
-                                    "corename": peripheral.instance_name,
+                                    "corename": peripheral.name,
                                     "if_name": interface["name"],
                                     "port": "",
                                     "bits": [],
                                 },
                                 {
                                     "corename": "external",
-                                    "if_name": peripheral.instance_name,
+                                    "if_name": peripheral.name,
                                     "port": "",
                                     "bits": [],
                                 },
@@ -351,19 +351,19 @@ def peripheral_portmap(python_module):
         # Get system block of peripheral in mapping[0]
         if mapping[0]["corename"] not in ["external", "internal"]:
             assert any(
-                i for i in peripherals_list if i.instance_name == mapping[0]["corename"]
+                i for i in peripherals_list if i.name == mapping[0]["corename"]
             ), f"{iob_colors.FAIL}{map_idx} Peripheral instance named '{mapping[0]['corename']}' not found!{iob_colors.ENDC}"
             mapping_items[0] = next(
-                i for i in peripherals_list if i.instance_name == mapping[0]["corename"]
+                i for i in peripherals_list if i.name == mapping[0]["corename"]
             )
 
         # Get system block of peripheral in mapping[1]
         if mapping[1]["corename"] not in ["external", "internal"]:
             assert any(
-                i for i in peripherals_list if i.instance_name == mapping[1]["corename"]
+                i for i in peripherals_list if i.name == mapping[1]["corename"]
             ), f"{iob_colors.FAIL}{map_idx} Peripheral instance named '{mapping[1]['corename']}' not found!{iob_colors.ENDC}"
             mapping_items[1] = next(
-                i for i in peripherals_list if i.instance_name == mapping[1]["corename"]
+                i for i in peripherals_list if i.name == mapping[1]["corename"]
             )
 
         # Make sure we are not mapping two external or internal interfaces
