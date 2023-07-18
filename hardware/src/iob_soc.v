@@ -3,7 +3,7 @@
 `include "bsp.vh"
 `include "iob_soc_conf.vh"
 `include "iob_soc.vh"
-`include "iob_lib.vh"
+`include "iob_utils.vh"
 
 //Peripherals _swreg_def.vh file includes.
 `include "iob_soc_periphs_swreg_def.vs"
