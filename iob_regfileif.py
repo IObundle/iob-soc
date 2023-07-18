@@ -130,8 +130,10 @@ class iob_regfileif(iob_module):
             # Macros
 
             # Parameters
-            {'name':'DATA_W',      'type':'P', 'val':'32', 'min':'NA', 'max':'32', 'descr':"Data bus width"},
-            {'name':'ADDR_W',      'type':'P', 'val':'`IOB_REGFILEIF_SWREG_ADDR_W', 'min':'NA', 'max':'32', 'descr':"Address bus width"},
+            {'name':'DATA_W',          'type':'P', 'val':'32', 'min':'NA', 'max':'32', 'descr':"Data bus width"},
+            {'name':'ADDR_W',          'type':'P', 'val':'`IOB_REGFILEIF_SWREG_ADDR_W', 'min':'NA', 'max':'32', 'descr':"Address bus width"},
+            {'name':'EXTERNAL_DATA_W', 'type':'P', 'val':'32', 'min':'NA', 'max':'32', 'descr':"External data bus width"},
+            {'name':'EXTERNAL_ADDR_W', 'type':'P', 'val':'`IOB_REGFILEIF_SWREG_ADDR_W', 'min':'NA', 'max':'32', 'descr':"External address bus width"},
         ])
 
     @classmethod
