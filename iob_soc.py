@@ -5,7 +5,7 @@ import sys
 
 from iob_module import iob_module
 from iob_block_group import iob_block_group
-from iob_soc_utils import setup_iob_soc
+from iob_soc_utils import pre_setup_iob_soc, post_setup_iob_soc
 from mk_configuration import update_define
 
 # Submodules
@@ -14,8 +14,6 @@ from iob_cache import iob_cache
 from iob_uart import iob_uart
 from iob_utils import iob_utils
 from iob_lib import iob_lib
-from iob_clkenrst_portmap import iob_clkenrst_portmap
-from iob_clkenrst_port import iob_clkenrst_port
 from iob_merge import iob_merge
 from iob_split import iob_split
 from iob_rom_sp import iob_rom_sp
@@ -32,9 +30,8 @@ from axi_ram import axi_ram
 from iob_tasks import iob_tasks
 from iob_str import iob_str
 from iob_ctls import iob_ctls
-
-# Optional submodules
-from axi_interconnect import axi_interconnect
+from iob_ram_2p import iob_ram_2p
+from iob_ram_sp import iob_ram_sp
 
 
 class iob_soc(iob_module):
@@ -49,74 +46,81 @@ class iob_soc(iob_module):
 
     # Method that runs the setup process of this class
     @classmethod
-    def _run_setup(cls):
-        cls._setup_confs()
-        cls._setup_ios()
+    def _specific_setup(cls):
         cls._setup_portmap()
-
         cls._custom_setup()
 
-        # Copy sources of this module to the build directory
-        super()._run_setup()
-        cls._create_instances()
-        cls._setup_block_groups()
-
-        # Setup this system using specialized iob-soc function
-        setup_iob_soc(cls)
+    @classmethod
+    def _generate_files(cls):
+        """Setup this system using specialized iob-soc functions"""
+        # Pre-setup specialized IOb-SoC functions
+        num_extmem_connections = pre_setup_iob_soc(cls)
+        # Generate hw, sw, doc files
+        super()._generate_files()
+        # Post-setup specialized IOb-SoC functions
+        post_setup_iob_soc(cls, num_extmem_connections)
 
     @classmethod
     def _create_instances(cls):
         # Verilog modules instances if we have them in the setup list (they may not be in the list if a subclass decided to remove them).
-        if iob_picorv32 in cls.submodule_setup_list:
+        if iob_picorv32 in cls.submodule_list:
             cls.cpu = iob_picorv32.instance("cpu_0")
-        if iob_split in cls.submodule_setup_list:
+        if iob_split in cls.submodule_list:
             cls.ibus_split = iob_split.instance("ibus_split_0")
             cls.dbus_split = iob_split.instance("dbus_split_0")
             cls.int_dbus_split = iob_split.instance("int_dbus_split_0")
             cls.pbus_split = iob_split.instance("pbus_split_0")
-        if iob_merge in cls.submodule_setup_list:
+        if iob_merge in cls.submodule_list:
             cls.int_mem = iob_merge.instance("iob_merge_0")
             cls.ext_mem = iob_merge.instance("iob_merge_1")
-        if iob_uart in cls.submodule_setup_list:
+        if iob_uart in cls.submodule_list:
             cls.peripherals.append(iob_uart.instance("UART0"))
 
     @classmethod
-    def _create_submodules_list(cls):
-        # Submodules
-        cls.submodule_setup_list += [
-            iob_picorv32,
-            iob_cache,
-            iob_uart,
-            # Hardware headers & modules
-            "iob_wire",
-            "axi_wire",
-            "axi_m_port",
-            "axi_m_m_portmap",
-            "axi_m_portmap",
-            iob_utils,
-            iob_lib,
-            iob_clkenrst_portmap,
-            iob_clkenrst_port,
-            iob_merge,
-            iob_split,
-            iob_rom_sp,
-            iob_ram_dp_be,
-            iob_ram_dp_be_xil,
-            iob_pulse_gen,
-            iob_counter,
-            iob_reg,
-            iob_reg_re,
-            iob_ram_sp_be,
-            iob_ram_dp,
-            iob_reset_sync,
-            iob_ctls,
-            # Simulation headers & modules
-            (axi_ram, {"purpose": "simulation"}),
-            ("axi_s_portmap", {"purpose": "simulation"}),
-            (iob_tasks, {"purpose": "simulation"}),
-            # Software modules
-            (iob_str, {"purpose": "software"}),
-        ]
+    def _create_submodules_list(cls, extra_submodules=[]):
+        """Create submodules list with dependencies of this module"""
+        super()._create_submodules_list(
+            [
+                iob_picorv32,
+                iob_cache,
+                iob_uart,
+                # Hardware headers & modules
+                {"interface": "iob_wire"},
+                {"interface": "axi_wire"},
+                {"interface": "axi_m_port"},
+                {"interface": "axi_m_m_portmap"},
+                {"interface": "axi_m_portmap"},
+                iob_utils,
+                iob_lib,
+                {"interface": "clk_en_rst_portmap"},
+                {"interface": "clk_en_rst_port"},
+                iob_merge,
+                iob_split,
+                iob_rom_sp,
+                iob_ram_dp_be,
+                iob_ram_dp_be_xil,
+                iob_pulse_gen,
+                iob_counter,
+                iob_reg,
+                iob_reg_re,
+                iob_ram_sp_be,
+                iob_ram_dp,
+                iob_reset_sync,
+                iob_ctls,
+                # Simulation headers & modules
+                (axi_ram, {"purpose": "simulation"}),
+                ({"interface": "axi_s_portmap"}, {"purpose": "simulation"}),
+                (iob_tasks, {"purpose": "simulation"}),
+                # Software modules
+                iob_str,
+                # Modules required for CACHE
+                (iob_ram_2p, {"purpose": "simulation"}),
+                (iob_ram_2p, {"purpose": "fpga"}),
+                (iob_ram_sp, {"purpose": "simulation"}),
+                (iob_ram_sp, {"purpose": "fpga"}),
+            ]
+            + extra_submodules
+        )
 
     @classmethod
     def _setup_portmap(cls):
@@ -315,11 +319,8 @@ class iob_soc(iob_module):
             if arg == "USE_EXTMEM":
                 update_define(cls.confs, "USE_EXTMEM", True)
 
-    # Public method to set dynamic attributes
-    # This method is automatically called by the `setup` method
     @classmethod
-    def set_dynamic_attributes(cls):
-        super().set_dynamic_attributes()
+    def _init_attributes(cls):
         # Initialize empty lists for attributes (We can't initialize in the attribute declaration because it would cause every subclass to reference the same list)
         cls.peripherals = []
         cls.peripheral_portmap = []
