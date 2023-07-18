@@ -1,7 +1,7 @@
 `timescale 1 ns / 1 ps
 
 `include "iob_soc_conf.vh"
-`include "iob_lib.vh"
+`include "iob_utils.vh"
 
 module int_mem #(
    parameter ADDR_W         = 0,
