@@ -24,8 +24,8 @@ class iob_regfileif(iob_module):
         ''' Create submodules list with dependencies of this module
         '''
         super()._create_submodules_list([
-            "iob_s_port",
-            "iob_s_portmap",
+            {"interface": "iob_s_port"},
+            {"interface": "iob_s_portmap"},
             iob_reg,
             iob_reg_e,
         ])
@@ -73,7 +73,7 @@ class iob_regfileif(iob_module):
             if '.iob_ready_nxt_o' in line: lines[idx] = ".iob_ready_nxt_o(iob_ready_nxt2),\n"
             if '.iob_rvalid_nxt_o' in line: lines[idx] = ".iob_rvalid_nxt_o(iob_rvalid_nxt2),\n"
             # Remove `iob_s_portmap.vs` as this mapping was already used in the `*_inverted_swreg_inst.vs` file
-            if '`include "iob_s_portmap.vs"' in line: 
+            if '`include "iob_s_s_portmap.vs"' in line:
                 lines[idx] = ""
                 #Insert correct portmap. The normal (non inverted) registers are connected to the external interface that connects to the primary system.
                 lines.insert(idx,".iob_avalid_i(external_iob_avalid_i), //Request valid.\n")
@@ -130,8 +130,10 @@ class iob_regfileif(iob_module):
             # Macros
 
             # Parameters
-            {'name':'DATA_W',      'type':'P', 'val':'32', 'min':'NA', 'max':'32', 'descr':"Data bus width"},
-            {'name':'ADDR_W',      'type':'P', 'val':'`IOB_REGFILEIF_SWREG_ADDR_W', 'min':'NA', 'max':'32', 'descr':"Address bus width"},
+            {'name':'DATA_W',          'type':'P', 'val':'32', 'min':'NA', 'max':'32', 'descr':"Data bus width"},
+            {'name':'ADDR_W',          'type':'P', 'val':'`IOB_REGFILEIF_SWREG_ADDR_W', 'min':'NA', 'max':'32', 'descr':"Address bus width"},
+            {'name':'EXTERNAL_DATA_W', 'type':'P', 'val':'32', 'min':'NA', 'max':'32', 'descr':"External data bus width"},
+            {'name':'EXTERNAL_ADDR_W', 'type':'P', 'val':'`IOB_REGFILEIF_SWREG_ADDR_W', 'min':'NA', 'max':'32', 'descr':"External address bus width"},
         ])
 
     @classmethod
