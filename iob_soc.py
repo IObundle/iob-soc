@@ -64,17 +64,17 @@ class iob_soc(iob_module):
     def _create_instances(cls):
         # Verilog modules instances if we have them in the setup list (they may not be in the list if a subclass decided to remove them).
         if iob_picorv32 in cls.submodule_list:
-            cls.cpu = iob_picorv32.instance("cpu_0")
+            cls.cpu = iob_picorv32("cpu_0")
         if iob_split in cls.submodule_list:
-            cls.ibus_split = iob_split.instance("ibus_split_0")
-            cls.dbus_split = iob_split.instance("dbus_split_0")
-            cls.int_dbus_split = iob_split.instance("int_dbus_split_0")
-            cls.pbus_split = iob_split.instance("pbus_split_0")
+            cls.ibus_split = iob_split("ibus_split_0")
+            cls.dbus_split = iob_split("dbus_split_0")
+            cls.int_dbus_split = iob_split("int_dbus_split_0")
+            cls.pbus_split = iob_split("pbus_split_0")
         if iob_merge in cls.submodule_list:
-            cls.int_mem = iob_merge.instance("iob_merge_0")
-            cls.ext_mem = iob_merge.instance("iob_merge_1")
+            cls.int_mem = iob_merge("iob_merge_0")
+            cls.ext_mem = iob_merge("iob_merge_1")
         if iob_uart in cls.submodule_list:
-            cls.peripherals.append(iob_uart.instance("UART0"))
+            cls.peripherals.append(iob_uart("UART0"))
 
     @classmethod
     def _create_submodules_list(cls, extra_submodules=[]):
