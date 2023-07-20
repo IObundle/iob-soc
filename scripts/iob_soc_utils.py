@@ -405,7 +405,8 @@ def peripheral_portmap(python_module):
 
         # Get ports of configured interface
         interface_table = next(
-            (i for i in mapping_items[0].ios if i["name"] == mapping[0]["if_name"]), None
+            (i for i in mapping_items[0].ios if i["name"] == mapping[0]["if_name"]),
+            None,
         )
         assert (
             interface_table
@@ -416,7 +417,8 @@ def peripheral_portmap(python_module):
         if mapping_internal_interface != 1 and mapping_external_interface != 1:
             # Get ports of configured interface
             interface_table = next(
-                (i for i in mapping_items[1].ios if i["name"] == mapping[1]["if_name"]), None
+                (i for i in mapping_items[1].ios if i["name"] == mapping[1]["if_name"]),
+                None,
             )
             assert (
                 interface_table
@@ -441,7 +443,9 @@ def peripheral_portmap(python_module):
                         {
                             "name": wire_name,
                             "n_bits": add_prefix_to_parameters_in_port(
-                                port, mapping_items[0].confs, mapping[0]["corename"] + "_"
+                                port,
+                                mapping_items[0].confs,
+                                mapping[0]["corename"] + "_",
                             )["n_bits"],
                         }
                     )
@@ -457,7 +461,9 @@ def peripheral_portmap(python_module):
                         {
                             "name": wire_name,
                             "n_bits": add_prefix_to_parameters_in_port(
-                                port, mapping_items[0].confs, mapping[0]["corename"] + "_"
+                                port,
+                                mapping_items[0].confs,
+                                mapping[0]["corename"] + "_",
                             )["n_bits"],
                         }
                     )
