@@ -165,6 +165,9 @@ module iob_axistream_in #(
       .ext_mem_r_en_o(ext_mem_r_en),
       .ext_mem_r_addr_o(ext_mem_r_addr),
       .ext_mem_r_data_i(ext_mem_r_data),
+      .ext_mem_clk_o(),
+      .ext_mem_arst_o(),
+      .ext_mem_cke_o(),
       //read port
       .r_en_i(OUT_ren & (!out_ren_delayed | iob_rvalid_o)),
       .r_data_o(OUT),
