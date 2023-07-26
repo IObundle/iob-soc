@@ -159,8 +159,10 @@ module int_mem #(
    // INSTANTIATE RAM
    //
    sram #(
+`ifndef IOB_SOC_USE_EXTMEM
 `ifdef IOB_SOC_INIT_MEM
       .HEXFILE    (HEXFILE),
+`endif
 `endif
       .DATA_W     (DATA_W),
       .SRAM_ADDR_W(SRAM_ADDR_W)
