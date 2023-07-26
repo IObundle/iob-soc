@@ -6,7 +6,7 @@ ROOT_DIR ?=..
 
 #Function to obtain parameter named $(1) in verilog header file located in $(2)
 #Usage: $(call GET_MACRO,<param_name>,<vh_path>)
-GET_MACRO = $(shell grep $(1) $(2) | rev | cut -d" " -f1 | rev)
+GET_MACRO = $(shell grep "define $(1)" $(2) | rev | cut -d" " -f1 | rev)
 
 #Function to obtain parameter named $(1) from iob_soc_conf.vh
 GET_IOB_SOC_CONF_MACRO = $(call GET_MACRO,IOB_SOC_$(1),../src/iob_soc_conf.vh)
