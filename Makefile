@@ -1,3 +1,8 @@
+CORE := iob_soc
+SIMULATOR ?= icarus
+
+DISABLE_LINT:=1
+
 include submodules/LIB/setup.mk
 
 INIT_MEM ?= 1
@@ -9,6 +14,9 @@ endif
 ifeq ($(USE_EXTMEM),1)
 SETUP_ARGS += USE_EXTMEM
 endif
+
+sim-run:
+	make clean && make setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../iob_soc_V*/ sim-run SIMULATOR=$(SIMULATOR)
 
 sim-test:
 	make clean && make setup && make -C ../iob_soc_V*/ sim-test
@@ -28,3 +36,5 @@ test-all:
 	make fpga-test BOARD=CYCLONEV-GT-DK
 	make fpga-test BOARD=AES-KU040-DB-G
 	make clean && make setup && make -C ../iob_soc_V*/ doc-test
+
+.PHONY: sim-test fpga-test test-all
