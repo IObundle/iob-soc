@@ -35,10 +35,10 @@ module iob_soc_fpga_wrapper (
       .arst_i   (sys_rst),
       .trap_o   (trap),
       //UART
-      .UART0_txd(uart_txd),
-      .UART0_rxd(uart_rxd),
-      .UART0_rts(),
-      .UART0_cts(1'b1)
+      .UART0_txd_o(uart_txd),
+      .UART0_rxd_i(uart_rxd),
+      .UART0_rts_o(),
+      .UART0_cts_i(1'b1)
    );
 
 endmodule

@@ -311,7 +311,12 @@ def peripheral_portmap(python_module):
                     # Auto-map if_gen interfaces, except for the ones that have reserved signals.
                     if interface["name"] in if_gen.interfaces and interface[
                         "name"
-                    ] not in ["iob_s_port", "axi_m_port", "clk_en_rst_port", "clk_rst_port"]:
+                    ] not in [
+                        "iob_s_port",
+                        "axi_m_port",
+                        "clk_en_rst_port",
+                        "clk_rst_port",
+                    ]:
                         # Map entire interface to the external system interface
                         peripheral_portmap.append(
                             (
