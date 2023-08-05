@@ -138,10 +138,10 @@ always @(posedge trap[1]) begin
       .iob_rvalid_o(uart_rvalid),
       .iob_ready_o (uart_ready),
 
-      .txd(UART_rxd),
-      .rxd(UART_txd),
-      .rts(UART_cts),
-      .cts(UART_rts)
+      .txd_o(UART_rxd_i),
+      .rxd_i(UART_txd_o),
+      .rts_o(UART_cts_i),
+      .cts_i(UART_rts_o)
    );
 
    //Ethernet

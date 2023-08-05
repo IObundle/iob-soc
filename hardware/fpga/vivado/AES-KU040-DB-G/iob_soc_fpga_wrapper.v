@@ -125,10 +125,10 @@ module iob_soc_fpga_wrapper (
    );
 
    // UART
-   assign uart_txd = UART_txd;
-   assign UART_rxd = uart_rxd;
-   assign UART_cts = 1'b1;
-   // UART_rts unconnected
+   assign uart_txd = UART_txd_o;
+   assign UART_rxd_i = uart_rxd;
+   assign UART_cts_i = 1'b1;
+   // UART_rts_i unconnected
 
 
    //
