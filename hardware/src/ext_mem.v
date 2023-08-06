@@ -24,7 +24,7 @@ module ext_mem #(
 
    // AXI interface
    `include "axi_m_port.vs"
-   `include "clk_en_rst_port.vs"
+   `include "clk_en_rst_s_port.vs"
 );
 
    //

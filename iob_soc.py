@@ -13,7 +13,6 @@ from iob_picorv32 import iob_picorv32
 from iob_cache import iob_cache
 from iob_uart import iob_uart
 from iob_utils import iob_utils
-from iob_lib import iob_lib
 from iob_merge import iob_merge
 from iob_split import iob_split
 from iob_rom_sp import iob_rom_sp
@@ -91,9 +90,8 @@ class iob_soc(iob_module):
                 {"interface": "axi_m_m_portmap"},
                 {"interface": "axi_m_portmap"},
                 iob_utils,
-                iob_lib,
-                {"interface": "clk_en_rst_portmap"},
-                {"interface": "clk_en_rst_port"},
+                {"interface": "clk_en_rst_s_s_portmap"},
+                {"interface": "clk_en_rst_s_port"},
                 iob_merge,
                 iob_split,
                 iob_rom_sp,
