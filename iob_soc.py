@@ -124,9 +124,13 @@ class iob_soc(iob_module):
     def _setup_portmap(cls):
         cls.peripheral_portmap += [
             (
-                {"corename": "UART0", "if_name": "rs232", "port": "", "bits": []},
-                {"corename": "external", "if_name": "UART", "port": "", "bits": []},
-            ),  # Map UART0 of iob-soc to external interface
+                {"corename": "UART0", "if_name": "rs232", "port": "txd_o", "bits": []},
+                {"corename": "external", "if_name": "rs232", "port": "uart_txd_o", "bits": []},
+            ),
+            (
+                {"corename": "UART0", "if_name": "rs232", "port": "rxd_i", "bits": []},
+                {"corename": "external", "if_name": "rs232", "port": "uart_rxd_i", "bits": []},
+            ),
         ]
 
     @classmethod
@@ -295,6 +299,24 @@ class iob_soc(iob_module):
                         "type": "O",
                         "n_bits": "1",
                         "descr": "CPU trap signal",
+                    },
+                ],
+            },
+            {
+                "name": "rs232",
+                "descr": "RS232 interface signals",
+                "ports": [
+                     {
+                        "name": "uart_txd_o",
+                        "type": "O",
+                        "n_bits": "1",
+                        "descr": "UART TX output",
+                    },
+                    {
+                        "name": "uart_rxd_i",
+                        "type": "I",
+                        "n_bits": "1",
+                        "descr": "UART RX input",
                     },
                 ],
             },

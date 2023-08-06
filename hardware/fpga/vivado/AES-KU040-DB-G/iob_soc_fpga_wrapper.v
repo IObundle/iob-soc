@@ -10,8 +10,8 @@ module iob_soc_fpga_wrapper (
    input reset,
 
    //uart
-   output uart_txd,
-   input  uart_rxd,
+   output uart_txd_o,
+   input  uart_rxd_i,
 
 `ifdef IOB_SOC_USE_EXTMEM
    output        c0_ddr4_act_n,
@@ -123,13 +123,12 @@ module iob_soc_fpga_wrapper (
       .arst_i(rst),
       .trap_o(trap)
    );
-
+   
    // UART
-   assign uart_txd = UART_txd_o;
-   assign UART_rxd_i = uart_rxd;
+   assign uart_txd_o = UART_txd_o;
+   assign UART_rxd_i = uart_rxd_i;
    assign UART_cts_i = 1'b1;
-   // UART_rts_i unconnected
-
+   // UART_rts_o unconnected
 
    //
    // DDR4 CONTROLLER

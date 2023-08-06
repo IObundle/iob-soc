@@ -40,12 +40,12 @@ if {$IS_FPGA == "1"} {
     set_instance_assignment -name CURRENT_STRENGTH_NEW DEFAULT -to trap
 
     #Uart
-    set_location_assignment PIN_F10 -to uart_txd
-    set_instance_assignment -name IO_STANDARD "2.5-V" -to uart_txd
-    #set_instance_assignment -name SLEW_RATE 1 -to uart_txd
-    #set_instance_assignment -name CURRENT_STRENGTH_NEW DEFAULT -to uart_txd
-    set_location_assignment PIN_C12 -to uart_rxd
-    set_instance_assignment -name IO_STANDARD "2.5-V" -to uart_rxd
+    set_location_assignment PIN_F10 -to uart_txd_o
+    set_instance_assignment -name IO_STANDARD "2.5-V" -to uart_txd_o
+    #set_instance_assignment -name SLEW_RATE 1 -to uart_txd_o
+    #set_instance_assignment -name CURRENT_STRENGTH_NEW DEFAULT -to uart_txd_o
+    set_location_assignment PIN_C12 -to uart_rxd_i
+    set_instance_assignment -name IO_STANDARD "2.5-V" -to uart_rxd_i
 
 
     if { $USE_EXTMEM > 0 }  {

@@ -5,8 +5,8 @@ module iob_soc_fpga_wrapper (
    input reset,
 
    //uart
-   output uart_txd,
-   input  uart_rxd
+   output uart_txd_o,
+   input  uart_rxd_i
 );
 
    //
@@ -39,8 +39,8 @@ module iob_soc_fpga_wrapper (
       .arst_i  (sys_rst),
       .trap_o  (trap),
       //UART
-      .UART_txd_o(uart_txd),
-      .UART_rxd_i(uart_rxd),
+      .UART_txd_o(uart_txd_o),
+      .UART_rxd_i(uart_rxd_i),
       .UART_rts_i(),
       .UART_cts_o(1'b1)
    );
