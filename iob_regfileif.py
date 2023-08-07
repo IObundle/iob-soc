@@ -47,6 +47,10 @@ class iob_regfileif(iob_module):
         inverted_regs = copy.deepcopy(cls.regs)
         for table in inverted_regs: 
             for reg in table['regs']:
+                # Don't invert VERSION register
+                if reg['name'] == 'VERSION':
+                    continue
+                # Invert register type
                 if reg['type'] == 'W': reg['type']='R'
                 else: reg['type']='W'
 
