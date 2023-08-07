@@ -1,5 +1,4 @@
 `timescale 1ns / 1ps
-`include "iob_lib.vh"
 `include "iob_axistream_out_conf.vh"
 `include "iob_axistream_out_swreg_def.vh"
 
@@ -80,8 +79,6 @@ module iob_axistream_out #(
       .ext_mem_r_addr_o(ext_mem_r_addr),
       .ext_mem_r_data_i(ext_mem_r_data),
       .ext_mem_clk_o(),
-      .ext_mem_arst_o(),
-      .ext_mem_cke_o(),
       //read port
       .r_en_i          (tready_i & ENABLE),
       .r_data_o        (tdata_o),
