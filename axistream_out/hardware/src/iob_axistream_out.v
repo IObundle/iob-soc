@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-`include "iob_lib.vh"
+`include "iob_utils.vh"
 `include "iob_axistream_out_conf.vh"
 `include "iob_axistream_out_swreg_def.vh"
 
