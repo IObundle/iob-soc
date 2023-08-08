@@ -53,19 +53,19 @@ module iob_soc #(
       .USE_EXTMEM    (0)
 `endif
    ) cpu (
-      .clk_i(clk_i),
-      .rst_i(cpu_reset),
-      .cke_i(cke_i),
-      .boot (boot),
-      .trap (cpu_trap_o),
+      .clk_i (clk_i),
+      .rst_i (cpu_reset),
+      .cke_i (cke_i),
+      .boot_i(boot),
+      .trap_o(cpu_trap_o),
 
       //instruction bus
-      .ibus_req (cpu_i_req),
-      .ibus_resp(cpu_i_resp),
+      .ibus_req_o (cpu_i_req),
+      .ibus_resp_i(cpu_i_resp),
 
       //data bus
-      .dbus_req (cpu_d_req),
-      .dbus_resp(cpu_d_resp)
+      .dbus_req_o (cpu_d_req),
+      .dbus_resp_i(cpu_d_resp)
    );
 
 

@@ -2,7 +2,6 @@
 
 `include "bsp.vh"
 `include "iob_soc_conf.vh"
-`include "iob_lib.vh"
 
 //Peripherals _swreg_def.vh file includes.
 `include "iob_soc_periphs_swreg_def.vs"
@@ -138,10 +137,10 @@ always @(posedge trap[1]) begin
       .iob_rvalid_o(uart_rvalid),
       .iob_ready_o (uart_ready),
 
-      .txd(UART_rxd),
-      .rxd(UART_txd),
-      .rts(UART_cts),
-      .cts(UART_rts)
+      .txd_o(uart_rxd_i),
+      .rxd_i(uart_txd_o),
+      .rts_o(uart_cts_i),
+      .cts_i(uart_rts_o)
    );
 
    //Ethernet

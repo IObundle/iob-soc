@@ -25,7 +25,7 @@ module sram #(
    output reg                   d_rvalid,
    output reg                   d_ready,
 
-   `include "clk_en_rst_port.vs"
+   `include "clk_en_rst_s_port.vs"
 );
 
 `ifdef USE_SPRAM

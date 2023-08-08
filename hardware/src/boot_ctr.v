@@ -1,5 +1,4 @@
 `timescale 1 ns / 1 ps
-`include "iob_lib.vh"
 
 module boot_ctr #(
    parameter HEXFILE        = "boot.hex",
@@ -26,7 +25,7 @@ module boot_ctr #(
    output     [  DATA_W-1:0] sram_wdata,
    output reg [DATA_W/8-1:0] sram_wstrb,
 
-   `include "clk_en_rst_port.vs"
+   `include "clk_en_rst_s_port.vs"
 );
 
 

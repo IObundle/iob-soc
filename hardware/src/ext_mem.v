@@ -24,7 +24,7 @@ module ext_mem #(
 
    // AXI interface
    `include "axi_m_port.vs"
-   `include "clk_en_rst_port.vs"
+   `include "clk_en_rst_s_port.vs"
 );
 
    //
@@ -52,26 +52,26 @@ module ext_mem #(
       .arst_i(arst_i),
 
       // Front-end interface
-      .avalid        (i_req[1+FIRM_ADDR_W-2+`WRITE_W-1]),
-      .addr          (i_req[`ADDRESS(0, FIRM_ADDR_W-2)]),
-      .wdata         (i_req[`WDATA(0)]),
-      .wstrb         (i_req[`WSTRB(0)]),
-      .rdata         (i_resp[`RDATA(0)]),
-      .rvalid        (i_resp[`RVALID(0)]),
-      .ready         (i_resp[`READY(0)]),
+      .avalid_i        (i_req[1+FIRM_ADDR_W-2+`WRITE_W-1]),
+      .addr_i          (i_req[`ADDRESS(0, FIRM_ADDR_W-2)]),
+      .wdata_i         (i_req[`WDATA(0)]),
+      .wstrb_i         (i_req[`WSTRB(0)]),
+      .rdata_o         (i_resp[`RDATA(0)]),
+      .rvalid_o        (i_resp[`RVALID(0)]),
+      .ready_o         (i_resp[`READY(0)]),
       //Control IO
-      .invalidate_in (1'b0),
-      .invalidate_out(),
-      .wtb_empty_in  (1'b1),
-      .wtb_empty_out (),
+      .invalidate_i (1'b0),
+      .invalidate_o(),
+      .wtb_empty_i  (1'b1),
+      .wtb_empty_o (),
       // Back-end interface
-      .be_avalid     (icache_be_req[1+MEM_ADDR_W+`WRITE_W-1]),
-      .be_addr       (icache_be_req[`ADDRESS(0, MEM_ADDR_W)]),
-      .be_wdata      (icache_be_req[`WDATA(0)]),
-      .be_wstrb      (icache_be_req[`WSTRB(0)]),
-      .be_rdata      (icache_be_resp[`RDATA(0)]),
-      .be_rvalid     (icache_be_resp[`RVALID(0)]),
-      .be_ready      (icache_be_resp[`READY(0)])
+      .be_avalid_o     (icache_be_req[1+MEM_ADDR_W+`WRITE_W-1]),
+      .be_addr_o       (icache_be_req[`ADDRESS(0, MEM_ADDR_W)]),
+      .be_wdata_o      (icache_be_req[`WDATA(0)]),
+      .be_wstrb_o      (icache_be_req[`WSTRB(0)]),
+      .be_rdata_i      (icache_be_resp[`RDATA(0)]),
+      .be_rvalid_i     (icache_be_resp[`RVALID(0)]),
+      .be_ready_i      (icache_be_resp[`READY(0)])
    );
 
    //l2 cache interface signals
@@ -116,26 +116,26 @@ module ext_mem #(
       .arst_i(arst_i),
 
       // Front-end interface
-      .avalid        (d_req[2+MEM_ADDR_W-2+`WRITE_W-1]),
-      .addr          (d_req[`ADDRESS(0, 1+MEM_ADDR_W-2)]),
-      .wdata         (d_req[`WDATA(0)]),
-      .wstrb         (d_req[`WSTRB(0)]),
-      .rdata         (d_resp[`RDATA(0)]),
-      .rvalid        (d_resp[`RVALID(0)]),
-      .ready         (d_resp[`READY(0)]),
+      .avalid_i        (d_req[2+MEM_ADDR_W-2+`WRITE_W-1]),
+      .addr_i          (d_req[`ADDRESS(0, 1+MEM_ADDR_W-2)]),
+      .wdata_i         (d_req[`WDATA(0)]),
+      .wstrb_i         (d_req[`WSTRB(0)]),
+      .rdata_o         (d_resp[`RDATA(0)]),
+      .rvalid_o        (d_resp[`RVALID(0)]),
+      .ready_o         (d_resp[`READY(0)]),
       //Control IO
-      .invalidate_in (1'b0),
-      .invalidate_out(invalidate),
-      .wtb_empty_in  (l2_wtb_empty),
-      .wtb_empty_out (),
+      .invalidate_i (1'b0),
+      .invalidate_o(invalidate),
+      .wtb_empty_i  (l2_wtb_empty),
+      .wtb_empty_o (),
       // Back-end interface
-      .be_avalid     (dcache_be_req[1+MEM_ADDR_W+`WRITE_W-1]),
-      .be_addr       (dcache_be_req[`ADDRESS(0, MEM_ADDR_W)]),
-      .be_wdata      (dcache_be_req[`WDATA(0)]),
-      .be_wstrb      (dcache_be_req[`WSTRB(0)]),
-      .be_rdata      (dcache_be_resp[`RDATA(0)]),
-      .be_rvalid     (dcache_be_resp[`RVALID(0)]),
-      .be_ready      (dcache_be_resp[`READY(0)])
+      .be_avalid_o     (dcache_be_req[1+MEM_ADDR_W+`WRITE_W-1]),
+      .be_addr_o       (dcache_be_req[`ADDRESS(0, MEM_ADDR_W)]),
+      .be_wdata_o      (dcache_be_req[`WDATA(0)]),
+      .be_wstrb_o      (dcache_be_req[`WSTRB(0)]),
+      .be_rdata_i      (dcache_be_resp[`RDATA(0)]),
+      .be_rvalid_i     (dcache_be_resp[`RVALID(0)]),
+      .be_ready_i      (dcache_be_resp[`READY(0)])
    );
 
    // Merge cache back-ends
@@ -184,18 +184,18 @@ module ext_mem #(
       .USE_CTRL_CNT (0)            //Remove counters
    ) l2cache (
       // Native interface
-      .avalid        (l2cache_valid),
-      .addr          (l2cache_addr),
-      .wdata         (l2cache_wdata),
-      .wstrb         (l2cache_wstrb),
-      .rdata         (l2cache_rdata),
-      .rvalid        (l2cache_rvalid),
-      .ready         (l2cache_ready),
+      .avalid_i        (l2cache_valid),
+      .addr_i          (l2cache_addr),
+      .wdata_i         (l2cache_wdata),
+      .wstrb_i         (l2cache_wstrb),
+      .rdata_o         (l2cache_rdata),
+      .rvalid_o        (l2cache_rvalid),
+      .ready_o         (l2cache_ready),
       //Control IO
-      .invalidate_in (invalidate_reg & ~l2_avalid),
-      .invalidate_out(),
-      .wtb_empty_in  (1'b1),
-      .wtb_empty_out (l2_wtb_empty),
+      .invalidate_i (invalidate_reg & ~l2_avalid),
+      .invalidate_o(),
+      .wtb_empty_i  (1'b1),
+      .wtb_empty_o (l2_wtb_empty),
       // AXI interface
       `include "axi_m_m_portmap.vs"
       .clk_i         (clk_i),
