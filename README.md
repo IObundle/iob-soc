@@ -20,7 +20,7 @@ The main classes that describe these cores are located in the `iob_axistream_in.
 The following steps describe the process of creating an AXISTREAMIN peripheral in an IOb-SoC-based system (the steps for the AXISTREAMOUT peripheral are similar):
 1) Import the `iob_axistream_in` class
 2) Run the `iob_axistream_in.setup()` method to copy the required sources of this module to the build directory.
-3) Run the `iob_axistream_in.instance(...)` method to create a Verilog instance of the AXISTREAMIN peripheral.
+3) Run the `iob_axistream_in(...)` method to create a Verilog instance of the AXISTREAMIN peripheral.
 4) Use this core as a peripheral of an IOb-SoC-based system:
     1) Add the created instance to the peripherals list of the IOb-SoC-based system.
     2) Write the firmware to run in the system, including the `iob-axistream-in.h` C header and use its driver functions to control this core.
@@ -44,7 +44,7 @@ class iob_soc_sut(iob_soc):
     ...
     # Create a Verilog instance of this module, named 'AXISTREAMIN0', and add it to the peripherals list of the system.
     cls.peripherals.append(
-        iob_axistream_in.instance(
+        iob_axistream_in(
             "AXISTREAMIN0", # Verilog instance name
             "SUT AXI input stream interface", # Instance description
 
