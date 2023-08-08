@@ -48,6 +48,7 @@ int main() {
 
   // init uart
   uart_init(UART0_BASE, FREQ / BAUD);
+  printf_init(&uart_putc);
 
   // test puts
   uart_puts("\n\n\nHello world!\n\n\n");
