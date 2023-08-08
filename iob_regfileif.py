@@ -69,7 +69,6 @@ class iob_regfileif(iob_module):
         # Modify lines
         for idx, line in enumerate(lines):
             # Remove wires, as they have already been declared in the `*_inverted_swreg_inst.vs` file
-            if line.startswith("`IOB_WIRE"): lines[idx] = ""
             if line.startswith("wire "): lines[idx] = ""
             # Replace name of swreg_0 instance
             if line.startswith(") swreg_0 ("): lines[idx] = ") swreg_1 (\n"
@@ -88,8 +87,8 @@ class iob_regfileif(iob_module):
                 lines.insert(idx,".iob_rdata_o(external_iob_rdata_o), //Read data.\n")
                 lines.insert(idx,".iob_ready_o(external_iob_ready_o), //Interface ready.\n")
         # Insert 2 wires for iob_ready_nxt and iob_rvalid_nxt ports
-        lines.insert(0,"`IOB_WIRE(iob_ready_nxt2, 1)\n")
-        lines.insert(0,"`IOB_WIRE(iob_rvalid_nxt2, 1)\n")
+        lines.insert(0,"wire iob_ready_nxt2;\n")
+        lines.insert(0,"wire iob_rvalid_nxt2;\n")
         # Write modified lines to file
         with open(f"{cls.build_dir}/hardware/src/{cls.name}_swreg_inst.vs", "w") as file:
             file.writelines(lines)
