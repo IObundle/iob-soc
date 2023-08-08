@@ -13,7 +13,7 @@ from submodule_utils import (
     reserved_signals,
     if_gen_interface,
 )
-from ios import get_interface_mapping
+
 import iob_colors
 import shutil
 import fnmatch
@@ -159,6 +159,7 @@ def update_ios_with_extmem_connections(python_module):
 
 
 ######################################
+
 
 # Run specialized iob-soc setup sequence
 def pre_setup_iob_soc(python_module):
@@ -314,8 +315,8 @@ def peripheral_portmap(python_module):
                     ] not in [
                         "iob_s_port",
                         "axi_m_port",
-                        "clk_en_rst_port",
-                        "clk_rst_port",
+                        "clk_en_rst_s_port",
+                        "clk_rst_s_port",
                     ]:
                         # Map entire interface to the external system interface
                         peripheral_portmap.append(
@@ -436,7 +437,7 @@ def peripheral_portmap(python_module):
             # NOTE: currently mapping[1]['if_name'] is always assumed to be equal to mapping[0]['if_name']
 
             # Get mapping for this interface
-            if_mapping = get_interface_mapping(mapping[0]["if_name"])
+            # if_mapping = get_interface_mapping(mapping[0]["if_name"])
 
             # For every port: create wires and connect IO
             for port in interface_ports:
