@@ -9,6 +9,7 @@ from iob_soc_utils import pre_setup_iob_soc, post_setup_iob_soc
 from mk_configuration import update_define
 
 # Submodules
+from boot import boot
 from iob_picorv32 import iob_picorv32
 from iob_cache import iob_cache
 from iob_uart import iob_uart
@@ -80,6 +81,7 @@ class iob_soc(iob_module):
         """Create submodules list with dependencies of this module"""
         super()._create_submodules_list(
             [
+                boot,
                 iob_picorv32,
                 iob_cache,
                 iob_uart,
