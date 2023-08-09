@@ -8,8 +8,8 @@ module iob_soc_fpga_wrapper (
    input resetn,
 
    //uart
-   output uart_txd,
-   input  uart_rxd,
+   output txd_o,
+   input  rxd_i,
 
 `ifdef IOB_SOC_USE_EXTMEM
    output [13:0] ddr3b_a,       //SSTL15  //Address
@@ -128,12 +128,15 @@ module iob_soc_fpga_wrapper (
       .trap_o(trap)
    );
 
+   //
    // UART
-   assign uart_txd = UART_txd;
-   assign UART_rxd = uart_rxd;
-   assign UART_cts = 1'b1;
-   // UART_rts unconnected
+   //
+   assign txd_o = uart_txd_o;
+   assign uart_rxd_i = rxd_i;
+   assign uart_cts_i = 1'b1;
+   // uart_rts_i unconnected
 
+   
 `ifdef IOB_SOC_USE_EXTMEM
    //user reset
    wire                                           locked;

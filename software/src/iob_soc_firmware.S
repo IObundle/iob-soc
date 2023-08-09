@@ -1,14 +1,14 @@
 #include "iob_soc_conf.h"
-#include "boot_conf.h"
+#include "iob_soc_periphs.h"
 
-#define CTR_ADDR (BOOT_BASE+(1<<IOB_SOC_ROM_ADDR_W))
+#define CTR_ADDR (BOOT0_BASE+(1<<BOOTROM_ADDR_W))
 
 .section .init
 .global main
 
 //set stack pointer
-lui sp, %hi(1<<IOB_SOC_RAM_ADDR_W)
-addi sp, sp, %lo(1<<IOB_SOC_RAM_ADDR_W)
+lui sp, %hi(1<<MEM_ADDR_W)
+addi sp, sp, %lo(1<<MEM_ADDR_W)
 
 //call main
 jal ra, main

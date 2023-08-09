@@ -4,6 +4,7 @@ import os
 
 from submodule_utils import get_pio_signals, add_prefix_to_parameters_in_string
 
+
 # Creates the Verilog Snippet (.vs) files required by wrappers
 def create_wrapper_files(build_dir, name, ios, confs, num_extmem_connections):
     out_dir = os.path.join(build_dir, f"hardware/simulation/src/")

@@ -1,10 +1,10 @@
 #include "iob_soc_conf.h"
-#include "boot_conf.h"
+#include "iob_soc_periphs.h"
 
-#define BOOTROM (BOOT_BASE+0x100)
-#define BOOTRAM ((1<<31) + (1<<IOB_SOC_RAM_ADDR_W) - (1<<IOB_SOC_ROM_ADDR_W))
-#define LENGTH (1 << IOB_SOC_ROM_ADDR_W)
-#define CTR_ADDR (BOOT_BASE+(1<<IOB_SOC_ROM_ADDR_W))
+#define BOOTROM (BOOT0_BASE+0x100)
+#define BOOTRAM ((1<<31) + (1<<MEM_ADDR_W) - (1<<BOOTROM_ADDR_W))
+#define LENGTH (1 << BOOTROM_ADDR_W)
+#define CTR_ADDR (BOOT0_BASE+(1<<BOOTROM_ADDR_W))
         
 .section .init
 .globl _start

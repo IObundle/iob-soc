@@ -27,10 +27,10 @@ set_property CONFIG_VOLTAGE 2.5 [current_design]
 set_property CFGBVS VCCO [current_design]
 
 ## USB-UART Interface
-set_property PACKAGE_PIN D20 [get_ports {uart_txd}]
-set_property IOSTANDARD LVCMOS18 [get_ports {uart_txd}]
-set_property PACKAGE_PIN C19 [get_ports {uart_rxd}]
-set_property IOSTANDARD LVCMOS18 [get_ports {uart_rxd}]
+set_property PACKAGE_PIN D20 [get_ports {txd_o}]
+set_property IOSTANDARD LVCMOS18 [get_ports {txd_o}]
+set_property PACKAGE_PIN C19 [get_ports {rxd_i}]
+set_property IOSTANDARD LVCMOS18 [get_ports {rxd_i}]
 
 ###### User LEDs
 #set_property PACKAGE_PIN D16 [get_ports {led[6]}]
