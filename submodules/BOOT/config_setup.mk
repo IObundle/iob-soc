@@ -2,7 +2,7 @@
 NAME=boot
 
 # core version 
-VERSION=0070
+VERSION=0010
 
 # root directory
 BOOT_DIR ?= .

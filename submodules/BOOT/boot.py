@@ -17,7 +17,7 @@ ROM_ADDR_W = 12
 
 class boot(iob_module):
     name = "boot"
-    version = "V0.70"
+    version = "V0.10"
     flows = "sim emb"
     setup_dir = os.path.dirname(__file__)
 
