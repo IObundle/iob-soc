@@ -57,14 +57,6 @@ class boot(iob_module):
                     "max": "NA",
                     "descr": "",
                 },
-                {
-                    "name": "ROM_ADDR_W",
-                    "type": "P",
-                    "val": str(ROM_ADDR_W),
-                    "min": str(ROM_ADDR_W),
-                    "max": str(ROM_ADDR_W),
-                    "descr": "ROM address width",
-                },
             ]
         )
 
