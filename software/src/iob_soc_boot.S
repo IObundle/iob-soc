@@ -1,7 +1,8 @@
 #include "iob_soc_conf.h"
+#include "iob_soc_periphs.h"
 #include "boot_conf.h"
 
-#define CTR_ADDR (BASE+(1<<BOOTROM_ADDR_W))
+#define CTR_ADDR (BOOT0_BASE+(1<<BOOTROM_ADDR_W))
 
 .section .init
 .global main

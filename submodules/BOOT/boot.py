@@ -11,7 +11,7 @@ from iob_pulse_gen import iob_pulse_gen
 from iob_rom_dp import iob_rom_dp
 
 # these 2 values should be passed from the top level but are hardcoded for now
-BASE = 0x20000000
+BASE = 0x40000000
 ROM_ADDR_W = 12
 
 
@@ -56,14 +56,6 @@ class boot(iob_module):
                     "min": "NA",
                     "max": "NA",
                     "descr": "",
-                },
-                {
-                    "name": "BASE",
-                    "type": "P",
-                    "val": str(BASE),
-                    "min": str(BASE),
-                    "max": str(BASE),
-                    "descr": "Base address",
                 },
                 {
                     "name": "ROM_ADDR_W",

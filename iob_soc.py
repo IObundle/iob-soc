@@ -75,6 +75,8 @@ class iob_soc(iob_module):
             cls.ext_mem = iob_merge("iob_merge_1")
         if iob_uart in cls.submodule_list:
             cls.peripherals.append(iob_uart("UART0"))
+        if boot in cls.submodule_list:
+            cls.peripherals.append(boot("BOOT0"))
 
     @classmethod
     def _create_submodules_list(cls, extra_submodules=[]):
