@@ -1,7 +1,6 @@
 #include "bsp.h"
 #include "iob-uart.h"
 #include "iob_soc_conf.h"
-#include "iob_soc_system.h"
 #include "iob_soc_periphs.h"
 
 #ifdef USE_EXTMEM
@@ -27,21 +26,17 @@ int main() {
 
 #ifdef USE_EXTMEM
   uart_puts(PROGNAME);
-  uart_puts(": DDR in use and program runs from DDR\n");
+  uart_puts(": System is using external memory\n");
 #endif
 
-  // address to copy firmware to
-  char *prog_start_addr;
-#ifdef USE_EXTMEM
-  prog_start_addr = (char *)EXTRA_BASE;
-#else
-  prog_start_addr = (char *)(1 << BOOTROM_ADDR_W);
-#endif
-
+  // sync with console
   while (uart_getc() != ACK) {
     uart_puts(PROGNAME);
     uart_puts(": Waiting for Console ACK.\n");
   }
+
+  // address to copy firmware to
+  char *prog_start_addr = (char *)(1 << 31);
 
 #ifndef INIT_MEM
   // receive firmware from host
@@ -51,20 +46,15 @@ int main() {
   uart_puts(PROGNAME);
   uart_puts(": Loading firmware...\n");
 
-  // sending firmware back for debug
-  char s_fw[] = "s_fw.bin";
-
-  if (file_size)
-    uart_sendfile(s_fw, file_size, prog_start_addr);
-  else {
+  if (file_size == 0) {
     uart_puts(PROGNAME);
-    uart_puts(": ERROR loading firmware\n");
+    uart_puts(": Error, file size is 0.\n");
   }
 #endif
 
   // run firmware
   uart_puts(PROGNAME);
-  uart_puts(": Restart CPU to run user program...\n");
+  uart_puts(": Reset CPU to run user program...\n");
   uart_txwait();
 
 #ifdef USE_EXTMEM

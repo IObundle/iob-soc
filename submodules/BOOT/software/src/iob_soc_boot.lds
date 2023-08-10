@@ -1,15 +1,29 @@
-MEMORY
-{
-    RAM (xrw)       : ORIGIN = 0x10000100, LENGTH = 0x1000 
-}
-
 SECTIONS {
-	.memory : {
-		. = 0x00000000;
-		*(.init);
-		*(.text);
-		*(*);
-		. = ALIGN(4);
-                _heap_start = .; 
-	} > RAM
+  /* Program code */
+  . = 0x00000000;
+  .init : { *(.init) }
+  .text : { *(.text) }
+
+  .memory : { 
+    /* Read-only data */
+    *(.rodata);
+
+    /* Initialized data */
+    *(.data);
+
+    /* Uninitialized data */
+    *(.bss);
+
+    /* Any symbols not explicitly mentioned in previous sections are included in this section */
+    *(*);
+  }
+
+  /* Stack */
+  stack_start = .;
+  .stack : { *(.stack) }
+  stack_end = .;
+
+  . = ALIGN(4);
+  _heap_start = .; 
+  end = .;
 }
