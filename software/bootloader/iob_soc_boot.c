@@ -1,4 +1,4 @@
-#include "build_configuration.h"
+#include "bsp.h"
 #include "iob-uart.h"
 #include "iob_soc_conf.h"
 #include "iob_soc_periphs.h"

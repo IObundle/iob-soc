@@ -49,16 +49,16 @@ module iob_soc_ext_mem_if
    reg  i_wr_e; // Instruction write enable register
    reg  i_ready;
    
-   iob_reg_e #(1,0) i_wr_e_reg 
-     (
-      .clk_i(clk_i),
-      .rst_i(rst_i),
-      .wr_i(i_avalid_i),
-      .wr_data_i(i_wstrb_i),
-      .rd_o(i_wr_e)
-     );
+   //iob_reg_e #(1,0) i_wr_e_reg 
+   //  (
+   //   .clk_i(clk_i),
+   //   .rst_i(rst_i),
+   //   .wr_i(i_avalid_i),
+   //   .wr_data_i(i_wstrb_i),
+   //   .rd_o(i_wr_e)
+   //  );
 
-   iob_reg_e #(1,0) d_wr_e_reg (clk_i, arst_i, cke_i, i_req[1+FIRM_ADDR_W-2+`WRITE_W-1], {| i_req[`WSTRB(0)]}, i_wr_e);
+   iob_reg_e #(1,0) i_wr_e_reg (clk_i, arst_i, cke_i, i_req[1+FIRM_ADDR_W-2+`WRITE_W-1], {| i_req[`WSTRB(0)]}, i_wr_e);
 
    assign i_resp[`RVALID(0)] = i_wr_e? 1'b0 : i_ack;
    assign i_resp[`READY(0)] = i_ack;

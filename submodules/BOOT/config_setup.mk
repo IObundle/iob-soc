@@ -1,5 +1,5 @@
 # core name
-NAME=boot
+NAME=iob_soc_boot
 
 # core version 
 VERSION=0010

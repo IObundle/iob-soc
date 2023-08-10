@@ -15,8 +15,8 @@ BASE = 0x40000000
 ROM_ADDR_W = 12
 
 
-class boot(iob_module):
-    name = "boot"
+class iob_soc_boot(iob_module):
+    name = "iob_soc_boot"
     version = "V0.10"
     flows = "sim emb"
     setup_dir = os.path.dirname(__file__)
@@ -51,19 +51,11 @@ class boot(iob_module):
                 },
                 {
                     "name": "ADDR_W",
-                    "type": "P",
-                    "val": "`IOB_UART_SWREG_ADDR_W",
+                    "type": "F",
+                    "val": "`IOB_SOC_BOOT_SWREG_ADDR_W",
                     "min": "NA",
                     "max": "NA",
                     "descr": "Address bus width",
-                },
-                {
-                    "name": "HEXFILE",
-                    "type": "P",
-                    "val": "0",
-                    "min": "NA",
-                    "max": "NA",
-                    "descr": "",
                 },
             ]
         )
