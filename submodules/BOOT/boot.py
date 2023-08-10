@@ -50,6 +50,14 @@ class boot(iob_module):
                     "descr": "Data bus width",
                 },
                 {
+                    "name": "ADDR_W",
+                    "type": "P",
+                    "val": "`IOB_UART_SWREG_ADDR_W",
+                    "min": "NA",
+                    "max": "NA",
+                    "descr": "Address bus width",
+                },
+                {
                     "name": "HEXFILE",
                     "type": "P",
                     "val": "0",
