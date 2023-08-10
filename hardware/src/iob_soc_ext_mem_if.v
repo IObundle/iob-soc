@@ -3,7 +3,8 @@
  */
 
 `timescale 1 ns / 1 ps
-`include "iob_lib.vh"
+`include "iob_soc_conf.vh"
+`include "iob_utils.vh"
 
 module iob_soc_ext_mem_if 
   #(
@@ -35,8 +36,8 @@ module iob_soc_ext_mem_if
     output [INT_DATA_W-1:0]  d_rdata_o,
                              
     // AXI interface 
-`include "iob_axi_m_port.vh"
-`include "iob_clkenrst_port.vh"
+`include "axi_m_port.vs"
+`include "clk_en_rst_s_port.vs"
     );
 
   //
@@ -48,22 +49,19 @@ module iob_soc_ext_mem_if
    reg  i_wr_e; // Instruction write enable register
    reg  i_ready;
    
-   iob_reg_e #(1,0) i_wr_e_reg 
-     (
-      .clk_i(clk_i),
-      .rst_i(rst_i),
-      .wr_i(i_avalid_i),
-      .wr_data_i(i_wstrb_i),
-      .rd_o(i_wr_e)
-     );
+   //iob_reg_e #(1,0) i_wr_e_reg 
+   //  (
+   //   .clk_i(clk_i),
+   //   .rst_i(rst_i),
+   //   .wr_i(i_avalid_i),
+   //   .wr_data_i(i_wstrb_i),
+   //   .rd_o(i_wr_e)
+   //  );
 
-clk_i, 
+   iob_reg_e #(1,0) i_wr_e_reg (clk_i, arst_i, cke_i, i_req[1+FIRM_ADDR_W-2+`WRITE_W-1], {| i_req[`WSTRB(0)]}, i_wr_e);
 
-
-arst_i, cke_i, i_req[1+FIRM_ADDR_W-2+`WRITE_W-1], {| i_req[`wstrb(0)]}, i_wr_e);
-
-   assign i_resp[`rvalid(0)] = i_wr_e? 1'b0 : i_ack;
-   assign i_resp[`ready(0)] = i_ack;
+   assign i_resp[`RVALID(0)] = i_wr_e? 1'b0 : i_ack;
+   assign i_resp[`READY(0)] = i_ack;
 
   // Back-end bus
   wire [1+DCACHE_ADDR_W+`WRITE_W-1:0] icache_be_req;
@@ -71,8 +69,7 @@ arst_i, cke_i, i_req[1+FIRM_ADDR_W-2+`WRITE_W-1], {| i_req[`wstrb(0)]}, i_wr_e);
 
    
   // Instruction cache instance
-   iob_cache_iob 
-     #(
+   iob_cache_iob #(
        .FE_ADDR_W(FIRM_ADDR_W),
        .BE_ADDR_W(DCACHE_ADDR_W),
        .NWAYS_W(2),       //Number of ways
@@ -89,10 +86,10 @@ arst_i, cke_i, i_req[1+FIRM_ADDR_W-2+`WRITE_W-1], {| i_req[`wstrb(0)]}, i_wr_e);
 
      // Front-end interface
      .req (i_req[1+FIRM_ADDR_W-2+`WRITE_W-1]),
-     .addr  (i_req[`address(0, FIRM_ADDR_W-2)]),
-     .wdata (i_req[`wdata(0)]),
-     .wstrb (i_req[`wstrb(0)]),
-     .rdata (i_resp[`rdata(0)]),
+     .addr  (i_req[`ADDRESS(0, FIRM_ADDR_W-2)]),
+     .wdata (i_req[`WDATA(0)]),
+     .wstrb (i_req[`WSTRB(0)]),
+     .rdata (i_resp[`RDATA(0)]),
      .ack   (i_ack),
      //Control IO
      .invalidate_in(1'b0),
@@ -101,11 +98,11 @@ arst_i, cke_i, i_req[1+FIRM_ADDR_W-2+`WRITE_W-1], {| i_req[`wstrb(0)]}, i_wr_e);
      .wtb_empty_out(),
      // Back-end interface
      .be_req (icache_be_req[1+DCACHE_ADDR_W+`WRITE_W-1]),
-     .be_addr  (icache_be_req[`address(0, DCACHE_ADDR_W)]),
-     .be_wdata (icache_be_req[`wdata(0)]),
-     .be_wstrb (icache_be_req[`wstrb(0)]),
-     .be_rdata (icache_be_resp[`rdata(0)]),
-     .be_ack (icache_be_resp[`ready(0)])
+     .be_addr  (icache_be_req[`ADDRESS(0, DCACHE_ADDR_W)]),
+     .be_wdata (icache_be_req[`WDATA(0)]),
+     .be_wstrb (icache_be_req[`WSTRB(0)]),
+     .be_rdata (icache_be_resp[`RDATA(0)]),
+     .be_ack (icache_be_resp[`READY(0)])
      );
 
    //l2 cache interface signals
@@ -138,10 +135,10 @@ arst_i, cke_i, i_req[1+FIRM_ADDR_W-2+`WRITE_W-1], {| i_req[`wstrb(0)]}, i_wr_e);
    wire d_ack;
    reg  d_wr_e; // Instruction write enable register
    reg  d_ready;
-   iob_reg_e #(1,0) d_wr_e_reg (clk_i, arst_i, cke_i, d_req[1+FIRM_ADDR_W-2+`WRITE_W-1], {| d_req[`wstrb(0)]}, d_wr_e);
+   iob_reg_e #(1,0) d_wr_e_reg (clk_i, arst_i, cke_i, d_req[1+FIRM_ADDR_W-2+`WRITE_W-1], {| d_req[`WSTRB(0)]}, d_wr_e);
    //iob_reg_e #(1,0) d_ready_reg (clk_i, arst_i, cke_i, d_ack | d_req[1+FIRM_ADDR_W-2+`WRITE_W-1], ~d_req[1+FIRM_ADDR_W-2+`WRITE_W-1], d_ready);
-   assign d_resp[`rvalid(0)] =  i_wr_e? 1'b0 : d_ack;
-   assign d_resp[`ready(0)] = d_ack;
+   assign d_resp[`RVALID(0)] =  i_wr_e? 1'b0 : d_ack;
+   assign d_resp[`READY(0)] = d_ack;
 
    // Back-end bus
    wire [1+DCACHE_ADDR_W+`WRITE_W-1:0]       dcache_be_req;
@@ -165,10 +162,10 @@ arst_i, cke_i, i_req[1+FIRM_ADDR_W-2+`WRITE_W-1], {| i_req[`wstrb(0)]}, i_wr_e);
 
       // Front-end interface
       .req (d_req[2+DCACHE_ADDR_W-2+`WRITE_W-1]),
-      .addr  (d_req[`address(0,1+DCACHE_ADDR_W-2)]),
-      .wdata (d_req[`wdata(0)]),
-      .wstrb (d_req[`wstrb(0)]),
-      .rdata (d_resp[`rdata(0)]),
+      .addr  (d_req[`ADDRESS(0,1+DCACHE_ADDR_W-2)]),
+      .wdata (d_req[`WDATA(0)]),
+      .wstrb (d_req[`WSTRB(0)]),
+      .rdata (d_resp[`RDATA(0)]),
       .ack   (d_ack),
       //Control IO
       .invalidate_in(1'b0),
@@ -177,11 +174,11 @@ arst_i, cke_i, i_req[1+FIRM_ADDR_W-2+`WRITE_W-1], {| i_req[`wstrb(0)]}, i_wr_e);
       .wtb_empty_out(),
       // Back-end interface
       .be_req (dcache_be_req[1+DCACHE_ADDR_W+`WRITE_W-1]),
-      .be_addr  (dcache_be_req[`address(0,DCACHE_ADDR_W)]),
-      .be_wdata (dcache_be_req[`wdata(0)]),
-      .be_wstrb (dcache_be_req[`wstrb(0)]),
-      .be_rdata (dcache_be_resp[`rdata(0)]),
-      .be_ack (dcache_be_resp[`ready(0)])
+      .be_addr  (dcache_be_req[`ADDRESS(0,DCACHE_ADDR_W)]),
+      .be_wdata (dcache_be_req[`WDATA(0)]),
+      .be_wstrb (dcache_be_req[`WSTRB(0)]),
+      .be_rdata (dcache_be_resp[`RDATA(0)]),
+      .be_ack (dcache_be_resp[`READY(0)])
       );
 
    // Merge cache back-ends
@@ -222,18 +219,18 @@ arst_i, cke_i, i_req[1+FIRM_ADDR_W-2+`WRITE_W-1], {| i_req[`wstrb(0)]}, i_wr_e);
      (
       // Native interface
       .req    (l2cache_req[1+DCACHE_ADDR_W+`WRITE_W-1]),
-      .addr     (l2cache_req[`address(0, DCACHE_ADDR_W)-2]),
-      .wdata    (l2cache_req[`wdata(0)]),
-      .wstrb    (l2cache_req[`wstrb(0)]),
-      .rdata    (l2cache_resp[`rdata(0)]),
-      .ack    (l2cache_resp[`ready(0)]),
+      .addr     (l2cache_req[`ADDRESS(0, DCACHE_ADDR_W)-2]),
+      .wdata    (l2cache_req[`WDATA(0)]),
+      .wstrb    (l2cache_req[`WSTRB(0)]),
+      .rdata    (l2cache_resp[`RDATA(0)]),
+      .ack    (l2cache_resp[`READY(0)]),
       //Control IO
       .invalidate_in(invalidate_reg & ~l2_avalid),
       .invalidate_out(),
       .wtb_empty_in(1'b1),
       .wtb_empty_out(l2_wtb_empty),
       // AXI interface
-      `include "iob_axi_m_m_portmap.vh"
+      `include "axi_m_m_portmap.vs"
       .clk_i(clk_i),
       .rst_i(arst_i)
       );

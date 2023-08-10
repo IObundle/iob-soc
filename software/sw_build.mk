@@ -48,18 +48,27 @@ IOB_SOC_FW_SRC+=$(wildcard src/iob-*.c)
 IOB_SOC_FW_SRC+=$(filter-out %_emul.c, $(wildcard src/*swreg*.c))
 
 # BOOTLOADER SOURCES
+#IOB_SOC_BOOT_SRC=bootloader/iob_soc_boot.c
+IOB_SOC_BOOT_SRC=src/iob_soc_boot.c
 IOB_SOC_BOOT_SRC+=src/iob_soc_boot.S
-IOB_SOC_BOOT_SRC+=src/iob_soc_boot.c
 IOB_SOC_BOOT_SRC+=$(filter-out %_emul.c, $(wildcard src/iob*uart*.c))
 IOB_SOC_BOOT_SRC+=$(filter-out %_emul.c, $(wildcard src/iob*cache*.c))
 
-build_iob_soc_software: iob_soc_firmware iob_soc_boot
+# PREBOOT SOURCES
+IOB_SOC_PREBOOT_SRC=preboot/iob_soc_preboot.S
+
+build_iob_soc_software: iob_soc_firmware iob_soc_boot #iob_soc_preboot
 
 iob_soc_firmware:
 	make $@.elf INCLUDES="$(IOB_SOC_INCLUDES)" LFLAGS="$(IOB_SOC_LFLAGS) -Wl,-Map,$@.map" SRC="$(IOB_SOC_FW_SRC)" TEMPLATE_LDS="$(TEMPLATE_LDS)"
+#make $@.elf INCLUDES="$(IOB_SOC_INCLUDES)" LFLAGS="-Wl,-Bstatic,-T,firmware/template.lds,--strip-debug -Wl,-Map,$@.map" SRC="$(IOB_SOC_BOOT_SRC)" TEMPLATE_LDS="firmware/$@.lds"
 
 iob_soc_boot:
 	make $@.elf INCLUDES="$(IOB_SOC_INCLUDES)" LFLAGS="$(IOB_SOC_LFLAGS) -Wl,-Map,$@.map" SRC="$(IOB_SOC_BOOT_SRC)" TEMPLATE_LDS="$(TEMPLATE_LDS)"
+#make $@.elf INCLUDES="$(IOB_SOC_INCLUDES)" LFLAGS="-Wl,-Bstatic,-T,bootloader/template.lds,--strip-debug -Wl,-Map,$@.map" SRC="$(IOB_SOC_BOOT_SRC)" TEMPLATE_LDS="bootloader/$@.lds"
+
+iob_soc_preboot:
+	make $@.elf INCLUDES="$(IOB_SOC_INCLUDES)" LFLAGS="-Wl,-Bstatic,-T,preboot/template.lds,--strip-debug -Wl,-Map,$@.map" SRC="$(IOB_SOC_PREBOOT_SRC)" TEMPLATE_LDS="preboot/$@.lds"
 
 
 .PHONE: build_iob_soc_software

@@ -4,7 +4,6 @@
  */
 
 `timescale 1ns / 1ps
-`include "build_configuration.vh"
 `include "iob_soc_conf.vh"
 
 module iob_soc_int_mem
@@ -30,7 +29,7 @@ module iob_soc_int_mem
     output reg           d_rvalid_o,
     output reg           d_ready_o,
     
-`include "iob_clkenrst_port.vh"
+`include "clk_en_rst_s_port.vs"
     );
 
    //assign ready signals to 1 since RAM is always ready

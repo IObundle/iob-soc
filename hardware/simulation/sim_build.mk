@@ -1,4 +1,5 @@
 # Add iob-soc software as a build dependency
+#HEX+=iob_soc_preboot.hex iob_soc_boot.hex iob_soc_firmware.hex iob_soc_rom.hex
 HEX+=iob_soc_boot.hex iob_soc_firmware.hex
 
 ROOT_DIR :=../..
