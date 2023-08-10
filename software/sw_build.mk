@@ -30,17 +30,25 @@ iob_soc_firmware.bin: ../../software/iob_soc_firmware.bin
 ../../software/%.bin:
 	make -C ../../ fw-build
 
+
+
+# Uncomment to compile the python-setup branch version of iob-soc software at commit
+# fd744280e78fe4ce8369254a47c3a03d5fc1b4c2.
+#COMPILE_PYTHON=python-setup/
+
+
+
 UTARGETS+=build_iob_soc_software
 
-TEMPLATE_LDS=src/$@.lds
+TEMPLATE_LDS=src/$(COMPILE_PYTHON)$@.lds
 
 IOB_SOC_INCLUDES=-I. -Isrc 
 
 IOB_SOC_LFLAGS=-Wl,-Bstatic,-T,$(TEMPLATE_LDS),--strip-debug
 
 # FIRMWARE SOURCES
-IOB_SOC_FW_SRC=src/iob_soc_firmware.S
-IOB_SOC_FW_SRC+=src/iob_soc_firmware.c
+IOB_SOC_FW_SRC=src/$(COMPILE_PYTHON)iob_soc_firmware.S
+IOB_SOC_FW_SRC+=src/$(COMPILE_PYTHON)iob_soc_firmware.c
 IOB_SOC_FW_SRC+=src/printf.c
 IOB_SOC_FW_SRC+=src/iob_str.c
 # PERIPHERAL SOURCES
@@ -48,14 +56,13 @@ IOB_SOC_FW_SRC+=$(wildcard src/iob-*.c)
 IOB_SOC_FW_SRC+=$(filter-out %_emul.c, $(wildcard src/*swreg*.c))
 
 # BOOTLOADER SOURCES
-#IOB_SOC_BOOT_SRC=bootloader/iob_soc_boot.c
-IOB_SOC_BOOT_SRC=src/iob_soc_boot.c
-IOB_SOC_BOOT_SRC+=src/iob_soc_boot.S
+IOB_SOC_BOOT_SRC=src/$(COMPILE_PYTHON)iob_soc_boot.c
+IOB_SOC_BOOT_SRC+=src/$(COMPILE_PYTHON)iob_soc_boot.S
 IOB_SOC_BOOT_SRC+=$(filter-out %_emul.c, $(wildcard src/iob*uart*.c))
 IOB_SOC_BOOT_SRC+=$(filter-out %_emul.c, $(wildcard src/iob*cache*.c))
 
 # PREBOOT SOURCES
-IOB_SOC_PREBOOT_SRC=preboot/iob_soc_preboot.S
+IOB_SOC_PREBOOT_SRC=src/$(COMPILE_PYTHON)iob_soc_preboot.S
 
 build_iob_soc_software: iob_soc_firmware iob_soc_boot #iob_soc_preboot
 
