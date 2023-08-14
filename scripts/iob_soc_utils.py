@@ -137,6 +137,13 @@ def update_ios_with_extmem_connections(python_module):
     # Count numer of external memory connections
     for peripheral in peripherals_list:
         for interface in peripheral.ios:
+            # Check if interface is a standard axi_m_port (for extmem connection)
+            if interface["name"] == "axi_m_port":
+                num_extmem_connections += 1
+                continue
+            # Check if interface does not have the standard axi_m_port name,
+            # but does contains its standard signals. For example, it may be a 
+            # bus of axi_m_ports, therefore may have a different name.
             for port in interface["ports"]:
                 if port["name"] == "axi_awid_o":
                     num_extmem_connections += get_extmem_bus_size(port["n_bits"])

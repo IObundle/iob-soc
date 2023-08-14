@@ -121,17 +121,6 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
 
         periphs_inst_str += "      );\n"
 
-    # Create internal wires to connect to the cache and the peripheral's external memory address buses
-    periphs_wires_str += (
-        "\n    // Internal wires for shared access to the external memory address bus\n"
-    )
-    periphs_wires_str += (
-        f"    wire [{num_extmem_connections}*AXI_ADDR_W-1:0] internal_axi_awaddr_o;\n"
-    )
-    periphs_wires_str += (
-        f"    wire [{num_extmem_connections}*AXI_ADDR_W-1:0] internal_axi_araddr_o;\n"
-    )
-
     # Create internal wires to connect the peripherals trap signals
     periphs_wires_str += "\n    // Internal wires for trap signals\n"
     periphs_wires_str += "    wire cpu_trap_o;\n"
@@ -147,10 +136,6 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
     fd_wires = open(f"{out_dir}/{top}_pwires.vs", "w")
     fd_wires.write(periphs_wires_str)
     fd_wires.close()
-
-    # Instantiate `iob_addr_zone_selector` modules to connect
-    periphs_inst_str += "\n    // Address zone selector instances to share external memory address space between peripherals\n"
-    periphs_inst_str += generate_iob_address_zone_selectors(top, num_extmem_connections)
 
     fd_periphs = open(f"{out_dir}/{top}_periphs_inst.vs", "w")
     fd_periphs.write(periphs_inst_str)
@@ -168,30 +153,3 @@ def get_extmem_bus_size(axi_awid_width: str):
     ), f"{iob_colors.FAIL} Could not parse bus size of 'axi_awid' signal with width \"{axi_awid_width}\".{iob_colors.ENDC}"
     # Convert to integer
     return 1 if bus_size[0] == "" else int(bus_size[0])
-
-
-# Generate a verilog string with the `iob_addr_zone_selector` instances
-# num_connections: Number of external connections in multiples of AXI_ADDR_W
-# Note: This implementation expects that the peripherals have the same MEM_ADDR_W and AXI_ADDR_W parameters as the iob-soc system
-def generate_iob_address_zone_selectors(name, num_connections):
-    return f"""
-`ifdef {name.upper()}_USE_EXTMEM
-   iob_addr_zone_selector #(
-      .ADDR_W        (AXI_ADDR_W),
-      .MEM_ADDR_W    (MEM_ADDR_W),
-      .N_CONNECTIONS ({num_connections})
-   ) iob_awaddr_zone_selector (
-      .addr_i (internal_axi_awaddr_o),
-      .addr_o (axi_awaddr_o)
-   );
-
-   iob_addr_zone_selector #(
-      .ADDR_W        (AXI_ADDR_W),
-      .MEM_ADDR_W    (MEM_ADDR_W),
-      .N_CONNECTIONS ({num_connections})
-   ) iob_araddr_zone_selector (
-      .addr_i (internal_axi_araddr_o),
-      .addr_o (axi_araddr_o)
-   );
-`endif
-"""

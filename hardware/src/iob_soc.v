@@ -205,6 +205,9 @@ module iob_soc #(
       ext_mem_d_req[`WRITE(0)]
    };
 
+   wire [AXI_ADDR_W-1:0] internal_axi_awaddr_o;
+   wire [AXI_ADDR_W-1:0] internal_axi_araddr_o;
+
    ext_mem #(
       .ADDR_W     (ADDR_W),
       .DATA_W     (DATA_W),
@@ -273,6 +276,9 @@ module iob_soc #(
       .cke_i (cke_i),
       .arst_i(cpu_reset)
    );
+
+   assign axi_awaddr_o[AXI_ADDR_W-1:0] = internal_axi_awaddr_o + MEM_ADDR_OFFSET;
+   assign axi_araddr_o[AXI_ADDR_W-1:0] = internal_axi_araddr_o + MEM_ADDR_OFFSET;
 `endif
 
    `include "iob_soc_periphs_inst.vs"
