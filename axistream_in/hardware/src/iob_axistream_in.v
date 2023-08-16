@@ -42,7 +42,7 @@ module iob_axistream_in #(
 
    //Reset register when it is read and FIFO is empty
    wire [1-1:0] reset_register_last;
-   assign reset_register_last = iob_avalid_i & !iob_wstrb_i & (iob_addr_i == (`IOB_AXISTREAM_IN_LAST_ADDR >> 2)) & EMPTY[0] & received_tlast;
+   assign reset_register_last = iob_avalid_i & !iob_wstrb_i & iob_addr_i == `IOB_AXISTREAM_IN_LAST_ADDR & EMPTY[0] & received_tlast;
 
    wire [  3:0] rstrb;
 
@@ -75,7 +75,7 @@ module iob_axistream_in #(
    //bytes to completly fill word in FIFO.
    //Reset value is zero (no bytes valid) when receives reset signal
    //Reset due to &rstrb_int (rstrb has all bytes valid) is the default_rstrb_value (to go to next word).
-   assign rstrb_int_en = (tvalid_i & !received_tlast) | (received_tlast & rstrb_int != 4'hf);
+   assign rstrb_int_en = ((tvalid_i & ~fifo_full) & !received_tlast) | (received_tlast & rstrb_int != 4'hf);
    assign  rstrb_int_next_val = ((&rstrb_int) ? 4'd0 : rstrb_int<<TDATA_W/8) + default_rstrb_value;
    iob_reg_re #(
       .DATA_W (4),
