@@ -24,14 +24,18 @@ bool axistream_in_pop(uint8_t *byte_array, uint8_t *n_valid_bytes){
   byte_array[2]= fifo_word>>16 & 0xff;
   byte_array[3]= fifo_word>>24 & 0xff;
 
+  //Read empty before last, because core becomes unblocked is cleared when last is read
+  bool empty = axistream_in_empty();
   uint8_t value = IOB_AXISTREAM_IN_GET_LAST();
-  if(axistream_in_empty() && (value & 0x10)){ //This is tlast word
-     //TODO: [Optimization] make register return number of valid bytes instead of rstrb (this removes need for counting here)
-     value = value & 0xf; //Leave only rstrb
-     for(*n_valid_bytes = 0; value; value = value>>1)//Count amount of valid bytes
-       (*n_valid_bytes)++;
+  if (empty && (value & 0x10)) { // This is tlast word
+    // TODO: [Optimization] make register return number of valid bytes instead
+    // of rstrb (this removes need for counting here)
+    value = value & 0xf; // Leave only rstrb
+    for (*n_valid_bytes = 0; value;
+         value = value >> 1) // Count amount of valid bytes
+      (*n_valid_bytes)++;
     return true;
-  } else { 
+  } else {
     *n_valid_bytes = 4;
     return false;
   }
