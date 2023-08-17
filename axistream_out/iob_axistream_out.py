@@ -99,6 +99,42 @@ class iob_axistream_out(iob_module):
                     },
                 ],
             },
+            {
+                "name": "interrupt",
+                "descr": "",
+                "ports": [
+                    {
+                        "name": "fifo_threshold",
+                        "type": "O",
+                        "n_bits": "1",
+                        "descr": "FIFO threshold interrupt signal",
+                    },
+                ],
+            },
+            {
+                "name": "dma",
+                "descr": "Direct Memory Access via dedicated AXI Stream interface.",
+                "ports": [
+                    {
+                        "name": "tdata_i",
+                        "type": "I",
+                        "n_bits": "DMA_TDATA_W",
+                        "descr": "TData input interface",
+                    },
+                    {
+                        "name": "tvalid_i",
+                        "type": "I",
+                        "n_bits": "1",
+                        "descr": "TValid input interface",
+                    },
+                    {
+                        "name": "tready_o",
+                        "type": "O",
+                        "n_bits": "1",
+                        "descr": "TReady output interface",
+                    },
+                ],
+            },
         ]
 
     @classmethod
@@ -157,6 +193,32 @@ class iob_axistream_out(iob_module):
                         "log2n_items": 0,
                         "autologic": False,
                         "descr": "From 1 to 4 bits: Set which output words of the next input word in AXISTREAMOUT_IN are valid and send TLAST signal along with last valid byte. (If this register has value 0, all 4 bytes will be valid and it will not send a TLAST signal with the last byte [MSB]). When the output word width (TDATA) is 8, 16 or 32 bits, this register has size 4, 2 or 1 bits respectively.",
+                    },
+                ],
+            },
+            {
+                "name": "fifo",
+                "descr": "FIFO related registers",
+                "regs": [
+                    {
+                        "name": "THRESHOLD",
+                        "type": "W",
+                        "n_bits": 32,
+                        "rst_val": 0,
+                        "addr": -1,
+                        "log2n_items": 0,
+                        "autologic": True,
+                        "descr": "FIFO threshold level for interrupt signal",
+                    },
+                    {
+                        "name": "LEVEL",
+                        "type": "R",
+                        "n_bits": 32,
+                        "rst_val": 0,
+                        "addr": -1,
+                        "log2n_items": 0,
+                        "autologic": True,
+                        "descr": "Current FIFO level",
                     },
                 ],
             }

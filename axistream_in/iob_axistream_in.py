@@ -66,6 +66,14 @@ class iob_axistream_in(iob_module):
                 "max": "16",
                 "descr": "Depth of FIFO",
             },
+            {
+                "name": "DMA_TDATA_W",
+                "type": "P",
+                "val": "32",
+                "min": "NA",
+                "max": "DATA_W",
+                "descr": "Width of DMA tdata interface (can be up to DATA_W)",
+            },
         ])
 
     @classmethod
@@ -123,6 +131,42 @@ class iob_axistream_in(iob_module):
                         "type": "I",
                         "n_bits": "1",
                         "descr": "TLast input interface",
+                    },
+                ],
+            },
+            {
+                "name": "interrupt",
+                "descr": "",
+                "ports": [
+                    {
+                        "name": "fifo_threshold",
+                        "type": "O",
+                        "n_bits": "1",
+                        "descr": "FIFO threshold interrupt signal",
+                    },
+                ],
+            },
+            {
+                "name": "dma",
+                "descr": "Direct Memory Access via dedicated AXI Stream interface.",
+                "ports": [
+                    {
+                        "name": "tdata_o",
+                        "type": "I",
+                        "n_bits": "DMA_TDATA_W",
+                        "descr": "TData output interface",
+                    },
+                    {
+                        "name": "tvalid_o",
+                        "type": "I",
+                        "n_bits": "1",
+                        "descr": "TValid output interface",
+                    },
+                    {
+                        "name": "tready_i",
+                        "type": "O",
+                        "n_bits": "1",
+                        "descr": "TReady input interface",
                     },
                 ],
             },
@@ -184,6 +228,32 @@ class iob_axistream_in(iob_module):
                         "log2n_items": 0,
                         "autologic": True,
                         "descr": "Enable peripheral.",
+                    },
+                ],
+            },
+            {
+                "name": "fifo",
+                "descr": "FIFO related registers",
+                "regs": [
+                    {
+                        "name": "THRESHOLD",
+                        "type": "W",
+                        "n_bits": 32,
+                        "rst_val": 0,
+                        "addr": -1,
+                        "log2n_items": 0,
+                        "autologic": True,
+                        "descr": "FIFO threshold level for interrupt signal",
+                    },
+                    {
+                        "name": "LEVEL",
+                        "type": "R",
+                        "n_bits": 32,
+                        "rst_val": 0,
+                        "addr": -1,
+                        "log2n_items": 0,
+                        "autologic": True,
+                        "descr": "Current FIFO level",
                     },
                 ],
             }
