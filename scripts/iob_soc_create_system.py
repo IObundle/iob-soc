@@ -3,13 +3,13 @@ import os
 import re
 
 import iob_colors
+
 from submodule_utils import (
     get_pio_signals,
     get_peripherals_ports_params_top,
     get_reserved_signals,
     get_reserved_signal_connection,
 )
-from ios import get_peripheral_port_mapping
 
 
 # Automatically include <corename>_swreg_def.vh verilog headers after IOB_PRAGMA_PHEADERS comment
@@ -195,3 +195,41 @@ def generate_iob_address_zone_selectors(name, num_connections):
    );
 `endif
 """
+
+
+# Returns a string that defines a Verilog mapping. This string can be assigend to a verilog wire/port.
+def get_verilog_mapping(map_obj):
+    # Check if map_obj is mapped to all bits of a signal (it is a string with signal name)
+    if type(map_obj) == str:
+        return map_obj
+
+    # Signal is mapped to specific bits of single/multiple wire(s)
+    verilog_concat_string = ""
+    # Create verilog concatenation of bits of same/different wires
+    for map_wire_bit in map_obj:
+        # Stop concatenation if we find a bit not mapped. (Every bit after it should not be mapped aswell)
+        if not map_wire_bit:
+            break
+        wire, bit = map_wire_bit
+        verilog_concat_string = f"{wire}[{bit}],{verilog_concat_string}"
+
+    verilog_concat_string = "{" + verilog_concat_string
+    verilog_concat_string = (
+        verilog_concat_string[:-1] + "}"
+    )  # Replace last comma by a '}'
+    return verilog_concat_string
+
+
+# peripheral_instance: dictionary describing a peripheral instance. Must have 'name' and 'IO' attributes.
+# port_name: name of the port we are mapping
+def get_peripheral_port_mapping(peripheral_instance, port_name):
+    # If IO dictionary (with mapping) does not exist for this peripheral, use default wire name
+    # print(peripheral_instance.__dict__)
+    if "io" not in peripheral_instance.__dict__:
+        return f"{peripheral_instance.name}_{port_name}"
+
+    assert (
+        port_name in peripheral_instance.io
+    ), f"{iob_colors.FAIL}Port {port_name} of {peripheral_instance.name} not mapped!{iob_colors.ENDC}"
+    # IO mapping dictionary exists, get verilog string for that mapping
+    return get_verilog_mapping(peripheral_instance.io[port_name])

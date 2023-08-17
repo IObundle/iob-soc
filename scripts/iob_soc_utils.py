@@ -7,10 +7,12 @@ from iob_soc_create_system import create_systemv, get_extmem_bus_size
 from iob_soc_create_wrapper_files import create_wrapper_files
 from submodule_utils import (
     add_prefix_to_parameters_in_port,
-    eval_param_expression_from_config,
     iob_soc_peripheral_setup,
     reserved_signals,
 )
+
+from mk_configuration import eval_param_expression_from_config
+
 
 import iob_colors
 import shutil
@@ -146,12 +148,9 @@ def update_ios_with_extmem_connections(python_module):
             # Inner loop was broken, break the outer.
             break
 
-    for interface in ios:
-        if interface["name"] == "extmem":
-            # Create bus of axi_m_port with size `num_extmem_connections`
-            interface["ports"] = if_gen_interface(
-                "axi_m_port", "", bus_size=num_extmem_connections
-            )
+    # find the element in the dict list  ios whose key "name" is "extmem"
+    interface = next((item for item in ios if item["name"] == "extmem"), None)
+    interface["ports"] = if_gen.get_ports("axi")
 
     return num_extmem_connections
 
@@ -414,7 +413,8 @@ def peripheral_portmap(python_module):
         assert (
             interface_table
         ), f"{iob_colors.FAIL}Interface {mapping[0]['if_name']} of {mapping[0]['corename']} not found!{iob_colors.ENDC}"
-        interface_ports = get_table_ports(interface_table)
+
+        interface_ports = interface_table["ports"]
 
         # If mapping_items[1] is not internal/external interface
         if mapping_internal_interface != 1 and mapping_external_interface != 1:
@@ -426,7 +426,7 @@ def peripheral_portmap(python_module):
             assert (
                 interface_table
             ), f"{iob_colors.FAIL}Interface {mapping[1]['if_name']} of {mapping[1]['corename']} not found!{iob_colors.ENDC}"
-            interface_ports2 = get_table_ports(interface_table)
+            interface_ports2 = interface_table["ports"]
 
         # Check if should insert one port or every port in the interface
         if not mapping[0]["port"]:

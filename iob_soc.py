@@ -126,7 +126,12 @@ class iob_soc(iob_module):
     def _setup_portmap(cls):
         cls.peripheral_portmap += [
             (
-                {"corename": "UART0", "if_name": "rs232_custom_port", "port": "txd", "bits": []},
+                {
+                    "corename": "UART0",
+                    "if_name": "rs232_custom_port",
+                    "port": "txd",
+                    "bits": [],
+                },
                 {
                     "corename": "external",
                     "if_name": "uart",
@@ -135,7 +140,12 @@ class iob_soc(iob_module):
                 },
             ),
             (
-                {"corename": "UART0", "if_name": "rs232_custom_port", "port": "rxd", "bits": []},
+                {
+                    "corename": "UART0",
+                    "if_name": "rs232_custom_port",
+                    "port": "rxd",
+                    "bits": [],
+                },
                 {
                     "corename": "external",
                     "if_name": "uart",
@@ -144,7 +154,12 @@ class iob_soc(iob_module):
                 },
             ),
             (
-                {"corename": "UART0", "if_name": "rs232_custom_port", "port": "cts", "bits": []},
+                {
+                    "corename": "UART0",
+                    "if_name": "rs232_custom_port",
+                    "port": "cts",
+                    "bits": [],
+                },
                 {
                     "corename": "external",
                     "if_name": "uart",
@@ -153,7 +168,12 @@ class iob_soc(iob_module):
                 },
             ),
             (
-                {"corename": "UART0", "if_name": "rs232_custom_port", "port": "rts", "bits": []},
+                {
+                    "corename": "UART0",
+                    "if_name": "rs232_custom_port",
+                    "port": "rts",
+                    "bits": [],
+                },
                 {
                     "corename": "external",
                     "if_name": "uart",
@@ -313,19 +333,19 @@ class iob_soc(iob_module):
                 "descr": "General interface signals",
                 "ports": [
                     {
-                        "name": "clk_i",
+                        "name": "clk",
                         "type": "input",
                         "n_bits": "1",
                         "descr": "System clock input",
                     },
                     {
-                        "name": "arst_i",
+                        "name": "arst",
                         "type": "input",
                         "n_bits": "1",
                         "descr": "System reset, synchronous and active high",
                     },
                     {
-                        "name": "trap_o",
+                        "name": "trap",
                         "type": "output",
                         "n_bits": "1",
                         "descr": "CPU trap signal",
