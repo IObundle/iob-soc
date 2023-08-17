@@ -126,7 +126,7 @@ class iob_soc(iob_module):
     def _setup_portmap(cls):
         cls.peripheral_portmap += [
             (
-                {"corename": "UART0", "if_name": "rs232", "port": "txd_o", "bits": []},
+                {"corename": "UART0", "if_name": "rs232_custom_port", "port": "txd", "bits": []},
                 {
                     "corename": "external",
                     "if_name": "uart",
@@ -135,7 +135,7 @@ class iob_soc(iob_module):
                 },
             ),
             (
-                {"corename": "UART0", "if_name": "rs232", "port": "rxd_i", "bits": []},
+                {"corename": "UART0", "if_name": "rs232_custom_port", "port": "rxd", "bits": []},
                 {
                     "corename": "external",
                     "if_name": "uart",
@@ -144,7 +144,7 @@ class iob_soc(iob_module):
                 },
             ),
             (
-                {"corename": "UART0", "if_name": "rs232", "port": "cts_i", "bits": []},
+                {"corename": "UART0", "if_name": "rs232_custom_port", "port": "cts", "bits": []},
                 {
                     "corename": "external",
                     "if_name": "uart",
@@ -153,7 +153,7 @@ class iob_soc(iob_module):
                 },
             ),
             (
-                {"corename": "UART0", "if_name": "rs232", "port": "rts_o", "bits": []},
+                {"corename": "UART0", "if_name": "rs232_custom_port", "port": "rts", "bits": []},
                 {
                     "corename": "external",
                     "if_name": "uart",
@@ -314,19 +314,19 @@ class iob_soc(iob_module):
                 "ports": [
                     {
                         "name": "clk_i",
-                        "type": "I",
+                        "type": "input",
                         "n_bits": "1",
                         "descr": "System clock input",
                     },
                     {
                         "name": "arst_i",
-                        "type": "I",
+                        "type": "input",
                         "n_bits": "1",
                         "descr": "System reset, synchronous and active high",
                     },
                     {
                         "name": "trap_o",
-                        "type": "O",
+                        "type": "output",
                         "n_bits": "1",
                         "descr": "CPU trap signal",
                     },

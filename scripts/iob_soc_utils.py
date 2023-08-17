@@ -6,12 +6,10 @@ from iob_soc_create_periphs_tmp import create_periphs_tmp
 from iob_soc_create_system import create_systemv, get_extmem_bus_size
 from iob_soc_create_wrapper_files import create_wrapper_files
 from submodule_utils import (
-    get_table_ports,
     add_prefix_to_parameters_in_port,
     eval_param_expression_from_config,
     iob_soc_peripheral_setup,
     reserved_signals,
-    if_gen_interface,
 )
 
 import iob_colors
@@ -402,10 +400,9 @@ def peripheral_portmap(python_module):
                     "name": mapping[mapping_external_interface]["if_name"],
                     "descr": f"IOs for peripherals based on portmap index {map_idx}",
                     "ports": mapping_ios,
-                    # Only set `ios_table_prefix` if user has not specified a value in the portmap entry
-                    "ios_table_prefix": True
-                    if "ios_table_prefix" not in mapping[mapping_external_interface]
-                    else mapping[mapping_external_interface]["ios_table_prefix"],
+                    "port_prefix": mapping[mapping_external_interface]["if_name"] + "_"
+                    if "port_prefix" not in mapping[mapping_external_interface]
+                    else mapping[mapping_external_interface]["port_prefix"],
                 }
             )
 
@@ -484,8 +481,8 @@ def peripheral_portmap(python_module):
                     )
                     # Dont add `if_name` prefix if `iob_table_prefix` is set to False
                     if (
-                        "ios_table_prefix" in mapping[mapping_external_interface]
-                        and not mapping[mapping_external_interface]["ios_table_prefix"]
+                        "port_prefix" in mapping[mapping_external_interface]
+                        and not mapping[mapping_external_interface]["port_prefix"]
                     ):
                         signal_prefix = ""
                     else:
@@ -591,10 +588,9 @@ def peripheral_portmap(python_module):
                         mapping[0]["corename"] + "_",
                     )
                 )
-                # Dont add `if_name` prefix if `iob_table_prefix` is set to False
                 if (
-                    "ios_table_prefix" in mapping[mapping_external_interface]
-                    and not mapping[mapping_external_interface]["ios_table_prefix"]
+                    "port_prefix" in mapping[mapping_external_interface]
+                    and not mapping[mapping_external_interface]["port_prefix"]
                 ):
                     signal_prefix = ""
                 else:
