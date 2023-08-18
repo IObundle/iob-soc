@@ -1,6 +1,7 @@
 `timescale 1 ns / 1 ps
 
 `include "bsp.vh"
+`include "iob_soc_boot_swreg_def.vh"
 `include "iob_soc_conf.vh"
 `include "iob_soc.vh"
 `include "iob_utils.vh"
@@ -77,12 +78,12 @@ module iob_soc #(
    wire [ `REQ_W-1:0] int_mem_i_req;
    wire [`RESP_W-1:0] int_mem_i_resp;
    //external memory instruction bus
-`ifdef IOB_SOC_USE_EXTMEM
    wire [ `REQ_W-1:0] ext_mem_i_req;
    wire [`RESP_W-1:0] ext_mem_i_resp;
+`ifdef IOB_SOC_USE_EXTMEM
 
    // INSTRUCTION BUS
-   iob_split #(
+   /*iob_split #(
       .ADDR_W  (ADDR_W),
       .DATA_W  (DATA_W),
       .N_SLAVES(2),
@@ -96,7 +97,7 @@ module iob_soc #(
       // slaves interface
       .s_req_o ({ext_mem_i_req, int_mem_i_req}),
       .s_resp_i({ext_mem_i_resp, int_mem_i_resp})
-   );
+   );*/
 `else
    assign int_mem_i_req = cpu_i_req;
    assign cpu_i_resp    = int_mem_i_resp;
@@ -108,12 +109,12 @@ module iob_soc #(
    //internal data bus
    wire [ `REQ_W-1:0] int_d_req;
    wire [`RESP_W-1:0] int_d_resp;
-`ifdef IOB_SOC_USE_EXTMEM
    //external memory data bus
    wire [ `REQ_W-1:0] ext_mem_d_req;
    wire [`RESP_W-1:0] ext_mem_d_resp;
+`ifdef IOB_SOC_USE_EXTMEM
 
-   iob_split #(
+   /*iob_split #(
       .ADDR_W  (ADDR_W),
       .DATA_W  (DATA_W),
       .N_SLAVES(2),       //E,{P,I}
@@ -127,11 +128,74 @@ module iob_soc #(
       // slaves interface
       .s_req_o ({ext_mem_d_req, int_d_req}),
       .s_resp_i({ext_mem_d_resp, int_d_resp})
-   );
+   );*/
 `else
    assign int_d_req  = cpu_d_req;
    assign cpu_d_resp = int_d_resp;
 `endif
+
+
+
+
+
+   wire [IOB_SOC_BOOT_CTR_W-1:0] BOOT_CTR;
+   
+   wire [ `REQ_W-1:0] boot_ctr_i_req;
+   wire [`RESP_W-1:0] boot_ctr_i_resp;
+
+   iob_soc_boot #(
+      .ADDR_W  (ADDR_W),
+      .DATA_W  (DATA_W)
+   ) soc_boot (
+      .clk_i (clk),
+      .cke_i (cke),
+      .arst_i(rst),
+
+      .CTR_o(BOOT_CTR),
+
+      .boot_ctr_i_req_i(boot_ctr_i_req),
+      .boot_ctr_i_resp_o(boot_ctr_i_resp)
+   );
+
+
+   //// SPLIT INSTUCTION BUS TO ACCESS MEMORY OR BOOT ROM
+
+   //external memory instruction bus
+   //wire [ `REQ_W-1:0] boot_ctr_i_req;
+   //wire [`RESP_W-1:0] boot_ctr_i_resp;
+
+   iob_split2 #(
+      .ADDR_W  (ADDR_W),
+      .DATA_W  (DATA_W),
+      .N_SLAVES(2)
+   ) boot_ibus_split (
+      .clk_i   (clk_i),
+      .arst_i  (cpu_reset),
+      .s_sel_i (BOOT_CTR),
+      // master interface
+      .m_req_i (cpu_i_req),
+      .m_resp_o(cpu_i_resp),
+      // slaves interface
+      .s_req_o ({boot_ctr_i_req,  ext_mem_i_req,  ext_mem_i_req}),
+      .s_resp_i({boot_ctr_i_resp, ext_mem_i_resp, ext_mem_i_resp})
+   );
+
+   //assign ext_mem_i_req  = cpu_i_req;
+   //assign cpu_i_resp = ext_mem_i_resp;
+   assign ext_mem_d_req  = cpu_d_req;
+   assign cpu_d_resp = ext_mem_d_resp;
+
+
+
+
+
+
+
+
+
+
+
+
 
    //
    // SPLIT INTERNAL MEMORY AND PERIPHERALS BUS

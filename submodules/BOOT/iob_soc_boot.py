@@ -11,8 +11,8 @@ from iob_pulse_gen import iob_pulse_gen
 from iob_rom_dp import iob_rom_dp
 
 # these 2 values should be passed from the top level but are hardcoded for now
-BASE = 0x40000000
-ROM_ADDR_W = 12
+# BASE = 0x40000000
+ROM_ADDR_W = 10
 
 
 class iob_soc_boot(iob_module):
@@ -57,6 +57,14 @@ class iob_soc_boot(iob_module):
                     "max": "NA",
                     "descr": "Address bus width",
                 },
+                {
+                    "name": "BOOTROM_ADDR_W",
+                    "type": "F",
+                    "val": str(ROM_ADDR_W),
+                    "min": "NA",
+                    "max": "24",
+                    "descr": "Boot ROM address width",
+                },
             ]
         )
 
@@ -64,42 +72,6 @@ class iob_soc_boot(iob_module):
     def _setup_ios(cls):
         cls.ios += [
             {"name": "iob_s_port", "descr": "CPU native interface", "ports": []},
-            {
-                "name": "ibus",
-                "descr": "Instruction bus",
-                "ports": [
-                    {
-                        "name": "ibus_avalid_1",
-                        "type": "O",
-                        "n_bits": "1",
-                        "descr": "Address is valid.",
-                    },
-                    {
-                        "name": "ibus_addr_i",
-                        "type": "O",
-                        "n_bits": "256",
-                        "descr": "Address.",
-                    },
-                    {
-                        "name": "ibus_rdata_o",
-                        "type": "O",
-                        "n_bits": "DATA_W",
-                        "descr": "SRAM write data.",
-                    },
-                    {
-                        "name": "ibus_rvalid_o",
-                        "type": "O",
-                        "n_bits": "DATA_W/8",
-                        "descr": "SRAM write strobe.",
-                    },
-                    {
-                        "name": "ibus_ready_o",
-                        "type": "O",
-                        "n_bits": "DATA_W/8",
-                        "descr": "SRAM write strobe.",
-                    },
-                ],
-            },
             {
                 "name": "general",
                 "descr": "GENERAL INTERFACE SIGNALS",
@@ -150,9 +122,9 @@ class iob_soc_boot(iob_module):
                         "type": "R",
                         "n_bits": "DATA_W",
                         "rst_val": 0,
-                        "addr": BASE,
-                        "log2n_items": ROM_ADDR_W,
-                        "autologic": True,
+                        "addr": -1,
+                        "log2n_items": 10,  # todo Make this be automatic ("passed from the top level")
+                        "autologic": False,
                         "descr": "Bootloader ROM.",
                     },
                     {
@@ -160,10 +132,20 @@ class iob_soc_boot(iob_module):
                         "type": "W",
                         "n_bits": 2,
                         "rst_val": 0,
-                        "addr": BASE + 2**ROM_ADDR_W,
+                        "addr": -1,
                         "log2n_items": 0,
                         "autologic": True,
-                        "descr": "Boot control register (write). The register has the following fields: 0: preboot enable, 1: boot enable, 2: CPU reset",
+                        "descr": "Boot control register (write). The register has the following values: 0: select preboot, 1: select bootloader, 2: select firmware",
+                    },
+                    {
+                        "name": "RST",
+                        "type": "W",
+                        "n_bits": 2,
+                        "rst_val": 0,
+                        "addr": -1,
+                        "log2n_items": 0,
+                        "autologic": True,
+                        "descr": "CPU reset control register (write). The register has the following fields: 0: reboot after preboot enable, 1: reboot after bootloader",
                     },
                 ],
             }

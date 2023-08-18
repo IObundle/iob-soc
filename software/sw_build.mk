@@ -12,10 +12,10 @@ GET_MACRO = $(shell grep "define $(1)" $(2) | rev | cut -d" " -f1 | rev)
 GET_IOB_SOC_CONF_MACRO = $(call GET_MACRO,IOB_SOC_$(1),../src/iob_soc_conf.vh)
 
 iob_soc_preboot.hex: ../../software/iob_soc_preboot.bin
-	../../scripts/makehex.py $< $(call GET_IOB_SOC_CONF_MACRO,BOOTROM_ADDR_W) > $@
+	../../scripts/makehex.py $< $(call GET_IOB_SOC_CONF_MACRO,PREBOOT_BOOTROM_ADDR_W) > $@
 
 iob_soc_boot.hex: ../../software/iob_soc_boot.bin
-	../../scripts/makehex.py $< $(call GET_IOB_SOC_CONF_MACRO,BOOTROM_ADDR_W) > $@
+	../../scripts/makehex.py $< $(call GET_IOB_SOC_CONF_MACRO,BOOT_BOOTROM_ADDR_W) > $@
 
 iob_soc_rom.hex: iob_soc_preboot.hex iob_soc_boot.hex
 	cat $^ > $@
@@ -64,18 +64,16 @@ IOB_SOC_BOOT_SRC+=$(filter-out %_emul.c, $(wildcard src/iob*cache*.c))
 # PREBOOT SOURCES
 IOB_SOC_PREBOOT_SRC=src/$(COMPILE_PYTHON)iob_soc_preboot.S
 
-build_iob_soc_software: iob_soc_firmware iob_soc_boot #iob_soc_preboot
+build_iob_soc_software: iob_soc_firmware iob_soc_boot iob_soc_preboot
 
 iob_soc_firmware:
 	make $@.elf INCLUDES="$(IOB_SOC_INCLUDES)" LFLAGS="$(IOB_SOC_LFLAGS) -Wl,-Map,$@.map" SRC="$(IOB_SOC_FW_SRC)" TEMPLATE_LDS="$(TEMPLATE_LDS)"
-#make $@.elf INCLUDES="$(IOB_SOC_INCLUDES)" LFLAGS="-Wl,-Bstatic,-T,firmware/template.lds,--strip-debug -Wl,-Map,$@.map" SRC="$(IOB_SOC_BOOT_SRC)" TEMPLATE_LDS="firmware/$@.lds"
 
 iob_soc_boot:
 	make $@.elf INCLUDES="$(IOB_SOC_INCLUDES)" LFLAGS="$(IOB_SOC_LFLAGS) -Wl,-Map,$@.map" SRC="$(IOB_SOC_BOOT_SRC)" TEMPLATE_LDS="$(TEMPLATE_LDS)"
-#make $@.elf INCLUDES="$(IOB_SOC_INCLUDES)" LFLAGS="-Wl,-Bstatic,-T,bootloader/template.lds,--strip-debug -Wl,-Map,$@.map" SRC="$(IOB_SOC_BOOT_SRC)" TEMPLATE_LDS="bootloader/$@.lds"
 
 iob_soc_preboot:
-	make $@.elf INCLUDES="$(IOB_SOC_INCLUDES)" LFLAGS="-Wl,-Bstatic,-T,preboot/template.lds,--strip-debug -Wl,-Map,$@.map" SRC="$(IOB_SOC_PREBOOT_SRC)" TEMPLATE_LDS="preboot/$@.lds"
+	make $@.elf INCLUDES="$(IOB_SOC_INCLUDES)" LFLAGS="$(IOB_SOC_LFLAGS) -Wl,-Map,$@.map" SRC="$(IOB_SOC_PREBOOT_SRC)" TEMPLATE_LDS="$(TEMPLATE_LDS)"
 
 
 .PHONE: build_iob_soc_software

@@ -1,5 +1,6 @@
 #include "bsp.h"
 #include "iob-uart.h"
+#include "iob_soc_boot_swreg.h"
 #include "iob_soc_conf.h"
 #include "iob_soc_periphs.h"
 #include "iob_soc_system.h"
@@ -54,6 +55,26 @@ int main() {
 
   // test printf with floats
   printf("Value of Pi = %f\n\n", 3.1415);
+
+  ///////////////////////////////
+  /*IOB_SOC_BOOT_INIT_BASEADDR(BOOT0_BASE);
+
+  char str[100] = {0};
+  for (int i = 0; i < 30; i += 4) {
+    uint32_t tmp = IOB_SOC_BOOT_GET_ROM(i / 4);
+
+    str[i + 0] = (char)(tmp & 0xFF);
+    str[i + 1] = (char)((tmp >> 8) & 0xFF);
+    str[i + 2] = (char)((tmp >> 16) & 0xFF);
+    str[i + 3] = (char)((tmp >> 24) & 0xFF);
+
+    if (str[i + 3] == '\0') {
+      break;
+    }
+  }
+  printf("String: %s\n", str);*/
+
+  // return 0;
 
   // test file send
   char *sendfile = malloc(1000);
