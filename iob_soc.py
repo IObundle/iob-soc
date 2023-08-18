@@ -16,6 +16,7 @@ from iob_uart import iob_uart
 from iob_utils import iob_utils
 from iob_merge import iob_merge
 from iob_split import iob_split
+from iob_split2 import iob_split2
 from iob_rom_sp import iob_rom_sp
 from iob_ram_dp_be import iob_ram_dp_be
 from iob_ram_dp_be_xil import iob_ram_dp_be_xil
@@ -70,6 +71,8 @@ class iob_soc(iob_module):
             cls.dbus_split = iob_split("dbus_split_0")
             cls.int_dbus_split = iob_split("int_dbus_split_0")
             cls.pbus_split = iob_split("pbus_split_0")
+        if iob_split2 in cls.submodule_list:
+            cls.boot_ibus_split = iob_split2("boot_ibus_split_0")
         if iob_merge in cls.submodule_list:
             cls.int_mem = iob_merge("iob_merge_0")
             cls.ext_mem = iob_merge("iob_merge_1")
@@ -98,6 +101,7 @@ class iob_soc(iob_module):
                 {"interface": "clk_en_rst_s_port"},
                 iob_merge,
                 iob_split,
+                iob_split2,
                 iob_rom_sp,
                 iob_ram_dp_be,
                 iob_ram_dp_be_xil,
@@ -237,6 +241,22 @@ class iob_soc(iob_module):
                     "min": "1",
                     "max": "32",
                     "descr": "Boot ROM address width",
+                },
+                {
+                    "name": "PREBOOT_BOOTROM_ADDR_W",
+                    "type": "P",
+                    "val": "8",
+                    "min": "1",
+                    "max": "32",
+                    "descr": "Preboot ROM address width",
+                },
+                {
+                    "name": "BOOT_BOOTROM_ADDR_W",
+                    "type": "P",
+                    "val": "11",
+                    "min": "1",
+                    "max": "32",
+                    "descr": "Preboot ROM address width",
                 },
                 {
                     "name": "SRAM_ADDR_W",
