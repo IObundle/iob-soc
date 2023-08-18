@@ -11,6 +11,7 @@ from submodule_utils import (
     get_reserved_signal_connection,
 )
 
+import if_gen
 
 # Automatically include <corename>_swreg_def.vh verilog headers after IOB_PRAGMA_PHEADERS comment
 def insert_header_files(dest_dir, name, peripherals_list):
@@ -80,9 +81,11 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
         for signal in get_pio_signals(port_list[instance.__class__.name]):
             if "if_defined" in signal.keys():
                 periphs_inst_str += f"`ifdef {top.upper()}_{signal['if_defined']}\n"
-            periphs_inst_str += "      .{}({}),\n".format(
+            periphs_inst_str += "      .{}{}({}{}),\n".format(
                 signal["name"],
+                if_gen.suffix(signal["type"]),
                 get_peripheral_port_mapping(instance, signal["name_without_prefix"]),
+                if_gen.suffix(signal["type"]),
             )
             if "if_defined" in signal.keys():
                 periphs_inst_str += "`endif\n"

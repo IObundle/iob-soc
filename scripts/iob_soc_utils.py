@@ -2,7 +2,6 @@
 import sys
 import os
 
-from iob_soc_create_periphs_tmp import create_periphs_tmp
 from iob_soc_create_system import create_systemv, get_extmem_bus_size
 from iob_soc_create_wrapper_files import create_wrapper_files
 from submodule_utils import (
@@ -21,10 +20,6 @@ import if_gen
 import build_srcs
 from iob_module import iob_module
 from axi_interconnect import axi_interconnect
-
-######################################
-# Specialized IOb-SoC setup functions.
-######################################
 
 
 def iob_soc_sw_setup(python_module, exclude_files=[]):
@@ -51,12 +46,6 @@ def iob_soc_wrapper_setup(python_module, num_extmem_connections, exclude_files=[
     create_wrapper_files(
         build_dir, name, python_module.ios, confs, num_extmem_connections
     )
-
-    # Note:
-    # The settings below are only used with `USE_EXTMEM=1`.
-    # Currently they are always being set up (even with USE_EXTMEM=0) to allow
-    # the users to manually add USE_EXTMEM=1 in the build_dir.
-    # As we no longer support build-time defines, we may need to change this in the future.
 
     python_module._setup_submodules(
         [
@@ -656,3 +645,26 @@ def peripheral_portmap(python_module):
     # print(f"### Debug python_module.ios: {python_module.ios}", file=sys.stderr)
 
     return peripheral_wires
+
+
+# Arguments:
+#   periph_addr_select_bit: Adress selection bit (P variable)
+#   peripherals_list: list with amount of instances of each peripheral (returned by get_peripherals())
+def create_periphs_tmp(addr_w, peripherals_list, out_file):
+    # Don't override output file
+    if os.path.isfile(out_file):
+        return
+
+    template_contents = []
+    for instance in peripherals_list:
+        template_contents.extend(
+            "#define {}_BASE ({}<<({}-1-N_SLAVES_W))\n".format(
+                instance.name, instance.name, addr_w
+            )
+        )
+
+    # Write system.v
+    os.makedirs(os.path.dirname(out_file), exist_ok=True)
+    periphs_tmp_file = open(out_file, "w")
+    periphs_tmp_file.writelines(template_contents)
+    periphs_tmp_file.close()
