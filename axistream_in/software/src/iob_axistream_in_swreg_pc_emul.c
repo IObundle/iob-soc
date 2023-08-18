@@ -30,8 +30,13 @@ void IOB_AXISTREAM_IN_SET_SOFTRESET(uint8_t value) {
 void IOB_AXISTREAM_IN_SET_ENABLE(uint8_t value) {
 }
 
+void IOB_AXISTREAM_IN_SET_FIFO_THRESHOLD(uint32_t value) {
+}
+
+uint32_t IOB_AXISTREAM_IN_GET_FIFO_LEVEL() {
+    return 0x00;
+}
+
 uint16_t IOB_AXISTREAM_IN_GET_VERSION() {
     return 0xaaaa;
 }
-
-

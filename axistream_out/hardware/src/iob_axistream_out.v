@@ -9,8 +9,7 @@ module iob_axistream_out #(
 );
    // FIFO Input width / Ouput width
    localparam N = 32 / TDATA_W;
-
-   //Dummy iob_ready_nxt_o and iob_rvalid_nxt_o to be used in swreg (unused ports)
+//Dummy iob_ready_nxt_o and iob_rvalid_nxt_o to be used in swreg (unused ports)
    wire iob_ready_nxt_o;
    wire iob_rvalid_nxt_o;
 
@@ -62,6 +61,9 @@ module iob_axistream_out #(
       .data_o(storing_tlast_word)
    );
 
+   //Mux between DMA tdata_i and SWreg iob_wdata_i
+   wire [32-1:0] fifo_data_i = tvalid_i==1'b1 ? tdata_i : iob_wdata_i;
+
    wire [FIFO_DEPTH_LOG2+1-1:0] fifo_level;
    iob_fifo_sync #(
       .W_DATA_W(32),
@@ -84,11 +86,21 @@ module iob_axistream_out #(
       .r_data_o        (tdata_o),
       .r_empty_o       (fifo_empty),
       //write port
-      .w_en_i          (IN_wen),
-      .w_data_i        (iob_wdata_i),
+      .w_en_i          (IN_wen | tvalid_i), // Write if DMA valid or SWreg IN enable
+      .w_data_i        (fifo_data_i),
       .w_full_o        (fifo_full),
       .level_o         (fifo_level)
    );
+
+   // DMA tready_o signal
+   assign tready_o = ~fifo_full & ENABLE;
+
+   // Assign unused bits to zero
+   assign FIFO_LEVEL[32-1:(FIFO_DEPTH_LOG2+1)] = {(FIFO_DEPTH_LOG2+1){1'b0}};
+
+   assign FIFO_LEVEL[FIFO_DEPTH_LOG2+1-1:0] = fifo_level;
+
+   assign fifo_threshold_o = FIFO_LEVEL <= FIFO_THRESHOLD;
 
    //Set FIFO full register when it is full or is waiting to send TLAST word.
    assign FULL[0] = fifo_full | (last_wstrb != {N{1'b0}});

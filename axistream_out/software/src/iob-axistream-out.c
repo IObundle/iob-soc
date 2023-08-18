@@ -113,3 +113,14 @@ void axistream_out_enable(){
 void axistream_out_disable(){
   IOB_AXISTREAM_OUT_SET_ENABLE(0);
 }
+
+//Set the FIFO threshold level
+//If the FIFO level is equal or lower than the threshold, trigger an interrupt
+void axistream_out_set_fifo_threshold(uint32_t threshold){
+  IOB_AXISTREAM_OUT_SET_FIFO_THRESHOLD(threshold);
+}
+
+//Get current FIFO level
+bool axistream_out_fifo_level(){
+  return IOB_AXISTREAM_OUT_GET_FIFO_LEVEL();
+}

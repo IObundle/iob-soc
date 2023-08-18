@@ -166,15 +166,39 @@ module iob_axistream_in #(
       .ext_mem_r_data_i(ext_mem_r_data),
       .ext_mem_clk_o(),
       //read port
-      .r_en_i(OUT_ren & (!out_ren_delayed | iob_rvalid_o)),
+      .r_en_i((OUT_ren & (!out_ren_delayed | iob_rvalid_o)) | (tready_i & ENABLE)),
       .r_data_o(OUT),
       .r_empty_o(EMPTY[0]),
       //write port
       .w_en_i            ((tvalid_i & !received_tlast) | (received_tlast & rstrb_int != 4'hf)), //Fill FIFO if is valid OR fill with dummy values to complete 32bit word
       .w_data_i(tdata_i),
       .w_full_o(fifo_full),
-      .level_o()
+      .level_o(FIFO_LEVEL[FIFO_DEPTH_LOG2+1-1:0])
    );
+
+   // Assign DMA tdata_o and tvalid_o
+   assign tdata_o = OUT;
+
+   //Next is valid if: 
+   //    is valid now and receiver is not ready
+   //    or
+   //    fifo is not empty, receiver is ready, `ENABLE` register is active
+   iob_reg_r #(
+      .DATA_W (1),
+      .RST_VAL(0)
+   ) tvalid_int_reg (
+      .clk_i(clk_i),
+      .arst_i(arst_i),
+      .cke_i(cke_i),
+      .rst_i(SOFTRESET),
+      .data_i ((tvalid_int & ~tready_i) | (~EMPTY[0] & tready_i & ENABLE)),
+      .data_o(tvalid_o)
+   );
+
+   // Assign unused bits to zero
+   assign FIFO_LEVEL[32-1:(FIFO_DEPTH_LOG2+1)] = {(FIFO_DEPTH_LOG2+1){1'b0}};
+
+   assign fifo_threshold_o = FIFO_LEVEL >= FIFO_THRESHOLD;
 
    //Only ready for more data when fifo not full, CPU has read AXISTREAMIN_LAST data, and `ENABLE` register is active
    assign tready_o = ~fifo_full & !received_tlast & ENABLE;

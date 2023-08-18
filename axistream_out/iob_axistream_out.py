@@ -104,7 +104,7 @@ class iob_axistream_out(iob_module):
                 "descr": "",
                 "ports": [
                     {
-                        "name": "fifo_threshold",
+                        "name": "fifo_threshold_o",
                         "type": "O",
                         "n_bits": "1",
                         "descr": "FIFO threshold interrupt signal",
@@ -201,17 +201,17 @@ class iob_axistream_out(iob_module):
                 "descr": "FIFO related registers",
                 "regs": [
                     {
-                        "name": "THRESHOLD",
+                        "name": "FIFO_THRESHOLD",
                         "type": "W",
                         "n_bits": 32,
-                        "rst_val": 0,
+                        "rst_val": 4,
                         "addr": -1,
                         "log2n_items": 0,
                         "autologic": True,
                         "descr": "FIFO threshold level for interrupt signal",
                     },
                     {
-                        "name": "LEVEL",
+                        "name": "FIFO_LEVEL",
                         "type": "R",
                         "n_bits": 32,
                         "rst_val": 0,
