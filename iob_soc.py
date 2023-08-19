@@ -235,30 +235,6 @@ class iob_soc(iob_module):
                 },
                 # parameters
                 {
-                    "name": "BOOTROM_ADDR_W",
-                    "type": "P",
-                    "val": "12",
-                    "min": "1",
-                    "max": "32",
-                    "descr": "Boot ROM address width",
-                },
-                {
-                    "name": "PREBOOT_BOOTROM_ADDR_W",
-                    "type": "P",
-                    "val": "8",
-                    "min": "1",
-                    "max": "32",
-                    "descr": "Preboot ROM address width",
-                },
-                {
-                    "name": "BOOT_BOOTROM_ADDR_W",
-                    "type": "P",
-                    "val": "11",
-                    "min": "1",
-                    "max": "32",
-                    "descr": "Preboot ROM address width",
-                },
-                {
                     "name": "SRAM_ADDR_W",
                     "type": "P",
                     "val": "15",

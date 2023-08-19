@@ -1,5 +1,6 @@
 #include "bsp.h"
 #include "iob-uart.h"
+#include "iob_soc_boot_conf.h"
 #include "iob_soc_conf.h"
 #include "iob_soc_periphs.h"
 #include "iob_soc_system.h"
@@ -35,7 +36,7 @@ int main() {
 #ifdef USE_EXTMEM
   prog_start_addr = (char *)EXTRA_BASE;
 #else
-  prog_start_addr = (char *)(1 << BOOTROM_ADDR_W);
+  prog_start_addr = (char *)(1 << IOB_SOC_BOOT_FULL_ROM_ADDR_W);
 #endif
 
   while (uart_getc() != ACK) {
