@@ -59,7 +59,7 @@ class iob_soc_boot(iob_module):
                     "val": "12",
                     "min": "NA",
                     "max": "24",
-                    "descr": "Boot ROM address width",
+                    "descr": "Full ROM (preboot+bootloader) address width",
                 },
                 {
                     "name": "BOOT_ROM_ADDR_W",
@@ -67,7 +67,7 @@ class iob_soc_boot(iob_module):
                     "val": "11",
                     "min": "NA",
                     "max": "24",
-                    "descr": "Boot ROM address width",
+                    "descr": "Bootloader ROM address width",
                 },
                 {
                     "name": "PREBOOT_ROM_ADDR_W",
@@ -75,7 +75,7 @@ class iob_soc_boot(iob_module):
                     "val": "8",
                     "min": "NA",
                     "max": "24",
-                    "descr": "Boot ROM address width",
+                    "descr": "Preboot ROM address width",
                 },
             ]
         )
