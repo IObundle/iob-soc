@@ -10,10 +10,6 @@ from iob_reg_e import iob_reg_e
 from iob_pulse_gen import iob_pulse_gen
 from iob_rom_dp import iob_rom_dp
 
-# these 2 values should be passed from the top level but are hardcoded for now
-# BASE = 0x40000000
-ROM_ADDR_W = 10
-
 
 class iob_soc_boot(iob_module):
     name = "iob_soc_boot"
@@ -58,12 +54,28 @@ class iob_soc_boot(iob_module):
                     "descr": "Address bus width",
                 },
                 {
-                    "name": "BOOTROM_ADDR_W",
+                    "name": "FULL_ROM_ADDR_W",
                     "type": "F",
-                    "val": str(ROM_ADDR_W),
+                    "val": "12",
                     "min": "NA",
                     "max": "24",
-                    "descr": "Boot ROM address width",
+                    "descr": "Full ROM (preboot+bootloader) address width",
+                },
+                {
+                    "name": "BOOT_ROM_ADDR_W",
+                    "type": "F",
+                    "val": "11",
+                    "min": "NA",
+                    "max": "24",
+                    "descr": "Bootloader ROM address width",
+                },
+                {
+                    "name": "PREBOOT_ROM_ADDR_W",
+                    "type": "F",
+                    "val": "8",
+                    "min": "NA",
+                    "max": "24",
+                    "descr": "Preboot ROM address width",
                 },
             ]
         )
@@ -123,7 +135,7 @@ class iob_soc_boot(iob_module):
                         "n_bits": "DATA_W",
                         "rst_val": 0,
                         "addr": -1,
-                        "log2n_items": 10,  # todo Make this be automatic ("passed from the top level")
+                        "log2n_items": "FULL_ROM_ADDR_W - 2",
                         "autologic": False,
                         "descr": "Bootloader ROM.",
                     },

@@ -11,7 +11,7 @@ module iob_soc_boot #(
         input [ `REQ_W-1:0] boot_ctr_i_req_i,
         
         output [`RESP_W-1:0] boot_ctr_i_resp_o,
-        output CTR_o,
+        output [`IOB_SOC_BOOT_CTR_W-1:0] CTR_o,
 
         `include "iob_soc_boot_io.vs"
     );
@@ -37,29 +37,30 @@ module iob_soc_boot #(
     );*/
     iob_rom_dp #(
         .DATA_W(DATA_W),
-        .ADDR_W(10),
-        .HEXFILE("iob_soc_preboot.hex") //todo iob_soc_rom.hex
+        .ADDR_W(FULL_ROM_ADDR_W),
+        .HEXFILE("iob_soc_rom.hex")
     ) boot_rom (
         .clk_i(clk_i),
 
         // instruction memory interface
-        .r_en_a_i(boot_ctr_i_req_i[`AVALID(0)]),
-        .addr_a_i(boot_ctr_i_req_i[`ADDRESS(0)]),
+        .r_en_a_i  (boot_ctr_i_req_i[`AVALID(0)]),
+        .addr_a_i  (boot_ctr_i_req_i[`ADDRESS(0, FULL_ROM_ADDR_W)][FULL_ROM_ADDR_W-1:0] >> 2),
         .r_data_a_o(boot_ctr_i_resp_o[`RDATA(0)]),
 
         // data memory interface
-        .r_en_b_i(ROM_ren),
-        .addr_b_i(iob_addr_i >> 2),
+        .r_en_b_i  (ROM_ren),
+        .addr_b_i  (iob_addr_i[FULL_ROM_ADDR_W-1:0] >> 2),
         .r_data_b_o(ROM)
     );
     assign ROM_ready = 1'b1;
+    assign boot_ctr_i_resp_o[`READY(0)] = 1'b1;
 
     iob_reg #(
         .DATA_W (1),
         .RST_VAL(1'd0)
-    ) ROM_valid_reg (
+    ) data_rvalid_reg (
         .clk_i (clk_i),
-        .cke_i (boot_ctr_i_req_i[`AVALID(0)] == 0),
+        .cke_i (cke_i),
         .arst_i(arst_i),
         .data_i(iob_avalid_i),
         .data_o(ROM_rvalid)
@@ -68,11 +69,11 @@ module iob_soc_boot #(
     iob_reg #(
         .DATA_W (1),
         .RST_VAL(1'd0)
-    ) CPU_rvalid_reg (
+    ) instruc_rvalid_reg (
         .clk_i (clk_i),
-        .cke_i (boot_ctr_i_req_i[`AVALID(0)] != 0),
+        .cke_i (cke_i),
         .arst_i(arst_i),
-        .data_i(iob_avalid_i),
+        .data_i(boot_ctr_i_req_i[`AVALID(0)]),
         .data_o(boot_ctr_i_resp_o[`RVALID(0)])
     );
 

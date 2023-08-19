@@ -57,7 +57,8 @@ int main() {
   printf("Value of Pi = %f\n\n", 3.1415);
 
   ///////////////////////////////
-  /*IOB_SOC_BOOT_INIT_BASEADDR(BOOT0_BASE);
+  // Test get "Preboot string!" from preboot rom
+  IOB_SOC_BOOT_INIT_BASEADDR(BOOT0_BASE);
 
   char str[100] = {0};
   for (int i = 0; i < 30; i += 4) {
@@ -72,9 +73,10 @@ int main() {
       break;
     }
   }
-  printf("String: %s\n", str);*/
+  printf("String: %s\n", str);
 
   // return 0;
+  ///////////////////////////////
 
   // test file send
   char *sendfile = malloc(1000);

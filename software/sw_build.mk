@@ -9,19 +9,19 @@ ROOT_DIR ?=..
 GET_MACRO = $(shell grep "define $(1)" $(2) | rev | cut -d" " -f1 | rev)
 
 #Function to obtain parameter named $(1) from iob_soc_conf.vh
-GET_IOB_SOC_CONF_MACRO = $(call GET_MACRO,IOB_SOC_$(1),../src/iob_soc_conf.vh)
+GET_IOB_SOC_CONF_MACRO = $(call GET_MACRO,$(1),../src/iob_soc_conf.vh)
 
 iob_soc_preboot.hex: ../../software/iob_soc_preboot.bin
-	../../scripts/makehex.py $< $(call GET_IOB_SOC_CONF_MACRO,PREBOOT_BOOTROM_ADDR_W) > $@
+	../../scripts/makehex.py $< $(call GET_IOB_SOC_CONF_MACRO,IOB_SOC_BOOT0_PREBOOT_ROM_ADDR_W) > $@
 
 iob_soc_boot.hex: ../../software/iob_soc_boot.bin
-	../../scripts/makehex.py $< $(call GET_IOB_SOC_CONF_MACRO,BOOT_BOOTROM_ADDR_W) > $@
+	../../scripts/makehex.py $< $(call GET_IOB_SOC_CONF_MACRO,IOB_SOC_BOOT0_BOOT_ROM_ADDR_W) > $@
 
 iob_soc_rom.hex: iob_soc_preboot.hex iob_soc_boot.hex
 	cat $^ > $@
 
 iob_soc_firmware.hex: iob_soc_firmware.bin
-	../../scripts/makehex.py $< $(call GET_IOB_SOC_CONF_MACRO,SRAM_ADDR_W) > $@
+	../../scripts/makehex.py $< $(call GET_IOB_SOC_CONF_MACRO,IOB_SOC_SRAM_ADDR_W) > $@
 	../../scripts/hex_split.py iob_soc_firmware .
 
 iob_soc_firmware.bin: ../../software/iob_soc_firmware.bin
