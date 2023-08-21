@@ -131,6 +131,7 @@ class iob_soc(iob_module):
     @classmethod
     def _setup_portmap(cls):
         cls.peripheral_portmap += [
+            # UART0
             (
                 {"corename": "UART0", "if_name": "rs232", "port": "txd_o", "bits": []},
                 {
@@ -164,6 +165,77 @@ class iob_soc(iob_module):
                     "corename": "external",
                     "if_name": "uart",
                     "port": "uart_rts_o",
+                    "bits": [],
+                },
+            ),
+            # BOOT0
+            (
+                {
+                    "corename": "BOOT0",
+                    "if_name": "general",
+                    "port": "cpu_rst_o",
+                    "bits": [],
+                },
+                {
+                    "corename": "internal",
+                    "if_name": "boot",
+                    "port": "cpu_reset",
+                    "bits": [],
+                },
+            ),
+            (
+                {
+                    "corename": "BOOT0",
+                    "if_name": "general",
+                    "port": "cpu_i_req_i",
+                    "bits": [],
+                },
+                {
+                    "corename": "internal",
+                    "if_name": "boot",
+                    "port": "cpu_i_req",
+                    "bits": [],
+                },
+            ),
+            (
+                {
+                    "corename": "BOOT0",
+                    "if_name": "general",
+                    "port": "cpu_i_resp_o",
+                    "bits": [],
+                },
+                {
+                    "corename": "internal",
+                    "if_name": "boot",
+                    "port": "cpu_i_resp",
+                    "bits": [],
+                },
+            ),
+            (
+                {
+                    "corename": "BOOT0",
+                    "if_name": "general",
+                    "port": "ext_mem_i_resp_i",
+                    "bits": [],
+                },
+                {
+                    "corename": "internal",
+                    "if_name": "boot",
+                    "port": "ext_mem_i_resp",
+                    "bits": [],
+                },
+            ),
+            (
+                {
+                    "corename": "BOOT0",
+                    "if_name": "general",
+                    "port": "ext_mem_i_req_o",
+                    "bits": [],
+                },
+                {
+                    "corename": "internal",
+                    "if_name": "boot",
+                    "port": "ext_mem_i_req",
                     "bits": [],
                 },
             ),

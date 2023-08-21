@@ -8,17 +8,29 @@
 module iob_soc_boot #(
         `include "iob_soc_boot_params.vs"
     ) (
-        input [ `REQ_W-1:0] boot_ctr_i_req_i,
-        
-        output [`RESP_W-1:0] boot_ctr_i_resp_o,
-        output [`IOB_SOC_BOOT_CTR_W-1:0] CTR_o,
-
         `include "iob_soc_boot_io.vs"
     );
 
     `include "iob_soc_boot_swreg_inst.vs"
+   
+    wire [ REQ_W_PARAM-1:0] boot_ctr_i_req;
+    wire [RESP_W_PARAM-1:0] boot_ctr_i_resp;
 
-    assign CTR_o = CTR;
+
+    //create CPU reset pulse
+    wire cpu_rst_req;
+    assign cpu_rst_req = (iob_avalid_i & (|iob_wstrb_i) & iob_wdata_i[2]) | arst_i;
+
+   iob_pulse_gen #(
+      .START   (0),
+      .DURATION(100)
+   ) reset_pulse (
+      .clk_i  (clk_i),
+      .arst_i (arst_i),
+      .cke_i  (cke_i),
+      .start_i(cpu_rst_req),
+      .pulse_o(cpu_rst_o)
+   );
 
     //
     //INSTANTIATE BOOT ROM
@@ -43,9 +55,9 @@ module iob_soc_boot #(
         .clk_i(clk_i),
 
         // instruction memory interface
-        .r_en_a_i  (boot_ctr_i_req_i[`AVALID(0)]),
-        .addr_a_i  (boot_ctr_i_req_i[`ADDRESS(0, FULL_ROM_ADDR_W)][FULL_ROM_ADDR_W-1:0] >> 2),
-        .r_data_a_o(boot_ctr_i_resp_o[`RDATA(0)]),
+        .r_en_a_i  (boot_ctr_i_req[`AVALID(0)]),
+        .addr_a_i  (boot_ctr_i_req[`ADDRESS(0, FULL_ROM_ADDR_W)]),
+        .r_data_a_o(boot_ctr_i_resp[`RDATA(0)]),
 
         // data memory interface
         .r_en_b_i  (ROM_ren),
@@ -53,11 +65,11 @@ module iob_soc_boot #(
         .r_data_b_o(ROM)
     );
     assign ROM_ready = 1'b1;
-    assign boot_ctr_i_resp_o[`READY(0)] = 1'b1;
+    assign boot_ctr_i_resp[`READY(0)] = 1'b1;
 
     iob_reg #(
-        .DATA_W (1),
-        .RST_VAL(1'd0)
+        .DATA_W (`VALID_W),
+        .RST_VAL(0)
     ) data_rvalid_reg (
         .clk_i (clk_i),
         .cke_i (cke_i),
@@ -67,17 +79,38 @@ module iob_soc_boot #(
     );
 
     iob_reg #(
-        .DATA_W (1),
-        .RST_VAL(1'd0)
+        .DATA_W (`VALID_W),
+        .RST_VAL(0)
     ) instruc_rvalid_reg (
         .clk_i (clk_i),
         .cke_i (cke_i),
         .arst_i(arst_i),
-        .data_i(boot_ctr_i_req_i[`AVALID(0)]),
-        .data_o(boot_ctr_i_resp_o[`RVALID(0)])
+        .data_i(boot_ctr_i_req[`AVALID(0)]),
+        .data_o(boot_ctr_i_resp[`RVALID(0)])
     );
 
 
+
+
+    // SPLIT INSTUCTION BUS TO ACCESS MEMORY OR BOOT ROM
+
+    iob_split2 #(
+       .ADDR_W  (ADDR_W),
+       .DATA_W  (DATA_W),
+       .N_SLAVES(3)
+    ) boot_ibus_split (
+       .clk_i   (clk_i),
+       .arst_i  (cpu_rst_o),
+       
+       .s_sel_i (CTR[2-1:0]),
+       
+       // master interface
+       .m_req_i (cpu_i_req_i),
+       .m_resp_o(cpu_i_resp_o),
+       // slaves interface
+       .s_req_o ({boot_ctr_i_req,  ext_mem_i_req_o,  ext_mem_i_req_o}),
+       .s_resp_i({boot_ctr_i_resp, ext_mem_i_resp_i, ext_mem_i_resp_i})
+    );
 
 
 

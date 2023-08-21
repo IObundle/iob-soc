@@ -9,6 +9,7 @@ from iob_reg import iob_reg
 from iob_reg_e import iob_reg_e
 from iob_pulse_gen import iob_pulse_gen
 from iob_rom_dp import iob_rom_dp
+from iob_split2 import iob_split2
 
 
 class iob_soc_boot(iob_module):
@@ -28,6 +29,7 @@ class iob_soc_boot(iob_module):
                 iob_reg_e,
                 iob_pulse_gen,
                 iob_rom_dp,
+                iob_split2,
             ]
         )
 
@@ -77,6 +79,22 @@ class iob_soc_boot(iob_module):
                     "max": "24",
                     "descr": "Preboot ROM address width",
                 },
+                {
+                    "name": "REQ_W_PARAM",
+                    "type": "F",
+                    "val": "`REQ_W",
+                    "min": "NA",
+                    "max": "32",
+                    "descr": "Address bus width",
+                },
+                {
+                    "name": "RESP_W_PARAM",
+                    "type": "F",
+                    "val": "`RESP_W",
+                    "min": "NA",
+                    "max": "32",
+                    "descr": "Address bus width",
+                },
             ]
         )
 
@@ -88,18 +106,6 @@ class iob_soc_boot(iob_module):
                 "name": "general",
                 "descr": "GENERAL INTERFACE SIGNALS",
                 "ports": [
-                    {
-                        "name": "cpu_rst_o",
-                        "type": "O",
-                        "n_bits": "1",
-                        "descr": "CPU sync reset.",
-                    },
-                    {
-                        "name": "boot_ctr_o",
-                        "type": "O",
-                        "n_bits": "2",
-                        "descr": "Boot control register access.",
-                    },
                     {
                         "name": "clk_i",
                         "type": "I",
@@ -116,6 +122,36 @@ class iob_soc_boot(iob_module):
                         "name": "cke_i",
                         "type": "I",
                         "n_bits": "1",
+                        "descr": "System reset, asynchronous and active high",
+                    },
+                    {
+                        "name": "cpu_rst_o",
+                        "type": "O",
+                        "n_bits": "1",
+                        "descr": "CPU sync reset.",
+                    },
+                    {
+                        "name": "cpu_i_req_i",
+                        "type": "I",
+                        "n_bits": "REQ_W_PARAM",
+                        "descr": "System reset, asynchronous and active high",
+                    },
+                    {
+                        "name": "cpu_i_resp_o",
+                        "type": "O",
+                        "n_bits": "RESP_W_PARAM",
+                        "descr": "System reset, asynchronous and active high",
+                    },
+                    {
+                        "name": "ext_mem_i_resp_i",
+                        "type": "I",
+                        "n_bits": "REQ_W_PARAM",
+                        "descr": "System reset, asynchronous and active high",
+                    },
+                    {
+                        "name": "ext_mem_i_req_o",
+                        "type": "O",
+                        "n_bits": "RESP_W_PARAM",
                         "descr": "System reset, asynchronous and active high",
                     },
                 ],
@@ -148,16 +184,6 @@ class iob_soc_boot(iob_module):
                         "log2n_items": 0,
                         "autologic": True,
                         "descr": "Boot control register (write). The register has the following values: 0: select preboot, 1: select bootloader, 2: select firmware",
-                    },
-                    {
-                        "name": "RST",
-                        "type": "W",
-                        "n_bits": 2,
-                        "rst_val": 0,
-                        "addr": -1,
-                        "log2n_items": 0,
-                        "autologic": True,
-                        "descr": "CPU reset control register (write). The register has the following fields: 0: reboot after preboot enable, 1: reboot after bootloader",
                     },
                 ],
             }
