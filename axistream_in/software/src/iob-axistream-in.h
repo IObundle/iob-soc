@@ -28,4 +28,4 @@ void axistream_in_disable();
 void axistream_in_set_fifo_threshold(uint32_t threshold);
 
 //Get current FIFO level
-bool axistream_in_fifo_level();
+uint32_t axistream_in_fifo_level();

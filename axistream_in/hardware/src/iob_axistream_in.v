@@ -191,7 +191,7 @@ module iob_axistream_in #(
       .arst_i(arst_i),
       .cke_i(cke_i),
       .rst_i(SOFTRESET),
-      .data_i ((tvalid_int & ~tready_i) | (~EMPTY[0] & tready_i & ENABLE)),
+      .data_i ((tvalid_o & ~tready_i) | (~EMPTY[0] & tready_i & ENABLE)),
       .data_o(tvalid_o)
    );
 

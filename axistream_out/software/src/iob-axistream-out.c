@@ -121,6 +121,6 @@ void axistream_out_set_fifo_threshold(uint32_t threshold){
 }
 
 //Get current FIFO level
-bool axistream_out_fifo_level(){
+uint32_t axistream_out_fifo_level(){
   return IOB_AXISTREAM_OUT_GET_FIFO_LEVEL();
 }

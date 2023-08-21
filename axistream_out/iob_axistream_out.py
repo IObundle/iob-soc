@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import copy
 
 from iob_module import iob_module
 
@@ -33,7 +34,7 @@ class iob_axistream_out(iob_module):
 
     @classmethod
     def _setup_confs(cls):
-        super()._setup_confs(iob_axistream_in.confs)
+        super()._setup_confs(copy.deepcopy(iob_axistream_in.confs))
 
         # Find ADDR_W from confs and change its val to OUT_SWREG_ADDR_W
         for conf in cls.confs:

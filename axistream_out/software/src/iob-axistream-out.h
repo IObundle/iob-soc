@@ -26,7 +26,7 @@ void axistream_out_disable();
 
 //Set the FIFO threshold level
 //If the FIFO level is equal or lower than the threshold, trigger an interrupt
-void axistream_in_set_fifo_threshold(uint32_t threshold);
+void axistream_out_set_fifo_threshold(uint32_t threshold);
 
 //Get current FIFO level
-bool axistream_in_fifo_level();
+uint32_t axistream_out_fifo_level();
