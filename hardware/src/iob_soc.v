@@ -84,21 +84,21 @@ module iob_soc #(
 `ifdef IOB_SOC_USE_EXTMEM
 
    // INSTRUCTION BUS
-   iob_split #(
-      .ADDR_W  (ADDR_W),
-      .DATA_W  (DATA_W),
-      .N_SLAVES(2),
-      .P_SLAVES(AddrMsb)
-   ) ibus_split (
-      .clk_i   (clk_i),
-      .arst_i  (cpu_reset),
-      // master interface
-      .m_req_i (cpu_i_req),
-      .m_resp_o(cpu_i_resp),
-      // slaves interface
-      .s_req_o ({ext_mem_i_req, int_mem_i_req}),
-      .s_resp_i({ext_mem_i_resp, int_mem_i_resp})
-   );
+   //iob_split #(
+   //   .ADDR_W  (ADDR_W),
+   //   .DATA_W  (DATA_W),
+   //   .N_SLAVES(2),
+   //   .P_SLAVES(AddrMsb)
+   //) ibus_split (
+   //   .clk_i   (clk_i),
+   //   .arst_i  (cpu_reset),
+   //   // master interface
+   //   .m_req_i (cpu_i_req),
+   //   .m_resp_o(cpu_i_resp),
+   //   // slaves interface
+   //   .s_req_o ({ext_mem_i_req, int_mem_i_req}),
+   //   .s_resp_i({ext_mem_i_resp, int_mem_i_resp})
+   //);
 `else
    assign int_mem_i_req = cpu_i_req;
    assign cpu_i_resp    = int_mem_i_resp;
@@ -115,21 +115,24 @@ module iob_soc #(
    wire [`RESP_W-1:0] ext_mem_d_resp;
 `ifdef IOB_SOC_USE_EXTMEM
 
-   iob_split #(
-      .ADDR_W  (ADDR_W),
-      .DATA_W  (DATA_W),
-      .N_SLAVES(2),       //E,{P,I}
-      .P_SLAVES(AddrMsb)
-   ) dbus_split (
-      .clk_i   (clk_i),
-      .arst_i  (cpu_reset),
-      // master interface
-      .m_req_i (cpu_d_req),
-      .m_resp_o(cpu_d_resp),
-      // slaves interface
-      .s_req_o ({ext_mem_d_req, int_d_req}),
-      .s_resp_i({ext_mem_d_resp, int_d_resp})
-   );
+   //iob_split #(
+   //   .ADDR_W  (ADDR_W),
+   //   .DATA_W  (DATA_W),
+   //   .N_SLAVES(2),       //E,{P,I}
+   //   .P_SLAVES(AddrMsb)
+   //) dbus_split (
+   //   .clk_i   (clk_i),
+   //   .arst_i  (cpu_reset),
+   //   // master interface
+   //   .m_req_i (cpu_d_req),
+   //   .m_resp_o(cpu_d_resp),
+   //   // slaves interface
+   //   .s_req_o ({ext_mem_d_req, int_d_req}),
+   //   .s_resp_i({ext_mem_d_resp, int_d_resp})
+   
+   assign ext_mem_d_req  = cpu_d_req;
+   assign cpu_d_resp = ext_mem_d_resp;
+   //);
 `else
    assign int_d_req  = cpu_d_req;
    assign cpu_d_resp = int_d_resp;
@@ -139,58 +142,38 @@ module iob_soc #(
 
 
 
-   wire [`IOB_SOC_BOOT_CTR_W-1:0] BOOT_CTR;
-   
-   wire [ `REQ_W-1:0] boot_ctr_i_req;
-   wire [`RESP_W-1:0] boot_ctr_i_resp;
+   assign cpu_reset = boot_cpu_rst_o;
+   assign boot_cpu_i_req_i = cpu_i_req;
+   assign cpu_i_resp = boot_cpu_i_resp_o;
+   assign boot_ext_mem_i_resp_i = ext_mem_i_resp;
+   assign ext_mem_i_req = boot_ext_mem_i_req_o;
 
-   iob_soc_boot #(
-      .ADDR_W  (ADDR_W),
-      .DATA_W  (DATA_W)
+   /*iob_soc_boot #(
+      .ADDR_W(ADDR_W),
+      .DATA_W(DATA_W)
    ) soc_boot (
-      .clk_i (clk_i),
-      .cke_i (cke_i),
-      .arst_i(arst_i),
+      .clk_i    (clk_i),
+      .cke_i    (cke_i),
+      .arst_i   (arst_i),
+      .cpu_rst_o(cpu_reset),
 
-      .iob_avalid_i (cpu_d_req[`AVALID(0)]),
-      .iob_addr_i   (cpu_d_req[`ADDRESS(0, ADDR_W)]),
-      .iob_wdata_i  (cpu_d_req[`WDATA(0)]),
-      .iob_wstrb_i  (cpu_d_req[`WSTRB(0)]),
+      .iob_avalid_i(cpu_d_req[`AVALID(0)]),
+      .iob_addr_i  (cpu_d_req[`ADDRESS(0, ADDR_W)]),
+      .iob_wdata_i (cpu_d_req[`WDATA(0)]),
+      .iob_wstrb_i (cpu_d_req[`WSTRB(0)]),
       // These below are empty. They're not used by the module and anyway cpu_d_resp is an output.
       // Can't be driven by multiple drivers.
-      .iob_rvalid_o (),
-      .iob_rdata_o  (),
-      .iob_ready_o  (),
+      .iob_rvalid_o(),
+      .iob_rdata_o (),
+      .iob_ready_o (),
 
-      //boot_ctr_i_req_i (boot_ctr_i_req),
-      //boot_ctr_i_resp_o(boot_ctr_i_resp),
+      .cpu_i_req_i (cpu_i_req),
+      .cpu_i_resp_o(cpu_i_resp),
 
-      .CTR_o(BOOT_CTR)
-   );
+      .ext_mem_i_req_o (ext_mem_i_req),
+      .ext_mem_i_resp_i(ext_mem_i_resp)
+   );*/
 
-
-   //// SPLIT INSTUCTION BUS TO ACCESS MEMORY OR BOOT ROM
-
-   //external memory instruction bus
-   //wire [ `REQ_W-1:0] boot_ctr_i_req;
-   //wire [`RESP_W-1:0] boot_ctr_i_resp;
-
-   //iob_split2 #(
-   //   .ADDR_W  (ADDR_W),
-   //   .DATA_W  (DATA_W),
-   //   .N_SLAVES(3)
-   //) boot_ibus_split (
-   //   .clk_i   (clk_i),
-   //   .arst_i  (cpu_reset),
-   //   .s_sel_i (BOOT_CTR),
-   //   // master interface
-   //   .m_req_i (cpu_i_req),
-   //   .m_resp_o(cpu_i_resp),
-   //   // slaves interface
-   //   .s_req_o ({boot_ctr_i_req,  ext_mem_i_req,  ext_mem_i_req}),
-   //   .s_resp_i({boot_ctr_i_resp, ext_mem_i_resp, ext_mem_i_resp})
-   //);
-//
    ////assign ext_mem_i_req  = cpu_i_req;
    ////assign cpu_i_resp = ext_mem_i_resp;
    //assign ext_mem_d_req  = cpu_d_req;
@@ -225,8 +208,8 @@ module iob_soc #(
       .clk_i   (clk_i),
       .arst_i  (cpu_reset),
       // master interface
-      .m_req_i (int_d_req),
-      .m_resp_o(int_d_resp),
+      .m_req_i (cpu_d_req),
+      .m_resp_o(cpu_d_resp),
       // slaves interface
       .s_req_o (slaves_req),
       .s_resp_i(slaves_resp)

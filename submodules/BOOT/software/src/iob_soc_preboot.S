@@ -16,7 +16,7 @@
 .section .init
 .globl _start
 
-.string "Preboot string!\n"
+//.string "Preboot string!\n"
 
 _start:
   li x1, LENGTH
@@ -32,7 +32,7 @@ copy_loop:
   bne x1, x0, copy_loop
 
 //reboot to run bootloader
-li s5, 0b10 //                  //cpu_rst_req=1, bootload=1, preload=0
+li s5, 0b101
 li s6, CTR_ADDR
 sw s5, 0(s6)
 

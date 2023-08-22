@@ -12,7 +12,7 @@ addi sp, sp, %lo(1<<IOB_SOC_SRAM_ADDR_W)
 jal ra, main
 
 //reboot to run firmware
-li s5, 2 //cpu_rst_req=1, boot=0
+li s5, 0b110
 li s6, BOOTCTR_BASE
 sw s5, 0(s6)
 
