@@ -18,7 +18,7 @@ module iob_axistream_out #(
    //Register File & Configuration control and status register file.
    `include "iob_axistream_out_swreg_inst.vs"
 
-   //FIFO RAM
+   //FIFOs RAMs
    wire [         N-1:0] ext_mem_tdata_w_en;
    wire [        32-1:0] ext_mem_tdata_w_data;
    wire [RAM_ADDR_W-1:0] ext_mem_tdata_w_addr;
@@ -43,11 +43,11 @@ module iob_axistream_out #(
    wire [RAM_ADDR_W-1:0] ext_mem_last_r_addr;
    wire                  ext_mem_last_clk;
 
-   wire                  empty;
+   wire                  fifo_empty;
    wire                  tvalid_int;
    wire                  valid_data;
    //All FIFOs are read at the same time
-   wire                  read_fifos = (tready_i & ENABLE) & ~empty;
+   wire                  read_fifos = (tready_i & ENABLE) & ~fifo_empty;
 
    iob_reg_re #(
       .DATA_W (1),
@@ -80,7 +80,7 @@ module iob_axistream_out #(
       //read port
       .r_en_i          (read_fifos),
       .r_data_o        (tdata_o),
-      .r_empty_o       (empty),
+      .r_empty_o       (fifo_empty),
       //write port
       .w_en_i          (DATA_wen),
       .w_data_i        (iob_wdata_i),
@@ -147,7 +147,7 @@ module iob_axistream_out #(
       .ext_mem_r_en_o  (ext_mem_last_r_en),
       .ext_mem_r_addr_o(ext_mem_last_r_addr),
       .ext_mem_r_data_i(ext_mem_last_r_data),
-      .ext_mem_clk_o   (),
+      .ext_mem_clk_o   (ext_mem_last_clk),
       //read port
       .r_en_i          (read_fifos),
       .r_data_o        (tlast_o),

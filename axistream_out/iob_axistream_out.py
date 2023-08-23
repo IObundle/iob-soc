@@ -5,9 +5,10 @@ import os
 from iob_module import iob_module
 
 # Submodules
-from iob_reg import iob_reg
-from iob_reg_e import iob_reg_e
-from iob_ram_2p_be import iob_ram_2p_be
+from iob_fifo_sync import iob_fifo_sync
+from iob_reg_re import iob_reg_re
+from iob_prio_enc import iob_prio_enc
+from iob_ram_2p import iob_ram_2p
 from iob_axistream_in import iob_axistream_in
 
 
@@ -22,13 +23,12 @@ class iob_axistream_out(iob_module):
         ''' Create submodules list with dependencies of this module
         '''
         super()._create_submodules_list([
-            # TODO: Copy submodules from iob_axistream_in. Probably should create a superclass iob_axistream with the base for these
             {"interface": "iob_s_port"},
             {"interface": "iob_s_portmap"},
-            iob_reg,
-            iob_reg_e,
-            (iob_ram_2p_be, {"purpose": "simulation"}),
-            (iob_ram_2p_be, {"purpose": "fpga"}),
+            iob_fifo_sync,
+            iob_reg_re,
+            iob_prio_enc,
+            iob_ram_2p,
         ])
 
     @classmethod
@@ -136,7 +136,7 @@ class iob_axistream_out(iob_module):
                         "addr": -1,
                         "log2n_items": 0,
                         "autologic": False,
-                        "descr": "Data register (writing to this register will apply the set WSTRB and LAST registers).",
+                        "descr": "Data input (writing to this register will apply the set WSTRB and LAST registers).",
                     },
                     {
                         "name": "WSTRB",
@@ -146,7 +146,7 @@ class iob_axistream_out(iob_module):
                         "addr": -1,
                         "log2n_items": 0,
                         "autologic": True,
-                        "descr": "Set how many words (with TDATA_W bits) of the next 32-bits input are valid.",
+                        "descr": "Set which words (with TDATA_W bits) of the next 32-bits input are valid.",
                     },
                     {
                         "name": "LAST",
