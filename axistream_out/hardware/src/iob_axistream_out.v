@@ -9,157 +9,201 @@ module iob_axistream_out #(
 );
    // FIFO Input width / Ouput width
    localparam N = 32 / TDATA_W;
+   localparam RAM_ADDR_W = FIFO_DEPTH_LOG2 - $clog2(N);
 
    //Dummy iob_ready_nxt_o and iob_rvalid_nxt_o to be used in swreg (unused ports)
    wire iob_ready_nxt_o;
    wire iob_rvalid_nxt_o;
 
-   //BLOCK Register File & Configuration control and status register file.
+   //Register File & Configuration control and status register file.
    `include "iob_axistream_out_swreg_inst.vs"
 
-   wire [                          1-1:0] fifo_empty;
-   wire [                          1-1:0] fifo_full;
-   wire [                          1-1:0] tvalid_int;
-   wire [                          1-1:0] tlast_int;
-   wire [                          1-1:0] storing_tlast_word;
-   //FIFO RAM
-   wire [                          N-1:0] ext_mem_w_en;
-   wire [                         32-1:0] ext_mem_w_data;
-   wire [(FIFO_DEPTH_LOG2-$clog2(N))-1:0] ext_mem_w_addr;
-   wire [                          N-1:0] ext_mem_r_en;
-   wire [                         32-1:0] ext_mem_r_data;
-   wire [(FIFO_DEPTH_LOG2-$clog2(N))-1:0] ext_mem_r_addr;
+   //FIFOs RAMs
+   wire [         N-1:0] ext_mem_tdata_w_en;
+   wire [        32-1:0] ext_mem_tdata_w_data;
+   wire [RAM_ADDR_W-1:0] ext_mem_tdata_w_addr;
+   wire [         N-1:0] ext_mem_tdata_r_en;
+   wire [        32-1:0] ext_mem_tdata_r_data;
+   wire [RAM_ADDR_W-1:0] ext_mem_tdata_r_addr;
+   wire                  ext_mem_tdata_clk;
 
-   //Register to store tlast wstrb
-   wire [                          N-1:0] last_wstrb;
-   iob_reg_re #(
-      .RST_VAL({N{1'b0}}),
-      .DATA_W (N)
-   ) axistreamout_wstrb_next_word_last (
-      .clk_i (clk_i),
-      .arst_i(arst_i),
-      .cke_i (cke_i),
-      .rst_i ((fifo_empty & storing_tlast_word) | SOFTRESET),  //Reset when TLAST word is sent
-      .en_i  (WSTRB_NEXT_WORD_LAST_wen),
-      .data_i(iob_wdata_i[0+:N]),
-      .data_o(last_wstrb)
-   );
+   wire [         N-1:0] ext_mem_strb_w_en;
+   wire [         N-1:0] ext_mem_strb_w_data;
+   wire [RAM_ADDR_W-1:0] ext_mem_strb_w_addr;
+   wire [         N-1:0] ext_mem_strb_r_en;
+   wire [         N-1:0] ext_mem_strb_r_data;
+   wire [RAM_ADDR_W-1:0] ext_mem_strb_r_addr;
+   wire                  ext_mem_strb_clk;
 
-   //Signal if tlast word is stored.
-   //Enable when TLAST word wstrb has been defined (in the last_wstrb register) 
-   //and a value has been inserted word.
-   //Reset when TLAST word is sent.
+   wire [         N-1:0] ext_mem_last_w_en;
+   wire [         N-1:0] ext_mem_last_w_data;
+   wire [RAM_ADDR_W-1:0] ext_mem_last_w_addr;
+   wire [         N-1:0] ext_mem_last_r_en;
+   wire [         N-1:0] ext_mem_last_r_data;
+   wire [RAM_ADDR_W-1:0] ext_mem_last_r_addr;
+   wire                  ext_mem_last_clk;
+
+   wire                  fifo_empty;
+   wire                  tvalid_int;
+   wire                  valid_data;
+   //All FIFOs are read at the same time
+   wire                  read_fifos = (tready_i & ENABLE) & ~fifo_empty;
+
    iob_reg_re #(
       .DATA_W (1),
-      .RST_VAL(1'b0)
-   ) storing_tlast_word_reg (
-      .clk_i (clk_i),
-      .arst_i(arst_i),
-      .cke_i (cke_i),
-      .rst_i (SOFTRESET | (fifo_empty & storing_tlast_word)),
-      .en_i  (&last_wstrb & IN_wen),
-      .data_i(1'b1),
-      .data_o(storing_tlast_word)
+      .RST_VAL(1'd0),
+      .CLKEDGE("posedge")
+   ) reg_tvalid (
+      `include "clk_en_rst_s_s_portmap.vs"
+      .rst_i (SOFT_RESET),
+      .en_i  (tready_i & ENABLE),
+      .data_i(read_fifos),
+      .data_o(valid_data)
    );
 
-   wire [FIFO_DEPTH_LOG2+1-1:0] fifo_level;
    iob_fifo_sync #(
       .W_DATA_W(32),
       .R_DATA_W(TDATA_W),
       .ADDR_W  (FIFO_DEPTH_LOG2)
-   ) fifo (
+   ) data_fifo (
       .arst_i          (arst_i),
-      .rst_i           (SOFTRESET),
+      .rst_i           (SOFT_RESET),
       .clk_i           (clk_i),
       .cke_i           (cke_i),
-      .ext_mem_w_en_o  (ext_mem_w_en),
-      .ext_mem_w_data_o(ext_mem_w_data),
-      .ext_mem_w_addr_o(ext_mem_w_addr),
-      .ext_mem_r_en_o  (ext_mem_r_en),
-      .ext_mem_r_addr_o(ext_mem_r_addr),
-      .ext_mem_r_data_i(ext_mem_r_data),
-      .ext_mem_clk_o(),
+      .ext_mem_w_en_o  (ext_mem_tdata_w_en),
+      .ext_mem_w_data_o(ext_mem_tdata_w_data),
+      .ext_mem_w_addr_o(ext_mem_tdata_w_addr),
+      .ext_mem_r_en_o  (ext_mem_tdata_r_en),
+      .ext_mem_r_addr_o(ext_mem_tdata_r_addr),
+      .ext_mem_r_data_i(ext_mem_tdata_r_data),
+      .ext_mem_clk_o   (ext_mem_tdata_clk),
       //read port
-      .r_en_i          (tready_i & ENABLE),
+      .r_en_i          (read_fifos),
       .r_data_o        (tdata_o),
       .r_empty_o       (fifo_empty),
       //write port
-      .w_en_i          (IN_wen),
+      .w_en_i          (DATA_wen),
       .w_data_i        (iob_wdata_i),
-      .w_full_o        (fifo_full),
-      .level_o         (fifo_level)
+      .w_full_o        (FULL),
+      .level_o         ()
    );
 
-   //Set FIFO full register when it is full or is waiting to send TLAST word.
-   assign FULL[0] = fifo_full | (last_wstrb != {N{1'b0}});
+   assign DATA_ready = ENABLE & ~FULL;
 
-   //Next is valid if: 
-   //    is valid now and receiver is not ready
-   //    or
-   //    fifo is not empty, receiver is ready, `ENABLE` register is active, and:
-   //          TLAST word is not stored
-   //        or
-   //          TLAST word is stored and is not on the last word
-   //        or
-   //          TLAST word is stored, is on the last word and on a valid
-   //          portion of wstrb
-   iob_reg_r #(
-      .DATA_W (1),
-      .RST_VAL(0)
-   ) tvalid_int_reg (
-      .clk_i(clk_i),
-      .arst_i(arst_i),
-      .cke_i(cke_i),
-      .rst_i(SOFTRESET),
-      .data_i ((tvalid_int & ~tready_i) | (~fifo_empty & tready_i & ENABLE & (!storing_tlast_word | fifo_level>N | last_wstrb[N-fifo_level]))),
-      .data_o(tvalid_int)
+   iob_fifo_sync #(
+      .W_DATA_W(N),
+      .R_DATA_W(1),
+      .ADDR_W  (FIFO_DEPTH_LOG2)
+   ) strb_fifo (
+      .arst_i          (arst_i),
+      .rst_i           (SOFT_RESET),
+      .clk_i           (clk_i),
+      .cke_i           (cke_i),
+      .ext_mem_w_en_o  (ext_mem_strb_w_en),
+      .ext_mem_w_data_o(ext_mem_strb_w_data),
+      .ext_mem_w_addr_o(ext_mem_strb_w_addr),
+      .ext_mem_r_en_o  (ext_mem_strb_r_en),
+      .ext_mem_r_addr_o(ext_mem_strb_r_addr),
+      .ext_mem_r_data_i(ext_mem_strb_r_data),
+      .ext_mem_clk_o   (ext_mem_strb_clk),
+      //read port
+      .r_en_i          (read_fifos),
+      .r_data_o        (tvalid_int),
+      .r_empty_o       (),
+      //write port
+      .w_en_i          (DATA_wen),
+      .w_data_i        (WSTRB),
+      .w_full_o        (),
+      .level_o         ()
    );
-   assign tvalid_o = tvalid_int;
 
-   //Next is tlast if: 
-   //    is tlast now and receiver is not ready
-   //    or
-   //    fifo is not empty, receiver is ready, `ENABLE` register is active, and TLAST word is stored, is on the last word and:
-   //        next portion of wstrb is zero (meaning this is the last portion of wstrb) (can only happen if fifo_level>1)
-   //        or
-   //        fifo_level is 1 (only reaches this value when wstrb is all ones)
-   iob_reg_r #(
-      .DATA_W (1),
-      .RST_VAL(0)
-   ) tlast_int_reg (
-      .clk_i(clk_i),
-      .arst_i(arst_i),
-      .cke_i(cke_i),
-      .rst_i(SOFTRESET),
-      .data_i ((tlast_int & ~tready_i) | (~fifo_empty & tready_i & ENABLE & storing_tlast_word & fifo_level<=N & (fifo_level>1?~last_wstrb[N-fifo_level+1]:fifo_level==1))),
-      .data_o(tlast_int)
+   assign tvalid_o = (tvalid_int & valid_data) & ENABLE;
+
+   //Priority encoder to find the position of the last valid bit in the WSTRB
+   wire [$clog2(N)-1:0] last_pos;
+   iob_prio_enc #(
+      .W   (N),
+      .MODE("HIGH")
+   ) prio_enc (
+      .unencoded_i(WSTRB),
+      .encoded_o  (last_pos)
    );
-   // TLAST active only while data is valid
-   assign tlast_o = tlast_int & tvalid_int;
 
-   //Convert ext_mem_w_en signal to byte enable signal
-   localparam num_bytes_per_output = TDATA_W / 8;
-   wire [32/8-1:0] ext_mem_w_en_be;
-   genvar c;
+   //LAST needs to be shifted according to the WSTRB before being inserted into the FIFO
+   wire [N-1:0] tlast_int = ({N{1'd0}} | LAST) << last_pos;
+
+   iob_fifo_sync #(
+      .W_DATA_W(N),
+      .R_DATA_W(1),
+      .ADDR_W  (FIFO_DEPTH_LOG2)
+   ) last_fifo (
+      .arst_i          (arst_i),
+      .rst_i           (SOFT_RESET),
+      .clk_i           (clk_i),
+      .cke_i           (cke_i),
+      .ext_mem_w_en_o  (ext_mem_last_w_en),
+      .ext_mem_w_data_o(ext_mem_last_w_data),
+      .ext_mem_w_addr_o(ext_mem_last_w_addr),
+      .ext_mem_r_en_o  (ext_mem_last_r_en),
+      .ext_mem_r_addr_o(ext_mem_last_r_addr),
+      .ext_mem_r_data_i(ext_mem_last_r_data),
+      .ext_mem_clk_o   (ext_mem_last_clk),
+      //read port
+      .r_en_i          (read_fifos),
+      .r_data_o        (tlast_o),
+      .r_empty_o       (),
+      //write port
+      .w_en_i          (DATA_wen),
+      .w_data_i        (tlast_int),
+      .w_full_o        (),
+      .level_o         ()
+   );
+
+
+   //FIFOs RAMs
+   genvar p;
    generate
-      for (c = 0; c < N; c = c + 1) begin : gen_ext_mem_w_en_be
-         assign ext_mem_w_en_be[c*num_bytes_per_output+:num_bytes_per_output] = {num_bytes_per_output{ext_mem_w_en[c]}};
+      for (p = 0; p < N; p = p + 1) begin : gen_fifo_ram
+         iob_ram_2p #(
+            .DATA_W(TDATA_W),
+            .ADDR_W(RAM_ADDR_W)
+         ) tdata_fifo_ram_2p (
+            .clk_i   (ext_mem_tdata_clk),
+            .w_en_i  (ext_mem_tdata_w_en[p]),
+            .w_addr_i(ext_mem_tdata_w_addr),
+            .w_data_i(ext_mem_tdata_w_data[p*TDATA_W+:TDATA_W]),
+            .r_en_i  (ext_mem_tdata_r_en[p]),
+            .r_addr_i(ext_mem_tdata_r_addr),
+            .r_data_o(ext_mem_tdata_r_data[p*TDATA_W+:TDATA_W])
+         );
+
+         iob_ram_2p #(
+            .DATA_W(1),
+            .ADDR_W(RAM_ADDR_W)
+         ) strb_fifo_ram_2p (
+            .clk_i   (ext_mem_strb_clk),
+            .w_en_i  (ext_mem_strb_w_en[p]),
+            .w_addr_i(ext_mem_strb_w_addr),
+            .w_data_i(ext_mem_strb_w_data[p]),
+            .r_en_i  (ext_mem_strb_r_en[p]),
+            .r_addr_i(ext_mem_strb_r_addr),
+            .r_data_o(ext_mem_strb_r_data[p])
+         );
+
+         iob_ram_2p #(
+            .DATA_W(1),
+            .ADDR_W(RAM_ADDR_W)
+         ) last_fifo_ram_2p (
+            .clk_i   (ext_mem_last_clk),
+            .w_en_i  (ext_mem_last_w_en[p]),
+            .w_addr_i(ext_mem_last_w_addr),
+            .w_data_i(ext_mem_last_w_data[p]),
+            .r_en_i  (ext_mem_last_r_en[p]),
+            .r_addr_i(ext_mem_last_r_addr),
+            .r_data_o(ext_mem_last_r_data[p])
+         );
       end
    endgenerate
-
-   //FIFO RAM
-   iob_ram_2p_be #(
-      .DATA_W(32),
-      .ADDR_W((FIFO_DEPTH_LOG2 - $clog2(N)))
-   ) fifo_memory (
-      .clk_i   (clk_i),
-      .w_en_i  (ext_mem_w_en_be),
-      .w_data_i(ext_mem_w_data),
-      .w_addr_i(ext_mem_w_addr),
-      .r_en_i  (|ext_mem_r_en),
-      .r_addr_i(ext_mem_r_addr),
-      .r_data_o(ext_mem_r_data)
-   );
 
 endmodule
 
