@@ -19,7 +19,7 @@ int main() {
   uart_init(UART_BASE, FREQ / BAUD);
 
 #ifdef USE_EXTMEM
-  cache_init(1<<E, MEM_ADDR_W);
+  cache_init(1 << E, MEM_ADDR_W);
 #endif
 
   // connect with console

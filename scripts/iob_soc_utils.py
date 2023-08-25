@@ -142,7 +142,7 @@ def update_ios_with_extmem_connections(python_module):
                 num_extmem_connections += 1
                 continue
             # Check if interface does not have the standard axi_m_port name,
-            # but does contains its standard signals. For example, it may be a 
+            # but does contains its standard signals. For example, it may be a
             # bus of axi_m_ports, therefore may have a different name.
             for port in interface["ports"]:
                 if port["name"] == "axi_awid_o":
