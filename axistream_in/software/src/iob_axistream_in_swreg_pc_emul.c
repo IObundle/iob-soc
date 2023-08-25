@@ -12,7 +12,7 @@ void IOB_AXISTREAM_IN_INIT_BASEADDR(uint32_t addr) {
 }
 
 // Core Setters and Getters
-uint32_t IOB_AXISTREAM_IN_GET_OUT() {
+uint32_t IOB_AXISTREAM_IN_GET_DATA() {
   return 0x00;
 }
 
@@ -24,7 +24,7 @@ uint8_t IOB_AXISTREAM_IN_GET_LAST() {
   return 0x00;
 }
 
-void IOB_AXISTREAM_IN_SET_SOFTRESET(uint8_t value) {
+void IOB_AXISTREAM_IN_SET_SOFT_RESET(uint8_t value) {
 }
 
 void IOB_AXISTREAM_IN_SET_ENABLE(uint8_t value) {

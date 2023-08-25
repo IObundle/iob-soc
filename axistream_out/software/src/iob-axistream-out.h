@@ -1,26 +1,20 @@
-#include <stdbool.h>
-
 #include "iob_axistream_out_swreg.h"
 
 //AXISTREAMOUT functions
 
-//Set AXISTREAMOUT base address
-void axistream_out_init(int base_address);
-void axistream_out_init_tdata_w(int base_address, int tdata_w);
+//Set AXISTREAMOUT base address and TDATA width (in bytes)
+void axistream_out_init(int base_address, uint8_t tdata_w);
 
-//Place value in FIFO, also place wstrb for word with TLAST signal.
-void axistream_out_push_word(uint32_t value, char tlast_wstrb);
-void axistream_out_push(uint8_t *byte_array, uint8_t n_valid_bytes, bool is_tlast);
+// Push data into the core with the correct wstrb and last.
+void axistream_out_push(uint32_t data, uint8_t n_valid_words, uint8_t is_last);
 
 //Signal when FIFO is full
-bool axistream_out_full();
-
-//Free memory from initialized instances
-void axistream_out_free();
+uint8_t axistream_out_full();
 
 //Soft reset
 void axistream_out_reset();
 
+//Enable and disable AXISTREAMOUT
 void axistream_out_enable();
 void axistream_out_disable();
 

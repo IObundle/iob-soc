@@ -6,9 +6,10 @@ import copy
 from iob_module import iob_module
 
 # Submodules
-from iob_reg import iob_reg
-from iob_reg_e import iob_reg_e
-from iob_ram_2p_be import iob_ram_2p_be
+from iob_fifo_sync import iob_fifo_sync
+from iob_reg_re import iob_reg_re
+from iob_prio_enc import iob_prio_enc
+from iob_ram_2p import iob_ram_2p
 from iob_axistream_in import iob_axistream_in
 
 
@@ -23,13 +24,12 @@ class iob_axistream_out(iob_module):
         ''' Create submodules list with dependencies of this module
         '''
         super()._create_submodules_list([
-            # TODO: Copy submodules from iob_axistream_in. Probably should create a superclass iob_axistream with the base for these
             {"interface": "iob_s_port"},
             {"interface": "iob_s_portmap"},
-            iob_reg,
-            iob_reg_e,
-            (iob_ram_2p_be, {"purpose": "simulation"}),
-            (iob_ram_2p_be, {"purpose": "fpga"}),
+            iob_fifo_sync,
+            iob_reg_re,
+            iob_prio_enc,
+            iob_ram_2p,
         ])
 
     @classmethod
@@ -146,27 +146,7 @@ class iob_axistream_out(iob_module):
                 "descr": "Axistream software accessible registers.",
                 "regs": [
                     {
-                        "name": "IN",
-                        "type": "W",
-                        "n_bits": 32,
-                        "rst_val": 0,
-                        "addr": -1,
-                        "log2n_items": 0,
-                        "autologic": False,
-                        "descr": "32 bits: Set next FIFO input (Writing to this register pushes the value into the FIFO)",
-                    },
-                    {
-                        "name": "FULL",
-                        "type": "R",
-                        "n_bits": 1,
-                        "rst_val": 0,
-                        "addr": -1,
-                        "log2n_items": 0,
-                        "autologic": True,
-                        "descr": "1 bit: Return if FIFO is full",
-                    },
-                    {
-                        "name": "SOFTRESET",
+                        "name": "SOFT_RESET",
                         "type": "W",
                         "n_bits": 1,
                         "rst_val": 0,
@@ -186,14 +166,44 @@ class iob_axistream_out(iob_module):
                         "descr": "Enable peripheral.",
                     },
                     {
-                        "name": "WSTRB_NEXT_WORD_LAST",
+                        "name": "DATA",
                         "type": "W",
-                        "n_bits": 5,
+                        "n_bits": 32,
                         "rst_val": 0,
-                        "addr": 8,
+                        "addr": -1,
                         "log2n_items": 0,
                         "autologic": False,
-                        "descr": "From 1 to 4 bits: Set which output words of the next input word in AXISTREAMOUT_IN are valid and send TLAST signal along with last valid byte. (If this register has value 0, all 4 bytes will be valid and it will not send a TLAST signal with the last byte [MSB]). When the output word width (TDATA) is 8, 16 or 32 bits, this register has size 4, 2 or 1 bits respectively.",
+                        "descr": "Data input (writing to this register will apply the set WSTRB and LAST registers).",
+                    },
+                    {
+                        "name": "WSTRB",
+                        "type": "W",
+                        "n_bits": "32/TDATA_W",
+                        "rst_val": 0,
+                        "addr": -1,
+                        "log2n_items": 0,
+                        "autologic": True,
+                        "descr": "Set which words (with TDATA_W bits) of the next 32-bits input are valid.",
+                    },
+                    {
+                        "name": "LAST",
+                        "type": "W",
+                        "n_bits": 1,
+                        "rst_val": 0,
+                        "addr": -1,
+                        "log2n_items": 0,
+                        "autologic": True,
+                        "descr": "Set the tlast bit of the next 32-bits input word.",
+                    },
+                    {
+                        "name": "FULL",
+                        "type": "R",
+                        "n_bits": 1,
+                        "rst_val": 0,
+                        "addr": -1,
+                        "log2n_items": 0,
+                        "autologic": True,
+                        "descr": "Full (1), or non-full (0).",
                     },
                 ],
             },
