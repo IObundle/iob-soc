@@ -124,6 +124,7 @@ module iob_soc_fpga_wrapper (
       //`endif
       `include "iob_soc_pportmaps.vs"
       .clk_i (clk),
+      .cke_i (1'b1),
       .arst_i(rst),
       .trap_o(trap)
    );
