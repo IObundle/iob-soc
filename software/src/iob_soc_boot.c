@@ -18,6 +18,10 @@ int main() {
   // init uart
   uart_init(UART_BASE, FREQ / BAUD);
 
+#ifdef USE_EXTMEM
+  cache_init(1<<E, MEM_ADDR_W);
+#endif
+
   // connect with console
   do {
     if (IOB_UART_GET_TXREADY())
