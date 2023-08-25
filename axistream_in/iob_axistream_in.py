@@ -6,13 +6,14 @@ from iob_module import iob_module
 
 # Submodules
 from iob_reg_re import iob_reg_re
-from iob_ram_2p import iob_ram_2p
-from iob_fifo_sync import iob_fifo_sync
+from iob_ram_t2p import iob_ram_t2p
+from iob_fifo_async import iob_fifo_async
+from iob_sync import iob_sync
 
 
 class iob_axistream_in(iob_module):
     name = 'iob_axistream_in'
-    version = "V0.10"
+    version = "V0.20"
     flows = "emb"
     setup_dir = os.path.dirname(__file__)
 
@@ -23,9 +24,10 @@ class iob_axistream_in(iob_module):
         super()._create_submodules_list([
             {"interface": "iob_s_port"},
             {"interface": "iob_s_portmap"},
-            iob_fifo_sync,
+            iob_fifo_async,
             iob_reg_re,
-            iob_ram_2p,
+            iob_ram_t2p,
+            iob_sync
         ])
 
     @classmethod
@@ -73,7 +75,7 @@ class iob_axistream_in(iob_module):
             {"name": "iob_s_port", "descr": "CPU native interface", "ports": []},
             {
                 "name": "general",
-                "descr": "GENERAL INTERFACE SIGNALS",
+                "descr": "System general interface signals",
                 "ports": [
                     {
                         "name": "clk_i",
@@ -97,31 +99,49 @@ class iob_axistream_in(iob_module):
             },
             {
                 "name": "axistream",
-                "descr": "",
+                "descr": "Axistream interface signals",
                 "ports": [
                     {
-                        "name": "tdata_i",
+                        "name": "axis_clk_i",
+                        "type": "I",
+                        "n_bits": "1",
+                        "descr": "Axistream clock input",
+                    },
+                    {
+                        "name": "axis_cke_i",
+                        "type": "I",
+                        "n_bits": "1",
+                        "descr": "Axistream clock enable signal.",
+                    },
+                    {
+                        "name": "axis_arst_i",
+                        "type": "I",
+                        "n_bits": "1",
+                        "descr": "Axistream reset, asynchronous and active high",
+                    },
+                    {
+                        "name": "axis_tdata_i",
                         "type": "I",
                         "n_bits": "TDATA_W",
-                        "descr": "TData input interface",
+                        "descr": "Axistream data input interface",
                     },
                     {
-                        "name": "tvalid_i",
+                        "name": "axis_tvalid_i",
                         "type": "I",
                         "n_bits": "1",
-                        "descr": "TValid input interface",
+                        "descr": "Axistream valid input interface",
                     },
                     {
-                        "name": "tready_o",
+                        "name": "axis_tready_o",
                         "type": "O",
                         "n_bits": "1",
-                        "descr": "TReady output interface",
+                        "descr": "Axistream ready output interface",
                     },
                     {
-                        "name": "tlast_i",
+                        "name": "axis_tlast_i",
                         "type": "I",
                         "n_bits": "1",
-                        "descr": "TLast input interface",
+                        "descr": "Axistream last input interface",
                     },
                 ],
             },
