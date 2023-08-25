@@ -327,6 +327,12 @@ class iob_soc(iob_module):
                         "descr": "System clock input",
                     },
                     {
+                        "name": "cke_i",
+                        "type": "I",
+                        "n_bits": "1",
+                        "descr": "System clock enable",
+                    },
+                    {
                         "name": "arst_i",
                         "type": "I",
                         "n_bits": "1",

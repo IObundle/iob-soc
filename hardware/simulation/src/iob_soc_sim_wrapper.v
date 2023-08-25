@@ -63,6 +63,7 @@ module iob_soc_sim_wrapper (
    ) iob_soc0 (
       `include "iob_soc_pportmaps.vs"
       .clk_i (clk),
+      .cke_i (1'b1),
       .arst_i(rst),
       .trap_o(trap_o)
    );
