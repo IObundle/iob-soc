@@ -81,18 +81,11 @@ class iob_soc(iob_module):
         """Create submodules list with dependencies of this module"""
         super()._create_submodules_list(
             [
+                # Hardware modules
+                iob_utils,
                 iob_picorv32,
                 iob_cache,
                 iob_uart,
-                # Hardware headers & modules
-                {"interface": "iob_wire"},
-                {"interface": "axi_wire"},
-                {"interface": "axi_m_port"},
-                {"interface": "axi_m_m_portmap"},
-                {"interface": "axi_m_portmap"},
-                iob_utils,
-                {"interface": "clk_en_rst_s_s_portmap"},
-                {"interface": "clk_en_rst_s_port"},
                 iob_merge,
                 iob_split,
                 iob_rom_sp,
@@ -106,18 +99,16 @@ class iob_soc(iob_module):
                 iob_ram_dp,
                 iob_reset_sync,
                 iob_ctls,
-                # Simulation headers & modules
-                (axi_ram, {"purpose": "simulation"}),
-                ({"interface": "axi_s_portmap"}, {"purpose": "simulation"}),
-                (iob_tasks, {"purpose": "simulation"}),
-                # Software modules
-                iob_str,
-                printf,
-                # Modules required for CACHE
                 (iob_ram_2p, {"purpose": "simulation"}),
                 (iob_ram_2p, {"purpose": "fpga"}),
                 (iob_ram_sp, {"purpose": "simulation"}),
                 (iob_ram_sp, {"purpose": "fpga"}),
+                # Simulation headers & modules
+                (axi_ram, {"purpose": "simulation"}),
+                (iob_tasks, {"purpose": "simulation"}),
+                # Software modules
+                iob_str,
+                printf,
             ]
             + extra_submodules
         )
@@ -128,7 +119,7 @@ class iob_soc(iob_module):
             (
                 {
                     "corename": "UART0",
-                    "if_name": "rs232_custom_port",
+                    "if_name": "rs232",
                     "port": "txd",
                     "bits": [],
                 },
@@ -142,7 +133,7 @@ class iob_soc(iob_module):
             (
                 {
                     "corename": "UART0",
-                    "if_name": "rs232_custom_port",
+                    "if_name": "rs232",
                     "port": "rxd",
                     "bits": [],
                 },
@@ -156,7 +147,7 @@ class iob_soc(iob_module):
             (
                 {
                     "corename": "UART0",
-                    "if_name": "rs232_custom_port",
+                    "if_name": "rs232",
                     "port": "cts",
                     "bits": [],
                 },
@@ -170,7 +161,7 @@ class iob_soc(iob_module):
             (
                 {
                     "corename": "UART0",
-                    "if_name": "rs232_custom_port",
+                    "if_name": "rs232",
                     "port": "rts",
                     "bits": [],
                 },
@@ -329,31 +320,33 @@ class iob_soc(iob_module):
     def _setup_ios(cls):
         cls.ios += [
             {
-                "name": "general",
-                "descr": "General interface signals",
+                "name": "clk_rst",
+                "type": "slave",
+                "port_prefix": "",
+                "wire_prefix": "",
+                "descr": "Clock and reset",
+                "ports": [],
+            },
+            {
+                "name": "trap",
+                "type": "master",
+                "port_prefix": "",
+                "wire_prefix": "",
+                "descr": "iob-soc trap signal",
                 "ports": [
                     {
-                        "name": "clk",
-                        "type": "input",
-                        "n_bits": "1",
-                        "descr": "System clock input",
-                    },
-                    {
-                        "name": "arst",
-                        "type": "input",
-                        "n_bits": "1",
-                        "descr": "System reset, synchronous and active high",
-                    },
-                    {
                         "name": "trap",
-                        "type": "output",
-                        "n_bits": "1",
+                        "direction": "output",                        
+                        "width": 1,
                         "descr": "CPU trap signal",
                     },
                 ],
             },
             {
                 "name": "extmem",
+                "type": "master",
+                "port_prefix": "",
+                "wire_prefix": "",
                 "descr": "Bus of AXI master interfaces for external memory. One interface for this system and others optionally for peripherals.",
                 "if_defined": "USE_EXTMEM",
                 "ports": [],

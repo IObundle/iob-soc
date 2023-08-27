@@ -128,7 +128,7 @@ def update_ios_with_extmem_connections(python_module):
         for interface in peripheral.ios:
             for port in interface["ports"]:
                 if port["name"] == "axi_awid_o":
-                    num_extmem_connections += get_extmem_bus_size(port["n_bits"])
+                    num_extmem_connections += get_extmem_bus_size(port["width"])
                     # Break the inner loop...
                     break
             else:
@@ -434,11 +434,11 @@ def peripheral_portmap(python_module):
                     peripheral_wires.append(
                         {
                             "name": wire_name,
-                            "n_bits": add_prefix_to_parameters_in_port(
+                            "width": add_prefix_to_parameters_in_port(
                                 port,
                                 mapping_items[0].confs,
                                 mapping[0]["corename"] + "_",
-                            )["n_bits"],
+                            )["width"],
                         }
                     )
                 elif mapping_internal_interface > -1:
@@ -452,11 +452,11 @@ def peripheral_portmap(python_module):
                     peripheral_wires.append(
                         {
                             "name": wire_name,
-                            "n_bits": add_prefix_to_parameters_in_port(
+                            "width": add_prefix_to_parameters_in_port(
                                 port,
                                 mapping_items[0].confs,
                                 mapping[0]["corename"] + "_",
-                            )["n_bits"],
+                            )["width"],
                         }
                     )
 
@@ -528,10 +528,10 @@ def peripheral_portmap(python_module):
             # Get number of bits for this wire. If 'bits' was not specified, use the same size as the port of the peripheral
             if not mapping[0]["bits"]:
                 # Mapping did not specify bits, use the same size as the port (will map all bits of the port)
-                n_bits = port["n_bits"]
+                width = port["width"]
             else:
                 # Mapping specified bits, the width will be the total amount of bits specified
-                n_bits = len(mapping[0]["bits"])
+                width = len(mapping[0]["bits"])
                 # Insert wire of the ports into the peripherals_wires list of the system
 
             if mapping_internal_interface < 0 and mapping_external_interface < 0:
@@ -541,9 +541,9 @@ def peripheral_portmap(python_module):
                 peripheral_wires.append(
                     {
                         "name": wire_name,
-                        "n_bits": add_prefix_to_parameters_in_port(
+                        "width": add_prefix_to_parameters_in_port(
                             port, mapping_items[0].confs, mapping[0]["corename"] + "_"
-                        )["n_bits"],
+                        )["width"],
                     }
                 )
             elif mapping_internal_interface > -1:
@@ -557,9 +557,9 @@ def peripheral_portmap(python_module):
                 peripheral_wires.append(
                     {
                         "name": wire_name,
-                        "n_bits": add_prefix_to_parameters_in_port(
+                        "width": add_prefix_to_parameters_in_port(
                             port, mapping_items[0].confs, mapping[0]["corename"] + "_"
-                        )["n_bits"],
+                        )["width"],
                     }
                 )
             else:
@@ -569,8 +569,8 @@ def peripheral_portmap(python_module):
                     add_prefix_to_parameters_in_port(
                         {
                             "name": port["name"],
-                            "type": port["type"],
-                            "n_bits": n_bits,
+                            "type": port["direction"],
+                            "width": width,
                             "descr": port["descr"],
                         },
                         mapping_items[0].confs,
@@ -608,7 +608,7 @@ def peripheral_portmap(python_module):
                     mapping_items[0].io,
                     mapping[0]["port"],
                     eval_param_expression_from_config(
-                        port["n_bits"], mapping_items[0].confs, "max"
+                        port["width"], mapping_items[0].confs, "max"
                     ),
                     mapping[0]["bits"],
                     wire_name,
@@ -620,7 +620,7 @@ def peripheral_portmap(python_module):
                     mapping_items[1].io,
                     mapping[1]["port"],
                     eval_param_expression_from_config(
-                        port2["n_bits"], mapping_items[1].confs, "max"
+                        port2["width"], mapping_items[1].confs, "max"
                     ),
                     mapping[1]["bits"],
                     wire_name,
