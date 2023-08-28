@@ -15,10 +15,6 @@ module iob_soc #(
 ) (
    `include "iob_soc_io.vs"
 );
-
-   localparam integer Bbit = `IOB_SOC_B;
-   localparam integer AddrMsb = `REQ_W - 2;
-
    `include "iob_soc_pwires.vs"
 
    //
@@ -36,12 +32,22 @@ module iob_soc #(
    //
 
    // instruction bus
-   wire [ `REQ_W-1:0] cpu_i_req;
-   wire [`RESP_W-1:0] cpu_i_resp;
+   wire          cpu_ibus_avalid;
+   wire [32-1:0] cpu_ibus_address;
+   wire [32-1:0] cpu_ibus_wdata;
+   wire [4-1:0]  cpu_ibus_wstrb;
+   wire [32-1:0] cpu_ibus_rdata;
+   wire          cpu_ibus_rvalid;
+   wire          cpu_ibus_ready;
 
    // data cat bus
-   wire [ `REQ_W-1:0] cpu_d_req;
-   wire [`RESP_W-1:0] cpu_d_resp;
+   wire          cpu_dbus_avalid;
+   wire [32-1:0] cpu_dbus_address;
+   wire [32-1:0] cpu_dbus_wdata;
+   wire [4-1:0]  cpu_dbus_wstrb;
+   wire [32-1:0] cpu_dbus_rdata;
+   wire          cpu_dbus_rvalid;
+   wire          cpu_dbus_ready;
 
    //instantiate the cpu
    iob_picorv32 #(
@@ -62,91 +68,79 @@ module iob_soc #(
       .trap_o(cpu_trap_o),
 
       //instruction bus
-      .ibus_req_o (cpu_i_req),
-      .ibus_resp_i(cpu_i_resp),
+      .cpu_ibus_avalid_o(cpu_ibus_avalid),
+      .cpu_ibus_address_o(cpu_ibus_address),
+      .cpu_ibus_wdata_o(cpu_ibus_wdata),
+      .cpu_ibus_wstrb_o(cpu_ibus_wstrb),
+      .cpu_ibus_rdata_i(cpu_ibus_rdata),
+      .cpu_ibus_rvalid_i(cpu_ibus_rvalid),
+      .cpu_ibus_ready_i(cpu_ibus_ready),
 
       //data bus
-      .dbus_req_o (cpu_d_req),
-      .dbus_resp_i(cpu_d_resp)
+      .cpu_dbus_avalid_o(cpu_dbus_avalid),
+      .cpu_dbus_address_o(cpu_dbus_address),
+      .cpu_dbus_wdata_o(cpu_dbus_wdata),
+      .cpu_dbus_wstrb_o(cpu_dbus_wstrb),
+      .cpu_dbus_rdata_i(cpu_dbus_rdata),
+      .cpu_dbus_rvalid_i(cpu_dbus_rvalid),
+      .cpu_dbus_ready_i(cpu_dbus_ready)
    );
 
 
    //
-   // SPLIT CPU BUSES TO ACCESS INTERNAL OR EXTERNAL MEMORY
+   // SPLIT CPU BUSES TO ACCESS MEMORY OR BOOT ROM
    //
 
-   //internal memory instruction bus
-   wire [ `REQ_W-1:0] int_mem_i_req;
-   wire [`RESP_W-1:0] int_mem_i_resp;
-   //external memory instruction bus
-   wire [ `REQ_W-1:0] ext_mem_i_req;
-   wire [`RESP_W-1:0] ext_mem_i_resp;
-`ifdef IOB_SOC_USE_EXTMEM
+   // memory instruction bus
+   wire          iob_soc_mem_ibus_avalid;
+   wire [32-1:0] iob_soc_mem_ibus_address;
+   wire [32-1:0] iob_soc_mem_ibus_wdata;
+   wire [4-1:0]  iob_soc_mem_ibus_wstrb;
+   wire [32-1:0] iob_soc_mem_ibus_rdata;
+   wire          iob_soc_mem_ibus_rvalid;
+   wire          iob_soc_mem_ibus_ready;
 
-   // INSTRUCTION BUS
-   //iob_split #(
-   //   .ADDR_W  (ADDR_W),
-   //   .DATA_W  (DATA_W),
-   //   .N_SLAVES(2),
-   //   .P_SLAVES(AddrMsb)
-   //) ibus_split (
-   //   .clk_i   (clk_i),
-   //   .arst_i  (cpu_reset),
-   //   // master interface
-   //   .m_req_i (cpu_i_req),
-   //   .m_resp_o(cpu_i_resp),
-   //   // slaves interface
-   //   .s_req_o ({ext_mem_i_req, int_mem_i_req}),
-   //   .s_resp_i({ext_mem_i_resp, int_mem_i_resp})
-   //);
-`else
-   assign int_mem_i_req = cpu_i_req;
-   assign cpu_i_resp    = int_mem_i_resp;
-`endif
+   // memory data bus
+   wire          iob_soc_mem_dbus_avalid;
+   wire [32-1:0] iob_soc_mem_dbus_address;
+   wire [32-1:0] iob_soc_mem_dbus_wdata;
+   wire [4-1:0]  iob_soc_mem_dbus_wstrb;
+   wire [32-1:0] iob_soc_mem_dbus_rdata;
+   wire          iob_soc_mem_dbus_rvalid;
+   wire          iob_soc_mem_dbus_ready;
 
+   // SPLIT INSTUCTION BUS TO ACCESS MEMORY OR BOOT ROM
 
-   // DATA BUS
+   iob_split #(
+      .ADDR_W  (ADDR_W),
+      .DATA_W  (DATA_W),
+      .N_SLAVES(2)
+   ) cpu_ibus_split (
+      .clk_i (clk_i),
+      .arst_i(cpu_reset),
 
-   //internal data bus
-   wire [ `REQ_W-1:0] int_d_req;
-   wire [`RESP_W-1:0] int_d_resp;
-   //external memory data bus
-   wire [ `REQ_W-1:0] ext_mem_d_req;
-   wire [`RESP_W-1:0] ext_mem_d_resp;
-`ifdef IOB_SOC_USE_EXTMEM
+      .f_sel_i(CTR[2-1:0] != '0),
 
-   //iob_split #(
-   //   .ADDR_W  (ADDR_W),
-   //   .DATA_W  (DATA_W),
-   //   .N_SLAVES(2),       //E,{P,I}
-   //   .P_SLAVES(AddrMsb)
-   //) dbus_split (
-   //   .clk_i   (clk_i),
-   //   .arst_i  (cpu_reset),
-   //   // master interface
-   //   .m_req_i (cpu_d_req),
-   //   .m_resp_o(cpu_d_resp),
-   //   // slaves interface
-   //   .s_req_o ({ext_mem_d_req, int_d_req}),
-   //   .s_resp_i({ext_mem_d_resp, int_d_resp})
-   
-   assign ext_mem_d_req  = cpu_d_req;
-   assign cpu_d_resp = ext_mem_d_resp;
-   //);
-`else
-   assign int_d_req  = cpu_d_req;
-   assign cpu_d_resp = int_d_resp;
-`endif
+      // master interface
+      m_avalid_i (cpu_ibus_avalid),
+      m_address_i(cpu_ibus_address),
+      m_wdata_i  (cpu_ibus_wdata),
+      m_wstrb_i  (cpu_ibus_wstrb),
+      m_rdata_o  (cpu_ibus_rdata),
+      m_rvalid_o (cpu_ibus_rvalid),
+      m_ready_o  (cpu_ibus_ready),
 
-
-
-
+      // followers interface
+      .f_avalid_o ({boot_ctr_ibus_avalid,  iob_soc_mem_ibus_avalid }),
+      .f_address_o({boot_ctr_ibus_address, iob_soc_mem_ibus_address}),
+      .f_wdata_o  ({boot_ctr_ibus_wdata,   iob_soc_mem_ibus_wdata  }),
+      .f_wstrb_o  ({boot_ctr_ibus_wstrb,   iob_soc_mem_ibus_wstrb  }),
+      .f_rdata_i  ({boot_ctr_ibus_rdata,   iob_soc_mem_ibus_rdata  }),
+      .f_rvalid_i ({boot_ctr_ibus_rvalid,  iob_soc_mem_ibus_rvalid }),
+      .f_ready_i  ({boot_ctr_ibus_ready,   iob_soc_mem_ibus_ready  })
+   );
 
    assign cpu_reset = boot_cpu_rst_o;
-   assign boot_cpu_i_req_i = cpu_i_req;
-   assign cpu_i_resp = boot_cpu_i_resp_o;
-   assign boot_ext_mem_i_resp_i = ext_mem_i_resp;
-   assign ext_mem_i_req = boot_ext_mem_i_req_o;
 
    /*iob_soc_boot #(
       .ADDR_W(ADDR_W),
@@ -174,11 +168,6 @@ module iob_soc #(
       .ext_mem_i_resp_i(ext_mem_i_resp)
    );*/
 
-   ////assign ext_mem_i_req  = cpu_i_req;
-   ////assign cpu_i_resp = ext_mem_i_resp;
-   //assign ext_mem_d_req  = cpu_d_req;
-   //assign cpu_d_resp = ext_mem_d_resp;
-
 
 
 
@@ -195,75 +184,111 @@ module iob_soc #(
    // SPLIT INTERNAL MEMORY AND PERIPHERALS BUS
    //
 
-   //slaves bus (includes internal memory + periphrals)
-   wire [ (`IOB_SOC_N_SLAVES)*`REQ_W-1:0] slaves_req;
-   wire [(`IOB_SOC_N_SLAVES)*`RESP_W-1:0] slaves_resp;
+   // Selected Peripheral data bus
+   wire          s_periph_dbus_avalid;
+   wire [32-1:0] s_periph_dbus_address;
+   wire [32-1:0] s_periph_dbus_wdata;
+   wire [4-1:0]  s_periph_dbus_wstrb;
+   wire [32-1:0] s_periph_dbus_rdata;
+   wire          s_periph_dbus_rvalid;
+   wire          s_periph_dbus_ready;
 
    iob_split #(
-      .ADDR_W  (ADDR_W),
-      .DATA_W  (DATA_W),
-      .N_SLAVES(`IOB_SOC_N_SLAVES),
-      .P_SLAVES(AddrMsb - 1)
+      .ADDR_W(ADDR_W),
+      .DATA_W(DATA_W),
+      .N     (2),
+   ) cpu_dbus_split (
+      .clk_i      (clk_i),
+      .arst_i     (cpu_reset),
+
+      // Master interface
+      m_avalid_i  (cpu_dbus_avalid),
+      m_address_i (cpu_dbus_address),
+      m_wdata_i   (cpu_dbus_wdata),
+      m_wstrb_i   (cpu_dbus_wstrb),
+      m_rdata_o   (cpu_dbus_rdata),
+      m_rvalid_o  (cpu_dbus_rvalid),
+      m_ready_o   (cpu_dbus_ready),
+
+      // Followers interface
+      .f_avalid_o ({s_periph_dbus_avalid,  iob_soc_mem_dbus_avalid }),
+      .f_address_o({s_periph_dbus_address, iob_soc_mem_dbus_address}),
+      .f_wdata_o  ({s_periph_dbus_wdata,   iob_soc_mem_dbus_wdata  }),
+      .f_wstrb_o  ({s_periph_dbus_wstrb,   iob_soc_mem_dbus_wstrb  }),
+      .f_rdata_i  ({s_periph_dbus_rdata,   iob_soc_mem_dbus_rdata  }),
+      .f_rvalid_i ({s_periph_dbus_rvalid,  iob_soc_mem_dbus_rvalid }),
+      .f_ready_i  ({s_periph_dbus_ready,   iob_soc_mem_dbus_ready  }),
+
+      // Follower selection
+      .f_sel_i    (cpu_dbus_address[ADDR_W-1])
+   );
+
+   //
+   // SPLIT INTERNAL MEMORY AND PERIPHERALS BUS
+   //
+
+   // Peripherals data bus
+   wire [`IOB_SOC_N_SLAVES*1-1:0]  periphs_dbus_avalid;
+   wire [`IOB_SOC_N_SLAVES*32-1:0] periphs_dbus_address;
+   wire [`IOB_SOC_N_SLAVES*32-1:0] periphs_dbus_wdata;
+   wire [`IOB_SOC_N_SLAVES*4-1:0]  periphs_dbus_wstrb;
+   wire [`IOB_SOC_N_SLAVES*32-1:0] periphs_dbus_rdata;
+   wire [`IOB_SOC_N_SLAVES*1-1:0]  periphs_dbus_rvalid;
+   wire [`IOB_SOC_N_SLAVES*1-1:0]  periphs_dbus_ready;
+
+   iob_split #(
+      .ADDR_W(ADDR_W),
+      .DATA_W(DATA_W),
+      .N     (`IOB_SOC_N_SLAVES - 1), // The memory is included and must be excluded
+      .NB    (`IOB_SOC_N_SLAVES_W)
    ) pbus_split (
-      .clk_i   (clk_i),
-      .arst_i  (cpu_reset),
-      // master interface
-      .m_req_i (cpu_d_req),
-      .m_resp_o(cpu_d_resp),
-      // slaves interface
-      .s_req_o (slaves_req),
-      .s_resp_i(slaves_resp)
+      .clk_i      (clk_i),
+      .arst_i     (cpu_reset),
+
+      // Master interface
+      m_avalid_i  (s_periph_dbus_avalid),
+      m_address_i (s_periph_dbus_address),
+      m_wdata_i   (s_periph_dbus_wdata),
+      m_wstrb_i   (s_periph_dbus_wstrb),
+      m_rdata_o   (s_periph_dbus_rdata),
+      m_rvalid_o  (s_periph_dbus_rvalid),
+      m_ready_o   (s_periph_dbus_ready),
+
+      // Followers interface
+      .f_avalid_o (periphs_dbus_avalid),
+      .f_address_o(periphs_dbus_addres),
+      .f_wdata_o  (periphs_dbus_wdata),
+      .f_wstrb_o  (periphs_dbus_wstrb),
+      .f_rdata_i  (periphs_dbus_rdata),
+      .f_rvalid_i (periphs_dbus_rvalid),
+      .f_ready_i  (periphs_dbus_ready),
+
+      // Follower selection
+      // Excluding the memory/peripherals bit, subtract the width of the peripheral bus
+      .f_sel_i    (s_periph_address[ADDR_W-2 -: `IOB_SOC_N_SLAVES_W])
    );
 
-
-   //
-   // INTERNAL SRAM MEMORY
-   //
-
-   int_mem #(
-      .ADDR_W        (ADDR_W),
-      .DATA_W        (DATA_W),
-      .HEXFILE       ("iob_soc_firmware"),
-      .BOOT_HEXFILE  ("iob_soc_boot"),
-      .SRAM_ADDR_W   (SRAM_ADDR_W),
-      .BOOTROM_ADDR_W(`IOB_SOC_BOOT_BOOT_ROM_ADDR_W),
-      .B_BIT         (`B_BIT)
-   ) int_mem0 (
-      .clk_i    (clk_i),
-      .arst_i   (arst_i),
-      .cke_i    (cke_i),
-      .boot     (boot),
-      .cpu_reset(cpu_reset),
-
-      // instruction bus
-      .i_req (int_mem_i_req),
-      .i_resp(int_mem_i_resp),
-
-      //data bus
-      .d_req (slaves_req[0+:`REQ_W]),
-      .d_resp(slaves_resp[0+:`RESP_W])
-   );
-
-`ifdef IOB_SOC_USE_EXTMEM
    //
    // EXTERNAL DDR MEMORY
    //
 
-   wire [ 1+SRAM_ADDR_W-2+DATA_W+DATA_W/8-1:0] ext_mem0_i_req;
-   wire [1+MEM_ADDR_W+1-2+DATA_W+DATA_W/8-1:0] ext_mem0_d_req;
+   wire          iob_soc_mem_ibus_avalid;
+   wire [32-1:0] iob_soc_mem_ibus_address;
+   wire [32-1:0] iob_soc_mem_ibus_wdata;
+   wire [4-1:0]  iob_soc_mem_ibus_wstrb;
+   wire [32-1:0] iob_soc_mem_ibus_rdata;
+   wire          iob_soc_mem_ibus_rvalid;
+   wire          iob_soc_mem_ibus_ready;
 
-   assign ext_mem0_i_req = {
-      ext_mem_i_req[`AVALID(0)],
-      ext_mem_i_req[`ADDRESS(0, SRAM_ADDR_W)-2],
-      ext_mem_i_req[`WRITE(0)]
-   };
-   assign ext_mem0_d_req = {
-      ext_mem_d_req[`AVALID(0)],
-      ext_mem_d_req[`ADDRESS(0, MEM_ADDR_W+1)-2],
-      ext_mem_d_req[`WRITE(0)]
-   };
+   wire          iob_soc_mem_dbus_avalid;
+   wire [32-1:0] iob_soc_mem_dbus_address;
+   wire [32-1:0] iob_soc_mem_dbus_wdata;
+   wire [4-1:0]  iob_soc_mem_dbus_wstrb;
+   wire [32-1:0] iob_soc_mem_dbus_rdata;
+   wire          iob_soc_mem_dbus_rvalid;
+   wire          iob_soc_mem_dbus_ready;
 
-   ext_mem #(
+   iob_soc_mem #(
       .ADDR_W     (ADDR_W),
       .DATA_W     (DATA_W),
       .FIRM_ADDR_W(SRAM_ADDR_W),
@@ -274,14 +299,24 @@ module iob_soc #(
       .AXI_LEN_W  (AXI_LEN_W),
       .AXI_ADDR_W (AXI_ADDR_W),
       .AXI_DATA_W (AXI_DATA_W)
-   ) ext_mem0 (
-      // instruction bus
-      .i_req (ext_mem0_i_req),
-      .i_resp(ext_mem_i_resp),
+   ) iob_soc_mem0 (
+      // Instruction bus
+      .i_avalid_i(iob_soc_mem_ibus_avalid),
+      .i_address_i(iob_soc_mem_ibus_address),
+      .i_wdata_i(iob_soc_mem_ibus_wdata),
+      .i_wstrb_i(iob_soc_mem_ibus_wstrb),
+      .i_rdata_o(iob_soc_mem_ibus_rdata),
+      .i_rvalid_o(iob_soc_mem_ibus_rvalid),
+      .i_ready_o(iob_soc_mem_ibus_ready),
 
-      //data bus
-      .d_req (ext_mem0_d_req),
-      .d_resp(ext_mem_d_resp),
+      // Data bus
+      .d_avalid_i(iob_soc_mem_dbus_avalid),
+      .d_address_i(iob_soc_mem_dbus_address),
+      .d_wdata_i(iob_soc_mem_dbus_wdata),
+      .d_wstrb_i(iob_soc_mem_dbus_wstrb),
+      .d_rdata_o(iob_soc_mem_dbus_rdata),
+      .d_rvalid_o(iob_soc_mem_dbus_rvalid),
+      .d_ready_o(iob_soc_mem_dbus_ready),
 
       //AXI INTERFACE
       //address write
@@ -331,7 +366,6 @@ module iob_soc #(
       .cke_i (cke_i),
       .arst_i(cpu_reset)
    );
-`endif
 
    `include "iob_soc_periphs_inst.vs"
 
