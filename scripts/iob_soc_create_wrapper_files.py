@@ -23,11 +23,10 @@ def create_wrapper_files(build_dir, name, ios, confs, num_extmem_connections):
         if pio_signals and "if_defined" in table.keys():
             pwires_str += f"`ifdef {table['if_defined']}\n"
         for signal in pio_signals:
-            pwires_str += "   wire [{}-1:0] {}_{};\n".format(
+            pwires_str += "   wire [{}-1:0] {};\n".format(
                 add_prefix_to_parameters_in_string(
                     signal["n_bits"], confs, "`" + name.upper() + "_"
                 ),
-                table["name"],
                 signal["name"],
             )
         if pio_signals and "if_defined" in table.keys():
@@ -38,7 +37,7 @@ def create_wrapper_files(build_dir, name, ios, confs, num_extmem_connections):
             pportmaps_str += f"`ifdef {table['if_defined']}\n"
         for signal in pio_signals:
             pportmaps_str += "               .{signal}({signal}),\n".format(
-                signal=table["name"] + "_" + signal["name"]
+                signal=signal["name"]
             )
         if pio_signals and "if_defined" in table.keys():
             pportmaps_str += "`endif\n"

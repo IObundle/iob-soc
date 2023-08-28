@@ -77,12 +77,13 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
         # Insert peripheral instance name
         periphs_inst_str += "   {} (\n".format(instance.name)
         # Insert io signals
+        #print(f"Debug: {instance.name} {instance.io} {port_list[instance.__class__.name]}\n")  # DEBUG
         for signal in get_pio_signals(port_list[instance.__class__.name]):
             if "if_defined" in signal.keys():
                 periphs_inst_str += f"`ifdef {top.upper()}_{signal['if_defined']}\n"
             periphs_inst_str += "      .{}({}),\n".format(
                 signal["name"],
-                get_peripheral_port_mapping(instance, signal["name_without_prefix"]),
+                get_peripheral_port_mapping(instance, signal["if_name"], signal["name"]),
             )
             if "if_defined" in signal.keys():
                 periphs_inst_str += "`endif\n"
