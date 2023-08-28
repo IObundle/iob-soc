@@ -186,8 +186,8 @@ module iob_axistream_in #(
       .clk_i(clk_i),
       .arst_i(arst_i),
       .cke_i(cke_i),
-      .rst_i(SOFTRESET),
-      .data_i ((tvalid_o & ~tready_i) | (~EMPTY[0] & tready_i & ENABLE)), //FIXME: Update with new iob-axis?
+      .rst_i(SOFT_RESET),
+      .data_i ((tvalid_o & ~tready_i) | (~EMPTY & tready_i & ENABLE)), //FIXME: Update with new iob-axis?
       .data_o(tvalid_o)
    );
 
