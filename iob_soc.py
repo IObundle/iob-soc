@@ -179,7 +179,7 @@ class iob_soc(iob_module):
                 {
                     "corename": "internal",
                     "if_name": "boot",
-                    "port": "cpu_reset",
+                    "port": "",
                     "bits": [],
                 },
             ),
@@ -187,13 +187,13 @@ class iob_soc(iob_module):
                 {
                     "corename": "BOOT0",
                     "if_name": "general",
-                    "port": "cpu_i_req_i",
+                    "port": "boot_ctr_i_req_i",
                     "bits": [],
                 },
                 {
                     "corename": "internal",
                     "if_name": "boot",
-                    "port": "cpu_i_req",
+                    "port": "",
                     "bits": [],
                 },
             ),
@@ -201,41 +201,13 @@ class iob_soc(iob_module):
                 {
                     "corename": "BOOT0",
                     "if_name": "general",
-                    "port": "cpu_i_resp_o",
+                    "port": "boot_ctr_i_resp_o",
                     "bits": [],
                 },
                 {
                     "corename": "internal",
                     "if_name": "boot",
-                    "port": "cpu_i_resp",
-                    "bits": [],
-                },
-            ),
-            (
-                {
-                    "corename": "BOOT0",
-                    "if_name": "general",
-                    "port": "ext_mem_i_resp_i",
-                    "bits": [],
-                },
-                {
-                    "corename": "internal",
-                    "if_name": "boot",
-                    "port": "ext_mem_i_resp",
-                    "bits": [],
-                },
-            ),
-            (
-                {
-                    "corename": "BOOT0",
-                    "if_name": "general",
-                    "port": "ext_mem_i_req_o",
-                    "bits": [],
-                },
-                {
-                    "corename": "internal",
-                    "if_name": "boot",
-                    "port": "ext_mem_i_req",
+                    "port": "",
                     "bits": [],
                 },
             ),
