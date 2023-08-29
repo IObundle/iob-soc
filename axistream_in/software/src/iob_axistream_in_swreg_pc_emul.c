@@ -16,6 +16,10 @@ uint32_t IOB_AXISTREAM_IN_GET_DATA() {
   return 0x00;
 }
 
+uint8_t IOB_AXISTREAM_IN_GET_RSTRB() {
+  return 0x00;
+}
+
 uint8_t IOB_AXISTREAM_IN_GET_EMPTY() {
   return 0x01;
 }

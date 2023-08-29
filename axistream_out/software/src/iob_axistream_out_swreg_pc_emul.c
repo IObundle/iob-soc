@@ -28,6 +28,9 @@ void IOB_AXISTREAM_OUT_SET_ENABLE(uint8_t value) {
 void IOB_AXISTREAM_OUT_SET_WSTRB(uint8_t value) {
 }
 
+void IOB_AXISTREAM_OUT_SET_LAST(uint8_t value) {
+}
+
 void IOB_AXISTREAM_OUT_SET_FIFO_THRESHOLD(uint32_t value) {
 }
 
