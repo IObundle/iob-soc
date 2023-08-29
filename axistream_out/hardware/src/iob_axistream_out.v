@@ -73,8 +73,10 @@ module iob_axistream_out #(
    wire                  fifo_empty;
    wire                  tvalid_int;
    wire                  valid_data;
-   //All FIFOs are read at the same time
+   //All FIFOs are read and write at the same time
    wire                  read_fifos = (axis_tready_i & axis_sw_enable) & ~fifo_empty;
+   // Write if SWreg DATA enable or DMA valid
+   wire                  write_fifos = DATA_wen | tvalid_i;
 
    iob_reg_re #(
       .DATA_W (1),
@@ -123,7 +125,7 @@ module iob_axistream_out #(
       .w_cke_i         (cke_i),
       .w_arst_i        (arst_i),
       .w_rst_i         (SOFT_RESET),
-      .w_en_i          (DATA_wen | tvalid_i), // Write if DMA valid or SWreg DATA enable
+      .w_en_i          (write_fifos),
       .w_data_i        (fifo_data_i),
       .w_empty_o       (),
       .w_full_o        (FULL),
@@ -141,6 +143,9 @@ module iob_axistream_out #(
    assign FIFO_LEVEL[FIFO_DEPTH_LOG2+1-1:0] = fifo_level;
 
    assign fifo_threshold_o = FIFO_LEVEL <= FIFO_THRESHOLD;
+
+   //WSTRB always set when received from DMA
+   wire [N-1:0] wstrb_int = tvalid_i==1'b1 ? {N{1'b1}} : WSTRB;
 
    iob_fifo_async #(
       .W_DATA_W(N),
@@ -170,8 +175,8 @@ module iob_axistream_out #(
       .w_cke_i         (cke_i),
       .w_arst_i        (arst_i),
       .w_rst_i         (SOFT_RESET),
-      .w_en_i          (DATA_wen),
-      .w_data_i        (WSTRB),
+      .w_en_i          (write_fifos),
+      .w_data_i        (wstrb_int),
       .w_empty_o       (),
       .w_full_o        (),
       .w_level_o       ()
@@ -197,6 +202,8 @@ module iob_axistream_out #(
 
    //LAST needs to be shifted according to the WSTRB before being inserted into the FIFO
    wire [N-1:0] tlast_int = ({N{1'd0}} | LAST) << last_pos;
+   //LAST always disabled when received from DMA
+   wire [N-1:0] tlast_int2 = tvalid_i==1'b1 ? {N{1'b0}} : tlast_int;
 
    iob_fifo_async #(
       .W_DATA_W(N),
@@ -226,8 +233,8 @@ module iob_axistream_out #(
       .w_cke_i         (cke_i),
       .w_arst_i        (arst_i),
       .w_rst_i         (SOFT_RESET),
-      .w_en_i          (DATA_wen),
-      .w_data_i        (tlast_int),
+      .w_en_i          (write_fifos),
+      .w_data_i        (tlast_int2),
       .w_empty_o       (),
       .w_full_o        (),
       .w_level_o       ()

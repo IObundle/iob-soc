@@ -84,14 +84,16 @@ module iob_axistream_in #(
       .signal_o(axis_sw_enable)
    );
 
-   wire read_fifos;
+   wire READ_en;
+   wire read_fifos = READ_en | (tready_i & ENABLE);
+
    // DATA_ren edge detection so that only one word is read from FIFO
    iob_edge_detect #(
       .CLKEDGE("posedge")
    ) READ_edge_detect (
       `include "clk_en_rst_s_s_portmap.vs"
       .bit_i     (DATA_ren),
-      .detected_o(read_fifos)
+      .detected_o(READ_en)
    );
 
    // Add padding words after the last word to fill packet
@@ -187,7 +189,7 @@ module iob_axistream_in #(
       .arst_i(arst_i),
       .cke_i(cke_i),
       .rst_i(SOFT_RESET),
-      .data_i ((tvalid_o & ~tready_i) | (~EMPTY & tready_i & ENABLE)), //FIXME: Update with new iob-axis?
+      .data_i ((tvalid_o & ~tready_i) | (~EMPTY & tready_i & ENABLE)),
       .data_o(tvalid_o)
    );
 
