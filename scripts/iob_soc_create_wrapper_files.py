@@ -94,7 +94,7 @@ def create_interconnect_instance(out_dir, name, num_extmem_connections):
       .M_COUNT     (1)
    ) system_axi_interconnect (
       .clk(clk),
-      .rst(rst),
+      .rst(arst),
 
       // Need to use manually defined connections because awlock and arlock of interconnect is only on bit for each slave
       .s_axi_awid    (axi_awid),    //Address write channel ID.

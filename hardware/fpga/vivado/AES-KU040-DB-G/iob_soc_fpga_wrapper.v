@@ -57,7 +57,7 @@ module iob_soc_fpga_wrapper (
    `include "iob_soc_wrapper_pwires.vs"
 
    wire clk;
-   wire rst;
+   wire arst;
 
 
    // 
@@ -121,7 +121,7 @@ module iob_soc_fpga_wrapper (
       `include "iob_soc_pportmaps.vs"
       .clk_i (clk),
       .cke_i (1'b1),
-      .arst_i(rst),
+      .arst_i(arst),
       .trap_o(trap)
    );
    
@@ -330,7 +330,7 @@ module iob_soc_fpga_wrapper (
       .arst_i (reset),
       .cke_i  (1'b1),
       .start_i(start),
-      .pulse_o(rst)
+      .pulse_o(arst)
    );
 `endif
 

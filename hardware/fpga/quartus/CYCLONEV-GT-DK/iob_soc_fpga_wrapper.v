@@ -60,7 +60,7 @@ module iob_soc_fpga_wrapper (
    // Clocking / Reset
    //-----------------------------------------------------------------
 
-   wire rst;
+   wire arst;
 
    // 
    // Logic to contatenate data pins and ethernet clock
@@ -125,7 +125,7 @@ module iob_soc_fpga_wrapper (
       `include "iob_soc_pportmaps.vs"
       .clk_i (clk),
       .cke_i (1'b1),
-      .arst_i(rst),
+      .arst_i(arst),
       .trap_o(trap)
    );
 
@@ -150,7 +150,7 @@ module iob_soc_fpga_wrapper (
    iob_reset_sync rst_sync (
       .clk_i (clk),
       .arst_i(rst_int),
-      .arst_o(rst)
+      .arst_o(arst)
    );
 
    alt_ddr3 ddr3_ctrl (
@@ -229,7 +229,7 @@ module iob_soc_fpga_wrapper (
    iob_reset_sync rst_sync (
       .clk_i (clk),
       .arst_i(~resetn),
-      .arst_o(rst)
+      .arst_o(arst)
    );
 `endif
 
