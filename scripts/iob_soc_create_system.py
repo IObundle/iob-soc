@@ -102,6 +102,7 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
                     signal["name"],
                     top.upper() + "_" + instance.name,
                     top_list[instance.__class__.name].upper() + "_SWREG",
+                    instance.name,
                 )
                 + ",\n"
             ).replace(

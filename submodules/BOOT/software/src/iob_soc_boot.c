@@ -3,7 +3,6 @@
 #include "iob_soc_boot_conf.h"
 #include "iob_soc_conf.h"
 #include "iob_soc_periphs.h"
-#include "iob_soc_system.h"
 
 #ifdef USE_EXTMEM
 #include "iob-cache.h"

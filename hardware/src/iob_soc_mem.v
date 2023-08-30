@@ -15,22 +15,22 @@ module iob_soc_mem #(
    parameter AXI_DATA_W  = 0
 ) (
    // Instruction bus
-   input               i_avalid_i,
-   input  [ADDR_W-1:0] i_address_i,
-   input  [DATA_W:0]   i_wdata_i,
-   input  [4-1:0]      i_wstrb_i,
-   output [DATA_W:0]   i_rdata_o,
-   output              i_rvalid_o,
-   output              i_ready_o,
+   input                       i_avalid_i,
+   input  [FIRM_ADDR_W-2-1:0]  i_addr_i,
+   input  [DATA_W-1:0]         i_wdata_i,
+   input  [DATA_W/8-1:0]       i_wstrb_i,
+   output [DATA_W-1:0]         i_rdata_o,
+   output                      i_rvalid_o,
+   output                      i_ready_o,
 
    // Data bus
-   input               d_avalid_i,
-   input  [ADDR_W-1:0] d_address_i,
-   input  [DATA_W:0]   d_wdata_i,
-   input  [4-1:0]      d_wstrb_i,
-   output [DATA_W:0]   d_rdata_o,
-   output              d_rvalid_o,
-   output              d_ready_o,
+   input                       d_avalid_i,
+   input  [1+MEM_ADDR_W-2-1:0] d_addr_i,
+   input  [DATA_W-1:0]         d_wdata_i,
+   input  [DATA_W/8-1:0]       d_wstrb_i,
+   output [DATA_W-1:0]         d_rdata_o,
+   output                      d_rvalid_o,
+   output                      d_ready_o,
 
    // AXI interface
    `include "axi_m_port.vs"
@@ -42,13 +42,13 @@ module iob_soc_mem #(
    //
 
    // Back-end bus
-   wire          cache_be_ibus_avalid;
-   wire [32-1:0] cache_be_ibus_address;
-   wire [32-1:0] cache_be_ibus_wdata;
-   wire [4-1:0]  cache_be_ibus_wstrb;
-   wire [32-1:0] cache_be_ibus_rdata;
-   wire          cache_be_ibus_rvalid;
-   wire          cache_be_ibus_ready;
+   wire                  cache_be_ibus_avalid;
+   wire [MEM_ADDR_W-1:0] cache_be_ibus_addr;
+   wire [DATA_W-1:0]     cache_be_ibus_wdata;
+   wire [DATA_W/8-1:0]   cache_be_ibus_wstrb;
+   wire [DATA_W-1:0]     cache_be_ibus_rdata;
+   wire                  cache_be_ibus_rvalid;
+   wire                  cache_be_ibus_ready;
 
 
    // Instruction cache instance
@@ -68,20 +68,20 @@ module iob_soc_mem #(
 
       // Front-end interface
       .avalid_i        (i_avalid_i),
-      .addr_i          (i_address_i),
+      .addr_i          (i_addr_i[(FIRM_ADDR_W-2)-1 -: (FIRM_ADDR_W-2)]),
       .wdata_i         (i_wdata_i),
       .wstrb_i         (i_wstrb_i),
       .rdata_o         (i_rdata_o),
       .rvalid_o        (i_rvalid_o),
       .ready_o         (i_ready_o),
       //Control IO
-      .invalidate_i (1'b0),
-      .invalidate_o(),
-      .wtb_empty_i  (1'b1),
-      .wtb_empty_o (),
+      .invalidate_i    (1'b0),
+      .invalidate_o    (),
+      .wtb_empty_i     (1'b1),
+      .wtb_empty_o     (),
       // Back-end interface
       .be_avalid_o     (cache_be_ibus_avalid),
-      .be_addr_o       (cache_be_ibus_address),
+      .be_addr_o       (cache_be_ibus_addr),
       .be_wdata_o      (cache_be_ibus_wdata),
       .be_wstrb_o      (cache_be_ibus_wstrb),
       .be_rdata_i      (cache_be_ibus_rdata),
@@ -90,13 +90,13 @@ module iob_soc_mem #(
    );
 
    // L2 cache interface signals
-   wire          l2cache_bus_avalid;
-   wire [32-1:0] l2cache_bus_address;
-   wire [32-1:0] l2cache_bus_wdata;
-   wire [4-1:0]  l2cache_bus_wstrb;
-   wire [32-1:0] l2cache_bus_rdata;
-   wire          l2cache_bus_rvalid;
-   wire          l2cache_bus_ready;
+   wire                  l2cache_bus_avalid;
+   wire [MEM_ADDR_W-1:0] l2cache_bus_addr;
+   wire [DATA_W-1:0]     l2cache_bus_wdata;
+   wire [DATA_W/8-1:0]   l2cache_bus_wstrb;
+   wire [DATA_W-1:0]     l2cache_bus_rdata;
+   wire                  l2cache_bus_rvalid;
+   wire                  l2cache_bus_ready;
 
    // iob_soc_mem control signals
    wire l2_wtb_empty;
@@ -116,13 +116,13 @@ module iob_soc_mem #(
    // IOb ready and rvalid signals
 
    // Back-end bus
-   wire          cache_be_dbus_avalid;
-   wire [32-1:0] cache_be_dbus_address;
-   wire [32-1:0] cache_be_dbus_wdata;
-   wire [4-1:0]  cache_be_dbus_wstrb;
-   wire [32-1:0] cache_be_dbus_rdata;
-   wire          cache_be_dbus_rvalid;
-   wire          cache_be_dbus_ready;
+   wire                  cache_be_dbus_avalid;
+   wire [MEM_ADDR_W-1:0] cache_be_dbus_addr;
+   wire [DATA_W-1:0]     cache_be_dbus_wdata;
+   wire [DATA_W/8-1:0]   cache_be_dbus_wstrb;
+   wire [DATA_W-1:0]     cache_be_dbus_rdata;
+   wire                  cache_be_dbus_rvalid;
+   wire                  cache_be_dbus_ready;
 
    // Data cache instance
    iob_cache_iob #(
@@ -141,7 +141,7 @@ module iob_soc_mem #(
 
       // Front-end interface
       .avalid_i        (d_avalid_i),
-      .addr_i          (d_address_i),
+      .addr_i          (d_addr_i[(1+MEM_ADDR_W-2)-1 -: (1+MEM_ADDR_W-2)]),
       .wdata_i         (d_wdata_i),
       .wstrb_i         (d_wstrb_i),
       .rdata_o         (d_rdata_o),
@@ -154,7 +154,7 @@ module iob_soc_mem #(
       .wtb_empty_o (),
       // Back-end interface
       .be_avalid_o     (cache_be_dbus_avalid),
-      .be_addr_o       (cache_be_dbus_address),
+      .be_addr_o       (cache_be_dbus_addr),
       .be_wdata_o      (cache_be_dbus_wdata),
       .be_wstrb_o      (cache_be_dbus_wstrb),
       .be_rdata_i      (cache_be_dbus_rdata),
@@ -163,35 +163,34 @@ module iob_soc_mem #(
    );
 
    // Merge cache back-ends
-   wire [2*1-1:0] m_avalid_merge_into_l2;
-   assign m_avalid_merge_into_l2 = {cache_be_ibus_avalid, cache_be_dbus_avalid};
    iob_merge #(
       .ADDR_W(MEM_ADDR_W),
-      .ADDR_W(DATA_W),
+      .DATA_W(DATA_W),
       .N     (2)
    ) merge_i_d_buses_into_l2 (
-      .clk_i   (clk_i),
-      .arst_i  (arst_i),
+      .clk_i     (clk_i),
+      .arst_i    (arst_i),
 
       // Masters' interface
-      m_avalid_i (m_avalid_merge_into_l2),
-      m_address_i({cache_be_ibus_address, cache_be_dbus_address}),
-      m_wdata_i  ({cache_be_ibus_wdata,   cache_be_dbus_wdata  }),
-      m_wstrb_i  ({cache_be_ibus_wstrb,   cache_be_dbus_wstrb  }),
-      m_rdata_o  ({cache_be_ibus_rdata,   cache_be_dbus_rdata  }),
-      m_rvalid_o ({cache_be_ibus_rvalid,  cache_be_dbus_rvalid }),
-      m_ready_o  ({cache_be_ibus_ready,   cache_be_dbus_ready  }),
-      // slave
-      f_avalid_o (l2cache_bus_avalid),
-      f_address_o(l2cache_bus_address),
-      f_wdata_o  (l2cache_bus_wdata),
-      f_wstrb_o  (l2cache_bus_wstrb),
-      f_rdata_i  (l2cache_bus_rdata),
-      f_rvalid_i (l2cache_bus_rvalid),
-      f_ready_i  (l2cache_bus_ready),
+      .m_avalid_i({cache_be_ibus_avalid, cache_be_dbus_avalid}),
+      .m_addr_i  ({cache_be_ibus_addr,   cache_be_dbus_addr  }),
+      .m_wdata_i ({cache_be_ibus_wdata,  cache_be_dbus_wdata }),
+      .m_wstrb_i ({cache_be_ibus_wstrb,  cache_be_dbus_wstrb }),
+      .m_rdata_o ({cache_be_ibus_rdata,  cache_be_dbus_rdata }),
+      .m_rvalid_o({cache_be_ibus_rvalid, cache_be_dbus_rvalid}),
+      .m_ready_o ({cache_be_ibus_ready,  cache_be_dbus_ready }),
+
+      // Follower's interface
+      .f_avalid_o(l2cache_bus_avalid),
+      .f_addr_o  (l2cache_bus_addr),
+      .f_wdata_o (l2cache_bus_wdata),
+      .f_wstrb_o (l2cache_bus_wstrb),
+      .f_rdata_i (l2cache_bus_rdata),
+      .f_rvalid_i(l2cache_bus_rvalid),
+      .f_ready_i (l2cache_bus_ready),
 
       // Master selection source
-      m_sel_src_i(m_avalid_merge_into_l2)
+      .m_sel_src_i({cache_be_ibus_avalid, cache_be_dbus_avalid})
    );
 
    // L2 cache instance
@@ -209,23 +208,23 @@ module iob_soc_mem #(
       .USE_CTRL_CNT (0)            //Remove counters
    ) l2cache (
       // Native interface
-      .avalid_i        (l2cache_bus_avalid),
-      .addr_i          (l2cache_bus_address),
-      .wdata_i         (l2cache_bus_wdata),
-      .wstrb_i         (l2cache_bus_wstrb),
-      .rdata_o         (l2cache_bus_rdata),
-      .rvalid_o        (l2cache_bus_rvalid),
-      .ready_o         (l2cache_bus_ready),
+      .avalid_i    (l2cache_bus_avalid),
+      .addr_i      (l2cache_bus_addr[(MEM_ADDR_W)-1 -: (MEM_ADDR_W)-2]),
+      .wdata_i     (l2cache_bus_wdata),
+      .wstrb_i     (l2cache_bus_wstrb),
+      .rdata_o     (l2cache_bus_rdata),
+      .rvalid_o    (l2cache_bus_rvalid),
+      .ready_o     (l2cache_bus_ready),
       //Control IO
-      .invalidate_i (invalidate_reg & ~l2_avalid),
+      .invalidate_i(invalidate_reg & ~l2cache_bus_avalid),
       .invalidate_o(),
-      .wtb_empty_i  (1'b1),
+      .wtb_empty_i (1'b1),
       .wtb_empty_o (l2_wtb_empty),
       // AXI interface
       `include "axi_m_m_portmap.vs"
-      .clk_i         (clk_i),
-      .cke_i         (cke_i),
-      .arst_i        (arst_i)
+      .clk_i       (clk_i),
+      .cke_i       (cke_i),
+      .arst_i      (arst_i)
    );
 
 endmodule

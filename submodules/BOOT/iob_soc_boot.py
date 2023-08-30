@@ -9,7 +9,7 @@ from iob_reg import iob_reg
 from iob_reg_e import iob_reg_e
 from iob_pulse_gen import iob_pulse_gen
 from iob_rom_dp import iob_rom_dp
-from iob_split2 import iob_split2
+from iob_split import iob_split
 
 
 class iob_soc_boot(iob_module):
@@ -29,7 +29,7 @@ class iob_soc_boot(iob_module):
                 iob_reg_e,
                 iob_pulse_gen,
                 iob_rom_dp,
-                iob_split2,
+                iob_split,
             ]
         )
 
@@ -43,16 +43,16 @@ class iob_soc_boot(iob_module):
                     "name": "DATA_W",
                     "type": "F",
                     "val": "32",
-                    "min": "32",
+                    "min": "NA",
                     "max": "32",
                     "descr": "Data bus width",
                 },
                 {
                     "name": "ADDR_W",
                     "type": "F",
-                    "val": "`IOB_SOC_BOOT_SWREG_ADDR_W",
+                    "val": "32",
                     "min": "NA",
-                    "max": "NA",
+                    "max": "32",
                     "descr": "Address bus width",
                 },
                 {
@@ -78,22 +78,6 @@ class iob_soc_boot(iob_module):
                     "min": "NA",
                     "max": "24",
                     "descr": "Preboot ROM address width",
-                },
-                {
-                    "name": "REQ_W_PARAM",
-                    "type": "F",
-                    "val": "`REQ_W",
-                    "min": "NA",
-                    "max": "32",
-                    "descr": "Address bus width",
-                },
-                {
-                    "name": "RESP_W_PARAM",
-                    "type": "F",
-                    "val": "`RESP_W",
-                    "min": "NA",
-                    "max": "32",
-                    "descr": "Address bus width",
                 },
             ]
         )
@@ -131,28 +115,52 @@ class iob_soc_boot(iob_module):
                         "descr": "CPU sync reset.",
                     },
                     {
-                        "name": "cpu_i_req_i",
-                        "type": "I",
-                        "n_bits": "REQ_W_PARAM",
-                        "descr": "System reset, asynchronous and active high",
-                    },
-                    {
-                        "name": "cpu_i_resp_o",
+                        "name": "CTR",
                         "type": "O",
-                        "n_bits": "RESP_W_PARAM",
-                        "descr": "System reset, asynchronous and active high",
+                        "n_bits": "2",
+                        "descr": "Boot controller external link.",
                     },
                     {
-                        "name": "ext_mem_i_resp_i",
+                        "name": "ctr_ibus_avalid_i",
                         "type": "I",
-                        "n_bits": "REQ_W_PARAM",
-                        "descr": "System reset, asynchronous and active high",
+                        "n_bits": "1",
+                        "descr": "CPU sync reset.",
                     },
                     {
-                        "name": "ext_mem_i_req_o",
+                        "name": "ctr_ibus_addr_i",
+                        "type": "I",
+                        "n_bits": "ADDR_W",
+                        "descr": "CPU sync reset.",
+                    },
+                    {
+                        "name": "ctr_ibus_wdata_i",
+                        "type": "I",
+                        "n_bits": "DATA_W",
+                        "descr": "CPU sync reset.",
+                    },
+                    {
+                        "name": "ctr_ibus_wstrb_i",
+                        "type": "I",
+                        "n_bits": "DATA_W/8",
+                        "descr": "CPU sync reset.",
+                    },
+                    {
+                        "name": "ctr_ibus_rdata_o",
                         "type": "O",
-                        "n_bits": "RESP_W_PARAM",
-                        "descr": "System reset, asynchronous and active high",
+                        "n_bits": "DATA_W",
+                        "descr": "CPU sync reset.",
+                    },
+                    {
+                        "name": "ctr_ibus_rvalid_o",
+                        "type": "O",
+                        "n_bits": "1",
+                        "descr": "CPU sync reset.",
+                    },
+                    {
+                        "name": "ctr_ibus_ready_o",
+                        "type": "O",
+                        "n_bits": "1",
+                        "descr": "CPU sync reset.",
                     },
                 ],
             },
