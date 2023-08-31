@@ -16,7 +16,6 @@ from iob_uart import iob_uart
 from iob_utils import iob_utils
 from iob_merge import iob_merge
 from iob_split import iob_split
-from iob_split2 import iob_split2
 from iob_rom_sp import iob_rom_sp
 from iob_ram_dp_be import iob_ram_dp_be
 from iob_ram_dp_be_xil import iob_ram_dp_be_xil
@@ -67,15 +66,11 @@ class iob_soc(iob_module):
         if iob_picorv32 in cls.submodule_list:
             cls.cpu = iob_picorv32("cpu_0")
         if iob_split in cls.submodule_list:
-            cls.ibus_split = iob_split("ibus_split_0")
-            cls.dbus_split = iob_split("dbus_split_0")
-            cls.int_dbus_split = iob_split("int_dbus_split_0")
+            cls.cpu_ibus_split = iob_split("cpu_ibus_split_0")
+            cls.cpu_dbus_split = iob_split("cpu_dbus_split_0")
             cls.pbus_split = iob_split("pbus_split_0")
-        if iob_split2 in cls.submodule_list:
-            cls.boot_ibus_split = iob_split2("boot_ibus_split_0")
         if iob_merge in cls.submodule_list:
-            cls.int_mem = iob_merge("iob_merge_0")
-            cls.ext_mem = iob_merge("iob_merge_1")
+            cls.iob_soc_mem = iob_merge("iob_merge_1")
         if iob_uart in cls.submodule_list:
             cls.peripherals.append(iob_uart("UART0"))
         if iob_soc_boot in cls.submodule_list:
@@ -101,7 +96,6 @@ class iob_soc(iob_module):
                 {"interface": "clk_en_rst_s_port"},
                 iob_merge,
                 iob_split,
-                iob_split2,
                 iob_rom_sp,
                 iob_ram_dp_be,
                 iob_ram_dp_be_xil,
@@ -187,7 +181,7 @@ class iob_soc(iob_module):
                 {
                     "corename": "BOOT0",
                     "if_name": "general",
-                    "port": "boot_ctr_i_req_i",
+                    "port": "CTR",
                     "bits": [],
                 },
                 {
@@ -201,7 +195,91 @@ class iob_soc(iob_module):
                 {
                     "corename": "BOOT0",
                     "if_name": "general",
-                    "port": "boot_ctr_i_resp_o",
+                    "port": "ctr_ibus_avalid_i",
+                    "bits": [],
+                },
+                {
+                    "corename": "internal",
+                    "if_name": "boot",
+                    "port": "",
+                    "bits": [],
+                },
+            ),
+            (
+                {
+                    "corename": "BOOT0",
+                    "if_name": "general",
+                    "port": "ctr_ibus_addr_i",
+                    "bits": [],
+                },
+                {
+                    "corename": "internal",
+                    "if_name": "boot",
+                    "port": "",
+                    "bits": [],
+                },
+            ),
+            (
+                {
+                    "corename": "BOOT0",
+                    "if_name": "general",
+                    "port": "ctr_ibus_wdata_i",
+                    "bits": [],
+                },
+                {
+                    "corename": "internal",
+                    "if_name": "boot",
+                    "port": "",
+                    "bits": [],
+                },
+            ),
+            (
+                {
+                    "corename": "BOOT0",
+                    "if_name": "general",
+                    "port": "ctr_ibus_wstrb_i",
+                    "bits": [],
+                },
+                {
+                    "corename": "internal",
+                    "if_name": "boot",
+                    "port": "",
+                    "bits": [],
+                },
+            ),
+            (
+                {
+                    "corename": "BOOT0",
+                    "if_name": "general",
+                    "port": "ctr_ibus_rdata_o",
+                    "bits": [],
+                },
+                {
+                    "corename": "internal",
+                    "if_name": "boot",
+                    "port": "",
+                    "bits": [],
+                },
+            ),
+            (
+                {
+                    "corename": "BOOT0",
+                    "if_name": "general",
+                    "port": "ctr_ibus_rvalid_o",
+                    "bits": [],
+                },
+                {
+                    "corename": "internal",
+                    "if_name": "boot",
+                    "port": "",
+                    "bits": [],
+                },
+            ),
+            (
+                {
+                    "corename": "BOOT0",
+                    "if_name": "general",
+                    "port": "ctr_ibus_ready_o",
                     "bits": [],
                 },
                 {
@@ -221,16 +299,15 @@ class iob_soc(iob_module):
                 name="bus_split",
                 description="Split modules for buses",
                 blocks=[
-                    cls.ibus_split,
-                    cls.dbus_split,
-                    cls.int_dbus_split,
+                    cls.cpu_ibus_split,
+                    cls.cpu_dbus_split,
                     cls.pbus_split,
                 ],
             ),
             iob_block_group(
                 name="mem",
                 description="Memory module",
-                blocks=[cls.int_mem, cls.ext_mem],
+                blocks=[cls.iob_soc_mem],
             ),
             iob_block_group(
                 name="peripheral",
@@ -260,22 +337,6 @@ class iob_soc(iob_module):
                     "min": "0",
                     "max": "1",
                     "descr": "Use compressed CPU instructions",
-                },
-                {
-                    "name": "E",
-                    "type": "M",
-                    "val": "31",
-                    "min": "1",
-                    "max": "32",
-                    "descr": "Address selection bit for external memory",
-                },
-                {
-                    "name": "B",
-                    "type": "M",
-                    "val": "20",
-                    "min": "1",
-                    "max": "32",
-                    "descr": "Address selection bit for boot ROM",
                 },
                 # parameters
                 {

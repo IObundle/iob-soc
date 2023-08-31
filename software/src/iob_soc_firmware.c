@@ -3,7 +3,6 @@
 #include "iob_soc_boot_swreg.h"
 #include "iob_soc_conf.h"
 #include "iob_soc_periphs.h"
-#include "iob_soc_system.h"
 #include "iob_str.h"
 #include "printf.h"
 
