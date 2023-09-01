@@ -120,7 +120,7 @@ module iob_soc #(
 
       // Master's interface
       .m_avalid_i(cpu_ibus_avalid),
-      .m_addr_i  (cpu_ibus_addr),
+      .m_addr_i  (boot_CTR_r_o == 2'b10 ? cpu_ibus_addr + 32'h80000000 : cpu_ibus_addr),
       .m_wdata_i (cpu_ibus_wdata),
       .m_wstrb_i (cpu_ibus_wstrb),
       .m_rdata_o (cpu_ibus_rdata),
@@ -128,19 +128,19 @@ module iob_soc #(
       .m_ready_o (cpu_ibus_ready),
 
       // Followers' interface
-      .f_avalid_o({boot_ctr_ibus_avalid_i, iob_soc_mem_ibus_avalid}),
-      .f_addr_o  ({boot_ctr_ibus_addr_i,   iob_soc_mem_ibus_addr}),
-      .f_wdata_o ({boot_ctr_ibus_wdata_i,  iob_soc_mem_ibus_wdata}),
-      .f_wstrb_o ({boot_ctr_ibus_wstrb_i,  iob_soc_mem_ibus_wstrb}),
-      .f_rdata_i ({boot_ctr_ibus_rdata_o,  iob_soc_mem_ibus_rdata}),
-      .f_rvalid_i({boot_ctr_ibus_rvalid_o, iob_soc_mem_ibus_rvalid}),
-      .f_ready_i ({boot_ctr_ibus_ready_o,  iob_soc_mem_ibus_ready}),
+      .f_avalid_o({iob_soc_mem_ibus_avalid, boot_ctr_ibus_avalid_i}),
+      .f_addr_o  ({iob_soc_mem_ibus_addr,   boot_ctr_ibus_addr_i  }),
+      .f_wdata_o ({iob_soc_mem_ibus_wdata,  boot_ctr_ibus_wdata_i }),
+      .f_wstrb_o ({iob_soc_mem_ibus_wstrb,  boot_ctr_ibus_wstrb_i }),
+      .f_rdata_i ({iob_soc_mem_ibus_rdata,  boot_ctr_ibus_rdata_o }),
+      .f_rvalid_i({iob_soc_mem_ibus_rvalid, boot_ctr_ibus_rvalid_o}),
+      .f_ready_i ({iob_soc_mem_ibus_ready,  boot_ctr_ibus_ready_o }),
 
       // Follower selection
-      .f_sel_i   (boot_CTR[2-1:0] != 'b0)
+      .f_sel_i   (boot_CTR_r_o == 2'b00 ? 1'b0 : 1'b1)
    );
 
-   assign cpu_reset = boot_cpu_rst_o;
+   assign cpu_reset = boot_CPU_RST_r_o;
 
    /*iob_soc_boot #(
       .ADDR_W(ADDR_W),
@@ -211,13 +211,13 @@ module iob_soc #(
       .m_ready_o (cpu_dbus_ready),
 
       // Followers' interface
-      .f_avalid_o({s_periph_dbus_avalid,  iob_soc_mem_dbus_avalid}),
-      .f_addr_o  ({s_periph_dbus_addr,    iob_soc_mem_dbus_addr  }),
-      .f_wdata_o ({s_periph_dbus_wdata,   iob_soc_mem_dbus_wdata }),
-      .f_wstrb_o ({s_periph_dbus_wstrb,   iob_soc_mem_dbus_wstrb }),
-      .f_rdata_i ({s_periph_dbus_rdata,   iob_soc_mem_dbus_rdata }),
-      .f_rvalid_i({s_periph_dbus_rvalid,  iob_soc_mem_dbus_rvalid}),
-      .f_ready_i ({s_periph_dbus_ready,   iob_soc_mem_dbus_ready }),
+      .f_avalid_o({iob_soc_mem_dbus_avalid, s_periph_dbus_avalid}),
+      .f_addr_o  ({iob_soc_mem_dbus_addr,   s_periph_dbus_addr  }),
+      .f_wdata_o ({iob_soc_mem_dbus_wdata,  s_periph_dbus_wdata }),
+      .f_wstrb_o ({iob_soc_mem_dbus_wstrb,  s_periph_dbus_wstrb }),
+      .f_rdata_i ({iob_soc_mem_dbus_rdata,  s_periph_dbus_rdata }),
+      .f_rvalid_i({iob_soc_mem_dbus_rvalid, s_periph_dbus_rvalid}),
+      .f_ready_i ({iob_soc_mem_dbus_ready,  s_periph_dbus_ready }),
 
       // Follower selection
       .f_sel_i    (cpu_dbus_addr[ADDR_W-1])
