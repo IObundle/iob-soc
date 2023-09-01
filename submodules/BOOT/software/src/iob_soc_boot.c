@@ -35,7 +35,7 @@ int main() {
 #ifdef USE_EXTMEM
   prog_start_addr = (char *)EXTRA_BASE;
 #else
-  prog_start_addr = (char *)(1 << IOB_SOC_BOOT_FULL_ROM_ADDR_W);
+  prog_start_addr = (char *)(1 << IOB_SOC_BOOT_BOOT_ROM_ADDR_W);
 #endif
 
   while (uart_getc() != ACK) {

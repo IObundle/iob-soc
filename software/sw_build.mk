@@ -17,9 +17,6 @@ iob_soc_preboot.hex: ../../software/iob_soc_preboot.bin
 iob_soc_boot.hex: ../../software/iob_soc_boot.bin
 	../../scripts/makehex.py $< $(call GET_IOB_SOC_CONF_MACRO,IOB_SOC_BOOT0_BOOT_ROM_ADDR_W) > $@
 
-iob_soc_rom.hex: iob_soc_preboot.hex iob_soc_boot.hex
-	cat $^ > $@
-
 iob_soc_firmware.hex: iob_soc_firmware.bin
 	../../scripts/makehex.py $< $(call GET_IOB_SOC_CONF_MACRO,IOB_SOC_SRAM_ADDR_W) > $@
 	../../scripts/hex_split.py iob_soc_firmware .
@@ -42,7 +39,7 @@ UTARGETS+=build_iob_soc_software
 
 TEMPLATE_LDS=src/$(COMPILE_PYTHON)$@.lds
 
-IOB_SOC_INCLUDES=-I. -Isrc 
+IOB_SOC_INCLUDES=-I. -Isrc
 
 IOB_SOC_LFLAGS=-Wl,-Bstatic,-T,$(TEMPLATE_LDS),--strip-debug
 

@@ -2,21 +2,20 @@
 #include "iob_soc_conf.h"
 #include "iob_soc_periphs.h"
 
-// Can't include iob_soc_boot_conf.h because the assembler doesn't recognize stdint.h,
+// Can't include iob_soc_boot_swreg.h because the assembler doesn't recognize stdint.h,
 // so define the constants here instead (these are address offsets).
 #define IOB_SOC_BOOT_ROM 0
 #define IOB_SOC_BOOT_CTR 0
+#define IOB_SOC_BOOT_CPU_RST 1
 
-#define BOOTROM (BOOT0_BASE + IOB_SOC_BOOT_ROM + 1 << IOB_SOC_BOOT_PREBOOT_ROM_ADDR_W)
-#define BOOTRAM ((1<<31) + (1<<IOB_SOC_MEM_ADDR_W) - (1<<IOB_SOC_BOOT_BOOT_ROM_ADDR_W))
-//#define BOOTRAM 7168 //((1 << 31) + (1 << MEM_ADDR_W) - (1 << BOOT_BOOTROM_ADDR_W))
-#define LENGTH (1 << IOB_SOC_BOOT_FULL_ROM_ADDR_W) - (1 << IOB_SOC_BOOT_PREBOOT_ROM_ADDR_W)
-#define CTR_ADDR (BOOT0_BASE + IOB_SOC_BOOT_CTR)
+#define BOOTROM (BOOT0_BASE + IOB_SOC_BOOT_ROM)
+#define BOOTRAM ((1 << 31) + (1 << IOB_SOC_MEM_ADDR_W) - (1 << IOB_SOC_BOOT_BOOT_ROM_ADDR_W))
+//#define BOOTRAM ((1 << 31) + (1 << IOB_SOC_MEM_ADDR_W))
+//#define BOOTRAM (1 << 31)
+#define LENGTH (1 << IOB_SOC_BOOT_BOOT_ROM_ADDR_W)
 
 .section .init
 .globl _start
-
-//.string "Preboot string!\n"
 
 _start:
   li x1, LENGTH
@@ -32,8 +31,12 @@ copy_loop:
   bne x1, x0, copy_loop
 
 //reboot to run bootloader
-li s5, 0b101
-li s6, CTR_ADDR
+li s5, 1
+li s6, BOOT0_BASE + IOB_SOC_BOOT_CTR
+sw s5, 0(s6)
+
+li s5, 1
+li s6, BOOT0_BASE + IOB_SOC_BOOT_CPU_RST
 sw s5, 0(s6)
 
 ebreak
