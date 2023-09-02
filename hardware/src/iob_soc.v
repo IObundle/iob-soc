@@ -120,7 +120,10 @@ module iob_soc #(
 
       // Master's interface
       .m_avalid_i(cpu_ibus_avalid),
-      .m_addr_i  (boot_CTR_r_o == 2'b10 ? cpu_ibus_addr + 32'h80000000 : cpu_ibus_addr),
+      .m_addr_i  (
+         boot_CTR_r_o == 2'b10 ? cpu_ibus_addr + 32'h80000000 :
+            (boot_CTR_r_o == 2'b01 ? cpu_ibus_addr | 32'h80000000 : cpu_ibus_addr)
+      ),
       .m_wdata_i (cpu_ibus_wdata),
       .m_wstrb_i (cpu_ibus_wstrb),
       .m_rdata_o (cpu_ibus_rdata),
@@ -140,51 +143,14 @@ module iob_soc #(
       .f_sel_i   (boot_CTR_r_o == 2'b00 ? 1'b0 : 1'b1)
    );
 
-   assign cpu_reset = boot_CPU_RST_r_o;
-
-   /*iob_soc_boot #(
-      .ADDR_W(ADDR_W),
-      .DATA_W(DATA_W)
-   ) soc_boot (
-      .clk_i    (clk_i),
-      .cke_i    (cke_i),
-      .arst_i   (arst_i),
-      .cpu_rst_o(cpu_reset),
-
-      .iob_avalid_i(cpu_d_req[`AVALID(0)]),
-      .iob_addr_i  (cpu_d_req[`ADDRESS(0, ADDR_W)]),
-      .iob_wdata_i (cpu_d_req[`WDATA(0)]),
-      .iob_wstrb_i (cpu_d_req[`WSTRB(0)]),
-      // These below are empty. They're not used by the module and anyway cpu_d_resp is an output.
-      // Can't be driven by multiple drivers.
-      .iob_rvalid_o(),
-      .iob_rdata_o (),
-      .iob_ready_o (),
-
-      .cpu_i_req_i (cpu_i_req),
-      .cpu_i_resp_o(cpu_i_resp),
-
-      .ext_mem_i_req_o (ext_mem_i_req),
-      .ext_mem_i_resp_i(ext_mem_i_resp)
-   );*/
-
-
-
-
-
-
-
-
-
-
-
+   assign cpu_reset = boot_cpu_rst_r_o;
 
 
    //
-   // SPLIT INTERNAL MEMORY AND PERIPHERALS BUS
+   // SPLIT MEMORY AND PERIPHERALS BUS
    //
 
-   // Selected Peripheral data bus
+   // Selected peripheral data bus
    wire                s_periph_dbus_avalid;
    wire [ADDR_W-1:0]   s_periph_dbus_addr;
    wire [DATA_W-1:0]   s_periph_dbus_wdata;
@@ -246,7 +212,7 @@ module iob_soc #(
 
       // Master's interface
       .m_avalid_i(s_periph_dbus_avalid),
-      .m_addr_i  (s_periph_dbus_addr),
+      .m_addr_i  ({1'b0, {(`IOB_SOC_N_SLAVES_W){1'b0}}, s_periph_dbus_addr[0 +: ADDR_W-1-`IOB_SOC_N_SLAVES_W]}),
       .m_wdata_i (s_periph_dbus_wdata),
       .m_wstrb_i (s_periph_dbus_wstrb),
       .m_rdata_o (s_periph_dbus_rdata),

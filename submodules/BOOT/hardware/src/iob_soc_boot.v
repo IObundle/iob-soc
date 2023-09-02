@@ -39,19 +39,29 @@ module iob_soc_boot #(
         .data_o(CTR_r_o)
     );
 
-   iob_pulse_gen #(
-      .START   (0),
-      .DURATION(100)
-   ) reset_pulse (
-      .clk_i  (clk_i),
-      .arst_i (arst_i),
-      .cke_i  (cke_i),
-      .start_i(CPU_RST | arst_i),
-      .pulse_o(CPU_RST_r_o)
-   );
+    // CPU reset
+    reg cpu_rst;
+    always @(posedge CTR) begin
+        cpu_rst = 1'b1;
+    end
+    always @(posedge clk_i, posedge arst_i) begin
+        if (cpu_rst | arst_i) begin
+            cpu_rst = 1'b0;
+        end
+    end
+    iob_pulse_gen #(
+        .START   (0),
+        .DURATION(100)
+    ) reset_pulse (
+        .clk_i  (clk_i),
+        .arst_i (arst_i),
+        .cke_i  (cke_i),
+        .start_i(cpu_rst | arst_i),
+        .pulse_o(cpu_rst_r_o)
+    );
 
     //
-    //INSTANTIATE BOOT ROM
+    //INSTANTIATE PREBOOT AND BOOTLOADER ROMs
     //
     iob_rom_sp #(
         .DATA_W(DATA_W),
@@ -62,7 +72,7 @@ module iob_soc_boot #(
 
         //instruction memory interface
         .r_en_i  (ctr_ibus_avalid_i),
-        .addr_i  (ctr_ibus_addr_i[0 +: BOOT_ROM_ADDR_W]),
+        .addr_i  ({2'b00, ctr_ibus_addr_i[2 +: BOOT_ROM_ADDR_W-2]}), // Equivalent to what would be (iob_addr_i >> 2)[0 +: 10]
         .r_data_o(ctr_ibus_rdata_o)
     );
     iob_rom_sp #(
@@ -74,7 +84,7 @@ module iob_soc_boot #(
 
         //instruction memory interface
         .r_en_i(ROM_ren),
-        .addr_i(iob_addr_i[2 +: PREBOOT_ROM_ADDR_W]), // Equivalent to what would be (iob_addr_i >> 2)[0 +: 10]
+        .addr_i({2'b00, iob_addr_i[2 +: PREBOOT_ROM_ADDR_W-2]}), // Equivalent to what would be (iob_addr_i >> 2)[0 +: 10]
         .r_data_o(ROM)
     );
     assign ROM_ready = 1'b1;

@@ -68,7 +68,7 @@ module iob_soc_mem #(
 
       // Front-end interface
       .avalid_i        (i_avalid_i),
-      .addr_i          (i_addr_i[(FIRM_ADDR_W-2)-1 -: (FIRM_ADDR_W-2)]),
+      .addr_i          (i_addr_i[0 +: (FIRM_ADDR_W-2)]),
       .wdata_i         (i_wdata_i),
       .wstrb_i         (i_wstrb_i),
       .rdata_o         (i_rdata_o),
@@ -141,7 +141,7 @@ module iob_soc_mem #(
 
       // Front-end interface
       .avalid_i        (d_avalid_i),
-      .addr_i          (d_addr_i[(1+MEM_ADDR_W-2)-1 -: (1+MEM_ADDR_W-2)]),
+      .addr_i          (d_addr_i[0 +: (1+MEM_ADDR_W-2)]),
       .wdata_i         (d_wdata_i),
       .wstrb_i         (d_wstrb_i),
       .rdata_o         (d_rdata_o),
@@ -209,7 +209,7 @@ module iob_soc_mem #(
    ) l2cache (
       // Native interface
       .avalid_i    (l2cache_bus_avalid),
-      .addr_i      (l2cache_bus_addr[(MEM_ADDR_W)-1 -: (MEM_ADDR_W)-2]),
+      .addr_i      (l2cache_bus_addr[0 +: (MEM_ADDR_W)-2]),
       .wdata_i     (l2cache_bus_wdata),
       .wstrb_i     (l2cache_bus_wstrb),
       .rdata_o     (l2cache_bus_rdata),
