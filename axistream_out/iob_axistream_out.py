@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
 
 import os
+import copy
 
 from iob_module import iob_module
 
 # Submodules
-from iob_reg import iob_reg
-from iob_reg_e import iob_reg_e
-from iob_ram_2p_be import iob_ram_2p_be
+from iob_fifo_async import iob_fifo_async
+from iob_reg_re import iob_reg_re
+from iob_prio_enc import iob_prio_enc
+from iob_ram_t2p import iob_ram_t2p
 from iob_axistream_in import iob_axistream_in
+from iob_sync import iob_sync
 
 
 class iob_axistream_out(iob_module):
@@ -22,18 +25,18 @@ class iob_axistream_out(iob_module):
         ''' Create submodules list with dependencies of this module
         '''
         super()._create_submodules_list([
-            # TODO: Copy submodules from iob_axistream_in. Probably should create a superclass iob_axistream with the base for these
             {"interface": "iob_s_port"},
             {"interface": "iob_s_portmap"},
-            iob_reg,
-            iob_reg_e,
-            (iob_ram_2p_be, {"purpose": "simulation"}),
-            (iob_ram_2p_be, {"purpose": "fpga"}),
+            iob_fifo_async,
+            iob_sync,
+            iob_reg_re,
+            iob_prio_enc,
+            iob_ram_t2p,
         ])
 
     @classmethod
     def _setup_confs(cls):
-        super()._setup_confs(iob_axistream_in.confs)
+        super()._setup_confs(copy.deepcopy(iob_axistream_in.confs))
 
         # Find ADDR_W from confs and change its val to OUT_SWREG_ADDR_W
         for conf in cls.confs:
@@ -47,7 +50,7 @@ class iob_axistream_out(iob_module):
             {"name": "iob_s_port", "descr": "CPU native interface", "ports": []},
             {
                 "name": "general",
-                "descr": "GENERAL INTERFACE SIGNALS",
+                "descr": "System general interface signals",
                 "ports": [
                     {
                         "name": "clk_i",
@@ -56,46 +59,100 @@ class iob_axistream_out(iob_module):
                         "descr": "System clock input",
                     },
                     {
-                        "name": "arst_i",
-                        "type": "I",
-                        "n_bits": "1",
-                        "descr": "System reset, asynchronous and active high",
-                    },
-                    {
                         "name": "cke_i",
                         "type": "I",
                         "n_bits": "1",
-                        "descr": "System clock enable signal.",
+                        "descr": "IOb clock enable signal.",
+                    },
+                    {
+                        "name": "arst_i",
+                        "type": "I",
+                        "n_bits": "1",
+                        "descr": "IOb reset, asynchronous and active high",
                     },
                 ],
             },
             {
                 "name": "axistream",
+                "descr": "Axistream interface signals",
+                "ports": [
+                    {
+                        "name": "axis_clk_i",
+                        "type": "I",
+                        "n_bits": "1",
+                        "descr": "Axistream clock input",
+                    },
+                    {
+                        "name": "axis_cke_i",
+                        "type": "I",
+                        "n_bits": "1",
+                        "descr": "Axistream clock enable signal.",
+                    },
+                    {
+                        "name": "axis_arst_i",
+                        "type": "I",
+                        "n_bits": "1",
+                        "descr": "Axistream reset, asynchronous and active high",
+                    },
+                    {
+                        "name": "axis_tdata_o",
+                        "type": "O",
+                        "n_bits": "TDATA_W",
+                        "descr": "Axistream data output interface",
+                    },
+                    {
+                        "name": "axis_tvalid_o",
+                        "type": "O",
+                        "n_bits": "1",
+                        "descr": "Axistream valid output interface",
+                    },
+                    {
+                        "name": "axis_tready_i",
+                        "type": "I",
+                        "n_bits": "1",
+                        "descr": "Axistream ready input interface",
+                    },
+                    {
+                        "name": "axis_tlast_o",
+                        "type": "O",
+                        "n_bits": "1",
+                        "descr": "Axistream last output interface",
+                    },
+                ],
+            },
+            {
+                "name": "interrupt",
                 "descr": "",
                 "ports": [
                     {
-                        "name": "tdata_o",
-                        "type": "O",
-                        "n_bits": "TDATA_W",
-                        "descr": "TData output interface",
-                    },
-                    {
-                        "name": "tvalid_o",
+                        "name": "fifo_threshold_o",
                         "type": "O",
                         "n_bits": "1",
-                        "descr": "TValid output interface",
+                        "descr": "FIFO threshold interrupt signal",
+                    },
+                ],
+            },
+            {
+                "name": "dma",
+                "descr": "Direct Memory Access via dedicated AXI Stream interface.",
+                "ports": [
+                    {
+                        "name": "tdata_i",
+                        "type": "I",
+                        "n_bits": "DMA_TDATA_W",
+                        "descr": "TData input interface",
                     },
                     {
-                        "name": "tready_i",
+                        "name": "tvalid_i",
                         "type": "I",
                         "n_bits": "1",
-                        "descr": "TReady input interface",
+                        "descr": "TValid input interface",
                     },
                     {
-                        "name": "tlast_o",
+                        "name": "tready_o",
                         "type": "O",
                         "n_bits": "1",
-                        "descr": "TLast output interface",
+                        "descr": "TReady output interface",
                     },
                 ],
             },
@@ -109,27 +166,7 @@ class iob_axistream_out(iob_module):
                 "descr": "Axistream software accessible registers.",
                 "regs": [
                     {
-                        "name": "IN",
-                        "type": "W",
-                        "n_bits": 32,
-                        "rst_val": 0,
-                        "addr": -1,
-                        "log2n_items": 0,
-                        "autologic": False,
-                        "descr": "32 bits: Set next FIFO input (Writing to this register pushes the value into the FIFO)",
-                    },
-                    {
-                        "name": "FULL",
-                        "type": "R",
-                        "n_bits": 1,
-                        "rst_val": 0,
-                        "addr": -1,
-                        "log2n_items": 0,
-                        "autologic": True,
-                        "descr": "1 bit: Return if FIFO is full",
-                    },
-                    {
-                        "name": "SOFTRESET",
+                        "name": "SOFT_RESET",
                         "type": "W",
                         "n_bits": 1,
                         "rst_val": 0,
@@ -149,14 +186,70 @@ class iob_axistream_out(iob_module):
                         "descr": "Enable peripheral.",
                     },
                     {
-                        "name": "WSTRB_NEXT_WORD_LAST",
+                        "name": "DATA",
                         "type": "W",
-                        "n_bits": 5,
+                        "n_bits": 32,
                         "rst_val": 0,
-                        "addr": 8,
+                        "addr": -1,
                         "log2n_items": 0,
                         "autologic": False,
-                        "descr": "From 1 to 4 bits: Set which output words of the next input word in AXISTREAMOUT_IN are valid and send TLAST signal along with last valid byte. (If this register has value 0, all 4 bytes will be valid and it will not send a TLAST signal with the last byte [MSB]). When the output word width (TDATA) is 8, 16 or 32 bits, this register has size 4, 2 or 1 bits respectively.",
+                        "descr": "Data input (writing to this register will apply the set WSTRB and LAST registers).",
+                    },
+                    {
+                        "name": "WSTRB",
+                        "type": "W",
+                        "n_bits": "32/TDATA_W",
+                        "rst_val": 0,
+                        "addr": -1,
+                        "log2n_items": 0,
+                        "autologic": True,
+                        "descr": "Set which words (with TDATA_W bits) of the next 32-bits input are valid.",
+                    },
+                    {
+                        "name": "LAST",
+                        "type": "W",
+                        "n_bits": 1,
+                        "rst_val": 0,
+                        "addr": -1,
+                        "log2n_items": 0,
+                        "autologic": True,
+                        "descr": "Set the tlast bit of the next 32-bits input word.",
+                    },
+                    {
+                        "name": "FULL",
+                        "type": "R",
+                        "n_bits": 1,
+                        "rst_val": 0,
+                        "addr": -1,
+                        "log2n_items": 0,
+                        "autologic": True,
+                        "descr": "Full (1), or non-full (0).",
+                    },
+                ],
+            },
+            {
+                "name": "fifo",
+                "descr": "FIFO related registers",
+                "regs": [
+                    {
+                        "name": "FIFO_THRESHOLD",
+                        "type": "W",
+                        "n_bits": 32,
+                        "rst_val": 4,
+                        "addr": -1,
+                        "log2n_items": 0,
+                        "autologic": True,
+                        "descr": "FIFO threshold level for interrupt signal",
+                    },
+                    {
+                        "name": "FIFO_LEVEL",
+                        "type": "R",
+                        "n_bits": 32,
+                        "rst_val": 0,
+                        "addr": -1,
+                        "log2n_items": 0,
+                        "autologic": True,
+                        "descr": "Current FIFO level",
                     },
                 ],
             }

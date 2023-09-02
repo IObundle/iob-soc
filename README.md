@@ -5,6 +5,7 @@
 The IObundle AXISTREAM is a RISC-V-based Peripheral written in Verilog, which users
 can download for free, modify, simulate and implement in FPGA or ASIC. 
 This peripheral provides an AXI4-Stream interface for communication with external systems.
+It also provides a [Direct Memory Access (DMA)](#direct-memory-access-(dma)) interface using on another AXI4-Stream interface.
 
 This repository contains both the AXISTREAM_IN and AXISTREAM_OUT peripherals.
 The configuration and sources for these peripherals are located within the `axistream_in` and `axistream_out` folders, respectively.
@@ -55,6 +56,16 @@ class iob_soc_sut(iob_soc):
     )
 ```
 
+## Direct Memory Access (DMA)
+
+This peripheral provides a DMA interface using AXI4-Stream.
+Is also contains the `fifo_threshold` port to be used as an interrupt for the CPU.
+This signal can be used to trigger data transfers via DMA.
+
+* Check out [IOb-DMA](https://github.com/IObundle/iob-dma) for more details.
+
+The `iob_soc_tester.py` script of the [IOb-SoC-SUT](https://github.com/IObundle/iob-soc-sut) system, provides examples of AXISTREAM peripherals configured to use the DMA interface.
+
 ## Brief description of C interface ##
 
 The AXISTREAM cores store the values in an internal FIFO buffer, which can be accessed via software.
@@ -90,6 +101,13 @@ axistream_in_disable();
 //    byte_array: byte array to be filled with 4 bytes popped from FIFO word
 //    n_valid_bytes: Number of valid bytes in this word (will always be 4 if tlast is not active)
 bool is_last = axistream_in_pop(uint8_t *byte_array, uint8_t *n_valid_bytes);
+
+//Set the FIFO threshold level
+//If the FIFO level is equal or higher than the threshold, trigger an interrupt
+axistream_in_set_fifo_threshold(uint32_t threshold);
+
+//Get current FIFO level
+uint32_t fifo_level = axistream_in_fifo_level();
 ```
 
 For the AXISTREAMOUT peripheral:
@@ -130,4 +148,11 @@ axistream_out_enable();
 
 //Disable peripheral, preventing new transfers
 axistream_out_disable();
+
+//Set the FIFO threshold level
+//If the FIFO level is equal or lower than the threshold, trigger an interrupt
+axistream_out_set_fifo_threshold(uint32_t threshold);
+
+//Get current FIFO level
+uint32_t fifo_level = axistream_out_fifo_level();
 ```

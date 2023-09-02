@@ -12,24 +12,32 @@ void IOB_AXISTREAM_OUT_INIT_BASEADDR(uint32_t addr) {
 }
 
 // Core Setters and Getters
-void IOB_AXISTREAM_OUT_SET_IN(uint32_t value) {
+void IOB_AXISTREAM_OUT_SET_DATA(uint32_t value) {
 }
 
 uint8_t IOB_AXISTREAM_OUT_GET_FULL() {
   return 0x00;
 }
 
-void IOB_AXISTREAM_OUT_SET_SOFTRESET(uint8_t value) {
+void IOB_AXISTREAM_OUT_SET_SOFT_RESET(uint8_t value) {
 }
 
 void IOB_AXISTREAM_OUT_SET_ENABLE(uint8_t value) {
 }
 
-void IOB_AXISTREAM_OUT_SET_WSTRB_NEXT_WORD_LAST(uint8_t value) {
+void IOB_AXISTREAM_OUT_SET_WSTRB(uint8_t value) {
+}
+
+void IOB_AXISTREAM_OUT_SET_LAST(uint8_t value) {
+}
+
+void IOB_AXISTREAM_OUT_SET_FIFO_THRESHOLD(uint32_t value) {
+}
+
+uint32_t IOB_AXISTREAM_OUT_GET_FIFO_LEVEL() {
+    return 0x00;
 }
 
 uint16_t IOB_AXISTREAM_OUT_GET_VERSION() {
   return 0xaaaa;
 }
-
-
