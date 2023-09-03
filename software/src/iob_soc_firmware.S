@@ -5,20 +5,18 @@
 // so define the constants here instead (these are address offsets).
 #define IOB_SOC_BOOT_CTR 0
 
-#define CTR_ADDR (BOOT0_BASE+IOB_SOC_BOOT_CTR)
-
 .section .init
 .global main
 
 //set stack pointer
-lui sp, %hi(1<<IOB_SOC_SRAM_ADDR_W)
-addi sp, sp, %lo(1<<IOB_SOC_SRAM_ADDR_W)
+lui sp, %hi(1 << IOB_SOC_SRAM_ADDR_W)
+addi sp, sp, %lo(1 << IOB_SOC_SRAM_ADDR_W)
 
 //call main
 jal ra, main
 
-li s5, 0b110
-li s6, CTR_ADDR
+li s5, 1
+li s6, BOOT0_BASE + IOB_SOC_BOOT_CTR
 sw s5, 0(s6)
 
 ebreak

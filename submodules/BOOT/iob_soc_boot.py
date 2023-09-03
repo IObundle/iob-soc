@@ -101,7 +101,7 @@ class iob_soc_boot(iob_module):
                         "descr": "System reset, asynchronous and active high",
                     },
                     {
-                        "name": "CPU_RST_r_o",
+                        "name": "cpu_rst_o",
                         "type": "O",
                         "n_bits": "1",
                         "descr": "CPU sync reset.",
@@ -184,16 +184,6 @@ class iob_soc_boot(iob_module):
                         "log2n_items": 0,
                         "autologic": True,
                         "descr": "Boot control register (write). The register has the following values: 0: select preboot, 1: select bootloader, 2: select firmware",
-                    },
-                    {
-                        "name": "CPU_RST",
-                        "type": "W",
-                        "n_bits": 1,
-                        "rst_val": 0,
-                        "addr": -1,
-                        "log2n_items": 0,
-                        "autologic": True,
-                        "descr": "CPU reset control register (write). 1 to reset the CPU, 0 to release the CPU from reset.",
                     },
                 ],
             }

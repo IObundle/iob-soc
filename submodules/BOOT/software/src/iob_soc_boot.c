@@ -31,12 +31,13 @@ int main() {
 #endif
 
   // address to copy firmware to
-  char *prog_start_addr;
-#ifdef USE_EXTMEM
-  prog_start_addr = (char *)EXTRA_BASE;
-#else
-  prog_start_addr = (char *)(1 << IOB_SOC_BOOT_BOOT_ROM_ADDR_W);
-#endif
+  char *prog_start_addr =
+      (char *)(0x80000000 | (1 << IOB_SOC_BOOT_BOOT_ROM_ADDR_W));
+  /*#ifdef USE_EXTMEM
+    prog_start_addr = (char *)EXTRA_BASE;
+  #else
+    prog_start_addr = (char *)(1 << IOB_SOC_BOOT_BOOT_ROM_ADDR_W);
+  #endif*/
 
   while (uart_getc() != ACK) {
     uart_puts(PROGNAME);

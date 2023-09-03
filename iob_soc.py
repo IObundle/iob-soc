@@ -167,7 +167,7 @@ class iob_soc(iob_module):
                 {
                     "corename": "BOOT0",
                     "if_name": "general",
-                    "port": "CPU_RST_r_o",
+                    "port": "cpu_rst_o",
                     "bits": [],
                 },
                 {

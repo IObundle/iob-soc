@@ -1,10 +1,10 @@
 SECTIONS {
 	.memory : {
-		. = 0x000000;
+		. = 0x00000000;
 		*(.init);
 		*(.text);
 		*(*);
 		. = ALIGN(4);
-                _heap_start = .; 
+                _heap_start = .;
 	}
 }
