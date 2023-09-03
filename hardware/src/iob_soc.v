@@ -121,8 +121,8 @@ module iob_soc #(
       // Master's interface
       .m_avalid_i(cpu_ibus_avalid),
       .m_addr_i  (
-         boot_CTR_r_o == 2'b10 ? cpu_ibus_addr + 32'h80000000 :
-            (boot_CTR_r_o == 2'b01 ? cpu_ibus_addr | 32'h80000000 : cpu_ibus_addr)
+         (boot_CTR_r_o == 2'b10 ? cpu_ibus_addr + 1 << `IOB_SOC_BOOT_BOOT_ROM_ADDR_W : cpu_ibus_addr)
+            & 32'h7FFFFFFF // Remove the P bit
       ),
       .m_wdata_i (cpu_ibus_wdata),
       .m_wstrb_i (cpu_ibus_wstrb),
@@ -143,7 +143,7 @@ module iob_soc #(
       .f_sel_i   (boot_CTR_r_o == 2'b00 ? 1'b0 : 1'b1)
    );
 
-   assign cpu_reset = boot_cpu_rst_r_o;
+   assign cpu_reset = boot_cpu_rst_o;
 
 
    //
@@ -169,7 +169,7 @@ module iob_soc #(
 
       // Master's interface
       .m_avalid_i(cpu_dbus_avalid),
-      .m_addr_i  (cpu_dbus_addr),
+      .m_addr_i  (cpu_dbus_addr & 32'h7FFFFFFF), // Remove the P bit
       .m_wdata_i (cpu_dbus_wdata),
       .m_wstrb_i (cpu_dbus_wstrb),
       .m_rdata_o (cpu_dbus_rdata),
@@ -251,7 +251,7 @@ module iob_soc #(
    ) iob_soc_mem0 (
       // Instruction bus
       .i_avalid_i   (iob_soc_mem_ibus_avalid),
-      .i_addr_i     (iob_soc_mem_ibus_addr[(SRAM_ADDR_W)-1 -: (SRAM_ADDR_W)-2]),
+      .i_addr_i     (iob_soc_mem_ibus_addr[0 +: (SRAM_ADDR_W)-2]),
       .i_wdata_i    (iob_soc_mem_ibus_wdata),
       .i_wstrb_i    (iob_soc_mem_ibus_wstrb),
       .i_rdata_o    (iob_soc_mem_ibus_rdata),
@@ -260,7 +260,7 @@ module iob_soc #(
 
       // Data bus
       .d_avalid_i   (iob_soc_mem_dbus_avalid),
-      .d_addr_i     (iob_soc_mem_dbus_addr[(MEM_ADDR_W+1)-1 -: (MEM_ADDR_W+1)-2]),
+      .d_addr_i     (iob_soc_mem_dbus_addr[0 +: (MEM_ADDR_W+1)-2]),
       .d_wdata_i    (iob_soc_mem_dbus_wdata),
       .d_wstrb_i    (iob_soc_mem_dbus_wstrb),
       .d_rdata_o    (iob_soc_mem_dbus_rdata),

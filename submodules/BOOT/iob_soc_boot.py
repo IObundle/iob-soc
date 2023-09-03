@@ -101,7 +101,7 @@ class iob_soc_boot(iob_module):
                         "descr": "System reset, asynchronous and active high",
                     },
                     {
-                        "name": "cpu_rst_r_o",
+                        "name": "cpu_rst_o",
                         "type": "O",
                         "n_bits": "1",
                         "descr": "CPU sync reset.",

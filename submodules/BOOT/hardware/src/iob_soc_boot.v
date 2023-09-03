@@ -41,6 +41,8 @@ module iob_soc_boot #(
 
     // CPU reset
     reg cpu_rst;
+    wire cpu_rst_r_o;
+    assign cpu_rst_o = cpu_rst_r_o;
     always @(posedge CTR) begin
         cpu_rst = 1'b1;
     end

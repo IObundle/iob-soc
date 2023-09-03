@@ -6,11 +6,8 @@
 // so define the constants here instead (these are address offsets).
 #define IOB_SOC_BOOT_ROM 0
 #define IOB_SOC_BOOT_CTR 0
-#define IOB_SOC_BOOT_CPU_RST 1
 
 #define BOOTROM (BOOT0_BASE + IOB_SOC_BOOT_ROM)
-//#define BOOTRAM ((1 << 31) + (1 << IOB_SOC_MEM_ADDR_W) - (1 << IOB_SOC_BOOT_BOOT_ROM_ADDR_W))
-//#define BOOTRAM ((1 << 31) + (1 << IOB_SOC_MEM_ADDR_W))
 #define BOOTRAM (1 << 31)
 #define LENGTH (1 << IOB_SOC_BOOT_BOOT_ROM_ADDR_W)
 
