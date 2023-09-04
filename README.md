@@ -5,7 +5,7 @@
 The IObundle AXISTREAM is a RISC-V-based Peripheral written in Verilog, which users
 can download for free, modify, simulate and implement in FPGA or ASIC. 
 This peripheral provides an AXI4-Stream interface for communication with external systems.
-It also provides a [Direct Memory Access (DMA)](#direct-memory-access-(dma)) interface using on another AXI4-Stream interface.
+It also provides a [Direct Memory Access (DMA)](#direct-memory-access-dma) interface using on another AXI4-Stream interface.
 
 This repository contains both the AXISTREAM_IN and AXISTREAM_OUT peripherals.
 The configuration and sources for these peripherals are located within the `axistream_in` and `axistream_out` folders, respectively.
