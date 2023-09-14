@@ -39,11 +39,13 @@ module iob_soc_fpga_wrapper (
    input  ENET_RX_D2,
    input  ENET_RX_D3,
    input  ENET_RX_DV,
+   input  ENET_RX_ERR,
    output ENET_TX_D0,
    output ENET_TX_D1,
    output ENET_TX_D2,
    output ENET_TX_D3,
    output ENET_TX_EN,
+   output ENET_TX_ERR,
 `endif
 
    output trap
@@ -65,32 +67,28 @@ module iob_soc_fpga_wrapper (
    //
 `ifdef IOB_SOC_USE_ETHERNET
    //buffered eth clock
-   wire       ETH_CLK;
-
-   //PLL
-   wire       locked;
+   wire       ETH_Clk;
 
    //MII
-   wire [3:0] TX_DATA;
-   wire [3:0] RX_DATA;
+   wire [3:0] ETH_MTxD;
+   wire [3:0] ETH_MRxD;
 
-   assign {ENET_TX_D3, ENET_TX_D2, ENET_TX_D1, ENET_TX_D0} = TX_DATA;
-   assign RX_DATA = {ENET_RX_D3, ENET_RX_D2, ENET_RX_D1, ENET_RX_D0};
+   assign {ENET_TX_D3, ENET_TX_D2, ENET_TX_D1, ENET_TX_D0} = ETH_MTxD;
+   assign ETH_MRxD = {ENET_RX_D3, ENET_RX_D2, ENET_RX_D1, ENET_RX_D0};
 
    //eth clock
    IBUFG rxclk_buf (
       .I(ENET_RX_CLK),
-      .O(ETH_CLK)
+      .O(ETH_Clk)
    );
    ODDRE1 ODDRE1_inst (
       .Q (ENET_GTX_CLK),
-      .C (ETH_CLK),
+      .C (ETH_Clk),
       .D1(1'b1),
       .D2(1'b0),
       .SR(~ENET_RESETN)
    );
 
-   assign locked = 1'b1;
 `endif
 
 
@@ -104,20 +102,24 @@ module iob_soc_fpga_wrapper (
       .AXI_ADDR_W(AXI_ADDR_W),
       .AXI_DATA_W(AXI_DATA_W)
    ) iob_soc0 (
-      //`ifdef IOB_SOC_USE_ETHERNET
-      //      //ETHERNET
-      //      //PHY
-      //      .ETHERNET0_ETH_PHY_RESETN(ENET_RESETN),
-      //      //PLL
-      //      .ETHERNET0_PLL_LOCKED    (locked),
-      //      //MII
-      //      .ETHERNET0_RX_CLK        (ETH_CLK),
-      //      .ETHERNET0_RX_DATA       (RX_DATA),
-      //      .ETHERNET0_RX_DV         (ENET_RX_DV),
-      //      .ETHERNET0_TX_CLK        (ETH_CLK),
-      //      .ETHERNET0_TX_DATA       (TX_DATA),
-      //      .ETHERNET0_TX_EN         (ENET_TX_EN),
-      //`endif
+`ifdef IOB_SOC_USE_ETHERNET
+      //MII
+      .ETHERNET0_MRxClk (ETH_Clk),
+      .ETHERNET0_MRxD   (ETH_MRxD),
+      .ETHERNET0_MRxDv  (ENET_RX_DV),
+      .ETHERNET0_MRxErr (ENET_RX_ERR),
+
+      .ETHERNET0_MTxClk (ETH_Clk),
+      .ETHERNET0_MTxD   (ETH_MTxD),
+      .ETHERNET0_MTxEn  (ENET_TX_EN),
+      .ETHERNET0_MTxErr (ENET_TX_ERR),
+
+      .MColl(1'b0),
+      .MCrS(1'b0),
+
+      .MDC(),
+      .MDIO(),
+`endif
       `include "iob_soc_pportmaps.vs"
       .clk_i (clk),
       .cke_i (1'b1),
