@@ -139,7 +139,7 @@ def update_ios_with_extmem_connections(python_module):
 
     # find the element in the dict list  ios whose key "name" is "extmem"
     interface = next((item for item in ios if item["name"] == "extmem"), None)
-    interface["ports"] = if_gen.get_ports("axi")
+    interface["ports"] = if_gen.get_axi_ports()
 
     return num_extmem_connections
 
@@ -386,11 +386,12 @@ def peripheral_portmap(python_module):
             ios.append(
                 {
                     "name": mapping[mapping_external_interface]["if_name"],
-                    "descr": f"IOs for peripherals based on portmap index {map_idx}",
-                    "ports": mapping_ios,
                     "port_prefix": mapping[mapping_external_interface]["if_name"] + "_"
                     if "port_prefix" not in mapping[mapping_external_interface]
                     else mapping[mapping_external_interface]["port_prefix"],
+                    "wire_prefix": "",
+                    "descr": f"IOs for peripherals based on portmap index {map_idx}",
+                    "ports": mapping_ios,
                 }
             )
 
