@@ -25,7 +25,7 @@ def create_wrapper_files(build_dir, name, ios, confs, num_extmem_connections):
         for signal in pio_signals:
             pwires_str += "   wire [{}-1:0] {}_{};\n".format(
                 add_prefix_to_parameters_in_string(
-                    signal["n_bits"], confs, "`" + name.upper() + "_"
+                    signal["width"], confs, "`" + name.upper() + "_"
                 ),
                 table["name"],
                 signal["name"],

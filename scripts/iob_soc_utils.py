@@ -386,6 +386,7 @@ def peripheral_portmap(python_module):
             ios.append(
                 {
                     "name": mapping[mapping_external_interface]["if_name"],
+                    "type": "master",
                     "port_prefix": mapping[mapping_external_interface]["if_name"] + "_"
                     if "port_prefix" not in mapping[mapping_external_interface]
                     else mapping[mapping_external_interface]["port_prefix"],
@@ -570,7 +571,7 @@ def peripheral_portmap(python_module):
                     add_prefix_to_parameters_in_port(
                         {
                             "name": port["name"],
-                            "type": port["direction"],
+                            "direction": port["direction"],
                             "width": width,
                             "descr": port["descr"],
                         },

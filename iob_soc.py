@@ -46,9 +46,10 @@ class iob_soc(iob_module):
 
     # Method that runs the setup process of this class
     @classmethod
-    def _specific_setup(cls):
+    def _post_setup(cls):
         cls._setup_portmap()
         cls._custom_setup()
+        super()._post_setup()
 
     @classmethod
     def _generate_files(cls):
@@ -336,7 +337,7 @@ class iob_soc(iob_module):
                 "ports": [
                     {
                         "name": "trap",
-                        "direction": "output",                        
+                        "direction": "output",
                         "width": 1,
                         "descr": "CPU trap signal",
                     },

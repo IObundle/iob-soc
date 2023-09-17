@@ -83,9 +83,9 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
                 periphs_inst_str += f"`ifdef {top.upper()}_{signal['if_defined']}\n"
             periphs_inst_str += "      .{}{}({}{}),\n".format(
                 signal["name"],
-                if_gen.suffix(signal["type"]),
+                if_gen.get_suffix(signal["direction"]),
                 get_peripheral_port_mapping(instance, signal["name_without_prefix"]),
-                if_gen.suffix(signal["type"]),
+                if_gen.get_suffix(signal["direction"]),
             )
             if "if_defined" in signal.keys():
                 periphs_inst_str += "`endif\n"
