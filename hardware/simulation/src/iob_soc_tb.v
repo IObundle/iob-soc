@@ -12,7 +12,7 @@
 
 module iob_soc_tb;
 
-   parameter realtime clk_per = 1s / `FREQ;
+   parameter realtime CLK_PER = 1s / `FREQ;
 
    localparam ADDR_W = `IOB_SOC_ADDR_W;
    localparam DATA_W = `IOB_SOC_DATA_W;
@@ -20,7 +20,7 @@ module iob_soc_tb;
 
    //clock
    reg clk = 1;
-   always #(clk_per / 2) clk = ~clk;
+   always #(CLK_PER / 2) clk = ~clk;
 
    //reset
    reg       reset = 0;
