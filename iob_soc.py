@@ -301,6 +301,14 @@ class iob_soc(iob_module):
                     "max": "4",
                     "descr": "AXI burst length width",
                 },
+                {
+                    "name": "MEM_ADDR_OFFSET",
+                    "type": "P",
+                    "val": "0",
+                    "min": "0",
+                    "max": "NA",
+                    "descr": "Offset of memory address",
+                },
             ]
             + extra_confs
         )
@@ -317,6 +325,12 @@ class iob_soc(iob_module):
                         "type": "I",
                         "n_bits": "1",
                         "descr": "System clock input",
+                    },
+                    {
+                        "name": "cke_i",
+                        "type": "I",
+                        "n_bits": "1",
+                        "descr": "System clock enable",
                     },
                     {
                         "name": "arst_i",

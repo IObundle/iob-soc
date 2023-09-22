@@ -36,6 +36,7 @@ module iob_soc_fpga_wrapper (
    //
    iob_soc iob_soc (
       .clk_i   (clk),
+      .cke_i   (1'b1),
       .arst_i  (sys_rst),
       .trap_o  (trap),
       //UART
