@@ -6,8 +6,9 @@ from iob_soc_create_system import create_systemv, get_extmem_bus_size
 from iob_soc_create_wrapper_files import create_wrapper_files
 from submodule_utils import (
     add_prefix_to_parameters_in_port,
-    iob_soc_peripheral_setup,
     reserved_signals,
+    get_peripherals_ports_params_top,
+    get_peripheral_macros,
 )
 
 from mk_configuration import eval_param_expression_from_config
@@ -19,8 +20,32 @@ import fnmatch
 import if_gen
 import build_srcs
 from iob_module import iob_module
-from axi_interconnect import axi_interconnect
 
+# This function is used to setup peripheral related configuration in the python module of iob-soc systems
+# python_module: Module of the iob-soc system being setup
+def iob_soc_peripheral_setup(python_module):
+    # Get peripherals list from 'peripherals' table in blocks list
+    peripherals_list = python_module.peripherals
+
+    if peripherals_list:
+        # Get port list, parameter list and top module name for each type of peripheral used
+        _, params_list, _ = get_peripherals_ports_params_top(peripherals_list)
+        # Insert peripheral instance parameters in system parameters
+        # This causes the system to have a parameter for each parameter of each peripheral instance
+        for instance in peripherals_list:
+            for parameter in params_list[instance.__class__.name]:
+                parameter_to_append = parameter.copy()
+                # Override parameter value if user specified a 'parameters' dictionary with an override value for this parameter.
+                if parameter["name"] in instance.parameters:
+                    parameter_to_append["val"] = instance.parameters[parameter["name"]]
+                # Add instance name prefix to the name of the parameter. This makes this parameter unique to this instance
+                parameter_to_append[
+                    "name"
+                ] = f"{instance.name}_{parameter_to_append['name']}"
+                python_module.confs.append(parameter_to_append)
+
+        # Get peripheral related macros
+        get_peripheral_macros(python_module.confs, peripherals_list)
 
 def iob_soc_sw_setup(python_module, exclude_files=[]):
     peripherals_list = python_module.peripherals
@@ -45,47 +70,6 @@ def iob_soc_wrapper_setup(python_module, num_extmem_connections, exclude_files=[
     # if not fnmatch.filter(exclude_files,'iob_soc_sim_wrapper.v'):
     create_wrapper_files(
         build_dir, name, python_module.ios, confs, num_extmem_connections
-    )
-
-    python_module._setup_submodules(
-        [
-            # Setup interconnect
-            axi_interconnect,
-            # Create extmem wrapper files
-            {
-                "file_prefix": "ddr4_",
-                "interface": "axi_wire",
-                "wire_prefix": "ddr4_",
-                "port_prefix": "ddr4_",
-            },
-            {
-                "file_prefix": f"iob_bus_{num_extmem_connections}_",
-                "interface": "axi_wire",
-                "wire_prefix": "",
-                "port_prefix": "",
-                "bus_size": num_extmem_connections,
-            },
-            {
-                "file_prefix": f"iob_bus_0_{num_extmem_connections}_",
-                "interface": "axi_m_portmap",
-                "wire_prefix": "",
-                "port_prefix": "",
-                "bus_start": 0,
-                "bus_size": num_extmem_connections,
-            },
-            {
-                "file_prefix": "iob_memory_",
-                "interface": "axi_wire",
-                "wire_prefix": "memory_",
-                "port_prefix": "",
-            },
-            {
-                "file_prefix": "iob_memory_",
-                "interface": "axi_s_portmap",
-                "wire_prefix": "memory_",
-                "port_prefix": "",
-            },
-        ]
     )
 
 
