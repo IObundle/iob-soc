@@ -120,14 +120,6 @@ class iob_soc(iob_module):
                     "bus_size": cls.num_extmem_connections,
                 },
                 {
-                    "interface": "axi_m_portmap",
-                    "file_prefix": f"iob_bus_0_{cls.num_extmem_connections}_",
-                    "wire_prefix": "",
-                    "port_prefix": "",
-                    "bus_start": 0,
-                    "bus_size": cls.num_extmem_connections,
-                },
-                {
                     "interface": "axi_wire",
                     "file_prefix": "iob_memory_",
                     "wire_prefix": "memory_",
@@ -381,6 +373,16 @@ class iob_soc(iob_module):
                 ],
             },
             {
+                "name": "axi",
+                "type": "master",
+                "file_prefix": f"iob_bus_0_{cls.num_extmem_connections}_",
+                "wire_prefix": "",
+                "port_prefix": "",
+                "mult": cls.num_extmem_connections,
+                "descr": "AXI master portmap",
+                "ports": [],
+            },
+            {
                 "name": "extmem",
                 "type": "master",
                 "port_prefix": "",
@@ -389,7 +391,6 @@ class iob_soc(iob_module):
                 "if_defined": "USE_EXTMEM",
                 "ports": [],
             },
-
         ]
 
     @classmethod
