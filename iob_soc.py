@@ -3,7 +3,13 @@
 import os
 import sys
 
+# Find python modules
+if __name__ == "__main__":
+    sys.path.append("./submodules/LIB/scripts")
 from iob_module import iob_module
+if __name__ == "__main__":
+    iob_module.find_modules()
+
 from iob_block_group import iob_block_group
 from iob_soc_utils import pre_setup_iob_soc, post_setup_iob_soc
 from mk_configuration import update_define
@@ -396,12 +402,12 @@ class iob_soc(iob_module):
     @classmethod
     def _custom_setup(cls):
         # Add the following arguments:
-        # "INIT_MEM": if should setup with init_mem or not
-        # "USE_EXTMEM": if should setup with extmem or not
+        # "INIT_MEM=x": if should setup with init_mem or not
+        # "USE_EXTMEM=x": if should setup with extmem or not
         for arg in sys.argv[1:]:
-            if arg == "INIT_MEM":
+            if "INIT_MEM" in arg and arg.split("=")[1] == "1":
                 update_define(cls.confs, "INIT_MEM", True)
-            if arg == "USE_EXTMEM":
+            if "USE_EXTMEM" in arg and arg.split("=")[1] == "1":
                 update_define(cls.confs, "USE_EXTMEM", True)
 
     @classmethod
@@ -409,3 +415,7 @@ class iob_soc(iob_module):
         # Initialize empty lists for attributes (We can't initialize in the attribute declaration because it would cause every subclass to reference the same list)
         cls.peripherals = []
         cls.peripheral_portmap = []
+
+
+if __name__ == "__main__":
+    iob_soc.setup_as_top_module()
