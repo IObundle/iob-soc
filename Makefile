@@ -3,23 +3,19 @@ SIMULATOR ?= icarus
 
 DISABLE_LINT:=1
 
-include submodules/LIB/setup.mk
-
 INIT_MEM ?= 1
 
-ifeq ($(INIT_MEM),1)
-SETUP_ARGS += INIT_MEM
-endif
+clean:
+	rm -rf ../$(CORE)_V*
 
-ifeq ($(USE_EXTMEM),1)
-SETUP_ARGS += USE_EXTMEM
-endif
+setup:
+	python3 -B ./$(CORE).py INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) 
 
-sim-build:
-	make clean && make setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(CORE)_V*/ sim-build SIMULATOR=$(SIMULATOR)
+sim-build: clean setup
+	make -C ../$(CORE)_V*/ sim-build SIMULATOR=$(SIMULATOR)
 
-sim-run:
-	make clean && make setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(CORE)_V*/ sim-run SIMULATOR=$(SIMULATOR)
+sim-run: clean setup
+	make -C ../$(CORE)_V*/ sim-run SIMULATOR=$(SIMULATOR)
 
 sim-test:
 	make clean && make setup && make -C ../$(CORE)_V*/ sim-test
