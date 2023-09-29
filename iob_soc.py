@@ -6,7 +6,7 @@ import sys
 # Find python modules
 if __name__ == "__main__":
     sys.path.append("./submodules/LIB/scripts")
-from iob_module import iob_module
+    from iob_module import iob_module
 if __name__ == "__main__":
     iob_module.find_modules()
 
@@ -54,23 +54,31 @@ class iob_soc(iob_module):
 
     # Method that runs the setup process of this class
     @classmethod
-    def _post_setup(cls):
+    def _pre_setup(cls):
         cls._setup_portmap()
-        cls._custom_setup()
-        super()._post_setup()
+        # Add the following arguments:
+        # "INIT_MEM=x": if should setup with init_mem or not
+        # "USE_EXTMEM=x": if should setup with extmem or not
+        for arg in sys.argv[1:]:
+            if "INIT_MEM" in arg and arg.split("=")[1] == "1":
+                update_define(cls.confs, "INIT_MEM", True)
+            if "USE_EXTMEM" in arg and arg.split("=")[1] == "1":
+                update_define(cls.confs, "USE_EXTMEM", True)
+
 
     @classmethod
-    def _generate_files(cls):
-        """Setup this system using specialized iob-soc functions"""
-        # Pre-setup specialized IOb-SoC functions
-        cls.num_extmem_connections = pre_setup_iob_soc(cls)
-        # Generate hw, sw, doc files
-        super()._generate_files()
-        # Post-setup specialized IOb-SoC functions
+    def _post_setup(cls):
         post_setup_iob_soc(cls, cls.num_extmem_connections)
 
     @classmethod
-    def _create_instances(cls):
+    def _init_attributes(cls):
+        # Initialize empty lists for attributes (We can't initialize in the attribute declaration because it would cause every subclass to reference the same list)
+        cls.peripherals = []
+        cls.peripheral_portmap = []
+
+        # Pre-setup specialized IOb-SoC functions
+        cls.num_extmem_connections = pre_setup_iob_soc(cls)
+
         # Verilog modules instances if we have them in the setup list (they may not be in the list if a subclass decided to remove them).
         if iob_picorv32 in cls.submodule_list:
             cls.cpu = iob_picorv32("cpu_0")
@@ -84,73 +92,66 @@ class iob_soc(iob_module):
             cls.ext_mem = iob_merge("iob_merge_1")
         if iob_uart in cls.submodule_list:
             cls.peripherals.append(iob_uart("UART0"))
-
-    @classmethod
-    def _create_submodules_list(cls, extra_submodules=[]):
-        """Create submodules list with dependencies of this module"""
-        super()._create_submodules_list(
-            [
-                # Hardware modules
-                iob_utils,
-                iob_picorv32,
-                iob_cache,
-                iob_uart,
-                iob_merge,
-                iob_split,
-                iob_rom_sp,
-                iob_ram_dp_be,
-                iob_ram_dp_be_xil,
-                iob_pulse_gen,
-                iob_counter,
-                iob_reg,
-                iob_reg_re,
-                iob_ram_sp_be,
-                iob_ram_dp,
-                iob_reset_sync,
-                iob_ctls,
-                (iob_ram_2p, {"purpose": "simulation"}),
-                (iob_ram_2p, {"purpose": "fpga"}),
-                (iob_ram_sp, {"purpose": "simulation"}),
-                (iob_ram_sp, {"purpose": "fpga"}),
-                {
-                    "interface": "axi_wire",
-                    "file_prefix": "ddr4_",
-                    "wire_prefix": "ddr4_",
-                    "port_prefix": "ddr4_",
-                },
-                {
-                    "interface": "axi_wire",
-                    "file_prefix": f"iob_bus_{cls.num_extmem_connections}_",
-                    "wire_prefix": "",
-                    "port_prefix": "",
-                    "bus_size": cls.num_extmem_connections,
-                },
-                {
-                    "interface": "axi_wire",
-                    "file_prefix": "iob_memory_",
-                    "wire_prefix": "memory_",
-                    "port_prefix": "",
-                },
-                {
-                    "interface": "axi_s_portmap",
-                    "file_prefix": "iob_memory_",
-                    "wire_prefix": "memory_",
-                    "port_prefix": "",
-                    "ports": [],
-                },
-                # Simulation headers & modules                
+            
+            
+        submodule_list = [
+            # Hardware modules
+            iob_utils,
+            iob_picorv32,
+            iob_cache,
+            iob_uart,
+            iob_merge,
+            iob_split,
+            iob_rom_sp,
+            iob_ram_dp_be,
+            iob_ram_dp_be_xil,
+            iob_pulse_gen,
+            iob_counter,
+            iob_reg,
+            iob_reg_re,
+            iob_ram_sp_be,
+            iob_ram_dp,
+            iob_reset_sync,
+            iob_ctls,
+            (iob_ram_2p, {"purpose": "simulation"}),
+            (iob_ram_2p, {"purpose": "fpga"}),
+            (iob_ram_sp, {"purpose": "simulation"}),
+            (iob_ram_sp, {"purpose": "fpga"}),
+            {
+                "interface": "axi_wire",
+                "file_prefix": "ddr4_",
+                "wire_prefix": "ddr4_",
+                "port_prefix": "ddr4_",
+            },
+            {
+                "interface": "axi_wire",
+                "file_prefix": f"iob_bus_{cls.num_extmem_connections}_",
+                "wire_prefix": "",
+                "port_prefix": "",
+                "bus_size": cls.num_extmem_connections,
+            },
+            {
+                "interface": "axi_wire",
+                "file_prefix": "iob_memory_",
+                "wire_prefix": "memory_",
+                "port_prefix": "",
+            },
+            {
+                "interface": "axi_s_portmap",
+                "file_prefix": "iob_memory_",
+                "wire_prefix": "memory_",
+                "port_prefix": "",
+                "ports": [],
+            },
+            # Simulation headers & modules                
                 (axi_interconnect, {"purpose": "simulation"}),
-                (axi_ram, {"purpose": "simulation"}),
-                (iob_tasks, {"purpose": "simulation"}),
-                # Software modules
+            (axi_ram, {"purpose": "simulation"}),
+            (iob_tasks, {"purpose": "simulation"}),
+            # Software modules
                 iob_str,
-                printf,
-            ]
-            + extra_submodules
-        )
+            printf,
+        ]
 
-    @classmethod
-    def _setup_portmap(cls):
         cls.peripheral_portmap += [
             (
                 {
@@ -210,8 +211,6 @@ class iob_soc(iob_module):
             ),
         ]
 
-    @classmethod
-    def _setup_block_groups(cls):
         cls.block_groups += [
             iob_block_group(name="cpu", description="CPU module", blocks=[cls.cpu]),
             iob_block_group(
@@ -236,45 +235,41 @@ class iob_soc(iob_module):
             ),
         ]
 
-    @classmethod
-    def _setup_confs(cls, extra_confs=[]):
-        # Append confs or override them if they exist
-        super()._setup_confs(
-            [
-                # macros
-                {
-                    "name": "USE_MUL_DIV",
-                    "type": "M",
-                    "val": "1",
-                    "min": "0",
-                    "max": "1",
-                    "descr": "Enable MUL and DIV CPU instructions",
-                },
-                {
-                    "name": "USE_COMPRESSED",
-                    "type": "M",
-                    "val": "1",
-                    "min": "0",
-                    "max": "1",
-                    "descr": "Use compressed CPU instructions",
-                },
-                {
-                    "name": "E",
-                    "type": "M",
-                    "val": "31",
-                    "min": "1",
-                    "max": "32",
-                    "descr": "Address selection bit for external memory",
-                },
-                {
-                    "name": "B",
-                    "type": "M",
-                    "val": "20",
-                    "min": "1",
-                    "max": "32",
-                    "descr": "Address selection bit for boot ROM",
-                },
-                # parameters
+        cls.confs = [
+            # macros
+            {
+                "name": "USE_MUL_DIV",
+                "type": "M",
+                "val": "1",
+                "min": "0",
+                "max": "1",
+                "descr": "Enable MUL and DIV CPU instructions",
+            },
+            {
+                "name": "USE_COMPRESSED",
+                "type": "M",
+                "val": "1",
+                "min": "0",
+                "max": "1",
+                "descr": "Use compressed CPU instructions",
+            },
+            {
+                "name": "E",
+                "type": "M",
+                "val": "31",
+                "min": "1",
+                "max": "32",
+                "descr": "Address selection bit for external memory",
+            },
+            {
+                "name": "B",
+                "type": "M",
+                "val": "20",
+                "min": "1",
+                "max": "32",
+                "descr": "Address selection bit for boot ROM",
+            },
+            # parameters
                 {
                     "name": "BOOTROM_ADDR_W",
                     "type": "P",
@@ -283,23 +278,23 @@ class iob_soc(iob_module):
                     "max": "32",
                     "descr": "Boot ROM address width",
                 },
-                {
-                    "name": "SRAM_ADDR_W",
-                    "type": "P",
-                    "val": "15",
-                    "min": "1",
-                    "max": "32",
-                    "descr": "SRAM address width",
-                },
-                {
-                    "name": "MEM_ADDR_W",
-                    "type": "P",
-                    "val": "24",
-                    "min": "1",
-                    "max": "32",
-                    "descr": "Memory bus address width",
-                },
-                # mandatory parameters (do not change them!)
+            {
+                "name": "SRAM_ADDR_W",
+                "type": "P",
+                "val": "15",
+                "min": "1",
+                "max": "32",
+                "descr": "SRAM address width",
+            },
+            {
+                "name": "MEM_ADDR_W",
+                "type": "P",
+                "val": "24",
+                "min": "1",
+                "max": "32",
+                "descr": "Memory bus address width",
+            },
+            # mandatory parameters (do not change them!)
                 {
                     "name": "ADDR_W",
                     "type": "P",
@@ -308,52 +303,48 @@ class iob_soc(iob_module):
                     "max": "32",
                     "descr": "Address bus width",
                 },
-                {
-                    "name": "DATA_W",
-                    "type": "P",
-                    "val": "32",
-                    "min": "1",
-                    "max": "32",
-                    "descr": "Data bus width",
-                },
-                {
-                    "name": "AXI_ID_W",
-                    "type": "P",
-                    "val": "0",
-                    "min": "1",
-                    "max": "32",
-                    "descr": "AXI ID bus width",
-                },
-                {
-                    "name": "AXI_ADDR_W",
-                    "type": "P",
-                    "val": "`IOB_SOC_MEM_ADDR_W",
-                    "min": "1",
-                    "max": "32",
-                    "descr": "AXI address bus width",
-                },
-                {
-                    "name": "AXI_DATA_W",
-                    "type": "P",
-                    "val": "`IOB_SOC_DATA_W",
-                    "min": "1",
-                    "max": "32",
-                    "descr": "AXI data bus width",
-                },
-                {
-                    "name": "AXI_LEN_W",
-                    "type": "P",
-                    "val": "4",
-                    "min": "1",
-                    "max": "4",
-                    "descr": "AXI burst length width",
-                },
-            ]
-            + extra_confs
-        )
+            {
+                "name": "DATA_W",
+                "type": "P",
+                "val": "32",
+                "min": "1",
+                "max": "32",
+                "descr": "Data bus width",
+            },
+            {
+                "name": "AXI_ID_W",
+                "type": "P",
+                "val": "0",
+                "min": "1",
+                "max": "32",
+                "descr": "AXI ID bus width",
+            },
+            {
+                "name": "AXI_ADDR_W",
+                "type": "P",
+                "val": "`IOB_SOC_MEM_ADDR_W",
+                "min": "1",
+                "max": "32",
+                "descr": "AXI address bus width",
+            },
+            {
+                "name": "AXI_DATA_W",
+                "type": "P",
+                "val": "`IOB_SOC_DATA_W",
+                "min": "1",
+                "max": "32",
+                "descr": "AXI data bus width",
+            },
+            {
+                "name": "AXI_LEN_W",
+                "type": "P",
+                "val": "4",
+                "min": "1",
+                "max": "4",
+                "descr": "AXI burst length width",
+            },
+        ]
 
-    @classmethod
-    def _setup_ios(cls):
         cls.ios += [
             {
                 "name": "clk_rst",
@@ -398,24 +389,6 @@ class iob_soc(iob_module):
                 "ports": [],
             },
         ]
-
-    @classmethod
-    def _custom_setup(cls):
-        # Add the following arguments:
-        # "INIT_MEM=x": if should setup with init_mem or not
-        # "USE_EXTMEM=x": if should setup with extmem or not
-        for arg in sys.argv[1:]:
-            if "INIT_MEM" in arg and arg.split("=")[1] == "1":
-                update_define(cls.confs, "INIT_MEM", True)
-            if "USE_EXTMEM" in arg and arg.split("=")[1] == "1":
-                update_define(cls.confs, "USE_EXTMEM", True)
-
-    @classmethod
-    def _init_attributes(cls):
-        # Initialize empty lists for attributes (We can't initialize in the attribute declaration because it would cause every subclass to reference the same list)
-        cls.peripherals = []
-        cls.peripheral_portmap = []
-
 
 if __name__ == "__main__":
     iob_soc.setup_as_top_module()
