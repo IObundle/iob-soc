@@ -121,10 +121,6 @@ def update_ios_with_extmem_connections(python_module):
             # Inner loop was broken, break the outer.
             break
 
-    # find the element in the dict list  ios whose key "name" is "extmem"
-    interface = next((item for item in ios if item["name"] == "extmem"), None)
-    interface["ports"] = if_gen.get_axi_ports()
-
     return num_extmem_connections
 
 
