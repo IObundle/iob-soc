@@ -22,6 +22,7 @@ class iob_gpio(iob_module):
         super()._create_submodules_list([
             {"interface": "iob_s_port"},
             {"interface": "iob_s_portmap"},
+            {"interface": "iob_wire"},
             iob_reg,
             iob_reg_e,
         ])
