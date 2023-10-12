@@ -20,9 +20,9 @@ sim-run:
 
 sim-test:
 	make clean && make setup && make -C ../$(CORE)_V*/ sim-test
-	make clean && make setup INIT_MEM=0 && make -C ../$(CORE)_V*/ sim-test
+	make clean && make setup INIT_MEM=0 && make -C ../$(CORE)_V*/ sim-test SIMULATOR=verilator
 	make clean && make setup USE_EXTMEM=1 && make -C ../$(CORE)_V*/ sim-test
-	make clean && make setup INIT_MEM=0 USE_EXTMEM=1 && make -C ../$(CORE)_V*/ sim-test
+	make clean && make setup INIT_MEM=0 USE_EXTMEM=1 && make -C ../$(CORE)_V*/ sim-test SIMULATOR=verilator
 
 fpga-test:
 	make clean && make setup && make -C ../$(CORE)_V*/ fpga-test
