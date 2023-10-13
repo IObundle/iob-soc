@@ -2,6 +2,7 @@ CORE := iob_soc
 SIMULATOR ?= icarus
 
 DISABLE_LINT:=1
+export DISABLE_LINT
 
 INIT_MEM ?= 1
 

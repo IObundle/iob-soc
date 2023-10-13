@@ -39,6 +39,7 @@ from iob_ctls import iob_ctls
 from iob_ram_2p import iob_ram_2p
 from iob_ram_sp import iob_ram_sp
 from axi_interconnect import axi_interconnect
+import if_gen
 
 
 class iob_soc(iob_module):
@@ -65,6 +66,21 @@ class iob_soc(iob_module):
                 update_define(cls.confs, "USE_EXTMEM", True)
         # Pre-setup specialized IOb-SoC functions
         cls.num_extmem_connections = pre_setup_iob_soc(cls)
+        # Update `axi` interface of `ios` dict with correct num_extmem_connections
+        for table in cls.ios:
+            if table["name"] == "axi":
+                table["file_prefix"] = f"iob_bus_0_{cls.num_extmem_connections}_"
+                table["mult"] = cls.num_extmem_connections
+                break
+        # Generate wires for tb
+        if_gen.gen_if(
+            "axi",  # Interface
+            f"iob_bus_{cls.num_extmem_connections}_",  # file_prefix
+            "",  # port_prefix
+            "",  # wire_prefix
+            [],  # ports
+            cls.num_extmem_connections,  # mult (bus_size)
+        )
 
 
     @classmethod
@@ -101,30 +117,29 @@ class iob_soc(iob_module):
             (iob_ram_sp, {"purpose": "simulation"}),
             (iob_ram_sp, {"purpose": "fpga"}),
             {
-                "interface": "axi_wire",
+                "interface": "axi",
+                "file_prefix": "",
+                "wire_prefix": "",
+                "port_prefix": "",
+            },
+            {
+                "interface": "axi",
                 "file_prefix": "ddr4_",
                 "wire_prefix": "ddr4_",
                 "port_prefix": "ddr4_",
             },
             {
-                "interface": "axi_wire",
+                "interface": "axi",
                 "file_prefix": "iob_memory_",
                 "wire_prefix": "memory_",
                 "port_prefix": "",
-            },
-            {
-                "interface": "axi_s_portmap",
-                "file_prefix": "iob_memory_",
-                "wire_prefix": "memory_",
-                "port_prefix": "",
-                "ports": [],
             },
             # Simulation headers & modules                
-                (axi_interconnect, {"purpose": "simulation"}),
+            (axi_interconnect, {"purpose": "simulation"}),
             (axi_ram, {"purpose": "simulation"}),
             (iob_tasks, {"purpose": "simulation"}),
             # Software modules
-                iob_str,
+            iob_str,
             printf,
         ]
 
@@ -362,10 +377,10 @@ class iob_soc(iob_module):
             {
                 "name": "axi",
                 "type": "master",
-                "file_prefix": f"iob_bus_0_{cls.num_extmem_connections}_",
+                #"file_prefix": f"iob_bus_0_{cls.num_extmem_connections}_",
                 "wire_prefix": "",
                 "port_prefix": "",
-                "mult": cls.num_extmem_connections,
+                #"mult": cls.num_extmem_connections,
                 "descr": "Bus of AXI master interfaces for external memory. One interface for this system and others optionally for peripherals.",
                 "if_defined": "USE_EXTMEM",
                 "ports": [],
