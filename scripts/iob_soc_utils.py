@@ -21,33 +21,6 @@ import if_gen
 import build_srcs
 from iob_module import iob_module
 
-# This function is used to setup peripheral related configuration in the python module of iob-soc systems
-# python_module: Module of the iob-soc system being setup
-def iob_soc_peripheral_setup(python_module):
-    # Get peripherals list from 'peripherals' table in blocks list
-    peripherals_list = python_module.peripherals
-
-    if peripherals_list:
-        # Get port list, parameter list and top module name for each type of peripheral used
-        _, params_list, _ = get_peripherals_ports_params_top(peripherals_list)
-        # Insert peripheral instance parameters in system parameters
-        # This causes the system to have a parameter for each parameter of each peripheral instance
-        for instance in peripherals_list:
-            for parameter in params_list[instance.__class__.name]:
-                parameter_to_append = parameter.copy()
-                # Override parameter value if user specified a 'parameters' dictionary with an override value for this parameter.
-                if parameter["name"] in instance.parameters:
-                    parameter_to_append["val"] = instance.parameters[parameter["name"]]
-                # Add instance name prefix to the name of the parameter. This makes this parameter unique to this instance
-                parameter_to_append[
-                    "name"
-                ] = f"{instance.name}_{parameter_to_append['name']}"
-                python_module.confs.append(parameter_to_append)
-
-        # Get peripheral related macros
-        get_peripheral_macros(python_module.confs, peripherals_list)
-
-
 def iob_soc_sw_setup(python_module, exclude_files=[]):
     peripherals_list = python_module.peripherals
     confs = python_module.confs
@@ -61,7 +34,6 @@ def iob_soc_sw_setup(python_module, exclude_files=[]):
             peripherals_list,
             f"{build_dir}/software/{name}_periphs.h",
         )
-
 
 def iob_soc_wrapper_setup(python_module, num_extmem_connections, exclude_files=[]):
     confs = python_module.confs
@@ -127,25 +99,10 @@ def update_ios_with_extmem_connections(python_module):
 
 ######################################
 
-
 # Run specialized iob-soc setup sequence
 def pre_setup_iob_soc(python_module):
-    confs = python_module.confs
-    name = python_module.name
-
-    # Replace IOb-SoC name in values of confs
-    for conf in confs:
-        if type(conf["val"]) == str:
-            conf["val"] = (
-                conf["val"].replace("iob_soc", name).replace("IOB_SOC", name.upper())
-            )
-
     # Setup peripherals
-    iob_soc_peripheral_setup(python_module)
     python_module.internal_wires = peripheral_portmap(python_module)
-    num_extmem_connections = update_ios_with_extmem_connections(python_module)
-
-    return num_extmem_connections
 
 
 def post_setup_iob_soc(python_module, num_extmem_connections):
