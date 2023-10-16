@@ -65,7 +65,6 @@ reserved_signals = {
 }
 
 
-
 # Import the <corename>_setup.py from the given core directory/file
 def import_setup(module_location, **kwargs):
     # Check if module_location is a directory
@@ -174,7 +173,6 @@ def get_peripheral_ios(peripherals_list):
     return ios_list
 
 
-
 # Get path to build directory of directory
 # Parameter: directory: path to core directory
 # Returns: string with path to build directory
@@ -198,7 +196,6 @@ def get_submodule_directories(root_dir):
 
 def clog2(val):
     return math.ceil(math.log2(val))
-
 
 
 # Replaces a verilog parameter in a string with its value.

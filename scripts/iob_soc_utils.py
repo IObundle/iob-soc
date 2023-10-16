@@ -47,6 +47,7 @@ def iob_soc_peripheral_setup(python_module):
         # Get peripheral related macros
         get_peripheral_macros(python_module.confs, peripherals_list)
 
+
 def iob_soc_sw_setup(python_module, exclude_files=[]):
     peripherals_list = python_module.peripherals
     confs = python_module.confs

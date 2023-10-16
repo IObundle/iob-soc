@@ -82,7 +82,6 @@ class iob_soc(iob_module):
             cls.num_extmem_connections,  # mult (bus_size)
         )
 
-
     @classmethod
     def _post_setup(cls):
         post_setup_iob_soc(cls, cls.num_extmem_connections)
@@ -92,7 +91,7 @@ class iob_soc(iob_module):
         # Initialize empty lists for attributes (We can't initialize in the attribute declaration because it would cause every subclass to reference the same list)
         cls.peripherals = []
         cls.peripheral_portmap = []
-            
+
         cls.submodules = [
             # Hardware modules
             iob_utils,
@@ -134,7 +133,7 @@ class iob_soc(iob_module):
                 "wire_prefix": "memory_",
                 "port_prefix": "",
             },
-            # Simulation headers & modules                
+            # Simulation headers & modules
             (axi_interconnect, {"purpose": "simulation"}),
             (axi_ram, {"purpose": "simulation"}),
             (iob_tasks, {"purpose": "simulation"}),
@@ -275,14 +274,14 @@ class iob_soc(iob_module):
                 "descr": "Address selection bit for boot ROM",
             },
             # parameters
-                {
-                    "name": "BOOTROM_ADDR_W",
-                    "type": "P",
-                    "val": "12",
-                    "min": "1",
-                    "max": "32",
-                    "descr": "Boot ROM address width",
-                },
+            {
+                "name": "BOOTROM_ADDR_W",
+                "type": "P",
+                "val": "12",
+                "min": "1",
+                "max": "32",
+                "descr": "Boot ROM address width",
+            },
             {
                 "name": "SRAM_ADDR_W",
                 "type": "P",
@@ -300,14 +299,14 @@ class iob_soc(iob_module):
                 "descr": "Memory bus address width",
             },
             # mandatory parameters (do not change them!)
-                {
-                    "name": "ADDR_W",
-                    "type": "P",
-                    "val": "32",
-                    "min": "1",
-                    "max": "32",
-                    "descr": "Address bus width",
-                },
+            {
+                "name": "ADDR_W",
+                "type": "P",
+                "val": "32",
+                "min": "1",
+                "max": "32",
+                "descr": "Address bus width",
+            },
             {
                 "name": "DATA_W",
                 "type": "P",
@@ -377,10 +376,10 @@ class iob_soc(iob_module):
             {
                 "name": "axi",
                 "type": "master",
-                #"file_prefix": f"iob_bus_0_{cls.num_extmem_connections}_",
+                # "file_prefix": f"iob_bus_0_{cls.num_extmem_connections}_",
                 "wire_prefix": "",
                 "port_prefix": "",
-                #"mult": cls.num_extmem_connections,
+                # "mult": cls.num_extmem_connections,
                 "descr": "Bus of AXI master interfaces for external memory. One interface for this system and others optionally for peripherals.",
                 "if_defined": "USE_EXTMEM",
                 "ports": [],
