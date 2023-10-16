@@ -47,6 +47,7 @@ def iob_soc_peripheral_setup(python_module):
         # Get peripheral related macros
         get_peripheral_macros(python_module.confs, peripherals_list)
 
+
 def iob_soc_sw_setup(python_module, exclude_files=[]):
     peripherals_list = python_module.peripherals
     confs = python_module.confs
@@ -120,10 +121,6 @@ def update_ios_with_extmem_connections(python_module):
                 continue
             # Inner loop was broken, break the outer.
             break
-
-    # find the element in the dict list  ios whose key "name" is "extmem"
-    interface = next((item for item in ios if item["name"] == "extmem"), None)
-    interface["ports"] = if_gen.get_axi_ports()
 
     return num_extmem_connections
 
