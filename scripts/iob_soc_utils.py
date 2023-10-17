@@ -111,6 +111,13 @@ def update_ios_with_extmem_connections(python_module):
     # Count numer of external memory connections
     for peripheral in peripherals_list:
         for interface in peripheral.ios:
+            # Check if interface is a standard axi_m_port (for extmem connection)
+            if interface["name"] == "axi_m_port":
+                num_extmem_connections += 1
+                continue
+            # Check if interface does not have the standard axi_m_port name,
+            # but does contains its standard signals. For example, it may be a
+            # bus of axi_m_ports, therefore may have a different name.
             for port in interface["ports"]:
                 if port["name"] == "axi_awid_o":
                     num_extmem_connections += get_extmem_bus_size(port["width"])
@@ -451,6 +458,12 @@ def peripheral_portmap(python_module):
                             port, mapping_items[0].confs, mapping[0]["corename"] + "_"
                         )
                     )
+                    # Append if_name as a prefix of signal
+                    mapping_ios[-1]["name"] = (
+                        mapping[mapping_external_interface]["if_name"]
+                        + "_"
+                        + port["name"]
+                    )
                     # Dont add `if_name` prefix if `iob_table_prefix` is set to False
                     if (
                         "port_prefix" in mapping[mapping_external_interface]
@@ -481,12 +494,22 @@ def peripheral_portmap(python_module):
 
                 # Insert mapping between IO and wire for mapping[0] (if its not internal/external interface)
                 if mapping_internal_interface != 0 and mapping_external_interface != 0:
-                    map_IO_to_wire(mapping_items[0].io, port["name"], 0, [], wire_name)
+                    map_IO_to_wire(
+                        mapping_items[0].io,
+                        mapping[0]["if_name"] + "_" + port["name"],
+                        0,
+                        [],
+                        wire_name,
+                    )
 
                 # Insert mapping between IO and wire for mapping[1] (if its not internal/external interface)
                 if mapping_internal_interface != 1 and mapping_external_interface != 1:
                     map_IO_to_wire(
-                        mapping_items[1].io, if_mapping[port["name"]], 0, [], wire_name
+                        mapping_items[1].io,
+                        mapping[1]["if_name"] + "_" + if_mapping[port["name"]],
+                        0,
+                        [],
+                        wire_name,
                     )
 
         else:
@@ -560,6 +583,11 @@ def peripheral_portmap(python_module):
                         mapping[0]["corename"] + "_",
                     )
                 )
+                # Append if_name as a prefix of signal
+                mapping_ios[-1]["name"] = (
+                    mapping[mapping_external_interface]["if_name"] + "_" + port["name"]
+                )  # FIXME
+                # Dont add `if_name` prefix if `iob_table_prefix` is set to False
                 if (
                     "port_prefix" in mapping[mapping_external_interface]
                     and not mapping[mapping_external_interface]["port_prefix"]
@@ -587,9 +615,10 @@ def peripheral_portmap(python_module):
 
             # Insert mapping between IO and wire for mapping[0] (if its not internal/external interface)
             if mapping_internal_interface != 0 and mapping_external_interface != 0:
+                # print(f"Debug: {mapping_items[0].name} {mapping_items[0].ios} {mapping_items[0].io}\n")  # DEBUG
                 map_IO_to_wire(
                     mapping_items[0].io,
-                    mapping[0]["port"],
+                    mapping[0]["if_name"] + "_" + mapping[0]["port"],
                     eval_param_expression_from_config(
                         port["width"], mapping_items[0].confs, "max"
                     ),
@@ -601,7 +630,7 @@ def peripheral_portmap(python_module):
             if mapping_internal_interface != 1 and mapping_external_interface != 1:
                 map_IO_to_wire(
                     mapping_items[1].io,
-                    mapping[1]["port"],
+                    mapping[1]["if_name"] + "_" + mapping[1]["port"],
                     eval_param_expression_from_config(
                         port2["width"], mapping_items[1].confs, "max"
                     ),

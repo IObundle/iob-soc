@@ -23,11 +23,10 @@ def create_wrapper_files(build_dir, name, ios, confs, num_extmem_connections):
         if pio_signals and "if_defined" in table.keys():
             pwires_str += f"`ifdef {table['if_defined']}\n"
         for signal in pio_signals:
-            pwires_str += "   wire [{}-1:0] {}_{};\n".format(
+            pwires_str += "   wire [{}-1:0] {};\n".format(
                 add_prefix_to_parameters_in_string(
                     signal["width"], confs, "`" + name.upper() + "_"
                 ),
-                table["name"],
                 signal["name"],
             )
         if pio_signals and "if_defined" in table.keys():
@@ -38,7 +37,7 @@ def create_wrapper_files(build_dir, name, ios, confs, num_extmem_connections):
             pportmaps_str += f"`ifdef {table['if_defined']}\n"
         for signal in pio_signals:
             pportmaps_str += "               .{signal}({signal}),\n".format(
-                signal=table["name"] + "_" + signal["name"]
+                signal=signal["name"]
             )
         if pio_signals and "if_defined" in table.keys():
             pportmaps_str += "`endif\n"
@@ -95,7 +94,7 @@ def create_interconnect_instance(out_dir, name, num_extmem_connections):
       .M_COUNT     (1)
    ) system_axi_interconnect (
       .clk(clk),
-      .rst(rst),
+      .rst(arst),
 
       // Need to use manually defined connections because awlock and arlock of interconnect is only on bit for each slave
       .s_axi_awid    (axi_awid),    //Address write channel ID.
@@ -197,7 +196,7 @@ def create_ku040_rstn(out_dir, name, num_extmem_connections):
     rstn_str = rstn_str[:-3]
 
     file_str = f"      wire [{num_extmem_connections}-1:0] rstn;"
-    file_str += f"      assign rst ={rstn_str};"
+    file_str += f"      assign arst ={rstn_str};"
 
     fp_rstn = open(f"{out_dir}/{name}_ku040_rstn.vs", "w")
     fp_rstn.write(file_str)

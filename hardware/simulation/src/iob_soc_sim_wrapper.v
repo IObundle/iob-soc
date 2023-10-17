@@ -33,7 +33,7 @@ module iob_soc_sim_wrapper (
    localparam AXI_DATA_W = `DDR_DATA_W;
 
    wire clk = clk_i;
-   wire rst = rst_i;
+   wire arst = rst_i;
 
    `include "iob_soc_wrapper_pwires.vs"
 
@@ -63,7 +63,8 @@ module iob_soc_sim_wrapper (
    ) iob_soc0 (
       `include "iob_soc_pportmaps.vs"
       .clk_i (clk),
-      .arst_i(rst),
+      .cke_i (1'b1),
+      .arst_i(arst),
       .trap_o(trap_o)
    );
 
@@ -84,7 +85,7 @@ module iob_soc_sim_wrapper (
       `include "iob_memory_axi_s_portmap.vs"
 
       .clk_i(clk),
-      .rst_i(rst)
+      .rst_i(arst)
    );
 `endif
 
@@ -127,7 +128,7 @@ always @(posedge trap[1]) begin
    iob_uart uart_tb (
       .clk_i (clk),
       .cke_i (cke),
-      .arst_i(rst),
+      .arst_i(arst),
 
       .iob_avalid_i(uart_avalid),
       .iob_addr_i  (uart_addr),
@@ -155,24 +156,31 @@ always @(posedge trap[1]) begin
    end
 
    // Ethernet Interface signals
-   assign ETHERNET0_RX_CLK     = eth_clk;
-   assign ETHERNET0_TX_CLK     = eth_clk;
-   assign ETHERNET0_PLL_LOCKED = 1'b1;
+   assign ETHERNET0_MRxClk     = eth_clk;
+   assign ETHERNET0_MTxClk     = eth_clk;
 
    //add core test module in testbench
    iob_eth_tb_gen eth_tb (
       .clk  (clk),
-      .reset(rst),
+      .reset(arst),
 
       // This module acts like a loopback
-      .RX_CLK (ETHERNET0_TX_CLK),
-      .RX_DATA(ETHERNET0_TX_DATA),
-      .RX_DV  (ETHERNET0_TX_EN),
+      .MRxClk (ETHERNET0_MTxClk),
+      .MRxD   (ETHERNET0_MTxD),
+      .MRxDv  (ETHERNET0_MTxEn),
+      .MRxErr (ETHERNET0_MTxErr),
 
       // The wires are thus reversed
-      .TX_CLK (ETHERNET0_RX_CLK),
-      .TX_DATA(ETHERNET0_RX_DATA),
-      .TX_EN  (ETHERNET0_RX_DV)
+      .MTxClk (ETHERNET0_MRxClk),
+      .MTxD   (ETHERNET0_MRxD),
+      .MTxEn  (ETHERNET0_MRxDv),
+      .MTxErr (ETHERNET0_MRxErr),
+
+      .MColl(1'b0),
+      .MCrS(1'b0),
+
+      .MDC(),
+      .MDIO(),
    );
 `endif
 

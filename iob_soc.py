@@ -48,12 +48,17 @@ class iob_soc(iob_module):
     flows = "pc-emul emb sim doc fpga"
     setup_dir = os.path.dirname(__file__)
 
+    # Configurable by subclasses
+    cpu = iob_picorv32
+    uart = iob_uart
+
     # IOb-SoC has the following list of non standard attributes:
     peripherals = None  # List with instances peripherals to include in system
     peripheral_portmap = None  # List of tuples, each tuple corresponds to a port map
     num_extmem_connections = None
 
     # Method that runs the setup process of this class
+    # TODO: Check in other repositories if we really need the _pre_setup method. We may be able to remove it.
     @classmethod
     def _pre_setup(cls):
         # Add the following arguments:
@@ -95,9 +100,9 @@ class iob_soc(iob_module):
         cls.submodules = [
             # Hardware modules
             iob_utils,
-            iob_picorv32,
+            cls.cpu,
             iob_cache,
-            iob_uart,
+            cls.uart,
             iob_merge,
             iob_split,
             iob_rom_sp,
@@ -201,36 +206,24 @@ class iob_soc(iob_module):
             ),
         ]
 
-        # Verilog modules instances if we have them in the setup list (they may not be in the list if a subclass decided to remove them).
-        if iob_picorv32 in cls.submodules:
-            cls.cpu = iob_picorv32("cpu_0")
-        if iob_split in cls.submodules:
-            cls.ibus_split = iob_split("ibus_split_0")
-            cls.dbus_split = iob_split("dbus_split_0")
-            cls.int_dbus_split = iob_split("int_dbus_split_0")
-            cls.pbus_split = iob_split("pbus_split_0")
-        if iob_merge in cls.submodules:
-            cls.int_mem = iob_merge("iob_merge_0")
-            cls.ext_mem = iob_merge("iob_merge_1")
-        if iob_uart in cls.submodules:
-            cls.peripherals.append(iob_uart("UART0"))
+        cls.peripherals.append(cls.uart("UART0"))
 
         cls.block_groups += [
-            iob_block_group(name="cpu", description="CPU module", blocks=[cls.cpu]),
+            iob_block_group(name="cpu", description="CPU module", blocks=[cls.cpu("cpu_0")]),
             iob_block_group(
                 name="bus_split",
                 description="Split modules for buses",
                 blocks=[
-                    cls.ibus_split,
-                    cls.dbus_split,
-                    cls.int_dbus_split,
-                    cls.pbus_split,
+                    iob_split("ibus_split_0"),
+                    iob_split("dbus_split_0"),
+                    iob_split("int_dbus_split_0"),
+                    iob_split("pbus_split_0")
                 ],
             ),
             iob_block_group(
                 name="mem",
                 description="Memory module",
-                blocks=[cls.int_mem, cls.ext_mem],
+                blocks=[iob_merge("iob_merge_0"), iob_merge("iob_merge_1")],
             ),
             iob_block_group(
                 name="peripheral",
@@ -346,6 +339,14 @@ class iob_soc(iob_module):
                 "min": "1",
                 "max": "4",
                 "descr": "AXI burst length width",
+            },
+            {
+                "name": "MEM_ADDR_OFFSET",
+                "type": "P",
+                "val": "0",
+                "min": "0",
+                "max": "NA",
+                "descr": "Offset of memory address",
             },
         ]
 

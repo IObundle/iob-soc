@@ -78,6 +78,7 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
         # Insert peripheral instance name
         periphs_inst_str += "   {} (\n".format(instance.name)
         # Insert io signals
+        # print(f"Debug: {instance.name} {instance.io} {port_list[instance.__class__.name]}\n")  # DEBUG
         for signal in get_pio_signals(port_list[instance.__class__.name]):
             if "if_defined" in signal.keys():
                 periphs_inst_str += f"`ifdef {top.upper()}_{signal['if_defined']}\n"
@@ -124,17 +125,6 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
 
         periphs_inst_str += "      );\n"
 
-    # Create internal wires to connect to the cache and the peripheral's external memory address buses
-    periphs_wires_str += (
-        "\n    // Internal wires for shared access to the external memory address bus\n"
-    )
-    periphs_wires_str += (
-        f"    wire [{num_extmem_connections}*AXI_ADDR_W-1:0] internal_axi_awaddr_o;\n"
-    )
-    periphs_wires_str += (
-        f"    wire [{num_extmem_connections}*AXI_ADDR_W-1:0] internal_axi_araddr_o;\n"
-    )
-
     # Create internal wires to connect the peripherals trap signals
     periphs_wires_str += "\n    // Internal wires for trap signals\n"
     periphs_wires_str += "    wire cpu_trap_o;\n"
@@ -150,10 +140,6 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
     fd_wires = open(f"{out_dir}/{top}_pwires.vs", "w")
     fd_wires.write(periphs_wires_str)
     fd_wires.close()
-
-    # Instantiate `iob_addr_zone_selector` modules to connect
-    periphs_inst_str += "\n    // Address zone selector instances to share external memory address space between peripherals\n"
-    periphs_inst_str += generate_iob_address_zone_selectors(top, num_extmem_connections)
 
     fd_periphs = open(f"{out_dir}/{top}_periphs_inst.vs", "w")
     fd_periphs.write(periphs_inst_str)

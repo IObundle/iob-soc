@@ -39,11 +39,13 @@ module iob_soc_fpga_wrapper (
    input  ENET_RX_D2,
    input  ENET_RX_D3,
    input  ENET_RX_DV,
+   input  ENET_RX_ERR,
    output ENET_TX_D0,
    output ENET_TX_D1,
    output ENET_TX_D2,
    output ENET_TX_D3,
    output ENET_TX_EN,
+   output ENET_TX_ERR,
 `endif
    output trap
 );
@@ -60,40 +62,34 @@ module iob_soc_fpga_wrapper (
    // Clocking / Reset
    //-----------------------------------------------------------------
 
-   wire rst;
+   wire arst;
 
    // 
    // Logic to contatenate data pins and ethernet clock
    //
 `ifdef IOB_SOC_USE_ETHERNET
    //buffered eth clock
-   wire       ETH_CLK;
-
-   //PLL
-   wire       eth_locked;
+   wire       ETH_Clk;
 
    //MII
-   wire [3:0] TX_DATA;
-   wire [3:0] RX_DATA;
+   wire [3:0] ETH_MTxD;
+   wire [3:0] ETH_MRxD;
 
-   assign {ENET_TX_D3, ENET_TX_D2, ENET_TX_D1, ENET_TX_D0} = TX_DATA;
-   assign RX_DATA = {ENET_RX_D3, ENET_RX_D2, ENET_RX_D1, ENET_RX_D0};
+   assign {ENET_TX_D3, ENET_TX_D2, ENET_TX_D1, ENET_TX_D0} = ETH_MTxD;
+   assign ETH_MRxD = {ENET_RX_D3, ENET_RX_D2, ENET_RX_D1, ENET_RX_D0};
 
    //eth clock
    clk_buf_altclkctrl_0 txclk_buf (
       .inclk (ENET_RX_CLK),
-      .outclk(ETH_CLK)
+      .outclk(ETH_Clk)
    );
-
-
-   assign eth_locked = 1'b1;
 
 
    ddio_out_clkbuf ddio_out_clkbuf_inst (
       .aclr    (~ENET_RESETN),
       .datain_h(1'b0),
       .datain_l(1'b1),
-      .outclock(ETH_CLK),
+      .outclock(ETH_Clk),
       .dataout (ENET_GTX_CLK)
    );
 
@@ -108,23 +104,28 @@ module iob_soc_fpga_wrapper (
       .AXI_ADDR_W(AXI_ADDR_W),
       .AXI_DATA_W(AXI_DATA_W)
    ) iob_soc (
-      //`ifdef IOB_SOC_USE_ETHERNET
-      //      //ETHERNET
-      //      //PHY
-      //      .ETHERNET0_ETH_PHY_RESETN(ENET_RESETN),
-      //      //PLL
-      //      .ETHERNET0_PLL_LOCKED    (eth_locked),
-      //      //MII
-      //      .ETHERNET0_RX_CLK        (ETH_CLK),
-      //      .ETHERNET0_RX_DATA       (RX_DATA),
-      //      .ETHERNET0_RX_DV         (ENET_RX_DV),
-      //      .ETHERNET0_TX_CLK        (ETH_CLK),
-      //      .ETHERNET0_TX_DATA       (TX_DATA),
-      //      .ETHERNET0_TX_EN         (ENET_TX_EN),
-      //`endif
+`ifdef IOB_SOC_USE_ETHERNET
+      //MII
+      .ETHERNET0_MRxClk (ETH_Clk),
+      .ETHERNET0_MRxD   (ETH_MRxD),
+      .ETHERNET0_MRxDv  (ENET_RX_DV),
+      .ETHERNET0_MRxErr (ENET_RX_ERR),
+
+      .ETHERNET0_MTxClk (ETH_Clk),
+      .ETHERNET0_MTxD   (ETH_MTxD),
+      .ETHERNET0_MTxEn  (ENET_TX_EN),
+      .ETHERNET0_MTxErr (ENET_TX_ERR),
+
+      .MColl(1'b0),
+      .MCrS(1'b0),
+
+      .MDC(),
+      .MDIO(),
+`endif
       `include "iob_soc_pportmaps.vs"
       .clk_i (clk),
-      .arst_i(rst),
+      .cke_i (1'b1),
+      .arst_i(arst),
       .trap_o(trap)
    );
 
@@ -149,7 +150,7 @@ module iob_soc_fpga_wrapper (
    iob_reset_sync rst_sync (
       .clk_i (clk),
       .arst_i(rst_int),
-      .arst_o(rst)
+      .arst_o(arst)
    );
 
    alt_ddr3 ddr3_ctrl (
@@ -228,7 +229,7 @@ module iob_soc_fpga_wrapper (
    iob_reset_sync rst_sync (
       .clk_i (clk),
       .arst_i(~resetn),
-      .arst_o(rst)
+      .arst_o(arst)
    );
 `endif
 
