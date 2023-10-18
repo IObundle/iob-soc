@@ -13,6 +13,7 @@ if __name__ == "__main__":
 from iob_block_group import iob_block_group
 from iob_soc_utils import pre_setup_iob_soc, post_setup_iob_soc
 from mk_configuration import update_define
+from submodule_utils import get_peripheral_macros
 
 # Submodules
 from iob_picorv32 import iob_picorv32
@@ -39,61 +40,25 @@ from iob_ctls import iob_ctls
 from iob_ram_2p import iob_ram_2p
 from iob_ram_sp import iob_ram_sp
 from axi_interconnect import axi_interconnect
-import if_gen
+
+MEM_ADDR_W = 24
 
 
 class iob_soc(iob_module):
-    name = "iob_soc"
-    version = "V0.70"
-    flows = "pc-emul emb sim doc fpga"
-    setup_dir = os.path.dirname(__file__)
 
-    # Configurable by subclasses
-    cpu = iob_picorv32
-    uart = iob_uart
-
-    # IOb-SoC has the following list of non standard attributes:
-    peripherals = None  # List with instances peripherals to include in system
-    peripheral_portmap = None  # List of tuples, each tuple corresponds to a port map
-    num_extmem_connections = None
-
-    # Method that runs the setup process of this class
-    # TODO: Check in other repositories if we really need the _pre_setup method. We may be able to remove it.
-    @classmethod
-    def _pre_setup(cls):
-        # Add the following arguments:
-        # "INIT_MEM=x": if should setup with init_mem or not
-        # "USE_EXTMEM=x": if should setup with extmem or not
-        for arg in sys.argv[1:]:
-            if "INIT_MEM" in arg and arg.split("=")[1] == "1":
-                update_define(cls.confs, "INIT_MEM", True)
-            if "USE_EXTMEM" in arg and arg.split("=")[1] == "1":
-                update_define(cls.confs, "USE_EXTMEM", True)
-        # Pre-setup specialized IOb-SoC functions
-        cls.num_extmem_connections = pre_setup_iob_soc(cls)
-        # Update `axi` interface of `ios` dict with correct num_extmem_connections
-        for table in cls.ios:
-            if table["name"] == "axi":
-                table["file_prefix"] = f"iob_bus_0_{cls.num_extmem_connections}_"
-                table["mult"] = cls.num_extmem_connections
-                break
-        # Generate wires for tb
-        if_gen.gen_if(
-            "axi",  # Interface
-            f"iob_bus_{cls.num_extmem_connections}_",  # file_prefix
-            "",  # port_prefix
-            "",  # wire_prefix
-            [],  # ports
-            cls.num_extmem_connections,  # mult (bus_size)
-        )
-
-    @classmethod
-    def _post_setup(cls):
-        post_setup_iob_soc(cls, cls.num_extmem_connections)
-
+    # override empty iob_module's method
     @classmethod
     def _init_attributes(cls):
-        # Initialize empty lists for attributes (We can't initialize in the attribute declaration because it would cause every subclass to reference the same list)
+        cls.name = "iob_soc"
+        cls.version = "V0.70"
+        cls.flows = "pc-emul emb sim doc fpga"
+        cls.setup_dir = os.path.dirname(__file__)
+
+        cls.cpu = iob_picorv32
+        cls.uart = iob_uart
+        cls.num_extmem_connections = 1
+
+        # warning: do not initialize lists as class variables, they will be shared between all subclasses
         cls.peripherals = []
         cls.peripheral_portmap = []
 
@@ -138,6 +103,13 @@ class iob_soc(iob_module):
                 "file_prefix": "iob_memory_",
                 "wire_prefix": "memory_",
                 "port_prefix": "",
+            },
+            {
+                "interface": "axi",
+                "file_prefix": f"iob_bus_{cls.num_extmem_connections}_",
+                "wire_prefix": "",
+                "port_prefix": "",
+                "mult": cls.num_extmem_connections,
             },
             # Simulation headers & modules
             (axi_ram, {"purpose": "simulation"}),
@@ -288,7 +260,7 @@ class iob_soc(iob_module):
             {
                 "name": "MEM_ADDR_W",
                 "type": "P",
-                "val": "24",
+                "val": MEM_ADDR_W,
                 "min": "1",
                 "max": "32",
                 "descr": "Memory bus address width",
@@ -321,7 +293,7 @@ class iob_soc(iob_module):
             {
                 "name": "AXI_ADDR_W",
                 "type": "P",
-                "val": "`IOB_SOC_MEM_ADDR_W",
+                "val": MEM_ADDR_W,
                 "min": "1",
                 "max": "32",
                 "descr": "AXI address bus width",
@@ -329,7 +301,7 @@ class iob_soc(iob_module):
             {
                 "name": "AXI_DATA_W",
                 "type": "P",
-                "val": "`IOB_SOC_DATA_W",
+                "val": "32",
                 "min": "1",
                 "max": "32",
                 "descr": "AXI data bus width",
@@ -351,6 +323,15 @@ class iob_soc(iob_module):
                 "descr": "Offset of memory address",
             },
         ]
+
+        # Add the following arguments:
+        # "INIT_MEM=x": if should setup with init_mem or not
+        # "USE_EXTMEM=x": if should setup with extmem or not
+        for arg in sys.argv[1:]:
+            if "INIT_MEM" in arg and arg.split("=")[1] == "1":
+                update_define(cls.confs, "INIT_MEM", True)
+            if "USE_EXTMEM" in arg and arg.split("=")[1] == "1":
+                update_define(cls.confs, "USE_EXTMEM", True)
 
         cls.ios += [
             {
@@ -379,15 +360,30 @@ class iob_soc(iob_module):
             {
                 "name": "axi",
                 "type": "master",
-                # "file_prefix": f"iob_bus_0_{cls.num_extmem_connections}_",
+                "file_prefix": f"iob_bus_0_{cls.num_extmem_connections}_",
                 "wire_prefix": "",
                 "port_prefix": "",
-                # "mult": cls.num_extmem_connections,
+                "mult": cls.num_extmem_connections,
                 "descr": "Bus of AXI master interfaces for external memory. One interface for this system and others optionally for peripherals.",
                 "if_defined": "USE_EXTMEM",
                 "ports": [],
             },
         ]
+
+        # Get number of peripherals and IDs
+        # TODO revise name of function
+        get_peripheral_macros(cls.confs, cls.peripherals)
+
+    # override empty iob_module's method
+    @classmethod
+    def _pre_setup(cls):
+        # Pre-setup specialized IOb-SoC functions
+        pre_setup_iob_soc(cls)
+
+    # override empty iob_module's method
+    @classmethod
+    def _post_setup(cls):
+        post_setup_iob_soc(cls, cls.num_extmem_connections)
 
 
 if __name__ == "__main__":
