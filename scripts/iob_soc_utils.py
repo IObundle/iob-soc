@@ -375,9 +375,11 @@ def peripheral_portmap(python_module):
                 {
                     "name": mapping[mapping_external_interface]["if_name"],
                     "type": "master",
-                    "port_prefix": mapping[mapping_external_interface]["if_name"] + "_"
-                    if "port_prefix" not in mapping[mapping_external_interface]
-                    else mapping[mapping_external_interface]["port_prefix"],
+                    # FIXME: Why does this not work? Can it be removed?
+                    # "port_prefix": mapping[mapping_external_interface]["if_name"] + "_"
+                    # if "port_prefix" not in mapping[mapping_external_interface]
+                    # else mapping[mapping_external_interface]["port_prefix"],
+                    "port_prefix": "",
                     "wire_prefix": "",
                     "descr": f"IOs for peripherals based on portmap index {map_idx}",
                     "ports": mapping_ios,

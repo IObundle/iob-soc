@@ -3,6 +3,7 @@
 import os
 
 from submodule_utils import get_pio_signals, add_prefix_to_parameters_in_string
+import if_gen
 
 
 # Creates the Verilog Snippet (.vs) files required by wrappers
@@ -27,7 +28,7 @@ def create_wrapper_files(build_dir, name, ios, confs, num_extmem_connections):
                 add_prefix_to_parameters_in_string(
                     signal["width"], confs, "`" + name.upper() + "_"
                 ),
-                signal["name"],
+                signal["name"] + if_gen.get_suffix(signal["direction"]),
             )
         if pio_signals and "if_defined" in table.keys():
             pwires_str += "`endif\n"
@@ -37,7 +38,7 @@ def create_wrapper_files(build_dir, name, ios, confs, num_extmem_connections):
             pportmaps_str += f"`ifdef {table['if_defined']}\n"
         for signal in pio_signals:
             pportmaps_str += "               .{signal}({signal}),\n".format(
-                signal=signal["name"]
+                signal=signal["name"] + if_gen.get_suffix(signal["direction"])
             )
         if pio_signals and "if_defined" in table.keys():
             pportmaps_str += "`endif\n"

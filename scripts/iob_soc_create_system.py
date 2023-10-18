@@ -85,7 +85,9 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
             periphs_inst_str += "      .{}{}({}{}),\n".format(
                 signal["name"],
                 if_gen.get_suffix(signal["direction"]),
-                get_peripheral_port_mapping(instance, signal["name_without_prefix"]),
+                get_peripheral_port_mapping(
+                    instance, signal["if_name"], signal["name"]
+                ),
                 if_gen.get_suffix(signal["direction"]),
             )
             if "if_defined" in signal.keys():
@@ -211,14 +213,14 @@ def get_verilog_mapping(map_obj):
 
 # peripheral_instance: dictionary describing a peripheral instance. Must have 'name' and 'IO' attributes.
 # port_name: name of the port we are mapping
-def get_peripheral_port_mapping(peripheral_instance, port_name):
+def get_peripheral_port_mapping(peripheral_instance, if_name, port_name):
     # If IO dictionary (with mapping) does not exist for this peripheral, use default wire name
-    # print(peripheral_instance.__dict__)
     if "io" not in peripheral_instance.__dict__:
         return f"{peripheral_instance.name}_{port_name}"
 
+    # print(port_name, peripheral_instance.io)  # Debug
     assert (
-        port_name in peripheral_instance.io
-    ), f"{iob_colors.FAIL}Port {port_name} of {peripheral_instance.name} not mapped!{iob_colors.ENDC}"
+        if_name + "_" + port_name in peripheral_instance.io
+    ), f"{iob_colors.FAIL}Port '{port_name}' of interface '{if_name}' for peripheral '{peripheral_instance.name}' not mapped!{iob_colors.ENDC}"
     # IO mapping dictionary exists, get verilog string for that mapping
-    return get_verilog_mapping(peripheral_instance.io[port_name])
+    return get_verilog_mapping(peripheral_instance.io[if_name + "_" + port_name])

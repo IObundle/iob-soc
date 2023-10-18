@@ -116,6 +116,7 @@ class iob_soc(iob_module):
             iob_ram_dp,
             iob_reset_sync,
             iob_ctls,
+            axi_interconnect,
             (iob_ram_2p, {"purpose": "simulation"}),
             (iob_ram_2p, {"purpose": "fpga"}),
             (iob_ram_sp, {"purpose": "simulation"}),
@@ -139,7 +140,6 @@ class iob_soc(iob_module):
                 "port_prefix": "",
             },
             # Simulation headers & modules
-            (axi_interconnect, {"purpose": "simulation"}),
             (axi_ram, {"purpose": "simulation"}),
             (iob_tasks, {"purpose": "simulation"}),
             # Software modules
@@ -209,7 +209,9 @@ class iob_soc(iob_module):
         cls.peripherals.append(cls.uart("UART0"))
 
         cls.block_groups += [
-            iob_block_group(name="cpu", description="CPU module", blocks=[cls.cpu("cpu_0")]),
+            iob_block_group(
+                name="cpu", description="CPU module", blocks=[cls.cpu("cpu_0")]
+            ),
             iob_block_group(
                 name="bus_split",
                 description="Split modules for buses",
@@ -217,7 +219,7 @@ class iob_soc(iob_module):
                     iob_split("ibus_split_0"),
                     iob_split("dbus_split_0"),
                     iob_split("int_dbus_split_0"),
-                    iob_split("pbus_split_0")
+                    iob_split("pbus_split_0"),
                 ],
             ),
             iob_block_group(
@@ -352,11 +354,11 @@ class iob_soc(iob_module):
 
         cls.ios += [
             {
-                "name": "clk_rst",
+                "name": "clk_en_rst",
                 "type": "slave",
                 "port_prefix": "",
                 "wire_prefix": "",
-                "descr": "Clock and reset",
+                "descr": "Clock, enable, and reset",
                 "ports": [],
             },
             {
