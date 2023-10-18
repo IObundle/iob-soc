@@ -20,7 +20,6 @@ import fnmatch
 import if_gen
 import build_srcs
 from iob_module import iob_module
-from axi_interconnect import axi_interconnect
 
 ######################################
 # Specialized IOb-SoC setup functions.
@@ -60,8 +59,6 @@ def iob_soc_wrapper_setup(python_module, num_extmem_connections, exclude_files=[
 
     python_module._setup_submodules(
         [
-            # Setup interconnect
-            axi_interconnect,
             # Create extmem wrapper files
             {
                 "file_prefix": "ddr4_",
