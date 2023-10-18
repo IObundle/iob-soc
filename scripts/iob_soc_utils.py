@@ -123,6 +123,14 @@ def post_setup_iob_soc(python_module, num_extmem_connections):
     iob_soc_hw_setup(python_module)
     iob_soc_doc_setup(python_module)
 
+    # Copy console.py from scripts dir
+    build_srcs.copy_files(
+        f"{python_module.setup_dir}/scripts",
+        f"{build_dir}/scripts",
+        ["console.py", "console_ethernet.py"],
+        "*.py",
+    )
+
     if not python_module.is_top_module:
         return
     ### Only run lines below if this system is the top module ###

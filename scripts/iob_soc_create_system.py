@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 import re
+import copy
 
 import iob_colors
 
@@ -28,6 +29,28 @@ def insert_header_files(dest_dir, name, peripherals_list):
     fd_out.close()
 
 
+def update_params_with_user_defined_values(params_dict, peripherals_list):
+    """Given a `params_dict`, create a copy, and update its values, to match
+       the parameters given by the user for each instance of the system's
+       peripheral instances in the `peripherals_list`
+    :param params_dict: dictionary obtained from `get_peripherals_ports_params_top`.
+                        This dict list all parameters of each peripheral and their default values.
+    :param peripherals_list: list of peripheral instances of the system
+    :return: updated copy of `params_dict`
+    """
+    return_params_dict = copy.deepcopy(params_dict)
+
+    for instance in peripherals_list:
+        for i in range(len(params_dict[instance.__class__.name])):
+            # Override parameter value if user specified a 'parameters' dictionary with an override value for this parameter.
+            if params_dict[instance.__class__.name][i]["name"] in instance.parameters:
+                return_params_dict[instance.__class__.name][i][
+                    "val"
+                ] = instance.parameters[parameter["name"]]
+
+    return return_params_dict
+
+
 # Creates the Verilog Snippet (.vs) files required by {top}.v
 # build_dir: build directory
 # top: top name of the system
@@ -46,6 +69,7 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
     port_list, params_list, top_list = get_peripherals_ports_params_top(
         peripherals_list
     )
+    params_list = update_params_with_user_defined_values(params_list, peripherals_list)
 
     # Insert internal module wires (if any)
     periphs_wires_str = ""
@@ -69,8 +93,9 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
             periphs_inst_str += "     #(\n"
             # Insert parameters
             for param in params_list[instance.__class__.name]:
-                periphs_inst_str += "      .{}({}){}\n".format(
-                    param["name"], instance.name + "_" + param["name"], ","
+                periphs_inst_str += "      .{}({}),\n".format(
+                    param["name"],
+                    param["val"],
                 )
             # Remove comma at the end of last parameter
             periphs_inst_str = periphs_inst_str[::-1].replace(",", "", 1)[::-1]
