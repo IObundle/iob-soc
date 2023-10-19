@@ -91,18 +91,36 @@ class iob_soc(iob_module):
                 "file_prefix": "",
                 "wire_prefix": "",
                 "port_prefix": "",
+                "widths": {
+                    "ID_W": "AXI_ID_W",
+                    "ADDR_W": "AXI_ADDR_W",
+                    "DATA_W": "AXI_DATA_W",
+                    "LEN_W": "AXI_LEN_W",
+                },
             },
             {
                 "interface": "axi",
                 "file_prefix": "ddr4_",
                 "wire_prefix": "ddr4_",
                 "port_prefix": "ddr4_",
+                "widths": {
+                    "ID_W": "AXI_ID_W",
+                    "ADDR_W": "AXI_ADDR_W",
+                    "DATA_W": "AXI_DATA_W",
+                    "LEN_W": "AXI_LEN_W",
+                },
             },
             {
                 "interface": "axi",
                 "file_prefix": "iob_memory_",
                 "wire_prefix": "memory_",
                 "port_prefix": "",
+                "widths": {
+                    "ID_W": "AXI_ID_W",
+                    "ADDR_W": "AXI_ADDR_W",
+                    "DATA_W": "AXI_DATA_W",
+                    "LEN_W": "AXI_LEN_W",
+                },
             },
             {
                 "interface": "axi",
@@ -110,6 +128,12 @@ class iob_soc(iob_module):
                 "wire_prefix": "",
                 "port_prefix": "",
                 "mult": cls.num_extmem_connections,
+                "widths": {
+                    "ID_W": "AXI_ID_W",
+                    "ADDR_W": "AXI_ADDR_W",
+                    "DATA_W": "AXI_DATA_W",
+                    "LEN_W": "AXI_LEN_W",
+                },
             },
             # Simulation headers & modules
             (axi_ram, {"purpose": "simulation"}),
@@ -364,6 +388,12 @@ class iob_soc(iob_module):
                 "wire_prefix": "",
                 "port_prefix": "",
                 "mult": cls.num_extmem_connections,
+                "widths": {
+                    "ID_W": "AXI_ID_W",
+                    "ADDR_W": "AXI_ADDR_W",
+                    "DATA_W": "AXI_DATA_W",
+                    "LEN_W": "AXI_LEN_W",
+                },
                 "descr": "Bus of AXI master interfaces for external memory. One interface for this system and others optionally for peripherals.",
                 "if_defined": "USE_EXTMEM",
                 "ports": [],
