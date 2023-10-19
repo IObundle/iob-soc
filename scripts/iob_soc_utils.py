@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import sys
 import os
 
 from iob_soc_create_system import create_systemv, get_extmem_bus_size
@@ -17,7 +16,6 @@ import shutil
 import fnmatch
 import if_gen
 import build_srcs
-from iob_module import iob_module
 
 
 def iob_soc_sw_setup(python_module, exclude_files=[]):
