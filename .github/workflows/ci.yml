@@ -13,7 +13,7 @@ concurrency:
 
 on:
   push:
-    branches: [ master ]
+    branches: '*'
   # Don't forget to require approval for all outside collaborators
   pull_request:
     branches: '*'
