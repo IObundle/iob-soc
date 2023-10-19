@@ -12,14 +12,14 @@
 
 module iob_soc_tb;
 
-   parameter realtime clk_per = 1s / `FREQ;
+   parameter realtime CLK_PER = 1s / `FREQ;
 
    localparam ADDR_W = `IOB_SOC_ADDR_W;
    localparam DATA_W = `IOB_SOC_DATA_W;
 
    //clock
    reg clk = 1;
-   always #(clk_per / 2) clk = ~clk;
+   always #(CLK_PER / 2) clk = ~clk;
 
    //reset
    reg       reset = 0;
@@ -44,9 +44,6 @@ module iob_soc_tb;
    integer i = 0, n = 0;
    integer error, n_byte = 0;
 
-   //got enquiry (connect request)
-   reg  gotENQ;
-
    //cpu trap signal
    wire trap;
 
@@ -62,8 +59,6 @@ module iob_soc_tb;
       // configure uart
       cpu_inituart();
 
-
-      gotENQ      = 0;
       cpu_char    = 0;
       rxread_reg  = 0;
       txread_reg  = 0;

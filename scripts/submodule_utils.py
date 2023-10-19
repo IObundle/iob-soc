@@ -7,6 +7,8 @@ import re
 import math
 import importlib
 
+import if_gen
+import iob_colors
 
 # List of reserved signals
 # These signals are known by the python scripts and are always auto-connected using the matching Verilog the string.
@@ -270,7 +272,19 @@ def get_module_io(ios, confs=None, corename=None):
         if "doc_only" in table.keys() and table["doc_only"]:
             continue
 
-        table_signals = table["ports"]
+        if table["ports"]:
+            table_signals = table["ports"]
+        elif table["name"] in if_gen.if_names:
+            # Interface has no ports and is a if_gen interface, so generate it.
+            table_signals = eval(f"if_gen.get_{table['name']}_ports()")
+            if "mult" in table and table["mult"] > 1:
+                for port in table_signals:
+                    port["width"] = port["width"] * table["mult"]
+        else:
+            print(
+                f"{iob_colors.WARNING}Unknown interface '{table['name']}'.{iob_colors.ENDC}"
+            )
+
         # Add signal attributes
         for signal in table_signals:
             # Add ifdef attribute to every signal if table also has it

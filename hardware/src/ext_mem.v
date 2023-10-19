@@ -109,7 +109,7 @@ module ext_mem #(
       .WORD_OFFSET_W(3),           //Word Offset (number of words per line)
       .WTBUF_DEPTH_W(5),           //FIFO's depth -- 5 minimum for BRAM implementation
       .USE_CTRL     (1),           //Either 1 to enable cache-control or 0 to disable
-      .USE_CTRL_CNT (1)            //do not change (it's implementation depends on the previous)
+      .USE_CTRL_CNT (0)            //do not change (it's implementation depends on the previous)
    ) dcache (
       .clk_i (clk_i),
       .cke_i (cke_i),
