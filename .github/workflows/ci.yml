@@ -62,7 +62,7 @@ jobs:
       - name: test-clean
         run: make test-clean
       - name: test-icarus
-        run: nix-shell --run "make sim-test SIMULATOR=icarus"
+        run: nix-shell --run "make icarus-test SIMULATOR=icarus"
 
   cyclonev:
     runs-on: self-hosted

@@ -115,6 +115,9 @@ VSRC+=$(foreach p, $(PERIPHERALS), $(shell if test -f $($p_DIR)/hardware/testben
 test: clean-testlog test1 test2 test3 test4 test5
 	diff test.log ../test.expected
 
+itest: clean-testlog test1 test3 test4
+	diff test.log ../test.expected
+
 test1:
 	make -C $(ROOT_DIR) sim-clean SIMULATOR=$(SIMULATOR)
 	make -C $(ROOT_DIR) sim-run INIT_MEM=1 USE_DDR=0 RUN_EXTMEM=0 TEST_LOG=">> test.log"

@@ -68,6 +68,9 @@ sim-waves:
 sim-clean: fw-clean
 	make -C $(SIM_DIR) clean
 
+icarus-test:
+	make -C $(SIM_DIR) itest
+
 sim-test:
 	make -C $(SIM_DIR) test
 
