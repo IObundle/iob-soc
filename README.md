@@ -7,15 +7,6 @@ selected, an instruction L1 cache, a data L1 cache and a shared L2 cache are
 added to the system. The L2 cache communicates with a 3rd party memory
 controller IP (typically a DDR controller) using an AXI4 master bus.
 
-## Virtual Machine
-
-IOb-SoC can be run on a VirtualBox VM. This way, the system can be quickly tried
-without investing much time installing the tools:
-
-1. Donwload and install [Oracle's VirtualBox](https://www.virtualbox.org/wiki/Downloads)
-2. Download [IOb-SoC VM](https://drive.google.com/file/d/1X4OXI4JiBLwK7BJPAEG1voxVaFYS9V-f/view?usp=share_link)
-
-
 ## Operating Systems
 
 IOb-SoC can be used in Linux Operating Systems. The following instructions work

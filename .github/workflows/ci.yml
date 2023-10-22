@@ -32,7 +32,7 @@ jobs:
       - name: test-clean
         run: make test-clean
       - name: test-pc-emul
-        run: make test-pc-emul
+        run: nix-shell --run "make test-pc-emul"
 
   verilator:
     runs-on: self-hosted
@@ -48,7 +48,7 @@ jobs:
       - name: test-clean
         run: make test-clean
       - name: test-verilator
-        run: make sim-test SIMULATOR=verilator
+        run: nix-shell --run "make sim-test SIMULATOR=verilator"
 
   icarus:
     runs-on: self-hosted
@@ -62,7 +62,7 @@ jobs:
       - name: test-clean
         run: make test-clean
       - name: test-icarus
-        run: make sim-test SIMULATOR=icarus
+        run: nix-shell --run "make sim-test SIMULATOR=icarus"
 
   cyclonev:
     runs-on: self-hosted
@@ -76,7 +76,7 @@ jobs:
       - name: test-clean
         run: make test-clean
       - name: test-cyclonev
-        run: make fpga-test BOARD=CYCLONEV-GT-DK
+        run: nix-shell --run "make fpga-test BOARD=CYCLONEV-GT-DK"
 
   aes-ku040:
     runs-on: self-hosted
@@ -90,7 +90,7 @@ jobs:
       - name: test-clean
         run: make test-clean
       - name: test-aes-ku040
-        run: make fpga-test BOARD=AES-KU040-DB-G
+        run: nix-shell --run "make fpga-test BOARD=AES-KU040-DB-G"
 
   doc:
     runs-on: self-hosted
@@ -105,4 +105,4 @@ jobs:
       - name: test-clean
         run: make test-clean
       - name: test-doc
-        run: make test-doc
+        run: nix-shell --run "make test-doc"
