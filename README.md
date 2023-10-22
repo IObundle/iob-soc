@@ -10,7 +10,18 @@ controller IP (typically a DDR controller) using an AXI4 master bus.
 ## Operating Systems
 
 IOb-SoC can be used in Linux Operating Systems. The following instructions work
-for CentOS 7 and Ubuntu 18.04 or 20.04 LTS.
+for CentOS 7 and Ubuntu 18.04, 20.04 and 22.04 LTS.
+
+
+## Nix environment
+
+Instead of manually installing the dependencies above, you can use
+[nix-shell](https://nixos.org/download.html#nix-install-linux) to run
+IOb-SoC in a [Nix](https://nixos.org/) environment with all dependencies
+available except for Vivado and Quartus.
+
+- Run `nix-shell` from the IOb-SoC root directory to install and start the environment with all the required dependencies.
+
 
 ## Clone the repository
 
