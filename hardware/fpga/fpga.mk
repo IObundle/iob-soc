@@ -48,18 +48,19 @@ endif
 endif
 endif
 
-build: $(FPGA_OBJ)
-
-#make the FPGA programming file either locally or remotely
 ifeq ($(INIT_MEM),1)
-$(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex firmware.hex
+build: $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex $(FPGA_OBJ)
 else
-$(FPGA_OBJ): $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex
+build: $(wildcard *.sdc) $(VSRC) $(VHDR) boot.hex firmware.hex $(FPGA_OBJ)
 endif
+export 
+#make the FPGA programming file either locally or remotely
+$(FPGA_OBJ):
 ifeq ($(NORUN),0)
 ifeq ($(FPGA_SERVER),)
 	@rm -f $(FPGA_LOG)
 	make local-build
+#	../build.sh  "$(INCLUDE)" "$(DEFINE)" "$(VSRC)"
 else 
 	ssh $(FPGA_USER)@$(FPGA_SERVER) "if [ ! -d $(REMOTE_ROOT_DIR) ]; then mkdir -p $(REMOTE_ROOT_DIR); fi"
 	rsync -avz --delete --force --exclude .git $(ROOT_DIR) $(FPGA_USER)@$(FPGA_SERVER):$(REMOTE_ROOT_DIR)

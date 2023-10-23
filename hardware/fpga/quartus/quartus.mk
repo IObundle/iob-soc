@@ -6,8 +6,8 @@ FPGA_USER=$(QUARTUS_USER)
 
 include ../../fpga.mk
 
-local-build: $(QIP_FILE)
-	$(QUARTUSPATH)/nios2eds/nios2_command_shell.sh quartus_sh -t ../top_system.tcl "$(INCLUDE)" "$(DEFINE)" "$(VSRC)"
+local-build:
+	nios2_command_shell.sh quartus_sh -t ../top_system.tcl "$(INCLUDE)" "$(DEFINE)" "$(VSRC)"
 	mv output_files/top_system.sof $(FPGA_OBJ)
 	mv output_files/top_system.fit.summary $(FPGA_LOG)
 

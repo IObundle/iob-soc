@@ -76,7 +76,7 @@ jobs:
       - name: test-clean
         run: make test-clean
       - name: test-cyclonev
-        run: nix-shell --run "make fpga-test BOARD=CYCLONEV-GT-DK"
+        run: make fpga-test BOARD=CYCLONEV-GT-DK
 
   aes-ku040:
     runs-on: self-hosted
@@ -90,7 +90,7 @@ jobs:
       - name: test-clean
         run: make test-clean
       - name: test-aes-ku040
-        run: nix-shell --run "make fpga-test BOARD=AES-KU040-DB-G"
+        run: make fpga-test BOARD=AES-KU040-DB-G
 
   doc:
     runs-on: self-hosted
