@@ -86,11 +86,11 @@ class iob_regfileif(iob_module):
                 lines.insert(idx,".iob_rvalid_o(external_iob_rvalid_o), //Read data valid.\n")
                 lines.insert(idx,".iob_rdata_o(external_iob_rdata_o), //Read data.\n")
                 lines.insert(idx,".iob_ready_o(external_iob_ready_o), //Interface ready.\n")
-            # Replace "_r" and "_w" suffixes of registers
-            if "_r)" in line:
-                lines[idx] = lines[idx].replace("_r)", "_w)")
+            # Replace "_rd" and "_wr" suffixes of registers
+            if "_rd)" in line:
+                lines[idx] = lines[idx].replace("_rd)", "_wr)")
             else:
-                lines[idx] = lines[idx].replace("_w)", "_r)")
+                lines[idx] = lines[idx].replace("_wr)", "_rd)")
         # Insert 2 wires for iob_ready_nxt and iob_rvalid_nxt ports
         lines.insert(0,"wire iob_ready_nxt2;\n")
         lines.insert(0,"wire iob_rvalid_nxt2;\n")
