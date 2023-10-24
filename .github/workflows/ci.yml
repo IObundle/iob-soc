@@ -95,7 +95,7 @@ jobs:
       - name: setup init_mem
         run: nix-shell --run "make setup"
       - name: build firmware
-        run: nix-shell "make -C ../iob_soc_V* fw-build"
+        run: nix-shell --run "make -C ../iob_soc_V* fw-build"
       - name: cyclonev test
         run: make -C ../iob_soc_V* fpga-test BOARD=CYCLONEV-GT-DK
       # No init mem
@@ -104,7 +104,7 @@ jobs:
       - name: setup
         run: nix-shell --run "make setup INIT_MEM=0"
       - name: build firmware
-        run: nix-shell "make -C ../iob_soc_V* fw-build"
+        run: nix-shell --run "make -C ../iob_soc_V* fw-build"
       - name: cyclonev test
         run: make -C ../iob_soc_V* fpga-test BOARD=CYCLONEV-GT-DK
       # No init mem and Ext mem
@@ -113,7 +113,7 @@ jobs:
       - name: setup ext_mem
         run: nix-shell --run "make setup INIT_MEM=0 USE_EXTMEM=1"
       - name: build firmware
-        run: nix-shell "make -C ../iob_soc_V* fw-build"
+        run: nix-shell --run "make -C ../iob_soc_V* fw-build"
       - name: cyclonev test
         run: make -C ../iob_soc_V* fpga-test BOARD=CYCLONEV-GT-DK
   
@@ -133,7 +133,7 @@ jobs:
       - name: setup init_mem
         run: nix-shell --run "make setup"
       - name: build firmware
-        run: nix-shell "make -C ../iob_soc_V* fw-build"
+        run: nix-shell --run "make -C ../iob_soc_V* fw-build"
       - name: ku040 test
         run: make -C ../iob_soc_V* fpga-test BOARD=AES-KU040-DB-G
       # No init mem
@@ -142,7 +142,7 @@ jobs:
       - name: setup
         run: nix-shell --run "make setup INIT_MEM=0"
       - name: build firmware
-        run: nix-shell "make -C ../iob_soc_V* fw-build"
+        run: nix-shell --run "make -C ../iob_soc_V* fw-build"
       - name: ku040 test
         run: make -C ../iob_soc_V* fpga-test BOARD=AES-KU040-DB-G
       # No init mem and Ext mem
@@ -151,7 +151,7 @@ jobs:
       - name: setup ext_mem
         run: nix-shell --run "make setup INIT_MEM=0 USE_EXTMEM=1"
       - name: build firmware
-        run: nix-shell "make -C ../iob_soc_V* fw-build"
+        run: nix-shell --run "make -C ../iob_soc_V* fw-build"
       - name: ku040 test
         run: make -C ../iob_soc_V* fpga-test BOARD=AES-KU040-DB-G
   
