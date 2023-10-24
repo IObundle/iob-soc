@@ -207,7 +207,7 @@ class iob_axistream_in(iob_module):
                         "rst_val": 0,
                         "addr": -1,
                         "log2n_items": 0,
-                        "autologic": True,
+                        "autoreg": True,
                         "descr": "Soft reset.",
                     },
                     {
@@ -217,7 +217,7 @@ class iob_axistream_in(iob_module):
                         "rst_val": 1,
                         "addr": -1,
                         "log2n_items": 0,
-                        "autologic": True,
+                        "autoreg": True,
                         "descr": "Enable peripheral.",
                     },
                     {
@@ -227,7 +227,7 @@ class iob_axistream_in(iob_module):
                         "rst_val": 0,
                         "addr": -1,
                         "log2n_items": 0,
-                        "autologic": False,
+                        "autoreg": False,
                         "descr": "Data output (reading from this register sets the RSTRB and LAST registers).",
                     },
                     {
@@ -237,7 +237,7 @@ class iob_axistream_in(iob_module):
                         "rst_val": 0,
                         "addr": -1,
                         "log2n_items": 0,
-                        "autologic": True,
+                        "autoreg": True,
                         "descr": "Get which words (with TDATA_W bits) of the previous 32-bits output are valid.",
                     },
                     {
@@ -247,7 +247,7 @@ class iob_axistream_in(iob_module):
                         "rst_val": 0,
                         "addr": -1,
                         "log2n_items": 0,
-                        "autologic": True,
+                        "autoreg": True,
                         "descr": "Get the tlast bit of the previous 32-bits output word.",
                     },
                     {
@@ -257,7 +257,7 @@ class iob_axistream_in(iob_module):
                         "rst_val": 0,
                         "addr": -1,
                         "log2n_items": 0,
-                        "autologic": True,
+                        "autoreg": True,
                         "descr": "Full (1), or non-full (0).",
                     },
                 ],
@@ -273,7 +273,7 @@ class iob_axistream_in(iob_module):
                         "rst_val": 4,
                         "addr": -1,
                         "log2n_items": 0,
-                        "autologic": True,
+                        "autoreg": True,
                         "descr": "FIFO threshold level for interrupt signal",
                     },
                     {
@@ -283,7 +283,7 @@ class iob_axistream_in(iob_module):
                         "rst_val": 0,
                         "addr": -1,
                         "log2n_items": 0,
-                        "autologic": True,
+                        "autoreg": True,
                         "descr": "Current FIFO level",
                     },
                 ],
