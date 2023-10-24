@@ -58,9 +58,9 @@ class iob_gpio(iob_module):
     def _setup_regs(cls):
         cls.regs += [
             {'name': 'gpio', 'descr':'GPIO software accessible registers.', 'regs': [
-                {'name':"GPIO_INPUT", 'type':"R", 'n_bits':32, 'rst_val':0, 'addr':-1, 'log2n_items':0, 'autologic':True, 'descr':"32 bits: 1 bit for value of each GPIO input."},
-                {'name':"GPIO_OUTPUT", 'type':"W", 'n_bits':32, 'rst_val':0, 'addr':-1, 'log2n_items':0, 'autologic':True, 'descr':"32 bits: 1 bit for value of each GPIO output."},
-                {'name':"GPIO_OUTPUT_ENABLE", 'type':"W", 'n_bits':32, 'rst_val':0, 'addr':-1, 'log2n_items':0, 'autologic':True, 'descr':'32 bits: 1 bit for each GPIO. Bits with "1" are driven with output value, bits with "0" are in tristate.'},
+                {'name':"GPIO_INPUT", 'type':"R", 'n_bits':32, 'rst_val':0, 'addr':-1, 'log2n_items':0, 'autoreg':True, 'descr':"32 bits: 1 bit for value of each GPIO input."},
+                {'name':"GPIO_OUTPUT", 'type':"W", 'n_bits':32, 'rst_val':0, 'addr':-1, 'log2n_items':0, 'autoreg':True, 'descr':"32 bits: 1 bit for value of each GPIO output."},
+                {'name':"GPIO_OUTPUT_ENABLE", 'type':"W", 'n_bits':32, 'rst_val':0, 'addr':-1, 'log2n_items':0, 'autoreg':True, 'descr':'32 bits: 1 bit for each GPIO. Bits with "1" are driven with output value, bits with "0" are in tristate.'},
             ]}
         ]
 
