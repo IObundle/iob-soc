@@ -3,9 +3,11 @@
 ## What is this repository for? ##
 
 The IObundle AXISTREAM is a RISC-V-based Peripheral written in Verilog, which users
-can download for free, modify, simulate and implement in FPGA or ASIC. 
+can download for free, modify, simulate, and implement in FPGA or ASIC. 
 This peripheral provides an AXI4-Stream interface for communication with external systems.
-It also provides a [Direct Memory Access (DMA)](#direct-memory-access-(dma)) interface using on another AXI4-Stream interface.
+It also provides a [Direct Memory Access (DMA)](#direct-memory-access-dma) interface using another AXI4-Stream interface.
+
+This peripheral can be used as a verification tool of the [OpenCryptoTester](https://nlnet.nl/project/OpenCryptoTester#ack) project.
 
 This repository contains both the AXISTREAM_IN and AXISTREAM_OUT peripherals.
 The configuration and sources for these peripherals are located within the `axistream_in` and `axistream_out` folders, respectively.
@@ -156,3 +158,16 @@ axistream_out_set_fifo_threshold(uint32_t threshold);
 //Get current FIFO level
 uint32_t fifo_level = axistream_out_fifo_level();
 ```
+
+# Acknowledgement
+The [OpenCryptoTester](https://nlnet.nl/project/OpenCryptoTester#ack) project is funded through the NGI Assure Fund, a fund established by NLnet
+with financial support from the European Commission's Next Generation Internet
+programme, under the aegis of DG Communications Networks, Content and Technology
+under grant agreement No 957073.
+
+<table>
+    <tr>
+        <td align="center" width="50%"><img src="https://nlnet.nl/logo/banner.svg" alt="NLnet foundation logo" style="width:90%"></td>
+        <td align="center"><img src="https://nlnet.nl/image/logos/NGIAssure_tag.svg" alt="NGI Assure logo" style="width:90%"></td>
+    </tr>
+</table>
