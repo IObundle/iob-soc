@@ -32,6 +32,7 @@ from printf import printf
 from iob_ctls import iob_ctls
 from iob_ram_2p import iob_ram_2p
 from iob_ram_sp import iob_ram_sp
+from axi_interconnect import axi_interconnect
 
 
 class iob_soc(iob_module):
@@ -106,6 +107,7 @@ class iob_soc(iob_module):
                 iob_ram_dp,
                 iob_reset_sync,
                 iob_ctls,
+                axi_interconnect,
                 # Simulation headers & modules
                 (axi_ram, {"purpose": "simulation"}),
                 ({"interface": "axi_s_portmap"}, {"purpose": "simulation"}),
