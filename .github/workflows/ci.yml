@@ -79,45 +79,6 @@ jobs:
       - name: verilator test
         run: nix-shell --run "make -C ../iob_soc_V* sim-test SIMULATOR=verilator"
   
-  icarus:
-    runs-on: self-hosted
-    timeout-minutes: 90
-    if: ${{ !cancelled() }}
-    needs: [ aes-ku040 ]
-  
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: 'recursive'
-      # Init mem
-      - name: clean
-        run: make clean
-      - name: setup init_mem
-        run: nix-shell --run "make setup"
-      - name: icarus test
-        run: nix-shell --run "make -C ../iob_soc_V* sim-test SIMULATOR=icarus"
-      # No init mem - Disabled because it takes too long and is already checked by verilator
-      #- name: clean
-      #  run: make clean
-      #- name: setup
-      #  run: nix-shell --run "make setup INIT_MEM=0"
-      #- name: icarus test
-      #  run: nix-shell --run "make -C ../iob_soc_V* sim-test SIMULATOR=icarus"
-      # Init mem and Ext mem
-      - name: clean
-        run: make clean
-      - name: setup init_mem ext_mem
-        run: nix-shell --run "make setup INIT_MEM=1 USE_EXTMEM=1"
-      - name: icarus test
-        run: nix-shell --run "make -C ../iob_soc_V* sim-test SIMULATOR=icarus"
-      # No init mem and Ext mem - Disabled because it takes too long and is already checked by verilator
-      #- name: clean
-      #  run: make clean
-      #- name: setup ext_mem
-      #  run: nix-shell --run "make setup INIT_MEM=0 USE_EXTMEM=1"
-      #- name: icarus test
-      #  run: nix-shell --run "make -C ../iob_soc_V* sim-test SIMULATOR=icarus"
-  
   cyclonev:
     runs-on: self-hosted
     timeout-minutes: 60
@@ -154,7 +115,7 @@ jobs:
     runs-on: self-hosted
     timeout-minutes: 90
     if: ${{ !cancelled() }}
-    needs: [ icarus, verilator ]
+    needs: [ verilator ]
   
     steps:
       - uses: actions/checkout@v3
@@ -198,3 +159,43 @@ jobs:
         run: nix-shell --run "make setup"
       - name: doc test
         run: nix-shell --run "make -C ../iob_soc_V* doc-test"
+
+  icarus:
+    runs-on: self-hosted
+    timeout-minutes: 90
+    if: ${{ !cancelled() }}
+    needs: [ aes-ku040 ]
+  
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      # Init mem
+      - name: clean
+        run: make clean
+      - name: setup init_mem
+        run: nix-shell --run "make setup"
+      - name: icarus test
+        run: nix-shell --run "make -C ../iob_soc_V* sim-test SIMULATOR=icarus"
+      # No init mem - Disabled because it takes too long and is already checked by verilator
+      #- name: clean
+      #  run: make clean
+      #- name: setup
+      #  run: nix-shell --run "make setup INIT_MEM=0"
+      #- name: icarus test
+      #  run: nix-shell --run "make -C ../iob_soc_V* sim-test SIMULATOR=icarus"
+      # Init mem and Ext mem
+      - name: clean
+        run: make clean
+      - name: setup init_mem ext_mem
+        run: nix-shell --run "make setup INIT_MEM=1 USE_EXTMEM=1"
+      - name: icarus test
+        run: nix-shell --run "make -C ../iob_soc_V* sim-test SIMULATOR=icarus"
+      # No init mem and Ext mem - Disabled because it takes too long and is already checked by verilator
+      #- name: clean
+      #  run: make clean
+      #- name: setup ext_mem
+      #  run: nix-shell --run "make setup INIT_MEM=0 USE_EXTMEM=1"
+      #- name: icarus test
+      #  run: nix-shell --run "make -C ../iob_soc_V* sim-test SIMULATOR=icarus"
+  
