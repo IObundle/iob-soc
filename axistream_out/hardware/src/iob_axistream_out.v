@@ -27,7 +27,7 @@ module iob_axistream_out #(
    ) sw_rst (
       .clk_i   (axis_clk_i),
       .arst_i  (axis_arst_i),
-      .signal_i(SOFT_RESET),
+      .signal_i(SOFT_RESET_w),
       .signal_o(axis_sw_rst)
    );
 
@@ -38,7 +38,7 @@ module iob_axistream_out #(
    ) sw_enable (
       .clk_i   (axis_clk_i),
       .arst_i  (axis_arst_i),
-      .signal_i(ENABLE),
+      .signal_i(ENABLE_w),
       .signal_o(axis_sw_enable)
    );
 
@@ -124,28 +124,28 @@ module iob_axistream_out #(
       .w_clk_i         (clk_i),
       .w_cke_i         (cke_i),
       .w_arst_i        (arst_i),
-      .w_rst_i         (SOFT_RESET),
+      .w_rst_i         (SOFT_RESET_w),
       .w_en_i          (write_fifos),
       .w_data_i        (fifo_data_i),
       .w_empty_o       (),
-      .w_full_o        (FULL),
+      .w_full_o        (FULL_r),
       .w_level_o       (fifo_level)
    );
 
-   assign DATA_ready = ENABLE & ~FULL;
+   assign DATA_ready = ENABLE_w & ~FULL_r;
 
    // DMA tready_o signal
    assign tready_o = DATA_ready;
 
    // Assign unused bits to zero
-   assign FIFO_LEVEL[32-1:(FIFO_DEPTH_LOG2+1)] = {(FIFO_DEPTH_LOG2+1){1'b0}};
+   assign FIFO_LEVEL_r[32-1:(FIFO_DEPTH_LOG2+1)] = {(FIFO_DEPTH_LOG2+1){1'b0}};
 
-   assign FIFO_LEVEL[FIFO_DEPTH_LOG2+1-1:0] = fifo_level;
+   assign FIFO_LEVEL_r[FIFO_DEPTH_LOG2+1-1:0] = fifo_level;
 
-   assign fifo_threshold_o = FIFO_LEVEL <= FIFO_THRESHOLD;
+   assign fifo_threshold_o = FIFO_LEVEL_r <= FIFO_THRESHOLD_w;
 
    //WSTRB always set when received from DMA
-   wire [N-1:0] wstrb_int = tvalid_i==1'b1 ? {N{1'b1}} : WSTRB;
+   wire [N-1:0] wstrb_int = tvalid_i==1'b1 ? {N{1'b1}} : WSTRB_w;
 
    iob_fifo_async #(
       .W_DATA_W(N),
@@ -174,7 +174,7 @@ module iob_axistream_out #(
       .w_clk_i         (clk_i),
       .w_cke_i         (cke_i),
       .w_arst_i        (arst_i),
-      .w_rst_i         (SOFT_RESET),
+      .w_rst_i         (SOFT_RESET_w),
       .w_en_i          (write_fifos),
       .w_data_i        (wstrb_int),
       .w_empty_o       (),
@@ -192,7 +192,7 @@ module iob_axistream_out #(
             .W   (N),
             .MODE("HIGH")
          ) prio_enc (
-            .unencoded_i(WSTRB),
+            .unencoded_i(WSTRB_w),
             .encoded_o  (last_pos)
          );
       end
@@ -201,7 +201,7 @@ module iob_axistream_out #(
    endgenerate
 
    //LAST needs to be shifted according to the WSTRB before being inserted into the FIFO
-   wire [N-1:0] tlast_int = ({N{1'd0}} | LAST) << last_pos;
+   wire [N-1:0] tlast_int = ({N{1'd0}} | LAST_w) << last_pos;
    //LAST always disabled when received from DMA
    wire [N-1:0] tlast_int2 = tvalid_i==1'b1 ? {N{1'b0}} : tlast_int;
 
@@ -232,7 +232,7 @@ module iob_axistream_out #(
       .w_clk_i         (clk_i),
       .w_cke_i         (cke_i),
       .w_arst_i        (arst_i),
-      .w_rst_i         (SOFT_RESET),
+      .w_rst_i         (SOFT_RESET_w),
       .w_en_i          (write_fifos),
       .w_data_i        (tlast_int2),
       .w_empty_o       (),
