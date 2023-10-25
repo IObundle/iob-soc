@@ -13,6 +13,7 @@ if __name__ == "__main__":
 from iob_block_group import iob_block_group
 from iob_soc_utils import pre_setup_iob_soc, post_setup_iob_soc
 from mk_configuration import update_define
+from submodule_utils import get_peripheral_macros
 
 # Submodules
 from iob_picorv32 import iob_picorv32
@@ -39,9 +40,9 @@ from iob_ctls import iob_ctls
 from iob_ram_2p import iob_ram_2p
 from iob_ram_sp import iob_ram_sp
 from axi_interconnect import axi_interconnect
-import if_gen
 
 MEM_ADDR_W = 24
+
 
 class iob_soc(iob_module):
 
@@ -53,16 +54,20 @@ class iob_soc(iob_module):
         cls.flows = "pc-emul emb sim doc fpga"
         cls.setup_dir = os.path.dirname(__file__)
 
-        #warning: do not initialize lists as class variables, they will be shared between all subclasses
+        cls.cpu = iob_picorv32
+        cls.uart = iob_uart
+        cls.num_extmem_connections = 1
+
+        # warning: do not initialize lists as class variables, they will be shared between all subclasses
         cls.peripherals = []
         cls.peripheral_portmap = []
 
         cls.submodules = [
             # Hardware modules
             iob_utils,
-            iob_picorv32,
+            cls.cpu,
             iob_cache,
-            iob_uart,
+            cls.uart,
             iob_merge,
             iob_split,
             iob_rom_sp,
@@ -76,6 +81,7 @@ class iob_soc(iob_module):
             iob_ram_dp,
             iob_reset_sync,
             iob_ctls,
+            axi_interconnect,
             (iob_ram_2p, {"purpose": "simulation"}),
             (iob_ram_2p, {"purpose": "fpga"}),
             (iob_ram_sp, {"purpose": "simulation"}),
@@ -85,21 +91,51 @@ class iob_soc(iob_module):
                 "file_prefix": "",
                 "wire_prefix": "",
                 "port_prefix": "",
+                "widths": {
+                    "ID_W": "AXI_ID_W",
+                    "ADDR_W": "AXI_ADDR_W",
+                    "DATA_W": "AXI_DATA_W",
+                    "LEN_W": "AXI_LEN_W",
+                },
             },
             {
                 "interface": "axi",
                 "file_prefix": "ddr4_",
                 "wire_prefix": "ddr4_",
                 "port_prefix": "ddr4_",
+                "widths": {
+                    "ID_W": "AXI_ID_W",
+                    "ADDR_W": "AXI_ADDR_W",
+                    "DATA_W": "AXI_DATA_W",
+                    "LEN_W": "AXI_LEN_W",
+                },
             },
             {
                 "interface": "axi",
                 "file_prefix": "iob_memory_",
                 "wire_prefix": "memory_",
                 "port_prefix": "",
+                "widths": {
+                    "ID_W": "AXI_ID_W",
+                    "ADDR_W": "AXI_ADDR_W",
+                    "DATA_W": "AXI_DATA_W",
+                    "LEN_W": "AXI_LEN_W",
+                },
+            },
+            {
+                "interface": "axi",
+                "file_prefix": f"iob_bus_{cls.num_extmem_connections}_",
+                "wire_prefix": "",
+                "port_prefix": "",
+                "mult": cls.num_extmem_connections,
+                "widths": {
+                    "ID_W": "AXI_ID_W",
+                    "ADDR_W": "AXI_ADDR_W",
+                    "DATA_W": "AXI_DATA_W",
+                    "LEN_W": "AXI_LEN_W",
+                },
             },
             # Simulation headers & modules
-            (axi_interconnect, {"purpose": "simulation"}),
             (axi_ram, {"purpose": "simulation"}),
             (iob_tasks, {"purpose": "simulation"}),
             # Software modules
@@ -166,36 +202,26 @@ class iob_soc(iob_module):
             ),
         ]
 
-        # Verilog modules instances if we have them in the setup list (they may not be in the list if a subclass decided to remove them).
-        if iob_picorv32 in cls.submodules:
-            cls.cpu = iob_picorv32("cpu_0")
-        if iob_split in cls.submodules:
-            cls.ibus_split = iob_split("ibus_split_0")
-            cls.dbus_split = iob_split("dbus_split_0")
-            cls.int_dbus_split = iob_split("int_dbus_split_0")
-            cls.pbus_split = iob_split("pbus_split_0")
-        if iob_merge in cls.submodules:
-            cls.int_mem = iob_merge("iob_merge_0")
-            cls.ext_mem = iob_merge("iob_merge_1")
-        if iob_uart in cls.submodules:
-            cls.peripherals.append(iob_uart("UART0"))
+        cls.peripherals.append(cls.uart("UART0"))
 
         cls.block_groups += [
-            iob_block_group(name="cpu", description="CPU module", blocks=[cls.cpu]),
+            iob_block_group(
+                name="cpu", description="CPU module", blocks=[cls.cpu("cpu_0")]
+            ),
             iob_block_group(
                 name="bus_split",
                 description="Split modules for buses",
                 blocks=[
-                    cls.ibus_split,
-                    cls.dbus_split,
-                    cls.int_dbus_split,
-                    cls.pbus_split,
+                    iob_split("ibus_split_0"),
+                    iob_split("dbus_split_0"),
+                    iob_split("int_dbus_split_0"),
+                    iob_split("pbus_split_0"),
                 ],
             ),
             iob_block_group(
                 name="mem",
                 description="Memory module",
-                blocks=[cls.int_mem, cls.ext_mem],
+                blocks=[iob_merge("iob_merge_0"), iob_merge("iob_merge_1")],
             ),
             iob_block_group(
                 name="peripheral",
@@ -312,6 +338,14 @@ class iob_soc(iob_module):
                 "max": "4",
                 "descr": "AXI burst length width",
             },
+            {
+                "name": "MEM_ADDR_OFFSET",
+                "type": "P",
+                "val": "0",
+                "min": "0",
+                "max": "NA",
+                "descr": "Offset of memory address",
+            },
         ]
 
         # Add the following arguments:
@@ -325,11 +359,11 @@ class iob_soc(iob_module):
 
         cls.ios += [
             {
-                "name": "clk_rst",
+                "name": "clk_en_rst",
                 "type": "slave",
                 "port_prefix": "",
                 "wire_prefix": "",
-                "descr": "Clock and reset",
+                "descr": "Clock, enable, and reset",
                 "ports": [],
             },
             {
@@ -350,10 +384,16 @@ class iob_soc(iob_module):
             {
                 "name": "axi",
                 "type": "master",
-                "file_prefix": f"iob_bus_0_1_",
+                "file_prefix": f"iob_bus_0_{cls.num_extmem_connections}_",
                 "wire_prefix": "",
                 "port_prefix": "",
-                "mult": 1,
+                "mult": cls.num_extmem_connections,
+                "widths": {
+                    "ID_W": "AXI_ID_W",
+                    "ADDR_W": "AXI_ADDR_W",
+                    "DATA_W": "AXI_DATA_W",
+                    "LEN_W": "AXI_LEN_W",
+                },
                 "descr": "Bus of AXI master interfaces for external memory. One interface for this system and others optionally for peripherals.",
                 "if_defined": "USE_EXTMEM",
                 "ports": [],
@@ -361,37 +401,19 @@ class iob_soc(iob_module):
         ]
 
         # Get number of peripherals and IDs
-        # TODO revise name of function 
+        # TODO revise name of function
         get_peripheral_macros(cls.confs, cls.peripherals)
-
 
     # override empty iob_module's method
     @classmethod
     def _pre_setup(cls):
         # Pre-setup specialized IOb-SoC functions
         pre_setup_iob_soc(cls)
-        # Update `axi` interface of `ios` dict with correct num_extmem_connections
-        for table in cls.ios:
-            if table["name"] == "axi":
-                table["file_prefix"] = f"iob_bus_0_{cls.num_extmem_connections}_"
-                table["mult"] = cls.num_extmem_connections
-                break
-        # Generate wires for tb
-        if_gen.gen_if(
-            "axi",  # Interface
-            f"iob_bus_{cls.num_extmem_connections}_",  # file_prefix
-            "",  # port_prefix
-            "",  # wire_prefix
-            [],  # ports
-            cls.num_extmem_connections,  # mult (bus_size)
-        )
 
     # override empty iob_module's method
     @classmethod
     def _post_setup(cls):
         post_setup_iob_soc(cls, cls.num_extmem_connections)
-
-
 
 
 if __name__ == "__main__":

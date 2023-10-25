@@ -13,9 +13,7 @@ concurrency:
 
 on:
   push:
-    branches:
-      - master
-      - python-setup
+    branches: '*'
   # Don't forget to require approval for all outside collaborators
   pull_request:
     branches: '*'

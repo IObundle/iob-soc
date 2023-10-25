@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 import re
+import copy
 
 import iob_colors
 
@@ -28,6 +29,28 @@ def insert_header_files(dest_dir, name, peripherals_list):
     fd_out.close()
 
 
+def update_params_with_user_defined_values(params_dict, peripherals_list):
+    """Given a `params_dict`, create a copy, and update its values, to match
+       the parameters given by the user for each instance of the system's
+       peripheral instances in the `peripherals_list`
+    :param params_dict: dictionary obtained from `get_peripherals_ports_params_top`.
+                        This dict list all parameters of each peripheral and their default values.
+    :param peripherals_list: list of peripheral instances of the system
+    :return: updated copy of `params_dict`
+    """
+    return_params_dict = copy.deepcopy(params_dict)
+
+    for instance in peripherals_list:
+        for i in range(len(params_dict[instance.__class__.name])):
+            # Override parameter value if user specified a 'parameters' dictionary with an override value for this parameter.
+            if params_dict[instance.__class__.name][i]["name"] in instance.parameters:
+                return_params_dict[instance.__class__.name][i][
+                    "val"
+                ] = instance.parameters[parameter["name"]]
+
+    return return_params_dict
+
+
 # Creates the Verilog Snippet (.vs) files required by {top}.v
 # build_dir: build directory
 # top: top name of the system
@@ -46,6 +69,7 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
     port_list, params_list, top_list = get_peripherals_ports_params_top(
         peripherals_list
     )
+    params_list = update_params_with_user_defined_values(params_list, peripherals_list)
 
     # Insert internal module wires (if any)
     periphs_wires_str = ""
@@ -69,8 +93,9 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
             periphs_inst_str += "     #(\n"
             # Insert parameters
             for param in params_list[instance.__class__.name]:
-                periphs_inst_str += "      .{}({}){}\n".format(
-                    param["name"], instance.name + "_" + param["name"], ","
+                periphs_inst_str += "      .{}({}),\n".format(
+                    param["name"],
+                    param["val"],
                 )
             # Remove comma at the end of last parameter
             periphs_inst_str = periphs_inst_str[::-1].replace(",", "", 1)[::-1]
@@ -78,13 +103,16 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
         # Insert peripheral instance name
         periphs_inst_str += "   {} (\n".format(instance.name)
         # Insert io signals
+        # print(f"Debug: {instance.name} {instance.io} {port_list[instance.__class__.name]}\n")  # DEBUG
         for signal in get_pio_signals(port_list[instance.__class__.name]):
             if "if_defined" in signal.keys():
                 periphs_inst_str += f"`ifdef {top.upper()}_{signal['if_defined']}\n"
             periphs_inst_str += "      .{}{}({}{}),\n".format(
                 signal["name"],
                 if_gen.get_suffix(signal["direction"]),
-                get_peripheral_port_mapping(instance, signal["name_without_prefix"]),
+                get_peripheral_port_mapping(
+                    instance, signal["if_name"], signal["name"]
+                ),
                 if_gen.get_suffix(signal["direction"]),
             )
             if "if_defined" in signal.keys():
@@ -124,17 +152,6 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
 
         periphs_inst_str += "      );\n"
 
-    # Create internal wires to connect to the cache and the peripheral's external memory address buses
-    periphs_wires_str += (
-        "\n    // Internal wires for shared access to the external memory address bus\n"
-    )
-    periphs_wires_str += (
-        f"    wire [{num_extmem_connections}*AXI_ADDR_W-1:0] internal_axi_awaddr_o;\n"
-    )
-    periphs_wires_str += (
-        f"    wire [{num_extmem_connections}*AXI_ADDR_W-1:0] internal_axi_araddr_o;\n"
-    )
-
     # Create internal wires to connect the peripherals trap signals
     periphs_wires_str += "\n    // Internal wires for trap signals\n"
     periphs_wires_str += "    wire cpu_trap_o;\n"
@@ -150,10 +167,6 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
     fd_wires = open(f"{out_dir}/{top}_pwires.vs", "w")
     fd_wires.write(periphs_wires_str)
     fd_wires.close()
-
-    # Instantiate `iob_addr_zone_selector` modules to connect
-    periphs_inst_str += "\n    // Address zone selector instances to share external memory address space between peripherals\n"
-    periphs_inst_str += generate_iob_address_zone_selectors(top, num_extmem_connections)
 
     fd_periphs = open(f"{out_dir}/{top}_periphs_inst.vs", "w")
     fd_periphs.write(periphs_inst_str)
@@ -225,14 +238,14 @@ def get_verilog_mapping(map_obj):
 
 # peripheral_instance: dictionary describing a peripheral instance. Must have 'name' and 'IO' attributes.
 # port_name: name of the port we are mapping
-def get_peripheral_port_mapping(peripheral_instance, port_name):
+def get_peripheral_port_mapping(peripheral_instance, if_name, port_name):
     # If IO dictionary (with mapping) does not exist for this peripheral, use default wire name
-    # print(peripheral_instance.__dict__)
     if "io" not in peripheral_instance.__dict__:
         return f"{peripheral_instance.name}_{port_name}"
 
+    # print(port_name, peripheral_instance.io)  # Debug
     assert (
-        port_name in peripheral_instance.io
-    ), f"{iob_colors.FAIL}Port {port_name} of {peripheral_instance.name} not mapped!{iob_colors.ENDC}"
+        if_name + "_" + port_name in peripheral_instance.io
+    ), f"{iob_colors.FAIL}Port '{port_name}' of interface '{if_name}' for peripheral '{peripheral_instance.name}' not mapped!{iob_colors.ENDC}"
     # IO mapping dictionary exists, get verilog string for that mapping
-    return get_verilog_mapping(peripheral_instance.io[port_name])
+    return get_verilog_mapping(peripheral_instance.io[if_name + "_" + port_name])
