@@ -2,7 +2,7 @@
 `include "iob_soc_conf.vh"
 `include "bsp.vh"
 
-module sram #(
+module iob_soc_sram #(
    parameter DATA_W      = `IOB_SOC_DATA_W,
    parameter SRAM_ADDR_W = `IOB_SOC_SRAM_ADDR_W,
    parameter HEXFILE     = "none"

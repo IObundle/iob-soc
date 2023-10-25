@@ -3,7 +3,7 @@
 `include "iob_soc_conf.vh"
 `include "iob_utils.vh"
 
-module int_mem #(
+module iob_soc_int_mem #(
    parameter ADDR_W         = 0,
    parameter DATA_W         = 0,
    parameter HEXFILE        = "firmware",
@@ -70,7 +70,7 @@ module int_mem #(
    wire [ `REQ_W-1:0] ram_w_req;
    wire [`RESP_W-1:0] ram_w_resp;
 
-   boot_ctr #(
+   iob_soc_boot_ctr #(
       .HEXFILE       ({BOOT_HEXFILE, ".hex"}),
       .DATA_W        (DATA_W),
       .ADDR_W        (ADDR_W),
@@ -158,7 +158,7 @@ module int_mem #(
    //
    // INSTANTIATE RAM
    //
-   sram #(
+   iob_soc_sram #(
 `ifndef IOB_SOC_USE_EXTMEM
 `ifdef IOB_SOC_INIT_MEM
       .HEXFILE    (HEXFILE),
