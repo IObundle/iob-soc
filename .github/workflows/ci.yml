@@ -23,6 +23,29 @@ on:
   workflow_dispatch:
 
 jobs:
+  uart:
+    runs-on: self-hosted
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: run uart test
+        run: make -C submodules/UART test
+
+  cache:
+    runs-on: self-hosted
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: run cache test
+        run: make -C submodules/CACHE sim-test
+
+
   pc-emul:
     runs-on: self-hosted
     timeout-minutes: 5
