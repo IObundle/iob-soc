@@ -1,0 +1,1 @@
+void perror(char *s);

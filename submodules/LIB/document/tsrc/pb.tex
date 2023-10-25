@@ -1,0 +1,46 @@
+\documentclass[twocolumn]{pb}
+
+\input{pb_title}
+\category{Product Brief}
+%\confidential{}
+
+\newcommand\BackgroundPic{%
+\put(0,0){%
+\parbox[b][\paperheight]{\paperwidth}{%
+\vfill
+\centering
+\includegraphics[width=\paperwidth,height=\paperheight,%
+keepaspectratio]{bg.pdf}%
+\vfill
+}}}
+
+\input{color}
+
+\begin{document}
+
+\AddToShipoutPicture*{\BackgroundPic}
+
+\section*{Overview}
+\input{intro}
+
+\section*{Features}
+\input{features}
+
+\newpage
+\section*{Block Diagram}
+\input{bd}
+
+\section*{Deliverables}
+\input{deliverables}
+
+\section*{Benefits}
+\input{benefits}
+
+
+\ifdefined\RESULTS
+\section*{Implementation Results}
+\input{fpga_results}
+\input{asic_results}
+\fi
+
+\end{document}

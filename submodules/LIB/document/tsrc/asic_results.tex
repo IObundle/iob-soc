@@ -1,0 +1,15 @@
+\ifdefined\ASIC
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+\rowcolor{iob-green}
+\textbf{Area} ($\SI{}{\micro\meter\squared}$)  & \textbf{Gates}  & \textbf{FFs}  & \textbf{Frequency} ($\SI{}{\mega\hertz}$)\\
+\hline
+\hline
+\input asic.tex
+\end{tabular}
+\caption{ASIC results for node UMC 130nm.}
+\label{tab:asic_results}
+\end{table}
+\fi

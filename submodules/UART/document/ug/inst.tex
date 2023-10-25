@@ -1,0 +1,10 @@
+The IOb-UART is a fully synchronous, single clock ({\tt clk}) domain
+design with an asynchronous active-high reset signal ({\tt arst}) that drives
+all the flip-flops in the design. The reset signal should be de-asserted
+synchronously with the clock signal's rising edge.
+
+The IOb-UART works attached to a CPU core, using the IOb Native Bus
+interface. It outputs (pin {\tt txd}) and receives (pin {\tt rxd}) an
+RS232-encoded serial data stream. The RS232 protocol also specifies and
+handshking signal pair consisting of the signals {\tt cts} and {\tt rts}.
+

@@ -1,0 +1,12 @@
+A {\tt .tcl} script is provided for the Cadence Genus synthesis tool. The script
+reads the technology files, compiles and elaborates the design, and proceeds to
+synthesize it. Timing constraints file(s) are provided.
+
+After synthesis, reports on silicon area usage, power consumption, and timing
+closure are generated. A post-synthesis Verilog file is created, which can be
+used in post-synthesis simulation. The IP core has been synthesized without the
+FIFO memories, which are treated as black boxes. RAM blocks are not included as
+they are technonoly dependent. The user is free to generate and add the required
+memories, or request this service from the IP core provider.
+
+\input{synth_desc}
