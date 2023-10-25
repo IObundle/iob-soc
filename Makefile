@@ -22,10 +22,10 @@ setup:
 	nix-shell --run 'make build-setup SETUP_ARGS="$(SETUP_ARGS)"'
 
 pc-emul-run:
-	nix-shell --run 'make clean && make setup && make -C ../$(CORE)_V*/ pc-emul-run'
+	nix-shell --run 'make clean setup && make -C ../$(CORE)_V*/ pc-emul-run'
 
 pc-emul-test:
-	nix-shell --run 'make clean && make setup && make -C ../$(CORE)_V*/ pc-emul-test'
+	nix-shell --run 'make clean setup && make -C ../$(CORE)_V*/ pc-emul-test'
 
 sim-run:
 	nix-shell --run 'make clean setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(CORE)_V*/ sim-run SIMULATOR=$(SIMULATOR)'
@@ -36,7 +36,7 @@ sim-test:
 	nix-shell --run 'make clean setup INIT_MEM=0 USE_EXTMEM=1 && make -C ../$(CORE)_V*/ sim-test SIMULATOR=verilator'
 
 fpga-run:
-	nix-shell --run 'make clean && make setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(CORE)_V*/ fpga-fw-build BOARD=$(BOARD)'
+	nix-shell --run 'make clean setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(CORE)_V*/ fpga-fw-build BOARD=$(BOARD)'
 	make -C ../$(CORE)_V*/ fpga-run BOARD=$(BOARD)
 
 fpga-test:
@@ -46,9 +46,14 @@ fpga-test:
 	make clean setup fpga-run BOARD=AES-KU040-DB-G INIT_MEM=0 USE_EXTMEM=1 
 
 
+doc-build:
+	nix-shell --run 'make clean setup && make -C ../$(CORE)_V*/ doc-build'
+
 doc-test:
-	nix-shell --run 'make clean && make setup && make -C ../$(CORE)_V*/ doc-test'
+	nix-shell --run 'make clean setup && make -C ../$(CORE)_V*/ doc-test'
+
 
 test-all: pc-emul-test sim-test fpga-test doc-test
+
 
 .PHONY: setup sim-test fpga-test doc-test test-all
