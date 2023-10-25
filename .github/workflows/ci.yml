@@ -31,14 +31,10 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: 'recursive'
-      - name: clean
-        run: make clean
-      - name: setup
-        run: nix-shell --run "make setup"
-      - name: pc-emul test
-        run: make -C ../iob_soc_V* pc-emul-test
+      - name: run test
+        run: make pc-emul-test
 
-  verilator:
+  simulation:
     runs-on: self-hosted
     timeout-minutes: 30
     # run even if previous job failed
@@ -50,34 +46,8 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: 'recursive'
-      # Init mem
-      - name: clean
-        run: nix-shell --run "make clean"
-      - name: setup init_mem
-        run: nix-shell --run "make setup"
-      - name: verilator test
-        run: nix-shell --run "make -C ../iob_soc_V* sim-test SIMULATOR=verilator"
-      # No init mem
-      - name: clean
-        run: nix-shell --run "make clean"
-      - name: setup
-        run: nix-shell --run "make setup INIT_MEM=0"
-      - name: verilator test
-        run: nix-shell --run "make -C ../iob_soc_V* sim-test SIMULATOR=verilator"
-      # Init mem and Ext mem
-      - name: clean
-        run: nix-shell --run "make clean"
-      - name: setup init_mem ext_mem
-        run: nix-shell --run "make setup INIT_MEM=1 USE_EXTMEM=1"
-      - name: verilator test
-        run: nix-shell --run "make -C ../iob_soc_V* sim-test SIMULATOR=verilator"
-      # No init mem and Ext mem
-      - name: clean
-        run: nix-shell --run "make clean"
-      - name: setup ext_mem
-        run: nix-shell --run "make setup INIT_MEM=0 USE_EXTMEM=1"
-      - name: verilator test
-        run: nix-shell --run "make -C ../iob_soc_V* sim-test SIMULATOR=verilator"
+      - name: run test
+        run: nix-shell --run "make sim-test"
   
   cyclonev:
     runs-on: self-hosted
@@ -89,72 +59,27 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: 'recursive'
-      # Init mem
-      - name: clean
-        run: nix-shell --run "make clean"
-      - name: setup init_mem
-        run: nix-shell --run "make setup"
-      - name: build firmware
-        run: nix-shell --run "make -C ../iob_soc_V* fw-build"
-      - name: cyclonev test
-        run: make -C ../iob_soc_V* fpga-test BOARD=CYCLONEV-GT-DK
-      # No init mem
-      - name: clean
-        run: nix-shell --run "make clean"
-      - name: setup
-        run: nix-shell --run "make setup INIT_MEM=0"
-      - name: build firmware
-        run: nix-shell --run "make -C ../iob_soc_V* fw-build"
-      - name: cyclonev test
-        run: make -C ../iob_soc_V* fpga-test BOARD=CYCLONEV-GT-DK
-      # No init mem and Ext mem
-      - name: clean
-        run: nix-shell --run "make clean"
-      - name: setup ext_mem
-        run: nix-shell --run "make setup INIT_MEM=0 USE_EXTMEM=1"
-      - name: build firmware
-        run: nix-shell --run "make -C ../iob_soc_V* fw-build"
-      - name: cyclonev test
-        run: make -C ../iob_soc_V* fpga-test BOARD=CYCLONEV-GT-DK
+      - name: init mem and no ext mem
+        run: make fpga-run BOARD=CYCLONEV-GT-DK INIT_MEM=1 USE_EXTMEM=0
+      - name: no init mem and ext mem
+        run: make fpga-run BOARD=CYCLONEV-GT-DK INIT_MEM=0 USE_EXTMEM=1
+
   
   aes-ku040:
     runs-on: self-hosted
     timeout-minutes: 90
     if: ${{ !cancelled() }}
-    needs: [ verilator ]
-  
+    needs: [ pc-emul ]
+
     steps:
       - uses: actions/checkout@v3
         with:
           submodules: 'recursive'
-      # Init mem
-      - name: clean
-        run: nix-shell --run "make clean"
-      - name: setup init_mem
-        run: nix-shell --run "make setup"
-      - name: build firmware
-        run: nix-shell --run "make -C ../iob_soc_V* fw-build"
-      - name: ku040 test
-        run: make -C ../iob_soc_V* fpga-test BOARD=AES-KU040-DB-G
-      # No init mem
-      - name: clean
-        run: nix-shell --run "make clean"
-      - name: setup
-        run: nix-shell --run "make setup INIT_MEM=0"
-      - name: build firmware
-        run: nix-shell --run "make -C ../iob_soc_V* fw-build"
-      - name: ku040 test
-        run: make -C ../iob_soc_V* fpga-test BOARD=AES-KU040-DB-G
-      # No init mem and Ext mem
-      - name: clean
-        run: nix-shell --run "make clean"
-      - name: setup ext_mem
-        run: nix-shell --run "make setup INIT_MEM=0 USE_EXTMEM=1"
-      - name: build firmware
-        run: nix-shell --run "make -C ../iob_soc_V* fw-build"
-      - name: ku040 test
-        run: make -C ../iob_soc_V* fpga-test BOARD=AES-KU040-DB-G
-  
+      - name: init mem and no ext mem
+        run: make fpga-run BOARD=AES-KU040-DB-G INIT_MEM=1 USE_EXTMEM=0
+      - name: no init mem and ext mem
+        run: make fpga-run BOARD=AES-KU040-DB-G INIT_MEM=0 USE_EXTMEM=1
+
   doc:
     runs-on: self-hosted
     timeout-minutes: 60
@@ -165,49 +90,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: 'recursive'
-      - name: clean
-        run: nix-shell --run "make clean"
-      - name: setup
-        run: nix-shell --run "make setup"
       - name: doc test
         run: nix-shell --run "make -C ../iob_soc_V* doc-test"
 
-  icarus:
-    runs-on: self-hosted
-    timeout-minutes: 90
-    if: ${{ !cancelled() }}
-    needs: [ aes-ku040 ]
-  
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: 'recursive'
-      # Init mem
-      - name: clean
-        run: make clean
-      - name: setup init_mem
-        run: nix-shell --run "make setup"
-      - name: icarus test
-        run: nix-shell --run "make -C ../iob_soc_V* sim-test SIMULATOR=icarus"
-      # No init mem - Disabled because it takes too long and is already checked by verilator
-      #- name: clean
-      #  run: make clean
-      #- name: setup
-      #  run: nix-shell --run "make setup INIT_MEM=0"
-      #- name: icarus test
-      #  run: nix-shell --run "make -C ../iob_soc_V* sim-test SIMULATOR=icarus"
-      # Init mem and Ext mem
-      - name: clean
-        run: make clean
-      - name: setup init_mem ext_mem
-        run: nix-shell --run "make setup INIT_MEM=1 USE_EXTMEM=1"
-      - name: icarus test
-        run: nix-shell --run "make -C ../iob_soc_V* sim-test SIMULATOR=icarus"
-      # No init mem and Ext mem - Disabled because it takes too long and is already checked by verilator
-      #- name: clean
-      #  run: make clean
-      #- name: setup ext_mem
-      #  run: nix-shell --run "make setup INIT_MEM=0 USE_EXTMEM=1"
-      #- name: icarus test
-      #  run: nix-shell --run "make -C ../iob_soc_V* sim-test SIMULATOR=icarus"
-  
+
