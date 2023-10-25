@@ -1,0 +1,19 @@
+The provided testbench uses the core instance described in
+Section~\ref{sec:inst}. A high-level block diagram of the testbench is shown in
+Figure~\ref{fig:tbbd}. The testbench is organized in a modular fashion, with
+each test described in a separate file. The test suite consists of all the test
+case files to make adding, modifying, or removing tests easy.
+
+\begin{figure}[!htbp]
+    \centerline{\includegraphics[width=14cm]{tbbd.pdf}}
+    \vspace{0cm}\caption{Testbench Block Diagram}
+    \label{fig:tbbd}
+\end{figure}
+
+\input{sim_desc}
+
+\subsubsection*{System-level Simulation}
+
+Upon request, simulation files to run the core embedded in a RISC-V system can
+be provided. The core is exercised in various modes by the RISC-V processor,
+using a bare-metal software program written in the C programming language.

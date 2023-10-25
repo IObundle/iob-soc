@@ -1,0 +1,10 @@
+{signal: [
+  {name: 'clk_i', wave: 'p...........'},
+  {name: 'avalid_i', wave: '0..1......0.'},
+  {name: 'ready_o', wave: '0....1..01..'},
+
+  {name: 'addr', wave: 'x..=..===.xx', data: ['A0', 'A1', 'A2', 'A3']},
+  {name: 'wstrb', wave: 'x..0......x.'},
+  {name: 'wdata', wave: 'x.........x.'},
+  {name: 'rdata', wave: 'x.....===x=x', data: ['D0', 'D1', 'D2', 'D3']},
+]}

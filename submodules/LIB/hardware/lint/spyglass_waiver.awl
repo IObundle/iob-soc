@@ -1,0 +1,7 @@
+waive -rule {  {CheckLocalParam-ML}  }  -comment {Created by juliani on 06-Oct-2021 14:02:36} 
+waive -rule {  {PartConnPort-ML}  }  -comment {Created by juliani on 15-Oct-2021 15:12:09}
+waive -rule {  {SDC2SGDC_INFO}  }  -comment {Created by Andre. This is waived just to prevent this info from appearing in the report.}
+waive -rule { "STARC05-3.5.6.2" "STARC05-3.1.3.4b" "STARC-3.1.3.4b"} -comment {Created by Andre. Comments are not included if the code is explicit enough}
+waive -rule { {NonConstShift-ML} } -comment {Created by Andre. Variable shift should be allowed}
+waive -rule { {UseBusWidth-ML} } -comment {Created by Andre. Bus-width is not given a bus is assigned to another bus of the same width}
+waive -rule { {NonReusableParametricModule-ML} } -comment {Created by Andre. This is a parametric module that is not reusable}

@@ -1,0 +1,25 @@
+This section describes how the IP core can be configured by means of
+Table~\ref{tab:confs}. The core may be configured using parameters or
+macros. The parameters are passed to each instance of the core and only affect
+that instance. The macros apply to all instances of the core. The macros and
+parameters have the following types:
+
+\begin{description}
+\item \textbf{'M'} Valued Macro: the value of the macro dictates the way the core is built.
+\item \textbf{'P'} True Parameter: the value of the parameter influences how the core instance that receives is built.
+\item \textbf{'F'} False Parameter: the parameter needs to be on the parameter list, but cannot be changed by the user.
+\end{description}
+
+\begin{xltabular}{\textwidth}{|l|c|c|c|c|X|} \hline
+    \rowcolor{iob-green}
+    {\bf Macro} & {\bf Type} & {\bf Min} & {\bf Typical} & {\bf Max} & {\bf Description}
+    \\ \hline \hline
+    \input confs_tab
+    \caption{Configuration Macros.}\label{tab:confs}
+\end{xltabular}
+
+Note: The 16-bit auto-created Product Version macro uses nibbles to represent
+decimal numbers using their binary values.  The two most significant nibbles
+represent the integral part of the version, and the two least significant
+nibbles represent the decimal part.  For example V12.34 is represented by
+0x1234.

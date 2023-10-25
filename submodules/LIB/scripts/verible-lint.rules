@@ -1,0 +1,9 @@
+-no-trailing-spaces
+-explicit-parameter-storage-type
+-parameter-name-style
+-line-length
+-generate-label-prefix
+-explicit-task-lifetime
+-unpacked-dimensions-range-ordering
+-always-comb
+-module-filename
