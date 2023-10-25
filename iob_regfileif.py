@@ -58,7 +58,7 @@ class iob_regfileif(iob_module):
         mkregs_obj = mkregs()
         mkregs_obj.config = cls.confs
         # Get register table
-        reg_table = mkregs_obj.get_reg_table(inverted_regs, False)
+        reg_table = mkregs_obj.get_reg_table(inverted_regs, cls.rw_overlap, False)
         # Create inverted register hardware
         mkregs_obj.write_hwheader(reg_table, cls.build_dir+'/hardware/src', f"{cls.name}_inverted")
         mkregs_obj.write_hwcode(reg_table, cls.build_dir+'/hardware/src', f"{cls.name}_inverted")
