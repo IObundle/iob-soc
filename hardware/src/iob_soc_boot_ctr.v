@@ -1,6 +1,6 @@
 `timescale 1 ns / 1 ps
 
-module boot_ctr #(
+module iob_soc_boot_ctr #(
    parameter HEXFILE        = "boot.hex",
    parameter DATA_W         = 0,
    parameter ADDR_W         = 0,

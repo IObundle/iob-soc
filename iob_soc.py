@@ -7,6 +7,7 @@ from iob_module import iob_module
 from iob_block_group import iob_block_group
 from iob_soc_utils import pre_setup_iob_soc, post_setup_iob_soc
 from mk_configuration import update_define
+from verilog_tools import inplace_change
 
 # Submodules
 from iob_picorv32 import iob_picorv32
@@ -56,6 +57,13 @@ class iob_soc(iob_module):
         """Setup this system using specialized iob-soc functions"""
         # Pre-setup specialized IOb-SoC functions
         num_extmem_connections = pre_setup_iob_soc(cls)
+        # Remove `[0+:1]` part select in AXI connections of ext_mem0 in iob_soc.v template
+        if num_extmem_connections == 1:
+            inplace_change(
+                os.path.join(cls.build_dir, "hardware/src", cls.name + ".v"),
+                "[0+:1])",
+                ")",
+            )
         # Generate hw, sw, doc files
         super()._generate_files()
         # Post-setup specialized IOb-SoC functions
