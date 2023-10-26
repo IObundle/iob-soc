@@ -179,7 +179,7 @@ class mkregs:
         )
 
         if not auto:  # output read enable
-            if "W" not in row['type']:
+            if "W" not in row["type"]:
                 f.write(f"wire {name}_addressed;\n")
                 f.write(
                     f"assign {name}_addressed = (iob_addr_i >= {addr}) && (iob_addr_i < ({addr}+(2**({addr_w}))));\n"
@@ -199,16 +199,24 @@ class mkregs:
             if name != "VERSION":
                 if "W" in row["type"]:
                     if auto:
-                        f.write(f"  output [{self.verilog_max(n_bits,1)}-1:0] {name}_o,\n")
+                        f.write(
+                            f"  output [{self.verilog_max(n_bits,1)}-1:0] {name}_o,\n"
+                        )
                     else:
-                        f.write(f"  output [{self.verilog_max(n_bits,1)}-1:0] {name}_wdata_o,\n")
+                        f.write(
+                            f"  output [{self.verilog_max(n_bits,1)}-1:0] {name}_wdata_o,\n"
+                        )
                         f.write(f"  output {name}_wen_o,\n")
                         f.write(f"  input {name}_wready_i,\n")
                 if "R" in row["type"]:
                     if auto:
-                        f.write(f"  input [{self.verilog_max(n_bits,1)}-1:0] {name}_i,\n")
+                        f.write(
+                            f"  input [{self.verilog_max(n_bits,1)}-1:0] {name}_i,\n"
+                        )
                     else:
-                        f.write(f"  input [{self.verilog_max(n_bits,1)}-1:0] {name}_rdata_i,\n")
+                        f.write(
+                            f"  input [{self.verilog_max(n_bits,1)}-1:0] {name}_rdata_i,\n"
+                        )
                         f.write(f"  output {name}_ren_o,\n")
                         f.write(f"  input {name}_rvalid_i,\n")
                         f.write(f"  input {name}_rready_i,\n")
@@ -244,14 +252,18 @@ class mkregs:
                     if auto:
                         f.write(f"wire [{self.verilog_max(n_bits,1)}-1:0] {name}_wr;\n")
                     else:
-                        f.write(f"wire [{self.verilog_max(n_bits,1)}-1:0] {name}_wdata_wr;\n")
+                        f.write(
+                            f"wire [{self.verilog_max(n_bits,1)}-1:0] {name}_wdata_wr;\n"
+                        )
                         f.write(f"wire {name}_wen_wr;\n")
                         f.write(f"wire {name}_wready_wr;\n")
                 if "R" in row["type"]:
                     if auto:
                         f.write(f"wire [{self.verilog_max(n_bits,1)}-1:0] {name}_rd;\n")
                     else:
-                        f.write(f"wire [{self.verilog_max(n_bits,1)}-1:0] {name}_rdata_rd;\n")
+                        f.write(
+                            f"wire [{self.verilog_max(n_bits,1)}-1:0] {name}_rdata_rd;\n"
+                        )
                         f.write(f"wire {name}_ren_rd;\n")
                         f.write(f"wire {name}_rvalid_rd;\n")
                         f.write(f"wire {name}_rready_rd;\n")
