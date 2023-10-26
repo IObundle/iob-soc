@@ -149,7 +149,7 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
 # axi_awid_width: String representing the width of the axi_awid signal.
 def get_extmem_bus_size(axi_awid_width: str):
     # Parse the size of the ext_mem bus, it should be something like "N*AXI_ID_W", where N is the size of the bus
-    bus_size = re.findall("^(?:(\d+)\*)?AXI_ID_W$", axi_awid_width)
+    bus_size = re.findall("^(?:\((\d+)\*)?AXI_ID_W\)?$", axi_awid_width)
     # Make sure parse of with was successful
     assert (
         bus_size != []
