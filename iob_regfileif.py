@@ -98,14 +98,6 @@ class iob_regfileif(iob_module):
         with open(f"{cls.build_dir}/hardware/src/{cls.name}_swreg_inst.vs", "w") as file:
             file.writelines(lines)
 
-        #### Modify "iob_regfileif_inverted_swreg_def" to include `IOB_REGFILEIF_SWREG_ADDR_W`
-        with open(f"{cls.build_dir}/hardware/src/{cls.name}_inverted_swreg_def.vh", "r") as file: lines = file.readlines()
-        for idx, line in enumerate(lines):
-            if line.startswith("`define IOB_REGFILEIF_INVERTED_SWREG_ADDR_W"):
-                lines.insert(idx,line.replace("_INVERTED",""))
-                break
-        with open(f"{cls.build_dir}/hardware/src/{cls.name}_inverted_swreg_def.vh", "w") as file: file.writelines(lines)
-
         #### Create params, inst_params and conf files for inverted hardware. (Use symlinks to save disk space and highlight they are equal)
         if not os.path.isfile(f"{cls.build_dir}/hardware/src/{cls.name}_inverted_conf.vh"): os.symlink(f"{cls.name}_conf.vh", f"{cls.build_dir}/hardware/src/{cls.name}_inverted_conf.vh")
         if not os.path.isfile(f"{cls.build_dir}/hardware/src/{cls.name}_inverted_params.vs"): shutil.copy(f"{cls.build_dir}/hardware/src/{cls.name}_params.vs", f"{cls.build_dir}/hardware/src/{cls.name}_inverted_params.vs")
