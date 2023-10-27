@@ -27,10 +27,10 @@ module iob_gpio # (
   `include "iob_gpio_swreg_inst.vs"
 
   // Write GPIO
-  assign output_ports = GPIO_OUTPUT;
-  assign output_enable = GPIO_OUTPUT_ENABLE;
+  assign output_ports = GPIO_OUTPUT_wr;
+  assign output_enable = GPIO_OUTPUT_ENABLE_wr;
 
   // Read GPIO
-  assign GPIO_INPUT = input_ports;
+  assign GPIO_INPUT_rd = input_ports;
 
 endmodule
