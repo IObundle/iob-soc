@@ -18,9 +18,19 @@ module iob_axistream_in #(
    localparam STATE_WRITE = 1'd0;
    localparam STATE_PADDING = 1'd1;
 
-   //Dummy iob_ready_nxt_o and iob_rvalid_nxt_o to be used in swreg (unused ports)
-   wire iob_ready_nxt_o;
-   wire iob_rvalid_nxt_o;
+   `include "iob_wire.vs"
+
+   assign iob_avalid = iob_avalid_i;
+   assign iob_addr = iob_addr_i;
+   assign iob_wdata = iob_wdata_i;
+   assign iob_wstrb = iob_wstrb_i;
+   assign iob_rvalid_o = iob_rvalid;
+   assign iob_rdata_o = iob_rdata;
+   assign iob_ready_o = iob_ready;
+
+   //Dummy iob_ready_nxt and iob_rvalid_nxt to be used in swreg (unused ports)
+   wire iob_ready_nxt;
+   wire iob_rvalid_nxt;
 
    // Configuration control and status register file.
    `include "iob_axistream_in_swreg_inst.vs"
@@ -54,7 +64,7 @@ module iob_axistream_in #(
    wire [RAM_ADDR_W-1:0] ext_mem_last_r_addr;
 
    wire                  fifo_full;
-   assign DATA_ready = ~EMPTY & ENABLE;
+   assign DATA_rready_rd = ~EMPTY_rd & ENABLE_wr;
 
    reg  [WORD_CNT_W-1:0] writen_words_nxt;
    wire [WORD_CNT_W-1:0] writen_words;
@@ -69,7 +79,7 @@ module iob_axistream_in #(
    ) sw_rst (
       .clk_i   (axis_clk_i),
       .arst_i  (axis_arst_i),
-      .signal_i(SOFT_RESET),
+      .signal_i(SOFT_RESET_wr),
       .signal_o(axis_sw_rst)
    );
 
@@ -80,19 +90,19 @@ module iob_axistream_in #(
    ) sw_enable (
       .clk_i   (axis_clk_i),
       .arst_i  (axis_arst_i),
-      .signal_i(ENABLE),
+      .signal_i(ENABLE_wr),
       .signal_o(axis_sw_enable)
    );
 
    wire READ_en;
-   wire read_fifos = READ_en | (tready_i & ENABLE);
+   wire read_fifos = READ_en | (tready_i & ENABLE_wr);
 
    // DATA_ren edge detection so that only one word is read from FIFO
    iob_edge_detect #(
       .CLKEDGE("posedge")
    ) READ_edge_detect (
       `include "clk_en_rst_s_s_portmap.vs"
-      .bit_i     (DATA_ren),
+      .bit_i     (DATA_ren_rd),
       .detected_o(READ_en)
    );
 
@@ -133,10 +143,10 @@ module iob_axistream_in #(
       .CLKEDGE("posedge")
    ) reg_DATA_valid (
       `include "clk_en_rst_s_s_portmap.vs"
-      .rst_i (SOFT_RESET),
-      .en_i  (ENABLE),
+      .rst_i (SOFT_RESET_wr),
+      .en_i  (ENABLE_wr),
       .data_i(read_fifos),
-      .data_o(DATA_rvalid)
+      .data_o(DATA_rvalid_rd)
    );
 
    iob_fifo_async #(
@@ -156,10 +166,10 @@ module iob_axistream_in #(
       .r_clk_i         (clk_i),
       .r_cke_i         (cke_i),
       .r_arst_i        (arst_i),
-      .r_rst_i         (SOFT_RESET),
+      .r_rst_i         (SOFT_RESET_wr),
       .r_en_i          (read_fifos),
-      .r_data_o        (DATA),
-      .r_empty_o       (EMPTY),
+      .r_data_o        (DATA_rdata_rd),
+      .r_empty_o       (EMPTY_rd),
       .r_full_o        (),
       .r_level_o       (),
       //write port
@@ -171,11 +181,11 @@ module iob_axistream_in #(
       .w_data_i        (axis_tdata_i),
       .w_empty_o       (),
       .w_full_o        (fifo_full),
-      .w_level_o(FIFO_LEVEL[FIFO_DEPTH_LOG2+1-1:0])
+      .w_level_o(FIFO_LEVEL_rd[FIFO_DEPTH_LOG2+1-1:0])
    );
 
    // Assign DMA tdata_o and tvalid_o
-   assign tdata_o = DATA;
+   assign tdata_o = DATA_rdata_rd;
 
    //Next is valid if: 
    //    is valid now and receiver is not ready
@@ -188,15 +198,15 @@ module iob_axistream_in #(
       .clk_i(clk_i),
       .arst_i(arst_i),
       .cke_i(cke_i),
-      .rst_i(SOFT_RESET),
-      .data_i ((tvalid_o & ~tready_i) | (~EMPTY & tready_i & ENABLE)),
+      .rst_i(SOFT_RESET_wr),
+      .data_i ((tvalid_o & ~tready_i) | (~EMPTY_rd & tready_i & ENABLE_wr)),
       .data_o(tvalid_o)
    );
 
    // Assign unused bits to zero
-   assign FIFO_LEVEL[32-1:(FIFO_DEPTH_LOG2+1)] = {(FIFO_DEPTH_LOG2+1){1'b0}};
+   assign FIFO_LEVEL_rd[32-1:(FIFO_DEPTH_LOG2+1)] = {(FIFO_DEPTH_LOG2+1){1'b0}};
 
-   assign fifo_threshold_o = FIFO_LEVEL >= FIFO_THRESHOLD;
+   assign fifo_threshold_o = FIFO_LEVEL_rd >= FIFO_THRESHOLD_wr;
 
    iob_fifo_async #(
       .W_DATA_W(1),
@@ -215,9 +225,9 @@ module iob_axistream_in #(
       .r_clk_i         (clk_i),
       .r_cke_i         (cke_i),
       .r_arst_i        (arst_i),
-      .r_rst_i         (SOFT_RESET),
+      .r_rst_i         (SOFT_RESET_wr),
       .r_en_i          (read_fifos),
-      .r_data_o        (RSTRB),
+      .r_data_o        (RSTRB_rd),
       .r_empty_o       (),
       .r_full_o        (),
       .r_level_o       (),
@@ -252,7 +262,7 @@ module iob_axistream_in #(
       .r_clk_i         (clk_i),
       .r_cke_i         (cke_i),
       .r_arst_i        (arst_i),
-      .r_rst_i         (SOFT_RESET),
+      .r_rst_i         (SOFT_RESET_wr),
       .r_en_i          (read_fifos),
       .r_data_o        (tlast_int),
       .r_empty_o       (),
@@ -270,7 +280,7 @@ module iob_axistream_in #(
       .w_level_o       ()
    );
 
-   assign LAST     = |tlast_int;
+   assign LAST_rd     = |tlast_int;
    // Is not ready when FIFO is full or when it is padding
    wire ready_int = ~fifo_full & axis_sw_enable;
    assign axis_tready_o = ready_int & (state != STATE_PADDING);
