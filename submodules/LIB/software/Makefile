@@ -89,7 +89,7 @@ BOARD_GRAB_CMD=../scripts/board_client.py grab 300
 run_emul: build_emul
 	$(BOARD_GRAB_CMD) -s './fw_emul' -c '$(CONSOLE_CMD)'
 
-test_emul: clean $(EMUL_TEST_LIST)
+test_emul: run_emul
 	test "$$(cat test.log)" = "Test passed!"
 
 .PHONY: build_emul run_emul test_emul
@@ -98,12 +98,9 @@ test_emul: clean $(EMUL_TEST_LIST)
 #            General targets            #
 #########################################
 
-# TODO add to iob-soc custom clean list
-# CLEAN_LIST+=
-
-clean: $(CLEAN_LIST)
+clean:
 	@rm -rf *.bin *.elf *.map *.hex
 	@rm -rf fw_emul test.log soc2cnsl cnsl2soc
-	@rm -rf *.txt
+	@rm -rf *.txt iob_soc_conf.h
 
 .PHONY: clean

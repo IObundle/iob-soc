@@ -22,7 +22,7 @@ pkgs.mkShell {
     python3Packages.matplotlib
     python3Packages.scipy
     python3Packages.pyserial
-    (texlive.combine { inherit (texlive) scheme-medium multirow lipsum catchfile nowidow enumitem placeins xltabular ltablex titlesec makecell datetime fmtcount ; })
+    (texlive.combine { inherit (texlive) scheme-medium multirow lipsum catchfile nowidow enumitem placeins xltabular ltablex titlesec makecell datetime fmtcount comment textpos csquotes amsmath cancel listings hyperref biblatex; })
     (callPackage ./riscv-gnu-toolchain.nix { })
     verible
     black

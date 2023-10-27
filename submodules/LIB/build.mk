@@ -5,9 +5,19 @@
 
 include config_build.mk
 
-# default FPGA board
-BOARD ?= CYCLONEV-GT-DK
 BSP_H ?= software/bsp.h
+SIM_DIR = hardware/simulation
+BOARD_DIR = $(shell find -name $(BOARD) -type d -print -quit)
+
+#
+# Create bsp.h from bsp.vh
+#
+$(BSP_H):
+	if [[ $(MAKECMDGOALS) == *fpga* ]]; then \
+		cp $(BOARD_DIR)/bsp.vh $(BSP_H); \
+	else \
+		cp $(SIM_DIR)/bsp.vh $(BSP_H); \
+	fi; sed -i 's/`/#/g' $(BSP_H);
 
 help:
 	@echo "Please use \`make <target>' where <target> is one of"
@@ -26,16 +36,17 @@ help:
 	@echo "  sim-waves	   to run the RTL simulator with waves"
 	@echo "  sim-debug         to print important simulation Makefile variables"
 	@echo "  cov-test          to run the RTL simulator test with coverage"
-	@echo "  fpga-build        to build the RTL simulator"
-	@echo "  fpga-clean        to clean the RTL simulator"
-	@echo "  fpga-run          to run the RTL simulator"
-	@echo "  fpga-test         to run the RTL simulator test"
-	@echo "  fpga-debug        to print important simulation Makefile variables"
-	@echo "  syn-build         to synthetize the design"
-	@echo "  syn-clean         to clean the synthesis files"
-	@echo "  doc-build         to build the RTL simulator"
-	@echo "  doc-clean         to clean the RTL simulator"
-	@echo "  doc-run           to run the RTL simulator"
+	@echo "  fpga-fw-build     to build the firmware for FPGA targets"
+	@echo "  fpga-build        to build the FPGA netlist or bitstream"
+	@echo "  fpga-clean        to clean the FPGA netlist or bitstream"
+	@echo "  fpga-run          to run the FPGA bitstream"
+	@echo "  fpga-test         to run the FPGA bitstream test"
+	@echo "  fpga-debug        to print important FPGA Makefile variables"
+	@echo "  syn-build         to synthetize the design for ASIC targets"
+	@echo "  syn-clean         to clean the synthetize the design for ASIC targets"
+	@echo "  doc-build         to build the documentation"
+	@echo "  doc-clean         to clean the documentation"
+	@echo "  doc-view	   to view the documentation"
 	@echo "  doc-test          to run the RTL simulator test"
 	@echo "  test 		   to run all tests"
 	@echo "  ptest 		   to run all production tests"
@@ -56,6 +67,8 @@ fw-build: $(BSP_H)
 fw-clean:
 	make -C $(SW_DIR) clean
 endif
+
+fpga-fw-build: fw-build
 
 #
 # PC EMUL
@@ -98,7 +111,6 @@ endif
 # SIMULATE
 #
 ifneq ($(filter sim, $(FLOWS)),)
-SIM_DIR=hardware/simulation
 sim-build: fw-build
 	make -C $(SIM_DIR) build
 
@@ -128,13 +140,13 @@ endif
 #
 ifneq ($(filter fpga, $(FLOWS)),)
 FPGA_DIR=hardware/fpga
-fpga-build: fw-build
+fpga-build:
 	make -C $(FPGA_DIR) build
 
-fpga-run: fw-build
+fpga-run:
 	make -C $(FPGA_DIR) run
 
-fpga-test: fw-build
+fpga-test:
 	make -C $(FPGA_DIR) test
 
 fpga-debug:
@@ -205,16 +217,6 @@ debug:
 
 
 #
-# Create bsp.h based on bsp.vh
-#
-$(BSP_H):
-	if [ `echo $(MAKECMDGOALS) | grep -c fpga` -eq 0 ]; then\
-		[ -f $(SIM_DIR)/bsp.vh ] && cp $(SIM_DIR)/bsp.vh $@;\
-	else\
-		[ -e $(FPGA_DIR)/*/$(BOARD)/bsp.vh ] && cp $(FPGA_DIR)/*/$(BOARD)/bsp.vh $@;\
-	fi  && touch $@ && sed -i 's/`/#/' $@
-
-#
 # CLEAN
 #
 
@@ -222,12 +224,12 @@ clean: fw-clean pc-emul-clean lint-clean sim-clean fpga-clean doc-clean
 	rm -f $(BSP_H)
 
 
-.PHONY: fw-build \
+.PHONY: fw-build fpga-fw-build \
 	pc-emul-build pc-emul-run \
 	lint-test lint-run lint-clean \
 	sim-build sim-run sim-debug \
 	fpga-build fpga-debug \
-	doc-build doc-debug \
+	doc-build doc-view doc-debug \
 	test clean debug \
 	sim-test fpga-test doc-test \
 	fw-clean pc-emul-clean sim-clean fpga-clean doc-clean

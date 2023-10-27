@@ -126,7 +126,7 @@ if {[catch {execute_module -tool fit} result]} {
 }
 
 #run quartus sta
-if {[catch {execute_module -tool sta} result]} {
+if {[catch {execute_module -tool sta -args "--report_script=quartus/timing.tcl"} result]} {
     puts "\nResult: $result\n"
     puts "ERROR: STA failed. See report files.\n"
     qexit -error
@@ -134,14 +134,16 @@ if {[catch {execute_module -tool sta} result]} {
     puts "\nINFO: STA was successful.\n"
 }
 
-
+#rerun quartus sta to generate reports
+if [catch {qexec "[file join $::quartus(binpath) quartus_sta] -t quartus/timing.tcl $NAME"} result] {
+    puts "\nResult: $result\n"
+    puts "ERROR: STA failed. See report files.\n"
+    qexit -error
+} else {
+    puts "\nINFO: STA was successful.\n"
+}
     
 if {$IS_FPGA != "1"} {
-
-    #run quartus sta to generate reports
-    if [catch {qexec "[file join $::quartus(binpath) quartus_sta] -t quartus/timing.tcl $NAME"} result] {
-        qexit -error
-    }
 
     #write netlist
     if {$USE_QUARTUS_PRO == 1} {
@@ -173,5 +175,3 @@ project_close
 #rename report files
 file rename reports/$NAME.fit.summary reports/$NAME\_$PART.fit.summary
 file rename reports/$NAME.sta.summary reports/$NAME\_$PART.sta.summary
-
-

@@ -833,11 +833,7 @@ def gen_if(name, file_prefix, port_prefix, wire_prefix, ports, mult=1, widths={}
 #
 
 
-def main():
+if __name__ == "__main__":
     # for if_type in range(len(if_names)):
     for i in range(0, 16):
         gen_if(if_names[i], "bla_", "di_", "da_", [])
-
-
-if __name__ == "__main__":
-    main()

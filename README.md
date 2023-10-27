@@ -1,22 +1,37 @@
 # IOb-SoC
 
 IOb-SoC is a System-on-Chip (SoC) template comprising an open-source RISC-V
-processor (picorv32), an internal SRAM memory subsystem, a UART (iob-uart), and
+processor (picorv32), an internal SRAM memory subsystem, a UART, and
 an optional interface to external memory. If the external memory interface is
 selected, an instruction L1 cache, a data L1 cache, and a shared L2 cache are
 added to the system. The L2 cache communicates with a 3rd party memory
 controller IP (typically a DDR controller) using an AXI4 master bus.
 
+## Nix environment
+
+You can use
+[nix-shell](https://nixos.org/download.html#nix-install-linux) to run
+IOb-SoC in a [Nix](https://nixos.org/) environment with all dependencies
+available except for Vivado and Quartus for FPGA compilation and running.
+
+After installing `nix-shell,` it can be initialized by calling any Makefile target in the IOb-SoC root directory, for example
+```Bash
+make setup
+```
+
+The first time it runs, `nix-shell` will automatically install all the required dependencies. This can take a couple of hours, but after that, you can enjoy IOb-SoC and not worry about installing software tools.
+
+  
 ## Dependencies
 
-Before building the system, install the following tools:
+If you prefer, you may install all the dependencies manually and run IOb-SoC without nix-shell. The following tools should be installed:
 - GNU Bash >=5.1.16
 - GNU Make >=4.3
 - RISC-V GNU Compiler Toolchain =2022.06.10  (Instructions at the end of this README)
 - Python3 >=3.10.6
 - Python3-Parse >=1.19.0
 
-Optional tools, depending on desired run strategy:
+Optional tools, depending on the desired run strategy:
 - Icarus Verilog >=10.3
 - Verilator >=5.002
 - gtkwave >=3.3.113
@@ -25,28 +40,12 @@ Optional tools, depending on desired run strategy:
 
 Older versions of the dependencies above may work but still need to be tested.
 
-## Nix environment
-
-Instead of manually installing the dependencies above, you can use
-[nix-shell](https://nixos.org/download.html#nix-install-linux) to run
-IOb-SoC in a [Nix](https://nixos.org/) environment with all dependencies
-available except for Vivado and Quartus.
-
-- Run `nix-shell` from the IOb-SoC root directory to install and start the environment with all the required dependencies.
-
-## Virtual Machine
-
-IOb-SoC can be run on a VirtualBox VM. This way, the system can be quickly tried
-without investing much time installing the tools:
-
-1. Download and install [Oracle's VirtualBox](https://www.virtualbox.org/wiki/Downloads)
-2. Download [IOb-SoC VM](https://drive.google.com/file/d/1X4OXI4JiBLwK7BJPAEG1voxVaFYS9V-f/view?usp=share_link)
 
 
 ## Operating Systems
 
 IOb-SoC can be used in Linux Operating Systems. The following instructions work
-for CentOS 7 and Ubuntu 18.04 or 20.04 LTS.
+for CentOS 7 and Ubuntu 18.04, 20.04, and 22.04 LTS.
 
 ## Clone the repository
 
@@ -81,27 +80,29 @@ these settings in your `.bashrc` file so that they apply to every session.
 
 ### Set up the remote simulator server
 
-Using the open-source simulator Icarus Verilog as an example, note that in
-`hardware/simulation/icarus/Makefile`, the variable for the server logical name,
-`SIM_SERVER`, is set to `IVSIM_SERVER`, and the variable for the user name,
-`SIM_USER`, is set to `IVSIM_USER`. If you do not set these variables, the simulator
-will run locally. To run the simulator on the server
-*mysimserver.myorg.com* as user *ivsimuser*, set the following environmental
-variables beforehand:
+Using the open-source simulator Icarus Verilog (`iverilog`) as an example, note that in
+`submodules/hardware/simulation/icarus.mk,` the variable for the server logical name,
+`SIM_SERVER,` is set to `IVSIM_SERVER,` and the variable for the user name,
+`SIM_USER` is set to `IVSIM_USER`.
+
+To run the simulator on the server *mysimserver.myorg.com* as user *ivsimuser*, set the following environmental
+variables beforehand, or place them in your `.bashrc` file:
 
 ```Bash
 export IVSIM_SERVER=ivsimserver.myorg.com
 export IVSIM_USER=ivsimuser
 ```
 
+When you start the simulation, IOb-SoC's simulation Makefile will log you on to the server using `ssh,` then `rsync` the files to a remote build directory and run the simulation there.  If you do not set these variables, the simulator will run locally if installed.
+
 ### Set up the remote FPGA toolchain and board servers
 
 Using the CYCLONEV-GT-DK board as an example, note that in
-`hardware/fpga/quartus/CYCLONEV-GT-DK/Makefile`, the variable for the FPGA tool
-server logical name, `FPGA_SERVER`, is set to `QUARTUS_SERVER`, and the
+`hardware/fpga/quartus/CYCLONEV-GT-DK/Makefile,` the variable for the FPGA tool
+server logical name, `FPGA_SERVER,` is set to `QUARTUS_SERVER,` and the
 variable for the user name, `FPGA_USER`, is set to `QUARTUS_USER`; the
-variable for the board server, `BOARD_SERVER`, is set to `CYC5_SERVER`, and
-the variable for the board user, `BOARD_USER`, is set to `CYC5_USER`. As in the
+variable for the board server, `BOARD_SERVER,` is set to `CYC5_SERVER`, and
+the variable for the board user, `BOARD_USER,` is set to `CYC5_USER`. As in the
 previous example, set these variables as follows:
 
 ```Bash
@@ -117,271 +118,91 @@ In each remote server, the environment variable for the license server used must
 export LM_LICENSE_FILE=port@licenseserver.myorg.com;lic_or_dat_file
 ```
 
-### Set up Nix environment on remote servers
+## Create the build directory
 
-If you want to run IOb-SoC on the remote servers inside a [Nix](https://nixos.org/) environment, you should
-edit the server's `.bashrc` file to launch the environment before running the commands.
-The IOb-SoC system uses the command `ssh <remote> <command>` to run commands on the remote server.
-
-Add the following code to the top of the server's `.bashrc` file to launch the Nix environment
-when ssh commands are executed:
-
+IOb-SoC uses intricate Python scripting to create a build directory with all the necessary files and makefiles to run the different tools. The build directory is placed in the folder above at ../iob_soc_Vx.y by running the following command from the root directory.
 ```Bash
-# Check if connected via ssh and is a non-interactive session
-if [ -n "$SSH_CONNECTION" ] && [[ $- != *i* ]]; then
-    # Get the command sent via ssh, which should run in the Nix environment
-    NIX_CMD=`ps -o args= $$ | cut -d ' ' -f3-`
-    # Replace the current shell with a nix-shell environment and run the command
-    exec $NIX_PATH/nix-shell $NIX_DEPS/shell.nix --run "$NIX_CMD"
-fi
+make setup
 ```
 
-NOTE: The `$NIX_PATH` variable should be replaced by the path to the nix-shell binary.
-Run `whereis nix-shell` on the remote machine to obtain the correct path.
-
-NOTE: The `$NIX_DEPS` variable should be replaced by the path to the [shell.nix](https://github.com/IObundle/iob-lib/blob/python-setup/scripts/shell.nix) file.
-This file is located in the `nix/` directory of the [IOb-Lib](https://github.com/IObundle/iob-lib) repository.
-Copy this file to a fixed location on the remote machine and replace the `$NIX_DEPS` variable with its path.
-
-
-Adding an extra `if` statement is possible to not run certain tools in the Nix environment.
-This may be useful since some tools, like Quartus, are difficult to run in the Nix environment.
+If you want to avoid getting into the complications of our Python scripts, use the ../iob_soc_Vx.y directory to build your SoC. It only has code files and a few Makefiles. Enter this directory and call the available Makefile targets. Alternatively, using another Makefile in the IOb-SoC root directory, the same targets can be called. For example, to run the simulation, the IOb-SoC's top Makefile has the following target:
 
 ```Bash
-# Check if connected via ssh and is a non-interactive session
-if [ -n "$SSH_CONNECTION" ] && [[ $- != *i* ]]; then
-    # Get the command sent via ssh, which should run in the Nix environment
-    NIX_CMD=`ps -o args= $$ | cut -d ' ' -f3-`
-    # Only run environment if a specified tool is used in the command
-    if [[ "$NIX_CMD" == *"verilator"* ]]; then
-        # Replace the current shell with a nix-shell environment and run the command
-        exec $NIX_PATH/nix-shell -p verilator --run "$NIX_CMD"
-    fi
-fi
+sim-run:
+	nix-shell --run 'make clean setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(CORE)_V*/ sim-run SIMULATOR=$(SIMULATOR)'
 ```
-
-
-
-## Setup the system
-
-The main configuration for the system is located in the `iob_soc.py` file.
-
-To set up the system, type:
-
-```Bash
-make setup [<control parameters>]
-```
-
-`<control parameters>` are system configuration parameters passed in the
-command line, overriding those in the `iob_soc.py` file. Example control
-parameters are `INIT_MEM=0 USE_EXTMEM=1`. For example,
-
-```Bash
-make setup INIT_MEM=0 USE_EXTMEM=1
-```
-
-The setup process will create a build directory containing all the files required to build the system.
-
-The **setup directory** is considered the repository folder, as it contains the files needed to set up the system.
-
-The **build directory** is considered to be the folder generated by the setup process, as it contains the files needed to build the system.
-The build directory is usually located in `../iob\_soc\_V*` relative to the setup directory.
-
-To further configure the setup process, you can create/modify the following scripts:
-
-- hardware/fpga/fpga\_setup.py
-- hardware/fpga/sim\_setup.py
-- software/sw\_setup.py
-
-Even though all of the scripts above will be called during the setup process, it is useful
-to separate them into different scripts according to their use purpose, mostly for organization
-purposes.
-If this system is included by another primary one, the primary system will have control over
-which sections of this system should be set up.
-
-
-## Simulate the system
-
-To simulate IOb-SoC, the simulator must be installed, either locally or
-remotely. If you are using the Nix environment the simulator is automatically installed.
-To simulate, navigate to the build directory and type:
-
-```Bash
-make sim-run [SIMULATOR=<simulator name>]
-```
-
-`<simulator name>` is the name of the simulator's Makefile segment.
-To visualize simulation waveforms use the `VCD=1` control parameter. It will
-open the Gtkwave waveform visualization program.
-
-You can also run the simulation directly from the setup directory (the root
-directory of this repository) by typing:
-
-```Bash
-make -C ../iob_soc_V* [sim-run] [SIMULATOR=<simulator name>]
-```
-
-To clean simulation-generated files, type:
-
-```Bash
-make -C ../iob_soc_V* sim-clean [SIMULATOR=<simulator name>]
-# Example
-make -C ../iob_soc_V* sim-clean SIMULATOR=icarus
-```
-
-For more details, read the Makefile segments in the `hardware/simulation/` directory
-of the build directory. The Makefile of the simulation directory includes the
-Makefile segment of the simulator being used, that contains simulator-specific configuration.
-
-The simulation Makefile also includes the sim\_build.mk that can be user created in the simulation
-folder of the setup directory. The sim\_build.mk file allows overriding Makefile variables for
-simulation, and adding extra Makefile targets that can be used to generate files required by
-the project.
-
-The simulation Makefile also includes system info from the config\_build.mk file that
-is auto-generated during setup.
-
+The above target invokes the `nix-shell` environment to call the local targets `clean` and `setup` and the target `sim-run` in the build directory. Below, the targets available in IOb-SoC's top Makefile are explained.
 
 ## Emulate the system on PC
 
-If there are embedded software compilation or runtime issues you can
-*emulate* the system on a PC to debug the issues. To emulate IOb-SoC's embedded
-software on a PC, type:
+You can *emulate* IOb-SoC's on a PC to develop and debug your embedded system. There is also a model to emulate the UART, which communicates with a run-time Python script server. If you develop peripherals, you can build embedded software models to run them using PC emulation. To emulate IOb-SoC's embedded software on a PC, type:
 
 ```Bash
-make -C ../iob_soc_V* pc-emul
+make pc-emul-run
 ```
 
-To clean the PC compilation generated files, type:
-
+The Makefile compiles and runs the software in the `../iob_soc_Vx.y/software/` directory. The Makefile includes the `sw_build.mk` segment supplied initially in the `./software/` directory in the IOb-SoC root. Please feel free to change this file for your specific project. To run an emulation test comparing the result to the expected result, run
 ```Bash
-make -C ../iob_soc_V* pc-emul-clean
+make pc-emul-test
 ```
 
-For more details, read the Makefile in the `software/pc-emul/` directory. As
-explained for the simulation make file, note the Makefile includes the pcemul\_build.mk
-Makefile segment for project-specific configuration.
+## Simulate the system
+
+To simulate IOb-SoC's RTL using a Verilog simulator, run
+```Bash
+make sim-run [SIMULATOR=icarus!verilator|xcelium|vcs|questa] [INIT_MEM=0|1] [USE_EXTMEM=0|1]
+```
+
+The INIT_MEM variable specifies whether the firmware is initially loaded in the memory, skipping the boot process, and the USE_EXTMEM variable indicates whether an external memory such as DRAM is used, in which case the cache system described above is instantiated.
+
+The Makefile compiles and runs the software in the `../iob_soc_Vx.y/hardware/simulation` directory. The Makefile includes the `./hardware/simulation/sim_build.mk`, which you can change for your project. To run a simulation test comprising several simulations with different parameters, run
+```Bash
+make sim-test
+```
+The simulation test contents can be edited in IOb-SoC's top Makefile. 
+
+Each simulator must be described in the `./submodules/LIB/hardware/simulation/<simulator>.mk` file. For example, the file `vcs.mk` describes the VCS simulator.
+
+The host machine must run an access server, a Python program in `./submodules/LIB/scripts/board_server.py,` set up to run as a service. The client connects to the host using the SSH protocol and runs the board client program `/submodules/LIB/scripts/board_client.py.` Note that the term *board* is used instead of *simulator* because the same server/client programs control the access to the board and FPGA compilers. The client requests the simulator for GRAB_TIMEOUT seconds, which is 300 seconds by default. Its value can be specified in the `./hardware/fpga/fpga_build.mk` Makefile segment, for example, as
+```Bash
+GRAB_TIMEOUT ?= 3600
+```
 
 
 ## Build and run on FPGA board
 
 To build and run IOb-SoC on an FPGA board, the FPGA design tools must be
-installed, either locally or remotely, the board must be attached to the local
-host or to a remote host, and each board must have a build directory under the
-`hardware/fpga/<tool>` directory, for example, the `hardware/fpga/vivado/BASYS3`
-directory. The FPGA tools and board hosts may be different.
-The host machine must have the [board\_server.py](https://github.com/IObundle/iob-lib/blob/python-setup/scripts/board_server.py)
-running. This file can be copied from the [IOb-Lib](https://github.com/IObundle/iob-lib) repository
-and set up to run as a service.
+installed locally or remotely. The FPGA board must also be attached to the local
+or remote host, not necessarily the same host where the design tools are installed.
 
-To build only, type
-
+Each board must be described under the `/submodules/LIB/hardware/fpga/<tool>/<board_dir>` directory. For example, the `hardware/fpga/vivado/BASYS3`
+directory contents describe the board BASYS3, which has an FPGA device that can be programmed by the Xilinx/AMD Vivado design tool. The access to the board is controlled by the same server/client programs described above for the simulators.
+To build an FPGA design of an IOb-SoC system and run it on the board located in the `board_dir` directory, type
 ```Bash
-make -C ../iob_soc_V* fpga-build [BOARD=<board directory name>]
-```
-where `<board directory name>` is the name of the board's run directory, and
-
-For more details read the Makefile in the `hardware/fpga/` folder of the build directory,
-and follow the included Makefile segments as explained before.
-
-To build and run, type:
-
-```Bash
-make -C ../iob_soc_V* fpga-run [BOARD=<board directory name>]
+make fpga-run [BOARD=<board_dir>] [INIT_MEM=0|1] [USE_EXTMEM=0|1]
 ```
 
-To manage multiple clients' connections to the same board, the system uses the
-[board\_server.py](https://github.com/IObundle/iob-lib/blob/python-setup/scripts/board_server.py)
-python server.
-If many users are trying to run the same FPGA board they will be queued by the server.
-Users will orderly load their bitstream onto the board and start running it.
-After a successful run or `Ctr-C` interrupt, the user is de-queued.
-
-If, for some reason, the run gets stuck, you may interrupt it with `Ctr-C`.
-
-To clean the FPGA compilation generated files, type
-
+To run an FPGA test comparing the result to the expected result, run
 ```Bash
-make -C ../iob_soc_V* fpga-clean [BOARD=<board directory name>]
+make fpga-test
 ```
+The FPGA test contents can be edited in IOb-SoC's top Makefile. 
+
 
 ## Compile the documentation
 
-To compile documents, the LaTeX document preparation software must be
-installed. The system can auto-generate a user guide based on TeX templates
-and system configuration.
-
-To compile the document, type:
-
+To compile documents, the LaTeX software must be installed. Three document types are generated: the Product Brief (pb), the User Guide (ug), and a presentation. To build a given document type DOC, run
 ```Bash
-make -C ../iob_soc_V* doc [DOC=<document directory name>]
+make doc-build [DOC=pb|ug|presentation]
+```
+
+To generate the three documents as a test, run 
+```Bash
+make doc-test
 ```
 
 
-To clean the document's build directory, type:
-
-```Bash
-make -C ../iob_soc_V* doc-clean [DOC=<document directory name>]
-```
-
-For more details, read the Makefile in the `document/` folder of the build directory,
-and follow the included Makefile segments as explained before.
-
-
-## Testing
-
-### Simulation test
-
-To run a series of simulation tests on the simulator selected by the SIMULATOR
-variable, type:
-
-```Bash
-make -C ../iob_soc_V* sim-test [SIMULATOR=<simulator directory>]
-```
-
-The above command produces a test log file called `test.log` in the simulator's
-directory. The `test.log` file contents are compared with the `Test passed!` string;
-if they differ, the test fails; otherwise, it passes.
-
-To test the setup, build, and simulation process for all configurations, type:
-
-```Bash
-make sim-test [SIMULATOR=<simulator directory>]
-```
-
-
-### Board test
-
-To compile and run a series of board tests on the board selected by the `BOARD`
-variable, type:
-
-```Bash
-make -C ../iob_soc_V* fpga-test [BOARD=<board directory name>]
-```
-
-The above command produces a test log file called `test.log` in the board's
-directory. The `test.log` file contents are compared with the `Test passed!` string;
-if they differ, the test fails; otherwise, it passes.
-
-To test the setup, build, and FPGA run process for all configurations, type:
-
-```Bash
-make fpga-test [BOARD=<board directory name>]
-```
-
-
-### Documentation test
-
-To compile and test the document selected by the `DOC`, variable, type:
-
-```Bash
-make -C ../iob_soc_V* doc-test [DOC=<document directory name>]
-```
-
-The resulting Latex .aux file is compared with a known-good .aux file. If the
-match the test passes; otherwise, it fails.
-
-### Total test
+## Total test
 
 To run all simulation, FPGA board, and documentation tests, type:
 
@@ -389,21 +210,15 @@ To run all simulation, FPGA board, and documentation tests, type:
 make test-all
 ```
 
-## Cleaning
+## Running more Makefile Targets
 
-The following command will clean the selected simulation, board, and document
-directories, locally and in the remote servers:
+The examples above are the Makefile targets at IOb-SoC's root directory that call the targets in the top Makefile in the build directory. Please explore the available targets in the build directory's top Makefile to add more targets to the root directory Makefile.
 
-```Bash
-make -C ../iob_soc_V* clean
-```
-
-The following command will delete the build directory:
-
+## Cleaning the build directory
+To clean the build directory, run
 ```Bash
 make clean
 ```
-
 
 ## Instructions for Installing the RISC-V GNU Compiler Toolchain
 
@@ -442,5 +257,4 @@ This will take a while. After it is done, type:
 export PATH=$PATH:/path/to/riscv/bin
 ```
 
-The above command should be added to your `~/.bashrc` file, so that
-you do not have to type it on every session.
+The above command should be added to your `~/.bashrc` file so you do not have to type it on every session.

@@ -90,11 +90,6 @@ ifneq ($(BOARD_SERVER),)
 endif
 endif
 
-test: debug $(TEST_LIST)
-ifeq ($(IS_FPGA),)
-	test "$$(cat test.log)" = "Test passed!"
-endif
-
 debug:
 	@echo SIMULATOR=$(SIMULATOR)
 	@echo BOARD=$(BOARD)
@@ -102,8 +97,7 @@ debug:
 	@echo VSRC=$(VSRC)
 	@echo FPGA_SERVER=$(FPGA_SERVER)
 	@echo FPGA_OBJ=$(FPGA_OBJ)
-	@echo TEST_LIST=$(TEST_LIST)
 
 .PRECIOUS: $(FPGA_OBJ) test.log s_fw.bin
 
-.PHONY: run build test clean debug $(TEST_LIST)
+.PHONY: run build test clean debug

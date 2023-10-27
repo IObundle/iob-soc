@@ -90,6 +90,9 @@ ifeq ($(VCD),1)
 	make waves
 endif
 
+test: run
+	sync && sleep 1 && test "$$(cat test.log)" = "Test passed!"
+
 waves:
 	if [ ! "`pgrep -u $(USER) gtkwave`" ]; then gtkwave -a uut.gtkw uut.vcd; fi &
 
@@ -98,11 +101,6 @@ fix-vcd:
 	@tail -n 1 $(VCD_FILE) | wc -c | xargs -I {} truncate $(VCD_FILE) -s -{}
 	@echo "" >> $(VCD_FILE)
 
-test.log: very-clean clean-test-log $(TEST_LIST)
-
-test: test.log
-	sync && sleep 1 && test "$$(cat test.log)" = "Test passed!"
-
 gen-clean:
 	@rm -f *.hex
 	@find . -maxdepth 1 -name "*.vh" -not \( -name "bsp.vh" -o -name "uut_build.mk" \) -delete
@@ -110,16 +108,12 @@ ifneq ($(SIM_SERVER),)
 	ssh -t $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'if [ -f $(REMOTE_SIM_DIR)/Makefile ]; then make -C $(REMOTE_SIM_DIR) $@; fi'
 endif
 
-clean-test-log:
-	rm -f test.log
-
 debug:
 	@echo NAME=$(NAME)
 	@echo VHDR=$(VHDR)
 	@echo VSRC=$(VSRC)
 	@echo VFLAGS=$(VFLAGS)
-	@echo $(TEST_LIST)
 
 .PRECIOUS: uut.vcd
 
-.PHONY: build run remote_build_dir waves fix-vcd test run-tests gen-clean clean-test-log debug
+.PHONY: build run remote_build_dir waves fix-vcd test run-tests gen-clean debug test
