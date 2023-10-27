@@ -136,27 +136,30 @@ def get_peripheral_macros(confs, peripherals_list):
     # Append macros with ID of each peripheral
     confs.extend(get_periphs_id_as_macros(peripherals_list))
     # Append macro with number of peripherals
-    confs.append(
-        {
-            "name": "N_SLAVES",
-            "type": "M",
-            "val": get_n_periphs(peripherals_list),
-            "min": "NA",
-            "max": "NA",
-            "descr": "Number of peripherals",
-        }
-    )
-    # Append macro with width of peripheral bus
-    confs.append(
-        {
-            "name": "N_SLAVES_W",
-            "type": "M",
-            "val": get_n_periphs_w(peripherals_list),
-            "min": "NA",
-            "max": "NA",
-            "descr": "Peripheral bus width",
-        }
-    )
+    # Only append macro if it does not exist (to allow subclasses set their own number)
+    if not list([i for i in confs if i["name"] == "N_SLAVES"]):
+        confs.append(
+            {
+                "name": "N_SLAVES",
+                "type": "M",
+                "val": get_n_periphs(peripherals_list),
+                "min": "NA",
+                "max": "NA",
+                "descr": "Number of peripherals",
+            }
+        )
+    if not list([i for i in confs if i["name"] == "N_SLAVES_W"]):
+        # Append macro with width of peripheral bus
+        confs.append(
+            {
+                "name": "N_SLAVES_W",
+                "type": "M",
+                "val": get_n_periphs_w(peripherals_list),
+                "min": "NA",
+                "max": "NA",
+                "descr": "Peripheral bus width",
+            }
+        )
 
 
 # Check if a module of certain type is in given modules list.
