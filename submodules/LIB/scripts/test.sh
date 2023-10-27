@@ -2,9 +2,6 @@
 
 set -e
 
-#iob module search path in SOC/submodules directory
-PROJECT_ROOT=../
-
 #find directories containing testbenches
 TBS=`find hardware | grep _tb.v | grep -v include`
 
@@ -23,7 +20,7 @@ fi
 #test if first argument is test and run all tests
 if [ "$1" == "test" ]; then
     for i in $MODULES; do
-        make clean build-setup PROJECT_ROOT=$PROJECT_ROOT CORE=$i TOP_MODULE_NAME=$i
+        make clean build-setup CORE=$i TOP_MODULE_NAME=$i
         make -C ../${i}_V* sim-run
     done
     exit 0
@@ -32,10 +29,10 @@ fi
 #test if first argument is "build" and run build for single module
 if [ "$1" == "build" ]; then
     make clean build-setup CORE=$2 TOP_MODULE_NAME=$2
-    make -C ../$2_V* sim-build PROJECT_ROOT=$PROJECT_ROOT
+    make -C ../$2_V* sim-build
     exit 0
 fi
 
 #run single test
 make clean build-setup CORE=$1 TOP_MODULE_NAME=$1
-make -C ../$1_V* sim-run VCD=$VCD PROJECT_ROOT=$PROJECT_ROOT
+make -C ../$1_V* sim-run VCD=$VCD
