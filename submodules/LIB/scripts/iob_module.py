@@ -90,6 +90,13 @@ class iob_module:
         :param str search_path: Path to search for modules
         """
         dirs = [search_path]
+        # Append PROJECT_ROOT to dirs, if exists
+        for arg in sys.argv:
+            if "PROJECT_ROOT" in arg:
+                # Set a custom LIB directory
+                dirs.append(arg.split("=")[1])
+                break
+
         found_modules = []
         return_values = []
         # while there are dirs to search

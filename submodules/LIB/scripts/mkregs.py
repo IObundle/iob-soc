@@ -6,7 +6,7 @@
 import sys, os
 from math import ceil, log
 from latex import write_table
-from submodule_utils import eval_param_expression_from_config
+from mk_configuration import eval_param_expression_from_config
 import re
 import iob_colors
 

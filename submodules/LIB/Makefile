@@ -14,7 +14,7 @@ CORE ?=iob_ctls
 include setup.mk
 
 setup:
-	nix-shell --run "python3 -B `find . -name '$(CORE).py'` LIB_DIR=$(LIB_DIR)"
+	nix-shell --run "python3 -B `find . -name '$(CORE).py'` LIB_DIR=$(LIB_DIR) PROJECT_ROOT=$(PROJECT_ROOT)"
 
 sim-build:
 	nix-shell --run "scripts/test.sh build $(CORE)"
