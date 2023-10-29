@@ -6,8 +6,8 @@
 //
 
 module iob2apb #(
-   parameter APB_ADDR_W = 32,          // APB address bus width in bits
-   parameter APB_DATA_W = 32,          // APB data bus width in bits
+   parameter APB_ADDR_W = 22,          // APB address bus width in bits
+   parameter APB_DATA_W = 22,          // APB data bus width in bits
    parameter ADDR_W     = APB_ADDR_W,  // IOb address bus width in bits
    parameter DATA_W     = APB_DATA_W   // IOb data bus width in bits
 ) (
