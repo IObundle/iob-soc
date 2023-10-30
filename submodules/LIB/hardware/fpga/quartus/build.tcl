@@ -126,7 +126,7 @@ if {[catch {execute_module -tool fit} result]} {
 }
 
 #run quartus sta
-if {[catch {execute_module -tool sta -args "--report_script=quartus/timing.tcl"} result]} {
+if {[catch {execute_module -tool sta} result]} {
     puts "\nResult: $result\n"
     puts "ERROR: STA failed. See report files.\n"
     qexit -error
