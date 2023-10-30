@@ -61,8 +61,8 @@ class iob_soc(iob_module):
         if num_extmem_connections == 1:
             inplace_change(
                 os.path.join(cls.build_dir, "hardware/src", cls.name + ".v"),
-                "[0+:1])",
-                ")",
+                "[0+:1]",
+                "",
             )
         # Generate hw, sw, doc files
         super()._generate_files()
