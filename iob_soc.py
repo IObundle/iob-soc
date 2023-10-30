@@ -39,7 +39,7 @@ from axi_interconnect import axi_interconnect
 class iob_soc(iob_module):
     name = "iob_soc"
     version = "V0.70"
-    flows = "pc-emul emb sim doc fpga"
+    flows = "pc-emul emb sim doc fpga syn"
     setup_dir = os.path.dirname(__file__)
 
     # IOb-SoC has the following list of non standard attributes:
