@@ -58,7 +58,7 @@ class iob_regfileif(iob_module):
         mkregs_obj = mkregs()
         mkregs_obj.config = cls.confs
         # Get register table
-        reg_table = mkregs_obj.get_reg_table(inverted_regs, False)
+        reg_table = mkregs_obj.get_reg_table(inverted_regs, cls.rw_overlap, False)
         # Create inverted register hardware
         mkregs_obj.write_hwheader(reg_table, cls.build_dir+'/hardware/src', f"{cls.name}_inverted")
         mkregs_obj.write_hwcode(reg_table, cls.build_dir+'/hardware/src', f"{cls.name}_inverted")
@@ -76,7 +76,7 @@ class iob_regfileif(iob_module):
             if '.iob_ready_nxt_o' in line: lines[idx] = ".iob_ready_nxt_o(iob_ready_nxt2),\n"
             if '.iob_rvalid_nxt_o' in line: lines[idx] = ".iob_rvalid_nxt_o(iob_rvalid_nxt2),\n"
             # Remove `iob_s_portmap.vs` as this mapping was already used in the `*_inverted_swreg_inst.vs` file
-            if '`include "iob_s_s_portmap.vs"' in line:
+            if '`include "iob_s_portmap.vs"' in line:
                 lines[idx] = ""
                 #Insert correct portmap. The normal (non inverted) registers are connected to the external interface that connects to the primary system.
                 lines.insert(idx,".iob_avalid_i(external_iob_avalid_i), //Request valid.\n")
@@ -86,20 +86,17 @@ class iob_regfileif(iob_module):
                 lines.insert(idx,".iob_rvalid_o(external_iob_rvalid_o), //Read data valid.\n")
                 lines.insert(idx,".iob_rdata_o(external_iob_rdata_o), //Read data.\n")
                 lines.insert(idx,".iob_ready_o(external_iob_ready_o), //Interface ready.\n")
+            # Replace "_rd" and "_wr" suffixes of registers
+            if "_rd)" in line:
+                lines[idx] = lines[idx].replace("_rd)", "_wr)")
+            else:
+                lines[idx] = lines[idx].replace("_wr)", "_rd)")
         # Insert 2 wires for iob_ready_nxt and iob_rvalid_nxt ports
         lines.insert(0,"wire iob_ready_nxt2;\n")
         lines.insert(0,"wire iob_rvalid_nxt2;\n")
         # Write modified lines to file
         with open(f"{cls.build_dir}/hardware/src/{cls.name}_swreg_inst.vs", "w") as file:
             file.writelines(lines)
-
-        #### Modify "iob_regfileif_inverted_swreg_def" to include `IOB_REGFILEIF_SWREG_ADDR_W`
-        with open(f"{cls.build_dir}/hardware/src/{cls.name}_inverted_swreg_def.vh", "r") as file: lines = file.readlines()
-        for idx, line in enumerate(lines):
-            if line.startswith("`define IOB_REGFILEIF_INVERTED_SWREG_ADDR_W"):
-                lines.insert(idx,line.replace("_INVERTED",""))
-                break
-        with open(f"{cls.build_dir}/hardware/src/{cls.name}_inverted_swreg_def.vh", "w") as file: file.writelines(lines)
 
         #### Create params, inst_params and conf files for inverted hardware. (Use symlinks to save disk space and highlight they are equal)
         if not os.path.isfile(f"{cls.build_dir}/hardware/src/{cls.name}_inverted_conf.vh"): os.symlink(f"{cls.name}_conf.vh", f"{cls.build_dir}/hardware/src/{cls.name}_inverted_conf.vh")
