@@ -76,7 +76,7 @@ class iob_regfileif(iob_module):
             if '.iob_ready_nxt_o' in line: lines[idx] = ".iob_ready_nxt_o(iob_ready_nxt2),\n"
             if '.iob_rvalid_nxt_o' in line: lines[idx] = ".iob_rvalid_nxt_o(iob_rvalid_nxt2),\n"
             # Remove `iob_s_portmap.vs` as this mapping was already used in the `*_inverted_swreg_inst.vs` file
-            if '`include "iob_s_s_portmap.vs"' in line:
+            if '`include "iob_s_portmap.vs"' in line:
                 lines[idx] = ""
                 #Insert correct portmap. The normal (non inverted) registers are connected to the external interface that connects to the primary system.
                 lines.insert(idx,".iob_avalid_i(external_iob_avalid_i), //Request valid.\n")
