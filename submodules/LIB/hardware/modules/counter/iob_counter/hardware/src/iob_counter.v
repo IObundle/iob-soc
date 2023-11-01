@@ -2,7 +2,8 @@
 
 module iob_counter #(
    parameter DATA_W  = 21,
-   parameter RST_VAL = {DATA_W{1'b0}}
+   parameter RST_VAL = {DATA_W{1'b0}},
+   parameter CLKEDGE = "posedge"
 ) (
    `include "clk_en_rst_s_port.vs"
 
@@ -17,7 +18,7 @@ module iob_counter #(
    iob_reg_re #(
       .DATA_W (DATA_W),
       .RST_VAL(RST_VAL),
-      .CLKEDGE("posedge")
+      .CLKEDGE("CLKEDGE")
    ) reg0 (
       `include "clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_i),
