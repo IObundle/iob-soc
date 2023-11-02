@@ -20,7 +20,7 @@ module iob_sipo_reg #(
    iob_reg #(
       .DATA_W (DATA_W),
       .RST_VAL(0),
-      .CLKEDGE("CLKEDGE")
+      .CLKEDGE(CLKEDGE)
    ) reg0 (
       `include "clk_en_rst_s_s_portmap.vs"
 
