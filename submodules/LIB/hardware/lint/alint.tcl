@@ -58,7 +58,7 @@ close $outfile
 
 workspace.file.add -destination $PRJ merged.sdc
 
-project.pref.toplevels -top $TOP\_$CSR_IF
+project.pref.toplevels -top $TOP
 
 project.pref.vlogstandard -format sv2005
 
