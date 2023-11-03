@@ -1,10 +1,10 @@
 `timescale 1ns / 1ps
 
 /* TODO: re-implement these tests 
--       $(VLOG) -DW_DATA_W=8 -DR_DATA_W=8 $(wildcard $(BUILD_VSRC_DIR)/*.v) &&\
--       $(VLOG) -DW_DATA_W=32 -DR_DATA_W=8 $(wildcard $(BUILD_VSRC_DIR)/*.v) &&\
--       $(VLOG) -DW_DATA_W=8 -DR_DATA_W=32 $(wildcard $(BUILD_VSRC_DIR)/*.v) &&\
--       $(VLOG) -DW_DATA_W=8 -DR_DATA_W=8 $(wildcard $(BUILD_VSRC_DIR)/*.v) &&\
+-       $(VLOG) -DW_DATA_W=8 -DR_DATA_W=8 $(wildcard $(BUILD_VSRC_DIR)*.v) &&\
+-       $(VLOG) -DW_DATA_W=32 -DR_DATA_W=8 $(wildcard $(BUILD_VSRC_DIR)*.v) &&\
+-       $(VLOG) -DW_DATA_W=8 -DR_DATA_W=32 $(wildcard $(BUILD_VSRC_DIR)*.v) &&\
+-       $(VLOG) -DW_DATA_W=8 -DR_DATA_W=8 $(wildcard $(BUILD_VSRC_DIR)*.v) &&\
 */
 
 `include "iob_utils.vh"
@@ -89,11 +89,16 @@ module iob_fifo_sync_tb;
       //reset FIFO
       #clk_per;
       @(posedge clk) #1;
-      reset = 1;
       arst  = 1;
       repeat (4) @(posedge clk) #1;
-      reset = 0;
       arst  = 0;
+
+      //reset FIFO
+      #clk_per;
+      @(posedge clk) #1;
+      reset  = 1;
+      repeat (4) @(posedge clk) #1;
+      reset  = 0;
 
       //fill up the FIFO
       for (i = 0; i < 2 ** W_ADDR_W; i = i + 1) begin

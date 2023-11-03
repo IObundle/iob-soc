@@ -79,6 +79,9 @@ else
 endif
 endif
 
+test: run
+	sync && sleep 1 && test "$$(cat test.log)" = "Test passed!"
+
 # clean
 clean: $(FPGA_TOOL)-clean
 	find . -maxdepth 1 -type f -not \( -name "Makefile" -o -name "fpga_build.mk" -o -name "uut_build.mk" \) -delete

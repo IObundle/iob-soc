@@ -218,7 +218,6 @@ class mkregs:
                             f"  input [{self.verilog_max(n_bits,1)}-1:0] {name}_rdata_i,\n"
                         )
                         f.write(f"  output {name}_ren_o,\n")
-                        f.write(f"  input {name}_rvalid_i,\n")
                         f.write(f"  input {name}_rready_i,\n")
 
         f.write(f"  output iob_ready_nxt_o,\n")
@@ -265,7 +264,6 @@ class mkregs:
                             f"wire [{self.verilog_max(n_bits,1)}-1:0] {name}_rdata_rd;\n"
                         )
                         f.write(f"wire {name}_ren_rd;\n")
-                        f.write(f"wire {name}_rvalid_rd;\n")
                         f.write(f"wire {name}_rready_rd;\n")
         f.write("\n")
 
@@ -290,7 +288,6 @@ class mkregs:
                     else:
                         f.write(f"  .{name}_rdata_i({name}_rdata_rd),\n")
                         f.write(f"  .{name}_ren_o({name}_ren_rd),\n")
-                        f.write(f"  .{name}_rvalid_i({name}_rvalid_rd),\n")
                         f.write(f"  .{name}_rready_i({name}_rready_rd),\n")
 
         f.write(f"  .iob_ready_nxt_o(iob_ready_nxt),\n")
@@ -383,7 +380,7 @@ class mkregs:
 
         # use variables to compute response
         f_gen.write(f"\n reg [{8*self.cpu_n_bytes}-1:0] rdata_int;\n")
-        f_gen.write(f"reg rvalid_int;\n")
+        f_gen.write(f"wire rvalid_int;\n")
         f_gen.write(f"reg wready_int;\n")
         f_gen.write(f"reg rready_int;\n\n")
 
@@ -412,7 +409,6 @@ class mkregs:
 
         # rvalid output
         f_gen.write("//rvalid output\n")
-        f_gen.write("reg rvalid_nxt;\n")
         f_gen.write("iob_reg #( \n")
         f_gen.write("  .DATA_W (1),\n")
         f_gen.write("  .RST_VAL (1'd0),\n")
@@ -421,22 +417,8 @@ class mkregs:
         f_gen.write("  .clk_i  (clk_i),\n")
         f_gen.write("  .cke_i  (cke_i),\n")
         f_gen.write("  .arst_i (arst_i),\n")
-        f_gen.write("  .data_i (rvalid_nxt),\n")
+        f_gen.write("  .data_i (iob_rvalid_nxt_o),\n")
         f_gen.write("  .data_o (iob_rvalid_o)\n")
-        f_gen.write(");\n\n")
-
-        # rdata output
-        f_gen.write("//rdata output\n")
-        f_gen.write("iob_reg #(\n")
-        f_gen.write(f"  .DATA_W ({8*self.cpu_n_bytes}),\n")
-        f_gen.write(f"  .RST_VAL ({8*self.cpu_n_bytes}'d0),\n")
-        f_gen.write('  .CLKEDGE ("posedge")\n')
-        f_gen.write(") rdata_reg_inst (\n")
-        f_gen.write("  .clk_i  (clk_i),\n")
-        f_gen.write("  .cke_i  (cke_i),\n")
-        f_gen.write("  .arst_i (arst_i),\n")
-        f_gen.write("  .data_i (rdata_int),\n")
-        f_gen.write("  .data_o (iob_rdata_o)\n")
         f_gen.write(");\n\n")
 
         f_gen.write("wire pc;\n")
@@ -457,7 +439,6 @@ class mkregs:
 
         f_gen.write(f"  rdata_int = {8*self.cpu_n_bytes}'d0;\n")
         f_gen.write(f"  rready_int = 1'b1;\n")
-        f_gen.write(f"  rvalid_int = 1'b1;\n")
         f_gen.write(f"  wready_int = 1'b1;\n\n")
 
         # read register response
@@ -516,7 +497,6 @@ class mkregs:
                     )
                 if not auto:
                     f_gen.write(f"    rready_int = {name}_rready_i;\n")
-                    f_gen.write(f"    rvalid_int = {name}_rvalid_i;\n")
                 f_gen.write(f"  end\n\n")
 
         # write register response
@@ -540,22 +520,6 @@ class mkregs:
                     f_gen.write(f"    wready_int = {name}_wready_i;\n  end\n")
 
         f_gen.write("  ready_nxt = (|iob_wstrb_i)? wready_int: rready_int;\n")
-        f_gen.write("  rvalid_nxt = iob_rvalid_o;\n")
-        f_gen.write("  pc_nxt = pc + 1'b1;\n\n")
-        f_gen.write("  case(pc)\n")
-        f_gen.write("    0: begin\n")
-        f_gen.write("      rvalid_nxt = 1'b0;\n")
-        f_gen.write("      if(!iob_avalid_i) begin\n")
-        f_gen.write("        pc_nxt=pc;\n")
-        f_gen.write("      end\n")
-        f_gen.write("    end\n")
-        f_gen.write("    default: begin\n")
-        f_gen.write("      rvalid_nxt =  (|iob_wstrb_i)? 1'b0: rvalid_int;\n")
-        f_gen.write("      if((|iob_wstrb_i)? !iob_ready_o: !rvalid_int) begin\n")
-        f_gen.write("        pc_nxt = pc;\n")
-        f_gen.write("      end\n")
-        f_gen.write("    end\n")
-        f_gen.write("  endcase\n")
 
         f_gen.write("end //always @*\n\n")
 
@@ -563,10 +527,14 @@ class mkregs:
         f_gen.write("//ready_nxt output\n")
         f_gen.write("assign iob_ready_nxt_o = ready_nxt;\n")
 
-        # rvalid_nxt output
-        f_gen.write("//rvalid_nxt output\n")
-        f_gen.write("assign iob_rvalid_nxt_o = rvalid_nxt;\n\n")
-
+        # iob_rvalid_nxt output
+        f_gen.write("//iob_rvalid_nxt output\n")
+        f_gen.write("assign iob_rvalid_nxt_o = iob_avalid_i & iob_ready_o & (!iob_wstrb_i);\n\n")
+        
+        # iob_rdata_o output
+        f_gen.write("assign iob_rdata_o = rdata_int;\n\n")
+        
+        
         f_gen.write("endmodule\n")
         f_gen.close()
         f_inst.close()
