@@ -104,7 +104,7 @@ endif
 
 clean:
 	-@if [ -f ../$(CORE)_V*/Makefile ]; then make -C ../$(CORE)_V* clean; fi
-	@rm -rf ../$(CORE)_V*
+	@rm -rf ../*.summary ../*.rpt ../$(CORE)_V*
 	@rm -f ~*
 ifneq ($(wildcard config_delivery.mk),)
 	make delivery-clean
