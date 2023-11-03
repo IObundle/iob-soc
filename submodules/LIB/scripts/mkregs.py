@@ -421,20 +421,6 @@ class mkregs:
         f_gen.write("  .data_o (iob_rvalid_o)\n")
         f_gen.write(");\n\n")
 
-        f_gen.write("wire pc;\n")
-        f_gen.write("reg pc_nxt;\n")
-        f_gen.write("iob_reg #(\n")
-        f_gen.write("  .DATA_W (1),\n")
-        f_gen.write("  .RST_VAL (1'd0),\n")
-        f_gen.write('  .CLKEDGE ("posedge")\n')
-        f_gen.write(") pc_reg (\n")
-        f_gen.write("  .clk_i  (clk_i),\n")
-        f_gen.write("  .cke_i  (cke_i),\n")
-        f_gen.write("  .arst_i (arst_i),\n")
-        f_gen.write("  .data_i (pc_nxt),\n")
-        f_gen.write("  .data_o (pc)\n")
-        f_gen.write(");\n\n")
-
         f_gen.write("always @* begin\n")
 
         f_gen.write(f"  rdata_int = {8*self.cpu_n_bytes}'d0;\n")
@@ -529,7 +515,7 @@ class mkregs:
 
         # iob_rvalid_nxt output
         f_gen.write("//iob_rvalid_nxt output\n")
-        f_gen.write("assign iob_rvalid_nxt_o = iob_avalid_i & iob_ready_o & (!iob_wstrb_i);\n\n")
+        f_gen.write("assign iob_rvalid_nxt_o = (iob_avalid_i & iob_ready_o) & (~(|iob_wstrb_i));\n\n")
         
         # iob_rdata_o output
         f_gen.write("assign iob_rdata_o = rdata_int;\n\n")
