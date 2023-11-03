@@ -33,6 +33,7 @@ module iob_soc_sim_wrapper (
    localparam AXI_DATA_W = `DDR_DATA_W;
 
    wire clk = clk_i;
+   wire cke = 1'b1;
    wire arst = rst_i;
 
    `include "iob_soc_wrapper_pwires.vs"
@@ -63,7 +64,7 @@ module iob_soc_sim_wrapper (
    ) iob_soc0 (
       `include "iob_soc_pportmaps.vs"
       .clk_i (clk),
-      .cke_i (1'b1),
+      .cke_i (cke),
       .arst_i(arst),
       .trap_o(trap_o)
    );
@@ -124,7 +125,6 @@ always @(posedge trap[1]) begin
    //Manually added testbench uart core. RS232 pins attached to the same pins
    //of the iob_soc UART0 instance to communicate with it
    // The interface of iob_soc UART0 is assumed to be the first portmapped interface (UART_*)
-   wire cke = 1'b1;
    iob_uart uart_tb (
       .clk_i (clk),
       .cke_i (cke),
@@ -156,8 +156,8 @@ always @(posedge trap[1]) begin
    end
 
    // Ethernet Interface signals
-   assign ETHERNET0_MRxClk     = eth_clk;
-   assign ETHERNET0_MTxClk     = eth_clk;
+   assign ETH0_MRxClk     = eth_clk;
+   assign ETH0_MTxClk     = eth_clk;
 
    //add core test module in testbench
    iob_eth_tb_gen eth_tb (
@@ -165,16 +165,16 @@ always @(posedge trap[1]) begin
       .reset(arst),
 
       // This module acts like a loopback
-      .MRxClk (ETHERNET0_MTxClk),
-      .MRxD   (ETHERNET0_MTxD),
-      .MRxDv  (ETHERNET0_MTxEn),
-      .MRxErr (ETHERNET0_MTxErr),
+      .MRxClk (ETH0_MTxClk),
+      .MRxD   (ETH0_MTxD),
+      .MRxDv  (ETH0_MTxEn),
+      .MRxErr (ETH0_MTxErr),
 
       // The wires are thus reversed
-      .MTxClk (ETHERNET0_MRxClk),
-      .MTxD   (ETHERNET0_MRxD),
-      .MTxEn  (ETHERNET0_MRxDv),
-      .MTxErr (ETHERNET0_MRxErr),
+      .MTxClk (ETH0_MRxClk),
+      .MTxD   (ETH0_MRxD),
+      .MTxEn  (ETH0_MRxDv),
+      .MTxErr (ETH0_MRxErr),
 
       .MColl(1'b0),
       .MCrS(1'b0),
