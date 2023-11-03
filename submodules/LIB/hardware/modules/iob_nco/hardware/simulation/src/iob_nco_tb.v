@@ -26,6 +26,9 @@ module iob_nco_tb;
 
       `IOB_PULSE(ld, 23, 20, 20)
 
+      $display("%c[1;34m", 27);
+      $display("Test completed successfully.");
+      $display("%c[0m", 27);
       #1000 $finish();
       
    end

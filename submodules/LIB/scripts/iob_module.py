@@ -130,6 +130,10 @@ class iob_module:
     @classmethod
     def __global_pre_setup_tasks(cls):
         """Tasks to run before starting global setup process."""
+        # Parse environment vars (if any)
+        if "LIB_DIR" in os.environ:
+            build_srcs.LIB_DIR = os.environ["LIB_DIR"]
+
         # Parse LIB_DIR argument
         for arg in sys.argv:
             if "LIB_DIR" in arg:
@@ -350,14 +354,8 @@ class iob_module:
                 from iob_ctls import iob_ctls
 
                 iob_ctls.__setup(purpose=cls.__get_setup_purpose())
-            ## Auto-add iob_s_port.vh
-            cls.__generate(
-                {"interface": "iob_s_port"}, purpose=cls.__get_setup_purpose()
-            )
-            ## Auto-add iob_s_portmap.vh
-            cls.__generate(
-                {"interface": "iob_s_s_portmap"}, purpose=cls.__get_setup_purpose()
-            )
+            ## Auto-add iob_s_port.vh and iob_s_portmap.vh
+            cls.__generate({"interface": "iob"}, purpose=cls.__get_setup_purpose())
 
     @classmethod
     def __build_regs_table(cls, no_overlap=False):
@@ -592,6 +590,11 @@ class iob_module:
             vs_dict["mult"],
             vs_dict["widths"],
         )
+
+        # move all .vs files from current directory to out_dir
+        for file in os.listdir("."):
+            if file.endswith(".vs"):
+                os.rename(file, f"{dest_dir}/{file}")
 
     @classmethod
     def __get_setup_purpose(cls):

@@ -23,8 +23,7 @@ class iob_regfile_2p(iob_module):
         cls.setup_dir = os.path.dirname(__file__)
         cls.submodules = [
             iob_ctls,
-            {"interface": "clk_en_rst_s_port"},
-            {"interface": "clk_en_rst_s_s_portmap"},
+            {"interface": "clk_en_rst"},
         ]
 
 

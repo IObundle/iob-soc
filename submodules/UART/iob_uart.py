@@ -6,11 +6,11 @@ import os
 if __name__ == "__main__":
     import sys
 
-    sys.path.append("./submodules/LIB/scripts")
+    sys.path.append("../LIB/scripts")
 from iob_module import iob_module
 
 if __name__ == "__main__":
-    iob_module.find_modules()
+    iob_module.find_modules(search_path="..")
 
 # Submodules
 from iob_utils import iob_utils
@@ -138,7 +138,7 @@ class iob_uart(iob_module):
                     {
                         "name": "TXDATA",
                         "type": "W",
-                        "n_bits": "UART_DATA_W",
+                        "n_bits": 8,
                         "rst_val": 0,
                         "addr": 4,
                         "log2n_items": 0,
@@ -190,7 +190,7 @@ class iob_uart(iob_module):
                     {
                         "name": "RXDATA",
                         "type": "R",
-                        "n_bits": "UART_DATA_W",
+                        "n_bits": 8,
                         "rst_val": 0,
                         "addr": 4,
                         "log2n_items": 0,

@@ -24,8 +24,7 @@ class iob_div_subshift_frac(iob_module):
         cls.flows = "sim"
         cls.setup_dir = os.path.dirname(__file__)
         cls.submodules = [
-            {"interface": "clk_en_rst_s_s_portmap"},
-            {"interface": "clk_en_rst_s_port"},
+            {"interface": "clk_en_rst"},
             # Setup dependencies
             iob_reg,
             iob_reg_e,

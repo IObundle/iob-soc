@@ -3,6 +3,7 @@ LIB_DIR=../LIB
 PROJECT_ROOT=..
 DISABLE_LINT:=1
 export DISABLE_LINT
+export LIB_DIR
 
 include ../LIB/setup.mk
 

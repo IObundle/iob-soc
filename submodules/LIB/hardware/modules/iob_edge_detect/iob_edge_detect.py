@@ -23,8 +23,7 @@ class iob_edge_detect(iob_module):
         cls.setup_dir = os.path.dirname(__file__)
         cls.submodules = [
             iob_reg,
-            {"interface": "clk_en_rst_s_s_portmap"},
-            {"interface": "clk_en_rst_s_port"},
+            {"interface": "clk_en_rst"},
         ]
 
 
