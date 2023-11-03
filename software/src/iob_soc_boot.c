@@ -75,7 +75,7 @@ int main() {
   uart_txwait();
 
 #ifdef USE_EXTMEM
-  while (!cache_wtb_empty())
+  while (!IOB_CACHE_GET_WTB_EMPTY())
     ;
 #endif
 }

@@ -529,12 +529,13 @@ class mkregs:
 
         # iob_rvalid_nxt output
         f_gen.write("//iob_rvalid_nxt output\n")
-        f_gen.write("assign iob_rvalid_nxt_o = iob_avalid_i & iob_ready_o & (!iob_wstrb_i);\n\n")
-        
+        f_gen.write(
+            "assign iob_rvalid_nxt_o = iob_avalid_i & iob_ready_o & (!iob_wstrb_i);\n\n"
+        )
+
         # iob_rdata_o output
         f_gen.write("assign iob_rdata_o = rdata_int;\n\n")
-        
-        
+
         f_gen.write("endmodule\n")
         f_gen.close()
         f_inst.close()
@@ -630,7 +631,7 @@ class mkregs:
         for row in table:
             name = row["name"]
             if "W" in row["type"] or "R" in row["type"]:
-                fswhdr.write(f"#define {core_prefix}{name} {row['addr']}\n")
+                fswhdr.write(f"#define {core_prefix}{name}_ADDR {row['addr']}\n")
 
         fswhdr.write("\n//Data widths (bit)\n")
         for row in table:
@@ -706,7 +707,7 @@ class mkregs:
                     f"void {core_prefix}SET_{name}({sw_type} value{addr_arg}) {{\n"
                 )
                 fsw.write(
-                    f"  (*( (volatile {sw_type} *) ( (base) + ({core_prefix}{name}){addr_shift}) ) = (value));\n"
+                    f"  (*( (volatile {sw_type} *) ( (base) + ({core_prefix}{name}_ADDR){addr_shift}) ) = (value));\n"
                 )
                 fsw.write("}\n\n")
             if "R" in row["type"]:
@@ -718,7 +719,7 @@ class mkregs:
                     addr_shift = f" + (addr << {int(log(n_bytes, 2))})"
                 fsw.write(f"{sw_type} {core_prefix}GET_{name}({addr_arg}) {{\n")
                 fsw.write(
-                    f"  return (*( (volatile {sw_type} *) ( (base) + ({core_prefix}{name}){addr_shift}) ));\n"
+                    f"  return (*( (volatile {sw_type} *) ( (base) + ({core_prefix}{name}_ADDR){addr_shift}) ));\n"
                 )
                 fsw.write("}\n\n")
         fsw.close()
