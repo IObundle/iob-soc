@@ -6,6 +6,7 @@ if __name__ == "__main__":
     import sys
 
     sys.path.append("./scripts")
+
 from iob_module import iob_module
 
 if __name__ == "__main__":
@@ -13,13 +14,10 @@ if __name__ == "__main__":
 
 
 class iob_tasks(iob_module):
-    @classmethod
-    def _init_attributes(cls):
-        """Init module attributes"""
-        cls.name = "iob_tasks"
-        cls.version = "V0.10"
-        cls.flows = "sim"
-        cls.setup_dir = os.path.dirname(__file__)
+    name = "iob_tasks"
+    version = "V0.10"
+    flows = "sim"
+    setup_dir = os.path.dirname(__file__)
 
 
 if __name__ == "__main__":

@@ -58,22 +58,16 @@ class iob_soc(iob_module):
         cls.cpu = iob_picorv32
         cls.uart = iob_uart
         cls.num_extmem_connections = 1
-    @classmethod
-    def _generate_files(cls):
+
         """Setup this system using specialized iob-soc functions"""
-        # Pre-setup specialized IOb-SoC functions
-        num_extmem_connections = pre_setup_iob_soc(cls)
+
         # Remove `[0+:1]` part select in AXI connections of ext_mem0 in iob_soc.v template
-        if num_extmem_connections == 1:
+        if cls.num_extmem_connections == 1:
             inplace_change(
                 os.path.join(cls.build_dir, "hardware/src", cls.name + ".v"),
                 "[0+:1])",
                 ")",
             )
-        # Generate hw, sw, doc files
-        super()._generate_files()
-        # Post-setup specialized IOb-SoC functions
-        post_setup_iob_soc(cls, num_extmem_connections)
 
         # warning: do not initialize lists as class variables, they will be shared between all subclasses
         cls.peripherals = []

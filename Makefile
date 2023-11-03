@@ -18,9 +18,6 @@ setup:
 sim-build: clean setup
 	make -C ../$(CORE)_V*/ sim-build SIMULATOR=$(SIMULATOR)
 
-setup:
-	nix-shell --run 'make build-setup SETUP_ARGS="$(SETUP_ARGS)"'
-
 pc-emul-run:
 	nix-shell --run 'make clean setup && make -C ../$(CORE)_V*/ pc-emul-run'
 
