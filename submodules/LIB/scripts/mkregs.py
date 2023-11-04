@@ -515,8 +515,10 @@ class mkregs:
 
         # iob_rvalid_nxt output
         f_gen.write("//iob_rvalid_nxt output\n")
-        f_gen.write("assign iob_rvalid_nxt_o = (iob_avalid_i & iob_ready_o) & (~(|iob_wstrb_i));\n\n")
-        
+        f_gen.write(
+            "assign iob_rvalid_nxt_o = (iob_avalid_i & iob_ready_o) & (~(|iob_wstrb_i));\n\n"
+        )
+
         # iob_rdata_o output
         f_gen.write("assign iob_rdata_o = rdata_int;\n\n")
 
