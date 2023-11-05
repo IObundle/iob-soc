@@ -16,81 +16,70 @@ module axil2iob #(
     `include "iob_m_port.vs"
 );
 
-  //
-  // AXI4-Lite interface to IOb
-  //
-  wire                  iob_rvalid_q;
-  wire                  iob_rvalid_e;
-  wire                  write_enable;
-  wire [ADDR_W-1:0]     addr_q;
-  wire                  addr_e;
-  wire [ADDR_W-1:0]     addr_d;
-  wire                  axil_bvalid_n;
-  wire                  axil_bvalid_e;
-
-  assign write_enable  = |axil_wstrb_i;
-  assign axil_bvalid_n = axil_wvalid_i;
-  assign axil_bvalid_e = axil_bvalid_n | axil_bready_i;
-  assign iob_rvalid_e  = iob_rvalid_i | axil_rready_i;
-
-  assign addr_e = axil_arvalid_i | axil_awvalid_i;
-  assign addr_d = axil_arvalid_i ? axil_araddr_i : axil_awaddr_i;
-
   // COMPUTE AXIL OUTPUTS
-  // // write address
+
+  // write address channel
   assign axil_awready_o  = iob_ready_i;
-  // // write
+
+  // write channel
   assign axil_wready_o   = iob_ready_i;
-  // // write response
-  assign axil_bresp_o    = 2'b0;
-  // // read address
+
+   // write response
+   assign axil_bresp_o    = 2'b0;
+   wire                 axil_bvalid_nxt;
+   //bvalid will toggle in the two situations below:
+   assign axil_bvalid_nxt = axil_bvalid_o ^ ((~axil_bvalid_o & axil_wvalid_i) | (axil_bvalid_o & axil_bready_i & ~axil_wvalid_i));
+    
+  // read address
   assign axil_arready_o  = iob_ready_i;
-  // // read
-  assign axil_rdata_o    = iob_rdata_i;
+
+  // read channel
   assign axil_rresp_o    = 2'b0;
-  assign axil_rvalid_o   = iob_rvalid_i;
+   wire                rvalid_nxt;
+   //rvalid will toggle in the two situations below:
+   assign rvalid_nxt = axil_rvalid_o ^ ((~axil_rvalid_o & iob_rvalid_i) | (axil_rvalid_o & axil_rready_i & ~iob_rvalid_i));
+  
 
   // COMPUTE IOb OUTPUTS
-  assign iob_avalid_o  = (axil_bvalid_n & write_enable) | axil_arvalid_i;
-  assign iob_addr_o    = axil_arvalid_i ? axil_araddr_i : (axil_awvalid_i ? axil_awaddr_i : addr_q);
+
+  assign iob_avalid_o  = (axil_wvalid_i & |axil_wstrb_i) | axil_arvalid_i;
+  assign iob_addr_o    = axil_arvalid_i ? axil_araddr_i : axil_awaddr_i;
   assign iob_wdata_o   = axil_wdata_i;
   assign iob_wstrb_o   = axil_arvalid_i ? {(DATA_W/8){1'b0}} : axil_wstrb_i;
 
-  // store last read or write address
-  iob_reg_e #(
-      .DATA_W (ADDR_W),
-      .RST_VAL(0)
-  ) iob_reg_addr (
-      .clk_i (clk_i),
-      .arst_i(arst_i),
-      .cke_i (cke_i),
-      .en_i  (addr_e),
-      .data_i(addr_d),
-      .data_o(addr_q)
-  );
-
-  iob_reg_e #(
-      .DATA_W (1),
-      .RST_VAL(0)
-  ) iob_reg_rvalid (
-      .clk_i (clk_i),
-      .arst_i(arst_i),
-      .cke_i (cke_i),
-      .en_i  (iob_rvalid_e),
-      .data_i(iob_rvalid_i),
-      .data_o(iob_rvalid_q)
-  );
-
-  iob_reg_e #(
+  iob_reg #(
       .DATA_W (1),
       .RST_VAL(0)
   ) iob_reg_bvalid (
       .clk_i (clk_i),
       .arst_i(arst_i),
       .cke_i (cke_i),
-      .en_i  (axil_bvalid_e),
-      .data_i(axil_bvalid_n),
+      .data_i(axil_wvalid_i),
       .data_o(axil_bvalid_o)
+  );
+
+   //rvalid register
+   iob_reg #(
+      .DATA_W (1),
+      .RST_VAL(0)
+   ) iob_reg_rvalid (
+      .clk_i (clk_i),
+      .arst_i(arst_i),
+      .cke_i (cke_i),
+      .data_i(rvalid_nxt),
+      .data_o(axil_rvalid_o)
+   );
+
+  iob_reg_e #(
+      .DATA_W (DATA_W),
+      .RST_VAL({DATA_W{1'b0}})
+  ) iob_reg_rdata (
+      .clk_i (clk_i),
+      .arst_i(arst_i),
+      .cke_i (cke_i),
+      .en_i  (iob_rvalid_i),
+      .data_i(iob_rdata_i),
+      .data_o(axil_rdata_o)
   );
 
 endmodule
