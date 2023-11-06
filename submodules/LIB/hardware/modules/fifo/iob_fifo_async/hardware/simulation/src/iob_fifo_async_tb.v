@@ -73,6 +73,7 @@ module iob_fifo_async_tb;
    wire [    ADDR_W:0] r_level;
 
    integer i, j;  //iterators
+   integer fd;
 
    reg [TESTSIZE*8-1:0] test_data;
    reg [TESTSIZE*8-1:0] read;
@@ -173,6 +174,9 @@ module iob_fifo_async_tb;
       $display("%c[1;34m", 27);
       $display("INFO: TEST PASSED");
       $display("%c[0m", 27);
+      fd = $fopen("test.log", "w");
+      $fdisplay(fd, "Test passed!");
+      $fclose(fd);
       #100 $finish();
    end
 
