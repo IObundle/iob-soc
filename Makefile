@@ -6,17 +6,13 @@ BOARD ?= CYCLONEV-GT-DK
 DISABLE_LINT:=1
 export DISABLE_LINT
 
+include submodules/LIB/setup.mk
+
 INIT_MEM ?= 1
 USE_EXTMEM ?= 0
 
 setup:
 	python3 -B ./$(CORE).py INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) 
-
-pc-emul-run:
-	nix-shell --run 'make clean setup && make -C ../$(CORE)_V*/ pc-emul-run'
-
-pc-emul-test:
-	nix-shell --run 'make clean setup && make -C ../$(CORE)_V*/ pc-emul-test'
 
 pc-emul-run:
 	nix-shell --run 'make clean setup && make -C ../$(CORE)_V*/ pc-emul-run'
