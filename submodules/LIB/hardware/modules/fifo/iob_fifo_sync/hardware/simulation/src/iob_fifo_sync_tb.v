@@ -46,6 +46,7 @@ module iob_fifo_sync_tb;
    always #(clk_per / 2) clk = ~clk;
 
    integer i, j;  //iterators
+   integer fd;
 
    reg  [TESTSIZE*MINDATA_W-1:0] test_data;
    reg  [TESTSIZE*MINDATA_W-1:0] read;
@@ -181,6 +182,9 @@ module iob_fifo_sync_tb;
       $display("%c[1;34m", 27);
       $display("INFO: TEST PASSED");
       $display("%c[0m", 27);
+      fd = $fopen("test.log", "w");
+      $fdisplay(fd, "Test passed!");
+      $fclose(fd);
       #(5 * clk_per) $finish();
    end
 

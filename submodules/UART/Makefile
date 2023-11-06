@@ -8,6 +8,6 @@ PROJECT_ROOT=..
 include ../LIB/setup.mk
 
 test: clean 
-	nix-shell --run "make build-setup && make -C ../iob_uart_* sim-test"
+	nix-shell --run "make build-setup && make -C ../iob_uart_* sim-run"
 
 
