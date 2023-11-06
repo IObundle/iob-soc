@@ -4,29 +4,30 @@
 #
 
 LIB_DIR:=.
+PROJECT_ROOT=..
+DISABLE_FORMAT:=1
 DISABLE_LINT:=1
 export DISABLE_LINT
 # Default lib module to setup. Can be overriden by the user.
 CORE ?=iob_ctls
 
-clean:
-	rm -rf ../$(CORE)_V*
+all: sim-test
+
+include setup.mk
 
 setup:
-	python3 -B `find . -name '$(CORE).py'` LIB_DIR=$(LIB_DIR)
+	nix-shell --run "python3 -B `find . -name '$(CORE).py'` LIB_DIR=$(LIB_DIR) PROJECT_ROOT=$(PROJECT_ROOT)"
 
 sim-build:
-	scripts/test.sh build $(CORE)
+	nix-shell --run "scripts/test.sh build $(CORE)"
 
 sim-run:
-	VCD=$(VCD) scripts/test.sh $(CORE)
+	nix-shell --run "VCD=$(VCD) scripts/test.sh $(CORE)"
 
 sim-test:
-	scripts/test.sh test
+	nix-shell --run "scripts/test.sh test"
 
 sim-clean:
-	scripts/test.sh clean
+	nix-shell --run "scripts/test.sh clean"
 
-
-
-
+.PHONY: all sim-build sim-run sim-test sim-clean

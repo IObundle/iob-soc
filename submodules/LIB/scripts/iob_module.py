@@ -34,6 +34,8 @@ class iob_module:
     setup_dir = ""  # Setup directory for this module
     build_dir = ""  # Build directory for this module
     confs = None  # List of configuration macros/parameters for this module
+    autoaddr = True  # register address mode: True: automatic; False: manual
+    rw_overlap = True  # overlap Read and Write register addresses
     regs = None  # List of registers for this module
     ios = None  # List of I/O for this module
     block_groups = None  # List of block groups for this module. Used for documentation.
@@ -88,6 +90,13 @@ class iob_module:
         :param str search_path: Path to search for modules
         """
         dirs = [search_path]
+        # Append PROJECT_ROOT to dirs, if exists
+        for arg in sys.argv:
+            if "PROJECT_ROOT" in arg:
+                # Set a custom LIB directory
+                dirs.append(arg.split("=")[1])
+                break
+
         found_modules = []
         return_values = []
         # while there are dirs to search
@@ -121,6 +130,10 @@ class iob_module:
     @classmethod
     def __global_pre_setup_tasks(cls):
         """Tasks to run before starting global setup process."""
+        # Parse environment vars (if any)
+        if "LIB_DIR" in os.environ:
+            build_srcs.LIB_DIR = os.environ["LIB_DIR"]
+
         # Parse LIB_DIR argument
         for arg in sys.argv:
             if "LIB_DIR" in arg:
@@ -341,14 +354,8 @@ class iob_module:
                 from iob_ctls import iob_ctls
 
                 iob_ctls.__setup(purpose=cls.__get_setup_purpose())
-            ## Auto-add iob_s_port.vh
-            cls.__generate(
-                {"interface": "iob_s_port"}, purpose=cls.__get_setup_purpose()
-            )
-            ## Auto-add iob_s_portmap.vh
-            cls.__generate(
-                {"interface": "iob_s_s_portmap"}, purpose=cls.__get_setup_purpose()
-            )
+            ## Auto-add iob_s_port.vh and iob_s_portmap.vh
+            cls.__generate({"interface": "iob"}, purpose=cls.__get_setup_purpose())
 
     @classmethod
     def __build_regs_table(cls, no_overlap=False):
@@ -389,7 +396,7 @@ class iob_module:
                         "rst_val": build_srcs.version_str_to_digits(cls.version),
                         "addr": -1,
                         "log2n_items": 0,
-                        "autologic": True,
+                        "autoreg": True,
                         "descr": "Product version.  This 16-bit register uses nibbles to represent decimal numbers using their binary values. The two most significant nibbles represent the integral part of the version, and the two least significant nibbles represent the decimal part. For example V12.34 is represented by 0x1234.",
                     }
                 )
@@ -399,7 +406,7 @@ class iob_module:
         mkregs_obj = mkregs.mkregs()
         mkregs_obj.config = cls.confs
         # Get register table
-        reg_table = mkregs_obj.get_reg_table(cls.regs, no_overlap)
+        reg_table = mkregs_obj.get_reg_table(cls.regs, cls.rw_overlap, cls.autoaddr)
 
         return mkregs_obj, reg_table
 
@@ -583,6 +590,11 @@ class iob_module:
             vs_dict["mult"],
             vs_dict["widths"],
         )
+
+        # move all .vs files from current directory to out_dir
+        for file in os.listdir("."):
+            if file.endswith(".vs"):
+                os.rename(file, f"{dest_dir}/{file}")
 
     @classmethod
     def __get_setup_purpose(cls):

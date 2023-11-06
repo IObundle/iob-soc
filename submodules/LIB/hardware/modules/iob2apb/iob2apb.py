@@ -22,13 +22,9 @@ class iob2apb(iob_module):
         cls.flows = "sim"
         cls.setup_dir = os.path.dirname(__file__)
         cls.submodules = [
-            {"interface": "clk_en_rst_s_port"},
-            {"interface": "iob_s_port"},
-            {"interface": "apb_m_port"},
-            {"interface": "clk_en_rst_s_s_portmap"},
-            # simulation
-            ({"interface": "iob_s_s_portmap"}, {"purpose": "simulation"}),
-            ({"interface": "iob_m_tb_wire"}, {"purpose": "simulation"}),
+            {"interface": "clk_en_rst"},
+            {"interface": "iob"},
+            {"interface": "apb"},
             iob_reg,
         ]
 

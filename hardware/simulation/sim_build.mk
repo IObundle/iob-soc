@@ -23,10 +23,6 @@ CONSOLE_CMD=rm -f soc2cnsl cnsl2soc; ../../scripts/console.py -L
 
 GRAB_TIMEOUT ?= 3600
 
-TEST_LIST+=test1
-test1:
-	make -C ../../ fw-clean SIMULATOR=$(SIMULATOR) && make -C ../../ sim-clean SIMULATOR=$(SIMULATOR) && make run SIMULATOR=$(SIMULATOR)
-
 # Include the UUT configuration if iob-soc is used as a Tester
 ifneq ($(wildcard uut_build_for_iob_soc.mk),)
 include uut_build_for_iob_soc.mk

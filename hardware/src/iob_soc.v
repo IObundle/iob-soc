@@ -159,7 +159,7 @@ module iob_soc #(
    // INTERNAL SRAM MEMORY
    //
 
-   int_mem #(
+   iob_soc_int_mem #(
       .ADDR_W        (ADDR_W),
       .DATA_W        (DATA_W),
       .HEXFILE       ("iob_soc_firmware"),
@@ -205,7 +205,7 @@ module iob_soc #(
    wire [AXI_ADDR_W-1:0] internal_axi_awaddr_o;
    wire [AXI_ADDR_W-1:0] internal_axi_araddr_o;
 
-   ext_mem #(
+   iob_soc_ext_mem #(
       .ADDR_W     (ADDR_W),
       .DATA_W     (DATA_W),
       .FIRM_ADDR_W(SRAM_ADDR_W),

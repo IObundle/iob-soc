@@ -37,8 +37,10 @@ if_types = [
     "s_tb_wire",
 ]
 
+
 def parse_widths(func):
     """Decorator to temporarily change values of global variables based on `widths` dicitonary."""
+
     def inner(widths={}):
         vars_backup = {}
         # Backup global variables
@@ -52,13 +54,14 @@ def parse_widths(func):
         for k in widths:
             globals()[k] = vars_backup[k]
         return return_obj
+
     return inner
 
 
 def try_math_eval(expr):
     """Try to evaluate math expressions, otherwise return the input."""
     try:
-        return int(eval(expr, {'__builtins__': None}, {}))
+        return int(eval(expr, {"__builtins__": None}, {}))
     except TypeError:
         return expr
 
@@ -833,11 +836,7 @@ def gen_if(name, file_prefix, port_prefix, wire_prefix, ports, mult=1, widths={}
 #
 
 
-def main():
+if __name__ == "__main__":
     # for if_type in range(len(if_names)):
     for i in range(0, 16):
         gen_if(if_names[i], "bla_", "di_", "da_", [])
-
-
-if __name__ == "__main__":
-    main()

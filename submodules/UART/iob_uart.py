@@ -6,11 +6,11 @@ import os
 if __name__ == "__main__":
     import sys
 
-    sys.path.append("./submodules/LIB/scripts")
+    sys.path.append("../LIB/scripts")
 from iob_module import iob_module
 
 if __name__ == "__main__":
-    iob_module.find_modules()
+    iob_module.find_modules(search_path="..")
 
 # Submodules
 from iob_utils import iob_utils
@@ -109,6 +109,7 @@ class iob_uart(iob_module):
             },
         ]
 
+        cls.autoaddr = False
         cls.regs += [
             {
                 "name": "uart",
@@ -119,9 +120,9 @@ class iob_uart(iob_module):
                         "type": "W",
                         "n_bits": 1,
                         "rst_val": 0,
-                        "addr": -1,
+                        "addr": 0,
                         "log2n_items": 0,
-                        "autologic": True,
+                        "autoreg": True,
                         "descr": "Soft reset.",
                     },
                     {
@@ -129,9 +130,9 @@ class iob_uart(iob_module):
                         "type": "W",
                         "n_bits": 16,
                         "rst_val": 0,
-                        "addr": -1,
+                        "addr": 2,
                         "log2n_items": 0,
-                        "autologic": True,
+                        "autoreg": True,
                         "descr": "Bit duration in system clock cycles.",
                     },
                     {
@@ -139,9 +140,9 @@ class iob_uart(iob_module):
                         "type": "W",
                         "n_bits": 8,
                         "rst_val": 0,
-                        "addr": -1,
+                        "addr": 4,
                         "log2n_items": 0,
-                        "autologic": False,
+                        "autoreg": False,
                         "descr": "TX data.",
                     },
                     {
@@ -149,9 +150,9 @@ class iob_uart(iob_module):
                         "type": "W",
                         "n_bits": 1,
                         "rst_val": 0,
-                        "addr": -1,
+                        "addr": 5,
                         "log2n_items": 0,
-                        "autologic": True,
+                        "autoreg": True,
                         "descr": "TX enable.",
                     },
                     {
@@ -161,7 +162,7 @@ class iob_uart(iob_module):
                         "rst_val": 0,
                         "addr": 6,
                         "log2n_items": 0,
-                        "autologic": True,
+                        "autoreg": True,
                         "descr": "RX enable.",
                     },
                     {
@@ -169,9 +170,9 @@ class iob_uart(iob_module):
                         "type": "R",
                         "n_bits": 1,
                         "rst_val": 0,
-                        "addr": -1,
+                        "addr": 0,
                         "log2n_items": 0,
-                        "autologic": True,
+                        "autoreg": True,
                         "descr": "TX ready to receive data.",
                     },
                     {
@@ -179,11 +180,13 @@ class iob_uart(iob_module):
                         "type": "R",
                         "n_bits": 1,
                         "rst_val": 0,
-                        "addr": -1,
+                        "addr": 1,
                         "log2n_items": 0,
-                        "autologic": True,
+                        "autoreg": True,
                         "descr": "RX data is ready to be read.",
                     },
+                    # NOTE: RXDATA needs to be the only Read register in a CPU Word
+                    # RXDATA_ren access is used to change UART state machine
                     {
                         "name": "RXDATA",
                         "type": "R",
@@ -191,7 +194,7 @@ class iob_uart(iob_module):
                         "rst_val": 0,
                         "addr": 4,
                         "log2n_items": 0,
-                        "autologic": False,
+                        "autoreg": False,
                         "descr": "RX data.",
                     },
                 ],

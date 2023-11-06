@@ -14,6 +14,7 @@ from iob_block_group import iob_block_group
 from iob_soc_utils import pre_setup_iob_soc, post_setup_iob_soc
 from mk_configuration import update_define
 from submodule_utils import get_peripheral_macros
+from verilog_tools import inplace_change
 
 # Submodules
 from iob_picorv32 import iob_picorv32
@@ -51,12 +52,22 @@ class iob_soc(iob_module):
     def _init_attributes(cls):
         cls.name = "iob_soc"
         cls.version = "V0.70"
-        cls.flows = "pc-emul emb sim doc fpga"
+        cls.flows = "pc-emul emb sim doc fpga syn"
         cls.setup_dir = os.path.dirname(__file__)
 
         cls.cpu = iob_picorv32
         cls.uart = iob_uart
         cls.num_extmem_connections = 1
+
+        """Setup this system using specialized iob-soc functions"""
+
+        # Remove `[0+:1]` part select in AXI connections of ext_mem0 in iob_soc.v template
+        if cls.num_extmem_connections == 1:
+            inplace_change(
+                os.path.join(cls.build_dir, "hardware/src", cls.name + ".v"),
+                "[0+:1])",
+                ")",
+            )
 
         # warning: do not initialize lists as class variables, they will be shared between all subclasses
         cls.peripherals = []

@@ -29,7 +29,8 @@ module iob_fifo_sync #(
    wire [W_ADDR_W-1:0] w_addr;
    iob_counter #(
       .DATA_W (W_ADDR_W),
-      .RST_VAL({W_ADDR_W{1'd0}})
+      .RST_VAL({W_ADDR_W{1'd0}}),
+      .CLKEDGE("posedge")
    ) w_addr_cnt0 (
       `include "clk_en_rst_s_s_portmap.vs"
 
@@ -45,7 +46,8 @@ module iob_fifo_sync #(
    wire [R_ADDR_W-1:0] r_addr;
    iob_counter #(
       .DATA_W (R_ADDR_W),
-      .RST_VAL({R_ADDR_W{1'd0}})
+      .RST_VAL({R_ADDR_W{1'd0}}),
+      .CLKEDGE("posedge")
    ) r_addr_cnt0 (
       `include "clk_en_rst_s_s_portmap.vs"
 

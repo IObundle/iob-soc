@@ -23,8 +23,7 @@ class iob_s2f_sync(iob_module):
         cls.setup_dir = os.path.dirname(__file__)
         cls.submodules = [
             iob_sync,
-            {"interface": "clk_rst_s_port"},
-            {"interface": "clk_rst_s_s_portmap"},
+            {"interface": "clk_rst"},
         ]
 
 

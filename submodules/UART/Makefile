@@ -1,27 +1,16 @@
 CORE := iob_uart
+LIB_DIR=../LIB
+PROJECT_ROOT=..
 DISABLE_LINT:=1
 export DISABLE_LINT
+export LIB_DIR
 
-clean:
-	rm -rf ../$(CORE)_V*
+include ../LIB/setup.mk
+
+all: test
 
 setup:
-	python3 -B ./$(CORE).py
-
-sim-build: clean setup
-	make -C ../$(CORE)_V*/ sim-build
-
-sim-run: clean setup
-	make -C ../$(CORE)_V*/ sim-run
-
-sim-waves:
-	make -C ../$(CORE)_V*/ sim-waves
-
-sim-test: clean setup
-	make -C ../$(CORE)_V*/ sim-test
-
+	nix-shell --run "python3 -B ./$(CORE).py"
 
 test: clean setup
-	make -C ../iob_uart_* sim-test
-
-
+	nix-shell --run "make -C ../iob_uart_* sim-test"

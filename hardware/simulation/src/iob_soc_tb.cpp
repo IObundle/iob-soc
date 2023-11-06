@@ -69,13 +69,13 @@ void uartread(unsigned int cpu_address, char *read_reg) {
 
 void inituart() {
   // pulse reset uart
-  uartwrite(IOB_UART_SOFTRESET, 1, IOB_UART_SOFTRESET_W / 8);
-  uartwrite(IOB_UART_SOFTRESET, 0, IOB_UART_SOFTRESET_W / 8);
+  uartwrite(IOB_UART_SOFTRESET_ADDR, 1, IOB_UART_SOFTRESET_W / 8);
+  uartwrite(IOB_UART_SOFTRESET_ADDR, 0, IOB_UART_SOFTRESET_W / 8);
   // config uart div factor
-  uartwrite(IOB_UART_DIV, int(FREQ / BAUD), IOB_UART_DIV_W / 8);
+  uartwrite(IOB_UART_DIV_ADDR, int(FREQ / BAUD), IOB_UART_DIV_W / 8);
   // enable uart for receiving
-  uartwrite(IOB_UART_RXEN, 1, IOB_UART_RXEN_W / 8);
-  uartwrite(IOB_UART_TXEN, 1, IOB_UART_TXEN_W / 8);
+  uartwrite(IOB_UART_RXEN_ADDR, 1, IOB_UART_RXEN_W / 8);
+  uartwrite(IOB_UART_TXEN_ADDR, 1, IOB_UART_TXEN_W / 8);
 }
 
 int main(int argc, char **argv, char **env) {
@@ -123,15 +123,15 @@ int main(int argc, char **argv, char **env) {
       break;
     }
     while (!rxread_reg && !txread_reg) {
-      uartread(IOB_UART_RXREADY, &rxread_reg);
-      uartread(IOB_UART_TXREADY, &txread_reg);
+      uartread(IOB_UART_RXREADY_ADDR, &rxread_reg);
+      uartread(IOB_UART_TXREADY_ADDR, &txread_reg);
     }
     if (rxread_reg) {
       if ((soc2cnsl_fd = fopen("./soc2cnsl", "rb")) != NULL) {
         able2read = fread(&cpu_char, sizeof(char), 1, soc2cnsl_fd);
         if (able2read == 0) {
           fclose(soc2cnsl_fd);
-          uartread(IOB_UART_RXDATA, &cpu_char);
+          uartread(IOB_UART_RXDATA_ADDR, &cpu_char);
           soc2cnsl_fd = fopen("./soc2cnsl", "wb");
           fwrite(&cpu_char, sizeof(char), 1, soc2cnsl_fd);
           rxread_reg = 0;
@@ -145,7 +145,7 @@ int main(int argc, char **argv, char **env) {
       }
       able2write = fread(&cpu_char, sizeof(char), 1, cnsl2soc_fd);
       if (able2write > 0) {
-        uartwrite(IOB_UART_TXDATA, cpu_char, IOB_UART_TXDATA_W / 8);
+        uartwrite(IOB_UART_TXDATA_ADDR, cpu_char, IOB_UART_TXDATA_W / 8);
         fclose(cnsl2soc_fd);
         cnsl2soc_fd = fopen("./cnsl2soc", "w");
       }

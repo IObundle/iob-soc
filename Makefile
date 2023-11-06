@@ -1,40 +1,58 @@
 CORE := iob_soc
+
 SIMULATOR ?= icarus
+BOARD ?= CYCLONEV-GT-DK
 
 DISABLE_LINT:=1
 export DISABLE_LINT
 
-INIT_MEM ?= 1
+include submodules/LIB/setup.mk
 
-clean:
-	rm -rf ../$(CORE)_V*
+INIT_MEM ?= 1
+USE_EXTMEM ?= 0
 
 setup:
 	python3 -B ./$(CORE).py INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) 
 
+pc-emul-run:
+	nix-shell --run 'make clean setup && make -C ../$(CORE)_V*/ pc-emul-run'
+
+pc-emul-test:
+	nix-shell --run 'make clean setup && make -C ../$(CORE)_V*/ pc-emul-test'
+
 sim-build: clean setup
 	make -C ../$(CORE)_V*/ sim-build SIMULATOR=$(SIMULATOR)
 
-sim-run: clean setup
-	make -C ../$(CORE)_V*/ sim-run SIMULATOR=$(SIMULATOR)
+sim-run:
+	nix-shell --run 'make clean setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(CORE)_V*/ fw-build'
+	nix-shell --run 'make clean setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(CORE)_V*/ sim-run SIMULATOR=$(SIMULATOR)'
 
 sim-test:
-	make clean && make setup && make -C ../$(CORE)_V*/ sim-test
-	make clean && make setup INIT_MEM=0 && make -C ../$(CORE)_V*/ sim-test SIMULATOR=verilator
-	make clean && make setup USE_EXTMEM=1 && make -C ../$(CORE)_V*/ sim-test
-	make clean && make setup INIT_MEM=0 USE_EXTMEM=1 && make -C ../$(CORE)_V*/ sim-test SIMULATOR=verilator
+	nix-shell --run 'make clean setup INIT_MEM=1 USE_EXTMEM=0 && make -C ../$(CORE)_V*/ sim-test SIMULATOR=icarus'
+	nix-shell --run 'make clean setup INIT_MEM=0 USE_EXTMEM=1 && make -C ../$(CORE)_V*/ sim-test SIMULATOR=verilator'
+	nix-shell --run 'make clean setup INIT_MEM=0 USE_EXTMEM=1 && make -C ../$(CORE)_V*/ sim-test SIMULATOR=verilator'
+
+fpga-run:
+	nix-shell --run 'make clean setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(CORE)_V*/ fpga-fw-build BOARD=$(BOARD)'
+	make -C ../$(CORE)_V*/ fpga-run BOARD=$(BOARD)
 
 fpga-test:
-	make clean && make setup && make -C ../$(CORE)_V*/ fpga-test
-	make clean && make setup INIT_MEM=0 && make -C ../$(CORE)_V*/ fpga-test
-	make clean && make setup  INIT_MEM=0 USE_EXTMEM=1 && make -C ../$(CORE)_V*/ fpga-test
+	make clean setup fpga-run BOARD=CYCLONEV-GT-DK INIT_MEM=1 USE_EXTMEM=0 
+	make clean setup fpga-run BOARD=CYCLONEV-GT-DK INIT_MEM=0 USE_EXTMEM=1 
+	make clean setup fpga-run BOARD=AES-KU040-DB-G INIT_MEM=1 USE_EXTMEM=0 
+	make clean setup fpga-run BOARD=AES-KU040-DB-G INIT_MEM=0 USE_EXTMEM=1 
 
-test-all:
-	make clean && make setup && make -C ../$(CORE)_V*/ pc-emul-test
-	#make sim-test SIMULATOR=icarus
-	make sim-test SIMULATOR=verilator
-	make fpga-test BOARD=CYCLONEV-GT-DK
-	make fpga-test BOARD=AES-KU040-DB-G
-	make clean && make setup && make -C ../$(CORE)_V*/ doc-test
+syn-build: clean
+	nix-shell --run "make setup && make -C ../$(CORE)_V*/ syn-build"
 
-.PHONY: sim-test fpga-test test-all
+doc-build:
+	nix-shell --run 'make clean setup && make -C ../$(CORE)_V*/ doc-build'
+
+doc-test:
+	nix-shell --run 'make clean setup && make -C ../$(CORE)_V*/ doc-test'
+
+
+test-all: pc-emul-test sim-test fpga-test doc-test
+
+
+.PHONY: setup sim-test fpga-test doc-test test-all

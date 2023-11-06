@@ -2,7 +2,7 @@
 
 `include "iob_utils.vh"
 
-module ext_mem #(
+module iob_soc_ext_mem #(
    parameter ADDR_W      = 0,
    parameter DATA_W      = 0,
    parameter FIRM_ADDR_W = 0,

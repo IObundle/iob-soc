@@ -23,8 +23,7 @@ class iob_pulse_gen(iob_module):
         cls.flows = "sim"
         cls.setup_dir = os.path.dirname(__file__)
         cls.submodules = [
-            {"interface": "clk_en_rst_s_s_portmap"},
-            {"interface": "clk_en_rst_s_port"},
+            {"interface": "clk_en_rst"},
             iob_reg,
             iob_counter,
         ]

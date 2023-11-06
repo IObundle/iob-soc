@@ -174,7 +174,7 @@ def post_setup_iob_soc(python_module, num_extmem_connections):
             )
         # Copy joinHexFiles.py from LIB
         build_srcs.copy_files(
-            "submodules/LIB", f"{build_dir}/scripts", ["joinHexFiles.py"], "*.py"
+            build_srcs.LIB_DIR, f"{build_dir}/scripts", ["joinHexFiles.py"], "*.py"
         )
 
 
