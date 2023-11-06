@@ -68,9 +68,9 @@ BOARD_GRAB_CMD=../../scripts/board_client.py grab $(GRAB_TIMEOUT)
 run: remote_build_dir
 ifeq ($(SIM_SERVER),)
 ifneq ($(CONSOLE_CMD),)
-	$(BOARD_GRAB_CMD) -s 'make exec' -c '$(CONSOLE_CMD)'
+	$(BOARD_GRAB_CMD) -s 'make exec' -c '$(CONSOLE_CMD)' && test "$$(cat test.log)" = "Test passed!"
 else
-	make exec
+	make exec && test "$$(cat test.log)" = "Test passed!"
 endif
 else
 ifeq ($(VCD),1)
@@ -89,9 +89,6 @@ endif
 ifeq ($(VCD),1)
 	make waves
 endif
-
-test: run
-	sync && sleep 1 && test "$$(cat test.log)" = "Test passed!"
 
 waves:
 	if [ ! "`pgrep -u $(USER) gtkwave`" ]; then gtkwave -a uut.gtkw uut.vcd; fi &
@@ -116,4 +113,4 @@ debug:
 
 .PRECIOUS: uut.vcd
 
-.PHONY: build run remote_build_dir waves fix-vcd test run-tests gen-clean debug test
+.PHONY: build run waves gen-clean debug fix-vcd remote_build_dir
