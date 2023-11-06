@@ -101,6 +101,7 @@ module axis2axi_tb;
 
    // Iterators
    integer i;
+   integer fd;
 
    initial begin
 
@@ -160,6 +161,10 @@ module axis2axi_tb;
       $display("%c[1;34m", 27);
       $display("Test completed successfully.");
       $display("%c[0m", 27);
+
+      fd = $fopen("test.log", "w");
+      $fdisplay(fd, "Test passed!");
+      $fclose(fd);
 
       repeat (10) @(posedge clk) #1;
 
