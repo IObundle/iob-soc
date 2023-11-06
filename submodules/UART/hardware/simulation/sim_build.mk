@@ -3,8 +3,7 @@
 #
 
 #tests
-TEST_LIST+=test1
-test1:
-	make run SIMULATOR=icarus 
+test: run
+	sync && sleep 1 && test "$$(cat test.log)" = "Test passed!"
 
 NOCLEAN+=-o -name "uart_tb.v"
