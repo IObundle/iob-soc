@@ -386,20 +386,7 @@ class mkregs:
                     f_gen.write(f"reg {aux_read_reg};\n")
         f_gen.write("\n")
 
-        # ready output
-        f_gen.write("//ready output\n")
-        f_gen.write("reg ready_nxt;\n")
-        f_gen.write("iob_reg #( \n")
-        f_gen.write("  .DATA_W (1),\n")
-        f_gen.write("  .RST_VAL (1'd1),\n")
-        f_gen.write('  .CLKEDGE ("posedge")\n')
-        f_gen.write(") ready_reg_inst (\n")
-        f_gen.write("  .clk_i  (clk_i),\n")
-        f_gen.write("  .cke_i  (cke_i),\n")
-        f_gen.write("  .arst_i (arst_i),\n")
-        f_gen.write("  .data_i (ready_nxt),\n")
-        f_gen.write("  .data_o (iob_ready_o)\n")
-        f_gen.write(");\n\n")
+        f_gen.write("reg ready_int;\n")
 
         # rvalid output
         f_gen.write("//rvalid output\n")
@@ -500,9 +487,12 @@ class mkregs:
                     )
                     f_gen.write(f"    wready_int = {name}_wready_i;\n  end\n")
 
-        f_gen.write("  ready_nxt = (|iob_wstrb_i)? wready_int: rready_int;\n")
+        f_gen.write("  ready_int = (|iob_wstrb_i)? wready_int: rready_int;\n")
 
         f_gen.write("end //always @*\n\n")
+
+        # iob_ready_o output
+        f_gen.write("assign iob_ready_o = ready_int;\n\n")
 
         # iob_rdata_o output
         f_gen.write("assign iob_rdata_o = rdata_int;\n\n")
