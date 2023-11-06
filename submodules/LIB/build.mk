@@ -114,10 +114,10 @@ endif
 #
 ifneq ($(filter sim, $(FLOWS)),)
 sim-build: fw-build
-	make -C $(SIM_DIR) build
+	make -C $(SIM_DIR) -j1 build
 
 sim-run: fw-build
-	make -C $(SIM_DIR) run
+	make -C $(SIM_DIR) -j1 run
 
 sim-waves:
 	make -C $(SIM_DIR) waves
@@ -129,7 +129,7 @@ sim-clean:
 	make -C $(SIM_DIR) clean
 
 sim-cov: sim-clean
-	make -C $(SIM_DIR) run COV=1
+	make -C $(SIM_DIR) -j1 run COV=1
 
 endif
 
@@ -140,10 +140,10 @@ endif
 ifneq ($(filter fpga, $(FLOWS)),)
 FPGA_DIR=hardware/fpga
 fpga-build:
-	make -C $(FPGA_DIR) build
+	make -C $(FPGA_DIR) -j1 build
 
 fpga-run:
-	make -C $(FPGA_DIR) run
+	make -C $(FPGA_DIR) -j1 run
 
 fpga-debug:
 	echo "BOARD=$(BOARD)"

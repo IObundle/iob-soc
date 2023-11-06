@@ -35,11 +35,11 @@ ifeq ($(SYN),1)
 VFLAGS+=-define SYN
 endif
 
-comp: $(VHDR) $(VSRC) $(HEX)
+comp hardware/simulation/xcelium.d/worklib: $(VHDR) $(VSRC) $(HEX)
 	echo $(VFLAGS)
 	xmvlog $(VFLAGS) $(VSRC) && xmelab $(EFLAGS) $(COV_EFLAGS) worklib.$(NAME)_tb:module
 
-exec: comp
+exec: comp hardware/simulation/xcelium.d/worklib
 	sync && sleep 1 && xmsim $(SFLAGS) $(COV_SFLAGS) worklib.$(NAME)_tb:module
 ifeq ($(COV),1)
 	ls -d cov_work/scope/* > all_ucd_file
