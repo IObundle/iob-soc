@@ -14,10 +14,10 @@ BOARD_DIR = $(shell find -name $(BOARD) -type d -print -quit)
 #
 $(BSP_H):
 	if [[ $(MAKECMDGOALS) == *fpga* ]]; then \
-		cp $(BOARD_DIR)/bsp.vh $(BSP_H); \
+		cp $(BOARD_DIR)/bsp.vh $@; \
 	else \
-		cp $(SIM_DIR)/bsp.vh $(BSP_H); \
-	fi; sed -i 's/`/#/g' $(BSP_H);
+		cp $(SIM_DIR)/bsp.vh $@; \
+	fi; sed -i 's/`/#/g' $@;
 
 help:
 	@echo "Please use \`make <target>' where <target> is one of"
@@ -68,6 +68,8 @@ fw-clean:
 	make -C $(SW_DIR) clean
 endif
 
+#this target is not the same as fw-build because bsp.h is build for FPGA when fw-build is called
+#see $(BSP_H) target that uses $(MAKECMDGOALS) to check if fw-build is called for FPGA or simulation
 fpga-fw-build: fw-build
 
 #

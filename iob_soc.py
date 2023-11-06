@@ -52,7 +52,7 @@ class iob_soc(iob_module):
     def _init_attributes(cls):
         cls.name = "iob_soc"
         cls.version = "V0.70"
-        cls.flows = "pc-emul emb sim doc fpga"
+        cls.flows = "pc-emul emb sim doc fpga syn"
         cls.setup_dir = os.path.dirname(__file__)
 
         cls.cpu = iob_picorv32

@@ -5,9 +5,6 @@ set CSR_IF $env(CSR_IF)
 puts "TOP: $TOP"
 puts "CSR_IF: $CSR_IF"
 
-set top $TOP\_$CSR_IF
-
-
 new_project spyglass -projectwdir .
 
 ##Data Import Section
@@ -20,7 +17,7 @@ if {[file exists spyglass.sgdc]} {
 }
 set fp [open spyglass.sgdc a]
 puts $fp "current_design $TOP"
-puts $fp "sdcschema -type ../syn/umc130/$TOP\_dev.sdc ../src/$TOP.sdc ../src/$top.sdc ../syn/$TOP\_tool.sdc"
+puts $fp "sdcschema -type ../syn/umc130/$TOP\_dev.sdc ../src/$TOP.sdc ../src/$TOP\_$CSR_IF.sdc ../syn/$TOP\_tool.sdc"
 
 read_file -type sgdc spyglass.sgdc
 
@@ -31,7 +28,7 @@ set_option language_mode mixed
 #set_option designread_enable_synthesis no
 #set_option designread_disable_flatten no
 set_option enableV05 yes
-set_option top $top
+set_option top $TOP
 set_option incdir { . ../src }
 #set_option active_methodology $SPYGLASS_HOME/GuideWare/latest/block/rtl_handoff
 set_option pragma { synopsys synthesis }
@@ -43,7 +40,7 @@ set_option enableSV no
 
 current_methodology $SPYGLASS_HOME/GuideWare/latest/block/rtl_handoff
 
-current_goal lint/lint_rtl -top $top
+current_goal lint/lint_rtl -top $TOP
 
 read_file -type awl spyglass_waiver.awl
 

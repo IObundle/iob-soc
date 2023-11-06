@@ -11,6 +11,8 @@ export DISABLE_LINT
 # Default lib module to setup. Can be overriden by the user.
 CORE ?=iob_ctls
 
+all: sim-test
+
 include setup.mk
 
 setup:
@@ -27,3 +29,5 @@ sim-test:
 
 sim-clean:
 	nix-shell --run "scripts/test.sh clean"
+
+.PHONY: all sim-build sim-run sim-test sim-clean

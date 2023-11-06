@@ -44,7 +44,7 @@ module iob2axil #(
   //
   assign iob_rvalid_o   = axil_rvalid_i;
   assign iob_rdata_o    = axil_rdata_i;
-  assign iob_ready_o    = (iob_wstrb_i != {(DATA_W / 8) {1'b0}}) ? axil_wready_i : axil_arready_i;
+  assign iob_ready_o    = (~|iob_wstrb_i) ? (axil_wready_i|axil_awready_i): axil_arready_i;
 
   //
   // COMPUTE AXIL OUTPUTS

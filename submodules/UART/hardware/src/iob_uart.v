@@ -18,10 +18,6 @@ module iob_uart #(
    assign iob_rdata_o = iob_rdata;
    assign iob_ready_o = iob_ready;
 
-   //Dummy iob_ready_nxt_o and iob_rvalid_nxt_o to be used in swreg (unused ports)
-   wire iob_ready_nxt;
-   wire iob_rvalid_nxt;
-
    //BLOCK Register File & Configuration control and status register file.
    `include "iob_uart_swreg_inst.vs"
 
@@ -30,7 +26,6 @@ module iob_uart #(
    
    // RXDATA Manual logic
    assign RXDATA_rready_rd  = 1'b1;
-   assign RXDATA_rvalid_rd = 1'b1;
 
    uart_core uart_core0 (
       .clk_i          (clk_i),

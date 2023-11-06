@@ -9,14 +9,8 @@ export DISABLE_LINT
 INIT_MEM ?= 1
 USE_EXTMEM ?= 0
 
-clean:
-	rm -rf ../$(CORE)_V*
-
 setup:
 	python3 -B ./$(CORE).py INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) 
-
-sim-build: clean setup
-	make -C ../$(CORE)_V*/ sim-build SIMULATOR=$(SIMULATOR)
 
 pc-emul-run:
 	nix-shell --run 'make clean setup && make -C ../$(CORE)_V*/ pc-emul-run'
@@ -24,7 +18,17 @@ pc-emul-run:
 pc-emul-test:
 	nix-shell --run 'make clean setup && make -C ../$(CORE)_V*/ pc-emul-test'
 
+pc-emul-run:
+	nix-shell --run 'make clean setup && make -C ../$(CORE)_V*/ pc-emul-run'
+
+pc-emul-test:
+	nix-shell --run 'make clean setup && make -C ../$(CORE)_V*/ pc-emul-test'
+
+sim-build: clean setup
+	make -C ../$(CORE)_V*/ sim-build SIMULATOR=$(SIMULATOR)
+
 sim-run:
+	nix-shell --run 'make clean setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(CORE)_V*/ fw-build'
 	nix-shell --run 'make clean setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(CORE)_V*/ sim-run SIMULATOR=$(SIMULATOR)'
 
 sim-test:
@@ -42,6 +46,8 @@ fpga-test:
 	make clean setup fpga-run BOARD=AES-KU040-DB-G INIT_MEM=1 USE_EXTMEM=0 
 	make clean setup fpga-run BOARD=AES-KU040-DB-G INIT_MEM=0 USE_EXTMEM=1 
 
+syn-build: clean
+	nix-shell --run "make setup && make -C ../$(CORE)_V*/ syn-build"
 
 doc-build:
 	nix-shell --run 'make clean setup && make -C ../$(CORE)_V*/ doc-build'
