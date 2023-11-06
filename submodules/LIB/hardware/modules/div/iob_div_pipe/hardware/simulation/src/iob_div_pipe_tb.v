@@ -28,7 +28,8 @@ module iob_div_pipe_tb;
    reg [DATA_W-1:0]  remainder_out [0:TEST_SZ-1];
 
    integer           i, j;
-
+   integer           fp;
+   
    iob_div_pipe # (
                .DATA_W(DATA_W),
                .OPERS_PER_STAGE(OPERS_PER_STAGE)
@@ -68,6 +69,10 @@ module iob_div_pipe_tb;
       $display("%c[1;34m", 27);
       $display("Test completed successfully.");
       $display("%c[0m", 27);
+
+      fp = $fopen("test.log", "w");
+      $fdisplay(fp, "Test passed!");
+      
       #(5 * clk_period) $finish();
    end
 

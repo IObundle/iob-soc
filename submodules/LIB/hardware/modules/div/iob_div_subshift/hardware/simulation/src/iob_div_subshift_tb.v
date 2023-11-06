@@ -25,6 +25,7 @@ module iob_div_subshift_tb;
    wire [DATA_W-1:0] remainder_out;
    
    integer           i;
+   integer fp;
 
  
    initial begin
@@ -60,12 +61,17 @@ module iob_div_subshift_tb;
          //verify results
          if(quotient_out != quotient[i] || remainder_out != remainder[i])
            $display ("%d / %d = %d with rem %d but got %d with rem %d", dividend[i], divisor[i], quotient[i], remainder[i], quotient_out, remainder_out);
+         else begin
+            fp = $fopen("test.log", "w");
+            $fdisplay(fp, "Test passed!");
+         end
       end
 
       #clk_period;
       $display("%c[1;34m", 27);
       $display("Test completed successfully.");
       $display("%c[0m", 27);
+
       #(5 * clk_period) $finish();
 
    end

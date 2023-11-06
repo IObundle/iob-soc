@@ -68,9 +68,9 @@ BOARD_GRAB_CMD=../../scripts/board_client.py grab $(GRAB_TIMEOUT)
 run: remote_build_dir
 ifeq ($(SIM_SERVER),)
 ifneq ($(CONSOLE_CMD),)
-	$(BOARD_GRAB_CMD) -s 'make exec' -c '$(CONSOLE_CMD)' && test "$$(cat test.log)" = "Test passed!"
+	$(BOARD_GRAB_CMD) -s 'make exec' -c '$(CONSOLE_CMD)' && echo "Checking test log..." && test "$$(cat test.log)" = "Test passed!"
 else
-	make exec && test "$$(cat test.log)" = "Test passed!"
+	make exec && echo "Checking test log..." && test "$$(cat test.log)" = "Test passed!"
 endif
 else
 ifeq ($(VCD),1)
