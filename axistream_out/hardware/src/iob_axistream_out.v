@@ -22,10 +22,6 @@ module iob_axistream_out #(
    assign iob_rdata_o = iob_rdata;
    assign iob_ready_o = iob_ready;
 
-   //Dummy iob_ready_nxt and iob_rvalid_nxt to be used in swreg (unused ports)
-   wire iob_ready_nxt;
-   wire iob_rvalid_nxt;
-
    //Register File & Configuration control and status register file.
    `include "iob_axistream_out_swreg_inst.vs"
 
@@ -142,7 +138,7 @@ module iob_axistream_out #(
       .w_level_o       (fifo_level)
    );
 
-   assign DATA_wready_wr = ENABLE_wr & ~FULL_rd;
+   assign DATA_wready_wr = ~FULL_rd;
 
    // DMA tready_o signal
    assign tready_o = DATA_wready_wr;

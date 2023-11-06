@@ -28,10 +28,6 @@ module iob_axistream_in #(
    assign iob_rdata_o = iob_rdata;
    assign iob_ready_o = iob_ready;
 
-   //Dummy iob_ready_nxt and iob_rvalid_nxt to be used in swreg (unused ports)
-   wire iob_ready_nxt;
-   wire iob_rvalid_nxt;
-
    // Configuration control and status register file.
    `include "iob_axistream_in_swreg_inst.vs"
 
@@ -64,7 +60,8 @@ module iob_axistream_in #(
    wire [RAM_ADDR_W-1:0] ext_mem_last_r_addr;
 
    wire                  fifo_full;
-   assign DATA_rready_rd = ~EMPTY_rd & ENABLE_wr;
+
+   assign DATA_rready_rd = ~EMPTY_rd;
 
    reg  [WORD_CNT_W-1:0] writen_words_nxt;
    wire [WORD_CNT_W-1:0] writen_words;
