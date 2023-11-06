@@ -128,11 +128,8 @@ sim-debug:
 sim-clean:
 	make -C $(SIM_DIR) clean
 
-sim-test: fw-build
-	make -C $(SIM_DIR) test
-
-cov-test: sim-clean
-	make -C $(SIM_DIR) test COV=1
+sim-cov: sim-clean
+	make -C $(SIM_DIR) run COV=1
 
 endif
 
@@ -147,9 +144,6 @@ fpga-build:
 
 fpga-run:
 	make -C $(FPGA_DIR) run
-
-fpga-test:
-	make -C $(FPGA_DIR) test
 
 fpga-debug:
 	echo "BOARD=$(BOARD)"
@@ -206,7 +200,7 @@ endif
 #
 test: sim-test fpga-test doc-test
 
-ptest: test syn-test lint-test cov-test
+ptest: test syn-test lint-test sim-cov
 
 dtest: sim-test syn-test fpga-test
 
@@ -226,12 +220,11 @@ clean: fw-clean pc-emul-clean lint-clean sim-clean fpga-clean doc-clean
 	rm -f $(BSP_H)
 
 
-.PHONY: fw-build fpga-fw-build \
-	pc-emul-build pc-emul-run \
+.PHONY: fw-build fpga-fw-build fw-clean \
+	pc-emul-build pc-emul-run pc-emul-clean \
 	lint-test lint-run lint-clean \
-	sim-build sim-run sim-debug \
-	fpga-build fpga-debug \
-	doc-build doc-view doc-debug \
-	test clean debug \
-	sim-test fpga-test doc-test \
-	fw-clean pc-emul-clean sim-clean fpga-clean doc-clean
+	sim-build sim-run sim-debug sim-clean \
+	fpga-build fpga-debug fpga-clean \
+	doc-build doc-view doc-debug doc-test doc-clean \
+	test clean debug
+
