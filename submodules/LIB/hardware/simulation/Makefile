@@ -111,6 +111,6 @@ debug:
 	@echo VSRC=$(VSRC)
 	@echo VFLAGS=$(VFLAGS)
 
-.PRECIOUS: uut.vcd
+.PRECIOUS: uut.vcd test.log
 
 .PHONY: build run waves gen-clean debug fix-vcd remote_build_dir

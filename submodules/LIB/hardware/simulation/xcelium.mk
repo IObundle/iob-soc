@@ -35,11 +35,13 @@ ifeq ($(SYN),1)
 VFLAGS+=-define SYN
 endif
 
-comp hardware/simulation/xcelium.d/worklib: $(VHDR) $(VSRC) $(HEX)
-	echo $(VFLAGS)
-	xmvlog $(VFLAGS) $(VSRC) && xmelab $(EFLAGS) $(COV_EFLAGS) worklib.$(NAME)_tb:module
+comp: $(VHDR) $(VSRC) $(HEX)
+	xmvlog $(VFLAGS) $(VSRC)
 
-exec: comp hardware/simulation/xcelium.d/worklib
+elab: comp
+	xmelab $(EFLAGS) $(COV_EFLAGS) worklib.$(NAME)_tb:module
+
+exec: elab
 	sync && sleep 1 && xmsim $(SFLAGS) $(COV_SFLAGS) worklib.$(NAME)_tb:module
 ifeq ($(COV),1)
 	ls -d cov_work/scope/* > all_ucd_file
@@ -56,4 +58,4 @@ very-clean: clean
 	@rm -f coverage_report_summary.rpt coverage_report_detail.rpt
 
 
-.PHONY: comp exec clean very-clean
+.PHONY: comp elab exec clean very-clean
