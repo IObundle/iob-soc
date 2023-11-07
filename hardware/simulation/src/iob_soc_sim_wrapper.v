@@ -180,7 +180,7 @@ always @(posedge trap[1]) begin
       .MCrS(1'b0),
 
       .MDC(),
-      .MDIO(),
+      .MDIO()
    );
 `endif
 
