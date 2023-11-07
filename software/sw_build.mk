@@ -56,7 +56,8 @@ iob_soc_boot:
 	make $@.elf INCLUDES="$(IOB_SOC_INCLUDES)" LFLAGS="$(IOB_SOC_LFLAGS) -Wl,-Map,$@.map" SRC="$(IOB_SOC_BOOT_SRC)" TEMPLATE_LDS="$(TEMPLATE_LDS)"
 
 
-.PHONE: build_iob_soc_software
+.PHONY: iob_soc_firmware iob_soc_boot
+
 
 # Include the UUT configuration if iob-soc is used as a Tester
 ifneq ($(wildcard $(ROOT_DIR)/software/uut_build_for_iob_soc.mk),)

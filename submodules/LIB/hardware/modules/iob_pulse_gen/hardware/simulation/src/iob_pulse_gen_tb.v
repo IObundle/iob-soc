@@ -26,6 +26,7 @@ module iob_pulse_gen_tb;
       );
 
    integer i;
+   integer fd;
    integer duration;
    integer start;
    initial begin
@@ -62,9 +63,18 @@ module iob_pulse_gen_tb;
           $display("%c[1;34m", 27);
           $display("Test completed successfully.");
           $display("%c[0m", 27);
+          fd = $fopen("test.log", "w");
+          $fdisplay(fd, "Test passed!");
+          $fclose(fd);
       end else begin
           $display("Test failed: duration %d\texpected %d", duration, DURATION);
           $display("Test failed: start %d\texpected %d", start, START);
+          fd = $fopen("test.log", "w");
+          $fdisplay(fd, "Test failed: duration %d\texpected %d", duration, DURATION);
+          $fdisplay(fd, "Test failed: start %d\texpected %d", start, START);
+          $fclose(fd);
+
+
       end
       #(10*clk_per) $finish;
    end // initial begin

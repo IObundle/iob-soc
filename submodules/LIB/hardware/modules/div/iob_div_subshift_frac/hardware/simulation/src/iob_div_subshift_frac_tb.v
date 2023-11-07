@@ -25,7 +25,8 @@ module iob_div_subshift_frac_tb;
    wire [DATA_W-1:0]        remainder_out;
    
    integer           i;
- 
+   integer           fp;
+   
    initial begin
 
 `ifdef VCD
@@ -60,7 +61,10 @@ module iob_div_subshift_frac_tb;
          //verify results
          if(quotient_out != quotient[i] || remainder_out != remainder[i])
            $display ("%d / %d = %d with rem %d but got %d with rem %d", dividend[i], divisor[i], quotient[i], remainder[i], quotient_out, remainder_out);
-
+         else begin
+            fp = $fopen("test.log", "w");
+            $fdisplay(fp, "Test passed!");
+         end
          
          #1000;
          

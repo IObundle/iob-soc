@@ -7,6 +7,7 @@ module iob_prio_enc_tb;
    wire    [$clog2(W)-1:0] data_o;
 
    integer                 i;
+   integer                 fd;
 
    initial begin
 `ifdef VCD
@@ -22,6 +23,9 @@ module iob_prio_enc_tb;
       $display("%c[1;34m", 27);
       $display("Test completed successfully.");
       $display("%c[0m", 27);
+      fd = $fopen("test.log", "w");
+      $fdisplay(fd, "Test passed!");
+      $fclose(fd);
       $finish();
    end
 
