@@ -35,6 +35,7 @@ def iob_soc_sw_setup(python_module, exclude_files=[]):
     # Build periphs_tmp.h
     if peripherals_list:
         create_periphs_tmp(
+            python_module.name,
             next(i["val"] for i in confs if i["name"] == "ADDR_W"),
             peripherals_list,
             f"{build_dir}/software/{name}_periphs.h",
