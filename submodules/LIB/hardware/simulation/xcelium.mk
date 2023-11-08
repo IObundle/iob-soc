@@ -38,10 +38,10 @@ endif
 xmvlog.log: $(VHDR) $(VSRC) $(HEX)
 	xmvlog $(VFLAGS) $(VSRC)
 
-comp xmelab.log: xmvlog.log
+comp xmelab.log xcelium.d/worklib: xmvlog.log
 	xmelab $(EFLAGS) $(COV_EFLAGS) worklib.$(NAME)_tb:module
 
-exec: elab xmelab.log
+exec: xmelab.log xcelium.d/worklib
 	sync && sleep 1 && xmsim $(SFLAGS) $(COV_SFLAGS) worklib.$(NAME)_tb:module
 ifeq ($(COV),1)
 	ls -d cov_work/scope/* > all_ucd_file
@@ -58,4 +58,4 @@ very-clean: clean
 	@rm -f coverage_report_summary.rpt coverage_report_detail.rpt
 
 
-.PHONY: comp elab exec clean very-clean
+.PHONY: comp exec clean very-clean
