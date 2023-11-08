@@ -35,10 +35,10 @@ ifeq ($(SYN),1)
 VFLAGS+=-define SYN
 endif
 
-comp xmvlog.log: $(VHDR) $(VSRC) $(HEX)
+xmvlog.log: $(VHDR) $(VSRC) $(HEX)
 	xmvlog $(VFLAGS) $(VSRC)
 
-elab xmelab.log: comp xmvlog.log
+comp xmelab.log: xmvlog.log
 	xmelab $(EFLAGS) $(COV_EFLAGS) worklib.$(NAME)_tb:module
 
 exec: elab xmelab.log
