@@ -22,8 +22,3 @@ endif
 CONSOLE_CMD=rm -f soc2cnsl cnsl2soc; ../../scripts/console.py -L
 
 GRAB_TIMEOUT ?= 3600
-
-# Include the UUT configuration if iob-soc is used as a Tester
-ifneq ($(wildcard uut_build_for_iob_soc.mk),)
-include uut_build_for_iob_soc.mk
-endif
