@@ -54,7 +54,7 @@ module axil2iob #(
       .clk_i (clk_i),
       .arst_i(arst_i),
       .cke_i (cke_i),
-      .data_i(axil_wvalid_i),
+      .data_i(axil_bvalid_nxt),
       .data_o(axil_bvalid_o)
   );
 
