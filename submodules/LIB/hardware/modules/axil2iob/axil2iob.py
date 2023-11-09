@@ -21,10 +21,12 @@ class axil2iob(iob_module):
         cls.version = "V0.10"
         cls.flows = "sim"
         cls.setup_dir = os.path.dirname(__file__)
-        cls.submodules = [
+        cls.interfaces = [
             {"interface": "axil"},
             {"interface": "iob"},
             {"interface": "clk_en_rst"},
+        ]
+        cls.submodules = [
             iob_reg_e,
         ]
 

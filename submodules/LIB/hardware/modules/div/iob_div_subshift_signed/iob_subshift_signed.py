@@ -21,11 +21,13 @@ class iob_div_subshift_signed(iob_module):
         cls.version = "V0.10"
         cls.flows = "sim"
         cls.setup_dir = os.path.dirname(__file__)
-        cls.submodules = [
+        cls.interfaces = [
             {"interface": "clk_en_rst"},
+        ]
+        cls.submodules = [
             iob_reg,
         ]
 
 
 if __name__ == "__main__":
-    iob_subshift_signed.setup_as_top_module()
+    iob_div_subshift_signed.setup_as_top_module()

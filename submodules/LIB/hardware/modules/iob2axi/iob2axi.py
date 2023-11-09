@@ -28,13 +28,15 @@ class iob2axi(iob_module):
         cls.version = "V0.10"
         cls.flows = "sim"
         cls.setup_dir = os.path.dirname(__file__)
+        cls.interfaces = [
+            {"interface": "clk_rst_s_port"},
+        ]
         cls.submodules = [
             m_axi_m_port,
             m_axi_write_m_port,
             m_axi_read_m_port,
             m_m_axi_write_portmap,
             m_m_axi_read_portmap,
-            {"interface": "clk_rst_s_port"},
             iob2axi_wr,
             iob2axi_rd,
             iob_fifo_sync,

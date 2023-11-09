@@ -48,6 +48,7 @@ class iob_module:
     )
 
     submodules = None  # List of submodules to setup
+    interfaces = None  # List of interfaces to generate
 
     # List of setup purposes for this module. Also used to check if module has already been setup.
     _setup_purpose = None
@@ -168,7 +169,7 @@ class iob_module:
 
         cls._setup_purpose.append(purpose)
 
-        cls.__setup_submodules(cls.submodules)
+        cls.__setup_submodules_and_interfaces(cls.submodules, cls.interfaces)
         cls._pre_setup()
         cls.__intermediate_setup()
         cls._post_setup()
@@ -190,6 +191,7 @@ class iob_module:
         cls.ios = []
         cls.block_groups = []
         cls.submodules = []
+        cls.interfaces = []
         cls.wire_list = []
         cls._init_attributes()
 
@@ -512,45 +514,54 @@ class iob_module:
             spec.loader.exec_module(module)
 
     @classmethod
-    def __setup_submodules(cls, submodules):
+    def __setup_submodules_and_interfaces(cls, submodules, interfaces):
         """
         Generate or run setup functions for the interfaces/submodules in the given submodules list.
         """
-        for submodule in submodules:
-            _submodule = submodule
-            setup_options = {}
 
-            # Split submodule from its setup options (if it is a tuple)
-            if type(submodule) == tuple:
-                _submodule = submodule[0]
-                setup_options = submodule[1]
+        def setup(entry_list, func2call):
+            for entry in entry_list:
+                _entry = entry
+                setup_options = {}
 
-            # Add 'hardware' purpose by default
-            if "purpose" not in setup_options:
-                setup_options["purpose"] = "hardware"
+                # Split entry from its setup options (if it is a tuple)
+                if type(entry) == tuple:
+                    _entry = entry[0]
+                    setup_options = entry[1]
 
-            # Don't setup submodules that have a purpose different than
-            # "hardware" when this class is not the top module
-            if not cls.is_top_module and setup_options["purpose"] != "hardware":
-                continue
+                # Add 'hardware' purpose by default
+                if "purpose" not in setup_options:
+                    setup_options["purpose"] = "hardware"
 
-            # If the submodule purpose is hardware, change that purpose to match the purpose of the current class.
-            # (If we setup the current class for simulation, then we want the submodules for simulation aswell)
-            if setup_options["purpose"] == "hardware":
-                setup_options["purpose"] = cls.__get_setup_purpose()
+                # Don't setup entrys that have a purpose different than
+                # "hardware" when this class is not the top module
+                if not cls.is_top_module and setup_options["purpose"] != "hardware":
+                    continue
 
-            # Check if should generate with if_gen or setup a submodule.
-            if type(_submodule) == dict:
-                # Dictionary: generate interface with if_gen
-                cls.__generate(_submodule, **setup_options)
-            elif issubclass(_submodule, iob_module):
-                # Subclass of iob_module: setup the module
-                _submodule.__setup(**setup_options)
-            else:
-                # Unknown type
-                raise Exception(
-                    f"{iob_colors.FAIL}Unknown type in submodules of {cls.name}: {_submodule}{iob_colors.ENDC}"
-                )
+                # If the entry purpose is hardware, change that purpose to match the purpose of the current class.
+                # (If we setup the current class for simulation, then we want the entrys for simulation aswell)
+                if setup_options["purpose"] == "hardware":
+                    setup_options["purpose"] = cls.__get_setup_purpose()
+
+                func2call(_entry, setup_options)
+
+        def setup_submodule(submodule, setup_options):
+            assert (
+                type(submodule) is not dict
+            ), f"{iob_colors.FAIL}Interfaces are no longer supported in submodules list of {cls.name}: {submodule}. Please use the new `interfaces` list attribute.{iob_colors.ENDC}"
+            assert issubclass(
+                submodule, iob_module
+            ), f"{iob_colors.FAIL}Unknown type in submodules of {cls.name}: {submodule}{iob_colors.ENDC}"
+            submodule.__setup(**setup_options)
+
+        def setup_interface(interface, setup_options):
+            assert (
+                type(interface) is dict
+            ), f"{iob_colors.FAIL}Unknown type in interfaces of {cls.name}: {interface}{iob_colors.ENDC}"
+            cls.__generate(interface, **setup_options)
+
+        setup(submodules, setup_submodule)
+        setup(interfaces, setup_interface)
 
     @classmethod
     def __generate(cls, vs_dict, purpose="hardware"):

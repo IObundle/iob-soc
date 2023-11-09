@@ -99,6 +99,15 @@ class iob_soc(iob_module):
             (iob_ram_2p, {"purpose": "fpga"}),
             (iob_ram_sp, {"purpose": "simulation"}),
             (iob_ram_sp, {"purpose": "fpga"}),
+            # Simulation headers & modules
+            (axi_ram, {"purpose": "simulation"}),
+            (iob_tasks, {"purpose": "simulation"}),
+            # Software modules
+            iob_str,
+            printf,
+        ]
+
+        cls.interfaces = [
             {
                 "interface": "axi",
                 "file_prefix": "",
@@ -148,12 +157,6 @@ class iob_soc(iob_module):
                     "LEN_W": "AXI_LEN_W",
                 },
             },
-            # Simulation headers & modules
-            (axi_ram, {"purpose": "simulation"}),
-            (iob_tasks, {"purpose": "simulation"}),
-            # Software modules
-            iob_str,
-            printf,
         ]
 
         cls.peripheral_portmap += [

@@ -21,9 +21,11 @@ class iob_s2f_sync(iob_module):
         cls.version = "V0.10"
         cls.flows = "sim"
         cls.setup_dir = os.path.dirname(__file__)
+        cls.interfaces = [
+            {"interface": "clk_rst"},
+        ]
         cls.submodules = [
             iob_sync,
-            {"interface": "clk_rst"},
         ]
 
 
