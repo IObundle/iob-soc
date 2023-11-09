@@ -246,6 +246,36 @@ class iob_soc(iob_module):
         cls.confs = [
             # macros
             {
+                "name": "INIT_MEM",
+                "type": "M",
+                "val": next(
+                    (
+                        True
+                        for arg in sys.argv[1:]
+                        if "INIT_MEM" in arg and arg.split("=")[1] == "1"
+                    ),
+                    False,
+                ),
+                "min": "0",
+                "max": "1",
+                "descr": "Used to select running linux.",
+            },
+            {
+                "name": "USE_EXTMEM",
+                "type": "M",
+                "val": next(
+                    (
+                        True
+                        for arg in sys.argv[1:]
+                        if "USE_EXTMEM" in arg and arg.split("=")[1] == "1"
+                    ),
+                    False,
+                ),
+                "min": "0",
+                "max": "1",
+                "descr": "Always use external memory in the SoC.",
+            },
+            {
                 "name": "USE_MUL_DIV",
                 "type": "M",
                 "val": "1",
@@ -360,15 +390,6 @@ class iob_soc(iob_module):
                 "descr": "Offset of memory address",
             },
         ]
-
-        # Add the following arguments:
-        # "INIT_MEM=x": if should setup with init_mem or not
-        # "USE_EXTMEM=x": if should setup with extmem or not
-        for arg in sys.argv[1:]:
-            if "INIT_MEM" in arg and arg.split("=")[1] == "1":
-                update_define(cls.confs, "INIT_MEM", True)
-            if "USE_EXTMEM" in arg and arg.split("=")[1] == "1":
-                update_define(cls.confs, "USE_EXTMEM", True)
 
         cls.ios += [
             {
