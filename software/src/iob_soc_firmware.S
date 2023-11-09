@@ -5,12 +5,12 @@
 .global main
 
 //set stack pointer
-#ifdef USE_EXTMEM //need to set MSB to address external memory
-lui sp, %hi(EXTRA_BASE | 1<<SRAM_ADDR_W)
-addi sp, sp, %lo(EXTRA_BASE | 1<<SRAM_ADDR_W)
+#ifdef IOB_SOC_USE_EXTMEM //need to set MSB to address external memory
+lui sp, %hi(EXTRA_BASE | 1<<IOB_SOC_SRAM_ADDR_W)
+addi sp, sp, %lo(EXTRA_BASE | 1<<IOB_SOC_SRAM_ADDR_W)
 #else
-lui sp, %hi(1<<SRAM_ADDR_W)
-addi sp, sp, %lo(1<<SRAM_ADDR_W)
+lui sp, %hi(1<<IOB_SOC_SRAM_ADDR_W)
+addi sp, sp, %lo(1<<IOB_SOC_SRAM_ADDR_W)
 #endif
 
 //call main
