@@ -10,8 +10,3 @@ include $(ROOT_DIR)/software/sw_build.mk
 IS_FPGA=1
 
 QUARTUS_SEED ?=5
-
-# Include the UUT configuration if iob-soc is used as a Tester
-ifneq ($(wildcard uut_build_for_iob_soc.mk),)
-include uut_build_for_iob_soc.mk
-endif

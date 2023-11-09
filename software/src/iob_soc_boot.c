@@ -3,13 +3,13 @@
 #include "iob_soc_conf.h"
 #include "iob_soc_system.h"
 
-#ifdef USE_EXTMEM
+#ifdef IOB_SOC_USE_EXTMEM
 #include "iob-cache.h"
 #endif
 
 // defined here (and not in periphs.h) because it is the only peripheral used
 // by the bootloader
-#define UART_BASE (UART0 << (31 - N_SLAVES_W))
+#define UART_BASE (IOB_SOC_UART0 << (31 - IOB_SOC_N_SLAVES_W))
 
 #define PROGNAME "IOb-Bootloader"
 
@@ -18,8 +18,8 @@ int main() {
   // init uart
   uart_init(UART_BASE, FREQ / BAUD);
 
-#ifdef USE_EXTMEM
-  cache_init(1 << E, MEM_ADDR_W);
+#ifdef IOB_SOC_USE_EXTMEM
+  cache_init(1 << IOB_SOC_E, IOB_SOC_MEM_ADDR_W);
 #endif
 
   // connect with console
@@ -32,17 +32,17 @@ int main() {
   uart_puts(PROGNAME);
   uart_puts(": connected!\n");
 
-#ifdef USE_EXTMEM
+#ifdef IOB_SOC_USE_EXTMEM
   uart_puts(PROGNAME);
   uart_puts(": DDR in use and program runs from DDR\n");
 #endif
 
   // address to copy firmware to
   char *prog_start_addr;
-#ifdef USE_EXTMEM
+#ifdef IOB_SOC_USE_EXTMEM
   prog_start_addr = (char *)EXTRA_BASE;
 #else
-  prog_start_addr = (char *)(1 << BOOTROM_ADDR_W);
+  prog_start_addr = (char *)(1 << IOB_SOC_BOOTROM_ADDR_W);
 #endif
 
   while (uart_getc() != ACK) {
@@ -50,7 +50,7 @@ int main() {
     uart_puts(": Waiting for Console ACK.\n");
   }
 
-#ifndef INIT_MEM
+#ifndef IOB_SOC_INIT_MEM
   // receive firmware from host
   int file_size = 0;
   char r_fw[] = "iob_soc_firmware.bin";
@@ -74,7 +74,7 @@ int main() {
   uart_puts(": Restart CPU to run user program...\n");
   uart_txwait();
 
-#ifdef USE_EXTMEM
+#ifdef IOB_SOC_USE_EXTMEM
   while (!IOB_CACHE_GET_WTB_EMPTY())
     ;
 #endif
