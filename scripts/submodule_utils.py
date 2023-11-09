@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Library with useful functions to manage submodules and peripherals
+# Library with useful functions to manage submodules and peripherals of IOb-SoC
 
 import sys
 import os
