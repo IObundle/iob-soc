@@ -10,7 +10,7 @@ SFLAGS = -errormax 15 -status -licqueue
 EFLAGS = $(SFLAGS) -access +wc
 ifeq ($(COV),1)
 COV_SFLAGS= -covoverwrite -covtest $(COV_TEST)
-COV_EFLAGS= -covdut $(NAME)_$(CSR_IF) -coverage A -covfile xcelium_cov_commands.ccf
+COV_EFLAGS= -covdut $(NAME) -coverage A -covfile xcelium_cov_commands.ccf
 endif
 
 VFLAGS=$(SFLAGS) -update -linedebug -sv -incdir .
