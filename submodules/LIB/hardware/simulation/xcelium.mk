@@ -38,10 +38,12 @@ endif
 xmvlog.log: $(VHDR) $(VSRC) $(HEX)
 	xmvlog $(VFLAGS) $(VSRC)
 
-comp xmelab.log xcelium.d/worklib: xmvlog.log
+xmelab.log : xmvlog.log xcelium.d/worklib
 	xmelab $(EFLAGS) $(COV_EFLAGS) worklib.$(NAME)_tb:module
 
-exec: xmelab.log xcelium.d/worklib
+comp: xmelab.log
+
+exec: comp
 	sync && sleep 1 && xmsim $(SFLAGS) $(COV_SFLAGS) worklib.$(NAME)_tb:module
 ifeq ($(COV),1)
 	ls -d cov_work/scope/* > all_ucd_file
