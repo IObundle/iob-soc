@@ -90,6 +90,8 @@ ifneq ($(BOARD_SERVER),)
 endif
 endif
 
+test: $(TEST_LIST)
+
 debug:
 	@echo SIMULATOR=$(SIMULATOR)
 	@echo BOARD=$(BOARD)
@@ -100,4 +102,4 @@ debug:
 
 .PRECIOUS: $(FPGA_OBJ) test.log s_fw.bin
 
-.PHONY: run build test clean debug
+.PHONY: run build clean debug test $(TEST_LIST)

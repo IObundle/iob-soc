@@ -109,6 +109,10 @@ ifneq ($(SIM_SERVER),)
 	ssh -t $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'if [ -f $(REMOTE_SIM_DIR)/Makefile ]; then make -C $(REMOTE_SIM_DIR) $@; fi'
 endif
 
+
+test: $(TEST_LIST)
+
+
 debug:
 	@echo NAME=$(NAME)
 	@echo VHDR=$(VHDR)
@@ -117,4 +121,4 @@ debug:
 
 .PRECIOUS: uut.vcd test.log
 
-.PHONY: build run waves gen-clean debug fix-vcd remote_build_dir copy_logs
+.PHONY: build run waves gen-clean debug test $(TEST_LIST) fix-vcd remote_build_dir copy_logs
