@@ -12,8 +12,7 @@ if __name__ == "__main__":
 
 from iob_block_group import iob_block_group
 from iob_soc_utils import pre_setup_iob_soc, post_setup_iob_soc
-from mk_configuration import update_define
-from submodule_utils import get_peripheral_macros
+from submodule_utils import append_peripheral_macros
 from verilog_tools import inplace_change
 
 # Submodules
@@ -439,7 +438,7 @@ class iob_soc(iob_module):
 
         # Get number of peripherals and IDs
         # TODO revise name of function
-        get_peripheral_macros(cls.confs, cls.peripherals)
+        append_peripheral_macros(cls.confs, cls.peripherals)
 
     # override empty iob_module's method
     @classmethod

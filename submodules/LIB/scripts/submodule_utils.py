@@ -114,7 +114,7 @@ def set_default_submodule_dirs(python_module):
 
 
 # Get peripheral related macros
-def get_peripheral_macros(confs, peripherals_list):
+def append_peripheral_macros(confs, peripherals_list):
     # Append macros with ID of each peripheral
     confs.extend(get_periphs_id_as_macros(peripherals_list))
     # Append macro with number of peripherals
