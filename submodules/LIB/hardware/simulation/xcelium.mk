@@ -44,7 +44,7 @@ xmelab.log : xmvlog.log xcelium.d/worklib
 comp: xmelab.log
 
 exec: comp
-	sync && sleep 1 && xmsim $(SFLAGS) $(COV_SFLAGS) worklib.$(NAME)_tb:module
+	sync && sleep 5 && xmsim $(SFLAGS) $(COV_SFLAGS) worklib.$(NAME)_tb:module
 ifeq ($(COV),1)
 	ls -d cov_work/scope/* > all_ucd_file
 	imc -execcmd "merge -runfile all_ucd_file -overwrite -out merge_all"
