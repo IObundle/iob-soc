@@ -61,6 +61,8 @@ class iob_soc(iob_module):
 
         """Setup this system using specialized iob-soc functions"""
 
+        # *** SCRIPT BELOW WILL BE REMOVED IN `python-gen` *** https://github.com/IObundle/iob-soc/issues/629
+        # The script is currently needed to fix the portmap of iob_soc.v; But it will be removed in `python-gen` because that feature will automatically generate all portmaps.
         # Remove `[0+:1]` part select in AXI connections of ext_mem0 in iob_soc.v template
         if cls.num_extmem_connections == 1:
             inplace_change(
@@ -418,6 +420,8 @@ class iob_soc(iob_module):
     # override empty iob_module's method
     @classmethod
     def _pre_setup(cls):
+        # *** PRE-SETUP SCRIPT WILL BE REMOVED IN `python-gen` *** https://github.com/IObundle/iob-soc/issues/606
+        # It will be removed in `python-gen` because that feature will automatically generate all portmaps. So we don't need to do it here.
         # Pre-setup specialized IOb-SoC functions
         pre_setup_iob_soc(cls)
 
