@@ -210,6 +210,12 @@ class iob_module:
         if not cls.previous_version:
             cls.previous_version = cls.version
 
+    @classmethod
+    def init_attr(cls, attribute_name, default_value):
+        """Initialize the given attribute if it has not been initialized yet."""
+        if not hasattr(cls, attribute_name):
+            setattr(cls, attribute_name, default_value)
+
     ###############################################################
     # Methods commonly overriden by subclasses
     ###############################################################

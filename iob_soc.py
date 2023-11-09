@@ -54,11 +54,9 @@ class iob_soc(iob_module):
         cls.flows = "pc-emul emb sim doc fpga syn"
         cls.setup_dir = os.path.dirname(__file__)
 
-        cls.cpu = iob_picorv32
-        cls.uart = iob_uart
-        cls.num_extmem_connections = 1
-
-        """Setup this system using specialized iob-soc functions"""
+        cls.init_attr("cpu", iob_picorv32)
+        cls.init_attr("uart", iob_uart)
+        cls.init_attr("num_extmem_connections", 1)
 
         # *** SCRIPT BELOW WILL BE REMOVED IN `python-gen` *** https://github.com/IObundle/iob-soc/issues/629
         # The script is currently needed to fix the portmap of iob_soc.v; But it will be removed in `python-gen` because that feature will automatically generate all portmaps.
@@ -71,10 +69,10 @@ class iob_soc(iob_module):
             )
 
         # warning: do not initialize lists as class variables, they will be shared between all subclasses
-        cls.peripherals = []
-        cls.peripheral_portmap = []
+        cls.init_attr("peripherals", [])
+        cls.init_attr("peripheral_portmap", [])
 
-        cls.submodules = [
+        cls.submodules += [
             # Hardware modules
             iob_utils,
             cls.cpu,
@@ -106,7 +104,7 @@ class iob_soc(iob_module):
             printf,
         ]
 
-        cls.interfaces = [
+        cls.interfaces += [
             {
                 "interface": "axi",
                 "file_prefix": "",
@@ -245,7 +243,7 @@ class iob_soc(iob_module):
             ),
         ]
 
-        cls.confs = [
+        cls.confs += [
             # macros
             {
                 "name": "INIT_MEM",
