@@ -134,18 +134,6 @@ module iob_axistream_in #(
    // Write data to FIFOs when valid, enable or in padding state
    wire wren_int = (axis_tvalid_i | (state == STATE_PADDING)) & axis_sw_enable;
 
-   iob_reg_re #(
-      .DATA_W (1),
-      .RST_VAL(1'd0),
-      .CLKEDGE("posedge")
-   ) reg_DATA_valid (
-      `include "clk_en_rst_s_s_portmap.vs"
-      .rst_i (SOFT_RESET_wr),
-      .en_i  (ENABLE_wr),
-      .data_i(read_fifos),
-      .data_o(DATA_rvalid_rd)
-   );
-
    iob_fifo_async #(
       .W_DATA_W(TDATA_W),
       .R_DATA_W(32),
