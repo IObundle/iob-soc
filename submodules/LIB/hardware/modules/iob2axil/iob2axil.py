@@ -19,7 +19,7 @@ class iob2axil(iob_module):
         cls.version = "V0.10"
         cls.flows = "sim"
         cls.setup_dir = os.path.dirname(__file__)
-        cls.submodules = [
+        cls.interfaces = [
             {"interface": "clk_rst"},
             {"interface": "iob"},
             {"interface": "axil"},

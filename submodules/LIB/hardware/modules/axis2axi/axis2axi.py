@@ -26,9 +26,11 @@ class axis2axi(iob_module):
         cls.version = "V0.10"
         cls.flows = "sim"
         cls.setup_dir = os.path.dirname(__file__)
-        cls.submodules = [
+        cls.interfaces = [
             {"interface": "axi_write"},
             {"interface": "axi_read"},
+        ]
+        cls.submodules = [
             iob_fifo_sync,
             iob_counter,
             iob_reg_r,

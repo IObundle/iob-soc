@@ -12,8 +12,7 @@ if __name__ == "__main__":
 
 from iob_block_group import iob_block_group
 from iob_soc_utils import pre_setup_iob_soc, post_setup_iob_soc
-from mk_configuration import update_define
-from submodule_utils import get_peripheral_macros
+from submodule_utils import setup_peripherals
 from verilog_tools import inplace_change
 
 # Submodules
@@ -55,12 +54,12 @@ class iob_soc(iob_module):
         cls.flows = "pc-emul emb sim doc fpga syn"
         cls.setup_dir = os.path.dirname(__file__)
 
-        cls.cpu = iob_picorv32
-        cls.uart = iob_uart
-        cls.num_extmem_connections = 1
+        cls.init_attr("cpu", iob_picorv32)
+        cls.init_attr("uart", iob_uart)
+        cls.init_attr("num_extmem_connections", 1)
 
-        """Setup this system using specialized iob-soc functions"""
-
+        # *** SCRIPT BELOW WILL BE REMOVED IN `python-gen` *** https://github.com/IObundle/iob-soc/issues/629
+        # The script is currently needed to fix the portmap of iob_soc.v; But it will be removed in `python-gen` because that feature will automatically generate all portmaps.
         # Remove `[0+:1]` part select in AXI connections of ext_mem0 in iob_soc.v template
         if cls.num_extmem_connections == 1:
             inplace_change(
@@ -70,10 +69,10 @@ class iob_soc(iob_module):
             )
 
         # warning: do not initialize lists as class variables, they will be shared between all subclasses
-        cls.peripherals = []
-        cls.peripheral_portmap = []
+        cls.init_attr("peripherals", [])
+        cls.init_attr("peripheral_portmap", [])
 
-        cls.submodules = [
+        cls.submodules += [
             # Hardware modules
             iob_utils,
             cls.cpu,
@@ -97,6 +96,15 @@ class iob_soc(iob_module):
             (iob_ram_2p, {"purpose": "fpga"}),
             (iob_ram_sp, {"purpose": "simulation"}),
             (iob_ram_sp, {"purpose": "fpga"}),
+            # Simulation headers & modules
+            (axi_ram, {"purpose": "simulation"}),
+            (iob_tasks, {"purpose": "simulation"}),
+            # Software modules
+            iob_str,
+            printf,
+        ]
+
+        cls.interfaces += [
             {
                 "interface": "axi",
                 "file_prefix": "",
@@ -146,12 +154,6 @@ class iob_soc(iob_module):
                     "LEN_W": "AXI_LEN_W",
                 },
             },
-            # Simulation headers & modules
-            (axi_ram, {"purpose": "simulation"}),
-            (iob_tasks, {"purpose": "simulation"}),
-            # Software modules
-            iob_str,
-            printf,
         ]
 
         cls.peripheral_portmap += [
@@ -241,8 +243,38 @@ class iob_soc(iob_module):
             ),
         ]
 
-        cls.confs = [
+        cls.confs += [
             # macros
+            {
+                "name": "INIT_MEM",
+                "type": "M",
+                "val": next(
+                    (
+                        True
+                        for arg in sys.argv[1:]
+                        if "INIT_MEM" in arg and arg.split("=")[1] == "1"
+                    ),
+                    False,
+                ),
+                "min": "0",
+                "max": "1",
+                "descr": "Used to select running linux.",
+            },
+            {
+                "name": "USE_EXTMEM",
+                "type": "M",
+                "val": next(
+                    (
+                        True
+                        for arg in sys.argv[1:]
+                        if "USE_EXTMEM" in arg and arg.split("=")[1] == "1"
+                    ),
+                    False,
+                ),
+                "min": "0",
+                "max": "1",
+                "descr": "Always use external memory in the SoC.",
+            },
             {
                 "name": "USE_MUL_DIV",
                 "type": "M",
@@ -359,15 +391,6 @@ class iob_soc(iob_module):
             },
         ]
 
-        # Add the following arguments:
-        # "INIT_MEM=x": if should setup with init_mem or not
-        # "USE_EXTMEM=x": if should setup with extmem or not
-        for arg in sys.argv[1:]:
-            if "INIT_MEM" in arg and arg.split("=")[1] == "1":
-                update_define(cls.confs, "INIT_MEM", True)
-            if "USE_EXTMEM" in arg and arg.split("=")[1] == "1":
-                update_define(cls.confs, "USE_EXTMEM", True)
-
         cls.ios += [
             {
                 "name": "clk_en_rst",
@@ -412,12 +435,13 @@ class iob_soc(iob_module):
         ]
 
         # Get number of peripherals and IDs
-        # TODO revise name of function
-        get_peripheral_macros(cls.confs, cls.peripherals)
+        setup_peripherals(cls.confs, cls.peripherals)
 
     # override empty iob_module's method
     @classmethod
     def _pre_setup(cls):
+        # *** PRE-SETUP SCRIPT WILL BE REMOVED IN `python-gen` *** https://github.com/IObundle/iob-soc/issues/606
+        # It will be removed in `python-gen` because that feature will automatically generate all portmaps. So we don't need to do it here.
         # Pre-setup specialized IOb-SoC functions
         pre_setup_iob_soc(cls)
 

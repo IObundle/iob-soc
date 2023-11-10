@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Library with useful functions to manage submodules and peripherals
+# Library with useful functions to manage submodules and peripherals of IOb-SoC
 
 import sys
 import os
@@ -113,8 +113,8 @@ def set_default_submodule_dirs(python_module):
         python_module.submodules["dirs"]["LIB"] = "submodules/LIB"
 
 
-# Get peripheral related macros
-def get_peripheral_macros(confs, peripherals_list):
+# Append peripheral related macros
+def setup_peripherals(confs, peripherals_list):
     # Append macros with ID of each peripheral
     confs.extend(get_periphs_id_as_macros(peripherals_list))
     # Append macro with number of peripherals
