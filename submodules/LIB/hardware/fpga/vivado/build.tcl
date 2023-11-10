@@ -44,7 +44,7 @@ if {[file exists "vivado/premap.tcl"]} {
 if { $IS_FPGA == "1" } {
     puts "Synthesizing for FPGA"
     read_xdc vivado/$BOARD/$NAME\_dev.sdc
-    read_xdc ../src/$NAME.sdc
+    read_xdc src/$NAME.sdc
     if {[file exists "../src/$NAME\_$CSR_IF.sdc"]} {
         read_xdc ../src/$NAME\_$CSR_IF.sdc
     }
@@ -56,7 +56,7 @@ if { $IS_FPGA == "1" } {
     #read design constraints
     puts "Out of context synthesis"
     read_xdc -mode out_of_context vivado/$BOARD/$NAME\_dev.sdc
-    read_xdc -mode out_of_context ../src/$NAME.sdc
+    read_xdc -mode out_of_context src/$NAME.sdc
     if {[file exists "vivado/$NAME\_tool.sdc"]} {
         read_xdc -mode out_of_context vivado/$NAME\_tool.sdc
     }
