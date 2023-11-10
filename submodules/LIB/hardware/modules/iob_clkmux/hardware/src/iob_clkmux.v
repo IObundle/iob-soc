@@ -24,8 +24,14 @@ module iob_clkmux (
       .S (clk_sel_i),
       .O (clk_o)
    );
-`else
-   reg clk_v;
+`elsif INTEL
+   altclkctrl altclkctrl_inst (
+      .inclk     ({clk0_i, clk1_i}),
+      .clkselect (clk_sel_i),
+      .outclk    (clk_o)
+   );
+`else 
+   reg    clk_v;
    always @* clk_v = #1 clk_sel_i ? clk1_i : clk0_i;
    assign clk_o = clk_v;
 `endif
