@@ -88,6 +88,8 @@ endif
 ifeq ($(VCD),1)
 	make waves
 endif
+endif
+
 
 waves:
 	if [ ! "`pgrep -u $(USER) gtkwave`" ]; then gtkwave -a uut.gtkw uut.vcd; fi &
@@ -116,4 +118,4 @@ debug:
 
 .PRECIOUS: uut.vcd test.log
 
-.PHONY: build run waves gen-clean debug test $(TEST_LIST) fix-vcd remote_build_dir copy_logs
+.PHONY: build run waves gen-clean debug test $(TEST_LIST) fix-vcd remote_build_dir
