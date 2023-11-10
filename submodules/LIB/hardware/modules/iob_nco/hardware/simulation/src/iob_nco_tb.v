@@ -6,6 +6,8 @@ module iob_nco_tb;
 
    localparam CLK_PER=10;
    
+   integer fp;
+
    reg clk;
    `IOB_CLOCK(clk, CLK_PER)
    reg cke = 1'b1;
@@ -29,6 +31,9 @@ module iob_nco_tb;
       $display("%c[1;34m", 27);
       $display("Test completed successfully.");
       $display("%c[0m", 27);
+
+      fp = $fopen("test.log", "w");
+      $fdisplay(fp, "Test passed!");
       #1000 $finish();
       
    end

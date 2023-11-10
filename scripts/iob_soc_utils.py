@@ -634,10 +634,11 @@ def create_periphs_tmp(name, addr_w, peripherals_list, out_file):
         return
 
     template_contents = []
+    core_prefix = f"{name.upper()}_"
     for instance in peripherals_list:
         template_contents.extend(
-            "#define {}_BASE ({}<<({}-1-{}_N_SLAVES_W))\n".format(
-                instance.name, instance.name, addr_w, name.upper()
+            "#define {}_BASE ({}{}<<({}-1-{}N_SLAVES_W))\n".format(
+                instance.name, core_prefix, instance.name, addr_w, core_prefix
             )
         )
 

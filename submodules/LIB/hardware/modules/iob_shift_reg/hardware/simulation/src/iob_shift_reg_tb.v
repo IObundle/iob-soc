@@ -26,6 +26,7 @@ module iob_shift_reg_tb;
    always #(CLK_PER / 2) clk = ~clk;
 
    integer i, j;  //iterators
+   integer fp;
 
    reg  [TESTSIZE*DATA_W-1:0] test_data;
    reg  [TESTSIZE*DATA_W-1:0] read_data;
@@ -77,6 +78,8 @@ module iob_shift_reg_tb;
       end
       en = 0;
       $display("Test passed");
+      fp = $fopen("test.log", "w");
+      $fdisplay(fp, "Test passed!");
       #1000 $finish();
       
    end
