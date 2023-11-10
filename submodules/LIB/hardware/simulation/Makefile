@@ -68,16 +68,16 @@ BOARD_GRAB_CMD=../../scripts/board_client.py grab $(GRAB_TIMEOUT)
 run: remote_build_dir
 ifeq ($(SIM_SERVER),)
 ifneq ($(CONSOLE_CMD),)
-	$(BOARD_GRAB_CMD) -s 'make exec' -c '$(CONSOLE_CMD)'
+	$(BOARD_GRAB_CMD) -s 'make exec' -c '$(CONSOLE_CMD)' && echo "Checking test log..." && sleep 2 && test "$$(cat test.log)" = "Test passed!"
 else
-	make exec
+	make exec && echo "Checking test log..." && sleep 2 && test "$$(cat test.log)" = "Test passed!"
 endif
 else
 ifeq ($(VCD),1)
 	trap 'trap - INT TERM; scp $(SIM_SCP_FLAGS) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_SIM_DIR)/*.vcd .' INT TERM EXIT;\
-	ssh -t $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'make -C $(REMOTE_SIM_DIR) $@ SIMULATOR=$(SIMULATOR) $(UFLAGS)' || true
+	ssh -t $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'make -j1 -C $(REMOTE_SIM_DIR) $@ SIMULATOR=$(SIMULATOR) $(UFLAGS)' || true
 else
-	ssh -t $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'make -C $(REMOTE_SIM_DIR) $@ SIMULATOR=$(SIMULATOR) $(UFLAGS)'
+	ssh -t $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'make -j1 -C $(REMOTE_SIM_DIR) $@ SIMULATOR=$(SIMULATOR) $(UFLAGS)'
 endif
 	sleep 1 && sync && scp $(SIM_SCP_FLAGS) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_SIM_DIR)/*.log .
 ifeq ($(COV),1)
@@ -85,13 +85,11 @@ ifeq ($(COV),1)
 	sleep 1 && sync && scp $(SIM_SCP_FLAGS) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_SIM_DIR)/coverage_report_summary.rpt .
 	sleep 1 && sync && scp $(SIM_SCP_FLAGS) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_SIM_DIR)/coverage_report_detail.rpt .
 endif
-endif
 ifeq ($(VCD),1)
 	make waves
 endif
+endif
 
-test: run
-	sync && sleep 1 && test "$$(cat test.log)" = "Test passed!"
 
 waves:
 	if [ ! "`pgrep -u $(USER) gtkwave`" ]; then gtkwave -a uut.gtkw uut.vcd; fi &
@@ -108,12 +106,16 @@ ifneq ($(SIM_SERVER),)
 	ssh -t $(SIM_SSH_FLAGS) $(SIM_USER)@$(SIM_SERVER) 'if [ -f $(REMOTE_SIM_DIR)/Makefile ]; then make -C $(REMOTE_SIM_DIR) $@; fi'
 endif
 
+
+test: $(TEST_LIST)
+
+
 debug:
 	@echo NAME=$(NAME)
 	@echo VHDR=$(VHDR)
 	@echo VSRC=$(VSRC)
 	@echo VFLAGS=$(VFLAGS)
 
-.PRECIOUS: uut.vcd
+.PRECIOUS: uut.vcd test.log
 
-.PHONY: build run remote_build_dir waves fix-vcd test run-tests gen-clean debug test
+.PHONY: build run waves gen-clean debug test $(TEST_LIST) fix-vcd remote_build_dir

@@ -13,7 +13,8 @@ module iob_rom_sp_tb;
    // Ouptuts
    reg [`DATA_W-1:0] r_data;
 
-   integer i, seq_ini;
+   integer i, seq_ini, fp;
+   
 
    parameter clk_per = 10;  // clk period = 10 timeticks
 
@@ -47,6 +48,9 @@ module iob_rom_sp_tb;
             $display("ERROR: read error in position %d, where expected data=%h but r_data=%h", i,
                      i + seq_ini, r_data);
             $fatal();
+         end else begin
+            fp = $fopen("test.log", "w");
+            $fdisplay(fp, "Test passed!");
          end
       end
 

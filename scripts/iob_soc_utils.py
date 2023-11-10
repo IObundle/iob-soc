@@ -27,6 +27,7 @@ def iob_soc_sw_setup(python_module, exclude_files=[]):
     # Build periphs_tmp.h
     if peripherals_list:
         create_periphs_tmp(
+            python_module.name,
             next(i["val"] for i in confs if i["name"] == "ADDR_W"),
             peripherals_list,
             f"{build_dir}/software/{name}_periphs.h",
@@ -627,7 +628,7 @@ def peripheral_portmap(python_module):
 # Arguments:
 #   periph_addr_select_bit: Adress selection bit (P variable)
 #   peripherals_list: list with amount of instances of each peripheral (returned by get_peripherals())
-def create_periphs_tmp(addr_w, peripherals_list, out_file):
+def create_periphs_tmp(name, addr_w, peripherals_list, out_file):
     # Don't override output file
     if os.path.isfile(out_file):
         return
@@ -635,8 +636,8 @@ def create_periphs_tmp(addr_w, peripherals_list, out_file):
     template_contents = []
     for instance in peripherals_list:
         template_contents.extend(
-            "#define {}_BASE ({}<<({}-1-N_SLAVES_W))\n".format(
-                instance.name, instance.name, addr_w
+            "#define {}_BASE ({}<<({}-1-{}_N_SLAVES_W))\n".format(
+                instance.name, instance.name, addr_w, name.upper()
             )
         )
 

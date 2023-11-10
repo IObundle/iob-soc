@@ -390,7 +390,7 @@ class mkregs:
 
         # rvalid output
         f_gen.write("//rvalid output\n")
-        f_gen.write("reg rvalid_nxt;\n")
+        f_gen.write("wire rvalid_nxt;\n")
         f_gen.write("iob_reg #( \n")
         f_gen.write("  .DATA_W (1),\n")
         f_gen.write("  .RST_VAL (1'd0),\n")

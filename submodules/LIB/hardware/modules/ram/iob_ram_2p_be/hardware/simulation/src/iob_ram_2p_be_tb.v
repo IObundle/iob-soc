@@ -20,6 +20,7 @@ module iob_ram_2p_be_tb;
    wire [`DATA_W-1:0] r_data;
 
    integer i, seq_ini;
+   integer fd;
 
    parameter clk_per = 10;  // clk period = 10 timeticks
 
@@ -87,6 +88,9 @@ module iob_ram_2p_be_tb;
       $display("%c[1;34m", 27);
       $display("Test completed successfully.");
       $display("%c[0m", 27);
+      fd = $fopen("test.log", "w");
+      $fdisplay(fd, "Test passed!");
+      $fclose(fd);
       $finish();
    end
 

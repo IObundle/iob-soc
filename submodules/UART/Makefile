@@ -13,4 +13,4 @@ setup:
 	nix-shell --run "python3 -B ./$(CORE).py"
 
 test: clean setup
-	nix-shell --run "make -C ../iob_uart_* sim-test"
+	nix-shell --run "make -C ../iob_uart_* sim-run"

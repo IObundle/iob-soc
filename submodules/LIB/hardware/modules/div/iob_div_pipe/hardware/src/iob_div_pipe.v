@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 module iob_div_pipe #(
-   parameter DATA_W          = 32,
+   parameter DATA_W = 32,
    parameter OPERS_PER_STAGE = 8
 ) (
    `include "iob_div_pipe_io.vs"
