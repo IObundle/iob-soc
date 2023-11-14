@@ -4,7 +4,7 @@ module iob_neg2posedge_sync #(
    parameter DATA_W  = 21,
    parameter RST_VAL = {2*DATA_W{1'b0}}
 ) (
-   `include "clk_rst_s_port.vs"
+   `include "clk_en_rst_s_port.vs"
    input      [DATA_W-1:0] signal_i,
    output reg [DATA_W-1:0] signal_o
 );
@@ -15,7 +15,7 @@ module iob_neg2posedge_sync #(
    always @(negedge clk_i, posedge arst_i) begin
       if (arst_i) begin
          synchronizer <= RST_VAL;
-      end else begin
+      end else if (cke_i) begin
          synchronizer <= signal_i;
       end
    end
@@ -24,7 +24,7 @@ module iob_neg2posedge_sync #(
    always @(posedge clk_i, posedge arst_i) begin
       if(arst_i) begin
          signal_o <= RST_VAL;
-      end else begin
+      end else if (cke_i) begin
          signal_o <= synchronizer;
       end
    end
