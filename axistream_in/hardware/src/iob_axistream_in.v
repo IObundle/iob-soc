@@ -109,7 +109,7 @@ module iob_axistream_in #(
       writen_words_nxt = writen_words;
       case (state)
          STATE_WRITE: begin
-            if (axis_tvalid_i) begin
+            if (axis_tvalid_i & ready_int) begin
                if (writen_words == N - 1) begin  // Last word in the packet
                   writen_words_nxt = 0;
                end else begin
@@ -131,8 +131,9 @@ module iob_axistream_in #(
       endcase
    end
 
-   // Write data to FIFOs when valid, enable or in padding state
-   wire wren_int = (axis_tvalid_i | (state == STATE_PADDING)) & axis_sw_enable;
+   // Write data to FIFOs when (valid and ready), enable or in padding state
+   wire wren_int;
+   assign wren_int = ((axis_tvalid_i & ready_int) | (state == STATE_PADDING)) & axis_sw_enable;
 
    iob_fifo_async #(
       .W_DATA_W(TDATA_W),
