@@ -96,9 +96,11 @@ module iob_axistream_in #(
 
    // DATA_ren edge detection so that only one word is read from FIFO
    iob_edge_detect #(
-      .CLKEDGE("posedge")
+                     .EDGE_TYPE("rising"),
+                     .OUT_TYPE("pulse")
    ) READ_edge_detect (
-      `include "clk_en_rst_s_s_portmap.vs"
+   `include "clk_en_rst_s_s_portmap.vs"
+      .rst_i(SOFT_RESET_wr),
       .bit_i     (DATA_ren_rd),
       .detected_o(READ_en)
    );
@@ -136,8 +138,7 @@ module iob_axistream_in #(
 
    iob_reg_re #(
       .DATA_W (1),
-      .RST_VAL(1'd0),
-      .CLKEDGE("posedge")
+      .RST_VAL(1'd0)
    ) reg_DATA_valid (
       `include "clk_en_rst_s_s_portmap.vs"
       .rst_i (SOFT_RESET_wr),
@@ -285,8 +286,7 @@ module iob_axistream_in #(
    // FSM state register
    iob_reg_re #(
       .DATA_W (1),
-      .RST_VAL(STATE_WRITE),
-      .CLKEDGE("posedge")
+      .RST_VAL(STATE_WRITE)
    ) fsm_state_reg (
       .clk_i (axis_clk_i),
       .cke_i (axis_cke_i),
@@ -300,8 +300,7 @@ module iob_axistream_in #(
    // Written words register
    iob_reg_re #(
       .DATA_W (WORD_CNT_W),
-      .RST_VAL({WORD_CNT_W {1'b0}}),
-      .CLKEDGE("posedge")
+      .RST_VAL({WORD_CNT_W {1'b0}})
    ) writen_words_reg (
       .clk_i (axis_clk_i),
       .cke_i (axis_cke_i),

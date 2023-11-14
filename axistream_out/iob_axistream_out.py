@@ -178,7 +178,7 @@ class iob_axistream_out(iob_module):
                         "name": "ENABLE",
                         "type": "W",
                         "n_bits": 1,
-                        "rst_val": 1,
+                        "rst_val": 0,
                         "log2n_items": 0,
                         "autoreg": True,
                         "descr": "Enable peripheral.",

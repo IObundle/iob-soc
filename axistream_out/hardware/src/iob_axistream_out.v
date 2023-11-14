@@ -86,8 +86,7 @@ module iob_axistream_out #(
 
    iob_reg_re #(
       .DATA_W (1),
-      .RST_VAL(1'd0),
-      .CLKEDGE("posedge")
+      .RST_VAL(1'd0)
    ) tvalid_reg (
       .clk_i (axis_clk_i),
       .cke_i (axis_cke_i),
@@ -102,9 +101,9 @@ module iob_axistream_out #(
    wire [32-1:0] fifo_data_i = tvalid_i==1'b1 ? tdata_i : iob_wdata_i;
 
    wire [FIFO_DEPTH_LOG2+1-1:0] fifo_level;
-   //FIFOs
+   //DATA FIFO
    iob_fifo_async #(
-      .W_DATA_W(32),
+      .W_DATA_W(DATA_W),
       .R_DATA_W(TDATA_W),
       .ADDR_W  (FIFO_DEPTH_LOG2)
    ) data_fifo (
