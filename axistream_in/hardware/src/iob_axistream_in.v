@@ -67,6 +67,7 @@ module iob_axistream_in #(
    wire [WORD_CNT_W-1:0] writen_words;
    reg                  state_nxt;
    wire                 state;
+   wire                 ready_int;
 
    //Synchronizers for the sw_regs
    wire                 axis_sw_rst;
@@ -109,7 +110,7 @@ module iob_axistream_in #(
       writen_words_nxt = writen_words;
       case (state)
          STATE_WRITE: begin
-            if (axis_tvalid_i) begin
+            if (axis_tvalid_i & ready_int) begin
                if (writen_words == N - 1) begin  // Last word in the packet
                   writen_words_nxt = 0;
                end else begin
@@ -131,8 +132,9 @@ module iob_axistream_in #(
       endcase
    end
 
-   // Write data to FIFOs when valid, enable or in padding state
-   wire wren_int = (axis_tvalid_i | (state == STATE_PADDING)) & axis_sw_enable;
+   // Write data to FIFOs when (valid and ready), enable or in padding state
+   wire wren_int;
+   assign wren_int = ((axis_tvalid_i & ready_int) | (state == STATE_PADDING)) & axis_sw_enable;
 
    iob_fifo_async #(
       .W_DATA_W(TDATA_W),
@@ -267,7 +269,7 @@ module iob_axistream_in #(
 
    assign LAST_rd     = |tlast_int;
    // Is not ready when FIFO is full or when it is padding
-   wire ready_int = ~fifo_full & axis_sw_enable;
+   assign ready_int = ~fifo_full & axis_sw_enable;
    assign axis_tready_o = ready_int & (state != STATE_PADDING);
 
    // FSM state register
