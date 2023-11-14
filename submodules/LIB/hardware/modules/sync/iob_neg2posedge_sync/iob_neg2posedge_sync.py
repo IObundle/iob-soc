@@ -2,11 +2,11 @@ import os
 
 from iob_module import iob_module
 
-from iob_sync import iob_sync
+from iob_reg import iob_reg
 
 
-class iob_s2f_sync(iob_module):
-    name = "iob_s2f_sync"
+class iob_neg2posedge_sync(iob_module):
+    name = "iob_neg2posedge_sync"
     version = "V0.10"
     flows = "sim"
     setup_dir = os.path.dirname(__file__)
@@ -16,8 +16,7 @@ class iob_s2f_sync(iob_module):
         """Create submodules list with dependencies of this module"""
         super()._create_submodules_list(
             [
-                iob_sync,
                 {"interface": "clk_rst_s_port"},
-                {"interface": "clk_rst_s_s_portmap"},
+                iob_reg,
             ]
         )

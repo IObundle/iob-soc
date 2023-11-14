@@ -28,8 +28,7 @@ module iob_gray_counter #(
 
    iob_reg_re #(
       .DATA_W (W),
-      .RST_VAL({{(W - 1) {1'd0}}, 1'd1}),
-      .CLKEDGE("posedge")
+      .RST_VAL({{(W - 1) {1'd0}}, 1'd1})
    ) bin_counter_reg (
       `include "clk_en_rst_s_s_portmap.vs"
 
@@ -42,8 +41,7 @@ module iob_gray_counter #(
 
    iob_reg_re #(
       .DATA_W (W),
-      .RST_VAL({W{1'd0}}),
-      .CLKEDGE("posedge")
+      .RST_VAL({W{1'd0}})
    ) gray_counter_reg (
       `include "clk_en_rst_s_s_portmap.vs"
 

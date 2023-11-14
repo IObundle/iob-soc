@@ -22,8 +22,7 @@ module iob_pulse_gen #(
 
    iob_reg #(
       .DATA_W (1),
-      .RST_VAL(0),
-      .CLKEDGE("posedge")
+      .RST_VAL(0)
    ) start_detected_inst (
       `include "clk_en_rst_s_s_portmap.vs"
       .data_i(start_detected_nxt),

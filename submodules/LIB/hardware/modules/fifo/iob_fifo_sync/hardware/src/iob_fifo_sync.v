@@ -54,8 +54,7 @@ module iob_fifo_sync #(
    wire [W_ADDR_W-1:0] w_addr;
    iob_counter #(
       .DATA_W (W_ADDR_W),
-      .RST_VAL({W_ADDR_W{1'd0}}),
-      .CLKEDGE("posedge")
+      .RST_VAL({W_ADDR_W{1'd0}})
    ) w_addr_cnt0 (
       `include "clk_en_rst_s_s_portmap.vs"
 
@@ -71,8 +70,7 @@ module iob_fifo_sync #(
    wire [R_ADDR_W-1:0] r_addr;
    iob_counter #(
       .DATA_W (R_ADDR_W),
-      .RST_VAL({R_ADDR_W{1'd0}}),
-      .CLKEDGE("posedge")
+      .RST_VAL({R_ADDR_W{1'd0}})
    ) r_addr_cnt0 (
       `include "clk_en_rst_s_s_portmap.vs"
 
@@ -90,8 +88,7 @@ module iob_fifo_sync #(
    wire [ADDR_W:0] level_int;
    iob_reg_r #(
       .DATA_W (ADDR_W + 1),
-      .RST_VAL({(ADDR_W + 1) {1'd0}}),
-      .CLKEDGE("posedge")
+      .RST_VAL({(ADDR_W + 1) {1'd0}})
    ) level_reg0 (
       `include "clk_en_rst_s_s_portmap.vs"
 
@@ -120,8 +117,7 @@ module iob_fifo_sync #(
    assign r_empty_nxt = level_nxt < R_INCR;
    iob_reg #(
       .DATA_W (1),
-      .RST_VAL(1'd1),
-      .CLKEDGE("posedge")
+      .RST_VAL(1'd1)
    ) r_empty_reg0 (
       `include "clk_en_rst_s_s_portmap.vs"
 
@@ -134,8 +130,7 @@ module iob_fifo_sync #(
    assign w_full_nxt = level_nxt > (FIFO_SIZE - W_INCR);
    iob_reg #(
       .DATA_W (1),
-      .RST_VAL(1'd0),
-      .CLKEDGE("posedge")
+      .RST_VAL(1'd0)
    ) w_full_reg0 (
       `include "clk_en_rst_s_s_portmap.vs"
 
