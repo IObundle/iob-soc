@@ -67,6 +67,7 @@ module iob_axistream_in #(
    wire [WORD_CNT_W-1:0] writen_words;
    reg                  state_nxt;
    wire                 state;
+   wire                 ready_int;
 
    //Synchronizers for the sw_regs
    wire                 axis_sw_rst;
@@ -268,7 +269,7 @@ module iob_axistream_in #(
 
    assign LAST_rd     = |tlast_int;
    // Is not ready when FIFO is full or when it is padding
-   wire ready_int = ~fifo_full & axis_sw_enable;
+   assign ready_int = ~fifo_full & axis_sw_enable;
    assign axis_tready_o = ready_int & (state != STATE_PADDING);
 
    // FSM state register
