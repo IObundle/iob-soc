@@ -8,7 +8,7 @@ module iob_edge_detect
 `include "clk_en_rst_s_port.vs"
    input rst_i,
    input  bit_i,
-   output reg detected_o
+   output detected_o
 );
 
    wire   bit_int;
