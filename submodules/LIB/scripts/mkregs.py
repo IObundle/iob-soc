@@ -373,7 +373,6 @@ class mkregs:
 
         # use variables to compute response
         f_gen.write(f"\n reg [{8*self.cpu_n_bytes}-1:0] rdata_int;\n")
-        f_gen.write(f"wire rvalid_int;\n")
         f_gen.write(f"reg wready_int;\n")
         f_gen.write(f"reg rready_int;\n\n")
 
