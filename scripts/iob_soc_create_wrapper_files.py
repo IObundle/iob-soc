@@ -23,12 +23,23 @@ def create_wrapper_files(build_dir, name, ios, confs, num_extmem_connections):
         if pio_signals and "if_defined" in table.keys():
             pwires_str += f"`ifdef {table['if_defined']}\n"
         for signal in pio_signals:
-            pwires_str += "   wire [{}-1:0] {};\n".format(
-                add_prefix_to_parameters_in_string(
-                    signal["n_bits"], confs, "`" + name.upper() + "_"
-                ),
-                signal["name"],
-            )
+            # check if n_bits (a string) is only an integer or a parameter
+            if signal["n_bits"].isdigit():
+                n_bits = int(signal["n_bits"])
+                # If n_bits is 1, do not add [0:0] to the wire
+                if n_bits == 1:
+                    pwires_str += "   wire {};\n".format(signal["name"])
+                else :
+                    pwires_str += "   wire [{}-1:0] {};\n".format(
+                        n_bits, signal["name"]
+                    )
+            else:
+                pwires_str += "   wire [{}-1:0] {};\n".format(
+                    add_prefix_to_parameters_in_string(
+                        signal["n_bits"], confs, "`" + name.upper() + "_"
+                    ),
+                    signal["name"],
+                )
         if pio_signals and "if_defined" in table.keys():
             pwires_str += "`endif\n"
 

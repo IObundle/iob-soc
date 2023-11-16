@@ -8,7 +8,7 @@ module iob_edge_detect
 `include "clk_en_rst_s_port.vs"
    input rst_i,
    input  bit_i,
-   output reg detected_o
+   output detected_o
 );
 
    wire   bit_int;
@@ -22,29 +22,38 @@ module iob_edge_detect
       assign bit_int = bit_i;
    end endgenerate
 
-   reg detected_q;
    reg enabled;
    
    generate if (OUT_TYPE == "pulse") begin
       assign detected_o = bit_int & ~bit_int_q & enabled;
    end else if (OUT_TYPE == "step") begin
+      reg detected_q;
       assign detected_o = detected_q | (bit_int & ~bit_int_q & enabled);
+
+      always @(posedge clk_i, posedge arst_i) begin
+         if(arst_i) begin
+            detected_q <= 1'b0;
+         end else if (cke_i) begin
+            if(rst_i) begin
+               detected_q <= 1'b0;
+            end else begin
+               detected_q <= detected_o;
+            end
+         end
+      end
    end else begin
       assign detected_o = 1'b0;
    end endgenerate
    
    always @(posedge clk_i, posedge arst_i) begin
       if(arst_i) begin
-         detected_q <= 1'b0;
          bit_int_q <= 1'b0;
          enabled <= 1'b0;
       end else if (cke_i) begin
          if(rst_i) begin
-            detected_q <= 1'b0;
             bit_int_q <= 1'b0;
             enabled <= 1'b0;
          end else begin
-            detected_q <= detected_o;
             bit_int_q <= bit_int;
             enabled <= 1'b1;
          end

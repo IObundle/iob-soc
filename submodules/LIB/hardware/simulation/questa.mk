@@ -9,7 +9,7 @@ SIM_PROC=vsim
 CFLAGS = -quiet -sv +incdir+. +incdir+../src  +incdir+src
 SFLAGS = -voptargs="+acc" -c
 ifeq ($(VCD),1)
-SFLAGS+=+define+VCD
+CFLAGS+=+define+VCD
 endif
 
 comp: $(VHDR) $(VSRC) $(HEX)
