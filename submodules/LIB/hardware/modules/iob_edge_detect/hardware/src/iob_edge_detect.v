@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module iob_edge_detect 
+module iob_edge_detect
 #(
   parameter EDGE_TYPE = "rising", // "rising", "falling", "both"
   parameter OUT_TYPE = "pulse" // "step", "pulse"
@@ -14,21 +14,23 @@ module iob_edge_detect
    wire   bit_int;
    reg    bit_int_q;
 
-   generate if (EDGE_TYPE == "rising") begin
-      assign bit_int = bit_i;
-   end else if (EDGE_TYPE == "falling") begin
-      assign bit_int = ~bit_i;
-   end else begin
-      assign bit_int = bit_i;
-   end endgenerate
+   generate
+      if (EDGE_TYPE == "rising") begin : gen_rising
+         assign bit_int = bit_i;
+      end else if (EDGE_TYPE == "falling") begin : gen_falling
+         assign bit_int = ~bit_i;
+      end else begin : gen_default_rising
+         assign bit_int = bit_i;
+      end
+   endgenerate
 
    reg enabled;
-   
-   generate if (OUT_TYPE == "pulse") begin
-      assign detected_o = bit_int & ~bit_int_q & enabled;
-   end else if (OUT_TYPE == "step") begin
+
+   generate if (OUT_TYPE == "pulse") begin : gen_pulse
+      assign detected_o = bit_int & ((~bit_int_q) & enabled);
+   end else if (OUT_TYPE == "step") begin : gen_step
       reg detected_q;
-      assign detected_o = detected_q | (bit_int & ~bit_int_q & enabled);
+      assign detected_o = detected_q | (bit_int & ((~bit_int_q) & enabled));
 
       always @(posedge clk_i, posedge arst_i) begin
          if(arst_i) begin
@@ -44,7 +46,7 @@ module iob_edge_detect
    end else begin
       assign detected_o = 1'b0;
    end endgenerate
-   
+
    always @(posedge clk_i, posedge arst_i) begin
       if(arst_i) begin
          bit_int_q <= 1'b0;
@@ -59,5 +61,5 @@ module iob_edge_detect
          end
       end
    end
-   
+
 endmodule
