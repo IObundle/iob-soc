@@ -444,7 +444,7 @@ class mkregs:
                     f_gen.write(f"  if({aux_read_reg}) ")
                 else:
                     f_gen.write(
-                        f"  {aux_read_reg} = (`IOB_WORD_ADDR(iob_addr_i) >= {self.bfloor(addr, addr_w_base)} && `IOB_WORD_ADDR(iob_addr_i) < {self.bfloor(addr_last, addr_w_base)});\n"
+                        f"  {aux_read_reg} = ((`IOB_WORD_ADDR(iob_addr_i) >= {self.bfloor(addr, addr_w_base)}) && (`IOB_WORD_ADDR(iob_addr_i) < {self.bfloor(addr_last, addr_w_base)}));\n"
                     )
                     f_gen.write(f"  if({aux_read_reg}) ")
                 f_gen.write(f"begin\n")
