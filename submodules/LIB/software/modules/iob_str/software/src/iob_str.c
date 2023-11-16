@@ -35,3 +35,21 @@ int iob_strlen(char *str) {
   }
   return c;
 }
+
+// concatenate src to dst up to max_len chars
+// return concatenated string
+char* iob_strncat(char *dst, char *src, int max_len) {
+    int i = 0;
+    int j = 0;
+
+    while((dst[i] != '\0')){
+        i++;
+    }
+
+    while((src[j] != '\0') && (j < max_len)){
+        dst[i++] = src[j++];
+    }
+    dst[i] = '\0';
+
+    return dst;
+}
