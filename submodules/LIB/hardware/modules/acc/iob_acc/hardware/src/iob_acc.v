@@ -9,7 +9,7 @@ module iob_acc #(
    input en_i,
    input  [DATA_W-1:0] incr_i,
    output [DATA_W-1:0] data_o,
-   output [DATA_W-1:0] data_nxt_o
+   output [DATA_W:0] data_nxt_o
 );
 
    assign data_nxt_o = data_o + incr_i;
@@ -21,7 +21,7 @@ module iob_acc #(
       `include "clk_en_rst_s_s_portmap.vs"
       .rst_i(rst_i),
       .en_i (en_i),
-      .data_i(data_nxt_o),
+      .data_i(data_nxt_o[DATA_W-1:0]),
       .data_o(data_o)
    );
 
