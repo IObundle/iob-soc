@@ -29,7 +29,7 @@ def create_wrapper_files(build_dir, name, ios, confs, num_extmem_connections):
                 # If n_bits is 1, do not add [0:0] to the wire
                 if n_bits == 1:
                     pwires_str += "   wire {};\n".format(signal["name"])
-                else :
+                else:
                     pwires_str += "   wire [{}-1:0] {};\n".format(
                         n_bits, signal["name"]
                     )
@@ -189,10 +189,18 @@ def create_interconnect_instance(out_dir, name, num_extmem_connections):
       .s_axi_awuser({num_extmem_connections}'b0),
       .s_axi_wuser ({num_extmem_connections}'b0),
       .s_axi_aruser({num_extmem_connections}'b0),
+      .s_axi_buser (),
+      .s_axi_ruser (),
+      .m_axi_awuser(),
+      .m_axi_wuser (),
+      .m_axi_aruser(),
       .m_axi_buser (1'b0),
-      .m_axi_ruser (1'b0)
+      .m_axi_ruser (1'b0),
+      .m_axi_awregion (),
+      .m_axi_arregion ()
    );
 `endif
+
 """
 
     fp_interconnect = open(f"{out_dir}/{name}_interconnect.vs", "w")
