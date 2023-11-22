@@ -12,6 +12,9 @@
 `ifndef IOB_SOC_DATA_W
 `define IOB_SOC_DATA_W 32
 `endif
+`ifndef IOB_ETH_SWREG_ADDR_W
+`define IOB_ETH_SWREG_ADDR_W 12
+`endif
 
 module iob_soc_sim_wrapper (
    output trap_o,
@@ -23,6 +26,16 @@ module iob_soc_sim_wrapper (
    output [`IOB_SOC_DATA_W-1:0] uart_rdata,
    output uart_ready,
    output uart_rvalid,
+`ifdef IOB_SOC_USE_ETHERNET
+   //IOb-SoC Ethernet
+   input ethernet_avalid,
+   input [`IOB_ETH_SWREG_ADDR_W-1:0] ethernet_addr,
+   input [`IOB_SOC_DATA_W-1:0] ethernet_wdata,
+   input [3:0] ethernet_wstrb,
+   output [`IOB_SOC_DATA_W-1:0] ethernet_rdata,
+   output ethernet_ready,
+   output ethernet_rvalid,
+`endif
    input [1-1:0] clk_i,  //V2TEX_IO System clock input.
    input [1-1:0] rst_i  //V2TEX_IO System reset, asynchronous and active high.
 );
@@ -159,29 +172,77 @@ always @(posedge trap[1]) begin
    assign ETH0_MRxClk     = eth_clk;
    assign ETH0_MTxClk     = eth_clk;
 
-   //add core test module in testbench
-   iob_eth_tb_gen eth_tb (
-      .clk  (clk),
-      .reset(arst),
-
-      // This module acts like a loopback
-      .MRxClk (ETH0_MTxClk),
-      .MRxD   (ETH0_MTxD),
-      .MRxDv  (ETH0_MTxEn),
-      .MRxErr (ETH0_MTxErr),
-
-      // The wires are thus reversed
-      .MTxClk (ETH0_MRxClk),
-      .MTxD   (ETH0_MRxD),
-      .MTxEn  (ETH0_MRxDv),
-      .MTxErr (ETH0_MRxErr),
-
-      .MColl(1'b0),
-      .MCrS(1'b0),
-
+   //Manually added testbench ethernet core. MII pins attached to the same pins
+   //of the iob_soc ETH0 instance to communicate with it
+   // The interface of iob_soc ETH0 is assumed to be the first portmapped interface (ETH_*)
+   iob_eth
+     #(
+      .AXI_ID_W(AXI_ID_W),
+      .AXI_ADDR_W(AXI_ADDR_W),
+      .AXI_DATA_W(AXI_DATA_W),
+      .AXI_LEN_W(AXI_LEN_W),
+   ) eth_tb (
+      .inta_o(),
+      .MTxClk(eth_clk),
+      .MTxD(ETH0_MRxD),
+      .MTxEn(ETH0_MRxDv),
+      .MTxErr(ETH0_MRxErr),
+      .MRxClk(eth_clk),
+      .MRxDv(ETH0_MTxEn),
+      .MRxD(ETH0_MTxD),
+      .MRxErr(ETH0_MTxErr),
+      .MColl(),
+      .MCrS(),
       .MDC(),
-      .MDIO()
-   );
+      .MDIO(),
+      .iob_avalid_i(ethernet_avalid),
+      .iob_addr_i  (ethernet_addr),
+      .iob_wdata_i (ethernet_wdata),
+      .iob_wstrb_i (ethernet_wstrb),
+      .iob_rvalid_o(ethernet_rvalid),
+      .iob_rdata_o (ethernet_rdata),
+      .iob_ready_o (ethernet_ready),
+      .axi_awid_o        (),
+      .axi_awaddr_o      (),
+      .axi_awlen_o       (),
+      .axi_awsize_o      (),
+      .axi_awburst_o     (),
+      .axi_awlock_o      (),
+      .axi_awcache_o     (),
+      .axi_awprot_o      (),
+      .axi_awqos_o       (),
+      .axi_awvalid_o     (),
+      .axi_awready_i     (1'b0),
+      .axi_wdata_o       (),
+      .axi_wstrb_o       (),
+      .axi_wlast_o       (),
+      .axi_wvalid_o      (),
+      .axi_wready_i      (1'b0),
+      .axi_bid_i         ({AXI_ID_W{1'b0}}),
+      .axi_bresp_i       (2'b0),
+      .axi_bvalid_i      (1'b0),
+      .axi_bready_o      (),
+      .axi_arid_o        (),
+      .axi_araddr_o      (),
+      .axi_arlen_o       (),
+      .axi_arsize_o      (),
+      .axi_arburst_o     (),
+      .axi_arlock_o      (),
+      .axi_arcache_o     (),
+      .axi_arprot_o      (),
+      .axi_arqos_o       (),
+      .axi_arvalid_o     (),
+      .axi_arready_i     (1'b0),
+      .axi_rid_i         ({AXI_ID_W{1'b0}}),
+      .axi_rdata_i       ({AXI_DATA_W{1'b0}}),
+      .axi_rresp_i       (2'b0),
+      .axi_rlast_i       (1'b0),
+      .axi_rvalid_i      (1'b0),
+      .axi_rready_o      (),
+      .clk_i(clk_i),
+      .arst_i(arst_i),
+      .cke_i(cke_i)
+      );
 `endif
 
 endmodule

@@ -40,7 +40,6 @@ module iob_soc_tb;
    wire [       `IOB_SOC_DATA_W-1:0] iob_rdata_o;
    wire                              iob_ready_o;
    wire                              iob_rvalid_o;
-
    //iterator
    integer i = 0, n = 0;
    integer error, n_byte = 0;
@@ -105,6 +104,18 @@ module iob_soc_tb;
          end
       end
    end
+   
+`ifdef IOB_SOC_USE_ETHERNET
+   //IOb-SoC ethernet
+   reg                               ethernet_avalid_i;
+   reg  [`IOB_ETH_SWREG_ADDR_W-1:0]  ethernet_addr_i;
+   reg  [       `IOB_SOC_DATA_W-1:0] ethernet_wdata_i;
+   reg  [                       3:0] ethernet_wstrb_i;
+   wire [       `IOB_SOC_DATA_W-1:0] ethernet_rdata_o;
+   wire                              ethernet_ready_o;
+   wire                              ethernet_rvalid_o;
+`endif
+
 
    iob_soc_sim_wrapper iob_soc_sim_wrapper (
       .clk_i (clk),
@@ -118,6 +129,16 @@ module iob_soc_tb;
       .uart_rdata (iob_rdata_o),
       .uart_ready (iob_ready_o),
       .uart_rvalid(iob_rvalid_o)
+
+`ifdef IOB_SOC_USE_ETHERNET
+      .ethernet_avalid(iob_avalid_i),
+      .ethernet_addr  (iob_addr_i),
+      .ethernet_wdata (iob_wdata_i),
+      .ethernet_wstrb (iob_wstrb_i),
+      .ethernet_rdata (iob_rdata_o),
+      .ethernet_ready (iob_ready_o),
+      .ethernet_rvalid(iob_rvalid_o)
+`endif
    );
 
    task cpu_inituart;
