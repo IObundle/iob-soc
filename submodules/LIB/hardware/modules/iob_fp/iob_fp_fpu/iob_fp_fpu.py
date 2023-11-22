@@ -13,6 +13,7 @@ from iob_fp_uint2float import iob_fp_uint2float
 from iob_fp_float2int import iob_fp_float2int
 from iob_fp_float2uint import iob_fp_float2uint
 
+
 class iob_fp_fpu(iob_module):
     name = "iob_fp_fpu"
     version = "V0.10"
@@ -24,15 +25,15 @@ class iob_fp_fpu(iob_module):
         """Create submodules list with dependencies of this module"""
         super()._create_submodules_list(
             [
-            iob_fp_add,
-            iob_fp_mul,
-            iob_fp_div,
-            iob_fp_sqrt,
-            iob_fp_minmax,
-            iob_fp_cmp,
-            iob_fp_int2float,
-            iob_fp_uint2float,
-            iob_fp_float2int,
-            iob_fp_float2uint
+                iob_fp_add,
+                iob_fp_mul,
+                iob_fp_div,
+                iob_fp_sqrt,
+                iob_fp_minmax,
+                iob_fp_cmp,
+                iob_fp_int2float,
+                iob_fp_uint2float,
+                iob_fp_float2int,
+                iob_fp_float2uint,
             ]
         )
