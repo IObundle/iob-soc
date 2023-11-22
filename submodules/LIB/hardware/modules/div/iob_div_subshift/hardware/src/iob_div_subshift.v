@@ -57,6 +57,11 @@ module iob_div_subshift #(
 
    reg [$clog2(DATA_W+1)-1:0] pcnt_nxt;  //program counter
    wire [$clog2(DATA_W+1)-1:0] pcnt;
+   
+   /* verilator lint_off WIDTH */   
+   wire [$clog2(DATA_W+1)-1:0] last_stage = DATA_W + 1;
+   /* verilator lint_on WIDTH */
+
    iob_reg #(
        .DATA_W($clog2(DATA_W+1)),
        .RST_VAL({($clog2(DATA_W+1)){1'b0}})
@@ -74,29 +79,23 @@ module iob_div_subshift #(
       divisor_nxt = divisor_reg;
       done_o      = 1'b1;
 
-      case (pcnt)
-         0: begin  //wait for start, load operands and do it
-            if (!start_i) begin
-               pcnt_nxt = pcnt;
-            end else begin
-               divisor_nxt = divisor_i;
-               dqr_nxt     = {{DATA_W{1'b0}}, dividend_i};
-            end
-         end
-
-         DATA_W + 1: begin
-            pcnt_nxt = 1'b0;
-         end
-
-         default: begin  //shift and subtract
-            done_o = 1'b0;
-            if (~tmp[DATA_W]) begin
-                dqr_nxt = {tmp, dqr_reg[DATA_W-2 : 0], 1'b1};
-            end else begin
-                dqr_nxt = {dqr_reg[(2*DATA_W)-2 : 0], 1'b0};
-            end
-         end
-      endcase  // case (pcnt)
+      if(pcnt == 0) begin //wait for start, load operands and do it
+         if (!start_i) begin 
+            pcnt_nxt = pcnt;
+         end else begin
+            divisor_nxt = divisor_i;
+            dqr_nxt     = {1'b0,{DATA_W{1'b0}}, dividend_i};
+         end         
+      end else if (pcnt == last_stage) begin
+         pcnt_nxt = 0;
+      end else begin //shift and subtract
+         done_o = 1'b0;
+         if (~tmp[DATA_W]) begin
+             dqr_nxt = {tmp, dqr_reg[DATA_W-2 : 0], 1'b1};
+         end else begin
+             dqr_nxt = {1'b0,dqr_reg[(2*DATA_W)-2 : 0], 1'b0};
+         end         
+      end
    end
 
 endmodule
