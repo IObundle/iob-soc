@@ -3,7 +3,7 @@ set NAME [lindex $argv 0]
 
 # Connect to the Digilent Cable on localhost:3121
 
-open_hw
+open_hw_manager
 connect_hw_server -url localhost:3121
 current_hw_target [get_hw_targets */xilinx_tcf/Digilent/*]
 open_hw_target
