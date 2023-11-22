@@ -5,6 +5,7 @@ import shutil
 import copy
 
 import iob_colors
+import build_srcs
 from iob_module import iob_module
 from mkregs import mkregs
 
@@ -70,6 +71,9 @@ class iob_regfileif(iob_module):
         for idx, line in enumerate(lines):
             # Remove wires, as they have already been declared in the `*_inverted_swreg_inst.vs` file
             if line.startswith("wire "): lines[idx] = ""
+            # Modify parameters to fix ADDR_W and DATA_W
+            if line.startswith('  `include "iob_regfileif_inst_params.vs"'):
+                lines[idx] = "  .DATA_W(EXTERNAL_DATA_W),\n  .ADDR_W(EXTERNAL_ADDR_W),\n  .SYSTEM_VERSION(SYSTEM_VERSION)\n"
             # Replace name of swreg_0 instance
             if line.startswith(") swreg_0 ("): lines[idx] = ") swreg_1 (\n"
             # Rename `iob_ready_ and iob_rvalid` ports as this mapping was already used in the `*_inverted_swreg_inst.vs` file
@@ -97,6 +101,22 @@ class iob_regfileif(iob_module):
         # Write modified lines to file
         with open(f"{cls.build_dir}/hardware/src/{cls.name}_swreg_inst.vs", "w") as file:
             file.writelines(lines)
+
+        ##### Modify "iob_regfileif_inverted_swreg_gen.v" to include the `iob_regfileif_swreg_def.vh` file as well.
+        with open(f"{cls.build_dir}/hardware/src/{cls.name}_inverted_swreg_gen.v", "r") as file: lines = file.readlines()
+        for idx, line in enumerate(lines):
+            if line.startswith('`include "iob_regfileif_inverted_swreg_def.vh"'):
+                lines.insert(idx, '`include "iob_regfileif_swreg_def.vh"\n')
+                break
+        with open(f"{cls.build_dir}/hardware/src/{cls.name}_inverted_swreg_gen.v", "w") as file: file.writelines(lines)
+
+        ##### Modify "iob_regfileif_swreg_gen.v" to update the value of the 'VERSION' register
+        with open(f"{cls.build_dir}/hardware/src/{cls.name}_swreg_gen.v", "r") as file: lines = file.readlines()
+        version_str = build_srcs.version_str_to_digits(cls.version)
+        for idx, line in enumerate(lines):
+            if version_str in line:
+                lines[idx] = lines[idx].replace("16'h"+version_str, "SYSTEM_VERSION")
+        with open(f"{cls.build_dir}/hardware/src/{cls.name}_swreg_gen.v", "w") as file: file.writelines(lines)
 
         #### Create params, inst_params and conf files for inverted hardware. (Use symlinks to save disk space and highlight they are equal)
         if not os.path.isfile(f"{cls.build_dir}/hardware/src/{cls.name}_inverted_conf.vh"): os.symlink(f"{cls.name}_conf.vh", f"{cls.build_dir}/hardware/src/{cls.name}_inverted_conf.vh")
@@ -131,9 +151,10 @@ class iob_regfileif(iob_module):
 
             # Parameters
             {'name':'DATA_W',          'type':'P', 'val':'32', 'min':'NA', 'max':'32', 'descr':"Data bus width"},
-            {'name':'ADDR_W',          'type':'P', 'val':'`IOB_REGFILEIF_SWREG_ADDR_W', 'min':'NA', 'max':'32', 'descr':"Address bus width"},
+            {'name':'ADDR_W',          'type':'P', 'val':'`IOB_REGFILEIF_INVERTED_SWREG_ADDR_W', 'min':'NA', 'max':'32', 'descr':"Address bus width"},
             {'name':'EXTERNAL_DATA_W', 'type':'P', 'val':'32', 'min':'NA', 'max':'32', 'descr':"External data bus width"},
             {'name':'EXTERNAL_ADDR_W', 'type':'P', 'val':'`IOB_REGFILEIF_SWREG_ADDR_W', 'min':'NA', 'max':'32', 'descr':"External address bus width"},
+            {'name':'SYSTEM_VERSION', 'type':'P', 'val':"`IOB_REGFILEIF_VERSION", 'min':'NA', 'max':'NA', 'descr':"Version of the (secondary) system that instantiates this peripheral. This parameter will define the value of the 'VERSION' register, when read from the primary/external system."},
         ])
 
     @classmethod
