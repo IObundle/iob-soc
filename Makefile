@@ -62,14 +62,14 @@ test-all: pc-emul-test sim-test fpga-test doc-test
 
 # Install board server and client
 board_server_install:
-        sudo cp scripts/board_client.py /usr/local/bin/ && \
-        sudo cp scripts/board_server.py /usr/local/bin/ && \
+	sudo cp scripts/board_client.py /usr/local/bin/ && \
+	sudo cp scripts/board_server.py /usr/local/bin/ && \
         sudo cp scripts/board_server.service /etc/systemd/system/ && \
         sudo systemctl daemon-reload && \
         sudo systemctl restart board_server
 
 board_server_uninstall:
-        sudo systemctl stop board_server && \
+	sudo systemctl stop board_server && \
         sudo systemctl disable board_server && \
         sudo rm /usr/local/bin/board_client.py && \
         sudo rm /usr/local/bin/board_server.py && \
@@ -78,6 +78,6 @@ board_server_uninstall:
 
 
 board_server_status:
-        systemctl status board_server
+	systemctl status board_server
 
 .PHONY: setup sim-test fpga-test doc-test test-all board_server_install board_server_uninstall board_server_status
