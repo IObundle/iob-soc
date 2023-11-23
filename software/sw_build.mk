@@ -16,9 +16,9 @@ iob_soc_boot.hex: ../../software/iob_soc_boot.bin
 
 iob_soc_firmware.hex: iob_soc_firmware.bin
 ifdef USE_EXTMEM
-	../../scripts/makehex.py $< $(call GET_IOB_SOC_CONF_MACRO,SRAM_ADDR_W) > $@
-else
 	../../scripts/makehex.py $< $(call GET_IOB_SOC_CONF_MACRO,MEM_ADDR_W) > $@
+else
+	../../scripts/makehex.py $< $(call GET_IOB_SOC_CONF_MACRO,SRAM_ADDR_W) > $@
 endif
 	../../scripts/hex_split.py iob_soc_firmware .
 
