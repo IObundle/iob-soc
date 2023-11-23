@@ -15,7 +15,7 @@ iob_soc_boot.hex: ../../software/iob_soc_boot.bin
 	../../scripts/makehex.py $< $(call GET_IOB_SOC_CONF_MACRO,BOOTROM_ADDR_W) > $@
 
 iob_soc_firmware.hex: iob_soc_firmware.bin
-ifdef USE_EXTMEM
+ifeq ($(USE_EXTMEM),1)
 	../../scripts/makehex.py $< $(call GET_IOB_SOC_CONF_MACRO,MEM_ADDR_W) > $@
 else
 	../../scripts/makehex.py $< $(call GET_IOB_SOC_CONF_MACRO,SRAM_ADDR_W) > $@
