@@ -17,3 +17,5 @@ set_property PROGRAM.FILE "./$NAME.bit" [lindex [get_hw_devices] 0]
  
 program_hw_devices [lindex [get_hw_devices] 0]
 refresh_hw_device [lindex [get_hw_devices] 0]
+close_hw_manager
+
