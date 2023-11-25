@@ -170,9 +170,9 @@ endif
 #
 test: sim-test fpga-test doc-test
 
-ptest: test syn-test lint-test sim-cov
+ptest: dtest lint-test sim-cov
 
-dtest: sim-test fpga-test  syn-test 
+dtest: test syn-test 
 
 #
 # DEBUG
