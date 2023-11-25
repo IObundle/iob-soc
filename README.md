@@ -189,6 +189,29 @@ make fpga-test
 The FPGA test contents can be edited in IOb-SoC's top Makefile. 
 
 
+The remote machines that have an FPGA board attached to it must run our board
+access control service script, which can be found in
+`submodules/LIB/scripts/board_server.py`. When IOb-SoC needs to access a remote
+FPGA server, it runs the board access script located in
+`submodules/LIB/scripts/board_server.py`.
+
+To install `board_server.py` as a service, run the following command on the remote FPGA server:
+```
+sudo make board_server_install
+```
+
+To uninstall the service, run
+
+```
+sudo make board_server_uninstall
+```
+
+Finally, to query the board status, run 
+```
+sudo make board_server_uninstall
+```
+
+
 ## Compile the documentation
 
 To compile documents, the LaTeX software must be installed. Three document types are generated: the Product Brief (pb), the User Guide (ug), and a presentation. To build a given document type DOC, run
