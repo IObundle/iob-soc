@@ -29,3 +29,19 @@ sim-clean:
 
 .PHONY: all sim-build sim-run sim-test sim-clean
 
+
+# Install board server and client
+board_server_install:
+	sudo cp scripts/board_client.py /usr/local/bin/ && \
+	sudo cp scripts/board_server.py /usr/local/bin/ && \
+        sudo cp scripts/board_server.service /etc/systemd/system/ && \
+        sudo systemctl daemon-reload && \
+        sudo systemctl restart board_server
+
+board_server_uninstall:
+	sudo systemctl stop board_server && \
+        sudo systemctl disable board_server && \
+        sudo rm /usr/local/bin/board_client.py && \
+        sudo rm /usr/local/bin/board_server.py && \
+        sudo rm /etc/systemd/system/board_server.service && \
+        sudo systemctl daemon-reload
