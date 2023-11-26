@@ -2,6 +2,7 @@
 # directory
 
 SHELL:=bash
+#export LC_ALL=C; unset LANGUAGE
 
 include ../../config_build.mk
 
