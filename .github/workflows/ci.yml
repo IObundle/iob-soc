@@ -95,9 +95,8 @@ jobs:
         run: make fpga-run BOARD=CYCLONEV-GT-DK INIT_MEM=1 USE_EXTMEM=0
       - name: no init mem and ext mem
         run: make fpga-run BOARD=CYCLONEV-GT-DK INIT_MEM=0 USE_EXTMEM=1
-
   
-  aes-ku040:
+  ku040:
     runs-on: self-hosted
     timeout-minutes: 90
     if: ${{ !cancelled() }}
@@ -106,7 +105,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-        submodules: 'recursive'
+          submodules: 'recursive'
       - name: init mem and no ext mem
         run: make fpga-run BOARD=AES-KU040-DB-G INIT_MEM=1 USE_EXTMEM=0
       - name: no init mem and ext mem
@@ -124,5 +123,3 @@ jobs:
           submodules: 'recursive'
       - name: doc test
         run: nix-shell --run "make -C ../iob_soc_V* doc-test"
-
-
