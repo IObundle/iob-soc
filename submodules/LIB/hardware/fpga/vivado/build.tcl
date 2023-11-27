@@ -60,7 +60,7 @@ if { $IS_FPGA == "1" } {
     if {[file exists "vivado/$NAME\_tool.sdc"]} {
         read_xdc -mode out_of_context vivado/$NAME\_tool.sdc
     }
-    synth_design -include_dirs ../src -include_dirs ./src -include_dirs ./vivado/$BOARD -part $PART -top $NAME -mode out_of_context -flatten_hierarchy rebuilt -verbose
+    synth_design -include_dirs ../src -include_dirs ./src -include_dirs ./vivado/$BOARD -part $PART -top $NAME -mode out_of_context -flatten_hierarchy full -verbose
 }
 
 #set post-map custom assignments
