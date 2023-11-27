@@ -5,6 +5,7 @@ import subprocess
 from pathlib import Path
 import shutil
 import importlib.util
+import build_srcs
 
 # IObundle scripts imported:
 import if_gen
@@ -94,7 +95,7 @@ def syn_setup(python_module):
 
     for file in Path(f"{LIB_DIR}/{syn_dir}").rglob("*"):
         src_file = file.as_posix()
-        dest_file = re.sub(LIB_DIR, build_dir, src_file)
+        dest_file = os.path.join(build_dir, src_file.replace(LIB_DIR, ""))
         if os.path.isfile(src_file):
             os.makedirs(os.path.dirname(dest_file), exist_ok=True)
             shutil.copyfile(f"{src_file}", f"{dest_file}")

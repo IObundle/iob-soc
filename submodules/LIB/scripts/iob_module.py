@@ -704,8 +704,9 @@ class iob_module:
                 )
 
             # Copy document directory if cls is the top module and it has documentation
-            if (cls.is_top_module and
-                    os.path.isdir(os.path.join(module_class.setup_dir, "document"))):
+            if cls.is_top_module and os.path.isdir(
+                os.path.join(module_class.setup_dir, "document")
+            ):
                 shutil.copytree(
                     os.path.join(module_class.setup_dir, "document"),
                     os.path.join(cls.build_dir, "document"),
