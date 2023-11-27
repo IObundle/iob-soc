@@ -13,7 +13,6 @@ from iob_ram_t2p import iob_ram_t2p
 class iob_fifo_async(iob_module):
     name = "iob_fifo_async"
     version = "V0.10"
-    flows = "sim"
     setup_dir = os.path.dirname(__file__)
 
     @classmethod

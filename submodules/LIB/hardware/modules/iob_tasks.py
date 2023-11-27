@@ -7,7 +7,6 @@ from iob_module import iob_module
 class iob_tasks(iob_module):
     name = "iob_tasks"
     version = "V0.10"
-    flows = "sim"
     setup_dir = os.path.dirname(__file__)
 
     # Copy sources of this module to the build directory

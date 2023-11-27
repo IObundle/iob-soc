@@ -8,7 +8,6 @@ from iob_int_sqrt import iob_int_sqrt
 class iob_fp_sqrt(iob_module):
     name = "iob_fp_sqrt"
     version = "V0.10"
-    flows = "sim"
     setup_dir = os.path.dirname(__file__)
 
     @classmethod

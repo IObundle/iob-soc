@@ -26,7 +26,6 @@ class iob_module:
     csr_if = "iob"
     version = "1.0"  # Module version
     previous_version = None  # Module version
-    flows = ""  # Flows supported by this module
     setup_dir = ""  # Setup directory for this module
     build_dir = ""  # Build directory for this module
     confs = None  # List of configuration macros/parameters for this module
@@ -404,24 +403,23 @@ class iob_module:
     @classmethod
     def _generate_sw(cls, mkregs_obj, reg_table):
         """Generate common software files"""
-        if "emb" in cls.flows:
-            os.makedirs(cls.build_dir + "/software/src", exist_ok=True)
-            if cls.regs:
-                mkregs_obj.write_swheader(
-                    reg_table, cls.build_dir + "/software/src", cls.name
-                )
-                mkregs_obj.write_swcode(
-                    reg_table, cls.build_dir + "/software/src", cls.name
-                )
-                mkregs_obj.write_swheader(
-                    reg_table, cls.build_dir + "/software/src", cls.name
-                )
-            mk_conf.conf_h(cls.confs, cls.name, cls.build_dir + "/software/src")
+        os.makedirs(cls.build_dir + "/software/src", exist_ok=True)
+        if cls.regs:
+            mkregs_obj.write_swheader(
+                reg_table, cls.build_dir + "/software/src", cls.name
+            )
+            mkregs_obj.write_swcode(
+                reg_table, cls.build_dir + "/software/src", cls.name
+            )
+            mkregs_obj.write_swheader(
+                reg_table, cls.build_dir + "/software/src", cls.name
+            )
+        mk_conf.conf_h(cls.confs, cls.name, cls.build_dir + "/software/src")
 
     @classmethod
     def _generate_doc(cls, mkregs_obj, reg_table):
         """Generate common documentation files"""
-        if cls.is_top_module and "doc" in cls.flows:
+        if cls.is_top_module:
             mk_conf.generate_confs_tex(cls.confs, cls.build_dir + "/document/tsrc")
             ios_lib.generate_ios_tex(cls.ios, cls.build_dir + "/document/tsrc")
             if cls.regs:
@@ -464,10 +462,6 @@ class iob_module:
             "doc": cls.setup_dir + "/document/doc_setup.py",
         }
         for flow, filepath in flows_setup_files.items():
-            # Skip if flow not in flows list
-            if flow not in cls.flows:
-                continue
-
             # Skip if file does not exist
             if not os.path.isfile(filepath):
                 continue
@@ -633,10 +627,8 @@ class iob_module:
         config_build_mk(cls)
         # Create hardware directories
         os.makedirs(f"{cls.build_dir}/hardware/src", exist_ok=True)
-        if "sim" in cls.flows:
-            os.makedirs(f"{cls.build_dir}/hardware/simulation/src", exist_ok=True)
-        if "fpga" in cls.flows:
-            os.makedirs(f"{cls.build_dir}/hardware/fpga/src", exist_ok=True)
+        os.makedirs(f"{cls.build_dir}/hardware/simulation/src", exist_ok=True)
+        os.makedirs(f"{cls.build_dir}/hardware/fpga/src", exist_ok=True)
 
         shutil.copyfile(
             f"{build_srcs.LIB_DIR}/build.mk", f"{cls.build_dir}/Makefile"
@@ -712,7 +704,7 @@ class iob_module:
                 )
 
             # Copy document directory if cls is the top module and it has documentation
-            if cls.is_top_module and "doc" in cls.flows:
+            if cls.is_top_module:
                 shutil.copytree(
                     os.path.join(module_class.setup_dir, "document"),
                     os.path.join(cls.build_dir, "document"),

@@ -11,7 +11,6 @@ from iob_fp_round import iob_fp_round
 class iob_fp_div(iob_module):
     name = "iob_fp_div"
     version = "V0.10"
-    flows = "sim"
     setup_dir = os.path.dirname(__file__)
 
     @classmethod

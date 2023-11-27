@@ -97,26 +97,8 @@ def config_build_mk(python_module):
     file2create.write(f"CSR_IF={python_module.csr_if}\n\n")
     file2create.write(f"VERSION={python_module.version}\n")
     file2create.write(f"BUILD_DIR_NAME={python_module.build_dir.split('/')[-1]}\n")
-    file2create.write(f"FLOWS={python_module.flows}\n\n")
 
     file2create.close()
-
-
-# This function append a list of flows to the existing config_build.mk file
-# Usually called by submodules that have flows not contained in the top core/system
-# flows_list:  list of flows of module
-# flows_filter: list of flows that should be appended if they exist in flows_list
-# build_dir: build directory containing config_build.mk
-def append_flows_config_build_mk(flows_list, flows_filter, build_dir):
-    flows2append = ""
-    for flow in flows_filter:
-        if flow in flows_list:
-            flows2append += f"{flow} "
-
-    if not flows2append:
-        return
-
-    append_str_config_build_mk(f"FLOWS+={flows2append}\n\n", build_dir)
 
 
 # Append a string to the config_build.mk

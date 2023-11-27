@@ -8,7 +8,6 @@ from iob_utils import iob_utils
 class iob_asym_converter(iob_module):
     name = "iob_asym_converter"
     version = "V0.10"
-    flows = "sim"
     setup_dir = os.path.dirname(__file__)
 
     @classmethod

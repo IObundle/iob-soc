@@ -8,7 +8,6 @@ from iob_reg import iob_reg
 class iob_div_subshift(iob_module):
     name = "iob_div_subshift"
     version = "V0.10"
-    flows = "sim"
     setup_dir = os.path.dirname(__file__)
 
     @classmethod
