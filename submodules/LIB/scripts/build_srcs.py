@@ -95,7 +95,7 @@ def syn_setup(python_module):
 
     for file in Path(f"{LIB_DIR}/{syn_dir}").rglob("*"):
         src_file = file.as_posix()
-        dest_file = os.path.join(build_dir, src_file.replace(LIB_DIR, ""))
+        dest_file = os.path.join(build_dir, src_file.replace(LIB_DIR, "").strip("/"))
         if os.path.isfile(src_file):
             os.makedirs(os.path.dirname(dest_file), exist_ok=True)
             shutil.copyfile(f"{src_file}", f"{dest_file}")
