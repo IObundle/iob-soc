@@ -5,7 +5,7 @@
 
 include config_build.mk
 
-BSP_H ?= software/bsp.h
+BSP_H ?= software/src/bsp.h
 SIM_DIR = hardware/simulation
 BOARD_DIR = $(shell find -name $(BOARD) -type d -print -quit)
 
@@ -16,7 +16,7 @@ $(BSP_H):
 	if [[ $(MAKECMDGOALS) == *fpga* ]]; then \
 		cp $(BOARD_DIR)/bsp.vh $@; \
 	else \
-		cp $(SIM_DIR)/bsp.vh $@; \
+		cp $(SIM_DIR)/src/bsp.vh $@; \
 	fi; sed -i 's/`/#/g' $@;
 
 
