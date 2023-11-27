@@ -37,6 +37,7 @@ class iob_module:
     block_groups = None  # List of block groups for this module. Used for documentation.
     wire_list = None  # List of internal wires of the Verilog module. Used to interconnect module components.
     is_top_module = False  # Select if this module is the top module
+    use_netlist = False  # use module netlist
 
     _initialized_attributes = (
         False  # Store if attributes have been initialized for this class
@@ -534,7 +535,9 @@ class iob_module:
                 cls.__generate(_submodule, **setup_options)
             elif issubclass(_submodule, iob_module):
                 # Subclass of iob_module: setup the module
-                _submodule.__setup(**setup_options)
+                # Skip if module uses netlist and purpose is hardware
+                if not cls.use_netlist or setup_options["purpose"] != "hardware":
+                    _submodule.__setup(**setup_options)
             else:
                 # Unknown type
                 raise Exception(
@@ -698,6 +701,9 @@ class iob_module:
                 # If we are handling the `hardware/src` directory,
                 # copy to the correct destination based on `_setup_purpose`.
                 if directory == "hardware/src":
+                    # do not copy hardware/src if cls module uses netlist
+                    if cls.use_netlist:
+                        continue
                     dst_directory = cls.get_purpose_dir(cls.get_setup_purpose())
                 else:
                     dst_directory = directory
