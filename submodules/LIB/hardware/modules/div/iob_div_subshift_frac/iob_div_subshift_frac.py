@@ -10,7 +10,6 @@ from iob_div_subshift import iob_div_subshift
 class iob_div_subshift_frac(iob_module):
     name = "iob_div_subshift_frac"
     version = "V0.10"
-    flows = "sim"
     setup_dir = os.path.dirname(__file__)
 
     @classmethod

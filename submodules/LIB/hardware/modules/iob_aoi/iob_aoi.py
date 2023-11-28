@@ -10,7 +10,6 @@ from iob_inv import iob_inv
 class iob_aoi(iob_module):
     name = "iob_aoi"
     version = "V0.10"
-    flows = "sim"
     setup_dir = os.path.dirname(__file__)
 
     @classmethod

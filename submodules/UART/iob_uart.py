@@ -13,7 +13,6 @@ from iob_reg_e import iob_reg_e
 class iob_uart(iob_module):
     name = "iob_uart"
     version = "V0.10"
-    flows = "sim emb doc"
     setup_dir = os.path.dirname(__file__)
 
     @classmethod

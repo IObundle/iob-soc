@@ -8,7 +8,6 @@ from iob_fp_dq import iob_fp_dq
 class iob_fp_float2uint(iob_module):
     name = "iob_fp_float2uint"
     version = "V0.10"
-    flows = "sim"
     setup_dir = os.path.dirname(__file__)
 
     @classmethod
