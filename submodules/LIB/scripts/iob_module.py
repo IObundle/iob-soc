@@ -701,10 +701,15 @@ class iob_module:
                 # If we are handling the `hardware/src` directory,
                 # copy to the correct destination based on `_setup_purpose`.
                 if directory == "hardware/src":
-                    # do not copy hardware/src if cls module uses netlist
-                    if cls.use_netlist:
-                        continue
                     dst_directory = cls.get_purpose_dir(cls.get_setup_purpose())
+                    if cls.use_netlist:
+                        # copy SETUP_DIR/CORE.v netlist instead of
+                        # SETUP_DIR/hardware/src
+                        shutil.copyfile(
+                            os.path.join(module_class.setup_dir, f"{cls.name}.v"),
+                            os.path.join(cls.build_dir, f"{dst_directory}/{cls.name}.v"),
+                        )
+                        continue
                 else:
                     dst_directory = directory
 
