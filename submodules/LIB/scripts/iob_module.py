@@ -387,9 +387,10 @@ class iob_module:
             mkregs_obj.write_lparam_header(
                 reg_table, cls.build_dir + "/hardware/simulation/src", cls.name
             )
-            mkregs_obj.write_hwcode(
-                reg_table, cls.build_dir + "/hardware/src", cls.name
-            )
+            if not cls.use_netlist:
+                mkregs_obj.write_hwcode(
+                    reg_table, cls.build_dir + "/hardware/src", cls.name
+                )
 
         if cls.confs:
             mk_conf.params_vh(cls.confs, cls.name, cls.build_dir + "/hardware/src")
