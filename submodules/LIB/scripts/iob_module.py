@@ -313,8 +313,8 @@ class iob_module:
                     }
                 )
         if cls.regs:
-            # Auto-add iob_ctls module
-            if cls.name != "iob_ctls":
+            # Auto-add iob_ctls module, except if use_netlist
+            if cls.name != "iob_ctls" and not cls.use_netlist:
                 from iob_ctls import iob_ctls
 
                 iob_ctls.__setup(purpose=cls.get_setup_purpose())
