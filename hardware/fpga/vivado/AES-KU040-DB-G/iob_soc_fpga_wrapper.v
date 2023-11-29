@@ -94,8 +94,27 @@ module iob_soc_fpga_wrapper (
    assign ENET_TX_EN = ETH0_MTxEn;
    //assign ENET_TX_ERR = ETH0_MTxErr;
 
-   assign MColl = 1'b0;
-   assign MCrS = 1'b0;
+   assign ETH0_MColl = 1'b0;
+   assign ETH0_MCrS = 1'b0;
+   
+   //
+   //  PHY RESET
+   //
+   // TODO: Reset PHY using `MDIO` commands, instead of a dedicated reset
+   // signal.
+   reg [20-1:0] phy_rst_cnt;
+   reg ETH_PHY_RESETN;
+
+   localparam PHY_RST_CNT = 20'hFFFFF;
+
+   always @(posedge clk, posedge arst)
+      if (arst) begin
+         phy_rst_cnt    <= 0;
+         ETH_PHY_RESETN <= 0;
+      end else if (phy_rst_cnt != PHY_RST_CNT) phy_rst_cnt <= phy_rst_cnt + 1'b1;
+      else ETH_PHY_RESETN <= 1;
+
+   assign ENET_RESETN = ETH_PHY_RESETN;
 `endif
 
 

@@ -122,6 +122,16 @@ module iob_soc_tb;
       .rst_i (reset),
       .trap_o(trap),
 
+`ifdef IOB_SOC_USE_ETHERNET
+      .ethernet_avalid(1'b0),
+      .ethernet_addr  (`IOB_ETH_SWREG_ADDR_W'b0),
+      .ethernet_wdata (`IOB_SOC_DATA_W'b0),
+      .ethernet_wstrb (4'b0),
+      .ethernet_rdata (),
+      .ethernet_ready (),
+      .ethernet_rvalid(),
+`endif
+
       .uart_avalid(iob_avalid_i),
       .uart_addr  (iob_addr_i),
       .uart_wdata (iob_wdata_i),
@@ -129,16 +139,6 @@ module iob_soc_tb;
       .uart_rdata (iob_rdata_o),
       .uart_ready (iob_ready_o),
       .uart_rvalid(iob_rvalid_o)
-
-`ifdef IOB_SOC_USE_ETHERNET
-      .ethernet_avalid(iob_avalid_i),
-      .ethernet_addr  (iob_addr_i),
-      .ethernet_wdata (iob_wdata_i),
-      .ethernet_wstrb (iob_wstrb_i),
-      .ethernet_rdata (iob_rdata_o),
-      .ethernet_ready (iob_ready_o),
-      .ethernet_rvalid(iob_rvalid_o)
-`endif
    );
 
    task cpu_inituart;

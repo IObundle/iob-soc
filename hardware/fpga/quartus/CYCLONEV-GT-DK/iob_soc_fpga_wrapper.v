@@ -39,13 +39,13 @@ module iob_soc_fpga_wrapper (
    input  ENET_RX_D2,
    input  ENET_RX_D3,
    input  ENET_RX_DV,
-   input  ENET_RX_ERR,
+   //input  ENET_RX_ERR,
    output ENET_TX_D0,
    output ENET_TX_D1,
    output ENET_TX_D2,
    output ENET_TX_D3,
    output ENET_TX_EN,
-   output ENET_TX_ERR,
+   //output ENET_TX_ERR,
 `endif
    output trap
 );
@@ -90,15 +90,35 @@ module iob_soc_fpga_wrapper (
    assign ETH0_MRxClk = ETH_Clk;
    assign ETH0_MRxD = {ENET_RX_D3, ENET_RX_D2, ENET_RX_D1, ENET_RX_D0};
    assign ETH0_MRxDv = ENET_RX_DV;
-   assign ETH0_MRxErr = ENET_RX_ERR;
+   //assign ETH0_MRxErr = ENET_RX_ERR;
+   assign ETH0_MRxErr = 1'b0;
 
    assign ETH0_MTxClk = ETH_Clk;
    assign {ENET_TX_D3, ENET_TX_D2, ENET_TX_D1, ENET_TX_D0} = ETH0_MTxD;
    assign ENET_TX_EN = ETH0_MTxEn;
-   assign ENET_TX_ERR = ETH0_MTxErr;
+   //assign ENET_TX_ERR = ETH0_MTxErr;
 
-   assign MColl = 1'b0;
-   assign MCrS = 1'b0;
+   assign ETH0_MColl = 1'b0;
+   assign ETH0_MCrS = 1'b0;
+
+   //
+   //  PHY RESET
+   //
+   // TODO: Reset PHY using `MDIO` commands, instead of a dedicated reset
+   // signal.
+   reg [20-1:0] phy_rst_cnt;
+   reg ETH_PHY_RESETN;
+
+   localparam PHY_RST_CNT = 20'hFFFFF;
+
+   always @(posedge clk, posedge arst)
+      if (arst) begin
+         phy_rst_cnt    <= 0;
+         ETH_PHY_RESETN <= 0;
+      end else if (phy_rst_cnt != PHY_RST_CNT) phy_rst_cnt <= phy_rst_cnt + 1'b1;
+      else ETH_PHY_RESETN <= 1;
+
+   assign ENET_RESETN = ETH_PHY_RESETN;
 `endif
 
    //

@@ -180,7 +180,7 @@ always @(posedge trap[1]) begin
       .AXI_ID_W(AXI_ID_W),
       .AXI_ADDR_W(AXI_ADDR_W),
       .AXI_DATA_W(AXI_DATA_W),
-      .AXI_LEN_W(AXI_LEN_W),
+      .AXI_LEN_W(AXI_LEN_W)
    ) eth_tb (
       .inta_o(),
       .MTxClk(eth_clk),
@@ -191,8 +191,8 @@ always @(posedge trap[1]) begin
       .MRxDv(ETH0_MTxEn),
       .MRxD(ETH0_MTxD),
       .MRxErr(ETH0_MTxErr),
-      .MColl(),
-      .MCrS(),
+      .MColl(1'b0),
+      .MCrS(1'b0),
       .MDC(),
       .MDIO(),
       .iob_avalid_i(ethernet_avalid),
@@ -239,9 +239,9 @@ always @(posedge trap[1]) begin
       .axi_rlast_i       (1'b0),
       .axi_rvalid_i      (1'b0),
       .axi_rready_o      (),
-      .clk_i(clk_i),
-      .arst_i(arst_i),
-      .cke_i(cke_i)
+      .clk_i(clk),
+      .arst_i(arst),
+      .cke_i(cke)
       );
 `endif
 

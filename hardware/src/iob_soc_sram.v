@@ -54,7 +54,7 @@ module iob_soc_sram #(
       .dt_o  (rdata)
    );
 `else  // !`ifdef USE_SPRAM
-`ifdef MEM_NO_READ_ON_WRITE
+`ifdef IOB_MEM_NO_READ_ON_WRITE
    iob_ram_dp_be #(
       .HEXFILE             (HEXFILE),
       .ADDR_W              (SRAM_ADDR_W - 2),
@@ -77,7 +77,7 @@ module iob_soc_sram #(
       .dB_i   (i_wdata),
       .dB_o   (i_rdata)
    );
-`else  // !`ifdef MEM_NO_READ_ON_WRITE
+`else  // !`ifdef IOB_MEM_NO_READ_ON_WRITE
    iob_ram_dp_be_xil #(
       .HEXFILE(HEXFILE),
       .ADDR_W (SRAM_ADDR_W - 2),
