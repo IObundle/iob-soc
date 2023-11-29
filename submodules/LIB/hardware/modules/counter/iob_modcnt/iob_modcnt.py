@@ -8,7 +8,6 @@ from iob_counter_ld import iob_counter_ld
 class iob_modcnt(iob_module):
     name = "iob_modcnt"
     version = "V0.10"
-    flows = "sim"
     setup_dir = os.path.dirname(__file__)
 
     @classmethod

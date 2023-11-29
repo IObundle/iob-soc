@@ -13,7 +13,6 @@ from iob_utils import iob_utils
 class iob_fifo_sync(iob_module):
     name = "iob_fifo_sync"
     version = "V0.10"
-    flows = "sim"
     setup_dir = os.path.dirname(__file__)
 
     @classmethod

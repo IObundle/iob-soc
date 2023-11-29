@@ -17,7 +17,6 @@ from iob_fp_float2uint import iob_fp_float2uint
 class iob_fp_fpu(iob_module):
     name = "iob_fp_fpu"
     version = "V0.10"
-    flows = "sim"
     setup_dir = os.path.dirname(__file__)
 
     @classmethod

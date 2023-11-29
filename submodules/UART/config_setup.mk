@@ -15,6 +15,3 @@ UART_DIR ?= .
 
 # default configuration
 CONFIG ?= base
-
-# supported flows
-FLOWS := sim

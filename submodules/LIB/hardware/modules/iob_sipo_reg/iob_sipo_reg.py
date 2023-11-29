@@ -9,7 +9,6 @@ from iob_reg import iob_reg
 class iob_sipo_reg(iob_module):
     name = "iob_sipo_reg"
     version = "V0.10"
-    flows = "sim"
     setup_dir = os.path.dirname(__file__)
 
     @classmethod

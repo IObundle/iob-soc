@@ -8,7 +8,6 @@ from iob_reg_r import iob_reg_r
 class iob_diff(iob_module):
     name = "iob_diff"
     version = "V0.10"
-    flows = "sim"
     setup_dir = os.path.dirname(__file__)
 
     @classmethod

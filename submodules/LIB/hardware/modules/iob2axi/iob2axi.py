@@ -15,7 +15,6 @@ from iob_fifo_sync import iob_fifo_sync
 class iob2axi(iob_module):
     name = "iob2axi"
     version = "V0.10"
-    flows = "sim"
     setup_dir = os.path.dirname(__file__)
 
     @classmethod

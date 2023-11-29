@@ -8,7 +8,6 @@ from iob_ram_sp import iob_ram_sp
 class iob_ram_sp_se(iob_module):
     name = "iob_ram_sp_se"
     version = "V0.10"
-    flows = "sim"
     setup_dir = os.path.dirname(__file__)
 
     @classmethod

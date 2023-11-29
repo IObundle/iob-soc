@@ -5,7 +5,7 @@
 
 include config_build.mk
 
-BSP_H ?= software/bsp.h
+BSP_H ?= software/src/bsp.h
 SIM_DIR = hardware/simulation
 BOARD_DIR = $(shell find -name $(BOARD) -type d -print -quit)
 
@@ -16,21 +16,19 @@ $(BSP_H):
 	if [[ $(MAKECMDGOALS) == *fpga* ]]; then \
 		cp $(BOARD_DIR)/bsp.vh $@; \
 	else \
-		cp $(SIM_DIR)/bsp.vh $@; \
+		cp $(SIM_DIR)/src/bsp.vh $@; \
 	fi; sed -i 's/`/#/g' $@;
 
 
 # 
 # EMBEDDED SOFTWARE
 #
-ifneq ($(filter emb, $(FLOWS)),)
 SW_DIR=software
 fw-build: $(BSP_H)
 	make -C $(SW_DIR) build
 
 fw-clean:
 	make -C $(SW_DIR) clean
-endif
 
 #this target is not the same as fw-build because bsp.h is build for FPGA when fw-build is called
 #see $(BSP_H) target that uses $(MAKECMDGOALS) to check if fw-build is called for FPGA or simulation
@@ -39,7 +37,6 @@ fpga-fw-build: fw-build
 #
 # PC EMUL
 #
-ifneq ($(filter pc-emul, $(FLOWS)),)
 pc-emul-build: fw-build
 	make -C $(SW_DIR) build_emul
 
@@ -51,14 +48,12 @@ pc-emul-test: $(BSP_H)
 
 pc-emul-clean:
 	make -C $(SW_DIR) clean
-endif
 
 
 #
 # LINT
 #
 
-ifneq ($(filter lint, $(FLOWS)),)
 LINTER ?= spyglass
 LINT_DIR=hardware/lint
 lint-run:
@@ -70,13 +65,11 @@ lint-clean:
 lint-test:
 	make lint-run LINTER=spyglass
 	make lint-run LINTER=alint
-endif
 
 
 #
 # SIMULATE
 #
-ifneq ($(filter sim, $(FLOWS)),)
 sim-build: fw-build
 	make -C $(SIM_DIR) -j1 build
 
@@ -98,13 +91,11 @@ sim-clean:
 sim-cov: sim-clean
 	make -C $(SIM_DIR) -j1 run COV=1
 
-endif
 
 
 #
 # FPGA
 #
-ifneq ($(filter fpga, $(FLOWS)),)
 FPGA_DIR=hardware/fpga
 fpga-build:
 	make -C $(FPGA_DIR) -j1 build
@@ -121,26 +112,22 @@ fpga-debug:
 
 fpga-clean:
 	make -C $(FPGA_DIR) clean
-endif
 
 #
 # SYN
 #
-ifneq ($(filter syn, $(FLOWS)),)
 SYN_DIR=hardware/syn
 syn-build:
 	make -C $(SYN_DIR) build
 
 syn-clean:
 	make -C $(SYN_DIR) clean
-endif
 
 syn-test: syn-clean syn-build
 
 #
 # DOCUMENT
 #
-ifneq ($(filter doc, $(FLOWS)),)
 DOC_DIR=document
 doc-build: $(BSP_H)
 	make -C $(DOC_DIR) build
@@ -163,7 +150,6 @@ else
 doc-test:
 endif
 
-endif
 
 #
 # TEST
@@ -173,12 +159,6 @@ test: sim-test fpga-test doc-test
 ptest: dtest lint-test sim-cov
 
 dtest: test syn-test 
-
-#
-# DEBUG
-#
-debug:
-	@echo $(FLOWS)
 
 
 
