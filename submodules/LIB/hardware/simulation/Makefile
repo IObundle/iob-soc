@@ -65,12 +65,15 @@ endif
 GRAB_TIMEOUT ?= 300
 BOARD_GRAB_CMD=../../scripts/board_client.py grab $(GRAB_TIMEOUT)
 
-run: remote_build_dir
+run: test.log
+	test "$$(cat test.log)" = "Test passed!"
+
+test.log: remote_build_dir
 ifeq ($(SIM_SERVER),)
 ifneq ($(CONSOLE_CMD),)
-	$(BOARD_GRAB_CMD) -s 'make exec' -c '$(CONSOLE_CMD)' && echo "Checking test log..." && sleep 2 && test "$$(cat test.log)" = "Test passed!"
+	$(BOARD_GRAB_CMD) -s 'make exec' -c '$(CONSOLE_CMD)' && echo "Checking test log..." && sleep 2
 else
-	make exec && echo "Checking test log..." && sleep 2 && test "$$(cat test.log)" = "Test passed!"
+	make exec && echo "Checking test log..." && sleep 2
 endif
 else
 ifeq ($(VCD),1)
@@ -85,10 +88,11 @@ ifeq ($(COV),1)
 	sleep 1 && sync && scp $(SIM_SCP_FLAGS) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_SIM_DIR)/coverage_report_summary.rpt .
 	sleep 1 && sync && scp $(SIM_SCP_FLAGS) $(SIM_USER)@$(SIM_SERVER):$(REMOTE_SIM_DIR)/coverage_report_detail.rpt .
 endif
+endif
 ifeq ($(VCD),1)
 	make waves
 endif
-endif
+
 
 
 waves:

@@ -52,13 +52,13 @@ module iob_soc_ext_mem #(
       .arst_i(arst_i),
 
       // Front-end interface
-      .avalid_i        (i_req[1+FIRM_ADDR_W-2+`WRITE_W-1]),
-      .addr_i          (i_req[`ADDRESS(0, FIRM_ADDR_W-2)]),
-      .wdata_i         (i_req[`WDATA(0)]),
-      .wstrb_i         (i_req[`WSTRB(0)]),
-      .rdata_o         (i_resp[`RDATA(0)]),
-      .rvalid_o        (i_resp[`RVALID(0)]),
-      .ready_o         (i_resp[`READY(0)]),
+      .iob_avalid_i        (i_req[1+FIRM_ADDR_W-2+`WRITE_W-1]),
+      .iob_addr_i          (i_req[`ADDRESS(0, FIRM_ADDR_W-2)]),
+      .iob_wdata_i         (i_req[`WDATA(0)]),
+      .iob_wstrb_i         (i_req[`WSTRB(0)]),
+      .iob_rdata_o         (i_resp[`RDATA(0)]),
+      .iob_rvalid_o        (i_resp[`RVALID(0)]),
+      .iob_ready_o         (i_resp[`READY(0)]),
       //Control IO
       .invalidate_i (1'b0),
       .invalidate_o(),
@@ -116,13 +116,13 @@ module iob_soc_ext_mem #(
       .arst_i(arst_i),
 
       // Front-end interface
-      .avalid_i        (d_req[2+MEM_ADDR_W-2+`WRITE_W-1]),
-      .addr_i          (d_req[`ADDRESS(0, 1+MEM_ADDR_W-2)]),
-      .wdata_i         (d_req[`WDATA(0)]),
-      .wstrb_i         (d_req[`WSTRB(0)]),
-      .rdata_o         (d_resp[`RDATA(0)]),
-      .rvalid_o        (d_resp[`RVALID(0)]),
-      .ready_o         (d_resp[`READY(0)]),
+      .iob_avalid_i        (d_req[2+MEM_ADDR_W-2+`WRITE_W-1]),
+      .iob_addr_i          (d_req[`ADDRESS(0, 1+MEM_ADDR_W-2)]),
+      .iob_wdata_i         (d_req[`WDATA(0)]),
+      .iob_wstrb_i         (d_req[`WSTRB(0)]),
+      .iob_rdata_o         (d_resp[`RDATA(0)]),
+      .iob_rvalid_o        (d_resp[`RVALID(0)]),
+      .iob_ready_o         (d_resp[`READY(0)]),
       //Control IO
       .invalidate_i (1'b0),
       .invalidate_o(invalidate),
@@ -184,13 +184,13 @@ module iob_soc_ext_mem #(
       .USE_CTRL_CNT (0)            //Remove counters
    ) l2cache (
       // Native interface
-      .avalid_i        (l2cache_valid),
-      .addr_i          (l2cache_addr),
-      .wdata_i         (l2cache_wdata),
-      .wstrb_i         (l2cache_wstrb),
-      .rdata_o         (l2cache_rdata),
-      .rvalid_o        (l2cache_rvalid),
-      .ready_o         (l2cache_ready),
+      .iob_avalid_i        (l2cache_valid),
+      .iob_addr_i          (l2cache_addr),
+      .iob_wdata_i         (l2cache_wdata),
+      .iob_wstrb_i         (l2cache_wstrb),
+      .iob_rdata_o         (l2cache_rdata),
+      .iob_rvalid_o        (l2cache_rvalid),
+      .iob_ready_o         (l2cache_ready),
       //Control IO
       .invalidate_i (invalidate_reg & ~l2_avalid),
       .invalidate_o(),

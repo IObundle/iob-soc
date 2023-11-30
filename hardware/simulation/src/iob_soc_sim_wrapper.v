@@ -88,39 +88,7 @@ module iob_soc_sim_wrapper (
       .rst_i(arst)
    );
 `endif
-
-   //finish simulation on trap
-   /* //Sut
-always @(posedge trap[0]) begin
-      #10 $display("Found SUT CPU trap condition");
-      $finish;
-   end
-//IOb-SoC
-always @(posedge trap[1]) begin
-      #10 $display("Found iob_soc CPU trap condition");
-      $finish;
-   end */
-
-   //sram monitor - use for debugging programs
-   /*
-    wire [`IOB_SOC_SRAM_ADDR_W-1:0] sram_daddr = uut.int_mem0.int_sram.d_addr;
-    wire sram_dwstrb = |uut.int_mem0.int_sram.d_wstrb & uut.int_mem0.int_sram.d_valid;
-    wire sram_drdstrb = !uut.int_mem0.int_sram.d_wstrb & uut.int_mem0.int_sram.d_valid;
-    wire [`IOB_SOC_DATA_W-1:0] sram_dwdata = uut.int_mem0.int_sram.d_wdata;
-
-
-    wire sram_iwstrb = |uut.int_mem0.int_sram.i_wstrb & uut.int_mem0.int_sram.i_valid;
-    wire sram_irdstrb = !uut.int_mem0.int_sram.i_wstrb & uut.int_mem0.int_sram.i_valid;
-    wire [`IOB_SOC_SRAM_ADDR_W-1:0] sram_iaddr = uut.int_mem0.int_sram.i_addr;
-    wire [`IOB_SOC_DATA_W-1:0] sram_irdata = uut.int_mem0.int_sram.i_rdata;
-
-    
-    always @(posedge sram_dwstrb)
-    if(sram_daddr == 13'h090d)  begin
-    #10 $display("Found CPU memory condition at %f : %x : %x", $time, sram_daddr, sram_dwdata );
-    //$finish;
-      end
-    */
+ 
    //Manually added testbench uart core. RS232 pins attached to the same pins
    //of the iob_soc UART0 instance to communicate with it
    // The interface of iob_soc UART0 is assumed to be the first portmapped interface (UART_*)

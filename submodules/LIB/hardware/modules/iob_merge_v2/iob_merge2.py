@@ -21,7 +21,6 @@ class iob_merge2(iob_module):
         """Init module attributes"""
         cls.name = "iob_merge2"
         cls.version = "V0.10"
-        cls.flows = "sim"
         cls.setup_dir = os.path.dirname(__file__)
         cls.submodules = [
             iob_reg,

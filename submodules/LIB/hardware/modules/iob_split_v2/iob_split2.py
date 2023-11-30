@@ -21,7 +21,6 @@ class iob_split2(iob_module):
         """Init module attributes"""
         cls.name = "iob_split2"
         cls.version = "V0.10"
-        cls.flows = "sim"
         cls.setup_dir = os.path.dirname(__file__)
         cls.interfaces = [
             {"interface": "clk_en_rst"},

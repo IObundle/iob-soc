@@ -24,7 +24,6 @@ class iob_uart(iob_module):
         """Init module attributes"""
         cls.name = "iob_uart"
         cls.version = "V0.10"
-        cls.flows = "sim emb doc"
         cls.setup_dir = os.path.dirname(__file__)
         cls.submodules = [
             iob_utils,

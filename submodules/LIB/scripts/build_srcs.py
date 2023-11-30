@@ -5,6 +5,7 @@ import subprocess
 from pathlib import Path
 import shutil
 import importlib.util
+import build_srcs
 
 # IObundle scripts imported:
 import if_gen
@@ -17,32 +18,25 @@ LIB_DIR = "submodules/LIB"
 
 # This function sets up the flows for this core
 def flows_setup(python_module):
-    core_flows = python_module.flows
 
     # Setup simulation
-    if "sim" in core_flows:
-        sim_setup(python_module)
+    sim_setup(python_module)
 
     # Setup fpga
-    if "fpga" in core_flows:
-        fpga_setup(python_module)
+    fpga_setup(python_module)
 
     # Setup harware
     hw_setup(python_module)
 
-    if "lint" in core_flows:
-        lint_setup(python_module)
+    lint_setup(python_module)
 
-    if "syn" in core_flows:
-        syn_setup(python_module)
+    syn_setup(python_module)
 
     # Setup software
-    if "emb" in core_flows:
-        sw_setup(python_module)
+    sw_setup(python_module)
 
     # Setup documentation if it is top module
-    if "doc" in core_flows and python_module.is_top_module:
-        doc_setup(python_module)
+    doc_setup(python_module)
 
 
 def hw_setup(python_module):
@@ -54,7 +48,6 @@ def hw_setup(python_module):
 # Setup simulation related files/modules
 # module: python module representing a *_setup.py file of the root directory of the core/system.
 def sim_setup(python_module):
-    core_flows = python_module.flows
     build_dir = python_module.build_dir
 
     sim_dir = "hardware/simulation"
@@ -70,12 +63,8 @@ def sim_setup(python_module):
 
 # Currently not used because it is not needed
 def fpga_setup(python_module):
-    core_flows = python_module.flows
     build_dir = python_module.build_dir
     fpga_dir = "hardware/fpga"
-
-    # append this core hw flows to config_build
-    mk_conf.append_flows_config_build_mk(core_flows, ["fpga"], build_dir)
 
     # Copy LIB fpga files
     shutil.copytree(
@@ -105,7 +94,7 @@ def syn_setup(python_module):
 
     for file in Path(f"{LIB_DIR}/{syn_dir}").rglob("*"):
         src_file = file.as_posix()
-        dest_file = re.sub(LIB_DIR, build_dir, src_file)
+        dest_file = os.path.join(build_dir, src_file.replace(LIB_DIR, "").strip("/"))
         if os.path.isfile(src_file):
             os.makedirs(os.path.dirname(dest_file), exist_ok=True)
             shutil.copyfile(f"{src_file}", f"{dest_file}")
@@ -153,23 +142,15 @@ def get_module_function(module_path, **kwargs):
 # Setup simulation related files/modules
 # module: python module representing a *_setup.py file of the root directory of the core/system.
 def sw_setup(python_module):
-    core_flows = python_module.flows
     build_dir = python_module.build_dir
     setup_dir = python_module.setup_dir
 
-    # append this core hw flows to config_build
-    if "emb" not in core_flows:
-        mk_conf.append_flows_config_build_mk(core_flows, ["emb"], build_dir)
-    if "pc-emul" not in core_flows:
-        mk_conf.append_flows_config_build_mk(core_flows, ["pc-emul"], build_dir)
+    os.makedirs(build_dir + "/software/src", exist_ok=True)
+    # Copy LIB software Makefile
+    shutil.copy(f"{LIB_DIR}/software/Makefile", f"{build_dir}/software/Makefile")
 
-    if "emb" in core_flows or "pc-emul" in core_flows:
-        os.makedirs(build_dir + "/software/src", exist_ok=True)
-        # Copy LIB software Makefile
-        shutil.copy(f"{LIB_DIR}/software/Makefile", f"{build_dir}/software/Makefile")
-
-        # Create 'scripts/' directory
-        python_setup(build_dir)
+    # Create 'scripts/' directory
+    python_setup(build_dir)
 
 
 def python_setup(build_dir):
@@ -189,7 +170,6 @@ def python_setup(build_dir):
 
 
 def doc_setup(python_module):
-    core_flows = python_module.flows
     build_dir = python_module.build_dir
     setup_dir = python_module.setup_dir
 
@@ -381,14 +361,13 @@ def version_file(
     tex_dir = f"{build_dir}/document/tsrc"
     verilog_dir = f"{build_dir}/hardware/src"
 
-    if "doc" in python_module.flows:
-        os.makedirs(tex_dir, exist_ok=True)
-        tex_file = f"{tex_dir}/{core_name}_version.tex"
-        with open(tex_file, "w") as tex_f:
-            tex_f.write(core_version)
-        tex_file = f"{tex_dir}/{core_name}_previous_version.tex"
-        with open(tex_file, "w") as tex_f:
-            tex_f.write(core_previous_version)
+    os.makedirs(tex_dir, exist_ok=True)
+    tex_file = f"{tex_dir}/{core_name}_version.tex"
+    with open(tex_file, "w") as tex_f:
+        tex_f.write(core_version)
+    tex_file = f"{tex_dir}/{core_name}_previous_version.tex"
+    with open(tex_file, "w") as tex_f:
+        tex_f.write(core_previous_version)
 
     # Don't create version.vh if module has regs (because it already has the VERSION register)
     if python_module.regs:

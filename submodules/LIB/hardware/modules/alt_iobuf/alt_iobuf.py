@@ -17,7 +17,6 @@ class alt_iobuf(iob_module):
         """Init module attributes"""
         cls.name = "alt_iobuf"
         cls.version = "V0.10"
-        cls.flows = "sim"
         cls.setup_dir = os.path.dirname(__file__)
 
 

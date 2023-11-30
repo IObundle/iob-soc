@@ -17,7 +17,6 @@ class iob_reset_sync(iob_module):
         """Init module attributes"""
         cls.name = "iob_reset_sync"
         cls.version = "V0.10"
-        cls.flows = "sim"
         cls.setup_dir = os.path.dirname(__file__)
 
 

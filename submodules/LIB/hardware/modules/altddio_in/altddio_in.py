@@ -11,15 +11,14 @@ if __name__ == "__main__":
     iob_module.find_modules()
 
 
-class altddion_in(iob_module):
+class altddio_in(iob_module):
     @classmethod
     def _init_attributes(cls):
         """Init module attributes"""
-        cls.name = "altddion_in"
+        cls.name = "altddio_in"
         cls.version = "V0.10"
-        cls.flows = "sim"
         cls.setup_dir = os.path.dirname(__file__)
 
 
 if __name__ == "__main__":
-    altddion_in.setup_as_top_module()
+    altddio_in.setup_as_top_module()

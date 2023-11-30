@@ -20,11 +20,9 @@ module iob_piso_reg #(
 
    iob_reg #(
       .DATA_W (DATA_W),
-      .RST_VAL(0),
-      .CLKEDGE("posedge")
+      .RST_VAL(0)
    ) reg0 (
       `include "clk_en_rst_s_s_portmap.vs"
-
       .data_i(data),
       .data_o(data_reg)
    );

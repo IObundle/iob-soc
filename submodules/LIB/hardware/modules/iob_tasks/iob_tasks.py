@@ -1,5 +1,4 @@
 import os
-import shutil
 
 # Find python modules
 if __name__ == "__main__":
@@ -14,10 +13,12 @@ if __name__ == "__main__":
 
 
 class iob_tasks(iob_module):
-    name = "iob_tasks"
-    version = "V0.10"
-    flows = "sim"
-    setup_dir = os.path.dirname(__file__)
+    @classmethod
+    def _init_attributes(cls):
+        """Init module attributes"""
+        cls.name = "iob_tasks"
+        cls.version = "V0.10"
+        cls.setup_dir = os.path.dirname(__file__)
 
 
 if __name__ == "__main__":

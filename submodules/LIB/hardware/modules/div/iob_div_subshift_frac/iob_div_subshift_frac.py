@@ -21,7 +21,6 @@ class iob_div_subshift_frac(iob_module):
         """Init module attributes"""
         cls.name = "iob_div_subshift_frac"
         cls.version = "V0.10"
-        cls.flows = "sim"
         cls.setup_dir = os.path.dirname(__file__)
         cls.interfaces = [
             {"interface": "clk_en_rst"},

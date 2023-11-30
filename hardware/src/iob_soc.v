@@ -188,12 +188,12 @@ module iob_soc #(
    // EXTERNAL DDR MEMORY
    //
 
-   wire [ 1+SRAM_ADDR_W-2+DATA_W+DATA_W/8-1:0] ext_mem0_i_req;
+   wire [ 1+MEM_ADDR_W-2+DATA_W+DATA_W/8-1:0] ext_mem0_i_req;
    wire [1+MEM_ADDR_W+1-2+DATA_W+DATA_W/8-1:0] ext_mem0_d_req;
 
    assign ext_mem0_i_req = {
       ext_mem_i_req[`AVALID(0)],
-      ext_mem_i_req[`ADDRESS(0, `IOB_SOC_SRAM_ADDR_W)-2],
+      ext_mem_i_req[`ADDRESS(0, MEM_ADDR_W)-2],
       ext_mem_i_req[`WRITE(0)]
    };
    assign ext_mem0_d_req = {
@@ -208,7 +208,7 @@ module iob_soc #(
    iob_soc_ext_mem #(
       .ADDR_W     (ADDR_W),
       .DATA_W     (DATA_W),
-      .FIRM_ADDR_W(SRAM_ADDR_W),
+      .FIRM_ADDR_W(MEM_ADDR_W),
       .MEM_ADDR_W (MEM_ADDR_W),
       .DDR_ADDR_W (`DDR_ADDR_W),
       .DDR_DATA_W (`DDR_DATA_W),

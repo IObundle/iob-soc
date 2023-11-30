@@ -17,7 +17,6 @@ class iob_inv(iob_module):
         """Init module attributes"""
         cls.name = "iob_inv"
         cls.version = "V0.10"
-        cls.flows = "sim"
         cls.setup_dir = os.path.dirname(__file__)
 
 

@@ -4,7 +4,7 @@
 #include "iob_soc_system.h"
 
 #ifdef IOB_SOC_USE_EXTMEM
-#include "iob-cache.h"
+#include "iob_cache_swreg.h"
 #endif
 
 // defined here (and not in periphs.h) because it is the only peripheral used
@@ -19,7 +19,7 @@ int main() {
   uart_init(UART_BASE, FREQ / BAUD);
 
 #ifdef IOB_SOC_USE_EXTMEM
-  cache_init(1 << IOB_SOC_E, IOB_SOC_MEM_ADDR_W);
+  IOB_CACHE_INIT_BASEADDR((1 << IOB_SOC_E) + (1 << IOB_SOC_MEM_ADDR_W));
 #endif
 
   // connect with console

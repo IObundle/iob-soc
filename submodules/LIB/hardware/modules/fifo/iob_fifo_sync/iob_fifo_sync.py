@@ -25,7 +25,6 @@ class iob_fifo_sync(iob_module):
         """Init module attributes"""
         cls.name = "iob_fifo_sync"
         cls.version = "V0.10"
-        cls.flows = "sim"
         cls.setup_dir = os.path.dirname(__file__)
         cls.submodules = [
             iob_reg_e,

@@ -44,14 +44,16 @@ jobs:
 
   cache:
     runs-on: self-hosted
-    timeout-minutes: 5
+    timeout-minutes: 20
 
     steps:
       - uses: actions/checkout@v3
         with:
           submodules: 'recursive'
-      - name: run cache test
+      - name: run simulation test
         run: make -C submodules/CACHE sim-test
+      - name: run fpga test
+        run: make -C submodules/CACHE fpga-test
 
 
   pc-emul:
@@ -93,9 +95,8 @@ jobs:
         run: make fpga-run BOARD=CYCLONEV-GT-DK INIT_MEM=1 USE_EXTMEM=0
       - name: no init mem and ext mem
         run: make fpga-run BOARD=CYCLONEV-GT-DK INIT_MEM=0 USE_EXTMEM=1
-
   
-  aes-ku040:
+  ku040:
     runs-on: self-hosted
     timeout-minutes: 90
     if: ${{ !cancelled() }}
@@ -114,7 +115,7 @@ jobs:
     runs-on: self-hosted
     timeout-minutes: 60
     if: ${{ !cancelled() }}
-    needs: [ cyclonev, aes-ku040 ]
+    needs: [ cyclonev ]
   
     steps:
       - uses: actions/checkout@v3
@@ -122,5 +123,3 @@ jobs:
           submodules: 'recursive'
       - name: doc test
         run: nix-shell --run "make -C ../iob_soc_V* doc-test"
-
-

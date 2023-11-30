@@ -19,7 +19,6 @@ class iob_f2s_1bit_sync(iob_module):
         """Init module attributes"""
         cls.name = "iob_f2s_1bit_sync"
         cls.version = "V0.10"
-        cls.flows = "sim"
         cls.setup_dir = os.path.dirname(__file__)
         cls.submodules = [
             iob_reg,

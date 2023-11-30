@@ -20,7 +20,6 @@ class iob_pulse_gen(iob_module):
         """Init module attributes"""
         cls.name = "iob_pulse_gen"
         cls.version = "V0.10"
-        cls.flows = "sim"
         cls.setup_dir = os.path.dirname(__file__)
         cls.interfaces = [
             {"interface": "clk_en_rst"},
