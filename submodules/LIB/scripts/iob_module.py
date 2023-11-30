@@ -700,7 +700,9 @@ class iob_module:
                         # SETUP_DIR/hardware/src
                         shutil.copyfile(
                             os.path.join(module_class.setup_dir, f"{cls.name}.v"),
-                            os.path.join(cls.build_dir, f"{dst_directory}/{cls.name}.v"),
+                            os.path.join(
+                                cls.build_dir, f"{dst_directory}/{cls.name}.v"
+                            ),
                         )
                         continue
                 else:
