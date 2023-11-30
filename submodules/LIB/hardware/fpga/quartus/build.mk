@@ -23,7 +23,7 @@ endif
 ifeq ($(IS_FPGA),1)
 FPGA_OBJ:=$(FPGA_TOP).sof
 else
-FPGA_OBJ:=resynthesis/$(FPGA_TOP)_netlist.v
+FPGA_OBJ:=$(FPGA_TOP)_netlist.v
 endif
 
 # Set the Quartus command to porgram the FPGA

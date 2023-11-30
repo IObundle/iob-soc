@@ -148,7 +148,7 @@ if {$IS_FPGA != "1"} {
     }
     
     #rename netlist
-    set netlist_file "resynthesis/$NAME\_netlist.v"
+    set netlist_file "$NAME\_netlist.v"
     if {[file exists $netlist_file] == 1} {
         file delete $netlist_file
     }
