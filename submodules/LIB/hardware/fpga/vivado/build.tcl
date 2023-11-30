@@ -3,27 +3,17 @@ set NAME [lindex $argv 0]
 set CSR_IF [lindex $argv 1]
 set BOARD [lindex $argv 2]
 set VSRC [lindex $argv 3]
-set VIP [lindex $argv 4]
-set IS_FPGA [lindex $argv 5]
-set USE_EXTMEM [lindex $argv 6]
-set N_INTERCONNECT_SLAVES [lindex $argv 7]
+set IS_FPGA [lindex $argv 4]
+set USE_EXTMEM [lindex $argv 5]
+set N_INTERCONNECT_SLAVES [lindex $argv 6]
 
-#verilog sources
+#verilog sources, vivado IPs, use file extension
 foreach file [split $VSRC \ ] {
-    puts $file
-    if {$file != "" && $file != " " && $file != "\n"} {
-        read_verilog -sv $file
-    }
-}
-
-#vivado IPs
-foreach file [split $VIP \ ] {
     puts $file
     if { [ file extension $file ] == ".edif" } {
         read_edif $file
-    }
-    if { [ file extension $file ] == ".v" } {
-        read_verilog $file
+    } elseif {$file != "" && $file != " " && $file != "\n"} {
+        read_verilog -sv $file
     }
 }
 
@@ -60,7 +50,7 @@ if { $IS_FPGA == "1" } {
     if {[file exists "vivado/$NAME\_tool.sdc"]} {
         read_xdc -mode out_of_context vivado/$NAME\_tool.sdc
     }
-    synth_design -include_dirs ../src -include_dirs ./src -include_dirs ./vivado/$BOARD -part $PART -top $NAME -mode out_of_context -flatten_hierarchy rebuilt -verbose
+    synth_design -include_dirs ../src -include_dirs ./src -include_dirs ./vivado/$BOARD -part $PART -top $NAME -mode out_of_context -flatten_hierarchy full -verbose
 }
 
 #set post-map custom assignments

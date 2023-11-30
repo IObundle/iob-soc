@@ -23,15 +23,15 @@ endif
 ifeq ($(IS_FPGA),1)
 FPGA_OBJ:=$(FPGA_TOP).sof
 else
-FPGA_OBJ:=resynthesis/$(FPGA_TOP)_netlist.v
+FPGA_OBJ:=$(FPGA_TOP)_netlist.v
 endif
 
 # Set the Quartus command to porgram the FPGA
 FPGA_PROG=nios2_command_shell.sh quartus_pgm -m jtag -c 1 -o "p;$(FPGA_TOP).sof"
 
-QUARTUS_FLAGS = -t quartus/build.tcl $(FPGA_TOP) $(BOARD) "$(VSRC)" "$(IP) " $(IS_FPGA) $(USE_EXTMEM) $(QUARTUS_SEED) $(USE_QUARTUS_PRO)
+QUARTUS_FLAGS = -t quartus/build.tcl $(FPGA_TOP) $(BOARD) "$(VSRC)" $(IS_FPGA) $(USE_EXTMEM) $(QUARTUS_SEED) $(USE_QUARTUS_PRO)
 
-$(FPGA_OBJ): $(VHDR) $(VSRC) $(IP) $(wildcard $(BOARD)/*.sdc)
+$(FPGA_OBJ): $(VHDR) $(VSRC) $(wildcard $(BOARD)/*.sdc)
 	nios2_command_shell.sh quartus_sh $(QUARTUS_FLAGS)
 
 quartus-clean:
