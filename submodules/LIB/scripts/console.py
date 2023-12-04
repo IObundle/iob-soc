@@ -42,34 +42,26 @@ def tb_write(data, number_of_bytes=1, is_file=False):
 def tb_read_until(end=b"\x00"):
     data = b""
     while True:
-        byte = tb_read(1)
+        byte = tb_read.read(1)
         if byte == end:
             return data
         else:
             data += byte
 
 
-def tb_read(number_of_bytes, is_file=False):
+def tb_read_file(number_of_bytes):
     data = b""
     transferred_bytes = 0
     read_percentage = 100
     while transferred_bytes < number_of_bytes:
-        f = open("./soc2cnsl", "rb")
-        while os.path.getsize("./soc2cnsl") == 0:
-            pass
-        byte = f.read(1)
+        byte = tb_read.read(1)
         data += byte
         transferred_bytes += 1
-        if is_file:
-            new_percentage = int(100 / number_of_bytes * transferred_bytes)
-            if read_percentage != new_percentage:
-                read_percentage = new_percentage
-                if not read_percentage % 10:
-                    print("%3d %c" % (read_percentage, "%"))
-        f.close()
-        # remove byte from file
-        f = open("./soc2cnsl", "w")
-        f.close()
+        new_percentage = int(100 / number_of_bytes * transferred_bytes)
+        if read_percentage != new_percentage:
+            read_percentage = new_percentage
+            if not read_percentage % 10:
+                print("%3d %c" % (read_percentage, "%"))
     return data
 
 
@@ -121,7 +113,7 @@ def cnsl_sendfile():
         ser.write(f.read())  # send file
     else:
         tb_write(file_size.to_bytes(4, byteorder="little"), 4)
-        while tb_read(1) != ACK:
+        while tb_read.read(1) != ACK:
             pass
         tb_write(f.read(), file_size, True)
     f.close()
@@ -144,10 +136,10 @@ def cnsl_recvfile():
         print(": file size: {0} bytes".format(file_size))
         data = serial_read(file_size)
     else:
-        file_size = int.from_bytes(tb_read(4), byteorder="little", signed=False)
+        file_size = int.from_bytes(tb_read.read(4), byteorder="little", signed=False)
         print(PROGNAME, end=" ")
         print(": file size: {0} bytes".format(file_size))
-        data = tb_read(file_size, True)
+        data = tb_read_file(file_size)
     f.write(data)
     f.close()
     print(PROGNAME, end="")
@@ -189,6 +181,7 @@ def clean_exit():
     if SerialFlag:
         ser.close()
     else:
+        tb_read.close()
         os.remove("./cnsl2soc")
         os.remove("./soc2cnsl")
     exit(0)
@@ -242,10 +235,14 @@ def init_serial():
 
 
 def init_files():
+    read = "./soc2cnsl"
+    os.mkfifo(read)
+    global tb_read
     f = open("./cnsl2soc", "w")
     f.close()
-    f = open("./soc2cnsl", "w")
-    f.close()
+    print(PROGNAME, end="")
+    print(": waiting for connection from SoC testbench...")
+    tb_read = open(read, "rb")
 
 
 def init_console():
@@ -290,9 +287,10 @@ def main():
 
         # get byte from target
         if not SerialFlag:
-            byte = tb_read(1)
+            byte = tb_read.read(1)
         elif ser.isOpen():
             byte = ser.read()
+
         # process command
         if byte == ENQ:
             if not gotENQ:

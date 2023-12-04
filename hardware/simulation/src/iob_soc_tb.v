@@ -65,12 +65,13 @@ module iob_soc_tb;
       txread_reg  = 0;
 
 
-      soc2cnsl_fd = $fopen("soc2cnsl", "r+");
-      while (!soc2cnsl_fd) begin
-         $display("Could not open \"soc2cnsl\"");
-         soc2cnsl_fd = $fopen("soc2cnsl", "r+");
+      cnsl2soc_fd = $fopen("cnsl2soc", "r");
+      while (!cnsl2soc_fd) begin
+         $display("Could not open \"cnsl2soc\"");
+         cnsl2soc_fd = $fopen("cnsl2soc", "r");
       end
-      $fclose(soc2cnsl_fd);
+      $fclose(cnsl2soc_fd);
+      soc2cnsl_fd = $fopen("soc2cnsl", "w");
 
       while (1) begin
          while (!rxread_reg && !txread_reg) begin
@@ -78,20 +79,15 @@ module iob_soc_tb;
             iob_read(`IOB_UART_TXREADY_ADDR, txread_reg, `IOB_UART_TXREADY_W);
          end
          if (rxread_reg) begin
-            soc2cnsl_fd = $fopen("soc2cnsl", "r");
-            n           = $fgets(cpu_char, soc2cnsl_fd);
-            if (n == 0) begin
-               $fclose(soc2cnsl_fd);
-               iob_read(`IOB_UART_RXDATA_ADDR, cpu_char, `IOB_UART_RXDATA_W);
-               soc2cnsl_fd = $fopen("soc2cnsl", "w");
-               $fwriteh(soc2cnsl_fd, "%c", cpu_char);
-               rxread_reg = 0;
-            end
-            $fclose(soc2cnsl_fd);
+            iob_read(`IOB_UART_RXDATA_ADDR, cpu_char, `IOB_UART_RXDATA_W);
+            $fwriteh(soc2cnsl_fd, "%c", cpu_char);
+            $fflush(soc2cnsl_fd);
+            rxread_reg = 0;
          end
          if (txread_reg) begin
             cnsl2soc_fd = $fopen("cnsl2soc", "r");
             if (!cnsl2soc_fd) begin
+               $fclose(soc2cnsl_fd);
                $finish();
             end
             n = $fscanf(cnsl2soc_fd, "%c", cpu_char);

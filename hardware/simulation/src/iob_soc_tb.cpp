@@ -112,11 +112,11 @@ int main(int argc, char **argv, char **env) {
   while ((cnsl2soc_fd = fopen("./cnsl2soc", "rb")) == NULL)
     ;
   fclose(cnsl2soc_fd);
+  soc2cnsl_fd = fopen("./soc2cnsl", "wb");
 
   while (1) {
     if (dut->trap_o > 0) {
       printf("\nTESTBENCH: force cpu trap exit\n");
-      soc2cnsl_fd = fopen("./soc2cnsl", "wb");
       cpu_char = 4;
       fwrite(&cpu_char, sizeof(char), 1, soc2cnsl_fd);
       fclose(soc2cnsl_fd);
@@ -127,20 +127,14 @@ int main(int argc, char **argv, char **env) {
       uartread(IOB_UART_TXREADY_ADDR, &txread_reg);
     }
     if (rxread_reg) {
-      if ((soc2cnsl_fd = fopen("./soc2cnsl", "rb")) != NULL) {
-        able2read = fread(&cpu_char, sizeof(char), 1, soc2cnsl_fd);
-        if (able2read == 0) {
-          fclose(soc2cnsl_fd);
-          uartread(IOB_UART_RXDATA_ADDR, &cpu_char);
-          soc2cnsl_fd = fopen("./soc2cnsl", "wb");
-          fwrite(&cpu_char, sizeof(char), 1, soc2cnsl_fd);
-          rxread_reg = 0;
-        }
-        fclose(soc2cnsl_fd);
-      }
+      uartread(IOB_UART_RXDATA_ADDR, &cpu_char);
+      fwrite(&cpu_char, sizeof(char), 1, soc2cnsl_fd);
+      fflush(soc2cnsl_fd);
+      rxread_reg = 0;
     }
     if (txread_reg) {
       if ((cnsl2soc_fd = fopen("./cnsl2soc", "rb")) == NULL) {
+        fclose(soc2cnsl_fd);
         break;
       }
       able2write = fread(&cpu_char, sizeof(char), 1, cnsl2soc_fd);
