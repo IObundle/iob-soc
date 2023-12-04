@@ -23,9 +23,7 @@ void IOB_UART_INIT_BASEADDR(uint32_t addr) {
   while ((cnsl2soc_fd = fopen("./cnsl2soc", "rb")) == NULL)
     ;
   fclose(cnsl2soc_fd);
-  while ((soc2cnsl_fd = fopen("./soc2cnsl", "rb")) == NULL)
-    ;
-  fclose(soc2cnsl_fd);
+  soc2cnsl_fd = fopen("./soc2cnsl", "wb");
 
   base = addr;
   return;
@@ -46,19 +44,8 @@ void IOB_UART_SET_TXDATA(uint8_t value) {
   char aux_char;
   int nbytes;
 
-  while (1) {
-    if ((soc2cnsl_fd = fopen("./soc2cnsl", "rb")) != NULL) {
-      nbytes = fread(&aux_char, sizeof(char), 1, soc2cnsl_fd);
-      if (nbytes == 0) {
-        fclose(soc2cnsl_fd);
-        soc2cnsl_fd = fopen("./soc2cnsl", "wb");
-        fwrite(&value, sizeof(char), 1, soc2cnsl_fd);
-        fclose(soc2cnsl_fd);
-        break;
-      }
-      fclose(soc2cnsl_fd);
-    }
-  }
+  fwrite(&value, sizeof(char), 1, soc2cnsl_fd);
+  fflush(soc2cnsl_fd);
 }
 
 void IOB_UART_SET_TXEN(uint8_t value) { return; }
@@ -74,6 +61,9 @@ uint8_t IOB_UART_GET_RXDATA() {
 
   while (1) {
     cnsl2soc_fd = fopen("./cnsl2soc", "rb");
+    if (!cnsl2soc_fd)
+      fclose(soc2cnsl_fd);
+
     nbytes = fread(&c, sizeof(char), 1, cnsl2soc_fd);
     if (nbytes == 1) {
       fclose(cnsl2soc_fd);
