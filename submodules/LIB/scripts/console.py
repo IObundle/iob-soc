@@ -301,27 +301,20 @@ def main():
                 else:
                     tb_write(ACK)
         elif byte == EOT:
-            print(PROGNAME, end="")
-            print(": exiting...")
+            print(f"{PROGNAME}: exiting...")
             clean_exit()
         elif byte == FTX:
-            print(PROGNAME, end="")
-            print(": got file receive request")
+            print(f"{PROGNAME}: got file receive request")
             cnsl_recvfile()
         elif byte == FRX:
-            print(PROGNAME, end="")
-            print(": got file send request")
+            print(f"{PROGNAME}: got file send request")
             cnsl_sendfile()
         elif byte == DC1:
-            print(PROGNAME, end="")
-            print(": received request to disable iob-soc exclusive message identifiers")
+            print(f"{PROGNAME}: disabling IOB-SOC exclusive identifiers")
             endFileTransfer()
-            print(PROGNAME, end="")
-            print(": activating terminal non-canonical mode.")
             script_arguments = ["python", "../../scripts/noncanonical.py"]
             subprocess.run(script_arguments)
-            print(PROGNAME, end="")
-            print(": start reading user input")
+            print(f"{PROGNAME}: start reading user input")
             input_thread.start()
         else:
             print(str(byte, "iso-8859-1"), end="", flush=True)
