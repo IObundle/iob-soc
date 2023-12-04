@@ -7,6 +7,7 @@ import importlib.util
 import time
 import select
 from threading import Thread
+import subprocess
 
 # Global variables
 ser = None
@@ -315,6 +316,10 @@ def main():
             print(PROGNAME, end="")
             print(": received request to disable iob-soc exclusive message identifiers")
             endFileTransfer()
+            print(PROGNAME, end="")
+            print(": activating terminal non-canonical mode.")
+            script_arguments = ["python", "../../scripts/noncanonical.py"]
+            subprocess.run(script_arguments)
             print(PROGNAME, end="")
             print(": start reading user input")
             input_thread.start()
