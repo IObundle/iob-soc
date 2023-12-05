@@ -76,7 +76,7 @@ set_property IOSTANDARD LVCMOS12 [get_ports {reset}]
 #set_property IOSTANDARD LVCMOS12 [get_ports {gpio_push_sw_tri_i[3]}]
 
 ####### Ethernet 100 MHz
-create_clock -period 40 [get_ports {ENET_RX_CLK}]
+create_clock -name enet_clk -period 40 [get_ports {ENET_RX_CLK}]
 
 ## Ethernet #1 Interface (J1)
 set_property PACKAGE_PIN D9 [get_ports ENET_RESETN]
