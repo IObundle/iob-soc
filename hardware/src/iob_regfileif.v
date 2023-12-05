@@ -2,6 +2,7 @@
 `include "iob_utils.vh"
 `include "iob_regfileif_conf.vh"
 `include "iob_regfileif_swreg_def.vh"
+`include "iob_regfileif_inverted_swreg_def.vh"
 
 module iob_regfileif # (
      `include "iob_regfileif_params.vs"
