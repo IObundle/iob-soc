@@ -260,5 +260,3 @@ set_property PACKAGE_PIN V24 [get_ports {c0_ddr4_bg[0]}]
 set_property IOSTANDARD SSTL12_DCI [ get_ports {c0_ddr4_bg[0]} ]
 set_property OUTPUT_IMPEDANCE RDRV_40_40 [ get_ports {c0_ddr4_bg[0]} ]
 
-## Max delay for ethernet clock
-set_max_delay -from [get_clocks {ENET_RX_CLK}] -to [get_clocks {mmcm_clkout1}] 100

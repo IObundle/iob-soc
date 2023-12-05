@@ -2,6 +2,7 @@
 // Read-First mode
 
 `timescale 1 ns / 1 ps
+`include "bsp.vh"
 
 module iob_ram_sp_se #(
    parameter HEXFILE = "none",

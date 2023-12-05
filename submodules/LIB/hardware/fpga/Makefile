@@ -60,7 +60,7 @@ endif
 endif
 
 #console start command
-CONSOLE_START_CMD=$(PYTHON_DIR)/console.py -s /dev/usb-uart
+CONSOLE_CMD ?=$(PYTHON_DIR)/console.py -s /dev/usb-uart
 
 #board client command
 BOARD_GRAB_CMD=../../scripts/board_client.py grab 300
@@ -70,7 +70,7 @@ run: build $(RUN_DEPS)
 ifneq ($(NORUN),1)
 ifeq ($(BOARD_SERVER),)
 	cp $(EMB_DIR)/$(NAME)_firmware.bin .
-	$(BOARD_GRAB_CMD) -p '$(FPGA_PROG)' -c '$(CONSOLE_START_CMD)'  && echo "Checking test log..." && test "$$(cat test.log)" = "Test passed!"
+	$(BOARD_GRAB_CMD) -p '$(FPGA_PROG)' -c '$(CONSOLE_CMD)'  && echo "Checking test log..." && test "$$(cat test.log)" = "Test passed!"
 else
 	ssh $(BOARD_USER)@$(BOARD_SERVER) "if [ ! -d $(REMOTE_BUILD_DIR) ]; then mkdir -p $(REMOTE_BUILD_DIR); fi"
 	rsync $(BOARD_SYNC_FLAGS) -avz --delete --force ../.. $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_BUILD_DIR)
