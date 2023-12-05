@@ -268,6 +268,9 @@ if __name__ == "__main__":
         )
         proc_list.append(console_proc)
         proc_wait(console_proc, remaining_duration)
+        if console_proc.returncode != 0:
+            print(f"{iob_colors.FAIL}Console exited with non-zero code.{iob_colors.ENDC}")
+            kill_processes()
 
         # Update time passed
         remaining_duration = int(DURATION) - (time.time() - start_time)
