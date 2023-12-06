@@ -312,7 +312,7 @@ def main():
         elif byte == DC1:
             print(f"{PROGNAME}: disabling IOB-SOC exclusive identifiers")
             endFileTransfer()
-            script_arguments = ["python", "../../scripts/noncanonical.py"]
+            script_arguments = ["python3", "../../scripts/noncanonical.py"]
             subprocess.run(script_arguments)
             print(f"{PROGNAME}: start reading user input")
             input_thread.start()
