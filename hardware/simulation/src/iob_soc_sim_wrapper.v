@@ -14,17 +14,17 @@
 `endif
 
 module iob_soc_sim_wrapper (
-   output trap_o,
-   //IOb-SoC uart
-   input uart_avalid,
+`include "clk_rst_s_port.vs"
+   output                             trap_o,
+
+   // UART for testbench
+   input                              uart_avalid,
    input [`IOB_UART_SWREG_ADDR_W-1:0] uart_addr,
-   input [`IOB_SOC_DATA_W-1:0] uart_wdata,
-   input [3:0] uart_wstrb,
-   output [`IOB_SOC_DATA_W-1:0] uart_rdata,
-   output uart_ready,
-   output uart_rvalid,
-   input [1-1:0] clk_i,  //V2TEX_IO System clock input.
-   input [1-1:0] rst_i  //V2TEX_IO System reset, asynchronous and active high.
+   input [`IOB_SOC_DATA_W-1:0]        uart_wdata,
+   input [3:0]                        uart_wstrb,
+   output [`IOB_SOC_DATA_W-1:0]       uart_rdata,
+   output                             uart_ready,
+   output                             uart_rvalid
 );
 
    localparam AXI_ID_W = 4;
@@ -32,11 +32,7 @@ module iob_soc_sim_wrapper (
    localparam AXI_ADDR_W = `DDR_ADDR_W;
    localparam AXI_DATA_W = `DDR_DATA_W;
 
-   wire clk = clk_i;
-   wire arst = rst_i;
-
    `include "iob_soc_wrapper_pwires.vs"
-
 
    /////////////////////////////////////////////
    // TEST PROCEDURE
@@ -62,9 +58,9 @@ module iob_soc_sim_wrapper (
       .AXI_DATA_W(AXI_DATA_W)
    ) iob_soc0 (
       `include "iob_soc_pportmaps.vs"
-      .clk_i (clk),
+      .clk_i (clk_i),
       .cke_i (1'b1),
-      .arst_i(arst),
+      .arst_i(arst_i),
       .trap_o(trap_o)
    );
 
@@ -84,8 +80,8 @@ module iob_soc_sim_wrapper (
    ) ddr_model_mem (
       `include "iob_memory_axi_s_portmap.vs"
 
-      .clk_i(clk),
-      .rst_i(arst)
+      .clk_i(clk_i),
+      .rst_i(arst_i)
    );
 `endif
  
@@ -94,9 +90,9 @@ module iob_soc_sim_wrapper (
    // The interface of iob_soc UART0 is assumed to be the first portmapped interface (UART_*)
    wire cke = 1'b1;
    iob_uart uart_tb (
-      .clk_i (clk),
+      .clk_i (clk_i),
       .cke_i (cke),
-      .arst_i(arst),
+      .arst_i(arst_i),
 
       .iob_avalid_i(uart_avalid),
       .iob_addr_i  (uart_addr),
@@ -118,7 +114,7 @@ module iob_soc_sim_wrapper (
    reg [1:0] eth_cnt = 2'b0;
    reg       eth_clk;
 
-   always @(posedge clk) begin
+   always @(posedge clk_i) begin
       eth_cnt <= eth_cnt + 1'b1;
       eth_clk <= eth_cnt[1];
    end
@@ -129,26 +125,26 @@ module iob_soc_sim_wrapper (
 
    //add core test module in testbench
    iob_eth_tb_gen eth_tb (
-      .clk  (clk),
-      .reset(arst),
+      .clk_i    (clk_i),
+      .arst_i   (arst_i),
 
       // This module acts like a loopback
-      .MRxClk (ETHERNET0_MTxClk),
-      .MRxD   (ETHERNET0_MTxD),
-      .MRxDv  (ETHERNET0_MTxEn),
-      .MRxErr (ETHERNET0_MTxErr),
+      .mrxclk_i (ETHERNET0_MTxClk),
+      .mrxd_i   (ETHERNET0_MTxD),
+      .mrxdv_i  (ETHERNET0_MTxEn),
+      .mrxerr_i (ETHERNET0_MTxErr),
 
       // The wires are thus reversed
-      .MTxClk (ETHERNET0_MRxClk),
-      .MTxD   (ETHERNET0_MRxD),
-      .MTxEn  (ETHERNET0_MRxDv),
-      .MTxErr (ETHERNET0_MRxErr),
+      .mtxclk_o (ETHERNET0_MRxClk),
+      .mtxd_o   (ETHERNET0_MRxD),
+      .mtxen_o  (ETHERNET0_MRxDv),
+      .mtxerr_i (ETHERNET0_MRxErr),
 
-      .MColl(1'b0),
-      .MCrS(1'b0),
+      .mcoll_o(1'b0),
+      .mcrs_o(1'b0),
 
-      .MDC(),
-      .MDIO(),
+      .mdc_o(),
+      .mdio_io(),
    );
 `endif
 
