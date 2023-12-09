@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 # importing modules
-import os
-import sys
+import os, sys
+import signal
 import importlib.util
 import time
 import select
@@ -185,7 +185,17 @@ def clean_exit():
         tb_read.close()
         os.remove("./cnsl2soc")
         os.remove("./soc2cnsl")
-    exit(0)
+    sys.exit(0)
+
+
+def cleanup_before_exit(signum, frame):
+    print(f"{PROGNAME}: Received signal {signum}. Ending...")
+    clean_exit()
+
+
+# Register the cleanup function for SIGTERM and SIGINT signals
+signal.signal(signal.SIGTERM, cleanup_before_exit)
+signal.signal(signal.SIGINT, cleanup_before_exit)
 
 
 def init_print():
