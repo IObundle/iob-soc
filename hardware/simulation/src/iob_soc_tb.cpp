@@ -91,13 +91,13 @@ int main(int argc, char **argv, char **env) {
 #endif
 
   dut->clk_i = 0;
-  dut->rst_i = 0;
+  dut->arst_i = 0;
 
   // Reset sequence
   Timer(100);
-  dut->rst_i = 1;
+  dut->arst_i = 1;
   Timer(100);
-  dut->rst_i = 0;
+  dut->arst_i = 0;
 
   dut->uart_avalid = 0;
   dut->uart_wstrb = 0;

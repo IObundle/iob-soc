@@ -19,34 +19,34 @@ module iob_soc_tb;
    localparam UART_DATA_W = `IOB_UART_UART_DATA_W;
 
    //clock
-   reg clk = 1;
-   always #(CLK_PER / 2) clk = ~clk;
+   reg                clk = 1;
+   `IOB_CLOCK(clk, CLK_PER)
 
    //reset
-   reg       reset = 0;
+   reg                arst = 0;
 
    //received by getchar
-   reg       rxread_reg;
-   reg       txread_reg;
-   reg [7:0] cpu_char;
-   integer soc2cnsl_fd = 0, cnsl2soc_fd = 0;
+   reg                rxread_reg;
+   reg                txread_reg;
+   reg [7:0]          cpu_char;
+   integer            soc2cnsl_fd = 0, cnsl2soc_fd = 0;
 
 
    //IOb-SoC uart
-   reg                               iob_avalid_i;
-   reg  [`IOB_UART_SWREG_ADDR_W-1:0] iob_addr_i;
-   reg  [       `IOB_SOC_DATA_W-1:0] iob_wdata_i;
-   reg  [                       3:0] iob_wstrb_i;
+   reg                iob_avalid_i;
+   reg [`IOB_UART_SWREG_ADDR_W-1:0] iob_addr_i;
+   reg [       `IOB_SOC_DATA_W-1:0] iob_wdata_i;
+   reg [                       3:0] iob_wstrb_i;
    wire [       `IOB_SOC_DATA_W-1:0] iob_rdata_o;
    wire                              iob_ready_o;
    wire                              iob_rvalid_o;
-
+   
    //iterator
-   integer i = 0, n = 0;
-   integer error, n_byte = 0;
+   integer                           i = 0, n = 0;
+   integer                           error, n_byte = 0;
 
    //cpu trap signal
-   wire trap;
+   wire                              trap;
 
    initial begin
       //init cpu bus signals
@@ -54,8 +54,7 @@ module iob_soc_tb;
       iob_wstrb_i  = 0;
 
       //reset system
-      `IOB_PULSE(reset, 100, 1_000, 100);
-      @(posedge clk) #1;
+      `IOB_RESET(clk, arst, 100, 1_000, 100);
 
       // configure uart
       cpu_inituart();
@@ -104,7 +103,7 @@ module iob_soc_tb;
 
    iob_soc_sim_wrapper iob_soc_sim_wrapper (
       .clk_i (clk),
-      .rst_i (reset),
+      .arst_i (arst),
       .trap_o(trap),
 
       .uart_avalid(iob_avalid_i),
