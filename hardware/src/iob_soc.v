@@ -51,7 +51,7 @@ module iob_soc #(
 `endif
    ) cpu (
       .clk_i (clk_i),
-      .rst_i (cpu_reset),
+      .arst_i (cpu_reset),
       .cke_i (cke_i),
       .boot_i(boot),
       .trap_o(cpu_trap_o),
