@@ -12,7 +12,7 @@ module iob_edge_detect
 );
    wire   bit_int;
    wire   bit_int_q;
-   wire   detected_nxt;
+   wire   detected_prev;
 
    generate
       if (EDGE_TYPE == "falling") begin : gen_falling
@@ -50,9 +50,9 @@ module iob_edge_detect
 
    generate 
       if (OUT_TYPE == "pulse") begin : gen_pulse
-         assign detected_nxt = bit_int & ~bit_int_q;
+         assign detected_o = bit_int & ~bit_int_q;
       end else  begin : gen_step
-         assign detected_nxt = detected_o | (bit_int & ~bit_int_q);
+         assign detected_o = detected_prev | (bit_int & ~bit_int_q);
       end
    endgenerate
 
@@ -63,8 +63,8 @@ module iob_edge_detect
        (
 `include "clk_en_rst_s_s_portmap.vs"
         .rst_i(rst_i),
-        .data_i(detected_nxt),
-        .data_o(detected_o)
+        .data_i(detected_o),
+        .data_o(detected_prev)
         );
 
 endmodule
