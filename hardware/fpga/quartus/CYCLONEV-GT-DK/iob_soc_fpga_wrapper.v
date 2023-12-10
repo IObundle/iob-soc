@@ -4,8 +4,8 @@
 
 module iob_soc_fpga_wrapper (
    //user clock
-   input clk,
-   input resetn,
+   input clk_i,
+   input arstn_i,
 
    //uart
    output txd_o,
@@ -123,7 +123,7 @@ module iob_soc_fpga_wrapper (
       .MDIO(),
 `endif
       `include "iob_soc_pportmaps.vs"
-      .clk_i (clk),
+      .clk_i (clk_i),
       .cke_i (1'b1),
       .arst_i(arst),
       .trap_o(trap)
@@ -144,18 +144,18 @@ module iob_soc_fpga_wrapper (
    wire                                           init_done;
 
    //determine system reset
-   wire rst_int = ~resetn | ~locked | ~init_done;
-   //   wire          rst_int = ~resetn | ~locked;
+   wire rst_int = ~arstn_i | ~locked | ~init_done;
+   //   wire          rst_int = ~arstn_i | ~locked;
 
    iob_reset_sync rst_sync (
-      .clk_i (clk),
+      .clk_i (clk_i),
       .arst_i(rst_int),
       .arst_o(arst)
    );
 
    alt_ddr3 ddr3_ctrl (
-      .clk_clk      (clk),
-      .reset_reset_n(resetn),
+      .clk_clk      (clk_i),
+      .reset_reset_n(arstn_i),
       .oct_rzqin    (rzqin),
 
       .memory_mem_a      (ddr3b_a),
@@ -227,8 +227,8 @@ module iob_soc_fpga_wrapper (
 
 `else
    iob_reset_sync rst_sync (
-      .clk_i (clk),
-      .arst_i(~resetn),
+      .clk_i (clk_i),
+      .arst_i(~arstn_i),
       .arst_o(arst)
    );
 `endif

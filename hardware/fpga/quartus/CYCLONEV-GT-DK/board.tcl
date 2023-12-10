@@ -21,12 +21,12 @@ if {$IS_FPGA == "1"} {
     #User clock 50MHz
     #set_location_assignment PIN_V28 -to clk50
     #set_instance_assignment -name IO_STANDARD "1.5 V" -to clk50
-    set_location_assignment PIN_V28 -to clk
-    set_instance_assignment -name IO_STANDARD "1.5 V" -to clk
+    set_location_assignment PIN_V28 -to clk_i
+    set_instance_assignment -name IO_STANDARD "1.5 V" -to clk_i
 
     #User reset
-    set_location_assignment PIN_AD29 -to resetn
-    set_instance_assignment -name IO_STANDARD "1.8 V" -to resetn
+    set_location_assignment PIN_AD29 -to arstn_i
+    set_instance_assignment -name IO_STANDARD "1.8 V" -to arstn_i
 
 
     #Leds

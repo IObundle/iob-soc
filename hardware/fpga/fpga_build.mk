@@ -9,4 +9,4 @@ include $(ROOT_DIR)/software/sw_build.mk
 
 IS_FPGA=1
 
-QUARTUS_SEED ?=4
+QUARTUS_SEED ?=5
