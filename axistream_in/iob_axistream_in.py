@@ -6,7 +6,6 @@ from iob_module import iob_module
 
 # Submodules
 from iob_reg_re import iob_reg_re
-from iob_edge_detect import iob_edge_detect
 from iob_ram_t2p import iob_ram_t2p
 from iob_fifo_async import iob_fifo_async
 from iob_sync import iob_sync
@@ -27,7 +26,6 @@ class iob_axistream_in(iob_module):
             {"interface": "iob_s_portmap"},
             iob_fifo_async,
             iob_reg_re,
-            iob_edge_detect,
             iob_ram_t2p,
             iob_sync
         ])
