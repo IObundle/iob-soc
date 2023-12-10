@@ -71,3 +71,18 @@ board_server_status:
 	systemctl status board_server
 
 .PHONY: setup sim-test fpga-test doc-test test-all board_server_install board_server_uninstall board_server_status
+
+
+
+
+
+
+#test caravel 
+
+Caravel_DIR := submodules/caravel_user_project #directory to caravel
+First_script := submodules/LIB/scripts # directory to the python script
+
+
+caravel-build:
+	python3 $(First_script)/caravel_setup.py 
+	make setup -C $(Caravel_DIR) -j1 build
