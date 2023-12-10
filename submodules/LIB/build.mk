@@ -113,6 +113,18 @@ fpga-debug:
 fpga-clean:
 	make -C $(FPGA_DIR) clean
 
+
+
+
+#
+#Caravel
+#
+Caravel_DIR=~/iob_soc/submodules/caravel_user_project 
+caravel-build:
+	make -C $(Caravel_DIR) -j1 build
+
+
+
 #
 # SYN
 #

@@ -7,6 +7,7 @@ DISABLE_LINT:=1
 
 include submodules/LIB/setup.mk
 
+
 INIT_MEM ?= 1
 USE_EXTMEM ?= 0
 
@@ -71,3 +72,23 @@ board_server_status:
 	systemctl status board_server
 
 .PHONY: setup sim-test fpga-test doc-test test-all board_server_install board_server_uninstall board_server_status
+
+
+
+
+
+
+
+#test caravel 
+
+Caravel_DIR := submodules/caravel_user_project
+First_script := submodules/LIB/scripts
+
+
+caravel-build:
+	python3 $(First_script)/caravel_setup.py
+	make setup -C $(Caravel_DIR) -j1 build
+
+caravel-build_gds:
+	
+	
