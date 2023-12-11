@@ -8,7 +8,7 @@ module iob_iob2wishbone #(
    `include "clk_en_rst_s_port.vs"
 
    // IOb interface
-   input  wire                iob_avalid_i,
+   input  wire                iob_valid_i,
    input  wire [  ADDR_W-1:0] iob_addr_i,
    input  wire [  DATA_W-1:0] iob_wdata_i,
    input  wire [DATA_W/8-1:0] iob_wstrb_i,
@@ -30,7 +30,7 @@ module iob_iob2wishbone #(
    localparam RB_MASK = {1'b0, {READ_BYTES{1'b1}}};
 
    // IOb auxiliar wires
-   wire                iob_avalid_r;
+   wire                iob_valid_r;
    wire [  ADDR_W-1:0] iob_address_r;
    wire [  DATA_W-1:0] iob_wdata_r;
    // Wishbone auxiliar wire
@@ -42,11 +42,11 @@ module iob_iob2wishbone #(
    wire                wb_ack_r;
 
    // Logic
-   assign wb_addr_o   = iob_avalid_i ? iob_addr_i : iob_address_r;
-   assign wb_data_o   = iob_avalid_i ? iob_wdata_i : iob_wdata_r;
-   assign wb_select_o = iob_avalid_i ? wb_select : wb_select_r;
-   assign wb_we_o     = iob_avalid_i ? wb_we : wb_we_r;
-   assign wb_cyc_o    = iob_avalid_i ? iob_avalid_i : iob_avalid_r;
+   assign wb_addr_o   = iob_valid_i ? iob_addr_i : iob_address_r;
+   assign wb_data_o   = iob_valid_i ? iob_wdata_i : iob_wdata_r;
+   assign wb_select_o = iob_valid_i ? wb_select : wb_select_r;
+   assign wb_we_o     = iob_valid_i ? wb_we : wb_we_r;
+   assign wb_cyc_o    = iob_valid_i ? iob_valid_i : iob_valid_r;
    assign wb_stb_o    = wb_cyc_o;
 
    assign wb_select   = wb_we ? iob_wstrb_i : (RB_MASK) << (iob_addr_i[1:0]);
@@ -54,17 +54,17 @@ module iob_iob2wishbone #(
 
    assign iob_rvalid_o = wb_ack_r & (~wb_we_r);
    assign iob_rdata_o  = wb_ack_i ? wb_data_i : wb_data_r;
-   assign iob_ready_o  = (~iob_avalid_r) | wb_ack_r;
+   assign iob_ready_o  = (~iob_valid_r) | wb_ack_r;
 
    iob_reg_re #(
       .DATA_W (1),
       .RST_VAL(0)
-   ) iob_reg_avalid (
+   ) iob_reg_valid (
       `include "clk_en_rst_s_s_portmap.vs"
       .rst_i (wb_ack_i),
-      .en_i  (iob_avalid_i),
-      .data_i(iob_avalid_i),
-      .data_o(iob_avalid_r)
+      .en_i  (iob_valid_i),
+      .data_i(iob_valid_i),
+      .data_o(iob_valid_r)
    );
    iob_reg_re #(
       .DATA_W (ADDR_W),
@@ -72,7 +72,7 @@ module iob_iob2wishbone #(
    ) iob_reg_addr (
       `include "clk_en_rst_s_s_portmap.vs"
       .rst_i (1'b0),
-      .en_i  (iob_avalid_i),
+      .en_i  (iob_valid_i),
       .data_i(iob_addr_i),
       .data_o(iob_address_r)
    );
@@ -82,7 +82,7 @@ module iob_iob2wishbone #(
    ) iob_reg_iob_data (
       `include "clk_en_rst_s_s_portmap.vs"
       .rst_i (1'b0),
-      .en_i  (iob_avalid_i),
+      .en_i  (iob_valid_i),
       .data_i(iob_wdata_i),
       .data_o(iob_wdata_r)
    );
@@ -92,7 +92,7 @@ module iob_iob2wishbone #(
    ) iob_reg_we (
       `include "clk_en_rst_s_s_portmap.vs"
       .rst_i (1'b0),
-      .en_i  (iob_avalid_i),
+      .en_i  (iob_valid_i),
       .data_i(wb_we),
       .data_o(wb_we_r)
    );
@@ -102,7 +102,7 @@ module iob_iob2wishbone #(
    ) iob_reg_strb (
       `include "clk_en_rst_s_s_portmap.vs"
       .rst_i (1'b0),
-      .en_i  (iob_avalid_i),
+      .en_i  (iob_valid_i),
       .data_i(wb_select),
       .data_o(wb_select_r)
    );
