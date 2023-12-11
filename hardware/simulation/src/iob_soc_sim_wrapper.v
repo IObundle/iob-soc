@@ -18,7 +18,7 @@ module iob_soc_sim_wrapper (
    output                             trap_o,
 
    // UART for testbench
-   input                              uart_avalid_i,
+   input                              uart_valid_i,
    input [`IOB_UART_SWREG_ADDR_W-1:0] uart_addr_i,
    input [`IOB_SOC_DATA_W-1:0]        uart_wdata_i,
    input [3:0]                        uart_wstrb_i,
@@ -94,7 +94,7 @@ module iob_soc_sim_wrapper (
       .cke_i (cke),
       .arst_i(arst_i),
 
-      .iob_avalid_i(uart_avalid_i),
+      .iob_valid_i(uart_valid_i),
       .iob_addr_i  (uart_addr_i),
       .iob_wdata_i (uart_wdata_i),
       .iob_wstrb_i (uart_wstrb_i),

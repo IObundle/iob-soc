@@ -142,7 +142,7 @@ module iob2apb #(
 
       case (pc)
          0: begin
-            if (!iob_avalid_i)  //wait for iob request
+            if (!iob_valid_i)  //wait for iob request
                pc_nxt = pc;
             else begin  // sample iob signals and initiate apb transaction
                apb_addr_nxt  = iob_addr_i;

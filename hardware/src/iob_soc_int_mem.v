@@ -85,7 +85,7 @@ module iob_soc_int_mem #(
 
       //cpu slave interface
       //no address bus since single address
-      .cpu_avalid_i(boot_ctr_req[`AVALID(0)]),
+      .cpu_valid_i(boot_ctr_req[`VALID(0)]),
       .cpu_wdata_i (boot_ctr_req[`WDATA(0)-(DATA_W-2)]),
       .cpu_wstrb_i (boot_ctr_req[`WSTRB(0)]),
       .cpu_rdata_o (boot_ctr_resp[`RDATA(0)]),
@@ -93,7 +93,7 @@ module iob_soc_int_mem #(
       .cpu_ready_o (boot_ctr_resp[`READY(0)]),
 
       //sram write master interface
-      .sram_avalid_o(ram_w_req[`AVALID(0)]),
+      .sram_valid_o(ram_w_req[`VALID(0)]),
       .sram_addr_o  (ram_w_req[`ADDRESS(0, ADDR_W)]),
       .sram_wdata_o (ram_w_req[`WDATA(0)]),
       .sram_wstrb_o (ram_w_req[`WSTRB(0)])
@@ -122,7 +122,7 @@ module iob_soc_int_mem #(
    assign boot_i_addr = i_req_i[`ADDRESS(0, ADDR_W)] + boot_offset;
    assign i_addr = i_req_i[`ADDRESS(0, ADDR_W)];
 
-   assign ram_r_req[`AVALID(0)] = i_req_i[`AVALID(0)];
+   assign ram_r_req[`VALID(0)] = i_req_i[`VALID(0)];
    assign ram_r_addr = boot ? boot_i_addr : i_addr;
    assign ram_r_req[`WRITE(0)] = i_req_i[`WRITE(0)];
    assign i_resp_o[`RESP(0)] = ram_r_resp[`RESP(0)];
@@ -172,7 +172,7 @@ module iob_soc_int_mem #(
       .arst_i(arst_i),
 
       //instruction bus
-      .i_avalid_i(ram_i_req[`AVALID(0)]),
+      .i_valid_i(ram_i_req[`VALID(0)]),
       .i_addr_i  (ram_i_req[`ADDRESS(0, SRAM_ADDR_W)-2]),
       .i_wdata_i (ram_i_req[`WDATA(0)]),
       .i_wstrb_i (ram_i_req[`WSTRB(0)]),
@@ -181,7 +181,7 @@ module iob_soc_int_mem #(
       .i_ready_o (ram_i_resp[`READY(0)]),
 
       //data bus
-      .d_avalid_i(ram_d_req[`AVALID(0)]),
+      .d_valid_i(ram_d_req[`VALID(0)]),
       .d_addr_i  (ram_d_addr),
       .d_wdata_i (ram_d_req[`WDATA(0)]),
       .d_wstrb_i (ram_d_req[`WSTRB(0)]),

@@ -8,7 +8,7 @@ module iob_soc_sram #(
    parameter HEXFILE     = "none"
 ) (
    // intruction bus
-   input                        i_avalid_i,
+   input                        i_valid_i,
    input      [SRAM_ADDR_W-3:0] i_addr_i,
    input      [     DATA_W-1:0] i_wdata_i,   //used for booting
    input      [   DATA_W/8-1:0] i_wstrb_i,   //used for booting
@@ -17,7 +17,7 @@ module iob_soc_sram #(
    output                       i_ready_o,
 
    // data bus
-   input                        d_avalid_i,
+   input                        d_valid_i,
    input      [SRAM_ADDR_W-3:0] d_addr_i,
    input      [     DATA_W-1:0] d_wdata_i,
    input      [   DATA_W/8-1:0] d_wstrb_i,
@@ -30,11 +30,11 @@ module iob_soc_sram #(
 
 `ifdef USE_SPRAM
 
-   wire d_avalid_int = i_avalid_i ? 1'b0 : d_avalid_i;
-   wire avalid = i_avalid_i ? i_avalid_i : d_avalid_i;
-   wire [SRAM_ADDR_W-3:0] addr = i_avalid_i ? i_addr_i : d_addr_i;
-   wire [DATA_W-1:0] wdata = i_avalid_i ? i_wdata_i : d_wdata_i;
-   wire [DATA_W/8-1:0] wstrb = i_avalid_i ? i_wstrb_i : d_wstrb_i;
+   wire d_valid_int = i_valid_i ? 1'b0 : d_valid_i;
+   wire valid = i_valid_i ? i_valid_i : d_valid_i;
+   wire [SRAM_ADDR_W-3:0] addr = i_valid_i ? i_addr_i : d_addr_i;
+   wire [DATA_W-1:0] wdata = i_valid_i ? i_wdata_i : d_wdata_i;
+   wire [DATA_W/8-1:0] wstrb = i_valid_i ? i_wstrb_i : d_wstrb_i;
    wire [DATA_W-1:0] rdata;
    assign d_rdata_o = rdata;
    assign i_rdata_o = rdata;
@@ -47,7 +47,7 @@ module iob_soc_sram #(
       .clk_i(clk_i),
 
       // data port
-      .en_i  (avalid),
+      .en_i  (valid),
       .addr_i(addr),
       .we_i  (wstrb),
       .d_i   (wdata),
@@ -64,14 +64,14 @@ module iob_soc_sram #(
       .clk_i(clk_i),
 
       // data port
-      .enA_i  (d_avalid_i),
+      .enA_i  (d_valid_i),
       .addrA_i(d_addr_i),
       .weA_i  (d_wstrb_i),
       .dA_i   (d_wdata_i),
       .dA_o   (d_rdata_o),
 
       // instruction port
-      .enB_i  (i_avalid_i),
+      .enB_i  (i_valid_i),
       .addrB_i(i_addr_i),
       .weB_i  (i_wstrb_i),
       .dB_i   (i_wdata_i),
@@ -86,14 +86,14 @@ module iob_soc_sram #(
       .clk_i(clk_i),
 
       // data port
-      .enA_i  (d_avalid_i),
+      .enA_i  (d_valid_i),
       .addrA_i(d_addr_i),
       .weA_i  (d_wstrb_i),
       .dA_i   (d_wdata_i),
       .dA_o   (d_rdata_o),
 
       // instruction port
-      .enB_i  (i_avalid_i),
+      .enB_i  (i_valid_i),
       .addrB_i(i_addr_i),
       .weB_i  (i_wstrb_i),
       .dB_i   (i_wdata_i),
@@ -104,7 +104,7 @@ module iob_soc_sram #(
 
    // reply with ready 
    wire i_rvalid_nxt;
-   assign i_rvalid_nxt = i_avalid_i & ~(|i_wstrb_i);
+   assign i_rvalid_nxt = i_valid_i & ~(|i_wstrb_i);
 
    iob_reg #(
       .DATA_W (1),
@@ -118,7 +118,7 @@ module iob_soc_sram #(
    );
 
    wire d_rvalid_nxt;
-   assign d_rvalid_nxt = d_avalid_i & ~(|d_wstrb_i);
+   assign d_rvalid_nxt = d_valid_i & ~(|d_wstrb_i);
 
    iob_reg #(
       .DATA_W (1),

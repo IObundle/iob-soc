@@ -33,7 +33,7 @@ module iob_soc_tb;
 
 
    //IOb-SoC uart
-   reg                iob_avalid_i;
+   reg                iob_valid_i;
    reg [`IOB_UART_SWREG_ADDR_W-1:0] iob_addr_i;
    reg [       `IOB_SOC_DATA_W-1:0] iob_wdata_i;
    reg [                       3:0] iob_wstrb_i;
@@ -50,7 +50,7 @@ module iob_soc_tb;
 
    initial begin
       //init cpu bus signals
-      iob_avalid_i = 0;
+      iob_valid_i = 0;
       iob_wstrb_i  = 0;
 
       //reset system
@@ -106,7 +106,7 @@ module iob_soc_tb;
       .arst_i (arst),
       .trap_o(trap),
 
-      .uart_avalid_i(iob_avalid_i),
+      .uart_valid_i(iob_valid_i),
       .uart_addr_i  (iob_addr_i),
       .uart_wdata_i (iob_wdata_i),
       .uart_wstrb_i (iob_wstrb_i),
