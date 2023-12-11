@@ -20,7 +20,7 @@ module iob_edge_detect
          iob_reg_r   
            #(
              .DATA_W(1),
-             .RST_VAL(1'b1)
+             .RST_VAL(1'b0)
              )
          bit_reg
            (
@@ -36,7 +36,7 @@ module iob_edge_detect
          iob_reg_r   
            #(
              .DATA_W(1),
-             .RST_VAL(1'b0)
+             .RST_VAL(1'b1)
              )
          bit_reg
            (
