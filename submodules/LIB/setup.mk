@@ -117,6 +117,7 @@ python-cache-clean:
 
 build-setup: build_dir_name build_top_module $(BUILD_DIR) $(SRC) format-all
 	@for i in $(SRC); do echo $$i; done
+	@cp -r $(PWD)/submodules/caravel_project $(BUILD_DIR)/caravel
 
 
 .PHONY: build-setup clean c-format python-format verilog-format
