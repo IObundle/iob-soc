@@ -161,6 +161,18 @@ ptest: dtest lint-test sim-cov
 dtest: test syn-test 
 
 
+export CARAVEL_LITE := 0
+#caravel
+caravel-build:
+	cd $(PWD)/caravel && make setup -j1 build
+
+
+
+
+
+
+
+
 
 #
 # CLEAN
