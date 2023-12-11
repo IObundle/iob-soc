@@ -106,13 +106,13 @@ module iob_soc_tb;
       .arst_i (arst),
       .trap_o(trap),
 
-      .uart_avalid(iob_avalid_i),
-      .uart_addr  (iob_addr_i),
-      .uart_wdata (iob_wdata_i),
-      .uart_wstrb (iob_wstrb_i),
-      .uart_rdata (iob_rdata_o),
-      .uart_ready (iob_ready_o),
-      .uart_rvalid(iob_rvalid_o)
+      .uart_avalid_i(iob_avalid_i),
+      .uart_addr_i  (iob_addr_i),
+      .uart_wdata_i (iob_wdata_i),
+      .uart_wstrb_i (iob_wstrb_i),
+      .uart_rdata_o (iob_rdata_o),
+      .uart_ready_o (iob_ready_o),
+      .uart_rvalid_o(iob_rvalid_o)
    );
 
    task cpu_inituart;

@@ -15,12 +15,12 @@ module iob_soc_ext_mem #(
    parameter AXI_DATA_W  = 0
 ) (
    // Instruction bus
-   input  [1+FIRM_ADDR_W-2+`WRITE_W-1:0] i_req,
-   output [                 `RESP_W-1:0] i_resp,
+   input  [1+FIRM_ADDR_W-2+`WRITE_W-1:0] i_req_i,
+   output [                 `RESP_W-1:0] i_resp_o,
 
    // Data bus
-   input  [1+1+MEM_ADDR_W-2+`WRITE_W-1:0] d_req,
-   output [                  `RESP_W-1:0] d_resp,
+   input  [1+1+MEM_ADDR_W-2+`WRITE_W-1:0] d_req_i,
+   output [                  `RESP_W-1:0] d_resp_o,
 
    // AXI interface
    `include "axi_m_port.vs"
@@ -52,13 +52,13 @@ module iob_soc_ext_mem #(
       .arst_i(arst_i),
 
       // Front-end interface
-      .iob_avalid_i        (i_req[1+FIRM_ADDR_W-2+`WRITE_W-1]),
-      .iob_addr_i          (i_req[`ADDRESS(0, FIRM_ADDR_W-2)]),
-      .iob_wdata_i         (i_req[`WDATA(0)]),
-      .iob_wstrb_i         (i_req[`WSTRB(0)]),
-      .iob_rdata_o         (i_resp[`RDATA(0)]),
-      .iob_rvalid_o        (i_resp[`RVALID(0)]),
-      .iob_ready_o         (i_resp[`READY(0)]),
+      .iob_avalid_i        (i_req_i[1+FIRM_ADDR_W-2+`WRITE_W-1]),
+      .iob_addr_i          (i_req_i[`ADDRESS(0, FIRM_ADDR_W-2)]),
+      .iob_wdata_i         (i_req_i[`WDATA(0)]),
+      .iob_wstrb_i         (i_req_i[`WSTRB(0)]),
+      .iob_rdata_o         (i_resp_o[`RDATA(0)]),
+      .iob_rvalid_o        (i_resp_o[`RVALID(0)]),
+      .iob_ready_o         (i_resp_o[`READY(0)]),
       //Control IO
       .invalidate_i (1'b0),
       .invalidate_o(),
@@ -116,13 +116,13 @@ module iob_soc_ext_mem #(
       .arst_i(arst_i),
 
       // Front-end interface
-      .iob_avalid_i        (d_req[2+MEM_ADDR_W-2+`WRITE_W-1]),
-      .iob_addr_i          (d_req[`ADDRESS(0, 1+MEM_ADDR_W-2)]),
-      .iob_wdata_i         (d_req[`WDATA(0)]),
-      .iob_wstrb_i         (d_req[`WSTRB(0)]),
-      .iob_rdata_o         (d_resp[`RDATA(0)]),
-      .iob_rvalid_o        (d_resp[`RVALID(0)]),
-      .iob_ready_o         (d_resp[`READY(0)]),
+      .iob_avalid_i        (d_req_i[2+MEM_ADDR_W-2+`WRITE_W-1]),
+      .iob_addr_i          (d_req_i[`ADDRESS(0, 1+MEM_ADDR_W-2)]),
+      .iob_wdata_i         (d_req_i[`WDATA(0)]),
+      .iob_wstrb_i         (d_req_i[`WSTRB(0)]),
+      .iob_rdata_o         (d_resp_o[`RDATA(0)]),
+      .iob_rvalid_o        (d_resp_o[`RVALID(0)]),
+      .iob_ready_o         (d_resp_o[`READY(0)]),
       //Control IO
       .invalidate_i (1'b0),
       .invalidate_o(invalidate),

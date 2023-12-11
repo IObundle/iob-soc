@@ -175,12 +175,12 @@ module iob_soc #(
       .cpu_reset(cpu_reset),
 
       // instruction bus
-      .i_req (int_mem_i_req),
-      .i_resp(int_mem_i_resp),
+      .i_req_i (int_mem_i_req),
+      .i_resp_o(int_mem_i_resp),
 
       //data bus
-      .d_req (slaves_req[0+:`REQ_W]),
-      .d_resp(slaves_resp[0+:`RESP_W])
+      .d_req_i (slaves_req[0+:`REQ_W]),
+      .d_resp_o(slaves_resp[0+:`RESP_W])
    );
 
 `ifdef IOB_SOC_USE_EXTMEM
@@ -218,12 +218,12 @@ module iob_soc #(
       .AXI_DATA_W (AXI_DATA_W)
    ) ext_mem0 (
       // instruction bus
-      .i_req (ext_mem0_i_req),
-      .i_resp(ext_mem_i_resp),
+      .i_req_i (ext_mem0_i_req),
+      .i_resp_o(ext_mem_i_resp),
 
       //data bus
-      .d_req (ext_mem0_d_req),
-      .d_resp(ext_mem_d_resp),
+      .d_req_i (ext_mem0_d_req),
+      .d_resp_o(ext_mem_d_resp),
 
       //AXI INTERFACE
       //address write

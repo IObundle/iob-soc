@@ -18,13 +18,13 @@ module iob_soc_sim_wrapper (
    output                             trap_o,
 
    // UART for testbench
-   input                              uart_avalid,
-   input [`IOB_UART_SWREG_ADDR_W-1:0] uart_addr,
-   input [`IOB_SOC_DATA_W-1:0]        uart_wdata,
-   input [3:0]                        uart_wstrb,
-   output [`IOB_SOC_DATA_W-1:0]       uart_rdata,
-   output                             uart_ready,
-   output                             uart_rvalid
+   input                              uart_avalid_i,
+   input [`IOB_UART_SWREG_ADDR_W-1:0] uart_addr_i,
+   input [`IOB_SOC_DATA_W-1:0]        uart_wdata_i,
+   input [3:0]                        uart_wstrb_i,
+   output [`IOB_SOC_DATA_W-1:0]       uart_rdata_o,
+   output                             uart_ready_o,
+   output                             uart_rvalid_o
 );
 
    localparam AXI_ID_W = 4;
@@ -94,13 +94,13 @@ module iob_soc_sim_wrapper (
       .cke_i (cke),
       .arst_i(arst_i),
 
-      .iob_avalid_i(uart_avalid),
-      .iob_addr_i  (uart_addr),
-      .iob_wdata_i (uart_wdata),
-      .iob_wstrb_i (uart_wstrb),
-      .iob_rdata_o (uart_rdata),
-      .iob_rvalid_o(uart_rvalid),
-      .iob_ready_o (uart_ready),
+      .iob_avalid_i(uart_avalid_i),
+      .iob_addr_i  (uart_addr_i),
+      .iob_wdata_i (uart_wdata_i),
+      .iob_wstrb_i (uart_wstrb_i),
+      .iob_rdata_o (uart_rdata_o),
+      .iob_rvalid_o(uart_rvalid_o),
+      .iob_ready_o (uart_ready_o),
 
       .txd_o(uart_rxd_i),
       .rxd_i(uart_txd_o),
