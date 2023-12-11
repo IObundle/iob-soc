@@ -20,7 +20,7 @@ $(NAME)_files.list: $(VSRC)
 $(VSRC):
 	@ls $@ >> $(NAME)_files.list
 
-LINTER?=spyglass
+LINTER?=verilator
 include $(LINTER).mk
 
 run: clean $(NAME)_files.list
