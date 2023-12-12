@@ -379,3 +379,4 @@ class iob_soc(iob_module):
         # Initialize empty lists for attributes (We can't initialize in the attribute declaration because it would cause every subclass to reference the same list)
         cls.peripherals = []
         cls.peripheral_portmap = []
+
