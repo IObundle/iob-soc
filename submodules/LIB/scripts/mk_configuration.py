@@ -7,6 +7,12 @@ from latex import write_table
 
 
 def params_vh(params, top_module, out_dir):
+    for parameter in params:
+        if parameter["type"] in ["P", "F"]:
+            break
+    else:
+        return
+
     file2create = open(f"{out_dir}/{top_module}_params.vs", "w")
     core_prefix = f"{top_module}_".upper()
     for parameter in params:
