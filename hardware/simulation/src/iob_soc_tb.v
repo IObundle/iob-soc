@@ -54,7 +54,7 @@ module iob_soc_tb;
       iob_wstrb_i  = 0;
 
       //reset system
-      `IOB_RESET(clk, arst, 1'b1, 100, 1_000, 100);
+      `IOB_RESET(clk, arst, 100, 1_000, 100);
 
       // configure uart
       cpu_inituart();
