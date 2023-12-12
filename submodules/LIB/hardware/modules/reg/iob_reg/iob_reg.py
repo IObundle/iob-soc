@@ -16,3 +16,17 @@ class iob_reg(iob_module):
                 {"interface": "clk_en_rst_s_port"},
             ]
         )
+
+    @classmethod
+    def _setup_confs(cls):
+        _confs = [
+            {
+                "name": "RST_POL",
+                "type": "M",
+                "val": "1",
+                "min": "0",
+                "max": "1",
+                "descr": "Reset polarity is high.",
+            },
+        ]
+

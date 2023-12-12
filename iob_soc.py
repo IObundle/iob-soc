@@ -379,3 +379,15 @@ class iob_soc(iob_module):
         # Initialize empty lists for attributes (We can't initialize in the attribute declaration because it would cause every subclass to reference the same list)
         cls.peripherals = []
         cls.peripheral_portmap = []
+        iob_reg.init_attributes()
+        iob_reg.confs = [
+            {
+                "name": "RST_POL",
+                "type": "M",
+                "val": "0",
+                "min": "0",
+                "max": "1",
+                "descr": "Reset polarity is high.",
+            },
+        ]
+

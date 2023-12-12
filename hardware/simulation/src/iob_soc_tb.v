@@ -5,7 +5,7 @@
 `include "iob_soc_conf.vh"
 `include "iob_uart_conf.vh"
 `include "iob_uart_swreg_def.vh"
-
+`include "iob_reg_conf.vh"
 
 //Peripherals _swreg_def.vh file includes.
 `include "iob_soc_periphs_swreg_def.vs"
