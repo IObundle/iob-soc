@@ -233,6 +233,12 @@ module iob_soc_fpga_wrapper (
    );
 `endif
 
+    // interconnect clk and arst
+    wire clk_interconnect;
+    wire arst_interconnect;
+    assign clk_interconnect = clk;
+    assign arst_interconnect = arst;
+
    `include "iob_soc_interconnect.vs"
 
 endmodule

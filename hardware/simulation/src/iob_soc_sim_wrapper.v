@@ -64,6 +64,13 @@ module iob_soc_sim_wrapper (
       .trap_o(trap_o)
    );
 
+
+    // interconnect clk and arst
+    wire clk_interconnect;
+    wire arst_interconnect;
+    assign clk_interconnect = clk_i;
+    assign arst_interconnect = arst_i;
+
    `include "iob_soc_interconnect.vs"
 
 `ifdef IOB_SOC_USE_EXTMEM
