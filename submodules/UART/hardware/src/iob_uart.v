@@ -29,7 +29,7 @@ module iob_uart #(
 
    uart_core uart_core0 (
       .clk_i          (clk_i),
-      .rst_i          (arst_i),
+      .arst_i         (arst_i),
       .rst_soft_i     (SOFTRESET_wr),
       .tx_en_i        (TXEN_wr),
       .rx_en_i        (RXEN_wr),

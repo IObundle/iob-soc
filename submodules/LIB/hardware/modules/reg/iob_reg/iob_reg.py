@@ -19,14 +19,31 @@ class iob_reg(iob_module):
 
     @classmethod
     def _setup_confs(cls):
-        _confs = [
-            {
-                "name": "RST_POL",
-                "type": "M",
-                "val": "1",
-                "min": "0",
-                "max": "1",
-                "descr": "Reset polarity is high.",
-            },
-        ]
-
+        super()._setup_confs(
+            [
+                {
+                    "name": "DATA_W",
+                    "type": "P",
+                    "val": "1",
+                    "min": "NA",
+                    "max": "NA",
+                    "descr": "Data bus width",
+                },
+                {
+                    "name": "RST_VAL",
+                    "type": "P",
+                    "val": "{DATA_W{1'b0}}",
+                    "min": "NA",
+                    "max": "NA",
+                    "descr": "Reset value.",
+                },
+                {
+                    "name": "RST_POL",
+                    "type": "M",
+                    "val": "1",
+                    "min": "0",
+                    "max": "1",
+                    "descr": "Reset polarity.",
+                },
+            ]
+        )

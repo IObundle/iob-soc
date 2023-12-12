@@ -1,6 +1,9 @@
 `timescale 1ns / 1ps
 
 `include "iob_uart_swreg_def.vh"
+`include "iob_utils.vh"
+`include "iob_reg_conf.vh"
+
 
 //ASCII codes used
 `define STX 2 //start of text
@@ -11,7 +14,7 @@
 `define FTX 7 //transmit file
 `define FRX 8 //receive file
 
-module uart_tb;
+module iob_uart_tb;
 
    parameter clk_frequency = 100e6;  //100 MHz
    parameter baud_rate = 1e6;  //high value to speed sim
@@ -21,7 +24,7 @@ module uart_tb;
    integer i, fd;
 
    // CORE SIGNALS
-   reg                        rst;
+   reg                        arst = ~`IOB_REG_RST_POL;
    reg                        clk;
 
    //control interface (backend)
@@ -51,7 +54,6 @@ module uart_tb;
 `endif
 
       clk      = 1;
-      rst      = 1;
       rst_soft = 0;
 
       rd_en    = 0;
@@ -62,9 +64,8 @@ module uart_tb;
 
       div      = clk_frequency / baud_rate;
 
-      // deassert hard reset
-      #100 @(posedge clk) #1 rst = 0;
-      #100 @(posedge clk);
+      //apply async reset
+      `IOB_RESET(clk, arst, 100, 1_000, 100);
 
       // assert tx not ready
       if (tx_ready) begin
@@ -146,7 +147,7 @@ module uart_tb;
    // Instantiate the Unit Under Test (UUT)
    uart_core uut (
       .clk_i          (clk),
-      .rst_i          (rst),
+      .arst_i         (arst),
       .rst_soft_i     (rst_soft),
       .tx_en_i        (tx_en),
       .rx_en_i        (rx_en),

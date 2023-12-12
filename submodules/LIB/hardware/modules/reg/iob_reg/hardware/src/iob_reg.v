@@ -2,8 +2,7 @@
 `include "iob_reg_conf.vh"
 
 module iob_reg #(
-   parameter DATA_W  = 21,
-   parameter RST_VAL = {DATA_W{1'b0}}
+   `include "iob_reg_params.vs"
 ) (
 `include "clk_en_rst_s_port.vs"
 
