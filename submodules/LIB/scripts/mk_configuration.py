@@ -21,11 +21,10 @@ def params_vh(params, top_module, out_dir):
             file2create.write(f"\n  parameter {p_name} = `{core_prefix}{p_name},")
     file2create.close()
 
-    if os.path.getsize(f"{out_dir}/{top_module}_params.vs"):
-        file2create = open(f"{out_dir}/{top_module}_params.vs", "rb+")
-        file2create.seek(-1, os.SEEK_END)
-        file2create.write(b"\n")
-        file2create.close()
+    file2create = open(f"{out_dir}/{top_module}_params.vs", "rb+")
+    file2create.seek(-1, os.SEEK_END)
+    file2create.write(b"\n")
+    file2create.close()
 
     file2create = open(f"{out_dir}/{top_module}_inst_params.vs", "w")
     for parameter in params:
@@ -33,11 +32,10 @@ def params_vh(params, top_module, out_dir):
             p_name = parameter["name"].upper()
             file2create.write(f"\n  .{p_name}({p_name}),")
 
-    if os.path.getsize(f"{out_dir}/{top_module}_inst_params.vs"):
-        file2create = open(f"{out_dir}/{top_module}_inst_params.vs", "rb+")
-        file2create.seek(-1, os.SEEK_END)
-        file2create.write(b"\n")
-        file2create.close()
+    file2create = open(f"{out_dir}/{top_module}_inst_params.vs", "rb+")
+    file2create.seek(-1, os.SEEK_END)
+    file2create.write(b"\n")
+    file2create.close()
 
 
 def conf_vh(macros, top_module, out_dir):
