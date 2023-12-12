@@ -35,7 +35,7 @@ module iob_neg2posedge_sync #(
       end else begin: g_rst_pol_0 // block: g_rst_pol_1
          // negedge stage
          always @(negedge clk_i, negedge arst_i) begin
-            if (arst_i) begin
+            if (!arst_i) begin
                synchronizer <= RST_VAL;
             end else if (cke_i) begin
                synchronizer <= signal_i;
@@ -43,7 +43,7 @@ module iob_neg2posedge_sync #(
          end
          // posedge stage
          always @(posedge clk_i, negedge arst_i) begin
-            if(arst_i) begin
+            if(!arst_i) begin
                signal_o <= RST_VAL;
             end else if (cke_i) begin
                signal_o <= synchronizer;

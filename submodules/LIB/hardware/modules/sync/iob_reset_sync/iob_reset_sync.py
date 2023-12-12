@@ -3,8 +3,9 @@ import os
 from iob_module import iob_module
 from iob_reg import iob_reg
 
-class iob_sync(iob_module):
-    name = "iob_sync"
+
+class iob_reset_sync(iob_module):
+    name = "iob_reset_sync"
     version = "V0.10"
     setup_dir = os.path.dirname(__file__)
 

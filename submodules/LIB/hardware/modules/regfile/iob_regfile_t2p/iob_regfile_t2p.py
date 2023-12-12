@@ -1,9 +1,7 @@
 import os
 
 from iob_module import iob_module
-
 from iob_sync import iob_sync
-
 
 class iob_regfile_t2p(iob_module):
     name = "iob_regfile_t2p"
