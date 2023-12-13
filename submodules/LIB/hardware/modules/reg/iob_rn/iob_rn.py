@@ -2,6 +2,7 @@ import os
 
 from iob_module import iob_module
 
+
 class iob_rn(iob_module):
     name = "iob_rn"
     version = "V0.10"
@@ -15,4 +16,3 @@ class iob_rn(iob_module):
                 {"interface": "clk_rst_s_port"},
             ]
         )
-

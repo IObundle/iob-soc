@@ -12,7 +12,7 @@ module iob_neg2posedge_sync #(
    
    reg [DATA_W-1:0] synchronizer;
  
-   iob_r #(
+   iob_rn #(
            .DATA_W  (DATA_W),
            .RST_VAL (RST_VAL)
            )     
@@ -23,7 +23,7 @@ module iob_neg2posedge_sync #(
          .data_o(synchronizer)
          );
    
-   iob_rn #(
+   iob_r #(
           .DATA_W(DATA_W),
           .RST_VAL(RST_VAL)
           )
