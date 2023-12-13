@@ -263,7 +263,7 @@ The above command should be added to your `~/.bashrc` file so you do not have to
 
 To setup the system with ethernet capability, set the `USE_ETHERNET` macro value to `True`.
 
-When running the system with ethernet, please set the `RMAC_ADDR` and `PYTHON_ENV` environment variables.
+When running the system with ethernet, please set the `RMAC_ADDR` and `IOB_CONSOLE_PYTHON_ENV` environment variables.
 These values will select which network interface and which python environment to use for the console.
 
 For example, you can add the following to your `~/.bashrc`:
@@ -272,5 +272,5 @@ For example, you can add the following to your `~/.bashrc`:
 # IOb-SoC console network interface
 export RMAC_ADDR=000000000000
 # IOb-SoC console python interperter with `CAP_NET_RAW` capability.
-export PYTHON_ENV=python
+export IOB_CONSOLE_PYTHON_ENV=python
 ``` 
