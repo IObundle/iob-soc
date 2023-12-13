@@ -7,29 +7,29 @@ module iob_reset_sync (
    output arst_o
 );
 
-   localparam RST_POL = `IOB_REG_RST_POL;
-
+   wire [1:0] data;
    reg [1:0] sync;
 
+   localparam RST_POL = `IOB_REG_RST_POL;
+
    generate
-      if (RST_POL == 1) begin: rst_pol_1
-         always @(posedge clk_i, posedge arst_i) begin
-            if (arst_i) begin
-               sync <= 2'd3;
-            end else begin
-               sync <= {sync[0], 1'b0};
-            end
-         end
-      end else begin: rst_pol_0 // block: rst_pol_1
-         always @(posedge clk_i, negedge arst_i) begin
-            if (!arst_i) begin
-               sync <= 2'd0;
-            end else begin
-               sync <= {sync[0], 1'b1};
-            end
-         end
+      if (RST_POL == 0) begin: gen_rst_pol_0
+         assign data = {sync[0], 1'b1};
+      end else begin: gen_rst_pol_1
+         assign data = {sync[0], 1'b0};
       end
    endgenerate
+   
+   iob_r #(
+           .DATA_W  (2),
+           .RST_VAL (2'b0)
+           )     
+   reg1 (
+         .clk_i (clk_i),
+         .arst_i (arst_i),
+         .data_i(data),
+         .data_o(sync)
+         );
 
    assign arst_o = sync[1];
    

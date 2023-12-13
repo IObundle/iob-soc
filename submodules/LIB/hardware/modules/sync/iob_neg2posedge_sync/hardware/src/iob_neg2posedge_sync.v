@@ -10,46 +10,28 @@ module iob_neg2posedge_sync #(
    output reg [DATA_W-1:0] signal_o
 );
    
-   localparam RST_POL = `IOB_REG_RST_POL;
-   
    reg [DATA_W-1:0] synchronizer;
-
-   generate
-      if (RST_POL == 1) begin: g_rst_pol_1
-         // negedge stage
-         always @(negedge clk_i, posedge arst_i) begin
-            if (arst_i) begin
-               synchronizer <= RST_VAL;
-            end else if (cke_i) begin
-               synchronizer <= signal_i;
-            end
-         end
-         // posedge stage
-         always @(posedge clk_i, posedge arst_i) begin
-            if(arst_i) begin
-               signal_o <= RST_VAL;
-            end else if (cke_i) begin
-               signal_o <= synchronizer;
-            end
-         end
-      end else begin: g_rst_pol_0 // block: g_rst_pol_1
-         // negedge stage
-         always @(negedge clk_i, negedge arst_i) begin
-            if (!arst_i) begin
-               synchronizer <= RST_VAL;
-            end else if (cke_i) begin
-               synchronizer <= signal_i;
-            end
-         end
-         // posedge stage
-         always @(posedge clk_i, negedge arst_i) begin
-            if(!arst_i) begin
-               signal_o <= RST_VAL;
-            end else if (cke_i) begin
-               signal_o <= synchronizer;
-            end
-         end
-      end // block: g_rst_pol_0
-   endgenerate // block: g_rst_pol_1
-
+ 
+   iob_r #(
+           .DATA_W  (DATA_W),
+           .RST_VAL (RST_VAL)
+           )     
+   reg1 (
+         .clk_i(clk_i),
+         .arst_i(arst_i),
+         .data_i(signal_i),
+         .data_o(synchronizer)
+         );
+   
+   iob_rn #(
+          .DATA_W(DATA_W),
+          .RST_VAL(RST_VAL)
+          )
+   reg2 (
+         .clk_i(clk_i),
+         .arst_i(arst_i),
+         .data_i(synchronizer),
+         .data_o(signal_o)
+         );
+   
 endmodule

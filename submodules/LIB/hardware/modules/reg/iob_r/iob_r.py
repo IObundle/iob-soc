@@ -1,10 +1,9 @@
 import os
 
 from iob_module import iob_module
-from iob_r import iob_r
 
-class iob_sync(iob_module):
-    name = "iob_sync"
+class iob_r(iob_module):
+    name = "iob_r"
     version = "V0.10"
     setup_dir = os.path.dirname(__file__)
 
@@ -14,6 +13,6 @@ class iob_sync(iob_module):
         super()._create_submodules_list(
             [
                 {"interface": "clk_rst_s_port"},
-                iob_r,
             ]
         )
+
