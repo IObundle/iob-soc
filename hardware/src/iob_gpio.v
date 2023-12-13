@@ -11,7 +11,7 @@ module iob_gpio # (
 
    `include "iob_wire.vs"
 
-   assign iob_avalid = iob_avalid_i;
+   assign iob_valid = iob_valid_i;
    assign iob_addr = iob_addr_i;
    assign iob_wdata = iob_wdata_i;
    assign iob_wstrb = iob_wstrb_i;
