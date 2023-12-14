@@ -125,9 +125,10 @@ def main():
 
         # get byte from target
         if not SerialFlag:
-            byte = tb_read(1)
+            byte = tb_read.read(1)
         elif ser.isOpen():
             byte = ser.read()
+
         # process command
         if byte == ENQ:
             if not gotENQ:
@@ -137,31 +138,26 @@ def main():
                 else:
                     tb_write(ACK)
         elif byte == EOT:
-            print(PROGNAME, end="")
-            print(": exiting...")
+            print(f"{PROGNAME}: exiting...")
             clean_exit()
         elif byte == FTX:
-            print(PROGNAME, end="")
-            print(": got file receive request")
+            print(f"{PROGNAME}: got file receive request")
             cnsl_recvfile()
         elif byte == FRX:
-            print(PROGNAME, end="")
-            print(": got file send request")
+            print(f"{PROGNAME}: got file send request")
             cnsl_sendfile()
         elif byte == EFTX:
-            print(PROGNAME, end="")
-            print(": got file receive by ethernet request")
+            print(f"{PROGNAME}: got file receive by ethernet request")
             cnsl_recvfile_ethernet()
         elif byte == EFRX:
-            print(PROGNAME, end="")
-            print(": got file send by ethernet request")
+            print(f"{PROGNAME}: got file send by ethernet request")
             cnsl_sendfile_ethernet()
         elif byte == DC1:
-            print(PROGNAME, end="")
-            print(": received request to disable iob-soc exclusive message identifiers")
+            print(f"{PROGNAME}: disabling IOB-SOC exclusive identifiers")
             endFileTransfer()
-            print(PROGNAME, end="")
-            print(": start reading user input")
+            script_arguments = ["python3", "../../scripts/noncanonical.py"]
+            subprocess.run(script_arguments)
+            print(f"{PROGNAME}: start reading user input")
             input_thread.start()
         else:
             print(str(byte, "iso-8859-1"), end="", flush=True)

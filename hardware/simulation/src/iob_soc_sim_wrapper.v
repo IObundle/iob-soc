@@ -20,15 +20,6 @@ module iob_soc_sim_wrapper (
 `include "clk_rst_s_port.vs"
    output                             trap_o,
 
-   // UART for testbench
-   input                              uart_valid_i,
-   input [`IOB_UART_SWREG_ADDR_W-1:0] uart_addr_i,
-   input [`IOB_SOC_DATA_W-1:0]        uart_wdata_i,
-   input [3:0]                        uart_wstrb_i,
-   output [`IOB_SOC_DATA_W-1:0]       uart_rdata_o,
-   output                             uart_ready_o,
-   output                             uart_rvalid_o
-
 `ifdef IOB_SOC_USE_ETHERNET
    // Ethernet for testbench
    input                              ethernet_valid_i,
@@ -39,6 +30,15 @@ module iob_soc_sim_wrapper (
    output                             ethernet_ready_o,
    output                             ethernet_rvalid_o,
 `endif
+
+   // UART for testbench
+   input                              uart_valid_i,
+   input [`IOB_UART_SWREG_ADDR_W-1:0] uart_addr_i,
+   input [`IOB_SOC_DATA_W-1:0]        uart_wdata_i,
+   input [3:0]                        uart_wstrb_i,
+   output [`IOB_SOC_DATA_W-1:0]       uart_rdata_o,
+   output                             uart_ready_o,
+   output                             uart_rvalid_o
 );
 
    localparam AXI_ID_W = 4;
@@ -166,13 +166,13 @@ module iob_soc_sim_wrapper (
       .MCrS(1'b0),
       .MDC(),
       .MDIO(),
-      .iob_avalid_i(ethernet_avalid),
-      .iob_addr_i  (ethernet_addr),
-      .iob_wdata_i (ethernet_wdata),
-      .iob_wstrb_i (ethernet_wstrb),
-      .iob_rvalid_o(ethernet_rvalid),
-      .iob_rdata_o (ethernet_rdata),
-      .iob_ready_o (ethernet_ready),
+      .iob_valid_i(ethernet_valid_i),
+      .iob_addr_i  (ethernet_addr_i),
+      .iob_wdata_i (ethernet_wdata_i),
+      .iob_wstrb_i (ethernet_wstrb_i),
+      .iob_rvalid_o(ethernet_rvalid_o),
+      .iob_rdata_o (ethernet_rdata_o),
+      .iob_ready_o (ethernet_ready_o),
       .axi_awid_o        (),
       .axi_awaddr_o      (),
       .axi_awlen_o       (),
