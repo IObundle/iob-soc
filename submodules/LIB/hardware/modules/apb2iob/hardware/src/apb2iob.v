@@ -23,8 +23,7 @@ module apb2iob #(
    wire apb_ready_nxt;
    iob_reg #(
       .DATA_W (1),
-      .RST_VAL(1'b0),
-      .CLKEDGE("posedge")
+      .RST_VAL(1'b0)
    ) apb_ready_reg_inst (
       `include "clk_en_rst_s_s_portmap.vs"
       .data_i(apb_ready_nxt),

@@ -8,7 +8,6 @@ from iob_reg_e import iob_reg_e
 class axil2iob(iob_module):
     name = "axil2iob"
     version = "V0.10"
-    flows = "sim"
     setup_dir = os.path.dirname(__file__)
 
     @classmethod

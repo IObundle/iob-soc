@@ -31,8 +31,9 @@ build_dir_name:
 	$(eval BUILD_FIG_DIR = $(BUILD_DOC_DIR)/figures)
 	$(eval BUILD_TSRC_DIR = $(BUILD_DOC_DIR)/tsrc)
 	@echo $(BUILD_DIR)
-	$(PYTHON_EXEC) ./$(PYTHON_DIR)/bootstrap.py $(TOP_MODULE_NAME) $(SETUP_ARGS) -s $(PROJECT_ROOT)
 
+build_top_module:
+	$(PYTHON_EXEC) ./$(PYTHON_DIR)/bootstrap.py $(TOP_MODULE_NAME) $(SETUP_ARGS) -s $(PROJECT_ROOT)
 
 python-format: build_dir_name
 	$(LIB_DIR)/scripts/sw_format.py black . 
@@ -72,7 +73,7 @@ ifneq ($(DISABLE_FORMAT),1)
 	$(IOB_LIB_PATH)/verilog-format.sh $(VHFILES) $(VFILES)
 endif
 
-format-all: build_dir_name  python-format c-format verilog-lint verilog-format
+format-all: build_dir_name python-format c-format verilog-lint verilog-format
 
 #
 #DOCUMENT
@@ -114,7 +115,7 @@ endif
 python-cache-clean:
 	find . -name "*__pycache__" -exec rm -rf {} \; -prune
 
-build-setup: build_dir_name $(BUILD_DIR) $(SRC) format-all
+build-setup: build_dir_name build_top_module $(BUILD_DIR) $(SRC) format-all
 	@for i in $(SRC); do echo $$i; done
 
 

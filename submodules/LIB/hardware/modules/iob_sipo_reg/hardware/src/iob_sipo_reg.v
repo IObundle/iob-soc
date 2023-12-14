@@ -1,15 +1,11 @@
 `timescale 1ns / 1ps
 
 module iob_sipo_reg #(
-   parameter DATA_W = 21,
-   parameter CLKEDGE = "pos"
+   parameter DATA_W = 21
 ) (
-
    `include "clk_en_rst_s_port.vs"
-
    //serial input
    input s_i,
-
    //parallel output
    output [DATA_W-1:0] p_o
 );
@@ -19,11 +15,9 @@ module iob_sipo_reg #(
 
    iob_reg #(
       .DATA_W (DATA_W),
-      .RST_VAL(0),
-      .CLKEDGE(CLKEDGE)
+      .RST_VAL(0)
    ) reg0 (
       `include "clk_en_rst_s_s_portmap.vs"
-
       .data_i(data),
       .data_o(p_o)
    );

@@ -2,8 +2,7 @@
 
 module iob_reg_re #(
    parameter DATA_W  = 21,
-   parameter RST_VAL = {DATA_W{1'b0}},
-   parameter CLKEDGE = "posedge"
+   parameter RST_VAL = {DATA_W{1'b0}}
 ) (
    `include "clk_en_rst_s_port.vs"
 
@@ -18,13 +17,10 @@ module iob_reg_re #(
 
    iob_reg_r #(
       .DATA_W (DATA_W),
-      .RST_VAL(RST_VAL),
-      .CLKEDGE(CLKEDGE)
+      .RST_VAL(RST_VAL)
    ) reg0 (
       `include "clk_en_rst_s_s_portmap.vs"
-
       .rst_i(rst_i),
-
       .data_i(data),
       .data_o(data_o)
    );

@@ -1,5 +1,2 @@
 BOARD_SERVER=
 BOARD_USER=
-
-#Dummy IP
-IP=quartus

@@ -9,7 +9,6 @@ from iob_counter import iob_counter
 class iob_pulse_gen(iob_module):
     name = "iob_pulse_gen"
     version = "V0.10"
-    flows = "sim"
     setup_dir = os.path.dirname(__file__)
 
     @classmethod

@@ -9,7 +9,6 @@ class iob_regfile_sp(iob_module):
     name = "iob_regfile_sp"
     version = "V0.10"
     previous_version = "V0.09"
-    flows = "sim"
     setup_dir = os.path.dirname(__file__)
 
     @classmethod

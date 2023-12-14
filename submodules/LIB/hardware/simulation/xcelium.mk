@@ -10,7 +10,7 @@ SFLAGS = -errormax 15 -status -licqueue
 EFLAGS = $(SFLAGS) -access +wc
 ifeq ($(COV),1)
 COV_SFLAGS= -covoverwrite -covtest $(COV_TEST)
-COV_EFLAGS= -covdut $(NAME)_$(CSR_IF) -coverage A -covfile xcelium_cov_commands.ccf
+COV_EFLAGS= -covdut $(NAME) -coverage A -covfile xcelium_cov_commands.ccf
 endif
 
 VFLAGS=$(SFLAGS) -update -linedebug -sv -incdir .
@@ -38,11 +38,13 @@ endif
 xmvlog.log: $(VHDR) $(VSRC) $(HEX)
 	xmvlog $(VFLAGS) $(VSRC)
 
-comp xmelab.log xcelium.d/worklib: xmvlog.log
+xmelab.log : xmvlog.log xcelium.d/worklib
 	xmelab $(EFLAGS) $(COV_EFLAGS) worklib.$(NAME)_tb:module
 
-exec: xmelab.log xcelium.d/worklib
-	sync && sleep 1 && xmsim $(SFLAGS) $(COV_SFLAGS) worklib.$(NAME)_tb:module
+comp: xmelab.log
+
+exec: comp
+	sync && sleep 2 && xmsim $(SFLAGS) $(COV_SFLAGS) worklib.$(NAME)_tb:module
 ifeq ($(COV),1)
 	ls -d cov_work/scope/* > all_ucd_file
 	imc -execcmd "merge -runfile all_ucd_file -overwrite -out merge_all"

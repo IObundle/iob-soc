@@ -8,7 +8,6 @@ from iob_reg import iob_reg
 class iob_edge_detect(iob_module):
     name = "iob_edge_detect"
     version = "V0.10"
-    flows = "sim"
     setup_dir = os.path.dirname(__file__)
 
     @classmethod

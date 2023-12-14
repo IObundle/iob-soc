@@ -23,12 +23,23 @@ def create_wrapper_files(build_dir, name, ios, confs, num_extmem_connections):
         if pio_signals and "if_defined" in table.keys():
             pwires_str += f"`ifdef {table['if_defined']}\n"
         for signal in pio_signals:
-            pwires_str += "   wire [{}-1:0] {};\n".format(
-                add_prefix_to_parameters_in_string(
-                    signal["n_bits"], confs, "`" + name.upper() + "_"
-                ),
-                signal["name"],
-            )
+            # check if n_bits (a string) is only an integer or a parameter
+            if signal["n_bits"].isdigit():
+                n_bits = int(signal["n_bits"])
+                # If n_bits is 1, do not add [0:0] to the wire
+                if n_bits == 1:
+                    pwires_str += "   wire {};\n".format(signal["name"])
+                else:
+                    pwires_str += "   wire [{}-1:0] {};\n".format(
+                        n_bits, signal["name"]
+                    )
+            else:
+                pwires_str += "   wire [{}-1:0] {};\n".format(
+                    add_prefix_to_parameters_in_string(
+                        signal["n_bits"], confs, "`" + name.upper() + "_"
+                    ),
+                    signal["name"],
+                )
         if pio_signals and "if_defined" in table.keys():
             pwires_str += "`endif\n"
 
@@ -178,10 +189,18 @@ def create_interconnect_instance(out_dir, name, num_extmem_connections):
       .s_axi_awuser({num_extmem_connections}'b0),
       .s_axi_wuser ({num_extmem_connections}'b0),
       .s_axi_aruser({num_extmem_connections}'b0),
+      .s_axi_buser (),
+      .s_axi_ruser (),
+      .m_axi_awuser(),
+      .m_axi_wuser (),
+      .m_axi_aruser(),
       .m_axi_buser (1'b0),
-      .m_axi_ruser (1'b0)
+      .m_axi_ruser (1'b0),
+      .m_axi_awregion (),
+      .m_axi_arregion ()
    );
 `endif
+
 """
 
     fp_interconnect = open(f"{out_dir}/{name}_interconnect.vs", "w")
@@ -196,7 +215,7 @@ def create_ku040_rstn(out_dir, name, num_extmem_connections):
     rstn_str = rstn_str[:-3]
 
     file_str = f"      wire [{num_extmem_connections}-1:0] rstn;"
-    file_str += f"      assign arst ={rstn_str};" # FIXME: This is probably wrong. Reset signals should not have logic
+    file_str += f"      assign arst ={rstn_str};"  # FIXME: This is probably wrong. Reset signals should not have logic
 
     fp_rstn = open(f"{out_dir}/{name}_ku040_rstn.vs", "w")
     fp_rstn.write(file_str)

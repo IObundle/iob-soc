@@ -8,7 +8,6 @@ from iob_ctls import iob_ctls
 class iob_regfile_2p(iob_module):
     name = "iob_regfile_2p"
     version = "V0.10"
-    flows = "sim"
     setup_dir = os.path.dirname(__file__)
 
     @classmethod

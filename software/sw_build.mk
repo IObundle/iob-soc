@@ -15,7 +15,11 @@ iob_soc_boot.hex: ../../software/iob_soc_boot.bin
 	../../scripts/makehex.py $< $(call GET_IOB_SOC_CONF_MACRO,BOOTROM_ADDR_W) > $@
 
 iob_soc_firmware.hex: iob_soc_firmware.bin
+ifeq ($(USE_EXTMEM),1)
+	../../scripts/makehex.py $< $(call GET_IOB_SOC_CONF_MACRO,MEM_ADDR_W) > $@
+else
 	../../scripts/makehex.py $< $(call GET_IOB_SOC_CONF_MACRO,SRAM_ADDR_W) > $@
+endif
 	../../scripts/hex_split.py iob_soc_firmware .
 
 iob_soc_firmware.bin: ../../software/iob_soc_firmware.bin
@@ -57,12 +61,6 @@ iob_soc_boot:
 
 
 .PHONY: iob_soc_firmware iob_soc_boot
-
-
-# Include the UUT configuration if iob-soc is used as a Tester
-ifneq ($(wildcard $(ROOT_DIR)/software/uut_build_for_iob_soc.mk),)
-include $(ROOT_DIR)/software/uut_build_for_iob_soc.mk
-endif
 
 #########################################
 #         PC emulation targets          #

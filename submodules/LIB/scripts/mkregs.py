@@ -146,8 +146,7 @@ class mkregs:
             )
             f.write(f"iob_reg_e #(\n")
             f.write(f"  .DATA_W({n_bits}),\n")
-            f.write(f"  .RST_VAL({rst_val_str}),\n")
-            f.write('  .CLKEDGE("posedge")\n')
+            f.write(f"  .RST_VAL({rst_val_str})\n")
             f.write(f") {name}_datareg (\n")
             f.write("  .clk_i  (clk_i),\n")
             f.write("  .cke_i  (cke_i),\n")
@@ -374,7 +373,6 @@ class mkregs:
 
         # use variables to compute response
         f_gen.write(f"\n reg [{8*self.cpu_n_bytes}-1:0] rdata_int;\n")
-        f_gen.write(f"wire rvalid_int;\n")
         f_gen.write(f"reg wready_int;\n")
         f_gen.write(f"reg rready_int;\n\n")
 
@@ -393,8 +391,7 @@ class mkregs:
         f_gen.write("wire rvalid_nxt;\n")
         f_gen.write("iob_reg #( \n")
         f_gen.write("  .DATA_W (1),\n")
-        f_gen.write("  .RST_VAL (1'd0),\n")
-        f_gen.write('  .CLKEDGE ("posedge")\n')
+        f_gen.write("  .RST_VAL (1'd0)\n")
         f_gen.write(") rvalid_reg_inst (\n")
         f_gen.write("  .clk_i  (clk_i),\n")
         f_gen.write("  .cke_i  (cke_i),\n")
@@ -446,7 +443,7 @@ class mkregs:
                     f_gen.write(f"  if({aux_read_reg}) ")
                 else:
                     f_gen.write(
-                        f"  {aux_read_reg} = (`IOB_WORD_ADDR(iob_addr_i) >= {self.bfloor(addr, addr_w_base)} && `IOB_WORD_ADDR(iob_addr_i) < {self.bfloor(addr_last, addr_w_base)});\n"
+                        f"  {aux_read_reg} = ((`IOB_WORD_ADDR(iob_addr_i) >= {self.bfloor(addr, addr_w_base)}) && (`IOB_WORD_ADDR(iob_addr_i) < {self.bfloor(addr_last, addr_w_base)}));\n"
                     )
                     f_gen.write(f"  if({aux_read_reg}) ")
                 f_gen.write(f"begin\n")

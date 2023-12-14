@@ -8,7 +8,6 @@ from iob_reg import iob_reg
 class iob_reg_r(iob_module):
     name = "iob_reg_r"
     version = "V0.10"
-    flows = "sim"
     setup_dir = os.path.dirname(__file__)
 
     @classmethod

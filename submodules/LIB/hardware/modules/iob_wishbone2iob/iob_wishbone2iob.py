@@ -8,7 +8,6 @@ from iob_reg_re import iob_reg_re
 class iob_wishbone2iob(iob_module):
     name = "iob_wishbone2iob"
     version = "V0.10"
-    flows = "sim"
     setup_dir = os.path.dirname(__file__)
 
     @classmethod

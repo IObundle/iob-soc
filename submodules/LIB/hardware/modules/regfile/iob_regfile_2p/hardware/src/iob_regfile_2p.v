@@ -58,8 +58,7 @@ module iob_regfile_2p #(
                assign wen[i+j] = wen_i & (waddr_int == (i + j)) & wstrb[j];
                iob_reg_e #(
                   .DATA_W (W),
-                  .RST_VAL({W{1'b0}}),
-                  .CLKEDGE("posedge")
+                  .RST_VAL({W{1'b0}})
                ) iob_reg_inst (
                   `include "clk_en_rst_s_s_portmap.vs"
                   .en_i  (wen[i+j]),

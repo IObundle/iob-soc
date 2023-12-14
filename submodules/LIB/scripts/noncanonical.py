@@ -3,6 +3,8 @@
 import sys
 import termios
 
+print("IOb-Non-Canonical: activating terminal non-canonical mode")
+
 stdin = sys.stdin
 fd = stdin.fileno()
 
@@ -12,4 +14,3 @@ new[3] &= ~termios.ECHO
 new[3] &= ~termios.ICANON
 
 termios.tcsetattr(fd, termios.TCSAFLUSH, new)
-print()

@@ -18,14 +18,14 @@ FPGA_STUB=$(FPGA_TOP)_stub.v
 endif
 
 
-FPGA_PROG=vivado -nojournal -log vivado.log -mode batch -source vivado/prog.tcl -tclargs $(FPGA_TOP) $(BOARD) $(IS_FPGA) $(USE_EXTMEM)
+FPGA_PROG=vivado -nojournal -log vivado.log -mode batch -source vivado/prog.tcl -tclargs $(FPGA_TOP)
 
 # work-around for http://svn.clifford.at/handicraft/2016/vivadosig11
 export RDI_VERBOSE = False
 
-VIVADO_FLAGS= -nojournal -log reports/vivado.log -mode batch -source vivado/build.tcl -tclargs $(FPGA_TOP) $(CSR_IF) $(BOARD) "$(VSRC)" "$(IP)" $(IS_FPGA) $(USE_EXTMEM) $(N_INTERCONNECT_SLAVES)
+VIVADO_FLAGS= -nojournal -log reports/vivado.log -mode batch -source vivado/build.tcl -tclargs $(FPGA_TOP) $(CSR_IF) $(BOARD) "$(VSRC)" $(IS_FPGA) $(USE_EXTMEM) $(N_INTERCONNECT_SLAVES)
 
-$(FPGA_OBJ): $(VSRC) $(VHDR) $(IP) $(wildcard $(BOARD)/*.sdc)
+$(FPGA_OBJ): $(VSRC) $(VHDR) $(wildcard $(BOARD)/*.sdc)
 	mkdir -p reports && vivado $(VIVADO_FLAGS) 
 
 vivado-clean:

@@ -10,7 +10,6 @@ from iob_demux import iob_demux
 class iob_split2(iob_module):
     name = "iob_split2"
     version = "V0.10"
-    flows = "sim"
     setup_dir = os.path.dirname(__file__)
 
     @classmethod

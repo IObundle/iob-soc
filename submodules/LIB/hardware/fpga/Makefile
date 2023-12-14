@@ -2,6 +2,7 @@
 # directory
 
 SHELL:=bash
+#export LC_ALL=C; unset LANGUAGE
 
 include ../../config_build.mk
 
@@ -63,7 +64,8 @@ endif
 CONSOLE_CMD ?=$(PYTHON_DIR)/console.py -s /dev/usb-uart
 
 #board client command
-BOARD_GRAB_CMD=../../scripts/board_client.py grab 300
+GRAB_TIMEOUT ?= 300
+BOARD_GRAB_CMD=../../scripts/board_client.py grab $(GRAB_TIMEOUT)
 
 #run fpga image
 run: build $(RUN_DEPS)
@@ -74,7 +76,7 @@ ifeq ($(BOARD_SERVER),)
 else
 	ssh $(BOARD_USER)@$(BOARD_SERVER) "if [ ! -d $(REMOTE_BUILD_DIR) ]; then mkdir -p $(REMOTE_BUILD_DIR); fi"
 	rsync $(BOARD_SYNC_FLAGS) -avz --delete --force ../.. $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_BUILD_DIR)
-	ssh -t $(BOARD_USER)@$(BOARD_SERVER) 'if [ -f quartus_env ]; then source quartus_env $(USE_QUARTUS_PRO); fi; make -C $(REMOTE_FPGA_DIR) $@ BOARD=$(BOARD) $(UFLAGS)'
+	ssh -t $(BOARD_USER)@$(BOARD_SERVER) 'if [ -f quartus_env ]; then source quartus_env $(USE_QUARTUS_PRO); fi; make -C $(REMOTE_FPGA_DIR) $@ BOARD=$(BOARD) GRAB_TIMEOUT=$(GRAB_TIMEOUT) $(UFLAGS)'
 	scp $(BOARD_USER)@$(BOARD_SERVER):$(REMOTE_FPGA_DIR)/*.log . 2> /dev/null | true
 endif
 endif
@@ -90,6 +92,8 @@ ifneq ($(BOARD_SERVER),)
 endif
 endif
 
+test: $(TEST_LIST)
+
 debug:
 	@echo SIMULATOR=$(SIMULATOR)
 	@echo BOARD=$(BOARD)
@@ -100,4 +104,4 @@ debug:
 
 .PRECIOUS: $(FPGA_OBJ) test.log s_fw.bin
 
-.PHONY: run build test clean debug
+.PHONY: run build clean debug test $(TEST_LIST)

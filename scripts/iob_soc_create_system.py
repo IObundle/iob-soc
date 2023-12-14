@@ -78,17 +78,30 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
         periphs_inst_str += "   {} (\n".format(instance.name)
         # Insert io signals
         # print(f"Debug: {instance.name} {instance.io} {port_list[instance.__class__.name]}\n")  # DEBUG
+        ## Group peripheral ports with the same condition to be used
+        grouped_signals = []
         for signal in get_pio_signals(port_list[instance.__class__.name]):
             if "if_defined" in signal.keys():
-                periphs_inst_str += f"`ifdef {top.upper()}_{signal['if_defined']}\n"
-            periphs_inst_str += "      .{}({}),\n".format(
-                signal["name"],
-                get_peripheral_port_mapping(
-                    instance, signal["if_name"], signal["name"]
-                ),
-            )
-            if "if_defined" in signal.keys():
+                if_defined_key = f"{top.upper()}_{signal['if_defined']}"
+            else:
+                if_defined_key = ""
+
+            if not grouped_signals or grouped_signals[-1][0] != if_defined_key:
+                grouped_signals.append((if_defined_key, []))
+
+            grouped_signals[-1][1].append(signal)
+
+        ## Iterate over the grouped signals and generate the code
+        for if_defined_key, signals_in_group in grouped_signals:
+            if if_defined_key != "":
+                periphs_inst_str += f"`ifdef {if_defined_key}\n"
+
+            for signal in signals_in_group:
+                periphs_inst_str += f"      .{signal['name']}({get_peripheral_port_mapping(instance, signal['if_name'], signal['name'])}),\n"
+
+            if if_defined_key != "":
                 periphs_inst_str += "`endif\n"
+
         # Insert reserved signals
         for signal in get_reserved_signals(port_list[instance.__class__.name]):
             # Check if should append this peripheral to the list of peripherals with extmem interfaces

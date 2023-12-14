@@ -12,9 +12,7 @@ if __name__ == "__main__":
     try:
         sys.argv = [
             "eth_comm.py",
-            sys.argv[sys.argv.index("-m") + 1]
-            if "-m" in sys.argv
-            else "4437e6a6893b",
+            sys.argv[sys.argv.index("-m") + 1] if "-m" in sys.argv else "4437e6a6893b",
         ]
         from ethBase import CreateSocket, SyncAckFirst, SyncAckLast
         from ethRcvData import RcvFile

@@ -77,7 +77,7 @@ int main() {
   free(sendfile);
   free(recvfile);
 
-  // #ifdef USE_EXTMEM
+  // #ifdef IOB_SOC_USE_EXTMEM
   //   if(memory_access_failed)
   //       uart_sendfile("test.log", iob_strlen(fail_string), fail_string);
   //       uart_finish();
