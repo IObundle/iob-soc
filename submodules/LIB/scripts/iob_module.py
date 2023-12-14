@@ -261,14 +261,15 @@ class iob_module:
     @classmethod
     def _post_setup(cls):
         """Launch post(-specific)-setup tasks"""
-        # Setup flows (copy LIB files)
-        build_srcs.flows_setup(cls)
+        # Auto-add common module macros and submodules
+        cls._auto_add_settings()
+
+        if cls.is_top_module:
+            # Setup flows (copy LIB files)
+            build_srcs.flows_setup(cls)
 
         # Copy sources from the module's setup dir (and from its superclasses)
         cls._copy_srcs()
-
-        # Auto-add common module macros and submodules
-        cls._auto_add_settings()
 
         # Generate hw, sw and doc files
         cls._generate_files()
