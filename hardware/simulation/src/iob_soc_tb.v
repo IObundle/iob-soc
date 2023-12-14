@@ -40,7 +40,7 @@ module iob_soc_tb;
    wire [       `IOB_SOC_DATA_W-1:0] iob_rdata_o;
    wire                              iob_ready_o;
    wire                              iob_rvalid_o;
-   
+
    //iterator
    integer                           i = 0, n = 0;
    integer                           error, n_byte = 0;
@@ -100,13 +100,35 @@ module iob_soc_tb;
          end
       end
    end
+   
+`ifdef IOB_SOC_USE_ETHERNET
+   //IOb-SoC ethernet
+   reg                               ethernet_valid_i;
+   reg  [`IOB_ETH_SWREG_ADDR_W-1:0]  ethernet_addr_i;
+   reg  [       `IOB_SOC_DATA_W-1:0] ethernet_wdata_i;
+   reg  [                       3:0] ethernet_wstrb_i;
+   wire [       `IOB_SOC_DATA_W-1:0] ethernet_rdata_o;
+   wire                              ethernet_ready_o;
+   wire                              ethernet_rvalid_o;
+`endif
+
 
    iob_soc_sim_wrapper iob_soc_sim_wrapper (
       .clk_i (clk),
       .arst_i (arst),
       .trap_o(trap),
 
-      .uart_valid_i(iob_valid_i),
+`ifdef IOB_SOC_USE_ETHERNET
+      .ethernet_valid_i (1'b0),
+      .ethernet_addr_i  (`IOB_ETH_SWREG_ADDR_W'b0),
+      .ethernet_wdata_i (`IOB_SOC_DATA_W'b0),
+      .ethernet_wstrb_i (4'b0),
+      .ethernet_rdata_o (),
+      .ethernet_ready_o (),
+      .ethernet_rvalid_o(),
+`endif
+
+      .uart_valid_i (iob_valid_i),
       .uart_addr_i  (iob_addr_i),
       .uart_wdata_i (iob_wdata_i),
       .uart_wstrb_i (iob_wstrb_i),

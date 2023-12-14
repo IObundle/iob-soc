@@ -19,6 +19,6 @@ VTOP:=iob_soc_sim_wrapper
 
 endif
 
-CONSOLE_CMD=rm -f soc2cnsl cnsl2soc; ../../scripts/console.py -L
+CONSOLE_CMD ?=rm -f soc2cnsl cnsl2soc; ../../scripts/console.py -L
 
 GRAB_TIMEOUT ?= 3600
