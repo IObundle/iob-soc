@@ -42,7 +42,9 @@ include sim_build.mk
 endif
 
 include $(SIMULATOR).mk
-
+ifeq ($(SIMULATOR), verilator)
+UFLAGS+=VERILATOR=$(VERILATOR)
+endif
 UFLAGS+=VCD=$(VCD)
 UFLAGS+=COV=$(COV)
 UFLAGS+=SYN=$(SYN)

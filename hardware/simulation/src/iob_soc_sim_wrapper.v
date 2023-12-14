@@ -17,27 +17,28 @@
 `endif
 
 module iob_soc_sim_wrapper (
-   output trap_o,
-   //IOb-SoC uart
-   input uart_avalid,
-   input [`IOB_UART_SWREG_ADDR_W-1:0] uart_addr,
-   input [`IOB_SOC_DATA_W-1:0] uart_wdata,
-   input [3:0] uart_wstrb,
-   output [`IOB_SOC_DATA_W-1:0] uart_rdata,
-   output uart_ready,
-   output uart_rvalid,
+`include "clk_rst_s_port.vs"
+   output                             trap_o,
+
+   // UART for testbench
+   input                              uart_valid_i,
+   input [`IOB_UART_SWREG_ADDR_W-1:0] uart_addr_i,
+   input [`IOB_SOC_DATA_W-1:0]        uart_wdata_i,
+   input [3:0]                        uart_wstrb_i,
+   output [`IOB_SOC_DATA_W-1:0]       uart_rdata_o,
+   output                             uart_ready_o,
+   output                             uart_rvalid_o
+
 `ifdef IOB_SOC_USE_ETHERNET
-   //IOb-SoC Ethernet
-   input ethernet_avalid,
-   input [`IOB_ETH_SWREG_ADDR_W-1:0] ethernet_addr,
-   input [`IOB_SOC_DATA_W-1:0] ethernet_wdata,
-   input [3:0] ethernet_wstrb,
-   output [`IOB_SOC_DATA_W-1:0] ethernet_rdata,
-   output ethernet_ready,
-   output ethernet_rvalid,
+   // Ethernet for testbench
+   input                              ethernet_valid_i,
+   input [`IOB_ETH_SWREG_ADDR_W-1:0]  ethernet_addr_i,
+   input [`IOB_SOC_DATA_W-1:0]        ethernet_wdata_i,
+   input [3:0]                        ethernet_wstrb_i,
+   output [`IOB_SOC_DATA_W-1:0]       ethernet_rdata_o,
+   output                             ethernet_ready_o,
+   output                             ethernet_rvalid_o,
 `endif
-   input [1-1:0] clk_i,  //V2TEX_IO System clock input.
-   input [1-1:0] rst_i  //V2TEX_IO System reset, asynchronous and active high.
 );
 
    localparam AXI_ID_W = 4;
@@ -45,12 +46,7 @@ module iob_soc_sim_wrapper (
    localparam AXI_ADDR_W = `DDR_ADDR_W;
    localparam AXI_DATA_W = `DDR_DATA_W;
 
-   wire clk = clk_i;
-   wire cke = 1'b1;
-   wire arst = rst_i;
-
    `include "iob_soc_wrapper_pwires.vs"
-
 
    /////////////////////////////////////////////
    // TEST PROCEDURE
@@ -76,11 +72,18 @@ module iob_soc_sim_wrapper (
       .AXI_DATA_W(AXI_DATA_W)
    ) iob_soc0 (
       `include "iob_soc_pportmaps.vs"
-      .clk_i (clk),
-      .cke_i (cke),
-      .arst_i(arst),
+      .clk_i (clk_i),
+      .cke_i (1'b1),
+      .arst_i(arst_i),
       .trap_o(trap_o)
    );
+
+
+    // interconnect clk and arst
+    wire clk_interconnect;
+    wire arst_interconnect;
+    assign clk_interconnect = clk_i;
+    assign arst_interconnect = arst_i;
 
    `include "iob_soc_interconnect.vs"
 
@@ -98,8 +101,8 @@ module iob_soc_sim_wrapper (
    ) ddr_model_mem (
       `include "iob_memory_axi_s_portmap.vs"
 
-      .clk_i(clk),
-      .rst_i(arst)
+      .clk_i(clk_i),
+      .rst_i(arst_i)
    );
 `endif
  
@@ -107,17 +110,17 @@ module iob_soc_sim_wrapper (
    //of the iob_soc UART0 instance to communicate with it
    // The interface of iob_soc UART0 is assumed to be the first portmapped interface (UART_*)
    iob_uart uart_tb (
-      .clk_i (clk),
-      .cke_i (cke),
-      .arst_i(arst),
+      .clk_i (clk_i),
+      .cke_i (1'b1),
+      .arst_i(arst_i),
 
-      .iob_avalid_i(uart_avalid),
-      .iob_addr_i  (uart_addr),
-      .iob_wdata_i (uart_wdata),
-      .iob_wstrb_i (uart_wstrb),
-      .iob_rdata_o (uart_rdata),
-      .iob_rvalid_o(uart_rvalid),
-      .iob_ready_o (uart_ready),
+      .iob_valid_i(uart_valid_i),
+      .iob_addr_i  (uart_addr_i),
+      .iob_wdata_i (uart_wdata_i),
+      .iob_wstrb_i (uart_wstrb_i),
+      .iob_rdata_o (uart_rdata_o),
+      .iob_rvalid_o(uart_rvalid_o),
+      .iob_ready_o (uart_ready_o),
 
       .txd_o(uart_rxd_i),
       .rxd_i(uart_txd_o),
@@ -131,7 +134,7 @@ module iob_soc_sim_wrapper (
    reg [1:0] eth_cnt = 2'b0;
    reg       eth_clk;
 
-   always @(posedge clk) begin
+   always @(posedge clk_i) begin
       eth_cnt <= eth_cnt + 1'b1;
       eth_clk <= eth_cnt[1];
    end
@@ -207,9 +210,9 @@ module iob_soc_sim_wrapper (
       .axi_rlast_i       (1'b0),
       .axi_rvalid_i      (1'b0),
       .axi_rready_o      (),
-      .clk_i(clk),
-      .arst_i(arst),
-      .cke_i(cke)
+      .clk_i(clk_i),
+      .arst_i(arst_i),
+      .cke_i(1'b1)
       );
 `endif
 

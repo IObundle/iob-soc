@@ -26,8 +26,9 @@
 `define IOB_PULSE(VAR, PRE, DURATION, POST) VAR=0; #PRE VAR=1; #DURATION VAR=0; #POST;
 
 //RESET GENERATOR
-`define IOB_RESET(CLK, RESET, PRE, DURATION, POST) RESET=0; #PRE RESET=1; #DURATION RESET=0; \
-   #POST; @(posedge CLK) #1 RESET=0;
+`define IOB_RESET(CLK, RESET, PRE, DURATION, POST) RESET=~`IOB_REG_RST_POL;\
+   #PRE RESET=`IOB_REG_RST_POL; #DURATION RESET=~`IOB_REG_RST_POL; #POST;\
+   @(posedge CLK) #1;
 
 //SLEEP
 `define IOB_SLEEP(TIME) #TIME;
@@ -49,7 +50,7 @@
 //REQ bus
 `define WDATA_P_(D) `WSTRB_W_(D)
 `define ADDR_P_(D) (`WDATA_P_(D)+D)
-`define AVALID_P_(A, D) (`ADDR_P_(D)+A)
+`define VALID_P_(A, D) (`ADDR_P_(D)+A)
 //RESP bus
 `define RDATA_P `VALID_W+`READY_W
 
@@ -71,7 +72,7 @@
 `define RESP_(I, D) (I*`RESP_W_(D)) +: `RESP_W_(D)
 
 //gets the WRITE valid bit of cat bus section
-`define AVALID_(I, A, D) (I*`REQ_W_(A,D)) + `AVALID_P_(A,D)
+`define VALID_(I, A, D) (I*`REQ_W_(A,D)) + `VALID_P_(A,D)
 
 //gets the ADDRESS of cat bus section
 `define ADDRESS_(I, W, A, D) I*`REQ_W_(A,D)+`ADDR_P_(D)+W-1 -: W
@@ -105,14 +106,14 @@
 
 `define WDATA_P `WDATA_P_(DATA_W)
 `define ADDR_P `ADDR_P_(DATA_W)
-`define AVALID_P `AVALID_P_(ADDR_W, DATA_W)
+`define VALID_P `VALID_P_(ADDR_W, DATA_W)
 
 `define REQ_W `REQ_W_(ADDR_W, DATA_W)
 `define RESP_W `RESP_W_(DATA_W)
 
 `define REQ(I) `REQ_(I, ADDR_W, DATA_W)
 `define RESP(I) `RESP_(I, DATA_W)
-`define AVALID(I) `AVALID_(I, ADDR_W, DATA_W)
+`define VALID(I) `VALID_(I, ADDR_W, DATA_W)
 `define ADDRESS(I, W) `ADDRESS_(I, W, ADDR_W, DATA_W)
 `define WDATA(I) `WDATA_(I, ADDR_W, DATA_W)
 `define WSTRB(I) `WSTRB_(I, ADDR_W, DATA_W)

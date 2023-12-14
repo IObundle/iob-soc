@@ -16,14 +16,14 @@ module iob_split #(
    wire [NBITS-1:0] sel, sel_reg;
    assign sel = addr_i[ADDR_W-2-:NBITS];
 
-   //avalid demux
+   //valid demux
    iob_demux #(
       .DATA_W(1),
       .N     (N)
-   ) iob_demux_avalid (
+   ) iob_demux_valid (
       .sel_i (sel),
-      .data_i(avalid_i),
-      .data_o(avalid_o)
+      .data_i(valid_i),
+      .data_o(valid_o)
    );
 
    //addr demux

@@ -22,7 +22,7 @@ module iob_merge #(
   localparam Nb = $clog2(N_MASTERS) + ($clog2(N_MASTERS) == 0);
 
   wire                 s_ready;
-  wire [N_MASTERS-1:0] m_avalid;
+  wire [N_MASTERS-1:0] m_valid;
   reg  [       Nb-1:0] sel;
   wire [       Nb-1:0] sel_q;
 
@@ -31,8 +31,8 @@ module iob_merge #(
   //select master
   generate
     genvar c;
-    for (c = 0; c < N_MASTERS; c = c + 1) begin : g_m_avalids
-      assign m_avalid[c] = m_req_i[`AVALID(c)];
+    for (c = 0; c < N_MASTERS; c = c + 1) begin : g_m_valids
+      assign m_valid[c] = m_req_i[`VALID(c)];
     end
   endgenerate
 
@@ -41,10 +41,10 @@ module iob_merge #(
   //
   integer k;
   always @* begin
-    if (|m_avalid) begin
+    if (|m_valid) begin
       sel = {Nb{1'b0}};
       for (k = 0; k < N_MASTERS; k = k + 1) begin
-        if (m_avalid[k]) sel = k[Nb-1:0];
+        if (m_valid[k]) sel = k[Nb-1:0];
       end
     end else begin
       sel = sel_q;
@@ -79,7 +79,7 @@ module iob_merge #(
     genvar a;
     for (a = 0; a < N_MASTERS; a = a + 1) begin : g_m_ready
       always @* begin
-        if ((sel == a) | (~m_avalid[a])) begin
+        if ((sel == a) | (~m_valid[a])) begin
           m_resp_o[`READY(a)] = s_resp_i[`READY(0)];
         end else begin
           m_resp_o[`READY(a)] = 1'b0;

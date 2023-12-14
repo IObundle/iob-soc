@@ -23,18 +23,23 @@ module iob_regfile_t2p #(
    //write
    reg  [((2**ADDR_W)*DATA_W)-1:0] regfile_in;
    wire [((2**ADDR_W)*DATA_W)-1:0] regfile_synced;
+   wire [(2**ADDR_W)-1:0]          regfile_en;
 
-   //write
    genvar addr;
    generate
       for (addr = 0; addr < (2 ** ADDR_W); addr = addr + 1) begin : gen_register_file
-         always @(posedge w_clk_i, posedge w_arst_i) begin
-            if (w_arst_i) begin
-               regfile_in[addr*DATA_W+:DATA_W] <= {DATA_W{1'd0}};
-            end else if (w_cke_i && (w_addr_i == addr)) begin
-               regfile_in[addr*DATA_W+:DATA_W] <= w_data_i;
-            end
-         end
+         assign regfile_en[addr] = (w_addr_i == addr);
+         iob_reg_e #(
+                   .DATA_W (DATA_W),
+                   .RST_VAL({DATA_W{1'd0}})
+                   ) rdata (
+                            .clk_i (w_clk_i),
+                            .cke_i (w_cke_i),
+                            .arst_i(w_arst_i),
+                            .en_i   (regfile_en[addr]),
+                            .data_i(w_data_i),
+                            .data_o(regfile_in[addr*DATA_W+:DATA_W])
+                            );
       end
    endgenerate
 
@@ -51,12 +56,15 @@ module iob_regfile_t2p #(
    );
 
    //read
-   always @(posedge r_clk_i, posedge r_arst_i) begin
-      if (r_arst_i) begin
-         r_data_o <= {DATA_W{1'd0}};
-      end else if (r_cke_i) begin
-         r_data_o <= regfile_synced[r_addr_i*DATA_W+:DATA_W];
-      end
-   end
-
+   iob_reg #(
+      .DATA_W (DATA_W),
+      .RST_VAL({DATA_W{1'd0}})
+   ) rdata (
+      .clk_i (r_clk_i),
+      .cke_i (r_cke_i),
+      .arst_i(r_arst_i),
+      .data_i(regfile_synced[r_addr_i*DATA_W+:DATA_W]),
+      .data_o(r_data_o)
+   );
+   
 endmodule
