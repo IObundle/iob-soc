@@ -3,7 +3,7 @@
 import sys
 import termios
 
-print("IOb-Non-Canonical: activating terminal non-canonical mode")
+print("IOb-TerminalMode: inverting terminal canonical and echo mode")
 
 stdin = sys.stdin
 fd = stdin.fileno()
