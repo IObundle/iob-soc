@@ -7,29 +7,18 @@ import importlib.util
 import importlib.machinery
 
 if __name__ == "__main__":
-    if "-e" in sys.argv:
-        # Get ethernet dir from string in arguments after '-e' flag
-        ethernet_dir = os.path.realpath(sys.argv[sys.argv.index("-e") + 1])
-
-        sys.path.append(ethernet_dir)
-        # Save argv and override it with new values because ethBase requires them
-        saved_argv = sys.argv
-        try:
-            sys.argv = [
-                "eth_comm.py",
-                sys.argv[sys.argv.index("-i") + 1] if "-i" in sys.argv else "eno1",
-                sys.argv[sys.argv.index("-m") + 1]
-                if "-m" in sys.argv
-                else "4437e6a6893b",
-                "randomFile",
-            ]
-            from software.python.ethBase import CreateSocket, SyncAckFirst, SyncAckLast
-            from software.python.ethRcvData import RcvFile
-            from software.python.ethSendData import SendFile
-        finally:
-            sys.argv = saved_argv
-    else:
-        ethernet_dir = ""
+    # Save argv and override it with new values because ethBase requires them
+    saved_argv = sys.argv
+    try:
+        sys.argv = [
+            "eth_comm.py",
+            sys.argv[sys.argv.index("-m") + 1] if "-m" in sys.argv else "4437e6a6893b",
+        ]
+        from ethBase import CreateSocket, SyncAckFirst, SyncAckLast
+        from ethRcvData import RcvFile
+        from ethSendData import SendFile
+    finally:
+        sys.argv = saved_argv
 
     if "-c" in sys.argv:
         # Get console filepath
@@ -46,8 +35,8 @@ if __name__ == "__main__":
         console_path = ""
 
 # Global variables
-EFTX = b"\x11"  # Receive file by ethernet request
-EFRX = b"\x12"  # Send file by ethernet request
+EFTX = b"\x12"  # Receive file by ethernet request
+EFRX = b"\x13"  # Send file by ethernet request
 
 
 # Send file to target by ethernet
@@ -115,7 +104,7 @@ def usage(message):
     print(
         "{}:{}".format(
             PROGNAME,
-            "usage: ./console_ethernet.py -s <serial port> -c <console path> [ -f ] [ -L/--local ] -e <ethernet submodule directory> -i <ethernet interface> -m <ethernet mac address>",
+            "usage: ./console_ethernet.py -s <serial port> -c <console path> [ -f ] [ -L/--local ] -m <ethernet mac address>",
         )
     )
     cnsl_perror(message)
@@ -123,10 +112,10 @@ def usage(message):
 
 # Main function.
 def main():
-    if not console_path or not ethernet_dir:
-        usage("PROGNAME: requires ethernet dir and console path")
+    if not console_path:
+        usage("PROGNAME: requires console path")
 
-    load_fw = init_console()
+    init_console()
     gotENQ = False
     input_thread = Thread(target=getUserInput, args=[], daemon=True)
 
@@ -136,49 +125,39 @@ def main():
 
         # get byte from target
         if not SerialFlag:
-            byte = tb_read(1)
+            byte = tb_read.read(1)
         elif ser.isOpen():
             byte = ser.read()
+
         # process command
         if byte == ENQ:
             if not gotENQ:
                 gotENQ = True
-                if load_fw:
-                    if SerialFlag:
-                        ser.write(FRX)
-                    else:
-                        tb_write(FRX)
+                if SerialFlag:
+                    ser.write(ACK)
                 else:
-                    if SerialFlag:
-                        ser.write(ACK)
-                    else:
-                        tb_write(ACK)
+                    tb_write(ACK)
         elif byte == EOT:
-            print(PROGNAME, end="")
-            print(": exiting...")
+            print(f"{PROGNAME}: exiting...")
             clean_exit()
         elif byte == FTX:
-            print(PROGNAME, end="")
-            print(": got file receive request")
+            print(f"{PROGNAME}: got file receive request")
             cnsl_recvfile()
         elif byte == FRX:
-            print(PROGNAME, end="")
-            print(": got file send request")
+            print(f"{PROGNAME}: got file send request")
             cnsl_sendfile()
         elif byte == EFTX:
-            print(PROGNAME, end="")
-            print(": got file receive by ethernet request")
+            print(f"{PROGNAME}: got file receive by ethernet request")
             cnsl_recvfile_ethernet()
         elif byte == EFRX:
-            print(PROGNAME, end="")
-            print(": got file send by ethernet request")
+            print(f"{PROGNAME}: got file send by ethernet request")
             cnsl_sendfile_ethernet()
         elif byte == DC1:
-            print(PROGNAME, end="")
-            print(": end of file transfer")
+            print(f"{PROGNAME}: disabling IOB-SOC exclusive identifiers")
             endFileTransfer()
-            print(PROGNAME, end="")
-            print(": start reading user input")
+            script_arguments = ["python3", "../../scripts/noncanonical.py"]
+            subprocess.run(script_arguments)
+            print(f"{PROGNAME}: start reading user input")
             input_thread.start()
         else:
             print(str(byte, "iso-8859-1"), end="", flush=True)

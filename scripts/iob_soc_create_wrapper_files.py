@@ -104,8 +104,8 @@ def create_interconnect_instance(out_dir, name, num_extmem_connections):
       .S_COUNT     ({num_extmem_connections}),
       .M_COUNT     (1)
    ) system_axi_interconnect (
-      .clk(clk),
-      .rst(arst),
+      .clk(clk_interconnect),
+      .rst(arst_interconnect),
 
       // Need to use manually defined connections because awlock and arlock of interconnect is only on bit for each slave
       .s_axi_awid    (axi_awid),    //Address write channel ID.
@@ -215,7 +215,7 @@ def create_ku040_rstn(out_dir, name, num_extmem_connections):
     rstn_str = rstn_str[:-3]
 
     file_str = f"      wire [{num_extmem_connections}-1:0] rstn;"
-    file_str += f"      assign arst ={rstn_str};"
+    file_str += f"      assign arst ={rstn_str};"  # FIXME: This is probably wrong. Reset signals should not have logic
 
     fp_rstn = open(f"{out_dir}/{name}_ku040_rstn.vs", "w")
     fp_rstn.write(file_str)

@@ -1,8 +1,7 @@
 import os
 
 from iob_module import iob_module
-
-from iob_reg import iob_reg
+from iob_r import iob_r
 
 
 class iob_sync(iob_module):
@@ -16,6 +15,6 @@ class iob_sync(iob_module):
         super()._create_submodules_list(
             [
                 {"interface": "clk_rst_s_port"},
-                iob_reg,
+                iob_r,
             ]
         )

@@ -2,7 +2,7 @@ import os
 
 from iob_module import iob_module
 
-from iob_reg import iob_reg
+from iob_reg_re import iob_reg_r
 
 
 class iob_edge_detect(iob_module):
@@ -15,7 +15,7 @@ class iob_edge_detect(iob_module):
         """Create submodules list with dependencies of this module"""
         super()._create_submodules_list(
             [
-                iob_reg,
+                iob_reg_r,
                 {"interface": "clk_en_rst_s_s_portmap"},
                 {"interface": "clk_en_rst_s_port"},
             ]
