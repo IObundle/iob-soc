@@ -6,8 +6,8 @@ module iob_rn #(
 ) (
 `include "clk_rst_s_port.vs"
 
-   input      [DATA_W-1:0] data_i,
-   output reg [DATA_W-1:0] data_o
+   input      [DATA_W-1:0] iob_rn_data_i,
+   output reg [DATA_W-1:0] iob_rn_data_o
 );
 
    localparam RST_POL = `IOB_REG_RST_POL;
@@ -16,17 +16,17 @@ module iob_rn #(
       if (RST_POL == 1) begin: g_rst_pol_1
          always @(negedge clk_i, posedge arst_i) begin
             if (arst_i) begin
-               data_o <= RST_VAL;
+               iob_rn_data_o <= RST_VAL;
             end else begin
-               data_o <= data_i;
+               iob_rn_data_o <= iob_rn_data_i;
             end
          end
       end else begin: g_rst_pol_0
          always @(negedge clk_i, negedge arst_i) begin
             if (~arst_i) begin
-               data_o <= RST_VAL;
+               iob_rn_data_o <= RST_VAL;
             end else begin
-               data_o <= data_i;
+               iob_rn_data_o <= iob_rn_data_i;
             end
          end
       end
