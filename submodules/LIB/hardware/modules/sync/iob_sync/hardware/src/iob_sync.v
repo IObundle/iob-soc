@@ -10,7 +10,7 @@ module iob_sync #(
    output reg [DATA_W-1:0] signal_o
 );
 
-   reg [DATA_W-1:0]        synchronizer;
+   wire [DATA_W-1:0]        synchronizer;
    
    iob_r #(
            .DATA_W  (DATA_W),
@@ -19,8 +19,8 @@ module iob_sync #(
    reg1 (
          .clk_i   (clk_i),
          .arst_i   (arst_i),
-         .data_i(signal_i),
-         .data_o(synchronizer)
+         .iob_r_data_i(signal_i),
+         .iob_r_data_o(synchronizer)
          );
    
    iob_r #(
@@ -30,8 +30,8 @@ module iob_sync #(
    reg2 (
          .clk_i   (clk_i),
          .arst_i   (arst_i),
-         .data_i(synchronizer),
-         .data_o(signal_o)
+         .iob_r_data_i(synchronizer),
+         .iob_r_data_o(signal_o)
          );
    
 endmodule

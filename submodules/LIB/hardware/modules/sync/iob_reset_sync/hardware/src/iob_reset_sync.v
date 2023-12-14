@@ -28,8 +28,8 @@ module iob_reset_sync (
    reg1 (
        .clk_i (clk_i),
        .arst_i (arst_i),
-       .data_i(data),
-       .data_o(sync)
+       .iob_r_data_i(data),
+       .iob_r_data_o(sync)
        );
    
    assign arst_o = sync[1];
