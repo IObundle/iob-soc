@@ -185,11 +185,14 @@ def clean_exit():
         tb_read.close()
         os.remove("./cnsl2soc")
         os.remove("./soc2cnsl")
+    if DC1 is None:
+        script_arguments = ["python3", "../../scripts/terminalMode.py"]
+        subprocess.run(script_arguments)
     sys.exit(0)
 
 
 def cleanup_before_exit(signum, frame):
-    print(f"{PROGNAME}: Received signal {signum}. Ending...")
+    print(f"\n{PROGNAME}: Received signal {signum}. Ending...")
     clean_exit()
 
 
@@ -322,7 +325,7 @@ def main():
         elif byte == DC1:
             print(f"{PROGNAME}: disabling IOB-SOC exclusive identifiers")
             endFileTransfer()
-            script_arguments = ["python3", "../../scripts/noncanonical.py"]
+            script_arguments = ["python3", "../../scripts/terminalMode.py"]
             subprocess.run(script_arguments)
             print(f"{PROGNAME}: start reading user input")
             input_thread.start()
