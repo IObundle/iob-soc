@@ -80,8 +80,10 @@ module iob_fifo_sync #(
    );
 
    //assign according to assymetry type
-   localparam [ADDR_W-1:0] W_INCR = (W_DATA_W > R_DATA_W) ? 1 << ADDR_W_DIFF : 1;
-   localparam [ADDR_W-1:0] R_INCR = (R_DATA_W > W_DATA_W) ? 1 << ADDR_W_DIFF : 1;
+   localparam [ADDR_W-1:0] W_INCR = (W_DATA_W > R_DATA_W) ?
+                  {{ADDR_W-1{1'd0}},{1'd1}} << ADDR_W_DIFF : {{ADDR_W-1{1'd0}},{1'd1}};
+   localparam [ADDR_W-1:0] R_INCR = (R_DATA_W > W_DATA_W) ?
+                  {{ADDR_W-1{1'd0}},{1'd1}} << ADDR_W_DIFF : {{ADDR_W-1{1'd0}},{1'd1}};
 
    //FIFO level
    reg  [ADDR_W:0] level_nxt;
