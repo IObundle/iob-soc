@@ -12,26 +12,28 @@ module iob_neg2posedge_sync #(
    
    wire [DATA_W-1:0] synchronizer;
  
-   iob_rn #(
+   iob_regn #(
            .DATA_W  (DATA_W),
            .RST_VAL (RST_VAL)
            )     
    reg1 (
          .clk_i(clk_i),
+         .cke_i(cke_i),
          .arst_i(arst_i),
-         .iob_rn_data_i(signal_i),
-         .iob_rn_data_o(synchronizer)
+         .data_i(signal_i),
+         .data_o(synchronizer)
          );
    
-   iob_r #(
+   iob_reg #(
           .DATA_W(DATA_W),
           .RST_VAL(RST_VAL)
           )
    reg2 (
          .clk_i(clk_i),
+         .cke_i(cke_i),
          .arst_i(arst_i),
-         .iob_r_data_i(synchronizer),
-         .iob_r_data_o(signal_o)
+         .data_i(synchronizer),
+         .data_o(signal_o)
          );
    
 endmodule
