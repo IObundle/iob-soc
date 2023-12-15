@@ -11,7 +11,6 @@ module iob_edge_detect #(
 );
    wire bit_int;
    wire bit_int_q;
-   wire detected_prev;
 
    generate
       if (EDGE_TYPE == "falling") begin : gen_falling
@@ -45,6 +44,7 @@ module iob_edge_detect #(
       if (OUT_TYPE == "pulse") begin : gen_pulse
          assign detected_o = bit_int & ~bit_int_q;
       end else begin : gen_step
+         wire detected_prev;
          iob_reg_r #(
             .DATA_W(1)
          ) detected_reg (
