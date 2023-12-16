@@ -99,7 +99,7 @@ To connect the external IOb-native (slave) interface of the REGFILEIF of the SUT
 ```Python
     'peripheral_portmap':
     [
-        ({'corename':'SUT0', 'if_name':'REGFILEIF0', 'port':'external_iob_avalid_i', 'bits':[]}, {'corename':'IOBNATIVEBRIDGEIF0', 'if_name':'iob_m_port', 'port':'iob_avalid_o', 'bits':[]}),
+        ({'corename':'SUT0', 'if_name':'REGFILEIF0', 'port':'external_iob_valid_i', 'bits':[]}, {'corename':'IOBNATIVEBRIDGEIF0', 'if_name':'iob_m_port', 'port':'iob_valid_o', 'bits':[]}),
         ({'corename':'SUT0', 'if_name':'REGFILEIF0', 'port':'external_iob_addr_i', 'bits':[]}, {'corename':'IOBNATIVEBRIDGEIF0', 'if_name':'iob_m_port', 'port':'iob_addr_o', 'bits':[]}),
         ({'corename':'SUT0', 'if_name':'REGFILEIF0', 'port':'external_iob_wdata_i', 'bits':[]}, {'corename':'IOBNATIVEBRIDGEIF0', 'if_name':'iob_m_port', 'port':'iob_wdata_o', 'bits':[]}),
         ({'corename':'SUT0', 'if_name':'REGFILEIF0', 'port':'external_iob_wstrb_i', 'bits':[]}, {'corename':'IOBNATIVEBRIDGEIF0', 'if_name':'iob_m_port', 'port':'iob_wstrb_o', 'bits':[]}),

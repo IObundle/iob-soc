@@ -83,7 +83,7 @@ class iob_regfileif(iob_module):
             if '`include "iob_s_portmap.vs"' in line:
                 lines[idx] = ""
                 #Insert correct portmap. The normal (non inverted) registers are connected to the external interface that connects to the primary system.
-                lines.insert(idx,".iob_avalid_i(external_iob_avalid_i), //Request valid.\n")
+                lines.insert(idx,".iob_valid_i(external_iob_valid_i), //Request valid.\n")
                 lines.insert(idx,".iob_addr_i(external_iob_addr_i), //Address.\n")
                 lines.insert(idx,".iob_wdata_i(external_iob_wdata_i), //Write data.\n")
                 lines.insert(idx,".iob_wstrb_i(external_iob_wstrb_i), //Write strobe.\n")
