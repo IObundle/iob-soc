@@ -3,8 +3,6 @@
 # importing modules
 import os
 import sys
-import importlib.util
-import importlib.machinery
 
 if __name__ == "__main__":
     # Save argv and override it with new values because ethBase requires them
@@ -58,7 +56,7 @@ def cnsl_sendfile_ethernet():
             pass
     else:
         tb_write(file_size.to_bytes(4, byteorder="little"), 4)
-        while tb_read(1) != ACK:
+        while tb_read.read(1) != ACK:
             pass
 
     # Send Data File
@@ -85,7 +83,7 @@ def cnsl_recvfile_ethernet():
         print(PROGNAME, end=" ")
         print(": file size: {0} bytes".format(file_size))
     else:
-        file_size = int.from_bytes(tb_read(4), byteorder="little", signed=False)
+        file_size = int.from_bytes(tb_read.read(4), byteorder="little", signed=False)
         print(PROGNAME, end=" ")
         print(": file size: {0} bytes".format(file_size))
 
