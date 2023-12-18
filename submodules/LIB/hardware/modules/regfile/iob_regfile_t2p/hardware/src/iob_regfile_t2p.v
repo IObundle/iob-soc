@@ -55,7 +55,7 @@ module iob_regfile_t2p #(
       .signal_o(regfile_synced)
    );
 
-   wire r_data = regfile_synced[r_addr_i*DATA_W+:DATA_W];
+   wire [DATA_W-1:0] r_data = regfile_synced[r_addr_i*DATA_W+:DATA_W];
    //read
    iob_reg #(
       .DATA_W (DATA_W),
