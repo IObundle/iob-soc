@@ -104,8 +104,8 @@ $(BUILD_DIR)/doc/vivado.tex:
 endif
 
 clean:
-	-@if [ -f ../$(CORE)_V*/Makefile ]; then make -C ../$(CORE)_V* clean; fi
-	@rm -rf ../*.summary ../*.rpt ../$(CORE)_V*
+	-@if [ -f $(BUILD_DIR)/Makefile ]; then make -C $(BUILD_DIR) clean; fi
+	@rm -rf ../*.summary ../*.rpt $(BUILD_DIR)
 	@rm -f ~*
 ifneq ($(wildcard config_delivery.mk),)
 	make delivery-clean
