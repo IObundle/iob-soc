@@ -103,7 +103,7 @@ $(BUILD_DIR)/doc/vivado.tex:
 
 endif
 
-clean:
+clean: build_dir_name
 	-@if [ -f $(BUILD_DIR)/Makefile ]; then make -C $(BUILD_DIR) clean; fi
 	@rm -rf ../*.summary ../*.rpt $(BUILD_DIR)
 	@rm -f ~*
