@@ -153,11 +153,21 @@ class iob_module:
 
         # Set the build directory in the `iob_module` superclass, so everyone has access to it
         if cls.is_top_module:
-            # Auto-fill build directory if its not set
-            if not cls.build_dir:
-                iob_module.build_dir = f"../{cls.name}_{cls.version}"
-            else:
+            if "BUILD_DIR" in os.environ:
+                # Use directory from 'BUILD_DIR' environment variable
+                iob_module.build_dir = os.environ["BUILD_DIR"]
+            elif cls.build_dir:
+                # Use build directory defined in module
                 iob_module.build_dir = cls.build_dir
+            else:
+                # Auto-fill build directory
+                iob_module.build_dir = f"../{cls.name}_{cls.version}"
+
+            # Use directory from 'BUILD_DIR' argument (if any)
+            for arg in sys.argv:
+                if arg.startswith("BUILD_DIR="):
+                    iob_module.build_dir = arg.split("=")[1]
+                    break
 
         # Copy build directory from the `iob_module` superclass
         cls.build_dir = iob_module.build_dir
