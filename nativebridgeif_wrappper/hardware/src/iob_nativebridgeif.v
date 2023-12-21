@@ -10,7 +10,7 @@ module iob_nativebridgeif # (
    );
 
     // Connect interfaces
-    assign iob_avalid_o = iob_avalid_i;
+    assign iob_valid_o = iob_valid_i;
     assign iob_addr_o = iob_addr_i;
     assign iob_wdata_o = iob_wdata_i;
     assign iob_wstrb_o = iob_wstrb_i;
