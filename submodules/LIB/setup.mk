@@ -115,7 +115,7 @@ endif
 python-cache-clean:
 	find . -name "*__pycache__" -exec rm -rf {} \; -prune
 
-build-setup: build_dir_name build_top_module $(BUILD_DIR) $(SRC) format-all
+build-setup: build_dir_name build_top_module $(SRC) format-all
 	@for i in $(SRC); do echo $$i; done
 
 
