@@ -36,13 +36,58 @@ class iob_axistream_out(iob_module):
 
     @classmethod
     def _setup_confs(cls):
-        super()._setup_confs(copy.deepcopy(iob_axistream_in.confs))
-
-        # Find ADDR_W from confs and change its val to OUT_SWREG_ADDR_W
-        for conf in cls.confs:
-            if conf["name"] == "ADDR_W":
-                conf["val"] = "`IOB_AXISTREAM_OUT_SWREG_ADDR_W"
-                break
+        super()._setup_confs([
+            # Macros
+            # Parameters
+            {
+                "name": "DATA_W",
+                "type": "P",
+                "val": "32",
+                "min": "32",
+                "max": "32",
+                "descr": "CPU data bus width",
+            },
+            {
+                "name": "ADDR_W",
+                "type": "P",
+                "val": "`IOB_AXISTREAM_OUT_SWREG_ADDR_W",
+                "min": "NA",
+                "max": "NA",
+                "descr": "Address bus width",
+            },
+            {
+                "name": "TDATA_W",
+                "type": "P",
+                "val": "8",
+                "min": "1",
+                "max": "DATA_W",
+                "descr": "AXI stream data width",
+            },
+            {
+                "name": "RATIO",
+                "type": "F",
+                "val": "DATA_W/TDATA_W",
+                "min": "DATA_W/TDATA_W",
+                "max": "DATA_W/TDATA_W",
+                "descr": "CPU/DMA to AXI stream data width ratio",
+            },
+            {
+                "name": "FIFO_ADDR_W",
+                "type": "P",
+                "val": "4",
+                "min": "NA",
+                "max": "16",
+                "descr": "FIFO depth (log2)",
+            },
+            {
+                "name": "DMA_TDATA_W",
+                "type": "P",
+                "val": "32",
+                "min": "NA",
+                "max": "DATA_W",
+                "descr": "DMA AXI stream data width.",
+            },
+        ])
 
     @classmethod
     def _setup_ios(cls):
@@ -137,22 +182,22 @@ class iob_axistream_out(iob_module):
                 "descr": "Direct Memory Access via dedicated AXI Stream interface.",
                 "ports": [
                     {
-                        "name": "tdata_i",
+                        "name": "dma_tdata_i",
                         "type": "I",
                         "n_bits": "DMA_TDATA_W",
-                        "descr": "TData input interface",
+                        "descr": "Data bus.",
                     },
                     {
-                        "name": "tvalid_i",
+                        "name": "dma_tvalid_i",
                         "type": "I",
                         "n_bits": "1",
-                        "descr": "TValid input interface",
+                        "descr": "Valid",
                     },
                     {
-                        "name": "tready_o",
+                        "name": "dma_tready_o",
                         "type": "O",
                         "n_bits": "1",
-                        "descr": "TReady output interface",
+                        "descr": "Ready",
                     },
                 ],
             },
@@ -195,20 +240,20 @@ class iob_axistream_out(iob_module):
                     {
                         "name": "WSTRB",
                         "type": "W",
-                        "n_bits": "32/TDATA_W",
+                        "n_bits": "DATA_W/TDATA_W",
                         "rst_val": 0,
                         "log2n_items": 0,
                         "autoreg": True,
                         "descr": "Set which words (with TDATA_W bits) of the next 32-bits input are valid.",
                     },
                     {
-                        "name": "LAST",
+                        "name": "NWORDS",
                         "type": "W",
-                        "n_bits": 1,
-                        "rst_val": 0,
+                        "n_bits": "DATA_W",
+                        "rst_val": -1,
                         "log2n_items": 0,
                         "autoreg": True,
-                        "descr": "Set the tlast bit of the next 32-bits input word.",
+                        "descr": "Set the number of words (with TDATA_W bits) to be written to the FIFO.",
                     },
                     {
                         "name": "FULL",

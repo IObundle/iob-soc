@@ -43,7 +43,7 @@ class iob_axistream_in(iob_module):
                 "val": "32",
                 "min": "32",
                 "max": "32",
-                "descr": "Data bus width",
+                "descr": "CPU data bus width",
             },
             {
                 "name": "ADDR_W",
@@ -59,7 +59,7 @@ class iob_axistream_in(iob_module):
                 "val": "8",
                 "min": "1",
                 "max": "DATA_W",
-                "descr": "Width of tdata interface (can be up to DATA_W)",
+                "descr": "AXI stream data width",
             },
             {
                 "name": "FIFO_DEPTH_LOG2",
@@ -67,7 +67,7 @@ class iob_axistream_in(iob_module):
                 "val": "4",
                 "min": "NA",
                 "max": "16",
-                "descr": "Depth of FIFO",
+                "descr": "FIFO depth (log2)",
             },
             {
                 "name": "DMA_TDATA_W",
@@ -75,9 +75,10 @@ class iob_axistream_in(iob_module):
                 "val": "32",
                 "min": "NA",
                 "max": "DATA_W",
-                "descr": "Width of DMA tdata interface (can be up to DATA_W)",
+                "descr": "DMA AXI stream data width.",
             },
         ])
+   
 
     @classmethod
     def _setup_ios(cls):
