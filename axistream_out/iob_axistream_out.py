@@ -8,16 +8,13 @@ from iob_module import iob_module
 # Submodules
 from iob_fifo_async import iob_fifo_async
 from iob_reg_re import iob_reg_re
-from iob_prio_enc import iob_prio_enc
 from iob_ram_t2p import iob_ram_t2p
-from iob_axistream_in import iob_axistream_in
 from iob_sync import iob_sync
-
+from iob_counter import iob_counter
 
 class iob_axistream_out(iob_module):
     name = "iob_axistream_out"
-    version = iob_axistream_in.version
-    flows = iob_axistream_in.flows
+    version = "NA"
     setup_dir = os.path.dirname(__file__)
 
     @classmethod
@@ -30,7 +27,6 @@ class iob_axistream_out(iob_module):
             iob_fifo_async,
             iob_sync,
             iob_reg_re,
-            iob_prio_enc,
             iob_ram_t2p,
         ])
 
@@ -64,28 +60,12 @@ class iob_axistream_out(iob_module):
                 "descr": "AXI stream data width",
             },
             {
-                "name": "RATIO",
-                "type": "F",
-                "val": "DATA_W/TDATA_W",
-                "min": "DATA_W/TDATA_W",
-                "max": "DATA_W/TDATA_W",
-                "descr": "CPU/DMA to AXI stream data width ratio",
-            },
-            {
                 "name": "FIFO_ADDR_W",
                 "type": "P",
                 "val": "4",
                 "min": "NA",
                 "max": "16",
                 "descr": "FIFO depth (log2)",
-            },
-            {
-                "name": "DMA_TDATA_W",
-                "type": "P",
-                "val": "32",
-                "min": "NA",
-                "max": "DATA_W",
-                "descr": "DMA AXI stream data width.",
             },
         ])
 
@@ -114,6 +94,12 @@ class iob_axistream_out(iob_module):
                         "type": "I",
                         "n_bits": "1",
                         "descr": "IOb reset, asynchronous and active high",
+                    },
+                    {
+                        "name": "interrupt_o",
+                        "type": "O",
+                        "n_bits": "1",
+                        "descr": "FIFO threshold interrupt signal",
                     },
                 ],
             },
@@ -166,25 +152,13 @@ class iob_axistream_out(iob_module):
                 ],
             },
             {
-                "name": "interrupt",
-                "descr": "",
-                "ports": [
-                    {
-                        "name": "fifo_threshold_o",
-                        "type": "O",
-                        "n_bits": "1",
-                        "descr": "FIFO threshold interrupt signal",
-                    },
-                ],
-            },
-            {
                 "name": "dma",
                 "descr": "Direct Memory Access via dedicated AXI Stream interface.",
                 "ports": [
                     {
                         "name": "dma_tdata_i",
                         "type": "I",
-                        "n_bits": "DMA_TDATA_W",
+                        "n_bits": "DATA_W",
                         "descr": "Data bus.",
                     },
                     {
@@ -238,15 +212,6 @@ class iob_axistream_out(iob_module):
                         "descr": "Data input (writing to this register will apply the set WSTRB and LAST registers).",
                     },
                     {
-                        "name": "WSTRB",
-                        "type": "W",
-                        "n_bits": "DATA_W/TDATA_W",
-                        "rst_val": 0,
-                        "log2n_items": 0,
-                        "autoreg": True,
-                        "descr": "Set which words (with TDATA_W bits) of the next 32-bits input are valid.",
-                    },
-                    {
                         "name": "NWORDS",
                         "type": "W",
                         "n_bits": "DATA_W",
@@ -255,8 +220,14 @@ class iob_axistream_out(iob_module):
                         "autoreg": True,
                         "descr": "Set the number of words (with TDATA_W bits) to be written to the FIFO.",
                     },
+                ],
+            },
+            {
+                "name": "fifo",
+                "descr": "FIFO related registers",
+                "regs": [
                     {
-                        "name": "FULL",
+                        "name": "FIFO_FULL",
                         "type": "R",
                         "n_bits": 1,
                         "rst_val": 0,
@@ -264,12 +235,15 @@ class iob_axistream_out(iob_module):
                         "autoreg": True,
                         "descr": "Full (1), or non-full (0).",
                     },
-                ],
-            },
-            {
-                "name": "fifo",
-                "descr": "FIFO related registers",
-                "regs": [
+                    {
+                        "name": "FIFO_EMPTY",
+                        "type": "R",
+                        "n_bits": 1,
+                        "rst_val": 0,
+                        "log2n_items": 0,
+                        "autoreg": True,
+                        "descr": "Full (1), or non-full (0).",
+                    },
                     {
                         "name": "FIFO_THRESHOLD",
                         "type": "W",
