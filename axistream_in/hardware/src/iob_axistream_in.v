@@ -20,7 +20,7 @@ module iob_axistream_in #(
 
    `include "iob_wire.vs"
 
-   assign iob_avalid = iob_avalid_i;
+   assign iob_valid = iob_valid_i;
    assign iob_addr = iob_addr_i;
    assign iob_wdata = iob_wdata_i;
    assign iob_wstrb = iob_wstrb_i;
@@ -92,19 +92,7 @@ module iob_axistream_in #(
       .signal_o(axis_sw_enable)
    );
 
-   wire READ_en;
-   wire read_fifos = READ_en | (tready_i & ENABLE_wr);
-
-   // DATA_ren edge detection so that only one word is read from FIFO
-   iob_edge_detect #(
-                     .EDGE_TYPE("rising"),
-                     .OUT_TYPE("pulse")
-   ) READ_edge_detect (
-   `include "clk_en_rst_s_s_portmap.vs"
-      .rst_i(SOFT_RESET_wr),
-      .bit_i     (DATA_ren_rd),
-      .detected_o(READ_en)
-   );
+   wire read_fifos = DATA_ren_rd | (tready_i & ENABLE_wr);
 
    // Add padding words after the last word to fill packet
    always @* begin
@@ -137,17 +125,6 @@ module iob_axistream_in #(
    // Write data to FIFOs when (valid and ready), enable or in padding state
    wire wren_int;
    assign wren_int = ((axis_tvalid_i & ready_int) | (state == STATE_PADDING)) & axis_sw_enable;
-
-   iob_reg_re #(
-      .DATA_W (1),
-      .RST_VAL(1'd0)
-   ) reg_DATA_valid (
-      `include "clk_en_rst_s_s_portmap.vs"
-      .rst_i (SOFT_RESET_wr),
-      .en_i  (ENABLE_wr),
-      .data_i(read_fifos),
-      .data_o(DATA_rvalid_rd)
-   );
 
    iob_fifo_async #(
       .W_DATA_W(TDATA_W),
