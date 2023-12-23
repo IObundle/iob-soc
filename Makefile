@@ -25,7 +25,7 @@ pc-emul-run:
 	nix-shell --run 'make clean setup && make -C ../$(CORE)_V*/ pc-emul-run'
 
 pc-emul-test:
-	nix-shell --run 'make clean setup && make -C ../$(CORE)_V*/ pc-emul-test'
+	nix-shell --run 'make clean setup && make -C ../$(CORE)_V*/ pc-emul-run'
 
 sim-run:
 	nix-shell --run 'make clean setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(CORE)_V*/ fw-build'
