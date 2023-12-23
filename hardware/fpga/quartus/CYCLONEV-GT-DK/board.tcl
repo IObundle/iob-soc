@@ -76,6 +76,11 @@ if {$IS_FPGA == "1"} {
     set_instance_assignment -name IO_STANDARD "2.5-V" -to ENET_TX_D3
     set_instance_assignment -name IO_STANDARD "2.5-V" -to ENET_TX_EN
 
+    #Force registers into IOBs
+    set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to *
+    set_instance_assignment -name FAST_INPUT_REGISTER ON -to *
+    set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to *
+
     if { $USE_EXTMEM > 0 }  {
 
         #set_instance_assignment -name IO_STANDARD "1.5-V" -to rzqin
