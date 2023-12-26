@@ -5,11 +5,11 @@
 
 SHELL:=bash
 
-#select simulator
+include ../../config_build.mk
+
 #default simulator
 SIMULATOR ?=icarus
 
-include ../../config_build.mk
 
 REMOTE_BUILD_DIR=$(USER)/$(BUILD_DIR_NAME)
 REMOTE_SIM_DIR=$(REMOTE_BUILD_DIR)/hardware/simulation
