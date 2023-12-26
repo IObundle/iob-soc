@@ -105,49 +105,49 @@ class iob_axistream_out(iob_module):
             },
             {
                 "name": "axistream",
-                "descr": "Axistream interface signals",
+                "descr": "AXI Stream interface signals",
                 "ports": [
                     {
                         "name": "axis_clk_i",
                         "type": "I",
                         "n_bits": "1",
-                        "descr": "Axistream clock input",
+                        "descr": "Clock.",
                     },
                     {
                         "name": "axis_cke_i",
                         "type": "I",
                         "n_bits": "1",
-                        "descr": "Axistream clock enable signal.",
+                        "descr": "Clock enable.",
                     },
                     {
                         "name": "axis_arst_i",
                         "type": "I",
                         "n_bits": "1",
-                        "descr": "Axistream reset, asynchronous and active high",
+                        "descr": "Aynchronous and active high reset.",
                     },
                     {
                         "name": "axis_tdata_o",
                         "type": "O",
                         "n_bits": "TDATA_W",
-                        "descr": "Axistream data output interface",
+                        "descr": "Data.",
                     },
                     {
                         "name": "axis_tvalid_o",
                         "type": "O",
                         "n_bits": "1",
-                        "descr": "Axistream valid output interface",
+                        "descr": "Valid.",
                     },
                     {
                         "name": "axis_tready_i",
                         "type": "I",
                         "n_bits": "1",
-                        "descr": "Axistream ready input interface",
+                        "descr": "Ready.",
                     },
                     {
                         "name": "axis_tlast_o",
                         "type": "O",
                         "n_bits": "1",
-                        "descr": "Axistream last output interface",
+                        "descr": "Last word.",
                     },
                 ],
             },
@@ -159,19 +159,19 @@ class iob_axistream_out(iob_module):
                         "name": "dma_tdata_i",
                         "type": "I",
                         "n_bits": "DATA_W",
-                        "descr": "Data bus.",
+                        "descr": "Data.",
                     },
                     {
                         "name": "dma_tvalid_i",
                         "type": "I",
                         "n_bits": "1",
-                        "descr": "Valid",
+                        "descr": "Valid.",
                     },
                     {
                         "name": "dma_tready_o",
                         "type": "O",
                         "n_bits": "1",
-                        "descr": "Ready",
+                        "descr": "Ready.",
                     },
                 ],
             },
@@ -182,7 +182,7 @@ class iob_axistream_out(iob_module):
         cls.regs += [
             {
                 "name": "axistream",
-                "descr": "Axistream software accessible registers.",
+                "descr": "AXI Stream software accessible registers.",
                 "regs": [
                     {
                         "name": "SOFT_RESET",
@@ -256,7 +256,7 @@ class iob_axistream_out(iob_module):
                     {
                         "name": "FIFO_LEVEL",
                         "type": "R",
-                        "n_bits": 32,
+                        "n_bits": "FIFO_ADDR_W+1",
                         "rst_val": 0,
                         "log2n_items": 0,
                         "autoreg": True,
