@@ -14,7 +14,7 @@ from iob_counter import iob_counter
 
 class iob_axistream_out(iob_module):
     name = "iob_axistream_out"
-    version = "NA"
+    version = "V0.30"
     setup_dir = os.path.dirname(__file__)
 
     @classmethod
@@ -215,7 +215,7 @@ class iob_axistream_out(iob_module):
                         "name": "NWORDS",
                         "type": "W",
                         "n_bits": "DATA_W",
-                        "rst_val": -1,
+                        "rst_val": 0,
                         "log2n_items": 0,
                         "autoreg": True,
                         "descr": "Set the number of words (with TDATA_W bits) to be written to the FIFO.",

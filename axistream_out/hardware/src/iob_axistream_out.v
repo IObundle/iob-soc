@@ -39,7 +39,8 @@ module iob_axistream_out #(
    reg                    pcounter, pcounter_nxt;
 
    //word counter
-   wire [DATA_W-1:0]      word_count;
+   wire [DATA_W-1:0]      axis_word_count;
+   wire [DATA_W-1:0]      axis_nwords;
    
    //
    wire [TDATA_W:0]       axis_data;
@@ -93,7 +94,7 @@ module iob_axistream_out #(
    //AXI stream
    assign axis_tdata_o = axis_data[TDATA_W-1:0];
    assign axis_tvalid_o = axis_fifo_read_q;
-   assign axis_tlast_o = (axis_fifo_level == word_count) & axis_tvalid_o;
+   assign axis_tlast_o = (axis_word_count == axis_nwords) & axis_tvalid_o;
 
 
    //
@@ -114,7 +115,7 @@ module iob_axistream_out #(
                               .rst_i (axis_sw_rst),
                               .en_i  (axis_sw_enable),
                               .data_i(axis_fifo_read),
-                              .data_o(fifo_read_q)
+                              .data_o(axis_fifo_read_q)
                               );
 
    // program counter
@@ -141,8 +142,8 @@ module iob_axistream_out #(
                                     .cke_i (axis_sw_enable),
                                     .arst_i(axis_arst_i),
                                     .rst_i (axis_sw_rst),
-                                    .en_i  (axis_fifo_read_q),
-                                    .data_o(word_count)
+                                    .en_i  (axis_fifo_read),
+                                    .data_o(axis_word_count)
                                     );
 
    
@@ -167,6 +168,17 @@ module iob_axistream_out #(
                            .signal_o(axis_sw_enable)
                            );
 
+   iob_sync #(
+              .DATA_W (DATA_W),
+              .RST_VAL(0)
+              ) fifo_threshold (
+                                .clk_i   (axis_clk_i),
+                                .arst_i  (axis_arst_i),
+                                .signal_i(NWORDS_wr),
+                                .signal_o(axis_nwords)
+                                );
+
+
    //DATA FIFO
    iob_fifo_async #(
                     .W_DATA_W(DATA_W),
@@ -181,24 +193,24 @@ module iob_axistream_out #(
                                  .ext_mem_r_en_o  (ext_mem_tdata_r_en),
                                  .ext_mem_r_addr_o(ext_mem_tdata_r_addr),
                                  .ext_mem_r_data_i(ext_mem_tdata_r_data),
-                                 //read port
+                                 //read port (axis clk domain)
                                  .r_clk_i         (axis_clk_i),
                                  .r_cke_i         (axis_cke_i),
                                  .r_arst_i        (axis_arst_i),
                                  .r_rst_i         (axis_sw_rst),
-                                 .r_en_i          (fifo_read),
+                                 .r_en_i          (axis_fifo_read),
                                  .r_data_o        (axis_data),
                                  .r_empty_o       (axis_fifo_empty),
                                  .r_full_o        (),
-                                 .r_level_o       (fifo_level),
-                                 //write port
+                                 .r_level_o       (axis_fifo_level),
+                                 //write port (sys clk domain)
                                  .w_clk_i         (clk_i),
                                  .w_cke_i         (cke_i),
                                  .w_arst_i        (arst_i),
                                  .w_rst_i         (SOFT_RESET_wr),
                                  .w_en_i          (fifo_write),
                                  .w_data_i        (fifo_wdata),
-                                 .w_empty_o       (),
+                                 .w_empty_o       (EMPTY_rd),
                                  .w_full_o        (FULL_rd),
                                  .w_level_o       (FIFO_LEVEL_rd),
                                  );

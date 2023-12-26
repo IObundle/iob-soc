@@ -14,7 +14,7 @@ from iob_counter import iob_counter
 
 class iob_axistream_in(iob_module):
     name = 'iob_axistream_in'
-    version = "NA"
+    version = "V0.30"
     setup_dir = os.path.dirname(__file__)
 
     @classmethod
@@ -215,10 +215,19 @@ class iob_axistream_in(iob_module):
                         "name": "NWORDS",
                         "type": "R",
                         "n_bits": "DATA_W",
-                        "rst_val": -1,
+                        "rst_val": 0,
                         "log2n_items": 0,
                         "autoreg": True,
                         "descr": "Read the number of words (with TDATA_W bits) written to the FIFO.",
+                    },
+                    {
+                        "name": "TLAST_DETECTED",
+                        "type": "R",
+                        "n_bits": 1,
+                        "rst_val": 0,
+                        "log2n_items": 0,
+                        "autoreg": True,
+                        "descr": "Read the TLAST detected status.",
                     },
                 ],
             },
