@@ -80,6 +80,7 @@ def create_wrapper_files(build_dir, name, ios, confs, num_extmem_connections):
     fd_pportmaps.close()
 
     create_interconnect_instance(out_dir, name, num_extmem_connections)
+    create_cyclonev_interconnect_s_portmap(out_dir, name, num_extmem_connections)
     create_ku040_interconnect_s_portmap(out_dir, name, num_extmem_connections)
     create_ku040_rstn(out_dir, name, num_extmem_connections)
 
@@ -282,5 +283,65 @@ def create_ku040_interconnect_s_portmap(out_dir, name, num_extmem_connections):
 """
 
     fp_interconnect = open(f"{out_dir}/{name}_ku040_interconnect_s_portmap.vs", "w")
+    fp_interconnect.write(interconnect_str)
+    fp_interconnect.close()
+
+
+def create_cyclonev_interconnect_s_portmap(out_dir, name, num_extmem_connections):
+    interconnect_str = ""
+    for i in range(num_extmem_connections):
+        interconnect_str += f"""
+      //
+      // External memory connection {i}
+      //
+
+      //Write address
+      .axi_bridge_{i}_s0_awid   (axi_awid[{i}*AXI_ID_W+:1]),
+      .axi_bridge_{i}_s0_awaddr (axi_awaddr[{i}*AXI_ADDR_W+:AXI_ADDR_W]),
+      .axi_bridge_{i}_s0_awlen  (axi_awlen[{i}*AXI_LEN_W+:AXI_LEN_W]),
+      .axi_bridge_{i}_s0_awsize (axi_awsize[{i}*3+:3]),
+      .axi_bridge_{i}_s0_awburst(axi_awburst[{i}*2+:2]),
+      .axi_bridge_{i}_s0_awlock (axi_awlock[{i}*2+:1]),
+      .axi_bridge_{i}_s0_awcache(axi_awcache[{i}*4+:4]),
+      .axi_bridge_{i}_s0_awprot (axi_awprot[{i}*3+:3]),
+      .axi_bridge_{i}_s0_awvalid(axi_awvalid[{i}*1+:1]),
+      .axi_bridge_{i}_s0_awready(axi_awready[{i}*1+:1]),
+
+      //Write data
+      .axi_bridge_{i}_s0_wdata  (axi_wdata[{i}*AXI_DATA_W+:AXI_DATA_W]),
+      .axi_bridge_{i}_s0_wstrb  (axi_wstrb[{i}*(AXI_DATA_W/8)+:(AXI_DATA_W/8)]),
+      .axi_bridge_{i}_s0_wlast  (axi_wlast[{i}*1+:1]),
+      .axi_bridge_{i}_s0_wvalid (axi_wvalid[{i}*1+:1]),
+      .axi_bridge_{i}_s0_wready (axi_wready[{i}*1+:1]),
+
+      //Write response
+      .axi_bridge_{i}_s0_bid    (axi_bid[{i}*AXI_ID_W+:1]),
+      .axi_bridge_{i}_s0_bresp  (axi_bresp[{i}*2+:2]),
+      .axi_bridge_{i}_s0_bvalid (axi_bvalid[{i}*1+:1]),
+      .axi_bridge_{i}_s0_bready (axi_bready[{i}*1+:1]),
+
+      //Read address
+      .axi_bridge_{i}_s0_arid   (axi_arid[{i}*AXI_ID_W+:1]),
+      .axi_bridge_{i}_s0_araddr (axi_araddr[{i}*AXI_ADDR_W+:AXI_ADDR_W]),
+      .axi_bridge_{i}_s0_arlen  (axi_arlen[{i}*AXI_LEN_W+:AXI_LEN_W]),
+      .axi_bridge_{i}_s0_arsize (axi_arsize[{i}*3+:3]),
+      .axi_bridge_{i}_s0_arburst(axi_arburst[{i}*2+:2]),
+      .axi_bridge_{i}_s0_arlock (axi_arlock[{i}*2+:1]),
+      .axi_bridge_{i}_s0_arcache(axi_arcache[{i}*4+:4]),
+      .axi_bridge_{i}_s0_arprot (axi_arprot[{i}*3+:3]),
+      .axi_bridge_{i}_s0_arvalid(axi_arvalid[{i}*1+:1]),
+      .axi_bridge_{i}_s0_arready(axi_arready[{i}*1+:1]),
+
+      //Read data
+      .axi_bridge_{i}_s0_rid    (axi_rid[{i}*AXI_ID_W+:1]),
+      .axi_bridge_{i}_s0_rdata  (axi_rdata[{i}*AXI_DATA_W+:AXI_DATA_W]),
+      .axi_bridge_{i}_s0_rresp  (axi_rresp[{i}*2+:2]),
+      .axi_bridge_{i}_s0_rlast  (axi_rlast[{i}*1+:1]),
+      .axi_bridge_{i}_s0_rvalid (axi_rvalid[{i}*1+:1]),
+      .axi_bridge_{i}_s0_rready (axi_rready[{i}*1+:1]),
+
+"""
+
+    fp_interconnect = open(f"{out_dir}/{name}_cyclonev_interconnect_s_portmap.vs", "w")
     fp_interconnect.write(interconnect_str)
     fp_interconnect.close()
