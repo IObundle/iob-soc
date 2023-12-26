@@ -24,7 +24,7 @@ module iob_axistream_out #(
    wire [DATA_W-1:0]      cpu_data, dma_data;
 
    //fifo read
-   reg                    axis_fifo_empty;
+   wire                   axis_fifo_empty;
    reg                    axis_fifo_read;
    wire                   axis_fifo_read_q;
    reg                    pcounter, pcounter_nxt;
