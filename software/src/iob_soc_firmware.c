@@ -3,8 +3,8 @@
 #include "iob_soc_conf.h"
 #include "iob_soc_periphs.h"
 #include "iob_soc_system.h"
-#include <string.h>
 #include "printf.h"
+#include <string.h>
 
 char *send_string = "Sending this string as a file to console.\n"
                     "The file is then requested back from console.\n"
@@ -30,7 +30,7 @@ int main() {
 
   // test file send
   char *sendfile = malloc(1000);
-  int send_file_size = 0;  
+  int send_file_size = 0;
   send_file_size = strlen(strcpy(sendfile, send_string));
   uart_sendfile("Sendfile.txt", send_file_size, sendfile);
 

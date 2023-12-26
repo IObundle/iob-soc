@@ -69,7 +69,6 @@ iob_soc_boot:
 # SOURCES
 EMUL_SRC+=src/iob_soc_firmware.c
 EMUL_SRC+=src/printf.c
-EMUL_SRC+=src/iob_str.c
 
 # PERIPHERAL SOURCES
 EMUL_SRC+=$(wildcard src/iob-*.c)
