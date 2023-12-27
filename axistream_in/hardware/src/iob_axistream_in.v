@@ -72,13 +72,13 @@ module iob_axistream_in #(
    assign axis_last = axis_tlast_i & axis_tvalid_i;
    
    //FIFO write
-   assign axis_fifo_write = axis_tvalid_i | axis_tlast_detected;
+   assign axis_fifo_write = axis_tvalid_i & axis_tready_o & axis_sw_enable;
 
    //FIFO full
-   assign axis_tready_o = ~axis_fifo_full;
+   assign axis_tready_o = ~axis_fifo_full & axis_sw_enable;
 
    //word count enable
-   assign axis_word_count_en = axis_sw_enable & axis_tvalid_i & axis_tready_o & ~axis_tlast_detected;
+   assign axis_word_count_en = axis_tvalid_i & axis_tready_o & ~axis_tlast_detected;
 
    //out stream for DMA
    assign dma_tvalid_o = ~FIFO_EMPTY_rd;
@@ -94,10 +94,10 @@ module iob_axistream_in #(
                  .RST_VAL(0)
                  ) word_count_inst (
                                     .clk_i (axis_clk_i),
-                                    .cke_i (axis_sw_enable),
+                                    .cke_i (axis_cke_i),
                                     .arst_i(axis_arst_i),
                                     .rst_i (axis_sw_rst),
-                                    .en_i  (axis_tvalid_i),
+                                    .en_i  (axis_word_count_en),
                                     .data_o(axis_word_count)
                                     );
 
@@ -202,7 +202,7 @@ module iob_axistream_in #(
                                  .w_cke_i         (axis_cke_i),
                                  .w_arst_i        (axis_arst_i),
                                  .w_rst_i         (axis_sw_rst),
-                                 .w_en_i          (axis_tvalid_i),
+                                 .w_en_i          (axis_fifo_write),
                                  .w_data_i        (axis_tdata_i),
                                  .w_empty_o       (),
                                  .w_full_o        (axis_fifo_full),

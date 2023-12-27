@@ -19,26 +19,23 @@ module iob_axistream_out #(
    wire                 axis_sw_enable;
    
    //fifo write
-   wire                   fifo_write;
-   wire [DATA_W-1:0]      fifo_wdata;
+   wire                 fifo_write;
+   wire [DATA_W-1:0]    fifo_wdata;
 
    //fifo read
-   wire                   axis_fifo_empty;
-   reg                    axis_fifo_read;
-   wire                   axis_fifo_read_q;
-   wire                   axis_pc;
-   reg                    axis_pc_nxt;
+   wire                 axis_fifo_empty;
+   reg                  axis_fifo_read;
+   wire                 axis_fifo_read_q;
+   wire                 axis_pc;
+   reg                  axis_pc_nxt;
 
    //word counter
-   wire [DATA_W-1:0]      axis_word_count;
-   wire [DATA_W-1:0]      axis_nwords;
+   wire [DATA_W-1:0]    axis_word_count;
+   wire [DATA_W-1:0]    axis_nwords;
    
-   //
-   wire [TDATA_W-1:0]     axis_data;
-     
-   //fifo RAM
-   wire                   ext_mem_w_clk;
-   wire                   ext_mem_w_en;
+   //fifo ram
+   wire                 ext_mem_w_clk;
+   wire                 ext_mem_w_en;
    wire [FIFO_ADDR_W-1:0] ext_mem_w_addr;
    wire [DATA_W-1:0]      ext_mem_w_data;
    wire                   ext_mem_r_clk;
@@ -64,11 +61,10 @@ module iob_axistream_out #(
    assign interrupt_o = FIFO_LEVEL_rd <= FIFO_THRESHOLD_wr;
    
    //DMA data ready
-   assign dma_tready_o =  ~FIFO_FULL_rd;
-   
+   assign dma_tready_o =  ~FIFO_FULL_rd & axis_sw_enable;
 
    //FIFO write
-   assign fifo_write = (DATA_wen_wr | dma_tvalid_i) & ~FIFO_FULL_rd;
+   assign fifo_write = (DATA_wen_wr | dma_tvalid_i) & dma_tready_o;
    assign fifo_wdata = dma_tvalid_i==1'b1 ? dma_tdata_i : DATA_wdata_wr;
 
    //FIFO read
@@ -85,9 +81,8 @@ module iob_axistream_out #(
       end else begin
          if (!axis_tready_i) begin
             axis_pc_nxt = axis_pc;
-         end else if (axis_fifo_empty) begin
-            axis_pc_nxt = 1'b0;
-         end else begin
+         end else if (!axis_fifo_empty) begin
+            axis_pc_nxt = axis_pc;
             axis_fifo_read = 1'b1;
          end
       end
@@ -95,7 +90,6 @@ module iob_axistream_out #(
 
 
    //AXI stream
-   assign axis_tdata_o = axis_data[TDATA_W-1:0];
    assign axis_tvalid_o = axis_fifo_read_q;
    assign axis_tlast_o = (axis_word_count == axis_nwords) & axis_tvalid_o;
 
@@ -217,7 +211,7 @@ module iob_axistream_out #(
                                  .r_arst_i        (axis_arst_i),
                                  .r_rst_i         (axis_sw_rst),
                                  .r_en_i          (axis_fifo_read),
-                                 .r_data_o        (axis_data),
+                                 .r_data_o        (axis_tdata_o),
                                  .r_empty_o       (axis_fifo_empty),
                                  .r_full_o        (),
                                  .r_level_o       (),
