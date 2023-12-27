@@ -14,6 +14,7 @@ class iob_uart(iob_module):
     name = "iob_uart"
     version = "V0.10"
     setup_dir = os.path.dirname(__file__)
+    rw_overlap = True
 
     @classmethod
     def _create_submodules_list(cls):
