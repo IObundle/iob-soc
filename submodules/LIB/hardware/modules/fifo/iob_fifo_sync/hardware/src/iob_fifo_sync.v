@@ -154,6 +154,7 @@ module iob_fifo_sync #(
       .ext_mem_r_addr_o(ext_mem_r_addr_o),
       .ext_mem_r_data_i(ext_mem_r_data_i),
       `include "clk_en_rst_s_s_portmap.vs"
+      .rst_i(rst_i),
       .w_addr_i        (w_addr),
       .w_en_i          (w_en_int),
       .w_data_i        (w_data_i),
