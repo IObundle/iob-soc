@@ -20,9 +20,9 @@ module iob_axistream_in #(
    
    //fifo write
    wire                   axis_fifo_write;
+   wire                   axis_fifo_full;
 
    //tlast detected
-   wire                   axis_tlast;
    wire                   axis_tlast_detected;
    
    //word counter
@@ -68,14 +68,21 @@ module iob_axistream_in #(
    assign fifo_read = (DATA_ren_rd | dma_tready_i) & ~FIFO_EMPTY_rd;
 
 
-   //valid tlast 
+   //tlast 
    assign axis_last = axis_tlast_i & axis_tvalid_i;
    
    //FIFO write
    assign axis_fifo_write = axis_tvalid_i | axis_tlast_detected;
 
+   //FIFO full
+   assign axis_tready_o = ~axis_fifo_full;
+
    //word count enable
    assign axis_word_count_en = axis_sw_enable & axis_tvalid_i & axis_tready_o & ~axis_tlast_detected;
+
+   //out stream for DMA
+   assign dma_tvalid_o = ~FIFO_EMPTY_rd;
+   assign dma_tdata_o = DATA_rdata_rd;
 
    //
    // Submodules
@@ -146,7 +153,7 @@ module iob_axistream_in #(
                                                 .cke_i     (axis_cke_i),
                                                 .arst_i    (axis_arst_i),
                                                 .rst_i     (axis_sw_rst),
-                                                .bit_i     (axis_tlast),
+                                                .bit_i     (axis_tlast_i),
                                                 .detected_o(axis_tlast_detected)
                                                 );
 
@@ -187,8 +194,8 @@ module iob_axistream_in #(
                                  .r_rst_i         (SOFT_RESET_wr),
                                  .r_en_i          (fifo_read),
                                  .r_data_o        (DATA_rdata_rd),
-                                 .r_empty_o       (EMPTY_rd),
-                                 .r_full_o        (FULL_rd),
+                                 .r_empty_o       (FIFO_EMPTY_rd),
+                                 .r_full_o        (FIFO_FULL_rd),
                                  .r_level_o       (FIFO_LEVEL_rd),
                                  //write port (axis clk domain)
                                  .w_clk_i         (axis_clk_i),
@@ -198,7 +205,7 @@ module iob_axistream_in #(
                                  .w_en_i          (axis_tvalid_i),
                                  .w_data_i        (axis_tdata_i),
                                  .w_empty_o       (),
-                                 .w_full_o        (axis_tready_o),
+                                 .w_full_o        (axis_fifo_full),
                                  .w_level_o       ()
                                  );
    

@@ -21,13 +21,13 @@ module iob_axistream_out #(
    //fifo write
    wire                   fifo_write;
    wire [DATA_W-1:0]      fifo_wdata;
-   wire [DATA_W-1:0]      cpu_data, dma_data;
 
    //fifo read
    wire                   axis_fifo_empty;
    reg                    axis_fifo_read;
    wire                   axis_fifo_read_q;
-   reg                    pcounter, pcounter_nxt;
+   wire                   axis_pc;
+   reg                    axis_pc_nxt;
 
    //word counter
    wire [DATA_W-1:0]      axis_word_count;
@@ -35,7 +35,6 @@ module iob_axistream_out #(
    
    //
    wire [TDATA_W-1:0]     axis_data;
-   wire                   axis_tvalid;
      
    //fifo RAM
    wire                   ext_mem_w_clk;
@@ -74,20 +73,20 @@ module iob_axistream_out #(
 
    //FIFO read
    always @* begin
-      pcounter_nxt = pcounter+1'b1;
+      axis_pc_nxt = axis_pc+1'b1;
       axis_fifo_read = 1'b0;
       
-      if (pcounter == 0) begin
+      if (axis_pc == 0) begin
          if (axis_fifo_empty) begin
-            pcounter_nxt = pcounter;
+            axis_pc_nxt = axis_pc;
          end else begin
             axis_fifo_read = 1'b1;
          end
       end else begin
          if (!axis_tready_i) begin
-            pcounter_nxt = pcounter;
+            axis_pc_nxt = axis_pc;
          end else if (axis_fifo_empty) begin
-               pcounter_nxt = 0;
+            axis_pc_nxt = 1'b0;
          end else begin
             axis_fifo_read = 1'b1;
          end
@@ -129,8 +128,8 @@ module iob_axistream_out #(
                               .arst_i(axis_arst_i),
                               .rst_i (axis_sw_rst),
                               .en_i  (axis_sw_enable),
-                              .data_i(pcounter_nxt),
-                              .data_o(pcounter)
+                              .data_i(axis_pc_nxt),
+                              .data_o(axis_pc)
                               );
 
 
@@ -229,8 +228,8 @@ module iob_axistream_out #(
                                  .w_rst_i         (SOFT_RESET_wr),
                                  .w_en_i          (fifo_write),
                                  .w_data_i        (fifo_wdata),
-                                 .w_empty_o       (EMPTY_rd),
-                                 .w_full_o        (FULL_rd),
+                                 .w_empty_o       (FIFO_EMPTY_rd),
+                                 .w_full_o        (FIFO_FULL_rd),
                                  .w_level_o       (FIFO_LEVEL_rd)
                                  );
    
