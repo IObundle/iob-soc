@@ -37,6 +37,7 @@ source_path = os.path.join(os.getcwd(), "hardware", "caravel", "src")
 target_path = os.path.join(target_path, "verilog", "rtl")
 open_lane_dir = os.path.join(build_dir, "caravel_project", "openlane")
 user_proj_dir = os.path.join(open_lane_dir, "user_proj_example")
+
 if os.path.exists(source_path):
     v_top_modules = [file for file in os.listdir(source_path) if file.endswith(".v")]
     # Copy each '.v' file from source_path to target_path
@@ -48,16 +49,27 @@ if os.path.exists(source_path):
         temporary_dir = os.path.join(open_lane_dir, module_name)
         iob_soc_src_path = os.path.join(build_dir, "hardware", "src")
         iob_bp = os.path.join(build_dir, "hardware", "simulation", "src")
-
+        v_files_sim = [
+            file
+            for file in os.listdir(iob_bp)
+            if file.endswith((".v", ".vh")) and file != "iob_soc_tb.v"
+        ]
+        for file_name in v_files_sim:
+            source_file_path = os.path.join(iob_bp, file_name)
+            destination_file_path = os.path.join(iob_soc_src_path, file_name)
+            # Copy the file from source to destination
+            shutil.copy(source_file_path, destination_file_path)
         v_files = [
             file
             for file in os.listdir(iob_soc_src_path)
             if file.endswith((".v", ".vh"))
+            and "ram" not in file
+            and file != "iob_soc.v"
+            and file != "iob_cache_onehot_to_bin.v"
+            and file != "iob_cache_replacement_policy.v"
+            and file != "axi_interconnect.v"
         ]
         # now it is made just for two directoried, but this can be done as the bootstrap, and import everithing
-        v_files_sim = [
-            file for file in os.listdir(iob_bp) if file.endswith((".v", ".vh"))
-        ]
 
         if not os.path.exists(temporary_dir):
             os.makedirs(temporary_dir)
@@ -84,10 +96,6 @@ if os.path.exists(source_path):
                     for verig in v_files:
                         temp = os.path.join(iob_soc_src_path, verig)
                         data["VERILOG_FILES"].append(temp)
-                    for verig in v_files_sim:
-                        temp = os.path.join(iob_bp, verig)
-                        data["VERILOG_FILES"].append(temp)
-
                 with open(json_temp, "w") as json_file:
                     json.dump(data, json_file, indent=4)
         else:
