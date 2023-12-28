@@ -192,7 +192,6 @@ def post_setup_iob_soc(python_module, num_extmem_connections):
     name = python_module.name
 
     # Run iob-soc specialized setup sequence
-    iob_soc_wrapper_setup(python_module, num_extmem_connections)
     iob_soc_sw_setup(python_module)
     iob_soc_hw_setup(python_module)
     iob_soc_doc_setup(python_module)
@@ -200,6 +199,8 @@ def post_setup_iob_soc(python_module, num_extmem_connections):
     if not python_module.is_top_module:
         return
     ### Only run lines below if this system is the top module ###
+
+    iob_soc_wrapper_setup(python_module, num_extmem_connections)
 
     # Check if was setup with INIT_MEM and USE_EXTMEM (check if macro exists)
     extmem_macro = bool(
