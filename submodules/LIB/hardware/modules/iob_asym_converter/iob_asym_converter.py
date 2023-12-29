@@ -1,7 +1,8 @@
 import os
 
 from iob_module import iob_module
-from iob_reg_e import iob_reg_e
+from iob_reg_r import iob_reg_r
+from iob_reg_re import iob_reg_re
 from iob_utils import iob_utils
 
 
@@ -17,7 +18,8 @@ class iob_asym_converter(iob_module):
             [
                 {"interface": "clk_en_rst_s_s_portmap"},
                 {"interface": "clk_en_rst_s_port"},
-                iob_reg_e,
+                iob_reg_r,
+                iob_reg_re,
                 iob_utils,
             ]
         )

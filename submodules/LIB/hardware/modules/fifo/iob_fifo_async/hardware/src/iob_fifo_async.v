@@ -215,6 +215,7 @@ module iob_fifo_async #(
       .clk_i           (r_clk_i),
       .cke_i           (r_cke_i),
       .arst_i          (r_arst_i),
+      .rst_i           (r_rst_i),
       .w_addr_i        (w_addr),
       .w_en_i          (w_en_int),
       .w_data_i        (w_data_i),
