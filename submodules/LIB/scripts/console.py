@@ -12,6 +12,7 @@ import subprocess
 # Global variables
 ser = None
 SerialFlag = True
+tb_read = None
 PROGNAME = "IOb-Console"
 EOT = b"\x04"  # End of Transmission in Hexadecimal
 ENQ = b"\x05"  # Enquiry in Hexadecimal
@@ -182,7 +183,8 @@ def clean_exit():
     if SerialFlag:
         ser.close()
     else:
-        tb_read.close()
+        if tb_read != None:
+            tb_read.close()
         os.remove("./cnsl2soc")
         os.remove("./soc2cnsl")
     if DC1 is None:
