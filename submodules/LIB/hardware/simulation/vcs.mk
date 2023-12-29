@@ -6,7 +6,7 @@ SIM_SYNC_FLAGS=$(SYNOPSYS_SYNC_FLAGS)
 
 SIM_PROC=simv
 
-SFLAGS=-nc -sverilog +incdir+. +incdir+../src  +incdir+src
+SFLAGS=-nc -sverilog +incdir+. +incdir+../src  +incdir+src $(VFLAGS)
 ifeq ($(VCD),1)
 SFLAGS+=+define+VCD
 endif

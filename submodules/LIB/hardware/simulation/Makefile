@@ -121,6 +121,7 @@ debug:
 	@echo NAME=$(NAME)
 	@echo VHDR=$(VHDR)
 	@echo VSRC=$(VSRC)
+	@echo UFLAGS=$(UFLAGS)
 	@echo VFLAGS=$(VFLAGS)
 
 .PRECIOUS: uut.vcd test.log
