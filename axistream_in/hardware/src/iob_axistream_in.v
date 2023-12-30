@@ -19,23 +19,25 @@ module iob_axistream_in #(
    wire                 axis_sw_enable;
    
    //fifo write
-   wire                   axis_fifo_write;
-   wire                   axis_fifo_full;
+   wire                 axis_fifo_write;
+   wire                 axis_fifo_full;
 
    //tlast detected
-   wire                   axis_tlast_detected;
+   wire                 axis_tlast;
+   wire                 axis_tlast_detected;
    
    //word counter
-   wire [DATA_W-1:0]      axis_word_count;
-   wire                   axis_word_count_en;
+   wire [DATA_W-1:0]    axis_word_count;
+   wire                 axis_word_count_en;
 
 
    //fifo read
-   wire                   fifo_read;
-   
+   reg                 fifo_read;
+   wire [DATA_W-1:0]   fifo_data;
+
    //fifo RAM
-   wire                   ext_mem_w_clk;
-   wire                   ext_mem_w_en;
+   wire                 ext_mem_w_clk;
+   wire                 ext_mem_w_en;
    wire [FIFO_ADDR_W-1:0] ext_mem_w_addr;
    wire [DATA_W-1:0]      ext_mem_w_data;
    wire                   ext_mem_r_clk;
@@ -43,7 +45,8 @@ module iob_axistream_in #(
    wire [FIFO_ADDR_W-1:0] ext_mem_r_addr;
    wire [DATA_W-1:0]      ext_mem_r_data;
    
-
+   reg dma_tvalid;
+   
    // configuration control and status register file.
 `include "iob_axistream_in_swreg_inst.vs"
    
@@ -56,37 +59,84 @@ module iob_axistream_in #(
    assign iob_rdata_o = iob_rdata;
    assign iob_ready_o = iob_ready;
 
+   //AXI Stream input interface
+   assign axis_tready_o = ~axis_fifo_full & axis_sw_enable;
 
-   //CPU data ready and interrupt
+   //CPU INTERFACE
    assign DATA_rready_rd = ~FIFO_EMPTY_rd;
-
-   //interrupt
    assign interrupt_o = FIFO_LEVEL_rd >= FIFO_THRESHOLD_wr;
-   
+
+   //DMA Stream output interface
+   assign dma_tvalid_o = dma_tvalid;
+   assign dma_tdata_o = fifo_data;
 
    //FIFO read
-   assign fifo_read = (DATA_ren_rd | dma_tready_i) & ~FIFO_EMPTY_rd;
-
+   wire                   axis_pc;
+   reg                    axis_pc_nxt;
+   always @* begin
+      axis_pc_nxt = axis_pc+1'b1;
+      fifo_read = 1'b0;
+      dma_tvalid = 1'b0;
+      
+      case (axis_pc)
+        0: begin
+           if (FIFO_EMPTY_rd) begin
+              axis_pc_nxt = axis_pc;
+           end else begin
+              fifo_read = 1'b1;
+           end
+        end
+        default: begin
+           dma_tvalid = 1'b1;
+           axis_pc_nxt = axis_pc;
+           if (dma_tready_i | DATA_ren_rd) begin
+              if (FIFO_EMPTY_rd) begin
+                 axis_pc_nxt = 1'b0;
+              end else begin
+                 fifo_read = 1'b1;
+              end
+           end
+         end
+      endcase
+   end
+   
 
    //tlast 
-   assign axis_last = axis_tlast_i & axis_tvalid_i;
+   assign axis_tlast = axis_tlast_i & axis_tvalid_i;
    
    //FIFO write
    assign axis_fifo_write = axis_tvalid_i & axis_tready_o & axis_sw_enable;
 
-   //FIFO full
-   assign axis_tready_o = ~axis_fifo_full & axis_sw_enable;
-
    //word count enable
    assign axis_word_count_en = axis_tvalid_i & axis_tready_o & ~axis_tlast_detected;
 
-   //out stream for DMA
-   assign dma_tvalid_o = ~FIFO_EMPTY_rd;
-   assign dma_tdata_o = DATA_rdata_rd;
 
-   //
-   // Submodules
-   //
+   
+   //FIFO read program counter
+   iob_reg_re #(
+             .DATA_W (1),
+             .RST_VAL(1'd0)
+             ) axis_pc_reg (
+                            .clk_i (clk_i),
+                            .cke_i (cke_i),
+                            .arst_i(arst_i),
+                            .rst_i (axis_sw_rst),
+                            .en_i  (axis_sw_enable),
+                            .data_i(axis_pc_nxt),
+                            .data_o(axis_pc)
+                            );
+
+   //FIFO data register
+   iob_reg #(
+      .DATA_W (DATA_W),
+      .RST_VAL(0)
+   ) fifo_data_reg (
+      .clk_i (clk_i),
+      .cke_i (cke_i),
+      .arst_i(arst_i),
+      .data_i(fifo_data),
+      .data_o(DATA_rdata_rd)
+   );
 
    // received words counter
    iob_counter #(
@@ -153,7 +203,7 @@ module iob_axistream_in #(
                                                 .cke_i     (axis_cke_i),
                                                 .arst_i    (axis_arst_i),
                                                 .rst_i     (axis_sw_rst),
-                                                .bit_i     (axis_tlast_i),
+                                                .bit_i     (axis_tlast),
                                                 .detected_o(axis_tlast_detected)
                                                 );
 
@@ -193,7 +243,7 @@ module iob_axistream_in #(
                                  .r_arst_i        (arst_i),
                                  .r_rst_i         (SOFT_RESET_wr),
                                  .r_en_i          (fifo_read),
-                                 .r_data_o        (DATA_rdata_rd),
+                                 .r_data_o        (fifo_data),
                                  .r_empty_o       (FIFO_EMPTY_rd),
                                  .r_full_o        (FIFO_FULL_rd),
                                  .r_level_o       (FIFO_LEVEL_rd),
@@ -209,7 +259,6 @@ module iob_axistream_in #(
                                  .w_level_o       ()
                                  );
    
-
 endmodule
 
 
