@@ -30,7 +30,7 @@ class iob_module:
     build_dir = ""  # Build directory for this module
     confs = None  # List of configuration macros/parameters for this module
     autoaddr = True  # register address mode: True: automatic; False: manual
-    rw_overlap = False  # overlap Read and Write register addresses
+    rw_overlap = True  # overlap Read and Write register addresses
     regs = None  # List of registers for this module
     ios = None  # List of I/O for this module
     block_groups = None  # List of block groups for this module. Used for documentation.
