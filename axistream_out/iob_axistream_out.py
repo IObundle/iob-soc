@@ -247,8 +247,8 @@ class iob_axistream_out(iob_module):
                     {
                         "name": "FIFO_THRESHOLD",
                         "type": "W",
-                        "n_bits": 32,
-                        "rst_val": 4,
+                        "n_bits": "FIFO_ADDR_W+1",
+                        "rst_val": 256,
                         "log2n_items": 0,
                         "autoreg": True,
                         "descr": "FIFO threshold level for interrupt signal",

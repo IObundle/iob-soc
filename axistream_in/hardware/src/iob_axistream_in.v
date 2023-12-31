@@ -105,12 +105,10 @@ module iob_axistream_in #(
    assign axis_tlast = axis_tlast_i & axis_tvalid_i;
    
    //FIFO write
-   assign axis_fifo_write = axis_tvalid_i & axis_tready_o & axis_sw_enable;
+   assign axis_fifo_write = axis_tvalid_i & axis_tready_o;
 
    //word count enable
-   assign axis_word_count_en = axis_tvalid_i & axis_tready_o & ~axis_tlast_detected;
-
-
+   assign axis_word_count_en = axis_fifo_write & ~axis_tlast_detected;
    
    //FIFO read program counter
    iob_reg_re #(
