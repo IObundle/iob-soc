@@ -68,6 +68,8 @@ if os.path.exists(source_path):
             and file != "iob_cache_onehot_to_bin.v"
             and file != "iob_cache_replacement_policy.v"
             and file != "axi_interconnect.v"
+            and file != "iob_soc_int_mem.v"
+            and file != "iob_soc_ext_mem.v"
         ]
         # now it is made just for two directoried, but this can be done as the bootstrap, and import everithing
 
