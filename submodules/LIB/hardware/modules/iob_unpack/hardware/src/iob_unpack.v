@@ -11,12 +11,12 @@ module iob_unpack #(
    input  [$clog2(R_DATA_W):0]  word_width_i,
 
    input [ W_DATA_W-1:0] r_data_i,
-   input r_data_valid_i,
-   output reg r_data_ready_o,
+   input r_ready_i,
+   output reg r_read_o,
 
-   output reg [R_DATA_W-1:0] w_data_o,
-   output reg w_data_valid_o,
-   input w_data_ready_i
+   output [R_DATA_W-1:0] w_data_o,
+   output reg w_write_o,
+   input w_ready_i
    );
 
    // word register
@@ -30,72 +30,52 @@ module iob_unpack #(
    reg [1:0]                pcnt_nxt;
    wire [1:0]               pcnt;
    
-   wire [$clog2(R_DATA_W):0] acc, rem;
+   wire [$clog2(R_DATA_W):0] acc;
    wire [$clog2(R_DATA_W)+1:0] acc_nxt;
 
-   reg                         load;
+   reg                         load, acc_rst;
+
+   assign w_data_o = w_data_shifted[W_DATA_W-1:0];
 
    
    assign data_nxt = load? (data << r_shift)|r_data_i : (data << r_shift);
    assign w_data_shifted = data >> w_shift;
-   assign w_data_o = w_data_shifted[W_DATA_W-1:0];
-
-   assign rem = (1'b1 << R_DATA_W) - acc;
    
    always @* begin
 
       pcnt_nxt = pcnt + 1'b1;
       load = 1'b0;
-
-      r_data_ready_o = 1'b0;
+      acc_rst = 1'b0;
       r_shift = 0;
 
-      w_data_valid_o = 1'b0;
+      w_write_o = 1'b0;
       w_shift = 0;
       
       case (pcnt)
-         0: begin // wait for valid data
-            r_data_ready_o = 1'b1;
-            if (!r_data_valid_i) begin
-               pcnt_nxt = pcnt;
-            end else begin
-               load = 1'b1;               
-            end
-         end
-         1: begin //data is loaded and shifting
-            w_data_valid_o = 1'b1;
-
-            //compute next state
-            if (!w_data_ready_i ) begin
-               pcnt_nxt = pcnt;
-            end else if (r_data_valid_i) begin
-               pcnt_nxt = pcnt;
-            end
-            
-            //compute load value
-            if(rem < word_width_i) begin
-               load = 1'b1;
-            end
-
-            //compute shift value            
-            if(rem >= word_width_i) begin
-               r_shift = word_width_i;
-            end
-
-            //compute rdata ready
-            if(w_data_ready_i) begin
-               r_data_ready_o = 1'b1;
-            end
-            
-         end // case: 1
-         default: begin //wait next word
-            //compute next state
-            if (!r_data_valid_i) begin
-               pcnt_nxt = pcnt;
-            end else begin
-               pcnt_nxt = 1'b1;
-            end
-         end
+        0: begin
+           if (!r_ready_i) begin  //wait for input ready
+              pcnt_nxt = pcnt;
+           end else begin  //fifo has data, start reading
+              r_read_o = 1'b1;
+           end
+        end
+        1: begin
+           load = 1'b1;
+        end
+        default: begin
+           if (!w_ready_i) begin  //wait for output ready
+              pcnt_nxt = pcnt;
+           end else begin
+              w_write_o = 1'b1;
+              r_shift = word_width_i;
+              if (acc_nxt <= W_DATA_W) begin
+                 pcnt_nxt = pcnt;
+              end else begin
+                 pcnt_nxt = 0;
+                 acc_rst = 1'b1;
+              end
+           end
+        end
       endcase
    end
 
@@ -108,8 +88,8 @@ module iob_unpack #(
       .clk_i     (clk_i),
       .cke_i     (cke_i),
       .arst_i    (arst_i),
-      .rst_i     (load),
-      .en_i      (w_data_valid_o),
+      .rst_i     (acc_rst),
+      .en_i      (w_write_o),
       .incr_i    (word_width_i),
       .data_o    (acc),
       .data_nxt_o(acc_nxt)
