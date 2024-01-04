@@ -71,7 +71,7 @@ module iob_unpack #(
             end else if (r_data_valid_i) begin
                pcnt_nxt = pcnt;
             end
-
+            
             //compute load value
             if(rem < word_width_i) begin
                load = 1'b1;
@@ -83,7 +83,7 @@ module iob_unpack #(
             end
 
             //compute rdata ready
-            if(w_data_ready_i && rem < word_width_i) begin
+            if(w_data_ready_i) begin
                r_data_ready_o = 1'b1;
             end
             
@@ -95,16 +95,6 @@ module iob_unpack #(
             end else begin
                pcnt_nxt = 1'b1;
             end
-
-            //compute shift value            
-            if(rem >= word_width_i) begin
-               r_shift = word_width_i;
-            end
-
-            //compute rdata ready
-            if(w_data_ready_i && rem < word_width_i) begin
-               r_data_ready_o = 1'b1;
-            end 
          end
       endcase
    end
