@@ -2,122 +2,122 @@
 `include "iob_utils.vh"
 
 module iob_pack #(
-   parameter W_DATA_W = 21,
    parameter R_DATA_W = 21,
-   parameter ADDR_W = 3,  //higher ADDR_W lower DATA_W
-   //determine W_ADDR_W and R_ADDR_W
-   parameter MAXDATA_W = `IOB_MAX(W_DATA_W, R_DATA_W),
-   parameter MINDATA_W = `IOB_MIN(W_DATA_W, R_DATA_W),
-   parameter R = MAXDATA_W / MINDATA_W,
-   parameter MINADDR_W = ADDR_W - $clog2(R),  //lower ADDR_W (higher DATA_W)
-   parameter W_ADDR_W = (W_DATA_W == MAXDATA_W) ? MINADDR_W : ADDR_W,
-   parameter R_ADDR_W = (R_DATA_W == MAXDATA_W) ? MINADDR_W : ADDR_W
+   parameter W_DATA_W = 21
 ) (
-   //memory write port
-   output [ R-1:0]        ext_mem_w_en_o,
-   output [MINADDR_W-1:0] ext_mem_w_addr_o,
-   output [MAXDATA_W-1:0] ext_mem_w_data_o,
-   //memory read port
-   output [ R-1:0]        ext_mem_r_en_o,
-   output [MINADDR_W-1:0] ext_mem_r_addr_o,
-   input [MAXDATA_W-1:0]  ext_mem_r_data_i,
 `include "clk_en_rst_s_port.vs"
    input                  rst_i,
-   //write port
-   input [ W_ADDR_W-1:0]  w_addr_i,
-   input                  w_en_i,
-   input [ W_DATA_W-1:0]  w_data_i,
-   //read port
-   input [ R_ADDR_W-1:0]  r_addr_i,
-   input                  r_en_i,
-   output [ R_DATA_W-1:0] r_data_o
-);
+   
+   input  [$clog2(R_DATA_W):0]  word_width_i,
 
-   //Data is valid after read enable
-   wire r_data_valid_reg;
-   iob_reg_r #(
-      .DATA_W (1),
-      .RST_VAL(1'b0)
-   ) r_data_valid_reg_inst (
-`include "clk_en_rst_s_s_portmap.vs"
-      .rst_i (rst_i),
-      .data_i(r_en_i),
-      .data_o(r_data_valid_reg)
+   input [ W_DATA_W-1:0] r_data_i,
+   input r_ready_i,
+   output reg r_read_o,
+
+   output [R_DATA_W-1:0] w_data_o,
+   output reg w_write_o,
+   input w_ready_i
    );
 
-   //Register read data from the memory
-   wire [MAXDATA_W-1:0] r_data_reg;
-   iob_reg_re #(
-      .DATA_W (MAXDATA_W),
-      .RST_VAL({MAXDATA_W{1'd0}})
-   ) r_data_reg_inst (
-`include "clk_en_rst_s_s_portmap.vs"
-      .rst_i (rst_i),
-      .en_i  (r_data_valid_reg),
-      .data_i(ext_mem_r_data_i),
-      .data_o(r_data_reg)
-   );
+   // word register
+   wire [2*R_DATA_W-1:0]  data;
+   reg [2*R_DATA_W-1:0]  data_nxt;
 
-   reg [MAXDATA_W-1:0] r_data_int;
+
+   // shift data to write and read
+   wire [2*W_DATA_W-1:0]  w_data_shifted;
+   
+   reg [1:0]                pcnt_nxt;
+   wire [1:0]               pcnt;
+   
+   wire [$clog2(R_DATA_W):0] acc;
+   wire [$clog2(R_DATA_W)+1:0] acc_nxt;
+   reg                         acc_rst;
+
+   assign w_data_shifted = data >> 0;
+   assign w_data_o = w_data_shifted[2*W_DATA_W-1:W_DATA_W];
+
+   //program
    always @* begin
-      if (r_data_valid_reg) begin
-         r_data_int = ext_mem_r_data_i;
-      end else begin
-         r_data_int = r_data_reg;
-      end
+
+      pcnt_nxt = pcnt + 1'b1;
+      r_read_o = 1'b0;
+      acc_rst = 1'b0;
+      w_write_o = 1'b0;
+      data_nxt = data;
+      
+      case (pcnt)
+        0: begin
+           if (!r_ready_i) begin  //wait for input ready
+              pcnt_nxt = pcnt;
+           end else begin  //fifo has data, read it
+              r_read_o = 1'b1;
+           end
+        end
+        1: begin //load data
+           data_nxt = {data, r_data_i};
+        end
+        default: begin
+           if (!w_ready_i) begin  //wait for output ready
+              pcnt_nxt = pcnt;
+           end else begin
+              if (acc_nxt <= W_DATA_W) begin
+                 pcnt_nxt = pcnt;
+                 data_nxt = data << word_width_i;
+                 w_write_o = 1'b1;
+              end else begin
+                 if (r_ready_i) begin
+                    pcnt_nxt = 1'b1;
+                 end else begin
+                    pcnt_nxt = 0;
+                 end
+                 r_read_o = 1'b1;
+                 acc_rst = 1'b1;
+                 data_nxt = data << ((1'b1 << $clog2(R_DATA_W))-acc);
+              end
+           end
+        end
+      endcase
    end
 
-   //Generate the RAM based on the parameters
-   generate
-      if (W_DATA_W > R_DATA_W) begin : g_write_wider
-         //memory write port
-         assign ext_mem_w_en_o   = {R{w_en_i}};
-         assign ext_mem_w_addr_o = w_addr_i;
-         assign ext_mem_w_data_o = w_data_i;
+   
+   //word width accumulator
+   iob_acc #(
+      .DATA_W ($clog2(R_DATA_W)+1),
+      .RST_VAL({($clog2(R_DATA_W)+1){1'b0}})
+   ) sample_acc (
+      .clk_i     (clk_i),
+      .cke_i     (cke_i),
+      .arst_i    (arst_i),
+      .rst_i     (acc_rst),
+      .en_i      (w_write_o),
+      .incr_i    (word_width_i),
+      .data_o    (acc),
+      .data_nxt_o(acc_nxt)
+   );
 
-         //register to hold the LSBs of r_addr
-         wire [$clog2(R)-1:0] r_addr_lsbs_reg;
-         iob_reg #(
-            .DATA_W ($clog2(R)),
-            .RST_VAL({$clog2(R) {1'd0}})
-         ) r_addr_reg_inst (
-            `include "clk_en_rst_s_s_portmap.vs"
-            .data_i(r_addr_i[$clog2(R)-1:0]),
-            .data_o(r_addr_lsbs_reg)
-         );
+   //word register
+   iob_reg_r #(
+      .DATA_W(2*W_DATA_W),
+      .RST_VAL({2*W_DATA_W{1'b0}})
+   ) data_reg_inst (
+`include "clk_en_rst_s_s_portmap.vs"
+      .rst_i(rst_i),
+      .data_i(data_nxt),
+      .data_o(data)
+   );
 
-         //memory read port
-         assign ext_mem_r_en_o   = {{(R - 1) {1'd0}}, r_en_i} << r_addr_i[$clog2(R)-1:0];
-         assign ext_mem_r_addr_o = r_addr_i[R_ADDR_W-1:$clog2(R)];
-
-         wire [W_DATA_W-1:0] r_data;
-         assign r_data   = r_data_int >> (r_addr_lsbs_reg * R_DATA_W);
-         assign r_data_o = r_data[R_DATA_W-1:0];
-
-      end else if (W_DATA_W < R_DATA_W) begin : g_read_wider
-         //memory write port
-         assign ext_mem_w_en_o = {{(R - 1) {1'd0}}, w_en_i} << w_addr_i[$clog2(R)-1:0];
-         assign ext_mem_w_data_o = {{(R_DATA_W - W_DATA_W) {1'd0}}, w_data_i} <<
-                                                                        (w_addr_i[$clog2(R)-1:0] * W_DATA_W);
-         assign ext_mem_w_addr_o = w_addr_i[W_ADDR_W-1:$clog2(R)];
-
-         //memory read port
-         assign ext_mem_r_en_o = {R{r_en_i}};
-         assign ext_mem_r_addr_o = r_addr_i;
-         assign r_data_o = r_data_int;
-
-      end else begin : g_same_width
-         //W_DATA_W == R_DATA_W
-         //memory write port
-         assign ext_mem_w_en_o   = w_en_i;
-         assign ext_mem_w_addr_o = w_addr_i;
-         assign ext_mem_w_data_o = w_data_i;
-
-         //memory read port
-         assign ext_mem_r_en_o   = r_en_i;
-         assign ext_mem_r_addr_o = r_addr_i;
-         assign r_data_o         = r_data_int;
-      end
-   endgenerate
+   //program counter register
+   iob_reg_r #(
+      .DATA_W(2),
+      .RST_VAL(2'b0)
+   ) pcnt_reg_inst (
+`include "clk_en_rst_s_s_portmap.vs"
+      .rst_i(rst_i),
+      .data_i(pcnt_nxt),
+      .data_o(pcnt)
+   );
+   
 endmodule
 
+ 

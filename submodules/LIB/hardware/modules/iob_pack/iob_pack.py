@@ -2,9 +2,7 @@ import os
 
 from iob_module import iob_module
 from iob_reg_r import iob_reg_r
-from iob_reg_re import iob_reg_re
-from iob_utils import iob_utils
-
+from iob_acc import iob_acc
 
 class iob_pack(iob_module):
     name = "iob_pack"
@@ -19,7 +17,6 @@ class iob_pack(iob_module):
                 {"interface": "clk_en_rst_s_s_portmap"},
                 {"interface": "clk_en_rst_s_port"},
                 iob_reg_r,
-                iob_reg_re,
-                iob_utils,
+                iob_acc,
             ]
         )
