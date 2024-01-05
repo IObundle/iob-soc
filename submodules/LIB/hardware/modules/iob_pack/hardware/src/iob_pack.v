@@ -55,14 +55,14 @@ module iob_pack #(
            end
         end
         1: begin //load data
-           data_nxt = (data<<word_width_i) | r_data_i;
-           if (acc < W_DATA_W) begin
+           if (acc_nxt <= W_DATA_W) begin
               pcnt_nxt = pcnt;
               if (r_ready_i) begin
+                 data_nxt = (data<<word_width_i) | r_data_i;
                  r_read_o = 1'b1;
               end
            end else begin
-                 //data_nxt = data << ((1'b1 << $clog2(R_DATA_W))-(acc-word_width_i));
+              data_nxt = ((data<<word_width_i) | r_data_i) << ((1'b1<<$clog2(R_DATA_W))-acc);
               acc_rst = 1'b1;
            end
         end
