@@ -20,59 +20,60 @@ module iob_unpack #(
    );
 
    // word register
-   wire [2*R_DATA_W-1:0]  data, data_nxt;
+   wire [2*R_DATA_W-1:0]  data;
+   reg [2*R_DATA_W-1:0]  data_nxt;
 
 
    // shift data to write and read
    wire [2*W_DATA_W-1:0]  w_data_shifted;
-   reg [$clog2(R_DATA_W):0] r_shift, w_shift;
    
    reg [1:0]                pcnt_nxt;
    wire [1:0]               pcnt;
    
    wire [$clog2(R_DATA_W):0] acc;
    wire [$clog2(R_DATA_W)+1:0] acc_nxt;
+   reg                         acc_rst;
 
-   reg                         load, acc_rst;
-
+   assign w_data_shifted = data >> 0;
    assign w_data_o = w_data_shifted[W_DATA_W-1:0];
 
-   
-   assign data_nxt = load? (data << r_shift)|r_data_i : (data << r_shift);
-   assign w_data_shifted = data >> w_shift;
-   
+   //program
    always @* begin
 
       pcnt_nxt = pcnt + 1'b1;
-      load = 1'b0;
+      r_read_o = 1'b0;
       acc_rst = 1'b0;
-      r_shift = 0;
-
       w_write_o = 1'b0;
-      w_shift = 0;
+      data_nxt = data;
       
       case (pcnt)
         0: begin
            if (!r_ready_i) begin  //wait for input ready
               pcnt_nxt = pcnt;
-           end else begin  //fifo has data, start reading
+           end else begin  //fifo has data, read it
               r_read_o = 1'b1;
            end
         end
-        1: begin
-           load = 1'b1;
+        1: begin //load data
+           data_nxt = {data, r_data_i};
         end
         default: begin
            if (!w_ready_i) begin  //wait for output ready
               pcnt_nxt = pcnt;
            end else begin
-              w_write_o = 1'b1;
-              r_shift = word_width_i;
               if (acc_nxt <= W_DATA_W) begin
                  pcnt_nxt = pcnt;
+                 data_nxt = data << word_width_i;
+                 w_write_o = 1'b1;
               end else begin
-                 pcnt_nxt = 0;
+                 if (r_ready_i) begin
+                    pcnt_nxt = 1'b1;
+                 end else begin
+                    pcnt_nxt = 0;
+                 end
+                 r_read_o = 1'b1;
                  acc_rst = 1'b1;
+                 data_nxt = data << ((1'b1 << $clog2(R_DATA_W))-acc);
               end
            end
         end
