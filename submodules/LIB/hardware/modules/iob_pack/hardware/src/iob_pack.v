@@ -35,7 +35,7 @@ module iob_pack #(
    reg                         acc_rst;
 
    assign w_data_shifted = data >> 0;
-   assign w_data_o = w_data_shifted[2*W_DATA_W-1:W_DATA_W];
+   assign w_data_o = w_data_shifted[W_DATA_W-1:0];
 
    //program
    always @* begin
@@ -55,26 +55,27 @@ module iob_pack #(
            end
         end
         1: begin //load data
-           data_nxt = {data, r_data_i};
+           data_nxt = (data<<word_width_i) | r_data_i;
+           if (acc < W_DATA_W) begin
+              pcnt_nxt = pcnt;
+              if (r_ready_i) begin
+                 r_read_o = 1'b1;
+              end
+           end else begin
+                 //data_nxt = data << ((1'b1 << $clog2(R_DATA_W))-(acc-word_width_i));
+              acc_rst = 1'b1;
+           end
         end
         default: begin
-           if (!w_ready_i) begin  //wait for output ready
-              pcnt_nxt = pcnt;
+           pcnt_nxt = pcnt;
+           if (w_ready_i) begin  //wait for output ready
+              w_write_o = 1'b1;
+           end
+           if (r_ready_i) begin
+              r_read_o = 1'b1;
+              pcnt_nxt = 1;
            end else begin
-              if (acc_nxt <= W_DATA_W) begin
-                 pcnt_nxt = pcnt;
-                 data_nxt = data << word_width_i;
-                 w_write_o = 1'b1;
-              end else begin
-                 if (r_ready_i) begin
-                    pcnt_nxt = 1'b1;
-                 end else begin
-                    pcnt_nxt = 0;
-                 end
-                 r_read_o = 1'b1;
-                 acc_rst = 1'b1;
-                 data_nxt = data << ((1'b1 << $clog2(R_DATA_W))-acc);
-              end
+              pcnt_nxt = 0;
            end
         end
       endcase
@@ -90,7 +91,7 @@ module iob_pack #(
       .cke_i     (cke_i),
       .arst_i    (arst_i),
       .rst_i     (acc_rst),
-      .en_i      (w_write_o),
+      .en_i      (r_read_o),
       .incr_i    (word_width_i),
       .data_o    (acc),
       .data_nxt_o(acc_nxt)
