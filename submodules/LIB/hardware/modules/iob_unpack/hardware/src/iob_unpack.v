@@ -5,35 +5,36 @@ module iob_unpack #(
    parameter R_DATA_W = 21,
    parameter W_DATA_W = 21
 ) (
-`include "clk_en_rst_s_port.vs"
-   input                  rst_i,
+   input                      rst_i,
    
-   input  [$clog2(R_DATA_W):0]  word_width_i,
+   input [$clog2(R_DATA_W):0] word_width_i,
+   input                      wrap_i,
 
-   input [ W_DATA_W-1:0] r_data_i,
-   input r_ready_i,
-   output reg r_read_o,
+   input [ W_DATA_W-1:0]      r_data_i,
+   input                      r_ready_i,
+   output reg                 r_read_o,
 
-   output [R_DATA_W-1:0] w_data_o,
-   output reg w_write_o,
-   input w_ready_i
+   output [R_DATA_W-1:0]      w_data_o,
+   output reg                 w_write_o,
+   input                      w_ready_i,
+`include "clk_en_rst_s_port.vs"
    );
 
    // word register
-   wire [2*R_DATA_W-1:0]  data;
-   reg [2*R_DATA_W-1:0]  data_nxt;
-
+   wire [2*R_DATA_W-1:0]      data;
+   reg [2*R_DATA_W-1:0]       data_nxt;
+   
 
    // shift data to write and read
-   wire [2*W_DATA_W-1:0]  w_data_shifted;
+   wire [2*W_DATA_W-1:0]      w_data_shifted;
    
-   reg [1:0]                pcnt_nxt;
-   wire [1:0]               pcnt;
+   reg [1:0]                  pcnt_nxt;
+   wire [1:0]                 pcnt;
    
-   wire [$clog2(R_DATA_W):0] acc;
+   wire [$clog2(R_DATA_W):0]  acc;
    wire [$clog2(R_DATA_W)+1:0] acc_nxt;
    reg                         acc_rst;
-
+   
    assign w_data_shifted = data >> 0;
    assign w_data_o = w_data_shifted[W_DATA_W-1:0];
 
