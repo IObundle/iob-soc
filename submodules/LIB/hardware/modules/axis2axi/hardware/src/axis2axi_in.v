@@ -74,7 +74,7 @@ module axis2axi_in #(
    wire last_burst_possible = (fifo_level > 0 && fifo_level < BURST_SIZE && !axis_in_valid_i);
    wire start_transfer = (normal_burst_possible || last_burst_possible) && !doing_transfer;
    wire transfer = axi_wready_i && axi_wvalid_o;
-   wire read_next = (axi_wready_i && !axi_wlast_o);
+   wire read_next = (transfer && !axi_wlast_o);
    wire last_transfer = (transfer_count == axi_awlen_o);
    wire fifo_read_enable = (read_next || start_transfer)
        ;  // Start_transfer puts the first valid data on r_data and offsets fifo read by one cycle which lines up perfectly with the way the m_axi_wready signal works
@@ -156,7 +156,7 @@ module axis2axi_in #(
          end
          TRANSFER: begin
             wvalid_int = 1'b1;  // Since we can only send a burst of less or equal to the FIFO level, we can set m_axi_wvalid to 1. We always have a value to send 
-            if (transfer && axi_wlast_o && last_transfer) begin
+            if (transfer && axi_wlast_o) begin
                next_address = current_address + ((axi_awlen_o + 1) << 2);
                state_nxt    = WAIT_BRESP;
             end
