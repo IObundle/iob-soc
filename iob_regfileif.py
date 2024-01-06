@@ -19,6 +19,7 @@ class iob_regfileif(iob_module):
     version = "V0.10"
     flows = ""
     setup_dir = os.path.dirname(__file__)
+    rw_overlap = True
 
     @classmethod
     def _create_submodules_list(cls):
