@@ -21,8 +21,8 @@ module iob_pack #(
    );
 
    // word register
-   wire [2*R_DATA_W-1:0]      data;
-   reg [2*R_DATA_W-1:0]       data_nxt;
+   wire [(2*R_DATA_W)-1:0]    data;
+   reg [(2*R_DATA_W)-1:0]     data_nxt;
    
    
    // shift data to write and read
@@ -35,7 +35,7 @@ module iob_pack #(
    wire [$clog2(R_DATA_W)+1:0] acc_nxt;
    reg                         acc_rst;
    
-   assign w_data_shifted = data >> 0;
+   assign w_data_shifted = data >> (wrap_i? 0: -acc);
    assign w_data_o = w_data_shifted[W_DATA_W-1:0];
 
    //program
@@ -64,7 +64,7 @@ module iob_pack #(
               end
            end else begin
               data_nxt = ((data<<word_width_i) | r_data_i) << ((1'b1<<$clog2(R_DATA_W))-acc);
-              acc_rst = 1'b1;
+              acc_rst = wrap_i;
            end
         end
         default: begin

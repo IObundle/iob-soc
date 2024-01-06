@@ -23,7 +23,6 @@ module iob_unpack #(
    // word register
    wire [2*R_DATA_W-1:0]      data;
    reg [2*R_DATA_W-1:0]       data_nxt;
-   
 
    // shift data to write and read
    wire [2*W_DATA_W-1:0]      w_data_shifted;
@@ -35,7 +34,7 @@ module iob_unpack #(
    wire [$clog2(R_DATA_W)+1:0] acc_nxt;
    reg                         acc_rst;
    
-   assign w_data_shifted = data >> 0;
+   assign w_data_shifted = data >> (wrap_i? 0: -acc);
    assign w_data_o = w_data_shifted[W_DATA_W-1:0];
 
    //program
@@ -73,7 +72,7 @@ module iob_unpack #(
                     pcnt_nxt = 0;
                  end
                  r_read_o = 1'b1;
-                 acc_rst = 1'b1;
+                 acc_rst = wrap_i;
                  data_nxt = data << ((1'b1 << $clog2(R_DATA_W))-acc);
               end
            end
