@@ -761,7 +761,7 @@ class mkregs:
                     f"{iob_colors.FAIL}invalid address type {addr_type} for register named {row['name']}{iob_colors.ENDC}"
                 )
 
-            if not rw_overlap:
+            if autoaddr and not rw_overlap:
                 addr_tmp = max(read_addr, write_addr)
 
             # save address temporarily in list

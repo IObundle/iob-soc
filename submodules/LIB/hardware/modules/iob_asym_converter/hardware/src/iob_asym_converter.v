@@ -14,42 +14,45 @@ module iob_asym_converter #(
    parameter R_ADDR_W = (R_DATA_W == MAXDATA_W) ? MINADDR_W : ADDR_W
 ) (
    //memory write port
-   output [        R-1:0] ext_mem_w_en_o,
+   output [ R-1:0]        ext_mem_w_en_o,
    output [MINADDR_W-1:0] ext_mem_w_addr_o,
    output [MAXDATA_W-1:0] ext_mem_w_data_o,
    //memory read port
-   output [        R-1:0] ext_mem_r_en_o,
+   output [ R-1:0]        ext_mem_r_en_o,
    output [MINADDR_W-1:0] ext_mem_r_addr_o,
-   input  [MAXDATA_W-1:0] ext_mem_r_data_i,
-   `include "clk_en_rst_s_port.vs"
+   input [MAXDATA_W-1:0]  ext_mem_r_data_i,
+`include "clk_en_rst_s_port.vs"
+   input                  rst_i,
    //write port
-   input  [ W_ADDR_W-1:0] w_addr_i,
+   input [ W_ADDR_W-1:0]  w_addr_i,
    input                  w_en_i,
-   input  [ W_DATA_W-1:0] w_data_i,
+   input [ W_DATA_W-1:0]  w_data_i,
    //read port
-   input  [ R_ADDR_W-1:0] r_addr_i,
+   input [ R_ADDR_W-1:0]  r_addr_i,
    input                  r_en_i,
    output [ R_DATA_W-1:0] r_data_o
 );
 
    //Data is valid after read enable
    wire r_data_valid_reg;
-   iob_reg #(
+   iob_reg_r #(
       .DATA_W (1),
       .RST_VAL(1'b0)
    ) r_data_valid_reg_inst (
-      `include "clk_en_rst_s_s_portmap.vs"
+`include "clk_en_rst_s_s_portmap.vs"
+      .rst_i (rst_i),
       .data_i(r_en_i),
       .data_o(r_data_valid_reg)
    );
 
    //Register read data from the memory
    wire [MAXDATA_W-1:0] r_data_reg;
-   iob_reg_e #(
+   iob_reg_re #(
       .DATA_W (MAXDATA_W),
       .RST_VAL({MAXDATA_W{1'd0}})
    ) r_data_reg_inst (
-      `include "clk_en_rst_s_s_portmap.vs"
+`include "clk_en_rst_s_s_portmap.vs"
+      .rst_i (rst_i),
       .en_i  (r_data_valid_reg),
       .data_i(ext_mem_r_data_i),
       .data_o(r_data_reg)

@@ -39,6 +39,7 @@ class iob_soc(iob_module):
     name = "iob_soc"
     version = "V0.70"
     setup_dir = os.path.dirname(__file__)
+    rw_overlap = True
 
     # IOb-SoC has the following list of non standard attributes:
     peripherals = None  # List with instances peripherals to include in system

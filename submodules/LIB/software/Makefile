@@ -34,7 +34,7 @@ endif
 
 #default compiler settings
 TOOLCHAIN_PREFIX ?=riscv64-unknown-elf-
-CFLAGS ?=-Os -nostdlib -march=$(MFLAGS) -mabi=ilp32 --specs=nano.specs -Wcast-align=strict
+CFLAGS ?=-Os -nostdlib -march=$(MFLAGS) -mabi=ilp32 --specs=nano.specs -Wcast-align=strict $(USER_CFLAGS)
 LFLAGS ?= -Wl,-Bstatic,-T,$(TEMPLATE_LDS),--strip-debug
 LLIBS ?=-lgcc -lc -lnosys
 INCLUDES ?=-I. -Isrc

@@ -13,7 +13,7 @@ COV_SFLAGS= -covoverwrite -covtest $(COV_TEST)
 COV_EFLAGS= -covdut $(NAME) -coverage A -covfile xcelium_cov_commands.ccf
 endif
 
-VFLAGS=$(SFLAGS) -update -linedebug -sv -incdir .
+VFLAGS+=$(SFLAGS) -update -linedebug -sv -incdir .
 
 ifneq ($(wildcard ../src),)
 VFLAGS+=-incdir ../src

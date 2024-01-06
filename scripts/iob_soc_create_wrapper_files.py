@@ -361,7 +361,8 @@ def modify_alt_ddr3_qsys(qsys_path, num_extmem_connections):
         new_lines.append(line)
         if "element clk_0" in line:
             for i in range(1, num_extmem_connections):
-                new_lines.insert(-1,
+                new_lines.insert(
+                    -1,
                     f"""
        element axi_bridge_{i}
        {{
@@ -375,7 +376,8 @@ def modify_alt_ddr3_qsys(qsys_path, num_extmem_connections):
                 )
         elif 'interface name="clk"' in line:
             for i in range(1, num_extmem_connections):
-                new_lines.insert(-1,
+                new_lines.insert(
+                    -1,
                     f"""
  <interface
    name="axi_bridge_{i}_s0"
@@ -386,7 +388,8 @@ def modify_alt_ddr3_qsys(qsys_path, num_extmem_connections):
                 )
         elif 'module name="clk_0"' in line:
             for i in range(1, num_extmem_connections):
-                new_lines.insert(-1,
+                new_lines.insert(
+                    -1,
                     f"""
  <module
    name="axi_bridge_{i}"
@@ -461,7 +464,8 @@ def modify_alt_ddr3_qsys(qsys_path, num_extmem_connections):
                 )
         elif 'end="axi_bridge_0.clk"' in line:
             for i in range(1, num_extmem_connections):
-                new_lines.insert(-1,
+                new_lines.insert(
+                    -1,
                     f"""
  <connection
    kind="avalon"
@@ -477,7 +481,8 @@ def modify_alt_ddr3_qsys(qsys_path, num_extmem_connections):
                 )
         elif 'name="qsys_mm.clockCrossingAdapter"' in line:
             for i in range(1, num_extmem_connections):
-                new_lines.insert(-1,
+                new_lines.insert(
+                    -1,
                     f"""
  <connection
    kind="reset"
