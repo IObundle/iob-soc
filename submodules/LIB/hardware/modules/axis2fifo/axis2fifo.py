@@ -15,8 +15,9 @@ class axis2fifo(iob_module):
         """Create submodules list with dependencies of this module"""
         super()._create_submodules_list(
             [
-                iob_reg_re,
-                {"interface": "clk_rst_s_port"},
-                {"interface": "clk_rst_s_portmap"},
+                iob_counter,
+                iob_edge_detect,
+                {"interface": "clk_en_rst_s_port"},
+                {"interface": "clk_en_rst_s_s_portmap"},
             ]
         )

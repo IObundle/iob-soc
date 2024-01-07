@@ -1,37 +1,37 @@
 `timescale 1ns / 1ps
 
 module fifo2axis #(
-    parameter FIFO_DATA_W     = 0,
-    parameter AXIS_DATA_W = DATA_W,
-    parameter AXIS_LEN_W = LEN_W,
+    parameter FIFO_DATA_W = 0,
+    parameter AXIS_DATA_W = 0,
+    parameter AXIS_LEN_W = 0
 ) (
-`include "clk_rst_s_port.vs"
-   input rst_i,
-   input en_i,
-   input [AXIS_LEN_W-1:0] len_i,
+   input                    rst_i,
+   input                    en_i,
+   input [AXIS_LEN_W-1:0]   len_i,
 
    // FIFO I/F
    input                    fifo_empty_i,
    input [FIFO_DATA_W-1:0]  fifo_rdata_i,
-   output                   fifo_read_o,
+   output reg               fifo_read_o,
    
    // AXIS I/F
-   output                   axis_tvalid_o,
+   output reg               axis_tvalid_o,
    input                    axis_tready_i,
-   output [AXIS_DATA_W-1:0] axis_tdata_o,
    output                   axis_tlast_o,
+`include "clk_en_rst_s_port.vs"
    );
 
-
+   wire [AXIS_LEN_W-1:0] axis_word_count;
+   
    //FIFO read
    wire                   axis_pc;
    reg                    axis_pc_nxt;
    always @* begin
       axis_pc_nxt = axis_pc+1'b1;
       fifo_read_o = 1'b0;
+      axis_tvalid_o = 1'b0;
 
       case (axis_pc)
-       axis_tvalid_o = 1'b0;
        0: begin
            if (fifo_empty_i) begin
               axis_pc_nxt = axis_pc;
@@ -53,12 +53,13 @@ module fifo2axis #(
       endcase
    end // always @ *
    
-   iob_reg_r #(
+   iob_reg_re #(
       .DATA_W (1),
       .RST_VAL(1'd0)
    ) axis_pc_reg (
-`include "clk_rst_s_portmap.vs"
+`include "clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_i),
+      .en_i  (en_i),
       .data_i(axis_pc_nxt),
       .data_o(axis_pc)
    );
@@ -70,23 +71,27 @@ module fifo2axis #(
    iob_reg_re #(
       .DATA_W (1),
       .RST_VAL(1'd0)
-   ) axis_pc_reg (
-`include "clk_rst_s_portmap.vs"
+   ) axis_tlast_reg (
+`include "clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_i),
+      .en_i  (en_i),
       .data_i(axis_tlast_nxt),
       .data_o(axis_tlast_o)
    );
 
    //tdata word count
-   iob_counter #(
-                 .DATA_W (DATA_W),
-                 .RST_VAL(0)
-                 ) word_count_inst (
-`include "clk_rst_s_portmap.vs"
-                                    .rst_i (rst_i),
-                                    .en_i  (fifo_read_o),
-                                    .data_o(axis_word_count)
-                                    );
+   iob_counter 
+     #(
+       .DATA_W (AXIS_LEN_W),
+       .RST_VAL(0)
+       ) 
+   word_count_inst 
+     (
+`include "clk_en_rst_s_s_portmap.vs"
+      .rst_i (rst_i),
+      .en_i  (fifo_read_o),
+      .data_o(axis_word_count)
+      );
 
    
 endmodule
