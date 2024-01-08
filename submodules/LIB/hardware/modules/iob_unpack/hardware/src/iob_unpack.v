@@ -1,5 +1,4 @@
 `timescale 1ns / 1ps
-`include "iob_utils.vh"
 
 module iob_unpack #(
    parameter R_DATA_W = 21,
@@ -21,8 +20,8 @@ module iob_unpack #(
    );
 
    // word register
-   wire [2*R_DATA_W-1:0]      data;
-   reg [2*R_DATA_W-1:0]       data_nxt;
+   wire [2*W_DATA_W-1:0]      data;
+   reg [2*W_DATA_W-1:0]       data_nxt;
 
    // shift data to write and read
    wire [2*W_DATA_W-1:0]      w_data_shifted;
@@ -33,8 +32,14 @@ module iob_unpack #(
    wire [$clog2(R_DATA_W):0]  acc;
    wire [$clog2(R_DATA_W)+1:0] acc_nxt;
    reg                         acc_rst;
-   
-   assign w_data_shifted = data >> (wrap_i? 0: -acc);
+   reg                         acc_en;
+
+   wire [$clog2(R_DATA_W)-1:0] shift_val;
+   reg [$clog2(R_DATA_W)-1:0] shift_val_nxt;
+
+
+   // shift data to write
+   assign w_data_shifted = data >> (wrap_i? 0: shift_val);
    assign w_data_o = w_data_shifted[W_DATA_W-1:0];
 
    //program
@@ -45,6 +50,8 @@ module iob_unpack #(
       acc_rst = 1'b0;
       w_write_o = 1'b0;
       data_nxt = data;
+      shift_val_nxt = shift_val;
+      acc_en = 1'b0;
       
       case (pcnt)
         0: begin
@@ -55,25 +62,45 @@ module iob_unpack #(
            end
         end
         1: begin //load data
-           data_nxt = {data, r_data_i};
+           data_nxt = {data[W_DATA_W-1:0], r_data_i};
         end
         default: begin
            if (!w_ready_i) begin  //wait for output ready
               pcnt_nxt = pcnt;
            end else begin
-              if (acc_nxt <= W_DATA_W) begin
-                 pcnt_nxt = pcnt;
+              if (wrap_i) begin
+                 if (acc_nxt <= W_DATA_W) begin
+                    pcnt_nxt = pcnt;
+                    data_nxt = data << word_width_i;
+                    w_write_o = 1'b1;
+                    acc_en = 1'b1;
+                 end else begin
+                    if (r_ready_i) begin
+                       pcnt_nxt = 1'b1;
+                    end else begin
+                       pcnt_nxt = 1'b0;
+                    end
+                    r_read_o = 1'b1;
+                    acc_rst = 1'b1;
+                    data_nxt = data << ((1'b1 << $clog2(R_DATA_W))-acc);
+                 end
+              end else begin //no wrap
                  data_nxt = data << word_width_i;
                  w_write_o = 1'b1;
-              end else begin
-                 if (r_ready_i) begin
-                    pcnt_nxt = 1'b1;
+                 acc_en = 1'b1;
+                 if (acc_nxt <= W_DATA_W) begin
+                    pcnt_nxt = pcnt;
                  end else begin
-                    pcnt_nxt = 0;
+                    if (acc < W_DATA_W) begin
+                       shift_val_nxt = -acc_nxt[$clog2(R_DATA_W)-1:0];
+                    end
+                    if (r_ready_i) begin
+                       pcnt_nxt = 1'b1;
+                    end else begin
+                       pcnt_nxt = 1'b0;
+                    end
+                    r_read_o = 1'b1;
                  end
-                 r_read_o = 1'b1;
-                 acc_rst = wrap_i;
-                 data_nxt = data << ((1'b1 << $clog2(R_DATA_W))-acc);
               end
            end
         end
@@ -116,6 +143,17 @@ module iob_unpack #(
       .rst_i(rst_i),
       .data_i(pcnt_nxt),
       .data_o(pcnt)
+   );
+
+   //shift value register
+   iob_reg_r #(
+      .DATA_W($clog2(R_DATA_W)),
+      .RST_VAL({$clog2(R_DATA_W){1'b0}})
+   ) shift_val_reg_inst (
+`include "clk_en_rst_s_s_portmap.vs"
+      .rst_i(rst_i),
+      .data_i(shift_val_nxt),
+      .data_o(shift_val)
    );
    
 endmodule
