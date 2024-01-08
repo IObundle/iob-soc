@@ -1,5 +1,4 @@
 `timescale 1ns / 1ps
-`include "iob_utils.vh"
 
 module iob_pack #(
    parameter R_DATA_W = 21,
