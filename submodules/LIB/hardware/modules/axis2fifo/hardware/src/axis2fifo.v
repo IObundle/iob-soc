@@ -60,7 +60,7 @@ module axis2fifo #(
      (
 `include "clk_en_rst_s_s_portmap.vs"
       .rst_i     (rst_i),
-      .bit_i     (axis_tlast_i),
+      .bit_i     (axis_tlast),
       .detected_o(done_o)
       );
 
