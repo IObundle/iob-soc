@@ -111,11 +111,11 @@ ifneq ($(wildcard config_delivery.mk),)
 	make delivery-clean
 endif
 
-# Remove all __pycache__ folders with python bytecode
-python-cache-clean:
-	find . -name "*__pycache__" -exec rm -rf {} \; -prune
-
-build-setup: build_dir_name build_top_module $(SRC) format-all
+#basicly change some files of caravel to work
+build_caravel:
+	$(PYTHON_EXEC) $(PYTHON_DIR)/caravel_setup.py $(BUILD_DIR)
+	
+build-setup: build_dir_name build_top_module $(BUILD_DIR) $(SRC) format-all build_caravel
 	@for i in $(SRC); do echo $$i; done
 
 

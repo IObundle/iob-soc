@@ -7,3 +7,6 @@
 [submodule "submodules/AXI"]
 	path = submodules/AXI
 	url = git@github.com:IObundle/verilog-axi.git
+[submodule "submodules/caravel_project"]
+	path = submodules/caravel_project
+	url = https://github.com/IObundle/caravel_project.git
