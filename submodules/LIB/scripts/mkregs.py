@@ -403,11 +403,11 @@ class mkregs:
 
         f_gen.write(
             f"""
-            wire ready_nxt;
+            reg ready_nxt;
 
             always @* begin
                 rdata_nxt = {8*self.cpu_n_bytes}'d0;
-                rvalid_nxt = (iob_valid_i & ready_nxt) & (~(|iob_wstrb_i));
+                rvalid_nxt = iob_valid_i & (~(|iob_wstrb_i));
                 rready_int = 1'b1;
                 wready_int = 1'b1;
 
@@ -495,12 +495,14 @@ class mkregs:
                     f_gen.write(f"    wready_int = {name}_wready_i;\n  end\n")
 
         f_gen.write(
-            """
+            """     
+                    if(iob_valid_i) begin
+                        ready_nxt = (|iob_wstrb_i) ? wready_int : rready_int;
+                    end else begin
+                        ready_nxt = 1'b0;
+                    end
                 end //always @*
 
-                assign ready_nxt = iob_valid_i ?
-                                        ((|iob_wstrb_i)? wready_int: rready_int) : 
-                                        1'd0;
                 //rdata output
                 iob_reg #( 
                     .DATA_W  (DATA_W),
