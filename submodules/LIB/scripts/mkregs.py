@@ -142,7 +142,7 @@ class mkregs:
                 rst_val_str = str(n_bits) + "'d" + str(rst_val)
             f.write(f"wire {name}_wen;\n")
             f.write(
-                f"assign {name}_wen = (iob_valid_i) & ((|iob_wstrb_i) & {name}_addressed);\n"
+                f"assign {name}_wen = (iob_valid_i & iob_ready_o) & ((|iob_wstrb_i) & {name}_addressed);\n"
             )
             f.write(f"iob_reg_e #(\n")
             f.write(f"  .DATA_W({n_bits}),\n")
@@ -157,7 +157,7 @@ class mkregs:
             f.write(");\n")
         else:  # compute wen
             f.write(
-                f"assign {name}_wen_o = ({name}_addressed & iob_valid_i)? |iob_wstrb_i: 1'b0;\n"
+                f"assign {name}_wen_o = ({name}_addressed & (iob_valid_i & iob_ready_o))? |iob_wstrb_i: 1'b0;\n"
             )
             f.write(f"assign {name}_wdata_o = {name}_wdata;\n")
 
@@ -184,7 +184,7 @@ class mkregs:
                     f"assign {name}_addressed = (iob_addr_i >= {addr}) && (iob_addr_i < ({addr}+(2**({addr_w}))));\n"
                 )
             f.write(
-                f"assign {name}_ren_o = {name}_addressed & iob_valid_i & (~|iob_wstrb_i);\n"
+                f"assign {name}_ren_o = {name}_addressed & (iob_valid_i & iob_ready_o) & (~|iob_wstrb_i);\n"
             )
 
     # generate ports for swreg module
@@ -403,11 +403,11 @@ class mkregs:
 
         f_gen.write(
             f"""
-            reg ready_nxt;
+            wire ready_nxt;
 
             always @* begin
                 rdata_nxt = {8*self.cpu_n_bytes}'d0;
-                rvalid_nxt = (iob_valid_i & iob_ready_o) & (~(|iob_wstrb_i));
+                rvalid_nxt = (iob_valid_i & ready_nxt) & (~(|iob_wstrb_i));
                 rready_int = 1'b1;
                 wready_int = 1'b1;
 
@@ -496,11 +496,11 @@ class mkregs:
 
         f_gen.write(
             """
-                    ready_nxt = (|iob_wstrb_i)? wready_int: rready_int;
                 end //always @*
 
-                assign iob_ready_o = ready_nxt;
-
+                assign ready_nxt = iob_valid_i ?
+                                        ((|iob_wstrb_i)? wready_int: rready_int) : 
+                                        1'd0;
                 //rdata output
                 iob_reg #( 
                     .DATA_W  (DATA_W),
@@ -523,6 +523,18 @@ class mkregs:
                     .arst_i (arst_i),
                     .data_i (rvalid_nxt),
                     .data_o (iob_rvalid_o)
+                );
+
+                //rvalid output
+                iob_reg #( 
+                    .DATA_W  (1),
+                    .RST_VAL (1'd0)
+                ) ready_reg_inst (
+                    .clk_i  (clk_i),
+                    .cke_i  (cke_i),
+                    .arst_i (arst_i),
+                    .data_i (ready_nxt),
+                    .data_o (iob_ready_o)
                 );
 
             endmodule
