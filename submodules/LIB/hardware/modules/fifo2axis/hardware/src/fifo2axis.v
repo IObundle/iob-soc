@@ -1,9 +1,8 @@
 `timescale 1ns / 1ps
 
 module fifo2axis #(
-   parameter FIFO_DATA_W = 0,
-   parameter AXIS_DATA_W = 0,
-   parameter AXIS_LEN_W  = 0
+   parameter DATA_W     = 0,
+   parameter AXIS_LEN_W = 0
 ) (
    `include "clk_en_rst_s_port.vs"
    input                  rst_i,
@@ -11,56 +10,38 @@ module fifo2axis #(
    input [AXIS_LEN_W-1:0] len_i,
 
    // FIFO I/F
-   input      fifo_empty_i,
-   output reg fifo_read_o,
+   input               fifo_empty_i,
+   output              fifo_read_o,
+   input  [DATA_W-1:0] fifo_rdata_i,
 
    // AXIS I/F
-   output reg axis_tvalid_o,
-   input      axis_tready_i,
-   output     axis_tlast_o
+   output              axis_tvalid_o,
+   output [DATA_W-1:0] axis_tdata_o,
+   input               axis_tready_i,
+   output              axis_tlast_o
 );
 
    wire [AXIS_LEN_W-1:0] axis_word_count;
 
    //FIFO read
-   wire                  axis_pc;
-   reg                   axis_pc_nxt;
-   always @* begin
-      axis_pc_nxt   = axis_pc + 1'b1;
-      fifo_read_o   = 1'b0;
-      axis_tvalid_o = 1'b0;
+   wire                  axis_tvalid_int;
 
-      case (axis_pc)
-         0: begin
-            if (fifo_empty_i) begin
-               axis_pc_nxt = axis_pc;
-            end else begin
-               fifo_read_o = 1'b1;
-            end
-         end
-         default: begin
-            axis_tvalid_o = 1'b1;
-            axis_pc_nxt   = axis_pc;
-            if (axis_tready_i) begin
-               if (fifo_empty_i) begin
-                  axis_pc_nxt = 1'b0;
-               end else begin
-                  fifo_read_o = 1'b1;
-               end
-            end
-         end
-      endcase
-   end  // always @ *
+   wire                  pipe_en;
+   assign pipe_en = (axis_tready_i | (~axis_tvalid_o)) & en_i;
 
+   assign fifo_read_o = ((~fifo_empty_i) & ((axis_tready_i & axis_tvalid_o) | (~axis_tvalid_o)))
+                           & en_i;
+
+   // valid_int register
    iob_reg_re #(
       .DATA_W (1),
       .RST_VAL(1'd0)
-   ) axis_pc_reg (
+   ) valid_int_reg (
       `include "clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_i),
-      .en_i  (en_i),
-      .data_i(axis_pc_nxt),
-      .data_o(axis_pc)
+      .en_i  (pipe_en),
+      .data_i(fifo_read_o),
+      .data_o(axis_tvalid_int)
    );
 
    //FIFO tlast
@@ -89,5 +70,28 @@ module fifo2axis #(
       .data_o(axis_word_count)
    );
 
+   //tdata pipe register
+   iob_reg_re #(
+      .DATA_W (DATA_W),
+      .RST_VAL({DATA_W{1'd0}})
+   ) axis_tdata_reg (
+      `include "clk_en_rst_s_s_portmap.vs"
+      .rst_i (rst_i),
+      .en_i  (pipe_en),
+      .data_i(fifo_rdata_i),
+      .data_o(axis_tdata_o)
+   );
+
+   //tvalid pipe register
+   iob_reg_re #(
+      .DATA_W (1),
+      .RST_VAL(1'd0)
+   ) axis_tvalid_reg (
+      `include "clk_en_rst_s_s_portmap.vs"
+      .rst_i (rst_i),
+      .en_i  (pipe_en),
+      .data_i(axis_tvalid_int),
+      .data_o(axis_tvalid_o)
+   );
 
 endmodule
