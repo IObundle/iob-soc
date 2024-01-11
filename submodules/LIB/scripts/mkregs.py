@@ -297,13 +297,23 @@ class mkregs:
                                 """
                         )
 
-    def write_hwcode(self, table, out_dir, top):
+    def write_hwcode(self, table, out_dir, top, iob_if=True):
         #
         # SWREG INSTANCE
         #
 
         os.makedirs(out_dir, exist_ok=True)
         f_inst = open(f"{out_dir}/{top}_swreg_inst.vs", "w")
+
+        if not iob_if:
+            f_inst.write(
+                f"""
+                //iob native interface wires
+                `include "iob_wire.vs"
+
+                //Core interface wires
+            """
+            )
 
         # connection wires
         self.gen_inst_wire(table, f_inst)
@@ -312,7 +322,10 @@ class mkregs:
         f_inst.write(f'  `include "{top}_inst_params.vs"\n')
         f_inst.write("\n) swreg_0 (\n")
         self.gen_portmap(table, f_inst)
-        f_inst.write('  `include "iob_s_portmap.vs"\n')
+        if iob_if:
+            f_inst.write('  `include "iob_s_s_portmap.vs"\n')
+        else:
+            f_inst.write('  `include "iob_s_portmap.vs"\n')
         f_inst.write("  .clk_i(clk_i),\n")
         f_inst.write("  .cke_i(cke_i),\n")
         f_inst.write("  .arst_i(arst_i)\n")
