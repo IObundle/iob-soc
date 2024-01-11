@@ -36,11 +36,9 @@ module axil2iob #(
 
    // read channel
    assign axil_rresp_o = 2'b0;
-   wire rvalid_nxt;
+   wire axil_rvalid_nxt;
    //rvalid will toggle in the two situations below:
-   assign rvalid_nxt = axil_rvalid_o ^ (((~axil_rvalid_o) & iob_rvalid_i)
-                        | (axil_rvalid_o & (axil_rready_i & (~iob_rvalid_i))));
-
+   assign axil_rvalid_nxt = iob_rvalid_i;
 
    // COMPUTE IOb OUTPUTS
 
@@ -68,7 +66,7 @@ module axil2iob #(
       .clk_i (clk_i),
       .cke_i (cke_i),
       .arst_i(arst_i),
-      .data_i(rvalid_nxt),
+      .data_i(axil_rvalid_nxt),
       .data_o(axil_rvalid_o)
    );
 

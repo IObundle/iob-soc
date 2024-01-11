@@ -142,7 +142,7 @@ class mkregs:
                 rst_val_str = str(n_bits) + "'d" + str(rst_val)
             f.write(f"wire {name}_wen;\n")
             f.write(
-                f"assign {name}_wen = (iob_valid_i) & ((|iob_wstrb_i) & {name}_addressed);\n"
+                f"assign {name}_wen = (iob_valid_i & iob_ready_o) & ((|iob_wstrb_i) & {name}_addressed);\n"
             )
             f.write(f"iob_reg_e #(\n")
             f.write(f"  .DATA_W({n_bits}),\n")
@@ -157,7 +157,7 @@ class mkregs:
             f.write(");\n")
         else:  # compute wen
             f.write(
-                f"assign {name}_wen_o = ({name}_addressed & iob_valid_i)? |iob_wstrb_i: 1'b0;\n"
+                f"assign {name}_wen_o = ({name}_addressed & (iob_valid_i & iob_ready_o))? |iob_wstrb_i: 1'b0;\n"
             )
             f.write(f"assign {name}_wdata_o = {name}_wdata;\n")
 
@@ -184,7 +184,7 @@ class mkregs:
                     f"assign {name}_addressed = (iob_addr_i >= {addr}) && (iob_addr_i < ({addr}+(2**({addr_w}))));\n"
                 )
             f.write(
-                f"assign {name}_ren_o = {name}_addressed & iob_valid_i & (~|iob_wstrb_i);\n"
+                f"assign {name}_ren_o = {name}_addressed & (iob_valid_i & iob_ready_o) & (~|iob_wstrb_i);\n"
             )
 
     # generate ports for swreg module
@@ -214,10 +214,13 @@ class mkregs:
                         )
                     else:
                         f.write(
-                            f"  input [{self.verilog_max(n_bits,1)}-1:0] {name}_rdata_i,\n"
+                            f""" 
+                                input [{self.verilog_max(n_bits,1)}-1:0] {name}_rdata_i,
+                                input {name}_rvalid_i,
+                                output {name}_ren_o,
+                                input {name}_rready_i,
+                            """
                         )
-                        f.write(f"  output {name}_ren_o,\n")
-                        f.write(f"  input {name}_rready_i,\n")
 
     # auxiliar read register case name
     def aux_read_reg_case_name(self, row):
@@ -257,10 +260,13 @@ class mkregs:
                         f.write(f"wire [{self.verilog_max(n_bits,1)}-1:0] {name}_rd;\n")
                     else:
                         f.write(
-                            f"wire [{self.verilog_max(n_bits,1)}-1:0] {name}_rdata_rd;\n"
+                            f"""
+                                wire [{self.verilog_max(n_bits,1)}-1:0] {name}_rdata_rd;
+                                wire {name}_rvalid_rd;
+                                wire {name}_ren_rd;
+                                wire {name}_rready_rd;
+                            """
                         )
-                        f.write(f"wire {name}_ren_rd;\n")
-                        f.write(f"wire {name}_rready_rd;\n")
         f.write("\n")
 
     # generate portmap for swreg instance in top module
@@ -282,9 +288,14 @@ class mkregs:
                     if auto:
                         f.write(f"  .{name}_i({name}_rd),\n")
                     else:
-                        f.write(f"  .{name}_rdata_i({name}_rdata_rd),\n")
-                        f.write(f"  .{name}_ren_o({name}_ren_rd),\n")
-                        f.write(f"  .{name}_rready_i({name}_rready_rd),\n")
+                        f.write(
+                            f"""
+                                    .{name}_rdata_i({name}_rdata_rd),
+                                    .{name}_rvalid_i({name}_rvalid_rd),
+                                    .{name}_ren_o({name}_ren_rd),
+                                    .{name}_rready_i({name}_rready_rd),
+                                """
+                        )
 
     def write_hwcode(self, table, out_dir, top):
         #
@@ -369,12 +380,18 @@ class mkregs:
         #
         # RESPONSE SWITCH
         #
-        f_gen.write("\n\n//RESPONSE SWITCH\n")
+        f_gen.write("\n\n//RESPONSE SWITCH\n\n")
 
         # use variables to compute response
-        f_gen.write(f"\n reg [{8*self.cpu_n_bytes}-1:0] rdata_int;\n")
-        f_gen.write(f"reg wready_int;\n")
-        f_gen.write(f"reg rready_int;\n\n")
+        f_gen.write(
+            f""" 
+                reg rvalid_nxt;
+                reg [{8*self.cpu_n_bytes}-1:0] rdata_nxt;
+                reg wready_int;
+                reg rready_int;
+                
+            """
+        )
 
         # auxiliar read register cases
         for row in table:
@@ -384,27 +401,18 @@ class mkregs:
                     f_gen.write(f"reg {aux_read_reg};\n")
         f_gen.write("\n")
 
-        f_gen.write("reg ready_int;\n")
+        f_gen.write(
+            f"""
+            reg ready_nxt;
 
-        # rvalid output
-        f_gen.write("//rvalid output\n")
-        f_gen.write("wire rvalid_nxt;\n")
-        f_gen.write("iob_reg #( \n")
-        f_gen.write("  .DATA_W (1),\n")
-        f_gen.write("  .RST_VAL (1'd0)\n")
-        f_gen.write(") rvalid_reg_inst (\n")
-        f_gen.write("  .clk_i  (clk_i),\n")
-        f_gen.write("  .cke_i  (cke_i),\n")
-        f_gen.write("  .arst_i (arst_i),\n")
-        f_gen.write("  .data_i (rvalid_nxt),\n")
-        f_gen.write("  .data_o (iob_rvalid_o)\n")
-        f_gen.write(");\n\n")
+            always @* begin
+                rdata_nxt = {8*self.cpu_n_bytes}'d0;
+                rvalid_nxt = iob_valid_i & (~(|iob_wstrb_i));
+                rready_int = 1'b1;
+                wready_int = 1'b1;
 
-        f_gen.write("always @* begin\n")
-
-        f_gen.write(f"  rdata_int = {8*self.cpu_n_bytes}'d0;\n")
-        f_gen.write(f"  rready_int = 1'b1;\n")
-        f_gen.write(f"  wready_int = 1'b1;\n\n")
+            """
+        )
 
         # read register response
         for row in table:
@@ -450,15 +458,17 @@ class mkregs:
                 if name == "VERSION":
                     rst_val = row["rst_val"]
                     f_gen.write(
-                        f"    rdata_int[{self.boffset(addr, self.cpu_n_bytes)}+:{8*n_bytes}] = 16'h{rst_val}|{8*n_bytes}'d0;\n"
+                        f"    rdata_nxt[{self.boffset(addr, self.cpu_n_bytes)}+:{8*n_bytes}] = 16'h{rst_val}|{8*n_bytes}'d0;\n"
                     )
                 elif auto:
                     f_gen.write(
-                        f"    rdata_int[{self.boffset(addr, self.cpu_n_bytes)}+:{8*n_bytes}] = {name}_i|{8*n_bytes}'d0;\n"
+                        f"    rdata_nxt[{self.boffset(addr, self.cpu_n_bytes)}+:{8*n_bytes}] = {name}_i|{8*n_bytes}'d0;\n"
                     )
                 else:
                     f_gen.write(
-                        f"    rdata_int[{self.boffset(addr, self.cpu_n_bytes)}+:{8*n_bytes}] = {name}_rdata_i|{8*n_bytes}'d0;\n"
+                        f"""rdata_nxt[{self.boffset(addr, self.cpu_n_bytes)}+:{8*n_bytes}] = {name}_rdata_i|{8*n_bytes}'d0;
+                            rvalid_nxt = {name}_rvalid_i;  
+                        """
                     )
                 if not auto:
                     f_gen.write(f"    rready_int = {name}_rready_i;\n")
@@ -484,22 +494,55 @@ class mkregs:
                     )
                     f_gen.write(f"    wready_int = {name}_wready_i;\n  end\n")
 
-        f_gen.write("  ready_int = (|iob_wstrb_i)? wready_int: rready_int;\n")
-
-        f_gen.write("end //always @*\n\n")
-
-        # iob_ready_o output
-        f_gen.write("assign iob_ready_o = ready_int;\n\n")
-
-        # iob_rdata_o output
-        f_gen.write("assign iob_rdata_o = rdata_int;\n\n")
-
-        # rvalid computation
         f_gen.write(
-            "assign rvalid_nxt = (iob_valid_i & iob_ready_o) & (~(|iob_wstrb_i));\n\n"
+            """     
+                    if(iob_valid_i) begin
+                        ready_nxt = (|iob_wstrb_i) ? wready_int : rready_int;
+                    end else begin
+                        ready_nxt = 1'b0;
+                    end
+                end //always @*
+
+                //rdata output
+                iob_reg #( 
+                    .DATA_W  (DATA_W),
+                    .RST_VAL ({DATA_W{1'd0}})
+                ) rdata_reg_inst (
+                    .clk_i  (clk_i),
+                    .cke_i  (cke_i),
+                    .arst_i (arst_i),
+                    .data_i (rdata_nxt),
+                    .data_o (iob_rdata_o)
+                );
+
+                //rvalid output
+                iob_reg #( 
+                    .DATA_W  (1),
+                    .RST_VAL (1'd0)
+                ) rvalid_reg_inst (
+                    .clk_i  (clk_i),
+                    .cke_i  (cke_i),
+                    .arst_i (arst_i),
+                    .data_i (rvalid_nxt),
+                    .data_o (iob_rvalid_o)
+                );
+
+                //rvalid output
+                iob_reg #( 
+                    .DATA_W  (1),
+                    .RST_VAL (1'd0)
+                ) ready_reg_inst (
+                    .clk_i  (clk_i),
+                    .cke_i  (cke_i),
+                    .arst_i (arst_i),
+                    .data_i (ready_nxt),
+                    .data_o (iob_ready_o)
+                );
+
+            endmodule
+            """
         )
 
-        f_gen.write("endmodule\n")
         f_gen.close()
         f_inst.close()
 
