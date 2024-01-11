@@ -5,20 +5,19 @@ module fifo2axis #(
     parameter AXIS_DATA_W = 0,
     parameter AXIS_LEN_W = 0
 ) (
+`include "clk_en_rst_s_port.vs"
    input                    rst_i,
    input                    en_i,
    input [AXIS_LEN_W-1:0]   len_i,
 
    // FIFO I/F
    input                    fifo_empty_i,
-   input [FIFO_DATA_W-1:0]  fifo_rdata_i,
    output reg               fifo_read_o,
    
    // AXIS I/F
    output reg               axis_tvalid_o,
    input                    axis_tready_i,
-   output                   axis_tlast_o,
-`include "clk_en_rst_s_port.vs"
+   output                   axis_tlast_o
    );
 
    wire [AXIS_LEN_W-1:0] axis_word_count;
