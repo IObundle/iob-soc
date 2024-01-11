@@ -13,6 +13,7 @@ from verilog_tools import inplace_change
 from iob_picorv32 import iob_picorv32
 from iob_cache import iob_cache
 from iob_uart import iob_uart
+from iob_timer import iob_timer
 from iob_utils import iob_utils
 from iob_merge import iob_merge
 from iob_split import iob_split
@@ -83,6 +84,8 @@ class iob_soc(iob_module):
             cls.ext_mem = iob_merge("iob_merge_1")
         if iob_uart in cls.submodule_list:
             cls.peripherals.append(iob_uart("UART0"))
+        if iob_timer in cls.submodule_list:
+            cls.peripherals.append(iob_timer("TIMER0"))
 
     @classmethod
     def _create_submodules_list(cls, extra_submodules=[]):
@@ -92,6 +95,7 @@ class iob_soc(iob_module):
                 iob_picorv32,
                 iob_cache,
                 iob_uart,
+                iob_timer,
                 # Hardware headers & modules
                 {"interface": "iob_wire"},
                 {"interface": "axi_wire"},
