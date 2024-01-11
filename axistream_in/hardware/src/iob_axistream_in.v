@@ -65,6 +65,7 @@ module iob_axistream_in #(
    //CPU INTERFACE
    assign DATA_rready_rd = ~FIFO_EMPTY_rd;
    assign interrupt_o    = FIFO_LEVEL_rd >= FIFO_THRESHOLD_wr;
+   assign DATA_rvalid_rd = dma_tvalid;
 
    //DMA Stream output interface
    assign dma_tvalid_o   = dma_tvalid;
