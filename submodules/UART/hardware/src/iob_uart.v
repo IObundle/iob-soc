@@ -8,8 +8,6 @@ module iob_uart #(
    `include "iob_uart_io.vs"
 );
 
-   `include "iob_wire.vs"
-
    //BLOCK Register File & Configuration control and status register file.
    `include "iob_uart_swreg_inst.vs"
 

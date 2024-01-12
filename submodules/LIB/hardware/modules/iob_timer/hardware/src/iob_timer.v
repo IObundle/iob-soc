@@ -8,8 +8,6 @@ module iob_timer #(
    `include "iob_timer_io.vs"
 );
 
-   `include "iob_wire.vs"
-
    //Dummy iob_ready_nxt_o and iob_rvalid_nxt_o to be used in swreg (unused ports)
    wire iob_ready_nxt;
    wire iob_rvalid_nxt;
