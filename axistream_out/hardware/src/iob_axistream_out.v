@@ -9,11 +9,6 @@ module iob_axistream_out #(
    `include "iob_axistream_out_io.vs"
 );
 
-   //
-   // Connection wires
-   //
-   `include "iob_wire.vs"
-
    //rst and enble synced to axis_clk
    wire                   axis_sw_rst;
    wire                   axis_sw_enable;
