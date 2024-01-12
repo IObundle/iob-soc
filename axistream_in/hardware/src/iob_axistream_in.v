@@ -50,15 +50,6 @@ module iob_axistream_in #(
    // configuration control and status register file.
    `include "iob_axistream_in_swreg_inst.vs"
 
-   //connect iob signals to ports
-   assign iob_valid      = iob_valid_i;
-   assign iob_addr       = iob_addr_i;
-   assign iob_wdata      = iob_wdata_i;
-   assign iob_wstrb      = iob_wstrb_i;
-   assign iob_rvalid_o   = iob_rvalid;
-   assign iob_rdata_o    = iob_rdata;
-   assign iob_ready_o    = iob_ready;
-
    //AXI Stream input interface
    assign axis_tready_o  = ~axis_fifo_full & axis_sw_enable;
 
