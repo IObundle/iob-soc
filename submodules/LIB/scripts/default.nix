@@ -29,5 +29,8 @@ pkgs.mkShell {
     llvmPackages_14.clangUseLLVM
     librsvg
     libreoffice
+    socat       # For communication between terminal emulators and the IOb console.py
+    picocom     # Terminal emulator
+    lrzsz       # For Zmodem file transfers via serial connection of the terminal emulator
   ];
 }
