@@ -21,6 +21,14 @@ def find_module_instantiations(verilog_file_path):
     return module_names
 
 
+def find_includes(file_path):
+    with open(file_path, "r") as file:
+        verilog_code = file.read()
+        include_pattern = re.compile(r'`include\s+"([^"]+)"')
+        matches = include_pattern.findall(verilog_code)
+        return matches
+
+
 if len(sys.argv) >= 2:
     build_dir = sys.argv[1]
     print(build_dir)
@@ -87,17 +95,17 @@ if os.path.exists(source_path):
             shutil.copy(source_file_path, destination_file_path)
 
         temporary_models = find_module_instantiations(target_file)
-        required_modules = temporary_models
+        required_modules = temporary_models + find_includes(target_file)
 
         while temporary_models != []:
             temporary_models3 = []
-
             for verilog_names in temporary_models:
-
-                print(verilog_names)
                 destination_file_path = os.path.join(iob_soc_src_path, verilog_names)
+
                 # search any new instatiated module in the verilog file
-                temporary_models2 = find_module_instantiations(destination_file_path)
+                temporary_models2 = find_module_instantiations(
+                    destination_file_path
+                ) + find_includes(destination_file_path)
                 # verify if there is any repeated modules
                 for verilog_names2 in temporary_models2:
                     for verilog_names3 in required_modules:
