@@ -21,8 +21,6 @@ def find_module_instantiations(verilog_file_path):
     return module_names
 
 
-
-
 if len(sys.argv) >= 2:
     build_dir = sys.argv[1]
     print(build_dir)
@@ -59,6 +57,8 @@ user_proj_dir = os.path.join(open_lane_dir, "user_proj_example")
 
 required_modules = []
 temporary_models = []
+temporary_models2 = []
+temporary_models3 = []
 
 
 if os.path.exists(source_path):
@@ -87,8 +87,26 @@ if os.path.exists(source_path):
             shutil.copy(source_file_path, destination_file_path)
 
         temporary_models = find_module_instantiations(target_file)
+        required_modules = temporary_models
 
         while temporary_models != []:
-            destination_file_path = os.path.join(iob_soc_src_path, file_name)
-            print(temporary_models)
-            temporary_models = []
+            temporary_models3 = []
+
+            for verilog_names in temporary_models:
+
+                print(verilog_names)
+                destination_file_path = os.path.join(iob_soc_src_path, verilog_names)
+                # search any new instatiated module in the verilog file
+                temporary_models2 = find_module_instantiations(destination_file_path)
+                # verify if there is any repeated modules
+                for verilog_names2 in temporary_models2:
+                    for verilog_names3 in required_modules:
+                        if verilog_names2 == verilog_names3:
+                            temporary_models2.remove(verilog_names2)
+
+                temporary_models3 = temporary_models3 + temporary_models2
+                required_modules = required_modules + temporary_models2
+
+            temporary_models = temporary_models3
+
+            print(required_modules)
