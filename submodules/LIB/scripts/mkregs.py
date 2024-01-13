@@ -142,7 +142,7 @@ class mkregs:
                 rst_val_str = str(n_bits) + "'d" + str(rst_val)
             f.write(f"wire {name}_wen;\n")
             f.write(
-                f"assign {name}_wen = (iob_valid_i) & ((|iob_wstrb_i) & {name}_addressed);\n"
+                f"assign {name}_wen = (iob_valid_i & iob_ready_o) & ((|iob_wstrb_i) & {name}_addressed);\n"
             )
             f.write(f"iob_reg_e #(\n")
             f.write(f"  .DATA_W({n_bits}),\n")
@@ -157,7 +157,7 @@ class mkregs:
             f.write(");\n")
         else:  # compute wen
             f.write(
-                f"assign {name}_wen_o = ({name}_addressed & iob_valid_i)? |iob_wstrb_i: 1'b0;\n"
+                f"assign {name}_wen_o = ({name}_addressed & (iob_valid_i & iob_ready_o))? |iob_wstrb_i: 1'b0;\n"
             )
             f.write(f"assign {name}_wdata_o = {name}_wdata;\n")
 
@@ -184,7 +184,7 @@ class mkregs:
                     f"assign {name}_addressed = (iob_addr_i >= {addr}) && (iob_addr_i < ({addr}+(2**({addr_w}))));\n"
                 )
             f.write(
-                f"assign {name}_ren_o = {name}_addressed & iob_valid_i & (~|iob_wstrb_i);\n"
+                f"assign {name}_ren_o = {name}_addressed & (iob_valid_i & iob_ready_o) & (~|iob_wstrb_i);\n"
             )
 
     # generate ports for swreg module
@@ -214,10 +214,13 @@ class mkregs:
                         )
                     else:
                         f.write(
-                            f"  input [{self.verilog_max(n_bits,1)}-1:0] {name}_rdata_i,\n"
+                            f""" 
+                                input [{self.verilog_max(n_bits,1)}-1:0] {name}_rdata_i,
+                                input {name}_rvalid_i,
+                                output {name}_ren_o,
+                                input {name}_rready_i,
+                            """
                         )
-                        f.write(f"  output {name}_ren_o,\n")
-                        f.write(f"  input {name}_rready_i,\n")
 
     # auxiliar read register case name
     def aux_read_reg_case_name(self, row):
@@ -257,10 +260,13 @@ class mkregs:
                         f.write(f"wire [{self.verilog_max(n_bits,1)}-1:0] {name}_rd;\n")
                     else:
                         f.write(
-                            f"wire [{self.verilog_max(n_bits,1)}-1:0] {name}_rdata_rd;\n"
+                            f"""
+                                wire [{self.verilog_max(n_bits,1)}-1:0] {name}_rdata_rd;
+                                wire {name}_rvalid_rd;
+                                wire {name}_ren_rd;
+                                wire {name}_rready_rd;
+                            """
                         )
-                        f.write(f"wire {name}_ren_rd;\n")
-                        f.write(f"wire {name}_rready_rd;\n")
         f.write("\n")
 
     # generate portmap for swreg instance in top module
@@ -282,17 +288,117 @@ class mkregs:
                     if auto:
                         f.write(f"  .{name}_i({name}_rd),\n")
                     else:
-                        f.write(f"  .{name}_rdata_i({name}_rdata_rd),\n")
-                        f.write(f"  .{name}_ren_o({name}_ren_rd),\n")
-                        f.write(f"  .{name}_rready_i({name}_rready_rd),\n")
+                        f.write(
+                            f"""
+                                    .{name}_rdata_i({name}_rdata_rd),
+                                    .{name}_rvalid_i({name}_rvalid_rd),
+                                    .{name}_ren_o({name}_ren_rd),
+                                    .{name}_rready_i({name}_rready_rd),
+                                """
+                        )
 
-    def write_hwcode(self, table, out_dir, top):
+    def write_hwcode(self, table, out_dir, top, csr_if):
         #
         # SWREG INSTANCE
         #
 
+        iob_if = csr_if == "iob"
+
         os.makedirs(out_dir, exist_ok=True)
         f_inst = open(f"{out_dir}/{top}_swreg_inst.vs", "w")
+
+        if not iob_if:
+            f_inst.write(
+                f"""
+                //iob native interface wires
+                `include "iob_wire.vs"
+                """
+            )
+            if csr_if == "apb":
+                f_inst.write(
+                    """
+
+                    ///////////////////////////////////////////////////////////////
+                    // APB to IOb converter
+                    //
+                    apb2iob #(
+                        .APB_ADDR_W(ADDR_W),
+                        .APB_DATA_W(DATA_W)
+                    ) apb2iob_0 (
+                        `include "clk_en_rst_s_s_portmap.vs"
+                        // APB slave i/f
+                        .apb_addr_i  (apb_addr_i),    //Byte address of the transfer.
+                        .apb_sel_i   (apb_sel_i),     //Slave select.
+                        .apb_enable_i(apb_enable_i),  //Enable. Indicates the number of cycles of the transfer.
+                        .apb_write_i (apb_write_i),   //Write. Indicates the direction of the operation.
+                        .apb_wdata_i (apb_wdata_i),   //Write data.
+                        .apb_wstrb_i (apb_wstrb_i),   //Write strobe.
+                        .apb_rdata_o (apb_rdata_o),   //Read data.
+                        .apb_ready_o (apb_ready_o),   //Ready. This signal indicates the end of a transfer.
+                        // IOb master interface
+                        .iob_valid_o (iob_valid),     //Request valid.
+                        .iob_addr_o  (iob_addr),      //Address.
+                        .iob_wdata_o (iob_wdata),     //Write data.
+                        .iob_wstrb_o (iob_wstrb),     //Write strobe.
+                        .iob_rvalid_i(iob_rvalid),    //Read data valid.
+                        .iob_rdata_i (iob_rdata),     //Read data.
+                        .iob_ready_i (iob_ready)      //Interface ready.
+                    );
+
+                """
+                )
+            elif csr_if == "axil":
+                f_inst.write(
+                    """
+
+                    ///////////////////////////////////////////////////////////////
+                    // AXIL to IOb converter
+                    //
+                    axil2iob #(
+                        .AXIL_ADDR_W(ADDR_W),
+                        .AXIL_DATA_W(DATA_W)
+                    ) axil2iob_0 (
+                        `include "clk_en_rst_s_s_portmap.vs"
+                        // AXIL slave i/f
+                        .axil_awaddr_i (axil_awaddr_i),   //Address write channel address.
+                        .axil_awprot_i (axil_awprot_i),   //Address write channel protection type.
+                                                            //Set to 000 if master output; ignored if slave input.
+                        .axil_awvalid_i(axil_awvalid_i),  //Address write channel valid.
+                        .axil_awready_o(axil_awready_o),  //Address write channel ready.
+                        .axil_wdata_i  (axil_wdata_i),    //Write channel data.
+                        .axil_wstrb_i  (axil_wstrb_i),    //Write channel write strobe.
+                        .axil_wvalid_i (axil_wvalid_i),   //Write channel valid.
+                        .axil_wready_o (axil_wready_o),   //Write channel ready.
+                        .axil_bresp_o  (axil_bresp_o),    //Write response channel response.
+                        .axil_bvalid_o (axil_bvalid_o),   //Write response channel valid.
+                        .axil_bready_i (axil_bready_i),   //Write response channel ready.
+                        .axil_araddr_i (axil_araddr_i),   //Address read channel address.
+                        .axil_arprot_i (axil_arprot_i),   //Address read channel protection type.
+                                                            //Set to 000 if master output; ignored if slave input.
+                        .axil_arvalid_i(axil_arvalid_i),  //Address read channel valid.
+                        .axil_arready_o(axil_arready_o),  //Address read channel ready.
+                        .axil_rdata_o  (axil_rdata_o),    //Read channel data.
+                        .axil_rresp_o  (axil_rresp_o),    //Read channel response.
+                        .axil_rvalid_o (axil_rvalid_o),   //Read channel valid.
+                        .axil_rready_i (axil_rready_i),   //Read channel ready.
+                        // IOb master interface
+                        .iob_valid_o   (iob_valid),       //Request valid.
+                        .iob_addr_o    (iob_addr),        //Address.
+                        .iob_wdata_o   (iob_wdata),       //Write data.
+                        .iob_wstrb_o   (iob_wstrb),       //Write strobe.
+                        .iob_rvalid_i  (iob_rvalid),      //Read data valid.
+                        .iob_rdata_i   (iob_rdata),       //Read data.
+                        .iob_ready_i   (iob_ready)        //Interface ready.
+                    );
+
+                    """
+                )
+            
+        f_inst.write(
+            """
+            // Core connection wires
+            """
+        )
 
         # connection wires
         self.gen_inst_wire(table, f_inst)
@@ -301,7 +407,10 @@ class mkregs:
         f_inst.write(f'  `include "{top}_inst_params.vs"\n')
         f_inst.write("\n) swreg_0 (\n")
         self.gen_portmap(table, f_inst)
-        f_inst.write('  `include "iob_s_portmap.vs"\n')
+        if iob_if:
+            f_inst.write('  `include "iob_s_s_portmap.vs"\n')
+        else:
+            f_inst.write('  `include "iob_s_portmap.vs"\n')
         f_inst.write("  .clk_i(clk_i),\n")
         f_inst.write("  .cke_i(cke_i),\n")
         f_inst.write("  .arst_i(arst_i)\n")
@@ -369,12 +478,18 @@ class mkregs:
         #
         # RESPONSE SWITCH
         #
-        f_gen.write("\n\n//RESPONSE SWITCH\n")
+        f_gen.write("\n\n//RESPONSE SWITCH\n\n")
 
         # use variables to compute response
-        f_gen.write(f"\n reg [{8*self.cpu_n_bytes}-1:0] rdata_int;\n")
-        f_gen.write(f"reg wready_int;\n")
-        f_gen.write(f"reg rready_int;\n\n")
+        f_gen.write(
+            f""" 
+                reg rvalid_nxt;
+                reg [{8*self.cpu_n_bytes}-1:0] rdata_nxt;
+                reg wready_int;
+                reg rready_int;
+                
+            """
+        )
 
         # auxiliar read register cases
         for row in table:
@@ -384,27 +499,18 @@ class mkregs:
                     f_gen.write(f"reg {aux_read_reg};\n")
         f_gen.write("\n")
 
-        f_gen.write("reg ready_int;\n")
+        f_gen.write(
+            f"""
+            reg ready_nxt;
 
-        # rvalid output
-        f_gen.write("//rvalid output\n")
-        f_gen.write("wire rvalid_nxt;\n")
-        f_gen.write("iob_reg #( \n")
-        f_gen.write("  .DATA_W (1),\n")
-        f_gen.write("  .RST_VAL (1'd0)\n")
-        f_gen.write(") rvalid_reg_inst (\n")
-        f_gen.write("  .clk_i  (clk_i),\n")
-        f_gen.write("  .cke_i  (cke_i),\n")
-        f_gen.write("  .arst_i (arst_i),\n")
-        f_gen.write("  .data_i (rvalid_nxt),\n")
-        f_gen.write("  .data_o (iob_rvalid_o)\n")
-        f_gen.write(");\n\n")
+            always @* begin
+                rdata_nxt = {8*self.cpu_n_bytes}'d0;
+                rvalid_nxt = iob_valid_i & (~(|iob_wstrb_i));
+                rready_int = 1'b1;
+                wready_int = 1'b1;
 
-        f_gen.write("always @* begin\n")
-
-        f_gen.write(f"  rdata_int = {8*self.cpu_n_bytes}'d0;\n")
-        f_gen.write(f"  rready_int = 1'b1;\n")
-        f_gen.write(f"  wready_int = 1'b1;\n\n")
+            """
+        )
 
         # read register response
         for row in table:
@@ -450,15 +556,17 @@ class mkregs:
                 if name == "VERSION":
                     rst_val = row["rst_val"]
                     f_gen.write(
-                        f"    rdata_int[{self.boffset(addr, self.cpu_n_bytes)}+:{8*n_bytes}] = 16'h{rst_val}|{8*n_bytes}'d0;\n"
+                        f"    rdata_nxt[{self.boffset(addr, self.cpu_n_bytes)}+:{8*n_bytes}] = 16'h{rst_val}|{8*n_bytes}'d0;\n"
                     )
                 elif auto:
                     f_gen.write(
-                        f"    rdata_int[{self.boffset(addr, self.cpu_n_bytes)}+:{8*n_bytes}] = {name}_i|{8*n_bytes}'d0;\n"
+                        f"    rdata_nxt[{self.boffset(addr, self.cpu_n_bytes)}+:{8*n_bytes}] = {name}_i|{8*n_bytes}'d0;\n"
                     )
                 else:
                     f_gen.write(
-                        f"    rdata_int[{self.boffset(addr, self.cpu_n_bytes)}+:{8*n_bytes}] = {name}_rdata_i|{8*n_bytes}'d0;\n"
+                        f"""rdata_nxt[{self.boffset(addr, self.cpu_n_bytes)}+:{8*n_bytes}] = {name}_rdata_i|{8*n_bytes}'d0;
+                            rvalid_nxt = {name}_rvalid_i;  
+                        """
                     )
                 if not auto:
                     f_gen.write(f"    rready_int = {name}_rready_i;\n")
@@ -484,22 +592,55 @@ class mkregs:
                     )
                     f_gen.write(f"    wready_int = {name}_wready_i;\n  end\n")
 
-        f_gen.write("  ready_int = (|iob_wstrb_i)? wready_int: rready_int;\n")
-
-        f_gen.write("end //always @*\n\n")
-
-        # iob_ready_o output
-        f_gen.write("assign iob_ready_o = ready_int;\n\n")
-
-        # iob_rdata_o output
-        f_gen.write("assign iob_rdata_o = rdata_int;\n\n")
-
-        # rvalid computation
         f_gen.write(
-            "assign rvalid_nxt = (iob_valid_i & iob_ready_o) & (~(|iob_wstrb_i));\n\n"
+            """     
+                    if(iob_valid_i) begin
+                        ready_nxt = (|iob_wstrb_i) ? wready_int : rready_int;
+                    end else begin
+                        ready_nxt = 1'b0;
+                    end
+                end //always @*
+
+                //rdata output
+                iob_reg #( 
+                    .DATA_W  (DATA_W),
+                    .RST_VAL ({DATA_W{1'd0}})
+                ) rdata_reg_inst (
+                    .clk_i  (clk_i),
+                    .cke_i  (cke_i),
+                    .arst_i (arst_i),
+                    .data_i (rdata_nxt),
+                    .data_o (iob_rdata_o)
+                );
+
+                //rvalid output
+                iob_reg #( 
+                    .DATA_W  (1),
+                    .RST_VAL (1'd0)
+                ) rvalid_reg_inst (
+                    .clk_i  (clk_i),
+                    .cke_i  (cke_i),
+                    .arst_i (arst_i),
+                    .data_i (rvalid_nxt),
+                    .data_o (iob_rvalid_o)
+                );
+
+                //rvalid output
+                iob_reg #( 
+                    .DATA_W  (1),
+                    .RST_VAL (1'd0)
+                ) ready_reg_inst (
+                    .clk_i  (clk_i),
+                    .cke_i  (cke_i),
+                    .arst_i (arst_i),
+                    .data_i (ready_nxt),
+                    .data_o (iob_ready_o)
+                );
+
+            endmodule
+            """
         )
 
-        f_gen.write("endmodule\n")
         f_gen.close()
         f_inst.close()
 

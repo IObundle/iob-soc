@@ -400,7 +400,10 @@ class iob_module:
             )
             if not cls.use_netlist:
                 mkregs_obj.write_hwcode(
-                    reg_table, cls.build_dir + "/hardware/src", cls.name
+                    reg_table,
+                    cls.build_dir + "/hardware/src",
+                    cls.name,
+                    cls.csr_if,
                 )
 
         if cls.confs:
