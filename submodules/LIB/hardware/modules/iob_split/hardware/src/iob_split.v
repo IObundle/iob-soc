@@ -24,10 +24,10 @@ module iob_split #(
    //slave select word
    wire [Nb-1:0] s_sel;
    wire [Nb-1:0] s_sel_r;
-   wire m_avalid;
+   wire m_valid;
 
    assign s_sel = m_req_i[P_SLAVES-:Nb];
-   assign m_avalid = m_req_i[`AVALID(0)];
+   assign m_valid = m_req_i[`VALID(0)];
 
    //route master request to selected slave
    integer i;
@@ -58,7 +58,7 @@ module iob_split #(
       `include "clk_rst_s_s_portmap.vs"
       .cke_i (1'b1),
       .rst_i (1'b0),
-      .en_i  (m_avalid),
+      .en_i  (m_valid),
       .data_i(s_sel),
       .data_o(s_sel_r)
    );

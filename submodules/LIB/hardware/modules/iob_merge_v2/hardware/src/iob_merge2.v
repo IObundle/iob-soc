@@ -17,14 +17,14 @@ module iob_merge #(
    wire [NBITS-1:0] sel, sel_reg;
    assign sel = addr_i[ADDR_W-2-:NBITS];
 
-   //avalid mux
+   //valid mux
    iob_mux #(
       .DATA_W(1),
       .N     (N)
-   ) iob_mux_avalid (
+   ) iob_mux_valid (
       .sel_i (sel),
-      .data_i(avalid_i),
-      .data_o(avalid_o)
+      .data_i(valid_i),
+      .data_o(valid_o)
    );
 
    //addr mux

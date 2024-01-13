@@ -1,0 +1,133 @@
+[*]
+[*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
+[*] Fri Feb 18 18:48:05 2022
+[*]
+[dumpfile] "/home/jdlopes/git/iob-axi/uut.vcd"
+[dumpfile_mtime] "Fri Feb 18 18:44:44 2022"
+[dumpfile_size] 1306246
+[savefile] "/home/jdlopes/git/iob-axi/hardware/fifo2axis/waves.gtkw"
+[timestart] 2775200
+[size] 1920 1017
+[pos] -1 -1
+*-15.797765 2870000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] fifo2axis_tb.
+[treeopen] fifo2axis_tb.uut.
+[sst_width] 258
+[signals_width] 286
+[sst_expanded] 1
+[sst_vpaned_height] 289
+@28
+fifo2axis_tb.clk
+fifo2axis_tb.rst
+@200
+-
+@22
+fifo2axis_tb.start_addr[23:0]
+@200
+-
+@28
+fifo2axis_tb.uut.run
+fifo2axis_tb.uut.direction
+fifo2axis_tb.uut.error
+fifo2axis_tb.uut.ready
+@200
+-
+@22
+fifo2axis_tb.uut.addr_int[23:0]
+fifo2axis_tb.uut.addr4k[21:0]
+fifo2axis_tb.uut.addrRem[21:0]
+fifo2axis_tb.uut.minAddr[21:0]
+@200
+-
+@201
+-Native Slave I/F
+@28
+fifo2axis_tb.uut.s_valid
+@24
+fifo2axis_tb.uut.s_addr[23:0]
+fifo2axis_tb.uut.s_wdata[31:0]
+@22
+fifo2axis_tb.uut.s_wstrb[3:0]
+@24
+fifo2axis_tb.uut.s_rdata[31:0]
+@28
+fifo2axis_tb.uut.s_ready
+@200
+-
+-AXI-4 Full Write Master I/F
+@28
+fifo2axis_tb.uut.m_axi_awvalid
+@c00022
+fifo2axis_tb.uut.m_axi_awaddr[23:0]
+@28
+(0)fifo2axis_tb.uut.m_axi_awaddr[23:0]
+(1)fifo2axis_tb.uut.m_axi_awaddr[23:0]
+(2)fifo2axis_tb.uut.m_axi_awaddr[23:0]
+(3)fifo2axis_tb.uut.m_axi_awaddr[23:0]
+(4)fifo2axis_tb.uut.m_axi_awaddr[23:0]
+(5)fifo2axis_tb.uut.m_axi_awaddr[23:0]
+(6)fifo2axis_tb.uut.m_axi_awaddr[23:0]
+(7)fifo2axis_tb.uut.m_axi_awaddr[23:0]
+(8)fifo2axis_tb.uut.m_axi_awaddr[23:0]
+(9)fifo2axis_tb.uut.m_axi_awaddr[23:0]
+(10)fifo2axis_tb.uut.m_axi_awaddr[23:0]
+(11)fifo2axis_tb.uut.m_axi_awaddr[23:0]
+(12)fifo2axis_tb.uut.m_axi_awaddr[23:0]
+(13)fifo2axis_tb.uut.m_axi_awaddr[23:0]
+(14)fifo2axis_tb.uut.m_axi_awaddr[23:0]
+(15)fifo2axis_tb.uut.m_axi_awaddr[23:0]
+(16)fifo2axis_tb.uut.m_axi_awaddr[23:0]
+(17)fifo2axis_tb.uut.m_axi_awaddr[23:0]
+(18)fifo2axis_tb.uut.m_axi_awaddr[23:0]
+(19)fifo2axis_tb.uut.m_axi_awaddr[23:0]
+(20)fifo2axis_tb.uut.m_axi_awaddr[23:0]
+(21)fifo2axis_tb.uut.m_axi_awaddr[23:0]
+(22)fifo2axis_tb.uut.m_axi_awaddr[23:0]
+(23)fifo2axis_tb.uut.m_axi_awaddr[23:0]
+@1401200
+-group_end
+@24
+fifo2axis_tb.uut.m_axi_awlen[7:0]
+@28
+fifo2axis_tb.uut.m_axi_awready
+@200
+-
+@28
+fifo2axis_tb.uut.m_axi_wvalid
+@24
+fifo2axis_tb.uut.m_axi_wdata[31:0]
+@22
+fifo2axis_tb.uut.m_axi_wstrb[3:0]
+@28
+fifo2axis_tb.uut.m_axi_wlast
+fifo2axis_tb.uut.m_axi_wready
+@200
+-
+@28
+fifo2axis_tb.uut.m_axi_bvalid
+fifo2axis_tb.uut.m_axi_bresp[1:0]
+fifo2axis_tb.uut.m_axi_bready
+@200
+-
+-AXI-4 Full Read Master I/F
+@28
+fifo2axis_tb.uut.fifo2axis_rd0.state
+fifo2axis_tb.uut.m_axi_arvalid
+@22
+fifo2axis_tb.uut.m_axi_araddr[23:0]
+@24
+fifo2axis_tb.uut.m_axi_arlen[7:0]
+@28
+fifo2axis_tb.uut.m_axi_arready
+@200
+-
+@28
+fifo2axis_tb.uut.m_axi_rvalid
+@24
+fifo2axis_tb.uut.fifo2axis_rd0.m_axi_rdata[31:0]
+@28
+fifo2axis_tb.uut.m_axi_rlast
+fifo2axis_tb.uut.m_axi_rresp[1:0]
+fifo2axis_tb.uut.m_axi_rready
+[pattern_trace] 1
+[pattern_trace] 0

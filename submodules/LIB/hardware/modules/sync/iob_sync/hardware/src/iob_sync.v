@@ -5,26 +5,30 @@ module iob_sync #(
    parameter RST_VAL = {DATA_W{1'b0}}
 ) (
    `include "clk_rst_s_port.vs"
-   input      [DATA_W-1:0] signal_i,
-   output reg [DATA_W-1:0] signal_o
+   input  [DATA_W-1:0] signal_i,
+   output [DATA_W-1:0] signal_o
 );
 
-   reg [DATA_W-1:0] synchronizer;
+   wire [DATA_W-1:0] synchronizer;
 
-   always @(posedge clk_i, posedge arst_i) begin
-      if (arst_i) begin
-         synchronizer <= RST_VAL;
-      end else begin
-         synchronizer <= signal_i;
-      end
-   end
-   
-   always @(posedge clk_i, posedge arst_i) begin
-      if (arst_i) begin
-         signal_o <= RST_VAL;
-      end else begin
-         signal_o <= synchronizer;
-      end
-   end
+   iob_r #(
+      .DATA_W (DATA_W),
+      .RST_VAL(RST_VAL)
+   ) reg1 (
+      .clk_i       (clk_i),
+      .arst_i      (arst_i),
+      .iob_r_data_i(signal_i),
+      .iob_r_data_o(synchronizer)
+   );
+
+   iob_r #(
+      .DATA_W (DATA_W),
+      .RST_VAL(RST_VAL)
+   ) reg2 (
+      .clk_i       (clk_i),
+      .arst_i      (arst_i),
+      .iob_r_data_i(synchronizer),
+      .iob_r_data_o(signal_o)
+   );
 
 endmodule

@@ -19,7 +19,7 @@ reserved_signals = {
     "cke_i": ".cke_i(cke_i)",
     "en_i": ".en_i(en_i)",
     "arst_i": ".arst_i(arst_i)",
-    "iob_avalid_i": ".iob_avalid_i(slaves_req[`AVALID(`/*<InstanceName>*/)])",
+    "iob_valid_i": ".iob_valid_i(slaves_req[`VALID(`/*<InstanceName>*/)])",
     "iob_addr_i": ".iob_addr_i(slaves_req[`ADDRESS(`/*<InstanceName>*/,`/*<SwregFilename>*/_ADDR_W)])",
     "iob_wdata_i": ".iob_wdata_i(slaves_req[`WDATA(`/*<InstanceName>*/)])",
     "iob_wstrb_i": ".iob_wstrb_i(slaves_req[`WSTRB(`/*<InstanceName>*/)])",

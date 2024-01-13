@@ -20,46 +20,46 @@ module axi2iob #(
     /*
      * AXI slave interface
      */
-    input  wire [AXI_ID_WIDTH-1:0] s_axi_awid,
-    input  wire [  ADDR_WIDTH-1:0] s_axi_awaddr,
-    input  wire [             7:0] s_axi_awlen,
-    input  wire [             2:0] s_axi_awsize,
-    input  wire [             1:0] s_axi_awburst,
-    input  wire                    s_axi_awlock,
-    input  wire [             3:0] s_axi_awcache,
-    input  wire [             2:0] s_axi_awprot,
-    input  wire                    s_axi_awvalid,
-    output wire                    s_axi_awready,
-    input  wire [  DATA_WIDTH-1:0] s_axi_wdata,
-    input  wire [  STRB_WIDTH-1:0] s_axi_wstrb,
-    input  wire                    s_axi_wlast,
-    input  wire                    s_axi_wvalid,
-    output wire                    s_axi_wready,
-    output wire [AXI_ID_WIDTH-1:0] s_axi_bid,
-    output wire [             1:0] s_axi_bresp,
-    output wire                    s_axi_bvalid,
-    input  wire                    s_axi_bready,
-    input  wire [AXI_ID_WIDTH-1:0] s_axi_arid,
-    input  wire [  ADDR_WIDTH-1:0] s_axi_araddr,
-    input  wire [             7:0] s_axi_arlen,
-    input  wire [             2:0] s_axi_arsize,
-    input  wire [             1:0] s_axi_arburst,
-    input  wire                    s_axi_arlock,
-    input  wire [             3:0] s_axi_arcache,
-    input  wire [             2:0] s_axi_arprot,
-    input  wire                    s_axi_arvalid,
-    output wire                    s_axi_arready,
-    output wire [AXI_ID_WIDTH-1:0] s_axi_rid,
-    output wire [  DATA_WIDTH-1:0] s_axi_rdata,
-    output wire [             1:0] s_axi_rresp,
-    output wire                    s_axi_rlast,
-    output wire                    s_axi_rvalid,
-    input  wire                    s_axi_rready,
+    input  wire [AXI_ID_WIDTH-1:0] s_axi_awid_i,
+    input  wire [  ADDR_WIDTH-1:0] s_axi_awaddr_i,
+    input  wire [             7:0] s_axi_awlen_i,
+    input  wire [             2:0] s_axi_awsize_i,
+    input  wire [             1:0] s_axi_awburst_i,
+    input  wire                    s_axi_awlock_i,
+    input  wire [             3:0] s_axi_awcache_i,
+    input  wire [             2:0] s_axi_awprot_i,
+    input  wire                    s_axi_awvalid_i,
+    output wire                    s_axi_awready_o,
+    input  wire [  DATA_WIDTH-1:0] s_axi_wdata_i,
+    input  wire [  STRB_WIDTH-1:0] s_axi_wstrb_i,
+    input  wire                    s_axi_wlast_i,
+    input  wire                    s_axi_wvalid_i,
+    output wire                    s_axi_wready_o,
+    output wire [AXI_ID_WIDTH-1:0] s_axi_bid_o,
+    output wire [             1:0] s_axi_bresp_o,
+    output wire                    s_axi_bvalid_o,
+    input  wire                    s_axi_bready_i,
+    input  wire [AXI_ID_WIDTH-1:0] s_axi_arid_i,
+    input  wire [  ADDR_WIDTH-1:0] s_axi_araddr_i,
+    input  wire [             7:0] s_axi_arlen_i,
+    input  wire [             2:0] s_axi_arsize_i,
+    input  wire [             1:0] s_axi_arburst_i,
+    input  wire                    s_axi_arlock_i,
+    input  wire [             3:0] s_axi_arcache_i,
+    input  wire [             2:0] s_axi_arprot_i,
+    input  wire                    s_axi_arvalid_i,
+    output wire                    s_axi_arready_o,
+    output wire [AXI_ID_WIDTH-1:0] s_axi_rid_o,
+    output wire [  DATA_WIDTH-1:0] s_axi_rdata_o,
+    output wire [             1:0] s_axi_rresp_o,
+    output wire                    s_axi_rlast_o,
+    output wire                    s_axi_rvalid_o,
+    input  wire                    s_axi_rready_i,
 
     /*
      * IOb-bus master interface
      */
-    output wire                  iob_avalid_o,
+    output wire                  iob_valid_o,
     output wire [ADDR_WIDTH-1:0] iob_addr_o,
     output wire [DATA_WIDTH-1:0] iob_wdata_o,
     output wire [STRB_WIDTH-1:0] iob_wstrb_o,
@@ -123,7 +123,7 @@ module axi2iob #(
   assign m_axil_rvalid = iob_rvalid_i ? 1'b1 : iob_rvalid_q;
 
   // COMPUTE IOb OUTPUTS
-  assign iob_avalid_o = (m_axil_bvalid_n & write_enable) | m_axil_arvalid;
+  assign iob_valid_o = (m_axil_bvalid_n & write_enable) | m_axil_arvalid;
   assign iob_addr_o = m_axil_arvalid ? m_axil_araddr : (m_axil_awvalid ? m_axil_awaddr : m_axil_awaddr_q);
   assign iob_wdata_o = m_axil_wdata;
   assign iob_wstrb_o = m_axil_arvalid ? {STRB_WIDTH{1'b0}} : m_axil_wstrb;
@@ -197,11 +197,11 @@ module axi2iob #(
   reg m_axil_wvalid_reg, m_axil_wvalid_next;
   reg m_axil_bready_reg, m_axil_bready_next;
 
-  assign s_axi_awready  = s_axi_awready_reg;
-  assign s_axi_wready   = s_axi_wready_reg;
-  assign s_axi_bid      = s_axi_bid_reg;
-  assign s_axi_bresp    = s_axi_bresp_reg;
-  assign s_axi_bvalid   = s_axi_bvalid_reg;
+  assign s_axi_awready_o  = s_axi_awready_reg;
+  assign s_axi_wready_o   = s_axi_wready_reg;
+  assign s_axi_bid_o      = s_axi_bid_reg;
+  assign s_axi_bresp_o    = s_axi_bresp_reg;
+  assign s_axi_bvalid_o   = s_axi_bvalid_reg;
 
   assign m_axil_awaddr  = m_axil_awaddr_reg;
   assign m_axil_awprot  = m_axil_awprot_reg;
@@ -231,7 +231,7 @@ module axi2iob #(
     s_axi_wready_next        = 1'b0;
     s_axi_bid_next           = s_axi_bid_reg;
     s_axi_bresp_next         = s_axi_bresp_reg;
-    s_axi_bvalid_next        = s_axi_bvalid_reg & ~s_axi_bready;
+    s_axi_bvalid_next        = s_axi_bvalid_reg & ~s_axi_bready_i;
     m_axil_awaddr_next       = m_axil_awaddr_reg;
     m_axil_awprot_next       = m_axil_awprot_reg;
     m_axil_awvalid_next      = m_axil_awvalid_reg & ~m_axil_awready;
@@ -246,15 +246,15 @@ module axi2iob #(
         s_axi_awready_next = ~m_axil_awvalid;
         w_first_transfer_next = 1'b1;
 
-        if (s_axi_awready & s_axi_awvalid) begin
+        if (s_axi_awready_o & s_axi_awvalid_i) begin
           s_axi_awready_next  = 1'b0;
-          w_id_next           = s_axi_awid;
-          m_axil_awaddr_next  = s_axi_awaddr;
-          w_addr_next         = s_axi_awaddr;
-          w_burst_next        = s_axi_awlen;
+          w_id_next           = s_axi_awid_i;
+          m_axil_awaddr_next  = s_axi_awaddr_i;
+          w_addr_next         = s_axi_awaddr_i;
+          w_burst_next        = s_axi_awlen_i;
           w_burst_size_next   = s_axi_awsize;
           w_burst_active_next = 1'b1;
-          m_axil_awprot_next  = s_axi_awprot;
+          m_axil_awprot_next  = s_axi_awprot_i;
           m_axil_awvalid_next = 1'b1;
           s_axi_wready_next   = ~m_axil_wvalid;
           w_state_next        = STATE_DATA;
@@ -266,15 +266,15 @@ module axi2iob #(
         // data state; transfer write data
         s_axi_wready_next = ~m_axil_wvalid;
 
-        if (s_axi_wready & s_axi_wvalid) begin
-          m_axil_wdata_next   = s_axi_wdata;
-          m_axil_wstrb_next   = s_axi_wstrb;
+        if (s_axi_wready_o & s_axi_wvalid_i) begin
+          m_axil_wdata_next   = s_axi_wdata_i;
+          m_axil_wstrb_next   = s_axi_wstrb_i;
           m_axil_wvalid_next  = 1'b1;
           w_burst_next        = w_burst_reg - 1;
           w_burst_active_next = w_burst_reg != 0;
           w_addr_next         = w_addr_reg + (1 << w_burst_size_reg);
           s_axi_wready_next   = 1'b0;
-          m_axil_bready_next  = ~s_axi_bvalid & ~m_axil_awvalid;
+          m_axil_bready_next  = ~s_axi_bvalid_o & ~m_axil_awvalid;
           w_state_next        = STATE_RESP;
         end else begin
           w_state_next = STATE_DATA;
@@ -282,7 +282,7 @@ module axi2iob #(
       end
       STATE_RESP: begin
         // resp state; transfer write response
-        m_axil_bready_next = ~s_axi_bvalid & ~m_axil_awvalid;
+        m_axil_bready_next = ~s_axi_bvalid_o & ~m_axil_awvalid;
 
         if (m_axil_bready & m_axil_bvalid) begin
           m_axil_bready_next    = 1'b0;
@@ -392,12 +392,12 @@ module axi2iob #(
   reg m_axil_arvalid_reg, m_axil_arvalid_next;
   reg m_axil_rready_reg, m_axil_rready_next;
 
-  assign s_axi_arready  = s_axi_arready_reg;
-  assign s_axi_rid      = s_axi_rid_reg;
-  assign s_axi_rdata    = s_axi_rdata_reg;
-  assign s_axi_rresp    = s_axi_rresp_reg;
-  assign s_axi_rlast    = s_axi_rlast_reg;
-  assign s_axi_rvalid   = s_axi_rvalid_reg;
+  assign s_axi_arready_o  = s_axi_arready_reg;
+  assign s_axi_rid_o      = s_axi_rid_reg;
+  assign s_axi_rdata_o    = s_axi_rdata_reg;
+  assign s_axi_rresp_o    = s_axi_rresp_reg;
+  assign s_axi_rlast_o    = s_axi_rlast_reg;
+  assign s_axi_rvalid_o   = s_axi_rvalid_reg;
 
   assign m_axil_araddr  = m_axil_araddr_reg;
   assign m_axil_arprot  = m_axil_arprot_reg;
@@ -421,7 +421,7 @@ module axi2iob #(
     s_axi_rdata_next         = s_axi_rdata_reg;
     s_axi_rresp_next         = s_axi_rresp_reg;
     s_axi_rlast_next         = s_axi_rlast_reg;
-    s_axi_rvalid_next        = s_axi_rvalid_reg & ~s_axi_rready;
+    s_axi_rvalid_next        = s_axi_rvalid_reg & ~s_axi_rready_i;
     m_axil_araddr_next       = m_axil_araddr_reg;
     m_axil_arprot_next       = m_axil_arprot_reg;
     m_axil_arvalid_next      = m_axil_arvalid_reg & ~m_axil_arready;
@@ -432,14 +432,14 @@ module axi2iob #(
         // idle state; wait for new burst
         s_axi_arready_next = ~m_axil_arvalid;
 
-        if (s_axi_arready & s_axi_arvalid) begin
+        if (s_axi_arready_o & s_axi_arvalid_i) begin
           s_axi_arready_next  = 1'b0;
-          r_id_next           = s_axi_arid;
-          m_axil_araddr_next  = s_axi_araddr;
-          r_addr_next         = s_axi_araddr;
-          r_burst_next        = s_axi_arlen;
-          r_burst_size_next   = s_axi_arsize;
-          m_axil_arprot_next  = s_axi_arprot;
+          r_id_next           = s_axi_arid_i;
+          m_axil_araddr_next  = s_axi_araddr_i;
+          r_addr_next         = s_axi_araddr_i;
+          r_burst_next        = s_axi_arlen_i;
+          r_burst_size_next   = s_axi_arsize_i;
+          m_axil_arprot_next  = s_axi_arprot_i;
           m_axil_arvalid_next = 1'b1;
           m_axil_rready_next  = 1'b0;
           r_state_next        = STATE_DATA;
@@ -449,7 +449,7 @@ module axi2iob #(
       end
       STATE_DATA: begin
         // data state; transfer read data
-        m_axil_rready_next = ~s_axi_rvalid & ~m_axil_arvalid;
+        m_axil_rready_next = ~s_axi_rvalid_o & ~m_axil_arvalid;
 
         if (m_axil_rready & m_axil_rvalid) begin
           s_axi_rid_next    = r_id_reg;

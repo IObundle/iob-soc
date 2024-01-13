@@ -248,7 +248,7 @@ iob = [
         "slave": 1,
         "signal": "output",
         "width": "1",
-        "name": "iob_avalid",
+        "name": "iob_valid",
         "default": "0",
         "description": "Request valid.",
     },

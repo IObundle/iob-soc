@@ -39,13 +39,13 @@ module iob_soc_fpga_wrapper (
    input  ENET_RX_D2,
    input  ENET_RX_D3,
    input  ENET_RX_DV,
-   input  ENET_RX_ERR,
+   //input  ENET_RX_ERR,
    output ENET_TX_D0,
    output ENET_TX_D1,
    output ENET_TX_D2,
    output ENET_TX_D3,
    output ENET_TX_EN,
-   output ENET_TX_ERR,
+   //output ENET_TX_ERR,
 `endif
 
    output trap
@@ -69,13 +69,6 @@ module iob_soc_fpga_wrapper (
    //buffered eth clock
    wire       ETH_Clk;
 
-   //MII
-   wire [3:0] ETH_MTxD;
-   wire [3:0] ETH_MRxD;
-
-   assign {ENET_TX_D3, ENET_TX_D2, ENET_TX_D1, ENET_TX_D0} = ETH_MTxD;
-   assign ETH_MRxD = {ENET_RX_D3, ENET_RX_D2, ENET_RX_D1, ENET_RX_D0};
-
    //eth clock
    IBUFG rxclk_buf (
       .I(ENET_RX_CLK),
@@ -89,6 +82,22 @@ module iob_soc_fpga_wrapper (
       .SR(~ENET_RESETN)
    );
 
+   //MII
+   assign ETH0_MRxClk = ETH_Clk;
+   assign ETH0_MRxD = {ENET_RX_D3, ENET_RX_D2, ENET_RX_D1, ENET_RX_D0};
+   assign ETH0_MRxDv = ENET_RX_DV;
+   //assign ETH0_MRxErr = ENET_RX_ERR;
+   assign ETH0_MRxErr = 1'b0;
+
+   assign ETH0_MTxClk = ETH_Clk;
+   assign {ENET_TX_D3, ENET_TX_D2, ENET_TX_D1, ENET_TX_D0} = ETH0_MTxD;
+   assign ENET_TX_EN = ETH0_MTxEn;
+   //assign ENET_TX_ERR = ETH0_MTxErr;
+
+   assign ENET_RESETN = ETH0_phy_rstn_o;
+
+   assign ETH0_MColl = 1'b0;
+   assign ETH0_MCrS = 1'b0;
 `endif
 
 
@@ -102,24 +111,6 @@ module iob_soc_fpga_wrapper (
       .AXI_ADDR_W(AXI_ADDR_W),
       .AXI_DATA_W(AXI_DATA_W)
    ) iob_soc0 (
-`ifdef IOB_SOC_USE_ETHERNET
-      //MII
-      .ETHERNET0_MRxClk (ETH_Clk),
-      .ETHERNET0_MRxD   (ETH_MRxD),
-      .ETHERNET0_MRxDv  (ENET_RX_DV),
-      .ETHERNET0_MRxErr (ENET_RX_ERR),
-
-      .ETHERNET0_MTxClk (ETH_Clk),
-      .ETHERNET0_MTxD   (ETH_MTxD),
-      .ETHERNET0_MTxEn  (ENET_TX_EN),
-      .ETHERNET0_MTxErr (ENET_TX_ERR),
-
-      .MColl(1'b0),
-      .MCrS(1'b0),
-
-      .MDC(),
-      .MDIO(),
-`endif
       `include "iob_soc_pportmaps.vs"
       .clk_i (clk),
       .cke_i (1'b1),

@@ -19,7 +19,6 @@ LIB_DIR = "submodules/LIB"
 
 # This function sets up the flows for this core
 def flows_setup(python_module):
-
     # Setup simulation
     sim_setup(python_module)
 

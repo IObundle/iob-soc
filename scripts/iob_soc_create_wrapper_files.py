@@ -80,6 +80,11 @@ def create_wrapper_files(build_dir, name, ios, confs, num_extmem_connections):
     fd_pportmaps.close()
 
     create_interconnect_instance(out_dir, name, num_extmem_connections)
+    create_cyclonev_interconnect_s_portmap(out_dir, name, num_extmem_connections)
+    modify_alt_ddr3_qsys(
+        os.path.join(build_dir, f"hardware/fpga/quartus/CYCLONEV-GT-DK/alt_ddr3.qsys"),
+        num_extmem_connections,
+    )
     create_ku040_interconnect_s_portmap(out_dir, name, num_extmem_connections)
     create_ku040_rstn(out_dir, name, num_extmem_connections)
 
@@ -104,8 +109,8 @@ def create_interconnect_instance(out_dir, name, num_extmem_connections):
       .S_COUNT     ({num_extmem_connections}),
       .M_COUNT     (1)
    ) system_axi_interconnect (
-      .clk(clk_i),
-      .rst(arst_i),
+      .clk(clk_interconnect),
+      .rst(arst_interconnect),
 
       // Need to use manually defined connections because awlock and arlock of interconnect is only on bit for each slave
       .s_axi_awid    (axi_awid),    //Address write channel ID.
@@ -215,7 +220,7 @@ def create_ku040_rstn(out_dir, name, num_extmem_connections):
     rstn_str = rstn_str[:-3]
 
     file_str = f"      wire [{num_extmem_connections}-1:0] rstn;"
-    file_str += f"      assign arst ={rstn_str};"
+    file_str += f"      assign arst ={rstn_str};"  # FIXME: This is probably wrong. Reset signals should not have logic
 
     fp_rstn = open(f"{out_dir}/{name}_ku040_rstn.vs", "w")
     fp_rstn.write(file_str)
@@ -284,3 +289,208 @@ def create_ku040_interconnect_s_portmap(out_dir, name, num_extmem_connections):
     fp_interconnect = open(f"{out_dir}/{name}_ku040_interconnect_s_portmap.vs", "w")
     fp_interconnect.write(interconnect_str)
     fp_interconnect.close()
+
+
+def create_cyclonev_interconnect_s_portmap(out_dir, name, num_extmem_connections):
+    interconnect_str = ""
+    for i in range(num_extmem_connections):
+        interconnect_str += f"""
+      //
+      // External memory connection {i}
+      //
+
+      //Write address
+      .axi_bridge_{i}_s0_awid   (axi_awid[{i}*AXI_ID_W+:1]),
+      .axi_bridge_{i}_s0_awaddr (axi_awaddr[{i}*AXI_ADDR_W+:AXI_ADDR_W]),
+      .axi_bridge_{i}_s0_awlen  (axi_awlen[{i}*AXI_LEN_W+:AXI_LEN_W]),
+      .axi_bridge_{i}_s0_awsize (axi_awsize[{i}*3+:3]),
+      .axi_bridge_{i}_s0_awburst(axi_awburst[{i}*2+:2]),
+      .axi_bridge_{i}_s0_awlock (axi_awlock[{i}*2+:1]),
+      .axi_bridge_{i}_s0_awcache(axi_awcache[{i}*4+:4]),
+      .axi_bridge_{i}_s0_awprot (axi_awprot[{i}*3+:3]),
+      .axi_bridge_{i}_s0_awvalid(axi_awvalid[{i}*1+:1]),
+      .axi_bridge_{i}_s0_awready(axi_awready[{i}*1+:1]),
+
+      //Write data
+      .axi_bridge_{i}_s0_wdata  (axi_wdata[{i}*AXI_DATA_W+:AXI_DATA_W]),
+      .axi_bridge_{i}_s0_wstrb  (axi_wstrb[{i}*(AXI_DATA_W/8)+:(AXI_DATA_W/8)]),
+      .axi_bridge_{i}_s0_wlast  (axi_wlast[{i}*1+:1]),
+      .axi_bridge_{i}_s0_wvalid (axi_wvalid[{i}*1+:1]),
+      .axi_bridge_{i}_s0_wready (axi_wready[{i}*1+:1]),
+
+      //Write response
+      .axi_bridge_{i}_s0_bid    (axi_bid[{i}*AXI_ID_W+:1]),
+      .axi_bridge_{i}_s0_bresp  (axi_bresp[{i}*2+:2]),
+      .axi_bridge_{i}_s0_bvalid (axi_bvalid[{i}*1+:1]),
+      .axi_bridge_{i}_s0_bready (axi_bready[{i}*1+:1]),
+
+      //Read address
+      .axi_bridge_{i}_s0_arid   (axi_arid[{i}*AXI_ID_W+:1]),
+      .axi_bridge_{i}_s0_araddr (axi_araddr[{i}*AXI_ADDR_W+:AXI_ADDR_W]),
+      .axi_bridge_{i}_s0_arlen  (axi_arlen[{i}*AXI_LEN_W+:AXI_LEN_W]),
+      .axi_bridge_{i}_s0_arsize (axi_arsize[{i}*3+:3]),
+      .axi_bridge_{i}_s0_arburst(axi_arburst[{i}*2+:2]),
+      .axi_bridge_{i}_s0_arlock (axi_arlock[{i}*2+:1]),
+      .axi_bridge_{i}_s0_arcache(axi_arcache[{i}*4+:4]),
+      .axi_bridge_{i}_s0_arprot (axi_arprot[{i}*3+:3]),
+      .axi_bridge_{i}_s0_arvalid(axi_arvalid[{i}*1+:1]),
+      .axi_bridge_{i}_s0_arready(axi_arready[{i}*1+:1]),
+
+      //Read data
+      .axi_bridge_{i}_s0_rid    (axi_rid[{i}*AXI_ID_W+:1]),
+      .axi_bridge_{i}_s0_rdata  (axi_rdata[{i}*AXI_DATA_W+:AXI_DATA_W]),
+      .axi_bridge_{i}_s0_rresp  (axi_rresp[{i}*2+:2]),
+      .axi_bridge_{i}_s0_rlast  (axi_rlast[{i}*1+:1]),
+      .axi_bridge_{i}_s0_rvalid (axi_rvalid[{i}*1+:1]),
+      .axi_bridge_{i}_s0_rready (axi_rready[{i}*1+:1]),
+
+"""
+
+    fp_interconnect = open(f"{out_dir}/{name}_cyclonev_interconnect_s_portmap.vs", "w")
+    fp_interconnect.write(interconnect_str)
+    fp_interconnect.close()
+
+
+# Add slave ports to alt_ddr3.qsys, based on number of extmem connections
+def modify_alt_ddr3_qsys(qsys_path, num_extmem_connections):
+    with open(qsys_path, "r") as f:
+        lines = f.readlines()
+    new_lines = []
+
+    for line in lines:
+        new_lines.append(line)
+        if "element clk_0" in line:
+            for i in range(1, num_extmem_connections):
+                new_lines.insert(
+                    -1,
+                    f"""
+       element axi_bridge_{i}
+       {{
+          datum _sortIndex
+          {{
+             value = "{i+2}";
+             type = "int";
+          }}
+       }}
+                             \n""",
+                )
+        elif 'interface name="clk"' in line:
+            for i in range(1, num_extmem_connections):
+                new_lines.insert(
+                    -1,
+                    f"""
+ <interface
+   name="axi_bridge_{i}_s0"
+   internal="axi_bridge_{i}.s0"
+   type="axi4"
+   dir="end" />
+                             \n""",
+                )
+        elif 'module name="clk_0"' in line:
+            for i in range(1, num_extmem_connections):
+                new_lines.insert(
+                    -1,
+                    f"""
+ <module
+   name="axi_bridge_{i}"
+   kind="altera_axi_bridge"
+   version="20.1"
+   enabled="1">
+  <parameter name="ADDR_WIDTH" value="28" />
+  <parameter name="AXI_VERSION" value="AXI4" />
+  <parameter name="COMBINED_ACCEPTANCE_CAPABILITY" value="16" />
+  <parameter name="COMBINED_ISSUING_CAPABILITY" value="16" />
+  <parameter name="DATA_WIDTH" value="32" />
+  <parameter name="M0_ID_WIDTH" value="1" />
+  <parameter name="READ_ACCEPTANCE_CAPABILITY" value="16" />
+  <parameter name="READ_ADDR_USER_WIDTH" value="64" />
+  <parameter name="READ_DATA_REORDERING_DEPTH" value="1" />
+  <parameter name="READ_DATA_USER_WIDTH" value="64" />
+  <parameter name="READ_ISSUING_CAPABILITY" value="16" />
+  <parameter name="S0_ID_WIDTH" value="1" />
+  <parameter name="USE_M0_ARBURST" value="1" />
+  <parameter name="USE_M0_ARCACHE" value="1" />
+  <parameter name="USE_M0_ARID" value="1" />
+  <parameter name="USE_M0_ARLEN" value="1" />
+  <parameter name="USE_M0_ARLOCK" value="1" />
+  <parameter name="USE_M0_ARQOS" value="0" />
+  <parameter name="USE_M0_ARREGION" value="0" />
+  <parameter name="USE_M0_ARSIZE" value="1" />
+  <parameter name="USE_M0_ARUSER" value="0" />
+  <parameter name="USE_M0_AWBURST" value="1" />
+  <parameter name="USE_M0_AWCACHE" value="1" />
+  <parameter name="USE_M0_AWID" value="1" />
+  <parameter name="USE_M0_AWLEN" value="1" />
+  <parameter name="USE_M0_AWLOCK" value="1" />
+  <parameter name="USE_M0_AWQOS" value="0" />
+  <parameter name="USE_M0_AWREGION" value="0" />
+  <parameter name="USE_M0_AWSIZE" value="1" />
+  <parameter name="USE_M0_AWUSER" value="0" />
+  <parameter name="USE_M0_BID" value="1" />
+  <parameter name="USE_M0_BRESP" value="1" />
+  <parameter name="USE_M0_BUSER" value="0" />
+  <parameter name="USE_M0_RID" value="1" />
+  <parameter name="USE_M0_RLAST" value="1" />
+  <parameter name="USE_M0_RRESP" value="1" />
+  <parameter name="USE_M0_RUSER" value="0" />
+  <parameter name="USE_M0_WSTRB" value="1" />
+  <parameter name="USE_M0_WUSER" value="0" />
+  <parameter name="USE_PIPELINE" value="1" />
+  <parameter name="USE_S0_ARCACHE" value="1" />
+  <parameter name="USE_S0_ARLOCK" value="1" />
+  <parameter name="USE_S0_ARPROT" value="1" />
+  <parameter name="USE_S0_ARQOS" value="0" />
+  <parameter name="USE_S0_ARREGION" value="0" />
+  <parameter name="USE_S0_ARUSER" value="0" />
+  <parameter name="USE_S0_AWCACHE" value="1" />
+  <parameter name="USE_S0_AWLOCK" value="1" />
+  <parameter name="USE_S0_AWPROT" value="1" />
+  <parameter name="USE_S0_AWQOS" value="0" />
+  <parameter name="USE_S0_AWREGION" value="0" />
+  <parameter name="USE_S0_AWUSER" value="0" />
+  <parameter name="USE_S0_BRESP" value="1" />
+  <parameter name="USE_S0_BUSER" value="0" />
+  <parameter name="USE_S0_RRESP" value="1" />
+  <parameter name="USE_S0_RUSER" value="0" />
+  <parameter name="USE_S0_WLAST" value="1" />
+  <parameter name="USE_S0_WUSER" value="0" />
+  <parameter name="WRITE_ACCEPTANCE_CAPABILITY" value="16" />
+  <parameter name="WRITE_ADDR_USER_WIDTH" value="64" />
+  <parameter name="WRITE_DATA_USER_WIDTH" value="64" />
+  <parameter name="WRITE_ISSUING_CAPABILITY" value="16" />
+  <parameter name="WRITE_RESP_USER_WIDTH" value="64" />
+ </module>
+                             \n""",
+                )
+        elif 'end="axi_bridge_0.clk"' in line:
+            for i in range(1, num_extmem_connections):
+                new_lines.insert(
+                    -1,
+                    f"""
+ <connection
+   kind="avalon"
+   version="20.1"
+   start="axi_bridge_{i}.m0"
+   end="mem_if_ddr3_emif_0.avl">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x0000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection kind="clock" version="20.1" start="clk_0.clk" end="axi_bridge_{i}.clk" />
+                             \n""",
+                )
+        elif 'name="qsys_mm.clockCrossingAdapter"' in line:
+            for i in range(1, num_extmem_connections):
+                new_lines.insert(
+                    -1,
+                    f"""
+ <connection
+   kind="reset"
+   version="20.1"
+   start="clk_0.clk_reset"
+   end="axi_bridge_{i}.clk_reset" />
+                             \n""",
+                )
+
+    with open(qsys_path, "w") as f:
+        f.writelines(new_lines)

@@ -47,6 +47,39 @@ if {$IS_FPGA == "1"} {
     set_location_assignment PIN_C12 -to rxd_i
     set_instance_assignment -name IO_STANDARD "2.5-V" -to rxd_i
 
+    #Ethernet
+    set_location_assignment PIN_AN9 -to ENET_RESETN
+    set_location_assignment PIN_AM10 -to ENET_RX_CLK
+    set_location_assignment PIN_AP7 -to ENET_GTX_CLK
+    set_location_assignment PIN_AK14 -to ENET_RX_D0
+    set_location_assignment PIN_AL10 -to ENET_RX_D1
+    set_location_assignment PIN_AJ14 -to ENET_RX_D2
+    set_location_assignment PIN_AK12 -to ENET_RX_D3
+    set_location_assignment PIN_AH14 -to ENET_RX_DV
+    set_location_assignment PIN_AB14 -to ENET_TX_D0
+    set_location_assignment PIN_AD15 -to ENET_TX_D1
+    set_location_assignment PIN_AB15 -to ENET_TX_D2
+    set_location_assignment PIN_AB13 -to ENET_TX_D3
+    set_location_assignment PIN_AC14 -to ENET_TX_EN
+
+    set_instance_assignment -name IO_STANDARD "2.5-V" -to ENET_RESETN
+    set_instance_assignment -name IO_STANDARD "2.5-V" -to ENET_RX_CLK
+    set_instance_assignment -name IO_STANDARD "2.5-V" -to ENET_GTX_CLK
+    set_instance_assignment -name IO_STANDARD "2.5-V" -to ENET_RX_D0
+    set_instance_assignment -name IO_STANDARD "2.5-V" -to ENET_RX_D1
+    set_instance_assignment -name IO_STANDARD "2.5-V" -to ENET_RX_D2
+    set_instance_assignment -name IO_STANDARD "2.5-V" -to ENET_RX_D3
+    set_instance_assignment -name IO_STANDARD "2.5-V" -to ENET_RX_DV
+    set_instance_assignment -name IO_STANDARD "2.5-V" -to ENET_TX_D0
+    set_instance_assignment -name IO_STANDARD "2.5-V" -to ENET_TX_D1
+    set_instance_assignment -name IO_STANDARD "2.5-V" -to ENET_TX_D2
+    set_instance_assignment -name IO_STANDARD "2.5-V" -to ENET_TX_D3
+    set_instance_assignment -name IO_STANDARD "2.5-V" -to ENET_TX_EN
+
+    #Force registers into IOBs
+    set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to *
+    set_instance_assignment -name FAST_INPUT_REGISTER ON -to *
+    set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to *
 
     if { $USE_EXTMEM > 0 }  {
 

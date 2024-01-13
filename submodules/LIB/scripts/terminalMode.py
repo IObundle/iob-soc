@@ -3,7 +3,7 @@
 import sys
 import termios
 
-PROGNAME: str = "IOb-Non-Canonical"
+print("IOb-TerminalMode: inverting terminal canonical and echo mode")
 
 stdin = sys.stdin
 fd = stdin.fileno()
@@ -14,4 +14,3 @@ new[3] &= ~termios.ECHO
 new[3] &= ~termios.ICANON
 
 termios.tcsetattr(fd, termios.TCSAFLUSH, new)
-print(f"{PROGNAME}: activating terminal non-canonical mode")

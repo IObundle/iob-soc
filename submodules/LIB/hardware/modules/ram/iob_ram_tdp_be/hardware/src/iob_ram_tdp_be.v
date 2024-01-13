@@ -2,6 +2,7 @@
 // Read-First mode 
 
 `timescale 1 ns / 1 ps
+`include "bsp.vh"
 
 module iob_ram_tdp_be #(
    parameter HEXFILE = "none",
@@ -45,7 +46,7 @@ module iob_ram_tdp_be #(
             .clkA_i (clkA_i),
             .enA_i  (enA_i),
             .addrA_i(addrA_i),
-            .dinA   (dA_i[i*COL_W+:COL_W]),
+            .dA_i   (dA_i[i*COL_W+:COL_W]),
             .weA_i  (weA_i[i]),
             .dA_o   (dA_o[i*COL_W+:COL_W]),
 

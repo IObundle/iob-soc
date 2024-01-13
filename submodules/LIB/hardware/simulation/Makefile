@@ -5,14 +5,15 @@
 
 SHELL:=bash
 
-#select simulator
+include ../../config_build.mk
+
 #default simulator
 SIMULATOR ?=icarus
 
-include ../../config_build.mk
 
 REMOTE_BUILD_DIR=$(USER)/$(BUILD_DIR_NAME)
 REMOTE_SIM_DIR=$(REMOTE_BUILD_DIR)/hardware/simulation
+PYTHON_DIR = ../../scripts
 
 #include simulation headers and sources
 VHDR+=$(wildcard ./src/*.vh)
@@ -120,6 +121,7 @@ debug:
 	@echo NAME=$(NAME)
 	@echo VHDR=$(VHDR)
 	@echo VSRC=$(VSRC)
+	@echo UFLAGS=$(UFLAGS)
 	@echo VFLAGS=$(VFLAGS)
 
 .PRECIOUS: uut.vcd test.log

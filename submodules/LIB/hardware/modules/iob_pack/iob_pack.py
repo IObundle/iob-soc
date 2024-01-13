@@ -1,12 +1,12 @@
 import os
 
 from iob_module import iob_module
-from iob_reg_e import iob_reg_e
-from iob_utils import iob_utils
+from iob_reg_r import iob_reg_r
+from iob_acc import iob_acc
 
 
-class iob_asym_converter(iob_module):
-    name = "iob_asym_converter"
+class iob_pack(iob_module):
+    name = "iob_pack"
     version = "V0.10"
     setup_dir = os.path.dirname(__file__)
 
@@ -17,7 +17,7 @@ class iob_asym_converter(iob_module):
             [
                 {"interface": "clk_en_rst_s_s_portmap"},
                 {"interface": "clk_en_rst_s_port"},
-                iob_reg_e,
-                iob_utils,
+                iob_reg_r,
+                iob_acc,
             ]
         )

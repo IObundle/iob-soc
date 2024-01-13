@@ -28,7 +28,6 @@ from iob_ram_dp import iob_ram_dp
 from iob_reset_sync import iob_reset_sync
 from axi_ram import axi_ram
 from iob_tasks import iob_tasks
-from iob_str import iob_str
 from printf import printf
 from iob_ctls import iob_ctls
 from iob_ram_2p import iob_ram_2p
@@ -40,6 +39,7 @@ class iob_soc(iob_module):
     name = "iob_soc"
     version = "V0.70"
     setup_dir = os.path.dirname(__file__)
+    rw_overlap = True
 
     # IOb-SoC has the following list of non standard attributes:
     peripherals = None  # List with instances peripherals to include in system
@@ -120,7 +120,6 @@ class iob_soc(iob_module):
                 ({"interface": "axi_s_portmap"}, {"purpose": "simulation"}),
                 (iob_tasks, {"purpose": "simulation"}),
                 # Software modules
-                iob_str,
                 printf,
                 # Modules required for CACHE
                 (iob_ram_2p, {"purpose": "simulation"}),

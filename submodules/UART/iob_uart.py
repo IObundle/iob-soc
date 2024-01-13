@@ -14,6 +14,7 @@ class iob_uart(iob_module):
     name = "iob_uart"
     version = "V0.10"
     setup_dir = os.path.dirname(__file__)
+    rw_overlap = True
 
     @classmethod
     def _create_submodules_list(cls):
@@ -35,15 +36,13 @@ class iob_uart(iob_module):
     def _setup_confs(cls):
         super()._setup_confs(
             [
-                # Macros
-                # Parameters
                 {
                     "name": "DATA_W",
                     "type": "P",
                     "val": "32",
                     "min": "NA",
                     "max": "NA",
-                    "descr": "Data bus width",
+                    "descr": "Data bus width.",
                 },
                 {
                     "name": "ADDR_W",
@@ -203,3 +202,33 @@ class iob_uart(iob_module):
     @classmethod
     def _setup_block_groups(cls):
         cls.block_groups += []
+
+    @classmethod
+    def _init_attributes(cls):
+        iob_reg.init_attributes()
+        iob_reg.confs = [
+            {
+                "name": "DATA_W",
+                "type": "P",
+                "val": "1",
+                "min": "NA",
+                "max": "NA",
+                "descr": "Data bus width",
+            },
+            {
+                "name": "RST_VAL",
+                "type": "P",
+                "val": "{DATA_W{1'b0}}",
+                "min": "NA",
+                "max": "NA",
+                "descr": "Reset value.",
+            },
+            {
+                "name": "RST_POL",
+                "type": "M",
+                "val": "1",
+                "min": "0",
+                "max": "1",
+                "descr": "Reset polarity.",
+            },
+        ]

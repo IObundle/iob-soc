@@ -40,7 +40,6 @@ IOB_SOC_LFLAGS=-Wl,-Bstatic,-T,$(TEMPLATE_LDS),--strip-debug
 IOB_SOC_FW_SRC=src/iob_soc_firmware.S
 IOB_SOC_FW_SRC+=src/iob_soc_firmware.c
 IOB_SOC_FW_SRC+=src/printf.c
-IOB_SOC_FW_SRC+=src/iob_str.c
 # PERIPHERAL SOURCES
 IOB_SOC_FW_SRC+=$(wildcard src/iob-*.c)
 IOB_SOC_FW_SRC+=$(filter-out %_emul.c, $(wildcard src/*swreg*.c))
@@ -60,20 +59,16 @@ iob_soc_boot:
 	make $@.elf INCLUDES="$(IOB_SOC_INCLUDES)" LFLAGS="$(IOB_SOC_LFLAGS) -Wl,-Map,$@.map" SRC="$(IOB_SOC_BOOT_SRC)" TEMPLATE_LDS="$(TEMPLATE_LDS)"
 
 
-.PHONY: iob_soc_firmware iob_soc_boot
+.PHONY: build_iob_soc_software iob_soc_firmware iob_soc_boot
 
 #########################################
 #         PC emulation targets          #
 #########################################
 # Local pc-emul makefile settings for custom pc emulation targets.
 
-# Include directory with iob_soc_system.h
-EMUL_INCLUDE+=-I. -Isrc
-
 # SOURCES
 EMUL_SRC+=src/iob_soc_firmware.c
 EMUL_SRC+=src/printf.c
-EMUL_SRC+=src/iob_str.c
 
 # PERIPHERAL SOURCES
 EMUL_SRC+=$(wildcard src/iob-*.c)

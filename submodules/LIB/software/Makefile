@@ -6,6 +6,18 @@
 include ../config_build.mk
 
 #########################################
+#            General settings           #
+#########################################
+
+PYTHON_DIR = ../scripts
+
+# include local build segment
+# all previously defined variables can be overwritten in this file
+ifneq ($(wildcard sw_build.mk),)
+include sw_build.mk
+endif
+
+#########################################
 #           Embedded settings           #
 #########################################
 
@@ -22,7 +34,7 @@ endif
 
 #default compiler settings
 TOOLCHAIN_PREFIX ?=riscv64-unknown-elf-
-CFLAGS ?=-Os -nostdlib -march=$(MFLAGS) -mabi=ilp32 --specs=nano.specs -Wcast-align=strict
+CFLAGS ?=-Os -nostdlib -march=$(MFLAGS) -mabi=ilp32 --specs=nano.specs -Wcast-align=strict $(USER_CFLAGS)
 LFLAGS ?= -Wl,-Bstatic,-T,$(TEMPLATE_LDS),--strip-debug
 LLIBS ?=-lgcc -lc -lnosys
 INCLUDES ?=-I. -Isrc
@@ -32,25 +44,15 @@ INCLUDES ?=-I. -Isrc
 #########################################
 
 # compiler flags
-EMUL_CFLAGS=-Os -std=gnu99 -Wl,--strip-debug
+EMUL_CFLAGS ?=-Os -std=gnu99 -Wl,--strip-debug
 
-CONSOLE_CMD=rm -f soc2cnsl cnsl2soc; ../scripts/console.py -L
+CONSOLE_CMD ?=rm -f soc2cnsl cnsl2soc; ../scripts/console.py -L
 
-EMUL_INCLUDES=-I. -Isrc
+EMUL_INCLUDES ?=-I. -Isrc
 
 EMUL_HDR+=$(wildcard src/*_emul.h)
 
 EMUL_SRC+=$(wildcard src/*_emul.c)
-
-#########################################
-#            General settings           #
-#########################################
-
-# include local build segment
-# all previously defined variables can be overwritten in this file
-ifneq ($(wildcard sw_build.mk),)
-include sw_build.mk
-endif
 
 #########################################
 #            Embedded targets           #
@@ -84,15 +86,15 @@ build_emul: fw_emul
 	@echo "build"
 
 #board client command
-BOARD_GRAB_CMD=../scripts/board_client.py grab 300
+BOARD_GRAB_CMD ?=../scripts/board_client.py grab 300
 
-run_emul: build_emul
+test.log: build_emul
 	$(BOARD_GRAB_CMD) -s './fw_emul' -c '$(CONSOLE_CMD)'
 
-test_emul: run_emul
+run_emul: test.log
 	test "$$(cat test.log)" = "Test passed!"
 
-.PHONY: build_emul run_emul test_emul
+.PHONY: build_emul run_emul
 
 #########################################
 #            General targets            #

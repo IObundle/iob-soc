@@ -92,22 +92,34 @@ def replace_includes(setup_dir="", build_dir=""):
 
 
 # Insert given verilog code into module defined inside the given verilog source file
-# The code will be inserted just before the `endmodule` statement.
-def insert_verilog_in_module(verilog_code, verilog_file_path):
+# If `after_line` is provided, the code will be inserted just after that line.
+# Otherwise, the code will be inserted just before the `endmodule` statement.
+def insert_verilog_in_module(verilog_code, verilog_file_path, after_line=""):
     with open(verilog_file_path, "r") as system_source:
         lines = system_source.readlines()
-    # Find `endmodule`
-    for idx, line in enumerate(lines):
-        if line.startswith("endmodule"):
-            endmodule_index = idx - 1
-            break
+    if after_line:
+        # Find line index
+        for idx, line in enumerate(lines):
+            if after_line in line:
+                insertion_idx = idx + 1
+                break
+        else:
+            raise Exception(
+                f"{iob_colors.FAIL}verilog_tools.py: Could not find 'endmodule' declaration in '{verilog_file_path}'!{iob_colors.ENDC}"
+            )
     else:
-        raise Exception(
-            f"{iob_colors.FAIL}verilog_tools.py: Could not find 'endmodule' declaration in '{verilog_file_path}'!{iob_colors.ENDC}"
-        )
+        # Find `endmodule`
+        for idx, line in enumerate(lines):
+            if line.startswith("endmodule"):
+                insertion_idx = idx
+                break
+        else:
+            raise Exception(
+                f"{iob_colors.FAIL}verilog_tools.py: Could not find 'endmodule' declaration in '{verilog_file_path}'!{iob_colors.ENDC}"
+            )
 
     # Insert Verilog code
-    lines.insert(endmodule_index, verilog_code)
+    lines.insert(insertion_idx, verilog_code + "\n")
 
     # Write new system source file
     with open(verilog_file_path, "w") as system_source:

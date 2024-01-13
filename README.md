@@ -281,3 +281,21 @@ export PATH=$PATH:/path/to/riscv/bin
 ```
 
 The above command should be added to your `~/.bashrc` file so you do not have to type it on every session.
+
+## Ethernet
+
+To setup the system with ethernet capability, set the `USE_ETHERNET` macro value to `True`.
+
+When running the system with ethernet, please set the `RMAC_ADDR` and `IOB_CONSOLE_PYTHON_ENV` environment variables.
+These values will select which network interface and which python environment to use for the console.
+
+For example, you can add the following to your `~/.bashrc`:
+
+```Bash
+# IOb-SoC console network interface (loopback interfacce)
+export RMAC_ADDR=000000000000
+# Custom IOb-SoC console python interperter with `CAP_NET_RAW` capability.
+export IOB_CONSOLE_PYTHON_ENV=/opt/pyeth3/bin/python
+``` 
+
+You could also set those variables in the `config_build.mk` file of the build directory.

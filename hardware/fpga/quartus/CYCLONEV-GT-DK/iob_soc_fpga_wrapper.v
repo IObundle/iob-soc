@@ -39,13 +39,13 @@ module iob_soc_fpga_wrapper (
    input  ENET_RX_D2,
    input  ENET_RX_D3,
    input  ENET_RX_DV,
-   input  ENET_RX_ERR,
+   //input  ENET_RX_ERR,
    output ENET_TX_D0,
    output ENET_TX_D1,
    output ENET_TX_D2,
    output ENET_TX_D3,
    output ENET_TX_EN,
-   output ENET_TX_ERR,
+   //output ENET_TX_ERR,
 `endif
    output trap
 );
@@ -71,13 +71,6 @@ module iob_soc_fpga_wrapper (
    //buffered eth clock
    wire       ETH_Clk;
 
-   //MII
-   wire [3:0] ETH_MTxD;
-   wire [3:0] ETH_MRxD;
-
-   assign {ENET_TX_D3, ENET_TX_D2, ENET_TX_D1, ENET_TX_D0} = ETH_MTxD;
-   assign ETH_MRxD = {ENET_RX_D3, ENET_RX_D2, ENET_RX_D1, ENET_RX_D0};
-
    //eth clock
    clk_buf_altclkctrl_0 txclk_buf (
       .inclk (ENET_RX_CLK),
@@ -93,6 +86,22 @@ module iob_soc_fpga_wrapper (
       .dataout (ENET_GTX_CLK)
    );
 
+   //MII
+   assign ETH0_MRxClk = ETH_Clk;
+   assign ETH0_MRxD = {ENET_RX_D3, ENET_RX_D2, ENET_RX_D1, ENET_RX_D0};
+   assign ETH0_MRxDv = ENET_RX_DV;
+   //assign ETH0_MRxErr = ENET_RX_ERR;
+   assign ETH0_MRxErr = 1'b0;
+
+   assign ETH0_MTxClk = ETH_Clk;
+   assign {ENET_TX_D3, ENET_TX_D2, ENET_TX_D1, ENET_TX_D0} = ETH0_MTxD;
+   assign ENET_TX_EN = ETH0_MTxEn;
+   //assign ENET_TX_ERR = ETH0_MTxErr;
+
+   assign ENET_RESETN = ETH0_phy_rstn_o;
+
+   assign ETH0_MColl = 1'b0;
+   assign ETH0_MCrS = 1'b0;
 `endif
 
    //
@@ -104,24 +113,6 @@ module iob_soc_fpga_wrapper (
       .AXI_ADDR_W(AXI_ADDR_W),
       .AXI_DATA_W(AXI_DATA_W)
    ) iob_soc (
-`ifdef IOB_SOC_USE_ETHERNET
-      //MII
-      .ETHERNET0_MRxClk (ETH_Clk),
-      .ETHERNET0_MRxD   (ETH_MRxD),
-      .ETHERNET0_MRxDv  (ENET_RX_DV),
-      .ETHERNET0_MRxErr (ENET_RX_ERR),
-
-      .ETHERNET0_MTxClk (ETH_Clk),
-      .ETHERNET0_MTxD   (ETH_MTxD),
-      .ETHERNET0_MTxEn  (ENET_TX_EN),
-      .ETHERNET0_MTxErr (ENET_TX_ERR),
-
-      .MColl(1'b0),
-      .MCrS(1'b0),
-
-      .MDC(),
-      .MDIO(),
-`endif
       `include "iob_soc_pportmaps.vs"
       .clk_i (clk_i),
       .cke_i (1'b1),
@@ -174,41 +165,7 @@ module iob_soc_fpga_wrapper (
       .memory_mem_dqs_n  (ddr3b_dqs_n),
       .memory_mem_odt    (ddr3b_odt),
 
-      .axi_bridge_0_s0_awid   (memory_axi_awid),
-      .axi_bridge_0_s0_awaddr (memory_axi_awaddr),
-      .axi_bridge_0_s0_awlen  (memory_axi_awlen),
-      .axi_bridge_0_s0_awsize (memory_axi_awsize),
-      .axi_bridge_0_s0_awburst(memory_axi_awburst),
-      .axi_bridge_0_s0_awlock (memory_axi_awlock),
-      .axi_bridge_0_s0_awcache(memory_axi_awcache),
-      .axi_bridge_0_s0_awprot (memory_axi_awprot),
-      .axi_bridge_0_s0_awvalid(memory_axi_awvalid),
-      .axi_bridge_0_s0_awready(memory_axi_awready),
-      .axi_bridge_0_s0_wdata  (memory_axi_wdata),
-      .axi_bridge_0_s0_wstrb  (memory_axi_wstrb),
-      .axi_bridge_0_s0_wlast  (memory_axi_wlast),
-      .axi_bridge_0_s0_wvalid (memory_axi_wvalid),
-      .axi_bridge_0_s0_wready (memory_axi_wready),
-      .axi_bridge_0_s0_bid    (memory_axi_bid),
-      .axi_bridge_0_s0_bresp  (memory_axi_bresp),
-      .axi_bridge_0_s0_bvalid (memory_axi_bvalid),
-      .axi_bridge_0_s0_bready (memory_axi_bready),
-      .axi_bridge_0_s0_arid   (memory_axi_arid),
-      .axi_bridge_0_s0_araddr (memory_axi_araddr),
-      .axi_bridge_0_s0_arlen  (memory_axi_arlen),
-      .axi_bridge_0_s0_arsize (memory_axi_arsize),
-      .axi_bridge_0_s0_arburst(memory_axi_arburst),
-      .axi_bridge_0_s0_arlock (memory_axi_arlock),
-      .axi_bridge_0_s0_arcache(memory_axi_arcache),
-      .axi_bridge_0_s0_arprot (memory_axi_arprot),
-      .axi_bridge_0_s0_arvalid(memory_axi_arvalid),
-      .axi_bridge_0_s0_arready(memory_axi_arready),
-      .axi_bridge_0_s0_rid    (memory_axi_rid),
-      .axi_bridge_0_s0_rdata  (memory_axi_rdata),
-      .axi_bridge_0_s0_rresp  (memory_axi_rresp),
-      .axi_bridge_0_s0_rlast  (memory_axi_rlast),
-      .axi_bridge_0_s0_rvalid (memory_axi_rvalid),
-      .axi_bridge_0_s0_rready (memory_axi_rready),
+      `include "iob_soc_cyclonev_interconnect_s_portmap.vs"
 
       .mem_if_ddr3_emif_0_pll_sharing_pll_mem_clk              (),
       .mem_if_ddr3_emif_0_pll_sharing_pll_write_clk            (),
@@ -232,7 +189,5 @@ module iob_soc_fpga_wrapper (
       .arst_o(arst)
    );
 `endif
-
-   `include "iob_soc_interconnect.vs"
 
 endmodule

@@ -5,7 +5,7 @@
 `include "iob_soc_conf.vh"
 `include "iob_uart_conf.vh"
 `include "iob_uart_swreg_def.vh"
-
+`include "iob_reg_conf.vh"
 
 //Peripherals _swreg_def.vh file includes.
 `include "iob_soc_periphs_swreg_def.vs"
@@ -33,14 +33,14 @@ module iob_soc_tb;
 
 
    //IOb-SoC uart
-   reg                iob_avalid_i;
+   reg                iob_valid_i;
    reg [`IOB_UART_SWREG_ADDR_W-1:0] iob_addr_i;
    reg [       `IOB_SOC_DATA_W-1:0] iob_wdata_i;
    reg [                       3:0] iob_wstrb_i;
    wire [       `IOB_SOC_DATA_W-1:0] iob_rdata_o;
    wire                              iob_ready_o;
    wire                              iob_rvalid_o;
-   
+
    //iterator
    integer                           i = 0, n = 0;
    integer                           error, n_byte = 0;
@@ -50,7 +50,7 @@ module iob_soc_tb;
 
    initial begin
       //init cpu bus signals
-      iob_avalid_i = 0;
+      iob_valid_i = 0;
       iob_wstrb_i  = 0;
 
       //reset system
@@ -86,8 +86,12 @@ module iob_soc_tb;
          if (txread_reg) begin
             cnsl2soc_fd = $fopen("cnsl2soc", "r");
             if (!cnsl2soc_fd) begin
-               $fclose(soc2cnsl_fd);
-               $finish();
+               //wait 1 ms and try again
+               #1_000_000 cnsl2soc_fd = $fopen("cnsl2soc", "r");
+               if (!cnsl2soc_fd) begin
+                  $fclose(soc2cnsl_fd);
+                  $finish();
+               end
             end
             n = $fscanf(cnsl2soc_fd, "%c", cpu_char);
             if (n > 0) begin
@@ -100,19 +104,41 @@ module iob_soc_tb;
          end
       end
    end
+   
+`ifdef IOB_SOC_USE_ETHERNET
+   //IOb-SoC ethernet
+   reg                               ethernet_valid_i;
+   reg  [`IOB_ETH_SWREG_ADDR_W-1:0]  ethernet_addr_i;
+   reg  [       `IOB_SOC_DATA_W-1:0] ethernet_wdata_i;
+   reg  [                       3:0] ethernet_wstrb_i;
+   wire [       `IOB_SOC_DATA_W-1:0] ethernet_rdata_o;
+   wire                              ethernet_ready_o;
+   wire                              ethernet_rvalid_o;
+`endif
+
 
    iob_soc_sim_wrapper iob_soc_sim_wrapper (
       .clk_i (clk),
       .arst_i (arst),
       .trap_o(trap),
 
-      .uart_avalid(iob_avalid_i),
-      .uart_addr  (iob_addr_i),
-      .uart_wdata (iob_wdata_i),
-      .uart_wstrb (iob_wstrb_i),
-      .uart_rdata (iob_rdata_o),
-      .uart_ready (iob_ready_o),
-      .uart_rvalid(iob_rvalid_o)
+`ifdef IOB_SOC_USE_ETHERNET
+      .ethernet_valid_i (1'b0),
+      .ethernet_addr_i  (`IOB_ETH_SWREG_ADDR_W'b0),
+      .ethernet_wdata_i (`IOB_SOC_DATA_W'b0),
+      .ethernet_wstrb_i (4'b0),
+      .ethernet_rdata_o (),
+      .ethernet_ready_o (),
+      .ethernet_rvalid_o(),
+`endif
+
+      .uart_valid_i (iob_valid_i),
+      .uart_addr_i  (iob_addr_i),
+      .uart_wdata_i (iob_wdata_i),
+      .uart_wstrb_i (iob_wstrb_i),
+      .uart_rdata_o (iob_rdata_o),
+      .uart_ready_o (iob_ready_o),
+      .uart_rvalid_o(iob_rvalid_o)
    );
 
    task cpu_inituart;

@@ -142,7 +142,7 @@ class mkregs:
                 rst_val_str = str(n_bits) + "'d" + str(rst_val)
             f.write(f"wire {name}_wen;\n")
             f.write(
-                f"assign {name}_wen = (iob_avalid_i) & ((|iob_wstrb_i) & {name}_addressed);\n"
+                f"assign {name}_wen = (iob_valid_i) & ((|iob_wstrb_i) & {name}_addressed);\n"
             )
             f.write(f"iob_reg_e #(\n")
             f.write(f"  .DATA_W({n_bits}),\n")
@@ -157,7 +157,7 @@ class mkregs:
             f.write(");\n")
         else:  # compute wen
             f.write(
-                f"assign {name}_wen_o = ({name}_addressed & iob_avalid_i)? |iob_wstrb_i: 1'b0;\n"
+                f"assign {name}_wen_o = ({name}_addressed & iob_valid_i)? |iob_wstrb_i: 1'b0;\n"
             )
             f.write(f"assign {name}_wdata_o = {name}_wdata;\n")
 
@@ -184,7 +184,7 @@ class mkregs:
                     f"assign {name}_addressed = (iob_addr_i >= {addr}) && (iob_addr_i < ({addr}+(2**({addr_w}))));\n"
                 )
             f.write(
-                f"assign {name}_ren_o = {name}_addressed & iob_avalid_i & (~|iob_wstrb_i);\n"
+                f"assign {name}_ren_o = {name}_addressed & iob_valid_i & (~|iob_wstrb_i);\n"
             )
 
     # generate ports for swreg module
@@ -496,7 +496,7 @@ class mkregs:
 
         # rvalid computation
         f_gen.write(
-            "assign rvalid_nxt = (iob_avalid_i & iob_ready_o) & (~(|iob_wstrb_i));\n\n"
+            "assign rvalid_nxt = (iob_valid_i & iob_ready_o) & (~(|iob_wstrb_i));\n\n"
         )
 
         f_gen.write("endmodule\n")
@@ -761,7 +761,7 @@ class mkregs:
                     f"{iob_colors.FAIL}invalid address type {addr_type} for register named {row['name']}{iob_colors.ENDC}"
                 )
 
-            if not rw_overlap:
+            if autoaddr and not rw_overlap:
                 addr_tmp = max(read_addr, write_addr)
 
             # save address temporarily in list

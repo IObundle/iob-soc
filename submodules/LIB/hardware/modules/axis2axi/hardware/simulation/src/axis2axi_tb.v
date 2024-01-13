@@ -316,15 +316,15 @@ module axis2axi_tb;
       .MAX_DELAY(DELAY_AXI_READ)
    ) delayRead (
       // Connect directly to the same named axi read wires in the master interface
-      .m_rvalid(m_rvalid),
-      .m_rready(m_rready),
+      .m_rvalid_o(m_rvalid),
+      .m_rready_i(m_rready),
 
       // Connect directly to the same named axi read wires in the slave interface
-      .s_rvalid(s_rvalid),
-      .s_rready(s_rready),
+      .s_rvalid_i(s_rvalid),
+      .s_rready_o(s_rready),
 
-      .clk(clk),
-      .rst(rst)
+      .clk_i(clk),
+      .rst_i(rst)
    );
 
    wire m_wvalid, m_wready, s_wvalid, s_wready;
@@ -332,15 +332,15 @@ module axis2axi_tb;
       .MAX_DELAY(DELAY_AXI_WRITE)
    ) delayWrite (
       // Connect directly to the same named axi write wires in the master interface
-      .m_wvalid(m_wvalid),
-      .m_wready(m_wready),
+      .m_wvalid_i(m_wvalid),
+      .m_wready_o(m_wready),
 
       // Connect directly to the same named axi write wires in the slave interface
-      .s_wvalid(s_wvalid),
-      .s_wready(s_wready),
+      .s_wvalid_o(s_wvalid),
+      .s_wready_i(s_wready),
 
-      .clk(clk),
-      .rst(rst)
+      .clk_i(clk),
+      .rst_i(rst)
    );
 
    wire delayed_axis_in_valid, delayed_axis_in_ready;
@@ -348,30 +348,30 @@ module axis2axi_tb;
       .MAX_DELAY(DELAY_AXIS_IN)
    ) delayIn (
       // Master interface. Connect to a slave interface
-      .m_valid(delayed_axis_in_valid),
-      .m_ready(delayed_axis_in_ready),
+      .m_valid_o(delayed_axis_in_valid),
+      .m_ready_i(delayed_axis_in_ready),
 
       // Slave interface. Connect to a master interface
-      .s_valid(axis_in_valid),
-      .s_ready(axis_in_ready),
+      .s_valid_i(axis_in_valid),
+      .s_ready_o(axis_in_ready),
 
-      .clk(clk),
-      .rst(rst)
+      .clk_i(clk),
+      .rst_i(rst)
    );
 
    axidelay #(
       .MAX_DELAY(DELAY_AXIS_OUT)
    ) delayOut (
       // Master interface. Connect to a slave interface
-      .m_valid(delayed_axis_out_valid),
-      .m_ready(delayed_axis_out_ready),
+      .m_valid_o(delayed_axis_out_valid),
+      .m_ready_i(delayed_axis_out_ready),
 
       // Slave interface. Connect to a master interface
-      .s_valid(non_delayed_axis_out_valid),
-      .s_ready(non_delayed_axis_out_ready),
+      .s_valid_i(non_delayed_axis_out_valid),
+      .s_ready_o(non_delayed_axis_out_ready),
 
-      .clk(clk),
-      .rst(rst)
+      .clk_i(clk),
+      .rst_i(rst)
    );
 
    axis2axi #(

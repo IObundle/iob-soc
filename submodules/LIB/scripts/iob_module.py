@@ -30,7 +30,7 @@ class iob_module:
     build_dir = ""  # Build directory for this module
     confs = None  # List of configuration macros/parameters for this module
     autoaddr = True  # register address mode: True: automatic; False: manual
-    rw_overlap = True  # overlap Read and Write register addresses
+    rw_overlap = False  # overlap Read and Write register addresses
     regs = None  # List of registers for this module
     ios = None  # List of I/O for this module
     block_groups = None  # List of block groups for this module. Used for documentation.
@@ -153,11 +153,21 @@ class iob_module:
 
         # Set the build directory in the `iob_module` superclass, so everyone has access to it
         if cls.is_top_module:
-            # Auto-fill build directory if its not set
-            if not cls.build_dir:
-                iob_module.build_dir = f"../{cls.name}_{cls.version}"
-            else:
+            if "BUILD_DIR" in os.environ:
+                # Use directory from 'BUILD_DIR' environment variable
+                iob_module.build_dir = os.environ["BUILD_DIR"]
+            elif cls.build_dir:
+                # Use build directory defined in module
                 iob_module.build_dir = cls.build_dir
+            else:
+                # Auto-fill build directory
+                iob_module.build_dir = f"../{cls.name}_{cls.version}"
+
+            # Use directory from 'BUILD_DIR' argument (if any)
+            for arg in sys.argv:
+                if arg.startswith("BUILD_DIR="):
+                    iob_module.build_dir = arg.split("=")[1]
+                    break
 
         # Copy build directory from the `iob_module` superclass
         cls.build_dir = iob_module.build_dir
@@ -261,14 +271,15 @@ class iob_module:
     @classmethod
     def _post_setup(cls):
         """Launch post(-specific)-setup tasks"""
-        # Setup flows (copy LIB files)
-        build_srcs.flows_setup(cls)
+        # Auto-add common module macros and submodules
+        cls._auto_add_settings()
+
+        if cls.is_top_module:
+            # Setup flows (copy LIB files)
+            build_srcs.flows_setup(cls)
 
         # Copy sources from the module's setup dir (and from its superclasses)
         cls._copy_srcs()
-
-        # Auto-add common module macros and submodules
-        cls._auto_add_settings()
 
         # Generate hw, sw and doc files
         cls._generate_files()

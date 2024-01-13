@@ -80,8 +80,10 @@ module iob_fifo_sync #(
    );
 
    //assign according to assymetry type
-   localparam [ADDR_W-1:0] W_INCR = (W_DATA_W > R_DATA_W) ? 1 << ADDR_W_DIFF : 1;
-   localparam [ADDR_W-1:0] R_INCR = (R_DATA_W > W_DATA_W) ? 1 << ADDR_W_DIFF : 1;
+   localparam [ADDR_W-1:0] W_INCR = (W_DATA_W > R_DATA_W) ?
+                  {{ADDR_W-1{1'd0}},{1'd1}} << ADDR_W_DIFF : {{ADDR_W-1{1'd0}},{1'd1}};
+   localparam [ADDR_W-1:0] R_INCR = (R_DATA_W > W_DATA_W) ?
+                  {{ADDR_W-1{1'd0}},{1'd1}} << ADDR_W_DIFF : {{ADDR_W-1{1'd0}},{1'd1}};
 
    //FIFO level
    reg  [ADDR_W:0] level_nxt;
@@ -115,12 +117,12 @@ module iob_fifo_sync #(
    //FIFO empty
    wire r_empty_nxt;
    assign r_empty_nxt = level_nxt < {1'b0,R_INCR};
-   iob_reg #(
+   iob_reg_r #(
       .DATA_W (1),
       .RST_VAL(1'd1)
    ) r_empty_reg0 (
       `include "clk_en_rst_s_s_portmap.vs"
-
+      .rst_i(rst_i),
       .data_i(r_empty_nxt),
       .data_o(r_empty_o)
    );
@@ -128,12 +130,12 @@ module iob_fifo_sync #(
    //FIFO full
    wire w_full_nxt;
    assign w_full_nxt = level_nxt > (FIFO_SIZE - W_INCR);
-   iob_reg #(
+   iob_reg_r #(
       .DATA_W (1),
       .RST_VAL(1'd0)
    ) w_full_reg0 (
       `include "clk_en_rst_s_s_portmap.vs"
-
+      .rst_i(rst_i),
       .data_i(w_full_nxt),
       .data_o(w_full_o)
    );
@@ -152,6 +154,7 @@ module iob_fifo_sync #(
       .ext_mem_r_addr_o(ext_mem_r_addr_o),
       .ext_mem_r_data_i(ext_mem_r_data_i),
       `include "clk_en_rst_s_s_portmap.vs"
+      .rst_i(rst_i),
       .w_addr_i        (w_addr),
       .w_en_i          (w_en_int),
       .w_data_i        (w_data_i),

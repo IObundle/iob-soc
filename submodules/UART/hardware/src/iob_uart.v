@@ -10,7 +10,7 @@ module iob_uart #(
 
    `include "iob_wire.vs"
 
-   assign iob_avalid = iob_avalid_i;
+   assign iob_valid = iob_valid_i;
    assign iob_addr = iob_addr_i;
    assign iob_wdata = iob_wdata_i;
    assign iob_wstrb = iob_wstrb_i;
@@ -29,7 +29,7 @@ module iob_uart #(
 
    uart_core uart_core0 (
       .clk_i          (clk_i),
-      .rst_i          (arst_i),
+      .arst_i         (arst_i),
       .rst_soft_i     (SOFTRESET_wr),
       .tx_en_i        (TXEN_wr),
       .rx_en_i        (RXEN_wr),

@@ -1,4 +1,5 @@
 `timescale 1 ns / 1 ps
+`include "bsp.vh"
 
 module iob_ram_tdp #(
    parameter HEXFILE = "none",

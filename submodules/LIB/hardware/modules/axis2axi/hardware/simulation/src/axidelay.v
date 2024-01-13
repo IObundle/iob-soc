@@ -7,30 +7,30 @@ module axidelay #(
    parameter MAX_DELAY = 3
 ) (
    // Master interface. Connect to a slave interface
-   output reg m_valid,
-   input      m_ready,
+   output reg m_valid_o,
+   input      m_ready_i,
 
    // Slave interface. Connect to a master interface
-   input      s_valid,
-   output reg s_ready,
+   input      s_valid_i,
+   output reg s_ready_o,
 
-   input clk,
-   input rst
+   input clk_i,
+   input rst_i
 );
 
    generate
       if (MAX_DELAY == 0) begin
          always @* begin
-            s_ready = m_ready;
-            m_valid = s_valid;
+            s_ready_o = m_ready_i;
+            m_valid_o = s_valid_i;
          end
       end else begin
          reg [$clog2(MAX_DELAY):0] counter;
-         always @(posedge clk, posedge rst) begin
-            if (rst) begin
+         always @(posedge clk_i, posedge rst_i) begin
+            if (rst_i) begin
                counter <= 0;
             end else begin
-               if (counter == 0 && m_valid && m_ready) begin
+               if (counter == 0 && m_valid_o && m_ready_i) begin
                   counter <= ($urandom % MAX_DELAY);
                end
 
@@ -39,12 +39,12 @@ module axidelay #(
          end
 
          always @* begin
-            s_ready = 1'b0;
-            m_valid = 1'b0;
+            s_ready_o = 1'b0;
+            m_valid_o = 1'b0;
 
             if (counter == 0) begin
-               s_ready = m_ready;
-               m_valid = s_valid;
+               s_ready_o = m_ready_i;
+               m_valid_o = s_valid_i;
             end
          end
       end
@@ -58,28 +58,28 @@ module axidelayRead #(
    parameter MAX_DELAY = 3
 ) (
    // Connect directly to the same named axi read wires in the master interface
-   output m_rvalid,
-   input  m_rready,
+   output m_rvalid_o,
+   input  m_rready_i,
 
    // Connect directly to the same named axi read wires in the slave interface
-   input  s_rvalid,
-   output s_rready,
+   input  s_rvalid_i,
+   output s_rready_o,
 
-   input clk,
-   input rst
+   input clk_i,
+   input rst_i
 );
 
    axidelay #(
       .MAX_DELAY(MAX_DELAY)
    ) Read (
-      .s_valid(s_rvalid),
-      .s_ready(s_rready),
+      .s_valid_i(s_rvalid_i),
+      .s_ready_o(s_rready_o),
 
-      .m_valid(m_rvalid),
-      .m_ready(m_rready),
+      .m_valid_o(m_rvalid_o),
+      .m_ready_i(m_rready_i),
 
-      .clk(clk),
-      .rst(rst)
+      .clk_i(clk_i),
+      .rst_i(rst_i)
    );
 
 endmodule
@@ -90,28 +90,28 @@ module axidelayWrite #(
    parameter MAX_DELAY = 3
 ) (
    // Connect directly to the same named axi write wires in the master interface
-   input  m_wvalid,
-   output m_wready,
+   input  m_wvalid_i,
+   output m_wready_o,
 
    // Connect directly to the same named axi write wires in the slave interface
-   output s_wvalid,
-   input  s_wready,
+   output s_wvalid_o,
+   input  s_wready_i,
 
-   input clk,
-   input rst
+   input clk_i,
+   input rst_i
 );
 
    axidelay #(
       .MAX_DELAY(MAX_DELAY)
    ) Write (
-      .s_valid(m_wvalid),
-      .s_ready(m_wready),
+      .s_valid_i(m_wvalid_i),
+      .s_ready_o(m_wready_o),
 
-      .m_valid(s_wvalid),
-      .m_ready(s_wready),
+      .m_valid_o(s_wvalid_o),
+      .m_ready_i(s_wready_i),
 
-      .clk(clk),
-      .rst(rst)
+      .clk_i(clk_i),
+      .rst_i(rst_i)
    );
 
 endmodule

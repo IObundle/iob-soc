@@ -251,6 +251,11 @@ if __name__ == "__main__":
         )
         proc_list.append(fpga_prog_proc)
         proc_wait(fpga_prog_proc, int(DURATION))
+        if fpga_prog_proc.returncode != 0:
+            print(
+                f"{iob_colors.FAIL}FPGA programmer exited with non-zero code.{iob_colors.ENDC}"
+            )
+            kill_processes()
 
     # Update time passed
     remaining_duration = int(DURATION) - (time.time() - start_time)
@@ -268,6 +273,11 @@ if __name__ == "__main__":
         )
         proc_list.append(console_proc)
         proc_wait(console_proc, remaining_duration)
+        if console_proc.returncode != 0:
+            print(
+                f"{iob_colors.FAIL}Console exited with non-zero code.{iob_colors.ENDC}"
+            )
+            kill_processes()
 
         # Update time passed
         remaining_duration = int(DURATION) - (time.time() - start_time)
@@ -276,5 +286,10 @@ if __name__ == "__main__":
     if simulator_run_command:
         print(f"{iob_colors.INFO}Waiting for simulator to finish{iob_colors.ENDC}")
         proc_wait(sim_proc, remaining_duration)
+        if sim_proc.returncode != 0:
+            print(
+                f"{iob_colors.FAIL}Simulator exited with non-zero code.{iob_colors.ENDC}"
+            )
+            kill_processes()
 
     exit_program(0)

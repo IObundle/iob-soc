@@ -3,8 +3,8 @@
 #include "iob_soc_conf.h"
 #include "iob_soc_periphs.h"
 #include "iob_soc_system.h"
-#include "iob_str.h"
 #include "printf.h"
+#include <string.h>
 
 char *send_string = "Sending this string as a file to console.\n"
                     "The file is then requested back from console.\n"
@@ -13,34 +13,6 @@ char *send_string = "Sending this string as a file to console.\n"
                     "Generating the file in the firmware creates an uniform "
                     "file transfer between pc-emul, simulation and fpga without"
                     " adding extra targets for file generation.\n";
-
-// copy src to dst
-// return number of copied chars (excluding '\0')
-int string_copy(char *dst, char *src) {
-  if (dst == NULL || src == NULL) {
-    return -1;
-  }
-  int cnt = 0;
-  while (src[cnt] != 0) {
-    dst[cnt] = src[cnt];
-    cnt++;
-  }
-  dst[cnt] = '\0';
-  return cnt;
-}
-
-// 0: same string
-// otherwise: different
-int compare_str(char *str1, char *str2, int str_size) {
-  int c = 0;
-  while (c < str_size) {
-    if (str1[c] != str2[c]) {
-      return str1[c] - str2[c];
-    }
-    c++;
-  }
-  return 0;
-}
 
 int main() {
   char pass_string[] = "Test passed!";
@@ -59,7 +31,7 @@ int main() {
   // test file send
   char *sendfile = malloc(1000);
   int send_file_size = 0;
-  send_file_size = string_copy(sendfile, send_string);
+  send_file_size = strlen(strcpy(sendfile, send_string));
   uart_sendfile("Sendfile.txt", send_file_size, sendfile);
 
   // test file receive
@@ -68,7 +40,7 @@ int main() {
   file_size = uart_recvfile("Sendfile.txt", recvfile);
 
   // compare files
-  if (compare_str(sendfile, recvfile, send_file_size)) {
+  if (strcmp(sendfile, recvfile)) {
     printf("FAILURE: Send and received file differ!\n");
   } else {
     printf("SUCCESS: Send and received file match!\n");
@@ -77,12 +49,7 @@ int main() {
   free(sendfile);
   free(recvfile);
 
-  // #ifdef IOB_SOC_USE_EXTMEM
-  //   if(memory_access_failed)
-  //       uart_sendfile("test.log", iob_strlen(fail_string), fail_string);
-  //       uart_finish();
-  // #endif
-  uart_sendfile("test.log", iob_strlen(pass_string), pass_string);
+  uart_sendfile("test.log", strlen(pass_string), pass_string);
 
   uart_finish();
 }

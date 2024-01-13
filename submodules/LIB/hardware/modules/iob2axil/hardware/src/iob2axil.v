@@ -30,7 +30,7 @@ module iob2axil #(
     input  wire [              1:0] axil_rresp_i,
 
     // IOb slave interface
-    input  wire                iob_avalid_i,
+    input  wire                iob_valid_i,
     input  wire [  ADDR_W-1:0] iob_addr_i,
     input  wire [  DATA_W-1:0] iob_wdata_i,
     input  wire [DATA_W/8-1:0] iob_wstrb_i,
@@ -51,12 +51,12 @@ module iob2axil #(
   //
 
   // write address
-  assign axil_awvalid_o = iob_avalid_i & |iob_wstrb_i;
+  assign axil_awvalid_o = iob_valid_i & |iob_wstrb_i;
   assign axil_awaddr_o  = iob_addr_i;
   assign axil_awprot_o  = 3'd2;
 
   // write
-  assign axil_wvalid_o  = iob_avalid_i & |iob_wstrb_i;
+  assign axil_wvalid_o  = iob_valid_i & |iob_wstrb_i;
   assign axil_wdata_o   = iob_wdata_i;
   assign axil_wstrb_o   = iob_wstrb_i;
 
@@ -64,7 +64,7 @@ module iob2axil #(
   assign axil_bready_o  = 1'b1;
 
   // read address
-  assign axil_arvalid_o = iob_avalid_i & ~|iob_wstrb_i;
+  assign axil_arvalid_o = iob_valid_i & ~|iob_wstrb_i;
   assign axil_araddr_o  = iob_addr_i;
   assign axil_arprot_o  = 3'd2;
 
