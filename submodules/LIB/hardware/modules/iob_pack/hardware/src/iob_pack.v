@@ -32,42 +32,51 @@ module iob_pack #(
    wire                              data_read;
    reg                               data_read_nxt;
 
-   //bfifo control
+   //bit fifo control
+   wire [$clog2(BFIFO_REG_W):0]      push_level;
    reg                               push;
    reg [$clog2(UNPACKED_DATA_W):0]   push_len;
    reg [UNPACKED_DATA_W-1:0]         push_data;
-   wire [$clog2(BFIFO_REG_W):0]      push_level;
-   reg                               pop;
+
    wire [$clog2(BFIFO_REG_W):0]      pop_level;
+   reg                               pop;
+   //pop length is always the unpacked data width
 
    //external fifo control
    reg read;
-
-   //read unpacked data fifo
-   assign read_o = read;
+   reg write;
    
+   //read unpacked data from external input fifo
+   assign read_o = read;
+   //write packed data to external output fifo
+   assign write_o = write;
+
+   //control logic
    always @* begin
       pop = 0;
+      //pop length is always the unpacked data width
       
       push = 0;
       push_len = len_i;
-      push_data = rdata_i;
+      push_data = rdata_i << (UNPACKED_DATA_W - len_i);
 
       read = 0;
+      write = 0;
+      
       data_read_nxt = data_read;
       
       //prioritize push over pop
       if (data_read && push_level >= len_i && rready_i) begin
          push = 1'b1;
-         read = 1'b1;
-         data_read_nxt = 1'b1;
+         read = 1'b1; //read next unpacked word from external input fifo
       end else if (wrap_i && push_level > 0 && push_level < len_i) begin //wrap up word by pushing zeros
          push_len = push_level;
          push_data = {UNPACKED_DATA_W{1'b0}};
          push = 1'b1;
-      end else if (pop_level >= len_i && wready_i) begin
+      end else if (pop_level >= len_i && wready_i) begin //pop and write to external output fifo
          pop = 1'b1;
-      end else if (!data_read && rready_i) begin
+         write = 1'b1;
+      end else if (!data_read && rready_i) begin //read new data from external input fifo
          read = 1'b1;
          data_read_nxt = 1'b1;
       end
@@ -81,19 +90,19 @@ module iob_pack #(
        ) bfifo (
 `include "clk_en_rst_s_s_portmap.vs"
                 .rst_i(rst_i),
-                
+                //push unpacked data to be packed
                 .write_i(push),
                 .wlen_i(push_len),
                 .wdata_i(push_data),
                 .wlevel_o(push_level),
-
+                //pop packed data to be output
                 .read_i(pop),
                 .rlen_i(PACKED_DATA_W_INT),
                 .rdata_o(wdata_o),
                 .rlevel_o(pop_level)
                 );
 
-   //data loaded register
+   //data read flag (data is present at the input)
    iob_reg_r #(
       .DATA_W(1),
       .RST_VAL(1'b0)
@@ -104,17 +113,6 @@ module iob_pack #(
       .data_o(data_read)
    );
 
-   //pop register
-   iob_reg_r #(
-      .DATA_W(1),
-      .RST_VAL(1'b0)
-   ) write_reg (
-`include "clk_en_rst_s_s_portmap.vs"
-      .rst_i(rst_i),
-      .data_i(push),
-      .data_o(write_o)
-   );
-   
 endmodule
 
 
