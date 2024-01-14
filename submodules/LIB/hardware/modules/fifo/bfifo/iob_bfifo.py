@@ -1,11 +1,10 @@
 import os
 
 from iob_module import iob_module
-from iob_bfifo import iob_bfifo
-from iob_utils import iob_utils
+from iob_reg_r import iob_reg_r
 
-class iob_pack(iob_module):
-    name = "iob_pack"
+class iob_bfifo(iob_module):
+    name = "iob_bfifo"
     version = "V0.10"
     setup_dir = os.path.dirname(__file__)
 
@@ -16,7 +15,6 @@ class iob_pack(iob_module):
             [
                 {"interface": "clk_en_rst_s_s_portmap"},
                 {"interface": "clk_en_rst_s_port"},
-                iob_bfifo,
-                iob_utils,
+                iob_reg_r,
             ]
         )
