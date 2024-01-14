@@ -116,14 +116,10 @@ python-cache-clean:
 	find . -name "*__pycache__" -exec rm -rf {} \; -prune
 
 #basicly change some files of caravel to work
-#$(PYTHON_EXEC) $(PYTHON_DIR)/caravel_setup.py $(BUILD_DIR)
 build_caravel:
 	$(PYTHON_EXEC) $(PYTHON_DIR)/caravel_setup.py $(BUILD_DIR)
 
-
-
 build-setup: build_dir_name build_top_module $(BUILD_DIR) $(SRC) format-all build_caravel
 	@for i in $(SRC); do echo $$i; done
-
 
 .PHONY: build-setup clean c-format python-format verilog-format
