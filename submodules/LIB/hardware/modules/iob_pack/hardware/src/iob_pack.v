@@ -23,7 +23,7 @@ module iob_pack #(
    );
 
    //bfifo size
-   localparam BFIFO_REG_W = `IOB_MAX(UNPACKED_DATA_W, PACKED_DATA_W);   
+   localparam BFIFO_REG_W = 2*`IOB_MAX(UNPACKED_DATA_W, PACKED_DATA_W);   
 
    //packed data width as a bit vector
    localparam [$clog2(PACKED_DATA_W):0] PACKED_DATA_W_INT = {1'b1, {$clog2(PACKED_DATA_W){1'b0}}};
@@ -66,14 +66,19 @@ module iob_pack #(
       data_read_nxt = data_read;
       
       //prioritize push over pop
-      if (data_read && push_level >= len_i && rready_i) begin
+      if (data_read && push_level >= len_i) begin //push and read from external input fifo
          push = 1'b1;
-         read = 1'b1; //read next unpacked word from external input fifo
+         if (rready_i) begin
+            read = 1'b1;
+         end else begin
+            data_read_nxt = 1'b0;
+         end
+         read = 1'b1;
       end else if (wrap_i && push_level > 0 && push_level < len_i) begin //wrap up word by pushing zeros
          push_len = push_level;
          push_data = {UNPACKED_DATA_W{1'b0}};
          push = 1'b1;
-      end else if (pop_level >= len_i && wready_i) begin //pop and write to external output fifo
+      end else if (pop_level >= PACKED_DATA_W_INT && wready_i) begin //pop and write to external output fifo
          pop = 1'b1;
          write = 1'b1;
       end else if (!data_read && rready_i) begin //read new data from external input fifo

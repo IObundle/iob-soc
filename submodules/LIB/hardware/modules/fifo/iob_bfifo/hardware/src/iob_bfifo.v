@@ -51,7 +51,7 @@ module iob_bfifo #(
       end
    end
    
-   //CONTROL LOGIC
+   //control logic
    integer i;
    always @* begin
 
