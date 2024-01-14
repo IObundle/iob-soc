@@ -297,10 +297,12 @@ class mkregs:
                                 """
                         )
 
-    def write_hwcode(self, table, out_dir, top, iob_if=True):
+    def write_hwcode(self, table, out_dir, top, csr_if):
         #
         # SWREG INSTANCE
         #
+
+        iob_if = csr_if == "iob"
 
         os.makedirs(out_dir, exist_ok=True)
         f_inst = open(f"{out_dir}/{top}_swreg_inst.vs", "w")
@@ -310,10 +312,93 @@ class mkregs:
                 f"""
                 //iob native interface wires
                 `include "iob_wire.vs"
-
-                //Core interface wires
-            """
+                """
             )
+            if csr_if == "apb":
+                f_inst.write(
+                    """
+
+                    ///////////////////////////////////////////////////////////////
+                    // APB to IOb converter
+                    //
+                    apb2iob #(
+                        .APB_ADDR_W(ADDR_W),
+                        .APB_DATA_W(DATA_W)
+                    ) apb2iob_0 (
+                        `include "clk_en_rst_s_s_portmap.vs"
+                        // APB slave i/f
+                        .apb_addr_i  (apb_addr_i),    //Byte address of the transfer.
+                        .apb_sel_i   (apb_sel_i),     //Slave select.
+                        .apb_enable_i(apb_enable_i),  //Enable. Indicates the number of cycles of the transfer.
+                        .apb_write_i (apb_write_i),   //Write. Indicates the direction of the operation.
+                        .apb_wdata_i (apb_wdata_i),   //Write data.
+                        .apb_wstrb_i (apb_wstrb_i),   //Write strobe.
+                        .apb_rdata_o (apb_rdata_o),   //Read data.
+                        .apb_ready_o (apb_ready_o),   //Ready. This signal indicates the end of a transfer.
+                        // IOb master interface
+                        .iob_valid_o (iob_valid),     //Request valid.
+                        .iob_addr_o  (iob_addr),      //Address.
+                        .iob_wdata_o (iob_wdata),     //Write data.
+                        .iob_wstrb_o (iob_wstrb),     //Write strobe.
+                        .iob_rvalid_i(iob_rvalid),    //Read data valid.
+                        .iob_rdata_i (iob_rdata),     //Read data.
+                        .iob_ready_i (iob_ready)      //Interface ready.
+                    );
+
+                """
+                )
+            elif csr_if == "axil":
+                f_inst.write(
+                    """
+
+                    ///////////////////////////////////////////////////////////////
+                    // AXIL to IOb converter
+                    //
+                    axil2iob #(
+                        .AXIL_ADDR_W(ADDR_W),
+                        .AXIL_DATA_W(DATA_W)
+                    ) axil2iob_0 (
+                        `include "clk_en_rst_s_s_portmap.vs"
+                        // AXIL slave i/f
+                        .axil_awaddr_i (axil_awaddr_i),   //Address write channel address.
+                        .axil_awprot_i (axil_awprot_i),   //Address write channel protection type.
+                                                            //Set to 000 if master output; ignored if slave input.
+                        .axil_awvalid_i(axil_awvalid_i),  //Address write channel valid.
+                        .axil_awready_o(axil_awready_o),  //Address write channel ready.
+                        .axil_wdata_i  (axil_wdata_i),    //Write channel data.
+                        .axil_wstrb_i  (axil_wstrb_i),    //Write channel write strobe.
+                        .axil_wvalid_i (axil_wvalid_i),   //Write channel valid.
+                        .axil_wready_o (axil_wready_o),   //Write channel ready.
+                        .axil_bresp_o  (axil_bresp_o),    //Write response channel response.
+                        .axil_bvalid_o (axil_bvalid_o),   //Write response channel valid.
+                        .axil_bready_i (axil_bready_i),   //Write response channel ready.
+                        .axil_araddr_i (axil_araddr_i),   //Address read channel address.
+                        .axil_arprot_i (axil_arprot_i),   //Address read channel protection type.
+                                                            //Set to 000 if master output; ignored if slave input.
+                        .axil_arvalid_i(axil_arvalid_i),  //Address read channel valid.
+                        .axil_arready_o(axil_arready_o),  //Address read channel ready.
+                        .axil_rdata_o  (axil_rdata_o),    //Read channel data.
+                        .axil_rresp_o  (axil_rresp_o),    //Read channel response.
+                        .axil_rvalid_o (axil_rvalid_o),   //Read channel valid.
+                        .axil_rready_i (axil_rready_i),   //Read channel ready.
+                        // IOb master interface
+                        .iob_valid_o   (iob_valid),       //Request valid.
+                        .iob_addr_o    (iob_addr),        //Address.
+                        .iob_wdata_o   (iob_wdata),       //Write data.
+                        .iob_wstrb_o   (iob_wstrb),       //Write strobe.
+                        .iob_rvalid_i  (iob_rvalid),      //Read data valid.
+                        .iob_rdata_i   (iob_rdata),       //Read data.
+                        .iob_ready_i   (iob_ready)        //Interface ready.
+                    );
+
+                    """
+                )
+            
+        f_inst.write(
+            """
+            // Core connection wires
+            """
+        )
 
         # connection wires
         self.gen_inst_wire(table, f_inst)

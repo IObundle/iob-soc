@@ -403,7 +403,7 @@ class iob_module:
                     reg_table,
                     cls.build_dir + "/hardware/src",
                     cls.name,
-                    cls.csr_if == "iob",
+                    cls.csr_if,
                 )
 
         if cls.confs:
