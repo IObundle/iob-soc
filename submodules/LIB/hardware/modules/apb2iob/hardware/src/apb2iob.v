@@ -10,9 +10,6 @@ module apb2iob #(
    parameter ADDR_W     = APB_ADDR_W,  // IOb address bus width in bits
    parameter DATA_W     = APB_DATA_W   // IOb data bus width in bits
 ) (
-   // Global signals
-   `include "clk_en_rst_s_port.vs"
-
    // APB slave interface
    `include "apb_s_port.vs"
 
@@ -25,6 +22,6 @@ module apb2iob #(
    assign iob_valid_o = apb_sel_i & apb_enable_i;
    assign iob_addr_o   = apb_addr_i;
    assign iob_wdata_o  = apb_wdata_i;
-   assign iob_wstrb_o  = apb_wstrb_i;
+   assign iob_wstrb_o  = apb_write_i ? apb_wstrb_i : {DATA_W/8{1'b0}};
 
 endmodule

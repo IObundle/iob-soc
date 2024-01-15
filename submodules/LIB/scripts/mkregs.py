@@ -325,7 +325,6 @@ class mkregs:
                         .APB_ADDR_W(ADDR_W),
                         .APB_DATA_W(DATA_W)
                     ) apb2iob_0 (
-                        `include "clk_en_rst_s_s_portmap.vs"
                         // APB slave i/f
                         .apb_addr_i  (apb_addr_i),    //Byte address of the transfer.
                         .apb_sel_i   (apb_sel_i),     //Slave select.
