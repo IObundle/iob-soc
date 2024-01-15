@@ -48,7 +48,7 @@ module iob_pack #(
    reg                              write;
 
    //wrapping control accumulator
-   reg  [  $clog2(PACKED_DATA_W):0] wrap_acc_nxt;
+   wire [  $clog2(PACKED_DATA_W):0] wrap_acc_nxt;
    wire [$clog2(PACKED_DATA_W)-1:0] wrap_acc;
    wire [$clog2(PACKED_DATA_W)-1:0] wrap_incr;
    wire [$clog2(PACKED_DATA_W)-1:0] wrap_rem;
@@ -67,15 +67,15 @@ module iob_pack #(
 
    //control logic
    always @* begin
-      pop           = 0;
+      pop           = 1'b0;
       //pop length is always the unpacked data width
 
-      push          = 0;
+      push          = 1'b0;
       push_len      = len_i;
       push_data     = rdata_i << (UNPACKED_DATA_W - len_i);
 
-      read          = 0;
-      write         = 0;
+      read          = 1'b0;
+      write         = 1'b0;
 
       data_read_nxt = data_read;
 

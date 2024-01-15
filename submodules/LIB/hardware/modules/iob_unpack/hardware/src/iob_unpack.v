@@ -48,7 +48,7 @@ module iob_unpack #(
    reg                              write;
 
    //wrapping control accumulator
-   reg  [  $clog2(PACKED_DATA_W):0] wrap_acc_nxt;
+   wire [  $clog2(PACKED_DATA_W):0] wrap_acc_nxt;
    wire [$clog2(PACKED_DATA_W)-1:0] wrap_acc;
    wire [$clog2(PACKED_DATA_W)-1:0] wrap_incr;
    wire [$clog2(PACKED_DATA_W)-1:0] wrap_rem;
@@ -67,14 +67,14 @@ module iob_unpack #(
 
    //control logic
    always @* begin
-      pop           = 0;
+      pop           = 1'b0;
       pop_len       = len_i;
 
-      push          = 0;
+      push          = 1'b0;
       //push length is always the packed data width
       //push data is always the packed input data
 
-      read          = 0;
+      read          = 1'b0;
       write         = 1'b0;
 
       data_read_nxt = data_read;
@@ -107,7 +107,7 @@ module iob_unpack #(
    ) bfifo (
       `include "clk_en_rst_s_s_portmap.vs"
       .rst_i   (rst_i),
-      //push packed data to be unpacked            
+      //push packed data to be unpacked
       .write_i (push),
       .wlen_i  (PACKED_DATA_W_INT),
       .wdata_i (rdata_i),
