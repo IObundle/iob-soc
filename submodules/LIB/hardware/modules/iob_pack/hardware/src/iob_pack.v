@@ -1,146 +1,147 @@
 `timescale 1ns / 1ps
+`include "iob_utils.vh"
 
 module iob_pack #(
-   parameter R_DATA_W = 21,
-   parameter W_DATA_W = 21
+   parameter PACKED_DATA_W = 21,
+   parameter UNPACKED_DATA_W = 21
 ) (
 `include "clk_en_rst_s_port.vs"
-   input                      rst_i,
    
-   input [$clog2(R_DATA_W):0] word_width_i,
-   input                      wrap_i,
+   input                             rst_i,
+   input [$clog2(UNPACKED_DATA_W):0] len_i,
+   input                             wrap_i,
 
-   input [ W_DATA_W-1:0]      r_data_i,
-   input                      r_ready_i,
-   output                     r_read_o,
+   //read unpacked data to be packed
+   output                            read_o,
+   input                             rready_i,
+   input [UNPACKED_DATA_W-1:0]       rdata_i,
 
-   output [R_DATA_W-1:0]      w_data_o,
-   output                     w_write_o,
-   input                      w_ready_i
+   //write packed data
+   output                            write_o,
+   input                             wready_i,
+   output [PACKED_DATA_W-1:0]        wdata_o
    );
 
-   //read and write fifos
-   reg read_fifo;
-   reg write_fifo;
+   //bfifo size
+   localparam BFIFO_REG_W = 2*`IOB_MAX(UNPACKED_DATA_W, PACKED_DATA_W);   
 
-   // word register
-   wire [(2*R_DATA_W)-1:0] data;
-   reg [(2*R_DATA_W)-1:0]  data_nxt;
+   //packed data width as a bit vector
+   localparam [$clog2(PACKED_DATA_W):0] PACKED_DATA_W_INT = {1'b1, {$clog2(PACKED_DATA_W){1'b0}}};
+
+   //data register
+   wire                              data_read;
+   reg                               data_read_nxt;
+
+   //bit fifo control
+   wire [$clog2(BFIFO_REG_W):0]      push_level;
+   reg                               push;
+   reg [$clog2(UNPACKED_DATA_W):0]   push_len;
+   reg [UNPACKED_DATA_W-1:0]         push_data;
+
+   wire [$clog2(BFIFO_REG_W):0]      pop_level;
+   reg                               pop;
+   //pop length is always the unpacked data width
+
+   //external fifo control
+   reg read;
+   reg write;
    
-   
-   // shift data to write and read
-   wire [2*W_DATA_W-1:0]   w_data_shifted;
-   
-   //program counter (fsm state)
-   reg [1:0]               pcnt_nxt;
-   wire [1:0]              pcnt;
-   
-   //word width accumulator
-   wire [$clog2(R_DATA_W):0] acc;
-   reg [$clog2(R_DATA_W):0]  acc_nxt;
-   
-   //shift value
-   wire [$clog2(R_DATA_W)-1:0] shift_val;
-   reg [$clog2(R_DATA_W)-1:0]  shift_val_nxt;
-   
-   
-   //output data
-   assign w_data_shifted = data >> (wrap_i? 1'b0: shift_val);
-   assign w_data_o = w_data_shifted[R_DATA_W-1-:W_DATA_W];
-   assign w_write_o = write_fifo;
-   assign r_read_o = read_fifo; 
-   
-   
-   //program
+   //wrapping control accumulator
+   reg [$clog2(PACKED_DATA_W):0]   wrap_acc_nxt;
+   wire [$clog2(PACKED_DATA_W)-1:0]  wrap_acc;
+   wire [$clog2(PACKED_DATA_W)-1:0]  wrap_incr;
+   wire [$clog2(PACKED_DATA_W)-1:0]  wrap_rem;
+   wire                              wrap_now;
+
+   //read unpacked data from external input fifo
+   assign read_o = read;
+   //write packed data to external output fifo
+   assign write_o = write;
+
+    //wrapping control
+   assign wrap_now = wrap_i & (wrap_acc > PACKED_DATA_W_INT);
+   assign wrap_rem = wrap_acc - PACKED_DATA_W_INT;
+   assign wrap_incr = wrap_now? -wrap_acc: wrap_acc+len_i;
+   assign wrap_acc_nxt = wrap_acc + wrap_incr;
+
+   //control logic
    always @* begin
-
-      pcnt_nxt = pcnt + 1'b1;
-      read_fifo = 1'b0;
-      data_nxt = data;
-      shift_val_nxt = shift_val;
-      write_fifo = 1'b0;
-      acc_nxt = acc;
-
-      case (pcnt)
-        
-        0: begin //read data from input FIFO
-           if (!r_ready_i) begin
-              pcnt_nxt = pcnt;
-           end else begin
-              read_fifo = 1'b1;
-           end
-        end
-
-        1: begin //shift and load data until word width is reached
-           if (acc < W_DATA_W ) begin
-              acc_nxt = acc + word_width_i;
-              data_nxt = (data << word_width_i) | r_data_i;           
-              pcnt_nxt = 2'd0;
-           end else begin
-              //restart accumulator
-              acc_nxt =  wrap_i? {$clog2(R_DATA_W)+1{1'b0}}: acc -(1'b1 << $clog2(R_DATA_W));
-              //save shift value
-              shift_val_nxt = (wrap_i? {$clog2(R_DATA_W){1'b0}} : acc -(1'b1 << $clog2(R_DATA_W)));
-           end
-        end
-
-        default: begin //write data to output FIFO
-           if (!w_ready_i) begin
-              pcnt_nxt = pcnt;
-           end else begin
-              write_fifo = 1'b1;
-              pcnt_nxt = 2'd1; //go process next word
-           end
-        end
-      endcase
+      pop = 0;
+      //pop length is always the unpacked data width
       
+      push = 0;
+      push_len = len_i;
+      push_data = rdata_i << (UNPACKED_DATA_W - len_i);
+
+      read = 0;
+      write = 0;
+      
+      data_read_nxt = data_read;
+      
+      //prioritize push over pop
+      if (data_read && push_level >= len_i) begin //push and read from external input fifo
+         push = 1'b1;
+         if (rready_i) begin
+            read = 1'b1;
+         end else begin
+            data_read_nxt = 1'b0;
+         end
+         read = 1'b1;
+      end else if (wrap_now) begin //wrap up word by pushing zeros
+         push_len = wrap_rem;
+         push_data = {UNPACKED_DATA_W{1'b0}};
+         push = 1'b1;
+      end else if (pop_level >= PACKED_DATA_W_INT && wready_i) begin //pop and write to external output fifo
+         pop = 1'b1;
+         write = 1'b1;
+      end else if (!data_read && rready_i) begin //read new data from external input fifo
+         read = 1'b1;
+         data_read_nxt = 1'b1;
+      end
    end
-
    
-   //word width accumulator register
-   iob_reg_r #(
-      .DATA_W ($clog2(R_DATA_W)+1),
-      .RST_VAL({$clog2(R_DATA_W)+1{1'b0}})
-   ) acc_reg (
+   iob_bfifo 
+     #(
+            .WDATA_W(UNPACKED_DATA_W),
+            .RDATA_W(PACKED_DATA_W),
+            .REG_W(BFIFO_REG_W)
+       ) bfifo (
 `include "clk_en_rst_s_s_portmap.vs"
-      .rst_i     (rst_i),
-      .data_i    (acc_nxt),
-      .data_o    (acc)
+                .rst_i(rst_i),
+                //push unpacked data to be packed
+                .write_i(push),
+                .wlen_i(push_len),
+                .wdata_i(push_data),
+                .wlevel_o(push_level),
+                //pop packed data to be output
+                .read_i(pop),
+                .rlen_i(PACKED_DATA_W_INT),
+                .rdata_o(wdata_o),
+                .rlevel_o(pop_level)
+                );
+
+   //data read flag (data is present at the input)
+   iob_reg_r #(
+      .DATA_W(1),
+      .RST_VAL(1'b0)
+   ) data_loaded_valid_reg (
+`include "clk_en_rst_s_s_portmap.vs"
+      .rst_i(rst_i),
+      .data_i(data_read_nxt),
+      .data_o(data_read)
    );
 
-   //data word register
+   //wrapping control accumulator
    iob_reg_r #(
-      .DATA_W(2*R_DATA_W),
-      .RST_VAL({2*R_DATA_W{1'b0}})
-   ) data_reg_inst (
+      .DATA_W($clog2(PACKED_DATA_W)),
+      .RST_VAL({$clog2(PACKED_DATA_W){1'b0}})
+   ) wrap_acc_reg (
 `include "clk_en_rst_s_s_portmap.vs"
-      .rst_i(rst_i),
-      .data_i(data_nxt),
-      .data_o(data)
-   );
-
-   //program counter register
-   iob_reg_r #(
-      .DATA_W(2),
-      .RST_VAL(2'b0)
-   ) pcnt_reg_inst (
-`include "clk_en_rst_s_s_portmap.vs"
-      .rst_i(rst_i),
-      .data_i(pcnt_nxt),
-      .data_o(pcnt)
-   );
-   
-    //shift value register
-   iob_reg_r #(
-      .DATA_W($clog2(R_DATA_W)),
-      .RST_VAL({$clog2(R_DATA_W){1'b0}})
-   ) shift_val_reg_inst (
-`include "clk_en_rst_s_s_portmap.vs"
-      .rst_i(rst_i),
-      .data_i(shift_val_nxt),
-      .data_o(shift_val)
+     .rst_i(rst_i),
+     .data_i(wrap_acc_nxt[$clog2(UNPACKED_DATA_W)-1:0]),
+     .data_o(wrap_acc)
    );
 
 endmodule
 
- 
+
