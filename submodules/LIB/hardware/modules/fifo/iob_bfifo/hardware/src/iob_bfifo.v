@@ -47,7 +47,7 @@ module iob_bfifo #(
    always @* begin
       data_tmp = data << REG_W;
       for (j = 0; j < WDATA_W; j = j + 1) begin
-         data_tmp[REG_W-1-j] = wdata_i[WDATA_W-1-j];
+         data_tmp[(REG_W-1)-j] = wdata_i[(WDATA_W-1)-j];
       end
    end
 
@@ -68,9 +68,9 @@ module iob_bfifo #(
          data_nxt = data << rlen_i;
          for (i = 0; i < RDATA_W; i = i + 1) begin
             if (i < rlen_i) begin
-               rdata[RDATA_W-1-i] = data[REG_W-1-i];
+               rdata[(RDATA_W-1)-i] = data[(REG_W-1)-i];
             end else begin
-               rdata[RDATA_W-1-i] = 1'b0;
+               rdata[(RDATA_W-1)-i] = 1'b0;
             end
          end
          rlevel_nxt = rlevel - rlen_i;

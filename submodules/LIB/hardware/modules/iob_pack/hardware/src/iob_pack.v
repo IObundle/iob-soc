@@ -80,7 +80,7 @@ module iob_pack #(
       data_read_nxt = data_read;
 
       //prioritize push over pop
-      if (data_read && push_level >= len_i) begin  //push and read from external input fifo
+      if (data_read && (push_level >= len_i)) begin  //push and read from external input fifo
          push = 1'b1;
          if (rready_i) begin
             read = 1'b1;
@@ -92,10 +92,10 @@ module iob_pack #(
          push_len  = wrap_rem;
          push_data = {UNPACKED_DATA_W{1'b0}};
          push      = 1'b1;
-      end else if (pop_level >= PACKED_DATA_W_INT && wready_i) begin //pop and write to external output fifo
+      end else if ((pop_level >= PACKED_DATA_W_INT) && wready_i) begin //pop and write to external output fifo
          pop   = 1'b1;
          write = 1'b1;
-      end else if (!data_read && rready_i) begin  //read new data from external input fifo
+      end else if ((!data_read) && rready_i) begin  //read new data from external input fifo
          read          = 1'b1;
          data_read_nxt = 1'b1;
       end

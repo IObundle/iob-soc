@@ -84,17 +84,17 @@ module iob_unpack #(
          pop_len = wrap_rem;
          pop     = 1'b1;
          //no write
-      end else if (pop_level >= len_i && wready_i) begin  //pop and write to external output fifo
+      end else if ((pop_level >= len_i) && wready_i) begin  //pop and write to external output fifo
          pop   = 1'b1;
          write = 1'b1;
-      end else if (data_read && push_level >= PACKED_DATA_W_INT) begin //push and read from external input fifo
+      end else if (data_read && (push_level >= PACKED_DATA_W_INT)) begin //push and read from external input fifo
          push = 1'b1;
          if (rready_i) begin
             read = 1'b1;
          end else begin
             data_read_nxt = 1'b0;
          end
-      end else if (!data_read && rready_i) begin  //read new data from external input fifo
+      end else if ((!data_read) && rready_i) begin  //read new data from external input fifo
          read          = 1'b1;
          data_read_nxt = 1'b1;
       end
