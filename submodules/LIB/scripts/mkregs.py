@@ -393,7 +393,7 @@ class mkregs:
 
                     """
                 )
-            
+
         f_inst.write(
             """
             // Core connection wires

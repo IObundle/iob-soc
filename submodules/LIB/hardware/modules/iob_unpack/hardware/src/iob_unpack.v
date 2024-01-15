@@ -46,10 +46,23 @@ module iob_unpack #(
    reg                               read;
    reg                               write;
 
+   //wrapping control accumulator
+   reg [$clog2(PACKED_DATA_W):0]   wrap_acc_nxt;
+   wire [$clog2(PACKED_DATA_W)-1:0]  wrap_acc;
+   wire [$clog2(PACKED_DATA_W)-1:0]  wrap_incr;
+   wire [$clog2(PACKED_DATA_W)-1:0]  wrap_rem;
+   wire                              wrap_now;
+
    //read unpacked data from external input fifo
    assign read_o = read;
    //write packed data to external output fifo
    assign write_o = write;
+
+   //wrapping control
+   assign wrap_now = wrap_i & (wrap_acc > PACKED_DATA_W_INT);
+   assign wrap_rem = wrap_acc - PACKED_DATA_W_INT;
+   assign wrap_incr = wrap_now? -wrap_acc: wrap_acc+len_i;
+   assign wrap_acc_nxt = wrap_acc + wrap_incr;
 
    //control logic
    always @* begin
@@ -66,13 +79,13 @@ module iob_unpack #(
       data_read_nxt = data_read;
       
       //prioritize pop over push
-      if (pop_level >= len_i && wready_i) begin //pop and write to external output fifo
-         pop = 1'b1;
-         write = 1'b1;
-      end else if (wrap_i && pop_level > 0 && pop_level < len_i) begin //wrap up by popping the remaining data
-         pop_len = pop_level;
+      if (wrap_now) begin //wrap up by popping the remaining data
+         pop_len = wrap_rem;
          pop = 1'b1;
          //no write
+      end else if (pop_level >= len_i && wready_i) begin //pop and write to external output fifo
+         pop = 1'b1;
+         write = 1'b1;
       end else if (data_read && push_level >= PACKED_DATA_W_INT) begin //push and read from external input fifo
          push = 1'b1;         
          if (rready_i) begin
@@ -115,6 +128,17 @@ module iob_unpack #(
      .rst_i(rst_i),
      .data_i(data_read_nxt),
      .data_o(data_read)
+   );
+
+   //wrapping control accumulator
+   iob_reg_r #(
+      .DATA_W($clog2(PACKED_DATA_W)),
+      .RST_VAL({$clog2(PACKED_DATA_W){1'b0}})
+   ) wrap_acc_reg (
+`include "clk_en_rst_s_s_portmap.vs"
+     .rst_i(rst_i),
+     .data_i(wrap_acc_nxt[$clog2(UNPACKED_DATA_W)-1:0]),
+     .data_o(wrap_acc)
    );
 
 endmodule
