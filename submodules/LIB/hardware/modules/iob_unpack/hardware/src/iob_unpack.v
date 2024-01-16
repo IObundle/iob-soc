@@ -49,8 +49,7 @@ module iob_unpack #(
 
    //wrapping control accumulator
    wire [  $clog2(PACKED_DATA_W):0] wrap_acc_nxt;
-   wire [$clog2(PACKED_DATA_W)-1:0] wrap_acc;
-   wire [$clog2(PACKED_DATA_W)-1:0] wrap_incr;
+   wire [$clog2(PACKED_DATA_W):0] wrap_acc;
    wire [$clog2(PACKED_DATA_W)-1:0] wrap_rem;
    wire                             wrap_now;
 
@@ -61,9 +60,8 @@ module iob_unpack #(
 
    //wrapping control
    assign wrap_now     = wrap_i & (wrap_acc > PACKED_DATA_W_INT);
-   assign wrap_rem     = wrap_acc - PACKED_DATA_W_INT;
-   assign wrap_incr    = wrap_now ? -wrap_acc : wrap_acc + len_i;
-   assign wrap_acc_nxt = wrap_acc + wrap_incr;
+   assign wrap_rem     = wrap_acc - PACKED_DATA_W_INT;   
+   assign wrap_acc_nxt = write? wrap_acc + len_i:  wrap_now? 0: wrap_acc;
 
    //control logic
    always @* begin
@@ -79,25 +77,26 @@ module iob_unpack #(
 
       data_read_nxt = data_read;
 
-      //prioritize pop over push
-      if (wrap_now) begin  //wrap up by popping the remaining data
-         pop_len = wrap_rem;
-         pop     = 1'b1;
-         //no write
-      end else if ((pop_level >= len_i) && wready_i) begin  //pop and write to external output fifo
-         pop   = 1'b1;
-         write = 1'b1;
-      end else if (data_read && (push_level >= PACKED_DATA_W_INT)) begin //push and read from external input fifo
+      if (data_read && (push_level >= PACKED_DATA_W_INT)) begin //push and read packed data from input fifo
          push = 1'b1;
          if (rready_i) begin
             read = 1'b1;
          end else begin
             data_read_nxt = 1'b0;
          end
-      end else if ((!data_read) && rready_i) begin  //read new data from external input fifo
+      end else if ((pop_level >= len_i) && wready_i) begin  //pop and write unpacked data to pin
+         pop   = 1'b1;
+         write = 1'b1;
+         if(wrap_now) begin
+            pop_len = wrap_rem;
+         end else
+           write = 1'b1;
+
+      end else if ((!data_read) && rready_i) begin  //read new packed data from input fifo
          read          = 1'b1;
          data_read_nxt = 1'b1;
       end
+      
    end
 
    iob_bfifo #(
@@ -130,14 +129,14 @@ module iob_unpack #(
       .data_o(data_read)
    );
 
-   //wrapping control accumulator
+   //wrap control accumulator
    iob_reg_r #(
-      .DATA_W ($clog2(PACKED_DATA_W)),
-      .RST_VAL({$clog2(PACKED_DATA_W) {1'b0}})
+      .DATA_W ($clog2(PACKED_DATA_W)+1),
+      .RST_VAL({$clog2(PACKED_DATA_W)+1{1'b0}})
    ) wrap_acc_reg (
       `include "clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_i),
-      .data_i(wrap_acc_nxt[$clog2(UNPACKED_DATA_W)-1:0]),
+      .data_i(wrap_acc_nxt),
       .data_o(wrap_acc)
    );
 
