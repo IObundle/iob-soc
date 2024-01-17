@@ -7,87 +7,56 @@ module iob_bfifo #(
 ) (
    `include "clk_en_rst_s_port.vs"
 
-   input rst_i,
+   input                     rst_i,
 
-   input                      write_i,
-   input  [$clog2(WDATA_W):0] wlen_i,
-   input  [      WDATA_W-1:0] wdata_i,
-   output [  $clog2(REG_W):0] wlevel_o,
+   input                     write_i,
+   input [$clog2(WDATA_W):0] wwidth_i,
+   input [ WDATA_W-1:0]      wdata_i,
+   output [$clog2(REG_W):0]  wlevel_o,
 
-   input                      read_i,
-   input  [$clog2(RDATA_W):0] rlen_i,
-   output [      RDATA_W-1:0] rdata_o,
-   output [  $clog2(REG_W):0] rlevel_o
+   input                     read_i,
+   input [$clog2(RDATA_W):0] rwidth_i,
+   output [ RDATA_W-1:0]     rdata_o,
+   output [$clog2(REG_W):0]  rlevel_o
 );
 
    //read data word width with the right number of bits
    localparam [$clog2(REG_W):0] FULL_LEVEL = {1'b1, {$clog2(REG_W) {1'b0}}};
+   localparam [$clog2(REG_W):0] EMPTY_LEVEL = {1'b0, {$clog2(REG_W) {1'b0}}};
 
    //data register
    wire [      REG_W-1:0] data;
    reg  [      REG_W-1:0] data_nxt;
-   reg  [      REG_W-1:0] data_tmp;
 
-   //data read and write levela
-   wire [$clog2(REG_W):0] wlevel;
-   reg  [$clog2(REG_W):0] wlevel_nxt;
+   //data read and write levels
    wire [$clog2(REG_W):0] rlevel;
    reg  [$clog2(REG_W):0] rlevel_nxt;
+   wire [$clog2(REG_W):0] wlevel;
 
-   //data read register
-   reg  [    RDATA_W-1:0] rdata;
+   //write data
+   wire  [      WDATA_W-1:0] wdata;
 
    //assign outputs
-   assign rlevel_o = rlevel;
    assign wlevel_o = wlevel;
-   assign rdata_o  = rdata;
-
-   //compute data to merge
-   integer j;
-   always @* begin
-      data_tmp = data << REG_W;
-      for (j = 0; j < WDATA_W; j = j + 1) begin
-         data_tmp[(REG_W-1)-j] = wdata_i[(WDATA_W-1)-j];
-      end
-   end
+   assign rlevel_o = rlevel;
+   assign rdata_o  = ((data[REG_W-1 -: RDATA_W] >> (RDATA_W - rwidth_i)) << (RDATA_W - rwidth_i));
 
    //control logic
-   integer i;
-   always @* begin
+   assign wlevel = (FULL_LEVEL - rlevel);
+   assign wdata = ((wdata_i >> (WDATA_W - wwidth_i)) << (WDATA_W - wwidth_i));
 
+   always @* begin
       data_nxt   = data;
       rlevel_nxt = rlevel;
-      wlevel_nxt = wlevel;
-      rdata      = {RDATA_W{1'b0}};
 
       if (write_i) begin  //write
-         data_nxt   = data | (data_tmp >> rlevel);
-         rlevel_nxt = rlevel + wlen_i;
-         wlevel_nxt = wlevel - wlen_i;
-      end else if (read_i) begin  //read (ignored if write)
-         data_nxt = data << rlen_i;
-         for (i = 0; i < RDATA_W; i = i + 1) begin
-            if (i < rlen_i) begin
-               rdata[(RDATA_W-1)-i] = data[(REG_W-1)-i];
-            end else begin
-               rdata[(RDATA_W-1)-i] = 1'b0;
-            end
-         end
-         rlevel_nxt = rlevel - rlen_i;
-         wlevel_nxt = wlevel + rlen_i;
+         data_nxt   = data | (wdata << ((REG_W - WDATA_W))-rlevel);
+         rlevel_nxt = rlevel + wwidth_i;
+       end else if (read_i) begin //read
+         data_nxt = data << rwidth_i;
+         rlevel_nxt = rlevel - rwidth_i;
       end
    end
-
-   //write level register
-   iob_reg_r #(
-      .DATA_W ($clog2(REG_W) + 1),
-      .RST_VAL(FULL_LEVEL)
-   ) wlevel_reg (
-      `include "clk_en_rst_s_s_portmap.vs"
-      .rst_i (rst_i),
-      .data_i(wlevel_nxt),
-      .data_o(wlevel)
-   );
 
    //read level register
    iob_reg_r #(
