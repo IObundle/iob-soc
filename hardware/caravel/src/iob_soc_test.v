@@ -100,8 +100,8 @@ module iob_soc_test #(
    // Assuming LA probes [63:32] are for controlling the count register  
    assign la_write    = ~la_oenb[63:64-BITS] & ~{BITS{valid}};
    // Assuming LA probes [65:64] are for controlling the count clk & reset  
-   assign clk         = (~la_oenb[64]) ? la_data_in[64] : wb_clk_i;
-   assign rst         = (~la_oenb[65]) ? la_data_in[65] : wb_rst_i;
+   assign clk         = wb_clk_i;
+   assign rst         = wb_rst_i;
 
    parameter RST_VAL = {BITS{1'b0}};
 
