@@ -29,7 +29,6 @@ module iob_unpack #(
    //bit fifo control
    wire [$clog2(BFIFO_REG_W):0]      push_level;
    wire [$clog2(DATA_W):0]           push_width;
-   reg [$clog2(DATA_W):0]            push_width_nxt;
    reg                               push;
 
    wire [$clog2(BFIFO_REG_W):0]      pop_level;
@@ -47,6 +46,8 @@ module iob_unpack #(
    assign read_o = read;
    //write packed data to external output fifo
    assign write_o = pop;
+
+   assign push_width = wrap_i ? wrap_acc : DATA_W;
    
    //control logic  
    always @* begin
@@ -56,17 +57,12 @@ module iob_unpack #(
       read          = 1'b0;
       wrap_acc_nxt  = wrap_acc;
       pcnt_nxt      = pcnt + 1'b1;
-      push_width_nxt = push_width;
       
       case (pcnt)
         0: begin  //compute push width
-           if (!wrap_i) begin
-              push_width_nxt = DATA_W;
-           end else if (wrap_acc < (DATA_W - width_i)) begin
+           if ( wrap_i && (wrap_acc + width_i) <= DATA_W) begin
               pcnt_nxt = pcnt;
               wrap_acc_nxt = wrap_acc + width_i;
-           end else begin
-              push_width_nxt = wrap_acc + width_i;
            end
         end
         1:begin //wait to read data from input fifo
@@ -130,17 +126,6 @@ module iob_unpack #(
       .data_o(pcnt)
    );
 
-   //push width register
-   iob_reg_r #(
-      .DATA_W ($clog2(DATA_W)+1),
-      .RST_VAL({$clog2(DATA_W)+1{1'b0}})
-   ) push_width_reg (
-      `include "clk_en_rst_s_s_portmap.vs"
-      .rst_i (rst_i),
-      .data_i(push_width_nxt),
-      .data_o(push_width)
-   );
-   
 endmodule
 
 
