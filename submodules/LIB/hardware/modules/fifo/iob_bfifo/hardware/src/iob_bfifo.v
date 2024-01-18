@@ -7,17 +7,17 @@ module iob_bfifo #(
 ) (
    `include "clk_en_rst_s_port.vs"
 
-   input                     rst_i,
+   input rst_i,
 
-   input                     write_i,
-   input [$clog2(WDATA_W):0] wwidth_i,
-   input [ WDATA_W-1:0]      wdata_i,
-   output [$clog2(REG_W):0]  wlevel_o,
+   input                      write_i,
+   input  [$clog2(WDATA_W):0] wwidth_i,
+   input  [      WDATA_W-1:0] wdata_i,
+   output [  $clog2(REG_W):0] wlevel_o,
 
-   input                     read_i,
-   input [$clog2(RDATA_W):0] rwidth_i,
-   output [ RDATA_W-1:0]     rdata_o,
-   output [$clog2(REG_W):0]  rlevel_o
+   input                      read_i,
+   input  [$clog2(RDATA_W):0] rwidth_i,
+   output [      RDATA_W-1:0] rdata_o,
+   output [  $clog2(REG_W):0] rlevel_o
 );
 
    //read data word width with the right number of bits
@@ -32,28 +32,28 @@ module iob_bfifo #(
    wire [$clog2(REG_W):0] rlevel;
    reg  [$clog2(REG_W):0] rlevel_nxt;
    wire [$clog2(REG_W):0] wlevel;
-
+   wire rdata_shift_sise;
    //write data
-   wire  [      WDATA_W-1:0] wdata;
+   wire [    WDATA_W-1:0] wdata;
 
    //assign outputs
    assign wlevel_o = wlevel;
    assign rlevel_o = rlevel;
-   assign rdata_o  = ((data[REG_W-1 -: RDATA_W] >> (RDATA_W - rwidth_i)) << (RDATA_W - rwidth_i));
+   assign rdata_o  = ((data[REG_W-1-:RDATA_W] >> (RDATA_W - rwidth_i)) << (RDATA_W - rwidth_i));
 
    //control logic
-   assign wlevel = (FULL_LEVEL - rlevel);
-   assign wdata = ((wdata_i >> (WDATA_W - wwidth_i)) << (WDATA_W - wwidth_i));
+   assign wlevel   = (FULL_LEVEL - rlevel);
+   assign wdata    = ((wdata_i >> (WDATA_W - wwidth_i)) << (WDATA_W - wwidth_i));
 
    always @* begin
       data_nxt   = data;
       rlevel_nxt = rlevel;
 
       if (write_i) begin  //write
-         data_nxt   = data | (wdata << ((REG_W - WDATA_W))-rlevel);
+         data_nxt   = data | ({{REG_W - WDATA_W{1'd0}}, wdata} << (((REG_W - WDATA_W)) - rlevel));
          rlevel_nxt = rlevel + wwidth_i;
-       end else if (read_i) begin //read
-         data_nxt = data << rwidth_i;
+      end else if (read_i) begin  //read
+         data_nxt   = data << rwidth_i;
          rlevel_nxt = rlevel - rwidth_i;
       end
    end
