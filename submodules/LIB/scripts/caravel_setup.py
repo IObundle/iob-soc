@@ -139,9 +139,11 @@ if os.path.exists(source_path):
                     for file in data["VERILOG_FILES"]
                     if "user_proj_example.v" not in file
                 ]
-                data["VERILOG_FILES"].append(target_file)
-                for verig in required_modules:
-                    temp = os.path.join(iob_soc_src_path, verig)
-                    data["VERILOG_FILES"].append(temp)
+            data["VERILOG_FILES"].append(target_file)
+            for verig in required_modules:
+                temp = os.path.join(iob_soc_src_path, verig)
+                data["VERILOG_FILES"].append(temp)
+            # Add or modify the SYNTH_BUFFERING entry
+            data["SYNTH_BUFFERING"] = 1
             with open(json_temp, "w") as json_file:
                 json.dump(data, json_file, indent=4)
