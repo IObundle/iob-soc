@@ -32,7 +32,6 @@ module iob_bfifo #(
    wire [$clog2(REG_W):0] rlevel;
    reg  [$clog2(REG_W):0] rlevel_nxt;
    wire [$clog2(REG_W):0] wlevel;
-   wire rdata_shift_sise;
    //write data
    wire [    WDATA_W-1:0] wdata;
 
