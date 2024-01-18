@@ -96,11 +96,11 @@ if os.path.exists(source_path):
                 else:
                     shutil.copy2(s, d)
 
-        #v_files_sim = [
+        # v_files_sim = [
         #    file for file in os.listdir(iob_bp) if file.endswith((".v", ".vh"))
-        #]
+        # ]
 
-        #for file_name in v_files_sim:
+        # for file_name in v_files_sim:
         #    source_file_path = os.path.join(iob_bp, file_name)
         #    destination_file_path = os.path.join(iob_soc_src_path, file_name)
         #    # Copy the file from source to destination

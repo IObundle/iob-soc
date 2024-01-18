@@ -103,16 +103,16 @@ module iob_soc_test #(
    assign clk         = wb_clk_i;
    assign rst         = wb_rst_i;
 
-   parameter RST_VAL = {BITS{1'b0}};
+   parameter RST_VAL = {BITS{16'b0}};
 
    iob_counter #(
       .DATA_W (BITS),
       .RST_VAL(RST_VAL)
    ) counter (
       .clk_i (clk),
-      .cke_i (clk),
+      .cke_i (la_data_in[62]),
       .arst_i(rst),
-      .rst_i (rst),
+      .rst_i (la_data_in[63]),
       .data_o(count)
    );
 
