@@ -82,37 +82,6 @@ module iob2apb #(
       .data_o(apb_wdata_o)
    );
 
-   //IOb outputs
-   reg iob_ready_nxt;
-   iob_reg #(
-      .DATA_W (1),
-      .RST_VAL(1)
-   ) ready_reg (
-      `include "clk_en_rst_s_s_portmap.vs"
-      .data_i(iob_ready_nxt),
-      .data_o(iob_ready_o)
-   );
-
-   reg iob_rvalid_nxt;
-   iob_reg #(
-      .DATA_W (1),
-      .RST_VAL(0)
-   ) rvalid_reg (
-      `include "clk_en_rst_s_s_portmap.vs"
-      .data_i(iob_rvalid_nxt),
-      .data_o(iob_rvalid_o)
-   );
-
-   reg [DATA_W-1:0] iob_rdata_nxt;
-   iob_reg #(
-      .DATA_W (DATA_W),
-      .RST_VAL(0)
-   ) rdata_reg (
-      `include "clk_en_rst_s_s_portmap.vs"
-      .data_i(iob_rdata_nxt),
-      .data_o(iob_rdata_o)
-   );
-
    wire pc;
    reg  pc_nxt;
    iob_reg #(
@@ -123,6 +92,10 @@ module iob2apb #(
       .data_i(pc_nxt),
       .data_o(pc)
    );
+
+   assign iob_ready_o = apb_ready_i;
+   assign iob_rvalid_o = apb_ready_i;
+   assign iob_rdata_o = apb_rdata_i;
 
    always @* begin
 
@@ -135,11 +108,6 @@ module iob2apb #(
       apb_wstrb_nxt  = apb_wstrb_o;
       apb_wdata_nxt  = apb_wdata_o;
 
-      iob_rdata_nxt  = iob_rdata_o;
-      iob_rvalid_nxt = 1'd0;
-      iob_ready_nxt  = iob_ready_o;
-
-
       case (pc)
          0: begin
             if (!iob_valid_i)  //wait for iob request
@@ -150,18 +118,13 @@ module iob2apb #(
                apb_wstrb_nxt = iob_wstrb_i;
                apb_wdata_nxt = iob_wdata_i;
                apb_sel_nxt   = 1'b1;
-
-               iob_ready_nxt = 1'b0;
             end
          end
          default: begin
             apb_enable_nxt = 1'b1;
             if (!apb_ready_i)  //wait until apb interface is ready
                pc_nxt = pc;
-            else begin  //sample apb response, assert rvalid and finish transaction
-               iob_rdata_nxt  = apb_rdata_i;
-               iob_rvalid_nxt = 1'b1;
-               iob_ready_nxt  = 1'b1;
+            else begin  //sample apb response and finish transaction
                pc_nxt         = 1'd0;
                apb_sel_nxt    = 1'b0;
                apb_enable_nxt = 1'b0;

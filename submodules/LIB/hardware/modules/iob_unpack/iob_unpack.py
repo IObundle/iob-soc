@@ -1,8 +1,8 @@
 import os
 
 from iob_module import iob_module
-from iob_reg_r import iob_reg_r
-from iob_acc import iob_acc
+from iob_bfifo import iob_bfifo
+from iob_utils import iob_utils
 
 
 class iob_unpack(iob_module):
@@ -17,7 +17,7 @@ class iob_unpack(iob_module):
             [
                 {"interface": "clk_en_rst_s_s_portmap"},
                 {"interface": "clk_en_rst_s_port"},
-                iob_reg_r,
-                iob_acc,
+                iob_bfifo,
+                iob_utils,
             ]
         )

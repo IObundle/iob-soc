@@ -1,4 +1,5 @@
 #include "bsp.h"
+#include "iob-timer.h"
 #include "iob-uart.h"
 #include "iob_soc_conf.h"
 #include "iob_soc_periphs.h"
@@ -17,6 +18,9 @@ char *send_string = "Sending this string as a file to console.\n"
 int main() {
   char pass_string[] = "Test passed!";
   char fail_string[] = "Test failed!";
+
+  // init timer
+  timer_init(TIMER0_BASE);
 
   // init uart
   uart_init(UART0_BASE, FREQ / BAUD);
@@ -50,6 +54,13 @@ int main() {
   free(recvfile);
 
   uart_sendfile("test.log", strlen(pass_string), pass_string);
+
+  // read current timer count, compute elapsed time
+  unsigned long long elapsed = timer_get_count();
+  unsigned int elapsedu = elapsed / (FREQ / 1000000);
+
+  printf("\nExecution time: %d clock cycles\n", (unsigned int)elapsed);
+  printf("\nExecution time: %dus @%dMHz\n\n", elapsedu, FREQ / 1000000);
 
   uart_finish();
 }
