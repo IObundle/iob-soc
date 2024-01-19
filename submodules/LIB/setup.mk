@@ -103,7 +103,7 @@ $(BUILD_DIR)/doc/vivado.tex:
 
 endif
 
-clean: build_dir_name copy_caravel
+clean: build_dir_name 
 	-@if [ -f $(BUILD_DIR)/Makefile ]; then make -C $(BUILD_DIR) clean; fi
 	@rm -rf ../*.summary ../*.rpt $(BUILD_DIR)
 	@rm -f ~*
@@ -118,9 +118,6 @@ python-cache-clean:
 #basicly change some files of caravel to work
 build_caravel:
 	$(PYTHON_EXEC) $(PYTHON_DIR)/caravel_setup.py $(BUILD_DIR)
-
-copy_caravel:
-	$(PYTHON_EXEC) $(PYTHON_DIR)/caravel_copy.py $(BUILD_DIR)
 
 build-setup: build_dir_name build_top_module $(BUILD_DIR) $(SRC) format-all build_caravel
 	@for i in $(SRC); do echo $$i; done
