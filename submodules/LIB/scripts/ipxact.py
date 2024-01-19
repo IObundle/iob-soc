@@ -104,7 +104,7 @@ class SwRegister:
             for param in parameters_list:
                 if param.name in self.hw_size:
                     param.usage_count += 2 * self.hw_size.count(param.name)
-            
+
             # Generate the reserved bits xml code
             rsvd_xml = f"""
     <ipxact:field>
@@ -143,6 +143,7 @@ class SwRegister:
         """
 
         return xml_code
+
 
 def gen_memory_map_xml(core, sw_regs, parameters_list):
     """
@@ -203,11 +204,6 @@ def gen_memory_map_xml(core, sw_regs, parameters_list):
     """
 
 
-
-
-
-
-
 def gen_parameters_list(core):
     """
     Generate the parameters list for the given core
@@ -229,15 +225,6 @@ def gen_parameters_list(core):
         )
 
     return parameters_list
-
-
-def gen_memory_map_xml(sw_regs, parameters_list):
-    """
-    Generate the memory map xml code
-    @param sw_regs: list of software registers
-    @param parameters_list: list of parameters objects
-    return: xml code
-    """
 
 
 def generate_ipxact_xml(core, sw_regs, dest_dir):
@@ -273,11 +260,36 @@ def generate_ipxact_xml(core, sw_regs, dest_dir):
     # Write the xml header
     xml_file.write(
         f"""
-    <?xml version=\"1.0\" encoding=\"UTF-8\"?>
-    <ipxact:component xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ipxact="http://www.accellera.org/XMLSchema/IPXACT/1685-2014" xmlns:kactus2="http://kactus2.cs.tut.fi" xsi:schemaLocation="http://www.accellera.org/XMLSchema/IPXACT/1685-2014 http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd>
-        <ipxact:vendor>{core_vendor}</ipxact:vendor>
-        <ipxact:library>{core_library}</ipxact:library>
-        <ipxact:name>{core_name_display}</ipxact:name>
-        <ipxact:version>{core.version}</ipxact:version>
+<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<ipxact:component xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ipxact="http://www.accellera.org/XMLSchema/IPXACT/1685-2014" xmlns:kactus2="http://kactus2.cs.tut.fi" xsi:schemaLocation="http://www.accellera.org/XMLSchema/IPXACT/1685-2014 http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd>
+    <ipxact:vendor>{core_vendor}</ipxact:vendor>
+    <ipxact:library>{core_library}</ipxact:library>
+    <ipxact:name>{core_name_display}</ipxact:name>
+    <ipxact:version>{core.version}</ipxact:version>
+    {memory_map_xml}
+    <ipxact:model>
+		<ipxact:views>
+			<ipxact:view>
+				<ipxact:name>flat_verilog</ipxact:name>
+				<ipxact:envIdentifier>Verilog:kactus2.cs.tut.fi:</ipxact:envIdentifier>
+				<ipxact:componentInstantiationRef>verilog_implementation</ipxact:componentInstantiationRef>
+			</ipxact:view>
+		</ipxact:views>
+        {inst_parameters_xml}
+        {ports_xml}
+    </ipxact:model>
+    {resets_xml}
+    <ipxact:description>{core.description}</ipxact:description>
+    {parameters_xml}
+    <ipxact:vendorExtensions>
+		<kactus2:author>IObundle, Lda</kactus2:author>
+		<kactus2:version>3,10,15,0</kactus2:version>
+		<kactus2:kts_attributes>
+			<kactus2:kts_productHier>Flat</kactus2:kts_productHier>
+			<kactus2:kts_implementation>HW</kactus2:kts_implementation>
+			<kactus2:kts_firmness>Mutable</kactus2:kts_firmness>
+		</kactus2:kts_attributes>
+	</ipxact:vendorExtensions>
+</ipxact:component>
         """
     )
