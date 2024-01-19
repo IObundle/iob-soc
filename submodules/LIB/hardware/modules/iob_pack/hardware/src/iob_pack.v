@@ -86,8 +86,7 @@ module iob_pack #(
 
    //bit fifo
    iob_bfifo #(
-      .WDATA_W(DATA_W),
-      .RDATA_W(DATA_W),
+      .DATA_W(DATA_W),
       .REG_W  (BFIFO_REG_W)
    ) bfifo (
       `include "clk_en_rst_s_s_portmap.vs"
