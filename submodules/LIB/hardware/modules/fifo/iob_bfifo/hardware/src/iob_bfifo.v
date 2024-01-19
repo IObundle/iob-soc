@@ -2,21 +2,21 @@
 
 module iob_bfifo #(
    parameter DATA_W = 21,
-   parameter REG_W   = 21
+   parameter REG_W  = 21
 ) (
    `include "clk_en_rst_s_port.vs"
 
    input rst_i,
 
-   input                      write_i,
+   input                     write_i,
    input  [$clog2(DATA_W):0] wwidth_i,
    input  [      DATA_W-1:0] wdata_i,
-   output [  $clog2(REG_W):0] wlevel_o,
+   output [ $clog2(REG_W):0] wlevel_o,
 
-   input                      read_i,
+   input                     read_i,
    input  [$clog2(DATA_W):0] rwidth_i,
    output [      DATA_W-1:0] rdata_o,
-   output [  $clog2(REG_W):0] rlevel_o
+   output [ $clog2(REG_W):0] rlevel_o
 );
 
    //data register
@@ -27,7 +27,7 @@ module iob_bfifo #(
    wire [$clog2(REG_W):0] level;
    reg  [$clog2(REG_W):0] level_nxt;
    //write data
-   wire [    DATA_W-1:0] wdata;
+   wire [     DATA_W-1:0] wdata;
 
    //assign outputs
    assign wlevel_o = {1'b1, {$clog2(REG_W) {1'b0}}} - level;
@@ -40,15 +40,14 @@ module iob_bfifo #(
    assign wdata    = ((wdata_i >> (DATA_W - wwidth_i)) << (DATA_W - wwidth_i));
 
    always @* begin
-      data_nxt   = data;
+      data_nxt  = data;
       level_nxt = level;
 
       if (write_i) begin  //write
-         data_nxt   = data | ({{REG_W - DATA_W{1'd0}}, wdata} << (((REG_W - DATA_W)) - level));
-         //data_nxt   = data | wdata;
+         data_nxt  = data | {wdata, {REG_W - DATA_W{1'd0}}} >> level;
          level_nxt = level + wwidth_i;
       end else if (read_i) begin  //read
-         data_nxt   = data << rwidth_i;
+         data_nxt  = data << rwidth_i;
          level_nxt = level - rwidth_i;
       end
    end
