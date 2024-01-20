@@ -24,11 +24,11 @@ module iob_unpack #(
    reg                 read;
 
    //bit fifo control
-   wire [$clog2(DATA_W):0] push_level;
-   reg [     $clog2(DATA_W):0] push_width;
+   wire [$clog2(2*DATA_W):0] push_level;
+   wire [     $clog2(DATA_W):0] push_width;
    reg                         push;
    
-   wire [$clog2(DATA_W):0]     pop_level;
+   wire [$clog2(2*DATA_W):0]     pop_level;
    reg                         pop;
 
    //wrap control accumulator
@@ -45,8 +45,8 @@ module iob_unpack #(
    assign write_o = pop;
 
    //control logic
+   assign push_width   = wrap_i ? wrap_acc : DATA_W;
    always @* begin
-      push_width   = wrap_i ? wrap_acc : DATA_W;
 
       //defaults
       pop          = 1'b0;
@@ -63,17 +63,17 @@ module iob_unpack #(
             end
          end
          1: begin  //wait to read data from input fifo
-            if ((!rready_i) || (push_level < {1'd0,push_width})) begin
-               pcnt_nxt = 2'd3;
-            end else begin
+            if ( rready_i && (push_level >= {2'd0,push_width}) ) begin
                read = 1'b1;
+            end else begin
+               pcnt_nxt = 2'd3;
             end
          end
          2: begin  //push data to bit fifo
             push = 1'b1;
          end
          default: begin  //wait to pop data from bit fifo
-            if ((pop_level >= {1'd0,width_i}) && wready_i) begin
+            if ((pop_level >= {2'd0,width_i}) && wready_i) begin
                pop = 1'b1;
             end
             pcnt_nxt = 2'd1;
