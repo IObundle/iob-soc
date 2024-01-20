@@ -19,19 +19,15 @@ module iob_pack #(
    input               wready_i,
    output [DATA_W-1:0] wdata_o
 );
-
-   //bfifo size
-   localparam BFIFO_REG_W = 2 * DATA_W;
-
    //input fifo read
    reg                          read;
 
    //bit fifo control
-   wire [$clog2(BFIFO_REG_W):0] push_level;
+   wire [$clog2(DATA_W):0]      push_level;
    reg                          push;
 
-   wire [$clog2(BFIFO_REG_W):0] pop_level;
-   reg [     $clog2(DATA_W):0] pop_width;
+   wire [$clog2(DATA_W):0]      pop_level;
+   reg [     $clog2(DATA_W):0]  pop_width;
    reg                          pop;
 
    //wrap control accumulator
@@ -86,8 +82,7 @@ module iob_pack #(
 
    //bit fifo
    iob_bfifo #(
-      .DATA_W(DATA_W),
-      .REG_W  (BFIFO_REG_W)
+      .DATA_W(DATA_W)
    ) bfifo (
       `include "clk_en_rst_s_s_portmap.vs"
       .rst_i   (rst_i),
