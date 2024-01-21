@@ -37,9 +37,12 @@ else:
     sys.exit(1)  # Exiting with a non-zero code signifies an error condition
 
 build_dir = os.path.abspath(build_dir)
+# Check if the directory exists
+if not os.path.exists(build_dir):
+    print(f"The directory '{build_dir}' does not exist. Exiting.")
+    sys.exit(1)  # Exit with a non-zero status code indicating an error
 source_path = os.path.join(os.getcwd(), "submodules", "caravel_project")
 target_path = os.path.join(build_dir, "caravel_project")
-
 
 try:
     # Ensure that the source directory exists

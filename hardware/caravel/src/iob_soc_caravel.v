@@ -36,7 +36,7 @@
  */
 
 
-module iob_soc_test #(
+module iob_soc_caravel #(
    parameter BITS = 16
 ) (
 `ifdef USE_POWER_PINS
@@ -56,16 +56,17 @@ module iob_soc_test #(
    output        wbs_ack_o,
    output [31:0] wbs_dat_o,
 
+
+
+
    // Logic Analyzer Signals
    input  [127:0] la_data_in,
    output [127:0] la_data_out,
    input  [127:0] la_oenb,
-
    // IOs
    input  [BITS-1:0] io_in,
    output [BITS-1:0] io_out,
    output [BITS-1:0] io_oeb,
-
    // IRQ
    output [2:0] irq
 );
@@ -75,7 +76,6 @@ module iob_soc_test #(
    // wire [BITS-1:0] rdata; 
    wire [BITS-1:0] wdata;
    wire [BITS-1:0] count;
-
    wire            valid;
    wire [     3:0] wstrb;
    wire [BITS-1:0] la_write;
@@ -103,18 +103,33 @@ module iob_soc_test #(
    assign clk         = wb_clk_i;
    assign rst         = wb_rst_i;
 
-   parameter RST_VAL = {BITS{16'b0}};
 
-   iob_counter #(
-      .DATA_W (BITS),
-      .RST_VAL(RST_VAL)
-   ) counter (
-      .clk_i (clk),
-      .cke_i (la_data_in[62]),
-      .arst_i(rst),
-      .rst_i (la_data_in[63]),
-      .data_o(count)
-   );
+iob_iob2wishbone #(
+   parameter ADDR_W = 32,
+   parameter DATA_W = 32
+) (
+   .wb_addr_i(wbs_adr_i),
+   .wb_select_i(wbs_sel_i),
+   .wb_we_i(wbs_we_i),
+   .wb_cyc_i(wbs_cyc_i),
+   .wb_stb_i(wb_stb_i),
+   .wb_data_i(wb_data_i),
+   .wb_ack_o(wb_ack_o),
+   .wb_data_o(wb_data_o),
+   //iob port interface
+   .iob_valid_o(),
+   .iob_address_o(),
+   .iob_wdata_o(),
+   .iob_wstrb_o(),
+   .iob_rvalid_i(),
+   .iob_rdata_i(),
+   iob_ready_i()
+);
+
+
+
+
+
 
 endmodule
 

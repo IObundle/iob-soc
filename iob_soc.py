@@ -11,6 +11,7 @@ from verilog_tools import inplace_change
 
 # Submodules
 from iob_picorv32 import iob_picorv32
+from iob_iob2wishbone import iob_iob2wishbone
 from iob_cache import iob_cache
 from iob_uart import iob_uart
 from iob_utils import iob_utils
@@ -107,6 +108,7 @@ class iob_soc(iob_module):
                 iob_ram_dp_be,
                 iob_ram_dp_be_xil,
                 iob_pulse_gen,
+                iob_iob2wishbone,
                 iob_counter,
                 iob_reg,
                 iob_reg_re,
