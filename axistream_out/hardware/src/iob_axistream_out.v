@@ -12,16 +12,6 @@ module iob_axistream_out #(
    localparam N = 32 / TDATA_W;
    localparam RAM_ADDR_W = FIFO_DEPTH_LOG2 - $clog2(N);
 
-   `include "iob_wire.vs"
-
-   assign iob_valid = iob_valid_i;
-   assign iob_addr = iob_addr_i;
-   assign iob_wdata = iob_wdata_i;
-   assign iob_wstrb = iob_wstrb_i;
-   assign iob_rvalid_o = iob_rvalid;
-   assign iob_rdata_o = iob_rdata;
-   assign iob_ready_o = iob_ready;
-
    //Register File & Configuration control and status register file.
    `include "iob_axistream_out_swreg_inst.vs"
 
