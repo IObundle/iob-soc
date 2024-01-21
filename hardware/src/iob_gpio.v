@@ -9,10 +9,6 @@ module iob_gpio #(
    `include "iob_gpio_io.vs"
 );
 
-   //Dummy iob_ready_nxt_o and iob_rvalid_nxt_o to be used in swreg (unused ports)
-   wire iob_ready_nxt;
-   wire iob_rvalid_nxt;
-
    //BLOCK Register File & Configuration control and status register file.
    `include "iob_gpio_swreg_inst.vs"
 
