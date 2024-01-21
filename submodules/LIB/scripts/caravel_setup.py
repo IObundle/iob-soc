@@ -7,7 +7,7 @@ import importlib
 
 
 def find_module_instantiations(verilog_file_path):
-    module_names = []
+    module_names = set()
     module_pattern = r"^(?!module).*\b\w+\s*#\s*\([\s\S]*?;\s*$"
     with open(verilog_file_path, "r") as file:
         verilog_code = file.read()
@@ -16,9 +16,11 @@ def find_module_instantiations(verilog_file_path):
         # Extract module names from the matches
         for match in matches:
             # Capture the module name pattern
-            module_name = match.split()[0] + ".v"
-            module_names.append(module_name)
-    return module_names
+            for match in matches:
+                # Capture the module name pattern
+                module_name = match.split()[0] + ".v"
+                module_names.add(module_name)
+    return list(module_names)
 
 
 def find_includes(file_path):
