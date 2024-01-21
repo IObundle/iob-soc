@@ -63,7 +63,7 @@ class iob_regfileif(iob_module):
         reg_table = mkregs_obj.get_reg_table(inverted_regs, cls.rw_overlap, False)
         # Create inverted register hardware
         mkregs_obj.write_hwheader(reg_table, cls.build_dir+'/hardware/src', f"{cls.name}_inverted")
-        mkregs_obj.write_hwcode(reg_table, cls.build_dir+'/hardware/src', f"{cls.name}_inverted")
+        mkregs_obj.write_hwcode(reg_table, cls.build_dir+'/hardware/src', f"{cls.name}_inverted", "iob")
 
         #### Modify `*_swreg_inst.vs` file to prevent overriding definitions of the `*_inverted_swreg_inst.vs` file
         with open(f"{cls.build_dir}/hardware/src/{cls.name}_swreg_inst.vs", "r") as file:
@@ -71,7 +71,7 @@ class iob_regfileif(iob_module):
         # Modify lines
         for idx, line in enumerate(lines):
             # Remove wires, as they have already been declared in the `*_inverted_swreg_inst.vs` file
-            if line.startswith("wire "): lines[idx] = ""
+            if line.lstrip().startswith("wire "): lines[idx] = ""
             # Modify parameters to fix ADDR_W and DATA_W
             if line.startswith('  `include "iob_regfileif_inst_params.vs"'):
                 lines[idx] = "  .DATA_W(EXTERNAL_DATA_W),\n  .ADDR_W(EXTERNAL_ADDR_W),\n  .SYSTEM_VERSION(SYSTEM_VERSION)\n"
@@ -80,8 +80,8 @@ class iob_regfileif(iob_module):
             # Rename `iob_ready_ and iob_rvalid` ports as this mapping was already used in the `*_inverted_swreg_inst.vs` file
             if '.iob_ready_nxt_o' in line: lines[idx] = ".iob_ready_nxt_o(iob_ready_nxt2),\n"
             if '.iob_rvalid_nxt_o' in line: lines[idx] = ".iob_rvalid_nxt_o(iob_rvalid_nxt2),\n"
-            # Remove `iob_s_portmap.vs` as this mapping was already used in the `*_inverted_swreg_inst.vs` file
-            if '`include "iob_s_portmap.vs"' in line:
+            # Remove `iob_s_s_portmap.vs` as this mapping was already used in the `*_inverted_swreg_inst.vs` file
+            if '`include "iob_s_s_portmap.vs"' in line:
                 lines[idx] = ""
                 #Insert correct portmap. The normal (non inverted) registers are connected to the external interface that connects to the primary system.
                 lines.insert(idx,".iob_valid_i(external_iob_valid_i), //Request valid.\n")
