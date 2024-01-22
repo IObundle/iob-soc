@@ -1,6 +1,5 @@
 `timescale 1ns / 1ps
-`define IOB_CSHIFT_RIGHT(DATA_W, DATA, SHIFT) ((DATA >> SHIFT) | (DATA << (DATA_W - SHIFT)))
-`define IOB_CSHIFT_LEFT(DATA_W, DATA, SHIFT) ((DATA << SHIFT) | (DATA >> (DATA_W - SHIFT)))
+`include "iob_utils.vh"
 
 module iob_bfifo #(
    parameter DATA_W = 21
@@ -36,18 +35,23 @@ module iob_bfifo #(
    reg  [  $clog2(2*DATA_W):0] level_nxt;
 
    //write data
-   wire [          DATA_W-1:0] wdata_int;
-   reg [      (2*DATA_W)-1:0] wdata;
+   reg  [          DATA_W-1:0] wdata_int;
+   reg  [      (2*DATA_W)-1:0] wdata;
    wire [      (2*DATA_W)-1:0] wmask;
    wire [      (2*DATA_W)-1:0] rdata;
 
    //assign outputs
-   assign wlevel_o  = (1'b1 << $clog2(BUFFER_SIZE)) - level;
-   assign rlevel_o  = level;
+   assign wlevel_o = (1'b1 << $clog2(BUFFER_SIZE)) - level;
+   assign rlevel_o = level;
+
+   wire [$clog2(DATA_W):0] crwidth;
+   wire [$clog2(DATA_W):0] cwwidth;
+
+   assign crwidth   = ({{$clog2(DATA_W) {1'b0}}, 1'b1} << $clog2(DATA_W)) - rwidth_i;
+   assign cwwidth   = ({{$clog2(DATA_W) {1'b0}}, 1'b1} << $clog2(DATA_W)) - wwidth_i;
 
    //zero trailing bits
-   assign rdata_o   = (rdata[(2*DATA_W)-1-:DATA_W] >> (DATA_W - rwidth_i)) << (DATA_W - rwidth_i);
-   assign wdata_int = (wdata_i >> (DATA_W - wwidth_i)) << (DATA_W - wwidth_i);
+   assign rdata_o   = (rdata[(2*DATA_W)-1-:DATA_W] >> crwidth) << crwidth;
 
    //write mask shifted
    assign wmask     = `IOB_CSHIFT_RIGHT(BUFFER_SIZE, ({BUFFER_SIZE{1'b1}} >> wwidth_i), wptr);
@@ -56,7 +60,8 @@ module iob_bfifo #(
 
    always @* begin
       //write data shifted
-      wdata = `IOB_CSHIFT_RIGHT(BUFFER_SIZE, {wdata_int, {DATA_W{1'b0}}}, wptr);
+      wdata_int = (wdata_i >> cwwidth) << cwwidth;
+      wdata     = `IOB_CSHIFT_RIGHT(BUFFER_SIZE, {wdata_int, {DATA_W{1'b0}}}, wptr);
       data_nxt  = data;
       rptr_nxt  = rptr;
       wptr_nxt  = wptr;

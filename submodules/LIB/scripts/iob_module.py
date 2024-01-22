@@ -37,6 +37,7 @@ class iob_module:
     wire_list = None  # List of internal wires of the Verilog module. Used to interconnect module components.
     is_top_module = False  # Select if this module is the top module
     use_netlist = False  # use module netlist
+    rst_pol = 1  # reset polarity (1: active high; 0: active low)
 
     _initialized_attributes = (
         False  # Store if attributes have been initialized for this class
@@ -307,7 +308,7 @@ class iob_module:
         # Auto-add 'VERSION' macro if it doesn't exist.
         # But only if this module has at least one other configuration aswell
         # (to prevent lots of LIB modules with only the `VERSION` macron)
-        if cls.confs:
+        if cls.confs and cls.regs:
             for macro in cls.confs:
                 if macro["name"] == "VERSION":
                     break
@@ -419,8 +420,8 @@ class iob_module:
     @classmethod
     def _generate_sw(cls, mkregs_obj, reg_table):
         """Generate common software files"""
-        os.makedirs(cls.build_dir + "/software/src", exist_ok=True)
         if cls.regs:
+            os.makedirs(cls.build_dir + "/software/src", exist_ok=True)
             mkregs_obj.write_swheader(
                 reg_table, cls.build_dir + "/software/src", cls.name
             )
@@ -430,7 +431,7 @@ class iob_module:
             mkregs_obj.write_swheader(
                 reg_table, cls.build_dir + "/software/src", cls.name
             )
-        mk_conf.conf_h(cls.confs, cls.name, cls.build_dir + "/software/src")
+            mk_conf.conf_h(cls.confs, cls.name, cls.build_dir + "/software/src")
 
     @classmethod
     def _generate_doc(cls, mkregs_obj, reg_table):
