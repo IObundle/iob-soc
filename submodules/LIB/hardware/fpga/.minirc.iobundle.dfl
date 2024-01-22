@@ -1,0 +1,7 @@
+# IObundle's minicom configuration file
+
+# Serial port settings
+pu port             /dev/usb-uart
+pu baudrate         115200
+# Disable hardware flow control
+pu rtscts           No
