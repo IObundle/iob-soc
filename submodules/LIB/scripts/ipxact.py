@@ -226,6 +226,22 @@ def gen_parameters_list(core):
 
     return parameters_list
 
+def gen_instantiations_xml(core, parameters_list):
+    """
+    Generate the instantiations xml code
+    @param core: core object
+    @param parameters_list: list of parameters objects
+    return: xml code
+    """
+
+    # Generate the parameters xml code
+    parameters_xml = ""
+    for param in parameters_list:
+        parameters_xml += param.gen_xml()
+
+    # Generate the xml code for the instantiations
+    xml_code = f""":
+
 
 def generate_ipxact_xml(core, sw_regs, dest_dir):
     """
@@ -254,6 +270,9 @@ def generate_ipxact_xml(core, sw_regs, dest_dir):
     # Genererate the memory map xml code
     memory_map_xml = gen_memory_map_xml(sw_regs, parameters_list)
 
+    # Generate instantiations xml code
+    instantiations_xml = gen_instantiations_xml(core, parameters_list)
+
     # Create the xml file
     xml_file = open(dest_dir + "/" + core_name + ".xml", "w")
 
@@ -275,7 +294,7 @@ def generate_ipxact_xml(core, sw_regs, dest_dir):
 				<ipxact:componentInstantiationRef>verilog_implementation</ipxact:componentInstantiationRef>
 			</ipxact:view>
 		</ipxact:views>
-        {inst_parameters_xml}
+        {instantiations_xml}
         {ports_xml}
     </ipxact:model>
     {resets_xml}
