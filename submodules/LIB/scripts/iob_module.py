@@ -37,7 +37,6 @@ class iob_module:
     wire_list = None  # List of internal wires of the Verilog module. Used to interconnect module components.
     is_top_module = False  # Select if this module is the top module
     use_netlist = False  # use module netlist
-    rst_pol = 1  # reset polarity (1: active high; 0: active low)
 
     _initialized_attributes = (
         False  # Store if attributes have been initialized for this class
