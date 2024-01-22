@@ -106,7 +106,7 @@ module iob_soc_caravel #(
 
 
 //on works
-iob_iob2wishbone #(
+iob_wishbone2iob #(
    parameter ADDR_W = 32,
    parameter DATA_W = 32
 ) (
