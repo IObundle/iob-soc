@@ -29,5 +29,7 @@ pkgs.mkShell {
     llvmPackages_14.clangUseLLVM
     librsvg
     libreoffice
+    minicom     # Terminal emulator
+    lrzsz       # For Zmodem file transfers via serial connection of the terminal emulator
   ];
 }
