@@ -1,6 +1,5 @@
 `timescale 1ns / 1ps
-`define IOB_CSHIFT_RIGHT(DATA_W, DATA, SHIFT) ((DATA >> SHIFT) | (DATA << (DATA_W - SHIFT)))
-`define IOB_CSHIFT_LEFT(DATA_W, DATA, SHIFT) ((DATA << SHIFT) | (DATA >> (DATA_W - SHIFT)))
+`include "iob_utils.vh"
 
 module iob_bfifo #(
    parameter DATA_W = 21
@@ -40,13 +39,20 @@ module iob_bfifo #(
    wire [   2*DATA_W-1:0]       wmask;
    wire [   2*DATA_W-1:0]       rdata;
    
+   wire [$clog2(DATA_W):0]      crwidth;
+   wire [$clog2(DATA_W):0]      cwwidth;
+
    //assign outputs
    assign wlevel_o = (1'b1 << $clog2(2*DATA_W)) - level;
    assign rlevel_o = level;
+   assign rdata_o  =  ( rdata[2*DATA_W-1-:DATA_W] >> crwidth ) <<  crwidth ; //zero extend
 
-   //zero trailing bits
-   assign rdata_o  =  ( rdata[2*DATA_W-1-:DATA_W] >> (DATA_W - rwidth_i) ) << (DATA_W - rwidth_i);
-   assign wdata_int = (wdata_i >> (DATA_W - wwidth_i)) << (DATA_W - wwidth_i);
+   //widths' complement
+   assign  cwwidth = (1'b1 << $clog2(DATA_W))-wwidth_i;
+   assign  crwidth = (1'b1 << $clog2(DATA_W))-rwidth_i;
+
+   //intermediate wdata signal
+   assign wdata_int = (wdata_i >> cwwidth) << cwwidth;//zero extend
 
    //write data shifted
    assign wdata = `IOB_CSHIFT_RIGHT( 2*DATA_W, {wdata_int, {DATA_W{1'b0}}}, wptr );
