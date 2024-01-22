@@ -44,9 +44,9 @@ module iob_bfifo #(
    assign wlevel_o = (1'b1 << $clog2(BUFFER_SIZE)) - level;
    assign rlevel_o = level;
 
+   //widths' complement
    wire [$clog2(DATA_W):0] crwidth;
    wire [$clog2(DATA_W):0] cwwidth;
-
    assign crwidth   = ({{$clog2(DATA_W) {1'b0}}, 1'b1} << $clog2(DATA_W)) - rwidth_i;
    assign cwwidth   = ({{$clog2(DATA_W) {1'b0}}, 1'b1} << $clog2(DATA_W)) - wwidth_i;
 

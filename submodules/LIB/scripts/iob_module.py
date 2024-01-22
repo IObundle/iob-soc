@@ -304,13 +304,13 @@ class iob_module:
     @classmethod
     def _auto_add_settings(cls):
         """Auto-add settings like macros and submodules to the module"""
-        # Auto-add 'VERSION' macro if it doesn't exist.
-        # But only if this module has at least one other configuration aswell
-        # (to prevent lots of LIB modules with only the `VERSION` macron)
-        if cls.confs and cls.regs:
-            for macro in cls.confs:
-                if macro["name"] == "VERSION":
-                    break
+
+        # Auto-add VERSION macro if there are software registers
+        if cls.regs:
+            if cls.confs:
+                for macro in cls.confs:
+                    if macro["name"] == "VERSION":
+                        break
             else:
                 cls.confs.append(
                     {
