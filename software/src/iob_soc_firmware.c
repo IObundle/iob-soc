@@ -1,7 +1,6 @@
 #include "bsp.h"
 #include "iob-timer.h"
 #include "iob-uart.h"
-#include "iob_soc_conf.h"
 #include "iob_soc_periphs.h"
 #include "iob_soc_system.h"
 #include "printf.h"
