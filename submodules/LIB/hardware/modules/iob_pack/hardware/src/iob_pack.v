@@ -19,6 +19,12 @@ module iob_pack #(
    input               wready_i,
    output [DATA_W-1:0] wdata_o
 );
+
+   localparam CALC_POP_WIDTH = 2'd0;
+   localparam WAIT_DATA      = 2'd1;
+   localparam PUSH_DATA      = 2'd2;
+   localparam WAIT_POP       = 2'd3;
+
    //input fifo read
    reg                       read;
 
@@ -57,27 +63,27 @@ module iob_pack #(
       pcnt_nxt     = pcnt + 1'b1;
 
       case (pcnt)
-         0: begin  //compute pop width
+         CALC_POP_WIDTH: begin  //compute pop width
             if (wrap_i && (wrap_acc_int <= DATA_W)) begin
                pcnt_nxt     = pcnt;
                wrap_acc_nxt = wrap_acc_int;
             end
          end
-         1: begin  //wait to read data from input fifo
+         WAIT_DATA: begin  //wait to read data from input fifo
             if (rready_i && (push_level >= {1'd0, width_i})) begin
                read = 1'b1;
             end else begin
-               pcnt_nxt = 2'd3;
+               pcnt_nxt = WAIT_POP;
             end
          end
-         2: begin  //push data to bit fifo
+         PUSH_DATA: begin  //push data to bit fifo
             push = 1'b1;
          end
          default: begin  //wait to pop data from bit fifo
             if ((pop_level >= {1'd0, pop_width}) && wready_i) begin
                pop = 1'b1;
             end
-            pcnt_nxt = 2'd1;
+            pcnt_nxt = WAIT_DATA;
          end
       endcase
    end
