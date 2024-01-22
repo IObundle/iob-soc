@@ -1,5 +1,6 @@
 `timescale 1ns / 1ps
 `include "iob_utils.vh"
+`include "iob_utils.vh"
 
 module iob_bfifo #(
    parameter DATA_W = 21
