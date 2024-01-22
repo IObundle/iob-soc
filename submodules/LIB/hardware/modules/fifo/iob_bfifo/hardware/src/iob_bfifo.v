@@ -20,9 +20,10 @@ module iob_bfifo #(
    output [$clog2(2*DATA_W):0] rlevel_o
 );
 
+   localparam BUFFER_SIZE = 2 * DATA_W;
    //data register
-   wire [        2*DATA_W-1:0] data;
-   reg  [        2*DATA_W-1:0] data_nxt;
+   wire [      (2*DATA_W)-1:0] data;
+   reg  [      (2*DATA_W)-1:0] data_nxt;
 
    //read and write pointers
    wire [$clog2(2*DATA_W)-1:0] rptr;  //init to 2*DATA_W-1
@@ -36,26 +37,26 @@ module iob_bfifo #(
 
    //write data
    wire [          DATA_W-1:0] wdata_int;
-   wire [        2*DATA_W-1:0] wdata;
-   wire [        2*DATA_W-1:0] wmask;
-   wire [        2*DATA_W-1:0] rdata;
+   reg [      (2*DATA_W)-1:0] wdata;
+   wire [      (2*DATA_W)-1:0] wmask;
+   wire [      (2*DATA_W)-1:0] rdata;
 
    //assign outputs
-   assign wlevel_o  = (1'b1 << $clog2(2 * DATA_W)) - level;
+   assign wlevel_o  = (1'b1 << $clog2(BUFFER_SIZE)) - level;
    assign rlevel_o  = level;
 
    //zero trailing bits
-   assign rdata_o   = (rdata[2*DATA_W-1-:DATA_W] >> (DATA_W - rwidth_i)) << (DATA_W - rwidth_i);
+   assign rdata_o   = (rdata[(2*DATA_W)-1-:DATA_W] >> (DATA_W - rwidth_i)) << (DATA_W - rwidth_i);
    assign wdata_int = (wdata_i >> (DATA_W - wwidth_i)) << (DATA_W - wwidth_i);
 
-   //write data shifted
-   assign wdata     = `IOB_CSHIFT_RIGHT(2 * DATA_W, {wdata_int, {DATA_W{1'b0}}}, wptr);
    //write mask shifted
-   assign wmask     = `IOB_CSHIFT_RIGHT(2 * DATA_W, ({2 * DATA_W{1'b1}} >> wwidth_i), wptr);
+   assign wmask     = `IOB_CSHIFT_RIGHT(BUFFER_SIZE, ({BUFFER_SIZE{1'b1}} >> wwidth_i), wptr);
    //read data shifted
-   assign rdata     = `IOB_CSHIFT_LEFT(2 * DATA_W, data, rptr);
+   assign rdata     = `IOB_CSHIFT_LEFT(BUFFER_SIZE, data, rptr);
 
    always @* begin
+      //write data shifted
+      wdata = `IOB_CSHIFT_RIGHT(BUFFER_SIZE, {wdata_int, {DATA_W{1'b0}}}, wptr);
       data_nxt  = data;
       rptr_nxt  = rptr;
       wptr_nxt  = wptr;
@@ -72,8 +73,8 @@ module iob_bfifo #(
 
    //data register
    iob_reg_r #(
-      .DATA_W (2 * DATA_W),
-      .RST_VAL({2 * DATA_W{1'b0}})
+      .DATA_W (BUFFER_SIZE),
+      .RST_VAL({BUFFER_SIZE{1'b0}})
    ) data_reg_inst (
       `include "clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_i),
@@ -83,8 +84,8 @@ module iob_bfifo #(
 
    //read pointer
    iob_reg_r #(
-      .DATA_W ($clog2(2 * DATA_W)),
-      .RST_VAL({$clog2(2 * DATA_W) {1'b0}})
+      .DATA_W ($clog2(BUFFER_SIZE)),
+      .RST_VAL({$clog2(BUFFER_SIZE) {1'b0}})
    ) rptr_reg (
       `include "clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_i),
@@ -94,8 +95,8 @@ module iob_bfifo #(
 
    //write pointer
    iob_reg_r #(
-      .DATA_W ($clog2(2 * DATA_W)),
-      .RST_VAL({$clog2(2 * DATA_W) {1'b0}})
+      .DATA_W ($clog2(BUFFER_SIZE)),
+      .RST_VAL({$clog2(BUFFER_SIZE) {1'b0}})
    ) wptr_reg (
       `include "clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_i),
@@ -105,8 +106,8 @@ module iob_bfifo #(
 
    //fifo level
    iob_reg_r #(
-      .DATA_W ($clog2(2 * DATA_W) + 1),
-      .RST_VAL({$clog2(2 * DATA_W) + 1{1'b0}})
+      .DATA_W ($clog2(BUFFER_SIZE) + 1),
+      .RST_VAL({$clog2(BUFFER_SIZE) + 1{1'b0}})
    ) level_reg (
       `include "clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_i),

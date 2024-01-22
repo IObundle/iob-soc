@@ -62,7 +62,7 @@ module iob_pack #(
             end
          end
          1: begin  //wait to read data from input fifo
-            if ( rready_i && (push_level >= {2'd0,width_i}) ) begin
+            if ( rready_i && (push_level >= {1'd0,width_i}) ) begin
                read = 1'b1;
             end else begin
                pcnt_nxt = 2'd3;
@@ -72,7 +72,7 @@ module iob_pack #(
             push = 1'b1;
          end
          default: begin  //wait to pop data from bit fifo
-            if ((pop_level >= {2'd0,pop_width}) && wready_i) begin
+            if ((pop_level >= {1'd0,pop_width}) && wready_i) begin
                pop = 1'b1;
             end
             pcnt_nxt = 2'd1;
