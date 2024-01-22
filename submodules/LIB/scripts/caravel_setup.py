@@ -31,6 +31,16 @@ def find_includes(file_path):
         return matches
 
 
+def search_algoritm(start_dir,name):
+    for foldername, subfolders, filenames in os.walk(start_dir):
+        if ".git" in subfolders:
+            subfolders.remove(".git")  # Exclude the .git folder from the search
+        if name in subfolders:
+            return os.path.abspath(os.path.join(foldername, name))
+
+    return None
+
+
 if len(sys.argv) >= 2:
     build_dir = sys.argv[1]
     print(build_dir)
@@ -38,12 +48,19 @@ else:
     print("Please provide two arguments.")
     sys.exit(1)  # Exiting with a non-zero code signifies an error condition
 
+
+#build_dir = os.path.join(os.path.abspath(os.pardir),build_dir)
+
 build_dir = os.path.abspath(build_dir)
-# Check if the directory exists
+
+print(build_dir)
+
 if not os.path.exists(build_dir):
     print(f"The directory '{build_dir}' does not exist. Exiting.")
     sys.exit(1)  # Exit with a non-zero status code indicating an error
-source_path = os.path.join(os.getcwd(), "submodules", "caravel_project")
+
+
+source_path = search_algoritm(os.getcwd(),"caravel_project")
 target_path = os.path.join(build_dir, "caravel_project")
 
 try:
@@ -63,6 +80,11 @@ except OSError as e:
     print(f"Error: {e}")
 
 source_path = os.path.join(os.getcwd(), "hardware", "caravel", "src")
+
+source_path = os.path.join(search_algoritm(os.getcwd(),"caravel"),"src")
+
+
+
 target_path = os.path.join(target_path, "verilog", "rtl")
 open_lane_dir = os.path.join(build_dir, "caravel_project", "openlane")
 user_proj_dir = os.path.join(open_lane_dir, "user_proj_example")
