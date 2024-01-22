@@ -39,6 +39,7 @@ module iob_bfifo #(
    wire [   2*DATA_W-1:0]       wmask;
    wire [   2*DATA_W-1:0]       rdata;
    
+   //widths' complement
    wire [$clog2(DATA_W):0]      crwidth;
    wire [$clog2(DATA_W):0]      cwwidth;
 
