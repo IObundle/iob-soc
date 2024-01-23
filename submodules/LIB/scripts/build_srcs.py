@@ -33,7 +33,8 @@ def flows_setup(python_module):
     syn_setup(python_module)
 
     # Setup software
-    sw_setup(python_module)
+    if python_module.is_system:
+        sw_setup(python_module)
 
     # Setup documentation if it is top module
     doc_setup(python_module)
