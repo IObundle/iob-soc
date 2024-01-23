@@ -66,6 +66,8 @@ def conf_vh(macros, top_module, out_dir):
 
 
 def conf_h(macros, top_module, out_dir):
+    if len(macros) == 0:
+        return
     os.makedirs(out_dir, exist_ok=True)
     file2create = open(f"{out_dir}/{top_module}_conf.h", "w")
     core_prefix = f"{top_module}_".upper()
