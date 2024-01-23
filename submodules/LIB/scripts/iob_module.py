@@ -421,8 +421,8 @@ class iob_module:
     @classmethod
     def _generate_sw(cls, mkregs_obj, reg_table):
         """Generate common software files"""
+        os.makedirs(cls.build_dir + "/software/src", exist_ok=True)
         if cls.regs:
-            os.makedirs(cls.build_dir + "/software/src", exist_ok=True)
             mkregs_obj.write_swheader(
                 reg_table, cls.build_dir + "/software/src", cls.name
             )
