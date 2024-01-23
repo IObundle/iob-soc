@@ -37,6 +37,7 @@ class iob_module:
     wire_list = None  # List of internal wires of the Verilog module. Used to interconnect module components.
     is_top_module = False  # Select if this module is the top module
     use_netlist = False  # use module netlist
+    is_system = False  # create software files in build directory
 
     _initialized_attributes = (
         False  # Store if attributes have been initialized for this class
@@ -421,17 +422,18 @@ class iob_module:
     @classmethod
     def _generate_sw(cls, mkregs_obj, reg_table):
         """Generate common software files"""
-        if cls.regs:
+        if cls.is_system or cls.regs:
             os.makedirs(cls.build_dir + "/software/src", exist_ok=True)
-            mkregs_obj.write_swheader(
-                reg_table, cls.build_dir + "/software/src", cls.name
-            )
-            mkregs_obj.write_swcode(
-                reg_table, cls.build_dir + "/software/src", cls.name
-            )
-            mkregs_obj.write_swheader(
-                reg_table, cls.build_dir + "/software/src", cls.name
-            )
+            if cls.regs:
+                mkregs_obj.write_swheader(
+                    reg_table, cls.build_dir + "/software/src", cls.name
+                )
+                mkregs_obj.write_swcode(
+                    reg_table, cls.build_dir + "/software/src", cls.name
+                )
+                mkregs_obj.write_swheader(
+                    reg_table, cls.build_dir + "/software/src", cls.name
+                )
             mk_conf.conf_h(cls.confs, cls.name, cls.build_dir + "/software/src")
 
     @classmethod
