@@ -66,6 +66,8 @@ def conf_vh(macros, top_module, out_dir):
 
 
 def conf_h(macros, top_module, out_dir):
+    if len(macros) == 0:
+        return
     os.makedirs(out_dir, exist_ok=True)
     file2create = open(f"{out_dir}/{top_module}_conf.h", "w")
     core_prefix = f"{top_module}_".upper()
@@ -101,8 +103,8 @@ def config_build_mk(python_module):
     file2create = open(f"{python_module.build_dir}/config_build.mk", "w")
     file2create.write(f"NAME={python_module.name}\n")
     file2create.write(f"CSR_IF={python_module.csr_if}\n\n")
-    file2create.write(f"VERSION={python_module.version}\n")
     file2create.write(f"BUILD_DIR_NAME={python_module.build_dir.split('/')[-1]}\n")
+    file2create.write(f"IS_FPGA={int(python_module.is_system)}\n")
 
     file2create.close()
 

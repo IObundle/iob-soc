@@ -16,6 +16,8 @@ module axil2iob #(
    `include "iob_m_port.vs"
 );
 
+   localparam WSTRB_W = DATA_W / 8;
+
    // COMPUTE AXIL OUTPUTS
 
    // write address channel
@@ -28,8 +30,7 @@ module axil2iob #(
    assign axil_bresp_o   = 2'b0;
    wire axil_bvalid_nxt;
    //bvalid will toggle in the two situations below:
-   assign axil_bvalid_nxt = axil_bvalid_o ^ (((~axil_bvalid_o) & axil_wvalid_i)
-                              | (axil_bvalid_o & axil_bready_i & (~axil_wvalid_i)));
+   assign axil_bvalid_nxt = (|axil_wstrb_i) ? iob_ready_i & iob_valid_o : 1'b0;
 
    // read address
    assign axil_arready_o = iob_ready_i;
@@ -48,7 +49,7 @@ module axil2iob #(
    assign iob_valid_o = (axil_wvalid_i & (|axil_wstrb_i)) | axil_arvalid_i;
    assign iob_addr_o = axil_arvalid_i ? axil_araddr_i : axil_awaddr_i;
    assign iob_wdata_o = axil_wdata_i;
-   assign iob_wstrb_o = axil_arvalid_i ? {(DATA_W / 8) {1'b0}} : axil_wstrb_i;
+   assign iob_wstrb_o = axil_arvalid_i ? {WSTRB_W {1'b0}} : axil_wstrb_i;
 
    iob_reg #(
       .DATA_W (1),

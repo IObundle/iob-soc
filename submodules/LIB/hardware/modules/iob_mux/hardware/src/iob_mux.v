@@ -10,12 +10,12 @@ module iob_mux #(
    output reg [                    DATA_W-1:0] data_o
 );
 
-   integer i;
+   integer input_sel;
    always @* begin
       data_o = {DATA_W{1'b0}};
-      for (i = 0; i < N; i = i + 1) begin : gen_mux
-         if (i == sel_i) begin
-            data_o = data_i[i*DATA_W+:DATA_W];
+      for (input_sel = 0; input_sel < N; input_sel = input_sel + 1) begin : gen_mux
+         if (input_sel == sel_i) begin
+            data_o = data_i[input_sel*DATA_W+:DATA_W];
          end
       end
    end
