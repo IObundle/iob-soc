@@ -304,14 +304,15 @@ class iob_module:
     @classmethod
     def _auto_add_settings(cls):
         """Auto-add settings like macros and submodules to the module"""
-        # Auto-add 'VERSION' macro if it doesn't exist.
-        # But only if this module has at least one other configuration aswell
-        # (to prevent lots of LIB modules with only the `VERSION` macron)
-        if cls.confs:
-            for macro in cls.confs:
-                if macro["name"] == "VERSION":
-                    break
-            else:
+
+        # Auto-add VERSION macro if there are software registers
+        if cls.regs:
+            found_version_macro = False
+            if cls.confs:
+                for macro in cls.confs:
+                    if macro["name"] == "VERSION":
+                        found_version_macro = True
+            if not found_version_macro:
                 cls.confs.append(
                     {
                         "name": "VERSION",
@@ -322,6 +323,7 @@ class iob_module:
                         "descr": "Product version. This 16-bit macro uses nibbles to represent decimal numbers using their binary values. The two most significant nibbles represent the integral part of the version, and the two least significant nibbles represent the decimal part. For example V12.34 is represented by 0x1234.",
                     }
                 )
+
         if cls.regs:
             # Auto-add iob_ctls module, except if use_netlist
             if cls.name != "iob_ctls" and not cls.use_netlist:

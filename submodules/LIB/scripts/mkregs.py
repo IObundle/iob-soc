@@ -451,13 +451,15 @@ class mkregs:
 
         f_gen.write(");\n\n")
 
+        f_gen.write("localparam WSTRB_W = DATA_W/8;\n")
+
         # write address
         f_gen.write("\n//write address\n")
 
         # extract address byte offset
-        f_gen.write(f"wire [($clog2(DATA_W/8)+1)-1:0] byte_offset;\n")
+        f_gen.write(f"wire [($clog2(WSTRB_W)+1)-1:0] byte_offset;\n")
         f_gen.write(
-            f"iob_ctls #(.W(DATA_W/8), .MODE(0), .SYMBOL(0)) bo_inst (.data_i(iob_wstrb_i), .count_o(byte_offset));\n"
+            f"iob_ctls #(.W(WSTRB_W), .MODE(0), .SYMBOL(0)) bo_inst (.data_i(iob_wstrb_i), .count_o(byte_offset));\n"
         )
 
         # compute write address

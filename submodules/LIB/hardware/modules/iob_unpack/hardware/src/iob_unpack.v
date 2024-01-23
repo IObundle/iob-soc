@@ -20,24 +20,30 @@ module iob_unpack #(
    output [DATA_W-1:0] wdata_o
 );
 
+   localparam CALC_PUSH_WIDTH = 2'd0;
+   localparam WAIT_DATA       = 2'd1;
+   localparam PUSH_DATA       = 2'd2;
+   localparam POP_DATA        = 2'd3;
+
    //input fifo read
-   reg                 read;
+   reg                       read;
 
    //bit fifo control
    wire [$clog2(2*DATA_W):0] push_level;
-   wire [     $clog2(DATA_W):0] push_width;
-   reg                         push;
-   
-   wire [$clog2(2*DATA_W):0]     pop_level;
-   reg                         pop;
+   reg  [  $clog2(DATA_W):0] push_width;
+   reg                       push;
+
+   wire [$clog2(2*DATA_W):0] pop_level;
+   reg                       pop;
 
    //wrap control accumulator
-   reg  [     $clog2(DATA_W):0] wrap_acc_nxt;
-   wire [     $clog2(DATA_W):0] wrap_acc;
+   reg  [  $clog2(DATA_W):0] wrap_acc_nxt;
+   wire [  $clog2(DATA_W):0] wrap_acc;
+   reg  [  $clog2(DATA_W):0] wrap_acc_int;
 
    //program counter
-   wire [                  1:0] pcnt;
-   reg  [                  1:0] pcnt_nxt;
+   wire [               1:0] pcnt;
+   reg  [               1:0] pcnt_nxt;
 
    //read unpacked data from external input fifo
    assign read_o  = read;
@@ -45,8 +51,9 @@ module iob_unpack #(
    assign write_o = pop;
 
    //control logic
-   assign push_width   = wrap_i ? wrap_acc : DATA_W;
    always @* begin
+      push_width   = wrap_i ? wrap_acc : DATA_W;
+      wrap_acc_int = wrap_acc + width_i;
 
       //defaults
       pop          = 1'b0;
@@ -56,27 +63,27 @@ module iob_unpack #(
       pcnt_nxt     = pcnt + 1'b1;
 
       case (pcnt)
-         0: begin  //compute push width
-            if (wrap_i && ((wrap_acc + width_i) <= DATA_W)) begin
+         CALC_PUSH_WIDTH: begin  //compute push width
+            if (wrap_i && (wrap_acc_int <= DATA_W)) begin
                pcnt_nxt     = pcnt;
-               wrap_acc_nxt = wrap_acc + width_i;
+               wrap_acc_nxt = wrap_acc_int;
             end
          end
-         1: begin  //wait to read data from input fifo
-            if ( rready_i && (push_level >= {2'd0,push_width}) ) begin
+         WAIT_DATA: begin  //wait to read data from input fifo
+            if (rready_i && (push_level >= {1'd0, push_width})) begin
                read = 1'b1;
             end else begin
-               pcnt_nxt = 2'd3;
+               pcnt_nxt = POP_DATA;
             end
          end
-         2: begin  //push data to bit fifo
+         PUSH_DATA: begin  //push data to bit fifo
             push = 1'b1;
          end
          default: begin  //wait to pop data from bit fifo
-            if ((pop_level >= {2'd0,width_i}) && wready_i) begin
+            if ((pop_level >= {1'd0, width_i}) && wready_i) begin
                pop = 1'b1;
             end
-            pcnt_nxt = 2'd1;
+            pcnt_nxt = WAIT_DATA;
          end
       endcase
    end
