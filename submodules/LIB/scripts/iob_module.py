@@ -432,7 +432,7 @@ class iob_module:
             mkregs_obj.write_swheader(
                 reg_table, cls.build_dir + "/software/src", cls.name
             )
-            mk_conf.conf_h(cls.confs, cls.name, cls.build_dir + "/software/src")
+        mk_conf.conf_h(cls.confs, cls.name, cls.build_dir + "/software/src")
 
     @classmethod
     def _generate_doc(cls, mkregs_obj, reg_table):
