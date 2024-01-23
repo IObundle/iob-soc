@@ -102,8 +102,7 @@ def config_build_mk(python_module):
     file2create.write(f"NAME={python_module.name}\n")
     file2create.write(f"CSR_IF={python_module.csr_if}\n\n")
     file2create.write(f"BUILD_DIR_NAME={python_module.build_dir.split('/')[-1]}\n")
-    if python_module.is_system:
-        file2create.write("IS_FPGA=1\n")
+    file2create.write(f"IS_FPGA={int(python_module.is_system)}\n")
 
     file2create.close()
 
