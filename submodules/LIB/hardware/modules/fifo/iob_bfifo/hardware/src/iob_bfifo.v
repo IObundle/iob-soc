@@ -45,10 +45,10 @@ module iob_bfifo #(
    assign rlevel_o = level;
 
    //widths' complement
-   wire [$clog2(DATA_W):0] crwidth;
-   wire [$clog2(DATA_W):0] cwwidth;
-   assign crwidth = {1'b1, {$clog2(DATA_W) {1'b0}}} - rwidth_i;
-   assign cwwidth = {1'b1, {$clog2(DATA_W) {1'b0}}} - wwidth_i;
+   wire [$clog2(DATA_W)-1:0] crwidth;
+   wire [$clog2(DATA_W)-1:0] cwwidth;
+   assign crwidth = (~rwidth_i[$clog2(DATA_W)-1:0]) + {{$clog2(DATA_W) - 1{1'd0}}, 1'd1};
+   assign cwwidth = (~wwidth_i[$clog2(DATA_W)-1:0]) + {{$clog2(DATA_W) - 1{1'd0}}, 1'd1};
 
    //zero trailing bits
    assign rdata_o = (rdata[(2*DATA_W)-1-:DATA_W] >> crwidth) << crwidth;
