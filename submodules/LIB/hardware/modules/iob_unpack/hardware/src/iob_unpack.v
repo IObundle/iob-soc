@@ -53,7 +53,7 @@ module iob_unpack #(
    //control logic
    always @* begin
       push_width   = wrap_i ? wrap_acc : DATA_W;
-      wrap_acc_int = wrap_acc + width_i;
+      wrap_acc_int = {1'd0,wrap_acc} + {1'd0,width_i};
 
       //defaults
       pop          = 1'b0;
