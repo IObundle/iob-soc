@@ -18,10 +18,28 @@ module apb2iob #(
 );
    localparam WSTRB_W = DATA_W / 8;
 
-   assign apb_ready_o = iob_ready_i;
-   assign apb_rdata_o = iob_rdata_i;
+   assign apb_ready_nxt = apb_write_i ? iob_ready_i : iob_rvalid_i;
 
-   assign iob_valid_o = apb_sel_i & apb_enable_i;
+   //APB outputs regs
+   iob_reg #(
+      .DATA_W (1),
+      .RST_VAL(1'd0)
+   ) apb_ready_reg (
+      `include "clk_en_rst_s_s_portmap.vs"
+      .data_i(apb_ready_nxt),
+      .data_o(apb_ready_o)
+   );
+
+   iob_reg #(
+      .DATA_W (1),
+      .RST_VAL(1'd0)
+   ) apb_rdata_reg (
+      `include "clk_en_rst_s_s_portmap.vs"
+      .data_i(iob_rdata_i),
+      .data_o(apb_rdata_o)
+   );
+
+   assign iob_valid_o = (apb_sel_i & apb_enable_i) & (~apb_ready_nxt);
    assign iob_addr_o   = apb_addr_i;
    assign iob_wdata_o  = apb_wdata_i;
    assign iob_wstrb_o  = apb_write_i ? apb_wstrb_i : {WSTRB_W{1'b0}};
