@@ -21,6 +21,7 @@ module apb2iob #(
 );
    localparam WSTRB_W = DATA_W / 8;
 
+   wire apb_ready_nxt;
    assign apb_ready_nxt = apb_write_i ? iob_ready_i : iob_rvalid_i;
    //APB outputs regs
    iob_reg #(
