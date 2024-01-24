@@ -52,15 +52,24 @@ void uartwrite(unsigned int cpu_address, unsigned int cpu_data,
   dut->uart_wstrb_i = wstrb_int << (cpu_address & 0b011);
   dut->uart_wdata_i = cpu_data
                       << ((cpu_address & 0b011) * 8); // align data to 32 bits
+  if (!dut->uart_ready_o) {
+    Timer(CLK_PERIOD);
+  }
   Timer(CLK_PERIOD);
   dut->uart_wstrb_i = 0;
   dut->uart_valid_i = 0;
 }
 
-// 2-cycle read
 void uartread(unsigned int cpu_address, char *read_reg) {
   dut->uart_addr_i = cpu_address;
   dut->uart_valid_i = 1;
+  if (!dut->uart_ready_o) {
+    Timer(CLK_PERIOD);
+  }
+  Timer(CLK_PERIOD);
+  if (!dut->uart_rvalid_o) {
+    Timer(CLK_PERIOD);
+  }
   Timer(CLK_PERIOD);
   *read_reg =
       (dut->uart_rdata_o) >> ((cpu_address & 0b011) * 8); // align to 32 bits

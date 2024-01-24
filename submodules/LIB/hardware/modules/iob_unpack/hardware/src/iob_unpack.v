@@ -39,7 +39,7 @@ module iob_unpack #(
    //wrap control accumulator
    reg  [  $clog2(DATA_W):0] wrap_acc_nxt;
    wire [  $clog2(DATA_W):0] wrap_acc;
-   reg  [  $clog2(DATA_W):0] wrap_acc_int;
+   reg  [  $clog2(DATA_W)+1:0] wrap_acc_int;
 
    //program counter
    wire [               1:0] pcnt;
@@ -53,7 +53,7 @@ module iob_unpack #(
    //control logic
    always @* begin
       push_width   = wrap_i ? wrap_acc : DATA_W;
-      wrap_acc_int = wrap_acc + width_i;
+      wrap_acc_int = {1'd0,wrap_acc} + {1'd0,width_i};
 
       //defaults
       pop          = 1'b0;
@@ -66,7 +66,7 @@ module iob_unpack #(
          CALC_PUSH_WIDTH: begin  //compute push width
             if (wrap_i && (wrap_acc_int <= DATA_W)) begin
                pcnt_nxt     = pcnt;
-               wrap_acc_nxt = wrap_acc_int;
+               wrap_acc_nxt = wrap_acc_int[0+:$clog2(DATA_W)+1];
             end
          end
          WAIT_DATA: begin  //wait to read data from input fifo

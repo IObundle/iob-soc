@@ -325,6 +325,7 @@ class mkregs:
                         .APB_ADDR_W(ADDR_W),
                         .APB_DATA_W(DATA_W)
                     ) apb2iob_0 (
+                        `include "clk_en_rst_s_s_portmap.vs"
                         // APB slave i/f
                         .apb_addr_i  (apb_addr_i),    //Byte address of the transfer.
                         .apb_sel_i   (apb_sel_i),     //Slave select.
@@ -451,7 +452,30 @@ class mkregs:
 
         f_gen.write(");\n\n")
 
-        f_gen.write("localparam WSTRB_W = DATA_W/8;\n")
+        f_gen.write(
+            """
+    localparam WSTRB_W = DATA_W/8;
+
+    //FSM states
+    localparam WAIT_REQ = 1'd0;
+    localparam WAIT_RVALID = 1'd1;
+
+    wire state;
+    reg state_nxt;
+
+    //FSM register
+    iob_reg #( 
+        .DATA_W  (1),
+        .RST_VAL (WAIT_REQ)
+    ) fsm_reg_inst (
+        .clk_i  (clk_i),
+        .cke_i  (cke_i),
+        .arst_i (arst_i),
+        .data_i (state_nxt),
+        .data_o (state)
+    );
+    """
+        )
 
         # write address
         f_gen.write("\n//write address\n")
@@ -485,6 +509,7 @@ class mkregs:
         f_gen.write(
             f""" 
                 reg rvalid_nxt;
+                reg rvalid_int;
                 reg [{8*self.cpu_n_bytes}-1:0] rdata_nxt;
                 reg wready_int;
                 reg rready_int;
@@ -506,7 +531,7 @@ class mkregs:
 
             always @* begin
                 rdata_nxt = {8*self.cpu_n_bytes}'d0;
-                rvalid_nxt = iob_valid_i & (~(|iob_wstrb_i));
+                rvalid_int = (iob_valid_i & iob_ready_o) & (~(|iob_wstrb_i));
                 rready_int = 1'b1;
                 wready_int = 1'b1;
 
@@ -566,7 +591,7 @@ class mkregs:
                 else:
                     f_gen.write(
                         f"""rdata_nxt[{self.boffset(addr, self.cpu_n_bytes)}+:{8*n_bytes}] = {name}_rdata_i|{8*n_bytes}'d0;
-                            rvalid_nxt = {name}_rvalid_i;  
+                            rvalid_int = {name}_rvalid_i;  
                         """
                     )
                 if not auto:
@@ -595,11 +620,36 @@ class mkregs:
 
         f_gen.write(
             """     
-                    if(iob_valid_i) begin
-                        ready_nxt = (|iob_wstrb_i) ? wready_int : rready_int;
-                    end else begin
-                        ready_nxt = 1'b0;
-                    end
+
+                    // ######  FSM  #############
+
+                    //FSM default values
+                    ready_nxt = 1'b0;
+                    rvalid_nxt = 1'b0;
+                    state_nxt = state;
+
+                    //FSM state machine
+                    case(state)
+                        WAIT_REQ: begin
+                            if(iob_valid_i & (!iob_ready_o)) begin // Wait for a valid request
+                                ready_nxt = |iob_wstrb_i ? wready_int : rready_int;
+                                // If is read and ready, go to WAIT_RVALID
+                                if (ready_nxt && (!(|iob_wstrb_i))) begin
+                                    state_nxt = WAIT_RVALID;
+                                end
+                            end
+                        end
+
+                        default: begin  // WAIT_RVALID
+                            if(rvalid_int) begin
+                                rvalid_nxt = 1'b1;
+                            end
+                            if (iob_rvalid_o) begin
+                                state_nxt = WAIT_REQ;
+                            end
+                        end
+                    endcase
+
                 end //always @*
 
                 //rdata output
@@ -626,7 +676,7 @@ class mkregs:
                     .data_o (iob_rvalid_o)
                 );
 
-                //rvalid output
+                //ready output
                 iob_reg #( 
                     .DATA_W  (1),
                     .RST_VAL (1'd0)

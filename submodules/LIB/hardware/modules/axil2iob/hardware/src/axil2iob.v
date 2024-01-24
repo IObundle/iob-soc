@@ -30,8 +30,7 @@ module axil2iob #(
    assign axil_bresp_o   = 2'b0;
    wire axil_bvalid_nxt;
    //bvalid will toggle in the two situations below:
-   assign axil_bvalid_nxt = axil_bvalid_o ^ (((~axil_bvalid_o) & axil_wvalid_i)
-                              | (axil_bvalid_o & axil_bready_i & (~axil_wvalid_i)));
+   assign axil_bvalid_nxt = (|axil_wstrb_i) ? iob_ready_i & iob_valid_o : 1'b0;
 
    // read address
    assign axil_arready_o = iob_ready_i;

@@ -93,9 +93,25 @@ module iob2apb #(
       .data_o(pc)
    );
 
-   assign iob_ready_o = apb_ready_i;
-   assign iob_rvalid_o = apb_ready_i;
-   assign iob_rdata_o = apb_rdata_i;
+   iob_reg #(
+      .DATA_W (1),
+      .RST_VAL(1'd0)
+   ) apb_rvalid_reg (
+      `include "clk_en_rst_s_s_portmap.vs"
+      .data_i(apb_ready_i),
+      .data_o(iob_rvalid_o)
+   );
+
+   iob_reg #(
+      .DATA_W (DATA_W),
+      .RST_VAL({DATA_W{1'd0}})
+   ) apb_data_reg (
+      `include "clk_en_rst_s_s_portmap.vs"
+      .data_i(apb_rdata_i),
+      .data_o(iob_rdata_o)
+   );
+
+   assign iob_ready_o = apb_ready_i & (~iob_rvalid_o);
 
    always @* begin
 

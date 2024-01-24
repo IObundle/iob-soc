@@ -45,18 +45,18 @@ module iob_bfifo #(
    assign rlevel_o = level;
 
    //widths' complement
-   wire [$clog2(DATA_W):0] crwidth;
-   wire [$clog2(DATA_W):0] cwwidth;
-   assign crwidth   = ({{$clog2(DATA_W) {1'b0}}, 1'b1} << $clog2(DATA_W)) - rwidth_i;
-   assign cwwidth   = ({{$clog2(DATA_W) {1'b0}}, 1'b1} << $clog2(DATA_W)) - wwidth_i;
+   wire [$clog2(DATA_W)-1:0] crwidth;
+   wire [$clog2(DATA_W)-1:0] cwwidth;
+   assign crwidth = (~rwidth_i[$clog2(DATA_W)-1:0]) + {{$clog2(DATA_W) - 1{1'd0}}, 1'd1};
+   assign cwwidth = (~wwidth_i[$clog2(DATA_W)-1:0]) + {{$clog2(DATA_W) - 1{1'd0}}, 1'd1};
 
    //zero trailing bits
-   assign rdata_o   = (rdata[(2*DATA_W)-1-:DATA_W] >> crwidth) << crwidth;
+   assign rdata_o = (rdata[(2*DATA_W)-1-:DATA_W] >> crwidth) << crwidth;
 
    //write mask shifted
-   assign wmask     = `IOB_CSHIFT_RIGHT(BUFFER_SIZE, ({BUFFER_SIZE{1'b1}} >> wwidth_i), wptr);
+   assign wmask   = `IOB_CSHIFT_RIGHT(BUFFER_SIZE, ({BUFFER_SIZE{1'b1}} >> wwidth_i), wptr);
    //read data shifted
-   assign rdata     = `IOB_CSHIFT_LEFT(BUFFER_SIZE, data, rptr);
+   assign rdata   = `IOB_CSHIFT_LEFT(BUFFER_SIZE, data, rptr);
 
    always @* begin
       //write data shifted
