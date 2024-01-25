@@ -20,6 +20,10 @@ module iob2apb #(
    // APB master interface
    `include "apb_m_port.vs"
 );
+   
+   //IOb outputs
+   assign iob_ready_o = apb_ready_i;
+
 
    //APB outputs
    reg apb_enable;
@@ -30,24 +34,6 @@ module iob2apb #(
    assign apb_wstrb_o = iob_wstrb_i;
    assign apb_write_o = |iob_wstrb_i;
    
- 
-
-   //IOb outputs
-   reg [DATA_W-1:0]     iob_rdata_nxt;
-   iob_reg #(
-      .DATA_W (DATA_W),
-      .RST_VAL(0)
-   ) iob_rdata_reg (
-      `include "clk_en_rst_s_s_portmap.vs"
-      .data_i(iob_rdata_nxt),
-      .data_o(iob_rdata_o)
-   );
-
-   reg                  iob_ready;
-   assign iob_ready_o = iob_ready;
-
-   reg                  iob_rvalid;
-   assign iob_rvalid_o = iob_rvalid;
 
    //program counter
    wire [1:0]           pc;
@@ -68,34 +54,56 @@ module iob2apb #(
       pc_nxt         = pc + 1'b1;
 
       apb_enable = 1'b0;
-      iob_rdata_nxt  = iob_rdata_o;
-      iob_rvalid  = 1'b0;
-      iob_ready   = 1'b0;
       
       case (pc)
         0: begin
-           if (!iob_valid_i)  //wait for iob request
+           if (!iob_valid_i) begin
              pc_nxt = pc;
-           else begin  // sample iob signals and initiate apb transaction
+           end else begin 
               apb_enable = 1'b1;
            end
-        end // case: 0
-        1: begin // wait for apb_ready
+        end
+        1: begin
            apb_enable = 1'b1;
            if (!apb_ready_i) begin
              pc_nxt = pc;
-           end else begin
-              iob_ready = 1'b1;
-              if (!iob_wstrb_i) begin // wait for iob_ready
-                 iob_rdata_nxt = apb_rdata_i;
-              end
-           end
+           end else 
         end
-        default: begin // read case: assert iob_rvalid and terminate transaction
+        default: begin
            pc_nxt         = 0;
-           iob_rvalid   = 1'b1;
         end
       endcase
    end
 
+
+   //IOb outputs
+   iob_reg #(
+      .DATA_W (DATA_W),
+      .RST_VAL(0)
+   ) iob_rdata_reg (
+      `include "clk_en_rst_s_s_portmap.vs"
+      .data_i(apb_rdata_i),
+      .data_o(iob_rdata_o)
+   );
+
+   iob_reg #(
+      .DATA_W (1),
+      .RST_VAL(0)
+   ) iob_rvalid_reg (
+      `include "clk_en_rst_s_s_portmap.vs"
+      .data_i(apb_ready_i),
+      .data_o(iob_rvalid_o)
+   );
+
+   iob_reg #(
+      .DATA_W (DATA_W),
+      .RST_VAL(0)
+   ) iob_wready_reg (
+      `include "clk_en_rst_s_s_portmap.vs"
+      .data_i(apb_rdata_i),
+      .data_o(iob_rdata_o)
+   );
+
+
+   
 endmodule

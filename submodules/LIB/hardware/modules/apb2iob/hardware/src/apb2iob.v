@@ -21,10 +21,10 @@ module apb2iob #(
 );
    localparam WSTRB_W = DATA_W / 8;
 
-   reg apb_ready_nxt;
    reg iob_valid;
-   assign iob_valid_o = iob_valid;
+   reg apb_ready_nxt;
 
+   assign iob_valid_o = iob_valid;
    assign iob_addr_o   = apb_addr_i;
    assign iob_wdata_o  = apb_wdata_i;
    assign iob_wstrb_o  = apb_write_i ? apb_wstrb_i : {WSTRB_W{1'b0}};
@@ -41,32 +41,34 @@ module apb2iob #(
       .data_o(pc)
    );
 
+   assign apb_ready_nxt = apb_write_i? iob_ready_i : iob_rvalid_i;
+   
    always @* begin
 
       pc_nxt         = pc + 1'b1;
       iob_valid      = 1'b0;
-      apb_ready_nxt  = 1'b0;
-
+      apb_ready_nxt = 1'b0;
+      
       case (pc)
         0: begin
            if(!(apb_sel_i & apb_enable_i)) begin
-              pc_nxt = pc;
-           end else begin
               iob_valid     = 1'b1;
+              pc_nxt = pc;
            end
         end
         1: begin
-           iob_valid     = 1'b1;
+           iob_valid = 1'b1;
            if(!iob_ready_i) begin
               pc_nxt = pc;
            end else begin
               if(apb_write_i) begin
+                 pc_nxt = 2'd0;
                  apb_ready_nxt = 1'b1;
-                 pc_nxt = 2'd3;
               end
            end
         end
         2: begin
+           iob_valid     = 1'b1;
            if (!iob_rvalid_i) begin
               pc_nxt = pc;
            end else begin
@@ -80,7 +82,7 @@ module apb2iob #(
    end // always @ *
    
 
-  //APB outputs regs
+  //APB outputs
    iob_reg #(
       .DATA_W (1),
       .RST_VAL(1'd0)
