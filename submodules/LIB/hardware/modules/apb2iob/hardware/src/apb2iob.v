@@ -21,68 +21,71 @@ module apb2iob #(
 );
    localparam WSTRB_W = DATA_W / 8;
 
+   localparam WAIT_ENABLE = 2'd0;
+   localparam WAIT_READY = 2'd1;
+   localparam WAIT_RVALID = 2'd2;
+   localparam WAIT_APB_READY = 2'd3;
+
    reg iob_valid;
    reg apb_ready_nxt;
 
    assign iob_valid_o = iob_valid;
-   assign iob_addr_o   = apb_addr_i;
-   assign iob_wdata_o  = apb_wdata_i;
-   assign iob_wstrb_o  = apb_write_i ? apb_wstrb_i : {WSTRB_W{1'b0}};
+   assign iob_addr_o  = apb_addr_i;
+   assign iob_wdata_o = apb_wdata_i;
+   assign iob_wstrb_o = apb_write_i ? apb_wstrb_i : {WSTRB_W{1'b0}};
 
    //program counter
-   wire [1:0]           pc;
-   reg [1:0]            pc_nxt;
+   wire [1:0] pc_cnt;
+   reg  [1:0] pc_cnt_nxt;
    iob_reg #(
       .DATA_W (2),
       .RST_VAL(2'd0)
-   ) access_reg (
+   ) pc_reg (
       `include "clk_en_rst_s_s_portmap.vs"
-      .data_i(pc_nxt),
-      .data_o(pc)
+      .data_i(pc_cnt_nxt),
+      .data_o(pc_cnt)
    );
 
-   assign apb_ready_nxt = apb_write_i? iob_ready_i : iob_rvalid_i;
-   
    always @* begin
 
-      pc_nxt         = pc + 1'b1;
-      iob_valid      = 1'b0;
+      pc_cnt_nxt    = pc_cnt + 1'b1;
+      iob_valid     = 1'b0;
       apb_ready_nxt = 1'b0;
-      
-      case (pc)
-        0: begin
-           if(!(apb_sel_i & apb_enable_i)) begin
-              iob_valid     = 1'b1;
-              pc_nxt = pc;
-           end
-        end
-        1: begin
-           iob_valid = 1'b1;
-           if(!iob_ready_i) begin
-              pc_nxt = pc;
-           end else begin
-              if(apb_write_i) begin
-                 pc_nxt = 2'd0;
-                 apb_ready_nxt = 1'b1;
-              end
-           end
-        end
-        2: begin
-           iob_valid     = 1'b1;
-           if (!iob_rvalid_i) begin
-              pc_nxt = pc;
-           end else begin
-              apb_ready_nxt = 1'b1;
-           end
-        end
-        default: begin
-           pc_nxt = 2'd0;
-        end
-      endcase
-   end // always @ *
-   
 
-  //APB outputs
+      case (pc_cnt)
+         WAIT_ENABLE: begin
+            if (!(apb_sel_i & apb_enable_i)) begin
+               pc_cnt_nxt = pc_cnt;
+            end else begin
+               iob_valid = 1'b1;
+            end
+         end
+         WAIT_READY: begin
+            iob_valid = 1'b1;
+            if (!iob_ready_i) begin
+               pc_cnt_nxt = pc_cnt;
+            end else begin
+               if (apb_write_i) begin
+                  pc_cnt_nxt    = WAIT_APB_READY;
+                  apb_ready_nxt = 1'b1;
+               end
+            end
+         end
+         WAIT_RVALID: begin
+            if (!iob_rvalid_i) begin
+               pc_cnt_nxt = pc_cnt;
+            end else begin
+               apb_ready_nxt = 1'b1;
+            end
+         end
+         default: begin  // WAIT_APB_READY
+            pc_cnt_nxt = WAIT_ENABLE;
+         end
+      endcase
+   end  // always @ *
+
+
+   //APB outputs
    iob_reg #(
       .DATA_W (1),
       .RST_VAL(1'd0)
@@ -97,7 +100,7 @@ module apb2iob #(
       .RST_VAL({DATA_W{1'd0}})
    ) apb_rdata_reg (
       `include "clk_en_rst_s_s_portmap.vs"
-      .en_i(iob_rvalid_i),
+      .en_i  (iob_rvalid_i),
       .data_i(iob_rdata_i),
       .data_o(apb_rdata_o)
    );

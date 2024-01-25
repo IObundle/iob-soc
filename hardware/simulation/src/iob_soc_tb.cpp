@@ -67,13 +67,13 @@ void uartread(unsigned int cpu_address, char *read_reg) {
     Timer(CLK_PERIOD);
   }
   Timer(CLK_PERIOD);
+  dut->uart_valid_i = 0;
   if (!dut->uart_rvalid_o) {
     Timer(CLK_PERIOD);
   }
   Timer(CLK_PERIOD);
   *read_reg =
       (dut->uart_rdata_o) >> ((cpu_address & 0b011) * 8); // align to 32 bits
-  dut->uart_valid_i = 0;
 }
 
 void inituart() {
