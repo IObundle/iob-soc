@@ -65,7 +65,7 @@ module iob2apb #(
             apb_enable = 1'b1;
             if (!apb_ready_i) begin
                pc_nxt = pc;
-            end else if (apb_write_o) begin // No need to wait for rvalid
+            end else if (apb_write_o) begin  // No need to wait for rvalid
                pc_nxt = WAIT_VALID;
             end
          end

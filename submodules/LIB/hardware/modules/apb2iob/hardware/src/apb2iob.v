@@ -57,7 +57,7 @@ module apb2iob #(
             if (!(apb_sel_i & apb_enable_i)) begin
                pc_cnt_nxt = pc_cnt;
             end else begin
-               iob_valid  = 1'b1;
+               iob_valid = 1'b1;
             end
          end
          WAIT_READY: begin
@@ -78,7 +78,7 @@ module apb2iob #(
                apb_ready_nxt = 1'b1;
             end
          end
-         default: begin // WAIT_APB_READY
+         default: begin  // WAIT_APB_READY
             pc_cnt_nxt = WAIT_ENABLE;
          end
       endcase
