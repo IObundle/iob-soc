@@ -641,10 +641,8 @@ class mkregs:
                         end
 
                         default: begin  // WAIT_RVALID
-                            if(rvalid_int & !iob_rvalid_o) begin
+                            if(rvalid_int) begin
                                 rvalid_nxt = 1'b1;
-                            end
-                            if (iob_rvalid_o) begin
                                 state_nxt = WAIT_REQ;
                             end
                         end
