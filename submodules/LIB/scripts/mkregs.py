@@ -641,7 +641,7 @@ class mkregs:
                         end
 
                         default: begin  // WAIT_RVALID
-                            if(rvalid_int) begin
+                            if(rvalid_int & !iob_rvalid_o) begin
                                 rvalid_nxt = 1'b1;
                             end
                             if (iob_rvalid_o) begin
