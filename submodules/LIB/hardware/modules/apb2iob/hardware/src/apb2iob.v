@@ -70,9 +70,9 @@ module apb2iob #(
                   apb_ready_nxt = 1'b1;
                end
             end
-            RVALID : begin
-               apb_ready_nxt = 1'b1;
-            end
+         end
+         RVALID: begin
+            apb_ready_nxt = 1'b1;
          end
          default: begin  // WAIT_APB_READY
             pc_cnt_nxt = WAIT_ENABLE;
