@@ -21,133 +21,77 @@ module iob2apb #(
    `include "apb_m_port.vs"
 );
 
+   localparam WAIT_VALID = 2'd0;
+   localparam WAIT_READY = 2'd1;
+
+   //IOb outputs
+   assign iob_ready_o = apb_ready_i;
+
    //APB outputs
-   reg apb_sel_nxt;
-   iob_reg #(
-      .DATA_W (1),
-      .RST_VAL(0)
-   ) sel_reg (
-      `include "clk_en_rst_s_s_portmap.vs"
-      .data_i(apb_sel_nxt),
-      .data_o(apb_sel_o)
-   );
+   reg apb_enable;
+   assign apb_sel_o    = apb_enable;
+   assign apb_enable_o = apb_enable;
+   assign apb_wdata_o  = iob_wdata_i;
 
-   reg apb_enable_nxt;
-   iob_reg #(
-      .DATA_W (1),
-      .RST_VAL(0)
-   ) enable_reg (
-      `include "clk_en_rst_s_s_portmap.vs"
-      .data_i(apb_enable_nxt),
-      .data_o(apb_enable_o)
-   );
+   assign apb_addr_o   = iob_addr_i;
+   assign apb_wstrb_o  = iob_wstrb_i;
+   assign apb_write_o  = |iob_wstrb_i;
 
-   reg [ADDR_W-1:0] apb_addr_nxt;
+   //program counter
+   wire [1:0] pc;
+   reg  [1:0] pc_nxt;
    iob_reg #(
-      .DATA_W (ADDR_W),
+      .DATA_W (2),
       .RST_VAL(0)
-   ) addr_reg (
-      `include "clk_en_rst_s_s_portmap.vs"
-      .data_i(apb_addr_nxt),
-      .data_o(apb_addr_o)
-   );
-
-   reg [(DATA_W/8)-1:0] apb_wstrb_nxt;
-   iob_reg #(
-      .DATA_W (DATA_W / 8),
-      .RST_VAL(0)
-   ) wstrb_reg (
-      `include "clk_en_rst_s_s_portmap.vs"
-      .data_i(apb_wstrb_nxt),
-      .data_o(apb_wstrb_o)
-   );
-
-   reg apb_write_nxt;
-   iob_reg #(
-      .DATA_W (1),
-      .RST_VAL(0)
-   ) write_reg (
-      `include "clk_en_rst_s_s_portmap.vs"
-      .data_i(apb_write_nxt),
-      .data_o(apb_write_o)
-   );
-
-   reg [DATA_W-1:0] apb_wdata_nxt;
-   iob_reg #(
-      .DATA_W (DATA_W),
-      .RST_VAL(0)
-   ) wdata_reg (
-      `include "clk_en_rst_s_s_portmap.vs"
-      .data_i(apb_wdata_nxt),
-      .data_o(apb_wdata_o)
-   );
-
-   wire pc;
-   reg  pc_nxt;
-   iob_reg #(
-      .DATA_W (1),
-      .RST_VAL(0)
-   ) access_reg (
+   ) pc_reg (
       `include "clk_en_rst_s_s_portmap.vs"
       .data_i(pc_nxt),
       .data_o(pc)
    );
 
-   iob_reg #(
-      .DATA_W (1),
-      .RST_VAL(1'd0)
-   ) apb_rvalid_reg (
-      `include "clk_en_rst_s_s_portmap.vs"
-      .data_i(apb_ready_i),
-      .data_o(iob_rvalid_o)
-   );
+   always @* begin
+      pc_nxt     = pc + 1'b1;
+      apb_enable = 1'b0;
 
+      case (pc)
+         WAIT_VALID: begin
+            if (!iob_valid_i) begin
+               pc_nxt = pc;
+            end else begin
+               apb_enable = 1'b1;
+            end
+         end
+         WAIT_READY: begin
+            apb_enable = 1'b1;
+            if (!apb_ready_i) begin
+               pc_nxt = pc;
+            end else if (apb_write_o) begin  // No need to wait for rvalid
+               pc_nxt = WAIT_VALID;
+            end
+         end
+         default: begin
+            pc_nxt = WAIT_VALID;
+         end
+      endcase
+   end
+
+   //IOb outputs
    iob_reg #(
       .DATA_W (DATA_W),
-      .RST_VAL({DATA_W{1'd0}})
-   ) apb_data_reg (
+      .RST_VAL(0)
+   ) iob_rdata_reg (
       `include "clk_en_rst_s_s_portmap.vs"
       .data_i(apb_rdata_i),
       .data_o(iob_rdata_o)
    );
 
-   assign iob_ready_o = apb_ready_i & (~iob_rvalid_o);
-
-   always @* begin
-
-      pc_nxt         = pc + 1'b1;
-
-      apb_sel_nxt    = apb_sel_o;
-      apb_enable_nxt = apb_enable_o;
-      apb_addr_nxt   = apb_addr_o;
-      apb_write_nxt  = apb_write_o;
-      apb_wstrb_nxt  = apb_wstrb_o;
-      apb_wdata_nxt  = apb_wdata_o;
-
-      case (pc)
-         0: begin
-            if (!iob_valid_i)  //wait for iob request
-               pc_nxt = pc;
-            else begin  // sample iob signals and initiate apb transaction
-               apb_addr_nxt  = iob_addr_i;
-               apb_write_nxt = (iob_wstrb_i != 0);
-               apb_wstrb_nxt = iob_wstrb_i;
-               apb_wdata_nxt = iob_wdata_i;
-               apb_sel_nxt   = 1'b1;
-            end
-         end
-         default: begin
-            apb_enable_nxt = 1'b1;
-            if (!apb_ready_i)  //wait until apb interface is ready
-               pc_nxt = pc;
-            else begin  //sample apb response and finish transaction
-               pc_nxt         = 1'd0;
-               apb_sel_nxt    = 1'b0;
-               apb_enable_nxt = 1'b0;
-            end
-         end
-      endcase
-   end
-
+   iob_reg #(
+      .DATA_W (1),
+      .RST_VAL(0)
+   ) iob_rvalid_reg (
+      `include "clk_en_rst_s_s_portmap.vs"
+      .data_i(apb_ready_i),
+      .data_o(iob_rvalid_o)
+   );
 
 endmodule
