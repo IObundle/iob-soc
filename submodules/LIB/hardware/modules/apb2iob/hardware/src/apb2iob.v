@@ -40,7 +40,7 @@ module apb2iob #(
    iob_reg #(
       .DATA_W (2),
       .RST_VAL(2'd0)
-   ) access_reg (
+   ) pc_reg (
       `include "clk_en_rst_s_s_portmap.vs"
       .data_i(pc_cnt_nxt),
       .data_o(pc_cnt)

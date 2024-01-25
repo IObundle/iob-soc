@@ -97,7 +97,7 @@ module iob2apb #(
    iob_reg #(
       .DATA_W (DATA_W),
       .RST_VAL(0)
-   ) iob_wready_reg (
+   ) iob_rdata_reg (
       `include "clk_en_rst_s_s_portmap.vs"
       .data_i(apb_rdata_i),
       .data_o(iob_rdata_o)
