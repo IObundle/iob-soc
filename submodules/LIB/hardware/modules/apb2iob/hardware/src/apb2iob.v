@@ -23,7 +23,7 @@ module apb2iob #(
 
    localparam WAIT_ENABLE = 2'd0;
    localparam WAIT_READY = 2'd1;
-   localparam WAIT_RVALID = 2'd2;
+   localparam RVALID = 2'd2;
    localparam WAIT_APB_READY = 2'd3;
 
    reg iob_valid;
@@ -71,12 +71,8 @@ module apb2iob #(
                end
             end
          end
-         WAIT_RVALID: begin
-            if (!iob_rvalid_i) begin
-               pc_cnt_nxt = pc_cnt;
-            end else begin
-               apb_ready_nxt = 1'b1;
-            end
+         RVALID: begin
+            apb_ready_nxt = 1'b1;
          end
          default: begin  // WAIT_APB_READY
             pc_cnt_nxt = WAIT_ENABLE;
