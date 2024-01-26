@@ -26,6 +26,7 @@ class iob_module:
     name = "iob_module"  # Verilog module name (not instance name)
     csr_if = "iob"
     version = "1.0"  # Module version
+    description = "default description"  # Module description
     previous_version = None  # Module version
     setup_dir = ""  # Setup directory for this module
     build_dir = ""  # Build directory for this module
@@ -452,6 +453,7 @@ class iob_module:
                 cls.block_groups, cls.build_dir + "/document/tsrc"
             )
             if cls.generate_ipxact:
+                # Generate IP-XACT XML file
                 ipxact_lib.generate_ipxact_xml(
                     cls, reg_table, cls.build_dir + "/document/ipxact"
                 )

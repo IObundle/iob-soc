@@ -5,6 +5,8 @@
 import math
 import ios
 import if_gen
+import re
+import os
 
 # Generates IP-XACT for the given core
 #
@@ -92,21 +94,32 @@ class SwRegister:
         else:
             access_type = "read-write"
 
+        xml_hw_size = self.hw_size
+
         # Search for parameters in the hw_size and replace them with their ID
-        for param in parameters_list:
-            # if the parameter is in the hw_size, increment it's usage count for each time it's used
-            if param.name in self.hw_size:
-                param.usage_count += self.hw_size.count(param.name)
-                # replace the parameter with it's ID
-                xml_hw_size = self.hw_size.replace(param.name, param.name + "_ID")
+        if self.hw_size is str:
+            # divide the hw_size expression into a list of strings separated by operators or parenthesis
+            hw_size_list = re.split(r"(\+|\-|\*|\/|\(|\))", self.hw_size)
+            for value in hw_size_list:
+                for param in parameters_list:
+                    # if the parameter is in the hw_size, increment it's usage count for each time it's used
+                    if value == param.name:
+                        param.usage_count += self.hw_size.count(param.name)
+                        # replace the parameter with it's ID
+                        xml_hw_size = self.hw_size.replace(
+                            param.name, param.name + "_ID"
+                        )
 
         # If the register is not a multiple of 8 bits, add the reserved bits
         rsvd_xml = ""
         if self.sw_size != self.hw_size:
             # if the parameter is in the hw_size, increment it's usage count two times for each time it's used
-            for param in parameters_list:
-                if param.name in self.hw_size:
-                    param.usage_count += 2 * self.hw_size.count(param.name)
+            if self.hw_size is str:
+                for value in hw_size_list:
+                    for param in parameters_list:
+                        # if the parameter is in the hw_size, increment it's usage count for each time it's used
+                        if value == param.name:
+                            param.usage_count += self.hw_size.count(param.name)
 
             # Generate the reserved bits xml code
             rsvd_xml = f"""
@@ -118,7 +131,7 @@ class SwRegister:
             <ipxact:value>{self.rst_val}</ipxact:value>
         </ipxact:reset>
     </ipxact:resets>
-    <ipxact:bitWidth>{self.sw_size + " - " + xml_hw_size}</ipxact:bitWidth>
+    <ipxact:bitWidth>{self.sw_size} - {xml_hw_size}</ipxact:bitWidth>
 </ipxact:field>
     """
 
@@ -169,18 +182,24 @@ class Port:
         return: xml code
         """
 
+        xml_n_bits = self.n_bits
+
         # set the direction
         if self.type == "input":
             direction = "in"
-        elif self.type == "output":
+        else:
             direction = "out"
 
-        # Search for parameters in the n_bits and replace them with their ID and increment their usage count
-        for param in parameters_list:
-            if param.name in self.n_bits:
-                param.usage_count += self.n_bits.count(param.name)
-                # replace the parameter with it's ID
-                xml_n_bits = self.n_bits.replace(param.name, param.name + "_ID")
+        # divide the hw_size expression into a list of strings separated by operators or parenthesis
+        if self.n_bits is str:
+            n_bits_list = re.split(r"(\+|\-|\*|\/|\(|\))", self.n_bits)
+            # Search for parameters in the n_bits and replace them with their ID and increment their usage count
+            for value in n_bits_list:
+                for param in parameters_list:
+                    if value == param.name:
+                        param.usage_count += self.n_bits.count(param.name)
+                        # replace the parameter with it's ID
+                        xml_n_bits = self.n_bits.replace(param.name, param.name + "_ID")
 
         # Generate the xml code
         xml_code = f"""
@@ -266,7 +285,7 @@ def gen_ports_xml(ports_list, parameters_list):
     return xml_code
 
 
-def gen_memory_map_xml(core, sw_regs, parameters_list):
+def gen_memory_map_xml(sw_regs, parameters_list):
     """
     Generate the memory map xml code
     @param core: core object
@@ -391,7 +410,8 @@ def gen_instantiations_xml(core, parameters_list):
 
     return xml_code
 
-def gen_resets_xml (ports_list):
+
+def gen_resets_xml(ports_list):
     """
     Generate the resets xml code by finding ports with the word "arst_i" in the last 6 characters
     @param ports_list: list of ports objects
@@ -424,6 +444,7 @@ def gen_resets_xml (ports_list):
 
     return xml_code
 
+
 def gen_parameters_xml(parameters_list):
     """
     Generate the parameters xml code
@@ -450,14 +471,12 @@ def generate_ipxact_xml(core, sw_regs, dest_dir):
     """
     Generate the xml file for the given core
     @param core: core object
-    @param sw_regs: list of software registers objects
     @param dest_dir: destination directory
     return: None
     """
 
-    # Remove the core name iob_ sufix and add the CSR IF,
-    core_name = core_name.replace("iob_", "")
-    core_name = core_name + "_" + core.csr_if
+    # Add the CSR IF,
+    core_name = core.name + "_" + core.csr_if
 
     # Core name to be displayed in the xml file
     # Change "_" to "-" and capitalize all the letters
@@ -478,37 +497,39 @@ def generate_ipxact_xml(core, sw_regs, dest_dir):
 
     # Generate ports list
     ports_list = gen_ports_list(core)
-    
+
     # Generate ports xml code
-    ports_xml = gen_ports_xml(ports_list, ports_list)
+    ports_xml = gen_ports_xml(ports_list, parameters_list)
 
     # Generate resets xml code
-    resets_xml = gen_resets_xml(core)
+    resets_xml = gen_resets_xml(ports_list)
 
     # Generate parameters xml code
     parameters_xml = gen_parameters_xml(parameters_list)
 
+    # Create the destination directory if it doesn't exist
+    if not os.path.exists(dest_dir):
+        os.makedirs(dest_dir)
+
     # Create the xml file
-    xml_file = open(dest_dir + "/" + core_name + ".xml", "w")
+    xml_file = open(dest_dir + "/" + core_name + ".xml", "w+")
 
     # Write the xml header
-    xml_file.write(
-        f"""
-<?xml version=\"1.0\" encoding=\"UTF-8\"?>
-<ipxact:component xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ipxact="http://www.accellera.org/XMLSchema/IPXACT/1685-2014" xmlns:kactus2="http://kactus2.cs.tut.fi" xsi:schemaLocation="http://www.accellera.org/XMLSchema/IPXACT/1685-2014 http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd>
+    xml_text = f"""<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<ipxact:component xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ipxact="http://www.accellera.org/XMLSchema/IPXACT/1685-2014" xmlns:kactus2="http://kactus2.cs.tut.fi" xsi:schemaLocation="http://www.accellera.org/XMLSchema/IPXACT/1685-2014 http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd">
     <ipxact:vendor>{core_vendor}</ipxact:vendor>
     <ipxact:library>{core_library}</ipxact:library>
     <ipxact:name>{core_name_display}</ipxact:name>
     <ipxact:version>{core.version}</ipxact:version>
     {memory_map_xml}
     <ipxact:model>
-		<ipxact:views>
-			<ipxact:view>
-				<ipxact:name>flat_verilog</ipxact:name>
-				<ipxact:envIdentifier>Verilog:kactus2.cs.tut.fi:</ipxact:envIdentifier>
-				<ipxact:componentInstantiationRef>verilog_implementation</ipxact:componentInstantiationRef>
-			</ipxact:view>
-		</ipxact:views>
+        <ipxact:views>
+            <ipxact:view>
+                <ipxact:name>flat_verilog</ipxact:name>
+                <ipxact:envIdentifier>Verilog:kactus2.cs.tut.fi:</ipxact:envIdentifier>
+                <ipxact:componentInstantiationRef>verilog_implementation</ipxact:componentInstantiationRef>
+            </ipxact:view>
+        </ipxact:views>
         {instantiations_xml}
         {ports_xml}
     </ipxact:model>
@@ -516,14 +537,15 @@ def generate_ipxact_xml(core, sw_regs, dest_dir):
     <ipxact:description>{core.description}</ipxact:description>
     {parameters_xml}
     <ipxact:vendorExtensions>
-		<kactus2:author>IObundle, Lda</kactus2:author>
-		<kactus2:version>3,10,15,0</kactus2:version>
-		<kactus2:kts_attributes>
-			<kactus2:kts_productHier>Flat</kactus2:kts_productHier>
-			<kactus2:kts_implementation>HW</kactus2:kts_implementation>
-			<kactus2:kts_firmness>Mutable</kactus2:kts_firmness>
-		</kactus2:kts_attributes>
-	</ipxact:vendorExtensions>
+        <kactus2:author>IObundle, Lda</kactus2:author>
+        <kactus2:version>3,10,15,0</kactus2:version>
+        <kactus2:kts_attributes>
+            <kactus2:kts_productHier>Flat</kactus2:kts_productHier>
+            <kactus2:kts_implementation>HW</kactus2:kts_implementation>
+            <kactus2:kts_firmness>Mutable</kactus2:kts_firmness>
+        </kactus2:kts_attributes>
+    </ipxact:vendorExtensions>
 </ipxact:component>
         """
-    )
+    # Write the xml code to the file
+    xml_file.write(xml_text)
