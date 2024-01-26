@@ -3,6 +3,8 @@
 # TODO: account for log2n_items in the memory map
 
 import math
+import ios.py
+import if_gen.py
 
 # Generates IP-XACT for the given core
 #
@@ -78,6 +80,7 @@ class SwRegister:
         """
         Generate the xml code for the software register
         @param self: software register object
+        @param parameters_list: list of parameters objects
         return: xml code
         """
 
@@ -107,16 +110,16 @@ class SwRegister:
 
             # Generate the reserved bits xml code
             rsvd_xml = f"""
-    <ipxact:field>
-        <ipxact:name>RSVD</ipxact:name>
-        <ipxact:bitOffset>{xml_hw_size}</ipxact:bitOffset>
-        <ipxact:resets>
-            <ipxact:reset resetTypeRef="{self.rst}">
-                <ipxact:value>{self.rst_val}</ipxact:value>
-            </ipxact:reset>
-        </ipxact:resets>
-        <ipxact:bitWidth>{self.sw_size + " - " + xml_hw_size}</ipxact:bitWidth>
-    </ipxact:field>
+<ipxact:field>
+    <ipxact:name>RSVD</ipxact:name>
+    <ipxact:bitOffset>{xml_hw_size}</ipxact:bitOffset>
+    <ipxact:resets>
+        <ipxact:reset resetTypeRef="{self.rst}">
+            <ipxact:value>{self.rst_val}</ipxact:value>
+        </ipxact:reset>
+    </ipxact:resets>
+    <ipxact:bitWidth>{self.sw_size + " - " + xml_hw_size}</ipxact:bitWidth>
+</ipxact:field>
     """
 
         # Generate the xml code
@@ -140,6 +143,60 @@ class SwRegister:
     </ipxact:field>
     {rsvd_xml}
 </ipxact:register>
+        """
+
+        return xml_code
+
+
+class Port:
+    """
+    Port class
+
+
+    """
+
+    def __init__(self, name, type, n_bits, description):
+        self.name = name
+        self.type = type
+        self.n_bits = n_bits
+        self.description = description
+
+    def gen_xml(self, parameters_list):
+        """
+        Generate the xml code for the port
+        @param self: port object
+        @param parameters_list: list of parameters objects
+        return: xml code
+        """
+
+        # set the direction
+        if self.type == "input":
+            direction = "in"
+        elif self.type == "output":
+            direction = "out"
+
+        # Search for parameters in the n_bits and replace them with their ID and increment their usage count
+        for param in parameters_list:
+            if param.name in self.n_bits:
+                param.usage_count += self.n_bits.count(param.name)
+                # replace the parameter with it's ID
+                xml_n_bits = self.n_bits.replace(param.name, param.name + "_ID")
+
+        # Generate the xml code
+        xml_code = f"""
+<ipxact:port>
+    <ipxact:name>{self.name}</ipxact:name>
+    <ipxact:description>{self.description}</ipxact:description>
+    <ipxact:wire>
+        <ipxact:direction>{direction}</ipxact:direction>
+        <ipxact:vectors>
+            <ipxact:vector>
+                <ipxact:left>{xml_n_bits}-1</ipxact:left>
+                <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+        </ipxact:vectors>
+    </ipxact:wire>
+</ipxact:port>
         """
 
         return xml_code
@@ -203,6 +260,8 @@ def gen_memory_map_xml(core, sw_regs, parameters_list):
 </ipxact:memoryMaps>
     """
 
+    return xml_code
+
 
 def gen_parameters_list(core):
     """
@@ -226,6 +285,7 @@ def gen_parameters_list(core):
 
     return parameters_list
 
+
 def gen_instantiations_xml(core, parameters_list):
     """
     Generate the instantiations xml code
@@ -235,12 +295,37 @@ def gen_instantiations_xml(core, parameters_list):
     """
 
     # Generate the parameters xml code
-    parameters_xml = ""
+    inst_parameters_xml = ""
     for param in parameters_list:
-        parameters_xml += param.gen_xml()
+        # generate the parameter ID and the instance parameter ID
+        param_id = param.name + "_ID"
+        inst_param_id = param.name + "_INST_ID"
+        # increment the usage count of the parameter
+        param.usage_count += 1
+
+        # generate the xml code
+        inst_parameters_xml += f"""
+<ipxact:moduleParameter parameterId="{inst_param_id}" usageType="nontyped">
+    <ipxact:name>{param.name}</ipxact:name>
+    <ipxact:value>{param_id}</ipxact:value>
+</ipxact:moduleParameter>
+    """
 
     # Generate the xml code for the instantiations
-    xml_code = f""":
+    xml_code = f"""
+<ipxact:instantiations>
+    <ipxact:componentInstantiation>
+        <ipxact:name>verilog_implementation</ipxact:name>
+        <ipxact:language>Verilog</ipxact:language>
+        <ipxact:moduleName>{core.name}</ipxact:moduleName>
+        <ipxact:moduleParameters>
+            {inst_parameters_xml}
+        </ipxact:moduleParameters>
+    </ipxact:componentInstantiation>
+</ipxact:instantiations>
+    """
+
+    return xml_code
 
 
 def generate_ipxact_xml(core, sw_regs, dest_dir):
