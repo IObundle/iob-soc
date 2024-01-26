@@ -3,8 +3,8 @@
 # TODO: account for log2n_items in the memory map
 
 import math
-import ios.py
-import if_gen.py
+import ios
+import if_gen
 
 # Generates IP-XACT for the given core
 #
@@ -202,6 +202,70 @@ class Port:
         return xml_code
 
 
+def gen_ports_list(core):
+    """
+    Generate the ports list for the given core
+    @param core: core object
+    return: ports list
+    """
+
+    ports_list = []
+
+    # First, scan the interfaces list for standard interfaces
+    for interface in core.ios:
+        if "doc_only" in interface.keys() and interface["doc_only"]:
+            continue
+
+        # Check if this interface is a standard interface (from if_gen.py)
+        if_prefix, if_name = ios.find_suffix_from_list(
+            interface["name"], if_gen.interfaces
+        )
+        if if_name:
+            # Generate the ports list for the interface
+            if_gen.create_signal_table(if_name)
+            port_prefix = f"{if_name+'_'}{if_prefix}"
+            param_prefix = port_prefix.upper()
+            if_ports_list = if_gen.generate_interface(
+                if_name, port_prefix, param_prefix
+            )
+        else:  # Interface is not standard, simply read ports list
+            if_ports_list = interface["ports"]
+
+    for port in if_ports_list:
+        ports_list.append(
+            Port(
+                port["name"],
+                port["type"],
+                port["n_bits"],
+                port["descr"],
+            )
+        )
+
+    return ports_list
+
+
+def gen_ports_xml(ports_list, parameters_list):
+    """
+    Generate the ports xml code
+    @param ports_list: list of ports objects
+    return: xml code
+    """
+
+    # Generate the xml code for the ports
+    ports_xml = ""
+    for port in ports_list:
+        ports_xml += port.gen_xml(parameters_list)
+
+    # Generate the xml code for the ports
+    xml_code = f"""
+<ipxact:ports>
+    {ports_xml}
+</ipxact:ports>
+    """
+
+    return xml_code
+
+
 def gen_memory_map_xml(core, sw_regs, parameters_list):
     """
     Generate the memory map xml code
@@ -327,6 +391,60 @@ def gen_instantiations_xml(core, parameters_list):
 
     return xml_code
 
+def gen_resets_xml (ports_list):
+    """
+    Generate the resets xml code by finding ports with the word "arst_i" in the last 6 characters
+    @param ports_list: list of ports objects
+    return: xml code
+    """
+
+    # Find the ports with the word "arst_i" in the last 6 characters
+    arst_ports = []
+    for port in ports_list:
+        if port.name[-6:] == "arst_i":
+            arst_ports.append(port)
+
+    # Generate the xml code for the resets
+    ports_xml_code = ""
+    for rst in arst_ports:
+        ports_xml_code += f"""
+<ipxact:resetType>
+    <ipxact:name>{rst.name}</ipxact:name>
+    <ipxact:displayName>{rst.name}</ipxact:displayName>
+    <ipxact:description>{rst.description}</ipxact:description>
+</ipxact:resetType>
+        """
+
+    # Generate the xml code for the resets
+    xml_code = f"""
+<ipxact:resetTypes>
+    {ports_xml_code}
+</ipxact:resetTypes>
+    """
+
+    return xml_code
+
+def gen_parameters_xml(parameters_list):
+    """
+    Generate the parameters xml code
+    @param parameters_list: list of parameters objects
+    return: xml code
+    """
+
+    # Generate the xml code for the parameters
+    parameters_xml = ""
+    for param in parameters_list:
+        parameters_xml += param.gen_xml()
+
+    # Generate the xml code for the parameters
+    xml_code = f"""
+<ipxact:parameters>
+    {parameters_xml}
+</ipxact:parameters>
+    """
+
+    return xml_code
+
 
 def generate_ipxact_xml(core, sw_regs, dest_dir):
     """
@@ -357,6 +475,18 @@ def generate_ipxact_xml(core, sw_regs, dest_dir):
 
     # Generate instantiations xml code
     instantiations_xml = gen_instantiations_xml(core, parameters_list)
+
+    # Generate ports list
+    ports_list = gen_ports_list(core)
+    
+    # Generate ports xml code
+    ports_xml = gen_ports_xml(ports_list, ports_list)
+
+    # Generate resets xml code
+    resets_xml = gen_resets_xml(core)
+
+    # Generate parameters xml code
+    parameters_xml = gen_parameters_xml(parameters_list)
 
     # Create the xml file
     xml_file = open(dest_dir + "/" + core_name + ".xml", "w")
