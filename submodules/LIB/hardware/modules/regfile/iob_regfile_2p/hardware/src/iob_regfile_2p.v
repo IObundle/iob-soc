@@ -44,26 +44,28 @@ module iob_regfile_2p #(
 
    //write register file
    wire [WDATA_W-1:0] wdata_int = req_i[WDATA_W-1:0];
-   genvar i;
-   genvar j;
+   genvar row_sel;
+   genvar col_sel;
 
    localparam LAST_I = (N / WSTRB_W) * WSTRB_W;
    localparam REM_I = (N - LAST_I) + 1;
 
    generate
-      for (i = 0; i < N; i = i + WSTRB_W) begin : g_rows
-         for (j = 0; j < ((i == LAST_I) ? REM_I : WSTRB_W); j = j + 1) begin : g_columns
-
-            if ((i + j) < N) begin : g_if
-               assign wen[i+j] = wen_i & (waddr_int == (i + j)) & wstrb[j];
+      for (row_sel = 0; row_sel < N; row_sel = row_sel + WSTRB_W) begin : g_rows
+         for ( col_sel = 0;
+               col_sel < ((row_sel == LAST_I) ? REM_I : WSTRB_W);
+               col_sel = col_sel + 1) begin : g_columns
+            if ((row_sel + col_sel) < N) begin : g_if
+               assign wen[row_sel+col_sel] = wen_i & (waddr_int == (row_sel + col_sel))
+                                             & wstrb[col_sel];
                iob_reg_e #(
                   .DATA_W (W),
                   .RST_VAL({W{1'b0}})
                ) iob_reg_inst (
                   `include "clk_en_rst_s_s_portmap.vs"
-                  .en_i  (wen[i+j]),
-                  .data_i(wdata_int[(j*8)+:W]),
-                  .data_o(regfile[(i+j)*W+:W])
+                  .en_i  (wen[row_sel+col_sel]),
+                  .data_i(wdata_int[(col_sel*8)+:W]),
+                  .data_o(regfile[(row_sel+col_sel)*W+:W])
                );
             end
          end
