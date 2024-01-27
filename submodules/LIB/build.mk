@@ -3,6 +3,8 @@
 # This file is copied to the root of the build directory and becomes the top Makefile.
 #
 
+SHELL:=bash
+
 include config_build.mk
 
 BSP_H ?= software/src/bsp.h
