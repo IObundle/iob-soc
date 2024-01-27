@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S python3 -B
 # Python script to search and add python modules under the given directory to the search path.
 # It also instatiates the top module, assuming that it is a class with the same name as the file that contains it.
 import os
