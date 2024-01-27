@@ -20,41 +20,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  lib:
-    runs-on: self-hosted
-    timeout-minutes: 5
-
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: 'recursive'
-      - name: run LIB test
-        run: nix-shell --run "cd submodules/LIB; ./scripts/test.sh test"
-
-  uart:
-    runs-on: self-hosted
-    timeout-minutes: 5
-
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: 'recursive'
-      - name: run uart test
-        run: make -C submodules/UART test
-
-  cache:
-    runs-on: self-hosted
-    timeout-minutes: 20
-
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: 'recursive'
-      - name: run simulation test
-        run: make -C submodules/CACHE sim-test
-      - name: run fpga test
-        run: make -C submodules/CACHE fpga-test
-
 
   pc-emul:
     runs-on: self-hosted
@@ -85,7 +50,7 @@ jobs:
     runs-on: self-hosted
     timeout-minutes: 60
     if: ${{ !cancelled() }}
-    needs: [ pc-emul ]
+    needs: [ simulation ]
   
     steps:
       - uses: actions/checkout@v3
@@ -100,7 +65,7 @@ jobs:
     runs-on: self-hosted
     timeout-minutes: 90
     if: ${{ !cancelled() }}
-    needs: [ pc-emul ]
+    needs: [ simulation ]
 
     steps:
       - uses: actions/checkout@v3
@@ -111,6 +76,46 @@ jobs:
       - name: no init mem and ext mem
         run: make fpga-run BOARD=AES-KU040-DB-G INIT_MEM=0 USE_EXTMEM=1
 
+  lib:
+    runs-on: self-hosted
+    timeout-minutes: 5
+    if: ${{ !cancelled() }}
+    needs: [ cyclonev ]
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: run LIB test
+        run: nix-shell --run "cd submodules/LIB; ./scripts/test.sh test"
+
+  uart:
+    runs-on: self-hosted
+    timeout-minutes: 5
+    if: ${{ !cancelled() }}
+    needs: [ lib ]
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: run uart test
+        run: make -C submodules/UART test
+
+  cache:
+    runs-on: self-hosted
+    timeout-minutes: 20
+    if: ${{ !cancelled() }}
+    needs: [ cyclonev ]
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: run simulation test
+        run: make -C submodules/CACHE sim-test
+      - name: run fpga test
+        run: make -C submodules/CACHE fpga-test
   doc:
     runs-on: self-hosted
     timeout-minutes: 60

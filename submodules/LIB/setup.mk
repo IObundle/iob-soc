@@ -3,11 +3,6 @@
 # This file is run as a makefile to setup a build directory for an IP core
 #
 
-help:
-	@echo The following targets are available:
-	@echo "  build-setup:  Setup the build directory"
-	@echo "  clean:  Remove the build directory"
-
 TOP_MODULE_NAME ?=$(basename $(wildcard *.py))
 PROJECT_ROOT ?=.
 
@@ -102,11 +97,7 @@ endif
 
 clean: build_dir_name
 	-@if [ -f $(BUILD_DIR)/Makefile ]; then make -C $(BUILD_DIR) clean; fi
-	@rm -rf ../*.summary ../*.rpt $(BUILD_DIR)
-	@rm -f ~*
-ifneq ($(wildcard config_delivery.mk),)
-	make delivery-clean
-endif
+	@rm -rf ../*.summary ../*.rpt $(BUILD_DIR)*  ~*
 
 # Remove all __pycache__ folders with python bytecode
 python-cache-clean:
