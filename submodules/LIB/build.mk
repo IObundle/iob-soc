@@ -5,21 +5,32 @@
 
 SHELL:=bash
 
+SIMULATOR ?= icarus
+BOARD ?= CYCLONEV-GT-DK
+
 include config_build.mk
 
 BSP_H ?= software/src/bsp.h
-SIM_DIR = hardware/simulation
-BOARD_DIR = $(shell find -name $(BOARD) -type d -print -quit)
+SIM_DIR := hardware/simulation
+BOARD_DIR := $(shell find -name $(BOARD) -type d -print -quit)
 
 #
 # Create bsp.h from bsp.vh
 #
+
+ifeq (fpga,$(findstring fpga,$(MAKECMDGOALS)))
+  USE_FPGA = 1
+endif
+
 $(BSP_H):
-	if [ $(MAKECMDGOALS) == *fpga* ]; then \
-		cp $(BOARD_DIR)/bsp.vh $@; \
-	else \
-		cp $(SIM_DIR)/src/bsp.vh $@; \
-	fi; sed -i 's/`/#/g' $@;
+ifeq ($(USE_FPGA),1)
+	@echo "Creating $(BSP_H) for FPGA"
+	cp $(BOARD_DIR)/bsp.vh $@;	
+else
+	@echo "Creating $(BSP_H) for simulation"
+	cp $(SIM_DIR)/src/bsp.vh $@;
+endif
+	sed -i 's/`/#/g' $@;
 
 
 # 
