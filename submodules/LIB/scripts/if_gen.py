@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S python3 -B
 
 # Generates IOb Native, Clock and Reset, External Memory, AXI4 Full and AXI4
 # Lite ports, port maps and signals

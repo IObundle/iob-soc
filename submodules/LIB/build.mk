@@ -15,7 +15,7 @@ BOARD_DIR = $(shell find -name $(BOARD) -type d -print -quit)
 # Create bsp.h from bsp.vh
 #
 $(BSP_H):
-	if [[ $(MAKECMDGOALS) == *fpga* ]]; then \
+	if [ $(MAKECMDGOALS) == *fpga* ]; then \
 		cp $(BOARD_DIR)/bsp.vh $@; \
 	else \
 		cp $(SIM_DIR)/src/bsp.vh $@; \
