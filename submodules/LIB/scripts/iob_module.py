@@ -12,6 +12,7 @@ import mkregs
 import blocks as blocks_lib
 import ios as ios_lib
 import mk_configuration as mk_conf
+import ipxact as ipxact_lib
 
 
 class iob_module:
@@ -25,6 +26,7 @@ class iob_module:
     name = "iob_module"  # Verilog module name (not instance name)
     csr_if = "iob"
     version = "1.0"  # Module version
+    description = "default description"  # Module description
     previous_version = None  # Module version
     setup_dir = ""  # Setup directory for this module
     build_dir = ""  # Build directory for this module
@@ -37,6 +39,7 @@ class iob_module:
     wire_list = None  # List of internal wires of the Verilog module. Used to interconnect module components.
     is_top_module = False  # Select if this module is the top module
     use_netlist = False  # use module netlist
+    generate_ipxact = False  # generate IP-XACT XML file
     is_system = False  # create software files in build directory
 
     _initialized_attributes = (
@@ -449,6 +452,11 @@ class iob_module:
             blocks_lib.generate_blocks_tex(
                 cls.block_groups, cls.build_dir + "/document/tsrc"
             )
+            if cls.generate_ipxact:
+                # Generate IP-XACT XML file
+                ipxact_lib.generate_ipxact_xml(
+                    cls, reg_table, cls.build_dir + "/document/ipxact"
+                )
 
     @classmethod
     def _remove_duplicate_sources(cls):
