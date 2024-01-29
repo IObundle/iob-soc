@@ -335,7 +335,7 @@ def gen_memory_map_xml(sw_regs, parameters_list):
     # Generate the xml code for the software registers
     sw_regs_xml = ""
     for sw_reg in sw_regs_list:
-        if sw_regs_xml == "":
+        if sw_regs_xml != "":
             sw_regs_xml += "\n"
             # indent the xml code
             sw_regs_xml += "\t" * 4
@@ -362,7 +362,6 @@ def gen_memory_map_xml(sw_regs, parameters_list):
 				<ipxact:width>32</ipxact:width>
 				<ipxact:usage>register</ipxact:usage>
 				<ipxact:access>read-write</ipxact:access>
-				<ipxact:volatile>true</ipxact:volatile>
 				{sw_regs_xml}
 			</ipxact:addressBlock>
 			<ipxact:addressUnitBits>8</ipxact:addressUnitBits>
