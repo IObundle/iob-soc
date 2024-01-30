@@ -2340,7 +2340,7 @@ def write_vs_contents(
             interface_name,
             port_prefix,
             param_prefix,
-            bus_size=1,
+            bus_size=bus_size,
             file_object=file_object,
         )
 
