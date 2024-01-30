@@ -63,6 +63,10 @@ def sim_setup(python_module):
 
 # Setup fpga files, but only the ones in the fpga_list
 def fpga_setup(python_module):
+    # If fpga_list is None, then do nothing 
+    if python_module.fpga_list ==  None:
+        return
+
     build_dir = python_module.build_dir
     fpga_dir = "hardware/fpga"
     src_dir = f"{LIB_DIR}/{fpga_dir}"
