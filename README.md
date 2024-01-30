@@ -302,6 +302,8 @@ You could also set those variables in the build directory's `config_build.mk` fi
 
 # Acknowledgements
 
+First of all, we acknowledge all the volunteer contributors for all their valuable pull requests, issues, and discussions. 
+
 The work has been partially performed in the scope of the A-IQ Ready project, which receives funding within Chips Joint Undertaking (Chips JU) - the Public-Private Partnership for research, development, and innovation under Horizon Europe – and National Authorities under grant agreement No. 101096658.
 
 The A-IQ Ready project is supported by the Chips Joint Undertaking (Chips JU) - the Public-Private Partnership for research, development, and innovation under Horizon Europe – and National Authorities under Grant Agreement No. 101096658.
