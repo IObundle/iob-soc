@@ -41,6 +41,7 @@ class iob_module:
     use_netlist = False  # use module netlist
     generate_ipxact = False  # generate IP-XACT XML file
     is_system = False  # create software files in build directory
+    fpga_list = None  # List of fpga files to copy to build directory
 
     _initialized_attributes = (
         False  # Store if attributes have been initialized for this class
@@ -731,6 +732,10 @@ class iob_module:
                             ),
                         )
                         continue
+                elif directory == "hardware/fpga":
+                    #if it is the fpga directory, only copy the directories in the cores fpga_list
+                    print (f"DEBUG: {cls.name} fpga_list: {cls.fpga_list}")
+
                 else:
                     dst_directory = directory
 
