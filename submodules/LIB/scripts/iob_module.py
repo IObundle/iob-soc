@@ -456,7 +456,7 @@ class iob_module:
             if cls.generate_ipxact:
                 # Generate IP-XACT XML file
                 ipxact_lib.generate_ipxact_xml(
-                    cls, reg_table, cls.build_dir + "/document/ipxact"
+                    cls, reg_table, cls.build_dir + "/ipxact"
                 )
 
     @classmethod
