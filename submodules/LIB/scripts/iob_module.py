@@ -733,16 +733,18 @@ class iob_module:
                         )
                         continue
                 elif directory == "hardware/fpga":
+                    if cls.fpga_list is None:
+                        continue
                     # if it is the fpga directory, only copy the directories in the cores fpga_list
                     for fpga in cls.fpga_list:
                         # search for the fpga directory in the cores setup_dir/hardware/fpga
                         # in both quartus and vivado directories
-                        for vendor_dir in ["quartus", "vivado"]:
+                        for tools_dir in ["quartus", "vivado"]:
                             setup_fpga_dir = os.path.join(
-                                module_class.setup_dir, directory, vendor_dir, fpga
+                                module_class.setup_dir, directory, tools_dir, fpga
                             )
                             build_fpga_dir = os.path.join(
-                                cls.build_dir, directory, vendor_dir, fpga
+                                cls.build_dir, directory, tools_dir, fpga
                             )
                             if os.path.isdir(setup_fpga_dir):
                                 shutil.copytree(
