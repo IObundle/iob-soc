@@ -380,16 +380,17 @@ def gen_parameters_list(core):
 
     parameters_list = []
     for conf in core.confs:
-        parameters_list.append(
-            Parameter(
-                conf["name"],
-                conf["type"],
-                conf["val"],
-                conf["min"],
-                conf["max"],
-                conf["descr"],
+        if conf["type"] != "M":
+            parameters_list.append(
+                Parameter(
+                    conf["name"],
+                    conf["type"],
+                    conf["val"],
+                    conf["min"],
+                    conf["max"],
+                    conf["descr"],
+                )
             )
-        )
 
     return parameters_list
 
