@@ -43,7 +43,7 @@ class iob_soc(iob_module):
     rw_overlap = True
     is_system = True
 
-    fpga_list = ["CYCLONEV-GT-DK", "AES-KU040-DB-G"]
+    board_list = ["CYCLONEV-GT-DK", "AES-KU040-DB-G"]
 
     # IOb-SoC has the following list of non standard attributes:
     peripherals = None  # List with instances peripherals to include in system
