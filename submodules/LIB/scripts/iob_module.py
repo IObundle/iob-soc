@@ -41,7 +41,7 @@ class iob_module:
     use_netlist = False  # use module netlist
     generate_ipxact = False  # generate IP-XACT XML file
     is_system = False  # create software files in build directory
-    fpga_list = None  # List of fpga files to copy to build directory
+    board_list = None  # List of fpga files to copy to build directory
 
     _initialized_attributes = (
         False  # Store if attributes have been initialized for this class
@@ -733,8 +733,8 @@ class iob_module:
                         )
                         continue
                 elif directory == "hardware/fpga":
-                    # Skip if fpga_list is empty
-                    if cls.fpga_list is None:
+                    # Skip if board_list is empty
+                    if cls.board_list is None:
                         continue
 
                     tools_list = ["quartus", "vivado"]
@@ -748,8 +748,8 @@ class iob_module:
                         ignore=shutil.ignore_patterns(*exclude_file_list, *tools_list),
                     )
 
-                    # if it is the fpga directory, only copy the directories in the cores fpga_list
-                    for fpga in cls.fpga_list:
+                    # if it is the fpga directory, only copy the directories in the cores board_list
+                    for fpga in cls.board_list:
                         # search for the fpga directory in the cores setup_dir/hardware/fpga
                         # in both quartus and vivado directories
                         for tools_dir in tools_list:
