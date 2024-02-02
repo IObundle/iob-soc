@@ -121,6 +121,19 @@ def instantiate_top_module():
     top_module.setup_as_top_module()
 
 
+# Generate Linux Driver Header
+def gen_linux_driver_header():
+    # invoked from the command line as:
+    # python3 bootstrap.py <top_module_name> -f gen_linux_driver_header -o [output_dir]
+
+    output_dir = "."
+    if "-o" in sys.argv and len(sys.argv) > sys.argv.index("-o") + 1:
+        output_dir = sys.argv[sys.argv.index("-o") + 1]
+
+    top_module = init_top_module()
+    top_module.gen_linux_driver_header(output_dir)
+
+
 ##########################################################################################
 ########   Main script    ################################################################
 ##########################################################################################
