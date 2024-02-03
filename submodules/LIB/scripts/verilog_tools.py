@@ -105,7 +105,7 @@ def insert_verilog_in_module(verilog_code, verilog_file_path, after_line=""):
                 break
         else:
             raise Exception(
-                f"{iob_colors.FAIL}verilog_tools.py: Could not find 'endmodule' declaration in '{verilog_file_path}'!{iob_colors.ENDC}"
+                f"{iob_colors.FAIL}verilog_tools.py: Could not find '{after_line}' declaration in '{verilog_file_path}'!{iob_colors.ENDC}"
             )
     else:
         # Find `endmodule`
