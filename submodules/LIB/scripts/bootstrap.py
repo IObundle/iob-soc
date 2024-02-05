@@ -111,8 +111,11 @@ def get_top_module_version():
 
 # Print build directory attribute of the top module
 def get_build_dir():
-    top_module = init_top_module()
-    print(top_module.build_dir)
+    try:
+        top_module = init_top_module()
+        print(top_module.build_dir)
+    except:
+        print("SOMETHING_OR_RM_DELETES_EVERYTHING")
 
 
 # Instantiate top module to start setup process
