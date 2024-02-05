@@ -115,7 +115,7 @@ def get_build_dir():
         top_module = init_top_module()
         print(top_module.build_dir)
     except:
-        print("NON_EXISTANT_DIR_OR_RM_DELETES_EVERYTHING")
+        print("ERROR: No build directory found for the top module")
         raise
 
 
