@@ -115,7 +115,8 @@ def get_build_dir():
         top_module = init_top_module()
         print(top_module.build_dir)
     except:
-        print("SOMETHING_OR_RM_DELETES_EVERYTHING")
+        print("NON_EXISTANT_DIR_OR_RM_DELETES_EVERYTHING")
+        raise
 
 
 # Instantiate top module to start setup process
