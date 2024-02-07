@@ -24,8 +24,8 @@ def replace_params_with_ids(string, parameters_list, double_usage_count=False):
     xml_output = string
     # Search for parameters in the hw_size and replace them with their ID
     if isinstance(string, str):
-        # divide the string expression into a list of strings separated by operators or parenthesis
-        string_list = re.split(r"(\+|\-|\*|\/|\(|\))", string)
+        # divide the string expression into a list of strings separated by operators, parenthesis or spaces
+        string_list = re.split(r"(\+|\-|\*|\/|\(|\)|\s)", string)
         for value in string_list:
             for param in parameters_list:
                 # if the parameter is in the string, increment it's usage count for each time it's used
@@ -35,7 +35,8 @@ def replace_params_with_ids(string, parameters_list, double_usage_count=False):
                     else:
                         param.usage_count += string.count(param.name)
                     # replace the parameter with it's ID
-                    xml_output = string.replace(param.name, param.name + "_ID")
+                    xml_output = xml_output.replace(param.name, param.name + "_ID")
+                    continue
 
     return xml_output
 

@@ -270,7 +270,7 @@ class iob_soc(iob_module):
                 # mandatory parameters (do not change them!)
                 {
                     "name": "ADDR_W",
-                    "type": "P",
+                    "type": "F",
                     "val": "32",
                     "min": "1",
                     "max": "32",
@@ -278,7 +278,7 @@ class iob_soc(iob_module):
                 },
                 {
                     "name": "DATA_W",
-                    "type": "P",
+                    "type": "F",
                     "val": "32",
                     "min": "1",
                     "max": "32",
@@ -286,7 +286,7 @@ class iob_soc(iob_module):
                 },
                 {
                     "name": "AXI_ID_W",
-                    "type": "P",
+                    "type": "F",
                     "val": "0",
                     "min": "1",
                     "max": "32",
@@ -294,7 +294,7 @@ class iob_soc(iob_module):
                 },
                 {
                     "name": "AXI_ADDR_W",
-                    "type": "P",
+                    "type": "F",
                     "val": "`IOB_SOC_MEM_ADDR_W",
                     "min": "1",
                     "max": "32",
@@ -302,7 +302,7 @@ class iob_soc(iob_module):
                 },
                 {
                     "name": "AXI_DATA_W",
-                    "type": "P",
+                    "type": "F",
                     "val": "`IOB_SOC_DATA_W",
                     "min": "1",
                     "max": "32",
@@ -310,7 +310,7 @@ class iob_soc(iob_module):
                 },
                 {
                     "name": "AXI_LEN_W",
-                    "type": "P",
+                    "type": "F",
                     "val": "4",
                     "min": "1",
                     "max": "4",
@@ -318,7 +318,7 @@ class iob_soc(iob_module):
                 },
                 {
                     "name": "MEM_ADDR_OFFSET",
-                    "type": "P",
+                    "type": "F",
                     "val": "0",
                     "min": "0",
                     "max": "NA",
