@@ -63,8 +63,8 @@ def sim_setup(python_module):
 
 # Setup fpga files, but only the ones in the board_list
 def fpga_setup(python_module):
-    # If board_list is None, then do nothing 
-    if python_module.board_list ==  None:
+    # If board_list is None, then do nothing
+    if python_module.board_list == None:
         return
 
     build_dir = python_module.build_dir
@@ -95,7 +95,9 @@ def fpga_setup(python_module):
                     for file in os.listdir(setup_tool_dir):
                         setup_tool_file = os.path.join(setup_tool_dir, file)
                         if os.path.isfile(setup_tool_file):
-                            shutil.copy2(setup_tool_file,os.path.join(dst_dir, tool, file))
+                            shutil.copy2(
+                                setup_tool_file, os.path.join(dst_dir, tool, file)
+                            )
                 # then copy the fpga directory (excluding any .pdf)
                 shutil.copytree(
                     setup_fpga_dir,

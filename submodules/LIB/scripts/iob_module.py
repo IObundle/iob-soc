@@ -274,6 +274,12 @@ class iob_module:
     ###############################################################
 
     @classmethod
+    def gen_linux_driver_header(cls, output_dir):
+        cls._setup_purpose = ["linux"]
+        mkregs_obj, reg_table = cls._build_regs_table()
+        mkregs_obj.write_linux_swheader(reg_table, output_dir, cls.name)
+
+    @classmethod
     def _post_setup(cls):
         """Launch post(-specific)-setup tasks"""
         # Auto-add common module macros and submodules
@@ -761,7 +767,7 @@ class iob_module:
                             )
                             setup_fpga_dir = os.path.join(setup_tools_dir, fpga)
                             build_fpga_dir = os.path.join(build_tools_dir, fpga)
-                            
+
                             # if the fpga directory is found, copy it to the build_dir
                             if os.path.isdir(setup_fpga_dir):
                                 # Copy the tools directory files only
