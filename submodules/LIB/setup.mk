@@ -15,6 +15,7 @@ PYTHON_DIR=$(LIB_DIR)/scripts
 # establish build dir paths
 build_dir_name:
 	$(eval BUILD_DIR := $(shell $(PYTHON_DIR)/bootstrap.py $(TOP_MODULE_NAME) $(SETUP_ARGS) -f get_build_dir -s $(PROJECT_ROOT)))
+	if [ $(.SHELLSTATUS) -ne 0 ]; then exit 1; fi
 	$(eval BUILD_VSRC_DIR = $(BUILD_DIR)/hardware/src)
 	$(eval BUILD_SIM_DIR := $(BUILD_DIR)/hardware/simulation)
 	$(eval BUILD_FPGA_DIR = $(BUILD_DIR)/hardware/fpga)	
@@ -22,7 +23,6 @@ build_dir_name:
 	$(eval BUILD_DOC_DIR = $(BUILD_DIR)/document)
 	$(eval BUILD_FIG_DIR = $(BUILD_DOC_DIR)/figures)
 	$(eval BUILD_TSRC_DIR = $(BUILD_DOC_DIR)/tsrc)
-	if [[ -z "$(BUILD_DIR)" ]]; then exit 1; fi
 	@echo $(BUILD_DIR)
 
 build_top_module:
