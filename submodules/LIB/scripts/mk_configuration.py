@@ -146,7 +146,7 @@ def generate_confs_tex(confs, out_dir):
     # Write table with true parameters and macros
     write_table(f"{out_dir}/confs", tex_table)
 
-    # Write list of fake parameters
+    # Write list of derived parameters
     file2create = open(f"{out_dir}/derived_params.tex", "w")
     file2create.write("\\begin{description}\n")
     for derv_param in derv_params:
