@@ -7,7 +7,6 @@ parameters have the following types:
 \begin{description}
 \item \textbf{'M'} Valued Macro: the value of the macro dictates the way the core is built.
 \item \textbf{'P'} True Parameter: the value of the parameter influences how the core instance that receives is built.
-\item \textbf{'F'} False Parameter: the parameter needs to be on the parameter list, but cannot be changed by the user.
 \end{description}
 
 \begin{xltabular}{\textwidth}{|l|c|c|c|c|X|} \hline
@@ -18,8 +17,7 @@ parameters have the following types:
     \caption{Configuration Macros.}\label{tab:confs}
 \end{xltabular}
 
-Note: The 16-bit auto-created Product Version macro uses nibbles to represent
-decimal numbers using their binary values.  The two most significant nibbles
-represent the integral part of the version, and the two least significant
-nibbles represent the decimal part.  For example V12.34 is represented by
-0x1234.
+There are fake parameters that are used to configure the core instances.
+Although they appear as normal ones, they should not be changed by the user,
+as they are automatically set by the core. The parameters are:
+\input fake_params
