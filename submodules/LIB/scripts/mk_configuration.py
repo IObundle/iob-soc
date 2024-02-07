@@ -119,7 +119,7 @@ def append_str_config_build_mk(str_2_append, build_dir):
 # Generate TeX table of confs
 def generate_confs_tex(confs, out_dir):
     tex_table = []
-    fake_params = []
+    derv_params = []
     for conf in confs:
         conf_val = conf["val"] if type(conf["val"]) != bool else "1"
         # False parameters are not included in the table
@@ -135,7 +135,7 @@ def generate_confs_tex(confs, out_dir):
                 ]
             )
         else:
-            fake_params.append(
+            derv_params.append(
                 [
                     conf["name"],
                     conf_val,
@@ -147,16 +147,16 @@ def generate_confs_tex(confs, out_dir):
     write_table(f"{out_dir}/confs", tex_table)
 
     # Write list of fake parameters
-    file2create = open(f"{out_dir}/fake_params.tex", "w")
+    file2create = open(f"{out_dir}/derived_params.tex", "w")
     file2create.write("\\begin{description}\n")
-    for fake_param in fake_params:
+    for derv_param in derv_params:
         # replace underscores and $clog2 with \_ and $\log_2
-        for i in range(len(fake_param)):
-            fake_param[i] = fake_param[i].replace("_", "\_")
-            fake_param[i] = fake_param[i].replace("$clog2", "log2")
+        for i in range(len(derv_param)):
+            derv_param[i] = derv_param[i].replace("_", "\_")
+            derv_param[i] = derv_param[i].replace("$clog2", "log2")
         # write the line
         file2create.write(
-            f"  \\item[{fake_param[0]}] {fake_param[2]} Parameter Value: {fake_param[1]}.\n"
+            f"  \\item[{derv_param[0]}] {derv_param[2]} Derived Value: {derv_param[1]}.\n"
         )
     file2create.write("\\end{description}\n")
 
