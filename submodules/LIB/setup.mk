@@ -22,6 +22,7 @@ build_dir_name:
 	$(eval BUILD_DOC_DIR = $(BUILD_DIR)/document)
 	$(eval BUILD_FIG_DIR = $(BUILD_DOC_DIR)/figures)
 	$(eval BUILD_TSRC_DIR = $(BUILD_DOC_DIR)/tsrc)
+	if [[ -z "$(BUILD_DIR)" ]]; then exit 1; fi
 	@echo $(BUILD_DIR)
 
 build_top_module:
