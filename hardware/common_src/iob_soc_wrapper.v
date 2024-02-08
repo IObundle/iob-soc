@@ -51,7 +51,6 @@ iob_soc#(
 
 //ram generation
 `ifdef USE_SPRAM
-
    localparam COL_W = 8;
    localparam NUM_COL = DATA_W / COL_W;
    wire [DATA_W-1:0] d_o;
@@ -60,8 +59,8 @@ iob_soc#(
        genvar i;
       generate
          for (i = 0; i < NUM_COL; i = i + 1) begin : ram_col
-            localparam mem_init_file_int = (HEXFILE != "none") ?
-               {HEXFILE, "_", file_suffix[8*(i+1)-1-:8], ".hex"} : "none";
+            //localparam mem_init_file_int = (HEXFILE != "none") ?
+            //   {HEXFILE, "_", file_suffix[8*(i+1)-1-:8], ".hex"} : "none";
 
             iob_ram_sp #(
                .HEXFILE("iob_soc_firmware"),
