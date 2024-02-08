@@ -15,38 +15,32 @@
 module iob_soc_wrapper #(
    `include "iob_soc_params.vs"
 ) (
-   `ifdef USE_SPRAM
-      output en_i,
-      output addr_i,
-      output d_i,
-      input [DATA_W-1:0] d_o,
-
    `include "iob_soc_io.vs"
 );
 
 
 iob_soc#(
-   .BOOTROM_ADDR_W(      BOOTROM_ADDR_W),
-   .SRAM_ADDR_W(            SRAM_ADDR_W),
-   .MEM_ADDR_W(              MEM_ADDR_W),
-   .ADDR_W(                      ADDR_W),
-   .DATA_W(                      DATA_W),
-   .AXI_ID_W(                  AXI_ID_W),
-   .AXI_ADDR_W(              AXI_ADDR_W),
-   .AXI_DATA_W(              AXI_DATA_W),
-   .AXI_LEN_W(                AXI_LEN_W),
-   .MEM_ADDR_OFFSET(    MEM_ADDR_OFFSET),
-   .UART0_DATA_W(          UART0_DATA_W),
-   .UART0_ADDR_W(          UART0_ADDR_W),
-   .UART0_UART_DATA_W(UART0_UART_DATA_W),
-   .TIMER0_DATA_W(        TIMER0_DATA_W),
-   .TIMER0_ADDR_W(        TIMER0_ADDR_W),
-   .TIMER0_WDATA_W(      TIMER0_WDATA_W)
+   .BOOTROM_ADDR_W(           BOOTROM_ADDR_W),
+   .SRAM_ADDR_W(                 SRAM_ADDR_W),
+   .MEM_ADDR_W(                   MEM_ADDR_W),
+   .ADDR_W(                           ADDR_W),
+   .DATA_W(                           DATA_W),
+   .AXI_ID_W(                       AXI_ID_W),
+   .AXI_ADDR_W(                   AXI_ADDR_W),
+   .AXI_DATA_W(                   AXI_DATA_W),
+   .AXI_LEN_W(                     AXI_LEN_W),
+   .MEM_ADDR_OFFSET(         MEM_ADDR_OFFSET),
+   .UART0_DATA_W(               UART0_DATA_W),
+   .UART0_ADDR_W(               UART0_ADDR_W),
+   .UART0_UART_DATA_W(     UART0_UART_DATA_W),
+   .TIMER0_DATA_W(             TIMER0_DATA_W),
+   .TIMER0_ADDR_W(             TIMER0_ADDR_W),
+   .TIMER0_WDATA_W(           TIMER0_WDATA_W)
 ) iob_soc(
-   output en_i,
-   output addr_i,
-   output d_i,
-   input [DATA_W-1:0] d_o,
+   output                             en_i,
+   output               [ADDR_W-1:0]addr_i,
+   output                  [DATA_W-1:0]d_i,
+   input                  [DATA_W-1:0] d_o,
    `include "iob_soc_io.vs"
 );
 
@@ -57,6 +51,7 @@ iob_soc#(
 
 //ram generation
 `ifdef USE_SPRAM
+
    localparam COL_W = 8;
    localparam NUM_COL = DATA_W / COL_W;
    wire [DATA_W-1:0] d_o;
