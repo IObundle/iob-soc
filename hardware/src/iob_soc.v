@@ -11,6 +11,9 @@
 module iob_soc #(
    `include "iob_soc_params.vs"
 ) (
+   output                                     rom_r_valid,
+   output                [BOOTROM_ADDR_W-3:0] rom_r_addr,
+   input                 [  DATA_W-1:0]       rom_r_rdata,
    `include "iob_soc_io.vs"
 );
 
@@ -180,7 +183,13 @@ module iob_soc #(
 
       //data bus
       .d_req_i (slaves_req[0+:`REQ_W]),
-      .d_resp_o(slaves_resp[0+:`RESP_W])
+      .d_resp_o(slaves_resp[0+:`RESP_W]),
+
+      //rom
+      .rom_r_valid(rom_r_valid),
+      .rom_r_addr(rom_r_addr),
+      .rom_r_rdata(rom_r_rdata)
+      //
    );
 
 `ifdef IOB_SOC_USE_EXTMEM

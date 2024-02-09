@@ -44,6 +44,7 @@ iob_soc#(
       output             [  ADDR_W-1:0] addr_i,
       output             [  DATA_W-1:0] d_i,
       input              [  DATA_W-1:0] d_o,
+   `endif
    // Port A
    output                               enA_i,
    output                [DATA_W/8-1:0] weA_i,
@@ -58,13 +59,17 @@ iob_soc#(
    input                 [DATA_W-1 : 0] dB_o,
 
    //rom
-   output                               r_en_i,
-   output                [  ADDR_W-1:0] addr_i,
-   input                 [  DATA_W-1:0] r_data_o
-
+   .rom_r_valid(rom_r_valid),
+   .rom_r_addr(rom_r_addr),
+   .rom_r_rdata(rom_r_rdata),
    `include "iob_soc_io.vs"
 );
 
+//rom wires
+wire                         rom_r_valid;
+wire  [BOOTROM_ADDR_W-3:0]   rom_r_addr;
+wire [DATA_W-1:0]            rom_r_rdata;
+//
 
 
 
