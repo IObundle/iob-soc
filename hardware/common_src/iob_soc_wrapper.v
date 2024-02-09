@@ -10,12 +10,12 @@
 
 //Peripherals _swreg_def.vh file includes.
 `include "iob_soc_periphs_swreg_def.vs"
-parameter HEXFILE = "iob_soc_firmware"
-
 
 module iob_soc_wrapper #(
    `include "iob_soc_params.vs"
 ) (
+   parameter HEXFILE = "iob_soc_firmware",
+   parameter BOOT_HEXFILE  = "iob_soc_boot",
    `include "iob_soc_io.vs"
 );
 
@@ -56,6 +56,11 @@ iob_soc#(
    output                [  ADDR_W-1:0] addrB_i,
    output                [  DATA_W-1:0] dB_i,
    input                 [DATA_W-1 : 0] dB_o,
+
+   //rom
+   output                               r_en_i,
+   output                [  ADDR_W-1:0] addr_i,
+   input                 [  DATA_W-1:0] r_data_o,
 
    `include "iob_soc_io.vs"
 );
@@ -197,6 +202,17 @@ iob_soc#(
    `endif
    
 
+//rom generation
 
+iob_rom_sp #(
+   .DATA_W (DATA_W),
+   .ADDR_W (BOOTROM_ADDR_W - 2),
+   .HEXFILE(BOOT_HEXFILE)
+) sp_rom0 (
+   .clk_i   (clk_i),
+   .r_en_i  (rom_r_valid),
+   .addr_i  (rom_r_addr),
+   .r_data_o(rom_r_rdata)
+);
 
 endmodule
