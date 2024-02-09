@@ -10,6 +10,7 @@
 
 //Peripherals _swreg_def.vh file includes.
 `include "iob_soc_periphs_swreg_def.vs"
+parameter HEXFILE = "iob_soc_firmware"
 
 
 module iob_soc_wrapper #(
@@ -37,13 +38,14 @@ iob_soc#(
    .TIMER0_ADDR_W(             TIMER0_ADDR_W),
    .TIMER0_WDATA_W(           TIMER0_WDATA_W)
 ) iob_soc(
-   output                             en_i,
-   output               [ADDR_W-1:0]addr_i,
-   output                  [DATA_W-1:0]d_i,
-   input                  [DATA_W-1:0] d_o,
+   `ifdef USE_SPRAM
+      output                            en_i,
+      output             [DATA_W/8-1:0] we_i,
+      output             [  ADDR_W-1:0] addr_i,
+      output             [  DATA_W-1:0] d_i,
+      input              [  DATA_W-1:0] d_o,
    `include "iob_soc_io.vs"
 );
-
 
 
 
@@ -59,11 +61,11 @@ iob_soc#(
        genvar i;
       generate
          for (i = 0; i < NUM_COL; i = i + 1) begin : ram_col
-            //localparam mem_init_file_int = (HEXFILE != "none") ?
-            //   {HEXFILE, "_", file_suffix[8*(i+1)-1-:8], ".hex"} : "none";
+            localparam mem_init_file_int = (HEXFILE != "none") ?
+               {HEXFILE, "_", file_suffix[8*(i+1)-1-:8], ".hex"} : "none";
 
             iob_ram_sp #(
-               .HEXFILE("iob_soc_firmware"),
+               .HEXFILE(mem_init_file_int),
                .ADDR_W (ADDR_W),
                .DATA_W (COL_W)
             ) ram (
@@ -79,7 +81,7 @@ iob_soc#(
       endgenerate
    `else  // !IOB_MEM_NO_READ_ON_WRITE
       // this allows ISE 14.7 to work; do not remove
-      localparam mem_init_file_int = {"iob_soc_firmware", ".hex"};
+      localparam mem_init_file_int = {HEXFILE, ".hex"};
       // Core Memory
       reg [DATA_W-1:0] ram_block[(2**ADDR_W)-1:0];
       // Initialize the RAM
@@ -100,6 +102,6 @@ iob_soc#(
       end
       assign d_o = d_o_int;
    `endif
-
+   `else  // !`ifdef USE_SPRAM
 
 endmodule
