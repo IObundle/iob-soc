@@ -47,9 +47,9 @@ iob_soc#(
    // Port A
    output                               enA_i,
    output                [DATA_W/8-1:0] weA_i,
-   output                [ADDR_W-1:0]   addrA_i,
-   output                [DATA_W-1:0]   dA_i,
-   input                 [ DATA_W-1:0]  dA_o,
+   output                [  ADDR_W-1:0] addrA_i,
+   output                [  DATA_W-1:0] dA_i,
+   input                 [  DATA_W-1:0] dA_o,
    // Port B
    output                               enB_i,
    output                [DATA_W/8-1:0] weB_i,
@@ -60,7 +60,7 @@ iob_soc#(
    //rom
    output                               r_en_i,
    output                [  ADDR_W-1:0] addr_i,
-   input                 [  DATA_W-1:0] r_data_o,
+   input                 [  DATA_W-1:0] r_data_o
 
    `include "iob_soc_io.vs"
 );
@@ -154,51 +154,27 @@ iob_soc#(
          end
       endgenerate
    `else
-       localparam COL_W = 8;
-      localparam NUM_COL = DATA_W / COL_W;
+      iob_ram_dp_be_xil #(
+      .HEXFILE(HEXFILE),
+      .ADDR_W (SRAM_ADDR_W - 2),
+      .DATA_W (DATA_W)
+      ) main_mem_byte (
+         .clk_i(clk_i),
 
-      // this allow ISE 14.7 to work; do not remove
-      localparam mem_init_file_int = {HEXFILE, ".hex"};
+         // data port
+         .enA_i  (enA_i),
+         .addrA_i(addrA_i),
+         .weA_i  (weA_i),
+         .dA_i   (dA_i),
+         .dA_o   (dA_o),
 
-      // Core Memory
-      reg [DATA_W-1:0] ram_block[(2**ADDR_W)-1:0];
-
-      // Initialize the RAM
-      initial
-         if (mem_init_file_int != "none.hex")
-            $readmemh(mem_init_file_int, ram_block, 0, 2 ** ADDR_W - 1);
-
-      // Port-A Operation
-      reg     [DATA_W-1:0] dA_o_int;
-      integer              i;
-      always @(posedge clk_i) begin
-         if (enA_i) begin
-            for (i = 0; i < NUM_COL; i = i + 1) begin
-               if (weA_i[i]) begin
-                  ram_block[addrA_i][i*COL_W+:COL_W] <= dA_i[i*COL_W+:COL_W];
-               end
-            end
-            dA_o_int <= ram_block[addrA_i];  // Send Feedback
-         end
-      end
-
-      assign dA_o = dA_o_int;
-
-      // Port-B Operation
-      reg     [DATA_W-1:0] dB_o_int;
-      integer              j;
-      always @(posedge clk_i) begin
-         if (enB_i) begin
-            for (j = 0; j < NUM_COL; j = j + 1) begin
-               if (weB_i[j]) begin
-                  ram_block[addrB_i][j*COL_W+:COL_W] <= dB_i[j*COL_W+:COL_W];
-               end
-            end
-            dB_o_int <= ram_block[addrB_i];  // Send Feedback
-         end
-      end
-
-      assign dB_o = dB_o_int;
+         // instruction port
+         .enB_i  (enB_i),
+         .addrB_i(addrB_i),
+         .weB_i  (weB_i),
+         .dB_i   (dB_i),
+         .dB_o   (dB_o)
+      );
    `endif
    
 
