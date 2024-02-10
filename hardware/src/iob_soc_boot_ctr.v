@@ -135,7 +135,6 @@ module iob_soc_boot_ctr #(
       end
 
    assign loading     = rom_r_valid | sram_w_valid;
-
    assign sram_valid_o = sram_w_valid;
    assign sram_addr_o   = {sram_w_addr, 2'b00};
    assign sram_wdata_o  = rom_r_rdata;

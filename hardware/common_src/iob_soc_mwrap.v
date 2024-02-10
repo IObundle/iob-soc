@@ -39,11 +39,11 @@ iob_soc#(
    .TIMER0_WDATA_W(           TIMER0_WDATA_W)
 ) iob_soc(
    `ifdef USE_SPRAM
-      output                            en_i,
-      output             [DATA_W/8-1:0] we_i,
-      output             [  ADDR_W-1:0] addr_i,
-      output             [  DATA_W-1:0] d_i,
-      input              [  DATA_W-1:0] d_o,
+      .valid(en_i),
+      .wstrb(we_i),
+      .addr(addr_i),
+      .wdata(d_i),
+      .rdata(d_o),
    `endif
    // Port A
    output                               enA_i,
@@ -69,13 +69,19 @@ iob_soc#(
 wire                         rom_r_valid;
 wire  [BOOTROM_ADDR_W-3:0]   rom_r_addr;
 wire [DATA_W-1:0]            rom_r_rdata;
-//
+
 
 
 
 
 //ram generation
 `ifdef USE_SPRAM
+      wire     [DATA_W-1:0]      d_o,
+      wire                       en_i,
+      wire     [SRAM_ADDR_W-3:0] addr_i,
+      wire     [DATA_W/8-1:0]    we_i,
+      wire     [DATA_W-1:0]      d_i,
+
    localparam COL_W = 8;
    localparam NUM_COL = DATA_W / COL_W;
    wire [DATA_W-1:0] d_o;
@@ -184,7 +190,6 @@ wire [DATA_W-1:0]            rom_r_rdata;
    
 
 //rom generation
-
 iob_rom_sp #(
    .DATA_W (DATA_W),
    .ADDR_W (BOOTROM_ADDR_W - 2),

@@ -29,6 +29,15 @@ module iob_soc_int_mem #(
    output [BOOTROM_ADDR_W-3:0] rom_r_addr,
    input  [ DATA_W-1:0]        rom_r_rdata,
 
+   //SPRAM
+   `ifdef USE_SPRAM
+      input     [DATA_W-1:0]     rdata,
+      output                     valid,
+      output    [SRAM_ADDR_W-3:0] addr,
+      output    [DATA_W/8-1:0]   wstrb,
+      output    [DATA_W-1:0]     wdata,
+   `endif
+   //
    `include "clk_en_rst_s_port.vs"
 );
 
@@ -199,7 +208,18 @@ module iob_soc_int_mem #(
       .d_wstrb_i (ram_d_req[`WSTRB(0)]),
       .d_rdata_o (ram_d_resp[`RDATA(0)]),
       .d_rvalid_o(ram_d_resp[`RVALID(0)]),
-      .d_ready_o (ram_d_resp[`READY(0)])
+      .d_ready_o (ram_d_resp[`READY(0)]),
+
+      
+      //SPRAM
+      `ifdef USE_SPRAM
+         .rdata(rdata),
+         .valid(valid),
+         .addr(addr),
+         .wstrb(wstrb),
+         .wdata(wdata),
+      `endif
+      //
    );
 
 endmodule

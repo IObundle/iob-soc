@@ -25,34 +25,30 @@ module iob_soc_sram #(
    output                       d_rvalid_o,
    output                       d_ready_o,
 
+   
+   //SPRAM
+   `ifdef USE_SPRAM
+      input     [DATA_W-1:0]     rdata,
+      output reg                 valid,
+      output reg[SRAM_ADDR_W-3:0]addr,
+      output reg[DATA_W/8-1:0]   wstrb,
+      output reg[DATA_W-1:0]     wdata,
+   `endif
+   //
+
    `include "clk_en_rst_s_port.vs"
 );
 
 `ifdef USE_SPRAM
 
    wire d_valid_int = i_valid_i ? 1'b0 : d_valid_i;
-   wire valid = i_valid_i ? i_valid_i : d_valid_i;
-   wire [SRAM_ADDR_W-3:0] addr = i_valid_i ? i_addr_i : d_addr_i;
-   wire [DATA_W-1:0] wdata = i_valid_i ? i_wdata_i : d_wdata_i;
-   wire [DATA_W/8-1:0] wstrb = i_valid_i ? i_wstrb_i : d_wstrb_i;
+   assign  valid = i_valid_i ? i_valid_i : d_valid_i;
+   assign  addr = i_valid_i ? i_addr_i : d_addr_i;
+   assign  wdata = i_valid_i ? i_wdata_i : d_wdata_i;
+   assign  wstrb = i_valid_i ? i_wstrb_i : d_wstrb_i;
    wire [DATA_W-1:0] rdata;
    assign d_rdata_o = rdata;
    assign i_rdata_o = rdata;
-
-   iob_ram_sp_be #(
-      .HEXFILE(HEXFILE),
-      .ADDR_W (SRAM_ADDR_W - 2),
-      .DATA_W (DATA_W)
-   ) main_mem_byte (
-      .clk_i(clk_i),
-
-      // data port
-      .en_i  (valid),
-      .addr_i(addr),
-      .we_i  (wstrb),
-      .d_i   (wdata),
-      .dt_o  (rdata)
-   );
 `else  // !`ifdef USE_SPRAM
 `ifdef IOB_MEM_NO_READ_ON_WRITE
    iob_ram_dp_be #(
