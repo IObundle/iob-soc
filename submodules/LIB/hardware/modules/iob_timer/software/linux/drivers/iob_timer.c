@@ -211,15 +211,16 @@ static int iob_timer_probe(struct platform_device *pdev) {
   iob_timer_data.regsize = resource_size(res);
 
   // Alocate char device
-  result = alloc_chrdev_region(&iob_timer_data.devnum, 0, 1, IOB_TIMER_DRIVER_NAME);
+  result =
+      alloc_chrdev_region(&iob_timer_data.devnum, 0, 1, IOB_TIMER_DRIVER_NAME);
   if (result) {
     pr_err("%s: Failed to allocate device number!\n", IOB_TIMER_DRIVER_NAME);
     goto ret_err_alloc_chrdev_region;
   }
 
   // Create device class
-  if ((iob_timer_data.timer_class = class_create(THIS_MODULE, IOB_TIMER_DRIVER_NAME)) ==
-      NULL) {
+  if ((iob_timer_data.timer_class =
+           class_create(THIS_MODULE, IOB_TIMER_DRIVER_NAME)) == NULL) {
     printk("Device class can not be created!\n");
     goto class_error;
   }

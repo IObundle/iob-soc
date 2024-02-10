@@ -664,6 +664,7 @@ class iob_module:
         config_build_mk(cls)
         # Create hardware directories
         os.makedirs(f"{cls.build_dir}/hardware/src", exist_ok=True)
+        os.makedirs(f"{cls.build_dir}/hardware/common_src", exist_ok=True)
         os.makedirs(f"{cls.build_dir}/hardware/simulation/src", exist_ok=True)
         os.makedirs(f"{cls.build_dir}/hardware/fpga/src", exist_ok=True)
 
@@ -713,6 +714,7 @@ class iob_module:
             if cls.is_top_module:
                 dir_list += [
                     "hardware/simulation",
+                    "hardware/common_src",
                     "hardware/fpga",
                     "hardware/syn",
                     "hardware/lint",
@@ -738,6 +740,12 @@ class iob_module:
                             ),
                         )
                         continue
+                elif directory == "hardware/common_src":
+                    directory = "hardware/common_src"
+                    shutil.copyfile(
+                        os.path.join(os.getcwd(), directory, "iob_soc_mwrap.v"),
+                        os.path.join(cls.build_dir, directory, "iob_soc_mwrap.v"),
+                    )
                 elif directory == "hardware/fpga":
                     # Skip if board_list is empty
                     if cls.board_list is None:
@@ -753,7 +761,6 @@ class iob_module:
                         copy_function=cls.copy_with_rename(module_class.name, cls.name),
                         ignore=shutil.ignore_patterns(*exclude_file_list, *tools_list),
                     )
-
                     # if it is the fpga directory, only copy the directories in the cores board_list
                     for fpga in cls.board_list:
                         # search for the fpga directory in the cores setup_dir/hardware/fpga
