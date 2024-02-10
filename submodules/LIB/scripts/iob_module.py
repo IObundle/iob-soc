@@ -664,7 +664,6 @@ class iob_module:
         config_build_mk(cls)
         # Create hardware directories
         os.makedirs(f"{cls.build_dir}/hardware/src", exist_ok=True)
-        os.makedirs(f"{cls.build_dir}/hardware/common_src", exist_ok=True)
         os.makedirs(f"{cls.build_dir}/hardware/simulation/src", exist_ok=True)
         os.makedirs(f"{cls.build_dir}/hardware/fpga/src", exist_ok=True)
 
@@ -741,10 +740,10 @@ class iob_module:
                         )
                         continue
                 elif directory == "hardware/common_src":
-                    directory = "hardware/common_src"
-                    shutil.copyfile(
-                        os.path.join(os.getcwd(), directory, "iob_soc_mwrap.v"),
-                        os.path.join(cls.build_dir, directory, "iob_soc_mwrap.v"),
+                    shutil.copytree(
+                        os.path.join(os.getcwd(), directory),
+                        os.path.join(cls.build_dir, directory),
+                        dirs_exist_ok=False,
                     )
                 elif directory == "hardware/fpga":
                     # Skip if board_list is empty
