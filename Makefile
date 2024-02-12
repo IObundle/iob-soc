@@ -23,10 +23,10 @@ setup:
 	nix-shell --run 'make build-setup SETUP_ARGS="$(SETUP_ARGS)"'
 
 pc-emul-run:
-	nix-shell --run 'make clean setup && make -C ../$(CORE)_V*/ pc-emul-run'
+	nix-shell --run 'make clean setup && make -C ../$(TOP)_V*/ pc-emul-run'
 
 pc-emul-test:
-	nix-shell --run 'make clean setup && make -C ../$(CORE)_V*/ pc-emul-run'
+	nix-shell --run 'make clean setup && make -C ../$(TOP)_V*/ pc-emul-run'
 
 sim-run:
 	nix-shell --run 'make clean setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(TOP)_V*/ fw-build'
