@@ -1,5 +1,5 @@
 CORE := iob_soc
-TOP := iob_soc_mwrap
+
 
 SIMULATOR ?= icarus
 BOARD ?= CYCLONEV-GT-DK
@@ -23,22 +23,22 @@ setup:
 	nix-shell --run 'make build-setup SETUP_ARGS="$(SETUP_ARGS)"'
 
 pc-emul-run:
-	nix-shell --run 'make clean setup && make -C ../$(TOP)_V*/ pc-emul-run'
+	nix-shell --run 'make clean setup && make -C ../$(CORE)_V*/ pc-emul-run'
 
 pc-emul-test:
-	nix-shell --run 'make clean setup && make -C ../$(TOP)_V*/ pc-emul-run'
+	nix-shell --run 'make clean setup && make -C ../$(CORE)_V*/ pc-emul-run'
 
 sim-run:
-	nix-shell --run 'make clean setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(TOP)_V*/ fw-build'
-	nix-shell --run 'make clean setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(TOP)_V*/ sim-run SIMULATOR=$(SIMULATOR)'
+	nix-shell --run 'make clean setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(CORE)_V*/ fw-build'
+	nix-shell --run 'make clean setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(CORE)_V*/ sim-run SIMULATOR=$(SIMULATOR)'
 
 sim-test:
-	nix-shell --run 'make clean setup INIT_MEM=1 USE_EXTMEM=0 && make -C ../$(TOP)_V*/ sim-run SIMULATOR=icarus'
-	nix-shell --run 'make clean setup INIT_MEM=0 USE_EXTMEM=1 && make -C ../$(TOP)_V*/ sim-run SIMULATOR=verilator'
-	nix-shell --run 'make clean setup INIT_MEM=0 USE_EXTMEM=1 && make -C ../$(TOP)_V*/ sim-run SIMULATOR=verilator'
+	nix-shell --run 'make clean setup INIT_MEM=1 USE_EXTMEM=0 && make -C ../$(CORE)_V*/ sim-run SIMULATOR=icarus'
+	nix-shell --run 'make clean setup INIT_MEM=0 USE_EXTMEM=1 && make -C ../$(CORE)_V*/ sim-run SIMULATOR=verilator'
+	nix-shell --run 'make clean setup INIT_MEM=0 USE_EXTMEM=1 && make -C ../$(CORE)_V*/ sim-run SIMULATOR=verilator'
 
 fpga-run:
-	nix-shell --run 'make clean setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(TOP)_V*/ fpga-fw-build BOARD=$(BOARD)'
+	nix-shell --run 'make clean setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(CORE)_V*/ fpga-fw-build BOARD=$(BOARD)'
 	make -C ../$(TOP)_V*/ fpga-run BOARD=$(BOARD)
 
 fpga-test:
@@ -48,7 +48,7 @@ fpga-test:
 	make clean setup fpga-run BOARD=AES-KU040-DB-G INIT_MEM=0 USE_EXTMEM=1 
 
 syn-build: clean
-	nix-shell --run "make setup && make -C ../$(TOP)_V*/ syn-build"
+	nix-shell --run "make setup && make -C ../$(CORE)_V*/ syn-build"
 
 doc-build:
 	nix-shell --run 'make clean setup && make -C ../$(CORE)_V*/ doc-build'
