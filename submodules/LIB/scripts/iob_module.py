@@ -180,6 +180,12 @@ class iob_module:
         # Copy current version to previous version if it is not set
         if not cls.previous_version:
             cls.previous_version = cls.version
+        # try to open file document/tsrc/intro.tex and read it into cls.intro
+        try:
+            with open(f"document/tsrc/intro.tex", "r") as file:
+                cls.description = file.read()
+        except:
+            print("Error reading document/tsrc/intro.tex")
 
         # Initialize empty lists for attributes (We can't initialize in the attribute declaration because it would cause every subclass to reference the same list)
         cls.confs = []

@@ -47,6 +47,14 @@ User Guide, \input{\NAME_version.tex}, Build \input{shortHash.tex}
 \input{deliverables}
 
 \section{Description}
+
+This section gives a detailed description of the IP core. The high-level block
+diagram is presented, along with a description of its blocks. The parameters and
+macros that define the core configuration are listed and explained. The
+interface signals are enumerated and described; if timing diagrams are needed,
+they are shown after the interface signals. Finally the Control and Status
+Registers (CSR) are outlined and explained.
+
 \subsection{Block Diagram}
 \label{sec:bdd}
 \input{bdd}
@@ -70,7 +78,7 @@ User Guide, \input{\NAME_version.tex}, Build \input{shortHash.tex}
 
 %software components
 \ifdefined\SWREG
-\subsection{Software Accessible Registers}
+\subsection{Control and Status Registers}
 \label{sec:swreg}
 \input{swreg}
 \fi
