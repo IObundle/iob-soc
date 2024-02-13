@@ -14,7 +14,7 @@
 #include <linux/platform_device.h>
 #include <linux/uaccess.h>
 
-#include "iob_class_utils.h"
+#include "iob_class/iob_class_utils.h"
 #include "iob_timer.h"
 
 static int iob_timer_probe(struct platform_device *);
@@ -56,22 +56,20 @@ static struct platform_driver iob_timer_driver = {
 		.remove = iob_timer_remove,
 };
 
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
+//
 // Module init and exit functions
-
+//
 static int iob_timer_probe(struct platform_device *pdev) {
 	struct resource *res;
 	int result = 0;
 
 	if (iob_timer_data.device != NULL) {
-		pr_err("[Driver] %s: No more devices allowed!\n", DRIVER_NAME);
+		pr_err("[Driver] %s: No more devices allowed!\n", IOB_TIMER_DRIVER_NAME);
 
 		return -ENODEV;
 	}
 
-	pr_info("[Driver] %s: probing.\n", DRIVER_NAME);
+	pr_info("[Driver] %s: probing.\n", IOB_TIMER_DRIVER_NAME);
 
 	// Get the I/O region base address
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
@@ -90,9 +88,9 @@ static int iob_timer_probe(struct platform_device *pdev) {
 	iob_timer_data.regsize = resource_size(res);
 
 	// Alocate char device
-	result = alloc_chrdev_region(&iob_timer_data.devnum, 0, 1, DRIVER_NAME);
+	result = alloc_chrdev_region(&iob_timer_data.devnum, 0, 1, IOB_TIMER_DRIVER_NAME);
 	if (result) {
-		pr_err("%s: Failed to allocate device number!\n", DRIVER_NAME);
+		pr_err("%s: Failed to allocate device number!\n", IOB_TIMER_DRIVER_NAME);
 		goto r_alloc_region;
 	}
 
@@ -100,30 +98,23 @@ static int iob_timer_probe(struct platform_device *pdev) {
 
 	result = cdev_add(&iob_timer_data.cdev, iob_timer_data.devnum, 1);
 	if (result) {
-		pr_err("%s: Char device registration failed!\n", DRIVER_NAME);
+		pr_err("%s: Char device registration failed!\n", IOB_TIMER_DRIVER_NAME);
 		goto r_cdev_add;
 	}
 
 	// Create device class // todo: make a dummy driver just to create and own the class: https://stackoverflow.com/a/16365027/8228163
-	if ((iob_timer_data.class = class_create(THIS_MODULE, DRIVER_CLASS)) == NULL) {
+	if ((iob_timer_data.class = class_create(THIS_MODULE, IOB_TIMER_DRIVER_CLASS)) == NULL) {
 		printk("Device class can not be created!\n");
 		goto r_class;
 	}
 
 	// Create device file
-	iob_timer_data.device = device_create(iob_timer_data.class, NULL, iob_timer_data.devnum, NULL, DRIVER_NAME);
+	iob_timer_data.device = device_create(iob_timer_data.class, NULL, iob_timer_data.devnum, NULL, IOB_TIMER_DRIVER_NAME);
 	if (iob_timer_data.device == NULL) {
 		printk("Can not create device file!\n");
 		goto r_device;
 	}
 
-	// Creating device attribute files
-	// result = !(!device_create_file(iob_timer_data.device, &dev_attr_data_high) &&
-	// 			!device_create_file(iob_timer_data.device, &dev_attr_data_low) &&
-	// 			!device_create_file(iob_timer_data.device, &dev_attr_reset) &&
-	// 			!device_create_file(iob_timer_data.device, &dev_attr_enable) &&
-	// 			!device_create_file(iob_timer_data.device, &dev_attr_sample) &&
-	// 			!device_create_file(iob_timer_data.device, &dev_attr_version));
     result = iob_timer_create_device_attr_files(iob_timer_data.device);
 	if (result) {
 		pr_err("Cannot create device attribute file......\n");
@@ -134,13 +125,6 @@ static int iob_timer_probe(struct platform_device *pdev) {
 	goto r_ok;
 
 r_dev_file:
-	// device_remove_file(iob_timer_data.device, &dev_attr_version);
-	// device_remove_file(iob_timer_data.device, &dev_attr_sample);
-	// device_remove_file(iob_timer_data.device, &dev_attr_enable);
-	// device_remove_file(iob_timer_data.device, &dev_attr_reset);
-	// device_remove_file(iob_timer_data.device, &dev_attr_data_low);
-	// device_remove_file(iob_timer_data.device, &dev_attr_data_high);
-	// device_destroy(iob_timer_data.class, iob_timer_data.devnum);
     iob_timer_remove_device_attr_files(&iob_timer_data);
 r_device:
 	class_destroy(iob_timer_data.class);
@@ -158,13 +142,6 @@ r_ok:
 }
 
 static int iob_timer_remove(struct platform_device *pdev) {
-	// device_remove_file(iob_timer_data.device, &dev_attr_version);
-	// device_remove_file(iob_timer_data.device, &dev_attr_sample);
-	// device_remove_file(iob_timer_data.device, &dev_attr_enable);
-	// device_remove_file(iob_timer_data.device, &dev_attr_reset);
-	// device_remove_file(iob_timer_data.device, &dev_attr_data_low);
-	// device_remove_file(iob_timer_data.device, &dev_attr_data_high);
-	// device_destroy(iob_timer_data.class, iob_timer_data.devnum);
     iob_timer_remove_device_attr_files(&iob_timer_data);
 	class_destroy(iob_timer_data.class);
 	cdev_del(&iob_timer_data.cdev);
@@ -177,21 +154,20 @@ static int iob_timer_remove(struct platform_device *pdev) {
 }
 
 static int __init test_counter_init(void) {
-	pr_info("[Driver] %s: initializing.\n", DRIVER_NAME);
+	pr_info("[Driver] %s: initializing.\n", IOB_TIMER_DRIVER_NAME);
 
 	return platform_driver_register(&iob_timer_driver);
 }
 
 static void __exit test_counter_exit(void) {
-	pr_info("[Driver] %s: exiting.\n", DRIVER_NAME);
+	pr_info("[Driver] %s: exiting.\n", IOB_TIMER_DRIVER_NAME);
 	platform_driver_unregister(&iob_timer_driver);
 }
 
 
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
+//
 // File operations
+//
 
 static int iob_timer_open(struct inode *inode, struct file *file) {
 	pr_info("[Driver] iob_timer device opened\n");
@@ -316,10 +292,6 @@ static loff_t iob_timer_llseek(struct file *filp, loff_t offset, int whence) {
 
 	return new_pos;
 }
-
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
 
 module_init(test_counter_init);
 module_exit(test_counter_exit);

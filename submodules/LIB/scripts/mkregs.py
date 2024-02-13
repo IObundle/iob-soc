@@ -895,10 +895,10 @@ class mkregs:
         fswhdr.write(f'#define {core_prefix}_DRIVER_NAME "{top}"\n')
         fswhdr.write(f'#define {core_prefix}_DRIVER_CLASS "iob_class"\n')
         fswhdr.write(f'#define {core_prefix}_DEVICE_FILE "/dev/{top}"\n')
-        fswhdr.write(f'#define {core_prefix}_DEVICE_CLASS "/sys/class/" DRIVER_CLASS "/" DRIVER_NAME\n\n')
+        fswhdr.write(f'#define {core_prefix}_DEVICE_CLASS "/sys/class/" {core_prefix}_DRIVER_CLASS "/" {core_prefix}_DRIVER_NAME\n\n')
 
         for row in table:
-            fswhdr.write(f'#define {core_prefix}_SYSFILE_{row["name"]} DEVICE_CLASS "/{row["name"].lower()}"\n')
+            fswhdr.write(f'#define {core_prefix}_SYSFILE_{row["name"]} {core_prefix}_DEVICE_CLASS "/{row["name"].lower()}"\n')
         fswhdr.write("\n")
 
         self.write_addr_and_width_defines(fswhdr, table, f"{core_prefix}_")
@@ -943,14 +943,14 @@ class mkregs:
                 fswhdr.write('\tsscanf(buf, "%u", &value);\n')
                 fswhdr.write(f"\tiob_data_write_reg({top}_data.regbase, value, {top.upper()}_{reg_name.upper()}_ADDR, {top.upper()}_{reg_name.upper()}_W);\n")
                 fswhdr.write(f"\tmutex_unlock(&{top}_mutex);\n")
-                fswhdr.write('\tpr_info("Sysfs - Write!!!%u\\n", value);\n')
+                fswhdr.write('\tpr_info("Sysfs - Write: 0x%u\\n", value);\n')
                 fswhdr.write('\treturn count;\n')
                 fswhdr.write('}\n\n')
             elif "R" in row["type"]:
                 # show function
                 fswhdr.write(f"static ssize_t sysfs_{reg_name}_show(struct device *dev, struct device_attribute *attr, char *buf) {{\n")
                 fswhdr.write(f"\tu32 value = iob_data_read_reg({top}_data.regbase, {top.upper()}_{reg_name.upper()}_ADDR, {top.upper()}_{reg_name.upper()}_W);\n")
-                fswhdr.write('\tpr_info("Sysfs - Read!!!%u\\n", value);\n')
+                fswhdr.write('\tpr_info("Sysfs - Read: 0x%u\\n", value);\n')
                 fswhdr.write('\treturn sprintf(buf, "%u", value);\n')
                 fswhdr.write('}\n\n')
 
