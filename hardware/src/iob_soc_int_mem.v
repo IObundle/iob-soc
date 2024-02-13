@@ -25,9 +25,19 @@ module iob_soc_int_mem #(
    output [`RESP_W-1:0] d_resp_o,
 
    //rom
-   output reg                       rom_r_valid,
-   output reg  [BOOTROM_ADDR_W-3:0] rom_r_addr,
+   output                           rom_r_valid,
+   output      [BOOTROM_ADDR_W-3:0] rom_r_addr,
    input       [DATA_W-1:0]         rom_r_rdata,
+   //
+
+   //SPRAM
+   `ifdef USE_SPRAM
+   output                       valid_SPRAM,
+   output     [SRAM_ADDR_W-3:0] addr_SPRAM,
+   output     [DATA_W/8-1:0]    wstrb_SPRAM,
+   output     [DATA_W-1:0]      wdata_SPRAM,
+   input      [DATA_W-1:0]      rdata_SPRAM,
+   `endif USE_SPRAM
    //
 
    `include "clk_en_rst_s_port.vs"
@@ -192,6 +202,16 @@ module iob_soc_int_mem #(
       .i_rvalid_o(ram_i_resp[`RVALID(0)]),
       .i_ready_o (ram_i_resp[`READY(0)]),
 
+      //SPRAM  
+      `ifdef USE_SPRAM
+      .valid_SPRAM(valid_SPRAM),
+      .addr_SPRAM(addr_SPRAM),
+      .wstrb_SPRAM(wstrb_SPRAM),
+      .wdata_SPRAM(wdata_SPRAM),
+      .rdata_SPRAM(rdata_SPRAM),
+      `endif
+      //
+
       //data bus
       .d_valid_i(ram_d_req[`VALID(0)]),
       .d_addr_i  (ram_d_addr),
@@ -199,7 +219,9 @@ module iob_soc_int_mem #(
       .d_wstrb_i (ram_d_req[`WSTRB(0)]),
       .d_rdata_o (ram_d_resp[`RDATA(0)]),
       .d_rvalid_o(ram_d_resp[`RVALID(0)]),
-      .d_ready_o (ram_d_resp[`READY(0)])
+      .d_ready_o (ram_d_resp[`READY(0)]),
+
+    
    );
 
 endmodule
