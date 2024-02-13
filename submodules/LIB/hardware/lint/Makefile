@@ -12,9 +12,9 @@ REMOTE_LINT_DIR=$(REMOTE_BUILD_DIR)/hardware/lint
 
 LINT_TOP=$(NAME)
 
-VHDR=$(wildcard ../src/*.vh)
-VSRC=$(wildcard ../src/*.v)
-
+VHDR+=$(wildcard ../src/*.vh)
+VSRC+=$(wildcard ../src/*.v)
+VSRC+=$(wildcard ../common_src/*.v)
 $(NAME)_files.list: $(VSRC)
 
 $(VSRC):
