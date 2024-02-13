@@ -18,6 +18,7 @@
 
 
 module iob_soc_mwrap #(
+    parameter BOOT_HEXFILE = "iob_soc_boot",
    `include "iob_soc_params.vs"
 ) (
    `include "iob_soc_io.vs"
@@ -88,9 +89,36 @@ iob_soc #(
     .uart_txd_o(                   uart_txd_o),
     .uart_rxd_i(                   uart_rxd_i),
     .uart_cts_i(                   uart_cts_i),
-    .uart_rts_o(                   uart_rts_o)
+    .uart_rts_o(                   uart_rts_o),
+    //rom
+    .rom_r_valid(rom_r_valid),
+    .rom_r_addr(rom_r_addr),
+    .rom_r_rdata(rom_r_rdata)
+    //
 );
 
+
+    //rom wires
+    wire                      rom_r_valid;
+    wire [BOOTROM_ADDR_W-3:0] rom_r_addr;
+    wire [DATA_W-1:0]         rom_r_rdata;
+    //
+
+
+
+
+
+    //rom instatiation
+   iob_rom_sp #(
+      .DATA_W (DATA_W),
+      .ADDR_W (BOOTROM_ADDR_W - 2),
+      .HEXFILE({BOOT_HEXFILE, ".hex"})
+   ) sp_rom0 (
+      .clk_i   (clk_i),
+      .r_en_i  (rom_r_valid),
+      .addr_i  (rom_r_addr),
+      .r_data_o(rom_r_rdata)
+   );
 
 
 

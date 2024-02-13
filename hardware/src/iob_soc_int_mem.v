@@ -23,6 +23,13 @@ module iob_soc_int_mem #(
    //data bus
    input  [ `REQ_W-1:0] d_req_i,
    output [`RESP_W-1:0] d_resp_o,
+
+   //rom
+   output reg                       rom_r_valid,
+   output reg  [BOOTROM_ADDR_W-3:0] rom_r_addr,
+   input       [DATA_W-1:0]         rom_r_rdata,
+   //
+
    `include "clk_en_rst_s_port.vs"
 );
 
@@ -96,7 +103,12 @@ module iob_soc_int_mem #(
       .sram_valid_o(ram_w_req[`VALID(0)]),
       .sram_addr_o  (ram_w_req[`ADDRESS(0, ADDR_W)]),
       .sram_wdata_o (ram_w_req[`WDATA(0)]),
-      .sram_wstrb_o (ram_w_req[`WSTRB(0)])
+      .sram_wstrb_o (ram_w_req[`WSTRB(0)]),
+      //rom
+      .rom_r_valid(rom_r_valid),
+      .rom_r_addr(rom_r_addr),
+      .rom_r_rdata(rom_r_rdata)
+      //
    );
 
    //

@@ -25,6 +25,13 @@ module iob_soc_boot_ctr #(
    output     [  DATA_W-1:0] sram_wdata_o,
    output reg [DATA_W/8-1:0] sram_wstrb_o,
 
+   //rom
+   output reg                       rom_r_valid,
+   output reg  [BOOTROM_ADDR_W-3:0] rom_r_addr,
+   input       [DATA_W-1:0]         rom_r_rdata,
+   //
+
+
    `include "clk_en_rst_s_port.vs"
 );
 
@@ -93,9 +100,6 @@ module iob_soc_boot_ctr #(
    //
    // READ BOOT ROM 
    //
-   reg                       rom_r_valid;
-   reg  [BOOTROM_ADDR_W-3:0] rom_r_addr;
-   wire [        DATA_W-1:0] rom_r_rdata;
 
    always @(posedge clk_i, posedge arst_i)
       if (arst_i) begin
@@ -137,15 +141,6 @@ module iob_soc_boot_ctr #(
    //
    //INSTANTIATE ROM
    //
-   iob_rom_sp #(
-      .DATA_W (DATA_W),
-      .ADDR_W (BOOTROM_ADDR_W - 2),
-      .HEXFILE(HEXFILE)
-   ) sp_rom0 (
-      .clk_i   (clk_i),
-      .r_en_i  (rom_r_valid),
-      .addr_i  (rom_r_addr),
-      .r_data_o(rom_r_rdata)
-   );
+
 
 endmodule
