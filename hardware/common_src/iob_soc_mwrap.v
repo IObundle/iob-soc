@@ -19,7 +19,11 @@
 
 module iob_soc_mwrap #(
     parameter BOOT_HEXFILE = "iob_soc_boot",
+`ifndef IOB_SOC_USE_EXTMEM
+     parameter HEXFILE =      "none",
+`ifdef IOB_SOC_INIT_MEM
     parameter HEXFILE =      "iob_soc_firmware",
+`endif
    `include "iob_soc_params.vs"
 ) (
    `include "iob_soc_io.vs"
