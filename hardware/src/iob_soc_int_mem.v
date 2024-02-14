@@ -182,6 +182,8 @@ module iob_soc_int_mem #(
    //
    iob_soc_sram #(
 `ifndef IOB_SOC_USE_EXTMEM
+   .HEXFILE    ("none"),
+`endif
 `ifdef IOB_SOC_INIT_MEM
       .HEXFILE    (HEXFILE),
 `endif

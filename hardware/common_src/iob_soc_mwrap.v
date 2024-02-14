@@ -19,8 +19,9 @@
 
 module iob_soc_mwrap #(
     parameter BOOT_HEXFILE = "iob_soc_boot",
-`ifndef IOB_SOC_USE_EXTMEM
-     parameter HEXFILE =      "none",
+//`ifndef IOB_SOC_USE_EXTMEM
+//     parameter HEXFILE =      "none",
+//`endif 
 `ifdef IOB_SOC_INIT_MEM
     parameter HEXFILE =      "iob_soc_firmware",
 `endif
