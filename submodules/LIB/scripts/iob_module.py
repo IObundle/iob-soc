@@ -274,13 +274,6 @@ class iob_module:
     ###############################################################
 
     @classmethod
-    def gen_linux_driver_headers(cls, output_dir):
-        cls._setup_purpose = ["linux"]
-        mkregs_obj, reg_table = cls._build_regs_table()
-        mkregs_obj.write_linux_swheader(reg_table, output_dir, cls.name)
-        mkregs_obj.write_linux_sysfs_header(reg_table, output_dir, cls.name)
-
-    @classmethod
     def _post_setup(cls):
         """Launch post(-specific)-setup tasks"""
         # Auto-add common module macros and submodules
