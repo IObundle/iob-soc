@@ -26,18 +26,17 @@ module iob_soc_sram #(
    output                       d_ready_o,
 
    //SPRAM
-   `ifdef USE_SPRAM
+`ifdef USE_SPRAM
    output reg                   valid_SPRAM,
    output reg [SRAM_ADDR_W-3:0] addr_SPRAM,
    output reg [DATA_W/8-1:0]    wstrb_SPRAM,
    output reg [DATA_W-1:0]      wdata_SPRAM,
    input      [DATA_W-1:0]      rdata_SPRAM,
-   `endif USE_SPRAM
+`endif 
    //
    
    `include "clk_en_rst_s_port.vs"
 );
-
 `ifdef USE_SPRAM
 
    wire d_valid_int = i_valid_i ? 1'b0 : d_valid_i;

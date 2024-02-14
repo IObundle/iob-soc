@@ -93,13 +93,13 @@ iob_soc #(
     .uart_rts_o(                   uart_rts_o),
 
     //SPRAM  
-    `ifdef USE_SPRAM
+`ifdef USE_SPRAM
     .valid_SPRAM(en_i),
     .addr_SPRAM(addr_i),
     .wstrb_SPRAM(we_i),
     .wdata_SPRAM(d_i),
     .rdata_SPRAM(d_o),
-    `endif USE_SPRAM
+`endif 
     //
 
     //rom
@@ -115,11 +115,11 @@ iob_soc #(
 
 
 `ifdef USE_SPRAM
-    wire                       en_i,
-    wire     [SRAM_ADDR_W-3:0] addr_i,
-    wire     [DATA_W/8-1:0]    we_i,
-    wire     [DATA_W-1:0]      d_i,
-    wire     [DATA_W-1:0]      d_o,
+    wire                       en_i;
+    wire     [SRAM_ADDR_W-3:0] addr_i;
+    wire     [DATA_W/8-1:0]    we_i;
+    wire     [DATA_W-1:0]      d_i;
+    wire     [DATA_W-1:0]      d_o;
     localparam COL_W = 8;
     localparam NUM_COL = DATA_W / COL_W;
 
@@ -148,7 +148,6 @@ iob_soc #(
             );
             end
         endgenerate
-    `endif
     `else  // !IOB_MEM_NO_READ_ON_WRITE
         // this allows ISE 14.7 to work; do not remove
         localparam mem_init_file_int = {HEXFILE, ".hex"};
@@ -175,18 +174,14 @@ iob_soc #(
         end
         assign d_o = d_o_int;
     `endif
-`endif USE_SPRAM
+`endif
 
-
-
-
-
-    //rom wires
-    wire                      rom_r_valid;
-    wire [BOOTROM_ADDR_W-3:0] rom_r_addr;
-    wire [DATA_W-1:0]         rom_r_rdata;
-    //
-    //rom instatiation
+   //rom wires
+   wire rom_r_valid;
+   wire [BOOTROM_ADDR_W-3:0] rom_r_addr;
+   wire [DATA_W-1:0] rom_r_rdata;
+   //
+   //rom instatiation
    iob_rom_sp #(
       .DATA_W (DATA_W),
       .ADDR_W (BOOTROM_ADDR_W - 2),

@@ -20,13 +20,13 @@ module iob_soc #(
    //
 
    //SPRAM
-   `ifdef USE_SPRAM
+`ifdef USE_SPRAM
    output                       valid_SPRAM,
    output     [SRAM_ADDR_W-3:0] addr_SPRAM,
    output     [DATA_W/8-1:0]    wstrb_SPRAM,
    output     [DATA_W-1:0]      wdata_SPRAM,
    input      [DATA_W-1:0]      rdata_SPRAM,
-   `endif
+`endif 
    //
 
 
@@ -199,13 +199,13 @@ module iob_soc #(
 
 
       //SPRAM  
-      `ifdef USE_SPRAM
+   `ifdef USE_SPRAM
       .valid_SPRAM(valid_SPRAM),
       .addr_SPRAM(addr_SPRAM),
       .wstrb_SPRAM(wstrb_SPRAM),
       .wdata_SPRAM(wdata_SPRAM),
       .rdata_SPRAM(rdata_SPRAM),
-      `endif USE_SPRAM
+   `endif 
       //
 
       //data bus
