@@ -16,6 +16,8 @@ class iob_uart(iob_module):
     setup_dir = os.path.dirname(__file__)
     rw_overlap = True
 
+    board_list = ["CYCLONEV-GT-DK", "AES-KU040-DB-G"]
+
     @classmethod
     def _create_submodules_list(cls):
         """Create submodules list with dependencies of this module"""

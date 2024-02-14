@@ -81,12 +81,18 @@ def create_wrapper_files(build_dir, name, ios, confs, num_extmem_connections):
 
     create_interconnect_instance(out_dir, name, num_extmem_connections)
     create_cyclonev_interconnect_s_portmap(out_dir, name, num_extmem_connections)
-    modify_alt_ddr3_qsys(
-        os.path.join(build_dir, f"hardware/fpga/quartus/CYCLONEV-GT-DK/alt_ddr3.qsys"),
-        num_extmem_connections,
-    )
-    create_ku040_interconnect_s_portmap(out_dir, name, num_extmem_connections)
-    create_ku040_rstn(out_dir, name, num_extmem_connections)
+    # If CYCLONEV-GT-DK directory exists, modify_alt_ddr3_qsys
+    if os.path.exists(os.path.join(build_dir, f"hardware/fpga/quartus/CYCLONEV-GT-DK")):
+        modify_alt_ddr3_qsys(
+            os.path.join(
+                build_dir, f"hardware/fpga/quartus/CYCLONEV-GT-DK/alt_ddr3.qsys"
+            ),
+            num_extmem_connections,
+        )
+    # If KU040 directory exists, create ku040_interconnect_s_portmap and ku040_rstn
+    if os.path.exists(os.path.join(build_dir, f"hardware/fpga/vivado/AES-KU040-DB-G")):
+        create_ku040_interconnect_s_portmap(out_dir, name, num_extmem_connections)
+        create_ku040_rstn(out_dir, name, num_extmem_connections)
 
 
 def create_interconnect_instance(out_dir, name, num_extmem_connections):

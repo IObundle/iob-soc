@@ -119,20 +119,46 @@ def append_str_config_build_mk(str_2_append, build_dir):
 # Generate TeX table of confs
 def generate_confs_tex(confs, out_dir):
     tex_table = []
+    derv_params = []
     for conf in confs:
         conf_val = conf["val"] if type(conf["val"]) != bool else "1"
-        tex_table.append(
-            [
-                conf["name"],
-                conf["type"],
-                conf["min"],
-                conf_val,
-                conf["max"],
-                conf["descr"],
-            ]
-        )
+        # False parameters are not included in the table
+        if conf["type"] != "F":
+            tex_table.append(
+                [
+                    conf["name"],
+                    conf["type"],
+                    conf["min"],
+                    conf_val,
+                    conf["max"],
+                    conf["descr"],
+                ]
+            )
+        else:
+            derv_params.append(
+                [
+                    conf["name"],
+                    conf_val,
+                    conf["descr"],
+                ]
+            )
 
+    # Write table with true parameters and macros
     write_table(f"{out_dir}/confs", tex_table)
+
+    # Write list of derived parameters
+    file2create = open(f"{out_dir}/derived_params.tex", "w")
+    file2create.write("\\begin{description}\n")
+    for derv_param in derv_params:
+        # replace underscores and $clog2 with \_ and $\log_2
+        for i in range(len(derv_param)):
+            derv_param[i] = derv_param[i].replace("_", "\_")
+            derv_param[i] = derv_param[i].replace("$clog2", "log2")
+        # write the line
+        file2create.write(
+            f"  \\item[{derv_param[0]}] {derv_param[2]} Derived Value: {derv_param[1]}.\n"
+        )
+    file2create.write("\\end{description}\n")
 
 
 # Select if a define from the confs dictionary is set or not
