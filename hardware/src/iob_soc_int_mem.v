@@ -219,7 +219,7 @@ module iob_soc_int_mem #(
       .d_wstrb_i(ram_d_req[`WSTRB(0)]),
       .d_rdata_o(ram_d_resp[`RDATA(0)]),
       .d_rvalid_o(ram_d_resp[`RVALID(0)]),
-      .d_ready_o(ram_d_resp[`READY(0)]),    
+      .d_ready_o(ram_d_resp[`READY(0)])
    );
 
 endmodule
