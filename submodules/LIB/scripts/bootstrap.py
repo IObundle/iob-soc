@@ -164,13 +164,12 @@ if __name__ == "__main__":
     top_module_name = sys.argv[1].split(".")[0]
     exec("import " + top_module_name)
 
-# Set a custom LIB directory
-for arg in sys.argv:
-    if "LIB_DIR" in arg:
-        import copy_srcs
-
-        copy_srcs.LIB_DIR = arg.split("=")[1]
-        break
+    # Set a custom LIB directory
+    for arg in sys.argv:
+        if "LIB_DIR" in arg:
+            import copy_srcs
+            copy_srcs.LIB_DIR = arg.split("=")[1]
+            break
 
     # Call either the default function or the one given by the user
     function_2_call = "instantiate_top_module"
