@@ -179,9 +179,9 @@ exec("import " + top_module_name)
 # Set a custom LIB directory
 for arg in sys.argv:
     if "LIB_DIR" in arg:
-        import build_srcs
+        import copy_srcs
 
-        build_srcs.LIB_DIR = arg.split("=")[1]
+        copy_srcs.LIB_DIR = arg.split("=")[1]
         break
 
 # Call either the default function or the one given by the user

@@ -18,7 +18,7 @@ import iob_colors
 import shutil
 import fnmatch
 import if_gen
-import build_srcs
+import copy_srcs
 from iob_module import iob_module
 
 ######################################

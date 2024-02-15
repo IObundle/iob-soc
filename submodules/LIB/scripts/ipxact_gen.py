@@ -3,7 +3,7 @@
 # TODO: account for log2n_items in the memory map
 
 import math
-import ios
+import io_gen
 import if_gen
 import re
 import os

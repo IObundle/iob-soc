@@ -9,7 +9,7 @@ from submodule_utils import (
     get_reserved_signals,
     get_reserved_signal_connection,
 )
-from ios import get_peripheral_port_mapping
+from io_gen import get_peripheral_port_mapping
 
 
 # Automatically include <corename>_swreg_def.vh verilog headers after IOB_PRAGMA_PHEADERS comment

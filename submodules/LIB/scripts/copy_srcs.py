@@ -1,3 +1,5 @@
+# This module copies sources to the build directory
+
 import os
 import sys
 import re
@@ -5,14 +7,14 @@ import subprocess
 from pathlib import Path
 import shutil
 import importlib.util
-import build_srcs
+import copy_srcs
 
 # IObundle scripts imported:
 import if_gen
 from submodule_utils import import_setup, set_default_submodule_dirs
 import iob_colors
 import inspect
-import mk_configuration as mk_conf
+import config_gen as mk_conf
 
 LIB_DIR = "submodules/LIB"
 
