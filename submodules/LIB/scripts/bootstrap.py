@@ -125,56 +125,44 @@ def instantiate_top_module():
     top_module.setup_as_top_module()
 
 
-# Generate Linux Driver Header
-def gen_linux_driver_header():
-    # invoked from the command line as:
-    # python3 bootstrap.py <top_module_name> -f gen_linux_driver_header -o [output_dir]
-
-    output_dir = "."
-    if "-o" in sys.argv and len(sys.argv) > sys.argv.index("-o") + 1:
-        output_dir = sys.argv[sys.argv.index("-o") + 1]
-
-    top_module = init_top_module()
-    top_module.gen_linux_driver_header(output_dir)
-
-
 ##########################################################################################
 ########   Main script    ################################################################
 ##########################################################################################
+if __name__ == "__main__":
 
-if len(sys.argv) < 2:
-    print(
-        "Usage: %s <top_module_name> [setup_args] [-s <search_path>] [-f <func_name>]"
-        % sys.argv[0]
-    )
-    print(
-        "<top_module_name>: Name of top module class and file (they must have the same name)."
-    )
-    print(
-        "-s <search_path>: Optional root of search path for python modules. Defaults to current directory."
-    )
-    print("-f <func_name>: Optional function name to execute")
-    print(
-        "setup_args: Optional project-defined arguments that may be using during setup process of the current project."
-    )
-    exit(0)
+    if len(sys.argv) < 2:
+        print(
+            "Usage: %s <top_module_name> [setup_args] [-s <search_path>] [-f <func_name>]"
+            % sys.argv[0]
+        )
+        print(
+            "<top_module_name>: Name of top module class and file (they must have the same name)."
+        )
+        print(
+            "-s <search_path>: Optional root of search path for python modules. Defaults to current directory."
+        )
+        print("-f <func_name>: Optional function name to execute")
+        print(
+            "setup_args: Optional project-defined arguments that may be using during setup process of the current project."
+        )
+        exit(0)
 
-search_path = "."
-if "-s" in sys.argv:
-    search_path = sys.argv[sys.argv.index("-s") + 1]
+    search_path = "."
+    if "-s" in sys.argv:
+        search_path = sys.argv[sys.argv.index("-s") + 1]
 
-# Add python modules search paths for every module
-print(f"Searching for modules under '{search_path}'...", file=sys.stderr)
-found_modules = []
-for filepath, files in bfs_search_files(search_path):
-    for filename in files:
-        if filename.endswith(".py") and filename not in found_modules:
-            sys.path.append(filepath)
-            found_modules.append(filename)
+    # Add python modules search paths for every module
+    print(f"Searching for modules under '{search_path}'...", file=sys.stderr)
+    found_modules = []
+    for filepath, files in bfs_search_files(search_path):
+        for filename in files:
+            if filename.endswith(".py") and filename not in found_modules:
+                sys.path.append(filepath)
+                found_modules.append(filename)
 
-# Import top module
-top_module_name = sys.argv[1].split(".")[0]
-exec("import " + top_module_name)
+    # Import top module
+    top_module_name = sys.argv[1].split(".")[0]
+    exec("import " + top_module_name)
 
 # Set a custom LIB directory
 for arg in sys.argv:
@@ -184,9 +172,9 @@ for arg in sys.argv:
         copy_srcs.LIB_DIR = arg.split("=")[1]
         break
 
-# Call either the default function or the one given by the user
-function_2_call = "instantiate_top_module"
-if "-f" in sys.argv:
-    function_2_call = sys.argv[sys.argv.index("-f") + 1]
-print(f"Calling '{function_2_call}'...", file=sys.stderr)
-vars()[function_2_call]()
+    # Call either the default function or the one given by the user
+    function_2_call = "instantiate_top_module"
+    if "-f" in sys.argv:
+        function_2_call = sys.argv[sys.argv.index("-f") + 1]
+    print(f"Calling '{function_2_call}'...", file=sys.stderr)
+    vars()[function_2_call]()

@@ -1,11 +1,9 @@
-#!/usr/bin/env python3
 # Creates periphs_tmp.h
 
 import sys, os
 
 # Add folder to path that contains python scripts to be imported
 from submodule_utils import *
-
 
 # Arguments:
 #   periph_addr_select_bit: Adress selection bit (P variable)
