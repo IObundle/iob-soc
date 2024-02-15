@@ -168,6 +168,7 @@ if __name__ == "__main__":
     for arg in sys.argv:
         if "LIB_DIR" in arg:
             import copy_srcs
+
             copy_srcs.LIB_DIR = arg.split("=")[1]
             break
 

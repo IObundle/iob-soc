@@ -255,10 +255,21 @@ iob_eth_rmac.h:
         with open(python_module.build_dir + "/software/sw_build.mk", "w") as file:
             file.writelines(contents)
 
-    # Copy console_ethernet.py from LIB
+    scripts = [
+        "console.py",
+        "board_client.py",
+        "makehex.py",
+        "hex_split.py",
+        "hex_join.py",
+    ]
+
+    # Copy scripts to build directory
+    copy_srcs.copy_files("./scripts", f"{build_dir}/scripts", scripts)
+
+    # Copy  console_ethernet.py
     if ethernet_macro:
         copy_srcs.copy_files(
-            copy_srcs.LIB_DIR, f"{build_dir}/scripts", ["console_ethernet.py"], "*.py"
+            "./scripts", f"{build_dir}/scripts", ["console_ethernet.py"], "*.py"
         )
 
     mem_add_w_parameter = next((i for i in confs if i["name"] == "MEM_ADDR_W"), False)
@@ -276,12 +287,9 @@ iob_eth_rmac.h:
                 else "-"
             )
             file.write(
-                f"	../../scripts/joinHexFiles.py $^ {sut_firmware_name} {mem_add_w_parameter['val']} > $@\n"
+                f"	../../scripts/hex_join.py $^ {sut_firmware_name} {mem_add_w_parameter['val']} > $@\n"
             )
         # Copy joinHexFiles.py from LIB
-        copy_srcs.copy_files(
-            copy_srcs.LIB_DIR, f"{build_dir}/scripts", ["joinHexFiles.py"], "*.py"
-        )
 
 
 # Given the io dictionary of ports, the port name (and size, and optional bit list) and a wire, it will map the selected bits of the port to the given wire.
