@@ -257,8 +257,8 @@ iob_eth_rmac.h:
 
     # Copy console_ethernet.py from LIB
     if ethernet_macro:
-        build_srcs.copy_files(
-            build_srcs.LIB_DIR, f"{build_dir}/scripts", ["console_ethernet.py"], "*.py"
+        copy_srcs.copy_files(
+            copy_srcs.LIB_DIR, f"{build_dir}/scripts", ["console_ethernet.py"], "*.py"
         )
 
     mem_add_w_parameter = next((i for i in confs if i["name"] == "MEM_ADDR_W"), False)
@@ -279,8 +279,8 @@ iob_eth_rmac.h:
                 f"	../../scripts/joinHexFiles.py $^ {sut_firmware_name} {mem_add_w_parameter['val']} > $@\n"
             )
         # Copy joinHexFiles.py from LIB
-        build_srcs.copy_files(
-            build_srcs.LIB_DIR, f"{build_dir}/scripts", ["joinHexFiles.py"], "*.py"
+        copy_srcs.copy_files(
+            copy_srcs.LIB_DIR, f"{build_dir}/scripts", ["joinHexFiles.py"], "*.py"
         )
 
 
