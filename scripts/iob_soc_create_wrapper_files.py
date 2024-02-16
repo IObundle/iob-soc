@@ -1,3 +1,9 @@
+"""
+File: iob_soc_create_wrapper_files.py
+Description: Library of IOb-SoC utility functions for generating files (verilog snippets) required by the system wrappers.
+             The main function is `create_wrapper_files`.
+"""
+
 import os
 
 from submodule_utils import get_pio_signals, add_prefix_to_parameters_in_string
