@@ -137,48 +137,45 @@ module iob_soc_boot_ctr #(
    wire [SRAM_ADDR_W-2-1:0] sram_w_addr;
    wire [SRAM_ADDR_W-2-1:0] sram_w_addr_nxt;
 
-   assign sram_w_addr_nxt = boot_o ? {3'b111, {(BOOTROM_ADDR_W - 2) {1'b0}}} + rom_r_addr : {3'b111, {(BOOTROM_ADDR_W - 2) {1'b0}}};
+   assign sram_w_addr_nxt = boot_o ? ((2**SRAM_ADDR_W-2**BOOTROM_ADDR_W)>>2) + rom_r_addr : ((2**SRAM_ADDR_W-2**BOOTROM_ADDR_W)>>2);
 
 
    wire [DATA_W/8-1:0] sram_wstrb_o_nxt;
 
 
-   assign sram_wstrb_o_nxt = boot_o ? {DATA_W / 8{rom_r_valid}} : {DATA_W / 8{1'b1}};
+   assign sram_wstrb_o_nxt = boot_o ? {DATA_W / 8{rom_r_valid}} : {DATA_W / 8{1'b0}};
 
 
-   iob_reg_r #(
+   iob_reg #(
       .DATA_W (1),
       .RST_VAL(1'b0)
    )sram_w_valid_reg (
       .clk_i (clk_i),
       .arst_i(arst_i),
       .cke_i (1'b1),
-      .rst_i (1'b0),
       .data_i(sram_w_valid_nxt),
       .data_o(sram_w_valid)
    );
 
-
-   iob_reg_r #(
+   iob_reg #(
       .DATA_W (SRAM_ADDR_W-2),
-      .RST_VAL({3'b111, {(BOOTROM_ADDR_W - 2) {1'b0}}})
+      .RST_VAL(((2**SRAM_ADDR_W-2**BOOTROM_ADDR_W)>>2))
    )sram_w_addr_reg (
       .clk_i (clk_i),
       .arst_i(arst_i),
       .cke_i (1'b1),
-      .rst_i (1'b0),
       .data_i(sram_w_addr_nxt),
       .data_o(sram_w_addr)
    );
 
-   iob_reg_r #(
+
+    iob_reg #(
       .DATA_W (DATA_W/8),
-      .RST_VAL({DATA_W / 8{1'b1}})
+      .RST_VAL({DATA_W / 8{1'b0}})
    )sram_wstrb_o_reg (
       .clk_i (clk_i),
       .arst_i(arst_i),
       .cke_i (1'b1),
-      .rst_i (1'b0),
       .data_i(sram_wstrb_o_nxt),
       .data_o(sram_wstrb_o)
    );
@@ -187,21 +184,21 @@ module iob_soc_boot_ctr #(
 
 
 
-   always @(posedge clk_i, posedge arst_i)
-      if (arst_i) begin
+   //always @(posedge clk_i, posedge arst_i)
+   //   if (arst_i) begin
          //sram_w_valid <= 1'b0;
          //sram_w_addr   <= {1'b1, {(BOOTROM_ADDR_W - 2) {1'b0}}};
          //sram_wstrb_o    <= {DATA_W / 8{1'b1}};
-      end 
-      else if (boot_o) begin
+   //   end 
+   //   else if (boot_o) begin
          //sram_w_valid <= rom_r_valid;
          //sram_w_addr   <= {1'b1, {(BOOTROM_ADDR_W - 2) {1'b0}}} + rom_r_addr;
          //sram_wstrb_o    <= {DATA_W / 8{rom_r_valid}};
-      end else begin
+   //   end else begin
          //sram_w_valid <= 1'b0;
          //sram_w_addr   <= {1'b1, {(BOOTROM_ADDR_W - 2) {1'b0}}};
          //sram_wstrb_o    <= {DATA_W / 8{1'b1}};
-      end
+   //   end
 
 
 
