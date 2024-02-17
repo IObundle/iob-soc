@@ -98,19 +98,6 @@ module iob_soc_boot_ctr #(
    reg  [BOOTROM_ADDR_W-3:0] rom_r_addr;
    wire [        DATA_W-1:0] rom_r_rdata;
 
-   
-
-
-
-
-
-
-
-
-
-
-
-
 
    always @(posedge clk_i, posedge arst_i)
       if (arst_i) begin
@@ -179,25 +166,6 @@ module iob_soc_boot_ctr #(
       .data_i(sram_w_addr_nxt),
       .data_o(sram_w_addr)
    );
-
-
-
-   //always @(posedge clk_i, posedge arst_i)
-   //   if (arst_i) begin
-         //sram_w_valid <= 1'b0;
-         //sram_w_addr   <= -{1'b1, {(BOOTROM_ADDR_W - 2) {1'b0}}};
-         //sram_wstrb_o    <= {DATA_W / 8{1'b1}};
-   //   end else if (boot_o) begin
-         //sram_w_valid <= rom_r_valid;
-         //sram_w_addr   <= -{1'b1, {(BOOTROM_ADDR_W - 2) {1'b0}}} + rom_r_addr;
-         //sram_wstrb_o    <= {DATA_W / 8{rom_r_valid}};
-   //   end else begin
-         //sram_w_valid <= 1'b0;
-         //sram_w_addr   <= -{1'b1, {(BOOTROM_ADDR_W - 2) {1'b0}}};
-         //sram_wstrb_o    <= {DATA_W / 8{1'b1}};
-   //   end
-
-
 
    assign loading     = rom_r_valid | sram_w_valid;
    assign sram_valid_o = sram_w_valid;
