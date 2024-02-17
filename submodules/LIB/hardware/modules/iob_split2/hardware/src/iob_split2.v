@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 
-module iob_split #(
+module iob_split2 #(
    parameter DATA_W = 0,
    parameter ADDR_W = 0,
    parameter N      = 0
