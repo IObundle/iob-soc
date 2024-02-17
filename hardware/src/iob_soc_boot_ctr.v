@@ -96,12 +96,12 @@ module iob_soc_boot_ctr #(
    wire                       rom_r_valid;
    wire                       rom_r_valid_nxt;
 
-   assign rom_r_valid_nxt = (boot_o && rom_r_addr != (2 ** (BOOTROM_ADDR_W - 2) - 1) && rom_r_valid != 1'b0) ? 1'b1 : 1'b0;
+   assign rom_r_valid_nxt = (boot_o && rom_r_addr != ({BOOTROM_ADDR_W - 2{1'b1}}-1) && rom_r_valid != 1'b0) ? 1'b1 : 1'b0;
    
    wire  [BOOTROM_ADDR_W-3:0] rom_r_addr;
    wire [BOOTROM_ADDR_W-3:0] rom_r_addr_nxt;
 
-   assign rom_r_addr_nxt = (boot_o && rom_r_addr != (2 ** (BOOTROM_ADDR_W - 2) - 1)) ? rom_r_addr + 1'b1 : {(BOOTROM_ADDR_W - 2) {1'b0}};
+   assign rom_r_addr_nxt = (boot_o && rom_r_addr != ({BOOTROM_ADDR_W - 2{1'b1}}-1)) ? rom_r_addr + 1'b1 : {(BOOTROM_ADDR_W - 2) {1'b0}};
 
 
    wire [        DATA_W-1:0] rom_r_rdata;
@@ -118,7 +118,6 @@ module iob_soc_boot_ctr #(
       .data_o(rom_r_addr)
    );
 
-
    iob_reg #(
       .DATA_W (1),
       .RST_VAL(1'b1)
@@ -129,8 +128,6 @@ module iob_soc_boot_ctr #(
       .data_i(rom_r_valid_nxt),
       .data_o(rom_r_valid)
    );
-
-
 
 
    //always @(posedge clk_i, posedge arst_i)
