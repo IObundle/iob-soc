@@ -137,7 +137,7 @@ module iob_soc_boot_ctr #(
    wire [SRAM_ADDR_W-2-1:0] sram_w_addr;
    wire [SRAM_ADDR_W-2-1:0] sram_w_addr_nxt;
 
-   assign sram_w_addr_nxt = boot_o ? ((2**SRAM_ADDR_W-2**BOOTROM_ADDR_W)>>2) + rom_r_addr : ((2**SRAM_ADDR_W-2**BOOTROM_ADDR_W)>>2);
+   assign sram_w_addr_nxt = boot_o ? (1'b1<<(SRAM_ADDR_W-2))-(1'b1<<(BOOTROM_ADDR_W-2)) + rom_r_addr : (1'b1<<(SRAM_ADDR_W-2))-(1'b1<<(BOOTROM_ADDR_W-2));
 
 
    wire [DATA_W/8-1:0] sram_wstrb_o_nxt;
@@ -159,7 +159,7 @@ module iob_soc_boot_ctr #(
 
    iob_reg #(
       .DATA_W (SRAM_ADDR_W-2),
-      .RST_VAL(((2**SRAM_ADDR_W-2**BOOTROM_ADDR_W)>>2))
+      .RST_VAL((1'b1<<(SRAM_ADDR_W-2))-(1'b1<<(BOOTROM_ADDR_W-2)))
    )sram_w_addr_reg (
       .clk_i (clk_i),
       .arst_i(arst_i),
