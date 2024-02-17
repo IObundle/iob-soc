@@ -93,35 +93,56 @@ module iob_soc_boot_ctr #(
    //
    // READ BOOT ROM 
    //
-   reg                       rom_r_valid;
+   wire                       rom_r_valid;
+   wire                       rom_r_valid_nxt;
+
+   assign rom_r_valid_nxt = (boot_o && rom_r_addr != (2 ** (BOOTROM_ADDR_W - 2) - 1) && rom_r_valid != 1'b0) ? 1'b1 : 1'b0;
    
-   reg  [BOOTROM_ADDR_W-3:0] rom_r_addr;
+   wire  [BOOTROM_ADDR_W-3:0] rom_r_addr;
+   wire [BOOTROM_ADDR_W-3:0] rom_r_addr_nxt;
+
+   assign rom_r_addr_nxt = (boot_o && rom_r_addr != (2 ** (BOOTROM_ADDR_W - 2) - 1)) ? rom_r_addr + 1'b1 : {(BOOTROM_ADDR_W - 2) {1'b0}};
+
+
    wire [        DATA_W-1:0] rom_r_rdata;
 
-   
+
+   iob_reg #(
+      .DATA_W (BOOTROM_ADDR_W-2),
+      .RST_VAL({(BOOTROM_ADDR_W - 2) {1'b0}})
+   )rom_r_addr_reg (
+      .clk_i (clk_i),
+      .arst_i(arst_i),
+      .cke_i (1'b1),
+      .data_i(rom_r_addr_nxt),
+      .data_o(rom_r_addr)
+   );
+
+
+   iob_reg #(
+      .DATA_W (1),
+      .RST_VAL(1'b1)
+   )rom_r_valid_reg (
+      .clk_i (clk_i),
+      .arst_i(arst_i),
+      .cke_i (1'b1),
+      .data_i(rom_r_valid_nxt),
+      .data_o(rom_r_valid)
+   );
 
 
 
 
-
-
-
-
-
-
-
-
-
-   always @(posedge clk_i, posedge arst_i)
-      if (arst_i) begin
-         rom_r_valid <= 1'b1;
-         rom_r_addr   <= {(BOOTROM_ADDR_W - 2) {1'b0}};
-      end else if (boot_o && rom_r_addr != (2 ** (BOOTROM_ADDR_W - 2) - 1))
-         rom_r_addr <= rom_r_addr + 1'b1;
-      else begin
-         rom_r_valid <= 1'b0;
-         rom_r_addr   <= {(BOOTROM_ADDR_W - 2) {1'b0}};
-      end
+   //always @(posedge clk_i, posedge arst_i)
+      //if (arst_i) begin
+         //rom_r_valid <= 1'b1;
+         //rom_r_addr   <= {(BOOTROM_ADDR_W - 2) {1'b0}};
+      //end else if (boot_o && rom_r_addr != (2 ** (BOOTROM_ADDR_W - 2) - 1))
+         //rom_r_addr <= rom_r_addr + 1'b1;
+      //else begin
+         //rom_r_valid <= 1'b0;
+         //rom_r_addr   <= {(BOOTROM_ADDR_W - 2) {1'b0}};
+      //end
 
    //
    // WRITE SRAM
