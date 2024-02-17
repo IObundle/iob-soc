@@ -113,7 +113,7 @@ module iob_soc_boot_ctr #(
    )rom_r_addr_reg (
       .clk_i (clk_i),
       .arst_i(arst_i),
-      .cke_i (1'b1),
+      .cke_i (cke_i),
       .data_i(rom_r_addr_nxt),
       .data_o(rom_r_addr)
    );
@@ -125,7 +125,7 @@ module iob_soc_boot_ctr #(
    )rom_r_valid_reg (
       .clk_i (clk_i),
       .arst_i(arst_i),
-      .cke_i (1'b1),
+      .cke_i (cke_i),
       .data_i(rom_r_valid_nxt),
       .data_o(rom_r_valid)
    );
@@ -173,7 +173,7 @@ module iob_soc_boot_ctr #(
    )sram_w_valid_reg (
       .clk_i (clk_i),
       .arst_i(arst_i),
-      .cke_i (1'b1),
+      .cke_i (cke_i),
       .data_i(sram_w_valid_nxt),
       .data_o(sram_w_valid)
    );
@@ -184,7 +184,7 @@ module iob_soc_boot_ctr #(
    )sram_w_addr_reg (
       .clk_i (clk_i),
       .arst_i(arst_i),
-      .cke_i (1'b1),
+      .cke_i (cke_i),
       .data_i(sram_w_addr_nxt),
       .data_o(sram_w_addr)
    );
@@ -196,7 +196,7 @@ module iob_soc_boot_ctr #(
    )sram_wstrb_o_reg (
       .clk_i (clk_i),
       .arst_i(arst_i),
-      .cke_i (1'b1),
+      .cke_i (cke_i),
       .data_i(sram_wstrb_o_nxt),
       .data_o(sram_wstrb_o)
    );
