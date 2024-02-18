@@ -406,6 +406,11 @@ class iob_module:
                     cls.name,
                     cls.csr_if,
                 )
+                mkregs_obj.write_tbcode(
+                    reg_table,
+                    cls.build_dir + "/hardware/src",
+                    cls.name,
+                )
 
         if cls.confs:
             mk_conf.params_vh(cls.confs, cls.name, cls.build_dir + "/hardware/src")

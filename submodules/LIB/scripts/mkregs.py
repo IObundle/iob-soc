@@ -827,6 +827,56 @@ class mkregs:
                 fsw.write("}\n\n")
         fsw.close()
 
+    def write_tbcode(self, table, out_dir, top):
+        os.makedirs(out_dir, exist_ok=True)
+        fsw = open(f"{out_dir}/{top}_swreg_emb_tb.vs", "w")
+        core_prefix = f"{top}_".upper()
+        # fsw.write(f'`include "{top}_swreg_def.vh"\n\n')
+        # fsw.write("\n// Base Address\n")
+        # fsw.write("eth_base = 0;\n")
+        fsw.write(f"task {core_prefix}INIT_BASEADDR(input [ADDR_W-1:0] addr);\n")
+        fsw.write("  eth_base = addr;\n")
+        fsw.write("endtask\n")
+
+        fsw.write("\n// Core Setters and Getters\n")
+
+        for row in table:
+            name = row["name"]
+            n_bits = row["n_bits"]
+            log2n_items = row["log2n_items"]
+            n_bytes = self.bceil(n_bits, 3) / 8
+            if n_bytes == 3:
+                n_bytes = 4
+            addr_w = self.calc_addr_w(log2n_items, n_bytes)
+            if "W" in row["type"]:
+                sw_type = f"[{int(n_bytes*8)}-1:0]"
+                addr_arg = ""
+                addr_arg = ""
+                addr_shift = ""
+                if addr_w / n_bytes > 1:
+                    addr_arg = ", input [ADDR_W-1:0] addr"
+                    addr_shift = f" + (addr << {int(log(n_bytes, 2))})"
+                fsw.write(
+                    f"task {core_prefix}SET_{name}(input {sw_type} value{addr_arg});\n"
+                )
+                fsw.write(
+                    f"  iob_write( (eth_base) + (`{core_prefix}{name}_ADDR){addr_shift}, value, `{core_prefix}{name}_W);\n"
+                )
+                fsw.write("endtask\n\n")
+            if "R" in row["type"]:
+                sw_type = f"[{int(n_bytes*8)}-1:0]"
+                addr_arg = ""
+                addr_shift = ""
+                if addr_w / n_bytes > 1:
+                    addr_arg = "input [ADDR_W-1:0] addr, "
+                    addr_shift = f" + (addr << {int(log(n_bytes, 2))})"
+                fsw.write(f"task {core_prefix}GET_{name}({addr_arg}output {sw_type} rvalue);\n")
+                fsw.write(
+                    f"  iob_read( (eth_base) + (`{core_prefix}{name}_ADDR){addr_shift}, rvalue, `{core_prefix}{name}_W);\n"
+                )
+                fsw.write("endtask\n\n")
+        fsw.close()
+
     # check if address is aligned
     @staticmethod
     def check_alignment(addr, addr_w):

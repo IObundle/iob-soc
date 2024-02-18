@@ -107,13 +107,25 @@ module iob_soc_tb;
    
 `ifdef IOB_SOC_USE_ETHERNET
    //IOb-SoC ethernet
-   reg                               ethernet_valid_i;
-   reg  [`IOB_ETH_SWREG_ADDR_W-1:0]  ethernet_addr_i;
-   reg  [       `IOB_SOC_DATA_W-1:0] ethernet_wdata_i;
-   reg  [                       3:0] ethernet_wstrb_i;
-   wire [       `IOB_SOC_DATA_W-1:0] ethernet_rdata_o;
-   wire                              ethernet_ready_o;
-   wire                              ethernet_rvalid_o;
+   wire                              ethernet_valid;
+   wire [`IOB_ETH_SWREG_ADDR_W-1:0]  ethernet_addr;
+   wire [       `IOB_SOC_DATA_W-1:0] ethernet_wdata;
+   wire [                       3:0] ethernet_wstrb;
+   wire [       `IOB_SOC_DATA_W-1:0] ethernet_rdata;
+   wire                              ethernet_ready;
+   wire                              ethernet_rvalid;
+
+   iob_eth_driver_tb (
+      .clk_i (clk),
+      .iob_valid_o(ethernet_valid),
+      .iob_addr_o(ethernet_addr),
+      .iob_wdata_o(ethernet_wdata),
+      .iob_wstrb_o(ethernet_wstrb),
+      .iob_rdata_i(ethernet_rdata),
+      .iob_ready_i(ethernet_ready),
+      .iob_rvalid_i(ethernet_rvalid)
+   );
+
 `endif
 
 
@@ -123,13 +135,13 @@ module iob_soc_tb;
       .trap_o(trap),
 
 `ifdef IOB_SOC_USE_ETHERNET
-      .ethernet_valid_i (1'b0),
-      .ethernet_addr_i  (`IOB_ETH_SWREG_ADDR_W'b0),
-      .ethernet_wdata_i (`IOB_SOC_DATA_W'b0),
-      .ethernet_wstrb_i (4'b0),
-      .ethernet_rdata_o (),
-      .ethernet_ready_o (),
-      .ethernet_rvalid_o(),
+      .ethernet_valid_i (ethernet_valid),
+      .ethernet_addr_i  (ethernet_addr),
+      .ethernet_wdata_i (ethernet_wdata),
+      .ethernet_wstrb_i (ethernet_wstrb),
+      .ethernet_rdata_o (ethernet_rdata),
+      .ethernet_ready_o (ethernet_ready),
+      .ethernet_rvalid_o(ethernet_rvalid),
 `endif
 
       .uart_valid_i (iob_valid_i),
