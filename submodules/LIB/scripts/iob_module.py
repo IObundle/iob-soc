@@ -586,56 +586,48 @@ class iob_module:
         )
 
     @classmethod
-    def __generate(cls, vs_name, purpose="hardware"):
-        """Generate a Verilog header with `if_gen.py`.
-        vs_name: A dictionary describing the interface to generate.
-                 Example simple dictionary: {"interface": "iob_wire"}
-                 Example full dictionary:
-                       {
-                           "file_prefix": "iob_bus_0_2_", # Prefix to include in the generated file name
-                           "interface": "axi_m_portmap",  # Type of interface/wires to generate. Will also be part of the filename.
-                           "wire_prefix": "",             # Prefix to include in the generated wire names
-                           "port_prefix": "",             # Prefix to include in the generated port names
-                           "bus_start": 0,                # Optional. Starting index of the bus of wires that we are connecting.
-                           "bus_size": 2,                 # Optional. Size of the bus of wires that we are creating/connecting.
-                       }
-        purpose: [Optional] Reason for generating the header. Used to select between the standard destination locations.
-
-        Example function calls:
-        To generate a simple `iob_s_port.vh` file, use: `iob_module.generate("iob_s_port")`
-        To generate an iob_s_port file with a custom prefix in its ports, wires, and filename, use:
-            iob_module.generate(
-                       {
-                           "file_prefix": "example_file_prefix_",
-                           "interface": "iob_s_port",
-                           "wire_prefix": "example_wire_prefix_",
-                           "port_prefix": "example_port_prefix_",
-                       })
+    def __generate(cls, vs_dict, purpose="hardware"):
+        """
+        Generate a Verilog snippet with `if_gen.py`.
         """
         dest_dir = os.path.join(cls.build_dir, cls.get_purpose_dir(purpose))
 
-        if_gen.default_interface_fields(vs_name)
+        # set prefixes if they do not exist
+        if not "file_prefix" in vs_dict:
+            vs_dict["file_prefix"] = ""
+        if not "port_prefix" in vs_dict:
+            vs_dict["port_prefix"] = ""
+        if not "wire_prefix" in vs_dict:
+            vs_dict["wire_prefix"] = ""
+        if not "ports" in vs_dict:
+            vs_dict["ports"] = []
+        if not "mult" in vs_dict:
+            vs_dict["mult"] = 1
+        if not "widths" in vs_dict:
+            vs_dict["widths"] = {}
 
-        if (type(vs_name) is dict) and (vs_name["interface"] in if_gen.interfaces):
-            f_out = open(
-                os.path.join(
-                    dest_dir, vs_name["file_prefix"] + vs_name["interface"] + ".vs"
-                ),
-                "w",
+        # Skip unknown interfaces
+        if vs_dict["interface"] not in if_gen.if_names:
+            print(
+                f"{iob_colors.WARNING}Unknown interface '{vs_dict['interface']}'.{iob_colors.ENDC}"
             )
-            if_gen.create_signal_table(vs_name["interface"])
-            if_gen.write_vs_contents(
-                vs_name["interface"],
-                vs_name["port_prefix"],
-                vs_name["wire_prefix"],
-                f_out,
-                bus_size=vs_name["bus_size"] if "bus_size" in vs_name.keys() else 1,
-                bus_start=vs_name["bus_start"] if "bus_start" in vs_name.keys() else 0,
-            )
-        else:
-            raise Exception(
-                f"{iob_colors.FAIL} Can't generate '{vs_name}'. Type not recognized.{iob_colors.ENDC}"
-            )
+            return
+
+        # Generate interface
+        if_gen.gen_if(
+            vs_dict["interface"],
+            vs_dict["file_prefix"],
+            vs_dict["port_prefix"],
+            vs_dict["wire_prefix"],
+            vs_dict["ports"],
+            vs_dict["mult"],
+            vs_dict["widths"],
+        )
+
+        # move all .vs files from current directory to out_dir
+        for file in os.listdir("."):
+            if file.endswith(".vs"):
+                os.rename(file, f"{dest_dir}/{file}")
 
     @classmethod
     def get_setup_purpose(cls):
