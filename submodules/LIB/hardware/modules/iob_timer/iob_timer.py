@@ -22,11 +22,6 @@ class iob_timer(iob_module):
         super()._create_submodules_list(
             [
                 # Hardware headers & modules
-                {"interface": "iob_s_port"},
-                {"interface": "iob_s_portmap"},
-                {"interface": "iob_wire"},
-                {"interface": "clk_en_rst_s_s_portmap"},
-                {"interface": "clk_en_rst_s_port"},
                 iob_utils,
                 iob_reg_re,
                 iob_reg_e,
@@ -70,30 +65,25 @@ class iob_timer(iob_module):
     @classmethod
     def _setup_ios(cls):
         cls.ios += [
-            {"name": "iob_s_port", "descr": "CPU native interface", "ports": []},
             {
-                "name": "general",
-                "descr": "General interface signals",
-                "ports": [
-                    {
-                        "name": "clk_i",
-                        "type": "I",
-                        "n_bits": "1",
-                        "descr": "System clock input",
-                    },
-                    {
-                        "name": "arst_i",
-                        "type": "I",
-                        "n_bits": "1",
-                        "descr": "System reset, asynchronous and active high",
-                    },
-                    {
-                        "name": "cke_i",
-                        "type": "I",
-                        "n_bits": "1",
-                        "descr": "System reset, asynchronous and active high",
-                    },
-                ],
+                "name": "clk_en_rst",
+                "type": "slave",
+                "port_prefix": "",
+                "wire_prefix": "",
+                "descr": "Clock, clock enable and reset",
+                "ports": [],
+            },
+            {
+                "name": "iob",
+                "type": "slave",
+                "port_prefix": "",
+                "wire_prefix": "",
+                "descr": "CPU native interface",
+                "ports": [],
+                "widths": {
+                    "ADDR_W": "ADDR_W",
+                    "DATA_W": "DATA_W",
+                },
             },
         ]
 

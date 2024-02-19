@@ -22,8 +22,6 @@ module axis2axi_tb;
    parameter DELAY_AXI_WRITE = 5;
 
    // Do not change these
-   parameter AXI_ADDR_W = ADDR_W;
-   parameter AXI_DATA_W = DATA_W;
    parameter AXI_LEN_W = 8;
    parameter AXI_ID_W = 1;
 
@@ -59,7 +57,7 @@ module axis2axi_tb;
 
    // AXI-4 full master I/F
    wire ddr_axi_awid;  //Address write channel ID
-   wire [AXI_ADDR_W-1:0] ddr_axi_awaddr;  //Address write channel address
+   wire [ADDR_W-1:0] ddr_axi_awaddr;  //Address write channel address
    wire [8-1:0] ddr_axi_awlen;  //Address write channel burst length
    wire [3-1:0] ddr_axi_awsize
        ;  //Address write channel burst size. This signal indicates the size of each transfer in the burst
@@ -73,15 +71,15 @@ module axis2axi_tb;
    wire ddr_axi_awvalid;  //Address write channel valid
    wire ddr_axi_awready;  //Address write channel ready
    wire ddr_axi_wid;  //Write channel ID
-   wire [AXI_DATA_W-1:0] ddr_axi_wdata;  //Write channel data
-   wire [(AXI_DATA_W/8)-1:0] ddr_axi_wstrb;  //Write channel write strobe
+   wire [DATA_W-1:0] ddr_axi_wdata;  //Write channel data
+   wire [(DATA_W/8)-1:0] ddr_axi_wstrb;  //Write channel write strobe
    wire ddr_axi_wlast;  //Write channel last word flag
    wire ddr_axi_bid;  //Write response channel ID
    wire [2-1:0] ddr_axi_bresp;  //Write response channel response
    wire ddr_axi_bvalid;  //Write response channel valid
    wire ddr_axi_bready;  //Write response channel ready
    wire ddr_axi_arid;  //Address read channel ID
-   wire [AXI_ADDR_W-1:0] ddr_axi_araddr;  //Address read channel address
+   wire [ADDR_W-1:0] ddr_axi_araddr;  //Address read channel address
    wire [8-1:0] ddr_axi_arlen;  //Address read channel burst length
    wire [3-1:0] ddr_axi_arsize
        ;  //Address read channel burst size. This signal indicates the size of each transfer in the burst
@@ -95,7 +93,7 @@ module axis2axi_tb;
    wire ddr_axi_arvalid;  //Address read channel valid
    wire ddr_axi_arready;  //Address read channel ready
    wire ddr_axi_rid;  //Read channel ID
-   wire [AXI_DATA_W-1:0] ddr_axi_rdata;  //Read channel data
+   wire [DATA_W-1:0] ddr_axi_rdata;  //Read channel data
    wire [2-1:0] ddr_axi_rresp;  //Read channel response
    wire ddr_axi_rlast;  //Read channel last word
 
@@ -375,8 +373,8 @@ module axis2axi_tb;
    );
 
    axis2axi #(
-      .AXI_ADDR_W(AXI_ADDR_W),
-      .AXI_DATA_W(AXI_DATA_W),
+      .ADDR_W(ADDR_W),
+      .DATA_W(DATA_W),
       .AXI_LEN_W (AXI_LEN_W),
       .AXI_ID_W  (AXI_ID_W),
       .BURST_W   (BURST_W)
@@ -461,8 +459,8 @@ module axis2axi_tb;
 
    axi_ram #(
       .ID_WIDTH  (1),
-      .DATA_WIDTH(AXI_DATA_W),
-      .ADDR_WIDTH(AXI_ADDR_W)
+      .DATA_WIDTH(DATA_W),
+      .ADDR_WIDTH(ADDR_W)
    ) axi_ram0 (
       .clk_i(clk),
       .rst_i(rst),

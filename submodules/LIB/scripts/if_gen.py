@@ -80,7 +80,7 @@ ADDR_W = 32
 def get_iob_ports():
     return [
         {
-            "name": "iob_avalid",
+            "name": "iob_valid",
             "direction": "output",
             "width": 1,
             "descr": "Request address is valid.",

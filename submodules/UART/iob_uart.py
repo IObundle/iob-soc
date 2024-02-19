@@ -23,12 +23,7 @@ class iob_uart(iob_module):
         """Create submodules list with dependencies of this module"""
         super()._create_submodules_list(
             [
-                {"interface": "iob_s_port"},
-                {"interface": "iob_s_portmap"},
-                {"interface": "iob_wire"},
                 iob_utils,
-                {"interface": "clk_en_rst_s_s_portmap"},
-                {"interface": "clk_en_rst_s_port"},
                 iob_reg,
                 iob_reg_e,
             ]
@@ -69,38 +64,55 @@ class iob_uart(iob_module):
     def _setup_ios(cls):
         cls.ios += [
             {
-                "name": "clk_en_rst_s_port",
+                "name": "clk_en_rst",
+                "type": "slave",
+                "port_prefix": "",
+                "wire_prefix": "",
                 "descr": "Clock, clock enable and reset",
                 "ports": [],
             },
-            {"name": "iob_s_port", "descr": "CPU native interface", "ports": []},
+            {
+                "name": "iob",
+                "type": "slave",
+                "port_prefix": "",
+                "wire_prefix": "",
+                "descr": "CPU native interface",
+                "ports": [],
+                "widths": {
+                    "ADDR_W": "ADDR_W",
+                    "DATA_W": "DATA_W",
+                },
+            },
             {
                 "name": "rs232",
-                "descr": "Cache invalidate and write-trough buffer IO chain",
+                "type": "master",
+                "port_prefix": "",
+                "wire_prefix": "",
+                "descr": "RS232 interface",
                 "ports": [
                     # {'name':'interrupt', 'type':'O', 'n_bits':'1', 'descr':'be done'},
                     {
-                        "name": "txd_o",
-                        "type": "O",
-                        "n_bits": "1",
+                        "name": "txd",
+                        "direction": "output",
+                        "width": "1",
                         "descr": "transmit line",
                     },
                     {
-                        "name": "rxd_i",
-                        "type": "I",
-                        "n_bits": "1",
+                        "name": "rxd",
+                        "direction": "input",
+                        "width": "1",
                         "descr": "receive line",
                     },
                     {
-                        "name": "cts_i",
-                        "type": "I",
-                        "n_bits": "1",
+                        "name": "cts",
+                        "direction": "input",
+                        "width": "1",
                         "descr": "to send; the destination is ready to receive a transmission sent by the UART",
                     },
                     {
-                        "name": "rts_o",
-                        "type": "O",
-                        "n_bits": "1",
+                        "name": "rts",
+                        "direction": "output",
+                        "width": "1",
                         "descr": "to send; the UART is ready to receive a transmission from the sender.",
                     },
                 ],

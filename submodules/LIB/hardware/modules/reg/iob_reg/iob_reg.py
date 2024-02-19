@@ -9,15 +9,6 @@ class iob_reg(iob_module):
     setup_dir = os.path.dirname(__file__)
 
     @classmethod
-    def _create_submodules_list(cls):
-        """Create submodules list with dependencies of this module"""
-        super()._create_submodules_list(
-            [
-                {"interface": "clk_en_rst_s_port"},
-            ]
-        )
-
-    @classmethod
     def _setup_confs(cls):
         super()._setup_confs(
             [
@@ -47,3 +38,37 @@ class iob_reg(iob_module):
                 },
             ]
         )
+
+    @classmethod
+    def _setup_ios(cls):
+        cls.ios += [
+            {
+                "name": "clk_en_rst",
+                "type": "slave",
+                "port_prefix": "",
+                "wire_prefix": "",
+                "descr": "Clock, clock enable and reset",
+                "ports": [],
+            },
+            {
+                "name": "io",
+                "type": "master",
+                "port_prefix": "",
+                "wire_prefix": "",
+                "descr": "Input and output",
+                "ports": [
+                    {
+                        "name": "data",
+                        "direction": "input",
+                        "width": "DATA_W",
+                        "descr": "Input",
+                    },
+                    {
+                        "name": "data",
+                        "direction": "output",
+                        "width": "DATA_W",
+                        "descr": "Output",
+                    },
+                ],
+            },
+        ]

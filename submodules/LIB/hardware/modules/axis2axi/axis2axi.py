@@ -20,12 +20,30 @@ class axis2axi(iob_module):
         """Create submodules list with dependencies of this module"""
         super()._create_submodules_list(
             [
-                {"interface": "axi_m_port"},
-                {"interface": "axi_m_write_port"},
-                {"interface": "axi_m_read_port"},
-                {"interface": "axi_m_m_write_portmap"},
-                {"interface": "axi_m_m_read_portmap"},
-                {"interface": "clk_en_rst_s_port"},
+                {
+                    "interface": "axi_write",
+                    "file_prefix": "",
+                    "wire_prefix": "",
+                    "port_prefix": "",
+                    "widths": {
+                        "ID_W": "AXI_ID_W",
+                        "ADDR_W": "AXI_ADDR_W",
+                        "DATA_W": "AXI_DATA_W",
+                        "LEN_W": "AXI_LEN_W",
+                    },
+                },
+                {
+                    "interface": "axi_read",
+                    "file_prefix": "",
+                    "wire_prefix": "",
+                    "port_prefix": "",
+                    "widths": {
+                        "ID_W": "AXI_ID_W",
+                        "ADDR_W": "AXI_ADDR_W",
+                        "DATA_W": "AXI_DATA_W",
+                        "LEN_W": "AXI_LEN_W",
+                    },
+                },
                 iob_fifo_sync,
                 iob_counter,
                 iob_reg_r,
@@ -34,3 +52,28 @@ class axis2axi(iob_module):
                 (iob_ram_t2p, {"purpose": "simulation"}),
             ]
         )
+
+    @classmethod
+    def _setup_ios(cls):
+        cls.ios += [
+            {
+                "name": "clk_en_rst",
+                "type": "slave",
+                "port_prefix": "",
+                "wire_prefix": "",
+                "descr": "Clock, clock enable and reset",
+                "ports": [],
+            },
+            {
+                "name": "axi",
+                "type": "master",
+                "port_prefix": "",
+                "wire_prefix": "",
+                "descr": "AXI master interface",
+                "ports": [],
+                "widths": {
+                    "ADDR_W": "ADDR_W",
+                    "DATA_W": "DATA_W",
+                },
+            },
+        ]

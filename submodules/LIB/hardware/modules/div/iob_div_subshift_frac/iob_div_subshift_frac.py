@@ -17,8 +17,6 @@ class iob_div_subshift_frac(iob_module):
         """Create submodules list with dependencies of this module"""
         super()._create_submodules_list(
             [
-                {"interface": "clk_en_rst_s_s_portmap"},
-                {"interface": "clk_en_rst_s_port"},
                 # Setup dependencies
                 iob_reg,
                 iob_reg_e,

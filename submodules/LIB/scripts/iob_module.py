@@ -343,12 +343,8 @@ class iob_module:
                 from iob_ctls import iob_ctls
 
                 iob_ctls.__setup(purpose=cls.get_setup_purpose())
-            ## Auto-add iob_s_port.vh
-            cls.__generate({"interface": "iob_s_port"}, purpose=cls.get_setup_purpose())
-            ## Auto-add iob_s_portmap.vh
-            cls.__generate(
-                {"interface": "iob_s_s_portmap"}, purpose=cls.get_setup_purpose()
-            )
+            ## Auto-add iob interface
+            cls.__generate({"interface": "iob"}, purpose=cls.get_setup_purpose())
 
     @classmethod
     def _build_regs_table(cls):
@@ -427,9 +423,7 @@ class iob_module:
             config_gen.conf_vh(cls.confs, cls.name, cls.build_dir + "/hardware/src")
 
         if cls.ios:
-            io_gen.generate_ios_header(
-                cls.ios, cls.name, cls.build_dir + "/hardware/src"
-            )
+            io_gen.generate_ports(cls.ios, cls.name, cls.build_dir + "/hardware/src")
 
     @classmethod
     def _generate_sw(cls, csr_gen_obj, reg_table):
@@ -515,28 +509,7 @@ class iob_module:
 
     @classmethod
     def _setup_submodules(cls, submodule_list):
-        """Generate or run setup functions for the interfaces/submodules in the given submodules list.
-        :param list submodule_list: List of interfaces/submodules to generate/setup.
-
-        Example submodule_list:
-            [
-            # Generate interfaces with if_gen. Check out the `__generate()` method for details.
-            # Generate an `axi_m_portmap` interface (using a simple dictionary):
-            {"interface": "axi_m_portmap"},
-            # Generate an `axi_s_portmap` interface for the `simulation` purpose (using a tuple with a simple dictionary):
-            ({"interface": "axi_s_portmap"}, {"purpose": "simulation"}),
-            # Generate an `iob_s_port` interface with custom prefixes (using a dictionary):
-            {
-                "file_prefix": "example_file_prefix_",
-                "interface": "iob_s_port",
-                "wire_prefix": "example_wire_prefix_",
-                "port_prefix": "example_port_prefix_",
-            },
-            # Set up a submodule
-            iob_picorv32,
-            # Set up a submodule for the `simulation` purpose (using a tuple):
-            (axi_ram, {"purpose": "simulation"}),
-        """
+        """Setup submodules in the submodule_list."""
         for submodule in submodule_list:
             _submodule = submodule
             setup_options = {}
@@ -574,16 +547,6 @@ class iob_module:
                 raise Exception(
                     f"{iob_colors.FAIL}Unknown type in submodule_list of {cls.name}: {_submodule}{iob_colors.ENDC}"
                 )
-
-    # DEPRECATED METHOD
-    @classmethod
-    def generate(cls, vs_name, purpose="hardware"):
-        """Deprecated method for generate.
-        Raises exception if called.
-        """
-        raise Exception(
-            f"{iob_colors.FAIL}The `generate()` method is deprecated. Use the `_create_submodules_list()` method to setup the `submodule_list`.{iob_colors.ENDC}"
-        )
 
     @classmethod
     def __generate(cls, vs_dict, purpose="hardware"):
