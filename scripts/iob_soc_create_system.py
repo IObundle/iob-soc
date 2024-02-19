@@ -8,8 +8,6 @@ from submodule_utils import (
     get_reserved_signals,
     get_reserved_signal_connection,
 )
-from io_gen import get_peripheral_port_mapping
-
 
 # Automatically include <corename>_swreg_def.vh verilog headers after IOB_PRAGMA_PHEADERS comment
 def insert_header_files(dest_dir, name, peripherals_list):

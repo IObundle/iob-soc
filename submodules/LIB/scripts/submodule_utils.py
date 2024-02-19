@@ -98,16 +98,6 @@ def import_setup(module_location, **kwargs):
     return module
 
 
-# Return short port type string based on given types: "input", "output" and "inout"
-# Maps "I", "O" and "IO" to "input", "output" and "inout", respectively.
-def get_short_port_type(port_type):
-    if port_type == "input":
-        return "I"
-    elif port_type == "output":
-        return "O"
-    else:
-        return "IO"
-
 
 # Adds and fills 'dirs' dictionary inside 'submodules' dicionary of given core/system _setup.py python module
 #       To implement this, we can either: crate a global dictionary with all submodules; or we can do a BFS search for submodules every time we call this function, starting from the root current working directory.
@@ -408,7 +398,7 @@ class if_gen_hack_list:
         self.port_list.append(
             {
                 "name": port.group(3),
-                "type": get_short_port_type(port.group(1)),
+                "type": port.group(1),
                 "n_bits": port.group(2),
                 "descr": next(
                     signal["description"]
@@ -435,20 +425,6 @@ def if_gen_interface(interface_name, port_prefix, bus_size=1):
     return virtual_file_obj.port_list
 
 
-# Given a table from 'ios' dictionary, return its ports list
-# If table has a standard interface name (and empty port list) then it generates the port list with if_gen.py
-def get_table_ports(table):
-    # Check if this table is a standard interface (from if_gen.py)
-    # Note: the table['name'] may have a prefix, therefore we separate it before calling if_gen.
-    prefix, if_name = find_suffix_from_list(table["name"], if_gen.interfaces)
-    if if_name:
-        # Interface is standard, generate ports
-        return if_gen_interface(if_name, prefix)
-    else:
-        # Interface is not standard, read ports
-        return copy.deepcopy(table["ports"])
-
-
 # Given ios object for the module, extract the list of ports.
 # It essencially removes de tables of each interface in 'ios'.
 # Returns a list of dictionaries that describe each port. (The list contains ports from all tables in ios)
@@ -465,7 +441,19 @@ def get_module_io(ios, confs=None, corename=None):
         if "doc_only" in table.keys() and table["doc_only"]:
             continue
 
-        table_signals = get_table_ports(table)
+        if table["ports"]:
+            table_signals = table["ports"]
+        elif table["name"] in if_gen.if_names:
+            # Interface has no ports and is a if_gen interface, so generate it.
+            table_signals = eval(f"if_gen.get_{table['name']}_ports()")
+            if "mult" in table and table["mult"] > 1:
+                for port in table_signals:
+                    port["width"] = port["width"] * table["mult"]
+        else:
+            print(
+                f"{iob_colors.WARNING}Unknown interface '{table['name']}'.{iob_colors.ENDC}"
+            )
+
         # Add signal attributes
         for signal in table_signals:
             # Add ifdef attribute to every signal if table also has it

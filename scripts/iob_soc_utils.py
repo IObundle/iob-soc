@@ -5,7 +5,6 @@ from iob_soc_create_periphs_tmp import create_periphs_tmp
 from iob_soc_create_system import create_systemv, get_extmem_bus_size
 from iob_soc_create_wrapper_files import create_wrapper_files
 from submodule_utils import (
-    get_table_ports,
     add_prefix_to_parameters_in_port,
     eval_param_expression_from_config,
     iob_soc_peripheral_setup,
@@ -361,7 +360,7 @@ def peripheral_portmap(python_module):
                             )
                 else:
                     # Auto-map if_gen interfaces, except for the ones that have reserved signals.
-                    if interface["name"] in if_gen.interfaces and interface[
+                    if interface["name"] in if_gen.if_names and interface[
                         "name"
                     ] not in [
                         "iob_s_port",
@@ -465,10 +464,11 @@ def peripheral_portmap(python_module):
             (i for i in mapping_items[0].ios if i["name"] == mapping[0]["if_name"]),
             None,
         )
+        print(interface_table)
         assert (
             interface_table
         ), f"{iob_colors.FAIL}Interface {mapping[0]['if_name']} of {mapping[0]['corename']} not found!{iob_colors.ENDC}"
-        interface_ports = get_table_ports(interface_table)
+        interface_ports = interface_table["ports"]
 
         # If mapping_items[1] is not internal/external interface
         if mapping_internal_interface != 1 and mapping_external_interface != 1:
@@ -480,7 +480,7 @@ def peripheral_portmap(python_module):
             assert (
                 interface_table
             ), f"{iob_colors.FAIL}Interface {mapping[1]['if_name']} of {mapping[1]['corename']} not found!{iob_colors.ENDC}"
-            interface_ports2 = get_table_ports(interface_table)
+            interface_ports2 = interface_table["ports"]
 
         # Check if should insert one port or every port in the interface
         if not mapping[0]["port"]:
@@ -593,6 +593,7 @@ def peripheral_portmap(python_module):
             port = next(
                 (i for i in interface_ports if i["name"] == mapping[0]["port"]), None
             )
+            print(port)
             assert (
                 port
             ), f"{iob_colors.FAIL}Port {mapping[0]['port']} of {mapping[0]['if_name']} for {mapping[0]['corename']} not found!{iob_colors.ENDC}"

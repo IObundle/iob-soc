@@ -49,6 +49,8 @@ class iob_soc(iob_module):
     peripherals = None  # List with instances peripherals to include in system
     peripheral_portmap = None  # List of tuples, each tuple corresponds to a port map
 
+    num_extmem_connections = 1  # Number of external memory connections
+    
     # Method that runs the setup process of this class
     @classmethod
     def _specific_setup(cls):
@@ -59,9 +61,9 @@ class iob_soc(iob_module):
     def _generate_files(cls):
         """Setup this system using specialized iob-soc functions"""
         # Pre-setup specialized IOb-SoC functions
-        num_extmem_connections = pre_setup_iob_soc(cls)
+        cls.num_extmem_connections = pre_setup_iob_soc(cls)
         # Remove `[0+:1]` part select in AXI connections of ext_mem0 in iob_soc.v template
-        if num_extmem_connections == 1:
+        if cls.num_extmem_connections == 1:
             inplace_change(
                 os.path.join(cls.build_dir, "hardware/src", cls.name + ".v"),
                 "[0+:1]",
@@ -70,7 +72,7 @@ class iob_soc(iob_module):
         # Generate hw, sw, doc files
         super()._generate_files()
         # Post-setup specialized IOb-SoC functions
-        post_setup_iob_soc(cls, num_extmem_connections)
+        post_setup_iob_soc(cls, cls.num_extmem_connections)
 
     @classmethod
     def _create_instances(cls):
@@ -99,15 +101,7 @@ class iob_soc(iob_module):
                 iob_cache,
                 iob_uart,
                 iob_timer,
-                # Hardware headers & modules
-                {"interface": "iob_wire"},
-                {"interface": "axi_wire"},
-                {"interface": "axi_m_port"},
-                {"interface": "axi_m_m_portmap"},
-                {"interface": "axi_m_portmap"},
                 iob_utils,
-                {"interface": "clk_en_rst_s_s_portmap"},
-                {"interface": "clk_en_rst_s_port"},
                 iob_merge,
                 iob_split,
                 iob_rom_sp,
@@ -124,7 +118,6 @@ class iob_soc(iob_module):
                 axi_interconnect,
                 # Simulation headers & modules
                 (axi_ram, {"purpose": "simulation"}),
-                ({"interface": "axi_s_portmap"}, {"purpose": "simulation"}),
                 (iob_tasks, {"purpose": "simulation"}),
                 # Software modules
                 printf,
@@ -332,37 +325,40 @@ class iob_soc(iob_module):
     def _setup_ios(cls):
         cls.ios += [
             {
-                "name": "general",
-                "descr": "General interface signals",
+                "name": "clk_en_rst",
+                "type": "slave",
+                "port_prefix": "",
+                "wire_prefix": "",
+                "descr": "Clock, enable, and reset",
+                "ports": [],
+            },
+            {
+                "name": "trap",
+                "type": "master",
+                "port_prefix": "",
+                "wire_prefix": "",
+                "descr": "iob-soc trap signal",
                 "ports": [
                     {
-                        "name": "clk_i",
-                        "type": "I",
-                        "n_bits": "1",
-                        "descr": "System clock input",
-                    },
-                    {
-                        "name": "cke_i",
-                        "type": "I",
-                        "n_bits": "1",
-                        "descr": "System clock enable",
-                    },
-                    {
-                        "name": "arst_i",
-                        "type": "I",
-                        "n_bits": "1",
-                        "descr": "System reset, synchronous and active high",
-                    },
-                    {
-                        "name": "trap_o",
-                        "type": "O",
-                        "n_bits": "1",
+                        "name": "trap",
+                        "direction": "output",
+                        "width": 1,
                         "descr": "CPU trap signal",
                     },
                 ],
             },
             {
-                "name": "extmem",
+                "name": "axi",
+                "type": "master",
+                "wire_prefix": "",
+                "port_prefix": "",
+                "mult": cls.num_extmem_connections,
+                "widths": {
+                    "ID_W": "AXI_ID_W",
+                    "ADDR_W": "AXI_ADDR_W",
+                    "DATA_W": "AXI_DATA_W",
+                    "LEN_W": "AXI_LEN_W",
+                },
                 "descr": "Bus of AXI master interfaces for external memory. One interface for this system and others optionally for peripherals.",
                 "if_defined": "USE_EXTMEM",
                 "ports": [],
