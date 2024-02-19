@@ -31,7 +31,6 @@ DURATION = "300"  # 5 minutes
 
 # Init board status
 board_status = "idle"
-grab_time = time.time()
 
 
 def get_remaining_time():
@@ -92,18 +91,22 @@ def get_response(request):
     return response
 
 
-# Create a TCP/IP socket
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind((HOST, PORT))
-s.listen()
+if __name__ == "__main__":
 
-# Loop forever
-while True:
-    conn, addr = s.accept()
-    request = conn.recv(1024).decode("utf-8")
-    if DEBUG:
-        print(f"Received request: {request}")
-    response = get_response(request)
-    if DEBUG:
-        print(f"Got response: {response}")
-    conn.sendall(response.encode("utf-8"))
+    grab_time = time.time()
+
+    # Create a TCP/IP socket
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind((HOST, PORT))
+    s.listen()
+
+    # Loop forever
+    while True:
+        conn, addr = s.accept()
+        request = conn.recv(1024).decode("utf-8")
+        if DEBUG:
+            print(f"Received request: {request}")
+            response = get_response(request)
+        if DEBUG:
+            print(f"Got response: {response}")
+            conn.sendall(response.encode("utf-8"))

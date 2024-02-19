@@ -5,6 +5,7 @@
 
 from latex import write_table
 import if_gen
+
 from submodule_utils import (
     get_submodule_directories,
     get_module_io,
@@ -16,14 +17,6 @@ from submodule_utils import (
 import importlib.util
 import os
 import iob_colors
-
-
-def reverse_port(port_type):
-    if port_type == "I":
-        return "O"
-    else:
-        return "I"
-
 
 # Return full port type string based on given types: "I", "O" and "IO"
 # Maps "I", "O" and "IO" to "input", "output" and "inout", respectively.

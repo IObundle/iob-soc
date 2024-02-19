@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-#    mkregs.py: build Verilog software accessible registers and software getters and setters
+#    csr_gen.py: build Verilog software accessible registers and software getters and setters
 #
 
 import sys, os
@@ -12,7 +12,7 @@ import iob_colors
 
 
 # Use a class for the entire module, as it may be imported multiple times, but must have instance variables (multiple cores/submodules have different registers)
-class mkregs:
+class csr_gen:
     def __init__(self):
         self.cpu_n_bytes = 4
         self.core_addr_w = None
