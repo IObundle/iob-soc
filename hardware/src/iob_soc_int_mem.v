@@ -23,7 +23,13 @@ module iob_soc_int_mem #(
    //data bus
    input  [ `REQ_W-1:0] d_req_i,
    output [`RESP_W-1:0] d_resp_o,
-
+`ifdef USE_SPRAM
+   output                       valid_SPRAM,
+   output     [SRAM_ADDR_W-3:0] addr_SPRAM,
+   output     [DATA_W/8-1:0]    wstrb_SPRAM,
+   output     [DATA_W-1:0]      wdata_SPRAM,
+   input      [DATA_W-1:0]      rdata_SPRAM,
+`endif 
    //rom
    output                           rom_r_valid,
    output      [BOOTROM_ADDR_W-3:0] rom_r_addr,
@@ -182,7 +188,13 @@ module iob_soc_int_mem #(
       .clk_i (clk_i),
       .cke_i (cke_i),
       .arst_i(arst_i),
-
+   `ifdef USE_SPRAM
+      .valid_SPRAM(valid_SPRAM),
+      .addr_SPRAM(addr_SPRAM),
+      .wstrb_SPRAM(wstrb_SPRAM),
+      .wdata_SPRAM(wdata_SPRAM),
+      .rdata_SPRAM(rdata_SPRAM),
+   `endif 
       //instruction bus
       .i_valid_i(ram_i_req[`VALID(0)]),
       .i_addr_i  (ram_i_req[`ADDRESS(0, SRAM_ADDR_W)-2]),

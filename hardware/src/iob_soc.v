@@ -14,6 +14,13 @@ module iob_soc #(
    output                           rom_r_valid,
    output   [BOOTROM_ADDR_W-3:0]    rom_r_addr,
    input       [DATA_W-1:0]         rom_r_rdata,
+`ifdef USE_SPRAM
+   output                       valid_SPRAM,
+   output     [SRAM_ADDR_W-3:0] addr_SPRAM,
+   output     [DATA_W/8-1:0]    wstrb_SPRAM,
+   output     [DATA_W-1:0]      wdata_SPRAM,
+   input      [DATA_W-1:0]      rdata_SPRAM,
+`endif 
    //
    `include "iob_soc_io.vs"
 );
@@ -182,6 +189,13 @@ module iob_soc #(
       //data bus
       .d_req_i (slaves_req[0+:`REQ_W]),
       .d_resp_o(slaves_resp[0+:`RESP_W]),
+   `ifdef USE_SPRAM
+      .valid_SPRAM(valid_SPRAM),
+      .addr_SPRAM(addr_SPRAM),
+      .wstrb_SPRAM(wstrb_SPRAM),
+      .wdata_SPRAM(wdata_SPRAM),
+      .rdata_SPRAM(rdata_SPRAM),
+   `endif 
 
 
       //rom
