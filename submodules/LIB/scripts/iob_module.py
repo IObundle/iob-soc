@@ -777,7 +777,7 @@ class iob_module:
                                 for file in os.listdir(setup_tools_dir):
                                     setup_file = os.path.join(setup_tools_dir, file)
                                     if os.path.isfile(setup_file):
-                                        shutil.copyfile(
+                                        cls.copy_with_rename(module_class.name, cls.name)(
                                             setup_file,
                                             os.path.join(build_tools_dir, file),
                                         )
