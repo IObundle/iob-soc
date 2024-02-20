@@ -359,10 +359,10 @@ def peripheral_portmap(python_module):
                     if interface["name"] in if_gen.if_names and interface[
                         "name"
                     ] not in [
-                        "iob_s_port",
-                        "axi_m_port",
-                        "clk_en_rst_s_port",
-                        "clk_rst_s_port",
+                        "iob",
+                        "axi",
+                        "clk_en_rst",
+                        "clk_rst",
                     ]:
                         # Map entire interface to the external system interface
                         peripheral_portmap.append(
