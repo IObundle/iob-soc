@@ -832,11 +832,6 @@ class mkregs:
         fsw = open(f"{out_dir}/{top}_swreg_emb_tb.vs", "w")
         core_prefix = f"{top}_".upper()
         # fsw.write(f'`include "{top}_swreg_def.vh"\n\n')
-        # fsw.write("\n// Base Address\n")
-        # fsw.write("eth_base = 0;\n")
-        fsw.write(f"task {core_prefix}INIT_BASEADDR(input [ADDR_W-1:0] addr);\n")
-        fsw.write("  eth_base = addr;\n")
-        fsw.write("endtask\n")
 
         fsw.write("\n// Core Setters and Getters\n")
 
@@ -860,7 +855,7 @@ class mkregs:
                     f"task {core_prefix}SET_{name}(input {sw_type} value{addr_arg});\n"
                 )
                 fsw.write(
-                    f"  iob_write( (eth_base) + (`{core_prefix}{name}_ADDR){addr_shift}, value, `{core_prefix}{name}_W);\n"
+                    f"  iob_write( (`{core_prefix}{name}_ADDR){addr_shift}, value, `{core_prefix}{name}_W);\n"
                 )
                 fsw.write("endtask\n\n")
             if "R" in row["type"]:
@@ -872,7 +867,7 @@ class mkregs:
                     addr_shift = f" + (addr << {int(log(n_bytes, 2))})"
                 fsw.write(f"task {core_prefix}GET_{name}({addr_arg}output {sw_type} rvalue);\n")
                 fsw.write(
-                    f"  iob_read( (eth_base) + (`{core_prefix}{name}_ADDR){addr_shift}, rvalue, `{core_prefix}{name}_W);\n"
+                    f"  iob_read( (`{core_prefix}{name}_ADDR){addr_shift}, rvalue, `{core_prefix}{name}_W);\n"
                 )
                 fsw.write("endtask\n\n")
         fsw.close()
