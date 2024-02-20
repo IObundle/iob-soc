@@ -5,6 +5,7 @@ import iob_colors
 from iob_soc_peripherals import (
     get_pio_signals,
     get_peripherals_ports_params_top,
+    get_peripheral_port_mapping,
     get_reserved_signals,
     get_reserved_signal_connection,
 )

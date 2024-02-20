@@ -438,3 +438,18 @@ def get_peripheral_blocks(peripherals_str, root_dir):
                 }
             )
     return block_list
+
+
+# peripheral_instance: dictionary describing a peripheral instance. Must have 'name' and 'IO' attributes.
+# port_name: name of the port we are mapping
+def get_peripheral_port_mapping(peripheral_instance, if_name, port_name):
+    print(peripheral_instance, if_name, port_name)
+    # If IO dictionary (with mapping) does not exist for this peripheral, use default wire name
+    if "io" not in peripheral_instance.__dict__:
+        return f"{peripheral_instance.name}_{port_name}"
+
+    assert (
+        if_name + "_" + port_name in peripheral_instance.io
+    ), f"{iob_colors.FAIL}Port '{port_name}' of interface '{if_name}' for peripheral '{peripheral_instance.name}' not mapped!{iob_colors.ENDC}"
+    # IO mapping dictionary exists, get verilog string for that mapping
+    return get_verilog_mapping(peripheral_instance.io[if_name + "_" + port_name])
