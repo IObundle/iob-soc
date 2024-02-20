@@ -46,11 +46,11 @@ class iob_soc(iob_module):
     board_list = ["CYCLONEV-GT-DK", "AES-KU040-DB-G"]
 
     # IOb-SoC has the following list of non standard attributes:
-    peripherals = None  # List with instances peripherals to include in system
+    peripherals = []  # List of peripherals
     peripheral_portmap = None  # List of tuples, each tuple corresponds to a port map
 
     num_extmem_connections = 1  # Number of external memory connections
-    
+
     # Method that runs the setup process of this class
     @classmethod
     def _specific_setup(cls):
@@ -80,18 +80,14 @@ class iob_soc(iob_module):
         # Verilog modules instances if we have them in the setup list (they may not be in the list if a subclass decided to remove them).
         if iob_picorv32 in cls.submodule_list:
             cls.cpu = iob_picorv32("cpu_0")
-        if iob_split in cls.submodule_list:
-            cls.ibus_split = iob_split("ibus_split_0")
-            cls.dbus_split = iob_split("dbus_split_0")
-            cls.int_dbus_split = iob_split("int_dbus_split_0")
-            cls.pbus_split = iob_split("pbus_split_0")
-        if iob_merge in cls.submodule_list:
-            cls.int_mem = iob_merge("iob_merge_0")
-            cls.ext_mem = iob_merge("iob_merge_1")
-        if iob_uart in cls.submodule_list:
-            cls.peripherals.append(iob_uart("UART0"))
-        if iob_timer in cls.submodule_list:
-            cls.peripherals.append(iob_timer("TIMER0"))
+        cls.ibus_split = iob_split("ibus_split_0")
+        cls.dbus_split = iob_split("dbus_split_0")
+        cls.int_dbus_split = iob_split("int_dbus_split_0")
+        cls.pbus_split = iob_split("pbus_split_0")
+        cls.int_mem = iob_merge("iob_merge_0")
+        cls.ext_mem = iob_merge("iob_merge_1")
+        cls.peripherals.append(iob_uart("UART0"))
+        cls.peripherals.append(iob_timer("TIMER0"))
 
     @classmethod
     def _create_submodules_list(cls, extra_submodules=[]):
@@ -382,3 +378,7 @@ class iob_soc(iob_module):
         # Initialize empty lists for attributes (We can't initialize in the attribute declaration because it would cause every subclass to reference the same list)
         cls.peripherals = []
         cls.peripheral_portmap = []
+
+
+if __name__ == "__main__":
+    iob_soc.setup_as_top_module()

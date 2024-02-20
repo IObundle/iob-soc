@@ -5,7 +5,7 @@ BOARD ?= CYCLONEV-GT-DK
 
 DISABLE_LINT:=1
 
-include submodules/LIB/setup.mk
+include lib/setup.mk
 
 INIT_MEM ?= 1
 USE_EXTMEM ?= 0
