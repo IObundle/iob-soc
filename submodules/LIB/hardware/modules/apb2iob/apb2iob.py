@@ -18,8 +18,8 @@ class apb2iob(iob_module):
                 {"interface": "iob_wire"},
                 {"interface": "apb_s_port"},
                 {"interface": "iob_s_portmap"},
-                {"interface": "clk_en_rst_s_port"},
-                {"interface": "clk_en_rst_s_s_portmap"},
+                
+                
                 iob_reg_e,
             ]
         )

@@ -15,8 +15,8 @@ class iob_modcnt(iob_module):
         """Create submodules list with dependencies of this module"""
         super()._create_submodules_list(
             [
-                {"interface": "clk_en_rst_s_port"},
-                {"interface": "clk_en_rst_s_s_portmap"},
+                
+                
                 iob_modcnt,
                 iob_counter_ld,
             ]

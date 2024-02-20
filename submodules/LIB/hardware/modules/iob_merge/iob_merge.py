@@ -20,7 +20,7 @@ class iob_merge(iob_module):
                 iob_reg_e,
                 iob_mux,
                 iob_demux,
-                {"interface": "clk_en_rst_s_s_portmap"},
-                {"interface": "clk_en_rst_s_port"},
+                
+                
             ]
         )

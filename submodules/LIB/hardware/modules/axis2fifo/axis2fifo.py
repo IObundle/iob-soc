@@ -17,7 +17,7 @@ class axis2fifo(iob_module):
             [
                 iob_counter,
                 iob_edge_detect,
-                {"interface": "clk_en_rst_s_port"},
-                {"interface": "clk_en_rst_s_s_portmap"},
+                
+                
             ]
         )

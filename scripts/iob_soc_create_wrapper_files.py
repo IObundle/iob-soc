@@ -1,6 +1,7 @@
 import os
 
-from submodule_utils import get_pio_signals, add_prefix_to_parameters_in_string
+from submodule_utils import add_prefix_to_parameters_in_string
+from iob_soc_peripherals import get_pio_signals, add_prefix_to_parameters_in_string
 
 
 # Creates the Verilog Snippet (.vs) files required by wrappers

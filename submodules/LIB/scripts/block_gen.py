@@ -3,8 +3,6 @@
 #
 
 from latex import write_table
-from submodule_utils import get_peripherals
-
 
 # Generate blocks.tex file with list TeX tables of blocks (Verilog modules instances)
 def generate_blocks_list_tex(block_groups, out_dir):
@@ -63,23 +61,3 @@ def generate_blocks_tex(block_groups, out_dir):
 
         write_table(f"{out_dir}/{block_group.name}_module", tex_table)
 
-
-# Generate list of blocks, one for each peripheral instance
-# Each dictionary is follows the format of a dictionary table in the
-# 'blocks' list of the dictionaries in the 'blocks' list of the <corename>_setup.py
-# Example list of blocks peripheral instance with one port:
-# [{'name':'uart0', 'descr':'UART0 peripheral'},
-# {'name':'uart1', 'descr':'UART1 peripheral'},
-# {'name':'timer0', 'descr':'TIMER0 peripheral'}]
-def get_peripheral_blocks(peripherals_str, root_dir):
-    instances_amount, _ = get_peripherals(peripherals_str)
-    block_list = []
-    for corename in instances_amount:
-        for i in range(instances_amount[corename]):
-            block_list.append(
-                {
-                    "name": corename + str(i),
-                    "descr": f"{corename.upper()+str(i)} peripheral",
-                }
-            )
-    return block_list

@@ -1,0 +1,440 @@
+#!/usr/bin/env python3
+# Library with useful functions to manage submodules and peripherals
+
+import sys
+import subprocess
+import os
+import re
+import math
+import importlib
+import if_gen
+import iob_colors
+import copy
+
+from submodule_utils import *
+
+# List of reserved signals
+# These signals are known by the python scripts and are always auto-connected using the matching Verilog the string.
+# These signals can not be portmapped! They will always have the fixed connection specified here.
+reserved_signals = {
+    "clk_i": ".clk_i(clk_i)",
+    "cke_i": ".cke_i(cke_i)",
+    "en_i": ".en_i(en_i)",
+    "arst_i": ".arst_i(arst_i)",
+    "iob_valid_i": ".iob_valid_i(slaves_req[`VALID(`/*<InstanceName>*/)])",
+    "iob_addr_i": ".iob_addr_i(slaves_req[`ADDRESS(`/*<InstanceName>*/,`/*<SwregFilename>*/_ADDR_W)])",
+    "iob_wdata_i": ".iob_wdata_i(slaves_req[`WDATA(`/*<InstanceName>*/)])",
+    "iob_wstrb_i": ".iob_wstrb_i(slaves_req[`WSTRB(`/*<InstanceName>*/)])",
+    "iob_rdata_o": ".iob_rdata_o(slaves_resp[`RDATA(`/*<InstanceName>*/)])",
+    "iob_ready_o": ".iob_ready_o(slaves_resp[`READY(`/*<InstanceName>*/)])",
+    "iob_rvalid_o": ".iob_rvalid_o(slaves_resp[`RVALID(`/*<InstanceName>*/)])",
+    "trap_o": ".trap_o(/*<InstanceName>*/_trap_o)",
+    "axi_awid_o": ".axi_awid_o          (axi_awid_o             [/*<extmem_conn_num>*/*AXI_ID_W       +:/*<bus_size>*/*AXI_ID_W])",
+    "axi_awaddr_o": ".axi_awaddr_o      (axi_awaddr_o           [/*<extmem_conn_num>*/*AXI_ADDR_W     +:/*<bus_size>*/*AXI_ADDR_W])",
+    "axi_awlen_o": ".axi_awlen_o        (axi_awlen_o            [/*<extmem_conn_num>*/*AXI_LEN_W      +:/*<bus_size>*/*AXI_LEN_W])",
+    "axi_awsize_o": ".axi_awsize_o      (axi_awsize_o           [/*<extmem_conn_num>*/*3              +:/*<bus_size>*/*3])",
+    "axi_awburst_o": ".axi_awburst_o    (axi_awburst_o          [/*<extmem_conn_num>*/*2              +:/*<bus_size>*/*2])",
+    "axi_awlock_o": ".axi_awlock_o      (axi_awlock_o           [/*<extmem_conn_num>*/*2              +:/*<bus_size>*/*2])",
+    "axi_awcache_o": ".axi_awcache_o    (axi_awcache_o          [/*<extmem_conn_num>*/*4              +:/*<bus_size>*/*4])",
+    "axi_awprot_o": ".axi_awprot_o      (axi_awprot_o           [/*<extmem_conn_num>*/*3              +:/*<bus_size>*/*3])",
+    "axi_awqos_o": ".axi_awqos_o        (axi_awqos_o            [/*<extmem_conn_num>*/*4              +:/*<bus_size>*/*4])",
+    "axi_awvalid_o": ".axi_awvalid_o    (axi_awvalid_o          [/*<extmem_conn_num>*/*1              +:/*<bus_size>*/*1])",
+    "axi_awready_i": ".axi_awready_i    (axi_awready_i          [/*<extmem_conn_num>*/*1              +:/*<bus_size>*/*1])",
+    "axi_wdata_o": ".axi_wdata_o        (axi_wdata_o            [/*<extmem_conn_num>*/*AXI_DATA_W     +:/*<bus_size>*/*AXI_DATA_W])",
+    "axi_wstrb_o": ".axi_wstrb_o        (axi_wstrb_o            [/*<extmem_conn_num>*/*(AXI_DATA_W/8) +:/*<bus_size>*/*(AXI_DATA_W/8)])",
+    "axi_wlast_o": ".axi_wlast_o        (axi_wlast_o            [/*<extmem_conn_num>*/*1              +:/*<bus_size>*/*1])",
+    "axi_wvalid_o": ".axi_wvalid_o      (axi_wvalid_o           [/*<extmem_conn_num>*/*1              +:/*<bus_size>*/*1])",
+    "axi_wready_i": ".axi_wready_i      (axi_wready_i           [/*<extmem_conn_num>*/*1              +:/*<bus_size>*/*1])",
+    "axi_bid_i": ".axi_bid_i            (axi_bid_i              [/*<extmem_conn_num>*/*AXI_ID_W       +:/*<bus_size>*/*AXI_ID_W])",
+    "axi_bresp_i": ".axi_bresp_i        (axi_bresp_i            [/*<extmem_conn_num>*/*2              +:/*<bus_size>*/*2])",
+    "axi_bvalid_i": ".axi_bvalid_i      (axi_bvalid_i           [/*<extmem_conn_num>*/*1              +:/*<bus_size>*/*1])",
+    "axi_bready_o": ".axi_bready_o      (axi_bready_o           [/*<extmem_conn_num>*/*1              +:/*<bus_size>*/*1])",
+    "axi_arid_o": ".axi_arid_o          (axi_arid_o             [/*<extmem_conn_num>*/*AXI_ID_W       +:/*<bus_size>*/*AXI_ID_W])",
+    "axi_araddr_o": ".axi_araddr_o      (axi_araddr_o           [/*<extmem_conn_num>*/*AXI_ADDR_W     +:/*<bus_size>*/*AXI_ADDR_W])",
+    "axi_arlen_o": ".axi_arlen_o        (axi_arlen_o            [/*<extmem_conn_num>*/*AXI_LEN_W      +:/*<bus_size>*/*AXI_LEN_W])",
+    "axi_arsize_o": ".axi_arsize_o      (axi_arsize_o           [/*<extmem_conn_num>*/*3              +:/*<bus_size>*/*3])",
+    "axi_arburst_o": ".axi_arburst_o    (axi_arburst_o          [/*<extmem_conn_num>*/*2              +:/*<bus_size>*/*2])",
+    "axi_arlock_o": ".axi_arlock_o      (axi_arlock_o           [/*<extmem_conn_num>*/*2              +:/*<bus_size>*/*2])",
+    "axi_arcache_o": ".axi_arcache_o    (axi_arcache_o          [/*<extmem_conn_num>*/*4              +:/*<bus_size>*/*4])",
+    "axi_arprot_o": ".axi_arprot_o      (axi_arprot_o           [/*<extmem_conn_num>*/*3              +:/*<bus_size>*/*3])",
+    "axi_arqos_o": ".axi_arqos_o        (axi_arqos_o            [/*<extmem_conn_num>*/*4              +:/*<bus_size>*/*4])",
+    "axi_arvalid_o": ".axi_arvalid_o    (axi_arvalid_o          [/*<extmem_conn_num>*/*1              +:/*<bus_size>*/*1])",
+    "axi_arready_i": ".axi_arready_i    (axi_arready_i          [/*<extmem_conn_num>*/*1              +:/*<bus_size>*/*1])",
+    "axi_rid_i": ".axi_rid_i            (axi_rid_i              [/*<extmem_conn_num>*/*AXI_ID_W       +:/*<bus_size>*/*AXI_ID_W])",
+    "axi_rdata_i": ".axi_rdata_i        (axi_rdata_i            [/*<extmem_conn_num>*/*AXI_DATA_W     +:/*<bus_size>*/*AXI_DATA_W])",
+    "axi_rresp_i": ".axi_rresp_i        (axi_rresp_i            [/*<extmem_conn_num>*/*2              +:/*<bus_size>*/*2])",
+    "axi_rlast_i": ".axi_rlast_i        (axi_rlast_i            [/*<extmem_conn_num>*/*1              +:/*<bus_size>*/*1])",
+    "axi_rvalid_i": ".axi_rvalid_i      (axi_rvalid_i           [/*<extmem_conn_num>*/*1              +:/*<bus_size>*/*1])",
+    "axi_rready_o": ".axi_rready_o      (axi_rready_o           [/*<extmem_conn_num>*/*1              +:/*<bus_size>*/*1])",
+}
+
+
+# Get peripheral related macros
+# confs: confs dictionary to be filled with peripheral macros
+# peripherals_list: list of peripherals
+def get_peripheral_macros(confs, peripherals_list):
+    # Append macros with ID of each peripheral
+    confs.extend(get_periphs_id_as_macros(peripherals_list))
+    # Append macro with number of peripherals
+    # Only append macro if it does not exist (to allow subclasses set their own number)
+    if not list([i for i in confs if i["name"] == "N_SLAVES"]):
+        confs.append(
+            {
+                "name": "N_SLAVES",
+                "type": "M",
+                "val": get_n_periphs(peripherals_list),
+                "min": "NA",
+                "max": "NA",
+                "descr": "Number of peripherals",
+            }
+        )
+    if not list([i for i in confs if i["name"] == "N_SLAVES_W"]):
+        # Append macro with width of peripheral bus
+        confs.append(
+            {
+                "name": "N_SLAVES_W",
+                "type": "M",
+                "val": get_n_periphs_w(peripherals_list),
+                "min": "NA",
+                "max": "NA",
+                "descr": "Peripheral bus width",
+            }
+        )
+
+
+
+# Generate list of dictionaries with interfaces for each peripheral instance
+# Each dictionary is follows the format of a dictionary table in the
+# 'ios' list of the <corename>_setup.py
+# Example dictionary of a peripheral instance with one port:
+#    {'name': 'instance_name', 'descr':'instance description', 'ports': [
+#        {'name':"clk_i", 'type':"I", 'width':'1', 'descr':"Peripheral clock input"}
+#    ]}
+def get_peripheral_ios(peripherals_list):
+    port_list = {}
+    # Get port list for each type of peripheral used
+    for instance in peripherals_list:
+        # Make sure we have a hw_module for this peripheral type
+        # assert check_module_in_modules_list(instance['type'],submodules["hw_setup"]["modules"]), f"{iob_colors.FAIL}peripheral {instance['type']} configured but no corresponding hardware module found!{iob_colors.ENDC}"
+        # Only insert ports of this peripheral type if we have not done so before
+        if instance.__class__.name not in port_list:
+            # Extract only PIO signals from the peripheral (no reserved/known signals)
+            port_list[instance.__class__.name] = get_pio_signals(
+                get_module_io(instance.ios, instance.confs, instance.name)
+            )
+
+    ios_list = []
+    # Append ports of each instance
+    for instance in peripherals_list:
+        ios_list.append(
+            {
+                "name": instance.name,
+                "descr": f"{instance.name} interface signals",
+                "ports": port_list[instance.__class__.name],
+                "ios_table_prefix": True,
+            }
+        )
+    return ios_list
+
+
+# This function is used to setup peripheral related configuration in the python module of iob-soc systems
+# python_module: Module of the iob-soc system being setup
+def iob_soc_peripheral_setup(python_module):
+    # Get peripherals list from 'peripherals' table in blocks list
+    peripherals_list = python_module.peripherals
+
+    if peripherals_list:
+        # Get port list, parameter list and top module name for each type of peripheral used
+        _, params_list, _ = get_peripherals_ports_params_top(peripherals_list)
+        # Insert peripheral instance parameters in system parameters
+        # This causes the system to have a parameter for each parameter of each peripheral instance
+        for instance in peripherals_list:
+            for parameter in params_list[instance.__class__.name]:
+                parameter_to_append = parameter.copy()
+                # Override parameter value if user specified a 'parameters' dictionary with an override value for this parameter.
+                if parameter["name"] in instance.parameters:
+                    parameter_to_append["val"] = instance.parameters[parameter["name"]]
+                # Add instance name prefix to the name of the parameter. This makes this parameter unique to this instance
+                parameter_to_append[
+                    "name"
+                ] = f"{instance.name}_{parameter_to_append['name']}"
+                python_module.confs.append(parameter_to_append)
+
+        # Get peripheral related macros
+        get_peripheral_macros(python_module.confs, peripherals_list)
+
+
+
+# Parameter: PERIPHERALS string defined in config.mk
+# Returns dictionary with amount of instances for each peripheral
+# Also returns dictionary with verilog parameters for each of those instance
+# instances_amount example: {'corename': numberOfInstances, 'anothercorename': numberOfInstances}
+# instances_parameters example: {'corename': [['instance1parameter1','instance1parameter2'],['instance2parameter1','instance2parameter2']]}
+def get_peripherals(peripherals_str):
+    peripherals = peripherals_str.split()
+
+    instances_amount = {}
+    instances_parameters = {}
+    # Count how many instances to create of each type of peripheral
+    for i in peripherals:
+        i = i.split("[")  # Split corename and parameters
+        # Initialize corename in dictionary
+        if i[0] not in instances_amount:
+            instances_amount[i[0]] = 0
+            instances_parameters[i[0]] = []
+        # Insert parameters of this instance (if there are any)
+        if len(i) > 1:
+            i[1] = i[1].strip("]")  # Delete final "]" from parameter list
+            instances_parameters[i[0]].append(i[1].split(","))
+        else:
+            instances_parameters[i[0]].append([])
+        # Increment amount of instances
+        instances_amount[i[0]] += 1
+
+    # print(instances_amount, file = sys.stderr) #Debug
+    # print(instances_parameters, file = sys.stderr) #Debug
+    return instances_amount, instances_parameters
+
+
+
+# Filter out non reserved signals from a given list (not stored in string reserved_signals)
+# Example signal_list:
+# [ {'name':"clk_i", 'type':"I", 'width':'1', 'descr':"Peripheral clock input"},
+#  {'name':"custom_i", 'type':"I", 'width':'1', 'descr':"Peripheral custom input"} ]
+# Return of this example:
+# [ {'name':"clk_i", 'type':"I", 'width':'1', 'descr':"Peripheral clock input"} ]
+def get_reserved_signals(signal_list):
+    return_list = []
+    for signal in signal_list:
+        if signal["name"] in reserved_signals:
+            return_list.append(signal)
+    return return_list
+
+
+def get_reserved_signal_connection(signal_name, instace_name, swreg_filename):
+    signal_connection = reserved_signals[signal_name]
+    return re.sub(
+        "\/\*<InstanceName>\*\/",
+        instace_name,
+        re.sub("\/\*<SwregFilename>\*\/", swreg_filename, signal_connection),
+    )
+
+
+# Filter out reserved signals from a given list (stored in string reserved_signals)
+# Example signal_list:
+# [ {'name':"clk_i", 'type':"I", 'width':'1', 'descr':"Peripheral clock input"},
+#  {'name':"custom_i", 'type':"I", 'width':'1', 'descr':"Peripheral custom input"} ]
+# Return of this example:
+# [ {'name':"custom_i", 'type':"I", 'width':'1', 'descr':"Peripheral custom input"} ]
+def get_pio_signals(signal_list):
+    return_list = []
+    for signal in signal_list:
+        if signal["name"] not in reserved_signals:
+            return_list.append(signal)
+    return return_list
+
+
+# Get port list, parameter list and top module name for each type of peripheral in a list of instances of peripherals
+# port_list, params_list, and top_list are dictionaries where their key is the name of the type of peripheral
+# The value of port_list is a list of ports for the given type of peripheral
+# The value of params_list is a list of parameters for the given type of peripheral
+# The value of top_list is the top name of the given type of peripheral
+def get_peripherals_ports_params_top(peripherals_list):
+    port_list = {}
+    params_list = {}
+    top_list = {}
+    for instance in peripherals_list:
+        if instance.__class__.name not in port_list:
+            # Append instance IO, parameters, and top name
+            port_list[instance.__class__.name] = get_module_io(instance.ios)
+            params_list[instance.__class__.name] = list(
+                i for i in instance.confs if i["type"] in ["P", "F"]
+            )
+            top_list[instance.__class__.name] = instance.__class__.name
+    return port_list, params_list, top_list
+
+
+# Creates list of defines of peripheral instances with sequential numbers
+# Returns list of tuples. One tuple for each peripheral instance with its name and value.
+def get_periphs_id(peripherals_str):
+    instances_amount, _ = get_peripherals(peripherals_str)
+    peripherals_list = []
+    j = 0
+    for corename in instances_amount:
+        for i in range(instances_amount[corename]):
+            peripherals_list.append((corename + str(i), str(j)))
+            j = j + 1
+    return peripherals_list
+
+
+# Given a list of dictionaries representing each peripheral instance
+# Return list of dictionaries representing macros of each peripheral instance with their ID assigned
+def get_periphs_id_as_macros(peripherals_list):
+    macro_list = []
+    for idx, instance in enumerate(peripherals_list, 1):
+        macro_list.append(
+            {
+                "name": instance.name,
+                "type": "M",
+                "val": str(idx),
+                "min": "0",
+                "max": "NA",
+                "descr": f"ID of {instance.name} peripheral",
+            }
+        )
+    return macro_list
+
+
+# Return amount of system peripherals
+def get_n_periphs(peripherals_list):
+    # +1 because the internal memory is not in the peripherals_list. int_mem is implicit peripheral. It is treated as a peripheral by the internal signals. (might change in the future)
+    return str(len(peripherals_list) + 1)
+
+
+# Return bus width required to address all peripherals
+def get_n_periphs_w(peripherals_list):
+    # +1 because the internal memory is not in the peripherals_list. int_mem is implicit peripheral. It is treated as a peripheral by the internal signals. (might change in the future)
+    i = len(peripherals_list) + 1
+    if not i:
+        return str(0)
+    else:
+        return str(math.ceil(math.log(i, 2)))
+
+
+##########################################################
+# Functions to run when this script gets called directly #
+##########################################################
+def print_instances(peripherals_str):
+    instances_amount, _ = get_peripherals(peripherals_str)
+    for corename in instances_amount:
+        for i in range(instances_amount[corename]):
+            print(corename + str(i), end=" ")
+
+
+def print_peripherals(peripherals_str):
+    instances_amount, _ = get_peripherals(peripherals_str)
+    for i in instances_amount:
+        print(i, end=" ")
+
+
+def print_nslaves(peripherals_str):
+    print(get_n_periphs(peripherals_str), end="")
+
+
+def print_nslaves_w(peripherals_str):
+    print(get_n_periphs_w(peripherals_str), end="")
+
+
+# Print list of peripherals without parameters and duplicates
+def remove_duplicates_and_params(peripherals_str):
+    peripherals = peripherals_str.split()
+    # Remove parameters from peripherals
+    for i in range(len(peripherals)):
+        peripherals[i] = peripherals[i].split("[")[0]
+    # Remove peripheral duplicates
+    peripherals = list(set(peripherals))
+    # Print list of peripherals
+    for p in peripherals:
+        print(p, end=" ")
+
+
+# Print list of peripheral instances with ID assigned
+def print_peripheral_defines(defmacro, peripherals_str):
+    peripherals_list = get_periphs_id(peripherals_str)
+    for instance in peripherals_list:
+        print(defmacro + instance[0] + "=" + instance[1], end=" ")
+
+
+if __name__ == "__main__":
+    # Parse arguments
+    if sys.argv[1] == "get_peripherals":
+        if len(sys.argv) < 3:
+            print("Usage: {} get_peripherals <peripherals>\n".format(sys.argv[0]))
+            exit(-1)
+        print_peripherals(sys.argv[2])
+    elif sys.argv[1] == "get_instances":
+        if len(sys.argv) < 3:
+            print("Usage: {} get_instances <peripherals>\n".format(sys.argv[0]))
+            exit(-1)
+        print_instances(sys.argv[2])
+    elif sys.argv[1] == "get_n_periphs":
+        if len(sys.argv) < 3:
+            print("Usage: {} get_n_periphs <peripherals>\n".format(sys.argv[0]))
+            exit(-1)
+        print_nslaves(sys.argv[2])
+    elif sys.argv[1] == "get_n_periphs_w":
+        if len(sys.argv) < 3:
+            print("Usage: {} get_n_periphs_w <peripherals>\n".format(sys.argv[0]))
+            exit(-1)
+        print_nslaves_w(sys.argv[2])
+    elif sys.argv[1] == "remove_duplicates_and_params":
+        if len(sys.argv) < 3:
+            print(
+                "Usage: {} remove_duplicates_and_params <peripherals>\n".format(
+                    sys.argv[0]
+                )
+            )
+            exit(-1)
+        remove_duplicates_and_params(sys.argv[2])
+    elif sys.argv[1] == "get_periphs_id":
+        if len(sys.argv) < 3:
+            print(
+                "Usage: {} get_periphs_id <peripherals> <optional:defmacro>\n".format(
+                    sys.argv[0]
+                )
+            )
+            exit(-1)
+        if len(sys.argv) < 4:
+            print_peripheral_defines("", sys.argv[2])
+        else:
+            print_peripheral_defines(sys.argv[3], sys.argv[2])
+    else:
+        print(
+            "Unknown command.\nUsage: {} <command> <parameters>\n Commands: get_peripherals get_instances get_n_periphs get_n_periphs_w get_periphs_id print_peripheral_defines".format(
+                sys.argv[0]
+            )
+        )
+        exit(-1)
+
+
+# Arguments:
+#   periph_addr_select_bit: Adress selection bit (P variable)
+#   peripherals_list: list with amount of instances of each peripheral (returned by get_peripherals())
+def create_periphs_tmp(name, addr_w, peripherals_list, out_file):
+    # Don't override output file
+    if os.path.isfile(out_file):
+        return
+
+    template_contents = []
+    for instance in peripherals_list:
+        template_contents.extend(
+            f"#define {instance.name}_BASE ({name.upper()}_{instance.name}<<({addr_w}-1-{name.upper()}_N_SLAVES_W))\n"
+        )
+
+    # Write system.v
+    os.makedirs(os.path.dirname(out_file), exist_ok=True)
+    periphs_tmp_file = open(out_file, "w")
+    periphs_tmp_file.writelines(template_contents)
+    periphs_tmp_file.close()
+
+
+
+# Generate list of blocks, one for each peripheral instance
+# Each dictionary is follows the format of a dictionary table in the
+# 'blocks' list of the dictionaries in the 'blocks' list of the <corename>_setup.py
+# Example list of blocks peripheral instance with one port:
+# [{'name':'uart0', 'descr':'UART0 peripheral'},
+# {'name':'uart1', 'descr':'UART1 peripheral'},
+# {'name':'timer0', 'descr':'TIMER0 peripheral'}]
+def get_peripheral_blocks(peripherals_str, root_dir):
+    instances_amount, _ = get_peripherals(peripherals_str)
+    block_list = []
+    for corename in instances_amount:
+        for i in range(instances_amount[corename]):
+            block_list.append(
+                {
+                    "name": corename + str(i),
+                    "descr": f"{corename.upper()+str(i)} peripheral",
+                }
+            )
+    return block_list

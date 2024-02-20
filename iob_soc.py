@@ -70,6 +70,7 @@ class iob_soc(iob_module):
                 "",
             )
         # Generate hw, sw, doc files
+        print(cls.ios)
         super()._generate_files()
         # Post-setup specialized IOb-SoC functions
         post_setup_iob_soc(cls, cls.num_extmem_connections)
@@ -134,7 +135,7 @@ class iob_soc(iob_module):
     def _setup_portmap(cls):
         cls.peripheral_portmap += [
             (
-                {"corename": "UART0", "if_name": "rs232", "port": "txd_o", "bits": []},
+                {"corename": "UART0", "if_name": "rs232", "port": "txd", "bits": []},
                 {
                     "corename": "external",
                     "if_name": "uart",
@@ -143,7 +144,7 @@ class iob_soc(iob_module):
                 },
             ),
             (
-                {"corename": "UART0", "if_name": "rs232", "port": "rxd_i", "bits": []},
+                {"corename": "UART0", "if_name": "rs232", "port": "rxd", "bits": []},
                 {
                     "corename": "external",
                     "if_name": "uart",
@@ -152,7 +153,7 @@ class iob_soc(iob_module):
                 },
             ),
             (
-                {"corename": "UART0", "if_name": "rs232", "port": "cts_i", "bits": []},
+                {"corename": "UART0", "if_name": "rs232", "port": "cts", "bits": []},
                 {
                     "corename": "external",
                     "if_name": "uart",
@@ -161,7 +162,7 @@ class iob_soc(iob_module):
                 },
             ),
             (
-                {"corename": "UART0", "if_name": "rs232", "port": "rts_o", "bits": []},
+                {"corename": "UART0", "if_name": "rs232", "port": "rts", "bits": []},
                 {
                     "corename": "external",
                     "if_name": "uart",
