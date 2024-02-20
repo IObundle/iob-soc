@@ -5,9 +5,9 @@ import shutil
 import copy
 
 import iob_colors
-import build_srcs
+import copy_srcs
 from iob_module import iob_module
-from mkregs import mkregs
+from csr_gen import csr_gen
 
 # Submodules
 from iob_reg import iob_reg
@@ -56,14 +56,14 @@ class iob_regfileif(iob_module):
                 if reg['type'] == 'W': reg['type']='R'
                 else: reg['type']='W'
 
-        #### Create an instance of the mkregs class inside the mkregs module
-        mkregs_obj = mkregs()
-        mkregs_obj.config = cls.confs
+        #### Create an instance of the csr_gen class inside the csr_gen module
+        csr_gen_obj = csr_gen()
+        csr_gen_obj.config = cls.confs
         # Get register table
-        reg_table = mkregs_obj.get_reg_table(inverted_regs, cls.rw_overlap, False)
+        reg_table = csr_gen_obj.get_reg_table(inverted_regs, cls.rw_overlap, False)
         # Create inverted register hardware
-        mkregs_obj.write_hwheader(reg_table, cls.build_dir+'/hardware/src', f"{cls.name}_inverted")
-        mkregs_obj.write_hwcode(reg_table, cls.build_dir+'/hardware/src', f"{cls.name}_inverted", "iob")
+        csr_gen_obj.write_hwheader(reg_table, cls.build_dir+'/hardware/src', f"{cls.name}_inverted")
+        csr_gen_obj.write_hwcode(reg_table, cls.build_dir+'/hardware/src', f"{cls.name}_inverted", "iob")
 
         #### Modify `*_swreg_inst.vs` file to prevent overriding definitions of the `*_inverted_swreg_inst.vs` file
         with open(f"{cls.build_dir}/hardware/src/{cls.name}_swreg_inst.vs", "r") as file:
@@ -113,7 +113,7 @@ class iob_regfileif(iob_module):
 
         ##### Modify "iob_regfileif_swreg_gen.v" to update the value of the 'VERSION' register
         with open(f"{cls.build_dir}/hardware/src/{cls.name}_swreg_gen.v", "r") as file: lines = file.readlines()
-        version_str = build_srcs.version_str_to_digits(cls.version)
+        version_str = copy_srcs.version_str_to_digits(cls.version)
         for idx, line in enumerate(lines):
             if version_str in line:
                 lines[idx] = lines[idx].replace("16'h"+version_str, "SYSTEM_VERSION")
@@ -125,8 +125,8 @@ class iob_regfileif(iob_module):
         if not os.path.isfile(f"{cls.build_dir}/hardware/src/{cls.name}_inverted_inst_params.vs"): shutil.copy(f"{cls.build_dir}/hardware/src/{cls.name}_inst_params.vs", f"{cls.build_dir}/hardware/src/{cls.name}_inverted_inst_params.vs")
 
         #### Create inverted register software
-        mkregs_obj.write_swheader(reg_table, cls.build_dir+'/software/src', f"{cls.name}_inverted")
-        mkregs_obj.write_swcode(reg_table, cls.build_dir+'/software/src', f"{cls.name}_inverted")
+        csr_gen_obj.write_swheader(reg_table, cls.build_dir+'/software/src', f"{cls.name}_inverted")
+        csr_gen_obj.write_swcode(reg_table, cls.build_dir+'/software/src', f"{cls.name}_inverted")
 
         #### Create pc-emul drivers
         # Copy iob_regfileif_inverted_swreg_emb.c
