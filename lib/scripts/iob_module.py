@@ -80,18 +80,13 @@ class iob_module:
         self.parameters = parameters
 
     @classmethod
-    def print_build_dir_name(cls):
-        """Print the build directory name for this module."""
-        print(cls.build_dir)
-
-    @classmethod
     def setup_as_top_module(cls):
         """Initialize the setup process for the top module.
         This method should only be called once, and only for the top module class.
         It is typically called by the `bootstrap.py` script.
         """
-        cls.is_top_module = True
         cls.build_dir = f"../{cls.name}_{cls.version}"
+        cls.is_top_module = True
         cls.__setup()
 
     @classmethod
@@ -602,6 +597,26 @@ class iob_module:
         shutil.copyfile(
             f"{copy_srcs.LIB_DIR}/build.mk", f"{cls.build_dir}/Makefile"
         )  # Copy generic MAKEFILE
+
+    @classmethod
+    def clean_build_dir(cls):
+        """Clean build directory. Must be called from the top module."""
+        cls.init_attributes()
+        cls.build_dir = f"../{cls.name}_{cls.version}"
+        print(
+            f"{iob_colors.ENDC}Cleaning build directory: {cls.build_dir}{iob_colors.ENDC}"
+        )
+        # if build_dir exists run make clean in it
+        if os.path.exists(cls.build_dir):
+            os.system(f"make -C {cls.build_dir} clean")
+        shutil.rmtree(cls.build_dir, ignore_errors=True)
+
+    @classmethod
+    def print_build_dir(cls):
+        """Print build directory."""
+        cls.init_attributes()
+        cls.build_dir = f"../{cls.name}_{cls.version}"
+        print(cls.build_dir)
 
     @classmethod
     def _copy_srcs(cls, exclude_file_list=[], highest_superclass=None):

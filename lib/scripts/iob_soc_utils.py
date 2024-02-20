@@ -84,7 +84,7 @@ def iob_soc_wrapper_setup(python_module, num_extmem_connections, exclude_files=[
             },
             {
                 "file_prefix": "iob_memory_",
-                "interface": "axi_wire",
+                "interface": "axi",
                 "type": "slave",
                 "wire_prefix": "memory_",
                 "port_prefix": "",
@@ -189,7 +189,7 @@ def post_setup_iob_soc(python_module, num_extmem_connections):
     # Run iob-soc specialized setup sequence
     iob_soc_sw_setup(python_module)
     iob_soc_hw_setup(python_module)
-    iob_soc_doc_setup(python_module)
+    # iob_soc_doc_setup(python_module)
 
     if not python_module.is_top_module:
         return

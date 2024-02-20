@@ -3,6 +3,7 @@
 # This file is run as a makefile to setup a build directory for an IP core
 #
 export PYTHONPATH=../iob_python
+BUILD_DIR=$(shell $(CORE).py print)
 
 build-setup: format-all
 	mkdir -p ../iob_python
@@ -47,10 +48,9 @@ endif
 format-all: python-format c-format verilog-lint verilog-format
 
 clean:
-	export BUILD_DIR = `python3 -B ./$(CORE).py -f print_build_dir_name`
-	echo $(BUILD_DIR)
-#	-@if [ -f $(BUILD_DIR)/Makefile ]; then make -C $(BUILD_DIR) clean; fi
-#	@rm -rf ../*.summary ../*.rpt $(BUILD_DIR)*  ~*
+	python3 -B ./iob_soc.py clean
+	@rm -rf ../*.summary ../*.rpt 
+	find . -name \*~ -delete
 
 # Remove all __pycache__ folders with python bytecode
 python-cache-clean:

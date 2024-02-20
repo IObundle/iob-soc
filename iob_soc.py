@@ -381,4 +381,9 @@ class iob_soc(iob_module):
 
 
 if __name__ == "__main__":
-    iob_soc.setup_as_top_module()
+    if "clean" in sys.argv:
+        iob_soc.clean_build_dir()
+    elif "print" in sys.argv:
+        iob_soc.print_build_dir()
+    else:
+        iob_soc.setup_as_top_module()
