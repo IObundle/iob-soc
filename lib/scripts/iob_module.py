@@ -138,7 +138,6 @@ class iob_module:
     @classmethod
     def clean_build_dir(cls):
         """Clean build directory. Must be called from the top module."""
-        cls.init_attributes()
         cls.build_dir = f"../{cls.name}_{cls.version}"
         print(
             f"{iob_colors.ENDC}Cleaning build directory: {cls.build_dir}{iob_colors.ENDC}"
@@ -151,7 +150,6 @@ class iob_module:
     @classmethod
     def print_build_dir(cls):
         """Print build directory."""
-        cls.init_attributes()
         cls.build_dir = f"../{cls.name}_{cls.version}"
         print(cls.build_dir)
 
