@@ -12,6 +12,7 @@ module iob_soc_mwrap #(
 
     parameter HEXFILE  = "iob_soc_firmware",
     parameter BOOT_HEXFILE = "iob_soc_boot",
+    parameter MEM_NO_READ_ON_WRITE = 1,        //no simultaneous read/write
    `include "iob_soc_params.vs"
 ) (
    `include "iob_soc_io.vs"
