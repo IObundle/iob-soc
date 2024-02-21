@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import sys
 
 from iob_module import iob_module
 
@@ -246,3 +247,12 @@ class iob_uart(iob_module):
                 "descr": "Reset polarity.",
             },
         ]
+
+
+if __name__ == "__main__":
+    if "clean" in sys.argv:
+        iob_usart.clean_build_dir()
+    elif "print" in sys.argv:
+        iob_uart.print_build_dir()
+    else:
+        iob_uart._setup()

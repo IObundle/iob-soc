@@ -1,1 +1,1 @@
-../LIB/scripts/default.nix
+../../../../lib/default.nix
