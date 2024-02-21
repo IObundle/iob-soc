@@ -9,10 +9,6 @@ module iob_soc_fpga_wrapper (
    input c0_sys_clk_clk_n,
    input reset,
 
-   //uart
-   output txd_o,
-   input  rxd_i,
-
 `ifdef IOB_SOC_USE_EXTMEM
    output        c0_ddr4_act_n,
    output [16:0] c0_ddr4_adr,
@@ -48,7 +44,9 @@ module iob_soc_fpga_wrapper (
    //output ENET_TX_ERR,
 `endif
 
-   output trap
+   //uart
+   output txd_o,
+   input  rxd_i
 );
 
    localparam AXI_ID_W = 4;
@@ -115,7 +113,7 @@ module iob_soc_fpga_wrapper (
       .clk_i (clk),
       .cke_i (1'b1),
       .arst_i(arst),
-      .trap_o(trap)
+      .trap_o()
    );
    
    // UART
