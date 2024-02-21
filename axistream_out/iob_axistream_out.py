@@ -152,23 +152,23 @@ class iob_axistream_out(iob_module):
                 ],
             },
             {
-                "name": "dma",
-                "descr": "Direct Memory Access via dedicated AXI Stream interface.",
+                "name": "sys_axis",
+                "descr": "System AXI Stream interface.",
                 "ports": [
                     {
-                        "name": "dma_tdata_i",
+                        "name": "sys_tdata_i",
                         "type": "I",
                         "n_bits": "DATA_W",
                         "descr": "Data.",
                     },
                     {
-                        "name": "dma_tvalid_i",
+                        "name": "sys_tvalid_i",
                         "type": "I",
                         "n_bits": "1",
                         "descr": "Valid.",
                     },
                     {
-                        "name": "dma_tready_o",
+                        "name": "sys_tready_o",
                         "type": "O",
                         "n_bits": "1",
                         "descr": "Ready.",
@@ -209,7 +209,16 @@ class iob_axistream_out(iob_module):
                         "rst_val": 0,
                         "log2n_items": 0,
                         "autoreg": False,
-                        "descr": "Data input (writing to this register will apply the set WSTRB and LAST registers).",
+                        "descr": "Data input.",
+                    },
+                    {
+                        "name": "MODE",
+                        "type": "W",
+                        "n_bits": "1",
+                        "rst_val": 0,
+                        "log2n_items": 0,
+                        "autoreg": True,
+                        "descr": "Sets the operation mode: (0) data is read using CSR; (1) data is read using system axistream interface.",
                     },
                     {
                         "name": "NWORDS",
@@ -248,7 +257,7 @@ class iob_axistream_out(iob_module):
                         "name": "FIFO_THRESHOLD",
                         "type": "W",
                         "n_bits": "FIFO_ADDR_W+1",
-                        "rst_val": 256,
+                        "rst_val": 8,
                         "log2n_items": 0,
                         "autoreg": True,
                         "descr": "FIFO threshold level for interrupt signal",
@@ -263,7 +272,7 @@ class iob_axistream_out(iob_module):
                         "descr": "Current FIFO level",
                     },
                 ],
-            }
+            },
         ]
 
     @classmethod

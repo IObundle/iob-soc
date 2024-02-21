@@ -68,7 +68,7 @@ class iob_axistream_in(iob_module):
                 "descr": "FIFO depth (log2)",
             },
         ])
-   
+
     @classmethod
     def _setup_ios(cls):
         cls.ios += [
@@ -152,23 +152,23 @@ class iob_axistream_in(iob_module):
                 ],
             },
             {
-                "name": "dma",
-                "descr": "Direct Memory Access via dedicated AXI Stream interface.",
+                "name": "sys_axis",
+                "descr": "System AXI Stream interface.",
                 "ports": [
                     {
-                        "name": "dma_tdata_o",
+                        "name": "sys_tdata_o",
                         "type": "O",
                         "n_bits": "DATA_W",
                         "descr": "Data.",
                     },
                     {
-                        "name": "dma_tvalid_o",
+                        "name": "sys_tvalid_o",
                         "type": "O",
                         "n_bits": "1",
                         "descr": "Valid.",
                     },
                     {
-                        "name": "dma_tready_i",
+                        "name": "sys_tready_i",
                         "type": "I",
                         "n_bits": "1",
                         "descr": "Ready.",
@@ -209,7 +209,16 @@ class iob_axistream_in(iob_module):
                         "rst_val": 0,
                         "log2n_items": 0,
                         "autoreg": False,
-                        "descr": "Data output (reading from this register sets the RSTRB and LAST registers).",
+                        "descr": "Data output.",
+                    },
+                    {
+                        "name": "MODE",
+                        "type": "W",
+                        "n_bits": "1",
+                        "rst_val": 0,
+                        "log2n_items": 0,
+                        "autoreg": True,
+                        "descr": "Sets the operation mode: (0) data is read using CSR; (1) data is read using system axistream interface.",
                     },
                     {
                         "name": "NWORDS",
@@ -257,7 +266,7 @@ class iob_axistream_in(iob_module):
                         "name": "FIFO_THRESHOLD",
                         "type": "W",
                         "n_bits": "FIFO_ADDR_W+1",
-                        "rst_val": 1024-256,
+                        "rst_val": 8,
                         "log2n_items": 0,
                         "autoreg": True,
                         "descr": "FIFO threshold level for interrupt signal",
@@ -272,7 +281,7 @@ class iob_axistream_in(iob_module):
                         "descr": "Current FIFO level",
                     },
                 ],
-            }
+            },
         ]
 
     @classmethod
