@@ -3,7 +3,6 @@
 # This file is run as a makefile to setup a build directory for an IP core
 #
 export PYTHONPATH=../iob_python
-BUILD_DIR=$(shell $(CORE).py print)
 
 build-setup: format-all
 	mkdir -p ../iob_python

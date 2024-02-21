@@ -503,6 +503,14 @@ def generate_ipxact_xml(core, sw_regs, dest_dir):
     return: None
     """
 
+    # try to open file document/tsrc/intro.tex and read it into cls.description
+    try:
+        with open(f"document/tsrc/intro.tex", "r") as file:
+            core.description = file.read()
+    except:
+        print("ERROR: Could not open document/tsrc/intro.tex")
+        exit(1)
+
     # Add the CSR IF,
     core_name = core.name + "_" + core.csr_if
 

@@ -42,12 +42,12 @@ class iob_soc(iob_module):
     setup_dir = os.path.dirname(__file__)
     rw_overlap = True
     is_system = True
-
+    cpu = iob_picorv32
     board_list = ["CYCLONEV-GT-DK", "AES-KU040-DB-G"]
 
     # IOb-SoC has the following list of non standard attributes:
     peripherals = []  # List of peripherals
-    peripheral_portmap = None  # List of tuples, each tuple corresponds to a port map
+    peripheral_portmap = []  # List of tuples, each tuple corresponds to a port map
 
     num_extmem_connections = 1  # Number of external memory connections
 
@@ -78,8 +78,7 @@ class iob_soc(iob_module):
     @classmethod
     def _create_instances(cls):
         # Verilog modules instances if we have them in the setup list (they may not be in the list if a subclass decided to remove them).
-        if iob_picorv32 in cls.submodule_list:
-            cls.cpu = iob_picorv32("cpu_0")
+        cls.cpu = cpu("cpu_0")
         cls.ibus_split = iob_split("ibus_split_0")
         cls.dbus_split = iob_split("dbus_split_0")
         cls.int_dbus_split = iob_split("int_dbus_split_0")
@@ -89,84 +88,76 @@ class iob_soc(iob_module):
         cls.peripherals.append(iob_uart("UART0"))
         cls.peripherals.append(iob_timer("TIMER0"))
 
-    @classmethod
-    def _create_submodules_list(cls, extra_submodules=[]):
-        """Create submodules list with dependencies of this module"""
-        super()._create_submodules_list(
-            [
-                iob_picorv32,
-                iob_cache,
-                iob_uart,
-                iob_timer,
-                iob_utils,
-                iob_merge,
-                iob_split,
-                iob_rom_sp,
-                iob_ram_dp_be,
-                iob_ram_dp_be_xil,
-                iob_pulse_gen,
-                iob_counter,
-                iob_reg,
-                iob_reg_re,
-                iob_ram_sp_be,
-                iob_ram_dp,
-                iob_reset_sync,
-                iob_ctls,
-                axi_interconnect,
-                # Simulation headers & modules
-                (axi_ram, {"purpose": "simulation"}),
-                (iob_tasks, {"purpose": "simulation"}),
-                # Software modules
-                printf,
-                # Modules required for CACHE
-                (iob_ram_2p, {"purpose": "simulation"}),
-                (iob_ram_2p, {"purpose": "fpga"}),
-                (iob_ram_sp, {"purpose": "simulation"}),
-                (iob_ram_sp, {"purpose": "fpga"}),
-            ]
-            + extra_submodules
-        )
+    submodules_list = [
+        iob_picorv32,
+        iob_cache,
+        iob_uart,
+        iob_timer,
+        iob_utils,
+        iob_merge,
+        iob_split,
+        iob_rom_sp,
+        iob_ram_dp_be,
+        iob_ram_dp_be_xil,
+        iob_pulse_gen,
+        iob_counter,
+        iob_reg,
+        iob_reg_re,
+        iob_ram_sp_be,
+        iob_ram_dp,
+        iob_reset_sync,
+        iob_ctls,
+        axi_interconnect,
+        # Simulation headers & modules
+        (axi_ram, {"purpose": "simulation"}),
+        (iob_tasks, {"purpose": "simulation"}),
+        # Software modules
+        printf,
+        # Modules required for CACHE
+        (iob_ram_2p, {"purpose": "simulation"}),
+        (iob_ram_2p, {"purpose": "fpga"}),
+        (iob_ram_sp, {"purpose": "simulation"}),
+        (iob_ram_sp, {"purpose": "fpga"}),
+    ]
 
-    @classmethod
-    def _setup_portmap(cls):
-        cls.peripheral_portmap += [
-            (
-                {"corename": "UART0", "if_name": "rs232", "port": "txd", "bits": []},
-                {
-                    "corename": "external",
-                    "if_name": "uart",
-                    "port": "uart_txd_o",
-                    "bits": [],
-                },
-            ),
-            (
-                {"corename": "UART0", "if_name": "rs232", "port": "rxd", "bits": []},
-                {
-                    "corename": "external",
-                    "if_name": "uart",
-                    "port": "uart_rxd_i",
-                    "bits": [],
-                },
-            ),
-            (
-                {"corename": "UART0", "if_name": "rs232", "port": "cts", "bits": []},
-                {
-                    "corename": "external",
-                    "if_name": "uart",
-                    "port": "uart_cts_i",
-                    "bits": [],
-                },
-            ),
-            (
-                {"corename": "UART0", "if_name": "rs232", "port": "rts", "bits": []},
-                {
-                    "corename": "external",
-                    "if_name": "uart",
-                    "port": "uart_rts_o",
-                    "bits": [],
-                },
-            ),
-        ]
+    peripheral_portmap = [
+        (
+            {"corename": "UART0", "if_name": "rs232", "port": "txd", "bits": []},
+            {
+                "corename": "external",
+                "if_name": "uart",
+                "port": "uart_txd_o",
+                "bits": [],
+            },
+        ),
+        (
+            {"corename": "UART0", "if_name": "rs232", "port": "rxd", "bits": []},
+            {
+                "corename": "external",
+                "if_name": "uart",
+                "port": "uart_rxd_i",
+                "bits": [],
+            },
+        ),
+        (
+            {"corename": "UART0", "if_name": "rs232", "port": "cts", "bits": []},
+            {
+                "corename": "external",
+                "if_name": "uart",
+                "port": "uart_cts_i",
+                "bits": [],
+            },
+        ),
+        (
+            {"corename": "UART0", "if_name": "rs232", "port": "rts", "bits": []},
+            {
+                "corename": "external",
+                "if_name": "uart",
+                "port": "uart_rts_o",
+                "bits": [],
+            },
+        ),
+    ]
 
     @classmethod
     def _setup_block_groups(cls):
@@ -363,7 +354,9 @@ class iob_soc(iob_module):
         ]
 
     @classmethod
-    def _custom_setup(cls):
+    def _setup(cls):
+        # Call the super class _setup
+        super()._setup()
         # Add the following arguments:
         # "INIT_MEM": if should setup with init_mem or not
         # "USE_EXTMEM": if should setup with extmem or not
@@ -373,12 +366,6 @@ class iob_soc(iob_module):
             if arg == "USE_EXTMEM":
                 update_define(cls.confs, "USE_EXTMEM", True)
 
-    @classmethod
-    def _init_attributes(cls):
-        # Initialize empty lists for attributes (We can't initialize in the attribute declaration because it would cause every subclass to reference the same list)
-        cls.peripherals = []
-        cls.peripheral_portmap = []
-
 
 if __name__ == "__main__":
     if "clean" in sys.argv:
@@ -386,4 +373,4 @@ if __name__ == "__main__":
     elif "print" in sys.argv:
         iob_soc.print_build_dir()
     else:
-        iob_soc.setup_as_top_module()
+        iob_soc._setup(True)
