@@ -186,3 +186,29 @@ def update_define(confs, define_name, should_set):
                     "descr": "Define",
                 }
             )
+
+
+def generate_confs(core):
+    # Auto-add VERSION macro if there are software registers
+    if core.regs:
+        found_version_macro = False
+        if core.confs:
+            for macro in core.confs:
+                if macro["name"] == "VERSION":
+                    found_version_macro = True
+        if not found_version_macro:
+            confs.append(
+                {
+                    "name": "VERSION",
+                    "type": "M",
+                    "val": "16'h" + copy_srcs.version_str_to_digits(core.version),
+                    "min": "NA",
+                    "max": "NA",
+                    "descr": "Product version. This 16-bit macro uses nibbles to represent decimal numbers using their binary values. The two most significant nibbles represent the integral part of the version, and the two least significant nibbles represent the decimal part. For example V12.34 is represented by 0x1234.",
+                }
+            )
+
+    params_vh(core.confs, core.name, core.build_dir + "/hardware/src")
+    conf_vh(core.confs, core.name, core.build_dir + "/hardware/src")
+    conf_h(core.confs, core.name, core.build_dir + "/software/include")
+    generate_confs_tex(core.confs, core.build_dir + "/doc")

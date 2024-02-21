@@ -318,9 +318,8 @@ class iob_soc(iob_module):
     ]
 
     @classmethod
-    def _setup(cls, is_top=False, purpose="hardware"):
+    def _setup(cls, is_top=True, purpose="hardware", topdir=""):
         # Call the super class _setup
-        super()._setup()
         # Add the following arguments:
         # "INIT_MEM": if should setup with init_mem or not
         # "USE_EXTMEM": if should setup with extmem or not
@@ -329,6 +328,7 @@ class iob_soc(iob_module):
                 update_define(cls.confs, "INIT_MEM", True)
             if arg == "USE_EXTMEM":
                 update_define(cls.confs, "USE_EXTMEM", True)
+        super()._setup(is_top, purpose, topdir)
 
 
 if __name__ == "__main__":
@@ -337,4 +337,4 @@ if __name__ == "__main__":
     elif "print" in sys.argv:
         iob_soc.print_build_dir()
     else:
-        iob_soc._setup(True, "hardware")
+        iob_soc._setup()

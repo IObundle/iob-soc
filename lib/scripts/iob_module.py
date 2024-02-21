@@ -15,6 +15,8 @@ import block_gen
 import io_gen
 import ipxact_gen
 
+from pathlib import Path
+
 
 class iob_module:
     """Generic class to describe a base iob-module"""
@@ -26,15 +28,9 @@ class iob_module:
     previous_version = None  # Module version
     setup_dir = ""  # Setup directory for this module
     build_dir = ""  # Build directory for this module
-    confs = None  # List of configuration macros/parameters for this module
-    autoaddr = True  # register address mode: True: automatic; False: manual
     rw_overlap = False  # overlap Read and Write register addresses
-    regs = None  # List of registers for this module
-    ios = None  # List of I/O for this module
-    block_groups = None  # List of block groups for this module. Used for documentation.
     is_top_module = False  # Select if this module is the top module
     use_netlist = False  # use module netlist
-    generate_ipxact = False  # generate IP-XACT XML file
     is_system = False  # create software files in build directory
     board_list = None  # List of fpga files to copy to build directory
     confs = []
@@ -68,26 +64,40 @@ class iob_module:
         self.parameters = parameters
 
     @classmethod
-    def _setup(cls, is_top=False, purpose="hardware"):
+    def _setup(cls, is_top=False, purpose="hardware", topdir=""):
+        print(topdir)
         """
         Initialize the setup process for the top module.
         """
+        cls.is_top_module = is_top
 
-        cls.build_dir = f"../{cls.name}_{cls.version}"
+        if is_top:
+            topdir = f"../{cls.name}_{cls.version}"
+
+        cls.build_dir = topdir
 
         # Create build directory this is the top module class, and is the first time setup
         if cls.is_top_module:
             cls.__create_build_dir()
 
+        # check if directory ../{cls.name}_{cls.version} exists
+
+        directory = Path(cls.build_dir)
+
+        if directory.exists():
+            print("Directory exists")
+        else:
+            print("Directory does not exist")
+
         # Setup submodules placed in `submodule_list` list
         for submodule in cls.submodule_list:
             if type(submodule) == tuple:
                 if "purpose" not in submodule[1]:
-                    submodule[0]._setup(False, "hardware")
+                    submodule[0]._setup(False, "hardware", topdir)
                 else:
-                    submodule[0]._setup(False, submodule[1])
+                    submodule[0]._setup(False, submodule[1], topdir)
             else:
-                submodule._setup(False, purpose)
+                submodule._setup(False, purpose, topdir)
 
         # Copy sources from the module's setup dir (and from its superclasses)
         cls._copy_srcs()
@@ -119,15 +129,12 @@ class iob_module:
             cls.is_top_module
         ), f"{iob_colors.FAIL}Module {cls.name} is not a top module!{iob_colors.ENDC}"
         os.makedirs(cls.build_dir, exist_ok=True)
-        config_gen.config_build_mk(cls)
         # Create hardware directories
         os.makedirs(f"{cls.build_dir}/hardware/src", exist_ok=True)
         os.makedirs(f"{cls.build_dir}/hardware/simulation/src", exist_ok=True)
         os.makedirs(f"{cls.build_dir}/hardware/fpga/src", exist_ok=True)
 
-        shutil.copyfile(
-            f"{copy_srcs.LIB_DIR}/build.mk", f"{cls.build_dir}/Makefile"
-        )  # Copy generic MAKEFILE
+        shutil.copyfile(f"{copy_srcs.LIB_DIR}/build.mk", f"{cls.build_dir}/Makefile")
 
     @classmethod
     def clean_build_dir(cls):
