@@ -22,6 +22,19 @@ module iob_soc #(
    input      [DATA_W-1:0]      rdata_SPRAM,
 `endif 
    //
+   //sram
+   output                           i_valid_i,
+   output      [SRAM_ADDR_W-3:0]    i_addr_i,
+   output      [     DATA_W-1:0]    i_wdata_i,
+   output      [   DATA_W/8-1:0]    i_wstrb_i,
+   input       [     DATA_W-1:0]    i_rdata_o,
+
+   output                           d_valid_i,
+   output      [SRAM_ADDR_W-3:0]    d_addr_i,
+   output      [     DATA_W-1:0]    d_wdata_i,
+   output      [   DATA_W/8-1:0]    d_wstrb_i,
+   input       [     DATA_W-1:0]    d_rdata_o,
+   //
    `include "iob_soc_io.vs"
 );
 
@@ -201,8 +214,21 @@ module iob_soc #(
       //rom
       .rom_r_valid(rom_r_valid),
       .rom_r_addr(rom_r_addr),
-      .rom_r_rdata(rom_r_rdata)
+      .rom_r_rdata(rom_r_rdata),
       //
+
+      //ram
+      .i_valid_i(i_valid_i),
+      .i_addr_i(i_addr_i),
+      .i_wdata_i(i_wdata_i),
+      .i_wstrb_i(i_wstrb_i),
+      .i_rdata_o(i_rdata_o),
+      .d_valid_i(d_valid_i),
+      .d_addr_i(d_addr_i),
+      .d_wdata_i(d_wdata_i),
+      .d_wstrb_i(d_wstrb_i),
+      .d_rdata_o(d_rdata_o)
+   //
    );
 
 `ifdef IOB_SOC_USE_EXTMEM

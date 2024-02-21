@@ -45,6 +45,8 @@ module iob_soc_sram #(
    assign d_rdata_o = rdata_SPRAM;
    assign i_rdata_o = rdata_SPRAM;
 `else  // !`ifdef USE_SPRAM
+
+/*
 `ifdef IOB_MEM_NO_READ_ON_WRITE
    iob_ram_dp_be #(
       .HEXFILE             (HEXFILE),
@@ -90,7 +92,7 @@ module iob_soc_sram #(
       .dB_i   (i_wdata_i),
       .dB_o   (i_rdata_o)
    );
-`endif
+`endif*/
 `endif
 
    // reply with ready 
