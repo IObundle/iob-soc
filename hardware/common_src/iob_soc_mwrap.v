@@ -192,67 +192,61 @@ iob_soc #(
             end
             assign d_o = d_o_int;
         `endif
-    `endif
+    `else
+        `ifdef IOB_MEM_NO_READ_ON_WRITE
+            localparam COL_W = DATA_W / 4;
+            localparam NUM_COL = DATA_W / COL_W;
+            localparam file_suffix = {"7", "6", "5", "4", "3", "2", "1", "0"};
+            genvar index;
+            generate
+                for (index = 0; index < NUM_COL; index = index + 1) begin : ram_col
+                    localparam mem_init_file_int = (HEXFILE != "none") ?
+                        {HEXFILE, "_", file_suffix[8*(index+1)-1-:8], ".hex"} : "none";
+                    iob_ram_dp #(
+                        .HEXFILE             (mem_init_file_int),
+                        .ADDR_W              (ADDR_W),
+                        .DATA_W              (COL_W),
+                        .MEM_NO_READ_ON_WRITE(MEM_NO_READ_ON_WRITE)
+                    ) ram (
+                        .clk_i(clk_i),
 
+                        .enA_i  (d_valid_i),
+                        .addrA_i(d_addr_i),
+                        .dA_i   (d_wdata_i[index*COL_W+:COL_W]),
+                        .weA_i  (d_wstrb_i[index]),
+                        .dA_o   (d_rdata_o[index*COL_W+:COL_W]),
 
+                        .enB_i  (i_valid_i),
+                        .addrB_i(i_addr_i),
+                        .dB_i   (i_wdata_i[index*COL_W+:COL_W]),
+                        .weB_i  (i_wstrb_i[index]),
+                        .dB_o   (i_rdata_o[index*COL_W+:COL_W])
+                );
+                end
+            endgenerate
+        `else  // !`ifdef IOB_MEM_NO_READ_ON_WRITE
+            iob_ram_dp_be_xil #(
+                .HEXFILE(HEXFILE),
+                .ADDR_W (SRAM_ADDR_W - 2),
+                .DATA_W (DATA_W)
+            ) main_mem_byte (
+                .clk_i(clk_i),
 
-
-    `ifdef IOB_MEM_NO_READ_ON_WRITE
-        localparam COL_W = DATA_W / 4;
-        localparam NUM_COL = DATA_W / COL_W;
-        localparam file_suffix = {"7", "6", "5", "4", "3", "2", "1", "0"};
-
-        genvar index;
-        generate
-            for (index = 0; index < NUM_COL; index = index + 1) begin : ram_col
-                localparam mem_init_file_int = (HEXFILE != "none") ?
-                    {HEXFILE, "_", file_suffix[8*(index+1)-1-:8], ".hex"} : "none";
-                iob_ram_dp #(
-                    .HEXFILE             (mem_init_file_int),
-                    .ADDR_W              (ADDR_W),
-                    .DATA_W              (COL_W),
-                    .MEM_NO_READ_ON_WRITE(MEM_NO_READ_ON_WRITE)
-                ) ram (
-                    .clk_i(clk_i),
-
-                    .enA_i  (d_valid_i),
-                    .addrA_i(d_addr_i),
-                    .dA_i   (d_wdata_i[index*COL_W+:COL_W]),
-                    .weA_i  (d_wstrb_i[index]),
-                    .dA_o   (d_rdata_o[index*COL_W+:COL_W]),
-
-                    .enB_i  (i_valid_i),
-                    .addrB_i(i_addr_i),
-                    .dB_i   (i_wdata_i[index*COL_W+:COL_W]),
-                    .weB_i  (i_wstrb_i[index]),
-                    .dB_o   (i_rdata_o[index*COL_W+:COL_W])
+                // data port
+                .enA_i  (d_valid_i),
+                .addrA_i(d_addr_i),
+                .weA_i  (d_wstrb_i),
+                .dA_i   (d_wdata_i),
+                .dA_o   (d_rdata_o),
+                // instruction port
+                .enB_i  (i_valid_i),
+                .addrB_i(i_addr_i),
+                .weB_i  (i_wstrb_i),
+                .dB_i   (i_wdata_i),
+                .dB_o   (i_rdata_o)
             );
-        end
-        endgenerate
-    `else  // !`ifdef IOB_MEM_NO_READ_ON_WRITE
-        iob_ram_dp_be_xil #(
-            .HEXFILE(HEXFILE),
-            .ADDR_W (SRAM_ADDR_W - 2),
-            .DATA_W (DATA_W)
-        ) main_mem_byte (
-            .clk_i(clk_i),
-
-            // data port
-            .enA_i  (d_valid_i),
-            .addrA_i(d_addr_i),
-            .weA_i  (d_wstrb_i),
-            .dA_i   (d_wdata_i),
-            .dA_o   (d_rdata_o),
-
-            // instruction port
-            .enB_i  (i_valid_i),
-            .addrB_i(i_addr_i),
-            .weB_i  (i_wstrb_i),
-            .dB_i   (i_wdata_i),
-            .dB_o   (i_rdata_o)
-        );
-    `endif
-
+        `endif
+    `endif 
 
 
 
