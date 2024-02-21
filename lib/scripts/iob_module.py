@@ -19,11 +19,6 @@ import ipxact_gen
 class iob_module:
     """Generic class to describe a base iob-module"""
 
-    ###############################################################
-    # IOb module attributes: common to all iob-modules (subclasses)
-    ###############################################################
-
-    # Standard attributes common to all iob-modules
     name = "iob_module"  # Verilog module name (not instance name)
     csr_if = "iob"
     version = "1.0"  # Module version
@@ -42,13 +37,11 @@ class iob_module:
     generate_ipxact = False  # generate IP-XACT XML file
     is_system = False  # create software files in build directory
     board_list = None  # List of fpga files to copy to build directory
-    # Initialize empty lists for attributes (We can't initialize in the attribute declaration because it would cause every subclass to reference the same list)
     confs = []
     regs = []
     ios = []
     block_groups = []
     submodule_list = []
-    submodule_list = None  # List of submodules to setup
 
     # Read-only dictionary with relation between the setup_purpose and the corresponding source folder
     purpose_dirs = {
@@ -75,7 +68,7 @@ class iob_module:
         self.parameters = parameters
 
     @classmethod
-    def setup(cls, is_top=False, purpose="hardware"):
+    def _setup(cls, is_top=False, purpose="hardware"):
         """
         Initialize the setup process for the top module.
         """
@@ -89,11 +82,12 @@ class iob_module:
         # Setup submodules placed in `submodule_list` list
         for submodule in cls.submodule_list:
             if type(submodule) == tuple:
-                purpose = submodule[1]
-                if "purpose" not in setup_options:
-                    submodule.setup(False, "hardware")
+                if "purpose" not in submodule[1]:
+                    submodule[0]._setup(False, "hardware")
                 else:
-                    submodule.setup(False, purpose)
+                    submodule[0]._setup(False, submodule[1])
+            else:
+                submodule._setup(False, purpose)
 
         # Copy sources from the module's setup dir (and from its superclasses)
         cls._copy_srcs()
