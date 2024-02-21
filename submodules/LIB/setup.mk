@@ -68,34 +68,6 @@ endif
 
 format-all: build_dir_name python-format c-format verilog-lint verilog-format
 
-#
-#DOCUMENT
-#
-
-ifneq ($(wildcard document),)
-
-ifeq ($(INTEL_FPGA),1)
-SRC+=$(BUILD_DIR)/doc/quartus.tex
-endif
-
-ifeq ($(AMD_FPGA),1)
-SRC+=$(BUILD_DIR)/doc/vivado.tex
-endif
-
-# generate quartus fitting results 
-$(BUILD_DIR)/doc/quartus.tex:
-	make -C $(BUILD_DIR) fpga-build BOARD=CYCLONEV-GT-DK
-	LOG=$(BUILD_FPGA_DIR)/reports/$(wildcard *.fit.summary) $(LIB_DIR)/scripts/quartus2tex.sh
-	mv `basename $@` $(BUILD_DOC_DIR)
-
-# generate vivado fitting results 
-$(BUILD_DIR)/doc/vivado.tex:
-	make -C $(BUILD_DIR) fpga-build BOARD=AES-KU040-DB-G
-	LOG=$(BUILD_FPGA_DIR)/vivado.log $(LIB_DIR)/scripts/vivado2tex.sh
-	mv `basename $@` $(BUILD_DOC_DIR)
-
-endif
-
 clean: build_dir_name
 	-@if [ -f $(BUILD_DIR)/Makefile ]; then make -C $(BUILD_DIR) clean; fi
 	@rm -rf ../*.summary ../*.rpt $(BUILD_DIR)*  ~*

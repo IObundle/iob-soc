@@ -13,9 +13,10 @@ $(BIN): $(SRC) $(HDR)
 	$(CC) $(FLAGS) $(INCLUDE) -o $(BIN) $(SRC)
 
 LIB_DIR = ../../../../../../
+IOB_LINUX_DIR ?= ../../../$(LIB_DIR)/iob-linux
 $(HDR):
 	cd $(LIB_DIR) && \
-		./scripts/bootstrap.py iob_timer -f gen_linux_driver_header -o `realpath $(CURDIR)`
+		.$(IOB_LINUX_DIR)/scripts/drivers.py iob_timer -o `realpath $(CURDIR)`
 
 clean:
 	rm -rf $(BIN) $(HDR)

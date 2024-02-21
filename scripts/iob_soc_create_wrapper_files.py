@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import os
 
 from submodule_utils import get_pio_signals, add_prefix_to_parameters_in_string

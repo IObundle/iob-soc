@@ -14,7 +14,6 @@ from iob_counter import iob_counter
 class iob_timer(iob_module):
     name = "iob_timer"
     version = "V0.10"
-    flows = "sim emb"
     setup_dir = os.path.dirname(__file__)
 
     @classmethod

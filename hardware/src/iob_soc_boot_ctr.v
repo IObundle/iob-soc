@@ -23,7 +23,7 @@ module iob_soc_boot_ctr #(
    output                    sram_valid_o,
    output     [  ADDR_W-1:0] sram_addr_o,
    output     [  DATA_W-1:0] sram_wdata_o,
-   output reg [DATA_W/8-1:0] sram_wstrb_o,
+   output     [DATA_W/8-1:0] sram_wstrb_o,
 
    `include "clk_en_rst_s_port.vs"
 );
@@ -45,7 +45,7 @@ module iob_soc_boot_ctr #(
 
    //boot register: (1) load bootloader to sram and run it: (0) run program
    wire boot_wr = cpu_valid_i & |cpu_wstrb_i;
-   reg                                     boot_nxt;
+   wire                                     boot_nxt;
    iob_reg_re #(
       .DATA_W (1),
       .RST_VAL(1)
@@ -93,43 +93,100 @@ module iob_soc_boot_ctr #(
    //
    // READ BOOT ROM 
    //
-   reg                       rom_r_valid;
-   reg  [BOOTROM_ADDR_W-3:0] rom_r_addr;
+   wire                       rom_r_valid;
+   wire                       rom_r_valid_nxt;
+
+   assign rom_r_valid_nxt = (boot_o && rom_r_addr != ({BOOTROM_ADDR_W - 2{1'b1}}-1) && rom_r_valid != 1'b0) ? 1'b1 : 1'b0;
+   
+   wire  [BOOTROM_ADDR_W-3:0] rom_r_addr;
+   wire [BOOTROM_ADDR_W-3:0] rom_r_addr_nxt;
+
+   assign rom_r_addr_nxt = (boot_o && rom_r_addr != ({BOOTROM_ADDR_W - 2{1'b1}}-1)) ? rom_r_addr + 1'b1 : {(BOOTROM_ADDR_W - 2) {1'b0}};
+
+
    wire [        DATA_W-1:0] rom_r_rdata;
 
-   always @(posedge clk_i, posedge arst_i)
-      if (arst_i) begin
-         rom_r_valid <= 1'b1;
-         rom_r_addr   <= {(BOOTROM_ADDR_W - 2) {1'b0}};
-      end else if (boot_o && rom_r_addr != (2 ** (BOOTROM_ADDR_W - 2) - 1))
-         rom_r_addr <= rom_r_addr + 1'b1;
-      else begin
-         rom_r_valid <= 1'b0;
-         rom_r_addr   <= {(BOOTROM_ADDR_W - 2) {1'b0}};
-      end
+
+   iob_reg #(
+      .DATA_W (BOOTROM_ADDR_W-2),
+      .RST_VAL({(BOOTROM_ADDR_W - 2) {1'b0}})
+   )rom_r_addr_reg (
+      .clk_i (clk_i),
+      .arst_i(arst_i),
+      .cke_i (cke_i),
+      .data_i(rom_r_addr_nxt),
+      .data_o(rom_r_addr)
+   );
+
+   iob_reg #(
+      .DATA_W (1),
+      .RST_VAL(1'b1)
+   )rom_r_valid_reg (
+      .clk_i (clk_i),
+      .arst_i(arst_i),
+      .cke_i (cke_i),
+      .data_i(rom_r_valid_nxt),
+      .data_o(rom_r_valid)
+   );
 
    //
    // WRITE SRAM
    //
-   reg                     sram_w_valid;
-   reg [SRAM_ADDR_W-2-1:0] sram_w_addr;
-   always @(posedge clk_i, posedge arst_i)
-      if (arst_i) begin
-         sram_w_valid <= 1'b0;
-         sram_w_addr   <= -{1'b1, {(BOOTROM_ADDR_W - 2) {1'b0}}};
-         sram_wstrb_o    <= {DATA_W / 8{1'b1}};
-      end else if (boot_o) begin
-         sram_w_valid <= rom_r_valid;
-         sram_w_addr   <= -{1'b1, {(BOOTROM_ADDR_W - 2) {1'b0}}} + rom_r_addr;
-         sram_wstrb_o    <= {DATA_W / 8{rom_r_valid}};
-      end else begin
-         sram_w_valid <= 1'b0;
-         sram_w_addr   <= -{1'b1, {(BOOTROM_ADDR_W - 2) {1'b0}}};
-         sram_wstrb_o    <= {DATA_W / 8{1'b1}};
-      end
+
+   wire                    sram_w_valid;
+   wire                    sram_w_valid_nxt;
+
+   assign sram_w_valid_nxt = boot_o ? rom_r_valid : 1'b0;
+
+
+
+   wire [SRAM_ADDR_W-2-1:0] sram_w_addr;
+   wire [SRAM_ADDR_W-2-1:0] sram_w_addr_nxt;
+
+   assign sram_w_addr_nxt = boot_o ? (1'b1<<(SRAM_ADDR_W-2))-(1'b1<<(BOOTROM_ADDR_W-2)) + rom_r_addr : (1'b1<<(SRAM_ADDR_W-2))-(1'b1<<(BOOTROM_ADDR_W-2));
+
+
+   wire [DATA_W/8-1:0] sram_wstrb_o_nxt;
+
+
+   assign sram_wstrb_o_nxt = boot_o ? {DATA_W / 8{rom_r_valid}} : {DATA_W / 8{1'b0}};
+
+
+   iob_reg #(
+      .DATA_W (1),
+      .RST_VAL(1'b0)
+   )sram_w_valid_reg (
+      .clk_i (clk_i),
+      .arst_i(arst_i),
+      .cke_i (cke_i),
+      .data_i(sram_w_valid_nxt),
+      .data_o(sram_w_valid)
+   );
+
+   iob_reg #(
+      .DATA_W (SRAM_ADDR_W-2),
+      .RST_VAL((1'b1<<(SRAM_ADDR_W-2))-(1'b1<<(BOOTROM_ADDR_W-2)))
+   )sram_w_addr_reg (
+      .clk_i (clk_i),
+      .arst_i(arst_i),
+      .cke_i (cke_i),
+      .data_i(sram_w_addr_nxt),
+      .data_o(sram_w_addr)
+   );
+
+
+    iob_reg #(
+      .DATA_W (DATA_W/8),
+      .RST_VAL({DATA_W / 8{1'b0}})
+   )sram_wstrb_o_reg (
+      .clk_i (clk_i),
+      .arst_i(arst_i),
+      .cke_i (cke_i),
+      .data_i(sram_wstrb_o_nxt),
+      .data_o(sram_wstrb_o)
+   );
 
    assign loading     = rom_r_valid | sram_w_valid;
-
    assign sram_valid_o = sram_w_valid;
    assign sram_addr_o   = {sram_w_addr, 2'b00};
    assign sram_wdata_o  = rom_r_rdata;

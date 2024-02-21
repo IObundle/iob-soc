@@ -1,4 +1,4 @@
-from build_srcs import (
+from copy_srcs import (
     lib_module_setup,
     create_if_gen_headers,
     copy_files,
