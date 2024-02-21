@@ -1,10 +1,10 @@
 CORE := iob_uart
 DISABLE_LINT:=1
 
-all: test
-
 LIB_DIR=../../../../lib
-PROJECT_ROOT=..
+BUILD_DIR := build
+
+all: setup
 
 include $(LIB_DIR)/setup.mk
 

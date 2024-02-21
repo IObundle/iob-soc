@@ -2,23 +2,25 @@
 #
 # This file is run as a makefile to setup a build directory for an IP core
 #
-export PYTHONPATH=../iob_python
 
 build-setup: format-all
-	mkdir -p ../iob_python
-	find . -name \*.py -exec cp -u {} ../iob_python \;
-	python3 -B ./iob_soc.py $(SETUP_ARGS)
+ifeq ($(IOB_PYTHONPATH),)
+	$(error "IOB_PYTHONPATH is not set")
+endif
+	mkdir -p $(IOB_PYTHONPATH)
+	find $(LIB_DIR) -name \*.py -exec cp -u {} $(IOB_PYTHONPATH) \;
+	python3 -B ./$(CORE).py $(SETUP_ARGS)
 
 python-format:
-	lib/scripts/sw_format.py black . 
+	$(LIB_DIR)/scripts/sw_format.py black . 
 ifneq ($(wildcard $(BUILD_DIR)),)
-	lib/scripts/sw_format.py black $(BUILD_DIR) 
+	$(LIB_DIR)/scripts/sw_format.py black $(BUILD_DIR) 
 endif
 
 c-format:
-	lib/scripts/sw_format.py clang .
+	$(LIB_DIR)/scripts/sw_format.py clang .
 ifneq ($(wildcard $(BUILD_DIR)),)
-	lib/scripts/sw_format.py clang $(BUILD_DIR)
+	$(LIB_DIR)/scripts/sw_format.py clang $(BUILD_DIR)
 endif
 
 # Auto-disable linter and formatter if setting up with the Tester
@@ -35,21 +37,24 @@ verilog_files:
 # Run linter on all verilog files
 verilog-lint: verilog_files
 ifneq ($(DISABLE_LINT),1)
-	./lib/scripts/verilog-lint.py $(VHFILES) $(VFILES)
+	$(LIB_DIR)/scripts/verilog-lint.py $(VHFILES) $(VFILES)
 endif
 
 # Run formatter on all verilog files
 verilog-format: verilog-lint
 ifneq ($(DISABLE_FORMAT),1)
-	./lib/scripts/verilog-format.sh $(VHFILES) $(VFILES)
+	$(LIB_DIR)/scripts/verilog-format.sh $(VHFILES) $(VFILES)
 endif
 
 format-all: python-format c-format verilog-lint verilog-format
 
 clean:
-	python3 -B ./iob_soc.py clean
+ifneq ($(wildcard $(BUILD_DIR)),)
+	python3 -B ./$(CORE).py clean
+endif
+	@rm -rf $(IOB_PYTHONPATH)
 	@rm -rf ../*.summary ../*.rpt 
-	find . -name \*~ -delete
+	@find . -name \*~ -delete
 
 # Remove all __pycache__ folders with python bytecode
 python-cache-clean:
