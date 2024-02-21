@@ -16,15 +16,15 @@ uint32_t IOB_AXISTREAM_IN_GET_DATA() {
   return 0x00;
 }
 
-uint8_t IOB_AXISTREAM_IN_GET_RSTRB() {
-  return 0x00;
-}
-
 uint8_t IOB_AXISTREAM_IN_GET_EMPTY() {
   return 0x01;
 }
 
-uint8_t IOB_AXISTREAM_IN_GET_LAST() {
+uint8_t IOB_AXISTREAM_IN_GET_TLAST_DETECTED() { 
+  return 0x00; 
+}
+
+uint32_t IOB_AXISTREAM_IN_GET_NWORDS() { 
   return 0x00;
 }
 
@@ -35,6 +35,9 @@ void IOB_AXISTREAM_IN_SET_ENABLE(uint8_t value) {
 }
 
 void IOB_AXISTREAM_IN_SET_FIFO_THRESHOLD(uint32_t value) {
+}
+
+void IOB_AXISTREAM_IN_SET_MODE(uint8_t value) {
 }
 
 uint32_t IOB_AXISTREAM_IN_GET_FIFO_LEVEL() {
