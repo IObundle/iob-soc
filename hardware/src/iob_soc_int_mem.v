@@ -230,7 +230,7 @@ module iob_soc_int_mem #(
       .i_valid_i(i_valid_i),
       .i_addr_i  (i_addr_i),
       .i_wdata_i (i_wdata_i),
-      .i_wstrb_i (i_wdata_i),
+      .i_wstrb_i (i_wstrb_i),
       .i_rdata_o (),
       .i_rvalid_o(ram_i_resp[`RVALID(0)]),
       .i_ready_o (ram_i_resp[`READY(0)]),
