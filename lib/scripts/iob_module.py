@@ -64,7 +64,7 @@ class iob_module:
         self.parameters = parameters
 
     @classmethod
-    def _setup(cls, is_top=False, purpose="hardware", topdir=""):
+    def _setup(cls, is_top=True, purpose="hardware", topdir="."):
         print(topdir)
         """
         Initialize the setup process for the top module.
@@ -73,8 +73,8 @@ class iob_module:
 
         if is_top:
             topdir = f"../{cls.name}_{cls.version}"
-
-        cls.build_dir = topdir
+            LIB_DIR = os.environ.get("LIB_DIR")
+        cls.build_dir = topdir+"/build"
 
         # Create build directory this is the top module class, and is the first time setup
         if cls.is_top_module:
@@ -100,7 +100,7 @@ class iob_module:
                 submodule._setup(False, purpose, topdir)
 
         # Copy sources from the module's setup dir (and from its superclasses)
-        cls._copy_srcs()
+        cls._copy_srcs(purpose)
 
         # Generate configuration files
         config_gen.generate_confs(cls)
@@ -156,154 +156,20 @@ class iob_module:
 
     @classmethod
     def _copy_srcs(cls, exclude_file_list=[], highest_superclass=None):
-        """Copy module sources to the build directory from every subclass in between `iob_module` and `cls`, inclusive.
-        The function will not copy sources from classes that have no setup_dir (empty string)
-        cls: Lowest subclass
-        (implicit: iob_module: highest subclass)
-        :param list exclude_file_list: list of strings, each string representing an ignore pattern for the source files.
-                                       For example, using the ignore pattern '*.v' would prevent from copying every Verilog source file.
-                                       Note, if want to ignore a file that is going to be renamed with the new core name,
-                                       we would still use the old core name in the ignore patterns.
-                                       For example, if we dont want it to generate the 'new_name_firmware.c' based on the 'old_name_firmware.c',
-                                       then we should add 'old_name_firmware.c' to the ignore list.
-        :param class highest_superclass: If specified, only copy sources from this subclass and up to specified class. By default, highest_superclass=iob_module.
-        """
-        previously_setup_dirs = []
-        # Select between specified highest_superclass or this one (iob_module)
-        highest_superclass = highest_superclass or __class__
+        """Copy sources from the module's setup dir"""
+        #find modules' setup dir
+        current_directory = os.getcwd()
+        # Use os.walk() to traverse the directory tree
+        for root, directories, files in os.walk(current_directory):
+            for directory in directories:
+                # Print the absolute path of each directory found
+                if directory == cls.name:
+                    print(os.path.join(root, directory))
+                    cls.setup_dir = os.path.join(root, directory)
+                    break
 
-        # List of classes, starting from highest superclass (iob_module), down to lowest subclass (cls)
-        classes = cls.__mro__[cls.__mro__.index(highest_superclass) :: -1]
-
-        # Go through every subclass, starting for highest superclass to the lowest subclass
-        for module_class in classes:
-            # Skip classes without setup_dir
-            if not module_class.setup_dir:
-                continue
-
-            # Skip class if we already setup its directory (it may have inherited the same dir from the superclass)
-            if module_class.setup_dir in previously_setup_dirs:
-                continue
-
-            previously_setup_dirs.append(module_class.setup_dir)
-
-            # Files that should always be copied
-            dir_list = [
-                "hardware/src",
-                "software",
-            ]
-            # Files that should only be copied if it is top module
-            if cls.is_top_module:
-                dir_list += [
-                    "hardware/simulation",
-                    "hardware/fpga",
-                    "hardware/syn",
-                    "hardware/lint",
-                ]
-
-            # Copy sources
-            for directory in dir_list:
-                # Skip this directory if it does not exist
-                if not os.path.isdir(os.path.join(module_class.setup_dir, directory)):
-                    continue
-
-                # If we are handling the `hardware/src` directory,
-                # copy to the correct destination based on `_setup_purpose`.
-                if directory == "hardware/src":
-                    dst_directory = cls.get_purpose_dir(cls.get_setup_purpose())
-                    if cls.use_netlist:
-                        # copy SETUP_DIR/CORE.v netlist instead of
-                        # SETUP_DIR/hardware/src
-                        shutil.copyfile(
-                            os.path.join(module_class.setup_dir, f"{cls.name}.v"),
-                            os.path.join(
-                                cls.build_dir, f"{dst_directory}/{cls.name}.v"
-                            ),
-                        )
-                        continue
-                elif directory == "hardware/fpga":
-                    # Skip if board_list is empty
-                    if cls.board_list is None:
-                        continue
-
-                    tools_list = ["quartus", "vivado"]
-
-                    # Copy everything except the tools directories
-                    shutil.copytree(
-                        os.path.join(module_class.setup_dir, directory),
-                        os.path.join(cls.build_dir, directory),
-                        dirs_exist_ok=True,
-                        copy_function=cls.copy_with_rename(module_class.name, cls.name),
-                        ignore=shutil.ignore_patterns(*exclude_file_list, *tools_list),
-                    )
-
-                    # if it is the fpga directory, only copy the directories in the cores board_list
-                    for fpga in cls.board_list:
-                        # search for the fpga directory in the cores setup_dir/hardware/fpga
-                        # in both quartus and vivado directories
-                        for tools_dir in tools_list:
-                            setup_tools_dir = os.path.join(
-                                module_class.setup_dir, directory, tools_dir
-                            )
-                            build_tools_dir = os.path.join(
-                                cls.build_dir, directory, tools_dir
-                            )
-                            setup_fpga_dir = os.path.join(setup_tools_dir, fpga)
-                            build_fpga_dir = os.path.join(build_tools_dir, fpga)
-
-                            # if the fpga directory is found, copy it to the build_dir
-                            if os.path.isdir(setup_fpga_dir):
-                                # Copy the tools directory files only
-                                for file in os.listdir(setup_tools_dir):
-                                    setup_file = os.path.join(setup_tools_dir, file)
-                                    if os.path.isfile(setup_file):
-                                        cls.copy_with_rename(
-                                            module_class.name, cls.name
-                                        )(
-                                            setup_file,
-                                            os.path.join(build_tools_dir, file),
-                                        )
-                                # Copy the fpga directory
-                                shutil.copytree(
-                                    setup_fpga_dir,
-                                    build_fpga_dir,
-                                    dirs_exist_ok=True,
-                                    copy_function=cls.copy_with_rename(
-                                        module_class.name, cls.name
-                                    ),
-                                    ignore=shutil.ignore_patterns(*exclude_file_list),
-                                )
-                                break
-                        else:
-                            raise Exception(
-                                f"{iob_colors.FAIL}FPGA directory {fpga} not found in {module_class.setup_dir}/hardware/fpga/{iob_colors.ENDC}"
-                            )
-
-                    # No need to copy any more files in this directory
-                    continue
-
-                else:
-                    dst_directory = directory
-
-                # Copy tree of this directory, renaming files, and overriding destination ones.
-                shutil.copytree(
-                    os.path.join(module_class.setup_dir, directory),
-                    os.path.join(cls.build_dir, dst_directory),
-                    dirs_exist_ok=True,
-                    copy_function=cls.copy_with_rename(module_class.name, cls.name),
-                    ignore=shutil.ignore_patterns(*exclude_file_list),
-                )
-
-            # Copy document directory if cls is the top module and it has documentation
-            if cls.is_top_module and os.path.isdir(
-                os.path.join(module_class.setup_dir, "document")
-            ):
-                shutil.copytree(
-                    os.path.join(module_class.setup_dir, "document"),
-                    os.path.join(cls.build_dir, "document"),
-                    dirs_exist_ok=True,
-                    ignore=shutil.ignore_patterns(*exclude_file_list),
-                )
+    
+ 
 
     @classmethod
     def _remove_duplicate_sources(cls):
