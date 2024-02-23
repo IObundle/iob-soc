@@ -18,9 +18,29 @@ import ipxact_gen
 from pathlib import Path
 
 
+class iob_module_meta(type):
+    """Function to copy class attributes to subclasses,
+    instead of passing them by reference. https://stackoverflow.com/a/2488610
+    """
+
+    def __init__(self, *args):
+        super(iob_module_meta, self).__init__(*args)
+        for superclass in self.__mro__:
+            for k, v in vars(superclass).items():
+                if isinstance(
+                    v,
+                    (
+                        list,
+                        dict,
+                    ),
+                ):
+                    setattr(self, k, type(v)(v))
+
+
 class iob_module:
     """Generic class to describe a base iob-module"""
 
+    __metaclass__ = iob_module_meta
     name = "iob_module"  # Verilog module name (not instance name)
     csr_if = "iob"
     version = "1.0"  # Module version
