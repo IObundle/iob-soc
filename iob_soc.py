@@ -6,7 +6,6 @@ import sys
 from iob_module import iob_module
 from iob_block_group import iob_block_group
 from iob_soc_utils import pre_setup_iob_soc, post_setup_iob_soc
-from config_gen import update_define
 from verilog_gen import inplace_change
 
 # Submodules
@@ -77,6 +76,22 @@ class iob_soc(iob_module):
     ]
     confs = [
         # macros
+        {
+            "name": "INIT_MEM",
+            "type": "M",
+            "val": "INIT_MEM" in sys.argv,
+            "min": "0",
+            "max": "1",
+            "descr": "Enable MUL and DIV CPU instructions",
+        },
+        {
+            "name": "USE_EXTMEM",
+            "type": "M",
+            "val": "USE_EXTMEM" in sys.argv,
+            "min": "0",
+            "max": "1",
+            "descr": "Enable MUL and DIV CPU instructions",
+        },
         {
             "name": "USE_MUL_DIV",
             "type": "M",
@@ -305,15 +320,6 @@ class iob_soc(iob_module):
 
     @classmethod
     def _setup(cls, *args, **kwargs):
-        # Add the following arguments:
-        # "INIT_MEM": if should setup with init_mem or not
-        # "USE_EXTMEM": if should setup with extmem or not
-        for arg in sys.argv[1:]:
-            if arg == "INIT_MEM":
-                update_define(cls.confs, "INIT_MEM", True)
-            if arg == "USE_EXTMEM":
-                update_define(cls.confs, "USE_EXTMEM", True)
-
         # Pre-setup specialized IOb-SoC functions
         cls.num_extmem_connections = pre_setup_iob_soc(cls)
         # Remove `[0+:1]` part select in AXI connections of ext_mem0 in iob_soc.v template

@@ -2,6 +2,7 @@ CORE := iob_soc
 
 SIMULATOR ?= icarus
 BOARD ?= CYCLONEV-GT-DK
+IOB_PYTHONPATH ?= ../iob_python
 
 DISABLE_LINT:=1
 

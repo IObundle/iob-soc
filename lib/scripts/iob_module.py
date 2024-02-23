@@ -74,7 +74,7 @@ class iob_module:
         if is_top:
             topdir = f"../{cls.name}_{cls.version}"
             LIB_DIR = os.environ.get("LIB_DIR")
-        cls.build_dir = topdir+"/build"
+        cls.build_dir = topdir + "/build"
 
         # Create build directory this is the top module class, and is the first time setup
         if cls.is_top_module:
@@ -157,7 +157,7 @@ class iob_module:
     @classmethod
     def _copy_srcs(cls, exclude_file_list=[], highest_superclass=None):
         """Copy sources from the module's setup dir"""
-        #find modules' setup dir
+        # find modules' setup dir
         current_directory = os.getcwd()
         # Use os.walk() to traverse the directory tree
         for root, directories, files in os.walk(current_directory):
@@ -167,9 +167,6 @@ class iob_module:
                     print(os.path.join(root, directory))
                     cls.setup_dir = os.path.join(root, directory)
                     break
-
-    
- 
 
     @classmethod
     def _remove_duplicate_sources(cls):

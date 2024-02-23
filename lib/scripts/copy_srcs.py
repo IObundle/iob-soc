@@ -16,10 +16,12 @@ import iob_colors
 import inspect
 import config_gen as mk_conf
 
-#get LIB_DIR from env variable
+# get LIB_DIR from env variable
+
 
 def get_lib_dir():
-    return os.environ.get('LIB_DIR')
+    return os.environ.get("LIB_DIR")
+
 
 # This function sets up the flows for this core
 def flows_setup(python_module):
