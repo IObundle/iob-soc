@@ -1,3 +1,5 @@
+# This module copies sources to the build directory
+
 import os
 import sys
 import re
@@ -5,14 +7,14 @@ import subprocess
 from pathlib import Path
 import shutil
 import importlib.util
-import build_srcs
+import copy_srcs
 
 # IObundle scripts imported:
 import if_gen
 from submodule_utils import import_setup, set_default_submodule_dirs
 import iob_colors
 import inspect
-import mk_configuration as mk_conf
+import config_gen as mk_conf
 
 LIB_DIR = "submodules/LIB"
 
@@ -186,19 +188,10 @@ def sw_setup(python_module):
 
 
 def python_setup(build_dir):
-    scripts = [
-        "sw_defines.py",
-        "hw_defines.py",
-        "console.py",
-        "hex_split.py",
-        "makehex.py",
-        "board_client.py",
-        "iob_colors.py",
-    ]
     dest_dir = f"{build_dir}/scripts"
     if not os.path.exists(dest_dir):
         os.mkdir(dest_dir)
-    copy_files(LIB_DIR, dest_dir, scripts, "*.py")
+    copy_files(LIB_DIR, dest_dir, ["iob_colors.py"], "*.py")
 
 
 def doc_setup(python_module):

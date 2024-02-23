@@ -19,6 +19,8 @@ class iob_split2(iob_module):
             [
                 {"interface": "clk_en_rst_s_s_portmap"},
                 {"interface": "clk_en_rst_s_port"},
+                {"interface": "iob_s_port"},
+                {"interface": "iob_m_port"},
                 iob_reg,
                 iob_mux,
                 iob_demux,

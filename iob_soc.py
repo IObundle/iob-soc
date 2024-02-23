@@ -6,8 +6,8 @@ import sys
 from iob_module import iob_module
 from iob_block_group import iob_block_group
 from iob_soc_utils import pre_setup_iob_soc, post_setup_iob_soc
-from mk_configuration import update_define
-from verilog_tools import inplace_change
+from config_gen import update_define
+from verilog_gen import inplace_change
 
 # Submodules
 from iob_picorv32 import iob_picorv32

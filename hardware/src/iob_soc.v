@@ -2,7 +2,6 @@
 
 `include "bsp.vh"
 `include "iob_soc_conf.vh"
-`include "iob_soc.vh"
 `include "iob_utils.vh"
 
 //Peripherals _swreg_def.vh file includes.
@@ -32,9 +31,6 @@ module iob_soc #(
 
    `include "iob_soc_io.vs"
 );
-
-   localparam integer Bbit = `IOB_SOC_B;
-   localparam integer AddrMsb = `REQ_W - 2;
 
    `include "iob_soc_pwires.vs"
 
@@ -102,7 +98,7 @@ module iob_soc #(
       .ADDR_W  (ADDR_W),
       .DATA_W  (DATA_W),
       .N_SLAVES(2),
-      .P_SLAVES(AddrMsb)
+      .P_SLAVES(`REQ_W - 2)
    ) ibus_split (
       .clk_i   (clk_i),
       .arst_i  (cpu_reset),
@@ -133,7 +129,7 @@ module iob_soc #(
       .ADDR_W  (ADDR_W),
       .DATA_W  (DATA_W),
       .N_SLAVES(2),       //E,{P,I}
-      .P_SLAVES(AddrMsb)
+      .P_SLAVES(`REQ_W - 2)
    ) dbus_split (
       .clk_i   (clk_i),
       .arst_i  (cpu_reset),
@@ -161,7 +157,7 @@ module iob_soc #(
       .ADDR_W  (ADDR_W),
       .DATA_W  (DATA_W),
       .N_SLAVES(`IOB_SOC_N_SLAVES),
-      .P_SLAVES(AddrMsb - 1)
+      .P_SLAVES(`REQ_W - 3)
    ) pbus_split (
       .clk_i   (clk_i),
       .arst_i  (cpu_reset),
@@ -185,7 +181,7 @@ module iob_soc #(
       .BOOT_HEXFILE  ("iob_soc_boot"),
       .SRAM_ADDR_W   (SRAM_ADDR_W),
       .BOOTROM_ADDR_W(BOOTROM_ADDR_W),
-      .B_BIT         (`B_BIT)
+      .B_BIT         (`REQ_W - (ADDR_W-`IOB_SOC_B+1))
    ) int_mem0 (
       .clk_i    (clk_i),
       .arst_i   (arst_i),
