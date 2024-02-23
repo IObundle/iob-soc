@@ -25,6 +25,11 @@ module iob_soc_boot_ctr #(
    output     [  DATA_W-1:0] sram_wdata_o,
    output     [DATA_W/8-1:0] sram_wstrb_o,
 
+   //rom
+   output                           rom_r_valid,
+   output      [BOOTROM_ADDR_W-3:0] rom_r_addr,
+   input       [DATA_W-1:0]         rom_r_rdata,
+   //
    `include "clk_en_rst_s_port.vs"
 );
 
@@ -93,18 +98,18 @@ module iob_soc_boot_ctr #(
    //
    // READ BOOT ROM 
    //
-   wire                       rom_r_valid;
+   //wire                       rom_r_valid;
    wire                       rom_r_valid_nxt;
 
    assign rom_r_valid_nxt = (boot_o && rom_r_addr != ({BOOTROM_ADDR_W - 2{1'b1}}-1) && rom_r_valid != 1'b0) ? 1'b1 : 1'b0;
    
-   wire  [BOOTROM_ADDR_W-3:0] rom_r_addr;
+   //wire  [BOOTROM_ADDR_W-3:0] rom_r_addr;
    wire [BOOTROM_ADDR_W-3:0] rom_r_addr_nxt;
 
    assign rom_r_addr_nxt = (boot_o && rom_r_addr != ({BOOTROM_ADDR_W - 2{1'b1}}-1)) ? rom_r_addr + 1'b1 : {(BOOTROM_ADDR_W - 2) {1'b0}};
 
 
-   wire [        DATA_W-1:0] rom_r_rdata;
+   //wire [        DATA_W-1:0] rom_r_rdata;
 
 
    iob_reg #(
@@ -194,15 +199,15 @@ module iob_soc_boot_ctr #(
    //
    //INSTANTIATE ROM
    //
-   iob_rom_sp #(
-      .DATA_W (DATA_W),
-      .ADDR_W (BOOTROM_ADDR_W - 2),
-      .HEXFILE(HEXFILE)
-   ) sp_rom0 (
-      .clk_i   (clk_i),
-      .r_en_i  (rom_r_valid),
-      .addr_i  (rom_r_addr),
-      .r_data_o(rom_r_rdata)
-   );
+   //iob_rom_sp #(
+   //   .DATA_W (DATA_W),
+   //   .ADDR_W (BOOTROM_ADDR_W - 2),
+   //   .HEXFILE(HEXFILE)
+   //) sp_rom0 (
+   //   .clk_i   (clk_i),
+   //   .r_en_i  (rom_r_valid),
+   //   .addr_i  (rom_r_addr),
+   //   .r_data_o(rom_r_rdata)
+   //);
 
 endmodule
