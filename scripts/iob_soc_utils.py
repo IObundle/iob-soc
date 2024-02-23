@@ -271,7 +271,7 @@ iob_eth_rmac.h:
             scripts_dir = root
             break
     # Copy scripts to build directory
-    copy_srcs.copy_files("./scripts", f"{build_dir}/scripts", scripts)
+    copy_srcs.copy_files(f"{scripts_dir}", f"{build_dir}/scripts", scripts)
 
     # Copy  console_ethernet.py
     if ethernet_macro:
