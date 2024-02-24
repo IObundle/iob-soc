@@ -1023,10 +1023,10 @@ class csr_gen:
     # regs_with_addr: list of all registers, where 'addr' field has already been computed
     # out_dir: output directory
     @classmethod
-    def generate_regs_tex(cls, regs, regs_with_addr, out_dir):
+    def generate_regs_tex(self, regs, regs_with_addr, out_dir):
         os.makedirs(out_dir, exist_ok=True)
         # Create swreg.tex file
-        cls.generate_swreg_tex(regs, out_dir)
+        self.generate_swreg_tex(regs, out_dir)
 
         for table in regs:
             tex_table = []

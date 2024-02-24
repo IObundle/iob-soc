@@ -6,16 +6,11 @@ from iob_reg_re import iob_reg_re
 
 
 class iob_regfile_sp(iob_module):
-    name = "iob_regfile_sp"
-    version = "V0.10"
-    previous_version = "V0.09"
-    setup_dir = os.path.dirname(__file__)
-
-    @classmethod
-    def _create_submodules_list(cls):
-        """Create submodules list with dependencies of this module"""
-        super()._create_submodules_list(
-            [
-                iob_reg_re,
-            ]
-        )
+    def __init__(self):
+        self.name = "iob_regfile_sp"
+        self.version = "V0.10"
+        self.previous_version = "V0.09"
+        self.setup_dir = os.path.dirname(__file__)
+        self.submodules_list = [
+            iob_reg_re,
+        ]

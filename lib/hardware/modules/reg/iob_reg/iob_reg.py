@@ -4,44 +4,37 @@ from iob_module import iob_module
 
 
 class iob_reg(iob_module):
-    name = "iob_reg"
-    version = "V0.10"
-    setup_dir = os.path.dirname(__file__)
-
-    @classmethod
-    def _setup_confs(cls):
-        super()._setup_confs(
-            [
-                {
-                    "name": "DATA_W",
-                    "type": "P",
-                    "val": "1",
-                    "min": "NA",
-                    "max": "NA",
-                    "descr": "Data bus width",
-                },
-                {
-                    "name": "RST_VAL",
-                    "type": "P",
-                    "val": "{DATA_W{1'b0}}",
-                    "min": "NA",
-                    "max": "NA",
-                    "descr": "Reset value.",
-                },
-                {
-                    "name": "RST_POL",
-                    "type": "M",
-                    "val": "1",
-                    "min": "0",
-                    "max": "1",
-                    "descr": "Reset polarity.",
-                },
-            ]
-        )
-
-    @classmethod
-    def _setup_ios(cls):
-        cls.ios += [
+    def __init__(self):
+        self.name = "iob_reg"
+        self.version = "V0.10"
+        self.setup_dir = os.path.dirname(__file__)
+        self.confs = [
+            {
+                "name": "DATA_W",
+                "type": "P",
+                "val": "1",
+                "min": "NA",
+                "max": "NA",
+                "descr": "Data bus width",
+            },
+            {
+                "name": "RST_VAL",
+                "type": "P",
+                "val": "{DATA_W{1'b0}}",
+                "min": "NA",
+                "max": "NA",
+                "descr": "Reset value.",
+            },
+            {
+                "name": "RST_POL",
+                "type": "M",
+                "val": "1",
+                "min": "0",
+                "max": "1",
+                "descr": "Reset polarity.",
+            },
+        ]
+        self.ios = [
             {
                 "name": "clk_en_rst",
                 "type": "slave",

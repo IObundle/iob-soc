@@ -6,15 +6,10 @@ from iob_ram_2p import iob_ram_2p
 
 
 class iob_ram_2p_tiled(iob_module):
-    name = "iob_ram_2p_tiled"
-    version = "V0.10"
-    setup_dir = os.path.dirname(__file__)
-
-    @classmethod
-    def _create_submodules_list(cls):
-        """Create submodules list with dependencies of this module"""
-        super()._create_submodules_list(
-            [
-                iob_ram_2p,
-            ]
-        )
+    def __init__(self):
+        self.name = "iob_ram_2p_tiled"
+        self.version = "V0.10"
+        self.setup_dir = os.path.dirname(__file__)
+        self.submodules_list = [
+            iob_ram_2p,
+        ]

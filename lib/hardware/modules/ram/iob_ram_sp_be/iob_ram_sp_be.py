@@ -6,15 +6,10 @@ from iob_ram_sp import iob_ram_sp
 
 
 class iob_ram_sp_be(iob_module):
-    name = "iob_ram_sp_be"
-    version = "V0.10"
-    setup_dir = os.path.dirname(__file__)
-
-    @classmethod
-    def _create_submodules_list(cls):
-        """Create submodules list with dependencies of this module"""
-        super()._create_submodules_list(
-            [
-                iob_ram_sp,
-            ]
-        )
+    def __init__(self):
+        self.name = "iob_ram_sp_be"
+        self.version = "V0.10"
+        self.setup_dir = os.path.dirname(__file__)
+        self.submodules_list = [
+            iob_ram_sp,
+        ]

@@ -12,59 +12,46 @@ from iob_counter import iob_counter
 
 
 class iob_timer(iob_module):
-    name = "iob_timer"
-    version = "V0.10"
-    setup_dir = os.path.dirname(__file__)
-
-    @classmethod
-    def _create_submodules_list(cls):
-        """Create submodules list with dependencies of this module"""
-        super()._create_submodules_list(
-            [
-                # Hardware headers & modules
-                iob_utils,
-                iob_reg_re,
-                iob_reg_e,
-                iob_counter,
-            ]
-        )
-
-    @classmethod
-    def _setup_confs(cls):
-        super()._setup_confs(
-            [
-                # Macros
-                # Parameters
-                {
-                    "name": "DATA_W",
-                    "type": "P",
-                    "val": "32",
-                    "min": "NA",
-                    "max": "NA",
-                    "descr": "Data bus width",
-                },
-                {
-                    "name": "ADDR_W",
-                    "type": "P",
-                    "val": "`IOB_TIMER_SWREG_ADDR_W",
-                    "min": "NA",
-                    "max": "NA",
-                    "descr": "Address bus width",
-                },
-                {
-                    "name": "WDATA_W",
-                    "type": "P",
-                    "val": "1",
-                    "min": "NA",
-                    "max": "8",
-                    "descr": "",
-                },
-            ]
-        )
-
-    @classmethod
-    def _setup_ios(cls):
-        cls.ios += [
+    def __init__(self):
+        self.name = "iob_timer"
+        self.version = "V0.10"
+        self.setup_dir = os.path.dirname(__file__)
+        self.submodules_list = [
+            # Hardware headers & modules
+            iob_utils,
+            iob_reg_re,
+            iob_reg_e,
+            iob_counter,
+        ]
+        self.confs = [
+            # Macros
+            # Parameters
+            {
+                "name": "DATA_W",
+                "type": "P",
+                "val": "32",
+                "min": "NA",
+                "max": "NA",
+                "descr": "Data bus width",
+            },
+            {
+                "name": "ADDR_W",
+                "type": "P",
+                "val": "`IOB_TIMER_SWREG_ADDR_W",
+                "min": "NA",
+                "max": "NA",
+                "descr": "Address bus width",
+            },
+            {
+                "name": "WDATA_W",
+                "type": "P",
+                "val": "1",
+                "min": "NA",
+                "max": "8",
+                "descr": "",
+            },
+        ]
+        self.ios = [
             {
                 "name": "clk_en_rst",
                 "type": "slave",
@@ -86,10 +73,7 @@ class iob_timer(iob_module):
                 },
             },
         ]
-
-    @classmethod
-    def _setup_regs(cls):
-        cls.regs += [
+        self.regs = [
             {
                 "name": "timer",
                 "descr": "TIMER software accessible registers.",
@@ -142,7 +126,4 @@ class iob_timer(iob_module):
                 ],
             }
         ]
-
-    @classmethod
-    def _setup_block_groups(cls):
-        cls.block_groups += []
+        self.block_groups = []

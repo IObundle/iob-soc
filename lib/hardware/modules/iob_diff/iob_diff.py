@@ -6,15 +6,10 @@ from iob_reg_r import iob_reg_r
 
 
 class iob_diff(iob_module):
-    name = "iob_diff"
-    version = "V0.10"
-    setup_dir = os.path.dirname(__file__)
-
-    @classmethod
-    def _create_submodules_list(cls):
-        """Create submodules list with dependencies of this module"""
-        super()._create_submodules_list(
-            [
-                iob_reg_r,
-            ]
-        )
+    def __init__(self):
+        self.name = "iob_diff"
+        self.version = "V0.10"
+        self.setup_dir = os.path.dirname(__file__)
+        self.submodules_list = [
+            iob_reg_r,
+        ]

@@ -4,13 +4,11 @@ from iob_module import iob_module
 
 
 class iob_r(iob_module):
-    name = "iob_r"
-    version = "V0.10"
-    setup_dir = os.path.dirname(__file__)
-
-    @classmethod
-    def _setup_ios(cls):
-        cls.ios += [
+    def __init__(self):
+        self.name = "iob_r"
+        self.version = "V0.10"
+        self.setup_dir = os.path.dirname(__file__)
+        self.ios = [
             {
                 "name": "clk_rst",
                 "type": "slave",
