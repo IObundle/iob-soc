@@ -90,7 +90,9 @@ def _build_regs_table(self):
 def _generate_hw(self, csr_gen_obj, reg_table):
     """Generate common hardware files"""
     if self.regs:
-        csr_gen_obj.write_hwheader(reg_table, self.build_dir + "/hardware/src", self.name)
+        csr_gen_obj.write_hwheader(
+            reg_table, self.build_dir + "/hardware/src", self.name
+        )
         csr_gen_obj.write_lparam_header(
             reg_table, self.build_dir + "/hardware/simulation/src", self.name
         )
@@ -176,7 +178,9 @@ def _build_regs_table(self):
 def _generate_hw(self, csr_gen_obj, reg_table):
     """Generate common hardware files"""
     if self.regs:
-        csr_gen_obj.write_hwheader(reg_table, self.build_dir + "/hardware/src", self.name)
+        csr_gen_obj.write_hwheader(
+            reg_table, self.build_dir + "/hardware/src", self.name
+        )
         csr_gen_obj.write_lparam_header(
             reg_table, self.build_dir + "/hardware/simulation/src", self.name
         )

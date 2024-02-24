@@ -24,7 +24,7 @@ class iob_uart(iob_module):
             iob_reg_e,
         ]
         self.confs = [
-        {
+            {
                 "name": "DATA_W",
                 "type": "P",
                 "val": "32",
@@ -198,8 +198,8 @@ class iob_uart(iob_module):
         ]
         self.block_groups = []
         # FIXME: Init attributes no longer exists
-        #iob_reg.init_attributes()
-        #iob_reg.confs = [
+        # iob_reg.init_attributes()
+        # iob_reg.confs = [
         #    {
         #        "name": "DATA_W",
         #        "type": "P",
@@ -224,7 +224,7 @@ class iob_uart(iob_module):
         #        "max": "1",
         #        "descr": "Reset polarity.",
         #    },
-        #]
+        # ]
 
 
 if __name__ == "__main__":

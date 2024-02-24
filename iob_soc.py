@@ -251,52 +251,79 @@ class iob_soc(iob_module):
         ]
 
         # IOb-SoC has the following set of non standard attributes:
-        self.peripherals = [iob_uart("UART0"), iob_timer("TIMER0")]  # List of peripherals
-        self.peripheral_portmap = [  # List of tuples, each tuple corresponds to a port map
-            (
-                {"corename": "UART0", "if_name": "rs232", "port": "txd", "bits": []},
-                {
-                    "corename": "external",
-                    "if_name": "uart",
-                    "port": "uart_txd_o",
-                    "bits": [],
-                },
-            ),
-            (
-                {"corename": "UART0", "if_name": "rs232", "port": "rxd", "bits": []},
-                {
-                    "corename": "external",
-                    "if_name": "uart",
-                    "port": "uart_rxd_i",
-                    "bits": [],
-                },
-            ),
-            (
-                {"corename": "UART0", "if_name": "rs232", "port": "cts", "bits": []},
-                {
-                    "corename": "external",
-                    "if_name": "uart",
-                    "port": "uart_cts_i",
-                    "bits": [],
-                },
-            ),
-            (
-                {"corename": "UART0", "if_name": "rs232", "port": "rts", "bits": []},
-                {
-                    "corename": "external",
-                    "if_name": "uart",
-                    "port": "uart_rts_o",
-                    "bits": [],
-                },
-            ),
-        ]
+        self.peripherals = [
+            iob_uart("UART0"),
+            iob_timer("TIMER0"),
+        ]  # List of peripherals
+        self.peripheral_portmap = (
+            [  # List of tuples, each tuple corresponds to a port map
+                (
+                    {
+                        "corename": "UART0",
+                        "if_name": "rs232",
+                        "port": "txd",
+                        "bits": [],
+                    },
+                    {
+                        "corename": "external",
+                        "if_name": "uart",
+                        "port": "uart_txd_o",
+                        "bits": [],
+                    },
+                ),
+                (
+                    {
+                        "corename": "UART0",
+                        "if_name": "rs232",
+                        "port": "rxd",
+                        "bits": [],
+                    },
+                    {
+                        "corename": "external",
+                        "if_name": "uart",
+                        "port": "uart_rxd_i",
+                        "bits": [],
+                    },
+                ),
+                (
+                    {
+                        "corename": "UART0",
+                        "if_name": "rs232",
+                        "port": "cts",
+                        "bits": [],
+                    },
+                    {
+                        "corename": "external",
+                        "if_name": "uart",
+                        "port": "uart_cts_i",
+                        "bits": [],
+                    },
+                ),
+                (
+                    {
+                        "corename": "UART0",
+                        "if_name": "rs232",
+                        "port": "rts",
+                        "bits": [],
+                    },
+                    {
+                        "corename": "external",
+                        "if_name": "uart",
+                        "port": "uart_rts_o",
+                        "bits": [],
+                    },
+                ),
+            ]
+        )
         self.num_extmem_connections = (
             -1
         )  # Number of external memory connections (will be filled automatically)
 
         # This is a standard iob_module attribute, but needs to be defined after 'peripherals' because it depends on it
         self.block_groups = [
-            iob_block_group(name="cpu", description="CPU module", blocks=[cpu("cpu_0")]),
+            iob_block_group(
+                name="cpu", description="CPU module", blocks=[cpu("cpu_0")]
+            ),
             iob_block_group(
                 name="bus_split",
                 description="Split modules for buses",

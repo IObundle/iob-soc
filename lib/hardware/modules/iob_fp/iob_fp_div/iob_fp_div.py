@@ -17,5 +17,5 @@ class iob_fp_div(iob_module):
             iob_fp_special,
             iob_div_subshift,
             iob_fp_clz,
-            iob_fp_round
+            iob_fp_round,
         ]

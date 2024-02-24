@@ -10,7 +10,4 @@ class iob_regfile_t2p(iob_module):
         self.name = "iob_regfile_t2p"
         self.version = "V0.10"
         self.setup_dir = os.path.dirname(__file__)
-        self.submodules_list = [
-            iob_sync,
-            iob_reg_e
-        ]
+        self.submodules_list = [iob_sync, iob_reg_e]
