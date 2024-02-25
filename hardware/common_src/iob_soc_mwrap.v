@@ -2,7 +2,6 @@
 
 `include "bsp.vh"
 `include "iob_soc_conf.vh"
-//`include "iob_soc.vh"
 `include "iob_utils.vh"
 
 //Peripherals _swreg_def.vh file includes.
@@ -143,90 +142,42 @@ iob_soc #(
 
 
     `ifdef USE_SPRAM
-        
-        `ifdef IOB_MEM_NO_READ_ON_WRITE
-            localparam COL_W = 8;
-            localparam NUM_COL = DATA_W / COL_W;
-            localparam file_suffix = {"7", "6", "5", "4", "3", "2", "1", "0"};
-            genvar i;
-            generate
-                for (i = 0; i < NUM_COL; i = i + 1) begin : ram_col
-                    localparam mem_init_file_int = (HEXFILE != "none") ?
-                    {HEXFILE, "_", file_suffix[8*(i+1)-1-:8], ".hex"} : "none";
-
-                    iob_ram_sp #(
-                        .HEXFILE(mem_init_file_int),
-                        .ADDR_W (SRAM_ADDR_W - 2),
-                        .DATA_W (COL_W)
-                    ) ram (
-                        .clk_i(clk_i),
-                        .en_i  (en_i),
-                        .addr_i(addr_i),
-                        .d_i   (d_i[i*COL_W+:COL_W]),
-                        .we_i  (we_i[i]),
-                        .d_o   (d_o[i*COL_W+:COL_W])
-                    );
-                end
-            endgenerate
-        `else  // !IOB_MEM_NO_READ_ON_WRITE
-            localparam COL_W = 8;
-            localparam NUM_COL = DATA_W / COL_W;
-            // this allows ISE 14.7 to work; do not remove
-            localparam mem_init_file_int = {HEXFILE, ".hex"};
-
-            // Core Memory
-            reg [DATA_W-1:0] ram_block[(2**ADDR_W)-1:0];
-
-            // Initialize the RAM
-            initial
-                if (mem_init_file_int != "none.hex")
-                    $readmemh(mem_init_file_int, ram_block, 0, 2 ** ADDR_W - 1);
-            reg     [DATA_W-1:0] d_o_int;
-            integer              i;
-            always @(posedge clk_i) begin
-                if (en_i) begin
-                    for (i = 0; i < NUM_COL; i = i + 1) begin
-                        if (we_i[i]) begin
-                            ram_block[addr_i][i*COL_W+:COL_W] <= d_i[i*COL_W+:COL_W];
-                        end
-                    end
-                d_o_int <= ram_block[addr_i];  // Send Feedback
-                end
-            end
-            assign d_o = d_o_int;
-        `endif
+        iob_ram_sp_be #(
+            .HEXFILE(HEXFILE),
+            .ADDR_W (SRAM_ADDR_W - 2),
+            .DATA_W (DATA_W)
+        ) main_mem_byte (
+            .clk_i(clk_i),
+            // data port
+            .en_i  (valid),
+            .addr_i(addr),
+            .we_i  (wstrb),
+            .d_i   (wdata),
+            .dt_o  (rdata)
+        );
     `else
         `ifdef IOB_MEM_NO_READ_ON_WRITE
-            localparam COL_W = DATA_W / 4;
-            localparam NUM_COL = DATA_W / COL_W;
-            localparam file_suffix = {"7", "6", "5", "4", "3", "2", "1", "0"};
-            genvar index;
-            generate
-                for (index = 0; index < NUM_COL; index = index + 1) begin : ram_col
-                    localparam mem_init_file_int = (HEXFILE != "none") ?
-                        {HEXFILE, "_", file_suffix[8*(index+1)-1-:8], ".hex"} : "none";
-                    iob_ram_dp #(
-                        .HEXFILE             (mem_init_file_int),
-                        .ADDR_W              (ADDR_W),
-                        .DATA_W              (COL_W),
-                        .MEM_NO_READ_ON_WRITE(MEM_NO_READ_ON_WRITE)
-                    ) ram (
-                        .clk_i(clk_i),
+            iob_ram_dp_be #(
+            .HEXFILE             (HEXFILE),
+            .ADDR_W              (SRAM_ADDR_W - 2),
+            .DATA_W              (DATA_W),
+            .MEM_NO_READ_ON_WRITE(1)
+            ) main_mem_byte (
+            .clk_i(clk_i),
+            // data port
+            .enA_i  (d_valid_i),
+            .addrA_i(d_addr_i),
+            .weA_i  (d_wstrb_i),
+            .dA_i   (d_wdata_i),
+            .dA_o   (d_rdata_o),
 
-                        .enA_i  (d_valid_i),
-                        .addrA_i(d_addr_i),
-                        .dA_i   (d_wdata_i[index*COL_W+:COL_W]),
-                        .weA_i  (d_wstrb_i[index]),
-                        .dA_o   (d_rdata_o[index*COL_W+:COL_W]),
-
-                        .enB_i  (i_valid_i),
-                        .addrB_i(i_addr_i),
-                        .dB_i   (i_wdata_i[index*COL_W+:COL_W]),
-                        .weB_i  (i_wstrb_i[index]),
-                        .dB_o   (i_rdata_o[index*COL_W+:COL_W])
-                );
-                end
-            endgenerate
+            // instruction port
+            .enB_i  (i_valid_i),
+            .addrB_i(i_addr_i),
+            .weB_i  (i_wstrb_i),
+            .dB_i   (i_wdata_i),
+            .dB_o   (i_rdata_o)
+        );
         `else  // !`ifdef IOB_MEM_NO_READ_ON_WRITE
             iob_ram_dp_be_xil #(
                 .HEXFILE(HEXFILE),
