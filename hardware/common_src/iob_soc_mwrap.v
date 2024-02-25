@@ -9,7 +9,11 @@
 
 module iob_soc_mwrap #(
 
+`ifdef IOB_SOC_INIT_MEM
     parameter HEXFILE  = "iob_soc_firmware",
+`else
+    parameter HEXFILE  = "none",
+`endif
     parameter BOOT_HEXFILE = "iob_soc_boot",
     parameter MEM_NO_READ_ON_WRITE = 1,        //no simultaneous read/write
    `include "iob_soc_params.vs"
