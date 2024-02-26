@@ -61,7 +61,6 @@ class iob_module:
 
         if is_top:
             topdir = f"../{self.name}_{self.version}"
-            LIB_DIR = os.environ.get("LIB_DIR")
         self.build_dir = topdir + "/build"
 
         # Create build directory this is the top module class, and is the first time setup
@@ -121,7 +120,9 @@ class iob_module:
         os.makedirs(f"{self.build_dir}/hardware/simulation/src", exist_ok=True)
         os.makedirs(f"{self.build_dir}/hardware/fpga/src", exist_ok=True)
 
-        shutil.copyfile(f"{copy_srcs.LIB_DIR}/build.mk", f"{self.build_dir}/Makefile")
+        shutil.copyfile(
+            f"{copy_srcs.get_lib_dir()}/build.mk", f"{self.build_dir}/Makefile"
+        )
 
     def clean_build_dir(self):
         """Clean build directory. Must be called from the top module."""

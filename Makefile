@@ -2,11 +2,17 @@ CORE := iob_soc
 
 SIMULATOR ?= icarus
 BOARD ?= CYCLONEV-GT-DK
+
 IOB_PYTHONPATH ?= ../iob_python
+ifneq ($(PYTHONPATH),)
+PYTHONPATH := $(IOB_PYTHONPATH):$(PYTHONPATH)
+export PYTHONPATH
+endif
 
 DISABLE_LINT:=1
 
-LIB_DIR=./lib
+LIB_DIR ?=./lib
+export LIB_DIR
 
 include $(LIB_DIR)/setup.mk
 

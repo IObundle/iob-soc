@@ -354,6 +354,8 @@ class iob_soc(iob_module):
     def _setup(self, *args, **kwargs):
         # Pre-setup specialized IOb-SoC functions
         self.num_extmem_connections = pre_setup_iob_soc(self)
+        # Call the superclass _setup
+        super()._setup(*args, **kwargs)
         # Remove `[0+:1]` part select in AXI connections of ext_mem0 in iob_soc.v template
         if self.num_extmem_connections == 1:
             inplace_change(
@@ -361,8 +363,6 @@ class iob_soc(iob_module):
                 "[0+:1]",
                 "",
             )
-        # Call the superclass _setup
-        super()._setup(*args, **kwargs)
         # Post-setup specialized IOb-SoC functions
         post_setup_iob_soc(self, self.num_extmem_connections)
 
