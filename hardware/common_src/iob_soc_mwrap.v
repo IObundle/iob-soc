@@ -29,16 +29,16 @@ wire [DATA_W-1:0] rom_r_rdata_o;
 
 
 //ram wires
-wire                               i_valid_i;
-wire          [SRAM_ADDR_W-3:0]    i_addr_i;
-wire          [     DATA_W-1:0]    i_wdata_i;
-wire          [   DATA_W/8-1:0]    i_wstrb_i;
-wire          [     DATA_W-1:0]    i_rdata_o;
-wire                               d_valid_i;
-wire          [SRAM_ADDR_W-3:0]    d_addr_i;
-wire          [     DATA_W-1:0]    d_wdata_i;
-wire          [   DATA_W/8-1:0]    d_wstrb_i;
-wire          [     DATA_W-1:0]    d_rdata_o;
+wire                               i_valid_o;
+wire          [SRAM_ADDR_W-3:0]    i_addr_o;
+wire          [     DATA_W-1:0]    i_wdata_o;
+wire          [   DATA_W/8-1:0]    i_wstrb_o;
+wire          [     DATA_W-1:0]    i_rdata_i;
+wire                               d_valid_o;
+wire          [SRAM_ADDR_W-3:0]    d_addr_o;
+wire          [     DATA_W-1:0]    d_wdata_o;
+wire          [   DATA_W/8-1:0]    d_wstrb_o;
+wire          [     DATA_W-1:0]    d_rdata_i;
 //
 
 `ifdef USE_SPRAM
@@ -116,30 +116,30 @@ iob_soc #(
     .uart_rts_o(                   uart_rts_o),
         //SPRAM  
 `ifdef USE_SPRAM
-    .valid_SPRAM_i(en_i),
-    .addr_SPRAM_i(addr_i),
-    .wstrb_SPRAM_i(we_i),
-    .wdata_SPRAM_i(d_i),
-    .rdata_SPRAM_o(d_o),
+    .valid_SPRAM_o(en_i),
+    .addr_SPRAM_o(addr_i),
+    .wstrb_SPRAM_o(we_i),
+    .wdata_SPRAM_o(d_i),
+    .rdata_SPRAM_i(d_o),
 `endif
 
     //rom
-    .rom_r_valid_i(rom_r_valid_i),
-    .rom_r_addr_i(rom_r_addr_i),
-    .rom_r_rdata_o(rom_r_rdata_o),
+    .rom_r_valid_o(rom_r_valid_i),
+    .rom_r_addr_o(rom_r_addr_i),
+    .rom_r_rdata_i(rom_r_rdata_o),
     //
 
     //ram
-    .i_valid_i(i_valid_i),
-    .i_addr_i(i_addr_i),
-    .i_wdata_i(i_wdata_i),
-    .i_wstrb_i(i_wstrb_i),
-    .i_rdata_o(i_rdata_o),
-    .d_valid_i(d_valid_i),
-    .d_addr_i(d_addr_i),
-    .d_wdata_i(d_wdata_i),
-    .d_wstrb_i(d_wstrb_i),
-    .d_rdata_o(d_rdata_o)
+    .i_valid_o(i_valid_o),
+    .i_addr_o(i_addr_o),
+    .i_wdata_o(i_wdata_o),
+    .i_wstrb_o(i_wstrb_o),
+    .i_rdata_i(i_rdata_i),
+    .d_valid_o(d_valid_o),
+    .d_addr_o(d_addr_o),
+    .d_wdata_o(d_wdata_o),
+    .d_wstrb_o(d_wstrb_o),
+    .d_rdata_i(d_rdata_i)
    //
 
 );
@@ -169,18 +169,18 @@ iob_soc #(
             ) main_mem_byte (
             .clk_i(clk_i),
             // data port
-            .enA_i  (d_valid_i),
-            .addrA_i(d_addr_i),
-            .weA_i  (d_wstrb_i),
-            .dA_i   (d_wdata_i),
-            .dA_o   (d_rdata_o),
+            .enA_i  (d_valid_o),
+            .addrA_i(d_addr_o),
+            .weA_i  (d_wstrb_o),
+            .dA_i   (d_wdata_o),
+            .dA_o   (d_rdata_i),
 
             // instruction port
-            .enB_i  (i_valid_i),
-            .addrB_i(i_addr_i),
-            .weB_i  (i_wstrb_i),
-            .dB_i   (i_wdata_i),
-            .dB_o   (i_rdata_o)
+            .enB_i  (i_valid_o),
+            .addrB_i(i_addr_o),
+            .weB_i  (i_wstrb_o),
+            .dB_i   (i_wdata_o),
+            .dB_o   (i_rdata_i)
         );
         `else  // !`ifdef IOB_MEM_NO_READ_ON_WRITE
             iob_ram_dp_be_xil #(
@@ -191,17 +191,17 @@ iob_soc #(
                 .clk_i(clk_i),
 
                 // data port
-                .enA_i  (d_valid_i),
-                .addrA_i(d_addr_i),
-                .weA_i  (d_wstrb_i),
-                .dA_i   (d_wdata_i),
-                .dA_o   (d_rdata_o),
+                .enA_i  (d_valid_o),
+                .addrA_i(d_addr_o),
+                .weA_i  (d_wstrb_o),
+                .dA_i   (d_wdata_o),
+                .dA_o   (d_rdata_i),
                 // instruction port
-                .enB_i  (i_valid_i),
-                .addrB_i(i_addr_i),
-                .weB_i  (i_wstrb_i),
-                .dB_i   (i_wdata_i),
-                .dB_o   (i_rdata_o)
+                .enB_i  (i_valid_o),
+                .addrB_i(i_addr_o),
+                .weB_i  (i_wstrb_o),
+                .dB_i   (i_wdata_o),
+                .dB_o   (i_rdata_i)
             );
         `endif
     `endif 
