@@ -6,15 +6,11 @@ from iob_reg_re import iob_reg_re
 
 
 class iob_counter_ld(iob_module):
-    name = "iob_counter_ld"
-    version = "V0.10"
-    setup_dir = os.path.dirname(__file__)
-
-    @classmethod
-    def _create_submodules_list(cls):
-        """Create submodules list with dependencies of this module"""
-        super()._create_submodules_list(
-            [
-                iob_reg_re,
-            ]
-        )
+    def __init__(self):
+        super().__init__()
+        self.name = "iob_counter_ld"
+        self.version = "V0.10"
+        self.setup_dir = os.path.dirname(__file__)
+        self.submodule_list = [
+            iob_reg_re(),
+        ]

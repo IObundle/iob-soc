@@ -129,7 +129,7 @@ def update_ios_with_extmem_connections(python_module):
     num_extmem_connections = 1  # By default, one connection for iob-soc's cache
     # Count numer of external memory connections
     for peripheral in peripherals_list:
-        for interface in peripheral.ios:
+        for interface in peripheral.module.ios:
             # Check if interface is a standard axi_m_port (for extmem connection)
             if interface["name"] == "axi_m_port":
                 num_extmem_connections += 1
@@ -330,7 +330,7 @@ def peripheral_portmap(python_module):
             i[0]["corename"] for i in peripheral_portmap or []
         ] + [i[1]["corename"] for i in peripheral_portmap or []]:
             # Map all ports of all interfaces
-            for interface in peripheral.ios:
+            for interface in peripheral.module.ios:
                 # If table has 'doc_only' attribute set to True, skip it
                 if "doc_only" in interface.keys() and interface["doc_only"]:
                     continue
@@ -463,7 +463,11 @@ def peripheral_portmap(python_module):
 
         # Get ports of configured interface
         interface_table = next(
-            (i for i in mapping_items[0].ios if i["name"] == mapping[0]["if_name"]),
+            (
+                i
+                for i in mapping_items[0].module.ios
+                if i["name"] == mapping[0]["if_name"]
+            ),
             None,
         )
         assert (
@@ -475,7 +479,11 @@ def peripheral_portmap(python_module):
         if mapping_internal_interface != 1 and mapping_external_interface != 1:
             # Get ports of configured interface
             interface_table = next(
-                (i for i in mapping_items[1].ios if i["name"] == mapping[1]["if_name"]),
+                (
+                    i
+                    for i in mapping_items[1].module.ios
+                    if i["name"] == mapping[1]["if_name"]
+                ),
                 None,
             )
             assert (
@@ -502,7 +510,7 @@ def peripheral_portmap(python_module):
                             "name": wire_name,
                             "width": add_prefix_to_parameters_in_port(
                                 port,
-                                mapping_items[0].confs,
+                                mapping_items[0].module.confs,
                                 mapping[0]["corename"] + "_",
                             )["width"],
                         }
@@ -520,7 +528,7 @@ def peripheral_portmap(python_module):
                             "name": wire_name,
                             "width": add_prefix_to_parameters_in_port(
                                 port,
-                                mapping_items[0].confs,
+                                mapping_items[0].module.confs,
                                 mapping[0]["corename"] + "_",
                             )["width"],
                         }
@@ -531,7 +539,9 @@ def peripheral_portmap(python_module):
                     # Add system IO for this port
                     mapping_ios.append(
                         add_prefix_to_parameters_in_port(
-                            port, mapping_items[0].confs, mapping[0]["corename"] + "_"
+                            port,
+                            mapping_items[0].module.confs,
+                            mapping[0]["corename"] + "_",
                         )
                     )
                     # Append if_name as a prefix of signal
@@ -624,7 +634,9 @@ def peripheral_portmap(python_module):
                     {
                         "name": wire_name,
                         "width": add_prefix_to_parameters_in_port(
-                            port, mapping_items[0].confs, mapping[0]["corename"] + "_"
+                            port,
+                            mapping_items[0].module.confs,
+                            mapping[0]["corename"] + "_",
                         )["width"],
                     }
                 )
@@ -640,7 +652,9 @@ def peripheral_portmap(python_module):
                     {
                         "name": wire_name,
                         "width": add_prefix_to_parameters_in_port(
-                            port, mapping_items[0].confs, mapping[0]["corename"] + "_"
+                            port,
+                            mapping_items[0].module.confs,
+                            mapping[0]["corename"] + "_",
                         )["width"],
                     }
                 )
@@ -655,7 +669,7 @@ def peripheral_portmap(python_module):
                             "width": width,
                             "descr": port["descr"],
                         },
-                        mapping_items[0].confs,
+                        mapping_items[0].module.confs,
                         mapping[0]["corename"] + "_",
                     )
                 )
@@ -696,7 +710,7 @@ def peripheral_portmap(python_module):
                     mapping_items[0].io,
                     mapping[0]["if_name"] + "_" + mapping[0]["port"],
                     eval_param_expression_from_config(
-                        port["width"], mapping_items[0].confs, "max"
+                        port["width"], mapping_items[0].module.confs, "max"
                     ),
                     mapping[0]["bits"],
                     wire_name,
@@ -708,7 +722,7 @@ def peripheral_portmap(python_module):
                     mapping_items[1].io,
                     mapping[1]["if_name"] + "_" + mapping[1]["port"],
                     eval_param_expression_from_config(
-                        port2["width"], mapping_items[1].confs, "max"
+                        port2["width"], mapping_items[1].module.confs, "max"
                     ),
                     mapping[1]["bits"],
                     wire_name,

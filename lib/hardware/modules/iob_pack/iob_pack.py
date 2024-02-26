@@ -6,16 +6,12 @@ from iob_utils import iob_utils
 
 
 class iob_pack(iob_module):
-    name = "iob_pack"
-    version = "V0.10"
-    setup_dir = os.path.dirname(__file__)
-
-    @classmethod
-    def _create_submodules_list(cls):
-        """Create submodules list with dependencies of this module"""
-        super()._create_submodules_list(
-            [
-                iob_bfifo,
-                iob_utils,
-            ]
-        )
+    def __init__(self):
+        super().__init__()
+        self.name = "iob_pack"
+        self.version = "V0.10"
+        self.setup_dir = os.path.dirname(__file__)
+        self.submodule_list = [
+            iob_bfifo(),
+            iob_utils(),
+        ]

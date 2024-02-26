@@ -503,7 +503,7 @@ def generate_ipxact_xml(core, sw_regs, dest_dir):
     return: None
     """
 
-    # try to open file document/tsrc/intro.tex and read it into cls.description
+    # try to open file document/tsrc/intro.tex and read it into self.description
     try:
         with open(f"document/tsrc/intro.tex", "r") as file:
             core.description = file.read()

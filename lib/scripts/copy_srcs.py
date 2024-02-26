@@ -16,10 +16,12 @@ import iob_colors
 import inspect
 import config_gen as mk_conf
 
-#get LIB_DIR from env variable
+# get LIB_DIR from env variable
+
 
 def get_lib_dir():
-    return os.environ.get('LIB_DIR')
+    return os.environ.get("LIB_DIR")
+
 
 # This function sets up the flows for this core
 def flows_setup(python_module):
@@ -58,7 +60,7 @@ def sim_setup(python_module):
 
     # Copy LIB sim files
     shutil.copytree(
-        f"{LIB_DIR}/{sim_dir}",
+        f"{get_lib_dir()}/{sim_dir}",
         f"{build_dir}/{sim_dir}",
         dirs_exist_ok=True,
         ignore=shutil.ignore_patterns("*.pdf"),
@@ -73,7 +75,7 @@ def fpga_setup(python_module):
 
     build_dir = python_module.build_dir
     fpga_dir = "hardware/fpga"
-    src_dir = f"{LIB_DIR}/{fpga_dir}"
+    src_dir = f"{get_lib_dir()}/{fpga_dir}"
     dst_dir = f"{build_dir}/{fpga_dir}"
     tools_list = ["quartus", "vivado"]
 
@@ -117,7 +119,7 @@ def lint_setup(python_module):
 
     # Copy LIB lint files
     shutil.copytree(
-        f"{LIB_DIR}/{lint_dir}",
+        f"{get_lib_dir()}/{lint_dir}",
         f"{build_dir}/{lint_dir}",
         dirs_exist_ok=True,
     )
@@ -128,9 +130,11 @@ def syn_setup(python_module):
     build_dir = python_module.build_dir
     syn_dir = "hardware/syn"
 
-    for file in Path(f"{LIB_DIR}/{syn_dir}").rglob("*"):
+    for file in Path(f"{get_lib_dir()}/{syn_dir}").rglob("*"):
         src_file = file.as_posix()
-        dest_file = os.path.join(build_dir, src_file.replace(LIB_DIR, "").strip("/"))
+        dest_file = os.path.join(
+            build_dir, src_file.replace(get_lib_dir(), "").strip("/")
+        )
         if os.path.isfile(src_file):
             os.makedirs(os.path.dirname(dest_file), exist_ok=True)
             shutil.copyfile(f"{src_file}", f"{dest_file}")
@@ -183,7 +187,7 @@ def sw_setup(python_module):
 
     os.makedirs(build_dir + "/software/src", exist_ok=True)
     # Copy LIB software Makefile
-    shutil.copy(f"{LIB_DIR}/software/Makefile", f"{build_dir}/software/Makefile")
+    shutil.copy(f"{get_lib_dir()}/software/Makefile", f"{build_dir}/software/Makefile")
 
     # Create 'scripts/' directory
     python_setup(build_dir)
@@ -193,7 +197,7 @@ def python_setup(build_dir):
     dest_dir = f"{build_dir}/scripts"
     if not os.path.exists(dest_dir):
         os.mkdir(dest_dir)
-    copy_files(LIB_DIR, dest_dir, ["iob_colors.py"], "*.py")
+    copy_files(get_lib_dir(), dest_dir, ["iob_colors.py"], "*.py")
 
 
 def doc_setup(python_module):
@@ -202,20 +206,21 @@ def doc_setup(python_module):
 
     # Copy LIB tex files if not present
     os.makedirs(f"{build_dir}/document/tsrc", exist_ok=True)
-    for file in os.listdir(f"{LIB_DIR}/document/tsrc"):
+    for file in os.listdir(f"{get_lib_dir()}/document/tsrc"):
         shutil.copy2(
-            f"{LIB_DIR}/document/tsrc/{file}", f"{build_dir}/document/tsrc/{file}"
+            f"{get_lib_dir()}/document/tsrc/{file}", f"{build_dir}/document/tsrc/{file}"
         )
 
     # Copy LIB figures
     os.makedirs(f"{build_dir}/document/figures", exist_ok=True)
-    for file in os.listdir(f"{LIB_DIR}/document/figures"):
+    for file in os.listdir(f"{get_lib_dir()}/document/figures"):
         shutil.copy2(
-            f"{LIB_DIR}/document/figures/{file}", f"{build_dir}/document/figures/{file}"
+            f"{get_lib_dir()}/document/figures/{file}",
+            f"{build_dir}/document/figures/{file}",
         )
 
     # Copy document Makefile
-    shutil.copy2(f"{LIB_DIR}/document/Makefile", f"{build_dir}/document/Makefile")
+    shutil.copy2(f"{get_lib_dir()}/document/Makefile", f"{build_dir}/document/Makefile")
 
     # General documentation
     write_git_revision_short_hash(f"{build_dir}/document/tsrc")
@@ -323,7 +328,7 @@ def lib_module_setup(
     headers,
     srcs,
     module_name,
-    lib_dir=LIB_DIR,
+    lib_dir=get_lib_dir(),
     add_sim_srcs=False,
     add_fpga_srcs=False,
     module_parameters=None,

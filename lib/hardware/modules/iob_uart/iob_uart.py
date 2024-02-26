@@ -12,58 +12,45 @@ from iob_reg_e import iob_reg_e
 
 
 class iob_uart(iob_module):
-    name = "iob_uart"
-    version = "V0.10"
-    setup_dir = os.path.dirname(__file__)
-    rw_overlap = True
-
-    board_list = ["CYCLONEV-GT-DK", "AES-KU040-DB-G"]
-
-    @classmethod
-    def _create_submodules_list(cls):
-        """Create submodules list with dependencies of this module"""
-        super()._create_submodules_list(
-            [
-                iob_utils,
-                iob_reg,
-                iob_reg_e,
-            ]
-        )
-
-    @classmethod
-    def _setup_confs(cls):
-        super()._setup_confs(
-            [
-                {
-                    "name": "DATA_W",
-                    "type": "P",
-                    "val": "32",
-                    "min": "NA",
-                    "max": "NA",
-                    "descr": "Data bus width.",
-                },
-                {
-                    "name": "ADDR_W",
-                    "type": "P",
-                    "val": "`IOB_UART_SWREG_ADDR_W",
-                    "min": "NA",
-                    "max": "NA",
-                    "descr": "Address bus width",
-                },
-                {
-                    "name": "UART_DATA_W",
-                    "type": "P",
-                    "val": "8",
-                    "min": "NA",
-                    "max": "8",
-                    "descr": "",
-                },
-            ]
-        )
-
-    @classmethod
-    def _setup_ios(cls):
-        cls.ios += [
+    def __init__(self):
+        super().__init__()
+        self.name = "iob_uart"
+        self.version = "V0.10"
+        self.setup_dir = os.path.dirname(__file__)
+        self.rw_overlap = True
+        self.board_list = ["CYCLONEV-GT-DK", "AES-KU040-DB-G"]
+        self.submodule_list = [
+            iob_utils(),
+            iob_reg(),
+            iob_reg_e(),
+        ]
+        self.confs = [
+            {
+                "name": "DATA_W",
+                "type": "P",
+                "val": "32",
+                "min": "NA",
+                "max": "NA",
+                "descr": "Data bus width.",
+            },
+            {
+                "name": "ADDR_W",
+                "type": "P",
+                "val": "`IOB_UART_SWREG_ADDR_W",
+                "min": "NA",
+                "max": "NA",
+                "descr": "Address bus width",
+            },
+            {
+                "name": "UART_DATA_W",
+                "type": "P",
+                "val": "8",
+                "min": "NA",
+                "max": "8",
+                "descr": "",
+            },
+        ]
+        self.ios = [
             {
                 "name": "clk_en_rst",
                 "type": "slave",
@@ -119,11 +106,8 @@ class iob_uart(iob_module):
                 ],
             },
         ]
-
-    @classmethod
-    def _setup_regs(cls):
-        cls.autoaddr = False
-        cls.regs += [
+        self.autoaddr = False
+        self.regs = [
             {
                 "name": "uart",
                 "descr": "UART software accessible registers.",
@@ -213,46 +197,43 @@ class iob_uart(iob_module):
                 ],
             }
         ]
-
-    @classmethod
-    def _setup_block_groups(cls):
-        cls.block_groups += []
-
-    @classmethod
-    def _init_attributes(cls):
-        iob_reg.init_attributes()
-        iob_reg.confs = [
-            {
-                "name": "DATA_W",
-                "type": "P",
-                "val": "1",
-                "min": "NA",
-                "max": "NA",
-                "descr": "Data bus width",
-            },
-            {
-                "name": "RST_VAL",
-                "type": "P",
-                "val": "{DATA_W{1'b0}}",
-                "min": "NA",
-                "max": "NA",
-                "descr": "Reset value.",
-            },
-            {
-                "name": "RST_POL",
-                "type": "M",
-                "val": "1",
-                "min": "0",
-                "max": "1",
-                "descr": "Reset polarity.",
-            },
-        ]
+        self.block_groups = []
+        # FIXME: Init attributes no longer exists
+        # iob_reg.init_attributes()
+        # iob_reg.confs = [
+        #    {
+        #        "name": "DATA_W",
+        #        "type": "P",
+        #        "val": "1",
+        #        "min": "NA",
+        #        "max": "NA",
+        #        "descr": "Data bus width",
+        #    },
+        #    {
+        #        "name": "RST_VAL",
+        #        "type": "P",
+        #        "val": "{DATA_W{1'b0}}",
+        #        "min": "NA",
+        #        "max": "NA",
+        #        "descr": "Reset value.",
+        #    },
+        #    {
+        #        "name": "RST_POL",
+        #        "type": "M",
+        #        "val": "1",
+        #        "min": "0",
+        #        "max": "1",
+        #        "descr": "Reset polarity.",
+        #    },
+        # ]
 
 
 if __name__ == "__main__":
+    # Create an iob-uart ip core
+    iob_uart_core = iob_uart()
     if "clean" in sys.argv:
-        iob_usart.clean_build_dir()
+        iob_uart_core.clean_build_dir()
     elif "print" in sys.argv:
-        iob_uart.print_build_dir()
+        iob_uart_core.print_build_dir()
     else:
-        iob_uart._setup()
+        iob_uart_core._setup()

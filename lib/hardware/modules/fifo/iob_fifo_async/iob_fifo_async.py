@@ -11,20 +11,16 @@ from iob_ram_t2p import iob_ram_t2p
 
 
 class iob_fifo_async(iob_module):
-    name = "iob_fifo_async"
-    version = "V0.10"
-    setup_dir = os.path.dirname(__file__)
-
-    @classmethod
-    def _create_submodules_list(cls):
-        """Create submodules list with dependencies of this module"""
-        super()._create_submodules_list(
-            [
-                iob_utils,
-                iob_gray_counter,
-                iob_gray2bin,
-                iob_sync,
-                iob_asym_converter,
-                (iob_ram_t2p, {"purpose": "simulation"}),
-            ]
-        )
+    def __init__(self):
+        super().__init__()
+        self.name = "iob_fifo_async"
+        self.version = "V0.10"
+        self.setup_dir = os.path.dirname(__file__)
+        self.submodule_list = [
+            iob_utils(),
+            iob_gray_counter(),
+            iob_gray2bin(),
+            iob_sync(),
+            iob_asym_converter(),
+            (iob_ram_t2p(), {"purpose": "simulation"}),
+        ]

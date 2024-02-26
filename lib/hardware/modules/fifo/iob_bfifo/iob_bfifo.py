@@ -5,15 +5,11 @@ from iob_reg_r import iob_reg_r
 
 
 class iob_bfifo(iob_module):
-    name = "iob_bfifo"
-    version = "V0.10"
-    setup_dir = os.path.dirname(__file__)
-
-    @classmethod
-    def _create_submodules_list(cls):
-        """Create submodules list with dependencies of this module"""
-        super()._create_submodules_list(
-            [
-                iob_reg_r,
-            ]
-        )
+    def __init__(self):
+        super().__init__()
+        self.name = "iob_bfifo"
+        self.version = "V0.10"
+        self.setup_dir = os.path.dirname(__file__)
+        self.submodule_list = [
+            iob_reg_r(),
+        ]

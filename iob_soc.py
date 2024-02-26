@@ -6,7 +6,6 @@ import sys
 from iob_module import iob_module
 from iob_block_group import iob_block_group
 from iob_soc_utils import pre_setup_iob_soc, post_setup_iob_soc
-from config_gen import update_define
 from verilog_gen import inplace_change
 
 # Submodules
@@ -37,302 +36,343 @@ from axi_interconnect import axi_interconnect
 
 
 class iob_soc(iob_module):
-    name = "iob_soc"
-    version = "V0.70"
-    setup_dir = os.path.dirname(__file__)
-    rw_overlap = True
-    is_system = True
-    cpu = iob_picorv32
-    board_list = ["CYCLONEV-GT-DK", "AES-KU040-DB-G"]
-    submodule_list = [
-        iob_picorv32,
-        iob_cache,
-        iob_uart,
-        iob_timer,
-        iob_utils,
-        iob_merge,
-        iob_split,
-        iob_rom_sp,
-        iob_ram_dp_be,
-        iob_ram_dp_be_xil,
-        iob_pulse_gen,
-        iob_counter,
-        iob_reg,
-        iob_reg_re,
-        iob_ram_sp_be,
-        iob_ram_dp,
-        iob_reset_sync,
-        iob_ctls,
-        axi_interconnect,
-        # Simulation headers & modules
-        (axi_ram, {"purpose": "simulation"}),
-        (iob_tasks, {"purpose": "simulation"}),
-        # Software modules
-        printf,
-        # Modules required for CACHE
-        (iob_ram_2p, {"purpose": "simulation"}),
-        (iob_ram_2p, {"purpose": "fpga"}),
-        (iob_ram_sp, {"purpose": "simulation"}),
-        (iob_ram_sp, {"purpose": "fpga"}),
-    ]
-    confs = [
-        # macros
-        {
-            "name": "USE_MUL_DIV",
-            "type": "M",
-            "val": "1",
-            "min": "0",
-            "max": "1",
-            "descr": "Enable MUL and DIV CPU instructions",
-        },
-        {
-            "name": "USE_COMPRESSED",
-            "type": "M",
-            "val": "1",
-            "min": "0",
-            "max": "1",
-            "descr": "Use compressed CPU instructions",
-        },
-        {
-            "name": "E",
-            "type": "M",
-            "val": "31",
-            "min": "1",
-            "max": "32",
-            "descr": "Address selection bit for external memory",
-        },
-        {
-            "name": "B",
-            "type": "M",
-            "val": "20",
-            "min": "1",
-            "max": "32",
-            "descr": "Address selection bit for boot ROM",
-        },
-        # parameters
-        {
-            "name": "BOOTROM_ADDR_W",
-            "type": "P",
-            "val": "12",
-            "min": "1",
-            "max": "32",
-            "descr": "Boot ROM address width",
-        },
-        {
-            "name": "SRAM_ADDR_W",
-            "type": "P",
-            "val": "15",
-            "min": "1",
-            "max": "32",
-            "descr": "SRAM address width",
-        },
-        {
-            "name": "MEM_ADDR_W",
-            "type": "P",
-            "val": "24",
-            "min": "1",
-            "max": "32",
-            "descr": "Memory bus address width",
-        },
-        # mandatory parameters (do not change them!)
-        {
-            "name": "ADDR_W",
-            "type": "F",
-            "val": "32",
-            "min": "1",
-            "max": "32",
-            "descr": "Address bus width",
-        },
-        {
-            "name": "DATA_W",
-            "type": "F",
-            "val": "32",
-            "min": "1",
-            "max": "32",
-            "descr": "Data bus width",
-        },
-        {
-            "name": "AXI_ID_W",
-            "type": "F",
-            "val": "0",
-            "min": "1",
-            "max": "32",
-            "descr": "AXI ID bus width",
-        },
-        {
-            "name": "AXI_ADDR_W",
-            "type": "F",
-            "val": "`IOB_SOC_MEM_ADDR_W",
-            "min": "1",
-            "max": "32",
-            "descr": "AXI address bus width",
-        },
-        {
-            "name": "AXI_DATA_W",
-            "type": "F",
-            "val": "`IOB_SOC_DATA_W",
-            "min": "1",
-            "max": "32",
-            "descr": "AXI data bus width",
-        },
-        {
-            "name": "AXI_LEN_W",
-            "type": "F",
-            "val": "4",
-            "min": "1",
-            "max": "4",
-            "descr": "AXI burst length width",
-        },
-        {
-            "name": "MEM_ADDR_OFFSET",
-            "type": "F",
-            "val": "0",
-            "min": "0",
-            "max": "NA",
-            "descr": "Offset of memory address",
-        },
-    ]
-    ios = [
-        {
-            "name": "clk_en_rst",
-            "type": "slave",
-            "port_prefix": "",
-            "wire_prefix": "",
-            "descr": "Clock, enable, and reset",
-            "ports": [],
-        },
-        {
-            "name": "trap",
-            "type": "master",
-            "port_prefix": "",
-            "wire_prefix": "",
-            "descr": "iob-soc trap signal",
-            "ports": [
-                {
-                    "name": "trap",
-                    "direction": "output",
-                    "width": 1,
-                    "descr": "CPU trap signal",
+    def __init__(self):
+        super().__init__()
+        self.name = "iob_soc"
+        self.version = "V0.70"
+        self.setup_dir = os.path.dirname(__file__)
+        self.rw_overlap = True
+        self.is_system = True
+        self.board_list = ["CYCLONEV-GT-DK", "AES-KU040-DB-G"]
+        cpu = iob_picorv32()
+        uart = iob_uart()
+        timer = iob_timer()
+        merge = iob_merge()
+        split = iob_split()
+        self.submodule_list = [
+            cpu,
+            iob_cache(),
+            uart,
+            timer,
+            iob_utils(),
+            merge,
+            split,
+            iob_rom_sp(),
+            iob_ram_dp_be(),
+            iob_ram_dp_be_xil(),
+            iob_pulse_gen(),
+            iob_counter(),
+            iob_reg(),
+            iob_reg_re(),
+            iob_ram_sp_be(),
+            iob_ram_dp(),
+            iob_reset_sync(),
+            iob_ctls(),
+            axi_interconnect(),
+            # Simulation headers & modules
+            (axi_ram(), {"purpose": "simulation"}),
+            (iob_tasks(), {"purpose": "simulation"}),
+            # Software modules
+            printf(),
+            # Modules required for CACHE
+            (iob_ram_2p(), {"purpose": "simulation"}),
+            (iob_ram_2p(), {"purpose": "fpga"}),
+            (iob_ram_sp(), {"purpose": "simulation"}),
+            (iob_ram_sp(), {"purpose": "fpga"}),
+        ]
+        self.confs = [
+            # macros
+            {
+                "name": "INIT_MEM",
+                "type": "M",
+                "val": "INIT_MEM" in sys.argv,
+                "min": "0",
+                "max": "1",
+                "descr": "Enable MUL and DIV CPU instructions",
+            },
+            {
+                "name": "USE_EXTMEM",
+                "type": "M",
+                "val": "USE_EXTMEM" in sys.argv,
+                "min": "0",
+                "max": "1",
+                "descr": "Enable MUL and DIV CPU instructions",
+            },
+            {
+                "name": "USE_MUL_DIV",
+                "type": "M",
+                "val": "1",
+                "min": "0",
+                "max": "1",
+                "descr": "Enable MUL and DIV CPU instructions",
+            },
+            {
+                "name": "USE_COMPRESSED",
+                "type": "M",
+                "val": "1",
+                "min": "0",
+                "max": "1",
+                "descr": "Use compressed CPU instructions",
+            },
+            {
+                "name": "E",
+                "type": "M",
+                "val": "31",
+                "min": "1",
+                "max": "32",
+                "descr": "Address selection bit for external memory",
+            },
+            {
+                "name": "B",
+                "type": "M",
+                "val": "20",
+                "min": "1",
+                "max": "32",
+                "descr": "Address selection bit for boot ROM",
+            },
+            # parameters
+            {
+                "name": "BOOTROM_ADDR_W",
+                "type": "P",
+                "val": "12",
+                "min": "1",
+                "max": "32",
+                "descr": "Boot ROM address width",
+            },
+            {
+                "name": "SRAM_ADDR_W",
+                "type": "P",
+                "val": "15",
+                "min": "1",
+                "max": "32",
+                "descr": "SRAM address width",
+            },
+            {
+                "name": "MEM_ADDR_W",
+                "type": "P",
+                "val": "24",
+                "min": "1",
+                "max": "32",
+                "descr": "Memory bus address width",
+            },
+            # mandatory parameters (do not change them!)
+            {
+                "name": "ADDR_W",
+                "type": "F",
+                "val": "32",
+                "min": "1",
+                "max": "32",
+                "descr": "Address bus width",
+            },
+            {
+                "name": "DATA_W",
+                "type": "F",
+                "val": "32",
+                "min": "1",
+                "max": "32",
+                "descr": "Data bus width",
+            },
+            {
+                "name": "AXI_ID_W",
+                "type": "F",
+                "val": "0",
+                "min": "1",
+                "max": "32",
+                "descr": "AXI ID bus width",
+            },
+            {
+                "name": "AXI_ADDR_W",
+                "type": "F",
+                "val": "`IOB_SOC_MEM_ADDR_W",
+                "min": "1",
+                "max": "32",
+                "descr": "AXI address bus width",
+            },
+            {
+                "name": "AXI_DATA_W",
+                "type": "F",
+                "val": "`IOB_SOC_DATA_W",
+                "min": "1",
+                "max": "32",
+                "descr": "AXI data bus width",
+            },
+            {
+                "name": "AXI_LEN_W",
+                "type": "F",
+                "val": "4",
+                "min": "1",
+                "max": "4",
+                "descr": "AXI burst length width",
+            },
+            {
+                "name": "MEM_ADDR_OFFSET",
+                "type": "F",
+                "val": "0",
+                "min": "0",
+                "max": "NA",
+                "descr": "Offset of memory address",
+            },
+        ]
+        self.ios = [
+            {
+                "name": "clk_en_rst",
+                "type": "slave",
+                "port_prefix": "",
+                "wire_prefix": "",
+                "descr": "Clock, enable, and reset",
+                "ports": [],
+            },
+            {
+                "name": "trap",
+                "type": "master",
+                "port_prefix": "",
+                "wire_prefix": "",
+                "descr": "iob-soc trap signal",
+                "ports": [
+                    {
+                        "name": "trap",
+                        "direction": "output",
+                        "width": 1,
+                        "descr": "CPU trap signal",
+                    },
+                ],
+            },
+            {
+                "name": "axi",
+                "type": "master",
+                "wire_prefix": "",
+                "port_prefix": "",
+                "mult": "",
+                "widths": {
+                    "ID_W": "AXI_ID_W",
+                    "ADDR_W": "AXI_ADDR_W",
+                    "DATA_W": "AXI_DATA_W",
+                    "LEN_W": "AXI_LEN_W",
                 },
-            ],
-        },
-        {
-            "name": "axi",
-            "type": "master",
-            "wire_prefix": "",
-            "port_prefix": "",
-            "mult": "",
-            "widths": {
-                "ID_W": "AXI_ID_W",
-                "ADDR_W": "AXI_ADDR_W",
-                "DATA_W": "AXI_DATA_W",
-                "LEN_W": "AXI_LEN_W",
+                "descr": "Bus of AXI master interfaces for external memory. One interface for this system and others optionally for peripherals.",
+                "if_defined": "USE_EXTMEM",
+                "ports": [],
             },
-            "descr": "Bus of AXI master interfaces for external memory. One interface for this system and others optionally for peripherals.",
-            "if_defined": "USE_EXTMEM",
-            "ports": [],
-        },
-    ]
+        ]
 
-    # IOb-SoC has the following set of non standard attributes:
-    peripherals = [iob_uart("UART0"), iob_timer("TIMER0")]  # List of peripherals
-    peripheral_portmap = [  # List of tuples, each tuple corresponds to a port map
-        (
-            {"corename": "UART0", "if_name": "rs232", "port": "txd", "bits": []},
-            {
-                "corename": "external",
-                "if_name": "uart",
-                "port": "uart_txd_o",
-                "bits": [],
-            },
-        ),
-        (
-            {"corename": "UART0", "if_name": "rs232", "port": "rxd", "bits": []},
-            {
-                "corename": "external",
-                "if_name": "uart",
-                "port": "uart_rxd_i",
-                "bits": [],
-            },
-        ),
-        (
-            {"corename": "UART0", "if_name": "rs232", "port": "cts", "bits": []},
-            {
-                "corename": "external",
-                "if_name": "uart",
-                "port": "uart_cts_i",
-                "bits": [],
-            },
-        ),
-        (
-            {"corename": "UART0", "if_name": "rs232", "port": "rts", "bits": []},
-            {
-                "corename": "external",
-                "if_name": "uart",
-                "port": "uart_rts_o",
-                "bits": [],
-            },
-        ),
-    ]
-    num_extmem_connections = (
-        -1
-    )  # Number of external memory connections (will be filled automatically)
+        # IOb-SoC has the following set of non standard attributes:
+        self.peripherals = [
+            uart.instance("UART0"),
+            timer.instance("TIMER0"),
+        ]  # List of peripherals
+        self.peripheral_portmap = (
+            [  # List of tuples, each tuple corresponds to a port map
+                (
+                    {
+                        "corename": "UART0",
+                        "if_name": "rs232",
+                        "port": "txd",
+                        "bits": [],
+                    },
+                    {
+                        "corename": "external",
+                        "if_name": "uart",
+                        "port": "uart_txd_o",
+                        "bits": [],
+                    },
+                ),
+                (
+                    {
+                        "corename": "UART0",
+                        "if_name": "rs232",
+                        "port": "rxd",
+                        "bits": [],
+                    },
+                    {
+                        "corename": "external",
+                        "if_name": "uart",
+                        "port": "uart_rxd_i",
+                        "bits": [],
+                    },
+                ),
+                (
+                    {
+                        "corename": "UART0",
+                        "if_name": "rs232",
+                        "port": "cts",
+                        "bits": [],
+                    },
+                    {
+                        "corename": "external",
+                        "if_name": "uart",
+                        "port": "uart_cts_i",
+                        "bits": [],
+                    },
+                ),
+                (
+                    {
+                        "corename": "UART0",
+                        "if_name": "rs232",
+                        "port": "rts",
+                        "bits": [],
+                    },
+                    {
+                        "corename": "external",
+                        "if_name": "uart",
+                        "port": "uart_rts_o",
+                        "bits": [],
+                    },
+                ),
+            ]
+        )
+        self.num_extmem_connections = (
+            -1
+        )  # Number of external memory connections (will be filled automatically)
 
-    # This is a standard iob_module attribute, but needs to be defined after 'peripherals' because it depends on it
-    block_groups = [
-        iob_block_group(name="cpu", description="CPU module", blocks=[cpu("cpu_0")]),
-        iob_block_group(
-            name="bus_split",
-            description="Split modules for buses",
-            blocks=[
-                iob_split("ibus_split_0"),
-                iob_split("dbus_split_0"),
-                iob_split("int_dbus_split_0"),
-                iob_split("pbus_split_0"),
-            ],
-        ),
-        iob_block_group(
-            name="mem",
-            description="Memory module",
-            blocks=[iob_merge("iob_merge_0"), iob_merge("iob_merge_1")],
-        ),
-        iob_block_group(
-            name="peripheral",
-            description="Peripheral module",
-            blocks=peripherals,
-        ),
-    ]
+        # This is a standard iob_module attribute, but needs to be defined after 'peripherals' because it depends on it
+        self.block_groups = [
+            iob_block_group(
+                name="cpu", description="CPU module", blocks=[cpu.instance("cpu_0")]
+            ),
+            iob_block_group(
+                name="bus_split",
+                description="Split modules for buses",
+                blocks=[
+                    split.instance("ibus_split_0"),
+                    split.instance("dbus_split_0"),
+                    split.instance("int_dbus_split_0"),
+                    split.instance("pbus_split_0"),
+                ],
+            ),
+            iob_block_group(
+                name="mem",
+                description="Memory module",
+                blocks=[merge.instance("iob_merge_0"), merge.instance("iob_merge_1")],
+            ),
+            iob_block_group(
+                name="peripheral",
+                description="Peripheral module",
+                blocks=self.peripherals,
+            ),
+        ]
 
-    @classmethod
-    def _setup(cls, *args, **kwargs):
-        # Add the following arguments:
-        # "INIT_MEM": if should setup with init_mem or not
-        # "USE_EXTMEM": if should setup with extmem or not
-        for arg in sys.argv[1:]:
-            if arg == "INIT_MEM":
-                update_define(cls.confs, "INIT_MEM", True)
-            if arg == "USE_EXTMEM":
-                update_define(cls.confs, "USE_EXTMEM", True)
-
+    def _setup(self, *args, **kwargs):
         # Pre-setup specialized IOb-SoC functions
-        cls.num_extmem_connections = pre_setup_iob_soc(cls)
+        self.num_extmem_connections = pre_setup_iob_soc(self)
         # Remove `[0+:1]` part select in AXI connections of ext_mem0 in iob_soc.v template
-        if cls.num_extmem_connections == 1:
+        if self.num_extmem_connections == 1:
             inplace_change(
-                os.path.join(cls.build_dir, "hardware/src", cls.name + ".v"),
+                os.path.join(self.build_dir, "hardware/src", self.name + ".v"),
                 "[0+:1]",
                 "",
             )
         # Call the superclass _setup
         super()._setup(*args, **kwargs)
         # Post-setup specialized IOb-SoC functions
-        post_setup_iob_soc(cls, cls.num_extmem_connections)
+        post_setup_iob_soc(self, self.num_extmem_connections)
 
 
 if __name__ == "__main__":
+    # Create an iob-soc ip core
+    iob_soc_core = iob_soc()
     if "clean" in sys.argv:
-        iob_soc.clean_build_dir()
+        iob_soc_core.clean_build_dir()
     elif "print" in sys.argv:
-        iob_soc.print_build_dir()
+        iob_soc_core.print_build_dir()
     else:
-        iob_soc._setup()
+        iob_soc_core._setup()

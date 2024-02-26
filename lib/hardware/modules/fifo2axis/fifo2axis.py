@@ -5,15 +5,11 @@ from iob_reg_re import iob_reg_re
 
 
 class fifo2axis(iob_module):
-    name = "fifo2axis"
-    version = "V0.10"
-    setup_dir = os.path.dirname(__file__)
-
-    @classmethod
-    def _create_submodules_list(cls):
-        """Create submodules list with dependencies of this module"""
-        super()._create_submodules_list(
-            [
-                iob_reg_re,
-            ]
-        )
+    def __init__(self):
+        super().__init__()
+        self.name = "fifo2axis"
+        self.version = "V0.10"
+        self.setup_dir = os.path.dirname(__file__)
+        self.submodule_list = [
+            iob_reg_re(),
+        ]
