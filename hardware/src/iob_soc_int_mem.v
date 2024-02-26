@@ -23,8 +23,52 @@ module iob_soc_int_mem #(
    //data bus
    input  [ `REQ_W-1:0] d_req_i,
    output [`RESP_W-1:0] d_resp_o,
+`ifdef USE_SPRAM
+   output                       valid_SPRAM,
+   output     [SRAM_ADDR_W-3:0] addr_SPRAM,
+   output     [DATA_W/8-1:0]    wstrb_SPRAM,
+   output     [DATA_W-1:0]      wdata_SPRAM,
+   input      [DATA_W-1:0]      rdata_SPRAM,
+`endif 
+   //rom
+   output                           rom_r_valid,
+   output      [BOOTROM_ADDR_W-3:0] rom_r_addr,
+   input       [DATA_W-1:0]         rom_r_rdata,
+   //
+
+   //sram
+   output                           i_valid_i,
+   output      [SRAM_ADDR_W-3:0]    i_addr_i,
+   output      [     DATA_W-1:0]    i_wdata_i,
+   output      [   DATA_W/8-1:0]    i_wstrb_i,
+   input       [     DATA_W-1:0]    i_rdata_o,
+
+   output                           d_valid_i,
+   output      [SRAM_ADDR_W-3:0]    d_addr_i,
+   output      [     DATA_W-1:0]    d_wdata_i,
+   output      [   DATA_W/8-1:0]    d_wstrb_i,
+   input       [     DATA_W-1:0]    d_rdata_o,
+   //
+
    `include "clk_en_rst_s_port.vs"
 );
+   assign i_valid_i  = ram_i_req[`VALID(0)];
+   assign i_addr_i   = ram_i_req[`ADDRESS(0, SRAM_ADDR_W)-2];
+   assign i_wdata_i  = ram_i_req[`WDATA(0)];
+   assign i_wstrb_i  = ram_i_req[`WSTRB(0)];
+   assign ram_i_resp[`RDATA(0)] = i_rdata_o;
+
+
+   assign d_valid_i  = ram_d_req[`VALID(0)];
+   assign d_addr_i   = ram_d_addr;
+   assign d_wdata_i  = ram_d_req[`WDATA(0)];
+   assign d_wstrb_i  = ram_d_req[`WSTRB(0)];
+   assign ram_d_resp[`RDATA(0)] = d_rdata_o;
+
+
+
+
+
 
    //sram data bus  interface
    wire [     `REQ_W-1:0] ram_d_req;
@@ -96,7 +140,12 @@ module iob_soc_int_mem #(
       .sram_valid_o(ram_w_req[`VALID(0)]),
       .sram_addr_o  (ram_w_req[`ADDRESS(0, ADDR_W)]),
       .sram_wdata_o (ram_w_req[`WDATA(0)]),
-      .sram_wstrb_o (ram_w_req[`WSTRB(0)])
+      .sram_wstrb_o (ram_w_req[`WSTRB(0)]),
+      //rom
+      .rom_r_valid(rom_r_valid),
+      .rom_r_addr(rom_r_addr),
+      .rom_r_rdata(rom_r_rdata)
+      //
    );
 
    //
@@ -170,22 +219,28 @@ module iob_soc_int_mem #(
       .clk_i (clk_i),
       .cke_i (cke_i),
       .arst_i(arst_i),
-
+   `ifdef USE_SPRAM
+      .valid_SPRAM(valid_SPRAM),
+      .addr_SPRAM(addr_SPRAM),
+      .wstrb_SPRAM(wstrb_SPRAM),
+      .wdata_SPRAM(wdata_SPRAM),
+      .rdata_SPRAM(rdata_SPRAM),
+   `endif 
       //instruction bus
-      .i_valid_i(ram_i_req[`VALID(0)]),
-      .i_addr_i  (ram_i_req[`ADDRESS(0, SRAM_ADDR_W)-2]),
-      .i_wdata_i (ram_i_req[`WDATA(0)]),
-      .i_wstrb_i (ram_i_req[`WSTRB(0)]),
-      .i_rdata_o (ram_i_resp[`RDATA(0)]),
+      .i_valid_i(i_valid_i),
+      .i_addr_i  (i_addr_i),
+      .i_wdata_i (i_wdata_i),
+      .i_wstrb_i (i_wstrb_i),
+      .i_rdata_o (),
       .i_rvalid_o(ram_i_resp[`RVALID(0)]),
       .i_ready_o (ram_i_resp[`READY(0)]),
 
       //data bus
-      .d_valid_i(ram_d_req[`VALID(0)]),
-      .d_addr_i  (ram_d_addr),
-      .d_wdata_i (ram_d_req[`WDATA(0)]),
-      .d_wstrb_i (ram_d_req[`WSTRB(0)]),
-      .d_rdata_o (ram_d_resp[`RDATA(0)]),
+      .d_valid_i(d_valid_i),
+      .d_addr_i  (d_addr_i),
+      .d_wdata_i (d_wdata_i),
+      .d_wstrb_i (d_wstrb_i),
+      .d_rdata_o (),
       .d_rvalid_o(ram_d_resp[`RVALID(0)]),
       .d_ready_o (ram_d_resp[`READY(0)])
    );

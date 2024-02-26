@@ -667,6 +667,7 @@ class iob_module:
         config_gen.config_build_mk(cls)
         # Create hardware directories
         os.makedirs(f"{cls.build_dir}/hardware/src", exist_ok=True)
+        os.makedirs(f"{cls.build_dir}/hardware/memories", exist_ok=True)
         os.makedirs(f"{cls.build_dir}/hardware/simulation/src", exist_ok=True)
         os.makedirs(f"{cls.build_dir}/hardware/fpga/src", exist_ok=True)
 
@@ -716,11 +717,11 @@ class iob_module:
             if cls.is_top_module:
                 dir_list += [
                     "hardware/simulation",
+                    "hardware/common_src",
                     "hardware/fpga",
                     "hardware/syn",
                     "hardware/lint",
                 ]
-
             # Copy sources
             for directory in dir_list:
                 # Skip this directory if it does not exist
@@ -730,17 +731,36 @@ class iob_module:
                 # If we are handling the `hardware/src` directory,
                 # copy to the correct destination based on `_setup_purpose`.
                 if directory == "hardware/src":
-                    dst_directory = cls.get_purpose_dir(cls.get_setup_purpose())
-                    if cls.use_netlist:
-                        # copy SETUP_DIR/CORE.v netlist instead of
-                        # SETUP_DIR/hardware/src
+                    if "_ram_" in cls.name or "_rom_" in cls.name:
+                        dst_directory = cls.get_purpose_dir(cls.get_setup_purpose())
                         shutil.copyfile(
-                            os.path.join(module_class.setup_dir, f"{cls.name}.v"),
+                            os.path.normpath(
+                                os.path.join(
+                                    module_class.setup_dir, directory, f"{cls.name}.v"
+                                )
+                            ),
                             os.path.join(
-                                cls.build_dir, f"{dst_directory}/{cls.name}.v"
+                                cls.build_dir, "hardware/memories", f"{cls.name}.v"
                             ),
                         )
-                        continue
+                    else:
+                        dst_directory = cls.get_purpose_dir(cls.get_setup_purpose())
+                        if cls.use_netlist:
+                            # copy SETUP_DIR/CORE.v netlist instead of
+                            # SETUP_DIR/hardware/src
+                            shutil.copyfile(
+                                os.path.join(module_class.setup_dir, f"{cls.name}.v"),
+                                os.path.join(
+                                    cls.build_dir, f"{dst_directory}/{cls.name}.v"
+                                ),
+                            )
+                            continue
+                elif directory == "hardware/common_src":
+                    shutil.copytree(
+                        os.path.join(os.getcwd(), directory),
+                        os.path.join(cls.build_dir, directory),
+                        dirs_exist_ok=False,
+                    )
                 elif directory == "hardware/fpga":
                     # Skip if board_list is empty
                     if cls.board_list is None:
