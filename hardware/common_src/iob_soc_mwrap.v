@@ -116,11 +116,11 @@ iob_soc #(
     .uart_rts_o(                   uart_rts_o),
         //SPRAM  
 `ifdef USE_SPRAM
-    .valid_SPRAM(en_i),
-    .addr_SPRAM(addr_i),
-    .wstrb_SPRAM(we_i),
-    .wdata_SPRAM(d_i),
-    .rdata_SPRAM(d_o),
+    .valid_SPRAM_i(en_i),
+    .addr_SPRAM_i(addr_i),
+    .wstrb_SPRAM_i(we_i),
+    .wdata_SPRAM_i(d_i),
+    .rdata_SPRAM_o(d_o),
 `endif
 
     //rom
@@ -205,26 +205,6 @@ iob_soc #(
             );
         `endif
     `endif 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     //rom instatiation
