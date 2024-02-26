@@ -42,16 +42,20 @@ class iob_soc(iob_module):
         self.setup_dir = os.path.dirname(__file__)
         self.rw_overlap = True
         self.is_system = True
-        self.cpu = iob_picorv32
         self.board_list = ["CYCLONEV-GT-DK", "AES-KU040-DB-G"]
+        cpu = iob_picorv32()
+        uart = iob_uart()
+        timer = iob_timer()
+        merge = iob_merge()
+        split = iob_split()
         self.submodule_list = [
-            iob_picorv32(),
+            cpu,
             iob_cache(),
-            iob_uart(),
-            iob_timer(),
+            uart,
+            timer,
             iob_utils(),
-            iob_merge(),
-            iob_split(),
+            merge,
+            split,
             iob_rom_sp(),
             iob_ram_dp_be(),
             iob_ram_dp_be_xil(),
@@ -252,8 +256,8 @@ class iob_soc(iob_module):
 
         # IOb-SoC has the following set of non standard attributes:
         self.peripherals = [
-            iob_uart("UART0"),
-            iob_timer("TIMER0"),
+            uart.instance("UART0"),
+            timer.instance("TIMER0"),
         ]  # List of peripherals
         self.peripheral_portmap = (
             [  # List of tuples, each tuple corresponds to a port map
@@ -322,22 +326,22 @@ class iob_soc(iob_module):
         # This is a standard iob_module attribute, but needs to be defined after 'peripherals' because it depends on it
         self.block_groups = [
             iob_block_group(
-                name="cpu", description="CPU module", blocks=[cpu("cpu_0")]
+                name="cpu", description="CPU module", blocks=[cpu.instance("cpu_0")]
             ),
             iob_block_group(
                 name="bus_split",
                 description="Split modules for buses",
                 blocks=[
-                    iob_split("ibus_split_0"),
-                    iob_split("dbus_split_0"),
-                    iob_split("int_dbus_split_0"),
-                    iob_split("pbus_split_0"),
+                    split.instance("ibus_split_0"),
+                    split.instance("dbus_split_0"),
+                    split.instance("int_dbus_split_0"),
+                    split.instance("pbus_split_0"),
                 ],
             ),
             iob_block_group(
                 name="mem",
                 description="Memory module",
-                blocks=[iob_merge("iob_merge_0"), iob_merge("iob_merge_1")],
+                blocks=[merge.instance("iob_merge_0"), merge.instance("iob_merge_1")],
             ),
             iob_block_group(
                 name="peripheral",

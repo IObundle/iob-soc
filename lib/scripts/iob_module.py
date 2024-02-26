@@ -17,6 +17,8 @@ import ipxact_gen
 
 from pathlib import Path
 
+from iob_verilog_instance import iob_verilog_instance
+
 
 class iob_module:
     """Generic class to describe a base iob-module"""
@@ -167,3 +169,12 @@ class iob_module:
 
     def _replace_snippet_includes(self):
         verilog_gen.replace_includes(self.setup_dir, self.build_dir)
+
+    def instance(self, name="", *args, **kwargs):
+        """Create a verilog instance for the current verilog module/ip core."""
+
+        if not name:
+            name = f"{self.name}_0"
+
+        # Return a new iob_verilog_instance object with these attributes that describe the Verilog instance
+        return iob_verilog_instance(name, *args, module=self, **kwargs)

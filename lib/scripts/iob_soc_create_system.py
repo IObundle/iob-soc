@@ -16,11 +16,11 @@ def insert_header_files(dest_dir, name, peripherals_list):
     # Get each type of peripheral used
     included_peripherals = []
     for instance in peripherals_list:
-        if instance.__class__.name not in included_peripherals:
-            included_peripherals.append(instance.__class__.name)
+        if instance.module.name not in included_peripherals:
+            included_peripherals.append(instance.module.name)
             # Only insert swreg file if module has regiters
             if hasattr(instance, "regs") and instance.regs:
-                top = instance.__class__.name
+                top = instance.module.name
                 fd_out.write(f'`include "{top}_swreg_def.vh"\n')
     fd_out.close()
 
@@ -60,12 +60,12 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
         periphs_inst_str += "   // {}\n".format(instance.name)
         periphs_inst_str += "\n"
         # Insert peripheral type
-        periphs_inst_str += "   {}\n".format(top_list[instance.__class__.name])
+        periphs_inst_str += "   {}\n".format(top_list[instance.module.name])
         # Insert peripheral parameters (if any)
-        if params_list[instance.__class__.name]:
+        if params_list[instance.module.name]:
             periphs_inst_str += "     #(\n"
             # Insert parameters
-            for param in params_list[instance.__class__.name]:
+            for param in params_list[instance.module.name]:
                 periphs_inst_str += "      .{}({}){}\n".format(
                     param["name"], instance.name + "_" + param["name"], ","
                 )
@@ -75,10 +75,10 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
         # Insert peripheral instance name
         periphs_inst_str += "   {} (\n".format(instance.name)
         # Insert io signals
-        # print(f"Debug: {instance.name} {instance.io} {port_list[instance.__class__.name]}\n")  # DEBUG
+        # print(f"Debug: {instance.name} {instance.io} {port_list[instance.module.name]}\n")  # DEBUG
         ## Group peripheral ports with the same condition to be used
         grouped_signals = []
-        for signal in get_pio_signals(port_list[instance.__class__.name]):
+        for signal in get_pio_signals(port_list[instance.module.name]):
             if "if_defined" in signal.keys():
                 if_defined_key = f"{top.upper()}_{signal['if_defined']}"
             else:
@@ -101,7 +101,7 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
                 periphs_inst_str += "`endif\n"
 
         # Insert reserved signals
-        for signal in get_reserved_signals(port_list[instance.__class__.name]):
+        for signal in get_reserved_signals(port_list[instance.module.name]):
             # Check if should append this peripheral to the list of peripherals with extmem interfaces
             # Note: This implementation assumes that the axi_awid_o will be the first signal of the ext_mem interface
             if signal["name"] == "axi_awid_o":
@@ -115,7 +115,7 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
                 get_reserved_signal_connection(
                     signal["name"],
                     top.upper() + "_" + instance.name,
-                    top_list[instance.__class__.name].upper() + "_SWREG",
+                    top_list[instance.module.name].upper() + "_SWREG",
                 )
                 + ",\n"
             ).replace(
