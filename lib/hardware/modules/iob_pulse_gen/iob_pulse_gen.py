@@ -11,7 +11,7 @@ class iob_pulse_gen(iob_module):
         self.name = "iob_pulse_gen"
         self.version = "V0.10"
         self.setup_dir = os.path.dirname(__file__)
-        self.submodules_list = [
-            iob_reg,
-            iob_counter,
+        self.submodule_list = [
+            iob_reg(),
+            iob_counter(),
         ]

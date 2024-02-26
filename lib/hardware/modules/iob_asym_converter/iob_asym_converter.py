@@ -11,8 +11,8 @@ class iob_asym_converter(iob_module):
         self.name = "iob_asym_converter"
         self.version = "V0.10"
         self.setup_dir = os.path.dirname(__file__)
-        self.submodules_list = [
-            iob_reg_r,
-            iob_reg_re,
-            iob_utils,
+        self.submodule_list = [
+            iob_reg_r(),
+            iob_reg_re(),
+            iob_utils(),
         ]

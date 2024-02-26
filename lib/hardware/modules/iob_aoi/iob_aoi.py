@@ -12,8 +12,8 @@ class iob_aoi(iob_module):
         self.name = "iob_aoi"
         self.version = "V0.10"
         self.setup_dir = os.path.dirname(__file__)
-        self.submodules_list = [
-            iob_and,
-            iob_or,
-            iob_inv,
+        self.submodule_list = [
+            iob_and(),
+            iob_or(),
+            iob_inv(),
         ]

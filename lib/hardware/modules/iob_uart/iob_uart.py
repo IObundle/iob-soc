@@ -18,10 +18,10 @@ class iob_uart(iob_module):
         self.setup_dir = os.path.dirname(__file__)
         self.rw_overlap = True
         self.board_list = ["CYCLONEV-GT-DK", "AES-KU040-DB-G"]
-        self.submodules_list = [
-            iob_utils,
-            iob_reg,
-            iob_reg_e,
+        self.submodule_list = [
+            iob_utils(),
+            iob_reg(),
+            iob_reg_e(),
         ]
         self.confs = [
             {
@@ -228,9 +228,11 @@ class iob_uart(iob_module):
 
 
 if __name__ == "__main__":
+    # Create an iob-uart ip core
+    iob_uart_core = iob_uart()
     if "clean" in sys.argv:
-        iob_uart.clean_build_dir()
+        iob_uart_core.clean_build_dir()
     elif "print" in sys.argv:
-        iob_uart.print_build_dir()
+        iob_uart_core.print_build_dir()
     else:
-        iob_uart._setup()
+        iob_uart_core._setup()

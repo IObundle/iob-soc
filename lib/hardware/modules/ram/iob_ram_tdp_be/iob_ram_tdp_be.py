@@ -10,6 +10,6 @@ class iob_ram_tdp_be(iob_module):
         self.name = "iob_ram_tdp_be"
         self.version = "V0.10"
         self.setup_dir = os.path.dirname(__file__)
-        self.submodules_list = [
-            iob_ram_tdp,
+        self.submodule_list = [
+            iob_ram_tdp(),
         ]

@@ -12,10 +12,10 @@ class iob_split2(iob_module):
         self.name = "iob_split2"
         self.version = "V0.10"
         self.setup_dir = os.path.dirname(__file__)
-        self.submodules_list = [
+        self.submodule_list = [
             {"interface": "iob_s_port"},
             {"interface": "iob_m_port"},
-            iob_reg,
-            iob_mux,
-            iob_demux,
+            iob_reg(),
+            iob_mux(),
+            iob_demux(),
         ]

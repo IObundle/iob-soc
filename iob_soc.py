@@ -45,35 +45,35 @@ class iob_soc(iob_module):
         self.cpu = iob_picorv32
         self.board_list = ["CYCLONEV-GT-DK", "AES-KU040-DB-G"]
         self.submodule_list = [
-            iob_picorv32,
-            iob_cache,
-            iob_uart,
-            iob_timer,
-            iob_utils,
-            iob_merge,
-            iob_split,
-            iob_rom_sp,
-            iob_ram_dp_be,
-            iob_ram_dp_be_xil,
-            iob_pulse_gen,
-            iob_counter,
-            iob_reg,
-            iob_reg_re,
-            iob_ram_sp_be,
-            iob_ram_dp,
-            iob_reset_sync,
-            iob_ctls,
-            axi_interconnect,
+            iob_picorv32(),
+            iob_cache(),
+            iob_uart(),
+            iob_timer(),
+            iob_utils(),
+            iob_merge(),
+            iob_split(),
+            iob_rom_sp(),
+            iob_ram_dp_be(),
+            iob_ram_dp_be_xil(),
+            iob_pulse_gen(),
+            iob_counter(),
+            iob_reg(),
+            iob_reg_re(),
+            iob_ram_sp_be(),
+            iob_ram_dp(),
+            iob_reset_sync(),
+            iob_ctls(),
+            axi_interconnect(),
             # Simulation headers & modules
-            (axi_ram, {"purpose": "simulation"}),
-            (iob_tasks, {"purpose": "simulation"}),
+            (axi_ram(), {"purpose": "simulation"}),
+            (iob_tasks(), {"purpose": "simulation"}),
             # Software modules
-            printf,
+            printf(),
             # Modules required for CACHE
-            (iob_ram_2p, {"purpose": "simulation"}),
-            (iob_ram_2p, {"purpose": "fpga"}),
-            (iob_ram_sp, {"purpose": "simulation"}),
-            (iob_ram_sp, {"purpose": "fpga"}),
+            (iob_ram_2p(), {"purpose": "simulation"}),
+            (iob_ram_2p(), {"purpose": "fpga"}),
+            (iob_ram_sp(), {"purpose": "simulation"}),
+            (iob_ram_sp(), {"purpose": "fpga"}),
         ]
         self.confs = [
             # macros
@@ -363,9 +363,11 @@ class iob_soc(iob_module):
 
 
 if __name__ == "__main__":
+    # Create an iob-soc ip core
+    iob_soc_core = iob_soc()
     if "clean" in sys.argv:
-        iob_soc.clean_build_dir()
+        iob_soc_core.clean_build_dir()
     elif "print" in sys.argv:
-        iob_soc.print_build_dir()
+        iob_soc_core.print_build_dir()
     else:
-        iob_soc._setup()
+        iob_soc_core._setup()

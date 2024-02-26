@@ -11,7 +11,7 @@ class iob_ctls(iob_module):
         self.name = "iob_ctls"
         self.version = "V0.10"
         self.setup_dir = os.path.dirname(__file__)
-        self.submodules_list = [
-            iob_reverse,
-            iob_prio_enc,
+        self.submodule_list = [
+            iob_reverse(),
+            iob_prio_enc(),
         ]

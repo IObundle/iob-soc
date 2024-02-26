@@ -10,6 +10,6 @@ class iob_counter_ld(iob_module):
         self.name = "iob_counter_ld"
         self.version = "V0.10"
         self.setup_dir = os.path.dirname(__file__)
-        self.submodules_list = [
-            iob_reg_re,
+        self.submodule_list = [
+            iob_reg_re(),
         ]

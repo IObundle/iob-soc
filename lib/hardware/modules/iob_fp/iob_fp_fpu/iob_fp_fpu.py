@@ -19,15 +19,15 @@ class iob_fp_fpu(iob_module):
         self.name = "iob_fp_fpu"
         self.version = "V0.10"
         self.setup_dir = os.path.dirname(__file__)
-        self.submodules_list = [
-            iob_fp_add,
-            iob_fp_mul,
-            iob_fp_div,
-            iob_fp_sqrt,
-            iob_fp_minmax,
-            iob_fp_cmp,
-            iob_fp_int2float,
-            iob_fp_uint2float,
-            iob_fp_float2int,
-            iob_fp_float2uint,
+        self.submodule_list = [
+            iob_fp_add(),
+            iob_fp_mul(),
+            iob_fp_div(),
+            iob_fp_sqrt(),
+            iob_fp_minmax(),
+            iob_fp_cmp(),
+            iob_fp_int2float(),
+            iob_fp_uint2float(),
+            iob_fp_float2int(),
+            iob_fp_float2uint(),
         ]

@@ -10,6 +10,6 @@ class iob_reg_r(iob_module):
         self.name = "iob_reg_r"
         self.version = "V0.10"
         self.setup_dir = os.path.dirname(__file__)
-        self.submodules_list = [
-            iob_reg,
+        self.submodule_list = [
+            iob_reg(),
         ]

@@ -10,6 +10,6 @@ class iob_add(iob_module):
         self.name = "iob_add"
         self.version = "V0.10"
         self.setup_dir = os.path.dirname(__file__)
-        self.submodules_list = [
-            iob_add2,
+        self.submodule_list = [
+            iob_add2(),
         ]

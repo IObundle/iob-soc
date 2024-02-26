@@ -11,7 +11,7 @@ class iob_sipo_reg(iob_module):
         self.name = "iob_sipo_reg"
         self.version = "V0.10"
         self.setup_dir = os.path.dirname(__file__)
-        self.submodules_list = [
-            iob_counter,
-            iob_reg,
+        self.submodule_list = [
+            iob_counter(),
+            iob_reg(),
         ]

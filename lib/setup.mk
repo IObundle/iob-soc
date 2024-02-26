@@ -8,8 +8,8 @@ ifeq ($(IOB_PYTHONPATH),)
 	$(error "IOB_PYTHONPATH is not set")
 endif
 	mkdir -p $(IOB_PYTHONPATH)
-	find $(LIB_DIR) -name \*.py -exec cp -u {} $(IOB_PYTHONPATH) \;
-	python3 -B ./$(CORE).py $(SETUP_ARGS)
+	find . -name \*.py -exec cp -u {} $(IOB_PYTHONPATH) \;
+	PYTHONPATH=$(IOB_PYTHONPATH) python3 -B ./$(CORE).py $(SETUP_ARGS)
 
 python-format:
 	$(LIB_DIR)/scripts/sw_format.py black . 
@@ -50,7 +50,7 @@ format-all: python-format c-format verilog-lint verilog-format
 
 clean:
 ifneq ($(wildcard $(BUILD_DIR)),)
-	python3 -B ./$(CORE).py clean
+	PYTHONPATH=$(IOB_PYTHONPATH) python3 -B ./$(CORE).py clean
 endif
 	@rm -rf $(IOB_PYTHONPATH)
 	@rm -rf ../*.summary ../*.rpt 

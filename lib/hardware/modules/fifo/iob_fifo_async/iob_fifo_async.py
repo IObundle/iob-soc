@@ -15,11 +15,11 @@ class iob_fifo_async(iob_module):
         self.name = "iob_fifo_async"
         self.version = "V0.10"
         self.setup_dir = os.path.dirname(__file__)
-        self.submodules_list = [
-            iob_utils,
-            iob_gray_counter,
-            iob_gray2bin,
-            iob_sync,
-            iob_asym_converter,
-            (iob_ram_t2p, {"purpose": "simulation"}),
+        self.submodule_list = [
+            iob_utils(),
+            iob_gray_counter(),
+            iob_gray2bin(),
+            iob_sync(),
+            iob_asym_converter(),
+            (iob_ram_t2p(), {"purpose": "simulation"}),
         ]

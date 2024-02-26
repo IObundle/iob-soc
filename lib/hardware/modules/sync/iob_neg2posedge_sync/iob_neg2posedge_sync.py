@@ -11,8 +11,8 @@ class iob_neg2posedge_sync(iob_module):
         self.name = "iob_neg2posedge_sync"
         self.version = "V0.10"
         self.setup_dir = os.path.dirname(__file__)
-        self.submodules_list = [
+        self.submodule_list = [
             {"interface": "clk_rst_s_port"},
-            iob_reg,
-            iob_regn,
+            iob_reg(),
+            iob_regn(),
         ]

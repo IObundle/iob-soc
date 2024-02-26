@@ -10,7 +10,7 @@ class iob_modcnt(iob_module):
         self.name = "iob_modcnt"
         self.version = "V0.10"
         self.setup_dir = os.path.dirname(__file__)
-        self.submodules_list = [
-            iob_modcnt,
-            iob_counter_ld,
+        self.submodule_list = [
+            iob_modcnt(),
+            iob_counter_ld(),
         ]

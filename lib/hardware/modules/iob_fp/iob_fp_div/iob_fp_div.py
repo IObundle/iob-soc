@@ -13,9 +13,9 @@ class iob_fp_div(iob_module):
         self.name = "iob_fp_div"
         self.version = "V0.10"
         self.setup_dir = os.path.dirname(__file__)
-        self.submodules_list = [
-            iob_fp_special,
-            iob_div_subshift,
-            iob_fp_clz,
-            iob_fp_round,
+        self.submodule_list = [
+            iob_fp_special(),
+            iob_div_subshift(),
+            iob_fp_clz(),
+            iob_fp_round(),
         ]

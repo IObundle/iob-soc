@@ -10,9 +10,9 @@ class apb2iob(iob_module):
         self.name = "apb2iob"
         self.version = "V0.10"
         self.setup_dir = os.path.dirname(__file__)
-        self.submodules_list = [
+        self.submodule_list = [
             {"interface": "iob_wire"},
             {"interface": "apb_s_port"},
             {"interface": "iob_s_portmap"},
-            iob_reg_e,
+            iob_reg_e(),
         ]

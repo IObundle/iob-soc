@@ -10,4 +10,4 @@ class iob_fp_float2int(iob_module):
         self.name = "iob_fp_float2int"
         self.version = "V0.10"
         self.setup_dir = os.path.dirname(__file__)
-        self.submodules_list = [iob_fp_dq]
+        self.submodule_list = [iob_fp_dq()]

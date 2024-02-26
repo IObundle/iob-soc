@@ -11,4 +11,4 @@ class iob_fp_mul(iob_module):
         self.name = "iob_fp_mul"
         self.version = "V0.10"
         self.setup_dir = os.path.dirname(__file__)
-        self.submodules_list = [iob_fp_special, iob_fp_round]
+        self.submodule_list = [iob_fp_special(), iob_fp_round()]

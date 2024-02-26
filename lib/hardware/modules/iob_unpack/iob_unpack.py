@@ -10,7 +10,7 @@ class iob_unpack(iob_module):
         self.name = "iob_unpack"
         self.version = "V0.10"
         self.setup_dir = os.path.dirname(__file__)
-        self.submodules_list = [
-            iob_bfifo,
-            iob_utils,
+        self.submodule_list = [
+            iob_bfifo(),
+            iob_utils(),
         ]

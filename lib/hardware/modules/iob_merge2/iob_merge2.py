@@ -12,8 +12,8 @@ class iob_merge2(iob_module):
         self.name = "iob_merge2"
         self.version = "V0.10"
         self.setup_dir = os.path.dirname(__file__)
-        self.submodules_list = [
-            iob_reg,
-            iob_mux,
-            iob_demux,
+        self.submodule_list = [
+            iob_reg(),
+            iob_mux(),
+            iob_demux(),
         ]

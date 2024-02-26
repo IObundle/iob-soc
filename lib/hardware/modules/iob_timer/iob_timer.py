@@ -16,12 +16,12 @@ class iob_timer(iob_module):
         self.name = "iob_timer"
         self.version = "V0.10"
         self.setup_dir = os.path.dirname(__file__)
-        self.submodules_list = [
+        self.submodule_list = [
             # Hardware headers & modules
-            iob_utils,
-            iob_reg_re,
-            iob_reg_e,
-            iob_counter,
+            iob_utils(),
+            iob_reg_re(),
+            iob_reg_e(),
+            iob_counter(),
         ]
         self.confs = [
             # Macros

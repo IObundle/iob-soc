@@ -12,9 +12,9 @@ class iob_div_subshift_frac(iob_module):
         self.name = "iob_div_subshift_frac"
         self.version = "V0.10"
         self.setup_dir = os.path.dirname(__file__)
-        self.submodules_list = [
+        self.submodule_list = [
             # Setup dependencies
-            iob_reg,
-            iob_reg_e,
-            iob_div_subshift,
+            iob_reg(),
+            iob_reg_e(),
+            iob_div_subshift(),
         ]

@@ -15,7 +15,7 @@ class axis2axi(iob_module):
         self.name = "axis2axi"
         self.version = "V0.10"
         self.setup_dir = os.path.dirname(__file__)
-        self.submodules_list = [
+        self.submodule_list = [
             {
                 "interface": "axi_write",
                 "file_prefix": "",
@@ -40,12 +40,12 @@ class axis2axi(iob_module):
                     "LEN_W": "AXI_LEN_W",
                 },
             },
-            iob_fifo_sync,
-            iob_counter,
-            iob_reg_r,
-            iob_reg_re,
-            (axi_ram, {"purpose": "simulation"}),
-            (iob_ram_t2p, {"purpose": "simulation"}),
+            iob_fifo_sync(),
+            iob_counter(),
+            iob_reg_r(),
+            iob_reg_re(),
+            (axi_ram(), {"purpose": "simulation"}),
+            (iob_ram_t2p(), {"purpose": "simulation"}),
         ]
         self.ios = [
             {

@@ -10,6 +10,6 @@ class iob_iob2wishbone(iob_module):
         self.name = "iob_iob2wishbone"
         self.version = "V0.10"
         self.setup_dir = os.path.dirname(__file__)
-        self.submodules_list = [
-            iob_reg_re,
+        self.submodule_list = [
+            iob_reg_re(),
         ]

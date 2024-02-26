@@ -10,6 +10,6 @@ class iob_fp_round(iob_module):
         self.name = "iob_fp_round"
         self.version = "V0.10"
         self.setup_dir = os.path.dirname(__file__)
-        self.submodules_list = [
-            iob_fp_clz,
+        self.submodule_list = [
+            iob_fp_clz(),
         ]

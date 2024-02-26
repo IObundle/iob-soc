@@ -12,4 +12,4 @@ class iob_fp_add(iob_module):
         self.name = "iob_fp_add"
         self.version = "V0.10"
         self.setup_dir = os.path.dirname(__file__)
-        self.submodules_list = [iob_fp_special, iob_fp_clz, iob_fp_round]
+        self.submodule_list = [iob_fp_special(), iob_fp_clz(), iob_fp_round()]
