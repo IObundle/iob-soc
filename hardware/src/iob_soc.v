@@ -11,9 +11,9 @@ module iob_soc #(
    `include "iob_soc_params.vs"
 ) (
    //rom
-   output                           rom_r_valid,
-   output   [BOOTROM_ADDR_W-3:0]    rom_r_addr,
-   input       [DATA_W-1:0]         rom_r_rdata,
+   output                           rom_r_valid_i,
+   output   [BOOTROM_ADDR_W-3:0]    rom_r_addr_i,
+   input       [DATA_W-1:0]         rom_r_rdata_o,
 `ifdef USE_SPRAM
    output                       valid_SPRAM,
    output     [SRAM_ADDR_W-3:0] addr_SPRAM,
@@ -212,9 +212,9 @@ module iob_soc #(
 
 
       //rom
-      .rom_r_valid(rom_r_valid),
-      .rom_r_addr(rom_r_addr),
-      .rom_r_rdata(rom_r_rdata),
+      .rom_r_valid_i(rom_r_valid_i),
+      .rom_r_addr_i(rom_r_addr_i),
+      .rom_r_rdata_o(rom_r_rdata_o),
       //
 
       //ram

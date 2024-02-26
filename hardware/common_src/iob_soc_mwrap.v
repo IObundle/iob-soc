@@ -23,9 +23,9 @@ module iob_soc_mwrap #(
 
 
 //rom wires
-wire rom_r_valid;
-wire [BOOTROM_ADDR_W-3:0] rom_r_addr;
-wire [DATA_W-1:0] rom_r_rdata;
+wire rom_r_valid_i;
+wire [BOOTROM_ADDR_W-3:0] rom_r_addr_i;
+wire [DATA_W-1:0] rom_r_rdata_o;
 
 
 //ram wires
@@ -124,9 +124,9 @@ iob_soc #(
 `endif
 
     //rom
-    .rom_r_valid(rom_r_valid),
-    .rom_r_addr(rom_r_addr),
-    .rom_r_rdata(rom_r_rdata),
+    .rom_r_valid_i(rom_r_valid_i),
+    .rom_r_addr_i(rom_r_addr_i),
+    .rom_r_rdata_o(rom_r_rdata_o),
     //
 
     //ram
@@ -234,8 +234,8 @@ iob_soc #(
         .HEXFILE({BOOT_HEXFILE, ".hex"})
     ) sp_rom0 (
         .clk_i   (clk_i),
-        .r_en_i  (rom_r_valid),
-        .addr_i  (rom_r_addr),
-        .r_data_o(rom_r_rdata)
+        .r_en_i  (rom_r_valid_i),
+        .addr_i  (rom_r_addr_i),
+        .r_data_o(rom_r_rdata_o)
     );
 endmodule
