@@ -98,7 +98,7 @@ module iob_soc_boot_ctr #(
    //
    // READ BOOT ROM 
    //
-   //wire                       rom_r_valid_i;
+
    wire                       rom_r_valid_i_nxt;
 
    assign rom_r_valid_i_nxt = (boot_o && rom_r_addr_i != ({BOOTROM_ADDR_W - 2{1'b1}}-1) && rom_r_valid_i != 1'b0) ? 1'b1 : 1'b0;
@@ -107,10 +107,6 @@ module iob_soc_boot_ctr #(
    wire [BOOTROM_ADDR_W-3:0] rom_r_addr_i_nxt;
 
    assign rom_r_addr_i_nxt = (boot_o && rom_r_addr_i != ({BOOTROM_ADDR_W - 2{1'b1}}-1)) ? rom_r_addr_i + 1'b1 : {(BOOTROM_ADDR_W - 2) {1'b0}};
-
-
-   //wire [        DATA_W-1:0] rom_r_rdata_o;
-
 
    iob_reg #(
       .DATA_W (BOOTROM_ADDR_W-2),
