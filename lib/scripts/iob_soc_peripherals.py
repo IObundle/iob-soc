@@ -119,7 +119,7 @@ def get_peripheral_ios(peripherals_list):
         if instance.module.name not in port_list:
             # Extract only PIO signals from the peripheral (no reserved/known signals)
             port_list[instance.module.name] = get_pio_signals(
-                get_module_io(instance.ios, instance.confs, instance.name)
+                get_module_io(instance.module.ios, instance.module.confs, instance.name)
             )
 
     ios_list = []
@@ -243,11 +243,11 @@ def get_peripherals_ports_params_top(peripherals_list):
     for instance in peripherals_list:
         if instance.module.name not in port_list:
             # Append instance IO, parameters, and top name
-            port_list[instance.module.name] = get_module_io(instance.ios)
+            port_list[instance.module.name] = get_module_io(instance.module.ios)
             params_list[instance.module.name] = list(
-                i for i in instance.confs if i["type"] in ["P", "F"]
+                i for i in instance.module.confs if i["type"] in ["P", "F"]
             )
-            top_list[instance.module.name] = instance.__class__.name
+            top_list[instance.module.name] = instance.module.name
     return port_list, params_list, top_list
 
 
