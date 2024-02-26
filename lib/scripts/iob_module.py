@@ -30,7 +30,10 @@ class iob_module:
         self.description = "default description"  # Module description
         self.previous_version = None  # Module version
         self.setup_dir = ""  # Setup directory for this module
-        self.build_dir = ""  # Build directory for this module
+        # self.build_dir = ""  # Build directory for this module
+        # FIXME: Currently set 'error_build_dir' as the default 'build_dir' attribute to avoid scripts from making changes to setup directory.
+        #        If the subclasses don't set their own build directory, they will use this default value
+        self.build_dir = "../error_build_dir"
         self.rw_overlap = False  # overlap Read and Write register addresses
         self.is_top_module = False  # Select if this module is the top module
         self.use_netlist = False  # use module netlist
