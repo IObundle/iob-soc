@@ -7,6 +7,7 @@ from iob_reg_re import iob_reg_re
 
 class iob_gray_counter(iob_module):
     def __init__(self):
+        super().__init__()
         self.name = "iob_gray_counter"
         self.version = "V0.10"
         self.setup_dir = os.path.dirname(__file__)

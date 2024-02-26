@@ -6,6 +6,7 @@ from iob_reg_r import iob_reg_r
 
 class iob_bfifo(iob_module):
     def __init__(self):
+        super().__init__()
         self.name = "iob_bfifo"
         self.version = "V0.10"
         self.setup_dir = os.path.dirname(__file__)

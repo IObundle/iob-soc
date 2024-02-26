@@ -13,6 +13,7 @@ from iob_counter import iob_counter
 
 class iob_timer(iob_module):
     def __init__(self):
+        super().__init__()
         self.name = "iob_timer"
         self.version = "V0.10"
         self.setup_dir = os.path.dirname(__file__)
