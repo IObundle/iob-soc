@@ -3,6 +3,15 @@
 # This makefile simulates the hardware modules in this repo
 #
 
+IOB_PYTHONPATH ?= ../../iob_python
+ifneq ($(PYTHONPATH),)
+PYTHONPATH := $(IOB_PYTHONPATH):$(PYTHONPATH)
+export PYTHONPATH
+else
+PYTHONPATH := $(IOB_PYTHONPATH)
+export PYTHONPATH
+endif
+
 LIB_DIR:=.
 PROJECT_ROOT=..
 DISABLE_LINT:=1

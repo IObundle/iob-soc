@@ -86,6 +86,9 @@ class iob_module:
         # Copy sources from the module's setup dir (and from its superclasses)
         self._copy_srcs(purpose)
 
+        # Generate config_build.mk
+        config_gen.config_build_mk(self)
+
         # Generate configuration files
         config_gen.generate_confs(self)
 
@@ -155,6 +158,7 @@ class iob_module:
                     print(os.path.join(root, directory))
                     self.setup_dir = os.path.join(root, directory)
                     break
+        copy_srcs.flows_setup(self)
 
     def _remove_duplicate_sources(self):
         """Remove sources in the build directory from subfolders that exist in `hardware/src`"""

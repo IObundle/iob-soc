@@ -49,6 +49,14 @@ def hw_setup(python_module):
     if python_module.is_top_module:
         version_file(python_module)
 
+    # Copy module's hw files
+    hw_dir = "hardware"
+    shutil.copytree(
+        f"{python_module.setup_dir}/{hw_dir}",
+        f"{python_module.build_dir}/{hw_dir}",
+        dirs_exist_ok=True,
+    )
+
 
 # Setup simulation related files/modules
 # module: python module representing a *_setup.py file of the root directory of the core/system.
