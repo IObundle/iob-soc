@@ -1,4 +1,5 @@
 import os
+import sys
 import shutil
 
 import iob_colors
@@ -75,7 +76,7 @@ class iob_module:
 
         # Setup submodules placed in `submodule_list` list
         for submodule in self.submodule_list:
-            if type(submodule) == tuple:
+            if type(submodule) is tuple:
                 if "purpose" not in submodule[1]:
                     submodule[0]._setup(False, "hardware", topdir)
                 else:
@@ -84,7 +85,7 @@ class iob_module:
                 submodule._setup(False, purpose, topdir)
 
         # Copy files from the module's setup dir
-        self._copy_and_rename_files(purpose)
+        copy_srcs.copy_rename_setup_directory(self)
 
         # Generate configuration files
         config_gen.generate_confs(self)
@@ -143,30 +144,6 @@ class iob_module:
         self.build_dir = f"../{self.name}_{self.version}"
         print(self.build_dir)
 
-    def _copy_and_rename_files(self):
-        """ Copy and rename files from the module's setup dir.
-        Any string from the files in the setup dir that matches the
-        module's class name (self.__class__.__name__) will be replaced by the 
-        module's name (self.name).
-        For example, if we create a new IOb-SoC module with
-        `iob_soc(name="iob_soc_sut")` then the `iob_soc.v` file from
-        the iob-soc setup dir will have all instances of the string 'iob_soc'
-        replaced with the new string 'iob_soc_sut'.
-        """
-
-        # TODO: Restore way to rename
-
-        # find modules' setup dir
-        current_directory = os.getcwd()
-        # Use os.walk() to traverse the directory tree
-        for root, directories, files in os.walk(current_directory):
-            for directory in directories:
-                # Print the absolute path of each directory found
-                if directory == self.name:
-                    print(os.path.join(root, directory))
-                    self.setup_dir = os.path.join(root, directory)
-                    break
-
     def _remove_duplicate_sources(self):
         """Remove sources in the build directory from subfolders that exist in `hardware/src`"""
         # Go through all subfolders defined in PURPOSE_DIRS
@@ -189,7 +166,7 @@ class iob_module:
         verilog_gen.replace_includes(self.setup_dir, self.build_dir)
 
     def instance(self, name="", *args, **kwargs):
-        """Create a verilog instance for the current verilog module/ip core."""
+        """Create a verilog instance for the current ip core/verilog module."""
 
         if not name:
             name = f"{self.name}_0"
