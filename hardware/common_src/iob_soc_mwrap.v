@@ -23,30 +23,30 @@ module iob_soc_mwrap #(
 
 
 //rom wires
-wire rom_r_valid_i;
-wire [BOOTROM_ADDR_W-3:0] rom_r_addr_i;
-wire [DATA_W-1:0] rom_r_rdata_o;
+wire rom_r_valid;
+wire [BOOTROM_ADDR_W-3:0] rom_r_addr;
+wire [DATA_W-1:0] rom_r_rdata;
 
 
 //ram wires
-wire                               i_valid_o;
-wire          [SRAM_ADDR_W-3:0]    i_addr_o;
-wire          [     DATA_W-1:0]    i_wdata_o;
-wire          [   DATA_W/8-1:0]    i_wstrb_o;
-wire          [     DATA_W-1:0]    i_rdata_i;
-wire                               d_valid_o;
-wire          [SRAM_ADDR_W-3:0]    d_addr_o;
-wire          [     DATA_W-1:0]    d_wdata_o;
-wire          [   DATA_W/8-1:0]    d_wstrb_o;
-wire          [     DATA_W-1:0]    d_rdata_i;
+wire                               i_valid;
+wire          [SRAM_ADDR_W-3:0]    i_addr;
+wire          [     DATA_W-1:0]    i_wdata;
+wire          [   DATA_W/8-1:0]    i_wstrb;
+wire          [     DATA_W-1:0]    i_rdata;
+wire                               d_valid;
+wire          [SRAM_ADDR_W-3:0]    d_addr;
+wire          [     DATA_W-1:0]    d_wdata;
+wire          [   DATA_W/8-1:0]    d_wstrb;
+wire          [     DATA_W-1:0]    d_rdata;
 //
 
 `ifdef USE_SPRAM
-    wire                       en_i;
-    wire     [SRAM_ADDR_W-3:0] addr_i;
-    wire     [DATA_W/8-1:0]    we_i;
-    wire     [DATA_W-1:0]      d_i;
-    wire     [DATA_W-1:0]      d_o;
+    wire                       en;
+    wire     [SRAM_ADDR_W-3:0] addr;
+    wire     [DATA_W/8-1:0]    we;
+    wire     [DATA_W-1:0]      di;
+    wire     [DATA_W-1:0]      do;
 `endif
 
 iob_soc #(
@@ -116,30 +116,30 @@ iob_soc #(
     .uart_rts_o(                   uart_rts_o),
         //SPRAM  
 `ifdef USE_SPRAM
-    .valid_SPRAM_o(en_i),
-    .addr_SPRAM_o(addr_i),
-    .wstrb_SPRAM_o(we_i),
-    .wdata_SPRAM_o(d_i),
-    .rdata_SPRAM_i(d_o),
+    .valid_SPRAM_o(en),
+    .addr_SPRAM_o(addr),
+    .wstrb_SPRAM_o(we),
+    .wdata_SPRAM_o(di),
+    .rdata_SPRAM_i(do),
 `endif
 
     //rom
-    .rom_r_valid_o(rom_r_valid_i),
-    .rom_r_addr_o(rom_r_addr_i),
-    .rom_r_rdata_i(rom_r_rdata_o),
+    .rom_r_valid_o(rom_r_valid),
+    .rom_r_addr_o(rom_r_addr),
+    .rom_r_rdata_i(rom_r_rdata),
     //
 
     //ram
-    .i_valid_o(i_valid_o),
-    .i_addr_o(i_addr_o),
-    .i_wdata_o(i_wdata_o),
-    .i_wstrb_o(i_wstrb_o),
-    .i_rdata_i(i_rdata_i),
-    .d_valid_o(d_valid_o),
-    .d_addr_o(d_addr_o),
-    .d_wdata_o(d_wdata_o),
-    .d_wstrb_o(d_wstrb_o),
-    .d_rdata_i(d_rdata_i)
+    .i_valid_o(i_valid),
+    .i_addr_o(i_addr),
+    .i_wdata_o(i_wdata),
+    .i_wstrb_o(i_wstrb),
+    .i_rdata_i(i_rdata),
+    .d_valid_o(d_valid),
+    .d_addr_o(d_addr),
+    .d_wdata_o(d_wdata),
+    .d_wstrb_o(d_wstrb),
+    .d_rdata_i(d_rdata)
    //
 
 );
@@ -153,7 +153,7 @@ iob_soc #(
         ) main_mem_byte (
             .clk_i(clk_i),
             // data port
-            .en_i  (valid),
+            .en_i  (en),
             .addr_i(addr),
             .we_i  (wstrb),
             .d_i   (wdata),
@@ -169,18 +169,18 @@ iob_soc #(
             ) main_mem_byte (
             .clk_i(clk_i),
             // data port
-            .enA_i  (d_valid_o),
-            .addrA_i(d_addr_o),
-            .weA_i  (d_wstrb_o),
-            .dA_i   (d_wdata_o),
-            .dA_o   (d_rdata_i),
+            .enA_i  (d_valid),
+            .addrA_i(d_addr),
+            .weA_i  (d_wstrb),
+            .dA_i   (d_wdata),
+            .dA_o   (d_rdata),
 
             // instruction port
-            .enB_i  (i_valid_o),
-            .addrB_i(i_addr_o),
-            .weB_i  (i_wstrb_o),
-            .dB_i   (i_wdata_o),
-            .dB_o   (i_rdata_i)
+            .enB_i  (i_valid),
+            .addrB_i(i_addr),
+            .weB_i  (i_wstrb),
+            .dB_i   (i_wdata),
+            .dB_o   (i_rdata)
         );
         `else  // !`ifdef IOB_MEM_NO_READ_ON_WRITE
             iob_ram_dp_be_xil #(
@@ -191,17 +191,17 @@ iob_soc #(
                 .clk_i(clk_i),
 
                 // data port
-                .enA_i  (d_valid_o),
-                .addrA_i(d_addr_o),
-                .weA_i  (d_wstrb_o),
-                .dA_i   (d_wdata_o),
-                .dA_o   (d_rdata_i),
+                .enA_i  (d_valid),
+                .addrA_i(d_addr),
+                .weA_i  (d_wstrb),
+                .dA_i   (d_wdata),
+                .dA_o   (d_rdata),
                 // instruction port
-                .enB_i  (i_valid_o),
-                .addrB_i(i_addr_o),
-                .weB_i  (i_wstrb_o),
-                .dB_i   (i_wdata_o),
-                .dB_o   (i_rdata_i)
+                .enB_i  (i_valid),
+                .addrB_i(i_addr),
+                .weB_i  (i_wstrb),
+                .dB_i   (i_wdata),
+                .dB_o   (i_rdata)
             );
         `endif
     `endif 
@@ -214,8 +214,8 @@ iob_soc #(
         .HEXFILE({BOOT_HEXFILE, ".hex"})
     ) sp_rom0 (
         .clk_i   (clk_i),
-        .r_en_i  (rom_r_valid_i),
-        .addr_i  (rom_r_addr_i),
-        .r_data_o(rom_r_rdata_o)
+        .r_en_i  (rom_r_valid),
+        .addr_i  (rom_r_addr),
+        .r_data_o(rom_r_rdata)
     );
 endmodule
