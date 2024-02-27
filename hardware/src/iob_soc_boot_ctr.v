@@ -103,7 +103,6 @@ module iob_soc_boot_ctr #(
 
    assign rom_r_valid_o_nxt = (boot_o && rom_r_addr_o != ({BOOTROM_ADDR_W - 2{1'b1}}-1) && rom_r_valid_o != 1'b0) ? 1'b1 : 1'b0;
    
-   //wire  [BOOTROM_ADDR_W-3:0] rom_r_addr_o;
    wire [BOOTROM_ADDR_W-3:0] rom_r_addr_o_nxt;
 
    assign rom_r_addr_o_nxt = (boot_o && rom_r_addr_o != ({BOOTROM_ADDR_W - 2{1'b1}}-1)) ? rom_r_addr_o + 1'b1 : {(BOOTROM_ADDR_W - 2) {1'b0}};
