@@ -21,8 +21,8 @@ from iob_verilog_instance import iob_verilog_instance
 class iob_module:
     """Generic class to describe a base iob-module"""
 
-    def __init__(self):
-        self.name = "iob_module"  # Verilog module name (not instance name)
+    def __init__(self, name=None):
+        self.name = name or self.__class__.__name__
         self.csr_if = "iob"
         self.version = "1.0"  # Module version
         self.description = "default description"  # Module description
@@ -83,8 +83,8 @@ class iob_module:
             else:
                 submodule._setup(False, purpose, topdir)
 
-        # Copy sources from the module's setup dir (and from its superclasses)
-        self._copy_srcs(purpose)
+        # Copy files from the module's setup dir
+        self._copy_and_rename_files(purpose)
 
         # Generate configuration files
         config_gen.generate_confs(self)
@@ -143,8 +143,19 @@ class iob_module:
         self.build_dir = f"../{self.name}_{self.version}"
         print(self.build_dir)
 
-    def _copy_srcs(self, exclude_file_list=[], highest_superclass=None):
-        """Copy sources from the module's setup dir"""
+    def _copy_and_rename_files(self):
+        """ Copy and rename files from the module's setup dir.
+        Any string from the files in the setup dir that matches the
+        module's class name (self.__class__.__name__) will be replaced by the 
+        module's name (self.name).
+        For example, if we create a new IOb-SoC module with
+        `iob_soc(name="iob_soc_sut")` then the `iob_soc.v` file from
+        the iob-soc setup dir will have all instances of the string 'iob_soc'
+        replaced with the new string 'iob_soc_sut'.
+        """
+
+        # TODO: Restore way to rename
+
         # find modules' setup dir
         current_directory = os.getcwd()
         # Use os.walk() to traverse the directory tree

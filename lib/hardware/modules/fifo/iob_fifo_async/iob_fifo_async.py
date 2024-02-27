@@ -13,7 +13,6 @@ from iob_ram_t2p import iob_ram_t2p
 class iob_fifo_async(iob_module):
     def __init__(self):
         super().__init__()
-        self.name = "iob_fifo_async"
         self.version = "V0.10"
         self.setup_dir = os.path.dirname(__file__)
         self.submodule_list = [

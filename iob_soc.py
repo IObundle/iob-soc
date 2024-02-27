@@ -38,7 +38,6 @@ from axi_interconnect import axi_interconnect
 class iob_soc(iob_module):
     def __init__(self):
         super().__init__()
-        self.name = "iob_soc"
         self.version = "V0.70"
         self.setup_dir = os.path.dirname(__file__)
         self.rw_overlap = True
