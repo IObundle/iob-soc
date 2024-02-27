@@ -3,11 +3,11 @@
 #    csr_gen.py: build Verilog software accessible registers and software getters and setters
 #
 
-import sys, os
+import sys
+import os
 from math import ceil, log
 from latex import write_table
 from submodule_utils import eval_param_expression_from_config
-import re
 import iob_colors
 
 

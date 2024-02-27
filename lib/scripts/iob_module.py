@@ -1,18 +1,16 @@
 import os
 import shutil
-import sys
-import importlib
 
 import iob_colors
 
 import copy_srcs
 
-import if_gen
 import config_gen
+import param_gen
 import verilog_gen
-import csr_gen
-import block_gen
+import reg_gen
 import io_gen
+import doc_gen
 import ipxact_gen
 
 from pathlib import Path
@@ -39,6 +37,7 @@ class iob_module:
         self.use_netlist = False  # use module netlist
         self.is_system = False  # create software files in build directory
         self.board_list = None  # List of fpga files to copy to build directory
+        self.purpose = "hardware"
         self.confs = []
         self.regs = []
         self.ios = []
@@ -46,7 +45,7 @@ class iob_module:
         self.submodule_list = []
 
         # Read-only dictionary with relation between the setup_purpose and the corresponding source folder
-        self.purpose_dirs = {
+        self.PURPOSE_DIRS = {
             "hardware": "hardware/src",
             "simulation": "hardware/simulation/src",
             "fpga": "hardware/fpga/src",
@@ -62,6 +61,7 @@ class iob_module:
         if is_top:
             topdir = f"../{self.name}_{self.version}"
         self.build_dir = topdir + "/build"
+        self.purpose = purpose
 
         # Create build directory this is the top module class, and is the first time setup
         if self.is_top_module:
@@ -99,15 +99,18 @@ class iob_module:
         io_gen.generate_ports(self)
 
         # Generate csr interface
-        csr_gen.generate_csr(self)
+        csr_gen_obj, reg_table = reg_gen.generate_csr(self)
 
         if is_top:
             # Replace Verilog snippet includes
-            self.replace_snippet_includes()
+            self._replace_snippet_includes()
             # Clean duplicate sources in `hardware/src` and its subfolders (like `hardware/simulation/src`)
-            self.remove_duplicate_sources()
+            self._remove_duplicate_sources()
+            # Generate docs
+            doc_gen.generate_docs(self, csr_gen_obj, reg_table)
             # Generate ipxact file
-            ipxact_gen.generate_ipxact_xml(self, reg_table, self.build_dir + "/ipxact")
+            # if self.generate_ipxact: #TODO: When should this be generated?
+            #    ipxact_gen.generate_ipxact_xml(self, reg_table, self.build_dir + "/ipxact")
 
     def __create_build_dir(self):
         """Create build directory. Must be called from the top module."""
@@ -119,6 +122,9 @@ class iob_module:
         os.makedirs(f"{self.build_dir}/hardware/src", exist_ok=True)
         os.makedirs(f"{self.build_dir}/hardware/simulation/src", exist_ok=True)
         os.makedirs(f"{self.build_dir}/hardware/fpga/src", exist_ok=True)
+
+        os.makedirs(f"{self.build_dir}/doc", exist_ok=True)
+        os.makedirs(f"{self.build_dir}/doc/tsrc", exist_ok=True)
 
         shutil.copyfile(
             f"{copy_srcs.get_lib_dir()}/build.mk", f"{self.build_dir}/Makefile"
@@ -162,7 +168,7 @@ class iob_module:
                 continue
 
             # Get common srcs between `hardware/src` and current subfolder
-            common_srcs = self.find_common_deep(
+            common_srcs = find_common_deep(
                 os.path.join(self.build_dir, "hardware/src"),
                 os.path.join(self.build_dir, subfolder),
             )
@@ -182,3 +188,21 @@ class iob_module:
 
         # Return a new iob_verilog_instance object with these attributes that describe the Verilog instance
         return iob_verilog_instance(name, *args, module=self, **kwargs)
+
+
+def find_common_deep(path1, path2):
+    """Find common files (recursively) inside two given directories
+    Taken from: https://stackoverflow.com/a/51625515
+    :param str path1: Directory path 1
+    :param str path2: Directory path 2
+    """
+    return set.intersection(
+        *(
+            set(
+                os.path.relpath(os.path.join(root, file), path)
+                for root, _, files in os.walk(path)
+                for file in files
+            )
+            for path in (path1, path2)
+        )
+    )

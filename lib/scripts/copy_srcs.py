@@ -2,19 +2,15 @@
 
 import os
 import sys
-import re
 import subprocess
 from pathlib import Path
 import shutil
 import importlib.util
-import copy_srcs
 
 # IObundle scripts imported:
 import if_gen
 from submodule_utils import import_setup, set_default_submodule_dirs
 import iob_colors
-import inspect
-import config_gen as mk_conf
 
 # get LIB_DIR from env variable
 

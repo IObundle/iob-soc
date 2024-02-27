@@ -2,40 +2,8 @@
 import os
 import re
 
-import iob_colors
 from latex import write_table
-
-
-def params_vh(params, top_module, out_dir):
-    for parameter in params:
-        if parameter["type"] in ["P", "F"]:
-            break
-    else:
-        return
-
-    file2create = open(f"{out_dir}/{top_module}_params.vs", "w")
-    core_prefix = f"{top_module}_".upper()
-    for parameter in params:
-        if parameter["type"] in ["P", "F"]:
-            p_name = parameter["name"].upper()
-            file2create.write(f"\n  parameter {p_name} = `{core_prefix}{p_name},")
-    file2create.close()
-
-    file2create = open(f"{out_dir}/{top_module}_params.vs", "rb+")
-    file2create.seek(-1, os.SEEK_END)
-    file2create.write(b"\n")
-    file2create.close()
-
-    file2create = open(f"{out_dir}/{top_module}_inst_params.vs", "w")
-    for parameter in params:
-        if parameter["type"] in ["P", "F"]:
-            p_name = parameter["name"].upper()
-            file2create.write(f"\n  .{p_name}({p_name}),")
-
-    file2create = open(f"{out_dir}/{top_module}_inst_params.vs", "rb+")
-    file2create.seek(-1, os.SEEK_END)
-    file2create.write(b"\n")
-    file2create.close()
+import copy_srcs
 
 
 def conf_vh(macros, top_module, out_dir):
@@ -197,7 +165,7 @@ def generate_confs(core):
                 if macro["name"] == "VERSION":
                     found_version_macro = True
         if not found_version_macro:
-            confs.append(
+            core.confs.append(
                 {
                     "name": "VERSION",
                     "type": "M",
@@ -208,7 +176,5 @@ def generate_confs(core):
                 }
             )
 
-    params_vh(core.confs, core.name, core.build_dir + "/hardware/src")
     conf_vh(core.confs, core.name, core.build_dir + "/hardware/src")
     conf_h(core.confs, core.name, core.build_dir + "/software/include")
-    generate_confs_tex(core.confs, core.build_dir + "/doc")

@@ -42,10 +42,12 @@ def delete_last_comma(file_obj):
     file_obj.write(" ")
 
 
-def generate_ports(ios, top_module, out_dir):
-    f_io = open(f"{out_dir}/{top_module}_io.vs", "w+")
+def generate_ports(core):
+    out_dir = core.build_dir + "/hardware/src"
 
-    for table in ios:
+    f_io = open(f"{out_dir}/{core.name}_io.vs", "w+")
+
+    for table in core.ios:
 
         # print(table)
 
@@ -55,7 +57,7 @@ def generate_ports(ios, top_module, out_dir):
 
         # Open ifdef if conditional interface
         if "if_defined" in table.keys():
-            f_io.write(f"`ifdef {top_module.upper()}_{table['if_defined']}\n")
+            f_io.write(f"`ifdef {core.name.upper()}_{table['if_defined']}\n")
 
         if "file_prefix" in table.keys():
             file_prefix = table["file_prefix"]
