@@ -159,7 +159,7 @@ module iob_soc_int_mem #(
    wire [     ADDR_W-1:0] boot_i_addr;
    wire [     ADDR_W-1:0] i_addr;
    wire [SRAM_ADDR_W-3:0] boot_ram_d_addr;
-   wire [SRAM_ADDR_W-3:0] ram_d_addr_ont;
+   wire [SRAM_ADDR_W-3:0] ram_d_addr_int;
 
    //
    //modify addresses to run  boot program
@@ -178,8 +178,8 @@ module iob_soc_int_mem #(
 
    //data bus: just replace address
    assign boot_ram_d_addr = ram_d_req[`ADDRESS(0, SRAM_ADDR_W)-2] + boot_offset[SRAM_ADDR_W-1:2];
-   assign ram_d_addr_ont = ram_d_req[`ADDRESS(0, SRAM_ADDR_W)-2];
-   assign ram_d_addr = boot ? boot_ram_d_addr : ram_d_addr_ont;
+   assign ram_d_addr_int = ram_d_req[`ADDRESS(0, SRAM_ADDR_W)-2];
+   assign ram_d_addr = boot ? boot_ram_d_addr : ram_d_addr_int;
 
    //
    //MERGE BOOT WRITE BUS AND CPU READ BUS

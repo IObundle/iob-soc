@@ -37,7 +37,7 @@ module iob_soc_sram #(
 
 `ifdef USE_SPRAM
 
-   wire d_valid_ont = i_valid_o ? 1'b0 : d_valid_o;
+   wire d_valid_int = i_valid_o ? 1'b0 : d_valid_o;
    assign valid_SPRAM_o = i_valid_o ? i_valid_o : d_valid_o;
    assign addr_SPRAM_o = i_valid_o ? i_addr_o : d_addr_o;
    assign wdata_SPRAM_o = i_valid_o ? i_wdata_o : d_wdata_o;
