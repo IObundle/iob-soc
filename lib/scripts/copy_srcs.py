@@ -16,6 +16,9 @@ import iob_colors
 
 
 def get_lib_dir():
+    assert (
+        "LIB_DIR" in os.environ
+    ), f"{iob_colors.FAIL}LIB_DIR not set in environment!{iob_colors.ENDC}"
     return os.environ.get("LIB_DIR")
 
 
