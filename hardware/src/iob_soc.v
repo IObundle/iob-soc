@@ -15,11 +15,11 @@ module iob_soc #(
    output   [BOOTROM_ADDR_W-3:0]    rom_r_addr_o,
    input       [DATA_W-1:0]         rom_r_rdata_i,
 `ifdef USE_SPRAM
-   output                       valid_SPRAM_o,
-   output     [SRAM_ADDR_W-3:0] addr_SPRAM_o,
-   output     [DATA_W/8-1:0]    wstrb_SPRAM_o,
-   output     [DATA_W-1:0]      wdata_SPRAM_o,
-   input      [DATA_W-1:0]      rdata_SPRAM_i,
+   output                       valid_spram_o,
+   output     [SRAM_ADDR_W-3:0] addr_spram_o,
+   output     [DATA_W/8-1:0]    wstrb_spram_o,
+   output     [DATA_W-1:0]      wdata_spram_o,
+   input      [DATA_W-1:0]      rdata_spram_i,
 `endif 
    //
    //sram
@@ -203,11 +203,11 @@ module iob_soc #(
       .d_req_i (slaves_req[0+:`REQ_W]),
       .d_resp_o(slaves_resp[0+:`RESP_W]),
    `ifdef USE_SPRAM
-      .valid_SPRAM_o(valid_SPRAM_o),
-      .addr_SPRAM_o(addr_SPRAM_o),
-      .wstrb_SPRAM_o(wstrb_SPRAM_o),
+      .valid_spram_o(valid_spram_o),
+      .addr_spram_o(addr_spram_o),
+      .wstrb_spram_o(wstrb_spram_o),
       .wdata_SPRAM_o(wdata_SPRAM_o),
-      .rdata_SPRAM_i(rdata_SPRAM_i),
+      .rdata_spram_i(rdata_spram_i),
    `endif 
 
 

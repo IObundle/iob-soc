@@ -8,11 +8,11 @@ module iob_soc_sram #(
    parameter HEXFILE     = "none"
 ) (
 `ifdef USE_SPRAM
-   output                       valid_SPRAM_o,
-   output     [SRAM_ADDR_W-3:0] addr_SPRAM_o,
-   output     [DATA_W/8-1:0]    wstrb_SPRAM_o,
-   output     [DATA_W-1:0]      wdata_SPRAM_o,
-   input      [DATA_W-1:0]      rdata_SPRAM_i,
+   output                       valid_spram_o,
+   output     [SRAM_ADDR_W-3:0] addr_spram_o,
+   output     [DATA_W/8-1:0]    wstrb_spram_o,
+   output     [DATA_W-1:0]      wdata_spram_o,
+   input      [DATA_W-1:0]      rdata_spram_i,
 `endif 
    // intruction bus
    input                        i_valid_o,
@@ -38,12 +38,12 @@ module iob_soc_sram #(
 `ifdef USE_SPRAM
 
    wire d_valid_int = i_valid_o ? 1'b0 : d_valid_o;
-   assign valid_SPRAM_o = i_valid_o ? i_valid_o : d_valid_o;
-   assign addr_SPRAM_o = i_valid_o ? i_addr_o : d_addr_o;
-   assign wdata_SPRAM_o = i_valid_o ? i_wdata_o : d_wdata_o;
-   assign wstrb_SPRAM_o = i_valid_o ? i_wstrb_o : d_wstrb_o;
-   assign d_rdata_i = rdata_SPRAM_i;
-   assign i_rdata_i = rdata_SPRAM_i;
+   assign valid_spram_o = i_valid_o ? i_valid_o : d_valid_o;
+   assign addr_spram_o = i_valid_o ? i_addr_o : d_addr_o;
+   assign wdata_spram_o = i_valid_o ? i_wdata_o : d_wdata_o;
+   assign wstrb_spram_o = i_valid_o ? i_wstrb_o : d_wstrb_o;
+   assign d_rdata_i = rdata_spram_i;
+   assign i_rdata_i = rdata_spram_i;
 `endif
 
    // reply with ready 
