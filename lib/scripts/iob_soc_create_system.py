@@ -10,6 +10,7 @@ from iob_soc_peripherals import (
     get_reserved_signal_connection,
 )
 
+
 # Automatically include <corename>_swreg_def.vh verilog headers after IOB_PRAGMA_PHEADERS comment
 def insert_header_files(dest_dir, name, peripherals_list):
     fd_out = open(f"{dest_dir}/{name}_periphs_swreg_def.vs", "w")

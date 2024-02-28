@@ -48,7 +48,6 @@ def generate_ports(core):
     f_io = open(f"{out_dir}/{core.name}_io.vs", "w+")
 
     for table in core.ios:
-
         # print(table)
 
         # If table has 'doc_only' attribute set to True, skip it
