@@ -74,8 +74,16 @@ class iob_module:
             else:
                 submodule._setup(False, purpose, topdir)
 
+        # Copy files from LIB to setup various flows
+        # (should run before copy of files from module's setup dir)
+        if is_top:
+            copy_srcs.flows_setup(self)
+
         # Copy files from the module's setup dir
         copy_srcs.copy_rename_setup_directory(self)
+
+        # Generate config_build.mk
+        config_gen.config_build_mk(self)
 
         # Generate configuration files
         config_gen.generate_confs(self)
