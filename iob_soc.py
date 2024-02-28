@@ -96,7 +96,7 @@ class iob_soc(iob_module):
         super()._create_submodules_list(
             [
                 iob_picorv32,
-                # iob_cache,
+                iob_cache,
                 iob_uart,
                 iob_timer,
                 # Hardware headers & modules
