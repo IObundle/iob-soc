@@ -223,7 +223,7 @@ module iob_soc_int_mem #(
       .valid_spram_o(valid_spram_o),
       .addr_spram_o(addr_spram_o),
       .wstrb_spram_o(wstrb_spram_o),
-      .wdata_SPRAM_o(wdata_SPRAM_o),
+      .wdata_spram_o(wdata_spram_o),
       .rdata_spram_i(rdata_spram_i),
    `endif 
       //instruction bus
