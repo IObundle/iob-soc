@@ -9,7 +9,6 @@ class iob_ram_dp(iob_module):
         super().__init__()
         self.version = "V0.10"
         self.previous_version = "V0.09"
-        self.setup_dir = os.path.dirname(__file__)
 
 
 if __name__ == "__main__":

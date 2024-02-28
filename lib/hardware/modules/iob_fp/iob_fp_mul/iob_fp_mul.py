@@ -10,5 +10,4 @@ class iob_fp_mul(iob_module):
     def __init__(self):
         super().__init__()
         self.version = "V0.10"
-        self.setup_dir = os.path.dirname(__file__)
         self.submodule_list = [iob_fp_special(), iob_fp_round()]

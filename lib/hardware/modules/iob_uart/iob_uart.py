@@ -15,7 +15,6 @@ class iob_uart(iob_module):
     def __init__(self):
         super().__init__()
         self.version = "V0.10"
-        self.setup_dir = os.path.dirname(__file__)
         self.rw_overlap = True
         self.board_list = ["CYCLONEV-GT-DK", "AES-KU040-DB-G"]
         self.submodule_list = [

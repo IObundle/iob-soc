@@ -10,7 +10,6 @@ class iob_asym_converter(iob_module):
     def __init__(self):
         super().__init__()
         self.version = "V0.10"
-        self.setup_dir = os.path.dirname(__file__)
         self.submodule_list = [
             iob_reg_r(),
             iob_reg_re(),

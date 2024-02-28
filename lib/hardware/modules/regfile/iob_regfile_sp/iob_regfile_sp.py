@@ -10,7 +10,6 @@ class iob_regfile_sp(iob_module):
         super().__init__()
         self.version = "V0.10"
         self.previous_version = "V0.09"
-        self.setup_dir = os.path.dirname(__file__)
         self.submodule_list = [
             iob_reg_re(),
         ]

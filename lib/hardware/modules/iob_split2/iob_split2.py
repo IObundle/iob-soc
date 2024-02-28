@@ -11,7 +11,6 @@ class iob_split2(iob_module):
     def __init__(self):
         super().__init__()
         self.version = "V0.10"
-        self.setup_dir = os.path.dirname(__file__)
         self.submodule_list = [
             {"interface": "iob_s_port"},
             {"interface": "iob_m_port"},

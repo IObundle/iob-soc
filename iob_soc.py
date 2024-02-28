@@ -39,7 +39,6 @@ class iob_soc(iob_module):
     def __init__(self):
         super().__init__()
         self.version = "V0.70"
-        self.setup_dir = os.path.dirname(__file__)
         self.rw_overlap = True
         self.is_system = True
         self.board_list = ["CYCLONEV-GT-DK", "AES-KU040-DB-G"]
