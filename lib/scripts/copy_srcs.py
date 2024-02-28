@@ -522,8 +522,8 @@ def copy_with_rename(old_core_name, new_core_name):
     return copy_func
 
 
-def copy_rename_setup_subdirectory(core, directory, exclude_file_list=[]):
-    """Copy and rename files from a given setup directory to the build directory
+def copy_rename_setup_subdir(core, directory, exclude_file_list=[]):
+    """Copy and rename files from a given setup subdirectory to the build directory
     :param core: The core object
     :param directory: The directory to copy
     :param exclude_file_list: List of wildcards for files to exclude
@@ -603,6 +603,11 @@ def copy_rename_setup_subdirectory(core, directory, exclude_file_list=[]):
         dst_directory = directory
 
     # Copy tree of this directory, renaming files, and overriding destination ones.
+    # Note: The `copy_with_rename` may throw errors when
+    #       trying to rename binary files from the doc dir.
+    #       The main branch used a dedicated script to copy doc files
+    #       without renaming them. Maybe here we should try to
+    #       implement it with a try catch block.
     shutil.copytree(
         os.path.join(core.setup_dir, directory),
         os.path.join(core.build_dir, dst_directory),
@@ -658,4 +663,4 @@ def copy_rename_setup_directory(core, exclude_file_list=[]):
 
     # Copy sources
     for directory in dir_list:
-        copy_rename_setup_subdirectory(core, directory, exclude_file_list)
+        copy_rename_setup_subdir(core, directory, exclude_file_list)

@@ -60,8 +60,11 @@ class iob_module:
         self.build_dir = topdir + "/build"
         self.purpose = purpose
 
+        if not self.previous_version:
+            self.previous_version = self.version
+
         # Create build directory this is the top module class, and is the first time setup
-        if self.is_top_module:
+        if is_top:
             self.__create_build_dir()
 
         # Setup submodules placed in `submodule_list` list
