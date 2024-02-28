@@ -541,9 +541,7 @@ def copy_rename_setup_subdirectory(core, directory, exclude_file_list=[]):
             # SETUP_DIR/hardware/src
             shutil.copyfile(
                 os.path.join(core.setup_dir, f"{core.name}.v"),
-                os.path.join(
-                    core.build_dir, f"{dst_directory}/{core.name}.v"
-                ),
+                os.path.join(core.build_dir, f"{dst_directory}/{core.name}.v"),
             )
             return
     elif directory == "hardware/fpga":
@@ -567,12 +565,8 @@ def copy_rename_setup_subdirectory(core, directory, exclude_file_list=[]):
             # search for the fpga directory in the cores setup_dir/hardware/fpga
             # in both quartus and vivado directories
             for tools_dir in tools_list:
-                setup_tools_dir = os.path.join(
-                    core.setup_dir, directory, tools_dir
-                )
-                build_tools_dir = os.path.join(
-                    core.build_dir, directory, tools_dir
-                )
+                setup_tools_dir = os.path.join(core.setup_dir, directory, tools_dir)
+                build_tools_dir = os.path.join(core.build_dir, directory, tools_dir)
                 setup_fpga_dir = os.path.join(setup_tools_dir, fpga)
                 build_fpga_dir = os.path.join(build_tools_dir, fpga)
 

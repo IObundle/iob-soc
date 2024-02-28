@@ -50,7 +50,6 @@ class iob_module:
         }
 
     def _setup(self, is_top=True, purpose="hardware", topdir="."):
-        print(topdir)
         """
         Initialize the setup process for the top module.
         """
@@ -65,22 +64,13 @@ class iob_module:
         if self.is_top_module:
             self.__create_build_dir()
 
-        # check if directory ../{self.name}_{self.version} exists
-
-        directory = Path(self.build_dir)
-
-        if directory.exists():
-            print("Directory exists")
-        else:
-            print("Directory does not exist")
-
         # Setup submodules placed in `submodule_list` list
         for submodule in self.submodule_list:
             if type(submodule) is tuple:
                 if "purpose" not in submodule[1]:
                     submodule[0]._setup(False, "hardware", topdir)
                 else:
-                    submodule[0]._setup(False, submodule[1], topdir)
+                    submodule[0]._setup(False, submodule[1]["purpose"], topdir)
             else:
                 submodule._setup(False, purpose, topdir)
 
