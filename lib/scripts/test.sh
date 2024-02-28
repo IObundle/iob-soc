@@ -2,8 +2,10 @@
 
 set -e
 
+LIB_DIR=./lib
+
 #find directories containing testbenches
-TBS=`find hardware | grep _tb.v | grep -v include`
+TBS=`find ${LIB_DIR}/hardware | grep _tb.v | grep -v include`
 
 #extract respective directories
 for i in $TBS; do TB_DIRS+=" `dirname $i`" ; done
@@ -20,8 +22,11 @@ fi
 #test if first argument is test and run all tests
 if [ "$1" == "test" ]; then
     for i in $MODULES; do
-        make clean build-setup CORE=$i TOP_MODULE_NAME=$i
-        make -C ../${i}_V* sim-run
+        # echo "$i"
+        core_dir=`find -name ${i}.py | xargs dirname`
+        # echo "Running test for $core_dir"
+        make -f ${LIB_DIR}/Makefile clean build-setup CORE=$i TOP_MODULE_NAME=$i LIB_DIR=$LIB_DIR CORE_DIR=$core_dir
+        make -C ../${i}_V*/build sim-run
     done
     exit 0
 fi
