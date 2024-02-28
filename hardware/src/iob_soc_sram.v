@@ -15,20 +15,20 @@ module iob_soc_sram #(
    input      [DATA_W-1:0]      rdata_spram_i,
 `endif 
    // intruction bus
-   input                        i_valid_o,
-   input      [SRAM_ADDR_W-3:0] i_addr_o,
-   input      [     DATA_W-1:0] i_wdata_o,   //used for booting
-   input      [   DATA_W/8-1:0] i_wstrb_o,   //used for booting
-   output     [     DATA_W-1:0] i_rdata_i,
+   input                        i_valid_i,
+   input      [SRAM_ADDR_W-3:0] i_addr_i,
+   input      [     DATA_W-1:0] i_wdata_i,   //used for booting
+   input      [   DATA_W/8-1:0] i_wstrb_i,   //used for booting
+   output     [     DATA_W-1:0] i_rdata_o,
    output                       i_rvalid_o,
    output                       i_ready_o,
 
    // data bus
-   input                        d_valid_o,
-   input      [SRAM_ADDR_W-3:0] d_addr_o,
-   input      [     DATA_W-1:0] d_wdata_o,
-   input      [   DATA_W/8-1:0] d_wstrb_o,
-   output     [     DATA_W-1:0] d_rdata_i,
+   input                        d_valid_i,
+   input      [SRAM_ADDR_W-3:0] d_addr_i,
+   input      [     DATA_W-1:0] d_wdata_i,
+   input      [   DATA_W/8-1:0] d_wstrb_i,
+   output     [     DATA_W-1:0] d_rdata_o,
    output                       d_rvalid_o,
    output                       d_ready_o,
 
@@ -37,18 +37,18 @@ module iob_soc_sram #(
 
 `ifdef USE_SPRAM
 
-   wire d_valid_int = i_valid_o ? 1'b0 : d_valid_o;
-   assign valid_spram_o = i_valid_o ? i_valid_o : d_valid_o;
-   assign addr_spram_o = i_valid_o ? i_addr_o : d_addr_o;
-   assign wdata_spram_o = i_valid_o ? i_wdata_o : d_wdata_o;
-   assign wstrb_spram_o = i_valid_o ? i_wstrb_o : d_wstrb_o;
-   assign d_rdata_i = rdata_spram_i;
-   assign i_rdata_i = rdata_spram_i;
+   wire d_valid_int = i_valid_i ? 1'b0 : d_valid_i;
+   assign valid_spram_o = i_valid_i ? i_valid_i : d_valid_i;
+   assign addr_spram_o = i_valid_i ? i_addr_i : d_addr_i;
+   assign wdata_spram_o = i_valid_i ? i_wdata_i : d_wdata_i;
+   assign wstrb_spram_o = i_valid_i ? i_wstrb_i : d_wstrb_i;
+   assign d_rdata_o = rdata_spram_i;
+   assign i_wstrb_o = rdata_spram_i;
 `endif
 
    // reply with ready 
    wire i_rvalid_nxt;
-   assign i_rvalid_nxt = i_valid_o & ~(|i_wstrb_o);
+   assign i_rvalid_nxt = i_valid_i & ~(|i_wstrb_i);
 
    iob_reg #(
       .DATA_W (1),
@@ -62,7 +62,7 @@ module iob_soc_sram #(
    );
 
    wire d_rvalid_nxt;
-   assign d_rvalid_nxt = d_valid_o & ~(|d_wstrb_o);
+   assign d_rvalid_nxt = d_valid_i & ~(|d_wstrb_i);
 
    iob_reg #(
       .DATA_W (1),

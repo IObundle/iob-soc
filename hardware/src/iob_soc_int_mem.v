@@ -26,7 +26,7 @@ module iob_soc_int_mem #(
 `ifdef USE_SPRAM
    output                       valid_spram_o,
    output     [SRAM_ADDR_W-3:0] addr_spram_o,
-   output     [DATA_W/8-1:0]    wstrb_SPRAM,
+   output     [DATA_W/8-1:0]    wstrb_spram_o,
    output     [DATA_W-1:0]      wdata_spram_o,
    input      [DATA_W-1:0]      rdata_spram_i,
 `endif 
@@ -222,25 +222,25 @@ module iob_soc_int_mem #(
    `ifdef USE_SPRAM
       .valid_spram_o(valid_spram_o),
       .addr_spram_o(addr_spram_o),
-      .wstrb_spram_o(wstrb_spram_o),
+      .wstrb_spram_o_o(wstrb_spram_o_o),
       .wdata_spram_o(wdata_spram_o),
       .rdata_spram_i(rdata_spram_i),
    `endif 
       //instruction bus
-      .i_valid_o(i_valid_o),
-      .i_addr_o  (i_addr_o),
-      .i_wdata_o (i_wdata_o),
-      .i_wstrb_o (i_wstrb_o),
-      .i_rdata_i (),
+      .i_valid_i(i_valid_o),
+      .i_addr_i  (i_addr_o),
+      .i_wdata_i (i_wdata_o),
+      .i_wstrb_i (i_wstrb_o),
+      .i_rdata_o (),
       .i_rvalid_o(ram_i_resp[`RVALID(0)]),
       .i_ready_o (ram_i_resp[`READY(0)]),
 
       //data bus
-      .d_valid_o(d_valid_o),
-      .d_addr_o  (d_addr_o),
-      .d_wdata_o (d_wdata_o),
-      .d_wstrb_o (d_wstrb_o),
-      .d_rdata_i (),
+      .d_valid_i(d_valid_o),
+      .d_addr_i  (d_addr_o),
+      .d_wdata_i (d_wdata_o),
+      .d_wstrb_i (d_wstrb_o),
+      .d_rdata_o (),
       .d_rvalid_o(ram_d_resp[`RVALID(0)]),
       .d_ready_o (ram_d_resp[`READY(0)])
    );
