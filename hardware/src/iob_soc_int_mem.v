@@ -52,18 +52,26 @@ module iob_soc_int_mem #(
 
    `include "clk_en_rst_s_port.vs"
 );
+
+   `ifdef USE_SPRAM
+      assign ram_d_resp[`RDATA(0)] = rdata_spram_i;
+      assign ram_i_resp[`RDATA(0)] = rdata_spram_i;
+   
+   `else
+      assign ram_i_resp[`RDATA(0)] = i_rdata_i;
+      assign ram_d_resp[`RDATA(0)] = d_rdata_i;
+   `endif 
+
    assign i_valid_o  = ram_i_req[`VALID(0)];
    assign i_addr_o   = ram_i_req[`ADDRESS(0, SRAM_ADDR_W)-2];
    assign i_wdata_o  = ram_i_req[`WDATA(0)];
    assign i_wstrb_o  = ram_i_req[`WSTRB(0)];
-   assign ram_i_resp[`RDATA(0)] = i_rdata_i;
-
 
    assign d_valid_o  = ram_d_req[`VALID(0)];
    assign d_addr_o   = ram_d_addr;
    assign d_wdata_o  = ram_d_req[`WDATA(0)];
    assign d_wstrb_o  = ram_d_req[`WSTRB(0)];
-   assign ram_d_resp[`RDATA(0)] = d_rdata_i;
+
 
 
 
