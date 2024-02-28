@@ -8,11 +8,11 @@ module iob_soc_sram #(
    parameter HEXFILE     = "none"
 ) (
 `ifdef USE_SPRAM
-   output                       valid_SPRAM,
-   output     [SRAM_ADDR_W-3:0] addr_SPRAM,
-   output     [DATA_W/8-1:0]    wstrb_SPRAM,
-   output     [DATA_W-1:0]      wdata_SPRAM,
-   input      [DATA_W-1:0]      rdata_SPRAM,
+   output                       valid_spram_o,
+   output     [SRAM_ADDR_W-3:0] addr_spram_o,
+   output     [DATA_W/8-1:0]    wstrb_spram_o,
+   output     [DATA_W-1:0]      wdata_spram_o,
+   input      [DATA_W-1:0]      rdata_spram_i,
 `endif 
    // intruction bus
    input                        i_valid_i,
@@ -36,63 +36,11 @@ module iob_soc_sram #(
 );
 
 `ifdef USE_SPRAM
-
    wire d_valid_int = i_valid_i ? 1'b0 : d_valid_i;
-   assign valid_SPRAM = i_valid_i ? i_valid_i : d_valid_i;
-   assign addr_SPRAM = i_valid_i ? i_addr_i : d_addr_i;
-   assign wdata_SPRAM = i_valid_i ? i_wdata_i : d_wdata_i;
-   assign wstrb_SPRAM = i_valid_i ? i_wstrb_i : d_wstrb_i;
-   assign d_rdata_o = rdata_SPRAM;
-   assign i_rdata_o = rdata_SPRAM;
-`else  // !`ifdef USE_SPRAM
-
-/*
-`ifdef IOB_MEM_NO_READ_ON_WRITE
-   iob_ram_dp_be #(
-      .HEXFILE             (HEXFILE),
-      .ADDR_W              (SRAM_ADDR_W - 2),
-      .DATA_W              (DATA_W),
-      .MEM_NO_READ_ON_WRITE(1)
-   ) main_mem_byte (
-      .clk_i(clk_i),
-
-      // data port
-      .enA_i  (d_valid_i),
-      .addrA_i(d_addr_i),
-      .weA_i  (d_wstrb_i),
-      .dA_i   (d_wdata_i),
-      .dA_o   (d_rdata_o),
-
-      // instruction port
-      .enB_i  (i_valid_i),
-      .addrB_i(i_addr_i),
-      .weB_i  (i_wstrb_i),
-      .dB_i   (i_wdata_i),
-      .dB_o   (i_rdata_o)
-   );
-`else  // !`ifdef IOB_MEM_NO_READ_ON_WRITE
-   iob_ram_dp_be_xil #(
-      .HEXFILE(HEXFILE),
-      .ADDR_W (SRAM_ADDR_W - 2),
-      .DATA_W (DATA_W)
-   ) main_mem_byte (
-      .clk_i(clk_i),
-
-      // data port
-      .enA_i  (d_valid_i),
-      .addrA_i(d_addr_i),
-      .weA_i  (d_wstrb_i),
-      .dA_i   (d_wdata_i),
-      .dA_o   (d_rdata_o),
-
-      // instruction port
-      .enB_i  (i_valid_i),
-      .addrB_i(i_addr_i),
-      .weB_i  (i_wstrb_i),
-      .dB_i   (i_wdata_i),
-      .dB_o   (i_rdata_o)
-   );
-`endif*/
+   assign valid_spram_o = i_valid_i ? i_valid_i : d_valid_i;
+   assign addr_spram_o = i_valid_i ? i_addr_i : d_addr_i;
+   assign wdata_spram_o = i_valid_i ? i_wdata_i : d_wdata_i;
+   assign wstrb_spram_o = i_valid_i ? i_wstrb_i : d_wstrb_i;
 `endif
 
    // reply with ready 

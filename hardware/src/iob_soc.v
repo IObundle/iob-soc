@@ -11,29 +11,29 @@ module iob_soc #(
    `include "iob_soc_params.vs"
 ) (
    //rom
-   output                           rom_r_valid,
-   output   [BOOTROM_ADDR_W-3:0]    rom_r_addr,
-   input       [DATA_W-1:0]         rom_r_rdata,
+   output                           rom_r_valid_o,
+   output   [BOOTROM_ADDR_W-3:0]    rom_r_addr_o,
+   input       [DATA_W-1:0]         rom_r_rdata_i,
 `ifdef USE_SPRAM
-   output                       valid_SPRAM,
-   output     [SRAM_ADDR_W-3:0] addr_SPRAM,
-   output     [DATA_W/8-1:0]    wstrb_SPRAM,
-   output     [DATA_W-1:0]      wdata_SPRAM,
-   input      [DATA_W-1:0]      rdata_SPRAM,
+   output                       valid_spram_o,
+   output     [SRAM_ADDR_W-3:0] addr_spram_o,
+   output     [DATA_W/8-1:0]    wstrb_spram_o,
+   output     [DATA_W-1:0]      wdata_spram_o,
+   input      [DATA_W-1:0]      rdata_spram_i,
 `endif 
    //
    //sram
-   output                           i_valid_i,
-   output      [SRAM_ADDR_W-3:0]    i_addr_i,
-   output      [     DATA_W-1:0]    i_wdata_i,
-   output      [   DATA_W/8-1:0]    i_wstrb_i,
-   input       [     DATA_W-1:0]    i_rdata_o,
+   output                           i_valid_o,
+   output      [SRAM_ADDR_W-3:0]    i_addr_o,
+   output      [     DATA_W-1:0]    i_wdata_o,
+   output      [   DATA_W/8-1:0]    i_wstrb_o,
+   input       [     DATA_W-1:0]    i_rdata_i,
 
-   output                           d_valid_i,
-   output      [SRAM_ADDR_W-3:0]    d_addr_i,
-   output      [     DATA_W-1:0]    d_wdata_i,
-   output      [   DATA_W/8-1:0]    d_wstrb_i,
-   input       [     DATA_W-1:0]    d_rdata_o,
+   output                           d_valid_o,
+   output      [SRAM_ADDR_W-3:0]    d_addr_o,
+   output      [     DATA_W-1:0]    d_wdata_o,
+   output      [   DATA_W/8-1:0]    d_wstrb_o,
+   input       [     DATA_W-1:0]    d_rdata_i,
    //
    `include "iob_soc_io.vs"
 );
@@ -203,31 +203,31 @@ module iob_soc #(
       .d_req_i (slaves_req[0+:`REQ_W]),
       .d_resp_o(slaves_resp[0+:`RESP_W]),
    `ifdef USE_SPRAM
-      .valid_SPRAM(valid_SPRAM),
-      .addr_SPRAM(addr_SPRAM),
-      .wstrb_SPRAM(wstrb_SPRAM),
-      .wdata_SPRAM(wdata_SPRAM),
-      .rdata_SPRAM(rdata_SPRAM),
+      .valid_spram_o(valid_spram_o),
+      .addr_spram_o(addr_spram_o),
+      .wstrb_spram_o(wstrb_spram_o),
+      .wdata_spram_o(wdata_spram_o),
+      .rdata_spram_i(rdata_spram_i),
    `endif 
 
 
       //rom
-      .rom_r_valid(rom_r_valid),
-      .rom_r_addr(rom_r_addr),
-      .rom_r_rdata(rom_r_rdata),
+      .rom_r_valid_o(rom_r_valid_o),
+      .rom_r_addr_o(rom_r_addr_o),
+      .rom_r_rdata_i(rom_r_rdata_i),
       //
 
       //ram
-      .i_valid_i(i_valid_i),
-      .i_addr_i(i_addr_i),
-      .i_wdata_i(i_wdata_i),
-      .i_wstrb_i(i_wstrb_i),
-      .i_rdata_o(i_rdata_o),
-      .d_valid_i(d_valid_i),
-      .d_addr_i(d_addr_i),
-      .d_wdata_i(d_wdata_i),
-      .d_wstrb_i(d_wstrb_i),
-      .d_rdata_o(d_rdata_o)
+      .i_valid_o(i_valid_o),
+      .i_addr_o(i_addr_o),
+      .i_wdata_o(i_wdata_o),
+      .i_wstrb_o(i_wstrb_o),
+      .i_rdata_i(i_rdata_i),
+      .d_valid_o(d_valid_o),
+      .d_addr_o(d_addr_o),
+      .d_wdata_o(d_wdata_o),
+      .d_wstrb_o(d_wstrb_o),
+      .d_rdata_i(d_rdata_i)
    //
    );
 
