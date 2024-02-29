@@ -17,7 +17,7 @@
 `endif
 
 module iob_soc_sim_wrapper (
-`include "clk_rst_s_port.vs"
+`include "clk_en_rst_s_port.vs"
    output                             trap_o,
 
 `ifdef IOB_SOC_USE_ETHERNET

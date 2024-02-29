@@ -36,7 +36,7 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
     latest_extmem_bus_size = -1
     peripherals_with_trap = []  # List of peripherals with trap output
 
-    out_dir = os.path.join(build_dir, f"hardware/src/")
+    out_dir = os.path.join(build_dir, "hardware/src")
 
     insert_header_files(out_dir, top, peripherals_list)
 

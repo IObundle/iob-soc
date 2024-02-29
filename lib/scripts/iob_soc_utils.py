@@ -12,7 +12,6 @@ from iob_soc_create_wrapper_files import create_wrapper_files
 from submodule_utils import (
     add_prefix_to_parameters_in_port,
     eval_param_expression_from_config,
-    if_gen_interface,
 )
 
 import iob_colors
@@ -20,7 +19,7 @@ import shutil
 import fnmatch
 import if_gen
 import copy_srcs
-from verilog_gen import inplace_change
+import verilog_gen
 
 
 def find_dict_in_list(list_obj, name):
@@ -66,42 +65,62 @@ def iob_soc_wrapper_setup(python_module, exclude_files=[]):
     # the users to manually add USE_EXTMEM=1 in the build_dir.
     # As we no longer support build-time defines, we may need to change this in the future.
 
-    python_module._setup_submodules(
-        [
-            # Create extmem wrapper files
-            {
-                "file_prefix": "ddr4_",
-                "interface": "axi",
-                "type": "master",
-                "wire_prefix": "ddr4_",
-                "port_prefix": "ddr4_",
-            },
-            {
-                "file_prefix": f"iob_bus_{num_extmem_connections}_",
-                "interface": "axi",
-                "type": "master",
-                "wire_prefix": "",
-                "port_prefix": "",
-                "bus_size": num_extmem_connections,
-            },
-            {
-                "file_prefix": f"iob_bus_0_{num_extmem_connections}_",
-                "interface": "axi",
-                "type": "master",
-                "wire_prefix": "",
-                "port_prefix": "",
-                "bus_start": 0,
-                "bus_size": num_extmem_connections,
-            },
-            {
-                "file_prefix": "iob_memory_",
-                "interface": "axi",
-                "type": "slave",
-                "wire_prefix": "memory_",
-                "port_prefix": "",
-            },
-        ]
-    )
+    # Create extmem wrapper files
+    gen_ifaces = [
+        {
+            "file_prefix": "ddr4_",
+            "name": "axi",
+            "type": "master",
+            "wire_prefix": "ddr4_",
+            "port_prefix": "ddr4_",
+            "ports": [],
+            "descr": "External memory interface",
+        },
+        {
+            "file_prefix": f"iob_bus_{num_extmem_connections}_",
+            "name": "axi",
+            "type": "master",
+            "wire_prefix": "",
+            "port_prefix": "",
+            "bus_size": num_extmem_connections,
+            "ports": [],
+            "descr": f"iob_bus_{num_extmem_connections} interface",
+        },
+        {
+            "file_prefix": f"iob_bus_0_{num_extmem_connections}_",
+            "name": "axi",
+            "type": "master",
+            "wire_prefix": "",
+            "port_prefix": "",
+            "bus_start": 0,
+            "bus_size": num_extmem_connections,
+            "ports": [],
+            "descr": f"iob_bus_0_{num_extmem_connections} interface",
+        },
+        {
+            "file_prefix": "iob_memory_",
+            "name": "axi",
+            "type": "slave",
+            "wire_prefix": "memory_",
+            "port_prefix": "",
+            "ports": [],
+            "descr": "iob_memory interface",
+        },
+    ]
+    for iface in gen_ifaces:
+        if_gen.gen_if(
+            iface["name"],
+            iface["file_prefix"],
+            iface["port_prefix"],
+            iface["wire_prefix"],
+            iface["ports"],
+            iface["mult"] if "mult" in iface.keys() else 1,
+            iface["widths"] if "widths" in iface.keys() else {},
+        )
+    # move all .vs files from current directory to out_dir
+    for file in os.listdir("."):
+        if file.endswith(".vs"):
+            os.rename(file, f"{python_module.build_dir}/hardware/src/{file}")
 
 
 def iob_soc_doc_setup(python_module, exclude_files=[]):
@@ -187,6 +206,20 @@ def pre_setup_iob_soc(python_module):
     python_module.internal_wires = peripheral_portmap(python_module)
     update_ios_with_extmem_connections(python_module)
 
+    python_module.ignore_snippets += [
+        f"{name}_periphs_swreg_def.vs",
+        f"{name}_pwires.vs",
+        f"{name}_periphs_inst.vs",
+        f"{name}_wrapper_pwires.vs",
+        f"{name}_pportmaps.vs",
+        f"{name}_interconnect.vs",
+        "iob_memory_axi_s_portmap.vs",
+        f"{name}_cyclonev_interconnect_s_portmap.vs",
+        f"{name}_ku040_rstn.vs",
+        "ddr4_axi_wire.vs",
+        f"{name}_ku040_interconnect_s_portmap.vs",
+    ]
+
 
 def post_setup_iob_soc(python_module):
     confs = python_module.confs
@@ -196,7 +229,7 @@ def post_setup_iob_soc(python_module):
 
     # Remove `[0+:1]` part select in AXI connections of ext_mem0 in iob_soc.v template
     if num_extmem_connections == 1:
-        inplace_change(
+        verilog_gen.inplace_change(
             os.path.join(
                 python_module.build_dir, "hardware/src", python_module.name + ".v"
             ),
@@ -217,6 +250,8 @@ def post_setup_iob_soc(python_module):
     #        We also cant call this function here, because it generates and uses verilog snippets, however, the snippets were already replaced by the `_setup()` function.
     #        How can we fix this in branch 'if_gen2'?
     iob_soc_wrapper_setup(python_module)
+
+    verilog_gen.replace_includes(python_module.setup_dir, python_module.build_dir, [])
 
     # Check if was setup with INIT_MEM and USE_EXTMEM (check if macro exists)
     extmem_macro = bool(
