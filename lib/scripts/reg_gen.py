@@ -34,7 +34,6 @@ def auto_add_reg_settings(core):
         if core.name != "iob_ctls" and not core.use_netlist:
             from iob_ctls import iob_ctls
 
-            print("\n\nDEBUG: iob_ctls.setup()\n\n")
             iob_ctls()._setup(
                 is_top=False,
                 purpose=core.purpose,

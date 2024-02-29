@@ -1,4 +1,3 @@
-import sys
 import os
 
 from iob_soc_peripherals import (
@@ -511,7 +510,7 @@ def peripheral_portmap(python_module):
                 "if_name"
             ], f"{iob_colors.FAIL}Portmap index {map_idx} needs an interface name for the 'external' corename!{iob_colors.ENDC}"
 
-            print(mapping[mapping_external_interface]["if_name"])
+            # print(mapping[mapping_external_interface]["if_name"]) #DEBUG
             ios.append(
                 {
                     "name": mapping[mapping_external_interface]["if_name"],
