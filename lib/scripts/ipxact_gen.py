@@ -249,7 +249,7 @@ def gen_ports_list(core):
             continue
 
         # Check if this interface is a standard interface (from if_gen.py)
-        if_prefix, if_name = ios.find_suffix_from_list(
+        if_prefix, if_name = io_gen.find_suffix_from_list(
             interface["name"], if_gen.interfaces
         )
         if if_name:
