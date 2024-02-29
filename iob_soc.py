@@ -345,11 +345,13 @@ class iob_soc(iob_module):
             ),
         ]
 
-    def _setup(self, *args, **kwargs):
+    def _setup(self, *args, is_top=True, **kwargs):
+        self.is_top_module = is_top
+        self.set_default_build_dir()
         # Pre-setup specialized IOb-SoC functions
         pre_setup_iob_soc(self)
         # Call the superclass _setup
-        super()._setup(*args, **kwargs)
+        super()._setup(*args, is_top=is_top, **kwargs)
         # Post-setup specialized IOb-SoC functions
         post_setup_iob_soc(self)
 

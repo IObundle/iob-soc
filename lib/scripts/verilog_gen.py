@@ -5,11 +5,13 @@ import re
 
 
 # Find include statements inside a list of lines and replace them by the contents of the included file and return the new list of lines
-def replace_includes_in_lines(lines, VSnippetFiles):
+def replace_includes_in_lines(lines, VSnippetFiles, ignore_snippets):
     for line in lines:
         if re.search(r'`include ".*\.vs"', line):
             # retrieve the name of the file to be included
             tail = line.split('"')[1]
+            if tail in ignore_snippets:
+                continue
             found_vs = False
             for VSnippetFile in VSnippetFiles:
                 if tail == os.path.basename(VSnippetFile):
@@ -31,7 +33,7 @@ def replace_includes_in_lines(lines, VSnippetFiles):
                     for include_line in include_lines:
                         if re.search(r'`include ".*\.vs"', include_line):
                             include_lines = replace_includes_in_lines(
-                                include_lines, VSnippetFiles
+                                include_lines, VSnippetFiles, ignore_snippets
                             )
                     # replace the include statement with the content of the file
                     lines[lines.index(line)] = "".join(include_lines)
@@ -45,7 +47,7 @@ def replace_includes_in_lines(lines, VSnippetFiles):
 
 
 # Function to search recursively for every verilog file inside the search_path
-def replace_includes(setup_dir="", build_dir=""):
+def replace_includes(setup_dir="", build_dir="", ignore_snippets=[]):
     VSnippetFiles = []
     VerilogFiles = []
     SearchPaths = f"{build_dir}/hardware"
@@ -76,7 +78,7 @@ def replace_includes(setup_dir="", build_dir=""):
                 )
                 exit(1)
             # replace the include statements with the content of the file
-            new_lines = replace_includes_in_lines(lines, VSnippetFiles)
+            new_lines = replace_includes_in_lines(lines, VSnippetFiles, ignore_snippets)
         # write the new file
         with open(VerilogFile, "w") as source:
             source.writelines(new_lines)

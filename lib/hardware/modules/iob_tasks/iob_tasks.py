@@ -1,6 +1,3 @@
-import os
-import shutil
-
 from iob_module import iob_module
 
 

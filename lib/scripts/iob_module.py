@@ -1,5 +1,4 @@
 import os
-import sys
 import shutil
 
 import iob_colors
@@ -14,8 +13,6 @@ import io_gen
 import doc_gen
 import ipxact_gen
 
-from pathlib import Path
-
 from iob_verilog_instance import iob_verilog_instance
 
 
@@ -27,7 +24,7 @@ class iob_module:
         self.csr_if = "iob"
         self.version = "1.0"  # Module version
         self.description = "default description"  # Module description
-        self.previous_version = None  # Module version
+        self.previous_version = self.version  # Module previous version
         self.setup_dir = ""  # Setup directory for this module
         self.build_dir = ""  # Build directory for this module
         self.rw_overlap = False  # overlap Read and Write register addresses
@@ -41,6 +38,7 @@ class iob_module:
         self.ios = []
         self.block_groups = []
         self.submodule_list = []
+        self.ignore_snippets = []  # List of snippets to ignore during replace
 
         # Read-only dictionary with relation between the setup_purpose and the corresponding source folder
         self.PURPOSE_DIRS = {
@@ -56,13 +54,12 @@ class iob_module:
         self.is_top_module = is_top
 
         if is_top:
-            topdir = f"../{self.name}_{self.version}"
-        self.build_dir = topdir + "/build"
+            self.set_default_build_dir()
+            topdir = self.build_dir
+        else:
+            self.build_dir = topdir
         self.setup_dir = find_module_setup_dir(self, os.getcwd())
         self.purpose = purpose
-
-        if not self.previous_version:
-            self.previous_version = self.version
 
         # Create build directory this is the top module class, and is the first time setup
         if is_top:
@@ -111,6 +108,10 @@ class iob_module:
             # Generate ipxact file
             # if self.generate_ipxact: #TODO: When should this be generated?
             #    ipxact_gen.generate_ipxact_xml(self, reg_table, self.build_dir + "/ipxact")
+
+    # by default, set build_dir for all modules as top module
+    def set_default_build_dir(self):
+        self.build_dir = f"../{self.name}_{self.version}/build"
 
     def __create_build_dir(self):
         """Create build directory. Must be called from the top module."""
@@ -165,7 +166,9 @@ class iob_module:
                 # print(f'{iob_colors.INFO}Removed duplicate source: {os.path.join(subfolder, src)}{iob_colors.ENDC}')
 
     def _replace_snippet_includes(self):
-        verilog_gen.replace_includes(self.setup_dir, self.build_dir)
+        verilog_gen.replace_includes(
+            self.setup_dir, self.build_dir, self.ignore_snippets
+        )
 
     def instance(self, name="", *args, **kwargs):
         """Create a verilog instance for the current ip core/verilog module."""
