@@ -20,6 +20,7 @@ import shutil
 import fnmatch
 import if_gen
 import copy_srcs
+from verilog_gen import inplace_change
 
 
 def find_dict_in_list(list_obj, name):
@@ -27,7 +28,7 @@ def find_dict_in_list(list_obj, name):
     for i in list_obj:
         if i["name"] == name:
             return i
-    exception(
+    raise Exception(
         f"{iob_colors.FAIL}Could not find element with name: {name}{iob_colors.ENDC}"
     )
 
@@ -157,14 +158,12 @@ def update_ios_with_extmem_connections(python_module):
             # Inner loop was broken, break the outer.
             break
 
-    for interface in ios:
-        if interface["name"] == "extmem":
-            # Create bus of axi_m_port with size `num_extmem_connections`
-            interface["ports"] = if_gen_interface(
-                "axi_m_port", "", bus_size=num_extmem_connections
-            )
+    python_module.num_extmem_connections = num_extmem_connections
 
-    return num_extmem_connections
+    # Update size of "axi" interface for external memory
+    find_dict_in_list(python_module.ios, "axi")[
+        "mult"
+    ] = python_module.num_extmem_connections
 
 
 ######################################
@@ -185,15 +184,24 @@ def pre_setup_iob_soc(python_module):
     # Setup peripherals
     iob_soc_peripheral_setup(python_module)
     python_module.internal_wires = peripheral_portmap(python_module)
-    num_extmem_connections = update_ios_with_extmem_connections(python_module)
-
-    return num_extmem_connections
+    update_ios_with_extmem_connections(python_module)
 
 
-def post_setup_iob_soc(python_module, num_extmem_connections):
+def post_setup_iob_soc(python_module):
     confs = python_module.confs
     build_dir = python_module.build_dir
     name = python_module.name
+    num_extmem_connections = python_module.num_extmem_connections
+
+    # Remove `[0+:1]` part select in AXI connections of ext_mem0 in iob_soc.v template
+    if num_extmem_connections == 1:
+        inplace_change(
+            os.path.join(
+                python_module.build_dir, "hardware/src", python_module.name + ".v"
+            ),
+            "[0+:1]",
+            "",
+        )
 
     # Run iob-soc specialized setup sequence
     iob_soc_sw_setup(python_module)

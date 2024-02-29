@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
 
-import os
 import sys
 
 from iob_module import iob_module
 from iob_block_group import iob_block_group
 from iob_soc_utils import pre_setup_iob_soc, post_setup_iob_soc, find_dict_in_list
-from verilog_gen import inplace_change
 
 # Submodules
 from iob_picorv32 import iob_picorv32
@@ -349,19 +347,11 @@ class iob_soc(iob_module):
 
     def _setup(self, *args, **kwargs):
         # Pre-setup specialized IOb-SoC functions
-        self.num_extmem_connections = pre_setup_iob_soc(self)
-        find_dict_in_list(self.ios, "axi")["mult"] = self.num_extmem_connections
+        pre_setup_iob_soc(self)
         # Call the superclass _setup
         super()._setup(*args, **kwargs)
-        # Remove `[0+:1]` part select in AXI connections of ext_mem0 in iob_soc.v template
-        if self.num_extmem_connections == 1:
-            inplace_change(
-                os.path.join(self.build_dir, "hardware/src", self.name + ".v"),
-                "[0+:1]",
-                "",
-            )
         # Post-setup specialized IOb-SoC functions
-        post_setup_iob_soc(self, self.num_extmem_connections)
+        post_setup_iob_soc(self)
 
 
 if __name__ == "__main__":
