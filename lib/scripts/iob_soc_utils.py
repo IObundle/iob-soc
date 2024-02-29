@@ -224,6 +224,7 @@ def pre_setup_iob_soc(python_module):
 def post_setup_iob_soc(python_module):
     confs = python_module.confs
     build_dir = python_module.build_dir
+    setup_dir = python_module.setup_dir
     name = python_module.name
     num_extmem_connections = python_module.num_extmem_connections
 
@@ -315,13 +316,22 @@ iob_eth_rmac.h:
         "hex_join.py",
     ]
 
+    scripts_dir = ""
+    # Find the scripts directory in the setup_dir which has all the scripts in the list above
+    for root, dirs, files in os.walk(setup_dir):
+        if all(script in files for script in scripts):
+            scripts_dir = root
+            break
     # Copy scripts to build directory
-    copy_srcs.copy_files("./scripts", f"{build_dir}/scripts", scripts)
+    copy_srcs.copy_files(f"{scripts_dir}", f"{build_dir}/scripts", scripts)
 
     # Copy  console_ethernet.py
     if ethernet_macro:
         copy_srcs.copy_files(
-            "./scripts", f"{build_dir}/scripts", ["console_ethernet.py"], "*.py"
+            scripts_dir,
+            f"{build_dir}/scripts",
+            ["console_ethernet.py"],
+            "*.py",
         )
 
     mem_add_w_parameter = next((i for i in confs if i["name"] == "MEM_ADDR_W"), False)
