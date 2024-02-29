@@ -1,5 +1,6 @@
 import os
 import shutil
+from dataclasses import dataclass
 
 import iob_colors
 
@@ -16,40 +17,40 @@ import ipxact_gen
 from iob_verilog_instance import iob_verilog_instance
 
 
+@dataclass
 class iob_module:
-    """Generic class to describe a base iob-module"""
+    """Generic class to describe how to generate a base IOb IP core / module"""
 
-    def __init__(self, name=None):
-        self.name = name or self.__class__.__name__
-        self.csr_if = "iob"
-        self.version = "1.0"  # Module version
-        self.description = "default description"  # Module description
-        self.previous_version = self.version  # Module previous version
-        self.setup_dir = ""  # Setup directory for this module
-        self.build_dir = ""  # Build directory for this module
-        self.rw_overlap = False  # overlap Read and Write register addresses
-        self.is_top_module = False  # Select if this module is the top module
-        self.use_netlist = False  # use module netlist
-        self.is_system = False  # create software files in build directory
-        self.board_list = None  # List of fpga files to copy to build directory
-        self.purpose = "hardware"
-        self.confs = []
-        self.regs = []
-        self.ios = []
-        self.block_groups = []
-        self.submodule_list = []
-        self.ignore_snippets = []  # List of snippets to ignore during replace
+    name: str = name or self.__class__.__name__
+    csr_if: str = "iob"
+    version: str = "1.0"  # Module version
+    description: str = "default description"  # Module description
+    previous_version: str = self.version  # Module previous version
+    setup_dir: str = ""  # Setup directory for this module
+    build_dir: str = ""  # Build directory for this module
+    rw_overlap: bool = False  # overlap Read and Write register addresses
+    is_top_module: bool = False  # Select if this module is the top module
+    use_netlist: bool = False  # use module netlist
+    is_system: bool = False  # create software files in build directory
+    board_list: list = None  # List of fpga files to copy to build directory
+    purpose: str = "hardware"
+    confs: list = []
+    regs: list = []
+    ios: list = []
+    block_groups: list = []
+    submodule_list: list = []
+    ignore_snippets: list = []  # List of snippets to ignore during replace
 
-        # Read-only dictionary with relation between the setup_purpose and the corresponding source folder
-        self.PURPOSE_DIRS = {
-            "hardware": "hardware/src",
-            "simulation": "hardware/simulation/src",
-            "fpga": "hardware/fpga/src",
-        }
+    # Read-only dictionary with relation between the setup_purpose and the corresponding source folder
+    PURPOSE_DIRS: dict = {
+        "hardware": "hardware/src",
+        "simulation": "hardware/simulation/src",
+        "fpga": "hardware/fpga/src",
+    }
 
-    def _setup(self, is_top=True, purpose="hardware", topdir="."):
+    def __post_init__(self, is_top=True, purpose="hardware", topdir="."):
         """
-        Initialize the setup process for the top module.
+        Finish attribute initialization and init setup process for this module
         """
         self.is_top_module = is_top
 
