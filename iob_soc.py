@@ -5,7 +5,7 @@ import sys
 
 from iob_module import iob_module
 from iob_block_group import iob_block_group
-from iob_soc_utils import pre_setup_iob_soc, post_setup_iob_soc
+from iob_soc_utils import pre_setup_iob_soc, post_setup_iob_soc, find_dict_in_list
 from verilog_gen import inplace_change
 
 # Submodules
@@ -240,7 +240,7 @@ class iob_soc(iob_module):
                 "type": "master",
                 "wire_prefix": "",
                 "port_prefix": "",
-                "mult": "",
+                "mult": "",  # Will be filled automatically
                 "widths": {
                     "ID_W": "AXI_ID_W",
                     "ADDR_W": "AXI_ADDR_W",
@@ -318,10 +318,8 @@ class iob_soc(iob_module):
                 ),
             ]
         )
-        self.num_extmem_connections = (
-            -1
-        )  # Number of external memory connections (will be filled automatically)
-
+        # Number of external memory connections (will be filled automatically)
+        self.num_extmem_connections = -1
         # This is a standard iob_module attribute, but needs to be defined after 'peripherals' because it depends on it
         self.block_groups = [
             iob_block_group(
@@ -352,6 +350,7 @@ class iob_soc(iob_module):
     def _setup(self, *args, **kwargs):
         # Pre-setup specialized IOb-SoC functions
         self.num_extmem_connections = pre_setup_iob_soc(self)
+        find_dict_in_list(self.ios, "axi")["mult"] = self.num_extmem_connections
         # Call the superclass _setup
         super()._setup(*args, **kwargs)
         # Remove `[0+:1]` part select in AXI connections of ext_mem0 in iob_soc.v template

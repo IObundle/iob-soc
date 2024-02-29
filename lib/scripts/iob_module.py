@@ -58,6 +58,7 @@ class iob_module:
         if is_top:
             topdir = f"../{self.name}_{self.version}"
         self.build_dir = topdir + "/build"
+        self.setup_dir = find_module_setup_dir(self, os.getcwd())
         self.purpose = purpose
 
         if not self.previous_version:
@@ -191,4 +192,22 @@ def find_common_deep(path1, path2):
             )
             for path in (path1, path2)
         )
+    )
+
+
+def find_module_setup_dir(core, search_path):
+    """Searches for a core's setup directory, and updates `core.setup_dir` attribute.
+    param core: The core object
+    param search_path: The directory to search
+    """
+    # Use os.walk() to traverse the directory tree
+    for root, directories, files in os.walk(search_path):
+        for file in files:
+            # Check if file name matches '<core_class_name>.py'
+            if file.split(".")[0] == core.__class__.__name__:
+                # print(os.path.join(root, file)) # DEBUG
+                return root
+
+    raise Exception(
+        f"{iob_colors.FAIL}Setup dir of {core.name} not found in {search_path}!{iob_colors.ENDC}"
     )

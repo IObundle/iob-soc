@@ -635,17 +635,6 @@ def copy_rename_setup_directory(core, exclude_file_list=[]):
                                    then we should add 'old_name_firmware.c' to the ignore list.
     """
 
-    # find modules' setup dir
-    current_directory = os.getcwd()
-    # Use os.walk() to traverse the directory tree
-    for root, directories, files in os.walk(current_directory):
-        for directory in directories:
-            # Print the absolute path of each directory found
-            if directory == core.name:
-                # print(os.path.join(root, directory)) # DEBUG
-                core.setup_dir = os.path.join(root, directory)
-                break
-
     # Files that should always be copied
     dir_list = [
         "hardware/src",

@@ -40,12 +40,6 @@ def auto_add_reg_settings(core):
                 purpose=core.purpose,
                 topdir=f"{core.build_dir}/../",
             )
-        ### FIXME: How do we implement the interfaces below in the if_gen2 branch? Is this still needed?
-        ###        Does if_gen2 branch generate the required snippets automatically?
-        # # Auto-add iob_s_port.vs
-        # core.__generate({"interface": "iob_s_port"}, purpose=core.purspose)
-        # # Auto-add iob_s_portmap.vs
-        # core.__generate({"interface": "iob_s_s_portmap"}, purpose=core.purspose)
 
 
 def build_regs_table(core):

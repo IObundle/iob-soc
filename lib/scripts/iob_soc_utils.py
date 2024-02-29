@@ -20,7 +20,16 @@ import shutil
 import fnmatch
 import if_gen
 import copy_srcs
-from iob_module import iob_module
+
+
+def find_dict_in_list(list_obj, name):
+    """Find an dictionary with a given name in a list of dictionaries"""
+    for i in list_obj:
+        if i["name"] == name:
+            return i
+    exception(
+        f"{iob_colors.FAIL}Could not find element with name: {name}{iob_colors.ENDC}"
+    )
 
 
 def iob_soc_sw_setup(python_module, exclude_files=[]):
