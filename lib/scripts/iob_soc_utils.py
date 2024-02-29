@@ -49,10 +49,11 @@ def iob_soc_sw_setup(python_module, exclude_files=[]):
         )
 
 
-def iob_soc_wrapper_setup(python_module, num_extmem_connections, exclude_files=[]):
+def iob_soc_wrapper_setup(python_module, exclude_files=[]):
     confs = python_module.confs
     build_dir = python_module.build_dir
     name = python_module.name
+    num_extmem_connections = python_module.num_extmem_connections
     # Try to build wrapper files
     # if not fnmatch.filter(exclude_files,'iob_soc_sim_wrapper.v'):
     create_wrapper_files(
@@ -208,11 +209,14 @@ def post_setup_iob_soc(python_module):
     iob_soc_hw_setup(python_module)
     # iob_soc_doc_setup(python_module)
 
+    ### Only run lines below if this system is the top module ###
     if not python_module.is_top_module:
         return
-    ### Only run lines below if this system is the top module ###
 
-    iob_soc_wrapper_setup(python_module, num_extmem_connections)
+    # FIXME: This function depends on the 'is_top_module' attribute. And since this attribute is only set during `_setup()`, we cant call this function in the `pre_setup_iob_soc()` function.
+    #        We also cant call this function here, because it generates and uses verilog snippets, however, the snippets were already replaced by the `_setup()` function.
+    #        How can we fix this in branch 'if_gen2'?
+    iob_soc_wrapper_setup(python_module)
 
     # Check if was setup with INIT_MEM and USE_EXTMEM (check if macro exists)
     extmem_macro = bool(
