@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
 
-import os
 import sys
 
 from iob_module import iob_module
 from iob_block_group import iob_block_group
-from iob_soc_utils import pre_setup_iob_soc, post_setup_iob_soc
-from verilog_gen import inplace_change
+from iob_soc_utils import pre_setup_iob_soc, post_setup_iob_soc, find_dict_in_list
 
 # Submodules
 from iob_picorv32 import iob_picorv32
@@ -38,9 +36,7 @@ from axi_interconnect import axi_interconnect
 class iob_soc(iob_module):
     def __init__(self):
         super().__init__()
-        self.name = "iob_soc"
         self.version = "V0.70"
-        self.setup_dir = os.path.dirname(__file__)
         self.rw_overlap = True
         self.is_system = True
         self.board_list = ["CYCLONEV-GT-DK", "AES-KU040-DB-G"]
@@ -242,7 +238,7 @@ class iob_soc(iob_module):
                 "type": "master",
                 "wire_prefix": "",
                 "port_prefix": "",
-                "mult": "",
+                "mult": "",  # Will be filled automatically
                 "widths": {
                     "ID_W": "AXI_ID_W",
                     "ADDR_W": "AXI_ADDR_W",
@@ -320,10 +316,8 @@ class iob_soc(iob_module):
                 ),
             ]
         )
-        self.num_extmem_connections = (
-            -1
-        )  # Number of external memory connections (will be filled automatically)
-
+        # Number of external memory connections (will be filled automatically)
+        self.num_extmem_connections = -1
         # This is a standard iob_module attribute, but needs to be defined after 'peripherals' because it depends on it
         self.block_groups = [
             iob_block_group(
@@ -351,20 +345,15 @@ class iob_soc(iob_module):
             ),
         ]
 
-    def _setup(self, *args, **kwargs):
+    def _setup(self, *args, is_top=True, **kwargs):
+        self.is_top_module = is_top
+        self.set_default_build_dir()
         # Pre-setup specialized IOb-SoC functions
-        self.num_extmem_connections = pre_setup_iob_soc(self)
-        # Remove `[0+:1]` part select in AXI connections of ext_mem0 in iob_soc.v template
-        if self.num_extmem_connections == 1:
-            inplace_change(
-                os.path.join(self.build_dir, "hardware/src", self.name + ".v"),
-                "[0+:1]",
-                "",
-            )
+        pre_setup_iob_soc(self)
         # Call the superclass _setup
-        super()._setup(*args, **kwargs)
+        super()._setup(*args, is_top=is_top, **kwargs)
         # Post-setup specialized IOb-SoC functions
-        post_setup_iob_soc(self, self.num_extmem_connections)
+        post_setup_iob_soc(self)
 
 
 if __name__ == "__main__":

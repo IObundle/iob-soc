@@ -1,12 +1,12 @@
 import os
 
 from submodule_utils import add_prefix_to_parameters_in_string
-from iob_soc_peripherals import get_pio_signals, add_prefix_to_parameters_in_string
+from iob_soc_peripherals import get_pio_signals
 
 
 # Creates the Verilog Snippet (.vs) files required by wrappers
 def create_wrapper_files(build_dir, name, ios, confs, num_extmem_connections):
-    out_dir = os.path.join(build_dir, f"hardware/simulation/src/")
+    out_dir = os.path.join(build_dir, "hardware/simulation/src/")
     pwires_str = ""
     pportmaps_str = ""
 
@@ -79,15 +79,15 @@ def create_wrapper_files(build_dir, name, ios, confs, num_extmem_connections):
     create_interconnect_instance(out_dir, name, num_extmem_connections)
     create_cyclonev_interconnect_s_portmap(out_dir, name, num_extmem_connections)
     # If CYCLONEV-GT-DK directory exists, modify_alt_ddr3_qsys
-    if os.path.exists(os.path.join(build_dir, f"hardware/fpga/quartus/CYCLONEV-GT-DK")):
+    if os.path.exists(os.path.join(build_dir, "hardware/fpga/quartus/CYCLONEV-GT-DK")):
         modify_alt_ddr3_qsys(
             os.path.join(
-                build_dir, f"hardware/fpga/quartus/CYCLONEV-GT-DK/alt_ddr3.qsys"
+                build_dir, "hardware/fpga/quartus/CYCLONEV-GT-DK/alt_ddr3.qsys"
             ),
             num_extmem_connections,
         )
     # If KU040 directory exists, create ku040_interconnect_s_portmap and ku040_rstn
-    if os.path.exists(os.path.join(build_dir, f"hardware/fpga/vivado/AES-KU040-DB-G")):
+    if os.path.exists(os.path.join(build_dir, "hardware/fpga/vivado/AES-KU040-DB-G")):
         create_ku040_interconnect_s_portmap(out_dir, name, num_extmem_connections)
         create_ku040_rstn(out_dir, name, num_extmem_connections)
 

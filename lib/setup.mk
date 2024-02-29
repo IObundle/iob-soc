@@ -3,13 +3,15 @@
 # This file is run as a makefile to setup a build directory for an IP core
 #
 
+CORE_DIR ?=.
+
 build-setup: format-all
 ifeq ($(IOB_PYTHONPATH),)
 	$(error "IOB_PYTHONPATH is not set")
 endif
 	mkdir -p $(IOB_PYTHONPATH)
 	find . -name \*.py -exec cp -u {} $(IOB_PYTHONPATH) \;
-	PYTHONPATH=$(IOB_PYTHONPATH) python3 -B ./$(CORE).py $(SETUP_ARGS)
+	python3 -B $(CORE_DIR)/$(CORE).py $(SETUP_ARGS)
 
 python-format:
 	$(LIB_DIR)/scripts/sw_format.py black . 
@@ -50,7 +52,7 @@ format-all: python-format c-format verilog-lint verilog-format
 
 clean:
 ifneq ($(wildcard $(BUILD_DIR)),)
-	PYTHONPATH=$(IOB_PYTHONPATH) python3 -B ./$(CORE).py clean
+	python3 -B ./$(CORE).py clean
 endif
 	@rm -rf $(IOB_PYTHONPATH)
 	@rm -rf ../*.summary ../*.rpt 

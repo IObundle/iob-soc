@@ -15,9 +15,7 @@ from iob_fifo_sync import iob_fifo_sync
 class iob2axi(iob_module):
     def __init__(self):
         super().__init__()
-        self.name = "iob2axi"
         self.version = "V0.10"
-        self.setup_dir = os.path.dirname(__file__)
         self.submodule_list = [
             m_axi_m_port(),
             m_axi_write_m_port(),

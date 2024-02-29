@@ -9,9 +9,7 @@ from iob_regn import iob_regn
 class iob_neg2posedge_sync(iob_module):
     def __init__(self):
         super().__init__()
-        self.name = "iob_neg2posedge_sync"
         self.version = "V0.10"
-        self.setup_dir = os.path.dirname(__file__)
         self.submodule_list = [
             {"interface": "clk_rst_s_port"},
             iob_reg(),

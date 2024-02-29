@@ -2,11 +2,17 @@ CORE := iob_soc
 
 SIMULATOR ?= icarus
 BOARD ?= CYCLONEV-GT-DK
+
 IOB_PYTHONPATH ?= ../iob_python
+ifneq ($(PYTHONPATH),)
+PYTHONPATH := $(IOB_PYTHONPATH):$(PYTHONPATH)
+export PYTHONPATH
+endif
 
 DISABLE_LINT:=1
 
-LIB_DIR=./lib
+LIB_DIR ?=./lib
+export LIB_DIR
 
 include $(LIB_DIR)/setup.mk
 
@@ -21,26 +27,34 @@ ifeq ($(USE_EXTMEM),1)
 SETUP_ARGS += USE_EXTMEM
 endif
 
+# Use Nix-shell if available
+ifeq ($(shell which nix),)
+$(info Nix-shell not found. Using default shell.)
+IOB_NIX_ENV = $(1)
+else
+IOB_NIX_ENV = nix-shell --run '$(1)'
+endif
+
 setup:
-	nix-shell --run 'make build-setup SETUP_ARGS="$(SETUP_ARGS)"'
+	$(call IOB_NIX_ENV, make build-setup SETUP_ARGS="$(SETUP_ARGS)")
 
 pc-emul-run:
-	nix-shell --run 'make clean setup && make -C ../$(CORE)_V*/ pc-emul-run'
+	$(call IOB_NIX_ENV, make clean setup && make -C ../$(CORE)_V*/ pc-emul-run)
 
 pc-emul-test:
-	nix-shell --run 'make clean setup && make -C ../$(CORE)_V*/ pc-emul-run'
+	$(call IOB_NIX_ENV, make clean setup && make -C ../$(CORE)_V*/ pc-emul-run)
 
 sim-run:
-	nix-shell --run 'make clean setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(CORE)_V*/ fw-build'
-	nix-shell --run 'make clean setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(CORE)_V*/ sim-run SIMULATOR=$(SIMULATOR)'
+	$(call IOB_NIX_ENV, make clean setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(CORE)_V*/ fw-build)
+	$(call IOB_NIX_ENV, make clean setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(CORE)_V*/ sim-run SIMULATOR=$(SIMULATOR))
 
 sim-test:
-	nix-shell --run 'make clean setup INIT_MEM=1 USE_EXTMEM=0 && make -C ../$(CORE)_V*/ sim-run SIMULATOR=icarus'
-	nix-shell --run 'make clean setup INIT_MEM=0 USE_EXTMEM=1 && make -C ../$(CORE)_V*/ sim-run SIMULATOR=verilator'
-	nix-shell --run 'make clean setup INIT_MEM=0 USE_EXTMEM=1 && make -C ../$(CORE)_V*/ sim-run SIMULATOR=verilator'
+	$(call IOB_NIX_ENV, make clean setup INIT_MEM=1 USE_EXTMEM=0 && make -C ../$(CORE)_V*/ sim-run SIMULATOR=icarus)
+	$(call IOB_NIX_ENV, make clean setup INIT_MEM=0 USE_EXTMEM=1 && make -C ../$(CORE)_V*/ sim-run SIMULATOR=verilator)
+	$(call IOB_NIX_ENV, make clean setup INIT_MEM=0 USE_EXTMEM=1 && make -C ../$(CORE)_V*/ sim-run SIMULATOR=verilator)
 
 fpga-run:
-	nix-shell --run 'make clean setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(CORE)_V*/ fpga-fw-build BOARD=$(BOARD)'
+	$(call IOB_NIX_ENV, make clean setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(CORE)_V*/ fpga-fw-build BOARD=$(BOARD))
 	make -C ../$(CORE)_V*/ fpga-run BOARD=$(BOARD)
 
 fpga-test:
@@ -50,13 +64,13 @@ fpga-test:
 	make clean setup fpga-run BOARD=AES-KU040-DB-G INIT_MEM=0 USE_EXTMEM=1 
 
 syn-build: clean
-	nix-shell --run "make setup && make -C ../$(CORE)_V*/ syn-build"
+	$(call IOB_NIX_ENV, make setup && make -C ../$(CORE)_V*/ syn-build)
 
 doc-build:
-	nix-shell --run 'make clean setup && make -C ../$(CORE)_V*/ doc-build'
+	$(call IOB_NIX_ENV, make clean setup && make -C ../$(CORE)_V*/ doc-build)
 
 doc-test:
-	nix-shell --run 'make clean setup && make -C ../$(CORE)_V*/ doc-test'
+	$(call IOB_NIX_ENV, make clean setup && make -C ../$(CORE)_V*/ doc-test)
 
 
 test-all: pc-emul-test sim-test fpga-test doc-test

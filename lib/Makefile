@@ -3,7 +3,16 @@
 # This makefile simulates the hardware modules in this repo
 #
 
-LIB_DIR:=.
+IOB_PYTHONPATH ?= ../../iob_python
+ifneq ($(PYTHONPATH),)
+PYTHONPATH := $(IOB_PYTHONPATH):$(PYTHONPATH)
+export PYTHONPATH
+else
+PYTHONPATH := $(IOB_PYTHONPATH)
+export PYTHONPATH
+endif
+
+LIB_DIR:=./lib
 PROJECT_ROOT=..
 DISABLE_LINT:=1
 DISABLE_FORMAT:=1
@@ -12,7 +21,7 @@ CORE ?=iob_ctls
 
 all: sim-test
 
-include setup.mk
+include $(LIB_DIR)/setup.mk
 
 sim-build:
 	nix-shell --run "scripts/test.sh build $(CORE)"

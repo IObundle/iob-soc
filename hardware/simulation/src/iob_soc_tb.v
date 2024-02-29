@@ -119,6 +119,7 @@ module iob_soc_tb;
 
    iob_soc_sim_wrapper iob_soc_sim_wrapper (
       .clk_i (clk),
+      .cke_i (1'b1),
       .arst_i (arst),
       .trap_o(trap),
 

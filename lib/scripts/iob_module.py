@@ -1,21 +1,17 @@
 import os
 import shutil
-import sys
-import importlib
 
 import iob_colors
 
 import copy_srcs
 
-import if_gen
 import config_gen
+import param_gen
 import verilog_gen
-import csr_gen
-import block_gen
+import reg_gen
 import io_gen
+import doc_gen
 import ipxact_gen
-
-from pathlib import Path
 
 from iob_verilog_instance import iob_verilog_instance
 
@@ -23,72 +19,72 @@ from iob_verilog_instance import iob_verilog_instance
 class iob_module:
     """Generic class to describe a base iob-module"""
 
-    def __init__(self):
-        self.name = "iob_module"  # Verilog module name (not instance name)
+    def __init__(self, name=None):
+        self.name = name or self.__class__.__name__
         self.csr_if = "iob"
         self.version = "1.0"  # Module version
         self.description = "default description"  # Module description
-        self.previous_version = None  # Module version
+        self.previous_version = self.version  # Module previous version
         self.setup_dir = ""  # Setup directory for this module
-        # self.build_dir = ""  # Build directory for this module
-        # FIXME: Currently set 'error_build_dir' as the default 'build_dir' attribute to avoid scripts from making changes to setup directory.
-        #        If the subclasses don't set their own build directory, they will use this default value
-        self.build_dir = "../error_build_dir"
+        self.build_dir = ""  # Build directory for this module
         self.rw_overlap = False  # overlap Read and Write register addresses
         self.is_top_module = False  # Select if this module is the top module
         self.use_netlist = False  # use module netlist
         self.is_system = False  # create software files in build directory
         self.board_list = None  # List of fpga files to copy to build directory
+        self.purpose = "hardware"
         self.confs = []
         self.regs = []
         self.ios = []
         self.block_groups = []
         self.submodule_list = []
+        self.ignore_snippets = []  # List of snippets to ignore during replace
 
         # Read-only dictionary with relation between the setup_purpose and the corresponding source folder
-        self.purpose_dirs = {
+        self.PURPOSE_DIRS = {
             "hardware": "hardware/src",
             "simulation": "hardware/simulation/src",
             "fpga": "hardware/fpga/src",
         }
 
     def _setup(self, is_top=True, purpose="hardware", topdir="."):
-        print(topdir)
         """
         Initialize the setup process for the top module.
         """
         self.is_top_module = is_top
 
         if is_top:
-            topdir = f"../{self.name}_{self.version}"
-            LIB_DIR = os.environ.get("LIB_DIR")
-        self.build_dir = topdir + "/build"
+            self.set_default_build_dir()
+            topdir = self.build_dir
+        else:
+            self.build_dir = topdir
+        self.setup_dir = find_module_setup_dir(self, os.getcwd())
+        self.purpose = purpose
 
         # Create build directory this is the top module class, and is the first time setup
-        if self.is_top_module:
+        if is_top:
             self.__create_build_dir()
-
-        # check if directory ../{self.name}_{self.version} exists
-
-        directory = Path(self.build_dir)
-
-        if directory.exists():
-            print("Directory exists")
-        else:
-            print("Directory does not exist")
 
         # Setup submodules placed in `submodule_list` list
         for submodule in self.submodule_list:
-            if type(submodule) == tuple:
+            if type(submodule) is tuple:
                 if "purpose" not in submodule[1]:
                     submodule[0]._setup(False, "hardware", topdir)
                 else:
-                    submodule[0]._setup(False, submodule[1], topdir)
+                    submodule[0]._setup(False, submodule[1]["purpose"], topdir)
             else:
                 submodule._setup(False, purpose, topdir)
 
-        # Copy sources from the module's setup dir (and from its superclasses)
-        self._copy_srcs(purpose)
+        # Copy files from LIB to setup various flows
+        # (should run before copy of files from module's setup dir)
+        if is_top:
+            copy_srcs.flows_setup(self)
+
+        # Copy files from the module's setup dir
+        copy_srcs.copy_rename_setup_directory(self)
+
+        # Generate config_build.mk
+        config_gen.config_build_mk(self)
 
         # Generate configuration files
         config_gen.generate_confs(self)
@@ -100,15 +96,22 @@ class iob_module:
         io_gen.generate_ports(self)
 
         # Generate csr interface
-        csr_gen.generate_csr(self)
+        csr_gen_obj, reg_table = reg_gen.generate_csr(self)
 
         if is_top:
             # Replace Verilog snippet includes
-            self.replace_snippet_includes()
+            self._replace_snippet_includes()
             # Clean duplicate sources in `hardware/src` and its subfolders (like `hardware/simulation/src`)
-            self.remove_duplicate_sources()
+            self._remove_duplicate_sources()
+            # Generate docs
+            doc_gen.generate_docs(self, csr_gen_obj, reg_table)
             # Generate ipxact file
-            ipxact_gen.generate_ipxact_xml(self, reg_table, self.build_dir + "/ipxact")
+            # if self.generate_ipxact: #TODO: When should this be generated?
+            #    ipxact_gen.generate_ipxact_xml(self, reg_table, self.build_dir + "/ipxact")
+
+    # by default, set build_dir for all modules as top module
+    def set_default_build_dir(self):
+        self.build_dir = f"../{self.name}_{self.version}/build"
 
     def __create_build_dir(self):
         """Create build directory. Must be called from the top module."""
@@ -121,7 +124,12 @@ class iob_module:
         os.makedirs(f"{self.build_dir}/hardware/simulation/src", exist_ok=True)
         os.makedirs(f"{self.build_dir}/hardware/fpga/src", exist_ok=True)
 
-        shutil.copyfile(f"{copy_srcs.LIB_DIR}/build.mk", f"{self.build_dir}/Makefile")
+        os.makedirs(f"{self.build_dir}/doc", exist_ok=True)
+        os.makedirs(f"{self.build_dir}/doc/tsrc", exist_ok=True)
+
+        shutil.copyfile(
+            f"{copy_srcs.get_lib_dir()}/build.mk", f"{self.build_dir}/Makefile"
+        )
 
     def clean_build_dir(self):
         """Clean build directory. Must be called from the top module."""
@@ -139,19 +147,6 @@ class iob_module:
         self.build_dir = f"../{self.name}_{self.version}"
         print(self.build_dir)
 
-    def _copy_srcs(self, exclude_file_list=[], highest_superclass=None):
-        """Copy sources from the module's setup dir"""
-        # find modules' setup dir
-        current_directory = os.getcwd()
-        # Use os.walk() to traverse the directory tree
-        for root, directories, files in os.walk(current_directory):
-            for directory in directories:
-                # Print the absolute path of each directory found
-                if directory == self.name:
-                    print(os.path.join(root, directory))
-                    self.setup_dir = os.path.join(root, directory)
-                    break
-
     def _remove_duplicate_sources(self):
         """Remove sources in the build directory from subfolders that exist in `hardware/src`"""
         # Go through all subfolders defined in PURPOSE_DIRS
@@ -161,7 +156,7 @@ class iob_module:
                 continue
 
             # Get common srcs between `hardware/src` and current subfolder
-            common_srcs = self.find_common_deep(
+            common_srcs = find_common_deep(
                 os.path.join(self.build_dir, "hardware/src"),
                 os.path.join(self.build_dir, subfolder),
             )
@@ -171,13 +166,51 @@ class iob_module:
                 # print(f'{iob_colors.INFO}Removed duplicate source: {os.path.join(subfolder, src)}{iob_colors.ENDC}')
 
     def _replace_snippet_includes(self):
-        verilog_gen.replace_includes(self.setup_dir, self.build_dir)
+        verilog_gen.replace_includes(
+            self.setup_dir, self.build_dir, self.ignore_snippets
+        )
 
     def instance(self, name="", *args, **kwargs):
-        """Create a verilog instance for the current verilog module/ip core."""
+        """Create a verilog instance for the current ip core/verilog module."""
 
         if not name:
             name = f"{self.name}_0"
 
         # Return a new iob_verilog_instance object with these attributes that describe the Verilog instance
         return iob_verilog_instance(name, *args, module=self, **kwargs)
+
+
+def find_common_deep(path1, path2):
+    """Find common files (recursively) inside two given directories
+    Taken from: https://stackoverflow.com/a/51625515
+    :param str path1: Directory path 1
+    :param str path2: Directory path 2
+    """
+    return set.intersection(
+        *(
+            set(
+                os.path.relpath(os.path.join(root, file), path)
+                for root, _, files in os.walk(path)
+                for file in files
+            )
+            for path in (path1, path2)
+        )
+    )
+
+
+def find_module_setup_dir(core, search_path):
+    """Searches for a core's setup directory, and updates `core.setup_dir` attribute.
+    param core: The core object
+    param search_path: The directory to search
+    """
+    # Use os.walk() to traverse the directory tree
+    for root, directories, files in os.walk(search_path):
+        for file in files:
+            # Check if file name matches '<core_class_name>.py'
+            if file.split(".")[0] == core.__class__.__name__:
+                # print(os.path.join(root, file)) # DEBUG
+                return root
+
+    raise Exception(
+        f"{iob_colors.FAIL}Setup dir of {core.name} not found in {search_path}!{iob_colors.ENDC}"
+    )

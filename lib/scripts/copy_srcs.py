@@ -2,24 +2,23 @@
 
 import os
 import sys
-import re
 import subprocess
 from pathlib import Path
 import shutil
 import importlib.util
-import copy_srcs
 
 # IObundle scripts imported:
 import if_gen
 from submodule_utils import import_setup, set_default_submodule_dirs
 import iob_colors
-import inspect
-import config_gen as mk_conf
 
 # get LIB_DIR from env variable
 
 
 def get_lib_dir():
+    assert (
+        "LIB_DIR" in os.environ
+    ), f"{iob_colors.FAIL}LIB_DIR not set in environment!{iob_colors.ENDC}"
     return os.environ.get("LIB_DIR")
 
 
@@ -486,3 +485,171 @@ def version_str_to_digits(version_str):
     version_str = version_str.replace("V", "")
     major_ver, minor_ver = version_str.split(".")
     return f"{int(major_ver):02d}{int(minor_ver):02d}"
+
+
+def copy_with_rename(old_core_name, new_core_name):
+    """Creates a function that:
+    - Renames any '<old_core_name>' string inside the src file and in its filename, to the given '<new_core_name>' string argument.
+    """
+
+    def copy_func(src, dst):
+        dst = os.path.join(
+            os.path.dirname(dst),
+            os.path.basename(
+                dst.replace(old_core_name, new_core_name).replace(
+                    old_core_name.upper(), new_core_name.upper()
+                )
+            ),
+        )
+        # print(f"### DEBUG: {src} {dst}")
+        try:
+            file_perms = os.stat(src).st_mode
+            with open(src, "r") as file:
+                lines = file.readlines()
+            for idx in range(len(lines)):
+                lines[idx] = (
+                    lines[idx]
+                    .replace(old_core_name, new_core_name)
+                    .replace(old_core_name.upper(), new_core_name.upper())
+                )
+            with open(dst, "w") as file:
+                file.writelines(lines)
+        except:
+            shutil.copyfile(src, dst)
+        # Set file permissions equal to source file
+        os.chmod(dst, file_perms)
+
+    return copy_func
+
+
+def copy_rename_setup_subdir(core, directory, exclude_file_list=[]):
+    """Copy and rename files from a given setup subdirectory to the build directory
+    :param core: The core object
+    :param directory: The directory to copy
+    :param exclude_file_list: List of wildcards for files to exclude
+    """
+    # Skip this directory if it does not exist
+    if not os.path.isdir(os.path.join(core.setup_dir, directory)):
+        return
+
+    # If we are handling the `hardware/src` directory,
+    # copy to the correct destination based on setup_purpose.
+    if directory == "hardware/src":
+        dst_directory = core.PURPOSE_DIRS[core.purpose]
+        if core.use_netlist:
+            # copy SETUP_DIR/CORE.v netlist instead of
+            # SETUP_DIR/hardware/src
+            shutil.copyfile(
+                os.path.join(core.setup_dir, f"{core.name}.v"),
+                os.path.join(core.build_dir, f"{dst_directory}/{core.name}.v"),
+            )
+            return
+    elif directory == "hardware/fpga":
+        # Skip if board_list is empty
+        if core.board_list is None:
+            return
+
+        tools_list = ["quartus", "vivado"]
+
+        # Copy everything except the tools directories
+        shutil.copytree(
+            os.path.join(core.setup_dir, directory),
+            os.path.join(core.build_dir, directory),
+            dirs_exist_ok=True,
+            copy_function=copy_with_rename(core.__class__.__name__, core.name),
+            ignore=shutil.ignore_patterns(*exclude_file_list, *tools_list),
+        )
+
+        # if it is the fpga directory, only copy the directories in the cores board_list
+        for fpga in core.board_list:
+            # search for the fpga directory in the cores setup_dir/hardware/fpga
+            # in both quartus and vivado directories
+            for tools_dir in tools_list:
+                setup_tools_dir = os.path.join(core.setup_dir, directory, tools_dir)
+                build_tools_dir = os.path.join(core.build_dir, directory, tools_dir)
+                setup_fpga_dir = os.path.join(setup_tools_dir, fpga)
+                build_fpga_dir = os.path.join(build_tools_dir, fpga)
+
+                # if the fpga directory is found, copy it to the build_dir
+                if os.path.isdir(setup_fpga_dir):
+                    # Copy the tools directory files only
+                    for file in os.listdir(setup_tools_dir):
+                        setup_file = os.path.join(setup_tools_dir, file)
+                        if os.path.isfile(setup_file):
+                            copy_with_rename(core.name, core.name)(
+                                setup_file,
+                                os.path.join(build_tools_dir, file),
+                            )
+                    # Copy the fpga directory
+                    shutil.copytree(
+                        setup_fpga_dir,
+                        build_fpga_dir,
+                        dirs_exist_ok=True,
+                        copy_function=copy_with_rename(
+                            core.__class__.__name__, core.name
+                        ),
+                        ignore=shutil.ignore_patterns(*exclude_file_list),
+                    )
+                    break
+            else:
+                raise Exception(
+                    f"{iob_colors.FAIL}FPGA directory {fpga} not found in {core.setup_dir}/hardware/fpga/{iob_colors.ENDC}"
+                )
+
+        # No need to copy any more files in this directory
+        return
+
+    else:
+        dst_directory = directory
+
+    # Copy tree of this directory, renaming files, and overriding destination ones.
+    # Note: The `copy_with_rename` may throw errors when
+    #       trying to rename binary files from the doc dir.
+    #       The main branch used a dedicated script to copy doc files
+    #       without renaming them. Maybe here we should try to
+    #       implement it with a try catch block.
+    shutil.copytree(
+        os.path.join(core.setup_dir, directory),
+        os.path.join(core.build_dir, dst_directory),
+        dirs_exist_ok=True,
+        copy_function=copy_with_rename(core.__class__.__name__, core.name),
+        ignore=shutil.ignore_patterns(*exclude_file_list),
+    )
+
+
+def copy_rename_setup_directory(core, exclude_file_list=[]):
+    """Copy and rename files from the module's setup dir.
+    Any string from the files in the setup dir that matches the
+    module's class name (core.__class__.__name__) will be replaced by the
+    module's name (core.name).
+    For example, if we create a new IOb-SoC module with
+    `iob_soc(name="iob_soc_sut")` then the `iob_soc.v` file from
+    the iob-soc setup dir will have all instances of the string 'iob_soc'
+    replaced with the new string 'iob_soc_sut'.
+
+    :param list exclude_file_list: list of strings, each string representing an ignore pattern for the source files.
+                                   For example, using the ignore pattern '*.v' would prevent from copying every Verilog source file.
+                                   Note, if want to ignore a file that is going to be renamed with the new core name,
+                                   we would still use the old core name in the ignore patterns.
+                                   For example, if we dont want it to generate the 'new_name_firmware.c' based on the 'old_name_firmware.c',
+                                   then we should add 'old_name_firmware.c' to the ignore list.
+    """
+
+    # Files that should always be copied
+    dir_list = [
+        "hardware/src",
+        "software",
+    ]
+    # Files that should only be copied if it is top module
+    if core.is_top_module:
+        dir_list += [
+            "hardware/simulation",
+            "hardware/fpga",
+            "hardware/syn",
+            "hardware/lint",
+            "doc",
+        ]
+
+    # Copy sources
+    for directory in dir_list:
+        copy_rename_setup_subdir(core, directory, exclude_file_list)
