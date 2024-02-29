@@ -1,4 +1,4 @@
-import os
+import sys
 
 from iob_module import iob_module
 
@@ -16,3 +16,14 @@ class iob_aoi(iob_module):
             iob_or(),
             iob_inv(),
         ]
+
+
+if __name__ == "__main__":
+    # Create an iob_aoi ip core
+    iob_aoi_core = iob_aoi()
+    if "clean" in sys.argv:
+        iob_aoi_core.clean_build_dir()
+    elif "print" in sys.argv:
+        iob_aoi_core.print_build_dir()
+    else:
+        iob_aoi_core._setup()

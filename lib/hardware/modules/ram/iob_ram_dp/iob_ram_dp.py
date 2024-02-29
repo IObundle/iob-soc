@@ -1,4 +1,3 @@
-import os
 import sys
 
 from iob_module import iob_module
@@ -12,7 +11,7 @@ class iob_ram_dp(iob_module):
 
 
 if __name__ == "__main__":
-    # Create an iob-ram-dp ip core
+    # Create an iob_ram_dp ip core
     iob_ram_dp_core = iob_ram_dp()
     if "clean" in sys.argv:
         iob_ram_dp_core.clean_build_dir()

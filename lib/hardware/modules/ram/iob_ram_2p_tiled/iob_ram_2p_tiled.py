@@ -1,4 +1,4 @@
-import os
+import sys
 
 from iob_module import iob_module
 
@@ -12,3 +12,14 @@ class iob_ram_2p_tiled(iob_module):
         self.submodule_list = [
             iob_ram_2p(),
         ]
+
+
+if __name__ == "__main__":
+    # Create an iob_ram_2p_tiled ip core
+    iob_ram_2p_tiled_core = iob_ram_2p_tiled()
+    if "clean" in sys.argv:
+        iob_ram_2p_tiled_core.clean_build_dir()
+    elif "print" in sys.argv:
+        iob_ram_2p_tiled_core.print_build_dir()
+    else:
+        iob_ram_2p_tiled_core._setup()

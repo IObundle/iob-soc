@@ -87,7 +87,7 @@ jobs:
         with:
           submodules: 'recursive'
       - name: run LIB test
-        run: nix-shell --run "cd submodules/LIB; ./scripts/test.sh test"
+        run: nix-shell --run "./lib/scripts/test.sh test"
 
   uart:
     runs-on: self-hosted

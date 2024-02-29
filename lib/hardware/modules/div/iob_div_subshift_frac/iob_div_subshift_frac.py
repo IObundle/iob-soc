@@ -1,4 +1,4 @@
-import os
+import sys
 
 from iob_module import iob_module
 
@@ -17,3 +17,14 @@ class iob_div_subshift_frac(iob_module):
             iob_reg_e(),
             iob_div_subshift(),
         ]
+
+
+if __name__ == "__main__":
+    # Create an iob_div_subshift_frac ip core
+    iob_div_subshift_frac_core = iob_div_subshift_frac()
+    if "clean" in sys.argv:
+        iob_div_subshift_frac_core.clean_build_dir()
+    elif "print" in sys.argv:
+        iob_div_subshift_frac_core.print_build_dir()
+    else:
+        iob_div_subshift_frac_core._setup()

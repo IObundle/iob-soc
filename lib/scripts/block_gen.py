@@ -4,6 +4,7 @@
 
 from latex import write_table
 
+
 # Generate blocks.tex file with list TeX tables of blocks (Verilog modules instances)
 def generate_blocks_list_tex(block_groups, out_dir):
     blocks_file = open(f"{out_dir}/blocks.tex", "w")
