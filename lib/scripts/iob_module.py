@@ -34,14 +34,12 @@ class iob_module:
     is_system: bool = False  # create software files in build directory
     board_list: list = None  # List of fpga files to copy to build directory
     purpose: str = "hardware"
-    confs: list = field(default_factory=list)
-    regs: list = field(default_factory=list)
-    ios: list = field(default_factory=list)
-    block_groups: list = field(default_factory=list)
-    submodule_list: list = field(default_factory=list)
-    ignore_snippets: list = field(
-        default_factory=list
-    )  # List of snippets to ignore during replace
+    confs: tuple = ()
+    regs: tuple = ()
+    ios: tuple = ()
+    block_groups: tuple = ()
+    submodule_list: tuple = ()
+    ignore_snippets: tuple = ()  # List of snippets to ignore during replace
 
     # Read-only dictionary with relation between the setup_purpose and the corresponding source folder
     PURPOSE_DIRS: dict = field(

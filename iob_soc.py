@@ -39,14 +39,13 @@ class iob_soc(iob_module):
     version = "V0.70"
     rw_overlap = True
     is_system = True
-    board_list = field(default_factory=lambda: [
-        "CYCLONEV-GT-DK", "AES-KU040-DB-G"])
+    board_list = ["CYCLONEV-GT-DK", "AES-KU040-DB-G"]
     cpu = iob_picorv32()
     uart = iob_uart()
     timer = iob_timer()
     merge = iob_merge()
     split = iob_split()
-    submodule_list = field(default_factory=lambda: [
+    submodule_list = [
         cpu,
         iob_cache(),
         uart,
@@ -76,8 +75,8 @@ class iob_soc(iob_module):
         (iob_ram_2p(), {"purpose": "fpga"}),
         (iob_ram_sp(), {"purpose": "simulation"}),
         (iob_ram_sp(), {"purpose": "fpga"}),
-        ])
-    confs = field(default_factory=lambda: [
+    ]
+    confs: list = [
         # macros
         {
             "name": "INIT_MEM",
@@ -209,8 +208,8 @@ class iob_soc(iob_module):
             "max": "NA",
             "descr": "Offset of memory address",
         },
-    ])
-    ios = field(default_factory=lambda: [
+    ]
+    ios = [
         {
             "name": "clk_en_rst",
             "type": "slave",
@@ -250,14 +249,14 @@ class iob_soc(iob_module):
             "if_defined": "USE_EXTMEM",
             "ports": [],
         },
-    ])
+    ]
 
     # IOb-SoC has the following set of non standard attributes:
-    peripherals = field(default_factory=lambda: [
+    peripherals = [
         uart.instance("UART0"),
         timer.instance("TIMER0"),
-        ]) 
-    peripheral_portmap = field(default_factory=lambda: [  # List of tuples, each tuple corresponds to a port map
+    ]
+    peripheral_portmap = [  # List of tuples, each tuple corresponds to a port map
         (
             {
                 "corename": "UART0",
@@ -314,11 +313,11 @@ class iob_soc(iob_module):
                 "bits": [],
             },
         ),
-    ])
+    ]
     # Number of external memory connections (will be filled automatically)
     num_extmem_connections = -1
     # This is a standard iob_module attribute, but needs to be defined after 'peripherals' because it depends on it
-    block_groups = field(default_factory=lambda: [
+    block_groups = [
         iob_block_group(
             name="cpu", description="CPU module", blocks=[cpu.instance("cpu_0")]
         ),
@@ -342,7 +341,7 @@ class iob_soc(iob_module):
             description="Peripheral module",
             blocks=peripherals,
         ),
-    ])
+    ]
 
     def __post_init__(self, *args, is_top=True, **kwargs):
         self.is_top_module = is_top
@@ -363,4 +362,4 @@ if __name__ == "__main__":
     elif "print" in sys.argv:
         iob_soc_core.print_build_dir()
     else:
-        iob_soc_core._setup()
+        iob_soc_core()
