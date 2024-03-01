@@ -993,29 +993,29 @@ class csr_gen:
             swreg_file.write(
                 """
     \\begin{table}[H]
-      \centering
+      \\centering
       \\begin{tabularx}{\\textwidth}{|l|c|c|c|c|X|}
         
-        \hline
+        \\hline
         \\rowcolor{iob-green}
-        {\\bf Name} & {\\bf R/W} & {\\bf Addr} & {\\bf Width} & {\\bf Default} & {\\bf Description} \\\\ \hline
+        {\\bf Name} & {\\bf R/W} & {\\bf Addr} & {\\bf Width} & {\\bf Default} & {\\bf Description} \\\\ \\hline
 
-        \input """
+        \\input """
                 + table["name"]
                 + """_swreg_tab
      
-      \end{tabularx}
-      \caption{"""
-                + table["descr"].replace("_", "\_")
+      \\end{tabularx}
+      \\caption{"""
+                + table["descr"].replace("_", "\\_")
                 + """}
-      \label{"""
+      \\label{"""
                 + table["name"]
                 + """_swreg_tab:is}
-    \end{table}
+    \\end{table}
     """
             )
 
-        swreg_file.write("\clearpage")
+        swreg_file.write("\\clearpage")
         swreg_file.close()
 
     # Generate TeX tables of registers
