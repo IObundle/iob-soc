@@ -1,6 +1,6 @@
 import os
 import shutil
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import iob_colors
 
@@ -34,19 +34,23 @@ class iob_module:
     is_system: bool = False  # create software files in build directory
     board_list: list = None  # List of fpga files to copy to build directory
     purpose: str = "hardware"
-    confs: list = []
-    regs: list = []
-    ios: list = []
-    block_groups: list = []
-    submodule_list: list = []
-    ignore_snippets: list = []  # List of snippets to ignore during replace
+    confs: list = field(default_factory=list)
+    regs: list = field(default_factory=list)
+    ios: list = field(default_factory=list)
+    block_groups: list = field(default_factory=list)
+    submodule_list: list = field(default_factory=list)
+    ignore_snippets: list = field(
+        default_factory=list
+    )  # List of snippets to ignore during replace
 
     # Read-only dictionary with relation between the setup_purpose and the corresponding source folder
-    PURPOSE_DIRS: dict = {
-        "hardware": "hardware/src",
-        "simulation": "hardware/simulation/src",
-        "fpga": "hardware/fpga/src",
-    }
+    PURPOSE_DIRS: dict = field(
+        default_factory=lambda: {
+            "hardware": "hardware/src",
+            "simulation": "hardware/simulation/src",
+            "fpga": "hardware/fpga/src",
+        }
+    )
 
     def __post_init__(self, is_top=True, purpose="hardware", topdir="."):
         """
