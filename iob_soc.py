@@ -256,66 +256,64 @@ class iob_soc(iob_module):
         uart.instance("UART0"),
         timer.instance("TIMER0"),
     ]  # List of peripherals
-    peripheral_portmap = (
-        [  # List of tuples, each tuple corresponds to a port map
-            (
-                {
-                    "corename": "UART0",
-                    "if_name": "rs232",
-                    "port": "txd",
-                    "bits": [],
-                },
-                {
-                    "corename": "external",
-                    "if_name": "uart",
-                    "port": "uart_txd_o",
-                    "bits": [],
-                },
-            ),
-            (
-                {
-                    "corename": "UART0",
-                    "if_name": "rs232",
-                    "port": "rxd",
-                    "bits": [],
-                },
-                {
-                    "corename": "external",
-                    "if_name": "uart",
-                    "port": "uart_rxd_i",
-                    "bits": [],
-                },
-            ),
-            (
-                {
-                    "corename": "UART0",
-                    "if_name": "rs232",
-                    "port": "cts",
-                    "bits": [],
-                },
-                {
-                    "corename": "external",
-                    "if_name": "uart",
-                    "port": "uart_cts_i",
-                    "bits": [],
-                },
-            ),
-            (
-                {
-                    "corename": "UART0",
-                    "if_name": "rs232",
-                    "port": "rts",
-                    "bits": [],
-                },
-                {
-                    "corename": "external",
-                    "if_name": "uart",
-                    "port": "uart_rts_o",
-                    "bits": [],
-                },
-            ),
-        ]
-    )
+    peripheral_portmap = [  # List of tuples, each tuple corresponds to a port map
+        (
+            {
+                "corename": "UART0",
+                "if_name": "rs232",
+                "port": "txd",
+                "bits": [],
+            },
+            {
+                "corename": "external",
+                "if_name": "uart",
+                "port": "uart_txd_o",
+                "bits": [],
+            },
+        ),
+        (
+            {
+                "corename": "UART0",
+                "if_name": "rs232",
+                "port": "rxd",
+                "bits": [],
+            },
+            {
+                "corename": "external",
+                "if_name": "uart",
+                "port": "uart_rxd_i",
+                "bits": [],
+            },
+        ),
+        (
+            {
+                "corename": "UART0",
+                "if_name": "rs232",
+                "port": "cts",
+                "bits": [],
+            },
+            {
+                "corename": "external",
+                "if_name": "uart",
+                "port": "uart_cts_i",
+                "bits": [],
+            },
+        ),
+        (
+            {
+                "corename": "UART0",
+                "if_name": "rs232",
+                "port": "rts",
+                "bits": [],
+            },
+            {
+                "corename": "external",
+                "if_name": "uart",
+                "port": "uart_rts_o",
+                "bits": [],
+            },
+        ),
+    ]
     # Number of external memory connections (will be filled automatically)
     num_extmem_connections = -1
     # This is a standard iob_module attribute, but needs to be defined after 'peripherals' because it depends on it
@@ -341,18 +339,17 @@ class iob_soc(iob_module):
         iob_block_group(
             name="peripheral",
             description="Peripheral module",
-            blocks=self.peripherals,
+            blocks=peripherals,
         ),
     ]
 
     def __post_init__(self, *args, is_top=True, **kwargs):
         self.is_top_module = is_top
         self.set_default_build_dir()
-        # TODO: Somehow we have to run pre_setup before the __init__
         # Pre-setup specialized IOb-SoC functions
         pre_setup_iob_soc(self)
-        # Call the superclass _setup # TODO: DELETE THIS. This does not exist anymore. Only leaving here for reference.
-        # super()._setup(*args, is_top=is_top, **kwargs)
+        # Call the superclass setup
+        super().__post_init__(*args, is_top=is_top, **kwargs)
         # Post-setup specialized IOb-SoC functions
         post_setup_iob_soc(self)
 

@@ -21,11 +21,11 @@ from iob_verilog_instance import iob_verilog_instance
 class iob_module:
     """Generic class to describe how to generate a base IOb IP core / module"""
 
-    name: str = name or self.__class__.__name__
+    name: str = None
     csr_if: str = "iob"
     version: str = "1.0"  # Module version
     description: str = "default description"  # Module description
-    previous_version: str = self.version  # Module previous version
+    previous_version: str = version  # Module previous version
     setup_dir: str = ""  # Setup directory for this module
     build_dir: str = ""  # Build directory for this module
     rw_overlap: bool = False  # overlap Read and Write register addresses
@@ -53,6 +53,8 @@ class iob_module:
         Finish attribute initialization and init setup process for this module
         """
         self.is_top_module = is_top
+        # TODO: Check if name is being set corretly
+        self.name = self.name or self.__class__.__name__
 
         if is_top:
             self.set_default_build_dir()
