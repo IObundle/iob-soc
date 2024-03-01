@@ -16,6 +16,7 @@ pkgs.mkShell {
     gtkwave
     python3
     python3Packages.black
+    python3Packages.mypy
     python3Packages.parse
     python3Packages.numpy
     python3Packages.wavedrom

@@ -6,11 +6,11 @@
 #   See "Usage" below
 #
 
-import sys
 import argparse
 import re
+from typing import List, Dict
 
-table = []
+table: List[Dict] = []
 
 interfaces = [
     "iob_m_port",

@@ -8,6 +8,7 @@
 import os
 import sys
 import subprocess
+from typing import Dict, List
 
 import iob_colors
 
@@ -20,7 +21,7 @@ linters = [
 files_list = sys.argv[1:]
 
 # Group files by their directories
-dir_file_list = {}
+dir_file_list: Dict[str, List] = {}
 for file in files_list:
     file_dir = os.path.dirname(file)
 
@@ -31,8 +32,8 @@ for file in files_list:
 
 # print(dir_file_list, file=sys.stderr) #DEBUG
 
-files_to_lint = {}
-directories_to_lint = {}
+files_to_lint: Dict[str, List] = {}
+directories_to_lint: Dict[str, List] = {}
 parent_dirs = []
 for child_dir in dir_file_list.keys():
     # print(f"debug: {child_dir}", file=sys.stderr) #DEBUG

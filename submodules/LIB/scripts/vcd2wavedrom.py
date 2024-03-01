@@ -3,13 +3,14 @@ import os
 import argparse
 import json
 import re
+from typing import Dict
 
 from Verilog_VCD import parse_vcd
 from Verilog_VCD import get_timescale
 
 busregex = re.compile(r"(.+)\[(\d+)\]")
 busregex2 = re.compile(r"(.+)\[(\d):(\d)\]")
-config = {}
+config: Dict = {}  # Note could use Union[int, float, etc]
 
 
 def replacevalue(wave, strval):

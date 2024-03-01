@@ -28,16 +28,19 @@ build_dir_name:
 build_top_module:
 	./$(PYTHON_DIR)/bootstrap.py $(TOP_MODULE_NAME) $(SETUP_ARGS) -s $(PROJECT_ROOT)
 
+python-lint: build_dir_name
+	$(LIB_DIR)/scripts/sw_tools.py mypy . 
+
 python-format: build_dir_name
-	$(LIB_DIR)/scripts/sw_format.py black . 
+	$(LIB_DIR)/scripts/sw_tools.py black . 
 ifneq ($(wildcard $(BUILD_DIR)),)
-	$(LIB_DIR)/scripts/sw_format.py black $(BUILD_DIR) 
+	$(LIB_DIR)/scripts/sw_tools.py black $(BUILD_DIR) 
 endif
 
 c-format: build_dir_name
-	$(LIB_DIR)/scripts/sw_format.py clang .
+	$(LIB_DIR)/scripts/sw_tools.py clang .
 ifneq ($(wildcard $(BUILD_DIR)),)
-	$(LIB_DIR)/scripts/sw_format.py clang $(BUILD_DIR)
+	$(LIB_DIR)/scripts/sw_tools.py clang $(BUILD_DIR)
 endif
 
 IOB_LIB_PATH=$(LIB_DIR)/scripts
@@ -66,7 +69,7 @@ ifneq ($(DISABLE_FORMAT),1)
 	$(IOB_LIB_PATH)/verilog-format.sh $(VHFILES) $(VFILES)
 endif
 
-format-all: build_dir_name python-format c-format verilog-lint verilog-format
+format-all: build_dir_name python-lint python-format c-format verilog-lint verilog-format
 
 clean: build_dir_name
 	-@if [ -f $(BUILD_DIR)/Makefile ]; then make -C $(BUILD_DIR) clean; fi
@@ -80,4 +83,4 @@ build-setup: build_dir_name build_top_module $(SRC) format-all
 	@for i in $(SRC); do echo $$i; done
 
 
-.PHONY: build-setup clean c-format python-format verilog-format
+.PHONY: build-setup clean c-format python-lint python-format verilog-format
