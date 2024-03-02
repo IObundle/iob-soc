@@ -63,6 +63,19 @@ int gpio_set_output_enable(uint32_t value) {
   return sysfs_write_file(IOB_GPIO_SYSFILE_GPIO_OUTPUT_ENABLE, value);
 }
 
+int gpio_print_version() {
+  uint32_t ret = -1;
+  uint32_t version = 0;
+
+  ret = sysfs_read_file(IOB_GPIO_SYSFILE_VERSION, &version);
+  if (ret == -1) {
+    return ret;
+  }
+
+  printf("[User] Version: 0x%x\n", version);
+  return 0;
+}
+
 int main() {
   printf("[User] IOb-GPIO test\n");
 
@@ -72,11 +85,9 @@ int main() {
     return -1;
   }
 
-  // read current timer count
-  uint32_t value = 0;
-  if (gpio_get(&value) == -1 || gpio_set_output_enable(0x0) == -1 ||
-          gpio_set(0x0) == -1) {
-    perror("[User] Failed to get/set outputs");
+  // Attempt to set GPIO registers
+  if (gpio_set_output_enable(0x0) == -1 || gpio_set(0x0) == -1) {
+    perror("[User] Failed to set outputs");
 
     return -1;
   }
