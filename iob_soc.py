@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
 import sys
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from iob_module import iob_module
 from iob_block_group import iob_block_group
-from iob_soc_utils import pre_setup_iob_soc, post_setup_iob_soc, find_dict_in_list
+from iob_soc_utils import pre_setup_iob_soc, post_setup_iob_soc
 
 # Submodules
 from iob_picorv32 import iob_picorv32
