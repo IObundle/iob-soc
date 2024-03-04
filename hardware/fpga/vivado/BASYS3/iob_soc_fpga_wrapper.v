@@ -34,7 +34,7 @@ module iob_soc_fpga_wrapper (
   //
   // SYSTEM
   //
-  iob_soc iob_soc (
+  iob_soc_mwrap iob_soc (
       `include "iob_soc_pportmaps.vs"
       .clk_i (clk),
       .cke_i (1'b1),
