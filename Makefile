@@ -10,8 +10,14 @@ include submodules/LIB/setup.mk
 INIT_MEM ?= 1
 USE_EXTMEM ?= 0
 
+SYN ?= 0
+
 ifeq ($(INIT_MEM),1)
 SETUP_ARGS += INIT_MEM
+endif
+
+ifeq ($(SYN),1)
+SETUP_ARGS += SYN
 endif
 
 ifeq ($(USE_EXTMEM),1)
@@ -45,6 +51,9 @@ fpga-test:
 	make clean setup fpga-run BOARD=CYCLONEV-GT-DK INIT_MEM=0 USE_EXTMEM=1 
 	make clean setup fpga-run BOARD=AES-KU040-DB-G INIT_MEM=1 USE_EXTMEM=0 
 	make clean setup fpga-run BOARD=AES-KU040-DB-G INIT_MEM=0 USE_EXTMEM=1 
+
+syn-run: 
+	make syn-build SYN=1 INIT_MEM=0 USE_EXTMEM=0 
 
 syn-build: clean
 	nix-shell --run "make setup && make -C ../$(CORE)_V*/ syn-build"
