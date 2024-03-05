@@ -4,11 +4,11 @@ import sys
 from dataclasses import dataclass
 
 from iob_module import iob_module
-from iob_block_group import iob_block_group
 from iob_soc_utils import pre_setup_iob_soc, post_setup_iob_soc
 
 from iob_conf import iob_conf
 from iob_port import iob_port, iob_interface
+from iob_wire import iob_wire
 
 # Submodules
 from iob_picorv32 import iob_picorv32
@@ -252,72 +252,45 @@ class iob_soc(iob_module):
             if_defined="USE_EXTMEM",
             ports=[],
         ),
+        iob_interface(
+            name="rs232",
+            type="master",
+            port_prefix="",
+            wire_prefix="",
+            descr="iob-soc uart interface",
+            ports=[
+                iob_port(
+                    name="txd",
+                    direction="output",
+                    width=1,
+                    descr="UART transmit data",
+                ),
+                iob_port(
+                    name="rxd",
+                    direction="input",
+                    width=1,
+                    descr="UART receive data",
+                ),
+                iob_port(
+                    name="rts",
+                    direction="output",
+                    width=1,
+                    descr="UART request to send",
+                ),
+                iob_port(
+                    name="cts",
+                    direction="input",
+                    width=1,
+                    descr="UART clear to send",
+                ),
+            ],
+        ),
     ]
 
     # IOb-SoC has the following set of non standard attributes:
-    peripherals = [
-        uart.instance("UART0"),
-        timer.instance("TIMER0"),
-    ]
-    # TODO: deprecate this list
-    peripheral_portmap = [  # List of tuples, each tuple corresponds to a port map
-        (
-            {
-                "corename": "UART0",
-                "if_name": "rs232",
-                "port": "txd",
-                "bits": [],
-            },
-            {
-                "corename": "external",
-                "if_name": "uart",
-                "port": "uart_txd_o",
-                "bits": [],
-            },
-        ),
-        (
-            {
-                "corename": "UART0",
-                "if_name": "rs232",
-                "port": "rxd",
-                "bits": [],
-            },
-            {
-                "corename": "external",
-                "if_name": "uart",
-                "port": "uart_rxd_i",
-                "bits": [],
-            },
-        ),
-        (
-            {
-                "corename": "UART0",
-                "if_name": "rs232",
-                "port": "cts",
-                "bits": [],
-            },
-            {
-                "corename": "external",
-                "if_name": "uart",
-                "port": "uart_cts_i",
-                "bits": [],
-            },
-        ),
-        (
-            {
-                "corename": "UART0",
-                "if_name": "rs232",
-                "port": "rts",
-                "bits": [],
-            },
-            {
-                "corename": "external",
-                "if_name": "uart",
-                "port": "uart_rts_o",
-                "bits": [],
-            },
-        ),
-    ]
+    uart0 = uart.instance("UART0"),
+    timer0 = timer.instance("TIMER0"),
+    peripherals = [uart0, timer0]
     # Number of external memory connections (will be filled automatically)
     num_extmem_connections = -1
     # This is a standard iob_module attribute, but needs to be defined after 'peripherals' because it depends on it
@@ -332,6 +305,24 @@ class iob_soc(iob_module):
     ] + peripherals
 
     def __post_init__(self, *args, is_top=True, **kwargs):
+        # Create wires for UART
+        txd = iob_wire(name='txd', width=1)
+        rxd = iob_wire(name='rxd', width=1)
+        cts = iob_wire(name='cts', width=1)
+        rts = iob_wire(name='rts', width=1)
+
+        # Connect UART wires
+        self.uart0.ios.txd = txd
+        self.uart0.ios.rxd = rxd
+        self.uart0.ios.cts = cts
+        self.uart0.ios.rts = rts
+
+        # Connect iob-soc IOs to uart wires
+        self.ios.txd = txd
+        self.ios.rxd = rxd
+        self.ios.cts = cts
+        self.ios.rts = rts
+
         self.is_top_module = is_top
         self.set_default_build_dir()
         # Pre-setup specialized IOb-SoC functions
