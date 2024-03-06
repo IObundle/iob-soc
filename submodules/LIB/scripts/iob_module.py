@@ -36,6 +36,7 @@ class iob_module:
     rw_overlap = False  # overlap Read and Write register addresses
     regs = None  # List of registers for this module
     ios = None  # List of I/O for this module
+    iob_buses = None  # List of iob_bus instances
     block_groups = None  # List of block groups for this module. Used for documentation.
     wire_list = None  # List of internal wires of the Verilog module. Used to interconnect module components.
     is_top_module = False  # Select if this module is the top module
@@ -430,6 +431,10 @@ class iob_module:
             io_gen.generate_ios_header(
                 cls.ios, cls.name, cls.build_dir + "/hardware/src"
             )
+
+        if cls.iob_buses:
+            for iob_bus in cls.iob_buses:
+                iob_bus.generate_code(cls.build_dir + "/hardware/src")
 
     @classmethod
     def _generate_sw(cls, csr_gen_obj, reg_table):

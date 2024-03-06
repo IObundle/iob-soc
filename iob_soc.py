@@ -8,6 +8,7 @@ from iob_block_group import iob_block_group
 from iob_soc_utils import pre_setup_iob_soc, post_setup_iob_soc
 from config_gen import update_define
 from verilog_gen import inplace_change
+from iob_bus import iob_bus
 
 # Submodules
 from iob_picorv32 import iob_picorv32
@@ -48,6 +49,16 @@ class iob_soc(iob_module):
     # IOb-SoC has the following list of non standard attributes:
     peripherals = None  # List with instances peripherals to include in system
     peripheral_portmap = None  # List of tuples, each tuple corresponds to a port map
+
+    iob_buses = [
+        # int_mem buses
+        iob_bus(file_prefix="boot_ctr", bus_prefix="boot_ctr"),
+        iob_bus(file_prefix="ram_i", bus_prefix="ram_i"),
+        iob_bus(file_prefix="ram_d", bus_prefix="ram_d"),
+        iob_bus(file_prefix="ram_r", bus_prefix="ram_r", logic="native2bus"),
+        iob_bus(file_prefix="ram_w", bus_prefix="ram_w", logic="native2bus"),
+        iob_bus(file_prefix="i", bus_prefix="i", is_IO=True, skip=["resp"]),
+    ]
 
     # Method that runs the setup process of this class
     @classmethod
