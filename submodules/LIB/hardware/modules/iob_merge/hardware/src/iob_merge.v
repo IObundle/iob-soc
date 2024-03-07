@@ -1,23 +1,28 @@
 `timescale 1ns / 1ps
-`include "iob_utils.vh"
 
 module iob_merge #(
     parameter N_MASTERS = 2,
     parameter DATA_W    = 32,
-    parameter ADDR_W    = 32
+    parameter ADDR_W    = 32,
+    parameter REQ_W     = (1+ADDR_W+DATA_W+DATA_W/8),
+    parameter RESP_W    = (DATA_W+1+1)
 ) (
     input clk_i,
     input arst_i,
 
     //masters interface
-    input      [ N_MASTERS*`REQ_W-1:0] m_req_i,
-    output reg [N_MASTERS*`RESP_W-1:0] m_resp_o,
+    input      [ N_MASTERS*REQ_W-1:0] m_req_i,
+    output reg [N_MASTERS*RESP_W-1:0] m_resp_o,
 
     //slave interface
-    output reg [ `REQ_W-1:0] s_req_o,
-    input      [`RESP_W-1:0] s_resp_i
+    output reg [ REQ_W-1:0] s_req_o,
+    input      [RESP_W-1:0] s_resp_i
 );
 
+  localparam VALID_OFFSET = ADDR_W+DATA_W+DATA_W/8;
+  localparam READY_OFFSET = 0;
+  localparam RVALID_OFFSET = 1;
+  localparam RDATA_OFFSET = 1+1;
 
   localparam Nb = $clog2(N_MASTERS) + ($clog2(N_MASTERS) == 0);
 
@@ -26,13 +31,13 @@ module iob_merge #(
   reg  [       Nb-1:0] sel;
   wire [       Nb-1:0] sel_q;
 
-  assign s_ready = s_resp_i[`READY(0)];
+  assign s_ready = s_resp_i[READY_OFFSET];
 
   //select master
   generate
     genvar c;
     for (c = 0; c < N_MASTERS; c = c + 1) begin : g_m_valids
-      assign m_valid[c] = m_req_i[`VALID(c)];
+      assign m_valid[c] = m_req_i[c*REQ_W+VALID_OFFSET];
     end
   endgenerate
 
@@ -54,7 +59,7 @@ module iob_merge #(
   //
   //route master request to slave
   //
-  assign s_req_o = m_req_i[`REQ(sel)];
+  assign s_req_o = m_req_i[sel*REQ_W+:REQ_W];
 
   //
   //route response from slave to previously selected master
@@ -64,11 +69,11 @@ module iob_merge #(
     for (b = 0; b < N_MASTERS; b = b + 1) begin : g_m_rdata_rvalid
       always @* begin
         if (b == sel_q) begin
-          m_resp_o[`RDATA(b)]  = s_resp_i[`RDATA(0)];
-          m_resp_o[`RVALID(b)] = s_resp_i[`RVALID(0)];
+          m_resp_o[b*RESP_W+RDATA_OFFSET+:DATA_W] = s_resp_i[RDATA_OFFSET+:DATA_W];
+          m_resp_o[b*RESP_W+RVALID_OFFSET] = s_resp_i[RVALID_OFFSET];
         end else begin
-          m_resp_o[`RDATA(b)]  = {DATA_W{1'b0}};
-          m_resp_o[`RVALID(b)] = 1'b0;
+          m_resp_o[b*RESP_W+RDATA_OFFSET+:DATA_W]  = {DATA_W{1'b0}};
+          m_resp_o[b*RESP_W+RVALID_OFFSET] = 1'b0;
         end
       end
     end
@@ -80,9 +85,9 @@ module iob_merge #(
     for (a = 0; a < N_MASTERS; a = a + 1) begin : g_m_ready
       always @* begin
         if ((sel == a) | (~m_valid[a])) begin
-          m_resp_o[`READY(a)] = s_resp_i[`READY(0)];
+          m_resp_o[a*RESP_W+READY_OFFSET] = s_resp_i[READY_OFFSET];
         end else begin
-          m_resp_o[`READY(a)] = 1'b0;
+          m_resp_o[a*RESP_W+READY_OFFSET] = 1'b0;
         end
       end
     end
