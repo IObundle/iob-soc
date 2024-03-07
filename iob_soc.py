@@ -55,16 +55,54 @@ class iob_soc(iob_module):
         iob_bus(file_prefix="iob_soc_ext_mem_i", bus_prefix="ext_mem_i", skip=["resp"]),
         iob_bus(file_prefix="iob_soc_ext_mem_d", bus_prefix="ext_mem_d", skip=["resp"]),
         # iob_soc_int_mem.v buses
-        iob_bus(file_prefix="boot_ctr", bus_prefix="boot_ctr"),
-        iob_bus(file_prefix="ram_i", bus_prefix="ram_i"),
-        iob_bus(file_prefix="ram_d", bus_prefix="ram_d"),
+        iob_bus(file_prefix="iob_soc_int_mem_boot_ctr", bus_prefix="boot_ctr"),
+        iob_bus(file_prefix="iob_soc_int_mem_ram_i", bus_prefix="ram_i"),
+        iob_bus(file_prefix="iob_soc_int_mem_ram_d", bus_prefix="ram_d"),
         iob_bus(
-            file_prefix="ram_r", bus_prefix="ram_r", logic="native2bus", skip=["resp"]
+            file_prefix="iob_soc_int_mem_ram_r",
+            bus_prefix="ram_r",
+            logic="native2bus",
+            skip=["resp"],
         ),
         iob_bus(
-            file_prefix="ram_w", bus_prefix="ram_w", logic="native2bus", skip=["resp"]
+            file_prefix="iob_soc_int_mem_ram_w",
+            bus_prefix="ram_w",
+            logic="native2bus",
+            skip=["resp"],
         ),
-        iob_bus(file_prefix="i", bus_prefix="i", is_IO=True, skip=["resp"]),
+        iob_bus(
+            file_prefix="iob_soc_int_mem_i", bus_prefix="i", is_IO=True, skip=["resp"]
+        ),
+        # iob_soc_ext_mem.v buses
+        iob_bus(
+            file_prefix="_iob_soc_ext_mem_i",
+            bus_prefix="i",
+            addr_width="FIRM_ADDR_W-2",
+            is_IO=True,
+        ),
+        iob_bus(
+            file_prefix="_iob_soc_ext_mem_d",
+            bus_prefix="d",
+            addr_width="MEM_ADDR_W+1-2",
+            is_IO=True,
+        ),
+        iob_bus(
+            file_prefix="iob_soc_ext_mem_icache_be",
+            bus_prefix="icache_be",
+            addr_width="MEM_ADDR_W",
+            logic="native2bus",
+        ),
+        iob_bus(
+            file_prefix="iob_soc_ext_mem_dcache_be",
+            bus_prefix="dcache_be",
+            addr_width="MEM_ADDR_W",
+            logic="native2bus",
+        ),
+        iob_bus(
+            file_prefix="iob_soc_ext_mem_l2cache",
+            bus_prefix="l2cache",
+            addr_width="MEM_ADDR_W",
+        ),
     ]
 
     # Method that runs the setup process of this class

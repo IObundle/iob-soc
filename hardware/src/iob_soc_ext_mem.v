@@ -31,10 +31,11 @@ module iob_soc_ext_mem #(
    // INSTRUCTION CACHE
    //
 
-   // Back-end bus
-   wire [1+MEM_ADDR_W+`WRITE_W-1:0] icache_be_req;
-   wire [              `RESP_W-1:0] icache_be_resp;
+   `include "_iob_soc_ext_mem_i_iob_bus.vs"
+   `include "_iob_soc_ext_mem_d_iob_bus.vs"
 
+   // Back-end bus
+   `include "iob_soc_ext_mem_icache_be_iob_bus.vs"
 
    // Instruction cache instance
    iob_cache_iob #(
@@ -52,42 +53,40 @@ module iob_soc_ext_mem #(
       .arst_i(arst_i),
 
       // Front-end interface
-      .iob_valid_i        (i_req_i[1+FIRM_ADDR_W-2+`WRITE_W-1]),
-      .iob_addr_i          (i_req_i[`ADDRESS(0, FIRM_ADDR_W-2)]),
-      .iob_wdata_i         (i_req_i[`WDATA(0)]),
-      .iob_wstrb_i         (i_req_i[`WSTRB(0)]),
-      .iob_rdata_o         (i_resp_o[`RDATA(0)]),
-      .iob_rvalid_o        (i_resp_o[`RVALID(0)]),
-      .iob_ready_o         (i_resp_o[`READY(0)]),
+      .iob_valid_i        (i_0_req_valid),
+      .iob_addr_i          (i_0_req_addr),
+      .iob_wdata_i         (i_0_req_wdata),
+      .iob_wstrb_i         (i_0_req_wstrb),
+      .iob_rdata_o         (i_0_resp_rdata),
+      .iob_rvalid_o        (i_0_resp_rvalid),
+      .iob_ready_o         (i_0_resp_ready),
       //Control IO
       .invalidate_i (1'b0),
       .invalidate_o(),
       .wtb_empty_i  (1'b1),
       .wtb_empty_o (),
       // Back-end interface
-      .be_valid_o     (icache_be_req[1+MEM_ADDR_W+`WRITE_W-1]),
-      .be_addr_o       (icache_be_req[`ADDRESS(0, MEM_ADDR_W)]),
-      .be_wdata_o      (icache_be_req[`WDATA(0)]),
-      .be_wstrb_o      (icache_be_req[`WSTRB(0)]),
-      .be_rdata_i      (icache_be_resp[`RDATA(0)]),
-      .be_rvalid_i     (icache_be_resp[`RVALID(0)]),
-      .be_ready_i      (icache_be_resp[`READY(0)])
+      .be_valid_o     (icache_be_0_req_valid),
+      .be_addr_o       (icache_be_0_req_addr),
+      .be_wdata_o      (icache_be_0_req_wdata),
+      .be_wstrb_o      (icache_be_0_req_wstrb),
+      .be_rdata_i      (icache_be_0_resp_rdata),
+      .be_rvalid_i     (icache_be_0_resp_rvalid),
+      .be_ready_i      (icache_be_0_resp_ready)
    );
 
    //l2 cache interface signals
-   wire [1+MEM_ADDR_W+`WRITE_W-1:0] l2cache_req;
-   wire [`RESP_W-1:0] l2cache_resp;
+   `include "iob_soc_ext_mem_l2cache_iob_bus.vs"
 
    //ext_mem control signals
    wire l2_wtb_empty;
    wire invalidate;
    reg invalidate_reg;
-   wire l2_valid = l2cache_req[1+MEM_ADDR_W+`WRITE_W-1];
    //Necessary logic to avoid invalidating L2 while it's being accessed by a request
    always @(posedge clk_i, posedge arst_i)
       if (arst_i) invalidate_reg <= 1'b0;
       else if (invalidate) invalidate_reg <= 1'b1;
-      else if (~l2_valid) invalidate_reg <= 1'b0;
+      else if (~l2cache_0_req_valid) invalidate_reg <= 1'b0;
       else invalidate_reg <= invalidate_reg;
 
    //
@@ -97,8 +96,7 @@ module iob_soc_ext_mem #(
    // IOb ready and rvalid signals
 
    // Back-end bus
-   wire [1+MEM_ADDR_W+`WRITE_W-1:0] dcache_be_req;
-   wire [              `RESP_W-1:0] dcache_be_resp;
+   `include "iob_soc_ext_mem_dcache_be_iob_bus.vs"
 
    // Data cache instance
    iob_cache_iob #(
@@ -116,26 +114,26 @@ module iob_soc_ext_mem #(
       .arst_i(arst_i),
 
       // Front-end interface
-      .iob_valid_i        (d_req_i[2+MEM_ADDR_W-2+`WRITE_W-1]),
-      .iob_addr_i          (d_req_i[`ADDRESS(0, 1+MEM_ADDR_W-2)]),
-      .iob_wdata_i         (d_req_i[`WDATA(0)]),
-      .iob_wstrb_i         (d_req_i[`WSTRB(0)]),
-      .iob_rdata_o         (d_resp_o[`RDATA(0)]),
-      .iob_rvalid_o        (d_resp_o[`RVALID(0)]),
-      .iob_ready_o         (d_resp_o[`READY(0)]),
+      .iob_valid_i        (d_0_req_valid),
+      .iob_addr_i          (d_0_req_addr),
+      .iob_wdata_i         (d_0_req_wdata),
+      .iob_wstrb_i         (d_0_req_wstrb),
+      .iob_rdata_o         (d_0_resp_rdata),
+      .iob_rvalid_o        (d_0_resp_rvalid),
+      .iob_ready_o         (d_0_resp_ready),
       //Control IO
       .invalidate_i (1'b0),
       .invalidate_o(invalidate),
       .wtb_empty_i  (l2_wtb_empty),
       .wtb_empty_o (),
       // Back-end interface
-      .be_valid_o     (dcache_be_req[1+MEM_ADDR_W+`WRITE_W-1]),
-      .be_addr_o       (dcache_be_req[`ADDRESS(0, MEM_ADDR_W)]),
-      .be_wdata_o      (dcache_be_req[`WDATA(0)]),
-      .be_wstrb_o      (dcache_be_req[`WSTRB(0)]),
-      .be_rdata_i      (dcache_be_resp[`RDATA(0)]),
-      .be_rvalid_i     (dcache_be_resp[`RVALID(0)]),
-      .be_ready_i      (dcache_be_resp[`READY(0)])
+      .be_valid_o     (dcache_be_0_req_valid),
+      .be_addr_o       (dcache_be_0_req_addr),
+      .be_wdata_o      (dcache_be_0_req_wdata),
+      .be_wstrb_o      (dcache_be_0_req_wstrb),
+      .be_rdata_i      (dcache_be_0_resp_rdata),
+      .be_rvalid_i     (dcache_be_0_resp_rvalid),
+      .be_ready_i      (dcache_be_0_resp_ready)
    );
 
    // Merge cache back-ends
@@ -153,22 +151,6 @@ module iob_soc_ext_mem #(
       .s_resp_i(l2cache_resp)
    );
 
-   wire                  l2cache_valid;
-   wire [MEM_ADDR_W-3:0] l2cache_addr;
-   wire [    DATA_W-1:0] l2cache_wdata;
-   wire [  DATA_W/8-1:0] l2cache_wstrb;
-   wire [    DATA_W-1:0] l2cache_rdata;
-   wire                  l2cache_rvalid;
-   wire                  l2cache_ready;
-
-   assign l2cache_valid            = l2cache_req[1+MEM_ADDR_W+`WRITE_W-1];
-   assign l2cache_addr             = l2cache_req[`ADDRESS(0, MEM_ADDR_W)-2];
-   assign l2cache_wdata            = l2cache_req[`WDATA(0)];
-   assign l2cache_wstrb            = l2cache_req[`WSTRB(0)];
-   assign l2cache_resp[`RDATA(0)]  = l2cache_rdata;
-   assign l2cache_resp[`RVALID(0)] = l2cache_rvalid;
-   assign l2cache_resp[`READY(0)]  = l2cache_ready;
-
    // L2 cache instance
    iob_cache_axi #(
       .AXI_ID_W     (AXI_ID_W),
@@ -184,15 +166,15 @@ module iob_soc_ext_mem #(
       .USE_CTRL_CNT (0)            //Remove counters
    ) l2cache (
       // Native interface
-      .iob_valid_i        (l2cache_valid),
-      .iob_addr_i          (l2cache_addr),
-      .iob_wdata_i         (l2cache_wdata),
-      .iob_wstrb_i         (l2cache_wstrb),
-      .iob_rdata_o         (l2cache_rdata),
-      .iob_rvalid_o        (l2cache_rvalid),
-      .iob_ready_o         (l2cache_ready),
+      .iob_valid_i        (l2cache_0_req_valid),
+      .iob_addr_i          (l2cache_0_req_addr[MEM_ADDR_W-1:2]),
+      .iob_wdata_i         (l2cache_0_req_wdata),
+      .iob_wstrb_i         (l2cache_0_req_wstrb),
+      .iob_rdata_o         (l2cache_0_resp_rdata),
+      .iob_rvalid_o        (l2cache_0_resp_rvalid),
+      .iob_ready_o         (l2cache_0_resp_ready),
       //Control IO
-      .invalidate_i (invalidate_reg & ~l2_valid),
+      .invalidate_i (invalidate_reg & ~l2cache_0_req_valid),
       .invalidate_o(),
       .wtb_empty_i  (1'b1),
       .wtb_empty_o (l2_wtb_empty),

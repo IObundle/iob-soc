@@ -54,9 +54,9 @@ module iob_soc_int_mem #(
 );
 
    //sram instruction bus
-   `include "ram_i_iob_bus.vs"
+   `include "iob_soc_int_mem_ram_i_iob_bus.vs"
    //sram data bus  interface
-   `include "ram_d_iob_bus.vs"
+   `include "iob_soc_int_mem_ram_d_iob_bus.vs"
 
    `ifdef USE_SPRAM
       assign ram_d_0_resp_rdata = rdata_spram_i;
@@ -85,7 +85,7 @@ module iob_soc_int_mem #(
    // BOOT HARDWARE
    //
    //boot controller bus to write program in sram
-   `include "boot_ctr_iob_bus.vs"
+   `include "iob_soc_int_mem_boot_ctr_iob_bus.vs"
 
    //
    // SPLIT DATA BUS BETWEEN SRAM AND BOOT CONTROLLER
@@ -113,7 +113,7 @@ module iob_soc_int_mem #(
    //
 
    //sram instruction write bus
-   `include "ram_w_iob_bus.vs"
+   `include "iob_soc_int_mem_ram_w_iob_bus.vs"
 
    iob_soc_boot_ctr #(
       .HEXFILE       ({BOOT_HEXFILE, ".hex"}),
@@ -153,10 +153,10 @@ module iob_soc_int_mem #(
    //MODIFY INSTRUCTION READ ADDRESS DURING BOOT
    //
 
-   `include "i_iob_bus.vs"
+   `include "iob_soc_int_mem_i_iob_bus.vs"
 
    //instruction read bus
-   `include "ram_r_iob_bus.vs"
+   `include "iob_soc_int_mem_ram_r_iob_bus.vs"
    wire [     ADDR_W-1:0] ram_r_addr;
    wire [     ADDR_W-1:0] boot_i_addr;
    wire [     ADDR_W-1:0] i_addr;
