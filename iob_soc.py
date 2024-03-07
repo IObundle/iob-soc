@@ -51,7 +51,10 @@ class iob_soc(iob_module):
     peripheral_portmap = None  # List of tuples, each tuple corresponds to a port map
 
     iob_buses = [
-        # int_mem buses
+        # iob_soc.v buses
+        iob_bus(file_prefix="iob_soc_ext_mem_i", bus_prefix="ext_mem_i", skip=["resp"]),
+        iob_bus(file_prefix="iob_soc_ext_mem_d", bus_prefix="ext_mem_d", skip=["resp"]),
+        # iob_soc_int_mem.v buses
         iob_bus(file_prefix="boot_ctr", bus_prefix="boot_ctr"),
         iob_bus(file_prefix="ram_i", bus_prefix="ram_i"),
         iob_bus(file_prefix="ram_d", bus_prefix="ram_d"),

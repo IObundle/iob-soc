@@ -96,8 +96,7 @@ module iob_soc #(
    wire [`RESP_W-1:0] int_mem_i_resp;
    //external memory instruction bus
 `ifdef IOB_SOC_USE_EXTMEM
-   wire [ `REQ_W-1:0] ext_mem_i_req;
-   wire [`RESP_W-1:0] ext_mem_i_resp;
+   `include "iob_soc_ext_mem_i_iob_bus.vs"
 
    // INSTRUCTION BUS
    iob_split #(
@@ -128,8 +127,7 @@ module iob_soc #(
    wire [`RESP_W-1:0] int_d_resp;
 `ifdef IOB_SOC_USE_EXTMEM
    //external memory data bus
-   wire [ `REQ_W-1:0] ext_mem_d_req;
-   wire [`RESP_W-1:0] ext_mem_d_resp;
+   `include "iob_soc_ext_mem_d_iob_bus.vs"
 
    iob_split #(
       .ADDR_W  (ADDR_W),
@@ -240,14 +238,16 @@ module iob_soc #(
    wire [1+MEM_ADDR_W+1-2+DATA_W+DATA_W/8-1:0] ext_mem0_d_req;
 
    assign ext_mem0_i_req = {
-      ext_mem_i_req[`VALID(0)],
-      ext_mem_i_req[`ADDRESS(0, MEM_ADDR_W)-2],
-      ext_mem_i_req[`WRITE(0)]
+      ext_mem_i_0_req_valid,
+      ext_mem_i_0_req_addr[MEM_ADDR_W-1:2],
+      ext_mem_i_0_req_wdata,
+      ext_mem_i_0_req_wstrb
    };
    assign ext_mem0_d_req = {
-      ext_mem_d_req[`VALID(0)],
-      ext_mem_d_req[`ADDRESS(0, MEM_ADDR_W+1)-2],
-      ext_mem_d_req[`WRITE(0)]
+      ext_mem_d_0_req_valid,
+      ext_mem_d_0_req_addr[MEM_ADDR_W+1-1:2],
+      ext_mem_d_0_req_wdata,
+      ext_mem_d_0_req_wstrb
    };
 
    wire [AXI_ADDR_W-1:0] internal_axi_awaddr_o;
