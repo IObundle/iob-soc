@@ -106,14 +106,16 @@ class iob_bus:
             resp_width = f"{self.n_buses}*({self.__resp_width.name})"
             fout.write(f"\twire [{resp_width}-1:0] {self.bus_prefix}_resp;\n\n")
 
-        for subbus in self.req_signals:
-            for signal in subbus:
-                fout.write(f"\twire [{signal.width}-1:0] {signal.name};\n")
-        fout.write("\n")
-        for subbus in self.resp_signals:
-            for signal in subbus:
-                fout.write(f"\twire [{signal.width}-1:0] {signal.name};\n")
-        fout.write("\n")
+        if "req" not in self.skip:
+            for subbus in self.req_signals:
+                for signal in subbus:
+                    fout.write(f"\twire [{signal.width}-1:0] {signal.name};\n")
+            fout.write("\n")
+        if "resp" not in self.skip:
+            for subbus in self.resp_signals:
+                for signal in subbus:
+                    fout.write(f"\twire [{signal.width}-1:0] {signal.name};\n")
+            fout.write("\n")
 
     def generate_bus2native_logic(
         self, fout: TextIO, buses: List[List[signal]], req_resp: str, subbus_width: str
@@ -128,9 +130,8 @@ class iob_bus:
                 else:
                     subbus_ptr = f"{subbus_range_prefix}+({cur_width})"
                 bit_range = f"{subbus_ptr}+{signal.width}-1:{subbus_ptr}"
-                fout.write(
-                    f"\tassign {signal.name} = {self.bus_prefix}_{req_resp}[{bit_range}];\n"
-                )
+                bus_name = f"{self.bus_prefix}_{req_resp}"
+                fout.write(f"\tassign {signal.name} = {bus_name}[{bit_range}];\n")
                 if cur_width == "":
                     cur_width = signal.width
                 else:
