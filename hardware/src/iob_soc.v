@@ -154,8 +154,7 @@ module iob_soc #(
    //
 
    //slaves bus (includes internal memory + periphrals)
-   wire [ (`IOB_SOC_N_SLAVES)*`REQ_W-1:0] slaves_req;
-   wire [(`IOB_SOC_N_SLAVES)*`RESP_W-1:0] slaves_resp;
+   `include "iob_soc_slaves_iob_bus.vs"
 
    iob_split #(
       .ADDR_W  (ADDR_W),

@@ -2,6 +2,7 @@ import os
 import re
 
 import iob_colors
+import iob_bus
 from submodule_utils import (
     get_pio_signals,
     get_peripherals_ports_params_top,
@@ -26,6 +27,18 @@ def insert_header_files(dest_dir, name, peripherals_list):
     fd_out.close()
 
 
+def create_slaves_bus(build_dir, top, peripherals_list):
+    # create iob_soc.v peripheral instance bus (slaves_req and slaves_resp)
+    bus_names = [f"{top.upper()}_INT_MEM"]  # internal memory is implicit peripheral
+    for p in peripherals_list:
+        bus_names.append(f"{top.upper()}_{p.name}")
+    iob_bus.iob_bus(
+        file_prefix="iob_soc_slaves",
+        bus_prefix="slaves",
+        bus_names=bus_names,
+    ).generate_code(out_dir=build_dir)
+
+
 # Creates the Verilog Snippet (.vs) files required by {top}.v
 # build_dir: build directory
 # top: top name of the system
@@ -40,6 +53,7 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
 
     insert_header_files(out_dir, top, peripherals_list)
 
+    create_slaves_bus(out_dir, top, peripherals_list)
     # Get port list, parameter list and top module name for each type of peripheral used
     port_list, params_list, top_list = get_peripherals_ports_params_top(
         peripherals_list
