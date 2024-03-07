@@ -27,27 +27,25 @@ class iob_bus:
     # False: req/resp buses are module wires/signals
     is_IO: bool = False
 
-    # bus2native:
-    #   generate logic from req -> iob signals
-    # native2bus:
-    #   generate logic from iob signals -> req
+    # bus2native: generate logic from req -> iob signals
+    # native2bus: generate logic from iob signals -> req
     # resp logic is always inverse from req logic
     logic: Literal["bus2native", "native2bus"] = "bus2native"
 
     # Optional flag to skip logic generation
     skip: List[str] = field(default_factory=list)
 
-    req_str: str = "req"
-    resp_str: str = "resp"
+    __req_str: str = "req"
+    __resp_str: str = "resp"
 
     def __post_init__(self) -> None:
         if self.is_IO:
             if self.logic == "bus2native":
-                self.req_str = "req_i"
-                self.resp_str = "resp_o"
+                self.__req_str = "req_i"
+                self.__resp_str = "resp_o"
             else:
-                self.req_str = "req_o"
-                self.resp_str = "resp_i"
+                self.__req_str = "req_o"
+                self.__resp_str = "resp_i"
         if self.bus_names is None:
             self.bus_names = []
             for i in range(self.n_buses):
@@ -158,16 +156,16 @@ class iob_bus:
         if self.logic == "bus2native":
             if "req" not in self.skip:
                 self.generate_bus2native_logic(
-                    fout, self.req_signals, self.req_str, self.__req_width.name
+                    fout, self.req_signals, self.__req_str, self.__req_width.name
                 )
             if "resp" not in self.skip:
-                self.generate_native2bus_logic(fout, self.resp_signals, self.resp_str)
+                self.generate_native2bus_logic(fout, self.resp_signals, self.__resp_str)
         elif self.logic == "native2bus":
             if "req" not in self.skip:
-                self.generate_native2bus_logic(fout, self.req_signals, self.req_str)
+                self.generate_native2bus_logic(fout, self.req_signals, self.__req_str)
             if "resp" not in self.skip:
                 self.generate_bus2native_logic(
-                    fout, self.resp_signals, self.resp_str, self.__resp_width.name
+                    fout, self.resp_signals, self.__resp_str, self.__resp_width.name
                 )
 
     def generate_code(self, out_dir: str = "") -> None:
@@ -179,27 +177,17 @@ class iob_bus:
             self.generate_logic(fout)
 
 
+# Manually test iob_bus module: python path/to/iob_bus.py
 if __name__ == "__main__":
     print("iob_bus module")
-    test_bus = iob_bus(
+    iob_bus(
         file_prefix="test_file",
         bus_prefix="test_bus",
-        addr_width="ADDR_W",
-        data_width="DATA_W",
-        # n_buses=2,
+        addr_width="TEST_ADDR_W",  # "ADDR_W",
+        data_width="TEST_DATA_W",  # "DATA_W",
+        n_buses=2,  # ignored if bus_names is set
         bus_names=["UART", "TIMER"],
         is_IO=False,
-        logic="bus2native",
-    )
-    test_bus.generate_code()
-    inv_bus = iob_bus(
-        file_prefix="inv_bus_file",
-        bus_prefix="inv_bus",
-        addr_width="ADDR_W",
-        data_width="DATA_W",
-        # n_buses=2,
-        bus_names=["UART", "TIMER"],
-        is_IO=False,
-        logic="native2bus",
-    )
-    inv_bus.generate_code()
+        logic="bus2native",  # bus2native or native2bus
+        skip=[],  # ["req", "resp"]
+    ).generate_code()
