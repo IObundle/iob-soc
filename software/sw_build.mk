@@ -32,7 +32,7 @@ UTARGETS+=build_iob_soc_software
 
 TEMPLATE_LDS=src/$@.lds
 
-IOB_SOC_INCLUDES=-I. -Isrc 
+IOB_SOC_INCLUDES=-I. -Isrc -Iinclude
 
 IOB_SOC_LFLAGS=-Wl,-Bstatic,-T,$(TEMPLATE_LDS),--strip-debug
 

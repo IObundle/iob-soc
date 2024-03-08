@@ -710,14 +710,31 @@ def write_s_port(fout, port_prefix, param_prefix, port_list):
 #
 
 
-# Write single port with given direction, bus width, and name to file
-def write_portmap(fout, port_prefix, wire_prefix, direction, port, connect_to_port):
+def get_port_name(port_prefix, direction, port):
     suffix = get_suffix(direction)
     port_name = port_prefix + port["name"] + suffix
+    return (suffix, port_name)
+
+
+# Generate portmap string for a single port given direction, but width and name
+def get_portmap_string(port_prefix, wire_prefix, direction, port, connect_to_port):
+    suffix, port_name = get_port_name(port_prefix, direction, port)
     wire_name = wire_prefix + port["name"]
     if connect_to_port:
         wire_name = wire_name + suffix
-    fout.write("." + port_name + "(" + wire_name + ")," + "\n")
+    return f".{port_name}({wire_name}),\n"
+
+
+# Write single port with to file
+def write_portmap(fout, port_prefix, wire_prefix, direction, port, connect_to_port):
+    portmap_string = get_portmap_string(
+        port_prefix,
+        wire_prefix,
+        direction,
+        port,
+        connect_to_port,
+    )
+    fout.write(portmap_string)
 
 
 def write_m_portmap(fout, port_prefix, wire_prefix, port_list):

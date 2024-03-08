@@ -2,6 +2,7 @@
 
 `include "bsp.vh"
 `include "iob_soc_conf.vh"
+`include "iob_uart_swreg_def.vh"
 
 //Peripherals _swreg_def.vh file includes.
 `include "iob_soc_periphs_swreg_def.vs"
@@ -41,7 +42,7 @@ module iob_soc_sim_wrapper (
    output                             uart_rvalid_o
 );
 
-   localparam AXI_ID_W = 4;
+   localparam AXI_ID_W = 1;
    localparam AXI_LEN_W = 8;
    localparam AXI_ADDR_W = `DDR_ADDR_W;
    localparam AXI_DATA_W = `DDR_DATA_W;
@@ -122,10 +123,10 @@ module iob_soc_sim_wrapper (
       .iob_rvalid_o(uart_rvalid_o),
       .iob_ready_o (uart_ready_o),
 
-      .txd_o(uart_rxd_i),
-      .rxd_i(uart_txd_o),
-      .rts_o(uart_cts_i),
-      .cts_i(uart_rts_o)
+      .txd_o(uart_rxd),
+      .rxd_i(uart_txd),
+      .rts_o(uart_cts),
+      .cts_i(uart_rts)
    );
 
    //Ethernet
