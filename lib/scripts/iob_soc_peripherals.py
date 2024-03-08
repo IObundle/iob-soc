@@ -438,8 +438,15 @@ def get_peripheral_blocks(peripherals_str, root_dir):
 
 # peripheral_instance: dictionary describing a peripheral instance. Must have 'name' and 'IO' attributes.
 # port_name: name of the port we are mapping
-def get_peripheral_port_mapping(peripheral_instance, if_name, port_name):
+def get_peripheral_port_mapping(
+    peripheral_portmaps, peripheral_instance, if_name, port_name
+):
     print(peripheral_instance, if_name, port_name)
+    # try to match port map from peripheral_portmap list
+    for portmap in peripheral_portmaps:
+        if portmap[0]["corename"] == peripheral_instance.name:
+            if portmap[0]["if_name"] == if_name and portmap[0]["port"] == port_name:
+                return portmap[1]["port"]
     # If IO dictionary (with mapping) does not exist for this peripheral, use default wire name
     if "io" not in peripheral_instance.__dict__:
         return f"{peripheral_instance.name}_{port_name}"

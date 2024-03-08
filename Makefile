@@ -39,19 +39,19 @@ setup:
 	$(call IOB_NIX_ENV, make build-setup SETUP_ARGS="$(SETUP_ARGS)")
 
 pc-emul-run:
-	$(call IOB_NIX_ENV, make clean setup && make -C ../$(CORE)_V*/ pc-emul-run)
+	$(call IOB_NIX_ENV, make clean setup && make -C ../$(CORE)_V*/build/ pc-emul-run)
 
 pc-emul-test:
-	$(call IOB_NIX_ENV, make clean setup && make -C ../$(CORE)_V*/ pc-emul-run)
+	$(call IOB_NIX_ENV, make clean setup && make -C ../$(CORE)_V*/build/ pc-emul-run)
 
 sim-run:
 	$(call IOB_NIX_ENV, make clean setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(CORE)_V*/ fw-build)
 	$(call IOB_NIX_ENV, make clean setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(CORE)_V*/ sim-run SIMULATOR=$(SIMULATOR))
 
 sim-test:
-	$(call IOB_NIX_ENV, make clean setup INIT_MEM=1 USE_EXTMEM=0 && make -C ../$(CORE)_V*/ sim-run SIMULATOR=icarus)
-	$(call IOB_NIX_ENV, make clean setup INIT_MEM=0 USE_EXTMEM=1 && make -C ../$(CORE)_V*/ sim-run SIMULATOR=verilator)
-	$(call IOB_NIX_ENV, make clean setup INIT_MEM=0 USE_EXTMEM=1 && make -C ../$(CORE)_V*/ sim-run SIMULATOR=verilator)
+	$(call IOB_NIX_ENV, make clean setup INIT_MEM=1 USE_EXTMEM=0 && make -C ../$(CORE)_V*/build/ sim-run SIMULATOR=icarus)
+	$(call IOB_NIX_ENV, make clean setup INIT_MEM=0 USE_EXTMEM=1 && make -C ../$(CORE)_V*/build/ sim-run SIMULATOR=verilator)
+	$(call IOB_NIX_ENV, make clean setup INIT_MEM=0 USE_EXTMEM=1 && make -C ../$(CORE)_V*/build/ sim-run SIMULATOR=verilator)
 
 fpga-run:
 	$(call IOB_NIX_ENV, make clean setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(CORE)_V*/ fpga-fw-build BOARD=$(BOARD))

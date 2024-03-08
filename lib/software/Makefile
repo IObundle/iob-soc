@@ -48,7 +48,7 @@ EMUL_CFLAGS ?=-Os -std=gnu99 -Wl,--strip-debug
 
 CONSOLE_CMD ?=rm -f soc2cnsl cnsl2soc; ../scripts/console.py -L
 
-EMUL_INCLUDES ?=-I. -Isrc
+EMUL_INCLUDES ?=-I. -Isrc -Iinclude
 
 EMUL_HDR+=$(wildcard src/*_emul.h)
 

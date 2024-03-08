@@ -9,6 +9,7 @@ from iob_soc_peripherals import (
     get_reserved_signals,
     get_reserved_signal_connection,
 )
+from if_gen import get_port_name
 
 
 # Automatically include <corename>_swreg_def.vh verilog headers after IOB_PRAGMA_PHEADERS comment
@@ -20,7 +21,7 @@ def insert_header_files(dest_dir, name, peripherals_list):
         if instance.module.name not in included_peripherals:
             included_peripherals.append(instance.module.name)
             # Only insert swreg file if module has regiters
-            if hasattr(instance, "regs") and instance.regs:
+            if hasattr(instance.module, "regs") and instance.module.regs:
                 top = instance.module.name
                 fd_out.write(f'`include "{top}_swreg_def.vh"\n')
     fd_out.close()
@@ -30,8 +31,11 @@ def insert_header_files(dest_dir, name, peripherals_list):
 # build_dir: build directory
 # top: top name of the system
 # peripherals_list: list of dictionaries each of them describes a peripheral instance
+# peripheral_portmap: list of tuples each of them a port map
 # internal_wires: Optional argument. List of extra wires to create inside module
-def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
+def create_systemv(
+    build_dir, top, peripherals_list, peripheral_portmap, internal_wires=None
+):
     num_extmem_connections = 1  # By default, one connection for iob-soc's cache
     latest_extmem_bus_size = -1
     peripherals_with_trap = []  # List of peripherals with trap output
@@ -96,7 +100,8 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
                 periphs_inst_str += f"`ifdef {if_defined_key}\n"
 
             for signal in signals_in_group:
-                periphs_inst_str += f"      .{signal['name']}({get_peripheral_port_mapping(instance, signal['if_name'], signal['name'])}),\n"
+                _, port_name = get_port_name("", signal["direction"], signal)
+                periphs_inst_str += f"      .{port_name}({get_peripheral_port_mapping(peripheral_portmap, instance, signal['if_name'], signal['name'])}),\n"
 
             if if_defined_key != "":
                 periphs_inst_str += "`endif\n"

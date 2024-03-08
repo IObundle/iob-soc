@@ -147,6 +147,7 @@ def iob_soc_hw_setup(python_module, exclude_files=[]):
             build_dir,
             name,
             peripherals_list,
+            python_module.peripheral_portmap,
             internal_wires=python_module.internal_wires,
         )
 
