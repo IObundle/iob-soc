@@ -1,5 +1,7 @@
 import os
 
+from iob_module import find_dict_in_list
+
 from iob_soc_peripherals import (
     create_periphs_tmp,
     iob_soc_peripheral_setup,
@@ -19,16 +21,6 @@ import fnmatch
 import if_gen
 import copy_srcs
 import verilog_gen
-
-
-def find_dict_in_list(list_obj, name):
-    """Find an dictionary with a given name in a list of dictionaries"""
-    for i in list_obj:
-        if i["name"] == name:
-            return i
-    raise Exception(
-        f"{iob_colors.FAIL}Could not find element with name: {name}{iob_colors.ENDC}"
-    )
 
 
 def iob_soc_sw_setup(python_module, exclude_files=[]):

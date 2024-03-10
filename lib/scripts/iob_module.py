@@ -1,5 +1,6 @@
 import os
 import shutil
+from dataclasses import dataclass, field
 
 import iob_colors
 
@@ -16,42 +17,46 @@ import ipxact_gen
 from iob_verilog_instance import iob_verilog_instance
 
 
+@dataclass
 class iob_module:
-    """Generic class to describe a base iob-module"""
+    """Generic class to describe how to generate a base IOb IP core / module"""
 
-    def __init__(self, name=None):
-        self.name = name or self.__class__.__name__
-        self.csr_if = "iob"
-        self.version = "1.0"  # Module version
-        self.description = "default description"  # Module description
-        self.previous_version = self.version  # Module previous version
-        self.setup_dir = ""  # Setup directory for this module
-        self.build_dir = ""  # Build directory for this module
-        self.rw_overlap = False  # overlap Read and Write register addresses
-        self.is_top_module = False  # Select if this module is the top module
-        self.use_netlist = False  # use module netlist
-        self.is_system = False  # create software files in build directory
-        self.board_list = None  # List of fpga files to copy to build directory
-        self.purpose = "hardware"
-        self.confs = []
-        self.regs = []
-        self.ios = []
-        self.block_groups = []
-        self.submodule_list = []
-        self.ignore_snippets = []  # List of snippets to ignore during replace
+    name: str = None
+    csr_if: str = "iob"
+    version: str = "1.0"  # Module version
+    description: str = "default description"  # Module description
+    previous_version: str = version  # Module previous version
+    setup_dir: str = ""  # Setup directory for this module
+    build_dir: str = ""  # Build directory for this module
+    rw_overlap: bool = False  # overlap Read and Write register addresses
+    is_top_module: bool = False  # Select if this module is the top module
+    use_netlist: bool = False  # use module netlist
+    is_system: bool = False  # create software files in build directory
+    board_list: list = None  # List of fpga files to copy to build directory
+    purpose: str = "hardware"
+    confs: tuple = ()
+    regs: tuple = ()
+    ios: tuple = ()
+    block_groups: tuple = ()
+    submodule_list: tuple = ()
+    ignore_snippets: tuple = ()  # List of snippets to ignore during replace
 
-        # Read-only dictionary with relation between the setup_purpose and the corresponding source folder
-        self.PURPOSE_DIRS = {
+    # Read-only dictionary with relation between the setup_purpose and the corresponding source folder
+    PURPOSE_DIRS: dict = field(
+        default_factory=lambda: {
             "hardware": "hardware/src",
             "simulation": "hardware/simulation/src",
             "fpga": "hardware/fpga/src",
         }
+    )
 
-    def _setup(self, is_top=True, purpose="hardware", topdir="."):
+    def __post_init__(self, is_top=True, purpose="hardware", topdir="."):
         """
-        Initialize the setup process for the top module.
+        Finish attribute initialization and init setup process for this module
         """
         self.is_top_module = is_top
+        # TODO: Check if name is being set corretly
+        self.name = self.name or self.__class__.__name__
 
         if is_top:
             self.set_default_build_dir()
@@ -213,4 +218,14 @@ def find_module_setup_dir(core, search_path):
 
     raise Exception(
         f"{iob_colors.FAIL}Setup dir of {core.name} not found in {search_path}!{iob_colors.ENDC}"
+    )
+
+
+def find_dict_in_list(list_obj, name):
+    """Find an dictionary with a given name in a list of dictionaries"""
+    for i in list_obj:
+        if i["name"] == name:
+            return i
+    raise Exception(
+        f"{iob_colors.FAIL}Could not find element with name: {name}{iob_colors.ENDC}"
     )
