@@ -12,7 +12,7 @@ REMOTE_SYN_DIR=$(REMOTE_BUILD_DIR)/hardware/syn
 
 #include the module's headers and sources
 VHDR+=$(wildcard ../src/*.vh) $(wildcard ./src/*.vh)
-VSRC+=$(wildcard ../src/iob_reg.v) $(wildcard ../src/iob_reg_r.v) $(wildcard ../src/iob_reg_re.v) $(wildcard ../src/iob_counter.v) $(wildcard ../src/timer_core.v) $(wildcard ../src/iob_reg_e.v) $(wildcard ../src/iob_prio_enc.v) $(wildcard ../src/iob_ctls.v) $(wildcard ../src/iob_timer_swreg_gen.v) $(wildcard ../src/iob_timer.v) $(wildcard ../src/iob_timer.v) $(wildcard ../src/iob_uart_swreg_gen.v) $(wildcard ../src/uart_core.v) $(wildcard ../src/iob_uart.v) $(wildcard ../src/iob_split.v)
+VSRC+=$(wildcard ../src/iob_reg.v) $(wildcard ../src/iob_reg_r.v) $(wildcard ../src/iob_reg_re.v) $(wildcard ../src/iob_counter.v) $(wildcard ../src/timer_core.v) $(wildcard ../src/iob_reg_e.v) $(wildcard ../src/iob_prio_enc.v) $(wildcard ../src/iob_ctls.v) $(wildcard ../src/iob_timer_swreg_gen.v) $(wildcard ../src/iob_timer.v) $(wildcard ../src/iob_timer.v) $(wildcard ../src/iob_uart_swreg_gen.v) $(wildcard ../src/uart_core.v) $(wildcard ../src/iob_uart.v) $(wildcard ../src/iob_split.v) $(wildcard ../src/iob_split.v) $(wildcard ../src/picorv32.v) $(wildcard ../src/iob_picorv32.v) $(wildcard ../src/iob_soc.v)
 
 INCLUDE+=.
 INCLUDE+=../src
