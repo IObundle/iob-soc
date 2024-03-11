@@ -293,15 +293,23 @@ class iob_soc(iob_module):
     peripherals = [uart0, timer0]
     # Number of external memory connections (will be filled automatically)
     num_extmem_connections = -1
+    # Instances for py2hw
+    cpu_0 = cpu.instance("cpu_0")
+    ibus_split_0 = split.instance("ibus_split_0")
+    dbus_split_0 = split.instance("dbus_split_0")
+    int_dbus_split_0 = split.instance("int_dbus_split_0")
+    pbus_split_0 = split.instance("pbus_split_0")
+    iob_merge_0 = merge.instance("iob_merge_0")
+    iob_merge_1 = merge.instance("iob_merge_1")
     # This is a standard iob_module attribute, but needs to be defined after 'peripherals' because it depends on it
     block_groups = [
-        cpu.instance("cpu_0"),
-        split.instance("ibus_split_0"),
-        split.instance("dbus_split_0"),
-        split.instance("int_dbus_split_0"),
-        split.instance("pbus_split_0"),
-        merge.instance("iob_merge_0"),
-        merge.instance("iob_merge_1")
+        cpu_0,
+        ibus_split_0,
+        dbus_split_0,
+        int_dbus_split_0,
+        pbus_split_0,
+        iob_merge_0,
+        iob_merge_1,
     ] + peripherals
 
     def __post_init__(self, *args, is_top=True, **kwargs):
@@ -322,6 +330,18 @@ class iob_soc(iob_module):
         self.ios.rxd = rxd
         self.ios.cts = cts
         self.ios.rts = rts
+
+        # TODO: Wires and connections of other compoents
+        # ibus = iob_wire(name='ibus', width=32)
+        # dbus = iob_wire(name='dbus', width=32)
+        #
+        # self.cpu_0.ios.ibus = ibus
+        # self.cpu_0.ios.dbus = dbus
+        #
+        # self.ibus_split_0.ios.m_bus = ibus
+        # self.ibus_split_0.ios.s_bus = [ext_mem_bus, int_mem_bus]
+        #
+        # ...
 
         self.is_top_module = is_top
         self.set_default_build_dir()
