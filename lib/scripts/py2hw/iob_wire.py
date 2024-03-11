@@ -6,7 +6,7 @@ class iob_wire:
     """Class to represent a wire in an iob module"""
     name: str
     width: int = 1
-    value: str = 'x' * width
+    connect_to: str = 'x' * width
     description: str = "Default description"
 
     def __post_init__(self):
@@ -38,7 +38,7 @@ class iob_wire:
             if self.width != 1:
                 raise ValueError(f'Boolean values must be assigned to wires of width 1')
             value = '1' if value else '0'
-        self.value = value
+        self.connect_to = value
 
     @classmethod
     def create_list(cls, name, width, num):
@@ -48,7 +48,7 @@ class iob_wire:
         return _list
 
     def get_value(self):
-        return self.value
+        return self.connect_to
 
     def print_wire(self):
         print(f"wire [{self.width}-1:0] {self.name};")

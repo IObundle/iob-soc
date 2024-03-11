@@ -22,7 +22,7 @@ class iob_port:
         if value.width != self.width:
             print(f"Error: Port {self.name} width ({self.width}) does not match wire {value.name} width ({value.width}).")
             exit(1)
-        self.value = value
+        self.connect_to = value
 
     def set_value(self, value):
         self.wire().set_value(value)
@@ -32,7 +32,7 @@ class iob_port:
 
     def wire(self):
         """Return the wire connected to the port"""
-        return self.value
+        return self.connect_to
         
     def print_port(self, comma=True):
         if comma:
@@ -42,13 +42,13 @@ class iob_port:
 
         
     def print_port_assign(self, comma=True):
-        if not isinstance(self.value, (iob_wire, iob_port)):
+        if not isinstance(self.connect_to, (iob_wire, iob_port)):
             print(f"Error: Port {self.name} is not connected.")
             exit(1)
         if comma:
-            print(f"      .{self.name}({self.value.name}),")
+            print(f"      .{self.name}({self.connect_to.name}),")
         else:
-            print(f"      .{self.name}({self.value.name})")
+            print(f"      .{self.name}({self.connect_to.name})")
 
 
 @dataclass

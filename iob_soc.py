@@ -43,43 +43,8 @@ class iob_soc(iob_module):
     rw_overlap = True
     is_system = True
     board_list = ["CYCLONEV-GT-DK", "AES-KU040-DB-G"]
-    cpu = iob_picorv32()
-    uart = iob_uart()
-    timer = iob_timer()
-    merge = iob_merge()
-    split = iob_split()
-    submodule_list = [
-        cpu,
-        iob_cache(),
-        uart,
-        timer,
-        iob_utils(),
-        merge,
-        split,
-        iob_rom_sp(),
-        iob_ram_dp_be(),
-        iob_ram_dp_be_xil(),
-        iob_pulse_gen(),
-        iob_counter(),
-        iob_reg(),
-        iob_reg_re(),
-        iob_ram_sp_be(),
-        iob_ram_dp(),
-        iob_reset_sync(),
-        iob_ctls(),
-        axi_interconnect(),
-        # Simulation headers & modules
-        (axi_ram(), {"purpose": "simulation"}),
-        (iob_tasks(), {"purpose": "simulation"}),
-        # Software modules
-        printf(),
-        # Modules required for CACHE
-        (iob_ram_2p(), {"purpose": "simulation"}),
-        (iob_ram_2p(), {"purpose": "fpga"}),
-        (iob_ram_sp(), {"purpose": "simulation"}),
-        (iob_ram_sp(), {"purpose": "fpga"}),
-    ]
-    confs: list = [
+
+    confs = [
         # macros
         iob_conf(
             name="INIT_MEM",
@@ -212,6 +177,34 @@ class iob_soc(iob_module):
             descr="Offset of memory address",
         ),
     ]
+
+    # Create wire for connection with IOs
+    clk_en_rst = iob_interface("clk_en_rst")
+    clk = clk_en_rst.wires.clk
+    arst = clk_en_rst.wires.arst
+    cke = clk_en_rst.wires.cke
+
+    trap = iob_wire("trap", width=1)
+
+    axi = iob_interface(
+        name="axi",
+        type="master",
+        wire_prefix="",
+        port_prefix="",
+        mult="",  # Will be filled automatically
+        widths={
+            "ID_W": "AXI_ID_W",
+            "ADDR_W": "AXI_ADDR_W",
+            "DATA_W": "AXI_DATA_W",
+            "LEN_W": "AXI_LEN_W",
+        },
+        )
+
+    txd = iob_wire(name='txd', width=1)
+    rxd = iob_wire(name='rxd', width=1)
+    cts = iob_wire(name='cts', width=1)
+    rts = iob_wire(name='rts', width=1)
+
     ios = [
         iob_interface(
             name="clk_en_rst",
@@ -220,6 +213,7 @@ class iob_soc(iob_module):
             wire_prefix="",
             descr="Clock, enable, and reset",
             ports=[],
+            connect_to=clk_en_rst,
         ),
         iob_interface(
             name="trap",
@@ -233,6 +227,7 @@ class iob_soc(iob_module):
                     direction="output",
                     width=1,
                     descr="CPU trap signal",
+                    connect_to=trap
                 ),
             ],
         ),
@@ -251,6 +246,7 @@ class iob_soc(iob_module):
             descr="Bus of AXI master interfaces for external memory. One interface for this system and others optionally for peripherals.",
             if_defined="USE_EXTMEM",
             ports=[],
+            connect_to=axi
         ),
         iob_interface(
             name="rs232",
@@ -264,85 +260,391 @@ class iob_soc(iob_module):
                     direction="output",
                     width=1,
                     descr="UART transmit data",
+                    connect_to=txd,
                 ),
                 iob_port(
                     name="rxd",
                     direction="input",
                     width=1,
                     descr="UART receive data",
+                    connect_to=rxd,
                 ),
                 iob_port(
                     name="rts",
                     direction="output",
                     width=1,
                     descr="UART request to send",
+                    connect_to=rts,
                 ),
                 iob_port(
                     name="cts",
                     direction="input",
                     width=1,
                     descr="UART clear to send",
+                    connect_to=cts,
                 ),
             ],
         ),
     ]
 
-    # IOb-SoC has the following set of non standard attributes:
-    uart0 = uart.instance("UART0"),
-    timer0 = timer.instance("TIMER0"),
-    peripherals = [uart0, timer0]
+    #######################################
+    # IOb-SoC modules, wires, and instances
+    #######################################
+
+    #
+    # SYSTEM RESET
+    #
+
+    boot = iob_wire("boot", width=1)
+    cpu_reset = iob_wire("cpu_reset", width=1)
+
+    #
+    # CPU
+    #
+
+    cpu_i_req = iob_wire("cpu_i_req", width=REQ_W)
+    cpu_i_resp = iob_wire("cpu_i_resp", width=RESP_W)
+    cpu_d_req = iob_wire("cpu_d_req", width=REQ_W)
+    cpu_d_resp = iob_wire("cpu_d_resp", width=RESP_W)
+
+    cpu = iob_picorv32(
+        "cpu",
+        parameters={
+            "ADDR_W": "ADDR_W",
+            "DATA_W": "DATA_W",
+            "USE_COMPRESSED":  USE_COMPRESSED,
+            "USE_MUL_DIV": USE_MUL_DIV,
+            "USE_EXTMEM": USE_EXTMEM
+        },
+        io_connections={
+            "clk_i": clk,
+            "arst_i": cpu_reset,
+            "cke_i": cke,
+            "boot_i": boot,
+            "trap_o": trap,
+            # instruction bus
+            "ibus_req_o": cpu_i_req,
+            "ibus_resp_i": cpu_i_resp,
+            # data bus
+            "dbus_req_o": cpu_d_req,
+            "dbus_resp_i": cpu_d_resp,
+        },
+    )
+
+    #
+    # SPLIT CPU BUSES TO ACCESS INTERNAL OR EXTERNAL MEMORY
+    #
+
+    # internal memory instruction bus
+    int_mem_i_req = iob_wire("int_mem_i_req", width=REQ_W)
+    int_mem_i_resp = iob_wire("int_mem_i_resp", width=RESP_W)
+    # external memory instruction bus
+    ext_mem_i_req = iob_wire("ext_mem_i_req", width=REQ_W)
+    ext_mem_i_resp = iob_wire("ext_mem_i_resp", width=RESP_W)
+
+    if USE_EXTMEM:
+        ibus_split = iob_split(
+            "ibus_split",
+            parameters={
+                "ADDR_W": "ADDR_W",
+                "DATA_W": "DATA_W",
+                "N_SLAVES": "2",
+                "P_SLAVES": str(REQ_W - 2),
+            },
+            io_connections={
+                "clk_i": clk,
+                "arst_i": cpu_reset,
+                # master interface
+                "m_req_i": cpu_i_req,
+                "m_resp_o": cpu_i_resp,
+                # slaves interface
+                "s_req_o": [ext_mem_i_req, int_mem_i_req],
+                "s_resp_i": [ext_mem_i_resp, int_mem_i_resp],
+            },
+        )
+    else:  # no extmem
+        int_mem_i_req.connect_to = cpu_i_req
+        cpu_i_resp.connect_to = int_mem_i_resp
+
+    # DATA BUS
+
+    # internal data bus
+    int_d_req = iob_wire("int_d_req", width=REQ_W)
+    int_d_resp = iob_wire("int_d_resp", width=RESP_W)
+    # external memory data bus
+    ext_mem_d_req = iob_wire("ext_mem_d_req", width=REQ_W)
+    ext_mem_d_resp = iob_wire("ext_mem_d_resp", width=RESP_W)
+
+    if USE_EXTMEM:
+        dbus_split = iob_split(
+            "dbus_split",
+            parameters={
+                "ADDR_W": "ADDR_W",
+                "DATA_W": "DATA_W",
+                "N_SLAVES": "2",  # E,{P,I}
+                "P_SLAVES": str(REQ_W - 2),
+            },
+            io_connections={
+                "clk_i": clk,
+                "arst_i": cpu_reset,
+                # master interface
+                "m_req_i": cpu_d_req,
+                "m_resp_o": cpu_d_resp,
+                # slaves interface
+                "s_req_o": [ext_mem_d_req, int_d_req],
+                "s_resp_i": [ext_mem_d_resp, int_d_resp],
+            },
+        )
+    else:  # no extmem
+        int_d_req.connect_to = cpu_d_req
+        cpu_d_resp.connect_to = int_d_resp
+
+    #
+    # SPLIT INTERNAL MEMORY AND PERIPHERALS BUS
+    #
+
+    # slaves bus (includes internal memory + periphrals)
+    slaves_req = iob_wire("slaves_req", width=N_SLAVES*REQ_W)
+    slaves_resp = iob_wire("slaves_resp", width=N_SLAVES*RESP_W)
+
+    pbus_split = iob_split(
+       "pbus_split",
+       parameters={
+          "ADDR_W": "ADDR_W",
+          "DATA_W": "DATA_W",
+          "N_SLAVES": str(N_SLAVES),
+          "P_SLAVES": str(REQ_W - 3),
+       },
+       io_connections={
+          "clk_i": clk,
+          "arst_i": cpu_reset,
+          # master interface
+          "m_req_i": int_d_req,
+          "m_resp_o": int_d_resp,
+          # slaves interface
+          "s_req_o": slaves_req,
+          "s_resp_i": slaves_resp,
+       },
+    )
+
+    #
+    # INTERNAL SRAM MEMORY
+    #
+
+    int_mem = iob_soc_int_mem(
+        "int_mem",
+        parameters={
+            "ADDR_W": "ADDR_W",
+            "DATA_W": "DATA_W",
+            "HEXFILE": "iob_soc_firmware",
+            "BOOT_HEXFILE": "iob_soc_boot",
+            "SRAM_ADDR_W": "SRAM_ADDR_W",
+            "BOOTROM_ADDR_W": "BOOTROM_ADDR_W",
+            "B_BIT": f"{REQ_W} - (ADDR_W-`IOB_SOC_B+1)",
+        },
+        io_connections={
+            "clk_i": clk,
+            "arst_i": arst,
+            "cke_i": cke,
+            "boot": boot,
+            "cpu_reset": cpu_reset,
+            # instruction bus
+            "i_req_i": int_mem_i_req,
+            "i_resp_o": int_mem_i_resp,
+            # data bus
+            "d_req_i": slaves_req.part_sel(0, REQ_W),  # .part(<part index>, <part width>)
+            "d_resp_o": slaves_resp.part_sel(0, RESP_W),
+        },
+    )
+
+    #
+    # EXTERNAL DDR MEMORY
+    #
+
+    ext_mem0_i_req = iob_wire("ext_mem0_i_req", width=1+MEM_ADDR_W-2+DATA_W+DATA_W/8)
+    ext_mem0_d_req = iob_wire("ext_mem0_d_req", width=1+MEM_ADDR_W+1-2+DATA_W+DATA_W/8)
+
+    ext_mem_i_req.connect_to = [valid(ext_mem_i_req, 0), address(ext_mem_i_req, 0, MEM_ADDR_W, -2), write(ext_mem_i_req, 0)]
+    ext_mem_d_req.connect_to = [valid(ext_mem_d_req, 0), address(ext_mem_d_req, 0, MEM_ADDR_W+1, -2), write(ext_mem_d_req, 0)]
+
+    internal_axi_awaddr_o = iob_wire("internal_axi_awaddr_o", width=AXI_ADDR_W)
+    internal_axi_araddr_o = iob_wire("internal_axi_araddr_o", width=AXI_ADDR_W)
+
+    ext_mem = iob_soc_ext_mem(
+        "ext_mem",
+        parameters={
+            "ADDR_W": "ADDR_W",
+            "DATA_W": "DATA_W",
+            "FIRM_ADDR_W": "MEM_ADDR_W",
+            "MEM_ADDR_W": "MEM_ADDR_W",
+            "DDR_ADDR_W": "`DDR_ADDR_W",
+            "DDR_DATA_W": "`DDR_DATA_W",
+            "AXI_ID_W": "AXI_ID_W",
+            "AXI_LEN_W": "AXI_LEN_W",
+            "AXI_ADDR_W": "AXI_ADDR_W",
+            "AXI_DATA_W": "AXI_DATA_W"
+        },
+        io_connections={
+            # instruction bus
+            "i_req_i": ext_mem0_i_req,
+            "i_resp_o": ext_mem_i_resp,
+
+            # data bus
+            "d_req_i": ext_mem0_d_req,
+            "d_resp_o": ext_mem_d_resp,
+
+            # AXI INTERFACE
+            # address write
+            "axi_awid_o": axi.wires.axi_awid_o.part_sel(0, AXI_ID_W),
+            "axi_awaddr_o": internal_axi_awaddr_o.part_sel(0, AXI_ADDR_W),
+            "axi_awlen_o": axi.wires.axi_awlen_o.part_sel(0, AXI_LEN_W),
+            "axi_awsize_o": axi.wires.axi_awsize_o.part_sel(0, 3),
+            "axi_awburst_o": axi.wires.axi_awburst_o.part_sel(0, 2),
+            "axi_awlock_o": axi.wires.axi_awlock_o.part_sel(0, 2),
+            "axi_awcache_o": axi.wires.axi_awcache_o.part_sel(0, 4),
+            "axi_awprot_o": axi.wires.axi_awprot_o.part_sel(0, 3),
+            "axi_awqos_o": axi.wires.axi_awqos_o.part_sel(0, 4),
+            "axi_awvalid_o": axi.wires.axi_awvalid_o.part_sel(0, 1),
+            "axi_awready_i": axi.wires.axi_awready_i.part_sel(0, 1),
+            # write
+            "axi_wdata_o": axi.wires.axi_wdata_o.part_sel(0, AXI_DATA_W),
+            "axi_wstrb_o": axi.wires.axi_wstrb_o.part_sel(0, (AXI_DATA_W/8)),
+            "axi_wlast_o": axi.wires.axi_wlast_o.part_sel(0, 1),
+            "axi_wvalid_o": axi.wires.axi_wvalid_o.part_sel(0, 1),
+            "axi_wready_i": axi.wires.axi_wready_i.part_sel(0, 1),
+            # write response
+            "axi_bid_i": axi.wires.axi_bid_i.part_sel(0, AXI_ID_W),
+            "axi_bresp_i": axi.wires.axi_bresp_i.part_sel(0, 2),
+            "axi_bvalid_i": axi.wires.axi_bvalid_i.part_sel(0, 1),
+            "axi_bready_o": axi.wires.axi_bready_o.part_sel(0, 1),
+            # address read
+            "axi_arid_o": axi.wires.axi_arid_o.part_sel(0, AXI_ID_W),
+            "axi_araddr_o": internal_axi_araddr_o.part_sel(0, AXI_ADDR_W),
+            "axi_arlen_o": axi.wires.axi_arlen_o.part_sel(0, AXI_LEN_W),
+            "axi_arsize_o": axi.wires.axi_arsize_o.part_sel(0, 3),
+            "axi_arburst_o": axi.wires.axi_arburst_o.part_sel(0, 2),
+            "axi_arlock_o": axi.wires.axi_arlock_o.part_sel(0, 2),
+            "axi_arcache_o": axi.wires.axi_arcache_o.part_sel(0, 4),
+            "axi_arprot_o": axi.wires.axi_arprot_o.part_sel(0, 3),
+            "axi_arqos_o": axi.wires.axi_arqos_o.part_sel(0, 4),
+            "axi_arvalid_o": axi.wires.axi_arvalid_o.part_sel(0, 1),
+            "axi_arready_i": axi.wires.axi_arready_i.part_sel(0, 1),
+            # read
+            "axi_rid_i": axi.wires.axi_rid_i.part_sel(0, AXI_ID_W),
+            "axi_rdata_i": axi.wires.axi_rdata_i.part_sel(0, AXI_DATA_W),
+            "axi_rresp_i": axi.wires.axi_rresp_i.part_sel(0, 2),
+            "axi_rlast_i": axi.wires.axi_rlast_i.part_sel(0, 1),
+            "axi_rvalid_i": axi.wires.axi_rvalid_i.part_sel(0, 1),
+            "axi_rready_o": axi.wires.axi_rready_o.part_sel(0, 1),
+
+            "clk_i": clk,
+            "cke_i": cke,
+            "arst_i": cpu_reset,
+        },
+    )
+
+    axi.wires.axi_awaddr_o.part_sel(0, AXI_ADDR_W).connect_to = internal_axi_awaddr_o + MEM_ADDR_OFFSET
+    axi.wires.axi_araddr_o.part_sel(0, AXI_ADDR_W).connect_to = internal_axi_araddr_o + MEM_ADDR_OFFSET
+
+    # TODO: Replace below with a script to auto-create and connect peripherals
+    UART0 = iob_uart(
+        "UART0",
+        parameters={
+            "DATA_W": "UART0_DATA_W",
+            "ADDR_W": "UART0_ADDR_W",
+            "UART_DATA_W": "UART0_UART_DATA_W",
+        },
+        io_connections={
+            "txd": txd,
+            "rxd": rxd,
+            "cts": cts,
+            "rts": rts,
+            "clk_i": clk,
+            "cke_i": cke,
+            "arst_i": arst,
+            "iob_valid_i": valid(slaves_req, IOB_SOC_UART0),
+            "iob_addr_i": address(slaves_req, IOB_SOC_UART, IOB_UART_SWREG_ADDR_W),
+            "iob_wdata_i": wdata(slaves_req, IOB_SOC_UART0),
+            "iob_wstrb_i": wstrb(slaves_req, IOB_SOC_UART0),
+            "iob_rvalid_o": rvalid(slaves_resp, IOB_SOC_UART0),
+            "iob_rdata_o": rdata(slaves_resp, IOB_SOC_UART0),
+            "iob_ready_o": ready(slaves_resp, IOB_SOC_UART0),
+        },
+    )
+    TIMER0 = iob_timer(
+        "TIMER0",
+        parameters={
+            "DATA_W": "TIMER0_DATA_W",
+            "ADDR_W": "TIMER0_ADDR_W",
+            "TIMER_DATA_W": "TIMER0_WDATA_W",
+        },
+        io_connections={
+            "clk_i": clk,
+            "cke_i": cke,
+            "arst_i": arst,
+            "iob_valid_i": valid(slaves_req, IOB_SOC_TIMER0),
+            "iob_addr_i": address(slaves_req, IOB_SOC_TIMER, IOB_TIMER_SWREG_ADDR_W),
+            "iob_wdata_i": wdata(slaves_req, IOB_SOC_TIMER0),
+            "iob_wstrb_i": wstrb(slaves_req, IOB_SOC_TIMER0),
+            "iob_rvalid_o": rvalid(slaves_resp, IOB_SOC_TIMER0),
+            "iob_rdata_o": rdata(slaves_resp, IOB_SOC_TIMER0),
+            "iob_ready_o": ready(slaves_resp, IOB_SOC_TIMER0),
+        },
+    )
+
+
+    #######################################
+    # End of IOb-SoC module
+    #######################################
+
+    # Modules that need to be setup, but are not instantiated inside iob_soc Verilog module
+    iob_utils("utils")
+    iob_merge("merge")
+    iob_cache("cache")
+    iob_rom_sp("rom_sp")
+    iob_ram_dp_be("ram_dp_be")
+    iob_ram_dp_be_xil("ram_dp_be_xil")
+    iob_pulse_gen("pulse_gen")
+    # iob_counter("counter")
+    iob_reg("reg")
+    iob_reg_re("reg_re")
+    iob_ram_sp_be("ram_sp_be")
+    # iob_ram_dp("ram_dp")
+    # iob_ctls("ctls")
+    axi_interconnect("interconnect")
+    # Simulation headers & modules
+    axi_ram("ram", purpose="simulation")
+    iob_tasks("tasks", purpose="simulation")
+    # Software modules
+    printf()
+    # Modules required for CACHE
+    iob_ram_2p("ram_2p", purpose="simulation")
+    iob_ram_2p("ram_2p", purpose="fpga")
+    iob_ram_sp("ram_sp", purpose="simulation")
+    iob_ram_sp("ram_sp", purpose="fpga")
+    # FPGA modules
+    iob_reset_sync("reset_sync", purpose="fpga")
+
+    # Peripherals
+    peripherals = [UART0, TIMER0]
+
+    # Fill blocks list with modules that need to be instantiated inside the iob_soc Verilog module
+    blocks = [
+        cpu,
+        pbus_split,
+        int_mem,
+    ] + peripherals
+    if USE_EXTMEM:
+        blocks += [
+            ibus_split,
+            dbus_split,
+            ext_mem,
+            ]
+
     # Number of external memory connections (will be filled automatically)
     num_extmem_connections = -1
-    # Instances for py2hw
-    cpu_0 = cpu.instance("cpu_0")
-    ibus_split_0 = split.instance("ibus_split_0")
-    dbus_split_0 = split.instance("dbus_split_0")
-    int_dbus_split_0 = split.instance("int_dbus_split_0")
-    pbus_split_0 = split.instance("pbus_split_0")
-    iob_merge_0 = merge.instance("iob_merge_0")
-    iob_merge_1 = merge.instance("iob_merge_1")
-    # This is a standard iob_module attribute, but needs to be defined after 'peripherals' because it depends on it
-    blocks = [
-        cpu_0,
-        ibus_split_0,
-        dbus_split_0,
-        int_dbus_split_0,
-        pbus_split_0,
-        iob_merge_0,
-        iob_merge_1,
-    ] + peripherals
 
     def __post_init__(self, *args, is_top=True, **kwargs):
-        # Create wires for UART
-        txd = iob_wire(name='txd', width=1)
-        rxd = iob_wire(name='rxd', width=1)
-        cts = iob_wire(name='cts', width=1)
-        rts = iob_wire(name='rts', width=1)
-
-        # Connect UART wires
-        self.uart0.ios.txd = txd
-        self.uart0.ios.rxd = rxd
-        self.uart0.ios.cts = cts
-        self.uart0.ios.rts = rts
-
-        # Connect iob-soc IOs to uart wires
-        self.ios.txd = txd
-        self.ios.rxd = rxd
-        self.ios.cts = cts
-        self.ios.rts = rts
-
-        # TODO: Wires and connections of other compoents
-        # ibus = iob_wire(name='ibus', width=32)
-        # dbus = iob_wire(name='dbus', width=32)
-        #
-        # self.cpu_0.ios.ibus = ibus
-        # self.cpu_0.ios.dbus = dbus
-        #
-        # self.ibus_split_0.ios.m_bus = ibus
-        # self.ibus_split_0.ios.s_bus = [ext_mem_bus, int_mem_bus]
-        #
-        # ...
-
         self.is_top_module = is_top
         self.set_default_build_dir()
         # Pre-setup specialized IOb-SoC functions
