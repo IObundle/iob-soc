@@ -37,7 +37,7 @@ class iob_module:
     confs: tuple = ()
     regs: tuple = ()
     ios: tuple = ()
-    block_groups: tuple = ()
+    blocks: tuple = ()
     submodule_list: tuple = ()
     ignore_snippets: tuple = ()  # List of snippets to ignore during replace
 

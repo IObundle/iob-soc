@@ -302,7 +302,7 @@ class iob_soc(iob_module):
     iob_merge_0 = merge.instance("iob_merge_0")
     iob_merge_1 = merge.instance("iob_merge_1")
     # This is a standard iob_module attribute, but needs to be defined after 'peripherals' because it depends on it
-    block_groups = [
+    blocks = [
         cpu_0,
         ibus_split_0,
         dbus_split_0,
