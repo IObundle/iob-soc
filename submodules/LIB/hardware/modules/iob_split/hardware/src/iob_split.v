@@ -11,8 +11,8 @@ module iob_split #(
    `include "clk_rst_s_port.vs"
 
    //masters interface
-   input      [ `REQ_W-1:0] m_req_i,
-   output reg [`RESP_W-1:0] m_resp_o,
+   input         [ `REQ_W-1:0] m_req_i,
+   output        [`RESP_W-1:0] m_resp_o,
 
    //slave interface
    output reg [ N_SLAVES*`REQ_W-1:0] s_req_o,
@@ -45,6 +45,18 @@ module iob_split #(
    //
    //route response from previously selected slave to master
    //
+
+   //iob_reg #(
+   //   .DATA_W (`RESP_W),
+   //   .RST_VAL({`RESP_W {1'b0}})
+   //)sram_w_valid_reg (
+   //   .clk_i (clk_i),
+   //   .arst_i(arst_i),
+   //   .cke_i (1'b1),
+   //   .data_i({s_resp_i[`RDATA(s_sel_r)], s_resp_i[`RVALID(s_sel_r)], s_resp_i[`READY(s_sel)]}),
+   //   .data_o(m_resp_o)
+   //);
+
 
    assign m_resp_o[`RDATA(0)] = s_resp_i[`RDATA(s_sel_r)];
    assign m_resp_o[`RVALID(0)] = s_resp_i[`RVALID(s_sel_r)];
