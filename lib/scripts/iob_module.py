@@ -1,6 +1,9 @@
 import os
 import shutil
 
+from dataclasses import dataclass, field
+from typing import Dict, List
+
 import iob_colors
 
 import copy_srcs
@@ -16,36 +19,45 @@ import ipxact_gen
 from iob_verilog_instance import iob_verilog_instance
 
 
+@dataclass
 class iob_module:
     """Generic class to describe a base iob-module"""
 
-    def __init__(self, name=None):
-        self.name = name or self.__class__.__name__
-        self.csr_if = "iob"
-        self.version = "1.0"  # Module version
-        self.description = "default description"  # Module description
-        self.previous_version = self.version  # Module previous version
-        self.setup_dir = ""  # Setup directory for this module
-        self.build_dir = ""  # Build directory for this module
-        self.rw_overlap = False  # overlap Read and Write register addresses
-        self.is_top_module = False  # Select if this module is the top module
-        self.use_netlist = False  # use module netlist
-        self.is_system = False  # create software files in build directory
-        self.board_list = None  # List of fpga files to copy to build directory
-        self.purpose = "hardware"
-        self.confs = []
-        self.regs = []
-        self.ios = []
-        self.block_groups = []
-        self.submodule_list = []
-        self.ignore_snippets = []  # List of snippets to ignore during replace
+    name: str = ""
+    csr_if: str = "iob"
+    version: str = "1.0"  # Module version
+    description: str = "default description"  # Module description
+    previous_version: str = version  # Module previous version
+    setup_dir: str = ""  # Setup directory for this module
+    build_dir: str = ""  # Build directory for this module
+    rw_overlap: bool = False  # overlap Read and Write register addresses
+    is_top_module: bool = False  # Select if this module is the top module
+    use_netlist: bool = False  # use module netlist
+    is_system: bool = False  # create software files in build directory
+    # List of fpga files to copy to build directory
+    board_list: List = field(default_factory=list)
+    purpose: str = "hardware"
+    confs: List = field(default_factory=list)
+    regs: List = field(default_factory=list)
+    ios: List = field(default_factory=list)
+    block_groups: List = field(default_factory=list)
+    submodule_list: List = field(default_factory=list)
+    ignore_snippets: List = field(
+        default_factory=list
+    )  # List of snippets to ignore during replace
 
-        # Read-only dictionary with relation between the setup_purpose and the corresponding source folder
-        self.PURPOSE_DIRS = {
+    # Read-only dictionary with relation between the setup_purpose and the corresponding source folder
+    PURPOSE_DIRS: Dict = field(
+        default_factory=lambda: {
             "hardware": "hardware/src",
             "simulation": "hardware/simulation/src",
             "fpga": "hardware/fpga/src",
         }
+    )
+
+    def __post_init__(self):
+        if self.name == "":
+            self.name = self.__class__.__name__
 
     def _setup(self, is_top=True, purpose="hardware", topdir="."):
         """

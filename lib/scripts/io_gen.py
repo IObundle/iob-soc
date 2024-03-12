@@ -46,6 +46,7 @@ def generate_ports(core):
     out_dir = core.build_dir + "/hardware/src"
 
     f_io = open(f"{out_dir}/{core.name}_io.vs", "w+")
+    f_io_portmap = open(f"{out_dir}/{core.name}_io_portmap.vs", "w+")
 
     for table in core.ios:
         # print(table)
@@ -57,6 +58,7 @@ def generate_ports(core):
         # Open ifdef if conditional interface
         if "if_defined" in table.keys():
             f_io.write(f"`ifdef {core.name.upper()}_{table['if_defined']}\n")
+            f_io_portmap.write(f"`ifdef {core.name.upper()}_{table['if_defined']}\n")
 
         if "file_prefix" in table.keys():
             file_prefix = table["file_prefix"]
@@ -69,6 +71,7 @@ def generate_ports(core):
             table["port_prefix"],
             table["wire_prefix"],
             table["ports"],
+            table["param_prefix"] if "param_prefix" in table.keys() else "",
             table["mult"] if "mult" in table.keys() else 1,
             table["widths"] if "widths" in table.keys() else {},
         )
@@ -78,8 +81,11 @@ def generate_ports(core):
             infix = "s"
         else:
             infix = "m"
-        vs_file = open(f"{file_prefix}{table['name']}_{infix}_port.vs", "r")
-        f_io.write(vs_file.read())
+        with open(f"{file_prefix}{table['name']}_{infix}_port.vs", "r") as vs_file:
+            f_io.write(vs_file.read())
+
+        with open(f"{file_prefix}{table['name']}_{infix}_portmap.vs", "r") as vs_file:
+            f_io_portmap.write(vs_file.read())
 
         # move all .vs files from current directory to out_dir
         for file in os.listdir("."):
@@ -89,9 +95,15 @@ def generate_ports(core):
         # Close ifdef if conditional interface
         if "if_defined" in table.keys():
             f_io.write("`endif\n")
+            f_io_portmap.write("`endif\n")
 
     # Find and remove last comma
     delete_last_comma(f_io)
+    delete_last_comma(f_io_portmap)
+
+    # close files
+    f_io.close()
+    f_io_portmap.close()
 
 
 # Generate if.tex file with list TeX tables of IOs

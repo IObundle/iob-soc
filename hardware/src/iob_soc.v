@@ -67,8 +67,9 @@ module iob_soc #(
    //
 
    //internal memory instruction bus
-   wire [ `REQ_W-1:0] int_mem_i_req;
-   wire [`RESP_W-1:0] int_mem_i_resp;
+   `include "iob_soc_int_mem_i_iob_wire.vs"
+   // wire [ `REQ_W-1:0] int_mem_i_req;
+   // wire [`RESP_W-1:0] int_mem_i_resp;
    //external memory instruction bus
 `ifdef IOB_SOC_USE_EXTMEM
    wire [ `REQ_W-1:0] ext_mem_i_req;
@@ -91,8 +92,15 @@ module iob_soc #(
       .s_resp_i({ext_mem_i_resp, int_mem_i_resp})
    );
 `else
-   assign int_mem_i_req = cpu_i_req;
-   assign cpu_i_resp    = int_mem_i_resp;
+   // assign int_mem_i_req = cpu_i_req;
+   // assign cpu_i_resp    = int_mem_i_resp;
+   assign int_mem_i_valid = cpu_i_valid;
+   assign int_mem_i_addr = cpu_i_addr;
+   assign int_mem_i_wdata = cpu_i_wdata;
+   assign int_mem_i_wstrb = cpu_i_wstrb;
+   assign cpu_i_rdata = int_mem_i_rdata;
+   assign cpu_i_rvalid = int_mem_i_rvalid;
+   assign cpu_i_ready = int_mem_i_ready;
 `endif
 
 
@@ -171,12 +179,14 @@ module iob_soc #(
       .cpu_reset(cpu_reset),
 
       // instruction bus
-      .i_req_i (int_mem_i_req),
-      .i_resp_o(int_mem_i_resp),
+      `include "iob_soc_int_mem_i_iob_s_portmap.vs"
+      // .i_req_i (int_mem_i_req),
+      // .i_resp_o(int_mem_i_resp),
 
       //data bus
-      .d_req_i (slaves_req[0+:`REQ_W]),
-      .d_resp_o(slaves_resp[0+:`RESP_W])
+      `include "iob_soc_int_mem_d_iob_s_portmap.vs"
+      // .d_req_i (slaves_req[0+:`REQ_W]),
+      // .d_resp_o(slaves_resp[0+:`RESP_W])
    );
 
 `ifdef IOB_SOC_USE_EXTMEM

@@ -17,18 +17,21 @@ module iob_soc_int_mem #(
    output cpu_reset,
 
    //instruction bus
-   input  [ `REQ_W-1:0] i_req_i,
-   output [`RESP_W-1:0] i_resp_o,
+   `include "iob_soc_int_mem_i_iob_s_port.vs"
+   // input  [ `REQ_W-1:0] i_req_i,
+   // output [`RESP_W-1:0] i_resp_o,
 
    //data bus
-   input  [ `REQ_W-1:0] d_req_i,
-   output [`RESP_W-1:0] d_resp_o,
+   `include "iob_soc_int_mem_d_iob_s_port.vs"
+   // input  [ `REQ_W-1:0] d_req_i,
+   // output [`RESP_W-1:0] d_resp_o,
    `include "clk_en_rst_s_port.vs"
 );
 
    //sram data bus  interface
-   wire [     `REQ_W-1:0] ram_d_req;
-   wire [    `RESP_W-1:0] ram_d_resp;
+   `include "iob_soc_int_mem_ram_d_iob_wire.vs"
+   // wire [     `REQ_W-1:0] ram_d_req;
+   // wire [    `RESP_W-1:0] ram_d_resp;
 
    //modified ram address during boot
    wire [SRAM_ADDR_W-3:0] ram_d_addr;
@@ -38,12 +41,14 @@ module iob_soc_int_mem #(
    // BOOT HARDWARE
    //
    //boot controller bus to write program in sram
-   wire [     `REQ_W-1:0] boot_ctr_req;
-   wire [    `RESP_W-1:0] boot_ctr_resp;
+   `include "iob_soc_int_mem_boot_ctr_iob_wire.vs"
+   // wire [     `REQ_W-1:0] boot_ctr_req;
+   // wire [    `RESP_W-1:0] boot_ctr_resp;
 
    //
    // SPLIT DATA BUS BETWEEN SRAM AND BOOT CONTROLLER
    //
+   `include "iob_data_boot_ctr_split2_inst.vs"
    iob_split #(
       .ADDR_W  (ADDR_W),
       .DATA_W  (DATA_W),
@@ -113,19 +118,23 @@ module iob_soc_int_mem #(
    wire [SRAM_ADDR_W-3:0] ram_d_addr_int;
 
    //
-   //modify addresses to run  boot program
+   //modify addresses to run boot program
    //
    localparam boot_offset = -('b1 << BOOTROM_ADDR_W);
 
    //instruction bus: connect directly but address
    assign ram_r_req[`ADDRESS(0, ADDR_W)] = ram_r_addr;
-   assign boot_i_addr = i_req_i[`ADDRESS(0, ADDR_W)] + boot_offset;
-   assign i_addr = i_req_i[`ADDRESS(0, ADDR_W)];
+   assign boot_i_addr = i_iob_addr_i + boot_offset;
+   assign i_addr = i_iob_addr_i;
 
-   assign ram_r_req[`VALID(0)] = i_req_i[`VALID(0)];
+   assign ram_r_req[`VALID(0)] = i_iob_valid_i;
    assign ram_r_addr = boot ? boot_i_addr : i_addr;
-   assign ram_r_req[`WRITE(0)] = i_req_i[`WRITE(0)];
+   assign ram_r_req[`WDATA(0)] = i_iob_wdata_i;
+   assign ram_r_req[`WSTRB(0)] = i_iob_wstrb_i;
    assign i_resp_o[`RESP(0)] = ram_r_resp[`RESP(0)];
+   assign i_iob_rvalid_o = ram_r_resp[`RVALID(0)];
+   assign i_iob_rdata_o = ram_r_resp[`RDATA(0)];
+   assign i_iob_ready_o = ram_r_resp[`READY(0)];
 
    //data bus: just replace address
    assign boot_ram_d_addr = ram_d_req[`ADDRESS(0, SRAM_ADDR_W)-2] + boot_offset[SRAM_ADDR_W-1:2];

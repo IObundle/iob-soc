@@ -68,8 +68,8 @@ def sim_setup(python_module):
 
 # Setup fpga files, but only the ones in the board_list
 def fpga_setup(python_module):
-    # If board_list is None, then do nothing
-    if python_module.board_list == None:
+    # If board_list is empty, then do nothing
+    if not python_module.board_list:
         return
 
     build_dir = python_module.build_dir
@@ -546,7 +546,7 @@ def copy_rename_setup_subdir(core, directory, exclude_file_list=[]):
             return
     elif directory == "hardware/fpga":
         # Skip if board_list is empty
-        if core.board_list is None:
+        if not core.board_list:
             return
 
         tools_list = ["quartus", "vivado"]

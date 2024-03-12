@@ -72,6 +72,7 @@ def iob_soc_wrapper_setup(python_module, exclude_files=[]):
             "type": "master",
             "wire_prefix": "ddr4_",
             "port_prefix": "ddr4_",
+            "param_prefix": "ddr4_",
             "ports": [],
             "descr": "External memory interface",
         },
@@ -113,6 +114,7 @@ def iob_soc_wrapper_setup(python_module, exclude_files=[]):
             iface["port_prefix"],
             iface["wire_prefix"],
             iface["ports"],
+            iface["param_prefix"] if "param_prefix" in iface.keys() else "",
             iface["mult"] if "mult" in iface.keys() else 1,
             iface["widths"] if "widths" in iface.keys() else {},
         )

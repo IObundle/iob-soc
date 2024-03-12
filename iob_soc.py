@@ -31,6 +31,7 @@ from iob_ctls import iob_ctls
 from iob_ram_2p import iob_ram_2p
 from iob_ram_sp import iob_ram_sp
 from axi_interconnect import axi_interconnect
+from iob_split2 import iob_split2
 
 
 class iob_soc(iob_module):
@@ -209,6 +210,77 @@ class iob_soc(iob_module):
                 "descr": "Offset of memory address",
             },
         ]
+        int_mem_i_io = {
+            "name": "iob",
+            "type": "slave",
+            "file_prefix": "iob_soc_int_mem_i_",
+            "port_prefix": "i_",
+            "wire_prefix": "int_mem_i_",
+            "param_prefix": "",
+            "descr": "iob-soc internal memory instruction interface",
+            "ports": [],
+            "widths": {
+                "DATA_W": "DATA_W",
+                "ADDR_W": "ADDR_W",
+            },
+        }
+        int_mem_d_io = {
+            "name": "iob",
+            "type": "slave",
+            "file_prefix": "iob_soc_int_mem_d_",
+            "port_prefix": "d_",
+            "wire_prefix": "int_mem_d_",
+            "param_prefix": "",
+            "descr": "iob-soc internal memory data interface",
+            "ports": [],
+            "widths": {
+                "DATA_W": "DATA_W",
+                "ADDR_W": "ADDR_W",
+            },
+        }
+        int_mem_d_io = {
+            "name": "iob",
+            "type": "slave",
+            "file_prefix": "iob_soc_int_mem_d_",
+            "port_prefix": "d_",
+            "wire_prefix": "int_mem_d_",
+            "param_prefix": "",
+            "descr": "iob-soc internal memory data interface",
+            "ports": [],
+            "widths": {
+                "DATA_W": "DATA_W",
+                "ADDR_W": "ADDR_W",
+            },
+        }
+        int_mem_boot_ctr_io = {
+            "name": "iob",
+            "type": "master",
+            "file_prefix": "iob_soc_int_mem_boot_ctr_",
+            "port_prefix": "boot_ctr_",
+            "wire_prefix": "boot_ctr_",
+            "param_prefix": "",
+            "descr": "iob-soc internal memory boot controler interface",
+            "ports": [],
+            "widths": {
+                "DATA_W": "DATA_W",
+                "ADDR_W": "ADDR_W",
+            },
+        }
+        int_mem_ram_d_io = {
+            "name": "iob",
+            "type": "master",
+            "file_prefix": "iob_soc_int_mem_ram_d_",
+            "port_prefix": "ram_d_",
+            "wire_prefix": "ram_d_",
+            "param_prefix": "",
+            "descr": "iob-soc internal memory ram data interface",
+            "ports": [],
+            "widths": {
+                "DATA_W": "DATA_W",
+                "ADDR_W": "ADDR_W",
+            },
+        }
+
         self.ios = [
             {
                 "name": "clk_en_rst",
@@ -249,7 +321,25 @@ class iob_soc(iob_module):
                 "if_defined": "USE_EXTMEM",
                 "ports": [],
             },
+            # iob_soc_int_mem.v
+            int_mem_i_io,
+            int_mem_d_io,
+            int_mem_boot_ctr_io,
+            int_mem_ram_d_io,
         ]
+        self.submodule_list.append(
+            iob_split2(
+                name_prefix="data_boot_ctr",
+                data_w="DATA_W",
+                addr_w="ADDR_W",
+                split_ptr="B_BIT",
+                input_io=int_mem_d_io,
+                output_ios=[
+                    int_mem_boot_ctr_io,
+                    int_mem_ram_d_io,
+                ],
+            ),
+        )
 
         # IOb-SoC has the following set of non standard attributes:
         self.peripherals = [

@@ -1,4 +1,5 @@
-import os
+from dataclasses import dataclass, field
+from typing import Dict, List
 
 from iob_module import iob_module
 
@@ -6,15 +7,184 @@ from iob_reg import iob_reg
 from iob_mux import iob_mux
 from iob_demux import iob_demux
 
+import io_gen
 
+
+@dataclass
 class iob_split2(iob_module):
-    def __init__(self):
-        super().__init__()
-        self.version = "V0.10"
-        self.submodule_list = [
-            {"interface": "iob_s_port"},
-            {"interface": "iob_m_port"},
-            iob_reg(),
-            iob_mux(),
-            iob_demux(),
-        ]
+    version = "V0.10"
+    submodule_list = [
+        iob_reg(),
+        iob_mux(),
+        iob_demux(),
+    ]
+    name_prefix: str = ""
+    data_w: str = "DATA_W"
+    addr_w: str = "ADDR_W"
+    split_ptr: str = "ADDR_W-2"
+    input_io: Dict = field(default_factory=dict)
+    output_ios: List = field(default_factory=list)
+    build_dir: str = "."
+
+    def __post_init__(self) -> None:
+        self.num_splits: int = len(self.output_ios)
+        self.name: str = f"iob_{self.name_prefix}_split2"
+        self.ios: List = [self.input_io]
+        for output_io in self.output_ios:
+            self.ios.append(output_io)
+
+    def gen_vlog_header(self, f):
+        f.write("`timescale 1ns / 1ps\n\n")
+        f.write(f"module {self.name} #(\n")
+        f.write(f"\tparameter DATA_W = {self.data_w},\n")
+        f.write(f"\tparameter ADDR_W = {self.addr_w}\n")
+        f.write(") (\n")
+        # TODO: need to improve this
+        # maybe use module list, generate using module/io_gen.py?
+        f.write(f'\t`include "{self.name}_io.vs"\n')
+        f.write(");\n\n")
+
+    def gen_vlog_aux_signals(self, f):
+        f.write(f"\tlocalparam SPLIT_PTR = {self.split_ptr};\n")
+        f.write(f"\tlocalparam NBITS = {self.num_splits.bit_length()};\n")
+        f.write("\twire [NBITS-1:0] = sel, sel_reg;\n")
+        input_addr = f'{self.input_io["port_prefix"]}iob_addr_i'
+        f.write(f"\tassign sel = {input_addr}[SPLIT_PTR-:NBITS];\n\n")
+        f.write("\tiob_reg #(\n")
+        f.write("\t  .DATA_W (1),\n")
+        f.write("\t  .RST_VAL(0)\n")
+        f.write("\t) sel_reg0 (\n")
+        f.write('\t  `include "clk_en_rst_s_s_portmap.vs"\n')
+        f.write("\t  .data_i(sel),\n")
+        f.write("\t  .data_o(sel_reg)\n")
+        f.write("\t);\n\n")
+
+    def gen_vlog_demux(self, f, data_w, signal):
+        f.write(f"\t//{signal}\n")
+        demux_data_o = f"demux_{signal}_dout"
+        demux_data_i = f'{self.input_io["port_prefix"]}{signal}_i'
+        f.write(f"\twire[{self.num_splits}*{data_w}-1:0] {demux_data_o};\n")
+        idx = 0
+        for output in self.output_ios:
+            output_wire = f'{output["port_prefix"]}{signal}_o'
+            f.write(
+                f"\tassign {output_wire} = {demux_data_o}[{idx}*{data_w}+:{data_w}];\n"
+            )
+            idx += 1
+        f.write("\n\tiob_demux #(\n")
+        f.write(f"\t  .DATA_W ({data_w}),\n")
+        f.write(f"\t  .N ({self.num_splits})\n")
+        f.write(f"\t) iob_demux_{signal} (\n")
+        f.write("\t  .sel_i(sel),\n")
+        f.write(f"\t  .data_i({demux_data_i}),\n")
+        f.write(f"\t  .data_o({demux_data_o})\n")
+        f.write("\t);\n\n")
+
+    def gen_vlog_mux(self, f, data_w, signal, sel="sel"):
+        f.write(f"\t//{signal}\n")
+        mux_data_i = f"mux_{signal}_din"
+        mux_data_o = f'{self.input_io["port_prefix"]}{signal}_o'
+        f.write(f"\twire [{self.num_splits}*{data_w}-1:0] {mux_data_i};\n")
+        f.write(f"\tassign {mux_data_i} = {{\n")
+        first_wire = True
+        for output in self.output_ios:
+            input_wire = f'{output["port_prefix"]}{signal}_i'
+            if not first_wire:
+                f.write(",\n")
+            f.write(f"\t\t{input_wire}")
+            first_wire = False
+        f.write("\n\t};\n")
+        f.write("\n\tiob_mux #(\n")
+        f.write(f"\t  .DATA_W ({data_w}),\n")
+        f.write(f"\t  .N ({self.num_splits})\n")
+        f.write(f"\t) iob_mux_{signal} (\n")
+        f.write(f"\t  .sel_i({sel}),\n")
+        f.write(f"\t  .data_i({mux_data_i}),\n")
+        f.write(f"\t  .data_o({mux_data_o})\n")
+        f.write("\t);\n\n")
+
+    def gen_verilog_module(self, top_dir="."):
+        file_name = f"{top_dir}/hardware/src/{self.name}.v"
+        with open(file_name, "w") as f:
+            self.gen_vlog_header(f)
+            self.gen_vlog_aux_signals(f)
+            self.gen_vlog_demux(f, 1, "valid")
+            self.gen_vlog_demux(f, "ADDR_W", "addr")
+            self.gen_vlog_demux(f, "DATA_W", "wdata")
+            self.gen_vlog_demux(f, "DATA_W/8", "wstrb")
+            self.gen_vlog_mux(f, "DATA_W", "rdata", sel="sel_reg")
+            self.gen_vlog_mux(f, 1, "rvalid", sel="sel_reg")
+            self.gen_vlog_mux(f, 1, "ready")
+            f.write("endmodule")
+
+    def gen_verilog_instance(self, top_dir="."):
+        file_name = f"{top_dir}/hardware/src/{self.name}_inst.vs"
+        with open(file_name, "w") as f:
+            f.write(f"\n\t{self.name} {self.name} (\n")
+            f.write(f'\t`include "{self.name}_io_portmap.vs"\n')
+            f.write("\t);\n\n")
+
+    def _setup(self, *args, **kwargs):
+        try:
+            top_dir = args[2]
+        except IndexError:
+            top_dir = "."
+        self.gen_verilog_module(top_dir)
+        self.gen_verilog_instance(top_dir)
+        super()._setup(*args, **kwargs)
+
+
+if __name__ == "__main__":
+    test_split = iob_split2(
+        name_prefix="test",
+        data_w="32",
+        addr_w="32",
+        split_ptr="32 - 2",
+        input_io={
+            "name": "iob",
+            "type": "slave",
+            "file_prefix": "split_input_",
+            "port_prefix": "input_",
+            "wire_prefix": "input_",
+            "param_prefix": "",
+            "descr": "split input io",
+            "ports": [],
+            "widths": {
+                "DATA_W": "DATA_W",
+                "ADDR_W": "ADDR_W",
+            },
+        },
+        output_ios=[
+            {
+                "name": "iob",
+                "type": "master",
+                "file_prefix": "split_out_i_",
+                "port_prefix": "i_",
+                "wire_prefix": "i_",
+                "param_prefix": "",
+                "descr": "split output i",
+                "ports": [],
+                "widths": {
+                    "DATA_W": "DATA_W",
+                    "ADDR_W": "ADDR_W",
+                },
+            },
+            {
+                "name": "iob",
+                "type": "master",
+                "file_prefix": "split_out_d_",
+                "port_prefix": "d_",
+                "wire_prefix": "d_",
+                "param_prefix": "",
+                "descr": "split output d",
+                "ports": [],
+                "widths": {
+                    "DATA_W": "DATA_W",
+                    "ADDR_W": "ADDR_W",
+                },
+            },
+        ],
+    )
+    test_split.gen_verilog_module(top_dir=".")
+    test_split.gen_verilog_instance(top_dir=".")
+    io_gen.generate_ports(test_split)

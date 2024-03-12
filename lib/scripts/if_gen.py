@@ -39,7 +39,7 @@ if_types = [
 
 
 def parse_widths(func):
-    """Decorator to temporarily change values of global variables based on `widths` dicitonary."""
+    """Decorator to temporarily change values of global variables based on `widths` dictionary."""
 
     def inner(widths={}):
         vars_backup = {}
@@ -678,7 +678,7 @@ def add_param_prefix(width_str, prefix):
 
 
 # Write single port with given direction, bus width, and name to file
-def write_port(fout, port_prefix, direction, port):
+def write_port(fout, port_prefix, param_prefix, direction, port):
     name = port_prefix + port["name"] + get_suffix(direction)
     mult = 1
     if "mult" in port:
@@ -688,7 +688,7 @@ def write_port(fout, port_prefix, direction, port):
         width_str = " "
     else:
         width_str = str("(" + str(mult) + "*" + str(port["width"]) + ")")
-        width_str = add_param_prefix(width_str, port_prefix)
+        width_str = add_param_prefix(width_str, param_prefix)
         width_str = " [" + width_str + "-1:0] "
     fout.write(direction + width_str + name + "," + "\n")
 
@@ -696,13 +696,13 @@ def write_port(fout, port_prefix, direction, port):
 def write_m_port(fout, port_prefix, param_prefix, port_list):
     for i in range(len(port_list)):
         direction = port_list[i]["direction"]
-        write_port(fout, port_prefix, direction, port_list[i])
+        write_port(fout, port_prefix, param_prefix, direction, port_list[i])
 
 
 def write_s_port(fout, port_prefix, param_prefix, port_list):
     for i in range(len(port_list)):
         direction = reverse_direction(port_list[i]["direction"])
-        write_port(fout, port_prefix, direction, port_list[i])
+        write_port(fout, port_prefix, param_prefix, direction, port_list[i])
 
 
 #
@@ -808,11 +808,20 @@ def write_s_tb_wire(fout, wire_prefix, param_prefix, wires):
 #
 
 
-def gen_if(name, file_prefix, port_prefix, wire_prefix, ports, mult=1, widths={}):
+def gen_if(
+    name,
+    file_prefix,
+    port_prefix,
+    wire_prefix,
+    ports,
+    param_prefix="",
+    mult=1,
+    widths={},
+):
     # print(name, file_prefix, port_prefix, wire_prefix, ports, mult)
 
-    # get param prefix
-    param_prefix = port_prefix.upper()
+    # ensure param_prefix is uppercase
+    param_prefix = param_prefix.upper()
 
     # get ports
     if ports == []:
