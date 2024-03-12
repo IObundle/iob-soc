@@ -178,13 +178,25 @@ class iob_soc(iob_module):
         ),
     ]
 
-    # Create wire for connection with IOs
-    clk_en_rst = iob_interface("clk_en_rst")
+    # Create IOs and references for them
+    clk_en_rst = iob_interface(
+        name="clk_en_rst",
+        type="slave",
+        port_prefix="",
+        wire_prefix="",
+        descr="Clock, enable, and reset",
+        ports=[],
+    )
+    # Extract some individual wires for use in modules below
     clk = clk_en_rst.wires.clk
-    arst = clk_en_rst.wires.arst
     cke = clk_en_rst.wires.cke
 
-    trap = iob_wire("trap", width=1)
+    trap = iob_port(
+        name="trap",
+        direction="output",
+        width=1,
+        descr="CPU trap signal",
+    )
 
     axi = iob_interface(
         name="axi",
@@ -198,56 +210,47 @@ class iob_soc(iob_module):
             "DATA_W": "AXI_DATA_W",
             "LEN_W": "AXI_LEN_W",
         },
-        )
+        descr="Bus of AXI master interfaces for external memory. One interface for this system and others optionally for peripherals.",
+        if_defined="USE_EXTMEM",
+        ports=[],
+    )
 
-    txd = iob_wire(name='txd', width=1)
-    rxd = iob_wire(name='rxd', width=1)
-    cts = iob_wire(name='cts', width=1)
-    rts = iob_wire(name='rts', width=1)
+    txd = iob_port(
+        name="txd",
+        direction="output",
+        width=1,
+        descr="UART transmit data",
+    ),
+    rxd = iob_port(
+        name="rxd",
+        direction="input",
+        width=1,
+        descr="UART receive data",
+    ),
+    rts = iob_port(
+        name="rts",
+        direction="output",
+        width=1,
+        descr="UART request to send",
+    ),
+    cts = iob_port(
+        name="cts",
+        direction="input",
+        width=1,
+        descr="UART clear to send",
+    ),
 
     ios = [
-        iob_interface(
-            name="clk_en_rst",
-            type="slave",
-            port_prefix="",
-            wire_prefix="",
-            descr="Clock, enable, and reset",
-            ports=[],
-            connect_to=clk_en_rst,
-        ),
+        clk_en_rst,
         iob_interface(
             name="trap",
             type="master",
             port_prefix="",
             wire_prefix="",
             descr="iob-soc trap signal",
-            ports=[
-                iob_port(
-                    name="trap",
-                    direction="output",
-                    width=1,
-                    descr="CPU trap signal",
-                    connect_to=trap
-                ),
-            ],
+            ports=[trap],
         ),
-        iob_interface(
-            name="axi",
-            type="master",
-            wire_prefix="",
-            port_prefix="",
-            mult="",  # Will be filled automatically
-            widths={
-                "ID_W": "AXI_ID_W",
-                "ADDR_W": "AXI_ADDR_W",
-                "DATA_W": "AXI_DATA_W",
-                "LEN_W": "AXI_LEN_W",
-            },
-            descr="Bus of AXI master interfaces for external memory. One interface for this system and others optionally for peripherals.",
-            if_defined="USE_EXTMEM",
-            ports=[],
-            connect_to=axi
-        ),
+        axi,
         iob_interface(
             name="rs232",
             type="master",
@@ -255,34 +258,10 @@ class iob_soc(iob_module):
             wire_prefix="",
             descr="iob-soc uart interface",
             ports=[
-                iob_port(
-                    name="txd",
-                    direction="output",
-                    width=1,
-                    descr="UART transmit data",
-                    connect_to=txd,
-                ),
-                iob_port(
-                    name="rxd",
-                    direction="input",
-                    width=1,
-                    descr="UART receive data",
-                    connect_to=rxd,
-                ),
-                iob_port(
-                    name="rts",
-                    direction="output",
-                    width=1,
-                    descr="UART request to send",
-                    connect_to=rts,
-                ),
-                iob_port(
-                    name="cts",
-                    direction="input",
-                    width=1,
-                    descr="UART clear to send",
-                    connect_to=cts,
-                ),
+                txd,
+                rxd,
+                rts,
+                cts,
             ],
         ),
     ]
@@ -290,6 +269,8 @@ class iob_soc(iob_module):
     #######################################
     # IOb-SoC modules, wires, and instances
     #######################################
+
+    # TODO: Find a way to include verilog headers at the top of the generated module 
 
     #
     # SYSTEM RESET
@@ -363,8 +344,8 @@ class iob_soc(iob_module):
             },
         )
     else:  # no extmem
-        int_mem_i_req.connect_to = cpu_i_req
-        cpu_i_resp.connect_to = int_mem_i_resp
+        int_mem_i_req = cpu_i_req
+        int_mem_i_resp = cpu_i_resp
 
     # DATA BUS
 
@@ -396,8 +377,8 @@ class iob_soc(iob_module):
             },
         )
     else:  # no extmem
-        int_d_req.connect_to = cpu_d_req
-        cpu_d_resp.connect_to = int_d_resp
+        int_d_req = cpu_d_req
+        int_d_resp = cpu_d_resp
 
     #
     # SPLIT INTERNAL MEMORY AND PERIPHERALS BUS
@@ -443,9 +424,7 @@ class iob_soc(iob_module):
             "B_BIT": f"{REQ_W} - (ADDR_W-`IOB_SOC_B+1)",
         },
         io_connections={
-            "clk_i": clk,
-            "arst_i": arst,
-            "cke_i": cke,
+            "clk_en_rst": clk_en_rst,
             "boot": boot,
             "cpu_reset": cpu_reset,
             # instruction bus
@@ -464,6 +443,8 @@ class iob_soc(iob_module):
     ext_mem0_i_req = iob_wire("ext_mem0_i_req", width=1+MEM_ADDR_W-2+DATA_W+DATA_W/8)
     ext_mem0_d_req = iob_wire("ext_mem0_d_req", width=1+MEM_ADDR_W+1-2+DATA_W+DATA_W/8)
 
+    # TODO: find a way to replace this. We don't to connect a wire to another.
+    # Either inject verilog, or use module
     ext_mem_i_req.connect_to = [valid(ext_mem_i_req, 0), address(ext_mem_i_req, 0, MEM_ADDR_W, -2), write(ext_mem_i_req, 0)]
     ext_mem_d_req.connect_to = [valid(ext_mem_d_req, 0), address(ext_mem_d_req, 0, MEM_ADDR_W+1, -2), write(ext_mem_d_req, 0)]
 
@@ -543,6 +524,8 @@ class iob_soc(iob_module):
         },
     )
 
+    # TODO: find a way to replace this. We don't to connect a wire to another.
+    # Either inject verilog, or use module
     axi.wires.axi_awaddr_o.part_sel(0, AXI_ADDR_W).connect_to = internal_axi_awaddr_o + MEM_ADDR_OFFSET
     axi.wires.axi_araddr_o.part_sel(0, AXI_ADDR_W).connect_to = internal_axi_araddr_o + MEM_ADDR_OFFSET
 
@@ -559,9 +542,7 @@ class iob_soc(iob_module):
             "rxd": rxd,
             "cts": cts,
             "rts": rts,
-            "clk_i": clk,
-            "cke_i": cke,
-            "arst_i": arst,
+            "clk_en_rst": clk_en_rst,
             "iob_valid_i": valid(slaves_req, IOB_SOC_UART0),
             "iob_addr_i": address(slaves_req, IOB_SOC_UART, IOB_UART_SWREG_ADDR_W),
             "iob_wdata_i": wdata(slaves_req, IOB_SOC_UART0),
@@ -579,9 +560,7 @@ class iob_soc(iob_module):
             "TIMER_DATA_W": "TIMER0_WDATA_W",
         },
         io_connections={
-            "clk_i": clk,
-            "cke_i": cke,
-            "arst_i": arst,
+            "clk_en_rst": clk_en_rst,
             "iob_valid_i": valid(slaves_req, IOB_SOC_TIMER0),
             "iob_addr_i": address(slaves_req, IOB_SOC_TIMER, IOB_TIMER_SWREG_ADDR_W),
             "iob_wdata_i": wdata(slaves_req, IOB_SOC_TIMER0),
