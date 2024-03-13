@@ -4,7 +4,7 @@ import sys
 
 from iob_module import iob_module
 from iob_block_group import iob_block_group
-from iob_soc_utils import pre_setup_iob_soc, post_setup_iob_soc, find_dict_in_list
+from iob_soc_utils import pre_setup_iob_soc, post_setup_iob_soc
 
 # Submodules
 from iob_picorv32 import iob_picorv32
@@ -32,6 +32,7 @@ from iob_ram_2p import iob_ram_2p
 from iob_ram_sp import iob_ram_sp
 from axi_interconnect import axi_interconnect
 from iob_split2 import iob_split2
+from iob_merge2 import iob_merge2
 
 
 class iob_soc(iob_module):
@@ -280,6 +281,50 @@ class iob_soc(iob_module):
                 "ADDR_W": "ADDR_W",
             },
         }
+        int_mem_ram_w_io = {
+            "name": "iob",
+            "type": "slave",
+            "file_prefix": "iob_soc_int_mem_ram_w_",
+            "port_prefix": "ram_w_",
+            "wire_prefix": "ram_w_",
+            "param_prefix": "",
+            "descr": "iob-soc internal memory sram write interface",
+            "ports": [],
+            "widths": {
+                "DATA_W": "DATA_W",
+                "ADDR_W": "ADDR_W",
+            },
+        }
+
+        int_mem_ram_r_io = {
+            "name": "iob",
+            "type": "slave",
+            "file_prefix": "iob_soc_int_mem_ram_r_",
+            "port_prefix": "ram_r_",
+            "wire_prefix": "ram_r_",
+            "param_prefix": "",
+            "descr": "iob-soc internal ram r bus",
+            "ports": [],
+            "widths": {
+                "DATA_W": "DATA_W",
+                "ADDR_W": "ADDR_W",
+            },
+        }
+
+        int_mem_ram_i_io = {
+            "name": "iob",
+            "type": "master",
+            "file_prefix": "iob_soc_int_mem_ram_i_",
+            "port_prefix": "ram_i_",
+            "wire_prefix": "ram_i_",
+            "param_prefix": "",
+            "descr": "iob-soc internal ram i bus",
+            "ports": [],
+            "widths": {
+                "DATA_W": "DATA_W",
+                "ADDR_W": "ADDR_W",
+            },
+        }
 
         self.ios = [
             {
@@ -326,8 +371,11 @@ class iob_soc(iob_module):
             int_mem_d_io,
             int_mem_boot_ctr_io,
             int_mem_ram_d_io,
+            int_mem_ram_w_io,
+            int_mem_ram_r_io,
+            int_mem_ram_i_io,
         ]
-        self.submodule_list.append(
+        self.submodule_list += [
             iob_split2(
                 name_prefix="data_boot_ctr",
                 data_w="DATA_W",
@@ -339,7 +387,17 @@ class iob_soc(iob_module):
                     int_mem_ram_d_io,
                 ],
             ),
-        )
+            iob_merge2(
+                name_prefix="ibus",
+                data_w="DATA_W",
+                addr_w="ADDR_W",
+                input_ios=[
+                    int_mem_ram_w_io,
+                    int_mem_ram_r_io,
+                ],
+                output_io=int_mem_ram_i_io,
+            ),
+        ]
 
         # IOb-SoC has the following set of non standard attributes:
         self.peripherals = [

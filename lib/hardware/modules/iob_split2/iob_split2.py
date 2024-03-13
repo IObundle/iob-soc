@@ -39,8 +39,6 @@ class iob_split2(iob_module):
         f.write(f"\tparameter DATA_W = {self.data_w},\n")
         f.write(f"\tparameter ADDR_W = {self.addr_w}\n")
         f.write(") (\n")
-        # TODO: need to improve this
-        # maybe use module list, generate using module/io_gen.py?
         f.write(f'\t`include "{self.name}_io.vs"\n')
         f.write(");\n\n")
 
@@ -51,7 +49,7 @@ class iob_split2(iob_module):
         input_addr = f'{self.input_io["port_prefix"]}iob_addr_i'
         f.write(f"\tassign sel = {input_addr}[SPLIT_PTR-:NBITS];\n\n")
         f.write("\tiob_reg #(\n")
-        f.write("\t  .DATA_W (1),\n")
+        f.write("\t  .DATA_W (NBITS),\n")
         f.write("\t  .RST_VAL(0)\n")
         f.write("\t) sel_reg0 (\n")
         f.write('\t  `include "clk_en_rst_s_s_portmap.vs"\n')

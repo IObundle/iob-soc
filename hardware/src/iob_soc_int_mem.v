@@ -18,20 +18,15 @@ module iob_soc_int_mem #(
 
    //instruction bus
    `include "iob_soc_int_mem_i_iob_s_port.vs"
-   // input  [ `REQ_W-1:0] i_req_i,
-   // output [`RESP_W-1:0] i_resp_o,
 
    //data bus
    `include "iob_soc_int_mem_d_iob_s_port.vs"
-   // input  [ `REQ_W-1:0] d_req_i,
-   // output [`RESP_W-1:0] d_resp_o,
+
    `include "clk_en_rst_s_port.vs"
 );
 
    //sram data bus  interface
    `include "iob_soc_int_mem_ram_d_iob_wire.vs"
-   // wire [     `REQ_W-1:0] ram_d_req;
-   // wire [    `RESP_W-1:0] ram_d_resp;
 
    //modified ram address during boot
    wire [SRAM_ADDR_W-3:0] ram_d_addr;
@@ -42,38 +37,28 @@ module iob_soc_int_mem #(
    //
    //boot controller bus to write program in sram
    `include "iob_soc_int_mem_boot_ctr_iob_wire.vs"
-   // wire [     `REQ_W-1:0] boot_ctr_req;
-   // wire [    `RESP_W-1:0] boot_ctr_resp;
 
    //
    // SPLIT DATA BUS BETWEEN SRAM AND BOOT CONTROLLER
    //
+   `include "iob_soc_int_mem_d_iob_wire.vs"
+
+   assign int_mem_d_iob_valid = d_iob_valid_i;
+   assign int_mem_d_iob_addr = d_iob_addr_i;
+   assign int_mem_d_iob_wdata = d_iob_wdata_i;
+   assign int_mem_d_iob_wstrb = d_iob_wstrb_i;
+   assign d_iob_rvalid_o = int_mem_d_iob_rvalid;
+   assign d_iob_rdata_o = int_mem_d_iob_rdata;
+   assign d_iob_ready_o = int_mem_d_iob_ready;
+
    `include "iob_data_boot_ctr_split2_inst.vs"
-   iob_split #(
-      .ADDR_W  (ADDR_W),
-      .DATA_W  (DATA_W),
-      .N_SLAVES(2),
-      .P_SLAVES(B_BIT)
-   ) data_bootctr_split (
-      .clk_i   (clk_i),
-      .arst_i  (arst_i),
-      // master interface
-      .m_req_i (d_req_i),
-      .m_resp_o(d_resp_o),
-
-      // slaves interface
-      .s_req_o ({boot_ctr_req, ram_d_req}),
-      .s_resp_i({boot_ctr_resp, ram_d_resp})
-   );
-
 
    //
    // BOOT CONTROLLER
    //
 
    //sram instruction write bus
-   wire [ `REQ_W-1:0] ram_w_req;
-   wire [`RESP_W-1:0] ram_w_resp;
+   `include "iob_soc_int_mem_ram_w_iob_wire.vs"
 
    iob_soc_boot_ctr #(
       .HEXFILE       ({BOOT_HEXFILE, ".hex"}),
@@ -90,18 +75,18 @@ module iob_soc_int_mem #(
 
       //cpu slave interface
       //no address bus since single address
-      .cpu_valid_i(boot_ctr_req[`VALID(0)]),
-      .cpu_wdata_i (boot_ctr_req[`WDATA(0)-(DATA_W-2)]),
-      .cpu_wstrb_i (boot_ctr_req[`WSTRB(0)]),
-      .cpu_rdata_o (boot_ctr_resp[`RDATA(0)]),
-      .cpu_rvalid_o(boot_ctr_resp[`RVALID(0)]),
-      .cpu_ready_o (boot_ctr_resp[`READY(0)]),
+      .cpu_valid_i(boot_ctr_iob_valid),
+      .cpu_wdata_i (boot_ctr_iob_wdata[1:0]),
+      .cpu_wstrb_i (boot_ctr_iob_wstrb),
+      .cpu_rdata_o (boot_ctr_iob_rdata),
+      .cpu_rvalid_o(boot_ctr_iob_rvalid),
+      .cpu_ready_o (boot_ctr_iob_ready),
 
       //sram write master interface
-      .sram_valid_o(ram_w_req[`VALID(0)]),
-      .sram_addr_o  (ram_w_req[`ADDRESS(0, ADDR_W)]),
-      .sram_wdata_o (ram_w_req[`WDATA(0)]),
-      .sram_wstrb_o (ram_w_req[`WSTRB(0)])
+      .sram_valid_o(ram_w_iob_valid),
+      .sram_addr_o  (ram_w_iob_addr),
+      .sram_wdata_o (ram_w_iob_wdata),
+      .sram_wstrb_o (ram_w_iob_wstrb)
    );
 
    //
@@ -109,13 +94,10 @@ module iob_soc_int_mem #(
    //
 
    //instruction read bus
-   wire [     `REQ_W-1:0] ram_r_req;
-   wire [    `RESP_W-1:0] ram_r_resp;
-   wire [     ADDR_W-1:0] ram_r_addr;
+   `include "iob_soc_int_mem_ram_r_iob_wire.vs"
    wire [     ADDR_W-1:0] boot_i_addr;
    wire [     ADDR_W-1:0] i_addr;
    wire [SRAM_ADDR_W-3:0] boot_ram_d_addr;
-   wire [SRAM_ADDR_W-3:0] ram_d_addr_int;
 
    //
    //modify addresses to run boot program
@@ -123,46 +105,29 @@ module iob_soc_int_mem #(
    localparam boot_offset = -('b1 << BOOTROM_ADDR_W);
 
    //instruction bus: connect directly but address
-   assign ram_r_req[`ADDRESS(0, ADDR_W)] = ram_r_addr;
    assign boot_i_addr = i_iob_addr_i + boot_offset;
    assign i_addr = i_iob_addr_i;
 
-   assign ram_r_req[`VALID(0)] = i_iob_valid_i;
-   assign ram_r_addr = boot ? boot_i_addr : i_addr;
-   assign ram_r_req[`WDATA(0)] = i_iob_wdata_i;
-   assign ram_r_req[`WSTRB(0)] = i_iob_wstrb_i;
-   assign i_resp_o[`RESP(0)] = ram_r_resp[`RESP(0)];
-   assign i_iob_rvalid_o = ram_r_resp[`RVALID(0)];
-   assign i_iob_rdata_o = ram_r_resp[`RDATA(0)];
-   assign i_iob_ready_o = ram_r_resp[`READY(0)];
+   assign ram_r_iob_valid = i_iob_valid_i;
+   assign ram_r_iob_addr = boot ? boot_i_addr : i_addr;
+   assign ram_r_iob_wdata = i_iob_wdata_i;
+   assign ram_r_iob_wstrb = i_iob_wstrb_i;
+   assign i_iob_rvalid_o = ram_r_iob_rvalid;
+   assign i_iob_rdata_o = ram_r_iob_rdata;
+   assign i_iob_ready_o = ram_r_iob_ready;
 
    //data bus: just replace address
-   assign boot_ram_d_addr = ram_d_req[`ADDRESS(0, SRAM_ADDR_W)-2] + boot_offset[SRAM_ADDR_W-1:2];
-   assign ram_d_addr_int = ram_d_req[`ADDRESS(0, SRAM_ADDR_W)-2];
-   assign ram_d_addr = boot ? boot_ram_d_addr : ram_d_addr_int;
+   assign boot_ram_d_addr = ram_d_iob_addr[SRAM_ADDR_W-1:2] + boot_offset[SRAM_ADDR_W-1:2];
+   assign ram_d_addr = boot ? boot_ram_d_addr : ram_d_iob_addr[SRAM_ADDR_W-1:2];
 
    //
    //MERGE BOOT WRITE BUS AND CPU READ BUS
    //
 
    //sram instruction bus
-   wire [ `REQ_W-1:0] ram_i_req;
-   wire [`RESP_W-1:0] ram_i_resp;
+   `include "iob_soc_int_mem_ram_i_iob_wire.vs"
 
-   iob_merge #(
-      .N_MASTERS(2)
-   ) ibus_merge (
-      .clk_i (clk_i),
-      .arst_i(arst_i),
-
-      //master
-      .m_req_i ({ram_w_req, ram_r_req}),
-      .m_resp_o({ram_w_resp, ram_r_resp}),
-
-      //slave
-      .s_req_o (ram_i_req),
-      .s_resp_i(ram_i_resp)
-   );
+   `include "iob_ibus_merge2_inst.vs"
 
    //
    // INSTANTIATE RAM
@@ -181,22 +146,22 @@ module iob_soc_int_mem #(
       .arst_i(arst_i),
 
       //instruction bus
-      .i_valid_i(ram_i_req[`VALID(0)]),
-      .i_addr_i  (ram_i_req[`ADDRESS(0, SRAM_ADDR_W)-2]),
-      .i_wdata_i (ram_i_req[`WDATA(0)]),
-      .i_wstrb_i (ram_i_req[`WSTRB(0)]),
-      .i_rdata_o (ram_i_resp[`RDATA(0)]),
-      .i_rvalid_o(ram_i_resp[`RVALID(0)]),
-      .i_ready_o (ram_i_resp[`READY(0)]),
+      .i_valid_i(ram_i_iob_valid),
+      .i_addr_i  (ram_i_iob_addr[SRAM_ADDR_W-1:2]),
+      .i_wdata_i (ram_i iob_wdata),
+      .i_wstrb_i (ram_i_iob_wstrb),
+      .i_rdata_o (ram_i_iob_rdata),
+      .i_rvalid_o(ram_i_iob_rvalid),
+      .i_ready_o (ram_i_iob_ready),
 
       //data bus
-      .d_valid_i(ram_d_req[`VALID(0)]),
+      .d_valid_i(ram_d_iob_valid),
       .d_addr_i  (ram_d_addr),
-      .d_wdata_i (ram_d_req[`WDATA(0)]),
-      .d_wstrb_i (ram_d_req[`WSTRB(0)]),
-      .d_rdata_o (ram_d_resp[`RDATA(0)]),
-      .d_rvalid_o(ram_d_resp[`RVALID(0)]),
-      .d_ready_o (ram_d_resp[`READY(0)])
+      .d_wdata_i (ram_d_iob_wdata),
+      .d_wstrb_i (ram_d_iob_wstrb),
+      .d_rdata_o (ram_d_iob_rdata),
+      .d_rvalid_o(ram_d_iob_rvalid),
+      .d_ready_o (ram_d_iob_ready)
    );
 
 endmodule
