@@ -71,7 +71,7 @@ module iob_axistream_out #(
 
       case (axis_pc)
          0: begin
-            if (axis_fifo_empty && !axis_sw_enable) begin
+            if (axis_fifo_empty) begin
                axis_pc_nxt = axis_pc;
             end else begin
                axis_fifo_read = 1'b1;
@@ -79,7 +79,7 @@ module iob_axistream_out #(
          end
          default: begin
             if (axis_word_count <= axis_nwords) begin  // Not in padding
-               axis_tvalid = 1'b1;
+               axis_tvalid = axis_sw_enable;
                axis_pc_nxt = axis_pc;
                if (axis_tready_i && axis_sw_enable) begin
                   if (axis_fifo_empty) begin
