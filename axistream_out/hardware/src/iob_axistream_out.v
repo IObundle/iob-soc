@@ -71,19 +71,28 @@ module iob_axistream_out #(
 
       case (axis_pc)
          0: begin
-            if (axis_fifo_empty) begin
+            if (axis_fifo_empty && !axis_sw_enable) begin
                axis_pc_nxt = axis_pc;
             end else begin
                axis_fifo_read = 1'b1;
             end
          end
          default: begin
-            axis_tvalid = 1'b1;
-            axis_pc_nxt = axis_pc;
-            if (axis_tready_i) begin
+            if (axis_word_count <= axis_nwords) begin  // Not in padding
+               axis_tvalid = 1'b1;
+               axis_pc_nxt = axis_pc;
+               if (axis_tready_i && axis_sw_enable) begin
+                  if (axis_fifo_empty) begin
+                     axis_pc_nxt = 1'b0;
+                  end else begin
+                     axis_fifo_read = 1'b1;
+                  end
+               end
+            end else begin  // In padding bytes (read them whithout tvalid and not waiting for tready)
                if (axis_fifo_empty) begin
                   axis_pc_nxt = 1'b0;
                end else begin
+                  axis_pc_nxt    = axis_pc;
                   axis_fifo_read = 1'b1;
                end
             end
@@ -105,14 +114,13 @@ module iob_axistream_out #(
       .data_o(axis_pc)
    );
 
-
    // sent words counter
    iob_counter #(
       .DATA_W (DATA_W),
-      .RST_VAL(0)
+      .RST_VAL({DATA_W{1'd0}})
    ) word_count_inst (
       .clk_i (axis_clk_i),
-      .cke_i (axis_sw_enable),
+      .cke_i (axis_cke_i),
       .arst_i(axis_arst_i),
       .rst_i (axis_sw_rst),
       .en_i  (axis_fifo_read),
