@@ -239,20 +239,6 @@ class iob_soc(iob_module):
                 "ADDR_W": "ADDR_W",
             },
         }
-        int_mem_d_io = {
-            "name": "iob",
-            "type": "slave",
-            "file_prefix": "iob_soc_int_mem_d_",
-            "port_prefix": "d_",
-            "wire_prefix": "int_mem_d_",
-            "param_prefix": "",
-            "descr": "iob-soc internal memory data interface",
-            "ports": [],
-            "widths": {
-                "DATA_W": "DATA_W",
-                "ADDR_W": "ADDR_W",
-            },
-        }
         int_mem_boot_ctr_io = {
             "name": "iob",
             "type": "master",
@@ -310,7 +296,6 @@ class iob_soc(iob_module):
                 "ADDR_W": "ADDR_W",
             },
         }
-
         int_mem_ram_i_io = {
             "name": "iob",
             "type": "master",
@@ -323,6 +308,76 @@ class iob_soc(iob_module):
             "widths": {
                 "DATA_W": "DATA_W",
                 "ADDR_W": "ADDR_W",
+            },
+        }
+        ext_mem_i_io = {
+            "name": "iob",
+            "type": "slave",
+            "file_prefix": "iob_soc_ext_mem_i_",
+            "port_prefix": "i_",
+            "wire_prefix": "ext_mem_i_",
+            "param_prefix": "",
+            "descr": "iob-soc external memory instruction interface",
+            "ports": [],
+            "widths": {
+                "DATA_W": "DATA_W",
+                "ADDR_W": "MEM_ADDR_W-2",
+            },
+        }
+        ext_mem_d_io = {
+            "name": "iob",
+            "type": "slave",
+            "file_prefix": "iob_soc_ext_mem_d_",
+            "port_prefix": "d_",
+            "wire_prefix": "ext_mem_d_",
+            "param_prefix": "",
+            "descr": "iob-soc external memory data interface",
+            "ports": [],
+            "widths": {
+                "DATA_W": "DATA_W",
+                "ADDR_W": "MEM_ADDR_W-1",
+            },
+        }
+        ext_mem_icache_io = {
+            "name": "iob",
+            "type": "slave",
+            "file_prefix": "iob_soc_ext_mem_icache_",
+            "port_prefix": "icache_",
+            "wire_prefix": "icache_be_",
+            "param_prefix": "",
+            "descr": "iob-soc external memory instruction cache interface",
+            "ports": [],
+            "widths": {
+                "DATA_W": "DATA_W",
+                "ADDR_W": "MEM_ADDR_W",
+            },
+        }
+        ext_mem_dcache_io = {
+            "name": "iob",
+            "type": "slave",
+            "file_prefix": "iob_soc_ext_mem_dcache_",
+            "port_prefix": "dcache_",
+            "wire_prefix": "dcache_be_",
+            "param_prefix": "",
+            "descr": "iob-soc external memory data cache interface",
+            "ports": [],
+            "widths": {
+                "DATA_W": "DATA_W",
+                "ADDR_W": "MEM_ADDR_W",
+            },
+        }
+        ext_mem_l2cache_io = {
+            "name": "iob",
+            "type": "master",
+            "file_prefix": "iob_soc_ext_mem_l2cache_",
+            "port_prefix": "l2cache_",
+            "wire_prefix": "l2cache_",
+            "param_prefix": "",
+            "descr": "iob-soc external memory l2 cache interface",
+            "ports": [],
+            "widths": {
+                "DATA_W": "DATA_W",
+                "ADDR_W": "MEM_ADDR_W",
             },
         }
 
@@ -374,6 +429,12 @@ class iob_soc(iob_module):
             int_mem_ram_w_io,
             int_mem_ram_r_io,
             int_mem_ram_i_io,
+            # iob_soc_ext_mem.v
+            ext_mem_i_io,
+            ext_mem_d_io,
+            ext_mem_icache_io,
+            ext_mem_dcache_io,
+            ext_mem_l2cache_io,
         ]
         self.submodule_list += [
             iob_split2(
@@ -396,6 +457,16 @@ class iob_soc(iob_module):
                     int_mem_ram_r_io,
                 ],
                 output_io=int_mem_ram_i_io,
+            ),
+            iob_merge2(
+                name_prefix="i_d_into_l2",
+                data_w="DATA_W",
+                addr_w="MEM_ADDR_W",
+                input_ios=[
+                    ext_mem_icache_io,
+                    ext_mem_dcache_io,
+                ],
+                output_io=ext_mem_l2cache_io,
             ),
         ]
 

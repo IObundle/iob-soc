@@ -796,22 +796,22 @@ def peripheral_portmap(python_module):
                     wire_name,
                 )
 
-    # Merge interfaces with the same name into a single interface
-    interface_names = []
-    for interface in ios:
-        if interface["name"] not in interface_names:
-            interface_names.append(interface["name"])
-    new_ios = []
-    for interface_name in interface_names:
-        first_interface_instance = None
-        for interface in ios:
-            if interface["name"] == interface_name:
-                if not first_interface_instance:
-                    first_interface_instance = interface
-                    new_ios.append(interface)
-                else:
-                    first_interface_instance["ports"] += interface["ports"]
-    python_module.ios = new_ios
+    # # Merge interfaces with the same name into a single interface
+    # interface_names = []
+    # for interface in ios:
+    #     if interface["name"] not in interface_names:
+    #         interface_names.append(interface["name"])
+    # new_ios = []
+    # for interface_name in interface_names:
+    #     first_interface_instance = None
+    #     for interface in ios:
+    #         if interface["name"] == interface_name:
+    #             if not first_interface_instance:
+    #                 first_interface_instance = interface
+    #                 new_ios.append(interface)
+    #             else:
+    #                 first_interface_instance["ports"] += interface["ports"]
+    # python_module.ios = new_ios
     # print(f"### Debug python_module.ios: {python_module.ios}", file=sys.stderr)
 
     return peripheral_wires
