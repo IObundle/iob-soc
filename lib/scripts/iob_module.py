@@ -1,6 +1,7 @@
 import os
 import shutil
 from dataclasses import dataclass, field
+from typing import List
 
 import iob_colors
 
@@ -15,11 +16,15 @@ import doc_gen
 import ipxact_gen
 
 from iob_verilog_instance import iob_verilog_instance
+from iob_conf import iob_conf
+from iob_reg import iob_reg
+from iob_port import iob_interface
 
 
 @dataclass
 class iob_module:
-    """Generic class to describe how to generate a base IOb IP core / module"""
+    """Generic class to describe how to generate a base IOb IP core"""
+    # TODO: Make it clear that this is neither a verilog module nor a verilog instance. It is a mix of the two.
 
     name: str = None
     csr_if: str = "iob"
@@ -32,12 +37,12 @@ class iob_module:
     is_top_module: bool = False  # Select if this module is the top module
     use_netlist: bool = False  # use module netlist
     is_system: bool = False  # create software files in build directory
-    board_list: list = None  # List of fpga files to copy to build directory
+    board_list: List[str] = None  # List of fpga files to copy to build directory
     purpose: str = "hardware"
-    confs: tuple = ()
-    regs: tuple = ()
-    ios: tuple = ()
-    block_groups: tuple = ()
+    confs: List[iob_conf] = ()
+    regs: List[iob_reg] = ()
+    ios: List[iob_interface] = ()
+    blocks: List[iob_module] = ()
     submodule_list: tuple = ()
     ignore_snippets: tuple = ()  # List of snippets to ignore during replace
 
