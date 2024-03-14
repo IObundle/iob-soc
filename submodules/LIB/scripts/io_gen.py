@@ -123,29 +123,29 @@ def generate_if_tex(ios, out_dir):
         if_file.write(
             """
 \\begin{table}[H]
-  \centering
+  \\centering
   \\begin{tabularx}{\\textwidth}{|l|l|r|X|}
     
-    \hline
+    \\hline
     \\rowcolor{iob-green}
-    {\\bf Name} & {\\bf Direction} & {\\bf Width} & {\\bf Description}  \\\\ \hline \hline
+    {\\bf Name} & {\\bf Direction} & {\\bf Width} & {\\bf Description}  \\\\ \\hline \\hline
 
-    \input """
+    \\input """
             + table["name"]
             + """_if_tab
  
-  \end{tabularx}
-  \caption{"""
-            + table["descr"].replace("_", "\_")
+  \\end{tabularx}
+  \\caption{"""
+            + table["descr"].replace("_", "\\_")
             + """}
-  \label{"""
+  \\label{"""
             + table["name"]
             + """_if_tab:is}
-\end{table}
+\\end{table}
 """
         )
 
-    if_file.write("\clearpage")
+    if_file.write("\\clearpage")
     if_file.close()
 
 

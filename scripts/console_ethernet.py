@@ -92,7 +92,7 @@ def cnsl_recvfile_ethernet():
     RcvFile(socket, name, file_size)
 
     print(PROGNAME, end="")
-    print(": file received".format(file_size))
+    print(": file received")
 
     # Close Socket
     socket.close()
