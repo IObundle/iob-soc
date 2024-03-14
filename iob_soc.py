@@ -380,6 +380,73 @@ class iob_soc(iob_module):
                 "ADDR_W": "MEM_ADDR_W",
             },
         }
+        cpu_i_io = {
+            "name": "iob",
+            "type": "slave",
+            "file_prefix": "iob_soc_cpu_i_",
+            "port_prefix": "cpu_i_",
+            "wire_prefix": "cpu_i_",
+            "param_prefix": "",
+            "descr": "cpu instruction bus",
+            "ports": [],
+            "widths": {
+                "DATA_W": "DATA_W",
+                "ADDR_W": "ADDR_W",
+            },
+        }
+        cpu_d_io = {
+            "name": "iob",
+            "type": "slave",
+            "file_prefix": "iob_soc_cpu_d_",
+            "port_prefix": "dbus_",
+            "wire_prefix": "dbus_",
+            "param_prefix": "",
+            "descr": "cpu data bus",
+            "ports": [],
+            "widths": {
+                "DATA_W": "DATA_W",
+                "ADDR_W": "ADDR_W",
+            },
+        }
+        cpu_i_inst_io = cpu_i_io.copy()
+        cpu_i_inst_io["type"] = "master"
+        cpu_i_inst_io["file_prefix"] = "iob_soc_cpu_i_inst_"
+        cpu_i_inst_io["port_prefix"] = "ibus_"
+
+        cpu_d_inst_io = cpu_d_io.copy()
+        cpu_d_inst_io["type"] = "master"
+        cpu_d_inst_io["file_prefix"] = "iob_soc_cpu_d_inst_"
+        cpu_d_inst_io["port_prefix"] = "ibus_"
+
+        ext_mem_i_split_io = ext_mem_i_io.copy()
+        ext_mem_i_split_io["type"] = "master"
+        ext_mem_i_split_io["file_prefix"] = "iob_soc_ext_mem_i_split_"
+        ext_mem_i_split_io["port_prefix"] = "ext_mem_i_"
+
+        int_mem_i_split_io = int_mem_i_io.copy()
+        int_mem_i_split_io["type"] = "master"
+        int_mem_i_split_io["file_prefix"] = "iob_soc_int_mem_i_split_"
+        int_mem_i_split_io["port_prefix"] = "int_mem_i_"
+
+        ext_mem_d_split_io = ext_mem_d_io.copy()
+        ext_mem_d_split_io["type"] = "master"
+        ext_mem_d_split_io["file_prefix"] = "iob_soc_ext_mem_d_split_"
+        ext_mem_d_split_io["port_prefix"] = "ext_mem_d_"
+
+        int_d_dbus_split_io = {
+            "name": "iob",
+            "type": "master",
+            "file_prefix": "iob_soc_int_d_dbus_",
+            "port_prefix": "int_d_",
+            "wire_prefix": "int_d_",
+            "param_prefix": "",
+            "descr": "iob-soc internal data interface",
+            "ports": [],
+            "widths": {
+                "DATA_W": "DATA_W",
+                "ADDR_W": "ADDR_W",
+            },
+        }
 
         self.ios = [
             {
@@ -421,6 +488,14 @@ class iob_soc(iob_module):
                 "if_defined": "USE_EXTMEM",
                 "ports": [],
             },
+            cpu_i_io,
+            cpu_d_io,
+            cpu_i_inst_io,
+            cpu_d_inst_io,
+            ext_mem_i_split_io,
+            int_mem_i_split_io,
+            ext_mem_d_split_io,
+            int_d_dbus_split_io,
             # iob_soc_int_mem.v
             int_mem_i_io,
             int_mem_d_io,
@@ -467,6 +542,28 @@ class iob_soc(iob_module):
                     ext_mem_dcache_io,
                 ],
                 output_io=ext_mem_l2cache_io,
+            ),
+            iob_split2(
+                name_prefix="ibus",
+                data_w="DATA_W",
+                addr_w="ADDR_W",
+                split_ptr="ADDR_W-1",
+                input_io=cpu_i_io,
+                output_ios=[
+                    ext_mem_i_split_io,
+                    int_mem_i_split_io,
+                ],
+            ),
+            iob_split2(
+                name_prefix="dbus",
+                data_w="DATA_W",
+                addr_w="ADDR_W",
+                split_ptr="ADDR_W-1",
+                input_io=cpu_d_io,
+                output_ios=[
+                    ext_mem_d_split_io,
+                    int_d_dbus_split_io,
+                ],
             ),
         ]
 

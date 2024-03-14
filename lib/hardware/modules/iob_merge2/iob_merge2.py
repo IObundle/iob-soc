@@ -14,12 +14,6 @@ import io_gen
 @dataclass
 class iob_merge2(iob_module):
     version = "V0.10"
-    submodule_list = [
-        iob_reg(),
-        iob_mux(),
-        iob_demux(),
-        iob_prio_enc(),
-    ]
     name_prefix: str = ""
     data_w: str = "DATA_W"
     addr_w: str = "ADDR_W"
@@ -29,6 +23,12 @@ class iob_merge2(iob_module):
     build_dir: str = "."
 
     def __post_init__(self) -> None:
+        self.submodule_list = [
+            iob_reg(),
+            iob_mux(),
+            iob_demux(),
+            iob_prio_enc(),
+        ]
         self.num_merges: int = len(self.input_ios)
         self.name: str = f"iob_{self.name_prefix}_merge2"
         self.ios: List = []

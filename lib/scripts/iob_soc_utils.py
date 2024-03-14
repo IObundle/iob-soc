@@ -6,7 +6,11 @@ from iob_soc_peripherals import (
     reserved_signals,
 )
 
-from iob_soc_create_system import create_systemv, get_extmem_bus_size
+from iob_soc_create_system import (
+    create_systemv,
+    get_extmem_bus_size,
+    create_pbus_split_submodule,
+)
 from iob_soc_create_wrapper_files import create_wrapper_files
 from submodule_utils import (
     add_prefix_to_parameters_in_port,
@@ -107,7 +111,11 @@ def iob_soc_wrapper_setup(python_module, exclude_files=[]):
             "descr": "iob_memory interface",
         },
     ]
-    for iface in gen_ifaces:
+    generate_ifaces(gen_ifaces, python_module.build_dir)
+
+
+def generate_ifaces(ifaces, build_dir):
+    for iface in ifaces:
         if_gen.gen_if(
             iface["name"],
             iface["file_prefix"],
@@ -121,7 +129,7 @@ def iob_soc_wrapper_setup(python_module, exclude_files=[]):
     # move all .vs files from current directory to out_dir
     for file in os.listdir("."):
         if file.endswith(".vs"):
-            os.rename(file, f"{python_module.build_dir}/hardware/src/{file}")
+            os.rename(file, f"{build_dir}/hardware/src/{file}")
 
 
 def iob_soc_doc_setup(python_module, exclude_files=[]):
@@ -152,6 +160,9 @@ def iob_soc_hw_setup(python_module, exclude_files=[]):
             python_module.peripheral_portmap,
             internal_wires=python_module.internal_wires,
         )
+        pbus_ios = create_pbus_split_submodule(python_module)
+        # generate pbus split ios for replacement in _periphs_inst.vs
+        generate_ifaces(pbus_ios, python_module.build_dir)
 
 
 def update_ios_with_extmem_connections(python_module):

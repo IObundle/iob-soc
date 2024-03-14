@@ -10,6 +10,8 @@ from iob_soc_peripherals import (
     get_reserved_signal_connection,
 )
 from if_gen import get_port_name
+from iob_split2 import iob_split2
+import io_gen
 
 
 # Automatically include <corename>_swreg_def.vh verilog headers after IOB_PRAGMA_PHEADERS comment
@@ -59,6 +61,9 @@ def create_systemv(
     periphs_inst_str = ""
     # Insert IOs and Instances for this type of peripheral
     for instance in peripherals_list:
+        # Peripheral pbus split io wire declaration
+        periphs_inst_str += f'\t\n`include "iob_soc_{instance.name}_iob_wire.vs"\n\n'
+
         # Create peripheral instance Verilog Snippet
         periphs_inst_str += "\n"
         # Insert peripheral comment
@@ -141,6 +146,9 @@ def create_systemv(
 
         periphs_inst_str += "      );\n"
 
+    # pbus split instance
+    periphs_inst_str += '\t\n`include "iob_pbus_split2_inst.vs"\n'
+
     # Create internal wires to connect the peripherals trap signals
     periphs_wires_str += "\n    // Internal wires for trap signals\n"
     periphs_wires_str += "    wire cpu_trap_o;\n"
@@ -173,3 +181,88 @@ def get_extmem_bus_size(axi_awid_width: str):
     ), f"{iob_colors.FAIL} Could not parse bus size of 'axi_awid' signal with width \"{axi_awid_width}\".{iob_colors.ENDC}"
     # Convert to integer
     return 1 if bus_size[0] == "" else int(bus_size[0])
+
+
+# peripheral instance io connections
+# returns: dict with:
+#   - input_io: pbus split input
+#   - output_ios: list of pbus split outputs
+def get_pbus_ios(python_module):
+    pbus_ios = {}
+    # int_d_pbus_split_io (pbus split input)
+    pbus_ios["input_io"] = {
+        "name": "iob",
+        "type": "slave",
+        "file_prefix": "iob_soc_int_d_pbus_",
+        "port_prefix": "int_d_",
+        "wire_prefix": "int_d_",
+        "param_prefix": "",
+        "descr": "iob-soc internal data interface",
+        "ports": [],
+        "widths": {
+            "DATA_W": "DATA_W",
+            "ADDR_W": "ADDR_W",
+        },
+    }
+    pbus_ios["output_ios"] = []
+    for instance in python_module.peripherals:
+        instance_io = pbus_split_instance_io(instance, python_module.name)
+        pbus_ios["output_ios"].append(instance_io)
+    return pbus_ios
+
+
+def get_pbus_split(python_module):
+    pbus_ios = get_pbus_ios(python_module)
+
+    # add pbus split ios to module ios
+    # needed for pbus_split module
+    python_module.ios.append(pbus_ios["input_io"])
+    for instance_io in pbus_ios["output_ios"]:
+        python_module.ios.append(instance_io)
+
+    # pbus split submodule
+    pbus_split = iob_split2(
+        name_prefix="pbus",
+        data_w="DATA_W",
+        addr_w="ADDR_W",
+        split_ptr="ADDR_W-2",
+        input_io=pbus_ios["input_io"],
+        output_ios=pbus_ios["output_ios"],
+    )
+    return pbus_split
+
+
+# add pbus split to submodule list
+# return list of ios to generate
+def create_pbus_split_submodule(python_module):
+    pbus_split = get_pbus_split(python_module)
+    pbus_split._setup(
+        False,
+        "hardware",
+        python_module.build_dir,
+    )
+
+    pbus_ios = [pbus_split.input_io]
+    for io in pbus_split.output_ios:
+        pbus_ios.append(io)
+    return pbus_ios
+
+
+# Add iob io interface for pbus split
+def pbus_split_instance_io(instance, top):
+    instance_name = f"{top.upper()}_{instance.name}"
+    instance_io = {
+        "name": "iob",
+        "type": "master",
+        "file_prefix": f"iob_soc_{instance.name}_",
+        "port_prefix": f"{instance.name}_",
+        "wire_prefix": f"{instance_name}_",
+        "param_prefix": "",
+        "descr": f"iob-soc pbus {instance.name} interface",
+        "ports": [],
+        "widths": {
+            "DATA_W": "DATA_W",
+            "ADDR_W": "ADDR_W",
+        },
+    }
+    return instance_io

@@ -13,11 +13,6 @@ import io_gen
 @dataclass
 class iob_split2(iob_module):
     version = "V0.10"
-    submodule_list = [
-        iob_reg(),
-        iob_mux(),
-        iob_demux(),
-    ]
     name_prefix: str = ""
     data_w: str = "DATA_W"
     addr_w: str = "ADDR_W"
@@ -27,6 +22,11 @@ class iob_split2(iob_module):
     build_dir: str = "."
 
     def __post_init__(self) -> None:
+        self.submodule_list = [
+            iob_reg(),
+            iob_mux(),
+            iob_demux(),
+        ]
         self.num_splits: int = len(self.output_ios)
         self.name: str = f"iob_{self.name_prefix}_split2"
         self.ios: List = [self.input_io]
