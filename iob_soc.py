@@ -328,7 +328,7 @@ class iob_soc(iob_module):
             "ports": [],
             "widths": {
                 "DATA_W": "DATA_W",
-                "ADDR_W": "MEM_ADDR_W-2",
+                "ADDR_W": "ADDR_W",
             },
             "is_io": False,
         }
@@ -343,7 +343,7 @@ class iob_soc(iob_module):
             "ports": [],
             "widths": {
                 "DATA_W": "DATA_W",
-                "ADDR_W": "MEM_ADDR_W-1",
+                "ADDR_W": "ADDR_W",
             },
             "is_io": False,
         }
@@ -362,6 +362,8 @@ class iob_soc(iob_module):
             },
             "is_io": False,
         }
+        ext_mem_icache_merge_io = ext_mem_icache_io.copy()
+        ext_mem_icache_merge_io["widths"]["ADDR_W"] = "ADDR_W"
         ext_mem_dcache_io = {
             "name": "iob",
             "type": "slave",
@@ -377,6 +379,8 @@ class iob_soc(iob_module):
             },
             "is_io": False,
         }
+        ext_mem_dcache_merge_io = ext_mem_dcache_io.copy()
+        ext_mem_dcache_merge_io["widths"]["ADDR_W"] = "ADDR_W"
         ext_mem_l2cache_io = {
             "name": "iob",
             "type": "master",
@@ -392,6 +396,8 @@ class iob_soc(iob_module):
             },
             "is_io": False,
         }
+        ext_mem_l2cache_merge_io = ext_mem_l2cache_io.copy()
+        ext_mem_l2cache_merge_io["widths"]["ADDR_W"] = "ADDR_W"
         cpu_i_io = {
             "name": "iob",
             "type": "slave",
@@ -553,10 +559,10 @@ class iob_soc(iob_module):
                 data_w="DATA_W",
                 addr_w="MEM_ADDR_W",
                 input_ios=[
-                    ext_mem_icache_io,
-                    ext_mem_dcache_io,
+                    ext_mem_icache_merge_io,
+                    ext_mem_dcache_merge_io,
                 ],
-                output_io=ext_mem_l2cache_io,
+                output_io=ext_mem_l2cache_merge_io,
             ),
             iob_split2(
                 name_prefix="ibus",
