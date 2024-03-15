@@ -44,7 +44,7 @@ jobs:
         with:
           submodules: 'recursive'
       - name: run test
-        run: nix-shell --run "make sim-test"
+        run: nix-shell --run "make sim-test SIMULATOR=$(SIMULATOR)"
   
   cyclonev:
     runs-on: self-hosted
