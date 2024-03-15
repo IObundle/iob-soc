@@ -133,6 +133,8 @@ module iob_soc_ext_mem #(
    );
 
    // Merge cache back-ends
+   wire iob_i_d_into_l2_merge2_rst;
+   assign iob_i_d_into_l2_merge2_rst = 1'b0;
    `include "iob_i_d_into_l2_merge2_inst.vs"
 
    // L2 cache instance

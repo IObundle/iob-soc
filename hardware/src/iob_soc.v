@@ -68,17 +68,20 @@ module iob_soc #(
    //external memory instruction bus
    `include "iob_soc_ext_mem_i_iob_wire.vs"
 
+   wire iob_ibus_split2_rst;
+   assign iob_ibus_split2_rst = cpu_reset;
+
    // INSTRUCTION BUS
    `include "iob_ibus_split2_inst.vs"
 
 `else
-   assign int_mem_i_valid = cpu_i_iob_valid;
-   assign int_mem_i_addr = cpu_i_iob_addr;
-   assign int_mem_i_wdata = cpu_i_iob_wdata;
-   assign int_mem_i_wstrb = cpu_i_iob_wstrb;
-   assign cpu_i_iob_rdata = int_mem_i_rdata;
-   assign cpu_i_iob_rvalid = int_mem_i_rvalid;
-   assign cpu_i_iob_ready = int_mem_i_ready;
+   assign int_mem_i_iob_valid = cpu_i_iob_valid;
+   assign int_mem_i_iob_addr = cpu_i_iob_addr;
+   assign int_mem_i_iob_wdata = cpu_i_iob_wdata;
+   assign int_mem_i_iob_wstrb = cpu_i_iob_wstrb;
+   assign cpu_i_iob_rdata = int_mem_i_iob_rdata;
+   assign cpu_i_iob_rvalid = int_mem_i_iob_rvalid;
+   assign cpu_i_iob_ready = int_mem_i_iob_ready;
 `endif
 
 
@@ -90,6 +93,9 @@ module iob_soc #(
    //external memory data bus
    `include "iob_soc_ext_mem_d_iob_wire.vs"
    
+   wire iob_dbus_split2_rst;
+   assign iob_dbus_split2_rst = cpu_reset;
+
    `include "iob_dbus_split2_inst.vs"
 
 `else
@@ -103,33 +109,9 @@ module iob_soc #(
 `endif
 
    //
-   // SPLIT INTERNAL MEMORY AND PERIPHERALS BUS
-   //
-
-   //slaves bus (includes internal memory + periphrals)
-   wire [ (`IOB_SOC_N_SLAVES)*`REQ_W-1:0] slaves_req;
-   wire [(`IOB_SOC_N_SLAVES)*`RESP_W-1:0] slaves_resp;
-
-   iob_split #(
-      .ADDR_W  (ADDR_W),
-      .DATA_W  (DATA_W),
-      .N_SLAVES(`IOB_SOC_N_SLAVES),
-      .P_SLAVES(`REQ_W - 3)
-   ) pbus_split (
-      .clk_i   (clk_i),
-      .arst_i  (cpu_reset),
-      // master interface
-      .m_req_i (int_d_req),
-      .m_resp_o(int_d_resp),
-      // slaves interface
-      .s_req_o (slaves_req),
-      .s_resp_i(slaves_resp)
-   );
-
-
-   //
    // INTERNAL SRAM MEMORY
    //
+   `include "iob_soc_int_mem_d_iob_wire.vs"
 
    iob_soc_int_mem #(
       .ADDR_W        (ADDR_W),
@@ -138,7 +120,7 @@ module iob_soc #(
       .BOOT_HEXFILE  ("iob_soc_boot"),
       .SRAM_ADDR_W   (SRAM_ADDR_W),
       .BOOTROM_ADDR_W(BOOTROM_ADDR_W),
-      .B_BIT         (`REQ_W - (ADDR_W-`IOB_SOC_B+1))
+      .B_BIT         (`IOB_SOC_B)
    ) int_mem0 (
       .clk_i    (clk_i),
       .arst_i   (arst_i),

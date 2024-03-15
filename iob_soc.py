@@ -224,6 +224,7 @@ class iob_soc(iob_module):
                 "DATA_W": "DATA_W",
                 "ADDR_W": "ADDR_W",
             },
+            "is_io": False,
         }
         int_mem_d_io = {
             "name": "iob",
@@ -238,6 +239,7 @@ class iob_soc(iob_module):
                 "DATA_W": "DATA_W",
                 "ADDR_W": "ADDR_W",
             },
+            "is_io": False,
         }
         int_mem_boot_ctr_io = {
             "name": "iob",
@@ -252,6 +254,7 @@ class iob_soc(iob_module):
                 "DATA_W": "DATA_W",
                 "ADDR_W": "ADDR_W",
             },
+            "is_io": False,
         }
         int_mem_ram_d_io = {
             "name": "iob",
@@ -266,6 +269,7 @@ class iob_soc(iob_module):
                 "DATA_W": "DATA_W",
                 "ADDR_W": "ADDR_W",
             },
+            "is_io": False,
         }
         int_mem_ram_w_io = {
             "name": "iob",
@@ -280,6 +284,7 @@ class iob_soc(iob_module):
                 "DATA_W": "DATA_W",
                 "ADDR_W": "ADDR_W",
             },
+            "is_io": False,
         }
 
         int_mem_ram_r_io = {
@@ -295,6 +300,7 @@ class iob_soc(iob_module):
                 "DATA_W": "DATA_W",
                 "ADDR_W": "ADDR_W",
             },
+            "is_io": False,
         }
         int_mem_ram_i_io = {
             "name": "iob",
@@ -309,6 +315,7 @@ class iob_soc(iob_module):
                 "DATA_W": "DATA_W",
                 "ADDR_W": "ADDR_W",
             },
+            "is_io": False,
         }
         ext_mem_i_io = {
             "name": "iob",
@@ -323,6 +330,7 @@ class iob_soc(iob_module):
                 "DATA_W": "DATA_W",
                 "ADDR_W": "MEM_ADDR_W-2",
             },
+            "is_io": False,
         }
         ext_mem_d_io = {
             "name": "iob",
@@ -337,6 +345,7 @@ class iob_soc(iob_module):
                 "DATA_W": "DATA_W",
                 "ADDR_W": "MEM_ADDR_W-1",
             },
+            "is_io": False,
         }
         ext_mem_icache_io = {
             "name": "iob",
@@ -351,6 +360,7 @@ class iob_soc(iob_module):
                 "DATA_W": "DATA_W",
                 "ADDR_W": "MEM_ADDR_W",
             },
+            "is_io": False,
         }
         ext_mem_dcache_io = {
             "name": "iob",
@@ -365,6 +375,7 @@ class iob_soc(iob_module):
                 "DATA_W": "DATA_W",
                 "ADDR_W": "MEM_ADDR_W",
             },
+            "is_io": False,
         }
         ext_mem_l2cache_io = {
             "name": "iob",
@@ -379,6 +390,7 @@ class iob_soc(iob_module):
                 "DATA_W": "DATA_W",
                 "ADDR_W": "MEM_ADDR_W",
             },
+            "is_io": False,
         }
         cpu_i_io = {
             "name": "iob",
@@ -393,13 +405,14 @@ class iob_soc(iob_module):
                 "DATA_W": "DATA_W",
                 "ADDR_W": "ADDR_W",
             },
+            "is_io": False,
         }
         cpu_d_io = {
             "name": "iob",
             "type": "slave",
             "file_prefix": "iob_soc_cpu_d_",
             "port_prefix": "dbus_",
-            "wire_prefix": "dbus_",
+            "wire_prefix": "cpu_d_",
             "param_prefix": "",
             "descr": "cpu data bus",
             "ports": [],
@@ -407,6 +420,7 @@ class iob_soc(iob_module):
                 "DATA_W": "DATA_W",
                 "ADDR_W": "ADDR_W",
             },
+            "is_io": False,
         }
         cpu_i_inst_io = cpu_i_io.copy()
         cpu_i_inst_io["type"] = "master"
@@ -416,7 +430,7 @@ class iob_soc(iob_module):
         cpu_d_inst_io = cpu_d_io.copy()
         cpu_d_inst_io["type"] = "master"
         cpu_d_inst_io["file_prefix"] = "iob_soc_cpu_d_inst_"
-        cpu_d_inst_io["port_prefix"] = "ibus_"
+        cpu_d_inst_io["wire_prefix"] = "cpu_d_"
 
         ext_mem_i_split_io = ext_mem_i_io.copy()
         ext_mem_i_split_io["type"] = "master"
@@ -446,6 +460,7 @@ class iob_soc(iob_module):
                 "DATA_W": "DATA_W",
                 "ADDR_W": "ADDR_W",
             },
+            "is_io": False,
         }
 
         self.ios = [

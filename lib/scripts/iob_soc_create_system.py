@@ -147,6 +147,8 @@ def create_systemv(
         periphs_inst_str += "      );\n"
 
     # pbus split instance
+    periphs_inst_str += "\n\twire iob_pbus_split2_rst;\n"
+    periphs_inst_str += "\tassign iob_pbus_split2_rst = cpu_reset;\n"
     periphs_inst_str += '\t\n`include "iob_pbus_split2_inst.vs"\n'
 
     # Create internal wires to connect the peripherals trap signals
@@ -204,7 +206,23 @@ def get_pbus_ios(python_module):
             "ADDR_W": "ADDR_W",
         },
     }
-    pbus_ios["output_ios"] = []
+    # add int memory as peripheral 0
+    pbus_ios["output_ios"] = [
+        {
+            "name": "iob",
+            "type": "master",
+            "file_prefix": "iob_soc_int_mem_d_",
+            "port_prefix": "int_mem_d_",
+            "wire_prefix": "int_mem_d_",
+            "param_prefix": "",
+            "descr": "iob-soc internal memory data interface",
+            "ports": [],
+            "widths": {
+                "DATA_W": "DATA_W",
+                "ADDR_W": "ADDR_W",
+            },
+        },
+    ]
     for instance in python_module.peripherals:
         instance_io = pbus_split_instance_io(instance, python_module.name)
         pbus_ios["output_ios"].append(instance_io)

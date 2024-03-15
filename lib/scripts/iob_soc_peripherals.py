@@ -23,7 +23,7 @@ reserved_signals = {
     "arst": ".arst_i(arst_i)",
     "iob_valid": ".iob_valid_i(/*<InstanceName>*/_iob_valid)",
     "iob_addr": ".iob_addr_i(/*<InstanceName>*/_iob_addr[`/*<SwregFilename>*/_ADDR_W-1:0])",
-    "iob_wdata": ".iob_wdata_i((/*<InstanceName>*/_iob_wdata)",
+    "iob_wdata": ".iob_wdata_i(/*<InstanceName>*/_iob_wdata)",
     "iob_wstrb": ".iob_wstrb_i(/*<InstanceName>*/_iob_wstrb)",
     "iob_rdata": ".iob_rdata_o(/*<InstanceName>*/_iob_rdata)",
     "iob_ready": ".iob_ready_o(/*<InstanceName>*/_iob_ready)",

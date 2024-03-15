@@ -3,7 +3,7 @@ from typing import Dict, List
 
 from iob_module import iob_module
 
-from iob_reg import iob_reg
+from iob_reg_r import iob_reg_r
 from iob_mux import iob_mux
 from iob_demux import iob_demux
 
@@ -23,36 +23,92 @@ class iob_split2(iob_module):
 
     def __post_init__(self) -> None:
         self.submodule_list = [
-            iob_reg(),
+            iob_reg_r(),
             iob_mux(),
             iob_demux(),
         ]
         self.num_splits: int = len(self.output_ios)
         self.name: str = f"iob_{self.name_prefix}_split2"
-        self.ios: List = [self.input_io]
+        self.confs = [
+            {
+                "name": "ADDR_W",
+                "type": "P",
+                "val": "32",
+                "min": "0",
+                "max": "NA",
+                "descr": "Address bus width",
+            },
+            {
+                "name": "DATA_W",
+                "type": "P",
+                "val": "32",
+                "min": "0",
+                "max": "NA",
+                "descr": "Data bus width",
+            },
+            {
+                "name": "SPLIT_PTR",
+                "type": "P",
+                "val": "32-1",
+                "min": "0",
+                "max": "NA",
+                "descr": "Split address pointer",
+            },
+        ]
+        self.input_io = self.input_io.copy()
+        self.input_io["is_io"] = True
+        self.ios: List = [
+            {
+                "name": "clk_en_rst",
+                "type": "slave",
+                "port_prefix": "",
+                "wire_prefix": "",
+                "descr": "Clock, clock enable and async reset",
+                "ports": [],
+                "connect_to_port": True,
+            },
+            {
+                "name": "rst",
+                "type": "master",
+                "port_prefix": "",
+                "wire_prefix": f"{self.name}_",
+                "descr": "Sync reset",
+                "ports": [
+                    {
+                        "name": "rst",
+                        "direction": "input",
+                        "width": "1",
+                        "descr": "Sync reset",
+                    },
+                ],
+            },
+            self.input_io,
+        ]
         for output_io in self.output_ios:
-            self.ios.append(output_io)
+            copy_output_io = output_io.copy()
+            copy_output_io["is_io"] = True
+            self.ios.append(copy_output_io)
 
     def gen_vlog_header(self, f):
         f.write("`timescale 1ns / 1ps\n\n")
+        f.write(f'`include "{self.name}_conf.vh"\n\n')
         f.write(f"module {self.name} #(\n")
-        f.write(f"\tparameter DATA_W = {self.data_w},\n")
-        f.write(f"\tparameter ADDR_W = {self.addr_w}\n")
+        f.write(f'\t`include "{self.name}_params.vs"\n')
         f.write(") (\n")
         f.write(f'\t`include "{self.name}_io.vs"\n')
         f.write(");\n\n")
 
     def gen_vlog_aux_signals(self, f):
-        f.write(f"\tlocalparam SPLIT_PTR = {self.split_ptr};\n")
-        f.write(f"\tlocalparam NBITS = {self.num_splits.bit_length()};\n")
-        f.write("\twire [NBITS-1:0] = sel, sel_reg;\n")
+        f.write(f"\tlocalparam NBITS = {(self.num_splits-1).bit_length()};\n")
+        f.write("\twire [NBITS-1:0] sel, sel_reg;\n")
         input_addr = f'{self.input_io["port_prefix"]}iob_addr_i'
         f.write(f"\tassign sel = {input_addr}[SPLIT_PTR-:NBITS];\n\n")
-        f.write("\tiob_reg #(\n")
+        f.write("\tiob_reg_r #(\n")
         f.write("\t  .DATA_W (NBITS),\n")
         f.write("\t  .RST_VAL(0)\n")
         f.write("\t) sel_reg0 (\n")
         f.write('\t  `include "clk_en_rst_s_s_portmap.vs"\n')
+        f.write("\t  .rst_i(rst_i),\n")
         f.write("\t  .data_i(sel),\n")
         f.write("\t  .data_o(sel_reg)\n")
         f.write("\t);\n\n")
@@ -60,11 +116,11 @@ class iob_split2(iob_module):
     def gen_vlog_demux(self, f, data_w, signal):
         f.write(f"\t//{signal}\n")
         demux_data_o = f"demux_{signal}_dout"
-        demux_data_i = f'{self.input_io["port_prefix"]}{signal}_i'
+        demux_data_i = f'{self.input_io["port_prefix"]}iob_{signal}_i'
         f.write(f"\twire[{self.num_splits}*{data_w}-1:0] {demux_data_o};\n")
         idx = 0
         for output in self.output_ios:
-            output_wire = f'{output["port_prefix"]}{signal}_o'
+            output_wire = f'{output["port_prefix"]}iob_{signal}_o'
             f.write(
                 f"\tassign {output_wire} = {demux_data_o}[{idx}*{data_w}+:{data_w}];\n"
             )
@@ -81,12 +137,12 @@ class iob_split2(iob_module):
     def gen_vlog_mux(self, f, data_w, signal, sel="sel"):
         f.write(f"\t//{signal}\n")
         mux_data_i = f"mux_{signal}_din"
-        mux_data_o = f'{self.input_io["port_prefix"]}{signal}_o'
+        mux_data_o = f'{self.input_io["port_prefix"]}iob_{signal}_o'
         f.write(f"\twire [{self.num_splits}*{data_w}-1:0] {mux_data_i};\n")
         f.write(f"\tassign {mux_data_i} = {{\n")
         first_wire = True
         for output in self.output_ios:
-            input_wire = f'{output["port_prefix"]}{signal}_i'
+            input_wire = f'{output["port_prefix"]}iob_{signal}_i'
             if not first_wire:
                 f.write(",\n")
             f.write(f"\t\t{input_wire}")
@@ -118,7 +174,11 @@ class iob_split2(iob_module):
     def gen_verilog_instance(self, top_dir="."):
         file_name = f"{top_dir}/hardware/src/{self.name}_inst.vs"
         with open(file_name, "w") as f:
-            f.write(f"\n\t{self.name} {self.name} (\n")
+            f.write(f"\n\t{self.name} #(\n")
+            f.write(f"\t\t.ADDR_W({self.addr_w}),\n")
+            f.write(f"\t\t.DATA_W({self.data_w}),\n")
+            f.write(f"\t\t.SPLIT_PTR({self.split_ptr})\n")
+            f.write(f"\t) {self.name} (\n")
             f.write(f'\t`include "{self.name}_io_portmap.vs"\n')
             f.write("\t);\n\n")
 

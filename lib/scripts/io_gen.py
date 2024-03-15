@@ -76,26 +76,42 @@ def generate_ports(core):
             table["widths"] if "widths" in table.keys() else {},
         )
 
-        # append vs_file to io.vs
-        if table["type"] == "slave":
-            infix = "s"
-        else:
-            infix = "m"
-        with open(f"{file_prefix}{table['name']}_{infix}_port.vs", "r") as vs_file:
-            f_io.write(vs_file.read())
+        # add to ios by default or if table['is_io'] is True
+        #
+        # table['is_io'] = False
+        # generates interfaces in ios list without adding to module ios
+        skip_io = False
+        if "is_io" in table.keys():
+            if table["is_io"] is False:
+                skip_io = True
 
-        with open(f"{file_prefix}{table['name']}_{infix}_portmap.vs", "r") as vs_file:
-            f_io_portmap.write(vs_file.read())
+        if skip_io is False:
+            # append vs_file to io.vs
+            if table["type"] == "slave":
+                infix = "s"
+            else:
+                infix = "m"
+            portmap_infix = infix
+            if "connect_to_port" in table.keys() and table["connect_to_port"]:
+                portmap_infix = f"{infix}_{infix}"
+
+            with open(f"{file_prefix}{table['name']}_{infix}_port.vs", "r") as vs_file:
+                f_io.write(vs_file.read())
+
+            with open(
+                f"{file_prefix}{table['name']}_{portmap_infix}_portmap.vs", "r"
+            ) as vs_file:
+                f_io_portmap.write(vs_file.read())
+
+            # Close ifdef if conditional interface
+            if "if_defined" in table.keys():
+                f_io.write("`endif\n")
+                f_io_portmap.write("`endif\n")
 
         # move all .vs files from current directory to out_dir
         for file in os.listdir("."):
             if file.endswith(".vs"):
                 os.rename(file, f"{out_dir}/{file}")
-
-        # Close ifdef if conditional interface
-        if "if_defined" in table.keys():
-            f_io.write("`endif\n")
-            f_io_portmap.write("`endif\n")
 
     # Find and remove last comma
     delete_last_comma(f_io)

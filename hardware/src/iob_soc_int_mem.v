@@ -51,6 +51,9 @@ module iob_soc_int_mem #(
    assign d_iob_rdata_o = int_mem_d_iob_rdata;
    assign d_iob_ready_o = int_mem_d_iob_ready;
 
+   wire iob_data_boot_ctr_split2_rst;
+   assign iob_data_boot_ctr_split2_rst = 1'b0;
+
    `include "iob_data_boot_ctr_split2_inst.vs"
 
    //
@@ -127,6 +130,8 @@ module iob_soc_int_mem #(
    //sram instruction bus
    `include "iob_soc_int_mem_ram_i_iob_wire.vs"
 
+   wire iob_ibus_merge2_rst;
+   assign iob_ibus_merge2_rst = 1'b0;
    `include "iob_ibus_merge2_inst.vs"
 
    //
@@ -148,7 +153,7 @@ module iob_soc_int_mem #(
       //instruction bus
       .i_valid_i(ram_i_iob_valid),
       .i_addr_i  (ram_i_iob_addr[SRAM_ADDR_W-1:2]),
-      .i_wdata_i (ram_i iob_wdata),
+      .i_wdata_i (ram_i_iob_wdata),
       .i_wstrb_i (ram_i_iob_wstrb),
       .i_rdata_o (ram_i_iob_rdata),
       .i_rvalid_o(ram_i_iob_rvalid),
