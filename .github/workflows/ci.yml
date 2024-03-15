@@ -45,9 +45,9 @@ jobs:
           submodules: 'recursive'
       - name: run test
         run: |
-          nix-shell --run 'make clean setup INIT_MEM=1 USE_EXTMEM=0 && make -C ../$(CORE)_V*/ sim-run SIMULATOR=icarus'
-          nix-shell --run 'make clean setup INIT_MEM=1 USE_EXTMEM=0 && make -C ../$(CORE)_V*/ sim-run SIMULATOR=verilator'
-          nix-shell --run 'make clean setup INIT_MEM=0 USE_EXTMEM=1 && make -C ../$(CORE)_V*/ sim-run SIMULATOR=verilator'
+          nix-shell --run 'make clean setup INIT_MEM=1 USE_EXTMEM=0 && make -C ../iob_soc_V*/ sim-run SIMULATOR=icarus'
+          nix-shell --run 'make clean setup INIT_MEM=1 USE_EXTMEM=0 && make -C ../iob_soc_V*/ sim-run SIMULATOR=verilator'
+          nix-shell --run 'make clean setup INIT_MEM=0 USE_EXTMEM=1 && make -C ../iob_soc_V*/ sim-run SIMULATOR=verilator'
 
   
   cyclonev:
