@@ -540,8 +540,8 @@ class iob_soc(iob_module):
                 split_ptr="B_BIT",
                 input_io=int_mem_d_io,
                 output_ios=[
-                    int_mem_boot_ctr_io,
                     int_mem_ram_d_io,
+                    int_mem_boot_ctr_io,
                 ],
             ),
             iob_merge2(
@@ -549,8 +549,8 @@ class iob_soc(iob_module):
                 data_w="DATA_W",
                 addr_w="ADDR_W",
                 input_ios=[
-                    int_mem_ram_w_io,
                     int_mem_ram_r_io,
+                    int_mem_ram_w_io,
                 ],
                 output_io=int_mem_ram_i_io,
             ),
@@ -559,8 +559,8 @@ class iob_soc(iob_module):
                 data_w="DATA_W",
                 addr_w="MEM_ADDR_W",
                 input_ios=[
-                    ext_mem_icache_merge_io,
                     ext_mem_dcache_merge_io,
+                    ext_mem_icache_merge_io,
                 ],
                 output_io=ext_mem_l2cache_merge_io,
             ),
@@ -571,8 +571,8 @@ class iob_soc(iob_module):
                 split_ptr="ADDR_W-1",
                 input_io=cpu_i_io,
                 output_ios=[
-                    ext_mem_i_split_io,
                     int_mem_i_split_io,
+                    ext_mem_i_split_io,
                 ],
             ),
             iob_split2(
@@ -582,8 +582,8 @@ class iob_soc(iob_module):
                 split_ptr="ADDR_W-1",
                 input_io=cpu_d_io,
                 output_ios=[
-                    ext_mem_d_split_io,
                     int_d_dbus_split_io,
+                    ext_mem_d_split_io,
                 ],
             ),
         ]

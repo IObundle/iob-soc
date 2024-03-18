@@ -122,11 +122,11 @@ module iob_soc #(
       .BOOTROM_ADDR_W(BOOTROM_ADDR_W),
       .B_BIT         (`IOB_SOC_B)
    ) int_mem0 (
-      .clk_i    (clk_i),
-      .arst_i   (arst_i),
-      .cke_i    (cke_i),
-      .boot     (boot),
-      .cpu_reset(cpu_reset),
+      .clk_i      (clk_i),
+      .arst_i     (arst_i),
+      .cke_i      (cke_i),
+      .boot_o     (boot),
+      .cpu_reset_o(cpu_reset),
 
       // instruction bus
       `include "iob_soc_int_mem_i_iob_s_portmap.vs"

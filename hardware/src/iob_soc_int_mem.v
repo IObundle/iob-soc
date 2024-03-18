@@ -13,8 +13,8 @@ module iob_soc_int_mem #(
    parameter B_BIT          = 0
 ) (
 
-   output boot,
-   output cpu_reset,
+   output boot_o,
+   output cpu_reset_o,
 
    //instruction bus
    `include "iob_soc_int_mem_i_iob_s_port.vs"
@@ -73,8 +73,8 @@ module iob_soc_int_mem #(
       .clk_i    (clk_i),
       .arst_i   (arst_i),
       .cke_i    (cke_i),
-      .cpu_rst_o(cpu_reset),
-      .boot_o   (boot),
+      .cpu_rst_o(cpu_reset_o),
+      .boot_o   (boot_o),
 
       //cpu slave interface
       //no address bus since single address
@@ -112,7 +112,7 @@ module iob_soc_int_mem #(
    assign i_addr = i_iob_addr_i;
 
    assign ram_r_iob_valid = i_iob_valid_i;
-   assign ram_r_iob_addr = boot ? boot_i_addr : i_addr;
+   assign ram_r_iob_addr = boot_o ? boot_i_addr : i_addr;
    assign ram_r_iob_wdata = i_iob_wdata_i;
    assign ram_r_iob_wstrb = i_iob_wstrb_i;
    assign i_iob_rvalid_o = ram_r_iob_rvalid;
@@ -121,7 +121,7 @@ module iob_soc_int_mem #(
 
    //data bus: just replace address
    assign boot_ram_d_addr = ram_d_iob_addr[SRAM_ADDR_W-1:2] + boot_offset[SRAM_ADDR_W-1:2];
-   assign ram_d_addr = boot ? boot_ram_d_addr : ram_d_iob_addr[SRAM_ADDR_W-1:2];
+   assign ram_d_addr = boot_o ? boot_ram_d_addr : ram_d_iob_addr[SRAM_ADDR_W-1:2];
 
    //
    //MERGE BOOT WRITE BUS AND CPU READ BUS

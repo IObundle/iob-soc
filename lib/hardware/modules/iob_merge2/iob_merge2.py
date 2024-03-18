@@ -97,7 +97,7 @@ class iob_merge2(iob_module):
     def gen_vlog_aux_signals(self, f):
         f.write("\tiob_prio_enc #(\n")
         f.write(f"\t  .W ({self.num_merges}),\n")
-        f.write('\t  .MODE("LOW")\n')
+        f.write('\t  .MODE("HIGH")\n')
         f.write("\t) sel_enc0 (\n")
         f.write("\t  .unencoded_i(mux_valid_din),\n")
         f.write("\t  .encoded_o(sel)\n")
@@ -140,7 +140,8 @@ class iob_merge2(iob_module):
         f.write(f"\twire [{self.num_merges}*{data_w}-1:0] {mux_data_i};\n")
         f.write(f"\tassign {mux_data_i} = {{\n")
         first_wire = True
-        for input in self.input_ios:
+        # reverse: most significant to least significant signal
+        for input in reversed(self.input_ios):
             input_wire = f'{input["port_prefix"]}iob_{signal}_i'
             if not first_wire:
                 f.write(",\n")

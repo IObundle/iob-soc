@@ -3,7 +3,7 @@ from typing import Dict, List
 
 from iob_module import iob_module
 
-from iob_reg_r import iob_reg_r
+from iob_reg_re import iob_reg_re
 from iob_mux import iob_mux
 from iob_demux import iob_demux
 
@@ -23,7 +23,7 @@ class iob_split2(iob_module):
 
     def __post_init__(self) -> None:
         self.submodule_list = [
-            iob_reg_r(),
+            iob_reg_re(),
             iob_mux(),
             iob_demux(),
         ]
@@ -103,12 +103,13 @@ class iob_split2(iob_module):
         f.write("\twire [NBITS-1:0] sel, sel_reg;\n")
         input_addr = f'{self.input_io["port_prefix"]}iob_addr_i'
         f.write(f"\tassign sel = {input_addr}[SPLIT_PTR-:NBITS];\n\n")
-        f.write("\tiob_reg_r #(\n")
+        f.write("\tiob_reg_re #(\n")
         f.write("\t  .DATA_W (NBITS),\n")
         f.write("\t  .RST_VAL(0)\n")
         f.write("\t) sel_reg0 (\n")
         f.write('\t  `include "clk_en_rst_s_s_portmap.vs"\n')
         f.write("\t  .rst_i(rst_i),\n")
+        f.write(f'\t  .en_i({self.input_io["port_prefix"]}iob_valid_i),\n')
         f.write("\t  .data_i(sel),\n")
         f.write("\t  .data_o(sel_reg)\n")
         f.write("\t);\n\n")
@@ -141,7 +142,8 @@ class iob_split2(iob_module):
         f.write(f"\twire [{self.num_splits}*{data_w}-1:0] {mux_data_i};\n")
         f.write(f"\tassign {mux_data_i} = {{\n")
         first_wire = True
-        for output in self.output_ios:
+        # reverse: most significant to least significant signal
+        for output in reversed(self.output_ios):
             input_wire = f'{output["port_prefix"]}iob_{signal}_i'
             if not first_wire:
                 f.write(",\n")
