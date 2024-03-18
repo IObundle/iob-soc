@@ -177,40 +177,31 @@ class iob_soc(iob_module):
             ),
         ]
 
-        # Create system ports and wires for them
+        # Create system ports (and wires) for them
 
-        # This function creates a wire group and adds it to a project global list of wire groups.
-        create_wire_group(
-            name="clk_en_rst",
-            wire_prefix="",
-            wires=[],
-            descr="Wire group for global clock, enable, and reset",
-        )
-        # This function creates a port group in the local module's `port_group_list`, and connects it to a wire group from the global list.
+        # This function creates a port group in the local module's `port_group_list`, and connects it to a newly created wire group from the global wire list: `global_wire_group_list`.
         create_port_group(
+            name="clk_en_rst",
             type="slave",
+            wire_prefix="",
             port_prefix="",
             descr="Clock, enable, and reset",
-            connect="clk_en_rst",
         )
 
-        # This function creates a wire named 'trap' and adds it to a project global list of wires.
-        create_wire(
-            name="trap",
-            width=1,
-        )
-        # This function creates a port in the local module's `port_group_list`, and assigns a group to it. It also connects the port to a wire from the global list.
+        # This function creates a port in the local module's `port_group_list`, and assigns a group to it. It also connects the port to a newly created wire from the global wire list.
         create_port(
+            name="trap",
             direction="output",
             width=1,
             descr="CPU trap signal",
-            connect="trap",  # Name of the global wire to connect the port to
             group="trap",  # Name of the group to assign the port to (will create a new group if it doesn't exist)
         )
 
-        create_wire_group(
+        create_port_group(
             name="axi",
+            type="master",
             wire_prefix="",
+            port_prefix="",
             mult="",  # Will be filled automatically
             widths={
                 "ID_W": "AXI_ID_W",
@@ -218,31 +209,16 @@ class iob_soc(iob_module):
                 "DATA_W": "AXI_DATA_W",
                 "LEN_W": "AXI_LEN_W",
             },
-            descr="Wire group for extmem interface",
-            if_defined="USE_EXTMEM",
-            wires=[],
-        )
-        create_port_group(
-            type="master",
-            port_prefix="",
             descr="Bus of AXI master interfaces for external memory. One interface for this system and others optionally for peripherals.",
             if_defined="USE_EXTMEM",
-            connect="axi",
         )
 
-        create_wire_group(
-            name="rs232",
-            wire_prefix="",
-            descr="Wire group for UART interface",
-            wires=[],
-        )
         create_port_group(
             name="rs232",
             type="",  # Neutral type. Neither master nor slave.
-            port_prefix="",
             wire_prefix="",
+            port_prefix="",
             descr="iob-soc uart interface",
-            connect="rs232",
         ),
 
         #######################################
