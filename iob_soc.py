@@ -179,7 +179,7 @@ class iob_soc(iob_module):
 
         # Create system ports (and wires) for them
 
-        # This function creates a port group in the local module's `port_group_list`, and connects it to a newly created wire group from the global wire list: `global_wire_group_list`.
+        # This function creates a port group in the local module's `port_group_list`, and connects it to a newly created wire group from the local wire list: `wire_group_list`.
         create_port_group(
             name="clk_en_rst",
             type="slave",
@@ -188,7 +188,7 @@ class iob_soc(iob_module):
             descr="Clock, enable, and reset",
         )
 
-        # This function creates a port in the local module's `port_group_list`, and assigns a group to it. It also connects the port to a newly created wire from the global wire list.
+        # This function creates a port in the local module's `port_group_list`, and assigns a group to it. It also connects the port to a newly created wire from the local wire list.
         create_port(
             name="trap",
             direction="output",
@@ -291,7 +291,7 @@ class iob_soc(iob_module):
         )
 
         # ###########################################################################
-        # TODO: Update lines below with new connections from global wires and groups.
+        # TODO: Update lines below with new connections from local wires and groups.
         #       Also remove `_i` and `_o` suffixes.
         # ###########################################################################
 
