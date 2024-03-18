@@ -278,11 +278,11 @@ class iob_soc(iob_module):
                 "USE_EXTMEM": USE_EXTMEM
             },
             connect={
-                "clk_i": get_wire_from_group("clk_en_rst", "clk"),
-                "arst_i": "cpu_reset",
-                "cke_i": get_wire_from_group("clk_en_rst", "cke"),
-                "boot_i": "boot",
-                "trap_o": "trap",
+                "clk": get_wire_from_group("clk_en_rst", "clk"),
+                "arst": "cpu_reset",
+                "cke": get_wire_from_group("clk_en_rst", "cke"),
+                "boot": "boot",
+                "trap": "trap",
                 # instruction bus
                 "i_bus": "cpu_i_bus",
                 # data bus
@@ -292,6 +292,7 @@ class iob_soc(iob_module):
 
         # ###########################################################################
         # TODO: Update lines below with new connections from global wires and groups.
+        #       Also remove `_i` and `_o` suffixes.
         # ###########################################################################
 
         #
