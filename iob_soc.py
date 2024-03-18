@@ -194,7 +194,6 @@ class iob_soc(iob_module):
             direction="output",
             width=1,
             descr="CPU trap signal",
-            group="trap",  # Name of the group to assign the port to (will create a new group if it doesn't exist)
         )
 
         create_port_group(
@@ -231,6 +230,7 @@ class iob_soc(iob_module):
         # SYSTEM RESET
         #
 
+        # Create single wires, and automatically assign them to single wire groups
         create_wire("boot", width=1)
         create_wire("cpu_reset", width=1)
 
@@ -268,6 +268,17 @@ class iob_soc(iob_module):
             ],
         )
 
+        create_wire_group(
+            name="cpu_clk_en_rst",
+            descr="Cpu clock, enable, and reset",
+            wires=[
+                get_wire_from_group("clk_en_rst", "clk"),
+                get_wire("cpu_reset"),
+                get_wire_from_group("clk_en_rst", "cke"),
+
+            ],
+        )
+
         cpu = iob_picorv32(
             "cpu",
             parameters={
@@ -277,10 +288,9 @@ class iob_soc(iob_module):
                 "USE_MUL_DIV": USE_MUL_DIV,
                 "USE_EXTMEM": USE_EXTMEM
             },
+            # Connect port groups to wire groups
             connect={
-                "clk": get_wire_from_group("clk_en_rst", "clk"),
-                "arst": "cpu_reset",
-                "cke": get_wire_from_group("clk_en_rst", "cke"),
+                "clk_en_rst": "cpu_clk_en_rst",
                 "boot": "boot",
                 "trap": "trap",
                 # instruction bus
