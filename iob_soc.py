@@ -5,10 +5,6 @@ import sys
 from iob_module import iob_module
 from iob_soc_utils import pre_setup_iob_soc, post_setup_iob_soc
 
-from iob_conf import create_conf
-from iob_port import create_wire_port, create_bus_port
-from iob_wire import create_wire, create_bus
-
 # Submodules
 from iob_picorv32 import iob_picorv32
 from iob_cache import iob_cache
@@ -45,7 +41,7 @@ class iob_soc(iob_module):
 
         # macros
         # This method creates a macro and adds it to the local module's `confs` list
-        create_conf(
+        self.create_conf(
             name="INIT_MEM",
             type="M",
             val="INIT_MEM" in sys.argv,
@@ -53,7 +49,7 @@ class iob_soc(iob_module):
             max="1",
             descr="Enable MUL and DIV CPU instructions",
         ),
-        create_conf(
+        self.create_conf(
             name="USE_EXTMEM",
             type="M",
             val="USE_EXTMEM" in sys.argv,
@@ -61,7 +57,7 @@ class iob_soc(iob_module):
             max="1",
             descr="Enable MUL and DIV CPU instructions",
         ),
-        create_conf(
+        self.create_conf(
             name="USE_MUL_DIV",
             type="M",
             val="1",
@@ -69,7 +65,7 @@ class iob_soc(iob_module):
             max="1",
             descr="Enable MUL and DIV CPU instructions",
         ),
-        create_conf(
+        self.create_conf(
             name="USE_COMPRESSED",
             type="M",
             val="1",
@@ -77,7 +73,7 @@ class iob_soc(iob_module):
             max="1",
             descr="Use compressed CPU instructions",
         ),
-        create_conf(
+        self.create_conf(
             name="E",
             type="M",
             val="31",
@@ -85,7 +81,7 @@ class iob_soc(iob_module):
             max="32",
             descr="Address selection bit for external memory",
         ),
-        create_conf(
+        self.create_conf(
             name="B",
             type="M",
             val="20",
@@ -94,7 +90,7 @@ class iob_soc(iob_module):
             descr="Address selection bit for boot ROM",
         ),
         # parameters
-        create_conf(
+        self.create_conf(
             name="BOOTROM_ADDR_W",
             type="P",
             val="12",
@@ -102,7 +98,7 @@ class iob_soc(iob_module):
             max="32",
             descr="Boot ROM address width",
         ),
-        create_conf(
+        self.create_conf(
             name="SRAM_ADDR_W",
             type="P",
             val="15",
@@ -110,7 +106,7 @@ class iob_soc(iob_module):
             max="32",
             descr="SRAM address width",
         ),
-        create_conf(
+        self.create_conf(
             name="MEM_ADDR_W",
             type="P",
             val="24",
@@ -119,7 +115,7 @@ class iob_soc(iob_module):
             descr="Memory bus address width",
         ),
         # mandatory parameters (do not change them!)
-        create_conf(
+        self.create_conf(
             name="ADDR_W",
             type="F",
             val="32",
@@ -127,7 +123,7 @@ class iob_soc(iob_module):
             max="32",
             descr="Address bus width",
         ),
-        create_conf(
+        self.create_conf(
             name="DATA_W",
             type="F",
             val="32",
@@ -135,7 +131,7 @@ class iob_soc(iob_module):
             max="32",
             descr="Data bus width",
         ),
-        create_conf(
+        self.create_conf(
             name="AXI_ID_W",
             type="F",
             val="0",
@@ -143,7 +139,7 @@ class iob_soc(iob_module):
             max="32",
             descr="AXI ID bus width",
         ),
-        create_conf(
+        self.create_conf(
             name="AXI_ADDR_W",
             type="F",
             val="`IOB_SOC_MEM_ADDR_W",
@@ -151,7 +147,7 @@ class iob_soc(iob_module):
             max="32",
             descr="AXI address bus width",
         ),
-        create_conf(
+        self.create_conf(
             name="AXI_DATA_W",
             type="F",
             val="`IOB_SOC_DATA_W",
@@ -159,7 +155,7 @@ class iob_soc(iob_module):
             max="32",
             descr="AXI data bus width",
         ),
-        create_conf(
+        self.create_conf(
             name="AXI_LEN_W",
             type="F",
             val="4",
@@ -167,7 +163,7 @@ class iob_soc(iob_module):
             max="4",
             descr="AXI burst length width",
         ),
-        create_conf(
+        self.create_conf(
             name="MEM_ADDR_OFFSET",
             type="F",
             val="0",
@@ -179,7 +175,7 @@ class iob_soc(iob_module):
         # Create system ports (and wires) for them
 
         # This method creates a bus port local module's `port_bus_list`, and connects it to a newly created wire bus from the local wire list: `wire_bus_list`.
-        create_bus_port(
+        self.create_bus_port(
             name="clk_en_rst",
             type="slave",
             wire_prefix="",
@@ -187,7 +183,7 @@ class iob_soc(iob_module):
             descr="Clock, enable, and reset",
         )
 
-        create_bus_port(
+        self.create_bus_port(
             name="axi",
             type="master",
             wire_prefix="",
@@ -203,7 +199,7 @@ class iob_soc(iob_module):
             if_defined="USE_EXTMEM",
         )
 
-        create_bus_port(
+        self.create_bus_port(
             name="rs232",
             type="",  # Neutral type. Neither master nor slave.
             wire_prefix="",
@@ -213,7 +209,7 @@ class iob_soc(iob_module):
 
         # Example method for creating a single wire port
         # This method creates a port in the local module's `port_bus_list`, and assigns a bus to it. It also connects the port to a newly created wire from the local wire list.
-        # create_wire_port(
+        # self.create_wire_port(
         #     name="trap",
         #     direction="output",
         #     width=1,
@@ -231,14 +227,14 @@ class iob_soc(iob_module):
         #
 
         # Create single wires, and automatically assign them to single wire groups
-        create_wire("boot", width=1)
-        create_wire("cpu_reset", width=1)
+        self.create_wire("boot", width=1)
+        self.create_wire("cpu_reset", width=1)
 
         #
         # CPU
         #
 
-        create_bus(
+        self.create_bus(
             name="cpu_i_bus",
             descr="Cpu instruction bus",
             wires=[
@@ -247,18 +243,18 @@ class iob_soc(iob_module):
             ],
         )
         ### Alternative way to create wires and assign them to a group
-        # create_wire(
+        # self.create_wire(
         #     name="cpu_i_req",
         #     width=REQ_W,
         #     group="cpu_i_bus"
         # )
-        # create_wire(
+        # self.create_wire(
         #     name="cpu_i_resp",
         #     width=RESP_W,
         #     group="cpu_i_bus"
         # )
 
-        create_bus(
+        self.create_bus(
             name="cpu_d_bus",
             descr="Cpu data bus",
             wires=[
@@ -267,7 +263,7 @@ class iob_soc(iob_module):
             ],
         )
 
-        create_bus(
+        self.create_bus(
             name="cpu_clk_en_rst",
             descr="Cpu clock, enable, and reset",
             wires=[
@@ -279,7 +275,7 @@ class iob_soc(iob_module):
         )
 
         # This method creates a new module instance and adds it to the local module's `blocks` list
-        create_instance(
+        self.create_instance(
             iob_picorv32,
             "cpu",
             parameters={
@@ -607,7 +603,7 @@ class iob_soc(iob_module):
         self.peripherals = [UART0, TIMER0]
 
         # Fill blocks list with modules that need to be instantiated inside the iob_soc Verilog module
-        # TODO: Remove this list. We no longer need it, since the `create_instance` method manages it.
+        # TODO: Remove this list. We no longer need it, since the `self.create_instance` method manages it.
         self.blocks = [
             cpu,
             pbus_split,
