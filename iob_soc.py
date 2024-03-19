@@ -179,8 +179,8 @@ class iob_soc(iob_module):
 
         # Create system ports (and wires) for them
 
-        # This function creates a port group in the local module's `port_group_list`, and connects it to a newly created wire group from the local wire list: `wire_group_list`.
-        create_port_group(
+        # This function creates a bus port local module's `port_bus_list`, and connects it to a newly created wire bus from the local wire list: `wire_bus_list`.
+        create_bus_port(
             name="clk_en_rst",
             type="slave",
             wire_prefix="",
@@ -188,15 +188,7 @@ class iob_soc(iob_module):
             descr="Clock, enable, and reset",
         )
 
-        # This function creates a port in the local module's `port_group_list`, and assigns a group to it. It also connects the port to a newly created wire from the local wire list.
-        create_port(
-            name="trap",
-            direction="output",
-            width=1,
-            descr="CPU trap signal",
-        )
-
-        create_port_group(
+        create_bus_port(
             name="axi",
             type="master",
             wire_prefix="",
@@ -212,13 +204,22 @@ class iob_soc(iob_module):
             if_defined="USE_EXTMEM",
         )
 
-        create_port_group(
+        create_bus_port(
             name="rs232",
             type="",  # Neutral type. Neither master nor slave.
             wire_prefix="",
             port_prefix="",
             descr="iob-soc uart interface",
         ),
+
+        # Example method for creating a single wire port
+        # This function creates a port in the local module's `port_bus_list`, and assigns a bus to it. It also connects the port to a newly created wire from the local wire list.
+        # create_wire_port(
+        #     name="trap",
+        #     direction="output",
+        #     width=1,
+        #     descr="CPU trap signal",
+        # )
 
         #######################################
         # IOb-SoC modules, wires, and instances
@@ -238,13 +239,12 @@ class iob_soc(iob_module):
         # CPU
         #
 
-        create_wire_group(
+        create_bus(
             name="cpu_i_bus",
             descr="Cpu instruction bus",
             wires=[
-                # Should we allow creating wires like this? Or should we always use `create_wire` instead?
-                wire("cpu_i_req", width=REQ_W),
-                wire("cpu_i_resp", width=RESP_W)
+                {"name": "cpu_i_req", "width": REQ_W},
+                {"name": "cpu_i_resp", "width": RESP_W}
             ],
         )
         ### Alternative way to create wires and assign them to a group
@@ -259,22 +259,22 @@ class iob_soc(iob_module):
         #     group="cpu_i_bus"
         # )
 
-        create_wire_group(
+        create_bus(
             name="cpu_d_bus",
             descr="Cpu data bus",
             wires=[
-                wire("cpu_d_req", width=REQ_W),
-                wire("cpu_d_resp", width=RESP_W)
+                {"name": "cpu_d_req", "width": REQ_W},
+                {"name": "cpu_d_resp", "width": RESP_W}
             ],
         )
 
-        create_wire_group(
+        create_bus(
             name="cpu_clk_en_rst",
             descr="Cpu clock, enable, and reset",
             wires=[
-                get_wire_from_group("clk_en_rst", "clk"),
+                get_wire_from_bus("clk_en_rst", "clk"),
                 get_wire("cpu_reset"),
-                get_wire_from_group("clk_en_rst", "cke"),
+                get_wire_from_bus("clk_en_rst", "cke"),
 
             ],
         )
@@ -292,7 +292,6 @@ class iob_soc(iob_module):
             connect={
                 "clk_en_rst": "cpu_clk_en_rst",
                 "boot": "boot",
-                "trap": "trap",
                 # instruction bus
                 "i_bus": "cpu_i_bus",
                 # data bus
