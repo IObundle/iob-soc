@@ -96,7 +96,8 @@ class iob_module:
         copy_srcs.copy_rename_setup_directory(self)
 
         # Generate config_build.mk
-        config_gen.config_build_mk(self)
+        if is_top:
+            config_gen.config_build_mk(self)
 
         # Generate configuration files
         config_gen.generate_confs(self)
