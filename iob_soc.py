@@ -5,10 +5,6 @@ import sys
 from iob_module import iob_module
 from iob_soc_utils import pre_setup_iob_soc, post_setup_iob_soc
 
-from iob_conf import iob_conf
-from iob_port import port, port_group
-from iob_wire import wire, wire_group
-
 # Submodules
 from iob_picorv32 import iob_picorv32
 from iob_cache import iob_cache
@@ -43,144 +39,143 @@ class iob_soc(iob_module):
         self.is_system = True
         self.board_list = ["CYCLONEV-GT-DK", "AES-KU040-DB-G"]
 
-        self.confs = [
-            # macros
-            iob_conf(
-                name="INIT_MEM",
-                type="M",
-                val="INIT_MEM" in sys.argv,
-                min="0",
-                max="1",
-                descr="Enable MUL and DIV CPU instructions",
-            ),
-            iob_conf(
-                name="USE_EXTMEM",
-                type="M",
-                val="USE_EXTMEM" in sys.argv,
-                min="0",
-                max="1",
-                descr="Enable MUL and DIV CPU instructions",
-            ),
-            iob_conf(
-                name="USE_MUL_DIV",
-                type="M",
-                val="1",
-                min="0",
-                max="1",
-                descr="Enable MUL and DIV CPU instructions",
-            ),
-            iob_conf(
-                name="USE_COMPRESSED",
-                type="M",
-                val="1",
-                min="0",
-                max="1",
-                descr="Use compressed CPU instructions",
-            ),
-            iob_conf(
-                name="E",
-                type="M",
-                val="31",
-                min="1",
-                max="32",
-                descr="Address selection bit for external memory",
-            ),
-            iob_conf(
-                name="B",
-                type="M",
-                val="20",
-                min="1",
-                max="32",
-                descr="Address selection bit for boot ROM",
-            ),
-            # parameters
-            iob_conf(
-                name="BOOTROM_ADDR_W",
-                type="P",
-                val="12",
-                min="1",
-                max="32",
-                descr="Boot ROM address width",
-            ),
-            iob_conf(
-                name="SRAM_ADDR_W",
-                type="P",
-                val="15",
-                min="1",
-                max="32",
-                descr="SRAM address width",
-            ),
-            iob_conf(
-                name="MEM_ADDR_W",
-                type="P",
-                val="24",
-                min="1",
-                max="32",
-                descr="Memory bus address width",
-            ),
-            # mandatory parameters (do not change them!)
-            iob_conf(
-                name="ADDR_W",
-                type="F",
-                val="32",
-                min="1",
-                max="32",
-                descr="Address bus width",
-            ),
-            iob_conf(
-                name="DATA_W",
-                type="F",
-                val="32",
-                min="1",
-                max="32",
-                descr="Data bus width",
-            ),
-            iob_conf(
-                name="AXI_ID_W",
-                type="F",
-                val="0",
-                min="1",
-                max="32",
-                descr="AXI ID bus width",
-            ),
-            iob_conf(
-                name="AXI_ADDR_W",
-                type="F",
-                val="`IOB_SOC_MEM_ADDR_W",
-                min="1",
-                max="32",
-                descr="AXI address bus width",
-            ),
-            iob_conf(
-                name="AXI_DATA_W",
-                type="F",
-                val="`IOB_SOC_DATA_W",
-                min="1",
-                max="32",
-                descr="AXI data bus width",
-            ),
-            iob_conf(
-                name="AXI_LEN_W",
-                type="F",
-                val="4",
-                min="1",
-                max="4",
-                descr="AXI burst length width",
-            ),
-            iob_conf(
-                name="MEM_ADDR_OFFSET",
-                type="F",
-                val="0",
-                min="0",
-                max="NA",
-                descr="Offset of memory address",
-            ),
-        ]
+        # macros
+        # This method creates a macro and adds it to the local module's `confs` list
+        self.create_conf(
+            name="INIT_MEM",
+            type="M",
+            val="INIT_MEM" in sys.argv,
+            min="0",
+            max="1",
+            descr="Enable MUL and DIV CPU instructions",
+        ),
+        self.create_conf(
+            name="USE_EXTMEM",
+            type="M",
+            val="USE_EXTMEM" in sys.argv,
+            min="0",
+            max="1",
+            descr="Enable MUL and DIV CPU instructions",
+        ),
+        self.create_conf(
+            name="USE_MUL_DIV",
+            type="M",
+            val="1",
+            min="0",
+            max="1",
+            descr="Enable MUL and DIV CPU instructions",
+        ),
+        self.create_conf(
+            name="USE_COMPRESSED",
+            type="M",
+            val="1",
+            min="0",
+            max="1",
+            descr="Use compressed CPU instructions",
+        ),
+        self.create_conf(
+            name="E",
+            type="M",
+            val="31",
+            min="1",
+            max="32",
+            descr="Address selection bit for external memory",
+        ),
+        self.create_conf(
+            name="B",
+            type="M",
+            val="20",
+            min="1",
+            max="32",
+            descr="Address selection bit for boot ROM",
+        ),
+        # parameters
+        self.create_conf(
+            name="BOOTROM_ADDR_W",
+            type="P",
+            val="12",
+            min="1",
+            max="32",
+            descr="Boot ROM address width",
+        ),
+        self.create_conf(
+            name="SRAM_ADDR_W",
+            type="P",
+            val="15",
+            min="1",
+            max="32",
+            descr="SRAM address width",
+        ),
+        self.create_conf(
+            name="MEM_ADDR_W",
+            type="P",
+            val="24",
+            min="1",
+            max="32",
+            descr="Memory bus address width",
+        ),
+        # mandatory parameters (do not change them!)
+        self.create_conf(
+            name="ADDR_W",
+            type="F",
+            val="32",
+            min="1",
+            max="32",
+            descr="Address bus width",
+        ),
+        self.create_conf(
+            name="DATA_W",
+            type="F",
+            val="32",
+            min="1",
+            max="32",
+            descr="Data bus width",
+        ),
+        self.create_conf(
+            name="AXI_ID_W",
+            type="F",
+            val="0",
+            min="1",
+            max="32",
+            descr="AXI ID bus width",
+        ),
+        self.create_conf(
+            name="AXI_ADDR_W",
+            type="F",
+            val="`IOB_SOC_MEM_ADDR_W",
+            min="1",
+            max="32",
+            descr="AXI address bus width",
+        ),
+        self.create_conf(
+            name="AXI_DATA_W",
+            type="F",
+            val="`IOB_SOC_DATA_W",
+            min="1",
+            max="32",
+            descr="AXI data bus width",
+        ),
+        self.create_conf(
+            name="AXI_LEN_W",
+            type="F",
+            val="4",
+            min="1",
+            max="4",
+            descr="AXI burst length width",
+        ),
+        self.create_conf(
+            name="MEM_ADDR_OFFSET",
+            type="F",
+            val="0",
+            min="0",
+            max="NA",
+            descr="Offset of memory address",
+        ),
 
         # Create system ports (and wires) for them
 
-        # This function creates a port group in the local module's `port_group_list`, and connects it to a newly created wire group from the local wire list: `wire_group_list`.
-        create_port_group(
+        # This method creates a bus port local module's `port_bus_list`, and connects it to a newly created wire bus from the local wire list: `wire_bus_list`.
+        self.create_bus_port(
             name="clk_en_rst",
             type="slave",
             wire_prefix="",
@@ -188,15 +183,7 @@ class iob_soc(iob_module):
             descr="Clock, enable, and reset",
         )
 
-        # This function creates a port in the local module's `port_group_list`, and assigns a group to it. It also connects the port to a newly created wire from the local wire list.
-        create_port(
-            name="trap",
-            direction="output",
-            width=1,
-            descr="CPU trap signal",
-        )
-
-        create_port_group(
+        self.create_bus_port(
             name="axi",
             type="master",
             wire_prefix="",
@@ -212,13 +199,22 @@ class iob_soc(iob_module):
             if_defined="USE_EXTMEM",
         )
 
-        create_port_group(
+        self.create_bus_port(
             name="rs232",
             type="",  # Neutral type. Neither master nor slave.
             wire_prefix="",
             port_prefix="",
             descr="iob-soc uart interface",
         ),
+
+        # Example method for creating a single wire port
+        # This method creates a port in the local module's `port_bus_list`, and assigns a bus to it. It also connects the port to a newly created wire from the local wire list.
+        # self.create_wire_port(
+        #     name="trap",
+        #     direction="output",
+        #     width=1,
+        #     descr="CPU trap signal",
+        # )
 
         #######################################
         # IOb-SoC modules, wires, and instances
@@ -231,55 +227,56 @@ class iob_soc(iob_module):
         #
 
         # Create single wires, and automatically assign them to single wire groups
-        create_wire("boot", width=1)
-        create_wire("cpu_reset", width=1)
+        self.create_wire("boot", width=1)
+        self.create_wire("cpu_reset", width=1)
 
         #
         # CPU
         #
 
-        create_wire_group(
+        self.create_bus(
             name="cpu_i_bus",
             descr="Cpu instruction bus",
             wires=[
-                # Should we allow creating wires like this? Or should we always use `create_wire` instead?
-                wire("cpu_i_req", width=REQ_W),
-                wire("cpu_i_resp", width=RESP_W)
+                {"name": "cpu_i_req", "width": REQ_W},
+                {"name": "cpu_i_resp", "width": RESP_W}
             ],
         )
         ### Alternative way to create wires and assign them to a group
-        # create_wire(
+        # self.create_wire(
         #     name="cpu_i_req",
         #     width=REQ_W,
         #     group="cpu_i_bus"
         # )
-        # create_wire(
+        # self.create_wire(
         #     name="cpu_i_resp",
         #     width=RESP_W,
         #     group="cpu_i_bus"
         # )
 
-        create_wire_group(
+        self.create_bus(
             name="cpu_d_bus",
             descr="Cpu data bus",
             wires=[
-                wire("cpu_d_req", width=REQ_W),
-                wire("cpu_d_resp", width=RESP_W)
+                {"name": "cpu_d_req", "width": REQ_W},
+                {"name": "cpu_d_resp", "width": RESP_W}
             ],
         )
 
-        create_wire_group(
+        self.create_bus(
             name="cpu_clk_en_rst",
             descr="Cpu clock, enable, and reset",
             wires=[
-                get_wire_from_group("clk_en_rst", "clk"),
+                get_wire_from_bus("clk_en_rst", "clk"),
                 get_wire("cpu_reset"),
-                get_wire_from_group("clk_en_rst", "cke"),
+                get_wire_from_bus("clk_en_rst", "cke"),
 
             ],
         )
 
-        cpu = iob_picorv32(
+        # This method creates a new module instance and adds it to the local module's `blocks` list
+        self.create_instance(
+            iob_picorv32,
             "cpu",
             parameters={
                 "ADDR_W": "ADDR_W",
@@ -292,7 +289,6 @@ class iob_soc(iob_module):
             connect={
                 "clk_en_rst": "cpu_clk_en_rst",
                 "boot": "boot",
-                "trap": "trap",
                 # instruction bus
                 "i_bus": "cpu_i_bus",
                 # data bus
@@ -607,6 +603,7 @@ class iob_soc(iob_module):
         self.peripherals = [UART0, TIMER0]
 
         # Fill blocks list with modules that need to be instantiated inside the iob_soc Verilog module
+        # TODO: Remove this list. We no longer need it, since the `self.create_instance` method manages it.
         self.blocks = [
             cpu,
             pbus_split,
