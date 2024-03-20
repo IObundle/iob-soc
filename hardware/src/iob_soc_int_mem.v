@@ -53,6 +53,18 @@ module iob_soc_int_mem #(
    `include "clk_en_rst_s_port.vs"
 );
 
+   wire [ `REQ_W-1:0] ram_i_req;
+   wire [`RESP_W-1:0] ram_i_resp;
+
+    //sram data bus  interface
+   wire [     `REQ_W-1:0] ram_d_req;
+   wire [    `RESP_W-1:0] ram_d_resp;
+
+
+   //modified ram address during boot
+   wire [SRAM_ADDR_W-3:0] ram_d_addr;
+
+
    `ifdef USE_SPRAM
       assign ram_d_resp[`RDATA(0)] = rdata_spram_i;
       assign ram_i_resp[`RDATA(0)] = rdata_spram_i;
@@ -78,12 +90,7 @@ module iob_soc_int_mem #(
 
 
 
-   //sram data bus  interface
-   wire [     `REQ_W-1:0] ram_d_req;
-   wire [    `RESP_W-1:0] ram_d_resp;
-
-   //modified ram address during boot
-   wire [SRAM_ADDR_W-3:0] ram_d_addr;
+  
 
 
    ////////////////////////////////////////////////////////
@@ -194,8 +201,7 @@ module iob_soc_int_mem #(
    //
 
    //sram instruction bus
-   wire [ `REQ_W-1:0] ram_i_req;
-   wire [`RESP_W-1:0] ram_i_resp;
+   
 
    iob_merge #(
       .N_MASTERS(2)
