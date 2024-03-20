@@ -174,8 +174,8 @@ class iob_soc(iob_module):
 
         # Create system ports (and wires) for them
 
-        # This method creates a bus port local module's `port_bus_list`, and connects it to a newly created wire bus from the local wire list: `wire_bus_list`.
-        self.create_bus_port(
+        # This method creates a port local module's `port_list`, and connects it to a newly created wire from the local wire list: `wire_list`.
+        self.create_port(
             name="clk_en_rst",
             type="slave",
             wire_prefix="",
@@ -183,12 +183,12 @@ class iob_soc(iob_module):
             descr="Clock, enable, and reset",
         )
 
-        self.create_bus_port(
+        self.create_port(
             name="axi",
             type="master",
             wire_prefix="",
             port_prefix="",
-            mult="",  # Will be filled automatically
+            mult=1,  # Adjust according to number of peripherals that need access to the wrapper interconnect for the external memory
             widths={
                 "ID_W": "AXI_ID_W",
                 "ADDR_W": "AXI_ADDR_W",
@@ -199,7 +199,7 @@ class iob_soc(iob_module):
             if_defined="USE_EXTMEM",
         )
 
-        self.create_bus_port(
+        self.create_port(
             name="rs232",
             type="",  # Neutral type. Neither master nor slave.
             wire_prefix="",
@@ -207,13 +207,14 @@ class iob_soc(iob_module):
             descr="iob-soc uart interface",
         ),
 
-        # Example method for creating a single wire port
-        # This method creates a port in the local module's `port_bus_list`, and assigns a bus to it. It also connects the port to a newly created wire from the local wire list.
-        # self.create_wire_port(
+        # Example method for creating a port with a single element.
+        # This method creates a port in the local module's `port_list`. It also connects the port to a newly created wire from the local wire list.
+        # self.create_port(
         #     name="trap",
-        #     direction="output",
-        #     width=1,
         #     descr="CPU trap signal",
+        #     elements=[
+        #         {"name": "trap", "width": 1, "direction": "output"},
+        #     ]
         # )
 
         #######################################
@@ -226,50 +227,51 @@ class iob_soc(iob_module):
         # SYSTEM RESET
         #
 
-        # Create single wires, and automatically assign them to single wire groups
-        self.create_wire("boot", width=1)
-        self.create_wire("cpu_reset", width=1)
+        # Create wires with single element
+        self.create_wire(
+            name="boot",
+            descr="Boot signal",
+            elements=[
+                {"name": "boot", "width": 1},
+            ],
+        )
+        self.create_wire(
+            name="cpu_reset",
+            descr="Cpu reset signal",
+            elements=[
+                {"name": "cpu_reset", "width": 1},
+            ],
+        )
 
         #
         # CPU
         #
 
-        self.create_bus(
+        self.create_wire(
             name="cpu_i_bus",
             descr="Cpu instruction bus",
-            wires=[
+            elements=[
                 {"name": "cpu_i_req", "width": REQ_W},
                 {"name": "cpu_i_resp", "width": RESP_W}
             ],
         )
-        ### Alternative way to create wires and assign them to a group
-        # self.create_wire(
-        #     name="cpu_i_req",
-        #     width=REQ_W,
-        #     group="cpu_i_bus"
-        # )
-        # self.create_wire(
-        #     name="cpu_i_resp",
-        #     width=RESP_W,
-        #     group="cpu_i_bus"
-        # )
 
-        self.create_bus(
+        self.create_wire(
             name="cpu_d_bus",
             descr="Cpu data bus",
-            wires=[
+            elements=[
                 {"name": "cpu_d_req", "width": REQ_W},
                 {"name": "cpu_d_resp", "width": RESP_W}
             ],
         )
 
-        self.create_bus(
+        self.create_wire(
             name="cpu_clk_en_rst",
             descr="Cpu clock, enable, and reset",
-            wires=[
-                get_wire_from_bus("clk_en_rst", "clk"),
-                get_wire("cpu_reset"),
-                get_wire_from_bus("clk_en_rst", "cke"),
+            elements=[
+                get_element_from_wire("clk_en_rst", "clk"),
+                get_element_from_wire("cpu_reset", "cpu_reset"),
+                get_element_from_wire("clk_en_rst", "cke"),
 
             ],
         )
@@ -297,7 +299,7 @@ class iob_soc(iob_module):
         )
 
         # ###########################################################################
-        # TODO: Update lines below with new connections from local wires and groups.
+        # TODO: Update lines below with new connections from local wires.
         #       Also remove `_i` and `_o` suffixes.
         # ###########################################################################
 
