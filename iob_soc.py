@@ -5,32 +5,6 @@ import sys
 from iob_module import iob_module
 from iob_soc_utils import pre_setup_iob_soc, post_setup_iob_soc
 
-# Submodules
-from iob_picorv32 import iob_picorv32
-from iob_cache import iob_cache
-from iob_uart import iob_uart
-from iob_timer import iob_timer
-from iob_utils import iob_utils
-from iob_merge import iob_merge
-from iob_split import iob_split
-from iob_rom_sp import iob_rom_sp
-from iob_ram_dp_be import iob_ram_dp_be
-from iob_ram_dp_be_xil import iob_ram_dp_be_xil
-from iob_pulse_gen import iob_pulse_gen
-from iob_counter import iob_counter
-from iob_reg import iob_reg
-from iob_reg_re import iob_reg_re
-from iob_ram_sp_be import iob_ram_sp_be
-from iob_ram_dp import iob_ram_dp
-from iob_reset_sync import iob_reset_sync
-from axi_ram import axi_ram
-from iob_tasks import iob_tasks
-from printf import printf
-from iob_ctls import iob_ctls
-from iob_ram_2p import iob_ram_2p
-from iob_ram_sp import iob_ram_sp
-from axi_interconnect import axi_interconnect
-
 
 class iob_soc(iob_module):
     def __init__(self, *args, **kwargs):
@@ -278,7 +252,7 @@ class iob_soc(iob_module):
 
         # This method creates a new module instance and adds it to the local module's `blocks` list
         self.create_instance(
-            iob_picorv32,
+            "iob_picorv32",
             "cpu",
             parameters={
                 "ADDR_W": "ADDR_W",
@@ -301,6 +275,7 @@ class iob_soc(iob_module):
         # ###########################################################################
         # TODO: Update lines below with new connections from local wires.
         #       Also remove `_i` and `_o` suffixes.
+        #       Also use the new 'create_instance' method.
         # ###########################################################################
 
         #
@@ -574,6 +549,12 @@ class iob_soc(iob_module):
         #######################################
 
         # Modules that need to be setup, but are not instantiated inside iob_soc Verilog module
+        # TODO: We should use something equivalent to `create_instance` but just for setup. Maybe `setup_module`.
+        # For example:
+        # setup_module(
+        #     "iob_utils",
+        #     "utils",
+        # )
         iob_utils("utils")
         iob_merge("merge")
         iob_cache("cache")
