@@ -17,14 +17,14 @@ class iob_inv(iob_module):
         self.create_port(
             name="input",
             descr="Input port",
-            elements=[
+            signals=[
                 {"name": "in", "width": "W", "direction": "input"},
             ]
         )
         self.create_port(
             name="output",
             descr="Output port",
-            elements=[
+            signals=[
                 {"name": "out", "width": "W", "direction": "output"},
             ]
         )

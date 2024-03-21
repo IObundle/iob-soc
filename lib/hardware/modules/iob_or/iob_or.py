@@ -25,14 +25,14 @@ class iob_or(iob_module):
         self.create_port(
             name="inputs",
             descr="Inputs port",
-            elements=[
+            signals=[
                 {"name": "in", "width": "N*W", "direction": "input"},
             ]
         )
         self.create_port(
             name="output",
             descr="Output port",
-            elements=[
+            signals=[
                 {"name": "out", "width": "W", "direction": "output"},
             ]
         )
@@ -40,7 +40,7 @@ class iob_or(iob_module):
         self.create_wire(
             name="or_vector",
             descr="Logic vector",
-            elements=[
+            signals=[
                 {"name": "or_vec", "width": "N*W"},
             ],
         )

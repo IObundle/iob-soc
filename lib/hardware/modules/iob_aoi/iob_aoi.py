@@ -11,7 +11,7 @@ class iob_aoi(iob_module):
         self.create_port(
             name="inputs",
             descr="Inputs port",
-            elements=[
+            signals=[
                 {"name": "a", "width": 1, "direction": "input"},
                 {"name": "b", "width": 1, "direction": "input"},
                 {"name": "c", "width": 1, "direction": "input"},
@@ -21,7 +21,7 @@ class iob_aoi(iob_module):
         self.create_port(
             name="output",
             descr="Output port",
-            elements=[
+            signals=[
                 {"name": "y", "width": 1, "direction": "output"},
             ]
         )
@@ -29,7 +29,7 @@ class iob_aoi(iob_module):
         self.create_wire(
             name="and_ab_in",
             descr="and ab input",
-            elements=[
+            signals=[
                 concat_bits(
                     get_wire_element("inputs", "a"),
                     get_wire_element("inputs", "b"),
@@ -39,14 +39,14 @@ class iob_aoi(iob_module):
         self.create_wire(
             name="and_ab_out",
             descr="and ab output",
-            elements=[
+            signals=[
                 {"name": "aab", "width": 1},
             ],
         )
         self.create_wire(
             name="and_cd_in",
             descr="and cd input",
-            elements=[
+            signals=[
                 concat_bits(
                     get_wire_element("inputs", "c"),
                     get_wire_element("inputs", "d"),
@@ -56,14 +56,14 @@ class iob_aoi(iob_module):
         self.create_wire(
             name="and_cd_out",
             descr="and cd output",
-            elements=[
+            signals=[
                 {"name": "cad", "width": 1},
             ],
         )
         self.create_wire(
             name="or_in",
             descr="or input",
-            elements=[
+            signals=[
                 concat_bits(
                     get_wire_element("and_ab_out", "aab"),
                     get_wire_element("and_cd_out", "cad"),
@@ -73,7 +73,7 @@ class iob_aoi(iob_module):
         self.create_wire(
             name="or_out",
             descr="or output",
-            elements=[
+            signals=[
                 {"name": "or_out", "width": 1},
             ],
         )
