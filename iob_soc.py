@@ -96,7 +96,6 @@ class iob_soc(iob_module):
         super()._create_submodules_list(
             [
                 iob_picorv32,
-                iob_cache,
                 iob_uart,
                 iob_timer,
                 # Hardware headers & modules
@@ -128,6 +127,8 @@ class iob_soc(iob_module):
                 (iob_tasks, {"purpose": "simulation"}),
                 # Software modules
                 printf,
+                (iob_cache, {"purpose": "simulation"}),
+                (iob_cache, {"purpose": "fpga"}),
                 # Modules required for CACHE
                 (iob_ram_2p, {"purpose": "simulation"}),
                 (iob_ram_2p, {"purpose": "fpga"}),
