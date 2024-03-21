@@ -131,7 +131,6 @@ class iob_aoi(iob_module):
 
 if __name__ == "__main__":
     # Create an iob_aoi ip core
-    iob_aoi = iob_aoi()
     if "clean" in sys.argv:
         iob_aoi.clean_build_dir()
     elif "print" in sys.argv:
