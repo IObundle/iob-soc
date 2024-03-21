@@ -108,6 +108,15 @@ class iob_module:
         # Generate csr interface
         csr_gen_obj, reg_table = reg_gen.generate_csr(self)
 
+        #TODO: Generate a global list of signals
+        # This list is useful for a python based simulator
+        # 1) Each input of the top generates a global signal
+        # 2) Each output of a leaf generates a global signal
+        # 3) Each output of a snippet generates a global signal
+        #    A snippet is a piece of verilog code manually written (should also receive a list of outputs by the user).
+        #    A snippet can also be any method that generates a new signal, like the `concat_bits`, or any other that performs logic in from other signals into a new one.
+        # TODO as well: Each module has a local `snippets` list.
+
         if is_top:
             # Replace Verilog snippet includes
             self._replace_snippet_includes()

@@ -1,7 +1,7 @@
 import sys
 
 from iob_module import iob_module
-from iob_wire import get_wire_signal, concat_bits
+from iob_wire import get_wire_signal
 
 
 class iob_aoi(iob_module):
@@ -9,7 +9,7 @@ class iob_aoi(iob_module):
         self.version = "V0.10"
 
         self.create_port(
-            name="inputs",
+            name="a_b_c_d",
             descr="Inputs port",
             signals=[
                 {"name": "a", "width": 1, "direction": "input"},
@@ -19,7 +19,7 @@ class iob_aoi(iob_module):
             ]
         )
         self.create_port(
-            name="output",
+            name="y",
             descr="Output port",
             signals=[
                 {"name": "y", "width": 1, "direction": "output"},
@@ -30,10 +30,8 @@ class iob_aoi(iob_module):
             name="and_ab_in",
             descr="and ab input",
             signals=[
-                concat_bits(
-                    get_wire_signal("inputs", "a"),
-                    get_wire_signal("inputs", "b"),
-                )
+                get_wire_signal("a_b_c_d", "a"),
+                get_wire_signal("a_b_c_d", "b"),
             ],
         )
         self.create_wire(
@@ -47,10 +45,8 @@ class iob_aoi(iob_module):
             name="and_cd_in",
             descr="and cd input",
             signals=[
-                concat_bits(
-                    get_wire_signal("inputs", "c"),
-                    get_wire_signal("inputs", "d"),
-                )
+                get_wire_signal("a_b_c_d", "c"),
+                get_wire_signal("a_b_c_d", "d"),
             ],
         )
         self.create_wire(
@@ -64,10 +60,8 @@ class iob_aoi(iob_module):
             name="or_in",
             descr="or input",
             signals=[
-                concat_bits(
-                    get_wire_signal("and_ab_out", "aab"),
-                    get_wire_signal("and_cd_out", "cad"),
-                )
+                get_wire_signal("and_ab_out", "aab"),
+                get_wire_signal("and_cd_out", "cad"),
             ],
         )
         self.create_wire(
@@ -81,37 +75,37 @@ class iob_aoi(iob_module):
         self.create_instance(
             "iob_and",
             "iob_and_ab",
+            n_inputs=2,
             parameters={
                 "W": 1,
-                "N": 2,
             },
             connect={
-                "in": "and_ab_in",
-                "out": "and_ab_out",
+                "a_b": "and_ab_in",
+                "y": "and_ab_out",
             },
         )
         self.create_instance(
             "iob_and",
             "iob_and_cd",
+            n_inputs=2,
             parameters={
                 "W": 1,
-                "N": 2,
             },
             connect={
-                "in": "and_cd_in",
-                "out": "and_cd_out",
+                "a_b": "and_cd_in",
+                "y": "and_cd_out",
             },
         )
         self.create_instance(
             "iob_or",
             "iob_or_abcd",
+            n_inputs=2,
             parameters={
                 "W": 1,
-                "N": 2,
             },
             connect={
-                "in": "or_in",
-                "out": "or_out",
+                "a_b": "or_in",
+                "y": "or_out",
             },
         )
         self.create_instance(
@@ -121,8 +115,8 @@ class iob_aoi(iob_module):
                 "W": 1,
             },
             connect={
-                "in": "or_out",
-                "out": "output",
+                "a": "or_out",
+                "y": "y",
             },
         )
 
