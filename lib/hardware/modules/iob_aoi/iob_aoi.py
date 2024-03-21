@@ -122,7 +122,7 @@ class iob_aoi(iob_module):
             },
             connect={
                 "in": "or_out",
-                "out": "y",
+                "out": "output",
             },
         )
 
