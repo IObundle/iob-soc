@@ -1,7 +1,7 @@
 import sys
 
 from iob_module import iob_module
-from iob_wire import get_wire_element, concat_bits
+from iob_wire import get_wire_signal, concat_bits
 
 
 class iob_aoi(iob_module):
@@ -31,8 +31,8 @@ class iob_aoi(iob_module):
             descr="and ab input",
             signals=[
                 concat_bits(
-                    get_wire_element("inputs", "a"),
-                    get_wire_element("inputs", "b"),
+                    get_wire_signal("inputs", "a"),
+                    get_wire_signal("inputs", "b"),
                 )
             ],
         )
@@ -48,8 +48,8 @@ class iob_aoi(iob_module):
             descr="and cd input",
             signals=[
                 concat_bits(
-                    get_wire_element("inputs", "c"),
-                    get_wire_element("inputs", "d"),
+                    get_wire_signal("inputs", "c"),
+                    get_wire_signal("inputs", "d"),
                 )
             ],
         )
@@ -65,8 +65,8 @@ class iob_aoi(iob_module):
             descr="or input",
             signals=[
                 concat_bits(
-                    get_wire_element("and_ab_out", "aab"),
-                    get_wire_element("and_cd_out", "cad"),
+                    get_wire_signal("and_ab_out", "aab"),
+                    get_wire_signal("and_cd_out", "cad"),
                 )
             ],
         )
