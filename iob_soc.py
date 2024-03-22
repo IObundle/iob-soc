@@ -131,15 +131,16 @@ class iob_soc(iob_module):
             (iob_tasks, {"purpose": "simulation"}),
             # Software modules
             printf,
-            iob_cache,
-            # Modules required for CACHE
-            (iob_ram_2p, {"purpose": "simulation"}),
-            (iob_ram_2p, {"purpose": "fpga"}),
-            (iob_ram_sp, {"purpose": "simulation"}),
-            (iob_ram_sp, {"purpose": "fpga"}),
         ]
-        if "USE_EXTMEM" not in sys.argv:
-            submodule_list.remove(iob_cache)
+        if "USE_EXTMEM" in sys.argv:
+            submodule_list += [
+                iob_cache,
+                # Modules required for CACHE
+                (iob_ram_2p, {"purpose": "simulation"}),
+                (iob_ram_2p, {"purpose": "fpga"}),
+                (iob_ram_sp, {"purpose": "simulation"}),
+                (iob_ram_sp, {"purpose": "fpga"}),
+            ]
 
         super()._create_submodules_list(submodule_list + extra_submodules)
 
