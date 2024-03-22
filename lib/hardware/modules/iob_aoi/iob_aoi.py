@@ -1,7 +1,6 @@
 import sys
 
 from iob_module import iob_module
-from iob_wire import get_wire_signal
 
 
 class iob_aoi(iob_module):
@@ -16,22 +15,22 @@ class iob_aoi(iob_module):
                 {"name": "b", "width": 1, "direction": "input"},
                 {"name": "c", "width": 1, "direction": "input"},
                 {"name": "d", "width": 1, "direction": "input"},
-            ]
+            ],
         )
         self.create_port(
             name="y",
             descr="Output port",
             signals=[
                 {"name": "y", "width": 1, "direction": "output"},
-            ]
+            ],
         )
 
         self.create_wire(
             name="and_ab_in",
             descr="and ab input",
             signals=[
-                get_wire_signal("a_b_c_d", "a"),
-                get_wire_signal("a_b_c_d", "b"),
+                self.get_wire_signal("a_b_c_d", "a"),
+                self.get_wire_signal("a_b_c_d", "b"),
             ],
         )
         self.create_wire(
@@ -45,8 +44,8 @@ class iob_aoi(iob_module):
             name="and_cd_in",
             descr="and cd input",
             signals=[
-                get_wire_signal("a_b_c_d", "c"),
-                get_wire_signal("a_b_c_d", "d"),
+                self.get_wire_signal("a_b_c_d", "c"),
+                self.get_wire_signal("a_b_c_d", "d"),
             ],
         )
         self.create_wire(
@@ -60,8 +59,8 @@ class iob_aoi(iob_module):
             name="or_in",
             descr="or input",
             signals=[
-                get_wire_signal("and_ab_out", "aab"),
-                get_wire_signal("and_cd_out", "cad"),
+                self.get_wire_signal("and_ab_out", "aab"),
+                self.get_wire_signal("and_cd_out", "cad"),
             ],
         )
         self.create_wire(

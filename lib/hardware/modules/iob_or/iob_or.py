@@ -23,7 +23,7 @@ class iob_or(iob_module):
         for i in range(n_inputs):
             port_name += f"{chr(97+i)}_"
             port_signals.append(
-                {"name": chr(97+i), "width": "W", "direction": "input"},
+                {"name": chr(97 + i), "width": "W", "direction": "input"},
             )
             verilog_inject += f"{chr(97+i)}_i, "
         verilog_inject += "};\n"
@@ -38,7 +38,7 @@ class iob_or(iob_module):
             descr="Output port",
             signals=[
                 {"name": "y", "width": "W", "direction": "output"},
-            ]
+            ],
         )
 
         self.create_wire(
@@ -51,7 +51,8 @@ class iob_or(iob_module):
         )
 
         self.insert_verilog(
-            verilog_inject + f"""
+            verilog_inject
+            + f"""
    assign or_vec[0 +: W] = in_vec[0 +: W];
 
    genvar i;

@@ -19,14 +19,14 @@ class iob_inv(iob_module):
             descr="Input port",
             signals=[
                 {"name": "a", "width": "W", "direction": "input"},
-            ]
+            ],
         )
         self.create_port(
             name="y",
             descr="Output port",
             signals=[
                 {"name": "y", "width": "W", "direction": "output"},
-            ]
+            ],
         )
 
         self.insert_verilog(

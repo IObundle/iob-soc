@@ -1,6 +1,5 @@
 import os
 import shutil
-from dataclasses import dataclass, field
 from typing import List
 
 import iob_colors
@@ -15,75 +14,61 @@ import io_gen
 import doc_gen
 import ipxact_gen
 
-from iob_verilog_instance import iob_verilog_instance
-from iob_conf import iob_conf
-from iob_reg import iob_reg
-from iob_port import iob_interface
+from iob_port import create_port
+from iob_wire import create_wire, get_wire_signal
+from iob_reg import create_reg
 
 
-@dataclass
 class iob_module:
     """Generic class to describe how to generate a base IOb IP core"""
+
     # TODO: Make it clear that this is neither a verilog module nor a verilog instance. It is a mix of the two.
 
-    name: str = None
-    csr_if: str = "iob"
-    version: str = "1.0"  # Module version
-    description: str = "default description"  # Module description
-    previous_version: str = version  # Module previous version
-    setup_dir: str = ""  # Setup directory for this module
-    build_dir: str = ""  # Build directory for this module
-    rw_overlap: bool = False  # overlap Read and Write register addresses
-    is_top_module: bool = False  # Select if this module is the top module
-    use_netlist: bool = False  # use module netlist
-    is_system: bool = False  # create software files in build directory
-    board_list: List[str] = None  # List of fpga files to copy to build directory
-    purpose: str = "hardware"
-    confs: List[iob_conf] = ()
-    regs: List[iob_reg] = ()
-    ios: List[iob_interface] = ()
-    blocks: List[iob_module] = ()
-    submodule_list: tuple = ()
-    ignore_snippets: tuple = ()  # List of snippets to ignore during replace
+    def __init__(self, *args, is_top=True, purpose="hardware", topdir=".", **kwargs):
+        self.set_default_value("name", self.__class__.__name__)
+        # CPU interface for control status registers
+        self.set_default_value("csr_if", "iob")
+        self.set_default_value("version", "1.0")
+        self.set_default_value("description", "default description")
+        self.set_default_value("previous_version", self.version)
+        self.set_default_value("setup_dir", "")
+        self.set_default_value("build_dir", "")
+        # Overlap Read and Write register addresses
+        self.set_default_value("rw_overlap", False)
+        self.set_default_value("is_top_module", is_top)
+        self.set_default_value("use_netlist", False)
+        self.set_default_value("is_system", False)
+        # List of FPGAs supported by this core
+        self.set_default_value("board_list", [])
+        # Where to copy sources of this core
+        self.set_default_value("purpose", purpose)
+        # List of core macros and Verilog (false-)parameters
+        self.set_default_value("confs", [])
+        self.set_default_value("ports", [])
+        self.set_default_value("wires", [])
+        self.set_default_value("regs", [])
+        # List of instances of other cores inside this core
+        self.set_default_value("blocks", [])
+        # List of core Verilog snippets
+        self.set_default_value("snippets", [])
 
-    # Read-only dictionary with relation between the setup_purpose and the corresponding source folder
-    PURPOSE_DIRS: dict = field(
-        default_factory=lambda: {
+        # Read-only dictionary with relation between the 'purpose' and
+        # the corresponding source folder
+        self.PURPOSE_DIRS: dict = {
             "hardware": "hardware/src",
             "simulation": "hardware/simulation/src",
             "fpga": "hardware/fpga/src",
         }
-    )
-
-    def __post_init__(self, is_top=True, purpose="hardware", topdir="."):
-        """
-        Finish attribute initialization and init setup process for this module
-        """
-        self.is_top_module = is_top
-        # TODO: Check if name is being set corretly
-        self.name = self.name or self.__class__.__name__
 
         if is_top:
-            self.set_default_build_dir()
+            self.build_dir = f"../{self.name}_{self.version}/build"
             topdir = self.build_dir
         else:
             self.build_dir = topdir
         self.setup_dir = find_module_setup_dir(self, os.getcwd())
-        self.purpose = purpose
 
-        # Create build directory this is the top module class, and is the first time setup
         if is_top:
             self.__create_build_dir()
-
-        # Setup submodules placed in `submodule_list` list
-        for submodule in self.submodule_list:
-            if type(submodule) is tuple:
-                if "purpose" not in submodule[1]:
-                    submodule[0]._setup(False, "hardware", topdir)
-                else:
-                    submodule[0]._setup(False, submodule[1]["purpose"], topdir)
-            else:
-                submodule._setup(False, purpose, topdir)
 
         # Copy files from LIB to setup various flows
         # (should run before copy of files from module's setup dir)
@@ -105,10 +90,19 @@ class iob_module:
         # Generate ios
         io_gen.generate_ports(self)
 
+        # Generate wires
+        # TODO: wire_gen.generate_wires(self)
+
         # Generate csr interface
         csr_gen_obj, reg_table = reg_gen.generate_csr(self)
 
-        #TODO: Generate a global list of signals
+        # Generate instances
+        # TODO: block_gen.generate_blocks(self)
+
+        # Generate snippets
+        # TODO: snippet_gen.generate_snippets(self)
+
+        # TODO: Generate a global list of signals
         # This list is useful for a python based simulator
         # 1) Each input of the top generates a global signal
         # 2) Each output of a leaf generates a global signal
@@ -128,9 +122,39 @@ class iob_module:
             # if self.generate_ipxact: #TODO: When should this be generated?
             #    ipxact_gen.generate_ipxact_xml(self, reg_table, self.build_dir + "/ipxact")
 
-    # by default, set build_dir for all modules as top module
-    def set_default_build_dir(self):
-        self.build_dir = f"../{self.name}_{self.version}/build"
+    def set_default_value(self, attribute_name: str, attribute_value):
+        if not hasattr(self, attribute_name):
+            setattr(self, attribute_name, attribute_value)
+
+    def create_port(self, *args, **kwargs):
+        create_port(self, *args, **kwargs)
+
+    def create_wire(self, *args, **kwargs):
+        create_wire(self, *args, **kwargs)
+
+    def get_wire_signal(self, *args, **kwargs):
+        get_wire_signal(self, *args, **kwargs)
+
+    def create_reg(self, *args, **kwargs):
+        create_reg(self, *args, **kwargs)
+
+    def create_instance(self, core_name: str, *args, **kwargs):
+        """Import core and create instance of it
+        param core_name: Name of the core
+        """
+        exec(f"from {core_name} import {core_name}")
+        instance = vars()[core_name](*args, **kwargs)
+        self.blocks.append(instance)
+
+    def create_snippet(self, snippet_outputs: List[str], snippet_code: str):
+        """Create a Verilog snippet to insert in this core.
+        param snippet_outputs: List of output ports of this snippet.
+                               Used internally to calculate global wires of
+                               the project.
+        param snippet_code: Verilog code of the snippet.
+        """
+        # TODO: Store outputs and use them for global wires list
+        self.snippets.append(snippet_code)
 
     def __create_build_dir(self):
         """Create build directory. Must be called from the top module."""
@@ -188,15 +212,6 @@ class iob_module:
         verilog_gen.replace_includes(
             self.setup_dir, self.build_dir, self.ignore_snippets
         )
-
-    def instance(self, name="", *args, **kwargs):
-        """Create a verilog instance for the current ip core/verilog module."""
-
-        if not name:
-            name = f"{self.name}_0"
-
-        # Return a new iob_verilog_instance object with these attributes that describe the Verilog instance
-        return iob_verilog_instance(name, *args, module=self, **kwargs)
 
 
 def find_common_deep(path1, path2):

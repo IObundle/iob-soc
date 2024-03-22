@@ -2,8 +2,6 @@
 
 set -e
 
-LIB_DIR=./lib
-
 #find directories containing testbenches
 TBS=`find ${LIB_DIR}/hardware | grep _tb.v | grep -v include`
 
@@ -25,7 +23,7 @@ if [ "$1" == "test" ]; then
         # echo "$i"
         core_dir=`find -name ${i}.py | xargs dirname`
         # echo "Running test for $core_dir"
-        make -f ${LIB_DIR}/Makefile clean build-setup CORE=$i TOP_MODULE_NAME=$i LIB_DIR=$LIB_DIR CORE_DIR=$core_dir
+        make -f ${LIB_DIR}/Makefile clean build-setup CORE=$i TOP_MODULE_NAME=$i CORE_DIR=$core_dir
         make -C ../${i}_V*/build sim-run
     done
     exit 0
@@ -33,11 +31,13 @@ fi
 
 #test if first argument is "build" and run build for single module
 if [ "$1" == "build" ]; then
-    make clean build-setup CORE=$2 TOP_MODULE_NAME=$2
+    core_dir=`find -name $2.py | xargs dirname`
+    make clean build-setup CORE=$2 TOP_MODULE_NAME=$2 CORE_DIR=$core_dir
     make -C ../$2_V* sim-build
     exit 0
 fi
 
 #run single test
-make clean build-setup CORE=$1 TOP_MODULE_NAME=$1
+core_dir=`find -name $1.py | xargs dirname`
+make clean build-setup CORE=$1 TOP_MODULE_NAME=$1 CORE_DIR=$core_dir
 make -C ../$1_V* sim-run VCD=$VCD
