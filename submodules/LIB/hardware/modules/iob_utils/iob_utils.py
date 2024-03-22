@@ -27,6 +27,6 @@ class iob_utils(iob_module):
                 # Delete sources for this purpose
                 os.remove(
                     os.path.join(
-                        cls.build_dir, cls.cls.PURPOSE_DIRS[purpose], "iob_utils.vh"
+                        cls.build_dir, cls.PURPOSE_DIRS[purpose], "iob_utils.vh"
                     )
                 )
