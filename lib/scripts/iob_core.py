@@ -19,7 +19,7 @@ from iob_wire import create_wire, get_wire_signal
 from iob_reg import create_reg
 
 
-class iob_module:
+class iob_core:
     """Generic class to describe how to generate a base IOb IP core"""
 
     # TODO: Make it clear that this is neither a verilog module nor a verilog instance. It is a mix of the two.

@@ -1,7 +1,7 @@
-from iob_module import iob_module
+from iob_core import iob_core
 
 
-class iob_or(iob_module):
+class iob_or(iob_core):
     def __init__(self, *args, n_inputs=2, **kwargs):
         self.version = "V0.10"
 

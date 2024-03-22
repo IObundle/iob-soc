@@ -5,6 +5,7 @@ from iob_module import iob_module
 
 
 # Class that describes a Verilog instance of a module
+# TODO DELETE THIS
 @dataclass
 class iob_verilog_instance:
     name: str = "instance_0"  # Name of the Verilog instance
