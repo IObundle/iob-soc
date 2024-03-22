@@ -93,50 +93,50 @@ class iob_soc(iob_module):
     @classmethod
     def _create_submodules_list(cls, extra_submodules=[]):
         """Create submodules list with dependencies of this module"""
-        super()._create_submodules_list(
-            [
-                iob_picorv32,
-                iob_uart,
-                iob_timer,
-                # Hardware headers & modules
-                {"interface": "iob_wire"},
-                {"interface": "axi_wire"},
-                {"interface": "axi_m_port"},
-                {"interface": "axi_m_m_portmap"},
-                {"interface": "axi_m_portmap"},
-                iob_utils,
-                {"interface": "clk_en_rst_s_s_portmap"},
-                {"interface": "clk_en_rst_s_port"},
-                iob_merge,
-                iob_split,
-                iob_rom_sp,
-                iob_ram_dp_be,
-                iob_ram_dp_be_xil,
-                iob_pulse_gen,
-                iob_counter,
-                iob_reg,
-                iob_reg_re,
-                iob_ram_sp_be,
-                iob_ram_dp,
-                iob_reset_sync,
-                iob_ctls,
-                axi_interconnect,
-                # Simulation headers & modules
-                (axi_ram, {"purpose": "simulation"}),
-                ({"interface": "axi_s_portmap"}, {"purpose": "simulation"}),
-                (iob_tasks, {"purpose": "simulation"}),
-                # Software modules
-                printf,
-                (iob_cache, {"purpose": "simulation"}),
-                (iob_cache, {"purpose": "fpga"}),
-                # Modules required for CACHE
-                (iob_ram_2p, {"purpose": "simulation"}),
-                (iob_ram_2p, {"purpose": "fpga"}),
-                (iob_ram_sp, {"purpose": "simulation"}),
-                (iob_ram_sp, {"purpose": "fpga"}),
-            ]
-            + extra_submodules
-        )
+        submodule_list = [
+            iob_picorv32,
+            iob_uart,
+            iob_timer,
+            # Hardware headers & modules
+            {"interface": "iob_wire"},
+            {"interface": "axi_wire"},
+            {"interface": "axi_m_port"},
+            {"interface": "axi_m_m_portmap"},
+            {"interface": "axi_m_portmap"},
+            iob_utils,
+            {"interface": "clk_en_rst_s_s_portmap"},
+            {"interface": "clk_en_rst_s_port"},
+            iob_merge,
+            iob_split,
+            iob_rom_sp,
+            iob_ram_dp_be,
+            iob_ram_dp_be_xil,
+            iob_pulse_gen,
+            iob_counter,
+            iob_reg,
+            iob_reg_re,
+            iob_ram_sp_be,
+            iob_ram_dp,
+            iob_reset_sync,
+            iob_ctls,
+            axi_interconnect,
+            # Simulation headers & modules
+            (axi_ram, {"purpose": "simulation"}),
+            ({"interface": "axi_s_portmap"}, {"purpose": "simulation"}),
+            (iob_tasks, {"purpose": "simulation"}),
+            # Software modules
+            printf,
+            iob_cache,
+            # Modules required for CACHE
+            (iob_ram_2p, {"purpose": "simulation"}),
+            (iob_ram_2p, {"purpose": "fpga"}),
+            (iob_ram_sp, {"purpose": "simulation"}),
+            (iob_ram_sp, {"purpose": "fpga"}),
+        ]
+        if "USE_EXTMEM" not in sys.argv:
+            submodule_list.remove(iob_cache)
+
+        super()._create_submodules_list(submodule_list + extra_submodules)
 
     @classmethod
     def _setup_portmap(cls):
