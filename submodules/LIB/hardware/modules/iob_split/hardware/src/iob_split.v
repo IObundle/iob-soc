@@ -12,7 +12,7 @@ module iob_split #(
 
    //masters interface
    input      [ `REQ_W-1:0] m_req_i,
-   output reg [`RESP_W-1:0] m_resp_o,
+   output     [`RESP_W-1:0] m_resp_o,
 
    //slave interface
    output reg [ N_SLAVES*`REQ_W-1:0] s_req_o,
