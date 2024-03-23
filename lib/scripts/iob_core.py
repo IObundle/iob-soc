@@ -14,22 +14,19 @@ import io_gen
 import doc_gen
 import ipxact_gen
 
-from iob_port import create_port
-from iob_wire import create_wire, get_wire_signal
-from iob_reg import create_reg
+from iob_module import iob_module
+from iob_instance import iob_instance
 
 
-class iob_core:
+class iob_core(iob_module, iob_instance):
     """Generic class to describe how to generate a base IOb IP core"""
 
-    # TODO: Make it clear that this is neither a verilog module nor a verilog instance. It is a mix of the two.
-
     def __init__(self, *args, is_top=True, purpose="hardware", topdir=".", **kwargs):
-        self.set_default_value("name", self.__class__.__name__)
+        # Inherit attributes from superclasses
+        super().__init__(*args, **kwargs)
         # CPU interface for control status registers
         self.set_default_value("csr_if", "iob")
         self.set_default_value("version", "1.0")
-        self.set_default_value("description", "default description")
         self.set_default_value("previous_version", self.version)
         self.set_default_value("setup_dir", "")
         self.set_default_value("build_dir", "")
@@ -42,15 +39,6 @@ class iob_core:
         self.set_default_value("board_list", [])
         # Where to copy sources of this core
         self.set_default_value("purpose", purpose)
-        # List of core macros and Verilog (false-)parameters
-        self.set_default_value("confs", [])
-        self.set_default_value("ports", [])
-        self.set_default_value("wires", [])
-        self.set_default_value("regs", [])
-        # List of instances of other cores inside this core
-        self.set_default_value("blocks", [])
-        # List of core Verilog snippets
-        self.set_default_value("snippets", [])
 
         # Read-only dictionary with relation between the 'purpose' and
         # the corresponding source folder
@@ -121,40 +109,6 @@ class iob_core:
             # Generate ipxact file
             # if self.generate_ipxact: #TODO: When should this be generated?
             #    ipxact_gen.generate_ipxact_xml(self, reg_table, self.build_dir + "/ipxact")
-
-    def set_default_value(self, attribute_name: str, attribute_value):
-        if not hasattr(self, attribute_name):
-            setattr(self, attribute_name, attribute_value)
-
-    def create_port(self, *args, **kwargs):
-        create_port(self, *args, **kwargs)
-
-    def create_wire(self, *args, **kwargs):
-        create_wire(self, *args, **kwargs)
-
-    def get_wire_signal(self, *args, **kwargs):
-        get_wire_signal(self, *args, **kwargs)
-
-    def create_reg(self, *args, **kwargs):
-        create_reg(self, *args, **kwargs)
-
-    def create_instance(self, core_name: str, *args, **kwargs):
-        """Import core and create instance of it
-        param core_name: Name of the core
-        """
-        exec(f"from {core_name} import {core_name}")
-        instance = vars()[core_name](*args, **kwargs)
-        self.blocks.append(instance)
-
-    def create_snippet(self, snippet_outputs: List[str], snippet_code: str):
-        """Create a Verilog snippet to insert in this core.
-        param snippet_outputs: List of output ports of this snippet.
-                               Used internally to calculate global wires of
-                               the project.
-        param snippet_code: Verilog code of the snippet.
-        """
-        # TODO: Store outputs and use them for global wires list
-        self.snippets.append(snippet_code)
 
     def __create_build_dir(self):
         """Create build directory. Must be called from the top module."""
