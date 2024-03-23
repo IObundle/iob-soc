@@ -7,7 +7,7 @@ class iob_instance(iob_base):
     """Class to describe a module's (Verilog) instance"""
 
     def __init__(self, *args, parameters: Dict = {}, **kwargs):
-        self.set_default_value("name", self.__class__.__name__)
-        self.set_default_value("description", "Default description")
+        self.set_default_attribute("name", self.__class__.__name__)
+        self.set_default_attribute("description", "Default description")
         # Verilog parameter values
-        self.set_default_value("parameters", parameters)
+        self.set_default_attribute("parameters", parameters)

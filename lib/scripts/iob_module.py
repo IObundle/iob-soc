@@ -12,14 +12,14 @@ class iob_module(iob_base):
 
     def __init__(self, *args, **kwargs):
         # List of module macros and Verilog (false-)parameters
-        self.set_default_value("confs", [])
-        self.set_default_value("ports", [])
-        self.set_default_value("wires", [])
-        self.set_default_value("regs", [])
+        self.set_default_attribute("confs", [])
+        self.set_default_attribute("ports", [])
+        self.set_default_attribute("wires", [])
+        self.set_default_attribute("regs", [])
         # List of instances of other cores inside this core
-        self.set_default_value("blocks", [])
+        self.set_default_attribute("blocks", [])
         # List of core Verilog snippets
-        self.set_default_value("snippets", [])
+        self.set_default_attribute("snippets", [])
 
     def create_conf(self, *args, **kwargs):
         create_conf(self, *args, **kwargs)

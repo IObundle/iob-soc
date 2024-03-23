@@ -1,6 +1,5 @@
 import os
 import shutil
-from typing import List
 
 import iob_colors
 
@@ -25,20 +24,20 @@ class iob_core(iob_module, iob_instance):
         # Inherit attributes from superclasses
         super().__init__(*args, **kwargs)
         # CPU interface for control status registers
-        self.set_default_value("csr_if", "iob")
-        self.set_default_value("version", "1.0")
-        self.set_default_value("previous_version", self.version)
-        self.set_default_value("setup_dir", "")
-        self.set_default_value("build_dir", "")
+        self.set_default_attribute("csr_if", "iob")
+        self.set_default_attribute("version", "1.0")
+        self.set_default_attribute("previous_version", self.version)
+        self.set_default_attribute("setup_dir", "")
+        self.set_default_attribute("build_dir", "")
         # Overlap Read and Write register addresses
-        self.set_default_value("rw_overlap", False)
-        self.set_default_value("is_top_module", is_top)
-        self.set_default_value("use_netlist", False)
-        self.set_default_value("is_system", False)
+        self.set_default_attribute("rw_overlap", False)
+        self.set_default_attribute("is_top_module", is_top)
+        self.set_default_attribute("use_netlist", False)
+        self.set_default_attribute("is_system", False)
         # List of FPGAs supported by this core
-        self.set_default_value("board_list", [])
+        self.set_default_attribute("board_list", [])
         # Where to copy sources of this core
-        self.set_default_value("purpose", purpose)
+        self.set_default_attribute("purpose", purpose)
 
         # Read-only dictionary with relation between the 'purpose' and
         # the corresponding source folder
