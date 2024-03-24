@@ -55,22 +55,9 @@ class iob_port:
             print(f"      .{self.name}({self.connect_to.name})")
 
 
-@dataclass
-class iob_interface:
-    """Describes a group of ports.
-    If list of ports is empty, try to generate them automatically based on interface name and attributes.
+def create_port(core, *args, **kwargs):
+    """Creates a new port object and adds it to the core's port list
+    param core: core object
     """
-
-    name: str  # Name of the interface
-    type: str = "master"  # 'master' or 'slave'
-    wire_prefix: str
-    port_prefix: str
-    mult: str
-    widths: Dict[str, str]
-    description: str = "Default description"
-    if_defined: str  # Only create this interface if macro given here is defined
-    ports: List[iob_port]  # List of iob_ports for this interface
-
-    def __post_init__(self):
-        if not self.name:
-            raise Exception("Interface name is required")
+    port = iob_port(*args, **kwargs)
+    core.ports.append(port)

@@ -20,7 +20,14 @@ from iob_instance import iob_instance
 class iob_core(iob_module, iob_instance):
     """Generic class to describe how to generate a base IOb IP core"""
 
-    def __init__(self, *args, is_top=True, purpose="hardware", topdir=".", **kwargs):
+    def __init__(
+        self,
+        *args,
+        is_top: bool = True,
+        purpose: str = "hardware",
+        topdir: str = ".",
+        **kwargs,
+    ):
         # Inherit attributes from superclasses
         super().__init__(*args, **kwargs)
         # CPU interface for control status registers

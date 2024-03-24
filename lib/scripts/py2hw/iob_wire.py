@@ -129,6 +129,14 @@ class iob_wire:
         return f"{self.name}"
 
 
+def create_wire(core, *args, **kwargs):
+    """Creates a new wire object and adds it to the core's wire list
+    param core: core object
+    """
+    wire = iob_wire(*args, **kwargs)
+    core.wires.append(wire)
+
+
 def get_wire_signal(core, wire_name: str, signal_name: str):
     """Return a signal reference from a given wire.
     param core: core object

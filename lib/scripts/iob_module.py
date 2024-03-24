@@ -11,6 +11,7 @@ class iob_module(iob_base):
     """Class to describe a (Verilog) module"""
 
     def __init__(self, *args, **kwargs):
+        self.set_default_attribute("name", self.__class__.__name__)
         # List of module macros and Verilog (false-)parameters
         self.set_default_attribute("confs", [])
         self.set_default_attribute("ports", [])
