@@ -64,11 +64,3 @@ class iob_reg(iob_module):
                 ],
             },
         ]
-
-
-def create_reg(core, *args, **kwargs):
-    """Creates a new reg object and adds it to the core's reg list
-    param core: core object
-    """
-    reg = iob_reg(*args, **kwargs)
-    core.regs.append(reg)

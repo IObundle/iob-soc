@@ -2,8 +2,8 @@ from iob_core import iob_core
 
 
 class iob_or(iob_core):
-    def __init__(self, *args, n_inputs=2, **kwargs):
-        self.version = "V0.10"
+    def __init__(self, *args, **kwargs):
+        self.set_default_attribute("version", "0.1")
 
         self.create_conf(
             name="W",
@@ -14,24 +14,19 @@ class iob_or(iob_core):
             descr="IO width",
         ),
 
-        # Create a port_name "a_b_c_d_e_..." based on n_inputs
-        # and the corresponding port signals [a, b, c, d, e, ...]
-        # and the Verilog snippet to inject that concatenates inputs
-        port_name = ""
-        port_signals = []
-        verilog_inject = "assign in_vec = {"
-        for i in range(n_inputs):
-            port_name += f"{chr(97+i)}_"
-            port_signals.append(
-                {"name": chr(97 + i), "width": "W", "direction": "input"},
-            )
-            verilog_inject += f"{chr(97+i)}_i, "
-        verilog_inject += "};\n"
-
         self.create_port(
-            name=port_name,
-            descr="Inputs port",
-            signals=port_signals,
+            name="a",
+            descr="Input port",
+            signals=[
+                {"name": "a", "width": "W", "direction": "input"},
+            ],
+        )
+        self.create_port(
+            name="b",
+            descr="Input port",
+            signals=[
+                {"name": "b", "width": "W", "direction": "input"},
+            ],
         )
         self.create_port(
             name="y",
@@ -41,28 +36,9 @@ class iob_or(iob_core):
             ],
         )
 
-        self.create_wire(
-            name="logic_vectors",
-            descr="Logic vectors",
-            signals=[
-                {"name": "in_vec", "width": f"{n_inputs}*W"},
-                {"name": "or_vec", "width": f"{n_inputs}*W"},
-            ],
-        )
-
         self.insert_verilog(
-            verilog_inject
-            + f"""
-   assign or_vec[0 +: W] = in_vec[0 +: W];
-
-   genvar i;
-   generate
-      for (i = 1; i < {n_inputs}; i = i + 1) begin : gen_mux
-         assign or_vec[i*W +: W] = in_i[i*W +: W] | or_vec[(i-1)*W +: W];
-      end
-   endgenerate
-
-   assign y_o = or_vec[({n_inputs}-1)*W +: W];
+            """
+   assign y_o = a_i | b_i;
             """
         )
 

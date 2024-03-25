@@ -4,6 +4,7 @@ import shutil
 import iob_colors
 
 import copy_srcs
+from typing import List
 
 import config_gen
 import param_gen
@@ -20,31 +21,34 @@ from iob_instance import iob_instance
 class iob_core(iob_module, iob_instance):
     """Generic class to describe how to generate a base IOb IP core"""
 
+    global_wires: List
+
     def __init__(
         self,
         *args,
         is_top: bool = True,
         purpose: str = "hardware",
         topdir: str = ".",
+        generate_hw: bool = True,
         **kwargs,
     ):
         # Inherit attributes from superclasses
         super().__init__(*args, **kwargs)
         # CPU interface for control status registers
-        self.set_default_attribute("csr_if", "iob")
-        self.set_default_attribute("version", "1.0")
-        self.set_default_attribute("previous_version", self.version)
-        self.set_default_attribute("setup_dir", "")
-        self.set_default_attribute("build_dir", "")
+        self.set_default_attribute("csr_if", "iob", str)
+        self.set_default_attribute("version", "1.0", str)
+        self.set_default_attribute("previous_version", self.version, str)
+        self.set_default_attribute("setup_dir", "", str)
+        self.set_default_attribute("build_dir", "", str)
         # Overlap Read and Write register addresses
-        self.set_default_attribute("rw_overlap", False)
-        self.set_default_attribute("is_top_module", is_top)
-        self.set_default_attribute("use_netlist", False)
-        self.set_default_attribute("is_system", False)
+        self.set_default_attribute("rw_overlap", False, bool)
+        self.set_default_attribute("is_top_module", is_top, str)
+        self.set_default_attribute("use_netlist", False, bool)
+        self.set_default_attribute("is_system", False, bool)
         # List of FPGAs supported by this core
-        self.set_default_attribute("board_list", [])
+        self.set_default_attribute("board_list", [], List)
         # Where to copy sources of this core
-        self.set_default_attribute("purpose", purpose)
+        self.set_default_attribute("purpose", purpose, str)
 
         # Read-only dictionary with relation between the 'purpose' and
         # the corresponding source folder

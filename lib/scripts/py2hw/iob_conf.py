@@ -19,9 +19,12 @@ class iob_conf:
         elif self.type not in ["M", "P", "F"]:
             raise Exception("Conf type must be either M, P or F")
 
+
 def create_conf(core, *args, **kwargs):
     """Creates a new conf object and adds it to the core's conf list
     param core: core object
     """
+    # Ensure 'confs' list exists
+    core.set_default_attribute("confs", [])
     conf = iob_conf(*args, **kwargs)
     core.confs.append(conf)

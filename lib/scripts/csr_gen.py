@@ -1049,3 +1049,11 @@ class csr_gen:
                 )
 
             write_table(f"{out_dir}/{table['name']}_swreg", tex_table)
+
+
+def create_reg(core, *args, **kwargs):
+    """Creates a new reg object and adds it to the core's reg list
+    param core: core object
+    """
+    reg = iob_reg(*args, **kwargs)
+    core.regs.append(reg)

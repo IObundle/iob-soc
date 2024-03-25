@@ -4,7 +4,7 @@ from iob_base import iob_base
 from iob_conf import create_conf
 from iob_port import create_port
 from iob_wire import create_wire, get_wire_signal
-from iob_reg import create_reg
+from iob_csr import create_csr
 
 
 class iob_module(iob_base):
@@ -16,11 +16,12 @@ class iob_module(iob_base):
         self.set_default_attribute("confs", [])
         self.set_default_attribute("ports", [])
         self.set_default_attribute("wires", [])
-        self.set_default_attribute("regs", [])
-        # List of instances of other cores inside this core
-        self.set_default_attribute("blocks", [])
+        # List of core Control/Status Registers
+        self.set_default_attribute("csrs", [])
         # List of core Verilog snippets
         self.set_default_attribute("snippets", [])
+        # List of instances of other cores inside this core
+        self.set_default_attribute("blocks", [])
 
     def create_conf(self, *args, **kwargs):
         create_conf(self, *args, **kwargs)
@@ -34,16 +35,8 @@ class iob_module(iob_base):
     def get_wire_signal(self, *args, **kwargs):
         get_wire_signal(self, *args, **kwargs)
 
-    def create_reg(self, *args, **kwargs):
-        create_reg(self, *args, **kwargs)
-
-    def create_instance(self, core_name: str, *args, **kwargs):
-        """Import core and create an instance of it inside this module
-        param core_name: Name of the core
-        """
-        exec(f"from {core_name} import {core_name}")
-        instance = vars()[core_name](*args, **kwargs)
-        self.blocks.append(instance)
+    def create_csr(self, *args, **kwargs):
+        create_csr(self, *args, **kwargs)
 
     def create_snippet(self, snippet_outputs: List[str], snippet_code: str):
         """Create a Verilog snippet to insert in this core.
@@ -54,3 +47,11 @@ class iob_module(iob_base):
         """
         # TODO: Store outputs and use them for global wires list
         self.snippets.append(snippet_code)
+
+    def create_instance(self, core_name: str, *args, **kwargs):
+        """Import core and create an instance of it inside this module
+        param core_name: Name of the core
+        """
+        exec(f"from {core_name} import {core_name}")
+        instance = vars()[core_name](*args, **kwargs)
+        self.blocks.append(instance)
