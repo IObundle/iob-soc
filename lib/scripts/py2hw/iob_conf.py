@@ -9,7 +9,7 @@ class iob_conf:
     val: str
     min: str = 0
     max: str = 1
-    description: str = "Default description"
+    descr: str = "Default description"
 
     def __post_init__(self):
         if not self.name:

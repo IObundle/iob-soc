@@ -29,10 +29,11 @@ class iob_inv(iob_core):
             ],
         )
 
-        self.insert_verilog(
+        self.create_snippet(
+            ["y"],
             """
    assign y_o = ~a_i;
-            """
+            """,
         )
 
         super().__init__(*args, **kwargs)

@@ -158,7 +158,7 @@ def update_define(confs, define_name, should_set):
 
 def generate_confs(core):
     # Auto-add VERSION macro if there are software registers
-    if core.regs:
+    if core.csrs:
         found_version_macro = False
         if core.confs:
             for macro in core.confs:

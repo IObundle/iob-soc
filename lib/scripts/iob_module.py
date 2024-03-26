@@ -45,6 +45,8 @@ class iob_module(iob_base):
                                the project.
         param snippet_code: Verilog code of the snippet.
         """
+        # Ensure 'snippets' list exists
+        self.set_default_attribute("snippets", [])
         # TODO: Store outputs and use them for global wires list
         self.snippets.append(snippet_code)
 
@@ -52,6 +54,8 @@ class iob_module(iob_base):
         """Import core and create an instance of it inside this module
         param core_name: Name of the core
         """
+        # Ensure 'blocks' list exists
+        self.set_default_attribute("blocks", [])
         exec(f"from {core_name} import {core_name}")
         instance = vars()[core_name](*args, **kwargs)
         self.blocks.append(instance)

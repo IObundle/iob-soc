@@ -36,10 +36,11 @@ class iob_or(iob_core):
             ],
         )
 
-        self.insert_verilog(
+        self.create_snippet(
+            ["y"],
             """
    assign y_o = a_i | b_i;
-            """
+            """,
         )
 
         super().__init__(*args, **kwargs)

@@ -7,7 +7,6 @@ from iob_wire import iob_wire, create_wire
 class iob_port(iob_wire):
     """Describes an IO port."""
 
-    direction: str = None
     # Module's internal wire that connects this port
     i_connect: iob_wire = None
     # External wire that connects this port
@@ -17,10 +16,13 @@ class iob_port(iob_wire):
     port_prefix: str = ""
 
     def __post_init__(self):
-        if not self.direction:
-            raise Exception("Port direction is required")
-        elif self.direction not in ["input", "output", "inout"]:
-            raise Exception("Error: Direction must be 'input', 'output', or 'inout'.")
+        for signal in self.signals:
+            if not signal["direction"]:
+                raise Exception("Port direction is required")
+            elif signal["direction"] not in ["input", "output", "inout"]:
+                raise Exception(
+                    "Error: Direction must be 'input', 'output', or 'inout'."
+                )
 
     def connect_external(self, wire):
         """Connects the port to an external wire"""
