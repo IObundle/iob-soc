@@ -15,8 +15,9 @@ class iob_wire:
     # Type of interface: 'master', 'slave' or '' (for neither)
     type: str = "master"
     wire_prefix: str = ""
-    mult: str = ""
+    mult: str = "1"
     widths: Dict[str, str] = None
+    file_prefix: str = ""
 
     """ Other wire arguments """
     descr: str = "Default description"

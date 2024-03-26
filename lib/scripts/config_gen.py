@@ -18,17 +18,17 @@ def conf_vh(macros, top_module, out_dir):
     # file2create.write(f"`ifndef VH_{fname}_VH\n")
     # file2create.write(f"`define VH_{fname}_VH\n\n")
     for macro in macros:
-        if "if_defined" in macro.keys():
-            file2create.write(f"`ifdef {macro['if_defined']}\n")
+        if macro.if_defined:
+            file2create.write(f"`ifdef {macro.if_defined}\n")
         # Only insert macro if its is not a bool define, and if so only insert it if it is true
-        if type(macro["val"]) != bool:
-            m_name = macro["name"].upper()
-            m_default_val = macro["val"]
+        if type(macro.val) != bool:
+            m_name = macro.name.upper()
+            m_default_val = macro.val
             file2create.write(f"`define {core_prefix}{m_name} {m_default_val}\n")
-        elif macro["val"]:
-            m_name = macro["name"].upper()
+        elif macro.val:
+            m_name = macro.name.upper()
             file2create.write(f"`define {core_prefix}{m_name} 1\n")
-        if "if_defined" in macro.keys():
+        if macro.if_defined:
             file2create.write("`endif\n")
     # file2create.write(f"\n`endif // VH_{fname}_VH\n")
 
@@ -44,12 +44,12 @@ def conf_h(macros, top_module, out_dir):
     file2create.write(f"#define H_{fname}_H\n\n")
     for macro in macros:
         # Only insert macro if its is not a bool define, and if so only insert it if it is true
-        if type(macro["val"]) != bool:
-            m_name = macro["name"].upper()
+        if type(macro.val) != bool:
+            m_name = macro.name.upper()
             # Replace any Verilog specific syntax by equivalent C syntax
-            m_default_val = re.sub("\d+'h", "0x", str(macro["val"]))
-            m_min_val = re.sub("\d+'h", "0x", str(macro["min"]))
-            m_max_val = re.sub("\d+'h", "0x", str(macro["max"]))
+            m_default_val = re.sub("\d+'h", "0x", str(macro.val))
+            m_min_val = re.sub("\d+'h", "0x", str(macro.min))
+            m_max_val = re.sub("\d+'h", "0x", str(macro.max))
             file2create.write(
                 f"#define {core_prefix}{m_name} {str(m_default_val).replace('`','')}\n"
             )  # Remove Verilog macros ('`')
@@ -59,8 +59,8 @@ def conf_h(macros, top_module, out_dir):
             file2create.write(
                 f"#define {core_prefix}{m_name}_MAX {str(m_max_val).replace('`','')}\n"
             )  # Remove Verilog macros ('`')
-        elif macro["val"]:
-            m_name = macro["name"].upper()
+        elif macro.val:
+            m_name = macro.name.upper()
             file2create.write(f"#define {core_prefix}{m_name} 1\n")
     file2create.write(f"\n#endif // H_{fname}_H\n")
 
@@ -89,25 +89,25 @@ def generate_confs_tex(confs, out_dir):
     tex_table = []
     derv_params = []
     for conf in confs:
-        conf_val = conf["val"] if type(conf["val"]) != bool else "1"
+        conf_val = conf.val if type(conf.val) != bool else "1"
         # False parameters are not included in the table
-        if conf["type"] != "F":
+        if conf.type != "F":
             tex_table.append(
                 [
-                    conf["name"],
-                    conf["type"],
-                    conf["min"],
+                    conf.name,
+                    conf.type,
+                    conf.min,
                     conf_val,
-                    conf["max"],
-                    conf["descr"],
+                    conf.max,
+                    conf.descr,
                 ]
             )
         else:
             derv_params.append(
                 [
-                    conf["name"],
+                    conf.name,
                     conf_val,
-                    conf["descr"],
+                    conf.descr,
                 ]
             )
 
@@ -134,12 +134,12 @@ def generate_confs_tex(confs, out_dir):
 # should_set: Select if define should be set or not
 def update_define(confs, define_name, should_set):
     for macro in confs:
-        if macro["name"] == define_name:
+        if macro.name == define_name:
             # Found macro. Unset it if not 'should_set'
             if should_set:
-                macro["val"] = True
+                macro.val = True
             else:
-                macro["val"] = False
+                macro.val = False
             break
     else:
         # Did not find define. Set it if should_set.
@@ -162,7 +162,7 @@ def generate_confs(core):
         found_version_macro = False
         if core.confs:
             for macro in core.confs:
-                if macro["name"] == "VERSION":
+                if macro.name == "VERSION":
                     found_version_macro = True
         if not found_version_macro:
             core.confs.append(

@@ -47,38 +47,38 @@ def generate_ports(core):
 
     f_io = open(f"{out_dir}/{core.name}_io.vs", "w+")
 
-    for table in core.ios:
-        # print(table)
+    for port in core.ports:
+        # print(port)
 
-        # If table has 'doc_only' attribute set to True, skip it
-        if "doc_only" in table.keys() and table["doc_only"]:
+        # If port has 'doc_only' attribute set to True, skip it
+        if port.doc_only:
             continue
 
         # Open ifdef if conditional interface
-        if "if_defined" in table.keys():
-            f_io.write(f"`ifdef {core.name.upper()}_{table['if_defined']}\n")
+        if port.if_defined:
+            f_io.write(f"`ifdef {core.name.upper()}_{port.if_defined}\n")
 
-        if "file_prefix" in table.keys():
-            file_prefix = table["file_prefix"]
+        if port.file_prefix:
+            file_prefix = port.file_prefix
         else:
-            file_prefix = table["port_prefix"] + table["wire_prefix"]
+            file_prefix = port.port_prefix + port.wire_prefix
 
         if_gen.gen_if(
-            table["name"],
+            port.name,
             file_prefix,
-            table["port_prefix"],
-            table["wire_prefix"],
-            table["ports"],
-            table["mult"] if "mult" in table.keys() else 1,
-            table["widths"] if "widths" in table.keys() else {},
+            port.port_prefix,
+            port.wire_prefix,
+            port.signals,
+            port.mult,
+            port.widths,
         )
 
         # append vs_file to io.vs
-        if table["type"] == "slave":
+        if port.type == "slave":
             infix = "s"
         else:
             infix = "m"
-        vs_file = open(f"{file_prefix}{table['name']}_{infix}_port.vs", "r")
+        vs_file = open(f"{file_prefix}{port.name}_{infix}_port.vs", "r")
         f_io.write(vs_file.read())
 
         # move all .vs files from current directory to out_dir
@@ -87,7 +87,7 @@ def generate_ports(core):
                 os.rename(file, f"{out_dir}/{file}")
 
         # Close ifdef if conditional interface
-        if "if_defined" in table.keys():
+        if port.if_defined:
             f_io.write("`endif\n")
 
     # Find and remove last comma
@@ -95,14 +95,14 @@ def generate_ports(core):
 
 
 # Generate if.tex file with list TeX tables of IOs
-def generate_if_tex(ios, out_dir):
+def generate_if_tex(ports, out_dir):
     if_file = open(f"{out_dir}/if.tex", "w")
 
     if_file.write(
         "The interface signals of the core are described in the following tables.\n"
     )
 
-    for table in ios:
+    for port in ports:
         if_file.write(
             """
 \\begin{table}[H]
@@ -114,15 +114,15 @@ def generate_if_tex(ios, out_dir):
     {\\bf Name} & {\\bf Direction} & {\\bf Width} & {\\bf Description}  \\\\ \hline \hline
 
     \input """
-            + table["name"]
+            + port.name
             + """_if_tab
  
   \end{tabularx}
   \caption{"""
-            + table["descr"].replace("_", "\_")
+            + port.descr.replace("_", "\_")
             + """}
   \label{"""
-            + table["name"]
+            + port.name
             + """_if_tab:is}
 \end{table}
 """
@@ -133,43 +133,43 @@ def generate_if_tex(ios, out_dir):
 
 
 # Generate TeX tables of IOs
-def generate_ios_tex(ios, out_dir):
+def generate_ios_tex(ports, out_dir):
     # Create if.tex file
-    generate_if_tex(ios, out_dir)
+    generate_if_tex(ports, out_dir)
 
-    for table in ios:
+    for port in ports:
         tex_table = []
         # Check if this table is a standard interface (from if_gen.py)
-        if_name = table["name"]
+        if_name = port.name
         if if_name in if_gen.if_names:
             # Interface is standard, generate ports
             eval_str = f"if_gen.get_{if_name}_ports()"
-            if_table = eval(eval_str)
+            if_port = eval(eval_str)
 
-            for port in if_table:
-                port_direction = port["direction"]
+            for signal in if_port:
+                port_direction = signal["direction"]
                 # reverse direction if port is a slave port
-                if table["type"] == "slave":
+                if port.type == "slave":
                     port_direction = reverse_port(port_direction)
 
                 tex_table.append(
                     [
-                        (port["name"] + if_gen.get_suffix(port_direction)),
+                        (signal["name"] + if_gen.get_suffix(port_direction)),
                         port_direction,
-                        port["width"],
-                        port["descr"],
+                        signal["width"],
+                        signal["descr"],
                     ]
                 )
         else:
             # Interface is not standard, read ports
-            for port in table["ports"]:
+            for signal in port.signals:
                 tex_table.append(
                     [
-                        port["name"],
-                        port["direction"],
-                        port["width"],
-                        port["descr"],
+                        signal["name"],
+                        signal["direction"],
+                        signal["width"],
+                        signal["descr"],
                     ]
                 )
 
-        write_table(f"{out_dir}/{table['name']}_if", tex_table)
+        write_table(f"{out_dir}/{port.name}_if", tex_table)

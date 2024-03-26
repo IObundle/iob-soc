@@ -4,7 +4,7 @@ import os
 
 def params_vh(params, top_module, out_dir):
     for parameter in params:
-        if parameter["type"] in ["P", "F"]:
+        if parameter.type in ["P", "F"]:
             break
     else:
         return
@@ -12,8 +12,8 @@ def params_vh(params, top_module, out_dir):
     file2create = open(f"{out_dir}/{top_module}_params.vs", "w")
     core_prefix = f"{top_module}_".upper()
     for parameter in params:
-        if parameter["type"] in ["P", "F"]:
-            p_name = parameter["name"].upper()
+        if parameter.type in ["P", "F"]:
+            p_name = parameter.name.upper()
             file2create.write(f"\n  parameter {p_name} = `{core_prefix}{p_name},")
     file2create.close()
 
@@ -24,8 +24,8 @@ def params_vh(params, top_module, out_dir):
 
     file2create = open(f"{out_dir}/{top_module}_inst_params.vs", "w")
     for parameter in params:
-        if parameter["type"] in ["P", "F"]:
-            p_name = parameter["name"].upper()
+        if parameter.type in ["P", "F"]:
+            p_name = parameter.name.upper()
             file2create.write(f"\n  .{p_name}({p_name}),")
 
     file2create = open(f"{out_dir}/{top_module}_inst_params.vs", "rb+")
