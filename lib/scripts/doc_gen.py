@@ -16,4 +16,4 @@ def generate_docs(core, csr_gen_obj, reg_table):
             csr_gen_obj.generate_regs_tex(
                 core.csrs, reg_table, core.build_dir + "/doc/tsrc"
             )
-        block_gen.generate_blocks_tex(core.block_groups, core.build_dir + "/doc/tsrc")
+        block_gen.generate_blocks_tex(core.blocks, core.build_dir + "/doc/tsrc")

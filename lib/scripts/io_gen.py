@@ -157,7 +157,7 @@ def generate_ios_tex(ports, out_dir):
                         (signal["name"] + if_gen.get_suffix(port_direction)),
                         port_direction,
                         signal["width"],
-                        signal["descr"],
+                        signal["descr"] if "descr" in signal else "",
                     ]
                 )
         else:
@@ -168,7 +168,7 @@ def generate_ios_tex(ports, out_dir):
                         signal["name"],
                         signal["direction"],
                         signal["width"],
-                        signal["descr"],
+                        signal["descr"] if "descr" in signal else "",
                     ]
                 )
 

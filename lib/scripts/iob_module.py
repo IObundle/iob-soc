@@ -10,6 +10,8 @@ from iob_csr import create_csr
 class iob_module(iob_base):
     """Class to describe a (Verilog) module"""
 
+    global_top_module = None  # Datatype is 'iob_module'
+
     def __init__(self, *args, **kwargs):
         self.set_default_attribute("name", self.__class__.__name__)
         # List of module macros and Verilog (false-)parameters
@@ -56,6 +58,16 @@ class iob_module(iob_base):
         """
         # Ensure 'blocks' list exists
         self.set_default_attribute("blocks", [])
+        # Ensure global top module is set
+        self.update_global_top_module()
+
         exec(f"from {core_name} import {core_name}")
         instance = vars()[core_name](*args, **kwargs)
         self.blocks.append(instance)
+
+    def update_global_top_module(self):
+        """Update global top module if it has not been set before.
+        The first module to call this method is the global top module.
+        """
+        if __class__.global_top_module is None:
+            __class__.global_top_module = self

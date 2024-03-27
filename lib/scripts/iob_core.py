@@ -22,18 +22,19 @@ class iob_core(iob_module, iob_instance):
     """Generic class to describe how to generate a base IOb IP core"""
 
     global_wires: List
+    global_build_dir: str = None
 
     def __init__(
         self,
         *args,
-        is_top: bool = True,
         purpose: str = "hardware",
-        topdir: str = ".",
         generate_hw: bool = True,
         **kwargs,
     ):
         # Inherit attributes from superclasses
         super().__init__(*args, **kwargs)
+        # Ensure global top module is set
+        self.update_global_top_module()
         # CPU interface for control status registers
         self.set_default_attribute("csr_if", "iob", str)
         self.set_default_attribute("version", "1.0", str)
@@ -42,13 +43,17 @@ class iob_core(iob_module, iob_instance):
         self.set_default_attribute("build_dir", "", str)
         # Overlap Read and Write register addresses
         self.set_default_attribute("rw_overlap", False, bool)
-        self.set_default_attribute("is_top_module", is_top, str)
         self.set_default_attribute("use_netlist", False, bool)
+        self.set_default_attribute(
+            "is_top_module", __class__.global_top_module == self, bool
+        )
         self.set_default_attribute("is_system", False, bool)
         # List of FPGAs supported by this core
         self.set_default_attribute("board_list", [], List)
         # Where to copy sources of this core
         self.set_default_attribute("purpose", purpose, str)
+        # Don't replace snippets mentioned in this list
+        self.set_default_attribute("ignore_snippets", [], List)
 
         # Read-only dictionary with relation between the 'purpose' and
         # the corresponding source folder
@@ -58,19 +63,17 @@ class iob_core(iob_module, iob_instance):
             "fpga": "hardware/fpga/src",
         }
 
-        if is_top:
-            self.build_dir = f"../{self.name}_{self.version}/build"
-            topdir = self.build_dir
-        else:
-            self.build_dir = topdir
+        if not self.is_top_module:
+            self.build_dir = __class__.global_build_dir
         self.setup_dir = find_module_setup_dir(self, os.getcwd())
+        # print(f"{self.name} {self.build_dir} {self.is_top_module}")  # DEBUG
 
-        if is_top:
+        if self.is_top_module:
             self.__create_build_dir()
 
         # Copy files from LIB to setup various flows
         # (should run before copy of files from module's setup dir)
-        if is_top:
+        if self.is_top_module:
             copy_srcs.flows_setup(self)
 
         # Copy files from the module's setup dir
@@ -109,7 +112,7 @@ class iob_core(iob_module, iob_instance):
         #    A snippet can also be any method that generates a new signal, like the `concat_bits`, or any other that performs logic in from other signals into a new one.
         # TODO as well: Each module has a local `snippets` list.
 
-        if is_top:
+        if self.is_top_module:
             # Replace Verilog snippet includes
             self._replace_snippet_includes()
             # Clean duplicate sources in `hardware/src` and its subfolders (like `hardware/simulation/src`)
@@ -119,6 +122,19 @@ class iob_core(iob_module, iob_instance):
             # Generate ipxact file
             # if self.generate_ipxact: #TODO: When should this be generated?
             #    ipxact_gen.generate_ipxact_xml(self, reg_table, self.build_dir + "/ipxact")
+
+    def update_global_top_module(self):
+        """Update the global top module and the global build directory."""
+        super().update_global_top_module()
+        if __class__.global_top_module == self:
+            # Ensure current (top)module has a build dir
+            # FIXME: This line is duplicate from 'iob_module.py'. Is this an issue?
+            self.set_default_attribute("name", self.__class__.__name__)
+            # FIXME: This line is duplicate from 'iob_core.py'. Is this an issue?
+            self.set_default_attribute("version", "1.0", str)
+            self.build_dir = f"../{self.name}_{self.version}/build"
+            # Update global build dir
+            __class__.global_build_dir = self.build_dir
 
     def __create_build_dir(self):
         """Create build directory. Must be called from the top module."""
