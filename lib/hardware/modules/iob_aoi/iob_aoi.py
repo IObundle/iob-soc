@@ -38,7 +38,7 @@ class iob_aoi(iob_core):
             name="y",
             descr="Output port",
             signals=[
-                {"name": "y", "direction": "output"},
+                {"name": "y", "width": 1, "direction": "output"},
             ],
         )
 

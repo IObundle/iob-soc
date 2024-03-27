@@ -32,7 +32,8 @@ class iob_core(iob_module, iob_instance):
         **kwargs,
     ):
         # Inherit attributes from superclasses
-        super().__init__(*args, **kwargs)
+        iob_module.__init__(self, *args, **kwargs)
+        iob_instance.__init__(self, *args, **kwargs)
         # Ensure global top module is set
         self.update_global_top_module()
         # CPU interface for control status registers
@@ -111,6 +112,7 @@ class iob_core(iob_module, iob_instance):
         #    A snippet is a piece of verilog code manually written (should also receive a list of outputs by the user).
         #    A snippet can also be any method that generates a new signal, like the `concat_bits`, or any other that performs logic in from other signals into a new one.
         # TODO as well: Each module has a local `snippets` list.
+        # Note: The 'width' attribute of many module's signals are generaly not needed, because most of them will be connected to global wires (that already contain the width).
 
         if self.is_top_module:
             # Replace Verilog snippet includes
@@ -132,7 +134,7 @@ class iob_core(iob_module, iob_instance):
             self.set_default_attribute("name", self.__class__.__name__)
             # FIXME: This line is duplicate from 'iob_core.py'. Is this an issue?
             self.set_default_attribute("version", "1.0", str)
-            self.build_dir = f"../{self.name}_{self.version}/build"
+            self.build_dir = f"../{self.name}_V{self.version}/build"
             # Update global build dir
             __class__.global_build_dir = self.build_dir
 

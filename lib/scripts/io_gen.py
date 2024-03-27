@@ -48,8 +48,6 @@ def generate_ports(core):
     f_io = open(f"{out_dir}/{core.name}_io.vs", "w+")
 
     for port in core.ports:
-        # print(port)
-
         # If port has 'doc_only' attribute set to True, skip it
         if port.doc_only:
             continue
