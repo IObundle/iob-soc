@@ -32,5 +32,16 @@ pkgs.mkShell {
     libreoffice
     minicom     # Terminal emulator
     lrzsz       # For Zmodem file transfers via serial connection of the terminal emulator
+    # Add Volare custom Python installation
+    (let
+      volareSrc = pkgs.fetchFromGitHub {
+        owner = "efabless";
+        repo = "volare";
+        rev = "47325949b87e857d75f81d306f02ebccf952cb15";
+        sha256 = "sha256-H9B/vZUs0O2jwmidCTMYhO0JY4DL+gmQNeVawaccvuU=";
+      };
+    in import "${volareSrc}" {
+      inherit pkgs;
+    })
   ];
 }
