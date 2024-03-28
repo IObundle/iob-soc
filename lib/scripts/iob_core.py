@@ -23,6 +23,8 @@ class iob_core(iob_module, iob_instance):
 
     global_wires: List
     global_build_dir: str = None
+    # Project wide special target. Used when we don't want to run normal setup (for example, when cleaning).
+    global_special_target: str = None
 
     def __init__(
         self,
@@ -63,6 +65,10 @@ class iob_core(iob_module, iob_instance):
             "simulation": "hardware/simulation/src",
             "fpga": "hardware/fpga/src",
         }
+
+        # Don't setup this module if using a project wide special target.
+        if __class__.global_special_target:
+            return
 
         if not self.is_top_module:
             self.build_dir = __class__.global_build_dir
@@ -138,6 +144,14 @@ class iob_core(iob_module, iob_instance):
             # Update global build dir
             __class__.global_build_dir = self.build_dir
 
+    def create_instance(self, *args, **kwargs):
+        """Create an instante of a module, but only if we are not using a
+        project wide special target (like clean)
+        """
+        if __class__.global_special_target:
+            return
+        super().create_instance(*args, **kwargs)
+
     def __create_build_dir(self):
         """Create build directory. Must be called from the top module."""
         assert (
@@ -155,22 +169,6 @@ class iob_core(iob_module, iob_instance):
         shutil.copyfile(
             f"{copy_srcs.get_lib_dir()}/build.mk", f"{self.build_dir}/Makefile"
         )
-
-    def clean_build_dir(self):
-        """Clean build directory. Must be called from the top module."""
-        self.build_dir = f"../{self.name}_{self.version}"
-        print(
-            f"{iob_colors.ENDC}Cleaning build directory: {self.build_dir}{iob_colors.ENDC}"
-        )
-        # if build_dir exists run make clean in it
-        if os.path.exists(self.build_dir):
-            os.system(f"make -C {self.build_dir} clean")
-        shutil.rmtree(self.build_dir, ignore_errors=True)
-
-    def print_build_dir(self):
-        """Print build directory."""
-        self.build_dir = f"../{self.name}_{self.version}"
-        print(self.build_dir)
 
     def _remove_duplicate_sources(self):
         """Remove sources in the build directory from subfolders that exist in `hardware/src`"""
@@ -194,6 +192,30 @@ class iob_core(iob_module, iob_instance):
         verilog_gen.replace_includes(
             self.setup_dir, self.build_dir, self.ignore_snippets
         )
+
+    @classmethod
+    def clean_build_dir(cls):
+        """Clean build directory."""
+        # Set project wide special target to "clean" (will prevent normal setup)
+        __class__.global_special_target = "clean"
+        # Build a new module instance, to obtain its attributes
+        module = cls()
+        print(
+            f"{iob_colors.ENDC}Cleaning build directory: {module.build_dir}{iob_colors.ENDC}"
+        )
+        # if build_dir exists run make clean in it
+        if os.path.exists(module.build_dir):
+            os.system(f"make -C {module.build_dir} clean")
+        shutil.rmtree(module.build_dir, ignore_errors=True)
+
+    @classmethod
+    def print_build_dir(cls):
+        """Print build directory."""
+        # Set project wide special target to "clean" (will prevent normal setup)
+        __class__.global_special_target = "print_build_dir"
+        # Build a new module instance, to obtain its attributes
+        module = cls()
+        print(module.build_dir)
 
 
 def find_common_deep(path1, path2):

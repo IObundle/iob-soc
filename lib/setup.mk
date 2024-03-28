@@ -56,7 +56,9 @@ clean: setup-python-dir
 #ifneq ($(wildcard $(BUILD_DIR)),)
 	python3 -B $(CORE_DIR)/$(CORE).py clean
 #endif
-	@rm -rf $(IOB_PYTHONPATH)
+	# Makefile only runs the 'setup-python-dir' target once: https://stackoverflow.com/a/38212629
+	# So if we delete it here, it wont be rebuilt on 'build-setup'
+	#@rm -rf $(IOB_PYTHONPATH)
 	@rm -rf ../*.summary ../*.rpt 
 	@find . -name \*~ -delete
 
@@ -65,4 +67,4 @@ python-cache-clean:
 	find . -name "*__pycache__" -exec rm -rf {} \; -prune
 
 
-.PHONY: build-setup clean c-format python-format verilog-format
+.PHONY: setup-python-dir build-setup clean c-format python-format verilog-format format-all
