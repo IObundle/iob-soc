@@ -13,7 +13,10 @@ for i in $TB_DIRS; do MODULES+=" `basename $(builtin cd $i/../../..; pwd)`" ; do
 
 #test first argument is "clean", run make clean for all modules and exit
 if [ "$1" == "clean" ]; then
-    for i in $MODULES; do make clean CORE=$i TOP_MODULE_NAME=$i; done
+    for i in $MODULES; do 
+        core_dir=`find -name ${i}.py | xargs dirname`
+        make clean CORE=$i TOP_MODULE_NAME=$i CORE_DIR=$core_dir
+    done
     exit 0
 fi
 

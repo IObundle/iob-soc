@@ -5,12 +5,14 @@
 
 CORE_DIR ?=.
 
-build-setup: format-all
+setup-python-dir:
 ifeq ($(IOB_PYTHONPATH),)
 	$(error "IOB_PYTHONPATH is not set")
 endif
 	mkdir -p $(IOB_PYTHONPATH)
 	find . -name \*.py -exec cp -u {} $(IOB_PYTHONPATH) \;
+
+build-setup: setup-python-dir format-all
 	python3 -B $(CORE_DIR)/$(CORE).py $(SETUP_ARGS)
 
 python-format:
@@ -50,10 +52,10 @@ endif
 
 format-all: python-format c-format verilog-lint verilog-format
 
-clean:
-ifneq ($(wildcard $(BUILD_DIR)),)
-	python3 -B ./$(CORE).py clean
-endif
+clean: setup-python-dir
+#ifneq ($(wildcard $(BUILD_DIR)),)
+	python3 -B $(CORE_DIR)/$(CORE).py clean
+#endif
 	@rm -rf $(IOB_PYTHONPATH)
 	@rm -rf ../*.summary ../*.rpt 
 	@find . -name \*~ -delete

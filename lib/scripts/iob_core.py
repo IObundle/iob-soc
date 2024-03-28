@@ -134,7 +134,7 @@ class iob_core(iob_module, iob_instance):
             self.set_default_attribute("name", self.__class__.__name__)
             # FIXME: This line is duplicate from 'iob_core.py'. Is this an issue?
             self.set_default_attribute("version", "1.0", str)
-            self.build_dir = f"../{self.name}_V{self.version}/build"
+            self.build_dir = f"../{self.name}_V{self.version}"
             # Update global build dir
             __class__.global_build_dir = self.build_dir
 
