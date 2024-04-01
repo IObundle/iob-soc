@@ -71,8 +71,8 @@ class iob_aoi(iob_core):
                 "W": 1,
             },
             connect={
-                "a": "and_a_in",
-                "b": "and_b_in",
+                "a": "a",
+                "b": "b",
                 "y": "and_ab_out",
             },
         )
@@ -83,8 +83,8 @@ class iob_aoi(iob_core):
                 "W": 1,
             },
             connect={
-                "a": "and_c_in",
-                "b": "and_d_in",
+                "a": "c",
+                "b": "d",
                 "y": "and_cd_out",
             },
         )

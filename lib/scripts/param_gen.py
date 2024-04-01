@@ -2,11 +2,16 @@
 import os
 
 
-def params_vh(params, top_module, out_dir):
-    for parameter in params:
-        if parameter.type in ["P", "F"]:
-            break
-    else:
+def has_params(confs):
+    """Check if given 'confs' list has any parameters"""
+    for conf in confs:
+        if conf.type in ["P", "F"]:
+            return True
+    return False
+
+
+def params_vs(params, top_module, out_dir):
+    if not has_params(params):
         return
 
     file2create = open(f"{out_dir}/{top_module}_params.vs", "w")
@@ -35,4 +40,4 @@ def params_vh(params, top_module, out_dir):
 
 
 def generate_params(core):
-    params_vh(core.confs, core.name, core.build_dir + "/hardware/src")
+    params_vs(core.confs, core.instance_name, core.build_dir + "/hardware/src")

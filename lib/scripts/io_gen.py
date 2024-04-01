@@ -4,8 +4,9 @@
 #
 
 from latex import write_table
-import if_gen
 import os
+
+import if_gen
 
 
 def reverse_port(port_type):
@@ -90,6 +91,7 @@ def generate_ports(core):
 
     # Find and remove last comma
     delete_last_comma(f_io)
+    f_io.close()
 
 
 # Generate if.tex file with list TeX tables of IOs

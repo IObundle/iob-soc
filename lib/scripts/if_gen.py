@@ -848,6 +848,12 @@ def gen_if(name, file_prefix, port_prefix, wire_prefix, ports, mult=1, widths={}
         fout.close()
 
 
+def gen_wires(name, file_prefix, param_prefix, wire_prefix, signals, mult=1, widths={}):
+    fout = open(file_prefix + name + "_wire.vs", "w")
+    write_wire(fout, wire_prefix, param_prefix, signals)
+    fout.close()
+
+
 #
 # Test this Python module
 #

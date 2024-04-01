@@ -8,10 +8,13 @@ from typing import List
 
 import config_gen
 import param_gen
-import verilog_gen
-import reg_gen
 import io_gen
+import wire_gen
+import reg_gen
+import block_gen
+import snippet_gen
 import doc_gen
+import verilog_gen
 import ipxact_gen
 
 from iob_module import iob_module
@@ -99,16 +102,19 @@ class iob_core(iob_module, iob_instance):
         io_gen.generate_ports(self)
 
         # Generate wires
-        # TODO: wire_gen.generate_wires(self)
+        wire_gen.generate_wires(self)
 
         # Generate csr interface
         csr_gen_obj, reg_table = reg_gen.generate_csr(self)
 
         # Generate instances
-        # TODO: block_gen.generate_blocks(self)
+        block_gen.generate_blocks(self)
 
         # Generate snippets
-        # TODO: snippet_gen.generate_snippets(self)
+        snippet_gen.generate_snippets(self)
+
+        # Generate main Verilog module
+        verilog_gen.generate_verilog(self)
 
         # TODO: Generate a global list of signals
         # This list is useful for a python based simulator
@@ -196,7 +202,7 @@ class iob_core(iob_module, iob_instance):
     @classmethod
     def clean_build_dir(cls):
         """Clean build directory."""
-        # Set project wide special target to "clean" (will prevent normal setup)
+        # Set project wide special target (will prevent normal setup)
         __class__.global_special_target = "clean"
         # Build a new module instance, to obtain its attributes
         module = cls()
@@ -211,7 +217,7 @@ class iob_core(iob_module, iob_instance):
     @classmethod
     def print_build_dir(cls):
         """Print build directory."""
-        # Set project wide special target to "clean" (will prevent normal setup)
+        # Set project wide special target (will prevent normal setup)
         __class__.global_special_target = "print_build_dir"
         # Build a new module instance, to obtain its attributes
         module = cls()

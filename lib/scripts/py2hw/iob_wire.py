@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List, Dict
 
-import iob_base
+import iob_colors
 import if_gen
 
 
@@ -12,8 +12,6 @@ class iob_wire:
     name: str = None
 
     """ 'if_gen' related arguments """
-    # Type of interface: 'master', 'slave' or '' (for neither)
-    type: str = "master"
     wire_prefix: str = ""
     mult: str = "1"
     widths: Dict[str, str] = None
@@ -61,3 +59,13 @@ def get_wire_signal(core, wire_name: str, signal_name: str):
     for wire in core.wire_list:
         if wire.name == wire_name:
             return wire
+
+
+def find_wire(core, name):
+    """Return the wire object with the given name from a core"""
+    for wire in core.wires:
+        if wire.name == name:
+            return wire
+    raise Exception(
+        f"{iob_colors.FAIL}Wire '{name}' of '{core.name}' not found!{iob_colors.ENDC}"
+    )

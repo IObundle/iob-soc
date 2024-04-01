@@ -5,6 +5,7 @@ from iob_conf import create_conf
 from iob_port import create_port
 from iob_wire import create_wire, get_wire_signal
 from iob_csr import create_csr
+from iob_snippet import create_snippet
 
 
 class iob_module(iob_base):
@@ -40,17 +41,8 @@ class iob_module(iob_base):
     def create_csr(self, *args, **kwargs):
         create_csr(self, *args, **kwargs)
 
-    def create_snippet(self, snippet_outputs: List[str], snippet_code: str):
-        """Create a Verilog snippet to insert in this core.
-        param snippet_outputs: List of output ports of this snippet.
-                               Used internally to calculate global wires of
-                               the project.
-        param snippet_code: Verilog code of the snippet.
-        """
-        # Ensure 'snippets' list exists
-        self.set_default_attribute("snippets", [])
-        # TODO: Store outputs and use them for global wires list
-        self.snippets.append(snippet_code)
+    def create_snippet(self, *args, **kwargs):
+        create_snippet(self, *args, **kwargs)
 
     def create_instance(self, core_name: str, *args, **kwargs):
         """Import core and create an instance of it inside this module
@@ -62,7 +54,7 @@ class iob_module(iob_base):
         self.update_global_top_module()
 
         exec(f"from {core_name} import {core_name}")
-        instance = vars()[core_name](*args, **kwargs)
+        instance = vars()[core_name](*args, instantiator=self, **kwargs)
         self.blocks.append(instance)
 
     def update_global_top_module(self):
