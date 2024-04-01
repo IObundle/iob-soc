@@ -22,7 +22,9 @@ class iob_instance(iob_base):
                        Key: Port name, Value: Wire name
         param instantiator: Module that is instantiating this instance
         """
-        self.instance_name = instance_name or self.__class__.__name__ + "_inst"
+        self.set_default_attribute(
+            "instance_name", instance_name or self.__class__.__name__ + "_inst"
+        )
         self.set_default_attribute("description", "Default description")
         # Verilog parameter values
         self.set_default_attribute("parameters", parameters)
