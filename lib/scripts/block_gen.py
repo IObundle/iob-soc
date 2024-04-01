@@ -76,7 +76,7 @@ def generate_blocks(core):
 {get_instance_port_connections(instance)}
     );
 
-            """
+"""
         )
 
         # Close ifdef if conditional interface

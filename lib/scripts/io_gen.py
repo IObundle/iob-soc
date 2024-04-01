@@ -78,7 +78,7 @@ def generate_ports(core):
         else:
             infix = "m"
         vs_file = open(f"{file_prefix}{port.name}_{infix}_port.vs", "r")
-        f_io.write(vs_file.read())
+        f_io.writelines(["    " + s for s in vs_file.readlines()])
 
         # move all .vs files from current directory to out_dir
         for file in os.listdir("."):

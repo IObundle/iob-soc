@@ -34,7 +34,7 @@ def generate_wires(core):
 
         # append vs_file to wires.vs
         vs_file = open(f"{file_prefix}{wire.name}_wire.vs", "r")
-        f_wires.write(vs_file.read())
+        f_wires.writelines(["    " + s for s in vs_file.readlines()])
 
         # move all .vs files from current directory to out_dir
         for file in os.listdir("."):
