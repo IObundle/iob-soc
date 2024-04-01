@@ -2,6 +2,7 @@
 
 let
   magic = import ./magic.nix { inherit pkgs; };
+   yosys_abc = import ./yosys-abc.nix { inherit pkgs; };
 in
 
 
@@ -43,5 +44,6 @@ pkgs.mkShell {
       inherit pkgs;
     })
     magic
+    yosys_abc
   ];
 }
