@@ -57,3 +57,18 @@ def find_port(core, name):
     raise Exception(
         f"{iob_colors.FAIL}Port '{name}' of '{core.name}' not found!{iob_colors.ENDC}"
     )
+
+
+def get_signal_name_with_dir_suffix(signal: Dict):
+    """Returns a signal name with the direction suffix appended
+    param signal: signal dictionary
+    """
+    if signal["direction"] == "input":
+        return f"{signal['name']}_i"
+    elif signal["direction"] == "output":
+        return f"{signal['name']}_o"
+    elif signal["direction"] == "inout":
+        return f"{signal['name']}_io"
+    raise Exception(
+        f"{iob_colors.FAIL}Unknown direction '{signal['direction']}' in '{signal['name']}'!{iob_colors.ENDC}"
+    )

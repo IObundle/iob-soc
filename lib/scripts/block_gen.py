@@ -5,6 +5,7 @@
 from latex import write_table
 
 import iob_colors
+from iob_port import get_signal_name_with_dir_suffix
 
 
 # Generate blocks.tex file with TeX table of blocks (Verilog modules instances)
@@ -97,14 +98,13 @@ def get_instance_port_connections(instance):
         ), f"{iob_colors.FAIL}Port '{port.name}' of instance '{instance.name}' is not connected!{iob_colors.ENDC}"
         instance_portmap += f"        // {port.name} port\n"
         for idx, signal in enumerate(port.signals):
+            port_name = get_signal_name_with_dir_suffix(signal)
             e_singal = port.e_connect.signals[idx]
             comma = (
                 ","
                 if (port_idx < len(instance.ports) - 1) or (idx < len(port.signals) - 1)
                 else ""
             )
-            instance_portmap += (
-                f"        .{signal['name']}({e_singal['name']}){comma}\n"
-            )
+            instance_portmap += f"        .{port_name}({e_singal['name']}){comma}\n"
 
     return instance_portmap
