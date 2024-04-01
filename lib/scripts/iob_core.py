@@ -78,8 +78,7 @@ class iob_core(iob_module, iob_instance):
         self.setup_dir = find_module_setup_dir(self, os.getcwd())
         # print(f"{self.name} {self.build_dir} {self.is_top_module}")  # DEBUG
 
-        if self.is_top_module:
-            self.__create_build_dir()
+        self.__create_build_dir()
 
         # Copy files from LIB to setup various flows
         # (should run before copy of files from module's setup dir)
@@ -159,10 +158,7 @@ class iob_core(iob_module, iob_instance):
         super().create_instance(*args, **kwargs)
 
     def __create_build_dir(self):
-        """Create build directory. Must be called from the top module."""
-        assert (
-            self.is_top_module
-        ), f"{iob_colors.FAIL}Module {self.name} is not a top module!{iob_colors.ENDC}"
+        """Create build directory if it doesn't exist"""
         os.makedirs(self.build_dir, exist_ok=True)
         # Create hardware directories
         os.makedirs(f"{self.build_dir}/hardware/src", exist_ok=True)

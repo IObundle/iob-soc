@@ -13,7 +13,6 @@ def has_params(confs):
 def generate_params(core):
     module_parameters = [p for p in core.confs if p.type in ["P", "F"]]
     instance_parameters = core.parameters
-    top_module = core.instance_name
     out_dir = core.build_dir + "/hardware/src"
 
     if not has_params(core.confs):
@@ -21,12 +20,12 @@ def generate_params(core):
 
     # Generate params.vs
     lines = []
-    core_prefix = f"{top_module}_".upper()
+    core_prefix = f"{core.name}_".upper()
     for parameter in module_parameters:
         p_name = parameter.name.upper()
         lines.append(f"    parameter {p_name} = `{core_prefix}{p_name},\n")
     lines[-1] = lines[-1].replace(",\n", "\n")
-    file2create = open(f"{out_dir}/{top_module}_params.vs", "w")
+    file2create = open(f"{out_dir}/{core.name}_params.vs", "w")
     file2create.writelines(lines)
     file2create.close()
 
@@ -35,6 +34,6 @@ def generate_params(core):
     for p_name, p_value in instance_parameters.items():
         lines.append(f"        .{p_name}({p_value}),\n")
     lines[-1] = lines[-1].replace(",\n", "\n")
-    file2create = open(f"{out_dir}/{top_module}_inst_params.vs", "w")
+    file2create = open(f"{out_dir}/{core.instance_name}_inst_params.vs", "w")
     file2create.writelines(lines)
     file2create.close()
