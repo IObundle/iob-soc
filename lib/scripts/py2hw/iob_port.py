@@ -9,8 +9,6 @@ from iob_wire import iob_wire, create_wire
 class iob_port(iob_wire):
     """Describes an IO port."""
 
-    # Module's internal wire that connects this port
-    i_connect: iob_wire = None
     # External wire that connects this port
     e_connect: iob_wire = None
 
@@ -43,20 +41,8 @@ def create_port(core, *args, **kwargs):
     """
     # Ensure 'ports' list exists
     core.set_default_attribute("ports", [])
-    create_wire(core, *args, **kwargs)
-    wire = core.wires[-1]
-    port = iob_port(*args, i_connect=wire, **kwargs)
+    port = iob_port(*args, **kwargs)
     core.ports.append(port)
-
-
-def find_port(core, name):
-    """Return the port object with the given name from a core"""
-    for port in core.ports:
-        if port.name == name:
-            return port
-    raise Exception(
-        f"{iob_colors.FAIL}Port '{name}' of '{core.name}' not found!{iob_colors.ENDC}"
-    )
 
 
 def get_signal_name_with_dir_suffix(signal: Dict):

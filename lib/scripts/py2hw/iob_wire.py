@@ -59,13 +59,3 @@ def get_wire_signal(core, wire_name: str, signal_name: str):
     for wire in core.wire_list:
         if wire.name == wire_name:
             return wire
-
-
-def find_wire(core, name):
-    """Return the wire object with the given name from a core"""
-    for wire in core.wires:
-        if wire.name == name:
-            return wire
-    raise Exception(
-        f"{iob_colors.FAIL}Wire '{name}' of '{core.name}' not found!{iob_colors.ENDC}"
-    )
