@@ -70,7 +70,7 @@ def generate_blocks(core):
             f_blocks.write(f"`ifdef {core.name.upper()}_{instance.if_defined}\n")
 
         f_blocks.write(
-            f"""
+            f"""\
     {instance.name} #(
         `include "{instance.instance_name}_inst_params.vs"
     ) {instance.instance_name} (

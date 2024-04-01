@@ -782,7 +782,7 @@ def write_single_wire(fout, wire_prefix, param_prefix, wire, for_tb, direction):
             wtype = get_tbsignal_type(wire["direction"])
     width_str = add_param_prefix(str(wire["width"]), param_prefix)
     width_str = " [(" + str(mult) + "*" + width_str + ")-1:0] "
-    fout.write(wtype + width_str + wire_name + "; //" + "\n")
+    fout.write(wtype + width_str + wire_name + ";\n")
 
 
 def write_wire(fout, wire_prefix, param_prefix, wires):
