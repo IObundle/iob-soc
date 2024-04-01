@@ -44,9 +44,10 @@ class iob_module(iob_base):
     def create_snippet(self, *args, **kwargs):
         create_snippet(self, *args, **kwargs)
 
-    def create_instance(self, core_name: str, *args, **kwargs):
+    def create_instance(self, core_name: str, instance_name: str, *args, **kwargs):
         """Import core and create an instance of it inside this module
         param core_name: Name of the core
+        param instance_name: Verilog instance name
         """
         # Ensure 'blocks' list exists
         self.set_default_attribute("blocks", [])
@@ -54,7 +55,9 @@ class iob_module(iob_base):
         self.update_global_top_module()
 
         exec(f"from {core_name} import {core_name}")
-        instance = vars()[core_name](*args, instantiator=self, **kwargs)
+        instance = vars()[core_name](
+            *args, instance_name=instance_name, instantiator=self, **kwargs
+        )
         self.blocks.append(instance)
 
     def update_global_top_module(self):
