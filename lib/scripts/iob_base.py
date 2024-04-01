@@ -19,7 +19,9 @@ class iob_base:
         elif datatype is not None:
             if type(getattr(self, attribute_name)) != datatype:
                 raise TypeError(
-                    f"Attribute '{attribute_name}' must be of type {datatype}"
+                    iob_colors.FAIL
+                    + f"Attribute '{attribute_name}' must be of type {datatype}"
+                    + iob_colors.ENDC
                 )
 
 

@@ -4,7 +4,6 @@ import shutil
 import iob_colors
 
 import copy_srcs
-from typing import List
 
 import config_gen
 import param_gen
@@ -24,7 +23,7 @@ from iob_instance import iob_instance
 class iob_core(iob_module, iob_instance):
     """Generic class to describe how to generate a base IOb IP core"""
 
-    global_wires: List
+    global_wires: list
     global_build_dir: str = None
     # Project wide special target. Used when we don't want to run normal setup (for example, when cleaning).
     global_special_target: str = None
@@ -55,11 +54,11 @@ class iob_core(iob_module, iob_instance):
         )
         self.set_default_attribute("is_system", False, bool)
         # List of FPGAs supported by this core
-        self.set_default_attribute("board_list", [], List)
+        self.set_default_attribute("board_list", [], list)
         # Where to copy sources of this core
         self.set_default_attribute("purpose", purpose, str)
         # Don't replace snippets mentioned in this list
-        self.set_default_attribute("ignore_snippets", [], List)
+        self.set_default_attribute("ignore_snippets", [], list)
 
         # Read-only dictionary with relation between the 'purpose' and
         # the corresponding source folder

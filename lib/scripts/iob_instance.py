@@ -23,11 +23,11 @@ class iob_instance(iob_base):
         param instantiator: Module that is instantiating this instance
         """
         self.set_default_attribute(
-            "instance_name", instance_name or self.__class__.__name__ + "_inst"
+            "instance_name", instance_name or self.__class__.__name__ + "_inst", str
         )
-        self.set_default_attribute("description", "Default description")
+        self.set_default_attribute("description", "Default description", str)
         # Verilog parameter values
-        self.set_default_attribute("parameters", parameters)
+        self.set_default_attribute("parameters", parameters, Dict)
         # Only use this instance in Verilog if this Verilog macro is defined
         self.set_default_attribute("if_defined", None, str)
 

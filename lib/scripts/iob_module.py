@@ -1,5 +1,3 @@
-from typing import List
-
 from iob_base import iob_base
 from iob_conf import create_conf
 from iob_port import create_port
@@ -14,17 +12,17 @@ class iob_module(iob_base):
     global_top_module = None  # Datatype is 'iob_module'
 
     def __init__(self, *args, **kwargs):
-        self.set_default_attribute("name", self.__class__.__name__)
+        self.set_default_attribute("name", self.__class__.__name__, str)
         # List of module macros and Verilog (false-)parameters
-        self.set_default_attribute("confs", [])
-        self.set_default_attribute("ports", [])
-        self.set_default_attribute("wires", [])
+        self.set_default_attribute("confs", [], list)
+        self.set_default_attribute("ports", [], list)
+        self.set_default_attribute("wires", [], list)
         # List of core Control/Status Registers
-        self.set_default_attribute("csrs", [])
+        self.set_default_attribute("csrs", [], list)
         # List of core Verilog snippets
-        self.set_default_attribute("snippets", [])
+        self.set_default_attribute("snippets", [], list)
         # List of instances of other cores inside this core
-        self.set_default_attribute("blocks", [])
+        self.set_default_attribute("blocks", [], list)
 
     def create_conf(self, *args, **kwargs):
         create_conf(self, *args, **kwargs)
