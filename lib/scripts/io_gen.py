@@ -16,38 +16,25 @@ def reverse_port(port_type):
         return "input"
 
 
-def delete_last_comma(file_obj):
-    # Place cursor at the end of the file
-    file_obj.read()
-
-    while True:
-        # Search for start of line (previous \n) or start of file
-        # (It is better than just searching for the comma, because there may be verilog comments in this line with commas that we dont want to remove)
-        while file_obj.read(1) != "\n" and file_obj.tell() > 1:
-            file_obj.seek(file_obj.tell() - 2)
-        # Return if we are at the start of the file (didnt find any comma)
-        if file_obj.tell() < 2:
-            return
-        # Ignore lines starting with Verilog macro
-        if file_obj.read(1) != "`":
-            file_obj.seek(file_obj.tell() - 1)
-            break
-        # Move cursor 3 chars back (skip "`", "\n" and previous char)
-        file_obj.seek(file_obj.tell() - 3)
-
-    # Search for next comma
-    while file_obj.read(1) != ",":
-        pass
-    file_obj.seek(file_obj.tell() - 1)
-    # Delete comma
-    file_obj.write(" ")
+def delete_last_comma(lines):
+    """Remove last comma from a list of Verilog lines"""
+    # Start searching from the last line
+    for i in range(len(lines) - 1, 0, -1):
+        line = lines[i]
+        # Ignore lines starting with Verilog macro or comment
+        if line.startswith("`") or line.startswith("//"):
+            continue
+        # Get index of first comma in line (there may be more if there are comments
+        comma_idx = line.find(",")
+        lines[i] = line[:comma_idx] + line[comma_idx + 1 :]
+        break
+    return lines
 
 
 def generate_ports(core):
     out_dir = core.build_dir + "/hardware/src"
 
-    f_io = open(f"{out_dir}/{core.name}_io.vs", "w+")
-
+    lines = []
     for port in core.ports:
         # If port has 'doc_only' attribute set to True, skip it
         if port.doc_only:
@@ -55,7 +42,7 @@ def generate_ports(core):
 
         # Open ifdef if conditional interface
         if port.if_defined:
-            f_io.write(f"`ifdef {core.name.upper()}_{port.if_defined}\n")
+            lines.append(f"`ifdef {core.name.upper()}_{port.if_defined}\n")
 
         if port.file_prefix:
             file_prefix = port.file_prefix
@@ -78,7 +65,7 @@ def generate_ports(core):
         else:
             infix = "m"
         vs_file = open(f"{file_prefix}{port.name}_{infix}_port.vs", "r")
-        f_io.writelines(["    " + s for s in vs_file.readlines()])
+        lines.extend(["    " + s for s in vs_file.readlines()])
 
         # move all .vs files from current directory to out_dir
         for file in os.listdir("."):
@@ -87,10 +74,10 @@ def generate_ports(core):
 
         # Close ifdef if conditional interface
         if port.if_defined:
-            f_io.write("`endif\n")
+            lines.append("`endif\n")
 
-    # Find and remove last comma
-    delete_last_comma(f_io)
+    f_io = open(f"{out_dir}/{core.name}_io.vs", "w+")
+    f_io.writelines(delete_last_comma(lines))
     f_io.close()
 
 
