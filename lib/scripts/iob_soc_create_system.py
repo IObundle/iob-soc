@@ -21,7 +21,7 @@ def insert_header_files(dest_dir, name, peripherals_list):
         if instance.module.name not in included_peripherals:
             included_peripherals.append(instance.module.name)
             # Only insert swreg file if module has regiters
-            if hasattr(instance.module, "regs") and instance.module.regs:
+            if hasattr(instance.module, "csrs") and instance.module.csrs:
                 top = instance.module.name
                 fd_out.write(f'`include "{top}_swreg_def.vh"\n')
     fd_out.close()

@@ -1,7 +1,7 @@
-from iob_module import iob_module
+from iob_core import iob_core
 
 
-class iob_inv(iob_module):
+class iob_inv(iob_core):
     def __init__(self, *args, **kwargs):
         self.version = "V0.10"
 
@@ -19,20 +19,21 @@ class iob_inv(iob_module):
             descr="Input port",
             signals=[
                 {"name": "a", "width": "W", "direction": "input"},
-            ]
+            ],
         )
         self.create_port(
             name="y",
             descr="Output port",
             signals=[
                 {"name": "y", "width": "W", "direction": "output"},
-            ]
+            ],
         )
 
-        self.insert_verilog(
+        self.create_snippet(
+            ["y"],
             """
    assign y_o = ~a_i;
-            """
+            """,
         )
 
         super().__init__(*args, **kwargs)

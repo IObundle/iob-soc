@@ -4,8 +4,9 @@
 #
 
 from latex import write_table
-import if_gen
 import os
+
+import if_gen
 
 
 def reverse_port(port_type):
@@ -15,71 +16,56 @@ def reverse_port(port_type):
         return "input"
 
 
-def delete_last_comma(file_obj):
-    # Place cursor at the end of the file
-    file_obj.read()
-
-    while True:
-        # Search for start of line (previous \n) or start of file
-        # (It is better than just searching for the comma, because there may be verilog comments in this line with commas that we dont want to remove)
-        while file_obj.read(1) != "\n" and file_obj.tell() > 1:
-            file_obj.seek(file_obj.tell() - 2)
-        # Return if we are at the start of the file (didnt find any comma)
-        if file_obj.tell() < 2:
-            return
-        # Ignore lines starting with Verilog macro
-        if file_obj.read(1) != "`":
-            file_obj.seek(file_obj.tell() - 1)
-            break
-        # Move cursor 3 chars back (skip "`", "\n" and previous char)
-        file_obj.seek(file_obj.tell() - 3)
-
-    # Search for next comma
-    while file_obj.read(1) != ",":
-        pass
-    file_obj.seek(file_obj.tell() - 1)
-    # Delete comma
-    file_obj.write(" ")
+def delete_last_comma(lines):
+    """Remove last comma from a list of Verilog lines"""
+    # Start searching from the last line
+    for i in range(len(lines) - 1, 0, -1):
+        line = lines[i]
+        # Ignore lines starting with Verilog macro or comment
+        if line.startswith("`") or line.startswith("//"):
+            continue
+        # Get index of first comma in line (there may be more if there are comments
+        comma_idx = line.find(",")
+        lines[i] = line[:comma_idx] + line[comma_idx + 1 :]
+        break
+    return lines
 
 
 def generate_ports(core):
     out_dir = core.build_dir + "/hardware/src"
 
-    f_io = open(f"{out_dir}/{core.name}_io.vs", "w+")
-
-    for table in core.ios:
-        # print(table)
-
-        # If table has 'doc_only' attribute set to True, skip it
-        if "doc_only" in table.keys() and table["doc_only"]:
+    lines = []
+    for port in core.ports:
+        # If port has 'doc_only' attribute set to True, skip it
+        if port.doc_only:
             continue
 
         # Open ifdef if conditional interface
-        if "if_defined" in table.keys():
-            f_io.write(f"`ifdef {core.name.upper()}_{table['if_defined']}\n")
+        if port.if_defined:
+            lines.append(f"`ifdef {core.name.upper()}_{port.if_defined}\n")
 
-        if "file_prefix" in table.keys():
-            file_prefix = table["file_prefix"]
+        if port.file_prefix:
+            file_prefix = port.file_prefix
         else:
-            file_prefix = table["port_prefix"] + table["wire_prefix"]
+            file_prefix = port.port_prefix + port.wire_prefix
 
         if_gen.gen_if(
-            table["name"],
+            port.name,
             file_prefix,
-            table["port_prefix"],
-            table["wire_prefix"],
-            table["ports"],
-            table["mult"] if "mult" in table.keys() else 1,
-            table["widths"] if "widths" in table.keys() else {},
+            port.port_prefix,
+            port.wire_prefix,
+            port.signals,
+            port.mult,
+            port.widths,
         )
 
         # append vs_file to io.vs
-        if table["type"] == "slave":
+        if port.type == "slave":
             infix = "s"
         else:
             infix = "m"
-        vs_file = open(f"{file_prefix}{table['name']}_{infix}_port.vs", "r")
-        f_io.write(vs_file.read())
+        vs_file = open(f"{file_prefix}{port.name}_{infix}_port.vs", "r")
+        lines.extend(["    " + s for s in vs_file.readlines()])
 
         # move all .vs files from current directory to out_dir
         for file in os.listdir("."):
@@ -87,22 +73,23 @@ def generate_ports(core):
                 os.rename(file, f"{out_dir}/{file}")
 
         # Close ifdef if conditional interface
-        if "if_defined" in table.keys():
-            f_io.write("`endif\n")
+        if port.if_defined:
+            lines.append("`endif\n")
 
-    # Find and remove last comma
-    delete_last_comma(f_io)
+    f_io = open(f"{out_dir}/{core.name}_io.vs", "w+")
+    f_io.writelines(delete_last_comma(lines))
+    f_io.close()
 
 
 # Generate if.tex file with list TeX tables of IOs
-def generate_if_tex(ios, out_dir):
+def generate_if_tex(ports, out_dir):
     if_file = open(f"{out_dir}/if.tex", "w")
 
     if_file.write(
         "The interface signals of the core are described in the following tables.\n"
     )
 
-    for table in ios:
+    for port in ports:
         if_file.write(
             """
 \\begin{table}[H]
@@ -114,15 +101,15 @@ def generate_if_tex(ios, out_dir):
     {\\bf Name} & {\\bf Direction} & {\\bf Width} & {\\bf Description}  \\\\ \hline \hline
 
     \input """
-            + table["name"]
+            + port.name
             + """_if_tab
  
   \end{tabularx}
   \caption{"""
-            + table["descr"].replace("_", "\_")
+            + port.descr.replace("_", "\_")
             + """}
   \label{"""
-            + table["name"]
+            + port.name
             + """_if_tab:is}
 \end{table}
 """
@@ -133,43 +120,43 @@ def generate_if_tex(ios, out_dir):
 
 
 # Generate TeX tables of IOs
-def generate_ios_tex(ios, out_dir):
+def generate_ios_tex(ports, out_dir):
     # Create if.tex file
-    generate_if_tex(ios, out_dir)
+    generate_if_tex(ports, out_dir)
 
-    for table in ios:
+    for port in ports:
         tex_table = []
         # Check if this table is a standard interface (from if_gen.py)
-        if_name = table["name"]
+        if_name = port.name
         if if_name in if_gen.if_names:
             # Interface is standard, generate ports
             eval_str = f"if_gen.get_{if_name}_ports()"
-            if_table = eval(eval_str)
+            if_port = eval(eval_str)
 
-            for port in if_table:
-                port_direction = port["direction"]
+            for signal in if_port:
+                port_direction = signal["direction"]
                 # reverse direction if port is a slave port
-                if table["type"] == "slave":
+                if port.type == "slave":
                     port_direction = reverse_port(port_direction)
 
                 tex_table.append(
                     [
-                        (port["name"] + if_gen.get_suffix(port_direction)),
+                        (signal["name"] + if_gen.get_suffix(port_direction)),
                         port_direction,
-                        port["width"],
-                        port["descr"],
+                        signal["width"],
+                        signal["descr"] if "descr" in signal else "",
                     ]
                 )
         else:
             # Interface is not standard, read ports
-            for port in table["ports"]:
+            for signal in port.signals:
                 tex_table.append(
                     [
-                        port["name"],
-                        port["direction"],
-                        port["width"],
-                        port["descr"],
+                        signal["name"],
+                        signal["direction"],
+                        signal["width"],
+                        signal["descr"] if "descr" in signal else "",
                     ]
                 )
 
-        write_table(f"{out_dir}/{table['name']}_if", tex_table)
+        write_table(f"{out_dir}/{port.name}_if", tex_table)

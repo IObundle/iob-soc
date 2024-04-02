@@ -243,7 +243,7 @@ def gen_ports_list(core):
 
     if_ports_list = []
 
-    for interface in core.ios:
+    for interface in core.ports:
         # Skip doc_only interfaces
         if "doc_only" in interface.keys() and interface["doc_only"]:
             continue

@@ -3,6 +3,8 @@ import os
 import iob_colors
 import re
 
+from param_gen import has_params
+
 
 # Find include statements inside a list of lines and replace them by the contents of the included file and return the new list of lines
 def replace_includes_in_lines(lines, VSnippetFiles, ignore_snippets):
@@ -162,3 +164,50 @@ def inplace_change(filename, old_string, new_string):
         )
         s = s.replace(old_string, new_string)
         f.write(s)
+
+
+def generate_verilog(core):
+    """Generate main Verilog module of given core
+    if it does not exist yet (may be defined manually or generated previously).
+    """
+    out_dir = core.build_dir + "/hardware/src"
+    file_path = os.path.join(out_dir, f"{core.name}.v")
+
+    if os.path.exists(file_path):
+        print(
+            f"[DEBUG]: Not generating '{core.name}.v'. Module already exists (probably defined manually or already generated previously)."
+        )
+        return
+
+    f_module = open(file_path, "w+")
+
+    if has_params(core.confs):
+        params_line = f'#(\n    `include "{core.name}_params.vs"\n) ('
+    else:
+        params_line = "("
+
+    module_body_lines = ""
+    if core.wires:
+        module_body_lines += f'    `include "{core.name}_wires.vs"\n\n'
+
+    if core.csrs:
+        module_body_lines += f'    `include "{core.name}_swreg_inst.vs"\n\n'
+
+    if core.blocks:
+        module_body_lines += f'    `include "{core.name}_blocks.vs"\n\n'
+
+    if core.snippets:
+        module_body_lines += f'    `include "{core.name}_snippets.vs"\n\n'
+
+    f_module.write(
+        f"""`timescale 1ns / 1ps
+`include "{core.name}_conf.vh"
+
+module {core.name} {params_line}
+    `include "{core.name}_io.vs"
+);
+{module_body_lines}
+endmodule
+"""
+    )
+    f_module.close()

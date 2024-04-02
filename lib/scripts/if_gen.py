@@ -782,7 +782,7 @@ def write_single_wire(fout, wire_prefix, param_prefix, wire, for_tb, direction):
             wtype = get_tbsignal_type(wire["direction"])
     width_str = add_param_prefix(str(wire["width"]), param_prefix)
     width_str = " [(" + str(mult) + "*" + width_str + ")-1:0] "
-    fout.write(wtype + width_str + wire_name + "; //" + "\n")
+    fout.write(wtype + width_str + wire_name + ";\n")
 
 
 def write_wire(fout, wire_prefix, param_prefix, wires):
@@ -846,6 +846,12 @@ def gen_if(name, file_prefix, port_prefix, wire_prefix, ports, mult=1, widths={}
         # print(eval_str, prefix1, prefix2)
         eval(eval_str)
         fout.close()
+
+
+def gen_wires(name, file_prefix, param_prefix, wire_prefix, signals, mult=1, widths={}):
+    fout = open(file_prefix + name + "_wire.vs", "w")
+    write_wire(fout, wire_prefix, param_prefix, signals)
+    fout.close()
 
 
 #
