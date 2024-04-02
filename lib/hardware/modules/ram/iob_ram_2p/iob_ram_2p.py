@@ -10,11 +10,9 @@ class iob_ram_2p(iob_module):
 
 
 if __name__ == "__main__":
-    # Create an iob_ram_2p ip core
-    iob_ram_2p_core = iob_ram_2p()
     if "clean" in sys.argv:
-        iob_ram_2p_core.clean_build_dir()
+        iob_ram_2p.clean_build_dir()
     elif "print" in sys.argv:
-        iob_ram_2p_core.print_build_dir()
+        iob_ram_2p.print_build_dir()
     else:
-        iob_ram_2p_core._setup()
+        iob_ram_2p()

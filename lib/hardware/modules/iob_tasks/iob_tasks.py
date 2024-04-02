@@ -1,7 +1,8 @@
-from iob_module import iob_module
+from iob_core import iob_core
 
 
-class iob_tasks(iob_module):
-    def __init__(self):
-        super().__init__()
-        self.version = "V0.10"
+class iob_tasks(iob_core):
+    def __init__(self, *args, **kwargs):
+        self.set_default_attribute("version", "0.1")
+
+        super().__init__(*args, **kwargs)

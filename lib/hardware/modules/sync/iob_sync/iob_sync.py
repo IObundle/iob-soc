@@ -1,13 +1,12 @@
-import os
+from iob_core import iob_core
 
-from iob_module import iob_module
-from iob_r import iob_r
+class iob_sync(iob_core):
+    def __init__(self, *args, **kwargs):
+        self.set_default_attribute("version", "0.1")
 
+        self.create_instance(
+            "iob_r",
+            "iob_r_inst",
+        )
 
-class iob_sync(iob_module):
-    def __init__(self):
-        super().__init__()
-        self.version = "V0.10"
-        self.submodule_list = [
-            iob_r(),
-        ]
+        super().__init__(*args, **kwargs)

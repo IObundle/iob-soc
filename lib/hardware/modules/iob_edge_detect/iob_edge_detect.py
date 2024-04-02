@@ -1,14 +1,13 @@
-import os
-
-from iob_module import iob_module
-
-from iob_reg_re import iob_reg_r
+from iob_core import iob_core
 
 
-class iob_edge_detect(iob_module):
-    def __init__(self):
-        super().__init__()
-        self.version = "V0.10"
-        self.submodule_list = [
-            iob_reg_r(),
-        ]
+class iob_edge_detect(iob_core):
+    def __init__(self, *args, **kwargs):
+        self.set_default_attribute("version", "0.1")
+
+        self.create_instance(
+            "iob_reg_r",
+            "iob_reg_r_inst",
+        )
+
+        super().__init__(*args, **kwargs)

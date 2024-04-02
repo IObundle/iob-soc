@@ -2,76 +2,58 @@
 
 import sys
 
-from iob_module import iob_module
-
-# Submodules
-from iob_utils import iob_utils
-from iob_reg_re import iob_reg_re
-from iob_reg_e import iob_reg_e
-from iob_counter import iob_counter
+from iob_core import iob_core
 
 
-class iob_timer(iob_module):
-    def __init__(self):
-        super().__init__()
-        self.version = "V0.10"
-        self.submodule_list = [
-            # Hardware headers & modules
-            iob_utils(),
-            iob_reg_re(),
-            iob_reg_e(),
-            iob_counter(),
-        ]
-        self.confs = [
-            # Macros
-            # Parameters
-            {
-                "name": "DATA_W",
-                "type": "P",
-                "val": "32",
-                "min": "NA",
-                "max": "NA",
-                "descr": "Data bus width",
+class iob_timer(iob_core):
+    def __init__(self, *args, **kwargs):
+        self.set_default_attribute("version", "0.1")
+
+        self.create_conf(
+            name="DATA_W",
+            type="P",
+            val="32",
+            min="NA",
+            max="NA",
+            descr="Data bus width",
+        )
+        self.create_conf(
+            name="ADDR_W",
+            type="P",
+            val="`IOB_TIMER_SWREG_ADDR_W",
+            min="NA",
+            max="NA",
+            descr="Address bus width",
+        )
+        self.create_conf(
+            name="WDATA_W",
+            type="P",
+            val="1",
+            min="NA",
+            max="8",
+            descr="",
+        )
+
+        self.create_port(
+            name="clk_en_rst",
+            type="slave",
+            port_prefix="",
+            wire_prefix="",
+            descr="Clock, clock enable and reset",
+            signals=[],
+        )
+        self.create_port(
+            name="iob",
+            type="slave",
+            port_prefix="",
+            wire_prefix="",
+            descr="CPU native interface",
+            signals=[],
+            widths={
+                "ADDR_W": "ADDR_W",
+                "DATA_W": "DATA_W",
             },
-            {
-                "name": "ADDR_W",
-                "type": "P",
-                "val": "`IOB_TIMER_SWREG_ADDR_W",
-                "min": "NA",
-                "max": "NA",
-                "descr": "Address bus width",
-            },
-            {
-                "name": "WDATA_W",
-                "type": "P",
-                "val": "1",
-                "min": "NA",
-                "max": "8",
-                "descr": "",
-            },
-        ]
-        self.ios = [
-            {
-                "name": "clk_en_rst",
-                "type": "slave",
-                "port_prefix": "",
-                "wire_prefix": "",
-                "descr": "Clock, clock enable and reset",
-                "ports": [],
-            },
-            {
-                "name": "iob",
-                "type": "slave",
-                "port_prefix": "",
-                "wire_prefix": "",
-                "descr": "CPU native interface",
-                "ports": [],
-                "widths": {
-                    "ADDR_W": "ADDR_W",
-                    "DATA_W": "DATA_W",
-                },
-            },
-        ]
+        )
         self.autoaddr = True
         self.regs = [
             {
@@ -126,15 +108,33 @@ class iob_timer(iob_module):
                 ],
             }
         ]
-        self.block_groups = []
+
+        self.create_instance(
+            "iob_utils",
+            "iob_utils_inst",
+        )
+
+        self.create_instance(
+            "iob_reg_e",
+            "iob_reg_e_inst",
+        )
+
+        self.create_instance(
+            "iob_counter_inst",
+        )
+
+        self.create_instance(
+            "iob_counter",
+            "iob_counter_inst",
+        )
+
+        super().__init__(*args, **kwargs)
 
 
 if __name__ == "__main__":
-    # Create an iob-uart ip core
-    iob_timer_core = iob_timer()
     if "clean" in sys.argv:
-        iob_timer_core.clean_build_dir()
+        iob_timer.clean_build_dir()
     elif "print" in sys.argv:
-        iob_timer_core.print_build_dir()
+        iob_timer.print_build_dir()
     else:
-        iob_timer_core._setup()
+        iob_timer()

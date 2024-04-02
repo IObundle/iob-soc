@@ -1,13 +1,12 @@
-import os
+from iob_core import iob_core
 
-from iob_module import iob_module
-from iob_reg_r import iob_reg_r
+class iob_bfifo(iob_core):
+    def __init__(self, *args, **kwargs):
+        self.set_default_attribute("version", "0.1")
 
+        self.create_instance(
+            "iob_reg_r",
+            "iob_reg_r_inst",
+        )
 
-class iob_bfifo(iob_module):
-    def __init__(self):
-        super().__init__()
-        self.version = "V0.10"
-        self.submodule_list = [
-            iob_reg_r(),
-        ]
+        super().__init__(*args, **kwargs)

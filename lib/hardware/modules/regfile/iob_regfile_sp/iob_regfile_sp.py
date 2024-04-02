@@ -1,26 +1,25 @@
 import sys
 
-from iob_module import iob_module
-
-from iob_reg_re import iob_reg_re
+from iob_core import iob_core
 
 
-class iob_regfile_sp(iob_module):
-    def __init__(self):
-        super().__init__()
-        self.version = "V0.10"
-        self.previous_version = "V0.09"
-        self.submodule_list = [
-            iob_reg_re(),
-        ]
+class iob_regfile_sp(iob_core):
+    def __init__(self, *args, **kwargs):
+        self.set_default_attribute("version", "0.1")
+        self.set_default_attribute("version", "0.09")
+
+        self.create_instance(
+            "iob_reg_re",
+            "iob_reg_re_inst",
+        )
+
+        super().__init__(*args, **kwargs)
 
 
 if __name__ == "__main__":
-    # Create an iob_regfile_sp ip core
-    iob_regfile_sp_core = iob_regfile_sp()
     if "clean" in sys.argv:
-        iob_regfile_sp_core.clean_build_dir()
+        iob_regfile_sp.clean_build_dir()
     elif "print" in sys.argv:
-        iob_regfile_sp_core.print_build_dir()
+        iob_regfile_sp.print_build_dir()
     else:
-        iob_regfile_sp_core._setup()
+        iob_regfile_sp()

@@ -1,40 +1,39 @@
 import os
 
-from iob_module import iob_module
+from iob_core import iob_core
 
 
-class iob_r(iob_module):
-    def __init__(self):
-        super().__init__()
-        self.version = "V0.10"
-        self.ios = [
-            {
-                "name": "clk_rst",
-                "type": "slave",
-                "port_prefix": "",
-                "wire_prefix": "",
-                "descr": "Clock, clock enable and reset",
-                "ports": [],
-            },
-            {
-                "name": "io",
-                "type": "master",
-                "port_prefix": "",
-                "wire_prefix": "",
-                "descr": "Input and output",
-                "ports": [
-                    {
-                        "name": "data",
-                        "direction": "input",
-                        "width": "DATA_W",
-                        "descr": "Data input",
-                    },
-                    {
-                        "name": "data",
-                        "direction": "output",
-                        "width": "DATA_W",
-                        "descr": "Data output",
-                    },
-                ],
-            },
-        ]
+class iob_r(iob_core):
+    def __init__(self, *args, **kwargs):
+        self.set_default_attribute("version", "0.1")
+        self.create_port(
+            name="clk_rst",
+            type="slave",
+            port_prefix="",
+            wire_prefix="",
+            descr="Clock, clock enable and reset",
+            signals=[],
+        )
+        self.create_port(
+            name="io",
+            type="master",
+            port_prefix="",
+            wire_prefix="",
+            descr="Input and output",
+            signals=[
+                {
+                    "name": "data",
+                    "direction": "input",
+                    "width": "DATA_W",
+                    "descr": "Data input",
+                },
+                {
+                    "name": "data",
+                    "direction": "output",
+                    "width": "DATA_W",
+                    "descr": "Data output",
+                },
+            ],
+        )
+
+        super().__init__(*args, **kwargs)

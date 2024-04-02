@@ -1,15 +1,17 @@
-import os
+from iob_core import iob_core
 
-from iob_module import iob_module
-from iob_counter import iob_counter
-from iob_edge_detect import iob_edge_detect
+class axis2fifo(iob_core):
+    def __init__(self, *args, **kwargs):
+        self.set_default_attribute("version", "0.1")
 
+        self.create_instance(
+            "iob_counter",
+            "iob_counter_inst",
+        )
 
-class axis2fifo(iob_module):
-    def __init__(self):
-        super().__init__()
-        self.version = "V0.10"
-        self.submodule_list = [
-            iob_counter(),
-            iob_edge_detect(),
-        ]
+        self.create_instance(
+            "iob_edge_detect",
+            "iob_edge_detect_inst",
+        )
+
+        super().__init__(*args, **kwargs)

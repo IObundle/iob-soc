@@ -1,12 +1,17 @@
-import os
+from iob_core import iob_core
 
-from iob_module import iob_module
-from iob_sync import iob_sync
-from iob_reg_e import iob_reg_e
+class iob_regfile_t2p(iob_core):
+    def __init__(self, *args, **kwargs):
+        self.set_default_attribute("version", "0.1")
 
+        self.create_instance(
+            "iob_sync",
+            "iob_sync_inst",
+        )
 
-class iob_regfile_t2p(iob_module):
-    def __init__(self):
-        super().__init__()
-        self.version = "V0.10"
-        self.submodule_list = [iob_sync(), iob_reg_e()]
+        self.create_instance(
+            "iob_reg_e",
+            "iob_reg_e_inst",
+        )
+
+        super().__init__(*args, **kwargs)

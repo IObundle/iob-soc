@@ -1,21 +1,19 @@
 import sys
 
-from iob_module import iob_module
+from iob_core import iob_core
 
 
-class iob_ram_dp(iob_module):
-    def __init__(self):
-        super().__init__()
-        self.version = "V0.10"
+class iob_ram_dp(iob_core):
+    def __init__(self, *args, **kwargs):
+        self.set_default_attribute("version", "0.1")
         self.previous_version = "V0.09"
+        super().__init__(*args, **kwargs)
 
 
 if __name__ == "__main__":
-    # Create an iob_ram_dp ip core
-    iob_ram_dp_core = iob_ram_dp()
     if "clean" in sys.argv:
-        iob_ram_dp_core.clean_build_dir()
+        iob_ram_dp.clean_build_dir()
     elif "print" in sys.argv:
-        iob_ram_dp_core.print_build_dir()
+        iob_ram_dp.print_build_dir()
     else:
-        iob_ram_dp_core._setup()
+        iob_ram_dp()
