@@ -8,6 +8,7 @@ import subprocess
 import signal
 import argparse
 import importlib.util
+from typing import List
 
 if importlib.util.find_spec("iob_colors") is not None:
     import iob_colors
@@ -31,7 +32,7 @@ USER = os.environ["USER"]
 DURATION = "15"  # Default duration is 5 seconds
 
 # List of processes to kill when terminating board_client
-proc_list = []
+proc_list: List = []
 
 # Variables to store the commands to run
 console_command = None
@@ -223,7 +224,6 @@ if __name__ == "__main__":
     # Lines below will only run if command=="grab" and request successful
 
     # Launch simulator in the background if -s was given
-    sim_proc = None
     if simulator_run_command:
         print(f"{iob_colors.INFO}Running simulator{iob_colors.ENDC}")
         sim_proc = subprocess.Popen(

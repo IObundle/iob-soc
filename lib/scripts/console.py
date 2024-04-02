@@ -145,7 +145,7 @@ def cnsl_recvfile():
     f.write(data)
     f.close()
     print(PROGNAME, end="")
-    print(": file received".format(file_size))
+    print(": file received")
 
 
 def getUserInput():

@@ -52,7 +52,7 @@ sim-run:
 
 sim-test:
 	$(call IOB_NIX_ENV, make clean setup INIT_MEM=1 USE_EXTMEM=0 && make -C ../$(CORE)_V*/build/ sim-run SIMULATOR=icarus)
-	$(call IOB_NIX_ENV, make clean setup INIT_MEM=0 USE_EXTMEM=1 && make -C ../$(CORE)_V*/build/ sim-run SIMULATOR=verilator)
+	$(call IOB_NIX_ENV, make clean setup INIT_MEM=1 USE_EXTMEM=0 && make -C ../$(CORE)_V*/build/ sim-run SIMULATOR=verilator)
 	$(call IOB_NIX_ENV, make clean setup INIT_MEM=0 USE_EXTMEM=1 && make -C ../$(CORE)_V*/build/ sim-run SIMULATOR=verilator)
 
 fpga-run:

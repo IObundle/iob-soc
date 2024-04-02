@@ -211,9 +211,9 @@ def get_reserved_signals(signal_list):
 def get_reserved_signal_connection(signal_name, instace_name, swreg_filename):
     signal_connection = reserved_signals[signal_name]
     return re.sub(
-        "\/\*<InstanceName>\*\/",
+        r"\/\*<InstanceName>\*\/",
         instace_name,
-        re.sub("\/\*<SwregFilename>\*\/", swreg_filename, signal_connection),
+        re.sub(r"\/\*<SwregFilename>\*\/", swreg_filename, signal_connection),
     )
 
 

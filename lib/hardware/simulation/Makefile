@@ -23,6 +23,7 @@ ifeq ($(SYN),)
 #include the module's headers and sources
 VHDR+=$(wildcard ../src/*.vh)
 VSRC+=$(wildcard ../src/*.v)
+VSRC+=$(wildcard ../common_src/*.v)
 else
 NODE ?= umc130
 include ../syn/$(NODE)/sim.mk

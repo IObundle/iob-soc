@@ -12,7 +12,7 @@ def eval_param_expression(param_expression, params_dict):
     else:
         original_expression = param_expression
         # Split string to separate parameters/macros from the rest
-        split_expression = re.split("([^\w_])", param_expression)
+        split_expression = re.split(r"([^\w_])", param_expression)
         # Replace each parameter, following the reverse order of parameter list. The reversed order allows replacing parameters recursively (parameters may have values with parameters that came before).
         for param_name, param_value in reversed(params_dict.items()):
             # Replace every instance of this parameter by its value
@@ -24,7 +24,7 @@ def eval_param_expression(param_expression, params_dict):
                     if idx > 0 and split_expression[idx - 1] == "`":
                         split_expression[idx - 1] = ""
                     # resplit the string in case the parameter value contains other parameters
-                    split_expression = re.split("([^\w_])", "".join(split_expression))
+                    split_expression = re.split(r"([^\w_])", "".join(split_expression))
         # Join back the string
         param_expression = "".join(split_expression)
         # Evaluate $clog2 expressions
@@ -201,7 +201,7 @@ class if_gen_hack_list:
     def write(self, port_string):
         # Parse written string
         port = re.search(
-            "^\s*((?:input)|(?:output))\s+\[([^:]+)-1:0\]\s+([^,]+),.*$",
+            r"^\s*((?:input)|(?:output))\s+\[([^:]+)-1:0\]\s+([^,]+),.*$",
             port_string,
         )
         # Append port to port dictionary
@@ -343,7 +343,7 @@ def get_module_parameters(verilog_lines):
 
         # Parse parameter
         parameter = re.search(
-            "^\s*parameter\s+([^=\s]+)\s*=\s*([^\s,]+),?", verilog_lines[i]
+            r"^\s*parameter\s+([^=\s]+)\s*=\s*([^\s,]+),?", verilog_lines[i]
         )
         if parameter is not None:
             # Store parameter in dictionary with format: module_parameters[parametername] = "default value"

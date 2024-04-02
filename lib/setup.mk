@@ -15,16 +15,19 @@ endif
 build-setup: setup-python-dir format-all
 	python3 -B $(CORE_DIR)/$(CORE).py $(SETUP_ARGS)
 
+python-lint:
+	$(LIB_DIR)/scripts/sw_tools.py mypy .
+
 python-format:
-	$(LIB_DIR)/scripts/sw_format.py black . 
+	$(LIB_DIR)/scripts/sw_tools.py black . 
 ifneq ($(wildcard $(BUILD_DIR)),)
-	$(LIB_DIR)/scripts/sw_format.py black $(BUILD_DIR) 
+	$(LIB_DIR)/scripts/sw_tools.py black $(BUILD_DIR) 
 endif
 
 c-format:
-	$(LIB_DIR)/scripts/sw_format.py clang .
+	$(LIB_DIR)/scripts/sw_tools.py clang .
 ifneq ($(wildcard $(BUILD_DIR)),)
-	$(LIB_DIR)/scripts/sw_format.py clang $(BUILD_DIR)
+	$(LIB_DIR)/scripts/sw_tools.py clang $(BUILD_DIR)
 endif
 
 # Auto-disable linter and formatter if setting up with the Tester
@@ -50,7 +53,7 @@ ifneq ($(DISABLE_FORMAT),1)
 	$(LIB_DIR)/scripts/verilog-format.sh $(VHFILES) $(VFILES)
 endif
 
-format-all: python-format c-format verilog-lint verilog-format
+format-all: python-lint python-format c-format verilog-lint verilog-format
 
 clean: setup-python-dir
 #ifneq ($(wildcard $(BUILD_DIR)),)
@@ -67,4 +70,4 @@ python-cache-clean:
 	find . -name "*__pycache__" -exec rm -rf {} \; -prune
 
 
-.PHONY: setup-python-dir build-setup clean c-format python-format verilog-format format-all
+.PHONY: setup-python-dir build-setup clean c-format python-lint python-format verilog-format format-all

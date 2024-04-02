@@ -93,29 +93,29 @@ def generate_if_tex(ports, out_dir):
         if_file.write(
             """
 \\begin{table}[H]
-  \centering
+  \\centering
   \\begin{tabularx}{\\textwidth}{|l|l|r|X|}
-    
-    \hline
-    \\rowcolor{iob-green}
-    {\\bf Name} & {\\bf Direction} & {\\bf Width} & {\\bf Description}  \\\\ \hline \hline
 
-    \input """
+    \\hline
+    \\rowcolor{iob-green}
+    {\\bf Name} & {\\bf Direction} & {\\bf Width} & {\\bf Description}  \\\\ \\hline \\hline
+
+    \\input """
             + port.name
             + """_if_tab
- 
-  \end{tabularx}
-  \caption{"""
-            + port.descr.replace("_", "\_")
+
+  \\end{tabularx}
+  \\caption{"""
+            + port.descr.replace("_", "\\_")
             + """}
-  \label{"""
+  \\label{"""
             + port.name
             + """_if_tab:is}
-\end{table}
+\\end{table}
 """
         )
 
-    if_file.write("\clearpage")
+    if_file.write("\\clearpage")
     if_file.close()
 
 

@@ -16,6 +16,7 @@ VSRC+=$(wildcard ../src/*.v) $(wildcard ./src/*.v)
 
 INCLUDE+=.
 INCLUDE+=../src
+INCLUDE+=../common_src
 
 #include local syn segment
 ifneq ($(wildcard syn_build.mk),)

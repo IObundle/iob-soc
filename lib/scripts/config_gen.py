@@ -47,9 +47,9 @@ def conf_h(macros, top_module, out_dir):
         if type(macro.val) != bool:
             m_name = macro.name.upper()
             # Replace any Verilog specific syntax by equivalent C syntax
-            m_default_val = re.sub("\d+'h", "0x", str(macro.val))
-            m_min_val = re.sub("\d+'h", "0x", str(macro.min))
-            m_max_val = re.sub("\d+'h", "0x", str(macro.max))
+            m_default_val = re.sub("\\d+'h", "0x", str(macro.val))
+            m_min_val = re.sub("\\d+'h", "0x", str(macro.min))
+            m_max_val = re.sub("\\d+'h", "0x", str(macro.max))
             file2create.write(
                 f"#define {core_prefix}{m_name} {str(m_default_val).replace('`','')}\n"
             )  # Remove Verilog macros ('`')
@@ -120,7 +120,7 @@ def generate_confs_tex(confs, out_dir):
     for derv_param in derv_params:
         # replace underscores and $clog2 with \_ and $\log_2
         for i in range(len(derv_param)):
-            derv_param[i] = derv_param[i].replace("_", "\_")
+            derv_param[i] = derv_param[i].replace("_", "\\_")
             derv_param[i] = derv_param[i].replace("$clog2", "log2")
         # write the line
         file2create.write(

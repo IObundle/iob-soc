@@ -644,6 +644,7 @@ def copy_rename_setup_directory(core, exclude_file_list=[]):
     if core.is_top_module:
         dir_list += [
             "hardware/simulation",
+            "hardware/common_src",
             "hardware/fpga",
             "hardware/syn",
             "hardware/lint",
