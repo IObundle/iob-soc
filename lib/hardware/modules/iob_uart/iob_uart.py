@@ -8,8 +8,9 @@ from iob_core import iob_core
 class iob_uart(iob_core):
     def __init__(self, *args, **kwargs):
         self.set_default_attribute("version", "0.1")
-        self.rw_overlap = True
-        self.board_list = ["CYCLONEV-GT-DK", "AES-KU040-DB-G"]
+        self.set_default_attribute("rw_overlap", True)
+        self.set_default_attribute("board_list", ["CYCLONEV-GT-DK", "AES-KU040-DB-G"])
+        self.set_default_attribute("autoaddr", False)
 
         self.create_conf(
             name="DATA_W",
@@ -90,7 +91,7 @@ class iob_uart(iob_core):
                 },
             ],
         )
-        self.autoaddr = False
+
         self.regs = [
             {
                 "name": "uart",
@@ -181,8 +182,10 @@ class iob_uart(iob_core):
                 ],
             }
         ]
-        self.block_groups = []
+
         # FIXME: Init attributes no longer exists
+        #        Here we are trying to change the (project wide) values of iob_reg
+        #        Main branch implementation: https://github.com/IObundle/iob-soc/blob/e1623e1bedab1ca6ee8087ae0903f0618f1a6c68/submodules/UART/iob_uart.py
         # iob_reg.confs = [
         #    {
         #        "name": "DATA_W",

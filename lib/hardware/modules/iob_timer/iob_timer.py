@@ -8,6 +8,7 @@ from iob_core import iob_core
 class iob_timer(iob_core):
     def __init__(self, *args, **kwargs):
         self.set_default_attribute("version", "0.1")
+        self.set_default_attribute("autoaddr", True)
 
         self.create_conf(
             name="DATA_W",
@@ -54,7 +55,7 @@ class iob_timer(iob_core):
                 "DATA_W": "DATA_W",
             },
         )
-        self.autoaddr = True
+
         self.regs = [
             {
                 "name": "timer",

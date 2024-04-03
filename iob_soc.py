@@ -2,42 +2,16 @@
 
 import sys
 
-from iob_module import iob_module
+from iob_core import iob_core
 from iob_soc_utils import pre_setup_iob_soc, post_setup_iob_soc
 
-# Submodules
-from iob_picorv32 import iob_picorv32
-from iob_cache import iob_cache
-from iob_uart import iob_uart
-from iob_timer import iob_timer
-from iob_utils import iob_utils
-from iob_merge import iob_merge
-from iob_split import iob_split
-from iob_rom_sp import iob_rom_sp
-from iob_ram_dp_be import iob_ram_dp_be
-from iob_ram_dp_be_xil import iob_ram_dp_be_xil
-from iob_pulse_gen import iob_pulse_gen
-from iob_counter import iob_counter
-from iob_reg import iob_reg
-from iob_reg_re import iob_reg_re
-from iob_ram_sp_be import iob_ram_sp_be
-from iob_ram_dp import iob_ram_dp
-from iob_reset_sync import iob_reset_sync
-from axi_ram import axi_ram
-from iob_tasks import iob_tasks
-from printf import printf
-from iob_ctls import iob_ctls
-from iob_ram_2p import iob_ram_2p
-from iob_ram_sp import iob_ram_sp
-from axi_interconnect import axi_interconnect
 
-
-class iob_soc(iob_module):
+class iob_soc(iob_core):
     def __init__(self, *args, **kwargs):
-        self.version = "V0.70"
-        self.rw_overlap = True
-        self.is_system = True
-        self.board_list = ["CYCLONEV-GT-DK", "AES-KU040-DB-G"]
+        self.set_default_attribute("version", "0.7")
+        self.set_default_attribute("rw_overlap", True)
+        self.set_default_attribute("is_system", True)
+        self.set_default_attribute("board_list", ["CYCLONEV-GT-DK", "AES-KU040-DB-G"])
 
         # macros
         # This method creates a macro and adds it to the local module's `confs` list
