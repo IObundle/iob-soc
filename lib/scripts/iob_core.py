@@ -24,9 +24,9 @@ class iob_core(iob_module, iob_instance):
     """Generic class to describe how to generate a base IOb IP core"""
 
     global_wires: list
-    global_build_dir: str = None
+    global_build_dir: str = ""
     # Project wide special target. Used when we don't want to run normal setup (for example, when cleaning).
-    global_special_target: str = None
+    global_special_target: str = ""
 
     def __init__(
         self,

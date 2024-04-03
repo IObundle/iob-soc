@@ -1,8 +1,8 @@
 from dataclasses import dataclass
-from typing import Dict, List
+from typing import Dict
 
 import iob_colors
-from iob_wire import iob_wire, create_wire
+from iob_wire import iob_wire
 
 
 @dataclass
@@ -10,7 +10,7 @@ class iob_port(iob_wire):
     """Describes an IO port."""
 
     # External wire that connects this port
-    e_connect: iob_wire = None
+    e_connect: iob_wire | None = None
 
     """ 'if_gen' related arguments """
     # Type of interface: 'master', 'slave' or '' (for neither)

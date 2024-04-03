@@ -1,3 +1,5 @@
+import sys
+
 from iob_core import iob_core
 
 
@@ -36,6 +38,7 @@ class iob_fifo_sync(iob_core):
         # )
 
         super().__init__(*args, **kwargs)
+
 
 if __name__ == "__main__":
     if "clean" in sys.argv:

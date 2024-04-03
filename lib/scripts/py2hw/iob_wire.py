@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List, Dict
 
 from iob_base import fail_with_msg
@@ -9,21 +9,21 @@ import if_gen
 class iob_wire:
     """Class to represent a wire in an iob module"""
 
-    name: str = None
+    name: str = ""
 
     """ 'if_gen' related arguments """
     wire_prefix: str = ""
-    mult: str = "1"
-    widths: Dict[str, str] = None
+    mult: str | int = 1
+    widths: Dict[str, str] = field(default_factory=dict)
     file_prefix: str = ""
 
     """ Other wire arguments """
     descr: str = "Default description"
     # Only set the wire if this Verilog macro is defined
-    if_defined: str = None
+    if_defined: str = ""
     # List of signals belonging to this wire
     # (each signal is similar to a Verilog wire)
-    signals: List = None
+    signals: List = field(default_factory=list)
     # Reference to a global signal connected to this one
     global_wire = None
 

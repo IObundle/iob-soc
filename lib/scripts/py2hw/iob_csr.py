@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from iob_base import fail_with_msg
 
@@ -7,9 +7,9 @@ from iob_base import fail_with_msg
 class iob_csr_group:
     """Class to represent a Control/Status Register group."""
 
-    name: str = None
+    name: str = ""
     descr: str = "Default description"
-    regs: list = None
+    regs: list = field(default_factory=list)
 
     def __post_init__(self):
         if not self.name:

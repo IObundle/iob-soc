@@ -546,7 +546,7 @@ def copy_rename_setup_subdir(core, directory, exclude_file_list=[]):
             return
     elif directory == "hardware/fpga":
         # Skip if board_list is empty
-        if core.board_list is None:
+        if not core.board_list:
             return
 
         tools_list = ["quartus", "vivado"]

@@ -62,5 +62,5 @@ class iob_module(iob_base):
         """Update global top module if it has not been set before.
         The first module to call this method is the global top module.
         """
-        if __class__.global_top_module is None:
+        if not __class__.global_top_module:
             __class__.global_top_module = self

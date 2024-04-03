@@ -1,17 +1,16 @@
 from dataclasses import dataclass
-from typing import Union
 
 
 @dataclass
 class iob_conf:
-    name: str
-    type: str
-    val: Union[str, bool]
-    min: str = 0
-    max: str = 1
+    name: str = ""
+    type: str = ""
+    val: str | bool = ""
+    min: str | int = 0
+    max: str | int = 1
     descr: str = "Default description"
     # Only set this macro if the Verilog macro specified here is defined
-    if_defined: str = None
+    if_defined: str = ""
 
     def __post_init__(self):
         if not self.name:
