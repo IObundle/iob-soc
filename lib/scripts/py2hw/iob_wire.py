@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List, Dict
 
-import iob_colors
+from iob_base import fail_with_msg
 import if_gen
 
 
@@ -29,10 +29,10 @@ class iob_wire:
 
     def __post_init__(self):
         if not self.name:
-            raise ValueError("Wire name is not set")
+            fail_with_msg("Wire name is not set", ValueError)
 
         if self.name in if_gen.if_names:
-            # TODO: Use if_gen to generate wire
+            # TODO: Use if_gen to generate signals
             return
 
         # Create wire manually

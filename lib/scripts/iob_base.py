@@ -30,6 +30,6 @@ def find_obj_in_list(obj_list, obj_name):
     return next((o for o in obj_list if o.name == obj_name), None)
 
 
-def fail_with_msg(msg):
+def fail_with_msg(msg, exception_type=Exception):
     """Raise an error with a given message"""
-    raise Exception(iob_colors.FAIL + msg + iob_colors.ENDC)
+    raise exception_type(iob_colors.FAIL + msg + iob_colors.ENDC)

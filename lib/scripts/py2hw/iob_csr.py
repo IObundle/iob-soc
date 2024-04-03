@@ -1,18 +1,29 @@
 from dataclasses import dataclass
 
+from iob_base import fail_with_msg
+
 
 @dataclass
-class iob_csr:
-    """Describes a Control/Status Register."""
+class iob_csr_group:
+    """Class to represent a Control/Status Register group."""
 
-    # TODO
+    name: str = None
+    descr: str = "Default description"
+    regs: list = None
+
+    def __post_init__(self):
+        if not self.name:
+            fail_with_msg("CSR group name is not set", ValueError)
+
+        if not self.regs:
+            fail_with_msg("CSR group regs list is empty", ValueError)
 
 
-def create_csr(core, *args, **kwargs):
-    """Creates a new csr object and adds it to the core's csr list
+def create_csr_group(core, *args, **kwargs):
+    """Creates a new csr group object and adds it to the core's csr list
     param core: core object
     """
     # Ensure 'csrs' list exists
     core.set_default_attribute("csrs", [])
-    csr = iob_csr(*args, **kwargs)
-    core.csrs.append(csr)
+    csr_group = iob_csr_group(*args, **kwargs)
+    core.csrs.append(csr_group)

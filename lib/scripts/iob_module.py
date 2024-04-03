@@ -2,7 +2,7 @@ from iob_base import iob_base
 from iob_conf import create_conf
 from iob_port import create_port
 from iob_wire import create_wire, get_wire_signal
-from iob_csr import create_csr
+from iob_csr import create_csr_group
 from iob_snippet import create_snippet
 
 
@@ -36,8 +36,8 @@ class iob_module(iob_base):
     def get_wire_signal(self, *args, **kwargs):
         get_wire_signal(self, *args, **kwargs)
 
-    def create_csr(self, *args, **kwargs):
-        create_csr(self, *args, **kwargs)
+    def create_csr_group(self, *args, **kwargs):
+        create_csr_group(self, *args, **kwargs)
 
     def create_snippet(self, *args, **kwargs):
         create_snippet(self, *args, **kwargs)

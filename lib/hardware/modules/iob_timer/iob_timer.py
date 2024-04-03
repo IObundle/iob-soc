@@ -56,59 +56,57 @@ class iob_timer(iob_core):
             },
         )
 
-        self.regs = [
-            {
-                "name": "timer",
-                "descr": "TIMER software accessible registers.",
-                "regs": [
-                    {
-                        "name": "RESET",
-                        "type": "W",
-                        "n_bits": 1,
-                        "rst_val": 0,
-                        "log2n_items": 0,
-                        "autoreg": True,
-                        "descr": "Timer soft reset",
-                    },
-                    {
-                        "name": "ENABLE",
-                        "type": "W",
-                        "n_bits": 1,
-                        "rst_val": 0,
-                        "log2n_items": 0,
-                        "autoreg": True,
-                        "descr": "Timer enable",
-                    },
-                    {
-                        "name": "SAMPLE",
-                        "type": "W",
-                        "n_bits": 1,
-                        "rst_val": 0,
-                        "log2n_items": 0,
-                        "autoreg": True,
-                        "descr": "Sample time counter value into a readable register",
-                    },
-                    {
-                        "name": "DATA_LOW",
-                        "type": "R",
-                        "n_bits": 32,
-                        "rst_val": 0,
-                        "log2n_items": 0,
-                        "autoreg": True,
-                        "descr": "High part of the timer value, which has twice the width of the data word width",
-                    },
-                    {
-                        "name": "DATA_HIGH",
-                        "type": "R",
-                        "n_bits": 32,
-                        "rst_val": 0,
-                        "log2n_items": 0,
-                        "autoreg": True,
-                        "descr": "Low part of the timer value, which has twice the width of the data word width",
-                    },
-                ],
-            }
-        ]
+        self.create_csr_group(
+            name="timer",
+            descr="TIMER software accessible registers.",
+            regs=[
+                {
+                    "name": "RESET",
+                    "type": "W",
+                    "n_bits": 1,
+                    "rst_val": 0,
+                    "log2n_items": 0,
+                    "autoreg": True,
+                    "descr": "Timer soft reset",
+                },
+                {
+                    "name": "ENABLE",
+                    "type": "W",
+                    "n_bits": 1,
+                    "rst_val": 0,
+                    "log2n_items": 0,
+                    "autoreg": True,
+                    "descr": "Timer enable",
+                },
+                {
+                    "name": "SAMPLE",
+                    "type": "W",
+                    "n_bits": 1,
+                    "rst_val": 0,
+                    "log2n_items": 0,
+                    "autoreg": True,
+                    "descr": "Sample time counter value into a readable register",
+                },
+                {
+                    "name": "DATA_LOW",
+                    "type": "R",
+                    "n_bits": 32,
+                    "rst_val": 0,
+                    "log2n_items": 0,
+                    "autoreg": True,
+                    "descr": "High part of the timer value, which has twice the width of the data word width",
+                },
+                {
+                    "name": "DATA_HIGH",
+                    "type": "R",
+                    "n_bits": 32,
+                    "rst_val": 0,
+                    "log2n_items": 0,
+                    "autoreg": True,
+                    "descr": "Low part of the timer value, which has twice the width of the data word width",
+                },
+            ],
+        )
 
         self.create_instance(
             "iob_utils",
