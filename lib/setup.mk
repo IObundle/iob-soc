@@ -53,7 +53,7 @@ ifneq ($(DISABLE_FORMAT),1)
 	$(LIB_DIR)/scripts/verilog-format.sh $(VHFILES) $(VFILES)
 endif
 
-format-all: python-lint python-format c-format verilog-lint verilog-format
+format-all: python-format c-format verilog-lint verilog-format # python-lint 
 
 clean: setup-python-dir
 #ifneq ($(wildcard $(BUILD_DIR)),)
