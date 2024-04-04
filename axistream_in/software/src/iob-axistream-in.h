@@ -1,31 +1,6 @@
 #include "iob_axistream_in_swreg.h"
 
-//AXISTREAMIN functions
+void iob_axis_in_reset();
 
-//Set AXISTREAMIN base address
-void axistream_in_init(int base_address);
+uint32_t iob_axis_read(uint32_t *value);
 
-// Get value from FIFO
-// Returns a 32 bits word (check rstrb to know which bytes are valid)
-// Arguments:
-//     uint8_t *rstrb: pointer to a uint8_t where the valid bytes will be marked
-//     with 1s (e.g. 0b00001111 means that the first 4 bytes are valid)
-//     uint8_t *tlast:  pointer to a uint8_t where the tlast signal will be
-//     stored
-uint32_t axistream_in_pop(uint8_t *rstrb, uint8_t *tlast);
-
-// Signal when FIFO empty
-uint8_t axistream_in_empty();
-
-// Soft reset
-void axistream_in_reset();
-
-void axistream_in_enable();
-void axistream_in_disable();
-
-//Set the FIFO threshold level
-//If the FIFO level is equal or higher than the threshold, trigger an interrupt
-void axistream_in_set_fifo_threshold(uint32_t threshold);
-
-//Get current FIFO level
-uint32_t axistream_in_fifo_level();
