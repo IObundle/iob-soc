@@ -811,6 +811,19 @@ def write_s_tb_wire(fout, wire_prefix, param_prefix, wires):
 #
 
 
+def get_signals(name, mult=1, widths={}):
+    """Get signals for given interface"""
+    eval_str = "get_" + name + "_ports(widths=widths)"
+    # print(eval_str)
+    signals = eval(eval_str)
+
+    if mult > 1:
+        for signal in signals:
+            signal["mult"] = mult
+
+    return signals
+
+
 def gen_if(name, file_prefix, port_prefix, wire_prefix, ports, mult=1, widths={}):
     # print(name, file_prefix, port_prefix, wire_prefix, ports, mult)
 
@@ -819,13 +832,7 @@ def gen_if(name, file_prefix, port_prefix, wire_prefix, ports, mult=1, widths={}
 
     # get ports
     if ports == []:
-        eval_str = "get_" + name + "_ports(widths=widths)"
-        # print(eval_str)
-        ports = eval(eval_str)
-
-        if mult > 1:
-            for port in ports:
-                port["mult"] = mult
+        ports = get_signals(name, mult, widths)
 
     #
     # GENERATE SNIPPETS FOR ALL TYPES OF PORTS AND WIRES
@@ -852,6 +859,10 @@ def gen_if(name, file_prefix, port_prefix, wire_prefix, ports, mult=1, widths={}
 
 
 def gen_wires(name, file_prefix, param_prefix, wire_prefix, signals, mult=1, widths={}):
+    # get signals
+    if signals == []:
+        signals = get_signals(name, mult, widths)
+
     fout = open(file_prefix + name + "_wire.vs", "w")
     write_wire(fout, wire_prefix, param_prefix, signals)
     fout.close()
