@@ -3,7 +3,6 @@ import sys
 from iob_core import iob_core
 
 
-
 class iob_ram_2p_tiled(iob_core):
     def __init__(self, *args, **kwargs):
         self.set_default_attribute("version", "0.1")

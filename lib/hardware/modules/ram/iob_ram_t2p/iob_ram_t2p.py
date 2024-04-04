@@ -9,6 +9,7 @@ class iob_ram_t2p(iob_core):
 
         super().__init__(*args, **kwargs)
 
+
 if __name__ == "__main__":
     if "clean" in sys.argv:
         iob_ram_t2p.clean_build_dir()
