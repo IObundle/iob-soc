@@ -5,6 +5,7 @@
 # interface dictionary as below run this script with the -h option for help
 
 import re
+from iob_wire import iob_signal_reference
 
 if_names = [
     "clk_en_rst",
@@ -768,6 +769,8 @@ def write_s_s_portmap(fout, port_prefix, wire_prefix, port_list):
 
 # Write wire with given name, bus size, width to file
 def write_single_wire(fout, wire_prefix, param_prefix, wire, for_tb, direction):
+    if isinstance(wire, iob_signal_reference):
+        return
     wire_name = wire_prefix + wire["name"]
     wtype = "wire"
     mult = 1

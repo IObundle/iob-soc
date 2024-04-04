@@ -6,6 +6,7 @@ from latex import write_table
 
 import iob_colors
 from iob_port import iob_port, get_signal_name_with_dir_suffix
+from iob_wire import get_real_signal
 
 
 # Generate blocks.tex file with TeX table of blocks (Verilog modules instances)
@@ -99,13 +100,12 @@ def get_instance_port_connections(instance):
         instance_portmap += f"        // {port.name} port\n"
         for idx, signal in enumerate(port.signals):
             port_name = get_signal_name_with_dir_suffix(signal)
-            if isinstance(port.e_connect, iob_port):
-                # External signal is a port. Use direction suffix.
-                e_signal_name = get_signal_name_with_dir_suffix(
-                    port.e_connect.signals[idx]
-                )
+            real_e_signal = get_real_signal(port.e_connect.signals[idx])
+            if "direction" in real_e_signal:
+                # External signal belongs to a port. Use direction suffix.
+                e_signal_name = get_signal_name_with_dir_suffix(real_e_signal)
             else:
-                e_signal_name = port.e_connect.signals[idx]["name"]
+                e_signal_name = real_e_signal["name"]
 
             comma = (
                 ","

@@ -1,8 +1,7 @@
 from dataclasses import dataclass, field
 from typing import List, Dict
 
-from iob_base import fail_with_msg
-import if_gen
+from iob_base import find_obj_in_list, fail_with_msg
 
 
 @dataclass
@@ -31,13 +30,6 @@ class iob_wire:
         if not self.name:
             fail_with_msg("Wire name is not set", ValueError)
 
-        if self.name in if_gen.if_names:
-            # TODO: Use if_gen to generate signals
-            return
-
-        # Create wire manually
-        # TODO
-
 
 def create_wire(core, *args, **kwargs):
     """Creates a new wire object and adds it to the core's wire list
@@ -49,13 +41,44 @@ def create_wire(core, *args, **kwargs):
     core.wires.append(wire)
 
 
+# It may better for us to use a class instead of dictionaries to represent a 'signal'
+# @dataclass
+# class iob_signal:
+#     pass
+
+
+@dataclass
+class iob_signal_reference:
+    """Class that references another signal
+    Use to distinguish from a real signal (for generator scripts)
+    """
+
+    signal: dict | None = None
+
+
 def get_wire_signal(core, wire_name: str, signal_name: str):
     """Return a signal reference from a given wire.
     param core: core object
     param wire_name: name of wire in the core's local wire list
     param signal_name: name of signal in the wire's signal list
     """
+    wire = find_obj_in_list(core.wires, wire_name) or find_obj_in_list(
+        core.ports, wire_name
+    )
+    if not wire:
+        fail_with_msg(f"Could not find wire/port '{wire_name}'!")
 
-    for wire in core.wire_list:
-        if wire.name == wire_name:
-            return wire
+    signal = find_obj_in_list(wire.signals, signal_name)
+    if not signal:
+        fail_with_msg(
+            f"Could not find signal '{signal_name}' of wire/port '{wire_name}'!"
+        )
+
+    return iob_signal_reference(signal=signal)
+
+
+def get_real_signal(signal):
+    """Given a signal reference, follow the reference (recursively) and return the real signal"""
+    while isinstance(signal, iob_signal_reference):
+        signal = signal.signal
+    return signal

@@ -27,6 +27,10 @@ class iob_base:
 
 def find_obj_in_list(obj_list, obj_name):
     """Returns an object with a given name from a list of objects"""
+    # Support dictionaries as well
+    if obj_list and isinstance(obj_list[0], dict):
+        return next((o for o in obj_list if o["name"] == obj_name), None)
+
     return next((o for o in obj_list if o.name == obj_name), None)
 
 
