@@ -14,7 +14,7 @@ class iob_pulse_gen(iob_core):
             min="0",
             max="NA",
             descr="",
-        ),
+        )
         self.create_conf(
             name="DURATION",
             type="P",
@@ -22,7 +22,7 @@ class iob_pulse_gen(iob_core):
             min="0",
             max="NA",
             descr="",
-        ),
+        )
         # Local/False parameters
         self.create_conf(
             name="WIDTH",
@@ -31,7 +31,7 @@ class iob_pulse_gen(iob_core):
             min="NA",
             max="NA",
             descr="",
-        ),
+        )
         self.create_conf(
             name="START_INT",
             type="F",
@@ -39,7 +39,7 @@ class iob_pulse_gen(iob_core):
             min="NA",
             max="NA",
             descr="",
-        ),
+        )
         self.create_conf(
             name="FINISH",
             type="F",
@@ -47,7 +47,7 @@ class iob_pulse_gen(iob_core):
             min="NA",
             max="NA",
             descr="",
-        ),
+        )
 
         self.create_port(
             name="clk_en_rst",

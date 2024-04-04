@@ -34,7 +34,7 @@ class iob_module(iob_base):
         create_wire(self, *args, **kwargs)
 
     def get_wire_signal(self, *args, **kwargs):
-        get_wire_signal(self, *args, **kwargs)
+        return get_wire_signal(self, *args, **kwargs)
 
     def create_csr_group(self, *args, **kwargs):
         create_csr_group(self, *args, **kwargs)

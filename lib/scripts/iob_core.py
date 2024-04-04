@@ -32,7 +32,6 @@ class iob_core(iob_module, iob_instance):
         self,
         *args,
         purpose: str = "hardware",
-        generate_hw: bool = True,
         **kwargs,
     ):
         # Inherit attributes from superclasses
@@ -59,6 +58,8 @@ class iob_core(iob_module, iob_instance):
         self.set_default_attribute("purpose", purpose, str)
         # Don't replace snippets mentioned in this list
         self.set_default_attribute("ignore_snippets", [], list)
+        # Select if should generate hardware from python
+        self.set_default_attribute("generate_hw", True)
 
         # Read-only dictionary with relation between the 'purpose' and
         # the corresponding source folder
@@ -106,13 +107,15 @@ class iob_core(iob_module, iob_instance):
         csr_gen_obj, reg_table = reg_gen.generate_csr(self)
 
         # Generate instances
-        block_gen.generate_blocks(self)
+        if self.generate_hw:
+            block_gen.generate_blocks(self)
 
         # Generate snippets
         snippet_gen.generate_snippets(self)
 
         # Generate main Verilog module
-        verilog_gen.generate_verilog(self)
+        if self.generate_hw:
+            verilog_gen.generate_verilog(self)
 
         # TODO: Generate a global list of signals
         # This list is useful for a python based simulator

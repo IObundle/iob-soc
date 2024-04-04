@@ -27,7 +27,7 @@ if [ "$1" == "test" ]; then
         core_dir=`find -name ${i}.py | xargs dirname`
         # echo "Running test for $core_dir"
         make -f ${LIB_DIR}/Makefile clean build-setup CORE=$i TOP_MODULE_NAME=$i CORE_DIR=$core_dir
-        make -C ../${i}_V*/build sim-run
+        make -C ../${i}_V* sim-run
     done
     exit 0
 fi
