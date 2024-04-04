@@ -21,7 +21,7 @@ class iob_port(iob_wire):
     doc_only: bool = False
 
     def __post_init__(self):
-        super().__post_init__()
+        super().__post_init__(signal_dir=True)
         for signal in self.signals:
             if not signal["direction"]:
                 raise Exception("Port direction is required")

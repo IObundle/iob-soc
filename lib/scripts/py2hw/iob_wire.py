@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import List, Dict
 
+import if_gen
 from iob_base import find_obj_in_list, fail_with_msg
 
 
@@ -26,9 +27,28 @@ class iob_wire:
     # Reference to a global signal connected to this one
     global_wire = None
 
-    def __post_init__(self):
+    def __post_init__(self, signal_dir=False):
+        """Post init method
+        param signal_dir: keep signal direction info (wires should not have it,
+                          but subclasses may need it)
+        """
         if not self.name:
             fail_with_msg("Wire name is not set", ValueError)
+
+        if self.name in if_gen.if_names:
+            self.signals += if_gen.get_signals(
+                self.name,
+                self.mult,
+                self.widths,
+            )
+
+        if not signal_dir:
+            for signal in self.signals:
+                # Skip signal references
+                if isinstance(signal, iob_signal_reference):
+                    continue
+                if "direction" in signal:
+                    signal.pop("direction")
 
 
 def create_wire(core, *args, **kwargs):

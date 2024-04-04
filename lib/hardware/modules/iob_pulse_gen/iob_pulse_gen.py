@@ -115,13 +115,6 @@ class iob_pulse_gen(iob_core):
                 self.get_wire_signal("pulse", "pulse"),
             ],
         )
-        # DEBUG Temporary wire for dev of py2hw
-        self.create_wire(
-            name="clk_en_rst",
-            wire_prefix="",
-            descr="Clock, clock enable and reset",
-            signals=[],
-        )
 
         self.create_instance(
             "iob_reg",
