@@ -108,7 +108,15 @@ class iob_pulse_gen(iob_core):
             ],
         )
         self.create_wire(
-            name="reg_io",
+            name="start_detected_io",
+            descr="",
+            signals=[
+                self.get_wire_signal("start_detected_nxt", "start_detected_nxt"),
+                self.get_wire_signal("start_detected", "start_detected"),
+            ],
+        )
+        self.create_wire(
+            name="pulse_reg_io",
             descr="",
             signals=[
                 self.get_wire_signal("pulse_nxt", "pulse_nxt"),
@@ -125,7 +133,7 @@ class iob_pulse_gen(iob_core):
             },
             connect={
                 "clk_en_rst": "clk_en_rst",
-                "io": "reg_io",
+                "io": "start_detected_io",
             },
         )
         self.create_instance(
@@ -140,6 +148,18 @@ class iob_pulse_gen(iob_core):
                 "rst": "start",
                 "en": "cnt_en",
                 "data": "cnt",
+            },
+        )
+        self.create_instance(
+            "iob_reg",
+            "pulse_reg",
+            parameters={
+                "DATA_W": 1,
+                "RST_VAL": 0,
+            },
+            connect={
+                "clk_en_rst": "clk_en_rst",
+                "io": "pulse_reg_io",
             },
         )
 
