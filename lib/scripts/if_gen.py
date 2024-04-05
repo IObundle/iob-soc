@@ -25,6 +25,7 @@ if_names = [
     "ram_sp",
     "ram_tdp",
     "ram_2p",
+    "rs232",
 ]
 
 if_types = [
@@ -630,6 +631,89 @@ def get_apb_ports():
 
 
 #
+# RS232
+#
+N_PINS = 4
+
+
+@parse_widths
+def get_rs232_ports():
+    assert N_PINS in [2, 4, 9], "rs232 'N_PINS' must be 2, 4 or 9!"
+    ports = []
+    if N_PINS == 9:
+        ports += [
+            {
+                "name": "rs232_dcd",
+                "direction": "input",
+                "width": 1,
+                "descr": "Data carrier detect.",
+            },
+        ]
+    if N_PINS in [2, 4]:
+        ports += [
+            {
+                "name": "rs232_rxd",
+                "direction": "input",
+                "width": 1,
+                "descr": "Receive data.",
+            },
+            {
+                "name": "rs232_txd",
+                "direction": "output",
+                "width": 1,
+                "descr": "Transmit data.",
+            },
+        ]
+    if N_PINS == 9:
+        ports += [
+            {
+                "name": "rs232_dtr",
+                "direction": "output",
+                "width": 1,
+                "descr": "Data terminal ready.",
+            },
+            {
+                "name": "rs232_gnd",
+                "direction": "input",
+                "width": 1,
+                "descr": "Ground.",
+            },
+            {
+                "name": "rs232_dsr",
+                "direction": "input",
+                "width": 1,
+                "descr": "Data set ready.",
+            },
+        ]
+    if N_PINS == 4:
+        ports += [
+            {
+                "name": "rs232_rts",
+                "direction": "output",
+                "width": 1,
+                "descr": "Request to send.",
+            },
+            {
+                "name": "rs232_cts",
+                "direction": "input",
+                "width": 1,
+                "descr": "Clear to send.",
+            },
+        ]
+    if N_PINS == 9:
+        ports += [
+            {
+                "name": "rs232_ri",
+                "direction": "input",
+                "width": 1,
+                "descr": "Ring indicator.",
+            },
+        ]
+
+    return ports
+
+
+#
 # Handle signal direction
 #
 
@@ -709,8 +793,7 @@ def write_m_port(fout, port_prefix, param_prefix, port_list):
 
 
 def write_s_port(fout, port_prefix, param_prefix, port_list):
-    for port in port_list:
-        write_port(fout, port_prefix, port)
+    write_m_port(fout, port_prefix, param_prefix, port_list)
 
 
 #
@@ -750,8 +833,7 @@ def write_m_portmap(fout, port_prefix, wire_prefix, port_list):
 
 
 def write_s_portmap(fout, port_prefix, wire_prefix, port_list):
-    for port in port_list:
-        write_portmap(fout, port_prefix, wire_prefix, port, False)
+    write_m_portmap(fout, port_prefix, wire_prefix, port_list)
 
 
 def write_m_m_portmap(fout, port_prefix, wire_prefix, port_list):
@@ -760,8 +842,7 @@ def write_m_m_portmap(fout, port_prefix, wire_prefix, port_list):
 
 
 def write_s_s_portmap(fout, port_prefix, wire_prefix, port_list):
-    for port in port_list:
-        write_portmap(fout, port_prefix, wire_prefix, port, True)
+    write_m_m_portmap(fout, port_prefix, wire_prefix, port_list)
 
 
 #
@@ -801,7 +882,7 @@ def write_m_tb_wire(fout, wire_prefix, param_prefix, wires):
 
 
 def write_s_tb_wire(fout, wire_prefix, param_prefix, wires):
-    write_tb_wire(fout, wire_prefix, param_prefix, wires)
+    write_m_tb_wire(fout, wire_prefix, param_prefix, wires)
 
 
 #
