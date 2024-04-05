@@ -2,7 +2,9 @@ from dataclasses import dataclass
 from typing import Dict
 
 import iob_colors
+import if_gen
 from iob_wire import iob_wire
+from iob_base import fail_with_msg
 
 
 @dataclass
@@ -21,7 +23,17 @@ class iob_port(iob_wire):
     doc_only: bool = False
 
     def __post_init__(self):
-        super().__post_init__(signal_dir=True)
+        if not self.name:
+            fail_with_msg("Port name is not set", ValueError)
+
+        if self.name in if_gen.if_names:
+            self.signals += if_gen.get_signals(
+                self.name,
+                self.type,
+                self.mult,
+                self.widths,
+            )
+
         for signal in self.signals:
             if not signal["direction"]:
                 raise Exception("Port direction is required")
