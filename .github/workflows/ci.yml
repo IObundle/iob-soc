@@ -21,18 +21,6 @@ on:
 
 jobs:
 
-  # Temporary Test for development of py2hw
-  iob-aoi:
-    runs-on: self-hosted
-    timeout-minutes: 5
-
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: 'recursive'
-      - name: run LIB test for iob_aoi
-        run: nix-shell --run "make -C lib sim-run CORE=iob_aoi"
-
   pc-emul:
     runs-on: self-hosted
     timeout-minutes: 5
@@ -99,7 +87,7 @@ jobs:
         with:
           submodules: 'recursive'
       - name: run LIB test
-        run: nix-shell --run "./lib/scripts/test.sh test"
+        run: nix-shell --run "make -C lib sim-test"
 
   uart:
     runs-on: self-hosted

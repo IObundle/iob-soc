@@ -51,7 +51,7 @@ class iob_uart(iob_core):
             type="slave",
             port_prefix="",
             wire_prefix="",
-            desc="CPU native interface",
+            descr="CPU native interface",
             signals=[],
             widths={
                 "ADDR_W": "ADDR_W",
@@ -211,11 +211,6 @@ class iob_uart(iob_core):
         #        "descr": "Reset polarity.",
         #    },
         # ]
-
-        self.create_instance(
-            "iob_utils",
-            "iob_utils_inst",
-        )
 
         self.create_instance(
             "iob_reg",
