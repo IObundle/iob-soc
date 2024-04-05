@@ -18,6 +18,7 @@ import ipxact_gen
 
 from iob_module import iob_module
 from iob_instance import iob_instance
+from iob_base import fail_with_msg
 
 
 class iob_core(iob_module, iob_instance):
@@ -75,7 +76,10 @@ class iob_core(iob_module, iob_instance):
 
         if not self.is_top_module:
             self.build_dir = __class__.global_build_dir
-        self.setup_dir = find_module_setup_dir(self, os.getcwd())
+        assert "PROJECT_ROOT" in os.environ, fail_with_msg(
+            "Environment variable 'PROJECT_ROOT' is not set!"
+        )
+        self.setup_dir = find_module_setup_dir(self, os.environ["PROJECT_ROOT"])
         # print(f"{self.name} {self.build_dir} {self.is_top_module}")  # DEBUG
 
         self.__create_build_dir()
@@ -147,7 +151,12 @@ class iob_core(iob_module, iob_instance):
             self.set_default_attribute("name", self.__class__.__name__)
             # FIXME: This line is duplicate from 'iob_core.py'. Is this an issue?
             self.set_default_attribute("version", "1.0", str)
-            self.set_default_attribute("build_dir", f"../{self.name}_V{self.version}")
+            custom_build_dir = (
+                os.environ["BUILD_DIR"] if "BUILD_DIR" in os.environ else None
+            )
+            self.set_default_attribute(
+                "build_dir", custom_build_dir or f"../{self.name}_V{self.version}"
+            )
             # Update global build dir
             __class__.global_build_dir = self.build_dir
 
