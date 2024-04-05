@@ -15,9 +15,6 @@ class iob_csr_group:
         if not self.name:
             fail_with_msg("CSR group name is not set", ValueError)
 
-        if not self.regs:
-            fail_with_msg("CSR group regs list is empty", ValueError)
-
 
 def create_csr_group(core, *args, **kwargs):
     """Creates a new csr group object and adds it to the core's csr list

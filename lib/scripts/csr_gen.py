@@ -46,7 +46,7 @@ class csr_gen:
         # Create reg table
         reg_table = []
         for i_regs in regs:
-            reg_table += i_regs["regs"]
+            reg_table += i_regs.regs
 
         return self.compute_addr(reg_table, rw_overlap, autoaddr)
 
@@ -297,7 +297,20 @@ class csr_gen:
                                 """
                         )
 
-    def write_hwcode(self, table, out_dir, top, csr_if):
+    def get_swreg_inst_params(self, core_confs):
+        """Return multi-line string with parameters for swreg instance"""
+        param_list = [p for p in core_confs if p.type == "P"]
+        if not param_list:
+            return ""
+
+        param_str = "#(\n"
+        for idx, param in enumerate(param_list):
+            comma = "," if idx < len(param_list) - 1 else ""
+            param_str += f"  .{param.name}({param.name}){comma}\n"
+        param_str += ") "
+        return param_str
+
+    def write_hwcode(self, table, out_dir, top, csr_if, core_confs):
         #
         # SWREG INSTANCE
         #
@@ -403,9 +416,9 @@ class csr_gen:
         # connection wires
         self.gen_inst_wire(table, f_inst)
 
-        f_inst.write(f"{top}_swreg_gen #(\n")
-        f_inst.write(f'  `include "{top}_inst_params.vs"\n')
-        f_inst.write("\n) swreg_0 (\n")
+        f_inst.write(f"{top}_swreg_gen ")
+        f_inst.write(self.get_swreg_inst_params(core_confs))
+        f_inst.write("swreg_0 (\n")
         self.gen_portmap(table, f_inst)
         if iob_if:
             f_inst.write('  `include "iob_s_s_portmap.vs"\n')
@@ -426,10 +439,14 @@ class csr_gen:
         # time scale
         f_gen.write("`timescale 1ns / 1ps\n\n")
 
-        # iob utils
-        f_gen.write(f'`include "iob_utils.vh"\n')
-
         # macros
+        f_gen.write("`define IOB_NBYTES (DATA_W/8)\n")
+        f_gen.write("`define IOB_NBYTES_W $clog2(`IOB_NBYTES)\n")
+        f_gen.write(
+            "`define IOB_WORD_ADDR(ADDR) ((ADDR>>`IOB_NBYTES_W)<<`IOB_NBYTES_W)\n\n"
+        )
+
+        # includes
         f_gen.write(f'`include "{top}_conf.vh"\n')
         f_gen.write(f'`include "{top}_swreg_def.vh"\n\n')
 
@@ -1001,15 +1018,15 @@ class csr_gen:
         {\\bf Name} & {\\bf R/W} & {\\bf Addr} & {\\bf Width} & {\\bf Default} & {\\bf Description} \\\\ \\hline
 
         \\input """
-                + table["name"]
+                + table.name
                 + """_swreg_tab
      
       \\end{tabularx}
       \\caption{"""
-                + table["descr"].replace("_", "\\_")
+                + table.descr.replace("_", "\\_")
                 + """}
       \\label{"""
-                + table["name"]
+                + table.name
                 + """_swreg_tab:is}
     \\end{table}
     """
@@ -1030,7 +1047,7 @@ class csr_gen:
 
         for table in regs:
             tex_table = []
-            for reg in table["regs"]:
+            for reg in table.regs:
                 # Find address of matching register in regs_with_addr list
                 addr = next(
                     register["addr"]
@@ -1048,4 +1065,4 @@ class csr_gen:
                     ]
                 )
 
-            write_table(f"{out_dir}/{table['name']}_swreg", tex_table)
+            write_table(f"{out_dir}/{table.name}_swreg", tex_table)

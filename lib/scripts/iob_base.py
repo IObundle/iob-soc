@@ -37,3 +37,8 @@ def find_obj_in_list(obj_list, obj_name):
 def fail_with_msg(msg, exception_type=Exception):
     """Raise an error with a given message"""
     raise exception_type(iob_colors.FAIL + msg + iob_colors.ENDC)
+
+
+def warn_with_msg(msg):
+    """Print a warning with a given message"""
+    print(iob_colors.WARNING + msg + iob_colors.ENDC)

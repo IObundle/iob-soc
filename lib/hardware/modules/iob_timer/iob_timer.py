@@ -110,19 +110,13 @@ class iob_timer(iob_core):
         )
 
         self.create_instance(
-            "iob_utils",
-            "iob_utils_inst",
+            "iob_reg_re",
+            "iob_reg_re_inst",
         )
-
         self.create_instance(
             "iob_reg_e",
             "iob_reg_e_inst",
         )
-
-        self.create_instance(
-            "iob_counter_inst",
-        )
-
         self.create_instance(
             "iob_counter",
             "iob_counter_inst",

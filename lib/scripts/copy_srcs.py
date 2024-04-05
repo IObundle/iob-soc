@@ -9,7 +9,6 @@ import importlib.util
 
 # IObundle scripts imported:
 import if_gen
-from submodule_utils import import_setup, set_default_submodule_dirs
 import iob_colors
 
 # get LIB_DIR from env variable
@@ -237,81 +236,6 @@ def write_git_revision_short_hash(dst_dir):
         os.makedirs(dst_dir)
     file = open(f"{dst_dir}/{file_name}", "w")
     file.write(text)
-
-
-# Setup python submodules recursively (the deeper ones in the tree are setup first)
-# python_module: python module of *_setup.py of the core/system, should contain setup_dir
-def setup_submodules(python_module):
-    modules_dictionary = {}
-
-    set_default_submodule_dirs(python_module)
-    submodule_dirs = python_module.submodules["dirs"]
-
-    for setup_type in python_module.submodules:
-        # Skip non "*_setup" dictionaies
-        if not setup_type.endswith("_setup"):
-            continue
-
-        # Iterate through every module in list
-        idx = 0
-        while idx < len(python_module.submodules[setup_type]["modules"]):
-            item = python_module.submodules[setup_type]["modules"][idx]
-            idx += 1
-
-            # If item is a tuple then it contains optional parameters
-            if type(item) == tuple:
-                # Save optional_parameters in a variable
-                optional_parameters = item[1]
-                # Convert item to a string
-                item = item[0]
-            else:
-                optional_parameters = None
-
-            # Skip non 'submodule' items
-            if item not in submodule_dirs:
-                continue
-
-            # Only allow submodule sin hw_setup list. (The other processes will be handled by the setup function of the module).
-            # Note: Maybe we should create a dedicated list to import submodules? This way it won't be as confusing as to why only the 'hw_setup' list is used for submodules.
-            #       The outer for loop of this function, only exists to execute this asser and warn the user if he is not using hw_setup. Otherwise we could just use the 'hw_setup' list.
-            assert (
-                setup_type == "hw_setup"
-            ), f"{iob_colors.FAIL}Only 'hw_setup' list can contain submodules. Please remove '{item}' from '{setup_type}' list.{iob_colors.ENDC}"
-
-            # Only import if the item has a _setup.py file
-            for fname in os.listdir(submodule_dirs[item]):
-                if fname.endswith("_setup.py"):
-                    break
-            else:
-                continue
-
-            # Import module
-            module = import_setup(
-                submodule_dirs[item],
-                not_top_module=True,
-                build_dir=python_module.build_dir,
-                setup_dir=submodule_dirs[item],
-                module_parameters=optional_parameters,
-            )
-
-            # Setup submodules from this imported module
-            setup_submodules(module)
-
-            # Call main function to setup this module
-            module.main()
-
-            # Remove this module
-            idx -= 1
-            del python_module.submodules[setup_type]["modules"][idx]
-
-
-# Setup submodules in modules_dictionary
-def submodule_setup(python_module):
-    modules_dictionary = python_module.modules_dictionary
-
-    # Setup submodules by the order they appear in modules_dictionary
-    for module in modules_dictionary:
-        module.main()
 
 
 # Include headers and srcs from given python module (module_name)
