@@ -16,9 +16,4 @@ class iob_asym_converter(iob_core):
             "iob_reg_re_inst",
         )
 
-        self.create_instance(
-            "iob_utils",
-            "iob_utils_inst",
-        )
-
         super().__init__(*args, **kwargs)

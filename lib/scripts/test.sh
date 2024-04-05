@@ -23,7 +23,7 @@ fi
 #test if first argument is test and run all tests
 if [ "$1" == "test" ]; then
     for i in $MODULES; do
-        # echo "$i"
+        echo -e "\n\033[1;33mTesting module '${i}'\033[0m"
         core_dir=`find -name ${i}.py | xargs dirname`
         # echo "Running test for $core_dir"
         make -f ${LIB_DIR}/Makefile clean build-setup CORE=$i TOP_MODULE_NAME=$i CORE_DIR=$core_dir

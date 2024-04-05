@@ -9,11 +9,6 @@ class iob_fifo_async(iob_core):
         self.set_default_attribute("generate_hw", False)
 
         self.create_instance(
-            "iob_utils",
-            "iob_utils_inst",
-        )
-
-        self.create_instance(
             "iob_gray_counter",
             "iob_gray_counter_inst",
         )
@@ -33,10 +28,11 @@ class iob_fifo_async(iob_core):
             "iob_asym_converter_inst",
         )
 
-        # self.create_instance(
-        #     "iob_ram_t2p",
-        #     "iob_ram_t2p_inst",
-        # )
+        # For simulation
+        self.create_instance(
+            "iob_ram_t2p",
+            "iob_ram_t2p_inst",
+        )
 
         super().__init__(*args, **kwargs)
 

@@ -42,7 +42,9 @@ module timer_tb;
     $write("Current time: %d; Timer value %d\n", $time(), TIMER_VALUE);
 
     if (TIMER_VALUE == 1003) begin
-      $display("Test passed");
+      $display("%c[1;34m", 27);
+      $display("Test completed successfully.");
+      $display("%c[0m", 27);
       fd = $fopen("test.log", "w");
       $fdisplay(fd, "Test passed!");
       $fclose(fd);

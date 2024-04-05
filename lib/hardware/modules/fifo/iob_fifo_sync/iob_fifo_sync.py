@@ -28,15 +28,11 @@ class iob_fifo_sync(iob_core):
             "iob_asym_converter_inst",
         )
 
+        # For simulation
         self.create_instance(
-            "iob_utils",
-            "iob_utils_inst",
+            "iob_ram_2p",
+            "iob_ram_2p_inst",
         )
-
-        # self.create_instance(
-        #     "iob_ram_2p",
-        #     "iob_ram_2p_inst",
-        # )
 
         super().__init__(*args, **kwargs)
 
