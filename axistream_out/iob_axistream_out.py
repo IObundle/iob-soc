@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import os
-import copy
 
 from iob_module import iob_module
 
@@ -11,6 +10,7 @@ from iob_reg_re import iob_reg_re
 from iob_ram_t2p import iob_ram_t2p
 from iob_sync import iob_sync
 from iob_counter import iob_counter
+
 
 class iob_axistream_out(iob_module):
     name = "iob_axistream_out"
@@ -28,6 +28,7 @@ class iob_axistream_out(iob_module):
             iob_sync,
             iob_reg_re,
             iob_ram_t2p,
+            iob_counter,
         ])
 
     @classmethod
