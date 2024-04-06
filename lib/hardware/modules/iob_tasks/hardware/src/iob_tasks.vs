@@ -2,6 +2,17 @@
 // Tasks for the IOb Native protocol
 //
 
+`define IOB_NBYTES (DATA_W/8)
+`define IOB_GET_NBYTES(WIDTH) (WIDTH/8 + |(WIDTH%8))
+`define IOB_NBYTES_W $clog2(`IOB_NBYTES)
+`define IOB_WORD_ADDR(ADDR) ((ADDR>>`IOB_NBYTES_W)<<`IOB_NBYTES_W)
+
+`define IOB_BYTE_OFFSET(ADDR) (ADDR%(DATA_W/8))
+
+`define IOB_GET_WDATA(ADDR, DATA) (DATA<<(8*`IOB_BYTE_OFFSET(ADDR)))
+`define IOB_GET_WSTRB(ADDR, WIDTH) (((1<<`IOB_GET_NBYTES(WIDTH))-1)<<`IOB_BYTE_OFFSET(ADDR))
+`define IOB_GET_RDATA(ADDR, DATA, WIDTH) ((DATA>>(8*`IOB_BYTE_OFFSET(ADDR)))&((1<<WIDTH)-1))
+
 // Write data to IOb Native slave
 task iob_write;
    input [ADDR_W-1:0] addr;

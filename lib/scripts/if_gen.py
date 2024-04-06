@@ -914,8 +914,8 @@ def get_signals(name, if_type="", mult=1, widths={}):
     return signals
 
 
-def gen_if(name, file_prefix, port_prefix, wire_prefix, ports, mult=1, widths={}):
-    # print(name, file_prefix, port_prefix, wire_prefix, ports, mult)
+def gen_if(name, file_prefix, port_prefix, wire_prefix, mult=1, widths={}):
+    # print(name, file_prefix, port_prefix, wire_prefix, mult)
 
     # get param prefix
     param_prefix = port_prefix.upper()
@@ -938,11 +938,10 @@ def gen_if(name, file_prefix, port_prefix, wire_prefix, ports, mult=1, widths={}
             prefix2 = param_prefix
 
         # get ports
-        if ports == []:
-            if if_type.startswith("s"):
-                ports = get_signals(name, "slave", mult, widths)
-            else:
-                ports = get_signals(name, "master", mult, widths)
+        if if_type.startswith("s"):
+            ports = get_signals(name, "slave", mult, widths)
+        else:
+            ports = get_signals(name, "master", mult, widths)
 
         eval_str = "write_" + if_type + "(fout, prefix1, prefix2, ports)"
         # print(eval_str, prefix1, prefix2)
