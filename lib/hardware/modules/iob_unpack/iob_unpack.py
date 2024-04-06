@@ -11,9 +11,4 @@ class iob_unpack(iob_core):
             "iob_bfifo_inst",
         )
 
-        self.create_instance(
-            "iob_utils",
-            "iob_utils_inst",
-        )
-
         super().__init__(*args, **kwargs)
