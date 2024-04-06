@@ -10,7 +10,12 @@ module iob_demux #(
    output [                (N*DATA_W)-1:0] data_o
 );
 
-   //Select the data to output
-   assign data_o = {{((N - 1) * DATA_W) {1'b0}}, data_i} << (sel_i * DATA_W);
+   // //Select the data to output
+   genvar i;
+   generate
+      for (i = 0; i < N; i = i + 1) begin : gen_demux
+         assign data_o[i*DATA_W+:DATA_W] = (sel_i==i)? data_i : {DATA_W{1'b0}};
+      end
+   endgenerate
 
 endmodule

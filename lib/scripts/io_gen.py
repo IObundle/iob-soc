@@ -56,6 +56,7 @@ def generate_ports(core):
                 file_prefix,
                 port.port_prefix,
                 port.wire_prefix,
+                port.param_prefix,
                 port.mult,
                 port.widths,
             )

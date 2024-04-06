@@ -8,7 +8,11 @@ from iob_soc_peripherals import (
     reserved_signals,
 )
 
-from iob_soc_create_system import create_systemv, get_extmem_bus_size
+from iob_soc_create_system import (
+    create_systemv,
+    get_extmem_bus_size,
+    create_pbus_split_submodule,
+)
 from iob_soc_create_wrapper_files import create_wrapper_files
 from submodule_utils import (
     add_prefix_to_parameters_in_port,
@@ -64,6 +68,7 @@ def iob_soc_wrapper_setup(python_module, exclude_files=[]):
             "type": "master",
             "wire_prefix": "ddr4_",
             "port_prefix": "ddr4_",
+            "param_prefix": "ddr4_",
             "ports": [],
             "descr": "External memory interface",
         },
@@ -98,20 +103,25 @@ def iob_soc_wrapper_setup(python_module, exclude_files=[]):
             "descr": "iob_memory interface",
         },
     ]
-    for iface in gen_ifaces:
+    generate_ifaces(gen_ifaces, python_module.build_dir)
+
+
+def generate_ifaces(ifaces, build_dir):
+    for iface in ifaces:
         if_gen.gen_if(
             iface["name"],
             iface["file_prefix"],
             iface["port_prefix"],
             iface["wire_prefix"],
             iface["ports"],
+            iface["param_prefix"] if "param_prefix" in iface.keys() else "",
             iface["mult"] if "mult" in iface.keys() else 1,
             iface["widths"] if "widths" in iface.keys() else {},
         )
     # move all .vs files from current directory to out_dir
     for file in os.listdir("."):
         if file.endswith(".vs"):
-            os.rename(file, f"{python_module.build_dir}/hardware/src/{file}")
+            os.rename(file, f"{build_dir}/hardware/src/{file}")
 
 
 def iob_soc_doc_setup(python_module, exclude_files=[]):
@@ -142,6 +152,9 @@ def iob_soc_hw_setup(python_module, exclude_files=[]):
             python_module.peripheral_portmap,
             internal_wires=python_module.internal_wires,
         )
+        pbus_ios = create_pbus_split_submodule(python_module)
+        # generate pbus split ios for replacement in _periphs_inst.vs
+        generate_ifaces(pbus_ios, python_module.build_dir)
 
 
 def update_ios_with_extmem_connections(python_module):
@@ -786,22 +799,22 @@ def peripheral_portmap(python_module):
                     wire_name,
                 )
 
-    # Merge interfaces with the same name into a single interface
-    interface_names = []
-    for interface in ios:
-        if interface["name"] not in interface_names:
-            interface_names.append(interface["name"])
-    new_ios = []
-    for interface_name in interface_names:
-        first_interface_instance = None
-        for interface in ios:
-            if interface["name"] == interface_name:
-                if not first_interface_instance:
-                    first_interface_instance = interface
-                    new_ios.append(interface)
-                else:
-                    first_interface_instance["ports"] += interface["ports"]
-    python_module.ios = new_ios
+    # # Merge interfaces with the same name into a single interface
+    # interface_names = []
+    # for interface in ios:
+    #     if interface["name"] not in interface_names:
+    #         interface_names.append(interface["name"])
+    # new_ios = []
+    # for interface_name in interface_names:
+    #     first_interface_instance = None
+    #     for interface in ios:
+    #         if interface["name"] == interface_name:
+    #             if not first_interface_instance:
+    #                 first_interface_instance = interface
+    #                 new_ios.append(interface)
+    #             else:
+    #                 first_interface_instance["ports"] += interface["ports"]
+    # python_module.ios = new_ios
     # print(f"### Debug python_module.ios: {python_module.ios}", file=sys.stderr)
 
     return peripheral_wires

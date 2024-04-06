@@ -16,6 +16,7 @@ class iob_wire:
     mult: str | int = 1
     widths: Dict[str, str] = field(default_factory=dict)
     file_prefix: str = ""
+    param_prefix: str = ""
 
     """ Other wire arguments """
     descr: str = "Default description"

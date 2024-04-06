@@ -67,8 +67,8 @@ def sim_setup(python_module):
 
 # Setup fpga files, but only the ones in the board_list
 def fpga_setup(python_module):
-    # If board_list is None, then do nothing
-    if python_module.board_list == None:
+    # If board_list is empty, then do nothing
+    if not python_module.board_list:
         return
 
     build_dir = python_module.build_dir
