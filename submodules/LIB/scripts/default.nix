@@ -1,8 +1,7 @@
 { pkgs ? import <nixpkgs> {} }:
 
 let
-  magic = import ./magic.nix { inherit pkgs; };
-   yosys_abc = import ./yosys-abc.nix { inherit pkgs; };
+  yosys_abc = import ./yosys-abc.nix { inherit pkgs; };
 in
 
 
@@ -43,7 +42,6 @@ pkgs.mkShell {
     in import "${volareSrc}" {
       inherit pkgs;
     })
-    magic
     yosys_abc
   ];
 }
