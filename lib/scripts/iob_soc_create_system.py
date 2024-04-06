@@ -10,7 +10,7 @@ from iob_soc_peripherals import (
     get_reserved_signal_connection,
 )
 from if_gen import get_port_name
-from iob_split2 import iob_split2
+from iob_split import iob_split
 import io_gen
 
 
@@ -147,9 +147,9 @@ def create_systemv(
         periphs_inst_str += "      );\n"
 
     # pbus split instance
-    periphs_inst_str += "\n\twire iob_pbus_split2_rst;\n"
-    periphs_inst_str += "\tassign iob_pbus_split2_rst = cpu_reset;\n"
-    periphs_inst_str += '\t\n`include "iob_pbus_split2_inst.vs"\n'
+    periphs_inst_str += "\n\twire iob_pbus_split_rst;\n"
+    periphs_inst_str += "\tassign iob_pbus_split_rst = cpu_reset;\n"
+    periphs_inst_str += '\t\n`include "iob_pbus_split_inst.vs"\n'
 
     # Create internal wires to connect the peripherals trap signals
     periphs_wires_str += "\n    // Internal wires for trap signals\n"
@@ -239,7 +239,7 @@ def get_pbus_split(python_module):
         python_module.ios.append(instance_io)
 
     # pbus split submodule
-    pbus_split = iob_split2(
+    pbus_split = iob_split(
         name_prefix="pbus",
         data_w="DATA_W",
         addr_w="ADDR_W",

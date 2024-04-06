@@ -93,11 +93,11 @@ module iob_soc #(
   //external memory instruction bus
   `include "iob_soc_ext_mem_i_iob_wire.vs"
 
-  wire iob_ibus_split2_rst;
-  assign iob_ibus_split2_rst = cpu_reset;
+  wire iob_ibus_split_rst;
+  assign iob_ibus_split_rst = cpu_reset;
 
   // INSTRUCTION BUS
-  `include "iob_ibus_split2_inst.vs"
+  `include "iob_ibus_split_inst.vs"
 
 `else
   assign int_mem_i_iob_valid = cpu_i_iob_valid;
@@ -118,10 +118,10 @@ module iob_soc #(
   //external memory data bus
   `include "iob_soc_ext_mem_d_iob_wire.vs"
 
-  wire iob_dbus_split2_rst;
-  assign iob_dbus_split2_rst = cpu_reset;
+  wire iob_dbus_split_rst;
+  assign iob_dbus_split_rst = cpu_reset;
 
-  `include "iob_dbus_split2_inst.vs"
+  `include "iob_dbus_split_inst.vs"
 
 `else
   assign int_d_iob_valid  = cpu_d_iob_valid;

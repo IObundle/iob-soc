@@ -541,7 +541,7 @@ class iob_soc(iob_core):
             },
         )
 
-        # iob_split2(
+        # iob_split(
         #     name_prefix="data_boot_ctr",
         #     data_w="DATA_W",
         #     addr_w="ADDR_W",
@@ -552,7 +552,7 @@ class iob_soc(iob_core):
         #         int_mem_boot_ctr_io,
         #     ],
         # ),
-        # iob_merge2(
+        # iob_merge(
         #     name_prefix="ibus",
         #     data_w="DATA_W",
         #     addr_w="ADDR_W",
@@ -562,7 +562,7 @@ class iob_soc(iob_core):
         #     ],
         #     output_io=int_mem_ram_i_io,
         # ),
-        # iob_merge2(
+        # iob_merge(
         #     name_prefix="i_d_into_l2",
         #     data_w="DATA_W",
         #     addr_w="MEM_ADDR_W",
@@ -572,7 +572,7 @@ class iob_soc(iob_core):
         #     ],
         #     output_io=ext_mem_l2cache_merge_io,
         # ),
-        # iob_split2(
+        # iob_split(
         #     name_prefix="ibus",
         #     data_w="DATA_W",
         #     addr_w="ADDR_W",
@@ -583,7 +583,7 @@ class iob_soc(iob_core):
         #         ext_mem_i_split_io,
         #     ],
         # ),
-        # iob_split2(
+        # iob_split(
         #     name_prefix="dbus",
         #     data_w="DATA_W",
         #     addr_w="ADDR_W",

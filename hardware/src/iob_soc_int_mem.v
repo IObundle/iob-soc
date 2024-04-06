@@ -80,10 +80,10 @@ module iob_soc_int_mem #(
    assign d_iob_rdata_o = int_mem_d_iob_rdata;
    assign d_iob_ready_o = int_mem_d_iob_ready;
 
-   wire iob_data_boot_ctr_split2_rst;
-   assign iob_data_boot_ctr_split2_rst = 1'b0;
+   wire iob_data_boot_ctr_split_rst;
+   assign iob_data_boot_ctr_split_rst = 1'b0;
 
-   `include "iob_data_boot_ctr_split2_inst.vs"
+   `include "iob_data_boot_ctr_split_inst.vs"
 
    //
    // BOOT CONTROLLER
@@ -163,9 +163,9 @@ module iob_soc_int_mem #(
    //sram instruction bus
    `include "iob_soc_int_mem_ram_i_iob_wire.vs"
 
-   wire iob_ibus_merge2_rst;
-   assign iob_ibus_merge2_rst = 1'b0;
-   `include "iob_ibus_merge2_inst.vs"
+   wire iob_ibus_merge_rst;
+   assign iob_ibus_merge_rst = 1'b0;
+   `include "iob_ibus_merge_inst.vs"
 
    //
    // INSTANTIATE RAM
