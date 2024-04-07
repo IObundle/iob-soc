@@ -31,8 +31,8 @@ def generate_ports(core):
             lines.append(f"`ifdef {core.name.upper()}_{port.if_defined}\n")
 
         for idx, s in enumerate(port.signals):
-            dir = s["direction"]
-            width = "[" + str(s["width"]) + "-1:0]"
+            dir = s.direction
+            width = "[" + str(s.width) + "-1:0]"
             port_name = get_signal_name_with_dir_suffix(s)
             if port_idx < len(core.ports) - 1 or idx < len(port.signals) - 1:
                 comma = ","
@@ -124,17 +124,17 @@ def generate_ios_tex(ports, out_dir):
             if_port = eval(eval_str)
 
             for signal in if_port:
-                port_direction = signal["direction"]
+                port_direction = signal.direction
                 # reverse direction if port is a slave port
                 if port.type == "slave":
                     port_direction = reverse_port(port_direction)
 
                 tex_table.append(
                     [
-                        (signal["name"] + if_gen.get_suffix(port_direction)),
+                        (signal.name + if_gen.get_suffix(port_direction)),
                         port_direction,
-                        signal["width"],
-                        signal["descr"] if "descr" in signal else "",
+                        signal.width,
+                        signal.descr,
                     ]
                 )
         else:
@@ -142,10 +142,10 @@ def generate_ios_tex(ports, out_dir):
             for signal in port.signals:
                 tex_table.append(
                     [
-                        signal["name"],
-                        signal["direction"],
-                        signal["width"],
-                        signal["descr"] if "descr" in signal else "",
+                        signal.name,
+                        signal.direction,
+                        signal.width,
+                        signal.descr,
                     ]
                 )
 

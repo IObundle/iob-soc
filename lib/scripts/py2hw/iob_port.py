@@ -4,7 +4,8 @@ from typing import Dict
 import iob_colors
 import if_gen
 from iob_wire import iob_wire
-from iob_base import fail_with_msg
+from iob_base import convert_dict2obj_list, fail_with_msg
+from iob_signal import iob_signal
 
 
 @dataclass
@@ -35,9 +36,9 @@ class iob_port(iob_wire):
             )
 
         for signal in self.signals:
-            if not signal["direction"]:
+            if not signal.direction:
                 raise Exception("Port direction is required")
-            elif signal["direction"] not in ["input", "output", "inout"]:
+            elif signal.direction not in ["input", "output", "inout"]:
                 raise Exception(
                     "Error: Direction must be 'input', 'output', or 'inout'."
                 )
@@ -47,14 +48,16 @@ class iob_port(iob_wire):
         self.e_connect = wire
 
 
-def create_port(core, *args, **kwargs):
+def create_port(core, *args, signals=[], **kwargs):
     """Creates a new port object and adds it to the core's port list
     Also creates a new internal module wire to connect to the new port
     param core: core object
     """
     # Ensure 'ports' list exists
     core.set_default_attribute("ports", [])
-    port = iob_port(*args, **kwargs)
+    # Convert user signal dictionaries into 'iob_signal' objects
+    sig_obj_list = convert_dict2obj_list(signals, iob_signal)
+    port = iob_port(*args, signals=sig_obj_list, **kwargs)
     core.ports.append(port)
 
 
@@ -62,12 +65,13 @@ def get_signal_name_with_dir_suffix(signal: Dict):
     """Returns a signal name with the direction suffix appended
     param signal: signal dictionary
     """
-    if signal["direction"] == "input":
-        return f"{signal['name']}_i"
-    elif signal["direction"] == "output":
-        return f"{signal['name']}_o"
-    elif signal["direction"] == "inout":
-        return f"{signal['name']}_io"
+    if signal.direction == "input":
+        return f"{signal.name}_i"
+    elif signal.direction == "output":
+        return f"{signal.name}_o"
+    elif signal.direction == "inout":
+        return f"{signal.name}_io"
     raise Exception(
-        f"{iob_colors.FAIL}Unknown direction '{signal['direction']}' in '{signal['name']}'!{iob_colors.ENDC}"
+        f"{iob_colors.FAIL}Unknown direction '{signal.direction}'"
+        f" in '{signal.name}'!{iob_colors.ENDC}"
     )

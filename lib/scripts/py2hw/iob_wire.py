@@ -2,7 +2,8 @@ from dataclasses import dataclass, field
 from typing import List, Dict
 
 import if_gen
-from iob_base import find_obj_in_list, fail_with_msg
+from iob_base import find_obj_in_list, convert_dict2obj_list, fail_with_msg
+from iob_signal import iob_signal, iob_signal_reference
 
 
 @dataclass
@@ -49,29 +50,16 @@ class iob_wire:
                     signal.pop("direction")
 
 
-def create_wire(core, *args, **kwargs):
+def create_wire(core, *args, signals=[], **kwargs):
     """Creates a new wire object and adds it to the core's wire list
     param core: core object
     """
     # Ensure 'wires' list exists
     core.set_default_attribute("wires", [])
-    wire = iob_wire(*args, **kwargs)
+    # Convert user signal dictionaries into 'iob_signal' objects
+    sig_obj_list = convert_dict2obj_list(signals, iob_signal)
+    wire = iob_wire(*args, signals=sig_obj_list, **kwargs)
     core.wires.append(wire)
-
-
-# It may better for us to use a class instead of dictionaries to represent a 'signal'
-# @dataclass
-# class iob_signal:
-#     pass
-
-
-@dataclass
-class iob_signal_reference:
-    """Class that references another signal
-    Use to distinguish from a real signal (for generator scripts)
-    """
-
-    signal: dict | None = None
 
 
 def get_wire_signal(core, wire_name: str, signal_name: str):
@@ -96,7 +84,9 @@ def get_wire_signal(core, wire_name: str, signal_name: str):
 
 
 def get_real_signal(signal):
-    """Given a signal reference, follow the reference (recursively) and return the real signal"""
+    """Given a signal reference, follow the reference (recursively) and
+    return the real signal
+    """
     while isinstance(signal, iob_signal_reference):
         signal = signal.signal
     return signal

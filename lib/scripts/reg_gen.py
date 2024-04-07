@@ -6,7 +6,7 @@ import os
 
 import copy_srcs
 import csr_gen
-from iob_csr import iob_csr_group
+from iob_csr import iob_csr, iob_csr_group
 from iob_base import find_obj_in_list
 
 
@@ -44,16 +44,16 @@ def build_regs_table(core):
     # Add 'VERSION' register if it does not have one
     if not find_obj_in_list(general_regs_table.regs, "VERSION"):
         general_regs_table.regs.append(
-            {
-                "name": "VERSION",
-                "type": "R",
-                "n_bits": 16,
-                "rst_val": copy_srcs.version_str_to_digits(core.version),
-                "addr": -1,
-                "log2n_items": 0,
-                "autoreg": True,
-                "descr": "Product version.  This 16-bit register uses nibbles to represent decimal numbers using their binary values. The two most significant nibbles represent the integral part of the version, and the two least significant nibbles represent the decimal part. For example V12.34 is represented by 0x1234.",
-            }
+            iob_csr(
+                name="VERSION",
+                type="R",
+                n_bits=16,
+                rst_val=copy_srcs.version_str_to_digits(core.version),
+                addr=-1,
+                log2n_items=0,
+                autoreg=True,
+                descr="Product version.  This 16-bit register uses nibbles to represent decimal numbers using their binary values. The two most significant nibbles represent the integral part of the version, and the two least significant nibbles represent the decimal part. For example V12.34 is represented by 0x1234.",
+            )
         )
 
     # Create an instance of the csr_gen class inside the csr_gen module

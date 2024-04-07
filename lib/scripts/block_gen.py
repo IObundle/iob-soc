@@ -103,11 +103,11 @@ def get_instance_port_connections(instance):
         for idx, signal in enumerate(port.signals):
             port_name = get_signal_name_with_dir_suffix(signal)
             real_e_signal = get_real_signal(port.e_connect.signals[idx])
-            if "direction" in real_e_signal:
+            if real_e_signal.direction:
                 # External signal belongs to a port. Use direction suffix.
                 e_signal_name = get_signal_name_with_dir_suffix(real_e_signal)
             else:
-                e_signal_name = real_e_signal["name"]
+                e_signal_name = real_e_signal.name
 
             comma = (
                 ","
