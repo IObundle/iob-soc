@@ -12,7 +12,11 @@ class iob_module(iob_base):
     global_top_module = None  # Datatype is 'iob_module'
 
     def __init__(self, *args, **kwargs):
-        self.set_default_attribute("name", self.__class__.__name__, str)
+        # Original name of the module.
+        # (The module name commonly used in the files of the setup dir.)
+        self.set_default_attribute("original_name", self.__class__.__name__, str)
+        # Name of the generated module
+        self.set_default_attribute("name", self.original_name, str)
         # List of module macros and Verilog (false-)parameters
         self.set_default_attribute("confs", [], list)
         self.set_default_attribute("ports", [], list)

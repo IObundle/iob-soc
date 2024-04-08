@@ -148,8 +148,9 @@ class iob_core(iob_module, iob_instance):
         super().update_global_top_module()
         if __class__.global_top_module == self:
             # Ensure current (top)module has a build dir
-            # FIXME: This line is duplicate from 'iob_module.py'. Is this an issue?
-            self.set_default_attribute("name", self.__class__.__name__)
+            # FIXME: These lines are duplicate from 'iob_module.py'. Is this an issue?
+            self.set_default_attribute("original_name", self.__class__.__name__)
+            self.set_default_attribute("name", self.original_name)
             # FIXME: This line is duplicate from 'iob_core.py'. Is this an issue?
             self.set_default_attribute("version", "1.0", str)
             custom_build_dir = (
@@ -259,7 +260,7 @@ def find_module_setup_dir(core, search_path):
     for root, directories, files in os.walk(search_path):
         for file in files:
             # Check if file name matches '<core_class_name>.py'
-            if file.split(".")[0] == core.__class__.__name__:
+            if file.split(".")[0] == core.original_name:
                 # print(os.path.join(root, file)) # DEBUG
                 return root
 
