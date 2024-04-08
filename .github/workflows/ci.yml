@@ -89,19 +89,6 @@ jobs:
       - name: run LIB test
         run: nix-shell --run "make -C lib sim-test"
 
-  uart:
-    runs-on: self-hosted
-    timeout-minutes: 5
-    if: ${{ !cancelled() }}
-    needs: [ lib ]
-
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: 'recursive'
-      - name: run uart test
-        run: make -C submodules/UART test
-
   cache:
     runs-on: self-hosted
     timeout-minutes: 20

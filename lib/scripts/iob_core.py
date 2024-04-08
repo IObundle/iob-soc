@@ -93,7 +93,8 @@ class iob_core(iob_module, iob_instance):
         copy_srcs.copy_rename_setup_directory(self)
 
         # Generate config_build.mk
-        config_gen.config_build_mk(self)
+        if self.is_top_module:
+            config_gen.config_build_mk(self)
 
         # Generate configuration files
         config_gen.generate_confs(self)
