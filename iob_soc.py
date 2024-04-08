@@ -168,7 +168,7 @@ class iob_soc(iob_core):
                 type="master",
                 wire_prefix="",
                 port_prefix="",
-                mult="",  # Will be filled automatically
+                mult=1,
                 widths={
                     "ID_W": "AXI_ID_W",
                     "ADDR_W": "AXI_ADDR_W",
@@ -989,7 +989,7 @@ class iob_soc(iob_core):
         # self.peripherals = [UART0, TIMER0]
 
         # Number of external memory connections (will be filled automatically)
-        self.num_extmem_connections = -1
+        # self.num_extmem_connections = -1
 
         # Pre-setup specialized IOb-SoC functions
         pre_setup_iob_soc(self)
