@@ -147,18 +147,14 @@ class iob_soc(iob_core):
             descr="Offset of memory address",
         ),
 
-        # Create system ports (and wires) for them
-
-        # This method creates a bus port local module's `port_bus_list`, and connects it to a newly created wire bus from the local wire list: `wire_bus_list`.
-        self.create_bus_port(
+        self.create_port(
             name="clk_en_rst",
             type="slave",
             wire_prefix="",
             port_prefix="",
             descr="Clock, enable, and reset",
         )
-
-        self.create_bus_port(
+        self.create_port(
             name="axi",
             type="master",
             wire_prefix="",
@@ -173,23 +169,58 @@ class iob_soc(iob_core):
             descr="Bus of AXI master interfaces for external memory. One interface for this system and others optionally for peripherals.",
             if_defined="USE_EXTMEM",
         )
-
-        self.create_bus_port(
+        # Internal memory Ports
+        self.create_port(
+            name="rom",
+            descr="Ports for connection with ROM memory",
+            signals=[
+                {"name": "rom_r_valid", "width": 1, "direction": "output"},
+                {"name": "rom_r_addr", "width": "BOOTROM_ADDR_W-2", "direction": "output"},
+                {"name": "rom_r_rdata", "width": "DATA_W", "direction": "input"},
+            ]
+        )
+        self.create_port(
+            name="spram",
+            descr="Port for connection with SPRAM memory",
+            if_defined="USE_SPRAM",
+            signals=[
+                {"name": "valid_spram", "width": 1, "direction": "output"},
+                {"name": "addr_spram", "width": "SRAM_ADDR_W-2", "direction": "output"},
+                {"name": "wdata_spram", "width": "DATA_W", "direction": "output"},
+                {"name": "wstrb_spram", "width": "DATA_W/8", "direction": "output"},
+                {"name": "rdata_spram", "width": "DATA_W", "direction": "input"},
+            ],
+        )
+        self.create_port(
+            name="i_sram",
+            descr="Instruction port for connection with SRAM memory",
+            signals=[
+                {"name": "i_valid", "width": 1, "direction": "output"},
+                {"name": "i_addr", "width": "SRAM_ADDR_W-2", "direction": "output"},
+                {"name": "i_wdata", "width": "DATA_W", "direction": "output"},
+                {"name": "i_wstrb", "width": "DATA_W/8", "direction": "output"},
+                {"name": "i_rdata", "width": "DATA_W", "direction": "input"},
+            ],
+        )
+        self.create_port(
+            name="d_sram",
+            descr="Data port for connection with SRAM memory",
+            signals=[
+                {"name": "d_valid", "width": 1, "direction": "output"},
+                {"name": "d_addr", "width": "SRAM_ADDR_W-2", "direction": "output"},
+                {"name": "d_wdata", "width": "DATA_W", "direction": "output"},
+                {"name": "d_wstrb", "width": "DATA_W/8", "direction": "output"},
+                {"name": "d_rdata", "width": "DATA_W", "direction": "input"},
+            ],
+        )
+        # Peripheral IO ports
+        self.create_port(
             name="rs232",
             type="",  # Neutral type. Neither master nor slave.
             wire_prefix="",
             port_prefix="",
             descr="iob-soc uart interface",
         ),
-
-        # Example method for creating a single wire port
-        # This method creates a port in the local module's `port_bus_list`, and assigns a bus to it. It also connects the port to a newly created wire from the local wire list.
-        # self.create_wire_port(
-        #     name="trap",
-        #     direction="output",
-        #     width=1,
-        #     descr="CPU trap signal",
-        # )
 
         #######################################
         # IOb-SoC modules, wires, and instances
