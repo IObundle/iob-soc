@@ -46,7 +46,7 @@ wire          [     DATA_W-1:0]    d_rdata;
     wire     [SRAM_ADDR_W-3:0] addr;
     wire     [DATA_W/8-1:0]    we;
     wire     [DATA_W-1:0]      di;
-    wire     [DATA_W-1:0]      do;
+    wire     [DATA_W-1:0]      doo;
 `endif
 
 iob_soc #(
@@ -120,7 +120,7 @@ iob_soc #(
     .addr_spram_o(addr),
     .wstrb_spram_o(we),
     .wdata_spram_o(di),
-    .rdata_spram_i(do),
+    .rdata_spram_i(doo),
 `endif
 
     //rom
