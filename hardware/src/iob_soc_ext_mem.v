@@ -1,6 +1,51 @@
 `timescale 1 ns / 1 ps
 
-`include "iob_utils.vh"
+/*
+ * Old iob_utils.vh macros. TODO: Remove these.
+ */
+//DATA WIDTHS
+`define VALID_W 1
+`define WSTRB_W_(D) D/8
+`define READY_W 1
+`define WRITE_W_(D) (D+(`WSTRB_W_(D)))
+`define READ_W_(D) (D)
+//DATA POSITIONS
+//REQ bus
+`define WDATA_P_(D) `WSTRB_W_(D)
+`define ADDR_P_(D) (`WDATA_P_(D)+D)
+`define VALID_P_(A, D) (`ADDR_P_(D)+A)
+//RESP bus
+`define RDATA_P `VALID_W+`READY_W
+//CONCAT BUS WIDTHS
+//request part
+`define REQ_W_(A, D) ((`VALID_W+A)+`WRITE_W_(D))
+//response part
+`define RESP_W_(D) ((`READ_W_(D)+`VALID_W)+`READY_W)
+//gets the WRITE valid bit of cat bus section
+`define VALID_(I, A, D) (I*`REQ_W_(A,D)) + `VALID_P_(A,D)
+//gets the ADDRESS of cat bus section
+`define ADDRESS_(I, W, A, D) I*`REQ_W_(A,D)+`ADDR_P_(D)+W-1 -: W
+//gets the WDATA field of cat bus
+`define WDATA_(I, A, D) I*`REQ_W_(A,D)+`WDATA_P_(D) +: D
+//gets the WSTRB field of cat bus
+`define WSTRB_(I, A, D) I*`REQ_W_(A,D) +: `WSTRB_W_(D)
+//gets the WRITE fields of cat bus
+`define WRITE_(I, A, D) I*`REQ_W_(A,D) +: `WRITE_W_(D)
+//gets the RDATA field of cat bus
+`define RDATA_(I, D) I*`RESP_W_(D)+`RDATA_P +: D
+//gets the read valid field of cat bus
+`define RVALID_(I, D) I*`RESP_W_(D)+`READY_W
+//gets the READY field of cat bus
+`define READY_(I, D) I*`RESP_W_(D)
+//defaults
+`define VALID(I) `VALID_(I, ADDR_W, DATA_W)
+`define ADDRESS(I, W) `ADDRESS_(I, W, ADDR_W, DATA_W)
+`define WDATA(I) `WDATA_(I, ADDR_W, DATA_W)
+`define WSTRB(I) `WSTRB_(I, ADDR_W, DATA_W)
+`define WRITE(I) `WRITE_(I, ADDR_W, DATA_W)
+`define RDATA(I) `RDATA_(I, DATA_W)
+`define RVALID(I) `RVALID_(I, DATA_W)
+`define READY(I) `READY_(I, DATA_W)
 
 module iob_soc_ext_mem #(
     parameter ADDR_W      = 0,

@@ -2,7 +2,53 @@
 
 `include "bsp.vh"
 `include "iob_soc_conf.vh"
-`include "iob_utils.vh"
+
+/*
+ * Old iob_utils.vh macros. TODO: Remove these.
+ */
+//DATA WIDTHS
+`define VALID_W 1
+`define WSTRB_W_(D) D/8
+`define READY_W 1
+`define WRITE_W_(D) (D+(`WSTRB_W_(D)))
+`define READ_W_(D) (D)
+//DATA POSITIONS
+//REQ bus
+`define WDATA_P_(D) `WSTRB_W_(D)
+`define ADDR_P_(D) (`WDATA_P_(D)+D)
+`define VALID_P_(A, D) (`ADDR_P_(D)+A)
+//RESP bus
+`define RDATA_P `VALID_W+`READY_W
+//CONCAT BUS WIDTHS
+//request part
+`define REQ_W_(A, D) ((`VALID_W+A)+`WRITE_W_(D))
+//response part
+`define RESP_W_(D) ((`READ_W_(D)+`VALID_W)+`READY_W)
+//gets the WRITE valid bit of cat bus section
+`define VALID_(I, A, D) (I*`REQ_W_(A,D)) + `VALID_P_(A,D)
+//gets the ADDRESS of cat bus section
+`define ADDRESS_(I, W, A, D) I*`REQ_W_(A,D)+`ADDR_P_(D)+W-1 -: W
+//gets the WDATA field of cat bus
+`define WDATA_(I, A, D) I*`REQ_W_(A,D)+`WDATA_P_(D) +: D
+//gets the WSTRB field of cat bus
+`define WSTRB_(I, A, D) I*`REQ_W_(A,D) +: `WSTRB_W_(D)
+//gets the WRITE fields of cat bus
+`define WRITE_(I, A, D) I*`REQ_W_(A,D) +: `WRITE_W_(D)
+//gets the RDATA field of cat bus
+`define RDATA_(I, D) I*`RESP_W_(D)+`RDATA_P +: D
+//gets the read valid field of cat bus
+`define RVALID_(I, D) I*`RESP_W_(D)+`READY_W
+//gets the READY field of cat bus
+`define READY_(I, D) I*`RESP_W_(D)
+//defaults
+`define VALID(I) `VALID_(I, ADDR_W, DATA_W)
+`define ADDRESS(I, W) `ADDRESS_(I, W, ADDR_W, DATA_W)
+`define WDATA(I) `WDATA_(I, ADDR_W, DATA_W)
+`define WSTRB(I) `WSTRB_(I, ADDR_W, DATA_W)
+`define WRITE(I) `WRITE_(I, ADDR_W, DATA_W)
+`define RDATA(I) `RDATA_(I, DATA_W)
+`define RVALID(I) `RVALID_(I, DATA_W)
+`define READY(I) `READY_(I, DATA_W)
 
 //Peripherals _swreg_def.vh file includes.
 `include "iob_soc_periphs_swreg_def.vs"
@@ -10,31 +56,6 @@
 module iob_soc #(
     `include "iob_soc_params.vs"
 ) (
-    //rom
-    output                      rom_r_valid_o,
-    output [BOOTROM_ADDR_W-3:0] rom_r_addr_o,
-    input  [        DATA_W-1:0] rom_r_rdata_i,
-`ifdef USE_SPRAM
-    output                      valid_spram_o,
-    output [   SRAM_ADDR_W-3:0] addr_spram_o,
-    output [      DATA_W/8-1:0] wstrb_spram_o,
-    output [        DATA_W-1:0] wdata_spram_o,
-    input  [        DATA_W-1:0] rdata_spram_i,
-`endif
-    //
-    //sram
-    output                      i_valid_o,
-    output [   SRAM_ADDR_W-3:0] i_addr_o,
-    output [        DATA_W-1:0] i_wdata_o,
-    output [      DATA_W/8-1:0] i_wstrb_o,
-    input  [        DATA_W-1:0] i_rdata_i,
-
-    output                   d_valid_o,
-    output [SRAM_ADDR_W-3:0] d_addr_o,
-    output [     DATA_W-1:0] d_wdata_o,
-    output [   DATA_W/8-1:0] d_wstrb_o,
-    input  [     DATA_W-1:0] d_rdata_i,
-    //
     `include "iob_soc_io.vs"
 );
 
@@ -158,6 +179,33 @@ iob_soc_int_mem #(
 
       //data bus
       `include "iob_soc_int_mem_d_iob_s_portmap.vs"
+
+`ifdef USE_SPRAM
+      .valid_spram_o(valid_spram_o),
+      .addr_spram_o (addr_spram_o),
+      .wstrb_spram_o(wstrb_spram_o),
+      .wdata_spram_o(wdata_spram_o),
+      .rdata_spram_i(rdata_spram_i),
+`endif
+
+
+      //rom
+      .rom_r_valid_o(rom_r_valid_o),
+      .rom_r_addr_o (rom_r_addr_o),
+      .rom_r_rdata_i(rom_r_rdata_i),
+      //
+
+      //ram
+      .i_valid_o(i_valid_o),
+      .i_addr_o (i_addr_o),
+      .i_wdata_o(i_wdata_o),
+      .i_wstrb_o(i_wstrb_o),
+      .i_rdata_i(i_rdata_i),
+      .d_valid_o(d_valid_o),
+      .d_addr_o (d_addr_o),
+      .d_wdata_o(d_wdata_o),
+      .d_wstrb_o(d_wstrb_o),
+      .d_rdata_i(d_rdata_i)
   );
 
 `ifdef IOB_SOC_USE_EXTMEM

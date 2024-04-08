@@ -1,7 +1,53 @@
 `timescale 1 ns / 1 ps
 
 `include "iob_soc_conf.vh"
-`include "iob_utils.vh"
+
+/*
+ * Old iob_utils.vh macros. TODO: Remove these.
+ */
+//DATA WIDTHS
+`define VALID_W 1
+`define WSTRB_W_(D) D/8
+`define READY_W 1
+`define WRITE_W_(D) (D+(`WSTRB_W_(D)))
+`define READ_W_(D) (D)
+//DATA POSITIONS
+//REQ bus
+`define WDATA_P_(D) `WSTRB_W_(D)
+`define ADDR_P_(D) (`WDATA_P_(D)+D)
+`define VALID_P_(A, D) (`ADDR_P_(D)+A)
+//RESP bus
+`define RDATA_P `VALID_W+`READY_W
+//CONCAT BUS WIDTHS
+//request part
+`define REQ_W_(A, D) ((`VALID_W+A)+`WRITE_W_(D))
+//response part
+`define RESP_W_(D) ((`READ_W_(D)+`VALID_W)+`READY_W)
+//gets the WRITE valid bit of cat bus section
+`define VALID_(I, A, D) (I*`REQ_W_(A,D)) + `VALID_P_(A,D)
+//gets the ADDRESS of cat bus section
+`define ADDRESS_(I, W, A, D) I*`REQ_W_(A,D)+`ADDR_P_(D)+W-1 -: W
+//gets the WDATA field of cat bus
+`define WDATA_(I, A, D) I*`REQ_W_(A,D)+`WDATA_P_(D) +: D
+//gets the WSTRB field of cat bus
+`define WSTRB_(I, A, D) I*`REQ_W_(A,D) +: `WSTRB_W_(D)
+//gets the WRITE fields of cat bus
+`define WRITE_(I, A, D) I*`REQ_W_(A,D) +: `WRITE_W_(D)
+//gets the RDATA field of cat bus
+`define RDATA_(I, D) I*`RESP_W_(D)+`RDATA_P +: D
+//gets the read valid field of cat bus
+`define RVALID_(I, D) I*`RESP_W_(D)+`READY_W
+//gets the READY field of cat bus
+`define READY_(I, D) I*`RESP_W_(D)
+//defaults
+`define VALID(I) `VALID_(I, ADDR_W, DATA_W)
+`define ADDRESS(I, W) `ADDRESS_(I, W, ADDR_W, DATA_W)
+`define WDATA(I) `WDATA_(I, ADDR_W, DATA_W)
+`define WSTRB(I) `WSTRB_(I, ADDR_W, DATA_W)
+`define WRITE(I) `WRITE_(I, ADDR_W, DATA_W)
+`define RDATA(I) `RDATA_(I, DATA_W)
+`define RVALID(I) `RVALID_(I, DATA_W)
+`define READY(I) `READY_(I, DATA_W)
 
 module iob_soc_int_mem #(
    parameter ADDR_W         = 0,
@@ -21,6 +67,32 @@ module iob_soc_int_mem #(
 
    //data bus
    `include "iob_soc_int_mem_d_iob_s_port.vs"
+
+`ifdef USE_SPRAM
+   output                       valid_spram_o,
+   output     [SRAM_ADDR_W-3:0] addr_spram_o,
+   output     [DATA_W/8-1:0]    wstrb_spram_o,
+   output     [DATA_W-1:0]      wdata_spram_o,
+   input      [DATA_W-1:0]      rdata_spram_i,
+`endif 
+   //rom
+   output                           rom_r_valid_o,
+   output      [BOOTROM_ADDR_W-3:0] rom_r_addr_o,
+   input       [DATA_W-1:0]         rom_r_rdata_i,
+   //
+
+   //sram
+   output                           i_valid_o,
+   output      [SRAM_ADDR_W-3:0]    i_addr_o,
+   output      [     DATA_W-1:0]    i_wdata_o,
+   output      [   DATA_W/8-1:0]    i_wstrb_o,
+   input       [     DATA_W-1:0]    i_rdata_i,
+
+   output                           d_valid_o,
+   output      [SRAM_ADDR_W-3:0]    d_addr_o,
+   output      [     DATA_W-1:0]    d_wdata_o,
+   output      [   DATA_W/8-1:0]    d_wstrb_o,
+   input       [     DATA_W-1:0]    d_rdata_i,
 
    `include "clk_en_rst_s_port.vs"
 );
@@ -185,27 +257,27 @@ module iob_soc_int_mem #(
    `ifdef USE_SPRAM
       .valid_spram_o(valid_spram_o),
       .addr_spram_o(addr_spram_o),
-      .wstrb_spram_o_o(wstrb_spram_o_o),
+      .wstrb_spram_o(wstrb_spram_o),
       .wdata_spram_o(wdata_spram_o),
       .rdata_spram_i(rdata_spram_i),
-   `endif 
+   `endif
       //instruction bus
-      .i_valid_i(ram_i_iob_valid),
-      .i_addr_i  (ram_i_iob_addr[SRAM_ADDR_W-1:2]),
-      .i_wdata_i (ram_i_iob_wdata),
-      .i_wstrb_i (ram_i_iob_wstrb),
-      .i_rdata_o (ram_i_iob_rdata),
-      .i_rvalid_o(ram_i_iob_rvalid),
-      .i_ready_o (ram_i_iob_ready),
+      .i_valid_i(i_valid_o),
+      .i_addr_i  (i_addr_o),
+      .i_wdata_i (i_wdata_o),
+      .i_wstrb_i (i_wstrb_o),
+      .i_rdata_o (),
+      .i_rvalid_o(ram_i_resp[`RVALID(0)]),
+      .i_ready_o (ram_i_resp[`READY(0)]),
 
       //data bus
-      .d_valid_i(ram_d_iob_valid),
-      .d_addr_i  (ram_d_addr),
-      .d_wdata_i (ram_d_iob_wdata),
-      .d_wstrb_i (ram_d_iob_wstrb),
-      .d_rdata_o (ram_d_iob_rdata),
-      .d_rvalid_o(ram_d_iob_rvalid),
-      .d_ready_o (ram_d_iob_ready)
+      .d_valid_i(d_valid_o),
+      .d_addr_i  (d_addr_o),
+      .d_wdata_i (d_wdata_o),
+      .d_wstrb_i (d_wstrb_o),
+      .d_rdata_o (),
+      .d_rvalid_o(ram_d_resp[`RVALID(0)]),
+      .d_ready_o (ram_d_resp[`READY(0)])
    );
 
 endmodule
