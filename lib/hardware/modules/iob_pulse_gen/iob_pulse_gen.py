@@ -164,20 +164,10 @@ class iob_pulse_gen(iob_core):
         )
 
         self.create_snippet(
-            ["start_detected_nxt"],
+            ["start_detected_nxt", "cnt_en", "pulse_nxt"],
             """
    assign start_detected_nxt = start_detected | start_i;
-            """,
-        )
-        self.create_snippet(
-            ["cnt_en"],
-            """
    assign cnt_en = start_detected & (cnt <= FINISH);
-            """,
-        )
-        self.create_snippet(
-            ["pulse_nxt"],
-            """
    assign pulse_nxt = cnt_en & (cnt < FINISH) & (cnt >= START_INT);
             """,
         )
