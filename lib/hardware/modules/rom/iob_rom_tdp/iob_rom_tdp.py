@@ -1,20 +1,20 @@
 import sys
 
-from iob_module import iob_module
+from iob_core import iob_core
 
 
-class iob_rom_tdp(iob_module):
-    def __init__(self):
-        super().__init__()
-        self.version = "V0.10"
+class iob_rom_tdp(iob_core):
+    def __init__(self, *args, **kwargs):
+        self.set_default_attribute("version", "0.1")
+        self.set_default_attribute("generate_hw", False)
+
+        super().__init__(*args, **kwargs)
 
 
 if __name__ == "__main__":
-    # Create an iob_rom_tdp ip core
-    iob_rom_tdp_core = iob_rom_tdp()
     if "clean" in sys.argv:
-        iob_rom_tdp_core.clean_build_dir()
+        iob_rom_tdp.clean_build_dir()
     elif "print" in sys.argv:
-        iob_rom_tdp_core.print_build_dir()
+        iob_rom_tdp.print_build_dir()
     else:
-        iob_rom_tdp_core._setup()
+        iob_rom_tdp()

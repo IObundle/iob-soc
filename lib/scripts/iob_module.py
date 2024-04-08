@@ -2,7 +2,7 @@ from iob_base import iob_base
 from iob_conf import create_conf
 from iob_port import create_port
 from iob_wire import create_wire, get_wire_signal
-from iob_csr import create_csr
+from iob_csr import create_csr_group
 from iob_snippet import create_snippet
 
 
@@ -34,10 +34,10 @@ class iob_module(iob_base):
         create_wire(self, *args, **kwargs)
 
     def get_wire_signal(self, *args, **kwargs):
-        get_wire_signal(self, *args, **kwargs)
+        return get_wire_signal(self, *args, **kwargs)
 
-    def create_csr(self, *args, **kwargs):
-        create_csr(self, *args, **kwargs)
+    def create_csr_group(self, *args, **kwargs):
+        create_csr_group(self, *args, **kwargs)
 
     def create_snippet(self, *args, **kwargs):
         create_snippet(self, *args, **kwargs)
@@ -62,5 +62,5 @@ class iob_module(iob_base):
         """Update global top module if it has not been set before.
         The first module to call this method is the global top module.
         """
-        if __class__.global_top_module is None:
+        if not __class__.global_top_module:
             __class__.global_top_module = self

@@ -31,6 +31,13 @@ class iob_instance(iob_base):
         # Only use this instance in Verilog if this Verilog macro is defined
         self.set_default_attribute("if_defined", None, str)
 
+        # Ensure 'ports' list exists. This attribute should normaly be defined by iob_module.
+        # Since 'ports' is not directly an attribute of the iob_instance, we should either:
+        # - Use another instance attribute, like 'port_connections"
+        # - Make iob_instance a subclass of iob_module (to inherit 'ports')
+        # - Place the code that makes the port connections in the 'iob_core' class
+        self.set_default_attribute("ports", [], list)
+
         # Connect instance ports to external wires
         for port_name, wire_name in connect.items():
             port = find_obj_in_list(self.ports, port_name)

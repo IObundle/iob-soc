@@ -2,40 +2,84 @@
 
 `include "bsp.vh"
 `include "iob_soc_conf.vh"
-`include "iob_utils.vh"
+
+/*
+ * Old iob_utils.vh macros. TODO: Remove these.
+ */
+//DATA WIDTHS
+`define VALID_W 1
+`define WSTRB_W_(D) D/8
+`define READY_W 1
+`define WRITE_W_(D) (D+(`WSTRB_W_(D)))
+`define READ_W_(D) (D)
+//DATA POSITIONS
+//REQ bus
+`define WDATA_P_(D) `WSTRB_W_(D)
+`define ADDR_P_(D) (`WDATA_P_(D)+D)
+`define VALID_P_(A, D) (`ADDR_P_(D)+A)
+//RESP bus
+`define RDATA_P `VALID_W+`READY_W
+//CONCAT BUS WIDTHS
+//request part
+`define REQ_W_(A, D) ((`VALID_W+A)+`WRITE_W_(D))
+//response part
+`define RESP_W_(D) ((`READ_W_(D)+`VALID_W)+`READY_W)
+//gets the WRITE valid bit of cat bus section
+`define VALID_(I, A, D) (I*`REQ_W_(A,D)) + `VALID_P_(A,D)
+//gets the ADDRESS of cat bus section
+`define ADDRESS_(I, W, A, D) I*`REQ_W_(A,D)+`ADDR_P_(D)+W-1 -: W
+//gets the WDATA field of cat bus
+`define WDATA_(I, A, D) I*`REQ_W_(A,D)+`WDATA_P_(D) +: D
+//gets the WSTRB field of cat bus
+`define WSTRB_(I, A, D) I*`REQ_W_(A,D) +: `WSTRB_W_(D)
+//gets the WRITE fields of cat bus
+`define WRITE_(I, A, D) I*`REQ_W_(A,D) +: `WRITE_W_(D)
+//gets the RDATA field of cat bus
+`define RDATA_(I, D) I*`RESP_W_(D)+`RDATA_P +: D
+//gets the read valid field of cat bus
+`define RVALID_(I, D) I*`RESP_W_(D)+`READY_W
+//gets the READY field of cat bus
+`define READY_(I, D) I*`RESP_W_(D)
+//defaults
+`define VALID(I) `VALID_(I, ADDR_W, DATA_W)
+`define ADDRESS(I, W) `ADDRESS_(I, W, ADDR_W, DATA_W)
+`define WDATA(I) `WDATA_(I, ADDR_W, DATA_W)
+`define WSTRB(I) `WSTRB_(I, ADDR_W, DATA_W)
+`define WRITE(I) `WRITE_(I, ADDR_W, DATA_W)
+`define RDATA(I) `RDATA_(I, DATA_W)
+`define RVALID(I) `RVALID_(I, DATA_W)
+`define READY(I) `READY_(I, DATA_W)
 
 //Peripherals _swreg_def.vh file includes.
 `include "iob_soc_periphs_swreg_def.vs"
 
 module iob_soc #(
-   `include "iob_soc_params.vs"
+    `include "iob_soc_params.vs"
 ) (
-   `include "iob_soc_io.vs"
+    `include "iob_soc_io.vs"
 );
 
-   `include "iob_soc_pwires.vs"
+  `include "iob_soc_pwires.vs"
 
-   //
-   // SYSTEM RESET
-   //
+  //
+  // SYSTEM RESET
+  //
 
-   wire boot;
-   wire cpu_reset;
+  wire boot;
+  wire cpu_reset;
 
-   //
-   //  CPU
-   //
+  //
+  //  CPU
+  //
 
-   // instruction bus
-   wire [ `REQ_W-1:0] cpu_i_req;
-   wire [`RESP_W-1:0] cpu_i_resp;
+  // instruction bus
+  `include "iob_soc_cpu_i_iob_wire.vs"
 
-   // data cat bus
-   wire [ `REQ_W-1:0] cpu_d_req;
-   wire [`RESP_W-1:0] cpu_d_resp;
+  // data cat bus
+  `include "iob_soc_cpu_d_iob_wire.vs"
 
-   //instantiate the cpu
-   iob_picorv32 #(
+  //instantiate the cpu
+  iob_picorv32 #(
       .ADDR_W        (ADDR_W),
       .DATA_W        (DATA_W),
       .USE_COMPRESSED(`IOB_SOC_USE_COMPRESSED),
@@ -45,163 +89,134 @@ module iob_soc #(
 `else
       .USE_EXTMEM    (0)
 `endif
-   ) cpu (
+  ) cpu (
       .clk_i (clk_i),
-      .arst_i (cpu_reset),
+      .arst_i(cpu_reset),
       .cke_i (cke_i),
       .boot_i(boot),
       .trap_o(cpu_trap_o),
 
       //instruction bus
-      .ibus_req_o (cpu_i_req),
-      .ibus_resp_i(cpu_i_resp),
+      `include "iob_soc_cpu_i_inst_iob_m_portmap.vs"
 
       //data bus
-      .dbus_req_o (cpu_d_req),
-      .dbus_resp_i(cpu_d_resp)
-   );
+      `include "iob_soc_cpu_d_inst_iob_m_portmap.vs"
+  );
 
 
-   //
-   // SPLIT CPU BUSES TO ACCESS INTERNAL OR EXTERNAL MEMORY
-   //
+  //
+  // SPLIT CPU BUSES TO ACCESS INTERNAL OR EXTERNAL MEMORY
+  //
 
-   //internal memory instruction bus
-   wire [ `REQ_W-1:0] int_mem_i_req;
-   wire [`RESP_W-1:0] int_mem_i_resp;
-   //external memory instruction bus
+  //internal memory instruction bus
+  `include "iob_soc_int_mem_i_iob_wire.vs"
 `ifdef IOB_SOC_USE_EXTMEM
-   wire [ `REQ_W-1:0] ext_mem_i_req;
-   wire [`RESP_W-1:0] ext_mem_i_resp;
+  //external memory instruction bus
+  `include "iob_soc_ext_mem_i_iob_wire.vs"
 
-   // INSTRUCTION BUS
-   iob_split #(
-      .ADDR_W  (ADDR_W),
-      .DATA_W  (DATA_W),
-      .N_SLAVES(2),
-      .P_SLAVES(`REQ_W - 2)
-   ) ibus_split (
-      .clk_i   (clk_i),
-      .arst_i  (cpu_reset),
-      // master interface
-      .m_req_i (cpu_i_req),
-      .m_resp_o(cpu_i_resp),
-      // slaves interface
-      .s_req_o ({ext_mem_i_req, int_mem_i_req}),
-      .s_resp_i({ext_mem_i_resp, int_mem_i_resp})
-   );
+  wire iob_ibus_split_rst;
+  assign iob_ibus_split_rst = cpu_reset;
+
+  // INSTRUCTION BUS
+  `include "iob_ibus_split_inst.vs"
+
 `else
-   assign int_mem_i_req = cpu_i_req;
-   assign cpu_i_resp    = int_mem_i_resp;
+  assign int_mem_i_iob_valid = cpu_i_iob_valid;
+  assign int_mem_i_iob_addr = cpu_i_iob_addr;
+  assign int_mem_i_iob_wdata = cpu_i_iob_wdata;
+  assign int_mem_i_iob_wstrb = cpu_i_iob_wstrb;
+  assign cpu_i_iob_rdata = int_mem_i_iob_rdata;
+  assign cpu_i_iob_rvalid = int_mem_i_iob_rvalid;
+  assign cpu_i_iob_ready = int_mem_i_iob_ready;
 `endif
 
 
-   // DATA BUS
+  // DATA BUS
 
-   //internal data bus
-   wire [ `REQ_W-1:0] int_d_req;
-   wire [`RESP_W-1:0] int_d_resp;
+  //internal data bus
+  `include "iob_soc_int_d_dbus_iob_wire.vs"
 `ifdef IOB_SOC_USE_EXTMEM
-   //external memory data bus
-   wire [ `REQ_W-1:0] ext_mem_d_req;
-   wire [`RESP_W-1:0] ext_mem_d_resp;
+  //external memory data bus
+  `include "iob_soc_ext_mem_d_iob_wire.vs"
 
-   iob_split #(
-      .ADDR_W  (ADDR_W),
-      .DATA_W  (DATA_W),
-      .N_SLAVES(2),       //E,{P,I}
-      .P_SLAVES(`REQ_W - 2)
-   ) dbus_split (
-      .clk_i   (clk_i),
-      .arst_i  (cpu_reset),
-      // master interface
-      .m_req_i (cpu_d_req),
-      .m_resp_o(cpu_d_resp),
-      // slaves interface
-      .s_req_o ({ext_mem_d_req, int_d_req}),
-      .s_resp_i({ext_mem_d_resp, int_d_resp})
-   );
+  wire iob_dbus_split_rst;
+  assign iob_dbus_split_rst = cpu_reset;
+
+  `include "iob_dbus_split_inst.vs"
+
 `else
-   assign int_d_req  = cpu_d_req;
-   assign cpu_d_resp = int_d_resp;
+  assign int_d_iob_valid  = cpu_d_iob_valid;
+  assign int_d_iob_addr   = cpu_d_iob_addr;
+  assign int_d_iob_wdata  = cpu_d_iob_wdata;
+  assign int_d_iob_wstrb  = cpu_d_iob_wstrb;
+  assign cpu_d_iob_rdata  = int_d_iob_rdata;
+  assign cpu_d_iob_rvalid = int_d_iob_rvalid;
+  assign cpu_d_iob_ready  = int_d_iob_ready;
 `endif
 
-   //
-   // SPLIT INTERNAL MEMORY AND PERIPHERALS BUS
-   //
+  //
+  // INTERNAL SRAM MEMORY
+  //
+  `include "iob_soc_int_mem_d_iob_wire.vs"
 
-   //slaves bus (includes internal memory + periphrals)
-   wire [ (`IOB_SOC_N_SLAVES)*`REQ_W-1:0] slaves_req;
-   wire [(`IOB_SOC_N_SLAVES)*`RESP_W-1:0] slaves_resp;
-
-   iob_split #(
-      .ADDR_W  (ADDR_W),
-      .DATA_W  (DATA_W),
-      .N_SLAVES(`IOB_SOC_N_SLAVES),
-      .P_SLAVES(`REQ_W - 3)
-   ) pbus_split (
-      .clk_i   (clk_i),
-      .arst_i  (cpu_reset),
-      // master interface
-      .m_req_i (int_d_req),
-      .m_resp_o(int_d_resp),
-      // slaves interface
-      .s_req_o (slaves_req),
-      .s_resp_i(slaves_resp)
-   );
-
-
-   //
-   // INTERNAL SRAM MEMORY
-   //
-
-   iob_soc_int_mem #(
+iob_soc_int_mem #(
       .ADDR_W        (ADDR_W),
       .DATA_W        (DATA_W),
       .HEXFILE       ("iob_soc_firmware"),
       .BOOT_HEXFILE  ("iob_soc_boot"),
       .SRAM_ADDR_W   (SRAM_ADDR_W),
       .BOOTROM_ADDR_W(BOOTROM_ADDR_W),
-      .B_BIT         (`REQ_W - (ADDR_W-`IOB_SOC_B+1))
-   ) int_mem0 (
-      .clk_i    (clk_i),
-      .arst_i   (arst_i),
-      .cke_i    (cke_i),
-      .boot     (boot),
-      .cpu_reset(cpu_reset),
+      .B_BIT         (`IOB_SOC_B)
+  ) int_mem0 (
+      .clk_i      (clk_i),
+      .arst_i     (arst_i),
+      .cke_i      (cke_i),
+      .boot_o     (boot),
+      .cpu_reset_o(cpu_reset),
 
       // instruction bus
-      .i_req_i (int_mem_i_req),
-      .i_resp_o(int_mem_i_resp),
+      `include "iob_soc_int_mem_i_iob_s_portmap.vs"
 
       //data bus
-      .d_req_i (slaves_req[0+:`REQ_W]),
-      .d_resp_o(slaves_resp[0+:`RESP_W])
-   );
+      `include "iob_soc_int_mem_d_iob_s_portmap.vs"
+
+`ifdef USE_SPRAM
+      .valid_spram_o(valid_spram_o),
+      .addr_spram_o (addr_spram_o),
+      .wstrb_spram_o(wstrb_spram_o),
+      .wdata_spram_o(wdata_spram_o),
+      .rdata_spram_i(rdata_spram_i),
+`endif
+
+
+      //rom
+      .rom_r_valid_o(rom_r_valid_o),
+      .rom_r_addr_o (rom_r_addr_o),
+      .rom_r_rdata_i(rom_r_rdata_i),
+      //
+
+      //ram
+      .i_valid_o(i_valid_o),
+      .i_addr_o (i_addr_o),
+      .i_wdata_o(i_wdata_o),
+      .i_wstrb_o(i_wstrb_o),
+      .i_rdata_i(i_rdata_i),
+      .d_valid_o(d_valid_o),
+      .d_addr_o (d_addr_o),
+      .d_wdata_o(d_wdata_o),
+      .d_wstrb_o(d_wstrb_o),
+      .d_rdata_i(d_rdata_i)
+  );
 
 `ifdef IOB_SOC_USE_EXTMEM
-   //
-   // EXTERNAL DDR MEMORY
-   //
+  //
+  // EXTERNAL DDR MEMORY
+  //
 
-   wire [ 1+MEM_ADDR_W-2+DATA_W+DATA_W/8-1:0] ext_mem0_i_req;
-   wire [1+MEM_ADDR_W+1-2+DATA_W+DATA_W/8-1:0] ext_mem0_d_req;
+  wire [AXI_ADDR_W-1:0] internal_axi_awaddr_o;
+  wire [AXI_ADDR_W-1:0] internal_axi_araddr_o;
 
-   assign ext_mem0_i_req = {
-      ext_mem_i_req[`VALID(0)],
-      ext_mem_i_req[`ADDRESS(0, MEM_ADDR_W)-2],
-      ext_mem_i_req[`WRITE(0)]
-   };
-   assign ext_mem0_d_req = {
-      ext_mem_d_req[`VALID(0)],
-      ext_mem_d_req[`ADDRESS(0, MEM_ADDR_W+1)-2],
-      ext_mem_d_req[`WRITE(0)]
-   };
-
-   wire [AXI_ADDR_W-1:0] internal_axi_awaddr_o;
-   wire [AXI_ADDR_W-1:0] internal_axi_araddr_o;
-
-   iob_soc_ext_mem #(
+  iob_soc_ext_mem #(
       .ADDR_W     (ADDR_W),
       .DATA_W     (DATA_W),
       .FIRM_ADDR_W(MEM_ADDR_W),
@@ -212,14 +227,24 @@ module iob_soc #(
       .AXI_LEN_W  (AXI_LEN_W),
       .AXI_ADDR_W (AXI_ADDR_W),
       .AXI_DATA_W (AXI_DATA_W)
-   ) ext_mem0 (
+  ) ext_mem0 (
       // instruction bus
-      .i_req_i (ext_mem0_i_req),
-      .i_resp_o(ext_mem_i_resp),
+      .i_iob_valid_i (ext_mem_i_iob_valid),
+      .i_iob_addr_i  (ext_mem_i_iob_addr[MEM_ADDR_W-1:2]),
+      .i_iob_wdata_i (ext_mem_i_iob_wdata),
+      .i_iob_wstrb_i (ext_mem_i_iob_wstrb),
+      .i_iob_rvalid_o(ext_mem_i_iob_rvalid),
+      .i_iob_rdata_o (ext_mem_i_iob_rdata),
+      .i_iob_ready_o (ext_mem_i_iob_ready),
 
       //data bus
-      .d_req_i (ext_mem0_d_req),
-      .d_resp_o(ext_mem_d_resp),
+      .d_iob_valid_i (ext_mem_d_iob_valid),
+      .d_iob_addr_i  (ext_mem_d_iob_addr[MEM_ADDR_W:2]),
+      .d_iob_wdata_i (ext_mem_d_iob_wdata),
+      .d_iob_wstrb_i (ext_mem_d_iob_wstrb),
+      .d_iob_rvalid_o(ext_mem_d_iob_rvalid),
+      .d_iob_rdata_o (ext_mem_d_iob_rdata),
+      .d_iob_ready_o (ext_mem_d_iob_ready),
 
       //AXI INTERFACE
       //address write
@@ -268,12 +293,12 @@ module iob_soc #(
       .clk_i (clk_i),
       .cke_i (cke_i),
       .arst_i(cpu_reset)
-   );
+  );
 
-   assign axi_awaddr_o[AXI_ADDR_W-1:0] = internal_axi_awaddr_o + MEM_ADDR_OFFSET;
-   assign axi_araddr_o[AXI_ADDR_W-1:0] = internal_axi_araddr_o + MEM_ADDR_OFFSET;
+  assign axi_awaddr_o[AXI_ADDR_W-1:0] = internal_axi_awaddr_o + MEM_ADDR_OFFSET;
+  assign axi_araddr_o[AXI_ADDR_W-1:0] = internal_axi_araddr_o + MEM_ADDR_OFFSET;
 `endif
 
-   `include "iob_soc_periphs_inst.vs"
+  `include "iob_soc_periphs_inst.vs"
 
 endmodule

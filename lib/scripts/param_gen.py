@@ -33,7 +33,8 @@ def generate_params(core):
     lines = []
     for p_name, p_value in instance_parameters.items():
         lines.append(f"        .{p_name}({p_value}),\n")
-    lines[-1] = lines[-1].replace(",\n", "\n")
+    if lines:
+        lines[-1] = lines[-1].replace(",\n", "\n")
     file2create = open(f"{out_dir}/{core.instance_name}_inst_params.vs", "w")
     file2create.writelines(lines)
     file2create.close()

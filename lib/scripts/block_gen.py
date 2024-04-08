@@ -5,7 +5,9 @@
 from latex import write_table
 
 import iob_colors
-from iob_port import iob_port, get_signal_name_with_dir_suffix
+from iob_port import get_signal_name_with_dir_suffix
+from iob_wire import get_real_signal
+import if_gen
 
 
 # Generate blocks.tex file with TeX table of blocks (Verilog modules instances)
@@ -13,9 +15,9 @@ def generate_blocks_table_tex(out_dir):
     blocks_file = open(f"{out_dir}/blocks.tex", "w")
 
     blocks_file.write(
-        "The Verilog modules in the top-level entity of the core are described in the \
-    following table. The table elements represent the blocks in the \
-    Block Diagram.\n"
+        "The Verilog modules in the top-level entity of the core are \
+        described in the following table. The table elements represent \
+        the blocks in the Block Diagram.\n"
     )
 
     blocks_file.write(
@@ -97,19 +99,22 @@ def get_instance_port_connections(instance):
             port.e_connect
         ), f"{iob_colors.FAIL}Port '{port.name}' of instance '{instance.name}' is not connected!{iob_colors.ENDC}"
         instance_portmap += f"        // {port.name} port\n"
+        # Connect individual signals
         for idx, signal in enumerate(port.signals):
             port_name = get_signal_name_with_dir_suffix(signal)
-            if isinstance(port.e_connect, iob_port):
-                # External signal is a port. Use direction suffix.
-                e_signal_name = get_signal_name_with_dir_suffix(
-                    port.e_connect.signals[idx]
-                )
+            real_e_signal = get_real_signal(port.e_connect.signals[idx])
+            if real_e_signal.direction:
+                # External signal belongs to a port. Use direction suffix.
+                e_signal_name = get_signal_name_with_dir_suffix(real_e_signal)
             else:
-                e_signal_name = port.e_connect.signals[idx]["name"]
+                e_signal_name = real_e_signal.name
 
             comma = (
                 ","
-                if (port_idx < len(instance.ports) - 1) or (idx < len(port.signals) - 1)
+                if (
+                    (port_idx < len(instance.ports) - 1)
+                    or (idx < len(port.signals) - 1)
+                )
                 else ""
             )
             instance_portmap += f"        .{port_name}({e_signal_name}){comma}\n"

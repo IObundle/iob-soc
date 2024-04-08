@@ -7,6 +7,7 @@ from latex import write_table
 import os
 
 import if_gen
+from iob_port import get_signal_name_with_dir_suffix
 
 
 def reverse_port(port_type):
@@ -16,26 +17,11 @@ def reverse_port(port_type):
         return "input"
 
 
-def delete_last_comma(lines):
-    """Remove last comma from a list of Verilog lines"""
-    # Start searching from the last line
-    for i in range(len(lines) - 1, 0, -1):
-        line = lines[i]
-        # Ignore lines starting with Verilog macro or comment
-        if line.startswith("`") or line.startswith("//"):
-            continue
-        # Get index of first comma in line (there may be more if there are comments
-        comma_idx = line.find(",")
-        lines[i] = line[:comma_idx] + line[comma_idx + 1 :]
-        break
-    return lines
-
-
 def generate_ports(core):
     out_dir = core.build_dir + "/hardware/src"
 
     lines = []
-    for port in core.ports:
+    for port_idx, port in enumerate(core.ports):
         # If port has 'doc_only' attribute set to True, skip it
         if port.doc_only:
             continue
@@ -44,40 +30,44 @@ def generate_ports(core):
         if port.if_defined:
             lines.append(f"`ifdef {core.name.upper()}_{port.if_defined}\n")
 
-        if port.file_prefix:
-            file_prefix = port.file_prefix
-        else:
-            file_prefix = port.port_prefix + port.wire_prefix
-
-        if_gen.gen_if(
-            port.name,
-            file_prefix,
-            port.port_prefix,
-            port.wire_prefix,
-            port.signals,
-            port.mult,
-            port.widths,
-        )
-
-        # append vs_file to io.vs
-        if port.type == "slave":
-            infix = "s"
-        else:
-            infix = "m"
-        vs_file = open(f"{file_prefix}{port.name}_{infix}_port.vs", "r")
-        lines.extend(["    " + s for s in vs_file.readlines()])
-
-        # move all .vs files from current directory to out_dir
-        for file in os.listdir("."):
-            if file.endswith(".vs"):
-                os.rename(file, f"{out_dir}/{file}")
+        for idx, s in enumerate(port.signals):
+            dir = s.direction
+            width = "[" + str(s.width) + "-1:0]"
+            port_name = get_signal_name_with_dir_suffix(s)
+            if port_idx < len(core.ports) - 1 or idx < len(port.signals) - 1:
+                comma = ","
+            else:
+                comma = ""
+            lines.append(f"    {dir} {width} {port_name}{comma}\n")
 
         # Close ifdef if conditional interface
         if port.if_defined:
             lines.append("`endif\n")
 
+        # Also generate if_gen.py files (portmaps, tb_portmaps, wires, ...)
+        if port.name in if_gen.if_names:
+            if port.file_prefix:
+                file_prefix = port.file_prefix
+            else:
+                file_prefix = port.port_prefix + port.wire_prefix
+
+            if_gen.gen_if(
+                port.name,
+                file_prefix,
+                port.port_prefix,
+                port.wire_prefix,
+                port.param_prefix,
+                port.mult,
+                port.widths,
+            )
+
+            # move all .vs files from current directory to out_dir
+            for file in os.listdir("."):
+                if file.endswith(".vs"):
+                    os.rename(file, f"{out_dir}/{file}")
+
     f_io = open(f"{out_dir}/{core.name}_io.vs", "w+")
-    f_io.writelines(delete_last_comma(lines))
+    f_io.writelines(lines)
     f_io.close()
 
 
@@ -93,29 +83,29 @@ def generate_if_tex(ports, out_dir):
         if_file.write(
             """
 \\begin{table}[H]
-  \centering
+  \\centering
   \\begin{tabularx}{\\textwidth}{|l|l|r|X|}
-    
-    \hline
-    \\rowcolor{iob-green}
-    {\\bf Name} & {\\bf Direction} & {\\bf Width} & {\\bf Description}  \\\\ \hline \hline
 
-    \input """
+    \\hline
+    \\rowcolor{iob-green}
+    {\\bf Name} & {\\bf Direction} & {\\bf Width} & {\\bf Description}  \\\\ \\hline \\hline
+
+    \\input """
             + port.name
             + """_if_tab
- 
-  \end{tabularx}
-  \caption{"""
-            + port.descr.replace("_", "\_")
+
+  \\end{tabularx}
+  \\caption{"""
+            + port.descr.replace("_", "\\_")
             + """}
-  \label{"""
+  \\label{"""
             + port.name
             + """_if_tab:is}
-\end{table}
+\\end{table}
 """
         )
 
-    if_file.write("\clearpage")
+    if_file.write("\\clearpage")
     if_file.close()
 
 
@@ -134,17 +124,17 @@ def generate_ios_tex(ports, out_dir):
             if_port = eval(eval_str)
 
             for signal in if_port:
-                port_direction = signal["direction"]
+                port_direction = signal.direction
                 # reverse direction if port is a slave port
                 if port.type == "slave":
                     port_direction = reverse_port(port_direction)
 
                 tex_table.append(
                     [
-                        (signal["name"] + if_gen.get_suffix(port_direction)),
+                        (signal.name + if_gen.get_suffix(port_direction)),
                         port_direction,
-                        signal["width"],
-                        signal["descr"] if "descr" in signal else "",
+                        signal.width,
+                        signal.descr,
                     ]
                 )
         else:
@@ -152,10 +142,10 @@ def generate_ios_tex(ports, out_dir):
             for signal in port.signals:
                 tex_table.append(
                     [
-                        signal["name"],
-                        signal["direction"],
-                        signal["width"],
-                        signal["descr"] if "descr" in signal else "",
+                        signal.name,
+                        signal.direction,
+                        signal.width,
+                        signal.descr,
                     ]
                 )
 

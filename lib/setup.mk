@@ -4,28 +4,28 @@
 #
 
 CORE_DIR ?=.
+PROJECT_ROOT ?=.
 
 setup-python-dir:
 ifeq ($(IOB_PYTHONPATH),)
 	$(error "IOB_PYTHONPATH is not set")
 endif
 	mkdir -p $(IOB_PYTHONPATH)
-	find . -name \*.py -exec cp -u {} $(IOB_PYTHONPATH) \;
+	find $(PROJECT_ROOT) -name \*.py -exec cp -u {} $(IOB_PYTHONPATH) \;
 
 build-setup: setup-python-dir format-all
 	python3 -B $(CORE_DIR)/$(CORE).py $(SETUP_ARGS)
 
+python-lint:
+	$(LIB_DIR)/scripts/sw_tools.py mypy .
+
 python-format:
-	$(LIB_DIR)/scripts/sw_format.py black . 
-ifneq ($(wildcard $(BUILD_DIR)),)
-	$(LIB_DIR)/scripts/sw_format.py black $(BUILD_DIR) 
-endif
+	$(LIB_DIR)/scripts/sw_tools.py black . 
+	if [ -d "$(BUILD_DIR)" ]; then $(LIB_DIR)/scripts/sw_tools.py black $(BUILD_DIR); fi
 
 c-format:
-	$(LIB_DIR)/scripts/sw_format.py clang .
-ifneq ($(wildcard $(BUILD_DIR)),)
-	$(LIB_DIR)/scripts/sw_format.py clang $(BUILD_DIR)
-endif
+	$(LIB_DIR)/scripts/sw_tools.py clang .
+	if [ -d "$(BUILD_DIR)" ]; then $(LIB_DIR)/scripts/sw_tools.py clang $(BUILD_DIR); fi
 
 # Auto-disable linter and formatter if setting up with the Tester
 ifeq ($(TESTER),1)
@@ -50,12 +50,10 @@ ifneq ($(DISABLE_FORMAT),1)
 	$(LIB_DIR)/scripts/verilog-format.sh $(VHFILES) $(VFILES)
 endif
 
-format-all: python-format c-format verilog-lint verilog-format
+format-all: python-format c-format verilog-lint verilog-format # python-lint 
 
 clean: setup-python-dir
-#ifneq ($(wildcard $(BUILD_DIR)),)
-	python3 -B $(CORE_DIR)/$(CORE).py clean
-#endif
+	if [ -d "$(BUILD_DIR)" ]; then python3 -B $(CORE_DIR)/$(CORE).py clean; fi
 	# Makefile only runs the 'setup-python-dir' target once: https://stackoverflow.com/a/38212629
 	# So if we delete it here, it wont be rebuilt on 'build-setup'
 	#@rm -rf $(IOB_PYTHONPATH)
@@ -67,4 +65,4 @@ python-cache-clean:
 	find . -name "*__pycache__" -exec rm -rf {} \; -prune
 
 
-.PHONY: setup-python-dir build-setup clean c-format python-format verilog-format format-all
+.PHONY: setup-python-dir build-setup clean c-format python-lint python-format verilog-format format-all

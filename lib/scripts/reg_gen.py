@@ -6,39 +6,20 @@ import os
 
 import copy_srcs
 import csr_gen
+from iob_csr import iob_csr, iob_csr_group
+from iob_base import find_obj_in_list
 
 
-def auto_add_reg_settings(core):
-    """Auto-add settings like macros and submodules to the module"""
+def auto_setup_iob_ctls(core):
+    """Auto-setup iob_ctls module"""
+    if not core.csrs:
+        return
 
-    # Auto-add VERSION macro if there are software registers
-    if core.csrs:
-        found_version_macro = False
-        if core.confs:
-            for macro in core.confs:
-                if macro["name"] == "VERSION":
-                    found_version_macro = True
-        if not found_version_macro:
-            core.confs.append(
-                {
-                    "name": "VERSION",
-                    "type": "M",
-                    "val": "16'h" + copy_srcs.version_str_to_digits(core.version),
-                    "min": "NA",
-                    "max": "NA",
-                    "descr": "Product version. This 16-bit macro uses nibbles to represent decimal numbers using their binary values. The two most significant nibbles represent the integral part of the version, and the two least significant nibbles represent the decimal part. For example V12.34 is represented by 0x1234.",
-                }
-            )
+    # Auto-add iob_ctls module, except if use_netlist
+    if core.name != "iob_ctls" and not core.use_netlist:
+        from iob_ctls import iob_ctls
 
-        # Auto-add iob_ctls module, except if use_netlist
-        if core.name != "iob_ctls" and not core.use_netlist:
-            from iob_ctls import iob_ctls
-
-            iob_ctls()._setup(
-                is_top=False,
-                purpose=core.purpose,
-                topdir=f"{core.build_dir}",
-            )
+        iob_ctls()
 
 
 def build_regs_table(core):
@@ -51,30 +32,28 @@ def build_regs_table(core):
         return None, None
 
     # Make sure 'general' registers table exists
-    general_regs_table = next((i for i in core.csrs if i["name"] == "general"), None)
+    general_regs_table = find_obj_in_list(core.csrs, "general")
     if not general_regs_table:
-        general_regs_table = {
-            "name": "general",
-            "descr": "General Registers.",
-            "regs": [],
-        }
+        general_regs_table = iob_csr_group(
+            name="general",
+            descr="General Registers.",
+            regs=[],
+        )
         core.csrs.append(general_regs_table)
 
     # Add 'VERSION' register if it does not have one
-    if not next(
-        (i for i in general_regs_table["regs"] if i["name"] == "VERSION"), None
-    ):
-        general_regs_table["regs"].append(
-            {
-                "name": "VERSION",
-                "type": "R",
-                "n_bits": 16,
-                "rst_val": copy_srcs.version_str_to_digits(core.version),
-                "addr": -1,
-                "log2n_items": 0,
-                "autoreg": True,
-                "descr": "Product version.  This 16-bit register uses nibbles to represent decimal numbers using their binary values. The two most significant nibbles represent the integral part of the version, and the two least significant nibbles represent the decimal part. For example V12.34 is represented by 0x1234.",
-            }
+    if not find_obj_in_list(general_regs_table.regs, "VERSION"):
+        general_regs_table.regs.append(
+            iob_csr(
+                name="VERSION",
+                type="R",
+                n_bits=16,
+                rst_val=copy_srcs.version_str_to_digits(core.version),
+                addr=-1,
+                log2n_items=0,
+                autoreg=True,
+                descr="Product version.  This 16-bit register uses nibbles to represent decimal numbers using their binary values. The two most significant nibbles represent the integral part of the version, and the two least significant nibbles represent the decimal part. For example V12.34 is represented by 0x1234.",
+            )
         )
 
     # Create an instance of the csr_gen class inside the csr_gen module
@@ -102,6 +81,7 @@ def generate_reg_hw(core, csr_gen_obj, reg_table):
                 core.build_dir + "/hardware/src",
                 core.name,
                 core.csr_if,
+                core.confs,
             )
 
 
@@ -126,5 +106,5 @@ def generate_csr(core):
     csr_gen_obj, reg_table = build_regs_table(core)
     generate_reg_hw(core, csr_gen_obj, reg_table)
     generate_reg_sw(core, csr_gen_obj, reg_table)
-    auto_add_reg_settings(core)
+    auto_setup_iob_ctls(core)
     return csr_gen_obj, reg_table

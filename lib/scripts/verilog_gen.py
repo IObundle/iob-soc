@@ -175,7 +175,7 @@ def generate_verilog(core):
 
     if os.path.exists(file_path):
         print(
-            f"[DEBUG]: Not generating '{core.name}.v'. Module already exists (probably defined manually or already generated previously)."
+            f"Note: Not generating '{core.name}.v'. Module already exists (probably created manually or generated previously)."
         )
         return
 

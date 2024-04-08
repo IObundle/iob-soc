@@ -15,6 +15,8 @@ LIB_DIR:=.
 export LIB_DIR
 
 PROJECT_ROOT=..
+export PROJECT_ROOT
+
 DISABLE_LINT:=1
 DISABLE_FORMAT:=1
 # Default lib module to setup. Can be overriden by the user.

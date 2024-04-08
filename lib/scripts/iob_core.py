@@ -18,21 +18,21 @@ import ipxact_gen
 
 from iob_module import iob_module
 from iob_instance import iob_instance
+from iob_base import fail_with_msg
 
 
 class iob_core(iob_module, iob_instance):
     """Generic class to describe how to generate a base IOb IP core"""
 
     global_wires: list
-    global_build_dir: str = None
+    global_build_dir: str = ""
     # Project wide special target. Used when we don't want to run normal setup (for example, when cleaning).
-    global_special_target: str = None
+    global_special_target: str = ""
 
     def __init__(
         self,
         *args,
         purpose: str = "hardware",
-        generate_hw: bool = True,
         **kwargs,
     ):
         # Inherit attributes from superclasses
@@ -59,6 +59,8 @@ class iob_core(iob_module, iob_instance):
         self.set_default_attribute("purpose", purpose, str)
         # Don't replace snippets mentioned in this list
         self.set_default_attribute("ignore_snippets", [], list)
+        # Select if should generate hardware from python
+        self.set_default_attribute("generate_hw", True)
 
         # Read-only dictionary with relation between the 'purpose' and
         # the corresponding source folder
@@ -74,7 +76,10 @@ class iob_core(iob_module, iob_instance):
 
         if not self.is_top_module:
             self.build_dir = __class__.global_build_dir
-        self.setup_dir = find_module_setup_dir(self, os.getcwd())
+        assert "PROJECT_ROOT" in os.environ, fail_with_msg(
+            "Environment variable 'PROJECT_ROOT' is not set!"
+        )
+        self.setup_dir = find_module_setup_dir(self, os.environ["PROJECT_ROOT"])
         # print(f"{self.name} {self.build_dir} {self.is_top_module}")  # DEBUG
 
         self.__create_build_dir()
@@ -88,7 +93,8 @@ class iob_core(iob_module, iob_instance):
         copy_srcs.copy_rename_setup_directory(self)
 
         # Generate config_build.mk
-        config_gen.config_build_mk(self)
+        if self.is_top_module:
+            config_gen.config_build_mk(self)
 
         # Generate configuration files
         config_gen.generate_confs(self)
@@ -106,13 +112,15 @@ class iob_core(iob_module, iob_instance):
         csr_gen_obj, reg_table = reg_gen.generate_csr(self)
 
         # Generate instances
-        block_gen.generate_blocks(self)
+        if self.generate_hw:
+            block_gen.generate_blocks(self)
 
         # Generate snippets
         snippet_gen.generate_snippets(self)
 
         # Generate main Verilog module
-        verilog_gen.generate_verilog(self)
+        if self.generate_hw:
+            verilog_gen.generate_verilog(self)
 
         # TODO: Generate a global list of signals
         # This list is useful for a python based simulator
@@ -144,7 +152,12 @@ class iob_core(iob_module, iob_instance):
             self.set_default_attribute("name", self.__class__.__name__)
             # FIXME: This line is duplicate from 'iob_core.py'. Is this an issue?
             self.set_default_attribute("version", "1.0", str)
-            self.set_default_attribute("build_dir", f"../{self.name}_V{self.version}")
+            custom_build_dir = (
+                os.environ["BUILD_DIR"] if "BUILD_DIR" in os.environ else None
+            )
+            self.set_default_attribute(
+                "build_dir", custom_build_dir or f"../{self.name}_V{self.version}"
+            )
             # Update global build dir
             __class__.global_build_dir = self.build_dir
 
@@ -252,14 +265,4 @@ def find_module_setup_dir(core, search_path):
 
     raise Exception(
         f"{iob_colors.FAIL}Setup dir of {core.name} not found in {search_path}!{iob_colors.ENDC}"
-    )
-
-
-def find_dict_in_list(list_obj, name):
-    """Find an dictionary with a given name in a list of dictionaries"""
-    for i in list_obj:
-        if i["name"] == name:
-            return i
-    raise Exception(
-        f"{iob_colors.FAIL}Could not find element with name: {name}{iob_colors.ENDC}"
     )

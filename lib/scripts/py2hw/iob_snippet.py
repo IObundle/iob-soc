@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List
 
 
@@ -7,8 +7,8 @@ class iob_snippet:
     """Class to represent a Verilog snippet in an iob module"""
 
     # List of outputs of this snippet (use to generate global wires)
-    outputs: List[str] = None
-    verilog_code: str = None
+    outputs: List[str] = field(default_factory=list)
+    verilog_code: str = ""
 
 
 def create_snippet(core, *args, **kwargs):

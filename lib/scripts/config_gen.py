@@ -4,6 +4,7 @@ import re
 
 from latex import write_table
 import copy_srcs
+from iob_conf import iob_conf
 
 
 def conf_vh(macros, top_module, out_dir):
@@ -47,9 +48,9 @@ def conf_h(macros, top_module, out_dir):
         if type(macro.val) != bool:
             m_name = macro.name.upper()
             # Replace any Verilog specific syntax by equivalent C syntax
-            m_default_val = re.sub("\d+'h", "0x", str(macro.val))
-            m_min_val = re.sub("\d+'h", "0x", str(macro.min))
-            m_max_val = re.sub("\d+'h", "0x", str(macro.max))
+            m_default_val = re.sub("\\d+'h", "0x", str(macro.val))
+            m_min_val = re.sub("\\d+'h", "0x", str(macro.min))
+            m_max_val = re.sub("\\d+'h", "0x", str(macro.max))
             file2create.write(
                 f"#define {core_prefix}{m_name} {str(m_default_val).replace('`','')}\n"
             )  # Remove Verilog macros ('`')
@@ -120,7 +121,7 @@ def generate_confs_tex(confs, out_dir):
     for derv_param in derv_params:
         # replace underscores and $clog2 with \_ and $\log_2
         for i in range(len(derv_param)):
-            derv_param[i] = derv_param[i].replace("_", "\_")
+            derv_param[i] = derv_param[i].replace("_", "\\_")
             derv_param[i] = derv_param[i].replace("$clog2", "log2")
         # write the line
         file2create.write(
@@ -166,14 +167,14 @@ def generate_confs(core):
                     found_version_macro = True
         if not found_version_macro:
             core.confs.append(
-                {
-                    "name": "VERSION",
-                    "type": "M",
-                    "val": "16'h" + copy_srcs.version_str_to_digits(core.version),
-                    "min": "NA",
-                    "max": "NA",
-                    "descr": "Product version. This 16-bit macro uses nibbles to represent decimal numbers using their binary values. The two most significant nibbles represent the integral part of the version, and the two least significant nibbles represent the decimal part. For example V12.34 is represented by 0x1234.",
-                }
+                iob_conf(
+                    name="VERSION",
+                    type="M",
+                    val="16'h" + copy_srcs.version_str_to_digits(core.version),
+                    min="NA",
+                    max="NA",
+                    descr="Product version. This 16-bit macro uses nibbles to represent decimal numbers using their binary values. The two most significant nibbles represent the integral part of the version, and the two least significant nibbles represent the decimal part. For example V12.34 is represented by 0x1234.",
+                )
             )
 
     conf_vh(core.confs, core.name, core.build_dir + "/hardware/src")

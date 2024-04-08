@@ -21,13 +21,13 @@ reserved_signals = {
     "cke": ".cke_i(cke_i)",
     "en": ".en_i(en_i)",
     "arst": ".arst_i(arst_i)",
-    "iob_valid": ".iob_valid_i(slaves_req[`VALID(`/*<InstanceName>*/)])",
-    "iob_addr": ".iob_addr_i(slaves_req[`ADDRESS(`/*<InstanceName>*/,`/*<SwregFilename>*/_ADDR_W)])",
-    "iob_wdata": ".iob_wdata_i(slaves_req[`WDATA(`/*<InstanceName>*/)])",
-    "iob_wstrb": ".iob_wstrb_i(slaves_req[`WSTRB(`/*<InstanceName>*/)])",
-    "iob_rdata": ".iob_rdata_o(slaves_resp[`RDATA(`/*<InstanceName>*/)])",
-    "iob_ready": ".iob_ready_o(slaves_resp[`READY(`/*<InstanceName>*/)])",
-    "iob_rvalid": ".iob_rvalid_o(slaves_resp[`RVALID(`/*<InstanceName>*/)])",
+    "iob_valid": ".iob_valid_i(/*<InstanceName>*/_iob_valid)",
+    "iob_addr": ".iob_addr_i(/*<InstanceName>*/_iob_addr[`/*<SwregFilename>*/_ADDR_W-1:0])",
+    "iob_wdata": ".iob_wdata_i(/*<InstanceName>*/_iob_wdata)",
+    "iob_wstrb": ".iob_wstrb_i(/*<InstanceName>*/_iob_wstrb)",
+    "iob_rdata": ".iob_rdata_o(/*<InstanceName>*/_iob_rdata)",
+    "iob_ready": ".iob_ready_o(/*<InstanceName>*/_iob_ready)",
+    "iob_rvalid": ".iob_rvalid_o(/*<InstanceName>*/_iob_rvalid)",
     "trap": ".trap_o(/*<InstanceName>*/_trap_o)",
     "axi_awid": ".axi_awid_o          (axi_awid_o             [/*<extmem_conn_num>*/*AXI_ID_W       +:/*<bus_size>*/*AXI_ID_W])",
     "axi_awaddr": ".axi_awaddr_o      (axi_awaddr_o           [/*<extmem_conn_num>*/*AXI_ADDR_W     +:/*<bus_size>*/*AXI_ADDR_W])",
@@ -138,29 +138,30 @@ def get_peripheral_ios(peripherals_list):
 
 # This function is used to setup peripheral related configuration in the python module of iob-soc systems
 # python_module: Module of the iob-soc system being setup
-def iob_soc_peripheral_setup(python_module):
-    # Get peripherals list from 'peripherals' table in blocks list
-    peripherals_list = python_module.peripherals
-
-    if peripherals_list:
-        # Get port list, parameter list and top module name for each type of peripheral used
-        _, params_list, _ = get_peripherals_ports_params_top(peripherals_list)
-        # Insert peripheral instance parameters in system parameters
-        # This causes the system to have a parameter for each parameter of each peripheral instance
-        for instance in peripherals_list:
-            for parameter in params_list[instance.module.name]:
-                parameter_to_append = parameter.copy()
-                # Override parameter value if user specified a 'parameters' dictionary with an override value for this parameter.
-                if parameter["name"] in instance.parameters:
-                    parameter_to_append["val"] = instance.parameters[parameter["name"]]
-                # Add instance name prefix to the name of the parameter. This makes this parameter unique to this instance
-                parameter_to_append[
-                    "name"
-                ] = f"{instance.name}_{parameter_to_append['name']}"
-                python_module.confs.append(parameter_to_append)
-
-        # Get peripheral related macros
-        get_peripheral_macros(python_module.confs, peripherals_list)
+# def iob_soc_peripheral_setup(python_module):
+#     """ Fill IOb-SoC macros related to peripherals automatically (like N_SLAVES, N_SLAVES_W, etc)"""
+#     # Get peripherals list from 'peripherals' table in blocks list
+#     peripherals_list = python_module.peripherals
+#
+#     if peripherals_list:
+#         # Get port list, parameter list and top module name for each type of peripheral used
+#         _, params_list, _ = get_peripherals_ports_params_top(peripherals_list)
+#         # Insert peripheral instance parameters in system parameters
+#         # This causes the system to have a parameter for each parameter of each peripheral instance
+#         for instance in peripherals_list:
+#             for parameter in params_list[instance.module.name]:
+#                 parameter_to_append = parameter.copy()
+#                 # Override parameter value if user specified a 'parameters' dictionary with an override value for this parameter.
+#                 if parameter["name"] in instance.parameters:
+#                     parameter_to_append["val"] = instance.parameters[parameter["name"]]
+#                 # Add instance name prefix to the name of the parameter. This makes this parameter unique to this instance
+#                 parameter_to_append[
+#                     "name"
+#                 ] = f"{instance.name}_{parameter_to_append['name']}"
+#                 python_module.confs.append(parameter_to_append)
+#
+#         # Get peripheral related macros
+#         get_peripheral_macros(python_module.confs, peripherals_list)
 
 
 # Parameter: PERIPHERALS string defined in config.mk
@@ -211,9 +212,9 @@ def get_reserved_signals(signal_list):
 def get_reserved_signal_connection(signal_name, instace_name, swreg_filename):
     signal_connection = reserved_signals[signal_name]
     return re.sub(
-        "\/\*<InstanceName>\*\/",
+        r"\/\*<InstanceName>\*\/",
         instace_name,
-        re.sub("\/\*<SwregFilename>\*\/", swreg_filename, signal_connection),
+        re.sub(r"\/\*<SwregFilename>\*\/", swreg_filename, signal_connection),
     )
 
 

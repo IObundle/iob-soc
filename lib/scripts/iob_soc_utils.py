@@ -1,22 +1,19 @@
 import os
 
-from iob_module import find_dict_in_list
+from iob_base import find_obj_in_list
 
 from iob_soc_peripherals import (
     create_periphs_tmp,
     iob_soc_peripheral_setup,
-    reserved_signals,
 )
 
-from iob_soc_create_system import create_systemv, get_extmem_bus_size
+from iob_soc_create_system import (
+    create_systemv,
+    get_extmem_bus_size,
+    create_pbus_split_submodule,
+)
 from iob_soc_create_wrapper_files import create_wrapper_files
-from submodule_utils import (
-    add_prefix_to_parameters_in_port,
-    eval_param_expression_from_config,
-)
 
-import iob_colors
-import shutil
 import fnmatch
 import if_gen
 import copy_srcs
@@ -24,6 +21,7 @@ import verilog_gen
 
 
 def iob_soc_sw_setup(python_module, exclude_files=[]):
+    """Create automatic software sources, like 'periphs_tmp.h'"""
     peripherals_list = python_module.peripherals
     confs = python_module.confs
     build_dir = python_module.build_dir
@@ -64,6 +62,7 @@ def iob_soc_wrapper_setup(python_module, exclude_files=[]):
             "type": "master",
             "wire_prefix": "ddr4_",
             "port_prefix": "ddr4_",
+            "param_prefix": "ddr4_",
             "ports": [],
             "descr": "External memory interface",
         },
@@ -98,35 +97,31 @@ def iob_soc_wrapper_setup(python_module, exclude_files=[]):
             "descr": "iob_memory interface",
         },
     ]
-    for iface in gen_ifaces:
+    generate_ifaces(gen_ifaces, python_module.build_dir)
+
+
+def generate_ifaces(ifaces, build_dir):
+    for iface in ifaces:
         if_gen.gen_if(
             iface["name"],
             iface["file_prefix"],
             iface["port_prefix"],
             iface["wire_prefix"],
             iface["ports"],
+            iface["param_prefix"] if "param_prefix" in iface.keys() else "",
             iface["mult"] if "mult" in iface.keys() else 1,
             iface["widths"] if "widths" in iface.keys() else {},
         )
     # move all .vs files from current directory to out_dir
     for file in os.listdir("."):
         if file.endswith(".vs"):
-            os.rename(file, f"{python_module.build_dir}/hardware/src/{file}")
-
-
-def iob_soc_doc_setup(python_module, exclude_files=[]):
-    # Copy .odg figures without processing
-    shutil.copytree(
-        os.path.join(os.path.dirname(__file__), "..", "document/"),
-        os.path.join(python_module.build_dir, "document/"),
-        dirs_exist_ok=True,
-        ignore=lambda directory, contents: [
-            f for f in contents if os.path.splitext(f)[1] not in [".odg", ""]
-        ],
-    )
+            os.rename(file, f"{build_dir}/hardware/src/{file}")
 
 
 def iob_soc_hw_setup(python_module, exclude_files=[]):
+    """Create automatic hardware sources, like 'iob_soc.v'
+    NOTE: This may not be needed when the py2hw process generates the iob_soc.v completely
+    """
     peripherals_list = python_module.peripherals
     build_dir = python_module.build_dir
     name = python_module.name
@@ -142,10 +137,13 @@ def iob_soc_hw_setup(python_module, exclude_files=[]):
             python_module.peripheral_portmap,
             internal_wires=python_module.internal_wires,
         )
+        pbus_ios = create_pbus_split_submodule(python_module)
+        # generate pbus split ios for replacement in _periphs_inst.vs
+        generate_ifaces(pbus_ios, python_module.build_dir)
 
 
 def update_ios_with_extmem_connections(python_module):
-    ios = python_module.ios
+    """Fill 'mult' argument of 'axi' port automatically based on number of peripherals that need to connect to the external memory interconnect"""
     peripherals_list = python_module.peripherals
 
     num_extmem_connections = 1  # By default, one connection for iob-soc's cache
@@ -173,7 +171,7 @@ def update_ios_with_extmem_connections(python_module):
     python_module.num_extmem_connections = num_extmem_connections
 
     # Update size of "axi" interface for external memory
-    find_dict_in_list(python_module.ios, "axi")[
+    find_obj_in_list(python_module.ios, "axi")[
         "mult"
     ] = python_module.num_extmem_connections
 
@@ -182,23 +180,27 @@ def update_ios_with_extmem_connections(python_module):
 
 
 # Run specialized iob-soc setup sequence
-def pre_setup_iob_soc(python_module):
-    confs = python_module.confs
-    name = python_module.name
+def pre_setup_iob_soc(core):
+    """Update IOb-SoC core attributes automatically.
+    These updated attributes will be used by the setup process.
+    """
+    name = core.name
+    confs = core.confs
 
-    # Replace IOb-SoC name in values of confs
+    # Replace original IOb-SoC name in values of confs with new name
     for conf in confs:
-        if type(conf["val"]) == str:
-            conf["val"] = (
-                conf["val"].replace("iob_soc", name).replace("IOB_SOC", name.upper())
+        if type(conf.val) is str:
+            conf.val = conf.val.replace("iob_soc", name).replace(
+                "IOB_SOC", name.upper()
             )
 
     # Setup peripherals
-    iob_soc_peripheral_setup(python_module)
-    python_module.internal_wires = peripheral_portmap(python_module)
-    update_ios_with_extmem_connections(python_module)
+    # iob_soc_peripheral_setup(core)
+    # update_ios_with_extmem_connections(core)
 
-    python_module.ignore_snippets += [
+    # Ignore snippets that should not be replaced by the normal setup process
+    # These snippets will only be generated and replaced by iob-soc after the setup process
+    core.ignore_snippets += [
         f"{name}_periphs_swreg_def.vs",
         f"{name}_pwires.vs",
         f"{name}_periphs_inst.vs",
@@ -221,6 +223,7 @@ def post_setup_iob_soc(python_module):
     num_extmem_connections = python_module.num_extmem_connections
 
     # Remove `[0+:1]` part select in AXI connections of ext_mem0 in iob_soc.v template
+    # NOTE: This will not be needed when the py2hw process generates the iob_soc.v completely
     if num_extmem_connections == 1:
         verilog_gen.inplace_change(
             os.path.join(
@@ -233,29 +236,19 @@ def post_setup_iob_soc(python_module):
     # Run iob-soc specialized setup sequence
     iob_soc_sw_setup(python_module)
     iob_soc_hw_setup(python_module)
-    # iob_soc_doc_setup(python_module)
 
     ### Only run lines below if this system is the top module ###
     if not python_module.is_top_module:
         return
 
-    # FIXME: This function depends on the 'is_top_module' attribute. And since this attribute is only set during `_setup()`, we cant call this function in the `pre_setup_iob_soc()` function.
-    #        We also cant call this function here, because it generates and uses verilog snippets, however, the snippets were already replaced by the `_setup()` function.
-    #        How can we fix this in branch 'if_gen2'?
     iob_soc_wrapper_setup(python_module)
 
     verilog_gen.replace_includes(python_module.setup_dir, python_module.build_dir, [])
 
     # Check if was setup with INIT_MEM and USE_EXTMEM (check if macro exists)
-    extmem_macro = bool(
-        next((i["val"] for i in confs if i["name"] == "USE_EXTMEM"), False)
-    )
-    initmem_macro = bool(
-        next((i["val"] for i in confs if i["name"] == "INIT_MEM"), False)
-    )
-    ethernet_macro = bool(
-        next((i["val"] for i in confs if i["name"] == "USE_ETHERNET"), False)
-    )
+    extmem_macro = bool(find_obj_in_list(confs, "USE_EXTMEM"))
+    initmem_macro = bool(find_obj_in_list(confs, "INIT_MEM"))
+    ethernet_macro = bool(find_obj_in_list(confs, "USE_ETHERNET"))
 
     # Set variables in fpga_build.mk
     with open(python_module.build_dir + "/hardware/fpga/fpga_build.mk", "r") as file:
@@ -344,464 +337,3 @@ iob_eth_rmac.h:
                 f"	../../scripts/hex_join.py $^ {sut_firmware_name} {mem_add_w_parameter['val']} > $@\n"
             )
         # Copy joinHexFiles.py from LIB
-
-
-# Given the io dictionary of ports, the port name (and size, and optional bit list) and a wire, it will map the selected bits of the port to the given wire.
-# io_dict: dictionary where keys represent port names, values are the mappings
-# port_name: name of the port to map
-# port_size: size the port (if port_bits are not specified, this value is not used)
-# port_bits: list of bits of the port that are being mapped to the wire. If list is empty it will map all the bits.
-#           The order of bits in this list is important. The bits of the wire will always be filled in incremental order and will match the corresponding bit of the port given on this list following the list order. Example: The list [5,3] will map the port bit 5 to wire bit 0 and port bit 3 to wire bit 1.
-# wire_name: name of the wire to connect the bits of the port to.
-def map_IO_to_wire(io_dict, port_name, port_size, port_bits, wire_name):
-    if not port_bits:
-        assert (
-            port_name not in io_dict
-        ), f"{iob_colors.FAIL}Peripheral port {port_name} has already been previously mapped!{iob_colors.ENDC}"
-        # Did not specify bits, connect all the entire port (all the bits)
-        io_dict[port_name] = wire_name
-    else:
-        # Initialize array with port_size, all bits with 'None' value (not mapped)
-        if port_name not in io_dict:
-            io_dict[port_name] = [None for n in range(int(port_size))]
-        # Map the selected bits to the corresponding wire bits
-        # Each element in the bit list of this port will be a tuple containign the name of the wire to connect to and the bit of that wire.
-        for wire_bit, bit in enumerate(port_bits):
-            assert bit < len(
-                io_dict[port_name]
-            ), f"{iob_colors.FAIL}Peripheral port {port_name} does not have bit {bit}!{iob_colors.ENDC}"
-            assert not io_dict[port_name][
-                bit
-            ], f"{iob_colors.FAIL}Peripheral port {port_name} bit {bit} has already been previously mapped!{iob_colors.ENDC}"
-            io_dict[port_name][bit] = (wire_name, wire_bit)
-
-
-# Function to handle portmap connections between: peripherals, internal, and external system interfaces.
-def peripheral_portmap(python_module):
-    peripherals_list = python_module.peripherals
-    ios = python_module.ios
-    peripheral_portmap = python_module.peripheral_portmap
-
-    # Add default portmap for peripherals not configured in peripheral_portmap
-    for peripheral in peripherals_list:
-        if peripheral.name not in [
-            i[0]["corename"] for i in peripheral_portmap or []
-        ] + [i[1]["corename"] for i in peripheral_portmap or []]:
-            # Map all ports of all interfaces
-            for interface in peripheral.module.ios:
-                # If table has 'doc_only' attribute set to True, skip it
-                if "doc_only" in interface.keys() and interface["doc_only"]:
-                    continue
-
-                if interface["ports"]:
-                    for port in interface["ports"]:
-                        if port["name"] not in reserved_signals:
-                            # Map port to the external system interface
-                            peripheral_portmap.append(
-                                (
-                                    {
-                                        "corename": peripheral.name,
-                                        "if_name": interface["name"],
-                                        "port": port["name"],
-                                        "bits": [],
-                                    },
-                                    {
-                                        "corename": "external",
-                                        "if_name": peripheral.name,
-                                        "port": "",
-                                        "bits": [],
-                                    },
-                                )
-                            )
-                else:
-                    # Auto-map if_gen interfaces, except for the ones that have reserved signals.
-                    if interface["name"] in if_gen.if_names and interface[
-                        "name"
-                    ] not in [
-                        "iob",
-                        "axi",
-                        "clk_en_rst",
-                        "clk_rst",
-                    ]:
-                        # Map entire interface to the external system interface
-                        peripheral_portmap.append(
-                            (
-                                {
-                                    "corename": peripheral.name,
-                                    "if_name": interface["name"],
-                                    "port": "",
-                                    "bits": [],
-                                },
-                                {
-                                    "corename": "external",
-                                    "if_name": peripheral.name,
-                                    "port": "",
-                                    "bits": [],
-                                },
-                            )
-                        )
-
-    # Add 'IO" attribute to every peripheral
-    for peripheral in peripherals_list:
-        peripheral.io = {}
-
-    # List of peripheral interconnection wires
-    peripheral_wires = []
-
-    # Handle peripheral portmap
-    for map_idx, mapping in enumerate(peripheral_portmap):
-        # List to store both items in this mamping
-        mapping_items = [None, None]
-        assert (
-            mapping[0]["corename"] and mapping[1]["corename"]
-        ), f"{iob_colors.FAIL}Mapping 'corename' can not be empty on portmap index {map_idx}!{iob_colors.ENDC}"
-
-        # The 'external' keyword in corename is reserved to map signals to the external interface, causing it to create a system IO port
-        # The 'internal' keyword in corename is reserved to map signals to the internal interface, causing it to create an internal system wire
-
-        # Get system block of peripheral in mapping[0]
-        if mapping[0]["corename"] not in ["external", "internal"]:
-            assert any(
-                i for i in peripherals_list if i.name == mapping[0]["corename"]
-            ), f"{iob_colors.FAIL}{map_idx} Peripheral instance named '{mapping[0]['corename']}' not found!{iob_colors.ENDC}"
-            mapping_items[0] = next(
-                i for i in peripherals_list if i.name == mapping[0]["corename"]
-            )
-
-        # Get system block of peripheral in mapping[1]
-        if mapping[1]["corename"] not in ["external", "internal"]:
-            assert any(
-                i for i in peripherals_list if i.name == mapping[1]["corename"]
-            ), f"{iob_colors.FAIL}{map_idx} Peripheral instance named '{mapping[1]['corename']}' not found!{iob_colors.ENDC}"
-            mapping_items[1] = next(
-                i for i in peripherals_list if i.name == mapping[1]["corename"]
-            )
-
-        # Make sure we are not mapping two external or internal interfaces
-        assert mapping_items != [
-            None,
-            None,
-        ], f"{iob_colors.FAIL}{map_idx} Cannot map between two internal/external interfaces!{iob_colors.ENDC}"
-
-        # By default, store -1 if we are not mapping to external/internal interface
-        mapping_external_interface = -1
-        mapping_internal_interface = -1
-
-        # Store index if any of the entries is the external/internal interface
-        if None in mapping_items:
-            if mapping[mapping_items.index(None)]["corename"] == "external":
-                mapping_external_interface = mapping_items.index(None)
-            else:
-                mapping_internal_interface = mapping_items.index(None)
-
-        # Create interface for this portmap if it is connected to external interface
-        if mapping_external_interface > -1:
-            # List of system IOs from ports of this mapping
-            mapping_ios = []
-            # Add peripherals table to ios of system
-            assert mapping[mapping_external_interface][
-                "if_name"
-            ], f"{iob_colors.FAIL}Portmap index {map_idx} needs an interface name for the 'external' corename!{iob_colors.ENDC}"
-
-            # print(mapping[mapping_external_interface]["if_name"]) #DEBUG
-            ios.append(
-                {
-                    "name": mapping[mapping_external_interface]["if_name"],
-                    "type": "master",
-                    "descr": f"IOs for peripherals based on portmap index {map_idx}",
-                    "port_prefix": "",
-                    "wire_prefix": "",
-                    "ports": mapping_ios,
-                    # Only set `ios_table_prefix` if user has not specified a value in the portmap entry
-                    # "ios_table_prefix": True
-                    # if "ios_table_prefix" not in mapping[mapping_external_interface]
-                    # else mapping[mapping_external_interface]["ios_table_prefix"],
-                }
-            )
-
-        # Get ports of configured interface
-        interface_table = next(
-            (
-                i
-                for i in mapping_items[0].module.ios
-                if i["name"] == mapping[0]["if_name"]
-            ),
-            None,
-        )
-        assert (
-            interface_table
-        ), f"{iob_colors.FAIL}Interface {mapping[0]['if_name']} of {mapping[0]['corename']} not found!{iob_colors.ENDC}"
-        interface_ports = interface_table["ports"]
-
-        # If mapping_items[1] is not internal/external interface
-        if mapping_internal_interface != 1 and mapping_external_interface != 1:
-            # Get ports of configured interface
-            interface_table = next(
-                (
-                    i
-                    for i in mapping_items[1].module.ios
-                    if i["name"] == mapping[1]["if_name"]
-                ),
-                None,
-            )
-            assert (
-                interface_table
-            ), f"{iob_colors.FAIL}Interface {mapping[1]['if_name']} of {mapping[1]['corename']} not found!{iob_colors.ENDC}"
-            interface_ports2 = interface_table["ports"]
-
-        # Check if should insert one port or every port in the interface
-        if not mapping[0]["port"]:
-            # Mapping configuration did not specify a port, therefore insert all signals from interface and auto-connect them
-            # NOTE: currently mapping[1]['if_name'] is always assumed to be equal to mapping[0]['if_name']
-
-            # Get mapping for this interface
-            # if_mapping = get_interface_mapping(mapping[0]["if_name"])
-
-            # For every port: create wires and connect IO
-            for port in interface_ports:
-                if mapping_internal_interface < 0 and mapping_external_interface < 0:
-                    # Not mapped to internal/external interface
-                    # Create peripheral wire name based on mapping.
-                    wire_name = f"connect_{mapping[0]['corename']}_{mapping[0]['if_name']}_{port['name']}_to_{mapping[1]['corename']}_{mapping[1]['if_name']}_{if_mapping[port['name']]}"
-                    peripheral_wires.append(
-                        {
-                            "name": wire_name,
-                            "width": add_prefix_to_parameters_in_port(
-                                port,
-                                mapping_items[0].module.confs,
-                                mapping[0]["corename"] + "_",
-                            )["width"],
-                        }
-                    )
-                elif mapping_internal_interface > -1:
-                    # Mapped to internal interface
-                    # Wire name generated the same way as ios inserted in verilog
-                    if mapping_internal_interface == 0:
-                        wire_name = f"{mapping[0]['if_name']+'_'}{port['name']}"
-                    else:
-                        wire_name = f"{mapping[1]['if_name']+'_'}{port['name']}"
-                    # Add internal system wire for this port
-                    peripheral_wires.append(
-                        {
-                            "name": wire_name,
-                            "width": add_prefix_to_parameters_in_port(
-                                port,
-                                mapping_items[0].module.confs,
-                                mapping[0]["corename"] + "_",
-                            )["width"],
-                        }
-                    )
-
-                else:
-                    # Mapped to external interface
-                    # Add system IO for this port
-                    mapping_ios.append(
-                        add_prefix_to_parameters_in_port(
-                            port,
-                            mapping_items[0].module.confs,
-                            mapping[0]["corename"] + "_",
-                        )
-                    )
-                    # Append if_name as a prefix of signal
-                    mapping_ios[-1]["name"] = (
-                        mapping[mapping_external_interface]["if_name"]
-                        + "_"
-                        + port["name"]
-                    )
-                    # Dont add `if_name` prefix if `iob_table_prefix` is set to False
-                    if (
-                        "ios_table_prefix" in mapping[mapping_external_interface]
-                        and not mapping[mapping_external_interface]["ios_table_prefix"]
-                    ):
-                        signal_prefix = ""
-                    else:
-                        signal_prefix = (
-                            mapping[mapping_external_interface]["if_name"] + "_"
-                        )
-
-                    if (
-                        "remove_string_from_port_names"
-                        in mapping[mapping_external_interface]
-                    ):
-                        signal_name = port["name"].replace(
-                            mapping[mapping_external_interface][
-                                "remove_string_from_port_names"
-                            ],
-                            "",
-                        )
-                        # Update port name previsously inserted in mapping_ios
-                        mapping_ios[-1]["name"] = signal_name
-                    else:
-                        signal_name = port["name"]
-                    # Wire name generated the same way as ios inserted in verilog
-                    wire_name = f"{signal_prefix}{signal_name}"
-
-                # Insert mapping between IO and wire for mapping[0] (if its not internal/external interface)
-                if mapping_internal_interface != 0 and mapping_external_interface != 0:
-                    map_IO_to_wire(
-                        mapping_items[0].io,
-                        mapping[0]["if_name"] + "_" + port["name"],
-                        0,
-                        [],
-                        wire_name,
-                    )
-
-                # Insert mapping between IO and wire for mapping[1] (if its not internal/external interface)
-                if mapping_internal_interface != 1 and mapping_external_interface != 1:
-                    map_IO_to_wire(
-                        mapping_items[1].io,
-                        mapping[1]["if_name"] + "_" + if_mapping[port["name"]],
-                        0,
-                        [],
-                        wire_name,
-                    )
-
-        else:
-            # Mapping configuration specified a port, therefore only insert singal for that port
-
-            port = next(
-                (i for i in interface_ports if i["name"] == mapping[0]["port"]), None
-            )
-            assert (
-                port
-            ), f"{iob_colors.FAIL}Port {mapping[0]['port']} of {mapping[0]['if_name']} for {mapping[0]['corename']} not found!{iob_colors.ENDC}"
-
-            if mapping_internal_interface != 1 and mapping_external_interface != 1:
-                port2 = next(
-                    (i for i in interface_ports2 if i["name"] == mapping[1]["port"]),
-                    None,
-                )
-                assert (
-                    port2
-                ), f"{iob_colors.FAIL}Port {mapping[1]['port']} of {mapping[1]['if_name']} for {mapping[1]['corename']} not found!{iob_colors.ENDC}"
-
-            # Get number of bits for this wire. If 'bits' was not specified, use the same size as the port of the peripheral
-            if not mapping[0]["bits"]:
-                # Mapping did not specify bits, use the same size as the port (will map all bits of the port)
-                width = port["width"]
-            else:
-                # Mapping specified bits, the width will be the total amount of bits specified
-                width = len(mapping[0]["bits"])
-                # Insert wire of the ports into the peripherals_wires list of the system
-
-            if mapping_internal_interface < 0 and mapping_external_interface < 0:
-                # Not mapped to external interface
-                # Create wire name based on mapping
-                wire_name = f"connect_{mapping[0]['corename']}_{mapping[0]['if_name']}_{mapping[0]['port']}_to_{mapping[1]['corename']}_{mapping[1]['if_name']}_{mapping[1]['port']}"
-                peripheral_wires.append(
-                    {
-                        "name": wire_name,
-                        "width": add_prefix_to_parameters_in_port(
-                            port,
-                            mapping_items[0].module.confs,
-                            mapping[0]["corename"] + "_",
-                        )["width"],
-                    }
-                )
-            elif mapping_internal_interface > -1:
-                # Mapped to internal interface
-                # Wire name generated the same way as ios inserted in verilog
-                if mapping_internal_interface == 0:
-                    wire_name = f"{mapping[0]['if_name']+'_'}{port['name']}"
-                else:
-                    wire_name = f"{mapping[1]['if_name']+'_'}{port['name']}"
-                # Add internal system wire for this port
-                peripheral_wires.append(
-                    {
-                        "name": wire_name,
-                        "width": add_prefix_to_parameters_in_port(
-                            port,
-                            mapping_items[0].module.confs,
-                            mapping[0]["corename"] + "_",
-                        )["width"],
-                    }
-                )
-            else:
-                # Mapped to external interface
-                # Add system IO for this port
-                mapping_ios.append(
-                    add_prefix_to_parameters_in_port(
-                        {
-                            "name": port["name"],
-                            "direction": port["direction"],
-                            "width": width,
-                            "descr": port["descr"],
-                        },
-                        mapping_items[0].module.confs,
-                        mapping[0]["corename"] + "_",
-                    )
-                )
-                # Append if_name as a prefix of signal
-                mapping_ios[-1]["name"] = (
-                    mapping[mapping_external_interface]["if_name"] + "_" + port["name"]
-                )  # FIXME
-                # Dont add `if_name` prefix if `iob_table_prefix` is set to False
-                if (
-                    "ios_table_prefix" in mapping[mapping_external_interface]
-                    and not mapping[mapping_external_interface]["ios_table_prefix"]
-                ):
-                    signal_prefix = ""
-                else:
-                    signal_prefix = mapping[mapping_external_interface]["if_name"] + "_"
-
-                if (
-                    "remove_string_from_port_names"
-                    in mapping[mapping_external_interface]
-                ):
-                    signal_name = port["name"].replace(
-                        mapping[mapping_external_interface][
-                            "remove_string_from_port_names"
-                        ],
-                        "",
-                    )
-                    # Update port name previsously inserted in mapping_ios
-                    mapping_ios[-1]["name"] = signal_name
-                else:
-                    signal_name = port["name"]
-                # Wire name generated the same way as ios inserted in verilog
-                wire_name = f"{signal_prefix}{signal_name}"
-
-            # Insert mapping between IO and wire for mapping[0] (if its not internal/external interface)
-            if mapping_internal_interface != 0 and mapping_external_interface != 0:
-                # print(f"Debug: {mapping_items[0].name} {mapping_items[0].ios} {mapping_items[0].io}\n")  # DEBUG
-                map_IO_to_wire(
-                    mapping_items[0].io,
-                    mapping[0]["if_name"] + "_" + mapping[0]["port"],
-                    eval_param_expression_from_config(
-                        port["width"], mapping_items[0].module.confs, "max"
-                    ),
-                    mapping[0]["bits"],
-                    wire_name,
-                )
-
-            # Insert mapping between IO and wire for mapping[1] (if its not internal/external interface)
-            if mapping_internal_interface != 1 and mapping_external_interface != 1:
-                map_IO_to_wire(
-                    mapping_items[1].io,
-                    mapping[1]["if_name"] + "_" + mapping[1]["port"],
-                    eval_param_expression_from_config(
-                        port2["width"], mapping_items[1].module.confs, "max"
-                    ),
-                    mapping[1]["bits"],
-                    wire_name,
-                )
-
-    # Merge interfaces with the same name into a single interface
-    interface_names = []
-    for interface in ios:
-        if interface["name"] not in interface_names:
-            interface_names.append(interface["name"])
-    new_ios = []
-    for interface_name in interface_names:
-        first_interface_instance = None
-        for interface in ios:
-            if interface["name"] == interface_name:
-                if not first_interface_instance:
-                    first_interface_instance = interface
-                    new_ios.append(interface)
-                else:
-                    first_interface_instance["ports"] += interface["ports"]
-    python_module.ios = new_ios
-    # print(f"### Debug python_module.ios: {python_module.ios}", file=sys.stderr)
-
-    return peripheral_wires

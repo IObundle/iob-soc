@@ -1,20 +1,19 @@
 import sys
 
-from iob_module import iob_module
+from iob_core import iob_core
 
 
-class iob_ram_dp_be_xil(iob_module):
-    def __init__(self):
-        super().__init__()
-        self.version = "V0.10"
+class iob_ram_dp_be_xil(iob_core):
+    def __init__(self, *args, **kwargs):
+        self.set_default_attribute("version", "0.1")
+        self.set_default_attribute("generate_hw", False)
+        super().__init__(*args, **kwargs)
 
 
 if __name__ == "__main__":
-    # Create an iob_ram_dp_be_xil ip core
-    iob_ram_dp_be_xil_core = iob_ram_dp_be_xil()
     if "clean" in sys.argv:
-        iob_ram_dp_be_xil_core.clean_build_dir()
+        iob_ram_dp_be_xil.clean_build_dir()
     elif "print" in sys.argv:
-        iob_ram_dp_be_xil_core.print_build_dir()
+        iob_ram_dp_be_xil.print_build_dir()
     else:
-        iob_ram_dp_be_xil_core._setup()
+        iob_ram_dp_be_xil()

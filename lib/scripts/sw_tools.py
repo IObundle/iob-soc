@@ -47,7 +47,7 @@ def build_find_cmd(path, file_extentions):
     if is_git_repo == "true":
         find_flags = submodule_exceptions(path)
 
-    find_cmd = f"find {path} {find_flags} -type f \("
+    find_cmd = f"find {path} {find_flags} -type f \\("
     first_extention = 1
     for extention in file_extentions.split(" "):
         if first_extention:
@@ -55,30 +55,36 @@ def build_find_cmd(path, file_extentions):
             first_extention = 0
         else:
             find_cmd = f"{find_cmd} -o -name '{extention}'"
-    find_cmd = f"{find_cmd} \)"
+    find_cmd = f"{find_cmd} \\)"
     return find_cmd
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        prog="sw_format.py",
-        description="""Software format script.
-        Format all software files in directory or repository (except submodules).
-        Currently supports black (python) and clang (C/C++).""",
+        prog="sw_tools.py",
+        description="""Software tools script.
+        Run tool over all software files in directory or repository (except submodules).
+        Currently supports black, mypy (python) and clang (C/C++).""",
     )
     parser.add_argument(
-        "formater", choices=["black", "clang"], help="Formater program to run."
+        "tool",
+        choices=[
+            "black",
+            "clang",
+            "mypy",
+        ],
+        help="Tool program to run.",
     )
     parser.add_argument(
         "path",
         type=str,
         nargs="?",
         default=".",
-        help="path to format. Formats all subdirs, except for git submodules",
+        help="Root path. Find files in all subdirs, except for git submodules",
     )
     args = parser.parse_args()
 
-    match args.formater:
+    match args.tool:
         case "black":
             cmd = "black"
             flags = ""
@@ -87,14 +93,16 @@ if __name__ == "__main__":
             cmd = "clang-format"
             flags = "-i -style=file -fallback-style=none -Werror"
             file_extentions = "*.c *.h *.cpp *.hpp"
+        case "mypy":
+            cmd = "mypy"
+            flags = "--ignore-missing-imports --cache-dir=/dev/null"
+            file_extentions = "*.py"
         case _:
             cmd = ""
             flags = ""
             file_extentions = ""
 
-    # find all files and format
-    format_cmd = (
-        f"{build_find_cmd(args.path, file_extentions)} | xargs -r {cmd} {flags}"
-    )
-    subprocess.run(format_cmd, shell=True, check=True)
-    print(format_cmd)
+    # find all files and run tool
+    tool_cmd = f"{build_find_cmd(args.path, file_extentions)} | xargs -r {cmd} {flags}"
+    subprocess.run(tool_cmd, shell=True, check=True)
+    print(tool_cmd)

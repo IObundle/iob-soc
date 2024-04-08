@@ -1,30 +1,35 @@
 import sys
 
-from iob_module import iob_module
-
-from iob_reg import iob_reg
-from iob_reg_e import iob_reg_e
-from iob_div_subshift import iob_div_subshift
+from iob_core import iob_core
 
 
-class iob_div_subshift_frac(iob_module):
-    def __init__(self):
-        super().__init__()
-        self.version = "V0.10"
-        self.submodule_list = [
-            # Setup dependencies
-            iob_reg(),
-            iob_reg_e(),
-            iob_div_subshift(),
-        ]
+class iob_div_subshift_frac(iob_core):
+    def __init__(self, *args, **kwargs):
+        self.set_default_attribute("version", "0.1")
+        self.set_default_attribute("generate_hw", False)
+
+        self.create_instance(
+            "iob_reg",
+            "iob_reg_inst",
+        )
+
+        self.create_instance(
+            "iob_reg_e",
+            "iob_reg_e_inst",
+        )
+
+        self.create_instance(
+            "iob_div_subshift",
+            "iob_div_subshift_inst",
+        )
+
+        super().__init__(*args, **kwargs)
 
 
 if __name__ == "__main__":
-    # Create an iob_div_subshift_frac ip core
-    iob_div_subshift_frac_core = iob_div_subshift_frac()
     if "clean" in sys.argv:
-        iob_div_subshift_frac_core.clean_build_dir()
+        iob_div_subshift_frac.clean_build_dir()
     elif "print" in sys.argv:
-        iob_div_subshift_frac_core.print_build_dir()
+        iob_div_subshift_frac.print_build_dir()
     else:
-        iob_div_subshift_frac_core._setup()
+        iob_div_subshift_frac()

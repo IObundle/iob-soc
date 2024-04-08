@@ -1,5 +1,7 @@
 import os
+import sys
 import re
+import math
 import if_gen
 
 
@@ -7,12 +9,12 @@ import if_gen
 # param_expression: string defining a math expression that may contain parameters
 # params_dict: dictionary of parameters, where the key is the parameter name and the value is its value
 def eval_param_expression(param_expression, params_dict):
-    if type(param_expression) == int:
+    if type(param_expression) is int:
         return param_expression
     else:
         original_expression = param_expression
         # Split string to separate parameters/macros from the rest
-        split_expression = re.split("([^\w_])", param_expression)
+        split_expression = re.split(r"([^\w_])", param_expression)
         # Replace each parameter, following the reverse order of parameter list. The reversed order allows replacing parameters recursively (parameters may have values with parameters that came before).
         for param_name, param_value in reversed(params_dict.items()):
             # Replace every instance of this parameter by its value
@@ -24,7 +26,7 @@ def eval_param_expression(param_expression, params_dict):
                     if idx > 0 and split_expression[idx - 1] == "`":
                         split_expression[idx - 1] = ""
                     # resplit the string in case the parameter value contains other parameters
-                    split_expression = re.split("([^\w_])", "".join(split_expression))
+                    split_expression = re.split(r"([^\w_])", "".join(split_expression))
         # Join back the string
         param_expression = "".join(split_expression)
         # Evaluate $clog2 expressions
@@ -50,60 +52,9 @@ def eval_param_expression_from_config(param_expression, confs, param_attribute):
     # Create parameter dictionary with correct values to be replaced in string
     params_dict = {}
     for param in confs:
-        params_dict[param["name"]] = param[param_attribute]
+        params_dict[param.name] = param.__dict__[param_attribute]
 
     return eval_param_expression(param_expression, params_dict)
-
-
-# Import the <corename>_setup.py from the given core directory/file
-def import_setup(module_location, **kwargs):
-    # Check if module_location is a directory
-    if os.path.isdir(module_location):
-        # Find <corename>_setup.py file
-        for x in os.listdir(module_location):
-            if x.endswith("_setup.py"):
-                filename = x
-                module_location = module_location + "/" + x
-                break
-        if "filename" not in vars():
-            raise FileNotFoundError(
-                f"Could not find a *_setup.py file in {module_location}"
-            )
-    else:
-        if not os.path.isfile(module_location):
-            raise FileNotFoundError(f"Could not find {module_location}")
-        filename = module_location.split("/")[-1]
-    # Import <corename>_setup.py
-    module_name = filename.split(".")[0]
-    spec = importlib.util.spec_from_file_location(module_name, module_location)
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[module_name] = module
-    # Define objects given in the module
-    for key, value in kwargs.items():
-        vars(module)[key] = value
-    spec.loader.exec_module(module)
-
-    return module
-
-
-# Adds and fills 'dirs' dictionary inside 'submodules' dicionary of given core/system _setup.py python module
-#       To implement this, we can either: crate a global dictionary with all submodules; or we can do a BFS search for submodules every time we call this function, starting from the root current working directory.
-def set_default_submodule_dirs(python_module):
-    # Make sure 'dirs' dictionary exists
-    if "dirs" not in python_module.submodules:
-        python_module.submodules["dirs"] = {}
-
-    if os.path.isdir(f"{python_module.setup_dir}/submodules"):
-        # Add default path for every submodule without a path
-        for submodule in os.listdir(f"{python_module.setup_dir}/submodules"):
-            if submodule not in python_module.submodules["dirs"]:
-                python_module.submodules["dirs"].update(
-                    {submodule: f"{python_module.setup_dir}/submodules/{submodule}"}
-                )
-
-    # Make sure 'LIB' path exists
-    if "LIB" not in python_module.submodules["dirs"]:
-        python_module.submodules["dirs"]["LIB"] = "submodules/LIB"
 
 
 # Replaces a verilog parameter in a string with its value.
@@ -140,18 +91,6 @@ def replaceByParameterValue(string_with_parameter, params_list, instance_paramet
         )
 
 
-# Check if a module of certain type is in given modules list.
-def check_module_in_modules_list(module_type, modules_list):
-    for item in modules_list:
-        if type(item) == str:
-            if item == module_type:
-                return True
-        elif type(item) == tuple:
-            if item[0] == module_type:
-                return True
-    return False
-
-
 # Given a string and a list of possible suffixes, check if string given has a suffix from the list
 # Returns a turple:
 #        -(prefix, suffix): 'prefix' is the full_string with the suffix removed. 'suffix' is the string from the list that is a suffix of the full_string.
@@ -182,12 +121,6 @@ def get_build_lib(directory):
     return ""
 
 
-# Return submodule_dirs dictionary from iob_*_setup.py in given directory
-def get_submodule_directories(root_dir):
-    module = import_setup(root_dir)
-    return module.submodule_dirs
-
-
 def clog2(val):
     return math.ceil(math.log2(val))
 
@@ -201,7 +134,7 @@ class if_gen_hack_list:
     def write(self, port_string):
         # Parse written string
         port = re.search(
-            "^\s*((?:input)|(?:output))\s+\[([^:]+)-1:0\]\s+([^,]+),.*$",
+            r"^\s*((?:input)|(?:output))\s+\[([^:]+)-1:0\]\s+([^,]+),.*$",
             port_string,
         )
         # Append port to port dictionary
@@ -343,7 +276,7 @@ def get_module_parameters(verilog_lines):
 
         # Parse parameter
         parameter = re.search(
-            "^\s*parameter\s+([^=\s]+)\s*=\s*([^\s,]+),?", verilog_lines[i]
+            r"^\s*parameter\s+([^=\s]+)\s*=\s*([^\s,]+),?", verilog_lines[i]
         )
         if parameter is not None:
             # Store parameter in dictionary with format: module_parameters[parametername] = "default value"

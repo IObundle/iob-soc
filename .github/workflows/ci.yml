@@ -44,7 +44,7 @@ jobs:
         with:
           submodules: 'recursive'
       - name: run test
-        run: nix-shell --run "make sim-test"
+        run: make sim-test
   
   cyclonev:
     runs-on: self-hosted
@@ -87,20 +87,7 @@ jobs:
         with:
           submodules: 'recursive'
       - name: run LIB test
-        run: nix-shell --run "./lib/scripts/test.sh test"
-
-  uart:
-    runs-on: self-hosted
-    timeout-minutes: 5
-    if: ${{ !cancelled() }}
-    needs: [ lib ]
-
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: 'recursive'
-      - name: run uart test
-        run: make -C submodules/UART test
+        run: nix-shell --run "make -C lib sim-test"
 
   cache:
     runs-on: self-hosted
@@ -127,4 +114,4 @@ jobs:
         with:
           submodules: 'recursive'
       - name: doc test
-        run: nix-shell --run "make -C ../iob_soc_V* doc-test"
+        run: make doc-test

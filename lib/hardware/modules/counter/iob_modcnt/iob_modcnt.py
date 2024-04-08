@@ -1,15 +1,19 @@
-import os
-
-from iob_module import iob_module
-
-from iob_counter_ld import iob_counter_ld
+from iob_core import iob_core
 
 
-class iob_modcnt(iob_module):
-    def __init__(self):
-        super().__init__()
-        self.version = "V0.10"
-        self.submodule_list = [
-            iob_modcnt(),
-            iob_counter_ld(),
-        ]
+class iob_modcnt(iob_core):
+    def __init__(self, *args, **kwargs):
+        self.set_default_attribute("version", "0.1")
+        self.set_default_attribute("generate_hw", False)
+
+        self.create_instance(
+            "iob_modcnt",
+            "iob_modcnt_inst",
+        )
+
+        self.create_instance(
+            "iob_counter_ld",
+            "iob_counter_ld_inst",
+        )
+
+        super().__init__(*args, **kwargs)

@@ -1,20 +1,20 @@
 import sys
 
-from iob_module import iob_module
+from iob_core import iob_core
 
 
-class iob_ram_t2p(iob_module):
-    def __init__(self):
-        super().__init__()
-        self.version = "V0.10"
+class iob_ram_t2p(iob_core):
+    def __init__(self, *args, **kwargs):
+        self.set_default_attribute("version", "0.1")
+        self.set_default_attribute("generate_hw", False)
+
+        super().__init__(*args, **kwargs)
 
 
 if __name__ == "__main__":
-    # Create an iob_ram_t2p ip core
-    iob_ram_t2p_core = iob_ram_t2p()
     if "clean" in sys.argv:
-        iob_ram_t2p_core.clean_build_dir()
+        iob_ram_t2p.clean_build_dir()
     elif "print" in sys.argv:
-        iob_ram_t2p_core.print_build_dir()
+        iob_ram_t2p.print_build_dir()
     else:
-        iob_ram_t2p_core._setup()
+        iob_ram_t2p()
