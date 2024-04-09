@@ -10,6 +10,7 @@ from iob_ram_t2p import iob_ram_t2p
 from iob_fifo_async import iob_fifo_async
 from iob_sync import iob_sync
 from iob_counter import iob_counter
+from iob_edge_detect import iob_edge_detect
 
 
 class iob_axistream_in(iob_module):
@@ -27,7 +28,9 @@ class iob_axistream_in(iob_module):
             iob_fifo_async,
             iob_reg_re,
             iob_ram_t2p,
-            iob_sync
+            iob_sync,
+            iob_counter,
+            iob_edge_detect,
         ])
 
     @classmethod
