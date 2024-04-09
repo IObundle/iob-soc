@@ -1,4 +1,4 @@
-from iob_base import iob_base
+from iob_base import iob_base, process_elements_from_list
 from iob_conf import create_conf
 from iob_port import create_port
 from iob_wire import create_wire, get_wire_signal
@@ -18,15 +18,36 @@ class iob_module(iob_base):
         # Name of the generated module
         self.set_default_attribute("name", self.original_name, str)
         # List of module macros and Verilog (false-)parameters
-        self.set_default_attribute("confs", [], list)
-        self.set_default_attribute("ports", [], list)
-        self.set_default_attribute("wires", [], list)
+        self.set_default_attribute(
+            "confs", [], list, get_list_attr_handler(self.create_conf)
+        )
+        self.set_default_attribute(
+            "ports", [], list, get_list_attr_handler(self.create_port)
+        )
+        self.set_default_attribute(
+            "wires", [], list, get_list_attr_handler(self.create_wire)
+        )
         # List of core Control/Status Registers
-        self.set_default_attribute("csrs", [], list)
+        self.set_default_attribute(
+            "csrs",
+            [],
+            list,
+            get_list_attr_handler(self.create_csr_group),
+        )
         # List of core Verilog snippets
-        self.set_default_attribute("snippets", [], list)
+        self.set_default_attribute(
+            "snippets",
+            [],
+            list,
+            get_list_attr_handler(self.create_snippet),
+        )
         # List of instances of other cores inside this core
-        self.set_default_attribute("blocks", [], list)
+        self.set_default_attribute(
+            "blocks",
+            [],
+            list,
+            get_list_attr_handler(self.create_instance),
+        )
 
     def create_conf(self, *args, **kwargs):
         create_conf(self, *args, **kwargs)
@@ -68,3 +89,12 @@ class iob_module(iob_base):
         """
         if not __class__.global_top_module:
             __class__.global_top_module = self
+
+
+def get_list_attr_handler(func):
+    """Returns a handler function to set attributes from a list using the function given
+    The returned function has the format:
+        returned_func(x), where x is a list of elements
+    This 'returned_func' will run the given 'func' on each element of the list 'x'
+    """
+    return lambda x: process_elements_from_list(x, func)

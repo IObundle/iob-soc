@@ -113,6 +113,7 @@ class iob_aoi(iob_core):
         )
 
         super().__init__(*args, **kwargs)
+        self.export_json()  # DEBUG
 
 
 if __name__ == "__main__":
@@ -121,5 +122,7 @@ if __name__ == "__main__":
         iob_aoi.clean_build_dir()
     elif "print" in sys.argv:
         iob_aoi.print_build_dir()
+    elif "print_attr" in sys.argv:
+        iob_aoi.print_py2hw_attributes()
     else:
         iob_aoi()

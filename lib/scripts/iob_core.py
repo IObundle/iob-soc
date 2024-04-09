@@ -1,5 +1,6 @@
 import os
 import shutil
+import json
 
 import iob_colors
 
@@ -33,6 +34,7 @@ class iob_core(iob_module, iob_instance):
         self,
         *args,
         purpose: str = "hardware",
+        attributes={},
         **kwargs,
     ):
         # Inherit attributes from superclasses
@@ -61,6 +63,9 @@ class iob_core(iob_module, iob_instance):
         self.set_default_attribute("ignore_snippets", [], list)
         # Select if should generate hardware from python
         self.set_default_attribute("generate_hw", True)
+
+        # Read 'attributes' dictionary and set corresponding core attributes
+        self.parse_attributes_dict(attributes)
 
         # Read-only dictionary with relation between the 'purpose' and
         # the corresponding source folder
@@ -208,6 +213,39 @@ class iob_core(iob_module, iob_instance):
             self.setup_dir, self.build_dir, self.ignore_snippets
         )
 
+    def parse_attributes_dict(self, attributes):
+        """Parse attributes dictionary given, and build and set the corresponding
+        attributes for this core, usiing the handlers stored in `SET_ATTRIUTE_HANDLER`
+        dictionary.
+        If there is no handler for an attribute then it will raise an error.
+        """
+        # For each attribute of the dictionary, check if there is a handler,
+        # and use it to set the attribute
+        for attr_name, attr_value in attributes.items():
+            if attr_name in self.SET_ATTRIBUTE_HANDLER:
+                setattr(
+                    self, attr_name, self.SET_ATTRIUTE_HANDLER[attr_name](attr_value)
+                )
+            else:
+                fail_with_msg(f"Unknown attribute: {attr_name}")
+
+    def export_json(self, output_filepath=""):
+        """Export JSON representation of the module."""
+        if not output_filepath:
+            output_filedir = os.path.join(self.setup_dir, "json")
+            os.makedirs(output_filedir, exist_ok=True)
+            output_filepath = os.path.join(output_filedir, f"{self.original_name}.json")
+        print(f"Attributes of {self.name}:")
+        for attr_name in self.SET_ATTRIBUTE_HANDLER.keys():
+            print(f"{attr_name}: {self.__dict__[attr_name]}")
+        # NOTE: This function is unfinished.
+        # The lists with objects (like confs, ports, wires) are causing issues when
+        # printing. We probably need a 'GET_ATTRIUTE_HANDLER' dictionary to convert
+        # objects to strings.
+
+        # with open(output_filepath, "w") as f:
+        #    f.write(json.dumps(vars(self)))
+
     @classmethod
     def clean_build_dir(cls):
         """Clean build directory."""
@@ -231,6 +269,22 @@ class iob_core(iob_module, iob_instance):
         # Build a new module instance, to obtain its attributes
         module = cls()
         print(module.build_dir)
+
+    @classmethod
+    def print_py2hw_attributes(cls):
+        """Print the supported py2hw attributes of this core.
+        The attributes listed can be used in the 'attributes' dictionary of the
+        constructor. This defines the information supported by the py2hw interface.
+        """
+        # Set project wide special target (will prevent normal setup)
+        __class__.global_special_target = "print_attributes"
+        # Build a new module instance, to obtain its attributes
+        module = cls()
+        print(
+            f"Attributes supported by the 'py2hw' interface of the '{module.name}' core:"
+        )
+        for attr_name in module.SET_ATTRIBUTE_HANDLER.keys():
+            print(f"- {attr_name}")
 
 
 def find_common_deep(path1, path2):
@@ -261,7 +315,7 @@ def find_module_setup_dir(core, search_path):
         for file in files:
             # Check if file name matches '<core_class_name>.py'
             if file.split(".")[0] == core.original_name:
-                # print(os.path.join(root, file)) # DEBUG
+                print(os.path.join(root, file))  # DEBUG
                 return root
 
     raise Exception(
