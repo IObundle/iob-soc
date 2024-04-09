@@ -14,7 +14,7 @@ module iob_merge #(
     output reg [N_MASTERS*`RESP_W-1:0] m_resp_o,
 
     //slave interface
-    output reg [ `REQ_W-1:0] s_req_o,
+    output     [ `REQ_W-1:0] s_req_o,
     input      [`RESP_W-1:0] s_resp_i
 );
 

@@ -6,9 +6,13 @@
   # Hash obtained using `nix-prefetch-url --unpack <url>`
   sha256 = "11w3wn2yjhaa5pv20gbfbirvjq6i3m7pqrq2msf0g7cv44vijwgw";
 }) {}}:
+
+let
+  yosys_abc = import ./yosys-abc.nix { inherit pkgs; };
+in
 pkgs.mkShell {
   name = "iob-shell";
-  buildInputs = with pkgs; [     
+  buildInputs = with pkgs; [
     bash
     gnumake
     verilog
@@ -32,5 +36,17 @@ pkgs.mkShell {
     libreoffice
     minicom     # Terminal emulator
     lrzsz       # For Zmodem file transfers via serial connection of the terminal emulator
+    # Add Volare custom Python installation
+    (let
+      volareSrc = pkgs.fetchFromGitHub {
+        owner = "efabless";
+        repo = "volare";
+        rev = "47325949b87e857d75f81d306f02ebccf952cb15";
+        sha256 = "sha256-H9B/vZUs0O2jwmidCTMYhO0JY4DL+gmQNeVawaccvuU=";
+      };
+    in import "${volareSrc}" {
+      inherit pkgs;
+    })
+    yosys_abc
   ];
 }
