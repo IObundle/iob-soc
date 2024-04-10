@@ -288,6 +288,22 @@ class iob_core(iob_module, iob_instance):
             align_spaces2 = " " * (18 - len(str(datatype)))
             print(f"- {name}:{align_spaces}{datatype}{align_spaces2}{descr}")
 
+    @classmethod
+    def py2hw(cls, core_dict):
+        """Generate a core based on the py2hw dictionary interface
+        param core_dict: The core dictionary using py2hw dictionary syntax
+        """
+        cls(attributes=core_dict)
+
+    @classmethod
+    def read_py2hw_json(cls, filepath):
+        """Read JSON file with py2hw attributes build a core from it
+        param filepath: Path to JSON file using py2hw json syntax
+        """
+        with open(filepath) as f:
+            core_dict = json.load(f)
+        cls.py2hw(core_dict)
+
     @staticmethod
     def export_json_from_dict(core_dict, output_filepath=""):
         """Given a py2hw dictionary describing a core, export it into a JSON file

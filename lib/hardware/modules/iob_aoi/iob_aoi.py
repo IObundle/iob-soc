@@ -1,3 +1,4 @@
+import os
 import sys
 
 from iob_core import iob_core
@@ -241,10 +242,15 @@ if __name__ == "__main__":
     elif "print_attr" in sys.argv:
         iob_aoi.print_py2hw_attributes()
     elif "py2hw" in sys.argv:
-        iob_core(attributes=attributes_dict)
+        # Generate iob_aoi from the py2hw dictionary interface
+        iob_core.py2hw(attributes_dict)
+    elif "json" in sys.argv:
+        # Generate iob_aoi from the py2hw json interface
+        iob_core.read_py2hw_json(
+            os.path.join(os.path.dirname(__file__), "json/iob_aoi.json")
+        )
     elif "export_json" in sys.argv:
         iob_core.export_json_from_dict(attributes_dict)
-    elif "json" in sys.argv:
-        iob_core.read_json()
     else:
+        # By default, generate iob_aoi from the subclass interface
         iob_aoi()
