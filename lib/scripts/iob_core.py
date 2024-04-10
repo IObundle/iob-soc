@@ -62,7 +62,7 @@ class iob_core(iob_module, iob_instance):
         # Don't replace snippets mentioned in this list
         self.set_default_attribute("ignore_snippets", [], list)
         # Select if should generate hardware from python
-        self.set_default_attribute("generate_hw", True)
+        self.set_default_attribute("generate_hw", True, bool)
 
         # Read 'attributes' dictionary and set corresponding core attributes
         self.parse_attributes_dict(attributes)
@@ -215,16 +215,18 @@ class iob_core(iob_module, iob_instance):
 
     def parse_attributes_dict(self, attributes):
         """Parse attributes dictionary given, and build and set the corresponding
-        attributes for this core, usiing the handlers stored in `SET_ATTRIUTE_HANDLER`
+        attributes for this core, using the handlers stored in `ATTRIBUTE_PROPERTIES`
         dictionary.
         If there is no handler for an attribute then it will raise an error.
         """
         # For each attribute of the dictionary, check if there is a handler,
         # and use it to set the attribute
         for attr_name, attr_value in attributes.items():
-            if attr_name in self.SET_ATTRIBUTE_HANDLER:
+            if attr_name in self.ATTRIBUTE_PROPERTIES:
                 setattr(
-                    self, attr_name, self.SET_ATTRIUTE_HANDLER[attr_name](attr_value)
+                    self,
+                    attr_name,
+                    self.ATTRIBUTE_PROPERTIES[attr_name].set_handler(attr_value),
                 )
             else:
                 fail_with_msg(f"Unknown attribute: {attr_name}")
@@ -236,12 +238,12 @@ class iob_core(iob_module, iob_instance):
             os.makedirs(output_filedir, exist_ok=True)
             output_filepath = os.path.join(output_filedir, f"{self.original_name}.json")
         print(f"Attributes of {self.name}:")
-        for attr_name in self.SET_ATTRIBUTE_HANDLER.keys():
+        for attr_name in self.ATTRIBUTE_PROPERTIES.keys():
             print(f"{attr_name}: {self.__dict__[attr_name]}")
         # NOTE: This function is unfinished.
         # The lists with objects (like confs, ports, wires) are causing issues when
-        # printing. We probably need a 'GET_ATTRIUTE_HANDLER' dictionary to convert
-        # objects to strings.
+        # printing. We probably need a 'get_handler' method in the
+        # `iob_attribute_properties` class to convert objects to strings.
 
         # with open(output_filepath, "w") as f:
         #    f.write(json.dumps(vars(self)))
@@ -280,11 +282,13 @@ class iob_core(iob_module, iob_instance):
         __class__.global_special_target = "print_attributes"
         # Build a new module instance, to obtain its attributes
         module = cls()
-        print(
-            f"Attributes supported by the 'py2hw' interface of the '{module.name}' core:"
-        )
-        for attr_name in module.SET_ATTRIBUTE_HANDLER.keys():
-            print(f"- {attr_name}")
+        print(f"Attributes supported by the '{module.name}' core's 'py2hw' interface:")
+        for name in module.ATTRIBUTE_PROPERTIES.keys():
+            datatype = module.ATTRIBUTE_PROPERTIES[name].datatype
+            descr = module.ATTRIBUTE_PROPERTIES[name].descr
+            align_spaces = " " * (20 - len(name))
+            align_spaces2 = " " * (18 - len(str(datatype)))
+            print(f"- {name}:{align_spaces}{datatype}{align_spaces2}{descr}")
 
 
 def find_common_deep(path1, path2):

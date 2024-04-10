@@ -1,4 +1,5 @@
 import iob_colors
+from dataclasses import dataclass
 
 
 class iob_base:
@@ -6,46 +7,69 @@ class iob_base:
 
     def set_default_attribute(
         self,
-        attribute_name: str,
-        attribute_value,
+        name: str,
+        value,
         datatype=None,
         set_attribute_handler=None,
+        descr: str = "",
     ):
         """Set an attribute if it has not been set before (likely by a subclass)
         Also optionally verifies if the datatype of the attribute set
         previously is correct.
-        param attribute_name: name of the attribute
-        param attribute_value: value to set
+        param name: name of the attribute
+        param value: value to set
         param datatype: optional data type of the attribute to check
         param set_attribute_handler: function to call to set the attribute
                                      Related to `parse_attributes_dict()` of iob_core.py
+        param descr: description of the attribute
         """
-        if not hasattr(self, attribute_name):
-            setattr(self, attribute_name, attribute_value)
+        if not hasattr(self, name):
+            setattr(self, name, value)
         elif datatype is not None:
-            if type(getattr(self, attribute_name)) != datatype:
+            if type(getattr(self, name)) != datatype:
                 raise TypeError(
                     iob_colors.FAIL
-                    + f"Attribute '{attribute_name}' must be of type {datatype}"
+                    + f"Attribute '{name}' must be of type {datatype}"
                     + iob_colors.ENDC
                 )
-        # Ensure that `SET_ATTRIBUTE_HANDLER` dictionary exists
-        # The 'SET_ATTRIBUTE_HANDLER' is a dictionary that stores the handlers used to
-        # set every attribute.
-        if "SET_ATTRIBUTE_HANDLER" not in self.__dict__:
-            self.SET_ATTRIBUTE_HANDLER = {}
+        # Ensure that `ATTRIBUTE_PROPERTIES` dictionary exists
+        # The 'ATTRIBUTE_PROPERTIES' is a dictionary that stores information about the
+        # attributes, including the handlers used to set their values.
+        if "ATTRIBUTE_PROPERTIES" not in self.__dict__:
+            self.ATTRIBUTE_PROPERTIES = {}
         # Define the function to call to set the attribute from info given in a dict.
         # See `parse_attributes_dict()` of iob_core.py for details.
         # For example, the info given about this attribute may be of the type 'dict',
         # but we may want to set a type 'object' instead.
         # The `set_attribute_handler` is responsible for converting between these two
         # datatypes.
-        if set_attribute_handler:
-            self.SET_ATTRIBUTE_HANDLER[attribute_name] = set_attribute_handler
+        if name in self.ATTRIBUTE_PROPERTIES:
+            properties = self.ATTRIBUTE_PROPERTIES[name]
         else:
-            self.SET_ATTRIBUTE_HANDLER[attribute_name] = lambda v: setattr(
-                self, attribute_name, v
-            )
+            properties = iob_attribute_properties()
+        if datatype:
+            properties.datatype = datatype
+        if set_attribute_handler:
+            # Set custom set_handler
+            properties.set_handler = set_attribute_handler
+        elif not properties.set_handler:
+            # Set default set_handler
+            properties.set_handler = lambda v: setattr(self, name, v)
+        if descr:
+            properties.descr = descr
+
+        self.ATTRIBUTE_PROPERTIES[name] = properties
+
+
+@dataclass
+class iob_attribute_properties:
+    """Class that stores properties of an attribute"""
+
+    datatype: object = None
+    # Function to use to set the attribute value based on info given in the 'py2hw'
+    # interface
+    set_handler: object = None
+    descr: str = "Default attribute description"
 
 
 #

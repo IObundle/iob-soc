@@ -14,18 +14,37 @@ class iob_module(iob_base):
     def __init__(self, *args, **kwargs):
         # Original name of the module.
         # (The module name commonly used in the files of the setup dir.)
-        self.set_default_attribute("original_name", self.__class__.__name__, str)
+        self.set_default_attribute(
+            "original_name",
+            self.__class__.__name__,
+            str,
+            descr="Original name of the module. (The module name commonly used in the files of the setup dir.)",
+        )
         # Name of the generated module
-        self.set_default_attribute("name", self.original_name, str)
+        self.set_default_attribute(
+            "name", self.original_name, str, descr="Name of the generated module."
+        )
         # List of module macros and Verilog (false-)parameters
         self.set_default_attribute(
-            "confs", [], list, get_list_attr_handler(self.create_conf)
+            "confs",
+            [],
+            list,
+            get_list_attr_handler(self.create_conf),
+            "List of module macros and Verilog (false-)parameters.",
         )
         self.set_default_attribute(
-            "ports", [], list, get_list_attr_handler(self.create_port)
+            "ports",
+            [],
+            list,
+            get_list_attr_handler(self.create_port),
+            "List of module ports.",
         )
         self.set_default_attribute(
-            "wires", [], list, get_list_attr_handler(self.create_wire)
+            "wires",
+            [],
+            list,
+            get_list_attr_handler(self.create_wire),
+            "List of module wires.",
         )
         # List of core Control/Status Registers
         self.set_default_attribute(
@@ -33,6 +52,7 @@ class iob_module(iob_base):
             [],
             list,
             get_list_attr_handler(self.create_csr_group),
+            "List of core Control/Status Registers.",
         )
         # List of core Verilog snippets
         self.set_default_attribute(
@@ -40,6 +60,7 @@ class iob_module(iob_base):
             [],
             list,
             get_list_attr_handler(self.create_snippet),
+            "List of core Verilog snippets.",
         )
         # List of instances of other cores inside this core
         self.set_default_attribute(
@@ -47,6 +68,7 @@ class iob_module(iob_base):
             [],
             list,
             get_list_attr_handler(self.create_instance),
+            "List of instances of other cores inside this core.",
         )
 
     def create_conf(self, *args, **kwargs):
@@ -94,7 +116,7 @@ class iob_module(iob_base):
 def get_list_attr_handler(func):
     """Returns a handler function to set attributes from a list using the function given
     The returned function has the format:
-        returned_func(x), where x is a list of elements
+        returned_func(x), where x is a list of elements, likely in the 'py2hw' syntax.
     This 'returned_func' will run the given 'func' on each element of the list 'x'
     """
     return lambda x: process_elements_from_list(x, func)

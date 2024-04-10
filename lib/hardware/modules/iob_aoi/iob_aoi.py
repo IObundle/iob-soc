@@ -113,7 +113,6 @@ class iob_aoi(iob_core):
         )
 
         super().__init__(*args, **kwargs)
-        self.export_json()  # DEBUG
 
 
 if __name__ == "__main__":
