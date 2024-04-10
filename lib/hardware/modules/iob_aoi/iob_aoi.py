@@ -242,5 +242,9 @@ if __name__ == "__main__":
         iob_aoi.print_py2hw_attributes()
     elif "py2hw" in sys.argv:
         iob_core(attributes=attributes_dict)
+    elif "export_json" in sys.argv:
+        iob_core.export_json_from_dict(attributes_dict)
+    elif "json" in sys.argv:
+        iob_core.read_json()
     else:
         iob_aoi()

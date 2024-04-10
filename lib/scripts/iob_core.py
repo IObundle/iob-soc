@@ -84,7 +84,9 @@ class iob_core(iob_module, iob_instance):
         assert "PROJECT_ROOT" in os.environ, fail_with_msg(
             "Environment variable 'PROJECT_ROOT' is not set!"
         )
-        self.setup_dir = find_module_setup_dir(self, os.environ["PROJECT_ROOT"])
+        self.setup_dir = find_module_setup_dir(
+            self.original_name, os.environ["PROJECT_ROOT"]
+        )
         # print(f"{self.name} {self.build_dir} {self.is_top_module}")  # DEBUG
 
         self.__create_build_dir()
@@ -286,6 +288,24 @@ class iob_core(iob_module, iob_instance):
             align_spaces2 = " " * (18 - len(str(datatype)))
             print(f"- {name}:{align_spaces}{datatype}{align_spaces2}{descr}")
 
+    @staticmethod
+    def export_json_from_dict(core_dict, output_filepath=""):
+        """Given a py2hw dictionary describing a core, export it into a JSON file
+        param core_dict: The core dictionary using py2hw dictionary syntax
+        param output_filepath: Optional filepath to export JSON to.
+        """
+        if not output_filepath:
+            output_filepath = os.path.join(
+                find_module_setup_dir(
+                    core_dict["original_name"], os.environ["PROJECT_ROOT"]
+                ),
+                "json",
+                core_dict["original_name"] + ".json",
+            )
+        print(f"{iob_colors.INFO}Exporting JSON to: {output_filepath}{iob_colors.ENDC}")
+        with open(output_filepath, "w") as f:
+            f.write(json.dumps(core_dict))
+
 
 def find_common_deep(path1, path2):
     """Find common files (recursively) inside two given directories
@@ -305,16 +325,16 @@ def find_common_deep(path1, path2):
     )
 
 
-def find_module_setup_dir(core, search_path):
-    """Searches for a core's setup directory, and updates `core.setup_dir` attribute.
-    param core: The core object
+def find_module_setup_dir(core_name, search_path):
+    """Searches for a core's setup directory
+    param core_name: The core_name object
     param search_path: The directory to search
     """
     # Use os.walk() to traverse the directory tree
     for root, directories, files in os.walk(search_path):
         for file in files:
             # Check if file name matches '<core_class_name>.py'
-            if file.split(".")[0] == core.original_name:
+            if file.split(".")[0] == core_name:
                 print(os.path.join(root, file))  # DEBUG
                 return root
 
