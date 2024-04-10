@@ -223,11 +223,7 @@ class iob_core(iob_module, iob_instance):
         # and use it to set the attribute
         for attr_name, attr_value in attributes.items():
             if attr_name in self.ATTRIBUTE_PROPERTIES:
-                setattr(
-                    self,
-                    attr_name,
-                    self.ATTRIBUTE_PROPERTIES[attr_name].set_handler(attr_value),
-                )
+                self.ATTRIBUTE_PROPERTIES[attr_name].set_handler(attr_value),
             else:
                 fail_with_msg(f"Unknown attribute: {attr_name}")
 
