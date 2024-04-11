@@ -281,23 +281,6 @@ class iob_core(iob_module, iob_instance):
             else:
                 fail_with_msg(f"Unknown attribute: {attr_name}")
 
-    def export_json(self, output_filepath=""):
-        """Export JSON representation of the module."""
-        if not output_filepath:
-            output_filedir = os.path.join(self.setup_dir, "json")
-            os.makedirs(output_filedir, exist_ok=True)
-            output_filepath = os.path.join(output_filedir, f"{self.original_name}.json")
-        print(f"Attributes of {self.name}:")
-        for attr_name in self.ATTRIBUTE_PROPERTIES.keys():
-            print(f"{attr_name}: {self.__dict__[attr_name]}")
-        # NOTE: This function is unfinished.
-        # The lists with objects (like confs, ports, wires) are causing issues when
-        # printing. We probably need a 'get_handler' method in the
-        # `iob_attribute_properties` class to convert objects to strings.
-
-        # with open(output_filepath, "w") as f:
-        #    f.write(json.dumps(vars(self)))
-
     @classmethod
     def clean_build_dir(cls):
         """Clean build directory."""
@@ -355,22 +338,6 @@ class iob_core(iob_module, iob_instance):
         with open(filepath) as f:
             core_dict = json.load(f)
         return cls.py2hw(core_dict, **kwargs)
-
-    @staticmethod
-    def export_json_from_dict(core_dict, output_filepath=""):
-        """Given a py2hw dictionary describing a core, export it into a JSON file
-        param core_dict: The core dictionary using py2hw dictionary syntax
-        param output_filepath: Optional filepath to export JSON to.
-        """
-        if not output_filepath:
-            output_filepath = os.path.join(
-                find_module_setup_dir(core_dict["original_name"])[0],
-                "json",
-                core_dict["original_name"] + ".json",
-            )
-        print(f"{iob_colors.INFO}Exporting JSON to: {output_filepath}{iob_colors.ENDC}")
-        with open(output_filepath, "w") as f:
-            f.write(json.dumps(core_dict))
 
 
 def find_common_deep(path1, path2):

@@ -249,8 +249,6 @@ if __name__ == "__main__":
         iob_core.read_py2hw_json(
             os.path.join(os.path.dirname(__file__), "json/iob_aoi.json")
         )
-    elif "export_json" in sys.argv:
-        iob_core.export_json_from_dict(attributes_dict)
     else:
         # By default, generate iob_aoi from the subclass interface
         iob_aoi()

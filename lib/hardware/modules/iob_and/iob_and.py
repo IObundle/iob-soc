@@ -86,7 +86,3 @@ attributes_dict = {
     ],
     "snippets": [{"outputs": ["y"], "verilog_code": "   assign y_o = a_i & b_i;"}],
 }
-
-
-if __name__ == "__main__":
-    iob_core.export_json_from_dict(attributes_dict)
