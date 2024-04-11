@@ -1,5 +1,7 @@
-import iob_colors
+import os
 from dataclasses import dataclass
+
+import iob_colors
 
 
 class iob_base:
@@ -126,3 +128,24 @@ def fail_with_msg(msg, exception_type=Exception):
 def warn_with_msg(msg):
     """Print a warning with a given message"""
     print(iob_colors.WARNING + msg + iob_colors.ENDC)
+
+
+#
+# Other methods
+#
+
+
+def find_file(search_directory, name_without_ext, filter_extensions=[]):
+    """Find a file, without extension, in a given directory or subdirectories
+    param name_without_ext: name_without_ext of the file without extension
+    param search_directory: directory to search
+    param filter_extensions: list of extensions to filter
+    """
+    for root, _, files in os.walk(search_directory):
+        for file in files:
+            file_name, file_ext = os.path.splitext(file)
+            if file_name == name_without_ext and (
+                filter_extensions == [] or file_ext in filter_extensions
+            ):
+                return os.path.join(root, file)
+    return None

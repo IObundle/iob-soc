@@ -89,22 +89,9 @@ class iob_module(iob_base):
     def create_snippet(self, *args, **kwargs):
         create_snippet(self, *args, **kwargs)
 
-    def create_instance(self, core_name: str = "", instance_name: str = "", **kwargs):
-        """Import core and create an instance of it inside this module
-        param core_name: Name of the core
-        param instance_name: Verilog instance name
-        """
-        assert core_name, fail_with_msg("Missing core_name argument", ValueError)
-        # Ensure 'blocks' list exists
-        self.set_default_attribute("blocks", [])
-        # Ensure global top module is set
-        self.update_global_top_module()
-
-        exec(f"from {core_name} import {core_name}")
-        instance = vars()[core_name](
-            instance_name=instance_name, instantiator=self, **kwargs
-        )
-        self.blocks.append(instance)
+    def create_instance(self, **kwargs):
+        """Import core and create an instance of it inside this module"""
+        # Method body implemented in subclass
 
     def update_global_top_module(self):
         """Update global top module if it has not been set before.

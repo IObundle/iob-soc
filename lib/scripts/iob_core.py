@@ -19,7 +19,7 @@ import ipxact_gen
 
 from iob_module import iob_module
 from iob_instance import iob_instance
-from iob_base import fail_with_msg
+from iob_base import find_obj_in_list, fail_with_msg, find_file
 
 
 class iob_core(iob_module, iob_instance):
@@ -35,8 +35,17 @@ class iob_core(iob_module, iob_instance):
         *args,
         purpose: str = "hardware",
         attributes={},
+        connect: dict = {},
+        instantiator=None,
         **kwargs,
     ):
+        """Build a core (includes module and instance attributes)
+        param purpose: Purpose for setup of the core (hardware/simulation/fpga)
+        param attributes: py2hw dictionary describing the core
+        param connect: External wires to connect to ports of this instance
+                       Key: Port name, Value: Wire name
+        param instantiator: Module that is instantiating this instance
+        """
         # Inherit attributes from superclasses
         iob_module.__init__(self, *args, **kwargs)
         iob_instance.__init__(self, *args, **kwargs)
@@ -75,18 +84,16 @@ class iob_core(iob_module, iob_instance):
             "fpga": "hardware/fpga/src",
         }
 
+        # Connect ports of this instance to external wires (wires of the instantiator)
+        self.connect_instance_ports(connect, instantiator)
+
         # Don't setup this module if using a project wide special target.
         if __class__.global_special_target:
             return
 
         if not self.is_top_module:
             self.build_dir = __class__.global_build_dir
-        assert "PROJECT_ROOT" in os.environ, fail_with_msg(
-            "Environment variable 'PROJECT_ROOT' is not set!"
-        )
-        self.setup_dir = find_module_setup_dir(
-            self.original_name, os.environ["PROJECT_ROOT"]
-        )
+        self.setup_dir = find_module_setup_dir(self.original_name)[0]
         # print(f"{self.name} {self.build_dir} {self.is_top_module}")  # DEBUG
 
         self.__create_build_dir()
@@ -169,13 +176,58 @@ class iob_core(iob_module, iob_instance):
             # Update global build dir
             __class__.global_build_dir = self.build_dir
 
-    def create_instance(self, *args, **kwargs):
+    def create_instance(self, core_name: str = "", instance_name: str = "", **kwargs):
         """Create an instante of a module, but only if we are not using a
         project wide special target (like clean)
+        param core_name: Name of the core
+        param instance_name: Verilog instance name
         """
         if __class__.global_special_target:
             return
-        super().create_instance(*args, **kwargs)
+        assert core_name, fail_with_msg("Missing core_name argument", ValueError)
+        # Ensure 'blocks' list exists
+        self.set_default_attribute("blocks", [])
+        # Ensure global top module is set
+        self.update_global_top_module()
+
+        core_dir, file_ext = find_module_setup_dir(core_name)
+
+        if file_ext == ".py":
+            exec(f"from {core_name} import {core_name}")
+            instance = vars()[core_name](
+                instance_name=instance_name, instantiator=self, **kwargs
+            )
+        elif file_ext == ".json":
+            instance = __class__.read_py2hw_json(
+                os.path.join(core_dir, f"json/{core_name}.json"),
+                instance_name=instance_name,
+                instantiator=self,
+                **kwargs,
+            )
+
+        self.blocks.append(instance)
+
+    def connect_instance_ports(self, connect, instantiator):
+        """
+        param connect: External wires to connect to ports of this instance
+                       Key: Port name, Value: Wire name
+        param instantiator: Module that is instantiating this instance
+        """
+        # Connect instance ports to external wires
+        for port_name, wire_name in connect.items():
+            port = find_obj_in_list(self.ports, port_name)
+            if not port:
+                fail_with_msg(
+                    f"Port '{port_name}' not found in instance '{self.instance_name}' of module '{instantiator.name}'!"
+                )
+            wire = find_obj_in_list(instantiator.wires, wire_name) or find_obj_in_list(
+                instantiator.ports, wire_name
+            )
+            if not wire:
+                fail_with_msg(
+                    f"Wire/port '{wire_name}' not found in module '{instantiator.name}'!"
+                )
+            port.connect_external(wire)
 
     def __create_build_dir(self):
         """Create build directory if it doesn't exist"""
@@ -289,20 +341,20 @@ class iob_core(iob_module, iob_instance):
             print(f"- {name}:{align_spaces}{datatype}{align_spaces2}{descr}")
 
     @classmethod
-    def py2hw(cls, core_dict):
+    def py2hw(cls, core_dict, **kwargs):
         """Generate a core based on the py2hw dictionary interface
         param core_dict: The core dictionary using py2hw dictionary syntax
         """
-        cls(attributes=core_dict)
+        return cls(attributes=core_dict, **kwargs)
 
     @classmethod
-    def read_py2hw_json(cls, filepath):
+    def read_py2hw_json(cls, filepath, **kwargs):
         """Read JSON file with py2hw attributes build a core from it
         param filepath: Path to JSON file using py2hw json syntax
         """
         with open(filepath) as f:
             core_dict = json.load(f)
-        cls.py2hw(core_dict)
+        return cls.py2hw(core_dict, **kwargs)
 
     @staticmethod
     def export_json_from_dict(core_dict, output_filepath=""):
@@ -312,9 +364,7 @@ class iob_core(iob_module, iob_instance):
         """
         if not output_filepath:
             output_filepath = os.path.join(
-                find_module_setup_dir(
-                    core_dict["original_name"], os.environ["PROJECT_ROOT"]
-                ),
+                find_module_setup_dir(core_dict["original_name"])[0],
                 "json",
                 core_dict["original_name"] + ".json",
             )
@@ -341,19 +391,25 @@ def find_common_deep(path1, path2):
     )
 
 
-def find_module_setup_dir(core_name, search_path):
+def find_module_setup_dir(core_name):
     """Searches for a core's setup directory
     param core_name: The core_name object
-    param search_path: The directory to search
+    returns: The path to the setup directory
+    returns: The file extension
     """
-    # Use os.walk() to traverse the directory tree
-    for root, directories, files in os.walk(search_path):
-        for file in files:
-            # Check if file name matches '<core_class_name>.py'
-            if file.split(".")[0] == core_name:
-                print(os.path.join(root, file))  # DEBUG
-                return root
-
-    raise Exception(
-        f"{iob_colors.FAIL}Setup dir of {core.name} not found in {search_path}!{iob_colors.ENDC}"
+    assert "PROJECT_ROOT" in os.environ, fail_with_msg(
+        "Environment variable 'PROJECT_ROOT' is not set!"
     )
+    file_path = find_file(os.environ["PROJECT_ROOT"], core_name, [".py", ".json"])
+    if not file_path:
+        fail_with_msg(
+            f"Setup directory of {core_name} not found in {os.environ['PROJECT_ROOT']}!"
+        )
+
+    file_ext = os.path.splitext(file_path)[1]
+    print("Found setup dir based on location of: " + file_path)  # DEBUG
+    if file_ext == ".py":
+        return os.path.dirname(file_path), ".py"
+    elif file_ext == ".json":
+        # Get out of the 'json/' folder
+        return os.path.join(os.path.dirname(file_path), ".."), ".json"
