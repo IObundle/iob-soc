@@ -59,6 +59,31 @@ def build_find_cmd(path, file_extentions):
     return find_cmd
 
 
+def run_tool(tool, path="."):
+    match tool:
+        case "black":
+            cmd = "black"
+            flags = ""
+            file_extentions = "*.py"
+        case "clang":
+            cmd = "clang-format"
+            flags = "-i -style=file -fallback-style=none -Werror"
+            file_extentions = "*.c *.h *.cpp *.hpp"
+        case "mypy":
+            cmd = "mypy"
+            flags = "--ignore-missing-imports --cache-dir=/dev/null"
+            file_extentions = "*.py"
+        case _:
+            cmd = ""
+            flags = ""
+            file_extentions = ""
+
+    # find all files and run tool
+    tool_cmd = f"{build_find_cmd(path, file_extentions)} | xargs -r {cmd} {flags}"
+    print(tool_cmd)
+    subprocess.run(tool_cmd, shell=True, check=True)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         prog="sw_tools.py",
@@ -84,25 +109,4 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    match args.tool:
-        case "black":
-            cmd = "black"
-            flags = ""
-            file_extentions = "*.py"
-        case "clang":
-            cmd = "clang-format"
-            flags = "-i -style=file -fallback-style=none -Werror"
-            file_extentions = "*.c *.h *.cpp *.hpp"
-        case "mypy":
-            cmd = "mypy"
-            flags = "--ignore-missing-imports --cache-dir=/dev/null"
-            file_extentions = "*.py"
-        case _:
-            cmd = ""
-            flags = ""
-            file_extentions = ""
-
-    # find all files and run tool
-    tool_cmd = f"{build_find_cmd(args.path, file_extentions)} | xargs -r {cmd} {flags}"
-    subprocess.run(tool_cmd, shell=True, check=True)
-    print(tool_cmd)
+    run_tool(args.tool, args.path)

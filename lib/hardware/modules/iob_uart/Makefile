@@ -1,17 +1,21 @@
 CORE := iob_uart
-DISABLE_LINT:=1
 
 LIB_DIR=../../../../lib
+DISABLE_LINT:=1
+export DISABLE_LINT
+export LIB_DIR
 BUILD_DIR := build
-
-all: setup
 
 include $(LIB_DIR)/setup.mk
 
-setup:
-	nix-shell --run 'make build-setup SETUP_ARGS="$(SETUP_ARGS)"'
+all: test
 
-test: clean 
-	nix-shell --run "make build-setup && make -C ../iob_uart_* sim-run"
+setup:
+	nix-shell --run 'make python3 -B py2hwsw $(CORE).py'
+
+test: clean setup
+	nix-shell --run "make -C ../iob_uart_* sim-run"
+
+.PHONY: all setup test
 
 

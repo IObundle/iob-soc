@@ -968,14 +968,6 @@ class iob_soc(iob_core):
             "ram_2p",
         )
         self.create_instance(
-            "iob_ram_2p",
-            "ram_2p",
-        )
-        self.create_instance(
-            "iob_ram_sp",
-            "ram_sp",
-        )
-        self.create_instance(
             "iob_ram_sp",
             "ram_sp",
         )

@@ -12,6 +12,7 @@ endif
 export PYTHONPATH
 
 DISABLE_LINT:=1
+export DISABLE_LINT
 
 LIB_DIR ?=./lib
 export LIB_DIR
@@ -20,14 +21,6 @@ include $(LIB_DIR)/setup.mk
 
 INIT_MEM ?= 1
 USE_EXTMEM ?= 0
-
-ifeq ($(INIT_MEM),1)
-SETUP_ARGS += INIT_MEM
-endif
-
-ifeq ($(USE_EXTMEM),1)
-SETUP_ARGS += USE_EXTMEM
-endif
 
 # Use Nix-shell if available
 ifeq ($(shell which nix),)
@@ -38,7 +31,7 @@ IOB_NIX_ENV = nix-shell --run '$(1)'
 endif
 
 setup:
-	$(call IOB_NIX_ENV, make build-setup SETUP_ARGS="$(SETUP_ARGS)")
+	$(call IOB_NIX_ENV, python3 -B py2hwsw $(CORE).py INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM))
 
 pc-emul-run:
 	$(call IOB_NIX_ENV, make clean setup && make -C ../$(CORE)_V*/build/ pc-emul-run)

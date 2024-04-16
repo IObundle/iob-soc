@@ -29,14 +29,6 @@ class iob_uart(iob_core):
             max="NA",
             descr="Address bus width",
         )
-        self.create_conf(
-            name="UART_DATA_W",
-            type="P",
-            val="8",
-            min="NA",
-            max="8",
-            descr="",
-        )
 
         self.create_port(
             name="clk_en_rst",
@@ -120,7 +112,7 @@ class iob_uart(iob_core):
                 {
                     "name": "TXDATA",
                     "type": "W",
-                    "n_bits": "UART_DATA_W",
+                    "n_bits": 8,
                     "rst_val": 0,
                     "addr": 4,
                     "log2n_items": 0,
@@ -172,7 +164,7 @@ class iob_uart(iob_core):
                 {
                     "name": "RXDATA",
                     "type": "R",
-                    "n_bits": "UART_DATA_W",
+                    "n_bits": 8,
                     "rst_val": 0,
                     "addr": 4,
                     "log2n_items": 0,

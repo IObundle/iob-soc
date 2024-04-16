@@ -15,24 +15,7 @@ module iob_asym_converter #(
     parameter W_ADDR_W = (W_DATA_W == MAXDATA_W) ? MINADDR_W : ADDR_W,
     parameter R_ADDR_W = (R_DATA_W == MAXDATA_W) ? MINADDR_W : ADDR_W
 ) (
-    //memory write port
-    output [        R-1:0] ext_mem_w_en_o,
-    output [MINADDR_W-1:0] ext_mem_w_addr_o,
-    output [MAXDATA_W-1:0] ext_mem_w_data_o,
-    //memory read port
-    output [        R-1:0] ext_mem_r_en_o,
-    output [MINADDR_W-1:0] ext_mem_r_addr_o,
-    input  [MAXDATA_W-1:0] ext_mem_r_data_i,
-    `include "clk_en_rst_s_port.vs"
-    input                  rst_i,
-    //write port
-    input  [ W_ADDR_W-1:0] w_addr_i,
-    input                  w_en_i,
-    input  [ W_DATA_W-1:0] w_data_i,
-    //read port
-    input  [ R_ADDR_W-1:0] r_addr_i,
-    input                  r_en_i,
-    output [ R_DATA_W-1:0] r_data_o
+    `include "iob_asym_converter_io.vs"
 );
 
   //Data is valid after read enable

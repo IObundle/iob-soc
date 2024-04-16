@@ -15,32 +15,7 @@ module iob_fifo_sync #(
     W_ADDR_W = (W_DATA_W == MAXDATA_W) ? MINADDR_W : ADDR_W,
     R_ADDR_W = (R_DATA_W == MAXDATA_W) ? MINADDR_W : ADDR_W
 ) (
-    `include "clk_en_rst_s_port.vs"
-
-    input rst_i,
-
-    //write port
-    input                 w_en_i,
-    input  [W_DATA_W-1:0] w_data_i,
-    output                w_full_o,
-
-    //read port
-    input                 r_en_i,
-    output [R_DATA_W-1:0] r_data_o,
-    output                r_empty_o,
-
-    //write port
-    output                 ext_mem_clk_o,
-    output [        R-1:0] ext_mem_w_en_o,
-    output [MINADDR_W-1:0] ext_mem_w_addr_o,
-    output [MAXDATA_W-1:0] ext_mem_w_data_o,
-    //read port
-    output [        R-1:0] ext_mem_r_en_o,
-    output [MINADDR_W-1:0] ext_mem_r_addr_o,
-    input  [MAXDATA_W-1:0] ext_mem_r_data_i,
-
-    //FIFO level
-    output [(ADDR_W+1)-1:0] level_o
+    `include "iob_fifo_sync_io.vs"
 );
 
   localparam ADDR_W_DIFF = $clog2(R);

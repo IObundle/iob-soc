@@ -17,40 +17,7 @@ module iob_fifo_async #(
     parameter W_ADDR_W = (W_DATA_W == MAXDATA_W) ? MINADDR_W : ADDR_W,
     parameter R_ADDR_W = (R_DATA_W == MAXDATA_W) ? MINADDR_W : ADDR_W
 ) (
-
-    //memory write port
-    output [        1-1:0] ext_mem_w_clk_o,
-    output [        R-1:0] ext_mem_w_en_o,
-    output [MINADDR_W-1:0] ext_mem_w_addr_o,
-    output [MAXDATA_W-1:0] ext_mem_w_data_o,
-    //memory read port
-    output [        1-1:0] ext_mem_r_clk_o,
-    output [        R-1:0] ext_mem_r_en_o,
-    output [MINADDR_W-1:0] ext_mem_r_addr_o,
-    input  [MAXDATA_W-1:0] ext_mem_r_data_i,
-
-    //read port
-    input                 r_clk_i,
-    input                 r_cke_i,
-    input                 r_arst_i,
-    input                 r_rst_i,
-    input                 r_en_i,
-    output [R_DATA_W-1:0] r_data_o,
-    output                r_empty_o,
-    output                r_full_o,
-    output [    ADDR_W:0] r_level_o,
-
-    //write port
-    input                 w_clk_i,
-    input                 w_cke_i,
-    input                 w_arst_i,
-    input                 w_rst_i,
-    input                 w_en_i,
-    input  [W_DATA_W-1:0] w_data_i,
-    output                w_empty_o,
-    output                w_full_o,
-    output [    ADDR_W:0] w_level_o
-
+    `include "iob_fifo_async_io.vs"
 );
 
   localparam [ADDR_W:0] FIFO_SIZE = {1'b1, {ADDR_W{1'b0}}};  //in bytes
