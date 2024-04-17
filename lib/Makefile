@@ -3,14 +3,6 @@
 # This makefile simulates the hardware modules in this repo
 #
 
-IOB_PYTHONPATH ?= ../../iob_python
-ifneq ($(PYTHONPATH),)
-PYTHONPATH := $(IOB_PYTHONPATH):$(PYTHONPATH)
-else
-PYTHONPATH := $(IOB_PYTHONPATH)
-endif
-export PYTHONPATH
-
 LIB_DIR:=.
 export LIB_DIR
 
@@ -29,7 +21,7 @@ all: sim-test
 include $(LIB_DIR)/setup.mk
 
 setup:
-	nix-shell --run "python3 -B py2hwsw $(CORE) LIB_DIR=$(LIB_DIR) PROJECT_ROOT=$(PROJECT_ROOT)"
+	nix-shell --run "py2hwsw $(CORE) LIB_DIR=$(LIB_DIR) PROJECT_ROOT=$(PROJECT_ROOT)"
 
 sim-build:
 	nix-shell --run "scripts/test.sh build $(CORE)"

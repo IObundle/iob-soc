@@ -11,7 +11,7 @@ include $(LIB_DIR)/setup.mk
 all: test
 
 setup:
-	nix-shell --run 'make python3 -B py2hwsw $(CORE).py'
+	nix-shell --run 'py2hwsw $(CORE)'
 
 test: clean setup
 	nix-shell --run "make -C ../iob_uart_* sim-run"

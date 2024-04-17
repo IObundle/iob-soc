@@ -31,7 +31,7 @@ IOB_NIX_ENV = nix-shell --run '$(1)'
 endif
 
 setup:
-	$(call IOB_NIX_ENV, python3 -B py2hwsw $(CORE).py INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM))
+	$(call IOB_NIX_ENV, py2hwsw $(CORE) INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM))
 
 pc-emul-run:
 	$(call IOB_NIX_ENV, make clean setup && make -C ../$(CORE)_V*/build/ pc-emul-run)

@@ -52,11 +52,8 @@ endif
 
 format-all: python-format c-format verilog-lint verilog-format # python-lint 
 
-clean: setup-python-dir
-	if [ -d "$(BUILD_DIR)" ]; then python3 -B $(CORE_DIR)/$(CORE).py clean; fi
-	# Makefile only runs the 'setup-python-dir' target once: https://stackoverflow.com/a/38212629
-	# So if we delete it here, it wont be rebuilt on 'build-setup'
-	#@rm -rf $(IOB_PYTHONPATH)
+clean:
+	if [ -d "$(BUILD_DIR)" ]; then py2hwsw $(CORE) clean; fi
 	@rm -rf ../*.summary ../*.rpt 
 	@find . -name \*~ -delete
 
