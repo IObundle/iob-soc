@@ -1,6 +1,8 @@
+import sys
 import os
 import shutil
 import json
+from pathlib import Path
 
 import iob_colors
 
@@ -20,6 +22,9 @@ import ipxact_gen
 from iob_module import iob_module
 from iob_instance import iob_instance
 from iob_base import find_obj_in_list, fail_with_msg, find_file
+import sw_tools
+import verilog_format
+import verilog_lint
 
 
 class iob_core(iob_module, iob_instance):
@@ -156,6 +161,8 @@ class iob_core(iob_module, iob_instance):
             # Generate ipxact file
             # if self.generate_ipxact: #TODO: When should this be generated?
             #    ipxact_gen.generate_ipxact_xml(self, reg_table, self.build_dir + "/ipxact")
+            # Lint and format sources
+            self.lint_and_format()
 
     def update_global_top_module(self):
         """Update the global top module and the global build directory."""
@@ -281,6 +288,56 @@ class iob_core(iob_module, iob_instance):
             else:
                 fail_with_msg(f"Unknown attribute: {attr_name}")
 
+    def lint_and_format(self):
+        """Run Linters and Formatters in setup and build directories."""
+        run_verilog_lint = True
+        run_verilog_format = True
+
+        # Parse environment vars (if any)
+        if "DISABLE_LINT" in os.environ:
+            run_verilog_lint = not bool(os.environ["DISABLE_LINT"])
+        if "DISABLE_FORMAT" in os.environ:
+            run_verilog_format = not bool(os.environ["DISABLE_FORMAT"])
+
+        # Parse arguments (if any)
+        for arg in sys.argv:
+            if "DISABLE_LINT" in arg:
+                run_verilog_lint = not bool(arg.split("=")[1])
+            elif "DISABLE_FORMAT" in arg:
+                run_verilog_format = not bool(arg.split("=")[1])
+
+        # Find Verilog sources and headers from build dir
+        verilog_headers = []
+        verilog_sources = []
+        for path in Path(os.path.join(self.build_dir, "hardware")).rglob("*.vh"):
+            # Skip specific Verilog headers
+            if path.name.endswith("version.vh") or "test_" in path.name:
+                continue
+            verilog_headers.append(str(path))
+            # print(str(path))
+        for path in Path(os.path.join(self.build_dir, "hardware")).rglob("*.v"):
+            verilog_sources.append(str(path))
+            # print(str(path))
+
+        # Run Verilog linter
+        if run_verilog_lint:
+            verilog_lint.lint_files(verilog_headers + verilog_sources)
+
+        # Run Verilog formatter
+        if run_verilog_format:
+            verilog_format.format_files(
+                verilog_headers + verilog_sources,
+                os.path.join(os.path.dirname(__file__), "verible-format.rules"),
+            )
+
+        # Run Python formatter
+        sw_tools.run_tool("black")
+        sw_tools.run_tool("black", self.build_dir)
+
+        # Run C formatter
+        sw_tools.run_tool("clang")
+        sw_tools.run_tool("clang", self.build_dir)
+
     @classmethod
     def clean_build_dir(cls):
         """Clean build directory."""
@@ -380,53 +437,3 @@ def find_module_setup_dir(core_name):
     elif file_ext == ".json":
         # Get out of the 'json/' folder
         return os.path.join(os.path.dirname(file_path), ".."), ".json"
-
-# def lint_and_format(cls):
-#     """Run Linters and Formatters in setup and build directories."""
-#     run_verilog_lint = True
-#     run_verilog_format = True
-# 
-#     # Parse environment vars (if any)
-#     if "DISABLE_LINT" in os.environ:
-#         run_verilog_lint = not bool(os.environ["DISABLE_LINT"])
-#     if "DISABLE_FORMAT" in os.environ:
-#         run_verilog_format = not bool(os.environ["DISABLE_FORMAT"])
-# 
-#     # Parse arguments (if any)
-#     for arg in sys.argv:
-#         if "DISABLE_LINT" in arg:
-#             run_verilog_lint = not bool(arg.split("=")[1])
-#         elif "DISABLE_FORMAT" in arg:
-#             run_verilog_format = not bool(arg.split("=")[1])
-# 
-#     # Find Verilog sources and headers from build dir
-#     verilog_headers = []
-#     verilog_sources = []
-#     for path in Path(os.path.join(cls.build_dir, "hardware")).rglob("*.vh"):
-#         # Skip specific Verilog headers
-#         if path.name.endswith("version.vh") or "test_" in path.name:
-#             continue
-#         verilog_headers.append(str(path))
-#         # print(str(path))
-#     for path in Path(os.path.join(cls.build_dir, "hardware")).rglob("*.v"):
-#         verilog_sources.append(str(path))
-#         # print(str(path))
-# 
-#     # Run Verilog linter
-#     if run_verilog_lint:
-#         verilog_lint.lint_files(verilog_headers + verilog_sources)
-# 
-#     # Run Verilog formatter
-#     if run_verilog_format:
-#         verilog_format.format_files(
-#             verilog_headers + verilog_sources,
-#             os.path.join(build_srcs.LIB_DIR, "scripts/verible-format.rules"),
-#         )
-# 
-#     # Run Python formatter
-#     sw_format.run_formatter("black")
-#     sw_format.run_formatter("black", cls.build_dir)
-# 
-#     # Run C formatter
-#     sw_format.run_formatter("clang")
-#     sw_format.run_formatter("clang", cls.build_dir)
