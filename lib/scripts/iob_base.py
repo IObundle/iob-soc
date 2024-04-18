@@ -149,3 +149,25 @@ def find_file(search_directory, name_without_ext, filter_extensions=[]):
             ):
                 return os.path.join(root, file)
     return None
+
+
+def hardcoded_find_file(name_without_ext, filter_extensions=[]):
+    """Find a file in specific hardcoded directories
+    param name_without_ext: name of the file without extension
+    param filter_extensions: list of extensions to filter
+    """
+    hardcoded_directories = [
+        ".",
+        f"submodules/{name_without_ext}",
+        f"lib/modules/{name_without_ext}",
+    ]
+
+    for dir in hardcoded_directories:
+        files = os.listdir(dir)
+        for file in files:
+            file_name, file_ext = os.path.splitext(file)
+            if file_name == name_without_ext and (
+                filter_extensions == [] or file_ext in filter_extensions
+            ):
+                return os.path.join(dir, file)
+    return None
