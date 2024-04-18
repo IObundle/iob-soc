@@ -73,7 +73,9 @@ format-all: build_dir_name python-lint python-format c-format verilog-lint veril
 
 clean: build_dir_name
 	-@if [ -f $(BUILD_DIR)/Makefile ]; then make -C $(BUILD_DIR) clean; fi
-	@rm -rf ../*.summary ../*.rpt $(BUILD_DIR)*  ~*
+	# replace [top_module]_V[version] by [top_module]_V
+	$(eval CLEAN_DIR=$(shell echo $(BUILD_DIR) | sed 's/_V[0-9]\+\.[0-9]\+$$/_V/'))
+	@rm -rf ../*.summary ../*.rpt $(CLEAN_DIR)*  ~*
 
 # Remove all __pycache__ folders with python bytecode
 python-cache-clean:
