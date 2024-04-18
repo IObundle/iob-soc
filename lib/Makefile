@@ -3,8 +3,12 @@
 # This makefile simulates the hardware modules in this repo
 #
 
+
 LIB_DIR:=.
 export LIB_DIR
+
+PATH:=$(PATH):$(LIB_DIR)/scripts
+export PATH
 
 PROJECT_ROOT=..
 export PROJECT_ROOT

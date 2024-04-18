@@ -1,0 +1,9 @@
+#!/usr/bin/env -S python3 -B
+
+import sys
+
+import iob_core
+
+if __name__ == "__main__":
+    print(f"Py2hwsw args: {sys.argv}")  # DEBUG
+    print(iob_core.find_module_setup_dir(sys.argv[1]))
