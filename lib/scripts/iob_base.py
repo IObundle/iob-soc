@@ -1,5 +1,7 @@
+import sys
 import os
 from dataclasses import dataclass
+import importlib
 
 import iob_colors
 
@@ -171,3 +173,16 @@ def hardcoded_find_file(name_without_ext, filter_extensions=[]):
             ):
                 return os.path.join(dir, file)
     return None
+
+
+def import_python_module(module_path, module_name=None):
+    """Import a python module from a given filepath
+    param module_path: path of the module's python file
+    param module_name: optinnal name of the module. By default equal to file name.
+    """
+    if not module_name:
+        module_name = os.path.splitext(os.path.basename(module_path))[0]
+    spec = importlib.util.spec_from_file_location(module_name, module_path)
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[module_name] = module
+    spec.loader.exec_module(module)

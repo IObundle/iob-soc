@@ -21,7 +21,7 @@ import ipxact_gen
 
 from iob_module import iob_module
 from iob_instance import iob_instance
-from iob_base import find_obj_in_list, fail_with_msg, find_file
+from iob_base import find_obj_in_list, fail_with_msg, find_file, import_python_module
 import sw_tools
 import verilog_format
 import verilog_lint
@@ -206,7 +206,7 @@ class iob_core(iob_module, iob_instance):
             )
         elif file_ext == ".json":
             instance = __class__.read_py2hw_json(
-                os.path.join(core_dir, f"json/{core_name}.json"),
+                os.path.join(core_dir, f"{core_name}.json"),
                 instance_name=instance_name,
                 instantiator=self,
                 **kwargs,
@@ -432,8 +432,5 @@ def find_module_setup_dir(core_name):
 
     file_ext = os.path.splitext(file_path)[1]
     print("Found setup dir based on location of: " + file_path)  # DEBUG
-    if file_ext == ".py":
-        return os.path.dirname(file_path), ".py"
-    elif file_ext == ".json":
-        # Get out of the 'json/' folder
-        return os.path.join(os.path.dirname(file_path), ".."), ".json"
+    if file_ext == ".py" or file_ext == ".json":
+        return os.path.dirname(file_path), file_ext

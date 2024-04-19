@@ -247,7 +247,7 @@ if __name__ == "__main__":
     elif "json" in sys.argv:
         # Generate iob_aoi from the py2hw json interface
         iob_core.read_py2hw_json(
-            os.path.join(os.path.dirname(__file__), "json/iob_aoi.json")
+            os.path.join(os.path.dirname(__file__), "iob_aoi.json")
         )
     else:
         # By default, generate iob_aoi from the subclass interface
