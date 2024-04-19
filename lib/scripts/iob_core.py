@@ -200,8 +200,11 @@ class iob_core(iob_module, iob_instance):
         core_dir, file_ext = find_module_setup_dir(core_name)
 
         if file_ext == ".py":
-            exec(f"from {core_name} import {core_name}")
-            instance = vars()[core_name](
+            import_python_module(
+                os.path.join(core_dir, f"{core_name}.py"),
+            )
+            core_module = sys.modules[core_name]
+            instance = vars(core_module)[core_name](
                 instance_name=instance_name, instantiator=self, **kwargs
             )
         elif file_ext == ".json":

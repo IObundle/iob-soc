@@ -1,9 +1,39 @@
 #!/usr/bin/env -S python3 -B
 
 import sys
+import os
 
 import iob_core
+from iob_base import find_obj_in_list, fail_with_msg, find_file, import_python_module
+
+
+def from_dict(core_dict):
+    """Generate a core from a py2hwsw dictionary"""
+    iob_core.iob_core.py2hw(core_dict)
+
+
+def from_json(json_filepath):
+    """Generate a core from a given json file"""
+    iob_core.iob_core.read_py2hw_json(json_filepath)
+
 
 if __name__ == "__main__":
     print(f"Py2hwsw args: {sys.argv}")  # DEBUG
-    print(iob_core.find_module_setup_dir(sys.argv[1]))
+    core_name = sys.argv[1]
+    core_dir, file_ext = iob_core.find_module_setup_dir(core_name)
+
+    if file_ext == ".py":
+        import_python_module(
+            os.path.join(core_dir, f"{core_name}.py"),
+        )
+        core_module = sys.modules[core_name]
+        instance = vars(core_module)[core_name](
+            instance_name=instance_name, instantiator=self, **kwargs
+        )
+    elif file_ext == ".json":
+        instance = __class__.read_py2hw_json(
+            os.path.join(core_dir, f"{core_name}.json"),
+            instance_name=instance_name,
+            instantiator=self,
+            **kwargs,
+        )

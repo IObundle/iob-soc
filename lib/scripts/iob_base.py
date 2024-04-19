@@ -178,8 +178,11 @@ def hardcoded_find_file(name_without_ext, filter_extensions=[]):
 def import_python_module(module_path, module_name=None):
     """Import a python module from a given filepath
     param module_path: path of the module's python file
-    param module_name: optinnal name of the module. By default equal to file name.
+    param module_name: optinal name of the module. By default equal to file name.
     """
+    # Don't import the same module twice
+    if module_name in sys.modules:
+        return
     if not module_name:
         module_name = os.path.splitext(os.path.basename(module_path))[0]
     spec = importlib.util.spec_from_file_location(module_name, module_path)
