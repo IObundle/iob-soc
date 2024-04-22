@@ -502,15 +502,13 @@ class iob_module:
             # Skip if file does not exist
             if not os.path.isfile(filepath):
                 continue
-
-            module_name = os.path.basename(filepath).split(".")[0]
-            spec = importlib.util.spec_from_file_location(module_name, filepath)
-            module = importlib.util.module_from_spec(spec)
-            sys.modules[module_name] = module
-            # Define setup_module object, corresponding to this class
-            vars(module)["setup_module"] = cls
-            # Execute setup file
-            spec.loader.exec_module(module)
+            
+            # Import the module 
+            setup_module = importlib.import_module(
+                os.path.splitext(os.path.basename(filepath))[0]
+            )
+            # Run the setup function
+            setup_module.setup(cls)            
 
     @classmethod
     def _setup_submodules(cls, submodule_list):
