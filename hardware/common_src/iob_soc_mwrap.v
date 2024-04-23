@@ -42,11 +42,11 @@ wire          [     DATA_W-1:0]    d_rdata;
 //
 
 `ifdef USE_SPRAM
-    wire                       en;
-    wire     [SRAM_ADDR_W-3:0] addr;
-    wire     [DATA_W/8-1:0]    we;
-    wire     [DATA_W-1:0]      di;
-    wire     [DATA_W-1:0]      do;
+    wire                       spram_en;
+    wire     [SRAM_ADDR_W-3:0] spram_addr;
+    wire     [DATA_W/8-1:0]    spram_we;
+    wire     [DATA_W-1:0]      spram_di;
+    wire     [DATA_W-1:0]      spram_do;
 `endif
 
 iob_soc #(
@@ -116,11 +116,11 @@ iob_soc #(
     .uart_rts_o(                   uart_rts_o),
         //SPRAM  
 `ifdef USE_SPRAM
-    .valid_spram_o(en),
-    .addr_spram_o(addr),
-    .wstrb_spram_o(we),
-    .wdata_spram_o(di),
-    .rdata_spram_i(do),
+    .valid_spram_o(spram_en),
+    .addr_spram_o(spram_addr),
+    .wstrb_spram_o(spram_we),
+    .wdata_spram_o(spram_di),
+    .rdata_spram_i(spram_do),
 `endif
 
     //rom
@@ -153,11 +153,11 @@ iob_soc #(
         ) main_mem_byte (
             .clk_i(clk_i),
             // data port
-            .en_i  (en),
-            .addr_i(addr),
-            .we_i  (wstrb),
-            .d_i   (wdata),
-            .dt_o  (rdata)
+            .en_i  (spram_en),
+            .addr_i(spram_addr),
+            .we_i  (spram_we),
+            .d_i   (spram_di),
+            .dt_o  (spram_do)
         );
     `else
         `ifdef IOB_MEM_NO_READ_ON_WRITE
