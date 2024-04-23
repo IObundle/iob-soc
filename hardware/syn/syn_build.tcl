@@ -1,0 +1,1 @@
+set_db hdl_error_on_latch false
