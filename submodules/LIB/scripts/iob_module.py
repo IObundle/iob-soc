@@ -738,12 +738,6 @@ class iob_module:
                             ),
                         )
                         continue
-                elif directory == "hardware/common_src":
-                    shutil.copytree(
-                        os.path.join(os.getcwd(), directory),
-                        os.path.join(cls.build_dir, directory),
-                        dirs_exist_ok=False,
-                    )
                 elif directory == "hardware/fpga":
                     # Skip if board_list is empty
                     if cls.board_list is None:
