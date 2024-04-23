@@ -1,4 +1,4 @@
-from iob_core import iob_core
+import py2hwsw
 
 
 class iob_and(iob_core):
@@ -86,3 +86,8 @@ attributes_dict = {
     ],
     "snippets": [{"outputs": ["y"], "verilog_code": "   assign y_o = a_i & b_i;"}],
 }
+
+
+def setup(**kwargs):
+    attributes_dict["name"] = kwargs["name"]
+    return py2hwsw.from_dict(attributes_dict)

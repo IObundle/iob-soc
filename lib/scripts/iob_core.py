@@ -46,7 +46,20 @@ class iob_core(iob_module, iob_instance):
     ):
         """Build a core (includes module and instance attributes)
         param purpose: Purpose for setup of the core (hardware/simulation/fpga)
-        param attributes: py2hw dictionary describing the core
+        param attributes: py2hwsw dictionary describing the core
+            Notes:
+                1) Each key/value pair in the dictionary describes an attribute name and
+                   corresponding attribute value of the core.
+                2) If the dictionary contains a key that does not match any attribute
+                   of the core, then an error will be raised.
+                3) The values will be processed by the `set_handler` method of the
+                   corresponding attribute. This method will convert from the py2hwsw
+                   dictionary datatypes into the internal IObundle datatypes.
+                   For example, it converts a 'wire' dict into an `iob_wire` object.
+                4) If another constructor argument is also given (like the argument
+                   'purpose'), and this dictionary also contains a key for the same
+                   attribute (like the key 'purpose'), then the value given in the
+                   dictionary will override the one from the constructor argument.
         param connect: External wires to connect to ports of this instance
                        Key: Port name, Value: Wire name
         param instantiator: Module that is instantiating this instance
@@ -204,12 +217,31 @@ class iob_core(iob_module, iob_instance):
                 os.path.join(core_dir, f"{core_name}.py"),
             )
             core_module = sys.modules[core_name]
-            instance = vars(core_module)[core_name](
-                instance_name=instance_name, instantiator=self, **kwargs
+            # Call `setup(<py_params_dict>)` function of `<core_name>.py` to
+            # obtain the core's py2hwsw dictionary.
+            # Give it a dictionary with all arguments of this function, since the user
+            # may want to use any of them to manipulate the core attributes.
+            core_dict = core_module.setup(
+                {
+                    "core_name": core_name,
+                    "instance_name": instance_name,
+                    "instantiator": self,
+                    **kwargs,
+                }
+            )
+            instance = __class__.py2hw(
+                core_dict,
+                # Note, any of the arguments below can have their values overridden by
+                # the core_dict
+                instance_name=instance_name,
+                instantiator=self,
+                **kwargs,
             )
         elif file_ext == ".json":
             instance = __class__.read_py2hw_json(
                 os.path.join(core_dir, f"{core_name}.json"),
+                # Note, any of the arguments below can have their values overridden by
+                # the json data
                 instance_name=instance_name,
                 instantiator=self,
                 **kwargs,
@@ -387,6 +419,7 @@ class iob_core(iob_module, iob_instance):
     def py2hw(cls, core_dict, **kwargs):
         """Generate a core based on the py2hw dictionary interface
         param core_dict: The core dictionary using py2hw dictionary syntax
+        param kwargs: Optional additional arguments to pass directly to the core
         """
         return cls(attributes=core_dict, **kwargs)
 
@@ -394,6 +427,7 @@ class iob_core(iob_module, iob_instance):
     def read_py2hw_json(cls, filepath, **kwargs):
         """Read JSON file with py2hw attributes build a core from it
         param filepath: Path to JSON file using py2hw json syntax
+        param kwargs: Optional additional arguments to pass directly to the core
         """
         with open(filepath) as f:
             core_dict = json.load(f)

@@ -27,13 +27,7 @@ if __name__ == "__main__":
             os.path.join(core_dir, f"{core_name}.py"),
         )
         core_module = sys.modules[core_name]
-        instance = vars(core_module)[core_name](
-            instance_name=instance_name, instantiator=self, **kwargs
-        )
+        core_dict = core_module.setup({"core_name": core_name})
+        from_dict(core_dict)
     elif file_ext == ".json":
-        instance = __class__.read_py2hw_json(
-            os.path.join(core_dir, f"{core_name}.json"),
-            instance_name=instance_name,
-            instantiator=self,
-            **kwargs,
-        )
+        from_json(os.path.join(core_dir, f"{core_name}.json"))

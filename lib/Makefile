@@ -25,7 +25,7 @@ all: sim-test
 include $(LIB_DIR)/setup.mk
 
 setup:
-	nix-shell --run "py2hwsw $(CORE) LIB_DIR=$(LIB_DIR) PROJECT_ROOT=$(PROJECT_ROOT)"
+	nix-shell --run "scripts/py2hwsw.py $(CORE) LIB_DIR=$(LIB_DIR) PROJECT_ROOT=$(PROJECT_ROOT)"
 
 sim-build:
 	nix-shell --run "scripts/test.sh build $(CORE)"
