@@ -1,6 +1,6 @@
 from typing import Dict
 
-from iob_base import iob_base, find_obj_in_list, fail_with_msg
+from iob_base import iob_base
 
 
 class iob_instance(iob_base):
@@ -11,16 +11,11 @@ class iob_instance(iob_base):
         *args,
         instance_name: str = None,
         parameters: Dict = {},
-        connect: Dict = {},
-        instantiator=None,
         **kwargs,
     ):
         """Build a (Verilog) instance
         param parameters: Verilog parameter values for this instance
                           Key: Verilog parameter name, Value: Verilog parameter value
-        param connect: External wires to connect to ports of this instance
-                       Key: Port name, Value: Wire name
-        param instantiator: Module that is instantiating this instance
         """
         self.set_default_attribute(
             "instance_name", instance_name or self.__class__.__name__ + "_inst", str
@@ -30,26 +25,3 @@ class iob_instance(iob_base):
         self.set_default_attribute("parameters", parameters, Dict)
         # Only use this instance in Verilog if this Verilog macro is defined
         self.set_default_attribute("if_defined", None, str)
-
-        # Ensure 'ports' list exists. This attribute should normaly be defined by iob_module.
-        # Since 'ports' is not directly an attribute of the iob_instance, we should either:
-        # - Use another instance attribute, like 'port_connections"
-        # - Make iob_instance a subclass of iob_module (to inherit 'ports')
-        # - Place the code that makes the port connections in the 'iob_core' class
-        self.set_default_attribute("ports", [], list)
-
-        # Connect instance ports to external wires
-        for port_name, wire_name in connect.items():
-            port = find_obj_in_list(self.ports, port_name)
-            if not port:
-                fail_with_msg(
-                    f"Port '{port_name}' not found in instance '{self.instance_name}' of module '{instantiator.name}'!"
-                )
-            wire = find_obj_in_list(instantiator.wires, wire_name) or find_obj_in_list(
-                instantiator.ports, wire_name
-            )
-            if not wire:
-                fail_with_msg(
-                    f"Wire/port '{wire_name}' not found in module '{instantiator.name}'!"
-                )
-            port.connect_external(wire)

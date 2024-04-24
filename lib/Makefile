@@ -38,6 +38,9 @@ sim-test:
 sim-clean:
 	nix-shell --run "scripts/test.sh clean"
 
+print-attr:
+	nix-shell --run "VCD=$(VCD) SETUP_ARGS='print_attr' scripts/test.sh $(CORE)"
+
 
 .PHONY: all sim-build sim-run sim-test sim-clean
 

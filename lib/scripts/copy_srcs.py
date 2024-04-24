@@ -480,7 +480,7 @@ def copy_rename_setup_subdir(core, directory, exclude_file_list=[]):
             os.path.join(core.setup_dir, directory),
             os.path.join(core.build_dir, directory),
             dirs_exist_ok=True,
-            copy_function=copy_with_rename(core.__class__.__name__, core.name),
+            copy_function=copy_with_rename(core.original_name, core.name),
             ignore=shutil.ignore_patterns(*exclude_file_list, *tools_list),
         )
 
@@ -509,9 +509,7 @@ def copy_rename_setup_subdir(core, directory, exclude_file_list=[]):
                         setup_fpga_dir,
                         build_fpga_dir,
                         dirs_exist_ok=True,
-                        copy_function=copy_with_rename(
-                            core.__class__.__name__, core.name
-                        ),
+                        copy_function=copy_with_rename(core.original_name, core.name),
                         ignore=shutil.ignore_patterns(*exclude_file_list),
                     )
                     break
@@ -536,7 +534,7 @@ def copy_rename_setup_subdir(core, directory, exclude_file_list=[]):
         os.path.join(core.setup_dir, directory),
         os.path.join(core.build_dir, dst_directory),
         dirs_exist_ok=True,
-        copy_function=copy_with_rename(core.__class__.__name__, core.name),
+        copy_function=copy_with_rename(core.original_name, core.name),
         ignore=shutil.ignore_patterns(*exclude_file_list),
     )
 
@@ -544,7 +542,7 @@ def copy_rename_setup_subdir(core, directory, exclude_file_list=[]):
 def copy_rename_setup_directory(core, exclude_file_list=[]):
     """Copy and rename files from the module's setup dir.
     Any string from the files in the setup dir that matches the
-    module's class name (core.__class__.__name__) will be replaced by the
+    module's class name (core.original_name) will be replaced by the
     module's name (core.name).
     For example, if we create a new IOb-SoC module with
     `iob_soc(name="iob_soc_sut")` then the `iob_soc.v` file from

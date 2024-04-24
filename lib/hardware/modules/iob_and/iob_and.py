@@ -44,3 +44,45 @@ class iob_and(iob_core):
         )
 
         super().__init__(*args, **kwargs)
+
+
+# Dictionary that describes this core using the py2hw dictionary interface
+attributes_dict = {
+    "original_name": "iob_and",
+    "name": "iob_and",
+    "version": "0.1",
+    "confs": [
+        {
+            "name": "W",
+            "type": "P",
+            "val": "21",
+            "min": "1",
+            "max": "32",
+            "descr": "IO width",
+        },
+    ],
+    "ports": [
+        {
+            "name": "a",
+            "descr": "Input port",
+            "signals": [
+                {"name": "a", "width": "W", "direction": "input"},
+            ],
+        },
+        {
+            "name": "b",
+            "descr": "Input port",
+            "signals": [
+                {"name": "b", "width": "W", "direction": "input"},
+            ],
+        },
+        {
+            "name": "y",
+            "descr": "Output port",
+            "signals": [
+                {"name": "y", "width": "W", "direction": "output"},
+            ],
+        },
+    ],
+    "snippets": [{"outputs": ["y"], "verilog_code": "   assign y_o = a_i & b_i;"}],
+}
