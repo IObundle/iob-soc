@@ -210,42 +210,9 @@ class iob_core(iob_module, iob_instance):
         # Ensure global top module is set
         self.update_global_top_module()
 
-        core_dir, file_ext = find_module_setup_dir(core_name)
-
-        if file_ext == ".py":
-            import_python_module(
-                os.path.join(core_dir, f"{core_name}.py"),
-            )
-            core_module = sys.modules[core_name]
-            # Call `setup(<py_params_dict>)` function of `<core_name>.py` to
-            # obtain the core's py2hwsw dictionary.
-            # Give it a dictionary with all arguments of this function, since the user
-            # may want to use any of them to manipulate the core attributes.
-            core_dict = core_module.setup(
-                {
-                    "core_name": core_name,
-                    "instance_name": instance_name,
-                    "instantiator": self,
-                    **kwargs,
-                }
-            )
-            instance = __class__.py2hw(
-                core_dict,
-                # Note, any of the arguments below can have their values overridden by
-                # the core_dict
-                instance_name=instance_name,
-                instantiator=self,
-                **kwargs,
-            )
-        elif file_ext == ".json":
-            instance = __class__.read_py2hw_json(
-                os.path.join(core_dir, f"{core_name}.json"),
-                # Note, any of the arguments below can have their values overridden by
-                # the json data
-                instance_name=instance_name,
-                instantiator=self,
-                **kwargs,
-            )
+        instance = self.get_core_obj(
+            core_name, instance_name=instance_name, instantiator=self, **kwargs
+        )
 
         self.blocks.append(instance)
 
@@ -432,6 +399,47 @@ class iob_core(iob_module, iob_instance):
         with open(filepath) as f:
             core_dict = json.load(f)
         return cls.py2hw(core_dict, **kwargs)
+
+    @staticmethod
+    def get_core_obj(core_name, **kwargs):
+        """Generate an instance of a core based on given core_name and python parameters
+        This method will search for the .py and .json files of the core, and generate a
+        python object based on info stored in those files, and info passed via python
+        parameters.
+        Calling this method may also begin the setup process of the core, depending on
+        the value of the `global_special_target` attribute.
+        """
+        core_dir, file_ext = find_module_setup_dir(core_name)
+
+        if file_ext == ".py":
+            import_python_module(
+                os.path.join(core_dir, f"{core_name}.py"),
+            )
+            core_module = sys.modules[core_name]
+            # Call `setup(<py_params_dict>)` function of `<core_name>.py` to
+            # obtain the core's py2hwsw dictionary.
+            # Give it a dictionary with all arguments of this function, since the user
+            # may want to use any of them to manipulate the core attributes.
+            core_dict = core_module.setup(
+                {
+                    "core_name": core_name,
+                    **kwargs,
+                }
+            )
+            instance = __class__.py2hw(
+                core_dict,
+                # Note, any of the arguments below can have their values overridden by
+                # the core_dict
+                **kwargs,
+            )
+        elif file_ext == ".json":
+            instance = __class__.read_py2hw_json(
+                os.path.join(core_dir, f"{core_name}.json"),
+                # Note, any of the arguments below can have their values overridden by
+                # the json data
+                **kwargs,
+            )
+        return instance
 
 
 def find_common_deep(path1, path2):
