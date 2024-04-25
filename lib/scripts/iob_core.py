@@ -341,48 +341,6 @@ class iob_core(iob_module, iob_instance):
         sw_tools.run_tool("clang", self.build_dir)
 
     @classmethod
-    def clean_build_dir(cls):
-        """Clean build directory."""
-        # Set project wide special target (will prevent normal setup)
-        __class__.global_special_target = "clean"
-        # Build a new module instance, to obtain its attributes
-        module = cls()
-        print(
-            f"{iob_colors.ENDC}Cleaning build directory: {module.build_dir}{iob_colors.ENDC}"
-        )
-        # if build_dir exists run make clean in it
-        if os.path.exists(module.build_dir):
-            os.system(f"make -C {module.build_dir} clean")
-        shutil.rmtree(module.build_dir, ignore_errors=True)
-
-    @classmethod
-    def print_build_dir(cls):
-        """Print build directory."""
-        # Set project wide special target (will prevent normal setup)
-        __class__.global_special_target = "print_build_dir"
-        # Build a new module instance, to obtain its attributes
-        module = cls()
-        print(module.build_dir)
-
-    @classmethod
-    def print_py2hw_attributes(cls):
-        """Print the supported py2hw attributes of this core.
-        The attributes listed can be used in the 'attributes' dictionary of the
-        constructor. This defines the information supported by the py2hw interface.
-        """
-        # Set project wide special target (will prevent normal setup)
-        __class__.global_special_target = "print_attributes"
-        # Build a new module instance, to obtain its attributes
-        module = cls()
-        print(f"Attributes supported by the '{module.name}' core's 'py2hw' interface:")
-        for name in module.ATTRIBUTE_PROPERTIES.keys():
-            datatype = module.ATTRIBUTE_PROPERTIES[name].datatype
-            descr = module.ATTRIBUTE_PROPERTIES[name].descr
-            align_spaces = " " * (20 - len(name))
-            align_spaces2 = " " * (18 - len(str(datatype)))
-            print(f"- {name}:{align_spaces}{datatype}{align_spaces2}{descr}")
-
-    @classmethod
     def py2hw(cls, core_dict, **kwargs):
         """Generate a core based on the py2hw dictionary interface
         param core_dict: The core dictionary using py2hw dictionary syntax
@@ -399,6 +357,48 @@ class iob_core(iob_module, iob_instance):
         with open(filepath) as f:
             core_dict = json.load(f)
         return cls.py2hw(core_dict, **kwargs)
+
+    @staticmethod
+    def clean_build_dir(core_name):
+        """Clean build directory."""
+        # Set project wide special target (will prevent normal setup)
+        __class__.global_special_target = "clean"
+        # Build a new module instance, to obtain its attributes
+        module = __class__.get_core_obj(core_name)
+        print(
+            f"{iob_colors.ENDC}Cleaning build directory: {module.build_dir}{iob_colors.ENDC}"
+        )
+        # if build_dir exists run make clean in it
+        if os.path.exists(module.build_dir):
+            os.system(f"make -C {module.build_dir} clean")
+        shutil.rmtree(module.build_dir, ignore_errors=True)
+
+    @staticmethod
+    def print_build_dir(core_name):
+        """Print build directory."""
+        # Set project wide special target (will prevent normal setup)
+        __class__.global_special_target = "print_build_dir"
+        # Build a new module instance, to obtain its attributes
+        module = __class__.get_core_obj(core_name)
+        print(module.build_dir)
+
+    @staticmethod
+    def print_py2hwsw_attributes(core_name):
+        """Print the supported py2hw attributes of this core.
+        The attributes listed can be used in the 'attributes' dictionary of the
+        constructor. This defines the information supported by the py2hw interface.
+        """
+        # Set project wide special target (will prevent normal setup)
+        __class__.global_special_target = "print_attributes"
+        # Build a new module instance, to obtain its attributes
+        module = __class__.get_core_obj(core_name)
+        print(f"Attributes supported by the '{module.name}' core's 'py2hw' interface:")
+        for name in module.ATTRIBUTE_PROPERTIES.keys():
+            datatype = module.ATTRIBUTE_PROPERTIES[name].datatype
+            descr = module.ATTRIBUTE_PROPERTIES[name].descr
+            align_spaces = " " * (20 - len(name))
+            align_spaces2 = " " * (18 - len(str(datatype)))
+            print(f"- {name}:{align_spaces}{datatype}{align_spaces2}{descr}")
 
     @staticmethod
     def get_core_obj(core_name, **kwargs):

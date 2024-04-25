@@ -1,9 +1,3 @@
-import os
-import sys
-
-import py2hwsw
-
-
 def setup(py_params_dict):
     """Standard py2hwsw setup method
     This method is called during the py2hwsw setup process to obtain the dictionary of
@@ -130,24 +124,3 @@ def setup(py_params_dict):
     }
 
     return attributes_dict
-
-
-if __name__ == "__main__":
-    # Create an iob_aoi ip core
-    if "clean" in sys.argv:
-        # iob_aoi.clean_build_dir()
-        pass
-    elif "print" in sys.argv:
-        # iob_aoi.print_build_dir()
-        pass
-    elif "print_attr" in sys.argv:
-        # iob_aoi.print_py2hw_attributes()
-        pass
-    elif "json" in sys.argv:
-        # Generate iob_aoi from the py2hw json interface
-        py2hwsw.from_json(os.path.join(os.path.dirname(__file__), "iob_aoi.json"))
-    else:
-        # By default:
-        # Generate iob_aoi from the py2hw dictionary interface
-        # py2hwsw.from_dict(attributes_dict)
-        pass
