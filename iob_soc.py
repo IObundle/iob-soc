@@ -317,7 +317,7 @@ class iob_soc(iob_core):
         # ###########################################################################
         # TODO: Update lines below with new connections from local wires.
         #       Also remove `_i` and `_o` suffixes.
-+       #       Also use the new 'create_*' methods.
+        #       Also use the new 'create_*' methods.
         # ###########################################################################
 
         #

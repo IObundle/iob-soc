@@ -31,8 +31,11 @@ class iob_core(iob_module, iob_instance):
     """Generic class to describe how to generate a base IOb IP core"""
 
     global_wires: list
+    # Project settings
     global_build_dir: str = ""
     global_project_root: str = "."
+    global_project_vformat: bool = True
+    global_project_vlint: bool = True
     # Project wide special target. Used when we don't want to run normal setup (for example, when cleaning).
     global_special_target: str = ""
 
@@ -301,22 +304,6 @@ class iob_core(iob_module, iob_instance):
 
     def lint_and_format(self):
         """Run Linters and Formatters in setup and build directories."""
-        run_verilog_lint = True
-        run_verilog_format = True
-
-        # Parse environment vars (if any)
-        if "DISABLE_LINT" in os.environ:
-            run_verilog_lint = not bool(os.environ["DISABLE_LINT"])
-        if "DISABLE_FORMAT" in os.environ:
-            run_verilog_format = not bool(os.environ["DISABLE_FORMAT"])
-
-        # Parse arguments (if any)
-        for arg in sys.argv:
-            if "DISABLE_LINT" in arg:
-                run_verilog_lint = not bool(arg.split("=")[1])
-            elif "DISABLE_FORMAT" in arg:
-                run_verilog_format = not bool(arg.split("=")[1])
-
         # Find Verilog sources and headers from build dir
         verilog_headers = []
         verilog_sources = []
@@ -331,11 +318,11 @@ class iob_core(iob_module, iob_instance):
             # print(str(path))
 
         # Run Verilog linter
-        if run_verilog_lint:
+        if __class__.global_project_vlint:
             verilog_lint.lint_files(verilog_headers + verilog_sources)
 
         # Run Verilog formatter
-        if run_verilog_format:
+        if __class__.global_project_vformat:
             verilog_format.format_files(
                 verilog_headers + verilog_sources,
                 os.path.join(os.path.dirname(__file__), "verible-format.rules"),

@@ -47,12 +47,27 @@ if __name__ == "__main__":
         default=".",
         help="The project root directory",
     )
+
+    parser.add_argument(
+        "--no_verilog_format",
+        dest="verilog_format",
+        action="store_false",
+        help="Disable verilog formatter",
+    )
+    parser.add_argument(
+        "--no_verilog_lint",
+        dest="verilog_lint",
+        action="store_false",
+        help="Disable verilog linter",
+    )
     args = parser.parse_args()
 
-    # print(f"Args: {args}")  # DEBUG
+    # print(f"Args: {args}", file=sys.stderr)  # DEBUG
 
     iob_core.global_build_dir = args.build_dir
     iob_core.global_project_root = args.project_root
+    iob_core.global_project_vformat = args.verilog_format
+    iob_core.global_project_vlint = args.verilog_lint
 
     if args.target == "setup":
         iob_core.get_core_obj(args.core_name)
