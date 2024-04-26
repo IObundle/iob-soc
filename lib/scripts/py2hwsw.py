@@ -34,11 +34,25 @@ if __name__ == "__main__":
         "Options: setup, clean, print_build_dir, print_py2hwsw_attributes.",
     )
     parser.add_argument(
-        "--project_root", type=str, default=".", help="The project root directory"
+        "--build_dir",
+        dest="build_dir",
+        type=str,
+        default="",
+        help="The core's build directory",
+    )
+    parser.add_argument(
+        "--project_root",
+        dest="project_root",
+        type=str,
+        default=".",
+        help="The project root directory",
     )
     args = parser.parse_args()
 
-    print(f"Args: {args}")  # DEBUG
+    # print(f"Args: {args}")  # DEBUG
+
+    iob_core.global_build_dir = args.build_dir
+    iob_core.global_project_root = args.project_root
 
     if args.target == "setup":
         iob_core.get_core_obj(args.core_name)

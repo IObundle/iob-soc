@@ -32,6 +32,7 @@ class iob_core(iob_module, iob_instance):
 
     global_wires: list
     global_build_dir: str = ""
+    global_project_root: str = "."
     # Project wide special target. Used when we don't want to run normal setup (for example, when cleaning).
     global_special_target: str = ""
 
@@ -68,10 +69,10 @@ class iob_core(iob_module, iob_instance):
         iob_module.__init__(self, *args, **kwargs)
         iob_instance.__init__(self, *args, **kwargs)
         # Ensure global top module is set
-        self.update_global_top_module()
+        self.update_global_top_module(attributes)
         # CPU interface for control status registers
         self.set_default_attribute("csr_if", "iob", str)
-        self.set_default_attribute("version", "1.0", str)
+        self.set_default_attribute("version", "", str)
         self.set_default_attribute("previous_version", self.version, str)
         self.set_default_attribute("setup_dir", "", str)
         self.set_default_attribute("build_dir", "", str)
@@ -177,24 +178,32 @@ class iob_core(iob_module, iob_instance):
             # Lint and format sources
             self.lint_and_format()
 
-    def update_global_top_module(self):
-        """Update the global top module and the global build directory."""
+    def update_global_top_module(self, attributes={}):
+        """Update the global top module and the global build directory.
+        param attributes: Py2hwsw dictionary describing the core
+                          Will be used to get the core name and version if available.
+        """
         super().update_global_top_module()
+        # Ensure top module has a build dir (and associated attributes)
         if __class__.global_top_module == self:
-            # Ensure current (top)module has a build dir
-            # FIXME: These lines are duplicate from 'iob_module.py'. Is this an issue?
-            self.set_default_attribute("original_name", self.__class__.__name__)
-            self.set_default_attribute("name", self.original_name)
-            # FIXME: This line is duplicate from 'iob_core.py'. Is this an issue?
-            self.set_default_attribute("version", "1.0", str)
-            custom_build_dir = (
-                os.environ["BUILD_DIR"] if "BUILD_DIR" in os.environ else None
-            )
-            self.set_default_attribute(
-                "build_dir", custom_build_dir or f"../{self.name}_V{self.version}"
-            )
-            # Update global build dir
-            __class__.global_build_dir = self.build_dir
+            # Attribute default values
+            original_name = self.__class__.__name__
+            name = self.original_name
+            version = "1.0"
+            # Extract values from attributes dict if available
+            if "original_name" in attributes:
+                original_name = attributes["original_name"]
+            if "name" in attributes:
+                name = attributes["name"]
+            if "version" in attributes:
+                version = attributes["version"]
+            # Set attributes
+            self.original_name = original_name
+            self.name = name
+            self.version = version
+            if not __class__.global_build_dir:
+                __class__.global_build_dir = f"../{self.name}_V{self.version}"
+            self.set_default_attribute("build_dir", __class__.global_build_dir)
 
     def create_instance(self, core_name: str = "", instance_name: str = "", **kwargs):
         """Create an instante of a module, but only if we are not using a
@@ -392,7 +401,9 @@ class iob_core(iob_module, iob_instance):
         __class__.global_special_target = "print_attributes"
         # Build a new module instance, to obtain its attributes
         module = __class__.get_core_obj(core_name)
-        print(f"Attributes supported by the '{module.name}' core's 'py2hw' interface:")
+        print(
+            f"Attributes supported by the '{module.name}' core's 'py2hwsw' interface:"
+        )
         for name in module.ATTRIBUTE_PROPERTIES.keys():
             datatype = module.ATTRIBUTE_PROPERTIES[name].datatype
             descr = module.ATTRIBUTE_PROPERTIES[name].descr
@@ -466,16 +477,13 @@ def find_module_setup_dir(core_name):
     returns: The path to the setup directory
     returns: The file extension
     """
-    assert "PROJECT_ROOT" in os.environ, fail_with_msg(
-        "Environment variable 'PROJECT_ROOT' is not set!"
-    )
-    file_path = find_file(os.environ["PROJECT_ROOT"], core_name, [".py", ".json"])
+    file_path = find_file(iob_core.global_project_root, core_name, [".py", ".json"])
     if not file_path:
         fail_with_msg(
-            f"Setup directory of {core_name} not found in {os.environ['PROJECT_ROOT']}!"
+            f"Setup directory of {core_name} not found in {iob_core.global_project_root}!"
         )
 
     file_ext = os.path.splitext(file_path)[1]
-    print("Found setup dir based on location of: " + file_path)  # DEBUG
+    # print("Found setup dir based on location of: " + file_path, file=sys.stderr)
     if file_ext == ".py" or file_ext == ".json":
         return os.path.dirname(file_path), file_ext

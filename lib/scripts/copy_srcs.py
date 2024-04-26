@@ -11,14 +11,9 @@ import importlib.util
 import if_gen
 import iob_colors
 
-# get LIB_DIR from env variable
-
 
 def get_lib_dir():
-    assert (
-        "LIB_DIR" in os.environ
-    ), f"{iob_colors.FAIL}LIB_DIR not set in environment!{iob_colors.ENDC}"
-    return os.environ.get("LIB_DIR")
+    return os.path.join(os.path.dirname(__file__), "..")
 
 
 # This function sets up the flows for this core
@@ -242,7 +237,7 @@ def write_git_revision_short_hash(dst_dir):
 # headers: List of headers that will be appedend by the list of headers in the .py module.
 # srcs: List of srcs that will be appedend by the list of srcs in the .py module.
 # module_name: name of the python module to include. Can also be the name of a src module (with the same extension as passed in the module_extension parameter).
-# LIB_DIR: root directory of the LIB
+# lib_dir: root directory of the LIB
 # add_sim_srcs: If True, then the list of simulation sources will be appended to the srcs list
 # add_fpga_srcs: If True, then the list of FPGA sources will be appended to the srcs list
 # module_parameters: optional argument. Allows passing an optional object with parameters to a hardware module.
