@@ -20,12 +20,13 @@ DISABLE_FORMAT:=1
 # Default lib module to setup. Can be overriden by the user.
 CORE ?=iob_ctls
 
+
 all: sim-test
 
 include $(LIB_DIR)/setup.mk
 
 setup:
-	nix-shell --run "scripts/py2hwsw.py $(CORE) setup --project_root $(PROJECT_ROOT)"
+	nix-shell --run "scripts/py2hwsw.py $(CORE) setup --project_root $(PROJECT_ROOT) --build_dir '$(BUILD_DIR)'"
 
 sim-build:
 	nix-shell --run "scripts/test.sh build $(CORE)"
