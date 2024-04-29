@@ -1,24 +1,9 @@
 #!/usr/bin/env -S python3 -B
 
-import sys
 import argparse
 
 from iob_base import fail_with_msg
 from iob_core import iob_core
-
-
-# TODO: Do we still need these functions?
-# They were supposed to be imported by the user script (<core_name>.py)
-# But since the entire setup process can be managed from the command line,
-# I'm not sure if these are needed anymore.
-def from_dict(core_dict):
-    """Generate a core from a py2hwsw dictionary"""
-    iob_core.py2hw(core_dict)
-
-
-def from_json(json_filepath):
-    """Generate a core from a given json file"""
-    iob_core.read_py2hw_json(json_filepath)
 
 
 if __name__ == "__main__":
