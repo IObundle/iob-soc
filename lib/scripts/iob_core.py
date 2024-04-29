@@ -201,9 +201,12 @@ class iob_core(iob_module, iob_instance):
             if "version" in attributes:
                 version = attributes["version"]
             # Set attributes
-            self.original_name = original_name
-            self.name = name
-            self.version = version
+            if not hasattr(self, "original_name") or not self.original_name:
+                self.original_name = original_name
+            if not hasattr(self, "name") or not self.name:
+                self.name = name
+            if not hasattr(self, "version") or not self.version:
+                self.version = version
             if not __class__.global_build_dir:
                 __class__.global_build_dir = f"../{self.name}_V{self.version}"
             self.set_default_attribute("build_dir", __class__.global_build_dir)
