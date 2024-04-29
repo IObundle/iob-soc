@@ -1,5 +1,3 @@
-import os
-
 from iob_core import iob_core
 
 

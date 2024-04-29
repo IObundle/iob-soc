@@ -15,7 +15,6 @@ module iob_soc_tb;
 
   localparam ADDR_W = `IOB_SOC_ADDR_W;
   localparam DATA_W = `IOB_SOC_DATA_W;
-  localparam UART_DATA_W = `IOB_UART_UART_DATA_W;
 
   //clock
   reg clk = 1;

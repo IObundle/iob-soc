@@ -16,13 +16,13 @@ class iob_module(iob_base):
         # (The module name commonly used in the files of the setup dir.)
         self.set_default_attribute(
             "original_name",
-            self.__class__.__name__,
+            "",
             str,
             descr="Original name of the module. (The module name commonly used in the files of the setup dir.)",
         )
         # Name of the generated module
         self.set_default_attribute(
-            "name", self.original_name, str, descr="Name of the generated module."
+            "name", "", str, descr="Name of the generated module."
         )
         # List of module macros and Verilog (false-)parameters
         self.set_default_attribute(

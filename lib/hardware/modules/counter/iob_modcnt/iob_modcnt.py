@@ -7,11 +7,6 @@ class iob_modcnt(iob_core):
         self.set_default_attribute("generate_hw", False)
 
         self.create_instance(
-            "iob_modcnt",
-            "iob_modcnt_inst",
-        )
-
-        self.create_instance(
             "iob_counter_ld",
             "iob_counter_ld_inst",
         )

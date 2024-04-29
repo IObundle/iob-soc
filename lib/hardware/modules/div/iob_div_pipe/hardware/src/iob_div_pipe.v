@@ -4,13 +4,7 @@ module iob_div_pipe #(
    parameter DATA_W = 32,
    parameter OPERS_PER_STAGE = 8
 ) (
-   input clk_i,
-
-   input [DATA_W-1:0] dividend_i,
-   input [DATA_W-1:0] divisor_i,
-
-   output [DATA_W-1:0] quotient_o,
-   output [DATA_W-1:0] remainder_o
+   `include "iob_div_pipe_io.vs"
 );
 
    wire [(DATA_W+1)*DATA_W-1:0] dividend_int;

@@ -1,5 +1,7 @@
+import sys
 import os
 from dataclasses import dataclass
+import importlib
 
 import iob_colors
 
@@ -149,3 +151,41 @@ def find_file(search_directory, name_without_ext, filter_extensions=[]):
             ):
                 return os.path.join(root, file)
     return None
+
+
+def hardcoded_find_file(name_without_ext, filter_extensions=[]):
+    """Find a file in specific hardcoded directories
+    param name_without_ext: name of the file without extension
+    param filter_extensions: list of extensions to filter
+    """
+    hardcoded_directories = [
+        ".",
+        f"submodules/{name_without_ext}",
+        f"lib/modules/{name_without_ext}",
+    ]
+
+    for dir in hardcoded_directories:
+        files = os.listdir(dir)
+        for file in files:
+            file_name, file_ext = os.path.splitext(file)
+            if file_name == name_without_ext and (
+                filter_extensions == [] or file_ext in filter_extensions
+            ):
+                return os.path.join(dir, file)
+    return None
+
+
+def import_python_module(module_path, module_name=None):
+    """Import a python module from a given filepath
+    param module_path: path of the module's python file
+    param module_name: optinal name of the module. By default equal to file name.
+    """
+    # Don't import the same module twice
+    if module_name in sys.modules:
+        return
+    if not module_name:
+        module_name = os.path.splitext(os.path.basename(module_path))[0]
+    spec = importlib.util.spec_from_file_location(module_name, module_path)
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[module_name] = module
+    spec.loader.exec_module(module)

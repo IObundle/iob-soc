@@ -24,8 +24,10 @@ set_db init_hdl_search_path $INCLUDE
 set_db stdout_log genus.log
 set_db information_level 7
 set_db super_thread_debug_directory st_part_log
-
-set_db hdl_error_on_latch true 
+set_db hdl_error_on_latch true
+if {[file exists "syn_build.tcl"]} {
+    source "syn_build.tcl"
+}
 set_db lp_power_analysis_effort medium
 set_db lp_power_unit uW
 
@@ -124,10 +126,21 @@ check_design -unresolved
 
 # add optimization constraints
 #----------------------------------------------------------------------
-read_sdc -stop_on_error ./$NODE/$NAME\_dev.sdc
-read_sdc -stop_on_error ./src/$NAME.sdc
-read_sdc -stop_on_error ./src/$NAME\_$CSR_IF.sdc
-read_sdc -stop_on_error ./$NAME\_tool.sdc
+if {[file exists ./$NODE/$NAME\_dev.sdc]} {
+    read_sdc -stop_on_error ./$NODE/$NAME\_dev.sdc
+}
+
+if {[file exists ./src/$NAME.sdc]} {
+    read_sdc -stop_on_error ./src/$NAME.sdc
+}
+
+if {[file exists ./src/$NAME\_$CSR_IF.sdc]} {
+    read_sdc -stop_on_error ./src/$NAME\_$CSR_IF.sdc
+}
+
+if {[file exists ./$NAME\_tool.sdc]} {
+    read_sdc -stop_on_error ./$NAME\_tool.sdc
+}
 
 check_timing_intent 
 

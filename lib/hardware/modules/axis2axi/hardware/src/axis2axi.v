@@ -23,58 +23,23 @@ Very important: if the transfer goes over the maximum size, given by AXI_ADDR_W,
 */
 
 module axis2axi #(
-   parameter ADDR_W = 0,
-   parameter DATA_W = 32,          // We currently only support 4 byte transfers
-   parameter AXI_LEN_W  = 8,
-   parameter AXI_ID_W   = 1,
-   parameter BURST_W    = 0,
-   parameter BUFFER_W   = BURST_W + 1
+    parameter ADDR_W    = 0,
+    parameter DATA_W    = 32,          // We currently only support 4 byte transfers
+    parameter AXI_LEN_W = 8,
+    parameter AXI_ID_W  = 1,
+    parameter BURST_W   = 0,
+    parameter BUFFER_W  = BURST_W + 1
 ) (
-   // Configuration (AXIS In)
-   input  [ADDR_W-1:0] config_in_addr_i,
-   input  [         1-1:0] config_in_valid_i,
-   output [         1-1:0] config_in_ready_o,
-
-   // AXIS In
-   input  [DATA_W-1:0] axis_in_data_i,
-   input  [         1-1:0] axis_in_valid_i,
-   output [         1-1:0] axis_in_ready_o,
-
-   // Configuration (AXIS Out)
-   input  [ADDR_W-1:0] config_out_addr_i,
-   input  [ADDR_W-1:0] config_out_length_i,
-   input  [         1-1:0] config_out_valid_i,
-   output [         1-1:0] config_out_ready_o,
-
-   // AXIS Out
-   output [DATA_W-1:0] axis_out_data_o,
-   output [         1-1:0] axis_out_valid_o,
-   input  [         1-1:0] axis_out_ready_i,
-
-   // AXI master interface
-   `include "axi_m_port.vs"
-
-   // External memory interfaces
-   output [         1-1:0] ext_mem_w_en_o,
-   output [DATA_W-1:0] ext_mem_w_data_o,
-   output [  BUFFER_W-1:0] ext_mem_w_addr_o,
-   output [         1-1:0] ext_mem_r_en_o,
-   output [  BUFFER_W-1:0] ext_mem_r_addr_o,
-   input  [DATA_W-1:0] ext_mem_r_data_i,
-
-   input clk_i,
-   input cke_i,
-   input rst_i,
-   input arst_i
+    `include "axis2axi_io.vs"
 );
 
-   axis2axi_in #(
+  axis2axi_in #(
       .AXI_ADDR_W(ADDR_W),
       .AXI_DATA_W(DATA_W),
       .AXI_LEN_W (AXI_LEN_W),
       .AXI_ID_W  (AXI_ID_W),
       .BURST_W   (BURST_W)
-   ) axis2axi_in_inst (
+  ) axis2axi_in_inst (
       .config_in_addr_i (config_in_addr_i),
       .config_in_valid_i(config_in_valid_i),
       .config_in_ready_o(config_in_ready_o),
@@ -96,15 +61,15 @@ module axis2axi #(
       .cke_i (cke_i),
       .rst_i (rst_i),
       .arst_i(arst_i)
-   );
+  );
 
-   axis2axi_out #(
+  axis2axi_out #(
       .AXI_ADDR_W(ADDR_W),
       .AXI_DATA_W(DATA_W),
       .AXI_LEN_W (AXI_LEN_W),
       .AXI_ID_W  (AXI_ID_W),
       .BURST_W   (BURST_W)
-   ) axis2axi_out_inst (
+  ) axis2axi_out_inst (
       .config_out_addr_i  (config_out_addr_i),
       .config_out_length_i(config_out_length_i),
       .config_out_valid_i (config_out_valid_i),
@@ -120,6 +85,6 @@ module axis2axi #(
       .cke_i (cke_i),
       .rst_i (rst_i),
       .arst_i(arst_i)
-   );
+  );
 
 endmodule

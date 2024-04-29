@@ -315,8 +315,9 @@ class iob_soc(iob_core):
         )
 
         # ###########################################################################
-        # TODO: Update lines below with new connections from local wires and groups.
+        # TODO: Update lines below with new connections from local wires.
         #       Also remove `_i` and `_o` suffixes.
+        #       Also use the new 'create_*' methods.
         # ###########################################################################
 
         #
@@ -966,14 +967,6 @@ class iob_soc(iob_core):
         self.create_instance(
             "iob_ram_2p",
             "ram_2p",
-        )
-        self.create_instance(
-            "iob_ram_2p",
-            "ram_2p",
-        )
-        self.create_instance(
-            "iob_ram_sp",
-            "ram_sp",
         )
         self.create_instance(
             "iob_ram_sp",

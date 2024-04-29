@@ -1,6 +1,8 @@
+import sys
 import os
 import shutil
 import json
+from pathlib import Path
 
 import iob_colors
 
@@ -19,14 +21,21 @@ import ipxact_gen
 
 from iob_module import iob_module
 from iob_instance import iob_instance
-from iob_base import find_obj_in_list, fail_with_msg, find_file
+from iob_base import find_obj_in_list, fail_with_msg, find_file, import_python_module
+import sw_tools
+import verilog_format
+import verilog_lint
 
 
 class iob_core(iob_module, iob_instance):
     """Generic class to describe how to generate a base IOb IP core"""
 
     global_wires: list
+    # Project settings
     global_build_dir: str = ""
+    global_project_root: str = "."
+    global_project_vformat: bool = True
+    global_project_vlint: bool = True
     # Project wide special target. Used when we don't want to run normal setup (for example, when cleaning).
     global_special_target: str = ""
 
@@ -41,7 +50,20 @@ class iob_core(iob_module, iob_instance):
     ):
         """Build a core (includes module and instance attributes)
         param purpose: Purpose for setup of the core (hardware/simulation/fpga)
-        param attributes: py2hw dictionary describing the core
+        param attributes: py2hwsw dictionary describing the core
+            Notes:
+                1) Each key/value pair in the dictionary describes an attribute name and
+                   corresponding attribute value of the core.
+                2) If the dictionary contains a key that does not match any attribute
+                   of the core, then an error will be raised.
+                3) The values will be processed by the `set_handler` method of the
+                   corresponding attribute. This method will convert from the py2hwsw
+                   dictionary datatypes into the internal IObundle datatypes.
+                   For example, it converts a 'wire' dict into an `iob_wire` object.
+                4) If another constructor argument is also given (like the argument
+                   'purpose'), and this dictionary also contains a key for the same
+                   attribute (like the key 'purpose'), then the value given in the
+                   dictionary will override the one from the constructor argument.
         param connect: External wires to connect to ports of this instance
                        Key: Port name, Value: Wire name
         param instantiator: Module that is instantiating this instance
@@ -50,10 +72,10 @@ class iob_core(iob_module, iob_instance):
         iob_module.__init__(self, *args, **kwargs)
         iob_instance.__init__(self, *args, **kwargs)
         # Ensure global top module is set
-        self.update_global_top_module()
+        self.update_global_top_module(attributes)
         # CPU interface for control status registers
         self.set_default_attribute("csr_if", "iob", str)
-        self.set_default_attribute("version", "1.0", str)
+        self.set_default_attribute("version", "", str)
         self.set_default_attribute("previous_version", self.version, str)
         self.set_default_attribute("setup_dir", "", str)
         self.set_default_attribute("build_dir", "", str)
@@ -156,25 +178,38 @@ class iob_core(iob_module, iob_instance):
             # Generate ipxact file
             # if self.generate_ipxact: #TODO: When should this be generated?
             #    ipxact_gen.generate_ipxact_xml(self, reg_table, self.build_dir + "/ipxact")
+            # Lint and format sources
+            self.lint_and_format()
 
-    def update_global_top_module(self):
-        """Update the global top module and the global build directory."""
+    def update_global_top_module(self, attributes={}):
+        """Update the global top module and the global build directory.
+        param attributes: Py2hwsw dictionary describing the core
+                          Will be used to get the core name and version if available.
+        """
         super().update_global_top_module()
+        # Ensure top module has a build dir (and associated attributes)
         if __class__.global_top_module == self:
-            # Ensure current (top)module has a build dir
-            # FIXME: These lines are duplicate from 'iob_module.py'. Is this an issue?
-            self.set_default_attribute("original_name", self.__class__.__name__)
-            self.set_default_attribute("name", self.original_name)
-            # FIXME: This line is duplicate from 'iob_core.py'. Is this an issue?
-            self.set_default_attribute("version", "1.0", str)
-            custom_build_dir = (
-                os.environ["BUILD_DIR"] if "BUILD_DIR" in os.environ else None
-            )
-            self.set_default_attribute(
-                "build_dir", custom_build_dir or f"../{self.name}_V{self.version}"
-            )
-            # Update global build dir
-            __class__.global_build_dir = self.build_dir
+            # Attribute default values
+            original_name = self.__class__.__name__
+            name = self.original_name
+            version = "1.0"
+            # Extract values from attributes dict if available
+            if "original_name" in attributes:
+                original_name = attributes["original_name"]
+            if "name" in attributes:
+                name = attributes["name"]
+            if "version" in attributes:
+                version = attributes["version"]
+            # Set attributes
+            if not hasattr(self, "original_name") or not self.original_name:
+                self.original_name = original_name
+            if not hasattr(self, "name") or not self.name:
+                self.name = name
+            if not hasattr(self, "version") or not self.version:
+                self.version = version
+            if not __class__.global_build_dir:
+                __class__.global_build_dir = f"../{self.name}_V{self.version}"
+            self.set_default_attribute("build_dir", __class__.global_build_dir)
 
     def create_instance(self, core_name: str = "", instance_name: str = "", **kwargs):
         """Create an instante of a module, but only if we are not using a
@@ -190,20 +225,9 @@ class iob_core(iob_module, iob_instance):
         # Ensure global top module is set
         self.update_global_top_module()
 
-        core_dir, file_ext = find_module_setup_dir(core_name)
-
-        if file_ext == ".py":
-            exec(f"from {core_name} import {core_name}")
-            instance = vars()[core_name](
-                instance_name=instance_name, instantiator=self, **kwargs
-            )
-        elif file_ext == ".json":
-            instance = __class__.read_py2hw_json(
-                os.path.join(core_dir, f"json/{core_name}.json"),
-                instance_name=instance_name,
-                instantiator=self,
-                **kwargs,
-            )
+        instance = self.get_core_obj(
+            core_name, instance_name=instance_name, instantiator=self, **kwargs
+        )
 
         self.blocks.append(instance)
 
@@ -281,13 +305,65 @@ class iob_core(iob_module, iob_instance):
             else:
                 fail_with_msg(f"Unknown attribute: {attr_name}")
 
+    def lint_and_format(self):
+        """Run Linters and Formatters in setup and build directories."""
+        # Find Verilog sources and headers from build dir
+        verilog_headers = []
+        verilog_sources = []
+        for path in Path(os.path.join(self.build_dir, "hardware")).rglob("*.vh"):
+            # Skip specific Verilog headers
+            if path.name.endswith("version.vh") or "test_" in path.name:
+                continue
+            verilog_headers.append(str(path))
+            # print(str(path))
+        for path in Path(os.path.join(self.build_dir, "hardware")).rglob("*.v"):
+            verilog_sources.append(str(path))
+            # print(str(path))
+
+        # Run Verilog linter
+        if __class__.global_project_vlint:
+            verilog_lint.lint_files(verilog_headers + verilog_sources)
+
+        # Run Verilog formatter
+        if __class__.global_project_vformat:
+            verilog_format.format_files(
+                verilog_headers + verilog_sources,
+                os.path.join(os.path.dirname(__file__), "verible-format.rules"),
+            )
+
+        # Run Python formatter
+        sw_tools.run_tool("black")
+        sw_tools.run_tool("black", self.build_dir)
+
+        # Run C formatter
+        sw_tools.run_tool("clang")
+        sw_tools.run_tool("clang", self.build_dir)
+
     @classmethod
-    def clean_build_dir(cls):
+    def py2hw(cls, core_dict, **kwargs):
+        """Generate a core based on the py2hw dictionary interface
+        param core_dict: The core dictionary using py2hw dictionary syntax
+        param kwargs: Optional additional arguments to pass directly to the core
+        """
+        return cls(attributes=core_dict, **kwargs)
+
+    @classmethod
+    def read_py2hw_json(cls, filepath, **kwargs):
+        """Read JSON file with py2hw attributes build a core from it
+        param filepath: Path to JSON file using py2hw json syntax
+        param kwargs: Optional additional arguments to pass directly to the core
+        """
+        with open(filepath) as f:
+            core_dict = json.load(f)
+        return cls.py2hw(core_dict, **kwargs)
+
+    @staticmethod
+    def clean_build_dir(core_name):
         """Clean build directory."""
         # Set project wide special target (will prevent normal setup)
         __class__.global_special_target = "clean"
         # Build a new module instance, to obtain its attributes
-        module = cls()
+        module = __class__.get_core_obj(core_name)
         print(
             f"{iob_colors.ENDC}Cleaning build directory: {module.build_dir}{iob_colors.ENDC}"
         )
@@ -296,17 +372,17 @@ class iob_core(iob_module, iob_instance):
             os.system(f"make -C {module.build_dir} clean")
         shutil.rmtree(module.build_dir, ignore_errors=True)
 
-    @classmethod
-    def print_build_dir(cls):
+    @staticmethod
+    def print_build_dir(core_name):
         """Print build directory."""
         # Set project wide special target (will prevent normal setup)
         __class__.global_special_target = "print_build_dir"
         # Build a new module instance, to obtain its attributes
-        module = cls()
+        module = __class__.get_core_obj(core_name)
         print(module.build_dir)
 
-    @classmethod
-    def print_py2hw_attributes(cls):
+    @staticmethod
+    def print_py2hwsw_attributes(core_name):
         """Print the supported py2hw attributes of this core.
         The attributes listed can be used in the 'attributes' dictionary of the
         constructor. This defines the information supported by the py2hw interface.
@@ -314,8 +390,10 @@ class iob_core(iob_module, iob_instance):
         # Set project wide special target (will prevent normal setup)
         __class__.global_special_target = "print_attributes"
         # Build a new module instance, to obtain its attributes
-        module = cls()
-        print(f"Attributes supported by the '{module.name}' core's 'py2hw' interface:")
+        module = __class__.get_core_obj(core_name)
+        print(
+            f"Attributes supported by the '{module.name}' core's 'py2hwsw' interface:"
+        )
         for name in module.ATTRIBUTE_PROPERTIES.keys():
             datatype = module.ATTRIBUTE_PROPERTIES[name].datatype
             descr = module.ATTRIBUTE_PROPERTIES[name].descr
@@ -323,21 +401,46 @@ class iob_core(iob_module, iob_instance):
             align_spaces2 = " " * (18 - len(str(datatype)))
             print(f"- {name}:{align_spaces}{datatype}{align_spaces2}{descr}")
 
-    @classmethod
-    def py2hw(cls, core_dict, **kwargs):
-        """Generate a core based on the py2hw dictionary interface
-        param core_dict: The core dictionary using py2hw dictionary syntax
+    @staticmethod
+    def get_core_obj(core_name, **kwargs):
+        """Generate an instance of a core based on given core_name and python parameters
+        This method will search for the .py and .json files of the core, and generate a
+        python object based on info stored in those files, and info passed via python
+        parameters.
+        Calling this method may also begin the setup process of the core, depending on
+        the value of the `global_special_target` attribute.
         """
-        return cls(attributes=core_dict, **kwargs)
+        core_dir, file_ext = find_module_setup_dir(core_name)
 
-    @classmethod
-    def read_py2hw_json(cls, filepath, **kwargs):
-        """Read JSON file with py2hw attributes build a core from it
-        param filepath: Path to JSON file using py2hw json syntax
-        """
-        with open(filepath) as f:
-            core_dict = json.load(f)
-        return cls.py2hw(core_dict, **kwargs)
+        if file_ext == ".py":
+            import_python_module(
+                os.path.join(core_dir, f"{core_name}.py"),
+            )
+            core_module = sys.modules[core_name]
+            # Call `setup(<py_params_dict>)` function of `<core_name>.py` to
+            # obtain the core's py2hwsw dictionary.
+            # Give it a dictionary with all arguments of this function, since the user
+            # may want to use any of them to manipulate the core attributes.
+            core_dict = core_module.setup(
+                {
+                    "core_name": core_name,
+                    **kwargs,
+                }
+            )
+            instance = __class__.py2hw(
+                core_dict,
+                # Note, any of the arguments below can have their values overridden by
+                # the core_dict
+                **kwargs,
+            )
+        elif file_ext == ".json":
+            instance = __class__.read_py2hw_json(
+                os.path.join(core_dir, f"{core_name}.json"),
+                # Note, any of the arguments below can have their values overridden by
+                # the json data
+                **kwargs,
+            )
+        return instance
 
 
 def find_common_deep(path1, path2):
@@ -364,19 +467,13 @@ def find_module_setup_dir(core_name):
     returns: The path to the setup directory
     returns: The file extension
     """
-    assert "PROJECT_ROOT" in os.environ, fail_with_msg(
-        "Environment variable 'PROJECT_ROOT' is not set!"
-    )
-    file_path = find_file(os.environ["PROJECT_ROOT"], core_name, [".py", ".json"])
+    file_path = find_file(iob_core.global_project_root, core_name, [".py", ".json"])
     if not file_path:
         fail_with_msg(
-            f"Setup directory of {core_name} not found in {os.environ['PROJECT_ROOT']}!"
+            f"Setup directory of {core_name} not found in {iob_core.global_project_root}!"
         )
 
     file_ext = os.path.splitext(file_path)[1]
-    print("Found setup dir based on location of: " + file_path)  # DEBUG
-    if file_ext == ".py":
-        return os.path.dirname(file_path), ".py"
-    elif file_ext == ".json":
-        # Get out of the 'json/' folder
-        return os.path.join(os.path.dirname(file_path), ".."), ".json"
+    # print("Found setup dir based on location of: " + file_path, file=sys.stderr)
+    if file_ext == ".py" or file_ext == ".json":
+        return os.path.dirname(file_path), file_ext

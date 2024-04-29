@@ -17,6 +17,135 @@ class axis2axi(iob_core):
             signals=[],
         )
         self.create_port(
+            name="rst",
+            type="master",
+            port_prefix="",
+            wire_prefix="",
+            descr="Synchronous reset interface",
+            ports=[
+                {
+                    "name": "rst",
+                    "direction": "input",
+                    "width": 1,
+                    "descr": "Synchronous reset input",
+                },
+            ],
+        )
+        self.create_port(
+            name="config_in",
+            type="master",
+            port_prefix="",
+            wire_prefix="",
+            descr="AXI Stream input configuration interface",
+            ports=[
+                {
+                    "name": "config_in_addr",
+                    "direction": "input",
+                    "width": "AXI_ADDR_W",
+                    "descr": "",
+                },
+                {
+                    "name": "config_in_valid",
+                    "direction": "input",
+                    "width": 1,
+                    "descr": "",
+                },
+                {
+                    "name": "config_in_ready",
+                    "direction": "output",
+                    "width": 1,
+                    "descr": "",
+                },
+            ],
+        )
+        self.create_port(
+            name="config_out",
+            type="master",
+            port_prefix="",
+            wire_prefix="",
+            descr="AXI Stream output configuration interface",
+            ports=[
+                {
+                    "name": "config_out_addr",
+                    "direction": "input",
+                    "width": "AXI_ADDR_W",
+                    "descr": "",
+                },
+                {
+                    "name": "config_out_length",
+                    "direction": "input",
+                    "width": "AXI_ADDR_W",
+                    "descr": "",
+                },
+                {
+                    "name": "config_out_valid",
+                    "direction": "input",
+                    "width": 1,
+                    "descr": "",
+                },
+                {
+                    "name": "config_out_ready",
+                    "direction": "output",
+                    "width": 1,
+                    "descr": "",
+                },
+            ],
+        )
+        self.create_port(
+            name="axis_in",
+            type="master",
+            port_prefix="",
+            wire_prefix="",
+            descr="AXI Stream input interface",
+            ports=[
+                {
+                    "name": "axis_in_data",
+                    "direction": "input",
+                    "width": "AXI_DATA_W",
+                    "descr": "",
+                },
+                {
+                    "name": "axis_in_valid",
+                    "direction": "input",
+                    "width": 1,
+                    "descr": "",
+                },
+                {
+                    "name": "axis_in_ready",
+                    "direction": "output",
+                    "width": 1,
+                    "descr": "",
+                },
+            ],
+        )
+        self.create_port(
+            name="axis_out",
+            type="master",
+            port_prefix="",
+            wire_prefix="",
+            descr="AXI Stream output interface",
+            ports=[
+                {
+                    "name": "axis_out_data",
+                    "direction": "output",
+                    "width": "AXI_DATA_W",
+                    "descr": "",
+                },
+                {
+                    "name": "axis_out_valid",
+                    "direction": "output",
+                    "width": 1,
+                    "descr": "",
+                },
+                {
+                    "name": "axis_out_ready",
+                    "direction": "input",
+                    "width": 1,
+                    "descr": "",
+                },
+            ],
+        )
+        self.create_port(
             name="axi",
             type="master",
             port_prefix="",
@@ -28,35 +157,83 @@ class axis2axi(iob_core):
                 "DATA_W": "DATA_W",
             },
         )
+        # Not real ports of axis2axi
+        # self.create_port(
+        #    name="axi_write",
+        #    type="master",
+        #    file_prefix="",
+        #    wire_prefix="",
+        #    port_prefix="",
+        #    signals=[],
+        #    widths={
+        #        "ID_W": "AXI_ID_W",
+        #        "ADDR_W": "AXI_ADDR_W",
+        #        "DATA_W": "AXI_DATA_W",
+        #        "LEN_W": "AXI_LEN_W",
+        #    },
+        #    descr="AXI write interface",
+        # )
+        # self.create_port(
+        #    name="axi_read",
+        #    type="master",
+        #    file_prefix="",
+        #    wire_prefix="",
+        #    port_prefix="",
+        #    signals=[],
+        #    widths={
+        #        "ID_W": "AXI_ID_W",
+        #        "ADDR_W": "AXI_ADDR_W",
+        #        "DATA_W": "AXI_DATA_W",
+        #        "LEN_W": "AXI_LEN_W",
+        #    },
+        #    descr="AXI read interface",
+        # )
         self.create_port(
-            name="axi_write",
+            name="extmem",
             type="master",
-            file_prefix="",
-            wire_prefix="",
             port_prefix="",
-            signals=[],
-            widths={
-                "ID_W": "AXI_ID_W",
-                "ADDR_W": "AXI_ADDR_W",
-                "DATA_W": "AXI_DATA_W",
-                "LEN_W": "AXI_LEN_W",
-            },
-            descr="AXI write interface",
-        )
-        self.create_port(
-            name="axi_read",
-            type="master",
-            file_prefix="",
             wire_prefix="",
-            port_prefix="",
-            signals=[],
-            widths={
-                "ID_W": "AXI_ID_W",
-                "ADDR_W": "AXI_ADDR_W",
-                "DATA_W": "AXI_DATA_W",
-                "LEN_W": "AXI_LEN_W",
-            },
-            descr="AXI read interface",
+            descr="External memory interface",
+            ports=[
+                #  Write port
+                {
+                    "name": "ext_mem_w_en",
+                    "direction": "output",
+                    "width": 1,
+                    "descr": "Memory write enable",
+                },
+                {
+                    "name": "ext_mem_w_addr",
+                    "direction": "output",
+                    "width": "BUFFER_W",
+                    "descr": "Memory write address",
+                },
+                {
+                    "name": "ext_mem_w_data",
+                    "direction": "output",
+                    "width": "AXI_DATA_W",
+                    "descr": "Memory write data",
+                },
+                #  Read port
+                {
+                    "name": "ext_mem_r_en",
+                    "direction": "output",
+                    "width": 1,
+                    "descr": "Memory read enable",
+                },
+                {
+                    "name": "ext_mem_r_addr",
+                    "direction": "output",
+                    "width": "BUFFER_W",
+                    "descr": "Memory read address",
+                },
+                {
+                    "name": "ext_mem_r_data",
+                    "direction": "input",
+                    "width": "AXI_DATA_W",
+                    "descr": "Memory read data",
+                },
+            ],
         )
 
         self.create_instance(
