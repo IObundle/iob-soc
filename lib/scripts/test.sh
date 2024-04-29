@@ -2,8 +2,6 @@
 
 set -e
 
-CUSTOM_BUILD_DIR=../../
-
 #find directories containing testbenches
 TBS=`find ${LIB_DIR}/hardware | grep _tb.v | grep -v include`
 
@@ -16,7 +14,8 @@ for i in $TB_DIRS; do MODULES+=" `basename $(builtin cd $i/../../..; pwd)`" ; do
 #test first argument is "clean", run make clean for all modules and exit
 if [ "$1" == "clean" ]; then
     for i in $MODULES; do 
-        make clean CORE=$i BUILD_DIR=${CUSTOM_BUILD_DIR}${i}_build
+        DEFAULT_BUILD_DIR=`./scripts/py2hwsw.py $i print_build_dir`
+        make clean CORE=$i BUILD_DIR=../${DEFAULT_BUILD_DIR}
     done
     exit 0
 fi
@@ -25,19 +24,22 @@ fi
 if [ "$1" == "test" ]; then
     for i in $MODULES; do
         echo -e "\n\033[1;33mTesting module '${i}'\033[0m"
-        make -f ${LIB_DIR}/Makefile clean setup CORE=$i BUILD_DIR=${CUSTOM_BUILD_DIR}${i}_build
-        make -C ${CUSTOM_BUILD_DIR}${i}_build sim-run
+        DEFAULT_BUILD_DIR=`./scripts/py2hwsw.py $i print_build_dir`
+        make -f ${LIB_DIR}/Makefile clean setup CORE=$i BUILD_DIR=../${DEFAULT_BUILD_DIR}
+        make -C ../${DEFAULT_BUILD_DIR} sim-run
     done
     exit 0
 fi
 
 #test if first argument is "build" and run build for single module
 if [ "$1" == "build" ]; then
-    make clean setup CORE=$2 BUILD_DIR=${CUSTOM_BUILD_DIR}${2}_build
-    make -C ${CUSTOM_BUILD_DIR}${2}_build sim-build
+    DEFAULT_BUILD_DIR=`./scripts/py2hwsw.py $2 print_build_dir`
+    make clean setup CORE=$2 BUILD_DIR=../${DEFAULT_BUILD_DIR}
+    make -C ../${DEFAULT_BUILD_DIR} sim-build
     exit 0
 fi
 
 #run single test
-make clean setup CORE=$1 BUILD_DIR=${CUSTOM_BUILD_DIR}${1}_build
-make -C ${CUSTOM_BUILD_DIR}${1}_build sim-run VCD=$VCD
+DEFAULT_BUILD_DIR=`./scripts/py2hwsw.py $1 print_build_dir`
+make clean setup CORE=$1 BUILD_DIR=../${DEFAULT_BUILD_DIR}
+make -C ../${DEFAULT_BUILD_DIR} sim-run VCD=$VCD
