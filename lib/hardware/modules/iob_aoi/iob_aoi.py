@@ -82,8 +82,6 @@ def setup(py_params_dict):
                     "b": "b",
                     "y": "and_ab_out",
                 },
-                "ctr_if_name": "axi",
-                "name": "new_name",
             },
             {
                 "core_name": "iob_and",
