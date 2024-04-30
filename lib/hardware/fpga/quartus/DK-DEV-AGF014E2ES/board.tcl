@@ -1,3 +1,0 @@
-set FAMILY "Agilex"
-set PART "AGFB014R24A2E2VR0"
-
