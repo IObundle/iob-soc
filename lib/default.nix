@@ -1,1 +1,0 @@
-scripts/default.nix
