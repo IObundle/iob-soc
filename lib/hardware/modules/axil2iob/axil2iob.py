@@ -1,14 +1,15 @@
-from iob_core import iob_core
+def setup(py_params_dict):
+    attributes_dict = {
+        "original_name": "axil2iob",
+        "name": "axil2iob",
+        "version": "0.1",
+        "generate_hw": False,
+        "blocks": [
+            {
+                "core_name": "iob_reg_e",
+                "instance_name": "iob_reg_e_inst",
+            },
+        ],
+    }
 
-
-class axil2iob(iob_core):
-    def __init__(self, *args, **kwargs):
-        self.set_default_attribute("version", "0.1")
-        self.set_default_attribute("generate_hw", False)
-
-        self.create_instance(
-            "iob_reg_e",
-            "iob_reg_e_inst",
-        )
-
-        super().__init__(*args, **kwargs)
+    return attributes_dict

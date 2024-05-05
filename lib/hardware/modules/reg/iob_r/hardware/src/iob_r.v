@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-`include "iob_reg_conf.vh"
+`include "iob_r_conf.vh"
 
 module iob_r #(
    `include "iob_reg_params.vs"

@@ -1,19 +1,19 @@
-from iob_core import iob_core
+def setup(py_params_dict):
+    attributes_dict = {
+        "original_name": "iob_regfile_t2p",
+        "name": "iob_regfile_t2p",
+        "version": "0.1",
+        "generate_hw": False,
+        "blocks": [
+            {
+                "core_name": "iob_sync",
+                "instance_name": "iob_sync_inst",
+            },
+            {
+                "core_name": "iob_reg_e",
+                "instance_name": "iob_reg_e_inst",
+            },
+        ],
+    }
 
-
-class iob_regfile_t2p(iob_core):
-    def __init__(self, *args, **kwargs):
-        self.set_default_attribute("version", "0.1")
-        self.set_default_attribute("generate_hw", False)
-
-        self.create_instance(
-            "iob_sync",
-            "iob_sync_inst",
-        )
-
-        self.create_instance(
-            "iob_reg_e",
-            "iob_reg_e_inst",
-        )
-
-        super().__init__(*args, **kwargs)
+    return attributes_dict

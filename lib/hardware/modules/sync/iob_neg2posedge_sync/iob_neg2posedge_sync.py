@@ -1,19 +1,19 @@
-from iob_core import iob_core
+def setup(py_params_dict):
+    attributes_dict = {
+        "original_name": "iob_neg2posedge_sync",
+        "name": "iob_neg2posedge_sync",
+        "version": "0.1",
+        "generate_hw": False,
+        "blocks": [
+            {
+                "core_name": "iob_reg",
+                "instance_name": "iob_reg_inst",
+            },
+            {
+                "core_name": "iob_regn",
+                "instance_name": "iob_regn_inst",
+            },
+        ],
+    }
 
-
-class iob_neg2posedge_sync(iob_core):
-    def __init__(self, *args, **kwargs):
-        self.set_default_attribute("version", "0.1")
-        self.set_default_attribute("generate_hw", False)
-
-        self.create_instance(
-            "iob_reg",
-            "iob_reg_inst",
-        )
-
-        self.create_instance(
-            "iob_regn",
-            "iob_regn_inst",
-        )
-
-        super().__init__(*args, **kwargs)
+    return attributes_dict

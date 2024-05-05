@@ -38,4 +38,5 @@ def setup(py_params_dict):
         ],
         "snippets": [{"outputs": ["y"], "verilog_code": "   assign y_o = a_i & b_i;"}],
     }
+
     return attributes_dict
