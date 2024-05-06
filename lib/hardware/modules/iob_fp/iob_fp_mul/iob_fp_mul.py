@@ -1,19 +1,19 @@
-from iob_core import iob_core
+def setup(py_params_dict):
+    attributes_dict = {
+        "original_name": "iob_fp_mul",
+        "name": "iob_fp_mul",
+        "version": "0.1",
+        "generate_hw": False,
+        "blocks": [
+            {
+                "core_name": "iob_fp_special",
+                "instance_name": "iob_fp_special_inst",
+            },
+            {
+                "core_name": "iob_fp_round",
+                "instance_name": "iob_fp_round_inst",
+            },
+        ],
+    }
 
-
-class iob_fp_mul(iob_core):
-    def __init__(self, *args, **kwargs):
-        self.set_default_attribute("version", "0.1")
-        self.set_default_attribute("generate_hw", False)
-
-        self.create_instance(
-            "iob_fp_special",
-            "iob_fp_special_inst",
-        )
-
-        self.create_instance(
-            "iob_fp_round",
-            "iob_fp_round_inst",
-        )
-
-        super().__init__(*args, **kwargs)
+    return attributes_dict

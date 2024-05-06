@@ -206,7 +206,7 @@ if __name__ == "__main__":
                 "wire_prefix": "ram_w_",
                 "param_prefix": "",
                 "descr": "merge input ram_w",
-                "ports": [],
+                "signals": [],
                 "widths": {
                     "DATA_W": "DATA_W",
                     "ADDR_W": "ADDR_W",
@@ -220,7 +220,7 @@ if __name__ == "__main__":
                 "wire_prefix": "ram_r_",
                 "param_prefix": "",
                 "descr": "merge input ram_r",
-                "ports": [],
+                "signals": [],
                 "widths": {
                     "DATA_W": "DATA_W",
                     "ADDR_W": "ADDR_W",

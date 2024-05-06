@@ -1,8 +1,8 @@
 `timescale 1ns / 1ps
-`include "iob_reg_conf.vh"
+`include "iob_r_conf.vh"
 
 module iob_r #(
-   `include "iob_reg_params.vs"
+   `include "iob_r_params.vs"
 ) (
 `include "clk_rst_s_port.vs"
    input      [DATA_W-1:0] iob_r_data_i,
