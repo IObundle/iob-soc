@@ -199,6 +199,17 @@ def setup(py_params_dict):
                     },
                 ],
             },
+            # Not real ports of axis2axi
+            # {
+            #     "name": "axi_write",
+            #     "descr": "AXI write interface",
+            #     "signals": [],
+            # },
+            # {
+            #     "name": "axi_read",
+            #     "descr": "AXI read interface",
+            #     "signals": [],
+            # },
         ],
         "blocks": [
             {

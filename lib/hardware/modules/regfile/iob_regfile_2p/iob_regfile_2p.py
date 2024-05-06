@@ -4,12 +4,6 @@ def setup(py_params_dict):
         "name": "iob_regfile_2p",
         "version": "0.1",
         "generate_hw": False,
-        "blocks": [
-            {
-                "core_name": "iob_ctls",
-                "instance_name": "iob_ctls_inst",
-            },
-        ],
         "ports": [
             {
                 "name": "clk_en_rst",
@@ -18,6 +12,12 @@ def setup(py_params_dict):
                 "wire_prefix": "",
                 "descr": "Clock, clock enable and reset",
                 "signals": [],
+            },
+        ],
+        "blocks": [
+            {
+                "core_name": "iob_ctls",
+                "instance_name": "iob_ctls_inst",
             },
         ],
     }
