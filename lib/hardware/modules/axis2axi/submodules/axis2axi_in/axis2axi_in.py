@@ -1,7 +1,7 @@
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "axis2axi",
-        "name": "axis2axi",
+        "original_name": "axis2axi_in",
+        "name": "axis2axi_in",
         "version": "0.1",
         "generate_hw": False,
         "ports": [
@@ -38,7 +38,7 @@ def setup(py_params_dict):
                     {
                         "name": "config_in_addr",
                         "direction": "input",
-                        "width": "ADDR_W",
+                        "width": "AXI_ADDR_W",
                         "descr": "",
                     },
                     {
@@ -56,39 +56,6 @@ def setup(py_params_dict):
                 ],
             },
             {
-                "name": "config_out",
-                "type": "master",
-                "port_prefix": "",
-                "wire_prefix": "",
-                "descr": "AXI Stream output configuration interface",
-                "signals": [
-                    {
-                        "name": "config_out_addr",
-                        "direction": "input",
-                        "width": "ADDR_W",
-                        "descr": "",
-                    },
-                    {
-                        "name": "config_out_length",
-                        "direction": "input",
-                        "width": "ADDR_W",
-                        "descr": "",
-                    },
-                    {
-                        "name": "config_out_valid",
-                        "direction": "input",
-                        "width": 1,
-                        "descr": "",
-                    },
-                    {
-                        "name": "config_out_ready",
-                        "direction": "output",
-                        "width": 1,
-                        "descr": "",
-                    },
-                ],
-            },
-            {
                 "name": "axis_in",
                 "type": "master",
                 "port_prefix": "",
@@ -98,7 +65,7 @@ def setup(py_params_dict):
                     {
                         "name": "axis_in_data",
                         "direction": "input",
-                        "width": "DATA_W",
+                        "width": "AXI_DATA_W",
                         "descr": "",
                     },
                     {
@@ -116,42 +83,15 @@ def setup(py_params_dict):
                 ],
             },
             {
-                "name": "axis_out",
+                "name": "axi_write",
                 "type": "master",
                 "port_prefix": "",
                 "wire_prefix": "",
-                "descr": "AXI Stream output interface",
-                "signals": [
-                    {
-                        "name": "axis_out_data",
-                        "direction": "output",
-                        "width": "DATA_W",
-                        "descr": "",
-                    },
-                    {
-                        "name": "axis_out_valid",
-                        "direction": "output",
-                        "width": 1,
-                        "descr": "",
-                    },
-                    {
-                        "name": "axis_out_ready",
-                        "direction": "input",
-                        "width": 1,
-                        "descr": "",
-                    },
-                ],
-            },
-            {
-                "name": "axi",
-                "type": "master",
-                "port_prefix": "",
-                "wire_prefix": "",
-                "descr": "AXI master interface",
+                "descr": "AXI write interface",
                 "signals": [],
                 "widths": {
-                    "ADDR_W": "ADDR_W",
-                    "DATA_W": "DATA_W",
+                    "ADDR_W": "AXI_ADDR_W",
+                    "DATA_W": "AXI_DATA_W",
                 },
             },
             {
@@ -176,7 +116,7 @@ def setup(py_params_dict):
                     {
                         "name": "ext_mem_w_data",
                         "direction": "output",
-                        "width": "DATA_W",
+                        "width": "AXI_DATA_W",
                         "descr": "Memory write data",
                     },
                     {
@@ -194,58 +134,13 @@ def setup(py_params_dict):
                     {
                         "name": "ext_mem_r_data",
                         "direction": "input",
-                        "width": "DATA_W",
+                        "width": "AXI_DATA_W",
                         "descr": "Memory read data",
                     },
                 ],
             },
-            # Not real ports of axis2axi
-            # {
-            #     "name": "axi_write",
-            #     "descr": "AXI write interface",
-            #     "signals": [],
-            # },
-            # {
-            #     "name": "axi_read",
-            #     "descr": "AXI read interface",
-            #     "signals": [],
-            # },
         ],
-        "blocks": [
-            {
-                "core_name": "iob_fifo_sync",
-                "instance_name": "iob_fifo_sync_inst",
-            },
-            {
-                "core_name": "iob_counter",
-                "instance_name": "iob_counter_inst",
-            },
-            {
-                "core_name": "iob_reg_r",
-                "instance_name": "iob_reg_r_inst",
-            },
-            {
-                "core_name": "iob_reg_re",
-                "instance_name": "iob_reg_re_inst",
-            },
-            # For simulation
-            {
-                "core_name": "axi_ram",
-                "instance_name": "axi_ram_inst",
-            },
-            {
-                "core_name": "iob_ram_t2p",
-                "instance_name": "iob_ram_t2p_inst",
-            },
-            {
-                "core_name": "axis2axi_in",
-                "instance_name": "axis2axi_in_inst",
-            },
-            {
-                "core_name": "axis2axi_out",
-                "instance_name": "axis2axi_out_inst",
-            },
-        ],
+        "blocks": [],
     }
 
     return attributes_dict

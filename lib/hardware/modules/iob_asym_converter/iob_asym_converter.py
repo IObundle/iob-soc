@@ -14,6 +14,21 @@ def setup(py_params_dict):
                 "signals": [],
             },
             {
+                "name": "rst",
+                "type": "master",
+                "port_prefix": "",
+                "wire_prefix": "",
+                "descr": "Synchronous reset interface",
+                "signals": [
+                    {
+                        "name": "rst",
+                        "direction": "input",
+                        "width": 1,
+                        "descr": "Synchronous reset input",
+                    },
+                ],
+            },
+            {
                 "name": "write",
                 "type": "master",
                 "port_prefix": "",
