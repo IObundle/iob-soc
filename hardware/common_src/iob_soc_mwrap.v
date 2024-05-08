@@ -21,6 +21,84 @@ module iob_soc_mwrap #(
    `include "iob_soc_io.vs"
 );
 
+`ifdef IOB_SOC_USE_EXTMEM
+    wire [      AXI_ID_W-1:0] axi_awid;
+    assign axi_awid_o = axi_awid;
+    wire [    AXI_ADDR_W-1:0] axi_awaddr;
+    assign axi_awaddr_o = axi_awaddr;
+    wire [     AXI_LEN_W-1:0] axi_awlen;
+    assign axi_awlen_o = axi_awlen;
+    wire [             3-1:0] axi_awsize;
+    assign axi_awsize_o = axi_awsize;
+    wire [             2-1:0] axi_awburst;
+    assign axi_awburst_o = axi_awburst;
+    wire [             2-1:0] axi_awlock;
+    assign axi_awlock_o = axi_awlock;
+    wire [             4-1:0] axi_awcache;
+    assign axi_awcache_o = axi_awcache;
+    wire [             3-1:0] axi_awprot;
+    assign axi_awprot_o = axi_awprot;
+    wire [             4-1:0] axi_awqos;
+    assign axi_awqos_o = axi_awqos;
+    wire                      axi_awvalid;
+    assign axi_awvalid_o = axi_awvalid;
+    wire                       axi_awready;
+    assign axi_awready = axi_awready_i;    
+    wire [    AXI_DATA_W-1:0] axi_wdata;
+    assign axi_wdata_o = axi_wdata;
+    wire [(AXI_DATA_W/8)-1:0] axi_wstrb;
+    assign axi_wstrb_o = axi_wstrb;
+    wire                      axi_wlast;
+    assign axi_wlast_o = axi_wlast;
+    wire                      axi_wvalid;
+    assign axi_wvalid_o = axi_wvalid;
+    wire                       axi_wready;
+    assign  axi_wready = axi_wready_i;
+    wire  [      AXI_ID_W-1:0] axi_bid;
+    assign axi_bid = axi_bid_i;   
+    wire  [             2-1:0] axi_bresp;
+    assign axi_bresp = axi_bresp_i;
+    wire                       axi_bvalid;
+    assign axi_bvalid = axi_bvalid_i;
+    wire                      axi_bready;
+    assign axi_bready_o = axi_bready;
+    wire [      AXI_ID_W-1:0] axi_arid;
+    assign axi_arid_o = axi_arid;
+    wire [    AXI_ADDR_W-1:0] axi_araddr;
+    assign axi_araddr_o = axi_araddr;
+    wire [     AXI_LEN_W-1:0] axi_arlen;
+    assign axi_arlen_o = axi_arlen;
+    wire [             3-1:0] axi_arsize;
+    assign axi_arsize_o = axi_arsize;
+    wire [             2-1:0] axi_arburst;
+    assign axi_arburst_o = axi_arburst;
+    wire [             2-1:0] axi_arlock;
+    assign axi_arlock_o = axi_arlock;
+    wire [             4-1:0] axi_arcache;
+    assign axi_arcache_o = axi_arcache;
+    wire [             3-1:0] axi_arprot;
+    assign axi_arprot_o = axi_arprot;
+    wire [             4-1:0] axi_arqos;
+    assign axi_arqos_o = axi_arqos;
+    wire                      axi_arvalid;
+    assign axi_arvalid_o = axi_arvalid;
+    wire                       axi_arready;
+    assign axi_arready = axi_arready_i;
+    wire  [      AXI_ID_W-1:0] axi_rid;
+    assign  axi_rid = axi_rid_i;
+    wire  [    AXI_DATA_W-1:0] axi_rdata;
+    assign  axi_rdata = axi_rdata_i;
+    wire  [             2-1:0] axi_rresp;
+    assign  axi_rresp = axi_rresp_i;
+    wire                       axi_rlast;
+    assign  axi_rlast = axi_rlast_i;
+    wire                       axi_rvalid;
+    assign  axi_rvalid = axi_rvalid_i;
+    wire                      axi_rready;
+    assign axi_rready_o = axi_rready;
+`endif
+
+
 
 //rom wires
 wire rom_r_valid;
@@ -50,70 +128,13 @@ wire          [     DATA_W-1:0]    d_rdata;
 `endif
 
 iob_soc #(
-    .BOOTROM_ADDR_W(           BOOTROM_ADDR_W),
-    .SRAM_ADDR_W(                 SRAM_ADDR_W),
-    .MEM_ADDR_W(                   MEM_ADDR_W),
-    .ADDR_W(                           ADDR_W),
-    .DATA_W(                           DATA_W),
-    .AXI_ID_W(                       AXI_ID_W),
-    .AXI_ADDR_W(                   AXI_ADDR_W),
-    .AXI_DATA_W(                   AXI_DATA_W),
-    .AXI_LEN_W(                     AXI_LEN_W),
-    .MEM_ADDR_OFFSET(         MEM_ADDR_OFFSET),
-    .UART0_DATA_W(               UART0_DATA_W),
-    .UART0_ADDR_W(               UART0_ADDR_W),
-    .UART0_UART_DATA_W(     UART0_UART_DATA_W),
-    .TIMER0_DATA_W(             TIMER0_DATA_W),
-    .TIMER0_ADDR_W(             TIMER0_ADDR_W),
-    .TIMER0_WDATA_W(           TIMER0_WDATA_W)
+    `include "iob_soc_inst_params.vs"
 )iob_soc(
+    `include "iob_soc_pportmaps.vs"
     .clk_i(                             clk_i),
     .cke_i(                             cke_i),
     .arst_i(                           arst_i),
     .trap_o(                           trap_o),
-    `ifdef IOB_SOC_USE_EXTMEM
-    .axi_awid_o(                   axi_awid_o),
-    .axi_awaddr_o(               axi_awaddr_o),
-    .axi_awlen_o(                 axi_awlen_o),
-    .axi_awsize_o(               axi_awsize_o),
-    .axi_awburst_o(             axi_awburst_o),
-    .axi_awlock_o(               axi_awlock_o),
-    .axi_awcache_o(             axi_awcache_o),
-    .axi_awprot_o(               axi_awprot_o),
-    .axi_awqos_o(                 axi_awqos_o),
-    .axi_awvalid_o(             axi_awvalid_o),
-    .axi_awready_i(             axi_awready_i),
-    .axi_wdata_o(                 axi_wdata_o),
-    .axi_wstrb_o(                 axi_wstrb_o),
-    .axi_wlast_o(                 axi_wlast_o),
-    .axi_wvalid_o(               axi_wvalid_o),
-    .axi_wready_i(               axi_wready_i),
-    .axi_bid_i(                     axi_bid_i),
-    .axi_bresp_i(                 axi_bresp_i),
-    .axi_bvalid_i(               axi_bvalid_i),
-    .axi_bready_o(               axi_bready_o),
-    .axi_arid_o(                   axi_arid_o),
-    .axi_araddr_o(               axi_araddr_o),
-    .axi_arlen_o(                 axi_arlen_o),
-    .axi_arsize_o(               axi_arsize_o),
-    .axi_arburst_o(             axi_arburst_o),
-    .axi_arlock_o(               axi_arlock_o),
-    .axi_arcache_o(             axi_arcache_o),
-    .axi_arprot_o(               axi_arprot_o),
-    .axi_arqos_o(                 axi_arqos_o),
-    .axi_arvalid_o(             axi_arvalid_o),
-    .axi_arready_i(             axi_arready_i),
-    .axi_rid_i(                     axi_rid_i),
-    .axi_rdata_i(                 axi_rdata_i),
-    .axi_rresp_i(                 axi_rresp_i),
-    .axi_rlast_i(                 axi_rlast_i),
-    .axi_rvalid_i(               axi_rvalid_i),
-    .axi_rready_o(               axi_rready_o),
-    `endif
-    .uart_txd_o(                   uart_txd_o),
-    .uart_rxd_i(                   uart_rxd_i),
-    .uart_cts_i(                   uart_cts_i),
-    .uart_rts_o(                   uart_rts_o),
         //SPRAM  
 `ifdef USE_SPRAM
     .valid_spram_o(spram_en),
@@ -143,6 +164,7 @@ iob_soc #(
    //
 
 );
+
 
 
     `ifdef USE_SPRAM
