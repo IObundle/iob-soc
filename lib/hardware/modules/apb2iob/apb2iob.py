@@ -6,12 +6,22 @@ def setup(py_params_dict):
         "generate_hw": False,
         "ports": [
             {
+                "name": "clk_en_rst",
+                "type": "slave",
+                "port_prefix": "",
+                "wire_prefix": "",
+                "descr": "Clock, clock enable and reset",
+                "signals": [],
+            },
+            {
                 "name": "apb",
+                "type": "slave",
                 "descr": "APB interface",
                 "signals": [],
             },
             {
                 "name": "iob",
+                "type": "master",
                 "descr": "CPU native interface",
                 "signals": [],
             },
