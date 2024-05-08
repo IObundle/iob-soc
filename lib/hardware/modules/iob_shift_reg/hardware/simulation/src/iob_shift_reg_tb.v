@@ -1,7 +1,5 @@
 `timescale 1ns / 1ps
 
-`include "iob_utils.vh"
-
 module iob_shift_reg_tb;
 
    localparam DATA_W = 8;
@@ -17,7 +15,7 @@ module iob_shift_reg_tb;
    reg                 rst = 0;
    reg                 en = 0;
    reg                 ld = 0;
-   
+
    reg  [DATA_W-1:0] data_i;
    wire [DATA_W-1:0] data_o;
 
@@ -52,7 +50,7 @@ module iob_shift_reg_tb;
 `endif
       repeat (4) @(posedge clk) #1;
       en = 0;
-      
+
       #8
       arst  = 1;
       #CLK_PER
@@ -78,7 +76,7 @@ module iob_shift_reg_tb;
       en = 0;
       $display("Test passed");
       #1000 $finish();
-      
+
    end
 
    // Instantiate the Unit Under Test (UUT)

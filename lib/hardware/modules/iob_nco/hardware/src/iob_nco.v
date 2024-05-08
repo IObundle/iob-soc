@@ -1,8 +1,7 @@
 `timescale 1ns / 1ps
-`include "iob_utils.vh"
 
 
-module iob_nco 
+module iob_nco
   #(
     parameter DATA_W = 21,
     parameter FRAC_W = 21
@@ -14,13 +13,13 @@ module iob_nco
        input ld_i,
        output  clk_o
        );
-   
+
    wire [DATA_W-1:0]        period_r;
    wire [DATA_W-1:0]        diff;
    wire [DATA_W-1:FRAC_W]   cnt;
    wire [DATA_W-1:0]        acc_in, acc_out;
    wire                     clk_int;
-   
+
    assign diff = period_r - {quant, {FRAC_W{1'b0}}};
    assign clk_int = (cnt > (quant/2));
 
@@ -35,8 +34,8 @@ module iob_nco
         quant = acc_out[DATA_W-1:FRAC_W];
    end
 
-   //fractional period value register 
-   iob_reg_re 
+   //fractional period value register
+   iob_reg_re
      #(
        .DATA_W(DATA_W)
        )
@@ -49,8 +48,8 @@ module iob_nco
       .data_o(period_r)
       );
 
-   //output clock register 
-   iob_reg_re 
+   //output clock register
+   iob_reg_re
      #(
        .DATA_W(1)
        )
@@ -62,9 +61,9 @@ module iob_nco
       .data_i(clk_int),
       .data_o(clk_o)
       );
-   
+
    //modulator accumulator
-   iob_acc_ld 
+   iob_acc_ld
      #(
        .DATA_W(DATA_W)
        )
@@ -78,9 +77,9 @@ module iob_nco
       .incr_i(diff),
       .data_o(acc_out)
       );
-   
 
-   //output period counter 
+
+   //output period counter
    iob_modcnt
      #(
        .DATA_W(DATA_W-FRAC_W)
@@ -93,6 +92,6 @@ module iob_nco
       .mod_i(quant),
       .data_o(cnt)
       );
-   
-      
+
+
 endmodule

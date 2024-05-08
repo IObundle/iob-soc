@@ -15,6 +15,8 @@ module iob_asym_converter #(
     parameter W_ADDR_W = (W_DATA_W == MAXDATA_W) ? MINADDR_W : ADDR_W,
     parameter R_ADDR_W = (R_DATA_W == MAXDATA_W) ? MINADDR_W : ADDR_W
 ) (
+    input rst_i,
+
     `include "iob_asym_converter_io.vs"
 );
 
