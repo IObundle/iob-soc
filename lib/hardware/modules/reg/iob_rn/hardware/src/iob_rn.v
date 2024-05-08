@@ -2,7 +2,7 @@
 `include "iob_reg_conf.vh"
 
 module iob_rn #(
-   `include "iob_reg_params.vs"
+   `include "iob_rn_params.vs"
 ) (
 `include "clk_rst_s_port.vs"
 

@@ -1,49 +1,43 @@
-from iob_core import iob_core
+def setup(py_params_dict):
+    attributes_dict = {
+        "original_name": "iob2axi",
+        "name": "iob2axi",
+        "version": "0.1",
+        "generate_hw": False,
+        "blocks": [
+            {
+                "core_name": "m_axi_m_port",
+                "instance_name": "m_axi_m_port_inst",
+            },
+            {
+                "core_name": "m_axi_write_m_port",
+                "instance_name": "m_axi_write_m_port_inst",
+            },
+            {
+                "core_name": "m_axi_read_m_port",
+                "instance_name": "m_axi_read_m_port_inst",
+            },
+            {
+                "core_name": "m_m_axi_write_portmap",
+                "instance_name": "m_m_axi_write_portmap_inst",
+            },
+            {
+                "core_name": "m_m_axi_read_portmap",
+                "instance_name": "m_m_axi_read_portmap_inst",
+            },
+            {
+                "core_name": "iob2axi_wr",
+                "instance_name": "iob2axi_wr_inst",
+            },
+            {
+                "core_name": "iob2axi_rd",
+                "instance_name": "iob2axi_rd_inst",
+            },
+            {
+                "core_name": "iob_fifo_sync",
+                "instance_name": "iob_fifo_sync_inst",
+            },
+        ],
+    }
 
-
-class iob2axi(iob_core):
-    def __init__(self, *args, **kwargs):
-        self.set_default_attribute("version", "0.1")
-        self.set_default_attribute("generate_hw", False)
-
-        self.create_instance(
-            "m_axi_m_port",
-            "m_axi_m_port_inst",
-        )
-
-        self.create_instance(
-            "m_axi_write_m_port",
-            "m_axi_write_m_port_inst",
-        )
-
-        self.create_instance(
-            "m_axi_read_m_port",
-            "m_axi_read_m_port_inst",
-        )
-
-        self.create_instance(
-            "m_m_axi_write_portmap",
-            "m_m_axi_write_portmap_inst",
-        )
-
-        self.create_instance(
-            "m_m_axi_read_portmap",
-            "m_m_axi_read_portmap_inst",
-        )
-
-        self.create_instance(
-            "iob2axi_wr",
-            "iob2axi_wr_inst",
-        )
-
-        self.create_instance(
-            "iob2axi_rd",
-            "iob2axi_rd_inst",
-        )
-
-        self.create_instance(
-            "iob_fifo_sync",
-            "iob_fifo_sync_inst",
-        )
-
-        super().__init__(*args, **kwargs)
+    return attributes_dict

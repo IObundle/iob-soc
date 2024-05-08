@@ -1,14 +1,25 @@
-from iob_core import iob_core
+def setup(py_params_dict):
+    attributes_dict = {
+        "original_name": "iob_regfile_2p",
+        "name": "iob_regfile_2p",
+        "version": "0.1",
+        "generate_hw": False,
+        "ports": [
+            {
+                "name": "clk_en_rst",
+                "type": "slave",
+                "port_prefix": "",
+                "wire_prefix": "",
+                "descr": "Clock, clock enable and reset",
+                "signals": [],
+            },
+        ],
+        "blocks": [
+            {
+                "core_name": "iob_ctls",
+                "instance_name": "iob_ctls_inst",
+            },
+        ],
+    }
 
-
-class iob_regfile_2p(iob_core):
-    def __init__(self, *args, **kwargs):
-        self.set_default_attribute("version", "0.1")
-        self.set_default_attribute("generate_hw", False)
-
-        self.create_instance(
-            "iob_ctls",
-            "iob_ctls_inst",
-        )
-
-        super().__init__(*args, **kwargs)
+    return attributes_dict

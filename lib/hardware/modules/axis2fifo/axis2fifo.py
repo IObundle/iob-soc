@@ -1,19 +1,19 @@
-from iob_core import iob_core
+def setup(py_params_dict):
+    attributes_dict = {
+        "original_name": "axis2fifo",
+        "name": "axis2fifo",
+        "version": "0.1",
+        "generate_hw": False,
+        "blocks": [
+            {
+                "core_name": "iob_counter",
+                "instance_name": "iob_counter_inst",
+            },
+            {
+                "core_name": "iob_edge_detect",
+                "instance_name": "iob_edge_detect_inst",
+            },
+        ],
+    }
 
-
-class axis2fifo(iob_core):
-    def __init__(self, *args, **kwargs):
-        self.set_default_attribute("version", "0.1")
-        self.set_default_attribute("generate_hw", False)
-
-        self.create_instance(
-            "iob_counter",
-            "iob_counter_inst",
-        )
-
-        self.create_instance(
-            "iob_edge_detect",
-            "iob_edge_detect_inst",
-        )
-
-        super().__init__(*args, **kwargs)
+    return attributes_dict

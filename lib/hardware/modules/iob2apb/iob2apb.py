@@ -1,14 +1,27 @@
-from iob_core import iob_core
+def setup(py_params_dict):
+    attributes_dict = {
+        "original_name": "iob2apb",
+        "name": "iob2apb",
+        "version": "0.1",
+        "generate_hw": False,
+        "ports": [
+            {
+                "name": "apb",
+                "descr": "APB interface",
+                "signals": [],
+            },
+            {
+                "name": "iob",
+                "descr": "CPU native interface",
+                "signals": [],
+            },
+        ],
+        "blocks": [
+            {
+                "core_name": "iob_reg",
+                "instance_name": "iob_reg_inst",
+            },
+        ],
+    }
 
-
-class iob2apb(iob_core):
-    def __init__(self, *args, **kwargs):
-        self.set_default_attribute("version", "0.1")
-        self.set_default_attribute("generate_hw", False)
-
-        self.create_instance(
-            "iob_reg",
-            "iob_reg_inst",
-        )
-
-        super().__init__(*args, **kwargs)
+    return attributes_dict

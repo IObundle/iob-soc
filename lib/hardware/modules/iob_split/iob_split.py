@@ -220,7 +220,7 @@ if __name__ == "__main__":
                 "wire_prefix": "i_",
                 "param_prefix": "",
                 "descr": "split output i",
-                "ports": [],
+                "signals": [],
                 "widths": {
                     "DATA_W": "DATA_W",
                     "ADDR_W": "ADDR_W",
@@ -234,7 +234,7 @@ if __name__ == "__main__":
                 "wire_prefix": "d_",
                 "param_prefix": "",
                 "descr": "split output d",
-                "ports": [],
+                "signals": [],
                 "widths": {
                     "DATA_W": "DATA_W",
                     "ADDR_W": "ADDR_W",
