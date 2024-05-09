@@ -53,7 +53,7 @@ endif
 format-all: python-format c-format verilog-lint verilog-format # python-lint 
 
 clean:
-	if [ -d "$(BUILD_DIR)" ]; then $(LIB_DIR)/scripts/py2hwsw.py $(CORE) clean --build_dir '$(BUILD_DIR)'; fi
+	if [ -d "$(BUILD_DIR)" ]; then py2hwsw $(CORE) clean --build_dir '$(BUILD_DIR)'; fi
 	@rm -rf ../*.summary ../*.rpt 
 	@find . -name \*~ -delete
 

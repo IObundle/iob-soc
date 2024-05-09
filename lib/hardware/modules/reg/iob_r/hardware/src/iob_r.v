@@ -9,7 +9,7 @@ module iob_r #(
    output reg [DATA_W-1:0] iob_r_data_o
 );
 
-   localparam RST_POL = `IOB_REG_RST_POL;
+   localparam RST_POL = `IOB_R_RST_POL;
 
    generate
       if (RST_POL == 1) begin: g_rst_pol_1

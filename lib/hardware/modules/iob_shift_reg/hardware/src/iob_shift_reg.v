@@ -1,14 +1,13 @@
 `timescale 1ns / 1ps
-`include "iob_utils.vh"
 
 
-module iob_shift_reg 
+module iob_shift_reg
   #(
     parameter DATA_W = 21,
     parameter N = 21,
     parameter ADDR_W = $clog2(N)
-    
-    ) 
+
+    )
    (
 `include "clk_en_rst_s_port.vs"
 
@@ -16,8 +15,8 @@ module iob_shift_reg
     input                 rst_i,
     input  [DATA_W-1:0]   data_i,
     output [DATA_W-1:0]   data_o,
-    
-    //memory clock 
+
+    //memory clock
     output                 ext_mem_clk_o,
     //memory write port
     output ext_mem_w_en_o,
@@ -38,8 +37,8 @@ module iob_shift_reg
 
    wire                 rst_int_w;
    wire                 rst_int_r;
-   
-   
+
+
    assign data_o = ext_mem_r_data_i & {DATA_W{out_en}};
 
    assign ext_mem_clk_o = clk_i;
@@ -50,11 +49,11 @@ module iob_shift_reg
 
    assign ext_mem_r_en_o = en_i;
    assign ext_mem_r_addr_o = addr_r;
-  
+
 
    //counter enable
    assign out_en_nxt = out_en  | (addr_w == (N-1));
-   
+
    assign rst_int_w = rst_i | (addr_w == (N-1));
    assign rst_int_r = rst_i | (addr_r == (N-1));
 
@@ -65,30 +64,29 @@ module iob_shift_reg
          addr_r = addr_w + 1'b1;
       end
    end
- 
+
    //write address
-   iob_counter 
+   iob_counter
      #(
        .DATA_W (ADDR_W),
        .RST_VAL({ADDR_W{1'd0}})
-       ) 
-   w_addr_cnt0 
+       )
+   w_addr_cnt0
      (
 `include "clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_int_w),
       .en_i  (en_i),
       .data_o(addr_w)
       );
-      
+
   iob_reg #(
       .DATA_W (1),
-      .RST_VAL(0),
-      .CLKEDGE("posedge")
+      .RST_VAL(0)
    ) out_enable (
       `include "clk_en_rst_s_s_portmap.vs"
       .data_i(out_en_nxt),
       .data_o(out_en)
    );
 
-      
+
 endmodule
