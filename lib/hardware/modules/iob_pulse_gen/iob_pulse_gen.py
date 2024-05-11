@@ -3,7 +3,6 @@ def setup(py_params_dict):
         "original_name": "iob_pulse_gen",
         "name": "iob_pulse_gen",
         "version": "0.1",
-        "generate_hw": True,
         "confs": [
             {
                 "name": "START",
@@ -106,55 +105,61 @@ def setup(py_params_dict):
                     {"name": "pulse_nxt", "width": 1},
                 ],
             },
-            #################################################
             {
                 "name": "start_detected_io",
                 "descr": "",
                 "signals": [
-                    {"name": "start_detected_nxt", "wire": "start_detected_nxt"},
-                    {"name": "start_detected", "wire": "start_detected"},
+                    {"name": "start_detected_nxt"},
+                    {"name": "start_detected"},
                 ],
             },
             {
                 "name": "pulse_reg_io",
                 "descr": "",
                 "signals": [
-                    {"name": "pulse_nxt", "wire": "pulse_nxt"},
-                    {"name": "pulse", "wire": "pulse"},
+                    {"name": "pulse_nxt"},
+                    {"name": "pulse"},
                 ],
             },
-            # FIXME: get_wire_signal is not implemented yet. These 2 directly above will not work ^^^^. Below are the
-            # originals.
-            # self.create_wire(
-            #    name="start_detected_io",
-            #    descr="",
-            #    signals=[
-            #        self.get_wire_signal("start_detected_nxt", "start_detected_nxt"),
-            #        self.get_wire_signal("start_detected", "start_detected"),
-            #    ],
-            # )
-            # self.create_wire(
-            #    name="pulse_reg_io",
-            #    descr="",
-            #    signals=[
-            #        self.get_wire_signal("pulse_nxt", "pulse_nxt"),
-            #        self.get_wire_signal("pulse", "pulse"),
-            #    ],
-            # )
-            #################################################
         ],
         "blocks": [
             {
                 "core_name": "iob_reg",
                 "instance_name": "start_detected_inst",
+                "parameters": {
+                    "DATA_W": 1,
+                    "RST_VAL": 0,
+                },
+                "connect": {
+                    "clk_en_rst": "clk_en_rst",
+                    "io": "start_detected_io",
+                },
             },
             {
                 "core_name": "iob_counter",
                 "instance_name": "cnt0",
+                "parameters": {
+                    "DATA_W": "WIDTH",
+                    "RST_VAL": "{WIDTH{1'b0}}",
+                },
+                "connect": {
+                    "clk_en_rst": "clk_en_rst",
+                    "rst": "start",
+                    "en": "cnt_en",
+                    "data": "cnt",
+                },
             },
             {
                 "core_name": "iob_reg",
                 "instance_name": "pulse_reg",
+                "parameters": {
+                    "DATA_W": 1,
+                    "RST_VAL": 0,
+                },
+                "connect": {
+                    "clk_en_rst": "clk_en_rst",
+                    "io": "pulse_reg_io",
+                },
             },
         ],
         "snippets": [
