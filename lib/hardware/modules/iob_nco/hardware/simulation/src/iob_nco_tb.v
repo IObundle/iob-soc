@@ -9,6 +9,8 @@
 
 module iob_nco_tb;
 
+  integer fd;
+
   localparam CLK_PER = 10;
 
   reg clk;
