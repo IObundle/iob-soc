@@ -22,14 +22,6 @@ include $(LIB_DIR)/setup.mk
 INIT_MEM ?= 1
 USE_EXTMEM ?= 0
 
-# Use Nix-shell if available
-ifeq ($(shell which nix),)
-$(info Nix-shell not found. Using default shell.)
-IOB_NIX_ENV = $(1)
-else
-IOB_NIX_ENV = nix-shell --run '$(1)'
-endif
-
 setup:
 	$(call IOB_NIX_ENV, py2hwsw $(CORE) INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM))
 

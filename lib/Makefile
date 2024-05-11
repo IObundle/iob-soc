@@ -26,22 +26,22 @@ all: sim-test
 include $(LIB_DIR)/setup.mk
 
 setup:
-	nix-shell --run "py2hwsw $(CORE) setup --project_root $(PROJECT_ROOT) --build_dir '$(BUILD_DIR)' --no_verilog_lint"
+	$(call IOB_NIX_ENV, py2hwsw $(CORE) setup --project_root $(PROJECT_ROOT) --build_dir '$(BUILD_DIR)' --no_verilog_lint)
 
 sim-build:
-	nix-shell --run "scripts/test.sh build $(CORE)"
+	$(call IOB_NIX_ENV, scripts/test.sh build $(CORE))
 
 sim-run:
-	nix-shell --run "VCD=$(VCD) scripts/test.sh $(CORE)"
+	$(call IOB_NIX_ENV, VCD=$(VCD) scripts/test.sh $(CORE))
 
 sim-test:
-	nix-shell --run "scripts/test.sh test"
+	$(call IOB_NIX_ENV, scripts/test.sh test)
 
 sim-clean:
-	nix-shell --run "scripts/test.sh clean"
+	$(call IOB_NIX_ENV, scripts/test.sh clean)
 
 print-attr:
-	nix-shell --run "VCD=$(VCD) SETUP_ARGS='print_attr' scripts/test.sh $(CORE)"
+	$(call IOB_NIX_ENV, VCD=$(VCD) SETUP_ARGS='print_attr' scripts/test.sh $(CORE))
 
 
 .PHONY: all setup sim-build sim-run sim-test sim-clean

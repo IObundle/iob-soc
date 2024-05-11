@@ -6,6 +6,16 @@
 CORE_DIR ?=.
 PROJECT_ROOT ?=.
 
+# Macro to use Nix-shell if available
+# Usage format:
+#     $(call IOB_NIX_ENV, <command_to_run>)
+ifeq ($(shell which nix),)
+$(info Nix-shell not found. Using default shell.)
+IOB_NIX_ENV = $(1)
+else
+IOB_NIX_ENV = nix-shell --run '$(1)'
+endif
+
 setup-python-dir:
 ifeq ($(IOB_PYTHONPATH),)
 	$(error "IOB_PYTHONPATH is not set")
