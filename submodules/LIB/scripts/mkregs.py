@@ -833,7 +833,7 @@ class mkregs:
         core_prefix = f"{top}_".upper()
         # fsw.write(f'`include "{top}_swreg_def.vh"\n\n')
 
-        fsw.write("\n// Core Setters and Getters\n")
+        fsw.write("\n// SWreg Core Setters and Getters\n")
 
         for row in table:
             name = row["name"]
@@ -849,10 +849,10 @@ class mkregs:
                 addr_arg = ""
                 addr_shift = ""
                 if addr_w / n_bytes > 1:
-                    addr_arg = ", input [ADDR_W-1:0] addr"
+                    addr_arg = ", input reg [ADDR_W-1:0] addr"
                     addr_shift = f" + (addr << {int(log(n_bytes, 2))})"
                 fsw.write(
-                    f"task {core_prefix}SET_{name}(input {sw_type} value{addr_arg});\n"
+                    f"task static {core_prefix}SET_{name}(input reg {sw_type} value{addr_arg});\n"
                 )
                 fsw.write(
                     f"  iob_write( (`{core_prefix}{name}_ADDR){addr_shift}, value, `{core_prefix}{name}_W);\n"
@@ -863,9 +863,9 @@ class mkregs:
                 addr_arg = ""
                 addr_shift = ""
                 if addr_w / n_bytes > 1:
-                    addr_arg = "input [ADDR_W-1:0] addr, "
+                    addr_arg = "input reg [ADDR_W-1:0] addr, "
                     addr_shift = f" + (addr << {int(log(n_bytes, 2))})"
-                fsw.write(f"task {core_prefix}GET_{name}({addr_arg}output {sw_type} rvalue);\n")
+                fsw.write(f"task static {core_prefix}GET_{name}({addr_arg}output reg {sw_type} rvalue);\n")
                 fsw.write(
                     f"  iob_read( (`{core_prefix}{name}_ADDR){addr_shift}, rvalue, `{core_prefix}{name}_W);\n"
                 )
