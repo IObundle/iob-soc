@@ -1,7 +1,8 @@
 `timescale 1ns / 1ps
 `include "iob_reg_conf.vh"
 
-`define IOB_CLOCK(CLK, PER) initial CLK=0; always #(PER/2) CLK = ~CLK;
+`include "iob_functions.vs"
+
 `define IOB_RESET(CLK, RESET, PRE, DURATION, POST) RESET=~`IOB_REG_RST_POL;\
    #PRE RESET=`IOB_REG_RST_POL; #DURATION RESET=~`IOB_REG_RST_POL; #POST;\
    @(posedge CLK) #1;
@@ -14,7 +15,11 @@ module iob_nco_tb;
   localparam CLK_PER = 10;
 
   reg clk;
-  `IOB_CLOCK(clk, CLK_PER)
+  iob_clock #(
+     .CLK_PERIOD(CLK_PER)
+  ) iob_clock_1 (
+     .clk_o(clk)
+  );
   reg  cke = 1'b1;
   reg  arst;
 

@@ -139,6 +139,10 @@ def setup(py_params_dict):
                 "core_name": "iob_reg_re",
                 "instance_name": "iob_reg_re_inst",
             },
+            {
+                "core_name": "iob_functions",
+                "instance_name": "iob_functions_inst",
+            },
         ],
     }
 
