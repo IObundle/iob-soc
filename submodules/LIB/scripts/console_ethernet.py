@@ -12,7 +12,7 @@ if __name__ == "__main__":
             "eth_comm.py",
             sys.argv[sys.argv.index("-m") + 1] if "-m" in sys.argv else "4437e6a6893b",
         ]
-        from ethBase import CreateSocket, SyncAckFirst, SyncAckLast
+        from ethBase import CreateSocket, SyncAckFirst, SyncAckLast, get_eth_interface
         from ethRcvData import RcvFile
         from ethSendData import SendFile
     finally:
@@ -116,6 +116,15 @@ def main():
     init_console()
     gotENQ = False
     input_thread = Thread(target=getUserInput, args=[], daemon=True)
+
+    # Launch eth2file python script (for simulation)
+    if "-e" in sys.argv:
+        eth2file_path = os.path.realpath(sys.argv[sys.argv.index("-e") + 1])
+        exec(open(eth2file_path).read())
+        interface = get_eth_interface(sys.argv[1])
+        Thread(
+            target=relay_frames, args=[interface, "sock_in", "sock_out"], daemon=True
+        )
 
     # Reading the data from the serial port or FIFO files. This will be running in an infinite loop.
     while True:
