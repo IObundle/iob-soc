@@ -32,6 +32,17 @@ if __name__ == "__main__":
     else:
         console_path = ""
 
+    if "-e" in sys.argv:
+        eth2file_path = os.path.realpath(sys.argv[sys.argv.index("-e") + 1])
+        # Save current __name__ and override it to run code from eth2file module
+        name_backup = __name__
+        __name__ = "eth2file"
+        # Run code from eth2file script
+        exec(open(eth2file_path).read())
+        # Restore __name__
+        __name__ = name_backup
+        del name_backup
+
 # Global variables
 EFTX = b"\x12"  # Receive file by ethernet request
 EFRX = b"\x13"  # Send file by ethernet request
@@ -105,7 +116,8 @@ def usage(message):
             "usage: ./console_ethernet.py -s <serial port> -c <console path> [ -f ] [ -L/--local ] -m <ethernet mac address>",
         )
     )
-    cnsl_perror(message)
+    print(message)
+    exit(1)
 
 
 # Main function.
@@ -119,9 +131,7 @@ def main():
 
     # Launch eth2file python script (for simulation)
     if "-e" in sys.argv:
-        eth2file_path = os.path.realpath(sys.argv[sys.argv.index("-e") + 1])
-        exec(open(eth2file_path).read())
-        interface = get_eth_interface(sys.argv[1])
+        interface = get_eth_interface(sys.argv[sys.argv.index("-m") + 1])
         Thread(
             target=relay_frames, args=[interface, "sock_in", "sock_out"], daemon=True
         )
