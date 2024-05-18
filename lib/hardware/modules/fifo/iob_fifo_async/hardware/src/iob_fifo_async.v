@@ -1,7 +1,5 @@
 `timescale 1ns / 1ps
 
-`include "iob_functions.vs"
-
 module iob_fifo_async #(
     parameter W_DATA_W = 21,
     parameter R_DATA_W = 21,
