@@ -5,8 +5,9 @@
 
 SHELL:=bash
 
-SIMULATOR ?= icarus
-BOARD ?= CYCLONEV-GT-DK
+export SIMULATOR ?= icarus
+export SYNTHESIZER ?= yosys
+export BOARD ?= CYCLONEV-GT-DK
 
 include config_build.mk
 
@@ -14,7 +15,6 @@ BSP_H ?= software/src/bsp.h
 SIM_DIR := hardware/simulation
 BOARD_DIR := $(shell find -name $(BOARD) -type d -print -quit)
 
-SYNTHESIZER ?= yosys
 #
 # Create bsp.h from bsp.vh
 #

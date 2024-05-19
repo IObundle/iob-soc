@@ -1,6 +1,7 @@
 CORE := iob_soc
 
 SIMULATOR ?= icarus
+SYNTHESIZER ?= yosys
 BOARD ?= CYCLONEV-GT-DK
 
 DISABLE_LINT:=1
@@ -10,7 +11,6 @@ include submodules/LIB/setup.mk
 INIT_MEM ?= 1
 USE_EXTMEM ?= 0
 
-SYNTHESIZER ?= yosys
 
 ifeq ($(INIT_MEM),1)
 SETUP_ARGS += INIT_MEM

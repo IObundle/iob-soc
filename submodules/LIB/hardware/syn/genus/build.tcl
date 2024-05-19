@@ -25,8 +25,8 @@ set_db stdout_log genus.log
 set_db information_level 7
 set_db super_thread_debug_directory st_part_log
 set_db hdl_error_on_latch true
-if {[file exists "syn_build.tcl"]} {
-    source "syn_build.tcl"
+if {[file exists "genus/syn_build.tcl"]} {
+    source "genus/syn_build.tcl"
 }
 set_db lp_power_analysis_effort medium
 set_db lp_power_unit uW
