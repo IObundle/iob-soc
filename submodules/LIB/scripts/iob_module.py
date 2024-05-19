@@ -502,13 +502,13 @@ class iob_module:
             # Skip if file does not exist
             if not os.path.isfile(filepath):
                 continue
-            
-            # Import the module 
+
+            # Import the module
             setup_module = importlib.import_module(
                 os.path.splitext(os.path.basename(filepath))[0]
             )
             # Run the setup function
-            setup_module.setup(cls)            
+            setup_module.setup(cls)
 
     @classmethod
     def _setup_submodules(cls, submodule_list):

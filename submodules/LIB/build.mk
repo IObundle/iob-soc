@@ -14,6 +14,7 @@ BSP_H ?= software/src/bsp.h
 SIM_DIR := hardware/simulation
 BOARD_DIR := $(shell find -name $(BOARD) -type d -print -quit)
 
+SYNTHESIZER ?= yosys
 #
 # Create bsp.h from bsp.vh
 #
