@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-`define IOB_PULSE(VAR, PRE, DURATION, POST) VAR=0; #PRE VAR=1; #DURATION VAR=0; #POST;
+//`define IOB_PULSE(VAR, PRE, DURATION, POST) VAR=0; #PRE VAR=1; #DURATION VAR=0; #POST;
 
 // TODO: re-implement these tests
 //      $(VLOG) -DW_DATA_W=8 -DR_DATA_W=8 $(wildcard $(BUILD_VSRC_DIR)/*.v) &&\
@@ -108,7 +108,7 @@ module iob_fifo_async_tb;
     $dumpvars();
 `endif
 
-    #10 `IOB_PULSE(arst, 50, 50, 50)
+    #10; //`IOB_PULSE(arst, 50, 50, 50) // FIXME: Replaced by iob_pulse below but simulation hangs
 
     //fill up the FIFO
     @(posedge w_clk) #1;
@@ -137,6 +137,14 @@ module iob_fifo_async_tb;
       w_en = 0;
     end
   end
+
+  iob_pulse #(
+      .PRE(50),
+      .DURATION(50),
+      .POST(50)
+  ) iob_pulse_1 (
+      .pulse_o(w_arst)
+  );
 
   //
   // READ PROCESS
