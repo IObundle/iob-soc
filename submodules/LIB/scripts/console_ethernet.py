@@ -132,9 +132,10 @@ def main():
     # Launch eth2file python script (for simulation)
     if "-e" in sys.argv:
         interface = get_eth_interface(sys.argv[sys.argv.index("-m") + 1])
-        Thread(
-            target=relay_frames, args=[interface, "sock_in", "sock_out"], daemon=True
+        eth2file_thread = Thread(
+            target=relay_frames, args=[interface, "soc2eth", "eth2soc"], daemon=True
         )
+        eth2file_thread.start()
 
     # Reading the data from the serial port or FIFO files. This will be running in an infinite loop.
     while True:
