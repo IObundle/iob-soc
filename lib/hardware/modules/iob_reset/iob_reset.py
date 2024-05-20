@@ -41,7 +41,7 @@ def setup(py_params_dict):
                 "name": "reset",
                 "descr": "Output reset",
                 "signals": [
-                    {"name": "pulse", "width": "1", "direction": "output"},
+                    {"name": "reset", "width": "1", "direction": "output"},
                 ],
             },
         ],
