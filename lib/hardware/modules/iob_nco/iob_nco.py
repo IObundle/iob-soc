@@ -30,6 +30,14 @@ def setup(py_params_dict):
                 "core_name": "iob_clock",
                 "instance_name": "iob_clock_inst",
             },
+            {
+                "core_name": "iob_pulse",
+                "instance_name": "iob_pulse_inst",
+            },
+            {
+                "core_name": "iob_reset",
+                "instance_name": "iob_reset_inst",
+            },
         ],
     }
 

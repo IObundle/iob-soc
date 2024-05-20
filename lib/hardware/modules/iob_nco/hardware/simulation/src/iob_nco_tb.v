@@ -3,10 +3,10 @@
 
 `include "iob_functions.vs"
 
-`define IOB_RESET(CLK, RESET, PRE, DURATION, POST) RESET=~`IOB_REG_RST_POL;\
-   #PRE RESET=`IOB_REG_RST_POL; #DURATION RESET=~`IOB_REG_RST_POL; #POST;\
-   @(posedge CLK) #1;
-`define IOB_PULSE(VAR, PRE, DURATION, POST) VAR=0; #PRE VAR=1; #DURATION VAR=0; #POST;
+//`define IOB_RESET(CLK, RESET, PRE, DURATION, POST) RESET=~`IOB_REG_RST_POL;\
+//   #PRE RESET=`IOB_REG_RST_POL; #DURATION RESET=~`IOB_REG_RST_POL; #POST;\
+//   @(posedge CLK) #1;
+//`define IOB_PULSE(VAR, PRE, DURATION, POST) VAR=0; #PRE VAR=1; #DURATION VAR=0; #POST;
 
 module iob_nco_tb;
 
@@ -34,9 +34,11 @@ module iob_nco_tb;
     $dumpvars();
 `endif
 
-    `IOB_RESET(clk, arst, 23, 23, 23)
+    // TODO: Replaced by iob_reset below. Confirm if it's well done
+    //`IOB_RESET(clk, arst, 23, 23, 23)
 
-    `IOB_PULSE(ld, 23, 20, 20)
+    // TODO: Replaced by iob_reset below. Confirm if it's well done
+    //`IOB_PULSE(ld, 23, 20, 20)
 
     $display("%c[1;34m", 27);
     $display("Test completed successfully.");
@@ -47,6 +49,23 @@ module iob_nco_tb;
     #1000 $finish();
 
   end
+
+  iob_pulse #(
+      .PRE(23),
+      .DURATION(20),
+      .POST(20)
+  ) pulse (
+      .pulse_o(ld)
+  );
+
+  iob_reset #(
+      .PRE(23),
+      .DURATION(23),
+      .POST(23)
+  ) reset (
+      .clk_i(clk),
+      .reset_o(arst)
+  );
 
   iob_nco #(
       .DATA_W(16),
