@@ -3,9 +3,9 @@
 `include "iob_uart_swreg_def.vh"
 `include "iob_reg_conf.vh"
 
-`define IOB_RESET(CLK, RESET, PRE, DURATION, POST) RESET=~`IOB_REG_RST_POL;\
-   #PRE RESET=`IOB_REG_RST_POL; #DURATION RESET=~`IOB_REG_RST_POL; #POST;\
-   @(posedge CLK) #1;
+//`define IOB_RESET(CLK, RESET, PRE, DURATION, POST) RESET=~`IOB_REG_RST_POL;\
+//   #PRE RESET=`IOB_REG_RST_POL; #DURATION RESET=~`IOB_REG_RST_POL; #POST;\
+//   @(posedge CLK) #1;
 
 //ASCII codes used
 `define STX 2 //start of text
@@ -49,6 +49,15 @@ module iob_uart_tb;
   wire                       tx2rx;
 
 
+  iob_reset #(
+     .PRE      (100),
+     .DURATION (1_000),
+     .POST     (100)
+  ) iob_reset_1 (
+     .clk_i   (clk),
+     .reset_o (arst)
+  );
+
   initial begin
 `ifdef VCD
     $dumpfile("uut.vcd");
@@ -67,7 +76,8 @@ module iob_uart_tb;
     div      = clk_frequency / baud_rate;
 
     //apply async reset
-    `IOB_RESET(clk, arst, 100, 1_000, 100);
+    // TODO: Replace by iob_reset above. Confirm if it's well done
+    //`IOB_RESET(clk, arst, 100, 1_000, 100);
 
     // assert tx not ready
     if (tx_ready) begin
@@ -97,7 +107,7 @@ module iob_uart_tb;
     // write data to send
     for (i = 0; i < 256; i = i + 1) begin
 
-      //wait for tx ready 
+      //wait for tx ready
       do @(posedge clk); while (!tx_ready);
 
       //write word to send
@@ -105,7 +115,7 @@ module iob_uart_tb;
       tx_data = i;
       @(posedge clk) #1 wr_en = 0;
 
-      //wait for core to receive datarx ready 
+      //wait for core to receive datarx ready
       do @(posedge clk); while (!rx_ready);
 
       //read received word
