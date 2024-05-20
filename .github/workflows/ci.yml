@@ -26,7 +26,7 @@ jobs:
     timeout-minutes: 5
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: 'recursive'
       - name: run test
@@ -40,7 +40,7 @@ jobs:
     needs: [ pc-emul ]
   
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: 'recursive'
       - name: run test
@@ -53,7 +53,7 @@ jobs:
     needs: [ simulation ]
   
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: 'recursive'
       - name: init mem and no ext mem
@@ -68,7 +68,7 @@ jobs:
     needs: [ simulation ]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: 'recursive'
       - name: init mem and no ext mem
@@ -83,7 +83,7 @@ jobs:
     needs: [ cyclonev ]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: 'recursive'
       - name: run LIB test
@@ -96,7 +96,7 @@ jobs:
     needs: [ lib ]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: 'recursive'
       - name: run uart test
@@ -109,7 +109,7 @@ jobs:
     needs: [ cyclonev ]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: 'recursive'
       - name: run simulation test
@@ -123,7 +123,7 @@ jobs:
     needs: [ cyclonev ]
   
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: 'recursive'
       - name: doc test
