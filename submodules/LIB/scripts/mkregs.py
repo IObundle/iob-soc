@@ -106,16 +106,16 @@ class mkregs:
         )
 
         # signal to indicate if the register is addressed
-        f.write(f"wire {name}_addressed;\n")
+        f.write(f"wire {name}_addressed_w;\n")
 
         # test if addr and addr_w are int and substitute with their values
         if isinstance(addr, int) and isinstance(addr_w, int):
             f.write(
-                f"assign {name}_addressed = (waddr >= {addr}) && (waddr < {addr+2**addr_w});\n"
+                f"assign {name}_addressed_w = (waddr >= {addr}) && (waddr < {addr+2**addr_w});\n"
             )
         else:
             f.write(
-                f"assign {name}_addressed = (waddr >= {addr}) && (waddr < ({addr}+(2**({addr_w}))));\n"
+                f"assign {name}_addressed_w = (waddr >= {addr}) && (waddr < ({addr}+(2**({addr_w}))));\n"
             )
 
         if auto:  # generate register
@@ -142,7 +142,7 @@ class mkregs:
                 rst_val_str = str(n_bits) + "'d" + str(rst_val)
             f.write(f"wire {name}_wen;\n")
             f.write(
-                f"assign {name}_wen = (iob_valid_i & iob_ready_o) & ((|iob_wstrb_i) & {name}_addressed);\n"
+                f"assign {name}_wen = (iob_valid_i & iob_ready_o) & ((|iob_wstrb_i) & {name}_addressed_w);\n"
             )
             f.write(f"iob_reg_e #(\n")
             f.write(f"  .DATA_W({n_bits}),\n")
@@ -157,7 +157,7 @@ class mkregs:
             f.write(");\n")
         else:  # compute wen
             f.write(
-                f"assign {name}_wen_o = ({name}_addressed & (iob_valid_i & iob_ready_o))? |iob_wstrb_i: 1'b0;\n"
+                f"assign {name}_wen_o = ({name}_addressed_w & (iob_valid_i & iob_ready_o))? |iob_wstrb_i: 1'b0;\n"
             )
             f.write(f"assign {name}_wdata_o = {name}_wdata;\n")
 
@@ -178,13 +178,12 @@ class mkregs:
         )
 
         if not auto:  # output read enable
-            if "W" not in row["type"]:
-                f.write(f"wire {name}_addressed;\n")
-                f.write(
-                    f"assign {name}_addressed = (iob_addr_i >= {addr}) && (iob_addr_i < ({addr}+(2**({addr_w}))));\n"
-                )
+            f.write(f"wire {name}_addressed_r;\n")
             f.write(
-                f"assign {name}_ren_o = {name}_addressed & (iob_valid_i & iob_ready_o) & (~|iob_wstrb_i);\n"
+                f"assign {name}_addressed_r = (iob_addr_i >= {addr}) && (iob_addr_i < ({addr}+(2**({addr_w}))));\n"
+            )
+            f.write(
+                f"assign {name}_ren_o = {name}_addressed_r & (iob_valid_i & iob_ready_o) & (~|iob_wstrb_i);\n"
             )
 
     # generate ports for swreg module
