@@ -7,10 +7,11 @@ import sys
 if __name__ == "__main__":
     # Save argv and override it with new values because ethBase requires them
     saved_argv = sys.argv
+    src_mac_addr = sys.argv[sys.argv.index("-m") + 1] if "-m" in sys.argv else "4437e6a6893b"
     try:
         sys.argv = [
             "eth_comm.py",
-            sys.argv[sys.argv.index("-m") + 1] if "-m" in sys.argv else "4437e6a6893b",
+            src_mac_addr,
         ]
         from ethBase import CreateSocket, SyncAckFirst, SyncAckLast, get_eth_interface
         from ethRcvData import RcvFile
@@ -133,7 +134,7 @@ def main():
     if "-e" in sys.argv:
         interface = get_eth_interface(sys.argv[sys.argv.index("-m") + 1])
         eth2file_thread = Thread(
-            target=relay_frames, args=[interface, "soc2eth", "eth2soc"], daemon=True
+            target=relay_frames, args=[interface, "soc2eth", "eth2soc", "01606e11020f"], daemon=True
         )
         eth2file_thread.start()
 
