@@ -26,7 +26,7 @@ module iob_uart_tb;
   integer i, fd;
 
   // CORE SIGNALS
-  reg                        arst = ~`IOB_REG_RST_POL;
+  wire                       arst;
   reg                        clk;
 
   //control interface (backend)
