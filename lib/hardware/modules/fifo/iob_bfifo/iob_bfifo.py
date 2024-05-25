@@ -9,6 +9,11 @@ def setup(py_params_dict):
                 "core_name": "iob_reg_r",
                 "instance_name": "iob_reg_r_inst",
             },
+            # For simulation
+            {
+                "core_name": "iob_functions",
+                "instance_name": "iob_functions_inst",
+            },
         ],
     }
 
