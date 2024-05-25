@@ -30,7 +30,7 @@ module iob_fifo_async_tb;
 
 
   //global reset
-  reg arst = 0;
+  wire arst = 0;
 
   //write reset
   reg w_arst = 0;
