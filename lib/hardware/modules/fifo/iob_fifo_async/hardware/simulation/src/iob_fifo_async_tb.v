@@ -143,7 +143,7 @@ module iob_fifo_async_tb;
       .DURATION(50),
       .POST(50)
   ) iob_pulse_1 (
-      .pulse_o(w_arst)
+      .pulse_o(arst)
   );
 
   //
