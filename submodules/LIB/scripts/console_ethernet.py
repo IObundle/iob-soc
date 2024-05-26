@@ -7,13 +7,19 @@ import sys
 if __name__ == "__main__":
     # Save argv and override it with new values because ethBase requires them
     saved_argv = sys.argv
-    src_mac_addr = sys.argv[sys.argv.index("-m") + 1] if "-m" in sys.argv else "4437e6a6893b"
+    cnsl_mac_addr = (
+        sys.argv[sys.argv.index("-m") + 1] if "-m" in sys.argv else "88431eafa897"
+    )
+    eth_interface = sys.argv[sys.argv.index("-i") + 1]
+    timeout = sys.argv[sys.argv.index("-t") + 1] if "-t" in sys.argv else "0.1"
     try:
         sys.argv = [
             "eth_comm.py",
-            src_mac_addr,
+            cnsl_mac_addr,
+            eth_interface,
+            timeout,
         ]
-        from ethBase import CreateSocket, SyncAckFirst, SyncAckLast, get_eth_interface
+        from ethBase import CreateSocket, SyncAckFirst, SyncAckLast
         from ethRcvData import RcvFile
         from ethSendData import SendFile
     finally:
@@ -114,7 +120,7 @@ def usage(message):
     print(
         "{}:{}".format(
             PROGNAME,
-            "usage: ./console_ethernet.py -s <serial port> -c <console path> [ -f ] [ -L/--local ] -m <ethernet mac address>",
+            "usage: ./console_ethernet.py -s <serial port> -c <console path> [ -f ] [ -L/--local ] -m <ethernet mac address> -i <interface> -t <socket_timeout>",
         )
     )
     print(message)
@@ -132,9 +138,10 @@ def main():
 
     # Launch eth2file python script (for simulation)
     if "-e" in sys.argv:
-        interface = get_eth_interface(sys.argv[sys.argv.index("-m") + 1])
         eth2file_thread = Thread(
-            target=relay_frames, args=[interface, "soc2eth", "eth2soc", "01606e11020f"], daemon=True
+            target=relay_frames,
+            args=[eth_interface, "soc2eth", "eth2soc", "01606e11020f"],
+            daemon=True,
         )
         eth2file_thread.start()
 
