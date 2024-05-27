@@ -30,6 +30,9 @@ signature.tex:
 figs:
 	make -C ./figures figs
 
+pb_figs:
+	make -C ./figures pb_figs
+
 #build document
 build: debug $(DOC).pdf
 
