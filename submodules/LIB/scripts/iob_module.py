@@ -419,7 +419,7 @@ class iob_module:
                     cls.name,
                     cls.csr_if,
                 )
-                mkregs_obj.write_tbcode(
+                csr_gen_obj.write_tbcode(
                     reg_table,
                     cls.build_dir + "/hardware/src",
                     cls.name,

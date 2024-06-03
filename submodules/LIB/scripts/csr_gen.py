@@ -3,11 +3,11 @@
 #    csr_gen.py: build Verilog software accessible registers and software getters and setters
 #
 
-import sys, os
+import sys
+import os
 from math import ceil, log
 from latex import write_table
 from submodule_utils import eval_param_expression_from_config
-import re
 import iob_colors
 
 
@@ -914,7 +914,9 @@ class csr_gen:
                 if addr_w / n_bytes > 1:
                     addr_arg = "input reg [ADDR_W-1:0] addr, "
                     addr_shift = f" + (addr << {int(log(n_bytes, 2))})"
-                fsw.write(f"task static {core_prefix}GET_{name}({addr_arg}output reg {sw_type} rvalue);\n")
+                fsw.write(
+                    f"task static {core_prefix}GET_{name}({addr_arg}output reg {sw_type} rvalue);\n"
+                )
                 fsw.write(
                     f"  iob_read( (`{core_prefix}{name}_ADDR){addr_shift}, rvalue, `{core_prefix}{name}_W);\n"
                 )
