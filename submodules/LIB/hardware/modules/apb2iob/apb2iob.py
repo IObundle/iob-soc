@@ -2,7 +2,7 @@ import os
 
 from iob_module import iob_module
 
-from iob_reg import iob_reg
+from iob_reg_e import iob_reg_e
 
 
 class apb2iob(iob_module):
@@ -20,6 +20,6 @@ class apb2iob(iob_module):
                 {"interface": "iob_s_portmap"},
                 {"interface": "clk_en_rst_s_port"},
                 {"interface": "clk_en_rst_s_s_portmap"},
-                iob_reg,
+                iob_reg_e,
             ]
         )

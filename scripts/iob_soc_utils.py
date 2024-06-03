@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import sys
 import os
 
@@ -18,7 +17,7 @@ import iob_colors
 import shutil
 import fnmatch
 import if_gen
-import build_srcs
+import copy_srcs
 from iob_module import iob_module
 
 ######################################
@@ -189,6 +188,7 @@ def pre_setup_iob_soc(python_module):
 def post_setup_iob_soc(python_module, num_extmem_connections):
     confs = python_module.confs
     build_dir = python_module.build_dir
+    setup_dir = python_module.setup_dir
     name = python_module.name
 
     # Run iob-soc specialized setup sequence
@@ -275,10 +275,30 @@ iob_eth_rmac.h:
         with open(python_module.build_dir + "/software/sw_build.mk", "w") as file:
             file.writelines(contents)
 
-    # Copy console_ethernet.py from LIB
+    scripts = [
+        "console.py",
+        "board_client.py",
+        "makehex.py",
+        "hex_split.py",
+        "hex_join.py",
+    ]
+
+    scripts_dir = ""
+    # Find the scripts directory in the setup_dir which has all the scripts in the list above
+    for root, dirs, files in os.walk(setup_dir):
+        if all(script in files for script in scripts):
+            scripts_dir = root
+            break
+    # Copy scripts to build directory
+    copy_srcs.copy_files(f"{scripts_dir}", f"{build_dir}/scripts", scripts)
+
+    # Copy  console_ethernet.py
     if ethernet_macro:
-        build_srcs.copy_files(
-            build_srcs.LIB_DIR, f"{build_dir}/scripts", ["console_ethernet.py"], "*.py"
+        copy_srcs.copy_files(
+            scripts_dir,
+            f"{build_dir}/scripts",
+            ["console_ethernet.py"],
+            "*.py",
         )
 
     mem_add_w_parameter = next((i for i in confs if i["name"] == "MEM_ADDR_W"), False)
@@ -296,12 +316,9 @@ iob_eth_rmac.h:
                 else "-"
             )
             file.write(
-                f"	../../scripts/joinHexFiles.py $^ {sut_firmware_name} {mem_add_w_parameter['val']} > $@\n"
+                f"	../../scripts/hex_join.py $^ {sut_firmware_name} {mem_add_w_parameter['val']} > $@\n"
             )
         # Copy joinHexFiles.py from LIB
-        build_srcs.copy_files(
-            build_srcs.LIB_DIR, f"{build_dir}/scripts", ["joinHexFiles.py"], "*.py"
-        )
 
 
 # Given the io dictionary of ports, the port name (and size, and optional bit list) and a wire, it will map the selected bits of the port to the given wire.

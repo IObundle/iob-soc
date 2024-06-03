@@ -6,29 +6,31 @@ module iob_asym_converter #(
    parameter R_DATA_W = 21,
    parameter ADDR_W = 3,  //higher ADDR_W lower DATA_W
    //determine W_ADDR_W and R_ADDR_W
-   parameter MAXDATA_W = `IOB_MAX(W_DATA_W, R_DATA_W),
-   parameter MINDATA_W = `IOB_MIN(W_DATA_W, R_DATA_W),
+   parameter MAXDATA_W =
+   `IOB_MAX(W_DATA_W, R_DATA_W),
+   parameter MINDATA_W =
+   `IOB_MIN(W_DATA_W, R_DATA_W),
    parameter R = MAXDATA_W / MINDATA_W,
    parameter MINADDR_W = ADDR_W - $clog2(R),  //lower ADDR_W (higher DATA_W)
    parameter W_ADDR_W = (W_DATA_W == MAXDATA_W) ? MINADDR_W : ADDR_W,
    parameter R_ADDR_W = (R_DATA_W == MAXDATA_W) ? MINADDR_W : ADDR_W
 ) (
    //memory write port
-   output [ R-1:0]        ext_mem_w_en_o,
+   output [        R-1:0] ext_mem_w_en_o,
    output [MINADDR_W-1:0] ext_mem_w_addr_o,
    output [MAXDATA_W-1:0] ext_mem_w_data_o,
    //memory read port
-   output [ R-1:0]        ext_mem_r_en_o,
+   output [        R-1:0] ext_mem_r_en_o,
    output [MINADDR_W-1:0] ext_mem_r_addr_o,
-   input [MAXDATA_W-1:0]  ext_mem_r_data_i,
-`include "clk_en_rst_s_port.vs"
+   input  [MAXDATA_W-1:0] ext_mem_r_data_i,
+   `include "clk_en_rst_s_port.vs"
    input                  rst_i,
    //write port
-   input [ W_ADDR_W-1:0]  w_addr_i,
+   input  [ W_ADDR_W-1:0] w_addr_i,
    input                  w_en_i,
-   input [ W_DATA_W-1:0]  w_data_i,
+   input  [ W_DATA_W-1:0] w_data_i,
    //read port
-   input [ R_ADDR_W-1:0]  r_addr_i,
+   input  [ R_ADDR_W-1:0] r_addr_i,
    input                  r_en_i,
    output [ R_DATA_W-1:0] r_data_o
 );
@@ -39,7 +41,7 @@ module iob_asym_converter #(
       .DATA_W (1),
       .RST_VAL(1'b0)
    ) r_data_valid_reg_inst (
-`include "clk_en_rst_s_s_portmap.vs"
+      `include "clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_i),
       .data_i(r_en_i),
       .data_o(r_data_valid_reg)
@@ -51,7 +53,7 @@ module iob_asym_converter #(
       .DATA_W (MAXDATA_W),
       .RST_VAL({MAXDATA_W{1'd0}})
    ) r_data_reg_inst (
-`include "clk_en_rst_s_s_portmap.vs"
+      `include "clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_i),
       .en_i  (r_data_valid_reg),
       .data_i(ext_mem_r_data_i),
@@ -77,11 +79,12 @@ module iob_asym_converter #(
 
          //register to hold the LSBs of r_addr
          wire [$clog2(R)-1:0] r_addr_lsbs_reg;
-         iob_reg #(
+         iob_reg_e #(
             .DATA_W ($clog2(R)),
             .RST_VAL({$clog2(R) {1'd0}})
          ) r_addr_reg_inst (
             `include "clk_en_rst_s_s_portmap.vs"
+            .en_i  (r_en_i),
             .data_i(r_addr_i[$clog2(R)-1:0]),
             .data_o(r_addr_lsbs_reg)
          );
@@ -98,7 +101,7 @@ module iob_asym_converter #(
          //memory write port
          assign ext_mem_w_en_o = {{(R - 1) {1'd0}}, w_en_i} << w_addr_i[$clog2(R)-1:0];
          assign ext_mem_w_data_o = {{(R_DATA_W - W_DATA_W) {1'd0}}, w_data_i} <<
-                                                                        (w_addr_i[$clog2(R)-1:0] * W_DATA_W);
+                                    (w_addr_i[$clog2(R)-1:0] * W_DATA_W);
          assign ext_mem_w_addr_o = w_addr_i[W_ADDR_W-1:$clog2(R)];
 
          //memory read port

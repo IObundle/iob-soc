@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S python3 -B
 
 # Generates IOb Native, Clock and Reset, External Memory, AXI4 Full and AXI4
 # Lite ports, port maps and signals
@@ -6,11 +6,11 @@
 #   See "Usage" below
 #
 
-import sys
 import argparse
 import re
+from typing import List, Dict
 
-table = []
+table: List[Dict] = []
 
 interfaces = [
     "iob_m_port",
@@ -1682,41 +1682,92 @@ def add_param_prefix(string, param_prefix):
 
 
 # Write port with given direction, bus width, name and description to file
-def write_port(direction, width, name, description, fout):
-    fout.write(direction + width + name + "," + "\n")
-    # fout.write(direction + width + name + ", //" + description + "\n")
+def write_port(direction, width, name, fout):
+    if direction == "I":
+        direction = "input"
+    elif direction == "O":
+        direction = "output"
+
+    fout.write(f"{direction} [{width}-1:0] {name}," + "\n")
 
 
-def m_port(prefix, param_prefix, fout, bus_size=1):
-    for i in range(len(table)):
-        if table[i]["master"] == 1:
-            port_direction = table[i]["signal"]
-            name = prefix + table[i]["name"] + suffix(table[i]["signal"])
+def m_port(prefix, param_prefix, bus_size=1):
+    """
+    Create a list of ports for the master interface
+    @param prefix: prefix to add to the port name
+    @param param_prefix: prefix to add to the port width
+    @param bus_size: bus size
+    @return: list of interface ports
+    """
+
+    port_list = []
+    for port in range(len(table)):
+        if table[port]["master"] == 1:
+            signal = table[port]["signal"]
+            if signal == "input":
+                direction = "I"
+            elif signal == "output":
+                direction = "O"
+
+            name = prefix + table[port]["name"] + suffix(table[port]["signal"])
             if bus_size == 1:
-                width = table[i]["width"]
+                width = table[port]["width"]
             else:
-                width = "(" + str(bus_size) + "*" + table[i]["width"] + ")"
+                width = "(" + str(bus_size) + "*" + table[port]["width"] + ")"
             width = add_param_prefix(width, param_prefix)
-            bus_width = " [" + width + "-1:0] "
-            description = top_macro + table[i]["description"]
-            # Write port
-            write_port(port_direction, bus_width, name, description, fout)
+            description = top_macro + table[port]["description"]
+
+            # Create port
+            port = {
+                "name": name,
+                "type": direction,
+                "n_bits": width,
+                "descr": description,
+            }
+            # Add to port list
+            port_list.append(port)
+
+    return port_list
 
 
-def s_port(prefix, param_prefix, fout, bus_size=1):
-    for i in range(len(table)):
-        if table[i]["slave"] == 1:
-            port_direction = reverse(table[i]["signal"])
-            name = prefix + table[i]["name"] + suffix(reverse(table[i]["signal"]))
+def s_port(prefix, param_prefix, bus_size=1):
+    """
+    Create a list of ports for the master interface
+    @param prefix: prefix to add to the port name
+    @param param_prefix: prefix to add to the port width
+    @param bus_size: bus size
+    @return: list of interface ports
+    """
+
+    port_list = []
+    for port in range(len(table)):
+        if table[port]["slave"] == 1:
+            signal = reverse(table[port]["signal"])
+            if signal == "input":
+                direction = "I"
+            elif signal == "output":
+                direction = "O"
+
+            name = prefix + table[port]["name"] + suffix(signal)
             if bus_size == 1:
-                width = table[i]["width"]
+                width = table[port]["width"]
             else:
-                width = "(" + str(bus_size) + "*" + table[i]["width"] + ")"
+                width = "(" + str(bus_size) + "*" + table[port]["width"] + ")"
             width = add_param_prefix(width, param_prefix)
-            bus_width = " [" + width + "-1:0] "
-            description = top_macro + table[i]["description"]
-            # Write port
-            write_port(port_direction, bus_width, name, description, fout)
+            description = top_macro + table[port]["description"]
+
+            # Create port
+            port = {
+                "name": name,
+                "type": direction,
+                "n_bits": width,
+                "descr": description,
+            }
+
+            # Add to port list
+            port_list.append(port)
+
+    return port_list
 
 
 #
@@ -2181,9 +2232,69 @@ def default_interface_fields(if_dict):
     return if_dict
 
 
+def generate_interface(
+    interface_name,
+    port_prefix,
+    param_prefix,
+    bus_size=1,
+):
+    """
+    Generate interface which is a list of ports
+    @param interface_name: interface name
+    @param port_prefix: prefix for ports
+    @param wire_prefix: prefix for wires
+    @param bus_size: bus size
+    @param bus_start: bus start
+    @return: list of ports
+    """
+    func_name = (
+        interface_name.replace("axil_", "")
+        .replace("clk_en_rst_", "")
+        .replace("clk_rst_", "")
+        .replace("rom_", "")
+        .replace("ram_", "")
+        .replace("axi_", "")
+        .replace("write_", "")
+        .replace("read_", "")
+        .replace("iob_", "")
+        .replace("apb_", "")
+        .replace("ahb_", "")
+    )
+
+    param_prefix = port_prefix.upper()
+
+    # add '_' prefix for func_names starting with digit
+    # (examples: 2p_port, 2p_be_portmap, 2p_tiled_port)
+    if func_name[0].isdigit():
+        func_name = f"_{func_name}"
+
+    interface = eval(func_name + "(port_prefix, param_prefix, bus_size=bus_size)")
+
+    return interface
+
+
 #
 # Write to .vs file
 #
+
+
+def write_interface_ports(
+    interface_name, port_prefix, param_prefix, bus_size=1, file_object=None
+):
+    """
+    Write ports to file
+    @param interface_name: interface name
+    @param param_prefix: prefix for parameters
+    @param port_prefix: prefix for ports
+    @param bus_size: bus size
+    @param file_object: file object
+    """
+
+    interface = generate_interface(
+        interface_name, port_prefix, param_prefix, bus_size=bus_size
+    )
+    for port in interface:
+        write_port(port["type"], port["n_bits"], port["name"], file_object)
 
 
 # port_prefix: Prefix for ports in a portmap file; Prefix for ports in a `*port.vs` file; Use PORT_PREFIX (upper case) for parameters in signal width for ports or wire.
@@ -2225,7 +2336,13 @@ def write_vs_contents(
     elif interface_name.find("wire") + 1:
         eval(func_name + "(wire_prefix, param_prefix, file_object, bus_size=bus_size)")
     else:
-        eval(func_name + "(port_prefix, param_prefix, file_object, bus_size=bus_size)")
+        write_interface_ports(
+            interface_name,
+            port_prefix,
+            param_prefix,
+            bus_size=bus_size,
+            file_object=file_object,
+        )
 
 
 #

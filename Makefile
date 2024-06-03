@@ -1,6 +1,7 @@
 CORE := iob_soc
 
 SIMULATOR ?= icarus
+SYNTHESIZER ?= yosys
 BOARD ?= CYCLONEV-GT-DK
 
 DISABLE_LINT:=1
@@ -9,6 +10,7 @@ include submodules/LIB/setup.mk
 
 INIT_MEM ?= 1
 USE_EXTMEM ?= 0
+
 
 ifeq ($(INIT_MEM),1)
 SETUP_ARGS += INIT_MEM
@@ -34,7 +36,7 @@ sim-run:
 sim-test:
 	nix-shell --run 'make clean setup INIT_MEM=1 USE_EXTMEM=0 && make -C ../$(CORE)_V*/ sim-run SIMULATOR=icarus'
 	nix-shell --run 'make clean setup INIT_MEM=0 USE_EXTMEM=1 && make -C ../$(CORE)_V*/ sim-run SIMULATOR=verilator'
-	nix-shell --run 'make clean setup INIT_MEM=0 USE_EXTMEM=1 && make -C ../$(CORE)_V*/ sim-run SIMULATOR=verilator'
+	nix-shell --run 'make clean setup INIT_MEM=1 USE_EXTMEM=0 && make -C ../$(CORE)_V*/ sim-run SIMULATOR=verilator'
 
 fpga-run:
 	nix-shell --run 'make clean setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(CORE)_V*/ fpga-fw-build BOARD=$(BOARD)'
@@ -47,7 +49,7 @@ fpga-test:
 	make clean setup fpga-run BOARD=AES-KU040-DB-G INIT_MEM=0 USE_EXTMEM=1 
 
 syn-build: clean
-	nix-shell --run "make setup && make -C ../$(CORE)_V*/ syn-build"
+	nix-shell --run 'make setup && make -C ../$(CORE)_V*/ syn-build SYNTHESIZER=$(SYNTHESIZER)'
 
 doc-build:
 	nix-shell --run 'make clean setup && make -C ../$(CORE)_V*/ doc-build'

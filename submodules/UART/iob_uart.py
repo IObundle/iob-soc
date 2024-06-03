@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+from typing import List
 
 from iob_module import iob_module
 
@@ -15,6 +16,8 @@ class iob_uart(iob_module):
     version = "V0.10"
     setup_dir = os.path.dirname(__file__)
     rw_overlap = True
+
+    board_list: List = ["CYCLONEV-GT-DK", "AES-KU040-DB-G"]
 
     @classmethod
     def _create_submodules_list(cls):

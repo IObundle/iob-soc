@@ -3,11 +3,6 @@
 # This file is run as a makefile to setup a build directory for an IP core
 #
 
-help:
-	@echo The following targets are available:
-	@echo "  build-setup:  Setup the build directory"
-	@echo "  clean:  Remove the build directory"
-
 TOP_MODULE_NAME ?=$(basename $(wildcard *.py))
 PROJECT_ROOT ?=.
 
@@ -17,12 +12,10 @@ SETUP_ARGS += LIB_DIR=$(LIB_DIR)
 # python scripts directory
 PYTHON_DIR=$(LIB_DIR)/scripts
 
-PYTHON_EXEC:=/usr/bin/env python3 -B
-
-
 # establish build dir paths
 build_dir_name:
-	$(eval BUILD_DIR := $(shell $(PYTHON_EXEC) $(PYTHON_DIR)/bootstrap.py $(TOP_MODULE_NAME) $(SETUP_ARGS) -f get_build_dir -s $(PROJECT_ROOT)))
+	$(eval BUILD_DIR := $(shell $(PYTHON_DIR)/bootstrap.py $(TOP_MODULE_NAME) $(SETUP_ARGS) -f get_build_dir -s $(PROJECT_ROOT)))
+	if [ $(.SHELLSTATUS) -ne 0 ]; then exit 1; fi
 	$(eval BUILD_VSRC_DIR = $(BUILD_DIR)/hardware/src)
 	$(eval BUILD_SIM_DIR := $(BUILD_DIR)/hardware/simulation)
 	$(eval BUILD_FPGA_DIR = $(BUILD_DIR)/hardware/fpga)	
@@ -33,18 +26,21 @@ build_dir_name:
 	@echo $(BUILD_DIR)
 
 build_top_module:
-	$(PYTHON_EXEC) ./$(PYTHON_DIR)/bootstrap.py $(TOP_MODULE_NAME) $(SETUP_ARGS) -s $(PROJECT_ROOT)
+	./$(PYTHON_DIR)/bootstrap.py $(TOP_MODULE_NAME) $(SETUP_ARGS) -s $(PROJECT_ROOT)
+
+python-lint: build_dir_name
+	$(LIB_DIR)/scripts/sw_tools.py mypy . 
 
 python-format: build_dir_name
-	$(LIB_DIR)/scripts/sw_format.py black . 
+	$(LIB_DIR)/scripts/sw_tools.py black . 
 ifneq ($(wildcard $(BUILD_DIR)),)
-	$(LIB_DIR)/scripts/sw_format.py black $(BUILD_DIR) 
+	$(LIB_DIR)/scripts/sw_tools.py black $(BUILD_DIR) 
 endif
 
 c-format: build_dir_name
-	$(LIB_DIR)/scripts/sw_format.py clang .
+	$(LIB_DIR)/scripts/sw_tools.py clang .
 ifneq ($(wildcard $(BUILD_DIR)),)
-	$(LIB_DIR)/scripts/sw_format.py clang $(BUILD_DIR)
+	$(LIB_DIR)/scripts/sw_tools.py clang $(BUILD_DIR)
 endif
 
 IOB_LIB_PATH=$(LIB_DIR)/scripts
@@ -73,43 +69,13 @@ ifneq ($(DISABLE_FORMAT),1)
 	$(IOB_LIB_PATH)/verilog-format.sh $(VHFILES) $(VFILES)
 endif
 
-format-all: build_dir_name python-format c-format verilog-lint verilog-format
-
-#
-#DOCUMENT
-#
-
-ifneq ($(wildcard document),)
-
-ifeq ($(INTEL_FPGA),1)
-SRC+=$(BUILD_DIR)/doc/quartus.tex
-endif
-
-ifeq ($(AMD_FPGA),1)
-SRC+=$(BUILD_DIR)/doc/vivado.tex
-endif
-
-# generate quartus fitting results 
-$(BUILD_DIR)/doc/quartus.tex:
-	make -C $(BUILD_DIR) fpga-build BOARD=CYCLONEV-GT-DK
-	LOG=$(BUILD_FPGA_DIR)/reports/$(wildcard *.fit.summary) $(LIB_DIR)/scripts/quartus2tex.sh
-	mv `basename $@` $(BUILD_DOC_DIR)
-
-# generate vivado fitting results 
-$(BUILD_DIR)/doc/vivado.tex:
-	make -C $(BUILD_DIR) fpga-build BOARD=AES-KU040-DB-G
-	LOG=$(BUILD_FPGA_DIR)/vivado.log $(LIB_DIR)/scripts/vivado2tex.sh
-	mv `basename $@` $(BUILD_DOC_DIR)
-
-endif
+format-all: build_dir_name python-lint python-format c-format verilog-lint verilog-format
 
 clean: build_dir_name
 	-@if [ -f $(BUILD_DIR)/Makefile ]; then make -C $(BUILD_DIR) clean; fi
-	@rm -rf ../*.summary ../*.rpt $(BUILD_DIR)
-	@rm -f ~*
-ifneq ($(wildcard config_delivery.mk),)
-	make delivery-clean
-endif
+	# replace [top_module]_V[version] by [top_module]_V
+	$(eval CLEAN_DIR=$(shell echo $(BUILD_DIR) | sed 's/_V[0-9]\+\.[0-9]\+$$/_V/'))
+	@rm -rf ../*.summary ../*.rpt $(CLEAN_DIR)*  ~*
 
 # Remove all __pycache__ folders with python bytecode
 python-cache-clean:
@@ -119,4 +85,4 @@ build-setup: build_dir_name build_top_module $(SRC) format-all
 	@for i in $(SRC); do echo $$i; done
 
 
-.PHONY: build-setup clean c-format python-format verilog-format
+.PHONY: build-setup clean c-format python-lint python-format verilog-format

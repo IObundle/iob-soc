@@ -298,4 +298,25 @@ export RMAC_ADDR=000000000000
 export IOB_CONSOLE_PYTHON_ENV=/opt/pyeth3/bin/python
 ``` 
 
-You could also set those variables in the `config_build.mk` file of the build directory.
+You could also set those variables in the build directory's `config_build.mk` file.
+
+# Acknowledgements
+
+First of all, we acknowledge all the volunteer contributors for all their valuable pull requests, issues, and discussions. 
+
+The work has been partially performed in the scope of the A-IQ Ready project, which receives funding within Chips Joint Undertaking (Chips JU) - the Public-Private Partnership for research, development, and innovation under Horizon Europe – and National Authorities under grant agreement No. 101096658.
+
+The A-IQ Ready project is supported by the Chips Joint Undertaking (Chips JU) - the Public-Private Partnership for research, development, and innovation under Horizon Europe – and National Authorities under Grant Agreement No. 101096658.
+
+![image](https://github.com/IObundle/iob-soc/assets/5718971/78f2a3ee-d10b-4989-b221-71154fe6e409) ![image](https://github.com/IObundle/iob-soc/assets/5718971/d57e0430-bb60-42e3-82a3-c5b6b0417322)
+
+
+This project provides the basic infrastructure to other projects funded through the NGI Assure Fund, a fund established by NLnet
+with financial support from the European Commission's Next Generation Internet program under the aegis of DG Communications Networks, Content, and Technology.
+
+<table>
+    <tr>
+        <td align="center" width="50%"><img src="https://nlnet.nl/logo/banner.svg" alt="NLnet foundation logo" style="width:50%"></td>
+        <td align="center"><img src="https://nlnet.nl/image/logos/NGIAssure_tag.svg" alt="NGI Assure logo" style="width:50%"></td>
+    </tr>
+</table>

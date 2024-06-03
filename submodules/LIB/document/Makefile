@@ -26,21 +26,20 @@ TSRC+=signature.tex
 signature.tex:
 	 @echo `cat name.tex`-USG-`cat version.tex`-`cat shortHash.tex` > signature.tex
 
-#make product brief figures
+#make figures
+figs:
+	make -C ./figures figs
+
 pb_figs:
 	make -C ./figures pb_figs
-
-#make user guide figures
-ug_figs:
-	make -C ./figures ug_figs
 
 #build document
 build: debug $(DOC).pdf
 
 #build presentation document type
-presentation.pdf: presentation.tex
-	pdflatex $<
-	pdflatex $<
+presentation.pdf: figs presentation.tex
+	pdflatex -jobname pres presentation.tex
+	pdflatex -jobname pres presentation.tex
 
 #build product brief document type
 pb.pdf: debug results pb_figs pbtop.tex
@@ -52,7 +51,7 @@ pbtop.tex:
 	make doctop DOC=pb
 
 #build user guide document type
-ug.pdf: debug results ug_figs ugtop.tex
+ug.pdf: debug results figs ugtop.tex
 	pdflatex -jobname ug ugtop.tex
 	if [ -f *.bib ]; then bibtex ug; fi
 	pdflatex -jobname ug ugtop.tex
@@ -124,5 +123,5 @@ debug: $(TSRC)
 	@echo AMD_FPGA=$(AMD_FPGA)
 	@echo ASIC_NODE=$(ASIC_NODE)
 
-.PHONY: view doctop figures results build clean test debug
+.PHONY: view doctop figs results build clean test debug
 

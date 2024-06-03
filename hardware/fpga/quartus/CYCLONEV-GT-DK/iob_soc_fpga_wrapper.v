@@ -107,7 +107,7 @@ module iob_soc_fpga_wrapper (
    //
    // IOb-SoC (may include UUT)
    //
-   iob_soc #(
+   iob_soc_mwrap #(
       .AXI_ID_W  (AXI_ID_W),
       .AXI_LEN_W (AXI_LEN_W),
       .AXI_ADDR_W(AXI_ADDR_W),
