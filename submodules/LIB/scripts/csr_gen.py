@@ -3,11 +3,11 @@
 #    csr_gen.py: build Verilog software accessible registers and software getters and setters
 #
 
-import sys, os
+import sys
+import os
 from math import ceil, log
 from latex import write_table
 from submodule_utils import eval_param_expression_from_config
-import re
 import iob_colors
 
 
@@ -106,16 +106,16 @@ class csr_gen:
         )
 
         # signal to indicate if the register is addressed
-        f.write(f"wire {name}_addressed;\n")
+        f.write(f"wire {name}_addressed_w;\n")
 
         # test if addr and addr_w are int and substitute with their values
         if isinstance(addr, int) and isinstance(addr_w, int):
             f.write(
-                f"assign {name}_addressed = (waddr >= {addr}) && (waddr < {addr+2**addr_w});\n"
+                f"assign {name}_addressed_w = (waddr >= {addr}) && (waddr < {addr+2**addr_w});\n"
             )
         else:
             f.write(
-                f"assign {name}_addressed = (waddr >= {addr}) && (waddr < ({addr}+(2**({addr_w}))));\n"
+                f"assign {name}_addressed_w = (waddr >= {addr}) && (waddr < ({addr}+(2**({addr_w}))));\n"
             )
 
         if auto:  # generate register
@@ -142,7 +142,7 @@ class csr_gen:
                 rst_val_str = str(n_bits) + "'d" + str(rst_val)
             f.write(f"wire {name}_wen;\n")
             f.write(
-                f"assign {name}_wen = (iob_valid_i & iob_ready_o) & ((|iob_wstrb_i) & {name}_addressed);\n"
+                f"assign {name}_wen = (iob_valid_i & iob_ready_o) & ((|iob_wstrb_i) & {name}_addressed_w);\n"
             )
             f.write(f"iob_reg_e #(\n")
             f.write(f"  .DATA_W({n_bits}),\n")
@@ -157,7 +157,7 @@ class csr_gen:
             f.write(");\n")
         else:  # compute wen
             f.write(
-                f"assign {name}_wen_o = ({name}_addressed & (iob_valid_i & iob_ready_o))? |iob_wstrb_i: 1'b0;\n"
+                f"assign {name}_wen_o = ({name}_addressed_w & (iob_valid_i & iob_ready_o))? |iob_wstrb_i: 1'b0;\n"
             )
             f.write(f"assign {name}_wdata_o = {name}_wdata;\n")
 
@@ -178,13 +178,12 @@ class csr_gen:
         )
 
         if not auto:  # output read enable
-            if "W" not in row["type"]:
-                f.write(f"wire {name}_addressed;\n")
-                f.write(
-                    f"assign {name}_addressed = (iob_addr_i >= {addr}) && (iob_addr_i < ({addr}+(2**({addr_w}))));\n"
-                )
+            f.write(f"wire {name}_addressed_r;\n")
             f.write(
-                f"assign {name}_ren_o = {name}_addressed & (iob_valid_i & iob_ready_o) & (~|iob_wstrb_i);\n"
+                f"assign {name}_addressed_r = (iob_addr_i >= {addr}) && (iob_addr_i < ({addr}+(2**({addr_w}))));\n"
+            )
+            f.write(
+                f"assign {name}_ren_o = {name}_addressed_r & (iob_valid_i & iob_ready_o) & (~|iob_wstrb_i);\n"
             )
 
     # generate ports for swreg module
@@ -875,6 +874,53 @@ class csr_gen:
                     f"  return (*( (volatile {sw_type} *) ( (base) + ({core_prefix}{name}_ADDR){addr_shift}) ));\n"
                 )
                 fsw.write("}\n\n")
+        fsw.close()
+
+    def write_tbcode(self, table, out_dir, top):
+        os.makedirs(out_dir, exist_ok=True)
+        fsw = open(f"{out_dir}/{top}_swreg_emb_tb.vs", "w")
+        core_prefix = f"{top}_".upper()
+        # fsw.write(f'`include "{top}_swreg_def.vh"\n\n')
+
+        fsw.write("\n// SWreg Core Setters and Getters\n")
+
+        for row in table:
+            name = row["name"]
+            n_bits = row["n_bits"]
+            log2n_items = row["log2n_items"]
+            n_bytes = self.bceil(n_bits, 3) / 8
+            if n_bytes == 3:
+                n_bytes = 4
+            addr_w = self.calc_addr_w(log2n_items, n_bytes)
+            if "W" in row["type"]:
+                sw_type = f"[{int(n_bytes*8)}-1:0]"
+                addr_arg = ""
+                addr_arg = ""
+                addr_shift = ""
+                if addr_w / n_bytes > 1:
+                    addr_arg = ", input reg [ADDR_W-1:0] addr"
+                    addr_shift = f" + (addr << {int(log(n_bytes, 2))})"
+                fsw.write(
+                    f"task static {core_prefix}SET_{name}(input reg {sw_type} value{addr_arg});\n"
+                )
+                fsw.write(
+                    f"  iob_write( (`{core_prefix}{name}_ADDR){addr_shift}, value, `{core_prefix}{name}_W);\n"
+                )
+                fsw.write("endtask\n\n")
+            if "R" in row["type"]:
+                sw_type = f"[{int(n_bytes*8)}-1:0]"
+                addr_arg = ""
+                addr_shift = ""
+                if addr_w / n_bytes > 1:
+                    addr_arg = "input reg [ADDR_W-1:0] addr, "
+                    addr_shift = f" + (addr << {int(log(n_bytes, 2))})"
+                fsw.write(
+                    f"task static {core_prefix}GET_{name}({addr_arg}output reg {sw_type} rvalue);\n"
+                )
+                fsw.write(
+                    f"  iob_read( (`{core_prefix}{name}_ADDR){addr_shift}, rvalue, `{core_prefix}{name}_W);\n"
+                )
+                fsw.write("endtask\n\n")
         fsw.close()
 
     # check if address is aligned

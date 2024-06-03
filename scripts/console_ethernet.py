@@ -7,10 +7,17 @@ import sys
 if __name__ == "__main__":
     # Save argv and override it with new values because ethBase requires them
     saved_argv = sys.argv
+    cnsl_mac_addr = (
+        sys.argv[sys.argv.index("-m") + 1] if "-m" in sys.argv else "88431eafa897"
+    )
+    eth_interface = sys.argv[sys.argv.index("-i") + 1]
+    timeout = sys.argv[sys.argv.index("-t") + 1] if "-t" in sys.argv else "0.1"
     try:
         sys.argv = [
             "eth_comm.py",
-            sys.argv[sys.argv.index("-m") + 1] if "-m" in sys.argv else "4437e6a6893b",
+            cnsl_mac_addr,
+            eth_interface,
+            timeout,
         ]
         from ethBase import CreateSocket, SyncAckFirst, SyncAckLast
         from ethRcvData import RcvFile
@@ -31,6 +38,17 @@ if __name__ == "__main__":
         del name_backup
     else:
         console_path = ""
+
+    if "-e" in sys.argv:
+        eth2file_path = os.path.realpath(sys.argv[sys.argv.index("-e") + 1])
+        # Save current __name__ and override it to run code from eth2file module
+        name_backup = __name__
+        __name__ = "eth2file"
+        # Run code from eth2file script
+        exec(open(eth2file_path).read())
+        # Restore __name__
+        __name__ = name_backup
+        del name_backup
 
 # Global variables
 EFTX = b"\x12"  # Receive file by ethernet request
@@ -102,10 +120,11 @@ def usage(message):
     print(
         "{}:{}".format(
             PROGNAME,
-            "usage: ./console_ethernet.py -s <serial port> -c <console path> [ -f ] [ -L/--local ] -m <ethernet mac address>",
+            "usage: ./console_ethernet.py -s <serial port> -c <console path> [ -f ] [ -L/--local ] -m <ethernet mac address> -i <interface> -t <socket_timeout>",
         )
     )
-    cnsl_perror(message)
+    print(message)
+    exit(1)
 
 
 # Main function.
@@ -116,6 +135,15 @@ def main():
     init_console()
     gotENQ = False
     input_thread = Thread(target=getUserInput, args=[], daemon=True)
+
+    # Launch eth2file python script (for simulation)
+    if "-e" in sys.argv:
+        eth2file_thread = Thread(
+            target=relay_frames,
+            args=[eth_interface, "soc2eth", "eth2soc", "01606e11020f"],
+            daemon=True,
+        )
+        eth2file_thread.start()
 
     # Reading the data from the serial port or FIFO files. This will be running in an infinite loop.
     while True:
