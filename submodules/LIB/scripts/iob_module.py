@@ -408,7 +408,7 @@ class iob_module:
                 )
                 mkregs_obj.write_tbcode(
                     reg_table,
-                    cls.build_dir + "/hardware/src",
+                    cls.build_dir + "/hardware/simulation/src",
                     cls.name,
                 )
 

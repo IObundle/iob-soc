@@ -6,82 +6,56 @@
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 
+#include "iob_tasks.h"
+
 #include "iob_soc_conf.h"
 #include "iob_uart_swreg.h"
 
 // other macros
 #define CLK_PERIOD 1000000000 / FREQ // 1/100MHz*10^9 = 10 ns
 
-vluint64_t main_time = 0;
 VerilatedVcdC *tfp = NULL;
 Viob_soc_sim_wrapper *dut = NULL;
 
 double sc_time_stamp() { return main_time; }
 
-void Timer(unsigned int ns) {
-  for (int i = 0; i < ns; i++) {
-    if (!(main_time % (CLK_PERIOD / 2))) {
-      dut->clk_i = !(dut->clk_i);
-      dut->eval();
-    }
-    // To add a new clk follow the example
-    // if(!(main_time%(EXAMPLE_CLK_PERIOD/2))){
-    //  dut->example_clk_in = !(dut->example_clk_in);
-    //}
-    main_time += 1;
-  }
-}
-
-// 1-cycle write
-void uartwrite(unsigned int cpu_address, unsigned int cpu_data,
-               unsigned int nbytes) {
-  char wstrb_int = 0;
-  switch (nbytes) {
-  case 1:
-    wstrb_int = 0b01;
-    break;
-  case 2:
-    wstrb_int = 0b011;
-    break;
-  default:
-    wstrb_int = 0b01111;
-    break;
-  }
-  dut->uart_addr_i = cpu_address;
-  dut->uart_valid_i = 1;
-  dut->uart_wstrb_i = wstrb_int << (cpu_address & 0b011);
-  dut->uart_wdata_i = cpu_data
-                      << ((cpu_address & 0b011) * 8); // align data to 32 bits
-  Timer(CLK_PERIOD);
-  dut->uart_wstrb_i = 0;
-  dut->uart_valid_i = 0;
-}
-
-// 2-cycle read
-void uartread(unsigned int cpu_address, char *read_reg) {
-  dut->uart_addr_i = cpu_address;
-  dut->uart_valid_i = 1;
-  Timer(CLK_PERIOD);
-  *read_reg =
-      (dut->uart_rdata_o) >> ((cpu_address & 0b011) * 8); // align to 32 bits
-  dut->uart_valid_i = 0;
-}
-
-void inituart() {
+void inituart(iob_native_t *uart_if) {
   // pulse reset uart
-  uartwrite(IOB_UART_SOFTRESET_ADDR, 1, IOB_UART_SOFTRESET_W / 8);
-  uartwrite(IOB_UART_SOFTRESET_ADDR, 0, IOB_UART_SOFTRESET_W / 8);
+  iob_write(IOB_UART_SOFTRESET_ADDR, 1, IOB_UART_SOFTRESET_W / 8, uart_if);
+  iob_write(IOB_UART_SOFTRESET_ADDR, 0, IOB_UART_SOFTRESET_W / 8, uart_if);
   // config uart div factor
-  uartwrite(IOB_UART_DIV_ADDR, int(FREQ / BAUD), IOB_UART_DIV_W / 8);
+  iob_write(IOB_UART_DIV_ADDR, int(FREQ / BAUD), IOB_UART_DIV_W / 8, uart_if);
   // enable uart for receiving
-  uartwrite(IOB_UART_RXEN_ADDR, 1, IOB_UART_RXEN_W / 8);
-  uartwrite(IOB_UART_TXEN_ADDR, 1, IOB_UART_TXEN_W / 8);
+  iob_write(IOB_UART_RXEN_ADDR, 1, IOB_UART_RXEN_W / 8, uart_if);
+  iob_write(IOB_UART_TXEN_ADDR, 1, IOB_UART_TXEN_W / 8, uart_if);
 }
 
 int main(int argc, char **argv, char **env) {
   Verilated::commandArgs(argc, argv);
   Verilated::traceEverOn(true);
   dut = new Viob_soc_sim_wrapper;
+  timer_settings.clk = &dut->clk_i;
+  timer_settings.eval = &dut->eval;
+
+  iob_native_t uart_if = {
+    &dut->uart_valid_i,
+    &dut->uart_addr_i,
+    &dut->uart_wdata_i,
+    &dut->uart_wstrb_i,
+    &dut->uart_rdata_o,
+    &dut->uart_rvalid_o,
+    &dut->uart_ready_o
+  }
+
+  iob_native_t eth_if = {
+    &dut->ethernet_valid_i,
+    &dut->ethernet_addr_i,
+    &dut->ethernet_wdata_i,
+    &dut->ethernet_wstrb_i,
+    &dut->ethernet_rdata_o,
+    &dut->ethernet_rvalid_o,
+    &dut->ethernet_ready_o
+  }
 
 #ifdef VCD
   tfp = new VerilatedVcdC;
@@ -99,9 +73,10 @@ int main(int argc, char **argv, char **env) {
   Timer(100);
   dut->arst_i = 0;
 
-  dut->uart_valid_i = 0;
-  dut->uart_wstrb_i = 0;
-  inituart();
+  *(uart_if.iob_valid) = 0;
+  *(uart_if.iob_wstrb) = 0;
+  inituart(&uart_if);
+  // TODO: Launch parallel ethernet driver
 
   FILE *soc2cnsl_fd;
   FILE *cnsl2soc_fd;
@@ -123,11 +98,11 @@ int main(int argc, char **argv, char **env) {
       break;
     }
     while (!rxread_reg && !txread_reg) {
-      uartread(IOB_UART_RXREADY_ADDR, &rxread_reg);
-      uartread(IOB_UART_TXREADY_ADDR, &txread_reg);
+      rxread_reg = iob_read(IOB_UART_RXREADY_ADDR, &uart_if);
+      txread_reg = iob_read(IOB_UART_TXREADY_ADDR, &uart_if);
     }
     if (rxread_reg) {
-      uartread(IOB_UART_RXDATA_ADDR, &cpu_char);
+      cpu_char = iob_read(IOB_UART_RXDATA_ADDR, &uart_if);
       fwrite(&cpu_char, sizeof(char), 1, soc2cnsl_fd);
       fflush(soc2cnsl_fd);
       rxread_reg = 0;
@@ -139,7 +114,7 @@ int main(int argc, char **argv, char **env) {
       }
       able2write = fread(&cpu_char, sizeof(char), 1, cnsl2soc_fd);
       if (able2write > 0) {
-        uartwrite(IOB_UART_TXDATA_ADDR, cpu_char, IOB_UART_TXDATA_W / 8);
+        iob_write(IOB_UART_TXDATA_ADDR, cpu_char, IOB_UART_TXDATA_W / 8, &uart_if);
         fclose(cnsl2soc_fd);
         cnsl2soc_fd = fopen("./cnsl2soc", "w");
       }
