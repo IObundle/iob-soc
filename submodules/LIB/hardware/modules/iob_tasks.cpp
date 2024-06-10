@@ -55,11 +55,17 @@ void Timer(unsigned int ns) {
     if (!(main_time % (CLK_PERIOD / 2))) {
       *(task_timer_settings.clk) = !*(task_timer_settings.clk);
       (*task_timer_settings.eval)();
-    }
     // To add a new clk follow the example
     // if(!(main_time%(EXAMPLE_CLK_PERIOD/2))){
     //   *(task_timer_settings.example_clk) = !*(task_timer_settings.example_clk);
-    //}
+
+    // Also eval 1ns after edge
+    } else if (!((main_time-1) % (CLK_PERIOD / 2))) {
+      (*task_timer_settings.eval)();
+    }
+#if (VM_TRACE == 1)
+    (*task_timer_settings.dump)(main_time); // Dump values into tracing file
+#endif
     main_time += 1;
   }
 }

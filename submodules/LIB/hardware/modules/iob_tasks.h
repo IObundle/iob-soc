@@ -22,6 +22,7 @@ typedef struct {
 typedef struct {
 	unsigned char *clk;
 	void (*eval)(void);
+	void (*dump)(vluint64_t);
 } timer_settings_t;
 
 void Timer(unsigned int ns);
