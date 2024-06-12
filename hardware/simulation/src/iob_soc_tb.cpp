@@ -4,8 +4,9 @@
 
 #include "Viob_soc_sim_wrapper.h"
 #include "bsp.h"
-#include "iob_tasks.h"
-#include "iob_eth_defines_verilator.h"
+#ifdef IOB_SOC_USE_ETHERNET
+#include "iob_eth_driver_tb.h"
+#endif
 
 #include "iob_soc_conf.h"
 #include "iob_uart_swreg.h"
@@ -62,6 +63,7 @@ int main(int argc, char **argv, char **env) {
     &dut->uart_ready_o
   };
 
+#ifdef IOB_SOC_USE_ETHERNET
   iob_native_t eth_if = {
     &dut->ethernet_valid_i,
     &dut->ethernet_addr_i,
@@ -72,6 +74,7 @@ int main(int argc, char **argv, char **env) {
     &dut->ethernet_rvalid_o,
     &dut->ethernet_ready_o
   };
+#endif
 
 #if (VM_TRACE == 1)
   Verilated::traceEverOn(true);           // Enable tracing
@@ -91,7 +94,10 @@ int main(int argc, char **argv, char **env) {
   *(uart_if.iob_valid) = 0;
   *(uart_if.iob_wstrb) = 0;
   cpu_inituart(&uart_if);
-  // TODO: Launch parallel ethernet driver
+
+#ifdef IOB_SOC_USE_ETHERNET
+  eth_setup(&eth_if);
+#endif
 
   FILE *soc2cnsl_fd;
   FILE *cnsl2soc_fd;
@@ -136,6 +142,10 @@ int main(int argc, char **argv, char **env) {
       fclose(cnsl2soc_fd);
       txread_reg = 0;
     }
+
+#ifdef IOB_SOC_USE_ETHERNET
+    eth_relay_frames(&eth_if);
+#endif
   }
 
   dut->final();
