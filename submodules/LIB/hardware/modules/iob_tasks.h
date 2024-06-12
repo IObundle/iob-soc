@@ -8,10 +8,13 @@
 #define CLK_PERIOD 1000000000 / FREQ // 1/100MHz*10^9 = 10 ns
 #endif
 
+typedef enum {UINT, USINT, UCHAR} signal_datatype_t;
+
 // Struct defining iob-native interface
 typedef struct {
 	unsigned char *iob_valid;
-	short unsigned int *iob_addr;
+	void *iob_addr;
+	signal_datatype_t iob_addr_type;
 	unsigned int *iob_wdata;
 	unsigned char *iob_wstrb;
 	unsigned int *iob_rdata;

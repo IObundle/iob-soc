@@ -6,6 +6,20 @@ vluint64_t main_time = 0;
 // Store timer related settings (clk and eval)
 timer_settings_t task_timer_settings;
 
+// Set a signal value with correct data type
+static void set_signal(void *signal, signal_datatype_t data_type, unsigned int data){
+  switch(data_type){
+    case USINT:
+      *(unsigned short int*)signal = data;
+      break;
+    case UCHAR:
+      *(unsigned char*)signal = data;
+      break;
+    default:
+      *(unsigned int*)signal = data;
+  }
+}
+
 //
 // Verilator functions to drive the IOb Native protocol
 //
@@ -26,7 +40,7 @@ void iob_write(unsigned int cpu_address, unsigned int cpu_data,
     wstrb_int = 0b01111;
     break;
   }
-  *(native_if->iob_addr) = cpu_address;
+  set_signal(native_if->iob_addr, native_if->iob_addr_type, cpu_address);
   *(native_if->iob_valid) = 1;
   *(native_if->iob_wstrb) = wstrb_int << (cpu_address & 0b011);
   *(native_if->iob_wdata) = cpu_data
@@ -40,7 +54,7 @@ void iob_write(unsigned int cpu_address, unsigned int cpu_data,
 // 2-cycle read
 char iob_read(unsigned int cpu_address, iob_native_t *native_if) {
   char read_reg = 0;
-  *(native_if->iob_addr) = cpu_address;
+  set_signal(native_if->iob_addr, native_if->iob_addr_type, cpu_address);
   *(native_if->iob_valid) = 1;
   Timer(CLK_PERIOD);
   read_reg =

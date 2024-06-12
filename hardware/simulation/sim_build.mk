@@ -9,6 +9,8 @@ VTOP:=iob_soc_tb
 # SOURCES
 ifeq ($(SIMULATOR),verilator)
 
+VSRC+=./src/iob_tasks.cpp
+
 # get header files (needed for iob_soc_tb.cpp)
 VHDR+=iob_uart_swreg.h
 iob_uart_swreg.h: ../../software/src/iob_uart_swreg.h

@@ -1,81 +1,96 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <verilated.h>
 
 #include "Viob_soc_sim_wrapper.h"
 #include "bsp.h"
-#include "verilated.h"
-#include "verilated_vcd_c.h"
-
 #include "iob_tasks.h"
+#include "iob_eth_defines_verilator.h"
 
 #include "iob_soc_conf.h"
 #include "iob_uart_swreg.h"
 
-// other macros
-#define CLK_PERIOD 1000000000 / FREQ // 1/100MHz*10^9 = 10 ns
+#if (VM_TRACE == 1) // If verilator was invoked with --trace
+#include <verilated_vcd_c.h>
+#endif
 
-VerilatedVcdC *tfp = NULL;
-Viob_soc_sim_wrapper *dut = NULL;
+extern vluint64_t main_time;
+extern timer_settings_t task_timer_settings;
 
-double sc_time_stamp() { return main_time; }
+void cpu_inituart(iob_native_t *uart_if);
 
-void inituart(iob_native_t *uart_if) {
-  // pulse reset uart
-  iob_write(IOB_UART_SOFTRESET_ADDR, 1, IOB_UART_SOFTRESET_W / 8, uart_if);
-  iob_write(IOB_UART_SOFTRESET_ADDR, 0, IOB_UART_SOFTRESET_W / 8, uart_if);
-  // config uart div factor
-  iob_write(IOB_UART_DIV_ADDR, int(FREQ / BAUD), IOB_UART_DIV_W / 8, uart_if);
-  // enable uart for receiving
-  iob_write(IOB_UART_RXEN_ADDR, 1, IOB_UART_RXEN_W / 8, uart_if);
-  iob_write(IOB_UART_TXEN_ADDR, 1, IOB_UART_TXEN_W / 8, uart_if);
+Viob_soc_sim_wrapper *dut = new Viob_soc_sim_wrapper;
+
+void call_eval(){
+  dut->eval();
 }
 
+#if (VM_TRACE == 1)
+VerilatedVcdC *tfp = new VerilatedVcdC; // Create tracing object
+
+void call_dump(vluint64_t time){
+  tfp->dump(time);
+}
+#endif
+
+double sc_time_stamp() { // Called by $time in Verilog
+  return main_time;
+}
+
+
+//
+// Main program
+//
 int main(int argc, char **argv, char **env) {
+  unsigned int i;
+
   Verilated::commandArgs(argc, argv);
-  Verilated::traceEverOn(true);
-  dut = new Viob_soc_sim_wrapper;
-  timer_settings.clk = &dut->clk_i;
-  timer_settings.eval = &dut->eval;
+  task_timer_settings.clk = &dut->clk_i;
+  task_timer_settings.eval = call_eval;
+#if (VM_TRACE == 1)
+  task_timer_settings.dump = call_dump;
+#endif
 
   iob_native_t uart_if = {
     &dut->uart_valid_i,
     &dut->uart_addr_i,
+    UCHAR,
     &dut->uart_wdata_i,
     &dut->uart_wstrb_i,
     &dut->uart_rdata_o,
     &dut->uart_rvalid_o,
     &dut->uart_ready_o
-  }
+  };
 
   iob_native_t eth_if = {
     &dut->ethernet_valid_i,
     &dut->ethernet_addr_i,
+    USINT,
     &dut->ethernet_wdata_i,
     &dut->ethernet_wstrb_i,
     &dut->ethernet_rdata_o,
     &dut->ethernet_rvalid_o,
     &dut->ethernet_ready_o
-  }
+  };
 
-#ifdef VCD
-  tfp = new VerilatedVcdC;
-
+#if (VM_TRACE == 1)
+  Verilated::traceEverOn(true);           // Enable tracing
   dut->trace(tfp, 1);
   tfp->open("uut.vcd");
 #endif
 
   dut->clk_i = 0;
-  dut->arst_i = 0;
 
   // Reset sequence
-  Timer(100);
+  dut->arst_i = 0;
+  for (i = 0; i < 100; i++) Timer(CLK_PERIOD);
   dut->arst_i = 1;
-  Timer(100);
+  for (i = 0; i < 100; i++) Timer(CLK_PERIOD);
   dut->arst_i = 0;
 
   *(uart_if.iob_valid) = 0;
   *(uart_if.iob_wstrb) = 0;
-  inituart(&uart_if);
+  cpu_inituart(&uart_if);
   // TODO: Launch parallel ethernet driver
 
   FILE *soc2cnsl_fd;
@@ -124,10 +139,28 @@ int main(int argc, char **argv, char **env) {
   }
 
   dut->final();
-#ifdef VCD
-  tfp->close();
+
+#if (VM_TRACE == 1)
+  tfp->dump(main_time); // Dump last values
+  tfp->close();         // Close tracing file
+  std::cout << "Generated vcd file" << std::endl;
+  delete tfp;
 #endif
+
   delete dut;
   dut = NULL;
+
   exit(0);
 }
+
+void cpu_inituart(iob_native_t *uart_if) {
+  // pulse reset uart
+  iob_write(IOB_UART_SOFTRESET_ADDR, 1, IOB_UART_SOFTRESET_W / 8, uart_if);
+  iob_write(IOB_UART_SOFTRESET_ADDR, 0, IOB_UART_SOFTRESET_W / 8, uart_if);
+  // config uart div factor
+  iob_write(IOB_UART_DIV_ADDR, int(FREQ / BAUD), IOB_UART_DIV_W / 8, uart_if);
+  // enable uart for receiving
+  iob_write(IOB_UART_RXEN_ADDR, 1, IOB_UART_RXEN_W / 8, uart_if);
+  iob_write(IOB_UART_TXEN_ADDR, 1, IOB_UART_TXEN_W / 8, uart_if);
+}
+
