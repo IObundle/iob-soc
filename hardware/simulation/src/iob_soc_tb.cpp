@@ -4,13 +4,13 @@
 
 #include "Viob_soc_sim_wrapper.h"
 #include "bsp.h"
+#include "iob_soc_conf.h"
+#include "iob_uart_swreg.h"
+
 #include "iob_tasks.h"
 #ifdef IOB_SOC_USE_ETHERNET
 #include "iob_eth_driver_tb.h"
 #endif
-
-#include "iob_soc_conf.h"
-#include "iob_uart_swreg.h"
 
 #if (VM_TRACE == 1) // If verilator was invoked with --trace
 #include <verilated_vcd_c.h>
