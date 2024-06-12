@@ -867,7 +867,9 @@ class mkregs:
                 if addr_w / n_bytes > 1:
                     addr_arg = "input reg [ADDR_W-1:0] addr, "
                     addr_shift = f" + (addr << {int(log(n_bytes, 2))})"
-                fsw.write(f"task static {core_prefix}GET_{name}({addr_arg}output reg {sw_type} rvalue);\n")
+                fsw.write(
+                    f"task static {core_prefix}GET_{name}({addr_arg}output reg {sw_type} rvalue);\n"
+                )
                 fsw.write(
                     f"  iob_read( (`{core_prefix}{name}_ADDR){addr_shift}, rvalue, `{core_prefix}{name}_W);\n"
                 )
@@ -913,7 +915,9 @@ class mkregs:
                 if addr_w / n_bytes > 1:
                     addr_arg = "int addr, "
                     addr_shift = f" + (addr << {int(log(n_bytes, 2))})"
-                fsw.write(f"{sw_type} {core_prefix}GET_{name}({addr_arg}iob_native_t *native_if) {{\n")
+                fsw.write(
+                    f"{sw_type} {core_prefix}GET_{name}({addr_arg}iob_native_t *native_if) {{\n"
+                )
                 fsw.write(
                     f"  return iob_read(({core_prefix}{name}_ADDR){addr_shift}, native_if);\n"
                 )
@@ -975,7 +979,9 @@ class mkregs:
                 addr_arg = ""
                 if addr_w / n_bytes > 1:
                     addr_arg = "int addr, "
-                fswhdr.write(f"{sw_type} {core_prefix}GET_{name}({addr_arg}iob_native_t *native_if);\n")
+                fswhdr.write(
+                    f"{sw_type} {core_prefix}GET_{name}({addr_arg}iob_native_t *native_if);\n"
+                )
 
         fswhdr.write(f"\n#endif // H_{core_prefix}_SWREG_VERILATOR_H\n")
 

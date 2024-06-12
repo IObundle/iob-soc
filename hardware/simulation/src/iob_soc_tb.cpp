@@ -4,6 +4,7 @@
 
 #include "Viob_soc_sim_wrapper.h"
 #include "bsp.h"
+#include "iob_tasks.h"
 #ifdef IOB_SOC_USE_ETHERNET
 #include "iob_eth_driver_tb.h"
 #endif
@@ -22,22 +23,17 @@ void cpu_inituart(iob_native_t *uart_if);
 
 Viob_soc_sim_wrapper *dut = new Viob_soc_sim_wrapper;
 
-void call_eval(){
-  dut->eval();
-}
+void call_eval() { dut->eval(); }
 
 #if (VM_TRACE == 1)
 VerilatedVcdC *tfp = new VerilatedVcdC; // Create tracing object
 
-void call_dump(vluint64_t time){
-  tfp->dump(time);
-}
+void call_dump(vluint64_t time) { tfp->dump(time); }
 #endif
 
 double sc_time_stamp() { // Called by $time in Verilog
   return main_time;
 }
-
 
 //
 // Main program
@@ -53,31 +49,19 @@ int main(int argc, char **argv, char **env) {
 #endif
 
   iob_native_t uart_if = {
-    &dut->uart_valid_i,
-    &dut->uart_addr_i,
-    UCHAR,
-    &dut->uart_wdata_i,
-    &dut->uart_wstrb_i,
-    &dut->uart_rdata_o,
-    &dut->uart_rvalid_o,
-    &dut->uart_ready_o
-  };
+      &dut->uart_valid_i,  &dut->uart_addr_i,  UCHAR,
+      &dut->uart_wdata_i,  &dut->uart_wstrb_i, &dut->uart_rdata_o,
+      &dut->uart_rvalid_o, &dut->uart_ready_o};
 
 #ifdef IOB_SOC_USE_ETHERNET
   iob_native_t eth_if = {
-    &dut->ethernet_valid_i,
-    &dut->ethernet_addr_i,
-    USINT,
-    &dut->ethernet_wdata_i,
-    &dut->ethernet_wstrb_i,
-    &dut->ethernet_rdata_o,
-    &dut->ethernet_rvalid_o,
-    &dut->ethernet_ready_o
-  };
+      &dut->ethernet_valid_i,  &dut->ethernet_addr_i,  USINT,
+      &dut->ethernet_wdata_i,  &dut->ethernet_wstrb_i, &dut->ethernet_rdata_o,
+      &dut->ethernet_rvalid_o, &dut->ethernet_ready_o};
 #endif
 
 #if (VM_TRACE == 1)
-  Verilated::traceEverOn(true);           // Enable tracing
+  Verilated::traceEverOn(true); // Enable tracing
   dut->trace(tfp, 1);
   tfp->open("uut.vcd");
 #endif
@@ -86,9 +70,11 @@ int main(int argc, char **argv, char **env) {
 
   // Reset sequence
   dut->arst_i = 0;
-  for (i = 0; i < 100; i++) Timer(CLK_PERIOD);
+  for (i = 0; i < 100; i++)
+    Timer(CLK_PERIOD);
   dut->arst_i = 1;
-  for (i = 0; i < 100; i++) Timer(CLK_PERIOD);
+  for (i = 0; i < 100; i++)
+    Timer(CLK_PERIOD);
   dut->arst_i = 0;
 
   *(uart_if.iob_valid) = 0;
@@ -135,7 +121,8 @@ int main(int argc, char **argv, char **env) {
       }
       able2write = fread(&cpu_char, sizeof(char), 1, cnsl2soc_fd);
       if (able2write > 0) {
-        iob_write(IOB_UART_TXDATA_ADDR, cpu_char, IOB_UART_TXDATA_W / 8, &uart_if);
+        iob_write(IOB_UART_TXDATA_ADDR, cpu_char, IOB_UART_TXDATA_W / 8,
+                  &uart_if);
         fclose(cnsl2soc_fd);
         cnsl2soc_fd = fopen("./cnsl2soc", "w");
       }
@@ -173,4 +160,3 @@ void cpu_inituart(iob_native_t *uart_if) {
   iob_write(IOB_UART_RXEN_ADDR, 1, IOB_UART_RXEN_W / 8, uart_if);
   iob_write(IOB_UART_TXEN_ADDR, 1, IOB_UART_TXEN_W / 8, uart_if);
 }
-
