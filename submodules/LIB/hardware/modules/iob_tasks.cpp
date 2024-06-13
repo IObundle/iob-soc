@@ -26,7 +26,6 @@ static void set_signal(void *signal, signal_datatype_t data_type,
 //
 
 // Write data to IOb Native slave
-// 1-cycle write
 void iob_write(unsigned int cpu_address, unsigned int cpu_data,
                unsigned int nbytes, iob_native_t *native_if) {
   char wstrb_int = 0;
@@ -41,26 +40,43 @@ void iob_write(unsigned int cpu_address, unsigned int cpu_data,
     wstrb_int = 0b01111;
     break;
   }
+  Timer(1); // In sync with clk posedge + 1ns
   set_signal(native_if->iob_addr, native_if->iob_addr_type, cpu_address);
   *(native_if->iob_valid) = 1;
   *(native_if->iob_wstrb) = wstrb_int << (cpu_address & 0b011);
   *(native_if->iob_wdata) =
       cpu_data << ((cpu_address & 0b011) * 8); // align data to 32 bits
-  Timer(CLK_PERIOD);
+  Timer(CLK_PERIOD - 1);                       // In sync with clk posedge
+  while (!*(native_if->iob_ready))
+    Timer(CLK_PERIOD);
   *(native_if->iob_wstrb) = 0;
   *(native_if->iob_valid) = 0;
 }
 
 // Read data from IOb Native slave
-// 2-cycle read
 char iob_read(unsigned int cpu_address, iob_native_t *native_if) {
   char read_reg = 0;
+  bool read_complete = 0;
+  Timer(1); // In sync with clk posedge + 1ns
   set_signal(native_if->iob_addr, native_if->iob_addr_type, cpu_address);
   *(native_if->iob_valid) = 1;
-  Timer(CLK_PERIOD);
+  Timer(CLK_PERIOD - 1); // In sync with clk posedge
+  while (!*(native_if->iob_ready))
+    Timer(CLK_PERIOD);
+  if (*(native_if->iob_rvalid)) {
+    read_reg = *(native_if->iob_rdata) >>
+               ((cpu_address & 0b011) * 8); // align to 32 bits
+    read_complete = 1;
+  }
+  Timer(1); // In sync with clk posedge + 1ns
+  *(native_if->iob_valid) = 0;
+  Timer(CLK_PERIOD - 1); // In sync with clk posedge
+  if (read_complete)
+    return read_reg;
+  while (!*(native_if->iob_rvalid))
+    Timer(CLK_PERIOD);
   read_reg = *(native_if->iob_rdata) >>
              ((cpu_address & 0b011) * 8); // align to 32 bits
-  *(native_if->iob_valid) = 0;
   return read_reg;
 }
 
