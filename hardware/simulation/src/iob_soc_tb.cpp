@@ -81,10 +81,6 @@ int main(int argc, char **argv, char **env) {
   *(uart_if.iob_wstrb) = 0;
   cpu_inituart(&uart_if);
 
-#ifdef IOB_SOC_USE_ETHERNET
-  eth_setup(&eth_if);
-#endif
-
   FILE *soc2cnsl_fd;
   FILE *cnsl2soc_fd;
   char cpu_char = 0;
@@ -95,6 +91,10 @@ int main(int argc, char **argv, char **env) {
     ;
   fclose(cnsl2soc_fd);
   soc2cnsl_fd = fopen("./soc2cnsl", "wb");
+
+#ifdef IOB_SOC_USE_ETHERNET
+  eth_setup(&eth_if);
+#endif
 
   while (1) {
     if (dut->trap_o > 0) {
@@ -140,7 +140,7 @@ int main(int argc, char **argv, char **env) {
 #if (VM_TRACE == 1)
   tfp->dump(main_time); // Dump last values
   tfp->close();         // Close tracing file
-  std::cout << "Generated vcd file" << std::endl;
+  VL_PRINTF("Generated vcd file\n");
   delete tfp;
 #endif
 
