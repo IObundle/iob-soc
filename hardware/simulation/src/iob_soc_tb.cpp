@@ -77,12 +77,6 @@ int main(int argc, char **argv, char **env) {
     Timer(CLK_PERIOD);
   dut->arst_i = 0;
 
-  // DEBUG
-  tfp->dump(main_time); // Dump last values
-  tfp->close();         // Close tracing file
-  VL_PRINTF("DEBUG EXIT\n");
-  exit(1);
-
   *(uart_if.iob_valid) = 0;
   *(uart_if.iob_wstrb) = 0;
   cpu_inituart(&uart_if);

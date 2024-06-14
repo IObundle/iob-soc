@@ -48,7 +48,17 @@ module iob_soc_tb;
   //cpu trap signal
   wire trap;
 
+
+  /////////////////////////////////////////////
+  // TEST PROCEDURE
+  //
   initial begin
+
+`ifdef VCD
+    $dumpfile("uut.vcd");
+    $dumpvars();
+`endif
+
     //init cpu bus signals
     iob_valid_i = 0;
     iob_wstrb_i = 0;
