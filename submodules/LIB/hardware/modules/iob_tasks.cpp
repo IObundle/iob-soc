@@ -49,8 +49,10 @@ void iob_write(unsigned int cpu_address, unsigned int cpu_data,
   Timer(CLK_PERIOD - 1);                       // In sync with clk posedge
   while (!*(native_if->iob_ready))
     Timer(CLK_PERIOD);
+  Timer(1); // In sync with clk posedge + 1ns
   *(native_if->iob_wstrb) = 0;
   *(native_if->iob_valid) = 0;
+  Timer(CLK_PERIOD - 1); // In sync with clk posedge
 }
 
 // Read data from IOb Native slave
