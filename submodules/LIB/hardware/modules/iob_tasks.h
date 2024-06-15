@@ -31,6 +31,6 @@ typedef struct {
 void Timer(unsigned int ns);
 void iob_write(unsigned int cpu_address, unsigned int cpu_data,
                unsigned int nbytes, iob_native_t *native_if);
-char iob_read(unsigned int cpu_address, iob_native_t *native_if);
+unsigned int iob_read(unsigned int cpu_address, iob_native_t *native_if);
 
 #endif // H_IOB_TASKS_H

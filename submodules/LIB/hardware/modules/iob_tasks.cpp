@@ -56,8 +56,8 @@ void iob_write(unsigned int cpu_address, unsigned int cpu_data,
 }
 
 // Read data from IOb Native slave
-char iob_read(unsigned int cpu_address, iob_native_t *native_if) {
-  char read_reg = 0;
+unsigned int iob_read(unsigned int cpu_address, iob_native_t *native_if) {
+  unsigned int read_reg = 0;
   bool read_complete = 0;
   Timer(1); // In sync with clk posedge + 1ns
   set_signal(native_if->iob_addr, native_if->iob_addr_type, cpu_address);

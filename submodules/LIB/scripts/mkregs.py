@@ -919,7 +919,7 @@ class mkregs:
                     f"{sw_type} {core_prefix}GET_{name}({addr_arg}iob_native_t *native_if) {{\n"
                 )
                 fsw.write(
-                    f"  return iob_read(({core_prefix}{name}_ADDR){addr_shift}, native_if);\n"
+                    f"  return ({sw_type})iob_read(({core_prefix}{name}_ADDR){addr_shift}, native_if);\n"
                 )
                 fsw.write("}\n\n")
         fsw.close()

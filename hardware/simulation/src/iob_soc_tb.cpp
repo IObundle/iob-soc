@@ -105,11 +105,11 @@ int main(int argc, char **argv, char **env) {
       break;
     }
     while (!rxread_reg && !txread_reg) {
-      rxread_reg = iob_read(IOB_UART_RXREADY_ADDR, &uart_if);
-      txread_reg = iob_read(IOB_UART_TXREADY_ADDR, &uart_if);
+      rxread_reg = (char)iob_read(IOB_UART_RXREADY_ADDR, &uart_if);
+      txread_reg = (char)iob_read(IOB_UART_TXREADY_ADDR, &uart_if);
     }
     if (rxread_reg) {
-      cpu_char = iob_read(IOB_UART_RXDATA_ADDR, &uart_if);
+      cpu_char = (char)iob_read(IOB_UART_RXDATA_ADDR, &uart_if);
       fwrite(&cpu_char, sizeof(char), 1, soc2cnsl_fd);
       fflush(soc2cnsl_fd);
       rxread_reg = 0;
