@@ -1,30 +1,9 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S python3 -B
 # Python script to search and add python modules under the given directory to the search path.
 # It also instatiates the top module, assuming that it is a class with the same name as the file that contains it.
 import os
 import sys
 import datetime
-
-if len(sys.argv) < 2:
-    print(
-        "Usage: %s <top_module_name> [setup_args] [-s <search_path>] [-f <func_name>]"
-        % sys.argv[0]
-    )
-    print(
-        "<top_module_name>: Name of top module class and file (they must have the same name)."
-    )
-    print(
-        "-s <search_path>: Optional root of search path for python modules. Defaults to current directory."
-    )
-    print("-f <func_name>: Optional function name to execute")
-    print(
-        "setup_args: Optional project-defined arguments that may be using during setup process of the current project."
-    )
-    exit(0)
-
-search_path = "."
-if "-s" in sys.argv:
-    search_path = sys.argv[sys.argv.index("-s") + 1]
 
 
 # Search for files under the given directory using a breadth-first search
@@ -54,27 +33,15 @@ def bfs_search_files(search_path):
     return return_values
 
 
-# Add python modules search paths for every module
-print(f"Searching for modules under '{search_path}'...", file=sys.stderr)
-found_modules = []
-for filepath, files in bfs_search_files(search_path):
-    for filename in files:
-        if filename.endswith(".py") and filename not in found_modules:
-            sys.path.append(filepath)
-            found_modules.append(filename)
+def init_top_module():
+    """ "
+    Initialize the top module and return it.
+    """
+    top_module = vars(sys.modules[top_module_name])[top_module_name]
+    top_module.is_top_module = True
+    top_module.init_attributes()
 
-# Import top module
-top_module_name = sys.argv[1].split(".")[0]
-exec("import " + top_module_name)
-
-
-# Set a custom LIB directory
-for arg in sys.argv:
-    if "LIB_DIR" in arg:
-        import build_srcs
-
-        build_srcs.LIB_DIR = arg.split("=")[1]
-        break
+    return top_module
 
 
 # Insert header in source files
@@ -89,9 +56,7 @@ def insert_header():
     # get the current year
     year = datetime.datetime.now().year
 
-    top_module = vars(sys.modules[top_module_name])[top_module_name]
-    top_module.is_top_module = True
-    top_module.init_attributes()
+    top_module = init_top_module()
 
     # get the name and version of the top module
     core_name = top_module.name
@@ -132,33 +97,84 @@ def version_from_str(version_str):
     return version_str
 
 
-# Print Makefile variable definitions, used for delivery
-def get_delivery_vars():
-    top_module = vars(sys.modules[top_module_name])[top_module_name]
-    top_module.is_top_module = True
-    top_module.init_attributes()
-    print(f"NAME={top_module.name} ", end="")
-    print(f"VERSION={version_from_str(top_module.version)} ", end="")
-    print(f"PREVIOUS_VERSION={version_from_str(top_module.previous_version)} ", end="")
-    print(f"VERSION_STR={top_module.version} ")
+# function to return the top module name
+def get_top_module_name():
+    top_module = init_top_module()
+    print(f"{top_module.name}", end="")
+
+
+# function to return the top module version
+def get_top_module_version():
+    top_module = init_top_module()
+    print(f"{top_module.version}", end="")
 
 
 # Print build directory attribute of the top module
 def get_build_dir():
-    top_module = vars(sys.modules[top_module_name])[top_module_name]
-    top_module.is_top_module = True
-    top_module.init_attributes()
-    print(top_module.build_dir)
+    try:
+        top_module = init_top_module()
+        print(top_module.build_dir)
+    except:
+        print("ERROR: No build directory found for the top module")
+        raise
 
 
 # Instantiate top module to start setup process
 def instantiate_top_module():
-    vars(sys.modules[top_module_name])[top_module_name].setup_as_top_module()
+    top_module = init_top_module()
+    top_module.setup_as_top_module()
 
 
-# Call either the default function or the one given by the user
-function_2_call = "instantiate_top_module"
-if "-f" in sys.argv:
-    function_2_call = sys.argv[sys.argv.index("-f") + 1]
-print(f"Calling '{function_2_call}'...", file=sys.stderr)
-vars()[function_2_call]()
+##########################################################################################
+########   Main script    ################################################################
+##########################################################################################
+if __name__ == "__main__":
+
+    if len(sys.argv) < 2:
+        print(
+            "Usage: %s <top_module_name> [setup_args] [-s <search_path>] [-f <func_name>]"
+            % sys.argv[0]
+        )
+        print(
+            "<top_module_name>: Name of top module class and file (they must have the same name)."
+        )
+        print(
+            "-s <search_path>: Optional root of search path for python modules. Defaults to current directory."
+        )
+        print("-f <func_name>: Optional function name to execute")
+        print(
+            "setup_args: Optional project-defined arguments that may be using during setup process of the current project."
+        )
+        exit(0)
+
+    search_path = "."
+    if "-s" in sys.argv:
+        search_path = sys.argv[sys.argv.index("-s") + 1]
+
+    # Add python modules search paths for every module
+    print(f"Searching for modules under '{search_path}'...", file=sys.stderr)
+    found_modules = []
+    for filepath, files in bfs_search_files(search_path):
+        for filename in files:
+            if filename.endswith(".py") and filename not in found_modules:
+                sys.path.append(filepath)
+                found_modules.append(filename)
+
+    # Import top module
+    top_module_name = sys.argv[1].split(".")[0]
+    exec("import " + top_module_name)
+
+    # Set a custom LIB directory
+    for arg in sys.argv:
+        if "LIB_DIR" in arg:
+            import copy_srcs
+
+            copy_srcs.LIB_DIR = arg.split("=")[1]
+            break
+
+    # Call either the default function or the one given by the user
+    function_2_call = "instantiate_top_module"
+    if "-f" in sys.argv:
+        function_2_call = sys.argv[sys.argv.index("-f") + 1]
+    print(f"Calling '{function_2_call}'...", file=sys.stderr)
+    vars()[function_2_call]()

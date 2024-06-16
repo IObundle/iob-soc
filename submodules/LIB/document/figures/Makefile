@@ -5,11 +5,11 @@ PDF += $(patsubst %.drom,%.pdf,$(wildcard *.drom))
 
 SVG = $(patsubst %.drom,%.svg,$(wildcard *.drom))
 
-.PHONY: pb_figs ug_figs clean debug
+.PHONY: figs clean debug
 
 pb_figs: bg.pdf bd.pdf
 
-ug_figs: $(PDF)
+figs: $(PDF)
 
 #make libreoffice figures
 ifeq ($(LO_RUNNING), )

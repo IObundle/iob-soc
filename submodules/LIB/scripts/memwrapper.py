@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
+from typing import List
 
 help_message = """
        tdp-ram - memakerwrap tech moduleName type asynch be Nmems {words bits bytes mux}{Nmems}
@@ -11,7 +12,7 @@ help_message = """
        sp-rom  - memakerwrap tech moduleName type Nmems {words bits mux romcode}{Nmems}
 """
 
-mems = []
+mems: List[List[int]] = []
 
 #
 # Time scale

@@ -58,15 +58,26 @@
 
 \begin{frame}{Outline}
 \begin{center}
-   \begin{itemize}
-     \item Introduction
-     \item Project setup
-     \item Instantiate an IP core in your SoC
-     \item Write the software to drive the new peripheral
-     \item Simulate IOb-SoC
-     \item Run IOb-SoC on an FPGA board
-     \item Conclusion
- \end{itemize}
+  \begin{columns}[onlytextwidth]
+    \column{0.5\textwidth}
+  \begin{itemize}
+  \item Introduction
+  \item Project setup
+  \item Instantiate a RISC-V CPU in IOb-SoC
+  \item Instantiate an IP core in your SoC
+  \item Write the software to drive the IP core
+  \item Simulate IOb-SoC
+  \item Run IOb-SoC on an FPGA board
+  \item Conclusion
+  \end{itemize}
+    \column{0.5\textwidth}
+    \begin{figure}
+      \centering
+      \includegraphics[width=0.9\textwidth]{bd.pdf}
+      \caption{IOb-SoC block diagram}
+      \label{fig:my_label}
+    \end{figure}
+  \end{columns}
 \end{center}
 \end{frame}
 
@@ -91,10 +102,10 @@
 \begin{frame}{Project setup}
 \begin{center}
   \begin{itemize}
-    \item Use a Linux real or virtual machine (see the README file to download a VM)
-    \item Make sure a {\bf stable} version of the open source Icarus Verilog simulator (\url{iverilog.icarus.com}) is installed locally or on some remote server
-    \item Make sure you have FPGA build tools installed locally or on some remote server
-    \item Make sure you have an FPGA board attached to your Linux machine or to some remote server
+  \item Use a Linux real or virtual machine (see the README file to download a VM)
+    \item Install {\tt nix-shell} to deal with dependencies, especially open-source simulators such as {\tt iverilog} or {\tt verilator} 
+    \item Commercial EDA tools must be installed locally or on some remote server (Vivado, Quartus, Cadence, etc) 
+    \item FPGA boards must be attached to your Linux machine or to some remote server
     \item Set up {\bf ssh} access key to GitHub (\url{github.com}) (using https will ask for your password many times)
     \item Follow the instructions in the IOb-SoC repository's README file to clone the repository and install the tools
   \end{itemize}
@@ -104,31 +115,15 @@
 
 \begin{frame}{Instantiate an IP core in your SoC}
   \begin{itemize}
-  \item The Timer IP core at \url{github.com/IObundle/iob-timer.git} is used here as an example
-  \item Add the Timer IP core repository as a git submodule of your IOb-SoC clone repository:\\
-    {\tt \tiny git submodule add git@github.com:IObundle/iob-timer.git submodules/TIMER}
-  \item Update the Timer IP core submodules:\\
-    {\tt \tiny git submodule update ----init ----recursive}
-  \item Add the Timer IP core to the list of peripherals in the {\tt ./config.mk} file:\\
-    {\tt PERIPHERALS:=UART {\em TIMER}}
-  \item Add {\tt TIMER\_DIR} to the {\tt submodule peripherals} list in the {\tt ./config.mk} file:\\
-    {\tt \tiny TIMER\_DIR=\$(ROOT\_DIR)/submodules/TIMER}
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Instantiate an IP core in your SoC}
-  \begin{itemize}
-  \item Include the Timer IP core {\tt hardware.mk} file in {\tt ./hardware.mk} file:\\
-    {\tt \tiny include \$(TIMER\_DIR)/hardware/hardware.mk}
-  \item Include the Timer IP core {\tt embedded.mk} file in {\tt ./firmware/Makefile} file:\\
-    {\tt \tiny include \$(TIMER\_DIR)/software/embedded/embedded.mk}
-  \item An IP core can be integrated into IOb-SoC if it provides the following files:
-    \begin{itemize}
-    \item CORE\_REPO/hardware/hardware.mk
-    \item CORE\_REPO/software/embedded/embedded.mk
-    \item CORE\_REPO/software/pc-emul/pc-emul.mk
-    \end{itemize}
-  \item Study these files and its references in the Timer IP core repository.
+  \item The Timer IP core in {\tt submodules/LIB/hardware/modules/iob-timer} is used here as an example
+  \item Add a symbolic link to the Timer IP core directory:\\
+    {\tt \tiny ln -s n {\tt submodules/LIB/hardware/modules/iob-timer submodules/TIMER}}
+  \item Add the Timer IP core to the list of peripherals in the {\tt iob\_soc.py} file:\\
+    {\tt peripherals =  {\em TIMER}}
+  \item Add the IP core special connections in the {\tt iob\_soc.py} file:\\
+    {\tt peripheral\_portmap =  {\em ...}}
+  \item Include the Timer IP core  in the submodules list in the  {\tt iob\_soc.py} file:\\
+    {\tt submodules\_list += iob\_timer}
   \end{itemize}
 \end{frame}
 
