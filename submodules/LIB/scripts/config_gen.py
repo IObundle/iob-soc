@@ -156,7 +156,7 @@ def generate_confs_tex(confs, out_dir):
             derv_param[i] = derv_param[i].replace("$clog2", "log2")
         # write the line
         file2create.write(
-            f"  \\item[{derv_param[0]}] {derv_param[2]} Derived Value: {derv_param[1]}.\n"
+            f"  \\item[{derv_param[0]}] {derv_param[2]} Value: {derv_param[1]}.\n"
         )
     file2create.write("\\end{description}\n")
 
