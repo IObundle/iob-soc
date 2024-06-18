@@ -1,7 +1,17 @@
 #include "iob_tasks.h"
 
+// Uncomment to enable periodic time printing
+// Useful to figure out when we should enable VCD dump
+//#define PERIODIC_TIME_PRINT 1000000
+
 // Keep track of simulation time
 vluint64_t main_time = 0;
+
+// Delayed start time of VCD trace dump
+// Used to avoid large VCD dump files during long simulations
+#if (VM_TRACE == 1)
+vluint64_t vcd_delayed_start = 0;
+#endif
 
 // Store timer related settings (clk and eval)
 timer_settings_t task_timer_settings;
@@ -98,7 +108,12 @@ void Timer(unsigned int ns) {
       (*task_timer_settings.eval)();
     }
 #if (VM_TRACE == 1)
-    (*task_timer_settings.dump)(main_time); // Dump values into tracing file
+    if (main_time > vcd_delayed_start)
+      (*task_timer_settings.dump)(main_time); // Dump values into tracing file
+#endif
+#ifdef PERIODIC_TIME_PRINT
+    if (main_time % PERIODIC_TIME_PRINT == 0)
+      printf("[iob_tasks] Time %u\n", main_time);
 #endif
     main_time += 1;
   }
