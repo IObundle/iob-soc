@@ -240,6 +240,7 @@ def post_setup_iob_soc(python_module, num_extmem_connections):
         ) as file:
             contents = file.readlines()
         contents.insert(0, "\n")
+        contents.insert(0, "USE_ETHERNET=1\n")
         # Set custom ethernet CONSOLE_CMD
         contents.insert(
             0,
