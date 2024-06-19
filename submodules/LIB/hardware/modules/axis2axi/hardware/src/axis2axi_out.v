@@ -113,6 +113,7 @@ module axis2axi_out #(
    always @* begin
       state_nxt    = state;
       arvalid_int  = 1'b0;
+      araddr_int   = 24'b0;
       next_address = current_address;
       next_length  = current_length;
 
