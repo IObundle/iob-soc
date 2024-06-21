@@ -5,7 +5,7 @@ from submodule_utils import get_pio_signals, add_prefix_to_parameters_in_string
 
 # Creates the Verilog Snippet (.vs) files required by wrappers
 def create_wrapper_files(build_dir, name, ios, confs, num_extmem_connections):
-    out_dir = os.path.join(build_dir, f"hardware/simulation/src/")
+    out_dir = os.path.join(build_dir, "hardware/simulation/src/")
     pwires_str = ""
     pportmaps_str = ""
 
@@ -70,6 +70,7 @@ def create_wrapper_files(build_dir, name, ios, confs, num_extmem_connections):
     pportmaps_str += f"""
 `ifdef {name.upper()}_USE_EXTMEM
       `include "iob_bus_0_{num_extmem_connections}_axi_m_portmap.vs"
+
 `endif
 """
 
@@ -80,17 +81,25 @@ def create_wrapper_files(build_dir, name, ios, confs, num_extmem_connections):
     create_interconnect_instance(out_dir, name, num_extmem_connections)
     create_cyclonev_interconnect_s_portmap(out_dir, name, num_extmem_connections)
     # If CYCLONEV-GT-DK directory exists, modify_alt_ddr3_qsys
-    if os.path.exists(os.path.join(build_dir, f"hardware/fpga/quartus/CYCLONEV-GT-DK")):
+    if os.path.exists(os.path.join(build_dir, "hardware/fpga/quartus/CYCLONEV-GT-DK")):
         modify_alt_ddr3_qsys(
             os.path.join(
-                build_dir, f"hardware/fpga/quartus/CYCLONEV-GT-DK/alt_ddr3.qsys"
+                build_dir, "hardware/fpga/quartus/CYCLONEV-GT-DK/alt_ddr3.qsys"
             ),
             num_extmem_connections,
         )
     # If KU040 directory exists, create ku040_interconnect_s_portmap and ku040_rstn
-    if os.path.exists(os.path.join(build_dir, f"hardware/fpga/vivado/AES-KU040-DB-G")):
+    if os.path.exists(os.path.join(build_dir, "hardware/fpga/vivado/AES-KU040-DB-G")):
         create_ku040_interconnect_s_portmap(out_dir, name, num_extmem_connections)
         create_ku040_rstn(out_dir, name, num_extmem_connections)
+
+    # Wires for extmem portmaps
+    src_dir = os.path.join(build_dir, "hardware/src")
+    mwrap_extmem_wires_str = f"""
+      `include "iob_bus_{num_extmem_connections}_axi_wire.vs"
+    """
+    with open(f"{src_dir}/iob_mwrap_extmem_wires.vs", "w") as fd_mwrap_extmem_wires:
+        fd_mwrap_extmem_wires.write(mwrap_extmem_wires_str)
 
 
 def create_interconnect_instance(out_dir, name, num_extmem_connections):
