@@ -1,7 +1,7 @@
 #pragma once
-#include "iob_timer_swreg.h"
+#include "iob_nco_swreg.h"
 
 // Functions
-void timer_reset();
-void timer_init(uint32_t base_address);
-uint64_t timer_get_count();
+void nco_reset();
+void nco_init(uint32_t base_address);
+uint64_t nco_get_count();

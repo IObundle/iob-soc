@@ -1,10 +1,10 @@
 SRC = $(wildcard *.c)
-HDR += iob_timer.h
+HDR += iob_nco.h
 FLAGS = -Wall -Werror -O2
 FLAGS += -static
 FLAGS += -march=rv32imac
 FLAGS += -mabi=ilp32
-BIN = iob_timer_user
+BIN = iob_nco_user
 CC = riscv64-unknown-linux-gnu-gcc
 
 all: $(BIN)
@@ -16,7 +16,7 @@ LIB_DIR = ../../../../../../
 IOB_LINUX_DIR ?= ../../../$(LIB_DIR)/iob-linux
 $(HDR):
 	cd $(LIB_DIR) && \
-		.$(IOB_LINUX_DIR)/scripts/drivers.py iob_timer -o `realpath $(CURDIR)`
+		.$(IOB_LINUX_DIR)/scripts/drivers.py iob_nco -o `realpath $(CURDIR)`
 
 clean:
 	rm -rf $(BIN) $(HDR)

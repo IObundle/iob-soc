@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "iob_timer.h"
+#include "iob_nco.h"
 
 int sysfs_read_file(const char *filename, uint32_t *read_value) {
   // Open file for read
@@ -48,34 +48,34 @@ int sysfs_write_file(const char *filename, uint32_t write_value) {
   return ret;
 }
 
-int timer_reset() {
-  if (sysfs_write_file(IOB_TIMER_SYSFILE_RESET, 1) == -1) {
+int nco_reset() {
+  if (sysfs_write_file(IOB_NCO_SYSFILE_RESET, 1) == -1) {
     return -1;
   }
-  if (sysfs_write_file(IOB_TIMER_SYSFILE_RESET, 0) == -1) {
-    return -1;
-  }
-
-  return 0;
-}
-
-int timer_init() {
-  if (timer_reset()) {
-    return -1;
-  }
-
-  if (sysfs_write_file(IOB_TIMER_SYSFILE_ENABLE, 1) == -1) {
+  if (sysfs_write_file(IOB_NCO_SYSFILE_RESET, 0) == -1) {
     return -1;
   }
 
   return 0;
 }
 
-int timer_print_version() {
+int nco_init() {
+  if (nco_reset()) {
+    return -1;
+  }
+
+  if (sysfs_write_file(IOB_NCO_SYSFILE_ENABLE, 1) == -1) {
+    return -1;
+  }
+
+  return 0;
+}
+
+int nco_print_version() {
   uint32_t ret = -1;
   uint32_t version = 0;
 
-  ret = sysfs_read_file(IOB_TIMER_SYSFILE_VERSION, &version);
+  ret = sysfs_read_file(IOB_NCO_SYSFILE_VERSION, &version);
   if (ret == -1) {
     return ret;
   }
@@ -84,25 +84,25 @@ int timer_print_version() {
   return 0;
 }
 
-int timer_get_count(uint64_t *count) {
+int nco_get_count(uint64_t *count) {
   uint32_t ret = -1;
   uint32_t data = 0;
 
-  // Sample timer counter
-  if (sysfs_write_file(IOB_TIMER_SYSFILE_SAMPLE, 1) == -1) {
+  // Sample nco counter
+  if (sysfs_write_file(IOB_NCO_SYSFILE_SAMPLE, 1) == -1) {
     return -1;
   }
-  if (sysfs_write_file(IOB_TIMER_SYSFILE_SAMPLE, 0) == -1) {
+  if (sysfs_write_file(IOB_NCO_SYSFILE_SAMPLE, 0) == -1) {
     return -1;
   }
 
-  // Read sampled timer counter
-  ret = sysfs_read_file(IOB_TIMER_SYSFILE_DATA_HIGH, &data);
+  // Read sampled nco counter
+  ret = sysfs_read_file(IOB_NCO_SYSFILE_DATA_HIGH, &data);
   if (ret == -1) {
     return -1;
   }
-  *count = ((uint64_t)data) << IOB_TIMER_DATA_LOW_W;
-  ret = sysfs_read_file(IOB_TIMER_SYSFILE_DATA_LOW, &data);
+  *count = ((uint64_t)data) << IOB_NCO_DATA_LOW_W;
+  ret = sysfs_read_file(IOB_NCO_SYSFILE_DATA_LOW, &data);
   if (ret == -1) {
     return -1;
   }
@@ -112,23 +112,23 @@ int timer_get_count(uint64_t *count) {
 }
 
 int main(int argc, char *argv[]) {
-  printf("[User] IOb-Timer application\n");
+  printf("[User] IOb-nco application\n");
 
-  if (timer_init()) {
-    perror("[User] Failed to initialize timer");
+  if (nco_init()) {
+    perror("[User] Failed to initialize nco");
 
     return EXIT_FAILURE;
   }
 
-  if (timer_print_version()) {
+  if (nco_print_version()) {
     perror("[User] Failed to print version");
 
     return EXIT_FAILURE;
   }
 
-  // read current timer count
+  // read current nco count
   uint64_t elapsed = 0;
-  if (timer_get_count(&elapsed)) {
+  if (nco_get_count(&elapsed)) {
     perror("[User] Failed to get count");
   }
   printf("\nExecution time: %lu clock cycles\n", elapsed);

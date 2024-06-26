@@ -20,9 +20,9 @@
         // Other SOC peripherals go here
 
         // Add this Node to device tree
-        TIMER0: timer@/*TIMER0_ADDR_MACRO*/ {
-            compatible = "iobundle,timer0";
-            reg = <0x/*TIMER0_ADDR_MACRO*/ 0x100>;
+        NCO0: nco@/*NCO0_ADDR_MACRO*/ {
+            compatible = "iobundle,nco0";
+            reg = <0x/*NCO0_ADDR_MACRO*/ 0x100>;
         };
 
     };
