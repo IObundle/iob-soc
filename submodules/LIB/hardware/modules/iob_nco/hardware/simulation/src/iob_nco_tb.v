@@ -1,26 +1,48 @@
 `timescale 1ns / 1ps
-`include "iob_reg_conf.vh"
 
-`define IOB_CLOCK(CLK, PER) initial CLK=0; always #(PER/2) CLK = ~CLK;
-`define IOB_RESET(CLK, RESET, PRE, DURATION, POST) RESET=~`IOB_REG_RST_POL;\
-   #PRE RESET=`IOB_REG_RST_POL; #DURATION RESET=~`IOB_REG_RST_POL; #POST;\
-   @(posedge CLK) #1;
-`define IOB_PULSE(VAR, PRE, DURATION, POST) VAR=0; #PRE VAR=1; #DURATION VAR=0; #POST;
+`include "iob_nco_conf.vh"
+`include "iob_nco_swreg_def.vh"
+
+`define IOB_NBYTES (DATA_W/8)
+`define IOB_GET_NBYTES(WIDTH) (WIDTH/8 + |(WIDTH%8))
+`define IOB_NBYTES_W $clog2(`IOB_NBYTES)
+
+`define IOB_WORD_ADDR(ADDR) ((ADDR>>`IOB_NBYTES_W)<<`IOB_NBYTES_W)
+
+`define IOB_BYTE_OFFSET(ADDR) (ADDR%(DATA_W/8))
+
+`define IOB_GET_WDATA(ADDR, DATA) (DATA<<(8*`IOB_BYTE_OFFSET(ADDR)))
+`define IOB_GET_WSTRB(ADDR, WIDTH) (((1<<`IOB_GET_NBYTES(WIDTH))-1)<<`IOB_BYTE_OFFSET(ADDR))
+`define IOB_GET_RDATA(ADDR, DATA, WIDTH) ((DATA>>(8*`IOB_BYTE_OFFSET(ADDR)))&((1<<WIDTH)-1))
 
 module iob_nco_tb;
 
   integer fd;
 
   localparam CLK_PER = 10;
+  localparam ADDR_W = `IOB_NCO_SWREG_ADDR_W;
+  localparam DATA_W = 32;
 
-  reg clk;
-  `IOB_CLOCK(clk, CLK_PER)
-  reg  cke = 1'b1;
-  reg  arst;
 
-  reg  ld;
+  reg clk = 1;
 
-  wire clk_out;
+  // Drive clock
+  always #(CLK_PER / 2) clk = ~clk;
+
+  reg                              cke = 1'b1;
+  reg                              arst;
+
+
+  wire                             clk_out;
+
+  //IOb-Native interface
+  reg                              iob_valid_i;
+  reg  [`IOB_NCO_SWREG_ADDR_W-1:0] iob_addr_i;
+  reg  [      `IOB_NCO_DATA_W-1:0] iob_wdata_i;
+  reg  [                      3:0] iob_wstrb_i;
+  wire [      `IOB_NCO_DATA_W-1:0] iob_rdata_o;
+  wire                             iob_ready_o;
+  wire                             iob_rvalid_o;
 
   initial begin
 
@@ -29,9 +51,22 @@ module iob_nco_tb;
     $dumpvars();
 `endif
 
-    `IOB_RESET(clk, arst, 23, 23, 23)
+    //init cpu bus signals
+    iob_valid_i = 0;
+    iob_wstrb_i = 0;
 
-    `IOB_PULSE(ld, 23, 20, 20)
+    // Reset signal
+    arst = 0;
+    #100 arst = 1;
+    #1_000 arst = 0;
+    #100;
+    @(posedge clk) #1;
+
+    IOB_NCO_SET_SOFT_RESET(1'b1);
+    IOB_NCO_SET_SOFT_RESET(1'b0);
+
+    IOB_NCO_SET_PERIOD(16'h1280);
+    IOB_NCO_SET_ENABLE(1'b1);
 
     $display("%c[1;34m", 27);
     $display("Test completed successfully.");
@@ -43,14 +78,20 @@ module iob_nco_tb;
 
   end
 
-  iob_nco #(
-      .DATA_W(16),
-      .FRAC_W(8)
-  ) nco (
+  iob_nco nco (
       `include "clk_en_rst_s_portmap.vs"
-      // TODO: iob_native
+      .iob_valid_i(iob_valid_i),
+      .iob_addr_i(iob_addr_i),
+      .iob_wdata_i(iob_wdata_i),
+      .iob_wstrb_i(iob_wstrb_i),
+      .iob_rdata_o(iob_rdata_o),
+      .iob_ready_o(iob_ready_o),
+      .iob_rvalid_o(iob_rvalid_o),
       .clk_o(clk_out)
   );
 
+  `include "iob_nco_swreg_emb_tb.vs"
+
+  `include "iob_tasks.vs"
 
 endmodule

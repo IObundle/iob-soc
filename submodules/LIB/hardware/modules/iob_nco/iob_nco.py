@@ -2,10 +2,13 @@ import os
 
 from iob_module import iob_module
 
+from iob_tasks import iob_tasks
+from iob_reg_e import iob_reg_e
 from iob_reg_r import iob_reg_r
 from iob_reg import iob_reg
 from iob_modcnt import iob_modcnt
 from iob_acc_ld import iob_acc_ld
+from iob_utils import iob_utils
 
 
 class iob_nco(iob_module):
@@ -22,6 +25,11 @@ class iob_nco(iob_module):
                 iob_reg,
                 iob_modcnt,
                 iob_acc_ld,
+                # simulation files
+                (iob_utils, {"purpose": "simulation"}),
+                (iob_tasks, {"purpose": "simulation"}),
+                ({"interface": "clk_en_rst_s_portmap"}, {"purpose": "simulation"}),
+                (iob_reg_e, {"purpose": "simulation"}),
             ]
         )
 
@@ -35,24 +43,24 @@ class iob_nco(iob_module):
                     "name": "DATA_W",
                     "type": "P",
                     "val": "32",
-                    "min": "NA",
-                    "max": "NA",
+                    "min": "0",
+                    "max": "32",
                     "descr": "Data bus width",
                 },
                 {
                     "name": "ADDR_W",
                     "type": "P",
                     "val": "`IOB_NCO_SWREG_ADDR_W",
-                    "min": "NA",
-                    "max": "NA",
+                    "min": "0",
+                    "max": "32",
                     "descr": "Address bus width",
                 },
                 {
                     "name": "FRAC_W",
                     "type": "P",
-                    "val": "32",
-                    "min": "NA",
-                    "max": "NA",
+                    "val": "8",
+                    "min": "0",
+                    "max": "32",
                     "descr": "Bit-width of the fractional part of the period value. Used to differentiate between the integer and fractional parts of the period. ",
                 },
             ]

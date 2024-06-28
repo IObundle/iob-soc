@@ -22,7 +22,7 @@ static int iob_nco_remove(struct platform_device *);
 
 static ssize_t iob_nco_read(struct file *, char __user *, size_t, loff_t *);
 static ssize_t iob_nco_write(struct file *, const char __user *, size_t,
-                               loff_t *);
+                             loff_t *);
 static loff_t iob_nco_llseek(struct file *, loff_t, int);
 static int iob_nco_open(struct inode *, struct file *);
 static int iob_nco_release(struct inode *, struct file *);
@@ -89,8 +89,7 @@ static int iob_nco_probe(struct platform_device *pdev) {
   iob_nco_data.regsize = resource_size(res);
 
   // Alocate char device
-  result =
-      alloc_chrdev_region(&iob_nco_data.devnum, 0, 1, IOB_NCO_DRIVER_NAME);
+  result = alloc_chrdev_region(&iob_nco_data.devnum, 0, 1, IOB_NCO_DRIVER_NAME);
   if (result) {
     pr_err("%s: Failed to allocate device number!\n", IOB_NCO_DRIVER_NAME);
     goto r_alloc_region;
@@ -106,16 +105,15 @@ static int iob_nco_probe(struct platform_device *pdev) {
 
   // Create device class // todo: make a dummy driver just to create and own the
   // class: https://stackoverflow.com/a/16365027/8228163
-  if ((iob_nco_data.class =
-           class_create(THIS_MODULE, IOB_NCO_DRIVER_CLASS)) == NULL) {
+  if ((iob_nco_data.class = class_create(THIS_MODULE, IOB_NCO_DRIVER_CLASS)) ==
+      NULL) {
     printk("Device class can not be created!\n");
     goto r_class;
   }
 
   // Create device file
-  iob_nco_data.device =
-      device_create(iob_nco_data.class, NULL, iob_nco_data.devnum, NULL,
-                    IOB_NCO_DRIVER_NAME);
+  iob_nco_data.device = device_create(
+      iob_nco_data.class, NULL, iob_nco_data.devnum, NULL, IOB_NCO_DRIVER_NAME);
   if (iob_nco_data.device == NULL) {
     printk("Can not create device file!\n");
     goto r_device;
@@ -195,7 +193,7 @@ static int iob_nco_release(struct inode *inode, struct file *file) {
 }
 
 static ssize_t iob_nco_read(struct file *file, char __user *buf, size_t count,
-                              loff_t *ppos) {
+                            loff_t *ppos) {
   int size = 0;
   u32 value = 0;
 
@@ -235,7 +233,7 @@ static ssize_t iob_nco_read(struct file *file, char __user *buf, size_t count,
 }
 
 static ssize_t iob_nco_write(struct file *file, const char __user *buf,
-                               size_t count, loff_t *ppos) {
+                             size_t count, loff_t *ppos) {
   int size = 0;
   u32 value = 0;
 
