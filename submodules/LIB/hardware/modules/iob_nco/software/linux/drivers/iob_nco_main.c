@@ -240,12 +240,12 @@ static ssize_t iob_nco_write(struct file *file, const char __user *buf,
   u32 value = 0;
 
   switch (*ppos) {
-  case IOB_NCO_RESET_ADDR:
-    size = (IOB_NCO_RESET_W >> 3); // bit to bytes
+  case IOB_NCO_SOFT_RESET_ADDR:
+    size = (IOB_NCO_SOFT_RESET_W >> 3); // bit to bytes
     if (read_user_data(buf, size, &value))
       return -EFAULT;
-    iob_data_write_reg(iob_nco_data.regbase, value, IOB_NCO_RESET_ADDR,
-                       IOB_NCO_RESET_W);
+    iob_data_write_reg(iob_nco_data.regbase, value, IOB_NCO_SOFT_RESET_ADDR,
+                       IOB_NCO_SOFT_RESET_W);
     pr_info("[Driver] Reset iob_nco: 0x%x\n", value);
     break;
   case IOB_NCO_ENABLE_ADDR:

@@ -48,10 +48,7 @@ module iob_nco_tb;
       .FRAC_W(8)
   ) nco (
       `include "clk_en_rst_s_portmap.vs"
-      .rst_i(1'b0),
-      .en_i(1'b1),
-      .period_i(16'h1280),
-      .ld_i(ld),
+      // TODO: iob_native
       .clk_o(clk_out)
   );
 

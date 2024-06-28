@@ -18,7 +18,7 @@ void IOB_NCO_INIT_BASEADDR(uint32_t addr) {
   return;
 }
 
-void IOB_NCO_SET_RESET(uint8_t value) {
+void IOB_NCO_SET_SOFT_RESET(uint8_t value) {
   // use only reg width
   int rst_int = (value & 0x01);
   if (rst_int) {
@@ -46,27 +46,4 @@ void IOB_NCO_SET_ENABLE(uint8_t value) {
   // store enable en_int
   nco_enable = en_int;
   return;
-}
-
-void IOB_NCO_SET_SAMPLE(uint8_t value) {
-  // use only reg width
-  int sample_int = (value & 0x01);
-  if (sample_int) {
-    counter_reg = time_counter;
-    if (start != 0)
-      counter_reg += (clock() - start);
-  }
-  return;
-}
-
-uint32_t IOB_NCO_GET_DATA_HIGH() {
-  /* convert clock from PC CLOCKS_PER_CYCLE to FREQ */
-  double counter_freq = (1.0 * counter_reg) * PC_TO_FREQ_FACTOR;
-  return ((int)(((unsigned long long)counter_freq) >> 32));
-}
-
-uint32_t IOB_NCO_GET_DATA_LOW() {
-  /* convert clock from PC CLOCKS_PER_CYCLE to FREQ */
-  double counter_freq = (1.0 * counter_reg) * PC_TO_FREQ_FACTOR;
-  return ((int)(((unsigned long long)counter_freq) & 0xFFFFFFFF));
 }

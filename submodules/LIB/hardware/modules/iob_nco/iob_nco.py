@@ -47,42 +47,36 @@ class iob_nco(iob_module):
                     "max": "NA",
                     "descr": "Address bus width",
                 },
+                {
+                    "name": "FRAC_W",
+                    "type": "P",
+                    "val": "32",
+                    "min": "NA",
+                    "max": "NA",
+                    "descr": "Bit-width of the fractional part of the period value. Used to differentiate between the integer and fractional parts of the period. ",
+                },
             ]
         )
 
     @classmethod
     def _setup_ios(cls):
         cls.ios += [
-            {"name": "iob_s_port", "descr": "CPU native interface", "ports": []},
             {
-                "name": "general",
-                "descr": "General interface signals",
-                "ports": [
-                    {
-                        "name": "clk_i",
-                        "type": "I",
-                        "n_bits": "1",
-                        "descr": "System clock input",
-                    },
-                    {
-                        "name": "arst_i",
-                        "type": "I",
-                        "n_bits": "1",
-                        "descr": "System reset, asynchronous and active high",
-                    },
-                    {
-                        "name": "cke_i",
-                        "type": "I",
-                        "n_bits": "1",
-                        "descr": "System reset, asynchronous and active high",
-                    },
-                ],
+                "name": "clk_en_rst_s_port",
+                "descr": "Clock, clock enable and reset",
+                "ports": [],
             },
+            {"name": "iob_s_port", "descr": "CPU native interface", "ports": []},
             {
                 "name": "clk_gen",
                 "descr": "Output generated clock interface",
                 "ports": [
-                    # TODO: Output generated clock interface
+                    {
+                        "name": "clk_o",
+                        "type": "O",
+                        "n_bits": "1",
+                        "descr": "Generated clock output",
+                    },
                 ],
             },
         ]
@@ -95,13 +89,13 @@ class iob_nco(iob_module):
                 "descr": "NCO software accessible registers.",
                 "regs": [
                     {
-                        "name": "RESET",
+                        "name": "SOFT_RESET",
                         "type": "W",
                         "n_bits": 1,
                         "rst_val": 0,
                         "log2n_items": 0,
                         "autoreg": True,
-                        "descr": "NCO soft reset",
+                        "descr": "Soft reset.",
                     },
                     {
                         "name": "ENABLE",
@@ -113,31 +107,13 @@ class iob_nco(iob_module):
                         "descr": "NCO enable",
                     },
                     {
-                        "name": "SAMPLE",
+                        "name": "PERIOD",
                         "type": "W",
-                        "n_bits": 1,
-                        "rst_val": 0,
-                        "log2n_items": 0,
-                        "autoreg": True,
-                        "descr": "Sample time counter value into a readable register",
-                    },
-                    {
-                        "name": "DATA_LOW",
-                        "type": "R",
                         "n_bits": 32,
-                        "rst_val": 0,
+                        "rst_val": 5,
                         "log2n_items": 0,
-                        "autoreg": True,
-                        "descr": "High part of the NCO value, which has twice the width of the data word width",
-                    },
-                    {
-                        "name": "DATA_HIGH",
-                        "type": "R",
-                        "n_bits": 32,
-                        "rst_val": 0,
-                        "log2n_items": 0,
-                        "autoreg": True,
-                        "descr": "Low part of the NCO value, which has twice the width of the data word width",
+                        "autoreg": False,
+                        "descr": "Period of the generated clock in terms of the number of system clock cycles. The period value is divided into integer and fractional parts where the lower FRAC_W bits represent the fractional part, and the remaining upper bits represent the integer part.",
                     },
                 ],
             }
