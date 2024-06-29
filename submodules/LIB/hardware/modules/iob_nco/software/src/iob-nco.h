@@ -1,4 +1,5 @@
 #pragma once
+#include <stdbool.h>
 #include "iob_nco_swreg.h"
 
 // Functions
