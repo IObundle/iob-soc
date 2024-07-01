@@ -14,7 +14,7 @@ module iob_modcnt #(
    output [DATA_W-1:0] data_o
 );
 
-   wire ld_count = (data_o == mod_i);
+   wire ld_count = (data_o >= mod_i);
    wire                               [DATA_W-1:0] ld_val = {DATA_W{1'b0}};
 
    iob_counter_ld #(
