@@ -13,7 +13,7 @@
 #endif
 
 #if (VM_TRACE == 1) // If verilator was invoked with --trace
-#ifdef VM_TRACE_FST
+#if (VM_TRACE_FST == 1) // If verilator was invoked with --trace-fst
 #include <verilated_fst_c.h>
 #else
 #include <verilated_vcd_c.h>
@@ -30,7 +30,7 @@ Viob_soc_sim_wrapper *dut = new Viob_soc_sim_wrapper;
 void call_eval() { dut->eval(); }
 
 #if (VM_TRACE == 1)
-#ifdef VM_TRACE_FST
+#if (VM_TRACE_FST == 1)
 VerilatedFstC *tfp = new VerilatedFstC; // Create tracing object
 #else
 VerilatedVcdC *tfp = new VerilatedVcdC; // Create tracing object
