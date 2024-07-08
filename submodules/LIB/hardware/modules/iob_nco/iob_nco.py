@@ -121,7 +121,7 @@ class iob_nco(iob_module):
                         "rst_val": 5,
                         "log2n_items": 0,
                         "autoreg": False,
-                        "descr": "Period of the generated clock in terms of the number of system clock cycles. The period value is divided into integer and fractional parts where the lower FRAC_W bits represent the fractional part, and the remaining upper bits represent the integer part.",
+                        "descr": "Period of the generated clock in terms of the number of system clock cycles + 1 implicit clock cycle. The period value is divided into integer and fractional parts where the lower FRAC_W bits represent the fractional part, and the remaining upper bits represent the integer part.",
                     },
                 ],
             }
