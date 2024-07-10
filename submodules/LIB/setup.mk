@@ -14,7 +14,7 @@ PYTHON_DIR=$(LIB_DIR)/scripts
 
 # establish build dir paths
 build_dir_name:
-	$(eval BUILD_DIR := $(shell $(PYTHON_DIR)/bootstrap.py $(TOP_MODULE_NAME) $(SETUP_ARGS) -f get_build_dir -s $(PROJECT_ROOT)))
+	$(eval BUILD_DIR := $(shell nix-shell --run "$(PYTHON_DIR)/bootstrap.py $(TOP_MODULE_NAME) $(SETUP_ARGS) -f get_build_dir -s $(PROJECT_ROOT)"))
 	if [ $(.SHELLSTATUS) -ne 0 ]; then exit 1; fi
 	$(eval BUILD_VSRC_DIR = $(BUILD_DIR)/hardware/src)
 	$(eval BUILD_SIM_DIR := $(BUILD_DIR)/hardware/simulation)
@@ -72,7 +72,6 @@ endif
 format-all: build_dir_name python-lint python-format c-format verilog-lint verilog-format
 
 clean: build_dir_name
-	-@if [ -f $(BUILD_DIR)/Makefile ]; then make -C $(BUILD_DIR) clean; fi
 	# replace [top_module]_V[version] by [top_module]_V
 	$(eval CLEAN_DIR=$(shell echo $(BUILD_DIR) | sed 's/_V[0-9]\+\.[0-9]\+$$/_V/'))
 	@rm -rf ../*.summary ../*.rpt $(CLEAN_DIR)*  ~*
