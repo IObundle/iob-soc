@@ -67,10 +67,10 @@ test-all: pc-emul-test sim-test fpga-test doc-test
 
 # Install board server and client
 board_server_install:
-	make -C submodules/LIB board_server_install
+	make -C lib board_server_install
 
 board_server_uninstall:
-	make -C submodules/LIB board_server_uninstall
+	make -C lib board_server_uninstall
 
 board_server_status:
 	systemctl status board_server

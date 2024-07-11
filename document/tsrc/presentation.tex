@@ -115,9 +115,9 @@
 
 \begin{frame}{Instantiate an IP core in your SoC}
   \begin{itemize}
-  \item The Timer IP core in {\tt submodules/LIB/hardware/modules/iob-timer} is used here as an example
+  \item The Timer IP core in {\tt lib/hardware/modules/iob-timer} is used here as an example
   \item Add a symbolic link to the Timer IP core directory:\\
-    {\tt \tiny ln -s n {\tt submodules/LIB/hardware/modules/iob-timer submodules/TIMER}}
+    {\tt \tiny ln -s n {\tt lib/hardware/modules/iob-timer submodules/TIMER}}
   \item Add the Timer IP core to the list of peripherals in the {\tt iob\_soc.py} file:\\
     {\tt peripherals =  {\em TIMER}}
   \item Add the IP core special connections in the {\tt iob\_soc.py} file:\\
