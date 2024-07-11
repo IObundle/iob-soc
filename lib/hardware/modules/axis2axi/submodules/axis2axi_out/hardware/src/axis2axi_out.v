@@ -30,12 +30,12 @@ module axis2axi_out #(
   assign axi_arqos_o   = 0;
 
   // Regs to assign to outputs
-  reg              arvalid_int;
-  reg  [     23:0] araddr_int;
-  wire [BURST_W:0] arlen_int;
+  reg                   arvalid_int;
+  reg  [AXI_ADDR_W-1:0] araddr_int;
+  wire [     BURST_W:0] arlen_int;
 
   // State regs
-  reg  [      1:0] state_nxt;
+  reg  [           1:0] state_nxt;
   reg [AXI_ADDR_W-1:0] next_address, next_length;
 
   // Instantiation wires

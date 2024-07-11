@@ -1,6 +1,7 @@
 CORE := iob_soc
 
 SIMULATOR ?= icarus
+SYNTHESIZER ?= yosys
 BOARD ?= CYCLONEV-GT-DK
 
 IOB_PYTHONPATH ?= ../iob_python
@@ -51,7 +52,7 @@ fpga-test:
 	make clean setup fpga-run BOARD=AES-KU040-DB-G INIT_MEM=0 USE_EXTMEM=1 
 
 syn-build: clean
-	$(call IOB_NIX_ENV, make setup && make -C ../$(CORE)_V*/ syn-build)
+	$(call IOB_NIX_ENV, make setup && make -C ../$(CORE)_V*/ syn-build SYNTHESIZER=$(SYNTHESIZER))
 
 doc-build:
 	$(call IOB_NIX_ENV, make clean setup && make -C ../$(CORE)_V*/ doc-build)

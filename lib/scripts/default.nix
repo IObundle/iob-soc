@@ -1,7 +1,7 @@
 { pkgs ? import <nixpkgs> {} }:
 
 let
-  py2hwsw_commit = "ae08b994282fb2e40820b0e3a7516f9b93086e08"; # Replace with the desired commit.
+  py2hwsw_commit = "8da1556c2e5b5c4073b2bfabdf839525fb6f0795"; # Replace with the desired commit.
 
   py2hwsw = pkgs.python3.pkgs.buildPythonPackage rec {
     pname = "py2hwsw";
@@ -11,7 +11,7 @@ let
       owner = "IObundle";
       repo = "py2hwsw";
       rev = py2hwsw_commit;
-      sha256 = "LviZHeh4zYPy1b33H7UbB49mwKb5ocMC2bdMUvd1SSw=";  # Replace with the actual SHA256 hash.
+      sha256 = "xy8ZnGJWjmTu5hD9k3Ztd0kGZs41lFYUtJQvPCxCBkI=";  # Replace with the actual SHA256 hash.
     };
 
     # Add any necessary dependencies here.
