@@ -24,7 +24,9 @@ INIT_MEM ?= 1
 USE_EXTMEM ?= 0
 
 setup:
-	$(call IOB_NIX_ENV, py2hwsw $(CORE) INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM))
+	$(call IOB_NIX_ENV, py2hwsw $(CORE) setup)
+	# TODO: Somehow pass INIT_MEM and USE_EXTMEM to `py_params_dict` argument of iob_soc.py
+	#                   py2hwsw $(CORE) INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM)
 
 pc-emul-run:
 	$(call IOB_NIX_ENV, make clean setup && make -C ../$(CORE)_V*/build/ pc-emul-run)
