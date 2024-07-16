@@ -5,7 +5,7 @@ def setup(py_params_dict):
     USE_MUL_DIV = 1
 
     # Number of peripherals + Bootctr
-    N_SLAVES = 3
+    N_SLAVES = 2 + 1
 
     attributes_dict = {
         "original_name": "iob_soc",
@@ -246,15 +246,15 @@ def setup(py_params_dict):
                 "type": "master",
                 "wire_prefix": "",
                 "port_prefix": "",
-                "mult": 1,  # TODO: Update this as necessary
                 "widths": {
                     "ID_W": "AXI_ID_W",
                     "ADDR_W": "AXI_ADDR_W",
                     "DATA_W": "AXI_DATA_W",
                     "LEN_W": "AXI_LEN_W",
                 },
-                "descr": "Bus of AXI master interfaces for external memory. One interface for this system and others optionally for peripherals.",
+                "descr": "AXI master interface for external memory",
             },
+            # TODO: Add axi interfaces automatically for peripherals with DMA
         ]
 
     attributes_dict["wires"] = [
@@ -301,6 +301,13 @@ def setup(py_params_dict):
                 "ADDR_W": "ADDR_W",
             },
         },
+        {
+            "name": "split_reset",
+            "descr": "Reset signal for iob_split components",
+            "signals": [
+                {"name": "cpu_reset"},
+            ],
+        },
         # Internal memory wires
         {
             "name": "int_mem_i",
@@ -314,6 +321,14 @@ def setup(py_params_dict):
                 "DATA_W": "DATA_W",
                 "ADDR_W": "ADDR_W",
             },
+        },
+        {
+            "name": "int_mem_general",
+            "descr": "General signals for internal memory",
+            "signals": [
+                {"name": "boot"},
+                {"name": "cpu_reset"},
+            ],
         },
     ]
     if USE_EXTMEM:
@@ -442,6 +457,15 @@ def setup(py_params_dict):
                     "ADDR_W": "ADDR_W",
                 },
             },
+            {
+                "name": "ext_mem_clk_en_rst",
+                "descr": "",
+                "signals": [
+                    {"name": "clk"},
+                    {"name": "cke"},
+                    {"name": "cpu_reset", "width": "1"},
+                ],
+            },
             # Verilog Snippets for other modules
             {
                 "name": "ext_mem_icache",
@@ -537,26 +561,6 @@ def setup(py_params_dict):
                 "ADDR_W": "ADDR_W",
             },
         },
-    ]
-    if USE_EXTMEM:
-        attributes_dict["wires"] += [
-            {
-                # TODO: Add offset to addr and connect to 'axi'
-                # Maybe call if_gen.py from here to generate wires?
-                "name": "axi_offset",
-                "if_gen": "axi",
-                "wire_prefix": "",
-                "port_prefix": "",
-                "widths": {
-                    "ID_W": "AXI_ID_W",
-                    "ADDR_W": "AXI_ADDR_W",
-                    "DATA_W": "AXI_DATA_W",
-                    "LEN_W": "AXI_LEN_W",
-                },
-                "descr": "AXI bus with address offset",
-            },
-        ]
-    attributes_dict["wires"] += [
         # Peripheral wires
         {
             "name": "uart_swreg",
@@ -618,7 +622,7 @@ def setup(py_params_dict):
                 },
                 "connect": {
                     "clk_en_rst": "clk_en_rst",
-                    "reset": "ibus_split_reset",
+                    "reset": "split_reset",
                     "input": "cpu_i",
                     "output_1": "int_mem_i",
                     "output_2": "ext_mem_i",
@@ -636,7 +640,7 @@ def setup(py_params_dict):
                 },
                 "connect": {
                     "clk_en_rst": "clk_en_rst",
-                    "reset": "dbus_split_reset",
+                    "reset": "split_reset",
                     "input": "cpu_d",
                     "output_1": "int_d",
                     "output_2": "ext_mem_d",
@@ -683,10 +687,10 @@ def setup(py_params_dict):
                     "AXI_DATA_W ": "AXI_DATA_W",
                 },
                 "connect": {
-                    "clk_en_rst": "clk_en_rst",
+                    "clk_en_rst": "ext_mem_clk_en_rst",
                     "i_bus": "ext_mem_i",
                     "d_bus": "ext_mem_d",
-                    "axi": "axi_offset",
+                    "axi": "axi",
                 },
             },
         ]
@@ -702,12 +706,12 @@ def setup(py_params_dict):
             },
             "connect": {
                 "clk_en_rst": "clk_en_rst",
-                "reset": "pbus_split_reset",
+                "reset": "split_reset",
                 "input": "int_d" if USE_EXTMEM else "cpu_d",
                 "output_1": "int_mem_d",
                 "output_2": "uart_swreg",
                 "output_3": "timer_swreg",
-                # TODO: Add peripherals automatically
+                # TODO: Connect peripherals automatically
             },
             "num_outputs": N_SLAVES,
         },
@@ -822,9 +826,6 @@ def setup(py_params_dict):
             "instance_name": "iob_reset_sync_inst",
             "create_verilog_instance": False,
         },
-    ]
-    attributes_dict["snippets"] = [
-        # TODO:
     ]
 
     # Peripherals
