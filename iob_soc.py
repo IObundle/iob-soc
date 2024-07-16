@@ -739,58 +739,66 @@ def setup(py_params_dict):
                 "iob": "timer_swreg",
             },
         },
-        #
         # Modules that need to be setup, but are not instantiated directly inside
-        # iob_soc Verilog module
-        # TODO: Maybe add a new standard argumnet "create_instance: False"
-        #       or assume that any block without instance name should not be created
+        # 'iob_soc' Verilog module
         {
             "core_name": "iob_cache",
             "instance_name": "iob_cache_inst",
+            "create_verilog_instance": False,
         },
         {
             "core_name": "iob_rom_sp",
             "instance_name": "iob_rom_sp_inst",
+            "create_verilog_instance": False,
         },
         {
             "core_name": "iob_ram_dp_be",
             "instance_name": "iob_ram_dp_be_inst",
+            "create_verilog_instance": False,
         },
         {
             "core_name": "iob_ram_dp_be_xil",
             "instance_name": "iob_ram_dp_be_xil_inst",
+            "create_verilog_instance": False,
         },
         {
             "core_name": "iob_pulse_gen",
             "instance_name": "iob_pulse_gen_inst",
+            "create_verilog_instance": False,
         },
         # iob_counter("counter")
         {
             "core_name": "iob_reg",
             "instance_name": "iob_reg_inst",
+            "create_verilog_instance": False,
         },
         {
             "core_name": "iob_reg_re",
             "instance_name": "iob_reg_re_inst",
+            "create_verilog_instance": False,
         },
         {
             "core_name": "iob_ram_sp_be",
             "instance_name": "iob_ram_sp_be_inst",
+            "create_verilog_instance": False,
         },
         # iob_ram_dp("ram_dp")
         # iob_ctls("ctls")
         {
             "core_name": "axi_interconnect",
             "instance_name": "axi_interconnect_inst",
+            "create_verilog_instance": False,
         },
         # Simulation headers & modules
         {
             "core_name": "axi_ram",
             "instance_name": "axi_ram_inst",
+            "create_verilog_instance": False,
         },
         {
             "core_name": "iob_tasks",
             "instance_name": "iob_tasks_inst",
+            "create_verilog_instance": False,
         },
         # Software modules
         {
@@ -801,15 +809,18 @@ def setup(py_params_dict):
         {
             "core_name": "iob_ram_2p",
             "instance_name": "iob_ram_2p_inst",
+            "create_verilog_instance": False,
         },
         {
             "core_name": "iob_ram_sp",
             "instance_name": "iob_ram_sp_inst",
+            "create_verilog_instance": False,
         },
         # FPGA modules
         {
             "core_name": "iob_reset_sync",
             "instance_name": "iob_reset_sync_inst",
+            "create_verilog_instance": False,
         },
     ]
     attributes_dict["snippets"] = [
