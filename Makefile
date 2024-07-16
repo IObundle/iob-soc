@@ -1,6 +1,7 @@
 CORE := iob_soc
 
 SIMULATOR ?= icarus
+SYNTHESIZER ?= yosys
 BOARD ?= CYCLONEV-GT-DK
 
 IOB_PYTHONPATH ?= ../iob_python
@@ -23,7 +24,9 @@ INIT_MEM ?= 1
 USE_EXTMEM ?= 0
 
 setup:
-	$(call IOB_NIX_ENV, py2hwsw $(CORE) INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM))
+	$(call IOB_NIX_ENV, py2hwsw $(CORE) setup)
+	# TODO: Somehow pass INIT_MEM and USE_EXTMEM to `py_params_dict` argument of iob_soc.py
+	#                   py2hwsw $(CORE) INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM)
 
 pc-emul-run:
 	$(call IOB_NIX_ENV, make clean setup && make -C ../$(CORE)_V*/build/ pc-emul-run)
@@ -51,7 +54,7 @@ fpga-test:
 	make clean setup fpga-run BOARD=AES-KU040-DB-G INIT_MEM=0 USE_EXTMEM=1 
 
 syn-build: clean
-	$(call IOB_NIX_ENV, make setup && make -C ../$(CORE)_V*/ syn-build)
+	$(call IOB_NIX_ENV, make setup && make -C ../$(CORE)_V*/ syn-build SYNTHESIZER=$(SYNTHESIZER))
 
 doc-build:
 	$(call IOB_NIX_ENV, make clean setup && make -C ../$(CORE)_V*/ doc-build)
@@ -66,10 +69,10 @@ test-all: pc-emul-test sim-test fpga-test doc-test
 
 # Install board server and client
 board_server_install:
-	make -C submodules/LIB board_server_install
+	make -C lib board_server_install
 
 board_server_uninstall:
-	make -C submodules/LIB board_server_uninstall
+	make -C lib board_server_uninstall
 
 board_server_status:
 	systemctl status board_server

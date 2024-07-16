@@ -25,6 +25,11 @@ all: sim-test
 
 include $(LIB_DIR)/setup.mk
 
+# Note for py2hwsw developers:
+# To debug py2hwsw using a custom version, you can override the 'py2hwsw' bin path using the following commands:
+# py2hwsw () { <path_to_custom_py2hwsw_repo>/py2hwsw/scripts/py2hwsw.py $@; }
+# export -f py2hwsw
+
 setup:
 	$(call IOB_NIX_ENV, py2hwsw $(CORE) setup --project_root $(PROJECT_ROOT) --build_dir '$(BUILD_DIR)' --no_verilog_lint)
 
