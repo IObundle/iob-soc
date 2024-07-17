@@ -1,12 +1,10 @@
 `timescale 1ns / 1ps
 
-
 module iob_shift_reg
   #(
     parameter DATA_W = 21,
     parameter N = 21,
     parameter ADDR_W = $clog2(N)
-
     )
    (
 `include "clk_en_rst_s_port.vs"
@@ -38,7 +36,6 @@ module iob_shift_reg
    wire                 rst_int_w;
    wire                 rst_int_r;
 
-
    assign data_o = ext_mem_r_data_i & {DATA_W{out_en}};
 
    assign ext_mem_clk_o = clk_i;
@@ -50,7 +47,6 @@ module iob_shift_reg
    assign ext_mem_r_en_o = en_i;
    assign ext_mem_r_addr_o = addr_r;
 
-
    //counter enable
    assign out_en_nxt = out_en  | (addr_w == (N-1));
 
@@ -58,7 +54,7 @@ module iob_shift_reg
    assign rst_int_r = rst_i | (addr_r == (N-1));
 
    always @* begin
-      if (addr_w == (N-1)) begin
+      if (addr_w == (N-1) || en_i == 0) begin
          addr_r = 0;
       end else begin
          addr_r = addr_w + 1'b1;
@@ -87,6 +83,5 @@ module iob_shift_reg
       .data_i(out_en_nxt),
       .data_o(out_en)
    );
-
 
 endmodule
