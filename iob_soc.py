@@ -748,83 +748,85 @@ def setup(py_params_dict):
         {
             "core_name": "iob_cache",
             "instance_name": "iob_cache_inst",
-            "create_verilog_instance": False,
+            "instantiate": False,
         },
         {
             "core_name": "iob_rom_sp",
             "instance_name": "iob_rom_sp_inst",
-            "create_verilog_instance": False,
+            "instantiate": False,
         },
         {
             "core_name": "iob_ram_dp_be",
             "instance_name": "iob_ram_dp_be_inst",
-            "create_verilog_instance": False,
+            "instantiate": False,
         },
         {
             "core_name": "iob_ram_dp_be_xil",
             "instance_name": "iob_ram_dp_be_xil_inst",
-            "create_verilog_instance": False,
+            "instantiate": False,
         },
         {
             "core_name": "iob_pulse_gen",
             "instance_name": "iob_pulse_gen_inst",
-            "create_verilog_instance": False,
+            "instantiate": False,
         },
         # iob_counter("counter")
         {
             "core_name": "iob_reg",
             "instance_name": "iob_reg_inst",
-            "create_verilog_instance": False,
+            "instantiate": False,
         },
         {
             "core_name": "iob_reg_re",
             "instance_name": "iob_reg_re_inst",
-            "create_verilog_instance": False,
+            "instantiate": False,
         },
         {
             "core_name": "iob_ram_sp_be",
             "instance_name": "iob_ram_sp_be_inst",
-            "create_verilog_instance": False,
+            "instantiate": False,
         },
         # iob_ram_dp("ram_dp")
         # iob_ctls("ctls")
         {
             "core_name": "axi_interconnect",
             "instance_name": "axi_interconnect_inst",
-            "create_verilog_instance": False,
+            "instantiate": False,
         },
         # Simulation headers & modules
         {
             "core_name": "axi_ram",
             "instance_name": "axi_ram_inst",
-            "create_verilog_instance": False,
+            "instantiate": False,
         },
         {
             "core_name": "iob_tasks",
             "instance_name": "iob_tasks_inst",
-            "create_verilog_instance": False,
-        },
-        # Software modules
-        {
-            "core_name": "printf",
-            "instance_name": "printf_inst",
+            "instantiate": False,
         },
         # Modules required for CACHE
         {
             "core_name": "iob_ram_2p",
             "instance_name": "iob_ram_2p_inst",
-            "create_verilog_instance": False,
+            "instantiate": False,
         },
         {
             "core_name": "iob_ram_sp",
             "instance_name": "iob_ram_sp_inst",
-            "create_verilog_instance": False,
+            "instantiate": False,
         },
         # FPGA modules
         {
             "core_name": "iob_reset_sync",
             "instance_name": "iob_reset_sync_inst",
-            "create_verilog_instance": False,
+            "instantiate": False,
+        },
+    ]
+    attributes_dict["sw_modules"] = [
+        # Software modules
+        {
+            "core_name": "printf",
+            "instance_name": "printf_inst",
         },
     ]
 
