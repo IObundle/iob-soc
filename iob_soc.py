@@ -280,7 +280,6 @@ def setup(py_params_dict):
             "if_gen": "iob",
             "file_prefix": "iob_soc_cpu_i_",
             "wire_prefix": "cpu_i_",
-            "param_prefix": "",
             "descr": "cpu instruction bus",
             "signals": [],
             "widths": {
@@ -288,12 +287,23 @@ def setup(py_params_dict):
                 "ADDR_W": "ADDR_W",
             },
         },
+        # TODO: Future py2hwsw if_gen2 template:
+        # {
+        #     "name": "cpu_i",
+        #     "interface": {
+        #         "type": "iob",
+        #         "subtype": "master",
+        #         # Widths/Other parameters
+        #         "DATA_W": "DATA_W",
+        #         "ADDR_W": "ADDR_W",
+        #     },
+        #     "descr": "cpu instruction bus",
+        # },
         {
             "name": "cpu_d",
             "if_gen": "iob",
             "file_prefix": "iob_soc_cpu_d_",
             "wire_prefix": "cpu_d_",
-            "param_prefix": "",
             "descr": "cpu data bus",
             "signals": [],
             "widths": {
@@ -314,7 +324,6 @@ def setup(py_params_dict):
             "if_gen": "iob",
             "file_prefix": "iob_soc_int_mem_i_",
             "wire_prefix": "int_mem_i_",
-            "param_prefix": "",
             "descr": "iob-soc internal memory instruction interface",
             "signals": [],
             "widths": {
@@ -338,7 +347,6 @@ def setup(py_params_dict):
                 "if_gen": "iob",
                 "file_prefix": "iob_soc_int_d_",
                 "wire_prefix": "int_d_",
-                "param_prefix": "",
                 "descr": "iob-soc internal data interface",
                 "signals": [],
                 "widths": {
@@ -353,7 +361,6 @@ def setup(py_params_dict):
             "if_gen": "iob",
             "file_prefix": "iob_soc_int_mem_d_",
             "wire_prefix": "int_mem_d_",
-            "param_prefix": "",
             "descr": "iob-soc internal memory data interface",
             "signals": [],
             "widths": {
@@ -367,7 +374,6 @@ def setup(py_params_dict):
             "if_gen": "iob",
             "file_prefix": "iob_soc_int_mem_boot_ctr_",
             "wire_prefix": "boot_ctr_",
-            "param_prefix": "",
             "descr": "iob-soc internal memory boot controler interface",
             "signals": [],
             "widths": {
@@ -380,7 +386,6 @@ def setup(py_params_dict):
             "if_gen": "iob",
             "file_prefix": "iob_soc_int_mem_ram_d_",
             "wire_prefix": "ram_d_",
-            "param_prefix": "",
             "descr": "iob-soc internal memory ram data interface",
             "signals": [],
             "widths": {
@@ -393,7 +398,6 @@ def setup(py_params_dict):
             "if_gen": "iob",
             "file_prefix": "iob_soc_int_mem_ram_w_",
             "wire_prefix": "ram_w_",
-            "param_prefix": "",
             "descr": "iob-soc internal memory sram write interface",
             "signals": [],
             "widths": {
@@ -406,7 +410,6 @@ def setup(py_params_dict):
             "if_gen": "iob",
             "file_prefix": "iob_soc_int_mem_ram_r_",
             "wire_prefix": "ram_r_",
-            "param_prefix": "",
             "descr": "iob-soc internal ram r bus",
             "signals": [],
             "widths": {
@@ -419,7 +422,6 @@ def setup(py_params_dict):
             "if_gen": "iob",
             "file_prefix": "iob_soc_int_mem_ram_i_",
             "wire_prefix": "ram_i_",
-            "param_prefix": "",
             "descr": "iob-soc internal ram i bus",
             "signals": [],
             "widths": {
@@ -436,7 +438,6 @@ def setup(py_params_dict):
                 "if_gen": "iob",
                 "file_prefix": "iob_soc_ext_mem_i_",
                 "wire_prefix": "ext_mem_i_",
-                "param_prefix": "",
                 "descr": "iob-soc external memory instruction interface",
                 "signals": [],
                 "widths": {
@@ -449,7 +450,6 @@ def setup(py_params_dict):
                 "if_gen": "iob",
                 "file_prefix": "iob_soc_ext_mem_d_",
                 "wire_prefix": "ext_mem_d_",
-                "param_prefix": "",
                 "descr": "iob-soc external memory data interface",
                 "signals": [],
                 "widths": {
@@ -472,7 +472,6 @@ def setup(py_params_dict):
                 "if_gen": "iob",
                 "file_prefix": "iob_soc_ext_mem_icache_",
                 "wire_prefix": "icache_be_",
-                "param_prefix": "",
                 "descr": "iob-soc external memory instruction cache interface",
                 "signals": [],
                 "widths": {
@@ -485,7 +484,6 @@ def setup(py_params_dict):
                 "if_gen": "iob",
                 "file_prefix": "iob_soc_ext_mem_icache_",
                 "wire_prefix": "icache_be_",
-                "param_prefix": "",
                 "descr": "iob-soc external memory instruction cache interface",
                 "signals": [],
                 "widths": {
@@ -498,7 +496,6 @@ def setup(py_params_dict):
                 "if_gen": "iob",
                 "file_prefix": "iob_soc_ext_mem_dcache_",
                 "wire_prefix": "dcache_be_",
-                "param_prefix": "",
                 "descr": "iob-soc external memory data cache interface",
                 "signals": [],
                 "widths": {
@@ -511,7 +508,6 @@ def setup(py_params_dict):
                 "if_gen": "iob",
                 "file_prefix": "iob_soc_ext_mem_dcache_",
                 "wire_prefix": "dcache_be_",
-                "param_prefix": "",
                 "descr": "iob-soc external memory data cache interface",
                 "signals": [],
                 "widths": {
@@ -524,7 +520,6 @@ def setup(py_params_dict):
                 "if_gen": "iob",
                 "file_prefix": "iob_soc_ext_mem_l2cache_",
                 "wire_prefix": "l2cache_",
-                "param_prefix": "",
                 "descr": "iob-soc external memory l2 cache interface",
                 "signals": [],
                 "widths": {
@@ -537,7 +532,6 @@ def setup(py_params_dict):
                 "if_gen": "iob",
                 "file_prefix": "iob_soc_ext_mem_l2cache_",
                 "wire_prefix": "l2cache_",
-                "param_prefix": "",
                 "descr": "iob-soc external memory l2 cache interface",
                 "signals": [],
                 "widths": {
@@ -553,7 +547,6 @@ def setup(py_params_dict):
             "if_gen": "iob",
             "file_prefix": "iob_soc_int_d_dbus_",
             "wire_prefix": "int_d_",
-            "param_prefix": "",
             "descr": "iob-soc internal data interface",
             "signals": [],
             "widths": {
@@ -567,7 +560,6 @@ def setup(py_params_dict):
             "if_gen": "iob",
             "file_prefix": "iob_soc_uart_swreg_",
             "wire_prefix": "uart_swreg_",
-            "param_prefix": "",
             "descr": "UART swreg bus",
             "signals": [],
             "widths": {
@@ -580,7 +572,6 @@ def setup(py_params_dict):
             "if_gen": "iob",
             "file_prefix": "iob_soc_timer_swreg_",
             "wire_prefix": "timer_swreg_",
-            "param_prefix": "",
             "descr": "TIMER swreg bus",
             "signals": [],
             "widths": {
