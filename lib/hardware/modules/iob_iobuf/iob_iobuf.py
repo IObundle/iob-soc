@@ -3,7 +3,94 @@ def setup(py_params_dict):
         "original_name": "iob_iobuf",
         "name": "iob_iobuf",
         "version": "0.1",
-        "generate_hw": False,
+        "ports": [
+            {
+                "name": "i",
+                "descr": "Input port",
+                "signals": [
+                    {
+                        "name": "i",
+                        "width": 1,
+                        "direction": "input",
+                    },
+                ],
+            },
+            {
+                "name": "t",
+                "descr": "Input port",
+                "signals": [
+                    {
+                        "name": "t",
+                        "width": 1,
+                        "direction": "input",
+                    },
+                ],
+            },
+            {
+                "name": "n",
+                "descr": "Input port",
+                "signals": [
+                    {
+                        "name": "n",
+                        "width": 1,
+                        "direction": "input",
+                    },
+                ],
+            },
+            {
+                "name": "o",
+                "descr": "Output port",
+                "signals": [
+                    {
+                        "name": "o",
+                        "width": 1,
+                        "direction": "output",
+                    },
+                ],
+            },
+            {
+                "name": "io",
+                "descr": "IN/Out port",
+                "signals": [
+                    {
+                        "name": "io",
+                        "width": 1,
+                        "direction": "inout",
+                    },
+                ],
+            },
+        ],
+        "wires": [
+            {
+                "name": "o_int",
+                "descr": "o_int wire",
+                "signals": [
+                    {"name": "o_int", "width": 1},
+                ],
+            },
+        ],
+        "snippets": [
+            {
+                "outputs": ["data_o"],
+                "verilog_code": """
+     `ifdef XILINX
+   IOBUF IOBUF_inst (
+      .I (i_i),
+      .T (t_i),
+      .O (o_int),
+      .IO(io)
+   );
+`else
+   reg o_var;
+   assign io = t_i ? 1'bz : i_i;
+   always @* o_var = #1 io;
+   assign o_int = o_var;
+`endif
+
+   assign o_o = (n_i ^ o_int);
+            """,
+            },
+        ],
     }
 
     return attributes_dict
