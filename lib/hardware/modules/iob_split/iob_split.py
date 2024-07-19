@@ -82,7 +82,7 @@ def setup(py_params_dict):
                 "name": f"output_{port_idx}",
                 "if_gen": "iob",
                 "type": "master",
-                "file_prefix": f"{py_params_dict["name"]}_output{port_idx}_",
+                "file_prefix": f"{py_params_dict['name']}_output{port_idx}_",
                 "port_prefix": f"output{port_idx}_",
                 "param_prefix": "",
                 "descr": "Split output interface",
@@ -131,7 +131,7 @@ def setup(py_params_dict):
             "descr": "I/O of valid demux",
             "signals": [
                 {"name": "input_iob_valid"},
-                {"name": "demux_valid_output", "width": NUM_OUTPUTS*1},
+                {"name": "demux_valid_output", "width": NUM_OUTPUTS * 1},
             ],
         },
         {
@@ -289,7 +289,7 @@ def setup(py_params_dict):
         {
             "outputs": ["sel"],
             # Extract output selection bits from address
-            "verilog_code": f"  assign sel = input_iob_addr_i[SPLIT_PTR-:{NBITS}];"
+            "verilog_code": f"  assign sel = input_iob_addr_i[SPLIT_PTR-:{NBITS}];",
         },
     ]
 

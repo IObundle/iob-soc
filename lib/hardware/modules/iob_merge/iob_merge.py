@@ -74,7 +74,7 @@ def setup(py_params_dict):
                 "name": f"input_{port_idx}",
                 "if_gen": "iob",
                 "type": "master",
-                "file_prefix": f"{py_params_dict["name"]}_input{port_idx}_",
+                "file_prefix": f"{py_params_dict['name']}_input{port_idx}_",
                 "port_prefix": f"input{port_idx}_",
                 "param_prefix": "",
                 "descr": "Merge input interfaces",
@@ -121,7 +121,7 @@ def setup(py_params_dict):
             "name": "mux_valid_io",
             "descr": "I/O of valid mux",
             "signals": [
-                {"name": "mux_valid_input", "width": NUM_INPUTS*1},
+                {"name": "mux_valid_input", "width": NUM_INPUTS * 1},
                 {"name": "output_iob_valid"},
             ],
         },
@@ -183,7 +183,6 @@ def setup(py_params_dict):
                 {"name": "sel"},
             ],
         },
-
     ]
     attributes_dict["blocks"] = [
         {
