@@ -43,11 +43,11 @@ def setup(py_params_dict):
             {
                 "name": "clk_en_rst",
                 "if_gen": "clk_en_rst",
-                "type": "slave",
-                "port_prefix": "",
-                "wire_prefix": "",
+                "interface": {
+                    "type": "clk_en_rst",
+                    "subtype": "slave",
+                },
                 "descr": "Clock, clock enable and async reset",
-                "signals": [],
             },
             {
                 "name": "reset",
@@ -62,17 +62,15 @@ def setup(py_params_dict):
             },
             {
                 "name": "input",
-                "if_gen": "iob",
-                "type": "slave",
-                "file_prefix": py_params_dict["name"] + "_input_",
-                "port_prefix": "input_",
-                "param_prefix": "",
-                "descr": "Split input",
-                "signals": [],
-                "widths": {
+                "interface": {
+                    "type": "iob",
+                    "subtype": "slave",
+                    "file_prefix": py_params_dict["name"] + "_input_",
+                    "port_prefix": "input_",
                     "DATA_W": "DATA_W",
                     "ADDR_W": "ADDR_W",
                 },
+                "descr": "Split input",
             },
         ],
     }
@@ -80,17 +78,15 @@ def setup(py_params_dict):
         attributes_dict["ports"].append(
             {
                 "name": f"output_{port_idx}",
-                "if_gen": "iob",
-                "type": "master",
-                "file_prefix": f"{py_params_dict['name']}_output{port_idx}_",
-                "port_prefix": f"output{port_idx}_",
-                "param_prefix": "",
-                "descr": "Split output interface",
-                "signals": [],
-                "widths": {
+                "interface": {
+                    "type": "iob",
+                    "subtype": "master",
+                    "file_prefix": f"{py_params_dict['name']}_output{port_idx}_",
+                    "port_prefix": f"output{port_idx}_",
                     "DATA_W": "DATA_W",
                     "ADDR_W": "ADDR_W",
                 },
+                "descr": "Split output interface",
             },
         )
     attributes_dict["wires"] = [

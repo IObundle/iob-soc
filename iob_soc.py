@@ -150,12 +150,11 @@ def setup(py_params_dict):
     attributes_dict["ports"] = [
         {
             "name": "clk_en_rst",
-            "if_gen": "clk_en_rst",
-            "type": "slave",
-            "wire_prefix": "",
-            "port_prefix": "",
+            "interface": {
+                "type": "clk_en_rst",
+                "subtype": "slave",
+            },
             "descr": "Clock, clock enable and reset",
-            "signals": [],
         },
         {
             "name": "cpu_trap",
@@ -231,10 +230,10 @@ def setup(py_params_dict):
         # Peripheral IO ports
         {
             "name": "rs232",
-            "if_gen": "rs232",
-            "type": "",  # Neutral type. Neither master nor slave.
-            "wire_prefix": "",
-            "port_prefix": "",
+            "interface": {
+                "type": "rs232",
+                "subtype": "slave",
+            },
             "descr": "iob-soc uart interface",
         },
     ]
@@ -242,11 +241,9 @@ def setup(py_params_dict):
         attributes_dict["ports"] += [
             {
                 "name": "axi",
-                "if_gen": "axi",
-                "type": "master",
-                "wire_prefix": "",
-                "port_prefix": "",
-                "widths": {
+                "interface": {
+                    "type": "axi",
+                    "subtype": "master",
                     "ID_W": "AXI_ID_W",
                     "ADDR_W": "AXI_ADDR_W",
                     "DATA_W": "AXI_DATA_W",
@@ -277,15 +274,14 @@ def setup(py_params_dict):
         },
         {
             "name": "cpu_i",
-            "if_gen": "iob",
-            "file_prefix": "iob_soc_cpu_i_",
-            "wire_prefix": "cpu_i_",
-            "descr": "cpu instruction bus",
-            "signals": [],
-            "widths": {
+            "interface": {
+                "type": "iob",
+                "file_prefix": "iob_soc_cpu_i_",
+                "wire_prefix": "cpu_i_",
                 "DATA_W": "DATA_W",
                 "ADDR_W": "ADDR_W",
             },
+            "descr": "cpu instruction bus",
         },
         # TODO: Future py2hwsw if_gen2 template:
         # {
@@ -301,15 +297,14 @@ def setup(py_params_dict):
         # },
         {
             "name": "cpu_d",
-            "if_gen": "iob",
-            "file_prefix": "iob_soc_cpu_d_",
-            "wire_prefix": "cpu_d_",
-            "descr": "cpu data bus",
-            "signals": [],
-            "widths": {
+            "interface": {
+                "type": "iob",
+                "file_prefix": "iob_soc_cpu_d_",
+                "wire_prefix": "cpu_d_",
                 "DATA_W": "DATA_W",
                 "ADDR_W": "ADDR_W",
             },
+            "descr": "cpu data bus",
         },
         {
             "name": "split_reset",
@@ -321,15 +316,14 @@ def setup(py_params_dict):
         # Internal memory wires
         {
             "name": "int_mem_i",
-            "if_gen": "iob",
-            "file_prefix": "iob_soc_int_mem_i_",
-            "wire_prefix": "int_mem_i_",
-            "descr": "iob-soc internal memory instruction interface",
-            "signals": [],
-            "widths": {
+            "interface": {
+                "type": "iob",
+                "file_prefix": "iob_soc_int_mem_i_",
+                "wire_prefix": "int_mem_i_",
                 "DATA_W": "DATA_W",
                 "ADDR_W": "ADDR_W",
             },
+            "descr": "iob-soc internal memory instruction interface",
         },
         {
             "name": "int_mem_general",
@@ -344,90 +338,83 @@ def setup(py_params_dict):
         attributes_dict["wires"] += [
             {
                 "name": "int_d",
-                "if_gen": "iob",
-                "file_prefix": "iob_soc_int_d_",
-                "wire_prefix": "int_d_",
-                "descr": "iob-soc internal data interface",
-                "signals": [],
-                "widths": {
+                "interface": {
+                    "type": "iob",
+                    "file_prefix": "iob_soc_int_d_",
+                    "wire_prefix": "int_d_",
                     "DATA_W": "DATA_W",
                     "ADDR_W": "ADDR_W",
                 },
+                "descr": "iob-soc internal data interface",
             },
         ]
     attributes_dict["wires"] += [
         {
             "name": "int_mem_d",
-            "if_gen": "iob",
-            "file_prefix": "iob_soc_int_mem_d_",
-            "wire_prefix": "int_mem_d_",
-            "descr": "iob-soc internal memory data interface",
-            "signals": [],
-            "widths": {
+            "interface": {
+                "type": "iob",
+                "file_prefix": "iob_soc_int_mem_d_",
+                "wire_prefix": "int_mem_d_",
                 "DATA_W": "DATA_W",
                 "ADDR_W": "ADDR_W",
             },
+            "descr": "iob-soc internal memory data interface",
         },
         # Verilog Snippets for other modules
         {
             "name": "int_mem_boot_ctr",
-            "if_gen": "iob",
-            "file_prefix": "iob_soc_int_mem_boot_ctr_",
-            "wire_prefix": "boot_ctr_",
-            "descr": "iob-soc internal memory boot controler interface",
-            "signals": [],
-            "widths": {
+            "interface": {
+                "type": "iob",
+                "file_prefix": "iob_soc_int_mem_boot_ctr_",
+                "wire_prefix": "boot_ctr_",
                 "DATA_W": "DATA_W",
                 "ADDR_W": "ADDR_W",
             },
+            "descr": "iob-soc internal memory boot controler interface",
         },
         {
             "name": "int_mem_ram_d",
-            "if_gen": "iob",
-            "file_prefix": "iob_soc_int_mem_ram_d_",
-            "wire_prefix": "ram_d_",
-            "descr": "iob-soc internal memory ram data interface",
-            "signals": [],
-            "widths": {
+            "interface": {
+                "type": "iob",
+                "file_prefix": "iob_soc_int_mem_ram_d_",
+                "wire_prefix": "ram_d_",
                 "DATA_W": "DATA_W",
                 "ADDR_W": "ADDR_W",
             },
+            "descr": "iob-soc internal memory ram data interface",
         },
         {
             "name": "int_mem_ram_w",
-            "if_gen": "iob",
-            "file_prefix": "iob_soc_int_mem_ram_w_",
-            "wire_prefix": "ram_w_",
-            "descr": "iob-soc internal memory sram write interface",
-            "signals": [],
-            "widths": {
+            "interface": {
+                "type": "iob",
+                "file_prefix": "iob_soc_int_mem_ram_w_",
+                "wire_prefix": "ram_w_",
                 "DATA_W": "DATA_W",
                 "ADDR_W": "ADDR_W",
             },
+            "descr": "iob-soc internal memory sram write interface",
         },
         {
             "name": "int_mem_ram_r",
-            "if_gen": "iob",
-            "file_prefix": "iob_soc_int_mem_ram_r_",
-            "wire_prefix": "ram_r_",
-            "descr": "iob-soc internal ram r bus",
-            "signals": [],
-            "widths": {
+            "interface": {
+                "type": "iob",
+                "file_prefix": "iob_soc_int_mem_ram_r_",
+                "wire_prefix": "ram_r_",
                 "DATA_W": "DATA_W",
                 "ADDR_W": "ADDR_W",
             },
+            "descr": "iob-soc internal ram r bus",
         },
         {
             "name": "int_mem_ram_i",
-            "if_gen": "iob",
-            "file_prefix": "iob_soc_int_mem_ram_i_",
-            "wire_prefix": "ram_i_",
-            "descr": "iob-soc internal ram i bus",
-            "signals": [],
-            "widths": {
+            "interface": {
+                "type": "iob",
+                "file_prefix": "iob_soc_int_mem_ram_i_",
+                "wire_prefix": "ram_i_",
                 "DATA_W": "DATA_W",
                 "ADDR_W": "ADDR_W",
             },
+            "descr": "iob-soc internal ram i bus",
         },
     ]
     if USE_EXTMEM:
@@ -435,27 +422,25 @@ def setup(py_params_dict):
             # External memory wires
             {
                 "name": "ext_mem_i",
-                "if_gen": "iob",
-                "file_prefix": "iob_soc_ext_mem_i_",
-                "wire_prefix": "ext_mem_i_",
-                "descr": "iob-soc external memory instruction interface",
-                "signals": [],
-                "widths": {
+                "interface": {
+                    "type": "iob",
+                    "file_prefix": "iob_soc_ext_mem_i_",
+                    "wire_prefix": "ext_mem_i_",
                     "DATA_W": "DATA_W",
                     "ADDR_W": "ADDR_W",
                 },
+                "descr": "iob-soc external memory instruction interface",
             },
             {
                 "name": "ext_mem_d",
-                "if_gen": "iob",
-                "file_prefix": "iob_soc_ext_mem_d_",
-                "wire_prefix": "ext_mem_d_",
-                "descr": "iob-soc external memory data interface",
-                "signals": [],
-                "widths": {
+                "interface": {
+                    "type": "iob",
+                    "file_prefix": "iob_soc_ext_mem_d_",
+                    "wire_prefix": "ext_mem_d_",
                     "DATA_W": "DATA_W",
                     "ADDR_W": "ADDR_W",
                 },
+                "descr": "iob-soc external memory data interface",
             },
             {
                 "name": "ext_mem_clk_en_rst",
@@ -469,115 +454,106 @@ def setup(py_params_dict):
             # Verilog Snippets for other modules
             {
                 "name": "ext_mem_icache",
-                "if_gen": "iob",
-                "file_prefix": "iob_soc_ext_mem_icache_",
-                "wire_prefix": "icache_be_",
-                "descr": "iob-soc external memory instruction cache interface",
-                "signals": [],
-                "widths": {
+                "interface": {
+                    "type": "iob",
+                    "file_prefix": "iob_soc_ext_mem_icache_",
+                    "wire_prefix": "icache_be_",
                     "DATA_W": "DATA_W",
                     "ADDR_W": "MEM_ADDR_W",
                 },
+                "descr": "iob-soc external memory instruction cache interface",
             },
             {
                 "name": "ext_mem_icache_merge",
-                "if_gen": "iob",
-                "file_prefix": "iob_soc_ext_mem_icache_",
-                "wire_prefix": "icache_be_",
-                "descr": "iob-soc external memory instruction cache interface",
-                "signals": [],
-                "widths": {
+                "interface": {
+                    "type": "iob",
+                    "file_prefix": "iob_soc_ext_mem_icache_",
+                    "wire_prefix": "icache_be_",
                     "DATA_W": "DATA_W",
                     "ADDR_W": "ADDR_W",
                 },
+                "descr": "iob-soc external memory instruction cache interface",
             },
             {
                 "name": "ext_mem_dcache",
-                "if_gen": "iob",
-                "file_prefix": "iob_soc_ext_mem_dcache_",
-                "wire_prefix": "dcache_be_",
-                "descr": "iob-soc external memory data cache interface",
-                "signals": [],
-                "widths": {
+                "interface": {
+                    "type": "iob",
+                    "file_prefix": "iob_soc_ext_mem_dcache_",
+                    "wire_prefix": "dcache_be_",
                     "DATA_W": "DATA_W",
                     "ADDR_W": "MEM_ADDR_W",
                 },
+                "descr": "iob-soc external memory data cache interface",
             },
             {
                 "name": "ext_mem_dcache_merge",
-                "if_gen": "iob",
-                "file_prefix": "iob_soc_ext_mem_dcache_",
-                "wire_prefix": "dcache_be_",
-                "descr": "iob-soc external memory data cache interface",
-                "signals": [],
-                "widths": {
+                "interface": {
+                    "type": "iob",
+                    "file_prefix": "iob_soc_ext_mem_dcache_",
+                    "wire_prefix": "dcache_be_",
                     "DATA_W": "DATA_W",
                     "ADDR_W": "ADDR_W",
                 },
+                "descr": "iob-soc external memory data cache interface",
             },
             {
                 "name": "ext_mem_l2cache",
-                "if_gen": "iob",
-                "file_prefix": "iob_soc_ext_mem_l2cache_",
-                "wire_prefix": "l2cache_",
-                "descr": "iob-soc external memory l2 cache interface",
-                "signals": [],
-                "widths": {
+                "interface": {
+                    "type": "iob",
+                    "file_prefix": "iob_soc_ext_mem_l2cache_",
+                    "wire_prefix": "l2cache_",
                     "DATA_W": "DATA_W",
                     "ADDR_W": "MEM_ADDR_W",
                 },
+                "descr": "iob-soc external memory l2 cache interface",
             },
             {
                 "name": "ext_mem_l2cache_merge",
-                "if_gen": "iob",
-                "file_prefix": "iob_soc_ext_mem_l2cache_",
-                "wire_prefix": "l2cache_",
-                "descr": "iob-soc external memory l2 cache interface",
-                "signals": [],
-                "widths": {
+                "interface": {
+                    "type": "iob",
+                    "file_prefix": "iob_soc_ext_mem_l2cache_",
+                    "wire_prefix": "l2cache_",
                     "DATA_W": "DATA_W",
                     "ADDR_W": "ADDR_W",
                 },
+                "descr": "iob-soc external memory l2 cache interface",
             },
         ]
     attributes_dict["wires"] += [
         # Split (for other modules?)
         {
             "name": "int_d_dbus_split",
-            "if_gen": "iob",
-            "file_prefix": "iob_soc_int_d_dbus_",
-            "wire_prefix": "int_d_",
-            "descr": "iob-soc internal data interface",
-            "signals": [],
-            "widths": {
+            "interface": {
+                "type": "iob",
+                "file_prefix": "iob_soc_int_d_dbus_",
+                "wire_prefix": "int_d_",
                 "DATA_W": "DATA_W",
                 "ADDR_W": "ADDR_W",
             },
+            "descr": "iob-soc internal data interface",
         },
         # Peripheral wires
         {
             "name": "uart_swreg",
-            "if_gen": "iob",
-            "file_prefix": "iob_soc_uart_swreg_",
-            "wire_prefix": "uart_swreg_",
-            "descr": "UART swreg bus",
-            "signals": [],
-            "widths": {
+            "interface": {
+                "type": "iob",
+                "file_prefix": "iob_soc_uart_swreg_",
+                "wire_prefix": "uart_swreg_",
                 "DATA_W": "DATA_W",
                 "ADDR_W": "ADDR_W",
             },
+            "descr": "UART swreg bus",
         },
         {
             "name": "timer_swreg",
-            "if_gen": "iob",
-            "file_prefix": "iob_soc_timer_swreg_",
-            "wire_prefix": "timer_swreg_",
-            "descr": "TIMER swreg bus",
-            "signals": [],
-            "widths": {
+            "interface": {
+                "type": "iob",
+                "file_prefix": "iob_soc_timer_swreg_",
+                "wire_prefix": "timer_swreg_",
                 "DATA_W": "DATA_W",
                 "ADDR_W": "ADDR_W",
             },
+            "descr": "TIMER swreg bus",
         },
         # TODO: Auto add peripheral wires
     ]

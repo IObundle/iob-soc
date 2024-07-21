@@ -33,17 +33,14 @@ def setup(py_params_dict):
         "ports": [
             {
                 "name": "clk_rst",
-                "type": "slave",
-                "port_prefix": "",
-                "wire_prefix": "",
+                "interface": {
+                    "type": "clk_rst",
+                    "subtype": "slave",
+                },
                 "descr": "Clock, clock enable and reset",
-                "signals": [],
             },
             {
                 "name": "io",
-                "type": "master",
-                "port_prefix": "",
-                "wire_prefix": "",
                 "descr": "Input and output",
                 "signals": [
                     {

@@ -34,11 +34,11 @@ def setup(py_params_dict):
         "ports": [
             {
                 "name": "clk_en_rst",
-                "type": "slave",
-                "port_prefix": "",
-                "wire_prefix": "",
+                "interface": {
+                    "type": "clk_en_rst",
+                    "subtype": "slave",
+                },
                 "descr": "Clock, clock enable and async reset",
-                "signals": [],
                 "connect_to_port": True,
             },
             {
@@ -55,16 +55,15 @@ def setup(py_params_dict):
             {
                 "name": "output",
                 "if_gen": "iob",
-                "type": "slave",
-                "file_prefix": py_params_dict["name"] + "_output_",
-                "port_prefix": "output_",
-                "param_prefix": "",
-                "descr": "Merge output",
-                "signals": [],
-                "widths": {
+                "interface": {
+                    "type": "iob",
+                    "subtype": "slave",
+                    "file_prefix": py_params_dict["name"] + "_output_",
+                    "port_prefix": "output_",
                     "DATA_W": "DATA_W",
                     "ADDR_W": "ADDR_W",
                 },
+                "descr": "Merge output",
             },
         ],
     }
@@ -73,16 +72,15 @@ def setup(py_params_dict):
             {
                 "name": f"input_{port_idx}",
                 "if_gen": "iob",
-                "type": "master",
-                "file_prefix": f"{py_params_dict['name']}_input{port_idx}_",
-                "port_prefix": f"input{port_idx}_",
-                "param_prefix": "",
-                "descr": "Merge input interfaces",
-                "signals": [],
-                "widths": {
+                "interface": {
+                    "type": "iob",
+                    "subtype": "master",
+                    "file_prefix": f"{py_params_dict['name']}_input{port_idx}_",
+                    "port_prefix": f"input{port_idx}_",
                     "DATA_W": "DATA_W",
                     "ADDR_W": "ADDR_W",
                 },
+                "descr": "Merge input interfaces",
             },
         )
     attributes_dict["wires"] = [

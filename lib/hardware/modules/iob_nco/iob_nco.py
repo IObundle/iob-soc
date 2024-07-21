@@ -33,29 +33,24 @@ def setup(py_params_dict):
         "ports": [
             {
                 "name": "clk_en_rst",
-                "type": "slave",
-                "port_prefix": "",
-                "wire_prefix": "",
+                "interface": {
+                    "type": "clk_en_rst",
+                    "subtype": "slave",
+                },
                 "descr": "clock, clock enable and reset",
-                "signals": [],
             },
             {
                 "name": "iob",
-                "type": "slave",
-                "port_prefix": "",
-                "wire_prefix": "",
-                "descr": "CPU native interface",
-                "signals": [],
-                "widths": {
+                "interface": {
+                    "type": "iob",
+                    "subtype": "slave",
                     "ADDR_W": "ADDR_W",
                     "DATA_W": "DATA_W",
                 },
+                "descr": "CPU native interface",
             },
             {
                 "name": "clk_gen",
-                "type": "master",
-                "port_prefix": "",
-                "wire_prefix": "",
                 "descr": "Output generated clock interface",
                 "signals": [
                     {
