@@ -4,7 +4,7 @@ def setup(py_params_dict):
         "name": "iob_str",
         "version": "0.1",
         "generate_hw": False,
-        "create_verilog_instance": False,
+        "instantiate": False,
     }
 
     return attributes_dict
