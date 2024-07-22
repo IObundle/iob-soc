@@ -12,6 +12,7 @@ def setup(py_params_dict):
 
     attributes_dict = {
         "original_name": "iob_split",
+        "name": py_params_dict["name"],
         "version": "0.1",
         "confs": [
             {
@@ -42,7 +43,6 @@ def setup(py_params_dict):
         "ports": [
             {
                 "name": "clk_en_rst",
-                "if_gen": "clk_en_rst",
                 "interface": {
                     "type": "clk_en_rst",
                     "subtype": "slave",

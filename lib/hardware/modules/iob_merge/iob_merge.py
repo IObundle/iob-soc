@@ -12,6 +12,7 @@ def setup(py_params_dict):
 
     attributes_dict = {
         "original_name": "iob_merge",
+        "name": py_params_dict["name"],
         "version": "0.1",
         "confs": [
             {
@@ -54,7 +55,6 @@ def setup(py_params_dict):
             },
             {
                 "name": "output",
-                "if_gen": "iob",
                 "interface": {
                     "type": "iob",
                     "subtype": "slave",
@@ -71,7 +71,6 @@ def setup(py_params_dict):
         attributes_dict["ports"].append(
             {
                 "name": f"input_{port_idx}",
-                "if_gen": "iob",
                 "interface": {
                     "type": "iob",
                     "subtype": "master",

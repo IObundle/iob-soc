@@ -1,0 +1,130 @@
+def setup(py_params_dict):
+    attributes_dict = {
+        "original_name": "iob_soc_ext_mem",
+        "name": "iob_soc_ext_mem",
+        "version": "0.1",
+        "generate_hw": False,
+        "confs": [
+            {
+                "name": "DATA_W",
+                "type": "P",
+                "val": "32",
+                "min": "0",
+                "max": "NA",
+                "descr": "Width of data bus",
+            },
+            {
+                "name": "ADDR_W",
+                "type": "P",
+                "val": "0",
+                "min": "0",
+                "max": "NA",
+                "descr": "Width of address bus",
+            },
+            {
+                "name": "FIRM_ADDR_W",
+                "type": "P",
+                "val": "0",
+                "min": "0",
+                "max": "NA",
+                "descr": "Width of firmware",
+            },
+            {
+                "name": "MEM_ADDR_W",
+                "type": "P",
+                "val": "0",
+                "min": "0",
+                "max": "NA",
+                "descr": "Width of address bus in memory interface",
+            },
+            {
+                "name": "DDR_DATA_W",
+                "type": "P",
+                "val": "32",
+                "min": "0",
+                "max": "NA",
+                "descr": "Width of data bus in ddr interface",
+            },
+            {
+                "name": "DDR_ADDR_W",
+                "type": "P",
+                "val": "0",
+                "min": "0",
+                "max": "NA",
+                "descr": "Width of address bus in ddr interface",
+            },
+            {
+                "name": "AXI_ID_W",
+                "type": "P",
+                "val": "32",
+                "min": "0",
+                "max": "NA",
+                "descr": "Width of id signal in axi interface",
+            },
+            {
+                "name": "AXI_LEN_W",
+                "type": "P",
+                "val": "0",
+                "min": "0",
+                "max": "NA",
+                "descr": "Width of len signal in axi interface",
+            },
+            {
+                "name": "AXI_DATA_W",
+                "type": "P",
+                "val": "32",
+                "min": "0",
+                "max": "NA",
+                "descr": "Width of data bus in axi interface",
+            },
+            {
+                "name": "AXI_ADDR_W",
+                "type": "P",
+                "val": "0",
+                "min": "0",
+                "max": "NA",
+                "descr": "Width of address bus in axi interface",
+            },
+        ],
+        "ports": [
+            {
+                "name": "clk_en_rst",
+                "interface": {
+                    "type": "clk_en_rst",
+                },
+                "descr": "Clock, clock enable and reset",
+            },
+            {
+                "name": "i_bus",
+                "interface": {
+                    "type": "iob",
+                    "DATA_W": "DATA_W",
+                    "ADDR_W": "ADDR_W",
+                },
+                "descr": "Instruction bus",
+            },
+            {
+                "name": "d_bus",
+                "interface": {
+                    "type": "iob",
+                    "DATA_W": "DATA_W",
+                    "ADDR_W": "ADDR_W",
+                },
+                "descr": "Data bus",
+            },
+            {
+                "name": "axi",
+                "interface": {
+                    "type": "axi",
+                    "subtype": "master",
+                    "ID_W": "AXI_ID_W",
+                    "ADDR_W": "AXI_ADDR_W",
+                    "DATA_W": "AXI_DATA_W",
+                    "LEN_W": "AXI_LEN_W",
+                },
+                "descr": "AXI master interface for external memory",
+            },
+        ],
+    }
+
+    return attributes_dict

@@ -283,18 +283,6 @@ def setup(py_params_dict):
             },
             "descr": "cpu instruction bus",
         },
-        # TODO: Future py2hwsw if_gen2 template:
-        # {
-        #     "name": "cpu_i",
-        #     "interface": {
-        #         "type": "iob",
-        #         "subtype": "master",
-        #         # Widths/Other parameters
-        #         "DATA_W": "DATA_W",
-        #         "ADDR_W": "ADDR_W",
-        #     },
-        #     "descr": "cpu instruction bus",
-        # },
         {
             "name": "cpu_d",
             "interface": {
@@ -591,8 +579,8 @@ def setup(py_params_dict):
                     "clk_en_rst": "clk_en_rst",
                     "reset": "split_reset",
                     "input": "cpu_i",
-                    "output_1": "int_mem_i",
-                    "output_2": "ext_mem_i",
+                    "output_0": "int_mem_i",
+                    "output_1": "ext_mem_i",
                 },
                 "num_outputs": 2,
             },
@@ -609,8 +597,8 @@ def setup(py_params_dict):
                     "clk_en_rst": "clk_en_rst",
                     "reset": "split_reset",
                     "input": "cpu_d",
-                    "output_1": "int_d",
-                    "output_2": "ext_mem_d",
+                    "output_0": "int_d",
+                    "output_1": "ext_mem_d",
                 },
                 "num_outputs": 2,
             },
@@ -675,9 +663,9 @@ def setup(py_params_dict):
                 "clk_en_rst": "clk_en_rst",
                 "reset": "split_reset",
                 "input": "int_d" if USE_EXTMEM else "cpu_d",
-                "output_1": "int_mem_d",
-                "output_2": "uart_swreg",
-                "output_3": "timer_swreg",
+                "output_0": "int_mem_d",
+                "output_1": "uart_swreg",
+                "output_2": "timer_swreg",
                 # TODO: Connect peripherals automatically
             },
             "num_outputs": N_SLAVES,
