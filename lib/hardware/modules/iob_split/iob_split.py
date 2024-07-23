@@ -285,7 +285,7 @@ def setup(py_params_dict):
         {
             "outputs": ["sel"],
             # Extract output selection bits from address
-            "verilog_code": f"  assign sel = input_iob_addr_i[SPLIT_PTR-:{NBITS}];",
+            "verilog_code": f"    assign sel = input_iob_addr_i[SPLIT_PTR-:{NBITS}];",
         },
     ]
 
@@ -294,10 +294,10 @@ def setup(py_params_dict):
     verilog_outputs = []
     for port_idx in range(NUM_OUTPUTS):
         verilog_code += ""
-        f"assign output{port_idx}_iob_valid_o = demux_valid_output[{port_idx}*1+:1];"
-        f"assign output{port_idx}_iob_addr_o = demux_addr_output[{port_idx}*ADDR_W+:ADDR_W];"
-        f"assign output{port_idx}_iob_wdata_o = demux_wdata_output[{port_idx}*DATA_W+:DATA_W];"
-        f"assign output{port_idx}_iob_wstrb_o = demux_wstrb_output[{port_idx}*(DATA_W/8)+:(DATA_W/8)];"
+        f"    assign output{port_idx}_iob_valid_o = demux_valid_output[{port_idx}*1+:1];"
+        f"    assign output{port_idx}_iob_addr_o = demux_addr_output[{port_idx}*ADDR_W+:ADDR_W];"
+        f"    assign output{port_idx}_iob_wdata_o = demux_wdata_output[{port_idx}*DATA_W+:DATA_W];"
+        f"    assign output{port_idx}_iob_wstrb_o = demux_wstrb_output[{port_idx}*(DATA_W/8)+:(DATA_W/8)];"
         verilog_outputs.append(f"output{port_idx}_iob_valid")
         verilog_outputs.append(f"output{port_idx}_iob_addr")
         verilog_outputs.append(f"output{port_idx}_iob_wdata")
@@ -305,7 +305,7 @@ def setup(py_params_dict):
     verilog_code += "\n"
     # Connect muxer inputs
     for signal in ["rdata", "rvalid", "ready"]:
-        verilog_code += f"mux_{signal}_input = {{"
+        verilog_code += f"    assign mux_{signal}_input = {{"
         for port_idx in range(NUM_OUTPUTS):
             verilog_code += f"output{port_idx}_iob_{signal}_i, "
         verilog_code = verilog_code[:-2] + "};\n"

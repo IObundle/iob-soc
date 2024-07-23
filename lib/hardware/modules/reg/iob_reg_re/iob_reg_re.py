@@ -4,6 +4,24 @@ def setup(py_params_dict):
         "name": "iob_reg_re",
         "version": "0.1",
         "generate_hw": False,
+        "confs": [
+            {
+                "name": "DATA_W",
+                "type": "P",
+                "val": "21",
+                "min": "NA",
+                "max": "NA",
+                "descr": "Data bus width",
+            },
+            {
+                "name": "RST_VAL",
+                "type": "P",
+                "val": "{DATA_W{1'b0}}",
+                "min": "NA",
+                "max": "NA",
+                "descr": "Reset value.",
+            },
+        ],
         "ports": [
             {
                 "name": "clk_en_rst",

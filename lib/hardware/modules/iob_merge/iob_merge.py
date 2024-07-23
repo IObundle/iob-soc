@@ -40,7 +40,6 @@ def setup(py_params_dict):
                     "subtype": "slave",
                 },
                 "descr": "Clock, clock enable and async reset",
-                "connect_to_port": True,
             },
             {
                 "name": "reset",
@@ -57,7 +56,7 @@ def setup(py_params_dict):
                 "name": "output",
                 "interface": {
                     "type": "iob",
-                    "subtype": "slave",
+                    "subtype": "master",
                     "file_prefix": py_params_dict["name"] + "_output_",
                     "port_prefix": "output_",
                     "DATA_W": "DATA_W",
@@ -73,7 +72,7 @@ def setup(py_params_dict):
                 "name": f"input_{port_idx}",
                 "interface": {
                     "type": "iob",
-                    "subtype": "master",
+                    "subtype": "slave",
                     "file_prefix": f"{py_params_dict['name']}_input{port_idx}_",
                     "port_prefix": f"input{port_idx}_",
                     "DATA_W": "DATA_W",
@@ -300,16 +299,16 @@ def setup(py_params_dict):
     verilog_outputs = []
     for port_idx in range(NUM_INPUTS):
         verilog_code += ""
-        f"assign input{port_idx}_iob_rdata_o = demux_rdata_output[{port_idx}*DATA_W+:DATA_W];"
-        f"assign input{port_idx}_iob_rvalid_o = demux_rvalid_output[{port_idx}*1+:1];"
-        f"assign input{port_idx}_iob_ready_o = demux_ready_output[{port_idx}*1+:1];"
+        f"    assign input{port_idx}_iob_rdata_o = demux_rdata_output[{port_idx}*DATA_W+:DATA_W];"
+        f"    assign input{port_idx}_iob_rvalid_o = demux_rvalid_output[{port_idx}*1+:1];"
+        f"    assign input{port_idx}_iob_ready_o = demux_ready_output[{port_idx}*1+:1];"
         verilog_outputs.append(f"input{port_idx}_iob_rdata")
         verilog_outputs.append(f"input{port_idx}_iob_rvalid")
         verilog_outputs.append(f"input{port_idx}_iob_ready")
     verilog_code += "\n"
     # Connect muxer inputs
     for signal in ["valid", "addr", "wdata", "wstrb"]:
-        verilog_code += f"mux_{signal}_input = {{"
+        verilog_code += f"    assign mux_{signal}_input = {{"
         for port_idx in range(NUM_INPUTS):
             verilog_code += f"input{port_idx}_iob_{signal}_i, "
         verilog_code = verilog_code[:-2] + "};\n"
