@@ -1,11 +1,8 @@
 edge = 1
-
-
 def setup(py_params_dict):
     global edge
     if "RST_POL" in py_params_dict:
         edge = py_params_dict["RST_POL"]
-        print(edge)
     attributes_dict = {
         "original_name": "iob_reg",
         "name": "iob_reg",
