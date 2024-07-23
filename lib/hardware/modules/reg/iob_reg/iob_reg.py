@@ -1,4 +1,11 @@
+edge = 1
+
+
 def setup(py_params_dict):
+    global edge
+    if "RST_POL" in py_params_dict:
+        edge = py_params_dict["RST_POL"]
+        print(edge)
     attributes_dict = {
         "original_name": "iob_reg",
         "name": "iob_reg",
@@ -19,14 +26,6 @@ def setup(py_params_dict):
                 "min": "NA",
                 "max": "NA",
                 "descr": "Reset value.",
-            },
-            {
-                "name": "RST_POL",
-                "type": "F",
-                "val": "1",
-                "min": "0",
-                "max": "1",
-                "descr": "Reset polarity.",
             },
         ],
         "ports": [
@@ -62,28 +61,16 @@ def setup(py_params_dict):
         "snippets": [
             {
                 "outputs": ["data_o_reg", "data_o"],
-                "verilog_code": """
+                "verilog_code": f"""
     reg [DATA_W-1:0] data_o_reg;
     assign data_o = data_o_reg;
-  generate
-    if (RST_POL == 1) begin : g_rst_pol_1
-      always @(posedge clk_i, posedge arst_i) begin
-        if (arst_i) begin
-          data_o_reg <= RST_VAL;
-        end else if (cke_i) begin
-          data_o_reg <= data_i;
-        end
-      end
-    end else begin : g_rst_pol_0
-      always @(posedge clk_i, negedge arst_i) begin
-        if (~arst_i) begin
-          data_o_reg <= RST_VAL;
-        end else if (cke_i) begin
-          data_o_reg <= data_i;
-        end
+    always @(posedge clk_i, {"posedge" if edge else "negedge"} arst_i) begin
+      if (arst_i) begin
+        data_o_reg <= RST_VAL;
+      end else if (cke_i) begin
+        data_o_reg <= data_i;
       end
     end
-  endgenerate
          """,
             },
         ],
