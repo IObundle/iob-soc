@@ -213,28 +213,30 @@ def setup(py_params_dict):
                 "descr": "Data bus",
             },
         ]
+    else:  # Not USE_SPRAM
+        attributes_dict["ports"] += [
+            {
+                "name": "sram_i_bus",
+                "interface": {
+                    "type": "iob",
+                    "port_prefix": "sram_i_",
+                    "DATA_W": "DATA_W",
+                    "ADDR_W": "SRAM_ADDR_W-2",
+                },
+                "descr": "Data bus",
+            },
+            {
+                "name": "sram_d_bus",
+                "interface": {
+                    "type": "iob",
+                    "port_prefix": "sram_d_",
+                    "DATA_W": "DATA_W",
+                    "ADDR_W": "SRAM_ADDR_W-2",
+                },
+                "descr": "Data bus",
+            },
+        ]
     attributes_dict["ports"] += [
-        # SRAM
-        {
-            "name": "sram_i_bus",
-            "interface": {
-                "type": "iob",
-                "port_prefix": "sram_i_",
-                "DATA_W": "DATA_W",
-                "ADDR_W": "SRAM_ADDR_W-2",
-            },
-            "descr": "Data bus",
-        },
-        {
-            "name": "sram_d_bus",
-            "interface": {
-                "type": "iob",
-                "port_prefix": "sram_d_",
-                "DATA_W": "DATA_W",
-                "ADDR_W": "SRAM_ADDR_W-2",
-            },
-            "descr": "Data bus",
-        },
         # Peripheral IO ports
         {
             "name": "rs232",
@@ -508,8 +510,6 @@ def setup(py_params_dict):
                 "i_bus": "int_mem_i" if USE_EXTMEM else "cpu_i",
                 "d_bus": "int_mem_d",
                 "rom_bus": "rom_bus",
-                "sram_i_bus": "sram_i_bus",
-                "sram_d_bus": "sram_d_bus",
             },
             "USE_SPRAM": USE_SPRAM,
             "USE_EXTMEM": USE_EXTMEM,
@@ -520,6 +520,13 @@ def setup(py_params_dict):
         attributes_dict["blocks"][-1]["connect"].update(
             {
                 "spram_bus": "spram_bus",
+            }
+        )
+    else:  # Not USE_SPRAM
+        attributes_dict["blocks"][-1]["connect"].update(
+            {
+                "sram_i_bus": "sram_i_bus",
+                "sram_d_bus": "sram_d_bus",
             }
         )
     if USE_EXTMEM:
@@ -672,6 +679,12 @@ def setup(py_params_dict):
         {
             "core_name": "iob_reset_sync",
             "instance_name": "iob_reset_sync_inst",
+            "instantiate": False,
+        },
+        # Memory wrapper
+        {
+            "core_name": "iob_soc_mwrap",
+            "instance_name": "iob_soc_mwrap",
             "instantiate": False,
         },
     ]

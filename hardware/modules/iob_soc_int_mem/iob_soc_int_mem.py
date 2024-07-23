@@ -122,6 +122,30 @@ def setup(py_params_dict):
                 "descr": "Data bus",
             },
         ]
+    else:  # Not USE_SPRAM
+        attributes_dict["ports"] += [
+            # SRAM
+            {
+                "name": "sram_i_bus",
+                "interface": {
+                    "type": "iob",
+                    "port_prefix": "sram_i_",
+                    "DATA_W": "DATA_W",
+                    "ADDR_W": "SRAM_ADDR_W-2",
+                },
+                "descr": "Data bus",
+            },
+            {
+                "name": "sram_d_bus",
+                "interface": {
+                    "type": "iob",
+                    "port_prefix": "sram_d_",
+                    "DATA_W": "DATA_W",
+                    "ADDR_W": "SRAM_ADDR_W-2",
+                },
+                "descr": "Data bus",
+            },
+        ]
     attributes_dict["ports"] += [
         # ROM
         {
@@ -136,27 +160,6 @@ def setup(py_params_dict):
                 },
                 {"name": "rom_r_rdata", "width": "DATA_W", "direction": "input"},
             ],
-        },
-        # SRAM
-        {
-            "name": "sram_i_bus",
-            "interface": {
-                "type": "iob",
-                "port_prefix": "sram_i_",
-                "DATA_W": "DATA_W",
-                "ADDR_W": "SRAM_ADDR_W-2",
-            },
-            "descr": "Data bus",
-        },
-        {
-            "name": "sram_d_bus",
-            "interface": {
-                "type": "iob",
-                "port_prefix": "sram_d_",
-                "DATA_W": "DATA_W",
-                "ADDR_W": "SRAM_ADDR_W-2",
-            },
-            "descr": "Data bus",
         },
     ]
     attributes_dict["wires"] = [
@@ -275,9 +278,6 @@ def setup(py_params_dict):
                 else """
     assign ram_i_iob_rdata = sram_i_iob_rdata_i;
     assign ram_d_iob_rdata = sram_d_iob_rdata_i;
-"""
-            )
-            + """
 
     assign sram_i_iob_valid_o  = ram_i_iob_valid;
     assign sram_i_iob_addr_o   = ram_i_iob_addr;
@@ -288,6 +288,9 @@ def setup(py_params_dict):
     assign sram_d_iob_addr_o   = ram_d_addr;
     assign sram_d_iob_wdata_o  = ram_d_iob_wdata;
     assign sram_d_iob_wstrb_o  = ram_d_iob_wstrb;
+"""
+            )
+            + """
 
     //
     // BOOT CONTROLLER
