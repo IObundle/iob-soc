@@ -1,9 +1,12 @@
+edge = 1
 def setup(py_params_dict):
+    global edge
+    if "RST_POL" in py_params_dict:
+        edge = py_params_dict["RST_POL"]
     attributes_dict = {
         "original_name": "iob_reg",
         "name": "iob_reg",
         "version": "0.1",
-        "generate_hw": False,
         "confs": [
             {
                 "name": "DATA_W",
@@ -21,44 +24,51 @@ def setup(py_params_dict):
                 "max": "NA",
                 "descr": "Reset value.",
             },
-            {
-                "name": "RST_POL",
-                "type": "M",
-                "val": "1",
-                "min": "0",
-                "max": "1",
-                "descr": "Reset polarity.",
-            },
         ],
         "ports": [
             {
                 "name": "clk_en_rst",
                 "type": "slave",
-                "port_prefix": "",
-                "wire_prefix": "",
                 "descr": "Clock, enable, and reset",
                 "signals": [],
             },
             {
-                "name": "io",
-                "type": "master",
-                "port_prefix": "",
-                "wire_prefix": "",
-                "descr": "Input and output",
+                "name": "data_i",
+                "descr": "Input port",
                 "signals": [
                     {
                         "name": "data",
+                        "width": "DATA_W",
                         "direction": "input",
-                        "width": "DATA_W",
-                        "descr": "Input",
-                    },
-                    {
-                        "name": "data",
-                        "direction": "output",
-                        "width": "DATA_W",
-                        "descr": "Output",
                     },
                 ],
+            },
+            {
+                "name": "data_o",
+                "descr": "Output port",
+                "signals": [
+                    {
+                        "name": "data",
+                        "width": "DATA_W",
+                        "direction": "output",
+                    },
+                ],
+            },
+        ],
+        "snippets": [
+            {
+                "outputs": ["data_o_reg", "data_o"],
+                "verilog_code": f"""
+    reg [DATA_W-1:0] data_o_reg;
+    assign data_o = data_o_reg;
+    always @(posedge clk_i, {"posedge" if edge else "negedge"} arst_i) begin
+      if (arst_i) begin
+        data_o_reg <= RST_VAL;
+      end else if (cke_i) begin
+        data_o_reg <= data_i;
+      end
+    end
+         """,
             },
         ],
     }
