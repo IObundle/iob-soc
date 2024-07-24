@@ -46,34 +46,11 @@ def setup(py_params_dict):
             },
             {
                 "name": "rs232",
+                "interface": {
+                    "type": "rs232",
+                    "subtype": "slave",
+                },
                 "descr": "RS232 interface",
-                "signals": [
-                    # {'name':'interrupt', 'type':'O', 'n_bits':'1', 'descr':'be done'},
-                    {
-                        "name": "txd",
-                        "direction": "output",
-                        "width": "1",
-                        "descr": "transmit line",
-                    },
-                    {
-                        "name": "rxd",
-                        "direction": "input",
-                        "width": "1",
-                        "descr": "receive line",
-                    },
-                    {
-                        "name": "cts",
-                        "direction": "input",
-                        "width": "1",
-                        "descr": "to send; the destination is ready to receive a transmission sent by the UART",
-                    },
-                    {
-                        "name": "rts",
-                        "direction": "output",
-                        "width": "1",
-                        "descr": "to send; the UART is ready to receive a transmission from the sender.",
-                    },
-                ],
             },
         ],
         "csrs": [

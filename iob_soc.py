@@ -8,8 +8,10 @@ from iob_soc_utils import pre_setup_iob_soc
 
 
 def setup(py_params_dict):
-    INIT_MEM = py_params_dict["INIT_MEM"] if "INIT_MEM" in py_params_dict else "0"
-    USE_EXTMEM = py_params_dict["USE_EXTMEM"] if "USE_EXTMEM" in py_params_dict else "0"
+    INIT_MEM = py_params_dict["INIT_MEM"] if "INIT_MEM" in py_params_dict else False
+    USE_EXTMEM = (
+        py_params_dict["USE_EXTMEM"] if "USE_EXTMEM" in py_params_dict else False
+    )
     USE_COMPRESSED = 1
     USE_MUL_DIV = 1
     USE_SPRAM = 1
@@ -681,10 +683,10 @@ def setup(py_params_dict):
             "instance_name": "iob_reset_sync_inst",
             "instantiate": False,
         },
-        # Memory wrapper
+        # Simulation wrapper
         {
-            "core_name": "iob_soc_mwrap",
-            "instance_name": "iob_soc_mwrap",
+            "core_name": "iob_soc_sim_wrapper",
+            "instance_name": "iob_soc_sim_wrapper",
             "instantiate": False,
         },
     ]

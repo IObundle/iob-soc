@@ -4,10 +4,11 @@ import iob_soc
 
 
 def setup(py_params_dict):
-    INIT_MEM = py_params_dict["INIT_MEM"] if "INIT_MEM" in py_params_dict else "0"
-    USE_SPRAM = py_params_dict["USE_SPRAM"] if "USE_SPRAM" in py_params_dict else "0"
+    INIT_MEM = py_params_dict["INIT_MEM"] if "INIT_MEM" in py_params_dict else False
+    USE_SPRAM = py_params_dict["USE_SPRAM"] if "USE_SPRAM" in py_params_dict else False
     iob_soc_attr = iob_soc.setup(py_params_dict)
 
+    # TODO: Generate this source in the common_src directory
     attributes_dict = {
         "original_name": "iob_soc_mwrap",
         "name": "iob_soc_mwrap",
