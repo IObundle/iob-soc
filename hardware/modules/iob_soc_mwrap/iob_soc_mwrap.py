@@ -167,15 +167,14 @@ def setup(py_params_dict):
             },
         },
         # IOb-SoC
-        # TODO: Find way to prevent setup of IOb-SoC
-        # {
-        #     "core_name": "iob_soc",
-        #     "instance_name": "iob_soc",
-        #     "parameters": {
-        #         i["name"]: i["name"] for i in iob_soc_attr["confs"] if i["type"] == "P"
-        #     },
-        #     "connect": {i: i for i in iob_soc_attr["ports"]["name"]},
-        # },
+        {
+            "core_name": "iob_soc",
+            "instance_name": "iob_soc",
+            "parameters": {
+                i["name"]: i["name"] for i in iob_soc_attr["confs"] if i["type"] == "P"
+            },
+            "connect": {i["name"]: i["name"] for i in iob_soc_attr["ports"]},
+        },
     ]
     #    attributes_dict["snippets"] = [
     #        {

@@ -212,9 +212,6 @@ def pre_setup_iob_soc(attributes_dict):
         f"{name}_ku040_rstn.vs",
         "ddr4_axi_wire.vs",
         f"{name}_ku040_interconnect_s_portmap.vs",
-    ] + [  # DEBUG
-        "iob_mwrap_extmem_wires.vs",
-        "iob_soc_inst_params.vs",
     ]
 
 
