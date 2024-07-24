@@ -1,17 +1,15 @@
-# import os
+import os
+
 #
 # from iob_base import find_obj_in_list
 #
-# from iob_soc_peripherals import (
-#     create_periphs_tmp,
-#     iob_soc_peripheral_setup,
-# )
+from iob_soc_peripherals import create_periphs_tmp, set_peripheral_macros
+
+
 #
-# from iob_soc_create_system import (
-#     create_systemv,
-#     get_extmem_bus_size,
-#     create_pbus_split_submodule,
-# )
+from iob_soc_create_system import insert_header_files
+
+
 # from iob_soc_create_wrapper_files import create_wrapper_files
 #
 # import fnmatch
@@ -20,21 +18,17 @@
 # import verilog_gen
 #
 #
-# def iob_soc_sw_setup(python_module, exclude_files=[]):
-#     """Create automatic software sources, like 'periphs_tmp.h'"""
-#     peripherals_list = python_module.peripherals
-#     confs = python_module.confs
-#     build_dir = python_module.build_dir
-#     name = python_module.name
-#
-#     # Build periphs_tmp.h
-#     if peripherals_list:
-#         create_periphs_tmp(
-#             python_module.name,
-#             next(i["val"] for i in confs if i["name"] == "ADDR_W"),
-#             peripherals_list,
-#             f"{build_dir}/software/{name}_periphs.h",
-#         )
+def iob_soc_sw_setup(attributes, peripherals):
+    create_periphs_tmp(
+        attributes["name"],
+        next(i["val"] for i in attributes["confs"] if i["name"] == "ADDR_W"),
+        peripherals,
+        # FIXME: Missing build dir
+        # f"{build_dir}/software/{attributes['name']}_periphs.h",
+        f"../iob_soc_V0.7/software/{attributes['name']}_periphs.h",
+    )
+
+
 #
 #
 # def iob_soc_wrapper_setup(python_module, exclude_files=[]):
@@ -180,7 +174,7 @@
 
 
 # Run specialized iob-soc setup sequence
-def pre_setup_iob_soc(attributes_dict):
+def pre_setup_iob_soc(attributes_dict, peripherals):
     """Update IOb-SoC core attributes automatically.
     These updated attributes will be used by the setup process.
     """
@@ -195,13 +189,17 @@ def pre_setup_iob_soc(attributes_dict):
             )
 
     # Setup peripherals
+    set_peripheral_macros(confs, peripherals)
+    # FIXME:build dir
+    out_dir = os.path.join("../iob_soc_V0.7/hardware/src")
+    os.makedirs(out_dir, exist_ok=True)
+    insert_header_files(out_dir, name, peripherals)
     # iob_soc_peripheral_setup(attributes_dict)
     # update_ios_with_extmem_connections(attributes_dict)
 
     # Ignore snippets that should not be replaced by the normal setup process
     # These snippets will only be generated and replaced by iob-soc after the setup process
     attributes_dict["ignore_snippets"] = [
-        f"{name}_periphs_swreg_def.vs",
         f"{name}_pwires.vs",
         f"{name}_periphs_inst.vs",
         f"{name}_wrapper_pwires.vs",

@@ -183,7 +183,7 @@ def setup(py_params_dict):
     attributes_dict["blocks"] = [
         {
             "core_name": "iob_reg_re",
-            "instance_name": "sel_reg",
+            "instance_name": "sel_reg_re",
             "parameters": {
                 "DATA_W": NBITS,
                 "RST_VAL": 0,

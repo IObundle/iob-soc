@@ -126,7 +126,6 @@ module iob_soc_tb;
   wire [      `IOB_SOC_DATA_W-1:0] ethernet_iob_rdata;
   wire                             ethernet_iob_ready;
   wire                             ethernet_iob_rvalid;
-`endif
 
 
   iob_eth_driver_tb eth_driver (
@@ -139,6 +138,7 @@ module iob_soc_tb;
       .iob_ready_i(ethernet_iob_ready),
       .iob_rvalid_i(ethernet_iob_rvalid)
   );
+`endif
 
 
   iob_soc_sim_wrapper iob_soc_sim_wrapper (

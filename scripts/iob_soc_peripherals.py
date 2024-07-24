@@ -69,10 +69,11 @@ reserved_signals = {
 }
 
 
-# Get peripheral related macros
-# confs: confs dictionary to be filled with peripheral macros
-# peripherals_list: list of peripherals
-def get_peripheral_macros(confs, peripherals_list):
+def set_peripheral_macros(confs, peripherals_list):
+    """Set peripheral related macros
+    confs: confs dictionary to be filled with peripheral macros
+    peripherals_list: list of peripherals
+    """
     # Append macros with ID of each peripheral
     confs.extend(get_periphs_id_as_macros(peripherals_list))
     # Append macro with number of peripherals
@@ -265,19 +266,20 @@ def get_periphs_id(peripherals_str):
     return peripherals_list
 
 
-# Given a list of dictionaries representing each peripheral instance
-# Return list of dictionaries representing macros of each peripheral instance with their ID assigned
 def get_periphs_id_as_macros(peripherals_list):
+    """Given a list of dictionaries representing each peripheral instance
+    Return list of dictionaries representing macros of each peripheral instance with their ID assigned.
+    """
     macro_list = []
     for idx, instance in enumerate(peripherals_list, 1):
         macro_list.append(
             {
-                "name": instance.name,
+                "name": instance["instance_name"],
                 "type": "M",
                 "val": str(idx),
                 "min": "0",
                 "max": "NA",
-                "descr": f"ID of {instance.name} peripheral",
+                "descr": f'ID of {instance["instance_name"]} peripheral',
             }
         )
     return macro_list
@@ -405,11 +407,11 @@ def create_periphs_tmp(name, addr_w, peripherals_list, out_file):
 
     template_contents = []
     for instance in peripherals_list:
+        instance_name = instance["instance_name"]
         template_contents.extend(
-            f"#define {instance.name}_BASE ({name.upper()}_{instance.name}<<({addr_w}-1-{name.upper()}_N_SLAVES_W))\n"
+            f"#define {instance_name}_BASE ({name.upper()}_{instance_name}<<({addr_w}-1-{name.upper()}_N_SLAVES_W))\n"
         )
 
-    # Write system.v
     os.makedirs(os.path.dirname(out_file), exist_ok=True)
     periphs_tmp_file = open(out_file, "w")
     periphs_tmp_file.writelines(template_contents)

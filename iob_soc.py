@@ -4,7 +4,7 @@ import os
 # Add iob-soc scripts folder to python path
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "scripts"))
 
-from iob_soc_utils import pre_setup_iob_soc
+from iob_soc_utils import pre_setup_iob_soc, iob_soc_sw_setup
 
 
 def setup(py_params_dict):
@@ -14,7 +14,7 @@ def setup(py_params_dict):
     )
     USE_COMPRESSED = 1
     USE_MUL_DIV = 1
-    USE_SPRAM = 1
+    USE_SPRAM = py_params_dict["USE_SPRAM"] if "USE_SPRAM" in py_params_dict else False
 
     # Number of peripherals + Bootctr
     N_SLAVES = 2 + 1
@@ -577,6 +577,8 @@ def setup(py_params_dict):
             },
             "num_outputs": N_SLAVES,
         },
+    ]
+    peripherals = [
         # Peripherals
         {
             "core_name": "iob_uart",
@@ -605,6 +607,8 @@ def setup(py_params_dict):
                 "iob": "timer_swreg",
             },
         },
+    ]
+    attributes_dict["blocks"] += peripherals + [
         # Modules that need to be setup, but are not instantiated directly inside
         # 'iob_soc' Verilog module
         {
@@ -698,18 +702,9 @@ def setup(py_params_dict):
         },
     ]
 
-    # Peripherals
-    # self.peripherals = [UART0, TIMER0]
-
-    # Number of external memory connections (will be filled automatically)
-    # self.num_extmem_connections = -1
-
     # Pre-setup specialized IOb-SoC functions
-    pre_setup_iob_soc(attributes_dict)
-    # Call the superclass setup
-    # super().__init__(*args, **kwargs)
-    # Post-setup specialized IOb-SoC functions
-    # post_setup_iob_soc(self)
+    pre_setup_iob_soc(attributes_dict, peripherals)
+    iob_soc_sw_setup(attributes_dict, peripherals)
 
     return attributes_dict
 
