@@ -49,16 +49,6 @@ module iob_soc_sim_wrapper (
 
   `include "iob_soc_wrapper_pwires.vs"
 
-  /////////////////////////////////////////////
-  // TEST PROCEDURE
-  //
-  initial begin
-`ifdef VCD
-    $dumpfile("uut.vcd");
-    $dumpvars();
-`endif
-  end
-
   //
   // INSTANTIATE COMPONENTS
   //
