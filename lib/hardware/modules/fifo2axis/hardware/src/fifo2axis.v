@@ -46,7 +46,8 @@ module fifo2axis #(
 
    //FIFO tlast
    wire axis_tlast_nxt;
-   assign axis_tlast_nxt = (axis_word_count == len_i);
+   wire [AXIS_LEN_W-1:0] len_int = len_i - 1;
+   assign axis_tlast_nxt = (axis_word_count == len_int);
 
    iob_reg_re #(
       .DATA_W (1),
@@ -54,19 +55,20 @@ module fifo2axis #(
    ) axis_tlast_reg (
       `include "clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_i),
-      .en_i  (en_i),
+      .en_i  (pipe_en),
       .data_i(axis_tlast_nxt),
       .data_o(axis_tlast_o)
    );
 
    //tdata word count
-   iob_counter #(
+   iob_modcnt #(
       .DATA_W (AXIS_LEN_W),
-      .RST_VAL(0)
+      .RST_VAL({AXIS_LEN_W{1'b1}}) // go to 0 after first enable
    ) word_count_inst (
       `include "clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_i),
       .en_i  (fifo_read_o),
+      .mod_i (len_int),
       .data_o(axis_word_count)
    );
 
