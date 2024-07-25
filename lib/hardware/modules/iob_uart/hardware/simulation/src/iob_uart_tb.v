@@ -3,8 +3,8 @@
 `include "iob_uart_swreg_def.vh"
 `include "iob_reg_conf.vh"
 
-`define IOB_RESET(CLK, RESET, PRE, DURATION, POST) RESET=~`IOB_REG_RST_POL;\
-   #PRE RESET=`IOB_REG_RST_POL; #DURATION RESET=~`IOB_REG_RST_POL; #POST;\
+`define IOB_RESET(CLK, RESET, PRE, DURATION, POST) RESET=~`IOB_UART_RST_POL;\
+   #PRE RESET=`IOB_UART_RST_POL; #DURATION RESET=~`IOB_UART_RST_POL; #POST;\
    @(posedge CLK) #1;
 
 //ASCII codes used
@@ -26,7 +26,7 @@ module iob_uart_tb;
   integer i, fd;
 
   // CORE SIGNALS
-  reg                        arst = ~`IOB_REG_RST_POL;
+  reg                        arst = ~`IOB_UART_RST_POL;
   reg                        clk;
 
   //control interface (backend)

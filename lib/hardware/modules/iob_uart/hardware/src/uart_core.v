@@ -46,7 +46,7 @@ module uart_core (
    assign txd_o = tx_pattern[0];
 
 
-   localparam RST_POL = `IOB_REG_RST_POL;
+   localparam RST_POL = `IOB_UART_RST_POL;
 
    generate
       if (RST_POL == 1) begin : g_rst_pol_1

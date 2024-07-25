@@ -4,6 +4,16 @@ def setup(py_params_dict):
         "name": "iob_nco",
         "version": "0.1",
         "generate_hw": False,
+        "confs": [
+            {
+                "name": "RST_POL",
+                "type": "M",
+                "val": "1",
+                "min": "0",
+                "max": "1",
+                "descr": "Reset polarity.",
+            },
+        ],
         "blocks": [
             {
                 "core_name": "iob_reg_r",
