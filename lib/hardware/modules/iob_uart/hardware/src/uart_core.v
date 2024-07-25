@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 `include "iob_uart_swreg_def.vh"
-`include "iob_reg_conf.vh"
+`include "iob_uart_conf.vh"
 
 module uart_core (
    input                            clk_i,

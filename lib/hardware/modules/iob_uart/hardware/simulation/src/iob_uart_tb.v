@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 `include "iob_uart_swreg_def.vh"
-`include "iob_reg_conf.vh"
+`include "iob_uart_conf.vh"
 
 `define IOB_RESET(CLK, RESET, PRE, DURATION, POST) RESET=~`IOB_UART_RST_POL;\
    #PRE RESET=`IOB_UART_RST_POL; #DURATION RESET=~`IOB_UART_RST_POL; #POST;\
