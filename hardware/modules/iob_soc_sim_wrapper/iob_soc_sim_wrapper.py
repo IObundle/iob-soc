@@ -113,6 +113,7 @@ def setup(py_params_dict):
             "interface": {
                 "type": "iob",
                 "subtype": "slave",
+                "port_prefix": "uart_",
             },
             "descr": "Testbench uart swreg interface",
         },
@@ -124,6 +125,7 @@ def setup(py_params_dict):
                 "interface": {
                     "type": "iob",
                     "subtype": "slave",
+                    "port_prefix": "ethernet_",
                 },
                 "descr": "Testbench ethernet swreg interface",
             },
@@ -255,6 +257,7 @@ def setup(py_params_dict):
                 "clk_en_rst": "clk_en_rst",
             }
             | {i["name"]: i["name"] for i in simwrap_wires},
+            "purpose": "common",
         },
         {
             "core_name": "iob_uart",

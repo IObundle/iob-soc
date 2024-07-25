@@ -17,7 +17,7 @@ def setup(py_params_dict):
             {
                 "name": "HEXFILE",
                 "type": "P",
-                "val": "iob_soc_firmware" if INIT_MEM else "none",
+                "val": '"iob_soc_firmware"' if INIT_MEM else '"none"',
                 "min": "NA",
                 "max": "NA",
                 "descr": "Firmware file name",
@@ -25,7 +25,7 @@ def setup(py_params_dict):
             {
                 "name": "BOOT_HEXFILE",
                 "type": "P",
-                "val": "iob_soc_boot",
+                "val": '"iob_soc_boot"',
                 "min": "NA",
                 "max": "NA",
                 "descr": "Bootloader file name",
@@ -66,8 +66,8 @@ def setup(py_params_dict):
                 "descr": "",
                 "signals": [
                     {"name": "spram_iob_valid"},
-                    {"name": "spram_iob_addr"},
                     {"name": "spram_iob_wstrb"},
+                    {"name": "spram_iob_addr"},
                     {"name": "spram_iob_wdata"},
                     {"name": "spram_iob_rdata"},
                 ],
@@ -80,8 +80,8 @@ def setup(py_params_dict):
                 "descr": "",
                 "signals": [
                     {"name": "sram_d_iob_valid"},
-                    {"name": "sram_d_iob_addr"},
                     {"name": "sram_d_iob_wstrb"},
+                    {"name": "sram_d_iob_addr"},
                     {"name": "sram_d_iob_wdata"},
                     {"name": "sram_d_iob_rdata"},
                 ],
@@ -91,8 +91,8 @@ def setup(py_params_dict):
                 "descr": "",
                 "signals": [
                     {"name": "sram_i_iob_valid"},
-                    {"name": "sram_i_iob_addr"},
                     {"name": "sram_i_iob_wstrb"},
+                    {"name": "sram_i_iob_addr"},
                     {"name": "sram_i_iob_wdata"},
                     {"name": "sram_i_iob_rdata"},
                 ],
@@ -106,7 +106,7 @@ def setup(py_params_dict):
                 "instance_name": "main_mem_byte",
                 "parameters": {
                     "HEXFILE": "HEXFILE",
-                    "ADDR_W": "SPRAM_ADDR_W - 2",
+                    "ADDR_W": "SRAM_ADDR_W - 2",
                     "DATA_W": "DATA_W",
                 },
                 "connect": {
@@ -123,7 +123,7 @@ def setup(py_params_dict):
                 "instance_name": "main_mem_byte",
                 "parameters": {
                     "HEXFILE": "HEXFILE",
-                    "ADDR_W": "SPRAM_ADDR_W - 2",
+                    "ADDR_W": "SRAM_ADDR_W - 2",
                     "DATA_W": "DATA_W",
                     "MEM_NO_READ_ON_WRITE": 1,
                 },
@@ -140,7 +140,7 @@ def setup(py_params_dict):
                 "instance_name": "main_mem_byte",
                 "parameters": {
                     "HEXFILE": "HEXFILE",
-                    "ADDR_W": "SPRAM_ADDR_W - 2",
+                    "ADDR_W": "SRAM_ADDR_W - 2",
                     "DATA_W": "DATA_W",
                 },
                 "connect": {

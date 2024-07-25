@@ -8,7 +8,7 @@ def setup(py_params_dict):
 
     NUM_INPUTS = int(py_params_dict["num_inputs"])
     # Number of bits required for input selection
-    NBITS = NUM_INPUTS.bit_length()
+    NBITS = (NUM_INPUTS - 1).bit_length()
 
     attributes_dict = {
         "original_name": "iob_merge",
@@ -260,7 +260,7 @@ def setup(py_params_dict):
             "core_name": "iob_demux",
             "instance_name": "iob_demux_rvalid",
             "parameters": {
-                "DATA_W": "DATA_W",
+                "DATA_W": 1,
                 "N": NUM_INPUTS,
             },
             "connect": {
@@ -272,7 +272,7 @@ def setup(py_params_dict):
             "core_name": "iob_demux",
             "instance_name": "iob_demux_ready",
             "parameters": {
-                "DATA_W": "DATA_W",
+                "DATA_W": 1,
                 "N": NUM_INPUTS,
             },
             "connect": {
@@ -286,7 +286,7 @@ def setup(py_params_dict):
             "instance_name": "sel_enc",
             "parameters": {
                 "W": NUM_INPUTS,
-                "MODE": "HIGH",
+                "MODE": '"HIGH"',
             },
             "connect": {
                 "io": "prio_enc_io",
@@ -298,10 +298,11 @@ def setup(py_params_dict):
     verilog_code = ""
     verilog_outputs = []
     for port_idx in range(NUM_INPUTS):
-        verilog_code += ""
-        f"    assign input{port_idx}_iob_rdata_o = demux_rdata_output[{port_idx}*DATA_W+:DATA_W];"
-        f"    assign input{port_idx}_iob_rvalid_o = demux_rvalid_output[{port_idx}*1+:1];"
-        f"    assign input{port_idx}_iob_ready_o = demux_ready_output[{port_idx}*1+:1];"
+        verilog_code += f"""
+    assign input{port_idx}_iob_rdata_o = demux_rdata_output[{port_idx}*DATA_W+:DATA_W];
+    assign input{port_idx}_iob_rvalid_o = demux_rvalid_output[{port_idx}*1+:1];
+    assign input{port_idx}_iob_ready_o = demux_ready_output[{port_idx}*1+:1];
+"""
         verilog_outputs.append(f"input{port_idx}_iob_rdata")
         verilog_outputs.append(f"input{port_idx}_iob_rvalid")
         verilog_outputs.append(f"input{port_idx}_iob_ready")

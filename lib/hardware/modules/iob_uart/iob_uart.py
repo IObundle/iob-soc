@@ -48,7 +48,6 @@ def setup(py_params_dict):
                 "name": "rs232",
                 "interface": {
                     "type": "rs232",
-                    "subtype": "slave",
                 },
                 "descr": "RS232 interface",
             },

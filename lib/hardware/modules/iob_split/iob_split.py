@@ -8,7 +8,7 @@ def setup(py_params_dict):
 
     NUM_OUTPUTS = int(py_params_dict["num_outputs"])
     # Number of bits required for output selection
-    NBITS = NUM_OUTPUTS.bit_length()
+    NBITS = (NUM_OUTPUTS - 1).bit_length()
 
     attributes_dict = {
         "original_name": "iob_split",
@@ -260,7 +260,7 @@ def setup(py_params_dict):
             "core_name": "iob_mux",
             "instance_name": "iob_mux_rvalid",
             "parameters": {
-                "DATA_W": "DATA_W",
+                "DATA_W": 1,
                 "N": NUM_OUTPUTS,
             },
             "connect": {
@@ -272,7 +272,7 @@ def setup(py_params_dict):
             "core_name": "iob_mux",
             "instance_name": "iob_mux_ready",
             "parameters": {
-                "DATA_W": "DATA_W",
+                "DATA_W": 1,
                 "N": NUM_OUTPUTS,
             },
             "connect": {
@@ -293,11 +293,12 @@ def setup(py_params_dict):
     verilog_code = ""
     verilog_outputs = []
     for port_idx in range(NUM_OUTPUTS):
-        verilog_code += ""
-        f"    assign output{port_idx}_iob_valid_o = demux_valid_output[{port_idx}*1+:1];"
-        f"    assign output{port_idx}_iob_addr_o = demux_addr_output[{port_idx}*ADDR_W+:ADDR_W];"
-        f"    assign output{port_idx}_iob_wdata_o = demux_wdata_output[{port_idx}*DATA_W+:DATA_W];"
-        f"    assign output{port_idx}_iob_wstrb_o = demux_wstrb_output[{port_idx}*(DATA_W/8)+:(DATA_W/8)];"
+        verilog_code += f"""
+    assign output{port_idx}_iob_valid_o = demux_valid_output[{port_idx}*1+:1];
+    assign output{port_idx}_iob_addr_o = demux_addr_output[{port_idx}*ADDR_W+:ADDR_W];
+    assign output{port_idx}_iob_wdata_o = demux_wdata_output[{port_idx}*DATA_W+:DATA_W];
+    assign output{port_idx}_iob_wstrb_o = demux_wstrb_output[{port_idx}*(DATA_W/8)+:(DATA_W/8)];
+"""
         verilog_outputs.append(f"output{port_idx}_iob_valid")
         verilog_outputs.append(f"output{port_idx}_iob_addr")
         verilog_outputs.append(f"output{port_idx}_iob_wdata")

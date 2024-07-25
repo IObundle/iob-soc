@@ -29,7 +29,7 @@ def setup(py_params_dict):
             {
                 "name": "HEXFILE",
                 "type": "P",
-                "val": "none",
+                "val": '"none"',
                 "min": "NA",
                 "max": "NA",
                 "descr": "Name of the firmware hex file",
@@ -37,7 +37,7 @@ def setup(py_params_dict):
             {
                 "name": "BOOT_HEXFILE",
                 "type": "P",
-                "val": "none",
+                "val": '"none"',
                 "min": "NA",
                 "max": "NA",
                 "descr": "Name of the boot hex file",

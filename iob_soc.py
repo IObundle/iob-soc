@@ -12,8 +12,8 @@ def setup(py_params_dict):
     USE_EXTMEM = (
         py_params_dict["USE_EXTMEM"] if "USE_EXTMEM" in py_params_dict else False
     )
-    USE_COMPRESSED = 1
-    USE_MUL_DIV = 1
+    USE_COMPRESSED = True
+    USE_MUL_DIV = True
     USE_SPRAM = py_params_dict["USE_SPRAM"] if "USE_SPRAM" in py_params_dict else False
 
     # Number of peripherals + Bootctr
@@ -244,7 +244,6 @@ def setup(py_params_dict):
             "name": "rs232",
             "interface": {
                 "type": "rs232",
-                "subtype": "slave",
             },
             "descr": "iob-soc uart interface",
         },
@@ -269,10 +268,11 @@ def setup(py_params_dict):
     attributes_dict["wires"] = [
         # CPU interface wires
         {
-            "name": "cpu_clk_rst",
+            "name": "cpu_clk_en_rst",
             "descr": "",
             "signals": [
                 {"name": "clk"},
+                {"name": "cke"},
                 {"name": "cpu_reset", "width": "1"},
             ],
         },
@@ -418,6 +418,7 @@ def setup(py_params_dict):
                 "file_prefix": "iob_soc_uart_swreg_",
                 "wire_prefix": "uart_swreg_",
                 "DATA_W": "DATA_W",
+                # TODO: How to trim ADDR_W to match swreg addr width?
                 "ADDR_W": "ADDR_W",
             },
             "descr": "UART swreg bus",
@@ -442,12 +443,12 @@ def setup(py_params_dict):
             "parameters": {
                 "ADDR_W": "ADDR_W",
                 "DATA_W": "DATA_W",
-                "USE_COMPRESSED": USE_COMPRESSED,
-                "USE_MUL_DIV": USE_MUL_DIV,
-                "USE_EXTMEM": USE_EXTMEM,
+                "USE_COMPRESSED": int(USE_COMPRESSED),
+                "USE_MUL_DIV": int(USE_MUL_DIV),
+                "USE_EXTMEM": int(USE_EXTMEM),
             },
             "connect": {
-                "clk_rst": "cpu_clk_rst",
+                "clk_en_rst": "cpu_clk_en_rst",
                 "general": "cpu_general",
                 "i_bus": "cpu_i",
                 "d_bus": "cpu_d",
@@ -513,9 +514,9 @@ def setup(py_params_dict):
                 "d_bus": "int_mem_d",
                 "rom_bus": "rom_bus",
             },
-            "USE_SPRAM": USE_SPRAM,
-            "USE_EXTMEM": USE_EXTMEM,
-            "INIT_MEM": INIT_MEM,
+            "USE_SPRAM": int(USE_SPRAM),
+            "USE_EXTMEM": int(USE_EXTMEM),
+            "INIT_MEM": int(INIT_MEM),
         },
     ]
     if USE_SPRAM:
@@ -583,11 +584,7 @@ def setup(py_params_dict):
         {
             "core_name": "iob_uart",
             "instance_name": "UART0",
-            "parameters": {
-                "DATA_W": "UART0_DATA_W",
-                "ADDR_W": "UART0_ADDR_W",
-                "UART_DATA_W": "UART0_UART_DATA_W",
-            },
+            "parameters": {},
             "connect": {
                 "clk_en_rst": "clk_en_rst",
                 "iob": "uart_swreg",
@@ -597,11 +594,7 @@ def setup(py_params_dict):
         {
             "core_name": "iob_timer",
             "instance_name": "TIMER0",
-            "parameters": {
-                "DATA_W": "TIMER0_DATA_W",
-                "ADDR_W": "TIMER0_ADDR_W",
-                "TIMER_DATA_W": "TIMER0_WDATA_W",
-            },
+            "parameters": {},
             "connect": {
                 "clk_en_rst": "clk_en_rst",
                 "iob": "timer_swreg",
@@ -661,25 +654,10 @@ def setup(py_params_dict):
         },
         # Simulation headers & modules
         {
-            "core_name": "axi_ram",
-            "instance_name": "axi_ram_inst",
-            "instantiate": False,
-        },
-        {
             "core_name": "iob_tasks",
             "instance_name": "iob_tasks_inst",
             "instantiate": False,
-        },
-        # Modules required for CACHE
-        {
-            "core_name": "iob_ram_2p",
-            "instance_name": "iob_ram_2p_inst",
-            "instantiate": False,
-        },
-        {
-            "core_name": "iob_ram_sp",
-            "instance_name": "iob_ram_sp_inst",
-            "instantiate": False,
+            "purpose": "simulation",
         },
         # FPGA modules
         {
@@ -692,6 +670,7 @@ def setup(py_params_dict):
             "core_name": "iob_soc_sim_wrapper",
             "instance_name": "iob_soc_sim_wrapper",
             "instantiate": False,
+            "purpose": "simulation",
         },
     ]
     attributes_dict["sw_modules"] = [
