@@ -24,6 +24,14 @@ def setup(py_params_dict):
                 "max": "NA",
                 "descr": "Address bus width",
             },
+            {
+                "name": "RST_POL",
+                "type": "M",
+                "val": "1",
+                "min": "0",
+                "max": "1",
+                "descr": "Reset polarity.",
+            },
         ],
         "ports": [
             {
