@@ -4,7 +4,6 @@
 `include "iob_soc_conf.vh"
 `include "iob_uart_conf.vh"
 `include "iob_uart_swreg_def.vh"
-`include "iob_reg_conf.vh"
 
 //Peripherals _swreg_def.vh file includes.
 `include "iob_soc_periphs_swreg_def.vs"
@@ -62,9 +61,9 @@ module iob_soc_tb;
     iob_wstrb_i = 0;
 
     //reset system
-    arst = ~`IOB_REG_RST_POL;
-    #100 arst = `IOB_REG_RST_POL;
-    #1_000 arst = ~`IOB_REG_RST_POL;
+    arst = ~`IOB_SOC_RST_POL;
+    #100 arst = `IOB_SOC_RST_POL;
+    #1_000 arst = ~`IOB_SOC_RST_POL;
     #100;
     @(posedge clk) #1;
 

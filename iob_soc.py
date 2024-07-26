@@ -157,6 +157,15 @@ def setup(py_params_dict):
                 "max": "NA",
                 "descr": "Offset of memory address",
             },
+            # Needed for testbench
+            {
+                "name": "RST_POL",
+                "type": "M",
+                "val": "1",
+                "min": "0",
+                "max": "1",
+                "descr": "Reset polarity.",
+            },
         ],
     }
     attributes_dict["ports"] = [

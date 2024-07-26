@@ -105,22 +105,6 @@ def setup(py_params_dict):
                     {"name": "pulse_nxt", "width": 1},
                 ],
             },
-            {
-                "name": "start_detected_io",
-                "descr": "",
-                "signals": [
-                    {"name": "start_detected_nxt"},
-                    {"name": "start_detected"},
-                ],
-            },
-            {
-                "name": "pulse_reg_io",
-                "descr": "",
-                "signals": [
-                    {"name": "pulse_nxt"},
-                    {"name": "pulse"},
-                ],
-            },
         ],
         "blocks": [
             {
@@ -132,7 +116,8 @@ def setup(py_params_dict):
                 },
                 "connect": {
                     "clk_en_rst": "clk_en_rst",
-                    "io": "start_detected_io",
+                    "data_i": "start_detected_nxt",
+                    "data_o": "start_detected",
                 },
             },
             {
@@ -158,13 +143,13 @@ def setup(py_params_dict):
                 },
                 "connect": {
                     "clk_en_rst": "clk_en_rst",
-                    "io": "pulse_reg_io",
+                    "data_i": "pulse_nxt",
+                    "data_o": "pulse",
                 },
             },
         ],
         "snippets": [
             {
-                "outputs": ["start_detected_nxt", "cnt_en", "pulse_nxt"],
                 "verilog_code": """
     assign start_detected_nxt = start_detected | start_i;
     assign cnt_en = start_detected & (cnt <= FINISH);

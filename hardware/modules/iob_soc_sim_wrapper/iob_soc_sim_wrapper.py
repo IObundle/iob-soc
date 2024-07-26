@@ -333,7 +333,6 @@ def setup(py_params_dict):
     if USE_ETHERNET:
         attributes_dict["snippets"] += [
             {
-                "outputs": [],
                 "verilog_code": """
     //ethernet clock: 4x slower than system clock
     reg [1:0] eth_cnt = 2'b0;
@@ -380,7 +379,6 @@ def setup(py_params_dict):
             verilog_code = verilog_code[:-2] + "};\n"
         attributes_dict["snippets"] += [
             {
-                "outputs": [],
                 "verilog_code": verilog_code,
             }
         ]

@@ -283,7 +283,6 @@ def setup(py_params_dict):
     ]
     attributes_dict["snippets"] = [
         {
-            "outputs": ["sel"],
             # Extract output selection bits from address
             "verilog_code": f"    assign sel = input_iob_addr_i[SPLIT_PTR-:{NBITS}];",
         },
@@ -314,7 +313,6 @@ def setup(py_params_dict):
     # Create snippet with muxer and demuxer connections
     attributes_dict["snippets"] += [
         {
-            "outputs": verilog_outputs,
             "verilog_code": verilog_code,
         },
     ]

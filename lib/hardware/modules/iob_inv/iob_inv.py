@@ -29,7 +29,7 @@ def setup(py_params_dict):
                 ],
             },
         ],
-        "snippets": [{"outputs": ["y"], "verilog_code": "   assign y_o = ~a_i;"}],
+        "snippets": [{"verilog_code": "   assign y_o = ~a_i;"}],
     }
 
     return attributes_dict

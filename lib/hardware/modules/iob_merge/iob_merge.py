@@ -317,7 +317,6 @@ def setup(py_params_dict):
     # Create snippet with demuxer and muxer connections
     attributes_dict["snippets"] = [
         {
-            "outputs": verilog_outputs,
             "verilog_code": verilog_code,
         },
     ]

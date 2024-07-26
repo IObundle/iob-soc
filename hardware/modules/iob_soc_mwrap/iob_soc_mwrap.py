@@ -178,7 +178,6 @@ def setup(py_params_dict):
     ]
     #    attributes_dict["snippets"] = [
     #        {
-    #            "outputs": [],
     #            "verilog_code": """
     # """,
     #        },

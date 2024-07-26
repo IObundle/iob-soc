@@ -260,7 +260,6 @@ def setup(py_params_dict):
     ]
     attributes_dict["snippets"] = [
         {
-            "outputs": [],
             "verilog_code": """
     assign always_low = 1'b0;
 
