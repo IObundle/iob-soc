@@ -3,7 +3,6 @@ def setup(py_params_dict):
         "original_name": "iob_reg_r",
         "name": "iob_reg_r",
         "version": "0.1",
-        "generate_hw": False,
         "confs": [
             {
                 "name": "DATA_W",
@@ -37,28 +36,40 @@ def setup(py_params_dict):
                 "signals": [
                     {
                         "name": "rst",
-                        "direction": "input",
                         "width": 1,
-                        "descr": "Synchronous reset input",
+                        "direction": "input",
                     },
                 ],
             },
             {
-                "name": "io",
-                "descr": "Data interface",
+                "name": "data_i",
+                "descr": "Input port",
                 "signals": [
                     {
                         "name": "data",
-                        "direction": "input",
                         "width": "DATA_W",
-                        "descr": "Write data",
+                        "direction": "input",
                     },
+                ],
+            },
+            {
+                "name": "data_o",
+                "descr": "Output port",
+                "signals": [
                     {
                         "name": "data",
-                        "direction": "output",
                         "width": "DATA_W",
-                        "descr": "Read data",
+                        "direction": "output",
                     },
+                ],
+            },
+        ],
+        "wires": [
+            {
+                "name": "data_next",
+                "descr": "data_next wire",
+                "signals": [
+                    {"name": "data_next", "width": "DATA_W"},
                 ],
             },
         ],
@@ -66,6 +77,22 @@ def setup(py_params_dict):
             {
                 "core_name": "iob_reg",
                 "instance_name": "iob_reg_inst",
+                "parameters": {
+                    "DATA_W": "DATA_W",
+                    "RST_VAL": "RST_VAL",
+                },
+                "connect": {
+                    "clk_en_rst": "clk_en_rst",
+                    "data_i": "data_next",
+                    "data_o": "data_o",
+                },
+            },
+        ],
+        "snippets": [
+            {
+                "verilog_code": """
+        assign data_next = rst_i ? RST_VAL : data_i;
+            """,
             },
         ],
     }

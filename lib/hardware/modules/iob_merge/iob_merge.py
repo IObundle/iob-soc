@@ -91,10 +91,16 @@ def setup(py_params_dict):
             ],
         },
         {
-            "name": "sel_reg_io",
-            "descr": "I/O of sel_reg",
+            "name": "sel_reg_data_i",
+            "descr": "Input of sel_reg",
             "signals": [
                 {"name": "sel", "width": NBITS},
+            ],
+        },
+        {
+            "name": "sel_reg_data_o",
+            "descr": "Output of sel_reg",
+            "signals": [
                 {"name": "sel_reg", "width": NBITS},
             ],
         },
@@ -191,7 +197,8 @@ def setup(py_params_dict):
             "connect": {
                 "clk_en_rst": "clk_en_rst",
                 "rst": "sel_reg_rst",
-                "io": "sel_reg_io",
+                "data_i": "sel_reg_data_i",
+                "data_o": "sel_reg_data_o",
             },
         },
         # muxers
