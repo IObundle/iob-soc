@@ -310,7 +310,7 @@ def setup(py_params_dict):
     # Connect muxer inputs
     for signal in ["valid", "addr", "wdata", "wstrb"]:
         verilog_code += f"    assign mux_{signal}_input = {{"
-        for port_idx in range(NUM_INPUTS):
+        for port_idx in range(NUM_INPUTS - 1, -1, -1):
             verilog_code += f"input{port_idx}_iob_{signal}_i, "
         verilog_code = verilog_code[:-2] + "};\n"
         verilog_outputs.append(f"mux_{signal}_input")

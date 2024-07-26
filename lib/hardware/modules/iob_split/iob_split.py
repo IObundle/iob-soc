@@ -95,8 +95,8 @@ def setup(py_params_dict):
             "name": "sel_reg_en_rst",
             "descr": "Enable and reset signal for sel_reg",
             "signals": [
-                {"name": "rst"},
                 {"name": "input_iob_valid"},
+                {"name": "rst"},
             ],
         },
         {
@@ -307,7 +307,7 @@ def setup(py_params_dict):
     # Connect muxer inputs
     for signal in ["rdata", "rvalid", "ready"]:
         verilog_code += f"    assign mux_{signal}_input = {{"
-        for port_idx in range(NUM_OUTPUTS):
+        for port_idx in range(NUM_OUTPUTS - 1, -1, -1):
             verilog_code += f"output{port_idx}_iob_{signal}_i, "
         verilog_code = verilog_code[:-2] + "};\n"
         verilog_outputs.append(f"mux_{signal}_input")
