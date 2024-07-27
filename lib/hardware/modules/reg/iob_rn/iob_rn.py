@@ -30,9 +30,11 @@ def setup(py_params_dict):
         "ports": [
             {
                 "name": "clk_rst",
-                "type": "slave",
+                "interface": {
+                    "type": "clk_rst",
+                    "subtype": "slave",
+                },
                 "descr": "Clock and reset",
-                "signals": [],
             },
             {
                 "name": "iob_rn_data_i",
@@ -59,7 +61,6 @@ def setup(py_params_dict):
         ],
         "snippets": [
             {
-                "outputs": ["iob_rn_data_o_reg"],
                 "verilog_code": f"""
     reg [DATA_W-1:0] iob_rn_data_o_reg;
     assign iob_rn_data_o = iob_rn_data_o_reg;

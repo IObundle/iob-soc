@@ -24,9 +24,11 @@ def setup(py_params_dict):
         "ports": [
             {
                 "name": "clk_en_rst",
-                "type": "slave",
+                "interface": {
+                    "type": "clk_en_rst",
+                    "subtype": "slave",
+                },
                 "descr": "Clock, clock enable and reset",
-                "signals": [],
             },
             {
                 "name": "en_i",
@@ -88,8 +90,7 @@ def setup(py_params_dict):
         ],
         "snippets": [
             {
-                "outputs": ["data"],
-                "verilog_code": f"""
+                "verilog_code": """
         assign data_int = en_i ? data_i : data_o;
             """,
             },

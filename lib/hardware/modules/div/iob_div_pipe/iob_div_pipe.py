@@ -7,9 +7,6 @@ def setup(py_params_dict):
         "ports": [
             {
                 "name": "clk",
-                "type": "master",
-                "port_prefix": "",
-                "wire_prefix": "",
                 "descr": "Clock",
                 "signals": [
                     {
@@ -22,9 +19,6 @@ def setup(py_params_dict):
             },
             {
                 "name": "div",
-                "type": "master",
-                "port_prefix": "",
-                "wire_prefix": "",
                 "descr": "Division interface",
                 "signals": [
                     {

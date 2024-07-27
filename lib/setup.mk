@@ -13,8 +13,12 @@ else
 IOB_NIX_ENV = nix-shell --run '$(1)'
 endif
 
+# Pass 'py2hwsw' function to shell using workaround: https://stackoverflow.com/a/26518222
+# The function is only needed for debug (when not using the version from nix-shell)
+BUILD_DIR ?= $(shell $(call IOB_NIX_ENV, py2hwsw='$(py2hwsw)' py2hwsw $(CORE) print_build_dir))
+
 clean:
-	if [ -d "$(BUILD_DIR)" ]; then py2hwsw $(CORE) clean --build_dir '$(BUILD_DIR)'; fi
+	if [ -d "$(BUILD_DIR)" ]; then $(call IOB_NIX_ENV, py2hwsw $(CORE) clean --build_dir '$(BUILD_DIR)'); fi
 	@rm -rf ../*.summary ../*.rpt 
 	@find . -name \*~ -delete
 
