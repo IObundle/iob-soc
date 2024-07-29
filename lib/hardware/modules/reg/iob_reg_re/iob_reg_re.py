@@ -25,16 +25,12 @@ def setup(py_params_dict):
             {
                 "name": "clk_en_rst",
                 "type": "slave",
-                "port_prefix": "",
-                "wire_prefix": "",
                 "descr": "Clock, clock enable and reset",
                 "signals": [],
             },
             {
                 "name": "en_rst",
                 "type": "master",
-                "port_prefix": "",
-                "wire_prefix": "",
                 "descr": "Enable and Synchronous reset interface",
                 "signals": [
                     {
