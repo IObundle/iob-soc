@@ -30,9 +30,11 @@ def setup(py_params_dict):
         "ports": [
             {
                 "name": "clk_rst",
-                "type": "slave",
+                "interface": {
+                    "type": "clk_rst",
+                    "subtype": "slave",
+                },
                 "descr": "Clock, clock enable and reset",
-                "signals": [],
             },
             {
                 "name": "iob_r_data_i",
@@ -59,15 +61,12 @@ def setup(py_params_dict):
         ],
         "snippets": [
             {
-                "outputs": ["iob_r_data_o_reg"],
                 "verilog_code": f"""
-    reg [DATA_W-1:0] iob_r_data_o_reg;
-    assign iob_r_data_o = iob_r_data_o_reg;
     always @(posedge clk_i, {"posedge" if edge else "negedge"} arst_i) begin
             if (arst_i) begin
-               iob_r_data_o_reg <= RST_VAL;
+               iob_r_data_o <= RST_VAL;
             end else begin
-               iob_r_data_o_reg <= iob_r_data_i;
+               iob_r_data_o <= iob_r_data_i;
             end
          end
          """,

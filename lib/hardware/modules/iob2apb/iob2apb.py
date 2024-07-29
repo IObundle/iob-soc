@@ -40,21 +40,27 @@ def setup(py_params_dict):
         "ports": [
             {
                 "name": "clk_en_rst",
-                "type": "slave",
+                "interface": {
+                    "type": "clk_en_rst",
+                    "subtype": "slave",
+                },
                 "descr": "Clock, clock enable and reset",
-                "signals": [],
             },
             {
                 "name": "iob",
-                "type": "slave",
+                "interface": {
+                    "type": "iob",
+                    "subtype": "slave",
+                },
                 "descr": "CPU native interface",
-                "signals": [],
             },
             {
                 "name": "apb",
-                "type": "master",
+                "interface": {
+                    "type": "apb",
+                    "subtype": "master",
+                },
                 "descr": "APB interface",
-                "signals": [],
             },
         ],
         "wires": [

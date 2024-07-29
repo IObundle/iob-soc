@@ -48,11 +48,11 @@ def setup(py_params_dict):
         "ports": [
             {
                 "name": "clk_en_rst",
-                "type": "slave",
-                "port_prefix": "",
-                "wire_prefix": "",
+                "interface": {
+                    "type": "clk_en_rst",
+                    "subtype": "slave",
+                },
                 "descr": "Clock, clock enable and reset",
-                "signals": [],
             },
             {
                 "name": "start",
@@ -150,7 +150,6 @@ def setup(py_params_dict):
         ],
         "snippets": [
             {
-                "outputs": ["start_detected_nxt", "cnt_en", "pulse_nxt"],
                 "verilog_code": """
     assign start_detected_nxt = start_detected | start_i;
     assign cnt_en = start_detected & (cnt <= FINISH);

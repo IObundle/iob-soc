@@ -18,7 +18,7 @@ def setup(py_params_dict):
                 "val": "LOW",
                 "min": "NA",
                 "max": "NA",
-                "descr": "",
+                "descr": "'LOW' = Prioritize smaller index",
             },
         ],
         "ports": [

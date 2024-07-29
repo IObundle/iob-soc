@@ -12,7 +12,7 @@
 #include "iob_eth_driver_tb.h"
 #endif
 
-#if (VM_TRACE == 1) // If verilator was invoked with --trace
+#if (VM_TRACE == 1)     // If verilator was invoked with --trace
 #if (VM_TRACE_FST == 1) // If verilator was invoked with --trace-fst
 #include <verilated_fst_c.h>
 #else
@@ -57,15 +57,19 @@ int main(int argc, char **argv, char **env) {
 #endif
 
   iob_native_t uart_if = {
-      &dut->uart_valid_i,  &dut->uart_addr_i,  UCHAR,
-      &dut->uart_wdata_i,  &dut->uart_wstrb_i, &dut->uart_rdata_o,
-      &dut->uart_rvalid_o, &dut->uart_ready_o};
+      &dut->uart_iob_valid_i,  &dut->uart_iob_addr_i,  UCHAR,
+      &dut->uart_iob_wdata_i,  &dut->uart_iob_wstrb_i, &dut->uart_iob_rdata_o,
+      &dut->uart_iob_rvalid_o, &dut->uart_iob_ready_o};
 
 #ifdef IOB_SOC_USE_ETHERNET
-  iob_native_t eth_if = {
-      &dut->ethernet_valid_i,  &dut->ethernet_addr_i,  USINT,
-      &dut->ethernet_wdata_i,  &dut->ethernet_wstrb_i, &dut->ethernet_rdata_o,
-      &dut->ethernet_rvalid_o, &dut->ethernet_ready_o};
+  iob_native_t eth_if = {&dut->ethernet_iob_valid_i,
+                         &dut->ethernet_iob_addr_i,
+                         USINT,
+                         &dut->ethernet_iob_wdata_i,
+                         &dut->ethernet_iob_wstrb_i,
+                         &dut->ethernet_iob_rdata_o,
+                         &dut->ethernet_iob_rvalid_o,
+                         &dut->ethernet_iob_ready_o};
 #endif
 
 #if (VM_TRACE == 1)

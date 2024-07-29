@@ -24,13 +24,15 @@ def setup(py_params_dict):
         "ports": [
             {
                 "name": "clk_en_rst",
-                "type": "slave",
+                "interface": {
+                    "type": "clk_en_rst",
+                    "subtype": "slave",
+                },
                 "descr": "Clock, clock enable and reset",
-                "signals": [],
             },
             {
-                "name": "rst_i",
-                "descr": "Input port",
+                "name": "rst",
+                "descr": "Synchronous reset interface",
                 "signals": [
                     {
                         "name": "rst",
@@ -88,8 +90,7 @@ def setup(py_params_dict):
         ],
         "snippets": [
             {
-                "outputs": ["data_next"],
-                "verilog_code": f"""
+                "verilog_code": """
         assign data_next = rst_i ? RST_VAL : data_i;
             """,
             },

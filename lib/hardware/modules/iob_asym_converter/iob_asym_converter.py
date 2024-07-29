@@ -7,17 +7,14 @@ def setup(py_params_dict):
         "ports": [
             {
                 "name": "clk_en_rst",
-                "type": "slave",
-                "port_prefix": "",
-                "wire_prefix": "",
+                "interface": {
+                    "type": "clk_en_rst",
+                    "subtype": "slave",
+                },
                 "descr": "Clock, clock enable and reset",
-                "signals": [],
             },
             {
                 "name": "rst",
-                "type": "master",
-                "port_prefix": "",
-                "wire_prefix": "",
                 "descr": "Synchronous reset interface",
                 "signals": [
                     {
@@ -30,9 +27,6 @@ def setup(py_params_dict):
             },
             {
                 "name": "write",
-                "type": "master",
-                "port_prefix": "",
-                "wire_prefix": "",
                 "descr": "Write interface",
                 "signals": [
                     {
@@ -57,9 +51,6 @@ def setup(py_params_dict):
             },
             {
                 "name": "read",
-                "type": "master",
-                "port_prefix": "",
-                "wire_prefix": "",
                 "descr": "Read interface",
                 "signals": [
                     {
@@ -84,9 +75,6 @@ def setup(py_params_dict):
             },
             {
                 "name": "extmem",
-                "type": "master",
-                "port_prefix": "",
-                "wire_prefix": "",
                 "descr": "External memory interface",
                 "signals": [
                     #  Write port

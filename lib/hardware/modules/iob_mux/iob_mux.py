@@ -10,7 +10,7 @@ def setup(py_params_dict):
                 "val": "21",
                 "min": "NA",
                 "max": "NA",
-                "descr": "Data bus width",
+                "descr": "Width of data interface",
             },
             {
                 "name": "N",
@@ -18,13 +18,13 @@ def setup(py_params_dict):
                 "val": "21",
                 "min": "NA",
                 "max": "NA",
-                "descr": "Reset value.",
+                "descr": "Number of inputs",
             },
         ],
         "ports": [
             {
                 "name": "sel_i",
-                "descr": "Input port",
+                "descr": "Selector interface",
                 "signals": [
                     {
                         "name": "sel",
