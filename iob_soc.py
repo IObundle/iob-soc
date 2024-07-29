@@ -619,6 +619,11 @@ def setup(py_params_dict):
             "instantiate": False,
         },
         {
+            "core_name": "iob_soc_boot",
+            "instance_name": "iob_soc_boot_inst",
+            "instantiate": False,
+        },
+        {
             "core_name": "iob_rom_sp",
             "instance_name": "iob_rom_sp_inst",
             "instantiate": False,

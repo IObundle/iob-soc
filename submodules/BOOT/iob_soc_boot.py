@@ -1,166 +1,124 @@
-#!/usr/bin/env python3
-
-import os
-
-from iob_module import iob_module
-
-# Submodules
-from iob_reg import iob_reg
-from iob_reg_e import iob_reg_e
-from iob_pulse_gen import iob_pulse_gen
-from iob_rom_dp import iob_rom_dp
-from iob_split import iob_split
-
-
-class iob_soc_boot(iob_module):
-    name = "iob_soc_boot"
-    version = "V0.10"
-    flows = "sim emb"
-    setup_dir = os.path.dirname(__file__)
-
-    @classmethod
-    def _create_submodules_list(cls):
-        """Create submodules list with dependencies of this module"""
-        super()._create_submodules_list(
-            [
-                {"interface": "iob_s_port"},
-                {"interface": "iob_s_portmap"},
-                iob_reg,
-                iob_reg_e,
-                iob_pulse_gen,
-                iob_rom_dp,
-                iob_split,
-            ]
-        )
-
-    @classmethod
-    def _setup_confs(cls):
-        super()._setup_confs(
-            [
-                # Macros
-                # Parameters
-                {
-                    "name": "DATA_W",
-                    "type": "F",
-                    "val": "32",
-                    "min": "NA",
-                    "max": "32",
-                    "descr": "Data bus width",
+def setup(py_params_dict):
+    attributes_dict = {
+        "original_name": "iob_soc_boot",
+        "name": "iob_soc_boot",
+        "version": "0.1",
+        "generate_hw": False,
+        "confs": [
+            {
+                "name": "DATA_W",
+                "type": "F",
+                "val": "32",
+                "min": "?",
+                "max": "32",
+                "descr": "Data bus width",
+            },
+            {
+                "name": "ADDR_W",
+                "type": "F",
+                "val": "32",
+                "min": "?",
+                "max": "32",
+                "descr": "Address bus width",
+            },
+            {
+                "name": "BOOT_ROM_ADDR_W",
+                "type": "F",
+                "val": "12",
+                "min": "?",
+                "max": "24",
+                "descr": "Bootloader ROM address width",
+            },
+            {
+                "name": "PREBOOT_ROM_ADDR_W",
+                "type": "F",
+                "val": "8",
+                "min": "?",
+                "max": "24",
+                "descr": "Preboot ROM address width",
+            },
+        ],
+        "ports": [
+            {
+                "name": "iob",
+                "interface": {
+                    "type": "iob",
+                    "subtype": "slave",
+                    "ADDR_W": "ADDR_W",
+                    "DATA_W": "DATA_W",
                 },
-                {
-                    "name": "ADDR_W",
-                    "type": "F",
-                    "val": "32",
-                    "min": "NA",
-                    "max": "32",
-                    "descr": "Address bus width",
+                "descr": "Front-end interface",
+            },
+            {
+                "name": "clk_en_rst",
+                "interface": {
+                    "type": "clk_en_rst",
+                    "subtype": "slave",
                 },
-                {
-                    "name": "BOOT_ROM_ADDR_W",
-                    "type": "F",
-                    "val": "12",
-                    "min": "NA",
-                    "max": "24",
-                    "descr": "Bootloader ROM address width",
-                },
-                {
-                    "name": "PREBOOT_ROM_ADDR_W",
-                    "type": "F",
-                    "val": "8",
-                    "min": "NA",
-                    "max": "24",
-                    "descr": "Preboot ROM address width",
-                },
-            ]
-        )
-
-    @classmethod
-    def _setup_ios(cls):
-        cls.ios += [
-            {"name": "iob_s_port", "descr": "CPU native interface", "ports": []},
+                "descr": "Clock and reset",
+            },
             {
                 "name": "general",
-                "descr": "GENERAL INTERFACE SIGNALS",
-                "ports": [
+                "descr": "General interface signals",
+                "signals": [
                     {
-                        "name": "clk_i",
-                        "type": "I",
-                        "n_bits": "1",
-                        "descr": "System clock input",
-                    },
-                    {
-                        "name": "arst_i",
-                        "type": "I",
-                        "n_bits": "1",
-                        "descr": "System reset, asynchronous and active high",
-                    },
-                    {
-                        "name": "cke_i",
-                        "type": "I",
-                        "n_bits": "1",
-                        "descr": "System reset, asynchronous and active high",
-                    },
-                    {
-                        "name": "CPU_RST_r_o",
-                        "type": "O",
-                        "n_bits": "1",
+                        "name": "CPU_RST",
+                        "direction": "output",
+                        "width": "1",
                         "descr": "CPU sync reset.",
                     },
                     {
                         "name": "CTR_r_o",
-                        "type": "O",
-                        "n_bits": "2",
+                        "direction": "output",
+                        "width": "2",
                         "descr": "Boot controller external link.",
                     },
                     {
                         "name": "ctr_ibus_avalid_i",
-                        "type": "I",
-                        "n_bits": "1",
+                        "direction": "input",
+                        "width": "1",
                         "descr": "CPU sync reset.",
                     },
                     {
                         "name": "ctr_ibus_addr_i",
-                        "type": "I",
-                        "n_bits": "ADDR_W",
+                        "direction": "input",
+                        "width": "ADDR_W",
                         "descr": "CPU sync reset.",
                     },
                     {
                         "name": "ctr_ibus_wdata_i",
-                        "type": "I",
-                        "n_bits": "DATA_W",
+                        "direction": "input",
+                        "width": "DATA_W",
                         "descr": "CPU sync reset.",
                     },
                     {
                         "name": "ctr_ibus_wstrb_i",
-                        "type": "I",
-                        "n_bits": "DATA_W/8",
+                        "direction": "input",
+                        "width": "DATA_W/8",
                         "descr": "CPU sync reset.",
                     },
                     {
                         "name": "ctr_ibus_rdata_o",
-                        "type": "O",
-                        "n_bits": "DATA_W",
+                        "direction": "output",
+                        "width": "DATA_W",
                         "descr": "CPU sync reset.",
                     },
                     {
                         "name": "ctr_ibus_rvalid_o",
-                        "type": "O",
-                        "n_bits": "1",
+                        "direction": "output",
+                        "width": "1",
                         "descr": "CPU sync reset.",
                     },
                     {
                         "name": "ctr_ibus_ready_o",
-                        "type": "O",
-                        "n_bits": "1",
+                        "direction": "output",
+                        "width": "1",
                         "descr": "CPU sync reset.",
                     },
                 ],
             },
-        ]
-
-    @classmethod
-    def _setup_regs(cls):
-        cls.regs += [
+        ],
+        "csrs": [
             {
                 "name": "boot",
                 "descr": "Boot control register.",
@@ -172,7 +130,7 @@ class iob_soc_boot(iob_module):
                         "rst_val": 0,
                         "addr": -1,
                         "log2n_items": "BOOT_ROM_ADDR_W - 2",
-                        "autologic": False,
+                        "autoreg": False,
                         "descr": "Bootloader ROM.",
                     },
                     {
@@ -182,7 +140,7 @@ class iob_soc_boot(iob_module):
                         "rst_val": 0,
                         "addr": -1,
                         "log2n_items": 0,
-                        "autologic": True,
+                        "autoreg": True,
                         "descr": "Boot control register (write). The register has the following values: 0: select preboot, 1: select bootloader, 2: select firmware",
                     },
                     {
@@ -192,13 +150,29 @@ class iob_soc_boot(iob_module):
                         "rst_val": 0,
                         "addr": -1,
                         "log2n_items": 0,
-                        "autologic": True,
+                        "autoreg": True,
                         "descr": "CPU reset control register (write). 1 to reset the CPU, 0 to release the CPU from reset.",
                     },
                 ],
             }
-        ]
-
-    @classmethod
-    def _setup_block_groups(cls):
-        cls.block_groups += []
+        ],
+        "blocks": [
+            {
+                "core_name": "iob_reg",
+                "instance_name": "iob_reg_inst",
+            },
+            {
+                "core_name": "iob_reg_e",
+                "instance_name": "iob_reg_e_inst",
+            },
+            {
+                "core_name": "iob_pulse_gen",
+                "instance_name": "iob_pulse_gen_inst",
+            },
+            {
+                "core_name": "iob_rom_dp",
+                "instance_name": "iob_rom_dp_inst",
+            },
+        ],
+    }
+    return attributes_dict
