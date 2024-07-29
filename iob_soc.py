@@ -16,8 +16,8 @@ def setup(py_params_dict):
     USE_MUL_DIV = True
     USE_SPRAM = py_params_dict["USE_SPRAM"] if "USE_SPRAM" in py_params_dict else False
 
-    # Number of peripherals + Bootctr
-    N_SLAVES = 2 + 1
+    # Number of peripherals
+    N_SLAVES = 2
 
     attributes_dict = {
         "original_name": "iob_soc",
@@ -316,6 +316,16 @@ def setup(py_params_dict):
             "descr": "cpu data bus",
         },
         {
+            "name": "cpu_pbus",
+            "interface": {
+                "type": "iob",
+                "wire_prefix": "cpu_pbus_",
+                "DATA_W": "DATA_W",
+                "ADDR_W": "ADDR_W",
+            },
+            "descr": "cpu peripheral bus",
+        },
+        {
             "name": "split_reset",
             "descr": "Reset signal for iob_split components",
             "signals": [
@@ -569,8 +579,8 @@ def setup(py_params_dict):
     attributes_dict["blocks"] += [
         {
             "core_name": "iob_split",
-            "name": "iob_pbus_split",
-            "instance_name": "iob_pbus_split",
+            "name": "iob_intmem_split",
+            "instance_name": "iob_intmem_split",
             "parameters": {
                 "ADDR_W": "ADDR_W",
                 "DATA_W": "DATA_W",
@@ -581,8 +591,25 @@ def setup(py_params_dict):
                 "reset": "split_reset",
                 "input": "int_d" if USE_EXTMEM else "cpu_d",
                 "output_0": "int_mem_d",
-                "output_1": "uart_swreg",
-                "output_2": "timer_swreg",
+                "output_1": "cpu_pbus",
+            },
+            "num_outputs": 2,
+        },
+        {
+            "core_name": "iob_split",
+            "name": "iob_pbus_split",
+            "instance_name": "iob_pbus_split",
+            "parameters": {
+                "ADDR_W": "ADDR_W",
+                "DATA_W": "DATA_W",
+                "SPLIT_PTR": "ADDR_W-3",
+            },
+            "connect": {
+                "clk_en_rst": "clk_en_rst",
+                "reset": "split_reset",
+                "input": "cpu_pbus",
+                "output_0": "uart_swreg",
+                "output_1": "timer_swreg",
                 # TODO: Connect peripherals automatically
             },
             "num_outputs": N_SLAVES,
