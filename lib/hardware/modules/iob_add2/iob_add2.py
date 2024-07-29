@@ -3,7 +3,79 @@ def setup(py_params_dict):
         "original_name": "iob_add2",
         "name": "iob_add2",
         "version": "0.1",
-        "generate_hw": False,
+        "confs": [
+            {
+                "name": "W",
+                "type": "P",
+                "val": "21",
+                "min": "NA",
+                "max": "NA",
+                "descr": "Data bus width",
+            },
+        ],
+        "ports": [
+            {
+                "name": "in1_i",
+                "descr": "Input port",
+                "signals": [
+                    {
+                        "name": "in1",
+                        "width": "W",
+                        "direction": "input",
+                    },
+                ],
+            },
+            {
+                "name": "in2_i",
+                "descr": "Input port",
+                "signals": [
+                    {
+                        "name": "in2",
+                        "width": "W",
+                        "direction": "input",
+                    },
+                ],
+            },
+            {
+                "name": "sum_o",
+                "descr": "Output port",
+                "signals": [
+                    {
+                        "name": "sum",
+                        "width": "W",
+                        "direction": "output",
+                    },
+                ],
+            },
+            {
+                "name": "carry_o",
+                "descr": "Output port",
+                "signals": [
+                    {
+                        "name": "carry",
+                        "width": 1,
+                        "direction": "output",
+                    },
+                ],
+            },
+        ],
+        "wires": [
+            {
+                "name": "sum_int",
+                "descr": "sum wire",
+                "signals": [
+                    {"name": "sum_int", "width": "W+1"},
+                ],
+            },
+        ],
+        "snippets": [
+            {
+                "verilog_code": f"""
+    assign sum_o   = in1_i + in2_i;
+    assign carry_o = sum_o[W];
+         """,
+            },
+        ],
     }
 
     return attributes_dict
