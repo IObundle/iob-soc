@@ -4,6 +4,7 @@ def setup(py_params_dict):
         "name": "printf",
         "version": "0.1",
         "generate_hw": False,
+        "instantiate": False,
     }
 
     return attributes_dict

@@ -1,9 +1,14 @@
+edge = 1
+
+
 def setup(py_params_dict):
+    global edge
+    if "RST_POL" in py_params_dict:
+        edge = py_params_dict["RST_POL"]
     attributes_dict = {
         "original_name": "iob_r",
         "name": "iob_r",
         "version": "0.1",
-        "generate_hw": False,
         "confs": [
             {
                 "name": "DATA_W",
@@ -21,44 +26,50 @@ def setup(py_params_dict):
                 "max": "NA",
                 "descr": "Reset value.",
             },
-            {
-                "name": "RST_POL",
-                "type": "M",
-                "val": "1",
-                "min": "0",
-                "max": "1",
-                "descr": "Reset polarity.",
-            },
         ],
         "ports": [
             {
                 "name": "clk_rst",
-                "type": "slave",
-                "port_prefix": "",
-                "wire_prefix": "",
+                "interface": {
+                    "type": "clk_rst",
+                    "subtype": "slave",
+                },
                 "descr": "Clock, clock enable and reset",
-                "signals": [],
             },
             {
-                "name": "io",
-                "type": "master",
-                "port_prefix": "",
-                "wire_prefix": "",
-                "descr": "Input and output",
+                "name": "iob_r_data_i",
+                "descr": "Input port",
                 "signals": [
                     {
-                        "name": "data",
+                        "name": "iob_r_data",
+                        "width": "DATA_W",
                         "direction": "input",
-                        "width": "DATA_W",
-                        "descr": "Data input",
-                    },
-                    {
-                        "name": "data",
-                        "direction": "output",
-                        "width": "DATA_W",
-                        "descr": "Data output",
                     },
                 ],
+            },
+            {
+                "name": "iob_r_data_o",
+                "descr": "Output port",
+                "signals": [
+                    {
+                        "name": "iob_r_data",
+                        "width": "DATA_W",
+                        "direction": "output",
+                    },
+                ],
+            },
+        ],
+        "snippets": [
+            {
+                "verilog_code": f"""
+    always @(posedge clk_i, {"posedge" if edge else "negedge"} arst_i) begin
+            if (arst_i) begin
+               iob_r_data_o <= RST_VAL;
+            end else begin
+               iob_r_data_o <= iob_r_data_i;
+            end
+         end
+         """,
             },
         ],
     }

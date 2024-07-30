@@ -4,7 +4,6 @@
 `include "iob_soc_conf.vh"
 `include "iob_uart_conf.vh"
 `include "iob_uart_swreg_def.vh"
-`include "iob_reg_conf.vh"
 
 //Peripherals _swreg_def.vh file includes.
 `include "iob_soc_periphs_swreg_def.vs"
@@ -62,9 +61,9 @@ module iob_soc_tb;
     iob_wstrb_i = 0;
 
     //reset system
-    arst = ~`IOB_REG_RST_POL;
-    #100 arst = `IOB_REG_RST_POL;
-    #1_000 arst = ~`IOB_REG_RST_POL;
+    arst = ~`IOB_SOC_RST_POL;
+    #100 arst = `IOB_SOC_RST_POL;
+    #1_000 arst = ~`IOB_SOC_RST_POL;
     #100;
     @(posedge clk) #1;
 
@@ -119,26 +118,26 @@ module iob_soc_tb;
 
 `ifdef IOB_SOC_USE_ETHERNET
   //IOb-SoC ethernet
-  wire                             ethernet_valid;
-  wire [`IOB_ETH_SWREG_ADDR_W-1:0] ethernet_addr;
-  wire [      `IOB_SOC_DATA_W-1:0] ethernet_wdata;
-  wire [                      3:0] ethernet_wstrb;
-  wire [      `IOB_SOC_DATA_W-1:0] ethernet_rdata;
-  wire                             ethernet_ready;
-  wire                             ethernet_rvalid;
-`endif
+  wire                             ethernet_iob_valid;
+  wire [`IOB_ETH_SWREG_ADDR_W-1:0] ethernet_iob_addr;
+  wire [      `IOB_SOC_DATA_W-1:0] ethernet_iob_wdata;
+  wire [                      3:0] ethernet_iob_wstrb;
+  wire [      `IOB_SOC_DATA_W-1:0] ethernet_iob_rdata;
+  wire                             ethernet_iob_ready;
+  wire                             ethernet_iob_rvalid;
 
 
   iob_eth_driver_tb eth_driver (
       .clk_i(clk),
-      .iob_valid_o(ethernet_valid),
-      .iob_addr_o(ethernet_addr),
-      .iob_wdata_o(ethernet_wdata),
-      .iob_wstrb_o(ethernet_wstrb),
-      .iob_rdata_i(ethernet_rdata),
-      .iob_ready_i(ethernet_ready),
-      .iob_rvalid_i(ethernet_rvalid)
+      .iob_valid_o(ethernet_iob_valid),
+      .iob_addr_o(ethernet_iob_addr),
+      .iob_wdata_o(ethernet_iob_wdata),
+      .iob_wstrb_o(ethernet_iob_wstrb),
+      .iob_rdata_i(ethernet_iob_rdata),
+      .iob_ready_i(ethernet_iob_ready),
+      .iob_rvalid_i(ethernet_iob_rvalid)
   );
+`endif
 
 
   iob_soc_sim_wrapper iob_soc_sim_wrapper (
@@ -148,22 +147,22 @@ module iob_soc_tb;
       .trap_o(trap),
 
 `ifdef IOB_SOC_USE_ETHERNET
-      .ethernet_valid_i (ethernet_valid),
-      .ethernet_addr_i  (ethernet_addr),
-      .ethernet_wdata_i (ethernet_wdata),
-      .ethernet_wstrb_i (ethernet_wstrb),
-      .ethernet_rdata_o (ethernet_rdata),
-      .ethernet_ready_o (ethernet_ready),
-      .ethernet_rvalid_o(ethernet_rvalid),
+      .ethernet_iob_valid_i (ethernet_valid),
+      .ethernet_iob_addr_i  (ethernet_addr),
+      .ethernet_iob_wdata_i (ethernet_wdata),
+      .ethernet_iob_wstrb_i (ethernet_wstrb),
+      .ethernet_iob_rdata_o (ethernet_rdata),
+      .ethernet_iob_ready_o (ethernet_ready),
+      .ethernet_iob_rvalid_o(ethernet_rvalid),
 `endif
 
-      .uart_valid_i (iob_valid_i),
-      .uart_addr_i  (iob_addr_i),
-      .uart_wdata_i (iob_wdata_i),
-      .uart_wstrb_i (iob_wstrb_i),
-      .uart_rdata_o (iob_rdata_o),
-      .uart_ready_o (iob_ready_o),
-      .uart_rvalid_o(iob_rvalid_o)
+      .uart_iob_valid_i (iob_valid_i),
+      .uart_iob_addr_i  (iob_addr_i),
+      .uart_iob_wdata_i (iob_wdata_i),
+      .uart_iob_wstrb_i (iob_wstrb_i),
+      .uart_iob_rdata_o (iob_rdata_o),
+      .uart_iob_ready_o (iob_ready_o),
+      .uart_iob_rvalid_o(iob_rvalid_o)
   );
 
   task cpu_inituart;

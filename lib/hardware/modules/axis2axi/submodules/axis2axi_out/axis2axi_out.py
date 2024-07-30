@@ -7,17 +7,14 @@ def setup(py_params_dict):
         "ports": [
             {
                 "name": "clk_en_rst",
-                "type": "slave",
-                "port_prefix": "",
-                "wire_prefix": "",
+                "interface": {
+                    "type": "clk_en_rst",
+                    "subtype": "slave",
+                },
                 "descr": "Clock, clock enable and reset",
-                "signals": [],
             },
             {
                 "name": "rst",
-                "type": "master",
-                "port_prefix": "",
-                "wire_prefix": "",
                 "descr": "Synchronous reset interface",
                 "signals": [
                     {
@@ -30,9 +27,6 @@ def setup(py_params_dict):
             },
             {
                 "name": "config_out",
-                "type": "master",
-                "port_prefix": "",
-                "wire_prefix": "",
                 "descr": "AXI Stream output configuration interface",
                 "signals": [
                     {
@@ -63,9 +57,6 @@ def setup(py_params_dict):
             },
             {
                 "name": "axis_out",
-                "type": "master",
-                "port_prefix": "",
-                "wire_prefix": "",
                 "descr": "AXI Stream output interface",
                 "signals": [
                     {
@@ -90,15 +81,13 @@ def setup(py_params_dict):
             },
             {
                 "name": "axi_read",
-                "type": "master",
-                "port_prefix": "",
-                "wire_prefix": "",
-                "descr": "AXI read interface",
-                "signals": [],
-                "widths": {
+                "interface": {
+                    "type": "axi_read",
+                    "subtype": "master",
                     "ADDR_W": "AXI_ADDR_W",
                     "DATA_W": "AXI_DATA_W",
                 },
+                "descr": "AXI read interface",
             },
         ],
         "blocks": [],
