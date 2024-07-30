@@ -15,7 +15,7 @@ def setup(py_params_dict):
             {
                 "name": "MODE",
                 "type": "P",
-                "val": "LOW",
+                "val": '"LOW"',
                 "min": "NA",
                 "max": "NA",
                 "descr": "'LOW' = Prioritize smaller index",

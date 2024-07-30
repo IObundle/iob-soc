@@ -24,9 +24,11 @@ def setup(py_params_dict):
         "ports": [
             {
                 "name": "clk_en_rst",
-                "type": "slave",
-                "descr": "Clock, enable, and reset",
-                "signals": [],
+                "interface": {
+                    "type": "clk_en_rst",
+                    "subtype": "slave",
+                },
+                "descr": "clock, clock enable and reset",
             },
             {
                 "name": "signal_i",
