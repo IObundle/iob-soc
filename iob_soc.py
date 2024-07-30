@@ -451,6 +451,17 @@ def setup(py_params_dict):
             },
             "descr": "TIMER swreg bus",
         },
+        {
+            "name": "bootctr_swreg",
+            "interface": {
+                "type": "iob",
+                "file_prefix": "iob_soc_bootctr_swreg_",
+                "wire_prefix": "bootctr_swreg_",
+                "DATA_W": "DATA_W",
+                "ADDR_W": "ADDR_W",
+            },
+            "descr": "BOOTCTR swreg bus",
+        },
         # TODO: Auto add peripheral wires
     ]
     attributes_dict["blocks"] = [
@@ -617,6 +628,15 @@ def setup(py_params_dict):
                 "iob": "timer_swreg",
             },
         },
+        {
+            "core_name": "iob_bootctr",
+            "instance_name": "BOOTCTR0",
+            "parameters": {},
+            "connect": {
+                "clk_en_rst": "clk_en_rst",
+                "iob": "bootctr_swreg",
+            },
+        },
     ]
     attributes_dict["blocks"] += peripherals + [
         # Modules that need to be setup, but are not instantiated directly inside
@@ -624,11 +644,6 @@ def setup(py_params_dict):
         {
             "core_name": "iob_cache",
             "instance_name": "iob_cache_inst",
-            "instantiate": False,
-        },
-        {
-            "core_name": "iob_bootctr",
-            "instance_name": "iob_bootctr_inst",
             "instantiate": False,
         },
         {
