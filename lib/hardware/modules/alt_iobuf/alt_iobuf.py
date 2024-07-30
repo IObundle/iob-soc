@@ -31,7 +31,7 @@ def setup(py_params_dict):
                 "descr": "Output port",
                 "signals": [
                     {
-                        "name": "data",
+                        "name": "out",
                         "width": 1,
                         "direction": "output",
                     },

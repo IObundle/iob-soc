@@ -71,8 +71,9 @@ def setup(py_params_dict):
         "snippets": [
             {
                 "verilog_code": f"""
-    assign sum_o   = in1_i + in2_i;
-    assign carry_o = sum_o[W];
+            assign sum_int = in1_i + in2_i;
+            assign sum_o = sum_int[W-1:0];
+            assign carry_o = sum_int[W];
          """,
             },
         ],

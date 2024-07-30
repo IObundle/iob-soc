@@ -59,17 +59,15 @@ def setup(py_params_dict):
         "snippets": [
             {
                 "verilog_code": """
-            reg [DATA_W-1:0] data_o_reg;
-            assign data_o = data_o_reg;
             integer input_sel;
-            always @* begin
-                data_o_reg = {DATA_W{1'b0}};
-                for (input_sel = 0; input_sel < N; input_sel = input_sel + 1) begin : gen_mux
-                    if (input_sel == sel_i) begin
-                         data_o_reg = data_i[input_sel*DATA_W+:DATA_W];
-                    end
+        always @* begin
+            data_o = {DATA_W{1'b0}};
+            for (input_sel = 0; input_sel < N; input_sel = input_sel + 1) begin : gen_mux
+                if (input_sel == sel_i) begin
+                     data_o = data_i[input_sel*DATA_W+:DATA_W];
                 end
-            end    
+            end
+        end   
             """,
             },
         ],
