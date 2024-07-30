@@ -1,25 +1,12 @@
 def setup(py_params_dict):
+    ADDR_W = py_params_dict["addr_w"] if "addr_w" in py_params_dict else 32
+    DATA_W = py_params_dict["data_w"] if "data_w" in py_params_dict else 32
+    MEM_ADDR_W = py_params_dict["MEM_ADDR_W"] if "mem_addr_w" in py_params_dict else 32
     attributes_dict = {
         "original_name": "iob_soc_ext_mem",
         "name": "iob_soc_ext_mem",
         "version": "0.1",
         "confs": [
-            {
-                "name": "DATA_W",
-                "type": "P",
-                "val": "32",
-                "min": "0",
-                "max": "NA",
-                "descr": "Width of data bus",
-            },
-            {
-                "name": "ADDR_W",
-                "type": "P",
-                "val": "0",
-                "min": "0",
-                "max": "NA",
-                "descr": "Width of address bus",
-            },
             {
                 "name": "FIRM_ADDR_W",
                 "type": "P",
@@ -27,14 +14,6 @@ def setup(py_params_dict):
                 "min": "0",
                 "max": "NA",
                 "descr": "Width of firmware",
-            },
-            {
-                "name": "MEM_ADDR_W",
-                "type": "P",
-                "val": "0",
-                "min": "0",
-                "max": "NA",
-                "descr": "Width of address bus in memory interface",
             },
             {
                 "name": "DDR_DATA_W",
@@ -100,8 +79,8 @@ def setup(py_params_dict):
                     "type": "iob",
                     "subtype": "slave",
                     "port_prefix": "i_",
-                    "DATA_W": "DATA_W",
-                    "ADDR_W": "ADDR_W",
+                    "DATA_W": DATA_W,
+                    "ADDR_W": ADDR_W,
                 },
                 "descr": "Instruction bus",
             },
@@ -111,8 +90,8 @@ def setup(py_params_dict):
                     "type": "iob",
                     "subtype": "slave",
                     "port_prefix": "d_",
-                    "DATA_W": "DATA_W",
-                    "ADDR_W": "ADDR_W",
+                    "DATA_W": DATA_W,
+                    "ADDR_W": ADDR_W,
                 },
                 "descr": "Data bus",
             },
@@ -143,8 +122,8 @@ def setup(py_params_dict):
             "interface": {
                 "type": "iob",
                 "wire_prefix": "icache_be_",
-                "DATA_W": "DATA_W",
-                "ADDR_W": "MEM_ADDR_W",
+                "DATA_W": DATA_W,
+                "ADDR_W": MEM_ADDR_W,
             },
             "descr": "iob-soc external memory instruction cache interface",
         },
@@ -153,8 +132,8 @@ def setup(py_params_dict):
             "interface": {
                 "type": "iob",
                 "wire_prefix": "dcache_be_",
-                "DATA_W": "DATA_W",
-                "ADDR_W": "MEM_ADDR_W",
+                "DATA_W": DATA_W,
+                "ADDR_W": MEM_ADDR_W,
             },
             "descr": "iob-soc external memory data cache interface",
         },
@@ -163,8 +142,8 @@ def setup(py_params_dict):
             "interface": {
                 "type": "iob",
                 "wire_prefix": "l2cache_",
-                "DATA_W": "DATA_W",
-                "ADDR_W": "MEM_ADDR_W",
+                "DATA_W": DATA_W,
+                "ADDR_W": MEM_ADDR_W,
             },
             "descr": "iob-soc external memory l2 cache interface",
         },
@@ -174,10 +153,6 @@ def setup(py_params_dict):
             "core_name": "iob_merge",
             "name": "iob_i_d_into_l2_merge",
             "instance_name": "iob_i_d_into_l2_merge",
-            "parameters": {
-                "ADDR_W": "MEM_ADDR_W",
-                "DATA_W": "DATA_W",
-            },
             "connect": {
                 "clk_en_rst": "clk_en_rst",
                 "reset": "never_reset",
@@ -186,17 +161,18 @@ def setup(py_params_dict):
                 "output": "l2cache",
             },
             "num_inputs": 2,
+            "addr_w": MEM_ADDR_W,
         },
     ]
     attributes_dict["snippets"] = [
         {
-            "verilog_code": """
+            "verilog_code": f"""
   assign always_low = 1'b0;
 
   // Instruction cache instance
   iob_cache_iob #(
       .FE_ADDR_W    (FIRM_ADDR_W),
-      .BE_ADDR_W    (MEM_ADDR_W),
+      .BE_ADDR_W    ({MEM_ADDR_W}),
       .NWAYS_W      (1),            //Number of ways
       .NLINES_W     (7),            //Cache Line Offset (number of lines)
       .WORD_OFFSET_W(3),            //Word Offset (number of words per line)
@@ -235,7 +211,7 @@ def setup(py_params_dict):
   wire l2_wtb_empty;
   wire invalidate;
   reg  invalidate_reg;
-  wire l2_valid = l2cache_iob_addr[MEM_ADDR_W];
+  wire l2_valid = l2cache_iob_addr[{MEM_ADDR_W}];
   //Necessary logic to avoid invalidating L2 while it's being accessed by a request
   always @(posedge clk_i, posedge arst_i)
     if (arst_i) invalidate_reg <= 1'b0;
@@ -251,8 +227,8 @@ def setup(py_params_dict):
 
   // Data cache instance
   iob_cache_iob #(
-      .FE_ADDR_W    (MEM_ADDR_W),
-      .BE_ADDR_W    (MEM_ADDR_W),
+      .FE_ADDR_W    ({MEM_ADDR_W}),
+      .BE_ADDR_W    ({MEM_ADDR_W}),
       .NWAYS_W      (1),           //Number of ways
       .NLINES_W     (7),           //Cache Line Offset (number of lines)
       .WORD_OFFSET_W(3),           //Word Offset (number of words per line)
@@ -291,7 +267,7 @@ def setup(py_params_dict):
   iob_cache_axi #(
       .AXI_ID_W     (AXI_ID_W),
       .AXI_LEN_W    (AXI_LEN_W),
-      .FE_ADDR_W    (MEM_ADDR_W),
+      .FE_ADDR_W    ({MEM_ADDR_W}),
       .BE_ADDR_W    (DDR_ADDR_W),
       .BE_DATA_W    (DDR_DATA_W),
       .NWAYS_W      (2),           //Number of Ways
@@ -303,7 +279,7 @@ def setup(py_params_dict):
   ) l2cache (
       // Native interface
       .iob_valid_i (l2cache_iob_valid),
-      .iob_addr_i  (l2cache_iob_addr[MEM_ADDR_W-1:2]),
+      .iob_addr_i  (l2cache_iob_addr[{MEM_ADDR_W}-1:2]),
       .iob_wdata_i (l2cache_iob_wdata),
       .iob_wstrb_i (l2cache_iob_wstrb),
       .iob_rdata_o (l2cache_iob_rdata),

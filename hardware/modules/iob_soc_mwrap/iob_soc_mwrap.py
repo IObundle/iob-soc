@@ -6,6 +6,7 @@ import iob_soc
 def setup(py_params_dict):
     INIT_MEM = py_params_dict["INIT_MEM"] if "INIT_MEM" in py_params_dict else False
     USE_SPRAM = py_params_dict["USE_SPRAM"] if "USE_SPRAM" in py_params_dict else False
+    DATA_W = py_params_dict["data_w"] if "data_w" in py_params_dict else 32
     iob_soc_attr = iob_soc.setup(py_params_dict)
 
     # TODO: Generate this source in the common_src directory
@@ -107,7 +108,7 @@ def setup(py_params_dict):
                 "parameters": {
                     "HEXFILE": "HEXFILE",
                     "ADDR_W": "SRAM_ADDR_W - 2",
-                    "DATA_W": "DATA_W",
+                    "DATA_W": DATA_W,
                 },
                 "connect": {
                     "clk": "clk",
@@ -124,7 +125,7 @@ def setup(py_params_dict):
                 "parameters": {
                     "HEXFILE": "HEXFILE",
                     "ADDR_W": "SRAM_ADDR_W - 2",
-                    "DATA_W": "DATA_W",
+                    "DATA_W": DATA_W,
                     "MEM_NO_READ_ON_WRITE": 1,
                 },
                 "connect": {
@@ -141,7 +142,7 @@ def setup(py_params_dict):
                 "parameters": {
                     "HEXFILE": "HEXFILE",
                     "ADDR_W": "SRAM_ADDR_W - 2",
-                    "DATA_W": "DATA_W",
+                    "DATA_W": DATA_W,
                 },
                 "connect": {
                     "clk": "clk",
@@ -157,7 +158,7 @@ def setup(py_params_dict):
             "core_name": "iob_rom_sp",
             "instance_name": "sp_rom",
             "parameters": {
-                "DATA_W": "DATA_W",
+                "DATA_W": DATA_W,
                 "ADDR_W": "BOOTROM_ADDR_W - 2",
                 "HEXFILE": '{BOOT_HEXFILE, ".hex"}',
             },

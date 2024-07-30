@@ -51,6 +51,7 @@ def setup(py_params_dict):
     USE_EXTMEM = (
         py_params_dict["USE_EXTMEM"] if "USE_EXTMEM" in py_params_dict else False
     )
+    DATA_W = py_params_dict["data_w"] if "data_w" in py_params_dict else 32
     iob_soc_attr = iob_soc.setup(py_params_dict)
 
     attributes_dict = {
@@ -258,6 +259,7 @@ def setup(py_params_dict):
             }
             | {i["name"]: i["name"] for i in simwrap_wires},
             "purpose": "common",
+            "data_w": DATA_W,
         },
         {
             "core_name": "iob_uart",

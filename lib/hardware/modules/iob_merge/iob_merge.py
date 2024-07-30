@@ -10,28 +10,13 @@ def setup(py_params_dict):
     # Number of bits required for input selection
     NBITS = (NUM_INPUTS - 1).bit_length()
 
+    ADDR_W = int(py_params_dict["addr_w"]) if "addr_w" in py_params_dict else 32
+    DATA_W = int(py_params_dict["data_w"]) if "data_w" in py_params_dict else 32
+
     attributes_dict = {
         "original_name": "iob_merge",
         "name": py_params_dict["name"],
         "version": "0.1",
-        "confs": [
-            {
-                "name": "ADDR_W",
-                "type": "P",
-                "val": "32",
-                "min": "0",
-                "max": "NA",
-                "descr": "Address bus width",
-            },
-            {
-                "name": "DATA_W",
-                "type": "P",
-                "val": "32",
-                "min": "0",
-                "max": "NA",
-                "descr": "Data bus width",
-            },
-        ],
         "ports": [
             {
                 "name": "clk_en_rst",
@@ -59,8 +44,8 @@ def setup(py_params_dict):
                     "subtype": "master",
                     "file_prefix": py_params_dict["name"] + "_output_",
                     "port_prefix": "output_",
-                    "DATA_W": "DATA_W",
-                    "ADDR_W": "ADDR_W",
+                    "DATA_W": DATA_W,
+                    "ADDR_W": ADDR_W,
                 },
                 "descr": "Merge output",
             },
@@ -75,8 +60,8 @@ def setup(py_params_dict):
                     "subtype": "slave",
                     "file_prefix": f"{py_params_dict['name']}_input{port_idx}_",
                     "port_prefix": f"input{port_idx}_",
-                    "DATA_W": "DATA_W",
-                    "ADDR_W": "ADDR_W",
+                    "DATA_W": DATA_W,
+                    "ADDR_W": ADDR_W - NBITS,
                 },
                 "descr": "Merge input interfaces",
             },
@@ -123,7 +108,7 @@ def setup(py_params_dict):
             "name": "mux_valid_io",
             "descr": "I/O of valid mux",
             "signals": [
-                {"name": "mux_valid_input", "width": NUM_INPUTS * 1},
+                {"name": "mux_valid_input", "width": NUM_INPUTS},
                 {"name": "output_iob_valid"},
             ],
         },
@@ -131,7 +116,7 @@ def setup(py_params_dict):
             "name": "mux_addr_io",
             "descr": "I/O of address mux",
             "signals": [
-                {"name": "mux_addr_input", "width": f"{NUM_INPUTS}*ADDR_W"},
+                {"name": "mux_addr_input", "width": NUM_INPUTS * ADDR_W},
                 {"name": "output_iob_addr"},
             ],
         },
@@ -139,7 +124,7 @@ def setup(py_params_dict):
             "name": "mux_wdata_io",
             "descr": "I/O of wdata mux",
             "signals": [
-                {"name": "mux_wdata_input", "width": f"{NUM_INPUTS}*DATA_W"},
+                {"name": "mux_wdata_input", "width": NUM_INPUTS * DATA_W},
                 {"name": "output_iob_wdata"},
             ],
         },
@@ -147,7 +132,7 @@ def setup(py_params_dict):
             "name": "mux_wstrb_io",
             "descr": "I/O of wstrb mux",
             "signals": [
-                {"name": "mux_wstrb_input", "width": f"{NUM_INPUTS}*(DATA_W/8)"},
+                {"name": "mux_wstrb_input", "width": NUM_INPUTS * (DATA_W / 8)},
                 {"name": "output_iob_wstrb"},
             ],
         },
@@ -157,7 +142,7 @@ def setup(py_params_dict):
             "descr": "I/O of rdata demux",
             "signals": [
                 {"name": "output_iob_rdata"},
-                {"name": "demux_rdata_output", "width": f"{NUM_INPUTS}*DATA_W"},
+                {"name": "demux_rdata_output", "width": NUM_INPUTS * DATA_W},
             ],
         },
         {
@@ -165,7 +150,7 @@ def setup(py_params_dict):
             "descr": "I/O of rvalid demux",
             "signals": [
                 {"name": "output_iob_rvalid"},
-                {"name": "demux_rvalid_output", "width": f"{NUM_INPUTS}*1"},
+                {"name": "demux_rvalid_output", "width": NUM_INPUTS},
             ],
         },
         {
@@ -173,7 +158,7 @@ def setup(py_params_dict):
             "descr": "I/O of ready demux",
             "signals": [
                 {"name": "output_iob_ready"},
-                {"name": "demux_ready_output", "width": f"{NUM_INPUTS}*1"},
+                {"name": "demux_ready_output", "width": NUM_INPUTS},
             ],
         },
         # Priority encoder signals
@@ -218,7 +203,7 @@ def setup(py_params_dict):
             "core_name": "iob_mux",
             "instance_name": "iob_mux_addr",
             "parameters": {
-                "DATA_W": "ADDR_W",
+                "DATA_W": ADDR_W,
                 "N": NUM_INPUTS,
             },
             "connect": {
@@ -230,7 +215,7 @@ def setup(py_params_dict):
             "core_name": "iob_mux",
             "instance_name": "iob_mux_wdata",
             "parameters": {
-                "DATA_W": "DATA_W",
+                "DATA_W": DATA_W,
                 "N": NUM_INPUTS,
             },
             "connect": {
@@ -242,7 +227,7 @@ def setup(py_params_dict):
             "core_name": "iob_mux",
             "instance_name": "iob_mux_wstrb",
             "parameters": {
-                "DATA_W": "DATA_W/8",
+                "DATA_W": DATA_W / 8,
                 "N": NUM_INPUTS,
             },
             "connect": {
@@ -254,7 +239,7 @@ def setup(py_params_dict):
             "core_name": "iob_demux",
             "instance_name": "iob_demux_rdata",
             "parameters": {
-                "DATA_W": "DATA_W",
+                "DATA_W": DATA_W,
                 "N": NUM_INPUTS,
             },
             "connect": {
@@ -306,9 +291,9 @@ def setup(py_params_dict):
     verilog_outputs = []
     for port_idx in range(NUM_INPUTS):
         verilog_code += f"""
-    assign input{port_idx}_iob_rdata_o = demux_rdata_output[{port_idx}*DATA_W+:DATA_W];
-    assign input{port_idx}_iob_rvalid_o = demux_rvalid_output[{port_idx}*1+:1];
-    assign input{port_idx}_iob_ready_o = demux_ready_output[{port_idx}*1+:1];
+    assign input{port_idx}_iob_rdata_o = demux_rdata_output[{port_idx*DATA_W}+:{DATA_W}];
+    assign input{port_idx}_iob_rvalid_o = demux_rvalid_output[{port_idx}+:1];
+    assign input{port_idx}_iob_ready_o = demux_ready_output[{port_idx}+:1];
 """
         verilog_outputs.append(f"input{port_idx}_iob_rdata")
         verilog_outputs.append(f"input{port_idx}_iob_rvalid")
@@ -318,6 +303,9 @@ def setup(py_params_dict):
     for signal in ["valid", "addr", "wdata", "wstrb"]:
         verilog_code += f"    assign mux_{signal}_input = {{"
         for port_idx in range(NUM_INPUTS - 1, -1, -1):
+            # Include padding bits for address
+            if signal == "addr":
+                verilog_code += f"{{{NBITS}{{1'b0}}}}, "
             verilog_code += f"input{port_idx}_iob_{signal}_i, "
         verilog_code = verilog_code[:-2] + "};\n"
         verilog_outputs.append(f"mux_{signal}_input")
