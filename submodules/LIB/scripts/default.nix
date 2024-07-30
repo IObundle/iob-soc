@@ -48,5 +48,7 @@ pkgs.mkShell {
       inherit pkgs;
     })
     yosys
+    gcc
+    libcap # Allows setting POSIX capabilities
   ];
 }
