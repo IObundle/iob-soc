@@ -1,17 +1,17 @@
 `timescale 1 ns / 1 ps
 
 `include "iob_utils.vh"
-`include "iob_soc_boot_conf.vh"
-`include "iob_soc_boot_swreg_def.vh"
+`include "iob_bootctr_conf.vh"
+`include "iob_bootctr_swreg_def.vh"
 `include "iob_soc_conf.vh"
 
-module iob_soc_boot #(
-        `include "iob_soc_boot_params.vs"
+module iob_bootctr #(
+        `include "iob_bootctr_params.vs"
     ) (
-        `include "iob_soc_boot_io.vs"
+        `include "iob_bootctr_io.vs"
     );
 
-    `include "iob_soc_boot_swreg_inst.vs"
+    `include "iob_bootctr_swreg_inst.vs"
 
 
     wire cpu_1st_rst;
@@ -28,7 +28,7 @@ module iob_soc_boot #(
     // Can't reset CTR_r_o ever again. Only once. Else it'll forget in which boot stage it is. Only the CPU can change
     // it afterwards.
     iob_reg_e #(
-        .DATA_W (`IOB_SOC_BOOT_CTR_W),
+        .DATA_W (`IOB_BOOTCTR_CTR_W),
         .RST_VAL(0)
     ) ctr_r (
         .clk_i (clk_i),

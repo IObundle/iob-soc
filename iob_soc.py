@@ -77,6 +77,14 @@ def setup(py_params_dict):
             },
             # parameters
             {
+                "name": "PREBOOTROM_ADDR_W",
+                "type": "P",
+                "val": "8",
+                "min": "1",
+                "max": "32",
+                "descr": "Preboot ROM address width",
+            },
+            {
                 "name": "BOOTROM_ADDR_W",
                 "type": "P",
                 "val": "12",
@@ -619,8 +627,8 @@ def setup(py_params_dict):
             "instantiate": False,
         },
         {
-            "core_name": "iob_soc_boot",
-            "instance_name": "iob_soc_boot_inst",
+            "core_name": "iob_bootctr",
+            "instance_name": "iob_bootctr_inst",
             "instantiate": False,
         },
         {

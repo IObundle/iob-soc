@@ -1,7 +1,7 @@
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "iob_soc_boot",
-        "name": "iob_soc_boot",
+        "original_name": "iob_bootctr",
+        "name": "iob_bootctr",
         "version": "0.1",
         "generate_hw": False,
         "confs": [
@@ -56,66 +56,6 @@ def setup(py_params_dict):
                     "subtype": "slave",
                 },
                 "descr": "Clock and reset",
-            },
-            {
-                "name": "general",
-                "descr": "General interface signals",
-                "signals": [
-                    {
-                        "name": "CPU_RST",
-                        "direction": "output",
-                        "width": "1",
-                        "descr": "CPU sync reset.",
-                    },
-                    {
-                        "name": "CTR_r_o",
-                        "direction": "output",
-                        "width": "2",
-                        "descr": "Boot controller external link.",
-                    },
-                    {
-                        "name": "ctr_ibus_avalid_i",
-                        "direction": "input",
-                        "width": "1",
-                        "descr": "CPU sync reset.",
-                    },
-                    {
-                        "name": "ctr_ibus_addr_i",
-                        "direction": "input",
-                        "width": "ADDR_W",
-                        "descr": "CPU sync reset.",
-                    },
-                    {
-                        "name": "ctr_ibus_wdata_i",
-                        "direction": "input",
-                        "width": "DATA_W",
-                        "descr": "CPU sync reset.",
-                    },
-                    {
-                        "name": "ctr_ibus_wstrb_i",
-                        "direction": "input",
-                        "width": "DATA_W/8",
-                        "descr": "CPU sync reset.",
-                    },
-                    {
-                        "name": "ctr_ibus_rdata_o",
-                        "direction": "output",
-                        "width": "DATA_W",
-                        "descr": "CPU sync reset.",
-                    },
-                    {
-                        "name": "ctr_ibus_rvalid_o",
-                        "direction": "output",
-                        "width": "1",
-                        "descr": "CPU sync reset.",
-                    },
-                    {
-                        "name": "ctr_ibus_ready_o",
-                        "direction": "output",
-                        "width": "1",
-                        "descr": "CPU sync reset.",
-                    },
-                ],
             },
         ],
         "csrs": [
