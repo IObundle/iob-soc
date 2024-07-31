@@ -24,7 +24,6 @@ def setup(py_params_dict):
         ],
         "snippets": [
             {
-                "outputs": ["clk_o"],
                 "verilog_code": """
    reg clk;
    assign clk_o = clk;
