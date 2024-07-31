@@ -105,68 +105,116 @@ def setup(py_params_dict):
         },
         # Mux signals
         {
-            "name": "mux_valid_io",
-            "descr": "I/O of valid mux",
+            "name": "mux_valid_data_i",
+            "descr": "Input of valid mux",
             "signals": [
                 {"name": "mux_valid_input", "width": NUM_INPUTS},
+            ],
+        },
+        {
+            "name": "mux_valid_data_o",
+            "descr": "Output of valid mux",
+            "signals": [
                 {"name": "output_iob_valid"},
             ],
         },
         {
-            "name": "mux_addr_io",
-            "descr": "I/O of address mux",
+            "name": "mux_addr_data_i",
+            "descr": "Input of address mux",
             "signals": [
                 {"name": "mux_addr_input", "width": NUM_INPUTS * ADDR_W},
+            ],
+        },
+        {
+            "name": "mux_addr_data_o",
+            "descr": "Output of address mux",
+            "signals": [
                 {"name": "output_iob_addr"},
             ],
         },
         {
-            "name": "mux_wdata_io",
-            "descr": "I/O of wdata mux",
+            "name": "mux_wdata_data_i",
+            "descr": "Input of wdata mux",
             "signals": [
                 {"name": "mux_wdata_input", "width": NUM_INPUTS * DATA_W},
+            ],
+        },
+        {
+            "name": "mux_wdata_data_o",
+            "descr": "Output of wdata mux",
+            "signals": [
                 {"name": "output_iob_wdata"},
             ],
         },
         {
-            "name": "mux_wstrb_io",
-            "descr": "I/O of wstrb mux",
+            "name": "mux_wstrb_data_i",
+            "descr": "Input of wstrb mux",
             "signals": [
                 {"name": "mux_wstrb_input", "width": NUM_INPUTS * (DATA_W / 8)},
+            ],
+        },
+        {
+            "name": "mux_wstrb_data_o",
+            "descr": "Output of wstrb mux",
+            "signals": [
                 {"name": "output_iob_wstrb"},
             ],
         },
         # Demux signals
         {
-            "name": "demux_rdata_io",
-            "descr": "I/O of rdata demux",
+            "name": "demux_rdata_data_i",
+            "descr": "Input of rdata demux",
             "signals": [
                 {"name": "output_iob_rdata"},
+            ],
+        },
+        {
+            "name": "demux_rdata_data_o",
+            "descr": "Output of rdata demux",
+            "signals": [
                 {"name": "demux_rdata_output", "width": NUM_INPUTS * DATA_W},
             ],
         },
         {
-            "name": "demux_rvalid_io",
-            "descr": "I/O of rvalid demux",
+            "name": "demux_rvalid_data_i",
+            "descr": "Input of rvalid demux",
             "signals": [
                 {"name": "output_iob_rvalid"},
+            ],
+        },
+        {
+            "name": "demux_rvalid_data_o",
+            "descr": "Output of rvalid demux",
+            "signals": [
                 {"name": "demux_rvalid_output", "width": NUM_INPUTS},
             ],
         },
         {
-            "name": "demux_ready_io",
-            "descr": "I/O of ready demux",
+            "name": "demux_ready_data_i",
+            "descr": "Input of ready demux",
             "signals": [
                 {"name": "output_iob_ready"},
+            ],
+        },
+        {
+            "name": "demux_ready_data_o",
+            "descr": "Output of ready demux",
+            "signals": [
                 {"name": "demux_ready_output", "width": NUM_INPUTS},
             ],
         },
         # Priority encoder signals
         {
-            "name": "prio_enc_io",
-            "descr": "I/O of priority encoder",
+            "name": "prio_enc_i",
+            "descr": "Input of priority encoder",
             "signals": [
                 {"name": "mux_valid_input"},
+            ],
+        },
+        {
+            "name": "prio_enc_o",
+            "descr": "Output of priority encoder",
+            "signals": [
                 {"name": "sel"},
             ],
         },
@@ -195,8 +243,9 @@ def setup(py_params_dict):
                 "N": NUM_INPUTS,
             },
             "connect": {
-                "sel": "input_sel",
-                "io": "mux_valid_io",
+                "sel_i": "input_sel",
+                "data_i": "mux_valid_data_i",
+                "data_o": "mux_valid_data_o",
             },
         },
         {
@@ -207,8 +256,9 @@ def setup(py_params_dict):
                 "N": NUM_INPUTS,
             },
             "connect": {
-                "sel": "input_sel",
-                "io": "mux_addr_io",
+                "sel_i": "input_sel",
+                "data_i": "mux_addr_data_i",
+                "data_o": "mux_addr_data_o",
             },
         },
         {
@@ -219,8 +269,9 @@ def setup(py_params_dict):
                 "N": NUM_INPUTS,
             },
             "connect": {
-                "sel": "input_sel",
-                "io": "mux_wdata_io",
+                "sel_i": "input_sel",
+                "data_i": "mux_wdata_data_i",
+                "data_o": "mux_wdata_data_o",
             },
         },
         {
@@ -231,8 +282,9 @@ def setup(py_params_dict):
                 "N": NUM_INPUTS,
             },
             "connect": {
-                "sel": "input_sel",
-                "io": "mux_wstrb_io",
+                "sel_i": "input_sel",
+                "data_i": "mux_wstrb_data_i",
+                "data_o": "mux_wstrb_data_o",
             },
         },
         {
@@ -243,8 +295,9 @@ def setup(py_params_dict):
                 "N": NUM_INPUTS,
             },
             "connect": {
-                "sel": "input_sel_reg",
-                "io": "demux_rdata_io",
+                "sel_i": "input_sel_reg",
+                "data_i": "demux_rdata_data_i",
+                "data_o": "demux_rdata_data_o",
             },
         },
         # demuxers
@@ -256,8 +309,9 @@ def setup(py_params_dict):
                 "N": NUM_INPUTS,
             },
             "connect": {
-                "sel": "input_sel_reg",
-                "io": "demux_rvalid_io",
+                "sel_i": "input_sel_reg",
+                "data_i": "demux_rvalid_data_i",
+                "data_o": "demux_rvalid_data_o",
             },
         },
         {
@@ -268,8 +322,9 @@ def setup(py_params_dict):
                 "N": NUM_INPUTS,
             },
             "connect": {
-                "sel": "input_sel",
-                "io": "demux_ready_io",
+                "sel_i": "input_sel",
+                "data_i": "demux_ready_data_i",
+                "data_o": "demux_ready_data_o",
             },
         },
         # priority encoder
@@ -281,7 +336,8 @@ def setup(py_params_dict):
                 "MODE": '"HIGH"',
             },
             "connect": {
-                "io": "prio_enc_io",
+                "unencoded_i": "prio_enc_i",
+                "encoded_o": "prio_enc_o",
             },
         },
     ]
