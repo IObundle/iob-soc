@@ -3,28 +3,27 @@ def setup(py_params_dict):
         "original_name": "iob_mux",
         "name": "iob_mux",
         "version": "0.1",
-        "generate_hw": False,
         "confs": [
             {
                 "name": "DATA_W",
                 "type": "P",
-                "val": "1",
-                "min": "0",
+                "val": "21",
+                "min": "NA",
                 "max": "NA",
                 "descr": "Width of data interface",
             },
             {
                 "name": "N",
                 "type": "P",
-                "val": "2",
-                "min": "0",
+                "val": "21",
+                "min": "NA",
                 "max": "NA",
                 "descr": "Number of inputs",
             },
         ],
         "ports": [
             {
-                "name": "sel",
+                "name": "sel_i",
                 "descr": "Selector interface",
                 "signals": [
                     {
@@ -35,20 +34,41 @@ def setup(py_params_dict):
                 ],
             },
             {
-                "name": "io",
-                "descr": "Data interface",
+                "name": "data_i",
+                "descr": "Input port",
                 "signals": [
                     {
                         "name": "data",
-                        "width": "(N*DATA_W)",
+                        "width": "N*DATA_W",
                         "direction": "input",
                     },
+                ],
+            },
+            {
+                "name": "data_o",
+                "descr": "Output port",
+                "signals": [
                     {
                         "name": "data",
                         "width": "DATA_W",
                         "direction": "output",
                     },
                 ],
+            },
+        ],
+        "snippets": [
+            {
+                "verilog_code": """
+            integer input_sel;
+        always @* begin
+            data_o = {DATA_W{1'b0}};
+            for (input_sel = 0; input_sel < N; input_sel = input_sel + 1) begin : gen_mux
+                if (input_sel == sel_i) begin
+                     data_o = data_i[input_sel*DATA_W+:DATA_W];
+                end
+            end
+        end   
+            """,
             },
         ],
     }
