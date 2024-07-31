@@ -150,7 +150,7 @@ def setup(py_params_dict):
             "name": "mux_wstrb_data_i",
             "descr": "Input of wstrb mux",
             "signals": [
-                {"name": "mux_wstrb_input", "width": NUM_INPUTS * (DATA_W / 8)},
+                {"name": "mux_wstrb_input", "width": NUM_INPUTS * int(DATA_W / 8)},
             ],
         },
         {
@@ -278,7 +278,7 @@ def setup(py_params_dict):
             "core_name": "iob_mux",
             "instance_name": "iob_mux_wstrb",
             "parameters": {
-                "DATA_W": DATA_W / 8,
+                "DATA_W": int(DATA_W / 8),
                 "N": NUM_INPUTS,
             },
             "connect": {

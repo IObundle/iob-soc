@@ -21,8 +21,6 @@ def setup(py_params_dict):
 
     MEM_ADDR_W = py_params_dict["mem_addr_w"] if "mem_addr_w" in py_params_dict else 24
 
-    BOOT_BIT = py_params_dict["boot_bit"] if "boot_bit" in py_params_dict else 20
-
     # Number of peripherals
     N_SLAVES = 2
 
@@ -89,14 +87,6 @@ def setup(py_params_dict):
                 "min": "1",
                 "max": "32",
                 "descr": "Address selection bit for external memory",
-            },
-            {
-                "name": "B",
-                "type": "M",
-                "val": BOOT_BIT,
-                "min": "1",
-                "max": "32",
-                "descr": "Address selection bit for boot ROM",
             },
             # parameters
             {
@@ -320,7 +310,7 @@ def setup(py_params_dict):
                 "type": "iob",
                 "wire_prefix": "cpu_pbus_",
                 "DATA_W": DATA_W,
-                "ADDR_W": ADDR_W,
+                "ADDR_W": ADDR_W - 2,
             },
             "descr": "cpu peripheral bus",
         },
@@ -339,7 +329,7 @@ def setup(py_params_dict):
                 "file_prefix": "iob_soc_int_mem_i_",
                 "wire_prefix": "int_mem_i_",
                 "DATA_W": DATA_W,
-                "ADDR_W": ADDR_W,
+                "ADDR_W": ADDR_W - 1,
             },
             "descr": "iob-soc internal memory instruction interface",
         },
@@ -361,7 +351,7 @@ def setup(py_params_dict):
                     "file_prefix": "iob_soc_int_d_",
                     "wire_prefix": "int_d_",
                     "DATA_W": DATA_W,
-                    "ADDR_W": ADDR_W,
+                    "ADDR_W": ADDR_W - 1,
                 },
                 "descr": "iob-soc internal data interface",
             },
@@ -374,7 +364,7 @@ def setup(py_params_dict):
                 "file_prefix": "iob_soc_int_mem_d_",
                 "wire_prefix": "int_mem_d_",
                 "DATA_W": DATA_W,
-                "ADDR_W": ADDR_W,
+                "ADDR_W": ADDR_W - 2,
             },
             "descr": "iob-soc internal memory data interface",
         },
@@ -389,7 +379,7 @@ def setup(py_params_dict):
                     "file_prefix": "iob_soc_ext_mem_i_",
                     "wire_prefix": "ext_mem_i_",
                     "DATA_W": DATA_W,
-                    "ADDR_W": ADDR_W,
+                    "ADDR_W": ADDR_W - 1,
                 },
                 "descr": "iob-soc external memory instruction interface",
             },
@@ -400,7 +390,7 @@ def setup(py_params_dict):
                     "file_prefix": "iob_soc_ext_mem_d_",
                     "wire_prefix": "ext_mem_d_",
                     "DATA_W": DATA_W,
-                    "ADDR_W": ADDR_W,
+                    "ADDR_W": ADDR_W - 1,
                 },
                 "descr": "iob-soc external memory data interface",
             },
@@ -437,7 +427,7 @@ def setup(py_params_dict):
                 "wire_prefix": "uart_swreg_",
                 "DATA_W": DATA_W,
                 # TODO: How to trim ADDR_W to match swreg addr width?
-                "ADDR_W": ADDR_W,
+                "ADDR_W": ADDR_W - 3,
             },
             "descr": "UART swreg bus",
         },
@@ -448,7 +438,7 @@ def setup(py_params_dict):
                 "file_prefix": "iob_soc_timer_swreg_",
                 "wire_prefix": "timer_swreg_",
                 "DATA_W": DATA_W,
-                "ADDR_W": ADDR_W,
+                "ADDR_W": ADDR_W - 3,
             },
             "descr": "TIMER swreg bus",
         },
@@ -487,7 +477,7 @@ def setup(py_params_dict):
                     "output_1": "ext_mem_i",
                 },
                 "num_outputs": 2,
-                "addr_w": ADDR_W - 1,
+                "addr_w": ADDR_W,
             },
             {
                 "core_name": "iob_split",
@@ -501,7 +491,7 @@ def setup(py_params_dict):
                     "output_1": "ext_mem_d",
                 },
                 "num_outputs": 2,
-                "addr_w": ADDR_W - 1,
+                "addr_w": ADDR_W,
             },
         ]
     attributes_dict["blocks"] += [
@@ -526,7 +516,6 @@ def setup(py_params_dict):
             "INIT_MEM": int(INIT_MEM),
             "addr_w": ADDR_W,
             "data_w": DATA_W,
-            "boot_bit": BOOT_BIT,
         },
     ]
     if USE_SPRAM:
@@ -580,7 +569,7 @@ def setup(py_params_dict):
                 "output_1": "cpu_pbus",
             },
             "num_outputs": 2,
-            "addr_w": ADDR_W - 2,
+            "addr_w": ADDR_W - 1,
         },
         {
             "core_name": "iob_split",
@@ -595,7 +584,7 @@ def setup(py_params_dict):
                 # TODO: Connect peripherals automatically
             },
             "num_outputs": N_SLAVES,
-            "addr_w": ADDR_W - 3,
+            "addr_w": ADDR_W - 2,
         },
     ]
     peripherals = [

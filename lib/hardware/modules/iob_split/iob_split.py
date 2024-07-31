@@ -158,7 +158,7 @@ def setup(py_params_dict):
             "name": "demux_wstrb_data_o",
             "descr": "Output of wstrb demux",
             "signals": [
-                {"name": "demux_wstrb_output", "width": NUM_OUTPUTS * (DATA_W / 8)},
+                {"name": "demux_wstrb_output", "width": NUM_OUTPUTS * int(DATA_W / 8)},
             ],
         },
         # Mux signals
@@ -264,7 +264,7 @@ def setup(py_params_dict):
             "core_name": "iob_demux",
             "instance_name": "iob_demux_wstrb",
             "parameters": {
-                "DATA_W": DATA_W / 8,
+                "DATA_W": int(DATA_W / 8),
                 "N": NUM_OUTPUTS,
             },
             "connect": {
@@ -328,7 +328,7 @@ def setup(py_params_dict):
     assign output{port_idx}_iob_valid_o = demux_valid_output[{port_idx}+:1];
     assign output{port_idx}_iob_addr_o = demux_addr_output[{port_idx*ADDR_W}+:{ADDR_W-NBITS}];
     assign output{port_idx}_iob_wdata_o = demux_wdata_output[{port_idx*DATA_W}+:{DATA_W}];
-    assign output{port_idx}_iob_wstrb_o = demux_wstrb_output[{port_idx*(DATA_W/8)}+:{DATA_W/8}];
+    assign output{port_idx}_iob_wstrb_o = demux_wstrb_output[{port_idx*int(DATA_W/8)}+:{int(DATA_W/8)}];
 """
     verilog_code += "\n"
     # Connect muxer inputs

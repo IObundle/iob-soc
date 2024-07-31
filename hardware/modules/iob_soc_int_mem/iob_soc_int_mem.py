@@ -7,8 +7,6 @@ def setup(py_params_dict):
     )
     INIT_MEM = py_params_dict["INIT_MEM"] if "INIT_MEM" in py_params_dict else False
 
-    BOOT_BIT = py_params_dict["boot_bit"] if "boot_bit" in py_params_dict else False
-
     attributes_dict = {
         "original_name": "iob_soc_int_mem",
         "name": "iob_soc_int_mem",
@@ -82,7 +80,7 @@ def setup(py_params_dict):
                     "subtype": "slave",
                     "port_prefix": "d_",
                     "DATA_W": DATA_W,
-                    "ADDR_W": ADDR_W,
+                    "ADDR_W": ADDR_W - 2,
                 },
                 "descr": "Data bus",
             },
@@ -156,7 +154,7 @@ def setup(py_params_dict):
                 "type": "iob",
                 "wire_prefix": "boot_ctr_",
                 "DATA_W": DATA_W,
-                "ADDR_W": ADDR_W,
+                "ADDR_W": ADDR_W - 3,
             },
             "descr": "Boot controller IOb native interface wires",
         },
@@ -166,7 +164,7 @@ def setup(py_params_dict):
                 "type": "iob",
                 "wire_prefix": "ram_d_",
                 "DATA_W": DATA_W,
-                "ADDR_W": ADDR_W,
+                "ADDR_W": ADDR_W - 3,
             },
             "descr": "Ram IOb native interface wires",
         },
@@ -176,7 +174,7 @@ def setup(py_params_dict):
                 "type": "iob",
                 "wire_prefix": "ram_w_",
                 "DATA_W": DATA_W,
-                "ADDR_W": ADDR_W,
+                "ADDR_W": ADDR_W - 1,
             },
             "descr": "iob-soc internal memory sram write interface",
         },
@@ -186,7 +184,7 @@ def setup(py_params_dict):
                 "type": "iob",
                 "wire_prefix": "ram_r_",
                 "DATA_W": DATA_W,
-                "ADDR_W": ADDR_W,
+                "ADDR_W": ADDR_W - 1,
             },
             "descr": "iob-soc internal ram r bus",
         },
@@ -214,7 +212,7 @@ def setup(py_params_dict):
                 "output_1": "boot_ctr_bus",
             },
             "num_outputs": 2,
-            "addr_w": BOOT_BIT,
+            "addr_w": ADDR_W - 2,
         },
         {
             "core_name": "iob_merge",
@@ -233,11 +231,11 @@ def setup(py_params_dict):
     ]
     attributes_dict["snippets"] = [
         {
-            "verilog_code": """
+            "verilog_code": f"""
     assign always_low = 1'b0;
 
     //modified ram address during boot
-    wire [SRAM_ADDR_W-3:0] ram_d_addr;
+    wire [{ADDR_W-3}-1:0] ram_d_addr;
 
 
 """
@@ -271,7 +269,7 @@ def setup(py_params_dict):
     iob_soc_boot_ctr #(
        .HEXFILE       ({{BOOT_HEXFILE, ".hex"}}),
        .DATA_W        ({DATA_W}),
-       .ADDR_W        ({ADDR_W}),
+       .ADDR_W        ({ADDR_W-1}),
        .BOOTROM_ADDR_W(BOOTROM_ADDR_W),
        .SRAM_ADDR_W   (SRAM_ADDR_W)
     ) boot_ctr0 (
@@ -374,7 +372,7 @@ def setup(py_params_dict):
 
       //data bus
       .d_valid_i(ram_d_iob_valid),
-      .d_addr_i  (ram_d_addr),
+      .d_addr_i  (ram_d_addr[SRAM_ADDR_W-3:0]),
       .d_wdata_i (ram_d_iob_wdata),
       .d_wstrb_i (ram_d_iob_wstrb),
       .d_rdata_o (),
