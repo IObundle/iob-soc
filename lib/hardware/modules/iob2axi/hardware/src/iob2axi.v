@@ -1,7 +1,6 @@
 `timescale 1ns / 1ps
 
-`define IOB_MIN(a, b) (((a) < (b)) ? (a) : (b))
-
+`include "iob_functions.vs"
 
 module iob2axi #(
     parameter ADDR_W     = 0,
@@ -218,7 +217,7 @@ module iob2axi #(
   reg [WADDR_W-1:0] addr_int_next;
   wire [WADDR_W-1:0] addr4k = {addr_int[ADDR_W-1:12], {(12 - (ADDR_W - WADDR_W)) {1'b1}}};
   wire [WADDR_W-1:0] addrRem = addr_int[ADDR_W-1-:WADDR_W] + length_int - 1'b1;
-  wire [WADDR_W-1:0] minAddr = `IOB_MIN(addr4k, addrRem);
+  wire [WADDR_W-1:0] minAddr = iob_min(addr4k, addrRem);
 
   always @(posedge clk_i, posedge rst_i) begin
     if (rst_i) begin
