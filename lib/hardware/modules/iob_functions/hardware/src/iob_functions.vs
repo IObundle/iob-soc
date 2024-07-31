@@ -15,3 +15,21 @@ function [31:0] iob_min;
       else iob_min = b;
    end
 endfunction
+
+function [31:0] iob_cshift_left;
+   input [31:0] DATA;
+   input integer DATA_W;
+   input integer SHIFT;
+   begin
+      iob_cshift_left = (DATA << SHIFT) | (DATA >> (DATA_W - SHIFT));
+   end
+endfunction
+
+function [31:0] iob_cshift_right;
+   input [31:0] DATA;
+   input integer DATA_W;
+   input integer SHIFT;
+   begin
+      iob_cshift_right = (DATA >> SHIFT) | (DATA << (DATA_W - SHIFT));
+   end
+endfunction
