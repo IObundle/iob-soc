@@ -271,7 +271,7 @@ def get_periphs_id_as_macros(peripherals_list):
     Return list of dictionaries representing macros of each peripheral instance with their ID assigned.
     """
     macro_list = []
-    for idx, instance in enumerate(peripherals_list, 1):
+    for idx, instance in enumerate(peripherals_list):
         macro_list.append(
             {
                 "name": instance["instance_name"],
@@ -287,14 +287,12 @@ def get_periphs_id_as_macros(peripherals_list):
 
 # Return amount of system peripherals
 def get_n_periphs(peripherals_list):
-    # +1 because the internal memory is not in the peripherals_list. int_mem is implicit peripheral. It is treated as a peripheral by the internal signals. (might change in the future)
-    return str(len(peripherals_list) + 1)
+    return str(len(peripherals_list))
 
 
 # Return bus width required to address all peripherals
 def get_n_periphs_w(peripherals_list):
-    # +1 because the internal memory is not in the peripherals_list. int_mem is implicit peripheral. It is treated as a peripheral by the internal signals. (might change in the future)
-    i = len(peripherals_list) + 1
+    i = len(peripherals_list)
     if not i:
         return str(0)
     else:
@@ -409,7 +407,7 @@ def create_periphs_tmp(name, addr_w, peripherals_list, out_file):
     for instance in peripherals_list:
         instance_name = instance["instance_name"]
         template_contents.extend(
-            f"#define {instance_name}_BASE ({name.upper()}_{instance_name}<<({addr_w}-1-{name.upper()}_N_SLAVES_W))\n"
+            f"#define {instance_name}_BASE (PBUS_BASE + ({name.upper()}_{instance_name}<<(P_BIT-{name.upper()}_N_SLAVES_W)))\n"
         )
 
     os.makedirs(os.path.dirname(out_file), exist_ok=True)

@@ -80,14 +80,6 @@ def setup(py_params_dict):
                 "max": "1",
                 "descr": "Use compressed CPU instructions",
             },
-            {  # Needed for software
-                "name": "E",
-                "type": "M",
-                "val": "31",
-                "min": "1",
-                "max": "32",
-                "descr": "Address selection bit for external memory",
-            },
             # parameters
             {
                 "name": "BOOTROM_ADDR_W",

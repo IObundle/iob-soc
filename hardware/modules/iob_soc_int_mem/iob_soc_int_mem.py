@@ -250,7 +250,7 @@ def setup(py_params_dict):
     assign ram_d_iob_rdata = sram_d_iob_rdata_i;
 
     assign sram_i_iob_valid_o  = ram_i_iob_valid;
-    assign sram_i_iob_addr_o   = ram_i_iob_addr;
+    assign sram_i_iob_addr_o   = ram_i_iob_addr[SRAM_ADDR_W-1:2];
     assign sram_i_iob_wdata_o  = ram_i_iob_wdata;
     assign sram_i_iob_wstrb_o  = ram_i_iob_wstrb;
 
