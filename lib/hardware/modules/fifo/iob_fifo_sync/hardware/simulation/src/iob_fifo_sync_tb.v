@@ -1,21 +1,20 @@
 `timescale 1ns / 1ps
 
-/* TODO: re-implement these tests 
+/* TODO: re-implement these tests
 -       $(VLOG) -DW_DATA_W=8 -DR_DATA_W=8 $(wildcard $(BUILD_VSRC_DIR)*.v) &&\
 -       $(VLOG) -DW_DATA_W=32 -DR_DATA_W=8 $(wildcard $(BUILD_VSRC_DIR)*.v) &&\
 -       $(VLOG) -DW_DATA_W=8 -DR_DATA_W=32 $(wildcard $(BUILD_VSRC_DIR)*.v) &&\
 -       $(VLOG) -DW_DATA_W=8 -DR_DATA_W=8 $(wildcard $(BUILD_VSRC_DIR)*.v) &&\
 */
 
-`define IOB_MAX(a, b) (((a) > (b)) ? (a) : (b))
-`define IOB_MIN(a, b) (((a) < (b)) ? (a) : (b))
-
 module iob_fifo_sync_tb;
+
+  `include "iob_functions.vs"
 
   localparam W_DATA_W = 8;
   localparam R_DATA_W = 8;
-  localparam MAXDATA_W = `IOB_MAX(W_DATA_W, R_DATA_W);
-  localparam MINDATA_W = `IOB_MIN(W_DATA_W, R_DATA_W);
+  localparam MAXDATA_W = iob_max(W_DATA_W, R_DATA_W);
+  localparam MINDATA_W = iob_min(W_DATA_W, R_DATA_W);
   localparam ADDR_W = 10;
   localparam R = MAXDATA_W / MINDATA_W;
   localparam MINADDR_W = ADDR_W - $clog2(R);  //lower ADDR_W (higher DATA_W)
