@@ -1,7 +1,5 @@
 `timescale 1ns / 1ps
 
-`include "iob_functions.vs"
-
 module iob_asym_converter #(
     parameter W_DATA_W = 21,
     parameter R_DATA_W = 21,
@@ -16,6 +14,8 @@ module iob_asym_converter #(
 ) (
     `include "iob_asym_converter_io.vs"
 );
+
+  `include "iob_functions.vs"
 
   //Data is valid after read enable
   wire r_data_valid_reg;

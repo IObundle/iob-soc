@@ -1,7 +1,5 @@
 `timescale 1ns / 1ps
 
-`include "iob_functions.vs"
-
 module iob_bfifo #(
     parameter DATA_W = 21
 ) (
@@ -19,6 +17,8 @@ module iob_bfifo #(
     output [        DATA_W-1:0] rdata_o,
     output [$clog2(2*DATA_W):0] rlevel_o
 );
+
+  `include "iob_functions.vs"
 
   localparam BUFFER_SIZE = 2 * DATA_W;
   //data register

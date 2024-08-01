@@ -1,7 +1,5 @@
 `timescale 1ns / 1ps
 
-`include "iob_functions.vs"
-
 module iob2axi #(
     parameter ADDR_W     = 0,
     parameter DATA_W     = 0,
@@ -34,6 +32,8 @@ module iob2axi #(
     `include "m_axi_m_port.vs"
     `include "clk_rst_s_port.vs"
 );
+
+  `include "iob_functions.vs"
 
   wire run_int;
   wire run_wr, run_rd;

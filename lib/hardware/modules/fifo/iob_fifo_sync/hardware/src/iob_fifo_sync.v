@@ -15,6 +15,8 @@ module iob_fifo_sync #(
     `include "iob_fifo_sync_io.vs"
 );
 
+  `include "iob_functions.vs"
+
   localparam ADDR_W_DIFF = $clog2(R);
   localparam [ADDR_W:0] FIFO_SIZE = {1'b1, {ADDR_W{1'b0}}};  //in bytes
 

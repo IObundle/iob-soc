@@ -9,6 +9,8 @@
 
 module iob_fifo_sync_tb;
 
+  `include "iob_functions.vs"
+
   localparam W_DATA_W = 8;
   localparam R_DATA_W = 8;
   localparam MAXDATA_W = iob_max(W_DATA_W, R_DATA_W);

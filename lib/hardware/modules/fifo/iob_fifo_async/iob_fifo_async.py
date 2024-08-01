@@ -199,6 +199,10 @@ def setup(py_params_dict):
                 "core_name": "iob_asym_converter",
                 "instance_name": "iob_asym_converter_inst",
             },
+            {
+                "core_name": "iob_functions",
+                "instance_name": "iob_functions_inst",
+            },
             # For simulation
             {
                 "core_name": "iob_ram_t2p",

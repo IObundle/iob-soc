@@ -16,6 +16,8 @@ module iob_fifo_async #(
     `include "iob_fifo_async_io.vs"
 );
 
+  `include "iob_functions.vs"
+
   localparam [ADDR_W:0] FIFO_SIZE = {1'b1, {ADDR_W{1'b0}}};  //in bytes
 
   //binary read addresses on both domains

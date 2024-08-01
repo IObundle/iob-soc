@@ -17,6 +17,8 @@
 
 module iob_fifo_async_tb;
 
+  `include "iob_functions.vs"
+
   localparam TESTSIZE = `TESTSIZE;  //bytes
   localparam W_DATA_W = 8;
   localparam R_DATA_W = 8;
