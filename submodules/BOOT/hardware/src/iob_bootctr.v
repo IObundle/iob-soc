@@ -1,6 +1,5 @@
 `timescale 1 ns / 1 ps
 
-`include "iob_utils.vh"
 `include "iob_bootctr_conf.vh"
 `include "iob_bootctr_swreg_def.vh"
 `include "iob_soc_conf.vh"
