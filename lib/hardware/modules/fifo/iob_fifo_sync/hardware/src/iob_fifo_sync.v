@@ -30,7 +30,7 @@ module iob_fifo_sync #(
       .DATA_W (W_ADDR_W),
       .RST_VAL({W_ADDR_W{1'd0}})
   ) w_addr_cnt0 (
-      `include "clk_en_rst_s_s_portmap.vs"
+      `include "iob_fifo_sync_clk_en_rst_s_s_portmap.vs"
 
       .rst_i (rst_i),
       .en_i  (w_en_int),
@@ -46,7 +46,7 @@ module iob_fifo_sync #(
       .DATA_W (R_ADDR_W),
       .RST_VAL({R_ADDR_W{1'd0}})
   ) r_addr_cnt0 (
-      `include "clk_en_rst_s_s_portmap.vs"
+      `include "iob_fifo_sync_clk_en_rst_s_s_portmap.vs"
 
       .rst_i (rst_i),
       .en_i  (r_en_int),
@@ -66,7 +66,7 @@ module iob_fifo_sync #(
       .DATA_W (ADDR_W + 1),
       .RST_VAL({(ADDR_W + 1) {1'd0}})
   ) level_reg0 (
-      `include "clk_en_rst_s_s_portmap.vs"
+      `include "iob_fifo_sync_clk_en_rst_s_s_portmap.vs"
 
       .rst_i(rst_i),
 
@@ -95,7 +95,7 @@ module iob_fifo_sync #(
       .DATA_W (1),
       .RST_VAL(1'd1)
   ) r_empty_reg0 (
-      `include "clk_en_rst_s_s_portmap.vs"
+      `include "iob_fifo_sync_clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_i),
       .data_i(r_empty_nxt),
       .data_o(r_empty_o)
@@ -108,7 +108,7 @@ module iob_fifo_sync #(
       .DATA_W (1),
       .RST_VAL(1'd0)
   ) w_full_reg0 (
-      `include "clk_en_rst_s_s_portmap.vs"
+      `include "iob_fifo_sync_clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_i),
       .data_i(w_full_nxt),
       .data_o(w_full_o)
@@ -127,7 +127,7 @@ module iob_fifo_sync #(
       .ext_mem_r_en_o  (ext_mem_r_en_o),
       .ext_mem_r_addr_o(ext_mem_r_addr_o),
       .ext_mem_r_data_i(ext_mem_r_data_i),
-      `include "clk_en_rst_s_s_portmap.vs"
+      `include "iob_fifo_sync_clk_en_rst_s_s_portmap.vs"
       .rst_i           (rst_i),
       .w_addr_i        (w_addr),
       .w_en_i          (w_en_int),

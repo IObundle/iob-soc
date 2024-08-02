@@ -291,7 +291,7 @@ def setup(py_params_dict):
       .wtb_empty_i (1'b1),
       .wtb_empty_o (l2_wtb_empty),
       // AXI interface
-      `include "axi_m_m_portmap.vs"
+      `include "iob_soc_ext_mem_axi_m_m_portmap.vs"
       .clk_i       (clk_i),
       .cke_i       (cke_i),
       .arst_i      (arst_i)

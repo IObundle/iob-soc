@@ -126,26 +126,26 @@ module axis2axi_out #(
   end
 
   iob_reg_re #(BURST_W + 1, 0) axi_length_reg (
-      `include "clk_en_rst_s_s_portmap.vs"
+      `include "axis2axi_out_clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_i),
       .en_i  (state == BEGIN_LOCAL),
       .data_i(transfer_len),
       .data_o(arlen_int)
   );
   iob_reg_r #(AXI_ADDR_W, 0) address_reg (
-      `include "clk_en_rst_s_s_portmap.vs"
+      `include "axis2axi_out_clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_i),
       .data_i(next_address),
       .data_o(current_address)
   );
   iob_reg_r #(AXI_ADDR_W, 0) length_reg (
-      `include "clk_en_rst_s_s_portmap.vs"
+      `include "axis2axi_out_clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_i),
       .data_i(next_length),
       .data_o(current_length)
   );
   iob_reg_r #(2, 0) state_reg (
-      `include "clk_en_rst_s_s_portmap.vs"
+      `include "axis2axi_out_clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_i),
       .data_i(state_nxt),
       .data_o(state)

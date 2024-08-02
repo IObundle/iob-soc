@@ -115,6 +115,7 @@ def setup(py_params_dict):
                 "type": "iob",
                 "subtype": "slave",
                 "port_prefix": "uart_",
+                "ADDR_W": 3,
             },
             "descr": "Testbench uart swreg interface",
         },
