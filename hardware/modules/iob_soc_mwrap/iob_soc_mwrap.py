@@ -4,8 +4,8 @@ import iob_soc
 
 
 def setup(py_params_dict):
-    INIT_MEM = py_params_dict["INIT_MEM"] if "INIT_MEM" in py_params_dict else False
-    USE_SPRAM = py_params_dict["USE_SPRAM"] if "USE_SPRAM" in py_params_dict else False
+    INIT_MEM = py_params_dict["init_mem"] if "init_mem" in py_params_dict else False
+    USE_SPRAM = py_params_dict["use_spram"] if "use_spram" in py_params_dict else False
     DATA_W = py_params_dict["data_w"] if "data_w" in py_params_dict else 32
     iob_soc_attr = iob_soc.setup(py_params_dict)
 

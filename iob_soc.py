@@ -12,6 +12,7 @@ def setup(py_params_dict):
         "init_mem": False,
         "use_extmem": False,
         "use_spram": False,
+        "use_ethernet": False,
         "addr_w": 32,
         "data_w": 32,
         "mem_addr_w": 24,
@@ -678,6 +679,10 @@ def setup(py_params_dict):
             "instance_name": "iob_soc_sim_wrapper",
             "instantiate": False,
             "purpose": "simulation",
+            "init_mem": params["init_mem"],
+            "use_extmem": params["use_extmem"],
+            "use_ethernet": params["use_ethernet"],
+            "use_spram": params["use_spram"],
             "data_w": params["data_w"],
         },
     ]
