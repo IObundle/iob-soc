@@ -17,7 +17,7 @@ def setup(py_params_dict):
     USE_SPRAM = py_params_dict["USE_SPRAM"] if "USE_SPRAM" in py_params_dict else False
 
     # Number of peripherals + Bootctr
-    N_SLAVES = 2 + 1
+    N_SLAVES = 3 + 1
 
     attributes_dict = {
         "original_name": "iob_soc",
@@ -414,6 +414,20 @@ def setup(py_params_dict):
             },
             # Verilog Snippets for other modules
         ]
+    # Boot
+    attributes_dict["wires"] += [
+        {
+            "name": "bootctr_i",
+            "interface": {
+                "type": "iob",
+                "file_prefix": "iob_soc_int_i_",
+                "wire_prefix": "bootctr_i_",
+                "DATA_W": "DATA_W",
+                "ADDR_W": "ADDR_W",
+            },
+            "descr": "iob-soc internal data interface",
+        },
+    ]
     attributes_dict["wires"] += [
         # Split (for other modules?)
         {
@@ -538,7 +552,7 @@ def setup(py_params_dict):
             "connect": {
                 "clk_en_rst": "clk_en_rst",
                 "general": "int_mem_general",
-                "i_bus": "int_mem_i" if USE_EXTMEM else "cpu_i",
+                "i_bus": "int_mem_i" if USE_EXTMEM else "bootctr_i",
                 "d_bus": "int_mem_d",
                 "rom_bus": "rom_bus",
             },
@@ -602,6 +616,7 @@ def setup(py_params_dict):
                 "output_0": "int_mem_d",
                 "output_1": "uart_swreg",
                 "output_2": "timer_swreg",
+                "output_3": "bootctr_swreg",
                 # TODO: Connect peripherals automatically
             },
             "num_outputs": N_SLAVES,
@@ -635,6 +650,9 @@ def setup(py_params_dict):
             "connect": {
                 "clk_en_rst": "clk_en_rst",
                 "iob": "bootctr_swreg",
+                "cpu_i_bus": "cpu_i",
+                "bootctr_i_bus": "bootctr_i",
+                "int_mem_i_bus": "int_mem_i",
             },
         },
     ]
