@@ -57,6 +57,28 @@ def setup(py_params_dict):
                 },
                 "descr": "Clock and reset",
             },
+            {
+                "name": "bootctr_i_bus",
+                "interface": {
+                    "type": "iob",
+                    "subtype": "master",
+                    "port_prefix": "bootctr_i_",
+                    "DATA_W": "DATA_W",
+                    "ADDR_W": "ADDR_W",
+                },
+                "descr": "Instruction bus",
+            },
+            {
+                "name": "cpu_i_bus",
+                "interface": {
+                    "type": "iob",
+                    "subtype": "slave",
+                    "port_prefix": "cpu_i_",
+                    "DATA_W": "DATA_W",
+                    "ADDR_W": "ADDR_W",
+                },
+                "descr": "Instruction bus",
+            },
         ],
         "csrs": [
             {

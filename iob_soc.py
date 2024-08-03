@@ -652,7 +652,6 @@ def setup(py_params_dict):
                 "iob": "bootctr_swreg",
                 "cpu_i_bus": "cpu_i",
                 "bootctr_i_bus": "bootctr_i",
-                "int_mem_i_bus": "int_mem_i",
             },
         },
     ]
