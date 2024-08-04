@@ -291,6 +291,8 @@ def setup(py_params_dict):
                 {"name": "clk"},
                 {"name": "cke"},
                 {"name": "cpu_reset", "width": "1"},
+                {"name": "int_mem_cpu_reset", "width": "1"},
+                {"name": "boot_ctr_cpu_reset", "width": "1"},
             ],
         },
         {
@@ -347,7 +349,14 @@ def setup(py_params_dict):
             "descr": "General signals for internal memory",
             "signals": [
                 {"name": "boot"},
-                {"name": "cpu_reset"},
+                {"name": "int_mem_cpu_reset"},
+            ],
+        },
+        {
+            "name": "bootctr",
+            "descr": "Boot controller interface",
+            "signals": [
+                {"name": "bootctr_cpu_reset", "width": "1"},
             ],
         },
     ]
@@ -652,6 +661,7 @@ def setup(py_params_dict):
                 "iob": "bootctr_swreg",
                 "cpu_i_bus": "cpu_i",
                 "bootctr_i_bus": "bootctr_i",
+                "swregs_read_out": "bootctr",
             },
         },
     ]
@@ -732,6 +742,13 @@ def setup(py_params_dict):
         {
             "core_name": "printf",
             "instance_name": "printf_inst",
+        },
+    ]
+    attributes_dict["snippets"] = [
+        {
+            "verilog_code": """
+assign cpu_reset = int_mem_cpu_reset | bootctr_cpu_reset;
+            """,
         },
     ]
 
