@@ -88,6 +88,7 @@ module iob_bootctr #(
         .addr_i(iob_addr_i[2 +: BOOT_ROM_ADDR_W]), // Equivalent to what would be (iob_addr_i >> 2)[0 +: 10]
         .r_data_o(ROM_rdata_rd)
     );
+    assign ROM_rready_rd = 1'b1;
     assign cpu_i_iob_ready_o = 1'b1;
 
     iob_reg #(
