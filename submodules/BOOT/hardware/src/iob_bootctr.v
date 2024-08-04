@@ -12,6 +12,8 @@ module iob_bootctr #(
 
     `include "iob_bootctr_swreg_inst.vs"
 
+    wire [2-1:0] CTR_r_o;
+
     assign bootctr_i_iob_valid_o  = cpu_i_iob_valid_i;
     assign bootctr_i_iob_addr_o   = cpu_i_iob_addr_i;
     assign bootctr_i_iob_wdata_o  = cpu_i_iob_wdata_i;
@@ -20,6 +22,95 @@ module iob_bootctr #(
     assign cpu_i_iob_rvalid_o     = bootctr_i_iob_rvalid_i;
     assign cpu_i_iob_rdata_o      = bootctr_i_iob_rdata_i;
     assign cpu_i_iob_ready_o      = bootctr_i_iob_ready_i;
+
+
+
+    wire cpu_1st_rst;
+    iob_reg #(
+        .DATA_W (1),
+        .RST_VAL(0)
+    ) cpu_1st_rst_store (
+        .clk_i (clk_i),
+        .arst_i(arst_i),
+        .cke_i (cke_i),
+        .data_i(1'b1),
+        .data_o(cpu_1st_rst)
+    );
+    // Can't reset CTR_r_o ever again. Only once. Else it'll forget in which boot stage it is. Only the CPU can change
+    // it afterwards.
+    iob_reg_e #(
+        .DATA_W (`IOB_BOOTCTR_CTR_W),
+        .RST_VAL(0)
+    ) ctr_r (
+        .clk_i (clk_i),
+        .arst_i(arst_i && ~cpu_1st_rst),
+        .cke_i (cke_i),
+        .en_i  (iob_valid_i),
+        .data_i(CTR_wr),
+        .data_o(CTR_r_o)
+    );
+
+   iob_pulse_gen #(
+      .START   (0),
+      .DURATION(100)
+   ) reset_pulse (
+      .clk_i  (clk_i),
+      .arst_i (arst_i),
+      .cke_i  (cke_i),
+      .start_i(CPU_RST_wr | arst_i),
+      .pulse_o(CPU_RST_r_o)
+   );
+
+    //
+    //INSTANTIATE BOOT ROM
+    //
+    iob_rom_sp #(
+        .DATA_W(DATA_W),
+        .ADDR_W(PREBOOT_ROM_ADDR_W),
+        .HEXFILE("iob_soc_preboot.hex")
+    ) preboot_rom (
+        .clk_i(clk_i),
+
+        //instruction memory interface
+        .r_en_i  (bootctr_i_iob_valid_o),
+        .addr_i  (bootctr_i_iob_addr_o[0 +: PREBOOT_ROM_ADDR_W]),
+        .r_data_o(bootctr_i_iob_rdata_i)
+    );
+    iob_rom_sp #(
+        .DATA_W(DATA_W),
+        .ADDR_W(BOOT_ROM_ADDR_W),
+        .HEXFILE("iob_soc_boot.hex")
+    ) boot_rom (
+        .clk_i(clk_i),
+
+        //instruction memory interface
+        .r_en_i(ROM_ren_rd),
+        .addr_i(iob_addr_i[2 +: BOOT_ROM_ADDR_W]), // Equivalent to what would be (iob_addr_i >> 2)[0 +: 10]
+        .r_data_o(ROM_rdata_rd)
+    );
+    assign cpu_i_iob_ready_o = 1'b1;
+
+    iob_reg #(
+        .DATA_W (1),
+        .RST_VAL(0)
+    ) rom_rvalid_r (
+        .clk_i (clk_i),
+        .cke_i (cke_i),
+        .arst_i(arst_i),
+        .data_i(iob_valid_i),
+        .data_o(ROM_rvalid_rd)
+    );
+
+    iob_reg #(
+        .DATA_W (1),
+        .RST_VAL(0)
+    ) ibus_rvalid_r (
+        .clk_i (clk_i),
+        .cke_i (cke_i),
+        .arst_i(arst_i),
+        .data_i(bootctr_i_iob_valid_o),
+        .data_o(bootctr_i_iob_rvalid_i)
+    );
 
 
 endmodule
