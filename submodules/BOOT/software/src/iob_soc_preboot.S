@@ -24,7 +24,7 @@ _start:
 
 copy_loop:
   lw x4, 0(x2)
-  sw x4, 0(x4)
+  sw x4, 0(x3)
   addi x2, x2, 4
   addi x3, x3, 4
   addi x1, x1, -1
