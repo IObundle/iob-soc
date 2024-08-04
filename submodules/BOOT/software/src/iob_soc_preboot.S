@@ -4,11 +4,11 @@
 
 // Can't include iob_bootctr_swreg.h because the assembler doesn't recognize stdint.h,
 // so define the constants here instead (these are address offsets).
-#define IOB_BOOTCTR_ROM 0
-#define IOB_BOOTCTR_CTR 0
-#define IOB_BOOTCTR_CPU_RST 1
+#define IOB_BOOTCTR_ROM_ADDR 0
+#define IOB_BOOTCTR_CTR_ADDR 16777216
+#define IOB_BOOTCTR_CPU_RST_ADDR 16777217
 
-#define BOOTROM (BOOTCTR0_BASE + IOB_BOOTCTR_ROM)
+#define BOOTROM (BOOTCTR0_BASE + IOB_BOOTCTR_ROM_ADDR)
 #define BOOTRAM ((1 << 31) + (1 << IOB_SOC_MEM_ADDR_W) - (1 << IOB_BOOTCTR_BOOT_ROM_ADDR_W))
 //#define BOOTRAM ((1 << 31) + (1 << IOB_SOC_MEM_ADDR_W))
 //#define BOOTRAM (1 << 31)
@@ -32,11 +32,11 @@ copy_loop:
 
 //reboot to run bootloader
 li s5, 1
-li s6, BOOTCTR0_BASE + IOB_BOOTCTR_CTR
+li s6, BOOTCTR0_BASE + IOB_BOOTCTR_CTR_ADDR
 sw s5, 0(s6)
 
 li s5, 1
-li s6, BOOTCTR0_BASE + IOB_BOOTCTR_CPU_RST
+li s6, BOOTCTR0_BASE + IOB_BOOTCTR_CPU_RST_ADDR
 sw s5, 0(s6)
 
 ebreak
