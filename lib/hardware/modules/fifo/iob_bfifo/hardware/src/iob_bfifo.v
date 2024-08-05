@@ -3,7 +3,7 @@
 module iob_bfifo #(
     parameter DATA_W = 21
 ) (
-    `include "clk_en_rst_s_port.vs"
+    `include "iob_bfifo_clk_en_rst_s_port.vs"
 
     input rst_i,
 
@@ -82,7 +82,7 @@ module iob_bfifo #(
       .DATA_W (BUFFER_SIZE),
       .RST_VAL({BUFFER_SIZE{1'b0}})
   ) data_reg_inst (
-      `include "clk_en_rst_s_s_portmap.vs"
+      `include "iob_bfifo_clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_i),
       .data_i(data_nxt),
       .data_o(data)
@@ -93,7 +93,7 @@ module iob_bfifo #(
       .DATA_W ($clog2(BUFFER_SIZE)),
       .RST_VAL({$clog2(BUFFER_SIZE) {1'b0}})
   ) rptr_reg (
-      `include "clk_en_rst_s_s_portmap.vs"
+      `include "iob_bfifo_clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_i),
       .data_i(rptr_nxt),
       .data_o(rptr)
@@ -104,7 +104,7 @@ module iob_bfifo #(
       .DATA_W ($clog2(BUFFER_SIZE)),
       .RST_VAL({$clog2(BUFFER_SIZE) {1'b0}})
   ) wptr_reg (
-      `include "clk_en_rst_s_s_portmap.vs"
+      `include "iob_bfifo_clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_i),
       .data_i(wptr_nxt),
       .data_o(wptr)
@@ -115,7 +115,7 @@ module iob_bfifo #(
       .DATA_W ($clog2(BUFFER_SIZE) + 1),
       .RST_VAL({$clog2(BUFFER_SIZE) + 1{1'b0}})
   ) level_reg (
-      `include "clk_en_rst_s_s_portmap.vs"
+      `include "iob_bfifo_clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_i),
       .data_i(level_nxt),
       .data_o(level)

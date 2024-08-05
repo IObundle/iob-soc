@@ -44,14 +44,10 @@ AXI_SIGNAL_NAMES = [
 
 
 def setup(py_params_dict):
-    INIT_MEM = py_params_dict["INIT_MEM"] if "INIT_MEM" in py_params_dict else False
-    USE_ETHERNET = (
-        py_params_dict["USE_ETHERNET"] if "USE_ETHERNET" in py_params_dict else False
-    )
-    USE_EXTMEM = (
-        py_params_dict["USE_EXTMEM"] if "USE_EXTMEM" in py_params_dict else False
-    )
-    iob_soc_attr = iob_soc.setup(py_params_dict)
+
+    params = py_params_dict["iob_soc_params"]
+
+    iob_soc_attr = iob_soc.setup(params)
 
     attributes_dict = {
         "original_name": "iob_soc_sim_wrapper",
@@ -114,11 +110,12 @@ def setup(py_params_dict):
                 "type": "iob",
                 "subtype": "slave",
                 "port_prefix": "uart_",
+                "ADDR_W": 3,
             },
             "descr": "Testbench uart swreg interface",
         },
     ]
-    if USE_ETHERNET:
+    if params["use_ethernet"]:
         attributes_dict["ports"] += [
             {
                 "name": "ethernet",
@@ -179,7 +176,7 @@ def setup(py_params_dict):
             ],
         },
     ]
-    if USE_ETHERNET:
+    if params["use_ethernet"]:
         attributes_dict["wires"] += [
             {
                 "name": "eth_axi",
@@ -215,7 +212,7 @@ def setup(py_params_dict):
                 ],
             },
         ]
-    if USE_EXTMEM:
+    if params["use_extmem"]:
         attributes_dict["wires"] += [
             {
                 "name": "memory_axi",
@@ -258,6 +255,7 @@ def setup(py_params_dict):
             }
             | {i["name"]: i["name"] for i in simwrap_wires},
             "purpose": "common",
+            "iob_soc_params": params,
         },
         {
             "core_name": "iob_uart",
@@ -269,7 +267,7 @@ def setup(py_params_dict):
             },
         },
     ]
-    if USE_ETHERNET:
+    if params["use_ethernet"]:
         attributes_dict["blocks"] += [
             {
                 "core_name": "iob_eth",
@@ -289,7 +287,7 @@ def setup(py_params_dict):
                 },
             },
         ]
-    if USE_EXTMEM:
+    if params["use_extmem"]:
         attributes_dict["blocks"] += [
             {
                 "core_name": "axi_interconnect",
@@ -322,15 +320,15 @@ def setup(py_params_dict):
                 },
             },
         ]
-        if INIT_MEM:
+        if params["init_mem"]:
             attributes_dict["blocks"][-1]["parameters"].update(
                 {
-                    "FILE": "init_ddr_contents.hex",
+                    "FILE": '"init_ddr_contents.hex"',
                     "FILE_SIZE": "2 ** (AXI_ADDR_W - 2)",
                 }
             )
     attributes_dict["snippets"] = []
-    if USE_ETHERNET:
+    if params["use_ethernet"]:
         attributes_dict["snippets"] += [
             {
                 "verilog_code": """
@@ -366,7 +364,7 @@ def setup(py_params_dict):
             },
         ]
 
-    if USE_EXTMEM:
+    if params["use_extmem"]:
         # Connect all IOb-SoC AXI interfaces to interconnect
         verilog_code = "    // Connect all IOb-SoC AXI interfaces to interconnect\n"
         for sig_name in AXI_SIGNAL_NAMES:
@@ -375,7 +373,7 @@ def setup(py_params_dict):
                 prefix = ""
                 if "wire_prefix" in wire["interface"]:
                     prefix = wire["interface"]["wire_prefix"]
-                verilog_code += f"{prefix}_axi_{sig_name}, "
+                verilog_code += f"{prefix}axi_{sig_name}, "
             verilog_code = verilog_code[:-2] + "};\n"
         attributes_dict["snippets"] += [
             {

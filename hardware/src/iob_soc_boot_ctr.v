@@ -30,7 +30,7 @@ module iob_soc_boot_ctr #(
     output [BOOTROM_ADDR_W-3:0] rom_r_addr_o,
     input  [        DATA_W-1:0] rom_r_rdata_i,
     //
-    `include "clk_en_rst_s_port.vs"
+    `include "iob_soc_clk_en_rst_s_port.vs"
 );
 
 

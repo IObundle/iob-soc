@@ -14,7 +14,7 @@ module iob_div_subshift #(
       .DATA_W ((2 * DATA_W) + 1),
       .RST_VAL({((2 * DATA_W) + 1) {1'b0}})
   ) dqr_reg0 (
-      `include "clk_en_rst_s_s_portmap.vs"
+      `include "iob_div_subshift_clk_en_rst_s_s_portmap.vs"
       .data_i(dqr_nxt),
       .data_o(dqr_reg)
   );
@@ -27,7 +27,7 @@ module iob_div_subshift #(
       .DATA_W (DATA_W),
       .RST_VAL({DATA_W{1'b0}})
   ) div_reg0 (
-      `include "clk_en_rst_s_s_portmap.vs"
+      `include "iob_div_subshift_clk_en_rst_s_s_portmap.vs"
 
       .data_i(divisor_nxt),
       .data_o(divisor_reg)

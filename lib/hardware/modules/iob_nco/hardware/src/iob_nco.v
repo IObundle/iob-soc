@@ -40,7 +40,7 @@ module iob_nco #(
   iob_reg_re #(
       .DATA_W(DATA_W)
   ) per_reg (
-      `include "clk_en_rst_s_s_portmap.vs"
+      `include "iob_nco_clk_en_rst_s_s_portmap.vs"
       .rst_i (SOFT_RESET_wr),
       .en_i  (PERIOD_wen_wr),
       .data_i(PERIOD_wdata_wr),
@@ -51,7 +51,7 @@ module iob_nco #(
   iob_reg_re #(
       .DATA_W(1)
   ) clk_out_reg (
-      `include "clk_en_rst_s_s_portmap.vs"
+      `include "iob_nco_clk_en_rst_s_s_portmap.vs"
       .rst_i (SOFT_RESET_wr),
       .en_i  (ENABLE_wr),
       .data_i(clk_int),
@@ -62,7 +62,7 @@ module iob_nco #(
   iob_acc_ld #(
       .DATA_W(DATA_W)
   ) acc_ld (
-      `include "clk_en_rst_s_s_portmap.vs"
+      `include "iob_nco_clk_en_rst_s_s_portmap.vs"
       .rst_i(SOFT_RESET_wr),
       .en_i(ENABLE_wr),
       .ld_i(PERIOD_wen_wr),
@@ -76,7 +76,7 @@ module iob_nco #(
   iob_modcnt #(
       .DATA_W(DATA_W - FRAC_W)
   ) modcnt (
-      `include "clk_en_rst_s_s_portmap.vs"
+      `include "iob_nco_clk_en_rst_s_s_portmap.vs"
       .rst_i (PERIOD_wen_wr),
       .en_i  (ENABLE_wr),
       .mod_i (quant),
