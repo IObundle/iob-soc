@@ -8,16 +8,29 @@ from iob_soc_utils import pre_setup_iob_soc, iob_soc_sw_setup
 
 
 def setup(py_params_dict):
-    INIT_MEM = py_params_dict["INIT_MEM"] if "INIT_MEM" in py_params_dict else False
-    USE_EXTMEM = (
-        py_params_dict["USE_EXTMEM"] if "USE_EXTMEM" in py_params_dict else False
-    )
-    USE_COMPRESSED = True
-    USE_MUL_DIV = True
-    USE_SPRAM = py_params_dict["USE_SPRAM"] if "USE_SPRAM" in py_params_dict else False
+    params = {
+        "init_mem": False,
+        "use_extmem": False,
+        "use_spram": False,
+        "use_ethernet": False,
+        "addr_w": 32,
+        "data_w": 32,
+        "mem_addr_w": 24,
+        "use_compressed": True,
+        "use_mul_div": True,
+    }
 
-    # Number of peripherals + Bootctr
-    N_SLAVES = 2 + 1
+    # Update params with py_params_dict
+    for name, default_val in params.items():
+        if name not in py_params_dict:
+            continue
+        if type(default_val) == bool and py_params_dict[name] == "0":
+            params[name] = False
+        else:
+            params[name] = type(default_val)(py_params_dict[name])
+
+    # Number of peripherals
+    N_SLAVES = 2
 
     attributes_dict = {
         "original_name": "iob_soc",
@@ -27,53 +40,61 @@ def setup(py_params_dict):
         "board_list": ["CYCLONEV-GT-DK", "AES-KU040-DB-G"],
         "confs": [
             # macros
-            {
+            {  # Needed for testbench
+                "name": "ADDR_W",
+                "type": "M",
+                "val": params["addr_w"],
+                "min": "1",
+                "max": "32",
+                "descr": "Address bus width",
+            },
+            {  # Needed for testbench
+                "name": "DATA_W",
+                "type": "M",
+                "val": params["data_w"],
+                "min": "1",
+                "max": "32",
+                "descr": "Data bus width",
+            },
+            {  # Needed for makefile and software
                 "name": "INIT_MEM",
                 "type": "M",
-                "val": INIT_MEM,
+                "val": params["init_mem"],
                 "min": "0",
                 "max": "1",
                 "descr": "Enable MUL and DIV CPU instructions",
             },
-            {
+            {  # Needed for makefile and software
                 "name": "USE_EXTMEM",
                 "type": "M",
-                "val": USE_EXTMEM,
+                "val": params["use_extmem"],
                 "min": "0",
                 "max": "1",
                 "descr": "Enable MUL and DIV CPU instructions",
             },
-            {
+            {  # Needed for makefile
                 "name": "USE_MUL_DIV",
                 "type": "M",
-                "val": USE_MUL_DIV,
+                "val": params["use_mul_div"],
                 "min": "0",
                 "max": "1",
                 "descr": "Enable MUL and DIV CPU instructions",
             },
-            {
+            {  # Needed for makefile
                 "name": "USE_COMPRESSED",
                 "type": "M",
-                "val": USE_COMPRESSED,
+                "val": params["use_compressed"],
                 "min": "0",
                 "max": "1",
                 "descr": "Use compressed CPU instructions",
             },
-            {
-                "name": "E",
+            {  # Needed for software
+                "name": "MEM_ADDR_W",
                 "type": "M",
-                "val": "31",
-                "min": "1",
+                "val": params["mem_addr_w"],
+                "min": "0",
                 "max": "32",
-                "descr": "Address selection bit for external memory",
-            },
-            {
-                "name": "B",
-                "type": "M",
-                "val": "20",
-                "min": "1",
-                "max": "32",
-                "descr": "Address selection bit for boot ROM",
+                "descr": "Memory bus address width",
             },
             # parameters
             {
@@ -92,31 +113,7 @@ def setup(py_params_dict):
                 "max": "32",
                 "descr": "SRAM address width",
             },
-            {
-                "name": "MEM_ADDR_W",
-                "type": "P",
-                "val": "24",
-                "min": "1",
-                "max": "32",
-                "descr": "Memory bus address width",
-            },
             # mandatory parameters (do not change them!)
-            {
-                "name": "ADDR_W",
-                "type": "F",
-                "val": "32",
-                "min": "1",
-                "max": "32",
-                "descr": "Address bus width",
-            },
-            {
-                "name": "DATA_W",
-                "type": "F",
-                "val": "32",
-                "min": "1",
-                "max": "32",
-                "descr": "Data bus width",
-            },
             {
                 "name": "AXI_ID_W",
                 "type": "F",
@@ -128,7 +125,7 @@ def setup(py_params_dict):
             {
                 "name": "AXI_ADDR_W",
                 "type": "F",
-                "val": "`IOB_SOC_MEM_ADDR_W",
+                "val": params["mem_addr_w"],
                 "min": "1",
                 "max": "32",
                 "descr": "AXI address bus width",
@@ -136,7 +133,7 @@ def setup(py_params_dict):
             {
                 "name": "AXI_DATA_W",
                 "type": "F",
-                "val": "`IOB_SOC_DATA_W",
+                "val": params["data_w"],
                 "min": "1",
                 "max": "32",
                 "descr": "AXI data bus width",
@@ -206,32 +203,32 @@ def setup(py_params_dict):
                 {
                     "name": "rom_r_rdata",
                     "direction": "input",
-                    "width": "DATA_W",
+                    "width": params["data_w"],
                 },
             ],
         },
     ]
-    if USE_SPRAM:
+    if params["use_spram"]:
         attributes_dict["ports"] += [
             {
                 "name": "spram_bus",
                 "interface": {
                     "type": "iob",
                     "port_prefix": "spram_",
-                    "DATA_W": "DATA_W",
+                    "DATA_W": params["data_w"],
                     "ADDR_W": "SRAM_ADDR_W-2",
                 },
                 "descr": "Data bus",
             },
         ]
-    else:  # Not USE_SPRAM
+    else:  # Not params["use_spram"]
         attributes_dict["ports"] += [
             {
                 "name": "sram_i_bus",
                 "interface": {
                     "type": "iob",
                     "port_prefix": "sram_i_",
-                    "DATA_W": "DATA_W",
+                    "DATA_W": params["data_w"],
                     "ADDR_W": "SRAM_ADDR_W-2",
                 },
                 "descr": "Data bus",
@@ -241,7 +238,7 @@ def setup(py_params_dict):
                 "interface": {
                     "type": "iob",
                     "port_prefix": "sram_d_",
-                    "DATA_W": "DATA_W",
+                    "DATA_W": params["data_w"],
                     "ADDR_W": "SRAM_ADDR_W-2",
                 },
                 "descr": "Data bus",
@@ -257,7 +254,7 @@ def setup(py_params_dict):
             "descr": "iob-soc uart interface",
         },
     ]
-    if USE_EXTMEM:
+    if params["use_extmem"]:
         attributes_dict["ports"] += [
             {
                 "name": "axi",
@@ -299,8 +296,8 @@ def setup(py_params_dict):
                 "type": "iob",
                 "file_prefix": "iob_soc_cpu_i_",
                 "wire_prefix": "cpu_i_",
-                "DATA_W": "DATA_W",
-                "ADDR_W": "ADDR_W",
+                "DATA_W": params["data_w"],
+                "ADDR_W": params["addr_w"],
             },
             "descr": "cpu instruction bus",
         },
@@ -310,10 +307,20 @@ def setup(py_params_dict):
                 "type": "iob",
                 "file_prefix": "iob_soc_cpu_d_",
                 "wire_prefix": "cpu_d_",
-                "DATA_W": "DATA_W",
-                "ADDR_W": "ADDR_W",
+                "DATA_W": params["data_w"],
+                "ADDR_W": params["addr_w"],
             },
             "descr": "cpu data bus",
+        },
+        {
+            "name": "cpu_pbus",
+            "interface": {
+                "type": "iob",
+                "wire_prefix": "cpu_pbus_",
+                "DATA_W": params["data_w"],
+                "ADDR_W": params["addr_w"] - 2,
+            },
+            "descr": "cpu peripheral bus",
         },
         {
             "name": "split_reset",
@@ -329,8 +336,8 @@ def setup(py_params_dict):
                 "type": "iob",
                 "file_prefix": "iob_soc_int_mem_i_",
                 "wire_prefix": "int_mem_i_",
-                "DATA_W": "DATA_W",
-                "ADDR_W": "ADDR_W",
+                "DATA_W": params["data_w"],
+                "ADDR_W": params["addr_w"] - 1,
             },
             "descr": "iob-soc internal memory instruction interface",
         },
@@ -343,7 +350,7 @@ def setup(py_params_dict):
             ],
         },
     ]
-    if USE_EXTMEM:
+    if params["use_extmem"]:
         attributes_dict["wires"] += [
             {
                 "name": "int_d",
@@ -351,8 +358,8 @@ def setup(py_params_dict):
                     "type": "iob",
                     "file_prefix": "iob_soc_int_d_",
                     "wire_prefix": "int_d_",
-                    "DATA_W": "DATA_W",
-                    "ADDR_W": "ADDR_W",
+                    "DATA_W": params["data_w"],
+                    "ADDR_W": params["addr_w"] - 1,
                 },
                 "descr": "iob-soc internal data interface",
             },
@@ -364,13 +371,13 @@ def setup(py_params_dict):
                 "type": "iob",
                 "file_prefix": "iob_soc_int_mem_d_",
                 "wire_prefix": "int_mem_d_",
-                "DATA_W": "DATA_W",
-                "ADDR_W": "ADDR_W",
+                "DATA_W": params["data_w"],
+                "ADDR_W": params["addr_w"] - 2,
             },
             "descr": "iob-soc internal memory data interface",
         },
     ]
-    if USE_EXTMEM:
+    if params["use_extmem"]:
         attributes_dict["wires"] += [
             # External memory wires
             {
@@ -379,8 +386,8 @@ def setup(py_params_dict):
                     "type": "iob",
                     "file_prefix": "iob_soc_ext_mem_i_",
                     "wire_prefix": "ext_mem_i_",
-                    "DATA_W": "DATA_W",
-                    "ADDR_W": "ADDR_W",
+                    "DATA_W": params["data_w"],
+                    "ADDR_W": params["addr_w"] - 1,
                 },
                 "descr": "iob-soc external memory instruction interface",
             },
@@ -390,8 +397,8 @@ def setup(py_params_dict):
                     "type": "iob",
                     "file_prefix": "iob_soc_ext_mem_d_",
                     "wire_prefix": "ext_mem_d_",
-                    "DATA_W": "DATA_W",
-                    "ADDR_W": "ADDR_W",
+                    "DATA_W": params["data_w"],
+                    "ADDR_W": params["addr_w"] - 1,
                 },
                 "descr": "iob-soc external memory data interface",
             },
@@ -407,18 +414,6 @@ def setup(py_params_dict):
             # Verilog Snippets for other modules
         ]
     attributes_dict["wires"] += [
-        # Split (for other modules?)
-        {
-            "name": "int_d_dbus_split",
-            "interface": {
-                "type": "iob",
-                "file_prefix": "iob_soc_int_d_dbus_",
-                "wire_prefix": "int_d_",
-                "DATA_W": "DATA_W",
-                "ADDR_W": "ADDR_W",
-            },
-            "descr": "iob-soc internal data interface",
-        },
         # Peripheral wires
         {
             "name": "uart_swreg",
@@ -426,9 +421,9 @@ def setup(py_params_dict):
                 "type": "iob",
                 "file_prefix": "iob_soc_uart_swreg_",
                 "wire_prefix": "uart_swreg_",
-                "DATA_W": "DATA_W",
+                "DATA_W": params["data_w"],
                 # TODO: How to trim ADDR_W to match swreg addr width?
-                "ADDR_W": "ADDR_W",
+                "ADDR_W": params["addr_w"] - 3,
             },
             "descr": "UART swreg bus",
         },
@@ -438,8 +433,8 @@ def setup(py_params_dict):
                 "type": "iob",
                 "file_prefix": "iob_soc_timer_swreg_",
                 "wire_prefix": "timer_swreg_",
-                "DATA_W": "DATA_W",
-                "ADDR_W": "ADDR_W",
+                "DATA_W": params["data_w"],
+                "ADDR_W": params["addr_w"] - 3,
             },
             "descr": "TIMER swreg bus",
         },
@@ -450,11 +445,11 @@ def setup(py_params_dict):
             "core_name": "iob_picorv32",
             "instance_name": "cpu",
             "parameters": {
-                "ADDR_W": "ADDR_W",
-                "DATA_W": "DATA_W",
-                "USE_COMPRESSED": int(USE_COMPRESSED),
-                "USE_MUL_DIV": int(USE_MUL_DIV),
-                "USE_EXTMEM": int(USE_EXTMEM),
+                "ADDR_W": params["addr_w"],
+                "DATA_W": params["data_w"],
+                "USE_COMPRESSED": int(params["use_compressed"]),
+                "USE_MUL_DIV": int(params["use_mul_div"]),
+                "USE_EXTMEM": int(params["use_extmem"]),
             },
             "connect": {
                 "clk_en_rst": "cpu_clk_en_rst",
@@ -464,17 +459,12 @@ def setup(py_params_dict):
             },
         },
     ]
-    if USE_EXTMEM:
+    if params["use_extmem"]:
         attributes_dict["blocks"] += [
             {
                 "core_name": "iob_split",
                 "name": "iob_ibus_split",
                 "instance_name": "iob_ibus_split",
-                "parameters": {
-                    "ADDR_W": "ADDR_W",
-                    "DATA_W": "DATA_W",
-                    "SPLIT_PTR": "ADDR_W-1",
-                },
                 "connect": {
                     "clk_en_rst": "clk_en_rst",
                     "reset": "split_reset",
@@ -483,16 +473,12 @@ def setup(py_params_dict):
                     "output_1": "ext_mem_i",
                 },
                 "num_outputs": 2,
+                "addr_w": params["addr_w"],
             },
             {
                 "core_name": "iob_split",
                 "name": "iob_dbus_split",
                 "instance_name": "iob_dbus_split",
-                "parameters": {
-                    "ADDR_W": "ADDR_W",
-                    "DATA_W": "DATA_W",
-                    "SPLIT_PTR": "ADDR_W-1",
-                },
                 "connect": {
                     "clk_en_rst": "clk_en_rst",
                     "reset": "split_reset",
@@ -501,6 +487,7 @@ def setup(py_params_dict):
                     "output_1": "ext_mem_d",
                 },
                 "num_outputs": 2,
+                "addr_w": params["addr_w"],
             },
         ]
     attributes_dict["blocks"] += [
@@ -508,49 +495,45 @@ def setup(py_params_dict):
             "core_name": "iob_soc_int_mem",
             "instance_name": "int_mem",
             "parameters": {
-                "ADDR_W": "ADDR_W",
-                "DATA_W": "DATA_W",
                 "HEXFILE": '"iob_soc_firmware"',
                 "BOOT_HEXFILE": '"iob_soc_boot"',
                 "SRAM_ADDR_W": "SRAM_ADDR_W",
                 "BOOTROM_ADDR_W": "BOOTROM_ADDR_W",
-                "B_BIT": "`IOB_SOC_B",
             },
             "connect": {
                 "clk_en_rst": "clk_en_rst",
                 "general": "int_mem_general",
-                "i_bus": "int_mem_i" if USE_EXTMEM else "cpu_i",
+                "i_bus": "int_mem_i" if params["use_extmem"] else "cpu_i",
                 "d_bus": "int_mem_d",
                 "rom_bus": "rom_bus",
             },
-            "USE_SPRAM": int(USE_SPRAM),
-            "USE_EXTMEM": int(USE_EXTMEM),
-            "INIT_MEM": int(INIT_MEM),
+            "USE_SPRAM": int(params["use_spram"]),
+            "USE_EXTMEM": int(params["use_extmem"]),
+            "INIT_MEM": int(params["init_mem"]),
+            "addr_w": params["addr_w"] - 1,
+            "data_w": params["data_w"],
         },
     ]
-    if USE_SPRAM:
+    if params["use_spram"]:
         attributes_dict["blocks"][-1]["connect"].update(
             {
                 "spram_bus": "spram_bus",
             }
         )
-    else:  # Not USE_SPRAM
+    else:  # Not params["use_spram"]
         attributes_dict["blocks"][-1]["connect"].update(
             {
                 "sram_i_bus": "sram_i_bus",
                 "sram_d_bus": "sram_d_bus",
             }
         )
-    if USE_EXTMEM:
+    if params["use_extmem"]:
         attributes_dict["blocks"] += [
             {
                 "core_name": "iob_soc_ext_mem",
                 "instance_name": "ext_mem",
                 "parameters": {
-                    "ADDR_W": "ADDR_W",
-                    "DATA_W": "DATA_W",
-                    "FIRM_ADDR_W": "MEM_ADDR_W",
-                    "MEM_ADDR_W ": "MEM_ADDR_W",
+                    "FIRM_ADDR_W": params["mem_addr_w"],
                     "DDR_ADDR_W ": "`DDR_ADDR_W",
                     "DDR_DATA_W ": "`DDR_DATA_W",
                     "AXI_ID_W   ": "AXI_ID_W",
@@ -564,28 +547,40 @@ def setup(py_params_dict):
                     "d_bus": "ext_mem_d",
                     "axi": "axi",
                 },
+                "addr_w": params["addr_w"] - 1,
+                "data_w": params["data_w"],
+                "mem_addr_w": params["mem_addr_w"],
             },
         ]
     attributes_dict["blocks"] += [
         {
             "core_name": "iob_split",
-            "name": "iob_pbus_split",
-            "instance_name": "iob_pbus_split",
-            "parameters": {
-                "ADDR_W": "ADDR_W",
-                "DATA_W": "DATA_W",
-                "SPLIT_PTR": "ADDR_W-2",
-            },
+            "name": "iob_intmem_split",
+            "instance_name": "iob_intmem_split",
             "connect": {
                 "clk_en_rst": "clk_en_rst",
                 "reset": "split_reset",
-                "input": "int_d" if USE_EXTMEM else "cpu_d",
+                "input": "int_d" if params["use_extmem"] else "cpu_d",
                 "output_0": "int_mem_d",
-                "output_1": "uart_swreg",
-                "output_2": "timer_swreg",
+                "output_1": "cpu_pbus",
+            },
+            "num_outputs": 2,
+            "addr_w": params["addr_w"] - 1,
+        },
+        {
+            "core_name": "iob_split",
+            "name": "iob_pbus_split",
+            "instance_name": "iob_pbus_split",
+            "connect": {
+                "clk_en_rst": "clk_en_rst",
+                "reset": "split_reset",
+                "input": "cpu_pbus",
+                "output_0": "uart_swreg",
+                "output_1": "timer_swreg",
                 # TODO: Connect peripherals automatically
             },
             "num_outputs": N_SLAVES,
+            "addr_w": params["addr_w"] - 2,
         },
     ]
     peripherals = [
@@ -680,6 +675,7 @@ def setup(py_params_dict):
             "instance_name": "iob_soc_sim_wrapper",
             "instantiate": False,
             "purpose": "simulation",
+            "iob_soc_params": params,
         },
     ]
     attributes_dict["sw_modules"] = [
@@ -692,6 +688,6 @@ def setup(py_params_dict):
 
     # Pre-setup specialized IOb-SoC functions
     pre_setup_iob_soc(attributes_dict, peripherals)
-    iob_soc_sw_setup(attributes_dict, peripherals)
+    iob_soc_sw_setup(attributes_dict, peripherals, params["addr_w"])
 
     return attributes_dict

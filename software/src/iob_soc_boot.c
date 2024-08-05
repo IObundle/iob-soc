@@ -1,25 +1,22 @@
 #include "bsp.h"
 #include "iob-uart.h"
 #include "iob_soc_conf.h"
+#include "iob_soc_periphs.h"
 #include "iob_soc_system.h"
 
 #ifdef IOB_SOC_USE_EXTMEM
 #include "iob_cache_swreg.h"
 #endif
 
-// defined here (and not in periphs.h) because it is the only peripheral used
-// by the bootloader
-#define UART_BASE (IOB_SOC_UART0 << (31 - IOB_SOC_N_SLAVES_W))
-
 #define PROGNAME "IOb-Bootloader"
 
 int main() {
 
   // init uart
-  uart_init(UART_BASE, FREQ / BAUD);
+  uart_init(UART0_BASE, FREQ / BAUD);
 
 #ifdef IOB_SOC_USE_EXTMEM
-  IOB_CACHE_INIT_BASEADDR((1 << IOB_SOC_E) + (1 << IOB_SOC_MEM_ADDR_W));
+  IOB_CACHE_INIT_BASEADDR(EXTRA_BASE + (1 << IOB_SOC_MEM_ADDR_W));
 #endif
 
   // connect with console

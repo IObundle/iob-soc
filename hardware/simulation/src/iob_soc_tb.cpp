@@ -79,6 +79,7 @@ int main(int argc, char **argv, char **env) {
 #endif
 
   dut->clk_i = 0;
+  dut->cke_i = 1;
 
   // Reset sequence
   dut->arst_i = 0;

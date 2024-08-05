@@ -23,7 +23,7 @@ module iob_asym_converter #(
       .DATA_W (1),
       .RST_VAL(1'b0)
   ) r_data_valid_reg_inst (
-      `include "clk_en_rst_s_s_portmap.vs"
+      `include "iob_asym_converter_clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_i),
       .data_i(r_en_i),
       .data_o(r_data_valid_reg)
@@ -35,7 +35,7 @@ module iob_asym_converter #(
       .DATA_W (MAXDATA_W),
       .RST_VAL({MAXDATA_W{1'd0}})
   ) r_data_reg_inst (
-      `include "clk_en_rst_s_s_portmap.vs"
+      `include "iob_asym_converter_clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_i),
       .en_i  (r_data_valid_reg),
       .data_i(ext_mem_r_data_i),
@@ -65,7 +65,7 @@ module iob_asym_converter #(
           .DATA_W ($clog2(R)),
           .RST_VAL({$clog2(R) {1'd0}})
       ) r_addr_reg_inst (
-          `include "clk_en_rst_s_s_portmap.vs"
+          `include "iob_asym_converter_clk_en_rst_s_s_portmap.vs"
           .en_i  (r_en_i),
           .data_i(r_addr_i[$clog2(R)-1:0]),
           .data_o(r_addr_lsbs_reg)
