@@ -44,24 +44,10 @@ AXI_SIGNAL_NAMES = [
 
 
 def setup(py_params_dict):
-    params = {
-        "init_mem": False,
-        "use_extmem": False,
-        "use_ethernet": False,
-        "use_spram": False,
-        "data_w": 32,
-    }
 
-    # Update params with py_params_dict
-    for name, default_val in params.items():
-        if name not in py_params_dict:
-            continue
-        if type(default_val) == bool and py_params_dict[name] == "0":
-            params[name] = False
-        else:
-            params[name] = type(default_val)(py_params_dict[name])
+    params = py_params_dict["iob_soc_params"]
 
-    iob_soc_attr = iob_soc.setup(py_params_dict)
+    iob_soc_attr = iob_soc.setup(params)
 
     attributes_dict = {
         "original_name": "iob_soc_sim_wrapper",
@@ -269,9 +255,7 @@ def setup(py_params_dict):
             }
             | {i["name"]: i["name"] for i in simwrap_wires},
             "purpose": "common",
-            "init_mem": params["init_mem"],
-            "use_spram": params["use_spram"],
-            "data_w": params["data_w"],
+            "iob_soc_params": params,
         },
         {
             "core_name": "iob_uart",
@@ -339,7 +323,7 @@ def setup(py_params_dict):
         if params["init_mem"]:
             attributes_dict["blocks"][-1]["parameters"].update(
                 {
-                    "FILE": "init_ddr_contents.hex",
+                    "FILE": '"init_ddr_contents.hex"',
                     "FILE_SIZE": "2 ** (AXI_ADDR_W - 2)",
                 }
             )
@@ -389,7 +373,7 @@ def setup(py_params_dict):
                 prefix = ""
                 if "wire_prefix" in wire["interface"]:
                     prefix = wire["interface"]["wire_prefix"]
-                verilog_code += f"{prefix}_axi_{sig_name}, "
+                verilog_code += f"{prefix}axi_{sig_name}, "
             verilog_code = verilog_code[:-2] + "};\n"
         attributes_dict["snippets"] += [
             {

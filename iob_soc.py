@@ -88,6 +88,14 @@ def setup(py_params_dict):
                 "max": "1",
                 "descr": "Use compressed CPU instructions",
             },
+            {  # Needed for software
+                "name": "MEM_ADDR_W",
+                "type": "M",
+                "val": params["mem_addr_w"],
+                "min": "0",
+                "max": "32",
+                "descr": "Memory bus address width",
+            },
             # parameters
             {
                 "name": "BOOTROM_ADDR_W",
@@ -406,18 +414,6 @@ def setup(py_params_dict):
             # Verilog Snippets for other modules
         ]
     attributes_dict["wires"] += [
-        # Split (for other modules?)
-        {
-            "name": "int_d_dbus_split",
-            "interface": {
-                "type": "iob",
-                "file_prefix": "iob_soc_int_d_dbus_",
-                "wire_prefix": "int_d_",
-                "DATA_W": params["data_w"],
-                "ADDR_W": params["addr_w"],
-            },
-            "descr": "iob-soc internal data interface",
-        },
         # Peripheral wires
         {
             "name": "uart_swreg",
@@ -514,7 +510,7 @@ def setup(py_params_dict):
             "USE_SPRAM": int(params["use_spram"]),
             "USE_EXTMEM": int(params["use_extmem"]),
             "INIT_MEM": int(params["init_mem"]),
-            "addr_w": params["addr_w"],
+            "addr_w": params["addr_w"] - 1,
             "data_w": params["data_w"],
         },
     ]
@@ -551,7 +547,7 @@ def setup(py_params_dict):
                     "d_bus": "ext_mem_d",
                     "axi": "axi",
                 },
-                "addr_w": params["addr_w"],
+                "addr_w": params["addr_w"] - 1,
                 "data_w": params["data_w"],
                 "mem_addr_w": params["mem_addr_w"],
             },
@@ -679,11 +675,7 @@ def setup(py_params_dict):
             "instance_name": "iob_soc_sim_wrapper",
             "instantiate": False,
             "purpose": "simulation",
-            "init_mem": params["init_mem"],
-            "use_extmem": params["use_extmem"],
-            "use_ethernet": params["use_ethernet"],
-            "use_spram": params["use_spram"],
-            "data_w": params["data_w"],
+            "iob_soc_params": params,
         },
     ]
     attributes_dict["sw_modules"] = [

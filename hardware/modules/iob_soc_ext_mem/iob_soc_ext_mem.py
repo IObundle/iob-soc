@@ -1,7 +1,7 @@
 def setup(py_params_dict):
     ADDR_W = py_params_dict["addr_w"] if "addr_w" in py_params_dict else 32
     DATA_W = py_params_dict["data_w"] if "data_w" in py_params_dict else 32
-    MEM_ADDR_W = py_params_dict["MEM_ADDR_W"] if "mem_addr_w" in py_params_dict else 32
+    MEM_ADDR_W = py_params_dict["mem_addr_w"] if "mem_addr_w" in py_params_dict else 32
     attributes_dict = {
         "original_name": "iob_soc_ext_mem",
         "name": "iob_soc_ext_mem",
@@ -186,7 +186,7 @@ def setup(py_params_dict):
 
       // Front-end interface
       .iob_valid_i (i_iob_valid_i),
-      .iob_addr_i  (i_iob_addr_i),
+      .iob_addr_i  (i_iob_addr_i[FIRM_ADDR_W-1:2]),
       .iob_wdata_i (i_iob_wdata_i),
       .iob_wstrb_i (i_iob_wstrb_i),
       .iob_rdata_o (i_iob_rdata_o),
@@ -211,12 +211,11 @@ def setup(py_params_dict):
   wire l2_wtb_empty;
   wire invalidate;
   reg  invalidate_reg;
-  wire l2_valid = l2cache_iob_addr[{MEM_ADDR_W}];
   //Necessary logic to avoid invalidating L2 while it's being accessed by a request
   always @(posedge clk_i, posedge arst_i)
     if (arst_i) invalidate_reg <= 1'b0;
     else if (invalidate) invalidate_reg <= 1'b1;
-    else if (~l2_valid) invalidate_reg <= 1'b0;
+    else if (~l2cache_iob_valid) invalidate_reg <= 1'b0;
     else invalidate_reg <= invalidate_reg;
 
   //
@@ -242,7 +241,7 @@ def setup(py_params_dict):
 
       // Front-end interface
       .iob_valid_i (d_iob_valid_i),
-      .iob_addr_i  (d_iob_addr_i),
+      .iob_addr_i  (d_iob_addr_i[1+{MEM_ADDR_W}-1:2]),
       .iob_wdata_i (d_iob_wdata_i),
       .iob_wstrb_i (d_iob_wstrb_i),
       .iob_rdata_o (d_iob_rdata_o),
@@ -286,7 +285,7 @@ def setup(py_params_dict):
       .iob_rvalid_o(l2cache_iob_rvalid),
       .iob_ready_o (l2cache_iob_ready),
       //Control IO
-      .invalidate_i(invalidate_reg & ~l2_valid),
+      .invalidate_i(invalidate_reg & ~l2cache_iob_valid),
       .invalidate_o(),
       .wtb_empty_i (1'b1),
       .wtb_empty_o (l2_wtb_empty),
