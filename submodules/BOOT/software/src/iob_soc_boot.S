@@ -2,8 +2,8 @@
 #include "iob_soc_periphs.h"
 
 // Can't import iob_soc_boot_swreg.h because it includes stdint.h, which the assembler doesn't like, so goes manual.
-#define IOB_SOC_BOOT_CTR 0
-#define IOB_SOC_BOOT_CPU_RST 1
+#define IOB_BOOTCTR_CTR_ADDR 16777216
+#define IOB_BOOTCTR_CPU_RST_ADDR 16777217
 
 .section .init
 .global main
@@ -17,11 +17,11 @@ jal ra, main
 
 //reboot to run firmware
 li s5, 2
-li s6, BOOT0_BASE + IOB_SOC_BOOT_CTR
+li s6, BOOTCTR0_BASE + IOB_BOOTCTR_CTR_ADDR
 sw s5, 0(s6)
 
 li s5, 1
-li s6, BOOT0_BASE + IOB_SOC_BOOT_CPU_RST
+li s6, BOOTCTR0_BASE + IOB_BOOTCTR_CPU_RST_ADDR
 sw s5, 0(s6)
 
 ebreak
