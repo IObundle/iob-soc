@@ -288,8 +288,6 @@ def setup(py_params_dict):
                 {"name": "clk"},
                 {"name": "cke"},
                 {"name": "cpu_reset", "width": "1"},
-                {"name": "int_mem_cpu_reset", "width": "1"},
-                {"name": "boot_ctr_cpu_reset", "width": "1"},
             ],
         },
         {
@@ -431,13 +429,12 @@ def setup(py_params_dict):
             },
             # Verilog Snippets for other modules
         ]
-    # Boot
     attributes_dict["wires"] += [
         {
             "name": "bootctr_i",
             "interface": {
                 "type": "iob",
-                "file_prefix": "iob_soc_int_i_",
+                "file_prefix": "bootctr_i_",
                 "wire_prefix": "bootctr_i_",
                 "DATA_W": params["data_w"],
                 "ADDR_W": params["addr_w"],
@@ -546,7 +543,8 @@ def setup(py_params_dict):
             "connect": {
                 "clk_en_rst": "clk_en_rst",
                 "general": "int_mem_general",
-                "i_bus": "int_mem_i" if params["use_extmem"] else "cpu_i",
+                # FIXME: This below was not commented out
+                "i_bus": "int_mem_i",  # if params["use_extmem"] else "cpu_i",
                 "d_bus": "int_mem_d",
                 "rom_bus": "rom_bus",
             },
