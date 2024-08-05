@@ -3,28 +3,27 @@ def setup(py_params_dict):
         "original_name": "iob_demux",
         "name": "iob_demux",
         "version": "0.1",
-        "generate_hw": False,
         "confs": [
             {
                 "name": "DATA_W",
                 "type": "P",
-                "val": "1",
-                "min": "0",
+                "val": "21",
+                "min": "NA",
                 "max": "NA",
                 "descr": "Width of data interface",
             },
             {
                 "name": "N",
                 "type": "P",
-                "val": "2",
-                "min": "0",
+                "val": "21",
+                "min": "NA",
                 "max": "NA",
                 "descr": "Number of outputs",
             },
         ],
         "ports": [
             {
-                "name": "sel",
+                "name": "sel_i",
                 "descr": "Selector interface",
                 "signals": [
                     {
@@ -35,20 +34,40 @@ def setup(py_params_dict):
                 ],
             },
             {
-                "name": "io",
-                "descr": "Data interface",
+                "name": "data_i",
+                "descr": "Input port",
                 "signals": [
                     {
                         "name": "data",
                         "width": "DATA_W",
                         "direction": "input",
                     },
+                ],
+            },
+            {
+                "name": "data_o",
+                "descr": "Output port",
+                "signals": [
                     {
                         "name": "data",
-                        "width": "(N*DATA_W)",
+                        "width": "N*DATA_W",
                         "direction": "output",
                     },
                 ],
+            },
+        ],
+        "snippets": [
+            {
+                "verilog_code": """
+            // //Select the data to output
+   genvar i;
+   generate
+      for (i = 0; i < N; i = i + 1) begin : gen_demux
+         assign data_o[i*DATA_W+:DATA_W] = (sel_i==i)? data_i : {DATA_W{1'b0}};
+      end
+   endgenerate
+
+            """,
             },
         ],
     }
