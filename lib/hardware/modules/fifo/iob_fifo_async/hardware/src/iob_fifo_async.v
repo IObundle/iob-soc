@@ -1,16 +1,12 @@
 `timescale 1ns / 1ps
 
-`define IOB_MAX(a, b) (((a) > (b)) ? (a) : (b))
-`define IOB_MIN(a, b) (((a) < (b)) ? (a) : (b))
-
-
 module iob_fifo_async #(
     parameter W_DATA_W = 21,
     parameter R_DATA_W = 21,
     parameter ADDR_W = 3,  //higher ADDR_W lower DATA_W
     //determine W_ADDR_W and R_ADDR_W
-    parameter MAXDATA_W = `IOB_MAX(W_DATA_W, R_DATA_W),
-    parameter MINDATA_W = `IOB_MIN(W_DATA_W, R_DATA_W),
+    parameter MAXDATA_W = iob_max(W_DATA_W, R_DATA_W),
+    parameter MINDATA_W = iob_min(W_DATA_W, R_DATA_W),
     parameter R = MAXDATA_W / MINDATA_W,
     parameter ADDR_W_DIFF = $clog2(R),
     parameter MINADDR_W = ADDR_W - $clog2(R),  //lower ADDR_W (higher DATA_W)
@@ -19,6 +15,8 @@ module iob_fifo_async #(
 ) (
     `include "iob_fifo_async_io.vs"
 );
+
+  `include "iob_functions.vs"
 
   localparam [ADDR_W:0] FIFO_SIZE = {1'b1, {ADDR_W{1'b0}}};  //in bytes
 

@@ -17,7 +17,7 @@ def setup(py_params_dict):
     USE_SPRAM = py_params_dict["USE_SPRAM"] if "USE_SPRAM" in py_params_dict else False
 
     # Number of peripherals + Bootctr
-    N_SLAVES = 2 + 1
+    N_SLAVES = 3 + 1
 
     attributes_dict = {
         "original_name": "iob_soc",
@@ -291,6 +291,8 @@ def setup(py_params_dict):
                 {"name": "clk"},
                 {"name": "cke"},
                 {"name": "cpu_reset", "width": "1"},
+                {"name": "int_mem_cpu_reset", "width": "1"},
+                {"name": "boot_ctr_cpu_reset", "width": "1"},
             ],
         },
         {
@@ -347,7 +349,15 @@ def setup(py_params_dict):
             "descr": "General signals for internal memory",
             "signals": [
                 {"name": "boot"},
-                {"name": "cpu_reset"},
+                {"name": "int_mem_cpu_reset"},
+            ],
+        },
+        {
+            "name": "bootctr",
+            "descr": "Boot controller interface",
+            "signals": [
+                {"name": "bootctr_cpu_reset", "width": "1"},
+                {"name": "bootctr_ctr_reg", "width": "2"},
             ],
         },
     ]
@@ -414,6 +424,20 @@ def setup(py_params_dict):
             },
             # Verilog Snippets for other modules
         ]
+    # Boot
+    attributes_dict["wires"] += [
+        {
+            "name": "bootctr_i",
+            "interface": {
+                "type": "iob",
+                "file_prefix": "iob_soc_int_i_",
+                "wire_prefix": "bootctr_i_",
+                "DATA_W": "DATA_W",
+                "ADDR_W": "ADDR_W",
+            },
+            "descr": "iob-soc internal data interface",
+        },
+    ]
     attributes_dict["wires"] += [
         # Split (for other modules?)
         {
@@ -538,7 +562,7 @@ def setup(py_params_dict):
             "connect": {
                 "clk_en_rst": "clk_en_rst",
                 "general": "int_mem_general",
-                "i_bus": "int_mem_i" if USE_EXTMEM else "cpu_i",
+                "i_bus": "int_mem_i",
                 "d_bus": "int_mem_d",
                 "rom_bus": "rom_bus",
             },
@@ -602,6 +626,7 @@ def setup(py_params_dict):
                 "output_0": "int_mem_d",
                 "output_1": "uart_swreg",
                 "output_2": "timer_swreg",
+                "output_3": "bootctr_swreg",
                 # TODO: Connect peripherals automatically
             },
             "num_outputs": N_SLAVES,
@@ -635,6 +660,8 @@ def setup(py_params_dict):
             "connect": {
                 "clk_en_rst": "clk_en_rst",
                 "iob": "bootctr_swreg",
+                "bootctr_i_bus": "bootctr_i",
+                "swregs_read_out": "bootctr",
             },
         },
     ]
@@ -664,6 +691,11 @@ def setup(py_params_dict):
         {
             "core_name": "iob_pulse_gen",
             "instance_name": "iob_pulse_gen_inst",
+            "instantiate": False,
+        },
+        {
+            "core_name": "iob_bus_demux",
+            "instance_name": "iob_bus_demux_inst",
             "instantiate": False,
         },
         # iob_counter("counter")
@@ -715,6 +747,43 @@ def setup(py_params_dict):
         {
             "core_name": "printf",
             "instance_name": "printf_inst",
+        },
+    ]
+    attributes_dict["snippets"] = [
+        {
+            "verilog_code": """
+assign cpu_reset = int_mem_cpu_reset | bootctr_cpu_reset;
+
+iob_bus_demux #(
+    .ADDR_W(ADDR_W),
+    .DATA_W(DATA_W),
+    .N     (2)
+) cpu_ibus_split (
+    .clk_i     (clk_i),
+    .arst_i    (cpu_reset),
+
+    // Master's interface
+    .m_avalid_i(cpu_i_iob_valid),
+    .m_addr_i  (bootctr_ctr_reg == 2'b10 ? cpu_i_iob_addr + 32'h80000000 : cpu_i_iob_addr),
+    .m_wdata_i (cpu_i_iob_wdata),
+    .m_wstrb_i (cpu_i_iob_wstrb),
+    .m_rdata_o (cpu_i_iob_rdata),
+    .m_rvalid_o(cpu_i_iob_rvalid),
+    .m_ready_o (cpu_i_iob_ready),
+
+    // Followers' interface
+    .f_avalid_o({int_mem_i_iob_valid,  bootctr_i_iob_valid }),
+    .f_addr_o  ({int_mem_i_iob_addr,   bootctr_i_iob_addr  }),
+    .f_wdata_o ({int_mem_i_iob_wdata,  bootctr_i_iob_wdata }),
+    .f_wstrb_o ({int_mem_i_iob_wstrb,  bootctr_i_iob_wstrb }),
+    .f_rdata_i ({int_mem_i_iob_rdata,  bootctr_i_iob_rdata }),
+    .f_rvalid_i({int_mem_i_iob_rvalid, bootctr_i_iob_rvalid}),
+    .f_ready_i ({int_mem_i_iob_ready,  bootctr_i_iob_ready }),
+
+    // Follower selection
+    .f_sel_i   (bootctr_ctr_reg == 2'b00 ? 1'b0 : 1'b1)
+);
+            """,
         },
     ]
 

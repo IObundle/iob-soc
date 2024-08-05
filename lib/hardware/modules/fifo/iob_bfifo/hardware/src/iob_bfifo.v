@@ -1,8 +1,5 @@
 `timescale 1ns / 1ps
 
-`define IOB_CSHIFT_LEFT(DATA_W, DATA, SHIFT) ((DATA << SHIFT) | (DATA >> (DATA_W - SHIFT)))
-`define IOB_CSHIFT_RIGHT(DATA_W, DATA, SHIFT) ((DATA >> SHIFT) | (DATA << (DATA_W - SHIFT)))
-
 module iob_bfifo #(
     parameter DATA_W = 21
 ) (
@@ -20,6 +17,8 @@ module iob_bfifo #(
     output [        DATA_W-1:0] rdata_o,
     output [$clog2(2*DATA_W):0] rlevel_o
 );
+
+  `include "iob_functions.vs"
 
   localparam BUFFER_SIZE = 2 * DATA_W;
   //data register
@@ -56,14 +55,14 @@ module iob_bfifo #(
   assign rdata_o = (rdata[(2*DATA_W)-1-:DATA_W] >> crwidth) << crwidth;
 
   //write mask shifted
-  assign wmask   = `IOB_CSHIFT_RIGHT(BUFFER_SIZE, ({BUFFER_SIZE{1'b1}} >> wwidth_i), wptr);
+  assign wmask   = iob_cshift_right(BUFFER_SIZE, ({BUFFER_SIZE{1'b1}} >> wwidth_i), wptr);
   //read data shifted
-  assign rdata   = `IOB_CSHIFT_LEFT(BUFFER_SIZE, data, rptr);
+  assign rdata   = iob_cshift_left(BUFFER_SIZE, data, rptr);
 
   always @* begin
     //write data shifted
     wdata_int = (wdata_i >> cwwidth) << cwwidth;
-    wdata     = `IOB_CSHIFT_RIGHT(BUFFER_SIZE, {wdata_int, {DATA_W{1'b0}}}, wptr);
+    wdata     = iob_cshift_right(BUFFER_SIZE, {wdata_int, {DATA_W{1'b0}}}, wptr);
     data_nxt  = data;
     rptr_nxt  = rptr;
     wptr_nxt  = wptr;

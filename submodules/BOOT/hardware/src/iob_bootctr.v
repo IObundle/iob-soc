@@ -1,6 +1,5 @@
 `timescale 1 ns / 1 ps
 
-`include "iob_utils.vh"
 `include "iob_bootctr_conf.vh"
 `include "iob_bootctr_swreg_def.vh"
 `include "iob_soc_conf.vh"
@@ -12,6 +11,7 @@ module iob_bootctr #(
     );
 
     `include "iob_bootctr_swreg_inst.vs"
+
 
 
     wire cpu_1st_rst;
@@ -34,8 +34,8 @@ module iob_bootctr #(
         .clk_i (clk_i),
         .arst_i(arst_i && ~cpu_1st_rst),
         .cke_i (cke_i),
-        .en_i  (iob_avalid_i),
-        .data_i(CTR),
+        .en_i  (iob_valid_i),
+        .data_i(CTR_wr),
         .data_o(CTR_r_o)
     );
 
@@ -46,7 +46,7 @@ module iob_bootctr #(
       .clk_i  (clk_i),
       .arst_i (arst_i),
       .cke_i  (cke_i),
-      .start_i(CPU_RST | arst_i),
+      .start_i(CPU_RST_wr | arst_i),
       .pulse_o(CPU_RST_r_o)
    );
 
@@ -55,30 +55,30 @@ module iob_bootctr #(
     //
     iob_rom_sp #(
         .DATA_W(DATA_W),
-        .ADDR_W(BOOT_ROM_ADDR_W),
+        .ADDR_W(PREBOOT_ROM_ADDR_W),
         .HEXFILE("iob_soc_preboot.hex")
     ) preboot_rom (
         .clk_i(clk_i),
 
         //instruction memory interface
-        .r_en_i  (ctr_ibus_avalid_i),
-        .addr_i  (ctr_ibus_addr_i[0 +: BOOT_ROM_ADDR_W]),
-        .r_data_o(ctr_ibus_rdata_o)
+        .r_en_i  (bootctr_i_iob_valid_i),
+        .addr_i  (bootctr_i_iob_addr_i[2 +: PREBOOT_ROM_ADDR_W]),
+        .r_data_o(bootctr_i_iob_rdata_o)
     );
     iob_rom_sp #(
         .DATA_W(DATA_W),
-        .ADDR_W(PREBOOT_ROM_ADDR_W),
+        .ADDR_W(BOOT_ROM_ADDR_W),
         .HEXFILE("iob_soc_boot.hex")
     ) boot_rom (
         .clk_i(clk_i),
 
         //instruction memory interface
-        .r_en_i(ROM_ren),
-        .addr_i(iob_addr_i[2 +: PREBOOT_ROM_ADDR_W]), // Equivalent to what would be (iob_addr_i >> 2)[0 +: 10]
-        .r_data_o(ROM)
+        .r_en_i(ROM_ren_rd),
+        .addr_i(iob_addr_i[2 +: BOOT_ROM_ADDR_W]), // Equivalent to what would be (iob_addr_i >> 2)[0 +: 10]
+        .r_data_o(ROM_rdata_rd)
     );
-    assign ROM_ready = 1'b1;
-    assign ctr_ibus_ready_o = 1'b1;
+    assign ROM_rready_rd = 1'b1;
+    assign cpu_i_iob_ready_o = 1'b1;
 
     iob_reg #(
         .DATA_W (1),
@@ -87,8 +87,8 @@ module iob_bootctr #(
         .clk_i (clk_i),
         .cke_i (cke_i),
         .arst_i(arst_i),
-        .data_i(iob_avalid_i),
-        .data_o(ROM_rvalid)
+        .data_i(iob_valid_i),
+        .data_o(ROM_rvalid_rd)
     );
 
     iob_reg #(
@@ -98,8 +98,9 @@ module iob_bootctr #(
         .clk_i (clk_i),
         .cke_i (cke_i),
         .arst_i(arst_i),
-        .data_i(ctr_ibus_avalid_i),
-        .data_o(ctr_ibus_rvalid_o)
+        .data_i(bootctr_i_iob_valid_i),
+        .data_o(bootctr_i_iob_rvalid_o)
     );
+
 
 endmodule

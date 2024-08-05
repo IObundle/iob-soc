@@ -57,6 +57,34 @@ def setup(py_params_dict):
                 },
                 "descr": "Clock and reset",
             },
+            {
+                "name": "bootctr_i_bus",
+                "interface": {
+                    "type": "iob",
+                    "subtype": "slave",
+                    "port_prefix": "bootctr_i_",
+                    "DATA_W": "DATA_W",
+                    "ADDR_W": "ADDR_W",
+                },
+                "descr": "Instruction bus",
+            },
+            {
+                "name": "swregs_read_out",
+                "signals": [
+                    {
+                        "name": "CPU_RST_r",
+                        "direction": "output",
+                        "width": 1,
+                        "descr": "CPU sync reset.",
+                    },
+                    {
+                        "name": "CTR_r",
+                        "direction": "output",
+                        "width": 2,
+                        "descr": "Boot controller external link.",
+                    },
+                ],
+            },
         ],
         "csrs": [
             {

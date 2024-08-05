@@ -1,11 +1,8 @@
 `timescale 1ns / 1ps
 
-`define IOB_MAX(a, b) (((a) > (b)) ? (a) : (b))
-`define IOB_MIN(a, b) (((a) < (b)) ? (a) : (b))
-`define IOB_CLOCK(CLK, PER) initial CLK=0; always #(PER/2) CLK = ~CLK;
 `define IOB_PULSE(VAR, PRE, DURATION, POST) VAR=0; #PRE VAR=1; #DURATION VAR=0; #POST;
 
-// TODO: re-implement these tests 
+// TODO: re-implement these tests
 //      $(VLOG) -DW_DATA_W=8 -DR_DATA_W=8 $(wildcard $(BUILD_VSRC_DIR)/*.v) &&\
 //      $(VLOG) -DW_DATA_W=32 -DR_DATA_W=8 $(wildcard $(BUILD_VSRC_DIR)/*.v) &&\
 //      $(VLOG) -DW_DATA_W=8 -DR_DATA_W=32 $(wildcard $(BUILD_VSRC_DIR)/*.v) &&\
@@ -20,11 +17,13 @@
 
 module iob_fifo_async_tb;
 
+  `include "iob_functions.vs"
+
   localparam TESTSIZE = `TESTSIZE;  //bytes
   localparam W_DATA_W = 8;
   localparam R_DATA_W = 8;
-  localparam MAXDATA_W = `IOB_MAX(W_DATA_W, R_DATA_W);
-  localparam MINDATA_W = `IOB_MIN(W_DATA_W, R_DATA_W);
+  localparam MAXDATA_W = iob_max(W_DATA_W, R_DATA_W);
+  localparam MINDATA_W = iob_min(W_DATA_W, R_DATA_W);
   localparam ADDR_W = `ADDR_W;
   localparam R = MAXDATA_W / MINDATA_W;
   localparam MINADDR_W = ADDR_W - $clog2(R);  //lower ADDR_W (higher DATA_W)
@@ -35,13 +34,13 @@ module iob_fifo_async_tb;
   //global reset
   reg arst = 0;
 
-  //write reset 
+  //write reset
   reg w_arst = 0;
   always @(posedge w_clk, posedge arst)
     if (arst) w_arst = 1;
     else w_arst = #1 arst;
 
-  //read reset 
+  //read reset
   reg r_arst = 0;
   always @(posedge r_clk, posedge arst)
     if (arst) r_arst = 1;
@@ -49,11 +48,19 @@ module iob_fifo_async_tb;
 
   //write clock
   reg w_clk;
-  `IOB_CLOCK(w_clk, 10)
+  iob_clock #(
+      .CLK_PERIOD(10)
+  ) iob_clock_1 (
+      .clk_o(w_clk)
+  );
 
   //read clock
   reg r_clk;
-  `IOB_CLOCK(r_clk, 13)
+  iob_clock #(
+      .CLK_PERIOD(13)
+  ) iob_clock_2 (
+      .clk_o(r_clk)
+  );
 
   reg                 r_cke = 1;
   reg                 w_cke = 1;
