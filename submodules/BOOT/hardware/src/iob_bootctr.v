@@ -78,7 +78,7 @@ module iob_bootctr #(
         .r_data_o(ROM_rdata_rd)
     );
     assign ROM_rready_rd = 1'b1;
-    assign cpu_i_iob_ready_o = 1'b1;
+    assign bootctr_i_iob_ready_o = 1'b1;
 
     iob_reg #(
         .DATA_W (1),
