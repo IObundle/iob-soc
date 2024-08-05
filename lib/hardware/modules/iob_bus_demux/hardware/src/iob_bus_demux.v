@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 // Split the IOb native interface, from a single master to multiple followers
-module iob_split2 #(
+module iob_bus_demux #(
    parameter ADDR_W = 32,
    parameter DATA_W = 32,
    parameter N      = 2,             // Number of followers, minimum of 2

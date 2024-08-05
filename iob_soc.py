@@ -694,8 +694,8 @@ def setup(py_params_dict):
             "instantiate": False,
         },
         {
-            "core_name": "iob_split2",
-            "instance_name": "iob_split2_inst",
+            "core_name": "iob_bus_demux",
+            "instance_name": "iob_bus_demux_inst",
             "instantiate": False,
         },
         # iob_counter("counter")
@@ -754,7 +754,7 @@ def setup(py_params_dict):
             "verilog_code": """
 assign cpu_reset = int_mem_cpu_reset | bootctr_cpu_reset;
 
-iob_split2 #(
+iob_bus_demux #(
     .ADDR_W(ADDR_W),
     .DATA_W(DATA_W),
     .N     (2)
