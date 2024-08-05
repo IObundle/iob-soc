@@ -439,8 +439,8 @@ def setup(py_params_dict):
                 "type": "iob",
                 "file_prefix": "iob_soc_int_i_",
                 "wire_prefix": "bootctr_i_",
-                "DATA_W": "DATA_W",
-                "ADDR_W": "ADDR_W",
+                "DATA_W": params["data_w"],
+                "ADDR_W": params["addr_w"],
             },
             "descr": "iob-soc internal data interface",
         },
@@ -476,8 +476,8 @@ def setup(py_params_dict):
                 "type": "iob",
                 "file_prefix": "iob_soc_bootctr_swreg_",
                 "wire_prefix": "bootctr_swreg_",
-                "DATA_W": "DATA_W",
-                "ADDR_W": "ADDR_W",
+                "DATA_W": params["data_w"],
+                "ADDR_W": params["addr_w"],
             },
             "descr": "BOOTCTR swreg bus",
         },
@@ -751,8 +751,12 @@ def setup(py_params_dict):
 assign cpu_reset = int_mem_cpu_reset | bootctr_cpu_reset;
 
 iob_bus_demux #(
-    .ADDR_W(ADDR_W),
-    .DATA_W(DATA_W),
+    .ADDR_W("""
+            + str(params["addr_w"])
+            + """),
+    .DATA_W("""
+            + str(params["data_w"])
+            + """),
     .N     (2)
 ) cpu_ibus_split (
     .clk_i     (clk_i),
