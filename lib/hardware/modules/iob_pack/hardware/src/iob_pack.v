@@ -3,7 +3,7 @@
 module iob_pack #(
     parameter DATA_W = 21
 ) (
-    `include "clk_en_rst_s_port.vs"
+    `include "iob_pack_clk_en_rst_s_port.vs"
 
     input                    rst_i,
     input                    wrap_i,
