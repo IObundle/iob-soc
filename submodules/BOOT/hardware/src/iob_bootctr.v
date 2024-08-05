@@ -12,17 +12,6 @@ module iob_bootctr #(
 
     `include "iob_bootctr_swreg_inst.vs"
 
-    wire [2-1:0] CTR_r_o;
-
-    assign bootctr_i_iob_valid_o  = cpu_i_iob_valid_i;
-    assign bootctr_i_iob_addr_o   = cpu_i_iob_addr_i;
-    assign bootctr_i_iob_wdata_o  = cpu_i_iob_wdata_i;
-    assign bootctr_i_iob_wstrb_o  = cpu_i_iob_wstrb_i;
-
-    assign cpu_i_iob_rvalid_o     = bootctr_i_iob_rvalid_i;
-    assign cpu_i_iob_rdata_o      = bootctr_i_iob_rdata_i;
-    assign cpu_i_iob_ready_o      = bootctr_i_iob_ready_i;
-
 
 
     wire cpu_1st_rst;
@@ -72,9 +61,9 @@ module iob_bootctr #(
         .clk_i(clk_i),
 
         //instruction memory interface
-        .r_en_i  (bootctr_i_iob_valid_o),
-        .addr_i  (bootctr_i_iob_addr_o[0 +: PREBOOT_ROM_ADDR_W]),
-        .r_data_o(bootctr_i_iob_rdata_i)
+        .r_en_i  (bootctr_i_iob_valid_i),
+        .addr_i  (bootctr_i_iob_addr_i[2 +: PREBOOT_ROM_ADDR_W]),
+        .r_data_o(bootctr_i_iob_rdata_o)
     );
     iob_rom_sp #(
         .DATA_W(DATA_W),
@@ -109,8 +98,8 @@ module iob_bootctr #(
         .clk_i (clk_i),
         .cke_i (cke_i),
         .arst_i(arst_i),
-        .data_i(bootctr_i_iob_valid_o),
-        .data_o(bootctr_i_iob_rvalid_i)
+        .data_i(bootctr_i_iob_valid_i),
+        .data_o(bootctr_i_iob_rvalid_o)
     );
 
 

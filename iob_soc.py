@@ -357,6 +357,7 @@ def setup(py_params_dict):
             "descr": "Boot controller interface",
             "signals": [
                 {"name": "bootctr_cpu_reset", "width": "1"},
+                {"name": "bootctr_ctr_reg", "width": "2"},
             ],
         },
     ]
@@ -561,7 +562,7 @@ def setup(py_params_dict):
             "connect": {
                 "clk_en_rst": "clk_en_rst",
                 "general": "int_mem_general",
-                "i_bus": "int_mem_i" if USE_EXTMEM else "bootctr_i",
+                "i_bus": "int_mem_i",
                 "d_bus": "int_mem_d",
                 "rom_bus": "rom_bus",
             },
@@ -659,7 +660,6 @@ def setup(py_params_dict):
             "connect": {
                 "clk_en_rst": "clk_en_rst",
                 "iob": "bootctr_swreg",
-                "cpu_i_bus": "cpu_i",
                 "bootctr_i_bus": "bootctr_i",
                 "swregs_read_out": "bootctr",
             },
@@ -691,6 +691,11 @@ def setup(py_params_dict):
         {
             "core_name": "iob_pulse_gen",
             "instance_name": "iob_pulse_gen_inst",
+            "instantiate": False,
+        },
+        {
+            "core_name": "iob_split2",
+            "instance_name": "iob_split2_inst",
             "instantiate": False,
         },
         # iob_counter("counter")
@@ -748,6 +753,36 @@ def setup(py_params_dict):
         {
             "verilog_code": """
 assign cpu_reset = int_mem_cpu_reset | bootctr_cpu_reset;
+
+iob_split2 #(
+    .ADDR_W(ADDR_W),
+    .DATA_W(DATA_W),
+    .N     (2)
+) cpu_ibus_split (
+    .clk_i     (clk_i),
+    .arst_i    (cpu_reset),
+
+    // Master's interface
+    .m_avalid_i(cpu_i_iob_valid),
+    .m_addr_i  (bootctr_ctr_reg == 2'b10 ? cpu_i_iob_addr + 32'h80000000 : cpu_i_iob_addr),
+    .m_wdata_i (cpu_i_iob_wdata),
+    .m_wstrb_i (cpu_i_iob_wstrb),
+    .m_rdata_o (cpu_i_iob_rdata),
+    .m_rvalid_o(cpu_i_iob_rvalid),
+    .m_ready_o (cpu_i_iob_ready),
+
+    // Followers' interface
+    .f_avalid_o({int_mem_i_iob_valid,  bootctr_i_iob_valid }),
+    .f_addr_o  ({int_mem_i_iob_addr,   bootctr_i_iob_addr  }),
+    .f_wdata_o ({int_mem_i_iob_wdata,  bootctr_i_iob_wdata }),
+    .f_wstrb_o ({int_mem_i_iob_wstrb,  bootctr_i_iob_wstrb }),
+    .f_rdata_i ({int_mem_i_iob_rdata,  bootctr_i_iob_rdata }),
+    .f_rvalid_i({int_mem_i_iob_rvalid, bootctr_i_iob_rvalid}),
+    .f_ready_i ({int_mem_i_iob_ready,  bootctr_i_iob_ready }),
+
+    // Follower selection
+    .f_sel_i   (bootctr_ctr_reg == 2'b00 ? 1'b0 : 1'b1)
+);
             """,
         },
     ]
