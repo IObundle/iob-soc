@@ -4,9 +4,9 @@ import iob_soc
 
 
 def setup(py_params_dict):
-    INIT_MEM = py_params_dict["INIT_MEM"] if "INIT_MEM" in py_params_dict else False
-    USE_SPRAM = py_params_dict["USE_SPRAM"] if "USE_SPRAM" in py_params_dict else False
-    iob_soc_attr = iob_soc.setup(py_params_dict)
+    params = py_params_dict["iob_soc_params"]
+
+    iob_soc_attr = iob_soc.setup(params)
 
     # TODO: Generate this source in the common_src directory
     attributes_dict = {
@@ -17,7 +17,7 @@ def setup(py_params_dict):
             {
                 "name": "HEXFILE",
                 "type": "P",
-                "val": '"iob_soc_firmware"' if INIT_MEM else '"none"',
+                "val": '"iob_soc_firmware"' if params["init_mem"] else '"none"',
                 "min": "NA",
                 "max": "NA",
                 "descr": "Firmware file name",
@@ -59,7 +59,7 @@ def setup(py_params_dict):
             ],
         },
     ]
-    if USE_SPRAM:
+    if params["use_spram"]:
         attributes_dict["wires"] += [
             {
                 "name": "main_mem_if",
@@ -99,7 +99,7 @@ def setup(py_params_dict):
             },
         ]
     attributes_dict["blocks"] = []
-    if USE_SPRAM:
+    if params["use_spram"]:
         attributes_dict["blocks"] += [
             {
                 "core_name": "iob_ram_sp_be",
@@ -107,7 +107,7 @@ def setup(py_params_dict):
                 "parameters": {
                     "HEXFILE": "HEXFILE",
                     "ADDR_W": "SRAM_ADDR_W - 2",
-                    "DATA_W": "DATA_W",
+                    "DATA_W": params["data_w"],
                 },
                 "connect": {
                     "clk": "clk",
@@ -115,7 +115,7 @@ def setup(py_params_dict):
                 },
             },
         ]
-    else:  # not USE_SPRAM
+    else:  # not params['use_spram']
         attributes_dict["blocks"] += [
             # MEM_NO_READ_ON_WRITE
             {
@@ -124,7 +124,7 @@ def setup(py_params_dict):
                 "parameters": {
                     "HEXFILE": "HEXFILE",
                     "ADDR_W": "SRAM_ADDR_W - 2",
-                    "DATA_W": "DATA_W",
+                    "DATA_W": params["data_w"],
                     "MEM_NO_READ_ON_WRITE": 1,
                 },
                 "connect": {
@@ -141,7 +141,7 @@ def setup(py_params_dict):
                 "parameters": {
                     "HEXFILE": "HEXFILE",
                     "ADDR_W": "SRAM_ADDR_W - 2",
-                    "DATA_W": "DATA_W",
+                    "DATA_W": params["data_w"],
                 },
                 "connect": {
                     "clk": "clk",
@@ -157,7 +157,7 @@ def setup(py_params_dict):
             "core_name": "iob_rom_sp",
             "instance_name": "sp_rom",
             "parameters": {
-                "DATA_W": "DATA_W",
+                "DATA_W": params["data_w"],
                 "ADDR_W": "BOOTROM_ADDR_W - 2",
                 "HEXFILE": '{BOOT_HEXFILE, ".hex"}',
             },
@@ -171,9 +171,12 @@ def setup(py_params_dict):
             "core_name": "iob_soc",
             "instance_name": "iob_soc",
             "parameters": {
-                i["name"]: i["name"] for i in iob_soc_attr["confs"] if i["type"] == "P"
+                i["name"]: i["name"]
+                for i in iob_soc_attr["confs"]
+                if i["type"] in ["P", "F"]
             },
             "connect": {i["name"]: i["name"] for i in iob_soc_attr["ports"]},
+            **params,
         },
     ]
     #    attributes_dict["snippets"] = [

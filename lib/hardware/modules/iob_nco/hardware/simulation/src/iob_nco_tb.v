@@ -79,7 +79,7 @@ module iob_nco_tb;
   end
 
   iob_nco nco (
-      `include "clk_en_rst_s_portmap.vs"
+      `include "iob_nco_clk_en_rst_s_portmap.vs"
       .iob_valid_i(iob_valid_i),
       .iob_addr_i(iob_addr_i),
       .iob_wdata_i(iob_wdata_i),

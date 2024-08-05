@@ -18,10 +18,10 @@ from iob_soc_create_system import insert_header_files
 # import verilog_gen
 #
 #
-def iob_soc_sw_setup(attributes, peripherals):
+def iob_soc_sw_setup(attributes, peripherals, ADDR_W):
     create_periphs_tmp(
         attributes["name"],
-        next(i["val"] for i in attributes["confs"] if i["name"] == "ADDR_W"),
+        ADDR_W,
         peripherals,
         # FIXME: Missing build dir
         # f"{build_dir}/software/{attributes['name']}_periphs.h",
