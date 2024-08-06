@@ -2,6 +2,9 @@
 #            Embedded targets           #
 #########################################
 ROOT_DIR ?=..
+
+include $(ROOT_DIR)/software/auto_sw_build.mk
+
 # Local embedded makefile settings for custom bootloader and firmware targets.
 
 #Function to obtain parameter named $(1) in verilog header file located in $(2)
