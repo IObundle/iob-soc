@@ -10,9 +10,7 @@
 #define IOB_BOOTCTR_CPU_RST_ADDR 16777217
 
 #define BOOTROM (BOOTCTR0_BASE + IOB_BOOTCTR_ROM_ADDR)
-#define BOOTRAM ((1 << 31) + (1 << IOB_SOC_MEM_ADDR_W) - (1 << IOB_BOOTCTR_BOOT_ROM_ADDR_W))
-//#define BOOTRAM ((1 << 31) + (1 << IOB_SOC_MEM_ADDR_W))
-//#define BOOTRAM (1 << 31)
+#define BOOTRAM ((1 << IOB_SOC_MEM_ADDR_W) - (1 << IOB_BOOTCTR_BOOT_ROM_ADDR_W)) - 4
 #define LENGTH (1 << IOB_BOOTCTR_BOOT_ROM_ADDR_W)
 
 .section .init
