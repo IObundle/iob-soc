@@ -762,7 +762,7 @@ iob_bus_demux #(
 
     // Master's interface
     .m_avalid_i(cpu_i_iob_valid),
-    .m_addr_i  (bootctr_ctr_reg == 2'b10 ? cpu_i_iob_addr + 32'h80000000 : cpu_i_iob_addr),
+    .m_addr_i  (bootctr_ctr_reg == 2'b00 ? cpu_i_iob_addr : cpu_i_iob_addr + 32'h00FFF000),
     .m_wdata_i (cpu_i_iob_wdata),
     .m_wstrb_i (cpu_i_iob_wstrb),
     .m_rdata_o (cpu_i_iob_rdata),
