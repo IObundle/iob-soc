@@ -139,7 +139,7 @@ def setup(py_params_dict):
                 "connect": {
                     "clk_en_rst": "clk_en_rst",
                     "en_rst": "iob_pulse_gen_int",
-                    "data": "cnt",
+                    "data_o": "cnt",
                 },
             },
             {
