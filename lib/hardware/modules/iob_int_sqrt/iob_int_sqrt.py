@@ -55,12 +55,26 @@ def setup(py_params_dict):
         ],
         "ports": [
             {
-                "name": "clk_rst",
-                "interface": {
-                    "type": "clk_rst",
-                    "subtype": "slave",
-                },
-                "descr": "Clock and reset",
+                "name": "clk_i",
+                "descr": "Input port",
+                "signals": [
+                    {
+                        "name": "clk",
+                        "width": 1,
+                        "direction": "input",
+                    },
+                ],
+            },
+            {
+                "name": "rst_i",
+                "descr": "Input port",
+                "signals": [
+                    {
+                        "name": "rst",
+                        "width": 1,
+                        "direction": "input",
+                    },
+                ],
             },
             {
                 "name": "start_i",
