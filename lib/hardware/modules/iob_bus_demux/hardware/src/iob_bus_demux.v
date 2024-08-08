@@ -10,25 +10,25 @@ module iob_bus_demux #(
    `include "iob_bus_demux_clk_rst_s_port.vs"
 
    // Master's interface
-   input                   m_avalid_i,
-   input  [ADDR_W-1:0]     m_addr_i,
-   input  [DATA_W-1:0]     m_wdata_i,
-   input  [DATA_W/8-1:0]   m_wstrb_i,
-   output [DATA_W-1:0]     m_rdata_o,
-   output                  m_rvalid_o,
-   output                  m_ready_o,
+   input                 m_valid_i,
+   input  [ADDR_W-1:0]   m_addr_i,
+   input  [DATA_W-1:0]   m_wdata_i,
+   input  [DATA_W/8-1:0] m_wstrb_i,
+   output [DATA_W-1:0]   m_rdata_o,
+   output                m_rvalid_o,
+   output                m_ready_o,
 
    // Followers' interface
-   output [N*1-1:0]        f_avalid_o,
-   output [N*ADDR_W-1:0]   f_addr_o,
-   output [N*DATA_W-1:0]   f_wdata_o,
-   output [N*DATA_W/8-1:0] f_wstrb_o,
-   input  [N*DATA_W-1:0]   f_rdata_i,
-   input  [N*1-1:0]        f_rvalid_i,
-   input  [N*1-1:0]        f_ready_i,
+   output [N*1-1:0]          f_valid_o,
+   output [N*ADDR_W-1:0]     f_addr_o,
+   output [N*DATA_W-1:0]     f_wdata_o,
+   output [N*(DATA_W/8)-1:0] f_wstrb_o,
+   input  [N*DATA_W-1:0]     f_rdata_i,
+   input  [N*1-1:0]          f_rvalid_i,
+   input  [N*1-1:0]          f_ready_i,
 
    // Follower selection
-   input  [NB-1:0]       f_sel_i
+   input  [NB-1:0] f_sel_i
 );
 
    //
@@ -42,7 +42,7 @@ module iob_bus_demux #(
    ) reg_f_sel (
       `include "iob_bus_demux_clk_rst_s_s_portmap.vs"
       .cke_i (1'b1),
-      .en_i  (m_avalid_i),
+      .en_i  (m_valid_i),
       .data_i(f_sel_i),
       .data_o(f_sel_r)
    );
@@ -51,20 +51,41 @@ module iob_bus_demux #(
    // Route master request to selected follower
    //
 
-   // Avalid goes to the selected follower
    iob_demux #(
       .DATA_W (1),
       .N      (N)
-   ) demux_avalid (
-      .sel_i (f_sel_r),
-      .data_i(m_avalid_i),
-      .data_o(f_avalid_o)
+   ) demux_valid (
+      .sel_i (f_sel_i),
+      .data_i(m_valid_i),
+      .data_o(f_valid_o)
    );
 
-   // These go to all followers (only the one with asserted avalid will use them)
-   assign f_addr_o  = m_addr_i;
-   assign f_wdata_o = m_wdata_i;
-   assign f_wstrb_o = m_wstrb_i;
+   iob_demux #(
+      .DATA_W (ADDR_W),
+      .N      (N)
+   ) demux_addr (
+      .sel_i (f_sel_i),
+      .data_i(m_addr_i),
+      .data_o(f_addr_o)
+   );
+
+   iob_demux #(
+      .DATA_W (DATA_W),
+      .N      (N)
+   ) demux_wdata (
+      .sel_i (f_sel_i),
+      .data_i(m_wdata_i),
+      .data_o(f_wdata_o)
+   );
+
+   iob_demux #(
+      .DATA_W (DATA_W/8),
+      .N      (N)
+   ) demux_wstrb (
+      .sel_i (f_sel_i),
+      .data_i(m_wstrb_i),
+      .data_o(f_wstrb_o)
+   );
 
    //
    // Route selected follower response to master
@@ -92,7 +113,7 @@ module iob_bus_demux #(
       .DATA_W (1),
       .N      (N)
    ) mux_ready (
-      .sel_i (f_sel_r),
+      .sel_i (f_sel_i),
       .data_i(f_ready_i),
       .data_o(m_ready_o)
    );
