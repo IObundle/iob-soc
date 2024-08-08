@@ -85,18 +85,11 @@ def setup(py_params_dict):
                 ],
             },
             {
-                "name": "cnt_en",
-                "descr": "",
+                "name": "iob_pulse_gen_int",
+                "descr": "iob_pulse_gen_int wire",
                 "signals": [
-                    {"name": "cnt_en", "width": 1},
-                ],
-            },
-            {
-                "name": "iob_pulse_gen",
-                "descr": "iob_pulse_gen wire",
-                "signals": [
-                    {"name": "start", "width": 1},
-                    {"name": "cnt_en", "width": 1}
+                    {"name": "cnt_en", "width":1},
+                     {"name": "start"},
                 ],
             },
 
@@ -138,7 +131,7 @@ def setup(py_params_dict):
                 },
                 "connect": {
                     "clk_en_rst": "clk_en_rst",
-                    "en_rst": "iob_pulse_gen",
+                    "en_rst": "iob_pulse_gen_int",
                     "data_o": "cnt",
                 },
             },
