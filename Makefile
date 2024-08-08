@@ -24,7 +24,7 @@ INIT_MEM ?= 1
 USE_EXTMEM ?= 0
 
 setup:
-	$(call IOB_NIX_ENV, py2hwsw $(CORE) setup --no_verilog_lint --py_params "init_mem=$(INIT_MEM);use_extmem=$(USE_EXTMEM)")
+	$(call IOB_NIX_ENV, py2hwsw $(CORE) setup --no_verilog_lint --py_params 'init_mem=$(INIT_MEM):use_extmem=$(USE_EXTMEM)')
 
 pc-emul-run:
 	$(call IOB_NIX_ENV, make clean setup && make -C ../$(CORE)_V*/ pc-emul-run)
