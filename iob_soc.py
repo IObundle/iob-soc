@@ -216,42 +216,6 @@ def setup(py_params_dict):
             ],
         },
     ]
-    if params["use_spram"]:
-        attributes_dict["ports"] += [
-            {
-                "name": "spram_bus",
-                "interface": {
-                    "type": "iob",
-                    "port_prefix": "spram_",
-                    "DATA_W": params["data_w"],
-                    "ADDR_W": "SRAM_ADDR_W-2",
-                },
-                "descr": "Data bus",
-            },
-        ]
-    else:  # Not params["use_spram"]
-        attributes_dict["ports"] += [
-            {
-                "name": "sram_i_bus",
-                "interface": {
-                    "type": "iob",
-                    "port_prefix": "sram_i_",
-                    "DATA_W": params["data_w"],
-                    "ADDR_W": "SRAM_ADDR_W-2",
-                },
-                "descr": "Data bus",
-            },
-            {
-                "name": "sram_d_bus",
-                "interface": {
-                    "type": "iob",
-                    "port_prefix": "sram_d_",
-                    "DATA_W": params["data_w"],
-                    "ADDR_W": "SRAM_ADDR_W-2",
-                },
-                "descr": "Data bus",
-            },
-        ]
     attributes_dict["ports"] += [
         # Peripheral IO ports
         {
@@ -655,7 +619,7 @@ iob_bus_demux #(
     .arst_i    (cpu_reset),
 
     // Master's interface
-    .m_avalid_i(cpu_i_iob_valid),
+    .m_valid_i (cpu_i_iob_valid),
     .m_addr_i  (bootctr_ctr_reg == 2'b00 ? cpu_i_iob_addr : cpu_i_iob_addr + 32'h00FFF000),
     .m_wdata_i (cpu_i_iob_wdata),
     .m_wstrb_i (cpu_i_iob_wstrb),
@@ -664,7 +628,7 @@ iob_bus_demux #(
     .m_ready_o (cpu_i_iob_ready),
 
     // Followers' interface
-    .f_avalid_o({mem_i_iob_valid,  bootctr_i_iob_valid }),
+    .f_valid_o ({mem_i_iob_valid,  bootctr_i_iob_valid }),
     .f_addr_o  ({mem_i_iob_addr,   bootctr_i_iob_addr  }),
     .f_wdata_o ({mem_i_iob_wdata,  bootctr_i_iob_wdata }),
     .f_wstrb_o ({mem_i_iob_wstrb,  bootctr_i_iob_wstrb }),
