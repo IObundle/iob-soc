@@ -288,8 +288,6 @@ def setup(py_params_dict):
                 {"name": "clk"},
                 {"name": "cke"},
                 {"name": "cpu_reset", "width": "1"},
-                {"name": "int_mem_cpu_reset", "width": "1"},
-                {"name": "boot_ctr_cpu_reset", "width": "1"},
             ],
         },
         {
@@ -431,16 +429,15 @@ def setup(py_params_dict):
             },
             # Verilog Snippets for other modules
         ]
-    # Boot
     attributes_dict["wires"] += [
         {
             "name": "bootctr_i",
             "interface": {
                 "type": "iob",
-                "file_prefix": "iob_soc_int_i_",
+                "file_prefix": "bootctr_i_",
                 "wire_prefix": "bootctr_i_",
-                "DATA_W": "DATA_W",
-                "ADDR_W": "ADDR_W",
+                "DATA_W": params["data_w"],
+                "ADDR_W": params["addr_w"],
             },
             "descr": "iob-soc internal data interface",
         },
@@ -476,8 +473,8 @@ def setup(py_params_dict):
                 "type": "iob",
                 "file_prefix": "iob_soc_bootctr_swreg_",
                 "wire_prefix": "bootctr_swreg_",
-                "DATA_W": "DATA_W",
-                "ADDR_W": "ADDR_W",
+                "DATA_W": params["data_w"],
+                "ADDR_W": params["addr_w"],
             },
             "descr": "BOOTCTR swreg bus",
         },
@@ -546,7 +543,8 @@ def setup(py_params_dict):
             "connect": {
                 "clk_en_rst": "clk_en_rst",
                 "general": "int_mem_general",
-                "i_bus": "int_mem_i" if params["use_extmem"] else "cpu_i",
+                # FIXME: This below was not commented out
+                "i_bus": "int_mem_i",  # if params["use_extmem"] else "cpu_i",
                 "d_bus": "int_mem_d",
                 "rom_bus": "rom_bus",
             },
@@ -751,8 +749,12 @@ def setup(py_params_dict):
 assign cpu_reset = int_mem_cpu_reset | bootctr_cpu_reset;
 
 iob_bus_demux #(
-    .ADDR_W(ADDR_W),
-    .DATA_W(DATA_W),
+    .ADDR_W("""
+            + str(params["addr_w"])
+            + """),
+    .DATA_W("""
+            + str(params["data_w"])
+            + """),
     .N     (2)
 ) cpu_ibus_split (
     .clk_i     (clk_i),
@@ -760,7 +762,7 @@ iob_bus_demux #(
 
     // Master's interface
     .m_avalid_i(cpu_i_iob_valid),
-    .m_addr_i  (bootctr_ctr_reg == 2'b10 ? cpu_i_iob_addr + 32'h80000000 : cpu_i_iob_addr),
+    .m_addr_i  (bootctr_ctr_reg == 2'b00 ? cpu_i_iob_addr : cpu_i_iob_addr + 32'h00FFF000),
     .m_wdata_i (cpu_i_iob_wdata),
     .m_wstrb_i (cpu_i_iob_wstrb),
     .m_rdata_o (cpu_i_iob_rdata),
@@ -784,7 +786,7 @@ iob_bus_demux #(
     ]
 
     # Pre-setup specialized IOb-SoC functions
-    pre_setup_iob_soc(attributes_dict, peripherals)
+    pre_setup_iob_soc(attributes_dict, peripherals, params)
     iob_soc_sw_setup(attributes_dict, peripherals, params["addr_w"])
 
     return attributes_dict

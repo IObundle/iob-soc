@@ -16,7 +16,7 @@ def setup(py_params_dict):
             {
                 "name": "ADDR_W",
                 "type": "F",
-                "val": "32",
+                "val": "`IOB_BOOTCTR_SWREG_ADDR_W",
                 "min": "?",
                 "max": "32",
                 "descr": "Address bus width",

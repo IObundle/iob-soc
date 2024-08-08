@@ -7,7 +7,7 @@ module iob_bus_demux #(
    parameter N      = 2,             // Number of followers, minimum of 2
    parameter NB     = $clog2(N)      // Number of bits needed to address all followers
 ) (
-   `include "clk_rst_s_port.vs"
+   `include "iob_bus_demux_clk_rst_s_port.vs"
 
    // Master's interface
    input                   m_avalid_i,
@@ -40,7 +40,7 @@ module iob_bus_demux #(
       .DATA_W (NB),
       .RST_VAL(0)
    ) reg_f_sel (
-      `include "clk_rst_s_s_portmap.vs"
+      `include "iob_bus_demux_clk_rst_s_s_portmap.vs"
       .cke_i (1'b1),
       .en_i  (m_avalid_i),
       .data_i(f_sel_i),

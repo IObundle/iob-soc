@@ -34,21 +34,21 @@ module iob_bootctr #(
         .clk_i (clk_i),
         .arst_i(arst_i && ~cpu_1st_rst),
         .cke_i (cke_i),
-        .en_i  (iob_valid_i),
+        .en_i  (CPU_RST_r_o),
         .data_i(CTR_wr),
         .data_o(CTR_r_o)
     );
 
-   iob_pulse_gen #(
-      .START   (0),
-      .DURATION(100)
-   ) reset_pulse (
-      .clk_i  (clk_i),
-      .arst_i (arst_i),
-      .cke_i  (cke_i),
-      .start_i(CPU_RST_wr | arst_i),
-      .pulse_o(CPU_RST_r_o)
-   );
+    iob_pulse_gen #(
+        .START   (100),
+        .DURATION(100)
+    ) reset_pulse (
+        .clk_i  (clk_i),
+        .arst_i (arst_i),
+        .cke_i  (cke_i),
+        .start_i(CPU_RST_wr | arst_i),
+        .pulse_o(CPU_RST_r_o)
+    );
 
     //
     //INSTANTIATE BOOT ROM
@@ -78,7 +78,7 @@ module iob_bootctr #(
         .r_data_o(ROM_rdata_rd)
     );
     assign ROM_rready_rd = 1'b1;
-    assign cpu_i_iob_ready_o = 1'b1;
+    assign bootctr_i_iob_ready_o = 1'b1;
 
     iob_reg #(
         .DATA_W (1),

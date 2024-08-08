@@ -1,6 +1,7 @@
 #include "iob_bootctr_conf.h"
 #include "iob_soc_conf.h"
 #include "iob_soc_periphs.h"
+#include "iob_soc_system.h"
 
 // Can't include iob_bootctr_swreg.h because the assembler doesn't recognize stdint.h,
 // so define the constants here instead (these are address offsets).
@@ -9,9 +10,7 @@
 #define IOB_BOOTCTR_CPU_RST_ADDR 16777217
 
 #define BOOTROM (BOOTCTR0_BASE + IOB_BOOTCTR_ROM_ADDR)
-#define BOOTRAM ((1 << 31) + (1 << IOB_SOC_MEM_ADDR_W) - (1 << IOB_BOOTCTR_BOOT_ROM_ADDR_W))
-//#define BOOTRAM ((1 << 31) + (1 << IOB_SOC_MEM_ADDR_W))
-//#define BOOTRAM (1 << 31)
+#define BOOTRAM ((1 << IOB_SOC_MEM_ADDR_W) - (1 << IOB_BOOTCTR_BOOT_ROM_ADDR_W)) - 4
 #define LENGTH (1 << IOB_BOOTCTR_BOOT_ROM_ADDR_W)
 
 .section .init
@@ -31,12 +30,20 @@ copy_loop:
   bne x1, x0, copy_loop
 
 //reboot to run bootloader
-li s5, 1
-li s6, BOOTCTR0_BASE + IOB_BOOTCTR_CTR_ADDR
-sw s5, 0(s6)
 
 li s5, 1
 li s6, BOOTCTR0_BASE + IOB_BOOTCTR_CPU_RST_ADDR
-sw s5, 0(s6)
+sb s5, 0(s6)
+
+li s5, 0
+li s6, BOOTCTR0_BASE + IOB_BOOTCTR_CPU_RST_ADDR
+sb s5, 0(s6)
+
+li s5, 1
+li s6, BOOTCTR0_BASE + IOB_BOOTCTR_CTR_ADDR
+sb s5, 0(s6)
+
+forever:
+  j forever
 
 ebreak
