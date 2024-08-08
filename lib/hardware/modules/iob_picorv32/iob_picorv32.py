@@ -11,7 +11,7 @@ def setup(py_params_dict):
                 "val": "32",
                 "min": "1",
                 "max": "?",
-                "descr": "description here",
+                "descr": "Address bus width",
             },
             {
                 "name": "DATA_W",
