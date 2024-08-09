@@ -1,7 +1,7 @@
 { pkgs ? import <nixpkgs> {} }:
 
 let
-  py2hwsw_commit = "42ec36ca141ef7aeb0ba0bcfe0af5d8344c029fc"; # Replace with the desired commit.
+  py2hwsw_commit = "7d3f852889ebeb986937985d2d80215f6aeccf10"; # Replace with the desired commit.
 
   py2hwsw = pkgs.python3.pkgs.buildPythonPackage rec {
     pname = "py2hwsw";
