@@ -687,7 +687,7 @@ def setup(py_params_dict):
     ]
 
     # Pre-setup specialized IOb-SoC functions
-    pre_setup_iob_soc(attributes_dict, peripherals)
+    pre_setup_iob_soc(attributes_dict, peripherals, params)
     iob_soc_sw_setup(attributes_dict, peripherals, params["addr_w"])
 
     return attributes_dict

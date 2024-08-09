@@ -2,44 +2,47 @@ import copy
 
 import iob_soc
 
-AXI_SIGNAL_NAMES = [
-    "araddr",
-    "arprot",
-    "arvalid",
-    "arready",
-    "rdata",
-    "rresp",
-    "rvalid",
-    "rready",
-    "arid",
-    "arlen",
-    "arsize",
-    "arburst",
-    "arlock",
-    "arcache",
-    "arqos",
-    "rid",
-    "rlast",
-    "awaddr",
-    "awprot",
-    "awvalid",
-    "awready",
-    "wdata",
-    "wstrb",
-    "wvalid",
-    "wready",
-    "bresp",
-    "bvalid",
-    "bready",
-    "awid",
-    "awlen",
-    "awsize",
-    "awburst",
-    "awlock",
-    "awcache",
-    "awqos",
-    "wlast",
-    "bid",
+AXI_IN_SIGNAL_NAMES = [
+    ("araddr", "AXI_ADDR_W"),
+    ("arprot", 3),
+    ("arvalid", 1),
+    ("rready", 1),
+    ("arid", "AXI_ID_W"),
+    ("arlen", "AXI_LEN_W"),
+    ("arsize", 3),
+    ("arburst", 2),
+    ("arlock", 2),
+    ("arcache", 4),
+    ("arqos", 4),
+    ("awaddr", "AXI_ADDR_W"),
+    ("awprot", 3),
+    ("awvalid", 1),
+    ("wdata", "AXI_DATA_W"),
+    ("wstrb", "AXI_DATA_W / 8"),
+    ("wvalid", 1),
+    ("bready", 1),
+    ("awid", "AXI_ID_W"),
+    ("awlen", "AXI_LEN_W"),
+    ("awsize", 3),
+    ("awburst", 2),
+    ("awlock", 2),
+    ("awcache", 4),
+    ("awqos", 4),
+    ("wlast", 1),
+]
+
+AXI_OUT_SIGNAL_NAMES = [
+    ("arready", 1),
+    ("rdata", "AXI_DATA_W"),
+    ("rresp", 2),
+    ("rvalid", 1),
+    ("rid", "AXI_ID_W"),
+    ("rlast", 1),
+    ("awready", 1),
+    ("wready", 1),
+    ("bresp", 2),
+    ("bvalid", 1),
+    ("bid", "AXI_ID_W"),
 ]
 
 
@@ -57,7 +60,7 @@ def setup(py_params_dict):
             {
                 "name": "AXI_ID_W",
                 "type": "F",
-                "val": "0",
+                "val": "4",
                 "min": "1",
                 "max": "32",
                 "descr": "AXI ID bus width",
@@ -157,11 +160,17 @@ def setup(py_params_dict):
 
     attributes_dict["wires"] = simwrap_wires + [
         {
-            "name": "clk_rst",
+            "name": "clk",
             "descr": "",
             "signals": [
                 {"name": "clk"},
-                {"name": "rst"},
+            ],
+        },
+        {
+            "name": "rst",
+            "descr": "",
+            "signals": [
+                {"name": "arst"},
             ],
         },
         # UART
@@ -215,6 +224,23 @@ def setup(py_params_dict):
     if params["use_extmem"]:
         attributes_dict["wires"] += [
             {
+                "name": "interconnect_memory_axi",
+                "interface": {
+                    "type": "axi",
+                    "wire_prefix": "intercon_mem_",
+                    "ID_W": "AXI_ID_W",
+                    "ADDR_W": "AXI_ADDR_W",
+                    "DATA_W": "AXI_DATA_W",
+                    "LEN_W": "AXI_LEN_W",
+                    "LOCK_W": 1,
+                },
+                "descr": "AXI bus to connect interconnect and memory",
+                "signals": [
+                    {"name": "intercon_mem_m_axi_buser", "width": 1},
+                    {"name": "intercon_mem_m_axi_ruser", "width": 1},
+                ],
+            },
+            {
                 "name": "memory_axi",
                 "interface": {
                     "type": "axi",
@@ -236,8 +262,14 @@ def setup(py_params_dict):
                     "ADDR_W": "AXI_ADDR_W",
                     "DATA_W": "AXI_DATA_W",
                     "LEN_W": "AXI_LEN_W",
+                    "LOCK_W": 1,
                 },
                 "descr": "AXI slave bus for interconnect",
+                "signals": [
+                    {"name": "intercon_s_axi_awuser", "width": 1},
+                    {"name": "intercon_s_axi_wuser", "width": 1},
+                    {"name": "intercon_s_axi_aruser", "width": 1},
+                ],
             },
         ]
     attributes_dict["blocks"] = [
@@ -301,9 +333,10 @@ def setup(py_params_dict):
                     "M_COUNT": "1",
                 },
                 "connect": {
-                    "clk_rst": "clk_rst",
+                    "clk": "clk",
+                    "rst": "rst",
                     "s_axi": "interconnect_s_axi",
-                    "m_axi": "memory_axi",
+                    "m_axi": "interconnect_memory_axi",
                 },
             },
             {
@@ -315,7 +348,8 @@ def setup(py_params_dict):
                     "DATA_WIDTH": "AXI_DATA_W",
                 },
                 "connect": {
-                    "clk_rst": "clk_rst",
+                    "clk": "clk",
+                    "rst": "rst",
                     "axi": "memory_axi",
                 },
             },
@@ -367,14 +401,39 @@ def setup(py_params_dict):
     if params["use_extmem"]:
         # Connect all IOb-SoC AXI interfaces to interconnect
         verilog_code = "    // Connect all IOb-SoC AXI interfaces to interconnect\n"
-        for sig_name in AXI_SIGNAL_NAMES:
+        for sig_name, _ in AXI_IN_SIGNAL_NAMES:
             verilog_code += f"    assign intercon_s_axi_{sig_name} = {{"
             for wire in axi_wires:
                 prefix = ""
                 if "wire_prefix" in wire["interface"]:
                     prefix = wire["interface"]["wire_prefix"]
-                verilog_code += f"{prefix}axi_{sig_name}, "
+                suffix = ""
+                if sig_name in ["awlock", "arlock"]:
+                    suffix = "[0]"
+                verilog_code += f"{prefix}axi_{sig_name}{suffix}, "
             verilog_code = verilog_code[:-2] + "};\n"
+
+        for sig_name, sig_size in AXI_OUT_SIGNAL_NAMES:
+            for idx, wire in enumerate(axi_wires):
+                prefix = ""
+                if "wire_prefix" in wire["interface"]:
+                    prefix = wire["interface"]["wire_prefix"]
+                bit_select = ""
+                if type(sig_size) is not int or sig_size > 1:
+                    bit_select = f"[{idx}*{sig_size}+:{sig_size}]"
+                verilog_code += f"    assign {prefix}axi_{sig_name} = intercon_s_axi_{sig_name}{bit_select}; \n"
+
+        # Connect interconnect wires to memory wires
+        verilog_code += "    // Connect all interconnect wires to memory\n"
+        for sig_name, _ in AXI_IN_SIGNAL_NAMES:
+            verilog_code += (
+                f"    assign mem_axi_{sig_name} = intercon_mem_axi_{sig_name};\n"
+            )
+        for sig_name, _ in AXI_OUT_SIGNAL_NAMES:
+            verilog_code += (
+                f"    assign intercon_mem_axi_{sig_name} = mem_axi_{sig_name};\n"
+            )
+
         attributes_dict["snippets"] += [
             {
                 "verilog_code": verilog_code,

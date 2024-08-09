@@ -3,7 +3,6 @@ def setup(py_params_dict):
         "original_name": "iob_counter",
         "name": "iob_counter",
         "version": "0.1",
-        "generate_hw": False,
         "confs": [
             {
                 "name": "DATA_W",
@@ -32,31 +31,61 @@ def setup(py_params_dict):
                 "descr": "Clock, clock enable and reset",
             },
             {
-                "name": "rst",
-                "descr": "Input port",
+                "name": "en_rst",
+                "descr": "Enable and Synchronous reset interface",
                 "signals": [
-                    {"name": "rst", "width": 1, "direction": "input"},
+                    {
+                        "name": "en",
+                        "direction": "input",
+                        "width": 1,
+                        "descr": "Enable input",
+                    },
+                    {
+                        "name": "rst",
+                        "direction": "input",
+                        "width": 1,
+                        "descr": "Synchronous reset input",
+                    },
                 ],
             },
             {
-                "name": "en",
-                "descr": "Input port",
-                "signals": [
-                    {"name": "en", "width": 1, "direction": "input"},
-                ],
-            },
-            {
-                "name": "data",
+                "name": "data_o",
                 "descr": "Output port",
                 "signals": [
                     {"name": "data", "width": "DATA_W", "direction": "output"},
                 ],
             },
         ],
+        "wires": [
+            {
+                "name": "data_int",
+                "descr": "data_int wire",
+                "signals": [
+                    {"name": "data_int", "width": "DATA_W"},
+                ],
+            },
+        ],
         "blocks": [
             {
                 "core_name": "iob_reg_re",
-                "instance_name": "iob_reg_re_inst",
+                "instance_name": "reg0",
+                "parameters": {
+                    "DATA_W": "DATA_W",
+                    "RST_VAL": "RST_VAL",
+                },
+                "connect": {
+                    "clk_en_rst": "clk_en_rst",
+                    "en_rst": "en_rst",
+                    "data_i": "data_int",
+                    "data_o": "data_o",
+                },
+            },
+        ],
+        "snippets": [
+            {
+                "verilog_code": """
+        assign data_int =  data_o + 1'b1;
+            """,
             },
         ],
     }
