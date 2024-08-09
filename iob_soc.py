@@ -677,6 +677,14 @@ def setup(py_params_dict):
             "purpose": "simulation",
             "iob_soc_params": params,
         },
+        # FPGA wrapper
+        {
+            "core_name": "iob_soc_ku040_wrapper",
+            "instance_name": "iob_soc_ku040_wrapper",
+            "instantiate": False,
+            "purpose": "fpga",
+            "iob_soc_params": params,
+        },
     ]
     attributes_dict["sw_modules"] = [
         # Software modules

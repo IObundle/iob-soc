@@ -4,153 +4,153 @@
 
 module iob_soc_fpga_wrapper (
 
-   //differential clock input and reset
-   input c0_sys_clk_clk_p,
-   input c0_sys_clk_clk_n,
-   input reset,
+    //differential clock input and reset
+    input c0_sys_clk_clk_p,
+    input c0_sys_clk_clk_n,
+    input reset,
 
 `ifdef IOB_SOC_USE_EXTMEM
-   output        c0_ddr4_act_n,
-   output [16:0] c0_ddr4_adr,
-   output [ 1:0] c0_ddr4_ba,
-   output [ 0:0] c0_ddr4_bg,
-   output [ 0:0] c0_ddr4_cke,
-   output [ 0:0] c0_ddr4_odt,
-   output [ 0:0] c0_ddr4_cs_n,
-   output [ 0:0] c0_ddr4_ck_t,
-   output [ 0:0] c0_ddr4_ck_c,
-   output        c0_ddr4_reset_n,
-   inout  [ 3:0] c0_ddr4_dm_dbi_n,
-   inout  [31:0] c0_ddr4_dq,
-   inout  [ 3:0] c0_ddr4_dqs_c,
-   inout  [ 3:0] c0_ddr4_dqs_t,
+    output        c0_ddr4_act_n,
+    output [16:0] c0_ddr4_adr,
+    output [ 1:0] c0_ddr4_ba,
+    output [ 0:0] c0_ddr4_bg,
+    output [ 0:0] c0_ddr4_cke,
+    output [ 0:0] c0_ddr4_odt,
+    output [ 0:0] c0_ddr4_cs_n,
+    output [ 0:0] c0_ddr4_ck_t,
+    output [ 0:0] c0_ddr4_ck_c,
+    output        c0_ddr4_reset_n,
+    inout  [ 3:0] c0_ddr4_dm_dbi_n,
+    inout  [31:0] c0_ddr4_dq,
+    inout  [ 3:0] c0_ddr4_dqs_c,
+    inout  [ 3:0] c0_ddr4_dqs_t,
 `endif
 
 `ifdef IOB_SOC_USE_ETHERNET
-   output ENET_RESETN,
-   input  ENET_RX_CLK,
-   output ENET_GTX_CLK,
-   input  ENET_RX_D0,
-   input  ENET_RX_D1,
-   input  ENET_RX_D2,
-   input  ENET_RX_D3,
-   input  ENET_RX_DV,
-   //input  ENET_RX_ERR,
-   output ENET_TX_D0,
-   output ENET_TX_D1,
-   output ENET_TX_D2,
-   output ENET_TX_D3,
-   output ENET_TX_EN,
-   //output ENET_TX_ERR,
+    output ENET_RESETN,
+    input  ENET_RX_CLK,
+    output ENET_GTX_CLK,
+    input  ENET_RX_D0,
+    input  ENET_RX_D1,
+    input  ENET_RX_D2,
+    input  ENET_RX_D3,
+    input  ENET_RX_DV,
+    //input  ENET_RX_ERR,
+    output ENET_TX_D0,
+    output ENET_TX_D1,
+    output ENET_TX_D2,
+    output ENET_TX_D3,
+    output ENET_TX_EN,
+    //output ENET_TX_ERR,
 `endif
 
-   //uart
-   output txd_o,
-   input  rxd_i
+    //uart
+    output txd_o,
+    input  rxd_i
 );
 
-   localparam AXI_ID_W = 4;
-   localparam AXI_LEN_W = 8;
-   localparam AXI_ADDR_W = `DDR_ADDR_W;
-   localparam AXI_DATA_W = `DDR_DATA_W;
+  localparam AXI_ID_W = 4;
+  localparam AXI_LEN_W = 8;
+  localparam AXI_ADDR_W = `DDR_ADDR_W;
+  localparam AXI_DATA_W = `DDR_DATA_W;
 
-   `include "iob_soc_wrapper_pwires.vs"
+  `include "iob_soc_wrapper_pwires.vs"
 
-   wire clk;
-   wire arst;
+  wire clk;
+  wire arst;
 
 
-   // 
-   // Logic to contatenate data pins and ethernet clock
-   //
+  // 
+  // Logic to contatenate data pins and ethernet clock
+  //
 `ifdef IOB_SOC_USE_ETHERNET
-   //buffered eth clock
-   wire       ETH_Clk;
+  //buffered eth clock
+  wire ETH_Clk;
 
-   //eth clock
-   IBUFG rxclk_buf (
+  //eth clock
+  IBUFG rxclk_buf (
       .I(ENET_RX_CLK),
       .O(ETH_Clk)
-   );
-   ODDRE1 ODDRE1_inst (
+  );
+  ODDRE1 ODDRE1_inst (
       .Q (ENET_GTX_CLK),
       .C (ETH_Clk),
       .D1(1'b1),
       .D2(1'b0),
       .SR(~ENET_RESETN)
-   );
+  );
 
-   //MII
-   assign ETH0_MRxClk = ETH_Clk;
-   assign ETH0_MRxD = {ENET_RX_D3, ENET_RX_D2, ENET_RX_D1, ENET_RX_D0};
-   assign ETH0_MRxDv = ENET_RX_DV;
-   //assign ETH0_MRxErr = ENET_RX_ERR;
-   assign ETH0_MRxErr = 1'b0;
+  //MII
+  assign ETH0_MRxClk = ETH_Clk;
+  assign ETH0_MRxD = {ENET_RX_D3, ENET_RX_D2, ENET_RX_D1, ENET_RX_D0};
+  assign ETH0_MRxDv = ENET_RX_DV;
+  //assign ETH0_MRxErr = ENET_RX_ERR;
+  assign ETH0_MRxErr = 1'b0;
 
-   assign ETH0_MTxClk = ETH_Clk;
-   assign {ENET_TX_D3, ENET_TX_D2, ENET_TX_D1, ENET_TX_D0} = ETH0_MTxD;
-   assign ENET_TX_EN = ETH0_MTxEn;
-   //assign ENET_TX_ERR = ETH0_MTxErr;
+  assign ETH0_MTxClk = ETH_Clk;
+  assign {ENET_TX_D3, ENET_TX_D2, ENET_TX_D1, ENET_TX_D0} = ETH0_MTxD;
+  assign ENET_TX_EN = ETH0_MTxEn;
+  //assign ENET_TX_ERR = ETH0_MTxErr;
 
-   assign ENET_RESETN = ETH0_phy_rstn_o;
+  assign ENET_RESETN = ETH0_phy_rstn_o;
 
-   assign ETH0_MColl = 1'b0;
-   assign ETH0_MCrS = 1'b0;
+  assign ETH0_MColl = 1'b0;
+  assign ETH0_MCrS = 1'b0;
 `endif
 
 
-   //
-   // IOb-SoC
-   //
+  //
+  // IOb-SoC
+  //
 
-   iob_soc_mwrap #(
+  iob_soc_mwrap #(
       .AXI_ID_W  (AXI_ID_W),
       .AXI_LEN_W (AXI_LEN_W),
       .AXI_ADDR_W(AXI_ADDR_W),
       .AXI_DATA_W(AXI_DATA_W)
-   ) iob_soc0 (
+  ) iob_soc0 (
       `include "iob_soc_pportmaps.vs"
       .clk_i (clk),
       .cke_i (1'b1),
       .arst_i(arst),
       .trap_o()
-   );
-   
-   // UART
-   assign txd_o = uart_txd_o;
-   assign uart_rxd_i = rxd_i;
-   assign uart_cts_i = 1'b1;
-   // uart_rts_o unconnected
+  );
 
-   //
-   // DDR4 CONTROLLER
-   //
+  // UART
+  assign txd_o = uart_txd_o;
+  assign uart_rxd_i = rxd_i;
+  assign uart_cts_i = 1'b1;
+  // uart_rts_o unconnected
+
+  //
+  // DDR4 CONTROLLER
+  //
 
 `ifdef IOB_SOC_USE_EXTMEM
-   localparam DDR4_AXI_ID_W = AXI_ID_W;
-   localparam DDR4_AXI_LEN_W = AXI_LEN_W;
-   localparam DDR4_AXI_ADDR_W = AXI_ADDR_W;
-   localparam DDR4_AXI_DATA_W = AXI_DATA_W;
+  localparam DDR4_AXI_ID_W = AXI_ID_W;
+  localparam DDR4_AXI_LEN_W = AXI_LEN_W;
+  localparam DDR4_AXI_ADDR_W = AXI_ADDR_W;
+  localparam DDR4_AXI_DATA_W = AXI_DATA_W;
 
 
-   `include "iob_soc_ku040_rstn.vs"
+  `include "iob_soc_ku040_rstn.vs"
 
-   //axi wires between ddr4 contrl and axi interconnect
-   `include "ddr4_axi_wire.vs"
+  //axi wires between ddr4 contrl and axi interconnect
+  `include "ddr4_axi_wire.vs"
 
-   //DDR4 controller axi side clocks and resets
-   wire c0_ddr4_ui_clk;  //controller output clock 200MHz
-   wire ddr4_axi_arstn;  //controller input
+  //DDR4 controller axi side clocks and resets
+  wire c0_ddr4_ui_clk;  //controller output clock 200MHz
+  wire ddr4_axi_arstn;  //controller input
 
-   wire c0_ddr4_ui_clk_sync_rst;
+  wire c0_ddr4_ui_clk_sync_rst;
 
-   wire calib_done;
+  wire calib_done;
 
 
-   //
-   // ASYNC AXI BRIDGE (between user logic (clk) and DDR controller (c0_ddr4_ui_clk)
-   //
-   axi_interconnect_0 axi_async_bridge (
+  //
+  // ASYNC AXI BRIDGE (between user logic (clk) and DDR controller (c0_ddr4_ui_clk)
+  //
+  axi_interconnect_0 axi_async_bridge (
       .INTERCONNECT_ACLK   (c0_ddr4_ui_clk),           //from ddr4 controller 
       .INTERCONNECT_ARESETN(~c0_ddr4_ui_clk_sync_rst), //from ddr4 controller
 
@@ -209,9 +209,9 @@ module iob_soc_fpga_wrapper (
       .M00_AXI_RLAST (ddr4_axi_rlast),
       .M00_AXI_RVALID(ddr4_axi_rvalid),
       .M00_AXI_RREADY(ddr4_axi_rready)
-   );
+  );
 
-   ddr4_0 ddr4_ctrl (
+  ddr4_0 ddr4_ctrl (
       .sys_rst     (reset),
       .c0_sys_clk_p(c0_sys_clk_clk_p),
       .c0_sys_clk_n(c0_sys_clk_clk_n),
@@ -290,39 +290,39 @@ module iob_soc_fpga_wrapper (
       .c0_ddr4_dqs_c         (c0_ddr4_dqs_c),
       .c0_ddr4_dqs_t         (c0_ddr4_dqs_t),
       .c0_init_calib_complete(calib_done)
-   );
+  );
 
 
 `else
-   //if DDR not used use PLL to generate system clock
-   clock_wizard #(
+  //if DDR not used use PLL to generate system clock
+  clock_wizard #(
       .OUTPUT_PER(10),
       .INPUT_PER (4)
-   ) clk_250_to_100_MHz (
+  ) clk_250_to_100_MHz (
       .clk_in1_p(c0_sys_clk_clk_p),
       .clk_in1_n(c0_sys_clk_clk_n),
       .clk_out1 (clk)
-   );
+  );
 
-   wire start;
-   iob_reset_sync start_sync (
+  wire start;
+  iob_reset_sync start_sync (
       .clk_i (clk),
       .arst_i(reset),
       .arst_o(start)
-   );
+  );
 
-   //create reset pulse as reset is never activated manually
-   //also, during bitstream loading, the reset pin is not pulled high
-   iob_pulse_gen #(
+  //create reset pulse as reset is never activated manually
+  //also, during bitstream loading, the reset pin is not pulled high
+  iob_pulse_gen #(
       .START   (5),
       .DURATION(10)
-   ) reset_pulse (
+  ) reset_pulse (
       .clk_i  (clk),
       .arst_i (reset),
       .cke_i  (1'b1),
       .start_i(start),
       .pulse_o(arst)
-   );
+  );
 `endif
 
 endmodule
