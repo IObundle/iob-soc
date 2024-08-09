@@ -444,6 +444,7 @@ def setup(py_params_dict):
         {
             "core_name": "iob_picorv32",
             "instance_name": "cpu",
+            "instance_description": "RISC-V CPU instance",
             "parameters": {
                 "ADDR_W": params["addr_w"],
                 "DATA_W": params["data_w"],
@@ -465,6 +466,7 @@ def setup(py_params_dict):
                 "core_name": "iob_split",
                 "name": "iob_ibus_split",
                 "instance_name": "iob_ibus_split",
+                "instance_description": "Instruction split between internal and external memory",
                 "connect": {
                     "clk_en_rst": "clk_en_rst",
                     "reset": "split_reset",
@@ -479,6 +481,7 @@ def setup(py_params_dict):
                 "core_name": "iob_split",
                 "name": "iob_dbus_split",
                 "instance_name": "iob_dbus_split",
+                "instance_description": "Data split between internal bus and external memory",
                 "connect": {
                     "clk_en_rst": "clk_en_rst",
                     "reset": "split_reset",
@@ -494,6 +497,7 @@ def setup(py_params_dict):
         {
             "core_name": "iob_soc_int_mem",
             "instance_name": "int_mem",
+            "instance_description": "Internal memory controller",
             "parameters": {
                 "HEXFILE": '"iob_soc_firmware"',
                 "BOOT_HEXFILE": '"iob_soc_boot"',
@@ -532,6 +536,7 @@ def setup(py_params_dict):
             {
                 "core_name": "iob_soc_ext_mem",
                 "instance_name": "ext_mem",
+                "instance_description": "External memory controller",
                 "parameters": {
                     "FIRM_ADDR_W": params["mem_addr_w"],
                     "DDR_ADDR_W ": "`DDR_ADDR_W",
@@ -557,6 +562,7 @@ def setup(py_params_dict):
             "core_name": "iob_split",
             "name": "iob_intmem_split",
             "instance_name": "iob_intmem_split",
+            "instance_description": "Split between internal memory and peripheral bus",
             "connect": {
                 "clk_en_rst": "clk_en_rst",
                 "reset": "split_reset",
@@ -571,6 +577,7 @@ def setup(py_params_dict):
             "core_name": "iob_split",
             "name": "iob_pbus_split",
             "instance_name": "iob_pbus_split",
+            "instance_description": "Split between peripherals",
             "connect": {
                 "clk_en_rst": "clk_en_rst",
                 "reset": "split_reset",
@@ -588,6 +595,7 @@ def setup(py_params_dict):
         {
             "core_name": "iob_uart",
             "instance_name": "UART0",
+            "instance_description": "UART peripheral",
             "parameters": {},
             "connect": {
                 "clk_en_rst": "clk_en_rst",
@@ -598,6 +606,7 @@ def setup(py_params_dict):
         {
             "core_name": "iob_timer",
             "instance_name": "TIMER0",
+            "instance_description": "Timer peripheral",
             "parameters": {},
             "connect": {
                 "clk_en_rst": "clk_en_rst",
