@@ -670,7 +670,7 @@ def setup(py_params_dict):
             "core_name": "iob_tasks",
             "instance_name": "iob_tasks_inst",
             "instantiate": False,
-            "purpose": "simulation",
+            "dest_dir": "hardware/simulation/src",
         },
         # FPGA modules
         {
@@ -683,7 +683,7 @@ def setup(py_params_dict):
             "core_name": "iob_soc_sim_wrapper",
             "instance_name": "iob_soc_sim_wrapper",
             "instantiate": False,
-            "purpose": "simulation",
+            "dest_dir": "hardware/simulation/src",
             "iob_soc_params": params,
         },
         # FPGA wrapper
@@ -691,7 +691,7 @@ def setup(py_params_dict):
             "core_name": "iob_soc_ku040_wrapper",
             "instance_name": "iob_soc_ku040_wrapper",
             "instantiate": False,
-            "purpose": "fpga",
+            "dest_dir": "hardware/fpga/vivado/AES-KU040-DB-G/",
             "iob_soc_params": params,
         },
     ]

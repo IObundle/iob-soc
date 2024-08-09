@@ -118,12 +118,12 @@ def setup(py_params_dict):
             {
                 "core_name": "iob_tasks",
                 "instance_name": "iob_tasks_inst",
-                "purpose": "simulation",
+                "dest_dir": "hardware/simulation/src",
             },
             {
                 "core_name": "iob_reg_e",
                 "instance_name": "iob_reg_e_inst",
-                "purpose": "simulation",
+                "dest_dir": "hardware/simulation/src",
             },
         ],
     }

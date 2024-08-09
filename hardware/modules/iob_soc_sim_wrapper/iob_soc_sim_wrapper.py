@@ -286,7 +286,7 @@ def setup(py_params_dict):
                 "clk_en_rst": "clk_en_rst",
             }
             | {i["name"]: i["name"] for i in simwrap_wires},
-            "purpose": "common",
+            "dest_dir": "hardware/common_src",
             "iob_soc_params": params,
         },
         {

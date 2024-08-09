@@ -54,7 +54,7 @@ def setup(py_params_dict):
 
     attributes_dict = {
         "original_name": "iob_soc_ku040_wrapper",
-        "name": "iob_soc_ku040_wrapper",
+        "name": "iob_soc_fpga_wrapper",
         "version": "0.1",
         "confs": [
             {
@@ -363,7 +363,7 @@ def setup(py_params_dict):
             },
             "connect": {"rs232": "rs232_int"}
             | {i["name"]: i["name"] for i in fpga_wrapper_wires},
-            "purpose": "common",
+            "dest_dir": "hardware/common_src",
             "iob_soc_params": params,
         },
     ]
