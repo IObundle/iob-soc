@@ -44,6 +44,6 @@ copy_loop:
   li s6, BOOTCTR0_BASE + IOB_BOOTCTR_CTR_ADDR
   sb s5, 0(s6)
 
-// Keep this here, for the CPU to wait until the reset pulse is triggered
 forever:
+  // Keep this here, for the CPU to wait until the reset pulse is triggered
   j forever
