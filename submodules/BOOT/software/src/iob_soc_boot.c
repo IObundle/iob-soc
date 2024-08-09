@@ -1,26 +1,18 @@
 #include "bsp.h"
 #include "iob-uart.h"
-#include "iob_soc_conf.h"
-#include "iob_soc_system.h"
-
-#ifdef IOB_SOC_USE_EXTMEM
 #include "iob_cache_swreg.h"
-#endif
-
-// defined here (and not in periphs.h) because it is the only peripheral used
-// by the bootloader
-#define UART_BASE (IOB_SOC_UART0 << (31 - IOB_SOC_N_SLAVES_W))
+#include "iob_soc_conf.h"
+#include "iob_soc_periphs.h"
+#include "iob_soc_system.h"
 
 #define PROGNAME "IOb-Bootloader"
 
 int main() {
 
   // init uart
-  uart_init(UART_BASE, FREQ / BAUD);
+  uart_init(UART0_BASE, FREQ / BAUD);
 
-#ifdef IOB_SOC_USE_EXTMEM
-  IOB_CACHE_INIT_BASEADDR((1 << IOB_SOC_E) + (1 << IOB_SOC_MEM_ADDR_W));
-#endif
+  IOB_CACHE_INIT_BASEADDR(1 << IOB_SOC_MEM_ADDR_W);
 
   // connect with console
   do {
@@ -39,11 +31,7 @@ int main() {
 
   // address to copy firmware to
   char *prog_start_addr;
-#ifdef IOB_SOC_USE_EXTMEM
-  prog_start_addr = (char *)EXTRA_BASE;
-#else
-  prog_start_addr = (char *)(1 << IOB_SOC_BOOTROM_ADDR_W);
-#endif
+  prog_start_addr = (char *)0;
 
   while (uart_getc() != ACK) {
     uart_puts(PROGNAME);
@@ -74,8 +62,6 @@ int main() {
   uart_puts(": Restart CPU to run user program...\n");
   uart_txwait();
 
-#ifdef IOB_SOC_USE_EXTMEM
   while (!IOB_CACHE_GET_WTB_EMPTY())
     ;
-#endif
 }
