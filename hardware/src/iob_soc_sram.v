@@ -7,13 +7,6 @@ module iob_soc_sram #(
     parameter SRAM_ADDR_W = `IOB_SOC_SRAM_ADDR_W,
     parameter HEXFILE     = "none"
 ) (
-`ifdef USE_SPRAM
-    output                   valid_spram_o,
-    output [SRAM_ADDR_W-3:0] addr_spram_o,
-    output [   DATA_W/8-1:0] wstrb_spram_o,
-    output [     DATA_W-1:0] wdata_spram_o,
-    input  [     DATA_W-1:0] rdata_spram_i,
-`endif
     // intruction bus
     input                    i_valid_i,
     input  [SRAM_ADDR_W-3:0] i_addr_i,
@@ -35,15 +28,7 @@ module iob_soc_sram #(
     `include "iob_soc_clk_en_rst_s_port.vs"
 );
 
-`ifdef USE_SPRAM
-  wire d_valid_int = i_valid_i ? 1'b0 : d_valid_i;
-  assign valid_spram_o = i_valid_i ? i_valid_i : d_valid_i;
-  assign addr_spram_o  = i_valid_i ? i_addr_i : d_addr_i;
-  assign wdata_spram_o = i_valid_i ? i_wdata_i : d_wdata_i;
-  assign wstrb_spram_o = i_valid_i ? i_wstrb_i : d_wstrb_i;
-`endif
-
-  // reply with ready 
+  // reply with ready
   wire i_rvalid_nxt;
   assign i_rvalid_nxt = i_valid_i & ~(|i_wstrb_i);
 
