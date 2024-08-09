@@ -11,8 +11,8 @@
 .globl main
 
   //set stack pointer
-  lui sp, %hi(1<<IOB_SOC_SRAM_ADDR_W)
-  addi sp, sp, %lo(1<<IOB_SOC_SRAM_ADDR_W)
+  lui sp, %hi(1<<IOB_SOC_MEM_ADDR_W)
+  addi sp, sp, %lo(1<<IOB_SOC_MEM_ADDR_W)
 
   //call main
   jal ra, main
@@ -21,15 +21,15 @@
 
   li s5, 1
   li s6, BOOTCTR0_BASE + IOB_BOOTCTR_CPU_RST_ADDR
-  sw s5, 0(s6)
+  sb s5, 0(s6)
 
   li s5, 0
   li s6, BOOTCTR0_BASE + IOB_BOOTCTR_CPU_RST_ADDR
-  sw s5, 0(s6)
+  sb s5, 0(s6)
 
   li s5, 2
   li s6, BOOTCTR0_BASE + IOB_BOOTCTR_CTR_ADDR
-  sw s5, 0(s6)
+  sb s5, 0(s6)
 
 forever:
   // Keep this here, for the CPU to wait until the reset pulse is triggered

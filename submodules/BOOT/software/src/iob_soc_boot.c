@@ -30,8 +30,7 @@ int main() {
 #endif
 
   // address to copy firmware to
-  char *prog_start_addr;
-  prog_start_addr = (char *)0;
+  char *prog_start_addr = (char *)0;
 
   while (uart_getc() != ACK) {
     uart_puts(PROGNAME);
