@@ -44,7 +44,7 @@ module iob_bootctr #(
         .DURATION(100)
     ) reset_pulse (
         .clk_i  (clk_i),
-        .arst_i ('b0),
+        .arst_i (1'b0),
         .cke_i  (cke_i),
         .start_i(CPU_RST_wr | arst_i),
         .pulse_o(CPU_RST_r_o)

@@ -365,9 +365,9 @@ def setup(py_params_dict):
                 "file_prefix": "bootctr_i_",
                 "wire_prefix": "bootctr_i_",
                 "DATA_W": params["data_w"],
-                "ADDR_W": params["addr_w"],
+                "ADDR_W": params["addr_w"] - 1,
             },
-            "descr": "iob-soc internal data interface",
+            "descr": "iob-soc boot controller instruction interface",
         },
     ]
     attributes_dict["wires"] += [
@@ -608,15 +608,15 @@ assign cpu_reset = bootctr_cpu_reset;
 
 iob_bus_demux #(
     .ADDR_W("""
-            + str(params["addr_w"])
+            + str(params["addr_w"] - 1)
             + """),
     .DATA_W("""
             + str(params["data_w"])
             + """),
     .N     (2)
 ) cpu_ibus_split (
-    .clk_i     (clk_i),
-    .arst_i    (cpu_reset),
+    .clk_i (clk_i),
+    .arst_i(cpu_reset),
 
     // Master's interface
     .m_valid_i (cpu_i_iob_valid),
@@ -628,16 +628,16 @@ iob_bus_demux #(
     .m_ready_o (cpu_i_iob_ready),
 
     // Followers' interface
-    .f_valid_o ({mem_i_iob_valid,  bootctr_i_iob_valid }),
-    .f_addr_o  ({mem_i_iob_addr,   bootctr_i_iob_addr  }),
-    .f_wdata_o ({mem_i_iob_wdata,  bootctr_i_iob_wdata }),
-    .f_wstrb_o ({mem_i_iob_wstrb,  bootctr_i_iob_wstrb }),
-    .f_rdata_i ({mem_i_iob_rdata,  bootctr_i_iob_rdata }),
+    .f_valid_o ({mem_i_iob_valid , bootctr_i_iob_valid }),
+    .f_addr_o  ({mem_i_iob_addr  , bootctr_i_iob_addr  }),
+    .f_wdata_o ({mem_i_iob_wdata , bootctr_i_iob_wdata }),
+    .f_wstrb_o ({mem_i_iob_wstrb , bootctr_i_iob_wstrb }),
+    .f_rdata_i ({mem_i_iob_rdata , bootctr_i_iob_rdata }),
     .f_rvalid_i({mem_i_iob_rvalid, bootctr_i_iob_rvalid}),
-    .f_ready_i ({mem_i_iob_ready,  bootctr_i_iob_ready }),
+    .f_ready_i ({mem_i_iob_ready , bootctr_i_iob_ready }),
 
     // Follower selection
-    .f_sel_i   (bootctr_ctr_reg == 2'b00 ? 1'b0 : 1'b1)
+    .f_sel_i(bootctr_ctr_reg == 2'b00 ? 1'b0 : 1'b1)
 );
             """,
         },
