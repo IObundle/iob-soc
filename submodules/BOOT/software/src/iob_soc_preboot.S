@@ -30,18 +30,20 @@ copy_loop:
   addi x1, x1, -1
   bne x1, x0, copy_loop
 
-//reboot to run bootloader
+  //reboot to run bootloader
 
-li s5, 1
-li s6, BOOTCTR0_BASE + IOB_BOOTCTR_CPU_RST_ADDR
-sb s5, 0(s6)
+  li s5, 1
+  li s6, BOOTCTR0_BASE + IOB_BOOTCTR_CPU_RST_ADDR
+  sb s5, 0(s6)
 
-li s5, 0
-li s6, BOOTCTR0_BASE + IOB_BOOTCTR_CPU_RST_ADDR
-sb s5, 0(s6)
+  li s5, 0
+  li s6, BOOTCTR0_BASE + IOB_BOOTCTR_CPU_RST_ADDR
+  sb s5, 0(s6)
 
-li s5, 1
-li s6, BOOTCTR0_BASE + IOB_BOOTCTR_CTR_ADDR
-sb s5, 0(s6)
+  li s5, 1
+  li s6, BOOTCTR0_BASE + IOB_BOOTCTR_CTR_ADDR
+  sb s5, 0(s6)
 
-ebreak
+// Keep this here, for the CPU to wait until the reset pulse is triggered
+forever:
+  j forever
