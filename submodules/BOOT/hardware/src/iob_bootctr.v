@@ -29,7 +29,7 @@ module iob_bootctr #(
 
     // Copied from iob_bootctr_swreg_gen.v
     // Only when the CPU_CTR register has 1 written to its first bit (whether the value was already there or not), the
-    // cpu_reset_o signal is set to 1 for some time.
+    // cpu_reset_o signal is set to an active pulse for some time.
     wire CPU_CTR_addressed_w;
     assign CPU_CTR_addressed_w = (iob_addr_i >= 0) && (iob_addr_i < 1);
     wire CPU_CTR_wen;
@@ -44,7 +44,7 @@ module iob_bootctr #(
         .DURATION(100)
     ) reset_pulse (
         .clk_i  (clk_i),
-        .arst_i (1'b0),
+        .arst_i (arst_i),
         .cke_i  (cke_i),
         .start_i(cpu_rst_start_pulse),
         .pulse_o(cpu_reset_o)
