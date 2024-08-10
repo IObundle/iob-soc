@@ -4,8 +4,7 @@
 
 // Can't include iob_bootctr_swreg.h because the assembler doesn't recognize stdint.h,
 // so define the constants here instead (these are address offsets).
-#define IOB_BOOTCTR_CTR_ADDR 16777216
-#define IOB_BOOTCTR_CPU_RST_ADDR 16777217
+#define IOB_BOOTCTR_CPU_CTR_ADDR 0
 
 .section .init
 .globl main
@@ -18,17 +17,8 @@
   jal ra, main
 
   //reboot to run bootloader
-
-  li s5, 1
-  li s6, BOOTCTR0_BASE + IOB_BOOTCTR_CPU_RST_ADDR
-  sb s5, 0(s6)
-
-  li s5, 0
-  li s6, BOOTCTR0_BASE + IOB_BOOTCTR_CPU_RST_ADDR
-  sb s5, 0(s6)
-
-  li s5, 1
-  li s6, BOOTCTR0_BASE + IOB_BOOTCTR_CTR_ADDR
+  li s5, 1 | (1 << 1)
+  li s6, BOOTCTR0_BASE + IOB_BOOTCTR_CPU_CTR_ADDR
   sb s5, 0(s6)
 
 forever:

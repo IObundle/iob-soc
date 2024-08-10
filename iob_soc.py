@@ -305,7 +305,7 @@ def setup(py_params_dict):
             "descr": "Boot controller interface",
             "signals": [
                 {"name": "bootctr_cpu_reset", "width": "1"},
-                {"name": "bootctr_ctr_reg", "width": "2"},
+                {"name": "bootctr_boot_ctr", "width": "2"},
             ],
         },
     ]
@@ -620,7 +620,7 @@ iob_bus_demux #(
 
     // Master's interface
     .m_valid_i (cpu_i_iob_valid),
-    .m_addr_i  (bootctr_ctr_reg == 2'b01 ? cpu_i_iob_addr + 32'h00FFF000 : cpu_i_iob_addr),
+    .m_addr_i  (bootctr_boot_ctr == 2'b01 ? cpu_i_iob_addr + 32'h00FFF000 : cpu_i_iob_addr),
     .m_wdata_i (cpu_i_iob_wdata),
     .m_wstrb_i (cpu_i_iob_wstrb),
     .m_rdata_o (cpu_i_iob_rdata),
@@ -637,7 +637,7 @@ iob_bus_demux #(
     .f_ready_i ({mem_i_iob_ready , bootctr_i_iob_ready }),
 
     // Follower selection
-    .f_sel_i(bootctr_ctr_reg == 2'b00 ? 1'b0 : 1'b1)
+    .f_sel_i(bootctr_boot_ctr == 2'b00 ? 1'b0 : 1'b1)
 );
             """,
         },
