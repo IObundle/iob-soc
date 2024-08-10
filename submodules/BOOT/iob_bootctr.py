@@ -69,7 +69,7 @@ def setup(py_params_dict):
                 "descr": "Instruction bus",
             },
             {
-                "name": "swregs_read_out",
+                "name": "cpu_controls",
                 "signals": [
                     {
                         "name": "cpu_reset",

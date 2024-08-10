@@ -512,7 +512,7 @@ def setup(py_params_dict):
                 "clk_en_rst": "clk_en_rst",
                 "iob": "bootctr_swreg",
                 "bootctr_i_bus": "bootctr_i",
-                "swregs_read_out": "bootctr",
+                "cpu_controls": "bootctr",
             },
         },
     ]
