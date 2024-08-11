@@ -1,4 +1,3 @@
-#include "iob_bootctr_conf.h"
 #include "iob_soc_conf.h"
 #include "iob_soc_periphs.h"
 #include "iob_soc_system.h"
@@ -9,8 +8,7 @@
 #define IOB_BOOTCTR_ROM_ADDR 16777216
 
 #define BOOTROM (BOOTCTR0_BASE + IOB_BOOTCTR_ROM_ADDR)
-#define BOOTRAM ((1 << IOB_SOC_MEM_ADDR_W) - (1 << IOB_BOOTCTR_BOOT_ROM_ADDR_W))
-#define LENGTH (1 << IOB_BOOTCTR_BOOT_ROM_ADDR_W)
+#define LENGTH (1 << IOB_SOC_BOOTROM_ADDR_W)
 
 .section .init
 .globl _start
@@ -19,7 +17,7 @@ _start:
   li x1, LENGTH
   li x2, BOOTROM
   // Below, -4 because it was only starting to write at 0x4 for some reason
-  li x3, BOOTRAM - 4
+  li x3, BOOTLDR_ADDR - 4
 
 copy_loop:
   lw x4, 0(x2)
@@ -29,11 +27,6 @@ copy_loop:
   addi x1, x1, -1
   bne x1, x0, copy_loop
 
-  //reboot to run bootloader
-  li s5, 1 | (1 << 1)
-  li s6, BOOTCTR0_BASE + IOB_BOOTCTR_CPU_CTR_ADDR
-  sb s5, 0(s6)
-
-forever:
-  // Keep this here, for the CPU to wait until the reset pulse is triggered
-  j forever
+  // Jump to the bootloader
+  li x5, BOOTLDR_ADDR
+  jalr x0, 0(x5)

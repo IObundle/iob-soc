@@ -98,6 +98,14 @@ def setup(py_params_dict):
             },
             # parameters
             {
+                "name": "P_BIT",
+                "type": "P",
+                "val": "30",
+                "min": "1",
+                "max": "32",
+                "descr": "Peripheral bus selection bit",
+            },
+            {
                 "name": "PREBOOTROM_ADDR_W",
                 "type": "P",
                 "val": "8",
@@ -111,7 +119,7 @@ def setup(py_params_dict):
                 "val": "12",
                 "min": "1",
                 "max": "32",
-                "descr": "Boot ROM address width",
+                "descr": "Bootloader ROM address width",
             },
             {
                 "name": "SRAM_ADDR_W",
@@ -620,7 +628,7 @@ iob_bus_demux #(
 
     // Master's interface
     .m_valid_i (cpu_i_iob_valid),
-    .m_addr_i  (bootctr_boot_ctr == 2'b01 ? cpu_i_iob_addr + 32'h00FFF000 : cpu_i_iob_addr),
+    .m_addr_i  (cpu_i_iob_addr),
     .m_wdata_i (cpu_i_iob_wdata),
     .m_wstrb_i (cpu_i_iob_wstrb),
     .m_rdata_o (cpu_i_iob_rdata),
@@ -628,16 +636,16 @@ iob_bus_demux #(
     .m_ready_o (cpu_i_iob_ready),
 
     // Followers' interface
-    .f_valid_o ({mem_i_iob_valid , bootctr_i_iob_valid }),
-    .f_addr_o  ({mem_i_iob_addr  , bootctr_i_iob_addr  }),
-    .f_wdata_o ({mem_i_iob_wdata , bootctr_i_iob_wdata }),
-    .f_wstrb_o ({mem_i_iob_wstrb , bootctr_i_iob_wstrb }),
-    .f_rdata_i ({mem_i_iob_rdata , bootctr_i_iob_rdata }),
-    .f_rvalid_i({mem_i_iob_rvalid, bootctr_i_iob_rvalid}),
-    .f_ready_i ({mem_i_iob_ready , bootctr_i_iob_ready }),
+    .f_valid_o ({bootctr_i_iob_valid , mem_i_iob_valid }),
+    .f_addr_o  ({bootctr_i_iob_addr  , mem_i_iob_addr  }),
+    .f_wdata_o ({bootctr_i_iob_wdata , mem_i_iob_wdata }),
+    .f_wstrb_o ({bootctr_i_iob_wstrb , mem_i_iob_wstrb }),
+    .f_rdata_i ({bootctr_i_iob_rdata , mem_i_iob_rdata }),
+    .f_rvalid_i({bootctr_i_iob_rvalid, mem_i_iob_rvalid}),
+    .f_ready_i ({bootctr_i_iob_ready , mem_i_iob_ready }),
 
     // Follower selection
-    .f_sel_i(bootctr_boot_ctr == 2'b00 ? 1'b0 : 1'b1)
+    .f_sel_i(cpu_i_iob_addr[P_BIT])
 );
             """,
         },
