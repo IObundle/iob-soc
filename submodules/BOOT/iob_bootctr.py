@@ -21,21 +21,22 @@ def setup(py_params_dict):
                 "max": "32",
                 "descr": "Address bus width",
             },
+            # These 2 below are copies of the ones defined in iob-soc.py
             {
-                "name": "BOOT_ROM_ADDR_W",
-                "type": "F",
-                "val": "12",
-                "min": "?",
-                "max": "24",
-                "descr": "Bootloader ROM address width",
-            },
-            {
-                "name": "PREBOOT_ROM_ADDR_W",
+                "name": "PREBOOTROM_ADDR_W",
                 "type": "F",
                 "val": "8",
                 "min": "?",
                 "max": "24",
                 "descr": "Preboot ROM address width",
+            },
+            {
+                "name": "BOOTROM_ADDR_W",
+                "type": "F",
+                "val": "12",
+                "min": "?",
+                "max": "24",
+                "descr": "Bootloader ROM address width",
             },
         ],
         "ports": [
@@ -69,19 +70,19 @@ def setup(py_params_dict):
                 "descr": "Instruction bus",
             },
             {
-                "name": "swregs_read_out",
+                "name": "cpu_controls",
                 "signals": [
                     {
-                        "name": "CPU_RST_r",
+                        "name": "cpu_reset",
                         "direction": "output",
                         "width": 1,
                         "descr": "CPU sync reset.",
                     },
                     {
-                        "name": "CTR_r",
+                        "name": "boot_ctr",
                         "direction": "output",
                         "width": 2,
-                        "descr": "Boot controller external link.",
+                        "descr": "Boot controller.",
                     },
                 ],
             },
@@ -92,34 +93,24 @@ def setup(py_params_dict):
                 "descr": "Boot control register.",
                 "regs": [
                     {
+                        "name": "CPU_CTR",
+                        "type": "W",
+                        "n_bits": 3,
+                        "rst_val": 0,
+                        "addr": -1,
+                        "log2n_items": 0,
+                        "autoreg": True,
+                        "descr": "CPU control register (write). First bit: write 1 to reset the CPU (no need to set to 0 again). Remaining bits: 0 to select preboot, 1 to select bootloader, 2 to select firmware",
+                    },
+                    {
                         "name": "ROM",
                         "type": "R",
                         "n_bits": "DATA_W",
                         "rst_val": 0,
                         "addr": -1,
-                        "log2n_items": "BOOT_ROM_ADDR_W - 2",
+                        "log2n_items": "BOOTROM_ADDR_W - 2",
                         "autoreg": False,
-                        "descr": "Bootloader ROM.",
-                    },
-                    {
-                        "name": "CTR",
-                        "type": "W",
-                        "n_bits": 2,
-                        "rst_val": 0,
-                        "addr": -1,
-                        "log2n_items": 0,
-                        "autoreg": True,
-                        "descr": "Boot control register (write). The register has the following values: 0: select preboot, 1: select bootloader, 2: select firmware",
-                    },
-                    {
-                        "name": "CPU_RST",
-                        "type": "W",
-                        "n_bits": 1,
-                        "rst_val": 0,
-                        "addr": -1,
-                        "log2n_items": 0,
-                        "autoreg": True,
-                        "descr": "CPU reset control register (write). 1 to reset the CPU, 0 to release the CPU from reset.",
+                        "descr": "Bootloader ROM (read).",
                     },
                 ],
             }
@@ -128,10 +119,6 @@ def setup(py_params_dict):
             {
                 "core_name": "iob_reg",
                 "instance_name": "iob_reg_inst",
-            },
-            {
-                "core_name": "iob_reg_e",
-                "instance_name": "iob_reg_e_inst",
             },
             {
                 "core_name": "iob_pulse_gen",
