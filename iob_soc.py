@@ -691,7 +691,14 @@ def setup(py_params_dict):
             "core_name": "iob_soc_ku040_wrapper",
             "instance_name": "iob_soc_ku040_wrapper",
             "instantiate": False,
-            "dest_dir": "hardware/fpga/vivado/AES-KU040-DB-G/",
+            "dest_dir": "hardware/fpga/vivado/AES-KU040-DB-G",
+            "iob_soc_params": params,
+        },
+        {
+            "core_name": "iob_soc_cyclonev_wrapper",
+            "instance_name": "iob_soc_cyclonev_wrapper",
+            "instantiate": False,
+            "dest_dir": "hardware/fpga/quartus/CYCLONEV-GT-DK",
             "iob_soc_params": params,
         },
     ]

@@ -3,6 +3,40 @@ def setup(py_params_dict):
         "original_name": "xilinx_ddr4_ctrl",
         "name": "xilinx_ddr4_ctrl",
         "version": "0.1",
+        "confs": [
+            {
+                "name": "AXI_ID_W",
+                "type": "P",
+                "val": "0",
+                "min": "1",
+                "max": "32",
+                "descr": "AXI ID bus width",
+            },
+            {
+                "name": "AXI_LEN_W",
+                "type": "P",
+                "val": "0",
+                "min": "1",
+                "max": "8",
+                "descr": "AXI burst length width",
+            },
+            {
+                "name": "AXI_ADDR_W",
+                "type": "P",
+                "val": "0",
+                "min": "1",
+                "max": "32",
+                "descr": "AXI address bus width",
+            },
+            {
+                "name": "AXI_DATA_W",
+                "type": "P",
+                "val": "0",
+                "min": "1",
+                "max": "32",
+                "descr": "AXI data bus width",
+            },
+        ],
         "ports": [
             {
                 "name": "clk_rst",
@@ -27,6 +61,10 @@ def setup(py_params_dict):
                 "interface": {
                     "type": "axi",
                     "subtype": "slave",
+                    "ID_W": "AXI_ID_W",
+                    "LEN_W": "AXI_LEN_W",
+                    "ADDR_W": "AXI_ADDR_W",
+                    "DATA_W": "AXI_DATA_W",
                 },
                 "descr": "AXI interface",
             },
@@ -44,10 +82,10 @@ def setup(py_params_dict):
                     {"name": "ddr4_ck_t", "direction": "output", "width": "1"},
                     {"name": "ddr4_ck_c", "direction": "output", "width": "1"},
                     {"name": "ddr4_reset_n", "direction": "output", "width": "1"},
-                    {"name": "ddr4_dm_dbi_n", "direction": "input", "width": "4"},
-                    {"name": "ddr4_dq", "direction": "input", "width": "32"},
-                    {"name": "ddr4_dqs_c", "direction": "input", "width": "4"},
-                    {"name": "ddr4_dqs_t", "direction": "input", "width": "4"},
+                    {"name": "ddr4_dm_dbi_n", "direction": "inout", "width": "4"},
+                    {"name": "ddr4_dq", "direction": "inout", "width": "32"},
+                    {"name": "ddr4_dqs_c", "direction": "inout", "width": "4"},
+                    {"name": "ddr4_dqs_t", "direction": "inout", "width": "4"},
                 ],
             },
         ],
@@ -63,12 +101,12 @@ def setup(py_params_dict):
         .dbg_bus(),
 
         //USER LOGIC CLOCK AND RESET
-        .c0_ddr4_ui_clk_sync_rst(axi_clk_sync_rst_o), //to axi intercon
-        .addn_ui_clkout1        (clkout_o),           //to user logic
+        .c0_ddr4_ui_clk_sync_rst(axi_clk_sync_rst_o),
+        .addn_ui_clkout1        (clkout_o),
 
         //AXI INTERFACE (slave)
-        .c0_ddr4_ui_clk (axi_clk_o),  //to axi intercon general and master clocks
-        .c0_ddr4_aresetn(axi_aresetn_i),  //from interconnect axi master
+        .c0_ddr4_ui_clk (axi_clk_o),
+        .c0_ddr4_aresetn(axi_aresetn_i),
 
         //address write
         .c0_ddr4_s_axi_awid   (axi_awid_i),
@@ -128,10 +166,10 @@ def setup(py_params_dict):
         .c0_ddr4_ck_t          (ddr4_ck_t_o),
         .c0_ddr4_ck_c          (ddr4_ck_c_o),
         .c0_ddr4_reset_n       (ddr4_reset_n_o),
-        .c0_ddr4_dm_dbi_n      (ddr4_dm_dbi_n_i),
-        .c0_ddr4_dq            (ddr4_dq_i),
-        .c0_ddr4_dqs_c         (ddr4_dqs_c_i),
-        .c0_ddr4_dqs_t         (ddr4_dqs_t_i),
+        .c0_ddr4_dm_dbi_n      (ddr4_dm_dbi_n_io),
+        .c0_ddr4_dq            (ddr4_dq_io),
+        .c0_ddr4_dqs_c         (ddr4_dqs_c_io),
+        .c0_ddr4_dqs_t         (ddr4_dqs_t_io),
         .c0_init_calib_complete()
     );
 """,

@@ -10,14 +10,14 @@ def setup(py_params_dict):
     iob_soc_attr = iob_soc.setup(params)
 
     attributes_dict = {
-        "original_name": "iob_soc_ku040_wrapper",
+        "original_name": "iob_soc_cyclonev_wrapper",
         "name": "iob_soc_fpga_wrapper",
         "version": "0.1",
         "confs": [
             {
                 "name": "AXI_ID_W",
                 "type": "F",
-                "val": "4",
+                "val": "1",
                 "min": "1",
                 "max": "32",
                 "descr": "AXI ID bus width",
@@ -25,7 +25,7 @@ def setup(py_params_dict):
             {
                 "name": "AXI_LEN_W",
                 "type": "F",
-                "val": "8",
+                "val": "4",
                 "min": "1",
                 "max": "8",
                 "descr": "AXI burst length width",
@@ -56,9 +56,15 @@ def setup(py_params_dict):
             "name": "clk_rst",
             "descr": "Clock and reset",
             "signals": [
-                {"name": "c0_sys_clk_clk_p", "direction": "input", "width": "1"},
-                {"name": "c0_sys_clk_clk_n", "direction": "input", "width": "1"},
-                {"name": "reset", "direction": "input", "width": "1"},
+                {"name": "clk", "direction": "input", "width": "1"},
+                {"name": "resetn", "direction": "input", "width": "1"},
+            ],
+        },
+        {
+            "name": "trap",
+            "descr": "CPU trap output",
+            "signals": [
+                {"name": "trap", "direction": "output", "width": "1"},
             ],
         },
         {
@@ -73,23 +79,25 @@ def setup(py_params_dict):
     if params["use_extmem"]:
         attributes_dict["ports"] += [
             {
-                "name": "ddr4",
-                "descr": "External DDR4 memory interface",
+                "name": "ddr3",
+                "descr": "External DDR3 memory interface",
                 "signals": [
-                    {"name": "c0_ddr4_act_n", "direction": "output", "width": "1"},
-                    {"name": "c0_ddr4_adr", "direction": "output", "width": "17"},
-                    {"name": "c0_ddr4_ba", "direction": "output", "width": "2"},
-                    {"name": "c0_ddr4_bg", "direction": "output", "width": "1"},
-                    {"name": "c0_ddr4_cke", "direction": "output", "width": "1"},
-                    {"name": "c0_ddr4_odt", "direction": "output", "width": "1"},
-                    {"name": "c0_ddr4_cs_n", "direction": "output", "width": "1"},
-                    {"name": "c0_ddr4_ck_t", "direction": "output", "width": "1"},
-                    {"name": "c0_ddr4_ck_c", "direction": "output", "width": "1"},
-                    {"name": "c0_ddr4_reset_n", "direction": "output", "width": "1"},
-                    {"name": "c0_ddr4_dm_dbi_n", "direction": "inout", "width": "4"},
-                    {"name": "c0_ddr4_dq", "direction": "inout", "width": "32"},
-                    {"name": "c0_ddr4_dqs_c", "direction": "inout", "width": "4"},
-                    {"name": "c0_ddr4_dqs_t", "direction": "inout", "width": "4"},
+                    {"name": "ddr3b_a", "direction": "output", "width": "14"},
+                    {"name": "ddr3b_ba", "direction": "output", "width": "3"},
+                    {"name": "ddr3b_rasn", "direction": "output", "width": "1"},
+                    {"name": "ddr3b_casn", "direction": "output", "width": "1"},
+                    {"name": "ddr3b_wen", "direction": "output", "width": "1"},
+                    {"name": "ddr3b_dm", "direction": "output", "width": "2"},
+                    {"name": "ddr3b_dq", "direction": "inout", "width": "16"},
+                    {"name": "ddr3b_clk_n", "direction": "output", "width": "1"},
+                    {"name": "ddr3b_clk_p", "direction": "output", "width": "1"},
+                    {"name": "ddr3b_cke", "direction": "output", "width": "1"},
+                    {"name": "ddr3b_csn", "direction": "output", "width": "1"},
+                    {"name": "ddr3b_dqs_n", "direction": "inout", "width": "2"},
+                    {"name": "ddr3b_dqs_p", "direction": "inout", "width": "2"},
+                    {"name": "ddr3b_odt", "direction": "output", "width": "1"},
+                    {"name": "ddr3b_resetn", "direction": "output", "width": "1"},
+                    {"name": "rzqin,", "direction": "input", "width": "1"},
                 ],
             },
         ]
@@ -122,6 +130,8 @@ def setup(py_params_dict):
     fpga_wrapper_wires = []
     for port in iob_soc_attr["ports"]:
         if port["name"] not in [
+            "clk_en_rst",
+            "cpu_trap",
             "rs232",
             "rom_bus",
             "spram_bus",
@@ -174,137 +184,75 @@ def setup(py_params_dict):
                 ],
             },
         ]
+
     if params["use_ethernet"]:
         attributes_dict["wires"] += [
             # eth clock
             {
                 "name": "rxclk_buf_io",
-                "descr": "IBUFG io",
+                "descr": "rxclkbuf io",
                 "signals": [
                     {"name": "enet_rx_clk"},
                     {"name": "eth_clk", "width": "1"},
                 ],
             },
             {
-                "name": "oddre1_io",
-                "descr": "ODDRE1 io",
+                "name": "ddio_out_clkbuf_io",
+                "descr": "",
                 "signals": [
-                    {"name": "enet_gtx_clk"},
-                    {"name": "eth_clk"},
-                    {"name": "high"},
-                    {"name": "low", "width": "1"},
                     {
                         "name": "enet_resetn_inv",
                         "width": "1",
                     },  # TODO: Connect and invert enet_resetn
+                    {"name": "low", "width": "1"},
+                    {"name": "high"},
+                    {"name": "eth_clk"},
+                    {"name": "enet_gtx_clk"},
                 ],
             },
         ]
     if params["use_extmem"]:
         attributes_dict["wires"] += [
-            # Interconnect
+            # DDR3 ctrl
             {
-                "name": "interconnect_clk_rst",
+                "name": "ddr3_ctr_clk_rst",
                 "descr": "",
                 "signals": [
-                    {"name": "mem_axi_clk", "width": "1"},
-                    {"name": "mem_clk_sync_rst_inv", "width": "1"},
+                    {"name": "clk"},
+                    {"name": "resetn"},
                 ],
             },
             {
-                "name": "ddr4_m0_clk_rst",
+                "name": "ddr3_ctr_general",
                 "descr": "",
                 "signals": [
-                    {"name": "mem_axi_clk"},
-                    {"name": "mem_axi_arstn", "width": "1"},
+                    {"name": "rzqin"},
+                    {"name": "pll_locked"},
+                    {"name": "init_done"},
                 ],
             },
-            {
-                "name": "ddr4_axi",
-                "interface": {
-                    "type": "axi",
-                    "wire_prefix": "mem_",
-                    "ID_W": "AXI_ID_W",
-                    "LEN_W": "AXI_LEN_W",
-                    "ADDR_W": "AXI_ADDR_W",
-                    "DATA_W": "AXI_DATA_W",
+        ]
+    attributes_dict["wires"] += [
+        # reset_sync
+        {
+            "name": "reset_sync_clk_rst",
+            "descr": "",
+            "signals": [
+                {"name": "clk"},
+                {
+                    "name": "rst_int" if params["use_extmem"] else "resetn_inv",
+                    "width": "1",
                 },
-                "descr": "AXI bus to connect interconnect and memory",
-            },
-            # DDR4 ctrl
-            {
-                "name": "ddr4_ctr_clk_rst",
-                "descr": "",
-                "signals": [
-                    {"name": "c0_sys_clk_clk_p"},
-                    {"name": "c0_sys_clk_clk_n"},
-                    {"name": "reset"},
-                    {"name": "clk"},
-                ],
-            },
-            {
-                "name": "ddr4_ctr_axi_clk_rst",
-                "descr": "",
-                "signals": [
-                    {"name": "mem_axi_clk"},
-                    {"name": "mem_clk_sync_rst", "width": "1"},
-                    {"name": "mem_axi_arstn"},
-                ],
-            },
-        ]
-    if not params["use_extmem"]:
-        attributes_dict["wires"] += [
-            # clock_wizard
-            {
-                "name": "clock_wizard_io",
-                "descr": "",
-                "signals": [
-                    {"name": "c0_sys_clk_clk_p"},
-                    {"name": "c0_sys_clk_clk_n"},
-                    {"name": "clk"},
-                ],
-            },
-            # reset_sync
-            {
-                "name": "reset_sync_clk_rst",
-                "descr": "",
-                "signals": [
-                    {"name": "clk"},
-                    {"name": "reset"},
-                ],
-            },
-            {
-                "name": "reset_sync_arst",
-                "descr": "",
-                "signals": [
-                    {"name": "start", "width": "1"},
-                ],
-            },
-            # pulse_gen
-            {
-                "name": "pulse_gen_clk_en_rst",
-                "descr": "",
-                "signals": [
-                    {"name": "clk"},
-                    {"name": "cke"},
-                    {"name": "reset"},
-                ],
-            },
-            {
-                "name": "pulse_gen_clk_start",
-                "descr": "",
-                "signals": [
-                    {"name": "start"},
-                ],
-            },
-            {
-                "name": "pulse_gen_clk_pulse",
-                "descr": "",
-                "signals": [
-                    {"name": "arst"},
-                ],
-            },
-        ]
+            ],
+        },
+        {
+            "name": "reset_sync_arst",
+            "descr": "",
+            "signals": [
+                {"name": "arst"},
+            ],
+        },
+    ]
     #
     # Blocks
     #
@@ -318,7 +266,11 @@ def setup(py_params_dict):
                 "AXI_ADDR_W": "AXI_ADDR_W",
                 "AXI_DATA_W": "AXI_DATA_W",
             },
-            "connect": {"rs232": "rs232_int"}
+            "connect": {
+                "clk_en_rst": "soc_clk_en_rst",
+                "cpu_trap": "trap",
+                "rs232": "rs232_int",
+            }
             | {i["name"]: i["name"] for i in fpga_wrapper_wires},
             "dest_dir": "hardware/common_src",
             "iob_soc_params": params,
@@ -328,38 +280,31 @@ def setup(py_params_dict):
         # Eth clock
         attributes_dict["blocks"] += [
             {
-                "core_name": "xilinx_ibufg",
+                "core_name": "altera_clk_buf_altclkctrl",
                 "instance_name": "rxclk_buf",
                 "connect": {
                     "io": "rxclk_buf_io",
                 },
             },
             {
-                "core_name": "xilinx_oddre1",
-                "instance_name": "oddre1_inst",
+                "core_name": "altera_ddio_out_clkbuf",
+                "instance_name": "ddio_out_clkbuf_inst",
                 "connect": {
-                    "io": "oddre1_io",
+                    "io": "ddio_out_clkbuf_io",
                 },
             },
         ]
     if params["use_extmem"]:
-        # Interconnect
+        # DDR3 controller
         attributes_dict["blocks"] += [
             {
-                "core_name": "xilinx_axi_interconnect",
-                "instance_name": "axi_async_bridge",
-                "parameters": {
-                    "AXI_ID_W": "AXI_ID_W",
-                    "AXI_LEN_W": "AXI_LEN_W",
-                    "AXI_ADDR_W": "AXI_ADDR_W",
-                    "AXI_DATA_W": "AXI_DATA_W",
-                },
+                "core_name": "altera_alt_ddr3",
+                "instance_name": "ddr3_ctrl",
                 "connect": {
-                    "clk_rst": "interconnect_clk_rst",
-                    "m0_clk_rst": "ddr4_m0_clk_rst",
-                    "m0_axi": "ddr4_axi",
+                    "clk_rst": "ddr3_ctr_clk_rst",
+                    "general": "ddr3_ctr_general",
+                    "ddr3": "ddr3",
                 },
-                "num_slaves": len(axi_wires),
             },
         ]
         # Connect axi wires to slave interfaces of interconnect
@@ -368,66 +313,21 @@ def setup(py_params_dict):
             if "wire_prefix" in wire["interface"]:
                 prefix = wire["interface"]["wire_prefix"]
             attributes_dict["blocks"][-1]["connect"] |= {
-                f"s{idx}_clk_rst": f"s{idx}_clk_rst",
                 f"s{idx}_axi": f"{prefix}axi",
             }
-        # DDR4 controller
-        attributes_dict["blocks"] += [
-            {
-                "core_name": "xilinx_ddr4_ctrl",
-                "instance_name": "ddr4_ctrl",
-                "parameters": {
-                    "AXI_ID_W": "AXI_ID_W",
-                    "AXI_LEN_W": "AXI_LEN_W",
-                    "AXI_ADDR_W": "AXI_ADDR_W",
-                    "AXI_DATA_W": "AXI_DATA_W",
-                },
-                "connect": {
-                    "clk_rst": "ddr4_ctr_clk_rst",
-                    "axi_clk_rst": "ddr4_ctr_axi_clk_rst",
-                    "axi": "ddr4_axi",
-                    "ddr4": "ddr4",
-                },
+    attributes_dict["blocks"] += [
+        # System reset
+        {
+            "core_name": "iob_reset_sync",
+            "instance_name": "rst_sync",
+            "connect": {
+                "clk_rst": "reset_sync_clk_rst",
+                "arst_o": "reset_sync_arst",
             },
-        ]
-    if not params["use_extmem"]:
-        attributes_dict["blocks"] += [
-            # Clock wizard
-            {
-                "core_name": "xilinx_clock_wizard",
-                "instance_name": "clk_250_to_100_MHz",
-                "parameters": {
-                    "OUTPUT_PER": 10,
-                    "INPUT_PER": 4,
-                },
-                "connect": {
-                    "io": "clock_wizard_io",
-                },
-            },
-            # System reset
-            {
-                "core_name": "iob_reset_sync",
-                "instance_name": "start_sync",
-                "connect": {
-                    "clk_rst": "reset_sync_clk_rst",
-                    "arst_o": "reset_sync_arst",
-                },
-            },
-            {
-                "core_name": "iob_pulse_gen",
-                "instance_name": "reset_pulse",
-                "parameters": {
-                    "START": 5,
-                    "DURATION": 10,
-                },
-                "connect": {
-                    "clk_en_rst": "pulse_gen_clk_en_rst",
-                    "start": "pulse_gen_clk_start",
-                    "pulse": "pulse_gen_clk_pulse",
-                },
-            },
-        ]
+        },
+    ]
 
+    # TODO:
     #
     # Snippets
     #

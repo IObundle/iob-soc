@@ -13,6 +13,40 @@ def setup(py_params_dict):
         "original_name": "xilinx_axi_interconnect",
         "name": "xilinx_axi_interconnect",
         "version": "0.1",
+        "confs": [
+            {
+                "name": "AXI_ID_W",
+                "type": "P",
+                "val": "0",
+                "min": "1",
+                "max": "32",
+                "descr": "AXI ID bus width",
+            },
+            {
+                "name": "AXI_LEN_W",
+                "type": "P",
+                "val": "0",
+                "min": "1",
+                "max": "8",
+                "descr": "AXI burst length width",
+            },
+            {
+                "name": "AXI_ADDR_W",
+                "type": "P",
+                "val": "0",
+                "min": "1",
+                "max": "32",
+                "descr": "AXI address bus width",
+            },
+            {
+                "name": "AXI_DATA_W",
+                "type": "P",
+                "val": "0",
+                "min": "1",
+                "max": "32",
+                "descr": "AXI data bus width",
+            },
+        ],
         "ports": [
             {
                 "name": "clk_rst",
@@ -40,6 +74,10 @@ def setup(py_params_dict):
                     "type": "axi",
                     "subtype": "slave",
                     "port_prefix": f"s{i}_",
+                    "ID_W": "AXI_ID_W",
+                    "LEN_W": "AXI_LEN_W",
+                    "ADDR_W": "AXI_ADDR_W",
+                    "DATA_W": "AXI_DATA_W",
                 },
                 "descr": f"Slave {i} interface",
             },
@@ -60,6 +98,10 @@ def setup(py_params_dict):
                     "type": "axi",
                     "subtype": "master",
                     "port_prefix": f"m{i}_",
+                    "ID_W": "AXI_ID_W",
+                    "LEN_W": "AXI_LEN_W",
+                    "ADDR_W": "AXI_ADDR_W",
+                    "DATA_W": "AXI_DATA_W",
                 },
                 "descr": f"Master {i} axi interface",
             },
@@ -193,6 +235,6 @@ def setup(py_params_dict):
         .M{i:02d}_AXI_RVALID(m{i}_axi_rvalid_i),
         .M{i:02d}_AXI_RREADY(m{i}_axi_rready_o)
 """
-    attributes_dict["snippets"][-1]["verilog_code"] += ");"
+    attributes_dict["snippets"][-1]["verilog_code"] += "    );"
 
     return attributes_dict

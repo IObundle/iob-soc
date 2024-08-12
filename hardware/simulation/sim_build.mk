@@ -1,3 +1,5 @@
+include auto_sim_build.mk
+
 # Add iob-soc software as a build dependency
 HEX+=iob_soc_boot.hex iob_soc_firmware.hex
 
