@@ -490,6 +490,20 @@ def setup(py_params_dict):
             "num_outputs": N_SLAVES,
             "addr_w": params["addr_w"] - 2,
         },
+        {
+            "core_name": "iob_split",
+            "name": "iob_instr_split",
+            "instance_name": "iob_instr_split",
+            "connect": {
+                "clk_en_rst": "clk_en_rst",
+                "reset": "split_reset",
+                "input": "cpu_i",
+                "output_0": "mem_i",
+                "output_1": "bootctr_i",
+            },
+            "num_outputs": 2,
+            "addr_w": params["addr_w"] - 1,
+        },
     ]
     peripherals = [
         # Peripherals
@@ -613,40 +627,6 @@ def setup(py_params_dict):
         {
             "verilog_code": """
 assign cpu_reset = bootctr_cpu_reset;
-
-iob_bus_demux #(
-    .ADDR_W("""
-            + str(params["addr_w"] - 1)
-            + """),
-    .DATA_W("""
-            + str(params["data_w"])
-            + """),
-    .N     (2)
-) cpu_ibus_split (
-    .clk_i (clk_i),
-    .arst_i(cpu_reset),
-
-    // Master's interface
-    .m_valid_i (cpu_i_iob_valid),
-    .m_addr_i  (cpu_i_iob_addr),
-    .m_wdata_i (cpu_i_iob_wdata),
-    .m_wstrb_i (cpu_i_iob_wstrb),
-    .m_rdata_o (cpu_i_iob_rdata),
-    .m_rvalid_o(cpu_i_iob_rvalid),
-    .m_ready_o (cpu_i_iob_ready),
-
-    // Followers' interface
-    .f_valid_o ({bootctr_i_iob_valid , mem_i_iob_valid }),
-    .f_addr_o  ({bootctr_i_iob_addr  , mem_i_iob_addr  }),
-    .f_wdata_o ({bootctr_i_iob_wdata , mem_i_iob_wdata }),
-    .f_wstrb_o ({bootctr_i_iob_wstrb , mem_i_iob_wstrb }),
-    .f_rdata_i ({bootctr_i_iob_rdata , mem_i_iob_rdata }),
-    .f_rvalid_i({bootctr_i_iob_rvalid, mem_i_iob_rvalid}),
-    .f_ready_i ({bootctr_i_iob_ready , mem_i_iob_ready }),
-
-    // Follower selection
-    .f_sel_i(cpu_i_iob_addr[P_BIT])
-);
             """,
         },
     ]
