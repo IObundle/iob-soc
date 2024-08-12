@@ -201,28 +201,6 @@ def setup(py_params_dict):
                 },
             ],
         },
-        # Internal memory ports for Memory Wrapper
-        {
-            "name": "rom_bus",
-            "descr": "Ports for connection with ROM memory",
-            "signals": [
-                {
-                    "name": "rom_r_valid",
-                    "direction": "output",
-                    "width": "1",
-                },
-                {
-                    "name": "rom_r_addr",
-                    "direction": "output",
-                    "width": "BOOTROM_ADDR_W-2",
-                },
-                {
-                    "name": "rom_r_rdata",
-                    "direction": "input",
-                    "width": params["data_w"],
-                },
-            ],
-        },
     ]
     attributes_dict["ports"] += [
         # Peripheral IO ports
@@ -626,7 +604,31 @@ def setup(py_params_dict):
     attributes_dict["snippets"] = [
         {
             "verilog_code": """
-assign cpu_reset = bootctr_cpu_reset;
+// Reset pulse generator //
+
+wire low_after_1st_rst;
+iob_reg #(
+    .DATA_W (1),
+    .RST_VAL(1'b1)
+) low_after_1st_rst_reg (
+    .clk_i (clk_i),
+    .cke_i (cke_i),
+    .arst_i(arst_i),
+    .data_i(1'b0),
+    .data_o(low_after_1st_rst)
+);
+
+assign cpu_rst_start_pulse = low_after_1st_rst;
+iob_pulse_gen #(
+    .START   (0),
+    .DURATION(100)
+) reset_pulse (
+    .clk_i  (clk_i),
+    .arst_i (arst_i),
+    .cke_i  (cke_i),
+    .start_i(cpu_rst_start_pulse),
+    .pulse_o(cpu_reset)
+);
             """,
         },
     ]
