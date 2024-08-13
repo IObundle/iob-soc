@@ -163,6 +163,11 @@ def setup(py_params_dict):
             "num_inputs": 2,
             "addr_w": MEM_ADDR_W,
         },
+        {
+            "core_name": "iob_cache",
+            "instance_name": "iob_cache_inst",
+            "instantiate": False,
+        },
     ]
     attributes_dict["snippets"] = [
         {

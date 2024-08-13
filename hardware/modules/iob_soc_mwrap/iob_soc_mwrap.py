@@ -17,7 +17,11 @@ def setup(py_params_dict):
             {
                 "name": "HEXFILE",
                 "type": "P",
-                "val": '"iob_soc_firmware"' if params["init_mem"] else '"none"',
+                "val": (
+                    '"iob_soc_firmware"'
+                    if params["init_mem"] and not params["use_extmem"]
+                    else '"none"'
+                ),
                 "min": "NA",
                 "max": "NA",
                 "descr": "Firmware file name",

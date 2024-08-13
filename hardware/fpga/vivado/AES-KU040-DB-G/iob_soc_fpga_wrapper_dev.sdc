@@ -1,5 +1,5 @@
 ## System Clock 
-create_clock -name "clk" -period 4.0 [get_ports {c0_sys_clk_clk_p}]
+create_clock -name "clk" -period 4.0 [get_ports {c0_sys_clk_clk_p_i}]
 
 # LVDS Programmable Clock Generator (CDCM61002)
 #set_property  PACKAGE_PIN M5   [get_ports LVDS_CLK0_N]
@@ -13,10 +13,10 @@ create_clock -name "clk" -period 4.0 [get_ports {c0_sys_clk_clk_p}]
 #set_property  IOSTANDARD LVDS [get_ports LVDS_CLK1_P]
 
 ##DDR clocks
-set_property PACKAGE_PIN H22 [get_ports {c0_sys_clk_clk_p}]
-set_property PACKAGE_PIN H23 [get_ports {c0_sys_clk_clk_n}]
-set_property IOSTANDARD DIFF_SSTL12 [get_ports {c0_sys_clk_clk_p}]
-set_property IOSTANDARD DIFF_SSTL12 [get_ports {c0_sys_clk_clk_n}]
+set_property PACKAGE_PIN H22 [get_ports {c0_sys_clk_clk_p_i}]
+set_property PACKAGE_PIN H23 [get_ports {c0_sys_clk_clk_n_i}]
+set_property IOSTANDARD DIFF_SSTL12 [get_ports {c0_sys_clk_clk_p_i}]
+set_property IOSTANDARD DIFF_SSTL12 [get_ports {c0_sys_clk_clk_n_i}]
 
 set_property CONFIG_VOLTAGE 2.5 [current_design]
 
@@ -57,10 +57,10 @@ set_property IOSTANDARD LVCMOS18 [get_ports {rxd_i}]
 #set_property IOSTANDARD LVCMOS18 [get_ports {trap}]
 
 ####### User PUSH Switches
-#set_property PACKAGE_PIN N24 [get_ports {reset}]
-#set_property IOSTANDARD LVCMOS12 [get_ports {reset}]
-set_property PACKAGE_PIN K20 [get_ports {reset}]
-set_property IOSTANDARD LVCMOS12 [get_ports {reset}]
+#set_property PACKAGE_PIN N24 [get_ports {reset_i}]
+#set_property IOSTANDARD LVCMOS12 [get_ports {reset_i}]
+set_property PACKAGE_PIN K20 [get_ports {reset_i}]
+set_property IOSTANDARD LVCMOS12 [get_ports {reset_i}]
 
 #set_property PACKAGE_PIN K18 [get_ports {gpio_push_sw_tri_i[0]}]
 #set_property IOSTANDARD LVCMOS12 [get_ports {gpio_push_sw_tri_i[0]}]
@@ -75,50 +75,50 @@ set_property IOSTANDARD LVCMOS12 [get_ports {reset}]
 #set_property IOSTANDARD LVCMOS12 [get_ports {gpio_push_sw_tri_i[3]}]
 
 ####### Ethernet 100 MHz
-#create_clock -name enet_clk -period 40 [get_ports {ENET_RX_CLK}]
+#create_clock -name enet_clk -period 40 [get_ports {enet_rx_clk_i}]
 
 ## Ethernet #1 Interface (J1)
-#set_property PACKAGE_PIN D9 [get_ports ENET_RESETN]
-#set_property IOSTANDARD LVCMOS18 [get_ports ENET_RESETN]
+#set_property PACKAGE_PIN D9 [get_ports enet_resetn_o]
+#set_property IOSTANDARD LVCMOS18 [get_ports enet_resetn_o]
 
-#set_property PACKAGE_PIN A10 [get_ports ENET_RX_D0]
-#set_property IOSTANDARD LVCMOS18 [get_ports ENET_RX_D0]
+#set_property PACKAGE_PIN A10 [get_ports enet_rx_d0_i]
+#set_property IOSTANDARD LVCMOS18 [get_ports enet_rx_d0_i]
 
-#set_property PACKAGE_PIN B10 [get_ports ENET_RX_D1]
-#set_property IOSTANDARD LVCMOS18 [get_ports ENET_RX_D1]
+#set_property PACKAGE_PIN B10 [get_ports enet_rx_d1_i]
+#set_property IOSTANDARD LVCMOS18 [get_ports enet_rx_d1_i]
 
-#set_property PACKAGE_PIN B11 [get_ports ENET_RX_D2]
-#set_property IOSTANDARD LVCMOS18 [get_ports ENET_RX_D2]
+#set_property PACKAGE_PIN B11 [get_ports enet_rx_d2_i]
+#set_property IOSTANDARD LVCMOS18 [get_ports enet_rx_d2_i]
 
-#set_property PACKAGE_PIN C11 [get_ports ENET_RX_D3]
-#set_property IOSTANDARD LVCMOS18 [get_ports ENET_RX_D3]
+#set_property PACKAGE_PIN C11 [get_ports enet_rx_d3_i]
+#set_property IOSTANDARD LVCMOS18 [get_ports enet_rx_d3_i]
 
-#set_property PACKAGE_PIN D11 [get_ports ENET_RX_DV]
-#set_property IOSTANDARD LVCMOS18 [get_ports ENET_RX_DV]
+#set_property PACKAGE_PIN D11 [get_ports enet_rx_dv_i]
+#set_property IOSTANDARD LVCMOS18 [get_ports enet_rx_dv_i]
 
-#set_property PACKAGE_PIN E11 [get_ports ENET_RX_CLK]
-##set_property IOSTANDARD LVCMOS18 [get_ports ENET_RX_CLK]
+#set_property PACKAGE_PIN E11 [get_ports enet_rx_clk_i]
+##set_property IOSTANDARD LVCMOS18 [get_ports enet_rx_clk_i]
 
-#set_property PACKAGE_PIN H8 [get_ports ENET_TX_D0]
-#set_property IOSTANDARD LVCMOS18 [get_ports ENET_TX_D0]
+#set_property PACKAGE_PIN H8 [get_ports enet_tx_d0_o]
+#set_property IOSTANDARD LVCMOS18 [get_ports enet_tx_d0_o]
 
-#set_property PACKAGE_PIN H9 [get_ports ENET_TX_D1]
-#set_property IOSTANDARD LVCMOS18 [get_ports ENET_TX_D1]
+#set_property PACKAGE_PIN H9 [get_ports enet_tx_d1_o]
+#set_property IOSTANDARD LVCMOS18 [get_ports enet_tx_d1_o]
 
-#set_property PACKAGE_PIN J9 [get_ports ENET_TX_D2]
-#set_property IOSTANDARD LVCMOS18 [get_ports ENET_TX_D2]
+#set_property PACKAGE_PIN J9 [get_ports enet_tx_d2_o]
+#set_property IOSTANDARD LVCMOS18 [get_ports enet_tx_d2_o]
 
-##set_property PACKAGE_PIN J10 [get_ports ENET_TX_D3]
-set_property IOSTANDARD LVCMOS18 [get_ports ENET_TX_D3]
+##set_property PACKAGE_PIN J10 [get_ports enet_tx_d3_o]
+#set_property IOSTANDARD LVCMOS18 [get_ports enet_tx_d3_o]
 
-#set_property PACKAGE_PIN G9 [get_ports ENET_TX_EN]
-#set_property IOSTANDARD LVCMOS18 [get_ports ENET_TX_EN]
+#set_property PACKAGE_PIN G9 [get_ports enet_tx_en_o]
+#set_property IOSTANDARD LVCMOS18 [get_ports enet_tx_en_o]
 
-#set_property PACKAGE_PIN G10 [get_ports ENET_GTX_CLK]
-#set_property IOSTANDARD LVCMOS18 [get_ports ENET_GTX_CLK]
+#set_property PACKAGE_PIN G10 [get_ports enet_gtx_clK_o]
+#set_property IOSTANDARD LVCMOS18 [get_ports enet_gtx_clK_o]
 
-#set_property IOB TRUE [get_ports ENET_TX_D0]
-#set_property IOB TRUE [get_ports ENET_TX_D1]
-#set_property IOB TRUE [get_ports ENET_TX_D2]
-#set_property IOB TRUE [get_ports ENET_TX_D3]
-#set_property IOB TRUE [get_ports ENET_TX_EN]
+#set_property IOB TRUE [get_ports enet_tx_d0_o]
+#set_property IOB TRUE [get_ports enet_tx_d1_o]
+#set_property IOB TRUE [get_ports enet_tx_d2_o]
+#set_property IOB TRUE [get_ports enet_tx_d3_o]
+#set_property IOB TRUE [get_ports enet_tx_en_o]
