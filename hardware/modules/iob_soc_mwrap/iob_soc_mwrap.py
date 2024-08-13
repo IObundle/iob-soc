@@ -37,7 +37,17 @@ def setup(py_params_dict):
     mwrap_wires = []
     mwrap_ports = []
     for port in iob_soc_attr["ports"]:
-        mwrap_ports.append(port)
+        if port["name"] == "rom_bus":
+            wire = copy.deepcopy(port)
+            if "interface" in wire and "port_prefix" in wire["interface"]:
+                wire["interface"]["wire_prefix"] = wire["interface"]["port_prefix"]
+                wire["interface"].pop("port_prefix")
+            if "signals" in wire:
+                for sig in wire["signals"]:
+                    sig.pop("direction")
+            mwrap_wires.append(wire)
+        else:
+            mwrap_ports.append(port)
     attributes_dict["ports"] = mwrap_ports
 
     attributes_dict["wires"] = mwrap_wires + [
@@ -50,6 +60,20 @@ def setup(py_params_dict):
         },
     ]
     attributes_dict["blocks"] = [
+        # ROM
+        {
+            "core_name": "iob_rom_sp",
+            "instance_name": "boot_rom",
+            "parameters": {
+                "ADDR_W": "BOOTROM_ADDR_W - 2",
+                "DATA_W": params["data_w"],
+                "HEXFILE": '{BOOT_HEXFILE, ".hex"}',
+            },
+            "connect": {
+                "clk": "clk",
+                "rom_if": "rom_bus",
+            },
+        },
         # IOb-SoC
         {
             "core_name": "iob_soc",

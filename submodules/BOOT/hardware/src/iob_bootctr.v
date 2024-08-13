@@ -40,18 +40,9 @@ module iob_bootctr #(
         .data_o(bootctr_i_iob_rvalid_o)
     );
 
-    iob_rom_sp #(
-        .DATA_W(DATA_W),
-        .ADDR_W(BOOTROM_ADDR_W),
-        .HEXFILE("iob_soc_boot.hex")
-    ) boot_rom (
-        .clk_i(clk_i),
-
-        //instruction memory interface
-        .r_en_i(ROM_ren_rd),
-        .addr_i(iob_addr_i[2 +: BOOTROM_ADDR_W]), // Equivalent to what would be (iob_addr_i >> 2)[0 +: 10]
-        .r_data_o(ROM_rdata_rd)
-    );
+    assign boot_rom_en_o = ROM_ren_rd;
+    assign boot_rom_addr_o = iob_addr_i[2 +: BOOTROM_ADDR_W];
+    assign ROM_rdata_rd = boot_rom_rdata_i;
     assign ROM_rready_rd = 1'b1; // ROM is always ready
     iob_reg #(
         .DATA_W (1),

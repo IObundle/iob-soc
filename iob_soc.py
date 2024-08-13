@@ -201,6 +201,27 @@ def setup(py_params_dict):
                 },
             ],
         },
+        {
+            "name": "rom_bus",
+            "descr": "Ports for connection with ROM memory",
+            "signals": [
+                {
+                    "name": "boot_rom_valid",
+                    "direction": "output",
+                    "width": "1",
+                },
+                {
+                    "name": "boot_rom_addr",
+                    "direction": "output",
+                    "width": "BOOTROM_ADDR_W-2",
+                },
+                {
+                    "name": "boot_rom_rdata",
+                    "direction": "input",
+                    "width": params["data_w"],
+                },
+            ],
+        },
     ]
     attributes_dict["ports"] += [
         # Peripheral IO ports
@@ -504,6 +525,7 @@ def setup(py_params_dict):
                 "clk_en_rst": "clk_en_rst",
                 "iob": "bootctr_swreg",
                 "bootctr_i_bus": "bootctr_i",
+                "boot_rom_bus": "rom_bus",
             },
         },
     ]

@@ -69,11 +69,32 @@ def setup(py_params_dict):
                 },
                 "descr": "Instruction bus",
             },
+            {
+                "name": "boot_rom_bus",
+                "descr": "Boot ROM bus",
+                "signals": [
+                    {
+                        "name": "boot_rom_en",
+                        "direction": "output",
+                        "width": "1",
+                    },
+                    {
+                        "name": "boot_rom_addr",
+                        "direction": "output",
+                        "width": "BOOTROM_ADDR_W",
+                    },
+                    {
+                        "name": "boot_rom_rdata",
+                        "direction": "input",
+                        "width": "DATA_W",
+                    },
+                ],
+            },
         ],
         "csrs": [
             {
-                "name": "boot",
-                "descr": "Boot control register.",
+                "name": "rom",
+                "descr": "ROM access.",
                 "regs": [
                     {
                         "name": "ROM",
