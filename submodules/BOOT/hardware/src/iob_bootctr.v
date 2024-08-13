@@ -12,56 +12,6 @@ module iob_bootctr #(
 
     `include "iob_bootctr_swreg_inst.vs"
 
-
-
-    // Can't reset boot_ctr_o ever again. Only once. Else it'll forget in which boot stage it is. Only the CPU can change
-    // it afterwards.
-    iob_reg #(
-        .DATA_W (2),
-        .RST_VAL(0)
-    ) ctr_r (
-        .clk_i (clk_i),
-        .arst_i(arst_i),
-        .cke_i (cke_i),
-        .data_i(CPU_CTR_wr[1 +: 2]),
-        .data_o(boot_ctr_o)
-    );
-
-    wire low_after_1st_rst;
-    iob_reg #(
-        .DATA_W (1),
-        .RST_VAL(1'b1)
-    ) low_after_1st_rst_reg (
-        .clk_i (clk_i),
-        .cke_i (cke_i),
-        .arst_i(arst_i),
-        .data_i(1'b0),
-        .data_o(low_after_1st_rst)
-    );
-
-    // Copied from iob_bootctr_swreg_gen.v
-    // Only when the CPU_CTR register has 1 written to its first bit (whether the value was already there or not), the
-    // cpu_reset_o signal is set to an active pulse for some time.
-    wire CPU_CTR_addressed_w;
-    assign CPU_CTR_addressed_w = (iob_addr_i >= 0) && (iob_addr_i < 1);
-    wire CPU_CTR_wen;
-    assign CPU_CTR_wen = (iob_valid_i & iob_ready_o) & ((|iob_wstrb_i) & CPU_CTR_addressed_w);
-
-    wire cpu_rst_req;
-    assign cpu_rst_req = CPU_CTR_wen & iob_wdata_i[0]; // The first bit of the data is the only one that matters
-    wire cpu_rst_start_pulse;
-    assign cpu_rst_start_pulse = cpu_rst_req | low_after_1st_rst;
-    iob_pulse_gen #(
-        .START   (0),
-        .DURATION(100)
-    ) reset_pulse (
-        .clk_i  (clk_i),
-        .arst_i (arst_i),
-        .cke_i  (cke_i),
-        .start_i(cpu_rst_start_pulse),
-        .pulse_o(cpu_reset_o)
-    );
-
     //
     // Instantiate preboot and boot ROMs
     //

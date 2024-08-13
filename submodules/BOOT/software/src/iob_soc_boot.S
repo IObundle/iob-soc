@@ -4,7 +4,6 @@
 
 // Can't include iob_bootctr_swreg.h because the assembler doesn't recognize stdint.h,
 // so define the constants here instead (these are address offsets).
-#define IOB_BOOTCTR_CPU_CTR_ADDR 0
 
 .section .init
 .globl main

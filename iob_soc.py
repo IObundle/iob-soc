@@ -286,14 +286,6 @@ def setup(py_params_dict):
                 {"name": "cpu_reset"},
             ],
         },
-        {
-            "name": "bootctr",
-            "descr": "Boot controller interface",
-            "signals": [
-                {"name": "bootctr_cpu_reset", "width": "1"},
-                {"name": "bootctr_boot_ctr", "width": "2"},
-            ],
-        },
     ]
     attributes_dict["wires"] += [
         {
@@ -512,7 +504,6 @@ def setup(py_params_dict):
                 "clk_en_rst": "clk_en_rst",
                 "iob": "bootctr_swreg",
                 "bootctr_i_bus": "bootctr_i",
-                "cpu_controls": "bootctr",
             },
         },
     ]
