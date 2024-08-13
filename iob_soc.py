@@ -309,19 +309,6 @@ def setup(py_params_dict):
         },
     ]
     attributes_dict["wires"] += [
-        {
-            "name": "int_d",
-            "interface": {
-                "type": "iob",
-                "file_prefix": "iob_soc_int_d_",
-                "wire_prefix": "int_d_",
-                "DATA_W": params["data_w"],
-                "ADDR_W": params["addr_w"] - 1,
-            },
-            "descr": "iob-soc internal data interface",
-        },
-    ]
-    attributes_dict["wires"] += [
         # External memory wires
         {
             "name": "mem_i",
