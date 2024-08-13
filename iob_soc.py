@@ -296,7 +296,7 @@ def setup(py_params_dict):
                 "type": "iob",
                 "wire_prefix": "cpu_pbus_",
                 "DATA_W": params["data_w"],
-                "ADDR_W": params["addr_w"] - 2,
+                "ADDR_W": params["addr_w"] - 1,
             },
             "descr": "cpu peripheral bus",
         },
@@ -450,7 +450,7 @@ def setup(py_params_dict):
                 "output_1": "cpu_pbus",
             },
             "num_outputs": 2,
-            "addr_w": params["addr_w"] - 1,
+            "addr_w": params["addr_w"],
         },
         {
             "core_name": "iob_split",
@@ -466,7 +466,7 @@ def setup(py_params_dict):
                 # TODO: Connect peripherals automatically
             },
             "num_outputs": N_SLAVES,
-            "addr_w": params["addr_w"] - 2,
+            "addr_w": params["addr_w"] - 1,
         },
         {
             "core_name": "iob_split",
