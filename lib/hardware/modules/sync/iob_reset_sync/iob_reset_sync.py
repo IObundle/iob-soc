@@ -64,7 +64,7 @@ def setup(py_params_dict):
         "snippets": [
             {
                 "verilog_code": f"""
-    assign data_int = {{sync[0], {"1'b1" if edge else "1'b0"}}};
+    assign data_int = {{sync[0], {"1'b0" if edge else "1'b1"}}};
     assign arst_o = sync[1];
             """,
             },
