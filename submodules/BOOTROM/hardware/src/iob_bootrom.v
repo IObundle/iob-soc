@@ -1,16 +1,16 @@
 `timescale 1 ns / 1 ps
 
-`include "iob_bootctr_conf.vh"
-`include "iob_bootctr_swreg_def.vh"
+`include "iob_bootrom_conf.vh"
+`include "iob_bootrom_swreg_def.vh"
 `include "iob_soc_conf.vh"
 
-module iob_bootctr #(
-        `include "iob_bootctr_params.vs"
+module iob_bootrom #(
+        `include "iob_bootrom_params.vs"
     ) (
-        `include "iob_bootctr_io.vs"
+        `include "iob_bootrom_io.vs"
     );
 
-    `include "iob_bootctr_swreg_inst.vs"
+    `include "iob_bootrom_swreg_inst.vs"
 
     //
     // Instantiate preboot and boot ROMs
@@ -24,11 +24,11 @@ module iob_bootctr #(
         .clk_i(clk_i),
 
         //instruction memory interface
-        .r_en_i  (bootctr_i_iob_valid_i),
-        .addr_i  (bootctr_i_iob_addr_i[2 +: PREBOOTROM_ADDR_W]),
-        .r_data_o(bootctr_i_iob_rdata_o)
+        .r_en_i  (bootrom_i_iob_valid_i),
+        .addr_i  (bootrom_i_iob_addr_i[2 +: PREBOOTROM_ADDR_W]),
+        .r_data_o(bootrom_i_iob_rdata_o)
     );
-    assign bootctr_i_iob_ready_o = 1'b1; // ROM is always ready
+    assign bootrom_i_iob_ready_o = 1'b1; // ROM is always ready
     iob_reg #(
         .DATA_W (1),
         .RST_VAL(0)
@@ -36,8 +36,8 @@ module iob_bootctr #(
         .clk_i (clk_i),
         .cke_i (cke_i),
         .arst_i(arst_i),
-        .data_i(bootctr_i_iob_valid_i),
-        .data_o(bootctr_i_iob_rvalid_o)
+        .data_i(bootrom_i_iob_valid_i),
+        .data_o(bootrom_i_iob_rvalid_o)
     );
 
     assign boot_rom_en_o = ROM_ren_rd;
