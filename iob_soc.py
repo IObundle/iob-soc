@@ -411,6 +411,7 @@ def setup(py_params_dict):
         {
             "core_name": "iob_picorv32",
             "instance_name": "cpu",
+            "instance_description": "RISC-V CPU instance",
             "parameters": {
                 "ADDR_W": params["addr_w"],
                 "DATA_W": params["data_w"],
@@ -469,6 +470,7 @@ def setup(py_params_dict):
             "core_name": "iob_split",
             "name": "iob_pbus_split",
             "instance_name": "iob_pbus_split",
+            "instance_description": "Split between peripherals",
             "connect": {
                 "clk_en_rst": "clk_en_rst",
                 "reset": "split_reset",
@@ -501,6 +503,7 @@ def setup(py_params_dict):
         {
             "core_name": "iob_uart",
             "instance_name": "UART0",
+            "instance_description": "UART peripheral",
             "parameters": {},
             "connect": {
                 "clk_en_rst": "clk_en_rst",
@@ -511,6 +514,7 @@ def setup(py_params_dict):
         {
             "core_name": "iob_timer",
             "instance_name": "TIMER0",
+            "instance_description": "Timer peripheral",
             "parameters": {},
             "connect": {
                 "clk_en_rst": "clk_en_rst",
@@ -590,12 +594,11 @@ def setup(py_params_dict):
             "core_name": "iob_tasks",
             "instance_name": "iob_tasks_inst",
             "instantiate": False,
-            "purpose": "simulation",
+            "dest_dir": "hardware/simulation/src",
         },
-        # FPGA modules
         {
-            "core_name": "iob_reset_sync",
-            "instance_name": "iob_reset_sync_inst",
+            "core_name": "iob_pulse_gen",
+            "instance_name": "iob_pulse_gen_inst",
             "instantiate": False,
         },
         # Simulation wrapper
@@ -603,7 +606,28 @@ def setup(py_params_dict):
             "core_name": "iob_soc_sim_wrapper",
             "instance_name": "iob_soc_sim_wrapper",
             "instantiate": False,
-            "purpose": "simulation",
+            "dest_dir": "hardware/simulation/src",
+            "iob_soc_params": params,
+        },
+        # FPGA wrappers
+        # NOTE: Disabled temporarily.
+        # Since cyclonev and ku040 wrappers have the same "name" attribute,
+        # the py2hwsw generated verilog snippets will also have the same name.
+        # Therefore, this one is disabled until either:
+        # 1) Py2hwsw generates modules directly without using verilog snippets.
+        # 2) We change the wrapper names to be unique.
+        # {
+        #     "core_name": "iob_soc_ku040_wrapper",
+        #     "instance_name": "iob_soc_ku040_wrapper",
+        #     "instantiate": False,
+        #     "dest_dir": "hardware/fpga/vivado/AES-KU040-DB-G",
+        #     "iob_soc_params": params,
+        # },
+        {
+            "core_name": "iob_soc_cyclonev_wrapper",
+            "instance_name": "iob_soc_cyclonev_wrapper",
+            "instantiate": False,
+            "dest_dir": "hardware/fpga/quartus/CYCLONEV-GT-DK",
             "iob_soc_params": params,
         },
     ]
