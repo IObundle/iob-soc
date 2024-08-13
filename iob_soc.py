@@ -480,7 +480,7 @@ def setup(py_params_dict):
                 "output_1": "bootrom_i",
             },
             "num_outputs": 2,
-            "addr_w": params["addr_w"] - 1,
+            "addr_w": params["addr_w"],
         },
     ]
     peripherals = [
