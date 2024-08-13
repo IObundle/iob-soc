@@ -24,7 +24,7 @@ def setup(py_params_dict):
     for name, default_val in params.items():
         if name not in py_params_dict:
             continue
-        if type(default_val) == bool and py_params_dict[name] == "0":
+        if type(default_val) is bool and py_params_dict[name] == "0":
             params[name] = False
         else:
             params[name] = type(default_val)(py_params_dict[name])
