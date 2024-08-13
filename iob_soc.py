@@ -617,65 +617,16 @@ def setup(py_params_dict):
     attributes_dict["blocks"] += peripherals + [
         # Modules that need to be setup, but are not instantiated directly inside
         # 'iob_soc' Verilog module
-        {
-            "core_name": "iob_cache",
-            "instance_name": "iob_cache_inst",
-            "instantiate": False,
-        },
-        {
-            "core_name": "iob_rom_sp",
-            "instance_name": "iob_rom_sp_inst",
-            "instantiate": False,
-        },
-        {
-            "core_name": "iob_ram_dp_be",
-            "instance_name": "iob_ram_dp_be_inst",
-            "instantiate": False,
-        },
-        {
-            "core_name": "iob_ram_dp_be_xil",
-            "instance_name": "iob_ram_dp_be_xil_inst",
-            "instantiate": False,
-        },
-        {
-            "core_name": "iob_pulse_gen",
-            "instance_name": "iob_pulse_gen_inst",
-            "instantiate": False,
-        },
-        # iob_counter("counter")
-        {
-            "core_name": "iob_reg",
-            "instance_name": "iob_reg_inst",
-            "instantiate": False,
-        },
-        {
-            "core_name": "iob_reg_re",
-            "instance_name": "iob_reg_re_inst",
-            "instantiate": False,
-        },
-        {
-            "core_name": "iob_ram_sp_be",
-            "instance_name": "iob_ram_sp_be_inst",
-            "instantiate": False,
-        },
-        # iob_ram_dp("ram_dp")
-        # iob_ctls("ctls")
-        {
-            "core_name": "axi_interconnect",
-            "instance_name": "axi_interconnect_inst",
-            "instantiate": False,
-        },
-        # Simulation headers & modules
+        # Testbench
         {
             "core_name": "iob_tasks",
             "instance_name": "iob_tasks_inst",
             "instantiate": False,
             "dest_dir": "hardware/simulation/src",
         },
-        # FPGA modules
         {
-            "core_name": "iob_reset_sync",
-            "instance_name": "iob_reset_sync_inst",
+            "core_name": "iob_pulse_gen",
+            "instance_name": "iob_pulse_gen_inst",
             "instantiate": False,
         },
         # Simulation wrapper
@@ -686,7 +637,7 @@ def setup(py_params_dict):
             "dest_dir": "hardware/simulation/src",
             "iob_soc_params": params,
         },
-        # FPGA wrapper
+        # FPGA wrappers
         # NOTE: Disabled temporarily.
         # Since cyclonev and ku040 wrappers have the same "name" attribute,
         # the py2hwsw generated verilog snippets will also have the same name.
