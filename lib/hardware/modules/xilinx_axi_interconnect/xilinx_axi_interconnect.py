@@ -113,8 +113,6 @@ def setup(py_params_dict):
         {
             "verilog_code": """
     axi_interconnect_0 axi_interconnect_inst (
-        .INTERCONNECT_ACLK   (clk_i),   //from ddr4 controller
-        .INTERCONNECT_ARESETN(~arst_i), //from ddr4 controller
 """,
         },
     ]
@@ -233,8 +231,14 @@ def setup(py_params_dict):
         .M{i:02d}_AXI_RRESP (m{i}_axi_rresp_i),
         .M{i:02d}_AXI_RLAST (m{i}_axi_rlast_i),
         .M{i:02d}_AXI_RVALID(m{i}_axi_rvalid_i),
-        .M{i:02d}_AXI_RREADY(m{i}_axi_rready_o)
+        .M{i:02d}_AXI_RREADY(m{i}_axi_rready_o),
 """
-    attributes_dict["snippets"][-1]["verilog_code"] += "    );"
+    attributes_dict["snippets"][-1][
+        "verilog_code"
+    ] += """
+        .INTERCONNECT_ACLK   (clk_i),
+        .INTERCONNECT_ARESETN(~arst_i)
+    );
+"""
 
     return attributes_dict

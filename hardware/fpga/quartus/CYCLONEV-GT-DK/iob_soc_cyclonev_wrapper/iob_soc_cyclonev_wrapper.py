@@ -97,7 +97,7 @@ def setup(py_params_dict):
                     {"name": "ddr3b_dqs_p", "direction": "inout", "width": "2"},
                     {"name": "ddr3b_odt", "direction": "output", "width": "1"},
                     {"name": "ddr3b_resetn", "direction": "output", "width": "1"},
-                    {"name": "rzqin,", "direction": "input", "width": "1"},
+                    {"name": "rzqin", "direction": "input", "width": "1"},
                 ],
             },
         ]
@@ -159,6 +159,15 @@ def setup(py_params_dict):
     # Wires
     #
     attributes_dict["wires"] = fpga_wrapper_wires + [
+        {
+            "name": "soc_clk_en_rst",
+            "descr": "",
+            "signals": [
+                {"name": "clk"},
+                {"name": "cke", "width": "1"},
+                {"name": "arst", "width": "1"},
+            ],
+        },
         {
             "name": "rs232_int",
             "descr": "iob-soc uart interface",
@@ -300,6 +309,12 @@ def setup(py_params_dict):
             {
                 "core_name": "altera_alt_ddr3",
                 "instance_name": "ddr3_ctrl",
+                "parameters": {
+                    "AXI_ID_W": "AXI_ID_W",
+                    "AXI_LEN_W": "AXI_LEN_W",
+                    "AXI_ADDR_W": "AXI_ADDR_W",
+                    "AXI_DATA_W": "AXI_DATA_W",
+                },
                 "connect": {
                     "clk_rst": "ddr3_ctr_clk_rst",
                     "general": "ddr3_ctr_general",
@@ -327,7 +342,6 @@ def setup(py_params_dict):
         },
     ]
 
-    # TODO:
     #
     # Snippets
     #
@@ -354,8 +368,15 @@ def setup(py_params_dict):
             {
                 "verilog_code": """
     // External memory connections
-    assign mem_clk_sync_rst_inv = ~mem_clk_sync_rst;
-    assign arst = ~s0_arstn;
+    assign rst_int = ~resetn_i | ~pll_locked | ~init_done;
+""",
+            },
+        ]
+    else:  # Not use_extmem
+        attributes_dict["snippets"] += [
+            {
+                "verilog_code": """
+    assign resetn_inv = ~resetn_i;
 """,
             },
         ]
