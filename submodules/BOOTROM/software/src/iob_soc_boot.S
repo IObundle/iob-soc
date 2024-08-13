@@ -2,9 +2,6 @@
 #include "iob_soc_periphs.h"
 #include "iob_soc_system.h"
 
-// Can't include iob_bootctr_swreg.h because the assembler doesn't recognize stdint.h,
-// so define the constants here instead (these are address offsets).
-
 .section .init
 .globl main
 

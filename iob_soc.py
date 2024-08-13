@@ -358,11 +358,11 @@ def setup(py_params_dict):
     ]
     attributes_dict["wires"] += [
         {
-            "name": "bootctr_i",
+            "name": "bootrom_i",
             "interface": {
                 "type": "iob",
-                "file_prefix": "bootctr_i_",
-                "wire_prefix": "bootctr_i_",
+                "file_prefix": "bootrom_i_",
+                "wire_prefix": "bootrom_i_",
                 "DATA_W": params["data_w"],
                 "ADDR_W": params["addr_w"] - 1,
             },
@@ -395,15 +395,15 @@ def setup(py_params_dict):
             "descr": "TIMER swreg bus",
         },
         {
-            "name": "bootctr_swreg",
+            "name": "bootrom_swreg",
             "interface": {
                 "type": "iob",
-                "file_prefix": "iob_soc_bootctr_swreg_",
-                "wire_prefix": "bootctr_swreg_",
+                "file_prefix": "iob_soc_bootrom_swreg_",
+                "wire_prefix": "bootrom_swreg_",
                 "DATA_W": params["data_w"],
                 "ADDR_W": params["addr_w"],
             },
-            "descr": "BOOTCTR swreg bus",
+            "descr": "BOOTROM swreg bus",
         },
         # TODO: Auto add peripheral wires
     ]
@@ -475,7 +475,7 @@ def setup(py_params_dict):
                 "input": "cpu_pbus",
                 "output_0": "uart_swreg",
                 "output_1": "timer_swreg",
-                "output_2": "bootctr_swreg",
+                "output_2": "bootrom_swreg",
                 # TODO: Connect peripherals automatically
             },
             "num_outputs": N_SLAVES,
@@ -490,7 +490,7 @@ def setup(py_params_dict):
                 "reset": "split_reset",
                 "input": "cpu_i",
                 "output_0": "mem_i",
-                "output_1": "bootctr_i",
+                "output_1": "bootrom_i",
             },
             "num_outputs": 2,
             "addr_w": params["addr_w"] - 1,
@@ -518,13 +518,13 @@ def setup(py_params_dict):
             },
         },
         {
-            "core_name": "iob_bootctr",
-            "instance_name": "BOOTCTR0",
+            "core_name": "iob_bootrom",
+            "instance_name": "BOOTROM0",
             "parameters": {},
             "connect": {
                 "clk_en_rst": "clk_en_rst",
-                "iob": "bootctr_swreg",
-                "bootctr_i_bus": "bootctr_i",
+                "iob": "bootrom_swreg",
+                "bootrom_i_bus": "bootrom_i",
                 "boot_rom_bus": "rom_bus",
             },
         },

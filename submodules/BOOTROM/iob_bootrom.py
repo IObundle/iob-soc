@@ -1,7 +1,7 @@
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "iob_bootctr",
-        "name": "iob_bootctr",
+        "original_name": "iob_bootrom",
+        "name": "iob_bootrom",
         "version": "0.1",
         "generate_hw": False,
         "confs": [
@@ -16,7 +16,7 @@ def setup(py_params_dict):
             {
                 "name": "ADDR_W",
                 "type": "F",
-                "val": "`IOB_BOOTCTR_SWREG_ADDR_W",
+                "val": "`IOB_BOOTROM_SWREG_ADDR_W",
                 "min": "?",
                 "max": "32",
                 "descr": "Address bus width",
@@ -45,7 +45,7 @@ def setup(py_params_dict):
                 "interface": {
                     "type": "iob",
                     "subtype": "slave",
-                    "ADDR_W": "`IOB_BOOTCTR_SWREG_ADDR_W",
+                    "ADDR_W": "`IOB_BOOTROM_SWREG_ADDR_W",
                     "DATA_W": "DATA_W",
                 },
                 "descr": "Front-end interface",
@@ -59,11 +59,11 @@ def setup(py_params_dict):
                 "descr": "Clock and reset",
             },
             {
-                "name": "bootctr_i_bus",
+                "name": "bootrom_i_bus",
                 "interface": {
                     "type": "iob",
                     "subtype": "slave",
-                    "port_prefix": "bootctr_i_",
+                    "port_prefix": "bootrom_i_",
                     "DATA_W": "DATA_W",
                     "ADDR_W": "ADDR_W",
                 },

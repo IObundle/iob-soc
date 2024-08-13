@@ -2,11 +2,11 @@
 #include "iob_soc_periphs.h"
 #include "iob_soc_system.h"
 
-// Can't include iob_bootctr_swreg.h because the assembler doesn't recognize stdint.h,
+// Can't include iob_bootrom_swreg.h because the assembler doesn't recognize stdint.h,
 // so define the constants here instead (these are address offsets).
-#define IOB_BOOTCTR_ROM_ADDR 0
+#define IOB_BOOTROM_ROM_ADDR 0
 
-#define BOOTROM (BOOTCTR0_BASE + IOB_BOOTCTR_ROM_ADDR)
+#define BOOTROM (BOOTROM0_BASE + IOB_BOOTROM_ROM_ADDR)
 #define LENGTH (1 << IOB_SOC_BOOTROM_ADDR_W)
 
 .section .init
