@@ -3,7 +3,16 @@ def setup(py_params_dict):
         "original_name": "iob_div_subshift",
         "name": "iob_div_subshift",
         "version": "0.1",
-        "generate_hw": False,
+        "confs": [
+            {
+                "name": "DATA_W",
+                "type": "P",
+                "val": "32",
+                "min": "NA",
+                "max": "NA",
+                "descr": "Data bus width",
+            },
+        ],
         "ports": [
             {
                 "name": "clk_en_rst",
@@ -62,11 +71,158 @@ def setup(py_params_dict):
                 ],
             },
         ],
-        "blocks": [
+        "wires": [
+            # { # NOTE: This wire is implicitly create by py2
+            #     "name": "dqr_reg_nxt",
+            #     "descr": "dqr_reg_nxt wire",
+            #     "signals": [
+            #         {"name": "dqr_reg_nxt", "width": "2*DATA_W+1"},
+            #     ],
+            # },
             {
-                "core_name": "iob_reg",
-                "instance_name": "iob_reg_inst",
+                "name": "dqr_reg",
+                "descr": "dqr_reg wire",
+                "signals": [
+                    {"name": "dqr_reg", "width": "2*DATA_W+1"},
+                ],
             },
+            # { # NOTE: This wire is implicitly create by py2
+            #    "name": "divisor_reg_nxt",
+            #    "descr": "divisor_reg_nxt wire",
+            #    "signals": [
+            #        {"name": "divisor_reg_nxt", "width": "DATA_W"},
+            #    ],
+            # },
+            {
+                "name": "divisor_reg",
+                "descr": "divisor_reg wire",
+                "signals": [
+                    {"name": "divisor_reg", "width": "DATA_W"},
+                ],
+            },
+            {
+                "name": "subtraend",
+                "descr": "subtraend wire",
+                "signals": [
+                    {"name": "subtraend", "width": "DATA_W"},
+                ],
+            },
+            {
+                "name": "tmp",
+                "descr": "tmp wire",
+                "signals": [
+                    {"name": "tmp", "width": "DATA_W+1"},
+                ],
+            },
+            # { # NOTE: This wire is implicitly create by py2
+            #    "name": "pcnt_nxt",
+            #    "descr": "pcnt_nxt wire",
+            #    "signals": [
+            #        {"name": "pcnt_nxt", "width": "$clog2(DATA_W+1)"},
+            #    ],
+            # },
+            {
+                "name": "pcnt",
+                "descr": "pcnt wire",
+                "signals": [
+                    {"name": "pcnt", "width": "$clog2(DATA_W+1)"},
+                ],
+            },
+            {
+                "name": "last_stage",
+                "descr": "last_stage wire",
+                "signals": [
+                    {"name": "last_stage", "width": "$clog2(DATA_W+1)"},
+                ],
+            },
+            {
+                "name": "done_reg",
+                "descr": "done_reg wire",
+                "signals": [
+                    {"name": "done_reg", "width": 1},
+                ],
+            },
+        ],
+        "blocks": [
+            # { # NOTE: Register instance is implicitly created by py2
+            #     "core_name": "iob_reg",
+            #     "instance_name": "dqr_reg0",
+            #     "parameters": {
+            #         "DATA_W": "(2 * DATA_W) + 1",
+            #         "RST_VAL": "{((2 * DATA_W) + 1) {1'b0}}",
+            #     },
+            #     "connect": {
+            #         "clk_en_rst": "clk_en_rst",
+            #         "data_i": "dqr_reg_nxt",
+            #         "data_o": "dqr_reg",
+            #     },
+            # },
+            # { # NOTE: Register instance is implicitly created by py2
+            #     "core_name": "iob_reg",
+            #     "instance_name": "div_reg0",
+            #     "parameters": {
+            #         "DATA_W": "DATA_W",
+            #         "RST_VAL": "{DATA_W{1'b0}}",
+            #     },
+            #     "connect": {
+            #         "clk_en_rst": "clk_en_rst",
+            #         "data_i": "divisor_reg_nxt",
+            #         "data_o": "divisor_reg",
+            #     },
+            # },
+            # { # NOTE: Register instance is implicitly created by py2
+            #     "core_name": "iob_reg",
+            #     "instance_name": "pcnt_reg0",
+            #     "parameters": {
+            #         "DATA_W": "$clog2(DATA_W + 1)",
+            #         "RST_VAL": "{($clog2(DATA_W + 1)) {1'b0}}",
+            #     },
+            #     "connect": {
+            #         "clk_en_rst": "clk_en_rst",
+            #         "data_i": "pcnt_nxt",
+            #         "data_o": "pcnt",
+            #     },
+            # },
+        ],
+        "snippets": [
+            {
+                "verilog_code": """
+            assign subtraend = dqr_reg[(2*DATA_W)-2-:DATA_W];
+            assign quotient_o = dqr_reg[DATA_W-1:0];
+            assign remainder_o = dqr_reg[(2*DATA_W)-1:DATA_W];
+            assign tmp = {1'b0, subtraend} - {1'b0, divisor_reg};
+            assign last_stage = DATA_W + 1;
+            assign done_o = done_reg;
+         """,
+            },
+        ],
+        "combs": [
+            {
+                "verilog_code": """
+    pcnt_nxt    = pcnt + 1'b1;
+    dqr_reg_nxt     = dqr_reg;
+    divisor_reg_nxt = divisor_reg;
+    done_reg    = 1'b1;
+
+    if (pcnt == 0) begin  //wait for start, load operands and do it
+      if (!start_i) begin
+        pcnt_nxt = pcnt;
+      end else begin
+        divisor_reg_nxt = divisor_i;
+        dqr_reg_nxt     = {1'b0, {DATA_W{1'b0}}, dividend_i};
+      end
+    end else if (pcnt == last_stage) begin
+      pcnt_nxt = 0;
+    end else begin  //shift and subtract
+      done_reg = 1'b0;
+      if (~tmp[DATA_W]) begin
+        dqr_reg_nxt = {tmp, dqr_reg[DATA_W-2 : 0], 1'b1};
+      end else begin
+        dqr_reg_nxt = {1'b0, dqr_reg[(2*DATA_W)-2 : 0], 1'b0};
+      end
+    end
+""",
+            }
         ],
     }
 
