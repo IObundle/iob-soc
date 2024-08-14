@@ -25,7 +25,7 @@ def setup(py_params_dict):
             {
                 "name": "PREBOOTROM_ADDR_W",
                 "type": "F",
-                "val": "8",
+                "val": "7",
                 "min": "?",
                 "max": "24",
                 "descr": "Preboot ROM address width",
