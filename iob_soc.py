@@ -98,14 +98,6 @@ def setup(py_params_dict):
             },
             # parameters
             {
-                "name": "P_BIT",
-                "type": "P",
-                "val": "30",
-                "min": "1",
-                "max": "32",
-                "descr": "Peripheral bus selection bit",
-            },
-            {
                 "name": "PREBOOTROM_ADDR_W",
                 "type": "P",
                 "val": "8",
