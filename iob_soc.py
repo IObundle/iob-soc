@@ -380,7 +380,7 @@ def setup(py_params_dict):
                 "file_prefix": "iob_soc_bootrom_swreg_",
                 "wire_prefix": "bootrom_swreg_",
                 "DATA_W": params["data_w"],
-                "ADDR_W": params["addr_w"],
+                "ADDR_W": params["addr_w"] - 3,
             },
             "descr": "BOOTROM swreg bus",
         },
