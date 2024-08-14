@@ -444,6 +444,7 @@ def setup(py_params_dict):
         {
             "core_name": "iob_picorv32",
             "instance_name": "cpu",
+            "instance_description": "RISC-V CPU instance",
             "parameters": {
                 "ADDR_W": params["addr_w"],
                 "DATA_W": params["data_w"],
@@ -465,6 +466,7 @@ def setup(py_params_dict):
                 "core_name": "iob_split",
                 "name": "iob_ibus_split",
                 "instance_name": "iob_ibus_split",
+                "instance_description": "Instruction split between internal and external memory",
                 "connect": {
                     "clk_en_rst": "clk_en_rst",
                     "reset": "split_reset",
@@ -479,6 +481,7 @@ def setup(py_params_dict):
                 "core_name": "iob_split",
                 "name": "iob_dbus_split",
                 "instance_name": "iob_dbus_split",
+                "instance_description": "Data split between internal bus and external memory",
                 "connect": {
                     "clk_en_rst": "clk_en_rst",
                     "reset": "split_reset",
@@ -494,6 +497,7 @@ def setup(py_params_dict):
         {
             "core_name": "iob_soc_int_mem",
             "instance_name": "int_mem",
+            "instance_description": "Internal memory controller",
             "parameters": {
                 "HEXFILE": '"iob_soc_firmware"',
                 "BOOT_HEXFILE": '"iob_soc_boot"',
@@ -532,6 +536,7 @@ def setup(py_params_dict):
             {
                 "core_name": "iob_soc_ext_mem",
                 "instance_name": "ext_mem",
+                "instance_description": "External memory controller",
                 "parameters": {
                     "FIRM_ADDR_W": params["mem_addr_w"],
                     "DDR_ADDR_W ": "`DDR_ADDR_W",
@@ -557,6 +562,7 @@ def setup(py_params_dict):
             "core_name": "iob_split",
             "name": "iob_intmem_split",
             "instance_name": "iob_intmem_split",
+            "instance_description": "Split between internal memory and peripheral bus",
             "connect": {
                 "clk_en_rst": "clk_en_rst",
                 "reset": "split_reset",
@@ -571,6 +577,7 @@ def setup(py_params_dict):
             "core_name": "iob_split",
             "name": "iob_pbus_split",
             "instance_name": "iob_pbus_split",
+            "instance_description": "Split between peripherals",
             "connect": {
                 "clk_en_rst": "clk_en_rst",
                 "reset": "split_reset",
@@ -588,6 +595,7 @@ def setup(py_params_dict):
         {
             "core_name": "iob_uart",
             "instance_name": "UART0",
+            "instance_description": "UART peripheral",
             "parameters": {},
             "connect": {
                 "clk_en_rst": "clk_en_rst",
@@ -598,6 +606,7 @@ def setup(py_params_dict):
         {
             "core_name": "iob_timer",
             "instance_name": "TIMER0",
+            "instance_description": "Timer peripheral",
             "parameters": {},
             "connect": {
                 "clk_en_rst": "clk_en_rst",
@@ -608,65 +617,16 @@ def setup(py_params_dict):
     attributes_dict["blocks"] += peripherals + [
         # Modules that need to be setup, but are not instantiated directly inside
         # 'iob_soc' Verilog module
-        {
-            "core_name": "iob_cache",
-            "instance_name": "iob_cache_inst",
-            "instantiate": False,
-        },
-        {
-            "core_name": "iob_rom_sp",
-            "instance_name": "iob_rom_sp_inst",
-            "instantiate": False,
-        },
-        {
-            "core_name": "iob_ram_dp_be",
-            "instance_name": "iob_ram_dp_be_inst",
-            "instantiate": False,
-        },
-        {
-            "core_name": "iob_ram_dp_be_xil",
-            "instance_name": "iob_ram_dp_be_xil_inst",
-            "instantiate": False,
-        },
-        {
-            "core_name": "iob_pulse_gen",
-            "instance_name": "iob_pulse_gen_inst",
-            "instantiate": False,
-        },
-        # iob_counter("counter")
-        {
-            "core_name": "iob_reg",
-            "instance_name": "iob_reg_inst",
-            "instantiate": False,
-        },
-        {
-            "core_name": "iob_reg_re",
-            "instance_name": "iob_reg_re_inst",
-            "instantiate": False,
-        },
-        {
-            "core_name": "iob_ram_sp_be",
-            "instance_name": "iob_ram_sp_be_inst",
-            "instantiate": False,
-        },
-        # iob_ram_dp("ram_dp")
-        # iob_ctls("ctls")
-        {
-            "core_name": "axi_interconnect",
-            "instance_name": "axi_interconnect_inst",
-            "instantiate": False,
-        },
-        # Simulation headers & modules
+        # Testbench
         {
             "core_name": "iob_tasks",
             "instance_name": "iob_tasks_inst",
             "instantiate": False,
-            "purpose": "simulation",
+            "dest_dir": "hardware/simulation/src",
         },
-        # FPGA modules
         {
-            "core_name": "iob_reset_sync",
-            "instance_name": "iob_reset_sync_inst",
+            "core_name": "iob_pulse_gen",
+            "instance_name": "iob_pulse_gen_inst",
             "instantiate": False,
         },
         # Simulation wrapper
@@ -674,7 +634,28 @@ def setup(py_params_dict):
             "core_name": "iob_soc_sim_wrapper",
             "instance_name": "iob_soc_sim_wrapper",
             "instantiate": False,
-            "purpose": "simulation",
+            "dest_dir": "hardware/simulation/src",
+            "iob_soc_params": params,
+        },
+        # FPGA wrappers
+        # NOTE: Disabled temporarily.
+        # Since cyclonev and ku040 wrappers have the same "name" attribute,
+        # the py2hwsw generated verilog snippets will also have the same name.
+        # Therefore, this one is disabled until either:
+        # 1) Py2hwsw generates modules directly without using verilog snippets.
+        # 2) We change the wrapper names to be unique.
+        # {
+        #     "core_name": "iob_soc_ku040_wrapper",
+        #     "instance_name": "iob_soc_ku040_wrapper",
+        #     "instantiate": False,
+        #     "dest_dir": "hardware/fpga/vivado/AES-KU040-DB-G",
+        #     "iob_soc_params": params,
+        # },
+        {
+            "core_name": "iob_soc_cyclonev_wrapper",
+            "instance_name": "iob_soc_cyclonev_wrapper",
+            "instantiate": False,
+            "dest_dir": "hardware/fpga/quartus/CYCLONEV-GT-DK",
             "iob_soc_params": params,
         },
     ]
@@ -687,7 +668,7 @@ def setup(py_params_dict):
     ]
 
     # Pre-setup specialized IOb-SoC functions
-    pre_setup_iob_soc(attributes_dict, peripherals)
+    pre_setup_iob_soc(attributes_dict, peripherals, params)
     iob_soc_sw_setup(attributes_dict, peripherals, params["addr_w"])
 
     return attributes_dict

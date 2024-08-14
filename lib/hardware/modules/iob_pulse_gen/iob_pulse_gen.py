@@ -88,11 +88,10 @@ def setup(py_params_dict):
                 "name": "iob_pulse_gen_int",
                 "descr": "iob_pulse_gen_int wire",
                 "signals": [
-                    {"name": "cnt_en", "width":1},
-                     {"name": "start"},
+                    {"name": "cnt_en", "width": 1},
+                    {"name": "start"},
                 ],
             },
-
             {
                 "name": "cnt",
                 "descr": "",
