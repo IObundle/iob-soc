@@ -256,7 +256,6 @@ def setup(py_params_dict):
             "name": "cpu_general",
             "descr": "",
             "signals": [
-                {"name": "boot", "width": "1"},
                 {"name": "trap"},
             ],
         },
