@@ -12,9 +12,7 @@ module iob_bootrom #(
 
     `include "iob_bootrom_swreg_inst.vs"
 
-    //
-    // Instantiate preboot and boot ROMs
-    //
+    // Instantiate preboot ROM //
 
     iob_rom_sp #(
         .DATA_W(DATA_W),
@@ -39,6 +37,8 @@ module iob_bootrom #(
         .data_i(bootrom_i_iob_valid_i),
         .data_o(bootrom_i_iob_rvalid_o)
     );
+
+    // Link to boot ROM //
 
     assign boot_rom_en_o = ROM_ren_rd;
     assign boot_rom_addr_o = iob_addr_i[2 +: BOOTROM_ADDR_W];
