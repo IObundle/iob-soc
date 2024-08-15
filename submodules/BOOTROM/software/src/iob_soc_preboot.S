@@ -6,8 +6,9 @@
 // so define the constants here instead (these are address offsets).
 #define IOB_BOOTROM_ROM_ADDR 0
 
-#define BOOTROM (BOOTROM0_BASE + IOB_BOOTROM_ROM_ADDR)
 #define LENGTH (1 << IOB_SOC_BOOTROM_ADDR_W)
+#define BOOTROM (BOOTROM0_BASE + IOB_BOOTROM_ROM_ADDR)
+#define BOOTLDR_ADDR ((1 << IOB_SOC_MEM_ADDR_W) - (1 << IOB_SOC_BOOTROM_ADDR_W))
 
 .section .init
 .globl _start
