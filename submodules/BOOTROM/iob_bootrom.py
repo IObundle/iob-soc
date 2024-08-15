@@ -115,12 +115,8 @@ def setup(py_params_dict):
                 "instance_name": "iob_reg_inst",
             },
             {
-                "core_name": "iob_pulse_gen",
-                "instance_name": "iob_pulse_gen_inst",
-            },
-            {
-                "core_name": "iob_rom_dp",
-                "instance_name": "iob_rom_dp_inst",
+                "core_name": "iob_rom_sp",
+                "instance_name": "iob_rom_sp_inst",
             },
         ],
     }
