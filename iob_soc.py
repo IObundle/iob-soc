@@ -205,7 +205,7 @@ def setup(py_params_dict):
                 {
                     "name": "boot_rom_addr",
                     "direction": "output",
-                    "width": "BOOTROM_ADDR_W-2",
+                    "width": "BOOTROM_ADDR_W",
                 },
                 {
                     "name": "boot_rom_rdata",
@@ -502,6 +502,7 @@ def setup(py_params_dict):
         {
             "core_name": "iob_bootrom",
             "instance_name": "BOOTROM0",
+            "instance_description": "Boot ROM peripheral",
             "parameters": {},
             "connect": {
                 "clk_en_rst": "clk_en_rst",

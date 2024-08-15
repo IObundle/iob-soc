@@ -69,7 +69,7 @@ def setup(py_params_dict):
             "core_name": "iob_rom_sp",
             "instance_name": "boot_rom",
             "parameters": {
-                "ADDR_W": "BOOTROM_ADDR_W - 2",
+                "ADDR_W": "BOOTROM_ADDR_W",
                 "DATA_W": params["data_w"],
                 "HEXFILE": '{BOOT_HEXFILE, ".hex"}',
             },
