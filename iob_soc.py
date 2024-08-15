@@ -580,6 +580,7 @@ iob_reg #(
     .data_o(low_after_1st_rst)
 );
 
+wire cpu_rst_start_pulse;
 assign cpu_rst_start_pulse = low_after_1st_rst;
 iob_pulse_gen #(
     .START   (0),
