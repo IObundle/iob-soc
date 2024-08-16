@@ -10,8 +10,6 @@ from iob_soc_peripherals import create_periphs_tmp, set_peripheral_macros
 from iob_soc_create_system import insert_header_files
 
 
-# from iob_soc_create_wrapper_files import create_wrapper_files
-#
 # import fnmatch
 # import if_gen
 # import copy_srcs
@@ -36,11 +34,6 @@ def iob_soc_sw_setup(attributes, peripherals, ADDR_W):
 #     build_dir = python_module.build_dir
 #     name = python_module.name
 #     num_extmem_connections = python_module.num_extmem_connections
-#     # Try to build wrapper files
-#     # if not fnmatch.filter(exclude_files,'iob_soc_sim_wrapper.v'):
-#     create_wrapper_files(
-#         build_dir, name, python_module.ios, confs, num_extmem_connections
-#     )
 #
 #     # Note:
 #     # The settings below are only used with `USE_EXTMEM=1`.

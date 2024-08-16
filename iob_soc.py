@@ -24,7 +24,7 @@ def setup(py_params_dict):
     for name, default_val in params.items():
         if name not in py_params_dict:
             continue
-        if type(default_val) == bool and py_params_dict[name] == "0":
+        if type(default_val) is bool and py_params_dict[name] == "0":
             params[name] = False
         else:
             params[name] = type(default_val)(py_params_dict[name])
@@ -624,11 +624,6 @@ def setup(py_params_dict):
             "instantiate": False,
             "dest_dir": "hardware/simulation/src",
         },
-        {
-            "core_name": "iob_pulse_gen",
-            "instance_name": "iob_pulse_gen_inst",
-            "instantiate": False,
-        },
         # Simulation wrapper
         {
             "core_name": "iob_soc_sim_wrapper",
@@ -638,19 +633,13 @@ def setup(py_params_dict):
             "iob_soc_params": params,
         },
         # FPGA wrappers
-        # NOTE: Disabled temporarily.
-        # Since cyclonev and ku040 wrappers have the same "name" attribute,
-        # the py2hwsw generated verilog snippets will also have the same name.
-        # Therefore, this one is disabled until either:
-        # 1) Py2hwsw generates modules directly without using verilog snippets.
-        # 2) We change the wrapper names to be unique.
-        # {
-        #     "core_name": "iob_soc_ku040_wrapper",
-        #     "instance_name": "iob_soc_ku040_wrapper",
-        #     "instantiate": False,
-        #     "dest_dir": "hardware/fpga/vivado/AES-KU040-DB-G",
-        #     "iob_soc_params": params,
-        # },
+        {
+            "core_name": "iob_soc_ku040_wrapper",
+            "instance_name": "iob_soc_ku040_wrapper",
+            "instantiate": False,
+            "dest_dir": "hardware/fpga/vivado/AES-KU040-DB-G",
+            "iob_soc_params": params,
+        },
         {
             "core_name": "iob_soc_cyclonev_wrapper",
             "instance_name": "iob_soc_cyclonev_wrapper",
