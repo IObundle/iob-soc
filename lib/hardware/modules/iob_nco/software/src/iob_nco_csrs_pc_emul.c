@@ -4,7 +4,7 @@
 #include <time.h>
 
 #include "bsp.h"
-#include "iob_nco_swreg.h"
+#include "iob_nco_csrs.h"
 
 /* convert clock values from PC CLOCK FREQ to EMBEDDED FREQ */
 #define PC_TO_FREQ_FACTOR ((1.0 * FREQ) / CLOCKS_PER_SEC)

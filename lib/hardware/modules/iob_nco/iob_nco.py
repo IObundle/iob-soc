@@ -16,7 +16,7 @@ def setup(py_params_dict):
             {
                 "name": "ADDR_W",
                 "type": "P",
-                "val": "`IOB_NCO_SWREG_ADDR_W",
+                "val": "`IOB_NCO_CSRS_ADDR_W",
                 "min": "0",
                 "max": "32",
                 "descr": "Address bus width",
@@ -62,42 +62,46 @@ def setup(py_params_dict):
                 ],
             },
         ],
-        "csrs": [
-            {
-                "name": "nco",
-                "descr": "NCO software accessible registers.",
-                "regs": [
-                    {
-                        "name": "SOFT_RESET",
-                        "type": "W",
-                        "n_bits": 1,
-                        "rst_val": 0,
-                        "log2n_items": 0,
-                        "autoreg": True,
-                        "descr": "Soft reset.",
-                    },
-                    {
-                        "name": "ENABLE",
-                        "type": "W",
-                        "n_bits": 1,
-                        "rst_val": 0,
-                        "log2n_items": 0,
-                        "autoreg": True,
-                        "descr": "NCO enable",
-                    },
-                    {
-                        "name": "PERIOD",
-                        "type": "W",
-                        "n_bits": 32,
-                        "rst_val": 5,
-                        "log2n_items": 0,
-                        "autoreg": False,
-                        "descr": "Period of the generated clock in terms of the number of system clock cycles + 1 implicit clock cycle. The period value is divided into integer and fractional parts where the lower FRAC_W bits represent the fractional part, and the remaining upper bits represent the integer part.",
-                    },
-                ],
-            }
-        ],
         "blocks": [
+            {
+                "core_name": "csrs",
+                "instance_name": "csrs_inst",
+                "csrs": [
+                    {
+                        "name": "nco",
+                        "descr": "NCO software accessible registers.",
+                        "regs": [
+                            {
+                                "name": "SOFT_RESET",
+                                "type": "W",
+                                "n_bits": 1,
+                                "rst_val": 0,
+                                "log2n_items": 0,
+                                "autoreg": True,
+                                "descr": "Soft reset.",
+                            },
+                            {
+                                "name": "ENABLE",
+                                "type": "W",
+                                "n_bits": 1,
+                                "rst_val": 0,
+                                "log2n_items": 0,
+                                "autoreg": True,
+                                "descr": "NCO enable",
+                            },
+                            {
+                                "name": "PERIOD",
+                                "type": "W",
+                                "n_bits": 32,
+                                "rst_val": 5,
+                                "log2n_items": 0,
+                                "autoreg": False,
+                                "descr": "Period of the generated clock in terms of the number of system clock cycles + 1 implicit clock cycle. The period value is divided into integer and fractional parts where the lower FRAC_W bits represent the fractional part, and the remaining upper bits represent the integer part.",
+                            },
+                        ],
+                    }
+                ],
+            },
             {
                 "core_name": "iob_reg_r",
                 "instance_name": "iob_reg_r_inst",

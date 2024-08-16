@@ -416,27 +416,27 @@ def setup(py_params_dict):
     attributes_dict["wires"] += [
         # Peripheral wires
         {
-            "name": "uart_swreg",
+            "name": "uart_csrs",
             "interface": {
                 "type": "iob",
-                "file_prefix": "iob_soc_uart_swreg_",
-                "wire_prefix": "uart_swreg_",
+                "file_prefix": "iob_soc_uart_csrs_",
+                "wire_prefix": "uart_csrs_",
                 "DATA_W": params["data_w"],
-                # TODO: How to trim ADDR_W to match swreg addr width?
+                # TODO: How to trim ADDR_W to match csrs addr width?
                 "ADDR_W": params["addr_w"] - 3,
             },
-            "descr": "UART swreg bus",
+            "descr": "UART csrs bus",
         },
         {
-            "name": "timer_swreg",
+            "name": "timer_csrs",
             "interface": {
                 "type": "iob",
-                "file_prefix": "iob_soc_timer_swreg_",
-                "wire_prefix": "timer_swreg_",
+                "file_prefix": "iob_soc_timer_csrs_",
+                "wire_prefix": "timer_csrs_",
                 "DATA_W": params["data_w"],
                 "ADDR_W": params["addr_w"] - 3,
             },
-            "descr": "TIMER swreg bus",
+            "descr": "TIMER csrs bus",
         },
         # TODO: Auto add peripheral wires
     ]
@@ -582,8 +582,8 @@ def setup(py_params_dict):
                 "clk_en_rst": "clk_en_rst",
                 "reset": "split_reset",
                 "input": "cpu_pbus",
-                "output_0": "uart_swreg",
-                "output_1": "timer_swreg",
+                "output_0": "uart_csrs",
+                "output_1": "timer_csrs",
                 # TODO: Connect peripherals automatically
             },
             "num_outputs": N_SLAVES,
@@ -599,7 +599,7 @@ def setup(py_params_dict):
             "parameters": {},
             "connect": {
                 "clk_en_rst": "clk_en_rst",
-                "iob": "uart_swreg",
+                "iob": "uart_csrs",
                 "rs232": "rs232",
             },
         },
@@ -610,7 +610,7 @@ def setup(py_params_dict):
             "parameters": {},
             "connect": {
                 "clk_en_rst": "clk_en_rst",
-                "iob": "timer_swreg",
+                "iob": "timer_csrs",
             },
         },
     ]

@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 `include "iob_nco_conf.vh"
-`include "iob_nco_swreg_def.vh"
+`include "iob_nco_csrs_def.vh"
 
 module iob_nco #(
     `include "iob_nco_params.vs"
@@ -14,12 +14,12 @@ module iob_nco #(
   wire [DATA_W-1:0] acc_in, acc_out;
   wire clk_int;
 
-  //Dummy iob_ready_nxt_o and iob_rvalid_nxt_o to be used in swreg (unused ports)
+  //Dummy iob_ready_nxt_o and iob_rvalid_nxt_o to be used in csrs (unused ports)
   wire iob_ready_nxt;
   wire iob_rvalid_nxt;
 
   //BLOCK Register File & Configuration, control and status registers accessible by the sofware
-  `include "iob_nco_swreg_inst.vs"
+  `include "iob_nco_csrs_inst.vs"
 
   // PERIOD Manual logic
   assign PERIOD_wready_wr = 1'b1;

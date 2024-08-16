@@ -285,7 +285,7 @@ static loff_t iob_nco_llseek(struct file *filp, loff_t offset, int whence) {
     new_pos = filp->f_pos + offset;
     break;
   case SEEK_END:
-    new_pos = (1 << IOB_NCO_SWREG_ADDR_W) + offset;
+    new_pos = (1 << IOB_NCO_CSRS_ADDR_W) + offset;
     break;
   default:
     return -EINVAL;
