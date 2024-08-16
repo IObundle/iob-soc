@@ -136,9 +136,6 @@ def setup(py_params_dict):
         if port["name"] not in [
             "clk_en_rst",
             "rom_bus",
-            "spram_bus",
-            "sram_i_bus",
-            "sram_d_bus",
         ]:
             wire = copy.deepcopy(port)
             if "interface" in wire and "port_prefix" in wire["interface"]:

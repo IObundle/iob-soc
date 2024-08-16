@@ -11,7 +11,6 @@ def setup(py_params_dict):
     params = {
         "init_mem": False,
         "use_extmem": False,
-        "use_spram": False,
         "use_ethernet": False,
         "addr_w": 32,
         "data_w": 32,
