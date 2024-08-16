@@ -302,22 +302,22 @@ def setup(py_params_dict):
     attributes_dict["wires"] += [
         # External memory wires
         {
-            "name": "mem_i",
+            "name": "cache_system_i",
             "interface": {
                 "type": "iob",
-                "file_prefix": "iob_soc_mem_i_",
-                "wire_prefix": "mem_i_",
+                "file_prefix": "iob_soc_cache_system_i_",
+                "wire_prefix": "cache_system_i_",
                 "DATA_W": params["data_w"],
                 "ADDR_W": params["addr_w"] - 1,
             },
             "descr": "iob-soc external memory instruction interface",
         },
         {
-            "name": "mem_d",
+            "name": "cache_system_d",
             "interface": {
                 "type": "iob",
-                "file_prefix": "iob_soc_mem_d_",
-                "wire_prefix": "mem_d_",
+                "file_prefix": "iob_soc_cache_system_d_",
+                "wire_prefix": "cache_system_d_",
                 "DATA_W": params["data_w"],
                 "ADDR_W": params["addr_w"] - 1,
             },
@@ -407,8 +407,8 @@ def setup(py_params_dict):
     ]
     attributes_dict["blocks"] += [
         {
-            "core_name": "iob_soc_mem",
-            "instance_name": "mem",
+            "core_name": "iob_soc_cache_system",
+            "instance_name": "cache_system",
             "parameters": {
                 "FIRM_ADDR_W": params["mem_addr_w"],
                 "DDR_ADDR_W ": "`DDR_ADDR_W",
@@ -420,8 +420,8 @@ def setup(py_params_dict):
             },
             "connect": {
                 "clk_en_rst": "mem_clk_en_rst",
-                "i_bus": "mem_i",
-                "d_bus": "mem_d",
+                "i_bus": "cache_system_i",
+                "d_bus": "cache_system_d",
                 "axi": "axi",
             },
             "addr_w": params["addr_w"] - 1,
@@ -432,13 +432,13 @@ def setup(py_params_dict):
     attributes_dict["blocks"] += [
         {
             "core_name": "iob_split",
-            "name": "iob_mem_split",
-            "instance_name": "iob_mem_split",
+            "name": "iob_data_split",
+            "instance_name": "iob_data_split",
             "connect": {
                 "clk_en_rst": "clk_en_rst",
                 "reset": "split_reset",
                 "input": "cpu_d",
-                "output_0": "mem_d",
+                "output_0": "cache_system_d",
                 "output_1": "cpu_pbus",
             },
             "num_outputs": 2,
@@ -469,7 +469,7 @@ def setup(py_params_dict):
                 "clk_en_rst": "clk_en_rst",
                 "reset": "split_reset",
                 "input": "cpu_i",
-                "output_0": "mem_i",
+                "output_0": "cache_system_i",
                 "output_1": "bootrom_i",
             },
             "num_outputs": 2,
