@@ -109,7 +109,7 @@ def setup(py_params_dict):
                 "name": "data_int",
                 "descr": "data_int wire",
                 "signals": [
-                    {"name": "data_int", "width": "DATA_W"},
+                    {"name": "data_int", "width": "DATA_W+1"},
                 ],
             },
         ],
@@ -118,7 +118,7 @@ def setup(py_params_dict):
                 "core_name": "iob_reg_re",
                 "instance_name": "reg0",
                 "parameters": {
-                    "DATA_W": "DATA_W",
+                    "DATA_W": "DATA_W+1",
                     "RST_VAL": "RST_VAL",
                 },
                 "connect": {
@@ -131,7 +131,7 @@ def setup(py_params_dict):
         ],
         "snippets": [
             {
-                "verilog_code": f"""
+                "verilog_code": """
             assign data_nxt_o = ld_i ? ld_val_i : data_o + incr_i;
             assign data_o = data_int[DATA_W-1:0];
             """,

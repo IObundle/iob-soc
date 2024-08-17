@@ -14,12 +14,12 @@ ifeq ($(SIMULATOR),verilator)
 VSRC+=./src/iob_tasks.cpp
 
 ifeq ($(USE_ETHERNET),1)
-VSRC+=./src/iob_eth_swreg_emb_verilator.c ./src/iob_eth_driver_tb.cpp
+VSRC+=./src/iob_eth_csrs_emb_verilator.c ./src/iob_eth_driver_tb.cpp
 endif
 
 # get header files (needed for iob_soc_tb.cpp)
-VHDR+=iob_uart_swreg.h
-iob_uart_swreg.h: ../../software/src/iob_uart_swreg.h
+VHDR+=iob_uart_csrs.h
+iob_uart_csrs.h: ../../software/src/iob_uart_csrs.h
 	cp $< $@
 
 # verilator top module

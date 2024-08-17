@@ -5,7 +5,7 @@
 #include "iob_soc_system.h"
 
 #ifdef IOB_SOC_USE_EXTMEM
-#include "iob_cache_swreg.h"
+#include "iob_cache_csrs.h"
 #endif
 
 #define PROGNAME "IOb-Bootloader"

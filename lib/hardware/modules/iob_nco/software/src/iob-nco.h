@@ -1,5 +1,5 @@
 #pragma once
-#include "iob_nco_swreg.h"
+#include "iob_nco_csrs.h"
 #include <stdbool.h>
 
 // Functions

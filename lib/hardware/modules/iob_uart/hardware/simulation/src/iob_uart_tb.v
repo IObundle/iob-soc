@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-`include "iob_uart_swreg_def.vh"
+`include "iob_uart_csrs_def.vh"
 `include "iob_uart_conf.vh"
 
 `define IOB_RESET(CLK, RESET, PRE, DURATION, POST) RESET=~`IOB_UART_RST_POL;\
@@ -161,10 +161,10 @@ module iob_uart_tb;
       .data_write_en_i(wr_en),
       .data_read_en_i (rd_en),
       .bit_duration_i (div),
-      .rxd_i          (tx2rx),
-      .txd_o          (tx2rx),
-      .cts_i          (rts2cts),
-      .rts_o          (rts2cts)
+      .rs232_rxd_i    (tx2rx),
+      .rs232_txd_o    (tx2rx),
+      .rs232_cts_i    (rts2cts),
+      .rs232_rts_o    (rts2cts)
   );
 
 endmodule

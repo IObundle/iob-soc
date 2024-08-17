@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "iob_uart_swreg.h"
+#include "iob_uart_csrs.h"
 
 static uint16_t div_value;
 

@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "iob_uart_swreg.h"
+#include "iob_uart_csrs.h"
 
 #define UART_PROGNAME "IOb-UART"
 

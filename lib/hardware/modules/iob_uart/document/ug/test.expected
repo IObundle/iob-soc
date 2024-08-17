@@ -48,7 +48,7 @@
 \@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces RS232 Interface Signals\relax }}{3}{table.caption.10}\protected@file@percent }
 \newlabel{tab:if_rs232}{{4}{3}{RS232 Interface Signals\relax }{table.caption.10}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Software Accessible Registers}{4}{subsection.2.4}\protected@file@percent }
-\newlabel{sec:swreg}{{2.4}{4}{Software Accessible Registers}{subsection.2.4}{}}
+\newlabel{sec:csrs}{{2.4}{4}{Software Accessible Registers}{subsection.2.4}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces UART software accessible registers.\relax }}{4}{table.caption.11}\protected@file@percent }
 \newlabel{tab:sw_tx}{{5}{4}{UART software accessible registers.\relax }{table.caption.11}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {3}Usage}{4}{section.3}\protected@file@percent }
