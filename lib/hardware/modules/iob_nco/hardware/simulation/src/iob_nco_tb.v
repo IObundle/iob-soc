@@ -62,8 +62,8 @@ module iob_nco_tb;
     #100;
     @(posedge clk) #1;
 
-    IOB_NCO_SET_SOFT_RESET(1'b1);
-    IOB_NCO_SET_SOFT_RESET(1'b0);
+    IOB_NCO_SET_SOFTRESET(1'b1);
+    IOB_NCO_SET_SOFTRESET(1'b0);
 
     IOB_NCO_SET_PERIOD(16'h1280);
     IOB_NCO_SET_ENABLE(1'b1);

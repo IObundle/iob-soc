@@ -18,7 +18,7 @@ void IOB_NCO_INIT_BASEADDR(uint32_t addr) {
   return;
 }
 
-void IOB_NCO_SET_SOFT_RESET(uint8_t value) {
+void IOB_NCO_SET_SOFTRESET(uint8_t value) {
   // use only reg width
   int rst_int = (value & 0x01);
   if (rst_int) {
