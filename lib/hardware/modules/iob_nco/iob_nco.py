@@ -15,7 +15,7 @@ def setup(py_params_dict):
             {
                 "name": "ADDR_W",
                 "type": "P",
-                "val": "`IOB_NCO_CSRS_ADDR_W",
+                "val": "4",  # Same as `IOB_NCO_CSRS_ADDR_W
                 "min": "0",
                 "max": "32",
                 "descr": "Address bus width",
@@ -43,7 +43,7 @@ def setup(py_params_dict):
                 "interface": {
                     "type": "iob",
                     "subtype": "slave",
-                    "ADDR_W": "ADDR_W",
+                    "ADDR_W": "4",  # Same as `IOB_NCO_CSRS_ADDR_W
                     "DATA_W": "DATA_W",
                 },
                 "descr": "CPU native interface",

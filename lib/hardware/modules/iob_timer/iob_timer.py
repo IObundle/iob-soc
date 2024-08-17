@@ -15,7 +15,7 @@ def setup(py_params_dict):
             {
                 "name": "ADDR_W",
                 "type": "P",
-                "val": "`IOB_TIMER_CSRS_ADDR_W",
+                "val": "4",  # Same as `IOB_TIMER_CSRS_ADDR_W
                 "min": "NA",
                 "max": "NA",
                 "descr": "Address bus width",

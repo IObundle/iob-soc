@@ -16,7 +16,7 @@ def setup(py_params_dict):
             {
                 "name": "ADDR_W",
                 "type": "P",
-                "val": "`IOB_UART_CSRS_ADDR_W",
+                "val": "3",  # Same as `IOB_UART_CSRS_ADDR_W
                 "min": "NA",
                 "max": "NA",
                 "descr": "Address bus width",
