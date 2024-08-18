@@ -143,47 +143,6 @@ def setup(py_params_dict):
                 ],
             },
         ],
-        "blocks": [
-            # { # NOTE: Register instance is implicitly created by py2
-            #     "core_name": "iob_reg",
-            #     "instance_name": "dqr_reg0",
-            #     "parameters": {
-            #         "DATA_W": "(2 * DATA_W) + 1",
-            #         "RST_VAL": "{((2 * DATA_W) + 1) {1'b0}}",
-            #     },
-            #     "connect": {
-            #         "clk_en_rst": "clk_en_rst",
-            #         "data_i": "dqr_reg_nxt",
-            #         "data_o": "dqr_reg",
-            #     },
-            # },
-            # { # NOTE: Register instance is implicitly created by py2
-            #     "core_name": "iob_reg",
-            #     "instance_name": "div_reg0",
-            #     "parameters": {
-            #         "DATA_W": "DATA_W",
-            #         "RST_VAL": "{DATA_W{1'b0}}",
-            #     },
-            #     "connect": {
-            #         "clk_en_rst": "clk_en_rst",
-            #         "data_i": "divisor_reg_nxt",
-            #         "data_o": "divisor_reg",
-            #     },
-            # },
-            # { # NOTE: Register instance is implicitly created by py2
-            #     "core_name": "iob_reg",
-            #     "instance_name": "pcnt_reg0",
-            #     "parameters": {
-            #         "DATA_W": "$clog2(DATA_W + 1)",
-            #         "RST_VAL": "{($clog2(DATA_W + 1)) {1'b0}}",
-            #     },
-            #     "connect": {
-            #         "clk_en_rst": "clk_en_rst",
-            #         "data_i": "pcnt_nxt",
-            #         "data_o": "pcnt",
-            #     },
-            # },
-        ],
         "snippets": [
             {
                 "verilog_code": """

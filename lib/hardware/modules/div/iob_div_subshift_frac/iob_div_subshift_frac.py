@@ -23,17 +23,6 @@ def setup(py_params_dict):
                 "descr": "Clock, clock enable and reset",
             },
             {
-                "name": "start_i",
-                "descr": "Input port",
-                "signals": [
-                    {
-                        "name": "start",
-                        "width": 1,
-                        "direction": "input",
-                    },
-                ],
-            },
-            {
                 "name": "dividend_i",
                 "descr": "Input port",
                 "signals": [
@@ -56,13 +45,20 @@ def setup(py_params_dict):
                 ],
             },
             {
-                "name": "done_o",
-                "descr": "Output port",
+                "name": "status",
+                "descr": "",
                 "signals": [
                     {
-                        "name": "done",
+                        "name": "start",
+                        "direction": "input",
                         "width": 1,
+                        "descr": "Start signal",
+                    },
+                    {
+                        "name": "done",
                         "direction": "output",
+                        "width": 1,
+                        "descr": "Done signal",
                     },
                 ],
             },
@@ -166,6 +162,7 @@ def setup(py_params_dict):
                 },
                 "connect": {
                     "clk_en_rst": "clk_en_rst",
+                    "status": "status",
                     "div": "div_frac",
                 },
             },
@@ -176,26 +173,24 @@ def setup(py_params_dict):
             incr        = 1'b0;
             res_acc_nxt = res_acc + remainder_o;
             res_acc_en  = 1'b0;
-            pc_nxt      = pc + 1'b1;
                 """,
             }
         ],
         "fsms": [
             {
                 "verilog_code": """
-        idle:
 
-        #case 0
+        
             if (!start_i) begin
                 pc_nxt = pc; 
             end 
 
-        #case 1
+      
             if (!done_o) begin
                 pc_nxt = pc;
             end
         
-        #default
+       
             begin 
             res_acc_en = 1'b1;
             if (res_acc_nxt >= divisor_i) begin
@@ -205,10 +200,6 @@ def setup(py_params_dict):
             if (!start_i) pc_nxt = pc;
             else pc_nxt = 1'b1;
             end
-
-        #case pc   
-            begin   
-            pc_nxt = idle; end
             """,
             }
         ],
