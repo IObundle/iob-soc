@@ -1,6 +1,6 @@
 SECTIONS {
   /* Program code */
-  . = 0x00000000;
+  INCLUDE auto_iob_soc_firmware.lds
   .init : { *(.init) }
   .text : { *(.text) }
 

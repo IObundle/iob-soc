@@ -17,6 +17,7 @@ def setup(py_params_dict):
         "mem_addr_w": 24,
         "use_compressed": True,
         "use_mul_div": True,
+        "fw_addr": 0,
     }
 
     # Update params with py_params_dict
@@ -94,6 +95,14 @@ def setup(py_params_dict):
                 "min": "0",
                 "max": "32",
                 "descr": "Memory bus address width",
+            },
+            {  # Needed for software
+                "name": "FW_ADDR",
+                "type": "M",
+                "val": params["fw_addr"],
+                "min": "0",
+                "max": "32",
+                "descr": "Firmware address",
             },
             # parameters
             {
