@@ -191,22 +191,6 @@ def pre_setup_iob_soc(attributes_dict, peripherals, params):
     # iob_soc_peripheral_setup(attributes_dict)
     # update_ios_with_extmem_connections(attributes_dict)
 
-    # Ignore snippets that should not be replaced by the normal setup process
-    # These snippets will only be generated and replaced by iob-soc after the setup process
-    # TODO: Remove this when wrappers are fully py2hwsw generated
-    attributes_dict["ignore_snippets"] = [
-        f"{name}_pwires.vs",
-        f"{name}_periphs_inst.vs",
-        f"{name}_wrapper_pwires.vs",
-        f"{name}_pportmaps.vs",
-        f"{name}_interconnect.vs",
-        "iob_memory_axi_s_portmap.vs",
-        f"{name}_cyclonev_interconnect_s_portmap.vs",
-        f"{name}_ku040_rstn.vs",
-        "ddr4_axi_wire.vs",
-        f"{name}_ku040_interconnect_s_portmap.vs",
-    ]
-
     #
     # Create auto_sw_build.mk
     #
