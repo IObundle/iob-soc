@@ -173,25 +173,27 @@ def setup(py_params_dict):
             incr        = 1'b0;
             res_acc_nxt = res_acc + remainder_o;
             res_acc_en  = 1'b0;
-            if (!start_i) begin
-                pc_nxt = pc; 
-            end 
+            pc_nxt      = pc + 1'b1;
 
-      
-            if (!done_o) begin
-                pc_nxt = pc;
-            end
-        
-       
-            begin 
-            res_acc_en = 1'b1;
-            if (res_acc_nxt >= divisor_i) begin
-            incr        = 1'b1;
-            res_acc_nxt = res_acc + remainder_o - divisor_i;
-            end
-            if (!start_i) pc_nxt = pc;
-            else pc_nxt = 1'b1;
-            end
+    case (pc)
+      0: begin  //wait for div start
+        if (!start_i) pc_nxt = pc;
+      end
+
+      1: begin  //wait for div done
+        if (!done_o) pc_nxt = pc;
+      end
+
+      default: begin
+        res_acc_en = 1'b1;
+        if (res_acc_nxt >= divisor_i) begin
+          incr        = 1'b1;
+          res_acc_nxt = res_acc + remainder_o - divisor_i;
+        end
+        if (!start_i) pc_nxt = pc;
+        else pc_nxt = 1'b1;
+      end
+    endcase  // case (pc)
                 """,
             }
         ],
