@@ -208,7 +208,7 @@ def setup(py_params_dict):
                 "descr": "",
                 "signals": [
                     {"name": "mem_axi_clk", "width": "1"},
-                    {"name": "mem_clk_sync_rst_inv", "width": "1"},
+                    {"name": "mem_clk_sync_rst", "width": "1"},
                 ],
             },
             {
@@ -228,6 +228,7 @@ def setup(py_params_dict):
                     "LEN_W": "AXI_LEN_W",
                     "ADDR_W": "AXI_ADDR_W",
                     "DATA_W": "AXI_DATA_W",
+                    "LOCK_W": 1,
                 },
                 "descr": "AXI bus to connect interconnect and memory",
             },
@@ -247,7 +248,7 @@ def setup(py_params_dict):
                 "descr": "",
                 "signals": [
                     {"name": "mem_axi_clk"},
-                    {"name": "mem_clk_sync_rst", "width": "1"},
+                    {"name": "mem_clk_sync_rst"},
                     {"name": "mem_axi_arstn"},
                 ],
             },
@@ -454,7 +455,6 @@ def setup(py_params_dict):
             {
                 "verilog_code": """
     // External memory connections
-    assign mem_clk_sync_rst_inv = ~mem_clk_sync_rst;
     assign arst = ~s0_arstn;
 """,
             },

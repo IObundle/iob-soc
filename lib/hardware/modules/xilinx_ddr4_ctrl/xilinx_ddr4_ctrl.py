@@ -65,6 +65,7 @@ def setup(py_params_dict):
                     "LEN_W": "AXI_LEN_W",
                     "ADDR_W": "AXI_ADDR_W",
                     "DATA_W": "AXI_DATA_W",
+                    "LOCK_W": 1,
                 },
                 "descr": "AXI interface",
             },

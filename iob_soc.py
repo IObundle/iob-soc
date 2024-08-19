@@ -36,6 +36,8 @@ def setup(py_params_dict):
         "original_name": "iob_soc",
         "name": "iob_soc",
         "version": "0.7",
+        # FIXME: Fix build dir based on py_params_dict
+        "build_dir": "../iob_soc_V0.7",
         "is_system": True,
         "board_list": ["CYCLONEV-GT-DK", "AES-KU040-DB-G"],
         "confs": [
