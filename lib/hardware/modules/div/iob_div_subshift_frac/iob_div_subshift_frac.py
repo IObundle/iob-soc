@@ -173,14 +173,6 @@ def setup(py_params_dict):
             incr        = 1'b0;
             res_acc_nxt = res_acc + remainder_o;
             res_acc_en  = 1'b0;
-                """,
-            }
-        ],
-        "fsms": [
-            {
-                "verilog_code": """
-
-        
             if (!start_i) begin
                 pc_nxt = pc; 
             end 
@@ -200,7 +192,7 @@ def setup(py_params_dict):
             if (!start_i) pc_nxt = pc;
             else pc_nxt = 1'b1;
             end
-            """,
+                """,
             }
         ],
     }
