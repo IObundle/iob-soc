@@ -17,7 +17,11 @@ def setup(py_params_dict):
             {
                 "name": "HEXFILE",
                 "type": "P",
-                "val": '"iob_soc_firmware"' if params["init_mem"] else '"none"',
+                "val": (
+                    '"iob_soc_firmware"'
+                    if params["init_mem"] and not params["use_extmem"]
+                    else '"none"'
+                ),
                 "min": "NA",
                 "max": "NA",
                 "descr": "Firmware file name",
@@ -37,7 +41,7 @@ def setup(py_params_dict):
     mwrap_wires = []
     mwrap_ports = []
     for port in iob_soc_attr["ports"]:
-        if port["name"] in ["rom_bus", "spram_bus", "sram_i_bus", "sram_d_bus"]:
+        if port["name"] == "rom_bus":
             wire = copy.deepcopy(port)
             if "interface" in wire and "port_prefix" in wire["interface"]:
                 wire["interface"]["wire_prefix"] = wire["interface"]["port_prefix"]
@@ -59,106 +63,14 @@ def setup(py_params_dict):
             ],
         },
     ]
-    if params["use_spram"]:
-        attributes_dict["wires"] += [
-            {
-                "name": "main_mem_if",
-                "descr": "",
-                "signals": [
-                    {"name": "spram_iob_valid"},
-                    {"name": "spram_iob_wstrb"},
-                    {"name": "spram_iob_addr"},
-                    {"name": "spram_iob_wdata"},
-                    {"name": "spram_iob_rdata"},
-                ],
-            },
-        ]
-    else:
-        attributes_dict["wires"] += [
-            {
-                "name": "main_mem_port_a",
-                "descr": "",
-                "signals": [
-                    {"name": "sram_d_iob_valid"},
-                    {"name": "sram_d_iob_wstrb"},
-                    {"name": "sram_d_iob_addr"},
-                    {"name": "sram_d_iob_wdata"},
-                    {"name": "sram_d_iob_rdata"},
-                ],
-            },
-            {
-                "name": "main_mem_port_b",
-                "descr": "",
-                "signals": [
-                    {"name": "sram_i_iob_valid"},
-                    {"name": "sram_i_iob_wstrb"},
-                    {"name": "sram_i_iob_addr"},
-                    {"name": "sram_i_iob_wdata"},
-                    {"name": "sram_i_iob_rdata"},
-                ],
-            },
-        ]
-    attributes_dict["blocks"] = []
-    if params["use_spram"]:
-        attributes_dict["blocks"] += [
-            {
-                "core_name": "iob_ram_sp_be",
-                "instance_name": "main_mem_byte",
-                "parameters": {
-                    "HEXFILE": "HEXFILE",
-                    "ADDR_W": "SRAM_ADDR_W - 2",
-                    "DATA_W": params["data_w"],
-                },
-                "connect": {
-                    "clk": "clk",
-                    "mem_if": "main_mem_if",
-                },
-            },
-        ]
-    else:  # not params['use_spram']
-        attributes_dict["blocks"] += [
-            # MEM_NO_READ_ON_WRITE
-            {
-                "core_name": "iob_ram_dp_be",
-                "instance_name": "main_mem_byte",
-                "parameters": {
-                    "HEXFILE": "HEXFILE",
-                    "ADDR_W": "SRAM_ADDR_W - 2",
-                    "DATA_W": params["data_w"],
-                    "MEM_NO_READ_ON_WRITE": 1,
-                },
-                "connect": {
-                    "clk": "clk",
-                    "port_a": "main_mem_port_a",
-                    "port_b": "main_mem_port_b",
-                },
-                "if_defined": "IOB_MEM_NO_READ_ON_WRITE",
-            },
-            # not MEM_NO_READ_ON_WRITE
-            {
-                "core_name": "iob_ram_dp_be_xil",
-                "instance_name": "main_mem_byte",
-                "parameters": {
-                    "HEXFILE": "HEXFILE",
-                    "ADDR_W": "SRAM_ADDR_W - 2",
-                    "DATA_W": params["data_w"],
-                },
-                "connect": {
-                    "clk": "clk",
-                    "port_a": "main_mem_port_a",
-                    "port_b": "main_mem_port_b",
-                },
-                "if_not_defined": "IOB_MEM_NO_READ_ON_WRITE",
-            },
-        ]
-    attributes_dict["blocks"] += [
+    attributes_dict["blocks"] = [
         # ROM
         {
             "core_name": "iob_rom_sp",
-            "instance_name": "sp_rom",
+            "instance_name": "boot_rom",
             "parameters": {
-                "DATA_W": params["data_w"],
                 "ADDR_W": "BOOTROM_ADDR_W - 2",
+                "DATA_W": params["data_w"],
                 "HEXFILE": '{BOOT_HEXFILE, ".hex"}',
             },
             "connect": {
@@ -179,11 +91,5 @@ def setup(py_params_dict):
             **params,
         },
     ]
-    #    attributes_dict["snippets"] = [
-    #        {
-    #            "verilog_code": """
-    # """,
-    #        },
-    #    ]
 
     return attributes_dict

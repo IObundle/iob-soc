@@ -211,7 +211,7 @@ def setup(py_params_dict):
             "instance_name": "sel_reg_re",
             "parameters": {
                 "DATA_W": NBITS,
-                "RST_VAL": 0,
+                "RST_VAL": f"{NBITS}'b0",
             },
             "connect": {
                 "clk_en_rst": "clk_en_rst",

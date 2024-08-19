@@ -98,17 +98,9 @@ def setup(py_params_dict):
             },
             # parameters
             {
-                "name": "P_BIT",
-                "type": "P",
-                "val": "30",
-                "min": "1",
-                "max": "32",
-                "descr": "Peripheral bus selection bit",
-            },
-            {
                 "name": "PREBOOTROM_ADDR_W",
                 "type": "P",
-                "val": "8",
+                "val": "7",
                 "min": "1",
                 "max": "32",
                 "descr": "Preboot ROM address width",
@@ -201,23 +193,22 @@ def setup(py_params_dict):
                 },
             ],
         },
-        # Internal memory ports for Memory Wrapper
         {
             "name": "rom_bus",
             "descr": "Ports for connection with ROM memory",
             "signals": [
                 {
-                    "name": "rom_r_valid",
+                    "name": "boot_rom_valid",
                     "direction": "output",
                     "width": "1",
                 },
                 {
-                    "name": "rom_r_addr",
+                    "name": "boot_rom_addr",
                     "direction": "output",
                     "width": "BOOTROM_ADDR_W-2",
                 },
                 {
-                    "name": "rom_r_rdata",
+                    "name": "boot_rom_rdata",
                     "direction": "input",
                     "width": params["data_w"],
                 },
@@ -297,7 +288,7 @@ def setup(py_params_dict):
                 "type": "iob",
                 "wire_prefix": "cpu_pbus_",
                 "DATA_W": params["data_w"],
-                "ADDR_W": params["addr_w"] - 2,
+                "ADDR_W": params["addr_w"] - 1,
             },
             "descr": "cpu peripheral bus",
         },
@@ -307,27 +298,6 @@ def setup(py_params_dict):
             "signals": [
                 {"name": "cpu_reset"},
             ],
-        },
-        {
-            "name": "bootctr",
-            "descr": "Boot controller interface",
-            "signals": [
-                {"name": "bootctr_cpu_reset", "width": "1"},
-                {"name": "bootctr_boot_ctr", "width": "2"},
-            ],
-        },
-    ]
-    attributes_dict["wires"] += [
-        {
-            "name": "int_d",
-            "interface": {
-                "type": "iob",
-                "file_prefix": "iob_soc_int_d_",
-                "wire_prefix": "int_d_",
-                "DATA_W": params["data_w"],
-                "ADDR_W": params["addr_w"] - 1,
-            },
-            "descr": "iob-soc internal data interface",
         },
     ]
     attributes_dict["wires"] += [
@@ -367,11 +337,11 @@ def setup(py_params_dict):
     ]
     attributes_dict["wires"] += [
         {
-            "name": "bootctr_i",
+            "name": "bootrom_i",
             "interface": {
                 "type": "iob",
-                "file_prefix": "bootctr_i_",
-                "wire_prefix": "bootctr_i_",
+                "file_prefix": "bootrom_i_",
+                "wire_prefix": "bootrom_i_",
                 "DATA_W": params["data_w"],
                 "ADDR_W": params["addr_w"] - 1,
             },
@@ -404,15 +374,15 @@ def setup(py_params_dict):
             "descr": "TIMER swreg bus",
         },
         {
-            "name": "bootctr_swreg",
+            "name": "bootrom_swreg",
             "interface": {
                 "type": "iob",
-                "file_prefix": "iob_soc_bootctr_swreg_",
-                "wire_prefix": "bootctr_swreg_",
+                "file_prefix": "iob_soc_bootrom_swreg_",
+                "wire_prefix": "bootrom_swreg_",
                 "DATA_W": params["data_w"],
-                "ADDR_W": params["addr_w"],
+                "ADDR_W": params["addr_w"] - 3,
             },
-            "descr": "BOOTCTR swreg bus",
+            "descr": "BOOTROM swreg bus",
         },
         # TODO: Auto add peripheral wires
     ]
@@ -420,6 +390,7 @@ def setup(py_params_dict):
         {
             "core_name": "iob_picorv32",
             "instance_name": "cpu",
+            "instance_description": "RISC-V CPU instance",
             "parameters": {
                 "ADDR_W": params["addr_w"],
                 "DATA_W": params["data_w"],
@@ -472,23 +443,38 @@ def setup(py_params_dict):
                 "output_1": "cpu_pbus",
             },
             "num_outputs": 2,
-            "addr_w": params["addr_w"] - 1,
+            "addr_w": params["addr_w"],
         },
         {
             "core_name": "iob_split",
             "name": "iob_pbus_split",
             "instance_name": "iob_pbus_split",
+            "instance_description": "Split between peripherals",
             "connect": {
                 "clk_en_rst": "clk_en_rst",
                 "reset": "split_reset",
                 "input": "cpu_pbus",
                 "output_0": "uart_swreg",
                 "output_1": "timer_swreg",
-                "output_2": "bootctr_swreg",
+                "output_2": "bootrom_swreg",
                 # TODO: Connect peripherals automatically
             },
             "num_outputs": N_SLAVES,
-            "addr_w": params["addr_w"] - 2,
+            "addr_w": params["addr_w"] - 1,
+        },
+        {
+            "core_name": "iob_split",
+            "name": "iob_instr_split",
+            "instance_name": "iob_instr_split",
+            "connect": {
+                "clk_en_rst": "clk_en_rst",
+                "reset": "split_reset",
+                "input": "cpu_i",
+                "output_0": "mem_i",
+                "output_1": "bootrom_i",
+            },
+            "num_outputs": 2,
+            "addr_w": params["addr_w"],
         },
     ]
     peripherals = [
@@ -496,6 +482,7 @@ def setup(py_params_dict):
         {
             "core_name": "iob_uart",
             "instance_name": "UART0",
+            "instance_description": "UART peripheral",
             "parameters": {},
             "connect": {
                 "clk_en_rst": "clk_en_rst",
@@ -506,6 +493,7 @@ def setup(py_params_dict):
         {
             "core_name": "iob_timer",
             "instance_name": "TIMER0",
+            "instance_description": "Timer peripheral",
             "parameters": {},
             "connect": {
                 "clk_en_rst": "clk_en_rst",
@@ -513,84 +501,30 @@ def setup(py_params_dict):
             },
         },
         {
-            "core_name": "iob_bootctr",
-            "instance_name": "BOOTCTR0",
+            "core_name": "iob_bootrom",
+            "instance_name": "BOOTROM0",
             "parameters": {},
             "connect": {
                 "clk_en_rst": "clk_en_rst",
-                "iob": "bootctr_swreg",
-                "bootctr_i_bus": "bootctr_i",
-                "cpu_controls": "bootctr",
+                "iob": "bootrom_swreg",
+                "bootrom_i_bus": "bootrom_i",
+                "boot_rom_bus": "rom_bus",
             },
         },
     ]
     attributes_dict["blocks"] += peripherals + [
         # Modules that need to be setup, but are not instantiated directly inside
         # 'iob_soc' Verilog module
-        {
-            "core_name": "iob_cache",
-            "instance_name": "iob_cache_inst",
-            "instantiate": False,
-        },
-        {
-            "core_name": "iob_rom_sp",
-            "instance_name": "iob_rom_sp_inst",
-            "instantiate": False,
-        },
-        {
-            "core_name": "iob_ram_dp_be",
-            "instance_name": "iob_ram_dp_be_inst",
-            "instantiate": False,
-        },
-        {
-            "core_name": "iob_ram_dp_be_xil",
-            "instance_name": "iob_ram_dp_be_xil_inst",
-            "instantiate": False,
-        },
-        {
-            "core_name": "iob_pulse_gen",
-            "instance_name": "iob_pulse_gen_inst",
-            "instantiate": False,
-        },
-        {
-            "core_name": "iob_bus_demux",
-            "instance_name": "iob_bus_demux_inst",
-            "instantiate": False,
-        },
-        # iob_counter("counter")
-        {
-            "core_name": "iob_reg",
-            "instance_name": "iob_reg_inst",
-            "instantiate": False,
-        },
-        {
-            "core_name": "iob_reg_re",
-            "instance_name": "iob_reg_re_inst",
-            "instantiate": False,
-        },
-        {
-            "core_name": "iob_ram_sp_be",
-            "instance_name": "iob_ram_sp_be_inst",
-            "instantiate": False,
-        },
-        # iob_ram_dp("ram_dp")
-        # iob_ctls("ctls")
-        {
-            "core_name": "axi_interconnect",
-            "instance_name": "axi_interconnect_inst",
-            "instantiate": False,
-        },
-        # Simulation headers & modules
+        # Testbench
         {
             "core_name": "iob_tasks",
             "instance_name": "iob_tasks_inst",
             "instantiate": False,
-            "purpose": "simulation",
+            "dest_dir": "hardware/simulation/src",
         },
-        # FPGA modules
         {
-            "core_name": "iob_reset_sync",
-            "instance_name": "iob_reset_sync_inst",
+            "core_name": "iob_pulse_gen",
+            "instance_name": "iob_pulse_gen_inst",
             "instantiate": False,
         },
         # Simulation wrapper
@@ -598,7 +532,28 @@ def setup(py_params_dict):
             "core_name": "iob_soc_sim_wrapper",
             "instance_name": "iob_soc_sim_wrapper",
             "instantiate": False,
-            "purpose": "simulation",
+            "dest_dir": "hardware/simulation/src",
+            "iob_soc_params": params,
+        },
+        # FPGA wrappers
+        # NOTE: Disabled temporarily.
+        # Since cyclonev and ku040 wrappers have the same "name" attribute,
+        # the py2hwsw generated verilog snippets will also have the same name.
+        # Therefore, this one is disabled until either:
+        # 1) Py2hwsw generates modules directly without using verilog snippets.
+        # 2) We change the wrapper names to be unique.
+        # {
+        #     "core_name": "iob_soc_ku040_wrapper",
+        #     "instance_name": "iob_soc_ku040_wrapper",
+        #     "instantiate": False,
+        #     "dest_dir": "hardware/fpga/vivado/AES-KU040-DB-G",
+        #     "iob_soc_params": params,
+        # },
+        {
+            "core_name": "iob_soc_cyclonev_wrapper",
+            "instance_name": "iob_soc_cyclonev_wrapper",
+            "instantiate": False,
+            "dest_dir": "hardware/fpga/quartus/CYCLONEV-GT-DK",
             "iob_soc_params": params,
         },
     ]
@@ -612,40 +567,30 @@ def setup(py_params_dict):
     attributes_dict["snippets"] = [
         {
             "verilog_code": """
-assign cpu_reset = bootctr_cpu_reset;
+// Reset pulse generator //
 
-iob_bus_demux #(
-    .ADDR_W("""
-            + str(params["addr_w"] - 1)
-            + """),
-    .DATA_W("""
-            + str(params["data_w"])
-            + """),
-    .N     (2)
-) cpu_ibus_split (
+wire low_after_1st_rst;
+iob_reg #(
+    .DATA_W (1),
+    .RST_VAL(1'b1)
+) low_after_1st_rst_reg (
     .clk_i (clk_i),
-    .arst_i(cpu_reset),
+    .cke_i (cke_i),
+    .arst_i(arst_i),
+    .data_i(1'b0),
+    .data_o(low_after_1st_rst)
+);
 
-    // Master's interface
-    .m_valid_i (cpu_i_iob_valid),
-    .m_addr_i  (cpu_i_iob_addr),
-    .m_wdata_i (cpu_i_iob_wdata),
-    .m_wstrb_i (cpu_i_iob_wstrb),
-    .m_rdata_o (cpu_i_iob_rdata),
-    .m_rvalid_o(cpu_i_iob_rvalid),
-    .m_ready_o (cpu_i_iob_ready),
-
-    // Followers' interface
-    .f_valid_o ({bootctr_i_iob_valid , mem_i_iob_valid }),
-    .f_addr_o  ({bootctr_i_iob_addr  , mem_i_iob_addr  }),
-    .f_wdata_o ({bootctr_i_iob_wdata , mem_i_iob_wdata }),
-    .f_wstrb_o ({bootctr_i_iob_wstrb , mem_i_iob_wstrb }),
-    .f_rdata_i ({bootctr_i_iob_rdata , mem_i_iob_rdata }),
-    .f_rvalid_i({bootctr_i_iob_rvalid, mem_i_iob_rvalid}),
-    .f_ready_i ({bootctr_i_iob_ready , mem_i_iob_ready }),
-
-    // Follower selection
-    .f_sel_i(cpu_i_iob_addr[P_BIT])
+assign cpu_rst_start_pulse = low_after_1st_rst;
+iob_pulse_gen #(
+    .START   (0),
+    .DURATION(100)
+) reset_pulse (
+    .clk_i  (clk_i),
+    .arst_i (arst_i),
+    .cke_i  (cke_i),
+    .start_i(cpu_rst_start_pulse),
+    .pulse_o(cpu_reset)
 );
             """,
         },

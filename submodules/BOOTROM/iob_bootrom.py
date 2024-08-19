@@ -1,7 +1,7 @@
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "iob_bootctr",
-        "name": "iob_bootctr",
+        "original_name": "iob_bootrom",
+        "name": "iob_bootrom",
         "version": "0.1",
         "generate_hw": False,
         "confs": [
@@ -16,7 +16,7 @@ def setup(py_params_dict):
             {
                 "name": "ADDR_W",
                 "type": "F",
-                "val": "`IOB_BOOTCTR_SWREG_ADDR_W",
+                "val": "`IOB_BOOTROM_SWREG_ADDR_W",
                 "min": "?",
                 "max": "32",
                 "descr": "Address bus width",
@@ -25,7 +25,7 @@ def setup(py_params_dict):
             {
                 "name": "PREBOOTROM_ADDR_W",
                 "type": "F",
-                "val": "8",
+                "val": "7",
                 "min": "?",
                 "max": "24",
                 "descr": "Preboot ROM address width",
@@ -45,7 +45,7 @@ def setup(py_params_dict):
                 "interface": {
                     "type": "iob",
                     "subtype": "slave",
-                    "ADDR_W": "ADDR_W",
+                    "ADDR_W": "`IOB_BOOTROM_SWREG_ADDR_W",
                     "DATA_W": "DATA_W",
                 },
                 "descr": "Front-end interface",
@@ -59,49 +59,43 @@ def setup(py_params_dict):
                 "descr": "Clock and reset",
             },
             {
-                "name": "bootctr_i_bus",
+                "name": "bootrom_i_bus",
                 "interface": {
                     "type": "iob",
                     "subtype": "slave",
-                    "port_prefix": "bootctr_i_",
+                    "port_prefix": "bootrom_i_",
                     "DATA_W": "DATA_W",
                     "ADDR_W": "ADDR_W",
                 },
                 "descr": "Instruction bus",
             },
             {
-                "name": "cpu_controls",
+                "name": "boot_rom_bus",
+                "descr": "Boot ROM bus",
                 "signals": [
                     {
-                        "name": "cpu_reset",
+                        "name": "boot_rom_en",
                         "direction": "output",
-                        "width": 1,
-                        "descr": "CPU sync reset.",
+                        "width": "1",
                     },
                     {
-                        "name": "boot_ctr",
+                        "name": "boot_rom_addr",
                         "direction": "output",
-                        "width": 2,
-                        "descr": "Boot controller.",
+                        "width": "BOOTROM_ADDR_W",
+                    },
+                    {
+                        "name": "boot_rom_rdata",
+                        "direction": "input",
+                        "width": "DATA_W",
                     },
                 ],
             },
         ],
         "csrs": [
             {
-                "name": "boot",
-                "descr": "Boot control register.",
+                "name": "rom",
+                "descr": "ROM access.",
                 "regs": [
-                    {
-                        "name": "CPU_CTR",
-                        "type": "W",
-                        "n_bits": 3,
-                        "rst_val": 0,
-                        "addr": -1,
-                        "log2n_items": 0,
-                        "autoreg": True,
-                        "descr": "CPU control register (write). First bit: write 1 to reset the CPU (no need to set to 0 again). Remaining bits: 0 to select preboot, 1 to select bootloader, 2 to select firmware",
-                    },
                     {
                         "name": "ROM",
                         "type": "R",
