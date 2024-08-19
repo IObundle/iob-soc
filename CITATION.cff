@@ -5,7 +5,7 @@ authors:
   given-names: "Jose"
   orcid: "https://orcid.org/0000-0001-7525-7546"
 title: "A RISC-V-based System-on-Chip Template"
-version: 2.0.4
+version: 0.7.2
 doi: 10.5281/zenodo.5791411
 date-released: 2021-12-18
 url: "https://github.com/IObundle/iob-soc"
