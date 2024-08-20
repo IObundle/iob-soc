@@ -102,6 +102,7 @@ def setup(py_params_dict):
                     "LEN_W": "AXI_LEN_W",
                     "ADDR_W": "AXI_ADDR_W",
                     "DATA_W": "AXI_DATA_W",
+                    "LOCK_W": 1,
                 },
                 "descr": f"Master {i} axi interface",
             },
@@ -128,12 +129,12 @@ def setup(py_params_dict):
         .S{i:02d}_AXI_ACLK        (s{i}_clk_i),
 
         //Write address
-        .S{i:02d}_AXI_AWID   (s{i}_axi_awid_i),
+        .S{i:02d}_AXI_AWID   (s{i}_axi_awid_i[0]),
         .S{i:02d}_AXI_AWADDR (s{i}_axi_awaddr_i),
         .S{i:02d}_AXI_AWLEN  (s{i}_axi_awlen_i),
         .S{i:02d}_AXI_AWSIZE (s{i}_axi_awsize_i),
         .S{i:02d}_AXI_AWBURST(s{i}_axi_awburst_i),
-        .S{i:02d}_AXI_AWLOCK (s{i}_axi_awlock_i),
+        .S{i:02d}_AXI_AWLOCK (s{i}_axi_awlock_i[0]),
         .S{i:02d}_AXI_AWCACHE(s{i}_axi_awcache_i),
         .S{i:02d}_AXI_AWPROT (s{i}_axi_awprot_i),
         .S{i:02d}_AXI_AWQOS  (s{i}_axi_awqos_i),
@@ -148,18 +149,18 @@ def setup(py_params_dict):
         .S{i:02d}_AXI_WREADY(s{i}_axi_wready_o),
 
         //Write response
-        .S{i:02d}_AXI_BID   (s{i}_axi_bid_o),
+        .S{i:02d}_AXI_BID   (s{i}_axi_bid_o[0]),
         .S{i:02d}_AXI_BRESP (s{i}_axi_bresp_o),
         .S{i:02d}_AXI_BVALID(s{i}_axi_bvalid_o),
         .S{i:02d}_AXI_BREADY(s{i}_axi_bready_i),
 
         //Read address
-        .S{i:02d}_AXI_ARID   (s{i}_axi_arid_i),
+        .S{i:02d}_AXI_ARID   (s{i}_axi_arid_i[0]),
         .S{i:02d}_AXI_ARADDR (s{i}_axi_araddr_i),
         .S{i:02d}_AXI_ARLEN  (s{i}_axi_arlen_i),
         .S{i:02d}_AXI_ARSIZE (s{i}_axi_arsize_i),
         .S{i:02d}_AXI_ARBURST(s{i}_axi_arburst_i),
-        .S{i:02d}_AXI_ARLOCK (s{i}_axi_arlock_i),
+        .S{i:02d}_AXI_ARLOCK (s{i}_axi_arlock_i[0]),
         .S{i:02d}_AXI_ARCACHE(s{i}_axi_arcache_i),
         .S{i:02d}_AXI_ARPROT (s{i}_axi_arprot_i),
         .S{i:02d}_AXI_ARQOS  (s{i}_axi_arqos_i),
@@ -167,7 +168,7 @@ def setup(py_params_dict):
         .S{i:02d}_AXI_ARREADY(s{i}_axi_arready_o),
 
         //Read data
-        .S{i:02d}_AXI_RID   (s{i}_axi_rid_o),
+        .S{i:02d}_AXI_RID   (s{i}_axi_rid_o[0]),
         .S{i:02d}_AXI_RDATA (s{i}_axi_rdata_o),
         .S{i:02d}_AXI_RRESP (s{i}_axi_rresp_o),
         .S{i:02d}_AXI_RLAST (s{i}_axi_rlast_o),
@@ -183,8 +184,8 @@ def setup(py_params_dict):
         // Master interface {i}
         //
 
-        .M{i:02d}_AXI_ARESET_OUT_N(m{i}_arstn_o),  //to ddr controller axi slave port
-        .M{i:02d}_AXI_ACLK        (m{i}_clk_i),    //from ddr4 controller 200MHz clock
+        .M{i:02d}_AXI_ARESET_OUT_N(m{i}_arstn_o),
+        .M{i:02d}_AXI_ACLK        (m{i}_clk_i),
 
         //Write address
         .M{i:02d}_AXI_AWID   (m{i}_axi_awid_o),

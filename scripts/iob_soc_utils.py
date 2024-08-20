@@ -21,9 +21,7 @@ def iob_soc_sw_setup(attributes, peripherals, ADDR_W):
         attributes["name"],
         ADDR_W,
         peripherals,
-        # FIXME: Missing build dir
-        # f"{build_dir}/software/{attributes['name']}_periphs.h",
-        f"../iob_soc_V0.7/software/{attributes['name']}_periphs.h",
+        f"{attributes['build_dir']}/software/{attributes['name']}_periphs.h",
     )
 
 
@@ -173,8 +171,7 @@ def pre_setup_iob_soc(attributes_dict, peripherals, params):
     """
     name = attributes_dict["name"]
     confs = attributes_dict["confs"]
-    # FIXME:build dir
-    build_dir = "../iob_soc_V0.7"
+    build_dir = attributes_dict["build_dir"]
 
     # Replace original IOb-SoC name in values of confs with new name
     for conf in confs:
