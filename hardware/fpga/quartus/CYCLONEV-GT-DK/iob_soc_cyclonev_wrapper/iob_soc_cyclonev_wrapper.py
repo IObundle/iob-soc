@@ -466,19 +466,36 @@ def setup(py_params_dict):
                     "ID_WIDTH": "AXI_ID_W",
                     "ADDR_WIDTH": "AXI_ADDR_W",
                     "DATA_WIDTH": "AXI_DATA_W",
+                    "READ_ON_WRITE": "0",
                 },
                 "connect": {
                     "clk": "clk",
                     "rst": "reset_sync_arst",
                     "axi": "memory_axi",
                 },
+                "if_defined": "IOB_MEM_NO_READ_ON_WRITE",
+            },
+            {
+                "core_name": "axi_ram",
+                "instance_name": "ddr_model_mem",
+                "parameters": {
+                    "ID_WIDTH": "AXI_ID_W",
+                    "ADDR_WIDTH": "AXI_ADDR_W",
+                    "DATA_WIDTH": "AXI_DATA_W",
+                    "READ_ON_WRITE": "1",
+                },
+                "connect": {
+                    "clk": "clk",
+                    "rst": "reset_sync_arst",
+                    "axi": "memory_axi",
+                },
+                "if_not_defined": "IOB_MEM_NO_READ_ON_WRITE",
             },
         ]
         if params["init_mem"]:
             attributes_dict["blocks"][-1]["parameters"].update(
                 {
-                    "FILE": '"init_ddr_contents.hex"',
-                    "FILE_SIZE": "2 ** (AXI_ADDR_W - 2)",
+                    "FILE": '"init_ddr_contents"',
                 }
             )
 

@@ -351,8 +351,7 @@ def setup(py_params_dict):
     if params["init_mem"]:
         attributes_dict["blocks"][-1]["parameters"].update(
             {
-                "FILE": '"init_ddr_contents.hex"',
-                "FILE_SIZE": "2 ** (AXI_ADDR_W - 2)",
+                "FILE": '"init_ddr_contents"',
             }
         )
     attributes_dict["snippets"] = []

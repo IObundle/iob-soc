@@ -21,6 +21,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 */
+/*
+Changes made (2023 Pedro Antunes):
+- formated the code with Verible
+- removed intialization in "reg" type signals declaration.
+- added reset to registers that did not previously have a reset value.
+*/
 
 // Language: Verilog 2001
 
@@ -181,10 +187,10 @@ module axi_interconnect #(
     output wire [             M_COUNT-1:0] m_axi_rready_o
 );
 
-  parameter CL_S_COUNT = $clog2(S_COUNT);
-  parameter CL_M_COUNT = $clog2(M_COUNT);
+  localparam CL_S_COUNT = $clog2(S_COUNT);
+  localparam CL_M_COUNT = $clog2(M_COUNT);
 
-  parameter AUSER_WIDTH = AWUSER_WIDTH > ARUSER_WIDTH ? AWUSER_WIDTH : ARUSER_WIDTH;
+  localparam AUSER_WIDTH = AWUSER_WIDTH > ARUSER_WIDTH ? AWUSER_WIDTH : ARUSER_WIDTH;
 
   // default address computation
   function automatic [M_COUNT*M_REGIONS*ADDR_WIDTH-1:0] calcBaseAddrs(input integer dummy);
@@ -203,7 +209,7 @@ module axi_interconnect #(
     end
   endfunction
 
-  parameter M_BASE_ADDR_INT = M_BASE_ADDR ? M_BASE_ADDR : calcBaseAddrs(0);
+  localparam M_BASE_ADDR_INT = M_BASE_ADDR ? M_BASE_ADDR : calcBaseAddrs(0);
 
   integer i, j;
 
@@ -265,35 +271,35 @@ module axi_interconnect #(
     STATE_READ_DROP = 3'd6,
     STATE_WAIT_IDLE = 3'd7;
 
-  reg [2:0] state_reg = STATE_IDLE, state_next;
+  reg [2:0] state_reg, state_next;
 
   reg match;
 
-  reg [CL_M_COUNT-1:0] m_select_reg = 2'd0, m_select_next;
-  reg [ID_WIDTH-1:0] axi_id_reg = {ID_WIDTH{1'b0}}, axi_id_next;
-  reg [ADDR_WIDTH-1:0] axi_addr_reg = {ADDR_WIDTH{1'b0}}, axi_addr_next;
-  reg axi_addr_valid_reg = 1'b0, axi_addr_valid_next;
-  reg [7:0] axi_len_reg = 8'd0, axi_len_next;
-  reg [2:0] axi_size_reg = 3'd0, axi_size_next;
-  reg [1:0] axi_burst_reg = 2'd0, axi_burst_next;
-  reg axi_lock_reg = 1'b0, axi_lock_next;
-  reg [3:0] axi_cache_reg = 4'd0, axi_cache_next;
-  reg [2:0] axi_prot_reg = 3'b000, axi_prot_next;
-  reg [3:0] axi_qos_reg = 4'd0, axi_qos_next;
-  reg [3:0] axi_region_reg = 4'd0, axi_region_next;
-  reg [AUSER_WIDTH-1:0] axi_auser_reg = {AUSER_WIDTH{1'b0}}, axi_auser_next;
-  reg [1:0] axi_bresp_reg = 2'b00, axi_bresp_next;
-  reg [BUSER_WIDTH-1:0] axi_buser_reg = {BUSER_WIDTH{1'b0}}, axi_buser_next;
+  reg [CL_M_COUNT-1:0] m_select_reg, m_select_next;
+  reg [ID_WIDTH-1:0] axi_id_reg, axi_id_next;
+  reg [ADDR_WIDTH-1:0] axi_addr_reg, axi_addr_next;
+  reg axi_addr_valid_reg, axi_addr_valid_next;
+  reg [7:0] axi_len_reg, axi_len_next;
+  reg [2:0] axi_size_reg, axi_size_next;
+  reg [1:0] axi_burst_reg, axi_burst_next;
+  reg axi_lock_reg, axi_lock_next;
+  reg [3:0] axi_cache_reg, axi_cache_next;
+  reg [2:0] axi_prot_reg, axi_prot_next;
+  reg [3:0] axi_qos_reg, axi_qos_next;
+  reg [3:0] axi_region_reg, axi_region_next;
+  reg [AUSER_WIDTH-1:0] axi_auser_reg, axi_auser_next;
+  reg [1:0] axi_bresp_reg, axi_bresp_next;
+  reg [BUSER_WIDTH-1:0] axi_buser_reg, axi_buser_next;
 
-  reg [S_COUNT-1:0] s_axi_awready_reg = 0, s_axi_awready_next;
-  reg [S_COUNT-1:0] s_axi_wready_reg = 0, s_axi_wready_next;
-  reg [S_COUNT-1:0] s_axi_bvalid_reg = 0, s_axi_bvalid_next;
-  reg [S_COUNT-1:0] s_axi_arready_reg = 0, s_axi_arready_next;
+  reg [S_COUNT-1:0] s_axi_awready_reg, s_axi_awready_next;
+  reg [S_COUNT-1:0] s_axi_wready_reg, s_axi_wready_next;
+  reg [S_COUNT-1:0] s_axi_bvalid_reg, s_axi_bvalid_next;
+  reg [S_COUNT-1:0] s_axi_arready_reg, s_axi_arready_next;
 
-  reg [M_COUNT-1:0] m_axi_awvalid_reg = 0, m_axi_awvalid_next;
-  reg [M_COUNT-1:0] m_axi_bready_reg = 0, m_axi_bready_next;
-  reg [M_COUNT-1:0] m_axi_arvalid_reg = 0, m_axi_arvalid_next;
-  reg [M_COUNT-1:0] m_axi_rready_reg = 0, m_axi_rready_next;
+  reg [M_COUNT-1:0] m_axi_awvalid_reg, m_axi_awvalid_next;
+  reg [M_COUNT-1:0] m_axi_bready_reg, m_axi_bready_next;
+  reg [M_COUNT-1:0] m_axi_arvalid_reg, m_axi_arvalid_next;
+  reg [M_COUNT-1:0] m_axi_rready_reg, m_axi_rready_next;
 
   // internal datapath
   reg  [   ID_WIDTH-1:0] s_axi_rid_int;
@@ -302,7 +308,7 @@ module axi_interconnect #(
   reg                    s_axi_rlast_int;
   reg  [RUSER_WIDTH-1:0] s_axi_ruser_int;
   reg                    s_axi_rvalid_int;
-  reg                    s_axi_rready_int_reg = 1'b0;
+  reg                    s_axi_rready_int_reg;
   wire                   s_axi_rready_int_early;
 
   reg  [ DATA_WIDTH-1:0] m_axi_wdata_int;
@@ -310,7 +316,7 @@ module axi_interconnect #(
   reg                    m_axi_wlast_int;
   reg  [WUSER_WIDTH-1:0] m_axi_wuser_int;
   reg                    m_axi_wvalid_int;
-  reg                    m_axi_wready_int_reg = 1'b0;
+  reg                    m_axi_wready_int_reg;
   wire                   m_axi_wready_int_early;
 
   assign s_axi_awready_o = s_axi_awready_reg;
@@ -724,64 +730,80 @@ module axi_interconnect #(
     endcase
   end
 
-  always @(posedge clk_i) begin
+  always @(posedge clk_i, posedge rst_i) begin
     if (rst_i) begin
-      state_reg         <= STATE_IDLE;
+      state_reg          <= STATE_IDLE;
 
-      s_axi_awready_reg <= 0;
-      s_axi_wready_reg  <= 0;
-      s_axi_bvalid_reg  <= 0;
-      s_axi_arready_reg <= 0;
+      s_axi_awready_reg  <= 0;
+      s_axi_wready_reg   <= 0;
+      s_axi_bvalid_reg   <= 0;
+      s_axi_arready_reg  <= 0;
 
-      m_axi_awvalid_reg <= 0;
-      m_axi_bready_reg  <= 0;
-      m_axi_arvalid_reg <= 0;
-      m_axi_rready_reg  <= 0;
+      m_axi_awvalid_reg  <= 0;
+      m_axi_bready_reg   <= 0;
+      m_axi_arvalid_reg  <= 0;
+      m_axi_rready_reg   <= 0;
+
+      m_select_reg       <= 2'd0;
+      axi_id_reg         <= {ID_WIDTH{1'b0}};
+      axi_addr_reg       <= {ADDR_WIDTH{1'b0}};
+      axi_addr_valid_reg <= 1'b0;
+      axi_len_reg        <= {8{1'b0}};
+      axi_size_reg       <= {3{1'b0}};
+      axi_burst_reg      <= {2{1'b0}};
+      axi_lock_reg       <= 1'b0;
+      axi_cache_reg      <= {4{1'b0}};
+      axi_prot_reg       <= {3{1'b0}};
+      axi_qos_reg        <= {4{1'b0}};
+      axi_region_reg     <= {4{1'b0}};
+      axi_auser_reg      <= {ARUSER_WIDTH{1'b0}};
+      axi_bresp_reg      <= {2{1'b0}};
+      axi_buser_reg      <= {BUSER_WIDTH{1'b0}};
     end else begin
-      state_reg         <= state_next;
+      state_reg          <= state_next;
 
-      s_axi_awready_reg <= s_axi_awready_next;
-      s_axi_wready_reg  <= s_axi_wready_next;
-      s_axi_bvalid_reg  <= s_axi_bvalid_next;
-      s_axi_arready_reg <= s_axi_arready_next;
+      s_axi_awready_reg  <= s_axi_awready_next;
+      s_axi_wready_reg   <= s_axi_wready_next;
+      s_axi_bvalid_reg   <= s_axi_bvalid_next;
+      s_axi_arready_reg  <= s_axi_arready_next;
 
-      m_axi_awvalid_reg <= m_axi_awvalid_next;
-      m_axi_bready_reg  <= m_axi_bready_next;
-      m_axi_arvalid_reg <= m_axi_arvalid_next;
-      m_axi_rready_reg  <= m_axi_rready_next;
+      m_axi_awvalid_reg  <= m_axi_awvalid_next;
+      m_axi_bready_reg   <= m_axi_bready_next;
+      m_axi_arvalid_reg  <= m_axi_arvalid_next;
+      m_axi_rready_reg   <= m_axi_rready_next;
+
+      m_select_reg       <= m_select_next;
+      axi_id_reg         <= axi_id_next;
+      axi_addr_reg       <= axi_addr_next;
+      axi_addr_valid_reg <= axi_addr_valid_next;
+      axi_len_reg        <= axi_len_next;
+      axi_size_reg       <= axi_size_next;
+      axi_burst_reg      <= axi_burst_next;
+      axi_lock_reg       <= axi_lock_next;
+      axi_cache_reg      <= axi_cache_next;
+      axi_prot_reg       <= axi_prot_next;
+      axi_qos_reg        <= axi_qos_next;
+      axi_region_reg     <= axi_region_next;
+      axi_auser_reg      <= axi_auser_next;
+      axi_bresp_reg      <= axi_bresp_next;
+      axi_buser_reg      <= axi_buser_next;
     end
-
-    m_select_reg       <= m_select_next;
-    axi_id_reg         <= axi_id_next;
-    axi_addr_reg       <= axi_addr_next;
-    axi_addr_valid_reg <= axi_addr_valid_next;
-    axi_len_reg        <= axi_len_next;
-    axi_size_reg       <= axi_size_next;
-    axi_burst_reg      <= axi_burst_next;
-    axi_lock_reg       <= axi_lock_next;
-    axi_cache_reg      <= axi_cache_next;
-    axi_prot_reg       <= axi_prot_next;
-    axi_qos_reg        <= axi_qos_next;
-    axi_region_reg     <= axi_region_next;
-    axi_auser_reg      <= axi_auser_next;
-    axi_bresp_reg      <= axi_bresp_next;
-    axi_buser_reg      <= axi_buser_next;
   end
 
   // output datapath logic (R channel)
-  reg [   ID_WIDTH-1:0] s_axi_rid_reg = {ID_WIDTH{1'b0}};
-  reg [ DATA_WIDTH-1:0] s_axi_rdata_reg = {DATA_WIDTH{1'b0}};
-  reg [            1:0] s_axi_rresp_reg = 2'd0;
-  reg                   s_axi_rlast_reg = 1'b0;
-  reg [RUSER_WIDTH-1:0] s_axi_ruser_reg = 1'b0;
-  reg [S_COUNT-1:0] s_axi_rvalid_reg = 1'b0, s_axi_rvalid_next;
+  reg [   ID_WIDTH-1:0] s_axi_rid_reg;
+  reg [ DATA_WIDTH-1:0] s_axi_rdata_reg;
+  reg [            1:0] s_axi_rresp_reg;
+  reg                   s_axi_rlast_reg;
+  reg [RUSER_WIDTH-1:0] s_axi_ruser_reg;
+  reg [S_COUNT-1:0] s_axi_rvalid_reg, s_axi_rvalid_next;
 
-  reg [   ID_WIDTH-1:0] temp_s_axi_rid_reg = {ID_WIDTH{1'b0}};
-  reg [ DATA_WIDTH-1:0] temp_s_axi_rdata_reg = {DATA_WIDTH{1'b0}};
-  reg [            1:0] temp_s_axi_rresp_reg = 2'd0;
-  reg                   temp_s_axi_rlast_reg = 1'b0;
-  reg [RUSER_WIDTH-1:0] temp_s_axi_ruser_reg = 1'b0;
-  reg temp_s_axi_rvalid_reg = 1'b0, temp_s_axi_rvalid_next;
+  reg [   ID_WIDTH-1:0] temp_s_axi_rid_reg;
+  reg [ DATA_WIDTH-1:0] temp_s_axi_rdata_reg;
+  reg [            1:0] temp_s_axi_rresp_reg;
+  reg                   temp_s_axi_rlast_reg;
+  reg [RUSER_WIDTH-1:0] temp_s_axi_ruser_reg;
+  reg temp_s_axi_rvalid_reg, temp_s_axi_rvalid_next;
 
   // datapath control
   reg store_axi_r_int_to_output;
@@ -826,38 +848,46 @@ module axi_interconnect #(
     end
   end
 
-  always @(posedge clk_i) begin
+  always @(posedge clk_i, posedge rst_i) begin
     if (rst_i) begin
       s_axi_rvalid_reg      <= 1'b0;
       s_axi_rready_int_reg  <= 1'b0;
       temp_s_axi_rvalid_reg <= 1'b0;
+      s_axi_rid_reg         <= {ID_WIDTH{1'b0}};
+      s_axi_rdata_reg       <= {DATA_WIDTH{1'b0}};
+      s_axi_rresp_reg       <= 2'd0;
+      s_axi_rlast_reg       <= 1'b0;
+      s_axi_ruser_reg       <= {RUSER_WIDTH{1'b0}};
+      temp_s_axi_rid_reg    <= {ID_WIDTH{1'b0}};
+      temp_s_axi_rdata_reg  <= {DATA_WIDTH{1'b0}};
+      temp_s_axi_rresp_reg  <= 2'd0;
+      temp_s_axi_rlast_reg  <= 1'b0;
+      temp_s_axi_ruser_reg  <= {RUSER_WIDTH{1'b0}};
     end else begin
       s_axi_rvalid_reg      <= s_axi_rvalid_next;
       s_axi_rready_int_reg  <= s_axi_rready_int_early;
       temp_s_axi_rvalid_reg <= temp_s_axi_rvalid_next;
-    end
-
-    // datapath
-    if (store_axi_r_int_to_output) begin
-      s_axi_rid_reg   <= s_axi_rid_int;
-      s_axi_rdata_reg <= s_axi_rdata_int;
-      s_axi_rresp_reg <= s_axi_rresp_int;
-      s_axi_rlast_reg <= s_axi_rlast_int;
-      s_axi_ruser_reg <= s_axi_ruser_int;
-    end else if (store_axi_r_temp_to_output) begin
-      s_axi_rid_reg   <= temp_s_axi_rid_reg;
-      s_axi_rdata_reg <= temp_s_axi_rdata_reg;
-      s_axi_rresp_reg <= temp_s_axi_rresp_reg;
-      s_axi_rlast_reg <= temp_s_axi_rlast_reg;
-      s_axi_ruser_reg <= temp_s_axi_ruser_reg;
-    end
-
-    if (store_axi_r_int_to_temp) begin
-      temp_s_axi_rid_reg   <= s_axi_rid_int;
-      temp_s_axi_rdata_reg <= s_axi_rdata_int;
-      temp_s_axi_rresp_reg <= s_axi_rresp_int;
-      temp_s_axi_rlast_reg <= s_axi_rlast_int;
-      temp_s_axi_ruser_reg <= s_axi_ruser_int;
+      // datapath
+      if (store_axi_r_int_to_output) begin
+        s_axi_rid_reg   <= s_axi_rid_int;
+        s_axi_rdata_reg <= s_axi_rdata_int;
+        s_axi_rresp_reg <= s_axi_rresp_int;
+        s_axi_rlast_reg <= s_axi_rlast_int;
+        s_axi_ruser_reg <= s_axi_ruser_int;
+      end else if (store_axi_r_temp_to_output) begin
+        s_axi_rid_reg   <= temp_s_axi_rid_reg;
+        s_axi_rdata_reg <= temp_s_axi_rdata_reg;
+        s_axi_rresp_reg <= temp_s_axi_rresp_reg;
+        s_axi_rlast_reg <= temp_s_axi_rlast_reg;
+        s_axi_ruser_reg <= temp_s_axi_ruser_reg;
+      end
+      if (store_axi_r_int_to_temp) begin
+        temp_s_axi_rid_reg   <= s_axi_rid_int;
+        temp_s_axi_rdata_reg <= s_axi_rdata_int;
+        temp_s_axi_rresp_reg <= s_axi_rresp_int;
+        temp_s_axi_rlast_reg <= s_axi_rlast_int;
+        temp_s_axi_ruser_reg <= s_axi_ruser_int;
+      end
     end
   end
 
@@ -866,13 +896,13 @@ module axi_interconnect #(
   reg [ STRB_WIDTH-1:0] m_axi_wstrb_reg = {STRB_WIDTH{1'b0}};
   reg                   m_axi_wlast_reg = 1'b0;
   reg [WUSER_WIDTH-1:0] m_axi_wuser_reg = 1'b0;
-  reg [M_COUNT-1:0] m_axi_wvalid_reg = 1'b0, m_axi_wvalid_next;
+  reg [M_COUNT-1:0] m_axi_wvalid_reg, m_axi_wvalid_next;
 
   reg [ DATA_WIDTH-1:0] temp_m_axi_wdata_reg = {DATA_WIDTH{1'b0}};
   reg [ STRB_WIDTH-1:0] temp_m_axi_wstrb_reg = {STRB_WIDTH{1'b0}};
   reg                   temp_m_axi_wlast_reg = 1'b0;
   reg [WUSER_WIDTH-1:0] temp_m_axi_wuser_reg = 1'b0;
-  reg temp_m_axi_wvalid_reg = 1'b0, temp_m_axi_wvalid_next;
+  reg temp_m_axi_wvalid_reg, temp_m_axi_wvalid_next;
 
   // datapath control
   reg store_axi_w_int_to_output;
@@ -916,35 +946,41 @@ module axi_interconnect #(
     end
   end
 
-  always @(posedge clk_i) begin
+  always @(posedge clk_i, posedge rst_i) begin
     if (rst_i) begin
       m_axi_wvalid_reg      <= 1'b0;
       m_axi_wready_int_reg  <= 1'b0;
       temp_m_axi_wvalid_reg <= 1'b0;
+      m_axi_wdata_reg       <= {DATA_WIDTH{1'b0}};
+      m_axi_wstrb_reg       <= {STRB_WIDTH{1'b0}};
+      m_axi_wlast_reg       <= 1'b0;
+      m_axi_wuser_reg       <= {WUSER_WIDTH{1'b0}};
+      temp_m_axi_wdata_reg  <= {DATA_WIDTH{1'b0}};
+      temp_m_axi_wstrb_reg  <= {STRB_WIDTH{1'b0}};
+      temp_m_axi_wlast_reg  <= 1'b0;
+      temp_m_axi_wuser_reg  <= {WUSER_WIDTH{1'b0}};
     end else begin
       m_axi_wvalid_reg      <= m_axi_wvalid_next;
       m_axi_wready_int_reg  <= m_axi_wready_int_early;
       temp_m_axi_wvalid_reg <= temp_m_axi_wvalid_next;
-    end
-
-    // datapath
-    if (store_axi_w_int_to_output) begin
-      m_axi_wdata_reg <= m_axi_wdata_int;
-      m_axi_wstrb_reg <= m_axi_wstrb_int;
-      m_axi_wlast_reg <= m_axi_wlast_int;
-      m_axi_wuser_reg <= m_axi_wuser_int;
-    end else if (store_axi_w_temp_to_output) begin
-      m_axi_wdata_reg <= temp_m_axi_wdata_reg;
-      m_axi_wstrb_reg <= temp_m_axi_wstrb_reg;
-      m_axi_wlast_reg <= temp_m_axi_wlast_reg;
-      m_axi_wuser_reg <= temp_m_axi_wuser_reg;
-    end
-
-    if (store_axi_w_int_to_temp) begin
-      temp_m_axi_wdata_reg <= m_axi_wdata_int;
-      temp_m_axi_wstrb_reg <= m_axi_wstrb_int;
-      temp_m_axi_wlast_reg <= m_axi_wlast_int;
-      temp_m_axi_wuser_reg <= m_axi_wuser_int;
+      // datapath
+      if (store_axi_w_int_to_output) begin
+        m_axi_wdata_reg <= m_axi_wdata_int;
+        m_axi_wstrb_reg <= m_axi_wstrb_int;
+        m_axi_wlast_reg <= m_axi_wlast_int;
+        m_axi_wuser_reg <= m_axi_wuser_int;
+      end else if (store_axi_w_temp_to_output) begin
+        m_axi_wdata_reg <= temp_m_axi_wdata_reg;
+        m_axi_wstrb_reg <= temp_m_axi_wstrb_reg;
+        m_axi_wlast_reg <= temp_m_axi_wlast_reg;
+        m_axi_wuser_reg <= temp_m_axi_wuser_reg;
+      end
+      if (store_axi_w_int_to_temp) begin
+        temp_m_axi_wdata_reg <= m_axi_wdata_int;
+        temp_m_axi_wstrb_reg <= m_axi_wstrb_int;
+        temp_m_axi_wlast_reg <= m_axi_wlast_int;
+        temp_m_axi_wuser_reg <= m_axi_wuser_int;
+      end
     end
   end
 
