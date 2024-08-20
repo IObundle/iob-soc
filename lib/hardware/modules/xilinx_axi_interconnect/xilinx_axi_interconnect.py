@@ -1,5 +1,4 @@
 def setup(py_params_dict):
-
     # Number of slave interfaces (number of masters to connect to)
     N_SLAVES = (
         int(py_params_dict["num_slaves"]) if "num_slaves" in py_params_dict else 1

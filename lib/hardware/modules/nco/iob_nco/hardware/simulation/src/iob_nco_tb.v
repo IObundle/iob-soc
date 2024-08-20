@@ -87,7 +87,8 @@ module iob_nco_tb;
       .iob_rdata_o(iob_rdata_o),
       .iob_ready_o(iob_ready_o),
       .iob_rvalid_o(iob_rvalid_o),
-      .clk_o(clk_out)
+      .clk_in_i(clk),
+      .clk_out_o(clk_out)
   );
 
   `include "iob_nco_csrs_emb_tb.vs"
