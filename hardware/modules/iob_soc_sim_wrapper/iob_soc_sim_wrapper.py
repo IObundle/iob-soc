@@ -351,7 +351,7 @@ def setup(py_params_dict):
     if params["init_mem"]:
         attributes_dict["blocks"][-1]["parameters"].update(
             {
-                "FILE": '"init_ddr_contents"',
+                "FILE": '"iob_soc_firmware"',
             }
         )
     attributes_dict["snippets"] = []
