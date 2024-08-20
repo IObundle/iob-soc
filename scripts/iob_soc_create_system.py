@@ -14,9 +14,9 @@
 # import io_gen
 #
 #
-## Automatically include <corename>_swreg_def.vh verilog headers after IOB_PRAGMA_PHEADERS comment
+## Automatically include <corename>_csrs_def.vh verilog headers after IOB_PRAGMA_PHEADERS comment
 def insert_header_files(dest_dir, name, peripherals_list):
-    fd_out = open(f"{dest_dir}/{name}_periphs_swreg_def.vs", "w")
+    fd_out = open(f"{dest_dir}/{name}_periphs_csrs_def.vs", "w")
     # Get each type of peripheral used
     included_peripherals = []
     for instance in peripherals_list:
@@ -24,9 +24,9 @@ def insert_header_files(dest_dir, name, peripherals_list):
         if instance_corename not in included_peripherals:
             included_peripherals.append(instance_corename)
             # FIXME:
-            # Only insert swreg file if module has regiters
+            # Only insert csrs file if module has regiters
             # if hasattr(instance.module, "csrs") and instance.module.csrs:
-            fd_out.write(f'`include "{instance_corename}_swreg_def.vh"\n')
+            fd_out.write(f'`include "{instance_corename}_csrs_def.vh"\n')
     fd_out.close()
 
 
@@ -129,7 +129,7 @@ def insert_header_files(dest_dir, name, peripherals_list):
 #                get_reserved_signal_connection(
 #                    signal["name"],
 #                    top.upper() + "_" + instance.name,
-#                    top_list[instance.module.name].upper() + "_SWREG",
+#                    top_list[instance.module.name].upper() + "_CSRS",
 #                )
 #                + ",\n"
 #            ).replace(

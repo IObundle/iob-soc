@@ -3,10 +3,10 @@
 `include "bsp.vh"
 `include "iob_soc_conf.vh"
 `include "iob_uart_conf.vh"
-`include "iob_uart_swreg_def.vh"
+`include "iob_uart_csrs_def.vh"
 
-//Peripherals _swreg_def.vh file includes.
-`include "iob_soc_periphs_swreg_def.vs"
+//Peripherals _csrs_def.vh file includes.
+`include "iob_soc_periphs_csrs_def.vs"
 
 module iob_soc_tb;
 
@@ -31,13 +31,13 @@ module iob_soc_tb;
 
 
   //IOb-SoC uart
-  reg                               iob_valid_i;
-  reg  [`IOB_UART_SWREG_ADDR_W-1:0] iob_addr_i;
-  reg  [       `IOB_SOC_DATA_W-1:0] iob_wdata_i;
-  reg  [                       3:0] iob_wstrb_i;
-  wire [       `IOB_SOC_DATA_W-1:0] iob_rdata_o;
-  wire                              iob_ready_o;
-  wire                              iob_rvalid_o;
+  reg                              iob_valid_i;
+  reg  [`IOB_UART_CSRS_ADDR_W-1:0] iob_addr_i;
+  reg  [      `IOB_SOC_DATA_W-1:0] iob_wdata_i;
+  reg  [                      3:0] iob_wstrb_i;
+  wire [      `IOB_SOC_DATA_W-1:0] iob_rdata_o;
+  wire                             iob_ready_o;
+  wire                             iob_rvalid_o;
 
   //iterator
   integer i = 0, n = 0;
@@ -118,13 +118,13 @@ module iob_soc_tb;
 
 `ifdef IOB_SOC_USE_ETHERNET
   //IOb-SoC ethernet
-  wire                             ethernet_iob_valid;
-  wire [`IOB_ETH_SWREG_ADDR_W-1:0] ethernet_iob_addr;
-  wire [      `IOB_SOC_DATA_W-1:0] ethernet_iob_wdata;
-  wire [                      3:0] ethernet_iob_wstrb;
-  wire [      `IOB_SOC_DATA_W-1:0] ethernet_iob_rdata;
-  wire                             ethernet_iob_ready;
-  wire                             ethernet_iob_rvalid;
+  wire                            ethernet_iob_valid;
+  wire [`IOB_ETH_CSRS_ADDR_W-1:0] ethernet_iob_addr;
+  wire [     `IOB_SOC_DATA_W-1:0] ethernet_iob_wdata;
+  wire [                     3:0] ethernet_iob_wstrb;
+  wire [     `IOB_SOC_DATA_W-1:0] ethernet_iob_rdata;
+  wire                            ethernet_iob_ready;
+  wire                            ethernet_iob_rvalid;
 
 
   iob_eth_driver_tb eth_driver (

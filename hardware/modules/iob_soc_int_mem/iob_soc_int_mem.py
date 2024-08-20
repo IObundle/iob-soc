@@ -228,6 +228,11 @@ def setup(py_params_dict):
             "num_inputs": 2,
             "addr_w": ADDR_W,
         },
+        {  # Needed for iob_soc_boot_ctr
+            "core_name": "iob_pulse_gen",
+            "instance_name": "iob_pulse_gen_inst",
+            "instantiate": False,
+        },
     ]
     attributes_dict["snippets"] = [
         {
