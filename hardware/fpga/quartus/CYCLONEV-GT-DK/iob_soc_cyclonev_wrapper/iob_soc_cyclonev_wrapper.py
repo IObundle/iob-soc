@@ -498,6 +498,11 @@ def setup(py_params_dict):
                     "FILE": '"init_ddr_contents"',
                 }
             )
+            attributes_dict["blocks"][-2]["parameters"].update(
+                {
+                    "FILE": '"init_ddr_contents"',
+                }
+            )
 
     #
     # Snippets
