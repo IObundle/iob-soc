@@ -556,6 +556,13 @@ def setup(py_params_dict):
             "iob_soc_params": params,
         },
     ]
+    attributes_dict["blocks"] += [
+        {
+            "core_name": "iob_pulse_gen",
+            "instance_name": "iob_pulse_gen_inst",
+            "instantiate": False,
+        },
+    ]
     attributes_dict["sw_modules"] = [
         # Software modules
         {
