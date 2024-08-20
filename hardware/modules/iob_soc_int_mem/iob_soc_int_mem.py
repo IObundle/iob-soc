@@ -228,14 +228,19 @@ def setup(py_params_dict):
             "num_inputs": 2,
             "addr_w": ADDR_W,
         },
+        {  # Needed for iob_soc_boot_ctr
+            "core_name": "iob_pulse_gen",
+            "instance_name": "iob_pulse_gen_inst",
+            "instantiate": False,
+        },
     ]
     attributes_dict["snippets"] = [
         {
-            "verilog_code": f"""
+            "verilog_code": """
     assign always_low = 1'b0;
 
     //modified ram address during boot
-    wire [{ADDR_W-2}-1:0] ram_d_addr;
+    wire [SRAM_ADDR_W-3:0] ram_d_addr;
 
 
 """
@@ -372,7 +377,7 @@ def setup(py_params_dict):
 
       //data bus
       .d_valid_i(ram_d_iob_valid),
-      .d_addr_i  (ram_d_addr[SRAM_ADDR_W-3:0]),
+      .d_addr_i  (ram_d_addr),
       .d_wdata_i (ram_d_iob_wdata),
       .d_wstrb_i (ram_d_iob_wstrb),
       .d_rdata_o (),

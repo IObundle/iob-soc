@@ -2,6 +2,9 @@
 #            Embedded targets           #
 #########################################
 ROOT_DIR ?=..
+
+include $(ROOT_DIR)/software/auto_sw_build.mk
+
 # Local embedded makefile settings for custom bootloader and firmware targets.
 
 #Function to obtain parameter named $(1) in verilog header file located in $(2)
@@ -42,7 +45,7 @@ IOB_SOC_FW_SRC+=src/iob_soc_firmware.c
 IOB_SOC_FW_SRC+=src/printf.c
 # PERIPHERAL SOURCES
 IOB_SOC_FW_SRC+=$(wildcard src/iob-*.c)
-IOB_SOC_FW_SRC+=$(filter-out %_emul.c, $(wildcard src/*swreg*.c))
+IOB_SOC_FW_SRC+=$(filter-out %_emul.c, $(wildcard src/*csrs*.c))
 
 # BOOTLOADER SOURCES
 IOB_SOC_BOOT_SRC+=src/iob_soc_boot.S

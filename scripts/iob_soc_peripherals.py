@@ -2,16 +2,10 @@
 # Library with useful functions to manage submodules and peripherals
 
 import sys
-import subprocess
 import os
 import re
 import math
-import importlib
-import if_gen
 import iob_colors
-import copy
-
-from submodule_utils import *
 
 # List of reserved signals
 # These signals are known by the python scripts and are always auto-connected using the matching Verilog the string.
@@ -22,7 +16,7 @@ reserved_signals = {
     "en": ".en_i(en_i)",
     "arst": ".arst_i(arst_i)",
     "iob_valid": ".iob_valid_i(/*<InstanceName>*/_iob_valid)",
-    "iob_addr": ".iob_addr_i(/*<InstanceName>*/_iob_addr[`/*<SwregFilename>*/_ADDR_W-1:0])",
+    "iob_addr": ".iob_addr_i(/*<InstanceName>*/_iob_addr[`/*<csrsFilename>*/_ADDR_W-1:0])",
     "iob_wdata": ".iob_wdata_i(/*<InstanceName>*/_iob_wdata)",
     "iob_wstrb": ".iob_wstrb_i(/*<InstanceName>*/_iob_wstrb)",
     "iob_rdata": ".iob_rdata_o(/*<InstanceName>*/_iob_rdata)",
@@ -210,12 +204,12 @@ def get_reserved_signals(signal_list):
     return return_list
 
 
-def get_reserved_signal_connection(signal_name, instace_name, swreg_filename):
+def get_reserved_signal_connection(signal_name, instace_name, csrs_filename):
     signal_connection = reserved_signals[signal_name]
     return re.sub(
         r"\/\*<InstanceName>\*\/",
         instace_name,
-        re.sub(r"\/\*<SwregFilename>\*\/", swreg_filename, signal_connection),
+        re.sub(r"\/\*<csrsFilename>\*\/", csrs_filename, signal_connection),
     )
 
 

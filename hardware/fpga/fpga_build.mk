@@ -1,3 +1,5 @@
+include auto_fpga_build.mk
+
 # Add iob-soc software as a build dependency
 RUN_DEPS+=iob_soc_boot.hex iob_soc_firmware.hex
 # Don't add firmware to BUILD_DEPS if we are not initializing memory since we don't want to rebuild the bitstream when we modify it.

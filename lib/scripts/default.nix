@@ -1,7 +1,8 @@
 { pkgs ? import <nixpkgs> {} }:
 
 let
-  py2hwsw_commit = "3f6a6d646815a15cac5c5c19d9adbcd5d11388ee"; # Replace with the desired commit.
+  py2hwsw_commit = "3ea08a4dab8e28d1c65a9d94acba80668eb64b5e"; # Replace with the desired commit.
+  py2hwsw_sha256 = "YrwueQ0TroZFW7y5ADJuNYLqeM/1RSaWSeO7zzME+yw="; # Replace with the actual SHA256 hash.
 
   py2hwsw = pkgs.python3.pkgs.buildPythonPackage rec {
     pname = "py2hwsw";
@@ -11,12 +12,19 @@ let
       owner = "IObundle";
       repo = "py2hwsw";
       rev = py2hwsw_commit;
-      sha256 = "9/cy9qv6oMtVNUhEl45RY3DvcU1H82JOVxw/5RNgQzY=";  # Replace with the actual SHA256 hash.
+      sha256 = py2hwsw_sha256;
     };
 
     # Add any necessary dependencies here.
     #propagatedBuildInputs = [ pkgs.python38Packages.someDependency ];
   };
+
+  # Hack to make Nix libreoffice wrapper work.
+  # This is because Nix wrapper breaks ghactions test by requiring the `/run/user/$(id -u)` folder to exist
+  libreofficeWithEnv = pkgs.writeShellScriptBin "soffice" ''
+    export DBUS_SESSION_BUS_ADDRESS="unix:path=/dev/null"
+    exec ${pkgs.libreoffice}/bin/soffice "$@"
+  '';
 
   yosys = import ./yosys.nix { inherit pkgs; };
 in
@@ -44,7 +52,7 @@ pkgs.mkShell {
     black
     llvmPackages_14.clangUseLLVM
     librsvg
-    libreoffice
+    libreofficeWithEnv
     minicom     # Terminal emulator
     lrzsz       # For Zmodem file transfers via serial connection of the terminal emulator
     # Add Volare custom Python installation
