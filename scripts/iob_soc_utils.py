@@ -261,6 +261,25 @@ def pre_setup_iob_soc(attributes_dict, peripherals, params):
                 'CONSOLE_CMD=$(IOB_CONSOLE_PYTHON_ENV) $(PYTHON_DIR)/console_ethernet.py -s /dev/usb-uart -c $(PYTHON_DIR)/console.py -m "$(RMAC_ADDR)" -i "$(ETH_IF)"\n',
             )
 
+        if params["init_mem"]:
+            # Append init_ddr_contents.hex target to sw_build.mk
+            file.write("\n#Auto-generated target to create init_ddr_contents.hex\n")
+            file.write("RUN_DEPS+=init_ddr_contents.hex\n")
+            file.write("BUILD_DEPS+=init_ddr_contents.hex\n")
+            file.write("# init file for internal mem with firmware of both systems\n")
+            file.write(f"init_ddr_contents.hex: {name}_firmware.hex\n")
+
+            # TODO: Remove SUT stuff from iob-soc (only used for Tester)
+            # sut_firmware_name = (
+            #    python_module.sut_fw_name.replace(".c", ".hex")
+            #    if "sut_fw_name" in python_module.__dict__.keys()
+            #    else "-"
+            # )
+            sut_firmware_name = "-"
+            file.write(
+                f"	../../scripts/hex_join.py $^ {sut_firmware_name} {params['mem_addr_w']} > $@\n"
+            )
+
     #
     # Create auto_sim_build.mk
     #
