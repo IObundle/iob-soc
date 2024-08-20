@@ -171,6 +171,7 @@ def setup(py_params_dict):
             {
                 "verilog_code": """
             incr        = 1'b0;
+            quotient_o = quotient_int + incr;
             res_acc_nxt = res_acc + remainder_o;
             res_acc_en  = 1'b0;
             pc_nxt      = pc + 1'b1;
@@ -198,13 +199,6 @@ def setup(py_params_dict):
     endcase  // case (pc)
                 """,
             }
-        ],
-        "snippets": [
-            {
-                "verilog_code": """
-             assign quotient_o = quotient_int + incr;
-         """,
-            },
         ],
     }
 
