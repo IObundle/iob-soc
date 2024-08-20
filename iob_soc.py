@@ -383,15 +383,15 @@ def setup(py_params_dict):
             "descr": "TIMER csrs bus",
         },
         {
-            "name": "bootrom_swreg",
+            "name": "bootrom_csrs",
             "interface": {
                 "type": "iob",
-                "file_prefix": "iob_soc_bootrom_swreg_",
-                "wire_prefix": "bootrom_swreg_",
+                "file_prefix": "iob_soc_bootrom_csrs_",
+                "wire_prefix": "bootrom_csrs_",
                 "DATA_W": params["data_w"],
                 "ADDR_W": params["addr_w"] - 3,
             },
-            "descr": "BOOTROM swreg bus",
+            "descr": "BOOTROM csrs bus",
         },
         # TODO: Auto add peripheral wires
     ]
@@ -465,7 +465,7 @@ def setup(py_params_dict):
                 "input": "cpu_pbus",
                 "output_0": "uart_csrs",
                 "output_1": "timer_csrs",
-                "output_2": "bootrom_swreg",
+                "output_2": "bootrom_csrs",
                 # TODO: Connect peripherals automatically
             },
             "num_outputs": N_SLAVES,
@@ -516,7 +516,7 @@ def setup(py_params_dict):
             "parameters": {},
             "connect": {
                 "clk_en_rst": "clk_en_rst",
-                "iob": "bootrom_swreg",
+                "iob": "bootrom_csrs",
                 "bootrom_i_bus": "bootrom_i",
                 "boot_rom_bus": "rom_bus",
             },

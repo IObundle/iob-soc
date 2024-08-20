@@ -1,8 +1,13 @@
 def setup(py_params_dict):
+    VERSION = "0.1"
+    # TODO: When csrs is updated, inline the value below on the conf and use it
+    # as a parameter for the ROM size.
+    BOOTROM_ADDR_W = "12"
+
     attributes_dict = {
         "original_name": "iob_bootrom",
         "name": "iob_bootrom",
-        "version": "0.1",
+        "version": VERSION,
         "generate_hw": False,
         "confs": [
             {
@@ -16,7 +21,7 @@ def setup(py_params_dict):
             {
                 "name": "ADDR_W",
                 "type": "F",
-                "val": "`IOB_BOOTROM_SWREG_ADDR_W",
+                "val": "`IOB_BOOTROM_CSRS_ADDR_W",
                 "min": "?",
                 "max": "32",
                 "descr": "Address bus width",
@@ -33,7 +38,7 @@ def setup(py_params_dict):
             {
                 "name": "BOOTROM_ADDR_W",
                 "type": "F",
-                "val": "12",
+                "val": BOOTROM_ADDR_W,
                 "min": "?",
                 "max": "24",
                 "descr": "Bootloader ROM address width",
@@ -45,7 +50,7 @@ def setup(py_params_dict):
                 "interface": {
                     "type": "iob",
                     "subtype": "slave",
-                    "ADDR_W": "`IOB_BOOTROM_SWREG_ADDR_W",
+                    "ADDR_W": "`IOB_BOOTROM_CSRS_ADDR_W",
                     "DATA_W": "DATA_W",
                 },
                 "descr": "Front-end interface",
@@ -91,25 +96,30 @@ def setup(py_params_dict):
                 ],
             },
         ],
-        "csrs": [
-            {
-                "name": "rom",
-                "descr": "ROM access.",
-                "regs": [
-                    {
-                        "name": "ROM",
-                        "type": "R",
-                        "n_bits": "DATA_W",
-                        "rst_val": 0,
-                        "addr": -1,
-                        "log2n_items": "BOOTROM_ADDR_W - 2",
-                        "autoreg": False,
-                        "descr": "Bootloader ROM (read).",
-                    },
-                ],
-            }
-        ],
         "blocks": [
+            {
+                "core_name": "csrs",
+                "instance_name": "csrs_inst",
+                "version": VERSION,
+                "csrs": [
+                    {
+                        "name": "rom",
+                        "descr": "ROM access.",
+                        "regs": [
+                            {
+                                "name": "ROM",
+                                "type": "R",
+                                "n_bits": "DATA_W",
+                                "rst_val": 0,
+                                "addr": -1,
+                                "log2n_items": BOOTROM_ADDR_W + " - 2",
+                                "autoreg": False,
+                                "descr": "Bootloader ROM (read).",
+                            },
+                        ],
+                    }
+                ],
+            },
             {
                 "core_name": "iob_reg",
                 "instance_name": "iob_reg_inst",

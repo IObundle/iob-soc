@@ -1,13 +1,9 @@
 #include "bsp.h"
 #include "iob-uart.h"
-#include "iob_cache_swreg.h"
+#include "iob_cache_csrs.h"
 #include "iob_soc_conf.h"
 #include "iob_soc_periphs.h"
 #include "iob_soc_system.h"
-
-#ifdef IOB_SOC_USE_EXTMEM
-#include "iob_cache_csrs.h"
-#endif
 
 #define PROGNAME "IOb-Bootloader"
 
