@@ -1,5 +1,5 @@
 #pragma once
-#include "iob_timer_swreg.h"
+#include "iob_timer_csrs.h"
 
 // Functions
 void timer_reset();

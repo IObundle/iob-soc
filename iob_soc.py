@@ -24,7 +24,7 @@ def setup(py_params_dict):
     for name, default_val in params.items():
         if name not in py_params_dict:
             continue
-        if type(default_val) == bool and py_params_dict[name] == "0":
+        if type(default_val) is bool and py_params_dict[name] == "0":
             params[name] = False
         else:
             params[name] = type(default_val)(py_params_dict[name])
@@ -36,6 +36,8 @@ def setup(py_params_dict):
         "original_name": "iob_soc",
         "name": "iob_soc",
         "version": "0.7",
+        # FIXME: Fix build dir based on py_params_dict
+        "build_dir": "../iob_soc_V0.7",
         "is_system": True,
         "board_list": ["CYCLONEV-GT-DK", "AES-KU040-DB-G"],
         "confs": [
@@ -358,27 +360,27 @@ def setup(py_params_dict):
     attributes_dict["wires"] += [
         # Peripheral wires
         {
-            "name": "uart_swreg",
+            "name": "uart_csrs",
             "interface": {
                 "type": "iob",
-                "file_prefix": "iob_soc_uart_swreg_",
-                "wire_prefix": "uart_swreg_",
+                "file_prefix": "iob_soc_uart_csrs_",
+                "wire_prefix": "uart_csrs_",
                 "DATA_W": params["data_w"],
-                # TODO: How to trim ADDR_W to match swreg addr width?
+                # TODO: How to trim ADDR_W to match csrs addr width?
                 "ADDR_W": params["addr_w"] - 3,
             },
-            "descr": "UART swreg bus",
+            "descr": "UART csrs bus",
         },
         {
-            "name": "timer_swreg",
+            "name": "timer_csrs",
             "interface": {
                 "type": "iob",
-                "file_prefix": "iob_soc_timer_swreg_",
-                "wire_prefix": "timer_swreg_",
+                "file_prefix": "iob_soc_timer_csrs_",
+                "wire_prefix": "timer_csrs_",
                 "DATA_W": params["data_w"],
                 "ADDR_W": params["addr_w"] - 3,
             },
-            "descr": "TIMER swreg bus",
+            "descr": "TIMER csrs bus",
         },
         {
             "name": "bootrom_swreg",
@@ -461,8 +463,8 @@ def setup(py_params_dict):
                 "clk_en_rst": "clk_en_rst",
                 "reset": "split_reset",
                 "input": "cpu_pbus",
-                "output_0": "uart_swreg",
-                "output_1": "timer_swreg",
+                "output_0": "uart_csrs",
+                "output_1": "timer_csrs",
                 "output_2": "bootrom_swreg",
                 # TODO: Connect peripherals automatically
             },
@@ -493,7 +495,7 @@ def setup(py_params_dict):
             "parameters": {},
             "connect": {
                 "clk_en_rst": "clk_en_rst",
-                "iob": "uart_swreg",
+                "iob": "uart_csrs",
                 "rs232": "rs232",
             },
         },
@@ -504,7 +506,7 @@ def setup(py_params_dict):
             "parameters": {},
             "connect": {
                 "clk_en_rst": "clk_en_rst",
-                "iob": "timer_swreg",
+                "iob": "timer_csrs",
             },
         },
         {
@@ -530,11 +532,6 @@ def setup(py_params_dict):
             "instantiate": False,
             "dest_dir": "hardware/simulation/src",
         },
-        {
-            "core_name": "iob_pulse_gen",
-            "instance_name": "iob_pulse_gen_inst",
-            "instantiate": False,
-        },
         # Simulation wrapper
         {
             "core_name": "iob_soc_sim_wrapper",
@@ -544,19 +541,13 @@ def setup(py_params_dict):
             "iob_soc_params": params,
         },
         # FPGA wrappers
-        # NOTE: Disabled temporarily.
-        # Since cyclonev and ku040 wrappers have the same "name" attribute,
-        # the py2hwsw generated verilog snippets will also have the same name.
-        # Therefore, this one is disabled until either:
-        # 1) Py2hwsw generates modules directly without using verilog snippets.
-        # 2) We change the wrapper names to be unique.
-        # {
-        #     "core_name": "iob_soc_ku040_wrapper",
-        #     "instance_name": "iob_soc_ku040_wrapper",
-        #     "instantiate": False,
-        #     "dest_dir": "hardware/fpga/vivado/AES-KU040-DB-G",
-        #     "iob_soc_params": params,
-        # },
+        {
+            "core_name": "iob_soc_ku040_wrapper",
+            "instance_name": "iob_soc_ku040_wrapper",
+            "instantiate": False,
+            "dest_dir": "hardware/fpga/vivado/AES-KU040-DB-G",
+            "iob_soc_params": params,
+        },
         {
             "core_name": "iob_soc_cyclonev_wrapper",
             "instance_name": "iob_soc_cyclonev_wrapper",

@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-`include "iob_timer_swreg_def.vh"
+`include "iob_timer_csrs_def.vh"
 
 module timer_tb;
 

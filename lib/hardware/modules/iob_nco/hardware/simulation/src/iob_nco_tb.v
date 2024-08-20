@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 `include "iob_nco_conf.vh"
-`include "iob_nco_swreg_def.vh"
+`include "iob_nco_csrs_def.vh"
 
 `define IOB_NBYTES (DATA_W/8)
 `define IOB_GET_NBYTES(WIDTH) (WIDTH/8 + |(WIDTH%8))
@@ -20,7 +20,7 @@ module iob_nco_tb;
   integer fd;
 
   localparam CLK_PER = 10;
-  localparam ADDR_W = `IOB_NCO_SWREG_ADDR_W;
+  localparam ADDR_W = `IOB_NCO_CSRS_ADDR_W;
   localparam DATA_W = 32;
 
 
@@ -29,20 +29,20 @@ module iob_nco_tb;
   // Drive clock
   always #(CLK_PER / 2) clk = ~clk;
 
-  reg                              cke = 1'b1;
-  reg                              arst;
+  reg                             cke = 1'b1;
+  reg                             arst;
 
 
-  wire                             clk_out;
+  wire                            clk_out;
 
   //IOb-Native interface
-  reg                              iob_valid_i;
-  reg  [`IOB_NCO_SWREG_ADDR_W-1:0] iob_addr_i;
-  reg  [      `IOB_NCO_DATA_W-1:0] iob_wdata_i;
-  reg  [                      3:0] iob_wstrb_i;
-  wire [      `IOB_NCO_DATA_W-1:0] iob_rdata_o;
-  wire                             iob_ready_o;
-  wire                             iob_rvalid_o;
+  reg                             iob_valid_i;
+  reg  [`IOB_NCO_CSRS_ADDR_W-1:0] iob_addr_i;
+  reg  [     `IOB_NCO_DATA_W-1:0] iob_wdata_i;
+  reg  [                     3:0] iob_wstrb_i;
+  wire [     `IOB_NCO_DATA_W-1:0] iob_rdata_o;
+  wire                            iob_ready_o;
+  wire                            iob_rvalid_o;
 
   initial begin
 
@@ -62,8 +62,8 @@ module iob_nco_tb;
     #100;
     @(posedge clk) #1;
 
-    IOB_NCO_SET_SOFT_RESET(1'b1);
-    IOB_NCO_SET_SOFT_RESET(1'b0);
+    IOB_NCO_SET_SOFTRESET(1'b1);
+    IOB_NCO_SET_SOFTRESET(1'b0);
 
     IOB_NCO_SET_PERIOD(16'h1280);
     IOB_NCO_SET_ENABLE(1'b1);
@@ -90,7 +90,7 @@ module iob_nco_tb;
       .clk_o(clk_out)
   );
 
-  `include "iob_nco_swreg_emb_tb.vs"
+  `include "iob_nco_csrs_emb_tb.vs"
 
   `include "iob_tasks.vs"
 

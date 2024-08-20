@@ -114,7 +114,7 @@ def setup(py_params_dict):
                 "port_prefix": "uart_",
                 "ADDR_W": 3,
             },
-            "descr": "Testbench uart swreg interface",
+            "descr": "Testbench uart csrs interface",
         },
     ]
     if params["use_ethernet"]:
@@ -126,7 +126,7 @@ def setup(py_params_dict):
                     "subtype": "slave",
                     "port_prefix": "ethernet_",
                 },
-                "descr": "Testbench ethernet swreg interface",
+                "descr": "Testbench ethernet csrs interface",
             },
         ]
 

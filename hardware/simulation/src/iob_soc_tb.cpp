@@ -5,7 +5,7 @@
 #include "Viob_soc_sim_wrapper.h"
 #include "bsp.h"
 #include "iob_soc_conf.h"
-#include "iob_uart_swreg.h"
+#include "iob_uart_csrs.h"
 
 #include "iob_tasks.h"
 #ifdef IOB_SOC_USE_ETHERNET

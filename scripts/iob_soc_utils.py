@@ -10,8 +10,6 @@ from iob_soc_peripherals import create_periphs_tmp, set_peripheral_macros
 from iob_soc_create_system import insert_header_files
 
 
-# from iob_soc_create_wrapper_files import create_wrapper_files
-#
 # import fnmatch
 # import if_gen
 # import copy_srcs
@@ -23,9 +21,7 @@ def iob_soc_sw_setup(attributes, peripherals, ADDR_W):
         attributes["name"],
         ADDR_W,
         peripherals,
-        # FIXME: Missing build dir
-        # f"{build_dir}/software/{attributes['name']}_periphs.h",
-        f"../iob_soc_V0.7/software/{attributes['name']}_periphs.h",
+        f"{attributes['build_dir']}/software/{attributes['name']}_periphs.h",
     )
 
 
@@ -36,11 +32,6 @@ def iob_soc_sw_setup(attributes, peripherals, ADDR_W):
 #     build_dir = python_module.build_dir
 #     name = python_module.name
 #     num_extmem_connections = python_module.num_extmem_connections
-#     # Try to build wrapper files
-#     # if not fnmatch.filter(exclude_files,'iob_soc_sim_wrapper.v'):
-#     create_wrapper_files(
-#         build_dir, name, python_module.ios, confs, num_extmem_connections
-#     )
 #
 #     # Note:
 #     # The settings below are only used with `USE_EXTMEM=1`.
@@ -180,8 +171,7 @@ def pre_setup_iob_soc(attributes_dict, peripherals, params):
     """
     name = attributes_dict["name"]
     confs = attributes_dict["confs"]
-    # FIXME:build dir
-    build_dir = "../iob_soc_V0.7"
+    build_dir = attributes_dict["build_dir"]
 
     # Replace original IOb-SoC name in values of confs with new name
     for conf in confs:

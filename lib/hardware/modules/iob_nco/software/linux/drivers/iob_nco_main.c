@@ -238,12 +238,12 @@ static ssize_t iob_nco_write(struct file *file, const char __user *buf,
   u32 value = 0;
 
   switch (*ppos) {
-  case IOB_NCO_SOFT_RESET_ADDR:
-    size = (IOB_NCO_SOFT_RESET_W >> 3); // bit to bytes
+  case IOB_NCO_SOFTRESET_ADDR:
+    size = (IOB_NCO_SOFTRESET_W >> 3); // bit to bytes
     if (read_user_data(buf, size, &value))
       return -EFAULT;
-    iob_data_write_reg(iob_nco_data.regbase, value, IOB_NCO_SOFT_RESET_ADDR,
-                       IOB_NCO_SOFT_RESET_W);
+    iob_data_write_reg(iob_nco_data.regbase, value, IOB_NCO_SOFTRESET_ADDR,
+                       IOB_NCO_SOFTRESET_W);
     pr_info("[Driver] Reset iob_nco: 0x%x\n", value);
     break;
   case IOB_NCO_ENABLE_ADDR:
@@ -285,7 +285,7 @@ static loff_t iob_nco_llseek(struct file *filp, loff_t offset, int whence) {
     new_pos = filp->f_pos + offset;
     break;
   case SEEK_END:
-    new_pos = (1 << IOB_NCO_SWREG_ADDR_W) + offset;
+    new_pos = (1 << IOB_NCO_CSRS_ADDR_W) + offset;
     break;
   default:
     return -EINVAL;

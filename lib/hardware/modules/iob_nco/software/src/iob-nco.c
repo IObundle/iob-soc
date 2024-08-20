@@ -4,8 +4,8 @@
 static uint32_t base;
 
 void nco_reset() {
-  IOB_NCO_SET_SOFT_RESET(1);
-  IOB_NCO_SET_SOFT_RESET(0);
+  IOB_NCO_SET_SOFTRESET(1);
+  IOB_NCO_SET_SOFTRESET(0);
 }
 
 void nco_init(uint32_t base_address) {
