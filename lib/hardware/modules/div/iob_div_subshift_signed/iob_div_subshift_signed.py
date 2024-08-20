@@ -167,13 +167,14 @@ def setup(py_params_dict):
                 "verilog_code": """
             assign quotient_o  = rq[DATA_W-1:0];
             assign remainder_o = rq[2*DATA_W-1:DATA_W];
+            assign subtraend = rq[2*DATA_W-2-:DATA_W]; 
 
    always @(posedge clk_i) begin
       if (en_i) begin
          pc <= pc + 1'b1;
 
          case (pc)
-            0: begin  
+            0: begin  //load operands and result sign
                if (sign_i) begin
                   divisor_reg    <= divisor_i;
                   divisor_sign   <= divisor_i[DATA_W-1];

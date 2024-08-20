@@ -177,11 +177,13 @@ def setup(py_params_dict):
 
     case (pc)
       0: begin  //wait for div start
-        if (!start_i) pc_nxt = pc;
+        if (!start_i) 
+        pc_nxt = pc;
       end
 
       1: begin  //wait for div done
-        if (!done_o) pc_nxt = pc;
+        if (!done_o) 
+        pc_nxt = pc;
       end
 
       default: begin
@@ -196,6 +198,13 @@ def setup(py_params_dict):
     endcase  // case (pc)
                 """,
             }
+        ],
+        "snippets": [
+            {
+                "verilog_code": """
+             assign quotient_o = quotient_int + incr;
+         """,
+            },
         ],
     }
 
