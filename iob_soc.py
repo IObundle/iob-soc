@@ -4,7 +4,7 @@ import os
 # Add iob-soc scripts folder to python path
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "scripts"))
 
-from iob_soc_utils import pre_setup_iob_soc, iob_soc_sw_setup
+from iob_soc_utils import generate_makefile_segments, generate_peripheral_base_addresses
 
 
 def setup(py_params_dict):
@@ -659,7 +659,10 @@ def setup(py_params_dict):
     ]
 
     # Pre-setup specialized IOb-SoC functions
-    pre_setup_iob_soc(attributes_dict, peripherals, params)
-    iob_soc_sw_setup(attributes_dict, peripherals, params["addr_w"])
+    generate_makefile_segments(attributes_dict, peripherals, params)
+    generate_peripheral_base_addresses(
+        peripherals,
+        f"{attributes_dict['build_dir']}/software/{attributes_dict['name']}_periphs.h",
+    )
 
     return attributes_dict
