@@ -18,6 +18,7 @@ def setup(py_params_dict):
         "use_compressed": True,
         "use_mul_div": True,
         "fw_addr": 0,
+        "fw_addr_w": 15,
         "build_dir": "",
     }
 
@@ -110,6 +111,14 @@ def setup(py_params_dict):
                 "name": "FW_ADDR",
                 "type": "M",
                 "val": params["fw_addr"],
+                "min": "0",
+                "max": "32",
+                "descr": "Firmware address",
+            },
+            {  # Needed for software
+                "name": "FW_ADDR_W",
+                "type": "M",
+                "val": params["fw_addr_w"],
                 "min": "0",
                 "max": "32",
                 "descr": "Firmware address",
