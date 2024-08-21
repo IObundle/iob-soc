@@ -167,39 +167,35 @@ def setup(py_params_dict):
                 },
             },
         ],
-        "combs": [
-            {
-                "verilog_code": """
-            incr        = 1'b0;
-            quotient_o = quotient_int + incr;
-            res_acc_nxt = res_acc + remainder_o;
-            res_acc_en  = 1'b0;
-            pc_nxt      = pc + 1'b1;
+        "fsm": {
+            "verilog_code": """
+default_assignments:
+    incr        = 1'b0;
+    quotient_o  = quotient_int + incr;
+    res_acc_nxt = res_acc + remainder_o;
+    res_acc_en  = 1'b0;
 
-    case (pc)
-      0: begin  //wait for div start
-        if (!start_i) 
+    if (!start_i) begin //wait for div start
         pc_nxt = pc;
-      end
+    end
 
-      1: begin  //wait for div done
-        if (!done_o) 
+    if (!done_o) begin //wait for div done
         pc_nxt = pc;
-      end
+    end
 
-      default: begin
-        res_acc_en = 1'b1;
-        if (res_acc_nxt >= divisor_i) begin
-          incr        = 1'b1;
-          res_acc_nxt = res_acc + remainder_o - divisor_i;
-        end
-        if (!start_i) pc_nxt = pc;
-        else pc_nxt = 1'b1;
-      end
-    endcase  // case (pc)
-                """,
+    res_acc_en = 1'b1;
+    if (res_acc_nxt >= divisor_i) begin
+        incr        = 1'b1;
+        res_acc_nxt = res_acc + remainder_o - divisor_i;
+    end
+    if (!start_i) begin
+        pc_nxt = pc;
+    end
+    else begin
+        pc_nxt = 1'b1;
+    end
+""",
             }
-        ],
     }
 
     return attributes_dict
