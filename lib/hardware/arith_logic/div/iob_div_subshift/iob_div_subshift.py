@@ -155,9 +155,8 @@ def setup(py_params_dict):
          """,
             },
         ],
-        "combs": [
-            {
-                "verilog_code": """
+        "comb": {
+            "verilog_code": """
     pcnt_nxt    = pcnt + 1'b1;
     dqr_reg_nxt     = dqr_reg;
     divisor_reg_nxt = divisor_reg;
@@ -181,8 +180,7 @@ def setup(py_params_dict):
       end
     end
 """,
-            }
-        ],
+        },
     }
 
     return attributes_dict

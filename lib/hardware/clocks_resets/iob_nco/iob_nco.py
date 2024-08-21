@@ -49,11 +49,23 @@ def setup(py_params_dict):
                 "descr": "CPU native interface",
             },
             {
+                "name": "clk_src",
+                "descr": "Source clock interface",
+                "signals": [
+                    {
+                        "name": "clk_in",
+                        "direction": "input",
+                        "width": "1",
+                        "descr": "Source clock input",
+                    },
+                ],
+            },
+            {
                 "name": "clk_gen",
                 "descr": "Output generated clock interface",
                 "signals": [
                     {
-                        "name": "clk",
+                        "name": "clk_out",
                         "direction": "output",
                         "width": "1",
                         "descr": "Generated clock output",
@@ -86,20 +98,72 @@ def setup(py_params_dict):
                     {"name": "period_wready_wr", "width": 1},
                 ],
             },
+            # nco sync wires
+            {
+                "name": "period_wdata_sync_in",
+                "descr": "",
+                "signals": [
+                    {"name": "period_wdata_wr"},
+                ],
+            },
+            {
+                "name": "period_wen_sync_in",
+                "descr": "",
+                "signals": [
+                    {"name": "period_wen_wr"},
+                ],
+            },
+            {
+                "name": "period_wdata_sync_out",
+                "descr": "",
+                "signals": [
+                    {"name": "period_wdata_wr"},
+                ],
+            },
+            {
+                "name": "period_wen_sync_out",
+                "descr": "",
+                "signals": [
+                    {"name": "period_wen_wr"},
+                ],
+            },
+            # clk src domain wires
+            {
+                "name": "softreset_clk_src",
+                "descr": "",
+                "signals": [
+                    {"name": "softreset_clk_src", "width": 1},
+                ],
+            },
+            {
+                "name": "enable_clk_src",
+                "descr": "",
+                "signals": [
+                    {"name": "enable_clk_src", "width": 1},
+                ],
+            },
+            {
+                "name": "period_clk_src",
+                "descr": "",
+                "signals": [
+                    {"name": "period_wdata_clk_src", "width": 32},
+                    {"name": "period_wen_clk_src", "width": 1},
+                ],
+            },
             # per_reg
             {
                 "name": "per_reg_en_rst",
                 "descr": "",
                 "signals": [
-                    {"name": "period_wen_wr"},
-                    {"name": "softreset_wr"},
+                    {"name": "period_wen_clk_src"},
+                    {"name": "softreset_clk_src"},
                 ],
             },
             {
                 "name": "per_reg_data_i",
                 "descr": "",
                 "signals": [
-                    {"name": "period_wdata_wr"},
+                    {"name": "period_wdata_clk_src"},
                 ],
             },
             {
@@ -114,8 +178,8 @@ def setup(py_params_dict):
                 "name": "clk_out_reg_en_rst",
                 "descr": "",
                 "signals": [
-                    {"name": "enable_wr"},
-                    {"name": "softreset_wr"},
+                    {"name": "enable_clk_src"},
+                    {"name": "softreset_clk_src"},
                 ],
             },
             {
@@ -127,17 +191,26 @@ def setup(py_params_dict):
             },
             # acc_ld
             {
+                "name": "acc_ld_clk_en_rst",
+                "descr": "",
+                "signals": [
+                    {"name": "clk_in"},
+                    {"name": "cke"},
+                    {"name": "arst"},
+                ],
+            },
+            {
                 "name": "acc_ld_ld",
                 "descr": "",
                 "signals": [
-                    {"name": "period_wen_wr"},
+                    {"name": "period_wen_clk_src"},
                 ],
             },
             {
                 "name": "acc_ld_ld_val",
                 "descr": "",
                 "signals": [
-                    {"name": "period_wdata_wr"},
+                    {"name": "period_wdata_clk_src"},
                 ],
             },
             {
@@ -166,8 +239,8 @@ def setup(py_params_dict):
                 "name": "modcnt_en_rst",
                 "descr": "",
                 "signals": [
-                    {"name": "enable_wr"},
-                    {"name": "period_wen_wr"},
+                    {"name": "enable_clk_src"},
+                    {"name": "period_wen_clk_src"},
                 ],
             },
             {
@@ -182,6 +255,14 @@ def setup(py_params_dict):
                 "descr": "",
                 "signals": [
                     {"name": "cnt", "width": "DATA_W-FRAC_W"},
+                ],
+            },
+            {
+                "name": "clk_rst",
+                "descr": "",
+                "signals": [
+                    {"name": "clk"},
+                    {"name": "arst"},
                 ],
             },
         ],
@@ -270,7 +351,7 @@ def setup(py_params_dict):
                     "DATA_W": "DATA_W",
                 },
                 "connect": {
-                    "clk_en_rst": "clk_en_rst",
+                    "clk_en_rst": "acc_ld_clk_en_rst",
                     "en_rst": "clk_out_reg_en_rst",
                     "ld_i": "acc_ld_ld",
                     "ld_val_i": "acc_ld_ld_val",
@@ -287,10 +368,30 @@ def setup(py_params_dict):
                     "DATA_W": "DATA_W - FRAC_W",
                 },
                 "connect": {
-                    "clk_en_rst": "clk_en_rst",
+                    "clk_en_rst": "acc_ld_clk_en_rst",
                     "en_rst": "modcnt_en_rst",
                     "mod_i": "modcnt_mod",
                     "data_o": "modcnt_data",
+                },
+            },
+            {
+                "core_name": "iob_nco_sync",
+                "instance_name": "nco_sync_inst",
+                "instance_description": "Syncronize from CSR domain to clk_src domain",
+                "parameters": {
+                    "PERIOD_W": "DATA_W",
+                },
+                "connect": {
+                    "clk_rst": "clk_rst",
+                    "clk_in": "clk_src",
+                    "soft_reset_in": "softreset",
+                    "enable_in": "enable",
+                    "period_wdata_in": "period_wdata_sync_in",
+                    "period_wen_in": "period_wen_sync_in",
+                    "soft_reset_out": "softreset_clk_src",
+                    "enable_out": "enable_clk_src",
+                    "period_wdata_out": "period_wdata_sync_out",
+                    "period_wen_out": "period_wen_sync_out",
                 },
             },
             # For simulation

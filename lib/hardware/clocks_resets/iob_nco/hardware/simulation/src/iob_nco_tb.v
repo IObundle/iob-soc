@@ -80,14 +80,9 @@ module iob_nco_tb;
 
   iob_nco nco (
       `include "iob_nco_clk_en_rst_s_portmap.vs"
-      .iob_valid_i(iob_valid_i),
-      .iob_addr_i(iob_addr_i),
-      .iob_wdata_i(iob_wdata_i),
-      .iob_wstrb_i(iob_wstrb_i),
-      .iob_rdata_o(iob_rdata_o),
-      .iob_ready_o(iob_ready_o),
-      .iob_rvalid_o(iob_rvalid_o),
-      .clk_o(clk_out)
+      `include "iob_nco_iob_s_s_portmap.vs"
+      .clk_in_i(clk),
+      .clk_out_o(clk_out)
   );
 
   `include "iob_nco_csrs_emb_tb.vs"
