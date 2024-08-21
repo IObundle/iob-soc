@@ -29,6 +29,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: 'recursive'
+      - name: Clean untracked files and directories (like old submodules)
+        run: git clean -ffdx
       - name: run test
         run: make pc-emul-test
 
@@ -43,6 +45,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: 'recursive'
+      - name: Clean untracked files and directories (like old submodules)
+        run: git clean -ffdx
       - name: run test
         run: make sim-test
   
@@ -56,6 +60,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: 'recursive'
+      - name: Clean untracked files and directories (like old submodules)
+        run: git clean -ffdx
       - name: init mem and no ext mem
         run: make fpga-run BOARD=CYCLONEV-GT-DK INIT_MEM=1 USE_EXTMEM=0
       - name: no init mem and ext mem
@@ -71,6 +77,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: 'recursive'
+      - name: Clean untracked files and directories (like old submodules)
+        run: git clean -ffdx
       - name: init mem and no ext mem
         run: make fpga-run BOARD=AES-KU040-DB-G INIT_MEM=1 USE_EXTMEM=0
       - name: no init mem and ext mem
@@ -86,6 +94,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: 'recursive'
+      - name: Clean untracked files and directories (like old submodules)
+        run: git clean -ffdx
       - name: run LIB test
         run: nix-shell --run "make -C lib sim-test"
 
@@ -99,6 +109,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: 'recursive'
+      - name: Clean untracked files and directories (like old submodules)
+        run: git clean -ffdx
       - name: run simulation test
         run: make -C submodules/CACHE sim-test
       - name: run fpga test
@@ -113,5 +125,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: 'recursive'
+      - name: Clean untracked files and directories (like old submodules)
+        run: git clean -ffdx
       - name: doc test
         run: make doc-test
