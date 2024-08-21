@@ -155,7 +155,7 @@ def setup(py_params_dict):
          """,
             },
         ],
-        "combs": [
+        "comb":
             {
                 "verilog_code": """
     pcnt_nxt    = pcnt + 1'b1;
@@ -182,7 +182,6 @@ def setup(py_params_dict):
     end
 """,
             }
-        ],
     }
 
     return attributes_dict
