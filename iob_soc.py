@@ -557,6 +557,11 @@ def setup(py_params_dict):
     ]
     attributes_dict["blocks"] += [
         {
+            "core_name": "iob_reg",
+            "instance_name": "iob_reg_inst",
+            "instantiate": False,
+        },
+        {
             "core_name": "iob_pulse_gen",
             "instance_name": "iob_pulse_gen_inst",
             "instantiate": False,
