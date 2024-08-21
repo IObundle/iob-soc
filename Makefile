@@ -4,20 +4,6 @@ SIMULATOR ?= icarus
 SYNTHESIZER ?= yosys
 BOARD ?= CYCLONEV-GT-DK
 
-IOB_PYTHONPATH ?= ../iob_python
-ifneq ($(PYTHONPATH),)
-PYTHONPATH := $(IOB_PYTHONPATH):$(PYTHONPATH)
-else
-PYTHONPATH := $(IOB_PYTHONPATH)
-endif
-export PYTHONPATH
-
-DISABLE_LINT:=1
-export DISABLE_LINT
-
-LIB_DIR ?=./lib
-export LIB_DIR
-
 CUSTOM_SHELL ?=nix-shell --run "$(1)"
 
 # Pass 'py2hwsw' function to shell using workaround: https://stackoverflow.com/a/26518222
