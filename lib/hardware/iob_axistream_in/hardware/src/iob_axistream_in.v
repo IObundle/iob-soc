@@ -1,7 +1,6 @@
 `timescale 1ns / 1ps
-`include "iob_utils.vh"
 `include "iob_axistream_in_conf.vh"
-`include "iob_axistream_in_swreg_def.vh"
+`include "iob_axistream_in_csrs_def.vh"
 
 module iob_axistream_in #(
    `include "iob_axistream_in_params.vs"
@@ -47,7 +46,7 @@ module iob_axistream_in #(
    reg                   sys_tvalid;
 
    // configuration control and status register file.
-   `include "iob_axistream_in_swreg_inst.vs"
+   `include "iob_axistream_in_csrs_inst.vs"
 
    wire tlast_detected_reg;
 
@@ -190,7 +189,7 @@ module iob_axistream_in #(
    );
 
 
-   //Synchronizers from clk (swregs) to axis domain
+   //Synchronizers from clk (csrs) to axis domain
    iob_sync #(
       .DATA_W (1),
       .RST_VAL(1'd0)

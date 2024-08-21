@@ -14,15 +14,16 @@
 #include <linux/platform_device.h>
 #include <linux/uaccess.h>
 
-#include "iob_class/iob_class_utils.h"
 #include "iob_axistream_in.h"
+#include "iob_class/iob_class_utils.h"
 
 static int iob_axistream_in_probe(struct platform_device *);
 static int iob_axistream_in_remove(struct platform_device *);
 
-static ssize_t iob_axistream_in_read(struct file *, char __user *, size_t, loff_t *);
-static ssize_t iob_axistream_in_write(struct file *, const char __user *, size_t,
-                               loff_t *);
+static ssize_t iob_axistream_in_read(struct file *, char __user *, size_t,
+                                     loff_t *);
+static ssize_t iob_axistream_in_write(struct file *, const char __user *,
+                                      size_t, loff_t *);
 static loff_t iob_axistream_in_llseek(struct file *, loff_t, int);
 static int iob_axistream_in_open(struct inode *, struct file *);
 static int iob_axistream_in_release(struct inode *, struct file *);
@@ -65,7 +66,8 @@ static int iob_axistream_in_probe(struct platform_device *pdev) {
   int result = 0;
 
   if (iob_axistream_in_data.device != NULL) {
-    pr_err("[Driver] %s: No more devices allowed!\n", IOB_AXISTREAM_IN_DRIVER_NAME);
+    pr_err("[Driver] %s: No more devices allowed!\n",
+           IOB_AXISTREAM_IN_DRIVER_NAME);
 
     return -ENODEV;
   }
@@ -89,18 +91,21 @@ static int iob_axistream_in_probe(struct platform_device *pdev) {
   iob_axistream_in_data.regsize = resource_size(res);
 
   // Alocate char device
-  result =
-      alloc_chrdev_region(&iob_axistream_in_data.devnum, 0, 1, IOB_AXISTREAM_IN_DRIVER_NAME);
+  result = alloc_chrdev_region(&iob_axistream_in_data.devnum, 0, 1,
+                               IOB_AXISTREAM_IN_DRIVER_NAME);
   if (result) {
-    pr_err("%s: Failed to allocate device number!\n", IOB_AXISTREAM_IN_DRIVER_NAME);
+    pr_err("%s: Failed to allocate device number!\n",
+           IOB_AXISTREAM_IN_DRIVER_NAME);
     goto r_alloc_region;
   }
 
   cdev_init(&iob_axistream_in_data.cdev, &iob_axistream_in_fops);
 
-  result = cdev_add(&iob_axistream_in_data.cdev, iob_axistream_in_data.devnum, 1);
+  result =
+      cdev_add(&iob_axistream_in_data.cdev, iob_axistream_in_data.devnum, 1);
   if (result) {
-    pr_err("%s: Char device registration failed!\n", IOB_AXISTREAM_IN_DRIVER_NAME);
+    pr_err("%s: Char device registration failed!\n",
+           IOB_AXISTREAM_IN_DRIVER_NAME);
     goto r_cdev_add;
   }
 
@@ -113,15 +118,16 @@ static int iob_axistream_in_probe(struct platform_device *pdev) {
   }
 
   // Create device file
-  iob_axistream_in_data.device =
-      device_create(iob_axistream_in_data.class, NULL, iob_axistream_in_data.devnum, NULL,
-                    IOB_AXISTREAM_IN_DRIVER_NAME);
+  iob_axistream_in_data.device = device_create(
+      iob_axistream_in_data.class, NULL, iob_axistream_in_data.devnum, NULL,
+      IOB_AXISTREAM_IN_DRIVER_NAME);
   if (iob_axistream_in_data.device == NULL) {
     printk("Can not create device file!\n");
     goto r_device;
   }
 
-  result = iob_axistream_in_create_device_attr_files(iob_axistream_in_data.device);
+  result =
+      iob_axistream_in_create_device_attr_files(iob_axistream_in_data.device);
   if (result) {
     pr_err("Cannot create device attribute file......\n");
     goto r_dev_file;
@@ -194,51 +200,58 @@ static int iob_axistream_in_release(struct inode *inode, struct file *file) {
   return 0;
 }
 
-static ssize_t iob_axistream_in_read(struct file *file, char __user *buf, size_t count,
-                              loff_t *ppos) {
+static ssize_t iob_axistream_in_read(struct file *file, char __user *buf,
+                                     size_t count, loff_t *ppos) {
   int size = 0;
   u32 value = 0;
 
   /* read value from register */
   switch (*ppos) {
   case IOB_AXISTREAM_IN_DATA_ADDR:
-    value = iob_data_read_reg(iob_axistream_in_data.regbase, IOB_AXISTREAM_IN_DATA_ADDR,
-                              IOB_AXISTREAM_IN_DATA_W);
+    value =
+        iob_data_read_reg(iob_axistream_in_data.regbase,
+                          IOB_AXISTREAM_IN_DATA_ADDR, IOB_AXISTREAM_IN_DATA_W);
     size = (IOB_AXISTREAM_IN_DATA_W >> 3); // bit to bytes
     pr_info("[Driver] Read DATA!\n");
     break;
   case IOB_AXISTREAM_IN_NWORDS_ADDR:
-    value = iob_data_read_reg(iob_axistream_in_data.regbase, IOB_AXISTREAM_IN_NWORDS_ADDR,
+    value = iob_data_read_reg(iob_axistream_in_data.regbase,
+                              IOB_AXISTREAM_IN_NWORDS_ADDR,
                               IOB_AXISTREAM_IN_NWORDS_W);
     size = (IOB_AXISTREAM_IN_NWORDS_W >> 3); // bit to bytes
     pr_info("[Driver] Read NWORDS!\n");
     break;
   case IOB_AXISTREAM_IN_TLAST_DETECTED_ADDR:
-    value = iob_data_read_reg(iob_axistream_in_data.regbase, IOB_AXISTREAM_IN_TLAST_DETECTED_ADDR,
+    value = iob_data_read_reg(iob_axistream_in_data.regbase,
+                              IOB_AXISTREAM_IN_TLAST_DETECTED_ADDR,
                               IOB_AXISTREAM_IN_TLAST_DETECTED_W);
     size = (IOB_AXISTREAM_IN_TLAST_DETECTED_W >> 3); // bit to bytes
     pr_info("[Driver] Read TLAST_DETECTED!\n");
     break;
   case IOB_AXISTREAM_IN_FIFO_FULL_ADDR:
-    value = iob_data_read_reg(iob_axistream_in_data.regbase, IOB_AXISTREAM_IN_FIFO_FULL_ADDR,
+    value = iob_data_read_reg(iob_axistream_in_data.regbase,
+                              IOB_AXISTREAM_IN_FIFO_FULL_ADDR,
                               IOB_AXISTREAM_IN_FIFO_FULL_W);
     size = (IOB_AXISTREAM_IN_FIFO_FULL_W >> 3); // bit to bytes
     pr_info("[Driver] Read FIFO_FULL!\n");
     break;
   case IOB_AXISTREAM_IN_FIFO_EMPTY_ADDR:
-    value = iob_data_read_reg(iob_axistream_in_data.regbase, IOB_AXISTREAM_IN_FIFO_EMPTY_ADDR,
+    value = iob_data_read_reg(iob_axistream_in_data.regbase,
+                              IOB_AXISTREAM_IN_FIFO_EMPTY_ADDR,
                               IOB_AXISTREAM_IN_FIFO_EMPTY_W);
     size = (IOB_AXISTREAM_IN_FIFO_EMPTY_W >> 3); // bit to bytes
     pr_info("[Driver] Read FIFO_EMPTY!\n");
     break;
   case IOB_AXISTREAM_IN_FIFO_LEVEL_ADDR:
-    value = iob_data_read_reg(iob_axistream_in_data.regbase, IOB_AXISTREAM_IN_FIFO_LEVEL_ADDR,
+    value = iob_data_read_reg(iob_axistream_in_data.regbase,
+                              IOB_AXISTREAM_IN_FIFO_LEVEL_ADDR,
                               IOB_AXISTREAM_IN_FIFO_LEVEL_W);
     size = (IOB_AXISTREAM_IN_FIFO_LEVEL_W >> 3); // bit to bytes
     pr_info("[Driver] Read FIFO_LEVEL!\n");
     break;
   case IOB_AXISTREAM_IN_VERSION_ADDR:
-    value = iob_data_read_reg(iob_axistream_in_data.regbase, IOB_AXISTREAM_IN_VERSION_ADDR,
+    value = iob_data_read_reg(iob_axistream_in_data.regbase,
+                              IOB_AXISTREAM_IN_VERSION_ADDR,
                               IOB_AXISTREAM_IN_VERSION_W);
     size = (IOB_AXISTREAM_IN_VERSION_W >> 3); // bit to bytes
     pr_info("[Driver] Read version!\n");
@@ -259,7 +272,7 @@ static ssize_t iob_axistream_in_read(struct file *file, char __user *buf, size_t
 }
 
 static ssize_t iob_axistream_in_write(struct file *file, const char __user *buf,
-                               size_t count, loff_t *ppos) {
+                                      size_t count, loff_t *ppos) {
   int size = 0;
   u32 value = 0;
 
@@ -268,7 +281,8 @@ static ssize_t iob_axistream_in_write(struct file *file, const char __user *buf,
     size = (IOB_AXISTREAM_IN_SOFT_RESET_W >> 3); // bit to bytes
     if (read_user_data(buf, size, &value))
       return -EFAULT;
-    iob_data_write_reg(iob_axistream_in_data.regbase, value, IOB_AXISTREAM_IN_SOFT_RESET_ADDR,
+    iob_data_write_reg(iob_axistream_in_data.regbase, value,
+                       IOB_AXISTREAM_IN_SOFT_RESET_ADDR,
                        IOB_AXISTREAM_IN_SOFT_RESET_W);
     pr_info("[Driver] SOFT_RESET iob_axistream_in: 0x%x\n", value);
     break;
@@ -276,23 +290,24 @@ static ssize_t iob_axistream_in_write(struct file *file, const char __user *buf,
     size = (IOB_AXISTREAM_IN_ENABLE_W >> 3); // bit to bytes
     if (read_user_data(buf, size, &value))
       return -EFAULT;
-    iob_data_write_reg(iob_axistream_in_data.regbase, value, IOB_AXISTREAM_IN_ENABLE_ADDR,
-                       IOB_AXISTREAM_IN_ENABLE_W);
+    iob_data_write_reg(iob_axistream_in_data.regbase, value,
+                       IOB_AXISTREAM_IN_ENABLE_ADDR, IOB_AXISTREAM_IN_ENABLE_W);
     pr_info("[Driver] ENABLE iob_axistream_in: 0x%x\n", value);
     break;
   case IOB_AXISTREAM_IN_MODE_ADDR:
     size = (IOB_AXISTREAM_IN_MODE_W >> 3); // bit to bytes
     if (read_user_data(buf, size, &value))
       return -EFAULT;
-    iob_data_write_reg(iob_axistream_in_data.regbase, value, IOB_AXISTREAM_IN_MODE_ADDR,
-                       IOB_AXISTREAM_IN_MODE_W);
+    iob_data_write_reg(iob_axistream_in_data.regbase, value,
+                       IOB_AXISTREAM_IN_MODE_ADDR, IOB_AXISTREAM_IN_MODE_W);
     pr_info("[Driver] MODE iob_axistream_in: 0x%x\n", value);
     break;
   case IOB_AXISTREAM_IN_FIFO_THRESHOLD_ADDR:
     size = (IOB_AXISTREAM_IN_FIFO_THRESHOLD_W >> 3); // bit to bytes
     if (read_user_data(buf, size, &value))
       return -EFAULT;
-    iob_data_write_reg(iob_axistream_in_data.regbase, value, IOB_AXISTREAM_IN_FIFO_THRESHOLD_ADDR,
+    iob_data_write_reg(iob_axistream_in_data.regbase, value,
+                       IOB_AXISTREAM_IN_FIFO_THRESHOLD_ADDR,
                        IOB_AXISTREAM_IN_FIFO_THRESHOLD_W);
     pr_info("[Driver] FIFO_THRESHOLD iob_axistream_in: 0x%x\n", value);
     break;
@@ -308,7 +323,8 @@ static ssize_t iob_axistream_in_write(struct file *file, const char __user *buf,
 /* Custom lseek function
  * check: lseek(2) man page for whence modes
  */
-static loff_t iob_axistream_in_llseek(struct file *filp, loff_t offset, int whence) {
+static loff_t iob_axistream_in_llseek(struct file *filp, loff_t offset,
+                                      int whence) {
   loff_t new_pos = -1;
 
   switch (whence) {
@@ -319,7 +335,7 @@ static loff_t iob_axistream_in_llseek(struct file *filp, loff_t offset, int when
     new_pos = filp->f_pos + offset;
     break;
   case SEEK_END:
-    new_pos = (1 << IOB_AXISTREAM_IN_SWREG_ADDR_W) + offset;
+    new_pos = (1 << IOB_AXISTREAM_IN_CSRS_ADDR_W) + offset;
     break;
   default:
     return -EINVAL;

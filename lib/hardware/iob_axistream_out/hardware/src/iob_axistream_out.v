@@ -1,7 +1,6 @@
 `timescale 1ns / 1ps
-`include "iob_utils.vh"
 `include "iob_axistream_out_conf.vh"
-`include "iob_axistream_out_swreg_def.vh"
+`include "iob_axistream_out_csrs_def.vh"
 
 module iob_axistream_out #(
    `include "iob_axistream_out_params.vs"
@@ -43,7 +42,7 @@ module iob_axistream_out #(
    wire [    DATA_W-1:0] ext_mem_r_data;
 
    // configuration control and status register file.
-   `include "iob_axistream_out_swreg_inst.vs"
+   `include "iob_axistream_out_csrs_inst.vs"
 
    //AXI Stream interface
    assign axis_tvalid_o = axis_tvalid;
