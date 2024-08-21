@@ -169,7 +169,7 @@ def setup(py_params_dict):
         ],
         "fsm": {
             "verilog_code": """
-default_assignmetns:
+default_assignments:
     incr        = 1'b0;
     quotient_o  = quotient_int + incr;
     res_acc_nxt = res_acc + remainder_o;
