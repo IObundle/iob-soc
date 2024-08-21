@@ -4,7 +4,7 @@ import os
 # Add iob-soc scripts folder to python path
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "scripts"))
 
-from iob_soc_utils import pre_setup_iob_soc, iob_soc_sw_setup
+from iob_soc_utils import generate_makefile_segments, generate_peripheral_base_addresses
 
 
 def setup(py_params_dict):
@@ -18,6 +18,7 @@ def setup(py_params_dict):
         "use_compressed": True,
         "use_mul_div": True,
         "fw_addr": 0,
+        "build_dir": "",
     }
 
     # Update params with py_params_dict
@@ -36,8 +37,15 @@ def setup(py_params_dict):
         "original_name": "iob_soc",
         "name": "iob_soc",
         "version": "0.7",
-        # FIXME: Fix build dir based on py_params_dict
-        "build_dir": "../iob_soc_V0.7",
+    }
+
+    if not params["build_dir"]:
+        params["build_dir"] = (
+            f"../{attributes_dict['name']}_V{attributes_dict['version']}"
+        )
+
+    attributes_dict |= {
+        "build_dir": params["build_dir"],
         "is_system": True,
         "board_list": ["CYCLONEV-GT-DK", "AES-KU040-DB-G"],
         "confs": [
@@ -163,14 +171,6 @@ def setup(py_params_dict):
                 "min": "1",
                 "max": "4",
                 "descr": "AXI burst length width",
-            },
-            {
-                "name": "MEM_ADDR_OFFSET",
-                "type": "F",
-                "val": "0",
-                "min": "0",
-                "max": "NA",
-                "descr": "Offset of memory address",
             },
             # Needed for testbench
             {
@@ -366,7 +366,6 @@ def setup(py_params_dict):
                 "file_prefix": "iob_soc_uart_csrs_",
                 "wire_prefix": "uart_csrs_",
                 "DATA_W": params["data_w"],
-                # TODO: How to trim ADDR_W to match csrs addr width?
                 "ADDR_W": params["addr_w"] - 3,
             },
             "descr": "UART csrs bus",
@@ -604,7 +603,10 @@ iob_pulse_gen #(
     ]
 
     # Pre-setup specialized IOb-SoC functions
-    pre_setup_iob_soc(attributes_dict, peripherals, params)
-    iob_soc_sw_setup(attributes_dict, peripherals, params["addr_w"])
+    generate_makefile_segments(attributes_dict, peripherals, params)
+    generate_peripheral_base_addresses(
+        peripherals,
+        f"{attributes_dict['build_dir']}/software/{attributes_dict['name']}_periphs.h",
+    )
 
     return attributes_dict
