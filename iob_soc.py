@@ -18,6 +18,7 @@ def setup(py_params_dict):
         "mem_addr_w": 24,
         "use_compressed": True,
         "use_mul_div": True,
+        "build_dir": "",
     }
 
     # Update params with py_params_dict
@@ -36,8 +37,15 @@ def setup(py_params_dict):
         "original_name": "iob_soc",
         "name": "iob_soc",
         "version": "0.7",
-        # FIXME: Fix build dir based on py_params_dict
-        "build_dir": "../iob_soc_V0.7",
+    }
+
+    if not params["build_dir"]:
+        params["build_dir"] = (
+            f"../{attributes_dict['name']}_V{attributes_dict['version']}"
+        )
+
+    attributes_dict |= {
+        "build_dir": params["build_dir"],
         "is_system": True,
         "board_list": ["CYCLONEV-GT-DK", "AES-KU040-DB-G"],
         "confs": [
@@ -147,14 +155,6 @@ def setup(py_params_dict):
                 "min": "1",
                 "max": "4",
                 "descr": "AXI burst length width",
-            },
-            {
-                "name": "MEM_ADDR_OFFSET",
-                "type": "F",
-                "val": "0",
-                "min": "0",
-                "max": "NA",
-                "descr": "Offset of memory address",
             },
             # Needed for testbench
             {
@@ -424,7 +424,6 @@ def setup(py_params_dict):
                 "file_prefix": "iob_soc_uart_csrs_",
                 "wire_prefix": "uart_csrs_",
                 "DATA_W": params["data_w"],
-                # TODO: How to trim ADDR_W to match csrs addr width?
                 "ADDR_W": params["addr_w"] - 3,
             },
             "descr": "UART csrs bus",
