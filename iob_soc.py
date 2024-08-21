@@ -4,7 +4,7 @@ import os
 # Add iob-soc scripts folder to python path
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "scripts"))
 
-from iob_soc_utils import pre_setup_iob_soc, iob_soc_sw_setup
+from iob_soc_utils import generate_makefile_segments, generate_peripheral_base_addresses
 
 
 def setup(py_params_dict):
@@ -18,13 +18,14 @@ def setup(py_params_dict):
         "mem_addr_w": 24,
         "use_compressed": True,
         "use_mul_div": True,
+        "build_dir": "",
     }
 
     # Update params with py_params_dict
     for name, default_val in params.items():
         if name not in py_params_dict:
             continue
-        if type(default_val) == bool and py_params_dict[name] == "0":
+        if type(default_val) is bool and py_params_dict[name] == "0":
             params[name] = False
         else:
             params[name] = type(default_val)(py_params_dict[name])
@@ -36,6 +37,15 @@ def setup(py_params_dict):
         "original_name": "iob_soc",
         "name": "iob_soc",
         "version": "0.7",
+    }
+
+    if not params["build_dir"]:
+        params["build_dir"] = (
+            f"../{attributes_dict['name']}_V{attributes_dict['version']}"
+        )
+
+    attributes_dict |= {
+        "build_dir": params["build_dir"],
         "is_system": True,
         "board_list": ["CYCLONEV-GT-DK", "AES-KU040-DB-G"],
         "confs": [
@@ -145,14 +155,6 @@ def setup(py_params_dict):
                 "min": "1",
                 "max": "4",
                 "descr": "AXI burst length width",
-            },
-            {
-                "name": "MEM_ADDR_OFFSET",
-                "type": "F",
-                "val": "0",
-                "min": "0",
-                "max": "NA",
-                "descr": "Offset of memory address",
             },
             # Needed for testbench
             {
@@ -416,27 +418,26 @@ def setup(py_params_dict):
     attributes_dict["wires"] += [
         # Peripheral wires
         {
-            "name": "uart_swreg",
+            "name": "uart_csrs",
             "interface": {
                 "type": "iob",
-                "file_prefix": "iob_soc_uart_swreg_",
-                "wire_prefix": "uart_swreg_",
+                "file_prefix": "iob_soc_uart_csrs_",
+                "wire_prefix": "uart_csrs_",
                 "DATA_W": params["data_w"],
-                # TODO: How to trim ADDR_W to match swreg addr width?
                 "ADDR_W": params["addr_w"] - 3,
             },
-            "descr": "UART swreg bus",
+            "descr": "UART csrs bus",
         },
         {
-            "name": "timer_swreg",
+            "name": "timer_csrs",
             "interface": {
                 "type": "iob",
-                "file_prefix": "iob_soc_timer_swreg_",
-                "wire_prefix": "timer_swreg_",
+                "file_prefix": "iob_soc_timer_csrs_",
+                "wire_prefix": "timer_csrs_",
                 "DATA_W": params["data_w"],
                 "ADDR_W": params["addr_w"] - 3,
             },
-            "descr": "TIMER swreg bus",
+            "descr": "TIMER csrs bus",
         },
         # TODO: Auto add peripheral wires
     ]
@@ -582,8 +583,8 @@ def setup(py_params_dict):
                 "clk_en_rst": "clk_en_rst",
                 "reset": "split_reset",
                 "input": "cpu_pbus",
-                "output_0": "uart_swreg",
-                "output_1": "timer_swreg",
+                "output_0": "uart_csrs",
+                "output_1": "timer_csrs",
                 # TODO: Connect peripherals automatically
             },
             "num_outputs": N_SLAVES,
@@ -599,7 +600,7 @@ def setup(py_params_dict):
             "parameters": {},
             "connect": {
                 "clk_en_rst": "clk_en_rst",
-                "iob": "uart_swreg",
+                "iob": "uart_csrs",
                 "rs232": "rs232",
             },
         },
@@ -610,7 +611,7 @@ def setup(py_params_dict):
             "parameters": {},
             "connect": {
                 "clk_en_rst": "clk_en_rst",
-                "iob": "timer_swreg",
+                "iob": "timer_csrs",
             },
         },
     ]
@@ -624,11 +625,6 @@ def setup(py_params_dict):
             "instantiate": False,
             "dest_dir": "hardware/simulation/src",
         },
-        {
-            "core_name": "iob_pulse_gen",
-            "instance_name": "iob_pulse_gen_inst",
-            "instantiate": False,
-        },
         # Simulation wrapper
         {
             "core_name": "iob_soc_sim_wrapper",
@@ -638,19 +634,13 @@ def setup(py_params_dict):
             "iob_soc_params": params,
         },
         # FPGA wrappers
-        # NOTE: Disabled temporarily.
-        # Since cyclonev and ku040 wrappers have the same "name" attribute,
-        # the py2hwsw generated verilog snippets will also have the same name.
-        # Therefore, this one is disabled until either:
-        # 1) Py2hwsw generates modules directly without using verilog snippets.
-        # 2) We change the wrapper names to be unique.
-        # {
-        #     "core_name": "iob_soc_ku040_wrapper",
-        #     "instance_name": "iob_soc_ku040_wrapper",
-        #     "instantiate": False,
-        #     "dest_dir": "hardware/fpga/vivado/AES-KU040-DB-G",
-        #     "iob_soc_params": params,
-        # },
+        {
+            "core_name": "iob_soc_ku040_wrapper",
+            "instance_name": "iob_soc_ku040_wrapper",
+            "instantiate": False,
+            "dest_dir": "hardware/fpga/vivado/AES-KU040-DB-G",
+            "iob_soc_params": params,
+        },
         {
             "core_name": "iob_soc_cyclonev_wrapper",
             "instance_name": "iob_soc_cyclonev_wrapper",
@@ -668,7 +658,10 @@ def setup(py_params_dict):
     ]
 
     # Pre-setup specialized IOb-SoC functions
-    pre_setup_iob_soc(attributes_dict, peripherals, params)
-    iob_soc_sw_setup(attributes_dict, peripherals, params["addr_w"])
+    generate_makefile_segments(attributes_dict, peripherals, params)
+    generate_peripheral_base_addresses(
+        peripherals,
+        f"{attributes_dict['build_dir']}/software/{attributes_dict['name']}_periphs.h",
+    )
 
     return attributes_dict
