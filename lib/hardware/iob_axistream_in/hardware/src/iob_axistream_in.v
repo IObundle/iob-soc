@@ -53,7 +53,8 @@ module iob_axistream_in #(
    //CPU INTERFACE
    assign DATA_rready_rd = ~FIFO_EMPTY_rd | sys_tvalid;
    assign interrupt_o    = FIFO_LEVEL_rd >= FIFO_THRESHOLD_wr;
-   assign DATA_rvalid_rd = sys_tvalid;
+   assign DATA_rvalid_rd = sys_tvalid & (~MODE_wr);
+   assign DATA_rdata_rd  = fifo_data;
 
    //System Stream output interface
    // System output valid only if in system stream mode
@@ -73,18 +74,20 @@ module iob_axistream_in #(
          0: begin
             if (FIFO_EMPTY_rd) begin
                fifo_read_pc_nxt = fifo_read_pc;
-            end else begin
+            end else if ((sys_tready_i && MODE_wr) || (DATA_ren_rd && !MODE_wr)) begin
                fifo_read = 1'b1;
+               fifo_read_pc_nxt = 1'b1;
+            end else begin
+               fifo_read_pc_nxt = fifo_read_pc;
             end
          end
          default: begin
             sys_tvalid       = 1'b1;
-            fifo_read_pc_nxt = fifo_read_pc;
+            fifo_read_pc_nxt = 1'b0;
             if ((sys_tready_i && MODE_wr) || (DATA_ren_rd && !MODE_wr)) begin
-               if (FIFO_EMPTY_rd) begin
-                  fifo_read_pc_nxt = 1'b0;
-               end else begin
+               if (~FIFO_EMPTY_rd) begin
                   fifo_read = 1'b1;
+                  fifo_read_pc_nxt = fifo_read_pc;
                end
             end
          end
@@ -161,18 +164,6 @@ module iob_axistream_in #(
       .en_i  (axis_sw_enable),
       .data_i(fifo_read_pc_nxt),
       .data_o(fifo_read_pc)
-   );
-
-   //FIFO data register
-   iob_reg #(
-      .DATA_W (DATA_W),
-      .RST_VAL(0)
-   ) fifo_data_reg (
-      .clk_i (clk_i),
-      .cke_i (cke_i),
-      .arst_i(arst_i),
-      .data_i(fifo_data),
-      .data_o(DATA_rdata_rd)
    );
 
    // received words counter
