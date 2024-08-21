@@ -195,7 +195,7 @@ default_assignments:
         pc_nxt = 1'b1;
     end
 """,
-            }
+        },
     }
 
     return attributes_dict
