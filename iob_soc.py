@@ -40,9 +40,9 @@ def setup(py_params_dict):
     }
 
     if not params["build_dir"]:
-        params["build_dir"] = (
-            f"../{attributes_dict['name']}_V{attributes_dict['version']}"
-        )
+        params[
+            "build_dir"
+        ] = f"../{attributes_dict['name']}_V{attributes_dict['version']}"
 
     attributes_dict |= {
         "build_dir": params["build_dir"],
