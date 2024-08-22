@@ -22,7 +22,7 @@ static int iob_gpio_remove(struct platform_device *);
 
 static ssize_t iob_gpio_read(struct file *, char __user *, size_t, loff_t *);
 static ssize_t iob_gpio_write(struct file *, const char __user *, size_t,
-                               loff_t *);
+                              loff_t *);
 static loff_t iob_gpio_llseek(struct file *, loff_t, int);
 static int iob_gpio_open(struct inode *, struct file *);
 static int iob_gpio_release(struct inode *, struct file *);
@@ -193,7 +193,7 @@ static int iob_gpio_release(struct inode *inode, struct file *file) {
 }
 
 static ssize_t iob_gpio_read(struct file *file, char __user *buf, size_t count,
-                              loff_t *ppos) {
+                             loff_t *ppos) {
   int size = 0;
   u32 value = 0;
 
@@ -227,7 +227,7 @@ static ssize_t iob_gpio_read(struct file *file, char __user *buf, size_t count,
 }
 
 static ssize_t iob_gpio_write(struct file *file, const char __user *buf,
-                               size_t count, loff_t *ppos) {
+                              size_t count, loff_t *ppos) {
   int size = 0;
   u32 value = 0;
 

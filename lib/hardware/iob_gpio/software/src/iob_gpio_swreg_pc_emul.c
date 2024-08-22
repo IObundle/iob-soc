@@ -6,23 +6,13 @@
 #include "iob_gpio_swreg.h"
 
 static uint32_t base;
-void IOB_GPIO_INIT_BASEADDR(uint32_t addr) {
-	base = addr;
-}
+void IOB_GPIO_INIT_BASEADDR(uint32_t addr) { base = addr; }
 
 // Core Setters and Getters
-uint32_t IOB_GPIO_GET_GPIO_INPUT() {
-    return 0xaaaaaaaa;
-}
+uint32_t IOB_GPIO_GET_GPIO_INPUT() { return 0xaaaaaaaa; }
 
-void IOB_GPIO_SET_GPIO_OUTPUT(uint32_t value) {
-}
+void IOB_GPIO_SET_GPIO_OUTPUT(uint32_t value) {}
 
-void IOB_GPIO_SET_GPIO_OUTPUT_ENABLE(uint32_t value) {
-}
+void IOB_GPIO_SET_GPIO_OUTPUT_ENABLE(uint32_t value) {}
 
-uint16_t IOB_GPIO_GET_VERSION() {
-    return 0xaaaa;
-}
-
-
+uint16_t IOB_GPIO_GET_VERSION() { return 0xaaaa; }
