@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include "iob_gpio_swreg.h"
+#include "iob_gpio_csrs.h"
 
 static uint32_t base;
 void IOB_GPIO_INIT_BASEADDR(uint32_t addr) { base = addr; }

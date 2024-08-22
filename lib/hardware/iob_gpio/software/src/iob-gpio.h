@@ -1,6 +1,6 @@
 #include <stdbool.h>
 
-#include "iob_gpio_swreg.h"
+#include "iob_gpio_csrs.h"
 
 // GPIO functions
 
