@@ -11,7 +11,7 @@ REGFILEIF_SRC_DIR:=$(REGFILEIF_HW_DIR)/src
 
 #include files
 VHDR+=$(wildcard $(REGFILEIF_INC_DIR)/*.vh)
-VHDR+=iob_regfileif_swreg_gen.vh iob_regfileif_swreg_def.vh
+VHDR+=iob_regfileif_csrs_gen.vh iob_regfileif_csrs_def.vh
 VHDR+=$(LIB_DIR)/hardware/include/iob_lib.vh $(LIB_DIR)/hardware/include/iob_s_if.vh $(LIB_DIR)/hardware/include/iob_gen_if.vh
 
 

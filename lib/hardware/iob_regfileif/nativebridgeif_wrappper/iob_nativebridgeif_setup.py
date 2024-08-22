@@ -51,15 +51,15 @@ blocks = []
 def main():
     setup.setup(sys.modules[__name__])
 
-    # Remove swreg_gen and swreg_inst files
-    os.remove(f"{build_dir}/hardware/src/{name}_swreg_inst.vs")
-    os.remove(f"{build_dir}/hardware/src/{name}_swreg_gen.v")
+    # Remove csrs_gen and csrs_inst files
+    os.remove(f"{build_dir}/hardware/src/{name}_csrs_inst.vs")
+    os.remove(f"{build_dir}/hardware/src/{name}_csrs_gen.v")
 
-    # Modify iob_nativebridgeif_swreg_def.vh
-    with open(f"{build_dir}/hardware/src/{name}_swreg_def.vh", "w") as file:
-        file.write('`include "iob_regfileif_swreg_def.vh"\n')
+    # Modify iob_nativebridgeif_csrs_def.vh
+    with open(f"{build_dir}/hardware/src/{name}_csrs_def.vh", "w") as file:
+        file.write('`include "iob_regfileif_csrs_def.vh"\n')
         file.write(
-            "`define IOB_NATIVEBRIDGEIF_SWREG_ADDR_W `IOB_REGFILEIF_SWREG_ADDR_W\n"
+            "`define IOB_NATIVEBRIDGEIF_csrs_ADDR_W `IOB_REGFILEIF_csrs_ADDR_W\n"
         )
 
 

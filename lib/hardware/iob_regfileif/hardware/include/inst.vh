@@ -17,7 +17,7 @@
 
       // CPU interface
       .valid       (slaves_req[`valid(`/*<InstanceName>*/)]),
-      .address     (slaves_req[`address(`/*<InstanceName>*/,`iob_regfileif_swreg_ADDR_W+2)-2]),
+      .address     (slaves_req[`address(`/*<InstanceName>*/,`iob_regfileif_csrs_ADDR_W+2)-2]),
       .wdata       (slaves_req[`wdata(`/*<InstanceName>*/)]),
       .wstrb       (slaves_req[`wstrb(`/*<InstanceName>*/)]),
       .rdata       (slaves_resp[`rdata(`/*<InstanceName>*/)]),

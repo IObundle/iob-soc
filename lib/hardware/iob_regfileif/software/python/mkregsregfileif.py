@@ -13,12 +13,12 @@ if __name__ == "__main__":
     # parse command line to get mkregs_dir
     if len(sys.argv) != 5:
         print(
-            "Usage: {} iob_corename_swreg.vh [HW|SW] [mkregs.py dir] [top_module_name]".format(
+            "Usage: {} iob_corename_csrs.vh [HW|SW] [mkregs.py dir] [top_module_name]".format(
                 sys.argv[0]
             )
         )
         print(
-            " iob_regfileif_swreg.vh:the software accessible registers definitions file"
+            " iob_regfileif_csrs.vh:the software accessible registers definitions file"
         )
         print(
             " [HW|SW]: use HW to generate the hardware files or SW to generate the software files"
@@ -88,7 +88,7 @@ def create_regs(filename, program):
         if not flds:
             continue  # empty line
         # print flds[0]
-        if "SWREG_" in flds[0]:  # software accessible registers
+        if "csrs_" in flds[0]:  # software accessible registers
             reg_name = flds[1]  # register name
             reg_size_bits = int(flds[2]) * 8  # register size
             reg_rst_val = flds[3]  # register name
@@ -142,27 +142,27 @@ if __name__ == "__main__":
     defsfile = fin.readlines()
     fin.close()
 
-    # Create normal swreg
-    swreg_parse(defsfile, hwsw, corename)
+    # Create normal csrs
+    csrs_parse(defsfile, hwsw, corename)
 
     if hwsw == "HW":
         # Create regs
-        create_regs(corename + "_swreg_regs.vh", defsfile)
+        create_regs(corename + "_csrs_regs.vh", defsfile)
 
         # Change <corename>_gen.vh to connect to external native bus
-        connect_to_external_native(corename + "_swreg_gen.vh")
+        connect_to_external_native(corename + "_csrs_gen.vh")
 
-    # Create swreg with read and write registers inverted
+    # Create csrs with read and write registers inverted
     corename = corename + "_inverted"
     # invert registers type
     for i in range(len(defsfile)):
-        if "SWREG_W" in defsfile[i]:
+        if "csrs_W" in defsfile[i]:
             defsfile[i] = re.sub(
-                "SWREG_W\(([^,]+),", "SWREG_R(\g<1>_INVERTED,", defsfile[i]
+                "csrs_W\(([^,]+),", "csrs_R(\g<1>_INVERTED,", defsfile[i]
             )
         else:
             defsfile[i] = re.sub(
-                "SWREG_R\(([^,]+),", "SWREG_W(\g<1>_INVERTED,", defsfile[i]
+                "csrs_R\(([^,]+),", "csrs_W(\g<1>_INVERTED,", defsfile[i]
             )
 
     if hwsw == "HW":
@@ -172,11 +172,11 @@ if __name__ == "__main__":
         fout.close()
 
     # create generated inverted files
-    swreg_parse(defsfile, hwsw, corename)
+    csrs_parse(defsfile, hwsw, corename)
 
-    # Hack to rename 'write_reg' and 'read_reg' inside iob_COREPREFIX_inverted_swreg_gen.vh, because it would cause duplicates if inverted and non inverted swreg_gen.vh files were included
+    # Hack to rename 'write_reg' and 'read_reg' inside iob_COREPREFIX_inverted_csrs_gen.vh, because it would cause duplicates if inverted and non inverted csrs_gen.vh files were included
     if hwsw == "HW":
-        fin = open(corename + "_swreg_gen.vh", "r")
+        fin = open(corename + "_csrs_gen.vh", "r")
         file_contents = fin.readlines()
         fin.close()
 
@@ -186,6 +186,6 @@ if __name__ == "__main__":
             )
             file_contents[i] = re.sub("read_reg", "read_reg_inverted", file_contents[i])
 
-        fout = open(corename + "_swreg_gen.vh", "w")
+        fout = open(corename + "_csrs_gen.vh", "w")
         fout.writelines(file_contents)
         fout.close()

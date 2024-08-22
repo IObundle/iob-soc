@@ -53,12 +53,12 @@ $(TOP_MODULE)_version.txt:
 #MAKE SW ACCESSIBLE REGISTER
 MKREGS:=$(shell find -L $(LIB_DIR) -name mkregs.py)
 
-#target to create (and update) swreg for nativebridgeif based on sut_swreg.conf
-$(IOBNATIVEBRIDGEIF_DIR)/mkregs.conf: $(IOBNATIVEBRIDGEIF_DIR)/../../sut_swreg.vh
-	$(IOBNATIVEBRIDGEIF_DIR)/software/python/createIObNativeIfSwreg.py $(IOBNATIVEBRIDGEIF_DIR)/../..
+#target to create (and update) csrs for nativebridgeif based on sut_csrs.conf
+$(IOBNATIVEBRIDGEIF_DIR)/mkregs.conf: $(IOBNATIVEBRIDGEIF_DIR)/../../sut_csrs.vh
+	$(IOBNATIVEBRIDGEIF_DIR)/software/python/createIObNativeIfcsrs.py $(IOBNATIVEBRIDGEIF_DIR)/../..
 
 #cpu accessible registers
-iob_nativebridgeif_swreg_def.vh iob_nativebridgeif_swreg_gen.vh: $(IOBNATIVEBRIDGEIF_DIR)/mkregs.conf
+iob_nativebridgeif_csrs_def.vh iob_nativebridgeif_csrs_gen.vh: $(IOBNATIVEBRIDGEIF_DIR)/mkregs.conf
 	$(IOBNATIVEBRIDGEIF_DIR)/software/python/mkregsregfileif.py $< HW $(shell dirname $(MKREGS)) iob_nativebridgeif
 
     """
@@ -66,9 +66,9 @@ iob_nativebridgeif_swreg_def.vh iob_nativebridgeif_swreg_gen.vh: $(IOBNATIVEBRID
     fout.write(config_mk_str)
     fout.close()
 
-    # ~~~~~~~~~~~~ Create gitignore (for swreg) ~~~~~~~~~~~~
+    # ~~~~~~~~~~~~ Create gitignore (for csrs) ~~~~~~~~~~~~
     gitignore_str = """\
-hardware/include/iob_nativebridgeif_swreg.vh
+hardware/include/iob_nativebridgeif_csrs.vh
     """
     fout = open(os.path.join(iobnativebridgeif_dir, ".gitignore"), "w")
     fout.write(gitignore_str)
@@ -88,7 +88,7 @@ IOBNATIVEBRIDGEIF_SRC_DIR:=$(IOBNATIVEBRIDGEIF_HW_DIR)/src
 
 #include files
 VHDR+=$(wildcard $(IOBNATIVEBRIDGEIF_INC_DIR)/*.vh)
-VHDR+=iob_nativebridgeif_swreg_gen.vh iob_nativebridgeif_swreg_def.vh
+VHDR+=iob_nativebridgeif_csrs_gen.vh iob_nativebridgeif_csrs_def.vh
 VHDR+=$(LIB_DIR)/hardware/include/iob_lib.vh $(LIB_DIR)/hardware/include/iob_s_if.vh $(LIB_DIR)/hardware/include/iob_gen_if.vh
 
 
@@ -148,36 +148,36 @@ endif
     fout = open(os.path.join(iobnativebridgeif_dir, "hardware/include", "pio.vh"), "w")
     fout.writelines(pio_content)
     fout.close()
-    # createIObNativeIfSwreg.py
+    # createIObNativeIfcsrs.py
     os.mkdir(os.path.join(iobnativebridgeif_dir, "software/python"))
-    swreg_python_creator = """\
+    csrs_python_creator = """\
 #!/usr/bin/env python3
 #Script created by iobnativebridge.py
-# Call this script with ROOT_DIR to create the iob_nativebridge_swreg.vh
+# Call this script with ROOT_DIR to create the iob_nativebridge_csrs.vh
 import os
 import sys
 import re
 
-fin = open (os.path.join(sys.argv[1], 'sut_swreg.vh'), 'r')
-swreg_content=fin.readlines()
+fin = open (os.path.join(sys.argv[1], 'sut_csrs.vh'), 'r')
+csrs_content=fin.readlines()
 fin.close()
-for i in range(len(swreg_content)):
-    swreg_content[i] = re.sub('REGFILEIF','IOBNATIVEBRIDGEIF', swreg_content[i])
+for i in range(len(csrs_content)):
+    csrs_content[i] = re.sub('REGFILEIF','IOBNATIVEBRIDGEIF', csrs_content[i])
 fout = open (os.path.join(os.path.dirname(__file__),"../../","mkregs.conf"), 'w')
-fout.writelines(swreg_content)
+fout.writelines(csrs_content)
 fout.close()
     """
     fout = open(
         os.path.join(
-            iobnativebridgeif_dir, "software/python", "createIObNativeIfSwreg.py"
+            iobnativebridgeif_dir, "software/python", "createIObNativeIfcsrs.py"
         ),
         "w",
     )
-    fout.writelines(swreg_python_creator)
+    fout.writelines(csrs_python_creator)
     fout.close()
     os.chmod(
         os.path.join(
-            iobnativebridgeif_dir, "software/python", "createIObNativeIfSwreg.py"
+            iobnativebridgeif_dir, "software/python", "createIObNativeIfcsrs.py"
         ),
         0o755,
     )
@@ -195,12 +195,12 @@ fout.close()
     verilog_source_str = """
 `timescale 1ns/1ps
 `include "iob_lib.vh"
-`include "iob_nativebridgeif_swreg_def.vh"
+`include "iob_nativebridgeif_csrs_def.vh"
 
 module iob_nativebridgeif
   # (
      parameter DATA_W = `DATA_W,
-     parameter ADDR_W = `iob_nativebridgeif_swreg_ADDR_W
+     parameter ADDR_W = `iob_nativebridgeif_csrs_ADDR_W
      )
    (
 
@@ -245,12 +245,12 @@ IOBNATIVEBRIDGEIF_SW_DIR:=$(IOBNATIVEBRIDGEIF_DIR)/software
 INCLUDE+=
 
 #headers
-HDR+=iob_nativebridgeif_swreg.h
+HDR+=iob_nativebridgeif_csrs.h
 
 #sources
 SRC+=
 
-iob_nativebridgeif_swreg.h iob_nativebridgeif_inverted_swreg.h: $(IOBNATIVEBRIDGEIF_DIR)/mkregs.conf
+iob_nativebridgeif_csrs.h iob_nativebridgeif_inverted_csrs.h: $(IOBNATIVEBRIDGEIF_DIR)/mkregs.conf
 	$(IOBNATIVEBRIDGEIF_DIR)/software/python/mkregsregfileif.py $< SW $(shell dirname $(MKREGS)) iob_nativebridgeif
     """
     fout = open(os.path.join(iobnativebridgeif_dir, "software", "software.mk"), "w")
@@ -267,9 +267,9 @@ SW_MODULES+=IOBNATIVEBRIDGEIF
 include $(IOBNATIVEBRIDGEIF_DIR)/software/software.mk
 
 # add embeded sources
-SRC+=iob_nativebridgeif_swreg_emb.c
+SRC+=iob_nativebridgeif_csrs_emb.c
 
-iob_nativebridgeif_swreg_emb.c: iob_nativebridgeif_swreg.h
+iob_nativebridgeif_csrs_emb.c: iob_nativebridgeif_csrs.h
 	
 
 endif
@@ -287,7 +287,7 @@ endif
 include $(IOBNATIVEBRIDGEIF_DIR)/software/software.mk
 
 #pc sources
-SRC+=$(IOBNATIVEBRIDGEIF_SW_DIR)/pc-emul/iob_nativebridgeif_swreg_emul.c
+SRC+=$(IOBNATIVEBRIDGEIF_SW_DIR)/pc-emul/iob_nativebridgeif_csrs_emul.c
     """
     fout = open(
         os.path.join(iobnativebridgeif_dir, "software/pc-emul", "pc-emul.mk"), "w"
@@ -297,7 +297,7 @@ SRC+=$(IOBNATIVEBRIDGEIF_SW_DIR)/pc-emul/iob_nativebridgeif_swreg_emul.c
     # iob-nativebridgeif.c for pc-emul
     fin = open(
         os.path.join(
-            os.path.dirname(__file__), "../pc-emul/iob_regfileif_swreg_pc_emul.c"
+            os.path.dirname(__file__), "../pc-emul/iob_regfileif_csrs_pc_emul.c"
         ),
         "r",
     )
@@ -311,7 +311,7 @@ SRC+=$(IOBNATIVEBRIDGEIF_SW_DIR)/pc-emul/iob_nativebridgeif_swreg_emul.c
         )
     fout = open(
         os.path.join(
-            iobnativebridgeif_dir, "software/pc-emul", "iob_nativebridgeif_swreg_emul.c"
+            iobnativebridgeif_dir, "software/pc-emul", "iob_nativebridgeif_csrs_emul.c"
         ),
         "w",
     )
