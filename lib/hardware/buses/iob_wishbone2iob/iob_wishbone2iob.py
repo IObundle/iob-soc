@@ -31,166 +31,57 @@ def setup(py_params_dict):
                 "descr": "Clock, clock enable and reset",
             },
             {
-                "name": "wb_addr_i",
-                "descr": "Input port",
+                "name": "iob",
+                "interface": {
+                    "type": "iob",
+                    "subtype": "master",
+                    "ADDR_W": "ADDR_W",
+                    "DATA_W": "DATA_W",
+                },
+                "descr": "IOb native master interface",
+            },
+            {
+                "name": "wb",
+                "descr": "Wishbone slave interface",
                 "signals": [
-                    {
+                   {
                         "name": "wb_addr",
                         "width": "ADDR_W",
                         "direction": "input",
                     },
-                ],
-            },
-            {
-                "name": "wb_select_i",
-                "descr": "Input port",
-                "signals": [
                     {
                         "name": "wb_select",
                         "width": "DATA_W/8",
                         "direction": "input",
                     },
-                ],
-            },
-            {
-                "name": "wb_we_i",
-                "descr": "Input port",
-                "signals": [
                     {
                         "name": "wb_we",
                         "width": 1,
                         "direction": "input",
                     },
-                ],
-            },
-            {
-                "name": "wb_cyc_i",
-                "descr": "Input port",
-                "signals": [
                     {
                         "name": "wb_cyc",
                         "width": 1,
                         "direction": "input",
                     },
-                ],
-            },
-            {
-                "name": "wb_stb_i",
-                "descr": "Input port",
-                "signals": [
                     {
                         "name": "wb_stb",
                         "width": 1,
                         "direction": "input",
                     },
-                ],
-            },
-            {
-                "name": "wb_data_i",
-                "descr": "Input port",
-                "signals": [
                     {
                         "name": "wb_data",
                         "width": "DATA_W",
                         "direction": "input",
                     },
-                ],
-            },
-            {
-                "name": "iob_rvalid_i",
-                "descr": "Input port",
-                "signals": [
-                    {
-                        "name": "iob_rvalid",
-                        "width": 1,
-                        "direction": "input",
-                    },
-                ],
-            },
-            {
-                "name": "iob_rdata_i",
-                "descr": "Input port",
-                "signals": [
-                    {
-                        "name": "iob_rdata",
-                        "width": "DATA_W",
-                        "direction": "input",
-                    },
-                ],
-            },
-            {
-                "name": "iob_ready_i",
-                "descr": "Input port",
-                "signals": [
-                    {
-                        "name": "iob_ready",
-                        "width": 1,
-                        "direction": "input",
-                    },
-                ],
-            },
-            {
-                "name": "wb_ack_o",
-                "descr": "Output port",
-                "signals": [
                     {
                         "name": "wb_ack",
                         "width": 1,
                         "direction": "output",
                     },
-                ],
-            },
-            {
-                "name": "wb_data_o",
-                "descr": "Output port",
-                "signals": [
                     {
                         "name": "wb_data",
                         "width": "DATA_W",
-                        "direction": "output",
-                    },
-                ],
-            },
-            {
-                "name": "iob_valid_o",
-                "descr": "Output port",
-                "signals": [
-                    {
-                        "name": "iob_valid",
-                        "width": 1,
-                        "direction": "output",
-                    },
-                ],
-            },
-            {
-                "name": "iob_address_o",
-                "descr": "Output port",
-                "signals": [
-                    {
-                        "name": "iob_address",
-                        "width": "ADDR_W",
-                        "direction": "output",
-                    },
-                ],
-            },
-            {
-                "name": "iob_wdata_o",
-                "descr": "Output port",
-                "signals": [
-                    {
-                        "name": "iob_wdata",
-                        "width": "DATA_W",
-                        "direction": "output",
-                    },
-                ],
-            },
-            {
-                "name": "iob_wstrb_o",
-                "descr": "Output port",
-                "signals": [
-                    {
-                        "name": "iob_wstrb",
-                        "width": "DATA_W/8",
                         "direction": "output",
                     },
                 ],
