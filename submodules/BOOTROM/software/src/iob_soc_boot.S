@@ -13,5 +13,5 @@
   jal ra, main
 
   // Jump to the firmware
-  li x5, 0x0
+  li x5, IOB_SOC_FW_ADDR
   jalr x0, 0(x5)

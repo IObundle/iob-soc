@@ -114,7 +114,7 @@ def setup(py_params_dict):
                 "port_prefix": "uart_",
                 "ADDR_W": 3,
             },
-            "descr": "Testbench uart swreg interface",
+            "descr": "Testbench uart csrs interface",
         },
     ]
     if params["use_ethernet"]:
@@ -126,7 +126,7 @@ def setup(py_params_dict):
                     "subtype": "slave",
                     "port_prefix": "ethernet_",
                 },
-                "descr": "Testbench ethernet swreg interface",
+                "descr": "Testbench ethernet csrs interface",
             },
         ]
 
@@ -136,9 +136,6 @@ def setup(py_params_dict):
         if port["name"] not in [
             "clk_en_rst",
             "rom_bus",
-            "spram_bus",
-            "sram_i_bus",
-            "sram_d_bus",
         ]:
             wire = copy.deepcopy(port)
             if "interface" in wire and "port_prefix" in wire["interface"]:
@@ -354,8 +351,7 @@ def setup(py_params_dict):
     if params["init_mem"]:
         attributes_dict["blocks"][-1]["parameters"].update(
             {
-                "FILE": '"init_ddr_contents.hex"',
-                "FILE_SIZE": "2 ** (AXI_ADDR_W - 2)",
+                "FILE": '"iob_soc_firmware"',
             }
         )
     attributes_dict["snippets"] = []

@@ -1,6 +1,6 @@
 #include "bsp.h"
 #include "iob-uart.h"
-#include "iob_cache_swreg.h"
+#include "iob_cache_csrs.h"
 #include "iob_soc_conf.h"
 #include "iob_soc_periphs.h"
 #include "iob_soc_system.h"
@@ -30,7 +30,7 @@ int main() {
 #endif
 
   // address to copy firmware to
-  char *prog_start_addr = (char *)0;
+  char *prog_start_addr = (char *)IOB_SOC_FW_ADDR;
 
   while (uart_getc() != ACK) {
     uart_puts(PROGNAME);

@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below. If you are contributor, submit a pull request to add you as an author."
+authors:
+- family-names: "T. de Sousa "
+  given-names: "Jose"
+  orcid: "https://orcid.org/0000-0001-7525-7546"
+title: "A RISC-V-based System-on-Chip Template"
+version: 0.7.2
+doi: 10.5281/zenodo.13346032
+date-released: 2021-12-18
+url: "https://github.com/IObundle/iob-soc"

@@ -1,0 +1,71 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
+\HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
+\global\let\oldcontentsline\contentsline
+\gdef\contentsline#1#2#3#4{\oldcontentsline{#1}{#2}{#3}}
+\global\let\oldnewlabel\newlabel
+\gdef\newlabel#1#2{\newlabelxx{#1}#2}
+\gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
+\AtEndDocument{\ifx\hyper@anchor\@undefined
+\let\contentsline\oldcontentsline
+\let\newlabel\oldnewlabel
+\fi}
+\fi}
+\global\let\hyper@last\relax 
+\gdef\HyperFirstAtBeginDocument#1{#1}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\newlabel{sec:intro}{{1}{1}{Introduction}{section.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces IP Core Symbol.\relax }}{1}{figure.caption.5}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:symbol}{{1}{1}{IP Core Symbol.\relax }{figure.caption.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Features}{1}{subsection.1.1}\protected@file@percent }
+\newlabel{sec:feat}{{1.1}{1}{Features}{subsection.1.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.2}Benefits}{2}{subsection.1.2}\protected@file@percent }
+\newlabel{sec:benef}{{1.2}{2}{Benefits}{subsection.1.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.3}Deliverables}{2}{subsection.1.3}\protected@file@percent }
+\newlabel{sec:deliv}{{1.3}{2}{Deliverables}{subsection.1.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Description}{2}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Block Diagram}{2}{subsection.2.1}\protected@file@percent }
+\newlabel{sec:bdd}{{2.1}{2}{Block Diagram}{subsection.2.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces High-Level Block Diagram.\relax }}{2}{figure.caption.6}\protected@file@percent }
+\newlabel{fig:bd}{{2}{2}{High-Level Block Diagram.\relax }{figure.caption.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Configuration}{3}{subsection.2.2}\protected@file@percent }
+\newlabel{sec:ipconfig}{{2.2}{3}{Configuration}{subsection.2.2}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.1}Macros}{3}{subsubsection.2.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.2}Parameters}{3}{subsubsection.2.2.2}\protected@file@percent }
+\newlabel{sec:cp}{{2.2.2}{3}{Parameters}{subsubsection.2.2.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Synthesis Parameters.\relax }}{3}{table.caption.7}\protected@file@percent }
+\newlabel{tab:sp}{{1}{3}{Synthesis Parameters.\relax }{table.caption.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Interface Signals}{3}{subsection.2.3}\protected@file@percent }
+\newlabel{sec:ifsig}{{2.3}{3}{Interface Signals}{subsection.2.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces General Interface Signals.\relax }}{3}{table.caption.8}\protected@file@percent }
+\newlabel{gen_if_tab:is}{{2}{3}{General Interface Signals.\relax }{table.caption.8}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces IObundle Interface Signals\relax }}{3}{table.caption.9}\protected@file@percent }
+\newlabel{tab:if_iob_s}{{3}{3}{IObundle Interface Signals\relax }{table.caption.9}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces RS232 Interface Signals\relax }}{3}{table.caption.10}\protected@file@percent }
+\newlabel{tab:if_rs232}{{4}{3}{RS232 Interface Signals\relax }{table.caption.10}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Software Accessible Registers}{4}{subsection.2.4}\protected@file@percent }
+\newlabel{sec:csrs}{{2.4}{4}{Software Accessible Registers}{subsection.2.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces UART software accessible registers.\relax }}{4}{table.caption.11}\protected@file@percent }
+\newlabel{tab:sw_tx}{{5}{4}{UART software accessible registers.\relax }{table.caption.11}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Usage}{4}{section.3}\protected@file@percent }
+\newlabel{sec:inst}{{3}{4}{Usage}{section.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Core Instance and Required Surrounding Blocks\relax }}{4}{figure.caption.12}\protected@file@percent }
+\newlabel{fig:inst}{{3}{4}{Core Instance and Required Surrounding Blocks\relax }{figure.caption.12}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Simulation}{4}{subsection.3.1}\protected@file@percent }
+\newlabel{sec:tbbd}{{3.1}{4}{Simulation}{subsection.3.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Testbench Block Diagram\relax }}{5}{figure.caption.13}\protected@file@percent }
+\newlabel{fig:tbbd}{{4}{5}{Testbench Block Diagram\relax }{figure.caption.13}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Synthesis}{5}{subsection.3.2}\protected@file@percent }
+\newlabel{sec:synth}{{3.2}{5}{Synthesis}{subsection.3.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Implementation Results}{5}{section.4}\protected@file@percent }
+\newlabel{sec:results}{{4}{5}{Implementation Results}{section.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}FPGA}{5}{subsection.4.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces AMD Kintex Ultrascale FPGAs.\relax }}{5}{table.caption.14}\protected@file@percent }
+\newlabel{tab:fpga_amd}{{6}{5}{AMD Kintex Ultrascale FPGAs.\relax }{table.caption.14}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Intel Cyclone V GT FPGAs.\relax }}{6}{table.caption.15}\protected@file@percent }
+\newlabel{tab:fpga_intel}{{7}{6}{Intel Cyclone V GT FPGAs.\relax }{table.caption.15}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}ASIC}{6}{subsection.4.2}\protected@file@percent }
