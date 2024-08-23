@@ -39,10 +39,10 @@ def setup(py_params_dict):
         ],
         "ports": [
             {
-                "name": "clk_a_i",
+                "name": "clk_i",
                 "descr": "Input port",
                 "signals": [
-                    {"name": "clk_a", "width": 1, "direction": "input"},
+                    {"name": "clk", "width": 1, "direction": "input"},
                 ],
             },
             {
@@ -57,13 +57,6 @@ def setup(py_params_dict):
                 "descr": "Input port",
                 "signals": [
                     {"name": "r_en_a", "width": 1, "direction": "input"},
-                ],
-            },
-            {
-                "name": "clk_b_i",
-                "descr": "Input port",
-                "signals": [
-                    {"name": "clk_b", "width": 1, "direction": "input"},
                 ],
             },
             {
@@ -99,18 +92,26 @@ def setup(py_params_dict):
             {
                 "verilog_code": """
             // Declare the ROM
-   reg [DATA_W-1:0] rom[2**ADDR_W-1:0];
+   reg [DATA_W-1:0] rom[(2**ADDR_W)-1:0];
 
    // Initialize the ROM
-   initial if ( MEM_INIT_FILE_INT != "none") $readmemh( MEM_INIT_FILE_INT, rom, 0, 2 ** ADDR_W - 1);
+   initial begin
+       if (MEM_INIT_FILE_INT != "none") begin
+           $readmemh(MEM_INIT_FILE_INT, rom, 0, (2 ** ADDR_W) - 1);
+       end
+   end
 
-   always @(posedge clk_a_i)  // Port A
-      if (r_en_a_i)
+   always @(posedge clk_i) begin  // Port A
+      if (r_en_a_i) begin
          r_data_a_o <= rom[addr_a_i];
+      end
+   end
 
-   always @(posedge clk_b_i)  // Port B
-      if (r_en_b_i)
+   always @(posedge clk_i) begin  // Port B
+      if (r_en_b_i) begin
          r_data_b_o <= rom[addr_b_i];
+      end
+   end
             """,
             },
         ],

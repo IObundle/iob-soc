@@ -123,7 +123,7 @@ def setup(py_params_dict):
         attributes_dict["blocks"] += [
             # MEM_NO_READ_ON_WRITE
             {
-                "core_name": "iob_ram_dp_be",
+                "core_name": "iob_ram_tdp_be",
                 "instance_name": "main_mem_byte",
                 "parameters": {
                     "HEXFILE": "HEXFILE",
@@ -140,7 +140,7 @@ def setup(py_params_dict):
             },
             # not MEM_NO_READ_ON_WRITE
             {
-                "core_name": "iob_ram_dp_be_xil",
+                "core_name": "iob_ram_tdp_be_xil",
                 "instance_name": "main_mem_byte",
                 "parameters": {
                     "HEXFILE": "HEXFILE",
