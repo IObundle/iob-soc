@@ -1,8 +1,8 @@
 { pkgs ? import <nixpkgs> {} }:
 
 let
-  py2hwsw_commit = "cfed55c1ddc63b0271dd0de3bcee7ed9b614f458"; # Replace with the desired commit.
-  py2hwsw_sha256 = "hCAq1sC1MaPSWvLR83wySf0PUwCYeLvbi+wh32EeWF0="; # Replace with the actual SHA256 hash.
+  py2hwsw_commit = "1b71af5c06333e63ea247bad0dc6511d10bf2746"; # Replace with the desired commit.
+  py2hwsw_sha256 = "+zDYS1TGqYIuu/iEhO4gUNrfkFX85FYjFO3BPPn9Nes="; # Replace with the actual SHA256 hash.
 
   py2hwsw = pkgs.python3.pkgs.buildPythonPackage rec {
     pname = "py2hwsw";
@@ -67,6 +67,8 @@ pkgs.mkShell {
       inherit pkgs;
     })
     yosys
+    gcc
+    libcap # Allows setting POSIX capabilities
     py2hwsw
   ];
 }

@@ -44,7 +44,7 @@ def setup(py_params_dict):
                 "name": "wb",
                 "descr": "Wishbone slave interface",
                 "signals": [
-                   {
+                    {
                         "name": "wb_addr",
                         "width": "ADDR_W",
                         "direction": "input",
