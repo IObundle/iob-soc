@@ -1,9 +1,10 @@
 `timescale 1ns / 1ps
 
 module iob_ram_2p #(
-   parameter HEXFILE = "none",
-   parameter DATA_W  = 0,
-   parameter ADDR_W  = 0
+   parameter HEXFILE  = "none",
+   parameter DATA_W   = 0,
+   parameter ADDR_W   = 0,
+   parameter WRITE_FIRST = 1 // 0: read first | 1: write first
 ) (
    input clk_i,
 
@@ -11,41 +12,47 @@ module iob_ram_2p #(
    input              w_en_i,
    input [ADDR_W-1:0] w_addr_i,
    input [DATA_W-1:0] w_data_i,
+   output             w_ready_o,
 
    //read port
    input               r_en_i,
    input  [ADDR_W-1:0] r_addr_i,
-   output [DATA_W-1:0] r_data_o
+   output [DATA_W-1:0] r_data_o,
+   output              r_ready_o
 );
 
-   //this allows ISE 14.7 to work; do not remove
-   localparam MEM_INIT_FILE_INT = HEXFILE;
+   wire en_int;
+   wire we_int;
+   wire [ADDR_W-1:0] addr_int;
 
-   // Declare the RAM
-   reg [DATA_W-1:0] mem    [(2**ADDR_W)-1:0];
+   // Internal Single Port RAM
+   iob_ram_sp #(
+      .HEXFILE(HEXFILE),
+      .DATA_W(DATA_W),
+      .ADDR_W(ADDR_W)
+   ) iob_ram_sp_inst (
+      .clk_i (clk_i),
+      .en_i  (en_int),
+      .we_i  (we_int),
+      .addr_i(addr_int),
+      .d_i   (w_data_i),
+      .d_o   (r_data_o)
+   );
 
-   reg [DATA_W-1:0] r_data;
-   // Initialize the RAM
-   initial begin
-       if (MEM_INIT_FILE_INT != "none") begin
-           $readmemh(MEM_INIT_FILE_INT, mem, 0, (2 ** ADDR_W) - 1);
-       end
-   end
-
-   //read port
-   always @(posedge clk_i) begin
-       if (r_en_i) begin
-           r_data <= mem[r_addr_i];
-       end
-   end
-
-   //write port
-   always @(posedge clk_i) begin
-       if (w_en_i) begin
-           mem[w_addr_i] <= w_data_i;
-       end
-   end
-
-   assign r_data_o = r_data;
+   generate
+    if (WRITE_FIRST) begin : write_first
+        assign en_int = w_en_i | r_en_i;
+        assign we_int = w_en_i;
+        assign addr_int = w_en_i ? w_addr_i : r_addr_i;
+        assign w_ready_o = 1'b1;
+        assign r_ready_o = ~w_en_i;
+    end else begin : read_first
+        assign en_int = w_en_i | r_en_i;
+        assign we_int = w_en_i & (~r_en_i);
+        assign addr_int = r_en_i ? r_addr_i : w_addr_i;
+        assign w_ready_o = ~r_en_i;
+        assign r_ready_o = 1'b1;
+    end
+   endgenerate
 
 endmodule
