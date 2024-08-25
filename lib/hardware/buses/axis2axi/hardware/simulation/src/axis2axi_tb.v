@@ -293,7 +293,7 @@ module axis2axi_tb;
    wire [31:0] ext_mem_w_data, ext_mem_r_data;
    wire [BURST_W:0] ext_mem_w_addr, ext_mem_r_addr;
 
-   iob_ram_t2p #(
+   iob_ram_at2p #(
       .DATA_W(32),
       .ADDR_W(BURST_W + 1)
    ) memory (

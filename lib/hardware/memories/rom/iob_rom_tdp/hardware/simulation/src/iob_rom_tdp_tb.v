@@ -6,8 +6,7 @@
 module iob_rom_tdp_tb;
 
    // Inputs
-   reg               clk_a;
-   reg               clk_b;
+   reg               clk;
    reg               r_en_a;
    reg [`ADDR_W-1:0] addr_a;
    reg               r_en_b;
@@ -31,8 +30,7 @@ module iob_rom_tdp_tb;
 `endif
 
       // Initialize Inputs
-      clk_a   = 1;
-      clk_b   = 1;
+      clk     = 1;
       r_en_a  = 0;
       addr_a  = 0;
       r_en_b  = 0;
@@ -45,18 +43,15 @@ module iob_rom_tdp_tb;
       end
 
       #clk_per;
-      @(posedge clk_a) #1;
-      @(posedge clk_b) #1;
-
-      @(posedge clk_a) #1;
+      @(posedge clk) #1;
       r_en_a = 1;
       r_en_b = 1;
 
-      @(posedge clk_a) #1;
+      @(posedge clk) #1;
       for (i = 0; i < 2 ** `ADDR_W; i = i + 1) begin
          addr_a = i;
          addr_b = 2 ** `ADDR_W - 1 - i;
-         @(posedge clk_a) #1;
+         @(posedge clk) #1;
          if (i + seq_ini != r_data_a) begin
             $display(
                 "ERROR: Port A - read error in position %d, where expected data=%h but r_data=%h",
@@ -71,7 +66,7 @@ module iob_rom_tdp_tb;
          end
       end
 
-      @(posedge clk_b) #1;
+      @(posedge clk) #1;
       r_en_a = 0;
       r_en_b = 0;
 
@@ -91,19 +86,18 @@ module iob_rom_tdp_tb;
       .DATA_W(`DATA_W),
       .ADDR_W(`ADDR_W)
    ) uut (
-      .clk_a_i   (clk_a),
+      .clk_i(clk),
+
       .r_en_a_i  (r_en_a),
       .addr_a_i  (addr_a),
       .r_data_a_o(r_data_a),
 
-      .clk_b_i   (clk_b),
       .r_en_b_i  (r_en_b),
       .addr_b_i  (addr_b),
       .r_data_b_o(r_data_b)
    );
 
    // system clock
-   always #(clk_per / 2) clk_a = ~clk_a;
-   always #(clk_per / 2) clk_b = ~clk_b;
+   always #(clk_per / 2) clk = ~clk;
 
 endmodule

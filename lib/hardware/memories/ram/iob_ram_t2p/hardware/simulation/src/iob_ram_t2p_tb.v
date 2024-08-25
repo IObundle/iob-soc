@@ -1,13 +1,11 @@
 `timescale 1ns / 1ps
-
-`define DATA_W 8
-`define ADDR_W 4
+`define ADDR_W 10
+`define DATA_W 32
 
 module iob_ram_t2p_tb;
 
    // Inputs
-   reg                w_clk;
-   reg                r_clk;
+   reg                clk;
 
    // Write signals
    reg                w_en;
@@ -26,8 +24,7 @@ module iob_ram_t2p_tb;
    parameter clk_per = 10;  // clk period = 10 timeticks
 
    initial begin
-      w_clk   = 1;
-      r_clk   = 1;
+      clk     = 1;
       r_en    = 0;
       w_en    = 0;
       r_addr  = 0;
@@ -43,45 +40,44 @@ module iob_ram_t2p_tb;
       $dumpvars();
 `endif
 
-      @(posedge w_clk) #1;
-      @(posedge r_clk) #1;
+      @(posedge clk) #1;
       w_en = 1;
 
       // Write all the locations of RAM
       for (i = 0; i < 2 ** `ADDR_W; i = i + 1) begin
          w_data = i + seq_ini;
          w_addr = i;
-         @(posedge w_clk) #1;
+         @(posedge clk) #1;
       end
 
       w_en = 0;
-      @(posedge r_clk) #1;
+      @(posedge clk) #1;
 
       // Read all the locations of RAM with r_en = 0
       r_en = 0;
-      @(posedge r_clk) #1;
+      @(posedge clk) #1;
 
       for (i = 0; i < 2 ** `ADDR_W; i = i + 1) begin
          r_addr = i;
-         @(posedge r_clk) #1;
+         @(posedge clk) #1;
          if (r_data != 0) begin
             $display("ERROR: with r_en = 0, at position %0d, r_data should be 0 but is %d", i,
                      r_data);
-            $finish();
+            $fatal(1);
          end
       end
 
       r_en = 1;
-      @(posedge r_clk) #1;
+      @(posedge clk) #1;
 
       // Read all the locations of RAM with r_en = 1
       for (i = 0; i < 2 ** `ADDR_W; i = i + 1) begin
          r_addr = i;
-         @(posedge r_clk) #1;
+         @(posedge clk) #1;
          if (r_data != i + seq_ini) begin
             $display("ERROR: on position %0d, r_data is %d where it should be %0d", i, r_data,
                      i + seq_ini);
-            $finish();
+            $fatal(1);
          end
       end
 
@@ -102,19 +98,18 @@ module iob_ram_t2p_tb;
       .DATA_W(`DATA_W),
       .ADDR_W(`ADDR_W)
    ) uut (
-      .w_clk_i (w_clk),
+      .clk_i(clk),
+
       .w_en_i  (w_en),
       .w_addr_i(w_addr),
       .w_data_i(w_data),
 
-      .r_clk_i (r_clk),
       .r_en_i  (r_en),
       .r_addr_i(r_addr),
       .r_data_o(r_data)
    );
 
    // Clock
-   always #(clk_per / 2) w_clk = ~w_clk;
-   always #(clk_per / 2) r_clk = ~r_clk;
+   always #(clk_per / 2) clk = ~clk;
 
 endmodule

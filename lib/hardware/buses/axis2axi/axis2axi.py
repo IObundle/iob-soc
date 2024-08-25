@@ -214,8 +214,8 @@ def setup(py_params_dict):
                 "instance_name": "axi_ram_inst",
             },
             {
-                "core_name": "iob_ram_t2p",
-                "instance_name": "iob_ram_t2p_inst",
+                "core_name": "iob_ram_at2p",
+                "instance_name": "iob_ram_at2p_inst",
             },
             {
                 "core_name": "axis2axi_in",
