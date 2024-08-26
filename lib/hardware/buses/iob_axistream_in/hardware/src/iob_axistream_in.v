@@ -250,10 +250,10 @@ module iob_axistream_in #(
    genvar p;
    generate
       for (p = 0; p < R; p = p + 1) begin : gen_fifo_ram
-         iob_ram_t2p #(
+         iob_ram_at2p #(
             .DATA_W(TDATA_W),
             .ADDR_W(RAM_ADDR_W)
-         ) iob_ram_t2p (
+         ) iob_ram_at2p (
             .w_clk_i (ext_mem_w_clk),
             .w_en_i  (ext_mem_w_en[p]),
             .w_addr_i(ext_mem_w_addr),

@@ -109,10 +109,10 @@ module iob_shift_reg_tb;
       .ext_mem_r_data_i(ext_mem_r_data)
   );
 
-  iob_ram_2p #(
+  iob_ram_t2p #(
       .DATA_W(DATA_W),
       .ADDR_W(ADDR_W)
-  ) iob_ram_2p_inst (
+  ) iob_ram_t2p_inst (
       .clk_i   (ext_mem_clk),
       .w_en_i  (ext_mem_w_en),
       .w_addr_i(ext_mem_w_addr),

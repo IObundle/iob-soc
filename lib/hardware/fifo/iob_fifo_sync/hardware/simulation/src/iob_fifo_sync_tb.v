@@ -218,10 +218,10 @@ module iob_fifo_sync_tb;
    genvar p;
    generate
       for (p = 0; p < R; p = p + 1) begin
-         iob_ram_2p #(
+         iob_ram_t2p #(
             .DATA_W(MINDATA_W),
             .ADDR_W(MINADDR_W)
-         ) iob_ram_2p_inst (
+         ) iob_ram_t2p_inst (
             .clk_i   (ext_mem_clk),
             .w_en_i  (ext_mem_w_en[p]),
             .w_addr_i(ext_mem_w_addr),
