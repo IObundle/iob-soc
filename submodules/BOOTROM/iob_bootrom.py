@@ -8,7 +8,6 @@ def setup(py_params_dict):
         "original_name": "iob_bootrom",
         "name": "iob_bootrom",
         "version": VERSION,
-        "generate_hw": False,
         "confs": [
             {
                 "name": "DATA_W",
@@ -97,6 +96,18 @@ def setup(py_params_dict):
                 ],
             },
         ],
+        "wires": [
+            {
+                "name": "rom",
+                "descr": "",
+                "signals": [
+                    {"name": "rom_rdata_rd", "width": "DATA_W"},
+                    {"name": "rom_rvalid_rd", "width": 1},
+                    {"name": "rom_ren_rd", "width": 1},
+                    {"name": "rom_rready_rd", "width": 1},
+                ],
+            },
+        ],
         "blocks": [
             {
                 "core_name": "csrs",
@@ -108,7 +119,7 @@ def setup(py_params_dict):
                         "descr": "ROM access.",
                         "regs": [
                             {
-                                "name": "ROM",
+                                "name": "rom",
                                 "type": "R",
                                 "n_bits": "DATA_W",
                                 "rst_val": 0,
@@ -120,14 +131,22 @@ def setup(py_params_dict):
                         ],
                     }
                 ],
+                "connect": {
+                    "clk_en_rst": "clk_en_rst",
+                    "control_if": "cbus",
+                    # Register interfaces
+                    "rom": "rom",
+                },
             },
             {
                 "core_name": "iob_reg",
                 "instance_name": "iob_reg_inst",
+                "instantiate": False,
             },
             {
                 "core_name": "iob_rom_sp",
                 "instance_name": "iob_rom_sp_inst",
+                "instantiate": False,
             },
         ],
     }
