@@ -14,10 +14,9 @@
 .globl _start
 
 _start:
-  li x1, LENGTH + 1
+  li x1, LENGTH
   li x2, BOOTROM
-  // Below, -4 because it was only starting to write at 0x4 for some reason
-  li x3, BOOTLDR_ADDR - 4
+  li x3, BOOTLDR_ADDR
 
 copy_loop:
   lw x4, 0(x2)

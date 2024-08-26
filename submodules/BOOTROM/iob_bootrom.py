@@ -54,11 +54,10 @@ def setup(py_params_dict):
                 "descr": "Clock and reset",
             },
             {
-                "name": "cbus",
+                "name": "iob",
                 "interface": {
                     "type": "iob",
                     "subtype": "slave",
-                    "port_prefix": "cbus_",
                     "ADDR_W": "`IOB_BOOTROM_CSRS_ADDR_W",
                     "DATA_W": "DATA_W",
                 },
