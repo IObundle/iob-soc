@@ -296,7 +296,6 @@ def setup(py_params_dict):
             "name": "cpu_i",
             "interface": {
                 "type": "iob",
-                "file_prefix": "iob_soc_cpu_i_",
                 "wire_prefix": "cpu_i_",
                 "DATA_W": params["data_w"],
                 "ADDR_W": params["addr_w"],
@@ -307,7 +306,6 @@ def setup(py_params_dict):
             "name": "cpu_d",
             "interface": {
                 "type": "iob",
-                "file_prefix": "iob_soc_cpu_d_",
                 "wire_prefix": "cpu_d_",
                 "DATA_W": params["data_w"],
                 "ADDR_W": params["addr_w"],
@@ -336,7 +334,6 @@ def setup(py_params_dict):
             "name": "int_mem_i",
             "interface": {
                 "type": "iob",
-                "file_prefix": "iob_soc_int_mem_i_",
                 "wire_prefix": "int_mem_i_",
                 "DATA_W": params["data_w"],
                 "ADDR_W": params["addr_w"] - 1,
@@ -358,7 +355,6 @@ def setup(py_params_dict):
                 "name": "int_d",
                 "interface": {
                     "type": "iob",
-                    "file_prefix": "iob_soc_int_d_",
                     "wire_prefix": "int_d_",
                     "DATA_W": params["data_w"],
                     "ADDR_W": params["addr_w"] - 1,
@@ -371,7 +367,6 @@ def setup(py_params_dict):
             "name": "int_mem_d",
             "interface": {
                 "type": "iob",
-                "file_prefix": "iob_soc_int_mem_d_",
                 "wire_prefix": "int_mem_d_",
                 "DATA_W": params["data_w"],
                 "ADDR_W": params["addr_w"] - 2,
@@ -386,7 +381,6 @@ def setup(py_params_dict):
                 "name": "ext_mem_i",
                 "interface": {
                     "type": "iob",
-                    "file_prefix": "iob_soc_ext_mem_i_",
                     "wire_prefix": "ext_mem_i_",
                     "DATA_W": params["data_w"],
                     "ADDR_W": params["addr_w"] - 1,
@@ -397,7 +391,6 @@ def setup(py_params_dict):
                 "name": "ext_mem_d",
                 "interface": {
                     "type": "iob",
-                    "file_prefix": "iob_soc_ext_mem_d_",
                     "wire_prefix": "ext_mem_d_",
                     "DATA_W": params["data_w"],
                     "ADDR_W": params["addr_w"] - 1,
@@ -421,7 +414,6 @@ def setup(py_params_dict):
             "name": "uart_csrs",
             "interface": {
                 "type": "iob",
-                "file_prefix": "iob_soc_uart_csrs_",
                 "wire_prefix": "uart_csrs_",
                 "DATA_W": params["data_w"],
                 "ADDR_W": params["addr_w"] - 3,
@@ -432,7 +424,6 @@ def setup(py_params_dict):
             "name": "timer_csrs",
             "interface": {
                 "type": "iob",
-                "file_prefix": "iob_soc_timer_csrs_",
                 "wire_prefix": "timer_csrs_",
                 "DATA_W": params["data_w"],
                 "ADDR_W": params["addr_w"] - 3,
