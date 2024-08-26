@@ -10,7 +10,10 @@ module iob_bootrom #(
         `include "iob_bootrom_io.vs"
     );
 
-    `include "iob_bootrom_csrs_inst.vs"
+    `include "iob_axistream_in_wires.vs"
+
+    // configuration control and status register file.
+    `include "iob_axistream_in_blocks.vs"
 
     // Instantiate preboot ROM //
 
