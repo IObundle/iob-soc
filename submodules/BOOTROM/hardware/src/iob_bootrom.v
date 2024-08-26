@@ -24,14 +24,14 @@ module iob_bootrom #(
    ) preboot_rom (
       .clk_i(clk_i),
 
-      //instruction memory interface
       .r_en_i  (ibus_iob_valid_i),
-      .addr_i  (ibus_iob_addr_i[2+:PREBOOTROM_ADDR_W-2]),
+      .addr_i  (ibus_iob_addr_i[PREBOOTROM_ADDR_W:2]),
       .r_data_o(ibus_iob_rdata_o)
    );
 
 
-   assign ibus_iob_ready_o = 1'b1;  // ROM is always ready
+   assign ibus_iob_ready_o = 1'b1;
+
    iob_reg #(
       .DATA_W (1),
       .RST_VAL(0)
@@ -43,13 +43,11 @@ module iob_bootrom #(
       .data_o(ibus_iob_rvalid_o)
    );
 
-   // Link to boot ROM //
-
    assign ext_rom_en_o   = rom_ren_rd;
-   assign ext_rom_addr_o = cbus_iob_addr_i[2+:BOOTROM_ADDR_W-2];
+   assign ext_rom_addr_o = cbus_iob_addr_i[BOOTROM_ADDR_W:2];
    assign rom_rdata_rd   = ext_rom_rdata_i;
    assign rom_rready_rd  = 1'b1;  // ROM is always ready
-   reg rom_rvalid_rd_middle;  // Registered twice to align rvalid with rdata
+
    iob_reg #(
       .DATA_W (1),
       .RST_VAL(0)
@@ -57,17 +55,7 @@ module iob_bootrom #(
       .clk_i (clk_i),
       .cke_i (cke_i),
       .arst_i(arst_i),
-      .data_i(cbus_iob_valid_i),
-      .data_o(rom_rvalid_rd_middle)
-   );
-   iob_reg #(
-      .DATA_W (1),
-      .RST_VAL(0)
-   ) rom_rvalid_r_2nd (
-      .clk_i (clk_i),
-      .cke_i (cke_i),
-      .arst_i(arst_i),
-      .data_i(rom_rvalid_rd_middle),
+      .data_i(rom_ren_rd),
       .data_o(rom_rvalid_rd)
    );
 
