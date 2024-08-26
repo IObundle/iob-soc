@@ -3,6 +3,7 @@ def setup(py_params_dict):
         "original_name": "iob_ram_2p",
         "name": "iob_ram_2p",
         "version": "0.1",
+        "generate_hw": False,
         "confs": [
             {
                 "name": "HEXFILE",
@@ -24,6 +25,14 @@ def setup(py_params_dict):
                 "name": "ADDR_W",
                 "type": "P",
                 "val": "0",
+                "min": "0",
+                "max": "NA",
+                "descr": "",
+            },
+            {
+                "name": "WRITE_FIRST ",
+                "type": "P",
+                "val": "1",
                 "min": "0",
                 "max": "NA",
                 "descr": "",
@@ -81,10 +90,24 @@ def setup(py_params_dict):
                 ],
             },
             {
+                "name": "w_ready_o",
+                "descr": "Output port",
+                "signals": [
+                    {"name": "w_ready", "width": 1, "direction": "output"},
+                ],
+            },
+            {
                 "name": "r_data_o",
-                "descr": "Input port",
+                "descr": "Output port",
                 "signals": [
                     {"name": "r_data", "width": "DATA_W", "direction": "output"},
+                ],
+            },
+            {
+                "name": " r_ready_o",
+                "descr": "Output port",
+                "signals": [
+                    {"name": "r_ready", "width": 1, "direction": "output"},
                 ],
             },
         ],
@@ -96,33 +119,12 @@ def setup(py_params_dict):
                     {"name": "r_data_int", "width": "DATA_W"},
                 ],
             },
-        ],
-        "snippets": [
             {
-                "verilog_code": """
-    reg [DATA_W-1:0] mem    [(2**ADDR_W)-1:0];
-            // Initialize the RAM
-   initial begin
-       if (MEM_INIT_FILE_INT != "none") begin
-           $readmemh(MEM_INIT_FILE_INT, mem, 0, (2 ** ADDR_W) - 1);
-       end
-   end
-
-   //read port
-   always @(posedge clk_i) begin
-       if (r_en_i) begin
-           r_data_int <= mem[r_addr_i];
-       end
-   end
-
-   //write port
-   always @(posedge clk_i) begin
-       if (w_en_i) begin
-           mem[w_addr_i] <= w_data_i;
-       end
-   end
-   assign r_data_o = r_data_int;
-            """,
+                "name": "mem",
+                "descr": "mem wire",
+                "signals": [
+                    {"name": "mem", "width": "(DATA_W*(2**ADDR_W))"},
+                ],
             },
         ],
     }

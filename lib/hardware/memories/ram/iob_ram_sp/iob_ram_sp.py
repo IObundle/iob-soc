@@ -3,6 +3,7 @@ def setup(py_params_dict):
         "original_name": "iob_ram_sp",
         "name": "iob_ram_sp",
         "version": "0.1",
+        "generate_hw": False,
         "confs": [
             {
                 "name": "HEXFILE",
@@ -79,24 +80,6 @@ def setup(py_params_dict):
                 "signals": [
                     {"name": "d", "width": "DATA_W", "direction": "output"},
                 ],
-            },
-        ],
-        "snippets": [
-            {
-                "verilog_code": """
-             // Declare the RAM
-   reg [DATA_W-1:0] ram[2**ADDR_W-1:0];
-   reg [DATA_W-1:0] d_o_int;
-   assign d_o=d_o_int;
-   // Initialize the RAM
-   initial if (MEM_INIT_FILE_INT != "none") $readmemh(MEM_INIT_FILE_INT, ram, 0, 2 ** ADDR_W - 1);
-
-   // Operate the RAM
-   always @(posedge clk_i)
-      if (en_i)
-         if (we_i) ram[addr_i] <= d_i;
-         else d_o_int <= ram[addr_i];
-            """,
             },
         ],
     }

@@ -3,6 +3,7 @@ def setup(py_params_dict):
         "original_name": "iob_ram_tdp",
         "name": "iob_ram_tdp",
         "version": "0.1",
+        "generate_hw": False,
         "confs": [
             {
                 "name": "HEXFILE",
@@ -123,42 +124,7 @@ def setup(py_params_dict):
                 ],
             },
         ],
-        "snippets": [
-            {
-                "verilog_code": """
-             // Declare the RAM
-   reg [DATA_W-1:0] ram[2**ADDR_W-1:0];
-
-   // Initialize the RAM
-   initial if (MEM_INIT_FILE_INT != "none") $readmemh(MEM_INIT_FILE_INT, ram, 0, 2 ** ADDR_W - 1);
-
-   //read port
-   always @(posedge clkA_i) begin  // Port A
-      if (enA_i)
-`ifdef IOB_MEM_NO_READ_ON_WRITE
-         if (weA_i) ram[addrA_i] <= dA_i;
-         else dA_o <= ram[addrA_i];
-`else
-         if (weA_i) ram[addrA_i] <= dA_i;
-         dA_o <= ram[addrA_i];
-`endif
-   end
-
-   //write port
-   always @(posedge clkB_i) begin  // Port B
-      if (enB_i)
-`ifdef IOB_MEM_NO_READ_ON_WRITE
-         if (weB_i) ram[addrB_i] <= dB_i;
-         else dB_o <= ram[addrB_i];
-`else
-         if (weB_i) ram[addrB_i] <= dB_i;
-         dB_o <= ram[addrB_i];
-`endif
-   end
-  
-            """,
-            },
-        ],
+       
     }
 
     return attributes_dict

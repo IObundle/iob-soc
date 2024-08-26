@@ -3,6 +3,7 @@ def setup(py_params_dict):
         "original_name": "iob_ram_atdp_be",
         "name": "iob_ram_atdp_be",
         "version": "0.1",
+        "generate_hw": False,
         "confs": [
             {
                 "name": "DATA_W",
@@ -139,36 +140,6 @@ def setup(py_params_dict):
                     "dec_i": "addr_int",
                     "dec_o": "addr_en",
                 },
-            },
-        ],
-        "snippets": [
-            {
-                "verilog_code": """
-                assign addr_int=addr_i[ADDR_W-1:ADDR_W-$clog2(K)];
-                assign r_data_vec_int=r_data_vec[K-1:0];
-   // Generate K BRAMs
-   genvar i;
-   generate
-      // Vector containing all BRAM outputs
-      for (i = 0; i < K; i = i + 1) begin : ram_tile
-         iob_ram_2p #(
-            .DATA_W(DATA_W),
-            .ADDR_W(ADDR_W - $clog2(K))
-         ) bram (
-            .clk_i(clk_i),
-
-            .w_en_i  (w_en_i & addr_en[i]),
-            .w_addr_i(addr_int),
-            .w_data_i(w_data_i),
-
-            .r_en_i  (r_en_i & addr_en[i]),
-            .r_addr_i(addr_int),
-            .r_data_o(r_data_vec_int[i])
-         );
-      end
-   endgenerate
-  
-            """,
             },
         ],
     }

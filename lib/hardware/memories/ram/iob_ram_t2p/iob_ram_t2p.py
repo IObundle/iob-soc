@@ -3,6 +3,7 @@ def setup(py_params_dict):
         "original_name": "iob_ram_t2p",
         "name": "iob_ram_t2p",
         "version": "0.1",
+        "generate_hw": False,
         "confs": [
             {
                 "name": "HEXFILE",
@@ -93,36 +94,6 @@ def setup(py_params_dict):
                 "signals": [
                     {"name": "r_data", "width": "DATA_W", "direction": "output"},
                 ],
-            },
-        ],
-        "snippets": [
-            {
-                "verilog_code": """
-            // Declare the RAM
-   reg [DATA_W-1:0] ram[(2**ADDR_W)-1:0];
-
-   // Initialize the RAM
-   initial begin
-       if (MEM_INIT_FILE_INT != "none") begin
-           $readmemh(MEM_INIT_FILE_INT, ram, 0, (2 ** ADDR_W) - 1);
-       end
-   end
-
-   //write
-   always @(posedge w_clk_i) begin
-       if (w_en_i) begin
-           ram[w_addr_i] <= w_data_i;
-       end
-   end
-
-   //read
-   always @(posedge r_clk_i) begin
-       if (r_en_i) begin
-           r_data_o <= ram[r_addr_i];
-       end
-   end
-  
-            """,
             },
         ],
     }
