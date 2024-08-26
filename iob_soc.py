@@ -524,7 +524,7 @@ def setup(py_params_dict):
             "parameters": {},
             "connect": {
                 "clk_en_rst": "clk_en_rst",
-                "iob": "bootrom_csrs",
+                "cbus": "bootrom_csrs",
                 "ibus": "bootrom_i",
                 "ext_rom_bus": "rom_bus",
             },
