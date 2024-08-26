@@ -46,16 +46,6 @@ def setup(py_params_dict):
         ],
         "ports": [
             {
-                "name": "iob",
-                "interface": {
-                    "type": "iob",
-                    "subtype": "slave",
-                    "ADDR_W": "`IOB_BOOTROM_CSRS_ADDR_W",
-                    "DATA_W": "DATA_W",
-                },
-                "descr": "Front-end interface",
-            },
-            {
                 "name": "clk_en_rst",
                 "interface": {
                     "type": "clk_en_rst",
@@ -64,32 +54,43 @@ def setup(py_params_dict):
                 "descr": "Clock and reset",
             },
             {
-                "name": "bootrom_i_bus",
+                "name": "cbus",
                 "interface": {
                     "type": "iob",
                     "subtype": "slave",
-                    "port_prefix": "bootrom_i_",
+                    "port_prefix": "cbus_",
+                    "ADDR_W": "`IOB_BOOTROM_CSRS_ADDR_W",
+                    "DATA_W": "DATA_W",
+                },
+                "descr": "Front-end control interface",
+            },
+            {
+                "name": "ibus",
+                "interface": {
+                    "type": "iob",
+                    "subtype": "slave",
+                    "port_prefix": "ibus_",
                     "DATA_W": "DATA_W",
                     "ADDR_W": "ADDR_W",
                 },
                 "descr": "Instruction bus",
             },
             {
-                "name": "boot_rom_bus",
-                "descr": "Boot ROM bus",
+                "name": "ext_rom_bus",
+                "descr": "External ROM signals",
                 "signals": [
                     {
-                        "name": "boot_rom_en",
+                        "name": "ext_rom_en",
                         "direction": "output",
                         "width": "1",
                     },
                     {
-                        "name": "boot_rom_addr",
+                        "name": "ext_rom_addr",
                         "direction": "output",
                         "width": "BOOTROM_ADDR_W",
                     },
                     {
-                        "name": "boot_rom_rdata",
+                        "name": "ext_rom_rdata",
                         "direction": "input",
                         "width": "DATA_W",
                     },

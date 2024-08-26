@@ -26,6 +26,8 @@ module iob_bootrom #(
         .addr_i  (bootrom_i_iob_addr_i[2 +: PREBOOTROM_ADDR_W-2]),
         .r_data_o(bootrom_i_iob_rdata_o)
     );
+
+   
     assign bootrom_i_iob_ready_o = 1'b1; // ROM is always ready
     iob_reg #(
         .DATA_W (1),
