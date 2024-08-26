@@ -41,8 +41,10 @@ module iob_axistream_out #(
    wire [RAM_ADDR_W-1:0] ext_mem_r_addr;
    wire [    DATA_W-1:0] ext_mem_r_data;
 
+   `include "iob_axistream_out_wires.vs"
+
    // configuration control and status register file.
-   `include "iob_axistream_out_csrs_inst.vs"
+   `include "iob_axistream_out_blocks.vs"
 
    //AXI Stream interface
    assign axis_tvalid_o = axis_tvalid;
@@ -50,17 +52,17 @@ module iob_axistream_out #(
    assign axis_tlast_o = (axis_word_count == axis_nwords) & axis_tvalid_o;
 
    //CPU interface
-   assign DATA_wready_wr = ~FIFO_FULL_rd;
-   assign interrupt_o = FIFO_LEVEL_rd <= FIFO_THRESHOLD_wr;
+   assign data_wready_wr = ~fifo_full_rd;
+   assign interrupt_o = fifo_level_rd <= fifo_threshold_wr;
 
    //DMA data ready
-   assign sys_tready_o = ~FIFO_FULL_rd & axis_sw_enable & (MODE_wr == 1'b1);
+   assign sys_tready_o = ~fifo_full_rd & axis_sw_enable & (mode_wr == 1'b1);
 
    //FIFO write
-   assign fifo_write     = ((DATA_wen_wr & (MODE_wr == 1'b0)) |
-                           (sys_tvalid_i & (MODE_wr == 1'b1))) &
+   assign fifo_write     = ((data_wen_wr & (mode_wr == 1'b0)) |
+                           (sys_tvalid_i & (mode_wr == 1'b1))) &
                            axis_sw_enable;
-   assign fifo_wdata = sys_tvalid_i == 1'b1 ? sys_tdata_i : DATA_wdata_wr;
+   assign fifo_wdata = sys_tvalid_i == 1'b1 ? sys_tdata_i : data_wdata_wr;
 
    //FIFO read
    always @* begin
@@ -134,7 +136,7 @@ module iob_axistream_out #(
    ) sw_rst (
       .clk_i   (axis_clk_i),
       .arst_i  (axis_arst_i),
-      .signal_i(SOFT_RESET_wr),
+      .signal_i(soft_reset_wr),
       .signal_o(axis_sw_rst)
    );
 
@@ -144,7 +146,7 @@ module iob_axistream_out #(
    ) sw_enable (
       .clk_i   (axis_clk_i),
       .arst_i  (axis_arst_i),
-      .signal_i(ENABLE_wr),
+      .signal_i(enable_wr),
       .signal_o(axis_sw_enable)
    );
 
@@ -154,7 +156,7 @@ module iob_axistream_out #(
    ) fifo_threshold (
       .clk_i   (axis_clk_i),
       .arst_i  (axis_arst_i),
-      .signal_i(NWORDS_wr),
+      .signal_i(nwords_wr),
       .signal_o(axis_nwords)
    );
 
@@ -210,12 +212,12 @@ module iob_axistream_out #(
       .w_clk_i         (clk_i),
       .w_cke_i         (cke_i),
       .w_arst_i        (arst_i),
-      .w_rst_i         (SOFT_RESET_wr),
+      .w_rst_i         (soft_reset_wr),
       .w_en_i          (fifo_write),
       .w_data_i        (fifo_wdata),
-      .w_empty_o       (FIFO_EMPTY_rd),
-      .w_full_o        (FIFO_FULL_rd),
-      .w_level_o       (FIFO_LEVEL_rd)
+      .w_empty_o       (fifo_empty_rd),
+      .w_full_o        (fifo_full_rd),
+      .w_level_o       (fifo_level_rd)
    );
 
 endmodule

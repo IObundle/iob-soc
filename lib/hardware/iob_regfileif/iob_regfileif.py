@@ -7,6 +7,7 @@ def setup(py_params_dict):
         "version": "0.7",
         "internal_csr_if": "iob",
         "external_csr_if": "iob",
+        # FIXME: Make ADDR_W automatic
         "internal_csr_if_widths": {"ADDR_W": 32, "DATA_W": 32},
         "external_csr_if_widths": {"ADDR_W": 32, "DATA_W": 32},
         "csrs": [],
@@ -55,6 +56,16 @@ def setup(py_params_dict):
                     },
                 ],
             }
+        ]
+        confs = [
+            {
+                "name": "DATA_W",
+                "type": "P",
+                "val": "32",
+                "min": "0",
+                "max": "32",
+                "descr": "Data bus width",
+            },
         ]
 
     assert params["csrs"], "Error: Register list empty."
@@ -109,15 +120,16 @@ def setup(py_params_dict):
             if csr["type"] == "RW":
                 internal_reg_connections[csr["name"]] = csr["name"] + "_inv"
 
+    if py_params_dict["instantiator"]:
+        confs = py_params_dict["instantiator"]["confs"]
+
     attributes_dict = {
         "original_name": "iob_regfileif",
         "name": "iob_regfileif",
         "version": "0.1",
     }
     attributes_dict |= {
-        "confs": [
-            # TODO:
-        ],
+        "confs": confs,
         "ports": [
             {
                 "name": "clk_en_rst",

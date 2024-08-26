@@ -139,6 +139,12 @@ def setup(py_params_dict):
                     {"name": "ddr3b_dqs_p", "direction": "inout", "width": "2"},
                     {"name": "ddr3b_odt", "direction": "output", "width": "1"},
                     {"name": "ddr3b_resetn", "direction": "output", "width": "1"},
+                ],
+            },
+            {
+                "name": "rzqin",
+                "descr": "",
+                "signals": [
                     {"name": "rzqin", "direction": "input", "width": "1"},
                 ],
             },
