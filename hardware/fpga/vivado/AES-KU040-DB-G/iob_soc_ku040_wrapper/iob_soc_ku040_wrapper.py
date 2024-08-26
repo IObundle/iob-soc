@@ -313,6 +313,7 @@ def setup(py_params_dict):
         {
             "core_name": "iob_soc_mwrap",
             "instance_name": "iob_soc_mwrap",
+            "instance_description": "IOb-SoC instance",
             "parameters": {
                 "AXI_ID_W": "AXI_ID_W",
                 "AXI_LEN_W": "AXI_LEN_W",
@@ -349,6 +350,7 @@ def setup(py_params_dict):
             {
                 "core_name": "xilinx_axi_interconnect",
                 "instance_name": "axi_async_bridge",
+                "instance_description": "Interconnect instance",
                 "parameters": {
                     "AXI_ID_W": "AXI_ID_W",
                     "AXI_LEN_W": "AXI_LEN_W",
@@ -377,6 +379,7 @@ def setup(py_params_dict):
             {
                 "core_name": "xilinx_ddr4_ctrl",
                 "instance_name": "ddr4_ctrl",
+                "instance_description": "DDR4 controller instance",
                 "parameters": {
                     "AXI_ID_W": "AXI_ID_W",
                     "AXI_LEN_W": "AXI_LEN_W",
@@ -397,6 +400,7 @@ def setup(py_params_dict):
             {
                 "core_name": "xilinx_clock_wizard",
                 "instance_name": "clk_250_to_100_MHz",
+                "instance_description": "PLL to generate system clock",
                 "parameters": {
                     "OUTPUT_PER": 10,
                     "INPUT_PER": 4,
@@ -417,6 +421,7 @@ def setup(py_params_dict):
             {
                 "core_name": "iob_pulse_gen",
                 "instance_name": "reset_pulse",
+                "instance_description": "Create reset pulse as reset is never activated manually also, during bitstream loading, the reset pin is not pulled high",
                 "parameters": {
                     "START": 5,
                     "DURATION": 10,
