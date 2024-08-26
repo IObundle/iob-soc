@@ -4,7 +4,6 @@ def setup(py_params_dict):
         "name": "iob_axistream_in",
         "version": "0.3",
         "board_list": ["CYCLONEV-GT-DK", "AES-KU040-DB-G"],
-        "generate_hw": False,  # TODO: Delele iob_axistream_in.v source and remove this line to generate core with py2hwsw
         "confs": [
             {
                 "name": "DATA_W",
@@ -18,6 +17,7 @@ def setup(py_params_dict):
                 "name": "ADDR_W",
                 "type": "P",
                 "val": "`IOB_AXISTREAM_IN_CSRS_ADDR_W",
+                # "val": "5",
                 "min": "NA",
                 "max": "NA",
                 "descr": "Address bus width",
@@ -53,6 +53,8 @@ def setup(py_params_dict):
                 "interface": {
                     "type": "iob",
                     "subtype": "slave",
+                    "ADDR_W": "ADDR_W",
+                    "DATA_W": "DATA_W",
                 },
                 "descr": "CPU native interface",
             },
@@ -142,7 +144,79 @@ def setup(py_params_dict):
             },
         ],
         "wires": [
-            # TODO: Create wires
+            {
+                "name": "soft_reset",
+                "descr": "",
+                "signals": [
+                    {"name": "soft_reset_wr", "width": 1},
+                ],
+            },
+            {
+                "name": "enable",
+                "descr": "",
+                "signals": [
+                    {"name": "enable_wr", "width": 1},
+                ],
+            },
+            {
+                "name": "data",
+                "descr": "",
+                "signals": [
+                    {"name": "data_rdata_rd", "width": 32},
+                    {"name": "data_rvalid_rd", "width": 1},
+                    {"name": "data_ren_rd", "width": 1},
+                    {"name": "data_rready_rd", "width": 1},
+                ],
+            },
+            {
+                "name": "mode",
+                "descr": "",
+                "signals": [
+                    {"name": "mode_wr", "width": 1},
+                ],
+            },
+            {
+                "name": "nwords",
+                "descr": "",
+                "signals": [
+                    {"name": "nwords_rd", "width": "DATA_W"},
+                ],
+            },
+            {
+                "name": "tlast_detected",
+                "descr": "",
+                "signals": [
+                    {"name": "tlast_detected_rd", "width": 1},
+                ],
+            },
+            {
+                "name": "fifo_full",
+                "descr": "",
+                "signals": [
+                    {"name": "fifo_full_rd", "width": 1},
+                ],
+            },
+            {
+                "name": "fifo_empty",
+                "descr": "",
+                "signals": [
+                    {"name": "fifo_empty_rd", "width": 1},
+                ],
+            },
+            {
+                "name": "fifo_threshold",
+                "descr": "",
+                "signals": [
+                    {"name": "fifo_threshold_wr", "width": "FIFO_ADDR_W+1"},
+                ],
+            },
+            {
+                "name": "fifo_level",
+                "descr": "",
+                "signals": [
+                    {"name": "fifo_level_rd", "width": "FIFO_ADDR_W+1"},
+                ],
+            },
         ],
         "blocks": [
             {
@@ -155,7 +229,7 @@ def setup(py_params_dict):
                         "descr": "AXI Stream software accessible registers.",
                         "regs": [
                             {
-                                "name": "SOFT_RESET",
+                                "name": "soft_reset",
                                 "type": "W",
                                 "n_bits": 1,
                                 "rst_val": 0,
@@ -164,7 +238,7 @@ def setup(py_params_dict):
                                 "descr": "Soft reset.",
                             },
                             {
-                                "name": "ENABLE",
+                                "name": "enable",
                                 "type": "W",
                                 "n_bits": 1,
                                 "rst_val": 0,
@@ -173,7 +247,7 @@ def setup(py_params_dict):
                                 "descr": "Enable peripheral.",
                             },
                             {
-                                "name": "DATA",
+                                "name": "data",
                                 "type": "R",
                                 "n_bits": 32,
                                 "rst_val": 0,
@@ -182,7 +256,7 @@ def setup(py_params_dict):
                                 "descr": "Data output.",
                             },
                             {
-                                "name": "MODE",
+                                "name": "mode",
                                 "type": "W",
                                 "n_bits": "1",
                                 "rst_val": 0,
@@ -191,7 +265,7 @@ def setup(py_params_dict):
                                 "descr": "Sets the operation mode: (0) data is read using CSR; (1) data is read using system axistream interface.",
                             },
                             {
-                                "name": "NWORDS",
+                                "name": "nwords",
                                 "type": "R",
                                 "n_bits": "DATA_W",
                                 "rst_val": 0,
@@ -200,7 +274,7 @@ def setup(py_params_dict):
                                 "descr": "Read the number of words (with TDATA_W bits) written to the FIFO.",
                             },
                             {
-                                "name": "TLAST_DETECTED",
+                                "name": "tlast_detected",
                                 "type": "R",
                                 "n_bits": 1,
                                 "rst_val": 0,
@@ -215,7 +289,7 @@ def setup(py_params_dict):
                         "descr": "FIFO related registers",
                         "regs": [
                             {
-                                "name": "FIFO_FULL",
+                                "name": "fifo_full",
                                 "type": "R",
                                 "n_bits": 1,
                                 "rst_val": 0,
@@ -224,7 +298,7 @@ def setup(py_params_dict):
                                 "descr": "Full (1), or non-full (0).",
                             },
                             {
-                                "name": "FIFO_EMPTY",
+                                "name": "fifo_empty",
                                 "type": "R",
                                 "n_bits": 1,
                                 "rst_val": 0,
@@ -233,7 +307,7 @@ def setup(py_params_dict):
                                 "descr": "Full (1), or non-full (0).",
                             },
                             {
-                                "name": "FIFO_THRESHOLD",
+                                "name": "fifo_threshold",
                                 "type": "W",
                                 # FIXME: Fix csrs.py block of py2hwsw to support these parameters
                                 # "n_bits": "FIFO_ADDR_W+1",
@@ -244,7 +318,7 @@ def setup(py_params_dict):
                                 "descr": "FIFO threshold level for interrupt signal",
                             },
                             {
-                                "name": "FIFO_LEVEL",
+                                "name": "fifo_level",
                                 "type": "R",
                                 # FIXME: Fix csrs.py block of py2hwsw to support these parameters
                                 # "n_bits": "FIFO_ADDR_W+1",
@@ -261,33 +335,48 @@ def setup(py_params_dict):
                     "clk_en_rst": "clk_en_rst",
                     "control_if": "iob",
                     # Register interfaces
-                    # TODO: Connect register signals
+                    "soft_reset": "soft_reset",
+                    "enable": "enable",
+                    "data": "data",
+                    "mode": "mode",
+                    "nwords": "nwords",
+                    "tlast_detected": "tlast_detected",
+                    "fifo_full": "fifo_full",
+                    "fifo_empty": "fifo_empty",
+                    "fifo_threshold": "fifo_threshold",
+                    "fifo_level": "fifo_level",
                 },
             },
             # TODO: Connect remaining blocks
             {
                 "core_name": "iob_fifo_async",
                 "instance_name": "iob_fifo_async_inst",
+                "instantiate": False,
             },
             {
                 "core_name": "iob_reg_re",
                 "instance_name": "iob_reg_re_inst",
+                "instantiate": False,
             },
             {
                 "core_name": "iob_ram_at2p",
                 "instance_name": "iob_ram_at2p_inst",
+                "instantiate": False,
             },
             {
                 "core_name": "iob_sync",
                 "instance_name": "iob_sync_inst",
+                "instantiate": False,
             },
             {
                 "core_name": "iob_counter",
                 "instance_name": "iob_counter_inst",
+                "instantiate": False,
             },
             {
                 "core_name": "iob_edge_detect",
                 "instance_name": "iob_edge_detect_inst",
+                "instantiate": False,
             },
         ],
     }

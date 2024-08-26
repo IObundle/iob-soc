@@ -41,9 +41,9 @@ def setup(py_params_dict):
     }
 
     if not params["build_dir"]:
-        params["build_dir"] = (
-            f"../{attributes_dict['name']}_V{attributes_dict['version']}"
-        )
+        params[
+            "build_dir"
+        ] = f"../{attributes_dict['name']}_V{attributes_dict['version']}"
 
     attributes_dict |= {
         "build_dir": params["build_dir"],
@@ -524,9 +524,9 @@ def setup(py_params_dict):
             "parameters": {},
             "connect": {
                 "clk_en_rst": "clk_en_rst",
-                "iob": "bootrom_csrs",
-                "bootrom_i_bus": "bootrom_i",
-                "boot_rom_bus": "rom_bus",
+                "cbus": "bootrom_csrs",
+                "ibus": "bootrom_i",
+                "ext_rom_bus": "rom_bus",
             },
         },
     ]

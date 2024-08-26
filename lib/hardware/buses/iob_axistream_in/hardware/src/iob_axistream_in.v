@@ -45,20 +45,22 @@ module iob_axistream_in #(
 
    reg                   sys_tvalid;
 
+   `include "iob_axistream_in_wires.vs"
+
    // configuration control and status register file.
-   `include "iob_axistream_in_csrs_inst.vs"
+   `include "iob_axistream_in_blocks.vs"
 
    wire tlast_detected_reg;
 
    //CPU INTERFACE
-   assign DATA_rready_rd = ~FIFO_EMPTY_rd | sys_tvalid;
-   assign interrupt_o    = FIFO_LEVEL_rd >= FIFO_THRESHOLD_wr;
-   assign DATA_rvalid_rd = sys_tvalid & (~MODE_wr);
-   assign DATA_rdata_rd  = fifo_data;
+   assign data_rready_rd = ~fifo_empty_rd | sys_tvalid;
+   assign interrupt_o    = fifo_level_rd >= fifo_threshold_wr;
+   assign data_rvalid_rd = sys_tvalid & (~mode_wr);
+   assign data_rdata_rd  = fifo_data;
 
    //System Stream output interface
    // System output valid only if in system stream mode
-   assign sys_tvalid_o   = sys_tvalid & MODE_wr;
+   assign sys_tvalid_o   = sys_tvalid & mode_wr;
    assign sys_tdata_o    = fifo_data;
 
    //FIFO read
@@ -72,10 +74,10 @@ module iob_axistream_in #(
 
       case (fifo_read_pc)
          0: begin
-            if (FIFO_EMPTY_rd) begin
+            if (fifo_empty_rd) begin
                fifo_read_pc_nxt = fifo_read_pc;
-            end else if ((sys_tready_i && MODE_wr) || (DATA_ren_rd && !MODE_wr)) begin
-               fifo_read = 1'b1;
+            end else if ((sys_tready_i && mode_wr) || (data_ren_rd && !mode_wr)) begin
+               fifo_read        = 1'b1;
                fifo_read_pc_nxt = 1'b1;
             end else begin
                fifo_read_pc_nxt = fifo_read_pc;
@@ -84,9 +86,9 @@ module iob_axistream_in #(
          default: begin
             sys_tvalid       = 1'b1;
             fifo_read_pc_nxt = 1'b0;
-            if ((sys_tready_i && MODE_wr) || (DATA_ren_rd && !MODE_wr)) begin
-               if (~FIFO_EMPTY_rd) begin
-                  fifo_read = 1'b1;
+            if ((sys_tready_i && mode_wr) || (data_ren_rd && !mode_wr)) begin
+               if (~fifo_empty_rd) begin
+                  fifo_read        = 1'b1;
                   fifo_read_pc_nxt = fifo_read_pc;
                end
             end
@@ -96,7 +98,7 @@ module iob_axistream_in #(
 
    wire ready_int;
    // Ready if not full and, if in CSR mode, tlast not detected
-   assign ready_int          = ~axis_fifo_full & axis_sw_enable & ~(~MODE_wr & tlast_detected_reg);
+   assign ready_int          = ~axis_fifo_full & axis_sw_enable & ~(~mode_wr & tlast_detected_reg);
 
    //word count enable
    assign axis_word_count_en = axis_fifo_write & ~tlast_detected_reg;
@@ -187,7 +189,7 @@ module iob_axistream_in #(
    ) sw_rst (
       .clk_i   (axis_clk_i),
       .arst_i  (axis_arst_i),
-      .signal_i(SOFT_RESET_wr),
+      .signal_i(soft_reset_wr),
       .signal_o(axis_sw_rst)
    );
 
@@ -197,7 +199,7 @@ module iob_axistream_in #(
    ) sw_enable (
       .clk_i   (axis_clk_i),
       .arst_i  (axis_arst_i),
-      .signal_i(ENABLE_wr),
+      .signal_i(enable_wr),
       .signal_o(axis_sw_enable)
    );
 
@@ -209,7 +211,7 @@ module iob_axistream_in #(
       .clk_i   (clk_i),
       .arst_i  (arst_i),
       .signal_i(tlast_detected_reg),
-      .signal_o(TLAST_DETECTED_rd)
+      .signal_o(tlast_detected_rd)
    );
 
    iob_sync #(
@@ -219,7 +221,7 @@ module iob_axistream_in #(
       .clk_i   (clk_i),
       .arst_i  (arst_i),
       .signal_i(axis_word_count),
-      .signal_o(NWORDS_rd)
+      .signal_o(nwords_rd)
    );
 
    //tlast detection
@@ -285,12 +287,12 @@ module iob_axistream_in #(
       .r_clk_i         (clk_i),
       .r_cke_i         (cke_i),
       .r_arst_i        (arst_i),
-      .r_rst_i         (SOFT_RESET_wr),
+      .r_rst_i         (soft_reset_wr),
       .r_en_i          (fifo_read),
       .r_data_o        (fifo_data),
-      .r_empty_o       (FIFO_EMPTY_rd),
-      .r_full_o        (FIFO_FULL_rd),
-      .r_level_o       (FIFO_LEVEL_rd),
+      .r_empty_o       (fifo_empty_rd),
+      .r_full_o        (fifo_full_rd),
+      .r_level_o       (fifo_level_rd),
       //write port (axis clk domain)
       .w_clk_i         (axis_clk_i),
       .w_cke_i         (axis_cke_i),
