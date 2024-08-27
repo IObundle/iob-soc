@@ -70,8 +70,10 @@ module clock_wizard #(
 ) (  // Clock in ports
      // Clock out ports
    output clk_out1,
+   output arst_out1,
    input  clk_in1_p,
-   input  clk_in1_n
+   input  clk_in1_n,
+   input  arst_i
 );
    // Input buffering
    //------------------------------------
@@ -152,10 +154,11 @@ module clock_wizard #(
       // Other control and status signals
       .LOCKED     (locked_int),
       .PWRDWN     (1'b0),
-      .RST        (1'b0)
+      .RST        (arst_i),
    );
 
 
+   assign arst_out1 = ~locked_int;
 
    // Clock Monitor clock assigning
    //--------------------------------------

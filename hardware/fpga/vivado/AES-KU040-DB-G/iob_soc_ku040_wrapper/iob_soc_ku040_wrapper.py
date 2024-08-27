@@ -58,7 +58,7 @@ def setup(py_params_dict):
             "signals": [
                 {"name": "c0_sys_clk_clk_p", "direction": "input", "width": "1"},
                 {"name": "c0_sys_clk_clk_n", "direction": "input", "width": "1"},
-                {"name": "reset", "direction": "input", "width": "1"},
+                {"name": "arst", "direction": "input", "width": "1"},
             ],
         },
         {
@@ -118,7 +118,7 @@ def setup(py_params_dict):
             },
         ]
 
-    # Get all fpga wrapper wires based on IOb-SoC ports
+    # Declare fpga wrapper wires based on IOb-SoC ports
     fpga_wrapper_wires = []
     for port in iob_soc_attr["ports"]:
         if port["name"] not in [
@@ -137,7 +137,7 @@ def setup(py_params_dict):
                     sig.pop("direction")
             fpga_wrapper_wires.append(wire)
 
-    # Get all IOb-SoC AXI interfaces
+    # Declare wires for IOb-SoC AXI interfaces
     axi_wires = []
     for wire in fpga_wrapper_wires:
         # Skip non-AXI wires
@@ -234,12 +234,9 @@ def setup(py_params_dict):
             },
             # DDR4 ctrl
             {
-                "name": "ddr4_ctr_clk_rst",
+                "name": "System clock",
                 "descr": "",
                 "signals": [
-                    {"name": "c0_sys_clk_clk_p"},
-                    {"name": "c0_sys_clk_clk_n"},
-                    {"name": "reset"},
                     {"name": "clk"},
                 ],
             },
@@ -263,46 +260,7 @@ def setup(py_params_dict):
                     {"name": "c0_sys_clk_clk_p"},
                     {"name": "c0_sys_clk_clk_n"},
                     {"name": "clk"},
-                ],
-            },
-            # reset_sync
-            {
-                "name": "reset_sync_clk_rst",
-                "descr": "",
-                "signals": [
-                    {"name": "clk"},
                     {"name": "reset"},
-                ],
-            },
-            {
-                "name": "reset_sync_arst",
-                "descr": "",
-                "signals": [
-                    {"name": "start", "width": "1"},
-                ],
-            },
-            # pulse_gen
-            {
-                "name": "pulse_gen_clk_en_rst",
-                "descr": "",
-                "signals": [
-                    {"name": "clk"},
-                    {"name": "cke"},
-                    {"name": "reset"},
-                ],
-            },
-            {
-                "name": "pulse_gen_clk_start",
-                "descr": "",
-                "signals": [
-                    {"name": "start"},
-                ],
-            },
-            {
-                "name": "pulse_gen_clk_pulse",
-                "descr": "",
-                "signals": [
-                    {"name": "arst"},
                 ],
             },
         ]
@@ -403,28 +361,6 @@ def setup(py_params_dict):
                 },
                 "connect": {
                     "io": "clock_wizard_io",
-                },
-            },
-            # System reset
-            {
-                "core_name": "iob_reset_sync",
-                "instance_name": "start_sync",
-                "connect": {
-                    "clk_rst": "reset_sync_clk_rst",
-                    "arst_o": "reset_sync_arst",
-                },
-            },
-            {
-                "core_name": "iob_pulse_gen",
-                "instance_name": "reset_pulse",
-                "parameters": {
-                    "START": 5,
-                    "DURATION": 10,
-                },
-                "connect": {
-                    "clk_en_rst": "pulse_gen_clk_en_rst",
-                    "start": "pulse_gen_clk_start",
-                    "pulse": "pulse_gen_clk_pulse",
                 },
             },
         ]
