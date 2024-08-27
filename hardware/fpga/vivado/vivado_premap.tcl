@@ -77,5 +77,6 @@ if { $USE_EXTMEM > 0 } {
     read_xdc vivado/$BOARD/ddr.xdc
 
 } else {
+    read_verilog vivado/$BOARD/xilinx_clock_wizard.v
     read_verilog vivado/$BOARD/clock_wizard.v
 }

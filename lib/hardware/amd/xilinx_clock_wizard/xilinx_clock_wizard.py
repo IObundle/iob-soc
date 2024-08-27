@@ -49,7 +49,7 @@ def setup(py_params_dict):
     ) clock_wizard_inst (
         .clk_in1_p(clk_p_i),
         .clk_in1_n(clk_n_i),
-        .arst_in1(arst_i),
+        .arst_i(arst_i),
         .clk_out1 (clk_out1_o),
         .arst_out1(rst_out1_o)
     );
