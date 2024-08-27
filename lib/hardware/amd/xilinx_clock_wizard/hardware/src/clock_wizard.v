@@ -75,25 +75,14 @@ module clock_wizard #(
    input  clk_in1_n,
    input  arst_i
 );
-   // Input buffering
-   //------------------------------------
+
    wire clk_in1_clock_wizard;
-   wire clk_in2_clock_wizard;
+
    IBUFDS clkin1_ibufds (
       .O (clk_in1_clock_wizard),
       .I (clk_in1_p),
       .IB(clk_in1_n)
    );
-
-
-
-
-   // Clocking PRIMITIVE
-   //------------------------------------
-
-   // Instantiation of the MMCM PRIMITIVE
-   //    * Unused inputs are tied off
-   //    * Unused outputs are labeled unused
 
    wire        clk_out1_clock_wizard;
    wire        clk_out2_clock_wizard;
@@ -116,10 +105,6 @@ module clock_wizard #(
    wire        clkinstopped_unused;
 
 
-
-   // Auto Instantiation//
-
-
    PLLE3_ADV #(
       .COMPENSATION      ("AUTO"),
       .STARTUP_WAIT      ("FALSE"),
@@ -131,7 +116,6 @@ module clock_wizard #(
       .CLKOUT0_DUTY_CYCLE(0.500),
       .CLKIN_PERIOD      (INPUT_PER)
    ) plle3_adv_inst
-   // Output clocks
    (
       .CLKFBOUT   (clkfbout_clock_wizard),
       .CLKOUT0    (clk_out1_clock_wizard),
@@ -160,22 +144,9 @@ module clock_wizard #(
 
    assign arst_out1 = ~locked_int;
 
-   // Clock Monitor clock assigning
-   //--------------------------------------
-   // Output buffering
-   //-----------------------------------
-
-
-
-
-
-
    BUFG clkout1_buf (
       .O(clk_out1),
       .I(clk_out1_clock_wizard)
    );
-
-
-
 
 endmodule

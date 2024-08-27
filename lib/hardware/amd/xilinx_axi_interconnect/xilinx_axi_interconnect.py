@@ -12,6 +12,9 @@ def setup(py_params_dict):
         "original_name": "xilinx_axi_interconnect",
         "name": "xilinx_axi_interconnect",
         "version": "0.1",
+        #
+        # AXI Parameters
+        #
         "confs": [
             {
                 "name": "AXI_ID_W",
@@ -46,14 +49,17 @@ def setup(py_params_dict):
                 "descr": "AXI data bus width",
             },
         ],
+        #
+        # Ports
+        #
         "ports": [
             {
-                "name": "clk_rst",
+                "name": "clk_rst_i",
+                "descr": "Clock and reset inputs",
                 "interface": {
                     "type": "clk_rst",
                     "subtype": "slave",
                 },
-                "descr": "Clock and reset",
             },
         ],
     }

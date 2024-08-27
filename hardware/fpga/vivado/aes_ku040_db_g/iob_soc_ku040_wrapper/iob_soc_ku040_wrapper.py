@@ -5,14 +5,19 @@ import iob_soc
 
 def setup(py_params_dict):
 
+    #user-passed parameters
     params = py_params_dict["iob_soc_params"]
 
+    #setup iob-soc and get all its attributes
     iob_soc_attr = iob_soc.setup(params)
 
     attributes_dict = {
         "original_name": "iob_soc_ku040_wrapper",
         "name": "iob_soc_fpga_wrapper",
         "version": "0.1",
+        #
+        # Configuration
+        #
         "confs": [
             {
                 "name": "AXI_ID_W",
@@ -58,7 +63,7 @@ def setup(py_params_dict):
             "signals": [
                 {"name": "c0_sys_clk_clk_p", "direction": "input", "width": "1"},
                 {"name": "c0_sys_clk_clk_n", "direction": "input", "width": "1"},
-                {"name": "arst", "direction": "input", "width": "1"},
+                {"name": "areset", "direction": "input", "width": "1"},
             ],
         },
         {
@@ -73,7 +78,7 @@ def setup(py_params_dict):
     if params["use_extmem"]:
         attributes_dict["ports"] += [
             {
-                "name": "ddr4",
+                "name": "ddr4_pins",
                 "descr": "External DDR4 memory interface",
                 "signals": [
                     {"name": "c0_ddr4_act_n", "direction": "output", "width": "1"},
@@ -118,8 +123,12 @@ def setup(py_params_dict):
             },
         ]
 
-    # Declare fpga wrapper wires based on IOb-SoC ports
+    #
+    # Wires
+    #
     fpga_wrapper_wires = []
+
+    # Declare fpga wrapper wires for IOb-SoC ports
     for port in iob_soc_attr["ports"]:
         if port["name"] not in [
             "rs232",
@@ -145,9 +154,6 @@ def setup(py_params_dict):
             continue
         axi_wires.append(wire)
 
-    #
-    # Wires
-    #
     attributes_dict["wires"] = fpga_wrapper_wires + [
         {
             "name": "rs232_int",
@@ -193,34 +199,33 @@ def setup(py_params_dict):
                     {"name": "eth_clk"},
                     {"name": "high"},
                     {"name": "low", "width": "1"},
-                    {
-                        "name": "enet_resetn_inv",
-                        "width": "1",
+                    {"name": "enet_resetn_inv", "width": "1",
                     },  # TODO: Connect and invert enet_resetn
                 ],
             },
         ]
+
     if params["use_extmem"]:
         attributes_dict["wires"] += [
-            # Interconnect
             {
-                "name": "interconnect_clk_rst",
-                "descr": "",
+                "name": "intercon_clk_rst",
+                "descr": "AXI interconnect clock and reset inputs",
                 "signals": [
-                    {"name": "mem_axi_clk", "width": "1"},
-                    {"name": "mem_clk_sync_rst", "width": "1"},
+                    {"name": "intercon_clk", "width": "1"},
+                    {"name": "intercon_rst", "width": "1"},
                 ],
             },
             {
-                "name": "ddr4_m0_clk_rst",
+                "name": "ddr4_axi_clk_rst",
                 "descr": "",
                 "signals": [
-                    {"name": "mem_axi_clk"},
-                    {"name": "mem_axi_arstn", "width": "1"},
+                    {"name": "intercon_clk"},
+                    {"name": "ddr4_axi_arstn", "width": "1"},
                 ],
             },
             {
                 "name": "ddr4_axi",
+                "descr": "AXI bus to connect interconnect and memory",
                 "interface": {
                     "type": "axi",
                     "wire_prefix": "mem_",
@@ -230,45 +235,15 @@ def setup(py_params_dict):
                     "DATA_W": "AXI_DATA_W",
                     "LOCK_W": 1,
                 },
-                "descr": "AXI bus to connect interconnect and memory",
-            },
-            # DDR4 ctrl
-            {
-                "name": "System clock",
-                "descr": "",
-                "signals": [
-                    {"name": "clk"},
-                ],
-            },
-            {
-                "name": "ddr4_ctr_axi_clk_rst",
-                "descr": "",
-                "signals": [
-                    {"name": "mem_axi_clk"},
-                    {"name": "mem_clk_sync_rst"},
-                    {"name": "mem_axi_arstn"},
-                ],
             },
         ]
-    if not params["use_extmem"]:
-        attributes_dict["wires"] += [
-            # clock_wizard
-            {
-                "name": "clock_wizard_io",
-                "descr": "",
-                "signals": [
-                    {"name": "c0_sys_clk_clk_p"},
-                    {"name": "c0_sys_clk_clk_n"},
-                    {"name": "clk"},
-                    {"name": "reset"},
-                ],
-            },
-        ]
+
     #
     # Blocks
     #
     attributes_dict["blocks"] = [
         {
+            #IOb-SoC Memory Wrapper
             "core_name": "iob_soc_mwrap",
             "instance_name": "iob_soc_mwrap",
             "parameters": {
@@ -278,7 +253,7 @@ def setup(py_params_dict):
                 "AXI_DATA_W": "AXI_DATA_W",
             },
             "connect": {"rs232": "rs232_int"}
-            | {i["name"]: i["name"] for i in fpga_wrapper_wires},
+            | {i["name"]: i["name"] for i in fpga_wrapper_wires}, #WHAT IS THIS?
             "dest_dir": "hardware/common_src",
             "iob_soc_params": params,
         },
@@ -314,7 +289,7 @@ def setup(py_params_dict):
                     "AXI_DATA_W": "AXI_DATA_W",
                 },
                 "connect": {
-                    "clk_rst": "interconnect_clk_rst",
+                    "clk_rst_i": "clk_rst",
                     "m0_clk_rst": "ddr4_m0_clk_rst",
                     "m0_axi": "ddr4_axi",
                 },
@@ -342,10 +317,10 @@ def setup(py_params_dict):
                     "AXI_DATA_W": "AXI_DATA_W",
                 },
                 "connect": {
-                    "clk_rst": "ddr4_ctr_clk_rst",
-                    "axi_clk_rst": "ddr4_ctr_axi_clk_rst",
+                    "clk_rst": "intercon_clk_rst",
+                    "axi_clk_rst": "ddr4_axi_clk_rst",
                     "axi": "ddr4_axi",
-                    "ddr4": "ddr4",
+                    "ddr4": "ddr4_pins",
                 },
             },
         ]
@@ -360,7 +335,8 @@ def setup(py_params_dict):
                     "INPUT_PER": 4,
                 },
                 "connect": {
-                    "io": "clock_wizard_io",
+                    "clk_rst_i": "clk_rst",
+                    "clk_rst_o": "clk_
                 },
             },
         ]
