@@ -5,14 +5,19 @@ import iob_soc
 
 def setup(py_params_dict):
 
+    # user-passed parameters
     params = py_params_dict["iob_soc_params"]
 
+    # setup iob-soc and get all its attributes
     iob_soc_attr = iob_soc.setup(params)
 
     attributes_dict = {
         "original_name": "iob_soc_ku040_wrapper",
         "name": "iob_soc_fpga_wrapper",
         "version": "0.1",
+        #
+        # Configuration
+        #
         "confs": [
             {
                 "name": "AXI_ID_W",
@@ -58,7 +63,7 @@ def setup(py_params_dict):
             "signals": [
                 {"name": "c0_sys_clk_clk_p", "direction": "input", "width": "1"},
                 {"name": "c0_sys_clk_clk_n", "direction": "input", "width": "1"},
-                {"name": "reset", "direction": "input", "width": "1"},
+                {"name": "areset", "direction": "input", "width": "1"},
             ],
         },
         {
@@ -73,7 +78,7 @@ def setup(py_params_dict):
     if params["use_extmem"]:
         attributes_dict["ports"] += [
             {
-                "name": "ddr4",
+                "name": "ddr4_pins",
                 "descr": "External DDR4 memory interface",
                 "signals": [
                     {"name": "c0_ddr4_act_n", "direction": "output", "width": "1"},
@@ -118,8 +123,12 @@ def setup(py_params_dict):
             },
         ]
 
-    # Get all fpga wrapper wires based on IOb-SoC ports
+    #
+    # Wires
+    #
     fpga_wrapper_wires = []
+
+    # Declare fpga wrapper wires for IOb-SoC ports
     for port in iob_soc_attr["ports"]:
         if port["name"] not in [
             "rs232",
@@ -137,7 +146,7 @@ def setup(py_params_dict):
                     sig.pop("direction")
             fpga_wrapper_wires.append(wire)
 
-    # Get all IOb-SoC AXI interfaces
+    # Declare wires for IOb-SoC AXI interfaces
     axi_wires = []
     for wire in fpga_wrapper_wires:
         # Skip non-AXI wires
@@ -145,9 +154,6 @@ def setup(py_params_dict):
             continue
         axi_wires.append(wire)
 
-    #
-    # Wires
-    #
     attributes_dict["wires"] = fpga_wrapper_wires + [
         {
             "name": "rs232_int",
@@ -200,27 +206,28 @@ def setup(py_params_dict):
                 ],
             },
         ]
+
     if params["use_extmem"]:
         attributes_dict["wires"] += [
-            # Interconnect
             {
-                "name": "interconnect_clk_rst",
-                "descr": "",
+                "name": "intercon_clk_rst",
+                "descr": "AXI interconnect clock and reset inputs",
                 "signals": [
-                    {"name": "mem_axi_clk", "width": "1"},
-                    {"name": "mem_clk_sync_rst", "width": "1"},
+                    {"name": "intercon_clk", "width": "1"},
+                    {"name": "intercon_rst", "width": "1"},
                 ],
             },
             {
-                "name": "ddr4_m0_clk_rst",
+                "name": "ddr4_axi_clk_rst",
                 "descr": "",
                 "signals": [
-                    {"name": "mem_axi_clk"},
-                    {"name": "mem_axi_arstn", "width": "1"},
+                    {"name": "intercon_clk"},
+                    {"name": "ddr4_axi_arstn", "width": "1"},
                 ],
             },
             {
                 "name": "ddr4_axi",
+                "descr": "AXI bus to connect interconnect and memory",
                 "interface": {
                     "type": "axi",
                     "wire_prefix": "mem_",
@@ -230,87 +237,26 @@ def setup(py_params_dict):
                     "DATA_W": "AXI_DATA_W",
                     "LOCK_W": 1,
                 },
-                "descr": "AXI bus to connect interconnect and memory",
-            },
-            # DDR4 ctrl
-            {
-                "name": "ddr4_ctr_clk_rst",
-                "descr": "",
-                "signals": [
-                    {"name": "c0_sys_clk_clk_p"},
-                    {"name": "c0_sys_clk_clk_n"},
-                    {"name": "reset"},
-                    {"name": "clk"},
-                ],
-            },
-            {
-                "name": "ddr4_ctr_axi_clk_rst",
-                "descr": "",
-                "signals": [
-                    {"name": "mem_axi_clk"},
-                    {"name": "mem_clk_sync_rst"},
-                    {"name": "mem_axi_arstn"},
-                ],
             },
         ]
     if not params["use_extmem"]:
         attributes_dict["wires"] += [
-            # clock_wizard
             {
-                "name": "clock_wizard_io",
-                "descr": "",
+                "name": "clk_wizard_out",
+                "descr": "Connect clock wizard outputs to iob-soc clock and reset",
                 "signals": [
-                    {"name": "c0_sys_clk_clk_p"},
-                    {"name": "c0_sys_clk_clk_n"},
-                    {"name": "clk"},
-                ],
-            },
-            # reset_sync
-            {
-                "name": "reset_sync_clk_rst",
-                "descr": "",
-                "signals": [
-                    {"name": "clk"},
-                    {"name": "reset"},
-                ],
-            },
-            {
-                "name": "reset_sync_arst",
-                "descr": "",
-                "signals": [
-                    {"name": "start", "width": "1"},
-                ],
-            },
-            # pulse_gen
-            {
-                "name": "pulse_gen_clk_en_rst",
-                "descr": "",
-                "signals": [
-                    {"name": "clk"},
-                    {"name": "cke"},
-                    {"name": "reset"},
-                ],
-            },
-            {
-                "name": "pulse_gen_clk_start",
-                "descr": "",
-                "signals": [
-                    {"name": "start"},
-                ],
-            },
-            {
-                "name": "pulse_gen_clk_pulse",
-                "descr": "",
-                "signals": [
-                    {"name": "arst"},
+                    {"name": "clk", "width": "1"},
+                    {"name": "arst", "width": "1"},
                 ],
             },
         ]
+
     #
     # Blocks
     #
     attributes_dict["blocks"] = [
         {
+            # IOb-SoC Memory Wrapper
             "core_name": "iob_soc_mwrap",
             "instance_name": "iob_soc_mwrap",
             "instance_description": "IOb-SoC instance",
@@ -321,7 +267,7 @@ def setup(py_params_dict):
                 "AXI_DATA_W": "AXI_DATA_W",
             },
             "connect": {"rs232": "rs232_int"}
-            | {i["name"]: i["name"] for i in fpga_wrapper_wires},
+            | {i["name"]: i["name"] for i in fpga_wrapper_wires},  # WHAT IS THIS?
             "dest_dir": "hardware/common_src",
             "iob_soc_params": params,
         },
@@ -358,7 +304,7 @@ def setup(py_params_dict):
                     "AXI_DATA_W": "AXI_DATA_W",
                 },
                 "connect": {
-                    "clk_rst": "interconnect_clk_rst",
+                    "clk_rst_i": "clk_rst",
                     "m0_clk_rst": "ddr4_m0_clk_rst",
                     "m0_axi": "ddr4_axi",
                 },
@@ -387,10 +333,10 @@ def setup(py_params_dict):
                     "AXI_DATA_W": "AXI_DATA_W",
                 },
                 "connect": {
-                    "clk_rst": "ddr4_ctr_clk_rst",
-                    "axi_clk_rst": "ddr4_ctr_axi_clk_rst",
+                    "clk_rst": "intercon_clk_rst",
+                    "axi_clk_rst": "ddr4_axi_clk_rst",
                     "axi": "ddr4_axi",
-                    "ddr4": "ddr4",
+                    "ddr4": "ddr4_pins",
                 },
             },
         ]
@@ -406,30 +352,8 @@ def setup(py_params_dict):
                     "INPUT_PER": 4,
                 },
                 "connect": {
-                    "io": "clock_wizard_io",
-                },
-            },
-            # System reset
-            {
-                "core_name": "iob_reset_sync",
-                "instance_name": "start_sync",
-                "connect": {
-                    "clk_rst": "reset_sync_clk_rst",
-                    "arst_o": "reset_sync_arst",
-                },
-            },
-            {
-                "core_name": "iob_pulse_gen",
-                "instance_name": "reset_pulse",
-                "instance_description": "Create reset pulse as reset is never activated manually also, during bitstream loading, the reset pin is not pulled high",
-                "parameters": {
-                    "START": 5,
-                    "DURATION": 10,
-                },
-                "connect": {
-                    "clk_en_rst": "pulse_gen_clk_en_rst",
-                    "start": "pulse_gen_clk_start",
-                    "pulse": "pulse_gen_clk_pulse",
+                    "clk_rst_i": "clk_rst",
+                    "clk_rst_o": "clk_wizard_out",
                 },
             },
         ]
