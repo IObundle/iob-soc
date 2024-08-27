@@ -245,8 +245,8 @@ def setup(py_params_dict):
                 "name": "clk_wizard_out",
                 "descr": "Connect clock wizard outputs to iob-soc clock and reset",
                 "signals": [
-                    {"name": "clk", "width": "1"},
-                    {"name": "arst", "width": "1"},
+                    {"name": "clk"},
+                    {"name": "arst"},
                 ],
             },
         ]

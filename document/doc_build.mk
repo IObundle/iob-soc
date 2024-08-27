@@ -10,7 +10,7 @@ ASICSYNTH?=0
 #default is 0 as EDA tools may not be accessible
 RESULTS ?= 1
 #results for intel FPGA
-INT_FAMILY ?=CYCLONEV-GT-DK
+INT_FAMILY ?=cyclonev_gt_dk
 #results for xilinx fpga
-XIL_FAMILY ?=AES-KU040-DB-G
+XIL_FAMILY ?=aes_ku040_db_g
 

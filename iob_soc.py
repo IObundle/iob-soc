@@ -19,6 +19,7 @@ def setup(py_params_dict):
         "use_compressed": True,
         "use_mul_div": True,
         "build_dir": "",
+        "py2hwsw_target": "",
     }
 
     # Update params with py_params_dict
@@ -47,7 +48,7 @@ def setup(py_params_dict):
     attributes_dict |= {
         "build_dir": params["build_dir"],
         "is_system": True,
-        "board_list": ["CYCLONEV-GT-DK", "AES-KU040-DB-G"],
+        "board_list": ["cyclonev_gt_dk", "aes_ku040_db_g"],
         "confs": [
             # macros
             {  # Needed for testbench
@@ -629,14 +630,14 @@ def setup(py_params_dict):
             "core_name": "iob_soc_ku040_wrapper",
             "instance_name": "iob_soc_ku040_wrapper",
             "instantiate": False,
-            "dest_dir": "hardware/fpga/vivado/AES-KU040-DB-G",
+            "dest_dir": "hardware/fpga/vivado/aes_ku040_db_g",
             "iob_soc_params": params,
         },
         {
             "core_name": "iob_soc_cyclonev_wrapper",
             "instance_name": "iob_soc_cyclonev_wrapper",
             "instantiate": False,
-            "dest_dir": "hardware/fpga/quartus/CYCLONEV-GT-DK",
+            "dest_dir": "hardware/fpga/quartus/cyclonev_gt_dk",
             "iob_soc_params": params,
         },
     ]
@@ -653,6 +654,7 @@ def setup(py_params_dict):
     generate_peripheral_base_addresses(
         peripherals,
         f"{attributes_dict['build_dir']}/software/{attributes_dict['name']}_periphs.h",
+        params,
     )
 
     return attributes_dict

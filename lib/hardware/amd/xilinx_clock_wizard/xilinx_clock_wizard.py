@@ -30,6 +30,8 @@ def setup(py_params_dict):
                     {"name": "clk_n", "direction": "input", "width": "1"},
                     {"name": "arst", "direction": "input", "width": "1"},
                 ],
+            },
+            {
                 "name": "clk_rst_o",
                 "descr": "clock and reset outputs",
                 "signals": [

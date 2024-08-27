@@ -97,8 +97,8 @@ When you start the simulation, IOb-SoC's simulation Makefile will log you on to 
 
 ### Set up the remote FPGA toolchain and board servers
 
-Using the CYCLONEV-GT-DK board as an example, note that in
-`hardware/fpga/quartus/CYCLONEV-GT-DK/Makefile,` the variable for the FPGA tool
+Using the cyclonev_gt_dk board as an example, note that in
+`hardware/fpga/quartus/cyclonev_gt_dk/Makefile,` the variable for the FPGA tool
 server logical name, `FPGA_SERVER,` is set to `QUARTUS_SERVER,` and the
 variable for the user name, `FPGA_USER`, is set to `QUARTUS_USER`; the
 variable for the board server, `BOARD_SERVER,` is set to `CYC5_SERVER`, and
