@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module iob_soc_fpga_wrapper (
+module basys3 (
     input clk,
     input reset,
 

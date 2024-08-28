@@ -10,8 +10,8 @@ def setup(py_params_dict):
     iob_soc_attr = iob_soc.setup(params)
 
     attributes_dict = {
-        "original_name": "iob_soc_cyclonev_wrapper",
-        "name": "iob_soc_fpga_wrapper",
+        "original_name": "cyclonev_gt_dk",
+        "name": "cyclonev_gt_dk",
         "version": "0.1",
         "confs": [
             {

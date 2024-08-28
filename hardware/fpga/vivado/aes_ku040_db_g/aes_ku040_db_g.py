@@ -4,8 +4,8 @@ def setup(py_params_dict):
     params = py_params_dict["iob_soc_params"]
 
     attributes_dict = {
-        "original_name": "iob_soc_ku040_wrapper",
-        "name": "iob_soc_fpga_wrapper",
+        "original_name": "aes_ku040_db_g",
+        "name": "aes_ku040_db_g",
         "version": "0.1",
         #
         # Configuration

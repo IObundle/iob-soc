@@ -627,15 +627,15 @@ def setup(py_params_dict):
         },
         # FPGA wrappers
         {
-            "core_name": "iob_soc_ku040_wrapper",
-            "instance_name": "iob_soc_ku040_wrapper",
+            "core_name": "aes_ku040_db_g",
+            "instance_name": "aes_ku040_db_g",
             "instantiate": False,
             "dest_dir": "hardware/fpga/vivado/aes_ku040_db_g",
             "iob_soc_params": params,
         },
         {
-            "core_name": "iob_soc_cyclonev_wrapper",
-            "instance_name": "iob_soc_cyclonev_wrapper",
+            "core_name": "cyclonev_gt_dk",
+            "instance_name": "cyclonev_gt_dk",
             "instantiate": False,
             "dest_dir": "hardware/fpga/quartus/cyclonev_gt_dk",
             "iob_soc_params": params,
