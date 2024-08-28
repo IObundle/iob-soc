@@ -42,49 +42,13 @@ def setup(py_params_dict):
             },
             {
                 "name": "wb",
+                "interface": {
+                    "type": "wb",
+                    "subtype": "slave",
+                    "ADDR_W": "ADDR_W",
+                    "DATA_W": "DATA_W",
+                },
                 "descr": "Wishbone slave interface",
-                "signals": [
-                    {
-                        "name": "wb_addr",
-                        "width": "ADDR_W",
-                        "direction": "input",
-                    },
-                    {
-                        "name": "wb_select",
-                        "width": "DATA_W/8",
-                        "direction": "input",
-                    },
-                    {
-                        "name": "wb_we",
-                        "width": 1,
-                        "direction": "input",
-                    },
-                    {
-                        "name": "wb_cyc",
-                        "width": 1,
-                        "direction": "input",
-                    },
-                    {
-                        "name": "wb_stb",
-                        "width": 1,
-                        "direction": "input",
-                    },
-                    {
-                        "name": "wb_data",
-                        "width": "DATA_W",
-                        "direction": "input",
-                    },
-                    {
-                        "name": "wb_ack",
-                        "width": 1,
-                        "direction": "output",
-                    },
-                    {
-                        "name": "wb_data",
-                        "width": "DATA_W",
-                        "direction": "output",
-                    },
-                ],
             },
         ],
         "wires": [
@@ -223,16 +187,16 @@ def setup(py_params_dict):
             {
                 "verilog_code": """
              assign iob_valid_o = valid;
-        assign iob_address_o = wb_addr_i;
-        assign iob_wdata_o = wb_data_i;
+        assign iob_address_o = wb_adr_i;
+        assign iob_wdata_o = wb_dat_i;
         assign iob_wstrb_o = wstrb;
         assign valid = (wb_stb_i & wb_cyc_i) & (~valid_r);
         assign rst_valid = (~wb_stb_i) & valid_r;
-        assign wstrb = wb_we_i ? wb_select_i : 4'h0;
-        assign wb_data_o = (iob_rdata_i) & (wb_data_mask);
+        assign wstrb = wb_we_i ? wb_sel_i : 4'h0;
+        assign wb_dat_o = (iob_rdata_i) & (wb_data_mask);
         assign wb_ack_o = iob_rvalid_i | wack_r;
         assign wack = iob_ready_i & iob_valid_o & (|iob_wstrb_o);
-        assign wb_data_mask = {{8{wb_select_i[3]}}, {8{wb_select_i[2]}}, {8{wb_select_i[1]}}, {8{wb_select_i[0]}}};
+        assign wb_data_mask = {{8{wb_sel_i[3]}}, {8{wb_sel_i[2]}}, {8{wb_sel_i[1]}}, {8{wb_sel_i[0]}}};
         assign reg_wack_int= 1'b0; 
         assign reg_wack_int_1= 1'b1;   
                 """,

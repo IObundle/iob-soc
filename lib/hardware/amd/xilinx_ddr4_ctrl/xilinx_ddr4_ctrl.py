@@ -53,7 +53,7 @@ def setup(py_params_dict):
                 ],
             },
             {
-                "name": "ui_clk_rst_out",
+                "name": "ui_clk_out",
                 "signals": [
                     {"name": "clkout", "direction": "output", "width": "1"},
                 ],
@@ -118,7 +118,7 @@ def setup(py_params_dict):
         //AXI INTERFACE         (slave)
         .c0_ddr4_ui_clk         (axi_clk_o),
         .c0_ddr4_ui_clk_sync_rst(axi_clk_rst_o),
-        .c0_ddr4_aresetn        (axi_aresetn_i),
+        .c0_ddr4_aresetn        (axi_arstn_i),
 
         //address write
         .c0_ddr4_s_axi_awid   (axi_awid_i),

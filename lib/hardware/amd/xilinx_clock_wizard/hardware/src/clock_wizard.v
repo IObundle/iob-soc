@@ -115,8 +115,7 @@ module clock_wizard #(
       .CLKOUT0_PHASE     (0.000),
       .CLKOUT0_DUTY_CYCLE(0.500),
       .CLKIN_PERIOD      (INPUT_PER)
-   ) plle3_adv_inst
-   (
+   ) plle3_adv_inst (
       .CLKFBOUT   (clkfbout_clock_wizard),
       .CLKOUT0    (clk_out1_clock_wizard),
       .CLKOUT0B   (clkout0b_unused),
@@ -138,7 +137,7 @@ module clock_wizard #(
       // Other control and status signals
       .LOCKED     (locked_int),
       .PWRDWN     (1'b0),
-      .RST        (arst_i),
+      .RST        (arst_i)
    );
 
 
