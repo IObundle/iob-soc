@@ -60,14 +60,13 @@ def setup(py_params_dict):
                 ],
             },
         ],
-        "combs": [
+        "combs": 
             {
                 "verilog_code": """
             
              data_o = data_i[sel_i*INPUT_W+:INPUT_W];
             """,
             },
-        ],
     }
 
     return attributes_dict

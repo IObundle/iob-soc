@@ -29,14 +29,13 @@ def setup(py_params_dict):
                 ],
             },
         ],
-        "combs": [
+        "combs": 
             {
                 "verilog_code": """
             dec_o        = 0;
             dec_o[dec_i] = 1'b1;
             """,
             },
-        ],
     }
 
     return attributes_dict
