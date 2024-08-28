@@ -13,6 +13,9 @@ proc generate_slave_config_lines {num_slaves} {
 
 if { $USE_EXTMEM > 0 } {
 
+    read_verilog vivado/$BOARD/xilinx_axi_interconnect.v
+    read_verilog vivado/$BOARD/xilinx_ddr4_ctrl.v
+
     if { ![file isdirectory "./ip"]} {
         file mkdir ./ip
     }
