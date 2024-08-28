@@ -3,7 +3,7 @@ def setup(py_params_dict):
         "original_name": "iob_axistream_out",
         "name": "iob_axistream_out",
         "version": "0.3",
-        "board_list": ["CYCLONEV-GT-DK", "AES-KU040-DB-G"],
+        "board_list": ["cyclonev_gt_dk", "aes_ku040_db_g"],
         "confs": [
             {
                 "name": "DATA_W",

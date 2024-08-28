@@ -1,16 +1,21 @@
 import os
 
 
-def generate_peripheral_base_addresses(peripherals_list, out_file):
+def generate_peripheral_base_addresses(peripherals_list, out_file, params):
     """Create C header file containing peripheral base addresses.
     :param list peripherals_list: list of peripheral blocks
     :param str out_file: output file path
+    :param dict params: iob_soc python parameters
     """
     # Don't override output file
     if os.path.isfile(out_file):
         return
 
     n_slaves_w = (len(peripherals_list) - 1).bit_length()
+
+    # Don't create files for other targets (like clean)
+    if params["py2hwsw_target"] != "setup":
+        return
 
     os.makedirs(os.path.dirname(out_file), exist_ok=True)
     with open(out_file, "w") as f:
@@ -29,6 +34,10 @@ def generate_makefile_segments(attributes_dict, peripherals, params):
     """
     name = attributes_dict["name"]
     build_dir = attributes_dict["build_dir"]
+
+    # Don't create files for other targets (like clean)
+    if params["py2hwsw_target"] != "setup":
+        return
 
     #
     # Create auto_sw_build.mk
