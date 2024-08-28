@@ -29,7 +29,7 @@ def setup(py_params_dict):
                 ],
             },
         ],
-        "combs": 
+        "comb": 
             {
                 "verilog_code": """
             dec_o        = 0;
