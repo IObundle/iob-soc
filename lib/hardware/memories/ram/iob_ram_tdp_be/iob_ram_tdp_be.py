@@ -48,79 +48,31 @@ def setup(py_params_dict):
         ],
         "ports": [
             {
-                "name": "clk_i",
-                "descr": "Input port",
+                "name": "clk",
+                "descr": "Clock",
                 "signals": [
                     {"name": "clk", "width": 1, "direction": "input"},
                 ],
             },
             {
-                "name": "enA_i",
-                "descr": "Input",
+                "name": "port_a",
+                "descr": "Memory interface A",
                 "signals": [
                     {"name": "enA", "width": 1, "direction": "input"},
-                ],
-            },
-            {
-                "name": "weA_i",
-                "descr": "Input",
-                "signals": [
                     {"name": "weA", "width": "DATA_W/8", "direction": "input"},
-                ],
-            },
-            {
-                "name": "addrA_i",
-                "descr": "Input",
-                "signals": [
                     {"name": "addrA", "width": "ADDR_W", "direction": "input"},
-                ],
-            },
-            {
-                "name": "dA_i",
-                "descr": "Input",
-                "signals": [
                     {"name": "dA", "width": "DATA_W", "direction": "input"},
-                ],
-            },
-            {
-                "name": "enB_i",
-                "descr": "Input",
-                "signals": [
-                    {"name": "enB", "width": 1, "direction": "input"},
-                ],
-            },
-            {
-                "name": "weB_i",
-                "descr": "Input",
-                "signals": [
-                    {"name": "weB", "width": "DATA_W/8", "direction": "input"},
-                ],
-            },
-            {
-                "name": "addrB_i",
-                "descr": "Input",
-                "signals": [
-                    {"name": "addrB", "width": "ADDR_W", "direction": "input"},
-                ],
-            },
-            {
-                "name": "dB_i",
-                "descr": "Input",
-                "signals": [
-                    {"name": "dB", "width": "DATA_W", "direction": "input"},
-                ],
-            },
-            {
-                "name": "dA_o",
-                "descr": "Output",
-                "signals": [
                     {"name": "dA", "width": "DATA_W", "direction": "output"},
                 ],
             },
             {
-                "name": "dB_o",
-                "descr": "Output",
+                "name": "port_b",
+                "descr": "Memory interface B",
                 "signals": [
+                    {"name": "enB", "width": 1, "direction": "input"},
+                    {"name": "weB", "width": "DATA_W/8", "direction": "input"},
+                    {"name": "addrB", "width": "ADDR_W", "direction": "input"},
+                    {"name": "dB", "width": "DATA_W", "direction": "input"},
                     {"name": "dB", "width": "DATA_W", "direction": "output"},
                 ],
             },
