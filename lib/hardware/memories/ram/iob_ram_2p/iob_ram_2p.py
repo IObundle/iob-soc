@@ -127,6 +127,12 @@ def setup(py_params_dict):
                 ],
             },
         ],
+        "blocks": [
+            {
+                "core_name": "iob_ram_2p",
+                "instantiate": False,
+            },
+        ],
     }
 
     return attributes_dict

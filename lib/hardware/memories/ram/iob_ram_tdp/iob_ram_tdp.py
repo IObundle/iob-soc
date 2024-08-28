@@ -40,10 +40,10 @@ def setup(py_params_dict):
         ],
         "ports": [
             {
-                "name": "clkA_i",
+                "name": "clk_i",
                 "descr": "Input port",
                 "signals": [
-                    {"name": "clkA", "width": 1, "direction": "input"},
+                    {"name": "clk", "width": 1, "direction": "input"},
                 ],
             },
             {
@@ -72,13 +72,6 @@ def setup(py_params_dict):
                 "descr": "Input",
                 "signals": [
                     {"name": "weA", "width": 1, "direction": "input"},
-                ],
-            },
-            {
-                "name": "clkB_i",
-                "descr": "Input port",
-                "signals": [
-                    {"name": "clkB", "width": 1, "direction": "input"},
                 ],
             },
             {
