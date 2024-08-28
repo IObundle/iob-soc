@@ -3,7 +3,7 @@ def setup(py_params_dict):
         "original_name": "iob_uart",
         "name": "iob_uart",
         "version": "0.1",
-        "board_list": ["CYCLONEV-GT-DK", "AES-KU040-DB-G"],
+        "board_list": ["cyclonev_gt_dk", "aes_ku040_db_g"],
         "confs": [
             {
                 "name": "DATA_W",

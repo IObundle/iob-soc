@@ -20,6 +20,7 @@ def setup(py_params_dict):
         "fw_addr": 0,
         "fw_addr_w": 15,
         "build_dir": "",
+        "py2hwsw_target": "",
     }
 
     # Update params with py_params_dict
@@ -41,14 +42,14 @@ def setup(py_params_dict):
     }
 
     if not params["build_dir"]:
-        params["build_dir"] = (
-            f"../{attributes_dict['name']}_V{attributes_dict['version']}"
-        )
+        params[
+            "build_dir"
+        ] = f"../{attributes_dict['name']}_V{attributes_dict['version']}"
 
     attributes_dict |= {
         "build_dir": params["build_dir"],
         "is_system": True,
-        "board_list": ["CYCLONEV-GT-DK", "AES-KU040-DB-G"],
+        "board_list": ["cyclonev_gt_dk", "aes_ku040_db_g"],
         "confs": [
             # macros
             {  # Needed for testbench
@@ -282,7 +283,6 @@ def setup(py_params_dict):
             "name": "cpu_i",
             "interface": {
                 "type": "iob",
-                "file_prefix": "iob_soc_cpu_i_",
                 "wire_prefix": "cpu_i_",
                 "DATA_W": params["data_w"],
                 "ADDR_W": params["addr_w"],
@@ -293,7 +293,6 @@ def setup(py_params_dict):
             "name": "cpu_d",
             "interface": {
                 "type": "iob",
-                "file_prefix": "iob_soc_cpu_d_",
                 "wire_prefix": "cpu_d_",
                 "DATA_W": params["data_w"],
                 "ADDR_W": params["addr_w"],
@@ -372,7 +371,6 @@ def setup(py_params_dict):
             "name": "uart_csrs",
             "interface": {
                 "type": "iob",
-                "file_prefix": "iob_soc_uart_csrs_",
                 "wire_prefix": "uart_csrs_",
                 "DATA_W": params["data_w"],
                 "ADDR_W": params["addr_w"] - 3,
@@ -383,7 +381,6 @@ def setup(py_params_dict):
             "name": "timer_csrs",
             "interface": {
                 "type": "iob",
-                "file_prefix": "iob_soc_timer_csrs_",
                 "wire_prefix": "timer_csrs_",
                 "DATA_W": params["data_w"],
                 "ADDR_W": params["addr_w"] - 3,
@@ -553,14 +550,14 @@ def setup(py_params_dict):
             "core_name": "iob_soc_ku040_wrapper",
             "instance_name": "iob_soc_ku040_wrapper",
             "instantiate": False,
-            "dest_dir": "hardware/fpga/vivado/AES-KU040-DB-G",
+            "dest_dir": "hardware/fpga/vivado/aes_ku040_db_g",
             "iob_soc_params": params,
         },
         {
             "core_name": "iob_soc_cyclonev_wrapper",
             "instance_name": "iob_soc_cyclonev_wrapper",
             "instantiate": False,
-            "dest_dir": "hardware/fpga/quartus/CYCLONEV-GT-DK",
+            "dest_dir": "hardware/fpga/quartus/cyclonev_gt_dk",
             "iob_soc_params": params,
         },
     ]
@@ -621,6 +618,7 @@ iob_pulse_gen #(
     generate_peripheral_base_addresses(
         peripherals,
         f"{attributes_dict['build_dir']}/software/{attributes_dict['name']}_periphs.h",
+        params,
     )
 
     return attributes_dict
