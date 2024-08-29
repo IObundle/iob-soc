@@ -97,14 +97,6 @@ def setup(py_params_dict):
                 "core_name": "iob_ram_t2p",
                 "instance_name": "iob_ram_t2p_inst",
             },
-             {
-                "core_name": "muxN",
-                "instance_name": "muxN_inst",
-            },
-            {
-                "core_name": "decN",
-                "instance_name": "decN_inst",
-            },
         ],
     }
 
