@@ -289,7 +289,7 @@ def setup(py_params_dict):
             "instance_name": "uart_tb",
             "connect": {
                 "clk_en_rst": "clk_en_rst",
-                "iob": "uart",
+                "cbus": "uart",
                 "rs232": "rs232_invert",
             },
         },

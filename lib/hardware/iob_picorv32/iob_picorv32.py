@@ -37,14 +37,6 @@ def setup(py_params_dict):
                 "max": "1",
                 "descr": "description here",
             },
-            {
-                "name": "USE_EXTMEM",
-                "type": "P",
-                "val": "0",
-                "min": "0",
-                "max": "1",
-                "descr": "Select if configured for usage with external memory.",
-            },
         ],
         "ports": [
             {

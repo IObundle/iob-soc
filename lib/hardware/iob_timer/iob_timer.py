@@ -39,7 +39,7 @@ def setup(py_params_dict):
                 "descr": "Clock, clock enable and reset",
             },
             {
-                "name": "iob",
+                "name": "cbus",
                 "interface": {
                     "type": "iob",
                     "subtype": "slave",
@@ -166,7 +166,7 @@ def setup(py_params_dict):
                 ],
                 "connect": {
                     "clk_en_rst": "clk_en_rst",
-                    "control_if": "iob",
+                    "control_if": "cbus",
                     # Register interfaces
                     "reset": "reset",
                     "enable": "enable",
