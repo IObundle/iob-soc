@@ -8,35 +8,35 @@ def setup(py_params_dict):
         "confs": [
             {
                 "name": "AXI_ID_W",
+                "descr": "AXI ID bus width",
                 "type": "F",
                 "val": "1",
                 "min": "1",
                 "max": "32",
-                "descr": "AXI ID bus width",
             },
             {
                 "name": "AXI_LEN_W",
+                "descr": "AXI burst length width",
                 "type": "F",
                 "val": "4",
                 "min": "1",
                 "max": "8",
-                "descr": "AXI burst length width",
             },
             {
                 "name": "AXI_ADDR_W",
+                "descr": "AXI address bus width",
                 "type": "F",
                 "val": "`DDR_ADDR_W" if params["use_extmem"] else "15",
                 "min": "1",
                 "max": "32",
-                "descr": "AXI address bus width",
             },
             {
                 "name": "AXI_DATA_W",
+                "descr": "AXI data bus width",
                 "type": "F",
                 "val": "`DDR_DATA_W",
                 "min": "1",
                 "max": "32",
-                "descr": "AXI data bus width",
             },
         ],
     }
@@ -129,13 +129,11 @@ def setup(py_params_dict):
     #
     attributes_dict["wires"] = [
         {
-            "name": "soc_clk_en_rst",
-            "descr": "",
-            "signals": [
-                {"name": "clk"},
-                {"name": "cke", "width": "1"},
-                {"name": "arst", "width": "1"},
-            ],
+            "name": "clk_en_rst",
+            "descr": "Clock, clock enable and reset",
+            "interface": {
+                "type": "clk_en_rst",
+            },
         },
         {
             "name": "rs232_int",
@@ -149,7 +147,7 @@ def setup(py_params_dict):
         },
         {
             "name": "axi",
-            "descr": "AXI interface to connect SoC to external memory",
+            "descr": "AXI interface to connect SoC to memory",
             "interface": {
                 "type": "axi",
                 "ID_W": "AXI_ID_W",
@@ -157,14 +155,6 @@ def setup(py_params_dict):
                 "DATA_W": "AXI_DATA_W",
                 "LEN_W": "AXI_LEN_W",
             },
-        },
-        {
-            "name": "s0_clk_rst",
-            "descr": "Interconnect slave 0 clock reset interface",
-            "signals": [
-                {"name": "clk"},
-                {"name": "s0_arstn", "width": "1"},
-            ],
         },
         {
             "name": "reset_sync_clk_rst",
@@ -270,7 +260,7 @@ def setup(py_params_dict):
                 "AXI_DATA_W": "AXI_DATA_W",
             },
             "connect": {
-                "clk_en_rst": "soc_clk_en_rst",
+                "clk_en_rst": "clk_en_rst",
                 "cpu_trap": "trap",
                 "rs232": "rs232_int",
                 "axi": "axi",

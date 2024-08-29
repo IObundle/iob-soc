@@ -8,35 +8,35 @@ def setup(py_params_dict):
         "confs": [
             {
                 "name": "AXI_ID_W",
+                "descr": "AXI ID bus width",
                 "type": "F",
                 "val": "4",
                 "min": "1",
                 "max": "32",
-                "descr": "AXI ID bus width",
             },
             {
                 "name": "AXI_LEN_W",
+                "descr": "AXI burst length width",
                 "type": "F",
                 "val": "8",
                 "min": "1",
                 "max": "8",
-                "descr": "AXI burst length width",
             },
             {
                 "name": "AXI_ADDR_W",
+                "descr": "AXI address bus width",
                 "type": "F",
                 "val": "`DDR_ADDR_W",
                 "min": "1",
                 "max": "32",
-                "descr": "AXI address bus width",
             },
             {
                 "name": "AXI_DATA_W",
+                "descr": "AXI data bus width",
                 "type": "F",
                 "val": "`DDR_DATA_W",
                 "min": "1",
                 "max": "32",
-                "descr": "AXI data bus width",
             },
         ],
     }
@@ -46,11 +46,11 @@ def setup(py_params_dict):
     attributes_dict["ports"] = [
         {
             "name": "clk_en_rst",
+            "descr": "Clock, clock enable and reset",
             "interface": {
                 "type": "clk_en_rst",
                 "subtype": "slave",
             },
-            "descr": "Clock, clock enable and reset",
         },
         {
             "name": "trap",
@@ -61,25 +61,25 @@ def setup(py_params_dict):
         },
         {
             "name": "uart",
+            "descr": "Testbench uart csrs interface",
             "interface": {
                 "type": "iob",
                 "subtype": "slave",
                 "port_prefix": "uart_",
                 "ADDR_W": 3,
             },
-            "descr": "Testbench uart csrs interface",
         },
     ]
     if params["use_ethernet"]:
         attributes_dict["ports"] += [
             {
                 "name": "ethernet",
+                "descr": "Testbench ethernet csrs interface",
                 "interface": {
                     "type": "iob",
                     "subtype": "slave",
                     "port_prefix": "ethernet_",
                 },
-                "descr": "Testbench ethernet csrs interface",
             },
         ]
 
@@ -146,11 +146,11 @@ def setup(py_params_dict):
         attributes_dict["wires"] += [
             {
                 "name": "eth_axi",
+                "descr": "Ethernet AXI bus",
                 "interface": {
                     "type": "axi",
                     "wire_prefix": "eth_",
                 },
-                "descr": "Ethernet AXI bus",
             },
             {
                 "name": "eth_mii_invert",

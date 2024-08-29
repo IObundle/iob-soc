@@ -8,36 +8,24 @@ def setup(py_params_dict):
 
     iob_soc_attr = iob_soc.setup(params)
 
-    # TODO: Generate this source in the common_src directory
     attributes_dict = {
         "original_name": "iob_soc_mwrap",
         "name": "iob_soc_mwrap",
         "version": "0.1",
         "confs": [
             {
-                "name": "HEXFILE",
-                "type": "P",
-                "val": (
-                    '"iob_soc_firmware"'
-                    if params["init_mem"] and not params["use_extmem"]
-                    else '"none"'
-                ),
-                "min": "NA",
-                "max": "NA",
-                "descr": "Firmware file name",
-            },
-            {
                 "name": "BOOT_HEXFILE",
+                "descr": "Bootloader file name",
                 "type": "P",
                 "val": '"iob_soc_boot"',
                 "min": "NA",
                 "max": "NA",
-                "descr": "Bootloader file name",
             },
         ]
         + iob_soc_attr["confs"],
     }
 
+    # Declare memory wrapper ports and wires automatically based on iob-soc ports.
     mwrap_wires = []
     mwrap_ports = []
     for port in iob_soc_attr["ports"]:
@@ -52,12 +40,13 @@ def setup(py_params_dict):
             mwrap_wires.append(wire)
         else:
             mwrap_ports.append(port)
+
     attributes_dict["ports"] = mwrap_ports
 
     attributes_dict["wires"] = mwrap_wires + [
         {
             "name": "clk",
-            "descr": "",
+            "descr": "Clock signal",
             "signals": [
                 {"name": "clk"},
             ],
@@ -68,6 +57,7 @@ def setup(py_params_dict):
         {
             "core_name": "iob_rom_sp",
             "instance_name": "boot_rom",
+            "instance_description": "Boot ROM",
             "parameters": {
                 "ADDR_W": "BOOTROM_ADDR_W",
                 "DATA_W": params["data_w"],
@@ -82,6 +72,7 @@ def setup(py_params_dict):
         {
             "core_name": "iob_soc",
             "instance_name": "iob_soc",
+            "instance_description": "IOb-SoC core",
             "parameters": {
                 i["name"]: i["name"]
                 for i in iob_soc_attr["confs"]
