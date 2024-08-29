@@ -3,8 +3,8 @@ def setup(py_params_dict):
     DATA_W = py_params_dict["data_w"] if "data_w" in py_params_dict else 32
     MEM_ADDR_W = py_params_dict["mem_addr_w"] if "mem_addr_w" in py_params_dict else 32
     attributes_dict = {
-        "original_name": "iob_soc_ext_mem",
-        "name": "iob_soc_ext_mem",
+        "original_name": "iob_soc_cache_system",
+        "name": "iob_soc_cache_system",
         "version": "0.1",
         "confs": [
             {
@@ -212,7 +212,7 @@ def setup(py_params_dict):
       .be_ready_i  (icache_be_iob_ready)
   );
 
-  //ext_mem control signals
+  //mem control signals
   wire l2_wtb_empty;
   wire invalidate;
   reg  invalidate_reg;
@@ -295,7 +295,7 @@ def setup(py_params_dict):
       .wtb_empty_i (1'b1),
       .wtb_empty_o (l2_wtb_empty),
       // AXI interface
-      `include "iob_soc_ext_mem_axi_m_m_portmap.vs"
+      `include "iob_soc_cache_system_axi_m_m_portmap.vs"
       .clk_i       (clk_i),
       .cke_i       (cke_i),
       .arst_i      (arst_i)

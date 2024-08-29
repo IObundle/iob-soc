@@ -11,13 +11,14 @@ def setup(py_params_dict):
     params = {
         "init_mem": False,
         "use_extmem": False,
-        "use_spram": False,
         "use_ethernet": False,
         "addr_w": 32,
         "data_w": 32,
         "mem_addr_w": 24,
         "use_compressed": True,
         "use_mul_div": True,
+        "fw_addr": 0,
+        "fw_addr_w": 15,
         "build_dir": "",
         "py2hwsw_target": "",
     }
@@ -32,7 +33,7 @@ def setup(py_params_dict):
             params[name] = type(default_val)(py_params_dict[name])
 
     # Number of peripherals
-    N_SLAVES = 2
+    N_SLAVES = 3
 
     attributes_dict = {
         "original_name": "iob_soc",
@@ -107,14 +108,38 @@ def setup(py_params_dict):
                 "max": "32",
                 "descr": "Memory bus address width",
             },
+            {  # Needed for software
+                "name": "FW_ADDR",
+                "type": "M",
+                "val": params["fw_addr"],
+                "min": "0",
+                "max": "32",
+                "descr": "Firmware address",
+            },
+            {  # Needed for software
+                "name": "FW_ADDR_W",
+                "type": "M",
+                "val": params["fw_addr_w"],
+                "min": "0",
+                "max": "32",
+                "descr": "Firmware address",
+            },
             # parameters
+            {
+                "name": "PREBOOTROM_ADDR_W",
+                "type": "P",
+                "val": "7",
+                "min": "1",
+                "max": "32",
+                "descr": "Preboot ROM address width",
+            },
             {
                 "name": "BOOTROM_ADDR_W",
                 "type": "P",
                 "val": "12",
                 "min": "1",
                 "max": "32",
-                "descr": "Boot ROM address width",
+                "descr": "Bootloader ROM address width",
             },
             {
                 "name": "SRAM_ADDR_W",
@@ -188,65 +213,28 @@ def setup(py_params_dict):
                 },
             ],
         },
-        # Internal memory ports for Memory Wrapper
         {
             "name": "rom_bus",
             "descr": "Ports for connection with ROM memory",
             "signals": [
                 {
-                    "name": "rom_r_valid",
+                    "name": "boot_rom_valid",
                     "direction": "output",
                     "width": "1",
                 },
                 {
-                    "name": "rom_r_addr",
+                    "name": "boot_rom_addr",
                     "direction": "output",
-                    "width": "BOOTROM_ADDR_W-2",
+                    "width": "BOOTROM_ADDR_W",
                 },
                 {
-                    "name": "rom_r_rdata",
+                    "name": "boot_rom_rdata",
                     "direction": "input",
                     "width": params["data_w"],
                 },
             ],
         },
     ]
-    if params["use_spram"]:
-        attributes_dict["ports"] += [
-            {
-                "name": "spram_bus",
-                "interface": {
-                    "type": "iob",
-                    "port_prefix": "spram_",
-                    "DATA_W": params["data_w"],
-                    "ADDR_W": "SRAM_ADDR_W-2",
-                },
-                "descr": "Data bus",
-            },
-        ]
-    else:  # Not params["use_spram"]
-        attributes_dict["ports"] += [
-            {
-                "name": "sram_i_bus",
-                "interface": {
-                    "type": "iob",
-                    "port_prefix": "sram_i_",
-                    "DATA_W": params["data_w"],
-                    "ADDR_W": "SRAM_ADDR_W-2",
-                },
-                "descr": "Data bus",
-            },
-            {
-                "name": "sram_d_bus",
-                "interface": {
-                    "type": "iob",
-                    "port_prefix": "sram_d_",
-                    "DATA_W": params["data_w"],
-                    "ADDR_W": "SRAM_ADDR_W-2",
-                },
-                "descr": "Data bus",
-            },
-        ]
     attributes_dict["ports"] += [
         # Peripheral IO ports
         {
@@ -257,39 +245,28 @@ def setup(py_params_dict):
             "descr": "iob-soc uart interface",
         },
     ]
-    if params["use_extmem"]:
-        attributes_dict["ports"] += [
-            {
-                "name": "axi",
-                "interface": {
-                    "type": "axi",
-                    "subtype": "master",
-                    "ID_W": "AXI_ID_W",
-                    "ADDR_W": "AXI_ADDR_W",
-                    "DATA_W": "AXI_DATA_W",
-                    "LEN_W": "AXI_LEN_W",
-                },
-                "descr": "AXI master interface for external memory",
+    attributes_dict["ports"] += [
+        {
+            "name": "axi",
+            "interface": {
+                "type": "axi",
+                "subtype": "master",
+                "ID_W": "AXI_ID_W",
+                "ADDR_W": "AXI_ADDR_W",
+                "DATA_W": "AXI_DATA_W",
+                "LEN_W": "AXI_LEN_W",
             },
-            # TODO: Add axi interfaces automatically for peripherals with DMA
-        ]
+            "descr": "AXI master interface for external memory",
+        },
+        # TODO: Add axi interfaces automatically for peripherals with DMA
+    ]
 
     attributes_dict["wires"] = [
         # CPU interface wires
         {
-            "name": "cpu_clk_en_rst",
-            "descr": "",
-            "signals": [
-                {"name": "clk"},
-                {"name": "cke"},
-                {"name": "cpu_reset", "width": "1"},
-            ],
-        },
-        {
             "name": "cpu_general",
             "descr": "",
             "signals": [
-                {"name": "boot", "width": "1"},
                 {"name": "trap"},
             ],
         },
@@ -319,7 +296,7 @@ def setup(py_params_dict):
                 "type": "iob",
                 "wire_prefix": "cpu_pbus_",
                 "DATA_W": params["data_w"],
-                "ADDR_W": params["addr_w"] - 2,
+                "ADDR_W": params["addr_w"] - 1,
             },
             "descr": "cpu peripheral bus",
         },
@@ -327,88 +304,58 @@ def setup(py_params_dict):
             "name": "split_reset",
             "descr": "Reset signal for iob_split components",
             "signals": [
-                {"name": "cpu_reset"},
+                {"name": "arst"},
             ],
         },
-        # Internal memory wires
+    ]
+    attributes_dict["wires"] += [
+        # External memory wires
         {
-            "name": "int_mem_i",
+            "name": "cache_system_i",
             "interface": {
                 "type": "iob",
-                "wire_prefix": "int_mem_i_",
+                "file_prefix": "iob_soc_cache_system_i_",
+                "wire_prefix": "cache_system_i_",
                 "DATA_W": params["data_w"],
                 "ADDR_W": params["addr_w"] - 1,
             },
-            "descr": "iob-soc internal memory instruction interface",
+            "descr": "iob-soc external memory instruction interface",
         },
         {
-            "name": "int_mem_general",
-            "descr": "General signals for internal memory",
-            "signals": [
-                {"name": "boot"},
-                {"name": "cpu_reset"},
-            ],
-        },
-    ]
-    if params["use_extmem"]:
-        attributes_dict["wires"] += [
-            {
-                "name": "int_d",
-                "interface": {
-                    "type": "iob",
-                    "wire_prefix": "int_d_",
-                    "DATA_W": params["data_w"],
-                    "ADDR_W": params["addr_w"] - 1,
-                },
-                "descr": "iob-soc internal data interface",
-            },
-        ]
-    attributes_dict["wires"] += [
-        {
-            "name": "int_mem_d",
+            "name": "cache_system_d",
             "interface": {
                 "type": "iob",
-                "wire_prefix": "int_mem_d_",
+                "file_prefix": "iob_soc_cache_system_d_",
+                "wire_prefix": "cache_system_d_",
                 "DATA_W": params["data_w"],
-                "ADDR_W": params["addr_w"] - 2,
+                "ADDR_W": params["addr_w"] - 1,
             },
-            "descr": "iob-soc internal memory data interface",
+            "descr": "iob-soc external memory data interface",
+        },
+        {
+            "name": "mem_clk_en_rst",
+            "descr": "",
+            "signals": [
+                {"name": "clk"},
+                {"name": "cke"},
+                {"name": "arst"},
+            ],
+        },
+        # Verilog Snippets for other modules
+    ]
+    attributes_dict["wires"] += [
+        {
+            "name": "bootrom_i",
+            "interface": {
+                "type": "iob",
+                "file_prefix": "bootrom_i_",
+                "wire_prefix": "bootrom_i_",
+                "DATA_W": params["data_w"],
+                "ADDR_W": params["addr_w"] - 1,
+            },
+            "descr": "iob-soc boot controller instruction interface",
         },
     ]
-    if params["use_extmem"]:
-        attributes_dict["wires"] += [
-            # External memory wires
-            {
-                "name": "ext_mem_i",
-                "interface": {
-                    "type": "iob",
-                    "wire_prefix": "ext_mem_i_",
-                    "DATA_W": params["data_w"],
-                    "ADDR_W": params["addr_w"] - 1,
-                },
-                "descr": "iob-soc external memory instruction interface",
-            },
-            {
-                "name": "ext_mem_d",
-                "interface": {
-                    "type": "iob",
-                    "wire_prefix": "ext_mem_d_",
-                    "DATA_W": params["data_w"],
-                    "ADDR_W": params["addr_w"] - 1,
-                },
-                "descr": "iob-soc external memory data interface",
-            },
-            {
-                "name": "ext_mem_clk_en_rst",
-                "descr": "",
-                "signals": [
-                    {"name": "clk"},
-                    {"name": "cke"},
-                    {"name": "cpu_reset", "width": "1"},
-                ],
-            },
-            # Verilog Snippets for other modules
-        ]
     attributes_dict["wires"] += [
         # Peripheral wires
         {
@@ -431,6 +378,17 @@ def setup(py_params_dict):
             },
             "descr": "TIMER csrs bus",
         },
+        {
+            "name": "bootrom_csrs",
+            "interface": {
+                "type": "iob",
+                "file_prefix": "iob_soc_bootrom_csrs_",
+                "wire_prefix": "bootrom_csrs_",
+                "DATA_W": params["data_w"],
+                "ADDR_W": params["addr_w"] - 3,
+            },
+            "descr": "BOOTROM csrs bus",
+        },
         # TODO: Auto add peripheral wires
     ]
     attributes_dict["blocks"] = [
@@ -446,125 +404,52 @@ def setup(py_params_dict):
                 "USE_EXTMEM": int(params["use_extmem"]),
             },
             "connect": {
-                "clk_en_rst": "cpu_clk_en_rst",
+                "clk_en_rst": "clk_en_rst",
                 "general": "cpu_general",
                 "i_bus": "cpu_i",
                 "d_bus": "cpu_d",
             },
         },
     ]
-    if params["use_extmem"]:
-        attributes_dict["blocks"] += [
-            {
-                "core_name": "iob_split",
-                "name": "iob_ibus_split",
-                "instance_name": "iob_ibus_split",
-                "instance_description": "Instruction split between internal and external memory",
-                "connect": {
-                    "clk_en_rst": "clk_en_rst",
-                    "reset": "split_reset",
-                    "input": "cpu_i",
-                    "output_0": "int_mem_i",
-                    "output_1": "ext_mem_i",
-                },
-                "num_outputs": 2,
-                "addr_w": params["addr_w"],
-            },
-            {
-                "core_name": "iob_split",
-                "name": "iob_dbus_split",
-                "instance_name": "iob_dbus_split",
-                "instance_description": "Data split between internal bus and external memory",
-                "connect": {
-                    "clk_en_rst": "clk_en_rst",
-                    "reset": "split_reset",
-                    "input": "cpu_d",
-                    "output_0": "int_d",
-                    "output_1": "ext_mem_d",
-                },
-                "num_outputs": 2,
-                "addr_w": params["addr_w"],
-            },
-        ]
     attributes_dict["blocks"] += [
         {
-            "core_name": "iob_soc_int_mem",
-            "instance_name": "int_mem",
-            "instance_description": "Internal memory controller",
+            "core_name": "iob_soc_cache_system",
+            "instance_name": "cache_system",
             "parameters": {
-                "HEXFILE": '"iob_soc_firmware"',
-                "BOOT_HEXFILE": '"iob_soc_boot"',
-                "SRAM_ADDR_W": "SRAM_ADDR_W",
-                "BOOTROM_ADDR_W": "BOOTROM_ADDR_W",
+                "FIRM_ADDR_W": params["mem_addr_w"],
+                "DDR_ADDR_W ": "`DDR_ADDR_W",
+                "DDR_DATA_W ": "`DDR_DATA_W",
+                "AXI_ID_W   ": "AXI_ID_W",
+                "AXI_LEN_W  ": "AXI_LEN_W",
+                "AXI_ADDR_W ": "AXI_ADDR_W",
+                "AXI_DATA_W ": "AXI_DATA_W",
             },
             "connect": {
-                "clk_en_rst": "clk_en_rst",
-                "general": "int_mem_general",
-                "i_bus": "int_mem_i" if params["use_extmem"] else "cpu_i",
-                "d_bus": "int_mem_d",
-                "rom_bus": "rom_bus",
+                "clk_en_rst": "mem_clk_en_rst",
+                "i_bus": "cache_system_i",
+                "d_bus": "cache_system_d",
+                "axi": "axi",
             },
-            "USE_SPRAM": int(params["use_spram"]),
-            "USE_EXTMEM": int(params["use_extmem"]),
-            "INIT_MEM": int(params["init_mem"]),
             "addr_w": params["addr_w"] - 1,
             "data_w": params["data_w"],
+            "mem_addr_w": params["mem_addr_w"],
         },
     ]
-    if params["use_spram"]:
-        attributes_dict["blocks"][-1]["connect"].update(
-            {
-                "spram_bus": "spram_bus",
-            }
-        )
-    else:  # Not params["use_spram"]
-        attributes_dict["blocks"][-1]["connect"].update(
-            {
-                "sram_i_bus": "sram_i_bus",
-                "sram_d_bus": "sram_d_bus",
-            }
-        )
-    if params["use_extmem"]:
-        attributes_dict["blocks"] += [
-            {
-                "core_name": "iob_soc_ext_mem",
-                "instance_name": "ext_mem",
-                "instance_description": "External memory controller",
-                "parameters": {
-                    "FIRM_ADDR_W": params["mem_addr_w"],
-                    "DDR_ADDR_W ": "`DDR_ADDR_W",
-                    "DDR_DATA_W ": "`DDR_DATA_W",
-                    "AXI_ID_W   ": "AXI_ID_W",
-                    "AXI_LEN_W  ": "AXI_LEN_W",
-                    "AXI_ADDR_W ": "AXI_ADDR_W",
-                    "AXI_DATA_W ": "AXI_DATA_W",
-                },
-                "connect": {
-                    "clk_en_rst": "ext_mem_clk_en_rst",
-                    "i_bus": "ext_mem_i",
-                    "d_bus": "ext_mem_d",
-                    "axi": "axi",
-                },
-                "addr_w": params["addr_w"] - 1,
-                "data_w": params["data_w"],
-                "mem_addr_w": params["mem_addr_w"],
-            },
-        ]
     attributes_dict["blocks"] += [
         {
             "core_name": "iob_split",
-            "name": "iob_intmem_split",
-            "instance_name": "iob_intmem_split",
-            "instance_description": "Split between internal memory and peripheral bus",
+            "name": "iob_data_split",
+            "instance_name": "iob_data_split",
+            "instance_description": "Split between memory and peripheral bus",
             "connect": {
                 "clk_en_rst": "clk_en_rst",
                 "reset": "split_reset",
-                "input": "int_d" if params["use_extmem"] else "cpu_d",
-                "output_0": "int_mem_d",
+                "input": "cpu_d",
+                "output_0": "cache_system_d",
                 "output_1": "cpu_pbus",
             },
             "num_outputs": 2,
-            "addr_w": params["addr_w"] - 1,
+            "addr_w": params["addr_w"],
         },
         {
             "core_name": "iob_split",
@@ -577,10 +462,26 @@ def setup(py_params_dict):
                 "input": "cpu_pbus",
                 "output_0": "uart_csrs",
                 "output_1": "timer_csrs",
+                "output_2": "bootrom_csrs",
                 # TODO: Connect peripherals automatically
             },
             "num_outputs": N_SLAVES,
-            "addr_w": params["addr_w"] - 2,
+            "addr_w": params["addr_w"] - 1,
+        },
+        {
+            "core_name": "iob_split",
+            "name": "iob_instr_split",
+            "instance_name": "iob_instr_split",
+            "instance_description": "Split between memory and bootrom bus",
+            "connect": {
+                "clk_en_rst": "clk_en_rst",
+                "reset": "split_reset",
+                "input": "cpu_i",
+                "output_0": "cache_system_i",
+                "output_1": "bootrom_i",
+            },
+            "num_outputs": 2,
+            "addr_w": params["addr_w"],
         },
     ]
     peripherals = [
@@ -604,6 +505,18 @@ def setup(py_params_dict):
             "connect": {
                 "clk_en_rst": "clk_en_rst",
                 "iob": "timer_csrs",
+            },
+        },
+        {
+            "core_name": "iob_bootrom",
+            "instance_name": "BOOTROM0",
+            "instance_description": "Boot ROM peripheral",
+            "parameters": {},
+            "connect": {
+                "clk_en_rst": "clk_en_rst",
+                "cbus": "bootrom_csrs",
+                "ibus": "bootrom_i",
+                "ext_rom_bus": "rom_bus",
             },
         },
     ]

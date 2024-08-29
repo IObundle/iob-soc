@@ -76,12 +76,6 @@ def setup(py_params_dict):
                 "descr": "General interface signals",
                 "signals": [
                     {
-                        "name": "boot",
-                        "direction": "input",
-                        "width": "1",
-                        "descr": "CPU boot input",
-                    },
-                    {
                         "name": "trap",
                         "direction": "output",
                         "width": "1",
