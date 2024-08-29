@@ -40,9 +40,37 @@ def setup(py_params_dict):
                 ],
             },
         ],
-        "snippets": [
+        "wires": [
             {
-                "verilog_code": """
+                "name": "reset_sync_clk_rst",
+                "descr": "Reset synchronizer inputs",
+                "signals": [
+                    {"name": "clk_out1"},
+                    {"name": "arst_out", "width": "1"},
+                ],
+            },
+            {
+                "name": "reset_sync_rst_out",
+                "descr": "Reset synchronizer output",
+                "signals": [
+                    {"name": "rst_out1"},
+                ],
+            },
+        ],
+    }
+    attributes_dict["blocks"] = [
+        {
+            "core_name": "iob_reset_sync",
+            "instance_name": "rst_sync",
+            "connect": {
+                "clk_rst": "reset_sync_clk_rst",
+                "arst_o": "reset_sync_rst_out",
+            },
+        },
+    ]
+    attributes_dict["snippets"] = [
+        {
+            "verilog_code": """
     clock_wizard #(
         .OUTPUT_PER(OUTPUT_PER),
         .INPUT_PER (INPUT_PER)
@@ -51,11 +79,10 @@ def setup(py_params_dict):
         .clk_in1_n(clk_n_i),
         .arst_i(arst_i),
         .clk_out1 (clk_out1_o),
-        .arst_out1(rst_out1_o)
+        .arst_out1(arst_out)
     );
 """,
-            },
-        ],
-    }
+        },
+    ]
 
     return attributes_dict

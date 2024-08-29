@@ -37,14 +37,6 @@ def setup(py_params_dict):
                 "max": "1",
                 "descr": "description here",
             },
-            {
-                "name": "USE_EXTMEM",
-                "type": "P",
-                "val": "0",
-                "min": "0",
-                "max": "1",
-                "descr": "Select if configured for usage with external memory.",
-            },
         ],
         "ports": [
             {
@@ -75,12 +67,6 @@ def setup(py_params_dict):
                 "name": "general",
                 "descr": "General interface signals",
                 "signals": [
-                    {
-                        "name": "boot",
-                        "direction": "input",
-                        "width": "1",
-                        "descr": "CPU boot input",
-                    },
                     {
                         "name": "trap",
                         "direction": "output",

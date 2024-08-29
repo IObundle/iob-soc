@@ -27,13 +27,7 @@ module iob_picorv32 #(
 
   //compute the instruction bus request
   assign ibus_iob_valid_o = iob_i_valid;
-  generate
-    if (USE_EXTMEM) begin : g_use_extmem
-      assign ibus_iob_addr_o = {~boot_i, cpu_addr[ADDR_W-2:0]};
-    end else begin : g_not_use_extmem
-      assign ibus_iob_addr_o = cpu_addr;
-    end
-  endgenerate
+  assign ibus_iob_addr_o = cpu_addr;
   assign ibus_iob_wdata_o = {DATA_W{1'b0}};
   assign ibus_iob_wstrb_o = {(DATA_W/8){1'b0}};
 

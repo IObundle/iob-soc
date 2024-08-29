@@ -1,10 +1,10 @@
 SECTIONS {
   /* Program code */
-  . = 0x80000000;
+  INCLUDE auto_iob_soc_firmware.lds
   .init : { *(.init) }
   .text : { *(.text) }
 
-  .memory : { 
+  .memory : {
     /* Read-only data */
     *(.rodata);
 
@@ -24,6 +24,6 @@ SECTIONS {
   stack_end = .;
 
   . = ALIGN(4);
-  _heap_start = .; 
+  _heap_start = .;
   end = .;
 }
