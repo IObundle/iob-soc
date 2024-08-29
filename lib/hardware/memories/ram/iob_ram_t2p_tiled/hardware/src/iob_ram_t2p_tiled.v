@@ -62,3 +62,36 @@ module iob_ram_t2p_tiled #(
    );
 
 endmodule
+// decoder with parameterizable output
+module decN #(
+   parameter N_OUTPUTS = 16
+) (
+   input      [$clog2(N_OUTPUTS)-1:0] dec_i,
+   output reg [        N_OUTPUTS-1:0] dec_o
+);
+
+   always @* begin
+      dec_o        = 0;
+      dec_o[dec_i] = 1'b1;
+   end
+endmodule
+
+// multiplexer with parameterizable input
+module muxN #(
+   parameter N_INPUTS = 4,                  // number of inputs
+   parameter INPUT_W  = 8,                  // input bit width
+   parameter S        = $clog2(N_INPUTS),   // number of select lines
+   parameter W        = N_INPUTS * INPUT_W  // total data width
+) (
+   // Inputs
+   input [INPUT_W-1:0] data_i[N_INPUTS-1:0],  // input port
+   input [      S-1:0] sel_i,                 // selection port
+
+   // Outputs
+   output reg [INPUT_W-1:0] data_o  // output port
+);
+
+   always @* begin
+      data_o = data_i[sel_i];
+   end
+endmodule
