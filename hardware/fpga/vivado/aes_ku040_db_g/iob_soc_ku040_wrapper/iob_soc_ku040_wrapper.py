@@ -1,56 +1,6 @@
-import copy
-
-import iob_soc
-
-AXI_IN_SIGNAL_NAMES = [
-    ("araddr", "AXI_ADDR_W"),
-    ("arprot", 3),
-    ("arvalid", 1),
-    ("rready", 1),
-    ("arid", "AXI_ID_W"),
-    ("arlen", "AXI_LEN_W"),
-    ("arsize", 3),
-    ("arburst", 2),
-    ("arlock", 2),
-    ("arcache", 4),
-    ("arqos", 4),
-    ("awaddr", "AXI_ADDR_W"),
-    ("awprot", 3),
-    ("awvalid", 1),
-    ("wdata", "AXI_DATA_W"),
-    ("wstrb", "AXI_DATA_W / 8"),
-    ("wvalid", 1),
-    ("bready", 1),
-    ("awid", "AXI_ID_W"),
-    ("awlen", "AXI_LEN_W"),
-    ("awsize", 3),
-    ("awburst", 2),
-    ("awlock", 2),
-    ("awcache", 4),
-    ("awqos", 4),
-    ("wlast", 1),
-]
-
-AXI_OUT_SIGNAL_NAMES = [
-    ("arready", 1),
-    ("rdata", "AXI_DATA_W"),
-    ("rresp", 2),
-    ("rvalid", 1),
-    ("rid", "AXI_ID_W"),
-    ("rlast", 1),
-    ("awready", 1),
-    ("wready", 1),
-    ("bresp", 2),
-    ("bvalid", 1),
-    ("bid", "AXI_ID_W"),
-]
-
-
 def setup(py_params_dict):
     # user-passed parameters
     params = py_params_dict["iob_soc_params"]
-
-    iob_soc_attr = iob_soc.setup(params)
 
     attributes_dict = {
         "original_name": "iob_soc_ku040_wrapper",
@@ -164,34 +114,10 @@ def setup(py_params_dict):
             },
         ]
 
-    # Get all fpga wrapper wires based on IOb-SoC ports
-    fpga_wrapper_wires = []
-    for port in iob_soc_attr["ports"]:
-        if port["name"] not in [
-            "rs232",
-            "rom_bus",
-        ]:
-            wire = copy.deepcopy(port)
-            if "interface" in wire and "port_prefix" in wire["interface"]:
-                wire["interface"]["wire_prefix"] = wire["interface"]["port_prefix"]
-                wire["interface"].pop("port_prefix")
-            if "signals" in wire:
-                for sig in wire["signals"]:
-                    sig.pop("direction")
-            fpga_wrapper_wires.append(wire)
-
-    # Get all IOb-SoC AXI interfaces
-    axi_wires = []
-    for wire in fpga_wrapper_wires:
-        # Skip non-AXI wires
-        if "interface" not in wire or wire["interface"]["type"] != "axi":
-            continue
-        axi_wires.append(wire)
-
     #
     # Wires
     #
-    attributes_dict["wires"] = fpga_wrapper_wires + [
+    attributes_dict["wires"] = [
         {
             "name": "clk_en_rst",
             "interface": {
@@ -210,31 +136,6 @@ def setup(py_params_dict):
                 },
             ],
         },
-    ]
-    if params["use_extmem"]:
-        attributes_dict["wires"] += [
-            {
-                "name": "axi",
-                "interface": {
-                    "type": "axi",
-                    "ID_W": "AXI_ID_W",
-                    "ADDR_W": "AXI_ADDR_W",
-                    "DATA_W": "AXI_DATA_W",
-                    "LEN_W": "AXI_LEN_W",
-                },
-                "descr": "AXI interface to connect SoC to external memory",
-            },
-            {
-                "name": "intercon_s0_clk_rst",
-                "descr": "Interconnect slave 0 clock reset interface",
-                "signals": [
-                    {"name": "clk"},
-                    {"name": "intercon_s0_arstn", "width": "1"},
-                ],
-            },
-        ]
-
-    attributes_dict["wires"] += [
         {
             "name": "rs232_int",
             "descr": "iob-soc uart interface",
@@ -246,82 +147,98 @@ def setup(py_params_dict):
             ],
         },
         {
-            "name": "clk",
-            "descr": "",
+            "name": "axi",
+            "interface": {
+                "type": "axi",
+                "ID_W": "AXI_ID_W",
+                "ADDR_W": "AXI_ADDR_W",
+                "DATA_W": "AXI_DATA_W",
+                "LEN_W": "AXI_LEN_W",
+            },
+            "descr": "AXI interface to connect SoC to external memory",
+        },
+        {
+            "name": "intercon_clk_rst",
+            "descr": "AXI interconnect clock and reset inputs",
             "signals": [
-                {"name": "clk"},
+                {
+                    "name": "ddr4_axi_clk" if params["use_extmem"] else "clk",
+                    "width": 1,
+                },
+                {"name": "intercon_rst", "width": "1"},
             ],
         },
         {
-            "name": "arst",
-            "descr": "",
+            "name": "intercon_s0_clk_rst",
+            "descr": "Interconnect slave 0 clock reset interface",
             "signals": [
-                {"name": "arst"},
+                {"name": "clk"},
+                {"name": "intercon_s0_arstn", "width": "1"},
             ],
         },
+        {
+            "name": "intercon_m0_clk_rst",
+            "descr": "Interconnect master 0 clock and reset",
+            "signals": [
+                {"name": "ddr4_axi_clk" if params["use_extmem"] else "clk"},
+                {"name": "intercon_m0_arstn", "width": "1"},
+            ],
+        },
+        {
+            "name": "memory_axi",
+            "descr": "AXI bus to connect interconnect and memory",
+            "interface": {
+                "type": "axi",
+                "wire_prefix": "mem_",
+                "ID_W": "AXI_ID_W",
+                "LEN_W": "AXI_LEN_W",
+                "ADDR_W": "AXI_ADDR_W",
+                "DATA_W": "AXI_DATA_W",
+                "LOCK_W": 1 if params["use_extmem"] else 2,
+            },
+        },
     ]
-    if not params["use_extmem"]:
+    if params["use_extmem"]:
         attributes_dict["wires"] += [
             {
-                "name": "interconnect_memory_axi",
-                "interface": {
-                    "type": "axi",
-                    "wire_prefix": "intercon_mem_",
-                    "ID_W": "AXI_ID_W",
-                    "ADDR_W": "AXI_ADDR_W",
-                    "DATA_W": "AXI_DATA_W",
-                    "LEN_W": "AXI_LEN_W",
-                    "LOCK_W": 1,
-                },
-                "descr": "AXI bus to connect interconnect and memory",
+                "name": "ddr4_ui_clk_out",
+                "descr": "DDR4 user interface clock output",
                 "signals": [
-                    {"name": "intercon_mem_m_axi_buser", "width": 1},
-                    {"name": "intercon_mem_m_axi_ruser", "width": 1},
+                    {"name": "clk"},
                 ],
             },
             {
-                "name": "memory_axi",
-                "interface": {
-                    "type": "axi",
-                    "wire_prefix": "mem_",
-                    "ID_W": "AXI_ID_W",
-                    "ADDR_W": "AXI_ADDR_W",
-                    "DATA_W": "AXI_DATA_W",
-                    "LEN_W": "AXI_LEN_W",
-                },
-                "descr": "AXI bus to connect interconnect and memory",
-            },
-            {
-                "name": "interconnect_s_axi",
-                "interface": {
-                    "type": "axi",
-                    "wire_prefix": "intercon_s_",
-                    "mult": len(axi_wires),
-                    "ID_W": "AXI_ID_W",
-                    "ADDR_W": "AXI_ADDR_W",
-                    "DATA_W": "AXI_DATA_W",
-                    "LEN_W": "AXI_LEN_W",
-                    "LOCK_W": 1,
-                },
-                "descr": "AXI slave bus for interconnect",
+                "name": "ddr4_axi_clk_rst",
+                "descr": "ddr4 axi clock and resets",
                 "signals": [
-                    {"name": "intercon_s_axi_awuser", "width": 1},
-                    {"name": "intercon_s_axi_wuser", "width": 1},
-                    {"name": "intercon_s_axi_aruser", "width": 1},
+                    {"name": "ddr4_axi_clk"},
+                    {"name": "intercon_rst"},
+                    {"name": "intercon_m0_arstn"},
                 ],
             },
         ]
-    for idx, wire in enumerate(axi_wires):
-        prefix = ""
-        if "wire_prefix" in wire["interface"]:
-            prefix = wire["interface"]["wire_prefix"]
+    if not params["use_extmem"]:
         attributes_dict["wires"] += [
             {
-                "name": f"s{idx}_clk_rst",
-                "descr": f"Interconnect slave {idx} clock reset interface",
+                "name": "clk_wizard_out",
+                "descr": "Connect clock wizard outputs to iob-soc clock and reset",
                 "signals": [
                     {"name": "clk"},
-                    {"name": f"s{idx}_arstn", "width": "1"},
+                    {"name": "intercon_rst"},
+                ],
+            },
+            {
+                "name": "axi_ram_clk",
+                "descr": "",
+                "signals": [
+                    {"name": "clk"},
+                ],
+            },
+            {
+                "name": "axi_ram_rst",
+                "descr": "",
+                "signals": [
+                    {"name": "axi_ram_rst", "width": "1"},
                 ],
             },
         ]
@@ -352,66 +269,6 @@ def setup(py_params_dict):
             },
         ]
 
-    if params["use_extmem"]:
-        attributes_dict["wires"] += [
-            {
-                "name": "intercon_clk_rst",
-                "descr": "AXI interconnect clock and reset inputs",
-                "signals": [
-                    {"name": "ddr4_axi_clk", "width": "1"},
-                    {"name": "ddr4_axi_clk_rst", "width": "1"},
-                ],
-            },
-            {
-                "name": "intercon_m0_clk_rst",
-                "descr": "Interconnect master 0 clock and reset",
-                "signals": [
-                    {"name": "ddr4_axi_clk"},
-                    {"name": "ddr4_axi_arstn", "width": "1"},
-                ],
-            },
-            {
-                "name": "ddr4_ui_clk_out",
-                "descr": "DDR4 user interface clock output",
-                "signals": [
-                    {"name": "clk"},
-                ],
-            },
-            {
-                "name": "ddr4_axi_clk_rst",
-                "descr": "ddr4 axi clock and resets",
-                "signals": [
-                    {"name": "ddr4_axi_clk"},
-                    {"name": "ddr4_axi_clk_rst"},
-                    {"name": "ddr4_axi_arstn"},
-                ],
-            },
-            {
-                "name": "ddr4_axi",
-                "descr": "AXI bus to connect interconnect and memory",
-                "interface": {
-                    "type": "axi",
-                    "wire_prefix": "mem_",
-                    "ID_W": "AXI_ID_W",
-                    "LEN_W": "AXI_LEN_W",
-                    "ADDR_W": "AXI_ADDR_W",
-                    "DATA_W": "AXI_DATA_W",
-                    "LOCK_W": 1,
-                },
-            },
-        ]
-    if not params["use_extmem"]:
-        attributes_dict["wires"] += [
-            {
-                "name": "clk_wizard_out",
-                "descr": "Connect clock wizard outputs to iob-soc clock and reset",
-                "signals": [
-                    {"name": "clk"},
-                    {"name": "arst"},
-                ],
-            },
-        ]
-
     #
     # Blocks
     #
@@ -436,51 +293,27 @@ def setup(py_params_dict):
             "dest_dir": "hardware/common_src",
             "iob_soc_params": params,
         },
+        {
+            "core_name": "xilinx_axi_interconnect",
+            "instance_name": "axi_async_bridge",
+            "instance_description": "Interconnect instance",
+            "parameters": {
+                "AXI_ID_W": "AXI_ID_W",
+                "AXI_LEN_W": "AXI_LEN_W",
+                "AXI_ADDR_W": "AXI_ADDR_W",
+                "AXI_DATA_W": "AXI_DATA_W",
+            },
+            "connect": {
+                "clk_rst_i": "intercon_clk_rst",
+                "m0_clk_rst": "intercon_m0_clk_rst",
+                "m0_axi": "memory_axi",
+                "s0_clk_rst": "intercon_s0_clk_rst",
+                "s0_axi": "axi",
+            },
+            "num_slaves": 1,
+        },
     ]
     if params["use_extmem"]:
-        # Connect IOb-SoC AXI interface
-        attributes_dict["blocks"][-1]["connect"]["axi"] = "axi"
-    if params["use_ethernet"]:
-        # Eth clock
-        attributes_dict["blocks"] += [
-            {
-                "core_name": "xilinx_ibufg",
-                "instance_name": "rxclk_buf",
-                "connect": {
-                    "io": "rxclk_buf_io",
-                },
-            },
-            {
-                "core_name": "xilinx_oddre1",
-                "instance_name": "oddre1_inst",
-                "connect": {
-                    "io": "oddre1_io",
-                },
-            },
-        ]
-    if params["use_extmem"]:
-        # Interconnect
-        attributes_dict["blocks"] += [
-            {
-                "core_name": "xilinx_axi_interconnect",
-                "instance_name": "axi_async_bridge",
-                "instance_description": "Interconnect instance",
-                "parameters": {
-                    "AXI_ID_W": "AXI_ID_W",
-                    "AXI_LEN_W": "AXI_LEN_W",
-                    "AXI_ADDR_W": "AXI_ADDR_W",
-                    "AXI_DATA_W": "AXI_DATA_W",
-                },
-                "connect": {
-                    "clk_rst_i": "intercon_clk_rst",
-                    "m0_clk_rst": "intercon_m0_clk_rst",
-                    "m0_axi": "ddr4_axi",
-                    "s0_clk_rst": "intercon_s0_clk_rst",
-                    "s0_axi": "axi",
-                },
-                "num_slaves": 1,
-            },
-        ]
         # DDR4 controller
         attributes_dict["blocks"] += [
             {
@@ -497,7 +330,7 @@ def setup(py_params_dict):
                     "clk_rst": "clk_rst",
                     "ui_clk_out": "ddr4_ui_clk_out",
                     "axi_clk_rst": "ddr4_axi_clk_rst",
-                    "axi": "ddr4_axi",
+                    "axi": "memory_axi",
                     "ddr4": "ddr4_pins",
                 },
             },
@@ -518,46 +351,10 @@ def setup(py_params_dict):
                     "clk_rst_o": "clk_wizard_out",
                 },
             },
-        ]
-    if not params["use_extmem"]:
-        attributes_dict["blocks"] += [
-            {
-                "core_name": "axi_interconnect",
-                "instance_name": "system_axi_interconnect",
-                "parameters": {
-                    "ID_WIDTH": "AXI_ID_W",
-                    "DATA_WIDTH": "AXI_DATA_W",
-                    "ADDR_WIDTH": "AXI_ADDR_W",
-                    "M_ADDR_WIDTH": "AXI_ADDR_W",
-                    "S_COUNT": len(axi_wires),
-                    "M_COUNT": "1",
-                },
-                "connect": {
-                    "clk": "clk",
-                    "rst": "arst",
-                    "s_axi": "interconnect_s_axi",
-                    "m_axi": "interconnect_memory_axi",
-                },
-            },
             {
                 "core_name": "axi_ram",
                 "instance_name": "ddr_model_mem",
-                "parameters": {
-                    "ID_WIDTH": "AXI_ID_W",
-                    "ADDR_WIDTH": "AXI_ADDR_W",
-                    "DATA_WIDTH": "AXI_DATA_W",
-                    "READ_ON_WRITE": "0",
-                },
-                "connect": {
-                    "clk": "clk",
-                    "rst": "arst",
-                    "axi": "memory_axi",
-                },
-                "if_defined": "IOB_MEM_NO_READ_ON_WRITE",
-            },
-            {
-                "core_name": "axi_ram",
-                "instance_name": "ddr_model_mem",
+                "instance_description": "DDR model memory",
                 "parameters": {
                     "ID_WIDTH": "AXI_ID_W",
                     "ADDR_WIDTH": "AXI_ADDR_W",
@@ -565,11 +362,10 @@ def setup(py_params_dict):
                     "READ_ON_WRITE": "1",
                 },
                 "connect": {
-                    "clk": "clk",
-                    "rst": "arst",
+                    "clk": "axi_ram_clk",
+                    "rst": "axi_ram_rst",
                     "axi": "memory_axi",
                 },
-                "if_not_defined": "IOB_MEM_NO_READ_ON_WRITE",
             },
         ]
         if params["init_mem"]:
@@ -578,11 +374,24 @@ def setup(py_params_dict):
                     "FILE": '"iob_soc_firmware"',
                 }
             )
-            attributes_dict["blocks"][-2]["parameters"].update(
-                {
-                    "FILE": '"iob_soc_firmware"',
-                }
-            )
+    if params["use_ethernet"]:
+        # Eth clock
+        attributes_dict["blocks"] += [
+            {
+                "core_name": "xilinx_ibufg",
+                "instance_name": "rxclk_buf",
+                "connect": {
+                    "io": "rxclk_buf_io",
+                },
+            },
+            {
+                "core_name": "xilinx_oddre1",
+                "instance_name": "oddre1_inst",
+                "connect": {
+                    "io": "oddre1_io",
+                },
+            },
+        ]
 
     #
     # Snippets
@@ -593,6 +402,7 @@ def setup(py_params_dict):
     // General connections
     assign high = 1'b1;
     assign cke = 1'b1;
+    assign arst = ~intercon_s0_arstn;
 """,
         },
     ]
@@ -606,56 +416,14 @@ def setup(py_params_dict):
 """,
             },
         ]
-    if params["use_extmem"]:
+    if not params["use_extmem"]:
         attributes_dict["snippets"] += [
             {
                 "verilog_code": """
-    // External memory connections
-    assign arst = ~intercon_s0_arstn;
+    // Memory connections
+    assign axi_ram_rst = ~intercon_m0_arstn;
 """,
             },
-        ]
-
-    if not params["use_extmem"]:
-        # Connect all IOb-SoC AXI interfaces to interconnect
-        verilog_code = "    // Connect all IOb-SoC AXI interfaces to interconnect\n"
-        for sig_name, _ in AXI_IN_SIGNAL_NAMES:
-            verilog_code += f"    assign intercon_s_axi_{sig_name} = {{"
-            for wire in axi_wires:
-                prefix = ""
-                if "wire_prefix" in wire["interface"]:
-                    prefix = wire["interface"]["wire_prefix"]
-                suffix = ""
-                if sig_name in ["awlock", "arlock"]:
-                    suffix = "[0]"
-                verilog_code += f"{prefix}axi_{sig_name}{suffix}, "
-            verilog_code = verilog_code[:-2] + "};\n"
-
-        for sig_name, sig_size in AXI_OUT_SIGNAL_NAMES:
-            for idx, wire in enumerate(axi_wires):
-                prefix = ""
-                if "wire_prefix" in wire["interface"]:
-                    prefix = wire["interface"]["wire_prefix"]
-                bit_select = ""
-                if type(sig_size) is not int or sig_size > 1:
-                    bit_select = f"[{idx}*{sig_size}+:{sig_size}]"
-                verilog_code += f"    assign {prefix}axi_{sig_name} = intercon_s_axi_{sig_name}{bit_select}; \n"
-
-        # Connect interconnect wires to memory wires
-        verilog_code += "    // Connect all interconnect wires to memory\n"
-        for sig_name, _ in AXI_IN_SIGNAL_NAMES:
-            verilog_code += (
-                f"    assign mem_axi_{sig_name} = intercon_mem_axi_{sig_name};\n"
-            )
-        for sig_name, _ in AXI_OUT_SIGNAL_NAMES:
-            verilog_code += (
-                f"    assign intercon_mem_axi_{sig_name} = mem_axi_{sig_name};\n"
-            )
-
-        attributes_dict["snippets"] += [
-            {
-                "verilog_code": verilog_code,
-            }
         ]
 
     return attributes_dict

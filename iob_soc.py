@@ -42,9 +42,9 @@ def setup(py_params_dict):
     }
 
     if not params["build_dir"]:
-        params[
-            "build_dir"
-        ] = f"../{attributes_dict['name']}_V{attributes_dict['version']}"
+        params["build_dir"] = (
+            f"../{attributes_dict['name']}_V{attributes_dict['version']}"
+        )
 
     attributes_dict |= {
         "build_dir": params["build_dir"],
@@ -264,15 +264,6 @@ def setup(py_params_dict):
     attributes_dict["wires"] = [
         # CPU interface wires
         {
-            "name": "cpu_clk_en_rst",
-            "descr": "",
-            "signals": [
-                {"name": "clk"},
-                {"name": "cke"},
-                {"name": "cpu_reset", "width": "1"},
-            ],
-        },
-        {
             "name": "cpu_general",
             "descr": "",
             "signals": [
@@ -313,7 +304,7 @@ def setup(py_params_dict):
             "name": "split_reset",
             "descr": "Reset signal for iob_split components",
             "signals": [
-                {"name": "cpu_reset"},
+                {"name": "arst"},
             ],
         },
     ]
@@ -347,7 +338,7 @@ def setup(py_params_dict):
             "signals": [
                 {"name": "clk"},
                 {"name": "cke"},
-                {"name": "cpu_reset", "width": "1"},
+                {"name": "arst"},
             ],
         },
         # Verilog Snippets for other modules
@@ -413,7 +404,7 @@ def setup(py_params_dict):
                 "USE_EXTMEM": int(params["use_extmem"]),
             },
             "connect": {
-                "clk_en_rst": "cpu_clk_en_rst",
+                "clk_en_rst": "clk_en_rst",
                 "general": "cpu_general",
                 "i_bus": "cpu_i",
                 "d_bus": "cpu_d",
@@ -449,6 +440,7 @@ def setup(py_params_dict):
             "core_name": "iob_split",
             "name": "iob_data_split",
             "instance_name": "iob_data_split",
+            "instance_description": "Split between memory and peripheral bus",
             "connect": {
                 "clk_en_rst": "clk_en_rst",
                 "reset": "split_reset",
@@ -480,6 +472,7 @@ def setup(py_params_dict):
             "core_name": "iob_split",
             "name": "iob_instr_split",
             "instance_name": "iob_instr_split",
+            "instance_description": "Split between memory and bootrom bus",
             "connect": {
                 "clk_en_rst": "clk_en_rst",
                 "reset": "split_reset",
@@ -561,55 +554,11 @@ def setup(py_params_dict):
             "iob_soc_params": params,
         },
     ]
-    attributes_dict["blocks"] += [
-        {
-            "core_name": "iob_reg",
-            "instance_name": "iob_reg_inst",
-            "instantiate": False,
-        },
-        {
-            "core_name": "iob_pulse_gen",
-            "instance_name": "iob_pulse_gen_inst",
-            "instantiate": False,
-        },
-    ]
     attributes_dict["sw_modules"] = [
         # Software modules
         {
             "core_name": "printf",
             "instance_name": "printf_inst",
-        },
-    ]
-    attributes_dict["snippets"] = [
-        {
-            "verilog_code": """
-// Reset pulse generator //
-
-wire low_after_1st_rst;
-iob_reg #(
-    .DATA_W (1),
-    .RST_VAL(1'b1)
-) low_after_1st_rst_reg (
-    .clk_i (clk_i),
-    .cke_i (cke_i),
-    .arst_i(arst_i),
-    .data_i(1'b0),
-    .data_o(low_after_1st_rst)
-);
-
-wire cpu_rst_start_pulse;
-assign cpu_rst_start_pulse = low_after_1st_rst;
-iob_pulse_gen #(
-    .START   (0),
-    .DURATION(100)
-) reset_pulse (
-    .clk_i  (clk_i),
-    .arst_i (arst_i),
-    .cke_i  (cke_i),
-    .start_i(cpu_rst_start_pulse),
-    .pulse_o(cpu_reset)
-);
-            """,
         },
     ]
 
