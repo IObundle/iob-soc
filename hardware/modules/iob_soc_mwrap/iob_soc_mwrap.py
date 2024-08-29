@@ -59,7 +59,7 @@ def setup(py_params_dict):
             "instance_name": "boot_rom",
             "instance_description": "Boot ROM",
             "parameters": {
-                "ADDR_W": "BOOTROM_ADDR_W",
+                "ADDR_W": params["bootrom_addr_w"] - 2,
                 "DATA_W": params["data_w"],
                 "HEXFILE": '{BOOT_HEXFILE, ".hex"}',
             },

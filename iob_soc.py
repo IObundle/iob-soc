@@ -15,6 +15,8 @@ def setup(py_params_dict):
         "addr_w": 32,
         "data_w": 32,
         "mem_addr_w": 24,
+        "bootrom_addr_w": 12,
+        "prebootrom_addr_w": 7,
         "use_compressed": True,
         "use_mul_div": True,
         "fw_addr": 0,
@@ -114,28 +116,19 @@ def setup(py_params_dict):
                 "min": "0",
                 "max": "1",
             },
-            # parameters
-            {
+            {  # Needed for makefiles
                 "name": "PREBOOTROM_ADDR_W",
                 "descr": "Preboot ROM address width",
-                "type": "P",
-                "val": "7",
+                "type": "M",
+                "val": params["prebootrom_addr_w"],
                 "min": "1",
                 "max": "32",
             },
-            {
+            {  # Needed for software and makefiles
                 "name": "BOOTROM_ADDR_W",
                 "descr": "Bootloader ROM address width",
-                "type": "P",
-                "val": "12",
-                "min": "1",
-                "max": "32",
-            },
-            {
-                "name": "SRAM_ADDR_W",
-                "descr": "SRAM address width",
-                "type": "P",
-                "val": "15",
+                "type": "M",
+                "val": params["bootrom_addr_w"],
                 "min": "1",
                 "max": "32",
             },
@@ -206,7 +199,7 @@ def setup(py_params_dict):
                 {
                     "name": "boot_rom_addr",
                     "direction": "output",
-                    "width": "BOOTROM_ADDR_W",
+                    "width": params["bootrom_addr_w"] - 2,
                 },
                 {
                     "name": "boot_rom_rdata",
@@ -476,6 +469,8 @@ def setup(py_params_dict):
                 "ibus": "bootrom_ibus",
                 "ext_rom_bus": "rom_bus",
             },
+            "bootrom_addr_w": params["bootrom_addr_w"],
+            "prebootrom_addr_w": params["prebootrom_addr_w"],
         },
         # NOTE: Instantiate other peripherals here
     ]
