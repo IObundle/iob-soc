@@ -117,30 +117,6 @@ def setup(py_params_dict):
                 "core_name": "iob_ram_2p",
                 "instantiate": False,
             },
-            {
-                "core_name": "muxN",
-                "instance_name": "bram_out_sel",
-                "parameters": {
-                    "N_INPUTS": "K",
-                    "INPUT_W": "DATA_W",
-                },
-                "connect": {
-                    "data_i": "r_data_vec_int",
-                    "sel_i": "addr_int",
-                    "data_o": "r_data_o",
-                },
-            },
-            {
-                "core_name": "decN",
-                "instance_name": "addr_dec",
-                "parameters": {
-                    "N_OUTPUTS": "K",
-                },
-                "connect": {
-                    "dec_i": "addr_int",
-                    "dec_o": "addr_en",
-                },
-            },
         ],
     }
 
