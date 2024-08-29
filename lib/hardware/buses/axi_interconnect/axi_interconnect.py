@@ -92,9 +92,9 @@ def setup(py_params_dict):
                 },
                 "descr": "AXI slave interface",
                 "signals": [
-                    {"name": "s_axi_awuser", "width": 1, "direction": "input"},
-                    {"name": "s_axi_wuser", "width": 1, "direction": "input"},
-                    {"name": "s_axi_aruser", "width": 1, "direction": "input"},
+                    {"name": "s_axi_awuser", "width": "S_COUNT", "direction": "input"},
+                    {"name": "s_axi_wuser", "width": "S_COUNT", "direction": "input"},
+                    {"name": "s_axi_aruser", "width": "S_COUNT", "direction": "input"},
                 ],
             },
             {
@@ -112,8 +112,8 @@ def setup(py_params_dict):
                 },
                 "descr": "AXI master interface",
                 "signals": [
-                    {"name": "m_axi_buser", "width": 1, "direction": "input"},
-                    {"name": "m_axi_ruser", "width": 1, "direction": "input"},
+                    {"name": "m_axi_buser", "width": "M_COUNT", "direction": "input"},
+                    {"name": "m_axi_ruser", "width": "M_COUNT", "direction": "input"},
                 ],
             },
         ],
