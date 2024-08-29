@@ -7,7 +7,7 @@ AXI_IN_SIGNAL_NAMES = [
     ("arlen", 8),
     ("arsize", 3),
     ("arburst", 2),
-    ("arlock", 2),
+    ("arlock", 1),
     ("arcache", 4),
     ("arqos", 4),
     ("awaddr", "AXI_ADDR_W"),
@@ -21,7 +21,7 @@ AXI_IN_SIGNAL_NAMES = [
     ("awlen", 8),
     ("awsize", 3),
     ("awburst", 2),
-    ("awlock", 2),
+    ("awlock", 1),
     ("awcache", 4),
     ("awqos", 4),
     ("wlast", 1),
@@ -221,10 +221,7 @@ def setup(py_params_dict):
             prefix = ""
             if "port_prefix" in port["interface"]:
                 prefix = port["interface"]["port_prefix"]
-            suffix = ""
-            if sig_name in ["awlock", "arlock"]:
-                suffix = "[0]"
-            verilog_code += f"{prefix}axi_{sig_name}_i{suffix}, "
+            verilog_code += f"{prefix}axi_{sig_name}_i, "
         verilog_code = verilog_code[:-2] + "};\n"
 
     for sig_name, sig_size in AXI_OUT_SIGNAL_NAMES:
@@ -245,10 +242,7 @@ def setup(py_params_dict):
             prefix = ""
             if "port_prefix" in port["interface"]:
                 prefix = port["interface"]["port_prefix"]
-            suffix = ""
-            if sig_name in ["awlock", "arlock"]:
-                suffix = "[0]"
-            verilog_code += f"{prefix}axi_{sig_name}_i{suffix}, "
+            verilog_code += f"{prefix}axi_{sig_name}_i, "
         verilog_code = verilog_code[:-2] + "};\n"
 
     for sig_name, sig_size in AXI_IN_SIGNAL_NAMES:
