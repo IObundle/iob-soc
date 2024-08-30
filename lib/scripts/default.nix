@@ -8,12 +8,18 @@ let
     pname = "py2hwsw";
     version = py2hwsw_commit;
 
-    src = pkgs.fetchFromGitHub {
-      owner = "IObundle";
-      repo = "py2hwsw";
-      rev = py2hwsw_commit;
-      sha256 = py2hwsw_sha256;
-    };
+    src = let
+      # Get local py2hwsw path from `PY2HWSW_PATH` env variable
+      py2hwswPath = builtins.getEnv "PY2HWSW_PATH";
+    in if py2hwswPath != "" then
+      pkgs.lib.cleanSource py2hwswPath
+    else
+      pkgs.fetchFromGitHub {
+        owner = "IObundle";
+        repo = "py2hwsw";
+        rev = py2hwsw_commit;
+        sha256 = py2hwsw_sha256;
+      };
 
     # Add any necessary dependencies here.
     #propagatedBuildInputs = [ pkgs.python38Packages.someDependency ];
