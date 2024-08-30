@@ -12,35 +12,35 @@ def setup(py_params_dict):
         "confs": [
             {
                 "name": "AXI_ID_W",
+                "descr": "AXI ID bus width",
                 "type": "F",
                 "val": "4",
                 "min": "1",
                 "max": "32",
-                "descr": "AXI ID bus width",
             },
             {
                 "name": "AXI_LEN_W",
+                "descr": "AXI burst length width",
                 "type": "F",
                 "val": "8",
                 "min": "1",
                 "max": "8",
-                "descr": "AXI burst length width",
             },
             {
                 "name": "AXI_ADDR_W",
+                "descr": "AXI address bus width",
                 "type": "F",
                 "val": "`DDR_ADDR_W" if params["use_extmem"] else "20",
                 "min": "1",
                 "max": "32",
-                "descr": "AXI address bus width",
             },
             {
                 "name": "AXI_DATA_W",
+                "descr": "AXI data bus width",
                 "type": "F",
                 "val": "`DDR_DATA_W",
                 "min": "1",
                 "max": "32",
-                "descr": "AXI data bus width",
             },
         ],
     }
@@ -120,11 +120,10 @@ def setup(py_params_dict):
     attributes_dict["wires"] = [
         {
             "name": "clk_en_rst",
+            "descr": "Clock, clock enable and reset",
             "interface": {
                 "type": "clk_en_rst",
-                "subtype": "slave",
             },
-            "descr": "Clock, clock enable and reset",
         },
         {
             "name": "cpu_trap",
@@ -148,6 +147,7 @@ def setup(py_params_dict):
         },
         {
             "name": "axi",
+            "descr": "AXI interface to connect SoC to memory",
             "interface": {
                 "type": "axi",
                 "ID_W": "AXI_ID_W",
@@ -155,7 +155,6 @@ def setup(py_params_dict):
                 "DATA_W": "AXI_DATA_W",
                 "LEN_W": "AXI_LEN_W",
             },
-            "descr": "AXI interface to connect SoC to external memory",
         },
         {
             "name": "intercon_clk_rst",
@@ -229,14 +228,14 @@ def setup(py_params_dict):
             },
             {
                 "name": "axi_ram_clk",
-                "descr": "",
+                "descr": "AXI RAM clock input",
                 "signals": [
                     {"name": "clk"},
                 ],
             },
             {
                 "name": "axi_ram_rst",
-                "descr": "",
+                "descr": "AXI RAM reset input",
                 "signals": [
                     {"name": "axi_ram_rst", "width": "1"},
                 ],
