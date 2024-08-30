@@ -52,6 +52,7 @@ def setup(py_params_dict):
                         "name": "data",
                         "width": "DATA_W",
                         "direction": "output",
+                        "isvar": True,
                     },
                 ],
             },
@@ -67,7 +68,7 @@ def setup(py_params_dict):
                      data_o = data_i[input_sel*DATA_W+:DATA_W];
                 end
             end
-        end   
+        end
             """,
             },
         ],

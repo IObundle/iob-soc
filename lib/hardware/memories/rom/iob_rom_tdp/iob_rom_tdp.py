@@ -77,14 +77,24 @@ def setup(py_params_dict):
                 "name": "r_data_a_o",
                 "descr": "Output port",
                 "signals": [
-                    {"name": "r_data_a", "width": "DATA_W", "direction": "output"},
+                    {
+                        "name": "r_data_a",
+                        "width": "DATA_W",
+                        "direction": "output",
+                        "isvar": True,
+                    },
                 ],
             },
             {
                 "name": "r_data_b_o",
                 "descr": "Output port",
                 "signals": [
-                    {"name": "r_data_b", "width": "DATA_W", "direction": "output"},
+                    {
+                        "name": "r_data_b",
+                        "width": "DATA_W",
+                        "direction": "output",
+                        "isvar": True,
+                    },
                 ],
             },
         ],
