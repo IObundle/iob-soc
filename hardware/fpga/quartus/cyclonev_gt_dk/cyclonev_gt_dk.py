@@ -131,9 +131,11 @@ def setup(py_params_dict):
         {
             "name": "clk_en_rst",
             "descr": "Clock, clock enable and reset",
-            "interface": {
-                "type": "clk_en_rst",
-            },
+            "signals": [
+                {"name": "clk"},
+                {"name": "cke", "width": "1"},
+                {"name": "arst", "width": "1"},
+            ],
         },
         {
             "name": "rs232_int",
