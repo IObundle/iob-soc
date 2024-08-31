@@ -10,10 +10,12 @@ module iob_rom_2p #(
    //read port 1
    input               r1_en_i,
    input  [ADDR_W-1:0] r1_addr_i,
+   output              r1_ready_o,
 
    //read port 2
    input               r2_en_i,
    input  [ADDR_W-1:0] r2_addr_i,
+   output              r2_ready_o,
 
    output [DATA_W-1:0] r_data_o
 );
@@ -35,5 +37,7 @@ module iob_rom_2p #(
 
    assign en_int = r1_en_i | r2_en_i;
    assign addr_int = r1_en_i ? r1_addr_i : r2_addr_i;
+   assign r1_ready_o = r1_en_i;
+   assign r2_ready_o = r1_en_i ? 0 : r2_en_i;
 
 endmodule

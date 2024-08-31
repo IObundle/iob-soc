@@ -10,11 +10,13 @@ module iob_rom_2p_tb;
    // Read 1 signals
    reg                r1_en;
    reg  [`ADDR_W-1:0] r1_addr;
+   wire               r1_ready;
 
 
    // Read 2 signals
    reg                r2_en;
    reg  [`ADDR_W-1:0] r2_addr;
+   wire               r2_ready;
 
    wire [`DATA_W-1:0] r_data;
 
@@ -44,7 +46,7 @@ module iob_rom_2p_tb;
          uut.iob_rom_sp_inst.rom[i] = i + seq_ini;
       end
 
-      // Read all the locations of ROM with r1_en = 0
+      // Attempt to read all the locations of ROM with r1_en = 0
       r1_en = 0;
       @(posedge clk) #1;
 
@@ -64,6 +66,10 @@ module iob_rom_2p_tb;
       // Read all the locations of ROM with r2_en = 1
       for (i = 0; i < 2 ** `ADDR_W; i = i + 1) begin
          r2_addr = i;
+         // wait for r2_ready
+         while (!r2_ready) begin
+            @(posedge clk) #1;
+         end
          @(posedge clk) #1;
          if (r_data != i + seq_ini) begin
             $display("ERROR: on position %0d, r_data is %d where it should be %0d", i, r_data,
@@ -89,12 +95,14 @@ module iob_rom_2p_tb;
       .DATA_W(`DATA_W),
       .ADDR_W(`ADDR_W)
    ) uut (
-      .clk_i    (clk),
-      .r1_en_i  (r1_en),
-      .r1_addr_i(r1_addr),
-      .r2_en_i  (r2_en),
-      .r2_addr_i(r2_addr),
-      .r_data_o (r_data)
+      .clk_i     (clk),
+      .r1_en_i   (r1_en),
+      .r1_addr_i (r1_addr),
+      .r1_ready_o(r1_ready),
+      .r2_en_i   (r2_en),
+      .r2_addr_i (r2_addr),
+      .r2_ready_o(r2_ready),
+      .r_data_o  (r_data)
    );
 
    // Clock
