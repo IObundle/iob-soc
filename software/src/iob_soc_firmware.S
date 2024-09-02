@@ -1,24 +1,17 @@
-#include "iob_soc_system.h"
 #include "iob_soc_conf.h"
+#include "iob_soc_periphs.h"
+#include "iob_soc_system.h"
 
 .section .init
-.global main
+.globl main
 
-//set stack pointer
-#ifdef IOB_SOC_USE_EXTMEM //need to set MSB to address external memory
-lui sp, %hi(EXTRA_BASE | 1<<IOB_SOC_MEM_ADDR_W)
-addi sp, sp, %lo(EXTRA_BASE | 1<<IOB_SOC_MEM_ADDR_W)
-#else
-lui sp, %hi(1<<IOB_SOC_SRAM_ADDR_W)
-addi sp, sp, %lo(1<<IOB_SOC_SRAM_ADDR_W)
-#endif
+  //set stack pointer
+  lui sp, %hi(1 << IOB_SOC_FW_ADDR_W)
+  addi sp, sp, %lo(1 << IOB_SOC_FW_ADDR_W)
 
-//call main
-jal ra, main
+  //call main
+  jal ra, main
 
-//reboot to run bootloader
-li s5, 3 //cpu_rst_req=1, boot=1
-li s6, BOOTCTR_BASE
-sw s5, 0(s6)
-
-ebreak
+  // Jump to the pre-bootloader
+  li x5, 0x80000000
+  jalr x0, 0(x5)

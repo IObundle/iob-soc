@@ -51,7 +51,12 @@ def setup(py_params_dict):
                 "signals": [
                     {"name": "r_en", "width": 1, "direction": "input"},
                     {"name": "addr", "width": "ADDR_W", "direction": "input"},
-                    {"name": "r_data", "width": "DATA_W", "direction": "output"},
+                    {
+                        "name": "r_data",
+                        "width": "DATA_W",
+                        "direction": "output",
+                        "isvar": True,
+                    },
                 ],
             },
         ],

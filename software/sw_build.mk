@@ -14,15 +14,14 @@ GET_MACRO = $(shell grep "define $(1)" $(2) | rev | cut -d" " -f1 | rev)
 #Function to obtain parameter named $(1) from iob_soc_conf.vh
 GET_IOB_SOC_CONF_MACRO = $(call GET_MACRO,IOB_SOC_$(1),../src/iob_soc_conf.vh)
 
+iob_soc_preboot.hex: ../../software/iob_soc_preboot.bin
+	../../scripts/makehex.py $< $(call GET_IOB_SOC_CONF_MACRO,PREBOOTROM_ADDR_W) > $@
+
 iob_soc_boot.hex: ../../software/iob_soc_boot.bin
 	../../scripts/makehex.py $< $(call GET_IOB_SOC_CONF_MACRO,BOOTROM_ADDR_W) > $@
 
 iob_soc_firmware.hex: iob_soc_firmware.bin
-ifeq ($(USE_EXTMEM),1)
 	../../scripts/makehex.py $< $(call GET_IOB_SOC_CONF_MACRO,MEM_ADDR_W) > $@
-else
-	../../scripts/makehex.py $< $(call GET_IOB_SOC_CONF_MACRO,SRAM_ADDR_W) > $@
-endif
 	../../scripts/hex_split.py iob_soc_firmware .
 
 iob_soc_firmware.bin: ../../software/iob_soc_firmware.bin
@@ -53,13 +52,19 @@ IOB_SOC_BOOT_SRC+=src/iob_soc_boot.c
 IOB_SOC_BOOT_SRC+=$(filter-out %_emul.c, $(wildcard src/iob*uart*.c))
 IOB_SOC_BOOT_SRC+=$(filter-out %_emul.c, $(wildcard src/iob*cache*.c))
 
-build_iob_soc_software: iob_soc_firmware iob_soc_boot
+# PREBOOT SOURCES
+IOB_SOC_PREBOOT_SRC=src/iob_soc_preboot.S
+
+build_iob_soc_software: iob_soc_firmware iob_soc_boot iob_soc_preboot
 
 iob_soc_firmware:
 	make $@.elf INCLUDES="$(IOB_SOC_INCLUDES)" LFLAGS="$(IOB_SOC_LFLAGS) -Wl,-Map,$@.map" SRC="$(IOB_SOC_FW_SRC)" TEMPLATE_LDS="$(TEMPLATE_LDS)"
 
 iob_soc_boot:
 	make $@.elf INCLUDES="$(IOB_SOC_INCLUDES)" LFLAGS="$(IOB_SOC_LFLAGS) -Wl,-Map,$@.map" SRC="$(IOB_SOC_BOOT_SRC)" TEMPLATE_LDS="$(TEMPLATE_LDS)"
+
+iob_soc_preboot:
+	make $@.elf INCLUDES="$(IOB_SOC_INCLUDES)" LFLAGS="$(IOB_SOC_LFLAGS) -Wl,-Map,$@.map" SRC="$(IOB_SOC_PREBOOT_SRC)" TEMPLATE_LDS="$(TEMPLATE_LDS)"
 
 
 .PHONY: build_iob_soc_software iob_soc_firmware iob_soc_boot

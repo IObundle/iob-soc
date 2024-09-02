@@ -75,7 +75,7 @@ module picorv32 #(
    parameter [ 0:0] REGS_INIT_ZERO       = 0,
    parameter [31:0] MASKED_IRQ           = 32'h0000_0000,
    parameter [31:0] LATCHED_IRQ          = 32'hffff_ffff,
-   parameter [31:0] PROGADDR_RESET       = 32'h0000_0000,
+   parameter [31:0] PROGADDR_RESET       = 32'h8000_0000,
    parameter [31:0] PROGADDR_IRQ         = 32'h0000_0010,
    parameter [31:0] STACKADDR            = 32'hffff_ffff
 ) (

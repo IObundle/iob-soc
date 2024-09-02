@@ -63,9 +63,9 @@ jobs:
       - name: Clean untracked files and directories (like old submodules)
         run: git clean -ffdx
       - name: init mem and no ext mem
-        run: make fpga-run BOARD=CYCLONEV-GT-DK INIT_MEM=1 USE_EXTMEM=0
+        run: make fpga-run BOARD=cyclonev_gt_dk INIT_MEM=1 USE_EXTMEM=0
       - name: no init mem and ext mem
-        run: make fpga-run BOARD=CYCLONEV-GT-DK INIT_MEM=0 USE_EXTMEM=1
+        run: make fpga-run BOARD=cyclonev_gt_dk INIT_MEM=0 USE_EXTMEM=1
   
   ku040:
     runs-on: self-hosted
@@ -80,9 +80,9 @@ jobs:
       - name: Clean untracked files and directories (like old submodules)
         run: git clean -ffdx
       - name: init mem and no ext mem
-        run: make fpga-run BOARD=AES-KU040-DB-G INIT_MEM=1 USE_EXTMEM=0
+        run: make fpga-run BOARD=aes_ku040_db_g INIT_MEM=1 USE_EXTMEM=0
       - name: no init mem and ext mem
-        run: make fpga-run BOARD=AES-KU040-DB-G INIT_MEM=0 USE_EXTMEM=1
+        run: make fpga-run BOARD=aes_ku040_db_g INIT_MEM=0 USE_EXTMEM=1
 
   lib:
     runs-on: self-hosted

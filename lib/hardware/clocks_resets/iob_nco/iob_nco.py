@@ -247,7 +247,7 @@ def setup(py_params_dict):
                 "name": "modcnt_mod",
                 "descr": "",
                 "signals": [
-                    {"name": "quant", "width": "DATA_W-FRAC_W"},
+                    {"name": "quant", "width": "DATA_W-FRAC_W", "isvar": True},
                 ],
             },
             {

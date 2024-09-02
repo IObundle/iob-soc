@@ -4,6 +4,9 @@ def setup(py_params_dict):
         "name": "xilinx_ddr4_ctrl",
         "version": "0.1",
         "confs": [
+            #
+            # AXI Parameters
+            #
             {
                 "name": "AXI_ID_W",
                 "type": "P",
@@ -38,12 +41,20 @@ def setup(py_params_dict):
             },
         ],
         "ports": [
+            #
+            # Ports
+            #
             {
                 "name": "clk_rst",
                 "signals": [
                     {"name": "clk_p", "direction": "input", "width": "1"},
                     {"name": "clk_n", "direction": "input", "width": "1"},
                     {"name": "arst", "direction": "input", "width": "1"},
+                ],
+            },
+            {
+                "name": "ui_clk_out",
+                "signals": [
                     {"name": "clkout", "direction": "output", "width": "1"},
                 ],
             },
@@ -52,8 +63,8 @@ def setup(py_params_dict):
                 "descr": "",
                 "signals": [
                     {"name": "axi_clk", "direction": "output", "width": "1"},
-                    {"name": "axi_clk_sync_rst", "direction": "output", "width": "1"},
-                    {"name": "axi_aresetn", "direction": "input", "width": "1"},
+                    {"name": "axi_clk_rst", "direction": "output", "width": "1"},
+                    {"name": "axi_arstn", "direction": "input", "width": "1"},
                 ],
             },
             {
@@ -101,13 +112,13 @@ def setup(py_params_dict):
         .dbg_clk(),
         .dbg_bus(),
 
-        //USER LOGIC CLOCK AND RESET
-        .c0_ddr4_ui_clk_sync_rst(axi_clk_sync_rst_o),
+        //USER LOGIC CLOCK
         .addn_ui_clkout1        (clkout_o),
 
-        //AXI INTERFACE (slave)
-        .c0_ddr4_ui_clk (axi_clk_o),
-        .c0_ddr4_aresetn(axi_aresetn_i),
+        //AXI INTERFACE         (slave)
+        .c0_ddr4_ui_clk         (axi_clk_o),
+        .c0_ddr4_ui_clk_sync_rst(axi_clk_rst_o),
+        .c0_ddr4_aresetn        (axi_arstn_i),
 
         //address write
         .c0_ddr4_s_axi_awid   (axi_awid_i),
