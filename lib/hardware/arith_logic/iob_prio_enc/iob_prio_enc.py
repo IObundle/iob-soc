@@ -41,6 +41,7 @@ def setup(py_params_dict):
                         "name": "encoded",
                         "width": "$clog2(W)",
                         "direction": "output",
+                        "isvar": True,
                     },
                 ],
             },
