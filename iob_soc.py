@@ -16,9 +16,6 @@ def setup(py_params_dict):
         "data_w": 32,
         "mem_addr_w": 24,
         "bootrom_addr_w": 12,
-        "prebootrom_addr_w": 7,
-        "use_compressed": True,
-        "use_mul_div": True,
         "fw_addr": 0,
         "fw_addr_w": 15,
     }
@@ -68,22 +65,6 @@ def setup(py_params_dict):
                 "min": "0",
                 "max": "1",
             },
-            {  # Needed for makefile
-                "name": "USE_MUL_DIV",
-                "descr": "Enable MUL and DIV CPU instructions",
-                "type": "M",
-                "val": params["use_mul_div"],
-                "min": "0",
-                "max": "1",
-            },
-            {  # Needed for makefile
-                "name": "USE_COMPRESSED",
-                "descr": "Use compressed CPU instructions",
-                "type": "M",
-                "val": params["use_compressed"],
-                "min": "0",
-                "max": "1",
-            },
             {  # Needed for software
                 "name": "MEM_ADDR_W",
                 "descr": "Memory bus address width",
@@ -115,14 +96,6 @@ def setup(py_params_dict):
                 "val": "1",
                 "min": "0",
                 "max": "1",
-            },
-            {  # Needed for makefiles
-                "name": "PREBOOTROM_ADDR_W",
-                "descr": "Preboot ROM address width",
-                "type": "M",
-                "val": params["prebootrom_addr_w"],
-                "min": "1",
-                "max": "32",
             },
             {  # Needed for software and makefiles
                 "name": "BOOTROM_ADDR_W",
@@ -177,17 +150,6 @@ def setup(py_params_dict):
             },
         },
         {
-            "name": "cpu_trap",
-            "descr": "CPU trap output",
-            "signals": [
-                {
-                    "name": "trap",
-                    "direction": "output",
-                    "width": "1",
-                },
-            ],
-        },
-        {
             "name": "rom_bus",
             "descr": "Ports for connection with ROM memory",
             "signals": [
@@ -233,10 +195,17 @@ def setup(py_params_dict):
 
     attributes_dict["wires"] = [
         {
-            "name": "cpu_general",
-            "descr": "",
+            "name": "clk",
+            "descr": "Clock signal",
             "signals": [
-                {"name": "trap"},
+                {"name": "clk"},
+            ],
+        },
+        {
+            "name": "rst",
+            "descr": "Reset signal",
+            "signals": [
+                {"name": "arst"},
             ],
         },
         {
@@ -257,6 +226,18 @@ def setup(py_params_dict):
                 "wire_prefix": "cpu_d_",
                 "DATA_W": params["data_w"],
                 "ADDR_W": params["addr_w"],
+            },
+        },
+        {
+            "name": "periphs_axi",
+            "descr": "AXI bus for peripheral CSRs",
+            "interface": {
+                "type": "axi",
+                "subtype": "master",
+                "ID_W": "AXI_ID_W",
+                "ADDR_W": "AXI_ADDR_W",
+                "DATA_W": "AXI_DATA_W",
+                "LEN_W": "AXI_LEN_W",
             },
         },
         {
@@ -309,13 +290,50 @@ def setup(py_params_dict):
             "name": "bootrom_ibus",
             "descr": "iob-soc boot controller instruction interface",
             "interface": {
-                "type": "iob",
+                "type": "axi",
                 "wire_prefix": "bootrom_i_",
                 "DATA_W": params["data_w"],
                 "ADDR_W": params["addr_w"] - 1,
             },
         },
+        {
+            "name": "bootrom_bus",
+            "descr": "iob-soc boot controller data interface",
+            "interface": {
+                "type": "axi",
+                "wire_prefix": "bootrom_d_",
+                "DATA_W": params["data_w"],
+                "ADDR_W": params["addr_w"] - 1,
+            },
+        },
+        {
+            "name": "interrupts",
+            "descr": "System interrupts",
+            "signals": [
+                {"name": "interrupts", "width": 1},
+            ],
+        },
         # Peripheral wires
+        {
+            "name": "plic_cbus",
+            "descr": "PLIC Control/Status Registers bus",
+            "interface": {
+                "type": "axil",
+                "wire_prefix": "plic_cbus_",
+                "DATA_W": params["data_w"],
+                "ADDR_W": params["addr_w"] - 3,
+            },
+        },
+        {
+            "name": "clint_cbus",
+            "descr": "CLINT Control/Status Registers bus",
+            "interface": {
+                "type": "axil",
+                "wire_prefix": "clint_cbus_",
+                "DATA_W": params["data_w"],
+                "ADDR_W": params["addr_w"] - 3,
+            },
+        },
         {
             "name": "uart_cbus",
             "descr": "UART Control/Status Registers bus",
@@ -336,72 +354,60 @@ def setup(py_params_dict):
                 "ADDR_W": params["addr_w"] - 3,
             },
         },
-        {
-            "name": "bootrom_cbus",
-            "descr": "BOOTROM Control/Status Registers bus",
-            "interface": {
-                "type": "iob",
-                "wire_prefix": "bootrom_cbus_",
-                "DATA_W": params["data_w"],
-                "ADDR_W": params["addr_w"] - 3,
-            },
-        },
         # NOTE: Add peripheral wires here
     ]
     attributes_dict["blocks"] = [
         {
-            "core_name": "iob_picorv32",
+            "core_name": "iob_vexriscv",
             "instance_name": "cpu",
             "instance_description": "RISC-V CPU instance",
             "parameters": {
                 "ADDR_W": params["addr_w"],
                 "DATA_W": params["data_w"],
-                "USE_COMPRESSED": int(params["use_compressed"]),
-                "USE_MUL_DIV": int(params["use_mul_div"]),
             },
             "connect": {
                 "clk_en_rst": "clk_en_rst",
-                "general": "cpu_general",
+                "rst": "rst",
                 "i_bus": "cpu_ibus",
                 "d_bus": "cpu_dbus",
+                "plic_interrupts": "interrupts",
+                "plic_cbus": "plic_cbus",
+                "clint_cbus": "clint_cbus",
             },
         },
         {
-            "core_name": "iob_soc_cache_system",
-            "instance_name": "cache_system",
+            "core_name": "axi_interconnect_wrapper",
+            "instance_name": "axi_interconnect",
+            "instance_description": "Interconnect instance",
             "parameters": {
-                "FIRM_ADDR_W": params["mem_addr_w"],
-                "DDR_ADDR_W ": "`DDR_ADDR_W",
-                "DDR_DATA_W ": "`DDR_DATA_W",
-                "AXI_ID_W   ": "AXI_ID_W",
-                "AXI_LEN_W  ": "AXI_LEN_W",
-                "AXI_ADDR_W ": "AXI_ADDR_W",
-                "AXI_DATA_W ": "AXI_DATA_W",
+                "AXI_ID_W": "AXI_ID_W",
+                "AXI_ADDR_W": "AXI_ADDR_W",
+                "AXI_DATA_W": "AXI_DATA_W",
             },
             "connect": {
-                "clk_en_rst": "mem_clk_en_rst",
-                "i_bus": "cache_ibus",
-                "d_bus": "cache_dbus",
-                "axi": "axi",
+                "clk": "clk",
+                "rst": "rst",
+                "s0_axi": "cpu_ibus",
+                "s1_axi": "cpu_dbus",
+                "m0_axi": "bootrom_bus",
+                "m1_axi": "axi",
+                "m2_axi": "periphs_axi",
+                "m3_axi": "clint_cbus",
+                "m4_axi": "plic_cbus",
             },
-            "addr_w": params["addr_w"] - 1,
-            "data_w": params["data_w"],
-            "mem_addr_w": params["mem_addr_w"],
+            "num_slaves": 2,
+            "num_masters": 5,
+            # FIXME: Size of each output
         },
         {
-            "core_name": "iob_split",
-            "name": "iob_data_split",
-            "instance_name": "iob_data_split",
-            "instance_description": "Split between cache and peripheral bus",
+            "core_name": "axil2iob",
+            "instance_name": "peripheral_axil2iob",
+            "instance_description": "Convert AXI interface to IOb for peripheral CSRs bus",
             "connect": {
                 "clk_en_rst": "clk_en_rst",
-                "reset": "split_reset",
-                "input": "cpu_dbus",
-                "output_0": "cache_dbus",
-                "output_1": "periphs_cbus",
+                "axil": "periphs_axi",
+                "iob": "periphs_cbus",
             },
-            "num_outputs": 2,
-            "addr_w": params["addr_w"],
         },
         {
             "core_name": "iob_split",
@@ -414,26 +420,10 @@ def setup(py_params_dict):
                 "input": "periphs_cbus",
                 "output_0": "uart_cbus",
                 "output_1": "timer_cbus",
-                "output_2": "bootrom_cbus",
                 # NOTE: Connect other peripherals here
             },
             "num_outputs": num_peripherals,
-            "addr_w": params["addr_w"] - 1,
-        },
-        {
-            "core_name": "iob_split",
-            "name": "iob_instr_split",
-            "instance_name": "iob_instr_split",
-            "instance_description": "Split between cache and bootrom bus",
-            "connect": {
-                "clk_en_rst": "clk_en_rst",
-                "reset": "split_reset",
-                "input": "cpu_ibus",
-                "output_0": "cache_ibus",
-                "output_1": "bootrom_ibus",
-            },
-            "num_outputs": 2,
-            "addr_w": params["addr_w"],
+            "addr_w": params["addr_w"] - 1,  # FIXME:
         },
     ]
     peripherals = [
@@ -465,12 +455,10 @@ def setup(py_params_dict):
             "parameters": {},
             "connect": {
                 "clk_en_rst": "clk_en_rst",
-                "cbus": "bootrom_cbus",
-                "ibus": "bootrom_ibus",
+                "rom_bus": "bootrom_bus",
                 "ext_rom_bus": "rom_bus",
             },
             "bootrom_addr_w": params["bootrom_addr_w"],
-            "prebootrom_addr_w": params["prebootrom_addr_w"],
         },
         # NOTE: Instantiate other peripherals here
     ]
@@ -514,6 +502,14 @@ def setup(py_params_dict):
             "core_name": "printf",
             "instance_name": "printf_inst",
         },
+    ]
+    attributes_dict["snippets"] = [
+        {
+            "verilog_code": """
+   //assign interrupts = {{30{1'b0}}, uart_interrupt_o, 1'b0};
+   assign interrupts = {{30{1'b0}}, 1'b0, 1'b0};
+"""
+        }
     ]
 
     iob_soc_scripts(attributes_dict, peripherals, params, py_params_dict)

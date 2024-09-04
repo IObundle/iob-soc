@@ -17,7 +17,7 @@ def setup(py_params_dict):
                 "name": "BOOT_HEXFILE",
                 "descr": "Bootloader file name",
                 "type": "P",
-                "val": '"iob_soc_boot"',
+                "val": '"iob_soc_bootrom"',
                 "min": "NA",
                 "max": "NA",
             },

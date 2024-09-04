@@ -43,9 +43,6 @@ module iob_soc_tb;
    integer i = 0, n = 0;
    integer error, n_byte = 0;
 
-   //cpu trap signal
-   wire trap;
-
    /////////////////////////////////////////////
    // TEST PROCEDURE
    //
@@ -144,7 +141,6 @@ module iob_soc_tb;
       .clk_i (clk),
       .cke_i (1'b1),
       .arst_i(arst),
-      .trap_o(trap),
 
 `ifdef IOB_SOC_USE_ETHERNET
       .ethernet_iob_valid_i (ethernet_valid),
@@ -179,11 +175,5 @@ module iob_soc_tb;
    endtask
 
    `include "iob_tasks.vs"
-
-   //finish simulation on trap
-   always @(posedge trap) begin
-      #10 $display("Found CPU trap condition");
-      $finish();
-   end
 
 endmodule

@@ -53,13 +53,6 @@ def setup(py_params_dict):
             },
         },
         {
-            "name": "trap",
-            "descr": "CPU trap",
-            "signals": [
-                {"name": "trap", "direction": "output", "width": "1"},
-            ],
-        },
-        {
             "name": "uart",
             "descr": "Testbench uart csrs interface",
             "interface": {
@@ -194,7 +187,6 @@ def setup(py_params_dict):
             },
             "connect": {
                 "clk_en_rst": "clk_en_rst",
-                "cpu_trap": "trap",
                 "rs232": "rs232",
                 "axi": "axi",
             },

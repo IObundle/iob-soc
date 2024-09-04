@@ -53,13 +53,6 @@ def setup(py_params_dict):
             ],
         },
         {
-            "name": "trap",
-            "descr": "CPU trap output",
-            "signals": [
-                {"name": "trap", "direction": "output", "width": "1"},
-            ],
-        },
-        {
             "name": "rs232",
             "descr": "Serial port",
             "signals": [
@@ -263,7 +256,6 @@ def setup(py_params_dict):
             },
             "connect": {
                 "clk_en_rst": "clk_en_rst",
-                "cpu_trap": "trap",
                 "rs232": "rs232_int",
                 "axi": "axi",
             },
