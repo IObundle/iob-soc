@@ -1,6 +1,6 @@
 #include "bsp.h"
-#include "iob-nco.h"
-#include "iob-uart.h"
+#include "iob_nco.h"
+#include "iob_uart.h"
 #include "periphs.h"
 #include "printf.h"
 #include "system.h"

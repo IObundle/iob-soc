@@ -1,8 +1,8 @@
 #include "bsp.h"
-#include "iob-uart.h"
 #include "iob_soc_conf.h"
 #include "iob_soc_periphs.h"
 #include "iob_soc_system.h"
+#include "iob_uart.h"
 
 #define PROGNAME "IOb-Bootloader"
 

@@ -40,13 +40,14 @@ IOB_SOC_FW_SRC=src/iob_soc_firmware.S
 IOB_SOC_FW_SRC+=src/iob_soc_firmware.c
 IOB_SOC_FW_SRC+=src/printf.c
 # PERIPHERAL SOURCES
-IOB_SOC_FW_SRC+=$(wildcard src/iob-*.c)
-IOB_SOC_FW_SRC+=$(filter-out %_emul.c, $(wildcard src/*csrs*.c))
+IOB_SOC_FW_SRC+=$(addprefix src/,$(addsuffix .c,$(PERIPHERALS)))
+IOB_SOC_FW_SRC+=$(addprefix src/,$(addsuffix _csrs_emb.c,$(PERIPHERALS)))
 
 # BOOTLOADER SOURCES
 IOB_SOC_BOOT_SRC+=src/iob_soc_boot.S
 IOB_SOC_BOOT_SRC+=src/iob_soc_boot.c
-IOB_SOC_BOOT_SRC+=$(filter-out %_emul.c, $(wildcard src/iob*uart*.c))
+IOB_SOC_BOOT_SRC+=src/iob_uart.c
+IOB_SOC_BOOT_SRC+=src/iob_uart_csrs_emb.c
 
 # PREBOOT SOURCES
 IOB_SOC_PREBOOT_SRC=src/iob_soc_preboot.S

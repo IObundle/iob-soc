@@ -1,4 +1,4 @@
-#include "iob-timer.h"
+#include "iob_timer.h"
 
 // Base Address
 static uint32_t base;

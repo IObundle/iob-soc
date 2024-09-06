@@ -195,8 +195,10 @@ def setup(py_params_dict):
         },
         {
             "core_name": "iob_uart",
+            "name": "iob_uart_iob",
             "instance_name": "uart_tb",
             "instance_description": "Testbench uart core",
+            "csr_if": "iob",
             "connect": {
                 "clk_en_rst": "clk_en_rst",
                 "cbus": "uart",
