@@ -110,7 +110,7 @@ def setup(py_params_dict):
                 "name": "rom_rvalid_i",
                 "descr": "Register input",
                 "signals": [
-                    {"name": "rom_ren", "width": 1},
+                    {"name": "axi_arvalid", "width": 1},
                 ],
             },
             {
@@ -146,19 +146,18 @@ def setup(py_params_dict):
         "snippets": [
             {
                 "verilog_code": f"""
-   assing rom_ren = axi_arvalid_i;
-   assign ext_rom_en_o   = rom_ren;
-   assign ext_rom_addr_o = axi_arddr_i[{BOOTROM_ADDR_W}:2];
+   assign ext_rom_en_o   = axi_arvalid_i;
+   assign ext_rom_addr_o = axi_araddr_i[{BOOTROM_ADDR_W}:2];
    assign axi_rdata_o  = ext_rom_rdata_i;
    assign axi_arready_o  = 1'b1;  // ROM is always ready
 
    // Unused outputs
    assign axi_awready_o = 1'b0;
    assign axi_wready_o  = 1'b0;
-   assign axi_bid_o  = {{AXI_ID{{1'b0}}}};
+   assign axi_bid_o  = {{AXI_ID_W{{1'b0}}}};
    assign axi_bresp_o  = 2'b0;
    assign axi_bvalid_o = 1'b0;
-   assign axi_rid_o  = {{AXI_ID{{1'b0}}}};
+   assign axi_rid_o  = {{AXI_ID_W{{1'b0}}}};
    assign axi_rresp_o  = 2'b0;
    assign axi_rlast_o = 1'b0;
 """,

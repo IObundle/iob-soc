@@ -1,6 +1,5 @@
 #include "bsp.h"
 #include "iob-uart.h"
-#include "iob_cache_csrs.h"
 #include "iob_soc_conf.h"
 #include "iob_soc_periphs.h"
 #include "iob_soc_system.h"
@@ -11,8 +10,6 @@ int main() {
 
   // init uart
   uart_init(UART0_BASE, FREQ / BAUD);
-
-  IOB_CACHE_INIT_BASEADDR(1 << IOB_SOC_MEM_ADDR_W);
 
   // connect with console
   do {
@@ -60,7 +57,4 @@ int main() {
   uart_puts(PROGNAME);
   uart_puts(": Restart CPU to run user program...\n");
   uart_txwait();
-
-  while (!IOB_CACHE_GET_WTB_EMPTY())
-    ;
 }

@@ -99,7 +99,7 @@ def setup(py_params_dict):
             },
             {  # Needed for software and makefiles
                 "name": "BOOTROM_ADDR_W",
-                "descr": "Bootloader ROM address width",
+                "descr": "Bootloader ROM address width (byte addressable). Includes a pre-bootloader that uses the first 128 bytes. Bootloader starts at address 0x80 of this ROM.",
                 "type": "M",
                 "val": params["bootrom_addr_w"],
                 "min": "1",
@@ -188,6 +188,7 @@ def setup(py_params_dict):
                 "ADDR_W": "AXI_ADDR_W",
                 "DATA_W": "AXI_DATA_W",
                 "LEN_W": "AXI_LEN_W",
+                "LOCK_W": "AXI_LEN_W",
             },
         },
         # NOTE: Add ports for peripherals here
@@ -212,20 +213,26 @@ def setup(py_params_dict):
             "name": "cpu_ibus",
             "descr": "CPU instruction bus",
             "interface": {
-                "type": "iob",
+                "type": "axi",
                 "wire_prefix": "cpu_i_",
-                "DATA_W": params["data_w"],
+                "ID_W": "AXI_ID_W",
                 "ADDR_W": params["addr_w"],
+                "DATA_W": params["data_w"],
+                "LEN_W": "AXI_LEN_W",
+                "LOCK_W": "1",
             },
         },
         {
             "name": "cpu_dbus",
             "descr": "CPU data bus",
             "interface": {
-                "type": "iob",
+                "type": "axi",
                 "wire_prefix": "cpu_d_",
-                "DATA_W": params["data_w"],
+                "ID_W": "AXI_ID_W",
                 "ADDR_W": params["addr_w"],
+                "DATA_W": params["data_w"],
+                "LEN_W": "AXI_LEN_W",
+                "LOCK_W": "1",
             },
         },
         {
@@ -233,7 +240,7 @@ def setup(py_params_dict):
             "descr": "AXI bus for peripheral CSRs",
             "interface": {
                 "type": "axi",
-                "subtype": "master",
+                "wire_prefix": "periphs_",
                 "ID_W": "AXI_ID_W",
                 "ADDR_W": "AXI_ADDR_W",
                 "DATA_W": "AXI_DATA_W",
@@ -258,80 +265,53 @@ def setup(py_params_dict):
             ],
         },
         {
-            "name": "cache_ibus",
-            "descr": "iob-soc cache instruction interface",
-            "interface": {
-                "type": "iob",
-                "wire_prefix": "cache_system_i_",
-                "DATA_W": params["data_w"],
-                "ADDR_W": params["addr_w"] - 1,
-            },
-        },
-        {
-            "name": "cache_dbus",
-            "descr": "iob-soc cache data interface",
-            "interface": {
-                "type": "iob",
-                "wire_prefix": "cache_system_d_",
-                "DATA_W": params["data_w"],
-                "ADDR_W": params["addr_w"] - 1,
-            },
-        },
-        {
-            "name": "mem_clk_en_rst",
-            "descr": "",
-            "signals": [
-                {"name": "clk"},
-                {"name": "cke"},
-                {"name": "arst"},
-            ],
-        },
-        {
-            "name": "bootrom_ibus",
-            "descr": "iob-soc boot controller instruction interface",
-            "interface": {
-                "type": "axi",
-                "wire_prefix": "bootrom_i_",
-                "DATA_W": params["data_w"],
-                "ADDR_W": params["addr_w"] - 1,
-            },
-        },
-        {
-            "name": "bootrom_bus",
+            "name": "bootrom_axi",
             "descr": "iob-soc boot controller data interface",
             "interface": {
                 "type": "axi",
-                "wire_prefix": "bootrom_d_",
-                "DATA_W": params["data_w"],
-                "ADDR_W": params["addr_w"] - 1,
+                "wire_prefix": "bootrom_",
+                # "DATA_W": params["data_w"],
+                # "ADDR_W": params["addr_w"] - 1,
+                "ID_W": "AXI_ID_W",
+                "ADDR_W": "AXI_ADDR_W",
+                "DATA_W": "AXI_DATA_W",
+                "LEN_W": "AXI_LEN_W",
             },
         },
         {
             "name": "interrupts",
             "descr": "System interrupts",
             "signals": [
-                {"name": "interrupts", "width": 1},
+                {"name": "interrupts", "width": 32},
             ],
         },
         # Peripheral wires
         {
-            "name": "plic_cbus",
-            "descr": "PLIC Control/Status Registers bus",
-            "interface": {
-                "type": "axil",
-                "wire_prefix": "plic_cbus_",
-                "DATA_W": params["data_w"],
-                "ADDR_W": params["addr_w"] - 3,
-            },
-        },
-        {
             "name": "clint_cbus",
             "descr": "CLINT Control/Status Registers bus",
             "interface": {
-                "type": "axil",
+                "type": "axi",
                 "wire_prefix": "clint_cbus_",
-                "DATA_W": params["data_w"],
-                "ADDR_W": params["addr_w"] - 3,
+                # "DATA_W": params["data_w"],
+                # "ADDR_W": params["addr_w"] - 3,
+                "ID_W": "AXI_ID_W",
+                "ADDR_W": "AXI_ADDR_W",
+                "DATA_W": "AXI_DATA_W",
+                "LEN_W": "AXI_LEN_W",
+            },
+        },
+        {
+            "name": "plic_cbus",
+            "descr": "PLIC Control/Status Registers bus",
+            "interface": {
+                "type": "axi",
+                "wire_prefix": "plic_cbus_",
+                # "DATA_W": params["data_w"],
+                # "ADDR_W": params["addr_w"] - 3,
+                "ID_W": "AXI_ID_W",
+                "ADDR_W": "AXI_ADDR_W",
+                "DATA_W": "AXI_DATA_W",
+                "LEN_W": "AXI_LEN_W",
             },
         },
         {
@@ -362,8 +342,10 @@ def setup(py_params_dict):
             "instance_name": "cpu",
             "instance_description": "RISC-V CPU instance",
             "parameters": {
-                "ADDR_W": params["addr_w"],
-                "DATA_W": params["data_w"],
+                "AXI_ID_W": "1",
+                "AXI_ADDR_W": params["addr_w"],
+                "AXI_DATA_W": params["data_w"],
+                "AXI_LEN_W": "AXI_LEN_W",
             },
             "connect": {
                 "clk_en_rst": "clk_en_rst",
@@ -389,7 +371,7 @@ def setup(py_params_dict):
                 "rst": "rst",
                 "s0_axi": "cpu_ibus",
                 "s1_axi": "cpu_dbus",
-                "m0_axi": "bootrom_bus",
+                "m0_axi": "bootrom_axi",
                 "m1_axi": "axi",
                 "m2_axi": "periphs_axi",
                 "m3_axi": "clint_cbus",
@@ -400,12 +382,15 @@ def setup(py_params_dict):
             # FIXME: Size of each output
         },
         {
-            "core_name": "axil2iob",
-            "instance_name": "peripheral_axil2iob",
+            "core_name": "axi2iob",
+            "instance_name": "peripheral_axi2iob",
             "instance_description": "Convert AXI interface to IOb for peripheral CSRs bus",
+            "parameters": {
+                "ADDR_WIDTH": params["addr_w"] - 1,
+            },
             "connect": {
                 "clk_en_rst": "clk_en_rst",
-                "axil": "periphs_axi",
+                "axi": "periphs_axi",
                 "iob": "periphs_cbus",
             },
         },
@@ -422,8 +407,8 @@ def setup(py_params_dict):
                 "output_1": "timer_cbus",
                 # NOTE: Connect other peripherals here
             },
-            "num_outputs": num_peripherals,
-            "addr_w": params["addr_w"] - 1,  # FIXME:
+            "num_outputs": num_peripherals - 1,  # Don't count bootloader
+            "addr_w": params["addr_w"] - 2,  # FIXME:
         },
     ]
     peripherals = [
@@ -452,10 +437,15 @@ def setup(py_params_dict):
             "core_name": "iob_bootrom",
             "instance_name": "BOOTROM0",
             "instance_description": "Boot ROM peripheral",
-            "parameters": {},
+            "parameters": {
+                "AXI_ID_W": "AXI_ID_W",
+                "AXI_ADDR_W": "AXI_ADDR_W",
+                "AXI_DATA_W": "AXI_DATA_W",
+                "AXI_LEN_W": "AXI_LEN_W",
+            },
             "connect": {
                 "clk_en_rst": "clk_en_rst",
-                "rom_bus": "bootrom_bus",
+                "rom_bus": "bootrom_axi",
                 "ext_rom_bus": "rom_bus",
             },
             "bootrom_addr_w": params["bootrom_addr_w"],
