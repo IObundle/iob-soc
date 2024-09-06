@@ -76,7 +76,7 @@ def setup(py_params_dict):
                 "interface": {
                     "type": "axi",
                     "subtype": "slave",
-                    "ADDR_W": BOOTROM_ADDR_W - 2,
+                    "ADDR_W": BOOTROM_ADDR_W,
                     "DATA_W": "DATA_W",
                 },
             },
@@ -156,10 +156,10 @@ def setup(py_params_dict):
    assign axi_wready_o  = 1'b0;
    assign axi_bid_o  = {{AXI_ID_W{{1'b0}}}};
    assign axi_bresp_o  = 2'b0;
-   assign axi_bvalid_o = 1'b0;
+   assign axi_bvalid_o = 1'b1;
    assign axi_rid_o  = {{AXI_ID_W{{1'b0}}}};
    assign axi_rresp_o  = 2'b0;
-   assign axi_rlast_o = 1'b0;
+   assign axi_rlast_o = axi_rvalid_o;
 """,
             },
         ],
