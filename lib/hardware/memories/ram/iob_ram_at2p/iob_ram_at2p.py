@@ -91,7 +91,7 @@ def setup(py_params_dict):
                 "name": "r_data_o",
                 "descr": "Output port",
                 "signals": [
-                    {"name": "r_data", "width": "ADDR_W", "direction": "output"},
+                    {"name": "r_data", "width": "DATA_W", "direction": "output"},
                 ],
             },
         ],
