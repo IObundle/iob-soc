@@ -297,6 +297,7 @@ def setup(py_params_dict):
         attributes_dict["blocks"] += [
             {
                 "core_name": "axi_interconnect_wrapper",
+                "name": "fpga_axi_interconnect_wrapper",
                 "instance_name": "axi_interconnect",
                 "instance_description": "Interconnect instance",
                 "parameters": {

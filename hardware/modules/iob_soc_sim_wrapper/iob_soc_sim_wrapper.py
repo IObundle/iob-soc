@@ -205,6 +205,7 @@ def setup(py_params_dict):
         },
         {
             "core_name": "axi_interconnect_wrapper",
+            "name": "sim_axi_interconnect_wrapper",
             "instance_name": "axi_interconnect",
             "instance_description": "Interconnect instance",
             "parameters": {
