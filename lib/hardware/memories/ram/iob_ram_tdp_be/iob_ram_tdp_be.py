@@ -3,12 +3,11 @@ def setup(py_params_dict):
         "original_name": "iob_ram_tdp_be",
         "name": "iob_ram_tdp_be",
         "version": "0.1",
-        "generate_hw": False,
         "confs": [
             {
                 "name": "HEXFILE",
                 "type": "P",
-                "val": "none",
+                "val": '"none"',
                 "min": "NA",
                 "max": "NA",
                 "descr": "Name of file to load into RAM",
@@ -36,6 +35,30 @@ def setup(py_params_dict):
                 "min": "0",
                 "max": "1",
                 "descr": "No simultaneous read/write",
+            },
+            {
+                "name": "COL_W",
+                "type": "F",
+                "val": "DATA_W / 4",
+                "min": "NA",
+                "max": "NA",
+                "descr": "",
+            },
+            {
+                "name": "NUM_COL",
+                "type": "F",
+                "val": "DATA_W / COL_W",
+                "min": "NA",
+                "max": "NA",
+                "descr": "",
+            },
+            {
+                "name": "file_suffix",
+                "type": "F",
+                "val": '{"7", "6", "5", "4", "3", "2", "1", "0"}',
+                "min": "NA",
+                "max": "NA",
+                "descr": "",
             },
         ],
         "ports": [
@@ -72,7 +95,40 @@ def setup(py_params_dict):
         "blocks": [
             {
                 "core_name": "iob_ram_tdp",
-                "instance_name": "iob_ram_tdp_inst",
+                "instantiate": False,
+            },
+        ],
+        "snippets": [
+            {
+                "verilog_code": """
+             genvar index;
+   generate
+      for (index = 0; index < NUM_COL; index = index + 1) begin : ram_col
+         localparam mem_init_file_int = (HEXFILE != "none") ?
+             {HEXFILE, "_", FILE_SUFFIX[8*(index+1)-1-:8], ".hex"} : "none";
+         iob_ram_tdp #(
+            .HEXFILE             (mem_init_file_int),
+            .ADDR_W              (ADDR_W),
+            .DATA_W              (COL_W),
+            .MEM_NO_READ_ON_WRITE(MEM_NO_READ_ON_WRITE)
+         ) ram (
+            .clk_i(clk_i),
+
+            .enA_i  (enA_i),
+            .addrA_i(addrA_i),
+            .dA_i   (dA_i[index*COL_W+:COL_W]),
+            .weA_i  (weA_i[index]),
+            .dA_o   (dA_o[index*COL_W+:COL_W]),
+
+            .enB_i  (enB_i),
+            .addrB_i(addrB_i),
+            .dB_i   (dB_i[index*COL_W+:COL_W]),
+            .weB_i  (weB_i[index]),
+            .dB_o   (dB_o[index*COL_W+:COL_W])
+         );
+      end
+   endgenerate
+            """,
             },
         ],
     }
