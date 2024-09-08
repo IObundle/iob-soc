@@ -50,6 +50,16 @@ def setup(py_params_dict):
             },
         ],
         "wires": [
+            {
+                "name": "csrs_iob",
+                "descr": "Internal CSRs IOb interface",
+                "interface": {
+                    "type": "iob",
+                    "wire_prefix": "csrs_",
+                    "ADDR_W": "ADDR_W",
+                    "DATA_W": "DATA_W",
+                },
+            },
             # Register wires
             {
                 "name": "reset",
@@ -168,6 +178,7 @@ def setup(py_params_dict):
                 "connect": {
                     "clk_en_rst": "clk_en_rst",
                     "control_if": "cbus",
+                    "csrs_iob_output": "csrs_iob",
                     # Register interfaces
                     "reset": "reset",
                     "enable": "enable",
