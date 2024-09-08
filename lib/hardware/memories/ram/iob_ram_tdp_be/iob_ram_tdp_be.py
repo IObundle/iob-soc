@@ -53,7 +53,7 @@ def setup(py_params_dict):
                 "descr": "",
             },
             {
-                "name": "file_suffix",
+                "name": "FILE_SUFFIX",
                 "type": "F",
                 "val": '{"7", "6", "5", "4", "3", "2", "1", "0"}',
                 "min": "NA",
