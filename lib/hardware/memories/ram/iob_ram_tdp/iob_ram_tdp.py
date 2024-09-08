@@ -37,7 +37,7 @@ def setup(py_params_dict):
                 "descr": "",
             },
             {
-                "name": "mem_init_file_int",
+                "name": "MEM_INIT_FILE_INT",
                 "type": "F",
                 "val": "HEXFILE",
                 "min": "0",
