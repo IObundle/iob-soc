@@ -100,6 +100,7 @@ module axi2iob #(
    // AXI4-Lite interface to IOb
    //
    wire                  iob_rvalid_q;
+   wire [DATA_WIDTH-1:0] iob_rdata_q;
    wire                  iob_rvalid_e;
    wire                  write_enable;
    wire [ADDR_WIDTH-1:0] m_axil_awaddr_q;
@@ -121,7 +122,7 @@ module axi2iob #(
    // // read address
    assign m_axil_arready = iob_ready_i;
    // // read
-   assign m_axil_rdata = iob_rdata_i;
+   assign m_axil_rdata = iob_rvalid_i ? iob_rdata_i : iob_rdata_q;
    assign m_axil_rresp = 2'b0;
    assign m_axil_rvalid = iob_rvalid_i ? 1'b1 : iob_rvalid_q;
 
@@ -155,6 +156,19 @@ module axi2iob #(
       .en_i  (iob_rvalid_e),
       .data_i(iob_rvalid_i),
       .data_o(iob_rvalid_q)
+   );
+
+   iob_reg_re #(
+      .DATA_W (DATA_WIDTH),
+      .RST_VAL(0)
+   ) iob_reg_rdata (
+      .clk_i (clk_i),
+      .arst_i(arst_i),
+      .cke_i (cke_i),
+      .rst_i (1'b0),
+      .en_i  (iob_rvalid_e),
+      .data_i(iob_rdata_i),
+      .data_o(iob_rdata_q)
    );
 
    iob_reg_re #(

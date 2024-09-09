@@ -164,7 +164,9 @@ def setup(py_params_dict):
         except ValueError:
             width_str = width
         master_addr_w_parameter = f"{width_str}," + master_addr_w_parameter
-    master_addr_w_parameter = "{" + master_addr_w_parameter[:-1] + "}"
+    master_addr_w_parameter = master_addr_w_parameter[:-1]
+    if len(MASTERS) > 1:
+        master_addr_w_parameter = "{" + master_addr_w_parameter + "}"
     attributes_dict["ports"] += slave_axi_ports + master_axi_ports
     #
     # Wires

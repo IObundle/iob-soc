@@ -199,7 +199,7 @@ def setup(py_params_dict):
             {
                 "verilog_code": f"""
    assign ext_rom_en_o   = rom_ren_rd;
-   assign ext_rom_addr_o = csrs_iob_addr[{BOOTROM_ADDR_W}:2];
+   assign ext_rom_addr_o = csrs_iob_addr[{BOOTROM_ADDR_W}-1:2];
    assign rom_rdata_rd   = ext_rom_rdata_i;
    assign rom_rready_rd  = 1'b1;  // ROM is always ready
 """,
