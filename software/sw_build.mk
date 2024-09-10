@@ -76,5 +76,6 @@ EMUL_SRC+=src/iob_soc_firmware.c
 EMUL_SRC+=src/printf.c
 
 # PERIPHERAL SOURCES
-EMUL_SRC+=$(wildcard src/iob-*.c)
+EMUL_SRC+=$(addprefix src/,$(addsuffix .c,$(PERIPHERALS)))
+EMUL_SRC+=$(addprefix src/,$(addsuffix _csrs_pc_emul.c,$(PERIPHERALS)))
 
