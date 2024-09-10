@@ -114,6 +114,11 @@ def setup(py_params_dict):
                 "descr": "AXI interface",
             },
         ],
+        "blocks": [
+            {
+                "core_name": "iob_ram_sp",
+            },
+        ],
     }
 
     return attributes_dict

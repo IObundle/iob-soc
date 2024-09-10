@@ -126,16 +126,6 @@ def setup(py_params_dict):
             },
         },
         {
-            "name": "cpu_trap",
-            "descr": "CPU trap",
-            "signals": [
-                {
-                    "name": "trap",
-                    "width": "1",
-                },
-            ],
-        },
-        {
             "name": "rs232_int",
             "descr": "iob-soc uart interface",
             "signals": [
@@ -285,7 +275,6 @@ def setup(py_params_dict):
             },
             "connect": {
                 "clk_en_rst": "clk_en_rst",
-                "cpu_trap": "cpu_trap",
                 "rs232": "rs232_int",
                 "axi": "axi",
             },

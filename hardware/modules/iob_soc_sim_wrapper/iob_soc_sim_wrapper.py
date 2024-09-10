@@ -53,13 +53,6 @@ def setup(py_params_dict):
             },
         },
         {
-            "name": "trap",
-            "descr": "CPU trap",
-            "signals": [
-                {"name": "trap", "direction": "output", "width": "1"},
-            ],
-        },
-        {
             "name": "uart",
             "descr": "Testbench uart csrs interface",
             "interface": {
@@ -194,7 +187,6 @@ def setup(py_params_dict):
             },
             "connect": {
                 "clk_en_rst": "clk_en_rst",
-                "cpu_trap": "trap",
                 "rs232": "rs232",
                 "axi": "axi",
             },
@@ -203,8 +195,10 @@ def setup(py_params_dict):
         },
         {
             "core_name": "iob_uart",
+            "name": "iob_uart_iob",
             "instance_name": "uart_tb",
             "instance_description": "Testbench uart core",
+            "csr_if": "iob",
             "connect": {
                 "clk_en_rst": "clk_en_rst",
                 "cbus": "uart",
@@ -213,6 +207,7 @@ def setup(py_params_dict):
         },
         {
             "core_name": "axi_interconnect_wrapper",
+            "name": "sim_axi_interconnect_wrapper",
             "instance_name": "axi_interconnect",
             "instance_description": "Interconnect instance",
             "parameters": {

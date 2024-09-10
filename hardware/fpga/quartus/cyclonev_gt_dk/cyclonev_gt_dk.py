@@ -53,13 +53,6 @@ def setup(py_params_dict):
             ],
         },
         {
-            "name": "trap",
-            "descr": "CPU trap output",
-            "signals": [
-                {"name": "trap", "direction": "output", "width": "1"},
-            ],
-        },
-        {
             "name": "rs232",
             "descr": "Serial port",
             "signals": [
@@ -263,7 +256,6 @@ def setup(py_params_dict):
             },
             "connect": {
                 "clk_en_rst": "clk_en_rst",
-                "cpu_trap": "trap",
                 "rs232": "rs232_int",
                 "axi": "axi",
             },
@@ -305,6 +297,7 @@ def setup(py_params_dict):
         attributes_dict["blocks"] += [
             {
                 "core_name": "axi_interconnect_wrapper",
+                "name": "fpga_axi_interconnect_wrapper",
                 "instance_name": "axi_interconnect",
                 "instance_description": "Interconnect instance",
                 "parameters": {

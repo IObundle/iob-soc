@@ -110,13 +110,6 @@ int main(int argc, char **argv, char **env) {
 #endif
 
   while (1) {
-    if (dut->trap_o > 0) {
-      printf("\nTESTBENCH: force cpu trap exit\n");
-      cpu_char = 4;
-      fwrite(&cpu_char, sizeof(char), 1, soc2cnsl_fd);
-      fclose(soc2cnsl_fd);
-      break;
-    }
     while (!rxread_reg && !txread_reg) {
       rxread_reg = (char)iob_read(IOB_UART_RXREADY_ADDR, &uart_if);
       txread_reg = (char)iob_read(IOB_UART_TXREADY_ADDR, &uart_if);

@@ -1,4 +1,4 @@
-#include "iob-nco.h"
+#include "iob_nco.h"
 
 // Base Address
 static uint32_t base;

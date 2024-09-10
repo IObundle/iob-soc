@@ -86,5 +86,6 @@ if { $USE_EXTMEM > 0 } {
     read_verilog vivado/$BOARD/clock_wizard.v
     read_verilog vivado/$BOARD/iob_reset_sync.v
     read_verilog vivado/$BOARD/iob_r.v
+    read_verilog vivado/$BOARD/axi_ram.v
 
 }

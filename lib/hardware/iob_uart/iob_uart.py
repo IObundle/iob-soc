@@ -1,7 +1,9 @@
 def setup(py_params_dict):
+    CSR_IF = py_params_dict["csr_if"] if "csr_if" in py_params_dict else "axi"
+    NAME = py_params_dict["name"] if "name" in py_params_dict else "iob_uart"
     attributes_dict = {
         "original_name": "iob_uart",
-        "name": "iob_uart",
+        "name": NAME,
         "version": "0.1",
         "board_list": ["cyclonev_gt_dk", "aes_ku040_db_g"],
         "confs": [
@@ -42,7 +44,7 @@ def setup(py_params_dict):
             {
                 "name": "cbus",
                 "interface": {
-                    "type": "iob",
+                    "type": CSR_IF,
                     "subtype": "slave",
                     "ADDR_W": "3",  # Same as `IOB_UART_CSRS_ADDR_W
                     "DATA_W": "DATA_W",
@@ -58,6 +60,16 @@ def setup(py_params_dict):
             },
         ],
         "wires": [
+            {
+                "name": "csrs_iob",
+                "descr": "Internal iob interface",
+                "interface": {
+                    "type": "iob",
+                    "wire_prefix": "csrs_",
+                    "ADDR_W": "ADDR_W",
+                    "DATA_W": "DATA_W",
+                },
+            },
             {
                 "name": "softreset",
                 "descr": "",
@@ -257,9 +269,11 @@ def setup(py_params_dict):
                         ],
                     }
                 ],
+                "csr_if": CSR_IF,
                 "connect": {
                     "clk_en_rst": "clk_en_rst",
                     "control_if": "cbus",
+                    "csrs_iob_output": "csrs_iob",
                     # Register interfaces
                     "softreset": "softreset",
                     "div": "div",
@@ -306,7 +320,7 @@ def setup(py_params_dict):
     assign rxdata_rready_rd = 1'b1;
 
     // rxdata rvalid is iob_valid registered
-    assign rxdata_rvalid_nxt = iob_valid_i & rxdata_ren_rd;
+    assign rxdata_rvalid_nxt = csrs_iob_valid & rxdata_ren_rd;
 """,
             },
         ],

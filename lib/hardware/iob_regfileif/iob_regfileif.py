@@ -159,7 +159,29 @@ def setup(py_params_dict):
                 "descr": "External CPU native interface.",
             },
         ],
-        "wires": reg_wires,
+        "wires": reg_wires
+        + [
+            {
+                "name": "csrs_iob",
+                "descr": "Internal CSRs iob interface",
+                "interface": {
+                    "type": "iob",
+                    "wire_prefix": "csrs_",
+                    "ADDR_W": "ADDR_W",
+                    "DATA_W": "DATA_W",
+                },
+            },
+            {
+                "name": "internal_iob2",
+                "descr": "Internal iob interface",
+                "interface": {
+                    "type": "iob",
+                    "wire_prefix": "internal2_",
+                    "ADDR_W": "ADDR_W",
+                    "DATA_W": "DATA_W",
+                },
+            },
+        ],
         "blocks": [
             {
                 "core_name": "csrs",
@@ -169,6 +191,7 @@ def setup(py_params_dict):
                 "connect": {
                     "clk_en_rst": "clk_en_rst",
                     "control_if": "external_control_if",
+                    "csrs_iob_output": "csrs_iob",
                     **external_reg_connections,
                 },
                 "csr_if": params["external_csr_if"],
@@ -185,6 +208,7 @@ def setup(py_params_dict):
                 "connect": {
                     "clk_en_rst": "clk_en_rst",
                     "control_if": "internal_control_if",
+                    "csrs_iob_output": "internal_iob2",
                     **internal_reg_connections,
                 },
                 "csr_if": params["internal_csr_if"],

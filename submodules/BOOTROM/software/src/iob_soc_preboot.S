@@ -4,9 +4,9 @@
 
 // Can't include iob_bootrom_swreg.h because the assembler doesn't recognize stdint.h,
 // so define the constants here instead (these are address offsets).
-#define IOB_BOOTROM_ROM_ADDR 0
+#define IOB_BOOTROM_ROM_ADDR 0x80
 
-#define LENGTH (1 << IOB_SOC_BOOTROM_ADDR_W)
+#define LENGTH ((1 << IOB_SOC_BOOTROM_ADDR_W) - IOB_BOOTROM_ROM_ADDR)
 #define BOOTROM (BOOTROM0_BASE + IOB_BOOTROM_ROM_ADDR)
 #define BOOTLDR_ADDR ((1 << IOB_SOC_MEM_ADDR_W) - (1 << IOB_SOC_BOOTROM_ADDR_W))
 
@@ -23,7 +23,7 @@ copy_loop:
   sw x4, 0(x3)
   addi x2, x2, 4
   addi x3, x3, 4
-  addi x1, x1, -1
+  addi x1, x1, -4
   bne x1, x0, copy_loop
 
   // Jump to the bootloader

@@ -99,22 +99,6 @@ jobs:
       - name: run LIB test
         run: nix-shell --run "make -C lib sim-test"
 
-  cache:
-    runs-on: self-hosted
-    timeout-minutes: 20
-    if: ${{ !cancelled() }}
-    needs: [ cyclonev ]
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: 'recursive'
-      - name: Clean untracked files and directories (like old submodules)
-        run: git clean -ffdx
-      - name: run simulation test
-        run: make -C submodules/CACHE sim-test
-      - name: run fpga test
-        run: make -C submodules/CACHE fpga-test
   doc:
     runs-on: self-hosted
     timeout-minutes: 60

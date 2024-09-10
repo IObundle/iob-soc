@@ -74,6 +74,16 @@ def setup(py_params_dict):
         ],
         "wires": [
             {
+                "name": "csrs_iob",
+                "descr": "Internal iob interface",
+                "interface": {
+                    "type": "iob",
+                    "wire_prefix": "csrs_",
+                    "ADDR_W": "ADDR_W",
+                    "DATA_W": "DATA_W",
+                },
+            },
+            {
                 "name": "input_ports",
                 "descr": "",
                 "signals": [
@@ -138,6 +148,7 @@ def setup(py_params_dict):
                 "connect": {
                     "clk_en_rst": "clk_en_rst",
                     "control_if": "iob",
+                    "csrs_iob_output": "csrs_iob",
                     # Register interfaces
                     "gpio_input": "input_ports",
                     "gpio_output": "output_ports",

@@ -3,11 +3,6 @@ def setup(py_params_dict):
     BOOTROM_ADDR_W = (
         py_params_dict["bootrom_addr_w"] if "bootrom_addr_w" in py_params_dict else 12
     )
-    PREBOOTROM_ADDR_W = (
-        py_params_dict["prebootrom_addr_w"]
-        if "prebootrom_addr_w" in py_params_dict
-        else 7
-    )
 
     attributes_dict = {
         "original_name": "iob_bootrom",
@@ -19,17 +14,48 @@ def setup(py_params_dict):
                 "descr": "Data bus width",
                 "type": "F",
                 "val": "32",
-                "min": "?",
+                "min": "0",
                 "max": "32",
             },
             {
                 "name": "ADDR_W",
                 "descr": "Address bus width",
                 "type": "F",
-                # "val": "`IOB_BOOTROM_CSRS_ADDR_W",
-                "val": 13,
-                "min": "?",
+                "val": BOOTROM_ADDR_W - 2,
+                "min": "0",
                 "max": "32",
+            },
+            {
+                "name": "AXI_ID_W",
+                "descr": "AXI ID bus width",
+                "type": "P",
+                "val": "0",
+                "min": "1",
+                "max": "32",
+            },
+            {
+                "name": "AXI_ADDR_W",
+                "descr": "AXI address bus width",
+                "type": "P",
+                "val": "0",
+                "min": "1",
+                "max": "32",
+            },
+            {
+                "name": "AXI_DATA_W",
+                "descr": "AXI data bus width",
+                "type": "P",
+                "val": "0",
+                "min": "1",
+                "max": "32",
+            },
+            {
+                "name": "AXI_LEN_W",
+                "descr": "AXI burst length width",
+                "type": "P",
+                "val": "0",
+                "min": "1",
+                "max": "4",
             },
         ],
         #
@@ -48,24 +74,11 @@ def setup(py_params_dict):
                 "name": "cbus",
                 "descr": "Front-end control interface",
                 "interface": {
-                    "type": "iob",
+                    "type": "axi",
                     "subtype": "slave",
                     "port_prefix": "cbus_",
-                    # "ADDR_W": "`IOB_BOOTROM_CSRS_ADDR_W",
-                    "ADDR_W": 13,
+                    "ADDR_W": BOOTROM_ADDR_W,
                     "DATA_W": "DATA_W",
-                },
-            },
-            {
-                "name": "ibus",
-                "descr": "Instruction bus",
-                "interface": {
-                    "type": "iob",
-                    "subtype": "slave",
-                    "port_prefix": "ibus_",
-                    "DATA_W": "DATA_W",
-                    # "ADDR_W": "`IOB_BOOTROM_CSRS_ADDR_W",
-                    "ADDR_W": 13,
                 },
             },
             {
@@ -95,6 +108,16 @@ def setup(py_params_dict):
         #
         "wires": [
             {
+                "name": "csrs_iob",
+                "descr": "Internal iob interface",
+                "interface": {
+                    "type": "iob",
+                    "wire_prefix": "csrs_",
+                    "ADDR_W": BOOTROM_ADDR_W,
+                    "DATA_W": "DATA_W",
+                },
+            },
+            {
                 "name": "rom",
                 "descr": "'rom' register interface",
                 "signals": [
@@ -102,36 +125,6 @@ def setup(py_params_dict):
                     {"name": "rom_rvalid_rd", "width": 1},
                     {"name": "rom_ren_rd", "width": 1},
                     {"name": "rom_rready_rd", "width": 1},
-                ],
-            },
-            {
-                "name": "preboot_rom_clk",
-                "descr": "Pre-bootloader ROM clock input",
-                "signals": [
-                    {"name": "clk"},
-                ],
-            },
-            {
-                "name": "preboot_rom_if",
-                "descr": "Pre-bootloader Memory interface",
-                "signals": [
-                    {"name": "ibus_iob_valid"},
-                    {"name": "prebootrom_addr_i", "width": PREBOOTROM_ADDR_W - 2},
-                    {"name": "ibus_iob_rdata"},
-                ],
-            },
-            {
-                "name": "ibus_rvalid_data_i",
-                "descr": "Register input",
-                "signals": [
-                    {"name": "ibus_iob_valid"},
-                ],
-            },
-            {
-                "name": "ibus_rvalid_data_o",
-                "descr": "Register output",
-                "signals": [
-                    {"name": "ibus_iob_rvalid"},
                 ],
             },
             {
@@ -175,39 +168,13 @@ def setup(py_params_dict):
                         ],
                     }
                 ],
+                "csr_if": "axi",
                 "connect": {
                     "clk_en_rst": "clk_en_rst",
                     "control_if": "cbus",
+                    "csrs_iob_output": "csrs_iob",
                     # Register interfaces
                     "rom": "rom",
-                },
-            },
-            {
-                "core_name": "iob_rom_sp",
-                "instance_name": "preboot_rom",
-                "instance_description": "Pre-bootloader ROM",
-                "parameters": {
-                    "ADDR_W": PREBOOTROM_ADDR_W - 2,
-                    "DATA_W": "DATA_W",
-                    "HEXFILE": '"iob_soc_preboot.hex"',
-                },
-                "connect": {
-                    "clk": "preboot_rom_clk",
-                    "rom_if": "preboot_rom_if",
-                },
-            },
-            {
-                "core_name": "iob_reg",
-                "instance_name": "ibus_rvalid_r",
-                "instance_description": "Instruction bus rvalid register",
-                "parameters": {
-                    "DATA_W": 1,
-                    "RST_VAL": "1'b0",
-                },
-                "connect": {
-                    "clk_en_rst": "clk_en_rst",
-                    "data_i": "ibus_rvalid_data_i",
-                    "data_o": "ibus_rvalid_data_o",
                 },
             },
             {
@@ -231,10 +198,8 @@ def setup(py_params_dict):
         "snippets": [
             {
                 "verilog_code": f"""
-   assign prebootrom_addr_i = ibus_iob_addr_i[{PREBOOTROM_ADDR_W}:2];
-   assign ibus_iob_ready_o = 1'b1;
    assign ext_rom_en_o   = rom_ren_rd;
-   assign ext_rom_addr_o = cbus_iob_addr_i[{BOOTROM_ADDR_W}:2];
+   assign ext_rom_addr_o = csrs_iob_addr[{BOOTROM_ADDR_W}-1:2];
    assign rom_rdata_rd   = ext_rom_rdata_i;
    assign rom_rready_rd  = 1'b1;  // ROM is always ready
 """,
