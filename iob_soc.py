@@ -415,7 +415,7 @@ def setup(py_params_dict):
         },
         {
             "core_name": "iob_bootrom",
-            "instance_name": "BOOTROM0",
+            "instance_name": "bootrom",
             "instance_description": "Boot ROM peripheral",
             "parameters": {
                 "AXI_ID_W": "AXI_ID_W",

@@ -1,26 +1,3 @@
-axil_signals = [
-    ("axil_araddr", "input", "ADDR_W"),
-    ("axil_arprot", "input", "PROT_W"),
-    ("axil_arvalid", "input", "1"),
-    ("axil_arready", "output", "1"),
-    ("axil_rdata", "output", "DATA_W"),
-    ("axil_rresp", "output", "RESP_W"),
-    ("axil_rvalid", "output", "1"),
-    ("axil_rready", "input", "1"),
-    ("axil_awaddr", "input", "ADDR_W"),
-    ("axil_awprot", "input", "PROT_W"),
-    ("axil_awvalid", "input", "1"),
-    ("axil_awready", "output", "1"),
-    ("axil_wdata", "input", "DATA_W"),
-    ("axil_wstrb", "input", "DATA_W/DATA_SECTION_W"),
-    ("axil_wvalid", "input", "1"),
-    ("axil_wready", "output", "1"),
-    ("axil_bresp", "output", "RESP_W"),
-    ("axil_bvalid", "output", "1"),
-    ("axil_bready", "input", "1"),
-]
-
-
 def setup(py_params_dict):
     assert "name" in py_params_dict, print(
         "Error: Missing name for generated split module."
@@ -42,6 +19,28 @@ def setup(py_params_dict):
     )
     PROT_W = int(py_params_dict["prot_w"]) if "prot_w" in py_params_dict else 3
     RESP_W = int(py_params_dict["resp_w"]) if "resp_w" in py_params_dict else 2
+
+    axil_signals = [
+        ("axil_araddr", "input", ADDR_W),
+        ("axil_arprot", "input", PROT_W),
+        ("axil_arvalid", "input", 1),
+        ("axil_arready", "output", 1),
+        ("axil_rdata", "output", DATA_W),
+        ("axil_rresp", "output", RESP_W),
+        ("axil_rvalid", "output", 1),
+        ("axil_rready", "input", 1),
+        ("axil_awaddr", "input", ADDR_W),
+        ("axil_awprot", "input", PROT_W),
+        ("axil_awvalid", "input", 1),
+        ("axil_awready", "output", 1),
+        ("axil_wdata", "input", DATA_W),
+        ("axil_wstrb", "input", int(DATA_W / DATA_SECTION_W)),
+        ("axil_wvalid", "input", 1),
+        ("axil_wready", "output", 1),
+        ("axil_bresp", "output", RESP_W),
+        ("axil_bvalid", "output", 1),
+        ("axil_bready", "input", 1),
+    ]
 
     attributes_dict = {
         "original_name": "iob_axil_split",
@@ -102,7 +101,7 @@ def setup(py_params_dict):
             "name": "sel_reg_en_rst",
             "descr": "Enable and reset signal for sel_reg",
             "signals": [
-                {"name": "input_axil_valid"},
+                {"name": "sel_reg_en", "width": 1},
                 {"name": "rst"},
             ],
         },
@@ -154,7 +153,7 @@ def setup(py_params_dict):
                     "signals": [
                         {
                             "name": "demux_" + signal,
-                            "width": eval("NUM_OUTPUTS*" + width),
+                            "width": NUM_OUTPUTS * width,
                         },
                     ],
                 },
@@ -168,7 +167,7 @@ def setup(py_params_dict):
                     "signals": [
                         {
                             "name": "mux_" + signal,
-                            "width": eval("NUM_OUTPUTS*" + width),
+                            "width": NUM_OUTPUTS * width,
                         },
                     ],
                 },
@@ -237,26 +236,30 @@ def setup(py_params_dict):
     attributes_dict["snippets"] = [
         {
             # Extract output selection bits from address
-            "verilog_code": f"    assign sel = input_axil_addr_i[{ADDR_W-1}-:{NBITS}];",
+            "verilog_code": f"""
+   assign sel = input_axil_arvalid_i ? input_axil_araddr_i[{ADDR_W-1}-:{NBITS}] : input_axil_awaddr_i[{ADDR_W-1}-:{NBITS}];
+   assign sel_reg_en = input_axil_arvalid_i | input_axil_awvalid_i;
+""",
         },
     ]
 
     verilog_code = ""
-    # Connect address signal # FIXME: araddr and awaddr
+    # Connect address signal
     for port_idx in range(NUM_OUTPUTS):
         verilog_code += f"""
-   assign output{port_idx}_axil_addr_o = demux_axil_addr[{port_idx*ADDR_W}+:{ADDR_W-NBITS}];
+   assign output{port_idx}_axil_araddr_o = demux_axil_araddr[{port_idx*ADDR_W}+:{ADDR_W-NBITS}];
+   assign output{port_idx}_axil_awaddr_o = demux_axil_awaddr[{port_idx*ADDR_W}+:{ADDR_W-NBITS}];
 """
     # Connect other signals
     for signal, direction, width in axil_signals:
-        if signal == "axil_addr":
+        if signal in ["axil_araddr", "axil_awaddr"]:
             continue
 
         if direction == "input":
             # Connect demuxers outputs
             for port_idx in range(NUM_OUTPUTS):
                 verilog_code += f"""
-   assign output{port_idx}_{signal}_o = demux_{signal}[{port_idx*int(eval(width))}+:{int(eval(width))}];
+   assign output{port_idx}_{signal}_o = demux_{signal}[{port_idx*width}+:{width}];
 """
         else:  # Output direction
             # Connect muxer inputs
