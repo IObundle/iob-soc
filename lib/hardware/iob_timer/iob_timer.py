@@ -41,7 +41,7 @@ def setup(py_params_dict):
             {
                 "name": "cbus",
                 "interface": {
-                    "type": "axi",
+                    "type": "axil",
                     "subtype": "slave",
                     "ADDR_W": "4",  # Same as `IOB_TIMER_CSRS_ADDR_W
                     "DATA_W": "DATA_W",
@@ -174,7 +174,7 @@ def setup(py_params_dict):
                         ],
                     },
                 ],
-                "csr_if": "axi",
+                "csr_if": "axil",
                 "connect": {
                     "clk_en_rst": "clk_en_rst",
                     "control_if": "cbus",

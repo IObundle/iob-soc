@@ -96,9 +96,9 @@ def setup(py_params_dict):
    assign axil_rready_o = axi_rready_i;
 
    // Unused axi outputs
-   assign axi_bid_o = 'b0;
-   assign axi_rid_o = 'b0;
-   assign axi_rlast_o = 'b0;
+   assign axi_bid_o = 1'b0;
+   assign axi_rid_o = 1'b0;
+   assign axi_rlast_o = 1'b1;
 
    // Unused axi inputs
    // axi_awid_i

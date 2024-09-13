@@ -1,7 +1,15 @@
 def setup(py_params_dict):
+    NAME = py_params_dict["name"] if "name" in py_params_dict else "iob_gpio"
+    N_INPUTS = int(py_params_dict["n_inputs"]) if "n_inputs" in py_params_dict else 1
+    N_OUTPUTS = int(py_params_dict["n_outputs"]) if "n_outputs" in py_params_dict else 1
+    # Create a dedicated output for tristate (output enable) of each output port
+    TRISTATE = (
+        bool(py_params_dict["tristate"]) if "tristate" in py_params_dict else False
+    )
+
     attributes_dict = {
         "original_name": "iob_gpio",
-        "name": "iob_gpio",
+        "name": NAME,
         "version": "0.1",
         "confs": [
             {
@@ -22,12 +30,20 @@ def setup(py_params_dict):
                 "descr": "Address bus width",
             },
             {
-                "name": "GPIO_W",
+                "name": "INPUT_GPIO_W",
                 "type": "P",
                 "val": "32",
                 "min": "NA",
                 "max": "DATA_W",
-                "descr": "Number of GPIO (can be up to DATA_W)",
+                "descr": "Width of GPIO input ports",
+            },
+            {
+                "name": "OUTPUT_GPIO_W",
+                "type": "P",
+                "val": "32",
+                "min": "NA",
+                "max": "DATA_W",
+                "descr": "Width of GPIO output ports",
             },
         ],
         "ports": [
@@ -47,115 +63,147 @@ def setup(py_params_dict):
                 },
                 "descr": "CPU native interface",
             },
-            {
-                "name": "gpio",
-                "descr": "",
-                "signals": [
-                    {
-                        "name": "input_ports",
-                        "direction": "input",
-                        "width": "GPIO_W",
-                        "descr": "Input interface",
-                    },
-                    {
-                        "name": "output_ports",
-                        "direction": "output",
-                        "width": "GPIO_W",
-                        "descr": "Output interface",
-                    },
-                    {
-                        "name": "output_enable",
-                        "direction": "output",
-                        "width": "GPIO_W",
-                        "descr": "Output Enable interface can be used to tristate outputs on external module",
-                    },
-                ],
-            },
-        ],
-        "wires": [
-            {
-                "name": "csrs_iob",
-                "descr": "Internal iob interface",
-                "interface": {
-                    "type": "iob",
-                    "wire_prefix": "csrs_",
-                    "ADDR_W": "ADDR_W",
-                    "DATA_W": "DATA_W",
-                },
-            },
-            {
-                "name": "input_ports",
-                "descr": "",
-                "signals": [
-                    {"name": "input_ports"},
-                ],
-            },
-            {
-                "name": "output_ports",
-                "descr": "",
-                "signals": [
-                    {"name": "output_ports"},
-                ],
-            },
-            {
-                "name": "output_enable",
-                "descr": "",
-                "signals": [
-                    {"name": "output_enable"},
-                ],
-            },
-        ],
-        "blocks": [
-            {
-                "core_name": "csrs",
-                "instance_name": "csrs_inst",
-                "instance_description": "Control/Status Registers",
-                "csrs": [
-                    {
-                        "name": "gpio",
-                        "descr": "GPIO software accessible registers.",
-                        "regs": [
-                            {
-                                "name": "gpio_input",
-                                "type": "R",
-                                "n_bits": 32,
-                                "rst_val": 0,
-                                "log2n_items": 0,
-                                "autoreg": True,
-                                "descr": "32 bits: 1 bit for value of each GPIO input.",
-                            },
-                            {
-                                "name": "gpio_output",
-                                "type": "W",
-                                "n_bits": 32,
-                                "rst_val": 0,
-                                "log2n_items": 0,
-                                "autoreg": True,
-                                "descr": "32 bits: 1 bit for value of each GPIO output.",
-                            },
-                            {
-                                "name": "gpio_output_enable",
-                                "type": "W",
-                                "n_bits": 32,
-                                "rst_val": 0,
-                                "log2n_items": 0,
-                                "autoreg": True,
-                                "descr": '32 bits: 1 bit for each GPIO. Bits with "1" are driven with output value, bits with "0" are in tristate.',
-                            },
-                        ],
-                    }
-                ],
-                "connect": {
-                    "clk_en_rst": "clk_en_rst",
-                    "control_if": "iob",
-                    "csrs_iob_output": "csrs_iob",
-                    # Register interfaces
-                    "gpio_input": "input_ports",
-                    "gpio_output": "output_ports",
-                    "gpio_output_enable": "output_enable",
-                },
-            },
         ],
     }
+    for idx in range(N_INPUTS):
+        attributes_dict["ports"].append(
+            {
+                "name": "input_" + str(idx),
+                "descr": "",
+                "signals": [
+                    {
+                        "name": "input_port_" + str(idx),
+                        "direction": "input",
+                        "width": "INPUT_GPIO_W",
+                        "descr": "Input interface " + str(idx),
+                    },
+                ],
+            }
+        )
+    for idx in range(N_OUTPUTS):
+        attributes_dict["ports"].append(
+            {
+                "name": "output_" + str(idx),
+                "descr": "",
+                "signals": [
+                    {
+                        "name": "output_port_" + str(idx),
+                        "direction": "output",
+                        "width": "OUTPUT_GPIO_W",
+                        "descr": "Output interface " + str(idx),
+                    },
+                ],
+            }
+        )
+        if TRISTATE:
+            attributes_dict["ports"][-1]["signals"].append(
+                {
+                    "name": "output_enable_" + str(idx),
+                    "direction": "output",
+                    "width": "OUTPUT_GPIO_W",
+                    "descr": f"Output Enable interface bits can be used to tristate output {idx} on external module",
+                },
+            )
+    attributes_dict["wires"] = [
+        {
+            "name": "csrs_iob",
+            "descr": "Internal iob interface",
+            "interface": {
+                "type": "iob",
+                "wire_prefix": "csrs_",
+                "ADDR_W": "ADDR_W",
+                "DATA_W": "DATA_W",
+            },
+        },
+    ]
+    regs = []
+    reg_connections = {}
+    # Create regs and reg connections for each input
+    for idx in range(N_INPUTS):
+        # Create Reg
+        regs.append(
+            {
+                "name": f"input_{idx}",
+                "type": "R",
+                "n_bits": 32,
+                "rst_val": 0,
+                "log2n_items": 0,
+                "autoreg": True,
+                "descr": "Value of GPIO input port " + str(idx),
+            }
+        )
+        # Connect reg to port
+        reg_connections[f"input_{idx}"] = f"input_{idx}"
+    # Create wires, regs, and reg connections for each output
+    for idx in range(N_OUTPUTS):
+        # Wires for reg connections (references to port signals)
+        attributes_dict["wires"].append(
+            {
+                "name": "output_port_" + str(idx),
+                "descr": "",
+                "signals": [
+                    {"name": "output_port_" + str(idx)},
+                ],
+            }
+        )
+        if TRISTATE:
+            attributes_dict["wires"].append(
+                {
+                    "name": "output_enable_" + str(idx),
+                    "descr": "",
+                    "signals": [
+                        {"name": "output_enable_" + str(idx)},
+                    ],
+                }
+            )
+        # Create Regs
+        regs.append(
+            {
+                "name": f"output_{idx}",
+                "type": "W",
+                "n_bits": 32,
+                "rst_val": 0,
+                "log2n_items": 0,
+                "autoreg": True,
+                "descr": "Value of GPIO output port " + str(idx),
+            }
+        )
+        if TRISTATE:
+            regs.append(
+                {
+                    "name": f"output_enable_{idx}",
+                    "type": "W",
+                    "n_bits": 32,
+                    "rst_val": 0,
+                    "log2n_items": 0,
+                    "autoreg": True,
+                    "descr": f'32 bits: 1 bit for each bit in GPIO output {idx}. Bits with "1" are driven with output value, bits with "0" are in tristate.',
+                }
+            )
+        # Connect regs to wires
+        reg_connections[f"output_{idx}"] = f"output_port_{idx}"
+        if TRISTATE:
+            reg_connections[f"output_enable_{idx}"] = f"output_enable_{idx}"
+
+    attributes_dict["blocks"] = [
+        {
+            "core_name": "csrs",
+            "instance_name": "csrs_inst",
+            "instance_description": "Control/Status Registers",
+            "csrs": [
+                {
+                    "name": "gpio",
+                    "descr": "GPIO software accessible registers.",
+                    "regs": regs,
+                }
+            ],
+            "connect": {
+                "clk_en_rst": "clk_en_rst",
+                "control_if": "iob",
+                "csrs_iob_output": "csrs_iob",
+                **reg_connections,
+            },
+        },
+    ]
 
     return attributes_dict

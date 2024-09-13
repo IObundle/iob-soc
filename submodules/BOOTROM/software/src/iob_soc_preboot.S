@@ -1,5 +1,4 @@
 #include "iob_soc_conf.h"
-#include "iob_soc_periphs.h"
 #include "iob_soc_system.h"
 
 // Can't include iob_bootrom_swreg.h because the assembler doesn't recognize stdint.h,
@@ -7,7 +6,7 @@
 #define IOB_BOOTROM_ROM_ADDR 0x80
 
 #define LENGTH ((1 << IOB_SOC_BOOTROM_ADDR_W) - IOB_BOOTROM_ROM_ADDR)
-#define BOOTROM (BOOTROM0_BASE + IOB_BOOTROM_ROM_ADDR)
+#define BOOTROM (BOOTROM_BASE + IOB_BOOTROM_ROM_ADDR)
 #define BOOTLDR_ADDR ((1 << IOB_SOC_MEM_ADDR_W) - (1 << IOB_SOC_BOOTROM_ADDR_W))
 
 .section .init
