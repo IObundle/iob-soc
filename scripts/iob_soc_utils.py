@@ -21,14 +21,15 @@ def update_params(params, py_params):
             params[name] = type(default_val)(py_params[name])
 
 
-def iob_soc_scripts(attributes_dict, peripherals, params, py_params):
+def iob_soc_scripts(attributes_dict, params, py_params):
     """IOb-SoC automatic setup scripts.
     :param dict attributes_dict: iob_soc attributes
-    :param list peripherals: list of peripheral blocks
     :param dict params: iob_soc python parameters
     :param dict py_params: iob_soc argument python parameters
     """
     set_build_dir(attributes_dict, py_params)
+    peripherals = get_iob_soc_peripherals_list(attributes_dict)
+    connect_peripherals_cbus(attributes_dict, peripherals, params)
     generate_makefile_segments(attributes_dict, peripherals, params, py_params)
     generate_peripheral_base_addresses(attributes_dict, peripherals, params, py_params)
 
@@ -48,6 +49,92 @@ def set_build_dir(attributes_dict, py_params):
     else:
         build_dir = f"../{attributes_dict['name']}_V{attributes_dict['version']}"
     attributes_dict["build_dir"] = build_dir
+
+
+def get_iob_soc_peripherals_list(attributes_dict):
+    """Parses blocks list in iob_soc attributes, for blocks with the `is_peripheral` attribute set to True.
+    Also removes `is_peripheral` attribute from each block after adding it to the peripherals list.
+    """
+    peripherals = []
+    for block in attributes_dict["blocks"]:
+        if "is_peripheral" in block and block["is_peripheral"]:
+            peripherals.append(block)
+            block.pop("is_peripheral")
+    return peripherals
+
+
+def connect_peripherals_cbus(attributes_dict, peripherals, params):
+    """Update given attributes_dict to connect peripherals cbus to system's pbus_split.
+    :param dict attributes_dict: iob_soc attributes
+    :param list peripherals: list of peripheral blocks
+    :param dict params: iob_soc python parameters
+    """
+    # Find pbus_split
+    pbus_split = None
+    for block in attributes_dict["blocks"]:
+        if block["instance_name"] == "iob_axil_pbus_split":
+            pbus_split = block
+
+    # Number of peripherals = peripherals + CLINT + PLIC
+    num_peripherals = len(peripherals) + 2
+    peripheral_addr_w = params["addr_w"] - 1 - (num_peripherals - 1).bit_length()
+
+    # Configure number of connections to pbus_split
+    pbus_split["num_outputs"] = num_peripherals
+
+    for idx, peripheral in enumerate(peripherals):
+        peripheral_name = peripheral["instance_name"].lower()
+        # Add peripheral cbus wire
+        attributes_dict["wires"].append(
+            {
+                "name": f"{peripheral_name}_cbus",
+                "descr": f"{peripheral_name} Control/Status Registers bus",
+                "interface": {
+                    "type": "axil",
+                    "wire_prefix": f"{peripheral_name}_cbus_",
+                    "ID_W": "AXI_ID_W",
+                    "ADDR_W": peripheral_addr_w,
+                    "DATA_W": "AXI_DATA_W",
+                    "LEN_W": "AXI_LEN_W",
+                },
+            },
+        )
+        # Connect cbus to pbus_split
+        pbus_split["connect"][f"output_{idx}"] = f"{peripheral_name}_cbus"
+        # Connect cbus to peripheral
+        peripheral["connect"]["cbus"] = f"{peripheral_name}_cbus"
+
+    # Add CLINT and PLIC wires (they are not in peripherals list)
+    attributes_dict["wires"] += [
+        {
+            "name": "clint_cbus",
+            "descr": "CLINT Control/Status Registers bus",
+            "interface": {
+                "type": "axil",
+                "wire_prefix": "clint_cbus_",
+                "ID_W": "AXI_ID_W",
+                "ADDR_W": peripheral_addr_w,
+                "DATA_W": "AXI_DATA_W",
+                "LEN_W": "AXI_LEN_W",
+            },
+        },
+        {
+            "name": "plic_cbus",
+            "descr": "PLIC Control/Status Registers bus",
+            "interface": {
+                "type": "axil",
+                "wire_prefix": "plic_cbus_",
+                "ID_W": "AXI_ID_W",
+                "ADDR_W": peripheral_addr_w,
+                "DATA_W": "AXI_DATA_W",
+                "LEN_W": "AXI_LEN_W",
+            },
+        },
+    ]
+
+    # Connect CLINT and PLIC cbus to last outputs of pbus_split
+    pbus_split["connect"][f"output_{num_peripherals-2}"] = "clint_cbus"
+    pbus_split["connect"][f"output_{num_peripherals-1}"] = "plic_cbus"
 
 
 def generate_peripheral_base_addresses(

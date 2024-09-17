@@ -22,35 +22,6 @@ def setup(py_params_dict):
 
     update_params(params, py_params_dict)
 
-    # Number of peripherals
-    peripherals = [
-        {
-            "core_name": "iob_uart",
-            "instance_name": "UART0",
-            "instance_description": "UART peripheral",
-            "parameters": {},
-            "connect": {
-                "clk_en_rst": "clk_en_rst",
-                "cbus": "uart0_cbus",
-                "rs232": "rs232",
-            },
-        },
-        {
-            "core_name": "iob_timer",
-            "instance_name": "TIMER0",
-            "instance_description": "Timer peripheral",
-            "parameters": {},
-            "connect": {
-                "clk_en_rst": "clk_en_rst",
-                "cbus": "timer0_cbus",
-            },
-        },
-        # NOTE: Instantiate other peripherals here
-    ]
-    # Number of peripherals = peripherals + CLINT + PLIC
-    num_peripherals = len(peripherals) + 2
-    peripheral_addr_w = params["addr_w"] - 1 - (num_peripherals - 1).bit_length()
-
     attributes_dict = {
         "original_name": "iob_soc",
         "name": "iob_soc",
@@ -311,60 +282,8 @@ def setup(py_params_dict):
                 "LEN_W": "AXI_LEN_W",
             },
         },
-        # Peripheral wires
-        {
-            "name": "clint_cbus",
-            "descr": "CLINT Control/Status Registers bus",
-            "interface": {
-                "type": "axil",
-                "wire_prefix": "clint_cbus_",
-                # "DATA_W": params["data_w"],
-                # "ADDR_W": params["addr_w"] - 3,
-                "ID_W": "AXI_ID_W",
-                "ADDR_W": peripheral_addr_w,
-                "DATA_W": "AXI_DATA_W",
-                "LEN_W": "AXI_LEN_W",
-            },
-        },
-        {
-            "name": "plic_cbus",
-            "descr": "PLIC Control/Status Registers bus",
-            "interface": {
-                "type": "axil",
-                "wire_prefix": "plic_cbus_",
-                # "DATA_W": params["data_w"],
-                # "ADDR_W": params["addr_w"] - 3,
-                "ID_W": "AXI_ID_W",
-                "ADDR_W": peripheral_addr_w,
-                "DATA_W": "AXI_DATA_W",
-                "LEN_W": "AXI_LEN_W",
-            },
-        },
-        {
-            "name": "uart0_cbus",
-            "descr": "AXI bus for uart0 CSRs",
-            "interface": {
-                "type": "axil",
-                "wire_prefix": "uart0_",
-                "ID_W": "AXI_ID_W",
-                "ADDR_W": peripheral_addr_w,
-                "DATA_W": "AXI_DATA_W",
-                "LEN_W": "AXI_LEN_W",
-            },
-        },
-        {
-            "name": "timer0_cbus",
-            "descr": "AXI bus for timer0 CSRs",
-            "interface": {
-                "type": "axil",
-                "wire_prefix": "timer0_",
-                "ID_W": "AXI_ID_W",
-                "ADDR_W": peripheral_addr_w,
-                "DATA_W": "AXI_DATA_W",
-                "LEN_W": "AXI_LEN_W",
-            },
-        },
-        # NOTE: Add peripheral wires here
+        # Peripheral cbus wires added automatically
+        # NOTE: Add other peripheral wires here
     ]
     attributes_dict["blocks"] = [
         {
@@ -454,17 +373,37 @@ def setup(py_params_dict):
                 "clk_en_rst": "clk_en_rst",
                 "reset": "split_reset",
                 "input": "axil_periphs_cbus",
-                "output_0": "uart0_cbus",
-                "output_1": "timer0_cbus",
-                # NOTE: Connect other peripherals here
-                "output_2": "clint_cbus",
-                "output_3": "plic_cbus",
+                # Peripherals cbus connections added automatically
             },
-            "num_outputs": num_peripherals,
+            "num_outputs": 0,  # Num outputs configured automatically
             "addr_w": params["addr_w"] - 1,
         },
-    ]
-    attributes_dict["blocks"] += peripherals + [
+        # Peripherals
+        {
+            "core_name": "iob_uart",
+            "instance_name": "UART0",
+            "instance_description": "UART peripheral",
+            "is_peripheral": True,
+            "parameters": {},
+            "connect": {
+                "clk_en_rst": "clk_en_rst",
+                # Cbus connected automatically
+                "rs232": "rs232",
+            },
+        },
+        {
+            "core_name": "iob_timer",
+            "instance_name": "TIMER0",
+            "instance_description": "Timer peripheral",
+            "is_peripheral": True,
+            "parameters": {},
+            "connect": {
+                "clk_en_rst": "clk_en_rst",
+                # Cbus connected automatically
+            },
+        },
+        # NOTE: Instantiate other peripherals here, using the 'is_peripheral' flag
+        #
         # Modules that need to be setup, but are not instantiated directly inside
         # 'iob_soc' Verilog module
         # Testbench
@@ -514,6 +453,6 @@ def setup(py_params_dict):
         }
     ]
 
-    iob_soc_scripts(attributes_dict, peripherals, params, py_params_dict)
+    iob_soc_scripts(attributes_dict, params, py_params_dict)
 
     return attributes_dict
