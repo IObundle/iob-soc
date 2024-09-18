@@ -45,7 +45,7 @@ def setup(py_params_dict):
             # Ports
             #
             {
-                "name": "clk_rst",
+                "name": "clk_rst_i",
                 "signals": [
                     {"name": "clk_p", "direction": "input", "width": "1"},
                     {"name": "clk_n", "direction": "input", "width": "1"},
@@ -53,7 +53,7 @@ def setup(py_params_dict):
                 ],
             },
             {
-                "name": "ui_clk_out",
+                "name": "ui_clk_o",
                 "signals": [
                     {"name": "clkout", "direction": "output", "width": "1"},
                 ],
@@ -68,7 +68,7 @@ def setup(py_params_dict):
                 ],
             },
             {
-                "name": "axi",
+                "name": "axi_s",
                 "interface": {
                     "type": "axi",
                     "subtype": "slave",

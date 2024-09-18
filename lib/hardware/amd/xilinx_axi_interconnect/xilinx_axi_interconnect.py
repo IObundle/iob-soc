@@ -54,7 +54,7 @@ def setup(py_params_dict):
         #
         "ports": [
             {
-                "name": "clk_rst_i",
+                "name": "clk_rst_s",
                 "descr": "Clock and reset inputs",
                 "interface": {
                     "type": "clk_rst",
@@ -74,7 +74,7 @@ def setup(py_params_dict):
                 ],
             },
             {
-                "name": f"s{i}_axi",
+                "name": f"s{i}_axi_s",
                 "interface": {
                     "type": "axi",
                     "subtype": "slave",
@@ -98,7 +98,7 @@ def setup(py_params_dict):
                 ],
             },
             {
-                "name": f"m{i}_axi",
+                "name": f"m{i}_axi_m",
                 "interface": {
                     "type": "axi",
                     "subtype": "master",
