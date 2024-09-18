@@ -15,7 +15,7 @@ def setup(py_params_dict):
         ],
         "ports": [
             {
-                "name": "clk_rst",
+                "name": "clk_rst_s",
                 "interface": {
                     "type": "clk_rst",
                     "subtype": "slave",
@@ -23,7 +23,7 @@ def setup(py_params_dict):
                 "descr": "Clock and reset",
             },
             {
-                "name": "clk_in",
+                "name": "clk_i",
                 "descr": "Source clock domain",
                 "signals": [
                     {
@@ -35,7 +35,7 @@ def setup(py_params_dict):
                 ],
             },
             {
-                "name": "soft_reset_in",
+                "name": "soft_reset_i",
                 "descr": "System soft reset",
                 "signals": [
                     {
@@ -47,7 +47,7 @@ def setup(py_params_dict):
                 ],
             },
             {
-                "name": "enable_in",
+                "name": "enable_i",
                 "descr": "System enable",
                 "signals": [
                     {
@@ -59,7 +59,7 @@ def setup(py_params_dict):
                 ],
             },
             {
-                "name": "period_wdata_in",
+                "name": "period_wdata_i",
                 "descr": "System period data",
                 "signals": [
                     {
@@ -71,7 +71,7 @@ def setup(py_params_dict):
                 ],
             },
             {
-                "name": "period_wen_in",
+                "name": "period_wen_i",
                 "descr": "System period write enable",
                 "signals": [
                     {
@@ -83,7 +83,7 @@ def setup(py_params_dict):
                 ],
             },
             {
-                "name": "soft_reset_out",
+                "name": "soft_reset_o",
                 "descr": "Source clock domain soft reset",
                 "signals": [
                     {
@@ -95,7 +95,7 @@ def setup(py_params_dict):
                 ],
             },
             {
-                "name": "enable_out",
+                "name": "enable_o",
                 "descr": "Source clock domain enable",
                 "signals": [
                     {
@@ -107,7 +107,7 @@ def setup(py_params_dict):
                 ],
             },
             {
-                "name": "period_wdata_out",
+                "name": "period_wdata_o",
                 "descr": "Source clock domain period data",
                 "signals": [
                     {
@@ -119,7 +119,7 @@ def setup(py_params_dict):
                 ],
             },
             {
-                "name": "period_wen_out",
+                "name": "period_wen_o",
                 "descr": "Source clock domain period write enable",
                 "signals": [
                     {
@@ -157,7 +157,7 @@ def setup(py_params_dict):
                     "DATA_W": "1",
                 },
                 "connect": {
-                    "clk_rst": "clk_rst",
+                    "clk_rst_s": "clk_rst_s",
                     "signal_i": "soft_reset_in",
                     "signal_o": "soft_reset_out",
                 },
@@ -170,7 +170,7 @@ def setup(py_params_dict):
                     "DATA_W": "1",
                 },
                 "connect": {
-                    "clk_rst": "clk_rst",
+                    "clk_rst_s": "clk_rst_s",
                     "signal_i": "enable_in",
                     "signal_o": "enable_out",
                 },
@@ -183,7 +183,7 @@ def setup(py_params_dict):
                     "DATA_W": "PERIOD_W+1",
                 },
                 "connect": {
-                    "clk_rst": "clk_rst",
+                    "clk_rst_s": "clk_rst_s",
                     "signal_i": "period_int",
                     "signal_o": "period_out",
                 },

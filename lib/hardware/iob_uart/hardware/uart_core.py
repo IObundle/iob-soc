@@ -6,7 +6,7 @@ def setup(py_params_dict):
         "generate_hw": False,
         "ports": [
             {
-                "name": "clk_rst",
+                "name": "clk_rst_s",
                 "interface": {
                     "type": "clk_rst",
                     "subtype": "slave",
@@ -34,7 +34,7 @@ def setup(py_params_dict):
                 ],
             },
             {
-                "name": "rs232",
+                "name": "rs232_m",
                 "interface": {
                     "type": "rs232",
                 },

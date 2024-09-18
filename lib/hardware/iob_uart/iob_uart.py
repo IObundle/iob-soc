@@ -34,7 +34,7 @@ def setup(py_params_dict):
         ],
         "ports": [
             {
-                "name": "clk_en_rst",
+                "name": "clk_en_rst_s",
                 "interface": {
                     "type": "clk_en_rst",
                     "subtype": "slave",
@@ -42,7 +42,7 @@ def setup(py_params_dict):
                 "descr": "Clock, clock enable and reset",
             },
             {
-                "name": "cbus",
+                "name": "cbus_s",
                 "interface": {
                     "type": CSR_IF,
                     "subtype": "slave",
@@ -52,7 +52,7 @@ def setup(py_params_dict):
                 "descr": "CPU native interface",
             },
             {
-                "name": "rs232",
+                "name": "rs232_m",
                 "interface": {
                     "type": "rs232",
                 },
