@@ -189,8 +189,8 @@ def setup(py_params_dict):
                 "instance_description": "Control/Status Registers for external CPU",
                 "csrs": params["csrs"],
                 "connect": {
-                    "clk_en_rst": "clk_en_rst",
-                    "control_if": "external_control_if",
+                    "clk_en_rst_s": "clk_en_rst_s",
+                    "control_if_s": "external_control_if_s",
                     "csrs_iob_output": "csrs_iob",
                     **external_reg_connections,
                 },
@@ -206,8 +206,8 @@ def setup(py_params_dict):
                 "instance_description": "Control/Status Registers for internal CPU (inverted registers)",
                 "csrs": csrs_inverted,
                 "connect": {
-                    "clk_en_rst": "clk_en_rst",
-                    "control_if": "internal_control_if",
+                    "clk_en_rst_s": "clk_en_rst_s",
+                    "control_if_s": "internal_control_if_s",
                     "csrs_iob_output": "internal_iob2",
                     **internal_reg_connections,
                 },

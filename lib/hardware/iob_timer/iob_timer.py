@@ -176,8 +176,8 @@ def setup(py_params_dict):
                 ],
                 "csr_if": "axil",
                 "connect": {
-                    "clk_en_rst": "clk_en_rst_s",
-                    "control_if": "cbus_s",
+                    "clk_en_rst_s": "clk_en_rst_s",
+                    "control_if_s": "cbus_s",
                     "csrs_iob_output": "csrs_iob",
                     # Register interfaces
                     "reset": "reset",
