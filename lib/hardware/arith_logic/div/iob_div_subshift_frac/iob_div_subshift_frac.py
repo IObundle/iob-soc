@@ -15,7 +15,7 @@ def setup(py_params_dict):
         ],
         "ports": [
             {
-                "name": "clk_en_rst",
+                "name": "clk_en_rst_s",
                 "interface": {
                     "type": "clk_en_rst",
                     "subtype": "slave",
@@ -149,7 +149,7 @@ def setup(py_params_dict):
                     "RST_VAL": "1'b0",
                 },
                 "connect": {
-                    "clk_en_rst": "clk_en_rst",
+                    "clk_en_rst_s": "clk_en_rst_s",
                     "data_i": "divisor_i",
                     "data_o": "divisor_reg",
                 },
@@ -161,7 +161,7 @@ def setup(py_params_dict):
                     "DATA_W": "DATA_W",
                 },
                 "connect": {
-                    "clk_en_rst": "clk_en_rst",
+                    "clk_en_rst_s": "clk_en_rst_s",
                     "status": "status",
                     "div": "div_frac",
                 },
