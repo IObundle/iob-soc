@@ -402,7 +402,7 @@ def setup(py_params_dict):
                 "rst_i": "rst",
                 "s0_axi_s": "cpu_ibus",
                 "s1_axi_s": "cpu_dbus",
-                "mem_axi": "axi_m",
+                "mem_axi_m": "axi_m",
                 "bootrom_axi": "bootrom_cbus",
                 "peripherals_axi": "axi_periphs_cbus",
             },
