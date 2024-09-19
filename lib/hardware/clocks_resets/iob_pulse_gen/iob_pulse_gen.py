@@ -144,7 +144,7 @@ def setup(py_params_dict):
                 "connect": {
                     "clk_en_rst_s": "clk_en_rst_s",
                     "data_i": "pulse_nxt",
-                    "data_o": "pulse",
+                    "data_o": "pulse_o",
                 },
             },
         ],
