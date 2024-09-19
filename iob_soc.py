@@ -197,7 +197,7 @@ def setup(py_params_dict):
             ],
         },
         {
-            "name": "axi_s",
+            "name": "axi_m",
             "descr": "AXI master interface for memory",
             "interface": {
                 "type": "axi",
@@ -402,7 +402,7 @@ def setup(py_params_dict):
                 "rst_i": "rst",
                 "s0_axi_s": "cpu_ibus",
                 "s1_axi_s": "cpu_dbus",
-                "mem_axi": "axi_s",
+                "mem_axi": "axi_m",
                 "bootrom_axi": "bootrom_cbus",
                 "peripherals_axi": "axi_periphs_cbus",
             },
