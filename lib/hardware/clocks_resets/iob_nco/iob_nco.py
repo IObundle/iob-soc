@@ -351,7 +351,7 @@ def setup(py_params_dict):
                     "clk_en_rst_s": "clk_en_rst_s",
                     "en_rst_i": "clk_out_reg_en_rst",
                     "data_i": "clk_out_reg_data_i",
-                    "data_o": "clk_gen",
+                    "data_o": "clk_gen_o",
                 },
             },
             {
@@ -394,7 +394,7 @@ def setup(py_params_dict):
                 },
                 "connect": {
                     "clk_rst_s": "clk_rst",
-                    "clk_i": "clk_src",
+                    "clk_i": "clk_src_i",
                     "soft_reset_i": "softreset",
                     "enable_i": "enable",
                     "period_wdata_i": "period_wdata_sync_in",
