@@ -200,7 +200,7 @@ def setup(py_params_dict):
             "instance_description": "Testbench uart core",
             "csr_if": "iob",
             "connect": {
-                "clk_en_rst_s": "clk_en_rst",
+                "clk_en_rst_s": "clk_en_rst_s",
                 "cbus_s": "uart",
                 "rs232_m": "rs232_invert",
             },
