@@ -187,7 +187,7 @@ def setup(py_params_dict):
             },
             "connect": {
                 "clk_en_rst_s": "clk_en_rst_s",
-                "rs232": "rs232",
+                "rs232_m": "rs232",
                 "axi": "axi",
             },
             "dest_dir": "hardware/common_src",
