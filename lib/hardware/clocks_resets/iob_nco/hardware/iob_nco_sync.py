@@ -158,8 +158,8 @@ def setup(py_params_dict):
                 },
                 "connect": {
                     "clk_rst_s": "clk_rst_s",
-                    "signal_i": "soft_reset_in",
-                    "signal_o": "soft_reset_out",
+                    "signal_i": "soft_reset_i",
+                    "signal_o": "soft_reset_o",
                 },
             },
             {
@@ -171,8 +171,8 @@ def setup(py_params_dict):
                 },
                 "connect": {
                     "clk_rst_s": "clk_rst_s",
-                    "signal_i": "enable_in",
-                    "signal_o": "enable_out",
+                    "signal_i": "enable_i",
+                    "signal_o": "enable_o",
                 },
             },
             {
