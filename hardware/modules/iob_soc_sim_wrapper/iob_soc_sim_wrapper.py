@@ -216,8 +216,8 @@ def setup(py_params_dict):
                 "AXI_DATA_W": "AXI_DATA_W",
             },
             "connect": {
-                "clk": "clk",
-                "rst": "rst",
+                "clk_i": "clk",
+                "rst_i": "rst",
                 "s0_axi_s": "axi",
                 "m0_axi_m": "memory_axi",
             },
