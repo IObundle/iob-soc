@@ -379,12 +379,12 @@ def setup(py_params_dict):
             },
             "connect": {
                 "clk_en_rst_s": "clk_en_rst_s",
-                "rst": "rst",
-                "i_bus": "cpu_ibus",
-                "d_bus": "cpu_dbus",
-                "plic_interrupts": "interrupts",
-                "plic_cbus": "plic_cbus",
-                "clint_cbus": "clint_cbus",
+                "rst_i": "rst",
+                "i_bus_m": "cpu_ibus",
+                "d_bus_m": "cpu_dbus",
+                "plic_interrupts_i": "interrupts",
+                "plic_cbus_s": "plic_cbus",
+                "clint_cbus_s": "clint_cbus",
             },
         },
         {
