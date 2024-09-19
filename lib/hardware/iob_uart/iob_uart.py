@@ -304,7 +304,7 @@ def setup(py_params_dict):
                 "instance_name": "uart_core_inst",
                 "instance_description": "UART core driver",
                 "connect": {
-                    "clk_rst_s": "clk_rst_s",
+                    "clk_rst_s": "clk_rst",
                     "reg_interface": "uart_core_reg_interface",
                     "rs232_m": "rs232_m",
                 },
