@@ -315,7 +315,7 @@ def setup(py_params_dict):
                     "AXI_DATA_W": "AXI_DATA_W",
                 },
                 "connect": {
-                    "clk_rst_i": "clk_rst",
+                    "clk_rst_i": "clk_rst_i",
                     "ui_clk_o": "ddr4_ui_clk_out",
                     "axi_clk_rst": "ddr4_axi_clk_rst",
                     "axi_s": "memory_axi",
@@ -335,7 +335,7 @@ def setup(py_params_dict):
                     "INPUT_PER": 4,
                 },
                 "connect": {
-                    "clk_rst_i": "clk_rst",
+                    "clk_rst_i": "clk_rst_i",
                     "clk_rst_o": "clk_wizard_out",
                 },
             },
