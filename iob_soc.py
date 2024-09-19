@@ -424,8 +424,8 @@ def setup(py_params_dict):
                 "AXI_LEN_W": "AXI_LEN_W",
             },
             "connect": {
-                "clk_en_rst": "clk_en_rst_s",
-                "cbus": "bootrom_cbus",
+                "clk_en_rst_s": "clk_en_rst_s",
+                "cbus_s": "bootrom_cbus",
                 "ext_rom_bus": "rom_bus",
             },
             "bootrom_addr_w": params["bootrom_addr_w"],
