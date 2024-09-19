@@ -237,13 +237,6 @@ def setup(py_params_dict):
                     {"name": "acc_out", "width": "DATA_W"},
                 ],
             },
-            {
-                "name": "acc_ld_data_nxt",
-                "descr": "",
-                "signals": [
-                    {"name": "acc_ld_data_nxt", "width": "DATA_W+1"},
-                ],
-            },
             # modcnt
             {
                 "name": "modcnt_en_rst",
@@ -368,7 +361,6 @@ def setup(py_params_dict):
                     "ld_val_i": "acc_ld_ld_val",
                     "incr_i": "acc_ld_incr",
                     "data_o": "acc_ld_data",
-                    "data_nxt_o": "acc_ld_data_nxt",
                 },
             },
             {
