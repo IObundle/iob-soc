@@ -201,7 +201,7 @@ def setup(py_params_dict):
             "csr_if": "iob",
             "connect": {
                 "clk_en_rst_s": "clk_en_rst_s",
-                "cbus_s": "uart",
+                "cbus_s": "uart_s",
                 "rs232_m": "rs232_invert",
             },
         },
