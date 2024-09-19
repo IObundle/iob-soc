@@ -403,8 +403,8 @@ def setup(py_params_dict):
                 "s0_axi_s": "cpu_ibus",
                 "s1_axi_s": "cpu_dbus",
                 "mem_axi_m": "axi_m",
-                "bootrom_axi": "bootrom_cbus",
-                "peripherals_axi": "axi_periphs_cbus",
+                "bootrom_axi_m": "bootrom_cbus",
+                "peripherals_axi_m": "axi_periphs_cbus",
             },
             "num_slaves": 2,
             "masters": {
