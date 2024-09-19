@@ -45,7 +45,7 @@ def setup(py_params_dict):
     #
     attributes_dict["ports"] = [
         {
-            "name": "clk_rst",
+            "name": "clk_rst_i",
             "descr": "Clock and reset",
             "signals": [
                 {"name": "clk", "direction": "input", "width": "1"},
@@ -85,7 +85,7 @@ def setup(py_params_dict):
                 ],
             },
             {
-                "name": "rzqin",
+                "name": "rzqin_i",
                 "descr": "",
                 "signals": [
                     {"name": "rzqin", "direction": "input", "width": "1"},
@@ -255,9 +255,9 @@ def setup(py_params_dict):
                 "AXI_DATA_W": "AXI_DATA_W",
             },
             "connect": {
-                "clk_en_rst": "clk_en_rst",
-                "rs232": "rs232_int",
-                "axi": "axi",
+                "clk_en_rst_s": "clk_en_rst",
+                "rs232_m": "rs232_int",
+                "axi_m": "axi",
             },
             "dest_dir": "hardware/common_src",
             "iob_soc_params": params,
@@ -267,7 +267,7 @@ def setup(py_params_dict):
             "instance_name": "rst_sync",
             "instance_description": "Reset synchronizer",
             "connect": {
-                "clk_rst": "reset_sync_clk_rst",
+                "clk_rst_s": "reset_sync_clk_rst",
                 "arst_o": "reset_sync_arst_out",
             },
         },
@@ -286,10 +286,10 @@ def setup(py_params_dict):
                     "AXI_DATA_W": "AXI_DATA_W",
                 },
                 "connect": {
-                    "clk_rst": "ddr3_ctr_clk_rst",
+                    "clk_rst_i": "ddr3_ctr_clk_rst",
                     "general": "ddr3_ctr_general",
                     "ddr3": "ddr3",
-                    "s0_axi": "axi",
+                    "s0_axi_s": "axi",
                 },
             },
         ]
@@ -306,10 +306,10 @@ def setup(py_params_dict):
                     "AXI_DATA_W": "AXI_DATA_W",
                 },
                 "connect": {
-                    "clk": "clk",
-                    "rst": "reset_sync_arst_out",
-                    "s0_axi": "axi",
-                    "m0_axi": "memory_axi",
+                    "clk_i": "clk",
+                    "rst_i": "reset_sync_arst_out",
+                    "s0_axi_s": "axi",
+                    "m0_axi_s": "memory_axi",
                 },
                 "num_slaves": 1,
                 "num_masters": 1,
@@ -325,9 +325,9 @@ def setup(py_params_dict):
                     "READ_ON_WRITE": "0",
                 },
                 "connect": {
-                    "clk": "clk",
-                    "rst": "reset_sync_arst_out",
-                    "axi": "memory_axi",
+                    "clk_i": "clk",
+                    "rst_i": "reset_sync_arst_out",
+                    "axi_s": "memory_axi",
                 },
             },
         ]

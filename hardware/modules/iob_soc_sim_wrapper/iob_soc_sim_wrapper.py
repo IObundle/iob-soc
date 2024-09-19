@@ -45,7 +45,7 @@ def setup(py_params_dict):
     #
     attributes_dict["ports"] = [
         {
-            "name": "clk_en_rst",
+            "name": "clk_en_rst_s",
             "descr": "Clock, clock enable and reset",
             "interface": {
                 "type": "clk_en_rst",
@@ -53,7 +53,7 @@ def setup(py_params_dict):
             },
         },
         {
-            "name": "uart",
+            "name": "uart_s",
             "descr": "Testbench uart csrs interface",
             "interface": {
                 "type": "iob",
@@ -66,7 +66,7 @@ def setup(py_params_dict):
     if params["use_ethernet"]:
         attributes_dict["ports"] += [
             {
-                "name": "ethernet",
+                "name": "ethernet_s",
                 "descr": "Testbench ethernet csrs interface",
                 "interface": {
                     "type": "iob",
@@ -186,7 +186,7 @@ def setup(py_params_dict):
                 "AXI_DATA_W": "AXI_DATA_W",
             },
             "connect": {
-                "clk_en_rst": "clk_en_rst",
+                "clk_en_rst_s": "clk_en_rst_s",
                 "rs232": "rs232",
                 "axi": "axi",
             },
@@ -258,7 +258,7 @@ def setup(py_params_dict):
                     "AXI_DATA_W": "AXI_DATA_W",
                 },
                 "connect": {
-                    "clk_en_rst": "clk_en_rst",
+                    "clk_en_rst": "clk_en_rst_s",
                     "iob": "ethernet",
                     "axi": "eth_axi",
                     "mii": "eth_mii_invert",

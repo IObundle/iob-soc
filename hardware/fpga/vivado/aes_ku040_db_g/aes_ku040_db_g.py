@@ -49,7 +49,7 @@ def setup(py_params_dict):
     #
     attributes_dict["ports"] = [
         {
-            "name": "clk_rst",
+            "name": "clk_rst_i",
             "descr": "Clock and reset",
             "signals": [
                 {"name": "c0_sys_clk_clk_p", "direction": "input", "width": "1"},
@@ -274,9 +274,9 @@ def setup(py_params_dict):
                 "AXI_DATA_W": "AXI_DATA_W",
             },
             "connect": {
-                "clk_en_rst": "clk_en_rst",
-                "rs232": "rs232_int",
-                "axi": "axi",
+                "clk_en_rst_s": "clk_en_rst",
+                "rs232_m": "rs232_int",
+                "axi_m": "axi",
             },
             "dest_dir": "hardware/common_src",
             "iob_soc_params": params,
@@ -292,11 +292,11 @@ def setup(py_params_dict):
                 "AXI_DATA_W": "AXI_DATA_W",
             },
             "connect": {
-                "clk_rst_i": "intercon_clk_rst",
+                "clk_rst_s": "intercon_clk_rst",
                 "m0_clk_rst": "intercon_m0_clk_rst",
-                "m0_axi": "memory_axi",
+                "m0_axi_m": "memory_axi",
                 "s0_clk_rst": "intercon_s0_clk_rst",
-                "s0_axi": "axi",
+                "s0_axi_s": "axi",
             },
             "num_slaves": 1,
         },
@@ -315,10 +315,10 @@ def setup(py_params_dict):
                     "AXI_DATA_W": "AXI_DATA_W",
                 },
                 "connect": {
-                    "clk_rst": "clk_rst",
-                    "ui_clk_out": "ddr4_ui_clk_out",
+                    "clk_rst_i": "clk_rst",
+                    "ui_clk_o": "ddr4_ui_clk_out",
                     "axi_clk_rst": "ddr4_axi_clk_rst",
-                    "axi": "memory_axi",
+                    "axi_s": "memory_axi",
                     "ddr4": "ddr4_pins",
                 },
             },
@@ -350,9 +350,9 @@ def setup(py_params_dict):
                     "READ_ON_WRITE": "1",
                 },
                 "connect": {
-                    "clk": "axi_ram_clk",
-                    "rst": "axi_ram_rst",
-                    "axi": "memory_axi",
+                    "clk_i": "axi_ram_clk",
+                    "rst_i": "axi_ram_rst",
+                    "axi_s": "memory_axi",
                 },
             },
         ]
