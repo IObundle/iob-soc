@@ -188,7 +188,7 @@ def setup(py_params_dict):
             "connect": {
                 "clk_en_rst_s": "clk_en_rst_s",
                 "rs232_m": "rs232",
-                "axi": "axi",
+                "axi_m": "axi",
             },
             "dest_dir": "hardware/common_src",
             "iob_soc_params": params,
@@ -200,9 +200,9 @@ def setup(py_params_dict):
             "instance_description": "Testbench uart core",
             "csr_if": "iob",
             "connect": {
-                "clk_en_rst": "clk_en_rst",
-                "cbus": "uart",
-                "rs232": "rs232_invert",
+                "clk_en_rst_s": "clk_en_rst",
+                "cbus_s": "uart",
+                "rs232_m": "rs232_invert",
             },
         },
         {
@@ -218,8 +218,8 @@ def setup(py_params_dict):
             "connect": {
                 "clk": "clk",
                 "rst": "rst",
-                "s0_axi": "axi",
-                "m0_axi": "memory_axi",
+                "s0_axi_s": "axi",
+                "m0_axi_m": "memory_axi",
             },
             "num_slaves": 1,
             "num_masters": 1,
@@ -234,9 +234,9 @@ def setup(py_params_dict):
                 "DATA_WIDTH": "AXI_DATA_W",
             },
             "connect": {
-                "clk": "clk",
-                "rst": "rst",
-                "axi": "memory_axi",
+                "clk_i": "clk",
+                "rst_i": "rst",
+                "axi_s": "memory_axi",
             },
         },
     ]
