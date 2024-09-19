@@ -344,7 +344,7 @@ def setup(py_params_dict):
                 "connect": {
                     "clk_en_rst_s": "clk_en_rst_s",
                     "control_if_s": "iob_s",
-                    "csrs_iob_output": "csrs_iob",
+                    "csrs_iob_o": "csrs_iob",
                     # Register interfaces
                     "soft_reset": "soft_reset",
                     "enable": "enable",

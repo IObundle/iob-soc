@@ -191,7 +191,7 @@ def setup(py_params_dict):
                 "connect": {
                     "clk_en_rst_s": "clk_en_rst_s",
                     "control_if_s": "external_control_if_s",
-                    "csrs_iob_output": "csrs_iob",
+                    "csrs_iob_o": "csrs_iob",
                     **external_reg_connections,
                 },
                 "csr_if": params["external_csr_if"],
@@ -208,7 +208,7 @@ def setup(py_params_dict):
                 "connect": {
                     "clk_en_rst_s": "clk_en_rst_s",
                     "control_if_s": "internal_control_if_s",
-                    "csrs_iob_output": "internal_iob2",
+                    "csrs_iob_o": "internal_iob2",
                     **internal_reg_connections,
                 },
                 "csr_if": params["internal_csr_if"],
