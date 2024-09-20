@@ -23,7 +23,7 @@ def setup(py_params_dict):
         ],
         "ports": [
             {
-                "name": "clk_en_rst",
+                "name": "clk_en_rst_s",
                 "interface": {
                     "type": "clk_en_rst",
                     "subtype": "slave",
@@ -31,7 +31,7 @@ def setup(py_params_dict):
                 "descr": "Clock, clock enable and reset",
             },
             {
-                "name": "en_rst",
+                "name": "en_rst_i",
                 "descr": "Enable and Synchronous reset interface",
                 "signals": [
                     {
@@ -88,8 +88,8 @@ def setup(py_params_dict):
                     "RST_VAL": "RST_VAL",
                 },
                 "connect": {
-                    "clk_en_rst": "clk_en_rst",
-                    "en_rst": "en_rst",
+                    "clk_en_rst_s": "clk_en_rst_s",
+                    "en_rst_i": "en_rst_i",
                     "data_i": "data_int",
                     "data_o": "data_o",
                 },

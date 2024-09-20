@@ -43,7 +43,7 @@ def setup(py_params_dict):
         ],
         "ports": [
             {
-                "name": "axi",
+                "name": "axi_s",
                 "descr": "AXI slave interface to connect to external master",
                 "interface": {
                     "type": "axi",
@@ -55,7 +55,7 @@ def setup(py_params_dict):
                 },
             },
             {
-                "name": "axil",
+                "name": "axil_m",
                 "descr": "AXI Lite master interface to connect to external slave",
                 "interface": {
                     "type": "axil",

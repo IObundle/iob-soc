@@ -11,7 +11,7 @@ def setup(py_params_dict):
         "version": "0.1",
         "ports": [
             {
-                "name": "clk_rst",
+                "name": "clk_rst_s",
                 "interface": {
                     "type": "clk_rst",
                     "subtype": "slave",
@@ -55,7 +55,7 @@ def setup(py_params_dict):
                     "RST_VAL": "2'd3" if edge else "2'd0",
                 },
                 "connect": {
-                    "clk_rst": "clk_rst",
+                    "clk_rst_s": "clk_rst_s",
                     "iob_r_data_i": "data_int",
                     "iob_r_data_o": "sync",
                 },

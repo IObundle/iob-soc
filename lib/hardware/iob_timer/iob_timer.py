@@ -31,7 +31,7 @@ def setup(py_params_dict):
         ],
         "ports": [
             {
-                "name": "clk_en_rst",
+                "name": "clk_en_rst_s",
                 "interface": {
                     "type": "clk_en_rst",
                     "subtype": "slave",
@@ -39,7 +39,7 @@ def setup(py_params_dict):
                 "descr": "Clock, clock enable and reset",
             },
             {
-                "name": "cbus",
+                "name": "cbus_s",
                 "interface": {
                     "type": "axil",
                     "subtype": "slave",
@@ -176,9 +176,9 @@ def setup(py_params_dict):
                 ],
                 "csr_if": "axil",
                 "connect": {
-                    "clk_en_rst": "clk_en_rst",
-                    "control_if": "cbus",
-                    "csrs_iob_output": "csrs_iob",
+                    "clk_en_rst_s": "clk_en_rst_s",
+                    "control_if_s": "cbus_s",
+                    "csrs_iob_o": "csrs_iob",
                     # Register interfaces
                     "reset": "reset",
                     "enable": "enable",
@@ -192,7 +192,7 @@ def setup(py_params_dict):
                 "instance_name": "timer_core_inst",
                 "instance_description": "Timer core driver",
                 "connect": {
-                    "clk_en_rst": "clk_en_rst",
+                    "clk_en_rst_s": "clk_en_rst_s",
                     "reg_interface": "timer_core_reg_interface",
                 },
             },

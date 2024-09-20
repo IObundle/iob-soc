@@ -6,7 +6,7 @@ def setup(py_params_dict):
         "generate_hw": False,
         "ports": [
             {
-                "name": "clk_en_rst",
+                "name": "clk_en_rst_s",
                 "interface": {
                     "type": "clk_en_rst",
                     "subtype": "slave",

@@ -23,7 +23,7 @@ def setup(py_params_dict):
         ],
         "ports": [
             {
-                "name": "clk_en_rst",
+                "name": "clk_en_rst_s",
                 "interface": {
                     "type": "clk_en_rst",
                     "subtype": "slave",
@@ -31,7 +31,7 @@ def setup(py_params_dict):
                 "descr": "Clock, clock enable and reset",
             },
             {
-                "name": "iob",
+                "name": "iob_m",
                 "interface": {
                     "type": "iob",
                     "subtype": "master",
@@ -41,7 +41,7 @@ def setup(py_params_dict):
                 "descr": "IOb native master interface",
             },
             {
-                "name": "wb",
+                "name": "wb_s",
                 "interface": {
                     "type": "wb",
                     "subtype": "slave",
@@ -162,8 +162,8 @@ def setup(py_params_dict):
                     "RST_VAL": 0,
                 },
                 "connect": {
-                    "clk_en_rst": "clk_en_rst",
-                    "en_rst": "int",
+                    "clk_en_rst_s": "clk_en_rst_s",
+                    "en_rst_i": "int",
                     "data_i": "wack",
                     "data_o": "wack_r",
                 },
@@ -176,8 +176,8 @@ def setup(py_params_dict):
                     "RST_VAL": 0,
                 },
                 "connect": {
-                    "clk_en_rst": "clk_en_rst",
-                    "en_rst": "int_2",
+                    "clk_en_rst_s": "clk_en_rst_s",
+                    "en_rst_i": "int_2",
                     "data_i": "valid",
                     "data_o": "valid_r",
                 },

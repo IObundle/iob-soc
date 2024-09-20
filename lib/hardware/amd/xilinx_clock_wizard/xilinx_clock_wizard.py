@@ -63,7 +63,7 @@ def setup(py_params_dict):
             "core_name": "iob_reset_sync",
             "instance_name": "rst_sync",
             "connect": {
-                "clk_rst": "reset_sync_clk_rst",
+                "clk_rst_s": "reset_sync_clk_rst",
                 "arst_o": "reset_sync_rst_out",
             },
         },

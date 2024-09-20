@@ -101,7 +101,7 @@ def setup(py_params_dict):
         #
         "ports": [
             {
-                "name": "clk",
+                "name": "clk_i",
                 "descr": "Clock",
                 "signals": [
                     {
@@ -112,7 +112,7 @@ def setup(py_params_dict):
                 ],
             },
             {
-                "name": "rst",
+                "name": "rst_i",
                 "descr": "Synchronous reset",
                 "signals": [
                     {
@@ -128,7 +128,7 @@ def setup(py_params_dict):
     for i in range(N_SLAVES):
         slave_axi_ports += [
             {
-                "name": f"s{i}_axi",
+                "name": f"s{i}_axi_s",
                 "descr": f"Slave {i} interface",
                 "interface": {
                     "type": "axi",
@@ -146,7 +146,7 @@ def setup(py_params_dict):
     for name, width in MASTERS.items():
         master_axi_ports += [
             {
-                "name": f"{name}_axi",
+                "name": f"{name}_axi_m",
                 "descr": f"Master '{name}' axi interface",
                 "interface": {
                     "type": "axi",
@@ -225,10 +225,10 @@ def setup(py_params_dict):
                 "M_ADDR_WIDTH": master_addr_w_parameter,
             },
             "connect": {
-                "clk": "clk",
-                "rst": "rst",
-                "s_axi": "interconnect_s_axi",
-                "m_axi": "interconnect_m_axi",
+                "clk_i": "clk_i",
+                "rst_i": "rst_i",
+                "s_axi_s": "interconnect_s_axi",
+                "m_axi_m": "interconnect_m_axi",
             },
         },
     ]

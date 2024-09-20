@@ -80,7 +80,7 @@ def setup(py_params_dict):
         ],
         "ports": [
             {
-                "name": "clk",
+                "name": "clk_i",
                 "descr": "Clock",
                 "signals": [
                     {
@@ -91,7 +91,7 @@ def setup(py_params_dict):
                 ],
             },
             {
-                "name": "rst",
+                "name": "rst_i",
                 "descr": "Synchronous reset",
                 "signals": [
                     {
@@ -102,7 +102,7 @@ def setup(py_params_dict):
                 ],
             },
             {
-                "name": "axi",
+                "name": "axi_s",
                 "interface": {
                     "type": "axi",
                     "subtype": "slave",

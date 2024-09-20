@@ -39,7 +39,7 @@ def setup(py_params_dict):
         ],
         "ports": [
             {
-                "name": "clk_en_rst",
+                "name": "clk_en_rst_s",
                 "interface": {
                     "type": "clk_en_rst",
                     "subtype": "slave",
@@ -47,7 +47,7 @@ def setup(py_params_dict):
                 "descr": "Clock, clock enable and reset",
             },
             {
-                "name": "iob",
+                "name": "iob_s",
                 "interface": {
                     "type": "iob",
                     "subtype": "slave",
@@ -55,7 +55,7 @@ def setup(py_params_dict):
                 "descr": "CPU native interface",
             },
             {
-                "name": "apb",
+                "name": "apb_m",
                 "interface": {
                     "type": "apb",
                     "subtype": "master",
@@ -116,7 +116,7 @@ def setup(py_params_dict):
                     "RST_VAL": 0,
                 },
                 "connect": {
-                    "clk_en_rst": "clk_en_rst",
+                    "clk_en_rst_s": "clk_en_rst_s",
                     "data_i": "pc_nxt_int",
                     "data_o": "pc_int",
                 },
@@ -129,7 +129,7 @@ def setup(py_params_dict):
                     "RST_VAL": 0,
                 },
                 "connect": {
-                    "clk_en_rst": "clk_en_rst",
+                    "clk_en_rst_s": "clk_en_rst_s",
                     "data_i": "apb_rdata_int",
                     "data_o": "iob_rdata_int",
                 },
@@ -142,7 +142,7 @@ def setup(py_params_dict):
                     "RST_VAL": 0,
                 },
                 "connect": {
-                    "clk_en_rst": "clk_en_rst",
+                    "clk_en_rst_s": "clk_en_rst_s",
                     "data_i": "apb_ready_int",
                     "data_o": "iob_rvalid_int",
                 },

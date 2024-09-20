@@ -39,7 +39,7 @@ def setup(py_params_dict):
         ],
         "ports": [
             {
-                "name": "clk",
+                "name": "clk_i",
                 "descr": "Clock",
                 "signals": [
                     {"name": "clk", "width": 1, "direction": "input"},
