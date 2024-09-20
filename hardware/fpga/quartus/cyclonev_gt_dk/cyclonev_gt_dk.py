@@ -309,7 +309,7 @@ def setup(py_params_dict):
                     "clk_i": "clk",
                     "rst_i": "reset_sync_arst_out",
                     "s0_axi_s": "axi",
-                    "m0_axi_s": "memory_axi",
+                    "m0_axi_m": "memory_axi",
                 },
                 "num_slaves": 1,
                 "num_masters": 1,
