@@ -9,6 +9,7 @@ from iob_system_utils import update_params, iob_system_scripts
 
 def setup(py_params_dict):
     params = {
+        "name": "iob_system",
         "init_mem": False,
         "use_extmem": False,
         "use_ethernet": False,
@@ -24,7 +25,7 @@ def setup(py_params_dict):
 
     attributes_dict = {
         "original_name": "iob_system",
-        "name": "iob_system",
+        "name": params["name"],
         "version": "0.7",
         "is_system": True,
         "board_list": ["cyclonev_gt_dk", "aes_ku040_db_g"],
@@ -348,6 +349,7 @@ def setup(py_params_dict):
                 "ext_rom_bus": "rom_bus",
             },
             "bootrom_addr_w": params["bootrom_addr_w"],
+            "soc_name": params["name"],
         },
         {
             "core_name": "axi2axil",

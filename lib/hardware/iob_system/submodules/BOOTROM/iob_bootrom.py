@@ -1,3 +1,8 @@
+import os
+import sys
+import shutil
+
+
 def setup(py_params_dict):
     VERSION = "0.1"
     BOOTROM_ADDR_W = (
@@ -207,4 +212,36 @@ def setup(py_params_dict):
         ],
     }
 
+    copy_sw_srcs_with_rename(py_params_dict)
+
     return attributes_dict
+
+
+def copy_sw_srcs_with_rename(py_params):
+    """Copy software sources, and rename them based on correct SoC name."""
+    SOC_NAME = py_params.get("soc_name", "iob_system")
+
+    # Don't create files for other targets (like clean)
+    if py_params.get("py2hwsw_target") != "setup":
+        return
+
+    SRC_DIR = os.path.join(os.path.dirname(__file__), "software_templates/src")
+    DEST_DIR = os.path.join(py_params.get("build_dir"), "software/src")
+    os.makedirs(DEST_DIR, exist_ok=True)
+
+    for filename in os.listdir(SRC_DIR):
+        new_filename = filename.replace("iob_system", SOC_NAME)
+        src = os.path.join(SRC_DIR, filename)
+        dst = os.path.join(DEST_DIR, new_filename)
+
+        # Read file, replace strings with SoC name, and write new file
+        with open(src, "r") as file:
+            lines = file.readlines()
+        for idx in range(len(lines)):
+            lines[idx] = (
+                lines[idx]
+                .replace("iob_system", SOC_NAME)
+                .replace("iob_system".upper(), SOC_NAME.upper())
+            )
+        with open(dst, "w") as file:
+            file.writelines(lines)

@@ -359,7 +359,7 @@ def setup(py_params_dict):
         if params["init_mem"]:
             attributes_dict["blocks"][-1]["parameters"].update(
                 {
-                    "FILE": '"iob_system_firmware"',
+                    "FILE": f'"{params["name"]}_firmware"',
                 }
             )
     if params["use_ethernet"]:

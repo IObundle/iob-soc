@@ -3,7 +3,7 @@ def setup(py_params_dict):
 
     attributes_dict = {
         "original_name": "iob_system_sim_wrapper",
-        "name": "iob_system_sim_wrapper",
+        "name": params["name"] + "_sim_wrapper",
         "version": "0.1",
         "confs": [
             {
@@ -243,7 +243,7 @@ def setup(py_params_dict):
     if params["init_mem"]:
         attributes_dict["blocks"][-1]["parameters"].update(
             {
-                "FILE": '"iob_system_firmware"',
+                "FILE": f'"{params["name"]}_firmware"',
             }
         )
     if params["use_ethernet"]:

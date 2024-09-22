@@ -10,14 +10,14 @@ def setup(py_params_dict):
 
     attributes_dict = {
         "original_name": "iob_system_mwrap",
-        "name": "iob_system_mwrap",
+        "name": params["name"] + "_mwrap",
         "version": "0.1",
         "confs": [
             {
                 "name": "BOOT_HEXFILE",
                 "descr": "Bootloader file name",
                 "type": "P",
-                "val": '"iob_system_bootrom"',
+                "val": f'"{params["name"]}_bootrom"',
                 "min": "NA",
                 "max": "NA",
             },
