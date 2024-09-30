@@ -6,7 +6,7 @@ def setup(py_params_dict):
         "generate_hw": False,
         "ports": [
             {
-                "name": "clk_en_rst",
+                "name": "clk_en_rst_s",
                 "interface": {
                     "type": "clk_en_rst",
                     "subtype": "slave",
@@ -14,7 +14,7 @@ def setup(py_params_dict):
                 "descr": "Clock, clock enable and reset",
             },
             {
-                "name": "apb",
+                "name": "apb_s",
                 "interface": {
                     "type": "apb",
                     "subtype": "slave",
@@ -22,7 +22,7 @@ def setup(py_params_dict):
                 "descr": "APB interface",
             },
             {
-                "name": "iob",
+                "name": "iob_m",
                 "interface": {
                     "type": "iob",
                     "subtype": "master",

@@ -48,7 +48,7 @@ def setup(py_params_dict):
         ],
         "ports": [
             {
-                "name": "clk_en_rst",
+                "name": "clk_en_rst_s",
                 "interface": {
                     "type": "clk_en_rst",
                     "subtype": "slave",
@@ -56,7 +56,7 @@ def setup(py_params_dict):
                 "descr": "Clock, clock enable and reset",
             },
             {
-                "name": "iob",
+                "name": "iob_s",
                 "interface": {
                     "type": "iob",
                     "subtype": "slave",
@@ -68,7 +68,7 @@ def setup(py_params_dict):
     for idx in range(N_INPUTS):
         attributes_dict["ports"].append(
             {
-                "name": "input_" + str(idx),
+                "name": "input_" + str(idx) + "_i",
                 "descr": "",
                 "signals": [
                     {
@@ -83,7 +83,7 @@ def setup(py_params_dict):
     for idx in range(N_OUTPUTS):
         attributes_dict["ports"].append(
             {
-                "name": "output_" + str(idx),
+                "name": "output_" + str(idx) + "_o",
                 "descr": "",
                 "signals": [
                     {
@@ -98,7 +98,7 @@ def setup(py_params_dict):
         if TRISTATE:
             attributes_dict["ports"][-1]["signals"].append(
                 {
-                    "name": "output_enable_" + str(idx),
+                    "name": "output_enable_" + str(idx) + "_o",
                     "direction": "output",
                     "width": "OUTPUT_GPIO_W",
                     "descr": f"Output Enable interface bits can be used to tristate output {idx} on external module",
@@ -198,9 +198,9 @@ def setup(py_params_dict):
                 }
             ],
             "connect": {
-                "clk_en_rst": "clk_en_rst",
-                "control_if": "iob",
-                "csrs_iob_output": "csrs_iob",
+                "clk_en_rst_s": "clk_en_rst_s",
+                "control_if_s": "iob_s",
+                "csrs_iob_o": "csrs_iob",
                 **reg_connections,
             },
         },

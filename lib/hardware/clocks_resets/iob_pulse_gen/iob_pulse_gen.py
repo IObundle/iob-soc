@@ -47,7 +47,7 @@ def setup(py_params_dict):
         ],
         "ports": [
             {
-                "name": "clk_en_rst",
+                "name": "clk_en_rst_s",
                 "interface": {
                     "type": "clk_en_rst",
                     "subtype": "slave",
@@ -55,14 +55,14 @@ def setup(py_params_dict):
                 "descr": "Clock, clock enable and reset",
             },
             {
-                "name": "start",
+                "name": "start_i",
                 "descr": "Input port",
                 "signals": [
                     {"name": "start", "width": 1, "direction": "input"},
                 ],
             },
             {
-                "name": "pulse",
+                "name": "pulse_o",
                 "descr": "Output port",
                 "signals": [
                     {"name": "pulse", "width": 1, "direction": "output"},
@@ -116,7 +116,7 @@ def setup(py_params_dict):
                     "RST_VAL": 0,
                 },
                 "connect": {
-                    "clk_en_rst": "clk_en_rst",
+                    "clk_en_rst_s": "clk_en_rst_s",
                     "data_i": "start_detected_nxt",
                     "data_o": "start_detected",
                 },
@@ -129,8 +129,8 @@ def setup(py_params_dict):
                     "RST_VAL": "{WIDTH{1'b0}}",
                 },
                 "connect": {
-                    "clk_en_rst": "clk_en_rst",
-                    "en_rst": "iob_pulse_gen_int",
+                    "clk_en_rst_s": "clk_en_rst_s",
+                    "en_rst_i": "iob_pulse_gen_int",
                     "data_o": "cnt",
                 },
             },
@@ -142,9 +142,9 @@ def setup(py_params_dict):
                     "RST_VAL": 0,
                 },
                 "connect": {
-                    "clk_en_rst": "clk_en_rst",
+                    "clk_en_rst_s": "clk_en_rst_s",
                     "data_i": "pulse_nxt",
-                    "data_o": "pulse",
+                    "data_o": "pulse_o",
                 },
             },
         ],

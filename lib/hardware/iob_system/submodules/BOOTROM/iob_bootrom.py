@@ -68,7 +68,7 @@ def setup(py_params_dict):
         #
         "ports": [
             {
-                "name": "clk_en_rst",
+                "name": "clk_en_rst_s",
                 "descr": "Clock and reset",
                 "interface": {
                     "type": "clk_en_rst",
@@ -76,7 +76,7 @@ def setup(py_params_dict):
                 },
             },
             {
-                "name": "cbus",
+                "name": "cbus_s",
                 "descr": "Front-end control interface",
                 "interface": {
                     "type": "axi",
@@ -175,9 +175,9 @@ def setup(py_params_dict):
                 ],
                 "csr_if": "axi",
                 "connect": {
-                    "clk_en_rst": "clk_en_rst",
-                    "control_if": "cbus",
-                    "csrs_iob_output": "csrs_iob",
+                    "clk_en_rst_s": "clk_en_rst_s",
+                    "control_if_s": "cbus_s",
+                    "csrs_iob_o": "csrs_iob",
                     # Register interfaces
                     "rom": "rom",
                 },
@@ -191,7 +191,7 @@ def setup(py_params_dict):
                     "RST_VAL": "1'b0",
                 },
                 "connect": {
-                    "clk_en_rst": "clk_en_rst",
+                    "clk_en_rst_s": "clk_en_rst_s",
                     "data_i": "rom_rvalid_data_i",
                     "data_o": "rom_rvalid_data_o",
                 },

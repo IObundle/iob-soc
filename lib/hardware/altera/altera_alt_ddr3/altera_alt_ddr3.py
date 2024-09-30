@@ -44,7 +44,7 @@ def setup(py_params_dict):
         ],
         "ports": [
             {
-                "name": "clk_rst",
+                "name": "clk_rst_i",
                 "descr": "Clock and reset",
                 "signals": [
                     {"name": "clk", "direction": "input", "width": "1"},
@@ -86,7 +86,7 @@ def setup(py_params_dict):
     for i in range(N_SLAVES):
         attributes_dict["ports"] += [
             {
-                "name": f"s{i}_axi",
+                "name": f"s{i}_axi_s",
                 "interface": {
                     "type": "axi",
                     "subtype": "slave",

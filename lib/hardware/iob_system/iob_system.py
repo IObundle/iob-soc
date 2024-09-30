@@ -140,7 +140,7 @@ def setup(py_params_dict):
     }
     attributes_dict["ports"] = [
         {
-            "name": "clk_en_rst",
+            "name": "clk_en_rst_s",
             "descr": "Clock, clock enable and reset",
             "interface": {
                 "type": "clk_en_rst",
@@ -169,7 +169,7 @@ def setup(py_params_dict):
             ],
         },
         {
-            "name": "axi",
+            "name": "axi_m",
             "descr": "AXI master interface for memory",
             "interface": {
                 "type": "axi",
@@ -183,7 +183,7 @@ def setup(py_params_dict):
         },
         # Peripheral IO ports
         {
-            "name": "rs232",
+            "name": "rs232_m",
             "descr": "iob-system uart interface",
             "interface": {
                 "type": "rs232",
@@ -298,13 +298,13 @@ def setup(py_params_dict):
                 "AXI_LEN_W": "AXI_LEN_W",
             },
             "connect": {
-                "clk_en_rst": "clk_en_rst",
-                "rst": "rst",
-                "i_bus": "cpu_ibus",
-                "d_bus": "cpu_dbus",
-                "plic_interrupts": "interrupts",
-                "plic_cbus": "plic_cbus",
-                "clint_cbus": "clint_cbus",
+                "clk_en_rst_s": "clk_en_rst_s",
+                "rst_i": "rst",
+                "i_bus_m": "cpu_ibus",
+                "d_bus_m": "cpu_dbus",
+                "plic_interrupts_i": "interrupts",
+                "plic_cbus_s": "plic_cbus",
+                "clint_cbus_s": "clint_cbus",
             },
         },
         {
@@ -318,13 +318,13 @@ def setup(py_params_dict):
                 "AXI_DATA_W": "AXI_DATA_W",
             },
             "connect": {
-                "clk": "clk",
-                "rst": "rst",
-                "s0_axi": "cpu_ibus",
-                "s1_axi": "cpu_dbus",
-                "mem_axi": "axi",
-                "bootrom_axi": "bootrom_cbus",
-                "peripherals_axi": "axi_periphs_cbus",
+                "clk_i": "clk",
+                "rst_i": "rst",
+                "s0_axi_s": "cpu_ibus",
+                "s1_axi_s": "cpu_dbus",
+                "mem_axi_m": "axi_m",
+                "bootrom_axi_m": "bootrom_cbus",
+                "peripherals_axi_m": "axi_periphs_cbus",
             },
             "num_slaves": 2,
             "masters": {
@@ -344,8 +344,8 @@ def setup(py_params_dict):
                 "AXI_LEN_W": "AXI_LEN_W",
             },
             "connect": {
-                "clk_en_rst": "clk_en_rst",
-                "cbus": "bootrom_cbus",
+                "clk_en_rst_s": "clk_en_rst_s",
+                "cbus_s": "bootrom_cbus",
                 "ext_rom_bus": "rom_bus",
             },
             "bootrom_addr_w": params["bootrom_addr_w"],
@@ -362,8 +362,8 @@ def setup(py_params_dict):
                 "AXI_LEN_W": "AXI_LEN_W",
             },
             "connect": {
-                "axi": "axi_periphs_cbus",
-                "axil": "axil_periphs_cbus",
+                "axi_s": "axi_periphs_cbus",
+                "axil_m": "axil_periphs_cbus",
             },
         },
         {
@@ -372,9 +372,9 @@ def setup(py_params_dict):
             "instance_name": "iob_axil_pbus_split",
             "instance_description": "Split between peripherals",
             "connect": {
-                "clk_en_rst": "clk_en_rst",
-                "reset": "split_reset",
-                "input": "axil_periphs_cbus",
+                "clk_en_rst_s": "clk_en_rst_s",
+                "reset_i": "split_reset",
+                "input_s": "axil_periphs_cbus",
                 # Peripherals cbus connections added automatically
             },
             "num_outputs": 0,  # Num outputs configured automatically
@@ -388,9 +388,9 @@ def setup(py_params_dict):
             "is_peripheral": True,
             "parameters": {},
             "connect": {
-                "clk_en_rst": "clk_en_rst",
+                "clk_en_rst_s": "clk_en_rst_s",
                 # Cbus connected automatically
-                "rs232": "rs232",
+                "rs232_m": "rs232_m",
             },
         },
         {
@@ -400,7 +400,7 @@ def setup(py_params_dict):
             "is_peripheral": True,
             "parameters": {},
             "connect": {
-                "clk_en_rst": "clk_en_rst",
+                "clk_en_rst_s": "clk_en_rst_s",
                 # Cbus connected automatically
             },
         },

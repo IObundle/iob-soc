@@ -23,7 +23,7 @@ def setup(py_params_dict):
         ],
         "ports": [
             {
-                "name": "clk_rst",
+                "name": "clk_rst_s",
                 "interface": {
                     "type": "clk_rst",
                     "subtype": "slave",
@@ -71,7 +71,7 @@ def setup(py_params_dict):
                     "RST_VAL": "RST_VAL",
                 },
                 "connect": {
-                    "clk_rst": "clk_rst",
+                    "clk_rst_s": "clk_rst_s",
                     "iob_r_data_i": "signal_i",
                     "iob_r_data_o": "synchronizer",
                 },
@@ -84,7 +84,7 @@ def setup(py_params_dict):
                     "RST_VAL": "RST_VAL",
                 },
                 "connect": {
-                    "clk_rst": "clk_rst",
+                    "clk_rst_s": "clk_rst_s",
                     "iob_r_data_i": "synchronizer",
                     "iob_r_data_o": "signal_o",
                 },

@@ -45,7 +45,7 @@ def setup(py_params_dict):
     #
     attributes_dict["ports"] = [
         {
-            "name": "clk_en_rst",
+            "name": "clk_en_rst_s",
             "descr": "Clock, clock enable and reset",
             "interface": {
                 "type": "clk_en_rst",
@@ -53,7 +53,7 @@ def setup(py_params_dict):
             },
         },
         {
-            "name": "uart",
+            "name": "uart_s",
             "descr": "Testbench uart csrs interface",
             "interface": {
                 "type": "iob",
@@ -66,7 +66,7 @@ def setup(py_params_dict):
     if params["use_ethernet"]:
         attributes_dict["ports"] += [
             {
-                "name": "ethernet",
+                "name": "ethernet_s",
                 "descr": "Testbench ethernet csrs interface",
                 "interface": {
                     "type": "iob",
@@ -186,9 +186,9 @@ def setup(py_params_dict):
                 "AXI_DATA_W": "AXI_DATA_W",
             },
             "connect": {
-                "clk_en_rst": "clk_en_rst",
-                "rs232": "rs232",
-                "axi": "axi",
+                "clk_en_rst_s": "clk_en_rst_s",
+                "rs232_m": "rs232",
+                "axi_m": "axi",
             },
             "dest_dir": "hardware/common_src",
             "iob_system_params": params,
@@ -200,9 +200,9 @@ def setup(py_params_dict):
             "instance_description": "Testbench uart core",
             "csr_if": "iob",
             "connect": {
-                "clk_en_rst": "clk_en_rst",
-                "cbus": "uart",
-                "rs232": "rs232_invert",
+                "clk_en_rst_s": "clk_en_rst_s",
+                "cbus_s": "uart_s",
+                "rs232_m": "rs232_invert",
             },
         },
         {
@@ -216,10 +216,10 @@ def setup(py_params_dict):
                 "AXI_DATA_W": "AXI_DATA_W",
             },
             "connect": {
-                "clk": "clk",
-                "rst": "rst",
-                "s0_axi": "axi",
-                "m0_axi": "memory_axi",
+                "clk_i": "clk",
+                "rst_i": "rst",
+                "s0_axi_s": "axi",
+                "m0_axi_m": "memory_axi",
             },
             "num_slaves": 1,
             "num_masters": 1,
@@ -234,9 +234,9 @@ def setup(py_params_dict):
                 "DATA_WIDTH": "AXI_DATA_W",
             },
             "connect": {
-                "clk": "clk",
-                "rst": "rst",
-                "axi": "memory_axi",
+                "clk_i": "clk",
+                "rst_i": "rst",
+                "axi_s": "memory_axi",
             },
         },
     ]
@@ -258,7 +258,7 @@ def setup(py_params_dict):
                     "AXI_DATA_W": "AXI_DATA_W",
                 },
                 "connect": {
-                    "clk_en_rst": "clk_en_rst",
+                    "clk_en_rst": "clk_en_rst_s",
                     "iob": "ethernet",
                     "axi": "eth_axi",
                     "mii": "eth_mii_invert",

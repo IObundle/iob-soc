@@ -132,7 +132,7 @@ def setup(py_params_dict):
         "confs": confs,
         "ports": [
             {
-                "name": "clk_en_rst",
+                "name": "clk_en_rst_s",
                 "interface": {
                     "type": "clk_en_rst",
                     "subtype": "slave",
@@ -140,7 +140,7 @@ def setup(py_params_dict):
                 "descr": "Clock, clock enable and reset",
             },
             {
-                "name": "internal_control_if",
+                "name": "internal_control_if_s",
                 "interface": {
                     "type": params["internal_csr_if"],
                     "subtype": "slave",
@@ -149,7 +149,7 @@ def setup(py_params_dict):
                 "descr": "Internal CPU native interface. Registers have their direction inverted from this CPU's perspective.",
             },
             {
-                "name": "external_control_if",
+                "name": "external_control_if_s",
                 "interface": {
                     "type": params["external_csr_if"],
                     "subtype": "slave",
@@ -189,9 +189,9 @@ def setup(py_params_dict):
                 "instance_description": "Control/Status Registers for external CPU",
                 "csrs": params["csrs"],
                 "connect": {
-                    "clk_en_rst": "clk_en_rst",
-                    "control_if": "external_control_if",
-                    "csrs_iob_output": "csrs_iob",
+                    "clk_en_rst_s": "clk_en_rst_s",
+                    "control_if_s": "external_control_if_s",
+                    "csrs_iob_o": "csrs_iob",
                     **external_reg_connections,
                 },
                 "csr_if": params["external_csr_if"],
@@ -206,9 +206,9 @@ def setup(py_params_dict):
                 "instance_description": "Control/Status Registers for internal CPU (inverted registers)",
                 "csrs": csrs_inverted,
                 "connect": {
-                    "clk_en_rst": "clk_en_rst",
-                    "control_if": "internal_control_if",
-                    "csrs_iob_output": "internal_iob2",
+                    "clk_en_rst_s": "clk_en_rst_s",
+                    "control_if_s": "internal_control_if_s",
+                    "csrs_iob_o": "internal_iob2",
                     **internal_reg_connections,
                 },
                 "csr_if": params["internal_csr_if"],

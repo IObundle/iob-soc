@@ -100,9 +100,9 @@ def connect_peripherals_cbus(attributes_dict, peripherals, params):
             },
         )
         # Connect cbus to pbus_split
-        pbus_split["connect"][f"output_{idx}"] = f"{peripheral_name}_cbus"
+        pbus_split["connect"][f"output_{idx}_m"] = f"{peripheral_name}_cbus"
         # Connect cbus to peripheral
-        peripheral["connect"]["cbus"] = f"{peripheral_name}_cbus"
+        peripheral["connect"]["cbus_s"] = f"{peripheral_name}_cbus"
 
     # Add CLINT and PLIC wires (they are not in peripherals list)
     attributes_dict["wires"] += [
@@ -133,8 +133,8 @@ def connect_peripherals_cbus(attributes_dict, peripherals, params):
     ]
 
     # Connect CLINT and PLIC cbus to last outputs of pbus_split
-    pbus_split["connect"][f"output_{num_peripherals-2}"] = "clint_cbus"
-    pbus_split["connect"][f"output_{num_peripherals-1}"] = "plic_cbus"
+    pbus_split["connect"][f"output_{num_peripherals-2}_m"] = "clint_cbus"
+    pbus_split["connect"][f"output_{num_peripherals-1}_m"] = "plic_cbus"
 
 
 def generate_peripheral_base_addresses(

@@ -66,7 +66,7 @@ def setup(py_params_dict):
         ],
         "ports": [
             {
-                "name": "clk_en_rst",
+                "name": "clk_en_rst_s",
                 "interface": {
                     "type": "clk_en_rst",
                     "subtype": "slave",
@@ -74,7 +74,7 @@ def setup(py_params_dict):
                 "descr": "Clock, clock enable and reset",
             },
             {
-                "name": "i_bus",
+                "name": "i_bus_s",
                 "interface": {
                     "type": "iob",
                     "subtype": "slave",
@@ -85,7 +85,7 @@ def setup(py_params_dict):
                 "descr": "Instruction bus",
             },
             {
-                "name": "d_bus",
+                "name": "d_bus_s",
                 "interface": {
                     "type": "iob",
                     "subtype": "slave",
@@ -96,7 +96,7 @@ def setup(py_params_dict):
                 "descr": "Data bus",
             },
             {
-                "name": "axi",
+                "name": "axi_m",
                 "interface": {
                     "type": "axi",
                     "subtype": "master",
@@ -154,11 +154,11 @@ def setup(py_params_dict):
             "name": "iob_i_d_into_l2_merge",
             "instance_name": "iob_i_d_into_l2_merge",
             "connect": {
-                "clk_en_rst": "clk_en_rst",
-                "reset": "never_reset",
+                "clk_en_rst_s": "clk_en_rst_s",
+                "reset_i": "never_reset",
                 "input_0": "dcache",
                 "input_1": "icache",
-                "output": "l2cache",
+                "output_m": "l2cache",
             },
             "num_inputs": 2,
             "addr_w": MEM_ADDR_W,

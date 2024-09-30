@@ -31,7 +31,7 @@ def setup(py_params_dict):
         ],
         "ports": [
             {
-                "name": "clk_en_rst",
+                "name": "clk_en_rst_s",
                 "interface": {
                     "type": "clk_en_rst",
                     "subtype": "slave",
@@ -39,7 +39,7 @@ def setup(py_params_dict):
                 "descr": "clock, clock enable and reset",
             },
             {
-                "name": "iob",
+                "name": "iob_s",
                 "interface": {
                     "type": "iob",
                     "subtype": "slave",
@@ -49,7 +49,7 @@ def setup(py_params_dict):
                 "descr": "CPU native interface",
             },
             {
-                "name": "clk_src",
+                "name": "clk_src_i",
                 "descr": "Source clock interface",
                 "signals": [
                     {
@@ -61,7 +61,7 @@ def setup(py_params_dict):
                 ],
             },
             {
-                "name": "clk_gen",
+                "name": "clk_gen_o",
                 "descr": "Output generated clock interface",
                 "signals": [
                     {
@@ -237,13 +237,6 @@ def setup(py_params_dict):
                     {"name": "acc_out", "width": "DATA_W"},
                 ],
             },
-            {
-                "name": "acc_ld_data_nxt",
-                "descr": "",
-                "signals": [
-                    {"name": "acc_ld_data_nxt", "width": "DATA_W+1"},
-                ],
-            },
             # modcnt
             {
                 "name": "modcnt_en_rst",
@@ -317,9 +310,9 @@ def setup(py_params_dict):
                     }
                 ],
                 "connect": {
-                    "clk_en_rst": "clk_en_rst",
-                    "control_if": "iob",
-                    "csrs_iob_output": "csrs_iob",
+                    "clk_en_rst_s": "clk_en_rst_s",
+                    "control_if_s": "iob_s",
+                    "csrs_iob_o": "csrs_iob",
                     # Register interfaces
                     "softreset": "softreset",
                     "enable": "enable",
@@ -334,8 +327,8 @@ def setup(py_params_dict):
                     "DATA_W": "DATA_W",
                 },
                 "connect": {
-                    "clk_en_rst": "clk_en_rst",
-                    "en_rst": "per_reg_en_rst",
+                    "clk_en_rst_s": "clk_en_rst_s",
+                    "en_rst_i": "per_reg_en_rst",
                     "data_i": "per_reg_data_i",
                     "data_o": "per_reg_data_o",
                 },
@@ -348,10 +341,10 @@ def setup(py_params_dict):
                     "DATA_W": "1",
                 },
                 "connect": {
-                    "clk_en_rst": "clk_en_rst",
-                    "en_rst": "clk_out_reg_en_rst",
+                    "clk_en_rst_s": "clk_en_rst_s",
+                    "en_rst_i": "clk_out_reg_en_rst",
                     "data_i": "clk_out_reg_data_i",
-                    "data_o": "clk_gen",
+                    "data_o": "clk_gen_o",
                 },
             },
             {
@@ -362,13 +355,12 @@ def setup(py_params_dict):
                     "DATA_W": "DATA_W",
                 },
                 "connect": {
-                    "clk_en_rst": "acc_ld_clk_en_rst",
-                    "en_rst": "clk_out_reg_en_rst",
+                    "clk_en_rst_s": "acc_ld_clk_en_rst",
+                    "en_rst_i": "clk_out_reg_en_rst",
                     "ld_i": "acc_ld_ld",
                     "ld_val_i": "acc_ld_ld_val",
                     "incr_i": "acc_ld_incr",
                     "data_o": "acc_ld_data",
-                    "data_nxt_o": "acc_ld_data_nxt",
                 },
             },
             {
@@ -379,8 +371,8 @@ def setup(py_params_dict):
                     "DATA_W": "DATA_W - FRAC_W",
                 },
                 "connect": {
-                    "clk_en_rst": "acc_ld_clk_en_rst",
-                    "en_rst": "modcnt_en_rst",
+                    "clk_en_rst_s": "acc_ld_clk_en_rst",
+                    "en_rst_i": "modcnt_en_rst",
                     "mod_i": "modcnt_mod",
                     "data_o": "modcnt_data",
                 },
@@ -393,16 +385,16 @@ def setup(py_params_dict):
                     "PERIOD_W": "DATA_W",
                 },
                 "connect": {
-                    "clk_rst": "clk_rst",
-                    "clk_in": "clk_src",
-                    "soft_reset_in": "softreset",
-                    "enable_in": "enable",
-                    "period_wdata_in": "period_wdata_sync_in",
-                    "period_wen_in": "period_wen_sync_in",
-                    "soft_reset_out": "softreset_clk_src",
-                    "enable_out": "enable_clk_src",
-                    "period_wdata_out": "period_wdata_sync_out",
-                    "period_wen_out": "period_wen_sync_out",
+                    "clk_rst_s": "clk_rst",
+                    "clk_i": "clk_src_i",
+                    "soft_reset_i": "softreset",
+                    "enable_i": "enable",
+                    "period_wdata_i": "period_wdata_sync_in",
+                    "period_wen_i": "period_wen_sync_in",
+                    "soft_reset_o": "softreset_clk_src",
+                    "enable_o": "enable_clk_src",
+                    "period_wdata_o": "period_wdata_sync_out",
+                    "period_wen_o": "period_wen_sync_out",
                 },
             },
             # For simulation

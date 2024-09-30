@@ -40,7 +40,7 @@ def setup(py_params_dict):
         ],
         "ports": [
             {
-                "name": "clk_en_rst",
+                "name": "clk_en_rst_i",
                 "signals": [
                     {
                         "name": "clk",
@@ -64,7 +64,7 @@ def setup(py_params_dict):
                 "descr": "Clock, enable and synchronous reset",
             },
             {
-                "name": "general",
+                "name": "general_o",
                 "descr": "General interface signals",
                 "signals": [
                     {
@@ -76,7 +76,7 @@ def setup(py_params_dict):
                 ],
             },
             {
-                "name": "i_bus",
+                "name": "i_bus_m",
                 "interface": {
                     "type": "iob",
                     "subtype": "master",
@@ -89,7 +89,7 @@ def setup(py_params_dict):
                 "descr": "iob-picorv32 instruction bus",
             },
             {
-                "name": "d_bus",
+                "name": "d_bus_m",
                 "interface": {
                     "type": "iob",
                     "subtype": "master",

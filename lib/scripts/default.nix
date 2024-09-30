@@ -1,8 +1,8 @@
 { pkgs ? import <nixpkgs> {} }:
 
 let
-  py2hwsw_commit = "6a26dfded288503342845fa421d3d1ee6bce021b"; # Replace with the desired commit.
-  py2hwsw_sha256 = "bsRLE+dLj7Msnret3CEI7cwK8VGIftaepZ7tSpAsVg0="; # Replace with the actual SHA256 hash.
+  py2hwsw_commit = "8bb5b4f96839394bfa2ed0f900f5e2704dccda24"; # Replace with the desired commit.
+  py2hwsw_sha256 = "SrWJMPLSQNKkYdldldTF1Xhb83XEd6mIcMCxhqi0L/8="; # Replace with the actual SHA256 hash.
 
   py2hwsw = pkgs.python3.pkgs.buildPythonPackage rec {
     pname = "py2hwsw";

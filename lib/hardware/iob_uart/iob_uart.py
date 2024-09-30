@@ -34,7 +34,7 @@ def setup(py_params_dict):
         ],
         "ports": [
             {
-                "name": "clk_en_rst",
+                "name": "clk_en_rst_s",
                 "interface": {
                     "type": "clk_en_rst",
                     "subtype": "slave",
@@ -42,7 +42,7 @@ def setup(py_params_dict):
                 "descr": "Clock, clock enable and reset",
             },
             {
-                "name": "cbus",
+                "name": "cbus_s",
                 "interface": {
                     "type": CSR_IF,
                     "subtype": "slave",
@@ -52,7 +52,7 @@ def setup(py_params_dict):
                 "descr": "CPU native interface",
             },
             {
-                "name": "rs232",
+                "name": "rs232_m",
                 "interface": {
                     "type": "rs232",
                 },
@@ -271,9 +271,9 @@ def setup(py_params_dict):
                 ],
                 "csr_if": CSR_IF,
                 "connect": {
-                    "clk_en_rst": "clk_en_rst",
-                    "control_if": "cbus",
-                    "csrs_iob_output": "csrs_iob",
+                    "clk_en_rst_s": "clk_en_rst_s",
+                    "control_if_s": "cbus_s",
+                    "csrs_iob_o": "csrs_iob",
                     # Register interfaces
                     "softreset": "softreset",
                     "div": "div",
@@ -294,7 +294,7 @@ def setup(py_params_dict):
                     "RST_VAL": "1'b0",
                 },
                 "connect": {
-                    "clk_en_rst": "clk_en_rst",
+                    "clk_en_rst_s": "clk_en_rst_s",
                     "data_i": "iob_reg_rvalid_data_i",
                     "data_o": "iob_reg_rvalid_data_o",
                 },
@@ -304,9 +304,9 @@ def setup(py_params_dict):
                 "instance_name": "uart_core_inst",
                 "instance_description": "UART core driver",
                 "connect": {
-                    "clk_rst": "clk_rst",
+                    "clk_rst_s": "clk_rst",
                     "reg_interface": "uart_core_reg_interface",
-                    "rs232": "rs232",
+                    "rs232_m": "rs232_m",
                 },
             },
         ],

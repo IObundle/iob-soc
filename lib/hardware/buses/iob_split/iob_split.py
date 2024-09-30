@@ -19,7 +19,7 @@ def setup(py_params_dict):
         "version": "0.1",
         "ports": [
             {
-                "name": "clk_en_rst",
+                "name": "clk_en_rst_s",
                 "interface": {
                     "type": "clk_en_rst",
                     "subtype": "slave",
@@ -27,7 +27,7 @@ def setup(py_params_dict):
                 "descr": "Clock, clock enable and async reset",
             },
             {
-                "name": "reset",
+                "name": "reset_i",
                 "descr": "Reset signal",
                 "signals": [
                     {
@@ -38,7 +38,7 @@ def setup(py_params_dict):
                 ],
             },
             {
-                "name": "input",
+                "name": "input_s",
                 "interface": {
                     "type": "iob",
                     "subtype": "slave",
@@ -54,7 +54,7 @@ def setup(py_params_dict):
     for port_idx in range(NUM_OUTPUTS):
         attributes_dict["ports"].append(
             {
-                "name": f"output_{port_idx}",
+                "name": f"output_{port_idx}_m",
                 "interface": {
                     "type": "iob",
                     "subtype": "master",
@@ -214,8 +214,8 @@ def setup(py_params_dict):
                 "RST_VAL": f"{NBITS}'b0",
             },
             "connect": {
-                "clk_en_rst": "clk_en_rst",
-                "en_rst": "sel_reg_en_rst",
+                "clk_en_rst_s": "clk_en_rst_s",
+                "en_rst_s": "sel_reg_en_rst",
                 "data_i": "sel_reg_data_i",
                 "data_o": "sel_reg_data_o",
             },
