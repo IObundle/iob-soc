@@ -300,11 +300,31 @@ def setup(py_params_dict):
             "connect": {
                 "clk_en_rst_s": "clk_en_rst_s",
                 "rst_i": "rst",
-                "i_bus_m": "cpu_ibus",
-                "d_bus_m": "cpu_dbus",
+                "i_bus_m": (
+                    "cpu_ibus",
+                    "cpu_i_axi_arid[0]",
+                    "cpu_i_axi_rid[0]",
+                    "cpu_i_axi_awid[0]",
+                    "cpu_i_axi_bid[0]",
+                ),
+                "d_bus_m": (
+                    "cpu_dbus",
+                    "cpu_d_axi_arid[0]",
+                    "cpu_d_axi_rid[0]",
+                    "cpu_d_axi_awid[0]",
+                    "cpu_d_axi_bid[0]",
+                ),
                 "plic_interrupts_i": "interrupts",
-                "plic_cbus_s": "plic_cbus",
-                "clint_cbus_s": "clint_cbus",
+                "plic_cbus_s": (
+                    "plic_cbus",
+                    "plic_cbus_axil_araddr[22-1:0]",
+                    "plic_cbus_axil_awaddr[22-1:0]",
+                ),
+                "clint_cbus_s": (
+                    "clint_cbus",
+                    "clint_cbus_axil_araddr[16-1:0]",
+                    "clint_cbus_axil_awaddr[16-1:0]",
+                ),
             },
         },
         {
@@ -322,7 +342,11 @@ def setup(py_params_dict):
                 "rst_i": "rst",
                 "s0_axi_s": "cpu_ibus",
                 "s1_axi_s": "cpu_dbus",
-                "mem_axi_m": "axi_m",
+                "mem_axi_m": (
+                    "axi_m",
+                    "axi_arlock[0]",
+                    "axi_awlock[0]",
+                ),
                 "bootrom_axi_m": "bootrom_cbus",
                 "peripherals_axi_m": "axi_periphs_cbus",
             },
