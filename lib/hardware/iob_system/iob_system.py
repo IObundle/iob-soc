@@ -257,6 +257,7 @@ def setup(py_params_dict):
                 "ADDR_W": params["addr_w"] - 2,
                 "DATA_W": "AXI_DATA_W",
                 "LEN_W": "AXI_LEN_W",
+                "LOCK_W": "1",
             },
         },
         {
@@ -272,10 +273,10 @@ def setup(py_params_dict):
             },
         },
         {
-            "name": "axil_periphs_cbus",
+            "name": "iob_periphs_cbus",
             "descr": "AXI-Lite bus for peripheral CSRs",
             "interface": {
-                "type": "axil",
+                "type": "iob",
                 "wire_prefix": "periphs_",
                 "ID_W": "AXI_ID_W",
                 "ADDR_W": params["addr_w"] - 1,
@@ -317,13 +318,11 @@ def setup(py_params_dict):
                 "plic_interrupts_i": "interrupts",
                 "plic_cbus_s": (
                     "plic_cbus",
-                    "plic_cbus_axil_araddr[22-1:0]",
-                    "plic_cbus_axil_awaddr[22-1:0]",
+                    "plic_cbus_iob_addr[22-1:0]",
                 ),
                 "clint_cbus_s": (
                     "clint_cbus",
-                    "clint_cbus_axil_araddr[16-1:0]",
-                    "clint_cbus_axil_awaddr[16-1:0]",
+                    "clint_cbus_iob_addr[16-1:0]",
                 ),
             },
         },
@@ -348,7 +347,11 @@ def setup(py_params_dict):
                     "axi_awlock[0]",
                 ),
                 "bootrom_axi_m": "bootrom_cbus",
-                "peripherals_axi_m": "axi_periphs_cbus",
+                "peripherals_axi_m": (
+                    "axi_periphs_cbus",
+                    "periphs_axi_awlock[0]",
+                    "periphs_axi_arlock[0]",
+                ),
             },
             "num_slaves": 2,
             "masters": {
@@ -376,29 +379,29 @@ def setup(py_params_dict):
             "soc_name": params["name"],
         },
         {
-            "core_name": "axi2axil",
-            "instance_name": "periphs_axi2axil",
+            "core_name": "axi2iob",
+            "instance_name": "periphs_axi2iob",
             "instance_description": "Convert AXI to AXI lite for CLINT",
             "parameters": {
-                "AXI_ID_W": "AXI_ID_W",
-                "AXI_ADDR_W": params["addr_w"] - 1,
-                "AXI_DATA_W": "AXI_DATA_W",
-                "AXI_LEN_W": "AXI_LEN_W",
+                "AXI_ID_WIDTH": "AXI_ID_W",
+                "ADDR_WIDTH": params["addr_w"] - 1,
+                "DATA_WIDTH": "AXI_DATA_W",
             },
             "connect": {
+                "clk_en_rst_s": "clk_en_rst_s",
                 "axi_s": "axi_periphs_cbus",
-                "axil_m": "axil_periphs_cbus",
+                "iob_m": "iob_periphs_cbus",
             },
         },
         {
-            "core_name": "iob_axil_split",
-            "name": "iob_axil_pbus_split",
-            "instance_name": "iob_axil_pbus_split",
+            "core_name": "iob_split",
+            "name": "iob_pbus_split",
+            "instance_name": "iob_pbus_split",
             "instance_description": "Split between peripherals",
             "connect": {
                 "clk_en_rst_s": "clk_en_rst_s",
                 "reset_i": "split_reset",
-                "input_s": "axil_periphs_cbus",
+                "input_s": "iob_periphs_cbus",
                 # Peripherals cbus connections added automatically
             },
             "num_outputs": 0,  # Num outputs configured automatically

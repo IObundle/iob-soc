@@ -72,7 +72,7 @@ def connect_peripherals_cbus(attributes_dict, peripherals, params):
     # Find pbus_split
     pbus_split = None
     for block in attributes_dict["blocks"]:
-        if block["instance_name"] == "iob_axil_pbus_split":
+        if block["instance_name"] == "iob_pbus_split":
             pbus_split = block
 
     # Number of peripherals = peripherals + CLINT + PLIC
@@ -90,12 +90,9 @@ def connect_peripherals_cbus(attributes_dict, peripherals, params):
                 "name": f"{peripheral_name}_cbus",
                 "descr": f"{peripheral_name} Control/Status Registers bus",
                 "interface": {
-                    "type": "axil",
+                    "type": "iob",
                     "wire_prefix": f"{peripheral_name}_cbus_",
-                    "ID_W": "AXI_ID_W",
                     "ADDR_W": peripheral_addr_w,
-                    "DATA_W": "AXI_DATA_W",
-                    "LEN_W": "AXI_LEN_W",
                 },
             },
         )
@@ -110,24 +107,18 @@ def connect_peripherals_cbus(attributes_dict, peripherals, params):
             "name": "clint_cbus",
             "descr": "CLINT Control/Status Registers bus",
             "interface": {
-                "type": "axil",
+                "type": "iob",
                 "wire_prefix": "clint_cbus_",
-                "ID_W": "AXI_ID_W",
                 "ADDR_W": peripheral_addr_w,
-                "DATA_W": "AXI_DATA_W",
-                "LEN_W": "AXI_LEN_W",
             },
         },
         {
             "name": "plic_cbus",
             "descr": "PLIC Control/Status Registers bus",
             "interface": {
-                "type": "axil",
+                "type": "iob",
                 "wire_prefix": "plic_cbus_",
-                "ID_W": "AXI_ID_W",
                 "ADDR_W": peripheral_addr_w,
-                "DATA_W": "AXI_DATA_W",
-                "LEN_W": "AXI_LEN_W",
             },
         },
     ]

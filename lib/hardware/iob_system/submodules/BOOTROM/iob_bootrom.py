@@ -84,6 +84,7 @@ def setup(py_params_dict):
                     "port_prefix": "cbus_",
                     "ADDR_W": BOOTROM_ADDR_W,
                     "DATA_W": "DATA_W",
+                    "LOCK_W": "1",
                 },
             },
             {
