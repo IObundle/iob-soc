@@ -82,9 +82,9 @@ def setup(py_params_dict):
                     "type": "axi",
                     "subtype": "slave",
                     "port_prefix": "cbus_",
-                    "ADDR_W": BOOTROM_ADDR_W,
+                    # BOOTROM_ADDR_W + 1 for remaining csrs ("VERSION" csr)
+                    "ADDR_W": BOOTROM_ADDR_W + 1,
                     "DATA_W": "DATA_W",
-                    "LOCK_W": "1",
                 },
             },
             {
@@ -119,7 +119,8 @@ def setup(py_params_dict):
                 "interface": {
                     "type": "iob",
                     "wire_prefix": "csrs_",
-                    "ADDR_W": BOOTROM_ADDR_W,
+                    # BOOTROM_ADDR_W + 1 for remaining csrs ("VERSION" csr)
+                    "ADDR_W": BOOTROM_ADDR_W + 1,
                     "DATA_W": "DATA_W",
                 },
             },

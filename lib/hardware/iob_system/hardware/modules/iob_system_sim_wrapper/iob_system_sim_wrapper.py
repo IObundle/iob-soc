@@ -106,6 +106,7 @@ def setup(py_params_dict):
                 "ADDR_W": "AXI_ADDR_W",
                 "DATA_W": "AXI_DATA_W",
                 "LEN_W": "AXI_LEN_W",
+                "LOCK_W": "AXI_LEN_W",
             },
         },
         {
@@ -132,6 +133,7 @@ def setup(py_params_dict):
                 "ADDR_W": "AXI_ADDR_W",
                 "DATA_W": "AXI_DATA_W",
                 "LEN_W": "AXI_LEN_W",
+                "LOCK_W": "1",
             },
         },
     ]
@@ -218,7 +220,11 @@ def setup(py_params_dict):
             "connect": {
                 "clk_i": "clk",
                 "rst_i": "rst",
-                "s0_axi_s": "axi",
+                "s0_axi_s": (
+                    "axi",
+                    "axi_awlock[0]",
+                    "axi_arlock[0]",
+                ),
                 "m0_axi_m": "memory_axi",
             },
             "num_slaves": 1,
@@ -236,7 +242,11 @@ def setup(py_params_dict):
             "connect": {
                 "clk_i": "clk",
                 "rst_i": "rst",
-                "axi_s": "memory_axi",
+                "axi_s": (
+                    "memory_axi",
+                    "{1'b0, mem_axi_arlock}",
+                    "{1'b0, mem_axi_awlock}",
+                ),
             },
         },
     ]

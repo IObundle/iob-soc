@@ -343,8 +343,8 @@ def setup(py_params_dict):
                 "s1_axi_s": "cpu_dbus",
                 "mem_axi_m": (
                     "axi_m",
-                    "axi_arlock[0]",
-                    "axi_awlock[0]",
+                    "axi_arlock_o[0]",
+                    "axi_awlock_o[0]",
                 ),
                 "bootrom_axi_m": "bootrom_cbus",
                 "peripherals_axi_m": (
@@ -372,7 +372,17 @@ def setup(py_params_dict):
             },
             "connect": {
                 "clk_en_rst_s": "clk_en_rst_s",
-                "cbus_s": "bootrom_cbus",
+                "cbus_s": (
+                    "bootrom_cbus",
+                    "bootrom_axi_araddr[13-1:0]",
+                    "bootrom_axi_arid[0]",
+                    "bootrom_axi_rid[0]",
+                    "{1'b0, bootrom_axi_arlock}",
+                    "bootrom_axi_awaddr[13-1:0]",
+                    "bootrom_axi_awid[0]",
+                    "bootrom_axi_bid[0]",
+                    "{1'b0, bootrom_axi_awlock}",
+                ),
                 "ext_rom_bus": "rom_bus",
             },
             "bootrom_addr_w": params["bootrom_addr_w"],
@@ -389,7 +399,11 @@ def setup(py_params_dict):
             },
             "connect": {
                 "clk_en_rst_s": "clk_en_rst_s",
-                "axi_s": "axi_periphs_cbus",
+                "axi_s": (
+                    "axi_periphs_cbus",
+                    "periphs_axi_arlock[0]",
+                    "periphs_axi_awlock[0]",
+                ),
                 "iob_m": "iob_periphs_cbus",
             },
         },
