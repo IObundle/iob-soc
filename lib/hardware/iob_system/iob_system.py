@@ -10,7 +10,7 @@ from iob_system_utils import update_params, iob_system_scripts
 def setup(py_params_dict):
     params = {
         "name": "iob_system",
-        "init_mem": False,
+        "init_mem": True,
         "use_extmem": False,
         "use_ethernet": False,
         "addr_w": 32,
