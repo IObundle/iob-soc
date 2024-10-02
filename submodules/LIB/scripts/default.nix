@@ -8,6 +8,14 @@
 }) {}}:
 
 let
+
+  # Hack to make Nix libreoffice wrapper work.
+  # This is because Nix wrapper breaks ghactions test by requiring the `/run/user/$(id -u)` folder to exist
+  libreofficeWithEnv = pkgs.writeShellScriptBin "soffice" ''
+    export DBUS_SESSION_BUS_ADDRESS="unix:path=/dev/null"
+    exec ${pkgs.libreoffice}/bin/soffice "$@"
+  '';
+
   yosys = import ./yosys.nix { inherit pkgs; };
 in
 pkgs.mkShell {
@@ -33,7 +41,7 @@ pkgs.mkShell {
     black
     llvmPackages_14.clangUseLLVM
     librsvg
-    libreoffice
+    libreofficeWithEnv
     minicom     # Terminal emulator
     lrzsz       # For Zmodem file transfers via serial connection of the terminal emulator
     # Add Volare custom Python installation
