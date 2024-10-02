@@ -100,6 +100,8 @@ def connect_peripherals_cbus(attributes_dict, peripherals, params):
         pbus_split["connect"][f"output_{idx}_m"] = f"{peripheral_name}_cbus"
         # Connect cbus to peripheral
         peripheral["connect"]["cbus_s"] = f"{peripheral_name}_cbus"
+        # Set address width parameter
+        peripheral["parameters"]["ADDR_W"] = peripheral_addr_w
 
     # Add CLINT and PLIC wires (they are not in peripherals list)
     attributes_dict["wires"] += [

@@ -19,7 +19,9 @@ def setup(py_params_dict):
                 "instance_name": "UART0",
                 "instance_description": "UART peripheral",
                 "is_peripheral": True,
-                "parameters": {},
+                "parameters": {
+                    "ADDR_W": "29",  # TODO: Automate this with iob_system scripts
+                },
                 "connect": {
                     "clk_en_rst_s": "clk_en_rst_s",
                     # TODO: Cbus should be connected automatically
@@ -35,7 +37,9 @@ def setup(py_params_dict):
                 "instance_name": "TIMER0",
                 "instance_description": "Timer peripheral",
                 "is_peripheral": True,
-                "parameters": {},
+                "parameters": {
+                    "ADDR_W": "29",  # TODO: Automate this with iob_system scripts
+                },
                 "connect": {
                     "clk_en_rst_s": "clk_en_rst_s",
                     # TODO: Cbus should be connected automatically
