@@ -1,3 +1,3 @@
 [submodule "submodules/VEXRISCV"]
-	path = submodules/VEXRISCV
+	path = lib/hardware/iob_system/submodules/VEXRISCV
 	url = git@github.com:IObundle/iob-vexriscv.git

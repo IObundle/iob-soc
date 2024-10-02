@@ -18,6 +18,8 @@ def setup(py_params_dict):
                 "interface": {
                     "type": "axil",
                     "subtype": "slave",
+                    "ADDR_W": "AXIL_ADDR_W",
+                    "DATA_W": "AXIL_DATA_W",
                 },
                 "descr": "AXIL interface",
             },
@@ -26,6 +28,8 @@ def setup(py_params_dict):
                 "interface": {
                     "type": "iob",
                     "subtype": "master",
+                    "ADDR_W": "ADDR_W",
+                    "DATA_W": "DATA_W",
                 },
                 "descr": "CPU native interface",
             },

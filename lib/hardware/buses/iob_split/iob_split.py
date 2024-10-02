@@ -215,7 +215,7 @@ def setup(py_params_dict):
             },
             "connect": {
                 "clk_en_rst_s": "clk_en_rst_s",
-                "en_rst_s": "sel_reg_en_rst",
+                "en_rst_i": "sel_reg_en_rst",
                 "data_i": "sel_reg_data_i",
                 "data_o": "sel_reg_data_o",
             },

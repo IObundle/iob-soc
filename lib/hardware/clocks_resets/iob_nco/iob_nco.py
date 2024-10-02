@@ -39,11 +39,11 @@ def setup(py_params_dict):
                 "descr": "clock, clock enable and reset",
             },
             {
-                "name": "iob_s",
+                "name": "cbus_s",
                 "interface": {
                     "type": "iob",
                     "subtype": "slave",
-                    "ADDR_W": "4",  # Same as `IOB_NCO_CSRS_ADDR_W
+                    "ADDR_W": "ADDR_W",
                     "DATA_W": "DATA_W",
                 },
                 "descr": "CPU native interface",
@@ -80,7 +80,7 @@ def setup(py_params_dict):
                 "interface": {
                     "type": "iob",
                     "wire_prefix": "csrs_",
-                    "ADDR_W": "ADDR_W",
+                    "ADDR_W": "4",
                     "DATA_W": "DATA_W",
                 },
             },
@@ -311,7 +311,10 @@ def setup(py_params_dict):
                 ],
                 "connect": {
                     "clk_en_rst_s": "clk_en_rst_s",
-                    "control_if_s": "iob_s",
+                    "control_if_s": (
+                        "cbus_s",
+                        "iob_addr_i[4-1:0]",
+                    ),
                     "csrs_iob_o": "csrs_iob",
                     # Register interfaces
                     "softreset": "softreset",

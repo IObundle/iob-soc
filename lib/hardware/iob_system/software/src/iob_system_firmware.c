@@ -1,7 +1,7 @@
 #include "bsp.h"
-#include "iob_soc_conf.h"
-#include "iob_soc_periphs.h"
-#include "iob_soc_system.h"
+#include "iob_system_conf.h"
+#include "iob_system_periphs.h"
+#include "iob_system_system.h"
 #include "iob_timer.h"
 #include "iob_uart.h"
 #include "printf.h"
@@ -27,7 +27,7 @@ int main() {
   printf_init(&uart_putc);
 
   // test puts
-  uart_puts("\n\n\nHello world from IOb-SoC!\n\n\n");
+  uart_puts("\n\n\nHello world!\n\n\n");
 
   // test printf with floats
   printf("Value of Pi = %f\n\n", 3.1415);
