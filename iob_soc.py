@@ -7,8 +7,8 @@ def setup(py_params_dict):
         "parent": {"core_name": "iob_system", **py_params_dict},
     }
 
-    # Dictionary of "iob_system" attributes to override/append
-    system_overrides = {
+    # Dictionary of "iob_system" attributes to modify
+    system_attributes = {
         "ports": [
             {
                 "name": "rs232_m",
@@ -45,7 +45,7 @@ def setup(py_params_dict):
         ],
     }
 
-    # Pass system_overrides dictionary via python parameter to the parent core (iob_system)
-    core_dict["parent"]["system_overrides"] = system_overrides
+    # Pass system_attributes dictionary via python parameter to the parent core (iob_system)
+    core_dict["parent"]["system_attributes"] = system_attributes
 
     return core_dict
