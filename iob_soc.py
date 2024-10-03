@@ -18,7 +18,7 @@ def setup(py_params_dict):
                 "core_name": "iob_uart",
                 "instance_name": "UART0",
                 "instance_description": "UART peripheral",
-                "is_peripheral": True,
+                "peripheral_addr_w": 3,
                 "parameters": {},
                 "connect": {
                     "clk_en_rst_s": "clk_en_rst_s",
@@ -26,7 +26,10 @@ def setup(py_params_dict):
                     # The iob_system blocks are handled by iob_system_utils.py, but
                     # the iob_system scripts do not have access to info in iob_soc.py,
                     # nor do they have permission to modify it (even if iob_system receives info about child module, it can't modify its dictionary).
-                    "cbus_s": "uart0_cbus",
+                    "cbus_s": (
+                        "uart0_cbus",
+                        "uart0_cbus_iob_addr[3-1:0]",
+                    ),
                     "rs232_m": "rs232_m",
                 },
             },
@@ -34,12 +37,15 @@ def setup(py_params_dict):
                 "core_name": "iob_timer",
                 "instance_name": "TIMER0",
                 "instance_description": "Timer peripheral",
-                "is_peripheral": True,
+                "peripheral_addr_w": 4,
                 "parameters": {},
                 "connect": {
                     "clk_en_rst_s": "clk_en_rst_s",
                     # TODO: Cbus should be connected automatically
-                    "cbus_s": "timer0_cbus",
+                    "cbus_s": (
+                        "timer0_cbus",
+                        "timer0_cbus_iob_addr[4-1:0]",
+                    ),
                 },
             },
         ],
