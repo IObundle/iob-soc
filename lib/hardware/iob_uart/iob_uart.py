@@ -1,17 +1,6 @@
 def setup(py_params_dict):
     CSR_IF = py_params_dict["csr_if"] if "csr_if" in py_params_dict else "iob"
     NAME = py_params_dict["name"] if "name" in py_params_dict else "iob_uart"
-
-    if CSR_IF == "iob":
-        cbus_widths = ["iob_addr_i[3-1:0]"]
-    elif CSR_IF == "axi":
-        cbus_widths = [
-            "axi_araddr_i[3-1:0]",
-            "axi_awaddr_i[3-1:0]",
-        ]
-    else:
-        cbus_widths = []
-
     attributes_dict = {
         "original_name": "iob_uart",
         "name": NAME,
@@ -57,7 +46,7 @@ def setup(py_params_dict):
                 "interface": {
                     "type": CSR_IF,
                     "subtype": "slave",
-                    "ADDR_W": "ADDR_W",
+                    "ADDR_W": "3",  # Same as `IOB_UART_CSRS_ADDR_W
                     "DATA_W": "DATA_W",
                 },
                 "descr": "CPU native interface",
@@ -77,7 +66,7 @@ def setup(py_params_dict):
                 "interface": {
                     "type": "iob",
                     "wire_prefix": "csrs_",
-                    "ADDR_W": "3",
+                    "ADDR_W": "ADDR_W",
                     "DATA_W": "DATA_W",
                 },
             },
@@ -283,7 +272,7 @@ def setup(py_params_dict):
                 "csr_if": CSR_IF,
                 "connect": {
                     "clk_en_rst_s": "clk_en_rst_s",
-                    "control_if_s": ("cbus_s", *cbus_widths),
+                    "control_if_s": "cbus_s",
                     "csrs_iob_o": "csrs_iob",
                     # Register interfaces
                     "softreset": "softreset",

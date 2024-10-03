@@ -1,4 +1,5 @@
 import os
+import sys
 
 #
 # Functions for iob_system.py
@@ -27,6 +28,7 @@ def iob_system_scripts(attributes_dict, params, py_params):
     :param dict params: iob_system python parameters
     :param dict py_params: iob_system argument python parameters
     """
+    handle_system_overrides(attributes_dict, py_params)
     set_build_dir(attributes_dict, py_params)
     peripherals = get_iob_system_peripherals_list(attributes_dict)
     connect_peripherals_cbus(attributes_dict, peripherals, params)
@@ -37,6 +39,48 @@ def iob_system_scripts(attributes_dict, params, py_params):
 #
 # Local functions
 #
+
+
+def handle_system_overrides(attributes_dict, py_params):
+    """Override/append attributes given in `system_overrides` python parameter (usually by child core).
+    :param dict attributes_dict: iob_system attributes
+    :param dict py_params: Dictionary containing `system_overrides` python parameter
+    """
+    child_attributes = py_params.get("system_overrides")
+    if not child_attributes:
+        return
+
+    for child_attribute_name, child_value in child_attributes.items():
+        # Don't override child-specific attributes
+        if child_attribute_name in ["original_name", "setup_dir", "parent"]:
+            continue
+
+        # Override other attributes of type string
+        if type(child_value) is str:
+            attributes_dict[child_attribute_name] = child_value
+            continue
+
+        # Override or append elements from list attributes
+        assert (
+            type(child_value) is list
+        ), f"Invalid type for attribute '{child_attribute_name}': {type(child_value)}"
+
+        # Select identifier attribute. Used to compare if should override each element.
+        identifier = "name"
+        if child_attribute_name in ["blocks", "sw_modules"]:
+            identifier = "instance_name"
+
+        # Process each object from list
+        for child_obj in child_value:
+            # Find object and override it
+            for idx, obj in enumerate(attributes_dict[child_attribute_name]):
+                if obj[identifier] == child_obj[identifier]:
+                    # print(f"DEBUG: Overriding {child_obj[identifier]}", file=sys.stderr)
+                    attributes_dict[child_attribute_name][idx] = child_obj
+                    break
+            else:
+                # Didn't override, so append it to list
+                attributes_dict[child_attribute_name].append(child_obj)
 
 
 def set_build_dir(attributes_dict, py_params):
@@ -52,14 +96,14 @@ def set_build_dir(attributes_dict, py_params):
 
 
 def get_iob_system_peripherals_list(attributes_dict):
-    """Parses blocks list in iob_system attributes, for blocks with the `is_peripheral` attribute set to True.
-    Also removes `is_peripheral` attribute from each block after adding it to the peripherals list.
+    """Parses blocks list in iob_system attributes, for blocks with the `peripheral_addr_w` attribute set.
+    Also removes `peripheral_addr_w` attribute from each block after adding it to the peripherals list.
     """
     peripherals = []
     for block in attributes_dict["blocks"]:
-        if "is_peripheral" in block and block["is_peripheral"]:
-            peripherals.append(block)
-            block.pop("is_peripheral")
+        if "peripheral_addr_w" in block and block["peripheral_addr_w"]:
+            peripherals.append({"ref": block, "addr_w": block["peripheral_addr_w"]})
+            block.pop("peripheral_addr_w")
     return peripherals
 
 
@@ -83,7 +127,7 @@ def connect_peripherals_cbus(attributes_dict, peripherals, params):
     pbus_split["num_outputs"] = num_peripherals
 
     for idx, peripheral in enumerate(peripherals):
-        peripheral_name = peripheral["instance_name"].lower()
+        peripheral_name = peripheral["ref"]["instance_name"].lower()
         # Add peripheral cbus wire
         attributes_dict["wires"].append(
             {
@@ -99,9 +143,10 @@ def connect_peripherals_cbus(attributes_dict, peripherals, params):
         # Connect cbus to pbus_split
         pbus_split["connect"][f"output_{idx}_m"] = f"{peripheral_name}_cbus"
         # Connect cbus to peripheral
-        peripheral["connect"]["cbus_s"] = f"{peripheral_name}_cbus"
-        # Set address width parameter
-        peripheral["parameters"]["ADDR_W"] = peripheral_addr_w
+        peripheral["ref"]["connect"]["cbus_s"] = (
+            f"{peripheral_name}_cbus",
+            f"{peripheral_name}_cbus_iob_addr[{peripheral['addr_w']}-1:0]",
+        )
 
     # Add CLINT and PLIC wires (they are not in peripherals list)
     attributes_dict["wires"] += [
@@ -148,8 +193,8 @@ def generate_peripheral_base_addresses(
 
     # Include CLINT and PLIC in peripherals list
     complete_peripherals_list = peripherals_list + [
-        {"instance_name": "CLINT0"},
-        {"instance_name": "PLIC0"},
+        {"ref": {"instance_name": "CLINT0"}},
+        {"ref": {"instance_name": "PLIC0"}},
     ]
     n_slaves_w = (len(complete_peripherals_list) - 1).bit_length()
 
@@ -160,7 +205,7 @@ def generate_peripheral_base_addresses(
     os.makedirs(os.path.dirname(out_file), exist_ok=True)
     with open(out_file, "w") as f:
         for idx, instance in enumerate(complete_peripherals_list):
-            instance_name = instance["instance_name"]
+            instance_name = instance["ref"]["instance_name"]
             f.write(
                 f"#define {instance_name}_BASE (PBUS_BASE + ({idx}<<(P_BIT-{n_slaves_w})))\n"
             )
@@ -189,7 +234,7 @@ def generate_makefile_segments(attributes_dict, peripherals, params, py_params):
         # Create a list with every peripheral name, except clint, and plic
         file.write(
             "PERIPHERALS ?="
-            + " ".join(peripheral["core_name"] for peripheral in peripherals)
+            + " ".join(peripheral["ref"]["core_name"] for peripheral in peripherals)
             + "\n",
         )
         if params["use_ethernet"]:
