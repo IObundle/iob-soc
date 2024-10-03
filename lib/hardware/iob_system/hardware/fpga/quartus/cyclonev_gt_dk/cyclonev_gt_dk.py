@@ -312,7 +312,6 @@ def setup(py_params_dict):
                     "m0_axi_m": "memory_axi",
                 },
                 "num_slaves": 1,
-                "num_masters": 1,
             },
             {
                 "core_name": "axi_ram",

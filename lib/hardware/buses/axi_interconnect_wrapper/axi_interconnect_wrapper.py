@@ -144,6 +144,16 @@ def setup(py_params_dict):
     master_axi_ports = []
     master_addr_w_parameter = ""
     for name, width in MASTERS.items():
+        attributes_dict["confs"].append(
+            {
+                "name": f"{name.upper()}_ADDR_W",
+                "type": "P",
+                "val": width,
+                "min": "1",
+                "max": "32",
+                "descr": f"{name.upper()} address bus width. Can be smaller than address range of master, but not larger.",
+            }
+        )
         master_axi_ports += [
             {
                 "name": f"{name}_axi_m",
@@ -153,7 +163,7 @@ def setup(py_params_dict):
                     "subtype": "master",
                     "port_prefix": f"{name}_",
                     "ID_W": "AXI_ID_W",
-                    "ADDR_W": width,
+                    "ADDR_W": f"{name.upper()}_ADDR_W",
                     "DATA_W": "AXI_DATA_W",
                     "LOCK_W": 1,
                 },
@@ -263,10 +273,8 @@ def setup(py_params_dict):
     verilog_code += "    // Connect all master AXI interfaces to interconnect\n"
     for sig_name, _ in AXI_OUT_SIGNAL_NAMES:
         assign_str = ""
-        for port in master_axi_ports:
-            prefix = ""
-            if "port_prefix" in port["interface"]:
-                prefix = port["interface"]["port_prefix"]
+        for master_name in MASTERS:
+            prefix = f"{master_name}_"
             assign_str = f"{prefix}axi_{sig_name}_i, " + assign_str
         assign_str = assign_str[:-2]
         verilog_code += (
@@ -274,13 +282,14 @@ def setup(py_params_dict):
         )
 
     for sig_name, sig_size in AXI_IN_SIGNAL_NAMES:
-        for idx, port in enumerate(master_axi_ports):
-            prefix = ""
-            if "port_prefix" in port["interface"]:
-                prefix = port["interface"]["port_prefix"]
+        for idx, master_name in enumerate(MASTERS):
+            prefix = f"{master_name}_"
+            output_size = sig_size
+            if sig_name.endswith("addr"):
+                output_size = f"{name.upper()}_ADDR_W"
             bit_select = ""
             if type(sig_size) is not int or sig_size > 1:
-                bit_select = f"[{idx}*{sig_size}+:{sig_size}]"
+                bit_select = f"[{idx}*{sig_size}+:{output_size}]"
             elif len(master_axi_ports) > 1:
                 bit_select = f"[{idx}]"
             verilog_code += f"    assign {prefix}axi_{sig_name}_o = intercon_m_axi_{sig_name}{bit_select}; \n"

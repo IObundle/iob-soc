@@ -335,6 +335,7 @@ def setup(py_params_dict):
                 "AXI_ID_W": "AXI_ID_W",
                 "AXI_ADDR_W": params["addr_w"],
                 "AXI_DATA_W": "AXI_DATA_W",
+                "MEM_ADDR_W": "AXI_ADDR_W",
             },
             "connect": {
                 "clk_i": "clk",
