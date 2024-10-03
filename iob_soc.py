@@ -1,9 +1,14 @@
 def setup(py_params_dict):
-    attributes_dict = {
+    # Py2hwsw dictionary describing current core
+    core_dict = {
         "original_name": "iob_soc",
         "name": "iob_soc",
-        "parent": {"core_name": "iob_system", **py_params_dict},
         "version": "0.1",
+        "parent": {"core_name": "iob_system", **py_params_dict},
+    }
+
+    # Dictionary of "iob_system" attributes to override/append
+    system_overrides = {
         "ports": [
             {
                 "name": "rs232_m",
@@ -22,14 +27,7 @@ def setup(py_params_dict):
                 "parameters": {},
                 "connect": {
                     "clk_en_rst_s": "clk_en_rst_s",
-                    # TODO: Cbus should be connected automatically
-                    # The iob_system blocks are handled by iob_system_utils.py, but
-                    # the iob_system scripts do not have access to info in iob_soc.py,
-                    # nor do they have permission to modify it (even if iob_system receives info about child module, it can't modify its dictionary).
-                    "cbus_s": (
-                        "uart0_cbus",
-                        "uart0_cbus_iob_addr[3-1:0]",
-                    ),
+                    # Cbus connected automatically
                     "rs232_m": "rs232_m",
                 },
             },
@@ -41,14 +39,13 @@ def setup(py_params_dict):
                 "parameters": {},
                 "connect": {
                     "clk_en_rst_s": "clk_en_rst_s",
-                    # TODO: Cbus should be connected automatically
-                    "cbus_s": (
-                        "timer0_cbus",
-                        "timer0_cbus_iob_addr[4-1:0]",
-                    ),
+                    # Cbus connected automatically
                 },
             },
         ],
     }
 
-    return attributes_dict
+    # Pass system_overrides dictionary via python parameter to the parent core (iob_system)
+    core_dict["parent"]["system_overrides"] = system_overrides
+
+    return core_dict

@@ -1,4 +1,5 @@
 import os
+import sys
 
 #
 # Functions for iob_system.py
@@ -27,6 +28,7 @@ def iob_system_scripts(attributes_dict, params, py_params):
     :param dict params: iob_system python parameters
     :param dict py_params: iob_system argument python parameters
     """
+    handle_system_overrides(attributes_dict, py_params)
     set_build_dir(attributes_dict, py_params)
     peripherals = get_iob_system_peripherals_list(attributes_dict)
     connect_peripherals_cbus(attributes_dict, peripherals, params)
@@ -37,6 +39,48 @@ def iob_system_scripts(attributes_dict, params, py_params):
 #
 # Local functions
 #
+
+
+def handle_system_overrides(attributes_dict, py_params):
+    """Override/append attributes given in `system_overrides` python parameter (usually by child core).
+    :param dict attributes_dict: iob_system attributes
+    :param dict py_params: Dictionary containing `system_overrides` python parameter
+    """
+    child_attributes = py_params.get("system_overrides")
+    if not child_attributes:
+        return
+
+    for child_attribute_name, child_value in child_attributes.items():
+        # Don't override child-specific attributes
+        if child_attribute_name in ["original_name", "setup_dir", "parent"]:
+            continue
+
+        # Override other attributes of type string
+        if type(child_value) is str:
+            attributes_dict[child_attribute_name] = child_value
+            continue
+
+        # Override or append elements from list attributes
+        assert (
+            type(child_value) is list
+        ), f"Invalid type for attribute '{child_attribute_name}': {type(child_value)}"
+
+        # Select identifier attribute. Used to compare if should override each element.
+        identifier = "name"
+        if child_attribute_name in ["blocks", "sw_modules"]:
+            identifier = "instance_name"
+
+        # Process each object from list
+        for child_obj in child_value:
+            # Find object and override it
+            for idx, obj in enumerate(attributes_dict[child_attribute_name]):
+                if obj[identifier] == child_obj[identifier]:
+                    # print(f"DEBUG: Overriding {child_obj[identifier]}", file=sys.stderr)
+                    attributes_dict[child_attribute_name][idx] = child_obj
+                    break
+            else:
+                # Didn't override, so append it to list
+                attributes_dict[child_attribute_name].append(child_obj)
 
 
 def set_build_dir(attributes_dict, py_params):
@@ -101,7 +145,7 @@ def connect_peripherals_cbus(attributes_dict, peripherals, params):
         # Connect cbus to peripheral
         peripheral["ref"]["connect"]["cbus_s"] = (
             f"{peripheral_name}_cbus",
-            f"{peripheral_name}_cbus_iob_addr[{peripheral["addr_w"]}-1:0]",
+            f"{peripheral_name}_cbus_iob_addr[{peripheral['addr_w']}-1:0]",
         )
 
     # Add CLINT and PLIC wires (they are not in peripherals list)
