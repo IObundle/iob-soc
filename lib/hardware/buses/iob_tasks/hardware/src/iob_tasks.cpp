@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2024 IObundle
+//
+// SPDX-License-Identifier: MIT
+
 #include "iob_tasks.h"
 
 // Uncomment to enable periodic time printing

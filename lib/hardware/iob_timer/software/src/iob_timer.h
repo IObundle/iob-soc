@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2024 IObundle
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 #pragma once
 #include "iob_timer_csrs.h"
 

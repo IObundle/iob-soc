@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2024 IObundle
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 /* PC Emulation of TIMER peripheral */
 
 #include <stdint.h>

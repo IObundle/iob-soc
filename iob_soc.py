@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
 def setup(py_params_dict):
     # Py2hwsw dictionary describing current core
     core_dict = {

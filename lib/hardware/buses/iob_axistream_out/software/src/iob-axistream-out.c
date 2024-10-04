@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2024 IObundle
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 #include "iob-axistream-out.h"
 
 void iob_axis_out_reset() {

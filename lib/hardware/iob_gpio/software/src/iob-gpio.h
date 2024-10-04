@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2024 IObundle
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 #include <stdbool.h>
 
 #include "iob_gpio_csrs.h"

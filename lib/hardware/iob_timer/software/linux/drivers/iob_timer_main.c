@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2024 IObundle
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 /* iob_timer_main.c: driver for iob_timer
  * using device platform. No hardcoded hardware address:
  * 1. load driver: insmod iob_timer.ko

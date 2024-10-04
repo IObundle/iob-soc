@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2024 IObundle
+//
+// SPDX-License-Identifier: MIT
+
 `timescale 1ns / 1ps
 
 module iob_f2s_1bit_sync (

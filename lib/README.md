@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2024 IObundle
+
+SPDX-License-Identifier: MIT
+-->
+
 # iob-lib
 This repository contains a set of Python scripts, Verilog, and C sources to
 simplify the development of subsystem IP cores.

@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
 include auto_sim_build.mk
 
 # Add iob-system software as a build dependency

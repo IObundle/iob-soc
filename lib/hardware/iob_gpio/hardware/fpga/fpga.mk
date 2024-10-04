@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
 GPIO_DIR:=../../..
 include $(GPIO_DIR)/hardware/hardware.mk
 

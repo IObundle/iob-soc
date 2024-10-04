@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
 AXI_IN_SIGNAL_NAMES = [
     ("araddr", "AXI_ADDR_W"),
     ("arprot", 3),

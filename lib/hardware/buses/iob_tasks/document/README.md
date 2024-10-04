@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2024 IObundle
+
+SPDX-License-Identifier: MIT
+-->
+
 # IOb-interface
 
 The IOb Native Interface, or IOb interface shortly, has the following signals

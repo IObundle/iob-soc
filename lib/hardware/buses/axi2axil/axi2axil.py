@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
 def setup(py_params_dict):
     """AXI to AXI-Lite converter
     This converter has the same limitations as AXI-Lite:

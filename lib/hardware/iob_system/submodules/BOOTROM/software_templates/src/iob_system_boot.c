@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2024 IObundle
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 #include "bsp.h"
 #include "iob_system_conf.h"
 #include "iob_system_periphs.h"

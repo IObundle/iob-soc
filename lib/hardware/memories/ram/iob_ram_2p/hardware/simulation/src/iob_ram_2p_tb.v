@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2024 IObundle
+//
+// SPDX-License-Identifier: MIT
+
 `timescale 1ns / 1ps
 `define ADDR_W 10
 `define DATA_W 32

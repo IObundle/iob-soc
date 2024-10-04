@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2024 IObundle
+//
+// SPDX-License-Identifier: MIT
+
 `timescale 1ns / 1ps
 
 /* Important: This unit has not been tested on a FPGA. Only simulation. Take care
