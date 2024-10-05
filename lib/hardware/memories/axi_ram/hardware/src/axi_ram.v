@@ -1,4 +1,3 @@
-// Copyright (c) 2018 Alex Forencich
 // SPDX-FileCopyrightText: 2024 IObundle
 //
 // SPDX-License-Identifier: MIT

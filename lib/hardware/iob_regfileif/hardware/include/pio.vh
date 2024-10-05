@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2024 IObundle
+//
+// SPDX-License-Identifier: MIT
+
    // REGFILEIF
    input                           /*<InstanceName>*/_valid,
    input [`iob_regfileif_csrs_ADDR_W-1:0]   /*<InstanceName>*/_address,

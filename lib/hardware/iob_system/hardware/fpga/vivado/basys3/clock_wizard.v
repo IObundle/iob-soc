@@ -1,4 +1,3 @@
-// Copyright 2008 - 2013 Xilinx, Inc. All rights reserved.
 // SPDX-FileCopyrightText: 2024 IObundle
 //
 // SPDX-License-Identifier: MIT

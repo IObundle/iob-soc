@@ -1,4 +1,3 @@
-// Copyright (C) 2015  Clifford Wolf <clifford@clifford.at>
 // SPDX-FileCopyrightText: 2024 IObundle
 //
 // SPDX-License-Identifier: MIT

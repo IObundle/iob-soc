@@ -1,7 +1,10 @@
+// SPDX-FileCopyrightText: 2024 IObundle
+//
+// SPDX-License-Identifier: MIT
+
 //
 // AXI-Lite write and read 
 //
-
 //axil_address_write(addr, data, width, awvalid, wvalid, awaddr, wdata, wstrb)
 task axil_write;
    input [AXIL_ADDR_W-1:0] addr;

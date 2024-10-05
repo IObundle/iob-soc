@@ -1,4 +1,3 @@
-// Copyright (C) 2020 IObundle, Lda  All rights reserved
 // SPDX-FileCopyrightText: 2024 IObundle
 //
 // SPDX-License-Identifier: MIT

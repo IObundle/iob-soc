@@ -1,5 +1,3 @@
-# Copyright (c) 2003-2023 Eelco Dolstra and the Nixpkgs/NixOS contributors
-# Copyright 2023 Efabless Corporation
 # SPDX-FileCopyrightText: 2024 IObundle
 #
 # SPDX-License-Identifier: MIT

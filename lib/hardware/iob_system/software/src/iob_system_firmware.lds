@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2024 IObundle
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 SECTIONS {
   /* Program code */
   INCLUDE auto_iob_system_firmware.lds
