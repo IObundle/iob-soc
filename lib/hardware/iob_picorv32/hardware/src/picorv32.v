@@ -1,6 +1,11 @@
+// SPDX-FileCopyrightText: 2015 Clifford Wolf <clifford@clifford.at>
 // SPDX-FileCopyrightText: 2024 IObundle
 //
 // SPDX-License-Identifier: MIT
+
+/*
+ *  PicoRV32 -- A Small RISC-V (RV32I) Processor Core
+ */
 
 `timescale 1 ns / 1 ps
 // `default_nettype none
@@ -569,20 +574,15 @@ module picorv32 #(
 
    always @(posedge clk) begin
       if (resetn && !trap) begin
-         if (mem_do_prefetch || mem_do_rinst || mem_do_rdata)
-            `ASSERT_(!mem_do_wdata);
+         if (mem_do_prefetch || mem_do_rinst || mem_do_rdata) `ASSERT_(!mem_do_wdata);
 
-         if (mem_do_prefetch || mem_do_rinst)
-            `ASSERT_(!mem_do_rdata);
+         if (mem_do_prefetch || mem_do_rinst) `ASSERT_(!mem_do_rdata);
 
-         if (mem_do_rdata)
-            `ASSERT_(!mem_do_prefetch && !mem_do_rinst);
+         if (mem_do_rdata) `ASSERT_(!mem_do_prefetch && !mem_do_rinst);
 
-         if (mem_do_wdata)
-            `ASSERT_(!(mem_do_prefetch || mem_do_rinst || mem_do_rdata));
+         if (mem_do_wdata) `ASSERT_(!(mem_do_prefetch || mem_do_rinst || mem_do_rdata));
 
-         if (mem_state == 2 || mem_state == 3)
-            `ASSERT_(mem_valid || mem_do_prefetch);
+         if (mem_state == 2 || mem_state == 3) `ASSERT_(mem_valid || mem_do_prefetch);
       end
    end
 
@@ -1525,11 +1525,15 @@ module picorv32 #(
 
                if (latched_branch) begin
                   current_pc = latched_store ? (latched_stalu ? alu_out_q : reg_out) & ~1 : reg_next_pc;
-                  `DEBUG_($display("ST_RD:  %2d 0x%08x, BRANCH 0x%08x", latched_rd,
-                                   reg_pc + (latched_compr ? 2 : 4), current_pc));
+                  `DEBUG_($display(
+                          "ST_RD:  %2d 0x%08x, BRANCH 0x%08x",
+                          latched_rd,
+                          reg_pc + (latched_compr ? 2 : 4),
+                          current_pc
+                          ));
                end else if (latched_store && !latched_branch) begin
-                  `DEBUG_($display("ST_RD:  %2d 0x%08x", latched_rd,
-                                   latched_stalu ? alu_out_q : reg_out));
+                  `DEBUG_($display(
+                          "ST_RD:  %2d 0x%08x", latched_rd, latched_stalu ? alu_out_q : reg_out));
                end else if (ENABLE_IRQ && irq_state[0]) begin
                   current_pc = PROGADDR_IRQ;
                   irq_active   <= 1;
