@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 
+
 def setup(py_params_dict):
     assert "name" in py_params_dict, print(
         "Error: Missing name for generated merge module."

@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 
+
 def setup(py_params_dict):
     ADDR_W = py_params_dict["addr_w"] if "addr_w" in py_params_dict else 32
     DATA_W = py_params_dict["data_w"] if "data_w" in py_params_dict else 32
