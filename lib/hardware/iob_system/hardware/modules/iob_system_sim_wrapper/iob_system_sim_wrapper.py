@@ -7,7 +7,6 @@ def setup(py_params_dict):
     params = py_params_dict["iob_system_params"]
 
     attributes_dict = {
-        "original_name": "iob_system_sim_wrapper",
         "name": params["name"] + "_sim_wrapper",
         "version": "0.1",
         "confs": [

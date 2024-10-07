@@ -9,8 +9,6 @@ def setup(py_params_dict):
     - No Burst Support: burst-related signals (like AWLEN, AWSIZE, ARBURST, etc.) are ignored.
     """
     attributes_dict = {
-        "original_name": "axi2axil",
-        "name": "axi2axil",
         "version": "0.1",
         "confs": [
             {

@@ -5,8 +5,6 @@
 
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "iob_axistream_out",
-        "name": "iob_axistream_out",
         "version": "0.3",
         "board_list": ["cyclonev_gt_dk", "aes_ku040_db_g"],
         "confs": [

@@ -5,8 +5,6 @@
 
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "iob_modcnt",
-        "name": "iob_modcnt",
         "version": "0.1",
         "confs": [
             {

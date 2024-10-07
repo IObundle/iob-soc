@@ -128,8 +128,6 @@ def setup(py_params_dict):
         confs = py_params_dict["instantiator"]["confs"]
 
     attributes_dict = {
-        "original_name": "iob_regfileif",
-        "name": "iob_regfileif",
         "version": "0.1",
     }
     attributes_dict |= {

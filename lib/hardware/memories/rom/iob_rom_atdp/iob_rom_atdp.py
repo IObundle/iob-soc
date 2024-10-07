@@ -5,8 +5,6 @@
 
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "iob_rom_atdp",
-        "name": "iob_rom_atdp",
         "version": "0.1",
         "confs": [
             {

@@ -5,8 +5,6 @@
 
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "iob_gray_counter",
-        "name": "iob_gray_counter",
         "version": "0.1",
         "generate_hw": False,
         "ports": [

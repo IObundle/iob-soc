@@ -19,7 +19,6 @@ def setup(py_params_dict):
     DATA_W = int(py_params_dict["data_w"]) if "data_w" in py_params_dict else 32
 
     attributes_dict = {
-        "original_name": "iob_merge",
         "name": py_params_dict["name"],
         "version": "0.1",
         "ports": [

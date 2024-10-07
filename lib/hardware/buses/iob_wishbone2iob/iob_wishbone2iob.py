@@ -5,8 +5,6 @@
 
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "iob_wishbone2iob",
-        "name": "iob_wishbone2iob",
         "version": "0.1",
         "confs": [
             {

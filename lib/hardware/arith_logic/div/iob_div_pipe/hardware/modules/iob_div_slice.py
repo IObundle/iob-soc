@@ -5,8 +5,6 @@
 
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "iob_div_slice",
-        "name": "iob_div_slice",
         "version": "0.1",
         "confs": [
             {

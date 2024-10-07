@@ -5,8 +5,6 @@
 
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "xilinx_ddr4_ctrl",
-        "name": "xilinx_ddr4_ctrl",
         "version": "0.1",
         "confs": [
             #

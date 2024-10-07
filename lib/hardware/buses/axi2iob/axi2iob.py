@@ -5,8 +5,6 @@
 
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "axi2iob",
-        "name": "axi2iob",
         "version": "0.1",
         "generate_hw": False,
         "confs": [

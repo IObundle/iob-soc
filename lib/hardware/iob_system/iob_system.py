@@ -28,7 +28,6 @@ def setup(py_params_dict):
     update_params(params, py_params_dict)
 
     attributes_dict = {
-        "original_name": "iob_system",
         "name": params["name"],
         "version": "0.7",
         "is_system": True,

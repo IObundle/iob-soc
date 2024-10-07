@@ -5,8 +5,6 @@
 
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "timer_core",
-        "name": "timer_core",
         "version": "0.1",
         "generate_hw": False,
         "ports": [

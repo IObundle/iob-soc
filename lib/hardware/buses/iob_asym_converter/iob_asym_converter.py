@@ -5,8 +5,6 @@
 
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "iob_asym_converter",
-        "name": "iob_asym_converter",
         "version": "0.1",
         "generate_hw": False,
         "ports": [

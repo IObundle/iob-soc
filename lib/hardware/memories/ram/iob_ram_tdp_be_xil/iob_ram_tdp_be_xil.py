@@ -5,8 +5,6 @@
 
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "iob_ram_tdp_be_xil",
-        "name": "iob_ram_tdp_be_xil",
         "version": "0.1",
         "confs": [
             {

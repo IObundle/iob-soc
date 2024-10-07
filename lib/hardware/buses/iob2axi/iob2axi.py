@@ -5,8 +5,6 @@
 
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "iob2axi",
-        "name": "iob2axi",
         "version": "0.1",
         "generate_hw": False,
         "blocks": [

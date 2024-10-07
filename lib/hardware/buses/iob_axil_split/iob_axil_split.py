@@ -48,7 +48,6 @@ def setup(py_params_dict):
     ]
 
     attributes_dict = {
-        "original_name": "iob_axil_split",
         "name": py_params_dict["name"],
         "version": "0.1",
         "ports": [

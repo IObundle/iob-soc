@@ -5,8 +5,6 @@
 
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "iob_regfile_at2p",
-        "name": "iob_regfile_at2p",
         "version": "0.1",
         "generate_hw": False,
         "blocks": [

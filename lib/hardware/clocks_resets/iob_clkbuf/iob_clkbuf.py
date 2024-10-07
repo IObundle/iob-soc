@@ -5,8 +5,6 @@
 
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "iob_clkbuf",
-        "name": "iob_clkbuf",
         "version": "0.1",
         "ports": [
             {

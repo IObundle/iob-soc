@@ -5,8 +5,6 @@
 
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "xilinx_oddre1",
-        "name": "xilinx_oddre1",
         "version": "0.1",
         "ports": [
             {

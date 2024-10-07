@@ -5,8 +5,6 @@
 
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "iob_clock",
-        "name": "iob_clock",
         "version": "0.1",
         "confs": [
             {

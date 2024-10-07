@@ -5,8 +5,6 @@
 
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "iob_div_subshift_frac",
-        "name": "iob_div_subshift_frac",
         "version": "0.1",
         "confs": [
             {

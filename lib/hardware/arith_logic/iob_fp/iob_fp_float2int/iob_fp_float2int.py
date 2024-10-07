@@ -5,8 +5,6 @@
 
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "iob_fp_float2int",
-        "name": "iob_fp_float2int",
         "version": "0.1",
         "generate_hw": False,
         "blocks": [

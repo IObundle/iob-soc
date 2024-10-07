@@ -5,8 +5,6 @@
 
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "xilinx_clock_wizard",
-        "name": "xilinx_clock_wizard",
         "version": "0.1",
         "confs": [
             {

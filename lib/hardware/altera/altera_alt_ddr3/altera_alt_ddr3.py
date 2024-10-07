@@ -10,8 +10,6 @@ def setup(py_params_dict):
     )
 
     attributes_dict = {
-        "original_name": "altera_alt_ddr3",
-        "name": "altera_alt_ddr3",
         "version": "0.1",
         "confs": [
             {

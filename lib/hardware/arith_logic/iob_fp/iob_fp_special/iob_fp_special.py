@@ -5,8 +5,6 @@
 
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "iob_fp_special",
-        "name": "iob_fp_special",
         "version": "0.1",
         "confs": [
             {

@@ -14,8 +14,6 @@ def setup(py_params_dict):
     )
 
     attributes_dict = {
-        "original_name": "iob_bootrom",
-        "name": "iob_bootrom",
         "version": VERSION,
         "confs": [
             {

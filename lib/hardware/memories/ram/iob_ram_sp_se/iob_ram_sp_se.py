@@ -5,8 +5,6 @@
 
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "iob_ram_sp_se",
-        "name": "iob_ram_sp_se",
         "version": "0.1",
         "confs": [
             {

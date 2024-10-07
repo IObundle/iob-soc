@@ -5,8 +5,6 @@
 
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "iob_pulse_gen",
-        "name": "iob_pulse_gen",
         "version": "0.1",
         "confs": [
             {

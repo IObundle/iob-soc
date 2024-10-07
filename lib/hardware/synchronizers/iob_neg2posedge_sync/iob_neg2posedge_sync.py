@@ -5,8 +5,6 @@
 
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "iob_neg2posedge_sync",
-        "name": "iob_neg2posedge_sync",
         "version": "0.1",
         "confs": [
             {

@@ -5,8 +5,6 @@
 
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "axis2fifo",
-        "name": "axis2fifo",
         "version": "0.1",
         "generate_hw": False,
         "blocks": [

@@ -5,8 +5,6 @@
 
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "iob_edge_detect",
-        "name": "iob_edge_detect",
         "version": "0.1",
         "generate_hw": False,
         "ports": [

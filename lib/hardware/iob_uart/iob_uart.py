@@ -7,7 +7,6 @@ def setup(py_params_dict):
     CSR_IF = py_params_dict["csr_if"] if "csr_if" in py_params_dict else "iob"
     NAME = py_params_dict["name"] if "name" in py_params_dict else "iob_uart"
     attributes_dict = {
-        "original_name": "iob_uart",
         "name": NAME,
         "version": "0.1",
         "board_list": ["cyclonev_gt_dk", "aes_ku040_db_g"],

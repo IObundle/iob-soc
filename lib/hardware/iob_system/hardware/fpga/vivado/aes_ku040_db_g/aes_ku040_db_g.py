@@ -8,8 +8,6 @@ def setup(py_params_dict):
     params = py_params_dict["iob_system_params"]
 
     attributes_dict = {
-        "original_name": "aes_ku040_db_g",
-        "name": "aes_ku040_db_g",
         "version": "0.1",
         #
         # Configuration

@@ -5,8 +5,6 @@
 
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "iob_regfile_sp",
-        "name": "iob_regfile_sp",
         "version": "0.09",
         "generate_hw": False,
         "ports": [

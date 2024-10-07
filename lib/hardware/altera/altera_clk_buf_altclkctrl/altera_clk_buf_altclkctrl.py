@@ -5,8 +5,6 @@
 
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "altera_clk_buf_altclkctrl",
-        "name": "altera_clk_buf_altclkctrl",
         "version": "0.1",
         "ports": [
             {

@@ -5,8 +5,6 @@
 
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "iob_fifo_sync",
-        "name": "iob_fifo_sync",
         "version": "0.1",
         "generate_hw": False,
         "confs": [

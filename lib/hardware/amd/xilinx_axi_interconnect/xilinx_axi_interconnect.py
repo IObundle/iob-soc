@@ -14,8 +14,6 @@ def setup(py_params_dict):
     )
 
     attributes_dict = {
-        "original_name": "xilinx_axi_interconnect",
-        "name": "xilinx_axi_interconnect",
         "version": "0.1",
         #
         # AXI Parameters

@@ -5,8 +5,6 @@
 
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "apb2iob",
-        "name": "apb2iob",
         "version": "0.1",
         "generate_hw": False,
         "ports": [

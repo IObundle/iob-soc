@@ -5,8 +5,6 @@
 
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "iob_piso_reg",
-        "name": "iob_piso_reg",
         "version": "0.1",
         "confs": [
             {

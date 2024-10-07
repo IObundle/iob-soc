@@ -5,8 +5,6 @@
 
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "axis2axi_out",
-        "name": "axis2axi_out",
         "version": "0.1",
         "generate_hw": False,
         "ports": [
