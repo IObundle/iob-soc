@@ -79,6 +79,7 @@ pkgs.mkShell {
     yosys
     gcc
     libcap # Allows setting POSIX capabilities
+    reuse
     py2hwsw
   ];
 }
