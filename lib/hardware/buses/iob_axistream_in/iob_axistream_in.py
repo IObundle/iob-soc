@@ -1,7 +1,10 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
+
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "iob_axistream_in",
-        "name": "iob_axistream_in",
         "version": "0.3",
         "board_list": ["cyclonev_gt_dk", "aes_ku040_db_g"],
         "confs": [

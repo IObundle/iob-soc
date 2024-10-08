@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
 name: CI
 
 # Set default shell as interactive (source ~/.bashrc)

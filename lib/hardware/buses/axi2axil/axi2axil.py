@@ -1,11 +1,14 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
+
 def setup(py_params_dict):
     """AXI to AXI-Lite converter
     This converter has the same limitations as AXI-Lite:
     - No Burst Support: burst-related signals (like AWLEN, AWSIZE, ARBURST, etc.) are ignored.
     """
     attributes_dict = {
-        "original_name": "axi2axil",
-        "name": "axi2axil",
         "version": "0.1",
         "confs": [
             {

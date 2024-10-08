@@ -1,8 +1,12 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
+
 def setup(py_params_dict):
     params = py_params_dict["iob_system_params"]
 
     attributes_dict = {
-        "original_name": "iob_system_sim_wrapper",
         "name": params["name"] + "_sim_wrapper",
         "version": "0.1",
         "confs": [
@@ -228,7 +232,6 @@ def setup(py_params_dict):
                 "m0_axi_m": "memory_axi",
             },
             "num_slaves": 1,
-            "num_masters": 1,
         },
         {
             "core_name": "axi_ram",

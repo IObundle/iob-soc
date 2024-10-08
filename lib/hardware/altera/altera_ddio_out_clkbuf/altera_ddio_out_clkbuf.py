@@ -1,7 +1,10 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
+
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "altera_ddio_out_clkbuf",
-        "name": "altera_ddio_out_clkbuf",
         "version": "0.1",
         "ports": [
             {

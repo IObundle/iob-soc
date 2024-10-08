@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2024 IObundle
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 /* iob_nco_main.c: driver for iob_nco
  * using device platform. No hardcoded hardware address:
  * 1. load driver: insmod iob_nco.ko

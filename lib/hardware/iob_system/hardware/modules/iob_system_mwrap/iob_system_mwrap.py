@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
 import copy
 
 import iob_system
@@ -9,7 +13,6 @@ def setup(py_params_dict):
     iob_system_attr = iob_system.setup(params)
 
     attributes_dict = {
-        "original_name": "iob_system_mwrap",
         "name": params["name"] + "_mwrap",
         "version": "0.1",
         "confs": [

@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
 FPGA_OBJ?=$(FPGA_FAMILY)/$(TOP_MODULE).edif
 CONSTRAINTS:=$(wildcard *.xdc)
 

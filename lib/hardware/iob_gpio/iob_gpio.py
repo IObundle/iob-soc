@@ -1,3 +1,8 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
+
 def setup(py_params_dict):
     NAME = py_params_dict["name"] if "name" in py_params_dict else "iob_gpio"
     N_INPUTS = int(py_params_dict["n_inputs"]) if "n_inputs" in py_params_dict else 1
@@ -8,7 +13,6 @@ def setup(py_params_dict):
     )
 
     attributes_dict = {
-        "original_name": "iob_gpio",
         "name": NAME,
         "version": "0.1",
         "confs": [

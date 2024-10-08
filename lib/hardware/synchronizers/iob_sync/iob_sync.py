@@ -1,7 +1,10 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
+
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "iob_sync",
-        "name": "iob_sync",
         "version": "0.1",
         "confs": [
             {

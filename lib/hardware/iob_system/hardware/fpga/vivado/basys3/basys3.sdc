@@ -1,23 +1,6 @@
-# ----------------------------------------------------------------------------
-#     _____
-#    /     \
-#   /____   \____
-#  / \===\   \==/
-# /___\===\___\/  AVNET Design Resource Center
-#      \======/         www.em.avnet.com/drc
-#       \====/
-# ----------------------------------------------------------------------------
+# SPDX-FileCopyrightText: 2024 IObundle
 #
-#  Disclaimer:
-#     Avnet, Inc. makes no warranty for the use of this code or design.
-#     This code is provided  "As Is". Avnet, Inc assumes no responsibility for
-#     any errors, which may appear in this code, nor does it make a commitment
-#     to update the information contained herein. Avnet, Inc specifically
-#     disclaims any implied warranties of fitness for a particular purpose.
-#                      Copyright(c) 2009 Avnet, Inc.
-#                              All rights reserved.
-#
-# ----------------------------------------------------------------------------
+# SPDX-License-Identifier: MIT
 
 ## System Clock
 set_property PACKAGE_PIN W5 [get_ports clk_i]

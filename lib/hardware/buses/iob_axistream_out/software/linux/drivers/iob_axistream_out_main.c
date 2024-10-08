@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2024 IObundle
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 /* iob_axistream_out_main.c: driver for iob_axistream_out
  * using device platform. No hardcoded hardware address:
  * 1. load driver: insmod iob_axistream_out.ko

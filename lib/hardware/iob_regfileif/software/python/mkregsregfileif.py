@@ -1,4 +1,9 @@
 #!/usr/bin/python3
+
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
 #
 #    Build configured REGFILEIF/NATIVEBRIDGEIF registers and signals
 #

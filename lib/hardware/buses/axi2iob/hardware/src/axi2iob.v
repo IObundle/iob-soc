@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2024 IObundle
+//
+// SPDX-License-Identifier: MIT
+
 // Language: Verilog 2001
 `timescale 1ns / 1ps
 

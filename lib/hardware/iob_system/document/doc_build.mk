@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
 # (c) 2022-Present IObundle, Lda, all rights reserved
 #
 # This makefile segment is used at build-time in $(BUILD_DIR)/doc/Makefile

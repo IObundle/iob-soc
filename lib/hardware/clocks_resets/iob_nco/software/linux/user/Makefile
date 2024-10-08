@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
 SRC = $(wildcard *.c)
 HDR += iob_nco.h
 FLAGS = -Wall -Werror -O2

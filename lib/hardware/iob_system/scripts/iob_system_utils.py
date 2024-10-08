@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
 import os
 import sys
 
@@ -42,11 +46,11 @@ def iob_system_scripts(attributes_dict, params, py_params):
 
 
 def handle_system_overrides(attributes_dict, py_params):
-    """Override/append attributes given in `system_overrides` python parameter (usually by child core).
+    """Override/append attributes given in `system_attributes` python parameter (usually by child core).
     :param dict attributes_dict: iob_system attributes
-    :param dict py_params: Dictionary containing `system_overrides` python parameter
+    :param dict py_params: Dictionary containing `system_attributes` python parameter
     """
-    child_attributes = py_params.get("system_overrides")
+    child_attributes = py_params.get("system_attributes")
     if not child_attributes:
         return
 
@@ -69,6 +73,11 @@ def handle_system_overrides(attributes_dict, py_params):
         identifier = "name"
         if child_attribute_name in ["blocks", "sw_modules"]:
             identifier = "instance_name"
+        elif child_attribute_name in ["board_list", "ignore_snippets"]:
+            # Elements in list do not have identifier, so just append them to parent list
+            for child_obj in child_value:
+                attributes_dict[child_attribute_name].append(child_obj)
+            continue
 
         # Process each object from list
         for child_obj in child_value:

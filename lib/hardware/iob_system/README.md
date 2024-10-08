@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2024 IObundle
+
+SPDX-License-Identifier: MIT
+-->
+
 # IOb-SoC
 
 IOb-SoC is a System-on-Chip (SoC) template comprising an open-source RISC-V

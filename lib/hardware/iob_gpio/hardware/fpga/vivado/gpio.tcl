@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
 
 set TOP [lindex $argv 0]
 set PART [lindex $argv 1]

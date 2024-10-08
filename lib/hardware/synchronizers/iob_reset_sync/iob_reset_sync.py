@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
 edge = 1
 
 
@@ -6,8 +10,6 @@ def setup(py_params_dict):
     if "RST_POL" in py_params_dict:
         edge = py_params_dict["RST_POL"]
     attributes_dict = {
-        "original_name": "iob_reset_sync",
-        "name": "iob_reset_sync",
         "version": "0.1",
         "ports": [
             {

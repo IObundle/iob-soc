@@ -1,7 +1,10 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
+
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "altddio_in",
-        "name": "altddio_in",
         "version": "0.1",
         "confs": [
             {

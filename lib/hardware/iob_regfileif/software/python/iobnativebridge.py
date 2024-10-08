@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
 #
 #   Create IOBNATIVEBRIDGEIF in directory specified
 #   The IOBNATIVEBRIDGEIF is a peripheral that only contains wires. It bridges the peripheral bus with an external interface.

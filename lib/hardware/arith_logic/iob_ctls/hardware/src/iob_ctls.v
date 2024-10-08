@@ -1,10 +1,7 @@
-/*****************************************************************************
+// SPDX-FileCopyrightText: 2024 IObundle
+//
+// SPDX-License-Identifier: MIT
 
-  Description: IOB_CTLS Count Trailing/Leading Symbols
-
-  Copyright (C) 2020 IObundle, Lda  All rights reserved
-
-******************************************************************************/
 `timescale 1ns / 1ps
 
 module iob_ctls #(

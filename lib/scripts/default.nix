@@ -1,8 +1,12 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
 { pkgs ? import <nixpkgs> {} }:
 
 let
-  py2hwsw_commit = "db8edfe33d2790cd7d779ec9537187b1edbad5d6"; # Replace with the desired commit.
-  py2hwsw_sha256 = "Y4J8l5U2SCjrx692L9UXuB3VVOlXwE1tV7j7XbU/TCo="; # Replace with the actual SHA256 hash.
+  py2hwsw_commit = "1b80e60335d43f1912a0dd80a97bef7b18bdea57"; # Replace with the desired commit.
+  py2hwsw_sha256 = "Ny0kpLwJy9/zC2JdEVefxWSj1uIRzSoNEPKu4OMIFo4="; # Replace with the actual SHA256 hash.
 
   py2hwsw = pkgs.python3.pkgs.buildPythonPackage rec {
     pname = "py2hwsw";

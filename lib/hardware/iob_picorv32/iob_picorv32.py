@@ -1,7 +1,10 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
+
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "iob_picorv32",
-        "name": "iob_picorv32",
         "version": "0.1",
         "generate_hw": False,
         "confs": [

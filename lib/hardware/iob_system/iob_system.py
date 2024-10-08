@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
 import sys
 import os
 
@@ -24,7 +28,6 @@ def setup(py_params_dict):
     update_params(params, py_params_dict)
 
     attributes_dict = {
-        "original_name": "iob_system",
         "name": params["name"],
         "version": "0.7",
         "is_system": True,
@@ -335,6 +338,7 @@ def setup(py_params_dict):
                 "AXI_ID_W": "AXI_ID_W",
                 "AXI_ADDR_W": params["addr_w"],
                 "AXI_DATA_W": "AXI_DATA_W",
+                "MEM_ADDR_W": "AXI_ADDR_W",
             },
             "connect": {
                 "clk_i": "clk",

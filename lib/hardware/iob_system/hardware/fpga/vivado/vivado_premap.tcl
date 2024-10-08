@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
 if {$N_INTERCONNECT_SLAVES eq ""} {
     set N_INTERCONNECT_SLAVES 1 ; # Default value when not provided
 }

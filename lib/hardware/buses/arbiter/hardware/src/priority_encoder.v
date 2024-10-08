@@ -1,26 +1,7 @@
-/*
-
-Copyright (c) 2014-2018 Alex Forencich
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
-*/
+// SPDX-FileCopyrightText: 2014-2018 Alex Forencich
+// SPDX-FileCopyrightText: 2024 IObundle
+//
+// SPDX-License-Identifier: MIT
 
 // Language: Verilog 2001
 
@@ -45,27 +26,26 @@ module priority_encoder #(
    parameter W2 = W1 / 2;
 
    generate
-      if (WIDTH == 1) begin: g_width_1
+      if (WIDTH == 1) begin : g_width_1
          // one input
          assign output_valid   = input_unencoded;
          assign output_encoded = 0;
-      end else if (WIDTH == 2) begin: g_width_2
+      end else if (WIDTH == 2) begin : g_width_2
          // two inputs - just an OR gate
          assign output_valid = |input_unencoded;
-         if (LSB_PRIORITY == "LOW") begin: g_width_2_lsb_priority_low
+         if (LSB_PRIORITY == "LOW") begin : g_width_2_lsb_priority_low
             assign output_encoded = input_unencoded[1];
-         end else begin: g_width_2_lsb_priority_high
+         end else begin : g_width_2_lsb_priority_high
             assign output_encoded = ~input_unencoded[0];
          end
-      end else begin: g_width_other
+      end else begin : g_width_other
          // more than two inputs - split into two parts and recurse
          // also pad input to correct power-of-two width
          wire [$clog2(W2)-1:0] out1, out2;
          wire valid1, valid2;
          wire [W2-1:0] in2;
          assign in2[WIDTH-W2-1:0] = input_unencoded[WIDTH-1:W2];
-         if (WIDTH-W2 < W2)
-            assign in2[W2-1:WIDTH-W2] = 0;
+         if (WIDTH - W2 < W2) assign in2[W2-1:WIDTH-W2] = 0;
          priority_encoder #(
             .WIDTH       (W2),
             .LSB_PRIORITY(LSB_PRIORITY)
@@ -86,9 +66,9 @@ module priority_encoder #(
          );
          // multiplexer to select part
          assign output_valid = valid1 | valid2;
-         if (LSB_PRIORITY == "LOW") begin: g_width_other_lsb_priority_low
+         if (LSB_PRIORITY == "LOW") begin : g_width_other_lsb_priority_low
             assign output_encoded = valid2 ? {1'b1, out2} : {1'b0, out1};
-         end else begin: g_width_other_lsb_priority_high
+         end else begin : g_width_other_lsb_priority_high
             assign output_encoded = valid1 ? {1'b0, out1} : {1'b1, out2};
          end
       end

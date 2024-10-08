@@ -1,5 +1,9 @@
 #!/usr/bin/bash
 
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
 export XILINXPATH=/opt/Xilinx
 export LM_LICENSE_FILE=$LM_LICENSE_FILE:$XILINXPATH/Xilinx.lic
 source /opt/Xilinx/Vivado/settings64.sh

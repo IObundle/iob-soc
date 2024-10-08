@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
 ifeq ($(filter REGFILEIF, $(HW_MODULES)),)
 
 include $(REGFILEIF_DIR)/config.mk

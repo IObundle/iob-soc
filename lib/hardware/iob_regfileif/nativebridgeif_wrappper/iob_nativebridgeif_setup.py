@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
 import os, sys
 
 sys.path.insert(0, os.getcwd() + "/submodules/LIB/scripts")

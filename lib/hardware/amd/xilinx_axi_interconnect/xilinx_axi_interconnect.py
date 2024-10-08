@@ -1,3 +1,8 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
+
 def setup(py_params_dict):
     # Number of slave interfaces (number of masters to connect to)
     N_SLAVES = (
@@ -9,8 +14,6 @@ def setup(py_params_dict):
     )
 
     attributes_dict = {
-        "original_name": "xilinx_axi_interconnect",
-        "name": "xilinx_axi_interconnect",
         "version": "0.1",
         #
         # AXI Parameters

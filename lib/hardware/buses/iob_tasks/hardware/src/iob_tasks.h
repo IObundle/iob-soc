@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2024 IObundle
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 #ifndef H_IOB_TASKS_H
 #define H_IOB_TASKS_H
 

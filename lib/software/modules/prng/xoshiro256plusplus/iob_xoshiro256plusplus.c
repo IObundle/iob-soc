@@ -1,4 +1,10 @@
 /*
+ * SPDX-FileCopyrightText: 2024 IObundle
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/*
  * Adapted from https://prng.di.unimi.it/xoshiro256plusplus.c
  * 64 bit PRNG
  *

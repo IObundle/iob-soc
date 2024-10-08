@@ -1,3 +1,8 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
+
 def setup(py_params_dict):
     assert "name" in py_params_dict, print(
         "Error: Missing name for generated split module."
@@ -14,7 +19,6 @@ def setup(py_params_dict):
     DATA_W = int(py_params_dict["data_w"]) if "data_w" in py_params_dict else 32
 
     attributes_dict = {
-        "original_name": "iob_split",
         "name": py_params_dict["name"],
         "version": "0.1",
         "ports": [

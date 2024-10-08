@@ -1,3 +1,8 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
+
 def setup(py_params_dict):
     # Number of slave interfaces (number of masters to connect to)
     N_SLAVES = (
@@ -5,8 +10,6 @@ def setup(py_params_dict):
     )
 
     attributes_dict = {
-        "original_name": "altera_alt_ddr3",
-        "name": "altera_alt_ddr3",
         "version": "0.1",
         "confs": [
             {

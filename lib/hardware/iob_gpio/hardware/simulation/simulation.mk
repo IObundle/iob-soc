@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
 include $(GPIO_DIR)/hardware/hardware.mk
 
 DEFINE+=$(defmacro)VCD

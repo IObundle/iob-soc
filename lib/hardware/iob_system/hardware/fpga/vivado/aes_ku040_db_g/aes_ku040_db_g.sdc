@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
 ## System Clock 
 create_clock -name "clk" -period 4.0 [get_ports {c0_sys_clk_clk_p_i}]
 

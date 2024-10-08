@@ -1,7 +1,10 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
+
 def setup(py_params_dict):
     attributes_dict = {
-        "original_name": "alt_iobuf",
-        "name": "alt_iobuf",
         "version": "0.1",
         "ports": [
             {

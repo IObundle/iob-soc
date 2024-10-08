@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2024 IObundle
+//
+// SPDX-License-Identifier: MIT
+
 function [31:0] iob_max;
    input [31:0] a;
    input [31:0] b;

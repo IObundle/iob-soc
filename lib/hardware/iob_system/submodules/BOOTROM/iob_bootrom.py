@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
 import os
 import sys
 import shutil
@@ -10,8 +14,6 @@ def setup(py_params_dict):
     )
 
     attributes_dict = {
-        "original_name": "iob_bootrom",
-        "name": "iob_bootrom",
         "version": VERSION,
         "confs": [
             {

@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+
 interfaces = {
     "iob": [
         ("valid", "output", 1),
@@ -133,7 +137,6 @@ def setup(py_params_dict):
         master_interface_parameters[width] = f"MASTER_{width}"
 
     attributes_dict = {
-        "original_name": "bus_width_converter",
         "name": f"{INTERFACE}_bus_width_converter",
         "version": "0.1",
         "confs": verilog_parameters,
