@@ -6,7 +6,7 @@
 
 let
   py2hwsw_commit = "cb11eb4ec2033a57fb164b7e547b91d2e85ec3d6"; # Replace with the desired commit.
-  py2hwsw_sha256 = "rmXq4bOVj74iX875OYOLeMKqm+iEDSnDXoo6hnjFhUY="; # Replace with the actual SHA256 hash.
+  py2hwsw_sha256 = "F3p/9VIczHGWlQkRN3oxmkryVeD1lNMifbS74vpfJeE="; # Replace with the actual SHA256 hash.
 
   py2hwsw = pkgs.python3.pkgs.buildPythonPackage rec {
     pname = "py2hwsw";
@@ -18,12 +18,17 @@ let
     in if py2hwswPath != "" then
       pkgs.lib.cleanSource py2hwswPath
     else
-      pkgs.fetchFromGitHub {
+      (pkgs.fetchFromGitHub {
         owner = "IObundle";
         repo = "py2hwsw";
         rev = py2hwsw_commit;
         sha256 = py2hwsw_sha256;
-      };
+        fetchSubmodules = true;
+      }).overrideAttrs (_: {
+  GIT_CONFIG_COUNT = 1;
+  GIT_CONFIG_KEY_0 = "url.https://github.com/.insteadOf";
+  GIT_CONFIG_VALUE_0 = "git@github.com:";
+});
 
     # Add any necessary dependencies here.
     #propagatedBuildInputs = [ pkgs.python38Packages.someDependency ];
