@@ -193,6 +193,16 @@ def setup(py_params_dict):
     #
     attributes_dict["blocks"] = [
         {
+            "core_name": "xilinx_clock_wizard",
+            "instance_name": "clk_250_to_100_MHz",
+            "instance_description": "PLL to generate system clock",
+            "parameters": {
+                "OUTPUT_PER": 10,
+                "INPUT_PER": 4,
+            },
+            "instantiate": False,
+        },
+        {
             # IOb-SoC Memory Wrapper
             "core_name": "iob_system_mwrap",
             "instance_name": "iob_system_mwrap",

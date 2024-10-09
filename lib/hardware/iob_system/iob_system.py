@@ -487,7 +487,7 @@ def setup(py_params_dict):
             "core_name": "zybo_z7",
             "instance_name": "zybo_z7",
             "instantiate": False,
-            "dest_dir": "hardware/fpga/quartus/zybo_z7",
+            "dest_dir": "hardware/fpga/vivado/zybo_z7",
             "iob_system_params": params,
         },
     ]
