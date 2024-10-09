@@ -5,8 +5,8 @@
 { pkgs ? import <nixpkgs> {} }:
 
 let
-  py2hwsw_commit = "a529836f70b1a69bf6fb4931970f3fa41acf2afb"; # Replace with the desired commit.
-  py2hwsw_sha256 = "sha256-cQ81peJBr4s4lC0FHdEjwf6yWfVF7iyo1f93wIK8ue4="; # Replace with the actual SHA256 hash.
+  py2hwsw_commit = "5e5b22163dd3ca9fb5e015698db2538a17085d5a"; # Replace with the desired commit.
+  py2hwsw_sha256 = "sha256-mMJV/9vfJILyb0ySi8/58kGawn0LNscd8ku6JDRY6Lo="; # Replace with the actual SHA256 hash.
 
   py2hwsw = pkgs.python3.pkgs.buildPythonPackage rec {
     pname = "py2hwsw";
@@ -18,12 +18,17 @@ let
     in if py2hwswPath != "" then
       pkgs.lib.cleanSource py2hwswPath
     else
-      pkgs.fetchFromGitHub {
+      (pkgs.fetchFromGitHub {
         owner = "IObundle";
         repo = "py2hwsw";
         rev = py2hwsw_commit;
         sha256 = py2hwsw_sha256;
-      };
+        fetchSubmodules = true;
+      }).overrideAttrs (_: {
+  GIT_CONFIG_COUNT = 1;
+  GIT_CONFIG_KEY_0 = "url.https://github.com/.insteadOf";
+  GIT_CONFIG_VALUE_0 = "git@github.com:";
+});
 
     # Add any necessary dependencies here.
     #propagatedBuildInputs = [ pkgs.python38Packages.someDependency ];
@@ -79,6 +84,7 @@ pkgs.mkShell {
     yosys
     gcc
     libcap # Allows setting POSIX capabilities
+    reuse
     py2hwsw
   ];
 }
