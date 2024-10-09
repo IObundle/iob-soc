@@ -88,21 +88,6 @@ jobs:
       - name: no init mem and ext mem
         run: make fpga-run BOARD=aes_ku040_db_g INIT_MEM=0 USE_EXTMEM=1
 
-  lib:
-    runs-on: self-hosted
-    timeout-minutes: 20
-    if: ${{ !cancelled() }}
-    needs: [ cyclonev ]
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: 'recursive'
-      - name: Clean untracked files and directories (like old submodules)
-        run: git clean -ffdx
-      - name: run LIB test
-        run: nix-shell --run "make -C lib sim-test"
-
   doc:
     runs-on: self-hosted
     timeout-minutes: 60
@@ -117,3 +102,18 @@ jobs:
         run: git clean -ffdx
       - name: doc test
         run: make doc-test
+
+  reuse:
+    runs-on: self-hosted
+    timeout-minutes: 3
+    if: ${{ !cancelled() }}
+    needs: [ doc ]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+      - name: Clean untracked files and directories (like old submodules)
+        run: git clean -ffdx
+      - name: Check compliance with REUSE specification
+        run: nix-shell --run "reuse lint"
