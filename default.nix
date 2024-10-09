@@ -5,8 +5,8 @@
 { pkgs ? import <nixpkgs> {} }:
 
 let
-  py2hwsw_commit = "a1931b8146efbef6ff8e094ffe4c281f16d68cd1"; # Replace with the desired commit.
-  py2hwsw_sha256 = "sha256-E46IgfVmHdVXiKuQs/ZgmaQHxdHEYDySkGtbx2bi+hs="; # Replace with the actual SHA256 hash.
+  py2hwsw_commit = "a529836f70b1a69bf6fb4931970f3fa41acf2afb"; # Replace with the desired commit.
+  py2hwsw_sha256 = "sha256-cQ81peJBr4s4lC0FHdEjwf6yWfVF7iyo1f93wIK8ue4="; # Replace with the actual SHA256 hash.
 
   py2hwsw = pkgs.python3.pkgs.buildPythonPackage rec {
     pname = "py2hwsw";
@@ -36,7 +36,7 @@ let
     exec ${pkgs.libreoffice}/bin/soffice "$@"
   '';
 
-  yosys = import ./yosys.nix { inherit pkgs; };
+  yosys = import scripts/yosys.nix { inherit pkgs; };
 in
 
 pkgs.mkShell {
@@ -57,7 +57,7 @@ pkgs.mkShell {
     python3Packages.scipy
     python3Packages.pyserial
     (texlive.combine { inherit (texlive) scheme-medium multirow lipsum catchfile nowidow enumitem placeins xltabular ltablex titlesec makecell datetime fmtcount comment textpos csquotes amsmath cancel listings hyperref biblatex; })
-    (callPackage ./riscv-gnu-toolchain.nix { })
+    (callPackage scripts/riscv-gnu-toolchain.nix { })
     verible
     black
     llvmPackages_14.clangUseLLVM
