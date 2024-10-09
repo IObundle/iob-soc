@@ -7,7 +7,7 @@ def setup(py_params_dict):
     # Py2hwsw dictionary describing current core
     core_dict = {
         "version": "0.1",
-        "board_list": ["basys3"],
+        "board_list": ["zybo_z7"],
         "parent": {
             "core_name": "iob_system",
             **py_params_dict,

@@ -440,7 +440,7 @@ module axi_interconnect #(
    wire read = grant_encoded[0];
    assign s_select = grant_encoded >> 1;
 
-   arbiter #(
+   iob_arbiter #(
       .PORTS       (S_COUNT * 2),
       .TYPE        ("ROUND_ROBIN"),
       .BLOCK       ("ACKNOWLEDGE"),

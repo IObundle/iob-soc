@@ -483,6 +483,13 @@ def setup(py_params_dict):
             "dest_dir": "hardware/fpga/quartus/cyclonev_gt_dk",
             "iob_system_params": params,
         },
+        {
+            "core_name": "zybo_z7",
+            "instance_name": "zybo_z7",
+            "instantiate": False,
+            "dest_dir": "hardware/fpga/quartus/zybo_z7",
+            "iob_system_params": params,
+        },
     ]
     attributes_dict["sw_modules"] = [
         # Software modules

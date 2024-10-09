@@ -10,7 +10,7 @@
 /*
  * Arbiter module
  */
-module arbiter #(
+module iob_arbiter #(
    parameter PORTS        = 4,
    // arbitration type: "PRIORITY" or "ROUND_ROBIN"
    parameter TYPE         = "PRIORITY",
@@ -42,10 +42,10 @@ module arbiter #(
    wire [$clog2(PORTS)-1:0] request_index;
    wire [        PORTS-1:0] request_mask;
 
-   priority_encoder #(
+   iob_priority_encoder #(
       .WIDTH       (PORTS),
       .LSB_PRIORITY(LSB_PRIORITY)
-   ) priority_encoder_inst (
+   ) iob_priority_encoder_inst (
       .input_unencoded (request),
       .output_valid    (request_valid),
       .output_encoded  (request_index),
@@ -58,10 +58,10 @@ module arbiter #(
    wire [$clog2(PORTS)-1:0] masked_request_index;
    wire [        PORTS-1:0] masked_request_mask;
 
-   priority_encoder #(
+   iob_priority_encoder #(
       .WIDTH       (PORTS),
       .LSB_PRIORITY(LSB_PRIORITY)
-   ) priority_encoder_masked (
+   ) iob_priority_encoder_masked (
       .input_unencoded (request & mask_reg),
       .output_valid    (masked_request_valid),
       .output_encoded  (masked_request_index),

@@ -10,7 +10,7 @@
 /*
  * Priority encoder module
  */
-module priority_encoder #(
+module iob_priority_encoder #(
    parameter WIDTH        = 4,
    // LSB priority: "LOW", "HIGH"
    parameter LSB_PRIORITY = "LOW"
@@ -46,19 +46,19 @@ module priority_encoder #(
          wire [W2-1:0] in2;
          assign in2[WIDTH-W2-1:0] = input_unencoded[WIDTH-1:W2];
          if (WIDTH - W2 < W2) assign in2[W2-1:WIDTH-W2] = 0;
-         priority_encoder #(
+         iob_priority_encoder #(
             .WIDTH       (W2),
             .LSB_PRIORITY(LSB_PRIORITY)
-         ) priority_encoder_inst1 (
+         ) iob_priority_encoder_inst1 (
             .input_unencoded (input_unencoded[W2-1:0]),
             .output_valid    (valid1),
             .output_encoded  (out1),
             .output_unencoded()
          );
-         priority_encoder #(
+         iob_priority_encoder #(
             .WIDTH       (W2),
             .LSB_PRIORITY(LSB_PRIORITY)
-         ) priority_encoder_inst2 (
+         ) iob_priority_encoder_inst2 (
             .input_unencoded (in2),
             .output_valid    (valid2),
             .output_encoded  (out2),
