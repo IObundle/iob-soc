@@ -2,6 +2,7 @@ import os
 
 from iob_module import iob_module
 from iob_r_rstn import iob_r_rstn
+from iob_r import iob_r
 
 
 class iob_reset_sync(iob_module):
@@ -16,5 +17,6 @@ class iob_reset_sync(iob_module):
             [
                 {"interface": "clk_rst_s_port"},
                 iob_r_rstn,
+                iob_r,
             ]
         )

@@ -10,24 +10,12 @@ module iob_r_rstn #(
    output reg [DATA_W-1:0] iob_r_data_o
 );
 
-   generate
-      if (RST_POL == 1) begin: g_rst_pol_1
-         always @(posedge clk_i, posedge arst_i) begin
-            if (arst_i) begin
-               iob_r_data_o <= RST_VAL;
-            end else begin
-               iob_r_data_o <= iob_r_data_i;
-            end
-         end
-      end else begin: g_rst_pol_0
-         always @(posedge clk_i, negedge arst_i) begin
-            if (~arst_i) begin
-               iob_r_data_o <= RST_VAL;
-            end else begin
-               iob_r_data_o <= iob_r_data_i;
-            end
-         end
-      end
-   endgenerate
+    always @(posedge clk_i, negedge arst_i) begin
+        if (~arst_i) begin
+            iob_r_data_o <= RST_VAL;
+        end else begin
+            iob_r_data_o <= iob_r_data_i;
+        end
+    end
 
 endmodule

@@ -37,13 +37,5 @@ class iob_r_rstn(iob_module):
                     "max": "NA",
                     "descr": "Reset value.",
                 },
-                {
-                    "name": "RST_POL",
-                    "type": "P",
-                    "val": "1",
-                    "min": "0",
-                    "max": "1",
-                    "descr": "Reset polarity.",
-                },
             ]
         )
