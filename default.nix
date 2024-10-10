@@ -5,8 +5,8 @@
 { pkgs ? import <nixpkgs> {} }:
 
 let
-  py2hwsw_commit = "fbadb1502178d90cf1e009e04b291e80c773d401"; # Replace with the desired commit.
-  py2hwsw_sha256 = "fSLu2BoSzkHTlwQjheWFk75tGKDJSJrJ/xAIxtyahqc="; # Replace with the actual SHA256 hash.
+  py2hwsw_commit = "e8d3923c55d141e9c75689a6f29bef045123eee1"; # Replace with the desired commit.
+  py2hwsw_sha256 = "OzrUAScg/rbluMsn09TrnFayvfEgF3knMoBCCfPb5KM="; # Replace with the actual SHA256 hash.
   # Get local py2hwsw path from `PY2HWSW_PATH` env variable
   py2hwswPath = builtins.getEnv "PY2HWSW_PATH";
 
@@ -43,6 +43,6 @@ let
 in
 
 if disable_py2_build == 0 then
-  import "${py2hwsw}/lib/python${builtins.substring 0 4 pkgs.python3.version}/site-packages/py2hwsw/lib/scripts/default.nix" { inherit pkgs; py2hwsw_pkg = py2hwsw; }
+  import "${py2hwsw}/lib/python${builtins.substring 0 4 pkgs.python3.version}/site-packages/py2hwsw/lib/default.nix" { inherit pkgs; py2hwsw_pkg = py2hwsw; }
 else
-  import "${py2hwswPath}/py2hwsw/lib/scripts/default.nix" { inherit pkgs; py2hwsw_pkg = py2hwsw; }
+  import "${py2hwswPath}/py2hwsw/lib/default.nix" { inherit pkgs; py2hwsw_pkg = py2hwsw; }
