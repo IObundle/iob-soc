@@ -2,7 +2,7 @@
 `include "iob_reg_conf.vh"
 
 module iob_reset_sync #(
-    parameter IN_RST_POL = 0, // 1: rst active HIGH, 0: rst active LOW
+    parameter IN_RST_POL = 1, // 1: rst active HIGH, 0: rst active LOW
     parameter OUT_RST_POL = `IOB_REG_RST_POL
 ) (
    input  clk_i,
@@ -25,7 +25,7 @@ module iob_reset_sync #(
 
    generate
        if (IN_RST_POL == 0) begin: gen_in_rst_pol_0
-           iob_r #(
+           iob_r_rstn #(
                .DATA_W  (2),
                .RST_VAL (RST_VAL)
            ) reg1 (
@@ -35,7 +35,7 @@ module iob_reset_sync #(
                .iob_r_data_o(sync)
            );
        end else begin: gen_in_rst_pol_1
-           iob_r_rstn #(
+           iob_r #(
                .DATA_W  (2),
                .RST_VAL (RST_VAL)
            ) reg1 (
