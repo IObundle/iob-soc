@@ -5,86 +5,44 @@
 { pkgs ? import <nixpkgs> {} }:
 
 let
-  py2hwsw_commit = "f43c1a83849fd0d58496032ecdc2f4881b0618d3"; # Replace with the desired commit.
-  py2hwsw_sha256 = "sha256-xADQ9zMXlVxkvT48H19M0ei5NtLcmUtqibEeiQEvOkc="; # Replace with the actual SHA256 hash.
+  py2hwsw_commit = "b957466b3533576f6bfbefa89a8efdd0bcf0d66e"; # Replace with the desired commit.
+  py2hwsw_sha256 = "V699e7n9b4Gvb+E2VFUQ79/x/+flDsYdyJADJBgW+MI="; # Replace with the actual SHA256 hash.
+  # Get local py2hwsw path from `PY2HWSW_PATH` env variable
+  py2hwswPath = builtins.getEnv "PY2HWSW_PATH";
 
-  py2hwsw = pkgs.python3.pkgs.buildPythonPackage rec {
-    pname = "py2hwsw";
-    version = py2hwsw_commit;
+  # For debug
+  disable_py2_build = 0;
 
-    src = let
-      # Get local py2hwsw path from `PY2HWSW_PATH` env variable
-      py2hwswPath = builtins.getEnv "PY2HWSW_PATH";
-    in if py2hwswPath != "" then
-      pkgs.lib.cleanSource py2hwswPath
+  py2hwsw = 
+    if disable_py2_build == 0 then
+      pkgs.python3.pkgs.buildPythonPackage rec {
+        pname = "py2hwsw";
+        version = py2hwsw_commit;
+        src =
+          if py2hwswPath != "" then
+            pkgs.lib.cleanSource py2hwswPath
+          else
+            (pkgs.fetchFromGitHub {
+              owner = "IObundle";
+              repo = "py2hwsw";
+              rev = py2hwsw_commit;
+              sha256 = py2hwsw_sha256;
+              fetchSubmodules = true;
+            }).overrideAttrs (_: {
+              GIT_CONFIG_COUNT = 1;
+              GIT_CONFIG_KEY_0 = "url.https://github.com/.insteadOf";
+              GIT_CONFIG_VALUE_0 = "git@github.com:";
+            });
+        # Add any necessary dependencies here.
+        #propagatedBuildInputs = [ pkgs.python38Packages.someDependency ];
+      }
     else
-      (pkgs.fetchFromGitHub {
-        owner = "IObundle";
-        repo = "py2hwsw";
-        rev = py2hwsw_commit;
-        sha256 = py2hwsw_sha256;
-        fetchSubmodules = true;
-      }).overrideAttrs (_: {
-  GIT_CONFIG_COUNT = 1;
-  GIT_CONFIG_KEY_0 = "url.https://github.com/.insteadOf";
-  GIT_CONFIG_VALUE_0 = "git@github.com:";
-});
+      null;
 
-    # Add any necessary dependencies here.
-    #propagatedBuildInputs = [ pkgs.python38Packages.someDependency ];
-  };
 
-  # Hack to make Nix libreoffice wrapper work.
-  # This is because Nix wrapper breaks ghactions test by requiring the `/run/user/$(id -u)` folder to exist
-  libreofficeWithEnv = pkgs.writeShellScriptBin "soffice" ''
-    export DBUS_SESSION_BUS_ADDRESS="unix:path=/dev/null"
-    exec ${pkgs.libreoffice}/bin/soffice "$@"
-  '';
-
-  yosys = import scripts/yosys.nix { inherit pkgs; };
 in
 
-pkgs.mkShell {
-  name = "iob-shell";
-  buildInputs = with pkgs; [
-    bash
-    gnumake
-    verilog
-    verilator
-    gtkwave
-    python3
-    python3Packages.black
-    python3Packages.mypy
-    python3Packages.parse
-    python3Packages.numpy
-    python3Packages.wavedrom
-    python3Packages.matplotlib
-    python3Packages.scipy
-    python3Packages.pyserial
-    (texlive.combine { inherit (texlive) scheme-medium multirow lipsum catchfile nowidow enumitem placeins xltabular ltablex titlesec makecell datetime fmtcount comment textpos csquotes amsmath cancel listings hyperref biblatex; })
-    (callPackage scripts/riscv-gnu-toolchain.nix { })
-    verible
-    black
-    llvmPackages_14.clangUseLLVM
-    librsvg
-    libreofficeWithEnv
-    minicom     # Terminal emulator
-    lrzsz       # For Zmodem file transfers via serial connection of the terminal emulator
-    # Add Volare custom Python installation
-    (let
-      volareSrc = pkgs.fetchFromGitHub {
-        owner = "efabless";
-        repo = "volare";
-        rev = "47325949b87e857d75f81d306f02ebccf952cb15";
-        sha256 = "sha256-H9B/vZUs0O2jwmidCTMYhO0JY4DL+gmQNeVawaccvuU=";
-      };
-    in import "${volareSrc}" {
-      inherit pkgs;
-    })
-    yosys
-    gcc
-    libcap # Allows setting POSIX capabilities
-    reuse
-    py2hwsw
-  ];
-}
+if disable_py2_build == 0 then
+  import "${py2hwsw}/lib/python${builtins.substring 0 4 pkgs.python3.version}/site-packages/py2hwsw/lib/default.nix" { inherit pkgs; py2hwsw_pkg = py2hwsw; }
+else
+  import "${py2hwswPath}/py2hwsw/lib/default.nix" { inherit pkgs; py2hwsw_pkg = py2hwsw; }
