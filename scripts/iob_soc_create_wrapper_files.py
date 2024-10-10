@@ -227,13 +227,9 @@ def create_interconnect_instance(out_dir, name, num_extmem_connections):
 
 
 def create_ku040_rstn(out_dir, name, num_extmem_connections):
-    rstn_str = ""
-    for i in range(num_extmem_connections):
-        rstn_str += f" ~rstn[{i}] ||"
-    rstn_str = rstn_str[:-3]
-
-    file_str = f"      wire [{num_extmem_connections}-1:0] rstn;"
-    file_str += f"      assign arst ={rstn_str};"  # FIXME: This is probably wrong. Reset signals should not have logic
+    file_str = f"      wire [{num_extmem_connections}-1:0] rstn;\n"
+    # Use only one of the resetN signals from axi interconnect
+    file_str += "      assign arst = ~rstn[0];"
 
     fp_rstn = open(f"{out_dir}/{name}_ku040_rstn.vs", "w")
     fp_rstn.write(file_str)
