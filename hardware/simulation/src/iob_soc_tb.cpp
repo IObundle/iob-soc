@@ -12,7 +12,7 @@
 #include "iob_eth_driver_tb.h"
 #endif
 
-#if (VM_TRACE == 1) // If verilator was invoked with --trace
+#if (VM_TRACE == 1)     // If verilator was invoked with --trace
 #if (VM_TRACE_FST == 1) // If verilator was invoked with --trace-fst
 #include <verilated_fst_c.h>
 #else

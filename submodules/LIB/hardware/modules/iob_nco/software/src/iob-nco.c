@@ -16,7 +16,7 @@ void nco_init(uint32_t base_address) {
 
 void nco_enable(bool enable) { IOB_NCO_SET_ENABLE(enable); }
 
-// Configure NCO output signal period to be 'period'+1 times the system clock period.
-// Iob_NCO always assumes +1 clock period implicitly.
-// Lowest 8 bits of value are the fractional part of the period by default
+// Configure NCO output signal period to be 'period'+1 times the system clock
+// period. Iob_NCO always assumes +1 clock period implicitly. Lowest 8 bits of
+// value are the fractional part of the period by default
 void nco_set_period(uint32_t period) { IOB_NCO_SET_PERIOD(period); }

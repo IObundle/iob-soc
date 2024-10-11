@@ -1,6 +1,6 @@
 #pragma once
-#include <stdbool.h>
 #include "iob_nco_swreg.h"
+#include <stdbool.h>
 
 // Functions
 void nco_reset();

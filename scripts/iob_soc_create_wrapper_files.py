@@ -91,7 +91,7 @@ def create_wrapper_files(build_dir, name, ios, confs, num_extmem_connections):
     # If KU040 directory exists, create ku040_interconnect_s_portmap and ku040_rstn
     if os.path.exists(os.path.join(build_dir, "hardware/fpga/vivado/AES-KU040-DB-G")):
         create_ku040_interconnect_s_portmap(out_dir, name, num_extmem_connections)
-        create_ku040_rstn(out_dir, name, num_extmem_connections)
+        # create_ku040_rstn(out_dir, name, num_extmem_connections)
 
     # Wires for extmem portmaps
     src_dir = os.path.join(build_dir, "hardware/src")
@@ -247,7 +247,7 @@ def create_ku040_interconnect_s_portmap(out_dir, name, num_extmem_connections):
       //
       // External memory connection {i}
       //
-      .S{i:02d}_AXI_ARESET_OUT_N(rstn[{i}]),  //to system reset
+      .S{i:02d}_AXI_ARESET_OUT_N(rstn),     //to system reset
       .S{i:02d}_AXI_ACLK        (clk),      //from ddr4 controller PLL to be used by system
 
       //Write address

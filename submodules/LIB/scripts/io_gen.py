@@ -18,6 +18,7 @@ import importlib.util
 import os
 import iob_colors
 
+
 # Return full port type string based on given types: "I", "O" and "IO"
 # Maps "I", "O" and "IO" to "input", "output" and "inout", respectively.
 def get_port_type(port_type):
