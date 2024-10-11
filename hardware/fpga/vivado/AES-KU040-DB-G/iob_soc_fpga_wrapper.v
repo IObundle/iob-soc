@@ -302,6 +302,9 @@ module iob_soc_fpga_wrapper (
       .clk_in1_n(c0_sys_clk_clk_n),
       .clk_out1 (clk)
    );
+
+   assign rstn = ~arst;
+   
 `endif
 
 endmodule
