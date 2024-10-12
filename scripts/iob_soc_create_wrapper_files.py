@@ -243,11 +243,16 @@ def create_ku040_rstn(out_dir, name, num_extmem_connections):
 def create_ku040_interconnect_s_portmap(out_dir, name, num_extmem_connections):
     interconnect_str = ""
     for i in range(num_extmem_connections):
+        # connect rstn only to first ext mem connection
+        if i == 0:
+            rstn_wire = "rstn"
+        else:
+            rstn_wire = ""
         interconnect_str += f"""
       //
       // External memory connection {i}
       //
-      .S{i:02d}_AXI_ARESET_OUT_N(rstn),     //to system reset
+      .S{i:02d}_AXI_ARESET_OUT_N({rstn_wire}),     //to system reset
       .S{i:02d}_AXI_ACLK        (clk),      //from ddr4 controller PLL to be used by system
 
       //Write address
