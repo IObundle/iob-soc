@@ -1,7 +1,7 @@
 `timescale 1 ns / 1 ps
 
 
-module iob_regfile_t2p #(
+module iob_regfile_at2p #(
    parameter ADDR_W = 3,
    parameter DATA_W = 21
 ) (
@@ -22,7 +22,6 @@ module iob_regfile_t2p #(
 
    //write
    wire [((2**ADDR_W)*DATA_W)-1:0] regfile_in;
-   wire [((2**ADDR_W)*DATA_W)-1:0] regfile_synced;
    wire [         (2**ADDR_W)-1:0] regfile_en;
 
    genvar addr;
@@ -34,7 +33,7 @@ module iob_regfile_t2p #(
             .RST_VAL({DATA_W{1'd0}})
          ) rdata (
             .clk_i (w_clk_i),
-            .cke_i (w_cke_i),
+            .cke_i (w_en_i),
             .arst_i(w_arst_i),
             .en_i  (regfile_en[addr]),
             .data_i(w_data_i),
@@ -44,25 +43,15 @@ module iob_regfile_t2p #(
    endgenerate
 
 
-   //sync
-   iob_sync #(
-      .DATA_W ((2 ** ADDR_W) * DATA_W),
-      .RST_VAL({((2 ** ADDR_W) * DATA_W) {1'b0}})
-   ) iob_sync_regfile_synced (
-      .clk_i   (r_clk_i),
-      .arst_i  (r_arst_i),
-      .signal_i(regfile_in),
-      .signal_o(regfile_synced)
-   );
+   wire [DATA_W-1:0] r_data = regfile_in[r_addr_i*DATA_W+:DATA_W];
 
-   wire [DATA_W-1:0] r_data = regfile_synced[r_addr_i*DATA_W+:DATA_W];
    //read
    iob_reg #(
       .DATA_W (DATA_W),
       .RST_VAL({DATA_W{1'd0}})
    ) rdata (
       .clk_i (r_clk_i),
-      .cke_i (r_cke_i),
+      .cke_i (r_en_i),
       .arst_i(r_arst_i),
       .data_i(r_data),
       .data_o(r_data_o)
