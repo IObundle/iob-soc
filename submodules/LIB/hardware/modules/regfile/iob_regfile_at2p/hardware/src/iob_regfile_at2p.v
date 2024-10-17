@@ -33,7 +33,7 @@ module iob_regfile_at2p #(
             .RST_VAL({DATA_W{1'd0}})
          ) rdata (
             .clk_i (w_clk_i),
-            .cke_i (w_en_i),
+            .cke_i (w_cke_i),
             .arst_i(w_arst_i),
             .en_i  (regfile_en[addr]),
             .data_i(w_data_i),
@@ -51,7 +51,7 @@ module iob_regfile_at2p #(
       .RST_VAL({DATA_W{1'd0}})
    ) rdata (
       .clk_i (r_clk_i),
-      .cke_i (r_en_i),
+      .cke_i (r_cke_i),
       .arst_i(r_arst_i),
       .data_i(r_data),
       .data_o(r_data_o)
