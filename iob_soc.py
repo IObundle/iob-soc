@@ -16,7 +16,7 @@ def setup(py_params_dict):
                     {
                         "name": "rs232_m",
                         "descr": "iob-system uart interface",
-                        "interface": {
+                        "signals": {
                             "type": "rs232",
                         },
                     },
