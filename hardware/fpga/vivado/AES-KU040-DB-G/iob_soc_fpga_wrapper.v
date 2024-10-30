@@ -7,7 +7,7 @@ module iob_soc_fpga_wrapper (
    //differential clock input and reset
    input c0_sys_clk_clk_p,
    input c0_sys_clk_clk_n,
-   input reset,
+   input arst,
 
 `ifdef IOB_SOC_USE_EXTMEM
    output        c0_ddr4_act_n,
@@ -57,8 +57,7 @@ module iob_soc_fpga_wrapper (
    `include "iob_soc_wrapper_pwires.vs"
 
    wire clk;
-   wire arst;
-
+   wire rstn;
 
    // 
    // Logic to contatenate data pins and ethernet clock
@@ -72,6 +71,7 @@ module iob_soc_fpga_wrapper (
       .I(ENET_RX_CLK),
       .O(ETH_Clk)
    );
+
    ODDRE1 ODDRE1_inst (
       .Q (ENET_GTX_CLK),
       .C (ETH_Clk),
@@ -112,7 +112,7 @@ module iob_soc_fpga_wrapper (
       `include "iob_soc_pportmaps.vs"
       .clk_i (clk),
       .cke_i (1'b1),
-      .arst_i(arst),
+      .arst_i(~rstn),
       .trap_o()
    );
    
@@ -133,7 +133,6 @@ module iob_soc_fpga_wrapper (
    localparam DDR4_AXI_DATA_W = AXI_DATA_W;
 
 
-   `include "iob_soc_ku040_rstn.vs"
 
    //axi wires between ddr4 contrl and axi interconnect
    `include "ddr4_axi_wire.vs"
@@ -212,7 +211,7 @@ module iob_soc_fpga_wrapper (
    );
 
    ddr4_0 ddr4_ctrl (
-      .sys_rst     (reset),
+      .sys_rst     (arst),
       .c0_sys_clk_p(c0_sys_clk_clk_p),
       .c0_sys_clk_n(c0_sys_clk_clk_n),
 
@@ -304,25 +303,8 @@ module iob_soc_fpga_wrapper (
       .clk_out1 (clk)
    );
 
-   wire start;
-   iob_reset_sync start_sync (
-      .clk_i (clk),
-      .arst_i(reset),
-      .arst_o(start)
-   );
-
-   //create reset pulse as reset is never activated manually
-   //also, during bitstream loading, the reset pin is not pulled high
-   iob_pulse_gen #(
-      .START   (5),
-      .DURATION(10)
-   ) reset_pulse (
-      .clk_i  (clk),
-      .arst_i (reset),
-      .cke_i  (1'b1),
-      .start_i(start),
-      .pulse_o(arst)
-   );
+   assign rstn = ~arst;
+   
 `endif
 
 endmodule
