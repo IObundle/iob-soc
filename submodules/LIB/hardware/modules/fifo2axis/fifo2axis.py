@@ -2,6 +2,7 @@ import os
 
 from iob_module import iob_module
 from iob_reg_re import iob_reg_re
+from iob_modcnt import iob_modcnt
 
 
 class fifo2axis(iob_module):
@@ -15,6 +16,7 @@ class fifo2axis(iob_module):
         super()._create_submodules_list(
             [
                 iob_reg_re,
+                iob_modcnt,
                 {"interface": "clk_en_rst_s_port"},
                 {"interface": "clk_en_rst_s_s_portmap"},
             ]
