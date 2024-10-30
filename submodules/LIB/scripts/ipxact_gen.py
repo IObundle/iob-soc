@@ -102,9 +102,15 @@ class SwRegister:
         if isinstance(max_size, str):
             # transform the string into a mathemathical expression and retrieve the maximum value
             max_size = max_size.replace(" ", "")
-            for param in parameters_list:
-                max_size = max_size.replace(param.name, param.max_value)
-            max_size = eval(max_size)
+            while True:
+                for param in parameters_list:
+                    # only replace complete words
+                    max_size = re.sub(r"\b" + param.name + r"\b", param.max_value , max_size)
+
+                # if the string only contains numbers or operators, evaluate it and break the loop
+                if re.match(r"^[0-9\+\-\*\/\(\)]+$", max_size):
+                    max_size = eval(max_size)
+                    break
 
         # Compute the the size of the register in steps of 8 bits, rounding up
         self.sw_size = 8 * math.ceil(max_size / 8)
