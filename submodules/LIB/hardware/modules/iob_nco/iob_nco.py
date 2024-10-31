@@ -3,12 +3,16 @@ import os
 from iob_module import iob_module
 
 from iob_tasks import iob_tasks
-from iob_reg_e import iob_reg_e
-from iob_reg_r import iob_reg_r
 from iob_reg import iob_reg
+from iob_reg_r import iob_reg_r
+from iob_reg_e import iob_reg_e
+from iob_reg_re import iob_reg_re
 from iob_modcnt import iob_modcnt
 from iob_acc_ld import iob_acc_ld
 from iob_utils import iob_utils
+from iob_sync import iob_sync
+from iob_fifo_async import iob_fifo_async
+from iob_regfile_at2p import iob_regfile_at2p
 
 
 class iob_nco(iob_module):
@@ -22,9 +26,13 @@ class iob_nco(iob_module):
         super()._create_submodules_list(
             [
                 iob_reg_r,
+                iob_reg_re,
                 iob_reg,
                 iob_modcnt,
                 iob_acc_ld,
+                iob_sync,
+                iob_regfile_at2p,
+                iob_fifo_async,
                 # simulation files
                 (iob_utils, {"purpose": "simulation"}),
                 (iob_tasks, {"purpose": "simulation"}),
@@ -55,14 +63,6 @@ class iob_nco(iob_module):
                     "max": "32",
                     "descr": "Address bus width",
                 },
-                {
-                    "name": "FRAC_W",
-                    "type": "P",
-                    "val": "8",
-                    "min": "0",
-                    "max": "32",
-                    "descr": "Bit-width of the fractional part of the period value. Used to differentiate between the integer and fractional parts of the period. ",
-                },
             ]
         )
 
@@ -77,10 +77,28 @@ class iob_nco(iob_module):
             {"name": "iob_s_port", "descr": "CPU native interface", "ports": []},
             {
                 "name": "clk_gen",
-                "descr": "Output generated clock interface",
+                "descr": "Generated clock interface",
                 "ports": [
                     {
-                        "name": "clk_o",
+                        "name": "clk_in_i",
+                        "type": "I",
+                        "n_bits": "1",
+                        "descr": "Clock input",
+                    },
+                    {
+                        "name": "clk_in_arst_i",
+                        "type": "I",
+                        "n_bits": "1",
+                        "descr": "Clock input asynchronous reset",
+                    },
+                    {
+                        "name": "clk_in_cke_i",
+                        "type": "I",
+                        "n_bits": "1",
+                        "descr": "Clock input enable",
+                    },
+                    {
+                        "name": "clk_out_o",
                         "type": "O",
                         "n_bits": "1",
                         "descr": "Generated clock output",
@@ -115,13 +133,22 @@ class iob_nco(iob_module):
                         "descr": "NCO enable",
                     },
                     {
-                        "name": "PERIOD",
+                        "name": "PERIOD_INT",
                         "type": "W",
                         "n_bits": 32,
                         "rst_val": 5,
                         "log2n_items": 0,
                         "autoreg": False,
-                        "descr": "Period of the generated clock in terms of the number of system clock cycles + 1 implicit clock cycle. The period value is divided into integer and fractional parts where the lower FRAC_W bits represent the fractional part, and the remaining upper bits represent the integer part.",
+                        "descr": "Integer part of the generated period. Period of the generated clock in terms of the number of system clock cycles + 1 implicit clock cycle. NOTE: need to write to both PERIOD_INT, PERIOD_FRAC registers to set internal period.",
+                    },
+                    {
+                        "name": "PERIOD_FRAC",
+                        "type": "W",
+                        "n_bits": 32,
+                        "rst_val": 0,
+                        "log2n_items": 0,
+                        "autoreg": False,
+                        "descr": "Fractional part of the generated period. NOTE: need to write to both PERIOD_INT, PERIOD_FRAC registers to set internal period.",
                     },
                 ],
             }
