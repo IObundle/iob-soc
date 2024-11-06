@@ -105,7 +105,9 @@ class SwRegister:
             while True:
                 for param in parameters_list:
                     # only replace complete words
-                    max_size = re.sub(r"\b" + param.name + r"\b", param.max_value , max_size)
+                    max_size = re.sub(
+                        r"\b" + param.name + r"\b", param.max_value, max_size
+                    )
 
                 # if the string only contains numbers or operators, evaluate it and break the loop
                 if re.match(r"^[0-9\+\-\*\/\(\)]+$", max_size):

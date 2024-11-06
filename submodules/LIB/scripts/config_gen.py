@@ -16,6 +16,9 @@ def params_vh(params, top_module, out_dir):
     file2create = open(f"{out_dir}/{top_module}_params.vs", "w")
     core_prefix = f"{top_module}_".upper()
     for parameter in params:
+        # If parameter has 'doc_only' attribute set to True, skip it
+        if "doc_only" in parameter.keys() and parameter["doc_only"]:
+            continue
         if parameter["type"] in ["P", "F"]:
             p_name = parameter["name"].upper()
             file2create.write(f"\n  parameter {p_name} = `{core_prefix}{p_name},")
@@ -28,6 +31,9 @@ def params_vh(params, top_module, out_dir):
 
     file2create = open(f"{out_dir}/{top_module}_inst_params.vs", "w")
     for parameter in params:
+        # If parameter has 'doc_only' attribute set to True, skip it
+        if "doc_only" in parameter.keys() and parameter["doc_only"]:
+            continue
         if parameter["type"] in ["P", "F"]:
             p_name = parameter["name"].upper()
             file2create.write(f"\n  .{p_name}({p_name}),")
@@ -50,6 +56,9 @@ def conf_vh(macros, top_module, out_dir):
     # file2create.write(f"`ifndef VH_{fname}_VH\n")
     # file2create.write(f"`define VH_{fname}_VH\n\n")
     for macro in macros:
+        # If macro has 'doc_only' attribute set to True, skip it
+        if "doc_only" in macro.keys() and macro["doc_only"]:
+            continue
         if "if_defined" in macro.keys():
             file2create.write(f"`ifdef {macro['if_defined']}\n")
         # Only insert macro if its is not a bool define, and if so only insert it if it is true
@@ -75,6 +84,9 @@ def conf_h(macros, top_module, out_dir):
     file2create.write(f"#ifndef H_{fname}_H\n")
     file2create.write(f"#define H_{fname}_H\n\n")
     for macro in macros:
+        # If macro has 'doc_only' attribute set to True, skip it
+        if "doc_only" in macro.keys() and macro["doc_only"]:
+            continue
         # Only insert macro if its is not a bool define, and if so only insert it if it is true
         if type(macro["val"]) != bool:
             m_name = macro["name"].upper()
