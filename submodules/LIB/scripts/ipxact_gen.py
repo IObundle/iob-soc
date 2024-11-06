@@ -389,6 +389,9 @@ def gen_parameters_list(core):
 
     parameters_list = []
     for conf in core.confs:
+        # Skip doc_only confs
+        if "doc_only" in conf.keys() and conf["doc_only"]:
+            continue
         if conf["type"] != "M":
             parameters_list.append(
                 Parameter(
