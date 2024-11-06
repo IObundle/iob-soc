@@ -46,6 +46,9 @@ class csr_gen:
         # Create reg table
         reg_table = []
         for i_regs in regs:
+            # If i_regs has 'doc_only' attribute set to True, skip it
+            if "doc_only" in i_regs.keys() and i_regs["doc_only"]:
+                continue
             reg_table += i_regs["regs"]
 
         return self.compute_addr(reg_table, rw_overlap, autoaddr)
@@ -1191,12 +1194,13 @@ class csr_gen:
         for table in regs:
             tex_table = []
             for reg in table["regs"]:
+                addr = "None"
                 # Find address of matching register in regs_with_addr list
-                addr = next(
-                    register["addr"]
-                    for register in regs_with_addr
-                    if register["name"] == reg["name"]
-                )
+                for reg_with_addr in regs_with_addr:
+                    if reg_with_addr["name"] == reg["name"]:
+                        addr = reg_with_addr["addr"]
+                        break
+
                 tex_table.append(
                     [
                         reg["name"],

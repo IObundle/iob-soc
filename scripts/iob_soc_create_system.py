@@ -67,6 +67,9 @@ def create_systemv(build_dir, top, peripherals_list, internal_wires=None):
             periphs_inst_str += "     #(\n"
             # Insert parameters
             for param in params_list[instance.__class__.name]:
+                # If param has 'doc_only' attribute set to True, skip it
+                if "doc_only" in param.keys() and param["doc_only"]:
+                    continue
                 periphs_inst_str += "      .{}({}){}\n".format(
                     param["name"], instance.name + "_" + param["name"], ","
                 )
