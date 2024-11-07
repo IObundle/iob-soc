@@ -515,7 +515,7 @@ def generate_ipxact_xml(core, sw_regs, dest_dir):
     """
 
     # Add the CSR IF,
-    core_name = core.name + "_" + core.csr_if
+    core_name = core.name + "_" + core.csr_if + "_" + core.data_if
 
     # Core name to be displayed in the xml file
     # Change "_" to "-" and capitalize all the letters
