@@ -1,9 +1,4 @@
-[submodule "submodules/CACHE"]
-	path = submodules/CACHE
-	url = git@github.com:IObundle/iob-cache.git
-[submodule "submodules/PICORV32"]
-	path = submodules/PICORV32
-	url = git@github.com:IObundle/iob-picorv32.git
-[submodule "submodules/AXI"]
-	path = submodules/AXI
-	url = git@github.com:IObundle/verilog-axi.git
+# SPDX-FileCopyrightText: 2024 IObundle
+#
+# SPDX-License-Identifier: MIT
+

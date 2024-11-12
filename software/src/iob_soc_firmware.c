@@ -1,9 +1,15 @@
-#include "bsp.h"
-#include "iob-timer.h"
-#include "iob-uart.h"
+/*
+ * SPDX-FileCopyrightText: 2024 IObundle
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "iob_bsp.h"
 #include "iob_soc_conf.h"
 #include "iob_soc_periphs.h"
 #include "iob_soc_system.h"
+#include "iob_timer.h"
+#include "iob_uart.h"
 #include "printf.h"
 #include <string.h>
 
@@ -27,7 +33,7 @@ int main() {
   printf_init(&uart_putc);
 
   // test puts
-  uart_puts("\n\n\nHello world!\n\n\n");
+  uart_puts("\n\n\nHello world from IOb-SoC!\n\n\n");
 
   // test printf with floats
   printf("Value of Pi = %f\n\n", 3.1415);

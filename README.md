@@ -1,11 +1,15 @@
+<!--
+SPDX-FileCopyrightText: 2024 IObundle
+
+SPDX-License-Identifier: MIT
+-->
+
 # IOb-SoC
 
 IOb-SoC is a System-on-Chip (SoC) template comprising an open-source RISC-V
-processor (picorv32), an internal SRAM memory subsystem, a UART, and
-an optional interface to external memory. If the external memory interface is
-selected, an instruction L1 cache, a data L1 cache, and a shared L2 cache are
-added to the system. The L2 cache communicates with a 3rd party memory
-controller IP (typically a DDR controller) using an AXI4 master bus.
+processor (vexriscv), a UART, a TIMER, and an interface to external memory.
+The external memory interface uses an AXI4 master bus. It may be used to 
+communicate with a 3rd party memory controller IP (typically a DDR controller).
 
 ## Nix environment
 
@@ -24,22 +28,9 @@ The first time it runs, `nix-shell` will automatically install all the required 
   
 ## Dependencies
 
-If you prefer, you may install all the dependencies manually and run IOb-SoC without nix-shell. The following tools should be installed:
-- GNU Bash >=5.1.16
-- GNU Make >=4.3
-- RISC-V GNU Compiler Toolchain =2022.06.10  (Instructions at the end of this README)
-- Python3 >=3.10.6
-- Python3-Parse >=1.19.0
-
-Optional tools, depending on the desired run strategy:
-- Icarus Verilog >=10.3
-- Verilator >=5.002
-- gtkwave >=3.3.113
-- Vivado >=2020.2
-- Quartus >=20.1
-
-Older versions of the dependencies above may work but still need to be tested.
-
+If you prefer, you may install all the dependencies manually and run IOb-SoC without nix-shell.
+To do this, you must manually remove the `nix-shell --run` commands from the Makefile, 
+and install the packages listed in the [py2hwsw default.nix file](https://github.com/IObundle/py2hwsw/blob/main/py2hwsw/lib/default.nix).
 
 
 ## Operating Systems
@@ -65,7 +56,7 @@ credential.helper 'cache --timeout=<time_in_seconds>'``
 
 ## Configure your SoC
 
-To configure your system, edit the `iob_soc.py` file, which can be found at the
+To configure your SoC, edit the `iob_soc.py` file, which can be found at the
 repository root. This file has the system configuration variables;
 hopefully, each variable is explained by a comment.
 
@@ -97,8 +88,8 @@ When you start the simulation, IOb-SoC's simulation Makefile will log you on to 
 
 ### Set up the remote FPGA toolchain and board servers
 
-Using the CYCLONEV-GT-DK board as an example, note that in
-`hardware/fpga/quartus/CYCLONEV-GT-DK/Makefile,` the variable for the FPGA tool
+Using the cyclonev_gt_dk board as an example, note that in
+`hardware/fpga/quartus/cyclonev_gt_dk/Makefile,` the variable for the FPGA tool
 server logical name, `FPGA_SERVER,` is set to `QUARTUS_SERVER,` and the
 variable for the user name, `FPGA_USER`, is set to `QUARTUS_USER`; the
 variable for the board server, `BOARD_SERVER,` is set to `CYC5_SERVER`, and
@@ -120,7 +111,7 @@ export LM_LICENSE_FILE=port@licenseserver.myorg.com;lic_or_dat_file
 
 ## Create the build directory
 
-IOb-SoC uses intricate Python scripting to create a build directory with all the necessary files and makefiles to run the different tools. The build directory is placed in the folder above at ../iob_soc_Vx.y by running the following command from the root directory.
+IOb-SoC uses the [Py2HWSW](https://nlnet.nl/project/Py2HWSW/) framework to create a build directory with all the necessary files and makefiles to run the different tools. The build directory is placed in the folder above at ../iob_soc_Vx.y by running the following command from the root directory.
 ```Bash
 make setup
 ```
@@ -129,7 +120,7 @@ If you want to avoid getting into the complications of our Python scripts, use t
 
 ```Bash
 sim-run:
-	nix-shell --run 'make clean setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(CORE)_V*/ sim-run SIMULATOR=$(SIMULATOR)'
+	nix-shell --run "make clean setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(CORE)_V*/ sim-run SIMULATOR=$(SIMULATOR)"
 ```
 The above target invokes the `nix-shell` environment to call the local targets `clean` and `setup` and the target `sim-run` in the build directory. Below, the targets available in IOb-SoC's top Makefile are explained.
 
@@ -161,9 +152,9 @@ make sim-test
 ```
 The simulation test contents can be edited in IOb-SoC's top Makefile. 
 
-Each simulator must be described in the `./submodules/LIB/hardware/simulation/<simulator>.mk` file. For example, the file `vcs.mk` describes the VCS simulator.
+Each simulator must be described in the [`./hardware/simulation/<simulator>.mk`](https://github.com/IObundle/py2hwsw/tree/main/py2hwsw/hardware/simulation) file. For example, the file `vcs.mk` describes the VCS simulator.
 
-The host machine must run an access server, a Python program in `./submodules/LIB/scripts/board_server.py,` set up to run as a service. The client connects to the host using the SSH protocol and runs the board client program `/submodules/LIB/scripts/board_client.py.` Note that the term *board* is used instead of *simulator* because the same server/client programs control the access to the board and FPGA compilers. The client requests the simulator for GRAB_TIMEOUT seconds, which is 300 seconds by default. Its value can be specified in the `./hardware/fpga/fpga_build.mk` Makefile segment, for example, as
+The host machine must run an access server, a Python program in [`./scripts/board_server.py`](https://github.com/IObundle/py2hwsw/blob/main/py2hwsw/scripts/board_server.py), set up to run as a service. The client connects to the host using the SSH protocol and runs the board client program [`./scripts/board_client.py`](https://github.com/IObundle/py2hwsw/blob/main/py2hwsw/scripts/board_client.py). Note that the term *board* is used instead of *simulator* because the same server/client programs control the access to the board and FPGA compilers. The client requests the simulator for GRAB_TIMEOUT seconds, which is 300 seconds by default. Its value can be specified in the `./hardware/fpga/fpga_build.mk` Makefile segment, for example, as
 ```Bash
 GRAB_TIMEOUT ?= 3600
 ```
@@ -175,7 +166,7 @@ To build and run IOb-SoC on an FPGA board, the FPGA design tools must be
 installed locally or remotely. The FPGA board must also be attached to the local
 or remote host, not necessarily the same host where the design tools are installed.
 
-Each board must be described under the `/submodules/LIB/hardware/fpga/<tool>/<board_dir>` directory. For example, the `hardware/fpga/vivado/BASYS3`
+Each board must be described under the [`./hardware/fpga/<tool>/<board_dir>`](https://github.com/IObundle/py2hwsw/tree/main/py2hwsw/hardware/fpga) directory. For example, the [`./hardware/fpga/vivado/BASYS3`](https://github.com/IObundle/py2hwsw/tree/main/py2hwsw/hardware/fpga/vivado/basys3)
 directory contents describe the board BASYS3, which has an FPGA device that can be programmed by the Xilinx/AMD Vivado design tool. The access to the board is controlled by the same server/client programs described above for the simulators.
 To build an FPGA design of an IOb-SoC system and run it on the board located in the `board_dir` directory, type
 ```Bash
@@ -191,9 +182,10 @@ The FPGA test contents can be edited in IOb-SoC's top Makefile.
 
 The remote machines that have an FPGA board attached to it must run our board
 access control service script, which can be found in
-`submodules/LIB/scripts/board_server.py`. When IOb-SoC needs to access a remote
+[`./scripts/board_server.py`](https://github.com/IObundle/py2hwsw/blob/main/py2hwsw/scripts/board_server.py). 
+When IOb-SoC needs to access a remote
 FPGA server, it runs the board access script located in
-`submodules/LIB/scripts/board_server.py`.
+[`./scripts/board_client.py`](https://github.com/IObundle/py2hwsw/blob/main/py2hwsw/scripts/board_client.py).
 
 To install `board_server.py` as a service, run the following command on the remote FPGA server:
 ```
@@ -308,7 +300,7 @@ The work has been partially performed in the scope of the A-IQ Ready project, wh
 
 The A-IQ Ready project is supported by the Chips Joint Undertaking (Chips JU) - the Public-Private Partnership for research, development, and innovation under Horizon Europe – and National Authorities under Grant Agreement No. 101096658.
 
-![image](https://github.com/IObundle/iob-soc/assets/5718971/78f2a3ee-d10b-4989-b221-71154fe6e409) ![image](https://github.com/IObundle/iob-soc/assets/5718971/d57e0430-bb60-42e3-82a3-c5b6b0417322)
+![image](https://github.com/IObundle/iob-system/assets/5718971/78f2a3ee-d10b-4989-b221-71154fe6e409) ![image](https://github.com/IObundle/iob-system/assets/5718971/d57e0430-bb60-42e3-82a3-c5b6b0417322)
 
 
 This project provides the basic infrastructure to other projects funded through the NGI Assure Fund, a fund established by NLnet

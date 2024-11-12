@@ -1,1 +1,0 @@
-../LIB/scripts/default.nix

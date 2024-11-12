@@ -1,3 +1,0 @@
-set FAMILY "Cyclone 10 GX"
-set PART "10CX220YF780I5G"
-
