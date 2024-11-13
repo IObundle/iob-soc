@@ -7,8 +7,8 @@
 let
   py2hwsw_commit = "0911c61b8d56eb8b2ec7649f4dd7e60dae118617"; # Replace with the desired commit.
   py2hwsw_sha256 = "+dyVBeO76c4v95T8cOnaWnYDiD0/2wb0UJRcColJi6A="; # Replace with the actual SHA256 hash.
-  # Get local py2hwsw path from `PY2HWSW_PATH` env variable
-  py2hwswPath = builtins.getEnv "PY2HWSW_PATH";
+  # Get local py2hwsw root from `PY2HWSW_ROOT` env variable
+  py2hwswRoot = builtins.getEnv "PY2HWSW_ROOT";
 
   # For debug
   disable_py2_build = 0;
@@ -19,8 +19,8 @@ let
         pname = "py2hwsw";
         version = py2hwsw_commit;
         src =
-          if py2hwswPath != "" then
-            pkgs.lib.cleanSource py2hwswPath
+          if py2hwswRoot != "" then
+            pkgs.lib.cleanSource py2hwswRoot
           else
             (pkgs.fetchFromGitHub {
               owner = "IObundle";
@@ -45,4 +45,4 @@ in
 if disable_py2_build == 0 then
   import "${py2hwsw}/lib/python${builtins.substring 0 4 pkgs.python3.version}/site-packages/py2hwsw/lib/default.nix" { inherit pkgs; py2hwsw_pkg = py2hwsw; }
 else
-  import "${py2hwswPath}/py2hwsw/lib/default.nix" { inherit pkgs; py2hwsw_pkg = py2hwsw; }
+  import "${py2hwswRoot}/py2hwsw/lib/default.nix" { inherit pkgs; py2hwsw_pkg = py2hwsw; }
