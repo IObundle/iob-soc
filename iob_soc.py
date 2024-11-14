@@ -25,6 +25,7 @@ def setup(py_params_dict):
                             "type": "rs232",
                         },
                     },
+                    # NOTE: Add other ports here.
                 ],
                 "blocks": [
                     {
@@ -32,7 +33,7 @@ def setup(py_params_dict):
                         "core_name": "iob_uart",
                         "instance_name": "UART0",
                         "instance_description": "UART peripheral",
-                        "peripheral_addr_w": 3,
+                        "peripheral_addr_w": 3,  # Width of cbus of this peripheral
                         "parameters": {},
                         "connect": {
                             "clk_en_rst_s": "clk_en_rst_s",
@@ -45,13 +46,14 @@ def setup(py_params_dict):
                         "core_name": "iob_timer",
                         "instance_name": "TIMER0",
                         "instance_description": "Timer peripheral",
-                        "peripheral_addr_w": 4,
+                        "peripheral_addr_w": 4,  # Width of cbus of this peripheral
                         "parameters": {},
                         "connect": {
                             "clk_en_rst_s": "clk_en_rst_s",
                             # Cbus connected automatically
                         },
                     },
+                    # NOTE: Add other components/peripherals here.
                 ],
             },
         },
