@@ -4,26 +4,28 @@ SPDX-FileCopyrightText: 2024 IObundle
 SPDX-License-Identifier: MIT
 -->
 
-# IOb-SoC
+# IOb-SoC: this version is under development: please use the latest stable release
 
 IOb-SoC is a System-on-Chip (SoC) template comprising an open-source RISC-V
-processor (vexriscv), a UART, a TIMER, and an interface to external memory.
-The external memory interface uses an AXI4 master bus. It may be used to 
-communicate with a 3rd party memory controller IP (typically a DDR controller).
+processor (VexRiscv), a UART, a TIMER, and an interface to external memory.  The
+external memory interface uses an AXI4 master bus. It may be used to access an
+on-chip RAM or a 3rd party memory controller IP (typically a DDR controller).
 
 ## Nix environment
 
-You can use
-[nix-shell](https://nixos.org/download.html#nix-install-linux) to run
-IOb-SoC in a [Nix](https://nixos.org/) environment with all dependencies
-available except for Vivado and Quartus for FPGA compilation and running.
+You can use [nix-shell](https://nixos.org/download.html#nix-install-linux) to
+run IOb-SoC in a [Nix](https://nixos.org/) environment with all dependencies
+available except for comercial EDA tools for FPGA and ASIC, which need to be
+licesed and installed by the user.
 
 After installing `nix-shell,` it can be initialized by calling any Makefile target in the IOb-SoC root directory, for example
 ```Bash
 make setup
 ```
 
-The first time it runs, `nix-shell` will automatically install all the required dependencies. This can take a couple of hours, but after that, you can enjoy IOb-SoC and not worry about installing software tools.
+The first time it runs, `nix-shell` will automatically install all the required
+dependencies. This can take a couple of hours. After that, you can enjoy IOb-SoC
+and not worry about installing any software tools.
 
   
 ## Dependencies
@@ -35,23 +37,9 @@ and install the packages listed in the [py2hwsw default.nix file](https://github
 
 ## Operating Systems
 
-IOb-SoC can be used in Linux Operating Systems. The following instructions work
-for CentOS 7 and Ubuntu 18.04, 20.04, and 22.04 LTS.
-
-## Clone the repository
-
-The first step is to clone this repository. IOb-SoC uses git sub-module trees, and
-GitHub will ask for your password for each downloaded module if you clone it by *https*. To avoid this,
-setup GitHub access with *ssh* and type:
-
-```Bash
-git clone --recursive git@github.com:IObundle/iob-soc.git
-cd iob-soc
-```
-
-Alternatively, you can still clone this repository using *https* if you cache
-your credentials before cloning the repository, using: ``git config --global
-credential.helper 'cache --timeout=<time_in_seconds>'``
+IOb-SoC can be used in Linux Operating Systems. The following instructions have
+been proven on Ubuntu 22.04 LTS, and likely work on most mainstream Linux
+distributions.
 
 
 ## Configure your SoC
@@ -61,7 +49,7 @@ repository root. This file has the system configuration variables;
 hopefully, each variable is explained by a comment.
 
 
-## Set environment variables for local or remote building and running
+## Set environment variables for local or remote building and running (WIP)
 
 The various simulators, FPGA compilers, and FPGA boards may run locally or
 remotely. For running a tool remotely, you need to set two environmental
@@ -160,7 +148,7 @@ GRAB_TIMEOUT ?= 3600
 ```
 
 
-## Build and run on FPGA board
+## Run on FPGA board
 
 To build and run IOb-SoC on an FPGA board, the FPGA design tools must be
 installed locally or remotely. The FPGA board must also be attached to the local
@@ -235,62 +223,6 @@ To clean the build directory, run
 make clean
 ```
 
-## Instructions for Installing the RISC-V GNU Compiler Toolchain
-
-### Get sources and check out the supported stable version
-
-```Bash
-git clone https://github.com/riscv/riscv-gnu-toolchain
-cd riscv-gnu-toolchain
-git checkout 2022.06.10
-```
-
-### Prerequisites
-
-For the Ubuntu OS and its variants:
-
-```Bash
-sudo apt install autoconf automake autotools-dev curl python3 python2 libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev
-```
-
-For CentOS and its variants:
-
-```Bash
-sudo yum install autoconf automake python3 python2 libmpc-devel mpfr-devel gmp-devel gawk  bison flex texinfo patchutils gcc gcc-c++ zlib-devel expat-devel
-```
-
-### Installation
-
-```Bash
-./configure --prefix=/path/to/riscv --enable-multilib
-sudo make -j$(nproc)
-```
-
-This will take a while. After it is done, type:
-
-```Bash
-export PATH=$PATH:/path/to/riscv/bin
-```
-
-The above command should be added to your `~/.bashrc` file so you do not have to type it on every session.
-
-## Ethernet
-
-To setup the system with ethernet capability, set the `USE_ETHERNET` macro value to `True`.
-
-When running the system with ethernet, please set the `RMAC_ADDR` and `IOB_CONSOLE_PYTHON_ENV` environment variables.
-These values will select which network interface and which python environment to use for the console.
-
-For example, you can add the following to your `~/.bashrc`:
-
-```Bash
-# IOb-SoC console network interface (loopback interfacce)
-export RMAC_ADDR=000000000000
-# Custom IOb-SoC console python interperter with `CAP_NET_RAW` capability.
-export IOB_CONSOLE_PYTHON_ENV=/opt/pyeth3/bin/python
-``` 
-
-You could also set those variables in the build directory's `config_build.mk` file.
 
 # Acknowledgements
 
