@@ -27,7 +27,7 @@ def setup(py_params_dict):
                     },
                     # NOTE: Add other ports here.
                 ],
-                "blocks": [
+                "subblocks": [
                     {
                         # Instantiate a UART core from: https://github.com/IObundle/py2hwsw/tree/main/py2hwsw/lib/hardware/iob_uart
                         "core_name": "iob_uart",
