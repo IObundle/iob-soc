@@ -4,68 +4,44 @@ SPDX-FileCopyrightText: 2024 IObundle
 SPDX-License-Identifier: MIT
 -->
 
-# IOb-SoC: this version is under development: please use the latest stable release
+# IOb-SoC:
 
-IOb-SoC is a System-on-Chip (SoC) template comprising an open-source RISC-V
-processor (VexRiscv), a UART, a TIMER, and an interface to external memory.  The
-external memory interface uses an AXI4 master bus. It may be used to access an
-on-chip RAM or a 3rd party memory controller IP (typically a DDR controller).
-
-## Nix environment
-
-You can use [nix-shell](https://nixos.org/download.html#nix-install-linux) to
-run IOb-SoC in a [Nix](https://nixos.org/) environment with all dependencies
-available except for comercial EDA tools for FPGA and ASIC, which need to be
-licesed and installed by the user.
-
-After installing `nix-shell,` it can be initialized by calling any Makefile target in the IOb-SoC root directory, for example
-```Bash
-make setup
-```
-
-The first time it runs, `nix-shell` will automatically install all the required
-dependencies. This can take a couple of hours. After that, you can enjoy IOb-SoC
-and not worry about installing any software tools.
+IOb-SoC is a System-on-Chip (SoC) described in Python, using the [Py2HWSW](https://github.com/IObundle/py2hwsw/blob/main/py2hwsw/lib/default.nix) framework. The SoC is entirely described in a few lines of Python. The Py2HWSW framework describes SoCs with a main [VexRiscv](https://github.com/SpinalHDL/VexRiscv) CPU by adding C software and a list of peripherals. After a setup procedure, Py2HWSW creates a build directory with all the sources and makefiles to build and run various tools on the Soc, such as simulation, synthesis, and FPGA prototyping; the SoC is described in Verilog. The Py2HWSW framework also has a comprehensive library of prebuilt modules and peripherals, including their bare-metal drivers. IObSoC uses the 
+iob-uart and iob-timer from this library. The external memory interface uses an AXI4 master bus. It may be used to access an on-chip RAM or a 3rd party memory controller IP (typically a DDR controller).
 
   
 ## Dependencies
 
-If you prefer, you may install all the dependencies manually and run IOb-SoC without nix-shell.
-To do this, you must manually remove the `nix-shell --run` commands from the Makefile, 
-and install the packages listed in the [py2hwsw default.nix file](https://github.com/IObundle/py2hwsw/blob/main/py2hwsw/lib/default.nix).
+IOb-SoC needs the [Py2HWSW](https://github.com/IObundle/py2hwsw/blob/main/py2hwsw/lib/default.nix) framework.
 
 
 ## Operating Systems
 
-IOb-SoC can be used in Linux Operating Systems. The following instructions have
-been proven on Ubuntu 22.04 LTS, and likely work on most mainstream Linux
-distributions.
+IOb-SoC can run on most mainstream Linux distributions. The reference distribution is Ubuntu 24.04.1 LTS.
 
 
-## Configure your SoC
+## SoC Configuration
 
-To configure your SoC, edit the `iob_soc.py` file, which can be found at the
-repository root. This file has the system configuration variables;
-hopefully, each variable is explained by a comment.
+The SoC configuration is in the `iob_soc.py` file at the repository root. To create your own SoC description, follow the instructions in the Py2HWSW user guide. 
 
-## Create the build directory
 
-IOb-SoC uses the [Py2HWSW](https://nlnet.nl/project/Py2HWSW/) framework to create a build directory with all the necessary files and makefiles to run the different tools. The build directory is placed in the folder above at ../iob_soc_Vx.y by running the following command from the root directory.
+## Setup the SoC by Creating the build directory
+
+At the repository root, there is a Makefile with some ready-to-use commands, assuming you have nix-shell installed. If you have installed Py2HWSW without nix-shell, edit the make file to remove the nix-shell --run "(...)" command wrappers.
+To create the build directory, simply type:
+
 ```Bash
 make setup
 ```
 
-If you want to avoid getting into the complications of our Python scripts, use the ../iob_soc_Vx.y directory to build your SoC. It only has code files and a few Makefiles. Enter this directory and call the available Makefile targets. Alternatively, using another Makefile in the IOb-SoC root directory, the same targets can be called. For example, to run the simulation, the IOb-SoC's top Makefile has the following target:
+The build directory is created in the folder ../iob_soc_Vx.y, where Vx.y is the IObSoC's current version.
 
-```Bash
-sim-run:
-	nix-shell --run "make clean setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(CORE)_V*/ sim-run SIMULATOR=$(SIMULATOR)"
-```
-The above target invokes the `nix-shell` environment to call the local targets `clean` and `setup` and the target `sim-run` in the build directory. Below, the targets available in IOb-SoC's top Makefile are explained.
+The build directory only has source code files and Makefiles. If you do not want to use the Py2HWSW framework, you may, from now on, only use the build directory, provided you have installed all the tools that makefiles will call outside the nix-shell environment.
 
 ## Emulate the system on PC
 
-You can *emulate* IOb-SoC's on a PC to develop and debug your embedded system. There is also a model to emulate the UART, which communicates with a run-time Python script server. If you develop peripherals, you can build embedded software models to run them using PC emulation. To emulate IOb-SoC's embedded software on a PC, type:
+You can *emulate* IOb-SoC's on a PC to develop and debug your embedded software. A model to emulate the UART uses a Python console server that comes with Py2HWSW. The same server is used to communicate with FPGA targets.
+If you develop peripherals, you can build embedded software models for PC emulation. To emulate IOb-SoC's embedded software on a PC, type:
 
 ```Bash
 make pc-emul-run
@@ -73,27 +49,27 @@ make pc-emul-run
 <!--
 # TODO: iob-soc repo no longer has sw_build.mk (it comes from iob-system). Should we add it back?
 -->
-The Makefile compiles and runs the software in the `../iob_soc_Vx.y/software/` directory. The Makefile includes the `sw_build.mk` segment supplied initially in the `./software/` directory in the IOb-SoC root. Please feel free to change this file for your specific project. To run an emulation test comparing the result to the expected result, run
+The Makefile compiles and runs the software in the `../iob_soc_Vx.y/software/` directory. The Makefile includes the `sw_build.mk` segment supplied initially in the same directory. Please feel free to change this file for your specific project. To run an emulation test comparing the result to the expected result, run
 ```Bash
 make pc-emul-test
 ```
 
 ## Simulate the system
 
-To simulate IOb-SoC's RTL using a Verilog simulator, run
+To simulate IOb-SoC's RTL using a Verilog simulator, run:
 ```Bash
 make sim-run [SIMULATOR=icarus!verilator|xcelium|vcs|questa] [INIT_MEM=0|1] [USE_EXTMEM=0|1]
 ```
 
+This target compiles the software and hardware and simulates in the `../iob_soc_Vx.y/hardware/simulation` directory. The `../iob_soc_Vx.y/hardware/simulation/sim_build.mk` makefile segment allows users to change the simulation settings.
 The INIT_MEM variable specifies whether the firmware is initially loaded in the memory, skipping the boot process, and the USE_EXTMEM variable indicates whether an external memory such as DRAM is used.
 
-The Makefile compiles and runs the software in the `../iob_soc_Vx.y/hardware/simulation` directory. The Makefile includes the `../iob_soc_Vx.y/hardware/simulation/sim_build.mk`, which you can change for your project. To run a simulation test comprising several simulations with different parameters, run
+To run a simulation test comprising a few configurations and two simulators, type:
 ```Bash
 make sim-test
 ```
-The simulation test contents can be edited in IOb-SoC's top Makefile. 
 
-Each simulator must be described in the [`../iob_soc_Vx.y/hardware/simulation/<simulator>.mk`](https://github.com/IObundle/py2hwsw/tree/main/py2hwsw/hardware/simulation) file. For example, the file `vcs.mk` describes the VCS simulator.
+The settings for each simulator are described in the [`../iob_soc_Vx.y/hardware/simulation/<simulator>.mk`](https://github.com/IObundle/py2hwsw/tree/main/py2hwsw/hardware/simulation) file. For example, file `icarus.mk` describes the settings for the Icarus Verilog simulator.
 
 The simulator will timeout after GRAB_TIMEOUT seconds, which is 300 seconds by default. Its value can be specified in the `../iob_soc_Vx.y/hardware/simulation/sim_build.mk` Makefile segment, for example, as
 ```Bash
@@ -103,10 +79,9 @@ GRAB_TIMEOUT ?= 3600
 
 ## Run on FPGA board
 
-To build and run IOb-SoC on an FPGA board, the FPGA design tools must be
-installed locally. The FPGA board must also be attached to the local host.
+The FPGA design tools must be installed locally to build and run IOb-SoC on an FPGA board. The FPGA board must also be attached to the local host. Currently, only AMD (Xilinx) and Altera boards are supported.
 
-Each board must be described under the [`../iob_soc_Vx.y/hardware/fpga/<tool>/<board_dir>`](https://github.com/IObundle/py2hwsw/tree/main/py2hwsw/hardware/fpga) directory.
+The board settings are in the  [`../iob_soc_Vx.y/hardware/fpga/<tool>/<board_dir>`](https://github.com/IObundle/py2hwsw/tree/main/py2hwsw/hardware/fpga) directory, where ""
 For example, the [`../iob_soc_Vx.y/hardware/fpga/vivado/basys3`](https://github.com/IObundle/py2hwsw/tree/main/py2hwsw/hardware/fpga/vivado/basys3) directory contents describe the board BASYS3, which has an FPGA device that can be programmed by the Xilinx/AMD Vivado design tool.
 
 To build an FPGA design of an IOb-SoC system and run it on the board located in the `board_dir` directory, type
@@ -171,7 +146,7 @@ export PY2HWSW_ROOT=/path/to/py2hwsw_root_dir
 
 # Acknowledgements
 
-First of all, we acknowledge all the volunteer contributors for all their valuable pull requests, issues, and discussions. 
+First, we acknowledge all the volunteer contributors for all their valuable pull requests, issues, and discussions. 
 
 The work has been partially performed in the scope of the A-IQ Ready project, which receives funding within Chips Joint Undertaking (Chips JU) - the Public-Private Partnership for research, development, and innovation under Horizon Europe – and National Authorities under grant agreement No. 101096658.
 
