@@ -152,11 +152,12 @@ The work has been partially performed in the scope of the A-IQ Ready project, wh
 
 The A-IQ Ready project is supported by the Chips Joint Undertaking (Chips JU) - the Public-Private Partnership for research, development, and innovation under Horizon Europe – and National Authorities under Grant Agreement No. 101096658.
 
-<!--
-# TODO: Fix these broken image links
--->
-![image](https://github.com/IObundle/iob-system/assets/5718971/78f2a3ee-d10b-4989-b221-71154fe6e409) ![image](https://github.com/IObundle/iob-system/assets/5718971/d57e0430-bb60-42e3-82a3-c5b6b0417322)
-
+<table>
+    <tr>
+        <td align="center" width="50%"><img src="assets/A-IQ_Ready_logo_blue_transp.png" alt="AI-Q Ready logo" style="width:50%"></td>
+        <td align="center"><img src="assets/Chips-JU_logo.jpeg" alt="Chips JU logo" style="width:50%"></td>
+    </tr>
+</table>
 
 This project provides the basic infrastructure to other projects funded through the NGI Assure Fund, a fund established by NLnet
 with financial support from the European Commission's Next Generation Internet program under the aegis of DG Communications Networks, Content, and Technology.
