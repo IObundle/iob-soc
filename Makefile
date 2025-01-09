@@ -81,3 +81,10 @@ python-cache-clean:
 	find . -name "*__pycache__" -exec rm -rf {} \; -prune
 
 .PHONY: clean python-cache-clean
+
+# Tester
+
+tester-sim-run:
+	nix-shell --run "make clean setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(CORE)_V*/submodules/tester/ sim-run SIMULATOR=$(SIMULATOR)"
+
+.PHONY: tester-sim-run
