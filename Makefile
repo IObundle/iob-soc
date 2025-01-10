@@ -87,4 +87,8 @@ python-cache-clean:
 tester-sim-run:
 	nix-shell --run "make clean setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(CORE)_V*/submodules/tester/ sim-run SIMULATOR=$(SIMULATOR)"
 
-.PHONY: tester-sim-run
+tester-fpga-run:
+	nix-shell --run "make clean setup INIT_MEM=$(INIT_MEM) USE_EXTMEM=$(USE_EXTMEM) && make -C ../$(CORE)_V*/submodules/tester/ fpga-fw-build BOARD=$(BOARD)"
+	make -C ../$(CORE)_V*/submodules/tester/ fpga-run BOARD=$(BOARD)
+
+.PHONY: tester-sim-run tester-fpga-run
