@@ -5,12 +5,12 @@
  */
 
 #include "iob_bsp.h"
+#include "iob_printf.h"
 #include "iob_soc_conf.h"
 #include "iob_soc_periphs.h"
 #include "iob_soc_system.h"
 #include "iob_timer.h"
 #include "iob_uart.h"
-#include "printf.h"
 #include <string.h>
 
 char *send_string = "Sending this string as a file to console.\n"
