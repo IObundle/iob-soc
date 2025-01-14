@@ -13,7 +13,7 @@ BUILD_DIR ?= $(shell nix-shell --run "py2hwsw $(CORE) print_build_dir")
 INIT_MEM ?= 1
 USE_EXTMEM ?= 0
 
-VERSION ?=$(shell nix-shell --run "py2hwsw iob_soc print_core_dict | grep version | cut -d '\"' -f 4")
+VERSION ?=$(shell cat iob_soc.py | grep version | cut -d '"' -f 4)
 
 ifneq ($(DEBUG),)
 EXTRA_ARGS +=--debug_level $(DEBUG)
