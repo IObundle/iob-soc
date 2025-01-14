@@ -42,7 +42,6 @@ def generate_blocks_list_tex(block_groups, out_dir):
 """
         )
 
-    blocks_file.write("\\clearpage")
     blocks_file.close()
 
 

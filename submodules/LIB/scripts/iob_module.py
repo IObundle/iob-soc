@@ -364,7 +364,7 @@ class iob_module:
         if not general_regs_table:
             general_regs_table = {
                 "name": "general",
-                "descr": "General Registers.",
+                "descr": "Version Register.",
                 "regs": [],
             }
             cls.regs.append(general_regs_table)
