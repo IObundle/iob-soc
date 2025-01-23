@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 IObundle
+# SPDX-FileCopyrightText: 2025 IObundle
 #
 # SPDX-License-Identifier: MIT
 
@@ -6,7 +6,7 @@
 def setup(py_params_dict):
     # Py2hwsw dictionary describing current core
     core_dict = {
-        "version": "0.1",
+        "version": "0.8",
         "parent": {
             # IOb-SoC is a child core of iob_system: https://github.com/IObundle/py2hwsw/tree/main/py2hwsw/lib/hardware/iob_system
             # IOb-SoC will inherit all attributes/files from the iob_system core.
@@ -27,7 +27,7 @@ def setup(py_params_dict):
                     },
                     # NOTE: Add other ports here.
                 ],
-                "blocks": [
+                "subblocks": [
                     {
                         # Instantiate a UART core from: https://github.com/IObundle/py2hwsw/tree/main/py2hwsw/lib/hardware/iob_uart
                         "core_name": "iob_uart",

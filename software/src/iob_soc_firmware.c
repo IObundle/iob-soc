@@ -1,16 +1,16 @@
 /*
- * SPDX-FileCopyrightText: 2024 IObundle
+ * SPDX-FileCopyrightText: 2025 IObundle
  *
  * SPDX-License-Identifier: MIT
  */
 
 #include "iob_bsp.h"
+#include "iob_printf.h"
 #include "iob_soc_conf.h"
 #include "iob_soc_periphs.h"
 #include "iob_soc_system.h"
 #include "iob_timer.h"
 #include "iob_uart.h"
-#include "printf.h"
 #include <string.h>
 
 char *send_string = "Sending this string as a file to console.\n"
@@ -38,6 +38,8 @@ int main() {
   // test printf with floats
   printf("Value of Pi = %f\n\n", 3.1415);
 
+// Don't transfer files when running alongside tester
+#ifndef TESTER
   // test file send
   char *sendfile = malloc(1000);
   int send_file_size = 0;
@@ -60,6 +62,7 @@ int main() {
   free(recvfile);
 
   uart_sendfile("test.log", strlen(pass_string), pass_string);
+#endif // TESTER
 
   // read current timer count, compute elapsed time
   unsigned long long elapsed = timer_get_count();
