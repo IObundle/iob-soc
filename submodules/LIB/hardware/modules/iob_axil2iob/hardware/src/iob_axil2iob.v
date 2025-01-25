@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module axil2iob #(
+module iob_axil2iob #(
    parameter AXIL_ADDR_W = 21,           // AXI Lite address bus width in bits
    parameter AXIL_DATA_W = 21,           // AXI Lite data bus width in bits
    parameter ADDR_W      = AXIL_ADDR_W,  // IOb address bus width in bits

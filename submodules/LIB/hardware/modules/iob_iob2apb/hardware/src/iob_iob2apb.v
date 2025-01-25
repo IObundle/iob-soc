@@ -5,7 +5,7 @@
 // IOb slave interface to APB master interface
 //
 
-module iob2apb #(
+module iob_iob2apb #(
    parameter APB_ADDR_W = 22,          // APB address bus width in bits
    parameter APB_DATA_W = 22,          // APB data bus width in bits
    parameter ADDR_W     = APB_ADDR_W,  // IOb address bus width in bits

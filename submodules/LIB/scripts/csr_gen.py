@@ -323,10 +323,10 @@ class csr_gen:
                     ///////////////////////////////////////////////////////////////
                     // APB to IOb converter
                     //
-                    apb2iob #(
+                    iob_apb2iob #(
                         .APB_ADDR_W(ADDR_W),
                         .APB_DATA_W(DATA_W)
-                    ) apb2iob_0 (
+                    ) iob_apb2iob_0 (
                         `include "clk_en_rst_s_s_portmap.vs"
                         // APB slave i/f
                         .apb_addr_i  (apb_addr_i),    //Byte address of the transfer.
@@ -356,10 +356,10 @@ class csr_gen:
                     ///////////////////////////////////////////////////////////////
                     // AXIL to IOb converter
                     //
-                    axil2iob #(
+                    iob_axil2iob #(
                         .AXIL_ADDR_W(ADDR_W),
                         .AXIL_DATA_W(DATA_W)
-                    ) axil2iob_0 (
+                    ) iob_axil2iob_0 (
                         `include "clk_en_rst_s_s_portmap.vs"
                         // AXIL slave i/f
                         .axil_awaddr_i (axil_awaddr_i),   //Address write channel address.

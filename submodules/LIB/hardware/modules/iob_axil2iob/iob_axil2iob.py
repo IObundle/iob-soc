@@ -5,8 +5,8 @@ from iob_module import iob_module
 from iob_reg_e import iob_reg_e
 
 
-class axil2iob(iob_module):
-    name = "axil2iob"
+class iob_axil2iob(iob_module):
+    name = "iob_axil2iob"
     version = "V0.10"
     setup_dir = os.path.dirname(__file__)
 
