@@ -5,8 +5,8 @@
 { pkgs ? import <nixpkgs> {} }:
 
 let
-  py2hwsw_commit = "1d0188c1b0178066a9e55efa533f2bf414214db3"; # Replace with the desired commit.
-  py2hwsw_sha256 = "YSdbFJNnjUG1AH4ce+fBJ11Tybjc2Q7GGFopw+NnYoY="; # Replace with the actual SHA256 hash.
+  py2hwsw_commit = "3a7e2324716c882c10b43b0b96544638ba64b400"; # Replace with the desired commit.
+  py2hwsw_sha256 = "EJY7uWcDxq7bj2cviXGSB2NVmGi7VcvX83NntEFISmg="; # Replace with the actual SHA256 hash.
   # Get local py2hwsw root from `PY2HWSW_ROOT` env variable
   py2hwswRoot = builtins.getEnv "PY2HWSW_ROOT";
 
