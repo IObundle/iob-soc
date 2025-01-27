@@ -180,7 +180,7 @@ dtest: test syn-test
 # CLEAN
 #
 
-clean: fw-clean pc-emul-clean lint-clean sim-clean fpga-clean doc-clean
+clean: fw-clean pc-emul-clean lint-clean sim-clean fpga-clean doc-clean syn-clean
 	rm -f $(BSP_H)
 
 
