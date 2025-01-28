@@ -34,10 +34,10 @@ if {[file exists "vivado/premap.tcl"]} {
 if { $IS_FPGA == "1" } {
     puts "Synthesizing for FPGA"
     read_xdc vivado/$BOARD/$NAME\_dev.sdc
-    if {[file exists "src/$NAME.sdc"]} {
-        read_xdc src/$NAME.sdc
+    if {[file exists "../src/$NAME.sdc"]} {
+        read_xdc ../src/$NAME.sdc
     }
-    if {[file exists "../src/$NAME\_$CSR_IF.sdc"]} {
+    if {[file exists "../../src/$NAME\_$CSR_IF.sdc"]} {
         read_xdc ../src/$NAME\_$CSR_IF.sdc
     }
     if {[file exists "vivado/$NAME\_tool.sdc"]} {
@@ -48,11 +48,17 @@ if { $IS_FPGA == "1" } {
     #read design constraints
     puts "Out of context synthesis"
     read_xdc -mode out_of_context vivado/$BOARD/$NAME\_dev.sdc
-    read_xdc -mode out_of_context src/$NAME.sdc
+    read_xdc -mode out_of_context ../src/$NAME.sdc
+    if {[file exists "../src/$NAME\_$CSR_IF.sdc"]} {
+        read_xdc ../src/$NAME\_$CSR_IF.sdc
+    }
+    if {[file exists "./src/$NAME.sdc"]} {
+        read_xdc ./src/$NAME.sdc
+    }
     if {[file exists "vivado/$NAME\_tool.sdc"]} {
         read_xdc -mode out_of_context vivado/$NAME\_tool.sdc
     }
-    synth_design -include_dirs ../src -include_dirs ./src -include_dirs ./vivado/$BOARD -part $PART -top $NAME -mode out_of_context -flatten_hierarchy full -verbose
+    synth_design -include_dirs ../src -include_dirs ./src -include_dirs ./vivado/$BOARD -part $PART -top $NAME -mode out_of_context -flatten_hierarchy none -verbose
 }
 
 #set post-map custom assignments
