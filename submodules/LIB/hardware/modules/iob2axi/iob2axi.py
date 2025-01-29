@@ -10,6 +10,7 @@ from m_m_axi_read_portmap import m_m_axi_read_portmap
 from iob2axi_wr import iob2axi_wr
 from iob2axi_rd import iob2axi_rd
 from iob_fifo_sync import iob_fifo_sync
+from iob_functions import iob_functions
 
 
 class iob2axi(iob_module):
@@ -31,5 +32,6 @@ class iob2axi(iob_module):
                 iob2axi_wr,
                 iob2axi_rd,
                 iob_fifo_sync,
+                iob_functions,
             ]
         )
