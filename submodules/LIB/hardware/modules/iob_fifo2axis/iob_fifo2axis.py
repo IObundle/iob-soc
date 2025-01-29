@@ -5,8 +5,8 @@ from iob_reg_re import iob_reg_re
 from iob_modcnt import iob_modcnt
 
 
-class fifo2axis(iob_module):
-    name = "fifo2axis"
+class iob_fifo2axis(iob_module):
+    name = "iob_fifo2axis"
     version = "V0.10"
     setup_dir = os.path.dirname(__file__)
 
