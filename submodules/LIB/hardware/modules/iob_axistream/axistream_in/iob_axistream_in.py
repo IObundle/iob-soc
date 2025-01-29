@@ -11,7 +11,7 @@ from iob_fifo_async import iob_fifo_async
 from iob_sync import iob_sync
 from iob_counter import iob_counter
 from iob_edge_detect import iob_edge_detect
-from fifo2axis import fifo2axis
+from iob_fifo2axis import iob_fifo2axis
 
 
 class iob_axistream_in(iob_module):
@@ -32,7 +32,7 @@ class iob_axistream_in(iob_module):
                 iob_sync,
                 iob_counter,
                 iob_edge_detect,
-                fifo2axis,
+                iob_fifo2axis,
             ]
         )
 

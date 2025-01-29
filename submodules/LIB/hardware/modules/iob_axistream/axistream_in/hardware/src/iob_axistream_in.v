@@ -69,9 +69,9 @@ module iob_axistream_in #(
 
    assign int_tready = (MODE_wr) ? sys_tready_i : DATA_ren_rd;
 
-   // empty = fifo empty + no data in fifo2axis
+   // empty = fifo empty + no data in iob_fifo2axis
    assign FIFO_EMPTY_rd = fifo_empty & (~int_tvalid);
-   // level = fifo level + data in fifo2axis
+   // level = fifo level + data in iob_fifo2axis
    assign FIFO_LEVEL_rd = fifo_level + int_tvalid;
 
    wire ready_int;
@@ -244,10 +244,10 @@ module iob_axistream_in #(
       end
    endgenerate
 
-    fifo2axis #(
+    iob_fifo2axis #(
         .DATA_W(DATA_W),
         .AXIS_LEN_W(1)
-    ) fifo2axis_inst (
+    ) iob_fifo2axis_inst (
         `include "clk_en_rst_s_s_portmap.vs"
         .rst_i(SOFT_RESET_wr),
         .en_i(1'b1),
