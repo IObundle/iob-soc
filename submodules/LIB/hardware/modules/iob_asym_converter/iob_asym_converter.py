@@ -20,6 +20,6 @@ class iob_asym_converter(iob_module):
                 {"interface": "clk_en_rst_s_port"},
                 iob_reg_r,
                 iob_reg_re,
-                iob_utils,
-            ]
+                (iob_utils, {"purpose": "simulation"}),
+           ]
         )

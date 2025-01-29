@@ -1,5 +1,4 @@
 `timescale 1ns / 1ps
-`include "iob_utils.vh"
 
 module iob_asym_converter #(
    parameter W_DATA_W = 21,

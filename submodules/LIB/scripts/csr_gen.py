@@ -428,9 +428,6 @@ class csr_gen:
         # time scale
         f_gen.write("`timescale 1ns / 1ps\n\n")
 
-        # iob utils
-        f_gen.write(f'`include "iob_utils.vh"\n')
-
         # macros
         f_gen.write(f'`include "{top}_conf.vh"\n')
         f_gen.write(f'`include "{top}_swreg_def.vh"\n\n')

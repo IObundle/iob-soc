@@ -20,11 +20,11 @@ class iob_fifo_async(iob_module):
         """Create submodules list with dependencies of this module"""
         super()._create_submodules_list(
             [
-                iob_utils,
                 iob_gray_counter,
                 iob_gray2bin,
                 iob_sync,
                 iob_asym_converter,
                 (iob_ram_t2p, {"purpose": "simulation"}),
+                (iob_utils, {"purpose": "simulation"}),
             ]
         )
