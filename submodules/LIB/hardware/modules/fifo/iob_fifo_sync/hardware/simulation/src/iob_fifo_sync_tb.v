@@ -7,7 +7,7 @@
 -       $(VLOG) -DW_DATA_W=8 -DR_DATA_W=8 $(wildcard $(BUILD_VSRC_DIR)*.v) &&\
 */
 
-`include "iob_utils.vh"
+`include "iob_functions.vh"
 
 module iob_fifo_sync_tb;
 

@@ -3,6 +3,7 @@ import os
 from iob_module import iob_module
 
 from iob_utils import iob_utils
+from iob_functions import iob_functions
 from iob_gray_counter import iob_gray_counter
 from iob_gray2bin import iob_gray2bin
 from iob_sync import iob_sync
@@ -24,6 +25,7 @@ class iob_fifo_async(iob_module):
                 iob_gray2bin,
                 iob_sync,
                 iob_asym_converter,
+                iob_functions,
                 (iob_ram_t2p, {"purpose": "simulation"}),
                 (iob_utils, {"purpose": "simulation"}),
             ]

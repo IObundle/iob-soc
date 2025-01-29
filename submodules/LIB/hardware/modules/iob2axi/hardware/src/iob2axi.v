@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-`include "iob_utils.vh"
+`include "iob_functions.vh"
 
 
 
