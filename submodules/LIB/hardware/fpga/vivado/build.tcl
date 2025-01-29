@@ -6,6 +6,7 @@ set VSRC [lindex $argv 3]
 set IS_FPGA [lindex $argv 4]
 set USE_EXTMEM [lindex $argv 5]
 set N_INTERCONNECT_SLAVES [lindex $argv 6]
+set SDC_PREFIX [lindex $argv 7]
 
 #verilog sources, vivado IPs, use file extension
 foreach file [split $VSRC \ ] {
@@ -33,32 +34,32 @@ if {[file exists "vivado/premap.tcl"]} {
 #read design constraints and synthesize design
 if { $IS_FPGA == "1" } {
     puts "Synthesizing for FPGA"
-    read_xdc vivado/$BOARD/$NAME\_dev.sdc
-    if {[file exists "../src/$NAME.sdc"]} {
-        read_xdc ../src/$NAME.sdc
+    read_xdc vivado/$BOARD/$SDC_PREFIX\_dev.sdc
+    if {[file exists "../src/$SDC_PREFIX.sdc"]} {
+        read_xdc ../src/$SDC_PREFIX.sdc
     }
-    if {[file exists "../../src/$NAME\_$CSR_IF.sdc"]} {
-        read_xdc ../src/$NAME\_$CSR_IF.sdc
+    if {[file exists "../../src/$SDC_PREFIX\_$CSR_IF.sdc"]} {
+        read_xdc ../src/$SDC_PREFIX\_$CSR_IF.sdc
     }
-    if {[file exists "vivado/$NAME\_tool.sdc"]} {
-        read_xdc vivado/$NAME\_tool.sdc
+    if {[file exists "vivado/$SDC_PREFIX\_tool.sdc"]} {
+        read_xdc vivado/$SDC_PREFIX\_tool.sdc
     }
     synth_design -include_dirs ../src -include_dirs ./src -include_dirs ./vivado/$BOARD -part $PART -top $NAME -verbose
 } else {
     #read design constraints
     puts "Out of context synthesis"
-    read_xdc -mode out_of_context vivado/$BOARD/$NAME\_dev.sdc
-    read_xdc -mode out_of_context ../src/$NAME.sdc
-    if {[file exists "../src/$NAME\_$CSR_IF.sdc"]} {
-        read_xdc ../src/$NAME\_$CSR_IF.sdc
+    read_xdc -mode out_of_context vivado/$BOARD/$SDC_PREFIX\_dev.sdc
+    read_xdc -mode out_of_context ../src/$SDC_PREFIX.sdc
+    if {[file exists "../src/$SDC_PREFIX\_$CSR_IF.sdc"]} {
+        read_xdc ../src/$SDC_PREFIX\_$CSR_IF.sdc
     }
-    if {[file exists "./src/$NAME.sdc"]} {
-        read_xdc ./src/$NAME.sdc
+    if {[file exists "./src/$SDC_PREFIX.sdc"]} {
+        read_xdc ./src/$SDC_PREFIX.sdc
     }
-    if {[file exists "vivado/$NAME\_tool.sdc"]} {
-        read_xdc -mode out_of_context vivado/$NAME\_tool.sdc
+    if {[file exists "vivado/$SDC_PREFIX\_tool.sdc"]} {
+        read_xdc -mode out_of_context vivado/$SDC_PREFIX\_tool.sdc
     }
-    synth_design -include_dirs ../src -include_dirs ./src -include_dirs ./vivado/$BOARD -part $PART -top $NAME -mode out_of_context -flatten_hierarchy none -verbose
+    synth_design -include_dirs ../src -include_dirs ./src -include_dirs ./vivado/$BOARD -part $PART -top $NAME -mode out_of_context -flatten_hierarchy full -verbose
 }
 
 #set post-map custom assignments
