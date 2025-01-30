@@ -6,6 +6,7 @@ CORE := iob_soc
 
 SIMULATOR ?= icarus
 SYNTHESIZER ?= yosys
+LINTER ?= spyglass
 BOARD ?= cyclonev_gt_dk
 
 BUILD_DIR ?= $(shell nix-shell --run "py2hwsw $(CORE) print_build_dir")
@@ -49,6 +50,9 @@ fpga-test:
 syn-build: clean
 	nix-shell --run "make setup && make -C ../$(CORE)_V$(VERSION)/ syn-build SYNTHESIZER=$(SYNTHESIZER)"
 
+lint-run: clean
+	nix-shell --run "make setup && make -C ../$(CORE)_V$(VERSION)/ lint-run LINTER=$(LINTER)"
+
 doc-build:
 	nix-shell --run "make clean setup && make -C ../$(CORE)_V$(VERSION)/ doc-build"
 
@@ -56,7 +60,7 @@ doc-test:
 	nix-shell --run "make clean setup && make -C ../$(CORE)_V$(VERSION)/ doc-test"
 
 
-test-all: pc-emul-test sim-test fpga-test doc-test
+test-all: pc-emul-test sim-test fpga-test syn-build lint-run doc-buil doc-test
 
 
 
