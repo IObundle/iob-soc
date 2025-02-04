@@ -22,8 +22,8 @@ iob_soc_bootrom.hex: ../../software/iob_soc_preboot.bin ../../software/iob_soc_b
 	../../scripts/makehex.py $^ 00000080 $(call GET_IOB_SOC_CONF_MACRO,BOOTROM_ADDR_W) $@
 
 iob_soc_firmware.hex: iob_soc_firmware.bin
-	../../scripts/makehex.py $< $(call GET_IOB_SOC_CONF_MACRO,FW_ADDR_W) $@
-	../../scripts/makehex.py --split $< $(call GET_IOB_SOC_CONF_MACRO,FW_ADDR_W) $@
+	../../scripts/makehex.py $< $(call GET_IOB_SOC_CONF_MACRO,MEM_ADDR_W) $@
+	../../scripts/makehex.py --split $< $(call GET_IOB_SOC_CONF_MACRO,MEM_ADDR_W) $@
 
 iob_soc_firmware.bin: ../../software/iob_soc_firmware.bin
 	cp $< $@
