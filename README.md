@@ -58,7 +58,7 @@ make pc-emul-test
 
 To simulate IOb-SoC's RTL using a Verilog simulator, run:
 ```Bash
-make sim-run [SIMULATOR=icarus!verilator|xcelium|vcs|questa] [INIT_MEM=0|1] [USE_EXTMEM=0|1]
+make sim-run [SIMULATOR=icarus!verilator|xcelium|vcs|questa] [USE_INTMEM=0|1] [USE_EXTMEM=0|1] [INIT_MEM=0|1]
 ```
 
 This target compiles the software and hardware and simulates in the `../iob_soc_Vx.y/hardware/simulation` directory. The `../iob_soc_Vx.y/hardware/simulation/sim_build.mk` makefile segment allows users to change the simulation settings.
@@ -86,7 +86,7 @@ For example, the [`../iob_soc_Vx.y/hardware/fpga/vivado/basys3`](https://github.
 
 To build an FPGA design of an IOb-SoC system and run it on the board located in the `board_dir` directory, type
 ```Bash
-make fpga-run [BOARD=<board_dir>] [INIT_MEM=0|1] [USE_EXTMEM=0|1]
+make fpga-run [BOARD=<board_dir>] [USE_INTMEM=0|1] [USE_EXTMEM=0|1] [INIT_MEM=0|1]
 ```
 
 To run an FPGA test comparing the result to the expected result, run
