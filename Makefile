@@ -62,7 +62,7 @@ doc-test:
 	nix-shell --run "make clean setup && make -C ../$(CORE)_V$(VERSION)/ doc-test"
 
 
-test-all: pc-emul-test sim-test fpga-test syn-build lint-run doc-buil doc-test
+test-all: pc-emul-test sim-test fpga-test syn-build lint-run doc-build doc-test
 
 
 
