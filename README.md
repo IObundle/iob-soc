@@ -46,9 +46,6 @@ If you develop peripherals, you can build embedded software models for PC emulat
 ```Bash
 make pc-emul-run
 ```
-<!--
-# TODO: iob-soc repo no longer has sw_build.mk (it comes from iob-system). Should we add it back?
--->
 The Makefile compiles and runs the software in the `../iob_soc_Vx.y/software/` directory. The Makefile includes the `sw_build.mk` segment supplied initially in the same directory. Please feel free to change this file for your specific project. To run an emulation test comparing the result to the expected result, run
 ```Bash
 make pc-emul-test
@@ -58,7 +55,7 @@ make pc-emul-test
 
 To simulate IOb-SoC's RTL using a Verilog simulator, run:
 ```Bash
-make sim-run [SIMULATOR=icarus!verilator|xcelium|vcs|questa] [INIT_MEM=0|1] [USE_EXTMEM=0|1]
+make sim-run [SIMULATOR=icarus!verilator|xcelium|vcs|questa] [USE_INTMEM=0|1] [USE_EXTMEM=0|1] [INIT_MEM=0|1]
 ```
 
 This target compiles the software and hardware and simulates in the `../iob_soc_Vx.y/hardware/simulation` directory. The `../iob_soc_Vx.y/hardware/simulation/sim_build.mk` makefile segment allows users to change the simulation settings.
@@ -81,12 +78,12 @@ GRAB_TIMEOUT ?= 3600
 
 The FPGA design tools must be installed locally to build and run IOb-SoC on an FPGA board. The FPGA board must also be attached to the local host. Currently, only AMD (Xilinx) and Altera boards are supported.
 
-The board settings are in the  [`../iob_soc_Vx.y/hardware/fpga/<tool>/<board_dir>`](https://github.com/IObundle/py2hwsw/tree/main/py2hwsw/hardware/fpga) directory, where ""
+The board settings are in the  [`../iob_soc_Vx.y/hardware/fpga/<tool>/<board_dir>`](https://github.com/IObundle/py2hwsw/tree/main/py2hwsw/hardware/fpga) directory.
 For example, the [`../iob_soc_Vx.y/hardware/fpga/vivado/basys3`](https://github.com/IObundle/py2hwsw/tree/main/py2hwsw/hardware/fpga/vivado/basys3) directory contents describe the board BASYS3, which has an FPGA device that can be programmed by the Xilinx/AMD Vivado design tool.
 
 To build an FPGA design of an IOb-SoC system and run it on the board located in the `board_dir` directory, type
 ```Bash
-make fpga-run [BOARD=<board_dir>] [INIT_MEM=0|1] [USE_EXTMEM=0|1]
+make fpga-run [BOARD=<board_dir>] [USE_INTMEM=0|1] [USE_EXTMEM=0|1] [INIT_MEM=0|1]
 ```
 
 To run an FPGA test comparing the result to the expected result, run
@@ -95,10 +92,13 @@ make fpga-test
 ```
 The FPGA test contents can be edited in IOb-SoC's top Makefile. 
 
-<!--
-# TODO: Explain the `board_client`/`board_server` program. It is also used in local machines.
-#       Maybe remove the script that uses them in local machines.
--->
+To configure the serial port connected to the FPGA board, set the corresponding environment variable for that board.
+The environment variables for each board are available in their [`board.mk`](https://github.com/IObundle/py2hwsw/blob/main/py2hwsw/hardware/fpga/vivado/basys3/board.mk) file.
+
+For example, to set the serial port for the BASYS3 board, run
+```Bash
+export BAS3_SERIAL_PORT=/dev/ttyUSB0
+```
 
 ## Compile the documentation
 
