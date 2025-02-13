@@ -47,7 +47,7 @@ module iob_fifo2axis #(
    wire                  saved_tlast;
 
    assign len_int        = len_i - 1'b1;
-   assign axis_tlast_int = (axis_word_count == len_int);
+   wire axis_tlast_int = (axis_word_count == len_int);
 
    //In case data has been read, but not used, save it and use when ready
    wire [DATA_W-1:0] saved_data;
