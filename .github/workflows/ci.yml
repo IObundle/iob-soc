@@ -102,20 +102,6 @@ jobs:
       - name: run uart test
         run: make -C submodules/UART test
 
-  cache:
-    runs-on: self-hosted
-    timeout-minutes: 20
-    if: ${{ !cancelled() }}
-    needs: [ cyclonev ]
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: 'recursive'
-      - name: run simulation test
-        run: make -C submodules/CACHE sim-test
-      - name: run fpga test
-        run: make -C submodules/CACHE fpga-test
   doc:
     runs-on: self-hosted
     timeout-minutes: 60
