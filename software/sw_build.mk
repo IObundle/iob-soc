@@ -44,7 +44,9 @@ IOB_SOC_FW_SRC=src/iob_soc_firmware.S
 IOB_SOC_FW_SRC+=src/iob_soc_firmware.c
 IOB_SOC_FW_SRC+=src/iob_printf.c
 # PERIPHERAL SOURCES
-IOB_SOC_FW_SRC+=$(addprefix src/,$(addsuffix .c,$(PERIPHERALS)))
+DRIVERS=$(addprefix src/,$(addsuffix .c,$(PERIPHERALS)))
+# Only add driver files if they exist
+IOB_SOC_FW_SRC+=$(foreach file,$(DRIVERS),$(wildcard $(file)*))
 IOB_SOC_FW_SRC+=$(addprefix src/,$(addsuffix _csrs_emb.c,$(PERIPHERALS)))
 
 # BOOTLOADER SOURCES
