@@ -1,5 +1,6 @@
 set TOP [lindex $argv 0]
 set CSR_IF [lindex $argv 1]
+set NODE [lindex $argv 2]
 
 puts "TOP: $TOP"
 puts "CSR_IF: $CSR_IF"
@@ -28,10 +29,11 @@ project.pref.vlogdirs -path ../src/
 workspace.file.add -destination $PRJ -f $TOP\_files.list
 
 # Open the sdc files for reading
-set sdcfile1 [open "../syn/umc130/$TOP\_dev.sdc" "r"]
-set sdcfile2 [open "../syn/src/$TOP\.sdc" "r"]
-set sdcfile3 [open "../syn/src/$TOP\_$CSR_IF.sdc" "r"]
-set sdcfile4 [open "../syn/$TOP\_tool.sdc" "r"]
+set sdcfile1 [open "../syn/$NODE/$TOP\_dev.sdc" "r"]
+set sdcfile2 [open "../src/$TOP.sdc" "r"]
+set sdcfile3 [open "../syn/src/$TOP\.sdc" "r"]
+set sdcfile4 [open "../src/$TOP\_$CSR_IF.sdc" "r"]
+
 
 # Open the output file for writing
 set outfile [open "merged.sdc" "w"]
@@ -86,4 +88,5 @@ project.report.violations -format simple_text -report alint_violations.txt
 project.report.violations -format pdf -report alint_violations.pdf
 project.report.quality -report alint_qor.txt
 
-file delete $outfile
+#file delete $outfile
+exit 

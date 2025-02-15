@@ -1,6 +1,7 @@
 #grab TOP from environment variable NAME in tcl
 set TOP $env(NAME)
 set CSR_IF $env(CSR_IF)
+set NODE $env(NODE)
 
 puts "TOP: $TOP"
 puts "CSR_IF: $CSR_IF"
@@ -17,7 +18,7 @@ if {[file exists spyglass.sgdc]} {
 }
 set fp [open spyglass.sgdc a]
 puts $fp "current_design $TOP"
-puts $fp "sdcschema -type ../syn/umc130/$TOP\_dev.sdc ../syn/src/$TOP.sdc ../syn/src/$TOP\_$CSR_IF.sdc ../syn/$TOP\_tool.sdc"
+puts $fp "sdcschema -type ../syn/$NODE/$TOP\_dev.sdc ../src/$TOP.sdc ../syn/src/$TOP.sdc ../src/$TOP\_$CSR_IF.sdc"
 
 read_file -type sgdc spyglass.sgdc
 
