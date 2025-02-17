@@ -252,6 +252,7 @@ module iob_axistream_in #(
         .rst_i(SOFT_RESET_wr),
         .en_i(1'b1),
         .len_i(1'b1),
+        .level_o(),
         // FIFO I/F
         .fifo_empty_i(fifo_empty),
         .fifo_read_o(fifo_read),
