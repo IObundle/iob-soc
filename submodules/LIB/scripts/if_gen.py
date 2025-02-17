@@ -943,7 +943,7 @@ axi_write = [
         "width": AXI_CACHE_W,
         "name": "axi_awcache",
         "default": "2",
-        "description": "Address write channel memory type. Set to 0000 if master output; ignored if slave input.",
+        "description": "Address write channel memory type. Set to 0000 if manager output; ignored if slave input.",
     },
     {
         "lite": 1,
@@ -953,7 +953,7 @@ axi_write = [
         "width": AXI_PROT_W,
         "name": "axi_awprot",
         "default": "2",
-        "description": "Address write channel protection type. Set to 000 if master output; ignored if slave input.",
+        "description": "Address write channel protection type. Set to 000 if manager output; ignored if subordinate input.",
     },
     {
         "lite": 0,
@@ -1146,7 +1146,7 @@ axi_read = [
         "width": AXI_CACHE_W,
         "name": "axi_arcache",
         "default": "2",
-        "description": "Address read channel memory type. Set to 0000 if master output; ignored if slave input.",
+        "description": "Address read channel memory type. Set to 0000 if manager output; ignored if subordinate input.",
     },
     {
         "lite": 1,
@@ -1156,7 +1156,7 @@ axi_read = [
         "width": AXI_PROT_W,
         "name": "axi_arprot",
         "default": "2",
-        "description": "Address read channel protection type. Set to 000 if master output; ignored if slave input.",
+        "description": "Address read channel protection type. Set to 000 if manager output; ignored if subordinate input.",
     },
     {
         "lite": 0,
@@ -1303,7 +1303,7 @@ amba = [
         "width": AHB_PROT_W,
         "name": "ahb_prot",
         "default": "1",
-        "description": "Protection type. Set to 0000 if master output; ignored if slave input.",
+        "description": "Protection type. Set to 0000 if manager output; ignored if subordinate input.",
     },
     {
         "ahb": 1,
@@ -1369,7 +1369,7 @@ amba = [
         "width": "1",
         "name": "ahb_sel",
         "default": "0",
-        "description": "Slave select.",
+        "description": "subordinate select.",
     },
     {
         "ahb": 0,
@@ -1479,7 +1479,7 @@ amba = [
         "width": "1",
         "name": "ahb_slverr",
         "default": "0",
-        "description": "Slave error. Indicates if the transfer has falied.",
+        "description": "subordinate error. Indicates if the transfer has falied.",
     },
 ]
 
