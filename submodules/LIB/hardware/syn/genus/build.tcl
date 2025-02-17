@@ -130,12 +130,12 @@ if {[file exists ./$NODE/$NAME\_dev.sdc]} {
   read_sdc -stop_on_error ./$NODE/$NAME\_dev.sdc
 }
 
-if {[file exists ./src/$NAME.sdc]} {
-  read_sdc -stop_on_error ./src/$NAME.sdc
+if {[file exists ../src/$NAME.sdc]} {
+  read_sdc -stop_on_error ../src/$NAME.sdc
 }
 
-if {[file exists ./src/$NAME\_$CSR_IF.sdc]} {
-  read_sdc -stop_on_error ./src/$NAME\_$CSR_IF.sdc
+if {[file exists ../src/$NAME\_$CSR_IF.sdc]} {
+  read_sdc -stop_on_error ../src/$NAME\_$CSR_IF.sdc
 }
 
 if {[file exists ./$NAME\_tool.sdc]} {
