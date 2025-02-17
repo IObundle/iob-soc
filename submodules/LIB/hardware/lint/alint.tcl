@@ -29,8 +29,8 @@ workspace.file.add -destination $PRJ -f $TOP\_files.list
 
 # Open the sdc files for reading
 set sdcfile1 [open "../syn/umc130/$TOP\_dev.sdc" "r"]
-set sdcfile2 [open "../syn/src/$TOP\.sdc" "r"]
-set sdcfile3 [open "../syn/src/$TOP\_$CSR_IF.sdc" "r"]
+set sdcfile2 [open "../src/$TOP\.sdc" "r"]
+set sdcfile3 [open "../src/$TOP\_$CSR_IF.sdc" "r"]
 set sdcfile4 [open "../syn/$TOP\_tool.sdc" "r"]
 
 # Open the output file for writing

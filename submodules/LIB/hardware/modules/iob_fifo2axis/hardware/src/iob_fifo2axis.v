@@ -64,8 +64,26 @@ module iob_fifo2axis #(
    );
 
    //FIFO tlast
-   wire axis_tlast_nxt;
    wire [AXIS_LEN_W-1:0] len_int;
+   wire                  saved_tlast;
+
+   assign len_int        = len_i - 1'b1;
+   wire axis_tlast_int = (axis_word_count == len_int);
+
+   //In case data has been read, but not used, save it and use when ready
+   wire [DATA_W-1:0] saved_data;
+   wire              saved;
+   wire              save = (axis_tvalid_int & (~axis_tready_i)) & en_i;
+   iob_reg_re #(
+      .DATA_W (DATA_W),
+      .RST_VAL({DATA_W{1'd0}})
+   ) saved_data_reg (
+      `include "clk_en_rst_s_s_portmap.vs"
+      .rst_i (rst_i),
+      .en_i  (save),
+      .data_i(fifo_rdata_i),
+      .data_o(saved_data)
+   );
 
    assign len_int = len_i - 1'b1;
    assign axis_tlast_nxt = (axis_word_count == len_int);
@@ -73,7 +91,18 @@ module iob_fifo2axis #(
    iob_reg_re #(
       .DATA_W (1),
       .RST_VAL(1'd0)
-   ) axis_tlast_reg (
+   ) saved_reg (
+      `include "clk_en_rst_s_s_portmap.vs"
+      .rst_i (axis_tready_i),
+      .en_i  (axis_tvalid_int),
+      .data_i(1'd1),
+      .data_o(saved)
+   );
+
+   iob_reg_re #(
+      .DATA_W (1),
+      .RST_VAL(1'd0)
+   ) saved_last_reg (
       `include "clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_i),
       .en_i  (fifo_read_r),
@@ -81,10 +110,26 @@ module iob_fifo2axis #(
       .data_o(saved_tlast)
    );
 
+   reg              axis_tvalid_nxt;
+   reg [DATA_W-1:0] axis_tdata_nxt;
+   reg              axis_tlast_nxt;
+   always @* begin
+      if (saved) begin
+         axis_tvalid_nxt = 1'd1;
+         axis_tdata_nxt  = saved_data;
+         axis_tlast_nxt  = saved_tlast;
+      end else begin
+         axis_tvalid_nxt = axis_tvalid_int;
+         axis_tdata_nxt  = fifo_rdata_i;
+         axis_tlast_nxt  = axis_tlast_int;
+      end
+   end
+
+
    //tdata word count
    iob_modcnt #(
       .DATA_W (AXIS_LEN_W),
-      .RST_VAL({AXIS_LEN_W{1'b1}}) // go to 0 after first enable
+      .RST_VAL({AXIS_LEN_W{1'b1}})  // go to 0 after first enable
    ) word_count_inst (
       `include "clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_i),
