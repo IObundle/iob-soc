@@ -10,6 +10,7 @@ include ../../config_build.mk
 REMOTE_BUILD_DIR=$(USER)/$(BUILD_DIR_NAME)
 REMOTE_LINT_DIR=$(REMOTE_BUILD_DIR)/hardware/lint
 
+LINTER?=verilator
 LINT_TOP=$(NAME)
 
 VHDR=$(wildcard ../src/*.vh)
@@ -20,7 +21,11 @@ $(NAME)_files.list: $(VSRC)
 $(VSRC):
 	@ls $@ >> $(NAME)_files.list
 
-LINTER?=verilator
+#include local lint segment
+ifneq ($(wildcard lint_build.mk),)
+include lint_build.mk
+endif
+
 include $(LINTER).mk
 
 run: clean $(NAME)_files.list
