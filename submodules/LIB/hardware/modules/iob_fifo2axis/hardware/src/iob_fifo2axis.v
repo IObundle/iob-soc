@@ -23,23 +23,44 @@ module iob_fifo2axis #(
 
    wire [AXIS_LEN_W-1:0] axis_word_count;
 
+   wire read_condition;
+   wire saved;
+   wire fifo_read_r;
+   wire output_en;
+
    //FIFO read
-   wire                  axis_tvalid_int;
+   // read new data:
+   // 1. if tready is high
+   // 2. if no data is saved
+   // 3. if no data is being read from fifo
+   assign read_condition = axis_tready_i | (~(saved | fifo_read_r));
+   assign fifo_read_o = (en_i & (~fifo_empty_i)) & read_condition;
 
-   wire                  pipe_en;
-   assign pipe_en     = axis_tready_i & en_i;
-
-   assign fifo_read_o = (axis_tready_i & (~fifo_empty_i)) & en_i;
-
-   // valid_int register
    iob_reg_r #(
       .DATA_W (1),
       .RST_VAL(1'd0)
-   ) valid_int_reg (
+   ) fifo_read_reg (
       `include "clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_i),
       .data_i(fifo_read_o),
-      .data_o(axis_tvalid_int)
+      .data_o(fifo_read_r)
+   );
+
+   // saved register
+   // 0 if no valid data in registers
+   // 1 if valid data in registers
+   wire saved_rst;
+   wire saved_nxt;
+   assign saved_rst = (rst_i | output_en);
+   assign saved_nxt = (fifo_read_r & (~output_en)) | saved;
+   iob_reg_r #(
+      .DATA_W (1),
+      .RST_VAL(1'd0)
+   ) saved_reg (
+      `include "clk_en_rst_s_s_portmap.vs"
+      .rst_i (saved_rst),
+      .data_i(saved_nxt),
+      .data_o(saved)
    );
 
    //FIFO tlast
@@ -64,6 +85,9 @@ module iob_fifo2axis #(
       .data_o(saved_data)
    );
 
+   assign len_int = len_i - 1'b1;
+   assign axis_tlast_nxt = (axis_word_count == len_int);
+   wire saved_tlast;
    iob_reg_re #(
       .DATA_W (1),
       .RST_VAL(1'd0)
@@ -81,8 +105,8 @@ module iob_fifo2axis #(
    ) saved_last_reg (
       `include "clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_i),
-      .en_i  (save),
-      .data_i(axis_tlast_int),
+      .en_i  (fifo_read_r),
+      .data_i(axis_tlast_nxt),
       .data_o(saved_tlast)
    );
 
@@ -114,40 +138,40 @@ module iob_fifo2axis #(
       .data_o(axis_word_count)
    );
 
-   //tdata pipe register
+   //tdata register
+   wire [DATA_W-1:0] saved_tdata;
    iob_reg_re #(
       .DATA_W (DATA_W),
       .RST_VAL({DATA_W{1'd0}})
    ) axis_tdata_reg (
       `include "clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_i),
-      .en_i  (pipe_en),
-      .data_i(axis_tdata_nxt),
-      .data_o(axis_tdata_o)
+      .en_i  (fifo_read_r),
+      .data_i(fifo_rdata_i),
+      .data_o(saved_tdata)
    );
 
-   //tvalid pipe register
+   // register valid + data + last
+   wire [(DATA_W+2)-1:0] output_nxt;
+   wire [(DATA_W+2)-1:0] output_r;
+   assign output_nxt[DATA_W+1] = (saved) ? 1'b1 : fifo_read_r;
+   assign output_nxt[1+:DATA_W] = (saved) ? saved_tdata : fifo_rdata_i;
+   assign output_nxt[0] = (saved) ? saved_tlast : axis_tlast_nxt;
+   assign output_en = (~axis_tvalid_o) | axis_tready_i;
    iob_reg_re #(
-      .DATA_W (1),
-      .RST_VAL(1'd0)
-   ) axis_tvalid_reg (
+       .DATA_W(DATA_W+2),
+       .RST_VAL({(DATA_W+2){1'd0}})
+   ) output_reg (
       `include "clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_i),
-      .en_i  (pipe_en),
-      .data_i(axis_tvalid_nxt),
-      .data_o(axis_tvalid_o)
+      .en_i(output_en),
+      .data_i(output_nxt),
+      .data_o(output_r)
    );
 
-   //tlast pipe register
-   iob_reg_re #(
-      .DATA_W (1),
-      .RST_VAL(1'd0)
-   ) axis_tlast_reg (
-      `include "clk_en_rst_s_s_portmap.vs"
-      .rst_i (rst_i),
-      .en_i  (pipe_en),
-      .data_i(axis_tlast_nxt),
-      .data_o(axis_tlast_o)
-   );
+   // axis outputs
+   assign axis_tvalid_o = output_r[DATA_W+1];
+   assign axis_tdata_o = output_r[1+:DATA_W];
+   assign axis_tlast_o = output_r[0];
 
 endmodule
