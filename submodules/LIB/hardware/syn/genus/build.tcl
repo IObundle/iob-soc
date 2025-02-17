@@ -142,6 +142,10 @@ if {[file exists ./$NAME\_tool.sdc]} {
   read_sdc -stop_on_error ./$NAME\_tool.sdc
 }
 
+if {[file exists ./src/$NAME.sdc]} {
+  read_sdc -stop_on_error ./src/$NAME.sdc
+}
+
 check_timing_intent 
 
 check_design -all > $OUTPUTS_DIR/${DESIGN}_check_design.rpt
