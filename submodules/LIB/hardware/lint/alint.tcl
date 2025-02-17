@@ -32,6 +32,7 @@ set sdcfile1 [open "../syn/umc130/$TOP\_dev.sdc" "r"]
 set sdcfile2 [open "../src/$TOP\.sdc" "r"]
 set sdcfile3 [open "../src/$TOP\_$CSR_IF.sdc" "r"]
 set sdcfile4 [open "../syn/$TOP\_tool.sdc" "r"]
+set sdcfile5 [open "../syn/src/$TOP\.sdc" "r"]
 
 # Open the output file for writing
 set outfile [open "merged.sdc" "w"]
@@ -41,18 +42,21 @@ set contents1 [read $sdcfile1]
 set contents2 [read $sdcfile2]
 set contents3 [read $sdcfile3]
 set contents4 [read $sdcfile4]
+set contents5 [read $sdcfile5]
 
 # Write the contents of the sdc files to the output file
 puts $outfile $contents1
 puts $outfile $contents2
 puts $outfile $contents3
 puts $outfile $contents4
+puts $outfile $contents5
 
 # Close the input and output files
 close $sdcfile1
 close $sdcfile2
 close $sdcfile3
 close $sdcfile4
+close $sdcfile5
 close $outfile
 
 
