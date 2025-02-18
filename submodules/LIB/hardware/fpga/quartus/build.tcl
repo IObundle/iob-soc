@@ -52,7 +52,7 @@ if {$IS_FPGA != "1"} {
 #read synthesis design constraints
 set_global_assignment -name SDC_FILE ./quartus/$BOARD/$SDC_PREFIX\_dev.sdc
 set_global_assignment -name SDC_FILE ../src/$SDC_PREFIX.sdc
-set_global_assignment -name SDC_FILE ../src/$SDC_PREFIX\$CSR_IF.sdc
+set_global_assignment -name SDC_FILE ../src/$SDC_PREFIX\_$CSR_IF.sdc
 set_global_assignment -name SDC_FILE ./src/$SDC_PREFIX.sdc
 
 set_global_assignment -name SYNCHRONIZER_IDENTIFICATION "Forced if Asynchronous"
