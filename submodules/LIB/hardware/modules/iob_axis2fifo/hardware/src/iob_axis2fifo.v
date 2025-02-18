@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module axis2fifo #(
+module iob_axis2fifo #(
    parameter DATA_W     = 0,
    parameter AXIS_LEN_W = 0
 ) (
