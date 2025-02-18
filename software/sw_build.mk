@@ -35,9 +35,9 @@ UTARGETS+=build_iob_soc_software
 
 TEMPLATE_LDS=src/$@.lds
 
-IOB_SOC_INCLUDES=-I. -Isrc -Iinclude
+IOB_SOC_INCLUDES=-Isrc -Iinclude
 
-IOB_SOC_LFLAGS=-Wl,-Bstatic,-T,$(TEMPLATE_LDS),--strip-debug
+IOB_SOC_LFLAGS=-Wl,-L,src,-Bstatic,-T,$(TEMPLATE_LDS),--strip-debug
 
 # FIRMWARE SOURCES
 IOB_SOC_FW_SRC=src/iob_soc_firmware.S
@@ -60,17 +60,26 @@ IOB_SOC_PREBOOT_SRC=src/iob_soc_preboot.S
 
 build_iob_soc_software: iob_soc_firmware iob_soc_boot iob_soc_preboot
 
-iob_soc_firmware:
+ifneq ($(USE_FPGA),)
+WRAPPER_CONFS_PREFIX=iob_soc_$(BOARD)
+else
+WRAPPER_CONFS_PREFIX=iob_soc_sim
+endif
+
+iob_bsp:
+	sed 's/$(WRAPPER_CONFS_PREFIX)/IOB_BSP/Ig' src/$(WRAPPER_CONFS_PREFIX)_conf.h > src/iob_bsp.h
+
+iob_soc_firmware: iob_bsp
 	make $@.elf INCLUDES="$(IOB_SOC_INCLUDES)" LFLAGS="$(IOB_SOC_LFLAGS) -Wl,-Map,$@.map" SRC="$(IOB_SOC_FW_SRC)" TEMPLATE_LDS="$(TEMPLATE_LDS)"
 
-iob_soc_boot:
+iob_soc_boot: iob_bsp
 	make $@.elf INCLUDES="$(IOB_SOC_INCLUDES)" LFLAGS="$(IOB_SOC_LFLAGS) -Wl,-Map,$@.map" SRC="$(IOB_SOC_BOOT_SRC)" TEMPLATE_LDS="$(TEMPLATE_LDS)"
 
 iob_soc_preboot:
 	make $@.elf INCLUDES="$(IOB_SOC_INCLUDES)" LFLAGS="$(IOB_SOC_LFLAGS) -Wl,-Map,$@.map" SRC="$(IOB_SOC_PREBOOT_SRC)" TEMPLATE_LDS="$(TEMPLATE_LDS)"
 
 
-.PHONY: build_iob_soc_software iob_soc_firmware iob_soc_boot
+.PHONY: build_iob_soc_software iob_bsp iob_soc_firmware iob_soc_boot iob_soc_preboot
 
 #########################################
 #         PC emulation targets          #
