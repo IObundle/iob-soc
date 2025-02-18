@@ -5,8 +5,8 @@ from iob_counter import iob_counter
 from iob_edge_detect import iob_edge_detect
 
 
-class axis2fifo(iob_module):
-    name = "axis2fifo"
+class iob_axis2fifo(iob_module):
+    aame = "iob_axis2fifo"
     version = "V0.10"
     setup_dir = os.path.dirname(__file__)
 
