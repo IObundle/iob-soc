@@ -25,11 +25,12 @@ module axis2axi_in #(
    `include "axi_m_write_port.vs"
 
    // External memory interfaces
+   output                  ext_mem_clk_o,
    output [         1-1:0] ext_mem_w_en_o,
    output [AXI_DATA_W-1:0] ext_mem_w_data_o,
-   output [BURST_W+1-1:0] ext_mem_w_addr_o,
+   output [ BURST_W+1-1:0] ext_mem_w_addr_o,
    output [         1-1:0] ext_mem_r_en_o,
-   output [BURST_W+1-1:0] ext_mem_r_addr_o,
+   output [ BURST_W+1-1:0] ext_mem_r_addr_o,
    input  [AXI_DATA_W-1:0] ext_mem_r_data_i,
 
    `include "clk_en_rst_s_port.vs"
@@ -94,9 +95,9 @@ module axis2axi_in #(
    generate
       if (AXI_ADDR_W >= 13) begin  // 4k boundary can only happen to LEN higher or equal to 13
 
-         wire [12:0] boundary_transfer_len = (13'h1000 - current_address[11:0]) >> 2;
+         wire [     12:0] boundary_transfer_len = (13'h1000 - current_address[11:0]) >> 2;
 
-         reg [BURST_W:0] boundary_burst_size;
+         reg  [BURST_W:0] boundary_burst_size;
          always @* begin
             boundary_burst_size = non_boundary_burst_size;
 
@@ -131,21 +132,21 @@ module axis2axi_in #(
 
    // State machine
    always @* begin
-      state_nxt    = state;
-      awvalid_int  = 1'b0;
-      wvalid_int   = 1'b0;
-      next_address = current_address;
+      state_nxt              = state;
+      awvalid_int            = 1'b0;
+      wvalid_int             = 1'b0;
+      next_address           = current_address;
 
       transfer_count_reg_rst = 1'b0;
-      transfer_count_reg_en = 1'b0;
-      axi_length_reg_en = 1'b0;
+      transfer_count_reg_en  = 1'b0;
+      axi_length_reg_en      = 1'b0;
 
       if (config_in_valid_i) next_address = config_in_addr_i;
 
       case (state)
          WAIT_DATA: begin
             if (start_transfer) begin
-               state_nxt = START_TRANSFER;
+               state_nxt         = START_TRANSFER;
                axi_length_reg_en = 1'b1;
             end
             transfer_count_reg_rst = 1'b1;
@@ -171,14 +172,14 @@ module axis2axi_in #(
 
    iob_counter #(BURST_SIZE, 0) transfer_count_reg (
       `include "clk_en_rst_s_s_portmap.vs"
-      .rst_i(transfer_count_reg_rst),
-      .en_i(transfer_count_reg_en),
+      .rst_i (transfer_count_reg_rst),
+      .en_i  (transfer_count_reg_en),
       .data_o(transfer_count)
    );
    iob_reg_re #(BURST_W + 1, 0) axi_length_reg (
       `include "clk_en_rst_s_s_portmap.vs"
       .rst_i (rst_i),
-      .en_i(axi_length_reg_en),
+      .en_i  (axi_length_reg_en),
       .data_i(transfer_len),
       .data_o(awlen_int)
    );
@@ -200,6 +201,7 @@ module axis2axi_in #(
       .R_DATA_W(AXI_DATA_W),
       .ADDR_W  (BUFFER_W)
    ) fifo (
+      .ext_mem_clk_o   (ext_mem_clk_o),
       //write port
       .ext_mem_w_en_o  (ext_mem_w_en_o),
       .ext_mem_w_data_o(ext_mem_w_data_o),
