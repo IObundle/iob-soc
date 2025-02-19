@@ -55,6 +55,7 @@ module axis2axi #(
    `include "axi_m_port.vs"
 
    // External memory interfaces
+   output                  ext_mem_clk_o,
    output [         1-1:0] ext_mem_w_en_o,
    output [AXI_DATA_W-1:0] ext_mem_w_data_o,
    output [  BUFFER_W-1:0] ext_mem_w_addr_o,
@@ -79,6 +80,7 @@ module axis2axi #(
       .config_in_valid_i(config_in_valid_i),
       .config_in_ready_o(config_in_ready_o),
 
+      .ext_mem_clk_o   (ext_mem_clk_o),
       .ext_mem_w_en_o  (ext_mem_w_en_o),
       .ext_mem_w_data_o(ext_mem_w_data_o),
       .ext_mem_w_addr_o(ext_mem_w_addr_o),
