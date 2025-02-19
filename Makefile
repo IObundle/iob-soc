@@ -93,10 +93,10 @@ python-cache-clean:
 # Tester
 
 tester-sim-run:
-	nix-shell --run "make clean setup && make -C ../$(CORE)_V$(VERSION)/submodules/tester/ sim-run SIMULATOR=$(SIMULATOR)"
+	nix-shell --run "make clean setup && make -C ../$(CORE)_V$(VERSION)/tester/ sim-run SIMULATOR=$(SIMULATOR)"
 
 tester-fpga-run:
-	nix-shell --run "make clean setup && make -C ../$(CORE)_V$(VERSION)/submodules/tester/ fpga-fw-build BOARD=$(BOARD)"
-	make -C ../$(CORE)_V$(VERSION)/submodules/tester/ fpga-run BOARD=$(BOARD)
+	nix-shell --run "make clean setup && make -C ../$(CORE)_V$(VERSION)/tester/ fpga-fw-build BOARD=$(BOARD)"
+	make -C ../$(CORE)_V$(VERSION)/tester/ fpga-run BOARD=$(BOARD)
 
 .PHONY: tester-sim-run tester-fpga-run
