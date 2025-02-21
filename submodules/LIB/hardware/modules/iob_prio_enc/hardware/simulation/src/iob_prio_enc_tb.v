@@ -4,7 +4,7 @@ module iob_prio_enc_tb;
    localparam W = 8;
 
    reg     [        W-1:0] data_i = 1;
-   wire    [$clog2(W)-1:0] data_o;
+   wire [$clog2(W+1)-1:0]  data_o;
 
    integer                 i;
    integer                 fd;

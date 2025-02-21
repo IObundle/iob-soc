@@ -730,7 +730,9 @@ class csr_gen:
         f_def = open(f"{out_dir}/{top}_swreg_def.vh", "w")
         f_def.write("`define IOB_NBYTES (DATA_W/8)\n")
         f_def.write("`define IOB_NBYTES_W $clog2(`IOB_NBYTES)\n")
-        f_def.write("`define IOB_WORD_ADDR(ADDR) ((ADDR>>`IOB_NBYTES_W)<<`IOB_NBYTES_W)\n")
+        f_def.write(
+            "`define IOB_WORD_ADDR(ADDR) ((ADDR>>`IOB_NBYTES_W)<<`IOB_NBYTES_W)\n"
+        )
         f_def.write("//used address space width\n")
         addr_w_prefix = f"{top}_swreg".upper()
         f_def.write(f"`define {addr_w_prefix}_ADDR_W {self.core_addr_w}\n\n")

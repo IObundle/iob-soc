@@ -21,5 +21,5 @@ class iob_asym_converter(iob_module):
                 iob_reg_r,
                 iob_reg_re,
                 iob_functions,
-           ]
+            ]
         )

@@ -12,8 +12,8 @@ module iob_ctls #(
    parameter MODE   = 0,   //trailing (0), leading (1)
    parameter SYMBOL = 0    //search zeros (0), search ones (1)
 ) (
-   input  [      W-1:0] data_i,
-   output [$clog2(W):0] count_o
+   input [ W-1:0]           data_i,
+   output [$clog2(W+1)-1:0] count_o
 );
 
    //invert if searching zeros or not
@@ -41,10 +41,10 @@ module iob_ctls #(
 
    //count trailing zeros
    iob_prio_enc #(
-      .W   (W + 1),
+      .W   (W),
       .MODE("LOW")
    ) prio_encoder0 (
-      .unencoded_i({1'b1, data_int2}),
+      .unencoded_i(data_int2),
       .encoded_o  (count_o)
    );
 
