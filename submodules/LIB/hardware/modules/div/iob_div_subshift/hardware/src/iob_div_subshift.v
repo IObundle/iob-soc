@@ -41,7 +41,8 @@ module iob_div_subshift #(
       .data_o(divisor_reg)
    );
 
-   wire [DATA_W-1:0] subtraend = dqr_reg[(2*DATA_W)-2-:DATA_W];
+   wire [DATA_W-1:0] subtraend;
+   assign subtraend = dqr_reg[(2*DATA_W)-2-:DATA_W];
    wire  [  DATA_W:0] tmp;
 
    //output quotient and remainder
@@ -58,10 +59,6 @@ module iob_div_subshift #(
    reg [$clog2(DATA_W+1)-1:0] pcnt_nxt;  //program counter
    wire [$clog2(DATA_W+1)-1:0] pcnt;
    
-   /* verilator lint_off WIDTH */   
-   wire [$clog2(DATA_W+1)-1:0] last_stage = DATA_W + 1;
-   /* verilator lint_on WIDTH */
-
    iob_reg #(
        .DATA_W($clog2(DATA_W+1)),
        .RST_VAL({($clog2(DATA_W+1)){1'b0}})
@@ -86,7 +83,7 @@ module iob_div_subshift #(
             divisor_nxt = divisor_i;
             dqr_nxt     = {1'b0,{DATA_W{1'b0}}, dividend_i};
          end         
-      end else if (pcnt == last_stage) begin
+      end else if (pcnt == (DATA_W+1)) begin
          pcnt_nxt = 0;
       end else begin //shift and subtract
          done_o = 1'b0;

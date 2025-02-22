@@ -13,7 +13,8 @@ module iob_reg_re #(
    output [DATA_W-1:0] data_o
 );
 
-   wire [DATA_W-1:0] data = en_i ? data_i : data_o;
+   wire [DATA_W-1:0] data;
+   assign data = en_i ? data_i : data_o;
 
    iob_reg_r #(
       .DATA_W (DATA_W),

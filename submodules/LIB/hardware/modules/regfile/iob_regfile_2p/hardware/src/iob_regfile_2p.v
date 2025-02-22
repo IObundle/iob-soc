@@ -23,15 +23,18 @@ module iob_regfile_2p #(
    wire [      N-1:0]                                          wen;
 
    //reconstruct write address from waddr_i and wstrb_i
-   wire [WSTRB_W-1:0] wstrb = req_i[WDATA_W+:WSTRB_W];
-   wire [WADDR_W-1:0] waddr = req_i[WSTRB_W+WDATA_W+:WADDR_W];
+   wire [WSTRB_W-1:0] wstrb;
+   wire [WADDR_W-1:0] waddr;
+   assign wstrb = req_i[WDATA_W+:WSTRB_W];
+   assign waddr = req_i[WSTRB_W+WDATA_W+:WADDR_W];
    localparam WADDR_INT_W = (WADDR_W > ($clog2(
        DATA_W / 8
    ) + 1)) ? WADDR_W : ($clog2(
        DATA_W / 8
    ) + 1);
    wire [($clog2(DATA_W/8)+1)-1:0]                                 waddr_incr;
-   wire [         WADDR_INT_W-1:0] waddr_int = waddr + waddr_incr;
+   wire [         WADDR_INT_W-1:0] waddr_int;
+   assign waddr_int = waddr + waddr_incr;
 
    iob_ctls #(
       .W     (DATA_W / 8),
@@ -43,7 +46,8 @@ module iob_regfile_2p #(
    );
 
    //write register file
-   wire [WDATA_W-1:0] wdata_int = req_i[WDATA_W-1:0];
+   wire [WDATA_W-1:0] wdata_int;
+   assign wdata_int = req_i[WDATA_W-1:0];
    genvar row_sel;
    genvar col_sel;
 
@@ -75,7 +79,8 @@ module iob_regfile_2p #(
    //read register file
    generate
       if (RADDR_W > 0) begin : g_read
-         wire [RADDR_W-1:0] raddr = req_i[(WSTRB_W+WDATA_W)+WADDR_W+:RADDR_W];
+         wire [RADDR_W-1:0] raddr;
+         assign raddr = req_i[(WSTRB_W+WDATA_W)+WADDR_W+:RADDR_W];
          assign resp_o = regfile[RDATA_W*raddr+:RDATA_W];
       end else begin : g_read
          assign resp_o = regfile;

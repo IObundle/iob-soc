@@ -12,7 +12,8 @@ module iob_reg_r #(
    output [DATA_W-1:0] data_o
 );
 
-   wire [DATA_W-1:0] data_nxt = rst_i ? RST_VAL : data_i;
+   wire [DATA_W-1:0] data_nxt;
+   assign data_nxt = rst_i ? RST_VAL : data_i;
 
    iob_reg #(
       .DATA_W (DATA_W),
