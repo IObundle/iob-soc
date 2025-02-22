@@ -13,14 +13,16 @@ module iob_regfile_sp #(
    output [DATA_W-1:0] d_o
 );
 
-   wire [DATA_W*(2**ADDR_W)-1:0] data_in = d_i << (addr_i * DATA_W);
+   wire [DATA_W*(2**ADDR_W)-1:0] data_in;
+   assign data_in = d_i << (addr_i * DATA_W);
    wire [DATA_W*(2**ADDR_W)-1:0] data_out;
    assign d_o = data_out >> (addr_i * DATA_W);
 
    genvar i;
    generate
       for (i = 0; i < 2**ADDR_W; i = i + 1) begin: g_regfile        
-         wire reg_en_i = we_i & (addr_i == i);
+         wire reg_en_i;
+         assign reg_en_i = we_i & (addr_i == i);
          iob_reg_re
                #(
                  .DATA_W(DATA_W)

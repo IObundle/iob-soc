@@ -12,7 +12,8 @@ module iob_counter_ld #(
    output [DATA_W-1:0] data_o
 );
 
-   wire [DATA_W-1:0] data = ld_i ? ld_val_i : data_o + 1'b1;
+   wire [DATA_W-1:0] data;
+   assign data = ld_i ? ld_val_i : data_o + 1'b1;
 
    iob_reg_re #(
       .DATA_W (DATA_W),

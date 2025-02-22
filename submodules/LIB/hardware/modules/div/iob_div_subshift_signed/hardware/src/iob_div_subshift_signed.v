@@ -22,9 +22,10 @@ module iob_div_subshift_signed #(
    reg               divident_sign;
    reg               divisor_sign;
    reg  [  PC_W-1:0] pc;  //program counter
-   wire [DATA_W-1:0] subtraend = rq[2*DATA_W-2-:DATA_W];
+   wire [DATA_W-1:0] subtraend;
    reg  [  DATA_W:0] tmp;
 
+   assign subtraend = rq[2*DATA_W-2-:DATA_W];
    //output quotient and remainder
    assign quotient_o  = rq[DATA_W-1:0];
    assign remainder_o = rq[2*DATA_W-1:DATA_W];
