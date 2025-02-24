@@ -127,11 +127,11 @@ module iob_fifo2axis #(
 
    always @* begin
       if (saved && axis_tvalid_o) begin
-         level_o = 2'd2;
+         level_o = {1'b1, 1'b0};
       end else if (saved || axis_tvalid_o) begin
-         level_o = 2'd1;
+         level_o = 1'b1;
       end else begin
-         level_o = 2'd0;
+         level_o = 1'b0;
       end
    end
 
