@@ -363,8 +363,6 @@ class csr_gen:
                         `include "clk_en_rst_s_s_portmap.vs"
                         // AXIL slave i/f
                         .axil_awaddr_i (axil_awaddr_i),   //Address write channel address.
-                        .axil_awprot_i (axil_awprot_i),   //Address write channel protection type.
-                                                            //Set to 000 if master output; ignored if slave input.
                         .axil_awvalid_i(axil_awvalid_i),  //Address write channel valid.
                         .axil_awready_o(axil_awready_o),  //Address write channel ready.
                         .axil_wdata_i  (axil_wdata_i),    //Write channel data.
@@ -375,8 +373,6 @@ class csr_gen:
                         .axil_bvalid_o (axil_bvalid_o),   //Write response channel valid.
                         .axil_bready_i (axil_bready_i),   //Write response channel ready.
                         .axil_araddr_i (axil_araddr_i),   //Address read channel address.
-                        .axil_arprot_i (axil_arprot_i),   //Address read channel protection type.
-                                                            //Set to 000 if master output; ignored if slave input.
                         .axil_arvalid_i(axil_arvalid_i),  //Address read channel valid.
                         .axil_arready_o(axil_arready_o),  //Address read channel ready.
                         .axil_rdata_o  (axil_rdata_o),    //Read channel data.
