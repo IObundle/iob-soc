@@ -10,7 +10,23 @@ module iob_axil2iob #(
    `include "clk_en_rst_s_port.vs"
 
    // AXI4 Lite slave interface
-   `include "axil_s_port.vs"
+   input  [    AXIL_ADDR_W-1:0] axil_awaddr_i,
+   input  [              1-1:0] axil_awvalid_i,
+   output [              1-1:0] axil_awready_o,
+   input  [    AXIL_DATA_W-1:0] axil_wdata_i,
+   input  [(AXIL_DATA_W/8)-1:0] axil_wstrb_i,
+   input  [              1-1:0] axil_wvalid_i,
+   output [              1-1:0] axil_wready_o,
+   output [              2-1:0] axil_bresp_o,
+   output [              1-1:0] axil_bvalid_o,
+   input  [              1-1:0] axil_bready_i,
+   input  [    AXIL_ADDR_W-1:0] axil_araddr_i,
+   input  [              1-1:0] axil_arvalid_i,
+   output [              1-1:0] axil_arready_o,
+   output [    AXIL_DATA_W-1:0] axil_rdata_o,
+   output [              2-1:0] axil_rresp_o,
+   output [              1-1:0] axil_rvalid_o,
+   input  [              1-1:0] axil_rready_i,
 
    // IOb master interface
    `include "iob_m_port.vs"
