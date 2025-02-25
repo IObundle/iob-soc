@@ -42,24 +42,12 @@ module iob_div_subshift #(
    );
 
    wire [DATA_W-1:0] subtraend;
-   assign subtraend = dqr_nxt[(2*DATA_W)-2-:DATA_W];
-   wire  [  DATA_W:0] tmp;
+   assign subtraend = dqr_reg[(2*DATA_W)-2-:DATA_W];
+   reg  [  DATA_W:0] tmp;
 
    //output quotient and remainder
    assign quotient_o  = dqr_reg[DATA_W-1:0];
    assign remainder_o = dqr_reg[(2*DATA_W)-1:DATA_W];
-
-   wire [DATA_W:0] tmp_nxt;
-   assign tmp_nxt = {1'b0, subtraend} - {1'b0, divisor_nxt};
-   iob_reg #(
-      .DATA_W (DATA_W+1),
-      .RST_VAL({(DATA_W+1){1'b0}})
-   ) tmp_reg0 (
-      `include "clk_en_rst_s_s_portmap.vs"
-
-      .data_i(tmp_nxt),
-      .data_o(tmp)
-   );
 
    //
    //PROGRAM
@@ -80,6 +68,7 @@ module iob_div_subshift #(
    );
 
    always @* begin
+      tmp = {1'b0, subtraend} - {1'b0, divisor_reg};
       pcnt_nxt      = pcnt + 1'b1;
       dqr_nxt     = dqr_reg;
       divisor_nxt = divisor_reg;
