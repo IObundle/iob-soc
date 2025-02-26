@@ -29,7 +29,6 @@ module iob_iob2axil #(
 
     // IOb slave interface
     `include "iob_s_port.vs"
-
 );
 
   //

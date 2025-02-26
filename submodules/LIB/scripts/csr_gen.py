@@ -145,7 +145,7 @@ class csr_gen:
                 rst_val_str = str(n_bits) + "'d" + str(rst_val)
             f.write(f"wire {name}_wen;\n")
             f.write(
-                f"assign {name}_wen = (iob_valid_i & iob_ready_o) & ((|iob_wstrb_i) & {name}_addressed_w);\n"
+                f"assign {name}_wen = iob_valid_i & ((|iob_wstrb_i) & {name}_addressed_w);\n"
             )
             f.write(f"iob_reg_e #(\n")
             f.write(f"  .DATA_W({n_bits}),\n")
@@ -160,7 +160,7 @@ class csr_gen:
             f.write(");\n")
         else:  # compute wen
             f.write(
-                f"assign {name}_wen_o = ({name}_addressed_w & (iob_valid_i & iob_ready_o))? |iob_wstrb_i: 1'b0;\n"
+                f"assign {name}_wen_o = ({name}_addressed_w & iob_valid_i)? |iob_wstrb_i: 1'b0;\n"
             )
             f.write(f"assign {name}_wdata_o = {name}_wdata;\n")
 
@@ -344,6 +344,7 @@ class csr_gen:
                         .iob_wstrb_o (iob_wstrb),     //Write strobe.
                         .iob_rvalid_i(iob_rvalid),    //Read data valid.
                         .iob_rdata_i (iob_rdata),     //Read data.
+                        .iob_rready_o(iob_rready),    //Read data ready.
                         .iob_ready_i (iob_ready)      //Interface ready.
                     );
 
@@ -386,6 +387,7 @@ class csr_gen:
                         .iob_wstrb_o   (iob_wstrb),       //Write strobe.
                         .iob_rvalid_i  (iob_rvalid),      //Read data valid.
                         .iob_rdata_i   (iob_rdata),       //Read data.
+                        .iob_rready_o  (iob_rready),      //Read data ready.
                         .iob_ready_i   (iob_ready)        //Interface ready.
                     );
 
@@ -636,8 +638,8 @@ class csr_gen:
                         end
 
                         default: begin  // WAIT_RVALID
-                            if(rvalid_int) begin
-                                rvalid_nxt = 1'b1;
+                            rvalid_nxt = rvalid_int;
+                            if (iob_rready_i) begin
                                 state_nxt = WAIT_REQ;
                             end
                         end
