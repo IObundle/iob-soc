@@ -15,10 +15,8 @@ module iob_modcnt #(
 );
 
    wire ld_count;
-   wire [DATA_W-1:0] ld_val;
 
    assign ld_count = (data_o >= mod_i);
-   assign ld_val = {DATA_W{1'b0}};
 
    iob_counter_ld #(
       .DATA_W (DATA_W),
@@ -28,7 +26,7 @@ module iob_modcnt #(
       .rst_i   (rst_i),
       .en_i    (en_i),
       .ld_i    (ld_count),
-      .ld_val_i(ld_val),
+      .ld_val_i({DATA_W{1'b0}}),
       .data_o  (data_o)
    );
 
