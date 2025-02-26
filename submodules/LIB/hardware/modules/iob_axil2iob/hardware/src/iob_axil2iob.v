@@ -34,9 +34,9 @@ module iob_axil2iob #(
 
    localparam WSTRB_W = DATA_W / 8;
 
-   wire [ADDR_W-1:0]  iob_addr;
-   wire               iob_addr_en;
-   
+   wire [ADDR_W-1:0] iob_addr;
+   wire              iob_addr_en;
+
    // COMPUTE AXIL OUTPUTS
 
    // write address channel
@@ -60,20 +60,20 @@ module iob_axil2iob #(
 
    //rvalid
    assign axil_rvalid_o = iob_rvalid_i;
-   
+
    //rdata
    assign axil_rdata_o = iob_rdata_i;
-   
+
 
    // COMPUTE IOb OUTPUTS
 
    assign iob_valid_o = axil_awvalid_i | axil_wvalid_i | axil_arvalid_i;
    assign iob_addr_o = axil_arvalid_i ? axil_araddr_i : axil_awvalid_i ? axil_awaddr_i : iob_addr;
    assign iob_wdata_o = axil_wdata_i;
-   assign iob_wstrb_o = axil_wvalid_i? axil_wstrb_i : {WSTRB_W {1'b0}};
-   
-   assign iob_addr_en = axil_arvalid_i | axil_awvalid_i;
+   assign iob_wstrb_o = axil_wvalid_i ? axil_wstrb_i : {WSTRB_W{1'b0}};
+   assign iob_rready_o = axil_rready_i;
 
+   assign iob_addr_en = axil_arvalid_i | axil_awvalid_i;
 
    iob_reg #(
       .DATA_W (1),
@@ -87,16 +87,16 @@ module iob_axil2iob #(
    );
 
    iob_reg_e #(
-       .DATA_W (ADDR_W),
-       .RST_VAL (0)
+      .DATA_W (ADDR_W),
+      .RST_VAL(0)
    ) iob_reg_addr (
       .clk_i (clk_i),
       .cke_i (cke_i),
       .arst_i(arst_i),
-      .en_i (iob_addr_en),
+      .en_i  (iob_addr_en),
       .data_i(iob_addr_o),
       .data_o(iob_addr)
    );
 
-             
+
 endmodule

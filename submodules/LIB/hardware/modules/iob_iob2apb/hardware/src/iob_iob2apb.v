@@ -76,20 +76,22 @@ module iob_iob2apb #(
    end
 
    //IOb outputs
-   iob_reg #(
+   iob_reg_e #(
       .DATA_W (DATA_W),
       .RST_VAL(0)
    ) iob_rdata_reg (
       `include "clk_en_rst_s_s_portmap.vs"
+      .en_i  (iob_rready_i),
       .data_i(apb_rdata_i),
       .data_o(iob_rdata_o)
    );
 
-   iob_reg #(
+   iob_reg_e #(
       .DATA_W (1),
       .RST_VAL(0)
    ) iob_rvalid_reg (
       `include "clk_en_rst_s_s_portmap.vs"
+      .en_i  (iob_rready_i),
       .data_i(apb_ready_i),
       .data_o(iob_rvalid_o)
    );
