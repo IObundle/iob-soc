@@ -43,14 +43,11 @@ module iob_div_subshift #(
 
    wire [DATA_W-1:0] subtraend;
    assign subtraend = dqr_reg[(2*DATA_W)-2-:DATA_W];
-   wire  [  DATA_W:0] tmp;
+   reg  [  DATA_W:0] tmp;
 
    //output quotient and remainder
    assign quotient_o  = dqr_reg[DATA_W-1:0];
    assign remainder_o = dqr_reg[(2*DATA_W)-1:DATA_W];
-
-   assign tmp = {1'b0, subtraend} - {1'b0, divisor_reg};
-
 
    //
    //PROGRAM
@@ -71,6 +68,7 @@ module iob_div_subshift #(
    );
 
    always @* begin
+      tmp = {1'b0, subtraend} - {1'b0, divisor_reg};
       pcnt_nxt      = pcnt + 1'b1;
       dqr_nxt     = dqr_reg;
       divisor_nxt = divisor_reg;
