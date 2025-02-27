@@ -28,7 +28,7 @@ int main() {
   timer_init(TIMER0_BASE);
 
   // init uart
-  uart_init(UART0_BASE, FREQ / BAUD);
+  uart_init(UART0_BASE, IOB_BSP_FREQ / IOB_BSP_BAUD);
   printf_init(&uart_putc);
 
   // test puts
@@ -65,10 +65,10 @@ int main() {
 
   // read current timer count, compute elapsed time
   unsigned long long elapsed = timer_get_count();
-  unsigned int elapsedu = elapsed / (FREQ / 1000000);
+  unsigned int elapsedu = elapsed / (IOB_BSP_FREQ / 1000000);
 
   printf("\nExecution time: %d clock cycles\n", (unsigned int)elapsed);
-  printf("\nExecution time: %dus @%dMHz\n\n", elapsedu, FREQ / 1000000);
+  printf("\nExecution time: %dus @%dMHz\n\n", elapsedu, IOB_BSP_FREQ / 1000000);
 
   uart_finish();
 }
