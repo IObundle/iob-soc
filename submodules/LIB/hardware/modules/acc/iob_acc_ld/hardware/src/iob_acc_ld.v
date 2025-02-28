@@ -2,6 +2,7 @@
 
 module iob_acc_ld #(
    parameter DATA_W  = 21,
+   parameter INCR_W  = DATA_W,
    parameter RST_VAL = {DATA_W{1'b0}}
 ) (
 `include "clk_en_rst_s_port.vs"
@@ -9,7 +10,7 @@ module iob_acc_ld #(
    input               en_i,
    input               ld_i,
    input [DATA_W-1:0]  ld_val_i,
-   input [DATA_W-1:0]  incr_i,
+   input [INCR_W-1:0]  incr_i,
    output [DATA_W-1:0] data_o,
    output [DATA_W:0]   data_nxt_o
    );
