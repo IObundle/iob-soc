@@ -12,10 +12,10 @@ module iob_uart #(
    `include "iob_uart_swreg_inst.vs"
 
    // TXDATA Manual logic
-   assign TXDATA_wready_wr = 1'b1;
+   assign TXDATA_ready_wr = 1'b1;
 
    // RXDATA Manual logic
-   assign RXDATA_rready_rd = 1'b1;
+   assign RXDATA_ready_rd = 1'b1;
 
    // RXDATA rvalid is iob_valid registered
    wire RXDATA_rvalid_nxt;

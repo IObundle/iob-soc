@@ -145,7 +145,7 @@ class csr_gen:
                 rst_val_str = str(n_bits) + "'d" + str(rst_val)
             f.write(f"wire {name}_wen;\n")
             f.write(
-                f"assign {name}_wen = iob_valid_i & ((|iob_wstrb_i) & {name}_addressed_w);\n"
+                f"assign {name}_wen = iob_valid_i & (write_en & {name}_addressed_w);\n"
             )
             f.write(f"iob_reg_e #(\n")
             f.write(f"  .DATA_W({n_bits}),\n")
@@ -160,7 +160,7 @@ class csr_gen:
             f.write(");\n")
         else:  # compute wen
             f.write(
-                f"assign {name}_wen_o = ({name}_addressed_w & iob_valid_i)? |iob_wstrb_i: 1'b0;\n"
+                f"assign {name}_wen_o = ({name}_addressed_w & iob_valid_i)? write_en : 1'b0;\n"
             )
             f.write(f"assign {name}_wdata_o = {name}_wdata;\n")
 
@@ -186,7 +186,8 @@ class csr_gen:
                 f"assign {name}_addressed_r = (iob_addr_i >= {addr}) && (iob_addr_i < ({addr}+(2**({addr_w}))));\n"
             )
             f.write(
-                f"assign {name}_ren_o = {name}_addressed_r & (iob_valid_i & iob_ready_o) & (~|iob_wstrb_i);\n"
+                f"assign {name}_ren_o = {name}_addressed_r & (iob_valid_i & iob_ready_o) & (~write_en);\n"
+                f"assign {name}_rready_o = {name}_addressed_r & rready_int;\n"
             )
 
     # generate ports for swreg module
@@ -208,7 +209,7 @@ class csr_gen:
                             f"  output [{self.verilog_max(n_bits,1)}-1:0] {name}_wdata_o,\n"
                         )
                         f.write(f"  output {name}_wen_o,\n")
-                        f.write(f"  input {name}_wready_i,\n")
+                        f.write(f"  input {name}_ready_i,\n")
                 if "R" in row["type"]:
                     if auto:
                         f.write(
@@ -219,8 +220,9 @@ class csr_gen:
                             f""" 
                                 input [{self.verilog_max(n_bits,1)}-1:0] {name}_rdata_i,
                                 input {name}_rvalid_i,
+                                output {name}_rready_o,
                                 output {name}_ren_o,
-                                input {name}_rready_i,
+                                input {name}_ready_i,
                             """
                         )
 
@@ -256,7 +258,7 @@ class csr_gen:
                             f"wire [{self.verilog_max(n_bits,1)}-1:0] {name}_wdata_wr;\n"
                         )
                         f.write(f"wire {name}_wen_wr;\n")
-                        f.write(f"wire {name}_wready_wr;\n")
+                        f.write(f"wire {name}_ready_wr;\n")
                 if "R" in row["type"]:
                     if auto:
                         f.write(f"wire [{self.verilog_max(n_bits,1)}-1:0] {name}_rd;\n")
@@ -267,6 +269,8 @@ class csr_gen:
                                 wire {name}_rvalid_rd;
                                 wire {name}_ren_rd;
                                 wire {name}_rready_rd;
+                                wire {name}_ready_rd;
+
                             """
                         )
         f.write("\n")
@@ -285,7 +289,7 @@ class csr_gen:
                     else:
                         f.write(f"  .{name}_wdata_o({name}_wdata_wr),\n")
                         f.write(f"  .{name}_wen_o({name}_wen_wr),\n")
-                        f.write(f"  .{name}_wready_i({name}_wready_wr),\n")
+                        f.write(f"  .{name}_ready_i({name}_ready_wr),\n")
                 if "R" in row["type"]:
                     if auto:
                         f.write(f"  .{name}_i({name}_rd),\n")
@@ -294,8 +298,9 @@ class csr_gen:
                             f"""
                                     .{name}_rdata_i({name}_rdata_rd),
                                     .{name}_rvalid_i({name}_rvalid_rd),
+                                    .{name}_rready_o({name}_rready_rd),
                                     .{name}_ren_o({name}_ren_rd),
-                                    .{name}_rready_i({name}_rready_rd),
+                                    .{name}_ready_i({name}_ready_rd),
                                 """
                         )
 
@@ -459,6 +464,10 @@ class csr_gen:
 
     wire state;
     reg state_nxt;
+    wire write_en;
+    assign write_en = |iob_wstrb_i;
+    wire rready_int;
+    assign rready_int = (state == WAIT_RVALID) & (iob_rready_i & iob_rvalid_o);
 
     //FSM register
     iob_reg #( 
@@ -505,11 +514,10 @@ class csr_gen:
         # use variables to compute response
         f_gen.write(
             f""" 
-                reg rvalid_nxt;
+                reg iob_rvalid_nxt;
                 reg rvalid_int;
-                reg [{8*self.cpu_n_bytes}-1:0] rdata_nxt;
-                reg wready_int;
-                reg rready_int;
+                reg [{8*self.cpu_n_bytes}-1:0] iob_rdata_nxt;
+                reg ready_int;
                 
             """
         )
@@ -524,13 +532,12 @@ class csr_gen:
 
         f_gen.write(
             f"""
-            reg ready_nxt;
+            reg iob_ready_nxt;
 
             always @* begin
-                rdata_nxt = {8*self.cpu_n_bytes}'d0;
-                rvalid_int = (iob_valid_i & iob_ready_o) & (~(|iob_wstrb_i));
-                rready_int = 1'b1;
-                wready_int = 1'b1;
+                iob_rdata_nxt = {8*self.cpu_n_bytes}'d0;
+                rvalid_int = 1'd1;
+                ready_int = 1'b1;
 
             """
         )
@@ -579,20 +586,20 @@ class csr_gen:
                 if name == "VERSION":
                     rst_val = row["rst_val"]
                     f_gen.write(
-                        f"    rdata_nxt[{self.boffset(addr, self.cpu_n_bytes)}+:{8*n_bytes}] = 16'h{rst_val}|{8*n_bytes}'d0;\n"
+                        f"    iob_rdata_nxt[{self.boffset(addr, self.cpu_n_bytes)}+:{8*n_bytes}] = 16'h{rst_val}|{8*n_bytes}'d0;\n"
                     )
                 elif auto:
                     f_gen.write(
-                        f"    rdata_nxt[{self.boffset(addr, self.cpu_n_bytes)}+:{8*n_bytes}] = {name}_i|{8*n_bytes}'d0;\n"
+                        f"    iob_rdata_nxt[{self.boffset(addr, self.cpu_n_bytes)}+:{8*n_bytes}] = {name}_i|{8*n_bytes}'d0;\n"
                     )
                 else:
                     f_gen.write(
-                        f"""rdata_nxt[{self.boffset(addr, self.cpu_n_bytes)}+:{8*n_bytes}] = {name}_rdata_i|{8*n_bytes}'d0;
+                        f"""iob_rdata_nxt[{self.boffset(addr, self.cpu_n_bytes)}+:{8*n_bytes}] = {name}_rdata_i|{8*n_bytes}'d0;
                             rvalid_int = {name}_rvalid_i;  
                         """
                     )
                 if not auto:
-                    f_gen.write(f"    rready_int = {name}_rready_i;\n")
+                    f_gen.write(f"    ready_int = {name}_ready_i;\n")
                 f_gen.write(f"  end\n\n")
 
         # write register response
@@ -609,11 +616,11 @@ class csr_gen:
 
             if "W" in row["type"]:
                 if not auto:
-                    # get wready
+                    # get ready
                     f_gen.write(
                         f"  if((waddr >= {addr}) && (waddr < {addr + 2**addr_w})) begin\n"
                     )
-                    f_gen.write(f"    wready_int = {name}_wready_i;\n  end\n")
+                    f_gen.write(f"    ready_int = {name}_ready_i;\n  end\n")
 
         f_gen.write(
             """     
@@ -621,26 +628,28 @@ class csr_gen:
                     // ######  FSM  #############
 
                     //FSM default values
-                    ready_nxt = 1'b0;
-                    rvalid_nxt = 1'b0;
+                    iob_ready_nxt = 1'b0;
+                    iob_rvalid_nxt = 1'b0;
                     state_nxt = state;
 
                     //FSM state machine
                     case(state)
                         WAIT_REQ: begin
                             if(iob_valid_i & (!iob_ready_o)) begin // Wait for a valid request
-                                ready_nxt = |iob_wstrb_i ? wready_int : rready_int;
+                                iob_ready_nxt = ready_int;
                                 // If is read and ready, go to WAIT_RVALID
-                                if (ready_nxt && (!(|iob_wstrb_i))) begin
+                                if (iob_ready_nxt && (!write_en)) begin
                                     state_nxt = WAIT_RVALID;
                                 end
                             end
                         end
 
                         default: begin  // WAIT_RVALID
-                            rvalid_nxt = rvalid_int;
-                            if (iob_rready_i) begin
+                            if (iob_rready_i & iob_rvalid_o) begin // Transfer done
+                                iob_rvalid_nxt = 1'b0;
                                 state_nxt = WAIT_REQ;
+                            end else begin
+                                iob_rvalid_nxt = rvalid_int;
                             end
                         end
                     endcase
@@ -655,7 +664,7 @@ class csr_gen:
                     .clk_i  (clk_i),
                     .cke_i  (cke_i),
                     .arst_i (arst_i),
-                    .data_i (rdata_nxt),
+                    .data_i (iob_rdata_nxt),
                     .data_o (iob_rdata_o)
                 );
 
@@ -667,7 +676,7 @@ class csr_gen:
                     .clk_i  (clk_i),
                     .cke_i  (cke_i),
                     .arst_i (arst_i),
-                    .data_i (rvalid_nxt),
+                    .data_i (iob_rvalid_nxt),
                     .data_o (iob_rvalid_o)
                 );
 
@@ -679,7 +688,7 @@ class csr_gen:
                     .clk_i  (clk_i),
                     .cke_i  (cke_i),
                     .arst_i (arst_i),
-                    .data_i (ready_nxt),
+                    .data_i (iob_ready_nxt),
                     .data_o (iob_ready_o)
                 );
 

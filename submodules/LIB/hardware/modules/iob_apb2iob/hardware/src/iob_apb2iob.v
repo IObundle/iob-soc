@@ -75,8 +75,11 @@ module iob_apb2iob #(
             end
          end
          RVALID: begin
+            apb_ready_nxt = iob_rvalid_i;
             iob_rready_int = 1'b1;
-            apb_ready_nxt  = 1'b1;
+            if(!iob_rvalid_i) begin
+               pc_cnt_nxt = pc_cnt;
+            end
          end
          default: begin  // WAIT_APB_READY
             pc_cnt_nxt = WAIT_ENABLE;

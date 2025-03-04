@@ -227,9 +227,9 @@ def iob_soc_peripheral_setup(python_module):
                 if parameter["name"] in instance.parameters:
                     parameter_to_append["val"] = instance.parameters[parameter["name"]]
                 # Add instance name prefix to the name of the parameter. This makes this parameter unique to this instance
-                parameter_to_append["name"] = (
-                    f"{instance.name}_{parameter_to_append['name']}"
-                )
+                parameter_to_append[
+                    "name"
+                ] = f"{instance.name}_{parameter_to_append['name']}"
                 python_module.confs.append(parameter_to_append)
 
         # Get peripheral related macros

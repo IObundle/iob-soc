@@ -45,6 +45,7 @@
 `define VALID_W 1
 `define WSTRB_W_(D) D/8
 `define READY_W 1
+`define RREADY_W 1
 
 `define WRITE_W_(D) (D+(`WSTRB_W_(D)))
 `define READ_W_(D) (D)
@@ -54,13 +55,14 @@
 `define WDATA_P_(D) `WSTRB_W_(D)
 `define ADDR_P_(D) (`WDATA_P_(D)+D)
 `define VALID_P_(A, D) (`ADDR_P_(D)+A)
+`define RREADY_P_(A, D) (`VALID_P_(A, D)+`VALID_W)
 //RESP bus
 `define RDATA_P `VALID_W+`READY_W
 
 
 //CONCAT BUS WIDTHS
 //request part
-`define REQ_W_(A, D) ((`VALID_W+A)+`WRITE_W_(D))
+`define REQ_W_(A, D) (`RREADY_W+((`VALID_W+A)+`WRITE_W_(D)))
 //response part
 `define RESP_W_(D) ((`READ_W_(D)+`VALID_W)+`READY_W)
 
@@ -98,6 +100,9 @@
 //gets the READY field of cat bus
 `define READY_(I, D) I*`RESP_W_(D)
 
+//gets the read ready field of cat bus
+`define RREADY_(I, A, D) I*`REQ_W_(A, D) + `RREADY_P_(A, D)
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //defaults
@@ -110,6 +115,7 @@
 `define WDATA_P `WDATA_P_(DATA_W)
 `define ADDR_P `ADDR_P_(DATA_W)
 `define VALID_P `VALID_P_(ADDR_W, DATA_W)
+`define RREADY_P `RREADY_P_(ADDR_W, DATA_W)
 
 `define REQ_W `REQ_W_(ADDR_W, DATA_W)
 `define RESP_W `RESP_W_(DATA_W)
@@ -124,3 +130,4 @@
 `define RDATA(I) `RDATA_(I, DATA_W)
 `define RVALID(I) `RVALID_(I, DATA_W)
 `define READY(I) `READY_(I, DATA_W)
+`define RREADY(I) `RREADY_(I, ADDR_W, DATA_W)

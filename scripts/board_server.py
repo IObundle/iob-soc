@@ -92,7 +92,6 @@ def get_response(request):
 
 
 if __name__ == "__main__":
-
     grab_time = time.time()
 
     # Create a TCP/IP socket

@@ -37,6 +37,8 @@ module iob_iob2apb #(
    assign apb_wstrb_o  = iob_wstrb_i;
    assign apb_write_o  = |iob_wstrb_i;
 
+   reg        iob_rvalid_nxt;
+
    //program counter
    wire [1:0] pc;
    reg  [1:0] pc_nxt;
@@ -50,8 +52,9 @@ module iob_iob2apb #(
    );
 
    always @* begin
-      pc_nxt     = pc + 1'b1;
-      apb_enable = 1'b0;
+      pc_nxt         = pc + 1'b1;
+      apb_enable     = 1'b0;
+      iob_rvalid_nxt = 1'b0;
 
       case (pc)
          WAIT_VALID: begin
@@ -67,20 +70,28 @@ module iob_iob2apb #(
                pc_nxt = pc;
             end else if (apb_write_o) begin  // No need to wait for rvalid
                pc_nxt = WAIT_VALID;
+            end else begin
+               iob_rvalid_nxt = 1'd1;
             end
          end
-         default: begin
-            pc_nxt = WAIT_VALID;
+         default: begin // WAIT_RREADY
+            if (iob_rready_i) begin
+               pc_nxt = WAIT_VALID;
+            end else begin
+               iob_rvalid_nxt = iob_rvalid_o;
+               pc_nxt         = pc;
+            end
          end
       endcase
    end
 
    //IOb outputs
-   iob_reg #(
+   iob_reg_e #(
       .DATA_W (DATA_W),
       .RST_VAL(0)
    ) iob_rdata_reg (
       `include "clk_en_rst_s_s_portmap.vs"
+      .en_i  (apb_ready_i),
       .data_i(apb_rdata_i),
       .data_o(iob_rdata_o)
    );
@@ -90,7 +101,7 @@ module iob_iob2apb #(
       .RST_VAL(0)
    ) iob_rvalid_reg (
       `include "clk_en_rst_s_s_portmap.vs"
-      .data_i(apb_ready_i),
+      .data_i(iob_rvalid_nxt),
       .data_o(iob_rvalid_o)
    );
 
