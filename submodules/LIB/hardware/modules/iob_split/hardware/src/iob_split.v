@@ -6,7 +6,7 @@ module iob_split #(
    parameter DATA_W   = 32,
    parameter ADDR_W   = 32,
    parameter N_SLAVES = 2,          //number of slaves
-   parameter P_SLAVES = `REQ_W - 2  //slave select word msb position
+   parameter P_SLAVES = `REQ_W - 3  //slave select word msb position
 ) (
    `include "clk_rst_s_port.vs"
 

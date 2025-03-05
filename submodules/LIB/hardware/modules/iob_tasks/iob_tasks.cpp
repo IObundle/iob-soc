@@ -82,13 +82,21 @@ unsigned int iob_read(unsigned int cpu_address, iob_native_t *native_if) {
   }
   Timer(1); // In sync with clk posedge + 1ns
   *(native_if->iob_valid) = 0;
+  Timer(CLK_PERIOD); // In sync with clk posedge + 1ns
+  *(native_if->iob_rready) = 1;
+
   Timer(CLK_PERIOD - 1); // In sync with clk posedge
-  if (read_complete)
+  if (read_complete) {
+    Timer(CLK_PERIOD); // In sync with clk posedge + 1ns
+    *(native_if->iob_rready) = 0;
     return read_reg;
+  }
   while (!*(native_if->iob_rvalid))
     Timer(CLK_PERIOD);
   read_reg = *(native_if->iob_rdata) >>
              ((cpu_address & 0b011) * 8); // align to 32 bits
+  Timer(CLK_PERIOD);                      // In sync with clk posedge + 1ns
+  *(native_if->iob_rready) = 0;
   return read_reg;
 }
 

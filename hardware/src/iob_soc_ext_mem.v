@@ -19,7 +19,7 @@ module iob_soc_ext_mem #(
    output [                 `RESP_W-1:0] i_resp_o,
 
    // Data bus
-   input  [1+1+MEM_ADDR_W-2+`WRITE_W-1:0] d_req_i,
+   input  [2+MEM_ADDR_W-2+`WRITE_W-1:0] d_req_i,
    output [                  `RESP_W-1:0] d_resp_o,
 
    // AXI interface
@@ -32,7 +32,7 @@ module iob_soc_ext_mem #(
    //
 
    // Back-end bus
-   wire [1+MEM_ADDR_W+`WRITE_W-1:0] icache_be_req;
+   wire [2+MEM_ADDR_W+`WRITE_W-1:0] icache_be_req;
    wire [              `RESP_W-1:0] icache_be_resp;
 
 
@@ -59,6 +59,7 @@ module iob_soc_ext_mem #(
       .iob_rdata_o         (i_resp_o[`RDATA(0)]),
       .iob_rvalid_o        (i_resp_o[`RVALID(0)]),
       .iob_ready_o         (i_resp_o[`READY(0)]),
+      .iob_rready_i        (1'd1),
       //Control IO
       .invalidate_i (1'b0),
       .invalidate_o(),
@@ -75,7 +76,7 @@ module iob_soc_ext_mem #(
    );
 
    //l2 cache interface signals
-   wire [1+MEM_ADDR_W+`WRITE_W-1:0] l2cache_req;
+   wire [2+MEM_ADDR_W+`WRITE_W-1:0] l2cache_req;
    wire [`RESP_W-1:0] l2cache_resp;
 
    //ext_mem control signals
@@ -97,7 +98,7 @@ module iob_soc_ext_mem #(
    // IOb ready and rvalid signals
 
    // Back-end bus
-   wire [1+MEM_ADDR_W+`WRITE_W-1:0] dcache_be_req;
+   wire [2+MEM_ADDR_W+`WRITE_W-1:0] dcache_be_req;
    wire [              `RESP_W-1:0] dcache_be_resp;
 
    // Data cache instance
@@ -123,6 +124,7 @@ module iob_soc_ext_mem #(
       .iob_rdata_o         (d_resp_o[`RDATA(0)]),
       .iob_rvalid_o        (d_resp_o[`RVALID(0)]),
       .iob_ready_o         (d_resp_o[`READY(0)]),
+      .iob_rready_i        (1'd1),
       //Control IO
       .invalidate_i (1'b0),
       .invalidate_o(invalidate),
@@ -191,6 +193,7 @@ module iob_soc_ext_mem #(
       .iob_rdata_o         (l2cache_rdata),
       .iob_rvalid_o        (l2cache_rvalid),
       .iob_ready_o         (l2cache_ready),
+      .iob_rready_i        (1'd1),
       //Control IO
       .invalidate_i (invalidate_reg & ~l2_valid),
       .invalidate_o(),

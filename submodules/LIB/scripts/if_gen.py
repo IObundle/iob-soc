@@ -300,6 +300,15 @@ iob = [
     {
         "master": 1,
         "slave": 1,
+        "signal": "output",
+        "width": "1",
+        "name": "iob_rready",
+        "default": "0",
+        "description": "Read data ready.",
+    },
+    {
+        "master": 1,
+        "slave": 1,
         "signal": "input",
         "width": "1",
         "name": "iob_ready",

@@ -129,7 +129,6 @@ def instantiate_top_module():
 ########   Main script    ################################################################
 ##########################################################################################
 if __name__ == "__main__":
-
     if len(sys.argv) < 2:
         print(
             "Usage: %s <top_module_name> [setup_args] [-s <search_path>] [-f <func_name>]"

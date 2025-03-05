@@ -107,7 +107,7 @@ module iob_soc_int_mem #(
       .ADDR_W  (ADDR_W),
       .DATA_W  (DATA_W),
       .N_SLAVES(2),
-      .P_SLAVES(B_BIT)
+      .P_SLAVES(B_BIT-1)
    ) data_bootctr_split (
       .clk_i   (clk_i),
       .arst_i  (arst_i),

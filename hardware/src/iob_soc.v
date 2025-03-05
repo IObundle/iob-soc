@@ -104,7 +104,7 @@ module iob_soc #(
       .ADDR_W  (ADDR_W),
       .DATA_W  (DATA_W),
       .N_SLAVES(2),
-      .P_SLAVES(`REQ_W - 2)
+      .P_SLAVES(`REQ_W - 3)
    ) ibus_split (
       .clk_i   (clk_i),
       .arst_i  (cpu_reset),
@@ -135,7 +135,7 @@ module iob_soc #(
       .ADDR_W  (ADDR_W),
       .DATA_W  (DATA_W),
       .N_SLAVES(2),       //E,{P,I}
-      .P_SLAVES(`REQ_W - 2)
+      .P_SLAVES(`REQ_W - 3)
    ) dbus_split (
       .clk_i   (clk_i),
       .arst_i  (cpu_reset),
@@ -163,7 +163,7 @@ module iob_soc #(
       .ADDR_W  (ADDR_W),
       .DATA_W  (DATA_W),
       .N_SLAVES(`IOB_SOC_N_SLAVES),
-      .P_SLAVES(`REQ_W - 3)
+      .P_SLAVES(`REQ_W - 4)
    ) pbus_split (
       .clk_i   (clk_i),
       .arst_i  (cpu_reset),

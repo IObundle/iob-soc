@@ -38,7 +38,8 @@ module iob_soc_sim_wrapper (
     input  [                       3:0] uart_wstrb_i,
     output [       `IOB_SOC_DATA_W-1:0] uart_rdata_o,
     output                              uart_ready_o,
-    output                              uart_rvalid_o
+    output                              uart_rvalid_o,
+    input                               uart_rready_i
 );
 
   localparam AXI_ID_W = 4;
@@ -111,6 +112,7 @@ module iob_soc_sim_wrapper (
       .iob_rdata_o (uart_rdata_o),
       .iob_rvalid_o(uart_rvalid_o),
       .iob_ready_o (uart_ready_o),
+      .iob_rready_i(uart_rready_i),
 
       .txd_o(uart_rxd_i),
       .rxd_i(uart_txd_o),

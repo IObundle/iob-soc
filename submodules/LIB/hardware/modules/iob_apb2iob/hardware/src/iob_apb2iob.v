@@ -28,11 +28,13 @@ module iob_apb2iob #(
 
    reg iob_valid;
    reg apb_ready_nxt;
+   reg iob_rready_int;
 
-   assign iob_valid_o = iob_valid;
-   assign iob_addr_o  = apb_addr_i;
-   assign iob_wdata_o = apb_wdata_i;
-   assign iob_wstrb_o = apb_write_i ? apb_wstrb_i : {WSTRB_W{1'b0}};
+   assign iob_valid_o  = iob_valid;
+   assign iob_addr_o   = apb_addr_i;
+   assign iob_wdata_o  = apb_wdata_i;
+   assign iob_wstrb_o  = apb_write_i ? apb_wstrb_i : {WSTRB_W{1'b0}};
+   assign iob_rready_o = iob_rready_int;
 
    //program counter
    wire [1:0] pc_cnt;
@@ -48,9 +50,10 @@ module iob_apb2iob #(
 
    always @* begin
 
-      pc_cnt_nxt    = pc_cnt + 1'b1;
-      iob_valid     = 1'b0;
-      apb_ready_nxt = 1'b0;
+      pc_cnt_nxt     = pc_cnt + 1'b1;
+      iob_valid      = 1'b0;
+      apb_ready_nxt  = 1'b0;
+      iob_rready_int = 1'b0;
 
       case (pc_cnt)
          WAIT_ENABLE: begin
@@ -72,7 +75,11 @@ module iob_apb2iob #(
             end
          end
          RVALID: begin
-            apb_ready_nxt = 1'b1;
+            apb_ready_nxt = iob_rvalid_i;
+            iob_rready_int = 1'b1;
+            if(!iob_rvalid_i) begin
+               pc_cnt_nxt = pc_cnt;
+            end
          end
          default: begin  // WAIT_APB_READY
             pc_cnt_nxt = WAIT_ENABLE;

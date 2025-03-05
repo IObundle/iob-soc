@@ -19,6 +19,7 @@ typedef struct {
   unsigned char *iob_wstrb;
   unsigned int *iob_rdata;
   unsigned char *iob_rvalid;
+  unsigned char *iob_rready;
   unsigned char *iob_ready;
 } iob_native_t;
 

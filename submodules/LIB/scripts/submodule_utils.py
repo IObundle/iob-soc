@@ -23,9 +23,10 @@ reserved_signals = {
     "iob_addr_i": ".iob_addr_i(slaves_req[`ADDRESS(`/*<InstanceName>*/,`/*<SwregFilename>*/_ADDR_W)])",
     "iob_wdata_i": ".iob_wdata_i(slaves_req[`WDATA(`/*<InstanceName>*/)])",
     "iob_wstrb_i": ".iob_wstrb_i(slaves_req[`WSTRB(`/*<InstanceName>*/)])",
-    "iob_rdata_o": ".iob_rdata_o(slaves_resp[`RDATA(`/*<InstanceName>*/)])",
     "iob_ready_o": ".iob_ready_o(slaves_resp[`READY(`/*<InstanceName>*/)])",
+    "iob_rdata_o": ".iob_rdata_o(slaves_resp[`RDATA(`/*<InstanceName>*/)])",
     "iob_rvalid_o": ".iob_rvalid_o(slaves_resp[`RVALID(`/*<InstanceName>*/)])",
+    "iob_rready_i": ".iob_rready_i(slaves_req[`RREADY(`/*<InstanceName>*/)])",
     "trap_o": ".trap_o(/*<InstanceName>*/_trap_o)",
     "axi_awid_o": ".axi_awid_o          (axi_awid_o             [/*<extmem_conn_num>*/*AXI_ID_W       +:/*<bus_size>*/*AXI_ID_W])",
     "axi_awaddr_o": ".axi_awaddr_o      (axi_awaddr_o           [/*<extmem_conn_num>*/*AXI_ADDR_W     +:/*<bus_size>*/*AXI_ADDR_W])",
@@ -226,9 +227,9 @@ def iob_soc_peripheral_setup(python_module):
                 if parameter["name"] in instance.parameters:
                     parameter_to_append["val"] = instance.parameters[parameter["name"]]
                 # Add instance name prefix to the name of the parameter. This makes this parameter unique to this instance
-                parameter_to_append["name"] = (
-                    f"{instance.name}_{parameter_to_append['name']}"
-                )
+                parameter_to_append[
+                    "name"
+                ] = f"{instance.name}_{parameter_to_append['name']}"
                 python_module.confs.append(parameter_to_append)
 
         # Get peripheral related macros
