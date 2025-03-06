@@ -57,7 +57,7 @@ module iob_axistream_in #(
    wire tlast_detected_reg;
 
    //CPU INTERFACE
-   assign DATA_rready_rd = int_tvalid;
+   assign DATA_ready_rd  = int_tvalid;
    assign interrupt_o    = FIFO_LEVEL_rd >= FIFO_THRESHOLD_wr;
    assign DATA_rvalid_rd = int_tvalid & (~MODE_wr);
    assign DATA_rdata_rd  = int_tdata;
