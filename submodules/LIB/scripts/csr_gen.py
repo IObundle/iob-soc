@@ -480,12 +480,13 @@ class csr_gen:
             f_gen.write(
                 """
     wire rready_int;
-    assign rready_int = (state == WAIT_RVALID) & (iob_rready_i & iob_rvalid_o);
+    assign rready_int = (state == WAIT_RVALID) & iob_rready_i;
         """
             )
 
         f_gen.write(
             """
+
     //FSM register
     iob_reg #( 
         .DATA_W  (1),
