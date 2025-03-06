@@ -6,7 +6,8 @@ module iob_div_subshift_tb;
 
    parameter clk_frequency = `CLK_FREQ;
    parameter clk_period = 1e9/clk_frequency; //ns
-   parameter DATA_W = 8;
+   parameter DIVIDEND_W = 32;
+   parameter DIVISOR_W = 21;
    parameter TEST_SZ = 1000;
 
    reg clk = 0;
@@ -15,14 +16,14 @@ module iob_div_subshift_tb;
    wire done;
 
    //data
-   reg [DATA_W-1:0]  dividend [0:TEST_SZ-1];
-   reg [DATA_W-1:0]  divisor [0:TEST_SZ-1];
-   reg [DATA_W-1:0]  quotient [0:TEST_SZ-1];
-   reg [DATA_W-1:0]  remainder [0:TEST_SZ-1];
+   reg [DIVIDEND_W-1:0]  dividend [0:TEST_SZ-1];
+   reg [DIVISOR_W-1:0]  divisor [0:TEST_SZ-1];
+   reg [DIVIDEND_W-1:0]  quotient [0:TEST_SZ-1];
+   reg [DIVISOR_W-1:0]  remainder [0:TEST_SZ-1];
 
    //core outputs
-   wire [DATA_W-1:0] quotient_out;
-   wire [DATA_W-1:0] remainder_out;
+   wire [DIVIDEND_W-1:0] quotient_out;
+   wire [DIVISOR_W-1:0] remainder_out;
    
    integer           i;
    integer fp;
@@ -82,7 +83,8 @@ module iob_div_subshift_tb;
    //instantiate unsigned divider
    iob_div_subshift 
      # (
-        .DATA_W(DATA_W)
+        .DIVIDEND_W(DIVIDEND_W),
+        .DIVISOR_W(DIVISOR_W)
         )
    uut 
      (

@@ -32,7 +32,7 @@ module iob_div_subshift_frac #(
    assign quotient_o = quotient_int + incr;
 
    iob_div_subshift #(
-      .DATA_W(DATA_W)
+      .DIVIDEND_W(DATA_W)
    ) div_subshift0 (
       `include "clk_en_rst_s_s_portmap.vs"
       .start_i(start_i),

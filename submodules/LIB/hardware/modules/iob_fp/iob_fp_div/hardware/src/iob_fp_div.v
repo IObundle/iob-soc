@@ -148,7 +148,7 @@ module iob_fp_div #(
    wire [EXP_W-1:0]              Temp_Exponent = A_Exponent_reg - B_Exponent_reg + BIAS;
    wire [2*MAN_W+EXTRA-1:0]      Temp_Mantissa; // = A_Mantissa_reg / B_Mantissa_reg;
    iob_div_subshift # (
-                   .DATA_W(2*MAN_W+EXTRA)
+                   .DIVIDEND_W(2*MAN_W+EXTRA)
                    )
    div_subshift (
                  .clk_i       (clk_i),
