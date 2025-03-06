@@ -466,8 +466,26 @@ class csr_gen:
     reg state_nxt;
     wire write_en;
     assign write_en = |iob_wstrb_i;
+    """
+        )
+
+        # check if all registers are auto and add rready_int if not
+        all_auto = True
+        for row in table:
+            if "R" in row["type"] and not row["autoreg"]:
+                all_auto = False
+                break
+
+        if not all_auto:
+            f_gen.write(
+                """
     wire rready_int;
     assign rready_int = (state == WAIT_RVALID) & iob_rready_i;
+        """
+            )
+
+        f_gen.write(
+            """
 
     //FSM register
     iob_reg #( 
