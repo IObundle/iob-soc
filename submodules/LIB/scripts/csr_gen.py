@@ -145,7 +145,7 @@ class csr_gen:
                 rst_val_str = str(n_bits) + "'d" + str(rst_val)
             f.write(f"wire {name}_wen;\n")
             f.write(
-                f"assign {name}_wen = (iob_valid_i & iob_ready_o) & (write_en & {name}_addressed_w);\n"
+                f"assign {name}_wen = iob_valid_i & (write_en & {name}_addressed_w);\n"
             )
             f.write(f"iob_reg_e #(\n")
             f.write(f"  .DATA_W({n_bits}),\n")
@@ -160,7 +160,7 @@ class csr_gen:
             f.write(");\n")
         else:  # compute wen
             f.write(
-                f"assign {name}_wen_o = ({name}_addressed_w & (iob_valid_i & iob_ready_o))? write_en : 1'b0;\n"
+                f"assign {name}_wen_o = (iob_valid_i & iob_ready_o) & (write_en & {name}_addressed_w);\n"
             )
             f.write(f"assign {name}_wdata_o = {name}_wdata;\n")
 
