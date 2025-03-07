@@ -51,7 +51,7 @@ module iob_axistream_out #(
    assign axis_tlast_o = (axis_word_count == axis_nwords) & axis_tvalid_o;
 
    //CPU interface
-   assign DATA_wready_wr = ~FIFO_FULL_rd;
+   assign DATA_ready_wr = ~FIFO_FULL_rd;
    assign interrupt_o = FIFO_LEVEL_rd <= FIFO_THRESHOLD_wr;
 
    //DMA data ready

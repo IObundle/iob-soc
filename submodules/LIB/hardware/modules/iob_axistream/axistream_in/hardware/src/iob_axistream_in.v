@@ -57,7 +57,7 @@ module iob_axistream_in #(
    wire tlast_detected_reg;
 
    //CPU INTERFACE
-   assign DATA_rready_rd = int_tvalid;
+   assign DATA_ready_rd  = int_tvalid;
    assign interrupt_o    = FIFO_LEVEL_rd >= FIFO_THRESHOLD_wr;
    assign DATA_rvalid_rd = int_tvalid & (~MODE_wr);
    assign DATA_rdata_rd  = int_tdata;
@@ -67,7 +67,7 @@ module iob_axistream_in #(
    assign sys_tvalid_o   = int_tvalid & MODE_wr;
    assign sys_tdata_o    = int_tdata;
 
-   assign int_tready = (MODE_wr) ? sys_tready_i : DATA_ren_rd;
+   assign int_tready = (MODE_wr) ? sys_tready_i : DATA_rready_rd;
 
    // empty = fifo empty + no data in iob_fifo2axis
    assign FIFO_EMPTY_rd = fifo_empty & (~int_tvalid);
