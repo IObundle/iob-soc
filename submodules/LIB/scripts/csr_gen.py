@@ -554,8 +554,8 @@ class csr_gen:
 
             always @* begin
                 iob_rdata_nxt = {8*self.cpu_n_bytes}'d0;
-                rvalid_int = 1'd1;
-                ready_int = 1'b1;
+                rvalid_int = 1'd0;
+                ready_int = 1'd0;
 
             """
         )
@@ -607,17 +607,18 @@ class csr_gen:
                         f"    iob_rdata_nxt[{self.boffset(addr, self.cpu_n_bytes)}+:{8*n_bytes}] = 16'h{rst_val}|{8*n_bytes}'d0;\n"
                     )
                 elif auto:
+                    f_gen.write(f"    rvalid_int = 1'd1;\n")
+                    f_gen.write(f"    ready_int = 1'd1;\n")
                     f_gen.write(
                         f"    iob_rdata_nxt[{self.boffset(addr, self.cpu_n_bytes)}+:{8*n_bytes}] = {name}_i|{8*n_bytes}'d0;\n"
                     )
                 else:
+                    f_gen.write(f"    ready_int = {name}_ready_i;\n")
                     f_gen.write(
                         f"""iob_rdata_nxt[{self.boffset(addr, self.cpu_n_bytes)}+:{8*n_bytes}] = {name}_rdata_i|{8*n_bytes}'d0;
                             rvalid_int = {name}_rvalid_i;  
                         """
                     )
-                if not auto:
-                    f_gen.write(f"    ready_int = {name}_ready_i;\n")
                 f_gen.write(f"  end\n\n")
 
         # write register response
@@ -633,7 +634,9 @@ class csr_gen:
             auto = row["autoreg"]
 
             if "W" in row["type"]:
-                if not auto:
+                if auto:
+                    f_gen.write(f"    ready_int = 1'd1;\n")
+                else:
                     # get ready
                     f_gen.write(
                         f"  if((waddr >= {addr}) && (waddr < {addr + 2**addr_w})) begin\n"
