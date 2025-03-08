@@ -164,8 +164,8 @@ def generate_confs_tex(confs, out_dir):
     for derv_param in derv_params:
         # replace underscores and $clog2 with \_ and $\log_2
         for i in range(len(derv_param)):
-            derv_param[i] = derv_param[i].replace("_", "\\_")
-            derv_param[i] = derv_param[i].replace("$clog2", "log2")
+            derv_param[i] = str(derv_param[i]).replace("_", "\\_")
+            derv_param[i] = str(derv_param[i]).replace("$clog2", "log2")
         # write the line
         file2create.write(
             f"  \\item[{derv_param[0]}] {derv_param[2]} Value: {derv_param[1]}.\n"

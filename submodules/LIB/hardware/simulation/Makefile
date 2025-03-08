@@ -70,7 +70,7 @@ GRAB_TIMEOUT ?= 300
 BOARD_GRAB_CMD=../../scripts/board_client.py grab $(GRAB_TIMEOUT)
 
 run: test.log
-	test "$$(cat test.log)" = "Test passed!"
+	@if ! grep -q "Test passed!" test.log; then echo "Test failed!"; exit 1; fi
 
 test.log: remote_build_dir
 ifeq ($(SIM_SERVER),)
