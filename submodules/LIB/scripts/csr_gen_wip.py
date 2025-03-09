@@ -469,24 +469,30 @@ class csr_gen:
     """
         )
 
-        # check if all registers are auto and add rready_int if not
-        all_auto = True
+        # check if all read registers are auto and add rready_int if not
+        all_read_auto = True
         for row in table:
-            if "R" in row["type"] and not row["autoreg"]:
-                all_auto = False
+            if not row["autoreg"] and row["type"] == 'R':
+                all_read_auto = False
                 break
-
-        if not all_auto:
+            
+        if not all_read_auto:
             f_gen.write(
                 """
-    wire rready_int;
-    assign rready_int = (state == WAIT_RVALID) & iob_rready_i;
-        """
+                wire rready_int;
+                assign rready_int = (state == WAIT_RVALID) & iob_rready_i;
+                """
             )
 
+        # check if all registers are auto
+        all_auto = True
+        for row in table:
+            if not row["autoreg"]:
+                all_auto = False
+                break
+            
         f_gen.write(
             """
-
     //FSM register
     iob_reg #( 
         .DATA_W  (1),
@@ -533,12 +539,35 @@ class csr_gen:
         f_gen.write(
             f""" 
                 reg iob_rvalid_nxt;
-                reg rvalid_int;
                 reg [{8*self.cpu_n_bytes}-1:0] iob_rdata_nxt;
-                reg ready_int;
                 
             """
-        )
+            )
+
+        if not all_read_auto:
+            f_gen.write(
+            """ 
+                reg rvalid_int;
+                
+            """
+            )
+            
+        if not all_auto:
+            f_gen.write(
+            """ 
+                reg ready_int;
+                reg iob_ready_nxt;
+
+            """
+            )
+        else:
+            f_gen.write(
+            """ 
+                assign iob_ready_o = 1'b1;
+                
+            """
+            )
+
 
         # auxiliar read register cases
         for row in table:
@@ -550,15 +579,55 @@ class csr_gen:
 
         f_gen.write(
             f"""
-            reg iob_ready_nxt;
-
+                
             always @* begin
                 iob_rdata_nxt = {8*self.cpu_n_bytes}'d0;
-                rvalid_int = 1'd1;
-                ready_int = 1'b1;
 
             """
         )
+
+        if not all_read_auto:                
+            f_gen.write(
+            """
+                rvalid_int = 1'd1;
+                
+                """
+            )
+
+        if not all_auto:
+            f_gen.write(
+            """
+                ready_int = 1'd1;
+                
+                """
+            )
+
+        if not all_read_auto:
+            rvalid_val = "rvalid_int"
+        else:
+            rvalid_val = "1'b1"
+            
+        if not all_auto:
+            assign_iob_ready_nxt_default = "iob_ready_nxt = 1'b0;"
+            assign_iob_ready_nxt = "iob_ready_nxt = ready_int;"
+            test_iob_ready_nxt = "iob_ready_nxt &&"
+            iob_ready_ff = """
+                iob_reg #( 
+                    .DATA_W  (1),
+                    .RST_VAL (1'd0)
+                ) ready_reg_inst (
+                    .clk_i  (clk_i),
+                    .cke_i  (cke_i),
+                    .arst_i (arst_i),
+                    .data_i (iob_ready_nxt),
+                    .data_o (iob_ready_o)
+                );
+            """
+        else:
+            assign_iob_ready_nxt_default = ""
+            assign_iob_ready_nxt = ""
+            test_iob_ready_nxt = ""
+            iob_ready_ff = ""
 
         # read register response
         for row in table:
@@ -611,13 +680,13 @@ class csr_gen:
                         f"    iob_rdata_nxt[{self.boffset(addr, self.cpu_n_bytes)}+:{8*n_bytes}] = {name}_i|{8*n_bytes}'d0;\n"
                     )
                 else:
+                    if not all_auto:
+                        f_gen.write(f"    ready_int = {name}_ready_i;\n")
                     f_gen.write(
                         f"""iob_rdata_nxt[{self.boffset(addr, self.cpu_n_bytes)}+:{8*n_bytes}] = {name}_rdata_i|{8*n_bytes}'d0;
                             rvalid_int = {name}_rvalid_i;  
                         """
                     )
-                if not auto:
-                    f_gen.write(f"    ready_int = {name}_ready_i;\n")
                 f_gen.write(f"  end\n\n")
 
         # write register response
@@ -640,76 +709,68 @@ class csr_gen:
                     )
                     f_gen.write(f"    ready_int = {name}_ready_i;\n  end\n")
 
-        f_gen.write(
-            """     
+        f_gen.write (
+            f"""     
 
-                    // ######  FSM  #############
-
-                    //FSM default values
-                    iob_ready_nxt = 1'b0;
-                    iob_rvalid_nxt = 1'b0;
-                    state_nxt = state;
-
-                    //FSM state machine
-                    case(state)
-                        WAIT_REQ: begin
-                            if(iob_valid_i & (!iob_ready_o)) begin // Wait for a valid request
-                                iob_ready_nxt = ready_int;
-                                // If is read and ready, go to WAIT_RVALID
-                                if (iob_ready_nxt && (!write_en)) begin
-                                    state_nxt = WAIT_RVALID;
-                                end
-                            end
-                        end
-
-                        default: begin  // WAIT_RVALID
-                            if (iob_rready_i & iob_rvalid_o) begin // Transfer done
-                                iob_rvalid_nxt = 1'b0;
-                                state_nxt = WAIT_REQ;
-                            end else begin
-                                iob_rvalid_nxt = rvalid_int;
-                            end
-                        end
-                    endcase
-
-                end //always @*
-
-                //rdata output
-                iob_reg #( 
-                    .DATA_W  (DATA_W),
-                    .RST_VAL ({DATA_W{1'd0}})
-                ) rdata_reg_inst (
-                    .clk_i  (clk_i),
-                    .cke_i  (cke_i),
-                    .arst_i (arst_i),
-                    .data_i (iob_rdata_nxt),
-                    .data_o (iob_rdata_o)
-                );
-
-                //rvalid output
-                iob_reg #( 
-                    .DATA_W  (1),
-                    .RST_VAL (1'd0)
-                ) rvalid_reg_inst (
-                    .clk_i  (clk_i),
-                    .cke_i  (cke_i),
-                    .arst_i (arst_i),
-                    .data_i (iob_rvalid_nxt),
-                    .data_o (iob_rvalid_o)
-                );
-
-                //ready output
-                iob_reg #( 
-                    .DATA_W  (1),
-                    .RST_VAL (1'd0)
-                ) ready_reg_inst (
-                    .clk_i  (clk_i),
-                    .cke_i  (cke_i),
-                    .arst_i (arst_i),
-                    .data_i (iob_ready_nxt),
-                    .data_o (iob_ready_o)
-                );
-
+            // ######  FSM  #############
+            
+            //FSM default values
+            {assign_iob_ready_nxt_default}
+            iob_rvalid_nxt = 1'b0;
+            state_nxt = state;
+            
+            //FSM state machine
+            case(state)
+            WAIT_REQ: begin
+               if(iob_valid_i & (!iob_ready_o)) begin // Wait for a valid request
+                  {assign_iob_ready_nxt}
+                  // If is read and ready, go to WAIT_RVALID
+                  if ({test_iob_ready_nxt} (!write_en)) begin
+                     state_nxt = WAIT_RVALID;
+                     iob_rvalid_nxt = {rvalid_val};       
+                  end
+               end
+            end
+            
+            default: begin  // WAIT_RVALID
+               if (iob_rready_i & iob_rvalid_o) begin // Transfer done
+                  iob_rvalid_nxt = 1'b0;
+                  state_nxt = WAIT_REQ;
+               end else begin
+                 iob_rvalid_nxt = {rvalid_val};
+               end
+            end
+            endcase
+            
+            end //always @*
+            
+            //rdata output
+            iob_reg #( 
+            .DATA_W  (DATA_W),
+            .RST_VAL ({{DATA_W{{1'd0}}}})
+            ) rdata_reg_inst (
+            .clk_i  (clk_i),
+            .cke_i  (cke_i),
+            .arst_i (arst_i),
+            .data_i (iob_rdata_nxt),
+            .data_o (iob_rdata_o)
+            );
+            
+            //rvalid output
+            iob_reg #( 
+            .DATA_W  (1),
+            .RST_VAL (1'd0)
+            ) rvalid_reg_inst (
+            .clk_i  (clk_i),
+            .cke_i  (cke_i),
+            .arst_i (arst_i),
+            .data_i (iob_rvalid_nxt),
+            .data_o (iob_rvalid_o)
+            );
+            
+            //ready output
+            {iob_ready_ff}
+            
             endmodule
             """
         )
