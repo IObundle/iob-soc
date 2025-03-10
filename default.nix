@@ -5,8 +5,8 @@
 { pkgs ? import <nixpkgs> {} }:
 
 let
-  py2hwsw_commit = "04dd0ea6ac799891684a1d68ee79383bb5c57f16"; # Replace with the desired commit.
-  py2hwsw_sha256 = "icgThZEwhDRSW7yS99zcRY9Y2kTT8g6rkOAYErX+zpQ="; # Replace with the actual SHA256 hash.
+  py2hwsw_commit = "6badfa89fd8be09939e269c1904582695d83e5fd"; # Replace with the desired commit.
+  py2hwsw_sha256 = "hbXznM77AtqsqoTTQbbUytVovaPzIsrgoTtMsgR0mYY="; # Replace with the actual SHA256 hash.
   # Get local py2hwsw root from `PY2HWSW_ROOT` env variable
   py2hwswRoot = builtins.getEnv "PY2HWSW_ROOT";
 
@@ -42,13 +42,16 @@ let
     else
       null;
 
+  extra_pkgs = with pkgs; [
+    # Define other Nix packages for your project here
+  ];
 
 in
 
 # If no root is provided, or there is a root but we want to force a rebuild
 if py2hwswRoot == "" || force_py2_build != 0 then
   # Use newly built nix package
-  import "${py2hwsw}/lib/python${builtins.substring 0 4 pkgs.python3.version}/site-packages/py2hwsw/lib/default.nix" { inherit pkgs; py2hwsw_pkg = py2hwsw; }
+  import "${py2hwsw}/lib/python${builtins.substring 0 4 pkgs.python3.version}/site-packages/py2hwsw/lib/default.nix" { inherit pkgs; py2hwsw_pkg = py2hwsw; extra_pkgs = extra_pkgs; }
 else
   # Use local
-  import "${py2hwswRoot}/py2hwsw/lib/default.nix" { inherit pkgs; py2hwsw_pkg = py2hwsw; }
+  import "${py2hwswRoot}/py2hwsw/lib/default.nix" { inherit pkgs; py2hwsw_pkg = py2hwsw; extra_pkgs = extra_pkgs; }
