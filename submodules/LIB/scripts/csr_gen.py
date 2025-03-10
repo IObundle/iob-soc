@@ -471,12 +471,15 @@ class csr_gen:
 
         # check if all registers are auto and add rready_int if not
         all_auto = True
+        all_reads_auto = True
         for row in table:
-            if "R" in row["type"] and not row["autoreg"]:
+            if not row["autoreg"]:
                 all_auto = False
-                break
+                if "R" in row["type"]:
+                    all_reads_auto = False
+                    break
 
-        if not all_auto:
+        if not all_reads_auto:
             f_gen.write(
                 """
     wire rready_int;
@@ -533,12 +536,17 @@ class csr_gen:
         f_gen.write(
             f""" 
                 reg iob_rvalid_nxt;
-                reg rvalid_int;
-                reg [{8*self.cpu_n_bytes}-1:0] iob_rdata_nxt;
-                reg ready_int;
-                
+                reg [{8*self.cpu_n_bytes}-1:0] iob_rdata_nxt;                
             """
         )
+
+        if not all_auto:
+            f_gen.write(
+                """
+                    reg rvalid_int;
+                    reg ready_int;
+                """
+            )
 
         # auxiliar read register cases
         for row in table:
@@ -554,11 +562,17 @@ class csr_gen:
 
             always @* begin
                 iob_rdata_nxt = {8*self.cpu_n_bytes}'d0;
-                rvalid_int = 1'd1;
-                ready_int = 1'b1;
-
             """
         )
+
+        if not all_auto:
+            f_gen.write(
+                """
+                rvalid_int = 1'b1;
+                ready_int = 1'b1;
+
+                """
+            )
 
         # read register response
         for row in table:
@@ -654,7 +668,24 @@ class csr_gen:
                     case(state)
                         WAIT_REQ: begin
                             if(iob_valid_i & (!iob_ready_o)) begin // Wait for a valid request
+            """
+        )
+
+        if not all_auto:
+            f_gen.write(
+                """
                                 iob_ready_nxt = ready_int;
+                """
+            )
+        else:
+            f_gen.write(
+                """
+                                iob_ready_nxt = 1'b1;
+                """
+            )
+
+        f_gen.write(
+            """
                                 // If is read and ready, go to WAIT_RVALID
                                 if (iob_ready_nxt && (!write_en)) begin
                                     state_nxt = WAIT_RVALID;
@@ -667,7 +698,23 @@ class csr_gen:
                                 iob_rvalid_nxt = 1'b0;
                                 state_nxt = WAIT_REQ;
                             end else begin
+            """
+        )   
+        if not all_reads_auto:
+            f_gen.write(
+                """
                                 iob_rvalid_nxt = rvalid_int;
+                """
+            )
+        else:
+            f_gen.write(
+                """
+                                iob_rvalid_nxt = 1'b1;
+                """
+            )
+
+        f_gen.write(
+            """
                             end
                         end
                     endcase
