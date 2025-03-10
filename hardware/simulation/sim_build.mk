@@ -1,10 +1,10 @@
-# SPDX-FileCopyrightText: 2024 IObundle
+# SPDX-FileCopyrightText: 2025 IObundle
 #
 # SPDX-License-Identifier: MIT
 
 include auto_sim_build.mk
 
-# Add iob-system software as a build dependency
+# Add iob-soc software as a build dependency
 HEX+=iob_soc_bootrom.hex iob_soc_firmware.hex
 
 ROOT_DIR :=../..
