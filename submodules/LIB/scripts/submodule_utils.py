@@ -405,12 +405,24 @@ class if_gen_hack_list:
             r"^\s*((?:input)|(?:output))\s+\[([^:]+)-1:0\]\s+([^,]+),.*$",
             port_string,
         )
+        # special case for width = 1
+        if port is None:
+            port = re.search(
+                r"^\s*((?:input)|(?:output))\s+([^,]+),.*$",
+                port_string,
+            )
+            port_name = port.group(2)
+            port_n_bits = "1"
+        else:
+            port_name = port.group(3)
+            port_n_bits = port.group(2)
+
         # Append port to port dictionary
         self.port_list.append(
             {
-                "name": port.group(3),
+                "name": port_name,
                 "type": get_short_port_type(port.group(1)),
-                "n_bits": port.group(2),
+                "n_bits": port_n_bits,
                 "descr": next(
                     signal["description"]
                     for signal in if_gen.iob
@@ -418,7 +430,7 @@ class if_gen_hack_list:
                     + if_gen.axi_write
                     + if_gen.axi_read
                     + if_gen.amba
-                    if signal["name"] in port.group(3)
+                    if signal["name"] in port_name
                 ),
             }
         )
