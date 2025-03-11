@@ -1697,7 +1697,10 @@ def write_port(direction, width, name, fout):
     elif direction == "O":
         direction = "output"
 
-    fout.write(f"{direction} [{width}-1:0] {name}," + "\n")
+    if width == "1":
+        fout.write(f"{direction} {name}," + "\n")
+    else:
+        fout.write(f"{direction} [{width}-1:0] {name}," + "\n")
 
 
 def m_port(prefix, param_prefix, bus_size=1):
