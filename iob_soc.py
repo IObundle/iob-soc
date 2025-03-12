@@ -12,8 +12,6 @@ def setup(py_params_dict):
             # IOb-SoC will inherit all attributes/files from the iob_system core.
             "core_name": "iob_system",
             # Every parameter in the lines below will be passed to the iob_system parent core.
-            **py_params_dict,
-            # IOb-System python parameters
             # Full list of parameters availabe here: https://github.com/IObundle/py2hwsw/blob/main/py2hwsw/lib/iob_system/iob_system.py
             "cpu": "iob_vexriscv",
             # NOTE: Place other iob_system python parameters here
@@ -64,6 +62,7 @@ def setup(py_params_dict):
                     # NOTE: Add other components/peripherals here.
                 ],
             },
+            **py_params_dict,
         },
     }
 
