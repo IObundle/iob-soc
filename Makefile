@@ -40,7 +40,7 @@ sim-test:
 	nix-shell --run "make clean setup USE_INTMEM=0 USE_EXTMEM=1 INIT_MEM=0 && make -C ../$(CORE)_V$(VERSION)/ sim-run SIMULATOR=verilator"
 
 fpga-run:
-	nix-shell --run "make clean setup && make -C ../$(CORE)_V$(VERSION)/ fpga-fw-build BOARD=$(BOARD)"
+	nix-shell --run "make clean setup && make -C ../$(CORE)_V$(VERSION)/ fpga-sw-build BOARD=$(BOARD)"
 	make -C ../$(CORE)_V$(VERSION)/ fpga-run BOARD=$(BOARD)
 
 fpga-test:
@@ -96,7 +96,7 @@ tester-sim-run:
 	nix-shell --run "make clean setup && make -C ../$(CORE)_V$(VERSION)/tester/ sim-run SIMULATOR=$(SIMULATOR)"
 
 tester-fpga-run:
-	nix-shell --run "make clean setup && make -C ../$(CORE)_V$(VERSION)/tester/ fpga-fw-build BOARD=$(BOARD)"
+	nix-shell --run "make clean setup && make -C ../$(CORE)_V$(VERSION)/tester/ fpga-sw-build BOARD=$(BOARD)"
 	make -C ../$(CORE)_V$(VERSION)/tester/ fpga-run BOARD=$(BOARD)
 
 .PHONY: tester-sim-run tester-fpga-run

@@ -31,7 +31,8 @@ iob_soc_firmware.bin: ../../software/iob_soc_firmware.bin
 ../../software/%.bin:
 	make -C ../../ fw-build
 
-UTARGETS+=build_iob_soc_software
+UTARGETS+=build_iob_soc_software tb
+CSRS=./src/iob_uart_csrs.c
 
 TEMPLATE_LDS=src/$@.lds
 
@@ -47,13 +48,13 @@ IOB_SOC_FW_SRC+=src/iob_printf.c
 DRIVERS=$(addprefix src/,$(addsuffix .c,$(PERIPHERALS)))
 # Only add driver files if they exist
 IOB_SOC_FW_SRC+=$(foreach file,$(DRIVERS),$(wildcard $(file)*))
-IOB_SOC_FW_SRC+=$(addprefix src/,$(addsuffix _csrs_emb.c,$(PERIPHERALS)))
+IOB_SOC_FW_SRC+=$(addprefix src/,$(addsuffix _csrs.c,$(PERIPHERALS)))
 
 # BOOTLOADER SOURCES
 IOB_SOC_BOOT_SRC+=src/iob_soc_boot.S
 IOB_SOC_BOOT_SRC+=src/iob_soc_boot.c
 IOB_SOC_BOOT_SRC+=src/iob_uart.c
-IOB_SOC_BOOT_SRC+=src/iob_uart_csrs_emb.c
+IOB_SOC_BOOT_SRC+=src/iob_uart_csrs.c
 
 # PREBOOT SOURCES
 IOB_SOC_PREBOOT_SRC=src/iob_soc_preboot.S
@@ -63,7 +64,7 @@ build_iob_soc_software: iob_soc_firmware iob_soc_boot iob_soc_preboot
 ifneq ($(USE_FPGA),)
 WRAPPER_CONFS_PREFIX=iob_soc_$(BOARD)
 else
-WRAPPER_CONFS_PREFIX=iob_soc_sim
+WRAPPER_CONFS_PREFIX=iob_uut
 endif
 
 iob_bsp:
@@ -76,7 +77,7 @@ iob_soc_boot: iob_bsp
 	make $@.elf INCLUDES="$(IOB_SOC_INCLUDES)" LFLAGS="$(IOB_SOC_LFLAGS) -Wl,-Map,$@.map" SRC="$(IOB_SOC_BOOT_SRC)" TEMPLATE_LDS="$(TEMPLATE_LDS)"
 
 iob_soc_preboot:
-	make $@.elf INCLUDES="$(IOB_SOC_INCLUDES)" LFLAGS="$(IOB_SOC_LFLAGS) -Wl,-Map,$@.map" SRC="$(IOB_SOC_PREBOOT_SRC)" TEMPLATE_LDS="$(TEMPLATE_LDS)"
+	make $@.elf INCLUDES="$(IOB_SOC_INCLUDES)" LFLAGS="$(IOB_SOC_LFLAGS) -Wl,-Map,$@.map" SRC="$(IOB_SOC_PREBOOT_SRC)" TEMPLATE_LDS="$(TEMPLATE_LDS)" NO_HW_DRIVER=1
 
 
 .PHONY: build_iob_soc_software iob_bsp iob_soc_firmware iob_soc_boot iob_soc_preboot
