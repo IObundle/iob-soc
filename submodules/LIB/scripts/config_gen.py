@@ -55,12 +55,38 @@ def conf_vh(macros, top_module, out_dir):
     # wont execute because of the `ifndef` added here, therefore the `ifdef MACRO1` block will also not execute when it should have.
     # file2create.write(f"`ifndef VH_{fname}_VH\n")
     # file2create.write(f"`define VH_{fname}_VH\n\n")
+
+    # First, order the macros by type, P first, M second, F last
+    sorted_macros = []
     for macro in macros:
+        if macro["type"] == "P":
+            sorted_macros.append(macro)
+    for macro in macros:
+        if macro["type"] == "M":
+            sorted_macros.append(macro)
+    for macro in macros:
+        if macro["type"] == "F":
+            sorted_macros.append(macro)
+
+    prev_type = ""
+    # Now, write the macros to the file
+    for macro in sorted_macros:
+        macro_type = macro["type"]
+        # If the type of the macro is different from the previous one, add a comment
+        if macro_type != prev_type:
+            if macro_type == "P":
+                file2create.write(f"// Core Configuration Parameters Default Values\n")
+            elif macro_type == "M":
+                file2create.write(f"// Core Constants. DO NOT CHANGE\n")
+            elif macro_type == "F":
+                file2create.write(f"// Core Derived Parameters. DO NOT CHANGE\n")
+
         # If macro has 'doc_only' attribute set to True, skip it
         if "doc_only" in macro.keys() and macro["doc_only"]:
             continue
         if "if_defined" in macro.keys():
             file2create.write(f"`ifdef {macro['if_defined']}\n")
+
         # Only insert macro if its is not a bool define, and if so only insert it if it is true
         if type(macro["val"]) != bool:
             m_name = macro["name"].upper()
@@ -71,6 +97,8 @@ def conf_vh(macros, top_module, out_dir):
             file2create.write(f"`define {core_prefix}{m_name} 1\n")
         if "if_defined" in macro.keys():
             file2create.write("`endif\n")
+
+        prev_type = macro_type
     # file2create.write(f"\n`endif // VH_{fname}_VH\n")
 
 
