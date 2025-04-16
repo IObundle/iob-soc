@@ -160,10 +160,11 @@ def append_str_config_build_mk(str_2_append, build_dir):
 def generate_confs_tex(confs, out_dir):
     tex_table = []
     derv_params = []
+    constants = []
     for conf in confs:
         conf_val = conf["val"] if type(conf["val"]) != bool else "1"
-        # False parameters are not included in the table
-        if conf["type"] != "F":
+        # Only parameters are added to the table
+        if conf["type"] == "P":
             tex_table.append(
                 [
                     conf["name"],
@@ -171,6 +172,15 @@ def generate_confs_tex(confs, out_dir):
                     conf["min"],
                     conf_val,
                     conf["max"],
+                    conf["descr"],
+                ]
+            )
+        elif conf["type"] == "M":
+            # Add to list of constants
+            constants.append(
+                [
+                    conf["name"],
+                    conf_val,
                     conf["descr"],
                 ]
             )
@@ -183,7 +193,7 @@ def generate_confs_tex(confs, out_dir):
                 ]
             )
 
-    # Write table with true parameters and macros
+    # Write table with true parameters
     write_table(f"{out_dir}/confs", tex_table)
 
     # Write list of derived parameters
@@ -197,6 +207,20 @@ def generate_confs_tex(confs, out_dir):
         # write the line
         file2create.write(
             f"  \\item[{derv_param[0]}] {derv_param[2]} Value: {derv_param[1]}.\n"
+        )
+    file2create.write("\\end{description}\n")
+
+    # Write list of constants
+    file2create = open(f"{out_dir}/constants.tex", "w")
+    file2create.write("\\begin{description}\n")
+    for constant in constants:
+        # replace underscores and $clog2 with \_ and $\log_2
+        for i in range(len(constant)):
+            constant[i] = str(constant[i]).replace("_", "\\_")
+            constant[i] = str(constant[i]).replace("$clog2", "log2")
+        # write the line
+        file2create.write(
+            f"  \\item[{constant[0]}] {constant[2]} Value: {constant[1]}.\n"
         )
     file2create.write("\\end{description}\n")
 
