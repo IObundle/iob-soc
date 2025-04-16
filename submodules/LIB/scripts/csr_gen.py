@@ -482,8 +482,7 @@ class csr_gen:
         if not all_reads_auto:
             f_gen.write(
                 """
-    wire rready_int;
-    assign rready_int = (state == WAIT_RVALID) & iob_rready_i;
+    reg rready_int;
         """
             )
 
@@ -663,13 +662,23 @@ class csr_gen:
                     iob_ready_nxt = 1'b0;
                     iob_rvalid_nxt = 1'b0;
                     state_nxt = state;
+            """
+        )
+        if not all_reads_auto:
+            f_gen.write(
+                """
+                    rready_int = 1'b0;
+                """
+            )
 
+        f_gen.write(
+            """
                     //FSM state machine
                     case(state)
                         WAIT_REQ: begin
                             if(iob_valid_i & (!iob_ready_o)) begin // Wait for a valid request
             """
-        )
+            )
 
         if not all_auto:
             f_gen.write(
@@ -695,11 +704,21 @@ class csr_gen:
 
                         default: begin  // WAIT_RVALID
                             if (iob_rready_i & iob_rvalid_o) begin // Transfer done
+            """
+        )
+        if not all_reads_auto:
+            f_gen.write(
+                """
+                                rready_int = 1'b1;
+                """
+            )
+        f_gen.write(
+            """
                                 iob_rvalid_nxt = 1'b0;
                                 state_nxt = WAIT_REQ;
                             end else begin
             """
-        )   
+        )
         if not all_reads_auto:
             f_gen.write(
                 """
