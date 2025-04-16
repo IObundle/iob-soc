@@ -42,14 +42,19 @@ class csr_gen:
             # a or b is a string
             return f"(({a} > {b}) ? {a} : {b})"
 
-    def get_reg_table(self, regs, rw_overlap, autoaddr):
+    def get_reg_table(self, regs, rw_overlap, autoaddr, doc_conf):
         # Create reg table
         reg_table = []
-        for i_regs in regs:
-            # If i_regs has 'doc_only' attribute set to True, skip it
-            if "doc_only" in i_regs.keys() and i_regs["doc_only"]:
-                continue
-            reg_table += i_regs["regs"]
+        for table in regs:
+            for reg in table["regs"]:
+                # exclude registers without matching doc_conf
+                # registers without 'doc_conf_list' are always included
+                if (
+                    "doc_conf_list" in reg.keys()
+                    and doc_conf not in reg["doc_conf_list"]
+                ):
+                    continue
+                reg_table.append(reg)
 
         return self.compute_addr(reg_table, rw_overlap, autoaddr)
 
@@ -678,7 +683,7 @@ class csr_gen:
                         WAIT_REQ: begin
                             if(iob_valid_i & (!iob_ready_o)) begin // Wait for a valid request
             """
-            )
+        )
 
         if not all_auto:
             f_gen.write(
