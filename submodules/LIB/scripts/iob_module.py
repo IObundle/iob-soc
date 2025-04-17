@@ -311,7 +311,7 @@ class iob_module:
         csr_gen_obj, reg_table = cls._build_regs_table()
         cls._generate_hw(csr_gen_obj, reg_table)
         cls._generate_sw(csr_gen_obj, reg_table)
-        cls._generate_doc(csr_gen_obj, reg_table)
+        cls._generate_doc(csr_gen_obj)
         cls._generate_ipxact(reg_table)
 
     @classmethod
@@ -400,7 +400,7 @@ class iob_module:
         csr_gen_obj = csr_gen.csr_gen()
         csr_gen_obj.config = cls.confs
         # Get register table
-        reg_table = csr_gen_obj.get_reg_table(
+        reg_table, _ = csr_gen_obj.get_reg_table(
             cls.regs, cls.rw_overlap, cls.autoaddr, cls.doc_conf
         )
 
@@ -478,9 +478,8 @@ class iob_module:
                 for r in table["regs"]:
                     r.pop("addr", None)
 
-
     @classmethod
-    def _generate_doc(cls, csr_gen_obj, reg_table):
+    def _generate_doc(cls, csr_gen_obj):
         """Generate common documentation files"""
         if cls.is_top_module:
             config_gen.generate_confs_tex(cls.confs, cls.build_dir + "/document/tsrc")
@@ -489,31 +488,27 @@ class iob_module:
                 # save doc_conf, regs
                 save_doc_conf = cls.doc_conf
                 save_regs = cls.regs.copy()
-                print(f"DEBUG: original doc_conf: {cls.doc_conf}")  # DEBUG
                 # Get doc_configuration_list
                 doc_configs = cls._list_all_doc_configs()
+                doc_tables = {}
                 # Generate reg_table for each doc_configuration
                 for doc_conf in doc_configs:
-                    print(f"DEBUG: doc_conf: {doc_conf}")  # DEBUG
                     cls.doc_conf = doc_conf
                     cls._reset_autoaddrs()
-                    reg_table = csr_gen_obj.get_reg_table(
-                        cls.regs, cls.rw_overlap, cls.autoaddr, cls.doc_conf
+                    _, doc_table = csr_gen_obj.get_reg_table(
+                        cls.regs, cls.rw_overlap, cls.autoaddr, doc_conf
                     )
-                    for r in reg_table:
-                        print(f'\treg_table: {r["name"]}')
 
-                    # # Generate tex section for each doc_configuration and reg table
-                    # csr_gen_obj.generate_regs_tex(
-                    #     cls.regs, reg_table, cls.build_dir + "/document/tsrc"
-                    # )
+                    doc_tables[doc_conf] = doc_table
 
-                # DEBUG: exit
+                # Generate tex section for each doc_configuration and reg table
+                csr_gen_obj.generate_regs_tex(
+                    doc_tables, cls.build_dir + "/document/tsrc"
+                )
                 # revert doc_conf, regs to original values
                 cls.doc_conf = save_doc_conf
                 cls.regs = save_regs
-                print(f"DEBUG: reverted doc_conf={cls.doc_conf}")
-                sys.exit(0)
+
             block_gen.generate_blocks_tex(
                 cls.block_groups, cls.build_dir + "/document/tsrc"
             )

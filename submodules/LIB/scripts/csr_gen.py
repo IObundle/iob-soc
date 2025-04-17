@@ -43,9 +43,11 @@ class csr_gen:
             return f"(({a} > {b}) ? {a} : {b})"
 
     def get_reg_table(self, regs, rw_overlap, autoaddr, doc_conf):
-        # Create reg table
-        reg_table = []
+        # Create doc table
+        doc_table = []
         for table in regs:
+            filtered_table = table.copy()
+            filtered_table["regs"] = []
             for reg in table["regs"]:
                 # exclude registers without matching doc_conf
                 # registers without 'doc_conf_list' are always included
@@ -54,9 +56,16 @@ class csr_gen:
                     and doc_conf not in reg["doc_conf_list"]
                 ):
                     continue
-                reg_table.append(reg)
+                filtered_table["regs"].append(reg.copy())
+            if filtered_table["regs"]:
+                doc_table.append(filtered_table)
 
-        return self.compute_addr(reg_table, rw_overlap, autoaddr)
+        # List all registers from doc_table
+        reg_table = []
+        for table in doc_table:
+            reg_table += table["regs"]
+
+        return self.compute_addr(reg_table, rw_overlap, autoaddr), doc_table
 
     def bceil(self, n, log2base):
         base = int(2**log2base)
@@ -1239,7 +1248,7 @@ class csr_gen:
 
     # Generate swreg.tex file with list TeX tables of regs
     @staticmethod
-    def generate_swreg_tex(regs, out_dir):
+    def generate_swreg_tex(doc_tables, out_dir):
         os.makedirs(out_dir, exist_ok=True)
         swreg_file = open(f"{out_dir}/swreg.tex", "w")
 
@@ -1249,65 +1258,63 @@ class csr_gen:
     tables. The tables give information on the name, read/write capability, address, width in bits, and a textual description.
     """
         )
+        for doc_conf, doc_table in doc_tables.items():
+            swreg_file.write(f'\\subsubsection{{{doc_conf} Configuration}}')
 
-        for table in regs:
-            swreg_file.write(
-                """
-    \\begin{table}[H]
-      \\centering
-      \\begin{tabularx}{\\textwidth}{|l|c|c|c|c|X|}
-        
-        \\hline
-        \\rowcolor{iob-green}
-        {\\bf Name} & {\\bf R/W} & {\\bf Addr} & {\\bf Width} & {\\bf Default} & {\\bf Description} \\\\ \\hline
+            for table in doc_table:
+                swreg_file.write(
+                    """
+        \\begin{table}[H]
+          \\centering
+          \\begin{tabularx}{\\textwidth}{|l|c|c|c|c|X|}
+            
+            \\hline
+            \\rowcolor{iob-green}
+            {\\bf Name} & {\\bf R/W} & {\\bf Addr} & {\\bf Width} & {\\bf Default} & {\\bf Description} \\\\ \\hline
 
-        \\input """
-                + table["name"]
-                + """_swreg_tab
-     
-      \\end{tabularx}
-      \\caption{"""
-                + table["descr"].replace("_", "\\_")
-                + """}
-      \\label{"""
-                + table["name"]
-                + """_swreg_tab:is}
-    \\end{table}
-    """
-            )
+            \\input """
+                    + doc_conf
+                    + f'_{table["name"]}'
+                    + """_swreg_tab
+         
+          \\end{tabularx}
+          \\caption{"""
+                    + table["descr"].replace("_", "\\_")
+                    + """}
+          \\label{"""
+                    + doc_conf
+                    + f'_{table["name"]}'
+                    + """_swreg_tab:is}
+        \\end{table}
+        """
+                )
 
         swreg_file.write("\\clearpage")
         swreg_file.close()
 
     # Generate TeX tables of registers
-    # regs: list of tables containing registers, as defined in <corename>_setup.py
-    # regs_with_addr: list of all registers, where 'addr' field has already been computed
+    # doc_tables: dictionary of doc_conf tables,
+    #    each ['doc_conf'] key as respective doc_table only with valid registers
     # out_dir: output directory
     @classmethod
-    def generate_regs_tex(cls, regs, regs_with_addr, out_dir):
+    def generate_regs_tex(cls, doc_tables, out_dir):
         os.makedirs(out_dir, exist_ok=True)
         # Create swreg.tex file
-        cls.generate_swreg_tex(regs, out_dir)
+        cls.generate_swreg_tex(doc_tables, out_dir)
 
-        for table in regs:
-            tex_table = []
-            for reg in table["regs"]:
-                addr = "None"
-                # Find address of matching register in regs_with_addr list
-                for reg_with_addr in regs_with_addr:
-                    if reg_with_addr["name"] == reg["name"]:
-                        addr = reg_with_addr["addr"]
-                        break
+        for doc_conf, doc_table in doc_tables.items():
+            for table in doc_table:
+                tex_table = []
+                for reg in table["regs"]:
+                    tex_table.append(
+                        [
+                            reg["name"],
+                            reg["type"],
+                            str(reg["addr"]),
+                            str(reg["n_bits"]),
+                            str(reg["rst_val"]),
+                            reg["descr"],
+                        ]
+                    )
 
-                tex_table.append(
-                    [
-                        reg["name"],
-                        reg["type"],
-                        str(addr),
-                        str(reg["n_bits"]),
-                        str(reg["rst_val"]),
-                        reg["descr"],
-                    ]
-                )
-
-            write_table(f"{out_dir}/{table['name']}_swreg", tex_table)
+                write_table(f"{out_dir}/{doc_conf}_{table['name']}_swreg", tex_table)
