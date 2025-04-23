@@ -3,6 +3,7 @@
 #    csr_gen.py: build Verilog software accessible registers and software getters and setters
 #
 
+import copy
 import sys
 import os
 from math import ceil, log
@@ -56,7 +57,7 @@ class csr_gen:
                     and doc_conf not in reg["doc_conf_list"]
                 ):
                     continue
-                filtered_table["regs"].append(reg.copy())
+                filtered_table["regs"].append(reg)
             if filtered_table["regs"]:
                 doc_table.append(filtered_table)
 
@@ -65,7 +66,7 @@ class csr_gen:
         for table in doc_table:
             reg_table += table["regs"]
 
-        return self.compute_addr(reg_table, rw_overlap, autoaddr), doc_table
+        return self.compute_addr(reg_table, rw_overlap, autoaddr), copy.deepcopy(doc_table)
 
     def bceil(self, n, log2base):
         base = int(2**log2base)
@@ -1259,7 +1260,7 @@ class csr_gen:
     """
         )
         for doc_conf, doc_table in doc_tables.items():
-            swreg_file.write(f'\\subsubsection{{{doc_conf} Configuration}}')
+            swreg_file.write(f"\\subsubsection{{{doc_conf} Configuration}}")
 
             for table in doc_table:
                 swreg_file.write(
