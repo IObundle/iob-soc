@@ -13,12 +13,10 @@ Table~\ref{tab:confs} describes the IP core configuration. The core may be confi
     \caption{Core Configuration.}\label{tab:confs}
 \end{xltabular}
 
-The parameters in the top-level Verilog module that are not listed above are
-called Derived Parameters. They are given as function of the primary parameters
-and should never be changed. They are used to simplify the definition of the
-interface and internal signals. The list of derived parameters is given below:
+The macros not listed above are constants. They improve the code readability and
+should not be changed by the user. These constants are listed below:
+\input constants
+
+The top-level parameters not listed above are constant or derived from the primary parameters. They improve the code readability and should not be changed by the user. These parameters are listed below:
 \input derived_params
 
-There are also constants that are used in the core in order to improve the readability
-of the code and should not be changed. They are defined as presented in the list below:
-\input constants
