@@ -19,9 +19,7 @@ def generate_blocks_list_tex(block_groups, out_dir):
     for block_group in block_groups:
         blocks_file.write(
             """
-\\begin{table}[H]
-  \\centering
-  \\begin{tabularx}{\\textwidth}{|l|X|}
+  \\begin{xltabular}{\\textwidth}{|l|X|}
     
     \\hline
     \\rowcolor{iob-green}
@@ -31,14 +29,13 @@ def generate_blocks_list_tex(block_groups, out_dir):
             + block_group.name
             + """_module_tab
  
-  \\end{tabularx}
   \\caption{"""
             + block_group.description
             + """}
+  \\end{xltabular}
   \\label{"""
             + block_group.name
             + """_module_tab:is}
-\\end{table}
 """
         )
 

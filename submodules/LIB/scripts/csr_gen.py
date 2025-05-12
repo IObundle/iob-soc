@@ -1265,9 +1265,7 @@ class csr_gen:
             for table in doc_table:
                 swreg_file.write(
                     """
-        \\begin{table}[H]
-          \\centering
-          \\begin{tabularx}{\\textwidth}{|l|c|c|c|c|X|}
+          \\begin{xltabular}{\\textwidth}{|l|c|c|c|c|X|}
             
             \\hline
             \\rowcolor{iob-green}
@@ -1278,15 +1276,14 @@ class csr_gen:
                     + f'_{table["name"]}'
                     + """_swreg_tab
          
-          \\end{tabularx}
           \\caption{"""
                     + table["descr"].replace("_", "\\_")
                     + """}
+          \\end{xltabular}
           \\label{"""
                     + doc_conf
                     + f'_{table["name"]}'
                     + """_swreg_tab:is}
-        \\end{table}
         """
                 )
 

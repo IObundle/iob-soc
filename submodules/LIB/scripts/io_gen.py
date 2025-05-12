@@ -124,9 +124,7 @@ Note that the ouput signals are registered in the core, while the input signals 
     for table in ios:
         if_file.write(
             """
-\\begin{table}[H]
-  \\centering
-  \\begin{tabularx}{\\textwidth}{|l|l|r|X|}
+  \\begin{xltabular}{\\textwidth}{|l|l|r|X|}
     
     \\hline
     \\rowcolor{iob-green}
@@ -136,14 +134,13 @@ Note that the ouput signals are registered in the core, while the input signals 
             + table["name"]
             + """_if_tab
  
-  \\end{tabularx}
   \\caption{"""
             + table["descr"].replace("_", "\\_")
             + """}
+  \\end{xltabular}
   \\label{"""
             + table["name"]
             + """_if_tab:is}
-\\end{table}
 """
         )
 
