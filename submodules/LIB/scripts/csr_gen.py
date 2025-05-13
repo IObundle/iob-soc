@@ -1265,29 +1265,27 @@ class csr_gen:
             for table in doc_table:
                 swreg_file.write(
                     """
-          \\begin{xltabular}{\\textwidth}{|l|c|c|c|c|X|}
-            
-            \\hline
-            \\rowcolor{iob-green}
-            {\\bf Name} & {\\bf R/W} & {\\bf Addr} & {\\bf Width} & {\\bf Default} & {\\bf Description} \\\\ \\hline
+        \\begin{xltabular}{\\textwidth}{|l|c|c|c|c|X|}
+        
+        \\hline
+        \\rowcolor{iob-green}
+        {\\bf Name} & {\\bf R/W} & {\\bf Addr} & {\\bf Width} & {\\bf Default} & {\\bf Description} \\\\ \\hline
 
-            \\input """
-                    + doc_conf
-                    + f'_{table["name"]}'
-                    + """_swreg_tab
-         
-          \\caption{"""
-                    + table["descr"].replace("_", "\\_")
-                    + """}
-          \\end{xltabular}
-          \\label{"""
-                    + doc_conf
-                    + f'_{table["name"]}'
-                    + """_swreg_tab:is}
+        \\input """
+                + doc_conf
+                + f'_{table["name"]}'
+                + """_swreg_tab
+        
+        \\caption{"""
+                + table["descr"].replace("_", "\\_")
+                + """}
+        \\end{xltabular}
+        \\label{"""
+                + doc_conf
+                + f'_{table["name"]}'
+                + """_swreg_tab:is}
         """
                 )
-
-        swreg_file.write("\\clearpage")
         swreg_file.close()
 
     # Generate TeX tables of registers

@@ -124,27 +124,26 @@ Note that the ouput signals are registered in the core, while the input signals 
     for table in ios:
         if_file.write(
             """
-  \\begin{xltabular}{\\textwidth}{|l|l|r|X|}
-    
-    \\hline
-    \\rowcolor{iob-green}
-    {\\bf Name} & {\\bf Direction} & {\\bf Width} & {\\bf Description}  \\\\ \\hline \\hline
+\\begin{xltabular}{\\textwidth}{|l|l|r|X|}
 
-    \\input """
-            + table["name"]
-            + """_if_tab
- 
-  \\caption{"""
-            + table["descr"].replace("_", "\\_")
-            + """}
-  \\end{xltabular}
-  \\label{"""
-            + table["name"]
-            + """_if_tab:is}
+\\hline
+\\rowcolor{iob-green}
+{\\bf Name} & {\\bf Direction} & {\\bf Width} & {\\bf Description}  \\\\ \\hline \\hline
+
+\\input """
+        + table["name"]
+        + """_if_tab
+
+\\caption{"""
+        + table["descr"].replace("_", "\\_")
+        + """}
+\\end{xltabular}
+\\label{"""
+        + table["name"]
+        + """_if_tab:is}
 """
         )
 
-    if_file.write("\\clearpage")
     if_file.close()
 
 
