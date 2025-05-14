@@ -100,3 +100,17 @@ tester-fpga-run:
 	make -C ../$(CORE)_V$(VERSION)/tester/ fpga-run BOARD=$(BOARD)
 
 .PHONY: tester-sim-run tester-fpga-run
+
+# Release Artifacts
+
+release-artifacts:
+	nix-shell --run "make clean setup USE_INTMEM=1 USE_EXTMEM=0 INIT_MEM=1"
+	tar -czf $(CORE)_V$(VERSION)_INTMEM1_EXTMEM0_INITMEM1.tar.gz ../$(CORE)_V$(VERSION)
+	nix-shell --run "make clean setup USE_INTMEM=1 USE_EXTMEM=0 INIT_MEM=0"
+	tar -czf $(CORE)_V$(VERSION)_INTMEM1_EXTMEM0_INITMEM0.tar.gz ../$(CORE)_V$(VERSION)
+	nix-shell --run "make clean setup USE_INTMEM=1 USE_EXTMEM=1 INIT_MEM=0"
+	tar -czf $(CORE)_V$(VERSION)_INTMEM1_EXTMEM1_INITMEM0.tar.gz ../$(CORE)_V$(VERSION)
+	nix-shell --run "make clean setup USE_INTMEM=0 USE_EXTMEM=1 INIT_MEM=0"
+	tar -czf $(CORE)_V$(VERSION)_INTMEM0_EXTMEM1_INITMEM0.tar.gz ../$(CORE)_V$(VERSION)
+
+.PHONY: release-artifacts

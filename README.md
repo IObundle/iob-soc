@@ -15,6 +15,16 @@ iob-uart and iob-timer from this library. The external memory interface uses an 
 IOb-SoC needs the [Py2HWSW](https://github.com/IObundle/py2hwsw/blob/main/py2hwsw/lib/default.nix) framework.
 
 
+## Build Directory without Py2HWSW
+
+If you want to use a pre-built build directory without utilizing Py2HWSW, follow these steps:
+1. Visit the [Latest Release](https://github.com/IObundle/iob-soc/releases/latest) page and scroll to the `Assets` section.
+2. Download the build directory that matches your desired configuration.
+
+You will receive a build directory containing all generated source files, which can be executed using the provided makefiles.
+By choosing this option, you take responsibility for installing all necessary tools.
+
+
 ## Operating Systems
 
 IOb-SoC can run on most mainstream Linux distributions. The reference distribution is Ubuntu 24.04.1 LTS.
@@ -142,7 +152,6 @@ To use a local directory as a source for Py2HWSW, set the following environment 
 ```Bash
 export PY2HWSW_ROOT=/path/to/py2hwsw_root_dir
 ```
-
 
 # Acknowledgements
 
