@@ -51,7 +51,7 @@ in
 # If no root is provided, or there is a root but we want to force a rebuild
 if py2hwswRoot == "" || force_py2_build != 0 then
   # Use newly built nix package
-  import "${py2hwsw}/lib/python${builtins.substring 0 4 pkgs.python3.version}/site-packages/py2hwsw/lib/default.nix" { inherit pkgs; py2hwsw_pkg = py2hwsw; extra_pkgs = extra_pkgs; }
+  import "${py2hwsw}/lib/python${builtins.substring 0 4 pkgs.python3.version}/site-packages/py2hwsw/lib/default.nix" { py2hwsw_pkg = py2hwsw; extra_pkgs = extra_pkgs; }
 else
   # Use local
-  import "${py2hwswRoot}/py2hwsw/lib/default.nix" { inherit pkgs; py2hwsw_pkg = py2hwsw; extra_pkgs = extra_pkgs; }
+  import "${py2hwswRoot}/py2hwsw/lib/default.nix" { py2hwsw_pkg = py2hwsw; extra_pkgs = extra_pkgs; }
