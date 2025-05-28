@@ -161,7 +161,7 @@ def generate_ios_tex(ios, out_dir):
             for port in if_gen.table:
                 port_direction = (
                     port["signal"]
-                    if "m_" in port["name"]
+                    if "m_" in table["name"]
                     else if_gen.reverse(port["signal"])
                 )  # Reverse port direction if it is a slave interface
                 tex_table.append(
