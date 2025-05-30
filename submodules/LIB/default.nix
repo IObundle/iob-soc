@@ -1,2 +1,1 @@
-{ pkgs ? import <nixpkgs> {} }:
-import scripts/default.nix { inherit pkgs; }
+import scripts/default.nix {}
