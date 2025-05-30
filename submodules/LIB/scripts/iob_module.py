@@ -331,7 +331,7 @@ class iob_module:
                     {
                         "name": "VERSION",
                         "type": "M",
-                        "val": "16'h" + copy_srcs.version_str_to_digits(cls.version) + " = " + cls.version,
+                        "val": "16'h" + copy_srcs.version_str_to_digits(cls.version),
                         "min": "NA",
                         "max": "NA",
                         "descr": "Product version. This 16-bit macro uses nibbles to represent decimal numbers using their binary values. The two most significant nibbles represent the integral part of the version, and the two least significant nibbles represent the decimal part.",
