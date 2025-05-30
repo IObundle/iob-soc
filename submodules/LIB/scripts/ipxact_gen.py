@@ -115,7 +115,11 @@ class SwRegister:
                     break
 
         # Compute the the size of the register in steps of 8 bits, rounding up
-        self.sw_size = 8 * math.ceil(max_size / 8)
+        sw_size = 8 * math.ceil(max_size / 8)
+        # If the size is 24 bits, set it to 32 bits
+        if sw_size == 24:
+            sw_size = 32
+        self.sw_size = sw_size
 
         self.access = access
         self.rst = rst
