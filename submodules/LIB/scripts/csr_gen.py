@@ -1319,7 +1319,7 @@ class csr_gen:
                         [
                             reg["name"],
                             reg["type"],
-                            str(hex(reg["addr"])),
+                            f"0x{reg['addr']:X}",  # Capitalized hex
                             str(reg["n_bits"]),
                             str(sw_width),
                             str(reg["rst_val"]),
