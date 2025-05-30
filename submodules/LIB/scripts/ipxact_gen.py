@@ -167,7 +167,7 @@ class SwRegister:
         xml_code = f"""<ipxact:register>
 					<ipxact:name>{self.name}</ipxact:name>
 					<ipxact:description>{self.description}</ipxact:description>
-					<ipxact:addressOffset>{self.address}</ipxact:addressOffset>
+					<ipxact:addressOffset>{hex(self.address)}</ipxact:addressOffset>
 					<ipxact:size>{self.sw_size}</ipxact:size>
 					<ipxact:volatile>false</ipxact:volatile>
 					<ipxact:access>{access_type}</ipxact:access>

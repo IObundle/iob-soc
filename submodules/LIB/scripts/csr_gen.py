@@ -1254,9 +1254,18 @@ class csr_gen:
         swreg_file = open(f"{out_dir}/swreg.tex", "w")
 
         swreg_file.write(
-            """
+            f"""
     The software accessible registers of the core are described in the following
-    tables. The tables give information on the name, read/write capability, address, width in bits, and a textual description.
+    tables. Each subsection corresponds to a specific configuration of the core, since
+    different configurations may have different registers available. 
+    The tables give information on the name, read/write capability, address, hardware and software width, and a 
+    textual description. The addresses are byte aligned and given in decimal format.
+    The hardware width is the number of bits that the register occupies in the hardware, while the
+    software width is the number of bits that the register occupies in the software.
+    In each address, the right-justified field having "Hw width" bits conveys the relevant information. 
+    Each register has only one type of access, either read or write, meaning that reading from 
+    a write-only register will produce invalid data or writing to a read-only register will 
+    not have any effect.
     """
         )
         for doc_conf, doc_table in doc_tables.items():
@@ -1265,25 +1274,27 @@ class csr_gen:
             for table in doc_table:
                 swreg_file.write(
                     """
-        \\begin{xltabular}{\\textwidth}{|l|c|c|c|c|X|}
+        \\begin{xltabular}{\\textwidth}{|l|c|c|c|c|c|X|}
         
         \\hline
         \\rowcolor{iob-green}
-        {\\bf Name} & {\\bf R/W} & {\\bf Addr} & {\\bf Width} & {\\bf Default} & {\\bf Description} \\\\ \\hline
+        {\\bf Name} & {\\bf R/W} & {\\bf Addr} & \multicolumn{2}{c|}{\\bf Width} & {\\bf Default} & {\\bf Description} \\\\ 
+                    &            &             & {\\bf Hw}       & {\\bf Sw}     &                &                    \\\\
+        \\hline
 
         \\input """
-                + doc_conf
-                + f'_{table["name"]}'
-                + """_swreg_tab
+                    + doc_conf
+                    + f'_{table["name"]}'
+                    + """_swreg_tab
         
         \\caption{"""
-                + table["descr"].replace("_", "\\_")
-                + """}
+                    + table["descr"].replace("_", "\\_")
+                    + """}
         \\end{xltabular}
         \\label{"""
-                + doc_conf
-                + f'_{table["name"]}'
-                + """_swreg_tab:is}
+                    + doc_conf
+                    + f'_{table["name"]}'
+                    + """_swreg_tab:is}
         """
                 )
         swreg_file.close()
@@ -1292,22 +1303,25 @@ class csr_gen:
     # doc_tables: dictionary of doc_conf tables,
     #    each ['doc_conf'] key as respective doc_table only with valid registers
     # out_dir: output directory
-    @classmethod
-    def generate_regs_tex(cls, doc_tables, out_dir):
+    def generate_regs_tex(self, doc_tables, out_dir):
         os.makedirs(out_dir, exist_ok=True)
         # Create swreg.tex file
-        cls.generate_swreg_tex(doc_tables, out_dir)
+        self.generate_swreg_tex(doc_tables, out_dir)
 
         for doc_conf, doc_table in doc_tables.items():
             for table in doc_table:
                 tex_table = []
                 for reg in table["regs"]:
+                    sw_width = self.bceil(reg["n_bits"], 3)
+                    if sw_width == 24:
+                        sw_width = 32
                     tex_table.append(
                         [
                             reg["name"],
                             reg["type"],
-                            str(reg["addr"]),
+                            str(hex(reg["addr"])),
                             str(reg["n_bits"]),
+                            str(sw_width),
                             str(reg["rst_val"]),
                             reg["descr"],
                         ]
