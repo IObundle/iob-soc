@@ -259,7 +259,7 @@ iob = [
         "width": "ADDR_W",
         "name": "iob_addr",
         "default": "0",
-        "description": "Address.",
+        "description": "Byte address.",
     },
     {
         "master": 1,
@@ -902,7 +902,7 @@ axi_write = [
         "width": "AXI_ADDR_W",
         "name": "axi_awaddr",
         "default": "0",
-        "description": "Address write channel address.",
+        "description": "Address write channel byte address.",
     },
     {
         "lite": 0,
@@ -1105,7 +1105,7 @@ axi_read = [
         "width": "AXI_ADDR_W",
         "name": "axi_araddr",
         "default": "0",
-        "description": "Address read channel address.",
+        "description": "Address read channel byte address.",
     },
     {
         "lite": 0,
