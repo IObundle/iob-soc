@@ -1259,7 +1259,7 @@ class csr_gen:
     tables. Each subsection corresponds to a specific configuration of the core, since
     different configurations have different registers available. 
     The tables give information on the name, read/write capability, address, hardware and software width, and a 
-    textual description. The addresses are byte aligned and given in decimal format.
+    textual description. The addresses are byte aligned and given in hexadecimal format.
     The hardware width is the number of bits that the register occupies in the hardware, while the
     software width is the number of bits that the register occupies in the software.
     In each address, the right-justified field having "Hw width" bits conveys the relevant information. 
