@@ -34,69 +34,239 @@ module iob_axil2iob #(
 
    localparam WSTRB_W = DATA_W / 8;
 
-   wire [ADDR_W-1:0] iob_addr;
-   wire              iob_addr_en;
-
-   // COMPUTE AXIL OUTPUTS
-
-   // write address channel
-   assign axil_awready_o = iob_ready_i;
-
-   // write channel
-   assign axil_wready_o  = iob_ready_i;
-
-   // write response
-   assign axil_bresp_o   = 2'b0;
-   wire axil_bvalid_nxt;
-
-   //bvalid 
-   assign axil_bvalid_nxt = (iob_valid_o & (|iob_wstrb_o)) ? iob_ready_i : (axil_bvalid_o & ~axil_bready_i);
-
-   // read address
-   assign axil_arready_o = iob_ready_i;
-
-   // read channel
+   wire [2:0] pc;
+   reg [2:0] pc_nxt;
+   
+   //axil response
+   reg                 axil_awready_nxt;
+   reg                 axil_wready_nxt;
+   reg                 axil_arready_nxt;
+   reg                 axil_rvalid_nxt;
+   reg [DATA_W-1:0]    axil_rdata_nxt;
+   reg                 axil_bvalid_nxt;       
+   assign axil_bresp_o = 2'b0;
    assign axil_rresp_o = 2'b0;
 
-   //rvalid
-   assign axil_rvalid_o = iob_rvalid_i;
+   //iob command
+   reg                 iob_valid_nxt;
+   reg [ADDR_W-1:0]    iob_addr_nxt;
+   reg [WSTRB_W-1:0]   iob_wstrb_nxt;
+   reg [DATA_W-1:0]    iob_wdata_nxt;
+   assign iob_rready_o = 1'b1;
+   
+   always @* begin
 
-   //rdata
-   assign axil_rdata_o = iob_rdata_i;
+      pc_nxt = pc+1'b1;
 
+      //axil response
+      axil_arready_nxt = 1'b0;
+      axil_rvalid_nxt = axil_rvalid_o;
+      axil_rdata_nxt = axil_rdata_o;
+      axil_awready_nxt = 1'b0;
+      axil_wready_nxt = 1'b0;
+      axil_bvalid_nxt = axil_bvalid_o;
 
-   // COMPUTE IOb OUTPUTS
+      //iob command
+      iob_valid_nxt = iob_valid_o;
+      iob_addr_nxt = iob_addr_o;
+      iob_wstrb_nxt = iob_wstrb_o;
+      iob_wdata_nxt = iob_wdata_o;
 
-   assign iob_valid_o = axil_awvalid_i | axil_wvalid_i | axil_arvalid_i;
-   assign iob_addr_o = axil_arvalid_i ? axil_araddr_i : axil_awvalid_i ? axil_awaddr_i : iob_addr;
-   assign iob_wdata_o = axil_wdata_i;
-   assign iob_wstrb_o = axil_wvalid_i ? axil_wstrb_i : {WSTRB_W{1'b0}};
-   assign iob_rready_o = axil_rready_i;
+      case (pc)
+        0: begin //init state
+           axil_rvalid_nxt = 1'b0;
+           if(axil_arvalid_i) begin
+              axil_arready_nxt = 1'b1;
+              iob_valid_nxt = 1'b1;
+              iob_addr_nxt = axil_araddr_i;
+              iob_wstrb_nxt = {WSTRB_W{1'b0}};
+              pc_nxt = 3'd4; //go wait for iob_ready
+           end else if(axil_awvalid_i) begin
+              axil_awready_nxt = 1'b1;
+              iob_addr_nxt = axil_awaddr_i;
+              if(axil_wvalid_i) begin
+                 axil_wready_nxt = 1'b1;
+                 iob_valid_nxt = 1'b1;
+                 iob_wdata_nxt = axil_wdata_i;
+                 iob_wstrb_nxt = axil_wstrb_i;
+                 pc_nxt = 3'd2; //go wait for iob_ready 
+              end
+           end else begin 
+              pc_nxt = pc;
+           end
+        end 
+        1: begin //write: wait axil_wvalid
+           if(!axil_wvalid_i) begin
+              pc_nxt = pc;
+           end else begin
+              axil_wready_nxt = 1'b1;
+              iob_valid_nxt = 1'b1;
+              iob_wdata_nxt = axil_wdata_i;
+              iob_wstrb_nxt = axil_wstrb_i;
+           end
+        end
+        2: begin //write: wait for iob_ready
+           if(!iob_ready_i) begin
+              pc_nxt = pc;
+           end else begin
+              axil_bvalid_nxt = 1'b1;
+              iob_valid_nxt = 1'b0;
+           end
+        end
+        3: begin //write: wait for bready
+           if(!axil_bready_i) begin
+             pc_nxt = pc;
+           end else begin
+              axil_bvalid_nxt = 1'b0;
+              pc_nxt = 3'd0;
+           end 
+        end
+        4: begin //read: wait for iob_ready
+           if(!iob_ready_i) begin
+              pc_nxt = pc;
+           end else begin
+              iob_valid_nxt = 1'b0;
+           end
+        end
+        5: begin //read: wait for iob_rvalid
+           if(!iob_rvalid_i) begin
+              pc_nxt = pc;
+           end else begin
+              axil_rvalid_nxt = 1'b1;
+              axil_rdata_nxt = iob_rdata_i;
+              pc_nxt = 3'd0;
+           end
+        end
+        default: begin //read: wait for axil_rready
+           if(!axil_rready_i) begin
+              pc_nxt = pc;
+           end else begin
+              axil_rvalid_nxt = 1'b0;
+              pc_nxt = 3'd0;
+           end
+        end
+      
+      endcase
+   end
 
-   assign iob_addr_en = axil_arvalid_i | axil_awvalid_i;
+   //iob command registers
+   iob_reg #(
+                .DATA_W (ADDR_W),
+                .RST_VAL(0)
+                ) iob_reg_addr (
+                                .clk_i (clk_i),
+                                .cke_i (cke_i),
+                                .arst_i(arst_i),
+                                .data_i(iob_addr_nxt),
+                                .data_o(iob_addr_o)
+                                );
 
    iob_reg #(
-      .DATA_W (1),
-      .RST_VAL(0)
-   ) iob_reg_bvalid (
-      .clk_i (clk_i),
-      .cke_i (cke_i),
-      .arst_i(arst_i),
-      .data_i(axil_bvalid_nxt),
-      .data_o(axil_bvalid_o)
-   );
+                 .DATA_W (DATA_W),
+                 .RST_VAL(0)
+                 ) iob_reg_wdata (
+                                  .clk_i (clk_i),
+                                  .cke_i (cke_i),
+                                  .arst_i(arst_i),
+                                  .data_i(iob_wdata_nxt),
+                                  .data_o(iob_wdata_o)
+                                  );
 
-   iob_reg_e #(
-      .DATA_W (ADDR_W),
-      .RST_VAL(0)
-   ) iob_reg_addr (
-      .clk_i (clk_i),
-      .cke_i (cke_i),
-      .arst_i(arst_i),
-      .en_i  (iob_addr_en),
-      .data_i(iob_addr_o),
-      .data_o(iob_addr)
-   );
+   iob_reg #(
+                .DATA_W (WSTRB_W),
+                .RST_VAL(0)
+                ) iob_reg_wstrb (
+                                 .clk_i (clk_i),
+                                 .cke_i (cke_i),
+                                 .arst_i(arst_i),
+                                 .data_i(iob_wstrb_nxt),
+                                 .data_o(iob_wstrb_o)
+                                 );
+   iob_reg #(
+                .DATA_W (1),
+                .RST_VAL(0)
+                ) iob_reg_valid (
+                                 .clk_i (clk_i),
+                                 .cke_i (cke_i),
+                                 .arst_i(arst_i),
+                                 .data_i(iob_valid_nxt),
+                                 .data_o(iob_valid_o)
+                                 );
 
+   iob_reg #(
+                .DATA_W (1),
+                .RST_VAL(0)
+                ) iob_reg_ready (
+                                 .clk_i (clk_i),
+                                 .cke_i (cke_i),
+                                 .arst_i(arst_i),
+                                 .data_i(axil_awready_nxt),
+                                 .data_o(axil_awready_o)
+                                 );
+
+   iob_reg #(
+                .DATA_W (1),
+                .RST_VAL(0)
+                ) iob_reg_wready (
+                                  .clk_i (clk_i),
+                                  .cke_i (cke_i),
+                                  .arst_i(arst_i),
+                                  .data_i(axil_wready_nxt),
+                                  .data_o(axil_wready_o)
+                                  );
+   iob_reg #(
+                .DATA_W (1),
+                .RST_VAL(0)
+                ) iob_reg_arready (
+                                  .clk_i (clk_i),
+                                  .cke_i (cke_i),
+                                  .arst_i(arst_i),
+                                  .data_i(axil_arready_nxt),
+                                  .data_o(axil_arready_o)
+                                  );
+   iob_reg #(
+                .DATA_W (DATA_W),
+                .RST_VAL(0)
+                ) iob_reg_rdata (
+                                 .clk_i (clk_i),
+                                 .cke_i (cke_i),
+                                 .arst_i(arst_i),
+                                 .data_i(axil_rdata_nxt),
+                                 .data_o(axil_rdata_o)
+                                 );
+
+   iob_reg #(
+                .DATA_W (1),
+                .RST_VAL(0)
+                ) iob_reg_rvalid (
+                                  .clk_i (clk_i),
+                                  .cke_i (cke_i),
+                                  .arst_i(arst_i),
+                                  .data_i(axil_rvalid_nxt),
+                                  .data_o(axil_rvalid_o)
+                                  );
+
+   iob_reg #(
+                .DATA_W (1),
+                .RST_VAL(0)
+                ) iob_reg_bvalid (
+                                  .clk_i (clk_i),
+                                  .cke_i (cke_i),
+                                  .arst_i(arst_i),
+                                  .data_i(axil_bvalid_nxt),
+                                  .data_o(axil_bvalid_o)
+                                  );
+
+   //state register
+   iob_reg #(
+                .DATA_W (3),
+                .RST_VAL(0)
+                ) iob_reg_pc (
+                              .clk_i (clk_i),
+                              .cke_i (cke_i),
+                              .arst_i(arst_i),
+                              .data_i(pc_nxt),
+                              .data_o(pc)
+                              );
 
 endmodule

@@ -2,7 +2,7 @@ import os
 
 from iob_module import iob_module
 
-from iob_reg_e import iob_reg_e
+from iob_reg import iob_reg
 
 
 class iob_axil2iob(iob_module):
@@ -23,6 +23,6 @@ class iob_axil2iob(iob_module):
                 {"interface": "clk_rst_s_s_portmap"},
                 {"interface": "clk_rst_s_port"},
                 {"interface": "iob_s_portmap"},
-                iob_reg_e,
+                iob_reg,
             ]
         )
