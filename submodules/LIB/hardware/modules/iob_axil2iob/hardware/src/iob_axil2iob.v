@@ -59,11 +59,11 @@ module iob_axil2iob #(
       pc_nxt = pc+1'b1;
 
       //axil response
-      axil_arready_nxt = 0;
+      axil_arready_nxt = 1'b0;
       axil_rvalid_nxt = axil_rvalid_o;
       axil_rdata_nxt = axil_rdata_o;
-      axil_awready_nxt = 0;
-      axil_wready_nxt = 0;
+      axil_awready_nxt = 1'b0;
+      axil_wready_nxt = 1'b0;
       axil_bvalid_nxt = axil_bvalid_o;
 
       //iob command
