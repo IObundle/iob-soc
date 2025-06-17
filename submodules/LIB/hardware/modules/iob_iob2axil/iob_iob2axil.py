@@ -2,6 +2,8 @@ import os
 
 from iob_module import iob_module
 
+from iob_reg import iob_reg
+
 
 class iob_iob2axil(iob_module):
     name = "iob_iob2axil"
@@ -19,5 +21,8 @@ class iob_iob2axil(iob_module):
                 {"interface": "axil_m_portmap"},
                 {"interface": "iob_m_tb_wire"},
                 {"interface": "axil_wire"},
+                {"interface": "clk_rst_s_s_portmap"},
+                {"interface": "clk_rst_s_port"},
+                iob_reg,
             ]
         )
