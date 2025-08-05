@@ -1255,7 +1255,7 @@ class csr_gen:
 
         swreg_file.write(
             f"""
-    The software accessible registers of the core are described in the following
+    The Control and Status Registers (CSRs) of the core are described in the following
     tables. Each subsection corresponds to a specific configuration of the core, since
     different configurations have different registers available. 
     The tables give information on the name, read/write capability, address, hardware and software width, and a 
