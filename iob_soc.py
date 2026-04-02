@@ -3,10 +3,10 @@
 # SPDX-License-Identifier: MIT
 
 
-def setup(py_params_dict):
+def setup(py_params: dict):
     # Py2hwsw dictionary describing current core
     core_dict = {
-        "version": "0.8",
+        "version": "0.8.0",
         "parent": {
             # IOb-SoC is a child core of iob_system: https://github.com/IObundle/py2hwsw/tree/main/py2hwsw/lib/hardware/iob_system
             # IOb-SoC will inherit all attributes/files from the iob_system core.
@@ -21,12 +21,13 @@ def setup(py_params_dict):
                     "iob_aes_ku040_db_g",
                     "iob_cyclonev_gt_dk",
                     "iob_zybo_z7",
+                    "iob_smart_zynq_sl",
                 ],
                 "ports": [
                     {
                         # Add new rs232 port for uart
                         "name": "rs232_m",
-                        "descr": "iob-system uart interface",
+                        "descr": "iob-soc uart interface",
                         "signals": {
                             "type": "rs232",
                         },
@@ -62,7 +63,7 @@ def setup(py_params_dict):
                     # NOTE: Add other components/peripherals here.
                 ],
             },
-            **py_params_dict,
+            **py_params,
         },
     }
 

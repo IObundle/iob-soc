@@ -16,7 +16,7 @@ include $(ROOT_DIR)/software/auto_sw_build.mk
 GET_MACRO = $(shell grep "define $(1)" $(2) | rev | cut -d" " -f1 | rev)
 
 #Function to obtain parameter named $(1) from iob_soc_conf.vh
-GET_IOB_SOC_CONF_MACRO = $(call GET_MACRO,IOB_SOC_$(1),../src/iob_soc_conf.vh)
+GET_IOB_SOC_CONF_MACRO = $(call GET_MACRO,IOB_SOC_$(1),$(ROOT_DIR)/hardware/src/iob_soc_conf.vh)
 
 iob_soc_bootrom.hex: ../../software/iob_soc_preboot.bin ../../software/iob_soc_boot.bin
 	../../scripts/makehex.py $^ 00000080 $(call GET_IOB_SOC_CONF_MACRO,BOOTROM_ADDR_W) $@
@@ -29,10 +29,11 @@ iob_soc_firmware.bin: ../../software/iob_soc_firmware.bin
 	cp $< $@
 
 ../../software/%.bin:
-	make -C ../../ fw-build
+	make -C ../../ sw-build
 
 UTARGETS+=build_iob_soc_software tb
-CSRS=./src/iob_uart_csrs.c
+TB_SRC+=./simulation/src/iob_uart_csrs.c
+TB_INCLUDES ?=-I./simulation/src
 
 TEMPLATE_LDS=src/$@.lds
 
@@ -63,12 +64,14 @@ build_iob_soc_software: iob_soc_firmware iob_soc_boot iob_soc_preboot
 
 ifneq ($(USE_FPGA),)
 WRAPPER_CONFS_PREFIX=iob_soc_$(BOARD)
+WRAPPER_DIR=src
 else
 WRAPPER_CONFS_PREFIX=iob_uut
+WRAPPER_DIR=simulation/src
 endif
 
 iob_bsp:
-	sed 's/$(WRAPPER_CONFS_PREFIX)/IOB_BSP/Ig' src/$(WRAPPER_CONFS_PREFIX)_conf.h > src/iob_bsp.h
+	sed 's/$(WRAPPER_CONFS_PREFIX)/IOB_BSP/Ig' $(WRAPPER_DIR)/$(WRAPPER_CONFS_PREFIX)_conf.h > src/iob_bsp.h
 
 iob_soc_firmware: iob_bsp
 	make $@.elf INCLUDES="$(IOB_SOC_INCLUDES)" LFLAGS="$(IOB_SOC_LFLAGS) -Wl,-Map,$@.map" SRC="$(IOB_SOC_FW_SRC)" TEMPLATE_LDS="$(TEMPLATE_LDS)"
@@ -96,3 +99,8 @@ EMUL_SRC+=src/iob_printf.c
 EMUL_SRC+=$(addprefix src/,$(addsuffix .c,$(PERIPHERALS)))
 EMUL_SRC+=$(addprefix src/,$(addsuffix _csrs_pc_emul.c,$(PERIPHERALS)))
 
+# include software build segment of child socs
+# child socs can add their own child_sw_build.mk without having to override this one.
+ifneq ($(wildcard $(ROOT_DIR)/software/child_sw_build.mk),)
+include $(ROOT_DIR)/software/child_sw_build.mk
+endif
