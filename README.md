@@ -9,6 +9,9 @@ SPDX-License-Identifier: MIT
 IOb-SoC is a System-on-Chip (SoC) described in Python, using the [Py2HWSW](https://github.com/IObundle/py2hwsw/blob/main/py2hwsw/lib/default.nix) framework. The SoC is entirely described in a few lines of Python. The Py2HWSW framework describes SoCs with a main [VexRiscv](https://github.com/SpinalHDL/VexRiscv) CPU by adding C software and a list of peripherals. After a setup procedure, Py2HWSW creates a build directory with all the sources and makefiles to build and run various tools on the Soc, such as simulation, synthesis, and FPGA prototyping; the SoC is described in Verilog. The Py2HWSW framework also has a comprehensive library of prebuilt modules and peripherals, including their bare-metal drivers. IObSoC uses the 
 iob-uart and iob-timer from this library. The external memory interface uses an AXI4 master bus. It may be used to access an on-chip RAM or a 3rd party memory controller IP (typically a DDR controller).
 
+An AI generated wiki for iob-soc is available [here](https://deepwiki.com/IObundle/iob-soc)
+
+
   
 ## Dependencies
 
