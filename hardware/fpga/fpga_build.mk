@@ -10,10 +10,13 @@ RUN_DEPS+=iob_soc_bootrom.hex iob_soc_firmware.hex
 BUILD_DEPS+=iob_soc_bootrom.hex $(if $(filter $(INIT_MEM),1),iob_soc_firmware.hex)
 
 # Throw error if user attempts to initialize external memory in FPGA
-ifeq ($(INIT_MEM), 1)
-    ifneq ($(USE_INTMEM), 1)
-        ifeq ($(USE_EXTMEM), 1)
-            $(error Error: FPGA board's DDR memory cannot be initialized. Either use INIT_MEM=0 to avoid DDR memory initialization or set USE_INTMEM=1 to use internal memory instead)
+# Execption: If USE_TESTER is set, the tester can preform exernal memory initialization.
+ifneq ($(USE_TESTER), 1)
+    ifeq ($(INIT_MEM), 1)
+        ifneq ($(USE_INTMEM), 1)
+            ifeq ($(USE_EXTMEM), 1)
+                $(error Error: FPGA board's DDR memory cannot be initialized. Either use INIT_MEM=0 to avoid DDR memory initialization or set USE_INTMEM=1 to use internal memory instead)
+            endif
         endif
     endif
 endif

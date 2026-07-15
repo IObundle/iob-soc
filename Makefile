@@ -15,7 +15,7 @@ USE_INTMEM ?= 1
 USE_EXTMEM ?= 0
 INIT_MEM ?= 1
 
-VERSION ?=$(shell cat iob_soc.py | grep version | cut -d '"' -f 4)
+VERSION ?=$(shell cat $(CORE).py | grep version | cut -d '"' -f 4)
 
 ifneq ($(DEBUG),)
 EXTRA_ARGS +=--debug_level $(DEBUG)

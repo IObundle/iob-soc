@@ -58,7 +58,9 @@ def setup(py_params: dict):
                         "connect": {
                             "clk_en_rst_s": "clk_en_rst_s",
                             # Cbus connected automatically
+                            "interrupt_o": "timer0_interrupt",
                         },
+                        "plic_source_id": 1,
                     },
                     # NOTE: Add other components/peripherals here.
                 ],
