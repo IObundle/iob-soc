@@ -88,6 +88,36 @@ jobs:
       - name: no init mem and ext mem
         run: make fpga-run BOARD=iob_aes_ku040_db_g USE_INTMEM=0 USE_EXTMEM=1 INIT_MEM=0
 
+  zybo-z7:
+    runs-on: self-hosted
+    timeout-minutes: 90
+    if: ${{ !cancelled() }}
+    needs: [ simulation ]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+      - name: Clean untracked files and directories (like old submodules)
+        run: git clean -ffdx
+      - name: no init mem and ext mem
+        run: make fpga-run BOARD=iob_zybo_z7 USE_INTMEM=0 USE_EXTMEM=1 INIT_MEM=0
+
+  zcu104:
+    runs-on: self-hosted
+    timeout-minutes: 90
+    if: ${{ !cancelled() }}
+    needs: [ simulation ]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+      - name: Clean untracked files and directories (like old submodules)
+        run: git clean -ffdx
+      - name: no init mem and ext mem
+        run: make fpga-run BOARD=iob_zcu104 USE_INTMEM=0 USE_EXTMEM=1 INIT_MEM=0
+
   doc:
     runs-on: self-hosted
     timeout-minutes: 60
