@@ -67,7 +67,7 @@ endif
 
 #board client command
 GRAB_TIMEOUT ?= 300
-BOARD_GRAB_CMD=../../scripts/board_client.py grab $(GRAB_TIMEOUT)
+BOARD_GRAB_CMD=../../scripts/board_client.py grab $(GRAB_TIMEOUT) -b $(BOARD)
 
 run: test.log
 	test "$$(cat test.log)" = "Test passed!"

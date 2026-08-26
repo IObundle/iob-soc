@@ -25,11 +25,12 @@ DEBUG = False
 # Must match the server's
 HOST = "localhost"  # Use the loopback interface
 PORT = 50007  # Use the same port as the server
-VERSION = "V0.2"
+VERSION = "V0.3"
 
-# user and duration board is needed
+# user, duration and board name
 USER = os.environ["USER"]
 DURATION = "15"  # Default duration is 5 seconds
+BOARD = ""  # Board name to grab
 
 # List of processes to kill when terminating board_client
 proc_list: List = []
@@ -53,11 +54,14 @@ def perror():
 def form_request(command):
     request = ""
     if command == "grab":
-        request += f"{command} {USER} {DURATION} {VERSION}"
+        request += f"{command} {BOARD} {USER} {DURATION} {VERSION}"
     elif command == "release":
-        request += f"{command} {USER} {VERSION}"
+        request += f"{command} {BOARD} {USER} {VERSION}"
     elif command == "query":
-        request += f"{command} {VERSION}"
+        if BOARD:
+            request += f"{command} {BOARD} {VERSION}"
+        else:
+            request += f"{command} {VERSION}"
     return request
 
 
@@ -188,9 +192,18 @@ if __name__ == "__main__":
         help="Command to run the simulator. Cannot be used with `-p` argument.",
     )
 
+    # Add -b argument for board name
+    parser.add_argument(
+        "-b",
+        "--board",
+        default=None,
+        help="Board name to grab (required for grab/release with V0.3 server).",
+    )
+
     # Assign arguments to variables
     command = parser.parse_args().command
     DURATION = parser.parse_args().duration
+    BOARD = parser.parse_args().board
     console_command = parser.parse_args().console
     fpga_prog_command = parser.parse_args().program
     simulator_run_command = parser.parse_args().simulate
@@ -199,6 +212,13 @@ if __name__ == "__main__":
     assert command != "grab" or bool(fpga_prog_command) != bool(
         simulator_run_command
     ), f"{iob_colors.FAIL}Either `-p` or `-s` must be present with 'grab' command. (Cannot be both){iob_colors.ENDC}"
+
+    # Ensure -b is given with grab/release when using V0.3 server
+    if command in ("grab", "release") and not BOARD:
+        print(
+            f"{iob_colors.FAIL}Argument `-b <board_name>` must be present with '{command}' command for V0.3 server.{iob_colors.ENDC}"
+        )
+        sys.exit(1)
 
     # Ensure -c is given with -p
     assert (
