@@ -46,21 +46,6 @@ jobs:
       - name: run test
         run: nix-shell --run "make sim-test"
   
-  cyclonev:
-    runs-on: self-hosted
-    timeout-minutes: 60
-    if: ${{ !cancelled() }}
-    needs: [ simulation ]
-  
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: 'recursive'
-      - name: init mem and no ext mem
-        run: make fpga-run BOARD=CYCLONEV-GT-DK INIT_MEM=1 USE_EXTMEM=0
-      - name: no init mem and ext mem
-        run: make fpga-run BOARD=CYCLONEV-GT-DK INIT_MEM=0 USE_EXTMEM=1
-  
   ku040:
     runs-on: self-hosted
     timeout-minutes: 90
@@ -80,7 +65,7 @@ jobs:
     runs-on: self-hosted
     timeout-minutes: 5
     if: ${{ !cancelled() }}
-    needs: [ cyclonev ]
+    needs: [ ku040 ]
 
     steps:
       - uses: actions/checkout@v4
@@ -106,7 +91,7 @@ jobs:
     runs-on: self-hosted
     timeout-minutes: 20
     if: ${{ !cancelled() }}
-    needs: [ cyclonev ]
+    needs: [ ku040 ]
 
     steps:
       - uses: actions/checkout@v4
@@ -120,7 +105,7 @@ jobs:
     runs-on: self-hosted
     timeout-minutes: 60
     if: ${{ !cancelled() }}
-    needs: [ cyclonev ]
+    needs: [ ku040 ]
   
     steps:
       - uses: actions/checkout@v4
